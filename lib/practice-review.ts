@@ -3,6 +3,14 @@
 /** UTF-8 bytes of one private note. */
 export const NOTE_MAX_BYTES = 20 * 1024;
 
+/** Longer than this, a solve timer was left running (closed tab, next day), not solving. */
+export const MAX_SOLVE_SECONDS = 6 * 3600;
+/**
+ * Interview time budget in minutes per difficulty, keyed by the Chinese names problems carry
+ * (lib/problems.ts difficulty, boot.problems): 简单 Easy, 中等 Medium, 困难 Hard.
+ */
+export const PRESETS: Record<string, number> = { 简单: 15, 中等: 25, 困难: 40 };
+
 /** One problem's formal (judge) submissions by the signed-in learner. */
 export type PracticeHistoryItem = {
   problemId: string;

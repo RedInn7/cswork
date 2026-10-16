@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeDiff } from './editor';
+import { EditorialVote } from './editorial-vote';
 import { SolutionPosts } from './solution-posts';
 import { StatementMarkdown } from './statement-markdown';
 import { ojRequest, type LingEditorial as Editorial } from '@/lib/oj-client';
@@ -209,6 +210,7 @@ export function LingEditorial({
               </li>
             ))}
           </ol>
+          <EditorialVote problemId={problemId} english={english} />
           {discussion && (
             <details className="cs-ling-discussion" onToggle={(e) => setDiscussing(e.currentTarget.open)}>
               <summary>{t('社区题解与讨论', 'Community solutions and discussion')}</summary>

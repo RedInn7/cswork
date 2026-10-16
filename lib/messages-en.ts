@@ -27,6 +27,8 @@ const EN: Record<string, string> = {
   '操作有些频繁，请稍后再试': 'Too many requests. Please try again later',
   '无效的 JSON': 'Invalid JSON',
   接口不存在: 'Endpoint not found',
+  // A wave-7 route whose module has not shipped yet.
+  未开放: 'Not available yet',
   操作不存在: 'Action not found',
   操作不支持: 'Action not supported',
   操作方式无效: 'Invalid request method',
@@ -389,13 +391,23 @@ const EN: Record<string, string> = {
   '项目最多 30 个文件，合计 256 KiB': 'A project is limited to 30 files and 256 KiB in all',
   '今天的 AI 结对次数已用完，明天再来': "You've used today's AI pair requests. Come back tomorrow",
   'AI 结对今天的额度已用完，明天再来': 'The AI pair is out of credit for today. Come back tomorrow',
+  '今天的 AI 结对评估次数已用完，明天再来': "You've used today's AI round reviews. Come back tomorrow",
+  '今天的 AI 作答点评次数已用完，明天再来': "You've used today's AI answer feedback. Come back tomorrow",
+  '今天的职位描述分析次数已用完，明天再来': "You've used today's job description checks. Come back tomorrow",
   '比赛进行中，AI 结对暂停，赛后开放': 'The AI pair is paused while your contest runs; it reopens afterwards',
+  // Answer and STAR story feedback (lib/server/ai-answer.ts)
+  '这道题没有参考答案，不能 AI 点评': "This question has no reference answer, so AI feedback isn't available",
+  '至少写 80 个字符再请求 AI 点评': 'Write at least 80 characters before asking for AI feedback',
+  '内容过长，AI 点评最多读取 6000 个字符': 'Too long: AI feedback reads at most 6,000 characters',
+  '比赛或考试进行中，AI 作答点评暂停，结束后开放':
+    'AI answer feedback is paused while your contest or exam runs; it reopens afterwards',
   '这道题没有 LeetCode 模式': "This problem has no LeetCode mode",
   请先输入问题: 'Type a question first',
   请先在题面里选中一段文字: 'Select some text in the statement first',
   通过本题后才能分析复杂度: 'Complexity analysis opens once you pass this problem',
   还没有失败的运行或提交可以分析: 'There is no failed run or submission to look at yet',
-  '只能给题目投票，或给面经和面试题点赞': 'Only problems can be voted on, and experiences and interview questions upvoted',
+  '只能给题目和官方题解投票，或给面经和面试题点赞':
+    'Only problems and editorials can be voted on, and experiences and interview questions upvoted',
   只有老师可以把内容设为精选: 'Only teachers can mark content as curated',
   // AI interviewer (lib/server/ai-interviewer.ts)
   'AI 面试官暂时不可用，请稍后再试': 'The AI interviewer is unavailable right now. Please try again later',

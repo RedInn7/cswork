@@ -7,6 +7,9 @@
  * must compile as shipped yet fail the sample. Local toolchains stand in for go-judge:
  * python3, $CXX or g++ (C++20), javac --release 17 and go -lang=go1.18: below the judge's Java 21
  * and Go 1.24, so whatever passes here also compiles there, on CI's default JDK and Go too.
+ * The concurrency group's drivers start threads in a seeded random order and pause at random
+ * inside every callback; their output depends only on the input, so it is checked like any other,
+ * and scripts/core-skills/stress.ts reruns them to show they are stable and still catch races.
  *
  *   node --import tsx scripts/core-skills/build.ts          # write the files
  *   node --import tsx scripts/core-skills/build.ts --check  # fail on drift
@@ -31,6 +34,7 @@ export const GROUPS = [
   { key: 'sort-search', zh: '排序与查找', en: 'Sorting & searching' },
   { key: 'graph', zh: '图', en: 'Graphs' },
   { key: 'advanced', zh: '高级结构', en: 'Advanced structures' },
+  { key: 'concurrency', zh: '并发', en: 'Concurrency' },
 ] as const;
 
 type Problem = {
@@ -168,20 +172,62 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: 'lowbit、前缀和与倍增求第 k 个', en: 'lowbit, prefix sums and k-th by binary lifting' },
   },
+  {
+    slug: 'ordered-print',
+    group: 'concurrency',
+    difficulty: '简单',
+    summary: { zh: '两个完成信号让三个任务按序执行', en: 'Two "done" signals put three jobs in order' },
+  },
+  {
+    slug: 'foobar-alternate',
+    group: 'concurrency',
+    difficulty: '简单',
+    summary: { zh: '两个线程严格轮流执行', en: 'Two threads taking strict turns' },
+  },
+  {
+    slug: 'zero-even-odd',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '三个线程接力输出 0 1 0 2 …', en: 'Three threads relaying 0 1 0 2 …' },
+  },
+  {
+    slug: 'h2o',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '信号量加屏障，两个氢配一个氧', en: 'Semaphores and a barrier pair two hydrogens with an oxygen' },
+  },
+  {
+    slug: 'dining-philosophers',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '按编号拿叉子，打破循环等待', en: 'Numbered forks break the circular wait' },
+  },
+  {
+    slug: 'bounded-blocking-queue',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '一把锁、两个条件变量的生产者与消费者', en: 'Producers and consumers on one lock and two conditions' },
+  },
+  {
+    slug: 'read-write-lock',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '读者共享、写者独占，用一把锁和条件变量实现', en: 'Shared readers and an exclusive writer from one lock and a condition' },
+  },
 ];
 
-const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
+export const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
 const SOURCE: Record<CodeLanguage, string> = { python: 'main.py', cpp: 'main.cpp', java: 'Main.java', go: 'main.go' };
-const LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
+export const LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
 
 type Run = { ok: boolean; stdout: string; stderr: string; ms: number };
-function exec(command: string, args: string[], cwd: string, input = ''): Run {
+export function exec(command: string, args: string[], cwd: string, input = '', timeout = 60_000): Run {
   const started = Date.now();
   const result = spawnSync(command, args, {
     cwd,
     input,
     encoding: 'utf8',
-    timeout: 60_000,
+    timeout,
     maxBuffer: 256 * 1024 * 1024,
     env: { ...process.env, GOTOOLCHAIN: 'local', GOFLAGS: '', GO111MODULE: 'off', CGO_ENABLED: '0' },
   });
@@ -194,7 +240,7 @@ function exec(command: string, args: string[], cwd: string, input = ''): Run {
 }
 
 /** One program built in its own directory: run() feeds it a test, close() removes it. */
-function compile(language: CodeLanguage, source: string) {
+export function compile(language: CodeLanguage, source: string) {
   const dir = mkdtempSync(join(tmpdir(), 'cswork-core-'));
   writeFileSync(join(dir, SOURCE[language]), source);
   const built =
@@ -213,7 +259,7 @@ function compile(language: CodeLanguage, source: string) {
         : [join(dir, 'main'), []];
   return {
     built,
-    run: (input: string) => exec(command, args, dir, input),
+    run: (input: string, timeout?: number) => exec(command, args, dir, input, timeout),
     close: () => rmSync(dir, { recursive: true, force: true }),
   };
 }

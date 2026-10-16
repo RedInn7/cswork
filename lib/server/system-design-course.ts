@@ -21,8 +21,8 @@ export type SdChapter = {
 
 /** The system design course (lib/content/system-design-course.json), in reading order. */
 export const sdChapters = (course as { chapters: SdChapter[] }).chapters;
-/** The certificate's chapters and the progress bar's: all but the optional key-technology and pattern reading. */
-export const sdRequired = sdChapters.map((chapter) => chapter.slug).filter((slug) => !/^(tech|pattern)-/.test(slug));
+/** The certificate's chapters and the progress bar's: all but the optional key-technology, pattern, LLD case and API reading. */
+export const sdRequired = sdChapters.map((chapter) => chapter.slug).filter((slug) => !/^(tech|pattern|lld-case|api)-/.test(slug));
 export const sdChapter = (slug: string) => sdChapters.find((chapter) => chapter.slug === slug);
 /** The index's parts: each runs from its first chapter up to the next part's. */
 export const sdParts = [
@@ -33,6 +33,8 @@ export const sdParts = [
   // Optional reading: not design exercises (sdCases) and not required for the certificate.
   { from: 'tech-kafka', zh: '关键技术（选读）', en: 'Key technologies (optional)' },
   { from: 'pattern-real-time-updates', zh: '通用设计模式（选读）', en: 'Patterns (optional)' },
+  { from: 'lld-case-atm', zh: 'LLD 案例库（选读）', en: 'LLD case library (optional)' },
+  { from: 'api-rest-vs-rpc-graphql', zh: 'API 设计（选读）', en: 'API design (optional)' },
 ].map((part, i, parts) => {
   const at = (slug: string) => sdChapters.findIndex((chapter) => chapter.slug === slug);
   const next = parts[i + 1];
@@ -58,11 +60,47 @@ export const sdCases = new Set([
   'fraud-detection',
 ]);
 export const sdPath = (slug?: string) => (slug ? `/system-design/${slug}` : '/system-design');
-/** Sitemap entries: the course index and every chapter. */
+/** The capacity estimation drill's own page (components/estimation-drill.tsx); no chapter takes this slug. */
+export const SD_ESTIMATION = 'estimation';
+/** Sitemap entries: the course index, every chapter and the estimation drill. */
 export const systemDesignPaths = () => [
   { path: sdPath() },
   ...sdChapters.map((chapter) => ({ path: sdPath(chapter.slug) })),
+  { path: sdPath(SD_ESTIMATION) },
 ];
+
+/**
+ * Reading time in whole minutes: Chinese at 400 characters a minute, English at 200 words,
+ * and fenced code or diagrams at 15 non-blank lines a minute.
+ */
+export function readMinutes(markdown: string) {
+  let lines = 0;
+  const prose = markdown.replace(/^```[^\n]*\n([\s\S]*?)^```/gm, (_, code: string) => {
+    lines += code.split('\n').filter((line) => line.trim()).length;
+    return '';
+  });
+  const han = prose.match(/\p{Script=Han}/gu)?.length ?? 0;
+  const words = prose.match(/[A-Za-z0-9]+(?:['’.-][A-Za-z0-9]+)*/g)?.length ?? 0;
+  return Math.max(1, Math.round(han / 400 + words / 200 + lines / 15));
+}
+// The course JSON is fixed for the process, so each chapter is measured once, on first use.
+const measured = new WeakMap<object, [zh: number, en: number]>();
+/** A chapter's reading time in the reader's language (system design or beginner course chapters). */
+export function chapterMinutes(chapter: { bodyZh: string; bodyEn: string }, zh: boolean) {
+  let both = measured.get(chapter);
+  if (!both) measured.set(chapter, (both = [readMinutes(chapter.bodyZh), readMinutes(chapter.bodyEn)]));
+  return both[zh ? 0 : 1];
+}
+/** A course's (or a part's) reading time: the sum of its chapters'. */
+export const totalMinutes = (chapters: { bodyZh: string; bodyEn: string }[], zh: boolean) =>
+  chapters.reduce((n, chapter) => n + chapterMinutes(chapter, zh), 0);
+/** "约 25 分钟" / "~25 min"; an hour or more reads "约 3 小时 10 分钟" / "~3 h 10 min". */
+export function minutesLabel(minutes: number, zh: boolean) {
+  const h = Math.floor(minutes / 60),
+    m = minutes % 60;
+  if (!h) return zh ? `约 ${m} 分钟` : `~${m} min`;
+  return zh ? `约 ${h} 小时${m ? ` ${m} 分钟` : ''}` : `~${h} h${m ? ` ${m} min` : ''}`;
+}
 
 /** The chapter's first paragraph as plain text, cut to `max` characters: index cards and meta descriptions. */
 export function sdSummary(body: string, max = 150) {

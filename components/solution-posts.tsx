@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
-import { anonymousAllowed, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
+import { anonymousAllowed, plainExcerpt, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { Report } from './chat-log';
@@ -121,13 +121,6 @@ const day = (time: number, english: boolean) =>
     month: 'short',
     day: 'numeric',
   });
-/** The list's two-line teaser: code blocks and Markdown marks dropped, rendered as text. */
-export const plainExcerpt = (md: string) =>
-  md
-    .replace(/(`{3,}|~{3,})[^\n]*\n[\s\S]*?(?:\1|$)/g, ' ')
-    .replace(/[#>*_`~|]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
 /** A fence longer than any backtick run inside the code, so pasted code cannot close it early. */
 export function codeBlock(code: string, language: string) {
   const run = Math.max(0, ...[...code.matchAll(/`+/g)].map((m) => m[0].length));
@@ -294,6 +287,7 @@ export function SolutionPosts({
   only = '',
   tag = '',
   initialPost,
+  initialQuery = '',
   signedIn = true,
   unlocked = false,
 }: {
@@ -306,6 +300,8 @@ export function SolutionPosts({
   tag?: string;
   /** Open this post first (a link from a thread's page). */
   initialPost?: string;
+  /** Start with this search (a board link's &q=). */
+  initialQuery?: string;
   signedIn?: boolean;
   unlocked?: boolean;
 }) {
@@ -318,12 +314,15 @@ export function SolutionPosts({
   const companies = useCompanies(kind === 'discuss' || saved);
   const [technique, setTechnique] = useState('');
   const filter = kind === 'problem' ? technique : tag;
-  const [sort, setSort] = useState<'votes' | 'new'>('votes');
+  const [sort, setSort] = useState<'votes' | 'hot' | 'new'>('votes');
+  // Searchable on a problem's solutions and the board's threads: words in the title or body.
+  const searchable = kind === 'problem' || kind === 'discuss';
+  const [q, setQ] = useState(() => (searchable ? initialQuery.trim().slice(0, 120) : ''));
   // Opened from the AC dialog's histogram: one language's posts until the chip clears it.
   const [langFilter, setLangFilter] = useState(() => (langName(only) ? only : ''));
   const query = saved
     ? 'oj/posts?starred=1'
-    : `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}&sort=${sort}${langFilter ? `&language=${langFilter}` : ''}`;
+    : `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}&sort=${sort}${langFilter ? `&language=${langFilter}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
   const [page, setPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
@@ -466,7 +465,10 @@ export function SolutionPosts({
             <fieldset className="cs-posts-sort">
               <legend className="sr-only">{t('排序', 'Sort by')}</legend>
               <button type="button" aria-pressed={sort === 'votes'} onClick={() => setSort('votes')}>
-                {t('最热', 'Most votes')}
+                {t('最多赞', 'Most votes')}
+              </button>
+              <button type="button" aria-pressed={sort === 'hot'} onClick={() => setSort('hot')}>
+                {t('热门', 'Hot')}
               </button>
               <button type="button" aria-pressed={sort === 'new'} onClick={() => setSort('new')}>
                 {t('最新', 'Newest')}
@@ -489,6 +491,27 @@ export function SolutionPosts({
               {t(`只看 ${langName(langFilter)}`, `${langName(langFilter)} only`)}
               <X size={12} aria-hidden="true" />
             </button>
+          )}
+          {!saved && searchable && (
+            <form
+              className="cs-posts-search"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setQ((e.currentTarget.elements.namedItem('q') as HTMLInputElement).value.trim());
+              }}
+            >
+              <label>
+                <span className="sr-only">{t('搜索帖子', 'Search posts')}</span>
+                <input
+                  type="search"
+                  name="q"
+                  defaultValue={q}
+                  maxLength={120}
+                  placeholder={t('搜索标题和正文', 'Search titles and posts')}
+                />
+              </label>
+              <button type="submit">{t('搜索', 'Search')}</button>
+            </form>
           )}
           {!saved && kind === 'problem' && (
             <label className="cs-posts-filter">
@@ -560,7 +583,9 @@ export function SolutionPosts({
           <p className="cs-posts-state">
             {saved
               ? t('还没有收藏帖子。打开一篇帖子，点「收藏」就会出现在这里。', 'No saved posts yet. Open a post and choose Save to keep it here.')
-              : t(...words.empty)}
+              : q
+                ? t(`没有找到包含「${q}」的帖子。`, `No posts match "${q}".`)
+                : t(...words.empty)}
           </p>
         )}
         {page.more && (
@@ -1152,6 +1177,12 @@ function PostEditor({
         {t(
           '所有人可见，显示你的公开主页名或打码后的昵称。支持 Markdown、代码块和 mermaid 图（```mermaid 代码块）；不支持图片和 HTML。',
           'Everyone can read it, under your public handle or a masked display name. Markdown, code blocks and mermaid diagrams (a ```mermaid block) work; images and HTML do not.',
+        )}
+      </p>
+      <p className="cs-post-editor-note">
+        {t(
+          '公式：$x^2$ 或单独成行的 $$…$$（金额写成 \\$5）。剧透：```spoiler 标题 … ``` 默认折叠，里面要放代码块时外层改用 4 个反引号。多语言：python、cpp、java、go 代码块连着写会合并成切换标签，这几种代码块都能在 Playground 打开。',
+          'Math: $x^2$, or $$…$$ on its own lines (write money as \\$5). Spoilers: ```spoiler Title … ``` stays folded; to put a code block inside, open it with four backticks. Languages: python, cpp, java and go blocks written back to back become tabs, and each of them opens in the Playground.',
         )}
       </p>
       {problemId === 'discuss:referral' && (

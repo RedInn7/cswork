@@ -12,15 +12,19 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 const PAGE = 30;
 const one = (v: string | string[] | undefined) => (typeof v === 'string' ? v : '');
 
-/** ?channel= (a channel or all), &company=, &sort=new, &page=; anything else is a 404. */
-const load = cache(async (channel: string, company: string, sort: string, page: number) => {
+/**
+ * ?channel= (a channel or all), &company=, &q= (words in the title or body), &sort=new|hot,
+ * &page=; anything else is a 404.
+ */
+const load = cache(async (channel: string, company: string, sort: string, query: string, page: number) => {
   if ((channel && !isChannel(channel)) || !/^[a-z0-9-]{0,80}$/.test(company) || !(page >= 1 && page <= 100))
     notFound();
   const companies = reportCompanies();
   if (company && !companies.some((c) => c.slug === company)) notFound();
   const result = await publicPosts(`discuss:${channel || 'all'}`, {
-    sort: sort === 'new' ? 'new' : 'votes',
+    sort: sort || 'votes',
     tag: company,
+    q: query,
     offset: String((page - 1) * PAGE),
   });
   if (!result) notFound();
@@ -30,9 +34,10 @@ async function read(searchParams: Props['searchParams']) {
   const q = await searchParams;
   const channel = one(q.channel);
   const company = one(q.company);
-  const sort = one(q.sort) === 'new' ? 'new' : '';
+  const sort = one(q.sort) === 'new' || one(q.sort) === 'hot' ? one(q.sort) : '';
+  const query = one(q.q).trim().slice(0, 120);
   const page = Math.floor(Number(one(q.page) || 1));
-  return { channel, company, sort, page, ...(await load(channel, company, sort, page)) };
+  return { channel, company, sort, query, page, ...(await load(channel, company, sort, query, page)) };
 }
 const href = (q: Record<string, string | number>) => {
   const params = new URLSearchParams();
@@ -42,7 +47,7 @@ const href = (q: Record<string, string | number>) => {
 };
 
 export async function generateMetadata({ searchParams }: Props) {
-  const { channel, company, sort, page, companies, zh } = await read(searchParams);
+  const { channel, company, sort, query, page, companies, zh } = await read(searchParams);
   const name = channel ? CHANNELS[channel as Channel][zh ? 0 : 1] : zh ? '讨论区' : 'Discussion board';
   const companyName = companies.find((c) => c.slug === company)?.name;
   return {
@@ -53,13 +58,13 @@ export async function generateMetadata({ searchParams }: Props) {
         : 'Interviews, algorithms, careers and offer stories: the CSWork discussion board.',
       path: href({ channel, company, page }),
     }),
-    // The newest-first view repeats the default one.
-    ...(sort ? { robots: { index: false, follow: true } } : {}),
+    // The other orders repeat the default view; a search is one reader's.
+    ...(sort || query ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
 export default async function DiscussPage({ searchParams }: Props) {
-  const { channel, company, sort, page, result, companies, zh } = await read(searchParams);
+  const { channel, company, sort, query, page, result, companies, zh } = await read(searchParams);
   const t = (a: string, b: string) => (zh ? a : b);
   const names = new Map(companies.map((c) => [c.slug, c.name]));
   const app = `/?${new URLSearchParams({ view: 'discuss', channel: channel || 'interview', ...(company ? { company } : {}) })}`;
@@ -88,7 +93,7 @@ export default async function DiscussPage({ searchParams }: Props) {
         {(['', ...Object.keys(CHANNELS)] as ('' | Channel)[]).map((key) => (
           <Link
             key={key || 'all'}
-            href={href({ channel: key, company, sort })}
+            href={href({ channel: key, company, sort, q: query })}
             prefetch={false}
             aria-current={key === channel ? 'page' : undefined}
           >
@@ -99,6 +104,16 @@ export default async function DiscussPage({ searchParams }: Props) {
 
       <form className="discuss-filters" action="/discuss" method="get">
         {channel && <input type="hidden" name="channel" value={channel} />}
+        <label>
+          <span>{t('搜索', 'Search')}</span>
+          <input
+            type="search"
+            name="q"
+            defaultValue={query}
+            maxLength={120}
+            placeholder={t('标题或正文里的词', 'Words in the title or post')}
+          />
+        </label>
         <label>
           <span>{t('公司', 'Company')}</span>
           <select name="company" defaultValue={company}>
@@ -113,7 +128,8 @@ export default async function DiscussPage({ searchParams }: Props) {
         <label>
           <span>{t('排序', 'Sort')}</span>
           <select name="sort" defaultValue={sort}>
-            <option value="">{t('最热', 'Most votes')}</option>
+            <option value="">{t('最多赞', 'Most votes')}</option>
+            <option value="hot">{t('热门', 'Hot')}</option>
             <option value="new">{t('最新', 'Newest')}</option>
           </select>
         </label>
@@ -147,18 +163,22 @@ export default async function DiscussPage({ searchParams }: Props) {
           })}
         </ol>
       ) : (
-        <p className="discuss-empty">{t('这里还没有帖子，来开个头吧。', 'No threads here yet. Start one.')}</p>
+        <p className="discuss-empty">
+          {query
+            ? t(`没有找到包含「${query}」的帖子。`, `No threads match "${query}".`)
+            : t('这里还没有帖子，来开个头吧。', 'No threads here yet. Start one.')}
+        </p>
       )}
       {(page > 1 || result.more) && (
         <nav className="discuss-pager" aria-label={t('分页', 'Pagination')}>
           {page > 1 && (
-            <Link href={href({ channel, company, sort, page: page - 1 })} prefetch={false}>
+            <Link href={href({ channel, company, sort, q: query, page: page - 1 })} prefetch={false}>
               ← {t('上一页', 'Previous')}
             </Link>
           )}
           <span>{t(`第 ${page} 页`, `Page ${page}`)}</span>
           {result.more && (
-            <Link href={href({ channel, company, sort, page: page + 1 })} prefetch={false}>
+            <Link href={href({ channel, company, sort, q: query, page: page + 1 })} prefetch={false}>
               {t('下一页', 'Next')} →
             </Link>
           )}

@@ -296,18 +296,38 @@ function savePoll(postId: string, target: string, poll: z.infer<typeof pollInput
     ).run(postId, poll.question, JSON.stringify(poll.options), poll.multi ? 1 : 0, poll.closesAt, now);
 }
 
+/** ?sort=hot: votes cooling with age, votes / (hours since posting + 2)^1.5 (`votes` is POST's column). */
+const HOT = 'votes/pow(max(@now-sp.created_at,0)/3600000.0+2,1.5) DESC,sp.created_at DESC';
+/** ?q=: up to 6 words, each in the title or body, as LIKE patterns escaped as experience-submissions' search. */
+const searchWords = (q: string | null) =>
+  (q ?? '')
+    .trim()
+    .slice(0, 120)
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 6)
+    .map((word) => `%${word.replace(/[\\%_]/g, (c) => `\\${c}`)}%`);
+
 /**
- * A target's posts, best or newest first, optionally one tag's, plus whether this learner has an
- * AC on it (posts on anything but a problem are never locked). `discuss:all` lists every channel.
- * `excerpt` is the opening; `body: true` sends whole bodies (answers and comments show inline).
+ * A target's posts, best, hottest or newest first, optionally one tag's or matching ?q=, plus
+ * whether this learner has an AC on it (posts on anything but a problem are never locked).
+ * `discuss:all` lists every channel. A search stays inside one target (or `discuss:all`), never
+ * across problems, so the contest gate below holds. `excerpt` is the opening; `body: true` sends
+ * whole bodies (answers and comments show inline).
+ * ponytail: LIKE scans the target's posts; an FTS index once one target holds tens of thousands.
  */
 async function listPosts(p: Person | null, params: URLSearchParams) {
   const problem = params.get('problem') ?? '';
   const all = problem === 'discuss:all';
   if (!all && !(await visibleTarget(p, problem))) throw new HttpError(404, '题目不存在或尚未发布');
   if (!all) refuseDuringContest(p, problem);
-  // Featured (pinned) posts first, either way.
-  const order = `sp.pinned DESC,${params.get('sort') === 'new' ? 'sp.created_at DESC' : 'votes DESC,sp.created_at DESC'}`;
+  const sort = params.get('sort');
+  // Featured (pinned) posts first, any order.
+  const order = `sp.pinned DESC,${sort === 'new' ? 'sp.created_at DESC' : sort === 'hot' ? HOT : 'votes DESC,sp.created_at DESC'}`;
+  const words = searchWords(params.get('q'));
+  const search = words
+    .map((_, i) => ` AND (sp.title LIKE @q${i} ESCAPE '\\' OR sp.body LIKE @q${i} ESCAPE '\\')`)
+    .join('');
   const offset = Math.min(Math.max(0, Math.floor(Number(params.get('offset')) || 0)), 5000);
   // ?language=: one language's posts (the AC dialog's histogram links here); '' is all.
   const language = postInput.shape.language.parse(params.get('language') ?? '');
@@ -319,12 +339,20 @@ async function listPosts(p: Person | null, params: URLSearchParams) {
     .prepare(
       `${POST},${params.get('body') === '1' ? 'sp.body' : 'substr(sp.body,1,300) AS excerpt'} ${FROM_POST}
       WHERE ${all ? "sp.problem_id>='discuss:' AND sp.problem_id<'discuss;'" : 'sp.problem_id=@problem'} ${tag ? 'AND sp.tag=@tag' : ''}
-        AND (@language='' OR sp.language=@language)
+        AND (@language='' OR sp.language=@language)${search}
         AND (sp.user_id=@me OR (sp.hidden=${SHOWN} AND NOT ${reportedDown("'post:'||sp.id")}))
         AND sp.hidden<>${REMOVED}${hiddenTags()}
       ORDER BY ${order},sp.id LIMIT ${PAGE + 1} OFFSET @offset`,
     )
-    .all({ me, problem, tag, offset, language }) as PostRow[];
+    .all({
+      me,
+      problem,
+      tag,
+      offset,
+      language,
+      now: Date.now(),
+      ...Object.fromEntries(words.map((like, i) => [`q${i}`, like])),
+    }) as PostRow[];
   const solved =
     targetKind(problem) !== 'problem' ||
     (!!p &&

@@ -3,8 +3,8 @@ import { CourseRating } from '@/components/course-rating';
 import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd, seoMetadata } from '@/lib/seo';
 import { beginnerCourse, learnKey, learnPath } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
-import { sdSummary } from '@/lib/server/system-design-course';
-import { SdReadCheck, SdReadCount } from '../../system-design/reader';
+import { chapterMinutes, minutesLabel, sdSummary, totalMinutes } from '@/lib/server/system-design-course';
+import { SdContinue, SdReadCheck, SdReadCount } from '../../system-design/reader';
 
 type Props = { params: Promise<{ course: string }> };
 
@@ -53,7 +53,18 @@ export default async function LearnCourse({ params }: Props) {
         <p className="public-library-eyebrow">{zh ? '入门 · 速成课' : 'BEGINNER · CRASH COURSE'}</p>
         <h1>{title}</h1>
         <p>{zh ? course.summaryZh : course.summaryEn}</p>
+        <p className="sd-total">
+          {zh ? '全部读完' : 'Reading time: '}
+          {minutesLabel(totalMinutes(course.chapters, zh), zh)}
+        </p>
         <SdReadCount slugs={course.chapters.map((chapter) => learnKey(course.slug, chapter.slug))} />
+        <SdContinue
+          chapters={course.chapters.map((chapter) => ({
+            slug: learnKey(course.slug, chapter.slug),
+            title: chapterTitle(chapter),
+            href: learnPath(course.slug, chapter.slug),
+          }))}
+        />
         <CourseRating courseId={`sd:${course.slug}`} zh={zh} />
       </div>
       <ol className="sd-sheets">
@@ -64,7 +75,12 @@ export default async function LearnCourse({ params }: Props) {
               <span className="sd-sheet-title">{chapterTitle(chapter)}</span>
               <span className="sd-sheet-summary">{sdSummary(zh ? chapter.bodyZh : chapter.bodyEn)}</span>
               <span className="sd-sheet-meta">
-                {zh ? `${chapter.quiz.length} 道测验 · ${chapter.homework.length} 道练习` : `${chapter.quiz.length}-question quiz · ${chapter.homework.length} problems`}
+                <span>
+                  {minutesLabel(chapterMinutes(chapter, zh), zh)} ·{' '}
+                  {zh ? `${chapter.quiz.length} 道测验` : `${chapter.quiz.length}-question quiz`}
+                  {chapter.homework.length > 0 &&
+                    (zh ? ` · ${chapter.homework.length} 道练习` : ` · ${chapter.homework.length} problems`)}
+                </span>
                 <SdReadCheck slug={learnKey(course.slug, chapter.slug)} />
               </span>
             </a>

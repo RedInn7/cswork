@@ -178,6 +178,24 @@ test('the packages are 50 valid, bilingual, SQL-only judge packages', () => {
   assert.equal(variant({ id: 'lc-1', languages: ['sql'] }), false);
 });
 
+test('interview patterns name known problems, and every problem lists its own', () => {
+  const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as {
+    patterns: { key: string; zh: string; en: string }[];
+    problems: { id: string; patterns: string[] }[];
+  };
+  const keys = manifest.patterns.map((p) => p.key);
+  assert.equal(new Set(keys).size, keys.length);
+  for (const p of manifest.patterns) assert.ok(/^[a-z]+(-[a-z]+)*$/.test(p.key) && p.zh && p.en, p.key);
+  for (const problem of manifest.problems) for (const key of problem.patterns) assert.ok(keys.includes(key), problem.id);
+  // Every pattern has a problem; the classic interview ones are where they belong.
+  for (const key of keys) assert.ok(manifest.problems.some((p) => p.patterns.includes(key)), key);
+  const of = (id: string) => manifest.problems.find((p) => p.id === id)!.patterns;
+  assert.deepEqual(of('sql-19'), ['gaps-islands', 'dedupe']);
+  assert.deepEqual(of('sql-04'), ['anti-join']);
+  assert.ok(of('sql-16').includes('top-n-per-group') && of('sql-17').includes('running-total'));
+  assert.ok(of('sql-20').includes('retention') && of('sql-32').includes('pivot'));
+});
+
 /** A stand-in go-judge: writes copyIn files and runs the command with local executables. */
 async function fakeRunner(): Promise<Server> {
   const server = createServer((request, response) => {

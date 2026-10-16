@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 
@@ -252,6 +253,18 @@ test('a failed ACM submission offers its first failing case as custom input', as
     assert.equal(debug() === null, true);
     await render({ ...base, id: 'f6' }, { onUseInput: undefined });
     assert.equal(debug() === null, true);
+    // A running mock OA seals hidden cases: the verdict only, like HackerRank.
+    await render({ ...base, id: 'f7' }, { sealHidden: true });
+    assert.equal(debug() === null, true);
+    assert.match(document.body.textContent, /Hidden test cases show only the verdict|隐藏测试点仅显示判题结果/);
+    assert.equal(document.body.textContent.includes('1 2'), false);
+    assert.equal(document.querySelector('.cs-case-output') === null, true);
+    // A public failing case still shows its input and replays.
+    await render({ ...base, id: 'f8', cases: [{ ordinal: 0, status: 'wrong_answer', hidden: false }] }, { sealHidden: true });
+    assert.equal(debug() !== null, true);
+    // The workspace seals both its result panel and the history dialog during a mock OA or contest.
+    const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
+    assert.equal(workspace.match(/sealHidden=\{examMode\}/g)?.length, 2);
   } finally {
     await act(async () => root.unmount());
     dom.window.close();

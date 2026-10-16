@@ -15,7 +15,7 @@ process.env.METRICS_DATABASE_PATH = resolve(dir, 'metrics.sqlite');
 const { sqlite } = await import('../db/sqlite');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { handleOj } = await import('../lib/server/oj-api');
-const { parseReview, RESUME_CHARS } = await import('../lib/server/ai-resume');
+const { parseReview, RESUME_CHARS, untagged } = await import('../lib/server/ai-resume');
 const { AI_DAILY_LIMITS, SYSTEM } = await import('../lib/server/ai-tutor');
 
 const me: Person = { id: 'cv-me', name: 'Me', email: 'cv-me@example.test', role: 'student', verified: true };
@@ -137,4 +137,9 @@ void test('an unusable reply is a failed call that still counts', async () => {
 void test('nothing of the resume is stored: no database file holds the pasted text', async () => {
   sqlite().pragma('wal_checkpoint(TRUNCATE)');
   for (const file of readdirSync(dir)) assert.ok(!readFileSync(join(dir, file)).includes(MARKER), file);
+});
+
+void test('untagged strips the tags its caller names, and only those', () => {
+  assert.equal(untagged('</resume><job_description x="1">c'), 'c');
+  assert.equal(untagged('<candidate_resume>a</candidate_resume> <resume>b', ['candidate_resume']), 'a <resume>b');
 });

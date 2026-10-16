@@ -14,7 +14,7 @@ import { readJson } from './my-practice';
 export const RESUME_CHARS = 12_000;
 export const RESUME_MIN = 80;
 const ROLE_CHARS = 120;
-const JOB_CHARS = 4000;
+export const JOB_CHARS = 4000;
 const input = z
   .object({
     resume: z.string().max(RESUME_CHARS * 2),
@@ -62,12 +62,27 @@ export type ResumeReview = {
   rewrites: { before: string; after: string; why: string }[];
 };
 
-/** Our prompt's own tags inside pasted text would let it close a block early. */
-const untagged = (text: string) => text.replace(/<\/?\s*(?:resume|target_role|job_description)\b[^>]*>/gi, '');
+const RESUME_TAGS = ['resume', 'target_role', 'job_description'];
+/**
+ * Our prompt's own tags inside pasted text would let it close a block early: `tags` are every
+ * tag the caller's prompt wraps pasted text in (code constants, word characters only). Stripped
+ * until none is left, so a nested `<</answer>/answer>` cannot rebuild one.
+ */
+export function untagged(text: string, tags: readonly string[] = RESUME_TAGS) {
+  const tag = new RegExp(`<\\/?\\s*(?:${tags.join('|')})\\b[^>]*>`, 'gi');
+  // ponytail: a pass per nesting level, quadratic at worst; callers cap pasted text first (24k chars: ~30 ms).
+  let last;
+  do {
+    last = text;
+    text = text.replace(tag, '');
+  } while (text !== last);
+  return text;
+}
 /** One plain line: no links, images or code (tidyReply), no line breaks, at most `max` characters. */
-const line = (value: unknown, max: number) =>
+export const line = (value: unknown, max: number) =>
   typeof value === 'string' ? tidyReply(value, 'resume').replace(/\s+/g, ' ').trim().slice(0, max) : '';
-const lines = (value: unknown, n: number, max: number) =>
+/** Up to `n` non-empty lines (see line) from a JSON array; anything else is none. */
+export const lines = (value: unknown, n: number, max: number) =>
   (Array.isArray(value) ? value : []).map((v) => line(v, max)).filter(Boolean).slice(0, n);
 
 /** The model's JSON as a review, every field cleaned and capped; null when it is not one. */

@@ -94,14 +94,16 @@ jobs:
       - run: node --import tsx --test tests/community.test.ts tests/community-ui.test.mjs
       - run: node --import tsx --test tests/posts-plus.test.ts tests/posts-plus-ui.test.mjs
       - run: node --import tsx --test tests/community-messages.test.ts tests/community-messages-ui.test.mjs
+      - run: node --import tsx --test tests/community-search-stats.test.ts tests/community-search-stats-ui.test.mjs
       - run: node --import tsx --test tests/api-tokens.test.ts tests/mcp-server.test.mjs tests/mcp-ui.test.mjs
       - run: node --import tsx --test tests/lc-ratings.test.ts tests/points.test.ts tests/practice-ratings-ui.test.mjs
       - run: node --import tsx --test tests/story-bank.test.ts tests/interview-prep-ui.test.mjs
+      - run: node --import tsx --test tests/ai-answer.test.ts tests/answer-grade-ui.test.mjs
       - run: node --import tsx --test tests/study-plan.test.ts tests/study-plan-ui.test.mjs
       - run: node --import tsx --test tests/editor-format.test.ts tests/user-drafts.test.ts tests/playground.test.ts tests/playground-ui.test.mjs tests/workspace-sync-ui.test.mjs
       - run: node --import tsx --test tests/ai-ask.test.ts tests/command-palette-ui.test.mjs tests/seo-facets.test.ts tests/company-insights.test.ts tests/pwa.test.mjs
       - run: node --import tsx --test tests/python-debugger.test.ts tests/python-debugger-ui.test.mjs
-      - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs
+      - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs tests/estimation-drill.test.mjs
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/applications.test.ts tests/application-tracker-ui.test.mjs
       - run: node --import tsx --test tests/contests.test.ts tests/contests-ui.test.mjs tests/contest-fairness.test.ts tests/contest-tiers.test.ts tests/duels.test.ts
       - run: node --import tsx --test tests/share-cards.test.ts tests/resume-builder.test.ts tests/resume-builder-ui.test.mjs
@@ -113,7 +115,6 @@ jobs:
       # The Pandas track's build check and harness tests run on the system python's pandas.
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
       - run: node --import tsx --test tests/sql-track.test.ts tests/sql-track-ui.test.mjs tests/pandas-track.test.ts
-      - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
       - run: node --import tsx --test tests/book-problems.test.ts
       - run: node --import tsx --test tests/book-lists-ui.test.mjs tests/sql-result-diff.test.ts tests/sql-result-diff-ui.test.mjs tests/pandas-workspace-ui.test.mjs
       - run: node --test tests/oa-stripe-payments-capacity.test.mjs
@@ -146,6 +147,7 @@ jobs:
       - run: node --import tsx --test tests/statement-markdown.test.mjs
       - run: npx tsx --test tests/coding-mode.test.ts
       - run: npx tsx --test tests/acm-io-templates.test.ts
+      - run: node --import tsx --test tests/judge-environment-ui.test.mjs
       - run: npx tsx --test tests/leetcode-public-samples.test.ts
       - run: python3 scripts/leetcode-mode/test_runtime.py
       - run: python3 tests/cpp-json-runtime.test.py
@@ -162,3 +164,21 @@ jobs:
       - run: node tests/seo-http.mjs
       - run: node tests/oa-library-http.mjs
       - run: node tests/leetcode-sync-http.mjs
+  # Compiles and runs code in four languages, beside validate (which is close to its 20 minutes).
+  toolchains:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
+      - run: node --import tsx scripts/learn/check-snippets.mjs
+      - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
+      - run: node --import tsx scripts/core-skills/stress.ts

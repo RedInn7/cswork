@@ -6,6 +6,8 @@ import type { Person } from './auth';
 import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
+import { lingEditorial } from './ling-editorials';
+import { oaJudgeRegistry } from './oa-judge';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
@@ -18,7 +20,8 @@ const MAX_BATCH = 500;
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
 // sub:<submission id> is a note on one submission; q:<slug> is a content library question;
 // post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post):[\w./-]{1,200}$/);
+// mcq:answers holds the concept-drill multiple-choice review state as JSON (app/oa/mcq/practice.tsx).
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item.
@@ -289,8 +292,17 @@ export async function handleMyPractice(
     }
     const d = z.object({ target, mark, on: z.boolean() }).strict().parse(body);
     const vote = d.mark === 'up' || d.mark === 'down';
-    if (vote && !d.target.startsWith('problem:') && !(d.mark === 'up' && UPVOTED.test(d.target)))
-      throw new HttpError(400, '只能给题目投票，或给面经和面试题点赞');
+    // An editorial (content:editorial/<problem id>, Line 500's or an OA's) takes "helpful" / "not helpful".
+    const editorial = /^content:editorial\/(?:lc|oa)-[a-z0-9-]+$/.test(d.target);
+    if (vote && !d.target.startsWith('problem:') && !editorial && !(d.mark === 'up' && UPVOTED.test(d.target)))
+      throw new HttpError(400, '只能给题目和官方题解投票，或给面经和面试题点赞');
+    // Only editorials that exist: made-up ids would crowd the owner's "not helpful" list. Taking a
+    // vote back always works.
+    if (vote && editorial && d.on) {
+      const id = d.target.slice('content:editorial/'.length);
+      if (!(id.startsWith('lc-') ? lingEditorial(id) : oaJudgeRegistry().editorialSha256(id)))
+        throw new HttpError(404, '题解不存在');
+    }
     if (d.mark === 'curated' && (p.role !== 'teacher' || !d.target.startsWith('content:')))
       throw new HttpError(403, '只有老师可以把内容设为精选');
     if (d.target.startsWith('list:')) throw new HttpError(400, '请在题单页收藏');

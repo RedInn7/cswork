@@ -156,3 +156,75 @@ test('the SQL track switches to the pandas versions once they are listed', async
     dom.window.close();
   }
 });
+
+// Interview patterns cut across the topic groups: ?pattern= (linked from /learn/sql) keeps one pattern's rows.
+test('the SQL track filters by interview pattern, from the URL and the chips', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', {
+    url: 'https://cswork.test/?view=problems&library=sql&pattern=anti-join#sql-group-joins',
+  });
+  let scrolled = '';
+  dom.window.Element.prototype.scrollIntoView = function () {
+    scrolled = this.id;
+  };
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'location', 'history'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { SqlTrack } = await import('../components/sql-track.tsx');
+  const root = createRoot(document.getElementById('root'));
+  const render = (key) =>
+    act(async () => {
+      root.render(
+        createElement(SqlTrack, {
+          key,
+          navigate() {},
+          // sql-01 is an anti-join and a self-join, sql-05 a self-join, sql-17 a running total.
+          availableProblemIds: ['sql-01', 'sql-04', 'sql-05', 'sql-17', 'sql-26'],
+          activity: [],
+          signedIn: true,
+        }),
+      );
+    });
+  const click = (node) =>
+    act(async () => {
+      node.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+  const chips = () => [...document.querySelectorAll('fieldset.classic-patterns button')];
+  const chip = (label) => chips().find((b) => b.textContent.startsWith(label));
+  const rows = () => [...document.querySelectorAll('a.study-row')].map((a) => a.getAttribute('href').split('=').at(-1));
+  try {
+    await render('url');
+    assert.equal(document.querySelector('fieldset.classic-patterns legend').textContent, 'Filter by pattern');
+    // Only patterns with a published problem get a chip, counted over what is published.
+    assert.deepEqual(
+      chips().map((b) => [b.textContent, b.getAttribute('aria-pressed')]),
+      [
+        ['All patterns', 'false'],
+        ['Running totals 1', 'false'],
+        ['Anti-join (never …) 3', 'true'],
+        ['Self-join 2', 'false'],
+      ],
+    );
+    assert.deepEqual(rows(), ['sql-01', 'sql-04', 'sql-26']);
+    assert.equal(document.querySelector('progress')?.getAttribute('max'), '3');
+    assert.equal(scrolled, 'sql-group-joins', 'a topic link scrolls to its group once the rows render');
+
+    await click(chip('Self-join'));
+    assert.deepEqual(rows(), ['sql-01', 'sql-05']);
+    assert.equal(new URL(location.href).searchParams.get('pattern'), 'self-join');
+    assert.equal(new URL(location.href).searchParams.get('library'), 'sql');
+
+    await click(chip('All patterns'));
+    assert.deepEqual(rows(), ['sql-01', 'sql-04', 'sql-05', 'sql-26', 'sql-17']);
+    assert.equal(new URL(location.href).searchParams.has('pattern'), false);
+
+    // An unknown pattern shows the whole track.
+    history.replaceState(null, '', '/?view=problems&library=sql&pattern=nope');
+    await render('unknown');
+    assert.equal(rows().length, 5);
+    assert.equal(chip('All patterns').getAttribute('aria-pressed'), 'true');
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+  }
+});

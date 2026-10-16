@@ -192,7 +192,9 @@ export function rankRows<T extends { solved: number; penalty: number; name: stri
 
 /**
  * Live and virtual standings, each ranked on its own. Only judge submissions on the room's
- * problems inside an entrant's window (and before `now`) count.
+ * problems inside an entrant's window (and before `now`) count. `questions`: per question (Q1 is
+ * 1), how many live entrants solved it and how many submitted to it at all; counts only, never
+ * the problem, so a running room may show them.
  */
 export function standings(
   room: ContestRoomTimes & { problemIds: readonly string[] },
@@ -202,6 +204,7 @@ export function standings(
 ) {
   const byUser = new Map<string, ContestSubmission[]>();
   for (const s of submissions) byUser.set(s.user_id, [...(byUser.get(s.user_id) ?? []), s]);
+  const questions = room.problemIds.map((_, i) => ({ q: i + 1, solved: 0, tried: 0 }));
   const rows = entries.map((entry) => {
     const { start, end } = entryWindow(room, entry);
     const mine = (byUser.get(entry.userId) ?? [])
@@ -227,6 +230,11 @@ export function standings(
       }
       return { solved: false, at: null, wrong, pending };
     });
+    if (entry.virtualStart === null)
+      room.problemIds.forEach((id, i) => {
+        if (cells[i].solved) questions[i].solved++;
+        if (mine.some((s) => s.problem_id === id)) questions[i].tried++;
+      });
     return {
       userId: entry.userId,
       name: entry.name,
@@ -241,6 +249,7 @@ export function standings(
   return {
     live: rankRows(rows.filter((r) => !r.virtual)) as Standing[],
     virtual: rankRows(rows.filter((r) => r.virtual)) as Standing[],
+    questions,
   };
 }
 

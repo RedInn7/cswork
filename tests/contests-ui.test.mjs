@@ -108,6 +108,10 @@ const room = (extra = {}) => ({
       row(2, 'Bob', { cells: cells([false, null, 3], [false, null, 0]) }),
     ],
     virtual: [],
+    questions: [
+      { q: 1, solved: 1, tried: 2 },
+      { q: 2, solved: 0, tried: 1 },
+    ],
   },
   winner: null,
   rated: false,
@@ -135,6 +139,10 @@ test('a running room: the board, the clock, and questions that open in the conte
     assert.ok([...document.querySelectorAll('tbody tr')][1].querySelector('.contest-cell').textContent.startsWith('-3'));
     assert.ok(document.querySelector('.contest-invite code').textContent === 'ABCD2345');
     assert.ok(document.querySelectorAll('caption').length === 1, 'no virtual table without virtual entrants');
+    // Solved / tried per question, under the live board, even while it runs.
+    const totals = [...document.querySelectorAll('tfoot .contest-cell')];
+    assert.deepEqual(totals.map((c) => c.querySelector('[aria-hidden]').textContent), ['1 / 2', '0 / 1']);
+    assert.ok(totals[0].textContent.includes('Q1: 1 solved, 2 tried'));
     assert.ok(document.querySelector('.contest-follow') === null, 'a mashup has no follow filter');
     assert.ok(button('Add to calendar') === undefined, 'it has started');
     assert.ok(document.querySelector('.contest-replay') === null, 'no replay while the run goes on');

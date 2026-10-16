@@ -145,6 +145,7 @@ void test('the notes hub searches written notes by every word, with snippets and
   await put('problem:lc-1', `${'开头。'.repeat(60)}用哈希表一遍扫描，记下 Complement 的下标。`);
   await put('content:interview_question/lru', 'LRU: hash map plus a doubly linked list');
   await put('sd:url-shortener', '{"q1":"hash"}'); // Quiz answers never show up.
+  await put('mcq:answers', '{"dsa-1":[1,0]}'); // Nor does the MCQ review state.
   await put('story:1', 'hash story');
   // A note on one of the learner's own submissions; someone else's is a 404.
   await put('sub:s1', '50% 的 WA 来自 a_b 下标');

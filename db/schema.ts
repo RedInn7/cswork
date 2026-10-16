@@ -39,6 +39,9 @@ export * from './course-ratings-schema';
 export * from './discuss-v2-schema';
 export * from './applications-schema';
 export * from './notify-schema';
+export * from './practice-aids-schema';
+export * from './job-openings-schema';
+export * from './code-reviews-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

@@ -29,7 +29,7 @@ const COPY = {
   },
 };
 
-// Framework → building blocks → case studies → LLD → concurrency → ML → key technologies → patterns. A chapter takes the course
+// Framework → building blocks → case studies → LLD → concurrency → ML → key technologies → patterns → LLD cases → API. A chapter takes the course
 // part it reads in (sdParts), so a new chapter lands beside its neighbours; unknown parts read as cases.
 const PART_FROM: Record<string, SdPart> = {
   'ood-interview-approach': 'lld',
@@ -37,6 +37,8 @@ const PART_FROM: Record<string, SdPart> = {
   'ml-design-framework': 'ml',
   'tech-kafka': 'tech',
   'pattern-real-time-updates': 'patterns',
+  'lld-case-atm': 'lld-cases',
+  'api-rest-vs-rpc-graphql': 'api',
 };
 const sdPartOf = (slug: string): SdPart =>
   slug === 'framework'

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Hourglass, Pause, Play, RotateCcw, Timer, X } from 'lucide-react';
 import { useT } from '@/lib/i18n';
+import { MAX_SOLVE_SECONDS, PRESETS } from '@/lib/practice-review';
 
 /** Stored per browser; startedAt is null while paused. Never synced to the server. */
 type TimerState = {
@@ -10,7 +11,6 @@ type TimerState = {
   elapsed: number;
   startedAt: number | null;
 };
-const PRESETS: Record<string, number> = { 简单: 15, 中等: 25, 困难: 40 };
 const CHOICES = [5, 10, 15, 20, 25, 30, 40, 45, 60, 90, 120];
 const storageKey = (userId: string, problemId: string) =>
   `cswork:timer:${userId}:${problemId}`;
@@ -24,8 +24,6 @@ const start = (s: TimerState): TimerState =>
   s.startedAt == null ? { ...s, startedAt: Date.now() } : s;
 // Other tabs announce writes with 'storage'; same-tab writes (stopTimer) with this.
 const CHANGED = 'cswork:timer-changed';
-// Longer than this, the clock was left running (closed tab, next day), not solving.
-const MAX_SOLVE_SECONDS = 6 * 3600;
 
 function readTimer(userId: string, problemId: string): TimerState | null {
   try {
