@@ -70,6 +70,20 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const editing = form && (form.id ?? '');
   useEffect(() => {
     let live = true;
+    // ?add=1&company=&role=&link= (an opening's "Add to tracker", app/company/jobs.tsx): a filled-in
+    // new card at Saved, kept only once the learner saves it; the link only when it is https.
+    const query = new URLSearchParams(location.search);
+    if (query.get('add') === '1') {
+      const link = (query.get('link') ?? '').trim();
+      history.replaceState(history.state, '', location.pathname);
+      setForm({
+        ...toForm(),
+        stage: 'saved',
+        company: (query.get('company') ?? '').slice(0, 100),
+        role: (query.get('role') ?? '').slice(0, 120),
+        link: link.length <= 500 && httpsLink(link) ? link : '',
+      });
+    }
     api<{ items: Application[] }>('oj/applications').then(
       (r) => live && setItems(r.items),
       (e: unknown) => live && (setItems([]), setError(e instanceof Error ? e.message : String(e))),
@@ -91,9 +105,11 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     setRefocus(null);
   }, [refocus]);
   // The form opens above the board, off-screen from a card far down: focusing it scrolls it in.
+  // A form opened from the address is only drawn once the board has loaded.
+  const loaded = items !== null;
   useEffect(() => {
     if (editing !== null) formRef.current?.querySelector('input')?.focus();
-  }, [editing]);
+  }, [editing, loaded]);
   const close = (to: string | null = form?.id ? `[data-id="${form.id}"] .tracker-card-actions button` : ADD) => {
     setRefocus(to);
     setForm(null);
