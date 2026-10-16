@@ -38,6 +38,8 @@ export async function handleStress(request: Request, p: Person, problemId: strin
     throw new HttpError(404, '这道题暂不支持对拍');
   const d = input.parse(await readJson(request, MAX_CODE_BYTES * 2));
   if (d.code.includes('\0')) throw new HttpError(400, '内容不能包含空字符');
+  // zod's max counts UTF-16 units; the judge's limit is bytes, as in createSubmission.
+  if (Buffer.byteLength(d.code) > MAX_CODE_BYTES) throw new HttpError(413, '代码和自定义输入分别最多 64 KiB');
   if (p.role !== 'teacher' && !p.verified) throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
   const { versionId, spec } = await getCompileProblem(p, problemId);
   // The browser compares outputs as text, so only the exact and tokens checkers qualify.

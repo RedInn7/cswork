@@ -203,6 +203,8 @@ void test('stress needs a whitelisted problem with a text checker, a verified ad
   assert.equal(await status(me, 'POST', `problems/${OA_PY}/stress`, body), 404, 'no OA stress tests');
   assert.equal(await status({ ...me, id: 'stress-unverified', verified: false }, 'POST', 'problems/lc-53/stress', body), 403);
   assert.equal(await status(me, 'POST', 'problems/lc-53/stress', { ...body, language: 'sql' }), 400);
+  // 30,000 CJK characters pass zod's length check but are about 88 KiB of UTF-8.
+  assert.equal(await status(me, 'POST', 'problems/lc-53/stress', { ...body, code: '中'.repeat(30000) }), 413);
   sqlite()
     .prepare(
       `INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,created_at)
