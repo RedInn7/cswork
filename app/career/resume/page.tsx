@@ -16,8 +16,8 @@ const copy = {
     privacy:
       'Your resume text, target role and job description are sent to Anthropic to write the review. CSWork does not store the text or the review; only the daily number of reviews is counted. Anything in the resume itself, such as your name or phone number, goes with it, so remove it first if you prefer.',
     more: 'Privacy notice',
-    off: 'The AI resume review is not available on this site right now. The resume chapter of the guide covers the same checklist.',
-    chapter: 'Read the resume chapter',
+    off: 'The AI resume review is not available on this site right now. The resume builder’s rule check scores your resume without AI: action verbs, numbers, bullet length, vague wording, dates and the sections every resume needs, and it points at the field to fix. It runs in your browser; nothing is uploaded.',
+    chapter: 'Open the rule check',
   },
   zh: {
     title: '简历 AI 点评：软件工程岗位 · CSWork',
@@ -29,8 +29,8 @@ const copy = {
     privacy:
       '你的简历文字、目标岗位和职位描述会发送给 Anthropic 用于生成点评。CSWork 不保存简历文字和点评结果，只统计每天的点评次数。简历里本身写着的姓名、电话等信息会一起发送，介意的话可以先删掉。',
     more: '隐私说明',
-    off: '本站暂未开放简历 AI 点评。求职指南的简历一章有同样的检查清单。',
-    chapter: '阅读简历一章',
+    off: '本站暂未开放简历 AI 点评。简历生成器里的“规则检查”不用 AI 也能给简历打分：看动词、数字、要点长度、空泛用词、日期和必备小节，并指出该改哪一个输入框。检查在你的浏览器里完成，不会上传。',
+    chapter: '打开规则检查',
   },
 };
 
@@ -54,18 +54,20 @@ export default async function ResumeReviewPage() {
         <h1>{c.h1}</h1>
         <p>{c.lead}</p>
       </section>
-      <div className="resume-privacy" id="resume-privacy">
-        <strong>{c.privacyTitle}</strong>
-        <p>
-          {c.privacy} <a href="/privacy#privacy-resume">{c.more}</a>
-        </p>
-      </div>
       {aiEnabled() ? (
-        <ResumeReview zh={zh} />
+        <>
+          <div className="resume-privacy" id="resume-privacy">
+            <strong>{c.privacyTitle}</strong>
+            <p>
+              {c.privacy} <a href="/privacy#privacy-resume">{c.more}</a>
+            </p>
+          </div>
+          <ResumeReview zh={zh} />
+        </>
       ) : (
         <div className="resume-off">
           <p>{c.off}</p>
-          <a href="/guide/resume">{c.chapter} →</a>
+          <a href="/career/resume/builder#resume-check">{c.chapter} →</a>
         </div>
       )}
     </>
