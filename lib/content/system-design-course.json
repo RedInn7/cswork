@@ -6219,8 +6219,8 @@
               "en": "Pays a 50 and a 20, crediting the extra 10 to the account"
             },
             {
-              "zh": "先拿 50 后凑不出 10，判定失败，其实 3 张 20 就够",
-              "en": "Takes the 50, cannot make 10 and fails, though three 20s work"
+              "zh": "拿了 50 就凑不出剩下的 10，判定失败",
+              "en": "Takes the 50, then cannot make 10, and fails"
             },
             {
               "zh": "贪心对任何面额组合都能找到张数最少的解",
@@ -6248,8 +6248,8 @@
               "en": "Pay out anyway, since most timed-out requests actually succeeded"
             },
             {
-              "zh": "不出钞，用同一个交易号发冲正或查询，银行按交易号幂等处理",
-              "en": "Do not pay out; reverse or query with the same id, which the bank handles idempotently"
+              "zh": "不出钞，用同一个交易号冲正或查询",
+              "en": "No payout; reverse or query under the same transaction id"
             },
             {
               "zh": "提示用户稍后再试，这笔交易不需要再做任何处理",
@@ -6265,12 +6265,12 @@
           "qEn": "Why use the State pattern here rather than checking the stage inside every Atm method?",
           "choices": [
             {
-              "zh": "每个阶段允许的操作和下一步集中在一个类里，加新阶段不用改所有方法",
-              "en": "Each stage keeps what it allows and where it goes in one class, so a new stage edits no other method"
+              "zh": "阶段的规则集中在一个类里，加新阶段不用改别的方法",
+              "en": "Each stage's rules live in one class; a new stage edits nothing else"
             },
             {
               "zh": "状态类可以被多台 ATM 共享，从而节省大量内存",
-              "en": "State objects can be shared across ATMs and save a lot of memory"
+              "en": "State objects can be shared across many ATMs, which saves a lot of memory"
             },
             {
               "zh": "状态模式能自动保证扣款和出钞的原子性",
@@ -6312,7 +6312,7 @@
             },
             {
               "zh": "取消时原样退回，成交时一步提交，失败无需回滚",
-              "en": "A cancel returns the same coins and a sale commits in one step with nothing to undo"
+              "en": "Cancel returns the same coins; a sale commits in one step"
             }
           ],
           "answer": 3,
@@ -6328,8 +6328,8 @@
               "en": "Dispense anyway and take the 0.50 out of the next customer's money"
             },
             {
-              "zh": "拒绝这笔交易并提示投零钱，暂存区不动，顾客仍可取消退款",
-              "en": "Refuse the sale and ask for exact change; escrow is untouched, so cancel still refunds"
+              "zh": "拒绝交易并提示投零钱，暂存区不动",
+              "en": "Refuse the sale and ask for exact change; escrow stays as is"
             },
             {
               "zh": "出货后把 2 元整枚退回，相当于免费送出商品",
@@ -6349,12 +6349,12 @@
           "qEn": "This machine manages its state with an enum and checks. Which change most justifies one class per state?",
           "choices": [
             {
-              "zh": "商品种类从 10 种增加到 50 种",
+              "zh": "商品种类从 10 种增加到 50 种，货道也随之翻倍",
               "en": "Going from 10 products to 50"
             },
             {
-              "zh": "加入刷卡支付，多出等待授权、出货中等状态，每个状态下按键含义都不同",
-              "en": "Adding card payment, with new states such as awaiting authorization and dispensing, each giving the keys a different meaning"
+              "zh": "加入刷卡支付，多出等待授权、出货中等状态",
+              "en": "Card payment, adding states such as awaiting authorization"
             },
             {
               "zh": "把金额单位从分改成厘",
@@ -6362,7 +6362,7 @@
             },
             {
               "zh": "把找零算法从动态规划换成回溯搜索",
-              "en": "Replacing the change-making DP with backtracking"
+              "en": "Replacing the change-making DP with a backtracking search over coins"
             }
           ],
           "answer": 1,
@@ -6391,8 +6391,8 @@
               "en": "To sort the moves so captures come first"
             },
             {
-              "zh": "牵制、王走进被攻击的格子、被将军时必须解将，这些都只能在走完后判断",
-              "en": "Pins, kings stepping into attack, and the need to answer check all show only after the move"
+              "zh": "牵制、送王、必须解将，都要走完才看得出",
+              "en": "Pins and checks only show up after the move"
             },
             {
               "zh": "因为 Python 的生成器不能被遍历两次",
@@ -6408,11 +6408,11 @@
           "qEn": "What information decides whether an en passant capture is legal?",
           "choices": [
             {
-              "zh": "上一步对方兵走了两格时被跳过的那一格，由 Game 记录并在下一步后清空",
-              "en": "The square an enemy pawn skipped on the previous move, kept by Game and cleared a move later"
+              "zh": "Game 记下的、对方兵上一步跳过的格子",
+              "en": "The square skipped by an enemy pawn's double step last move"
             },
             {
-              "zh": "只看当前棋盘上两个兵是否左右相邻",
+              "zh": "只看当前棋盘上两个兵是否左右相邻、在同一横排",
               "en": "Only whether two pawns stand side by side on the current board"
             },
             {
@@ -6437,8 +6437,8 @@
               "en": "Only from and to; undo moves the piece back"
             },
             {
-              "zh": "被吃掉的子，以及走之前的易位权和吃过路兵目标格",
-              "en": "The captured piece, and the castling rights and en passant square from before the move"
+              "zh": "被吃的子，和走之前的易位权、过路兵格",
+              "en": "The captured piece and the prior castling and en passant state"
             },
             {
               "zh": "走这步棋之前整个界面的截图",
@@ -6446,7 +6446,7 @@
             },
             {
               "zh": "对手在这一步之后的所有合法走法",
-              "en": "Every legal reply the opponent has after the move"
+              "en": "Every legal reply the opponent has after the move, for faster redo"
             }
           ],
           "answer": 1,
@@ -6467,8 +6467,8 @@
           "qEn": "Why does a hold attach to Book while a loan attaches to BookCopy?",
           "choices": [
             {
-              "zh": "读者等的是任意一本，哪本先还给他哪本；借走的却是某一本实体",
-              "en": "A hold wants any copy, whichever returns first, while a loan takes one physical copy"
+              "zh": "预约要任意一本，借阅借走的是具体一本",
+              "en": "A hold wants any copy; a loan takes one particular copy"
             },
             {
               "zh": "BookCopy 的数量太多，挂预约会占用太多内存",
@@ -6500,7 +6500,7 @@
               "en": "Notify both and lend it to whoever arrives first"
             },
             {
-              "zh": "进入预约架，只留给队首的读者，限期 3 天",
+              "zh": "进预约架，只留给队首读者 3 天",
               "en": "The hold shelf, kept for the first member in line for 3 days"
             },
             {
@@ -6517,7 +6517,7 @@
           "qEn": "With loans in a database, two librarians lend the last available copy at once. How do you prevent a double loan?",
           "choices": [
             {
-              "zh": "先 SELECT 查状态，是 AVAILABLE 再 UPDATE",
+              "zh": "先 SELECT 查状态，确认是 AVAILABLE 之后再执行 UPDATE",
               "en": "SELECT the status, then UPDATE if it is AVAILABLE"
             },
             {
@@ -6526,11 +6526,11 @@
             },
             {
               "zh": "借出后每天跑一次对账，发现冲突再联系读者",
-              "en": "Run a daily reconciliation and phone the readers on conflict"
+              "en": "Run a daily reconciliation and phone both readers when there is a conflict"
             },
             {
-              "zh": "UPDATE 时加上 status = AVAILABLE 条件，影响行数为 1 才算成功",
-              "en": "UPDATE with a status = 'AVAILABLE' condition; success only when one row changes"
+              "zh": "条件更新：WHERE status = AVAILABLE，看影响行数",
+              "en": "A conditional UPDATE on status = 'AVAILABLE', checking rows changed"
             }
           ],
           "answer": 3,
@@ -6563,8 +6563,8 @@
               "en": "The 11th and 12th"
             },
             {
-              "zh": "10 日和 11 日两晚，12 日另一位客人可以入住",
-              "en": "The 10th and 11th; another guest may check in on the 12th"
+              "zh": "10 日和 11 日两晚",
+              "en": "The 10th and 11th"
             }
           ],
           "answer": 3,
@@ -6576,8 +6576,8 @@
           "qEn": "Why does booking take per-type, per-night inventory instead of locking a specific room?",
           "choices": [
             {
-              "zh": "锁定具体房间会把日历切碎：每晚都有空房，却没有一间能连住",
-              "en": "Fixed rooms fragment the calendar: each night has a free room but none spans the stay"
+              "zh": "提前锁房会把日历切碎，每晚有房却连不起来",
+              "en": "Fixed rooms fragment nights, so no one room spans the stay"
             },
             {
               "zh": "房间号属于敏感信息，不能在下单时暴露给用户",
@@ -6609,8 +6609,8 @@
               "en": "Keep the money and wait for the guest to call"
             },
             {
-              "zh": "重新尝试占用同样的库存，成功就确认，失败就自动退款并通知用户",
-              "en": "Try to take the same inventory again; confirm on success, refund and tell the guest otherwise"
+              "zh": "重新占库存，成功则确认，失败则退款",
+              "en": "Retake the inventory: confirm if it works, refund if not"
             },
             {
               "zh": "把所有占房时间延长到 1 小时，问题就不会出现",
@@ -6643,8 +6643,8 @@
               "en": "Round everyone up to 33.34, better too much than too little"
             },
             {
-              "zh": "整除后余下的 1 分按固定顺序分给一个人，总和正好 100 元",
-              "en": "Divide, then give the leftover cent to one person in a fixed order so the total is exact"
+              "zh": "余下的 1 分按固定顺序给其中一人",
+              "en": "Give the leftover cent to one person in a fixed order"
             },
             {
               "zh": "改用浮点数存 33.333…，显示时再四舍五入",
@@ -6689,15 +6689,15 @@
               "en": "Pairwise balances take more storage"
             },
             {
-              "zh": "余额能随时从流水重算和核对，修改或作废一笔支出也只需追加记录",
-              "en": "Balances can be recomputed and audited from the log, and edits are just new entries"
+              "zh": "余额能从流水重算和核对，改支出只需追加记录",
+              "en": "Balances can be rebuilt and audited from the log"
             },
             {
               "zh": "数据库不支持对余额做加减运算",
               "en": "Databases cannot add to or subtract from a balance"
             },
             {
-              "zh": "只存余额就无法显示每个人的名字",
+              "zh": "只存余额就无法在界面上显示每个人的名字和头像",
               "en": "With balances only, member names could not be shown"
             }
           ],
@@ -6731,8 +6731,8 @@
               "en": "Seat categories change between shows, so they are split"
             },
             {
-              "zh": "同一个物理座位在不同场次的状态不同，状态属于“座位 × 场次”",
-              "en": "One physical seat has a different state in each show; state belongs to seat and show"
+              "zh": "同一座位在不同场次状态不同",
+              "en": "A seat's state differs from show to show"
             }
           ],
           "answer": 3,
@@ -6745,7 +6745,7 @@
           "choices": [
             {
               "zh": "整体失败，一个座位都不锁，让用户重新选",
-              "en": "Fail as a whole, hold nothing, and let the user choose again"
+              "en": "Fail as a whole and let the user pick again"
             },
             {
               "zh": "锁定另外 3 个，并提示用户少了一个",
@@ -6777,8 +6777,8 @@
               "en": "The database flips the state when the deadline passes"
             },
             {
-              "zh": "freeAt 把超过截止时间的锁定视为空闲，下一次锁座时直接覆盖",
-              "en": "freeAt treats a hold past its deadline as free, so the next hold overwrites it"
+              "zh": "freeAt 把过了截止时间的锁定当作空闲",
+              "en": "freeAt counts a hold past its deadline as free"
             },
             {
               "zh": "锁座时长足够短，过期后用户一定已经付款",
@@ -6807,8 +6807,8 @@
               "en": "Small doors open faster, which feels better"
             },
             {
-              "zh": "把大格口留给只能放进大格口的包裹，减少后来的包裹无处可放",
-              "en": "It keeps large compartments for parcels that need them, so fewer later parcels are turned away"
+              "zh": "把大格口留给只能放进大格口的包裹",
+              "en": "It saves large compartments for parcels that need them"
             },
             {
               "zh": "小格口离地面更近，所有人都方便取件",
@@ -6840,8 +6840,8 @@
               "en": "Among the live codes of every station in the city"
             },
             {
-              "zh": "同一站点当前有效的取件码中唯一，取件后可以复用",
-              "en": "Among the live codes at the same station; reusable after pickup"
+              "zh": "同一站点当前有效的码中唯一",
+              "en": "Among the live codes at that station"
             }
           ],
           "answer": 3,
@@ -6853,7 +6853,7 @@
           "qEn": "Someone stands at the locker trying codes. Which defense works best?",
           "choices": [
             {
-              "zh": "连续输错后锁定键盘，锁定时间逐次加长，并向运维告警",
+              "zh": "输错几次后锁定键盘，时间逐次加长并告警",
               "en": "Lock the keypad after misses, longer each time, and alert operations"
             },
             {
@@ -6887,7 +6887,7 @@
           "qEn": "Why do order lines copy the dish name and unit price instead of storing only the item id?",
           "choices": [
             {
-              "zh": "菜品 ID 可能重复，复制菜名才能区分",
+              "zh": "菜品 ID 可能重复，只有复制菜名才能区分开来",
               "en": "Item ids may collide, and copying names tells them apart"
             },
             {
@@ -6895,12 +6895,12 @@
               "en": "It saves one database connection per order lookup"
             },
             {
-              "zh": "餐厅之后改价或下架，历史订单仍按顾客当时付款的内容显示和退款",
-              "en": "Later price changes or removals leave past orders showing, and refunding, what the customer paid"
+              "zh": "日后改价下架，历史订单仍是顾客付款时的样子",
+              "en": "Past orders keep what the customer paid after menu edits"
             },
             {
               "zh": "菜单数据只在下单当天有效，第二天会被删除",
-              "en": "Menu data is valid only on the day and deleted the next"
+              "en": "Menu data is valid only for the day and is deleted the next morning"
             }
           ],
           "answer": 2,
@@ -6912,12 +6912,12 @@
           "qEn": "What does a transition table buy over if-else checks scattered through methods?",
           "choices": [
             {
-              "zh": "所有合法跳转和谁能触发都集中在一处，非法跳转统一拒绝，漏掉的路径一眼可见",
-              "en": "Every legal move and who may make it sits in one place, illegal moves are rejected uniformly, and gaps are easy to spot"
+              "zh": "规则集中在一张表里，非法跳转统一拒绝",
+              "en": "All rules sit in one table and illegal moves fail in one place"
             },
             {
               "zh": "转移表在运行时比 if-else 快一个数量级",
-              "en": "A table runs an order of magnitude faster than if-else"
+              "en": "A table runs an order of magnitude faster than chained if-else checks"
             },
             {
               "zh": "用了转移表就不再需要权限检查",
@@ -6941,8 +6941,8 @@
               "en": "Let the driver choose one in the app and redispatch the other later"
             },
             {
-              "zh": "把“选骑手”和“标记忙碌”放进同一个原子操作，只有一单能抢到，另一单选下一个",
-              "en": "Make \"choose the driver\" and \"mark busy\" one atomic step, so only one order wins and the other takes the next driver"
+              "zh": "让“选骑手”和“标记忙碌”成为一个原子操作",
+              "en": "Make choosing and claiming the driver one atomic step"
             },
             {
               "zh": "派单前随机等待几百毫秒，错开两个请求",
@@ -6983,7 +6983,7 @@
               "en": "The lambda adds the caller's line number by itself"
             },
             {
-              "zh": "DEBUG 关闭时 dump() 和字符串拼接都不会执行",
+              "zh": "DEBUG 关闭时 dump() 根本不会执行",
               "en": "With DEBUG off, neither dump() nor the concatenation runs"
             }
           ],
@@ -7000,8 +7000,8 @@
               "en": "Yes, because the root is INFO"
             },
             {
-              "zh": "不会，有效级别取最近的上级 app.db，即 WARN",
-              "en": "No: the effective level comes from the nearest ancestor, app.db, which is WARN"
+              "zh": "不会，取最近上级 app.db 的 WARN",
+              "en": "No: the nearest ancestor, app.db, sets WARN"
             },
             {
               "zh": "会，没有设置级别的记录器默认输出一切",
@@ -7021,8 +7021,8 @@
           "qEn": "The async appender's queue is full. Why drop INFO records by default instead of making the caller wait?",
           "choices": [
             {
-              "zh": "日志不能拖慢业务：磁盘一慢就阻塞，所有请求都会跟着变慢，丢弃时记录丢了多少即可",
-              "en": "Logging must not slow the business: blocking makes every request slow whenever the disk is; just count what was dropped"
+              "zh": "日志不能拖慢业务，丢弃时记下丢了多少即可",
+              "en": "Logging must never slow requests; just count the drops"
             },
             {
               "zh": "阻塞写法在 Java 里无法实现",
@@ -7059,8 +7059,8 @@
               "en": "The server rejects queries nested more than N+1 levels deep"
             },
             {
-              "zh": "查列表用 1 次查询，每一项的关联字段又各查 1 次，可以按请求批量加载来合并",
-              "en": "One query for a list, then one per item for a related field; batching loads per request merges them"
+              "zh": "列表查 1 次，每项关联字段再各查 1 次",
+              "en": "One query for the list, then one more per item"
             },
             {
               "zh": "客户端要发 N+1 个 HTTP 请求才能拿全一个页面的数据",
@@ -7088,8 +7088,8 @@
               "en": "GraphQL can only travel over WebSocket"
             },
             {
-              "zh": "查询通常用 POST 发往同一个地址，URL 不能区分请求的内容",
-              "en": "Queries usually POST to one URL, so the URL does not identify what was asked"
+              "zh": "查询多用 POST 发往同一地址，URL 区分不了内容",
+              "en": "Queries POST to one URL, so URLs do not identify them"
             },
             {
               "zh": "GraphQL 的响应体太大，超过了 CDN 的缓存上限",
@@ -7105,8 +7105,8 @@
           "qEn": "Why do internal services such as messages and presence often use gRPC rather than REST?",
           "choices": [
             {
-              "zh": "两端都由自己团队维护：契约严格、代码自动生成、二进制传输效率高，还原生支持流",
-              "en": "Both ends are yours: a strict contract, generated code, compact binary and built-in streaming"
+              "zh": "两端都归自己团队：契约严格、二进制高效、支持流",
+              "en": "Both ends are yours: strict contract, fast binary, streams"
             },
             {
               "zh": "gRPC 的请求可以被 CDN 缓存，REST 不行",
@@ -7143,8 +7143,8 @@
               "en": "Page 2 fails because the page count changed"
             },
             {
-              "zh": "第 2 页开头重复出现第 1 页末尾的 3 笔记录",
-              "en": "Page 2 starts with the last 3 rows of page 1 again"
+              "zh": "开头重复出现第 1 页末尾的 3 笔",
+              "en": "It repeats the last 3 rows of page 1"
             },
             {
               "zh": "3 笔新支付会出现在第 2 页的开头",
@@ -7164,15 +7164,15 @@
           "qEn": "In cursor pagination, why does the cursor carry id as well as created_at?",
           "choices": [
             {
-              "zh": "created_at 可能重复，加上 id 才能确定唯一顺序，翻页边界上不会漏掉记录",
-              "en": "created_at can repeat; id makes the order total so nothing is skipped at a boundary"
+              "zh": "created_at 会重复，加上 id 顺序才唯一",
+              "en": "created_at can repeat; id breaks ties"
             },
             {
               "zh": "id 用来校验客户端有没有篡改游标",
               "en": "id lets the server detect a tampered cursor"
             },
             {
-              "zh": "数据库要求每个 WHERE 条件里都必须出现主键",
+              "zh": "数据库要求每个 WHERE 条件里都必须带上主键列",
               "en": "Databases require the primary key in every WHERE clause"
             },
             {
@@ -7197,7 +7197,7 @@
               "en": "Charge 24 and overwrite the stored record"
             },
             {
-              "zh": "返回错误，说明这个键已被一个不同的请求使用",
+              "zh": "返回错误：这个键已用于另一个请求",
               "en": "Return an error saying the key was used for a different request"
             },
             {
@@ -7277,12 +7277,12 @@
               "en": "A code is shorter than a message and saves bandwidth"
             },
             {
-              "zh": "文案是给人看的，会改措辞、会翻译；code 是给程序判断的契约",
-              "en": "Messages are for people and get reworded and translated; the code is the contract for programs"
+              "zh": "文案给人看、会改会翻译；code 才是契约",
+              "en": "Messages get reworded and translated; the code is the contract"
             },
             {
               "zh": "HTTP 规范要求每个错误响应都必须有 code 字段",
-              "en": "The HTTP specification requires a code field in every error"
+              "en": "The HTTP specification requires a code field in every error response"
             },
             {
               "zh": "有了 code 字段就可以不用 HTTP 状态码了",
@@ -7312,15 +7312,15 @@
             },
             {
               "zh": "有了 PKCE，用户就不用在授权页面登录",
-              "en": "With PKCE users no longer sign in on the consent page"
+              "en": "With PKCE, users no longer need to sign in on the consent page"
             },
             {
               "zh": "PKCE 会把 API 的响应加密，防止被抓包",
               "en": "PKCE encrypts API responses against sniffing"
             },
             {
-              "zh": "App 保存不了客户端密钥；PKCE 让截获授权码的人因为没有 code_verifier 而换不到令牌",
-              "en": "An app cannot keep a client secret; PKCE means an intercepted code is useless without the code_verifier"
+              "zh": "截获的授权码没有 verifier 就没用",
+              "en": "An intercepted code is useless without the code_verifier"
             }
           ],
           "answer": 3,
@@ -7332,8 +7332,8 @@
           "qEn": "Why are JWT access tokens usually short-lived?",
           "choices": [
             {
-              "zh": "JWT 在本地验签、不查库，到期前很难吊销，短有效期限制了泄露后的损失",
-              "en": "JWTs are checked locally without a lookup and are hard to revoke, so a short life limits a leak"
+              "zh": "本地验签，到期前难吊销，短期限能控制泄露损失",
+              "en": "They are hard to revoke before expiry"
             },
             {
               "zh": "JWT 的签名算法在一小时后会失效",
@@ -7361,7 +7361,7 @@
               "en": "Return 403 and disable the key permanently"
             },
             {
-              "zh": "返回 429，带上 Retry-After 和剩余额度相关的头",
+              "zh": "返回 429，并带上 Retry-After",
               "en": "Return 429 with Retry-After and allowance headers"
             },
             {
@@ -7400,7 +7400,7 @@
             },
             {
               "zh": "防止有人截获一个合法的请求后反复重放",
-              "en": "It stops a captured valid request from being replayed later"
+              "en": "It stops captured requests being replayed"
             },
             {
               "zh": "时间戳用来计算 Webhook 的投递费用",
@@ -7416,8 +7416,8 @@
           "qEn": "Webhooks are delivered at least once. What should the receiver do?",
           "choices": [
             {
-              "zh": "按事件 ID 去重，验签后先入队并立即返回 200，再异步处理",
-              "en": "Deduplicate by event id; after verifying, queue it, return 200 at once and process later"
+              "zh": "按事件 ID 去重，先入队再立即返回 200",
+              "en": "Dedupe by event id, queue it, and return 200 at once"
             },
             {
               "zh": "处理完所有业务逻辑后再返回 200，确保不会丢",
@@ -7453,8 +7453,8 @@
               "en": "Have the client call the create endpoint every second until it succeeds"
             },
             {
-              "zh": "返回 202 和一个操作资源地址，调用方轮询它或等 Webhook 通知",
-              "en": "Return 202 with an operation resource the caller polls or waits on via webhook"
+              "zh": "返回 202 和操作资源地址，供轮询或等通知",
+              "en": "Return 202 with an operation resource to poll"
             }
           ],
           "answer": 3,
