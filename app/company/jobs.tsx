@@ -64,7 +64,7 @@ export function JobOpenings({ slug, name, zh, now = Date.now() }: { slug: string
         <h2 id="jobs">
           {zh ? '在招的实习和新毕业生岗位' : 'Open intern and new-grad roles'} <small>{zh ? `${items.length} 个` : items.length}</small>
         </h2>
-        <a href={`/career/jobs?${new URLSearchParams({ company: slug })}`}>
+        <a href={items.length > SHOWN ? `/career/jobs?${new URLSearchParams({ company: slug })}` : '/career/jobs'}>
           {items.length > SHOWN ? (zh ? `查看全部 ${items.length} 个` : `View all ${items.length}`) : zh ? '各公司岗位' : 'All companies'}{' '}
           <span aria-hidden="true">→</span>
         </a>

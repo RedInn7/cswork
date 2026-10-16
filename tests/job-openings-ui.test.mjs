@@ -9,12 +9,12 @@ import { createElement, act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/', virtualConsole: new VirtualConsole() });
-for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator', 'location', 'history'])
+for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'localStorage', 'sessionStorage', 'navigator', 'location', 'history'])
   Object.defineProperty(globalThis, name, { configurable: true, get: () => dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { OpeningList, trackerAddPath } = await import('../app/company/jobs.tsx');
-const { ApplicationTracker } = await import('../components/application-tracker.tsx');
+const { ApplicationTracker, KeepTrackerAdd } = await import('../components/application-tracker.tsx');
 
 const opening = {
   id: 'greenhouse:stripe:1',
@@ -102,4 +102,25 @@ test('a non-https link is dropped, and without add=1 nothing opens', async () =>
   assert.equal(view.host.querySelector('form'), null);
   assert.equal(location.search, '?company=Acme', 'an address without add=1 is left alone');
   await act(async () => view.root.unmount());
+});
+
+test('signed out, the opening waits in this tab and fills in the form once the board opens', async () => {
+  const query = new URLSearchParams({ add: '1', company: 'Acme', role: 'SWE Intern', link: 'https://example.com/j' });
+  dom.reconfigure({ url: `https://cswork.test/career/tracker?${query}` });
+  const host = document.createElement('div');
+  document.body.append(host);
+  const signedOut = createRoot(host);
+  await act(async () => signedOut.render(createElement(KeepTrackerAdd)));
+  await act(async () => signedOut.unmount());
+  // Signed in, back at the tracker from the nav: no query in the address.
+  const view = await open('');
+  const form = view.host.querySelector('form');
+  assert.ok(form, 'the add form is open');
+  assert.equal(form.querySelector('input').value, 'Acme');
+  assert.equal(form.querySelector('input[type="url"]').value, 'https://example.com/j');
+  assert.equal(sessionStorage.getItem('cswork:tracker:add'), null, 'read once');
+  await act(async () => view.root.unmount());
+  const again = await open('');
+  assert.equal(again.host.querySelector('form'), null);
+  await act(async () => again.root.unmount());
 });

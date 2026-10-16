@@ -17,6 +17,17 @@ import {
 import { api } from '@/lib/types';
 
 const ADD = '.tracker [data-add]';
+const KEPT_ADD = 'cswork:tracker:add';
+
+/** Signed out (app/career/tracker/page.tsx): an opening's ?add=1 query waits in this tab until the board opens after sign-in. */
+export function KeepTrackerAdd() {
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(location.search).get('add') === '1') sessionStorage.setItem(KEPT_ADD, location.search);
+    } catch {}
+  }, []);
+  return null;
+}
 type Form = {
   id: string | null;
   company: string;
@@ -71,11 +82,18 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   useEffect(() => {
     let live = true;
     // ?add=1&company=&role=&link= (an opening's "Add to tracker", app/company/jobs.tsx): a filled-in
-    // new card at Saved, kept only once the learner saves it; the link only when it is https.
-    const query = new URLSearchParams(location.search);
+    // new card at Saved, kept only once the learner saves it; the link only when it is https. Signed
+    // out, the page kept the query in this tab (KeepTrackerAdd) for after sign-in.
+    let query = new URLSearchParams(location.search),
+      kept = '';
+    try {
+      kept = sessionStorage.getItem(KEPT_ADD) ?? '';
+      sessionStorage.removeItem(KEPT_ADD);
+    } catch {}
+    if (query.get('add') === '1') history.replaceState(history.state, '', location.pathname);
+    else query = new URLSearchParams(kept);
     if (query.get('add') === '1') {
       const link = (query.get('link') ?? '').trim();
-      history.replaceState(history.state, '', location.pathname);
       setForm({
         ...toForm(),
         stage: 'saved',
