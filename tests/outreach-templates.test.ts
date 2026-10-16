@@ -1,5 +1,6 @@
 // Outreach message templates (lib/content/outreach-templates.ts): ten, each in both languages with
-// the same known placeholders, and filled in without touching what was left blank.
+// the same known placeholders, and filled in without touching what was left blank; and the guide
+// chapter checklists (lib/content/career-checklists.ts).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fillTemplate, OUTREACH_TEMPLATES, PLACEHOLDERS, placeholdersIn } from '../lib/content/outreach-templates';
