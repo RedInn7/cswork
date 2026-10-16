@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { extractTerms, mentions } from '@/lib/jd-keywords';
 import { normalizeResume, readVersions, RESUME_KEY, type Resume, type ResumeItem } from './resume-builder';
 
@@ -15,6 +15,8 @@ export function JdResumeMatch({ zh, job }: { zh: boolean; job: string }) {
   // [version name ('' for the base), resume]; null until read from storage after hydration.
   const [resumes, setResumes] = useState<[string, Resume][] | null>(null);
   const [pick, setPick] = useState(0);
+  // The page re-renders on every keystroke in the posting box; the terms only change with a new check.
+  const terms = useMemo(() => extractTerms(job).sort((a, b) => +(a.importance === 'nice') - +(b.importance === 'nice')), [job]);
   useEffect(() => {
     let base: [string, Resume][] = [];
     try {
@@ -27,7 +29,6 @@ export function JdResumeMatch({ zh, job }: { zh: boolean; job: string }) {
     setResumes([...base, ...Object.entries(readVersions())]);
   }, []);
   if (!resumes) return null;
-  const terms = extractTerms(job).sort((a, b) => +(a.importance === 'nice') - +(b.importance === 'nice'));
   const resume = resumes[pick]?.[1];
   const places = (term: string, r: Resume) => [
     ...(['experience', 'projects'] as const).flatMap((key) =>
