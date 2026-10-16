@@ -127,11 +127,20 @@ void test('editorial votes: helpful / not helpful on lc- and oa- editorials only
     'content:other/lc-1',
   ])
     assert.equal((await vote(me, target, 'down')).status, 400, target);
+  // Well-formed ids with no editorial behind them are refused; taking a vote back still works.
+  for (const target of ['content:editorial/lc-999999', 'content:editorial/oa-no-such-1'])
+    assert.equal((await vote(me, target, 'down')).status, 404, target);
+  assert.equal((await vote(me, 'content:editorial/lc-999999', 'down', false)).status, 200);
   // Experiences still take upvotes only.
   assert.equal((await vote(me, 'content:experience/x', 'down')).status, 400);
   assert.equal((await vote(me, 'content:experience/x', 'up')).status, 200);
 
-  // The owner analytics: most "not helpful" first, all time.
+  // The owner analytics: most "not helpful" first, all time, verified accounts only.
+  const ghost: Person = { ...me, id: 'search-ghost', email: 'ghost@example.test', verified: false };
+  assert.equal((await vote(ghost, 'content:editorial/lc-2', 'down')).status, 200);
+  const account = sqlite().prepare('INSERT INTO "user"(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,?,1,1)');
+  for (const p of [other, third]) account.run(p.id, p.name, p.email, 1);
+  account.run(ghost.id, ghost.name, ghost.email, 0);
   const response = await handleMetrics(
     new Request('https://cswork.test/api/metrics/summary?days=1'),
     teacher,

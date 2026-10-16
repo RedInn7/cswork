@@ -6,6 +6,8 @@ import type { Person } from './auth';
 import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
+import { lingEditorial } from './ling-editorials';
+import { oaJudgeRegistry } from './oa-judge';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
@@ -294,6 +296,13 @@ export async function handleMyPractice(
     const editorial = /^content:editorial\/(?:lc|oa)-[a-z0-9-]+$/.test(d.target);
     if (vote && !d.target.startsWith('problem:') && !editorial && !(d.mark === 'up' && UPVOTED.test(d.target)))
       throw new HttpError(400, '只能给题目和官方题解投票，或给面经和面试题点赞');
+    // Only editorials that exist: made-up ids would crowd the owner's "not helpful" list. Taking a
+    // vote back always works.
+    if (vote && editorial && d.on) {
+      const id = d.target.slice('content:editorial/'.length);
+      if (!(id.startsWith('lc-') ? lingEditorial(id) : oaJudgeRegistry().editorialSha256(id)))
+        throw new HttpError(404, '题解不存在');
+    }
     if (d.mark === 'curated' && (p.role !== 'teacher' || !d.target.startsWith('content:')))
       throw new HttpError(403, '只有老师可以把内容设为精选');
     if (d.target.startsWith('list:')) throw new HttpError(400, '请在题单页收藏');
