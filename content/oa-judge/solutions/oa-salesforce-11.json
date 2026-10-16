@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-11",
+  "packageChecksum": "cc549821945f7e8128d3a993075a5e80a0ecbdc43a46c1be5b01dff95cb2c256",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    arr = data[1:1 + n]\n    mags = [abs(int(x)) for x in arr]\n    vals = [x.decode() for x in arr]\n    out = []\n    for i in range(n):\n        p = mags[i]\n        vi = vals[i]\n        for j in range(i + 1, n):\n            q = mags[j]\n            # With a = min, b = max of |x|, |y|: condition 2 always holds, condition 1 is b <= 2a.\n            if (q <= 2 * p) if p <= q else (p <= 2 * q):\n                out.append(vi + ' ' + vals[j])\n    sys.stdout.write(str(len(out)) + '\\n')\n    if out:\n        sys.stdout.write('\\n'.join(out) + '\\n')\n\n\nmain()\n",
+      "sha256": "eefb5615488b585eee9887ef6d2b37351a9a3325eb506c3a13e06ba3985bc33b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedInputStream(System.in));\n        st.resetSyntax();\n        st.wordChars('!', '~');\n        st.whitespaceChars(0, ' ');\n        st.nextToken();\n        int n = Integer.parseInt(st.sval);\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = Long.parseLong(st.sval); }\n        StringBuilder out = new StringBuilder();\n        long k = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                long p = Math.abs(a[i]), q = Math.abs(a[j]);\n                // With a = min, b = max of |x|, |y|: condition 2 always holds, condition 1 is b <= 2a.\n                if (Math.max(p, q) <= 2 * Math.min(p, q)) {\n                    k++;\n                    out.append(a[i]).append(' ').append(a[j]).append('\\n');\n                }\n            }\n        }\n        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));\n        pw.println(k);\n        pw.print(out);\n        pw.flush();\n    }\n}\n",
+      "sha256": "67b256c9938325125a3b73105b08f39d035a683344cd7d63500357e76cead9ff"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc abs(x int64) int64 {\n\tif x < 0 {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\treader := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(reader, &n)\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\tfmt.Fscan(reader, &a[i])\n\t}\n\tout := []byte{}\n\tk := 0\n\tfor i := 0; i < n; i++ {\n\t\tfor j := i + 1; j < n; j++ {\n\t\t\tp, q := abs(a[i]), abs(a[j])\n\t\t\t// With a = min, b = max of |x|, |y|: condition 2 always holds, condition 1 is b <= 2a.\n\t\t\tif max(p, q) <= 2*min(p, q) {\n\t\t\t\tk++\n\t\t\t\tout = strconv.AppendInt(out, a[i], 10)\n\t\t\t\tout = append(out, ' ')\n\t\t\t\tout = strconv.AppendInt(out, a[j], 10)\n\t\t\t\tout = append(out, '\\n')\n\t\t\t}\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfmt.Fprintln(w, k)\n\tw.Write(out)\n}\n",
+      "sha256": "bed75bd07d6a9bc369a187c1a2497e95e4c8d9ecfa8a55e5bda6935ea2132875"
+    }
+  ]
+}

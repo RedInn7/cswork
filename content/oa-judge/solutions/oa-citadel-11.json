@@ -1,0 +1,21 @@
+{
+  "id": "oa-citadel-11",
+  "packageChecksum": "7954b128fd0801295ae0e94d7db75c989d0ee22b56150830f25f4e059e279a17",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char ibuf[1 << 16];\nstatic size_t ipos = 0, ilen = 0;\nstatic inline int gc() {\n    if (ipos == ilen) { ilen = fread(ibuf, 1, sizeof ibuf, stdin); ipos = 0; if (!ilen) return -1; }\n    return ibuf[ipos++];\n}\nstatic inline int readInt() {\n    int c = gc();\n    while (c < '0' || c > '9') c = gc();\n    int x = 0;\n    while (c >= '0' && c <= '9') { x = x * 10 + (c - '0'); c = gc(); }\n    return x;\n}\n\nint main() {\n    int n = readInt();\n    vector<int> lower(n), higher(n);\n    for (auto& x : lower) x = readInt();\n    for (auto& x : higher) x = readInt();\n    int low = 1, high = n;\n    while (low < high) {\n        int target = (low + high + 1) / 2, chosen = 0;\n        // Greedy: with `chosen` already picked, this person fits iff both limits allow it.\n        for (int i = 0; i < n && chosen < target; i++)\n            if (lower[i] >= chosen && higher[i] >= target - 1 - chosen) chosen++;\n        if (chosen == target) low = target; else high = target - 1;\n    }\n    printf(\"%d\\n\", low);\n}\n",
+      "sha256": "954f1629aaece9797476cc15971e5030da7680536a0accdea92ec385dcc5542f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n\n    static int readInt() throws IOException {\n        int c = in.read();\n        while (c < '0' || c > '9') c = in.read();\n        int x = 0;\n        while (c >= '0' && c <= '9') { x = x * 10 + (c - '0'); c = in.read(); }\n        return x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = readInt();\n        int[] lower = new int[n], higher = new int[n];\n        for (int i = 0; i < n; i++) lower[i] = readInt();\n        for (int i = 0; i < n; i++) higher[i] = readInt();\n        int low = 1, high = n;\n        while (low < high) {\n            int target = (low + high + 1) / 2, chosen = 0;\n            // Greedy: with `chosen` already picked, this person fits iff both limits allow it.\n            for (int i = 0; i < n && chosen < target; i++)\n                if (lower[i] >= chosen && higher[i] >= target - 1 - chosen) chosen++;\n            if (chosen == target) low = target; else high = target - 1;\n        }\n        System.out.println(low);\n    }\n}\n",
+      "sha256": "e5bc35f79ae11071c38245444d15c23db0e855f7328db4f44c03f3b104e5f581"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readInt() int32 {\n\tc, _ := reader.ReadByte()\n\tfor c < '0' || c > '9' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tvar x int32\n\tfor c >= '0' && c <= '9' {\n\t\tx = x*10 + int32(c-'0')\n\t\tvar err error\n\t\tc, err = reader.ReadByte()\n\t\tif err != nil {\n\t\t\tbreak\n\t\t}\n\t}\n\treturn x\n}\n\nfunc main() {\n\tn := int(readInt())\n\tlower := make([]int32, n)\n\thigher := make([]int32, n)\n\tfor i := range lower {\n\t\tlower[i] = readInt()\n\t}\n\tfor i := range higher {\n\t\thigher[i] = readInt()\n\t}\n\tlow, high := int32(1), int32(n)\n\tfor low < high {\n\t\ttarget := (low + high + 1) / 2\n\t\tvar chosen int32\n\t\t// Greedy: with `chosen` already picked, this person fits iff both limits allow it.\n\t\tfor i := 0; i < n && chosen < target; i++ {\n\t\t\tif lower[i] >= chosen && higher[i] >= target-1-chosen {\n\t\t\t\tchosen++\n\t\t\t}\n\t\t}\n\t\tif chosen == target {\n\t\t\tlow = target\n\t\t} else {\n\t\t\thigh = target - 1\n\t\t}\n\t}\n\tfmt.Println(low)\n}\n",
+      "sha256": "899a398a5279d1dfebc6fdd244b61157ab316f3714a22e4b56a1665fe54a9b1b"
+    }
+  ]
+}

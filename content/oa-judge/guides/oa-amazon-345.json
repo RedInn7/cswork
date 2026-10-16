@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-345",
+  "packageChecksum": "fbbd5b08a35a1eb755625a5cfda8b0540b8c2ed4f7d436e4fb94aaceffe6d8f2",
+  "sourceContentHash": "5f5c95d3969db0d2dbc5cf1ba1d3d63f5ffc6b619c8ca07c8749ac7620aaf64a",
+  "editorialSha256": "0a59bdb0ab4152f1fde6ff286dc3102c49279e2ce133cb11229530dd01bcf74f",
+  "hints": {
+    "zh": [
+      "自定义顺序下的比较规则和普通字典序完全一样（第一个不同字符决定大小，前缀更短者更小），只是“字符谁大谁小”换成了 order 里的位置。所以只要把每个字符换成它在 order 中的名次，问题就变成普通的字典序排序。注意字符按 Unicode 码点算，代理对要合成一个字符。",
+      "order 最多 256 个字符，名次正好能装进一个字节。把每个编码逐字符映射成名次字节，得到一个与码点数等长的字节串作为排序键；按字节串字典序排序原编码即可，第一个不同字节与第一个不同字符的比较一致，前缀短者优先的规则也自动保留。重复编码保留。",
+      "解析 JSON：order 是一个字符串，productCodes 是字符串数组；解析时处理 \\uXXXX 转义并把高低代理合成一个码点，原样的 UTF-8 也要解码成码点。用 order 建立“码点 → 名次”表，为每个编码生成名次字节串，按它排序编码的下标。最后按规范紧凑 ASCII JSON 输出：引号和反斜杠转义，\\b \\t \\n \\f \\r 用简写，其余控制字符及 U+007F 以上用小写 \\uXXXX（超出 BMP 的拆成代理对），元素之间只用逗号。"
+    ],
+    "en": [
+      "Comparison under the custom order works exactly like ordinary lexicographic order (the first differing character decides, and a shorter prefix comes first); only \"which character is larger\" is replaced by the position in order. So once every character is replaced by its rank in order, the task becomes an ordinary lexicographic sort. Characters are counted as Unicode code points, so a surrogate pair must be combined into one character.",
+      "order has at most 256 characters, so a rank fits exactly into one byte. Map every code character by character to its rank byte, which gives a byte string as long as the number of code points, and use it as the sort key; sorting the original codes by these byte strings lexicographically is enough, since the first differing byte compares the same way as the first differing character, and the shorter-prefix-first rule is preserved automatically. Keep duplicate codes.",
+      "Parse the JSON: order is a string and productCodes is an array of strings; while parsing, handle \\uXXXX escapes and combine a high and a low surrogate into one code point, and decode raw UTF-8 into code points as well. Build a table from code point to rank using order, generate the rank byte string of each code, and sort the code indices by it. Finally print canonical compact ASCII JSON: escape quotes and backslashes, use the short forms \\b \\t \\n \\f \\r, write the other control characters and everything from U+007F upward as lowercase \\uXXXX (splitting characters beyond the BMP into surrogate pairs), and separate elements with commas only."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild a mapping from characters to their order 0..255, turn each string into a byte sort key of the same length, and sort the original strings by the lexicographic order of these byte strings.\n\n## Proof of correctness\n\nThe mapping strictly preserves the order given by order, and each original character corresponds to exactly one byte. Comparing the first differing code points agrees exactly with comparing the first differing bytes; the key length equals the number of code points, which also preserves the rule that a shorter prefix comes first. Therefore sorting by the keys is equivalent to the target order, and returning the original strings keeps every character and every duplicate.\n\n## Complexity\n\nLet M be the total number of code points, n the number of codes and L the maximum code length. Building the keys takes O(M), the comparison sort takes O(M+nL log n) in the worst case, and the space is O(M+n)."
+}

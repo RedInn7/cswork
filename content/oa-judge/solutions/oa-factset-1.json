@@ -1,0 +1,21 @@
+{
+  "id": "oa-factset-1",
+  "packageChecksum": "266cd5ba1e23f817db5d002da943a8472cfda22a29536c062787611cd0050fcb",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read()\n    parts = data.split(None, 1)\n    n = int(parts[0]) if parts else 0\n    if n == 0:\n        print(0)\n        return\n    # Every entry is a single 0/1 character: drop whitespace and map '0'/'1' to bytes 0/1.\n    bits = parts[1].translate(bytes.maketrans(b'01', b'\\x00\\x01'), b' \\t\\n\\r\\x0b\\x0c')\n    del data, parts\n    inc = list(range(1, n + 2))  # inc[x] == x + 1 without allocating new ints in the hot loop\n    previous = [0] * n  # previous[c]: largest all-1 square with bottom-right corner at (row-1, c)\n    answer = 0\n    for row in range(n):\n        # dp = 1 + min(left, above, upper-left) on a 1, else 0; `left` carries this row's value.\n        left = 0\n        previous = [(left := inc[m if (m := (left if left < a else a)) < d else d]) if v else (left := 0)\n                    for v, a, d in zip(bits[row * n:(row + 1) * n], previous, [0] + previous[:-1])]\n        # A cell's value exceeds the one above it by at most 1, so the best grows by at most 1 per row.\n        if answer + 1 in previous:\n            answer += 1\n    print(answer)\n\n\nmain()\n",
+      "sha256": "020b6efaaeb495f2c10b848d507a587ef687f4f0403ced5858c3a63fd4f6d679"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int c = in.read();\n        while (c != -1 && (c < '0' || c > '9')) c = in.read();\n        int n = 0;\n        while (c >= '0' && c <= '9') { n = n * 10 + (c - '0'); c = in.read(); }\n        int[] dp = new int[n + 1];  // dp[col]: largest all-1 square ending at (row, col), rolling over rows\n        int answer = 0;\n        for (int row = 0; row < n; row++) {\n            int diagonal = 0;\n            for (int col = 1; col <= n; col++) {\n                c = in.read();\n                while (c <= ' ') c = in.read();\n                int above = dp[col];\n                dp[col] = c == '1' ? 1 + Math.min(above, Math.min(dp[col - 1], diagonal)) : 0;\n                if (dp[col] > answer) answer = dp[col];\n                diagonal = above;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "7d6206cc97267375bb77243ba57071db0f3825b0e821ef26144b11c50675c1ed"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\treader := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c < '0' || c > '9') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tn := 0\n\tfor err == nil && c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, err = reader.ReadByte()\n\t}\n\tdp := make([]int32, n+1) // dp[col]: largest all-1 square ending at (row, col), rolling over rows\n\tvar answer int32\n\tfor row := 0; row < n; row++ {\n\t\tvar diagonal int32\n\t\tfor col := 1; col <= n; col++ {\n\t\t\tc, _ = reader.ReadByte()\n\t\t\tfor c <= ' ' {\n\t\t\t\tc, _ = reader.ReadByte()\n\t\t\t}\n\t\t\tabove := dp[col]\n\t\t\tif c == '1' {\n\t\t\t\tdp[col] = 1 + min(above, dp[col-1], diagonal)\n\t\t\t} else {\n\t\t\t\tdp[col] = 0\n\t\t\t}\n\t\t\tanswer = max(answer, dp[col])\n\t\t\tdiagonal = above\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "7cba61424135e5c70b1172086a97392a8d4c8f4ea12bd1fc92d9f7defbd03ae5"
+    }
+  ]
+}

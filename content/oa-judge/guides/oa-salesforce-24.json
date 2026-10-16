@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-24",
+  "packageChecksum": "883033b2ac4036f89cc8eac22b65fab766db5bb1c28f7c209af3d550a740b93f",
+  "sourceContentHash": "03d175e9639fb8c67f5c94ac42a60588c1356a5cb90204f89f4b573e63fb86ff",
+  "editorialSha256": "9c6a02359a5f60bc868f112b683da2553c21ac8ea0c89814ddb25bdf523052af",
+  "hints": {
+    "zh": [
+      "一条路径的代价只取决于它最大的那条边。换个问法：给定阈值 W，只保留权值不超过 W 的边，起点和终点能否连通？答案就是使它们连通的最小 W。另外，节点标签可能大到 10^55，但实际出现的标签最多约 20 万个。",
+      "把边按权值从小到大依次加入，用并查集维护连通性；第一次让起点和终点落在同一连通块时，刚加入那条边的权值就是答案。所有边加完仍不连通则输出 -1；起点等于终点时直接输出 0。标签不要按数值开数组，而是用哈希表把出现过的标签压缩成连续编号。",
+      "读入时把每个标签当作十进制字符串（去掉前导零）映射成编号，起点和终点也要映射；若起点和终点相同输出 0。把 M 条边按权值排序，依次合并两端（按大小合并加路径压缩），每合并一条就检查起点与终点的根是否相同，相同则输出当前边权并结束；循环结束仍未连通输出 -1。"
+    ],
+    "en": [
+      "The cost of a path depends only on its heaviest edge. Rephrase the question: for a threshold W, keep only edges of weight at most W; are the source and the destination connected? The answer is the smallest W that connects them. Also note that node labels can be as large as 10^55, yet at most about 200,000 distinct labels actually appear.",
+      "Add the edges in increasing order of weight and maintain connectivity with a union-find; the first time the source and the destination end up in the same component, the weight of the edge just added is the answer. If they are still disconnected after all edges, output -1; if the source equals the destination, output 0 right away. Do not allocate arrays by label value; compress the labels that appear into consecutive indices with a hash map.",
+      "While reading, treat every label as a decimal string (with leading zeros removed) and map it to an index, including the source and the destination; if they are the same, output 0. Sort the M edges by weight and merge their endpoints one by one (union by size with path compression); after each edge, check whether the source and the destination share a root, and if so output the current weight and stop. If the loop ends without connecting them, output -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMerge the endpoints in increasing order of edge weight; the weight of the first edge that puts the source and the destination in the same connected component is the answer. Compress the nodes that appear with a dictionary, and never allocate arrays by N.\n\n## Proof of correctness\n\nThe edges of weight at most W form a subgraph: the source and the destination are connected in that subgraph if and only if there is a path whose largest edge weight is at most W. Accumulating connectivity in sorted order of weight, the W at which they first become connected is the smallest; if they are still disconnected after all edges are processed, there is no path.\n\n## Complexity\n\nTime O(M log M), space O(M); there are at most 200002 actual labels, independent of the numeric value of N."
+}

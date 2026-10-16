@@ -1,0 +1,19 @@
+{
+  "id": "oa-airbnb-6",
+  "packageChecksum": "b12221e29a45bd1e18df249ba44c1690e0713f27726a4a2efcd3bc3d152e7faa",
+  "sourceContentHash": "54ed5ba7e3dac6c1628db32155c0483c2c20fe927f5242f807c86c98799e1602",
+  "editorialSha256": "73824010c1b62a6833183f0fc455b0d1a0919e5578c079f9d7d06c2dfa1a427e",
+  "hints": {
+    "zh": [
+      "句子里的空格（包括开头和结尾的空格）都是内容的一部分，空行也是一个合法的空句子。所以必须按整行读取每个句子，不能按空白分词，也不能去掉首尾空格。",
+      "所有行都等长：边框行是加号、width+2 个减号、加号；句子行是竖线加空格、句子原文、补空格到恰好 width 个内容字符、空格加竖线。边框串只需构造一次，在循环里反复使用。",
+      "先读第一行的 n 和 width，然后对每个句子依次输出一条边框和一条句子行（补 width−len 个空格），最后在 n>0 时再补一条收尾边框；n=0 时什么都不输出。输出可达数千万字节，要拼接或缓冲后批量写出，不要逐行刷新。"
+    ],
+    "en": [
+      "Spaces in a sentence, including leading and trailing ones, are part of its content, and an empty line is a valid empty sentence. So each sentence must be read as a whole line, not split on whitespace, and its leading and trailing spaces must not be stripped.",
+      "Every line has the same length: a border line is a plus, width+2 minuses and a plus; a sentence line is a bar and a space, the sentence as is, spaces up to exactly width content characters, and a space and a bar. Build the border string once and reuse it in the loop.",
+      "Read n and width from the first line, then for each sentence print a border and its sentence line (padded with width−len spaces), and finally, when n>0, one more closing border; print nothing when n=0. The output can reach tens of millions of bytes, so build it up or buffer it and write in bulk instead of flushing line by line."
+    ]
+  },
+  "explanationEn": "## Problem\n\nGiven n sentences and a fixed content width width, draw each sentence as one row of a table: border lines and sentence lines alternate, and one more border closes the table at the end, for 2n+1 lines in total; when n=0, nothing is printed.\n\n- Border line: `+`, width+2 copies of `-`, `+`.\n- Sentence line: `| `, the sentence as is, padded with spaces to exactly width content characters, ` |`.\n\n## Approach\n\nBuild the border string once, then read sentences line by line: print the border, then print `| ` + sentence + (width−len) spaces + ` |`. Finally, if n>0, print the border once more.\n\nSpaces in a sentence (including leading and trailing spaces) are part of the content and must be kept exactly, so read by whole line; do not split on whitespace, and do not strip leading or trailing spaces. An empty sentence corresponds to a full row of width spaces.\n\n## Correctness\n\nEvery sentence line has length 2+len+(width−len)+2=width+4, the same as a border line; the content of each line depends only on its sentence and width, so printing them in order gives the unique correct table.\n\n## Complexity\n\nThe output totals (2n+1)·(width+5) bytes, and both time and space are linear in the output size. Many separate print calls per line or frequent flushing are slow on large data; it is better to concatenate and write everything at once.\n\n## Independent verification\n\nThe oracle produces the table with Python's padding (`ljust`); a separate structural validator does not construct the answer but checks line by line: there are 2n+1 lines, even lines equal the border, and odd lines start with `| `, end with ` |`, and have the sentence plus spaces in between. Every input with width≤3, n≤2 and sentences drawn from {space, a} is enumerated, and the reference program is run on each. Five wrong programs that exit normally (missing the last border, wrong number of dashes in the border, deleting leading spaces of a sentence, still printing a border when n=0, padding to the longest sentence) are all judged wrong by the formal data."
+}

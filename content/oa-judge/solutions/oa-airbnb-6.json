@@ -1,0 +1,21 @@
+{
+  "id": "oa-airbnb-6",
+  "packageChecksum": "b12221e29a45bd1e18df249ba44c1690e0713f27726a4a2efcd3bc3d152e7faa",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read()\n    first, _, rest = data.partition(b\"\\n\")\n    n, width = map(int, first.split()[:2])\n    # Sentences are whole lines: keep leading/trailing spaces, never split on whitespace.\n    lines = rest.split(b\"\\n\")\n    border = b\"+\" + b\"-\" * (width + 2) + b\"+\\n\"\n    out = sys.stdout.buffer\n    for i in range(n):\n        sentence = lines[i] if i < len(lines) else b\"\"\n        out.write(border + b\"| \" + sentence.ljust(width) + b\" |\\n\")\n    if n > 0:\n        out.write(border)\n\n\nmain()\n",
+      "sha256": "b51e3692648b948888d9e3b808ab8eb8272e7c32089ad9b6bf7160a997b4057c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] in = System.in.readAllBytes();\n        int p = 0;\n        long n = 0, w = 0;\n        while (p < in.length && in[p] == ' ') p++;\n        while (p < in.length && in[p] >= '0' && in[p] <= '9') n = n * 10 + (in[p++] - '0');\n        while (p < in.length && in[p] == ' ') p++;\n        while (p < in.length && in[p] >= '0' && in[p] <= '9') w = w * 10 + (in[p++] - '0');\n        while (p < in.length && in[p] != '\\n') p++;\n        if (p < in.length) p++;\n        int width = (int) w;\n        byte[] border = new byte[width + 5];\n        Arrays.fill(border, (byte) '-');\n        border[0] = '+';\n        border[width + 3] = '+';\n        border[width + 4] = '\\n';\n        BufferedOutputStream out = new BufferedOutputStream(System.out, 1 << 16);\n        byte[] row = new byte[width + 5];\n        for (long i = 0; i < n; i++) {\n            // A sentence is the whole line up to '\\n', spaces included.\n            int e = p;\n            while (e < in.length && in[e] != '\\n') e++;\n            int len = e - p;\n            Arrays.fill(row, (byte) ' ');\n            row[0] = '|';\n            System.arraycopy(in, p, row, 2, len);\n            row[width + 3] = '|';\n            row[width + 4] = '\\n';\n            out.write(border);\n            out.write(row);\n            p = e < in.length ? e + 1 : e;\n        }\n        if (n > 0) out.write(border);\n        out.flush();\n    }\n}\n",
+      "sha256": "70c046d5c03157f70d6fe4d7c33ab986663ea8ed69e7771eaddf445697d35b42"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"bytes\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tin, _ := io.ReadAll(os.Stdin)\n\tp, n, w := 0, 0, 0\n\tfor p < len(in) && in[p] == ' ' {\n\t\tp++\n\t}\n\tfor p < len(in) && in[p] >= '0' && in[p] <= '9' {\n\t\tn = n*10 + int(in[p]-'0')\n\t\tp++\n\t}\n\tfor p < len(in) && in[p] == ' ' {\n\t\tp++\n\t}\n\tfor p < len(in) && in[p] >= '0' && in[p] <= '9' {\n\t\tw = w*10 + int(in[p]-'0')\n\t\tp++\n\t}\n\tfor p < len(in) && in[p] != '\\n' {\n\t\tp++\n\t}\n\tif p < len(in) {\n\t\tp++\n\t}\n\tborder := []byte(\"+\" + string(bytes.Repeat([]byte(\"-\"), w+2)) + \"+\\n\")\n\tout := bufio.NewWriterSize(os.Stdout, 1<<16)\n\tdefer out.Flush()\n\tspaces := bytes.Repeat([]byte(\" \"), w)\n\tfor i := 0; i < n; i++ {\n\t\t// A sentence is the whole line up to '\\n', spaces included.\n\t\te := p\n\t\tfor e < len(in) && in[e] != '\\n' {\n\t\t\te++\n\t\t}\n\t\tout.Write(border)\n\t\tout.WriteString(\"| \")\n\t\tout.Write(in[p:e])\n\t\tout.Write(spaces[:w-(e-p)])\n\t\tout.WriteString(\" |\\n\")\n\t\tif e < len(in) {\n\t\t\tp = e + 1\n\t\t} else {\n\t\t\tp = e\n\t\t}\n\t}\n\tif n > 0 {\n\t\tout.Write(border)\n\t}\n}\n",
+      "sha256": "6e59e1336cc043daf1149ab857caf6a4ff73fc021154bfacd4d26362fe24d306"
+    }
+  ]
+}
