@@ -28,6 +28,7 @@ import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { sendPeerReminders } from './peer-reminders';
 import { sendLearnerReminders } from './reminders';
 import { sendCompanyDigest } from './company-follows';
+import { syncJobOpenings } from './job-openings';
 import { seed } from './seed';
 import {
   assertSnapshotBudget,
@@ -781,11 +782,15 @@ const reminderTimer = setInterval(() => {
       await send().catch((error: unknown) => console.error(name, error instanceof Error ? error.message : 'unknown'));
   })().finally(() => (reminding = false));
 }, 600_000);
+// New-grad and intern openings from public ATS boards, about daily (lib/server/job-openings.ts): its
+// own timer, so a slow round of boards never holds back the reminders above.
+const jobsTimer = setInterval(() => void syncJobOpenings().catch(() => console.error('job openings sync failed')), 600_000);
 async function stop() {
   if (stopping) return;
   stopping = true;
   clearInterval(timer);
   clearInterval(reminderTimer);
+  clearInterval(jobsTimer);
   clearInterval(dispatchTimer);
   clearInterval(precompileTimer);
   for (const controller of controllers.values()) controller.abort();
