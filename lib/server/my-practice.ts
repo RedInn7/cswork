@@ -195,15 +195,17 @@ export async function handleMyPractice(
     if (resource === 'history') return json({ items: practiceHistory(p.id) });
     if (resource === 'notes') {
       if (!params.has('target')) {
-        // ?prefix=story: lists the story bank with its bodies in one request.
-        if (params.get('prefix') === 'story:')
+        // ?prefix=story: lists the story bank with its bodies in one request; ?prefix=sd: the
+        // system design quiz answers (app/oa/mcq/practice.tsx reviews the wrong ones).
+        const listed = params.get('prefix');
+        if (listed === 'story:' || listed === 'sd:')
           return json({
             items: db
               .prepare(
                 `SELECT target,body,updated_at AS updatedAt FROM user_notes
-                WHERE user_id=? AND target LIKE 'story:%' ORDER BY updated_at DESC`,
+                WHERE user_id=? AND target LIKE ? ORDER BY updated_at DESC`,
               )
-              .all(p.id),
+              .all(p.id, `${listed}%`),
           });
         return json(searchNotes(p.id, params));
       }

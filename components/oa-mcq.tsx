@@ -19,6 +19,8 @@ export const MCQ_TOPIC_NAMES: Record<string, [string, string]> = {
   js: ['JavaScript', 'JavaScript'],
   probability: ['概率', 'Probability'],
   logic: ['逻辑推理', 'Logic'],
+  dsa: ['数据结构与算法', 'Data structures & algorithms'],
+  complexity: ['复杂度', 'Complexity'],
 };
 
 let bank: Promise<McqQuestion[]> | null = null;
