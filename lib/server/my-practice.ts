@@ -290,8 +290,10 @@ export async function handleMyPractice(
     }
     const d = z.object({ target, mark, on: z.boolean() }).strict().parse(body);
     const vote = d.mark === 'up' || d.mark === 'down';
-    if (vote && !d.target.startsWith('problem:') && !(d.mark === 'up' && UPVOTED.test(d.target)))
-      throw new HttpError(400, '只能给题目投票，或给面经和面试题点赞');
+    // An editorial (content:editorial/<problem id>, Line 500's or an OA's) takes "helpful" / "not helpful".
+    const editorial = /^content:editorial\/(?:lc|oa)-[a-z0-9-]+$/.test(d.target);
+    if (vote && !d.target.startsWith('problem:') && !editorial && !(d.mark === 'up' && UPVOTED.test(d.target)))
+      throw new HttpError(400, '只能给题目和官方题解投票，或给面经和面试题点赞');
     if (d.mark === 'curated' && (p.role !== 'teacher' || !d.target.startsWith('content:')))
       throw new HttpError(403, '只有老师可以把内容设为精选');
     if (d.target.startsWith('list:')) throw new HttpError(400, '请在题单页收藏');

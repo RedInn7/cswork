@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { EditorialVote } from './editorial-vote';
 import type { Navigate } from './learning';
 import {
   canonicalCompany,
@@ -1253,6 +1254,7 @@ export function OaEditorial({
             <code>{solution.code}</code>
           </pre>
         ))}
+      <EditorialVote problemId={problemId} english={en} />
     </section>
   );
 }

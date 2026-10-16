@@ -297,6 +297,15 @@ async function summarize(days: number) {
     .prepare(`SELECT status,COUNT(*) FROM submissions WHERE status IN ('queued','compiling','running') GROUP BY status`)
     .raw()
     .all() as [string, number][];
+  // The editorials most marked "not helpful" (components/editorial-vote.tsx): standing marks, so all
+  // time rather than the range.
+  const unhelpful = db
+    .prepare(
+      `SELECT substr(target,19) AS problemId,SUM(mark='down') AS down,SUM(mark='up') AS up FROM user_marks
+       WHERE target>='content:editorial/' AND target<'content:editorial0' AND mark IN ('up','down')
+       GROUP BY target HAVING down>0 ORDER BY down DESC,up,target LIMIT 20`,
+    )
+    .all() as { problemId: string; down: number; up: number }[];
 
   const sum = (key: 'pageViews' | 'signups' | 'submissions' | 'runs' | 'accepted') =>
     daily.reduce((total, d) => total + d[key], 0);
@@ -340,6 +349,7 @@ async function summarize(days: number) {
     topSearches: top(searches, ['q']),
     errors: top(errors, ['stage', 'status']),
     locales: top(locales, ['locale']),
+    unhelpfulEditorials: unhelpful,
   };
 }
 
