@@ -160,6 +160,8 @@ export const KIND_RUBRIC: Partial<Record<KindId, RubricId[]>> = {
   analytics: ['metric', 'experiment', 'stats'],
   stats: ['stats', 'problem'],
   ml: ['modeling', 'mltradeoffs'],
+  project: ['ownership', 'impact', 'reflection', 'tradeoffs'],
+  api: ['requirements', 'hld', 'tradeoffs', 'deepdive'],
   recruiter: ROLEPLAY_RUBRIC,
   negotiation: ROLEPLAY_RUBRIC,
 };
