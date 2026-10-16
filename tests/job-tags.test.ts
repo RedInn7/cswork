@@ -51,6 +51,17 @@ void test('role categories, checked in order', () => {
     // "aid" and "html" are no AI or ML; a software role at a sales team is still software.
     ['Financial Aid Software Engineer Intern', 'swe'],
     ['Software Engineer, Sales Tools', 'swe'],
+    // A business role on a technical team is still 'other'; a technical role on a business team is not.
+    ['Finance Intern, Trading', 'other'],
+    ['Cloud Sales Intern', 'other'],
+    ['Product Marketing Intern, AI Platform', 'other'],
+    ['Legal Intern, Platform', 'other'],
+    ['Account Executive, Platform - New Grad', 'other'],
+    ['Sales Development Representative (AI), Early Career', 'other'],
+    ['Machine Learning Engineer, Finance', 'ml'],
+    ['Data Analyst, Marketing', 'data'],
+    ['Product Manager, Sales Tools', 'pm'],
+    ['Quantitative Finance Intern', 'quant'],
   ] as const)
     assert.equal(roleCategory(title), category, title);
 });
@@ -74,6 +85,8 @@ void test('terms in titles', () => {
   assert.equal(termLabel('2027', false), '2027');
   assert.equal(termLabel('winter', true), '冬季');
   assert.deepEqual(sortTerms(['summer', 'fall-2026', '2027', 'summer-2027', 'spring-2027', '', '2027']), ['fall-2026', '2027', 'spring-2027', 'summer-2027', 'summer']);
+  // Calendar order: a Winter 2027 term (January to April) comes before Spring 2027.
+  assert.deepEqual(sortTerms(['fall-2027', 'winter-2027', 'summer-2027', 'spring-2027', 'winter-2028']), ['winter-2027', 'spring-2027', 'summer-2027', 'fall-2027', 'winter-2028']);
 });
 
 void test('the hiring cycle: a plausible title year, else July on hires for next year', () => {

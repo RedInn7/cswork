@@ -18,7 +18,18 @@ export const ROLE_NAMES: Record<RoleCategory, [string, string]> = {
   other: ['其他', 'Other'],
 };
 
-// First match wins. AI and ML are matched in capitals only ("aid", "html" are no AI).
+// A business role is 'other' whatever team it sits on ("Cloud Sales Intern", "Finance Intern, Trading"),
+// unless the title also names a technical role; an engineer a business word names ("Sales Engineer",
+// "Mechanical Engineering") is none.
+const BUSINESS = 'marketing|finance|financial|sales|legal|accounting|account executives?|account managers?|business development|mechanical|civil|chemical|recruiting';
+const NOT_TECH = new RegExp(`\\b(?:${BUSINESS})\\b`, 'i');
+const TECH_ROLE = new RegExp(
+  `(?<!\\b(?:${BUSINESS}) )\\b(?:engineer(?:ing|s)?|developers?|scientists?)\\b|\\b(?:software|swe|sde|data (?:scien|engineer|analy)|(?:product|program) manag)|软件`,
+  'i',
+);
+// Quant first: "Quantitative Finance" is quant. Then first match wins; AI and ML are matched in
+// capitals only ("aid", "html" are no AI).
+const QUANT = /\b(?:quant|quantitative)\b|量化/i;
 const RULES: [RoleCategory, RegExp][] = [
   ['ml', /\b(?:AI|ML)\b/],
   ['ml', /\b(?:machine learning|deep learning|research scientists?|applied scientists?|computer vision|nlp|llms?)\b|机器学习|人工智能|算法/i],
@@ -26,24 +37,23 @@ const RULES: [RoleCategory, RegExp][] = [
   ['infra', /\b(?:site reliability|sre|devops|infrastructure|platforms?|cloud)\b/i],
   ['security', /\b(?:security|cybersecurity|appsec)\b|安全/i],
   ['hardware', /\b(?:hardware|embedded|firmware|asic|fpga|silicon|electrical)\b|硬件|芯片/i],
-  ['quant', /\b(?:quant|quantitative|traders?|trading)\b|量化/i],
+  ['quant', /\b(?:traders?|trading)\b/i],
   ['pm', /\b(?:product manag(?:er|ement)|program manag(?:er|ement)|tpm|apm)\b|产品经理/i],
 ];
-// A business role named "engineer" (sales engineer, mechanical engineering) is no software role.
-const NOT_TECH = /\b(?:marketing|finance|financial|sales|legal|accounting|mechanical|civil|chemical|recruiting)\b/i;
-const SOFTWARE = /\b(?:software|developers?|swe|sde)\b|软件/i;
 const SWE = /\b(?:software|engineer(?:ing|s)?|developers?|swe|sde|back[- ]?end|front[- ]?end|full[- ]?stack|mobile|ios|android)\b|后端|前端|客户端|开发|软件|研发/i;
 
 /** The kind of role a title names; 'other' for marketing, finance, sales, design and the like. */
 export function roleCategory(title: string): RoleCategory {
+  if (QUANT.test(title)) return 'quant';
+  if (NOT_TECH.test(title) && !TECH_ROLE.test(title)) return 'other';
   for (const [category, words] of RULES) if (words.test(title)) return category;
-  if (NOT_TECH.test(title) && !SOFTWARE.test(title)) return 'other';
   return SWE.test(title) ? 'swe' : 'other';
 }
 /** The default filter, "tech roles": everything but product/program management and other. */
 export const isTech = (category: RoleCategory) => category !== 'pm' && category !== 'other';
 
-export const SEASONS = ['spring', 'summer', 'fall', 'winter'] as const;
+// Calendar order: a Winter 2027 term runs January to April 2027, before that spring.
+export const SEASONS = ['winter', 'spring', 'summer', 'fall'] as const;
 export type Season = (typeof SEASONS)[number];
 export type Term = { season: Season | null; year: number | null; coop: boolean };
 const SEASON_NAMES: Record<Season, [string, string]> = { spring: ['春季', 'Spring'], summer: ['夏季', 'Summer'], fall: ['秋季', 'Fall'], winter: ['冬季', 'Winter'] };
