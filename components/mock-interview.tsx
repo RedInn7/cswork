@@ -24,7 +24,9 @@ import {
   AI_MESSAGE_CHARS, AI_STEPS, AI_TURNS, candidateTurns, openerFor, reportFeedback, writesCode,
   type AiReport, type StepFeedback, type Turn,
 } from '@/lib/mock-ai-interview';
+import { countSpeech, type Segment } from '@/lib/mock-delivery';
 import type { Navigate } from './learning';
+import { DeliveryReport, DeliveryStats } from './mock-delivery';
 import { ModeTabs } from './mock-modes';
 import { OaMarkdown } from './oa-library';
 import { TryFirst } from './try-first';
@@ -84,6 +86,8 @@ type Run = {
   guide?: Record<number, Guide>;
   /** AI interviewer: the learner's own 1–4 per dimension, sent with the report. */
   self?: Partial<Record<RubricId, number>>;
+  /** AI interviewer: each question's dictated utterances, for the delivery metrics. Never sent. */
+  speech?: Record<number, Segment[]>;
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
 type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
@@ -111,8 +115,8 @@ const RUNS = 'cswork:mock-interview:runs',
   AVOID = 'cswork:mock-interview:avoid-seen';
 const RATINGS: Text[] = [['卡住了', 'Stuck'], ['有思路', 'Partial'], ['基本答好', 'Solid'], ['很完整', 'Nailed it']];
 const SCORES: Text[] = [['不足', 'Weak'], ['一般', 'Mixed'], ['良好', 'Good'], ['出色', 'Excellent']];
-/** What a person scores on the interviewer's sheet: the role-plays' dimensions are the AI's alone. */
-const CORE = rubricFor(false);
+/** What a set is scored on, by its rounds (lib/mock-interview-feedback.ts rubricFor). */
+const dimsOf = (slots: { kind: KindId }[]) => rubricFor(slots.map((s) => s.kind));
 
 const pick = (params: Record<string, string>) => {
   const out: Record<string, string> = {};
@@ -1290,7 +1294,7 @@ const SPEAK = 'cswork:mock-interview:speak';
  * The browser's own speech: reading the interviewer aloud (speechSynthesis) and dictation
  * (SpeechRecognition, prefixed in Chrome and Safari). Each is hidden where the browser has none.
  */
-function useSpeech(locale: 'zh' | 'en', onText: (text: string) => void) {
+function useSpeech(locale: 'zh' | 'en', onText: (text: string, ms: number, gap: number) => void) {
   const lang = locale === 'zh' ? 'zh-CN' : 'en-US';
   const [canSpeak] = useState(() => typeof speechSynthesis !== 'undefined');
   const [Engine] = useState(() => {
@@ -1333,10 +1337,20 @@ function useSpeech(locale: 'zh' | 'en', onText: (text: string) => void) {
       const r = new Engine();
       r.lang = lang;
       r.continuous = true;
-      r.interimResults = false;
+      // Interim results only time when each utterance began; the text is the final one's.
+      r.interimResults = true;
+      const began: Record<number, number> = {};
+      let lastEnd = 0;
       r.onresult = (e) => {
-        for (let i = e.resultIndex; i < e.results.length; i++)
-          if (e.results[i].isFinal) heard.current(e.results[i][0].transcript.trim());
+        const now = Date.now();
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          began[i] ??= now;
+          if (!e.results[i].isFinal) continue;
+          const from = began[i];
+          delete began[i];
+          heard.current(e.results[i][0].transcript.trim(), now - from, lastEnd ? Math.max(0, from - lastEnd) : 0);
+          lastEnd = now;
+        }
       };
       r.onend = () => {
         recognition.current = null;
@@ -1373,7 +1387,12 @@ function AiRunner({
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState<'turn' | 'step' | 'report' | null>(null);
   const [error, setError] = useState('');
-  const speech = useSpeech(locale, (text) => text && setDraft((d) => (d.trim() ? `${d.trimEnd()} ${text}` : text)));
+  const speech = useSpeech(locale, (text, ms, gap) => {
+    if (!text) return;
+    setDraft((d) => (d.trim() ? `${d.trimEnd()} ${text}` : text));
+    const segment: Segment = [ms, ...countSpeech(text, locale === 'zh'), gap];
+    setRun((r) => ({ ...r, speech: { ...r.speech, [r.index]: [...(r.speech?.[r.index] ?? []), segment] } }));
+  });
   const log = useRef<HTMLOListElement>(null);
   const slot = data.slots[run.index];
   const item = slot?.item;
@@ -1387,8 +1406,8 @@ function AiRunner({
   if (!slot) return null;
   const code = writesCode(slot.kind);
   const last = run.index === data.slots.length - 1;
-  // What the report scores, and so what the learner may rate themselves on first.
-  const dims = rubricFor(data.slots.some((s) => isRoleplay(s.kind)));
+  // What the report scores (the questions drawn), and so what the learner may rate themselves on first.
+  const dims = dimsOf(data.slots.filter((s) => s.item));
   // A guided question (system design, LLD): the step under way and the feedback so far.
   const steps = item ? guideFor(slot.kind, item.category) : null;
   const guide = run.guide?.[run.index] ?? { from: 0, at: 0, done: [] };
@@ -1680,6 +1699,7 @@ function AiRunner({
                 </button>
               </div>
             </form>
+            <DeliveryStats title={t('这题的语音表达', 'Your delivery on this question')} segments={run.speech?.[run.index] ?? []} minutes={slot.minutes} />
             <p className="mi-ai-privacy">
               {t(
                 '对话、题目和代码会发给 Anthropic 生成面试官的回复，不含邮箱和姓名；参考答案只在服务器上。语音输入用浏览器自带的识别，音频可能由浏览器厂商处理。AI 也会出错。',
@@ -1842,6 +1862,7 @@ function Summary({
       <SetHead data={data} query={query} mode={mode} />
       {card}
       {mode === 'ai' && <AiExtras data={data} run={run} peers={peers} />}
+      {mode === 'ai' && <DeliveryReport slots={data.slots} speech={run.speech} />}
       <section className="mi-board mi-summary-board rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
         <div>
           <p className="mi-ticket-kicker">{t('用时', 'Time')}</p>
@@ -2013,7 +2034,7 @@ function InterviewerSheet({ data, query, run, setRun, now, problemIds, finish }:
       <section className="rd-card mi-verdict">
         <h2>{t('总体评价', 'Overall')}</h2>
         <div className="mi-rubric">
-          {RUBRIC.filter((r) => CORE.includes(r.id)).map((r) => (
+          {RUBRIC.filter((r) => dimsOf(data.slots).includes(r.id)).map((r) => (
             <Rating
               key={r.id}
               name={t(...r.name)}
@@ -2189,7 +2210,7 @@ export function FeedbackCard({
   const roleplay = data.slots.some((s) => isRoleplay(s.kind));
   const verdict = (roleplay ? ROLEPLAY_VERDICTS : VERDICTS).find(([id]) => id === feedback.verdict);
   // The dimensions this set is scored on, and any other a report scored.
-  const dims = rubricFor(roleplay);
+  const dims = dimsOf(data.slots);
   const sameSet = forSet(feedback, query);
   // Ratings line up by position, but a changed bank draws other questions from the same seed: each
   // rating names its question by tag, and one that's moved is shown by the title it was given for.

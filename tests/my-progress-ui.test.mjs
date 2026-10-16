@@ -71,7 +71,10 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     if (url.endsWith('/oj/history')) return Response.json({ items: history });
     // Two self-rated AI interviews: off by one, then spot on.
     if (url.endsWith('/oj/ai/interview-calibration'))
-      return Response.json({ calibration: { sessions: [{ gap: 1, bias: 1 }, { gap: 0, bias: 0 }], gap: 0.5, bias: 0.5 } });
+      return Response.json({
+        calibration: { sessions: [{ gap: 1, bias: 1 }, { gap: 0, bias: 0 }], gap: 0.5, bias: 0.5 },
+        trend: { communication: [4, 1, 4], star: [1, 3] },
+      });
     // Every daily problem of February 2026, from the points ledger.
     if (url.endsWith('/oj/points/daily'))
       return Response.json({ days: Array.from({ length: 28 }, (_, i) => `2026-02-${String(i + 1).padStart(2, '0')}`) });
@@ -162,6 +165,11 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     const calibration = document.getElementById('calibration-title').parentElement.textContent;
     assert.match(calibration, /Last 2 AI interviews, mean gap 0\.5 points · You overrate: 0\.5 above the interviewer/);
     assert.match(calibration, /Gap per interview, oldest first: 1\.0 → 0\.0/);
+    // Each dimension's scores as a small line, in rubric order, with the latest score.
+    const trend = [...document.querySelectorAll('.trend-list li')];
+    assert.deepEqual(trend.map((li) => li.textContent), ['Communication4/4 3 interviews', 'Structure (STAR)3/4 2 interviews']);
+    assert.equal(trend[0].querySelector('svg').getAttribute('aria-label'), 'Communication: 4 → 1 → 4');
+    assert.equal(trend[0].querySelector('polyline').getAttribute('points'), '3,3 48,23 93,3');
     assert.deepEqual(
       [...document.querySelectorAll('[role="tab"] .progress-count')].map((n) => n.textContent),
       ['2', '2', '1', '1', '1', '1', '2'],

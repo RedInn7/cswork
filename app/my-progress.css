@@ -231,6 +231,49 @@
   font-size: 13px;
   line-height: 1.8;
 }
+/* AI interviews: each rubric dimension's recent scores as a small line. */
+.trend-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 2px 18px;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: #fff;
+  list-style: none;
+}
+.trend-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 5.5em;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  color: #27343e;
+  font-size: 13px;
+}
+.trend-list b {
+  color: #1d252d;
+  font-variant-numeric: tabular-nums;
+}
+.trend-list small {
+  color: #66717c;
+  font-size: 11px;
+}
+.trend-spark {
+  width: 96px;
+  height: 26px;
+  overflow: visible;
+}
+.trend-spark polyline {
+  fill: none;
+  stroke: #327b76;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.trend-spark circle {
+  fill: #327b76;
+}
 @media (prefers-reduced-motion: reduce) {
   .progress-tabs button {
     transition: none;
@@ -331,6 +374,25 @@
   }
   .dark .progress-empty p {
     color: #b5bfc9;
+  }
+  .dark .trend-list {
+    background: #191919;
+  }
+  .dark .trend-list li {
+    color: #cbd9e4;
+  }
+  .dark .trend-list b {
+    color: #d6dfe8;
+  }
+  .dark .trend-list small {
+    color: #b5bfc9;
+  }
+  .dark .trend-spark polyline {
+    fill: none;
+    stroke: #327b76;
+  }
+  .dark .trend-spark circle {
+    fill: #327b76;
   }
 }
 /* ── end dark theme ── */

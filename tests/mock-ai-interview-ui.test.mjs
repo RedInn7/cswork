@@ -231,6 +231,30 @@ test('read aloud and dictation appear only where the browser has them; AI off fa
   assert.equal(spoken.length, 1);
   assert.equal(spoken[0].text, 'Why a hash map?');
   assert.equal(spoken[0].lang, 'en-US');
+  // Delivery: interim results time when each utterance began; the numbers show under the conversation.
+  const realNow = Date.now;
+  const base = realNow() + 2_000;
+  const said = (transcript, isFinal) => Object.assign([{ transcript }], { isFinal });
+  const hear = (ms, e) =>
+    act(async () => {
+      Date.now = () => base + ms;
+      recognizer.onresult(e);
+    });
+  try {
+    const first = said('I would use a hash map', true);
+    await hear(0, { resultIndex: 1, results: [first, said('I would', false)] });
+    const second = said(' I would use a hash map um like a cache ', true);
+    await hear(12_000, { resultIndex: 1, results: [first, second] });
+    await hear(15_000, { resultIndex: 2, results: [first, second, said('so', false)] });
+    await hear(21_000, { resultIndex: 2, results: [first, second, said('so basically done', true)] });
+  } finally {
+    Date.now = realNow;
+  }
+  const stats = [...document.querySelectorAll('.mi-ai-side .mi-delivery dd')].map((dd) => dd.textContent);
+  assert.deepEqual(stats, ['43 words/min', '3', '0:18 / 25:00', '0:03']);
+  // Kept with the run on this device; never part of a request.
+  assert.equal(JSON.parse(localStorage.getItem('cswork:mock-interview:runs'))['ai:u1:template=custom&mix=coding.1&set=k3x9q2ab'].speech[0].length, 3);
+  assert.equal(calls.some((c) => JSON.stringify(c.body ?? '').includes('speech')), false);
   await click(dictate);
   assert.equal(dictate.getAttribute('aria-pressed'), 'false');
   // Without the AI flag an `as=ai` link is plain solo practice.

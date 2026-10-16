@@ -47,6 +47,9 @@ test('the candidate sees the verdict, rubric, notes and each question with its r
   assert.ok(html.includes('>3.0<'));
   assert.ok(/<dt>Communication<\/dt><dd><span class="mi-pips" data-n="4">/.test(html));
   assert.ok(/<dt>Testing<\/dt><dd><span class="mi-muted">Not scored/.test(html));
+  // A behavioral + coding set lists the behavioral dimensions too, and no design ones.
+  assert.ok(/<dt>Structure \(STAR\)<\/dt><dd><span class="mi-muted">Not scored/.test(html));
+  assert.equal(html.includes('<dt>Requirements</dt>'), false);
   // Notes are text, never markup.
   assert.ok(html.includes('Asked about &lt;empty&gt; input first'));
   assert.ok(/Tell me about a conflict<\/p><p class="mi-fb-q-note">Clear STAR story<\/p><\/div><span class="mi-pips" data-n="3">/.test(html));
