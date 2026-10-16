@@ -31,9 +31,11 @@ const good = {
     // Off the list, or listed twice: dropped.
     { skill: 'kubernetes', evidence: 'Kubernetes', importance: 'must' },
     { skill: 'dsa', evidence: 'again', importance: 'nice' },
-    { skill: 'python', evidence: 'proficiency in Python or Java [x](https://evil.example)', importance: 'must' },
-    { skill: 'sql', evidence: 'SQL', importance: 'maybe' },
-    { skill: 'lld', evidence: 'x'.repeat(300), importance: 'nice' },
+    { skill: 'python', evidence: 'proficiency in  Python or java', importance: 'must' },
+    // Not words the posting has: the quote is blanked, the skill stays.
+    { skill: 'sql', evidence: 'Expert in SQL tuning [x](https://evil.example)', importance: 'maybe' },
+    // Cut to 100 characters, across a line break of the posting.
+    { skill: 'lld', evidence: 'Requirements: strong data structures and algorithms; proficiency in Python or Java; SQL. Preferred: experience with distributed systems.', importance: 'nice' },
     'not an object',
   ],
   likelyRounds: ['behavioral', 'onsite-dance', 'oa', 'phone-coding'],
@@ -114,10 +116,11 @@ void test('the checklist: off-list skills dropped, the posting sent as data, pro
   const [dsa, python, sql, lld] = reply.skills;
   // The hand-ticked problem counts: the second-to-last stop has a and b, still one short.
   assert.deepEqual([dsa.status, dsa.done, dsa.total, dsa.importance], ['ready', 33, 35, 'must']);
-  assert.ok(!python.evidence.includes('evil.example'));
+  // Whitespace and case aside, a quote must be the posting's own words.
+  assert.equal(python.evidence, 'proficiency in Python or java');
   // 99 Python ACs on line problems; the hand tick has no language but still counts toward dsa.
   assert.deepEqual([python.status, python.done, python.total], ['ready', 30, 30]);
-  assert.deepEqual([sql.status, sql.done, sql.importance], ['gap', 0, 'nice']);
+  assert.deepEqual([sql.status, sql.done, sql.importance, sql.evidence], ['gap', 0, 'nice', '']);
   assert.equal(lld.evidence.length, 100);
   // dsa is ready: no Line 500 plan.
   assert.deepEqual(reply.planStops, []);
@@ -184,9 +187,9 @@ void test('the pure measures: thresholds, certificates, empty learners and repli
   solved.delete('lc-x0');
   assert.deepEqual(skillProgress('java', { ...empty, solved }), { status: 'partial', done: 23, total: 30 });
   assert.equal(skillProgress('python', { ...empty, certs: new Set(['sd:python']) }).status, 'ready');
-  assert.deepEqual(parseJd('[]'), null);
-  assert.deepEqual(parseJd('{"skills":[],"likelyRounds":"oa"}'), { skills: [], likelyRounds: [] });
-  assert.equal(parseJd('not json'), null);
+  assert.deepEqual(parseJd('[]', job), null);
+  assert.deepEqual(parseJd('{"skills":[],"likelyRounds":"oa"}', job), { skills: [], likelyRounds: [] });
+  assert.equal(parseJd('not json', job), null);
 });
 
 void test('limits: a long posting is cut, not refused; too short is 400; three a day, then 429', async () => {

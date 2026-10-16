@@ -67,9 +67,14 @@ ${JD_SKILLS.map((skill) => `  - ${skill}: ${JD_SKILL_INFO[skill].hint}`).join('\
 
 type Asked = Pick<JdItem, 'skill' | 'evidence' | 'importance'>;
 const isSkill = (value: unknown): value is JdSkill => (JD_SKILLS as readonly unknown[]).includes(value);
+const flat = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
 
-/** The model's JSON as skills and rounds: ids off the lists dropped, each skill once; null when it is not one. */
-export function parseJd(raw: string): { skills: Asked[]; likelyRounds: JdReport['likelyRounds'] } | null {
+/**
+ * The model's JSON as skills and rounds: ids off the lists dropped, each skill once, and a quote
+ * the posting `job` does not hold blanked (the page shows it in quotation marks); null when it is not one.
+ */
+export function parseJd(raw: string, job: string): { skills: Asked[]; likelyRounds: JdReport['likelyRounds'] } | null {
+  const posting = flat(job);
   let data: Record<string, unknown>;
   try {
     data = JSON.parse(raw) as Record<string, unknown>;
@@ -83,7 +88,10 @@ export function parseJd(raw: string): { skills: Asked[]; likelyRounds: JdReport[
     const { skill, evidence, importance } = (item ?? {}) as Record<string, unknown>;
     if (!isSkill(skill) || seen.has(skill)) return [];
     seen.add(skill);
-    return [{ skill, evidence: line(evidence, 100), importance: importance === 'must' ? 'must' : 'nice' }];
+    const quote = line(evidence, 100);
+    return [
+      { skill, evidence: quote && posting.includes(flat(quote)) ? quote : '', importance: importance === 'must' ? 'must' : 'nice' },
+    ];
   });
   const rounds: unknown[] = Array.isArray(data.likelyRounds) ? data.likelyRounds : [];
   // In the order a process runs, whatever order the model wrote.
@@ -186,7 +194,7 @@ List the skills this job description asks for and the interview rounds it implie
     user,
     PROMPT,
     (raw) => {
-      const asked = parseJd(raw);
+      const asked = parseJd(raw, job);
       // Unparseable or cut off by max_tokens: a failed call, still spent.
       if (!asked) throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
       return asked;
