@@ -294,6 +294,7 @@ export function SolutionPosts({
   only = '',
   tag = '',
   initialPost,
+  initialQuery = '',
   signedIn = true,
   unlocked = false,
 }: {
@@ -306,6 +307,8 @@ export function SolutionPosts({
   tag?: string;
   /** Open this post first (a link from a thread's page). */
   initialPost?: string;
+  /** Start with this search (a board link's &q=). */
+  initialQuery?: string;
   signedIn?: boolean;
   unlocked?: boolean;
 }) {
@@ -318,12 +321,15 @@ export function SolutionPosts({
   const companies = useCompanies(kind === 'discuss' || saved);
   const [technique, setTechnique] = useState('');
   const filter = kind === 'problem' ? technique : tag;
-  const [sort, setSort] = useState<'votes' | 'new'>('votes');
+  const [sort, setSort] = useState<'votes' | 'hot' | 'new'>('votes');
+  // Searchable on a problem's solutions and the board's threads: words in the title or body.
+  const searchable = kind === 'problem' || kind === 'discuss';
+  const [q, setQ] = useState(() => (searchable ? initialQuery.trim().slice(0, 120) : ''));
   // Opened from the AC dialog's histogram: one language's posts until the chip clears it.
   const [langFilter, setLangFilter] = useState(() => (langName(only) ? only : ''));
   const query = saved
     ? 'oj/posts?starred=1'
-    : `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}&sort=${sort}${langFilter ? `&language=${langFilter}` : ''}`;
+    : `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}&sort=${sort}${langFilter ? `&language=${langFilter}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
   const [page, setPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
@@ -466,7 +472,10 @@ export function SolutionPosts({
             <fieldset className="cs-posts-sort">
               <legend className="sr-only">{t('排序', 'Sort by')}</legend>
               <button type="button" aria-pressed={sort === 'votes'} onClick={() => setSort('votes')}>
-                {t('最热', 'Most votes')}
+                {t('最多赞', 'Most votes')}
+              </button>
+              <button type="button" aria-pressed={sort === 'hot'} onClick={() => setSort('hot')}>
+                {t('热门', 'Hot')}
               </button>
               <button type="button" aria-pressed={sort === 'new'} onClick={() => setSort('new')}>
                 {t('最新', 'Newest')}
@@ -489,6 +498,27 @@ export function SolutionPosts({
               {t(`只看 ${langName(langFilter)}`, `${langName(langFilter)} only`)}
               <X size={12} aria-hidden="true" />
             </button>
+          )}
+          {!saved && searchable && (
+            <form
+              className="cs-posts-search"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setQ((e.currentTarget.elements.namedItem('q') as HTMLInputElement).value.trim());
+              }}
+            >
+              <label>
+                <span className="sr-only">{t('搜索帖子', 'Search posts')}</span>
+                <input
+                  type="search"
+                  name="q"
+                  defaultValue={q}
+                  maxLength={120}
+                  placeholder={t('搜索标题和正文', 'Search titles and posts')}
+                />
+              </label>
+              <button type="submit">{t('搜索', 'Search')}</button>
+            </form>
           )}
           {!saved && kind === 'problem' && (
             <label className="cs-posts-filter">
@@ -560,7 +590,9 @@ export function SolutionPosts({
           <p className="cs-posts-state">
             {saved
               ? t('还没有收藏帖子。打开一篇帖子，点「收藏」就会出现在这里。', 'No saved posts yet. Open a post and choose Save to keep it here.')
-              : t(...words.empty)}
+              : q
+                ? t(`没有找到包含「${q}」的帖子。`, `No posts match "${q}".`)
+                : t(...words.empty)}
           </p>
         )}
         {page.more && (

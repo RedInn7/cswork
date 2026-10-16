@@ -523,7 +523,14 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
             return { id: pid, title: s?.title ?? pid, titleEn: s?.titleEn ?? null, difficulty: s?.difficulty ?? null, rating: lcRating(pid) };
           })
         : null,
-    standings: board ? { live: shown(follows ? board.live.filter(followed) : board.live), virtual: shown(board.virtual) } : null,
+    // questions: every live entrant's, even on the followed-only table; counts only, so a running room shows them too.
+    standings: board
+      ? {
+          live: shown(follows ? board.live.filter(followed) : board.live),
+          virtual: shown(board.virtual),
+          questions: board.questions,
+        }
+      : null,
     /** Null signed out or in a mashup or duel; else whether the live table keeps only the people the reader follows. */
     following: p && isRatedKind(row.kind) ? following : null,
     codeOpen,

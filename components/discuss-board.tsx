@@ -10,8 +10,8 @@ import '@/app/discuss.css';
 
 /**
  * ?view=discuss: the discussion board. One channel at a time (&channel=), optionally one
- * company's threads (&company=), &post= opens a thread (links from its public page). Reading
- * works signed out; posting, replying and voting ask to sign in.
+ * company's threads (&company=), &q= starts a search, &post= opens a thread (links from its
+ * public page). Reading works signed out; posting, replying and voting ask to sign in.
  */
 export function DiscussBoard({
   params,
@@ -79,9 +79,10 @@ export function DiscussBoard({
         </label>
       </div>
       <SolutionPosts
-        key={`${channel}:${company}:${params.post ?? ''}`}
+        key={`${channel}:${company}:${params.post ?? ''}:${params.q ?? ''}`}
         problemId={discussTarget(channel)}
         tag={company}
+        initialQuery={params.q}
         english={english}
         initialPost={params.post}
         signedIn={signedIn}

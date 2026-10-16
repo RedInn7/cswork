@@ -79,6 +79,8 @@ type Summary = {
   topSearches: { q: string; count: number }[];
   errors: { stage: string; status?: string | number | null; count: number }[];
   locales: { locale: string; count: number }[];
+  /** Editorials by "not helpful" marks, all time (lib/server/metrics.ts). */
+  unhelpfulEditorials?: { problemId: string; down: number; up: number }[];
 };
 type T = (zh: string, en: string) => string;
 
@@ -1011,6 +1013,27 @@ function Dashboard({
             key: l.locale,
             count: l.count,
             label: <span className="om-text">{named(LOCALE_NAMES, l.locale, t)}</span>,
+          }))}
+        />
+      </Card>
+      <Card
+        className="om-span-4"
+        i={12}
+        title={t('没帮助的题解', 'Unhelpful editorials')}
+        note={t('被点「没帮助」最多的官方题解，不限时间范围', 'Editorials most marked not helpful, all time')}
+      >
+        <BarList
+          none={t('还没有题解被点「没帮助」。', 'No editorial marked not helpful yet.')}
+          rows={(data.unhelpfulEditorials ?? []).map((e) => ({
+            key: e.problemId,
+            tone: 'bad',
+            count: e.down,
+            label: (
+              <a className="om-link" href={`/?${new URLSearchParams({ view: 'problem', problem: e.problemId })}`}>
+                <span className="om-text om-mono">{e.problemId}</span>
+                <span className="rd-badge">{t(`有帮助 ${f.n(e.up)}`, `${f.n(e.up)} helpful`)}</span>
+              </a>
+            ),
           }))}
         />
       </Card>
