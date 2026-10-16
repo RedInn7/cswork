@@ -61,6 +61,7 @@ test('the server render is a labelled form beside an empty sheet, and the page i
   assert.equal(doc.querySelector('.resume-sheet h2').textContent, '你的姓名');
   assert.equal(doc.querySelectorAll('.resume-sheet h3').length, 0);
   assert.equal([...doc.querySelectorAll('button')].some((b) => b.textContent.startsWith('从 CSWork 填入')), false, 'signed out: no fill');
+  assert.equal([...doc.querySelectorAll('button')].some((b) => b.textContent.startsWith('送去 AI 点评')), false, 'AI off: no review button');
   assert.ok(SITEMAP_STATIC_ENTRIES.some((e) => e.path === '/career/resume/builder'));
 });
 
@@ -114,7 +115,7 @@ test('importing a file replaces the resume; a bad file says so and keeps it', as
 
 test('every field holds exactly what a reload keeps: nothing typed is cut on the next visit', async () => {
   localStorage.clear();
-  const fields = (host) => [...host.querySelectorAll('input:not([type="file"]), textarea')];
+  const fields = (host) => [...host.querySelectorAll('.resume-builder-form :is(input, textarea)')];
   const first = await mount({ zh: false, signedIn: false });
   for (const field of fields(first.host)) await setValue(field, 'x'.repeat(field.maxLength));
   const typed = fields(first.host).map((f) => f.value.length);
@@ -143,7 +144,7 @@ test('a sheet taller than one Letter page warns', async () => {
 
 test('signed in, Fill in from CSWork adds the record once; the AI review picks the text up once', async () => {
   localStorage.setItem(KEY, JSON.stringify({ name: 'Ada Lovelace', awards: 'Dean’s list' }));
-  const { host, unmount } = await mount({ zh: false, signedIn: true });
+  const { host, unmount } = await mount({ zh: false, signedIn: true, ai: true });
   await act(async () => button(host, 'Fill in from CSWork').click());
   assert.ok(calls.includes('GET /api/oj/profile/resume-facts'));
   const items = [...host.querySelectorAll('.resume-sheet li')].map((li) => li.textContent);
@@ -169,4 +170,106 @@ test('signed in, Fill in from CSWork adds the record once; the AI review picks t
   assert.equal(reviewHost.querySelector('#resume-text').value, sent);
   assert.equal(sessionStorage.getItem(REVIEW_KEY), null, 'read once, then gone');
   await act(async () => root.unmount());
+});
+
+const VERSIONS = 'cswork:resume:versions';
+const pick = async (select, value) => {
+  await act(async () => {
+    select.value = value;
+    select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  });
+};
+
+test('the rule check: a score, the costliest issues first, and each one opens its field', async () => {
+  localStorage.clear();
+  localStorage.setItem(
+    KEY,
+    JSON.stringify({
+      name: 'Ada Lovelace',
+      email: 'ada@example.com',
+      links: 'github.com/ada',
+      education: [{ title: 'MIT', subtitle: 'BS Computer Science', dates: 'Sep 2023 – May 2027', bullets: 'GPA 3.9' }],
+      experience: [{ title: 'Acme', subtitle: 'SWE Intern', dates: 'Jun 2026 – Aug 2026', bullets: 'Worked on various things for the team' }],
+      skills: 'Languages: Python, Go',
+    }),
+  );
+  const { host, unmount } = await mount({ zh: false, signedIn: false });
+  const check = host.querySelector('#resume-check');
+  const score = Number(check.querySelector('h2 span').textContent);
+  assert.ok(score > 0 && score < 100, String(score));
+  const items = [...check.querySelectorAll('li button')];
+  // Three up front, the rest folded away.
+  assert.equal(check.querySelectorAll(':scope > ol > li').length, 3);
+  assert.match(items[0].textContent, /no number/);
+  assert.ok(check.querySelector('details summary').textContent.endsWith('more'));
+  await act(async () => items[0].click());
+  assert.equal(document.activeElement, host.querySelector('#resume-experience-0-bullets'));
+  // Fixing the bullet clears its issues and raises the score.
+  await setValue(document.activeElement, 'Cut checkout latency 40% by caching 3 hot queries in Redis for 2M daily users');
+  assert.ok(Number(check.querySelector('h2 span').textContent) > score);
+  assert.ok(![...check.querySelectorAll('li button')].some((b) => b.textContent.includes('Worked on')));
+  await unmount();
+});
+
+test('paste to import: a preview first, and only the confirm replaces the resume', async () => {
+  localStorage.clear();
+  localStorage.setItem(KEY, JSON.stringify({ name: 'Old Name' }));
+  const { host, unmount } = await mount({ zh: false, signedIn: false });
+  await act(async () => button(host, 'Paste text to import').click());
+  const area = host.querySelector('.resume-paste textarea');
+  assert.ok(area.closest('label'));
+  await setValue(area, 'Grace Hopper\ngrace@example.com | github.com/grace\n\nEXPERIENCE\nNavy | Programmer | 1943 – 1966\n• Wrote the first compiler, used by 3 teams\n\nSKILLS\nCOBOL');
+  await act(async () => button(host, 'Preview').click());
+  const preview = host.querySelector('.resume-paste-preview');
+  assert.match(preview.textContent, /Grace Hopper/);
+  assert.match(preview.textContent, /Navy · 1943 – 1966 \(1 bullet\)/);
+  // Nothing replaced yet.
+  assert.equal(host.querySelector('.resume-sheet h2').textContent, 'Old Name');
+  assert.equal(JSON.parse(localStorage.getItem(KEY)).name, 'Old Name');
+  await act(async () => button(host, 'Replace the base resume with this').click());
+  assert.equal(host.querySelector('.resume-sheet h2').textContent, 'Grace Hopper');
+  const saved = JSON.parse(localStorage.getItem(KEY));
+  assert.deepEqual([saved.email, saved.links, saved.skills, saved.experience[0].title], ['grace@example.com', 'github.com/grace', 'COBOL', 'Navy']);
+  assert.equal(host.querySelector('.resume-paste'), null, 'the panel closes');
+  await unmount();
+});
+
+test('versions: copy the resume under a name, edit it apart from the base, count the differences, delete it', async () => {
+  localStorage.clear();
+  localStorage.setItem(KEY, JSON.stringify({ name: 'Ada Lovelace', skills: 'Python' }));
+  const first = await mount({ zh: false, signedIn: false });
+  let host = first.host;
+  const name = [...host.querySelectorAll('.resume-versions input')][0];
+  assert.equal(name.maxLength, 40);
+  await setValue(name, 'Backend');
+  await act(async () => button(host, 'Copy as new version').click());
+  const select = host.querySelector('.resume-versions select');
+  assert.equal(select.value, 'Backend');
+  assert.match(host.querySelector('.resume-versions small').textContent, /^0 fields differ/);
+  await setValue(host.querySelector('#resume-skills'), 'Go, Kafka');
+  assert.match(host.querySelector('.resume-versions small').textContent, /^1 field differs/);
+  // The edit went to the version only; the base and its key are untouched.
+  assert.deepEqual(JSON.parse(localStorage.getItem(VERSIONS)).Backend.skills, 'Go, Kafka');
+  assert.equal(JSON.parse(localStorage.getItem(KEY)).skills, 'Python');
+  await pick(select, '');
+  assert.equal(host.querySelector('#resume-skills').value, 'Python');
+  // A name already taken is refused.
+  await setValue(name, 'Backend');
+  await act(async () => button(host, 'Copy as new version').click());
+  assert.equal(host.querySelector('.resume-builder-status').textContent, 'Pick a version name not used yet.');
+  await first.unmount();
+  // A reload brings the versions back; deleting asks first.
+  const again = await mount({ zh: false, signedIn: false });
+  host = again.host;
+  await pick(host.querySelector('.resume-versions select'), 'Backend');
+  assert.equal(host.querySelector('#resume-skills').value, 'Go, Kafka');
+  window.confirm = () => false;
+  await act(async () => button(host, 'Delete this version').click());
+  assert.ok(JSON.parse(localStorage.getItem(VERSIONS)).Backend);
+  window.confirm = () => true;
+  await act(async () => button(host, 'Delete this version').click());
+  assert.deepEqual(JSON.parse(localStorage.getItem(VERSIONS)), {});
+  assert.equal(host.querySelector('.resume-versions select').value, '');
+  await again.unmount();
+  localStorage.clear();
 });

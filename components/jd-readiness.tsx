@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { readJd } from '@/lib/jd-keywords';
 import { ojRequest } from '@/lib/oj-client';
 import {
   JD_CHARS,
@@ -12,8 +13,11 @@ import {
   type JdReport,
   type Readiness,
 } from '@/lib/jd-skills';
+import { JdResumeMatch } from './jd-resume-match';
 
 type Reply = JdReport & { remaining: number; limit: number; bonus: number };
+type Measured = { skills: Pick<JdItem, 'skill' | 'status' | 'done' | 'total' | 'certified'>[]; planStops: string[] };
+const UNMEASURED = { status: 'unmeasured', done: 0, total: 0, certified: false } as const;
 
 /** The study plan with these Line 500 stops preselected as its topics (components/study-plan.tsx). */
 export const planHref = (stops: string[]) =>
@@ -23,15 +27,20 @@ export const planHref = (stops: string[]) =>
  * /career/jd: paste a job description, get a readiness checklist (lib/server/ai-jd.ts): each skill
  * it asks for with the learner's progress and a practice link, the likely rounds, and the gaps
  * handed to the Line 500 sprint plan. The posting lives only in this page's state.
+ * Without AI (`ai` false) lib/jd-keywords.ts reads the posting here; signed out it still lists the
+ * skills, signed in only their ids go to the server to be measured.
  */
-export function JdReadiness({ zh }: { zh: boolean }) {
+export function JdReadiness({ zh, ai = true }: { zh: boolean; ai?: boolean }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const [job, setJob] = useState(''),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [signedOut, setSignedOut] = useState(false),
     [left, setLeft] = useState<number | null>(null),
-    [report, setReport] = useState<JdReport | null>(null);
+    [report, setReport] = useState<JdReport | null>(null),
+    // The posting the report is for (the resume match reads it), and whether progress was measured.
+    [checked, setChecked] = useState(''),
+    [measured, setMeasured] = useState(true);
   const result = useRef<HTMLElement>(null);
   useEffect(() => {
     // Sent over once from the resume review (components/resume-review.tsx); not kept.
@@ -43,6 +52,7 @@ export function JdReadiness({ zh }: { zh: boolean }) {
     } catch {
       // Blocked storage: the form starts empty.
     }
+    if (!ai) return;
     let live = true;
     ojRequest<Record<string, number>>('ai/usage')
       .then((usage) => live && setLeft((usage.jd ?? 0) + (usage.bonus ?? 0)))
@@ -52,7 +62,7 @@ export function JdReadiness({ zh }: { zh: boolean }) {
     return () => {
       live = false;
     };
-  }, []);
+  }, [ai]);
   // A new checklist takes focus, so a screen reader starts reading it.
   useEffect(() => {
     if (report) result.current?.focus();
@@ -63,8 +73,10 @@ export function JdReadiness({ zh }: { zh: boolean }) {
     setBusy(true);
     setError('');
     try {
+      if (!ai) return await keywords();
       const reply = await ojRequest<Reply>('ai/jd', { job });
       setReport({ skills: reply.skills, likelyRounds: reply.likelyRounds, planStops: reply.planStops });
+      setChecked(job);
       setLeft(reply.remaining + (reply.bonus ?? 0));
     } catch (e) {
       const failure = e as Error & { status?: number | string };
@@ -75,7 +87,28 @@ export function JdReadiness({ zh }: { zh: boolean }) {
       setBusy(false);
     }
   }
-  if (signedOut)
+  // Keyword mode: the checklist stands without the server; a failed or signed-out measure only drops the progress.
+  async function keywords() {
+    const read = readJd(job);
+    let progress: Measured | null = null;
+    if (read.skills.length && !signedOut)
+      try {
+        progress = await ojRequest<Measured>('ai/jd', { skills: read.skills.map((s) => s.skill) });
+      } catch (e) {
+        const failure = e as Error & { status?: number | string };
+        if (failure.status === 401) setSignedOut(true);
+        else setError(failure.message);
+      }
+    const by = new Map(progress?.skills.map((s) => [s.skill, s]));
+    setReport({
+      skills: read.skills.map((s) => ({ ...s, ...UNMEASURED, ...by.get(s.skill) })),
+      likelyRounds: read.likelyRounds,
+      planStops: progress?.planStops ?? [],
+    });
+    setMeasured(!!progress);
+    setChecked(job);
+  }
+  if (signedOut && ai)
     return (
       <div className="resume-off">
         <p>{t('登录后才能使用 JD 准备度检查。', 'Sign in to check a job description.')}</p>
@@ -114,10 +147,12 @@ export function JdReadiness({ zh }: { zh: boolean }) {
         </label>
         <div className="resume-actions">
           <button type="submit" disabled={busy || job.trim().length < JD_MIN || left === 0}>
-            {busy ? t('正在分析…（约 15 秒）', 'Checking… (about 15 seconds)') : t('检查准备度', 'Check my readiness')}
+            {busy && ai ? t('正在分析…（约 15 秒）', 'Checking… (about 15 seconds)') : t('检查准备度', 'Check my readiness')}
           </button>
           <small aria-live="polite">
-            {left === null
+            {!ai
+              ? t('关键词匹配，不是 AI 解析：职位描述只在这个浏览器里读取。', 'Keyword matching, not AI: the posting is read in this browser only.')
+              : left === null
               ? ''
               : left > 0
                 ? t(`今天还可以分析 ${left} 次`, `${left} ${left === 1 ? 'check' : 'checks'} left today`)
@@ -133,7 +168,24 @@ export function JdReadiness({ zh }: { zh: boolean }) {
       {report && (
         <section className="resume-result" ref={result} tabIndex={-1} aria-labelledby="jd-result-title">
           <h2 id="jd-result-title">{t('准备度清单', 'Your readiness checklist')}</h2>
-          {report.skills.length ? (
+          {!ai && (
+            <p className="jd-mode">
+              {t('关键词匹配，不是 AI 解析：按约 250 个技术关键词和段落标题判断，可能漏掉换了说法的要求。', 'Keyword matching, not AI: about 250 technical terms and the section headings decide, so a requirement worded differently can be missed.')}
+              {signedOut && (
+                <>
+                  {' '}
+                  <a href="/?view=account">{t('登录后可以看到每项的练习进度', 'Sign in to see your progress on each skill')} →</a>
+                </>
+              )}
+            </p>
+          )}
+          {!measured ? (
+            <p className="resume-summary">
+              {report.skills.length
+                ? t(`职位描述提到 ${report.skills.length} 项技能。`, `This posting asks for ${report.skills.length} ${report.skills.length === 1 ? 'skill' : 'skills'}.`)
+                : t('没有从这段文字里读到技能要求。确认粘贴的是完整的职位描述。', 'No skill requirements found in this text. Check that you pasted the whole job description.')}
+            </p>
+          ) : report.skills.length ? (
             <p className="resume-summary">
               {t(
                 `职位要求的 ${report.skills.length} 项里：${count('ready')} 项已就绪，${count('partial')} 项部分掌握，${count('gap')} 项还是缺口${unmeasured ? `，${unmeasured} 项本站无法度量` : ''}。`,
@@ -168,14 +220,14 @@ export function JdReadiness({ zh }: { zh: boolean }) {
                   <h3>{importance === 'must' ? t('必须', 'Required') : t('加分项', 'Nice to have')}</h3>
                   <ul className="jd-skills">
                     {items.map((item) => (
-                      <SkillRow key={item.skill} item={item} status={statusName[item.status]} zh={zh} />
+                      <SkillRow key={item.skill} item={item} status={measured ? statusName[item.status] : ''} zh={zh} />
                     ))}
                   </ul>
                 </div>
               )
             );
           })}
-          {report.skills.length > 0 && (
+          {measured && report.skills.length > 0 && (
             <div className="jd-plan">
               <h3>{t('学习计划', 'Study plan')}</h3>
               {report.planStops.length > 0 ? (
@@ -206,6 +258,7 @@ export function JdReadiness({ zh }: { zh: boolean }) {
           )}
         </section>
       )}
+      {checked && <JdResumeMatch zh={zh} job={checked} />}
     </div>
   );
 }
@@ -225,9 +278,9 @@ function SkillRow({ item, status, zh }: { item: JdItem; status: string; zh: bool
     <li className="jd-skill" data-status={item.status}>
       <div className="jd-skill-head">
         <strong>{name}</strong>
-        <span className="jd-status">{status}</span>
+        {status && <span className="jd-status">{status}</span>}
       </div>
-      {item.total > 0 ? (
+      {!status ? null : item.total > 0 ? (
         <div className="jd-progress">
           <span className="jd-bar" aria-hidden="true">
             <i style={{ width: `${Math.round((item.done / item.total) * 100)}%` }} />

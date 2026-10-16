@@ -16,8 +16,12 @@ const copy = {
     privacy:
       'The job description you paste is sent to Anthropic to pick out the skills it asks for. CSWork does not store the text or the checklist; only the daily number of checks is counted. Your progress is read from your own account and is not sent.',
     more: 'Privacy notice',
-    off: 'The JD readiness check is not available on this site right now. The career guide lists what each interview round tests.',
-    chapter: 'Open the career guide',
+    // Keyword mode (AI off): lib/jd-keywords.ts in the browser.
+    offKicker: 'JD KEYWORD CHECK · RUNS IN YOUR BROWSER',
+    offLead:
+      'The posting is matched against about 250 technical keywords: the skills it asks for, required or nice to have, each set against your own practice here, the interview rounds to expect, and how well your resume covers its keywords.',
+    offPrivacy:
+      'The job description is read in this browser and never uploaded. Signed in, only the names of the skills found (such as python or sql) are sent to read your progress; nothing is stored. Your resume is compared in this browser too.',
   },
   zh: {
     title: 'JD 准备度检查：软件工程岗位 · CSWork',
@@ -29,8 +33,10 @@ const copy = {
     privacy:
       '你粘贴的职位描述会发送给 Anthropic，用于找出其中要求的技能。CSWork 不保存职位描述和清单结果，只统计每天的分析次数。你的练习进度从你自己的账户读取，不会发送出去。',
     more: '隐私说明',
-    off: '本站暂未开放 JD 准备度检查。求职指南里有各轮面试考什么的说明。',
-    chapter: '打开求职指南',
+    offKicker: 'JD 关键词检查 · 在你的浏览器里完成',
+    offLead: '用约 250 个技术关键词对照职位描述：列出它要求的技能（必须还是加分），逐项对照你在本站的练习，推断可能的面试环节，并看你的简历覆盖了多少关键词。',
+    offPrivacy:
+      '职位描述只在这个浏览器里做关键词匹配，不会上传。登录后，只有匹配到的技能名称（例如 python、sql）会发送给 CSWork，用来读取你的练习进度，不会保存。简历比对同样只在浏览器里进行。',
   },
 };
 
@@ -41,7 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function JdReadinessPage() {
   const zh = (await requestLocale()) === 'zh',
-    c = copy[zh ? 'zh' : 'en'];
+    c = copy[zh ? 'zh' : 'en'],
+    ai = aiEnabled();
   return (
     <>
       <nav className="mock-public-crumbs" aria-label={zh ? '导航路径' : 'Breadcrumb'}>
@@ -50,24 +57,17 @@ export default async function JdReadinessPage() {
         <span aria-current="page">{zh ? 'JD 准备度检查' : 'JD readiness check'}</span>
       </nav>
       <section className="mock-public-hero guide-hero">
-        <p className="mock-public-kicker">{c.kicker}</p>
+        <p className="mock-public-kicker">{ai ? c.kicker : c.offKicker}</p>
         <h1>{c.h1}</h1>
-        <p>{c.lead}</p>
+        <p>{ai ? c.lead : c.offLead}</p>
       </section>
       <div className="resume-privacy" id="resume-privacy">
         <strong>{c.privacyTitle}</strong>
         <p>
-          {c.privacy} <a href="/privacy#privacy-jd">{c.more}</a>
+          {ai ? c.privacy : c.offPrivacy} <a href="/privacy#privacy-jd">{c.more}</a>
         </p>
       </div>
-      {aiEnabled() ? (
-        <JdReadiness zh={zh} />
-      ) : (
-        <div className="resume-off">
-          <p>{c.off}</p>
-          <a href="/guide">{c.chapter} →</a>
-        </div>
-      )}
+      <JdReadiness zh={zh} ai={ai} />
     </>
   );
 }

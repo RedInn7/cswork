@@ -354,6 +354,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
   }
   const check = checkResume(resume);
   const names = Object.keys(versions);
+  const diff = version ? resumeDiff(resume, base) : 0;
   const contactLine = contact(resume);
   return (
     <div className="resume-builder">
@@ -369,7 +370,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
             ))}
           </select>
         </label>
-        {version && <small>{t(`与基础版有 ${resumeDiff(resume, base)} 处不同`, `${resumeDiff(resume, base)} fields differ from the base`)}</small>}
+        {version && <small>{t(`与基础版有 ${diff} 处不同`, `${diff} ${diff === 1 ? 'field differs' : 'fields differ'} from the base`)}</small>}
         <label>
           {t('新版本名称（例如 后端、数据）', 'New version name (e.g. Backend, Data)')}
           <input value={newName} maxLength={VERSION_NAME} onChange={(e) => setNewName(e.target.value)} />
@@ -626,7 +627,7 @@ function PastePreview({ parsed, zh, onApply, replacing }: { parsed: Resume; zh: 
       const bullets = items.reduce((n, item) => n + lines(item.bullets).length, 0);
       return [
         t(...legend),
-        items.length ? `${items.map((item) => [item.title, item.dates].filter(Boolean).join(' · ')).join('; ')} (${t(`${bullets} 条要点`, `${bullets} bullets`)})` : '',
+        items.length ? `${items.map((item) => [item.title, item.dates].filter(Boolean).join(' · ')).join('; ')} (${t(`${bullets} 条要点`, `${bullets} ${bullets === 1 ? 'bullet' : 'bullets'}`)})` : '',
       ];
     }),
     [t('技能', 'Skills'), lines(parsed.skills).join('; ')],
