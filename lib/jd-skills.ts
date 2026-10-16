@@ -15,16 +15,20 @@ export const JD_SKILLS = [
 export type JdSkill = (typeof JD_SKILLS)[number];
 export const JD_ROUNDS = ['oa', 'phone-coding', 'system-design', 'behavioral', 'take-home'] as const;
 export type JdRound = (typeof JD_ROUNDS)[number];
-export type Readiness = 'ready' | 'partial' | 'gap';
+/** unmeasured: nothing on the site tracks the skill (total 0), so no verdict either way. */
+export type Readiness = 'ready' | 'partial' | 'gap' | 'unmeasured';
 export type JdItem = {
   skill: JdSkill;
   /** A short quote from the job description. */
   evidence: string;
   importance: 'must' | 'nice';
   status: Readiness;
+  /** The learner's real count, never raised by a certificate. */
   done: number;
   /** 0: nothing on the site measures this skill. */
   total: number;
+  /** A certificate in `certs` made the skill ready, whatever `done` is. */
+  certified: boolean;
 };
 export type JdReport = { skills: JdItem[]; likelyRounds: JdRound[]; planStops: string[] };
 
@@ -35,7 +39,8 @@ export type JdReport = { skills: JdItem[]; likelyRounds: JdRound[]; planStops: s
  * - parts: system design course parts (sdParts, named by their first chapter) whose chapters are
  *   marked read, plus `core`, a Core Skills group (lib/content/core-skills.json) whose problems are solved;
  * - stories: STAR stories in the story bank, toward `goal`;
- * - certs: certificates that make the skill ready on their own.
+ * - certs: judged certificates (skill exams) that make the skill ready on their own; a reading
+ *   course's certificate is only chapters marked read, so it never stands in for solved problems.
  * None of them: nothing on the site tracks the skill.
  */
 type Measure = {
@@ -133,7 +138,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     href: '/learn/python',
     language: 'python',
     goal: 30,
-    certs: ['skill:python', 'sd:python'],
+    certs: ['skill:python'],
   },
   java: { zh: 'Java', en: 'Java', hint: 'the Java language', href: '/?view=problems', language: 'java', goal: 30 },
   cpp: { zh: 'C++', en: 'C++', hint: 'the C or C++ language', href: '/?view=problems', language: 'cpp', goal: 30 },
@@ -159,7 +164,12 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
 export const JD_ROUND_INFO: Record<JdRound, { zh: string; en: string; href: string }> = {
   oa: { zh: '在线笔试（OA）', en: 'Online assessment', href: '/mock-oa' },
   'phone-coding': { zh: '电话编程面', en: 'Phone coding screen', href: '/?view=mock-interview&template=phone' },
-  'system-design': { zh: '系统设计面', en: 'System design round', href: '/?view=mock-interview&template=onsite' },
+  // One design slot alone (the onsite template is two hours of coding and behavioral around it).
+  'system-design': {
+    zh: '系统设计面',
+    en: 'System design round',
+    href: '/?view=mock-interview&template=custom&mix=design.1&min=45',
+  },
   behavioral: { zh: '行为面', en: 'Behavioral round', href: '/?view=mock-interview&template=behavioral' },
   'take-home': { zh: '带回家作业', en: 'Take-home project', href: '/ai-assisted' },
 };

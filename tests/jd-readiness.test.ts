@@ -16,7 +16,8 @@ const { sqlite } = await import('../db/sqlite');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { handleOj } = await import('../lib/server/oj-api');
 const { parseJd, skillProgress, weakStops } = await import('../lib/server/ai-jd');
-const { JD_CHARS } = await import('../lib/jd-skills');
+const { JD_CHARS, JD_ROUND_INFO } = await import('../lib/jd-skills');
+const { resolveTemplate } = await import('../lib/mock-interview');
 const { AI_DAILY_LIMITS } = await import('../lib/server/ai-tutor');
 const { curatedEntries } = await import('../lib/ling-curated');
 const { ROUTE_SLUGS } = await import('../lib/route-stops');
@@ -155,13 +156,14 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
     likelyRounds: [],
   });
   const reply = (await (await call(learner, { job })).json()) as {
-    skills: { skill: string; status: string; done: number; total: number }[];
+    skills: { skill: string; status: string; done: number; total: number; certified: boolean }[];
     planStops: string[];
   };
   const by = Object.fromEntries(reply.skills.map((s) => [s.skill, [s.status, s.done, s.total]]));
   const chapters = (from: string[]) => sdParts.filter((p) => from.includes(p.from)).reduce((n, p) => n + p.chapters.length, 0);
-  // The SQL exam certificate makes SQL ready without a single SQL AC.
-  assert.deepEqual(by.sql, ['ready', 30, 30]);
+  // The SQL exam certificate makes SQL ready without a single SQL AC, and the count stays real.
+  assert.deepEqual(by.sql, ['ready', 0, 30]);
+  assert.deepEqual(reply.skills.filter((s) => s.certified).map((s) => s.skill), ['sql']);
   assert.deepEqual(by.lld, ['partial', 2, chapters(['ood-interview-approach', 'lld-case-atm'])]);
   // 3 chapters + 7 concurrency problems; core-dynamic-array is not one of them.
   assert.deepEqual(by.concurrency, ['partial', 3, chapters(['concurrency-primitives']) + 7]);
@@ -169,8 +171,8 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
   // Seven stories toward six: capped, ready.
   assert.deepEqual(by.behavioral, ['ready', 6, 6]);
   assert.deepEqual(by.go, ['partial', 1, 30]);
-  // Nothing on the site measures front end.
-  assert.deepEqual(by.frontend, ['gap', 0, 0]);
+  // Nothing on the site measures front end: no verdict, not a gap.
+  assert.deepEqual(by.frontend, ['unmeasured', 0, 0]);
   assert.deepEqual(by.dsa, ['gap', 0, 35]);
   assert.deepEqual(by.ml, ['gap', 0, chapters(['ml-design-framework'])]);
   // dsa and oa are not ready: every stop goes to the study plan (one AC covers none).
@@ -180,13 +182,25 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
 void test('the pure measures: thresholds, certificates, empty learners and replies that are not one', () => {
   const empty = { solved: new Map(), read: new Set<string>(), certs: new Set<string>(), stories: 0 };
   assert.deepEqual(weakStops(empty), ROUTE_SLUGS);
-  assert.deepEqual(skillProgress('python', empty), { status: 'gap', done: 0, total: 30 });
+  assert.deepEqual(skillProgress('python', empty), { status: 'gap', done: 0, total: 30, certified: false });
   const solved = new Map(Array.from({ length: 24 }, (_, i) => [`lc-x${i}`, new Set(['java'])] as const));
   // 24 of 30: exactly 80%, ready; 23 is partial.
   assert.equal(skillProgress('java', { ...empty, solved }).status, 'ready');
   solved.delete('lc-x0');
-  assert.deepEqual(skillProgress('java', { ...empty, solved }), { status: 'partial', done: 23, total: 30 });
-  assert.equal(skillProgress('python', { ...empty, certs: new Set(['sd:python']) }).status, 'ready');
+  assert.deepEqual(skillProgress('java', { ...empty, solved }), { status: 'partial', done: 23, total: 30, certified: false });
+  // Only the judged exam stands in for solved problems; the reading course's certificate does not.
+  assert.deepEqual(skillProgress('python', { ...empty, certs: new Set(['skill:python']) }), {
+    status: 'ready',
+    done: 0,
+    total: 30,
+    certified: true,
+  });
+  assert.equal(skillProgress('python', { ...empty, certs: new Set(['sd:python']) }).status, 'gap');
+  assert.equal(skillProgress('frontend', empty).status, 'unmeasured');
+  // The system design round opens one design slot, not the whole onsite.
+  const design = new URL(JD_ROUND_INFO['system-design'].href, 'https://cswork.test').searchParams;
+  const slots = resolveTemplate(design.get('template'), design.get('mix'), design.get('min'))?.slots;
+  assert.deepEqual(slots?.map((s) => [s.kind, s.minutes]), [['design', 45]]);
   assert.deepEqual(parseJd('[]', job), null);
   assert.deepEqual(parseJd('{"skills":[],"likelyRounds":"oa"}', job), { skills: [], likelyRounds: [] });
   assert.equal(parseJd('not json', job), null);

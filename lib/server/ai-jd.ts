@@ -168,8 +168,10 @@ export function skillProgress(skill: JdSkill, learner: Learner, weak = weakStops
     done = Math.min(n, total);
   }
   const certified = !!m.certs?.some((c) => learner.certs.has(c));
-  const status: Readiness = certified || (total > 0 && done >= total * READY) ? 'ready' : done > 0 ? 'partial' : 'gap';
-  return { status, done: certified ? total : done, total };
+  const status: Readiness =
+    certified || (total > 0 && done >= total * READY) ? 'ready' : !total ? 'unmeasured' : done > 0 ? 'partial' : 'gap';
+  // The certificate sets the status; done stays the learner's real count.
+  return { status, done, total, certified };
 }
 
 // Line 500 is the study plan's pool: these skills' gaps become its topics.
