@@ -77,12 +77,14 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-void test('points: the zerotrac rating, else 1200/1600/2000 by difficulty, each problem once', () => {
+void test('points: the zerotrac rating, an OA estimate, else 1200/1600/2000 by difficulty, each problem once', () => {
   assert.equal(problemPoints('lc-1000', catalogue), 2423);
-  assert.deepEqual(['lc-1', 'lc-2', 'oa-amazon-1'].map((id) => problemPoints(id, catalogue)), [1200, 1600, 2000]);
+  assert.deepEqual(['lc-1', 'lc-2'].map((id) => problemPoints(id, catalogue)), [1200, 1600]);
+  // An OA problem scores the estimate its workspace shows (oa-rating.ts), not the plain prior.
+  assert.equal(problemPoints('oa-amazon-1', catalogue), 2150);
   const board = practiceBoard(catalogue, {}, 'u-ada', now);
   const ada = board.rows.find((r) => r.handle === 'ada')!;
-  assert.deepEqual(ada, { rank: 1, handle: 'ada', score: Math.round((2423 + 1200 + 2000) / 100), solved: 3, streak: 2, me: true });
+  assert.deepEqual(ada, { rank: 1, handle: 'ada', score: Math.round((2423 + 1200 + 2150) / 100), solved: 3, streak: 2, me: true });
   assert.deepEqual(board.mine, ada);
   // Only learners with a visible profile and show_practice on; nobody else's rows say "me".
   assert.deepEqual(board.rows.map((r) => r.handle).sort(), ['ada', 'bo', 'cy', 'di', 'ed']);
@@ -104,7 +106,7 @@ void test('a language counts only the problems accepted in it', () => {
   const python = practiceBoard(catalogue, { language: 'python' }, null, now).rows.find((r) => r.handle === 'ada')!;
   assert.deepEqual([python.solved, python.score], [2, Math.round((2423 + 1200) / 100)]);
   const java = practiceBoard(catalogue, { language: 'java' }, null, now).rows;
-  assert.deepEqual(java.map((r) => [r.handle, r.solved, r.score]), [['ada', 1, 20]]);
+  assert.deepEqual(java.map((r) => [r.handle, r.solved, r.score]), [['ada', 1, 22]]);
   assert.deepEqual(practiceBoard(catalogue, { language: 'go' }, null, now).rows, []);
 });
 
@@ -150,10 +152,10 @@ void test('the badge: 404 while the profile is hidden, score and rank only on th
   assert.equal(/pts|rank/.test(svg), false, 'off the board: no score or rank');
 
   assert.deepEqual(practiceCard('quiet', catalogue, now), { handle: 'quiet', solved: 1, streak: 1, score: null, rank: null });
-  assert.deepEqual(practiceCard('ada', catalogue, now), { handle: 'ada', solved: 3, streak: 2, score: 56, rank: 1 });
+  assert.deepEqual(practiceCard('ada', catalogue, now), { handle: 'ada', solved: 3, streak: 2, score: 58, rank: 1 });
   assert.equal(practiceCard('hidden', catalogue, now), null);
   const listed = badgeSvg(practiceCard('ada', catalogue, now)!, true);
-  assert.match(listed, /通过 3 · 积分 56 · 第 1 名 · 连续 2 天/);
+  assert.match(listed, /通过 3 · 积分 58 · 第 1 名 · 连续 2 天/);
   const odd = badgeSvg({ handle: 'a<b>&"\'', solved: 0, streak: 0, score: null, rank: null }, false);
   assert.equal(odd.includes('<b>'), false);
   assert.match(odd, /@a&#60;b&#62;&#38;&#34;&#39;/);

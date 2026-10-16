@@ -2,14 +2,16 @@ import { sqlite } from '@/db/sqlite';
 import { slotOf, type Slot } from '@/lib/mock-oa';
 import { practiceStats } from '@/lib/practice-stats';
 import { lcRating } from './lc-ratings';
+import { oaRating } from './oa-rating';
 import { HANDLE, shownIn, type PublicCatalogue } from './learner-cloud';
 
 /**
  * The practice leaderboard (/leaderboard) and the README badge (/u/<handle>/badge.svg).
  * Counted as the public profile counts: judge-mode ACs on problems a guest can open. Points:
- * each distinct problem adds its zerotrac rating, or 1200/1600/2000 by difficulty without one,
- * and the sum over 100 is the score. Only learners whose profile is visible and who switched
- * on show_practice are listed; schools and handles are read live, so opting out is immediate.
+ * each distinct problem adds its zerotrac rating, an OA problem the estimate its page shows
+ * (oa-rating.ts), anything else 1200/1600/2000 by difficulty, and the sum over 100 is the
+ * score. Only learners whose profile is visible and who switched on show_practice are listed;
+ * schools and handles are read live, so opting out is immediate.
  */
 const HOUR = 3600000;
 const PRIOR: Record<Slot, number> = { easy: 1200, medium: 1600, hard: 2000 };
@@ -25,9 +27,14 @@ const ORDER: Record<BoardSort, readonly BoardSort[]> = {
   streak: ['streak', 'score', 'solved'],
 };
 
-/** One problem's points: its contest rating, else a prior by difficulty (unknown counts as medium). */
+/**
+ * One problem's points: its contest rating, or the OA estimate the workspace shows as its rating,
+ * else a prior by difficulty (unknown counts as medium).
+ */
 export const problemPoints = (id: string, catalogue: PublicCatalogue) =>
-  lcRating(id) ?? PRIOR[slotOf(catalogue.get(id)?.difficulty) ?? 'medium'];
+  lcRating(id) ??
+  oaRating(id, catalogue.get(id)?.difficulty) ??
+  PRIOR[slotOf(catalogue.get(id)?.difficulty) ?? 'medium'];
 
 type Tally = { points: number; solved: number };
 type Stats = Tally & { streak: number; languages: Map<string, Tally> };

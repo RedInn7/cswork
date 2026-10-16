@@ -49,8 +49,8 @@ export function PracticeBoardView({
         <h1>{t('练习积分榜', 'Practice board')}</h1>
         <p>
           {t(
-            '每道通过的题只算一次：力扣题按 zerotrac 根据周赛和双周赛数据给这道题估出的难度分计分，没有难度分的题按简单 1200、中等 1600、困难 2000 计（难度未知按中等），总和除以 100 就是积分。只统计判题模式下公开题库里的题，和主页上的通过数一致。',
-            'Each accepted problem counts once: a LeetCode problem scores its zerotrac problem rating, estimated from weekly and biweekly contests; anything without one scores 1200, 1600 or 2000 for easy, medium or hard (unknown difficulty counts as medium), and the total over 100 is your points. Only judged runs on public problems count, the same ones your profile counts.',
+            '每道通过的题只算一次：力扣题按 zerotrac 根据周赛和双周赛数据给这道题估出的难度分计分，OA 题按题目页显示的估算难度分计（简单 1400、中等 1750、困难 2150），其余没有难度分的题按简单 1200、中等 1600、困难 2000 计（难度未知按中等），总和除以 100 就是积分。只统计判题模式下公开题库里的题，和主页上的通过数一致。',
+            'Each accepted problem counts once: a LeetCode problem scores its zerotrac problem rating, estimated from weekly and biweekly contests; an OA problem scores the estimated rating its page shows (1400, 1750 or 2150 for easy, medium or hard); anything else without a rating scores 1200, 1600 or 2000 (unknown difficulty counts as medium), and the total over 100 is your points. Only judged runs on public problems count, the same ones your profile counts.',
           )}
         </p>
         <p className="contest-calendar">
