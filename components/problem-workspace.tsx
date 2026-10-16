@@ -36,6 +36,7 @@ import {
   Download,
   ExternalLink,
   FileText,
+  Gauge,
   History,
   Keyboard,
   Lightbulb,
@@ -508,6 +509,7 @@ function Workspace({
   const [recovering, setRecovering] = useState(false);
   const [hintCount, setHintCount] = useState(0);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [targetOpen, setTargetOpen] = useState(false);
   // Line 500 hint: earned by a failed formal submission, or shown on request after a confirm.
   const [routeHint, setRouteHint] = useState<'locked' | 'earned' | 'asked'>(
     'locked',
@@ -1797,6 +1799,21 @@ function Workspace({
               </span>
               {/* Contest rating (zerotrac); kept out of a mock like the company tags. */}
               {!examMode && <RatingBadge rating={problem.rating} english={uiEnglish} />}
+              {/* Line 500's best approach, like GfG's expected complexity: folded until asked for. */}
+              {!examMode && problem.targetComplexity && (
+                <button
+                  className="cs-statement-pill"
+                  aria-expanded={targetOpen}
+                  onClick={() => setTargetOpen((open) => !open)}
+                >
+                  <Gauge size={15} />
+                  {uiEnglish ? 'Target complexity' : '目标复杂度'}
+                  {targetOpen &&
+                    (uiEnglish
+                      ? `: ${problem.targetComplexity.time} time, ${problem.targetComplexity.space} extra space`
+                      : `：时间 ${problem.targetComplexity.time}，额外空间 ${problem.targetComplexity.space}`)}
+                </button>
+              )}
               {!examMode && topics.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -3187,6 +3204,7 @@ function Workspace({
               : undefined
           }
           ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
+          targetComplexity={problem.targetComplexity}
         />
       )}
       {problemError &&
@@ -3610,6 +3628,7 @@ function AcceptedDialog({
   onClose,
   openSolutions,
   ai,
+  targetComplexity,
 }: {
   problemId: string;
   language: string;
@@ -3619,6 +3638,8 @@ function AcceptedDialog({
   openSolutions?: (language: string) => void;
   /** The AI tutor, when on: "analyse complexity" joins the dialog. */
   ai?: { tutor: ReturnType<typeof useAiTutor>; context: AiContext };
+  /** Line 500's target complexity, shown beside the AI analysis to compare against. */
+  targetComplexity?: OJProblem['targetComplexity'];
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -3772,6 +3793,14 @@ function AcceptedDialog({
                 (() => openSolutions(['python', 'cpp', 'java', 'go'].includes(language) ? language : ''))
               }
             />
+          )}
+          {ai && targetComplexity && (
+            <p className="cs-accepted-standing">
+              {t(
+                `目标复杂度：时间 ${targetComplexity.time}，额外空间 ${targetComplexity.space}`,
+                `Target: ${targetComplexity.time} time, ${targetComplexity.space} extra space`,
+              )}
+            </p>
           )}
           {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
           <AcceptedExtras

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 
@@ -261,6 +262,9 @@ test('a failed ACM submission offers its first failing case as custom input', as
     // A public failing case still shows its input and replays.
     await render({ ...base, id: 'f8', cases: [{ ordinal: 0, status: 'wrong_answer', hidden: false }] }, { sealHidden: true });
     assert.equal(debug() !== null, true);
+    // The workspace seals both its result panel and the history dialog during a mock OA or contest.
+    const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
+    assert.equal(workspace.match(/sealHidden=\{examMode\}/g)?.length, 2);
   } finally {
     await act(async () => root.unmount());
     dom.window.close();

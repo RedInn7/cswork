@@ -57,6 +57,8 @@ export type OJProblem = Problem & {
    * is GET problems/<id>/editorial (components/ling-editorial.tsx), once solved or after a confirm.
    */
   lingEditorialVerified?: boolean | null;
+  /** The Line 500 editorial's best approach: the time and extra space to aim for; null without one or in a contest. */
+  targetComplexity?: { time: string; space: string } | null;
   /** The problem's Line 500 stop slug, null off the line. */
   stop?: string | null;
   similar?: SimilarProblem[];

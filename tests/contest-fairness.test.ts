@@ -182,6 +182,10 @@ void test('the problem payload carries no editorial, only whether one exists and
   assert.equal(problem.curatedHint, null);
   const outside = (await (await call(bob, 'GET', 'problems/lc-1')).json()) as Record<string, unknown>;
   assert.notEqual(outside.lingHints, null);
+  // So does the target complexity (the best approach's); a problem without an editorial has none.
+  assert.equal(problem.targetComplexity, null);
+  assert.deepEqual(outside.targetComplexity, { time: 'O(n)', space: 'O(n)' });
+  assert.equal(none.targetComplexity, null);
 });
 
 void test("the package's own hints, in every language, stay home in the window; a sql- exam takes its pd- twin", async () => {
