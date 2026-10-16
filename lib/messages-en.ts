@@ -395,6 +395,12 @@ const EN: Record<string, string> = {
   '今天的 AI 作答点评次数已用完，明天再来': "You've used today's AI answer feedback. Come back tomorrow",
   '今天的职位描述分析次数已用完，明天再来': "You've used today's job description checks. Come back tomorrow",
   '比赛进行中，AI 结对暂停，赛后开放': 'The AI pair is paused while your contest runs; it reopens afterwards',
+  // Answer and STAR story feedback (lib/server/ai-answer.ts)
+  '这道题没有参考答案，不能 AI 点评': "This question has no reference answer, so AI feedback isn't available",
+  '至少写 80 个字符再请求 AI 点评': 'Write at least 80 characters before asking for AI feedback',
+  '内容过长，AI 点评最多读取 6000 个字符': 'Too long: AI feedback reads at most 6,000 characters',
+  '比赛或考试进行中，AI 作答点评暂停，结束后开放':
+    'AI answer feedback is paused while your contest or exam runs; it reopens afterwards',
   '这道题没有 LeetCode 模式': "This problem has no LeetCode mode",
   请先输入问题: 'Type a question first',
   请先在题面里选中一段文字: 'Select some text in the statement first',
