@@ -4070,6 +4070,1056 @@
    ]
   },
   {
+   "id": "mcq-js-16",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nout.push(1);\nsetTimeout(() => out.push(2), 0);\nPromise.resolve()\n  .then(() => out.push(3))\n  .then(() => out.push(4));\nqueueMicrotask(() => out.push(5));\nout.push(6);\nsetTimeout(() => console.log(out.join(\" \")), 10);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "1 3 4 5 6 2",
+     "1 6 3 5 4 2",
+     "1 6 3 4 5 2",
+     "1 6 2 3 5 4"
+    ],
+    "explain": "同步代码先跑完（1、6）。然后清空微任务队列：3 和 5 按入队顺序执行，3 执行完才把 4 放进队列，所以 4 在 5 后面。最后才轮到宏任务 setTimeout（2）。",
+    "whys": [
+     "then 的回调是异步的，不会在同步代码 6 之前执行。",
+     "正确：同步 → 微任务（按入队顺序）→ 宏任务。",
+     "4 是在 3 执行之后才入队的，排在已经在队里的 5 后面。",
+     "setTimeout 是宏任务，要等所有微任务执行完。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "1 3 4 5 6 2",
+     "1 6 3 5 4 2",
+     "1 6 3 4 5 2",
+     "1 6 2 3 5 4"
+    ],
+    "explain": "Synchronous code runs first (1, 6). Then the microtask queue drains: 3 and 5 run in the order they were queued, and 4 is only queued once 3 has run, so it comes after 5. The setTimeout task (2) is last.",
+    "whys": [
+     "then callbacks are asynchronous; they cannot run before the synchronous 6.",
+     "Right: sync code, then microtasks in queue order, then tasks.",
+     "4 is queued only after 3 runs, behind 5 which was already waiting.",
+     "setTimeout is a task; it waits until every microtask has run."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-17",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nasync function a() {\n  out.push(\"a1\");\n  await b();\n  out.push(\"a2\");\n}\nasync function b() {\n  out.push(\"b\");\n}\na();\nPromise.resolve().then(() => out.push(\"p\"));\nout.push(\"s\");\nsetTimeout(() => console.log(out.join(\" \")), 0);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "a1 s b a2 p",
+     "a1 b s p a2",
+     "a1 b s a2 p",
+     "a1 b a2 s p"
+    ],
+    "explain": "async 函数在第一个 await 之前是同步执行的，所以 a1、b 立刻入数组。await 一个已完成的 promise 会把 a 的后续放进微任务队列，它比后面的 then(p) 先入队，所以 a2 在 p 前面。s 是同步代码，排在两个微任务之前。",
+    "whys": [
+     "调用 b() 是同步的，b 在 s 之前。",
+     "现代引擎里 await 原生 promise 只需一次微任务，a2 先于 p 入队。",
+     "正确：await 之前同步执行，await 之后的部分按入队顺序在 p 之前。",
+     "await 之后的代码总是异步继续，不会在同步的 s 之前。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "a1 s b a2 p",
+     "a1 b s p a2",
+     "a1 b s a2 p",
+     "a1 b a2 s p"
+    ],
+    "explain": "An async function runs synchronously up to its first await, so a1 and b go in at once. Awaiting an already-settled promise queues the rest of a as a microtask, ahead of the later then(p), so a2 comes before p. s is synchronous and lands before both microtasks.",
+    "whys": [
+     "Calling b() is synchronous, so b comes before s.",
+     "In current engines awaiting a native promise takes one microtask, queued before p.",
+     "Right: sync until the await, and the continuation is queued before p.",
+     "Code after an await always resumes asynchronously, after the synchronous s."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-18",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nnew Promise((resolve) => {\n  out.push(1);\n  resolve();\n  out.push(2);\n}).then(() => out.push(3));\nout.push(4);\nsetTimeout(() => console.log(out.join(\" \")), 0);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "1 2 4 3",
+     "1 3 2 4",
+     "1 4 2 3",
+     "4 1 2 3"
+    ],
+    "explain": "Promise 构造函数里的执行器是同步运行的；resolve() 不会中断它，2 照样执行。then 的回调是微任务，要等同步代码（4）跑完。",
+    "whys": [
+     "正确：执行器同步运行，then 异步。",
+     "resolve() 不会立刻调用 then 的回调。",
+     "执行器整体同步执行，2 在 4 之前。",
+     "执行器在 new Promise 时就运行了，早于 4。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "1 2 4 3",
+     "1 3 2 4",
+     "1 4 2 3",
+     "4 1 2 3"
+    ],
+    "explain": "The executor passed to new Promise runs synchronously, and resolve() does not stop it, so 2 still runs. The then callback is a microtask and waits for the synchronous 4.",
+    "whys": [
+     "Right: the executor is synchronous, then is not.",
+     "resolve() does not call the then callback immediately.",
+     "The whole executor runs synchronously, so 2 comes before 4.",
+     "The executor runs as soon as new Promise is called, before 4."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-19",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nsetTimeout(() => {\n  out.push(\"t1\");\n  Promise.resolve().then(() => out.push(\"m\"));\n}, 0);\nsetTimeout(() => out.push(\"t2\"), 0);\nsetTimeout(() => console.log(out.join(\" \")), 5);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "t1 t2 m",
+     "m t1 t2",
+     "t2 t1 m",
+     "t1 m t2"
+    ],
+    "explain": "每执行完一个宏任务（这里是一个 setTimeout 回调），都会先清空微任务队列，再取下一个宏任务。所以 t1 里产生的微任务 m 在 t2 之前执行。Node 11 起与浏览器一致。",
+    "whys": [
+     "微任务不会等到所有定时器都执行完。",
+     "m 是在 t1 里才创建的，不可能早于 t1。",
+     "延迟相同的定时器按注册顺序执行，t1 在前。",
+     "正确：每个宏任务之后清空微任务。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "t1 t2 m",
+     "m t1 t2",
+     "t2 t1 m",
+     "t1 m t2"
+    ],
+    "explain": "After each task (here, each setTimeout callback) the microtask queue is drained before the next task. So the microtask m created in t1 runs before t2. Node has matched browsers on this since version 11.",
+    "whys": [
+     "Microtasks do not wait for every timer to finish.",
+     "m is created inside t1, so it cannot run before t1.",
+     "Timers with the same delay fire in the order they were set, t1 first.",
+     "Right: microtasks drain after every task."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-20",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\n[1, 2, 3].forEach(async (n) => {\n  await null;\n  out.push(n);\n});\nout.push(\"done\");\nsetTimeout(() => console.log(out.join(\" \")), 0);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "done 3 2 1",
+     "1 2 3 done",
+     "1 done 2 3",
+     "done 1 2 3"
+    ],
+    "explain": "forEach 不会等待回调返回的 promise。三个回调都在 await 处暂停，forEach 立刻结束，先 push 了 done；之后三个微任务按顺序恢复。需要顺序等待时用 for...of 加 await。",
+    "whys": [
+     "三个回调按调用顺序入队，恢复时也按 1、2、3。",
+     "forEach 不会等 await，done 先执行。",
+     "第一个回调也在 await 处暂停了，不会先于 done。",
+     "正确：forEach 不等待 async 回调。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "done 3 2 1",
+     "1 2 3 done",
+     "1 done 2 3",
+     "done 1 2 3"
+    ],
+    "explain": "forEach ignores the promises its callback returns. All three callbacks pause at await, forEach returns at once and done is pushed; then the three resume in order. Use for...of with await to wait in sequence.",
+    "whys": [
+     "The callbacks were queued in order 1, 2, 3 and resume in that order.",
+     "forEach does not wait for the awaits; done runs first.",
+     "The first callback also pauses at await, so it cannot beat done.",
+     "Right: forEach does not wait for async callbacks."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-21",
+   "section": "code-output",
+   "topic": "js",
+   "code": "Promise.resolve(1)\n  .then((x) => {\n    throw new Error(\"x\" + x);\n  })\n  .then(() => console.log(\"skipped\"))\n  .catch((e) => e.message)\n  .then((v) => console.log(v, \"after\"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "x1",
+     "skipped\nx1 after",
+     "undefined after",
+     "x1 after"
+    ],
+    "explain": "then 回调里抛出的错误让返回的 promise 变成 rejected，后面的成功回调被跳过，直到 catch 接住。catch 返回的值（e.message）会让链恢复成功状态，传给下一个 then。",
+    "whys": [
+     "catch 之后链恢复了，最后一个 then 会运行。",
+     "链已经是 rejected 状态，中间那个 then 的成功回调不会运行。",
+     "catch 返回了 e.message，所以 v 是 \"x1\"。",
+     "正确：错误跳过中间的 then，catch 的返回值传下去。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "x1",
+     "skipped\nx1 after",
+     "undefined after",
+     "x1 after"
+    ],
+    "explain": "Throwing in a then callback rejects the promise it returns, so later success callbacks are skipped until catch handles it. Whatever catch returns (e.message) fulfils the chain again and is passed to the next then.",
+    "whys": [
+     "After catch the chain is fulfilled again and the last then runs.",
+     "The chain is rejected, so the middle then's success callback never runs.",
+     "catch returned e.message, so v is \"x1\".",
+     "Right: the error skips the middle then, and catch's return value flows on."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-22",
+   "section": "code-output",
+   "topic": "js",
+   "code": "var x = 1;\nfunction f() {\n  console.log(x);\n  var x = 2;\n}\nf();",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "undefined",
+     "2",
+     "ReferenceError",
+     "1"
+    ],
+    "explain": "var 声明会提升到函数顶部，但赋值留在原处。函数里的 x 遮住了外面的 x，打印时它已声明、还没赋值，是 undefined。",
+    "whys": [
+     "正确：声明提升，赋值不提升。",
+     "赋值 x = 2 在 console.log 之后才执行。",
+     "var 没有暂时性死区，提前读取得到 undefined 而不是报错。",
+     "函数内的 var x 提升后遮住了外层的 x。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "undefined",
+     "2",
+     "ReferenceError",
+     "1"
+    ],
+    "explain": "A var declaration is hoisted to the top of its function, but the assignment stays where it is. The inner x shadows the outer one and is declared but not yet assigned when logged: undefined.",
+    "whys": [
+     "Right: the declaration is hoisted, the assignment is not.",
+     "x = 2 runs after the console.log.",
+     "var has no temporal dead zone; reading early gives undefined, not an error.",
+     "The hoisted inner var x shadows the outer x."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-23",
+   "section": "code-output",
+   "topic": "js",
+   "code": "let x = 1;\nfunction f() {\n  try {\n    console.log(x);\n  } catch (e) {\n    console.log(e.name);\n  }\n  let x = 2;\n}\nf();",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "undefined",
+     "1",
+     "ReferenceError",
+     "2"
+    ],
+    "explain": "let 也会提升，但在声明语句执行之前处于暂时性死区（TDZ），读取会抛 ReferenceError。函数里的 let x 遮住了外层的 x，所以不会读到 1。",
+    "whys": [
+     "读到 undefined 是 var 的行为，let 会抛错。",
+     "函数作用域里的 let x 遮住了外层 x。",
+     "正确：在暂时性死区里读取 let 变量会抛错。",
+     "赋值 2 还没执行。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "undefined",
+     "1",
+     "ReferenceError",
+     "2"
+    ],
+    "explain": "let is hoisted too, but until its declaration runs it sits in the temporal dead zone, and reading it throws a ReferenceError. The inner let x shadows the outer one, so 1 is not read.",
+    "whys": [
+     "undefined is what var gives; let throws.",
+     "The inner let x shadows the outer x.",
+     "Right: reading a let binding in its TDZ throws.",
+     "The assignment of 2 has not run yet."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-24",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [typeof notDeclared];\ntry {\n  out.push(typeof later);\n} catch (e) {\n  out.push(e.name);\n}\nlet later = 1;\nconsole.log(out.join(\" \"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "undefined undefined",
+     "undefined ReferenceError",
+     "ReferenceError ReferenceError",
+     "undefined number"
+    ],
+    "explain": "对从未声明的变量用 typeof 是安全的，返回 \"undefined\"。但对处于暂时性死区的 let 变量用 typeof 照样抛 ReferenceError，typeof 救不了它。",
+    "whys": [
+     "later 已经声明（只是还在 TDZ 里），typeof 也会抛错。",
+     "正确：未声明安全，TDZ 不安全。",
+     "对未声明的名字，typeof 不会抛错。",
+     "let later = 1 还没执行，读不到 number。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "undefined undefined",
+     "undefined ReferenceError",
+     "ReferenceError ReferenceError",
+     "undefined number"
+    ],
+    "explain": "typeof on a name that was never declared is safe and gives \"undefined\". typeof on a let binding in its temporal dead zone still throws a ReferenceError; typeof does not protect it.",
+    "whys": [
+     "later is declared, just still in its TDZ, so typeof throws.",
+     "Right: undeclared is safe, the TDZ is not.",
+     "typeof on an undeclared name does not throw.",
+     "let later = 1 has not run yet, so there is no number to read."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-25",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const before = typeof foo;\nvar foo = 1;\nfunction foo() {}\nconsole.log(before, typeof foo);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "function number",
+     "function function",
+     "number number",
+     "undefined number"
+    ],
+    "explain": "函数声明和 var 都会提升，同名时函数声明优先，所以一开始 foo 是函数。执行到 var foo = 1 时赋值覆盖，foo 变成数字（function foo() {} 这一行在运行时什么也不做）。",
+    "whys": [
+     "正确：先是提升的函数，赋值后变成数字。",
+     "var foo = 1 的赋值会覆盖函数。",
+     "赋值发生在第一次 typeof 之后。",
+     "函数声明连同函数体一起提升，开头就是函数。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "function number",
+     "function function",
+     "number number",
+     "undefined number"
+    ],
+    "explain": "Function declarations and vars are both hoisted, and a function declaration wins a name clash, so foo starts out as the function. var foo = 1 then assigns over it, making it a number (the function foo() {} line does nothing at run time).",
+    "whys": [
+     "Right: the hoisted function first, a number after the assignment.",
+     "The assignment in var foo = 1 overwrites the function.",
+     "The assignment happens after the first typeof.",
+     "A function declaration is hoisted with its body, so it is a function from the start."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-26",
+   "section": "code-output",
+   "topic": "js",
+   "code": "try {\n  new Dog();\n} catch (e) {\n  console.log(e.name);\n}\nclass Dog {}",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "ReferenceError",
+     "undefined",
+     "TypeError",
+     "SyntaxError"
+    ],
+    "explain": "class 声明和 let 一样有暂时性死区：声明执行前使用会抛 ReferenceError。这一点和可以提前调用的函数声明不同。",
+    "whys": [
+     "正确：class 在声明前处于暂时性死区。",
+     "抛出的错误被 catch 打印了名字。",
+     "TypeError 是「不是构造函数」之类的错误，这里是名字还不能用。",
+     "代码语法没问题，错误发生在运行时。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "ReferenceError",
+     "undefined",
+     "TypeError",
+     "SyntaxError"
+    ],
+    "explain": "A class declaration has a temporal dead zone like let: using it before the declaration runs throws a ReferenceError, unlike a function declaration, which can be called early.",
+    "whys": [
+     "Right: a class is in its TDZ before the declaration.",
+     "An error is thrown, and catch prints its name.",
+     "TypeError is for things like \"not a constructor\"; here the name is not usable yet.",
+     "The syntax is fine; the error happens at run time."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-27",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const fs = [];\nfor (let i = 0; i < 3; i++) fs.push(() => i);\nlet j = 0;\nconst gs = [];\nfor (; j < 3; j++) gs.push(() => j);\nconsole.log(fs.map((f) => f()).join(\"\"), gs.map((g) => g()).join(\"\"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "333 333",
+     "333 012",
+     "012 012",
+     "012 333"
+    ],
+    "explain": "for (let i ...) 每次迭代都会创建新的 i 绑定，三个闭包各自记住 0、1、2。j 声明在循环外面，只有一个绑定，三个闭包读到的都是最后的 3。",
+    "whys": [
+     "for 头里的 let 每次迭代都有新的 i。",
+     "两种情况说反了。",
+     "j 是在循环外声明的，只有一个绑定。",
+     "正确：循环头里的 let 每轮一个新绑定，外面的 let 只有一个。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "333 333",
+     "333 012",
+     "012 012",
+     "012 333"
+    ],
+    "explain": "for (let i ...) creates a fresh i for each iteration, so the closures remember 0, 1 and 2. j is declared outside the loop, so there is one binding, and all three closures read its final value, 3.",
+    "whys": [
+     "let in the for head gives each iteration its own i.",
+     "The two cases are the wrong way round.",
+     "j is declared outside the loop, so there is only one binding.",
+     "Right: let in the loop head is per iteration; the outer let is one binding."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-28",
+   "section": "code-output",
+   "topic": "js",
+   "code": "let msg = \"hi\";\nconst say = () => msg;\nmsg = \"bye\";\nconsole.log(say());",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "bye",
+     "hi",
+     "ReferenceError",
+     "undefined"
+    ],
+    "explain": "闭包捕获的是变量本身（绑定），不是创建时的值。调用 say 时读 msg 的当前值 \"bye\"。",
+    "whys": [
+     "正确：闭包读的是变量的当前值。",
+     "闭包不会拷贝创建时的值。",
+     "msg 在调用前已经声明。",
+     "msg 在调用时已有值。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "bye",
+     "hi",
+     "ReferenceError",
+     "undefined"
+    ],
+    "explain": "A closure captures the variable (the binding), not its value at creation. When say runs it reads msg's current value, \"bye\".",
+    "whys": [
+     "Right: the closure reads the variable's current value.",
+     "A closure does not copy the value at creation time.",
+     "msg is declared before the call.",
+     "msg has a value when say is called."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-29",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nfor (var i = 0; i < 3; i++) {\n  ((j) => setTimeout(() => out.push(j), 0))(i);\n}\nsetTimeout(() => console.log(out.join(\",\"), i), 0);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "0,1,2 undefined",
+     "0,1,2 2",
+     "3,3,3 3",
+     "0,1,2 3"
+    ],
+    "explain": "立即执行的箭头函数把每轮的 i 作为参数 j 传进去，每个定时器捕获的是各自的 j。i 是 var，循环结束后仍可访问，值为 3。",
+    "whys": [
+     "var 是函数作用域，循环外仍可读到 i。",
+     "循环在 i 变成 3 时才结束。",
+     "IIFE 让每个回调捕获了自己的 j。",
+     "正确：参数 j 固定了每轮的值；循环结束时 i 为 3。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "0,1,2 undefined",
+     "0,1,2 2",
+     "3,3,3 3",
+     "0,1,2 3"
+    ],
+    "explain": "The immediately invoked arrow passes each round's i in as j, so each timer captures its own j. i is a var, still visible after the loop, and ends at 3.",
+    "whys": [
+     "var is function-scoped, so i is still readable after the loop.",
+     "The loop stops once i reaches 3.",
+     "The IIFE gives each callback its own j.",
+     "Right: j pins each round's value; i is 3 after the loop."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-30",
+   "section": "code-output",
+   "topic": "js",
+   "code": "function once(fn) {\n  let done = false;\n  let result;\n  return (...args) => {\n    if (!done) {\n      done = true;\n      result = fn(...args);\n    }\n    return result;\n  };\n}\nconst init = once((x) => x * 2);\nconsole.log(init(5), init(10));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "20 20",
+     "10 20",
+     "10 undefined",
+     "10 10"
+    ],
+    "explain": "once 返回的函数通过闭包记住 done 和 result。第一次调用计算 5 * 2 = 10 并缓存，之后的调用直接返回缓存的结果，参数被忽略。",
+    "whys": [
+     "第一次的参数是 5，结果是 10。",
+     "fn 只会被调用一次，第二次不会算 10 * 2。",
+     "result 保存在闭包里，第二次返回的是 10。",
+     "正确：只执行第一次，之后返回缓存值。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "20 20",
+     "10 20",
+     "10 undefined",
+     "10 10"
+    ],
+    "explain": "The function once returns keeps done and result in its closure. The first call computes 5 * 2 = 10 and stores it; later calls return the stored result and ignore their arguments.",
+    "whys": [
+     "The first argument is 5, so the result is 10.",
+     "fn is called only once, so 10 * 2 is never computed.",
+     "result lives in the closure, so the second call returns 10.",
+     "Right: fn runs once, later calls get the cached value."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-31",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nclass Counter {\n  constructor() {\n    this.n = 0;\n  }\n  inc() {\n    return ++this.n;\n  }\n}\nconst c = new Counter();\nconst inc = c.inc;\ntry {\n  inc();\n} catch (e) {\n  out.push(e.name);\n}\nout.push(c.inc());\nconsole.log(out.join(\" \"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "TypeError 1",
+     "undefined 2",
+     "TypeError 2",
+     "NaN 1"
+    ],
+    "explain": "把方法单独取出来调用会丢失 this。class 内部总是严格模式，此时 this 是 undefined，读 this.n 抛 TypeError。c.inc() 通过对象调用，this 是 c，n 从 0 变成 1。",
+    "whys": [
+     "正确：严格模式下 this 是 undefined，读属性抛 TypeError。",
+     "第一次调用抛出了错误，c.inc() 返回 1。",
+     "第一次调用失败了，n 只加了一次。",
+     "在非严格的普通函数里可能是 NaN，但 class 方法是严格模式。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "TypeError 1",
+     "undefined 2",
+     "TypeError 2",
+     "NaN 1"
+    ],
+    "explain": "Calling a method on its own loses this. Class bodies are always strict mode, so this is undefined and reading this.n throws a TypeError. c.inc() is called on the object, so this is c and n goes from 0 to 1.",
+    "whys": [
+     "Right: in strict mode this is undefined, and reading a property throws.",
+     "The first call threw, and c.inc() returns 1.",
+     "The first call failed, so n went up only once.",
+     "A sloppy-mode function might give NaN, but class methods are strict."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-32",
+   "section": "code-output",
+   "topic": "js",
+   "code": "function who() {\n  return this.name;\n}\nconst a = { name: \"a\", who };\nconst b = { name: \"b\" };\nconst bound = who.bind(b);\na.bound = bound;\nconsole.log(a.who(), bound(), a.bound(), bound.call(a));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "b b b b",
+     "a b a b",
+     "a b a a",
+     "a b b b"
+    ],
+    "explain": "a.who() 按调用方式绑定 this 为 a。bind 返回的函数 this 永久固定为 b：作为 a 的方法调用、或者用 call 传别的对象，都改不了。",
+    "whys": [
+     "a.who() 调用的是没有 bind 的原函数，this 是 a。",
+     "call 也改不了已经 bind 的 this。",
+     "bind 的结果不受调用方式影响，a.bound() 和 call 都还是 b。",
+     "正确：bind 之后 this 永久是 b。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "b b b b",
+     "a b a b",
+     "a b a a",
+     "a b b b"
+    ],
+    "explain": "a.who() binds this to a by how it is called. bind returns a function whose this is fixed to b for good: calling it as a method of a or through call with another object does not change it.",
+    "whys": [
+     "a.who() calls the unbound function, so this is a.",
+     "call cannot override a bound this either.",
+     "A bound function ignores how it is called; a.bound() and call both give b.",
+     "Right: after bind, this is b for good."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-33",
+   "section": "code-output",
+   "topic": "js",
+   "code": "function Person(name) {\n  this.name = name;\n}\nconst p = new Person(\"Ann\");\nconst q = Person.call({}, \"Bo\");\nconsole.log(p.name, q);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "Ann Bo",
+     "undefined undefined",
+     "Ann [object Object]",
+     "Ann undefined"
+    ],
+    "explain": "new 会创建新对象作为 this，并在函数没有返回对象时返回它，所以 p.name 是 \"Ann\"。Person.call({}, \"Bo\") 只是普通调用：给传入的空对象设了 name，但函数没有 return，返回 undefined。",
+    "whys": [
+     "call 不会像 new 那样自动返回 this。",
+     "new Person(\"Ann\") 正常设置了 name。",
+     "q 是函数返回值，不是传入的对象。",
+     "正确：new 返回 this，普通调用返回函数的返回值。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "Ann Bo",
+     "undefined undefined",
+     "Ann [object Object]",
+     "Ann undefined"
+    ],
+    "explain": "new creates a fresh object as this and returns it when the function returns no object, so p.name is \"Ann\". Person.call({}, \"Bo\") is a plain call: it sets name on the empty object passed in, but the function has no return, so q is undefined.",
+    "whys": [
+     "call does not return this the way new does.",
+     "new Person(\"Ann\") does set name.",
+     "q is the return value, not the object passed in.",
+     "Right: new returns this; a plain call returns what the function returns."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-34",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nconst timer = {\n  label: \"T\",\n  start() {\n    setTimeout(function () {\n      out.push(this === timer);\n    }, 0);\n    setTimeout(() => out.push(this.label), 0);\n  },\n};\ntimer.start();\nsetTimeout(() => console.log(out.join(\" \")), 5);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "true undefined",
+     "false undefined",
+     "false T",
+     "true T"
+    ],
+    "explain": "传给 setTimeout 的普通函数由定时器调用，this 不是 timer（Node 里是 Timeout 对象，浏览器里是 window）。箭头函数没有自己的 this，用的是 start 里的 this，也就是 timer。",
+    "whys": [
+     "两处都说反了。",
+     "箭头函数继承 start 的 this，能读到 label。",
+     "正确：普通回调丢了 this，箭头函数继承外层 this。",
+     "普通函数的 this 取决于谁调用它，这里是定时器。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "true undefined",
+     "false undefined",
+     "false T",
+     "true T"
+    ],
+    "explain": "A regular function passed to setTimeout is called by the timer, so this is not timer (it is the Timeout object in Node, window in a browser). An arrow function has no this of its own and uses start's this, which is timer.",
+    "whys": [
+     "Both are the wrong way round.",
+     "The arrow inherits start's this, so it reads label.",
+     "Right: the regular callback loses this; the arrow keeps start's.",
+     "A regular function's this depends on its caller, here the timer."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-35",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const ctx = { id: 1 };\nconst fn = function () {\n  return this;\n};\nconst arrow = () => this;\nconsole.log(fn.call(ctx) === ctx, arrow.call(ctx) === ctx);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "true false",
+     "true true",
+     "false false",
+     "false true"
+    ],
+    "explain": "call 能指定普通函数的 this。箭头函数的 this 在定义时就从外层作用域确定了，call、apply、bind 都改不了。",
+    "whys": [
+     "正确：call 只对普通函数有效。",
+     "箭头函数忽略 call 传入的 this。",
+     "fn.call(ctx) 中 this 就是 ctx。",
+     "两者正好说反了。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "true false",
+     "true true",
+     "false false",
+     "false true"
+    ],
+    "explain": "call sets this for a regular function. An arrow function takes this from the scope it was defined in, and call, apply and bind cannot change it.",
+    "whys": [
+     "Right: call only affects regular functions.",
+     "An arrow function ignores the this passed to call.",
+     "In fn.call(ctx), this is ctx.",
+     "Exactly reversed."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-36",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(JSON.stringify([] + []), [] + {}, [1, 2] + [3]);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "[] [object Object] [1,2,3]",
+     "\"\" {} 1,2,3",
+     "\"\" [object Object] 1,23",
+     "0 NaN 6"
+    ],
+    "explain": "+ 遇到对象会先把它转成原始值：数组转成元素用逗号连接的字符串，[] 变成 \"\"，{} 变成 \"[object Object]\"。只要有一边是字符串就做拼接，所以 [1, 2] + [3] 是 \"1,2\" + \"3\"。",
+    "whys": [
+     "+ 不会合并数组，而是转成字符串。",
+     "{} 转字符串是 \"[object Object]\"；\"1,2\" 和 \"3\" 拼接没有逗号。",
+     "正确：都转成字符串再拼接。",
+     "两边都转成了字符串，所以是拼接而不是数值相加。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "[] [object Object] [1,2,3]",
+     "\"\" {} 1,2,3",
+     "\"\" [object Object] 1,23",
+     "0 NaN 6"
+    ],
+    "explain": "+ first turns objects into primitives: an array becomes its elements joined by commas, so [] is \"\", and {} becomes \"[object Object]\". Once either side is a string, + concatenates, so [1, 2] + [3] is \"1,2\" + \"3\".",
+    "whys": [
+     "+ does not merge arrays; it converts them to strings.",
+     "{} becomes \"[object Object]\", and \"1,2\" + \"3\" has no comma between.",
+     "Right: everything becomes a string, then concatenates.",
+     "Both sides became strings, so it concatenates rather than adding numbers."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-37",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log([] == false, [0] == false, \"0\" == false, null == false);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "true true false true",
+     "false true true false",
+     "true true true false",
+     "false false true false"
+    ],
+    "explain": "== 遇到布尔值会先把它转成数字（false → 0），对象再转成原始值：[] → \"\" → 0，[0] → \"0\" → 0，\"0\" → 0，所以前三个都相等。null 只和 undefined（以及自己）宽松相等，不会被转成 0。",
+    "whys": [
+     "\"0\" 转数字是 0，等于 false；null 不等于 false。",
+     "[] 转成 0，和 false 相等。",
+     "正确：布尔转数字，对象转原始值；null 特殊处理。",
+     "空数组会转成 \"\" 再转成 0，等于 false。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "true true false true",
+     "false true true false",
+     "true true true false",
+     "false false true false"
+    ],
+    "explain": "With ==, a boolean is first converted to a number (false → 0), and objects to primitives: [] → \"\" → 0, [0] → \"0\" → 0, \"0\" → 0, so the first three are equal. null is loosely equal only to undefined (and itself); it is not converted to 0.",
+    "whys": [
+     "\"0\" becomes 0, equal to false, and null is not equal to false.",
+     "[] becomes 0, which equals false.",
+     "Right: booleans become numbers, objects primitives; null is special.",
+     "An empty array becomes \"\" and then 0, which equals false."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-38",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(Number(\"\"), Number(\" 12 \"), Number(\"1e3\"), parseInt(\"12px\"), Number(\"12px\"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "0 12 1000 NaN NaN",
+     "0 12 1000 12 NaN",
+     "NaN 12 1 12 NaN",
+     "0 NaN 1000 12 12"
+    ],
+    "explain": "Number 要求整个字符串都是数字（忽略首尾空白），空字符串是 0，\"1e3\" 是科学计数法 1000，\"12px\" 不合法得 NaN。parseInt 从头解析，遇到第一个非数字字符就停，得到 12。",
+    "whys": [
+     "parseInt 会读出开头的 12。",
+     "正确：Number 看整串，parseInt 读前缀。",
+     "空字符串转 Number 是 0；\"1e3\" 是 1000。",
+     "Number 会忽略首尾空白，\" 12 \" 是 12；\"12px\" 是 NaN。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "0 12 1000 NaN NaN",
+     "0 12 1000 12 NaN",
+     "NaN 12 1 12 NaN",
+     "0 NaN 1000 12 12"
+    ],
+    "explain": "Number needs the whole string to be numeric (leading and trailing spaces are ignored): \"\" is 0, \"1e3\" is scientific notation for 1000, and \"12px\" is NaN. parseInt reads from the start and stops at the first non-digit, giving 12.",
+    "whys": [
+     "parseInt reads the leading 12.",
+     "Right: Number takes the whole string, parseInt a prefix.",
+     "\"\" converts to 0, and \"1e3\" is 1000.",
+     "Number trims whitespace, so \" 12 \" is 12, while \"12px\" is NaN."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-39",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(Boolean(\"0\"), Boolean(\"\"), !!NaN, !![], !!{});",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "true false false true true",
+     "false false false false false",
+     "true false true true true",
+     "false false false true true"
+    ],
+    "explain": "假值只有 false、0、-0、0n、\"\"、null、undefined、NaN 这几个。\"0\" 是非空字符串，为真；空数组和空对象都是对象，也为真。",
+    "whys": [
+     "正确：只有固定的几个假值。",
+     "空数组和空对象都是真值，\"0\" 也是。",
+     "NaN 是假值。",
+     "\"0\" 是非空字符串，是真值。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "true false false true true",
+     "false false false false false",
+     "true false true true true",
+     "false false false true true"
+    ],
+    "explain": "The only falsy values are false, 0, -0, 0n, \"\", null, undefined and NaN. \"0\" is a non-empty string, so it is truthy; empty arrays and objects are objects, also truthy.",
+    "whys": [
+     "Right: only a fixed handful of values are falsy.",
+     "Empty arrays and objects are truthy, and so is \"0\".",
+     "NaN is falsy.",
+     "\"0\" is a non-empty string, so it is truthy."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-40",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(true + 1, null + 1, undefined + 1, \"3\" * \"4\", [2] * [3]);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "2 NaN NaN 12 NaN",
+     "2 1 NaN 34 6",
+     "true1 null1 undefined1 34 6",
+     "2 1 NaN 12 6"
+    ],
+    "explain": "没有字符串参与时，+ 做数值加法：true → 1，null → 0，undefined → NaN。* 总是转成数字：\"3\" * \"4\" = 12，[2] 和 [3] 先转成 \"2\"、\"3\" 再转数字，得 6。",
+    "whys": [
+     "null 转数字是 0，不是 NaN；单元素数组能转成数字。",
+     "* 不会拼接字符串，\"3\" * \"4\" 是 12。",
+     "这些操作数里没有字符串，+ 不会拼接。",
+     "正确：按数值规则转换。"
+    ]
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "2 NaN NaN 12 NaN",
+     "2 1 NaN 34 6",
+     "true1 null1 undefined1 34 6",
+     "2 1 NaN 12 6"
+    ],
+    "explain": "With no string involved, + adds numbers: true → 1, null → 0, undefined → NaN. * always converts to numbers: \"3\" * \"4\" is 12, and [2] and [3] become \"2\" and \"3\" and then numbers, giving 6.",
+    "whys": [
+     "null converts to 0, not NaN, and one-element arrays convert to numbers.",
+     "* never concatenates; \"3\" * \"4\" is 12.",
+     "None of these operands is a string, so + does not concatenate.",
+     "Right: everything converts by the number rules."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
    "id": "mcq-java-1",
    "section": "code-output",
    "topic": "java",
@@ -10222,6 +11272,2109 @@
      "O(n log n)"
     ],
     "explain": "The inner loop starts at i and runs n - i times, n + (n-1) + … + 1 = n(n+1)/2 in all. Halving the constant does not change the order: Θ(n²)."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-1",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int a[] = {10, 20, 30, 40};\n    int* p = a + 1;\n    std::cout << *p + 1 << \" \" << *(p + 2) << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "21 30",
+     "11 30",
+     "21 40",
+     "20 40"
+    ],
+    "explain": "p 指向 a[1]（20）。*p + 1 先解引用再加 1，得 21；*(p + 2) 是 a[3]，即 40。",
+    "whys": [
+     "*(p + 2) 从 a[1] 往后数两格，是 a[3] 而不是 a[2]。",
+     "把 *p 当成了 a[0]，但 p = a + 1 已经指向 a[1]。",
+     "正确：先取 *p 得 20 再加 1；p + 2 指向 a[3]。",
+     "*p + 1 是把值加 1，不是移动指针后再取值。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "21 30",
+     "11 30",
+     "21 40",
+     "20 40"
+    ],
+    "explain": "p points at a[1] (20). *p + 1 dereferences first and then adds 1, giving 21; *(p + 2) is a[3], which is 40.",
+    "whys": [
+     "*(p + 2) is two places after a[1], so a[3], not a[2].",
+     "Takes *p as a[0], but p = a + 1 already points at a[1].",
+     "Right: *p is 20, plus 1; p + 2 points at a[3].",
+     "*p + 1 adds 1 to the value; it does not move the pointer."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-2",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int x = 5;\n    int& r = x;\n    r += 3;\n    int y = r;\n    y *= 2;\n    std::cout << x << \" \" << y << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "8 16",
+     "5 10",
+     "5 16",
+     "8 8"
+    ],
+    "explain": "r 是 x 的别名，r += 3 直接把 x 改成 8。y 是普通 int，int y = r 复制了 8，之后改 y 不影响 x。",
+    "whys": [
+     "正确：通过引用改的就是 x；y 是拷贝。",
+     "y 是在 r += 3 之后才复制的，复制到的是 8。",
+     "引用不是拷贝，r += 3 改的就是 x。",
+     "y *= 2 之后 y 是 16。y 是独立的变量，翻倍的只是 y。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "8 16",
+     "5 10",
+     "5 16",
+     "8 8"
+    ],
+    "explain": "r is another name for x, so r += 3 makes x 8. y is a plain int: int y = r copies 8, and changing y later leaves x alone.",
+    "whys": [
+     "Right: writing through the reference writes x; y is a copy.",
+     "y is copied after r += 3, so it starts at 8.",
+     "A reference is not a copy: r += 3 changes x.",
+     "After y *= 2, y is 16; y is its own variable and only it doubles."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-3",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nvoid f(int v) { v = 100; }\nvoid g(int& v) { v = 200; }\n\nint main() {\n    int a = 1, b = 1;\n    f(a);\n    g(b);\n    std::cout << a << \" \" << b << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "1 200",
+     "100 1",
+     "100 200",
+     "1 1"
+    ],
+    "explain": "f 按值传参，改的是自己的副本，a 不变；g 按引用传参，改的就是 b。",
+    "whys": [
+     "正确：按值传参改副本，按引用传参改原变量。",
+     "两个函数的效果正好说反了。",
+     "f 拿到的是 a 的副本，函数里赋值不会写回 a。",
+     "g 的参数是 int&，赋值会改掉调用方的 b。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "1 200",
+     "100 1",
+     "100 200",
+     "1 1"
+    ],
+    "explain": "f takes its argument by value and changes its own copy, so a stays 1; g takes a reference and changes b itself.",
+    "whys": [
+     "Right: by value changes a copy; by reference changes the caller's variable.",
+     "This swaps what the two functions do.",
+     "f gets a copy of a; assigning to it never reaches a.",
+     "g takes int&, so assigning to v changes the caller's b."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-4",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nvoid swapPtr(int* a, int* b) {\n    int* t = a;\n    a = b;\n    b = t;\n}\n\nint main() {\n    int x = 1, y = 2;\n    int* p = &x;\n    int* q = &y;\n    swapPtr(p, q);\n    std::cout << *p << \" \" << *q << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "2 1",
+     "1 2",
+     "2 2",
+     "1 1"
+    ],
+    "explain": "指针本身也是按值传递的。swapPtr 交换的是两个局部指针副本，main 里的 p、q 和 x、y 都没变。要交换指向的值得写 *a 和 *b，要交换指针本身得传 int*&。",
+    "whys": [
+     "要得到 2 1，函数得交换 *a 和 *b，或者参数写成 int*&。",
+     "正确：交换的只是函数里的两个指针副本。",
+     "p 仍指向 x，x 仍是 1。",
+     "q 仍指向 y，y 仍是 2。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "2 1",
+     "1 2",
+     "2 2",
+     "1 1"
+    ],
+    "explain": "The pointers themselves are passed by value. swapPtr swaps its two local copies; p, q, x and y in main are untouched. Swapping the values needs *a and *b; swapping the pointers needs int*&.",
+    "whys": [
+     "Getting 2 1 needs swapping *a and *b, or taking int*& parameters.",
+     "Right: only the function's copies of the pointers were swapped.",
+     "p still points at x, and x is still 1.",
+     "q still points at y, and y is still 2."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-cpp-5",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct A {\n    A() { std::cout << \"D\"; }\n    A(const A&) { std::cout << \"C\"; }\n};\n\nvoid take(A a) {}\n\nint main() {\n    A a;\n    take(a);\n    A b = a;\n    std::cout << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "DCCC",
+     "D",
+     "DC",
+     "DCC"
+    ],
+    "explain": "A a 调用默认构造（D）；按值传给 take 要拷贝一次（C）；A b = a 用左值初始化，也是拷贝构造（C）。",
+    "whys": [
+     "只有两处拷贝；函数返回时没有再拷贝（take 返回 void）。",
+     "按值传参会调用拷贝构造，A b = a 也会。",
+     "漏掉了一次：按值传参和 A b = a 各拷贝一次。",
+     "正确：一次默认构造，两次拷贝构造。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "DCCC",
+     "D",
+     "DC",
+     "DCC"
+    ],
+    "explain": "A a runs the default constructor (D); passing it by value to take copies it (C); A b = a initializes from an lvalue, another copy (C).",
+    "whys": [
+     "There are only two copies; take returns void, so nothing is copied back.",
+     "Passing by value calls the copy constructor, and so does A b = a.",
+     "One copy is missing: passing by value and A b = a each copy once.",
+     "Right: one default construction, two copy constructions."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-6",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n#include <utility>\n#include <vector>\n\nint main() {\n    std::vector<int> a{1, 2, 3};\n    std::vector<int> b = std::move(a);\n    std::cout << a.size() << \" \" << b.size() << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "3 3",
+     "3 0",
+     "未定义行为",
+     "0 3"
+    ],
+    "explain": "vector 的移动构造把 a 的缓冲区直接交给 b，标准规定移动构造之后源对象为空，所以 a.size() 是 0。读一个被移走的 vector 的 size 是合法的。",
+    "whys": [
+     "std::move 只是转换成右值；这里调用的是移动构造，元素没有被复制。",
+     "方向反了：数据从 a 移到了 b。",
+     "移走之后的对象仍处于有效状态，调用 size() 没有问题。",
+     "正确：缓冲区转给了 b，a 变成空的。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "3 3",
+     "3 0",
+     "Undefined behavior",
+     "0 3"
+    ],
+    "explain": "vector's move constructor hands a's buffer to b, and the standard guarantees the source is empty after a move construction, so a.size() is 0. Asking a moved-from vector for its size is fine.",
+    "whys": [
+     "std::move is only a cast; the move constructor runs and nothing is copied.",
+     "Backwards: the data moved from a to b.",
+     "A moved-from object is still valid, so calling size() is fine.",
+     "Right: the buffer moved to b and a is left empty."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-7",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct A {\n    A() { std::cout << \"D\"; }\n    A(const A&) { std::cout << \"C\"; }\n    A(A&&) { std::cout << \"M\"; }\n};\n\nA make() { return A(); }\n\nint main() {\n    A a = make();\n    std::cout << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "DM",
+     "DMM",
+     "D",
+     "DC"
+    ],
+    "explain": "C++17 起，用同类型的纯右值（prvalue）初始化对象时保证省略拷贝：return A() 和 A a = make() 直接在 a 的位置构造，只打印一次 D，即使编译器没开优化。",
+    "whys": [
+     "C++17 之前可能看到一次移动，C++17 里这种写法必须省略。",
+     "两次移动是 C++11 不做省略时的情况，C++17 里不会发生。",
+     "正确：C++17 保证的拷贝省略，不调用移动或拷贝构造。",
+     "就算没有省略，也会优先用移动构造，而不是拷贝构造。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "DM",
+     "DMM",
+     "D",
+     "DC"
+    ],
+    "explain": "Since C++17, initializing an object from a prvalue of the same type is guaranteed to skip the copy: return A() and A a = make() construct straight into a, so only D prints, even at -O0.",
+    "whys": [
+     "Before C++17 a move could show up here; C++17 requires the elision.",
+     "Two moves is C++11 without elision, which C++17 rules out.",
+     "Right: C++17 guaranteed copy elision; no move or copy runs.",
+     "Even without elision the move constructor would win over the copy."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-8",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n#include <utility>\n\nstruct A {\n    A() {}\n    A(const A&) { std::cout << \"C\"; }\n    A(A&&) { std::cout << \"M\"; }\n};\n\nint main() {\n    const A a;\n    A b = std::move(a);\n    A c = std::move(b);\n    std::cout << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "CC",
+     "CM",
+     "MM",
+     "MC"
+    ],
+    "explain": "std::move(a) 得到的是 const A&&，移动构造要 A&&（非 const），绑不上，只能退回拷贝构造，打印 C。b 不是 const，std::move(b) 走移动构造，打印 M。",
+    "whys": [
+     "第二次的 b 不是 const，会调用移动构造。",
+     "正确：const 对象没法被移动，只能拷贝。",
+     "const A&& 绑不到 A&& 参数上，第一次其实是拷贝。",
+     "顺序反了：先拷贝（const 的 a），后移动（b）。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "CC",
+     "CM",
+     "MM",
+     "MC"
+    ],
+    "explain": "std::move(a) yields const A&&. The move constructor takes a non-const A&&, so it cannot bind and the copy constructor runs: C. b is not const, so std::move(b) moves: M.",
+    "whys": [
+     "b is not const, so the second one moves.",
+     "Right: a const object cannot be moved from, so it is copied.",
+     "const A&& cannot bind to an A&& parameter, so the first one copies.",
+     "Reversed: the const a is copied first, then b is moved."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-cpp-9",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct Base {\n    virtual void hi() { std::cout << \"B\"; }\n    void plain() { std::cout << \"b\"; }\n};\nstruct Derived : Base {\n    void hi() override { std::cout << \"D\"; }\n    void plain() { std::cout << \"d\"; }\n};\n\nint main() {\n    Derived d;\n    Base* p = &d;\n    p->hi();\n    p->plain();\n    std::cout << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "Bb",
+     "Dd",
+     "Db",
+     "Bd"
+    ],
+    "explain": "hi 是虚函数，按对象的实际类型（Derived）调用；plain 不是虚函数，按指针的静态类型（Base*）调用，Derived::plain 只是把它隐藏了。",
+    "whys": [
+     "hi 是虚函数且被重写，会调用 Derived::hi。",
+     "非虚函数不会动态分派，p->plain() 调的是 Base::plain。",
+     "正确：虚函数看对象，非虚函数看指针类型。",
+     "两处都说反了。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "Bb",
+     "Dd",
+     "Db",
+     "Bd"
+    ],
+    "explain": "hi is virtual, so the call goes by the object's real type, Derived. plain is not virtual, so it goes by the pointer's static type, Base*; Derived::plain only hides it.",
+    "whys": [
+     "hi is virtual and overridden, so Derived::hi runs.",
+     "A non-virtual call is not dispatched: p->plain() calls Base::plain.",
+     "Right: virtual calls follow the object, non-virtual ones the pointer type.",
+     "Both calls are the wrong way round."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-10",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct Base {\n    virtual const char* name() const { return \"Base\"; }\n};\nstruct Derived : Base {\n    const char* name() const override { return \"Derived\"; }\n};\n\nvoid byValue(Base b) { std::cout << b.name() << \" \"; }\nvoid byRef(const Base& b) { std::cout << b.name() << \"\\n\"; }\n\nint main() {\n    Derived d;\n    byValue(d);\n    byRef(d);\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "Base Derived",
+     "Derived Base",
+     "Base Base",
+     "Derived Derived"
+    ],
+    "explain": "按值传递时只拷贝了 Base 那一部分（对象切片），b 就是一个 Base，name() 返回 \"Base\"。按引用传递不拷贝，虚函数仍分派到 Derived。",
+    "whys": [
+     "正确：按值传参发生切片，按引用传参保留动态类型。",
+     "说反了：切片发生在按值传参那一边。",
+     "引用绑定的是原来的 Derived 对象，虚函数会分派过去。",
+     "按值传参会切片，b 已经是一个 Base 对象了。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "Base Derived",
+     "Derived Base",
+     "Base Base",
+     "Derived Derived"
+    ],
+    "explain": "Passing by value copies only the Base part (object slicing): b is a real Base, so name() returns \"Base\". Passing by reference copies nothing, and the virtual call reaches Derived.",
+    "whys": [
+     "Right: by value slices, by reference keeps the dynamic type.",
+     "Reversed: slicing happens on the by-value side.",
+     "The reference binds to the original Derived, so the virtual call reaches it.",
+     "Pass by value slices: b is a plain Base object."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-11",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct Base {\n    Base() { hello(); }\n    virtual void hello() { std::cout << \"Base\\n\"; }\n};\nstruct Derived : Base {\n    void hello() override { std::cout << \"Derived\\n\"; }\n};\n\nint main() {\n    Derived d;\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "Derived",
+     "Base\nDerived",
+     "Base",
+     "未定义行为"
+    ],
+    "explain": "构造 Base 部分时，对象的动态类型还是 Base（Derived 的成员还没初始化），所以在构造函数里调用虚函数只会调到 Base::hello。这是确定的行为，不是未定义行为（纯虚函数才另当别论）。",
+    "whys": [
+     "此时 Derived 部分还没构造，不会分派到 Derived::hello。",
+     "构造函数只调用了一次 hello。",
+     "正确：构造期间虚函数按正在构造的那一层分派。",
+     "调用的不是纯虚函数，行为是确定的。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "Derived",
+     "Base\nDerived",
+     "Base",
+     "Undefined behavior"
+    ],
+    "explain": "While the Base part is being built, the object's dynamic type is still Base (Derived's members are not initialized yet), so a virtual call in the constructor reaches Base::hello. This is well defined; only calling a pure virtual function would not be.",
+    "whys": [
+     "The Derived part is not built yet, so Derived::hello is not reached.",
+     "The constructor calls hello only once.",
+     "Right: during construction, virtual calls go to the class being constructed.",
+     "It is not a pure virtual call, so the behaviour is defined."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-12",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct T {\n    char c;\n    T(char c) : c(c) { std::cout << c; }\n    ~T() { std::cout << char(c - 'a' + 'A'); }\n};\n\nint main() {\n    T a('a');\n    T b('b');\n    std::cout << \"|\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "ab|AB",
+     "aAbB|",
+     "ab|BA",
+     "ab|"
+    ],
+    "explain": "局部对象按声明顺序构造，离开作用域时按相反顺序析构：先 b 后 a。析构发生在 main 结束时，在打印 | 之后。",
+    "whys": [
+     "析构顺序与构造相反，b 先析构。",
+     "对象活到作用域结束，不会构造完立刻析构。",
+     "正确：先构造的后析构。",
+     "离开 main 的作用域时析构函数一定会运行。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "ab|AB",
+     "aAbB|",
+     "ab|BA",
+     "ab|"
+    ],
+    "explain": "Local objects are constructed in declaration order and destroyed in reverse when the scope ends: b first, then a. That happens as main returns, after the | is printed.",
+    "whys": [
+     "Destruction runs in reverse order, so b goes first.",
+     "Objects live until the end of their scope, not just past construction.",
+     "Right: first constructed, last destroyed.",
+     "Leaving main's scope always runs the destructors."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-13",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct Base {\n    ~Base() { std::cout << \"~B\"; }\n};\nstruct Derived : Base {\n    ~Derived() { std::cout << \"~D\"; }\n};\n\nint main() {\n    Base* p = new Derived;\n    delete p;\n    std::cout << \"\\n\";\n}",
+   "lang": "cpp",
+   "ub": true,
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "~B~D",
+     "~B",
+     "未定义行为",
+     "~D~B"
+    ],
+    "explain": "通过基类指针 delete 派生类对象，而基类析构函数不是虚函数，C++ 标准规定这是未定义行为。实际编译出来常常只打印 ~B（Derived 部分没被析构），但不能依赖。修法是给 Base 加 virtual ~Base()。",
+    "whys": [
+     "析构顺序是先派生类后基类，而且这里本身就是未定义行为。",
+     "常见的实际现象，但标准不保证，属于未定义行为。",
+     "正确：基类析构函数非虚，通过基类指针 delete 是未定义行为。",
+     "这是 ~Base 为虚函数时的输出。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "~B~D",
+     "~B",
+     "Undefined behavior",
+     "~D~B"
+    ],
+    "explain": "Deleting a derived object through a base pointer when the base destructor is not virtual is undefined behaviour by the standard. Real builds often print just ~B (the Derived part is never destroyed), but nothing guarantees it. The fix is virtual ~Base().",
+    "whys": [
+     "Derived parts are destroyed before base parts, and this is UB anyway.",
+     "Often what happens, but nothing guarantees it: it is undefined.",
+     "Right: deleting through a base pointer with a non-virtual destructor is UB.",
+     "That is what a virtual ~Base would print."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-14",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint counter() {\n    static int n = 0;\n    return ++n;\n}\n\nint main() {\n    counter();\n    counter();\n    std::cout << counter() << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "3",
+     "2",
+     "1",
+     "0"
+    ],
+    "explain": "函数内的 static 变量只初始化一次，之后一直保留上次的值。三次调用依次返回 1、2、3。",
+    "whys": [
+     "正确：static 局部变量在调用之间保留值。",
+     "打印的是第三次调用的返回值，前两次也都加过。",
+     "每次调用并不会把 n 重新设成 0；= 0 只在第一次执行。",
+     "打印的是 ++n 的结果，至少是 1。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "3",
+     "2",
+     "1",
+     "0"
+    ],
+    "explain": "A static local is initialized once and keeps its value between calls. The three calls return 1, 2 and 3.",
+    "whys": [
+     "Right: a static local keeps its value between calls.",
+     "It prints the third call; the first two also counted.",
+     "n is not reset each call; = 0 runs only the first time.",
+     "It prints the result of ++n, which is at least 1."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-15",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct Dog {\n    static int count;\n    Dog() { ++count; }\n};\nint Dog::count = 0;\n\nint main() {\n    Dog a, b;\n    {\n        Dog c;\n    }\n    std::cout << Dog::count << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "0",
+     "1",
+     "2",
+     "3"
+    ],
+    "explain": "静态成员属于类，所有对象共用一份。构造了 a、b、c 三个对象，count 加了三次；c 析构时没有减少（没写析构函数）。",
+    "whys": [
+     "Dog::count 是共享的，每次构造都加 1。",
+     "静态成员不是每个对象各一份。",
+     "c 虽然已经析构，但没有代码去减少 count。",
+     "正确：三次构造，共用一个计数。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "0",
+     "1",
+     "2",
+     "3"
+    ],
+    "explain": "A static member belongs to the class; all objects share one copy. Three Dogs were constructed, so count went up three times; destroying c does not decrease it (there is no destructor doing that).",
+    "whys": [
+     "Dog::count is shared and each construction adds 1.",
+     "A static member is not one per object.",
+     "c was destroyed, but nothing decrements count.",
+     "Right: three constructions, one shared counter."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-16",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <cstdint>\n#include <iostream>\n\nint main() {\n    std::uint32_t u = 0;\n    u = u - 1;\n    std::cout << u << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "未定义行为",
+     "-1",
+     "0",
+     "4294967295"
+    ],
+    "explain": "无符号整数的运算按模 2^32 进行，0 - 1 回绕成 2^32 - 1 = 4294967295。这是标准定义好的行为，和有符号溢出不同。",
+    "whys": [
+     "无符号回绕是定义好的行为；有符号溢出才是未定义行为。",
+     "无符号类型不能表示负数，结果会回绕。",
+     "运算结果不会被截到 0。",
+     "正确：无符号数回绕到最大值。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "Undefined behavior",
+     "-1",
+     "0",
+     "4294967295"
+    ],
+    "explain": "Unsigned arithmetic is modulo 2^32, so 0 - 1 wraps to 2^32 - 1 = 4294967295. This is defined by the standard, unlike signed overflow.",
+    "whys": [
+     "Unsigned wraparound is defined; signed overflow is the undefined one.",
+     "An unsigned type cannot hold -1; the result wraps.",
+     "The result is not clamped to 0.",
+     "Right: unsigned values wrap around to the maximum."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-17",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <climits>\n#include <iostream>\n\nint main() {\n    int x = INT_MAX;\n    x = x + 1;\n    std::cout << x << \"\\n\";\n}",
+   "lang": "cpp",
+   "ub": true,
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "未定义行为",
+     "2147483648",
+     "-2147483648",
+     "0"
+    ],
+    "explain": "有符号整数溢出是未定义行为。很多机器上实际会打印 -2147483648，但编译器可以假设它不会发生并据此优化（比如把 x + 1 > x 直接当成 true），所以不能依赖任何结果。",
+    "whys": [
+     "正确：有符号溢出是未定义行为。",
+     "int 装不下 2147483648。",
+     "常见的实际结果，但标准不保证。",
+     "溢出不会归零。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "Undefined behavior",
+     "2147483648",
+     "-2147483648",
+     "0"
+    ],
+    "explain": "Signed integer overflow is undefined behaviour. Many machines will print -2147483648, but the compiler may assume it never happens and optimize on that (treating x + 1 > x as always true, say), so no result can be relied on.",
+    "whys": [
+     "Right: signed overflow is undefined behaviour.",
+     "An int cannot hold 2147483648.",
+     "A common result in practice, but not guaranteed.",
+     "Overflow does not reset to 0."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-18",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    unsigned char a = 200, b = 100;\n    std::cout << a + b << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "44",
+     ",",
+     "未定义行为",
+     "300"
+    ],
+    "explain": "算术运算前，unsigned char 会先提升为 int，所以 a + b 是 int 的 300，不会在 8 位里回绕；结果是 int，打印成数字。",
+    "whys": [
+     "300 - 256 = 44 是在 8 位里回绕的结果，但运算是在 int 里做的。",
+     "结果是 int，不是 char，不会打印成字符。",
+     "int 装得下 300，没有溢出。",
+     "正确：整型提升后按 int 相加。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "44",
+     ",",
+     "Undefined behavior",
+     "300"
+    ],
+    "explain": "Before arithmetic, unsigned char operands are promoted to int, so a + b is the int 300, with no 8-bit wraparound, and it prints as a number.",
+    "whys": [
+     "44 is 300 - 256, an 8-bit wrap, but the addition happens in int.",
+     "The sum is an int, not a char, so it is not printed as a character.",
+     "An int holds 300 easily; nothing overflows.",
+     "Right: promoted to int, then added."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-19",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int a = -1;\n    unsigned int b = 1;\n    std::cout << (a < b ? \"less\" : \"not less\") << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "not less",
+     "未定义行为",
+     "编译错误",
+     "less"
+    ],
+    "explain": "int 和 unsigned int 比较时，int 会转换成 unsigned int，-1 变成 4294967295，比 1 大，所以 a < b 为假。编译器一般会给出 sign-compare 警告。",
+    "whys": [
+     "正确：-1 被转成很大的无符号数。",
+     "有符号到无符号的转换是定义好的（按模），不是未定义行为。",
+     "这段代码能编译，最多是警告。",
+     "数学上 -1 < 1，但比较是在无符号类型下做的。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "not less",
+     "Undefined behavior",
+     "Compile error",
+     "less"
+    ],
+    "explain": "Comparing int with unsigned int converts the int to unsigned: -1 becomes 4294967295, which is larger than 1, so a < b is false. Compilers usually warn (sign-compare).",
+    "whys": [
+     "Right: -1 converts to a huge unsigned value.",
+     "Signed-to-unsigned conversion is defined (modulo), not UB.",
+     "It compiles; at most you get a warning.",
+     "Mathematically -1 < 1, but the comparison is done in unsigned."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-20",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    std::cout << -7 / 2 << \" \" << -7 % 2 << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "-4 -1",
+     "-3 -1",
+     "-4 1",
+     "-3 1"
+    ],
+    "explain": "C++11 起整数除法向零取整：-7 / 2 = -3。余数满足 (a / b) * b + a % b == a，所以 -7 % 2 = -7 - (-6) = -1，余数和被除数同号。",
+    "whys": [
+     "商向零取整得 -3，不是 -4。",
+     "正确：向零取整，余数与被除数同号。",
+     "向下取整（-4、1）是 Python 的规则，不是 C++ 的。",
+     "商 -3 时余数必须是 -1，等式才成立。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "-4 -1",
+     "-3 -1",
+     "-4 1",
+     "-3 1"
+    ],
+    "explain": "Since C++11, integer division truncates toward zero: -7 / 2 is -3. The remainder satisfies (a / b) * b + a % b == a, so -7 % 2 = -7 - (-6) = -1; it takes the sign of the dividend.",
+    "whys": [
+     "Truncating toward zero gives -3, not -4.",
+     "Right: truncation toward zero, remainder takes the dividend's sign.",
+     "Flooring (-4 and 1) is Python's rule, not C++'s.",
+     "With a quotient of -3, the remainder has to be -1 for the identity to hold."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-cpp-21",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int a[5] = {1, 2, 3, 4, 5};\n    int* p = &a[4];\n    int* q = a + 1;\n    std::cout << p - q << \" \" << *q << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "4 2",
+     "3 1",
+     "12 2",
+     "3 2"
+    ],
+    "explain": "同一数组内两个指针相减，结果是相隔的元素个数（不是字节数）：4 - 1 = 3。q = a + 1 指向 a[1]，值为 2。",
+    "whys": [
+     "p 是 a[4]、q 是 a[1]，相差 3 个元素。",
+     "a + 1 指向 a[1]，值是 2 而不是 1。",
+     "12 是字节数（3 × sizeof(int)），指针相减按元素算。",
+     "正确：按元素计数，q 指向 a[1]。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "4 2",
+     "3 1",
+     "12 2",
+     "3 2"
+    ],
+    "explain": "Subtracting two pointers into the same array gives the distance in elements, not bytes: 4 - 1 = 3. q = a + 1 points at a[1], which is 2.",
+    "whys": [
+     "p is a[4] and q is a[1]: 3 elements apart.",
+     "a + 1 points at a[1], which holds 2, not 1.",
+     "12 would be bytes (3 × sizeof(int)); pointer subtraction counts elements.",
+     "Right: counted in elements, and q points at a[1]."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-22",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int x = 1, y = 2;\n    const int* p = &x;\n    p = &y;\n    *p = 5;\n    std::cout << *p << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "1",
+     "2",
+     "编译错误",
+     "5"
+    ],
+    "explain": "const int* 是「指向 const int 的指针」：指针本身可以改指向（p = &y 没问题），但不能通过它修改所指的值，*p = 5 编译报错。若写成 int* const p，则正好相反。",
+    "whys": [
+     "p 已经改指向 y，而且这段代码根本编译不过。",
+     "如果去掉 *p = 5，才会打印 2。",
+     "正确：不能通过指向 const 的指针赋值。",
+     "*p = 5 这一行编译不过，程序不会运行。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "1",
+     "2",
+     "Compile error",
+     "5"
+    ],
+    "explain": "const int* is a pointer to const int: the pointer can be re-pointed (p = &y is fine), but you cannot write through it, so *p = 5 fails to compile. int* const p would be the other way round.",
+    "whys": [
+     "p was re-pointed to y, and the code does not compile anyway.",
+     "Without *p = 5 it would print 2.",
+     "Right: you cannot assign through a pointer to const.",
+     "The line *p = 5 does not compile, so nothing runs."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-23",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int a = 1, b = 2;\n    int& r = a;\n    r = b;\n    b = 3;\n    std::cout << a << r << b << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "133",
+     "233",
+     "223",
+     "123"
+    ],
+    "explain": "引用一旦绑定就不能改绑。r = b 不是让 r 改指 b，而是把 b 的值 2 赋给 a。之后改 b 和 a、r 无关。",
+    "whys": [
+     "r 还是 a 的别名，r = b 把 a 改成了 2。",
+     "r 没有改绑到 b，所以 r 不会跟着变成 3。",
+     "正确：r = b 是给 a 赋值。",
+     "a 已经被 r = b 改成 2 了。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "133",
+     "233",
+     "223",
+     "123"
+    ],
+    "explain": "A reference cannot be re-bound. r = b does not make r refer to b; it assigns b's value, 2, to a. Changing b afterwards does not touch a or r.",
+    "whys": [
+     "r still names a, and r = b set a to 2.",
+     "r was not re-bound to b, so it does not become 3.",
+     "Right: r = b assigns to a.",
+     "a was already set to 2 by r = b."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-24",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct Box {\n    int* v;\n    Box(int x) : v(new int(x)) {}\n};\n\nint main() {\n    Box a(1);\n    Box b = a;\n    *b.v = 9;\n    std::cout << *a.v << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "1",
+     "编译错误",
+     "未定义行为",
+     "9"
+    ],
+    "explain": "Box 没有自定义拷贝构造，默认拷贝逐个成员复制，b.v 和 a.v 是同一个指针（浅拷贝）。通过 b.v 改值，a 看到的也变了。程序有内存泄漏，但输出是确定的。",
+    "whys": [
+     "默认拷贝只复制指针，不会复制它指向的 int。",
+     "编译器会自动生成拷贝构造，可以编译。",
+     "这里没有释放内存，也没有越界，只是泄漏，行为是确定的。",
+     "正确：浅拷贝，两个对象共享同一个 int。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "1",
+     "Compile error",
+     "Undefined behavior",
+     "9"
+    ],
+    "explain": "Box has no copy constructor of its own, so the default one copies member by member: b.v and a.v are the same pointer (a shallow copy). Writing through b.v changes what a sees. The program leaks memory, but its output is defined.",
+    "whys": [
+     "The default copy copies the pointer, not the int behind it.",
+     "The compiler generates a copy constructor, so it compiles.",
+     "Nothing is freed or read out of bounds; it only leaks, which is defined.",
+     "Right: a shallow copy, both objects share one int."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-cpp-25",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n#include <memory>\n#include <utility>\n\nint main() {\n    auto p = std::make_unique<int>(7);\n    auto q = std::move(p);\n    std::cout << (p ? \"p\" : \"null\") << \" \" << *q << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "null 0",
+     "null 7",
+     "p 7",
+     "编译错误"
+    ],
+    "explain": "unique_ptr 独占所有权，不能拷贝只能移动。移动之后标准保证源指针为空，q 接管了那个 int。",
+    "whys": [
+     "对象本身没被改动，*q 仍是 7。",
+     "正确：移动后 p 为空，q 指向 7。",
+     "unique_ptr 的移动会把源置空，p 不再拥有对象。",
+     "auto q = std::move(p) 是移动构造，可以编译；拷贝才会报错。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "null 0",
+     "null 7",
+     "p 7",
+     "Compile error"
+    ],
+    "explain": "unique_ptr has sole ownership: it can be moved, not copied. After a move the source is guaranteed to be null, and q owns the int.",
+    "whys": [
+     "The int itself is untouched; *q is still 7.",
+     "Right: after the move p is null and q points at 7.",
+     "Moving a unique_ptr empties the source; p no longer owns anything.",
+     "auto q = std::move(p) is a move and compiles; only a copy would not."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-cpp-26",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n#include <memory>\n\nint main() {\n    auto a = std::make_shared<int>(1);\n    auto b = a;\n    {\n        auto c = b;\n        std::cout << a.use_count();\n    }\n    std::cout << a.use_count() << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "33",
+     "32",
+     "31",
+     "22"
+    ],
+    "explain": "a、b、c 三个 shared_ptr 共享同一个对象，内层作用域里引用计数是 3；c 离开作用域析构，计数减到 2。",
+    "whys": [
+     "c 离开作用域会析构，计数会减 1。",
+     "正确：3 个持有者，c 析构后剩 2 个。",
+     "离开内层作用域后 a、b 还在，计数是 2。",
+     "内层作用域里有 a、b、c 三个持有者。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "33",
+     "32",
+     "31",
+     "22"
+    ],
+    "explain": "a, b and c all share one object, so the count is 3 inside the block; c is destroyed when the block ends, bringing it back to 2.",
+    "whys": [
+     "c is destroyed at the end of the block, so the count drops.",
+     "Right: three owners, then two once c is gone.",
+     "After the block a and b remain, so the count is 2.",
+     "Inside the block there are three owners: a, b and c."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-cpp-27",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nstruct B {\n    virtual void f(int x = 1) { std::cout << \"B\" << x; }\n};\nstruct D : B {\n    void f(int x = 2) override { std::cout << \"D\" << x; }\n};\n\nint main() {\n    D d;\n    B& b = d;\n    b.f();\n    std::cout << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "B2",
+     "B1",
+     "D1",
+     "D2"
+    ],
+    "explain": "调用哪个函数是运行时按对象类型决定的（D::f），但默认参数是编译时按静态类型（B&）填进去的，所以 x 用的是 B::f 的默认值 1。所以重写虚函数时不要改默认参数。",
+    "whys": [
+     "调用的是 D::f，而且默认参数是 1。",
+     "f 是虚函数，会调用 D::f。",
+     "正确：函数动态分派，默认参数静态绑定。",
+     "默认参数不随动态类型变化，用的是 B 的默认值。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "B2",
+     "B1",
+     "D1",
+     "D2"
+    ],
+    "explain": "Which function runs is decided at run time by the object (D::f), but default arguments are filled in at compile time from the static type (B&), so x gets B::f's default, 1. That is why overrides should not change default arguments.",
+    "whys": [
+     "D::f runs, and the default argument is 1.",
+     "f is virtual, so D::f runs.",
+     "Right: the function is dispatched dynamically, the default is bound statically.",
+     "Default arguments do not follow the dynamic type; B's default is used."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-28",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int i = 5;\n    int a = i++;\n    int b = ++i;\n    std::cout << a << \" \" << b << \" \" << i << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "5 6 6",
+     "6 6 7",
+     "5 7 7",
+     "6 7 7"
+    ],
+    "explain": "i++ 返回自增前的值（5），之后 i 为 6；++i 先自增再返回（7）。最后 i 是 7。每条语句只改一次 i，没有未定义行为。",
+    "whys": [
+     "执行了两次自增，i 最后是 7。",
+     "a 是 5，而且 ++i 之后 b 是 7。",
+     "正确：后置返回旧值，前置返回新值。",
+     "a 拿到的是 i++ 自增前的值 5。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "5 6 6",
+     "6 6 7",
+     "5 7 7",
+     "6 7 7"
+    ],
+    "explain": "i++ yields the old value (5) and leaves i at 6; ++i increments first and yields 7. i ends at 7. Each statement changes i once, so nothing is undefined.",
+    "whys": [
+     "i was incremented twice, so it ends at 7.",
+     "a is 5, and after ++i b is 7.",
+     "Right: postfix yields the old value, prefix the new one.",
+     "a gets the value before i++, which is 5."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-cpp-29",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    long long x = 100000 * 100000;\n    std::cout << x << \"\\n\";\n}",
+   "lang": "cpp",
+   "ub": true,
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "未定义行为",
+     "编译错误",
+     "1410065408",
+     "10000000000"
+    ],
+    "explain": "100000 和 100000 都是 int，乘法在 int 里做，10^10 超出 int 范围，是有符号溢出，属于未定义行为；结果再存进 long long 已经晚了。正确写法是 100000LL * 100000。这类错误在 OA 里很常见。",
+    "whys": [
+     "正确：int 乘法溢出，是未定义行为。",
+     "代码能编译，最多给出溢出警告。",
+     "这是截断到 32 位后常见的实际结果，但标准不保证。",
+     "乘法是在 int 里做完再转成 long long 的，不会得到这个值。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "Undefined behavior",
+     "Compile error",
+     "1410065408",
+     "10000000000"
+    ],
+    "explain": "Both 100000s are ints, so the multiplication happens in int; 10^10 does not fit, which is signed overflow and undefined behaviour. Storing the result in a long long comes too late. Write 100000LL * 100000. This mistake shows up in OAs all the time.",
+    "whys": [
+     "Right: the int multiplication overflows, which is UB.",
+     "It compiles; you may get an overflow warning.",
+     "What a 32-bit wrap often prints, but nothing guarantees it.",
+     "The product is computed in int and only then converted, so you do not get this."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-cpp-30",
+   "section": "code-output",
+   "topic": "cpp",
+   "code": "#include <iostream>\n\nint main() {\n    int n = 1;\n    auto byVal = [n] { return n; };\n    auto byRef = [&n] { return n; };\n    n = 5;\n    std::cout << byVal() << \" \" << byRef() << \"\\n\";\n}",
+   "lang": "cpp",
+   "zh": {
+    "q": "下面的 C++ 程序（g++ -std=c++17）输出什么？",
+    "choices": [
+     "1 5",
+     "5 5",
+     "1 1",
+     "5 1"
+    ],
+    "explain": "[n] 在创建 lambda 时把 n 的值（1）拷贝进去；[&n] 保存的是引用，调用时读的是 n 当前的值 5。",
+    "whys": [
+     "正确：按值捕获拷贝当时的值，按引用捕获读当前值。",
+     "按值捕获发生在创建 lambda 的时候，那时 n 是 1。",
+     "按引用捕获会看到 n = 5 之后的值。",
+     "两种捕获说反了。"
+    ]
+   },
+   "en": {
+    "q": "What does this C++ program print (g++ -std=c++17)?",
+    "choices": [
+     "1 5",
+     "5 5",
+     "1 1",
+     "5 1"
+    ],
+    "explain": "[n] copies n's value (1) when the lambda is created; [&n] holds a reference, so a call reads n's current value, 5.",
+    "whys": [
+     "Right: by value copies the value at creation, by reference reads it now.",
+     "Capture by value happens when the lambda is made, when n was 1.",
+     "Capture by reference sees n after n = 5.",
+     "The two captures are the wrong way round."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-1",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE t (id INTEGER, bonus INTEGER);\nINSERT INTO t VALUES (1, 100), (2, NULL), (3, 50), (4, NULL);\nSELECT COUNT(*), COUNT(bonus), SUM(bonus), MAX(bonus) FROM t;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "4 | 2 | NULL | NULL",
+     "4 | 2 | 150 | 100",
+     "2 | 2 | 150 | 100",
+     "4 | 4 | 150 | 100"
+    ],
+    "explain": "COUNT(*) 数行，包括 bonus 为 NULL 的行；COUNT(列) 和 SUM、MAX 等聚合函数都会跳过 NULL。",
+    "whys": [
+     "聚合函数跳过 NULL 而不是被 NULL 污染，SUM 是 150。",
+     "正确：COUNT(*) 数行，其他聚合跳过 NULL。",
+     "COUNT(*) 不管列值，4 行都算。",
+     "COUNT(bonus) 不计 NULL，只有 2。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "4 | 2 | NULL | NULL",
+     "4 | 2 | 150 | 100",
+     "2 | 2 | 150 | 100",
+     "4 | 4 | 150 | 100"
+    ],
+    "explain": "COUNT(*) counts rows, including those whose bonus is NULL; COUNT(column), SUM, MAX and the other aggregates skip NULLs.",
+    "whys": [
+     "Aggregates skip NULLs rather than turning NULL, so SUM is 150.",
+     "Right: COUNT(*) counts rows; the other aggregates skip NULLs.",
+     "COUNT(*) ignores values; all 4 rows count.",
+     "COUNT(bonus) skips NULLs, so it is 2."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-sql-2",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE t (id INTEGER, bonus INTEGER);\nINSERT INTO t VALUES (1, 100), (2, NULL), (3, 50), (4, NULL);\nSELECT\n  (SELECT COUNT(*) FROM t WHERE bonus <> 100),\n  (SELECT COUNT(*) FROM t WHERE bonus IS NULL);",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "1 | 0",
+     "3 | 0",
+     "1 | 2",
+     "3 | 2"
+    ],
+    "explain": "NULL 和任何值比较（包括 <>）的结果都是 NULL，不是真，所以 bonus <> 100 只命中 50 那一行。判断空值要用 IS NULL，bonus = NULL 永远不成立。",
+    "whys": [
+     "IS NULL 能找出两行空值。",
+     "两处都错：<> 不选 NULL 行，IS NULL 能选到。",
+     "正确：NULL 不满足 <>，IS NULL 才能找到空值。",
+     "NULL <> 100 的结果是 NULL，这两行不会被选中。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "1 | 0",
+     "3 | 0",
+     "1 | 2",
+     "3 | 2"
+    ],
+    "explain": "Comparing NULL with anything, <> included, gives NULL, which is not true, so bonus <> 100 only matches the row with 50. Testing for missing values needs IS NULL; bonus = NULL is never true.",
+    "whys": [
+     "IS NULL finds the two NULL rows.",
+     "Both wrong: <> skips NULL rows, IS NULL finds them.",
+     "Right: NULL fails <>, and IS NULL finds the missing values.",
+     "NULL <> 100 is NULL, so those two rows are not selected."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-sql-3",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE a (x INTEGER);\nINSERT INTO a VALUES (1), (2), (3);\nCREATE TABLE b (y INTEGER);\nINSERT INTO b VALUES (2), (NULL);\nSELECT COUNT(*) FROM a WHERE x NOT IN (SELECT y FROM b);",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "1",
+     "0",
+     "2",
+     "3"
+    ],
+    "explain": "x NOT IN (2, NULL) 相当于 x <> 2 AND x <> NULL。后半部分永远是 NULL，所以整个条件不可能为真，一行也选不出来。子查询可能含 NULL 时，用 NOT EXISTS 或先过滤掉 NULL。",
+    "whys": [
+     "NOT IN 不是只排除 NULL 的那一项。",
+     "正确：列表里有 NULL，NOT IN 永远不为真。",
+     "如果 b 里没有 NULL，结果才会是 2（1 和 3）。",
+     "x = 2 那行本来就该被排除，何况有 NULL。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "1",
+     "0",
+     "2",
+     "3"
+    ],
+    "explain": "x NOT IN (2, NULL) means x <> 2 AND x <> NULL. The second part is always NULL, so the condition is never true and no row comes back. When the subquery may hold NULLs, use NOT EXISTS or filter the NULLs out.",
+    "whys": [
+     "NOT IN does not just skip the NULL entry.",
+     "Right: with a NULL in the list, NOT IN is never true.",
+     "Without the NULL in b the answer would be 2 (1 and 3).",
+     "x = 2 should be excluded anyway, and the NULL removes the rest."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-sql-4",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER, amount INTEGER);\nINSERT INTO users VALUES (1, 'ann'), (2, 'bo'), (3, 'cy');\nINSERT INTO orders VALUES (1, 1, 30), (2, 1, 80), (3, 2, 20);\nSELECT u.name, COUNT(o.id)\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id AND o.amount > 25\nGROUP BY u.id\nORDER BY u.id;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "ann | 2\nbo | 1\ncy | 0",
+     "ann | 2\nbo | 0\ncy | 0",
+     "ann | 2",
+     "ann | 2\nbo | 0"
+    ],
+    "explain": "条件写在 ON 里，只影响哪些订单能连上，不会删掉左表的用户。bo 的订单金额 20 不满足条件，连不上，o.id 为 NULL，COUNT(o.id) 是 0；cy 没有订单，也是 0。",
+    "whys": [
+     "bo 的订单金额 20 不满足 amount > 25。",
+     "正确：ON 里的条件不删左表行。",
+     "这是把条件写在 WHERE 里的结果。",
+     "LEFT JOIN 会保留 cy，即使他没有订单。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "ann | 2\nbo | 1\ncy | 0",
+     "ann | 2\nbo | 0\ncy | 0",
+     "ann | 2",
+     "ann | 2\nbo | 0"
+    ],
+    "explain": "A condition in ON only decides which orders join; it never drops users from the left table. bo's only order (20) fails it, so o.id is NULL and COUNT(o.id) is 0; cy has no orders, also 0.",
+    "whys": [
+     "bo's order of 20 fails amount > 25.",
+     "Right: a condition in ON never removes left-table rows.",
+     "That is what putting the condition in WHERE gives.",
+     "LEFT JOIN keeps cy even though he has no orders."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-sql-5",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER, amount INTEGER);\nINSERT INTO users VALUES (1, 'ann'), (2, 'bo'), (3, 'cy');\nINSERT INTO orders VALUES (1, 1, 30), (2, 1, 80), (3, 2, 20);\nSELECT u.name, COUNT(o.id)\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id\nWHERE o.amount > 25\nGROUP BY u.id\nORDER BY u.id;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "ann | 2",
+     "ann | 2\nbo | 1",
+     "ann | 2\ncy | 0",
+     "ann | 2\nbo | 0\ncy | 0"
+    ],
+    "explain": "WHERE 在连接之后过滤：bo 那行 amount 是 20，cy 那行 amount 是 NULL，都不满足 o.amount > 25，被整行删掉，LEFT JOIN 实际变成了内连接。",
+    "whys": [
+     "正确：WHERE 把没连上的行也过滤掉了。",
+     "bo 的订单是 20，在 WHERE 里被删掉了。",
+     "cy 那行 amount 是 NULL，NULL > 25 不为真。",
+     "这是把条件放在 ON 里的结果。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "ann | 2",
+     "ann | 2\nbo | 1",
+     "ann | 2\ncy | 0",
+     "ann | 2\nbo | 0\ncy | 0"
+    ],
+    "explain": "WHERE filters after the join: bo's row has amount 20 and cy's has NULL, neither passes o.amount > 25, so both rows go, and the LEFT JOIN behaves like an inner join.",
+    "whys": [
+     "Right: WHERE also removes the rows that did not match.",
+     "bo's order is 20 and WHERE drops it.",
+     "cy's row has amount NULL, and NULL > 25 is not true.",
+     "That is what the condition in ON gives."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-6",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE p (id INTEGER, tag TEXT);\nINSERT INTO p VALUES (1, 'a'), (1, 'b'), (2, 'c');\nCREATE TABLE q (id INTEGER, v INTEGER);\nINSERT INTO q VALUES (1, 10), (1, 20), (3, 30);\nSELECT COUNT(*) FROM p JOIN q ON p.id = q.id;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "2",
+     "6",
+     "4",
+     "3"
+    ],
+    "explain": "内连接对每一对满足条件的行都产出一行。id = 1 在 p 里有 2 行、q 里有 2 行，组合出 2 × 2 = 4 行；id 2 和 3 各只在一边出现，连不上。",
+    "whys": [
+     "连接不会去重，2 行对 2 行会产生 4 行。",
+     "只有键相同的行才配对；id 2 在 q 里没有匹配，不产生行。",
+     "正确：重复的键会相乘。",
+     "id 2 和 id 3 都找不到匹配，不会贡献行。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "2",
+     "6",
+     "4",
+     "3"
+    ],
+    "explain": "An inner join produces one row for every matching pair. id 1 has 2 rows in p and 2 in q, giving 2 × 2 = 4; ids 2 and 3 each appear on one side only and match nothing.",
+    "whys": [
+     "A join does not deduplicate; 2 rows against 2 rows makes 4.",
+     "Only rows with equal keys pair up; id 2 has no match in q and adds nothing.",
+     "Right: duplicate keys multiply.",
+     "ids 2 and 3 have no match, so they add nothing."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-sql-7",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE sales (region TEXT, amount INTEGER);\nINSERT INTO sales VALUES ('east', 10), ('east', 30), ('west', 5), ('west', 6), ('north', 50);\nSELECT region, SUM(amount)\nFROM sales\nGROUP BY region\nHAVING COUNT(*) > 1\nORDER BY region;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "east | 40\nwest | 11",
+     "north | 50",
+     "east | 40\nnorth | 50",
+     "east | 40\nnorth | 50\nwest | 11"
+    ],
+    "explain": "HAVING 在分组之后按组过滤：north 只有 1 行，不满足 COUNT(*) > 1，整组被去掉。",
+    "whys": [
+     "正确：只保留行数大于 1 的组。",
+     "条件是行数多于 1，不是金额。",
+     "west 有两行，应该保留；north 只有一行。",
+     "HAVING 会去掉只有一行的 north。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "east | 40\nwest | 11",
+     "north | 50",
+     "east | 40\nnorth | 50",
+     "east | 40\nnorth | 50\nwest | 11"
+    ],
+    "explain": "HAVING filters groups after grouping: north has a single row, fails COUNT(*) > 1, and the whole group goes.",
+    "whys": [
+     "Right: only groups with more than one row stay.",
+     "The condition is on the row count, not the amount.",
+     "west has two rows and stays; north has one.",
+     "HAVING removes north, which has one row."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-8",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE sales (region TEXT, amount INTEGER);\nINSERT INTO sales VALUES ('east', 10), ('east', 30), ('west', 5), ('west', 6), ('north', 50);\nSELECT region, SUM(amount)\nFROM sales\nWHERE amount > 8\nGROUP BY region\nORDER BY region;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "east | 40\nnorth | 50",
+     "east | 40\nnorth | 50\nwest | 11",
+     "east | 40\nnorth | 50\nwest | 0",
+     "east | 30\nnorth | 50"
+    ],
+    "explain": "WHERE 在分组之前逐行过滤：west 的两行（5、6）都被去掉，这一组根本不存在，所以不会出现 west | 0。east 的两行 10、30 都留下，合计 40。",
+    "whys": [
+     "正确：先过滤行，再分组。",
+     "west 的行都小于等于 8，已被 WHERE 去掉。",
+     "没有行的组不会出现，不会显示为 0。",
+     "east 的 10 也大于 8，被保留。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "east | 40\nnorth | 50",
+     "east | 40\nnorth | 50\nwest | 11",
+     "east | 40\nnorth | 50\nwest | 0",
+     "east | 30\nnorth | 50"
+    ],
+    "explain": "WHERE filters rows before grouping: both west rows (5 and 6) are removed, so that group never forms and there is no west | 0. Both east rows, 10 and 30, stay, for 40.",
+    "whys": [
+     "Right: rows are filtered first, then grouped.",
+     "Both west rows are 8 or less and are removed by WHERE.",
+     "A group with no rows does not appear at all, not as 0.",
+     "east's 10 is also above 8 and stays."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-9",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE a (x INTEGER);\nINSERT INTO a VALUES (1), (2), (2);\nCREATE TABLE b (x INTEGER);\nINSERT INTO b VALUES (2), (3);\nSELECT\n  (SELECT COUNT(*) FROM (SELECT x FROM a UNION SELECT x FROM b)),\n  (SELECT COUNT(*) FROM (SELECT x FROM a UNION ALL SELECT x FROM b));",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "3 | 5",
+     "3 | 4",
+     "5 | 5",
+     "4 | 5"
+    ],
+    "explain": "UNION 合并后去重，连同一张表里的重复行也去掉，剩 1、2、3；UNION ALL 原样保留全部 5 行。",
+    "whys": [
+     "正确：UNION 对整个结果去重，UNION ALL 不去重。",
+     "UNION ALL 不去重，a 的 3 行加 b 的 2 行共 5 行。",
+     "UNION 会去重。",
+     "UNION 也会去掉 a 自己内部的重复 2。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "3 | 5",
+     "3 | 4",
+     "5 | 5",
+     "4 | 5"
+    ],
+    "explain": "UNION removes duplicates from the combined result, including those within one table, leaving 1, 2, 3; UNION ALL keeps all 5 rows as they are.",
+    "whys": [
+     "Right: UNION dedupes the whole result; UNION ALL does not.",
+     "UNION ALL keeps everything: 3 rows from a plus 2 from b.",
+     "UNION does remove duplicates.",
+     "UNION also removes the duplicate 2 inside a."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-10",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE emp (name TEXT, salary INTEGER);\nINSERT INTO emp VALUES ('a', 100), ('b', 300), ('c', 300), ('d', 200);\nSELECT DISTINCT salary FROM emp ORDER BY salary DESC LIMIT 1 OFFSET 1;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "NULL",
+     "100",
+     "300",
+     "200"
+    ],
+    "explain": "DISTINCT 先把工资去重成 300、200、100，降序后跳过第一个（OFFSET 1），取一个（LIMIT 1），得到第二高的不同工资 200。",
+    "whys": [
+     "去重后有 3 个值，偏移 1 后仍有结果。",
+     "100 是第三高。",
+     "没有 DISTINCT 时第二行才会是 300。",
+     "正确：去重后第二高的工资。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "NULL",
+     "100",
+     "300",
+     "200"
+    ],
+    "explain": "DISTINCT reduces the salaries to 300, 200 and 100; in descending order OFFSET 1 skips the first and LIMIT 1 takes one, giving the second-highest distinct salary, 200.",
+    "whys": [
+     "There are 3 distinct values, so OFFSET 1 still leaves rows.",
+     "100 is the third highest.",
+     "Without DISTINCT the second row would be 300.",
+     "Right: the second-highest distinct salary."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-sql-11",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE s (name TEXT, score INTEGER);\nINSERT INTO s VALUES ('a', 90), ('b', 80), ('c', 90), ('d', 70);\nSELECT name,\n  RANK() OVER (ORDER BY score DESC),\n  DENSE_RANK() OVER (ORDER BY score DESC)\nFROM s\nORDER BY score DESC, name;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "a | 1 | 1\nc | 2 | 2\nb | 3 | 3\nd | 4 | 4",
+     "a | 1 | 1\nc | 1 | 1\nb | 2 | 2\nd | 3 | 3",
+     "a | 1 | 1\nc | 1 | 2\nb | 3 | 3\nd | 4 | 4",
+     "a | 1 | 1\nc | 1 | 1\nb | 3 | 2\nd | 4 | 3"
+    ],
+    "explain": "并列的行名次相同。RANK 在并列之后跳号（1、1、3、4），DENSE_RANK 不跳号（1、1、2、3）。",
+    "whys": [
+     "这是 ROW_NUMBER 的结果，并列的行也会分出先后。",
+     "RANK 会在两个并列第一之后跳到 3。",
+     "DENSE_RANK 里并列的行名次相同，c 也是 1。",
+     "正确：RANK 跳号，DENSE_RANK 连续。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "a | 1 | 1\nc | 2 | 2\nb | 3 | 3\nd | 4 | 4",
+     "a | 1 | 1\nc | 1 | 1\nb | 2 | 2\nd | 3 | 3",
+     "a | 1 | 1\nc | 1 | 2\nb | 3 | 3\nd | 4 | 4",
+     "a | 1 | 1\nc | 1 | 1\nb | 3 | 2\nd | 4 | 3"
+    ],
+    "explain": "Tied rows share a rank. RANK skips numbers after a tie (1, 1, 3, 4); DENSE_RANK does not (1, 1, 2, 3).",
+    "whys": [
+     "That is ROW_NUMBER, which breaks ties.",
+     "RANK jumps to 3 after the two tied firsts.",
+     "In DENSE_RANK tied rows share a rank, so c is 1 too.",
+     "Right: RANK leaves gaps, DENSE_RANK does not."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-sql-12",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE tx (day INTEGER, amount INTEGER);\nINSERT INTO tx VALUES (1, 5), (2, -2), (3, 10);\nSELECT day, SUM(amount) OVER (ORDER BY day) FROM tx ORDER BY day;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "1 | 5\n2 | 3\n3 | 13",
+     "1 | 13\n2 | 13\n3 | 13",
+     "1 | 5\n2 | -2\n3 | 10",
+     "1 | 5\n2 | 7\n3 | 17"
+    ],
+    "explain": "窗口里带 ORDER BY 时，默认的窗口范围是从第一行到当前行，SUM 就成了累计和：5、5 - 2 = 3、3 + 10 = 13。去掉 ORDER BY 才是每行都显示总和 13。",
+    "whys": [
+     "正确：累计求和。",
+     "这是 OVER () 不带 ORDER BY 时的结果。",
+     "窗口函数对窗口内的行求和，不是只看当前行。",
+     "-2 要按负数加进去，5 - 2 = 3。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "1 | 5\n2 | 3\n3 | 13",
+     "1 | 13\n2 | 13\n3 | 13",
+     "1 | 5\n2 | -2\n3 | 10",
+     "1 | 5\n2 | 7\n3 | 17"
+    ],
+    "explain": "With ORDER BY in the window, the default frame runs from the first row to the current one, so SUM is a running total: 5, 5 - 2 = 3, 3 + 10 = 13. Without ORDER BY every row would show the total, 13.",
+    "whys": [
+     "Right: a running total.",
+     "That is what OVER () without ORDER BY gives.",
+     "The window function sums the frame, not just the current row.",
+     "-2 is added as a negative: 5 - 2 = 3."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-13",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "SELECT 7 / 2, 7 / 2.0, 7 % 3;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "4 | 3.5 | 1",
+     "3 | 3.5 | 1",
+     "3.5 | 3.5 | 1",
+     "3 | 3 | 1"
+    ],
+    "explain": "SQLite（和 PostgreSQL）里两个整数相除是整数除法，7 / 2 = 3；只要有一边是小数就按小数算。MySQL 的 / 则总是返回小数，所以这类题要先看方言。",
+    "whys": [
+     "整数除法是截断，不是四舍五入。",
+     "正确：整数相除取整，有小数时按小数算。",
+     "这是 MySQL 的行为；SQLite 里 7 / 2 是 3。",
+     "7 / 2.0 有一边是小数，结果是 3.5。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "4 | 3.5 | 1",
+     "3 | 3.5 | 1",
+     "3.5 | 3.5 | 1",
+     "3 | 3 | 1"
+    ],
+    "explain": "In SQLite (and PostgreSQL) dividing two integers is integer division, so 7 / 2 is 3; one decimal operand makes it a decimal division. MySQL's / always returns a decimal, so check the dialect.",
+    "whys": [
+     "Integer division truncates; it does not round.",
+     "Right: integer division truncates; a decimal operand keeps the fraction.",
+     "That is MySQL; in SQLite 7 / 2 is 3.",
+     "7 / 2.0 has a decimal operand, so it is 3.5."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-sql-14",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "SELECT 'a' || NULL, COALESCE(NULL, NULL, 'z'), NULL + 1;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "NULL | NULL | NULL",
+     "a | z | NULL",
+     "NULL | z | NULL",
+     "a | z | 1"
+    ],
+    "explain": "几乎所有运算碰到 NULL 都得 NULL，字符串拼接 || 和加法都一样。COALESCE 返回第一个非 NULL 的参数，是处理空值的标准办法。",
+    "whys": [
+     "COALESCE 会跳过 NULL，返回 z。",
+     "|| 拼接 NULL 的结果也是 NULL。",
+     "正确：运算遇 NULL 得 NULL，COALESCE 取第一个非空值。",
+     "NULL 不会被当成空字符串或 0。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "NULL | NULL | NULL",
+     "a | z | NULL",
+     "NULL | z | NULL",
+     "a | z | 1"
+    ],
+    "explain": "Nearly every operation involving NULL yields NULL, string concatenation with || and addition alike. COALESCE returns its first non-NULL argument and is the standard way to handle missing values.",
+    "whys": [
+     "COALESCE skips the NULLs and returns z.",
+     "Concatenating NULL with || also gives NULL.",
+     "Right: operations with NULL give NULL; COALESCE takes the first non-NULL.",
+     "NULL is not treated as an empty string or 0."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-sql-15",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE g (score INTEGER);\nINSERT INTO g VALUES (95), (72), (88), (60);\nSELECT\n  SUM(CASE WHEN score >= 80 THEN 1 ELSE 0 END),\n  COUNT(CASE WHEN score < 70 THEN 1 END)\nFROM g;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "2 | 1",
+     "4 | 1",
+     "2 | 2",
+     "2 | 4"
+    ],
+    "explain": "第一列每行给 1 或 0 再求和，数出 95、88 两行。第二列的 CASE 没有 ELSE，不满足时为 NULL，COUNT 不数 NULL，只数到 60 这一行。",
+    "whys": [
+     "正确：没有 ELSE 的 CASE 返回 NULL，COUNT 跳过它。",
+     "SUM 只累加满足条件时的 1，结果是 2。",
+     "只有 60 小于 70，72 不算。",
+     "不满足条件时是 NULL 而不是 0，COUNT 不会数它。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "2 | 1",
+     "4 | 1",
+     "2 | 2",
+     "2 | 4"
+    ],
+    "explain": "The first column gives each row 1 or 0 and sums them: 95 and 88. The second CASE has no ELSE, so it is NULL when the condition fails, and COUNT skips NULLs, counting only the row with 60.",
+    "whys": [
+     "Right: a CASE without ELSE gives NULL, and COUNT skips it.",
+     "SUM adds 1 only where the condition holds, so it is 2.",
+     "Only 60 is below 70; 72 is not.",
+     "A failed condition gives NULL, not 0, so COUNT does not count it."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-16",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE e (v INTEGER);\nSELECT COUNT(*), SUM(v), MAX(v) FROM e;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "0 | NULL | NULL",
+     "（没有返回任何行）",
+     "0 | 0 | 0",
+     "0 | 0 | NULL"
+    ],
+    "explain": "没有 GROUP BY 的聚合查询总是返回一行，即使表是空的。COUNT 在空集上是 0，SUM 和 MAX 在空集上是 NULL（SQLite 另有 TOTAL()，空集返回 0.0）。",
+    "whys": [
+     "正确：空集上 COUNT 为 0，SUM 和 MAX 为 NULL。",
+     "不带 GROUP BY 的聚合一定返回一行。",
+     "空集的 SUM 是 NULL，不是 0。",
+     "SUM 在没有行时同样是 NULL。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "0 | NULL | NULL",
+     "(no rows)",
+     "0 | 0 | 0",
+     "0 | 0 | NULL"
+    ],
+    "explain": "An aggregate query without GROUP BY always returns one row, even for an empty table. COUNT over nothing is 0, while SUM and MAX over nothing are NULL (SQLite also has TOTAL(), which gives 0.0).",
+    "whys": [
+     "Right: COUNT is 0, SUM and MAX are NULL over no rows.",
+     "An aggregate without GROUP BY always returns one row.",
+     "SUM over no rows is NULL, not 0.",
+     "SUM over no rows is NULL too."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-17",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE emp (name TEXT, dept TEXT, salary INTEGER);\nINSERT INTO emp VALUES ('a', 'x', 100), ('b', 'x', 200), ('c', 'y', 150), ('d', 'y', 150), ('e', 'y', 300);\nSELECT name FROM emp e1\nWHERE salary > (SELECT AVG(salary) FROM emp e2 WHERE e2.dept = e1.dept)\nORDER BY name;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "b",
+     "e",
+     "b\ne",
+     "b\nc\nd\ne"
+    ],
+    "explain": "关联子查询对外层每一行按它的部门算平均：x 部门平均 150，只有 b（200）更高；y 部门平均 200，只有 e（300）更高。",
+    "whys": [
+     "e 的 300 也高于 y 部门的平均。",
+     "这是和全公司平均（180）比的结果，但子查询按部门过滤了。",
+     "正确：各自和本部门平均比较。",
+     "c、d 的 150 低于 y 部门的平均 200。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "b",
+     "e",
+     "b\ne",
+     "b\nc\nd\ne"
+    ],
+    "explain": "The correlated subquery computes the average of each row's own department: x averages 150, and only b (200) is above it; y averages 200, and only e (300) is above it.",
+    "whys": [
+     "e's 300 is above y's average too.",
+     "That compares with the company average (180), but the subquery filters by department.",
+     "Right: each row is compared with its own department's average.",
+     "c and d earn 150, below y's average of 200."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-sql-18",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE staff (id INTEGER PRIMARY KEY, name TEXT, manager_id INTEGER);\nINSERT INTO staff VALUES (1, 'ann', NULL), (2, 'bo', 1), (3, 'cy', 1), (4, 'di', 2);\nSELECT s.name, m.name\nFROM staff s\nLEFT JOIN staff m ON s.manager_id = m.id\nORDER BY s.id;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "ann | ann\nbo | ann\ncy | ann\ndi | bo",
+     "bo | ann\ncy | ann\ndi | bo",
+     "ann | NULL\nbo | ann\ncy | ann\ndi | bo",
+     "ann | NULL\nbo | ann\ncy | bo\ndi | cy"
+    ],
+    "explain": "自连接把同一张表当两张用：s 是员工，m 是经理。LEFT JOIN 保留没有经理的 ann，她那一行的经理名是 NULL。",
+    "whys": [
+     "ann 的 manager_id 是 NULL，连不到任何人。",
+     "这是内连接的结果，LEFT JOIN 会保留 ann。",
+     "正确：LEFT JOIN 保留了没有经理的人。",
+     "经理按 manager_id 找，cy 的经理是 ann（1），di 的是 bo（2）。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "ann | ann\nbo | ann\ncy | ann\ndi | bo",
+     "bo | ann\ncy | ann\ndi | bo",
+     "ann | NULL\nbo | ann\ncy | ann\ndi | bo",
+     "ann | NULL\nbo | ann\ncy | bo\ndi | cy"
+    ],
+    "explain": "A self-join uses one table twice: s for the employee, m for the manager. LEFT JOIN keeps ann, who has no manager, with NULL for the manager's name.",
+    "whys": [
+     "ann's manager_id is NULL, which matches nobody.",
+     "That is an inner join; LEFT JOIN keeps ann.",
+     "Right: LEFT JOIN keeps the person with no manager.",
+     "Managers come from manager_id: cy's is ann (1), di's is bo (2)."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-sql-19",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE emails (id INTEGER, email TEXT);\nINSERT INTO emails VALUES (1, 'a@x'), (2, 'b@x'), (3, 'a@x'), (4, 'c@x'), (5, 'b@x'), (6, 'a@x');\nSELECT email, COUNT(*)\nFROM emails\nGROUP BY email\nHAVING COUNT(*) > 1\nORDER BY COUNT(*) DESC;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "a@x | 3\nb@x | 2",
+     "b@x | 2\na@x | 3",
+     "a@x | 3\nb@x | 2\nc@x | 1",
+     "a@x | 2\nb@x | 1"
+    ],
+    "explain": "按邮箱分组后数行数，HAVING 只留下出现不止一次的（重复的）邮箱，再按次数从多到少排列。",
+    "whys": [
+     "正确：找出重复项并按次数降序。",
+     "按 COUNT(*) 降序，a@x（3 次）在前。",
+     "c@x 只出现一次，被 HAVING 去掉。",
+     "COUNT(*) 数的是全部行，不是「多出来的」次数。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "a@x | 3\nb@x | 2",
+     "b@x | 2\na@x | 3",
+     "a@x | 3\nb@x | 2\nc@x | 1",
+     "a@x | 2\nb@x | 1"
+    ],
+    "explain": "Grouping by email and counting rows, HAVING keeps only the emails that appear more than once (the duplicates), sorted by count, most first.",
+    "whys": [
+     "Right: the duplicates, most frequent first.",
+     "Sorted by count descending, a@x (3) comes first.",
+     "c@x appears once and HAVING drops it.",
+     "COUNT(*) counts every row, not just the extra copies."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-sql-20",
+   "section": "code-output",
+   "topic": "sql",
+   "code": "CREATE TABLE t (id INTEGER PRIMARY KEY, v INTEGER);\nINSERT INTO t VALUES (1, 1), (2, 2), (3, NULL);\nUPDATE t SET v = v * 10 WHERE v >= 2 OR v IS NULL;\nSELECT id, v FROM t ORDER BY id;",
+   "lang": "sql",
+   "zh": {
+    "q": "在 SQLite 里依次执行下面的语句，最后一条查询返回什么？（每行一条记录，列之间用 | 分隔）",
+    "choices": [
+     "1 | 1\n2 | 20\n3 | NULL",
+     "1 | 1\n2 | 20\n3 | 0",
+     "1 | 10\n2 | 20\n3 | NULL",
+     "1 | 1\n2 | 20\n3 | 10"
+    ],
+    "explain": "WHERE 选中了 id 2 和 id 3 两行。id 2 变成 20；id 3 的 NULL * 10 仍是 NULL。id 1 的 v 是 1，不满足条件，不变。",
+    "whys": [
+     "正确：NULL 参与乘法仍是 NULL。",
+     "NULL 乘任何数还是 NULL，不会变成 0。",
+     "id 1 的 v 小于 2，不会被更新。",
+     "NULL 不会被当成 1。"
+    ]
+   },
+   "en": {
+    "q": "Run these statements in SQLite. What does the last query return? (One row per line, columns separated by |)",
+    "choices": [
+     "1 | 1\n2 | 20\n3 | NULL",
+     "1 | 1\n2 | 20\n3 | 0",
+     "1 | 10\n2 | 20\n3 | NULL",
+     "1 | 1\n2 | 20\n3 | 10"
+    ],
+    "explain": "WHERE picks ids 2 and 3. id 2 becomes 20; for id 3, NULL * 10 is still NULL. id 1 has v = 1, fails the condition and is unchanged.",
+    "whys": [
+     "Right: NULL times anything is still NULL.",
+     "NULL times a number stays NULL; it does not become 0.",
+     "id 1 has v below 2 and is not updated.",
+     "NULL is not treated as 1."
+    ]
    },
    "answer": [
     0
