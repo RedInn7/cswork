@@ -63,8 +63,8 @@ export function TakeHomeWorkspace({
       <div className="ica-bar">
         <p className="ai-round-hint">
           {t(
-            '不可用 AI。计时和设计说明只保存在这个浏览器里，代码也一样。',
-            'No AI. The timer and the design note stay in this browser, like the code.',
+            '不可用 AI。计时、设计说明和编辑中的代码只保存在这个浏览器里；运行测试时文件会和 AI 辅助轮一样保存在你的运行记录里。',
+            'No AI. The timer, the design note and the code you are editing stay in this browser; a test run keeps the files in your run records, as in the AI-assisted round.',
           )}
         </p>
         <Countdown storageKey={`cswork:take-home:${slug}:started`} minutes={minutes} />

@@ -211,7 +211,7 @@ export function PrivacyDocument() {
               </p>
               <p id="privacy-ai-round">
                 在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
-                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。点「AI 评估」时，服务器会把你当前的文件、浏览器里保存的结对对话（最多 40 轮、2.4 万字）、最近一次运行的公开测试结果和隐藏测试通过数、近 3 小时的运行情况，以及带回家作业的设计说明发送给 Anthropic，用于生成评估；同样不保存，只记录每天的调用次数和用量。带回家作业（/take-home）的代码、计时开始时间和设计说明只保存在当前浏览器。
+                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。点 AI 结对下方的「结束并评估」时，服务器会把你当前的文件、本页的结对对话（最多 40 轮、2.4 万字）、最近一次运行的公开测试结果和隐藏测试通过数、近 3 小时的运行情况发送给 Anthropic；带回家作业点「评估代码质量」时改为发送当前文件、最近一次运行结果和设计说明。评估同样不保存，只记录每天的调用次数和用量。带回家作业（/take-home）点「运行测试」时和上面一样，项目文件和测试结果保存在你的运行记录里；编辑中的代码、计时开始时间和设计说明只保存在当前浏览器。
               </p>
               <p id="privacy-ica">
                 「CodeSignal ICA 式练习」（/oa/ica）的运行与上面相同：项目文件和测试结果保存在你的运行记录里，平台据此判断你通过了哪些关卡、解锁下一关。90 分钟计时只记在当前浏览器。这项练习没有 AI 结对，不向任何第三方发送内容。
@@ -854,14 +854,17 @@ export function PrivacyDocument() {
                 reply. No email, name or account identifier is sent; the platform
                 records only daily call counts and usage, never what was sent or
                 the AI's reply. Nothing is sent unless you ask. When you choose
-                AI review, the server sends your current files, the pair
-                conversation saved in your browser (up to 40 turns and 24,000
-                characters), your last run&apos;s public results and hidden-test
-                pass count, your runs over the last 3 hours and, for a take-home
-                project, your design notes to Anthropic to write the review; it
-                is not stored either, and only daily call counts and usage are
-                recorded. A take-home project&apos;s code (/take-home), its start
-                time and your design notes stay only in your browser.
+                Finish and review under the AI pair, the server sends your
+                current files, this page&apos;s pair conversation (up to 40 turns
+                and 24,000 characters), your last run&apos;s public results and
+                hidden-test pass count and your runs over the last 3 hours to
+                Anthropic to write the review; Review code quality on a
+                take-home sends your current files, the last run and your design
+                note instead. The review is not stored either, and only daily
+                call counts and usage are recorded. Runs of a take-home project
+                (/take-home) are kept in your run records the same way; the code
+                you are editing, its start time and your design notes stay only
+                in your browser.
               </p>
               <p id="privacy-ica">
                 Runs in the CodeSignal ICA-style practice (/oa/ica) work the
