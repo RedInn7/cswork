@@ -304,6 +304,7 @@ export function StudyPlan({
         today={today || localDay()}
         stops={stops}
         english={english}
+        handoff={Boolean(handed)}
         onDone={close}
       />
     );
@@ -580,12 +581,15 @@ function PlanForm({
   today,
   stops,
   english,
+  handoff,
   onDone,
 }: {
   goal: PlanGoal;
   today: string;
   stops: RouteStop[];
   english: boolean;
+  /** The topics were handed over (?planTopics=): the learner's pick, which a placement result leaves alone. */
+  handoff: boolean;
   onDone: (goal?: PlanGoal) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -602,6 +606,7 @@ function PlanForm({
   // The latest placement quiz (/placement); placementAt moves on once a newer result is applied.
   const [placement, setPlacement] = useState<PlacementResult | null>(null);
   const [placementAt, setPlacementAt] = useState(goal.placementAt);
+  const [unticked, setUnticked] = useState(0);
   const [error, setError] = useState('');
   const first = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -615,7 +620,8 @@ function PlanForm({
   }, []);
   // A result newer than the one applied unticks its known stops and moves the start past them,
   // unless that would leave no stop to plan (then it stays unapplied). Ticking one back undoes it:
-  // the start moves back to it. Signed out the request fails and nothing changes.
+  // the start moves back to it. Signed out the request fails and nothing changes. Handed-over
+  // topics stay as handed (the result is applied next time); known stops are still tagged.
   // ponytail: kept from the topics as the form opened; a tick made before the fetch lands is lost.
   useEffect(() => {
     const controller = new AbortController();
@@ -623,11 +629,12 @@ function PlanForm({
       ({ latest }) => {
         if (!latest || !Array.isArray(latest.groups)) return;
         setPlacement(latest);
-        if (latest.at <= goal.placementAt) return;
+        if (latest.at <= goal.placementAt || handoff) return;
         const known = masteredStops(latest);
         const kept = topics.filter((slug) => !known.has(slug));
         if (!kept.length) return;
         setTopics(kept);
+        setUnticked(topics.length - kept.length);
         setStart((at) => openStart(at, known));
         setPlacementAt(latest.at);
       },
@@ -801,11 +808,11 @@ function PlanForm({
             <ChevronDown size={14} aria-hidden="true" />
           </summary>
           {placement ? (
-            placementAt > goal.placementAt && (
+            unticked > 0 && (
               <p className="route-plan-note" role="status">
                 {t(
-                  `已按定位测验取消勾选 ${known.size} 个已掌握的站，想练可以重新勾上。`,
-                  `Your placement quiz unticked ${known.size} known stops; tick any you still want to practise.`,
+                  `已按定位测验取消勾选 ${unticked} 个已掌握的站，想练可以重新勾上。`,
+                  `Your placement quiz unticked ${unticked} known ${unticked === 1 ? 'stop' : 'stops'}; tick any you still want to practise.`,
                 )}
               </p>
             )

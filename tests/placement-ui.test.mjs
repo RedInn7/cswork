@@ -196,4 +196,25 @@ test('the sprint plan form unticks a new result’s known stops once, starts pas
   await act(async () => button('Save plan').click());
   assert.deepEqual([saved[1].startStop, saved[1].topics, saved[1].placementAt], [DEFAULT_GOAL.startStop, first, DEFAULT_GOAL.placementAt]);
   await act(async () => root.unmount());
+
+  // The note counts the stops it unticked, not every known one.
+  root = createRoot(document.getElementById('root'));
+  await render({ ...DEFAULT_GOAL, status: 'planned', topics: ROUTE_SLUGS.slice(3) });
+  await act(async () => button('Edit sprint plan').click());
+  assert.match(document.querySelector('.route-plan-topics [role="status"]').textContent, /unticked 5 known stops/);
+  await act(async () => root.unmount());
+
+  // Stops handed over by /career/jd stay ticked; the known ones are only tagged, and the result waits.
+  window.history.replaceState(null, '', '/?view=problems&planTopics=binary-search,dp-grid');
+  root = createRoot(document.getElementById('root'));
+  await render(DEFAULT_GOAL);
+  assert.deepEqual(
+    ROUTE_SLUGS.filter((slug) => box(slug).checked),
+    ['binary-search', 'dp-grid'],
+  );
+  assert.equal(document.querySelectorAll('.route-plan-topics label .route-plan-note').length, first.length);
+  assert.equal(document.querySelector('.route-plan-topics [role="status"]'), null);
+  await act(async () => button('Save plan').click());
+  assert.deepEqual([saved[2].topics, saved[2].placementAt], [['binary-search', 'dp-grid'], DEFAULT_GOAL.placementAt]);
+  await act(async () => root.unmount());
 });
