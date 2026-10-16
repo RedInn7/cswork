@@ -92,6 +92,23 @@ function SymbolBar({ editor }: { editor: MonacoEditor }) {
     </div>
   );
 }
+/** Whiteboard mode's editor: typing only, nothing that finishes or checks the code for you. */
+const BARE: EditorProps['options'] = {
+  quickSuggestions: false,
+  suggestOnTriggerCharacters: false,
+  parameterHints: { enabled: false },
+  wordBasedSuggestions: 'off',
+  snippetSuggestions: 'none',
+  autoClosingBrackets: 'never',
+  autoClosingQuotes: 'never',
+  autoClosingDelete: 'never',
+  autoSurround: 'never',
+  matchBrackets: 'never',
+  bracketPairColorization: { enabled: false },
+  hover: { enabled: false },
+  occurrencesHighlight: 'off',
+  renderValidationDecorations: 'off',
+};
 export type CodeEditorProps = {
   value: string;
   language: Language;
@@ -110,6 +127,8 @@ export type CodeEditorProps = {
   onFormatReady?: (format: (() => void) | null) => void;
   /** The mounted Monaco editor, for decorations and gutter clicks; may return a disposer. */
   onEditorMount?: (...args: Parameters<OnMount>) => void | (() => void);
+  /** Whiteboard mode: plain text, no completion, hovers, diagnostics or auto-closing pairs. */
+  bare?: boolean;
 };
 export function CodeEditor({
   value,
@@ -127,6 +146,7 @@ export function CodeEditor({
   onSuggestReady,
   onFormatReady,
   onEditorMount,
+  bare = false,
 }: CodeEditorProps) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -244,7 +264,7 @@ export function CodeEditor({
         editor.onDidBlurEditorText(() => setKeybar(false)),
       );
     const model = editor.getModel();
-    if (!readOnly && problemId && model) {
+    if (!readOnly && !bare && problemId && model) {
       // The SQL track's languages get no language server (the Python one has no pandas
       // stubs): Monaco highlights them and word completion fills in names.
       if (!isTrackLanguage(language)) {
@@ -301,6 +321,7 @@ export function CodeEditor({
     suggestOnTriggerCharacters: true,
     parameterHints: { enabled: true },
     wordBasedSuggestions: problemId && !isTrackLanguage(language) ? 'off' : 'currentDocument',
+    ...(bare ? BARE : {}),
   };
   return (
     <div className="cs-editor-host" data-theme={settings.theme}>
@@ -308,7 +329,7 @@ export function CodeEditor({
         <runtime.Editor
           height={vim || emacs ? 'calc(100% - 24px)' : '100%'}
           width="100%"
-          language={monacoLanguage(language)}
+          language={bare ? 'plaintext' : monacoLanguage(language)}
           value={value}
           path={path}
           theme={`cswork-${settings.theme}`}
