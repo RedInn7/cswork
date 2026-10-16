@@ -76,9 +76,10 @@ export function parseJd(raw: string): { skills: Asked[]; likelyRounds: JdReport[
   } catch {
     return null;
   }
-  if (!data || typeof data !== 'object' || !Array.isArray(data.skills)) return null;
+  const list: unknown[] | null = data && typeof data === 'object' && Array.isArray(data.skills) ? data.skills : null;
+  if (!list) return null;
   const seen = new Set<JdSkill>();
-  const skills = data.skills.flatMap((item): Asked[] => {
+  const skills = list.flatMap((item): Asked[] => {
     const { skill, evidence, importance } = (item ?? {}) as Record<string, unknown>;
     if (!isSkill(skill) || seen.has(skill)) return [];
     seen.add(skill);
