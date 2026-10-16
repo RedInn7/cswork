@@ -146,6 +146,10 @@ void test('problems in the learner’s running contest stay out of the quiz', as
       VALUES('room-1','u-racer','Room','room',?,?,90,?)`,
     )
     .run(JSON.stringify(NUMBERS.map((n) => `lc-${n}`)), now - 60_000, now);
+  // A quiz started before the contest: its question's verdict waits until the contest ends.
+  const before = (await call({ start: true }, racer)).session!.question;
   sqlite().prepare("INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('room-1','u-racer','R',?)").run(now);
+  await assert.rejects(call({ id: before.id, pick: before.choices[0] }, racer), { status: 403 });
+  sqlite().prepare("DELETE FROM user_notes WHERE user_id='u-racer'").run();
   await assert.rejects(call({ start: true }, racer), { status: 409 });
 });

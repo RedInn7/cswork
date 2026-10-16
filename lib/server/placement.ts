@@ -12,7 +12,7 @@ import {
 } from '@/lib/placement';
 import { firstParagraph } from '@/lib/speedrun';
 import type { Person } from './auth';
-import { runningContestProblems } from './contests';
+import { refuseInContest, runningContestProblems } from './contests';
 import { body, HttpError, json, limit } from './http';
 import { lcRatingOf } from './lc-ratings';
 import { speedrunPool } from './speedrun';
@@ -130,6 +130,8 @@ export async function handlePlacement(request: Request, p: Person): Promise<Resp
   if (!session || !current) throw new HttpError(409, '没有进行中的定位测验');
   if (data.id !== current.id) throw new HttpError(409, '这道题已经答过了，请刷新页面');
   if (!current.choices.includes(data.pick)) throw new HttpError(400, '选项无效');
+  // The verdict names the problem's stop and why: not while it is in a contest that began mid-quiz.
+  refuseInContest(p, current.id);
   current.pick = data.pick;
   const items = pool(p.id);
   const next = nextStep(items, session.steps);
