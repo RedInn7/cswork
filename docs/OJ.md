@@ -28,10 +28,11 @@ cswork 使用 Monaco Editor 作为浏览器编辑器、BullMQ 作为持久化任
 
 ## Core Skills
 
-- 21 道「手写数据结构与经典算法」原创题（动态数组、链表、环形双端队列、拉链哈希表、最小堆、LRU、二分、快排、归并、计数排序、KMP、网格 BFS、拓扑排序、Dijkstra、Bellman-Ford、Kruskal、Prim、并查集、字典树、线段树、树状数组），ACM 模式，四种语言都能判题，`tokens` checker。
+- 28 道「手写数据结构、经典算法与并发」原创题：数据结构与算法 21 道（动态数组、链表、环形双端队列、拉链哈希表、最小堆、LRU、二分、快排、归并、计数排序、KMP、网格 BFS、拓扑排序、Dijkstra、Bellman-Ford、Kruskal、Prim、并查集、字典树、线段树、树状数组），并发 7 道（`ordered-print`、`foobar-alternate`、`zero-even-odd`、`h2o`、`dining-philosophers`、`bounded-blocking-queue`、`read-write-lock`）。ACM 模式，四种语言都能判题，`tokens` checker。
 - 每题在 `content/core-skills/<slug>/`：`statement.{zh,en}.md`（`# 标题`、题面，再依次是输入、输出、样例说明、提示四个 `## ` 小节；题面和输出按 Markdown 渲染）、`starter.*` 和 `solution.*` 各四种语言、`gen.py` 打印测试输入（JSON：`samples`、`tests`）。起始代码上半部分是要补全的类或函数，下半部分以「—— 以下驱动代码请勿修改」开头，是读操作序列、调用实现、打印结果的固定驱动。
 - 题包里的 `starters`（`lib/oj-types.ts`）随题目 payload 下发；工作区 ACM 模式下优先用它，未改动的起始代码按模板对待（切换语言、重置、切换题面语言都会换回它）。
 - `node --import tsx scripts/core-skills/build.ts` 用本机工具链代替 go-judge（python3、`$CXX` 或 g++ `-std=c++20`、`javac --release 17`、`go -lang=go1.18`，都低于判题镜像的 Java 21 和 Go 1.24，CI 默认的 JDK 和 Go 也能跑）：solution.py 的输出就是期望答案；每种语言的 solution 必须和 starter 的驱动逐字相同并在全部测试上输出一致；每种语言的 starter 必须原样编译通过、但答错样例。生成 `content/core-skills/packages.json` 和列表用的 `lib/content/core-skills.json`；`tests/core-skills.test.ts` 重跑构建并比对。
+- 并发题的驱动带随机性（线程启动顺序、让出时机），构建跑一遍过不代表没有竞态。`node --import tsx scripts/core-skills/stress.ts [--runs N] [slug ...]`（默认 50 次）把每种语言的 solution 重跑 N 次，每次都要和 solution.py 的答案一致；每道并发题还要有去掉同步的 `racy.<ext>`，它在同样次数内至少要错一次，否则说明驱动太弱、抓不到竞态。新增并发题必须带 `racy.*`。CI（`checks.yml`）会跑这个脚本。
 - 发布：`deploy/release.sh` 在 SQL 专项之后运行 `scripts/publish-core-skills.ts`，未变化的题跳过。`core-` 题号在 `lib/free-tracks.ts` 里，对已验证邮箱的账号免费评测；导入校验要求 `core-` 题挂在 `gomall/00-overview`。入口是题库的「Core Skills」（`?view=problems&library=core`）和公开页 `/core-skills`。
 
 ## 持久化与运行
