@@ -256,7 +256,7 @@ export async function handleNotify(request: Request, p: Person | null, path: str
     const zh = db.prepare('SELECT locale FROM notify_prefs WHERE user_id=?').pluck().get(p.id) === 'zh';
     const items = db
       .prepare(
-        `SELECT id,title,body,href FROM notifications WHERE user_id=? AND kind IN ('reminder','contest-start') AND created_at>?
+        `SELECT id,title,body,href FROM notifications WHERE user_id=? AND kind IN ('reminder','contest-start','application','company-jobs') AND created_at>?
         ORDER BY created_at DESC LIMIT 1`,
       )
       .all(p.id, Date.now() - HOUR) as { id: string; title: string; body: string; href: string }[];
