@@ -385,6 +385,8 @@ const EN: Record<string, string> = {
   '今天的简历点评次数已用完，明天再来': "You've used today's resume reviews. Come back tomorrow",
   '请粘贴完整的简历文字（至少 80 个字符）': 'Paste your whole resume as text (at least 80 characters)',
   '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
+  // JD readiness checklist (lib/server/ai-jd.ts)
+  '请粘贴完整的职位描述（至少 80 个字符）': 'Paste the whole job description (at least 80 characters)',
   // AI-assisted round (lib/server/ai-rounds.ts, createProjectRun)
   练习任务不存在: 'Practice task not found',
   请先通过上一关: 'Pass the previous level first',
