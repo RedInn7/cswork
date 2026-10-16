@@ -5,7 +5,7 @@ import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { getCompileProblem } from './oj-problems';
 import { leetcodeContract } from './leetcode-mode';
-import { MAX_CODE_BYTES, ojStatus } from './oj-submissions';
+import { MAX_CODE_BYTES, ojStatus, REFERENCE_MODES_SQL } from './oj-submissions';
 
 export const PRECOMPILE_TTL_MS = 30_000;
 export const PRECOMPILE_QUEUE_LIMIT = 32;
@@ -81,7 +81,7 @@ export function hasForegroundSubmissions(except?: PrecompileDraft) {
   return Boolean(
     sqlite()
       .prepare(
-        "SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 AND mode<>'reference' AND NOT (user_id IS ? AND problem_version_id IS ? AND language IS ? AND COALESCE(coding_mode,'acm') IS ? AND code IS ?) LIMIT 1",
+        `SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 AND mode NOT IN ${REFERENCE_MODES_SQL} AND NOT (user_id IS ? AND problem_version_id IS ? AND language IS ? AND COALESCE(coding_mode,'acm') IS ? AND code IS ?) LIMIT 1`,
       )
       .get(
         except?.user_id ?? null,

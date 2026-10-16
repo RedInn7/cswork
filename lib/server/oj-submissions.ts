@@ -43,8 +43,10 @@ export type SubmissionRow = {
    * drill: an OA debugging drill, judged on every case like judge but unlisted: no points,
    * never solved, out of history and statistics (the learner started from a planted bug).
    * drill-run: a run inside a drill, judged like run but unlisted like drill; its detail reads 'run'.
+   * stress, stress-ref: a stress test's learner and reference sides (lib/server/stress.ts),
+   * unlisted; stress-ref is a reference run (referenceMode).
    */
-  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project' | 'drill' | 'drill-run';
+  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project' | 'drill' | 'drill-run' | 'stress' | 'stress-ref';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
@@ -65,6 +67,12 @@ export type SubmissionRow = {
 };
 /** Judged on every case, hidden ones included, with a formal verdict: a submission or a drill. */
 export const formalMode = (mode: string) => mode === 'judge' || mode === 'drill';
+// A reference solution's run: the editorial's code on a custom case, or the stress test's reference side.
+const REFERENCE_MODES = ['reference', 'stress-ref'];
+/** A reference solution's run: its code, stderr and compile output never reach the client, and it has its own admit() slots. */
+export const referenceMode = (mode: string) => REFERENCE_MODES.includes(mode);
+/** REFERENCE_MODES as an SQL list, for `mode IN …`. */
+export const REFERENCE_MODES_SQL = `(${REFERENCE_MODES.map((m) => `'${m}'`).join(',')})`;
 export function judgeReady() {
   if (process.env.OJ_ENABLED === 'true') return true;
   return Boolean(
@@ -125,7 +133,7 @@ function priorRequest(userId: string, key: string, hash: string) {
 function admit(p: Person, reference = false) {
   const counts = sqlite()
     .prepare(
-      "SELECT COUNT(*) as total,SUM(user_id=? AND (mode='reference')=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
+      `SELECT COUNT(*) as total,SUM(user_id=? AND (mode IN ${REFERENCE_MODES_SQL})=?) as own FROM submissions WHERE status IN ('queued','compiling','running')`,
     )
     .get(p.id, reference ? 1 : 0) as { total: number; own: number };
   if (counts.own >= 2)
@@ -689,7 +697,7 @@ export async function submissionDetail(p: Person, id: string) {
             expected: c.expectedOutput,
             stdout: r?.stdout ?? '',
             // A reference traceback would quote the editorial's code.
-            stderr: s.mode === 'reference' ? '' : (r?.stderr ?? ''),
+            stderr: referenceMode(s.mode) ? '' : (r?.stderr ?? ''),
           }
         : {}),
     };
@@ -762,10 +770,10 @@ export async function submissionDetail(p: Person, id: string) {
   return {
     ...summary(s),
     watchToken: watchToken(s),
-    code: s.mode === 'reference' ? undefined : s.code,
+    code: referenceMode(s.mode) ? undefined : s.code,
     cases,
     firstFailure,
-    compileOutput: s.mode === 'reference' ? '' : (s.compile_output ?? ''),
+    compileOutput: referenceMode(s.mode) ? '' : (s.compile_output ?? ''),
     queuedPosition: position,
     cancelRequested: Boolean(s.cancel_requested),
     problemVersion: snapshot ? `v${snapshot.revision}` : undefined,
@@ -773,8 +781,8 @@ export async function submissionDetail(p: Person, id: string) {
     project: s.mode === 'project' ? projectReport(results[0]) : undefined,
   };
 }
-/** Never the learner's own attempts: /playground, editorial reference runs, ai-assisted projects, OA drills and their runs. */
-const UNLISTED_MODES = "('playground','reference','project','drill','drill-run')";
+/** Never the learner's own attempts: /playground, reference runs, stress tests, ai-assisted projects, OA drills and their runs. */
+const UNLISTED_MODES = "('playground','reference','stress','stress-ref','project','drill','drill-run')";
 export function submissionHistory(
   p: Person,
   problemId: string | null,
