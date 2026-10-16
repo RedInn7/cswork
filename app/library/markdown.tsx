@@ -4,6 +4,8 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { CourseDiagram } from '@/components/course-diagram';
+import { RunInPlayground } from '@/components/run-in-playground';
+import { playgroundLanguage } from '@/lib/playground-share';
 
 function safeLink(value: string | undefined) {
   if (!value) return undefined;
@@ -75,16 +77,30 @@ export function PublicLibraryMarkdown({
       rehypePlugins={rehypePlugins}
       components={{
         h1: ({ children, id }) => <h2 id={id}>{children}</h2>,
-        // Our own mermaid blocks draw in the browser; the server page carries their source.
-        pre: ({ children }) => {
+        pre: ({ node, children }) => {
           const code = Children.toArray(children)[0];
-          return !ugc &&
-            isValidElement<{ className?: string; children?: unknown }>(code) &&
-            code.props.className?.split(/\s+/).includes('language-mermaid') &&
-            typeof code.props.children === 'string' ? (
-            <CourseDiagram source={code.props.children} />
-          ) : (
-            <pre>{children}</pre>
+          if (!isValidElement<{ className?: string; children?: unknown }>(code) || typeof code.props.children !== 'string')
+            return <pre>{children}</pre>;
+          const source = code.props.children;
+          const tag = /(?:^|\s)language-(\S+)/.exec(code.props.className ?? '')?.[1];
+          // Our own mermaid blocks draw in the browser; the server page carries their source.
+          if (!ugc && tag === 'mermaid') return <CourseDiagram source={source} />;
+          // A member's ```spoiler Title stays folded here too (the app's post view does the same).
+          if (ugc && tag === 'spoiler') {
+            const title = (node?.children[0] as { data?: { meta?: string | null } } | undefined)?.data?.meta?.trim();
+            return (
+              <details className="cs-spoiler">
+                <summary>{title || '剧透 · Spoiler'}</summary>
+                <PublicLibraryMarkdown body={source} math={false} ugc />
+              </details>
+            );
+          }
+          const language = playgroundLanguage(tag);
+          return (
+            <>
+              <pre>{children}</pre>
+              {language && <RunInPlayground code={source} language={language} />}
+            </>
           );
         },
         a: ({ node, href, children }) =>

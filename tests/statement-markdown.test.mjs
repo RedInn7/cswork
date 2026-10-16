@@ -139,3 +139,17 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
     act(() => root.unmount());
   }
 });
+test('server-rendered library pages offer the playground and fold member spoilers', async () => {
+  const { PublicLibraryMarkdown } = await import('../app/library/markdown.tsx');
+  const page = (body, ugc) => new JSDOM(renderToStaticMarkup(React.createElement(PublicLibraryMarkdown, { body, math: false, ugc }))).window.document;
+  const body = '```java\nclass Main {}\n```\n\n```sql\nselect 1\n```\n\n```spoiler Answer\nUse a **heap**.\n```';
+  const own = page(body, false);
+  assert.equal(own.querySelectorAll('.cs-run-playground').length, 1);
+  assert.equal(own.querySelectorAll('details').length, 0);
+  const member = page(body, true);
+  assert.equal(member.querySelectorAll('.cs-run-playground').length, 1);
+  const spoiler = member.querySelector('details.cs-spoiler');
+  assert.equal(spoiler.hasAttribute('open'), false);
+  assert.equal(spoiler.querySelector('summary').textContent, 'Answer');
+  assert.equal(spoiler.querySelector('strong').textContent, 'heap');
+});
