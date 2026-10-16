@@ -55,15 +55,17 @@ const time = (v: unknown) => {
   return Number.isFinite(at) && at > 0 ? at : null;
 };
 
-/** A board's postings as [id, title, location, url, posted] from its API's JSON. */
-function postings(ats: Ats, body: unknown): [string, string, string, string, unknown][] {
+/** id, title, location, url, posting time. */
+type Posting = [string, string, string, string, unknown];
+/** A board's postings from its API's JSON. */
+function postings(ats: Ats, body: unknown): Posting[] {
   if (ats === 'greenhouse')
-    return list(obj(body).jobs).map((j) => [str(j.id), str(j.title), str(obj(j.location).name), str(j.absolute_url), j.first_published ?? j.updated_at]);
+    return list(obj(body).jobs).map((j): Posting => [str(j.id), str(j.title), str(obj(j.location).name), str(j.absolute_url), j.first_published ?? j.updated_at]);
   if (ats === 'lever')
-    return list(body).map((j) => [str(j.id), str(j.text), str(obj(j.categories).location), str(j.hostedUrl), j.createdAt]);
+    return list(body).map((j): Posting => [str(j.id), str(j.text), str(obj(j.categories).location), str(j.hostedUrl), j.createdAt]);
   return list(obj(body).jobs)
     .filter((j) => j.isListed !== false)
-    .map((j) => [str(j.id), str(j.title), str(j.location), str(j.jobUrl), j.publishedAt]);
+    .map((j): Posting => [str(j.id), str(j.title), str(j.location), str(j.jobUrl), j.publishedAt]);
 }
 
 /** The early-career openings on one board; links must be https and fit the tracker's link field. */
@@ -93,17 +95,13 @@ export async function syncJobOpenings(now = Date.now(), boards: Record<string, B
   );
   let seen = 0;
   for (const [slug, board] of Object.entries(boards)) {
-    let found: Opening[];
-    try {
-      const response = await fetch(BOARD_API[board.ats](board.board), {
-        headers: { accept: 'application/json' },
-        signal: AbortSignal.timeout(FETCH_TIMEOUT),
-      });
-      if (!response.ok) continue;
-      found = boardOpenings(slug, board, await response.json());
-    } catch {
-      continue;
-    }
+    const found = await fetch(BOARD_API[board.ats](board.board), {
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT),
+    })
+      .then(async (response) => (response.ok ? boardOpenings(slug, board, await response.json()) : null))
+      .catch(() => null);
+    if (!found) continue;
     db.transaction(() => {
       for (const o of found) upsert.run(o.id, o.companySlug, o.title, o.location, o.url, o.kind, o.postedAt, now, now);
     })();
