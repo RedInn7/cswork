@@ -287,7 +287,7 @@ type MdNode = { type: string; value?: string; children?: MdNode[]; position?: { 
  * ponytail: Markdown inside a reverted pair (`$5 **off**, $10`) stays literal; `\$` always works.
  */
 const remarkMoney = () => (tree: MdNode, file: { value?: unknown }) => {
-  const source = String(file.value ?? '');
+  const source = typeof file.value === 'string' ? file.value : '';
   const walk = (node: MdNode) =>
     node.children?.forEach((child, i, list) => {
       if (child.type !== 'inlineMath') return walk(child);
@@ -352,7 +352,7 @@ function CodeTabs({ langs, children }: { langs: string[]; children?: React.React
   };
   return (
     <div className="cs-code-tabs">
-      <div role="tablist" aria-label={t('代码语言', 'Code language')} ref={list} onKeyDown={move}>
+      <div role="tablist" aria-label={t('代码语言', 'Code language')} ref={list}>
         {langs.map((lang, i) => (
           <button
             key={lang}
@@ -363,6 +363,7 @@ function CodeTabs({ langs, children }: { langs: string[]; children?: React.React
             aria-controls={`${id}-panel-${i}`}
             tabIndex={i === at ? 0 : -1}
             onClick={() => setAt(i)}
+            onKeyDown={move}
           >
             {languages.find((item) => item.id === lang)?.name ?? lang}
           </button>
