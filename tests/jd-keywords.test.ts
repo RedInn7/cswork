@@ -1,7 +1,9 @@
 // The JD keyword reading without AI (lib/jd-keywords.ts) and the server half of /career/jd's
-// keyword mode: aliases map onto one term on word boundaries (Go but not Go-to-market, SQL but not
-// NoSQL), sections decide must or nice, rounds come from cues, and with AI off POST oj/ai/jd takes
-// only skill ids, measures them on the learner's data and never sees the posting.
+// keyword mode: aliases map onto one term on word boundaries (Go but not Go-to-market or "Go
+// beyond", C but not Series C or C端, SQL but not NoSQL), sections decide must, nice or nothing
+// (About us, Benefits), links are dropped, years count only as experience, rounds come from cues,
+// and with AI off POST oj/ai/jd takes only skill ids, measures them on the learner's data and
+// never sees the posting.
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -18,6 +20,7 @@ delete process.env.ANTHROPIC_API_KEY;
 const { sqlite } = await import('../db/sqlite');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { handleOj } = await import('../lib/server/oj-api');
+const { fail } = await import('../lib/server/http');
 const { JD_TERMS, extractTerms, mentions, readJd } = await import('../lib/jd-keywords');
 const { JD_SKILLS } = await import('../lib/jd-skills');
 const { ROUTE_SLUGS } = await import('../lib/route-stops');
@@ -27,8 +30,10 @@ after(() => {
 });
 
 const job = `Software Engineer, New Grad 2027
+About us
+We are an AI-first company with Docker swag.
 About the role
-You'll build go-to-market tooling and react to customer feedback. We are an AI-first company.
+You'll build go-to-market tooling and react to customer feedback. Apply at https://jobs.example.com/123.
 Minimum qualifications:
 - BS in Computer Science; strong data structures and algorithms
 - Proficiency in Golang, Python or Java; experience with Postgres and k8s
@@ -66,6 +71,10 @@ void test('aliases and boundaries', () => {
     ['CI/CD', 'own our CI/CD pipelines'],
     ['React', 'React-based dashboards'],
     ['SQL', 'PL/SQL'],
+    ['C', 'proficient in C and assembly'],
+    ['C', '熟悉C语言和 Linux'],
+    ['C', 'Python, C, or Go'],
+    ['Go', 'Go is a plus'],
   ];
   const no: [string, string][] = [
     ['Go', 'our go-to-market team'],
@@ -81,9 +90,17 @@ void test('aliases and boundaries', () => {
     ['Node.js', 'every node of the graph'],
     ['Vue', 'a review'],
     ['Spark', 'spark joy'],
+    ['C', 'a fast-growing Series C startup'],
+    ['C', 'our series C round'],
+    ['C', '负责C端产品的后端开发'],
+    ['C', '面向 C 端用户'],
+    ['Go', 'Go beyond the ordinary'],
+    ['Go', 'a real Go-getter'],
   ];
   for (const [term, text] of yes) assert.ok(mentions(term, text), `${term} in "${text}"`);
   for (const [term, text] of no) assert.ok(!mentions(term, text), `${term} not in "${text}"`);
+  // A link in the posting is no HTTP requirement.
+  assert.deepEqual(extractTerms('Python. Apply at https://jobs.example.com/123 or www.example.com/jobs').map((h) => h.term), ['Python']);
 });
 
 void test('must and nice by heading, by "a plus", and the first must sentence wins', () => {
@@ -92,11 +109,13 @@ void test('must and nice by heading, by "a plus", and the first must sentence wi
   assert.equal(hits.Kubernetes.skill, undefined);
   assert.equal(hits.Kafka.importance, 'nice');
   assert.equal(hits['Distributed systems'].importance, 'nice');
-  // Not go-to-market, not "react to", not "the rest": only the AI blurb above the headings counts, as no skill.
+  // Not go-to-market, not "react to", not "the rest", not the link; About us and Benefits ask for nothing.
   assert.deepEqual(Object.keys(hits).sort(), [
-    'AI', 'Algorithms', 'C', 'C++', 'Data structures', 'Distributed systems', 'Go', 'Java', 'JavaScript', 'Kafka', 'Kubernetes', 'PostgreSQL', 'Python', 'React',
+    'Algorithms', 'C', 'C++', 'Data structures', 'Distributed systems', 'Go', 'Java', 'JavaScript', 'Kafka', 'Kubernetes', 'PostgreSQL', 'Python', 'React',
   ].sort());
-  assert.equal(hits.AI.skill, undefined);
+  // Before the first heading: the blurb (nice) when there are headings, the posting (must) when there are none.
+  assert.deepEqual(extractTerms('We are an AI-first company.\nRequirements\nPython').map((h) => [h.term, h.importance]), [['AI', 'nice'], ['Python', 'must']]);
+  assert.deepEqual(extractTerms('We are an AI-first company using Python.').map((h) => [h.term, h.importance]), [['Python', 'must'], ['AI', 'must']]);
   // A nice line that says so inline, and the same term asked for again as a must.
   const inline = extractTerms('Requirements: Python.\nExperience with Rust is a plus.\nNice to have: SQL\nRequirements\nSQL every day');
   assert.deepEqual(inline.map((h) => [h.term, h.importance, h.sentence]), [
@@ -138,8 +157,13 @@ void test('the checklist reading: skills once each, musts first, evidence cut to
     'behavioral',
     'take-home',
   ]);
-  // "1-2 years" is junior: no design round from years alone.
+  // "1-2 years" is junior: no design round from years alone; nor from an age or the company's history.
   assert.deepEqual(readJd('1-2 years of Java.').likelyRounds, ['phone-coding', 'behavioral']);
+  assert.deepEqual(readJd('Python. Must be at least 18 years of age. We have shipped tools for over 25 years.').likelyRounds, ['phone-coding', 'behavioral']);
+  for (const years of ['3+ years of professional software engineering experience', "Minimum 4 years' experience with Python", '3年以上后端开发经验，熟悉 Python'])
+    assert.ok(readJd(years).likelyRounds.includes('system-design'), years);
+  // Series C and "Go beyond" are no languages.
+  assert.deepEqual(readJd('We are a fast-growing Series C startup. Go beyond the ordinary. 负责C端产品。'), { terms: [], skills: [], likelyRounds: [] });
   assert.deepEqual(readJd('We sell shoes and love customers.'), { terms: [], skills: [], likelyRounds: [] });
 });
 
@@ -154,7 +178,8 @@ async function status(p: Person | null, body: unknown, method = 'POST') {
   try {
     return (await post(p, body, method)).status;
   } catch (error) {
-    return (error as { status?: number }).status ?? 400;
+    // The real error mapping: a ZodError is 400, anything unexpected 500.
+    return fail(error).status;
   }
 }
 

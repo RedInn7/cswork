@@ -4,9 +4,9 @@ import { JD_ROUNDS, type JdItem, type JdRound, type JdSkill } from './jd-skills'
  * Keyword reading of a job description, no AI (/career/jd when AI is off, and the resume match
  * on that page): a fixed table of CS skills with their aliases, matched on word boundaries,
  * each hit with the sentence it sits in. Lines under "Minimum qualifications", "Requirements",
- * "What you'll need" and the like are must; under "Preferred", "Nice to have" or "Bonus", or a
- * sentence saying "a plus", nice. Pure and client-safe: it runs in the browser, so the posting
- * never leaves it.
+ * "What you'll need" or "Responsibilities" and the like are must; under "Preferred", "Nice to
+ * have" or "Bonus", or a sentence saying "a plus", nice; under "About us" or "Benefits", nothing.
+ * Pure and client-safe: it runs in the browser, so the posting never leaves it.
  */
 export type JdTerm = { term: string; aliases: string[]; skill?: JdSkill };
 export type TermHit = { term: string; skill?: JdSkill; sentence: string; importance: 'must' | 'nice' };
@@ -283,11 +283,17 @@ export const JD_TERMS: JdTerm[] = GROUPS.flatMap(([skill, entries]) =>
 );
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+const either = (words: string) => words.split(' ').map((w) => `[${w[0].toUpperCase()}${w[0]}]${w.slice(1)}`).join('|');
+// Bare C and Go without their everyday uses: Series C, Plan C, C端 (consumer-facing), "Go beyond".
+const GUARDED: Record<string, string> = {
+  C: `(?<!(?:${either('series round level tier plan grade type class vitamin section part option phase stage building group category appendix')})\\s)C(?!\\s*[端侧轮位])`,
+  Go: 'Go(?!-getter|\\s(?:beyond|above|further|deep|deeper|fast|far|big|live|out|after|ahead|home|get|the extra mile)\\b)',
+};
 // Not inside a longer word, and "Go-to-market" or "C-level" are not Go or C.
 const BEFORE = '(?<![A-Za-z0-9+#\\-])';
 const AFTER = '(?![A-Za-z0-9+#]|\\.[A-Za-z0-9]|-(?:to|level|suite)\\b)';
 const pattern = (forms: string[], flags: string) =>
-  forms.length ? [new RegExp(`${BEFORE}(?:${forms.sort((a, b) => b.length - a.length).map(escape).join('|')})${AFTER}`, flags)] : [];
+  forms.length ? [new RegExp(`${BEFORE}(?:${forms.sort((a, b) => b.length - a.length).map((f) => GUARDED[f] ?? escape(f)).join('|')})${AFTER}`, flags)] : [];
 const PATTERNS = new Map(
   JD_TERMS.map((t) => {
     const forms = [t.term, ...t.aliases];
@@ -301,20 +307,27 @@ const MUST_HEAD =
   /^(?:(?:minimum|basic|required|key|your|job) )?(?:qualifications|requirements|skills)$|^what you(?:'|’)ll (?:need|bring)$|^what (?:we|we're|we’re) (?:are )?looking for$|^must[- ]haves?$|^you (?:have|bring|should have|might be a fit if)$|^who you are$|^about you$|^(?:任职要求|岗位要求|任职资格|职位要求)$/i;
 const NICE_HEAD =
   /^(?:preferred|desired|bonus|additional|nice[- ]to[- ]have)(?: (?:qualifications|skills|requirements|points|experience))?$|^nice[- ]to[- ]haves?$|^bonus points(?: if you have)?$|^(?:it(?:'|’)s )?a plus(?: if you have)?$|^(?:加分项|优先|加分)$/i;
-const OTHER_HEAD =
-  /^(?:(?:key |your )?responsibilities|what you(?:'|’)ll do|about (?:us|the role|the team|the job|the company)|the role|benefits|perks|compensation|salary|pay range|location|岗位职责|工作职责|职位描述|福利待遇)$/i;
+// The role itself counts like a requirement; the company blurb, pay and perks ask for nothing.
+const ROLE_HEAD =
+  /^(?:(?:key |your )?responsibilities|what you(?:'|’)ll do|about (?:the role|the team|the job)|the role|岗位职责|工作职责|职位描述)$/i;
+const SKIP_HEAD = /^(?:about (?:us|the company)|who we are|benefits|perks|compensation|salary|pay range|location|公司介绍|福利待遇|薪资福利)$/i;
 const NICE_INLINE = /\b(?:a plus|is a bonus|nice to have|nice-to-have|preferred|bonus points|desirable)\b|加分|优先/i;
 const headKind = (label: string) => {
   const l = label.replace(/\s*\(.*\)$/, '').replace(/\s+/g, ' ').trim();
-  return NICE_HEAD.test(l) ? 'nice' : MUST_HEAD.test(l) ? 'must' : OTHER_HEAD.test(l) ? 'none' : null;
+  return NICE_HEAD.test(l) ? 'nice' : MUST_HEAD.test(l) || ROLE_HEAD.test(l) ? 'must' : SKIP_HEAD.test(l) ? 'skip' : null;
 };
 
-/** The posting as sentences, each marked must or nice by the heading above it (or its own "a plus"). */
+/**
+ * The posting as sentences, each marked must or nice by the heading above it (or its own "a plus").
+ * Under About us, Benefits or Pay nothing is asked for: left out. Text before the first heading is
+ * the title and blurb when there are headings (nice), the whole posting when there are none (must).
+ */
 function sentences(text: string) {
-  let section: 'must' | 'nice' | 'none' = 'none';
-  const out: { text: string; importance: 'must' | 'nice' }[] = [];
+  let section: 'lead' | 'must' | 'nice' | 'skip' = 'lead';
+  const out: { text: string; importance: 'must' | 'nice' | 'lead' }[] = [];
   for (const raw of text.split('\n')) {
-    let line = raw.replace(/^[\s#*_>•·▪◦●\-–—]+|[\s*_]+$/g, '');
+    // An "Apply at https://…" link is no HTTP requirement.
+    let line = raw.replace(/\b(?:https?:\/\/|www\.)\S+/gi, ' ').replace(/^[\s#*_>•·▪◦●\-–—]+|[\s*_]+$/g, '');
     if (!line) continue;
     const colon = /^([^:：]{2,60})[:：]\s*(.*)$/.exec(line);
     const kind = headKind(colon ? colon[1] : line.replace(/[:：]$/, ''));
@@ -323,10 +336,12 @@ function sentences(text: string) {
       line = colon ? colon[2] : '';
       if (!line) continue;
     }
+    if (section === 'skip') continue;
     for (const s of line.split(/(?<=[。！？；])|(?<=[.!?;])\s+/))
-      if (s.trim()) out.push({ text: s.trim(), importance: section === 'nice' || NICE_INLINE.test(s) ? 'nice' : 'must' });
+      if (s.trim()) out.push({ text: s.trim(), importance: NICE_INLINE.test(s) ? 'nice' : section });
   }
-  return out;
+  const headed = section !== 'lead';
+  return out.map((s) => ({ ...s, importance: s.importance === 'lead' ? (headed ? 'nice' : 'must') : s.importance }));
 }
 
 /** Each table term the posting mentions, once, with the first sentence that asks for it (a must one first). */
@@ -341,6 +356,8 @@ export function extractTerms(text: string): TermHit[] {
   return [...hits.values()];
 }
 
+const YEARS =
+  /(?<!\d)(\d{1,2})(?:\s*[-–~～]\s*\d{1,2})?\+?\s*(?:(?:years?|yrs)\b['’]?(?!\s+(?:of\s+age|old)\b)(?:\s+of)?(?:\s+[\w+#/.-]+){0,4}?\s+(?:experience|building|developing|designing|writing|working|shipping|programming|coding)\b|年(?:及?以上)?[^，。；,;.\s]{0,12}?经验)/gi;
 const ROUND_CUES: [JdRound, RegExp][] = [
   [
     'oa',
@@ -368,8 +385,8 @@ export function readJd(text: string): { terms: TermHit[]; skills: Pick<JdItem, '
     bySkill.set(hit.skill, { skill: hit.skill, evidence, importance: hit.importance });
   }
   const skills = [...bySkill.values()].sort((a, b) => +(a.importance === 'nice') - +(b.importance === 'nice'));
-  // The lower bound of "3-5 years" or "3+ yrs" or "3年以上".
-  const years = Math.max(0, ...[...text.matchAll(/(?<!\d)(\d{1,2})(?:\s*[-–]\s*\d{1,2})?\+?\s*(?:years|yrs|年以上)/gi)].map((m) => Number(m[1])));
+  // The lower bound of "3-5 years of experience", "3+ yrs building …" or "3年以上…经验"; not "18 years of age" or "for 25 years".
+  const years = Math.max(0, ...[...text.matchAll(YEARS)].map((m) => Number(m[1])));
   const rounds = new Set(ROUND_CUES.filter(([, re]) => re.test(text)).map(([round]) => round));
   if (skills.length) rounds.add('phone-coding').add('behavioral');
   if (years >= 3) rounds.add('system-design');
