@@ -54,7 +54,7 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
     } catch {}
     if (!signedIn) return;
     const from = query.get('contact') ? `c:${query.get('contact')}` : query.get('application') ? `a:${query.get('application')}` : '';
-    Promise.all([
+    void Promise.all([
       api<{ items: Application[] }>('oj/applications').then((r) => r.items, () => []),
       api<{ items: Contact[] }>('oj/contacts').then((r) => r.items, () => []),
     ]).then(([a, c]) => {
@@ -81,7 +81,7 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
     const filled = valuesFrom(next, applications, contacts);
     if (filled) setValues((v) => ({ ...v, ...filled }));
   };
-  const type = (key: Placeholder, value: string) => {
+  const edit = (key: Placeholder, value: string) => {
     setValues((v) => ({ ...v, [key]: value }));
     if (key !== 'myName') return;
     try {
@@ -167,7 +167,7 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
           {fields.map((key) => (
             <label key={key}>
               {PLACEHOLDERS[key][zh ? 0 : 1]}
-              <input maxLength={120} autoComplete="off" value={values[key] ?? ''} onChange={(e) => type(key, e.target.value)} />
+              <input maxLength={120} autoComplete="off" value={values[key] ?? ''} onChange={(e) => edit(key, e.target.value)} />
             </label>
           ))}
         </fieldset>
