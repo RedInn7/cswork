@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Eye, PenLine } from 'lucide-react';
 import { useT } from '@/lib/i18n';
+import { AnswerGrade, GRADE_MIN, GRADEABLE } from './answer-grade';
 import { useNote } from './problem-notes';
 import '@/app/interview-prep.css';
 
@@ -133,6 +134,10 @@ export function TryFirst({
               status
             )}
           </p>
+          {/* Above the reference answer, which it leaves closed. */}
+          {!guest && GRADEABLE.test(target) && (
+            <AnswerGrade ready={text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
+          )}
         </>
       )}
       {!revealed &&

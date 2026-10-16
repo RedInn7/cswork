@@ -8,6 +8,7 @@ import {
   rankStories, speakingSeconds, storiesMarkdown, storyBody, storyTarget, wordCount,
   type Story, type StoryQuestion,
 } from '@/lib/story-bank';
+import { AnswerGrade, GRADE_MIN } from './answer-grade';
 import { putNote } from './problem-notes';
 import '@/app/redesign.css';
 import '@/app/interview-prep.css';
@@ -374,7 +375,10 @@ function StoryEditor({
   onClose: () => void;
 }) {
   const t = useT();
+  const id = useId();
   const [form, setForm] = useState(story);
+  // The behavioral question sent with "AI feedback": the first one the story answers, or typed.
+  const [question, setQuestion] = useState(story.questions[0]?.title ?? '');
   const [saved, setSaved] = useState(story);
   const [state, setState] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [error, setError] = useState('');
@@ -499,6 +503,29 @@ function StoryEditor({
           </ul>
         </section>
       )}
+      <AnswerGrade
+        ready={STAR.reduce((n, f) => n + form[f].trim().length, 0) >= GRADE_MIN}
+        request={() => ({
+          story: { title: form.title, situation: form.situation, task: form.task, action: form.action, result: form.result },
+          question,
+        })}
+      >
+        <label className="ip-field">
+          <span>{t('一起点评的行为题（可不填）', 'Behavioral question it answers (optional)')}</span>
+          <input
+            list={`${id}-questions`}
+            maxLength={300}
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder={t('例如：讲一次你和同事意见不合的经历', 'e.g. Tell me about a time you disagreed with a teammate')}
+          />
+          <datalist id={`${id}-questions`}>
+            {form.questions.map((q) => (
+              <option key={q.key} value={q.title} />
+            ))}
+          </datalist>
+        </label>
+      </AnswerGrade>
       <footer className="ip-editor-foot">
         <button type="submit" className="rd-button" disabled={state === 'saving' || (!dirty && !isNew)}>
           {state === 'saving' ? t('正在保存…', 'Saving…') : t('保存', 'Save')}
