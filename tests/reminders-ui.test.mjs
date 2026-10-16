@@ -244,7 +244,7 @@ test('follow a company from its page; signed out it leads to signing in; unfollo
   await settle();
   const follow = document.querySelector('button.company-follow');
   assert.equal(follow.getAttribute('aria-pressed'), 'false');
-  assert.equal(follow.textContent, '关注 Amazon，有新面经或 OA 题时提醒我');
+  assert.equal(follow.textContent, '关注 Amazon，有新面经、OA 题或在招岗位时提醒我');
   await click(follow);
   assert.deepEqual(calls.at(-1), ['POST /api/oj/follows/companies', { slug: 'amazon', on: true }]);
   assert.equal(follow.getAttribute('aria-pressed'), 'true');
