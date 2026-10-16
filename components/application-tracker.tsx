@@ -601,7 +601,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                             {a.links?.mock && <a href={a.links.mock}>{t('模拟 OA', 'Mock OA')}</a>}
                             {a.prep?.experiences && (
                               <a href={a.prep.experiences.href}>
-                                {t(`面经 ${a.prep.experiences.n} 篇`, `${a.prep.experiences.n} interview experiences`)}
+                                {t(`面经 ${a.prep.experiences.n} 篇`, `${a.prep.experiences.n} interview ${a.prep.experiences.n === 1 ? 'experience' : 'experiences'}`)}
                               </a>
                             )}
                             {a.prep && <a href={a.prep.problems}>{t('这家的高频题', 'Its most reported problems')}</a>}

@@ -96,7 +96,9 @@ export function TrackerStats({ items, now, zh }: { items: readonly Application[]
             <ul>
               {s.stays.map((x) => (
                 <li key={x.stage}>
-                  {STAGE_NAMES[x.stage][i]}：{days(x.days, zh)} <small>({x.n})</small>
+                  {STAGE_NAMES[x.stage][i]}
+                  {t('：', ': ')}
+                  {days(x.days, zh)} <small>({x.n})</small>
                 </li>
               ))}
             </ul>
@@ -111,7 +113,9 @@ export function TrackerStats({ items, now, zh }: { items: readonly Application[]
             <ul>
               {s.rejectedAfter.map((x) => (
                 <li key={x.stage}>
-                  {STAGE_NAMES[x.stage][i]}：{x.n}
+                  {STAGE_NAMES[x.stage][i]}
+                  {t('：', ': ')}
+                  {x.n}
                 </li>
               ))}
             </ul>
@@ -153,9 +157,11 @@ export function TrackerBookmarklet({ zh }: { zh: boolean }) {
     const open = JSON.stringify(`${location.origin}/career/tracker?add=1`);
     link.setAttribute(
       'href',
-      `javascript:(()=>{const d=document,e=encodeURIComponent,m=d.querySelector('meta[property="og:site_name"]'),` +
-        `s=String(getSelection()).trim().slice(0,10000);window.open(${open}+'&company='+e(((m&&m.content)||location.hostname).slice(0,100))` +
-        `+'&role='+e(d.title.slice(0,120))+'&link='+e(location.href)+(s?'#jd='+e(s):''))})()`,
+      // c cuts to n code units without leaving half an emoji, which encodeURIComponent would throw on.
+      `javascript:(()=>{const d=document,e=encodeURIComponent,c=(x,n)=>x.slice(0,n).replace(/[\\uD800-\\uDBFF]$/,''),` +
+        `m=d.querySelector('meta[property="og:site_name"]'),s=c(String(getSelection()).trim(),10000);` +
+        `window.open(${open}+'&company='+e(c((m&&m.content)||location.hostname,100))` +
+        `+'&role='+e(c(d.title,120))+'&link='+e(location.href)+(s?'#jd='+e(s):''))})()`,
     );
     // Clicked here it would only open this page again: it is for dragging to the bookmarks bar.
     const stay = (e: Event) => e.preventDefault();

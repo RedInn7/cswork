@@ -34,7 +34,7 @@ const items = [
   card({ id: 'off', company: 'Offerco', stage: 'offer', interviewAt: now - 100 * HOUR }),
   card({ id: 'wish', company: 'Someday', stage: 'saved' }),
   card({ id: 'old', company: 'Quietco', stage: 'applied', stageLog: [['applied', now - 30 * DAY]], updatedAt: now - DAY }),
-  card({ id: 'nudge', company: 'Nudgeco', stage: 'applied', stageLog: [['applied', now - 8 * DAY]], updatedAt: now - DAY }),
+  card({ id: 'nudge', company: 'Nudgeco', stage: 'applied', stageLog: [['applied', now - 8 * DAY]], updatedAt: now - 8 * DAY }),
   card({
     id: 'due', companySlug: 'acme', company: 'Dueco', role: 'SWE Intern', stage: 'phone', stageLog: [['applied', now - 9 * DAY], ['phone', now - 3 * DAY]],
     updatedAt: now, nextAt: now - HOUR, nextAction: 'Send a thank-you note', interviewAt: new Date(2026, 9, 3).getTime(), hasJd: true, channel: 'referral',
@@ -53,7 +53,7 @@ globalThis.fetch = async (url, init = {}) => {
   if (key === 'GET /api/oj/applications/due/jd') return Response.json({ jd: 'Build things.\nShip them.' });
   if (key.startsWith('GET /api/oj/notes')) return Response.json({ body: JSON.stringify({ weekly: 3 }) });
   const id = /^POST \/api\/oj\/applications\/([\w-]+)$/.exec(key)?.[1];
-  if (id) return Response.json({ item: { ...items.find((a) => a.id === id), ...body } });
+  if (id) return Response.json({ item: { ...items.find((a) => a.id === id), ...body, updatedAt: Date.now() } });
   return Response.json({ error: 'no route' }, { status: 404 });
 };
 const blobs = [];
@@ -246,14 +246,34 @@ test("the bookmarklet's #jd fills the job description and leaves the address, al
   await act(async () => kept.unmount());
 });
 
-test('the bookmarklet link gets its javascript: address after mount', async () => {
+test('the bookmarklet opens the tracker with the page title, site, address and selection', async () => {
   const host = document.createElement('div');
   const r = createRoot(host);
   await act(async () => r.render(createElement(TrackerBookmarklet, { zh: true })));
   const href = host.querySelector('a').getAttribute('href');
-  assert.ok(href.startsWith('javascript:(()=>{'));
-  assert.ok(href.includes('"https://cswork.test/career/tracker?add=1"'));
-  assert.ok(href.includes("'#jd='"));
+  assert.ok(href.startsWith('javascript:'));
   assert.ok(!href.includes('%'), 'a javascript: URL is percent-decoded before it runs');
+  // Run it as a job page would: window.open recorded, the selection fixed.
+  const run = (selection) => {
+    let opened;
+    new Function('window', 'getSelection', href.slice('javascript:'.length))({ open: (u) => (opened = u) }, () => selection);
+    const url = new URL(opened);
+    assert.equal(url.origin + url.pathname, 'https://cswork.test/career/tracker');
+    return { ...Object.fromEntries(url.searchParams), jd: url.hash ? decodeURIComponent(url.hash.slice('#jd='.length)) : null };
+  };
+  history.replaceState(null, '', '/jobs/42?src=feed');
+  const meta = document.head.appendChild(Object.assign(document.createElement('meta'), { content: 'Acme Careers' }));
+  meta.setAttribute('property', 'og:site_name');
+  document.title = 'Backend Engineer – Payments';
+  assert.deepEqual(run('  Go, Kubernetes 🚀 \n'), {
+    add: '1', company: 'Acme Careers', role: 'Backend Engineer – Payments', link: 'https://cswork.test/jobs/42?src=feed', jd: 'Go, Kubernetes 🚀',
+  });
+  // No site name: the host. An emoji cut in half at a limit is dropped, not a URIError.
+  meta.remove();
+  document.title = `${'x'.repeat(119)}🚀`;
+  const cut = run(`${'y'.repeat(9999)}😀`);
+  assert.deepEqual([cut.company, cut.role, cut.jd], ['cswork.test', 'x'.repeat(119), 'y'.repeat(9999)]);
+  assert.equal(run('').jd, null);
+  history.replaceState(null, '', '/career/tracker');
   await act(async () => r.unmount());
 });
