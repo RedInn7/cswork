@@ -120,6 +120,8 @@ void test('sync: at most every 20 hours, a failed board skipped, stale openings 
   replies = { 'greenhouse.io/v1/boards/acme/jobs': greenhouse, 'lever.co/v0/postings/leverco?mode=json': lever, 'ashbyhq.com/posting-api/job-board/ashco': ashby };
   assert.equal(await syncJobOpenings(t0, boards), 4);
   assert.equal(asked.length, 4);
+  // Each board that answered gets its own row, listed nowhere.
+  assert.deepEqual(sqlite().prepare("SELECT id FROM job_openings WHERE kind='board' ORDER BY id").pluck().all(), ['ashby:ashco:', 'greenhouse:acme:', 'lever:leverco:']);
   assert.deepEqual(
     freshOpenings(t0).map((o) => o.id),
     // Newest first; one with no posting date by when it was first seen.
@@ -157,11 +159,13 @@ void test('the digest: new openings at followed companies, not a board’s first
   const nine = Date.UTC(2026, 9, 15, 1);
   const db = sqlite();
   db.prepare('DELETE FROM job_openings').run();
-  const row = (id: string, company: string, firstSeen: number) =>
+  const row = (id: string, company: string, firstSeen: number, kind = 'intern') =>
     db
-      .prepare("INSERT INTO job_openings(id,company_slug,title,location,url,kind,first_seen_at,last_seen_at) VALUES(?,?,'SWE Intern','','https://example.com/j','intern',?,?)")
-      .run(id, company, firstSeen, nine - HOUR);
+      .prepare("INSERT INTO job_openings(id,company_slug,title,location,url,kind,first_seen_at,last_seen_at) VALUES(?,?,'SWE Intern','','https://example.com/j',?,?,?)")
+      .run(id, company, kind, firstSeen, nine - HOUR);
   // Stripe's board was first synced long ago; two openings since. Airbnb's board was first synced yesterday.
+  row('greenhouse:stripe:', 'stripe', nine - 10 * 24 * HOUR, 'board');
+  row('greenhouse:airbnb:', 'airbnb', nine - 20 * HOUR, 'board');
   row('greenhouse:stripe:1', 'stripe', nine - 10 * 24 * HOUR);
   row('greenhouse:stripe:2', 'stripe', nine - 20 * HOUR);
   row('greenhouse:stripe:3', 'stripe', nine - 5 * HOUR);
@@ -188,4 +192,35 @@ void test('the digest: new openings at followed companies, not a board’s first
   } finally {
     delete process.env.HIDDEN_COMPANIES;
   }
+});
+
+void test('the digest: a board’s first early-career role, a new season after old rows expired, names outside the OA catalog', async () => {
+  const db = sqlite();
+  db.prepare('DELETE FROM job_openings').run();
+  db.prepare('DELETE FROM company_follows').run();
+  // SpaceX and Lyft have company pages but no OA catalog entry.
+  const two = { spacex: { ats: 'greenhouse', board: 'spacex' }, lyft: { ats: 'lever', board: 'lyft' } } as const;
+  const senior = { id: 1, title: 'Senior Software Engineer', location: { name: 'Hawthorne, CA' }, absolute_url: 'https://example.com/s/1' };
+  const intern = (id: string) => ({ id, text: 'Software Engineer Intern', categories: {}, hostedUrl: `https://jobs.lever.co/lyft/${id}` });
+  const sync = async (at: number, spacex: unknown[], lyft: unknown[]) => {
+    replies = { 'greenhouse.io/v1/boards/spacex/jobs': { jobs: spacex }, 'lever.co/v0/postings/lyft?mode=json': lyft };
+    assert.notEqual(await syncJobOpenings(at, two), null);
+  };
+  const s0 = Date.UTC(2026, 9, 20, 2);
+  db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at) VALUES(?,?,?)').run('jo-dan', 'spacex', s0 - 24 * HOUR);
+  db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at) VALUES(?,?,?)').run('jo-dan', 'lyft', s0 - 24 * HOUR);
+  const notices = () => db.prepare("SELECT title,body,href FROM notifications WHERE user_id='jo-dan' ORDER BY created_at").all();
+  // First syncs: SpaceX lists no early-career role, Lyft one intern role; neither is news.
+  await sync(s0, [senior], [intern('a1')]);
+  // Next day SpaceX posts its first intern role and Lyft's closes.
+  await sync(s0 + 21 * HOUR, [senior, { ...senior, id: 2, title: 'Software Engineering Intern', absolute_url: 'https://example.com/s/2' }], []);
+  assert.equal(await sendCompanyDigest(Date.UTC(2026, 9, 21, 1)), 1);
+  assert.deepEqual(notices(), [{ title: '关注的公司有 1 条新动态', body: 'SpaceX 1', href: '/company/spacex#jobs' }]);
+  // A month on, Lyft's old row is gone; its board's row is not, so next season's role is news.
+  const s2 = s0 + 31 * 24 * HOUR;
+  await sync(s2, [], []);
+  assert.deepEqual(db.prepare("SELECT id FROM job_openings WHERE company_slug='lyft'").pluck().all(), ['lever:lyft:']);
+  await sync(s2 + 21 * HOUR, [], [intern('b1')]);
+  assert.equal(await sendCompanyDigest(Date.UTC(2026, 10, 21, 1)), 1);
+  assert.deepEqual(notices()[1], { title: '关注的公司有 1 条新动态', body: 'Lyft 1', href: '/company/lyft#jobs' });
 });

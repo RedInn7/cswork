@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { sqlite } from '@/db/sqlite';
+import lcMapFile from '@/lib/content/company-lc-map.json';
 import { canonicalCompany, companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { hiddenCompanies } from './env';
 import { notify } from './notify';
@@ -35,7 +36,8 @@ export async function sendCompanyDigest(now = Date.now()) {
     companies: { slug: string; name: string }[];
     items: { id: string; companySlug: string }[];
   };
-  const names = new Map(catalog.companies.map((c) => [c.slug, c.name]));
+  // Followable companies outside the OA catalog (a board's SpaceX, Lyft) by the library's display name.
+  const names = new Map([...Object.entries(lcMapFile.names), ...catalog.companies.map((c) => [c.slug, c.name] as const)]);
   const companyOf = new Map(catalog.items.map((i) => [i.id, i.companySlug]));
   const added = new Map<string, { at: number; path: string; name: string }[]>();
   // oaReadyProblems already leaves hidden companies out.
@@ -48,14 +50,15 @@ export async function sendCompanyDigest(now = Date.now()) {
     if (list) list.push(problem);
     else added.set(slug, [problem]);
   }
-  // Openings first seen in the window; a board's first sync (the company's earliest rows) is no news.
+  // Openings first seen in the window; what a board's first sync found (lib/server/job-openings.ts
+  // keeps that time in the board's own row) is no news. MAX: a remapped board's old row lingers.
   const hidden = hiddenCompanies();
   const opened = Map.groupBy(
     (
       db
         .prepare(
-          `SELECT company_slug AS slug,first_seen_at AS at FROM job_openings j WHERE first_seen_at>=? AND first_seen_at<?
-          AND first_seen_at>(SELECT MIN(first_seen_at) FROM job_openings WHERE company_slug=j.company_slug)`,
+          `SELECT company_slug AS slug,first_seen_at AS at FROM job_openings j WHERE first_seen_at>=? AND first_seen_at<? AND kind<>'board'
+          AND first_seen_at>(SELECT MAX(first_seen_at) FROM job_openings WHERE company_slug=j.company_slug AND kind='board')`,
         )
         .all(oldest, now) as { slug: string; at: number }[]
     ).filter((j) => !hidden.has(j.slug)),

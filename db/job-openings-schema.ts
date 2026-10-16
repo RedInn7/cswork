@@ -1,7 +1,8 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 
 // New-grad and intern openings from public ATS boards (company-job-openings): id is
-// '<ats>:<board>:<jobId>', kind 'intern' or 'new-grad'; no description text is stored. Times are
+// '<ats>:<board>:<jobId>', kind 'intern' or 'new-grad'; no description text is stored. Each board
+// also has one kind 'board' row, id '<ats>:<board>:', recording its first and latest sync. Times are
 // epoch ms; posted_at is null when the board gives none. No foreign keys: release.sh only
 // applies additive SQL.
 export const jobOpenings = sqliteTable(

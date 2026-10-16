@@ -103,6 +103,9 @@ export async function syncJobOpenings(now = Date.now(), boards: Record<string, B
       .catch(() => null);
     if (!found) continue;
     db.transaction(() => {
+      // The board's own row (kind 'board', id without a job id), refreshed on every fetch so it
+      // outlives KEEP_FOR: its first_seen_at is the board's first sync, which the digest skips.
+      upsert.run(`${board.ats}:${board.board}:`, slug, '', '', '', 'board', null, now, now);
       for (const o of found) upsert.run(o.id, o.companySlug, o.title, o.location, o.url, o.kind, o.postedAt, now, now);
     })();
     seen += found.length;
@@ -117,7 +120,7 @@ export function freshOpenings(now = Date.now(), company?: string): Opening[] {
   const rows = sqlite()
     .prepare(
       `SELECT id,company_slug AS companySlug,title,location,url,kind,posted_at AS postedAt FROM job_openings
-      WHERE last_seen_at>=?${company ? ' AND company_slug=?' : ''} ORDER BY COALESCE(posted_at,first_seen_at) DESC,id`,
+      WHERE last_seen_at>=? AND kind<>'board'${company ? ' AND company_slug=?' : ''} ORDER BY COALESCE(posted_at,first_seen_at) DESC,id`,
     )
     .all(...(company ? [now - FRESH_FOR, company] : [now - FRESH_FOR])) as Opening[];
   return rows.filter((o) => !hidden.has(o.companySlug));
