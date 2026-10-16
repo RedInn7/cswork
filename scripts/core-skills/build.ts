@@ -31,6 +31,7 @@ export const GROUPS = [
   { key: 'sort-search', zh: '排序与查找', en: 'Sorting & searching' },
   { key: 'graph', zh: '图', en: 'Graphs' },
   { key: 'advanced', zh: '高级结构', en: 'Advanced structures' },
+  { key: 'concurrency', zh: '并发', en: 'Concurrency' },
 ] as const;
 
 type Problem = {
@@ -170,18 +171,18 @@ export const PROBLEMS: Problem[] = [
   },
 ];
 
-const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
+export const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
 const SOURCE: Record<CodeLanguage, string> = { python: 'main.py', cpp: 'main.cpp', java: 'Main.java', go: 'main.go' };
-const LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
+export const LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
 
 type Run = { ok: boolean; stdout: string; stderr: string; ms: number };
-function exec(command: string, args: string[], cwd: string, input = ''): Run {
+export function exec(command: string, args: string[], cwd: string, input = '', timeout = 60_000): Run {
   const started = Date.now();
   const result = spawnSync(command, args, {
     cwd,
     input,
     encoding: 'utf8',
-    timeout: 60_000,
+    timeout,
     maxBuffer: 256 * 1024 * 1024,
     env: { ...process.env, GOTOOLCHAIN: 'local', GOFLAGS: '', GO111MODULE: 'off', CGO_ENABLED: '0' },
   });
@@ -194,7 +195,7 @@ function exec(command: string, args: string[], cwd: string, input = ''): Run {
 }
 
 /** One program built in its own directory: run() feeds it a test, close() removes it. */
-function compile(language: CodeLanguage, source: string) {
+export function compile(language: CodeLanguage, source: string) {
   const dir = mkdtempSync(join(tmpdir(), 'cswork-core-'));
   writeFileSync(join(dir, SOURCE[language]), source);
   const built =
@@ -213,7 +214,7 @@ function compile(language: CodeLanguage, source: string) {
         : [join(dir, 'main'), []];
   return {
     built,
-    run: (input: string) => exec(command, args, dir, input),
+    run: (input: string, timeout?: number) => exec(command, args, dir, input, timeout),
     close: () => rmSync(dir, { recursive: true, force: true }),
   };
 }
