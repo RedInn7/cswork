@@ -6,7 +6,18 @@ import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
 import { SolutionPosts } from '@/components/solution-posts';
-import { sdCases, sdChapter, sdChapters, sdParts, sdPath, sdRequired, sdSummary } from '@/lib/server/system-design-course';
+import {
+  chapterMinutes,
+  minutesLabel,
+  sdCases,
+  sdChapter,
+  sdChapters,
+  sdParts,
+  sdPath,
+  sdRequired,
+  sdSummary,
+} from '@/lib/server/system-design-course';
+import { EstimationDrill } from '@/components/estimation-drill';
 import { PublicLibraryMarkdown, markdownToc } from '../../library/markdown';
 import { SdQuiz } from '../quiz';
 import { SdMarkRead, SdReadCheck, SdTryFirst } from '../reader';
@@ -88,7 +99,8 @@ export default async function SystemDesignChapter({ params }: Props) {
         </nav>
         <header className="public-library-article-header sd-chapter-header">
           <p className="sd-sheet-no">
-            {t(`第 ${at + 1} 章 / 共 ${sdChapters.length} 章`, `Chapter ${at + 1} of ${sdChapters.length}`)}
+            {t(`第 ${at + 1} 章 / 共 ${sdChapters.length} 章`, `Chapter ${at + 1} of ${sdChapters.length}`)} ·{' '}
+            {minutesLabel(chapterMinutes(chapter, zh), zh)}
           </p>
           <h1>{title(chapter)}</h1>
         </header>
@@ -106,6 +118,8 @@ export default async function SystemDesignChapter({ params }: Props) {
           prose
         )}
         {chapter.quiz.length > 0 && <SdQuiz slug={chapter.slug} quiz={chapter.quiz} zh={zh} />}
+        {/* The framework's estimation section, practised (also at /system-design/estimation). */}
+        {chapter.slug === 'framework' && <EstimationDrill zh={zh} />}
         <SdMarkRead slug={chapter.slug} slugs={sdRequired} />
         <nav className="sd-pager" aria-label={t('章节导航', 'Chapters')}>
           {prev ? (
