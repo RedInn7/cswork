@@ -86,7 +86,8 @@ function cachedStats(ids: readonly string[], catalogue: PublicCatalogue, now: nu
 export type BoardRow = { rank: number; handle: string; score: number; solved: number; streak: number; me: boolean };
 
 /**
- * The board: up to 100 rows by `sort` (ties share a rank), the viewer's own row wherever it is,
+ * The board: up to 100 rows by `sort` (ties share a rank), the viewer's own row wherever it is
+ * (and whether they opted in at all),
  * and the schools with at least SCHOOL_MIN listed learners (most used spelling names one).
  * `school` is a school_key and `language` a judge language; only learners with an AC count.
  */
@@ -134,7 +135,15 @@ export function practiceBoard(
     if (!i || entries[i - 1][sort] !== e[sort]) rank = i + 1;
     return { rank, ...e };
   });
-  return { rows: rows.slice(0, MAX_ROWS), mine: rows.find((r) => r.me) ?? null, total: rows.length, schools, school: board ?? null };
+  return {
+    rows: rows.slice(0, MAX_ROWS),
+    mine: rows.find((r) => r.me) ?? null,
+    /** The viewer switched the board on, listed or not (no counted AC yet). */
+    optedIn: live.some((r) => r.user_id === viewerId),
+    total: rows.length,
+    schools,
+    school: board ?? null,
+  };
 }
 
 /**

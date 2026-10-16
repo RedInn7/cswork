@@ -68,6 +68,9 @@ before(() => {
   ac('u-quiet', 'lc-1000', now - HOUR);
   profile('u-hidden', 'hidden', { visible: 0, school: 'MIT' });
   ac('u-hidden', 'lc-1000', now - HOUR);
+  // Opted in, but only a course exercise: not listed yet.
+  profile('u-new', 'newbie');
+  ac('u-new', 'course-x', now - HOUR);
 });
 after(() => {
   sqlite().close();
@@ -84,6 +87,11 @@ void test('points: the zerotrac rating, else 1200/1600/2000 by difficulty, each 
   // Only learners with a visible profile and show_practice on; nobody else's rows say "me".
   assert.deepEqual(board.rows.map((r) => r.handle).sort(), ['ada', 'bo', 'cy', 'di', 'ed']);
   assert.equal(board.rows.filter((r) => r.me).length, 1);
+  assert.equal(board.optedIn, true);
+  const waiting = practiceBoard(catalogue, {}, 'u-new', now);
+  assert.deepEqual([waiting.mine, waiting.optedIn], [null, true]);
+  assert.equal(practiceBoard(catalogue, {}, 'u-quiet', now).optedIn, false);
+  assert.equal(practiceBoard(catalogue, {}, null, now).optedIn, false);
   // Ties share a rank: di and ed both solved one easy problem.
   const di = board.rows.find((r) => r.handle === 'di')!;
   assert.equal(board.rows.find((r) => r.handle === 'ed')!.rank, di.rank);

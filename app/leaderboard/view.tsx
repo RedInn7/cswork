@@ -49,8 +49,8 @@ export function PracticeBoardView({
         <h1>{t('练习积分榜', 'Practice board')}</h1>
         <p>
           {t(
-            '每道通过的题只算一次：力扣题按它所在周赛的难度分（zerotrac rating）计分，没有分数的题按简单 1200、中等 1600、困难 2000 计，总和除以 100 就是积分。只统计判题模式下公开题库里的题，和主页上的通过数一致。',
-            'Each accepted problem counts once: a LeetCode problem scores its contest difficulty rating (zerotrac), anything without one scores 1200, 1600 or 2000 for easy, medium or hard, and the total over 100 is your points. Only judged runs on public problems count, the same ones your profile counts.',
+            '每道通过的题只算一次：力扣题按 zerotrac 根据周赛和双周赛数据给这道题估出的难度分计分，没有难度分的题按简单 1200、中等 1600、困难 2000 计（难度未知按中等），总和除以 100 就是积分。只统计判题模式下公开题库里的题，和主页上的通过数一致。',
+            'Each accepted problem counts once: a LeetCode problem scores its zerotrac problem rating, estimated from weekly and biweekly contests; anything without one scores 1200, 1600 or 2000 for easy, medium or hard (unknown difficulty counts as medium), and the total over 100 is your points. Only judged runs on public problems count, the same ones your profile counts.',
           )}
         </p>
         <p className="contest-calendar">
@@ -132,16 +132,24 @@ export function PracticeBoardView({
               ))}
             </tbody>
             {mine && !board.rows.some((r) => r.me) && (
-              <tfoot>
+              <tbody className="practice-board-me">
                 <tr data-me>{row(mine)}</tr>
-              </tfoot>
+              </tbody>
             )}
           </table>
         </div>
       ) : (
         <p className="contest-hidden-note">{t('这里还没有人上榜。', 'Nobody is listed here yet.')}</p>
       )}
-      {!mine && !scope && (
+      {!mine && !scope && board.optedIn && (
+        <p className="contest-hidden-note">
+          {t(
+            '你已开启上榜。在判题模式下通过一道公开题后就会出现在这里，榜单每小时更新一次。',
+            'You are opted in. Solve a public problem in judge mode to appear here; the board refreshes hourly.',
+          )}
+        </p>
+      )}
+      {!mine && !scope && !board.optedIn && (
         <p className="contest-hidden-note">
           {t('想上榜？在', 'Want a place? Turn on ')}
           <a href="/?view=account">{t('账户设置', 'your public profile')}</a>

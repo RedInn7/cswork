@@ -17,7 +17,7 @@ const { ProfileView } = await import('../app/u/views.tsx');
 const render = (type, props) => new JSDOM(renderToStaticMarkup(createElement(type, props))).window.document;
 const row = (rank, handle, me = false) => ({ rank, handle, score: 50 - rank, solved: 10 - rank, streak: 3, me });
 
-test('the board links handles, marks the sort and the viewer, and keeps a far-down viewer in the footer', () => {
+test('the board links handles, marks the sort and the viewer, and keeps a far-down viewer in a tbody of their own', () => {
   const school = { key: 'mit', name: 'M.I.T.', members: 3 };
   const board = { rows: [row(1, 'ada'), row(2, 'bo', true)], mine: row(2, 'bo', true), total: 2, schools: [school], school };
   for (const zh of [true, false]) {
@@ -39,12 +39,19 @@ test('the board links handles, marks the sort and the viewer, and keeps a far-do
   }
   const far = { ...board, school: null, rows: [row(1, 'ada')], mine: row(140, 'bo', true), total: 140 };
   const doc = render(PracticeBoardView, { board: far, sort: 'score', zh: false });
-  assert.equal(doc.querySelector('tfoot tr[data-me] td').textContent, '140');
+  // A second tbody, so the board's own-row highlight and "you" chip apply as in the top rows.
+  assert.equal(doc.querySelector('tfoot'), null);
+  assert.equal(doc.querySelector('tbody:last-of-type.practice-board-me tr[data-me] td').textContent, '140');
+  assert.equal(doc.querySelector('tbody:last-of-type th small').textContent, 'you');
   assert.equal(doc.querySelector('nav a').getAttribute('href'), '/leaderboard');
   assert.equal(doc.querySelector('input[name="sort"]'), null);
   const empty = render(PracticeBoardView, { board: { ...far, rows: [], mine: null, total: 0 }, sort: 'score', zh: true });
   assert.equal(empty.querySelector('table'), null);
   assert.ok(empty.querySelector('a[href="/?view=account"]'), 'says how to get on the board');
+  // Opted in, no counted AC yet: not told to switch on what is already on.
+  const waiting = render(PracticeBoardView, { board: { ...far, mine: null, optedIn: true }, sort: 'score', zh: false });
+  assert.equal(waiting.querySelector('a[href="/?view=account"]'), null);
+  assert.match(waiting.body.textContent, /You are opted in/);
 });
 
 test('the profile draws the climbing curve and the daily effort bars, and an older payload still renders', () => {
