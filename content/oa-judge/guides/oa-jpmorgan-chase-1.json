@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-1",
+  "packageChecksum": "c6488f349dcf08c0c43309b8d9c34d40b7c5671cf356933c72421e3d7f7bb6d5",
+  "sourceContentHash": "dd0671189338da8df11490e9a9810dbe586808e198d9ffaf8d592e9f44e0dabd",
+  "editorialSha256": "ba446e694ffe32167ad17691e81f7713f08a2b08012c512998817871dce9339a",
+  "hints": {
+    "zh": [
+      "一个数取反两次就等于没变，所以每个位置的最终值只取决于它被多少个更新区间覆盖：次数为奇数就取反，为偶数就保持原值。逐区间逐元素取反是 O(n·k)，n、k 都到 10^6 时太慢。",
+      "用异或差分数组记录奇偶：区间 [l, r]（1 下标）只需在两个端点各异或一次 1，之后从左到右做前缀异或，得到的就是每个位置被覆盖次数的奇偶。",
+      "开长度 n+1 的 flip 数组，对每个更新执行 flip[l−1] ^= 1、flip[r] ^= 1。然后 cur 从 0 开始，对 i 从 0 到 n−1 执行 cur ^= flip[i]，cur 为 1 时输出 −data[i]，否则输出 data[i]。0 取反仍是 0，|data[i]| ≤ 10^9 不会溢出 32 位；输入输出都有约百万个数，要用快速读写。"
+    ],
+    "en": [
+      "Negating a number twice leaves it unchanged, so each position's final value depends only on how many update ranges cover it: negate when the count is odd, keep the original when it is even. Negating range by range, element by element, is O(n·k), too slow when n and k both reach 10^6.",
+      "Record the parity with an XOR difference array: a range [l, r] (1-indexed) needs just one XOR with 1 at each of its two boundaries, and a left-to-right prefix XOR afterwards yields, for every position, the parity of the number of ranges covering it.",
+      "Allocate a flip array of length n+1 and, for each update, do flip[l−1] ^= 1 and flip[r] ^= 1. Then, starting from cur = 0, for i from 0 to n−1 do cur ^= flip[i], and print −data[i] when cur is 1 and data[i] otherwise. Negating 0 still gives 0, and |data[i]| ≤ 10^9 cannot overflow 32 bits; input and output each hold about a million numbers, so use fast I/O."
+    ]
+  },
+  "explanationEn": "## Idea: only the parity of the number of negations matters\n\nNegating a number twice leaves it unchanged, so the final value of each position depends only on how many update ranges cover it: if the count is odd, negate it; if it is even, keep the original value. Negating range by range and element by element is O(n·k), which is too slow when n and k both reach 10^6.\n\nUse an XOR difference array: for a range [l, r] (1-indexed), set flip[l−1] ^= 1 and flip[r] ^= 1. Then take a prefix XOR from left to right, cur ^= flip[i]; cur is the parity of the number of times position i is covered. When cur=1 output −data[i], otherwise output data[i].\n\n## Correctness\n\nThe range [l, r] flips cur once only when the prefix XOR passes index l−1, and flips it back when passing index r, so it flips the parity of exactly indices l−1..r−1 (that is, 1-indexed l..r) once each, and no other position is affected. The contributions of all ranges combine by XOR, giving the parity of the number of times each position is covered.\n\nNote that negating 0 still gives 0; |data[i]| ≤ 10^9, so negation cannot overflow a 32-bit integer.\n\n## Complexity\n\nO(n + k) time and O(n) extra space. Input and output each have about 10^6 numbers, so fast reading and writing is recommended.\n\n## Independent verification\n\nThe oracle sorts all range endpoints and counts coverage with a sweep line, without a difference array; for small data it additionally simulates the negations directly one by one. For n≤3, every update sequence of length at most 3 made of all possible ranges is enumerated, and the reference program is run on each. Four wrong programs that exit normally (a right-open range, negating whenever a position is covered at all, treating indices as 0-based, using −|x| instead of negation) are all judged wrong on the formal data."
+}
