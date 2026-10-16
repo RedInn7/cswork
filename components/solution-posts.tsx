@@ -1154,6 +1154,12 @@ function PostEditor({
           'Everyone can read it, under your public handle or a masked display name. Markdown, code blocks and mermaid diagrams (a ```mermaid block) work; images and HTML do not.',
         )}
       </p>
+      <p className="cs-post-editor-note">
+        {t(
+          '公式：$x^2$ 或单独成行的 $$…$$（金额写成 \\$5）。剧透：```spoiler 标题 … ``` 默认折叠，里面要放代码块时外层改用 4 个反引号。多语言：python、cpp、java、go 代码块连着写会合并成切换标签，这几种代码块都能在 Playground 打开。',
+          'Math: $x^2$, or $$…$$ on its own lines (write money as \\$5). Spoilers: ```spoiler Title … ``` stays folded; to put a code block inside, open it with four backticks. Languages: python, cpp, java and go blocks written back to back become tabs, and each of them opens in the Playground.',
+        )}
+      </p>
       {problemId === 'discuss:referral' && (
         <p className="cs-post-editor-note">
           {t(
