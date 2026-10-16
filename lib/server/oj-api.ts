@@ -28,6 +28,14 @@ import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
 import { handleAiResume } from './ai-resume';
 import { handleAiPair } from './ai-rounds';
+// Wave 7: one module per route; each feature edits only its own.
+import { handleAiGrade } from './ai-answer';
+import { handleAiJd } from './ai-jd';
+import { handleCodeReviews } from './code-reviews';
+import { handlePlacement } from './placement';
+import { handlePracticeAids } from './practice-aids';
+import { handleRoundReview } from './round-review';
+import { handleStress } from './stress';
 import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
@@ -281,6 +289,16 @@ export async function handleOj(
   if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
   // The AI pair of the AI-assisted round (lib/server/ai-rounds.ts).
   if (resource === 'ai' && id === 'pair' && !action) return handleAiPair(request, p);
+  // Feedback on a written answer or STAR story (lib/server/ai-answer.ts).
+  if (resource === 'ai' && id === 'grade' && !action) return handleAiGrade(request, p);
+  // The review of an AI-assisted round or take-home (lib/server/round-review.ts).
+  if (resource === 'ai' && id === 'round-review' && !action) return handleRoundReview(request, p);
+  // A job description's readiness checklist (lib/server/ai-jd.ts).
+  if (resource === 'ai' && id === 'jd' && !action) return handleAiJd(request, p);
+  // Private code review links, every method (lib/server/code-reviews.ts).
+  if (resource === 'reviews') return handleCodeReviews(request, p, path.slice(1));
+  // The placement quiz beside the speedrun, signed in (lib/server/placement.ts).
+  if (resource === 'speedrun' && id === 'placement' && !action) return handlePlacement(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
@@ -357,6 +375,8 @@ export async function handleOj(
     }
     return json(await requestPrecompile(p, data), 202);
   }
+  // Hint and solve-time events (lib/server/practice-aids.ts): a limit of their own, not oj-write's.
+  if (resource === 'problems' && id && action === 'aids' && !operation) return handlePracticeAids(request, p, id);
   await limit(p, 'oj-write', 40);
   if (resource === 'practice-rounds' && !id) {
     let data: unknown;
@@ -390,6 +410,8 @@ export async function handleOj(
     // Watched like a run: GET submissions/<id>?wait=1; its code never comes back.
     return json(await settleSubmission(p, created.id, request.signal), 201);
   }
+  // A stress test against the reference on generated cases (lib/server/stress.ts).
+  if (resource === 'problems' && id && action === 'stress' && !operation) return handleStress(request, p, id);
   if (resource === 'playground' && id === 'run' && !action) {
     let data: unknown;
     try {
