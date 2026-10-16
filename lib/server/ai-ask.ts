@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { askTerms } from '@/lib/ask-terms';
 import { hiddenCompanySlugs } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
+import { untagged as untaggedAll } from './ai-resume';
 import { aiEnabled, runAi, SYSTEM, textReply } from './ai-tutor';
 import { library } from './content-library';
 import { setting } from './env';
@@ -43,7 +44,8 @@ function excerpt(body: string, terms: string[]) {
   return (start ? '…' : '') + text.slice(start, start + EXCERPT_CHARS) + (start + EXCERPT_CHARS < text.length ? '…' : '');
 }
 /** Our prompt's own tags inside copied text would let a page close its source early. */
-const untagged = (text: string) => text.replace(/<\/?\s*(?:sources?|question|selected_text)\b[^>]*>/gi, '');
+const ASK_TAGS = ['source', 'sources', 'question', 'selected_text'];
+const untagged = (text: string) => untaggedAll(text, ASK_TAGS);
 
 /**
  * The public library pages that best match the question (and the selected text), best first.

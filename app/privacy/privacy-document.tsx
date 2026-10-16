@@ -53,7 +53,7 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
+                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，给面经和面试题的点赞，以及对官方题解「有帮助 / 没帮助」的评价也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告、点赞和题解评价只以人数汇总展示，不公开报告人、点赞人和评价人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
               </p>
               <p>
                 你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
@@ -189,6 +189,10 @@ export function PrivacyDocument() {
                 在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
+              <p id="privacy-answer-feedback">
+                在面试题或模拟面试里点「AI 点评我的答案」、或在故事库里点评一个 STAR 故事时，服务器会把你写的答案（或故事各部分和你选的行为面试题）、这道题的题面和参考答案（如有）发送给
+                Anthropic，用于生成点评；不发送邮箱、姓名或账户标识。平台不保存答案和点评，只记录每天的调用次数和用量。不点就不会发送。
+              </p>
               <p id="privacy-resume-builder">
                 在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「导出 JSON」的文件也在浏览器里生成。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。
               </p>
@@ -278,9 +282,9 @@ export function PrivacyDocument() {
               <p>
                 When you are signed in, finished mock OA results, the problem
                 lists you create, your “I was asked this” reports on problems
-                and library interview questions, and your upvotes on
-                experiences and interview questions are also stored with your
-                account. Lists are private until you make one
+                and library interview questions, your upvotes on experiences
+                and interview questions, and whether you found an official
+                editorial helpful are also stored with your account. Lists are private until you make one
                 public, after which anyone with the link can view and copy it.
                 The public profile is off by default; when on, it shows only the
                 handle and bio you chose, your practice statistics and the
@@ -300,8 +304,8 @@ export function PrivacyDocument() {
                 shows, never which problems, and stays out of search. How many
                 problems all of them solved appears only to one of the people
                 compared who follows each of the others and is followed back.
-                Interview reports and upvotes are shown only as counts of
-                people; reporters and voters are never named. Mock OA scores and
+                Interview reports, upvotes and editorial ratings are shown only
+                as counts of people; reporters and voters are never named. Mock OA scores and
                 AI interview scores also count, anonymously, toward the
                 percentiles other learners see, which only appear once a
                 scenario has 20 people (30 for AI interviews).
@@ -734,6 +738,16 @@ export function PrivacyDocument() {
                 store the resume text or the review; it records only daily call
                 counts and usage, and the review exists only on your open page.
                 Nothing is sent unless you submit.
+              </p>
+              <p id="privacy-answer-feedback">
+                When you choose AI feedback on your answer to an interview
+                question or in a mock interview, or on a STAR story in the story
+                bank, the server sends what you wrote (or the story&apos;s parts
+                and the behavioral question you picked), the question and its
+                reference answer (if any) to Anthropic to write the feedback.
+                Your email, name and account identifier are not sent. The
+                platform does not store the answer or the feedback; it records
+                only daily call counts and usage. Nothing is sent unless you ask.
               </p>
               <p id="privacy-resume-builder">
                 What you enter in the resume builder (/career/resume/builder)
