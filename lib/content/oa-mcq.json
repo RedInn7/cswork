@@ -5698,9 +5698,9 @@
     "q": "在长度为 n 的动态数组（如 Python list）下标 0 处插入一个元素，时间复杂度是？",
     "choices": [
      "O(n)",
-     "O(n log n)",
+     "O(log n)",
      "O(1)",
-     "O(log n)"
+     "O(n log n)"
     ],
     "explain": "数组元素在内存里连续存放，插到最前面要把原有的 n 个元素都往后挪一格。"
    },
@@ -5708,9 +5708,9 @@
     "q": "Inserting one element at index 0 of a dynamic array (such as a Python list) holding n elements costs?",
     "choices": [
      "O(n)",
-     "O(n log n)",
+     "O(log n)",
      "O(1)",
-     "O(log n)"
+     "O(n log n)"
     ],
     "explain": "The elements sit next to each other in memory, so all n of them shift one slot to the right."
    },
@@ -5728,8 +5728,8 @@
     "choices": [
      "保证按下标访问仍是 O(1)",
      "让追加操作的均摊代价保持 O(1)：总复制量是 1+2+4+… 的等比数列，不超过 2n",
-     "节省内存，倍增浪费的空间更少",
-     "内存分配器只能分配 2 的幂大小的块"
+     "内存分配器只能分配 2 的幂大小的块",
+     "节省内存，倍增浪费的空间更少"
     ],
     "explain": "每次只多开 k 个位置，n 次追加要扩容约 n/k 次，每次复制当前全部元素，总量是 O(n²/k)。按倍数扩容时复制总量是等比数列，均摊到每次追加是常数。下标访问在两种做法下都是 O(1)。"
    },
@@ -5738,8 +5738,8 @@
     "choices": [
      "To keep index access O(1)",
      "To keep append amortized O(1): the total copying is a geometric series 1+2+4+… below 2n",
-     "To save memory; doubling wastes less space",
-     "Because memory allocators only hand out power-of-two blocks"
+     "Because memory allocators only hand out power-of-two blocks",
+     "To save memory; doubling wastes less space"
     ],
     "explain": "Growing by k slots means about n/k resizes for n appends, each copying everything so far: O(n²/k) in total. Growing by a factor makes the copying a geometric series, a constant per append on average. Index access is O(1) either way."
    },
@@ -5755,25 +5755,25 @@
    "zh": {
     "q": "用链地址法的哈希表里有 n 个键、m 个桶，负载因子 α = n/m。假设哈希函数把键均匀打散，一次查找失败（键不存在）的期望代价是？",
     "choices": [
-     "Θ(α²)",
-     "Θ(log n)",
      "Θ(1 + α)",
-     "Θ(n)"
+     "Θ(n)",
+     "Θ(log n)",
+     "Θ(α²)"
     ],
     "explain": "计算哈希值是常数时间，之后要走完目标桶里的整条链，期望链长是 α。所以只要扩容时把 α 控制在常数以内，查找就是期望 O(1)。"
    },
    "en": {
     "q": "A chained hash table holds n keys in m buckets, load factor α = n/m. With keys spread uniformly, what is the expected cost of an unsuccessful lookup?",
     "choices": [
-     "Θ(α²)",
-     "Θ(log n)",
      "Θ(1 + α)",
-     "Θ(n)"
+     "Θ(n)",
+     "Θ(log n)",
+     "Θ(α²)"
     ],
     "explain": "Hashing costs a constant, then the whole chain in that bucket is scanned, which has α entries on average. Resizing keeps α bounded, which is why lookups are expected O(1)."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -5785,9 +5785,9 @@
     "q": "关于哈希表，下面哪些说法正确？（多选）",
     "choices": [
      "平均 O(1) 查找的前提是哈希函数分布均匀、负载因子有上限",
+     "扩容时要把每个键重新放进新的桶数组",
      "不做额外处理也能 O(n) 按键的大小顺序遍历",
-     "大量键落进同一个桶时，一次查找可能退化到 O(n)",
-     "扩容时要把每个键重新放进新的桶数组"
+     "大量键落进同一个桶时，一次查找可能退化到 O(n)"
     ],
     "explain": "哈希表的 O(1) 是期望值，依赖均匀的哈希和有界的负载因子；键全挤在一个桶里就退化成线性查找。扩容会改变桶数，每个键都要按新桶数重新放置。哈希表不维护键的大小顺序，要有序遍历得先排序（O(n log n)）或改用平衡树。"
    },
@@ -5795,15 +5795,15 @@
     "q": "Which statements about hash tables are true? Select all that apply.",
     "choices": [
      "Average O(1) lookups assume a well-spread hash function and a bounded load factor",
+     "Resizing moves every key into the new bucket array",
      "Keys can be visited in sorted order in O(n) with no extra work",
-     "If many keys land in one bucket, a lookup can degrade to O(n)",
-     "Resizing moves every key into the new bucket array"
+     "If many keys land in one bucket, a lookup can degrade to O(n)"
     ],
     "explain": "O(1) is an expectation that rests on good hashing and a bounded load factor; if every key shares a bucket, a lookup is a linear scan. Resizing changes the bucket count, so every key is placed again. A hash table keeps no key order: sorted output needs a sort (O(n log n)) or a balanced tree."
    },
    "answer": [
     0,
-    2,
+    1,
     3
    ]
   },
@@ -5815,9 +5815,9 @@
    "zh": {
     "q": "在 Python 里拼一个很长的字符串，为什么推荐先把片段放进列表再 \"\".join(parts)，而不是循环里 s += part？",
     "choices": [
-     "字符串不可变，+= 可能每次都复制已有的全部内容，最坏 O(n²)；join 先算总长度，每个片段只复制一次",
      "join 会用多线程并行拼接",
      "str 类型不支持 += 运算",
+     "字符串不可变，+= 可能每次都复制已有的全部内容，最坏 O(n²)；join 先算总长度，每个片段只复制一次",
      "join 会压缩字符串，占用更少内存"
     ],
     "explain": "每次 s += part 都可能新建一个字符串并把旧内容整个复制过去，总复制量是 1+2+…+n。CPython 在某些情况下能原地扩展，但这不是语言保证。join 一次性分配好总长度再逐段复制，总共 O(n)。"
@@ -5825,15 +5825,15 @@
    "en": {
     "q": "When building a long string in Python, why collect the pieces in a list and call \"\".join(parts) instead of doing s += part in a loop?",
     "choices": [
-     "Strings are immutable, so += may copy everything so far each time, O(n²) in the worst case; join sizes the result once and copies each piece once",
      "join concatenates in parallel threads",
      "str does not support +=",
+     "Strings are immutable, so += may copy everything so far each time, O(n²) in the worst case; join sizes the result once and copies each piece once",
      "join compresses the string to use less memory"
     ],
     "explain": "Each s += part may allocate a new string and copy the old contents, 1+2+…+n in total. CPython can sometimes grow the string in place, but the language does not promise it. join allocates the full length once and copies each piece once: O(n) overall."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -5844,20 +5844,20 @@
    "zh": {
     "q": "只含小写字母的两个长度为 n 的字符串，用一个大小为 26 的计数数组判断它们是否互为字母异位词。时间和额外空间分别是？",
     "choices": [
-     "O(n log n) 时间，O(1) 空间",
+     "O(n²) 时间，O(1) 空间",
      "O(n) 时间，O(1) 空间",
      "O(n) 时间，O(n) 空间",
-     "O(n²) 时间，O(1) 空间"
+     "O(n log n) 时间，O(1) 空间"
     ],
     "explain": "两个字符串各扫一遍，一个加计数、一个减计数，最后检查 26 个计数是否全为 0。计数数组的大小由字母表决定，与 n 无关，所以额外空间是 O(1)。排序的做法才是 O(n log n)。"
    },
    "en": {
     "q": "Two lowercase strings of length n are checked for being anagrams with a 26-slot count array. Time and extra space?",
     "choices": [
-     "O(n log n) time, O(1) space",
+     "O(n²) time, O(1) space",
      "O(n) time, O(1) space",
      "O(n) time, O(n) space",
-     "O(n²) time, O(1) space"
+     "O(n log n) time, O(1) space"
     ],
     "explain": "One pass adds counts for the first string, one pass subtracts for the second, then the 26 counts are checked for zero. The array size depends on the alphabet, not on n, so the extra space is O(1). Sorting both strings is the O(n log n) way."
    },
@@ -5873,8 +5873,8 @@
    "zh": {
     "q": "找两数之和等于 target 的对撞双指针（和太小就左指针右移，太大就右指针左移），在什么前提下才正确？",
     "choices": [
-     "数组元素都是正数",
      "数组长度是偶数",
+     "数组元素都是正数",
      "数组已经有序",
      "数组元素互不相同"
     ],
@@ -5883,8 +5883,8 @@
    "en": {
     "q": "The opposite-ends two-pointer search for a pair summing to target (move left up when the sum is too small, right down when too big) is correct only when:",
     "choices": [
-     "all values are positive",
      "the length is even",
+     "all values are positive",
      "the array is sorted",
      "all values are distinct"
     ],
@@ -5902,25 +5902,25 @@
    "zh": {
     "q": "求「和不超过 K 的最长子数组」时，常用的滑动窗口是：右端每次扩一格，和超过 K 就收缩左端。这个做法依赖什么条件？",
     "choices": [
-     "数组有序",
+     "数组元素都非负",
      "K 是正数",
      "数组没有重复元素",
-     "数组元素都非负"
+     "数组有序"
     ],
     "explain": "元素非负时，窗口扩大和只增不减，缩小和只减不增，所以「超过 K 就收缩左端」不会错过答案。出现负数后，收缩左端反而可能让和变大，单调性没了，要改用前缀和配合其他结构。"
    },
    "en": {
     "q": "For \"longest subarray with sum at most K\", the usual sliding window grows the right end one step at a time and shrinks the left end while the sum exceeds K. What does it rely on?",
     "choices": [
-     "The array is sorted",
+     "All values are non-negative",
      "K is positive",
      "No value repeats",
-     "All values are non-negative"
+     "The array is sorted"
     ],
     "explain": "With non-negative values, growing the window never lowers the sum and shrinking never raises it, so shrinking on overflow never skips an answer. A negative value breaks that monotonicity: dropping it from the left can raise the sum, so prefix sums with another structure are needed."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -5931,25 +5931,25 @@
    "zh": {
     "q": "前缀和数组 P 定义为 P[0] = 0，P[i] = a[0] + … + a[i-1]。闭区间 a[l..r] 的和等于？",
     "choices": [
-     "P[r+1] - P[l]",
+     "P[r] - P[l]",
      "P[r] - P[l-1]",
-     "P[r+1] - P[l+1]",
-     "P[r] - P[l]"
+     "P[r+1] - P[l]",
+     "P[r+1] - P[l+1]"
     ],
     "explain": "P[r+1] 是 a[0..r] 的和，P[l] 是 a[0..l-1] 的和，相减剩下 a[l..r]。P 多一位开头的 0，正好让 l = 0 时不用特判。"
    },
    "en": {
     "q": "Prefix sums are P[0] = 0 and P[i] = a[0] + … + a[i-1]. The sum of a[l..r], both ends included, is:",
     "choices": [
-     "P[r+1] - P[l]",
+     "P[r] - P[l]",
      "P[r] - P[l-1]",
-     "P[r+1] - P[l+1]",
-     "P[r] - P[l]"
+     "P[r+1] - P[l]",
+     "P[r+1] - P[l+1]"
     ],
     "explain": "P[r+1] sums a[0..r] and P[l] sums a[0..l-1]; the difference is a[l..r]. The leading 0 in P means l = 0 needs no special case."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -5961,9 +5961,9 @@
     "q": "合并一组可能重叠的区间，标准做法和时间复杂度是？",
     "choices": [
      "必须两两比较所有区间：至少 O(n²)",
-     "按左端点排序，再扫一遍，每个区间只和上一个合并结果比较：O(n log n)",
+     "不用排序，用一个哈希集合扫一遍：O(n)",
      "按区间长度排序，再扫一遍：O(n log n)",
-     "不用排序，用一个哈希集合扫一遍：O(n)"
+     "按左端点排序，再扫一遍，每个区间只和上一个合并结果比较：O(n log n)"
     ],
     "explain": "按左端点排好序后，能和当前区间重叠的只可能是上一个合并结果，所以一遍扫描就够，瓶颈是排序。按长度排序后，相邻的区间在数轴上可能离得很远，扫一遍合并不对。"
    },
@@ -5971,14 +5971,14 @@
     "q": "What is the standard way to merge a list of possibly overlapping intervals, and its time?",
     "choices": [
      "Every pair must be compared: at least O(n²)",
-     "Sort by start, then one pass comparing each interval with the last merged one: O(n log n)",
+     "No sort; one pass with a hash set: O(n)",
      "Sort by length, then one pass: O(n log n)",
-     "No sort; one pass with a hash set: O(n)"
+     "Sort by start, then one pass comparing each interval with the last merged one: O(n log n)"
     ],
     "explain": "Once sorted by start, only the last merged interval can overlap the current one, so one pass suffices and the sort dominates. Sorted by length, neighbours can sit far apart on the line, so a single merging pass is wrong."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -5989,25 +5989,25 @@
    "zh": {
     "q": "对长度为 n 的数组做 q 次「给 a[l..r] 全部加 v」的操作，最后只读一次整个数组。用差分数组，总时间是？",
     "choices": [
-     "O(n·q)",
-     "O(q log n)",
      "O(n + q)",
-     "O(n log q)"
+     "O(n log q)",
+     "O(q log n)",
+     "O(n·q)"
     ],
     "explain": "每次更新只改两个位置：d[l] += v，d[r+1] -= v，是 O(1)。全部更新完后对 d 求一遍前缀和就得到最终数组，O(n)。"
    },
    "en": {
     "q": "An array of length n gets q updates \"add v to every element of a[l..r]\" and is read once at the end. With a difference array, the total time is:",
     "choices": [
-     "O(n·q)",
-     "O(q log n)",
      "O(n + q)",
-     "O(n log q)"
+     "O(n log q)",
+     "O(q log n)",
+     "O(n·q)"
     ],
     "explain": "Each update touches two cells, d[l] += v and d[r+1] -= v, in O(1). One prefix-sum pass over d at the end gives the final array in O(n)."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -6018,25 +6018,25 @@
    "zh": {
     "q": "lo, hi = 0, len(a)；while lo < hi：mid = (lo + hi) // 2；若 a[mid] < x 则 lo = mid + 1，否则 hi = mid。对有序数组 a，循环结束时 lo 是什么？",
     "choices": [
-     "第一个满足 a[i] > x 的下标",
+     "第一个满足 a[i] >= x 的下标；没有这样的元素时是 len(a)",
      "某个满足 a[i] == x 的下标，找不到时是 -1",
-     "最后一个满足 a[i] < x 的下标",
-     "第一个满足 a[i] >= x 的下标；没有这样的元素时是 len(a)"
+     "第一个满足 a[i] > x 的下标",
+     "最后一个满足 a[i] < x 的下标"
     ],
     "explain": "这是左闭右开区间上的 lower bound：a[mid] < x 时答案一定在 mid 右边，否则 mid 本身可能就是答案，所以 hi = mid 保留它。区间缩到空时 lo 就是第一个 >= x 的位置，全部小于 x 时停在 len(a)。"
    },
    "en": {
     "q": "lo, hi = 0, len(a); while lo < hi: mid = (lo + hi) // 2; if a[mid] < x then lo = mid + 1 else hi = mid. On a sorted array a, what is lo when the loop ends?",
     "choices": [
-     "The first index with a[i] > x",
+     "The first index with a[i] >= x, or len(a) if there is none",
      "Some index with a[i] == x, or -1 if none",
-     "The last index with a[i] < x",
-     "The first index with a[i] >= x, or len(a) if there is none"
+     "The first index with a[i] > x",
+     "The last index with a[i] < x"
     ],
     "explain": "This is lower bound on a half-open range: when a[mid] < x the answer is right of mid; otherwise mid itself may be the answer, so hi = mid keeps it. When the range empties, lo is the first position holding something >= x, or len(a) when everything is smaller."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -6047,25 +6047,25 @@
    "zh": {
     "q": "「二分答案」（在答案的取值范围上二分，每次用 check(mid) 判断可行）需要满足什么条件？",
     "choices": [
-     "check 在取值范围上单调：某个值可行，比它大的值也都可行（或反过来）",
      "输入数组已排序",
+     "输入里没有重复元素",
      "答案一定是整数",
-     "输入里没有重复元素"
+     "check 在取值范围上单调：某个值可行，比它大的值也都可行（或反过来）"
     ],
     "explain": "二分只需要「可行」与「不可行」在取值范围上分成两段。输入本身是否有序无关紧要，例如按速度二分时数组完全可以无序；答案是实数时也可以二分到所需精度。"
    },
    "en": {
     "q": "Binary search on the answer (bisect a range of candidate answers, testing each with check(mid)) requires:",
     "choices": [
-     "check to be monotone over the range: once a value works, every larger one does (or the reverse)",
      "the input array to be sorted",
+     "no repeated values in the input",
      "the answer to be an integer",
-     "no repeated values in the input"
+     "check to be monotone over the range: once a value works, every larger one does (or the reverse)"
     ],
     "explain": "All binary search needs is that feasible and infeasible values form two runs. The input itself can be unsorted (bisecting on a speed, say), and real-valued answers can be bisected to a precision."
    },
    "answer": [
-    0
+    3
    ]
   },
   {
@@ -6076,20 +6076,20 @@
    "zh": {
     "q": "在 Java 或 C++ 里，为什么常写 mid = lo + (hi - lo) / 2，而不是 mid = (lo + hi) / 2？",
     "choices": [
-     "只有前者在 lo 为负数时正确",
+     "前者更快，少一次除法",
      "lo + hi 可能超出 int 范围而溢出，hi - lo 不会",
      "前者向上取整，后者向下取整",
-     "前者更快，少一次除法"
+     "只有前者在 lo 为负数时正确"
     ],
     "explain": "lo 和 hi 都接近 2³¹ - 1 时，lo + hi 会溢出成负数。hi - lo 不超过区间长度，不会溢出。两种写法在不溢出时结果相同。Python 整数没有上限，所以没有这个问题。"
    },
    "en": {
     "q": "In Java or C++, why write mid = lo + (hi - lo) / 2 instead of mid = (lo + hi) / 2?",
     "choices": [
-     "Only the first is right when lo is negative",
+     "The first is faster, with one less division",
      "lo + hi can overflow int; hi - lo cannot",
      "The first rounds up, the second rounds down",
-     "The first is faster, with one less division"
+     "Only the first is right when lo is negative"
     ],
     "explain": "With lo and hi near 2³¹ - 1, lo + hi wraps to a negative number. hi - lo is at most the range length, so it stays in range. Without overflow both give the same mid. Python integers are unbounded, so it never comes up there."
    },
@@ -6105,25 +6105,25 @@
    "zh": {
     "q": "用「自底向上」的方法（从最后一个非叶子节点开始依次下沉）把 n 个无序元素建成二叉堆，时间复杂度是？",
     "choices": [
-     "O(n²)",
      "O(log n)",
-     "O(n)",
-     "O(n log n)"
+     "O(n log n)",
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "大约一半节点是叶子，不用动；高度为 h 的节点最多下沉 h 层，而这样的节点只有约 n/2^(h+1) 个。总和是 n·Σ h/2^(h+1)，收敛到 O(n)。一个个 push 进去才是 O(n log n)。"
    },
    "en": {
     "q": "Building a binary heap from n unordered elements bottom-up (sift down from the last internal node back to the root) takes:",
     "choices": [
-     "O(n²)",
      "O(log n)",
-     "O(n)",
-     "O(n log n)"
+     "O(n log n)",
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "About half the nodes are leaves and never move; a node at height h sinks at most h levels, and there are about n/2^(h+1) of them. The sum n·Σ h/2^(h+1) converges to O(n). Pushing elements one by one is the O(n log n) way."
    },
    "answer": [
-    2
+    3
    ]
   },
   {
@@ -6135,9 +6135,9 @@
     "q": "要在数据流里始终保留最大的 k 个数，用堆的标准做法是？",
     "choices": [
      "把所有 n 个数放进小顶堆，最后弹 k 次",
-     "维护有序数组，用二分找位置插入，每个数 O(log k)",
+     "大小为 k 的小顶堆，超过 k 个时弹出最小的",
      "大小为 k 的大顶堆，超过 k 个时弹出最大的",
-     "大小为 k 的小顶堆，超过 k 个时弹出最小的"
+     "维护有序数组，用二分找位置插入，每个数 O(log k)"
     ],
     "explain": "小顶堆的堆顶是当前 k 个里最小的，也就是第一个该被挤掉的，所以每个数 O(log k)，空间 O(k)。有序数组二分找位置是 O(log k)，但插入要挪元素，实际是 O(k)。"
    },
@@ -6145,14 +6145,14 @@
     "q": "To keep the k largest numbers of a stream with a heap, the standard approach is:",
     "choices": [
      "Put all n numbers in a min-heap and pop k times at the end",
-     "A sorted array with binary-search insertion, O(log k) per number",
+     "A min-heap of size k, popping the smallest once it holds more than k",
      "A max-heap of size k, popping the largest once it holds more than k",
-     "A min-heap of size k, popping the smallest once it holds more than k"
+     "A sorted array with binary-search insertion, O(log k) per number"
     ],
     "explain": "The top of the min-heap is the smallest of the k kept, the first to be pushed out, so each number costs O(log k) and memory is O(k). In a sorted array the search is O(log k) but the insertion shifts elements, which is O(k)."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -6163,9 +6163,9 @@
    "zh": {
     "q": "下列场景里，哪一个最适合用单调栈？",
     "choices": [
-     "对每个元素找右边第一个比它大的元素",
-     "判断两个字符串是否互为字母异位词",
      "求数组的中位数",
+     "判断两个字符串是否互为字母异位词",
+     "对每个元素找右边第一个比它大的元素",
      "按优先级调度任务"
     ],
     "explain": "单调栈保存「还没找到更大元素」的下标，新元素到来时把比它小的都弹出并记下答案，每个下标进出栈各一次，总共 O(n)。中位数通常用两个堆，按优先级调度用堆，异位词用计数。"
@@ -6173,15 +6173,15 @@
    "en": {
     "q": "Which of these is the classic use of a monotonic stack?",
     "choices": [
-     "For each element, the first larger element to its right",
-     "Checking whether two strings are anagrams",
      "The median of an array",
+     "Checking whether two strings are anagrams",
+     "For each element, the first larger element to its right",
      "Scheduling tasks by priority"
     ],
     "explain": "The stack holds indices still waiting for a larger element; a new value pops every smaller one and answers it. Each index is pushed and popped once, O(n) overall. Medians take two heaps, priority scheduling a heap, anagrams a count."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -6192,20 +6192,20 @@
    "zh": {
     "q": "从一组区间中选出最多个互不重叠的区间，正确的贪心策略是每次选？",
     "choices": [
-     "长度最短的",
+     "开始最早的",
      "结束最早的",
      "与其他区间重叠最少的",
-     "开始最早的"
+     "长度最短的"
     ],
     "explain": "先结束的区间给后面留下的空间最多，可以用交换论证证明它不会让结果变差。开始最早的会被 [1,10]、[2,3]、[4,5] 这样的例子推翻；最短的会被 [1,5]、[4,7]、[6,10] 推翻：选了 [4,7] 就只剩它一个，而最优是 2 个。"
    },
    "en": {
     "q": "To pick the most pairwise non-overlapping intervals, the right greedy choice each step is the interval that:",
     "choices": [
-     "is shortest",
+     "starts first",
      "ends first",
      "overlaps the fewest others",
-     "starts first"
+     "is shortest"
     ],
     "explain": "Ending first leaves the most room for the rest, and an exchange argument shows it never hurts. Starting first fails on [1,10], [2,3], [4,5]; shortest fails on [1,5], [4,7], [6,10], where taking [4,7] blocks both others and the optimum is 2."
    },
@@ -6221,9 +6221,9 @@
    "zh": {
     "q": "硬币面值是 {1, 3, 4}，要凑出 6。「每次拿不超过剩余金额的最大硬币」的贪心用几枚？最少需要几枚？",
     "choices": [
-     "贪心 3 枚，最少 3 枚",
      "贪心 4 枚，最少 2 枚",
      "贪心 3 枚，最少 2 枚",
+     "贪心 3 枚，最少 3 枚",
      "贪心 2 枚，最少 2 枚"
     ],
     "explain": "贪心拿 4，剩 2，再拿 1 和 1，一共 3 枚；最优是 3 + 3，2 枚。贪心找零只在特定面值体系（比如 1、5、10、25）下最优，一般情况要用动态规划。"
@@ -6231,15 +6231,15 @@
    "en": {
     "q": "With coins {1, 3, 4} and amount 6, how many coins does \"always take the largest coin that fits\" use, and what is the minimum?",
     "choices": [
-     "Greedy 3, minimum 3",
      "Greedy 4, minimum 2",
      "Greedy 3, minimum 2",
+     "Greedy 3, minimum 3",
      "Greedy 2, minimum 2"
     ],
     "explain": "Greedy takes 4, then 1 and 1: three coins. The optimum is 3 + 3: two coins. Greedy change-making is optimal only for some coin systems (1, 5, 10, 25 is one); in general it takes dynamic programming."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -6250,25 +6250,25 @@
    "zh": {
     "q": "Floyd 判圈算法（慢指针一次一步，快指针一次两步）中，两个指针在环里相遇后，怎样找到环的入口？",
     "choices": [
-     "快指针继续一次两步，直到回到头节点",
-     "先数出环长，再在链表上二分查找",
      "相遇点就是入口",
-     "把一个指针放回头节点，两个指针都改成一次一步，再次相遇的位置就是入口"
+     "把一个指针放回头节点，两个指针都改成一次一步，再次相遇的位置就是入口",
+     "先数出环长，再在链表上二分查找",
+     "快指针继续一次两步，直到回到头节点"
     ],
     "explain": "设头到入口距离为 a，入口到相遇点为 b，环长为 c。相遇时快指针走的路程是慢指针的两倍，可推出 a 与 c - b 相差 c 的整数倍。所以从头和从相遇点同速出发，会恰好在入口相遇。整个过程只用 O(1) 额外空间。"
    },
    "en": {
     "q": "After Floyd's tortoise and hare (slow moves 1, fast moves 2) meet inside a cycle, how do you find the node where the cycle starts?",
     "choices": [
-     "Keep moving fast two steps until it reaches the head",
-     "Count the cycle length, then binary search the list",
      "The meeting point is the entry",
-     "Move one pointer back to the head, step both one node at a time, and they meet at the entry"
+     "Move one pointer back to the head, step both one node at a time, and they meet at the entry",
+     "Count the cycle length, then binary search the list",
+     "Keep moving fast two steps until it reaches the head"
     ],
     "explain": "Let a be the distance from head to entry, b from entry to the meeting point, c the cycle length. Fast has gone twice as far as slow, which gives a ≡ c - b (mod c). So walkers starting at the head and at the meeting point at the same speed meet exactly at the entry, with O(1) extra space."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -6280,8 +6280,8 @@
     "q": "一个同时保存 head 和 tail 指针的单链表，下面哪个操作不是 O(1)？",
     "choices": [
      "删除尾节点",
-     "在头部插入",
      "在尾部插入",
+     "在头部插入",
      "删除头节点"
     ],
     "explain": "删除尾节点要把倒数第二个节点的 next 置空，而单链表只能从头走过去才找得到它，是 O(n)。双向链表有 prev 指针，删尾才是 O(1)。"
@@ -6290,8 +6290,8 @@
     "q": "A singly linked list keeps both head and tail pointers. Which operation is not O(1)?",
     "choices": [
      "Delete the tail",
-     "Insert at the head",
      "Insert at the tail",
+     "Insert at the head",
      "Delete the head"
     ],
     "explain": "Deleting the tail means clearing the next pointer of the node before it, and a singly linked list can only reach that node by walking from the head: O(n). A doubly linked list has prev pointers, which makes it O(1)."
@@ -6309,9 +6309,9 @@
     "q": "链表题里常在头节点前加一个哑节点（dummy），它主要解决什么问题？",
     "choices": [
      "让链表可以 O(1) 随机访问",
-     "头节点可能被删除或替换时，不用单独处理「改 head」这种特殊情况",
      "减少内存占用",
-     "让单链表可以反向遍历"
+     "让单链表可以反向遍历",
+     "头节点可能被删除或替换时，不用单独处理「改 head」这种特殊情况"
     ],
     "explain": "有了哑节点，每个真实节点（包括原来的头）都有前驱，删除、插入都能用同一套代码，最后返回 dummy.next 即可。它不改变访问方式，还会多占一个节点。"
    },
@@ -6319,14 +6319,14 @@
     "q": "Linked-list solutions often put a dummy node before the head. What is it for?",
     "choices": [
      "O(1) random access",
-     "No special case when the head itself is removed or replaced",
      "Using less memory",
-     "Walking a singly linked list backwards"
+     "Walking a singly linked list backwards",
+     "No special case when the head itself is removed or replaced"
     ],
     "explain": "With a dummy, every real node, the old head included, has a predecessor, so one piece of code handles every insert and delete; return dummy.next at the end. Access stays sequential, and it costs one extra node."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -6337,20 +6337,20 @@
    "zh": {
     "q": "在 n 个节点、高度为 h 的二叉树上做递归 DFS，额外空间（调用栈）是？",
     "choices": [
+     "总是 O(n)",
      "总是 O(log n)",
-     "O(1)",
      "O(h)：平衡时约 O(log n)，退化成链时 O(n)",
-     "总是 O(n)"
+     "O(1)"
     ],
     "explain": "调用栈里同时存在的只有从根到当前节点这条路径上的帧，最多 h + 1 个。平衡树 h 约为 log n，退化成链时 h = n - 1。"
    },
    "en": {
     "q": "Recursive DFS on a binary tree with n nodes and height h uses how much extra (call stack) space?",
     "choices": [
+     "Always O(n)",
      "Always O(log n)",
-     "O(1)",
      "O(h): about O(log n) when balanced, O(n) for a chain",
-     "Always O(n)"
+     "O(1)"
     ],
     "explain": "Only the frames on the path from the root to the current node are alive at once, at most h + 1. A balanced tree has h near log n; a chain has h = n - 1."
    },
@@ -6366,8 +6366,8 @@
    "zh": {
     "q": "满二叉树（每个节点要么有 0 个、要么有 2 个孩子）如果有 n 个内部节点，它有几个叶子？",
     "choices": [
-     "2n",
      "n",
+     "2n",
      "n - 1",
      "n + 1"
     ],
@@ -6376,8 +6376,8 @@
    "en": {
     "q": "A full binary tree (every node has 0 or 2 children) has n internal nodes. How many leaves does it have?",
     "choices": [
-     "2n",
      "n",
+     "2n",
      "n - 1",
      "n + 1"
     ],
@@ -6395,25 +6395,25 @@
    "zh": {
     "q": "要自底向上算出每棵子树的高度，需要先处理完左右子树再处理当前节点。这对应哪种 DFS 顺序？",
     "choices": [
-     "后序",
      "前序",
-     "中序",
-     "层序"
+     "后序",
+     "层序",
+     "中序"
     ],
     "explain": "后序是「左、右、根」，访问一个节点时它的两棵子树都已经算完，正适合用孩子的结果推出自己的结果。"
    },
    "en": {
     "q": "To compute every subtree's height bottom-up, a node must come after both of its subtrees. Which DFS order is that?",
     "choices": [
-     "Postorder",
      "Preorder",
-     "Inorder",
-     "Level order"
+     "Postorder",
+     "Level order",
+     "Inorder"
     ],
     "explain": "Postorder is left, right, node: when a node is visited both subtrees are done, so it can build its answer from its children's."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -6424,25 +6424,25 @@
    "zh": {
     "q": "「二叉树中任意两点间的最大路径和」：递归函数返回给父节点的值应该是什么？（L、R 是左右孩子返回的值）",
     "choices": [
+     "max(L, R)",
      "当前子树内部的最大路径和",
-     "node.val + max(0, L, R)：从当前节点往下只走一边的最大和",
      "node.val + L + R",
-     "max(L, R)"
+     "node.val + max(0, L, R)：从当前节点往下只走一边的最大和"
     ],
     "explain": "路径经过父节点时，只能从当前节点往下走一侧，所以返回单边最大值，负数就舍掉。node.val + max(0, L) + max(0, R) 这种拐弯的路径只用来更新全局答案，不能返回，否则父节点会拼出分叉的「路径」。"
    },
    "en": {
     "q": "Maximum path sum between any two nodes of a binary tree: what should the recursive helper return to its parent? (L and R are what the children returned.)",
     "choices": [
+     "max(L, R)",
      "The best path anywhere inside the subtree",
-     "node.val + max(0, L, R): the best downward chain through one side",
      "node.val + L + R",
-     "max(L, R)"
+     "node.val + max(0, L, R): the best downward chain through one side"
     ],
     "explain": "A path that continues to the parent can only go down one side from here, so return the best one-sided chain, dropping a negative side. The bent path node.val + max(0, L) + max(0, R) only updates the global best; returning it would let the parent build a forked \"path\"."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -6453,20 +6453,20 @@
    "zh": {
     "q": "统计二叉树里和为 target 的向下路径数，常用做法是 DFS 时用哈希表记录根到当前节点路径上各前缀和出现的次数。为什么回溯（离开节点）时要把当前前缀和的计数减 1？",
     "choices": [
+     "因为前缀和可能是负数",
      "为了让哈希表占用更少内存",
-     "否则同一条路径会被算两次",
      "离开后这个前缀不在当前根到节点的路径上了，不能再和兄弟子树里的节点配对",
-     "因为前缀和可能是负数"
+     "否则同一条路径会被算两次"
     ],
     "explain": "路径必须是从上到下的一段。一个前缀只对它自己子树里的节点有意义，离开该节点后如果不撤销，兄弟子树里的节点会和它配对，算出并不存在的「拐弯路径」。"
    },
    "en": {
     "q": "Counting downward paths that sum to target, DFS keeps a hash map of prefix-sum counts along the root-to-node path. Why decrement the current prefix sum when leaving a node?",
     "choices": [
+     "Because prefix sums can be negative",
      "To keep the map small",
-     "Otherwise each path is counted twice",
      "Once left, that prefix is no longer on the current root-to-node path and must not pair with nodes in a sibling subtree",
-     "Because prefix sums can be negative"
+     "Otherwise each path is counted twice"
     ],
     "explain": "A path has to run downward. A prefix only matters for nodes in its own subtree; left in the map, it would pair with nodes in a sibling subtree and count bent \"paths\" that do not exist."
    },
@@ -6482,26 +6482,26 @@
    "zh": {
     "q": "节点值互不相同时，下面哪些遍历组合能唯一确定一棵二叉树？（多选）",
     "choices": [
+     "只有前序",
      "前序 + 中序",
      "后序 + 中序",
-     "前序 + 后序",
-     "只有前序"
+     "前序 + 后序"
     ],
     "explain": "中序能告诉我们根左边是哪些节点、右边是哪些，前序或后序能告诉我们谁是根，两者结合可以递归还原。前序加后序分不清只有一个孩子时它是左孩子还是右孩子：根 1 只带一个孩子 2，不管 2 在左还是在右，前序都是 1,2，后序都是 2,1。"
    },
    "en": {
     "q": "With distinct values, which traversal pairs determine a binary tree uniquely? Select all that apply.",
     "choices": [
+     "Preorder alone",
      "Preorder + inorder",
      "Postorder + inorder",
-     "Preorder + postorder",
-     "Preorder alone"
+     "Preorder + postorder"
     ],
     "explain": "Inorder splits the nodes into the left and right of the root; preorder or postorder names the root; together they rebuild the tree recursively. Preorder plus postorder cannot tell a lone left child from a lone right one: root 1 with one child 2 gives preorder 1,2 and postorder 2,1 either way."
    },
    "answer": [
-    0,
-    1
+    1,
+    2
    ]
   },
   {
@@ -6512,25 +6512,25 @@
    "zh": {
     "q": "由前序和中序重建二叉树时，先建一个「值 → 中序下标」的哈希表，带来的改变是？",
     "choices": [
-     "每次找根在中序里的位置从 O(n) 变成 O(1)，最坏总时间从 O(n²) 降到 O(n)",
      "把空间从 O(n) 降到 O(1)",
-     "让节点值可以重复",
-     "让平衡树的情况更快，退化树没有区别"
+     "让平衡树的情况更快，退化树没有区别",
+     "每次找根在中序里的位置从 O(n) 变成 O(1)，最坏总时间从 O(n²) 降到 O(n)",
+     "让节点值可以重复"
     ],
     "explain": "不建哈希表时每层递归都要在中序里线性找根，树退化成链时总共 1 + 2 + … + n = O(n²)。有了哈希表每个节点 O(1)，整体 O(n)，代价是 O(n) 的额外空间。值重复时哈希表反而没法用。"
    },
    "en": {
     "q": "Rebuilding a tree from preorder and inorder, what does a hash map from value to inorder index change?",
     "choices": [
-     "Finding the root's inorder position goes from O(n) to O(1), so the worst case drops from O(n²) to O(n)",
      "Space drops from O(n) to O(1)",
-     "Values may repeat",
-     "Balanced trees get faster; skewed trees are unchanged"
+     "Balanced trees get faster; skewed trees are unchanged",
+     "Finding the root's inorder position goes from O(n) to O(1), so the worst case drops from O(n²) to O(n)",
+     "Values may repeat"
     ],
     "explain": "Without the map every call scans inorder for the root; on a chain that is 1 + 2 + … + n = O(n²). With it each node costs O(1), O(n) in all, for O(n) extra space. Repeated values would break the map."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -6541,25 +6541,25 @@
    "zh": {
     "q": "验证二叉搜索树时，只检查每个节点满足「左孩子 < 当前节点 < 右孩子」为什么不够？",
     "choices": [
+     "其实已经够了",
      "因为还要检查树是否平衡",
      "左子树深处的节点可能比某个祖先还大，只看父子关系发现不了；要把上下界一路传下去，或检查中序遍历严格递增",
-     "因为空节点要特殊处理",
-     "其实已经够了"
+     "因为空节点要特殊处理"
     ],
     "explain": "例如根 5、左孩子 3、3 的右孩子 6：每对父子都满足大小关系，但 6 在 5 的左子树里，违反了 BST 的定义。BST 的约束针对整棵子树，所以要带着 (low, high) 区间递归。"
    },
    "en": {
     "q": "Why is checking left child < node < right child at every node not enough to validate a binary search tree?",
     "choices": [
+     "It is enough",
      "It must also be balanced",
      "A node deep in the left subtree can exceed an ancestor, which parent-child checks miss; pass bounds down, or check that inorder is strictly increasing",
-     "Empty children need special handling",
-     "It is enough"
+     "Empty children need special handling"
     ],
     "explain": "Take root 5, left child 3, and 3 with right child 6: every parent-child pair looks fine, but 6 sits in the left subtree of 5. The BST rule covers whole subtrees, so recurse with a (low, high) range."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -6570,8 +6570,8 @@
    "zh": {
     "q": "把 1, 2, …, n 按顺序插入一棵不做平衡的普通二叉搜索树，树高（边数）是多少？",
     "choices": [
-     "约 √n",
      "约 log₂ n",
+     "约 √n",
      "n - 1，退化成一条链",
      "n / 2"
     ],
@@ -6580,8 +6580,8 @@
    "en": {
     "q": "Inserting 1, 2, …, n in order into a plain (unbalanced) binary search tree gives what height, in edges?",
     "choices": [
-     "About √n",
      "About log₂ n",
+     "About √n",
      "n - 1, a chain",
      "n / 2"
     ],
@@ -6599,25 +6599,25 @@
    "zh": {
     "q": "从 BST 中删除一个有两个孩子的节点，标准做法是？",
     "choices": [
-     "用根节点替换它",
-     "直接删掉，把两个孩子都接到父节点上",
      "用左孩子替换它",
-     "用中序后继（右子树中最小的节点）或中序前驱替换它的值，再删除那个后继或前驱节点"
+     "用中序后继（右子树中最小的节点）或中序前驱替换它的值，再删除那个后继或前驱节点",
+     "直接删掉，把两个孩子都接到父节点上",
+     "用根节点替换它"
     ],
     "explain": "中序后继比左子树所有值都大、比右子树其余值都小，放在这个位置不会破坏 BST 性质。后继最多只有一个右孩子，删掉它属于简单情况。"
    },
    "en": {
     "q": "How do you delete a node with two children from a BST?",
     "choices": [
-     "Replace it with the root",
-     "Remove it and attach both children to its parent",
      "Replace it with its left child",
-     "Copy in its inorder successor (smallest in the right subtree) or predecessor, then delete that node"
+     "Copy in its inorder successor (smallest in the right subtree) or predecessor, then delete that node",
+     "Remove it and attach both children to its parent",
+     "Replace it with the root"
     ],
     "explain": "The inorder successor is larger than everything on the left and smaller than the rest of the right subtree, so it fits the spot. It has at most a right child, which makes its own removal the easy case."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -6628,25 +6628,25 @@
    "zh": {
     "q": "在无权网格上求从起点到终点的最少步数，哪种搜索直接给出答案？",
     "choices": [
-     "BFS",
      "DFS",
-     "BFS 和 DFS 都可以",
-     "都不行，必须用 Dijkstra"
+     "都不行，必须用 Dijkstra",
+     "BFS",
+     "BFS 和 DFS 都可以"
     ],
     "explain": "BFS 按距离一层层向外扩，第一次到达终点时的层数就是最少步数。DFS 先到达终点的那条路不一定最短。每步代价相同，不需要 Dijkstra。"
    },
    "en": {
     "q": "Which search gives the fewest moves from start to target on an unweighted grid directly?",
     "choices": [
-     "BFS",
      "DFS",
-     "Either BFS or DFS",
-     "Neither; it needs Dijkstra"
+     "Neither; it needs Dijkstra",
+     "BFS",
+     "Either BFS or DFS"
     ],
     "explain": "BFS expands outward one distance at a time, so the first time it reaches the target is the shortest. DFS's first route there can be long. Every move costs the same, so Dijkstra is unnecessary."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -6657,25 +6657,25 @@
    "zh": {
     "q": "BFS 为什么通常在把格子加入队列时就标记为已访问，而不是出队时才标记？",
     "choices": [
-     "入队时标记需要的内存更多",
-     "出队时才标记，同一个格子可能被多个邻居重复加入队列，浪费时间和内存",
      "两者没有任何区别",
-     "出队时标记会得到错误的最短距离"
+     "出队时标记会得到错误的最短距离",
+     "入队时标记需要的内存更多",
+     "出队时才标记，同一个格子可能被多个邻居重复加入队列，浪费时间和内存"
     ],
     "explain": "在 BFS 中，出队时标记也能得到正确距离（第一次出队时的距离就是最短的），但在被标记之前，一个格子可能被它的每个邻居各入队一次。入队时标记保证每个格子只进队一次。"
    },
    "en": {
     "q": "Why does BFS usually mark a cell visited when it is enqueued rather than when it is dequeued?",
     "choices": [
-     "Marking on enqueue uses more memory",
-     "Marked only on dequeue, a cell can be enqueued once by each of its neighbours, wasting time and memory",
      "There is no difference",
-     "Marking on dequeue gives wrong shortest distances"
+     "Marking on dequeue gives wrong shortest distances",
+     "Marking on enqueue uses more memory",
+     "Marked only on dequeue, a cell can be enqueued once by each of its neighbours, wasting time and memory"
     ],
     "explain": "Marking on dequeue still yields correct distances (the first dequeue of a cell has the shortest one), but before that a cell can enter the queue once per neighbour. Marking on enqueue keeps each cell in the queue once."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -6686,25 +6686,25 @@
    "zh": {
     "q": "R×C 网格里有 k 个源点，要求每个格子到最近源点的距离。高效的做法是？",
     "choices": [
+     "对每个格子做一次 BFS 找最近的源点：O((R·C)²)",
      "用 DFS 从任意一个源点出发",
      "从每个源点各做一次 BFS，取最小值：O(k·R·C)",
-     "把所有源点都以距离 0 放进同一个队列，做一次多源 BFS：O(R·C)",
-     "对每个格子做一次 BFS 找最近的源点：O((R·C)²)"
+     "把所有源点都以距离 0 放进同一个队列，做一次多源 BFS：O(R·C)"
     ],
     "explain": "多源 BFS 相当于加一个虚拟超级源点连向所有源点，一次 BFS 就按距离从小到大处理所有格子，每个格子只进队一次。"
    },
    "en": {
     "q": "An R×C grid has k sources; every cell needs its distance to the nearest source. The efficient way is:",
     "choices": [
+     "One BFS per cell to find its nearest source: O((R·C)²)",
      "DFS from any one source",
      "One BFS per source, taking the minimum: O(k·R·C)",
-     "Start a single BFS with every source in the queue at distance 0: O(R·C)",
-     "One BFS per cell to find its nearest source: O((R·C)²)"
+     "Start a single BFS with every source in the queue at distance 0: O(R·C)"
     ],
     "explain": "Multi-source BFS is like adding a virtual super source joined to all sources; one BFS then settles cells in order of distance, each cell enqueued once."
    },
    "answer": [
-    2
+    3
    ]
   },
   {
@@ -6715,25 +6715,25 @@
    "zh": {
     "q": "并查集同时使用路径压缩和按秩（或按大小）合并后，每次操作的均摊时间是？",
     "choices": [
-     "O(√n)",
-     "最坏 O(1)",
      "O(n)",
-     "O(α(n))，α 是反阿克曼函数，实际上不超过 4 或 5"
+     "O(α(n))，α 是反阿克曼函数，实际上不超过 4 或 5",
+     "最坏 O(1)",
+     "O(√n)"
     ],
     "explain": "Tarjan 证明了两种优化合用时，m 次操作总共 O(m·α(n))。α(n) 增长极慢，对任何实际的 n 都不超过 5，所以常说「几乎是常数」，但它在理论上不是 O(1)。"
    },
    "en": {
     "q": "With both path compression and union by rank (or size), what is the amortized time per union-find operation?",
     "choices": [
-     "O(√n)",
-     "O(1) worst case",
      "O(n)",
-     "O(α(n)), the inverse Ackermann function, at most 4 or 5 in practice"
+     "O(α(n)), the inverse Ackermann function, at most 4 or 5 in practice",
+     "O(1) worst case",
+     "O(√n)"
     ],
     "explain": "Tarjan showed m operations take O(m·α(n)) with both optimizations. α(n) grows so slowly it stays below 5 for any real n, hence \"almost constant\", but it is not O(1) in theory."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -6744,9 +6744,9 @@
    "zh": {
     "q": "用并查集判断无向图有没有环：依次处理每条边 (u, v)，什么时候说明出现了环？",
     "choices": [
-     "find(u) == find(v)，即 u 和 v 已经连通",
      "u 或 v 的度数大于 2",
      "find(u) != find(v)",
+     "find(u) == find(v)，即 u 和 v 已经连通",
      "处理完所有边后集合个数大于 1"
     ],
     "explain": "u 和 v 已在同一个集合里，说明它们之间已经有一条路径，再加这条边就形成环。否则把两个集合合并。集合个数大于 1 只说明图不连通。"
@@ -6754,15 +6754,15 @@
    "en": {
     "q": "Detecting a cycle in an undirected graph with union-find, edge by edge: when does edge (u, v) close a cycle?",
     "choices": [
-     "When find(u) == find(v): u and v are already connected",
      "When u or v has degree above 2",
      "When find(u) != find(v)",
+     "When find(u) == find(v): u and v are already connected",
      "When more than one set remains at the end"
     ],
     "explain": "If u and v are already in one set, a path joins them and this edge closes a cycle; otherwise the sets are merged. Several sets at the end only means the graph is disconnected."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -6774,9 +6774,9 @@
     "q": "n 个顶点、处理完 m 条边后，并查集中成功合并（两端原本不在同一集合）的次数为 s。连通分量有几个？",
     "choices": [
      "n + s",
-     "n - s",
+     "n - m",
      "m - s",
-     "n - m"
+     "n - s"
     ],
     "explain": "开始时每个顶点自成一个分量，共 n 个。每次成功合并把两个分量变成一个，分量数减 1；两端已连通的边不改变分量数。所以最后是 n - s。"
    },
@@ -6784,14 +6784,14 @@
     "q": "After m edges on n vertices, union-find made s successful unions (the ends were in different sets). How many connected components are there?",
     "choices": [
      "n + s",
-     "n - s",
+     "n - m",
      "m - s",
-     "n - m"
+     "n - s"
     ],
     "explain": "Each vertex starts alone: n components. Every successful union merges two into one; an edge inside a component changes nothing. That leaves n - s."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -6802,25 +6802,25 @@
    "zh": {
     "q": "用 Kahn 算法（反复取出入度为 0 的点）做拓扑排序，结束时输出的顶点数少于 n，说明什么？",
     "choices": [
-     "算法实现有 bug，正常情况下不会出现",
      "图不连通",
      "图里有环",
-     "有顶点入度大于 1"
+     "有顶点入度大于 1",
+     "算法实现有 bug，正常情况下不会出现"
     ],
     "explain": "环上的每个顶点都至少有一条来自环内的入边，入度永远减不到 0，所以永远不会被输出。不连通的 DAG 照样能输出全部 n 个顶点。"
    },
    "en": {
     "q": "Kahn's algorithm (repeatedly removing in-degree-0 vertices) outputs fewer than n vertices. What does that mean?",
     "choices": [
-     "A bug; it cannot happen",
      "The graph is disconnected",
      "The graph has a cycle",
-     "Some vertex has in-degree above 1"
+     "Some vertex has in-degree above 1",
+     "A bug; it cannot happen"
     ],
     "explain": "Every vertex on a cycle keeps an incoming edge from inside the cycle, so its in-degree never reaches 0 and it is never output. A disconnected DAG still outputs all n vertices."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -6832,9 +6832,9 @@
     "q": "基于 DFS 的拓扑排序，结果是哪个顺序？",
     "choices": [
      "DFS 前序倒过来",
+     "后序（完成顺序）倒过来",
      "从 0 号点开始的 BFS 顺序",
-     "DFS 前序（第一次访问的顺序）",
-     "后序（完成顺序）倒过来"
+     "DFS 前序（第一次访问的顺序）"
     ],
     "explain": "一个顶点完成时，它能到达的所有顶点都已经完成，所以完成时间晚的应该排在前面，把后序倒过来即可。前序不行：从 A 出发可能先访问到一个其实依赖于 B 的点，而 B 还没被访问。"
    },
@@ -6842,14 +6842,14 @@
     "q": "DFS-based topological sort outputs which order?",
     "choices": [
      "Reversed preorder",
+     "Reversed postorder (reverse finishing order)",
      "BFS order from vertex 0",
-     "DFS preorder (first visit)",
-     "Reversed postorder (reverse finishing order)"
+     "DFS preorder (first visit)"
     ],
     "explain": "When a vertex finishes, everything reachable from it has already finished, so later finishers go first: reverse the postorder. Preorder fails: from A, DFS may reach a vertex that also depends on some B not yet visited."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -6861,9 +6861,9 @@
     "q": "有向图有负权边但没有负权环，求单源最短路，应该用哪个算法？",
     "choices": [
      "Bellman-Ford",
-     "Prim",
      "Dijkstra",
-     "BFS"
+     "BFS",
+     "Prim"
     ],
     "explain": "Dijkstra 假设一个点出堆后距离不会再变小，负权边会打破这一点。Bellman-Ford 对所有边做 V - 1 轮松弛，能处理负权，第 V 轮还能松弛就说明有负环。BFS 只适用于无权图，Prim 求的是最小生成树。"
    },
@@ -6871,9 +6871,9 @@
     "q": "A directed graph has negative edges but no negative cycle. Which algorithm finds single-source shortest paths?",
     "choices": [
      "Bellman-Ford",
-     "Prim",
      "Dijkstra",
-     "BFS"
+     "BFS",
+     "Prim"
     ],
     "explain": "Dijkstra assumes a settled vertex never improves, which a negative edge can break. Bellman-Ford relaxes every edge V - 1 times, handles negative weights, and a further successful relaxation reveals a negative cycle. BFS needs unit weights; Prim builds a spanning tree."
    },
@@ -6889,20 +6889,20 @@
    "zh": {
     "q": "边权只有 0 和 1 的图上做「0-1 BFS」，用双端队列时边的处理规则是？",
     "choices": [
-     "权 0 的边直接忽略",
+     "权 1 放队头，权 0 放队尾",
      "经过权 0 的边到达的点放队头，经过权 1 的边到达的点放队尾",
-     "都放队尾",
-     "权 1 放队头，权 0 放队尾"
+     "权 0 的边直接忽略",
+     "都放队尾"
     ],
     "explain": "这样双端队列里的距离始终单调且最多只差 1，效果和 Dijkstra 一样，但每次操作是 O(1)，总时间 O(V + E)。"
    },
    "en": {
     "q": "In 0-1 BFS (edge weights 0 or 1, using a deque), where do newly reached vertices go?",
     "choices": [
-     "0 edges are skipped",
+     "Through a 1 edge to the front, through a 0 edge to the back",
      "Through a 0 edge to the front, through a 1 edge to the back",
-     "Always to the back",
-     "Through a 1 edge to the front, through a 0 edge to the back"
+     "0 edges are skipped",
+     "Always to the back"
     ],
     "explain": "That keeps the deque sorted by distance with at most two distinct values, the same order Dijkstra would use, at O(1) per operation: O(V + E) in total."
    },
@@ -6947,26 +6947,26 @@
    "zh": {
     "q": "一个有 V 个顶点的连通无向带权图，下面哪些说法正确？（多选）",
     "choices": [
-     "最小生成树恰好有 V - 1 条边",
-     "所有边权互不相同时，最小生成树唯一",
      "最小生成树里包含任意两点之间的最短路径",
-     "图里最重的那条边一定不在最小生成树里"
+     "所有边权互不相同时，最小生成树唯一",
+     "图里最重的那条边一定不在最小生成树里",
+     "最小生成树恰好有 V - 1 条边"
     ],
     "explain": "树有 V 个顶点就有 V - 1 条边；边权互不相同时 MST 唯一。MST 让总权值最小，不保证两点之间的路径最短：三角形 A-B 2、B-C 2、A-C 3 中，MST 选两条 2，A 到 C 在树上要走 4。最重的边如果是桥（删掉就不连通），它必须在 MST 里。"
    },
    "en": {
     "q": "For a connected weighted undirected graph with V vertices, which are true? Select all that apply.",
     "choices": [
-     "A minimum spanning tree has exactly V - 1 edges",
-     "If all edge weights are distinct, the MST is unique",
      "The MST contains a shortest path between every pair of vertices",
-     "The heaviest edge of the graph is never in the MST"
+     "If all edge weights are distinct, the MST is unique",
+     "The heaviest edge of the graph is never in the MST",
+     "A minimum spanning tree has exactly V - 1 edges"
     ],
     "explain": "A tree on V vertices has V - 1 edges, and distinct weights make the MST unique. An MST minimizes total weight, not pairwise distances: in the triangle A-B 2, B-C 2, A-C 3, the MST keeps both 2s, so A to C costs 4 in the tree. A heaviest edge that is a bridge must be in the MST."
    },
    "answer": [
-    0,
-    1
+    1,
+    3
    ]
   },
   {
@@ -6977,25 +6977,25 @@
    "zh": {
     "q": "用回溯生成 n 个不同元素的所有子集，每个子集都复制成一个列表输出。总时间是？",
     "choices": [
-     "O(n·2^n)",
-     "O(n²)",
      "O(2^n)",
-     "O(n!)"
+     "O(n!)",
+     "O(n·2^n)",
+     "O(n²)"
     ],
     "explain": "一共有 2^n 个子集，每个输出时要复制，长度最多 n，平均 n/2。光是输出就要 Θ(n·2^n)。"
    },
    "en": {
     "q": "Backtracking generates every subset of n distinct items, copying each one out as a list. Total time?",
     "choices": [
-     "O(n·2^n)",
-     "O(n²)",
      "O(2^n)",
-     "O(n!)"
+     "O(n!)",
+     "O(n·2^n)",
+     "O(n²)"
     ],
     "explain": "There are 2^n subsets and each copy is up to n long, n/2 on average, so the output alone is Θ(n·2^n)."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -7006,25 +7006,25 @@
    "zh": {
     "q": "生成 [1, 1, 2] 的不重复全排列，常用规则是：先排序，在同一层里遇到 nums[i] == nums[i-1] 且 nums[i-1] 没有被使用时跳过 nums[i]。这条规则保证了什么？",
     "choices": [
-     "可以省去 used 数组",
      "相等的元素总是按原来的先后顺序放入排列，所以每种排列只生成一次",
      "相等的元素永远不会相邻",
-     "排列按字典序倒序输出"
+     "排列按字典序倒序输出",
+     "可以省去 used 数组"
     ],
     "explain": "两个 1 互换得到的是同一个排列。规定「前一个 1 没用时不能先用后一个 1」，就只保留其中一种放法，重复被剪掉，而且不需要再用集合去重。"
    },
    "en": {
     "q": "To list unique permutations of [1, 1, 2]: sort, then at each position skip nums[i] when nums[i] == nums[i-1] and nums[i-1] is not in use. What does this rule guarantee?",
     "choices": [
-     "The used array can be dropped",
      "Equal values always enter in their original order, so each permutation is produced once",
      "Equal values are never adjacent",
-     "Permutations come out in reverse lexicographic order"
+     "Permutations come out in reverse lexicographic order",
+     "The used array can be dropped"
     ],
     "explain": "Swapping the two 1s gives the same permutation. Forbidding the second 1 before the first keeps only one of those orders, pruning duplicates without a set."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -7064,9 +7064,9 @@
    "zh": {
     "q": "3 对括号能组成多少个合法（配对正确）的括号串？",
     "choices": [
-     "6",
-     "8",
      "3",
+     "8",
+     "6",
      "5"
     ],
     "explain": "分别是 ((()))、(()())、(())()、()(())、()()()。个数是卡特兰数 C(n) = C(2n, n)/(n+1)，n = 3 时是 20/4 = 5。"
@@ -7074,9 +7074,9 @@
    "en": {
     "q": "How many balanced strings can 3 pairs of parentheses form?",
     "choices": [
-     "6",
-     "8",
      "3",
+     "8",
+     "6",
      "5"
     ],
     "explain": "They are ((())), (()()), (())(), ()(()), ()()(). The count is the Catalan number C(2n, n)/(n+1), which is 20/4 = 5 for n = 3."
@@ -7093,25 +7093,25 @@
    "zh": {
     "q": "N 皇后问题中，位于 (r1, c1) 和 (r2, c2) 的两个皇后恰好在同一条斜线上，当且仅当？",
     "choices": [
-     "r1 - c1 == r2 - c2 或 r1 + c1 == r2 + c2",
-     "r1 * c1 == r2 * c2",
+     "|r1 - r2| + |c1 - c2| == 2",
      "r1 + r2 == c1 + c2",
-     "|r1 - r2| + |c1 - c2| == 2"
+     "r1 - c1 == r2 - c2 或 r1 + c1 == r2 + c2",
+     "r1 * c1 == r2 * c2"
     ],
     "explain": "主对角线上 r - c 不变，副对角线上 r + c 不变。所以用列、r - c、r + c 三个集合，就能 O(1) 判断冲突。"
    },
    "en": {
     "q": "In N-Queens, queens at (r1, c1) and (r2, c2) share a diagonal exactly when:",
     "choices": [
-     "r1 - c1 == r2 - c2 or r1 + c1 == r2 + c2",
-     "r1 * c1 == r2 * c2",
+     "|r1 - r2| + |c1 - c2| == 2",
      "r1 + r2 == c1 + c2",
-     "|r1 - r2| + |c1 - c2| == 2"
+     "r1 - c1 == r2 - c2 or r1 + c1 == r2 + c2",
+     "r1 * c1 == r2 * c2"
     ],
     "explain": "r - c is constant along one diagonal direction and r + c along the other. Three sets (columns, r - c, r + c) give O(1) conflict checks."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -7122,20 +7122,20 @@
    "zh": {
     "q": "组合总和问题里，候选数都是正数并且已经升序排序。当 candidates[i] 大于剩余目标值时，为什么可以直接 break，而不只是跳过这一个？",
     "choices": [
-     "因为剩余目标值会变成负数，程序会报错",
+     "因为 break 和 continue 在这里效果完全一样",
      "因为后面的数都不比它小，也都放不进去",
-     "因为 i 之后的数都已经用过了",
-     "因为 break 和 continue 在这里效果完全一样"
+     "因为剩余目标值会变成负数，程序会报错",
+     "因为 i 之后的数都已经用过了"
     ],
     "explain": "升序排序后，后面的候选数都 ≥ candidates[i]，同样超过剩余目标值，继续循环只是白白检查。这类剪枝依赖排序，没排序时只能 continue。"
    },
    "en": {
     "q": "In Combination Sum with positive candidates sorted ascending, why may the loop break (not just skip) once candidates[i] exceeds the remaining target?",
     "choices": [
-     "The remaining target would go negative and crash",
+     "break and continue behave the same here",
      "Every later number is at least as large, so none of them fits either",
-     "Every later number has already been used",
-     "break and continue behave the same here"
+     "The remaining target would go negative and crash",
+     "Every later number has already been used"
     ],
     "explain": "Sorted ascending, everything after candidates[i] is at least as big, so it overshoots too and checking it is wasted work. The pruning relies on the sort; unsorted, only continue is safe."
    },
@@ -7152,9 +7152,9 @@
     "q": "哪两条性质让一个问题适合用动态规划？",
     "choices": [
      "O(1) 空间 + 单调函数",
-     "贪心选择性质 + 输入有序",
+     "子问题互不重叠的分治 + 递归",
      "重叠子问题 + 最优子结构",
-     "子问题互不重叠的分治 + 递归"
+     "贪心选择性质 + 输入有序"
     ],
     "explain": "最优子结构让大问题的最优解能由子问题的最优解拼出；重叠子问题让「记下来复用」有意义。子问题互不重叠时，普通分治（如归并排序）就够了。"
    },
@@ -7162,9 +7162,9 @@
     "q": "Which two properties make a problem a good fit for dynamic programming?",
     "choices": [
      "O(1) memory + a monotone function",
-     "Greedy choice + sorted input",
+     "Divide and conquer with disjoint subproblems + recursion",
      "Overlapping subproblems + optimal substructure",
-     "Divide and conquer with disjoint subproblems + recursion"
+     "Greedy choice + sorted input"
     ],
     "explain": "Optimal substructure lets the best answer be built from best sub-answers; overlapping subproblems make storing and reusing them pay off. With disjoint subproblems, plain divide and conquer (merge sort, say) is enough."
    },
@@ -7180,27 +7180,27 @@
    "zh": {
     "q": "关于记忆化搜索（自顶向下）和递推（自底向上），哪些说法正确？（多选）",
     "choices": [
-     "自顶向下只会计算从起点状态能到达的那些状态",
      "自底向上必须按「依赖先算好」的顺序填表",
-     "加不加记忆化会改变递推式算出的答案",
-     "自顶向下递归太深可能会栈溢出"
+     "自顶向下递归太深可能会栈溢出",
+     "自顶向下只会计算从起点状态能到达的那些状态",
+     "加不加记忆化会改变递推式算出的答案"
     ],
     "explain": "两种写法算的是同一个递推式，答案相同，记忆化只省去重复计算。自顶向下按需展开，只访问可达状态，但要靠递归栈；自底向上没有递归，但要自己安排好计算顺序。"
    },
    "en": {
     "q": "Which are true of top-down memoization and bottom-up tabulation? Select all that apply.",
     "choices": [
-     "Top-down only computes states reachable from the start",
      "Bottom-up must fill states so that dependencies come first",
-     "Memoization changes the answer the recurrence gives",
-     "Deep top-down recursion can overflow the call stack"
+     "Deep top-down recursion can overflow the call stack",
+     "Top-down only computes states reachable from the start",
+     "Memoization changes the answer the recurrence gives"
     ],
     "explain": "Both evaluate the same recurrence and get the same answer; memoization only skips repeated work. Top-down expands on demand and visits only reachable states, but rides the call stack; bottom-up has no recursion but needs an evaluation order."
    },
    "answer": [
     0,
     1,
-    3
+    2
    ]
   },
   {
@@ -7211,25 +7211,25 @@
    "zh": {
     "q": "在 3×3 的格子里，从左上角的格子走到右下角的格子，每步只能向右或向下，一共有多少条路径？",
     "choices": [
-     "6",
-     "9",
      "12",
-     "4"
+     "9",
+     "4",
+     "6"
     ],
     "explain": "一共要向右 2 步、向下 2 步，路径就是这 4 步的排列：C(4, 2) = 6。用 DP 填表也一样，dp[i][j] = dp[i-1][j] + dp[i][j-1]。"
    },
    "en": {
     "q": "On a 3×3 grid of cells, moving only right or down, how many paths lead from the top-left cell to the bottom-right cell?",
     "choices": [
-     "6",
-     "9",
      "12",
-     "4"
+     "9",
+     "4",
+     "6"
     ],
     "explain": "Every path is 2 rights and 2 downs in some order: C(4, 2) = 6. The table dp[i][j] = dp[i-1][j] + dp[i][j-1] gives the same."
    },
    "answer": [
-    0
+    3
    ]
   },
   {
@@ -7240,25 +7240,25 @@
    "zh": {
     "q": "网格 DP 压缩成一维数组时，按 j 从左到右执行 dp[j] = dp[j] + dp[j-1]。赋值之前，dp[j] 和 dp[j-1] 分别代表什么？",
     "choices": [
-     "都是当前行的值",
-     "dp[j] 是上一行同一列（上方），dp[j-1] 是当前行刚算好的左边一格",
+     "都是上一行的值",
      "dp[j] 是当前行，dp[j-1] 是上一行",
-     "都是上一行的值"
+     "都是当前行的值",
+     "dp[j] 是上一行同一列（上方），dp[j-1] 是当前行刚算好的左边一格"
     ],
     "explain": "从左到右更新时，j 左边的格子已经被改成当前行的值，j 本身还没改，仍是上一行的值。这正好是「上方 + 左方」两个来源。"
    },
    "en": {
     "q": "A grid DP squeezed into one row runs dp[j] = dp[j] + dp[j-1] for j from left to right. Before the assignment, what do dp[j] and dp[j-1] hold?",
     "choices": [
-     "Both hold the current row",
-     "dp[j] is the cell above (previous row), dp[j-1] the cell to the left (current row, just updated)",
+     "Both hold the previous row",
      "dp[j] is the current row, dp[j-1] the previous row",
-     "Both hold the previous row"
+     "Both hold the current row",
+     "dp[j] is the cell above (previous row), dp[j-1] the cell to the left (current row, just updated)"
     ],
     "explain": "Going left to right, cells left of j already hold this row while j still holds the row above: exactly the \"above + left\" the recurrence needs."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -7269,20 +7269,20 @@
    "zh": {
     "q": "0/1 背包压成一维时写作 for w in range(W, wt - 1, -1): dp[w] = max(dp[w], dp[w - wt] + val)。为什么容量要从大到小遍历？",
     "choices": [
-     "为了让 dp[0] 保持为 0",
      "从小到大会越界",
+     "从大到小更快",
      "保证 dp[w - wt] 还是放这件物品之前的值，每件物品最多用一次",
-     "从大到小更快"
+     "为了让 dp[0] 保持为 0"
     ],
     "explain": "从大到小时，dp[w - wt] 还没被这件物品更新过。如果从小到大，dp[w - wt] 可能已经放过这件物品，再放一次就变成了每件物品可无限使用的完全背包。"
    },
    "en": {
     "q": "In one-row 0/1 knapsack, for w in range(W, wt - 1, -1): dp[w] = max(dp[w], dp[w - wt] + val). Why go from high capacity to low?",
     "choices": [
-     "To keep dp[0] at 0",
      "Going up would index out of range",
+     "It runs faster",
      "So dp[w - wt] still holds the value before this item, using each item at most once",
-     "It runs faster"
+     "To keep dp[0] at 0"
     ],
     "explain": "Going down, dp[w - wt] has not seen this item yet. Going up, it may already include the item, so it could be taken again: that is the unbounded knapsack."
    },
@@ -7298,25 +7298,25 @@
    "zh": {
     "q": "0/1 背包的 O(n·W) 动态规划通常被称为「伪多项式时间」，原因是？",
     "choices": [
+     "W 是一个数值，写成二进制只要 log W 位；O(n·W) 对输入长度来说是指数级的",
      "它只在 n 较小时才是多项式",
      "它用了随机化",
-     "它的空间是指数级的",
-     "W 是一个数值，写成二进制只要 log W 位；O(n·W) 对输入长度来说是指数级的"
+     "它的空间是指数级的"
     ],
     "explain": "复杂度和 W 的数值成正比，而输入里表示 W 只需约 log W 位，所以 W 每多一位，运行时间翻倍。0/1 背包是 NP 难问题，这个 DP 只在 W 不大时好用。"
    },
    "en": {
     "q": "Why is the O(n·W) 0/1 knapsack DP called pseudo-polynomial?",
     "choices": [
+     "W is a number written in about log W bits, so O(n·W) is exponential in the input length",
      "It is polynomial only for small n",
      "It uses randomization",
-     "Its memory is exponential",
-     "W is a number written in about log W bits, so O(n·W) is exponential in the input length"
+     "Its memory is exponential"
     ],
     "explain": "The running time grows with the value of W, while the input spells W in about log W bits: one more bit doubles the time. 0/1 knapsack is NP-hard; the DP works when W is modest."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -7327,25 +7327,25 @@
    "zh": {
     "q": "硬币 coins = [1, 2]，金额 3。执行 ways = [1, 0, 0, 0]；for c in coins: for a in range(c, 4): ways[a] += ways[a - c]。ways[3] 是多少？",
     "choices": [
-     "2",
      "4",
-     "1",
-     "3"
+     "3",
+     "2",
+     "1"
     ],
     "explain": "外层循环是硬币，每种组合只会按硬币顺序被数一次，所以算的是组合数：{1,1,1} 和 {1,2}，共 2 种。把两层循环交换（外层金额），算的就是排列数 3（1+1+1、1+2、2+1）。"
    },
    "en": {
     "q": "coins = [1, 2], amount 3. Run ways = [1, 0, 0, 0]; for c in coins: for a in range(c, 4): ways[a] += ways[a - c]. What is ways[3]?",
     "choices": [
-     "2",
      "4",
-     "1",
-     "3"
+     "3",
+     "2",
+     "1"
     ],
     "explain": "With coins in the outer loop, each multiset is counted once in coin order, so this counts combinations: {1,1,1} and {1,2}, 2 ways. Swap the loops (amount outside) and it counts ordered sequences: 3 (1+1+1, 1+2, 2+1)."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -7356,25 +7356,25 @@
    "zh": {
     "q": "最长递增子序列的 O(n log n) 解法维护一个数组 tails。tails[k] 表示什么？",
     "choices": [
+     "目前找到的最长递增子序列本身",
      "前 k 个元素的最大值",
-     "目前所有长度为 k + 1 的递增子序列里，最小的结尾值",
      "以第 k 个元素结尾的最长递增子序列长度",
-     "目前找到的最长递增子序列本身"
+     "目前所有长度为 k + 1 的递增子序列里，最小的结尾值"
     ],
     "explain": "tails 始终严格递增，所以每个新数可以二分找到第一个 ≥ 它的位置并替换。结尾值越小，后面越容易接上。tails 的长度就是答案，但 tails 本身不一定是一个真实存在的子序列。"
    },
    "en": {
     "q": "The O(n log n) longest increasing subsequence method keeps an array tails. What is tails[k]?",
     "choices": [
+     "The best subsequence found so far",
      "The maximum of the first k elements",
-     "The smallest last value of any increasing subsequence of length k + 1 seen so far",
      "The LIS length ending at element k",
-     "The best subsequence found so far"
+     "The smallest last value of any increasing subsequence of length k + 1 seen so far"
     ],
     "explain": "tails stays strictly increasing, so each new number binary-searches the first entry >= it and replaces it; a smaller tail is easier to extend. Its length is the answer, though tails itself need not be a real subsequence."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -7385,9 +7385,9 @@
    "zh": {
     "q": "数组 [8, 3, 6, 1, 7, 4, 9, 2] 的最长严格递增子序列长度是？",
     "choices": [
-     "6",
      "3",
      "4",
+     "6",
      "5"
     ],
     "explain": "3, 6, 7, 9 长度为 4。没有更长的：7 后面比它大的只有 9，而 3 前面只有更大的 8，接不上。用 O(n²) 的 DP 或 tails 方法算出来都是 4。"
@@ -7395,15 +7395,15 @@
    "en": {
     "q": "What is the length of the longest strictly increasing subsequence of [8, 3, 6, 1, 7, 4, 9, 2]?",
     "choices": [
-     "6",
      "3",
      "4",
+     "6",
      "5"
     ],
     "explain": "3, 6, 7, 9 has length 4. Nothing is longer: after 7 only 9 is larger, and before 3 there is only the larger 8. The O(n²) DP and the tails method both give 4."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -7414,25 +7414,25 @@
    "zh": {
     "q": "把 \"abc\" 变成 \"yabd\" 的编辑距离（插入、删除、替换各算一步）是？",
     "choices": [
+     "2",
      "3",
      "4",
-     "1",
-     "2"
+     "1"
     ],
     "explain": "在开头插入 y 得到 \"yabc\"，再把 c 替换成 d，共 2 步。1 步不够：长度差 1，唯一的一步只能是插入，而往 \"abc\" 里插一个字符得不到 \"yabd\"。"
    },
    "en": {
     "q": "What is the edit distance (insert, delete, replace each cost 1) from \"abc\" to \"yabd\"?",
     "choices": [
+     "2",
      "3",
      "4",
-     "1",
-     "2"
+     "1"
     ],
     "explain": "Insert y at the front (\"yabc\"), then replace c with d: 2 steps. One step is not enough: the lengths differ by one, so it would have to be an insertion, and no single insertion turns \"abc\" into \"yabd\"."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -7443,25 +7443,25 @@
    "zh": {
     "q": "求两个长度为 m、n 的字符串的最长公共子序列长度，二维 DP 需要 O(m·n) 空间。只要长度、不要具体子序列时，空间最少能压到多少？",
     "choices": [
-     "O(min(m, n))",
-     "O(log(m·n))",
      "O(1)",
-     "O(m + n)"
+     "O(m + n)",
+     "O(log(m·n))",
+     "O(min(m, n))"
     ],
     "explain": "dp[i][j] 只依赖第 i 行和第 i-1 行，所以只保留两行（或一行加一个临时变量），让较短的串当列，空间就是 O(min(m, n))。要还原具体子序列时，需要完整的表或 Hirschberg 算法。"
    },
    "en": {
     "q": "LCS length of strings of lengths m and n uses O(m·n) memory as a full table. If only the length is needed, how low can the memory go?",
     "choices": [
-     "O(min(m, n))",
-     "O(log(m·n))",
      "O(1)",
-     "O(m + n)"
+     "O(m + n)",
+     "O(log(m·n))",
+     "O(min(m, n))"
     ],
     "explain": "Row i depends only on row i-1, so two rows (or one row and a temporary) suffice; index columns by the shorter string for O(min(m, n)). Recovering the subsequence itself needs the full table or Hirschberg."
    },
    "answer": [
-    0
+    3
    ]
   },
   {
@@ -7473,8 +7473,8 @@
     "q": "用「中心扩展」找回文子串，长度为 n 的字符串一共要从多少个中心向两边扩展？",
     "choices": [
      "n",
-     "2n - 1",
      "n²",
+     "2n - 1",
      "n / 2"
     ],
     "explain": "奇数长度的回文以某个字符为中心，有 n 个；偶数长度的回文以两个相邻字符之间为中心，有 n - 1 个，合计 2n - 1。每次扩展最坏 O(n)，总共 O(n²) 时间、O(1) 空间。"
@@ -7483,14 +7483,14 @@
     "q": "Expand-around-center for palindromic substrings: how many centers does a string of length n have?",
     "choices": [
      "n",
-     "2n - 1",
      "n²",
+     "2n - 1",
      "n / 2"
     ],
     "explain": "Odd-length palindromes center on one of n characters; even-length ones on one of n - 1 gaps between neighbours: 2n - 1 in all. Each expansion is O(n) at worst, O(n²) time and O(1) space overall."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -7502,9 +7502,9 @@
     "q": "区间 DP 求最长回文子序列：dp[i][j] 依赖 dp[i+1][j-1]、dp[i+1][j] 和 dp[i][j-1]。下面哪种填表顺序是对的？",
     "choices": [
      "i 从 0 往 n-1，j 从 n-1 往 i",
-     "任何顺序都可以",
      "i 从 n-1 往 0，j 从 i 往 n-1",
-     "i 从 0 往 n-1，j 从 0 往 n-1"
+     "i 从 0 往 n-1，j 从 0 往 n-1",
+     "任何顺序都可以"
     ],
     "explain": "算 dp[i][j] 时，i+1 那一行必须已经算好，所以 i 要从大到小；同一行里 dp[i][j-1] 要先算，所以 j 从小到大。按区间长度从短到长也可以。"
    },
@@ -7512,14 +7512,14 @@
     "q": "Longest palindromic subsequence: dp[i][j] needs dp[i+1][j-1], dp[i+1][j] and dp[i][j-1]. Which fill order works?",
     "choices": [
      "i from 0 up, j from n-1 down to i",
-     "Any order",
      "i from n-1 down to 0, j from i up to n-1",
-     "i from 0 up, j from 0 up"
+     "i from 0 up, j from 0 up",
+     "Any order"
     ],
     "explain": "Row i+1 must be done before row i, so i goes down; within a row dp[i][j-1] comes first, so j goes up. Filling by increasing interval length also works."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -7531,8 +7531,8 @@
     "q": "打家劫舍的环形版本（首尾两间房相邻，不能同时偷）通常怎么做？",
     "choices": [
      "只要隔一间偷一间就是最优",
-     "在线性版本的结果上减去首尾两间中较小的一间",
      "把数组复制一份接在后面再做线性版本",
+     "在线性版本的结果上减去首尾两间中较小的一间",
      "分别对「去掉第一间」和「去掉最后一间」各做一次线性版本，取较大值"
     ],
     "explain": "首尾不能同时偷，所以最优解要么不含第一间，要么不含最后一间，两种情况都退化成线性问题。直接减去较小的一间并不对，最优方案可能需要整体调整。"
@@ -7541,8 +7541,8 @@
     "q": "House Robber on a circle (first and last houses are neighbours) is usually solved how?",
     "choices": [
      "Rob every other house",
-     "Run the line version and subtract the smaller of the two end houses",
      "Append a copy of the array and run the line version",
+     "Run the line version and subtract the smaller of the two end houses",
      "Run the line version without the first house and without the last house, and take the larger"
     ],
     "explain": "The first and last cannot both be robbed, so the optimum skips one of them, and each case is the line problem. Subtracting an end house is wrong; the best plan may change throughout."
@@ -7559,25 +7559,25 @@
    "zh": {
     "q": "股票买卖含一天冷冻期，用三个状态：hold（持有）、sold（今天刚卖出）、rest（不持有且不在冷冻期）。今天买入应该从昨天的哪个状态转移过来？",
     "choices": [
+     "hold",
      "rest",
      "sold",
-     "hold 和 sold 都可以",
-     "hold"
+     "hold 和 sold 都可以"
     ],
     "explain": "转移是 hold[i] = max(hold[i-1], rest[i-1] - p)，sold[i] = hold[i-1] + p，rest[i] = max(rest[i-1], sold[i-1])。昨天刚卖出的话今天在冷冻期，不能买；已经持有也不能再买。"
    },
    "en": {
     "q": "Stock trading with a one-day cooldown uses states hold, sold (sold today) and rest (not holding, no cooldown). Buying today comes from which state yesterday?",
     "choices": [
+     "hold",
      "rest",
      "sold",
-     "Either hold or sold",
-     "hold"
+     "Either hold or sold"
     ],
     "explain": "The transitions are hold[i] = max(hold[i-1], rest[i-1] - p), sold[i] = hold[i-1] + p, rest[i] = max(rest[i-1], sold[i-1]). Selling yesterday puts today in cooldown, and holding already rules out another buy."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -7588,9 +7588,9 @@
    "zh": {
     "q": "股价依次是 [6, 2, 9, 1, 4, 8]，可以买卖任意多次，但手里最多持有一股（卖出后才能再买）。最大利润是？",
     "choices": [
+     "15",
      "11",
      "14",
-     "15",
      "7"
     ],
     "explain": "把所有上涨的相邻差价加起来：(9 - 2) + (4 - 1) + (8 - 4) = 7 + 3 + 4 = 14，相当于 2 买 9 卖、1 买 8 卖。只能交易一次时答案是 7。"
@@ -7598,15 +7598,15 @@
    "en": {
     "q": "Prices are [6, 2, 9, 1, 4, 8]. Any number of trades is allowed, holding at most one share at a time. What is the maximum profit?",
     "choices": [
+     "15",
      "11",
      "14",
-     "15",
      "7"
     ],
     "explain": "Add every rise between neighbours: (9 - 2) + (4 - 1) + (8 - 4) = 7 + 3 + 4 = 14, the same as buying at 2, selling at 9, buying at 1, selling at 8. With one trade only, it would be 7."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -7617,9 +7617,9 @@
    "zh": {
     "q": "「最多交易 k 次」的股票问题，n 天价格。当 k ≥ n / 2 时可以怎么处理？",
     "choices": [
-     "必须用 O(n·k) 的 DP，没有捷径",
      "只能交易一次",
      "等同于不限次数：把所有上涨的相邻差价加起来，O(n)",
+     "必须用 O(n·k) 的 DP，没有捷径",
      "答案一定是 0"
     ],
     "explain": "一次完整交易至少占两天，n 天里最多做 n/2 次有用的交易，k 再大也用不上，限制等于不存在。这样还能避免 k 极大时开出 O(k) 的数组。"
@@ -7627,15 +7627,15 @@
    "en": {
     "q": "Stock trading with at most k transactions over n days: what can you do when k >= n / 2?",
     "choices": [
-     "Nothing; it still needs the O(n·k) DP",
      "Only one trade is allowed",
      "Treat it as unlimited: sum every rise between neighbours, O(n)",
+     "Nothing; it still needs the O(n·k) DP",
      "The answer is always 0"
     ],
     "explain": "A useful trade spans at least two days, so n days hold at most n/2 of them; a larger k never binds. It also avoids allocating O(k) arrays for a huge k."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -7676,9 +7676,9 @@
     "q": "给一组会议时间段，最少需要几间会议室？下面哪个说法正确？",
     "choices": [
      "等于任一时刻同时进行的会议数的最大值，可以按开始时间排序后用结束时间的小顶堆求，O(n log n)",
+     "必须枚举所有分配方案",
      "等于会议总数的一半，向上取整",
-     "等于时长最长的那个会议覆盖的其他会议个数",
-     "必须枚举所有分配方案"
+     "等于时长最长的那个会议覆盖的其他会议个数"
     ],
     "explain": "最多同时进行的会议数是下界，而按开始时间依次安排、有空房就复用（堆顶是最早空出来的房间）正好能达到这个下界。也可以把开始和结束时间分别排序后扫一遍。"
    },
@@ -7686,9 +7686,9 @@
     "q": "Given meeting times, what is the minimum number of rooms?",
     "choices": [
      "The maximum number of meetings running at once; sort by start and keep a min-heap of end times, O(n log n)",
+     "It requires trying every assignment",
      "Half the number of meetings, rounded up",
-     "The number of meetings the longest one overlaps",
-     "It requires trying every assignment"
+     "The number of meetings the longest one overlaps"
     ],
     "explain": "The peak overlap is a lower bound, and assigning meetings by start time while reusing the room that frees up first (the heap top) achieves it. Sorting starts and ends separately and sweeping works too."
    },
@@ -7704,20 +7704,20 @@
    "zh": {
     "q": "两人轮流从数组两端取数，都按最优策略。区间 DP 写作 dp[i][j] = max(a[i] - dp[i+1][j], a[j] - dp[i][j-1])。dp[i][j] 表示什么？",
     "choices": [
-     "只剩 a[i..j] 时，后手的总得分",
+     "a[i..j] 的元素和",
      "只剩 a[i..j] 时，轮到的玩家最多能领先对手多少分",
-     "只剩 a[i..j] 时，先手的总得分",
-     "a[i..j] 的元素和"
+     "只剩 a[i..j] 时，后手的总得分",
+     "只剩 a[i..j] 时，先手的总得分"
     ],
     "explain": "取走 a[i] 后，局面变成对手面对 a[i+1..j]，对手能领先 dp[i+1][j]，所以自己的领先是 a[i] - dp[i+1][j]，取 a[j] 同理。dp[0][n-1] ≥ 0 就说明先手不会输。"
    },
    "en": {
     "q": "Two players alternately take a number from either end of an array, both optimally. The DP is dp[i][j] = max(a[i] - dp[i+1][j], a[j] - dp[i][j-1]). What is dp[i][j]?",
     "choices": [
-     "With a[i..j] left, the second player's total",
+     "The sum of a[i..j]",
      "With a[i..j] left, the most the player to move can finish ahead of the opponent",
-     "With a[i..j] left, the first player's total",
-     "The sum of a[i..j]"
+     "With a[i..j] left, the second player's total",
+     "With a[i..j] left, the first player's total"
     ],
     "explain": "Taking a[i] hands a[i+1..j] to the opponent, who then leads by dp[i+1][j], so the mover's lead is a[i] - dp[i+1][j]; likewise for a[j]. dp[0][n-1] >= 0 means the first player does not lose."
    },
@@ -7734,9 +7734,9 @@
     "q": "「矩阵中的最长递增路径」用带记忆化的 DFS 求解，为什么不需要 visited 数组防止走回头路？",
     "choices": [
      "因为 DFS 只往右和往下走",
-     "因为记忆化表本身就是 visited 数组",
+     "其实需要，否则会无限递归",
      "路径严格递增，不可能回到走过的格子，状态图本身没有环",
-     "其实需要，否则会无限递归"
+     "因为记忆化表本身就是 visited 数组"
     ],
     "explain": "每一步都走到更大的值，所以走过的格子值都更小，不会再被走到。状态图是 DAG，记忆化后每个格子只算一次，总共 O(R·C)。"
    },
@@ -7744,9 +7744,9 @@
     "q": "Longest increasing path in a matrix by memoized DFS: why is no visited set needed against walking in circles?",
     "choices": [
      "DFS only moves right and down",
-     "The memo table is the visited set",
+     "It is needed, or the recursion never ends",
      "Values strictly increase along a path, so it can never return to a cell; the state graph has no cycles",
-     "It is needed, or the recursion never ends"
+     "The memo table is the visited set"
     ],
     "explain": "Each step goes to a larger value, so every cell already on the path is smaller and unreachable. The state graph is a DAG; with memoization each cell is solved once, O(R·C) in total."
    },
@@ -7762,25 +7762,25 @@
    "zh": {
     "q": "实现一个支持 push、pop、top 和 O(1) getMin 的栈，常见做法是？",
     "choices": [
-     "用一个小顶堆代替栈",
      "用哈希表记录每个值出现的次数",
+     "每个元素入栈时同时记下「到它为止的最小值」，比如存成 (值, 当前最小值) 二元组",
      "每次 getMin 时扫描整个栈",
-     "每个元素入栈时同时记下「到它为止的最小值」，比如存成 (值, 当前最小值) 二元组"
+     "用一个小顶堆代替栈"
     ],
     "explain": "栈顶记录的最小值就是整个栈的最小值；弹出后，新栈顶记录的就是剩余元素的最小值，不用重算。扫描是 O(n)，堆的弹出是 O(log n) 且不能按后进先出弹。"
    },
    "en": {
     "q": "A stack with push, pop, top and O(1) getMin is usually built how?",
     "choices": [
-     "Replace the stack with a min-heap",
      "Count each value in a hash map",
+     "Store with each element the minimum up to it, e.g. (value, current min) pairs",
      "Scan the whole stack on getMin",
-     "Store with each element the minimum up to it, e.g. (value, current min) pairs"
+     "Replace the stack with a min-heap"
     ],
     "explain": "The minimum stored at the top is the minimum of the whole stack, and after a pop the new top already has the right one. Scanning is O(n); a heap pops in O(log n) and not in LIFO order."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -7793,8 +7793,8 @@
     "choices": [
      "list.pop(0) 要把后面的元素全部前移，是 O(n)；deque.popleft() 是 O(1)",
      "deque 是线程安全的，list 不是",
-     "list 不能存元组",
-     "deque 占用的内存是 list 的一半"
+     "deque 占用的内存是 list 的一半",
+     "list 不能存元组"
     ],
     "explain": "list 是连续数组，删掉第一个元素要整体挪动。deque 是分块的双端结构，两端进出都是 O(1)。队列很长时，pop(0) 会让 BFS 变成平方级。"
    },
@@ -7803,8 +7803,8 @@
     "choices": [
      "list.pop(0) shifts every remaining element, O(n); deque.popleft() is O(1)",
      "deque is thread-safe and list is not",
-     "Lists cannot hold tuples",
-     "deque uses half the memory"
+     "deque uses half the memory",
+     "Lists cannot hold tuples"
     ],
     "explain": "A list is one contiguous array, so removing the first element moves the rest. A deque is a block-linked double-ended structure with O(1) at both ends. On long queues pop(0) turns BFS quadratic."
    },
@@ -7820,9 +7820,9 @@
    "zh": {
     "q": "要让 LRU 缓存的 get 和 put 都是 O(1)，标准结构是？",
     "choices": [
-     "一个小顶堆，按最近访问时间排序",
-     "哈希表 + 双向链表：哈希表找节点，链表维护新旧顺序",
      "只用一个哈希表",
+     "哈希表 + 双向链表：哈希表找节点，链表维护新旧顺序",
+     "一个小顶堆，按最近访问时间排序",
      "一个按访问时间排序的数组"
     ],
     "explain": "哈希表 O(1) 找到节点，双向链表 O(1) 把它摘下来移到头部，淘汰时直接删尾部。堆每次更新是 O(log n)；普通哈希表不记录访问顺序（Python 的 OrderedDict 内部就是哈希表加双向链表）。"
@@ -7830,9 +7830,9 @@
    "en": {
     "q": "What gives an LRU cache O(1) get and put?",
     "choices": [
-     "A min-heap ordered by last access",
-     "A hash map plus a doubly linked list: the map finds the node, the list keeps recency order",
      "A hash map alone",
+     "A hash map plus a doubly linked list: the map finds the node, the list keeps recency order",
+     "A min-heap ordered by last access",
      "An array sorted by access time"
     ],
     "explain": "The map finds the node in O(1), the list unlinks it and moves it to the front in O(1), and eviction drops the tail. A heap update is O(log n); a plain map keeps no recency (Python's OrderedDict is itself a hash map with a doubly linked list)."
@@ -7849,9 +7849,9 @@
    "zh": {
     "q": "LRU 缓存里的链表为什么要用双向链表，单向的不行吗？",
     "choices": [
-     "单向链表不能在头部插入",
-     "为了能按 key 排序",
      "从哈希表拿到一个节点后，要 O(1) 把它摘下来，需要知道它的前驱；单向链表只能从头找",
+     "为了能按 key 排序",
+     "单向链表不能在头部插入",
      "双向链表更省内存"
     ],
     "explain": "摘除节点要改前驱的 next。单向链表找前驱是 O(n)，双向链表通过 prev 直接拿到。"
@@ -7859,15 +7859,15 @@
    "en": {
     "q": "Why does an LRU cache use a doubly linked list rather than a singly linked one?",
     "choices": [
-     "Singly linked lists cannot insert at the head",
-     "To keep keys sorted",
      "A node found through the map must be unlinked in O(1), which needs its predecessor; a singly linked list would walk from the head",
+     "To keep keys sorted",
+     "Singly linked lists cannot insert at the head",
      "Doubly linked lists use less memory"
     ],
     "explain": "Unlinking changes the predecessor's next pointer. Finding it is O(n) in a singly linked list and O(1) through prev in a doubly linked one."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -7879,9 +7879,9 @@
     "q": "字典树（Trie）里已经存了 N 个单词，查找一个长度为 L 的单词是否存在，时间是？",
     "choices": [
      "O(N·L)",
+     "O(L)，与 N 无关",
      "O(L log N)",
-     "O(log N)",
-     "O(L)，与 N 无关"
+     "O(log N)"
     ],
     "explain": "从根开始每个字符往下走一层，最多 L 步，与存了多少单词无关（每个节点的孩子用数组或哈希表，取孩子是 O(1)）。这也是 Trie 适合前缀查询的原因。"
    },
@@ -7889,14 +7889,14 @@
     "q": "A trie holds N words. Checking whether a word of length L is present takes:",
     "choices": [
      "O(N·L)",
+     "O(L), independent of N",
      "O(L log N)",
-     "O(log N)",
-     "O(L), independent of N"
+     "O(log N)"
     ],
     "explain": "Each character moves one level down from the root, at most L steps, however many words are stored (children in an array or hash map are O(1) to reach). That is why tries suit prefix queries."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -7907,25 +7907,25 @@
    "zh": {
     "q": "为什么把二叉树序列化成「带空节点标记（如 #）的前序遍历」就足以还原，而普通的前序遍历不行？",
     "choices": [
-     "空标记指明了每个子树在哪里结束，按同样的前序顺序递归读取就能唯一还原",
      "因为 # 让字符串更短",
+     "因为反序列化时可以用中序补全",
      "因为前序遍历本身就能唯一确定一棵树",
-     "因为反序列化时可以用中序补全"
+     "空标记指明了每个子树在哪里结束，按同样的前序顺序递归读取就能唯一还原"
     ],
     "explain": "没有空标记时，[1, 2] 既可以是 2 为左孩子，也可以是 2 为右孩子。加上空标记后，\"1,2,#,#,#\" 和 \"1,#,2,#,#\" 不同，读取时遇到 # 就返回 None，结构完全确定。"
    },
    "en": {
     "q": "Why does preorder with explicit null markers (such as #) let a binary tree be rebuilt, while plain preorder does not?",
     "choices": [
-     "The markers show where every subtree ends, so reading back in the same preorder rebuilds exactly one tree",
      "The # makes the string shorter",
+     "Deserializing can fill in the gaps with inorder",
      "Plain preorder already determines the tree",
-     "Deserializing can fill in the gaps with inorder"
+     "The markers show where every subtree ends, so reading back in the same preorder rebuilds exactly one tree"
     ],
     "explain": "Without markers, [1, 2] could have 2 as a left or a right child. With them, \"1,2,#,#,#\" and \"1,#,2,#,#\" differ; reading a # returns None, and the shape is fixed."
    },
    "answer": [
-    0
+    3
    ]
   },
   {
@@ -7936,25 +7936,25 @@
    "zh": {
     "q": "对正整数 x，x & (x - 1) == 0 成立意味着什么？",
     "choices": [
+     "x 是奇数",
      "x 是偶数",
      "x 是 2 的幂",
-     "x 的二进制里 1 和 0 一样多",
-     "x 是奇数"
+     "x 的二进制里 1 和 0 一样多"
     ],
     "explain": "x & (x - 1) 会去掉 x 最低位的 1。结果为 0 说明 x 只有一个 1，也就是 2 的幂。x = 0 时式子也成立，所以要额外判断 x > 0。"
    },
    "en": {
     "q": "For a positive integer x, what does x & (x - 1) == 0 mean?",
     "choices": [
+     "x is odd",
      "x is even",
      "x is a power of two",
-     "x has as many 1 bits as 0 bits",
-     "x is odd"
+     "x has as many 1 bits as 0 bits"
     ],
     "explain": "x & (x - 1) clears the lowest set bit of x. A zero result means x had a single 1 bit: a power of two. It also holds for x = 0, hence the separate x > 0 check."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -7965,25 +7965,25 @@
    "zh": {
     "q": "[7, 3, 5, 3, 7] 中所有数的按位异或结果是？",
     "choices": [
+     "0",
      "3",
      "7",
-     "5",
-     "0"
+     "5"
     ],
     "explain": "a ^ a = 0，a ^ 0 = a，异或满足交换律和结合律，所以成对出现的 7 和 3 互相抵消，只剩 5。「其余数都出现两次，找出只出现一次的数」就是这样 O(n) 时间、O(1) 空间解决的。"
    },
    "en": {
     "q": "What is the bitwise XOR of all of [7, 3, 5, 3, 7]?",
     "choices": [
+     "0",
      "3",
      "7",
-     "5",
-     "0"
+     "5"
     ],
     "explain": "a ^ a = 0, a ^ 0 = a, and XOR is commutative and associative, so the paired 7s and 3s cancel and 5 remains. That is the O(n) time, O(1) space answer to \"every number appears twice except one\"."
    },
    "answer": [
-    2
+    3
    ]
   },
   {
@@ -7994,25 +7994,25 @@
    "zh": {
     "q": "在补码表示下，x & -x 的结果是什么？以 x = 12 为例。",
     "choices": [
+     "4",
      "8",
-     "12",
      "1",
-     "4"
+     "12"
     ],
     "explain": "-x 等于 ~x + 1，它和 x 只在最低位的 1 及其右边一致。所以 x & -x 只保留最低位的 1。12 = 1100₂，结果是 100₂ = 4。树状数组用它来跳到下一个区间。"
    },
    "en": {
     "q": "In two's complement, what does x & -x give? Take x = 12.",
     "choices": [
+     "4",
      "8",
-     "12",
      "1",
-     "4"
+     "12"
     ],
     "explain": "-x is ~x + 1, which agrees with x only at its lowest set bit and the zeros below it, so x & -x keeps just that bit. 12 = 1100₂, giving 100₂ = 4. Fenwick trees use it to step between ranges."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -8023,8 +8023,8 @@
    "zh": {
     "q": "「能否跳到最后一个下标」（a[i] 是从 i 出发最多能跳的步数）：贪心从左到右扫描，记录目前能到达的最远下标 far。什么时候可以判定跳不到？",
     "choices": [
-     "扫描到的下标 i 已经大于 far 时",
      "第一步之后 far 仍小于 n - 1 时",
+     "扫描到的下标 i 已经大于 far 时",
      "永远不会，贪心总是返回能到达",
      "遇到某个 a[i] == 0 时"
     ],
@@ -8033,15 +8033,15 @@
    "en": {
     "q": "\"Can you reach the last index?\" (a[i] is the longest jump from i): a greedy left-to-right scan keeps far, the farthest index reachable so far. When is the answer no?",
     "choices": [
-     "When the scan reaches an index i greater than far",
      "When far is still below n - 1 after the first step",
+     "When the scan reaches an index i greater than far",
      "Never; the greedy always says yes",
      "As soon as some a[i] == 0"
     ],
     "explain": "While i <= far, i can be stood on and i + a[i] extends far. Once i passes far, nothing before i reaches it, so nothing beyond does either. A 0 does not always block: [2, 0, 1] jumps from index 0 straight over it to the end."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -8052,9 +8052,9 @@
    "zh": {
     "q": "回溯枚举字符串 s（长度 n）的所有回文划分时，先预处理一张表 pal[i][j]（s[i..j] 是否为回文），带来的改变是？",
     "choices": [
-     "整个算法变成多项式时间",
-     "搜索中每次判断回文从 O(n) 变成 O(1)，建表本身 O(n²)",
      "不再需要回溯",
+     "搜索中每次判断回文从 O(n) 变成 O(1)，建表本身 O(n²)",
+     "整个算法变成多项式时间",
      "划分方案的数量变少了"
     ],
     "explain": "建表用区间 DP：pal[i][j] = s[i] == s[j] 且 pal[i+1][j-1]，O(n²)。之后搜索里每次判断只要查表。划分方案本身可能有指数多个（全是同一个字符时有 2^(n-1) 种），所以总时间仍由输出决定。"
@@ -8062,9 +8062,9 @@
    "en": {
     "q": "When backtracking over every palindrome partition of s (length n), what does precomputing a table pal[i][j] (is s[i..j] a palindrome) change?",
     "choices": [
-     "The whole algorithm becomes polynomial",
-     "Each palindrome check in the search drops from O(n) to O(1); the table costs O(n²)",
      "Backtracking is no longer needed",
+     "Each palindrome check in the search drops from O(n) to O(1); the table costs O(n²)",
+     "The whole algorithm becomes polynomial",
      "There are fewer partitions"
     ],
     "explain": "The table is an interval DP, pal[i][j] = s[i] == s[j] and pal[i+1][j-1], in O(n²). The search then answers each check by lookup. The partitions themselves can be exponential (2^(n-1) for a string of one repeated letter), so the output still dominates."
@@ -8081,25 +8081,25 @@
    "zh": {
     "q": "在网格里用回溯找单词时，为什么要在递归前把当前格子标记为「使用中」，返回后再恢复？",
     "choices": [
-     "为了统计访问过的格子数",
-     "为了缓存结果，加快速度",
+     "只是为了防止无限递归，恢复可有可无",
      "让当前路径不重复使用同一个格子；恢复是为了别的路径之后还能用它",
-     "只是为了防止无限递归，恢复可有可无"
+     "为了统计访问过的格子数",
+     "为了缓存结果，加快速度"
     ],
     "explain": "同一条路径不能重复用一个格子，所以要标记。但这个格子对其他起点或其他分支仍然可用；如果失败后不恢复，它会一直被挡住，导致漏掉本来存在的答案。"
    },
    "en": {
     "q": "Searching a grid for a word by backtracking, why mark the current cell as in use before recursing and restore it afterwards?",
     "choices": [
-     "To count visited cells",
-     "To cache results for speed",
+     "Only to stop infinite recursion; restoring is optional",
      "So the current path cannot reuse the cell; restoring lets other paths use it later",
-     "Only to stop infinite recursion; restoring is optional"
+     "To count visited cells",
+     "To cache results for speed"
     ],
     "explain": "One path may not use a cell twice, hence the mark. Other starts and branches may still need that cell; left marked after a failed branch, it stays blocked and real answers are missed."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -8110,25 +8110,25 @@
    "zh": {
     "q": "把 n 个互不相同的有序数建成一棵高度平衡的 BST（递归时传下标区间，不切片）。每个子区间选谁当根，总时间是多少？",
     "choices": [
-     "选最后一个元素，O(n log n)",
-     "每个子区间排序后取中位数，O(n log² n)",
      "选第一个元素，O(n)",
-     "选中间元素，O(n)"
+     "选中间元素，O(n)",
+     "每个子区间排序后取中位数，O(n log² n)",
+     "选最后一个元素，O(n log n)"
     ],
     "explain": "中间元素当根，左右两半大小最多差 1，树高约 log n。每个元素只建一次节点，传下标不复制数组，总共 O(n)。选第一个元素会得到一条链。"
    },
    "en": {
     "q": "Building a height-balanced BST from n distinct sorted values (recursing on index ranges, no slicing): which element of each range becomes the root, and what is the total time?",
     "choices": [
-     "The last, O(n log n)",
-     "The median after sorting each range, O(n log² n)",
      "The first, O(n)",
-     "The middle one, O(n)"
+     "The middle one, O(n)",
+     "The median after sorting each range, O(n log² n)",
+     "The last, O(n log n)"
     ],
     "explain": "With the middle as root the halves differ by at most one, so the height is about log n. Each value becomes one node, and index ranges copy nothing: O(n) in total. Taking the first element builds a chain."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -8140,8 +8140,8 @@
     "q": "二叉树的直径（任意两节点间最长路径的边数）一定经过根节点吗？",
     "choices": [
      "不一定；在每个节点计算「左子树深度 + 右子树深度」，取全局最大值",
-     "只要根有两个孩子就一定经过",
      "不一定，而且只能从每个节点各做一次 BFS，O(n²)",
+     "只要根有两个孩子就一定经过",
      "一定经过"
     ],
     "explain": "最长路径可能整个落在一棵子树里，比如根的右孩子是一个叶子，而左子树很深很宽。一次后序遍历就够了：每个节点返回自己的深度，同时用左右深度之和更新答案，O(n)。"
@@ -8150,8 +8150,8 @@
     "q": "Does the diameter of a binary tree (the most edges on a path between any two nodes) always pass through the root?",
     "choices": [
      "Not necessarily; take left depth + right depth at every node and keep the maximum",
-     "It does whenever the root has two children",
      "Not necessarily, and finding it takes a BFS from every node, O(n²)",
+     "It does whenever the root has two children",
      "Always"
     ],
     "explain": "The longest path can sit entirely inside one subtree, say when the root's right child is a single leaf and the left subtree is deep and wide. One postorder pass suffices: each node returns its depth and updates the answer with the sum of its two sides, O(n)."
@@ -8169,8 +8169,8 @@
     "q": "带手续费的股票买卖：每天写 hold = max(hold, cash - p)；cash = max(cash, hold + p - fee)，第二行用到的是刚更新过的 hold。为什么这样原地更新不会出错？",
     "choices": [
      "因为股价不会下跌",
-     "用新 hold 相当于同一天先买后卖，只会白白付一次手续费，永远不会让 cash 变大",
      "因为手续费是正数，hold 不会改变",
+     "用新 hold 相当于同一天先买后卖，只会白白付一次手续费，永远不会让 cash 变大",
      "其实会出错，必须用两个临时变量"
     ],
     "explain": "新的 hold 如果来自今天买入，即 cash - p，那么 hold + p - fee = cash - fee ≤ cash，max 不会选它。所以用新值和用昨天的值结果一样。fee 为 0 时等于 cash，同样不影响结果。"
@@ -8179,14 +8179,14 @@
     "q": "Stock trading with a fee: each day hold = max(hold, cash - p); cash = max(cash, hold + p - fee), where the second line sees the updated hold. Why is updating in place safe?",
     "choices": [
      "Because prices never fall",
-     "Using the new hold means buying and selling the same day, which only pays a fee and can never raise cash",
      "Because the fee is positive, hold never changes",
+     "Using the new hold means buying and selling the same day, which only pays a fee and can never raise cash",
      "It is not safe; two temporaries are required"
     ],
     "explain": "If the new hold came from buying today, cash - p, then hold + p - fee = cash - fee <= cash, so max ignores it. The result matches using yesterday's hold. With a zero fee it equals cash, still harmless."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -8199,20 +8199,20 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n)",
+     "O(1)",
      "O(n log n)",
      "O(n²)",
-     "O(1)"
+     "O(n)"
     ],
     "explain": "insert(0, x) 要把 out 里已有的元素全部后移，第 i 次插入挪 i 个，总共 0 + 1 + … + (n-1) = Θ(n²)。改成 append 后再整体反转，或者直接 a[::-1]，都是 O(n)。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n)",
+     "O(1)",
      "O(n log n)",
      "O(n²)",
-     "O(1)"
+     "O(n)"
     ],
     "explain": "insert(0, x) shifts everything already in out, i elements on the i-th call: 0 + 1 + … + (n-1) = Θ(n²). Appending and reversing once, or a[::-1], is O(n)."
    },
@@ -8230,8 +8230,8 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（取最紧的界）",
     "choices": [
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(log n)",
      "O(n)"
     ],
@@ -8240,8 +8240,8 @@
    "en": {
     "q": "What is the time complexity of this code (tightest bound)?",
     "choices": [
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(log n)",
      "O(n)"
     ],
@@ -8261,25 +8261,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n²)",
+     "O(n log n)",
      "O(1)",
-     "O(n)",
-     "O(n log n)"
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "max(a) 写在列表推导式里，每个元素都会重新扫描一遍整个列表，n 次 O(n) 就是 O(n²)。先把 m = max(a) 存下来就是 O(n)。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n²)",
+     "O(n log n)",
      "O(1)",
-     "O(n)",
-     "O(n log n)"
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "max(a) sits inside the comprehension, so the whole list is scanned again for every element: n scans of O(n) is O(n²). Computing m = max(a) once makes it O(n)."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -8292,8 +8292,8 @@
    "zh": {
     "q": "下面代码在最坏情况下的时间复杂度是？（n = len(a)）",
     "choices": [
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(n³)",
      "O(n)"
     ],
@@ -8302,15 +8302,15 @@
    "en": {
     "q": "What is the worst-case time complexity (n = len(a))?",
     "choices": [
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(n³)",
      "O(n)"
     ],
     "explain": "seen is a list, so x in seen compares one by one. With all values distinct it grows to n, about n²/2 comparisons in all. A set makes membership expected O(1) and the whole function expected O(n)."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -8323,9 +8323,9 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n²)",
      "O(1)",
      "期望 O(n)",
+     "O(n²)",
      "O(n log n)"
     ],
     "explain": "一次遍历，每个元素做一次集合查找和一次插入，都是期望 O(1)。说「期望」是因为哈希冲突严重时单次操作可能退化。"
@@ -8333,15 +8333,15 @@
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n²)",
      "O(1)",
      "O(n) expected",
+     "O(n²)",
      "O(n log n)"
     ],
     "explain": "One pass with one set lookup and one insert per element, each expected O(1). \"Expected\" because heavy hash collisions could slow single operations."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -8355,9 +8355,9 @@
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
      "O(n³)",
-     "O(n)",
      "O(n log n)",
-     "O(n²)"
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "list.count 每次都扫描整个列表，循环里调用两次，就是 n 次 O(n)，共 O(n²)。用 collections.Counter 先计数一遍就是 O(n)。"
    },
@@ -8365,14 +8365,14 @@
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
      "O(n³)",
-     "O(n)",
      "O(n log n)",
-     "O(n²)"
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "list.count scans the whole list, and it is called twice per iteration: n times O(n) is O(n²). Counting once with collections.Counter is O(n)."
    },
    "answer": [
-    3
+    2
    ]
   },
   {
@@ -8385,25 +8385,25 @@
    "zh": {
     "q": "words 有 n 个词，vocab 是一个有 m 个键的 dict。时间复杂度是？",
     "choices": [
+     "O(n + m)",
      "O(n·m)",
-     "O(m log n)",
      "O(n)",
-     "O(n + m)"
+     "O(m log n)"
     ],
     "explain": "每次循环都用 list(vocab) 把 m 个键复制成新列表，再线性查找，单次 O(m)，共 O(n·m)。直接写 w in vocab 就是期望 O(1) 的哈希查找，整体 O(n)。"
    },
    "en": {
     "q": "words has n entries and vocab is a dict with m keys. What is the time complexity?",
     "choices": [
+     "O(n + m)",
      "O(n·m)",
-     "O(m log n)",
      "O(n)",
-     "O(n + m)"
+     "O(m log n)"
     ],
     "explain": "Each iteration copies the m keys into a new list with list(vocab) and scans it: O(m) per word, O(n·m) total. Writing w in vocab is an expected O(1) hash lookup, O(n) overall."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -8417,9 +8417,9 @@
     "q": "下面代码在 s 是回文时的时间复杂度是？（n = len(s)）",
     "choices": [
      "O(n log n)",
-     "O(n²)",
      "O(2^n)",
-     "O(n)"
+     "O(n)",
+     "O(n²)"
     ],
     "explain": "递归约 n/2 层，每层的切片 s[1:-1] 都会复制出一个新字符串，长度依次是 n-2、n-4……，总复制量 Θ(n²)。改成传左右下标、不切片，就是 O(n)。"
    },
@@ -8427,14 +8427,14 @@
     "q": "What is the time complexity when s is a palindrome (n = len(s))?",
     "choices": [
      "O(n log n)",
-     "O(n²)",
      "O(2^n)",
-     "O(n)"
+     "O(n)",
+     "O(n²)"
     ],
     "explain": "There are about n/2 calls, and each slice s[1:-1] copies a new string of length n-2, n-4, …, Θ(n²) in total. Passing left and right indices instead of slicing makes it O(n)."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -8447,9 +8447,9 @@
    "zh": {
     "q": "下面 Java 方法的时间复杂度是？",
     "choices": [
-     "O(n)",
      "O(n log n)",
      "O(n²)",
+     "O(n)",
      "O(2^n)"
     ],
     "explain": "Java 的 String 不可变，s += \"x\" 每次都新建一个字符串并复制已有的 i 个字符，总共 Θ(n²)。在循环里拼接应该用 StringBuilder，append 均摊 O(1)，整体 O(n)。"
@@ -8457,15 +8457,15 @@
    "en": {
     "q": "What is the time complexity of this Java method?",
     "choices": [
-     "O(n)",
      "O(n log n)",
      "O(n²)",
+     "O(n)",
      "O(2^n)"
     ],
     "explain": "Java strings are immutable, so each s += \"x\" builds a new string and copies the i characters so far: Θ(n²) overall. A StringBuilder appends in amortized O(1), O(n) in total."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -8479,9 +8479,9 @@
     "q": "a 里都是非负整数，k ≥ 0。下面代码的时间复杂度是？（n = len(a)）",
     "choices": [
      "O(n log n)",
-     "O(n²)",
      "O(n·k)",
-     "O(n)"
+     "O(n)",
+     "O(n²)"
     ],
     "explain": "虽然是两层循环，但 lo 只增不减，整个过程最多加 n 次，内层 while 的总执行次数不超过 n。所以总共 O(n)。"
    },
@@ -8489,14 +8489,14 @@
     "q": "a holds non-negative integers and k >= 0. What is the time complexity (n = len(a))?",
     "choices": [
      "O(n log n)",
-     "O(n²)",
      "O(n·k)",
-     "O(n)"
+     "O(n)",
+     "O(n²)"
     ],
     "explain": "The loops are nested, but lo only moves forward, at most n times over the whole run, so the inner while runs at most n times in total: O(n)."
    },
    "answer": [
-    3
+    2
    ]
   },
   {
@@ -8509,8 +8509,8 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(log n)",
      "O(n)"
     ],
@@ -8519,15 +8519,15 @@
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(log n)",
      "O(n)"
     ],
     "explain": "The two-pointer loop moves i or j each step, O(n), but the sort before it is O(n log n), which dominates."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -8540,25 +8540,25 @@
    "zh": {
     "q": "a 长度为 n，queries 有 q 个 (l, r) 区间。时间复杂度是？",
     "choices": [
-     "O(q log n)",
      "O(n + q)",
-     "O(n·q)",
-     "O(n log n + q)"
+     "O(q log n)",
+     "O(n log n + q)",
+     "O(n·q)"
     ],
     "explain": "建前缀和 O(n)，之后每个查询只做一次减法 O(1)，共 O(n + q)。"
    },
    "en": {
     "q": "a has length n and queries holds q (l, r) ranges. What is the time complexity?",
     "choices": [
-     "O(q log n)",
      "O(n + q)",
-     "O(n·q)",
-     "O(n log n + q)"
+     "O(q log n)",
+     "O(n log n + q)",
+     "O(n·q)"
     ],
     "explain": "Building prefix sums is O(n); each query is then one subtraction, O(1): O(n + q) in total."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -8571,25 +8571,25 @@
    "zh": {
     "q": "a 长度为 n，queries 有 q 个 (l, r) 区间。最坏情况下的时间复杂度是？",
     "choices": [
-     "O(q)",
-     "O(n + q)",
+     "O(q log n)",
      "O(n·q)",
-     "O(q log n)"
+     "O(n + q)",
+     "O(q)"
     ],
     "explain": "每个查询都要切片复制一段再求和，区间可能覆盖整个数组，单次 O(n)，共 O(n·q)。先建前缀和就能降到 O(n + q)。"
    },
    "en": {
     "q": "a has length n and queries holds q (l, r) ranges. What is the worst-case time complexity?",
     "choices": [
-     "O(q)",
-     "O(n + q)",
+     "O(q log n)",
      "O(n·q)",
-     "O(q log n)"
+     "O(n + q)",
+     "O(q)"
     ],
     "explain": "Every query copies a slice and sums it, and a range can span the whole array: O(n) each, O(n·q) in total. Prefix sums bring it to O(n + q)."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -8602,25 +8602,25 @@
    "zh": {
     "q": "初始 hi - lo = n，每次调用 ok 需要 O(m)。时间复杂度是？",
     "choices": [
-     "O(n·m)",
-     "O(log n)",
      "O(m + log n)",
-     "O(m log n)"
+     "O(m log n)",
+     "O(log n)",
+     "O(n·m)"
     ],
     "explain": "每轮把区间减半，共 O(log n) 轮，每轮调用一次 ok，所以是 O(m log n)。这正是「二分答案」的典型代价。"
    },
    "en": {
     "q": "Initially hi - lo = n, and each call to ok costs O(m). What is the time complexity?",
     "choices": [
-     "O(n·m)",
-     "O(log n)",
      "O(m + log n)",
-     "O(m log n)"
+     "O(m log n)",
+     "O(log n)",
+     "O(n·m)"
     ],
     "explain": "Each round halves the range, O(log n) rounds with one ok call each: O(m log n). This is the usual cost of binary search on the answer."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -8633,25 +8633,25 @@
    "zh": {
     "q": "a 是有序列表。最坏情况下的时间复杂度是？（n = len(a)）",
     "choices": [
-     "O(n)",
      "O(n log n)",
-     "O(log² n)",
-     "O(log n)"
+     "O(log n)",
+     "O(n)",
+     "O(log² n)"
     ],
     "explain": "比较次数确实只有 O(log n)，但每层的切片都会复制半个列表：n/2 + n/4 + … ≈ n，总共 O(n)。传 lo、hi 下标而不切片，才是真正的 O(log n)。"
    },
    "en": {
     "q": "a is sorted. What is the worst-case time complexity (n = len(a))?",
     "choices": [
-     "O(n)",
      "O(n log n)",
-     "O(log² n)",
-     "O(log n)"
+     "O(log n)",
+     "O(n)",
+     "O(log² n)"
     ],
     "explain": "There are only O(log n) comparisons, but every level copies half the list: n/2 + n/4 + … ≈ n, so O(n) overall. Passing lo and hi instead of slicing gives a true O(log n)."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -8664,25 +8664,25 @@
    "zh": {
     "q": "下面代码在最坏情况下的时间复杂度是？（n = len(a)）",
     "choices": [
-     "O(n log n)",
      "O(n²)",
      "O(n)",
-     "O(log n)"
+     "O(log n)",
+     "O(n log n)"
     ],
     "explain": "insort 用二分找位置只要 O(log n)，但插入列表中间要把后面的元素都后移，是 O(n)。a 递减时每次都插到最前面，总共 Θ(n²)。只要最后的有序结果时，直接 sorted(a) 是 O(n log n)。"
    },
    "en": {
     "q": "What is the worst-case time complexity (n = len(a))?",
     "choices": [
-     "O(n log n)",
      "O(n²)",
      "O(n)",
-     "O(log n)"
+     "O(log n)",
+     "O(n log n)"
     ],
     "explain": "insort finds the spot by binary search in O(log n), but inserting into the middle of a list shifts everything after it, O(n). With a decreasing, every insert goes to the front: Θ(n²). If only the final order matters, sorted(a) is O(n log n)."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -8695,9 +8695,9 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n²)",
      "只有输入有序时才是 O(n)",
      "O(n)",
+     "O(n²)",
      "O(n log n)"
     ],
     "explain": "每个下标只入栈一次、最多出栈一次，所以内层 while 在整个过程中总共最多执行 n 次。整体 O(n)，与输入顺序无关。"
@@ -8705,15 +8705,15 @@
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n²)",
      "O(n) only for sorted input",
      "O(n)",
+     "O(n²)",
      "O(n log n)"
     ],
     "explain": "Each index is pushed once and popped at most once, so the inner while runs at most n times over the whole run: O(n) for any input order."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -8726,25 +8726,25 @@
    "zh": {
     "q": "下面代码在最坏情况下的时间复杂度是？（n = len(a)）",
     "choices": [
-     "O(n²)",
+     "O(n log n)",
      "O(log n)",
      "O(n)",
-     "O(n log n)"
+     "O(n²)"
     ],
     "explain": "每次 heappush 最多上浮 log n 层，a 递减时每个新元素都要一路浮到堆顶，共 Θ(n log n)。直接调用 heapq.heapify(a) 自底向上建堆是 O(n)。"
    },
    "en": {
     "q": "What is the worst-case time complexity (n = len(a))?",
     "choices": [
-     "O(n²)",
+     "O(n log n)",
      "O(log n)",
      "O(n)",
-     "O(n log n)"
+     "O(n²)"
     ],
     "explain": "Each heappush sifts up at most log n levels, and with a decreasing every new element climbs to the top: Θ(n log n). heapq.heapify(a) builds bottom-up in O(n)."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -8757,9 +8757,9 @@
    "zh": {
     "q": "1 ≤ k ≤ n。时间复杂度是？（n = len(a)）",
     "choices": [
-     "O(n log k)",
      "O(n·k)",
      "O(n + k)",
+     "O(n log k)",
      "O(n log n)"
     ],
     "explain": "堆的大小始终不超过 k + 1，每次 push 和 pop 都是 O(log k)，n 个元素共 O(n log k)；最后排序 k 个元素 O(k log k) 不超过它。k 远小于 n 时比整体排序快。"
@@ -8767,15 +8767,15 @@
    "en": {
     "q": "1 <= k <= n. What is the time complexity (n = len(a))?",
     "choices": [
-     "O(n log k)",
      "O(n·k)",
      "O(n + k)",
+     "O(n log k)",
      "O(n log n)"
     ],
     "explain": "The heap never holds more than k + 1 items, so each push and pop is O(log k), O(n log k) over n elements; the final sort of k items, O(k log k), is no larger. That beats a full sort when k is much smaller than n."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -8788,20 +8788,20 @@
    "zh": {
     "q": "tasks 有 n 个元素。时间复杂度是？",
     "choices": [
-     "O(n log n)",
-     "O(n²)",
      "O(1)",
-     "O(n)"
+     "O(n²)",
+     "O(n)",
+     "O(n log n)"
     ],
     "explain": "list.pop(0) 要把剩下的元素全部前移一格，第 i 次挪 n - i 个，总共 Θ(n²)。用 collections.deque 的 popleft() 是 O(1)，整体 O(n)。"
    },
    "en": {
     "q": "tasks has n elements. What is the time complexity?",
     "choices": [
-     "O(n log n)",
-     "O(n²)",
      "O(1)",
-     "O(n)"
+     "O(n²)",
+     "O(n)",
+     "O(n log n)"
     ],
     "explain": "list.pop(0) shifts every remaining element left, n - i of them on the i-th call: Θ(n²) in total. collections.deque.popleft() is O(1), making it O(n)."
    },
@@ -8819,20 +8819,20 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n log n)",
+     "O(n³)",
      "O(n²)",
      "O(n² log n)",
-     "O(n³)"
+     "O(n log n)"
     ],
     "explain": "第 i 轮对长度为 i 的前缀重新排序，O(i log i)，加起来是 Θ(n² log n)。用一个大顶堆加一个小顶堆维护两半，每个新数 O(log n)，整体 O(n log n)。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n log n)",
+     "O(n³)",
      "O(n²)",
      "O(n² log n)",
-     "O(n³)"
+     "O(n log n)"
     ],
     "explain": "Round i re-sorts a prefix of length i, O(i log i), which sums to Θ(n² log n). Two heaps holding the lower and upper halves take O(log n) per number, O(n log n) overall."
    },
@@ -8850,9 +8850,9 @@
    "zh": {
     "q": "链表有 n 个节点。suffix_lengths 的时间复杂度是？",
     "choices": [
-     "O(2^n)",
      "O(n)",
      "O(n log n)",
+     "O(2^n)",
      "O(n²)"
     ],
     "explain": "每个节点都调用一次 length，从它走到链表末尾：n + (n-1) + … + 1 = Θ(n²)。先求一次总长度，之后每走一步减 1，就是 O(n)。"
@@ -8860,9 +8860,9 @@
    "en": {
     "q": "The list has n nodes. What is the time complexity of suffix_lengths?",
     "choices": [
-     "O(2^n)",
      "O(n)",
      "O(n log n)",
+     "O(2^n)",
      "O(n²)"
     ],
     "explain": "length walks from each node to the end: n + (n-1) + … + 1 = Θ(n²). Measuring the total once and subtracting 1 per step makes it O(n)."
@@ -8882,9 +8882,9 @@
     "q": "树有 n 个节点、高度为 h。时间和额外空间分别是？",
     "choices": [
      "O(n) 时间，O(h) 额外空间",
-     "O(n log n) 时间，O(log n) 额外空间",
      "O(n²) 时间，O(n) 额外空间",
-     "O(log n) 时间，O(1) 额外空间"
+     "O(log n) 时间，O(1) 额外空间",
+     "O(n log n) 时间，O(log n) 额外空间"
     ],
     "explain": "每个节点恰好访问一次，O(n)。递归栈的深度等于当前路径长度，最多 h + 1 层：平衡时 O(log n)，退化成链时 O(n)。"
    },
@@ -8892,9 +8892,9 @@
     "q": "The tree has n nodes and height h. What are the time and extra space?",
     "choices": [
      "O(n) time, O(h) extra space",
-     "O(n log n) time, O(log n) extra space",
      "O(n²) time, O(n) extra space",
-     "O(log n) time, O(1) extra space"
+     "O(log n) time, O(1) extra space",
+     "O(n log n) time, O(log n) extra space"
     ],
     "explain": "Each node is visited once: O(n). The call stack is as deep as the current path, at most h + 1 frames: O(log n) when balanced, O(n) for a chain."
    },
@@ -8912,25 +8912,25 @@
    "zh": {
     "q": "在有 n 个节点的完全平衡二叉树上调用 balanced(root)，时间复杂度是？",
     "choices": [
+     "O(log n)",
      "O(n)",
      "O(n log n)",
-     "O(n²)",
-     "O(log n)"
+     "O(n²)"
     ],
     "explain": "每个节点都会对自己的两棵子树求高度，代价是子树大小。同一层的子树大小加起来约为 n，共 log n 层，所以是 O(n log n)。让一次后序遍历同时返回高度和是否平衡，就能做到 O(n)。"
    },
    "en": {
     "q": "balanced(root) runs on a perfectly balanced binary tree with n nodes. What is the time complexity?",
     "choices": [
+     "O(log n)",
      "O(n)",
      "O(n log n)",
-     "O(n²)",
-     "O(log n)"
+     "O(n²)"
     ],
     "explain": "Every node measures both of its subtrees, costing their size. Sizes on one level add up to about n, over log n levels: O(n log n). One postorder pass returning height and balance together is O(n)."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -8943,9 +8943,9 @@
    "zh": {
     "q": "这是一棵不做平衡的普通二叉搜索树。循环部分的总时间是？",
     "choices": [
+     "O(n²)",
      "O(n)",
      "O(n log n)",
-     "O(n²)",
      "O(log n)"
     ],
     "explain": "键按递增顺序插入，每个新键都比已有的大，要走到最右端，树退化成链。第 k 次插入走 k 步，总共 Θ(n²)。键随机打乱时期望是 O(n log n)。"
@@ -8953,15 +8953,15 @@
    "en": {
     "q": "This is a plain, unbalanced binary search tree. What is the total time of the loop?",
     "choices": [
+     "O(n²)",
      "O(n)",
      "O(n log n)",
-     "O(n²)",
      "O(log n)"
     ],
     "explain": "Keys arrive in increasing order, so each one walks to the far right of a tree that has become a chain: k steps for the k-th insert, Θ(n²) in total. Shuffled keys would give O(n log n) expected."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -8974,25 +8974,25 @@
    "zh": {
     "q": "在 n 个节点、高度为 h 的 BST 上把 next() 调用 n 次走完整个中序。每次 next() 的代价是？",
     "choices": [
-     "每次都是 O(log n)",
      "均摊 O(n)",
-     "均摊 O(h)",
-     "均摊 O(1)，单次最坏 O(h)"
+     "均摊 O(1)，单次最坏 O(h)",
+     "每次都是 O(log n)",
+     "均摊 O(h)"
     ],
     "explain": "单次 next() 可能要沿左链压入 h 个节点，但整个遍历中每个节点只入栈、出栈各一次，n 次调用总共 O(n)，均摊每次 O(1)。栈最多 O(h) 个元素。"
    },
    "en": {
     "q": "next() is called n times to walk a BST with n nodes and height h in order. What does each next() cost?",
     "choices": [
-     "O(log n) every call",
      "O(n) amortized",
-     "O(h) amortized",
-     "O(1) amortized, O(h) worst case for one call"
+     "O(1) amortized, O(h) worst case for one call",
+     "O(log n) every call",
+     "O(h) amortized"
     ],
     "explain": "One call may push h nodes down a left spine, but over the whole walk each node is pushed and popped once, O(n) for n calls: O(1) amortized. The stack holds at most O(h) nodes."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -9006,9 +9006,9 @@
     "q": "网格是 R 行 C 列。时间复杂度是？",
     "choices": [
      "O(R·C)",
-     "O((R·C)²)",
+     "O(R + C)",
      "O(R·C·log(R·C))",
-     "O(R + C)"
+     "O((R·C)²)"
     ],
     "explain": "每个格子最多进队一次（进队时就写入 dist），出队时检查 4 个邻居，都是 O(1)，所以总共 O(R·C)。"
    },
@@ -9016,9 +9016,9 @@
     "q": "The grid has R rows and C columns. What is the time complexity?",
     "choices": [
      "O(R·C)",
-     "O((R·C)²)",
+     "O(R + C)",
      "O(R·C·log(R·C))",
-     "O(R + C)"
+     "O((R·C)²)"
     ],
     "explain": "Each cell enters the queue at most once (dist is set on enqueue) and checks 4 neighbours in O(1) when dequeued: O(R·C) overall."
    },
@@ -9036,8 +9036,8 @@
    "zh": {
     "q": "n 个元素上做 m 次 find 或 union（m ≥ n），总时间是？",
     "choices": [
-     "O(m·n)",
      "O(m·α(n))，几乎是线性",
+     "O(m·n)",
      "O(m²)",
      "O(m·√n)"
     ],
@@ -9046,15 +9046,15 @@
    "en": {
     "q": "m find or union calls on n elements (m >= n). What is the total time?",
     "choices": [
-     "O(m·n)",
      "O(m·α(n)), nearly linear",
+     "O(m·n)",
      "O(m²)",
      "O(m·√n)"
     ],
     "explain": "p[x] = p[p[x]] is path halving; together with union by size it gives O(α(n)) amortized per call, where the inverse Ackermann α stays below 5 in practice."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -9067,25 +9067,25 @@
    "zh": {
     "q": "n 个元素上做 m 次 find 或 union，最坏情况下总时间是？",
     "choices": [
-     "O(m·α(n))",
      "O(m log n)",
-     "O(m·n)",
-     "O(m)"
+     "O(m)",
+     "O(m·α(n))",
+     "O(m·n)"
     ],
     "explain": "既不压缩路径也不按大小合并，树可能退化成链：依次 union(0, 1)、union(1, 2)…… 会得到 0→1→2→…，之后每次 find(0) 都要走 n 步。最坏 O(m·n)。"
    },
    "en": {
     "q": "m find or union calls on n elements. What is the worst-case total time?",
     "choices": [
-     "O(m·α(n))",
      "O(m log n)",
-     "O(m·n)",
-     "O(m)"
+     "O(m)",
+     "O(m·α(n))",
+     "O(m·n)"
     ],
     "explain": "With neither path compression nor union by size, trees can become chains: union(0, 1), union(1, 2), … builds 0→1→2→…, after which every find(0) walks n steps. Worst case O(m·n)."
    },
    "answer": [
-    2
+    3
    ]
   },
   {
@@ -9098,25 +9098,25 @@
    "zh": {
     "q": "图有 V = n 个顶点、E 条边，用 n×n 邻接矩阵表示。时间复杂度是？",
     "choices": [
-     "O(V·E)",
-     "O(E log V)",
+     "O(V²)",
      "O(V + E)",
-     "O(V²)"
+     "O(V·E)",
+     "O(E log V)"
     ],
     "explain": "每个顶点的 dfs 只调用一次，但每次都要扫描矩阵的一整行（n 列），不管实际有几条边，总共 Θ(V²)。邻接表才能做到 O(V + E)，稀疏图差别很大。"
    },
    "en": {
     "q": "The graph has V = n vertices and E edges, stored as an n×n adjacency matrix. What is the time complexity?",
     "choices": [
-     "O(V·E)",
-     "O(E log V)",
+     "O(V²)",
      "O(V + E)",
-     "O(V²)"
+     "O(V·E)",
+     "O(E log V)"
     ],
     "explain": "dfs runs once per vertex, but each run scans a full matrix row of n entries however few edges there are: Θ(V²). An adjacency list gives O(V + E), a big difference on sparse graphs."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -9129,25 +9129,25 @@
    "zh": {
     "q": "V = n 个顶点，E = len(edges) 条边。时间复杂度是？",
     "choices": [
-     "O(V + E)",
+     "O(E log V)",
      "O(V·E)",
-     "O(V²)",
-     "O(E log V)"
+     "O(V + E)",
+     "O(V²)"
     ],
     "explain": "建图 O(V + E)；每个顶点最多出队一次，每条边在它的起点出队时处理一次，总共 O(V + E)。"
    },
    "en": {
     "q": "V = n vertices and E = len(edges) edges. What is the time complexity?",
     "choices": [
-     "O(V + E)",
+     "O(E log V)",
      "O(V·E)",
-     "O(V²)",
-     "O(E log V)"
+     "O(V + E)",
+     "O(V²)"
     ],
     "explain": "Building the graph is O(V + E); each vertex leaves the queue at most once and each edge is handled once when its source does: O(V + E)."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -9160,25 +9160,25 @@
    "zh": {
     "q": "图有 V 个顶点、E 条边，边权非负。时间复杂度是？",
     "choices": [
+     "O(V² log V)",
      "O(V + E)",
-     "O((V + E) log V)",
      "O(V·E)",
-     "O(V² log V)"
+     "O((V + E) log V)"
     ],
     "explain": "每次成功松弛都 push 一次，堆里最多有 O(E) 项，每次堆操作 O(log E) = O(log V)（因为 E ≤ V²）。过期的项出堆后直接跳过。合起来是 O((V + E) log V)。"
    },
    "en": {
     "q": "The graph has V vertices, E edges and non-negative weights. What is the time complexity?",
     "choices": [
+     "O(V² log V)",
      "O(V + E)",
-     "O((V + E) log V)",
      "O(V·E)",
-     "O(V² log V)"
+     "O((V + E) log V)"
     ],
     "explain": "Every successful relaxation pushes once, so the heap holds O(E) items and each heap operation is O(log E) = O(log V) since E <= V². Stale entries are skipped when popped. Altogether O((V + E) log V)."
    },
    "answer": [
-    1
+    3
    ]
   },
   {
@@ -9191,25 +9191,25 @@
    "zh": {
     "q": "V = n 个顶点，E = len(edges) 条边。时间复杂度是？",
     "choices": [
-     "O(V + E)",
-     "O(E log V)",
+     "O(V³)",
      "O(V·E)",
-     "O(V³)"
+     "O(E log V)",
+     "O(V + E)"
     ],
     "explain": "外层 V - 1 轮，每轮把 E 条边全部松弛一遍，共 O(V·E)。某一轮没有任何更新时可以提前结束，但最坏情况不变。"
    },
    "en": {
     "q": "V = n vertices and E = len(edges) edges. What is the time complexity?",
     "choices": [
-     "O(V + E)",
-     "O(E log V)",
+     "O(V³)",
      "O(V·E)",
-     "O(V³)"
+     "O(E log V)",
+     "O(V + E)"
     ],
     "explain": "V - 1 rounds each relax all E edges: O(V·E). Stopping early after a round with no update helps in practice but not in the worst case."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -9222,25 +9222,25 @@
    "zh": {
     "q": "d 是 V×V 的距离矩阵。时间复杂度是？",
     "choices": [
-     "O(V² log V)",
-     "O(V⁴)",
      "O(V²)",
-     "O(V³)"
+     "O(V⁴)",
+     "O(V³)",
+     "O(V² log V)"
     ],
     "explain": "这是 Floyd-Warshall：三层循环各 V 次，Θ(V³) 时间，原地更新只用 O(V²) 空间。"
    },
    "en": {
     "q": "d is a V×V distance matrix. What is the time complexity?",
     "choices": [
-     "O(V² log V)",
-     "O(V⁴)",
      "O(V²)",
-     "O(V³)"
+     "O(V⁴)",
+     "O(V³)",
+     "O(V² log V)"
     ],
     "explain": "This is Floyd-Warshall: three nested loops of V each, Θ(V³) time, updating in place in O(V²) space."
    },
    "answer": [
-    3
+    2
    ]
   },
   {
@@ -9253,25 +9253,25 @@
    "zh": {
     "q": "V = n 个顶点，E = len(edges) 条边，图连通。时间复杂度是？",
     "choices": [
-     "O(E log E)",
-     "O(V·E)",
+     "O(V + E)",
      "O(E²)",
-     "O(V + E)"
+     "O(E log E)",
+     "O(V·E)"
     ],
     "explain": "排序 E 条边是 O(E log E)。并查集这里只有路径减半，没有按大小合并，均摊每次 O(log V)，2E 次 find 也不超过 O(E log V)。连通图里 E ≥ V - 1，且 log E ≤ 2 log V，所以整体 O(E log E)，也可以写成 O(E log V)。"
    },
    "en": {
     "q": "V = n vertices, E = len(edges) edges, connected. What is the time complexity?",
     "choices": [
-     "O(E log E)",
-     "O(V·E)",
+     "O(V + E)",
      "O(E²)",
-     "O(V + E)"
+     "O(E log E)",
+     "O(V·E)"
     ],
     "explain": "Sorting E edges is O(E log E). The union-find here only halves paths, without union by size, which is O(log V) amortized per find, so 2E finds stay within O(E log V). With E >= V - 1 and log E <= 2 log V, the total is O(E log E), equally O(E log V)."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -9284,25 +9284,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(2^n)",
-     "O(n·2^n)",
+     "O(n²)",
      "O(n!)",
-     "O(n²)"
+     "O(n·2^n)",
+     "O(2^n)"
     ],
     "explain": "递归树有 2^n 个叶子，每个叶子复制一个最长为 n 的列表，内部节点共 2^n - 1 个、每个 O(1)。总共 O(n·2^n)，光输出的大小就是这么多。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(2^n)",
-     "O(n·2^n)",
+     "O(n²)",
      "O(n!)",
-     "O(n²)"
+     "O(n·2^n)",
+     "O(2^n)"
     ],
     "explain": "The recursion tree has 2^n leaves, each copying a list up to n long; the 2^n - 1 internal nodes are O(1) each. O(n·2^n) in total, which is the size of the output itself."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -9315,9 +9315,9 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(2^n)",
-     "O(n!)",
      "O(n·n!)",
+     "O(n!)",
+     "O(2^n)",
      "O(n^n)"
     ],
     "explain": "一共 n! 个排列，每个复制 n 个元素，就已经是 n·n!。内部节点在第 d 层有 n!/(n-d)! 个，每个循环 n 次，加起来不超过 e·n·n!，所以总共 O(n·n!)。"
@@ -9325,15 +9325,15 @@
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(2^n)",
-     "O(n!)",
      "O(n·n!)",
+     "O(n!)",
+     "O(2^n)",
      "O(n^n)"
     ],
     "explain": "There are n! permutations and each copy is n long, already n·n!. Level d of the tree has n!/(n-d)! internal nodes, each looping n times, which sums to at most e·n·n!: O(n·n!) overall."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -9346,9 +9346,9 @@
    "zh": {
     "q": "下面代码的时间复杂度是？",
     "choices": [
-     "Θ(n)",
-     "Θ(n²)",
      "Θ(n log n)",
+     "Θ(n²)",
+     "Θ(n)",
      "指数级：约 φ^n ≈ 1.618^n"
     ],
     "explain": "调用次数满足 T(n) = T(n-1) + T(n-2) + 1，和斐波那契数本身同阶，是 Θ(φ^n)，φ 是黄金比例。同一个 fib(k) 被重复计算了很多次，加记忆化或递推就是 O(n)。"
@@ -9356,9 +9356,9 @@
    "en": {
     "q": "What is the time complexity of this code?",
     "choices": [
-     "Θ(n)",
-     "Θ(n²)",
      "Θ(n log n)",
+     "Θ(n²)",
+     "Θ(n)",
      "Exponential: about φ^n ≈ 1.618^n"
     ],
     "explain": "The call count obeys T(n) = T(n-1) + T(n-2) + 1, growing like the Fibonacci numbers themselves: Θ(φ^n), φ the golden ratio. The same fib(k) is recomputed many times; memoization or a loop makes it O(n)."
@@ -9378,8 +9378,8 @@
     "q": "第一次调用 fib(n) 的时间复杂度是？（把整数加法看作 O(1)）",
     "choices": [
      "O(n)",
-     "O(n²)",
      "O(φ^n)",
+     "O(n²)",
      "O(log n)"
     ],
     "explain": "有了缓存，fib(0) 到 fib(n) 各只真正计算一次，其余调用直接命中缓存，总共 O(n) 次调用、O(n) 空间。n 很大时 Python 递归深度会是瓶颈，递推写法更稳。"
@@ -9388,8 +9388,8 @@
     "q": "What is the time of the first call fib(n) (treating integer addition as O(1))?",
     "choices": [
      "O(n)",
-     "O(n²)",
      "O(φ^n)",
+     "O(n²)",
      "O(log n)"
     ],
     "explain": "With the cache, fib(0) through fib(n) are each computed once and every other call is a cache hit: O(n) calls and O(n) memory. For large n the recursion depth becomes the limit; a loop is safer."
@@ -9408,9 +9408,9 @@
    "zh": {
     "q": "网格 g 是 m 行 n 列。时间和额外空间分别是？",
     "choices": [
-     "O(m·n) 时间，O(m·n) 空间",
-     "O(m·n) 时间，O(n) 空间",
      "O(m + n) 时间，O(n) 空间",
+     "O(m·n) 时间，O(n) 空间",
+     "O(m·n) 时间，O(m·n) 空间",
      "O(m·n·(m + n)) 时间，O(n) 空间"
     ],
     "explain": "每个格子算一次、O(1)，共 O(m·n)。dp 只保留一行：更新前的 dp[j] 是上方格子，dp[j-1] 是刚更新过的左边格子，所以空间是 O(n)。"
@@ -9418,9 +9418,9 @@
    "en": {
     "q": "The grid g has m rows and n columns. What are the time and extra space?",
     "choices": [
-     "O(m·n) time, O(m·n) space",
-     "O(m·n) time, O(n) space",
      "O(m + n) time, O(n) space",
+     "O(m·n) time, O(n) space",
+     "O(m·n) time, O(m·n) space",
      "O(m·n·(m + n)) time, O(n) space"
     ],
     "explain": "Each cell is computed once in O(1): O(m·n). dp keeps one row, where dp[j] before the update is the cell above and dp[j-1] the freshly updated cell to the left: O(n) space."
@@ -9439,20 +9439,20 @@
    "zh": {
     "q": "items 有 n 件物品，容量是 W。时间复杂度是？",
     "choices": [
-     "O(n + W)",
+     "O(2^n)",
      "O(n log W)",
      "O(n·W)",
-     "O(2^n)"
+     "O(n + W)"
     ],
     "explain": "每件物品把容量从 W 扫到 wt，最多 W + 1 次，共 O(n·W) 时间、O(W) 空间。它和 W 的数值成正比，所以叫伪多项式时间。"
    },
    "en": {
     "q": "items has n items and the capacity is W. What is the time complexity?",
     "choices": [
-     "O(n + W)",
+     "O(2^n)",
      "O(n log W)",
      "O(n·W)",
-     "O(2^n)"
+     "O(n + W)"
     ],
     "explain": "Each item sweeps capacities from W down to wt, at most W + 1 steps: O(n·W) time and O(W) space. It scales with the value of W, which is why it is called pseudo-polynomial."
    },
@@ -9470,25 +9470,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
+     "O(n log n)",
      "O(n²)",
-     "O(n log² n)",
      "O(n)",
-     "O(n log n)"
+     "O(n log² n)"
     ],
     "explain": "tails 始终有序且长度不超过 n，每个元素做一次二分 O(log n)，替换或追加 O(1)，共 O(n log n)。双重循环的 DP 写法是 O(n²)。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
+     "O(n log n)",
      "O(n²)",
-     "O(n log² n)",
      "O(n)",
-     "O(n log n)"
+     "O(n log² n)"
     ],
     "explain": "tails stays sorted and at most n long; each element does one O(log n) binary search and an O(1) replace or append: O(n log n). The double-loop DP is O(n²)."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -9501,25 +9501,25 @@
    "zh": {
     "q": "m = len(a)，n = len(b)。时间和额外空间分别是？",
     "choices": [
-     "O(m·n) 时间，O(m·n) 空间",
+     "O(m + n) 时间，O(m + n) 空间",
      "O(m·n) 时间，O(1) 空间",
      "O(2^(m+n)) 时间，O(m + n) 空间",
-     "O(m + n) 时间，O(m + n) 空间"
+     "O(m·n) 时间，O(m·n) 空间"
     ],
     "explain": "(m+1)×(n+1) 的表每格 O(1) 算一次。只要长度时可以只留两行，把空间降到 O(min(m, n))，但这段代码存了整张表。"
    },
    "en": {
     "q": "m = len(a), n = len(b). What are the time and extra space?",
     "choices": [
-     "O(m·n) time, O(m·n) space",
+     "O(m + n) time, O(m + n) space",
      "O(m·n) time, O(1) space",
      "O(2^(m+n)) time, O(m + n) space",
-     "O(m + n) time, O(m + n) space"
+     "O(m·n) time, O(m·n) space"
     ],
     "explain": "Each cell of the (m+1)×(n+1) table takes O(1). Keeping two rows would cut space to O(min(m, n)) when only the length is needed, but this code stores the whole table."
    },
    "answer": [
-    0
+    3
    ]
   },
   {
@@ -9532,25 +9532,25 @@
    "zh": {
     "q": "n = len(s)，把整数加法看作 O(1)。时间复杂度是？",
     "choices": [
-     "O(n)",
-     "O(n²)",
+     "O(n log n)",
      "O(2^n)",
-     "O(n log n)"
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "状态只有 n + 1 个后缀，记忆化保证每个只算一次。但状态是字符串本身：每次 t[1:]、t[2:] 都复制出一个长度 O(n) 的新串，作为缓存的键还要对它求哈希，也是 O(n)。所以是 O(n²)。改成传下标 i，就是 O(n)。"
    },
    "en": {
     "q": "n = len(s); treat integer addition as O(1). What is the time complexity?",
     "choices": [
-     "O(n)",
-     "O(n²)",
+     "O(n log n)",
      "O(2^n)",
-     "O(n log n)"
+     "O(n²)",
+     "O(n)"
     ],
     "explain": "There are only n + 1 suffix states and the cache solves each once. But the state is the string itself: every t[1:] and t[2:] copies O(n) characters, and hashing it as a cache key is O(n) too. That makes O(n²). Passing an index i instead gives O(n)."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -9563,25 +9563,25 @@
    "zh": {
     "q": "n = len(s)。最坏情况下的时间和额外空间分别是？",
     "choices": [
-     "O(n³) 时间，O(1) 空间",
-     "O(n) 时间，O(1) 空间",
+     "O(n²) 时间，O(n²) 空间",
      "O(n²) 时间，O(1) 空间",
-     "O(n²) 时间，O(n²) 空间"
+     "O(n³) 时间，O(1) 空间",
+     "O(n) 时间，O(1) 空间"
     ],
     "explain": "一共 2n - 1 个中心，每个中心最多向外扩展 O(n) 步。s 由同一个字符组成时每次都扩到边界，总共 Θ(n²)。只用了几个变量，额外空间 O(1)。"
    },
    "en": {
     "q": "n = len(s). What are the worst-case time and extra space?",
     "choices": [
-     "O(n³) time, O(1) space",
-     "O(n) time, O(1) space",
+     "O(n²) time, O(n²) space",
      "O(n²) time, O(1) space",
-     "O(n²) time, O(n²) space"
+     "O(n³) time, O(1) space",
+     "O(n) time, O(1) space"
     ],
     "explain": "There are 2n - 1 centers and each expands at most O(n) steps; a string of one repeated character expands to the edges every time: Θ(n²). Only a few variables: O(1) extra space."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -9594,25 +9594,25 @@
    "zh": {
     "q": "n = len(s)。时间复杂度是？",
     "choices": [
+     "O(n³)",
      "O(2^n)",
-     "O(n²)",
      "O(n² log n)",
-     "O(n³)"
+     "O(n²)"
     ],
     "explain": "共有约 n²/2 个子串，每个都要切片、反转、比较，代价与长度成正比，平均 O(n)。合起来是 Θ(n³)。中心扩展法是 O(n²)。"
    },
    "en": {
     "q": "n = len(s). What is the time complexity?",
     "choices": [
+     "O(n³)",
      "O(2^n)",
-     "O(n²)",
      "O(n² log n)",
-     "O(n³)"
+     "O(n²)"
     ],
     "explain": "There are about n²/2 substrings, and each is sliced, reversed and compared at a cost proportional to its length, O(n) on average: Θ(n³) in total. Expanding around centers is O(n²)."
    },
    "answer": [
-    3
+    0
    ]
   },
   {
@@ -9625,25 +9625,25 @@
    "zh": {
     "q": "n = len(prices)，最多交易 k 次。时间和额外空间分别是？",
     "choices": [
-     "O(n·k) 时间，O(k) 空间",
-     "O(n·k) 时间，O(n·k) 空间",
      "O(n²·k) 时间，O(k) 空间",
-     "O(n + k) 时间，O(k) 空间"
+     "O(n·k) 时间，O(k) 空间",
+     "O(n + k) 时间，O(k) 空间",
+     "O(n·k) 时间，O(n·k) 空间"
     ],
     "explain": "每天对 k 个交易次数各更新一次 buy 和 sell，共 O(n·k)；只保留当前这一天的两个数组，空间 O(k)。k ≥ n/2 时可以直接按不限次数处理，O(n)。"
    },
    "en": {
     "q": "n = len(prices), at most k transactions. What are the time and extra space?",
     "choices": [
-     "O(n·k) time, O(k) space",
-     "O(n·k) time, O(n·k) space",
      "O(n²·k) time, O(k) space",
-     "O(n + k) time, O(k) space"
+     "O(n·k) time, O(k) space",
+     "O(n + k) time, O(k) space",
+     "O(n·k) time, O(n·k) space"
     ],
     "explain": "Each day updates buy and sell for each of the k counts: O(n·k). Only the current day's two arrays are kept: O(k) space. When k >= n/2 the unlimited version, O(n), applies."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -9657,8 +9657,8 @@
     "q": "jobs 是 n 个 (开始, 结束, 权值)。时间复杂度是？",
     "choices": [
      "O(n)",
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(2^n)"
     ],
     "explain": "按结束时间排序 O(n log n)；每个任务用一次二分找出结束时间不晚于它开始时间的任务个数 k，O(log n)。合起来 O(n log n)。"
@@ -9667,14 +9667,14 @@
     "q": "jobs holds n (start, end, weight) triples. What is the time complexity?",
     "choices": [
      "O(n)",
-     "O(n log n)",
      "O(n²)",
+     "O(n log n)",
      "O(2^n)"
     ],
     "explain": "Sorting by end is O(n log n); each job then binary-searches how many jobs end by its start, O(log n). Altogether O(n log n)."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -9687,9 +9687,9 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n³)",
-     "O(n)",
      "O(n²)",
+     "O(n)",
+     "O(n³)",
      "O(2^n)"
     ],
     "explain": "状态是区间 (i, j)，共约 n²/2 个，每个只算一次，算一次只看两个子状态 O(1)。所以 O(n²) 时间和空间。不加缓存就是指数级。"
@@ -9697,15 +9697,15 @@
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n³)",
-     "O(n)",
      "O(n²)",
+     "O(n)",
+     "O(n³)",
      "O(2^n)"
     ],
     "explain": "States are intervals (i, j), about n²/2 of them, each solved once from two sub-states in O(1): O(n²) time and space. Without the cache it is exponential."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -9719,8 +9719,8 @@
     "q": "在空队列上执行任意 n 次 push 和 pop，每次操作的代价是？",
     "choices": [
      "每次 pop 都是 O(n)",
-     "均摊 O(log n)",
      "每次调用都保证 O(1)",
+     "均摊 O(log n)",
      "均摊 O(1)，单次最坏 O(n)"
     ],
     "explain": "每个元素最多被搬运一次：压入 inbox，搬进 outbox，再从 outbox 弹出，每步 O(1)。所以 n 次操作总共 O(n)，均摊 O(1)。outbox 为空时的那次 pop 可能要搬 O(n) 个元素。"
@@ -9729,8 +9729,8 @@
     "q": "Starting empty, any n push and pop calls run. What does each operation cost?",
     "choices": [
      "O(n) for every pop",
-     "O(log n) amortized",
      "O(1) worst case for every call",
+     "O(log n) amortized",
      "O(1) amortized, O(n) worst case for one pop"
     ],
     "explain": "Each element moves at most once: into inbox, over to outbox, out of outbox, O(1) each step. n operations take O(n) in total, O(1) amortized, though the pop that finds outbox empty may move O(n) elements."
@@ -9749,25 +9749,25 @@
    "zh": {
     "q": "get 和 put 每次的时间复杂度是？",
     "choices": [
-     "平均 O(1)",
      "O(log cap)",
+     "O(cap²)",
      "O(cap)",
-     "O(cap²)"
+     "平均 O(1)"
     ],
     "explain": "OrderedDict 内部是哈希表加双向链表：查找、move_to_end、从头部 popitem 都是平均 O(1)。"
    },
    "en": {
     "q": "What does each get and put cost?",
     "choices": [
-     "O(1) average",
      "O(log cap)",
+     "O(cap²)",
      "O(cap)",
-     "O(cap²)"
+     "O(1) average"
     ],
     "explain": "OrderedDict is a hash map plus a doubly linked list: lookup, move_to_end and popitem from the front are all O(1) on average."
    },
    "answer": [
-    0
+    3
    ]
   },
   {
@@ -9780,8 +9780,8 @@
    "zh": {
     "q": "缓存里已有 cap 个键时，一次命中的 get 的时间复杂度是？",
     "choices": [
-     "O(log cap)",
      "O(cap)",
+     "O(log cap)",
      "O(cap²)",
      "O(1)"
     ],
@@ -9790,15 +9790,15 @@
    "en": {
     "q": "With cap keys in the cache, what does a get that hits cost?",
     "choices": [
-     "O(log cap)",
      "O(cap)",
+     "O(log cap)",
      "O(cap²)",
      "O(1)"
     ],
     "explain": "order is a plain list, so remove(key) searches linearly and shifts the rest: O(cap). The dict lookup is O(1), but this step dominates. OrderedDict, or a hash map with a doubly linked list, makes it O(1)."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -9811,25 +9811,25 @@
    "zh": {
     "q": "把一组单词建成字典树，时间复杂度是？",
     "choices": [
-     "O(S log S)",
-     "O(单词个数)",
+     "O(S·L)，L 是最长单词的长度",
      "O(S)，S 是所有单词的长度之和",
-     "O(S·L)，L 是最长单词的长度"
+     "O(S log S)",
+     "O(单词个数)"
     ],
     "explain": "每个字符在字典里做一次期望 O(1) 的查找或插入，所以总共与字符总数 S 成正比。"
    },
    "en": {
     "q": "Building a trie from a list of words takes what time?",
     "choices": [
-     "O(S log S)",
-     "O(number of words)",
+     "O(S·L), where L is the longest word",
      "O(S), where S is the total length of all words",
-     "O(S·L), where L is the longest word"
+     "O(S log S)",
+     "O(number of words)"
     ],
     "explain": "Each character costs one expected O(1) dict lookup or insert, so the total is proportional to the character count S."
    },
    "answer": [
-    2
+    1
    ]
   },
   {
@@ -9843,8 +9843,8 @@
     "q": "x 是非负整数。循环执行的次数等于？",
     "choices": [
      "固定 32 次",
-     "x 本身的大小",
      "x 的二进制位数",
+     "x 本身的大小",
      "x 中 1 的个数"
     ],
     "explain": "x &= x - 1 每次去掉最低位的 1，所以循环次数等于 x 里 1 的个数。x = 0b1000000 时只循环 1 次，逐位右移的写法则要循环 7 次。"
@@ -9853,8 +9853,8 @@
     "q": "x is a non-negative integer. How many times does the loop run?",
     "choices": [
      "Always 32",
-     "The value of x",
      "The number of bits in x",
+     "The value of x",
      "The number of 1 bits in x"
     ],
     "explain": "x &= x - 1 clears the lowest 1 bit each time, so the loop runs once per 1 bit. For x = 0b1000000 it runs once, where shifting bit by bit would take 7 rounds."
@@ -9873,25 +9873,25 @@
    "zh": {
     "q": "a、b 是正整数，把一次取模看作 O(1)。时间复杂度是？",
     "choices": [
-     "O(log min(a, b))",
      "O(√a)",
-     "O(a + b)",
-     "O(min(a, b))"
+     "O(min(a, b))",
+     "O(log min(a, b))",
+     "O(a + b)"
     ],
     "explain": "欧几里得算法每两轮至少让较大的数减半（a % b < a / 2），所以轮数是 O(log min(a, b))。最坏情况出现在相邻的斐波那契数上。"
    },
    "en": {
     "q": "a and b are positive; treat one modulo as O(1). What is the time complexity?",
     "choices": [
-     "O(log min(a, b))",
      "O(√a)",
-     "O(a + b)",
-     "O(min(a, b))"
+     "O(min(a, b))",
+     "O(log min(a, b))",
+     "O(a + b)"
     ],
     "explain": "Every two rounds of Euclid at least halve the larger number (a % b < a / 2), so the round count is O(log min(a, b)). Consecutive Fibonacci numbers are the worst case."
    },
    "answer": [
-    0
+    2
    ]
   },
   {
@@ -9904,9 +9904,9 @@
    "zh": {
     "q": "n ≥ 1。时间复杂度是？（取最紧的界）",
     "choices": [
-     "O(n)",
      "O(n log log n)",
      "O(n log n)",
+     "O(n)",
      "O(n√n)"
     ],
     "explain": "这是埃氏筛。每个质数 p 划掉约 n/p 个数，对所有不超过 √n 的质数求和，是 n·Σ1/p = Θ(n log log n)。"
@@ -9914,15 +9914,15 @@
    "en": {
     "q": "n >= 1. What is the time complexity (tightest bound)?",
     "choices": [
-     "O(n)",
      "O(n log log n)",
      "O(n log n)",
+     "O(n)",
      "O(n√n)"
     ],
     "explain": "This is the sieve of Eratosthenes. Each prime p crosses out about n/p numbers; summed over primes up to √n that is n·Σ1/p = Θ(n log log n)."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -9935,20 +9935,20 @@
    "zh": {
     "q": "bits 是低位在前的二进制计数器，从全 0 开始调用 increment n 次（位数足够）。总时间是？",
     "choices": [
+     "总共 O(n²)",
      "均摊每次 O(log n)",
-     "总共 O(n log n)",
      "总共 O(n)，均摊每次 O(1)",
-     "总共 O(n²)"
+     "总共 O(n log n)"
     ],
     "explain": "第 0 位每次都翻转，第 1 位每 2 次翻转一次，第 k 位每 2^k 次一次。总翻转次数 n + n/2 + n/4 + … < 2n，所以总共 O(n)。单次最坏 O(log n)，但这种情况很少。"
    },
    "en": {
     "q": "bits is a binary counter, lowest bit first, starting at all zeros; increment is called n times (enough bits). What is the total time?",
     "choices": [
+     "O(n²) in total",
      "O(log n) amortized each",
-     "O(n log n) in total",
      "O(n) in total, O(1) amortized each",
-     "O(n²) in total"
+     "O(n log n) in total"
     ],
     "explain": "Bit 0 flips every call, bit 1 every second call, bit k every 2^k calls. Total flips n + n/2 + n/4 + … < 2n: O(n). A single call can cost O(log n), but rarely."
    },
@@ -9966,25 +9966,25 @@
    "zh": {
     "q": "下面代码在最坏情况下的时间复杂度是？（把一次取模看作 O(1)）",
     "choices": [
-     "O(n log n)",
      "O(log n)",
-     "O(n)",
-     "O(√n)"
+     "O(√n)",
+     "O(n log n)",
+     "O(n)"
     ],
     "explain": "循环在 d 超过 √n 时停止，n 是质数时要试完所有 2 到 √n 的数，O(√n)。如果 n 有不超过 √n 的因子，一定会更早被找到。"
    },
    "en": {
     "q": "What is the worst-case time complexity (treating one modulo as O(1))?",
     "choices": [
-     "O(n log n)",
      "O(log n)",
-     "O(n)",
-     "O(√n)"
+     "O(√n)",
+     "O(n log n)",
+     "O(n)"
     ],
     "explain": "The loop stops once d exceeds √n, so a prime n tries every d from 2 to √n: O(√n). Any composite n has a factor at most √n and exits earlier."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -9996,25 +9996,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n log n)",
      "O(n²)",
-     "O(n log² n)",
-     "O(n)"
+     "O(n log n)",
+     "O(n)",
+     "O(n log² n)"
     ],
     "explain": "递推式 T(n) = 2T(n/2) + O(n)，切片和合并都是线性的。按主定理，n^(log₂2) = n 与合并代价同阶，结果是 Θ(n log n)：log n 层，每层总共 O(n)。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n log n)",
      "O(n²)",
-     "O(n log² n)",
-     "O(n)"
+     "O(n log n)",
+     "O(n)",
+     "O(n log² n)"
     ],
     "explain": "The recurrence is T(n) = 2T(n/2) + O(n), slicing and merging both linear. By the master theorem n^(log₂2) = n matches the merge cost, giving Θ(n log n): log n levels of O(n) each."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -10026,25 +10026,25 @@
    "zh": {
     "q": "调用 range_max(a, 0, n - 1)。时间复杂度是？",
     "choices": [
-     "O(log n)",
      "O(n)",
+     "O(n²)",
      "O(n log n)",
-     "O(n²)"
+     "O(log n)"
     ],
     "explain": "递推式 T(n) = 2T(n/2) + O(1)。按主定理，n^(log₂2) = n 比 O(1) 大，结果是 Θ(n)：递归树一共约 2n 个节点，每个 O(1)。"
    },
    "en": {
     "q": "The call is range_max(a, 0, n - 1). What is the time complexity?",
     "choices": [
-     "O(log n)",
      "O(n)",
+     "O(n²)",
      "O(n log n)",
-     "O(n²)"
+     "O(log n)"
     ],
     "explain": "The recurrence is T(n) = 2T(n/2) + O(1). By the master theorem n^(log₂2) = n outgrows O(1), so Θ(n): the recursion tree has about 2n nodes of O(1) each."
    },
    "answer": [
-    1
+    0
    ]
   },
   {
@@ -10056,25 +10056,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？（n = len(a)，取最紧的界）",
     "choices": [
-     "O(n²)",
      "O(log n)",
-     "O(n)",
-     "O(n log n)"
+     "O(n²)",
+     "O(n log n)",
+     "O(n)"
     ],
     "explain": "递推式 T(n) = T(n/2) + O(n)：每层求和、切片都是当前长度的线性时间。n + n/2 + n/4 + … < 2n，所以是 Θ(n)，不是 O(n log n)。"
    },
    "en": {
     "q": "What is the time complexity of this code (n = len(a), tightest bound)?",
     "choices": [
-     "O(n²)",
      "O(log n)",
-     "O(n)",
-     "O(n log n)"
+     "O(n²)",
+     "O(n log n)",
+     "O(n)"
     ],
     "explain": "The recurrence is T(n) = T(n/2) + O(n): summing and slicing are linear in the current length. n + n/2 + n/4 + … < 2n, so Θ(n), not O(n log n)."
    },
    "answer": [
-    2
+    3
    ]
   },
   {
@@ -10087,9 +10087,9 @@
     "q": "下面代码的时间复杂度是？",
     "choices": [
      "Θ(n²)",
+     "Θ(n^(log₂3)) ≈ n^1.585",
      "Θ(3^n)",
-     "Θ(n log n)",
-     "Θ(n^(log₂3)) ≈ n^1.585"
+     "Θ(n log n)"
     ],
     "explain": "递推式 T(n) = 3T(n/2) + Θ(n)。n^(log₂3) ≈ n^1.585 比 n 增长快，按主定理结果由递归部分决定：Θ(n^(log₂3))。Karatsuba 乘法就是这个递推式。"
    },
@@ -10097,14 +10097,14 @@
     "q": "What is the time complexity of this code?",
     "choices": [
      "Θ(n²)",
+     "Θ(n^(log₂3)) ≈ n^1.585",
      "Θ(3^n)",
-     "Θ(n log n)",
-     "Θ(n^(log₂3)) ≈ n^1.585"
+     "Θ(n log n)"
     ],
     "explain": "The recurrence is T(n) = 3T(n/2) + Θ(n). n^(log₂3) ≈ n^1.585 outgrows n, so by the master theorem the recursion dominates: Θ(n^(log₂3)). Karatsuba multiplication has this recurrence."
    },
    "answer": [
-    3
+    1
    ]
   },
   {
@@ -10116,9 +10116,9 @@
    "zh": {
     "q": "输入是已经升序排好的 n 个不同的数。时间复杂度是？",
     "choices": [
+     "O(n)",
      "O(n²)",
      "O(2^n)",
-     "O(n)",
      "O(n log n)"
     ],
     "explain": "每次都选第一个元素当枢轴，有序输入下 smaller 为空、larger 有 n - 1 个，递推式 T(n) = T(n-1) + O(n)，结果 Θ(n²)，递归深度也是 n。随机选枢轴时期望是 O(n log n)。"
@@ -10126,15 +10126,15 @@
    "en": {
     "q": "The input is n distinct numbers already in ascending order. What is the time complexity?",
     "choices": [
+     "O(n)",
      "O(n²)",
      "O(2^n)",
-     "O(n)",
      "O(n log n)"
     ],
     "explain": "The pivot is always the first element, so on sorted input smaller is empty and larger has n - 1 items: T(n) = T(n-1) + O(n), Θ(n²), with recursion depth n. A random pivot gives O(n log n) expected."
    },
    "answer": [
-    0
+    1
    ]
   },
   {
@@ -10146,25 +10146,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？",
     "choices": [
-     "O(n)",
-     "O(n log n)",
+     "O(log n)",
      "O(n²)",
-     "O(log n)"
+     "O(n log n)",
+     "O(n)"
     ],
     "explain": "外层 n 次；内层 j 每次翻倍，从 1 到 n 需要约 log₂ n 次，而且和 i 无关。总共 Θ(n log n)。"
    },
    "en": {
     "q": "What is the time complexity of this code?",
     "choices": [
-     "O(n)",
-     "O(n log n)",
+     "O(log n)",
      "O(n²)",
-     "O(log n)"
+     "O(n log n)",
+     "O(n)"
     ],
     "explain": "The outer loop runs n times; the inner j doubles, taking about log₂ n steps to reach n regardless of i. Θ(n log n) in total."
    },
    "answer": [
-    1
+    2
    ]
   },
   {
@@ -10176,25 +10176,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？",
     "choices": [
-     "O(n√n)",
-     "O(n)",
      "O(n log n)",
-     "O(n²)"
+     "O(n²)",
+     "O(n√n)",
+     "O(n)"
     ],
     "explain": "内层循环步长为 i，执行约 n/i 次。总次数 n/1 + n/2 + … + n/n = n·H(n)，调和级数 H(n) ≈ ln n，所以是 Θ(n log n)。"
    },
    "en": {
     "q": "What is the time complexity of this code?",
     "choices": [
-     "O(n√n)",
-     "O(n)",
      "O(n log n)",
-     "O(n²)"
+     "O(n²)",
+     "O(n√n)",
+     "O(n)"
     ],
     "explain": "The inner loop steps by i, about n/i iterations. The total n/1 + n/2 + … + n/n = n·H(n), and the harmonic number H(n) ≈ ln n: Θ(n log n)."
    },
    "answer": [
-    2
+    0
    ]
   },
   {
@@ -10206,25 +10206,25 @@
    "zh": {
     "q": "下面代码的时间复杂度是？",
     "choices": [
+     "O(n²)",
      "O(n³)",
      "O(n)",
-     "O(n log n)",
-     "O(n²)"
+     "O(n log n)"
     ],
     "explain": "内层从 i 开始，执行 n - i 次，总共 n + (n-1) + … + 1 = n(n+1)/2。少了一半的常数不影响量级，仍是 Θ(n²)。"
    },
    "en": {
     "q": "What is the time complexity of this code?",
     "choices": [
+     "O(n²)",
      "O(n³)",
      "O(n)",
-     "O(n log n)",
-     "O(n²)"
+     "O(n log n)"
     ],
     "explain": "The inner loop starts at i and runs n - i times, n + (n-1) + … + 1 = n(n+1)/2 in all. Halving the constant does not change the order: Θ(n²)."
    },
    "answer": [
-    3
+    0
    ]
   }
  ]

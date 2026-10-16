@@ -46,6 +46,17 @@ void test('the bank is well formed: unique ids, known sections and topics, answe
   assert(SITEMAP_STATIC_ENTRIES.some((e) => e.path === '/oa/mcq'), 'the practice page is in the sitemap');
 });
 
+void test('answer positions do not cycle, so one answer never gives away the next', () => {
+  for (const topic of TOPICS) {
+    const single = bank.filter((q) => q.topic === topic && q.answer.length === 1).map((q) => q.answer[0]);
+    let run = 1;
+    for (let i = 1; i < single.length; i++) {
+      run = single[i] === (single[i - 1] + 1) % 4 ? run + 1 : 1;
+      assert(run < 6, `${topic}: answers step A→B→C→D around question ${i}`);
+    }
+  }
+});
+
 void test('every preset MCQ section can fill its draw from the bank', () => {
   const withMcq = shownMockPresets().filter((p) => p.mcq);
   assert(withMcq.length >= 9);
