@@ -231,6 +231,7 @@ function blockEnd(lines: Line[], li: number) {
 }
 
 const PY_MEMO = new Set(['memo', 'cache', 'lru_cache', 'dp', 'seen', 'visited', 'memory', 'table', 'setdefault']);
+const PY_MUTATE = new Set(['add', 'remove', 'discard', 'append', 'pop']);
 
 function python(t: Token[]): AnalyzerNote[] {
   const pair = pairs(t);
@@ -380,6 +381,9 @@ function python(t: Token[]): AnalyzerNote[] {
     else if (t[i].v === 'sorted' && t[i + 1]?.v === '(' && t[i + 2]?.k === 'id' && [')', ','].includes(t[i + 3]?.v)) name = t[i + 2].v;
     const loop = name && loopAt(loops, i);
     if (!loop || !names.only(name, 'list', 'list-literal')) continue;
+    // cur = [] each pass: a fresh list collected and sorted once, not one that keeps growing.
+    const fresh = (L: Line) => t[L.s].v === name && t[L.s + 1]?.v === '=' && !t.slice(L.s + 2, L.e).some((x) => x.v === name);
+    if (lines.some((L) => L.s >= loop.s && L.s < loop.e && fresh(L))) continue;
     let grows = false;
     for (let k = loop.s; k < loop.e && !grows; k++)
       grows =
@@ -392,8 +396,8 @@ function python(t: Token[]): AnalyzerNote[] {
           'py-sort-in-loop',
           'actionable',
           t[i].line,
-          `每轮循环都往 ${name} 里加元素再整体排序，一共是 O(n² log n)。只想保持有序可以用 bisect.insort 插入，只关心最值或中位数就用堆（heapq）。`,
-          `Each pass appends to ${name} and then sorts the whole list again, O(n² log n) in total. To keep it ordered use bisect.insort; if you only need the extremes or the median, use a heap (heapq).`,
+          `每轮循环都往 ${name} 里加元素再整个重新排序。Timsort 会利用已经有序的部分，但每次排序至少 O(n)，总共至少 O(n²)。只关心最值或中位数就用堆（heapq，每次 O(log n)）；要随时整体有序又频繁插入，得用平衡树一类的有序结构（评测环境没有 sortedcontainers）。bisect.insort 只省常数，每次插入仍要移动元素，是 O(n)。`,
+          `Each pass adds to ${name} and sorts the whole list again. Timsort reuses the part that is already in order, but every sort is still at least O(n), so at least O(n²) overall. If you only need the extremes or the median, use a heap (heapq, O(log n) each); to keep everything ordered while inserting often you need an ordered structure such as a balanced tree (the judge has no sortedcontainers). bisect.insort only saves a constant factor: each insert still shifts elements, O(n).`,
           'stacks-heaps',
         ),
       );
@@ -414,7 +418,16 @@ function python(t: Token[]): AnalyzerNote[] {
     const params = new Set<string>();
     for (let i = L.s + 3; i < pair[L.s + 2]; i++)
       if (t[i].k === 'id' && ['(', ','].includes(t[i - 1].v) && t[i].v !== 'self' && t[i].v !== 'cls') params.add(t[i].v);
-    for (let i = L.e; i < end; i++) if (PY_MEMO.has(t[i].v) || (t[i].v === ']' && t[i + 1]?.v === '=')) continue memo;
+    // A memo by any name, or state outside the arguments (visited.add(...), grid[r][c] = ...): @cache would be wrong.
+    for (let i = L.e; i < end; i++)
+      if (
+        PY_MEMO.has(t[i].v) ||
+        (t[i].v === ']' && t[i + 1]?.v === '=') ||
+        (t[i - 1]?.v === '.' && PY_MUTATE.has(t[i].v) && t[i + 1]?.v === '(')
+      )
+        continue memo;
+    const moves = new Set<string>();
+    let at = -1;
     for (let k = li + 1; k < lines.length && lines[k].s < end; k++) {
       let calls = 0;
       for (let i = lines[k].s; i < lines[k].e; i++) {
@@ -424,22 +437,26 @@ function python(t: Token[]): AnalyzerNote[] {
           args.length &&
           args.every((a) => a.k === 'num' || (a.k === 'id' && params.has(a.v)) || ['+', '-', ','].includes(a.v)) &&
           args.some((a) => a.v === '+' || a.v === '-')
-        )
+        ) {
           calls++;
+          args.forEach((a, j) => (a.v === '+' || a.v === '-') && args[j - 1]?.k === 'id' && moves.add(args[j - 1].v + a.v));
+        }
       }
-      if (calls >= 2) {
-        notes.push(
-          note(
-            'py-no-memo',
-            'actionable',
-            t[lines[k].s].line,
-            `${fn.v} 在同一个表达式里以相近的参数递归了多次，又没有记忆化，同样的子问题会被反复计算，最坏是指数级。给函数加上 @cache（functools），或者改写成自底向上的 DP。`,
-            `${fn.v} recurses more than once in the same expression with neighbouring arguments and nothing is memoized, so the same subproblems are solved over and over, exponential in the worst case. Add @cache (functools) or rewrite it as a bottom-up DP.`,
-            'dp-foundations',
-          ),
-        );
-        break memo;
-      }
+      if (calls >= 2 && at < 0) at = k;
+    }
+    // r + 1 and r - 1 both: a walk on a grid that only ends through a visited check.
+    if (at >= 0 && ![...params].some((p) => moves.has(`${p}+`) && moves.has(`${p}-`))) {
+      notes.push(
+        note(
+          'py-no-memo',
+          'actionable',
+          t[lines[at].s].line,
+          `${fn.v} 在同一个表达式里以相近的参数递归了多次，又没有记忆化，同样的子问题会被反复计算，最坏是指数级。给函数加上 @cache（functools），或者改写成自底向上的 DP。`,
+          `${fn.v} recurses more than once in the same expression with neighbouring arguments and nothing is memoized, so the same subproblems are solved over and over, exponential in the worst case. Add @cache (functools) or rewrite it as a bottom-up DP.`,
+          'dp-foundations',
+        ),
+      );
+      break;
     }
   }
   return notes;

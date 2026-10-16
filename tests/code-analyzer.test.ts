@@ -59,6 +59,8 @@ void test('python: re-sorting a list the loop keeps growing', () => {
   // Group anagrams: sorting each element is fine.
   assert.deepEqual(ids(src('groups = {}', 'for w in strs:', "    key = ''.join(sorted(w))"), 'python'), []);
   assert.deepEqual(ids(src('arr = []', 'for x in nums:', '    arr.append(x)', 'arr.sort()'), 'python'), []);
+  // A list started fresh each pass (one group, one diagonal) is collected and sorted once.
+  assert.deepEqual(ids(src('res = []', 'for g in groups:', '    cur = []', '    for x in g:', '        cur.append(x)', '    cur.sort()', '    res.append(cur)'), 'python'), []);
 });
 
 void test('python: overlapping recursion with no memo', () => {
@@ -80,6 +82,32 @@ void test('python: overlapping recursion with no memo', () => {
   assert.deepEqual(ids(src('def total(lo, hi):', '    mid = (lo + hi) // 2', '    return total(lo, mid) + total(mid + 1, hi)'), 'python'), []);
   // Backtracking calls as separate statements are enumeration, not a missing memo.
   assert.deepEqual(ids(src('def go(i):', '    if i == n:', '        return', '    go(i + 1)', '    go(i + 1)'), 'python'), []);
+  // Backtracking over a shared visited set (LC 79, LC 695): the answer depends on the set, so @cache would be wrong.
+  const word = src(
+    'def dfs(r, c, i):',
+    '    if i == len(word):',
+    '        return True',
+    '    if r < 0 or c < 0 or r >= ROWS or c >= COLS or word[i] != board[r][c] or (r, c) in path:',
+    '        return False',
+    '    path.add((r, c))',
+    '    res = (dfs(r + 1, c, i + 1) or',
+    '           dfs(r - 1, c, i + 1) or',
+    '           dfs(r, c + 1, i + 1) or',
+    '           dfs(r, c - 1, i + 1))',
+    '    path.remove((r, c))',
+    '    return res',
+  );
+  assert.deepEqual(ids(word, 'python'), []);
+  const island = src(
+    'def area(r, c):',
+    '    if r < 0 or r == ROWS or c < 0 or c == COLS or grid[r][c] == 0 or (r, c) in visit:',
+    '        return 0',
+    '    visit.add((r, c))',
+    '    return 1 + area(r + 1, c) + area(r - 1, c) + area(r, c + 1) + area(r, c - 1)',
+  );
+  assert.deepEqual(ids(island, 'python'), []);
+  // Moving both ways along one argument ends only through a visited check, however it is kept.
+  assert.deepEqual(ids(island.replace('    visit.add((r, c))\n', '    vis[r][c] ^= 1\n'), 'python'), []);
 });
 
 void test('java: string concatenation in a loop and reference equality', () => {
