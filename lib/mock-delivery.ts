@@ -12,10 +12,11 @@
 export type Segment = [ms: number, units: number, fillers: number, gap: number];
 
 const CJK = /[㐀-鿿豈-﫿]/g;
-// ponytail: "like" as a verb or comparison ("would like", "looks like") is left out by a short
-// list of the usual lead-ins, not by parsing; fine for a practice count.
+// ponytail: "like" as a verb or comparison ("I like", "looks like") and "you know" in a question
+// ("do you know") are left out by a short list of the usual lead-ins, not by parsing; fine for a
+// practice count.
 const FILLERS_EN =
-  /\b(?:u+m+|u+h+|(?<!\b(?:would|i'd|we'd|you'd|they'd|look|looks|looked|feel|feels|felt|seem|seems|sound|sounds|something|just|more|much)\s)like|you know|basically)\b/gi;
+  /\b(?:u+m+|u+h+|(?<!\b(?:i|we|you|they|people|users|would|i'd|we'd|you'd|they'd|don't|doesn't|didn't|really|also|look|looks|looked|feel|feels|felt|seem|seems|sound|sounds|something|just|more|much)\s)like|(?<!\b(?:do|did|if|as|would|don't)\s)you know|basically)\b/gi;
 const FILLERS_ZH = /嗯|那个|就是|然后/g;
 const count = (text: string, pattern: RegExp) => text.match(pattern)?.length ?? 0;
 

@@ -9,6 +9,9 @@ void test('words, characters and fillers in one utterance', () => {
   assert.deepEqual(countSpeech("Um, so basically I'd like to use a hash map, you know, like a cache", false), [15, 4]);
   // A verb or comparison "like" is not a filler; "umbrella" is not "um".
   assert.deepEqual(countSpeech('It looks like an umbrella; I would like that', false), [9, 0]);
+  // Nor is "like" after a subject, or "you know" in a question.
+  assert.deepEqual(countSpeech('I like this and do you know why', false), [8, 0]);
+  assert.deepEqual(countSpeech("We really like it, users like fast pages, as you know", false), [11, 0]);
   assert.deepEqual(countSpeech('UHH okay uh', false), [3, 2]);
   // Chinese counts characters, plus Latin words mixed in.
   assert.deepEqual(countSpeech('嗯，那个，我们先用 hash map 存一下，然后就是遍历', true), [18, 4]);
