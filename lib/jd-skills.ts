@@ -160,7 +160,6 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     goal: 30,
   },
 };
-// ponytail: take-home points at the AI-assisted rounds until a take-home page exists.
 export const JD_ROUND_INFO: Record<JdRound, { zh: string; en: string; href: string }> = {
   oa: { zh: '在线笔试（OA）', en: 'Online assessment', href: '/mock-oa' },
   'phone-coding': { zh: '电话编程面', en: 'Phone coding screen', href: '/?view=mock-interview&template=phone' },
@@ -171,7 +170,7 @@ export const JD_ROUND_INFO: Record<JdRound, { zh: string; en: string; href: stri
     href: '/?view=mock-interview&template=custom&mix=design.1&min=45',
   },
   behavioral: { zh: '行为面', en: 'Behavioral round', href: '/?view=mock-interview&template=behavioral' },
-  'take-home': { zh: '带回家作业', en: 'Take-home project', href: '/ai-assisted' },
+  'take-home': { zh: '带回家作业', en: 'Take-home project', href: '/take-home' },
 };
 /** The study plan's URL parameter: Line 500 stops (comma-separated slugs) to preselect as its topics. */
 export const PLAN_TOPICS_PARAM = 'planTopics';

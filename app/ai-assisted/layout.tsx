@@ -20,6 +20,9 @@ export default async function AiAssistedLayout({ children }: { children: React.R
         {children}
       </main>
       <footer className="mock-public-footer">
+        <Link href="/take-home" prefetch={false}>
+          {zh ? '带回家作业' : 'Take-home projects'}
+        </Link>
         <Link href="/mock-interview" prefetch={false}>
           {zh ? '模拟面试' : 'Mock interviews'}
         </Link>

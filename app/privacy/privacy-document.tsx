@@ -79,6 +79,15 @@ export function PrivacyDocument() {
               <p id="privacy-tracker">
                 使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息、职位链接和备注，每个账号最多 300 条。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。导出的 CSV 和 OA 截止日历文件在你的浏览器里生成，截止提醒由你自己的日历应用发出，平台不发送提醒。
               </p>
+              <p id="privacy-jobs">
+                「在招岗位」（/career/jobs 和公司页）列出的是各公司在 Greenhouse、Lever、Ashby 上公开发布的招聘信息，由服务器定时抓取，抓取时不发送任何用户数据；点岗位标题会打开第三方的招聘页面。点「加入投递追踪」只是预填表单，你点保存后才写进自己的投递记录；未登录时，这个岗位的公司、职位和链接会临时存在当前标签页的会话存储里，登录后打开投递追踪读取一次就删除。
+              </p>
+              <p id="privacy-practice-aids">
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。
+              </p>
+              <p id="privacy-code-review">
+                在提交详情里生成「代码评审链接」后，拿到链接并登录的人都能看到这次提交的代码、你的留言和全部评论；页面只显示公开主页名，没有主页名时显示「作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。你可以随时关闭链接：关闭后链接失效，评论不再对任何人显示，但仍保留在数据库里。有新评论时只发站内通知。每个账号最多同时开 20 条链接，每天最多新建 50 条。
+              </p>
               <p>
                 学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
               </p>
@@ -96,7 +105,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。「对拍」（随机生成小用例，拿你的代码和参考解比对）的代码和生成的输入同样保存在你的运行记录里，不出现在提交列表、统计和学习进度中。通过后弹窗里的代码提示和提交前的「追问」检查都在浏览器里完成，不上传、不保存。
               </p>
             </section>
 
@@ -179,7 +188,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
-                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。简历项目深挖还会随每条消息和最后的评估发送简历文字：你粘贴的内容，或从简历生成器自动填入的内容（自动填入时默认去掉姓名和联系方式，粘贴的简历按原样发送）；服务器不保存简历，它只存在你浏览器本地存储里这场面试的进度中。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 和比赛的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考；比赛回放只给录制它的参赛者本人看。比赛日历的订阅链接是公开的固定赛程，不含账号信息，单场比赛的日历文件在你的浏览器里生成。
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。简历项目深挖还会随每条消息和最后的评估发送简历文字：你粘贴的内容，或从简历生成器自动填入的内容（自动填入时默认去掉姓名和联系方式，粘贴的简历按原样发送）；服务器不保存简历，它只存在你浏览器本地存储里这场面试的进度中。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。AI 模拟面试里的表达指标（语速、口头禅、说话时长和停顿）只在浏览器里计算并存在本机，不上传。模拟 OA 和比赛的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考；比赛回放只给录制它的参赛者本人看。比赛日历的订阅链接是公开的固定赛程，不含账号信息，单场比赛的日历文件在你的浏览器里生成。
               </p>
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
@@ -193,12 +202,16 @@ export function PrivacyDocument() {
                 在面试题、系统设计案例的设计草稿或模拟面试里点「AI 点评我的答案」、或在故事库里点评一个 STAR 故事时，服务器会把你写的答案（或故事各部分和你选的行为面试题）、这道题的题面和参考答案（如有；系统设计案例的参考是这一章的正文）发送给
                 Anthropic，用于生成点评；不发送邮箱、姓名或账户标识。平台不保存答案和点评，只记录每天的调用次数和用量。不点就不会发送。
               </p>
+              <p id="privacy-jd">
+                在「JD 准备度检查」（/career/jd）提交时，服务器只把你粘贴的职位描述发送给
+                Anthropic，用于整理出这个岗位要的技能和面试轮次；不发送邮箱、姓名、账户标识或你的练习记录，你的练习进度在服务器上读取，只和结果一起显示给你。职位描述和检查结果都不保存，只记录每天的调用次数和用量。从简历 AI 点评页带过来的职位描述经当前标签页的会话存储传递，读取后立即删除。
+              </p>
               <p id="privacy-resume-builder">
                 在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「导出 JSON」的文件也在浏览器里生成。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。AI 模拟面试的简历项目深挖也会读取这里的内容（不含姓名和联系方式），只随你发出的消息和最后的评估发送，方式见上面 AI 面试官一段。
               </p>
               <p id="privacy-ai-round">
                 在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
-                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。
+                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。点「AI 评估」时，服务器会把你当前的文件、浏览器里保存的结对对话（最多 40 轮、2.4 万字）、最近一次运行的公开测试结果和隐藏测试通过数、近 3 小时的运行情况，以及带回家作业的设计说明发送给 Anthropic，用于生成评估；同样不保存，只记录每天的调用次数和用量。带回家作业（/take-home）的代码、计时开始时间和设计说明只保存在当前浏览器。
               </p>
               <p id="privacy-ica">
                 「CodeSignal ICA 式练习」（/oa/ica）的运行与上面相同：项目文件和测试结果保存在你的运行记录里，平台据此判断你通过了哪些关卡、解锁下一关。90 分钟计时只记在当前浏览器。这项练习没有 AI 结对，不向任何第三方发送内容。
@@ -444,6 +457,40 @@ export function PrivacyDocument() {
                 the reminders come from your own calendar app; the platform sends
                 none.
               </p>
+              <p id="privacy-jobs">
+                Open roles (/career/jobs and company pages) are the postings
+                companies publish on Greenhouse, Lever and Ashby. The server
+                fetches them on a schedule and sends no user data when it does;
+                a role&apos;s title opens the third-party job page. Add to
+                tracker only fills in the form, and nothing is saved to your
+                applications until you press save. When you are signed out, the
+                role&apos;s company, title and link wait in this tab&apos;s
+                session storage and are deleted once the tracker reads them
+                after you sign in.
+              </p>
+              <p id="privacy-practice-aids">
+                While you solve a problem, your account records when you first
+                open the second or a later hint, open the editorial or use the
+                AI tutor (except for explaining the statement), and the problem
+                timer&apos;s reading when you first pass. My progress uses this
+                to tell independent solves from assisted ones, show your solve
+                times and space your reviews. Only you can see it; it is never
+                public and never counts toward points or leaderboards. Nothing
+                is recorded when you are signed out.
+              </p>
+              <p id="privacy-code-review">
+                When you create a code review link from a submission&apos;s
+                details, anyone signed in who has the link can see that
+                submission&apos;s code, your note and every comment. The page
+                shows public handles only, or &ldquo;Author&rdquo; and
+                &ldquo;Reviewer N&rdquo; without one, never nicknames or email,
+                and it stays out of search. The server stores only a hash of the
+                link, which is shown in full once, when it is made. You can close
+                a link at any time: it stops working and its comments are no
+                longer shown to anyone, though they stay in the database. New
+                comments send on-site notifications only. Each account can have
+                20 open links at a time and create 50 a day.
+              </p>
               <p>
                 Study group chat messages are seen only by that group&apos;s
                 members, under the name you use in the group; they are deleted
@@ -527,7 +574,12 @@ export function PrivacyDocument() {
                 drill&apos;s code draft stays in the current browser. The lines
                 you flag in a code-review drill are used only to score that
                 attempt and are not stored, and your notes on them are never
-                uploaded.
+                uploaded. A stress test (small random inputs run against your
+                code and a reference solution) keeps your code and the generated
+                inputs in your run records the same way, out of your submission
+                list, statistics and progress. The code notes after an accepted
+                submission and the follow-up check before submitting run in your
+                browser; nothing is uploaded or stored.
               </p>
             </section>
 
@@ -718,7 +770,10 @@ export function PrivacyDocument() {
                 speech recognition; some browsers (Chrome, for example) send the
                 audio to the browser maker&apos;s servers to turn it into text,
                 without going through this platform, and nothing is recorded
-                unless you press dictate. Mock OA and contest code replays and
+                unless you press dictate. The delivery stats in an AI mock
+                interview (pace, filler words, talk time and pauses) are worked
+                out in your browser and kept on this device; they are never
+                uploaded. Mock OA and contest code replays and
                 the focus self-check (time away from the page, pastes over 40
                 characters) stay in your browser, are never uploaded and are
                 not proctoring; a contest replay shows only to the entrant it
@@ -757,6 +812,17 @@ export function PrivacyDocument() {
                 platform does not store the answer or the feedback; it records
                 only daily call counts and usage. Nothing is sent unless you ask.
               </p>
+              <p id="privacy-jd">
+                When you submit on the JD readiness check (/career/jd), the
+                server sends only the job description you pasted to Anthropic,
+                to pick out the skills and interview rounds the role asks for.
+                Your email, name, account identifier and practice records are
+                not sent; your progress is read on the server and shown only to
+                you beside the result. The job description and the result are
+                not stored; only daily call counts and usage are recorded. A job
+                description carried over from the AI resume review page passes
+                through this tab&apos;s session storage and is deleted once read.
+              </p>
               <p id="privacy-resume-builder">
                 What you enter in the resume builder (/career/resume/builder)
                 is kept only in this browser&apos;s local storage and is never
@@ -787,7 +853,15 @@ export function PrivacyDocument() {
                 test results (hidden tests as counts only) to Anthropic to write a
                 reply. No email, name or account identifier is sent; the platform
                 records only daily call counts and usage, never what was sent or
-                the AI's reply. Nothing is sent unless you ask.
+                the AI's reply. Nothing is sent unless you ask. When you choose
+                AI review, the server sends your current files, the pair
+                conversation saved in your browser (up to 40 turns and 24,000
+                characters), your last run&apos;s public results and hidden-test
+                pass count, your runs over the last 3 hours and, for a take-home
+                project, your design notes to Anthropic to write the review; it
+                is not stored either, and only daily call counts and usage are
+                recorded. A take-home project&apos;s code (/take-home), its start
+                time and your design notes stay only in your browser.
               </p>
               <p id="privacy-ica">
                 Runs in the CodeSignal ICA-style practice (/oa/ica) work the
