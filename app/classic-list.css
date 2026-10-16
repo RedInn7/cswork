@@ -179,6 +179,35 @@
   outline: 2px solid var(--route-white);
   outline-offset: -3px;
 }
+/* The SQL track's pattern filter: the switch's buttons as wrapping chips. */
+.classic-patterns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.classic-patterns button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--route-slate);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--route-white-2);
+  font: 600 12px/1 var(--font-route);
+  cursor: pointer;
+}
+.classic-patterns button[aria-pressed='true'] {
+  border-color: var(--route-amber);
+  background: var(--route-amber);
+  color: var(--route-navy);
+}
+.classic-patterns button:focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
 .classic-tick-error {
   margin: 0;
   font-size: 12px;
@@ -399,6 +428,22 @@
     color: var(--route-navy);
   }
   .dark .classic-site button:focus-visible {
+    outline: 2px solid var(--route-white);
+  }
+  .dark .classic-patterns {
+    border: 0;
+  }
+  .dark .classic-patterns button {
+    border: 1px solid var(--route-slate);
+    background: transparent;
+    color: var(--route-white-2);
+  }
+  .dark .classic-patterns button[aria-pressed='true'] {
+    border-color: var(--route-amber);
+    background: var(--route-amber);
+    color: var(--route-navy);
+  }
+  .dark .classic-patterns button:focus-visible {
     outline: 2px solid var(--route-white);
   }
   .dark .classic-tick-error {

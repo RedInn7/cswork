@@ -64,6 +64,12 @@ export function ProblemTrack({
   const sequence = groups.flatMap((group) => group.ids.map(judgeId));
   const done = sequence.filter((id) => solved.has(id)).length;
   const next = signedIn ? sequence.find((id) => !solved.has(id)) : undefined;
+  // A link to one topic (/learn/sql → #sql-group-joins) lands before the rows render: scroll once they do.
+  const listed = sequence.length > 0;
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (listed && id) document.getElementById(id)?.scrollIntoView?.({ block: 'start' });
+  }, [listed]);
   const open = (event: React.MouseEvent | null, id: string) => {
     // Let modified clicks open the problem in a new tab.
     if (event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
@@ -177,7 +183,8 @@ export function ProblemTrack({
 /**
  * The SQL track (?view=problems&library=sql): CSWork's own SQL problems, judged on SQLite.
  * Once pandas versions (pd-xx) are listed, a SQL / Pandas switch picks which
- * of each problem the rows open; it is remembered in this browser.
+ * of each problem the rows open; it is remembered in this browser. ?pattern= keeps
+ * the rows of one interview pattern (the /learn/sql course links there).
  */
 export function SqlTrack(props: TrackProps) {
   const english = useLocale() === 'en';
@@ -203,28 +210,71 @@ export function SqlTrack(props: TrackProps) {
   const available = new Set(props.availableProblemIds);
   const hasPandas = sqlTrack.problems.some((item) => available.has(pandasId(item.id)));
   const pandas = hasPandas && language === 'pandas';
+  const judge = pandas ? pandasId : (id: string) => id;
+  const [pattern, setPattern] = useState(() =>
+    typeof window === 'undefined' ? '' : (new URLSearchParams(window.location.search).get('pattern') ?? ''),
+  );
+  const counts = new Map(
+    sqlTrack.patterns.map(({ key }) => [
+      key,
+      sqlTrack.problems.filter((item) => item.patterns.includes(key) && available.has(judge(item.id))).length,
+    ]),
+  );
+  // An unknown pattern, or one with nothing published yet, shows the whole track.
+  const active = counts.get(pattern) ? pattern : '';
+  const filter = (key: string) => {
+    setPattern(key);
+    const url = new URL(window.location.href);
+    if (key) url.searchParams.set('pattern', key);
+    else url.searchParams.delete('pattern');
+    window.history.replaceState(window.history.state, '', url);
+  };
+  const shown = new Set(sqlTrack.problems.filter((item) => item.patterns.includes(active)).map((item) => item.id));
+  const track = active
+    ? {
+        ...sqlTrack,
+        groups: sqlTrack.groups.map((group) => ({ ...group, ids: group.ids.filter((id) => shown.has(id)) })),
+      }
+    : sqlTrack;
   return (
     <ProblemTrack
       {...props}
       library="sql"
-      track={sqlTrack}
+      track={track}
       judgeId={pandas ? pandasId : undefined}
       controls={
-        hasPandas && (
-          <fieldset className="classic-site">
-            <legend className="sr-only">{t('练习语言', 'Practice language')}</legend>
-            {(['sql', 'pandas'] as const).map((value) => (
-              <button
-                key={value}
-                type="button"
-                aria-pressed={(pandas ? 'pandas' : 'sql') === value}
-                onClick={() => pick(value)}
-              >
-                {value === 'sql' ? 'SQL' : 'Pandas'}
+        <>
+          {hasPandas && (
+            <fieldset className="classic-site">
+              <legend className="sr-only">{t('练习语言', 'Practice language')}</legend>
+              {(['sql', 'pandas'] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={(pandas ? 'pandas' : 'sql') === value}
+                  onClick={() => pick(value)}
+                >
+                  {value === 'sql' ? 'SQL' : 'Pandas'}
+                </button>
+              ))}
+            </fieldset>
+          )}
+          {[...counts.values()].some(Boolean) && (
+            <fieldset className="classic-patterns">
+              <legend className="sr-only">{t('按题型筛选', 'Filter by pattern')}</legend>
+              <button type="button" aria-pressed={!active} onClick={() => filter('')}>
+                {t('全部题型', 'All patterns')}
               </button>
-            ))}
-          </fieldset>
-        )
+              {sqlTrack.patterns
+                .filter(({ key }) => counts.get(key))
+                .map(({ key, zh, en }) => (
+                  <button key={key} type="button" aria-pressed={active === key} onClick={() => filter(key)}>
+                    {english ? en : zh} <span>{counts.get(key)}</span>
+                  </button>
+                ))}
+            </fieldset>
+          )}
+        </>
       }
       copy={{
         kicker: pandas

@@ -19,6 +19,24 @@ export const GROUPS: { key: GroupKey; zh: string; en: string }[] = [
   { key: 'strings', zh: '字符串处理', en: 'Strings' },
   { key: 'dates', zh: '日期处理', en: 'Dates' },
 ];
+/**
+ * Interview patterns across the topic groups: the SQL track filters by them (?pattern=) and the
+ * /learn/sql course links to them. A problem may have none (plain filtering, strings, dates).
+ */
+export const PATTERNS: { key: string; zh: string; en: string; ids: string[] }[] = [
+  { key: 'top-n-per-group', zh: '分组 Top N', en: 'Top N per group', ids: ['sql-15', 'sql-16', 'sql-34'] },
+  { key: 'ranking', zh: '排名与第 N 高', en: 'Ranking & Nth highest', ids: ['sql-12', 'sql-38', 'sql-42'] },
+  { key: 'gaps-islands', zh: '连续区间', en: 'Gaps & islands', ids: ['sql-19', 'sql-43'] },
+  { key: 'running-total', zh: '累计与移动窗口', en: 'Running totals', ids: ['sql-17', 'sql-41'] },
+  { key: 'period-over-period', zh: '环比与间隔', en: 'Period over period', ids: ['sql-18', 'sql-39'] },
+  { key: 'retention', zh: '留存', en: 'Retention', ids: ['sql-20'] },
+  { key: 'ratio', zh: '占比与比率', en: 'Ratios & shares', ids: ['sql-20', 'sql-31', 'sql-40'] },
+  { key: 'dedupe', zh: '去重与找重复', en: 'Dedupe & duplicates', ids: ['sql-11', 'sql-19', 'sql-24', 'sql-29', 'sql-43'] },
+  { key: 'pivot', zh: '条件聚合与行转列', en: 'Conditional aggregation & pivot', ids: ['sql-03', 'sql-27', 'sql-31', 'sql-32'] },
+  { key: 'anti-join', zh: '反连接（从未…）', en: 'Anti-join (never …)', ids: ['sql-01', 'sql-04', 'sql-26', 'sql-35', 'sql-36'] },
+  { key: 'self-join', zh: '自连接', en: 'Self-join', ids: ['sql-01', 'sql-05', 'sql-08', 'sql-25'] },
+  { key: 'relational-division', zh: '全称条件', en: 'For all (division)', ids: ['sql-14', 'sql-35'] },
+];
 export type SqlProblem = {
   id: string;
   group: GroupKey;
