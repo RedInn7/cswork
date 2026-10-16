@@ -405,10 +405,10 @@ export type DrawOptions = {
 export type DrawnSlot<T> = Slot & { item: T | null; similar: boolean; pool: number };
 
 /**
- * Each kind (or kind and category, for a slot naming one) gets one queue: its questions shuffled by the seed, then ordered best match first
- * (the company's questions, the role's, the round's) so other companies only fill in. Slots take
- * the queue in turn, and a re-roll the next question, skipping any a slot holds (or its problem).
- * Deterministic: a share link carrying seed + rerolls reproduces the set.
+ * Each kind gets one queue (a slot naming a category, one of that category alone): its questions
+ * shuffled by the seed, then ordered best match first (the company's questions, the role's, the
+ * round's) so other companies only fill in. Slots take the queue in turn, and a re-roll the next
+ * question, skipping any a slot holds (or its problem). Deterministic: a share link carrying seed + rerolls reproduces the set.
  */
 export function drawSet<T extends PoolItem>(pool: readonly T[], template: Template, o: DrawOptions) {
   const companies = o.company ? companyGroup(o.company) : null;
