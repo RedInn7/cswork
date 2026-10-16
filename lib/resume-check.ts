@@ -28,17 +28,17 @@ const WEIGHT = {
 const BULLET_RULES = ['verb', 'metric', 'length', 'pronoun', 'vague', 'repeat', 'tense'] as const;
 
 // Strong opening verbs, base forms. Past tense is regular unless PAST says otherwise.
-const VERBS = `accelerate achieve adapt add analyze architect assemble audit author automate balance benchmark boost
+const VERBS = `accelerate achieve adapt add adopt analyze annotate architect assemble audit author automate balance benchmark boost
 build cache calibrate champion clarify coach code collaborate compile compose compute conceive configure consolidate
-construct containerize contribute convert coordinate create curate cut debug decrease define delegate deliver deploy
-design detect develop devise diagnose digitize direct discover document double drive eliminate enable engineer enhance
-establish evaluate expand expedite experiment extend extract fix forecast formalize generate grow guide halve
+conduct construct containerize contribute convert coordinate craft create curate cut debug decrease define delegate deliver deploy
+design detect develop devise diagnose digitize direct discover distill document double drive eliminate enable engineer enhance
+establish evaluate execute expand expedite experiment extend extract fine-tune fix forecast formalize formulate found generate grow guide halve
 harden identify implement improve increase initiate innovate inspect install instrument integrate introduce invent
 investigate launch lead leverage lower maintain manage map maximize measure mentor merge migrate minimize model
 modernize monitor negotiate normalize optimize orchestrate organize overhaul own parallelize partner patch pilot pioneer plan
-port predict prepare present prioritize produce profile program prototype provision publish rebuild recruit redesign
+port predict prepare present prioritize produce profile program propose prototype provision publish quantify rebuild recruit redesign
 reduce refactor release remove render replace report research resolve restructure revamp review rewrite run save scale
-schedule secure shorten ship simplify slash solve spearhead speed standardize streamline strengthen supervise teach
+schedule secure shorten ship simplify slash solve spearhead speed standardize streamline strengthen supervise survey teach
 test train transform translate triage troubleshoot tune unify upgrade validate visualize win write`.split(/\s+/);
 const PAST: Record<string, string> = {
   build: 'built',
@@ -72,6 +72,8 @@ for (const v of [...VERBS, ...VERBS.filter((w) => w.endsWith('ize')).map((w) => 
 }
 FORMS.set('modelled', { base: 'model', past: true });
 FORMS.set('speeded', { base: 'speed', past: true });
+// "Found 12 race conditions" is the past of find, not the present of found ("Founded").
+FORMS.set('found', { base: 'find', past: true });
 
 const VAGUE = /\b(responsible for|helped (with|to)?|worked on|various)\b|各种/i;
 // "I/O" is not a pronoun, and "US" is a country.

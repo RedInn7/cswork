@@ -33,6 +33,17 @@ void test('a clean resume scores 100: Led, Built, Wrote and Ran are past tense, 
   const r = good();
   r.projects[0].bullets = 'Implementing leader election and log replication across 5 nodes in Go';
   assert.deepEqual(rules(r), ['verb@projects.0.bullets']);
+  // Founding, ML and research verbs are strong and past too; "Found" is the past of find.
+  const s = good();
+  s.experience[0].bullets = [
+    'Founded a student club with 40 members and ran weekly coding workshops',
+    'Fine-tuned Llama 3 on 20k support tickets, raising answer accuracy by 12%',
+    'Conducted 40 user interviews to shape the onboarding flow for new users',
+    'Proposed a sharded index layout that cut query latency by 30% across shards',
+    'Found and fixed 12 race conditions in the job scheduler before the launch',
+  ].join('\n');
+  s.projects[0].bullets = 'Co-founded a startup that served 2,000 users in its first six months';
+  assert.deepEqual(rules(s), []);
 });
 
 void test('each rule on one bad bullet: weak verb, no number, short, pronoun, vague, tense, repeats', () => {
