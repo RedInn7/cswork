@@ -76,6 +76,13 @@ const EN: Record<string, string> = {
   视频不属于此章节: "This video doesn't belong to this lesson",
   没有需要保存的内容: 'Nothing to save',
   提交不存在: 'Submission not found',
+  // Private code review links (lib/server/code-reviews.ts); the notice title too
+  评审链接不存在或已关闭: 'This review link does not exist or was closed',
+  只能为正式提交生成评审链接: 'Review links are for submitted solutions only',
+  '未关闭的评审链接已达上限，请先关闭不用的链接': 'You have too many open review links. Close one you no longer need first',
+  行号超出代码范围: 'That line is outside the code',
+  这条评审链接的评论已达上限: 'This review link has reached its comment limit',
+  你的代码收到了新的评审意见: 'Your code got new review comments',
   更新不存在: 'Update not found',
   '此章节已有未发布草稿，请在课程管理中继续编辑':
     'This lesson already has an unpublished draft. Continue editing it in course management',
