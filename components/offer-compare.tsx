@@ -163,6 +163,7 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
       />
     </label>
   );
+  const customSum = (o: Offer) => Math.round((o.custom ?? []).reduce<number>((a, b) => a + (b ?? 0), 0) * 100) / 100;
   const due = (o: Offer) => {
     if (!o.deadline) return '—';
     const left = now === null ? null : countdown(new Date(`${o.deadline}T23:59:59`).getTime(), now, !zh);
@@ -246,8 +247,8 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
               {!results[i] && (
                 <p className="resume-error" aria-live="polite">
                   {t(
-                    `自定义归属比例合计 ${(o.custom ?? []).reduce<number>((a, b) => a + (b ?? 0), 0)}%，需要正好 100%，且每项不能为负。`,
-                    `The custom schedule adds up to ${(o.custom ?? []).reduce<number>((a, b) => a + (b ?? 0), 0)}%; it must be exactly 100%, with no negative year.`,
+                    `自定义归属比例合计 ${customSum(o)}%，需要正好 100%，且每项不能为负。`,
+                    `The custom schedule adds up to ${customSum(o)}%; it must be exactly 100%, with no negative year.`,
                   )}
                 </p>
               )}
