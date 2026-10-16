@@ -53,9 +53,11 @@ export default async function LearnChapter({ params }: Props) {
       <li>
         <a href="#sd-quiz-title">{t('小测验', 'Quiz')}</a>
       </li>
-      <li>
-        <a href="#learn-practice-title">{t('课后练习', 'Practice')}</a>
-      </li>
+      {chapter.homework.length > 0 && (
+        <li>
+          <a href="#learn-practice-title">{t('课后练习', 'Practice')}</a>
+        </li>
+      )}
     </ol>
   );
   return (
@@ -97,18 +99,21 @@ export default async function LearnChapter({ params }: Props) {
           <PublicLibraryMarkdown body={body} math={false} sectionIds />
         </div>
         <SdQuiz slug={learnKey(course.slug, chapter.slug)} quiz={chapter.quiz} zh={zh} />
-        <section className="learn-practice" aria-labelledby="learn-practice-title">
-          <h2 id="learn-practice-title">{t('课后练习', 'Practice')}</h2>
-          <p>{t('在题库里提交，判题结果会计入你的练习记录。', 'Submit in the problem bank; the verdicts count toward your practice history.')}</p>
-          <ol>
-            {chapter.homework.map((problem) => (
-              <li key={problem.id}>
-                <a href={problemAppHref(problem.id)}>{zh ? problem.zh : problem.en}</a>
-                <span>{problem.id.replace('lc-', 'LeetCode ')}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
+        {/* SQL lessons have no LeetCode homework: their text links to the SQL track instead. */}
+        {chapter.homework.length > 0 && (
+          <section className="learn-practice" aria-labelledby="learn-practice-title">
+            <h2 id="learn-practice-title">{t('课后练习', 'Practice')}</h2>
+            <p>{t('在题库里提交，判题结果会计入你的练习记录。', 'Submit in the problem bank; the verdicts count toward your practice history.')}</p>
+            <ol>
+              {chapter.homework.map((problem) => (
+                <li key={problem.id}>
+                  <a href={problemAppHref(problem.id)}>{zh ? problem.zh : problem.en}</a>
+                  <span>{problem.id.replace('lc-', 'LeetCode ')}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
         <SdMarkRead slug={learnKey(course.slug, chapter.slug)} slugs={keys} />
         <nav className="sd-pager" aria-label={t('章节导航', 'Lessons')}>
           {prev ? (

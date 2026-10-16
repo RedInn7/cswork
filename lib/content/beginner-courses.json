@@ -2355,7 +2355,7 @@
                 },
                 {
                   "zh": "pair 是不可复制的类型",
-                  "en": "pair cannot be copied"
+                  "en": "pair cannot be copied into a hash container"
                 }
               ],
               "answer": 0,
@@ -2396,7 +2396,7 @@
                   "en": "m.erase(it); then ++it"
                 },
                 {
-                  "zh": "用范围 for 遍历，直接 m.erase(key)",
+                  "zh": "用范围 for 遍历，遇到要删的键直接 m.erase(key)",
                   "en": "Range-for over it and call m.erase(key)"
                 },
                 {
@@ -2404,8 +2404,8 @@
                   "en": "it = m.erase(it); and ++it only when not erasing"
                 },
                 {
-                  "zh": "不能删除，只能先复制一份",
-                  "en": "Impossible; you must copy the map first"
+                  "zh": "不能边遍历边删除，只能先复制一份再删",
+                  "en": "Impossible: copy the keys out first, then erase them in a second loop"
                 }
               ],
               "answer": 2,
@@ -2448,8 +2448,8 @@
               "qEn": "What happens when the comparator passed to sort is return a <= b;?",
               "choices": [
                 {
-                  "zh": "和 a < b 完全一样",
-                  "en": "Exactly the same as a < b"
+                  "zh": "和 a < b 完全一样，相等的元素原地不动",
+                  "en": "It behaves exactly like a < b, because equal elements simply stay put"
                 },
                 {
                   "zh": "变成稳定排序",
@@ -2506,8 +2506,8 @@
                   "en": "Equal elements must keep their original order"
                 },
                 {
-                  "zh": "需要降序排列",
-                  "en": "You want descending order"
+                  "zh": "需要降序排列，而且数组里有重复元素",
+                  "en": "You want descending order and the vector has duplicates"
                 },
                 {
                   "zh": "数组长度超过 10⁵",
@@ -2695,8 +2695,8 @@
                   "en": "a.erase(unique(a.begin(), a.end()), a.end());"
                 },
                 {
-                  "zh": "a.resize(unique(a.begin(), a.end()));",
-                  "en": "a.resize(unique(a.begin(), a.end()));"
+                  "zh": "a.erase(a.begin(), unique(a.begin(), a.end()));",
+                  "en": "a.erase(a.begin(), unique(a.begin(), a.end()));"
                 }
               ],
               "answer": 2,
@@ -2712,8 +2712,8 @@
                   "en": "O(1): ms.erase(x)"
                 },
                 {
-                  "zh": "O(n)：必须先遍历",
-                  "en": "O(n): it needs a full scan"
+                  "zh": "O(n)：ms.erase(ms.find(x))，find 要逐个比较",
+                  "en": "O(n): ms.erase(ms.find(x)), since find scans linearly"
                 },
                 {
                   "zh": "O(log n)：ms.erase(x)",
@@ -2794,8 +2794,8 @@
               "qEn": "List<Integer> a = List.of(1, 2); a.add(3); what happens?",
               "choices": [
                 {
-                  "zh": "a 变成 [1, 2, 3]",
-                  "en": "a becomes [1, 2, 3]"
+                  "zh": "a 变成 [1, 2, 3]，List.of 返回的就是普通的 ArrayList",
+                  "en": "a becomes [1, 2, 3]; List.of returns an ordinary ArrayList"
                 },
                 {
                   "zh": "抛出 UnsupportedOperationException",
@@ -3004,7 +3004,7 @@
               "choices": [
                 {
                   "zh": "它比 Integer.compare 慢很多",
-                  "en": "It is much slower than Integer.compare"
+                  "en": "It is much slower, because every comparison boxes and unboxes two Integer objects"
                 },
                 {
                   "zh": "它会把堆变成最大堆",
@@ -3040,8 +3040,8 @@
                   "en": "Descending"
                 },
                 {
-                  "zh": "插入的顺序",
-                  "en": "Insertion order"
+                  "zh": "插入的顺序，和放进去的先后完全一致",
+                  "en": "Insertion order, exactly as the elements were offered"
                 }
               ],
               "answer": 0,
@@ -3091,8 +3091,8 @@
                   "en": "cnt.merge(w, 1, Integer::sum);"
                 },
                 {
-                  "zh": "cnt.add(w, 1);",
-                  "en": "cnt.add(w, 1);"
+                  "zh": "cnt.put(w, cnt.containsKey(w) ? cnt.get(w) : 1);",
+                  "en": "cnt.put(w, cnt.containsKey(w) ? cnt.get(w) : 1);"
                 },
                 {
                   "zh": "cnt[w]++;",
@@ -3100,8 +3100,8 @@
                 }
               ],
               "answer": 1,
-              "whyZh": "merge 在键不存在时放入 1，存在时放入旧值加 1。cnt.get(w) 在键不存在时返回 null，加 1 时抛空指针异常；Map 没有 add 方法，也不支持 [] 语法。",
-              "whyEn": "merge stores 1 for a new key and old + 1 otherwise. cnt.get(w) is null for a new key, so + 1 throws; Map has no add method and no [] syntax."
+              "whyZh": "merge 在键不存在时放入 1，存在时放入旧值加 1。cnt.get(w) 在键不存在时返回 null，加 1 时抛空指针异常；containsKey 那一行在键已存在时没有加 1；Map 也不支持 [] 语法。",
+              "whyEn": "merge stores 1 for a new key and old + 1 otherwise. cnt.get(w) is null for a new key, so + 1 throws; the containsKey line never adds 1 to an existing count; and Map has no [] syntax."
             },
             {
               "qZh": "Set<int[]> s 里放了 new int[]{1, 2}，s.contains(new int[]{1, 2}) 返回什么？",
@@ -3112,8 +3112,8 @@
                   "en": "true"
                 },
                 {
-                  "zh": "抛出异常",
-                  "en": "It throws"
+                  "zh": "抛出 ClassCastException",
+                  "en": "It throws ClassCastException"
                 },
                 {
                   "zh": "false",
@@ -3137,8 +3137,8 @@
                   "en": "Override equals only"
                 },
                 {
-                  "zh": "实现 Comparable",
-                  "en": "Implement Comparable"
+                  "zh": "实现 Comparable 接口并重写 compareTo",
+                  "en": "Implement Comparable and override compareTo"
                 },
                 {
                   "zh": "什么都不用做",
@@ -3298,8 +3298,8 @@
                   "en": "Arrays.sort(a, (x, y) -> y - x)"
                 },
                 {
-                  "zh": "Arrays.sortDescending(a)",
-                  "en": "Arrays.sortDescending(a)"
+                  "zh": "Arrays.sort((Integer[]) a, Collections.reverseOrder())",
+                  "en": "Arrays.sort((Integer[]) a, Collections.reverseOrder())"
                 },
                 {
                   "zh": "先 Arrays.sort(a) 升序，再原地反转",
@@ -3307,8 +3307,8 @@
                 }
               ],
               "answer": 3,
-              "whyZh": "基本类型数组的 Arrays.sort 不接受比较器，前两种都编译不过，也没有 sortDescending。另一种办法是装箱成 Integer[] 再传比较器。",
-              "whyEn": "Arrays.sort on a primitive array takes no comparator, so the first two do not compile, and there is no sortDescending. The other way is to box into an Integer[] and pass a comparator."
+              "whyZh": "基本类型数组的 Arrays.sort 不接受比较器，int[] 也不能强制转换成 Integer[]，其他三种都编译不过。另一种办法是用 Arrays.stream(a).boxed() 装箱成 Integer[] 再传比较器。",
+              "whyEn": "Arrays.sort on a primitive array takes no comparator, and an int[] cannot be cast to Integer[], so the other three do not compile. The other way is to box it with Arrays.stream(a).boxed() into an Integer[] and pass a comparator."
             },
             {
               "qZh": "Arrays.sort(Integer[]) 和 Arrays.sort(int[]) 有什么区别？",
@@ -3407,8 +3407,8 @@
                   "en": "false"
                 },
                 {
-                  "zh": "抛出异常",
-                  "en": "It throws"
+                  "zh": "抛出 NullPointerException",
+                  "en": "It throws NullPointerException"
                 }
               ],
               "answer": 2,
@@ -3499,8 +3499,8 @@
               "qEn": "When spotting repeats with a HashSet, what does seen.add(x) returning false mean?",
               "choices": [
                 {
-                  "zh": "集合已满，加不进去",
-                  "en": "The set is full"
+                  "zh": "集合已满，扩容失败所以加不进去",
+                  "en": "The set is full and could not grow to take x"
                 },
                 {
                   "zh": "x 之前已经在集合里了",
@@ -3647,13 +3647,13 @@
                   "en": "a.append(x)"
                 },
                 {
-                  "zh": "a.push(x)",
-                  "en": "a.push(x)"
+                  "zh": "a = append(a[:len(a)-1], x)",
+                  "en": "a = append(a[:len(a)-1], x)"
                 }
               ],
               "answer": 1,
-              "whyZh": "append 是内置函数，返回新的切片头，必须赋值回去；单独写 append(a, x) 编译不过。切片没有 append、push 方法。",
-              "whyEn": "append is a built-in that returns a new slice header, which must be assigned back; a bare append(a, x) does not compile. Slices have no append or push method."
+              "whyZh": "append 是内置函数，返回新的切片头，必须赋值回去；单独写 append(a, x) 编译不过。切片没有 append 方法；append(a[:len(a)-1], x) 会把最后一个元素替换掉。",
+              "whyEn": "append is a built-in that returns a new slice header, which must be assigned back; a bare append(a, x) does not compile. Slices have no append method, and append(a[:len(a)-1], x) replaces the last element."
             },
             {
               "qZh": "回溯时把当前路径存进结果，应该怎么写？",
@@ -3672,8 +3672,8 @@
                   "en": "res = append(res, append([]int(nil), path...))"
                 },
                 {
-                  "zh": "res = append(res, path[0:len(path)])",
-                  "en": "res = append(res, path[0:len(path)])"
+                  "zh": "res = append(res, path[0:len(path)]); path = path[:0]",
+                  "en": "res = append(res, path[0:len(path)]); path = path[:0]"
                 }
               ],
               "answer": 2,
@@ -3723,8 +3723,8 @@
                   "en": "A compile error"
                 },
                 {
-                  "zh": "什么也不发生",
-                  "en": "Nothing happens"
+                  "zh": "什么也不发生，nil map 会静默丢弃写入",
+                  "en": "Nothing happens; a nil map silently drops the write"
                 },
                 {
                   "zh": "panic：不能写入 nil map",
@@ -3752,13 +3752,13 @@
                   "en": "m[k] == nil"
                 },
                 {
-                  "zh": "m.contains(k)",
-                  "en": "m.contains(k)"
+                  "zh": "_, err := m[k]，看 err 是否为 nil",
+                  "en": "_, err := m[k], then check whether err is nil"
                 }
               ],
               "answer": 0,
-              "whyZh": "缺失的键返回零值，单看值区分不了。逗号 ok 写法里 ok 为 false 才表示不存在。int 不能和 nil 比较，map 也没有 contains 方法。",
-              "whyEn": "A missing key returns the zero value, so the value alone cannot tell. In the comma-ok form, ok is false only for a missing key. An int cannot be compared with nil, and maps have no contains method."
+              "whyZh": "缺失的键返回零值，单看值区分不了。逗号 ok 写法里 ok 为 false 才表示不存在。int 不能和 nil 比较；map 取值的第二个返回值是 bool，不是 error。",
+              "whyEn": "A missing key returns the zero value, so the value alone cannot tell. In the comma-ok form, ok is false only for a missing key. An int cannot be compared with nil, and a map lookup's second result is a bool, not an error."
             },
             {
               "qZh": "下面哪种类型不能当 map 的键？",
@@ -3824,7 +3824,7 @@
                   "en": "Two element values"
                 },
                 {
-                  "zh": "两个元素的指针",
+                  "zh": "两个元素的指针，可以直接修改元素",
                   "en": "Pointers to two elements"
                 },
                 {
@@ -3878,8 +3878,8 @@
                   "en": "sort.Slice"
                 },
                 {
-                  "zh": "slices.Sort",
-                  "en": "slices.Sort"
+                  "zh": "slices.SortFunc 配合 cmp.Compare",
+                  "en": "slices.SortFunc with cmp.Compare"
                 },
                 {
                   "zh": "sort.Ints",
@@ -3887,8 +3887,8 @@
                 }
               ],
               "answer": 0,
-              "whyZh": "sort.Slice、slices.Sort 都不保证稳定；sort.Ints 只能排 []int。稳定排序用 sort.SliceStable 或 slices.SortStableFunc。",
-              "whyEn": "sort.Slice and slices.Sort are not guaranteed stable, and sort.Ints only sorts []int. For stability use sort.SliceStable or slices.SortStableFunc."
+              "whyZh": "sort.Slice、slices.SortFunc 都不保证稳定；sort.Ints 只能排 []int。稳定排序用 sort.SliceStable 或 slices.SortStableFunc。",
+              "whyEn": "sort.Slice and slices.SortFunc are not guaranteed stable, and sort.Ints only sorts []int. For stability use sort.SliceStable or slices.SortStableFunc."
             }
           ],
           "homework": [
@@ -4063,8 +4063,8 @@
                   "en": "A rune (a Unicode code point)"
                 },
                 {
-                  "zh": "一个长度为 1 的 string",
-                  "en": "A one-character string"
+                  "zh": "一个长度为 1 的 string，比如 \"a\"",
+                  "en": "A one-character string such as \"a\""
                 },
                 {
                   "zh": "字符的下标",
@@ -4272,8 +4272,8 @@
                   "en": "b := a[:]"
                 },
                 {
-                  "zh": "b := a[0:len(a)]",
-                  "en": "b := a[0:len(a)]"
+                  "zh": "b := make([]int, len(a)); b = a",
+                  "en": "b := make([]int, len(a)); b = a"
                 },
                 {
                   "zh": "b := append([]int(nil), a...)",
@@ -4281,8 +4281,8 @@
                 }
               ],
               "answer": 3,
-              "whyZh": "后三种都只复制了切片头，仍然共用同一个数组。append 到一个 nil 切片会分配新数组并复制元素。slices.Clone(a) 也可以。",
-              "whyEn": "The other three copy only the header and still share the array. Appending to a nil slice allocates a new array and copies the elements. slices.Clone(a) works too."
+              "whyZh": "其他三种都没有复制元素：b = a 只是让 b 指向同一个数组，make 出来的新数组被丢掉了。append 到一个 nil 切片会分配新数组并复制元素。slices.Clone(a) 也可以。",
+              "whyEn": "None of the other three copies the elements: b = a just points b at the same array, discarding the one make created. Appending to a nil slice allocates a new array and copies the elements. slices.Clone(a) works too."
             },
             {
               "qZh": "heap.Init(h) 的时间复杂度是？",
@@ -4327,6 +4327,531 @@
               "en": "Remove All Adjacent Duplicates In String"
             }
           ],
+          "solves": []
+        }
+      ]
+    },
+    {
+      "slug": "sql",
+      "titleZh": "SQL 面试速成课",
+      "titleEn": "SQL for Interviews",
+      "summaryZh": "6 节课从 SELECT、WHERE 和 NULL 讲起，经过 JOIN、GROUP BY 与 HAVING、子查询和 CTE、窗口函数，最后是分组 Top N、连续区间、累计、留存、去重这些面试套路。所有例子都在 SQL 专项的示例表上真实运行，每节有小测验，并链接到 SQL 专项里对应分组和题型的练习。",
+      "summaryEn": "Six lessons from SELECT, WHERE and NULL through joins, GROUP BY and HAVING, subqueries and CTEs and window functions, ending with the interview patterns: top N per group, gaps and islands, running totals, retention and deduplication. Every example really runs on the SQL track's sample tables, and each lesson has a quiz and links to the matching groups and patterns in the SQL track.",
+      "chapters": [
+        {
+          "slug": "select-where-null",
+          "titleZh": "SELECT、WHERE 与 NULL",
+          "titleEn": "SELECT, WHERE and NULL",
+          "bodyZh": "这门课讲面试里的 SQL：从最基本的查询讲到窗口函数和常见题型。所有例子都在 SQL 专项练习用的示例表上运行，方言是 SQLite，和本站判题用的数据库一样；和 MySQL、PostgreSQL 不同的地方会单独指出。每节的结果都是真实运行的输出。\n\n## 示例表\n\n| 表 | 列 | 说明 |\n|---|---|---|\n| `departments` | `id, name` | 4 个部门，Legal 没有员工 |\n| `employees` | `id, name, department_id, manager_id, salary, hire_date` | 10 名员工；`department_id`、`manager_id` 可能是 NULL，也可能指向不存在的人 |\n| `customers` | `id, name, email, city` | 6 个客户，有人 `city` 为 NULL |\n| `products` | `id, name, category, price` | 5 件商品，3 个类目 |\n| `orders` | `id, customer_id, order_date, status` | 9 个订单；`status` 是 `'paid'` 或 `'cancelled'`，游客订单的 `customer_id` 为 NULL |\n| `order_items` | `order_id, product_id, quantity, unit_price` | 订单明细，`unit_price` 是实际成交价 |\n| `courses` | `id, title` | 4 门课 |\n| `enrollments` | `student_id, course_id, score` | 选课记录；缺考时 `score` 为 NULL |\n| `logins` | `user_id, login_date` | 登录记录，同一天可能有多条 |\n\n日期都以 `'YYYY-MM-DD'` 文本保存，可以直接比较大小，也可以交给 `date()`、`julianday()`、`strftime()` 计算。\n\n## 写法顺序和执行顺序\n\n```sql\nSELECT 列 FROM 表 WHERE 行条件 GROUP BY 分组 HAVING 组条件 ORDER BY 排序 LIMIT 行数\n```\n\n数据库实际的执行顺序是 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT。所以 WHERE 里不能用 SELECT 里起的别名，也不能用聚合函数；ORDER BY 在 SELECT 之后执行，可以用别名。\n\n```sql run\nSELECT name, salary\nFROM employees\nWHERE salary >= 8000\nORDER BY salary DESC, name;\n```\n\n```text\nname | salary\nAva | 12000\nBen | 9000\nChloe | 9000\nFinn | 8500\nEve | 8000\n```\n\n两人工资相同时按名字排，这样结果的顺序才是确定的。只写 `ORDER BY salary DESC` 时，Ben 和 Chloe 谁在前面没有保证。\n\n## NULL：既不等于也不不等于\n\nNULL 表示\"未知\"。任何值和 NULL 比较，结果都是 NULL（既不是真也不是假），而 WHERE 只保留条件为真的行。\n\n```sql run\nSELECT\n  (SELECT COUNT(*) FROM employees) AS everyone,\n  (SELECT COUNT(*) FROM employees WHERE department_id = 1) AS in_dept_1,\n  (SELECT COUNT(*) FROM employees WHERE department_id <> 1) AS not_dept_1,\n  (SELECT COUNT(*) FROM employees WHERE department_id IS NULL) AS no_dept;\n```\n\n```text\neveryone | in_dept_1 | not_dept_1 | no_dept\n10 | 4 | 5 | 1\n```\n\n4 + 5 不等于 10：没有部门的那个人既不满足 `= 1`，也不满足 `<> 1`。判断 NULL 只能用 `IS NULL`、`IS NOT NULL`，`= NULL` 永远查不到任何行。\n\n## NOT IN 遇到 NULL\n\n这是 NULL 最隐蔽的坑。下面想找\"不管理任何人\"的员工：\n\n```sql run\nSELECT COUNT(*) AS manage_nobody\nFROM employees\nWHERE id NOT IN (SELECT manager_id FROM employees);\n```\n\n```text\nmanage_nobody\n0\n```\n\n结果是 0，因为子查询里有 NULL。`x NOT IN (1, 2, NULL)` 等价于 `x <> 1 AND x <> 2 AND x <> NULL`，最后一项永远是 NULL，整个条件就不可能为真。把 NULL 排除掉就对了：\n\n```sql run\nSELECT name\nFROM employees\nWHERE id NOT IN (SELECT manager_id FROM employees WHERE manager_id IS NOT NULL)\nORDER BY name;\n```\n\n```text\nname\nChloe\nDan\nFinn\nGia\nIris\nJack\n```\n\n更稳妥的写法是 `NOT EXISTS`，下一课会讲。\n\n## COALESCE 和 CASE\n\n`COALESCE(a, b, ...)` 返回第一个不是 NULL 的参数，常用来给 NULL 一个默认值。`CASE` 按顺序检查条件，返回第一个成立的分支：\n\n```sql run\nSELECT name,\n       COALESCE(city, '(unknown)') AS city,\n       CASE WHEN city IS NULL THEN 'no city'\n            WHEN city = 'Austin' THEN 'local'\n            ELSE 'remote' END AS segment\nFROM customers\nORDER BY id;\n```\n\n```text\nname | city | segment\nAlice | Austin | local\nBob | Boston | remote\nCara | Austin | local\nDev | (unknown) | no city\nElle | Boston | remote\nFemi | Austin | local\n```\n\n如果把 `city IS NULL` 那个分支删掉，Dev 会落进 ELSE，被当成 `'remote'`：`NULL = 'Austin'` 不成立，但也不会让 CASE 报错。\n\n## 整数除法\n\n两个整数相除得到整数：`7 / 2` 是 3。算比例、平均值时，先乘一个 `1.0`：\n\n```sql run\nSELECT 7 / 2 AS int_div, 7 / 2.0 AS real_div, 1.0 * 7 / 2 AS times_one;\n```\n\n```text\nint_div | real_div | times_one\n3 | 3.5 | 3.5\n```\n\nSQLite 和 PostgreSQL 都是这样；MySQL 的 `/` 总是返回小数，整数除法要用 `DIV`。\n\n## 练习\n\n到 [SQL 专项的\"过滤与 NULL\"分组](/?view=problems&library=sql#sql-group-basics) 练习本节内容，每道题都在同一套表上判题。",
+          "bodyEn": "This course covers SQL as interviews ask it, from basic queries to window functions and the classic question types. Every example runs on the sample tables of the SQL practice track, in the SQLite dialect the site's judge uses; where MySQL or PostgreSQL differ, the lesson says so. Every result shown is real output.\n\n## The sample tables\n\n| Table | Columns | Notes |\n|---|---|---|\n| `departments` | `id, name` | 4 departments; Legal has no employees |\n| `employees` | `id, name, department_id, manager_id, salary, hire_date` | 10 employees; `department_id` and `manager_id` may be NULL or point at nobody |\n| `customers` | `id, name, email, city` | 6 customers, one with a NULL `city` |\n| `products` | `id, name, category, price` | 5 products in 3 categories |\n| `orders` | `id, customer_id, order_date, status` | 9 orders; `status` is `'paid'` or `'cancelled'`, and guest orders have a NULL `customer_id` |\n| `order_items` | `order_id, product_id, quantity, unit_price` | order lines; `unit_price` is the price actually charged |\n| `courses` | `id, title` | 4 courses |\n| `enrollments` | `student_id, course_id, score` | enrollments; `score` is NULL for a missed exam |\n| `logins` | `user_id, login_date` | logins, possibly several per day |\n\nDates are stored as `'YYYY-MM-DD'` text, so they compare correctly as strings and work with `date()`, `julianday()` and `strftime()`.\n\n## Written order versus run order\n\n```sql\nSELECT columns FROM table WHERE row filter GROUP BY groups HAVING group filter ORDER BY sort LIMIT rows\n```\n\nThe database runs it as FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. That is why WHERE cannot use an alias defined in SELECT or an aggregate function, while ORDER BY, which runs after SELECT, can use aliases.\n\n```sql run\nSELECT name, salary\nFROM employees\nWHERE salary >= 8000\nORDER BY salary DESC, name;\n```\n\n```text\nname | salary\nAva | 12000\nBen | 9000\nChloe | 9000\nFinn | 8500\nEve | 8000\n```\n\nEqual salaries are ordered by name so the result order is fixed. With only `ORDER BY salary DESC`, nothing guarantees whether Ben or Chloe comes first.\n\n## NULL: neither equal nor unequal\n\nNULL means \"unknown\". Comparing anything with NULL gives NULL, which is neither true nor false, and WHERE keeps only rows whose condition is true.\n\n```sql run\nSELECT\n  (SELECT COUNT(*) FROM employees) AS everyone,\n  (SELECT COUNT(*) FROM employees WHERE department_id = 1) AS in_dept_1,\n  (SELECT COUNT(*) FROM employees WHERE department_id <> 1) AS not_dept_1,\n  (SELECT COUNT(*) FROM employees WHERE department_id IS NULL) AS no_dept;\n```\n\n```text\neveryone | in_dept_1 | not_dept_1 | no_dept\n10 | 4 | 5 | 1\n```\n\n4 + 5 is not 10: the employee without a department satisfies neither `= 1` nor `<> 1`. Test for NULL with `IS NULL` and `IS NOT NULL`; `= NULL` never matches a single row.\n\n## NOT IN meets NULL\n\nThis is the sneakiest NULL trap. Here we look for employees who manage nobody:\n\n```sql run\nSELECT COUNT(*) AS manage_nobody\nFROM employees\nWHERE id NOT IN (SELECT manager_id FROM employees);\n```\n\n```text\nmanage_nobody\n0\n```\n\nThe answer is 0 because the subquery contains a NULL. `x NOT IN (1, 2, NULL)` means `x <> 1 AND x <> 2 AND x <> NULL`, and the last part is always NULL, so the whole condition can never be true. Leave the NULLs out and it works:\n\n```sql run\nSELECT name\nFROM employees\nWHERE id NOT IN (SELECT manager_id FROM employees WHERE manager_id IS NOT NULL)\nORDER BY name;\n```\n\n```text\nname\nChloe\nDan\nFinn\nGia\nIris\nJack\n```\n\n`NOT EXISTS`, covered in the next lesson, is the safer habit.\n\n## COALESCE and CASE\n\n`COALESCE(a, b, ...)` returns its first non-NULL argument, the usual way to give NULL a default. `CASE` checks its conditions in order and returns the first branch that holds:\n\n```sql run\nSELECT name,\n       COALESCE(city, '(unknown)') AS city,\n       CASE WHEN city IS NULL THEN 'no city'\n            WHEN city = 'Austin' THEN 'local'\n            ELSE 'remote' END AS segment\nFROM customers\nORDER BY id;\n```\n\n```text\nname | city | segment\nAlice | Austin | local\nBob | Boston | remote\nCara | Austin | local\nDev | (unknown) | no city\nElle | Boston | remote\nFemi | Austin | local\n```\n\nDrop the `city IS NULL` branch and Dev falls through to ELSE as `'remote'`: `NULL = 'Austin'` does not hold, and CASE raises no error about it.\n\n## Integer division\n\nDividing two integers gives an integer: `7 / 2` is 3. For ratios and averages, multiply by `1.0` first:\n\n```sql run\nSELECT 7 / 2 AS int_div, 7 / 2.0 AS real_div, 1.0 * 7 / 2 AS times_one;\n```\n\n```text\nint_div | real_div | times_one\n3 | 3.5 | 3.5\n```\n\nSQLite and PostgreSQL behave this way; MySQL's `/` always returns a decimal, and integer division there is `DIV`.\n\n## Practice\n\nPractise this lesson in the [SQL track's Filtering & NULL group](/?view=problems&library=sql#sql-group-basics); every problem is judged on the same tables.",
+          "quiz": [
+            {
+              "qZh": "employees 有 10 行，其中 1 行的 department_id 是 NULL、4 行等于 1。WHERE department_id <> 1 返回几行？",
+              "qEn": "employees has 10 rows: one with a NULL department_id and four equal to 1. How many rows does WHERE department_id <> 1 return?",
+              "choices": [
+                {
+                  "zh": "6",
+                  "en": "6"
+                },
+                {
+                  "zh": "5",
+                  "en": "5"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "10",
+                  "en": "10"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "NULL <> 1 的结果是 NULL，不是真，所以那一行被过滤掉了：10 - 4 - 1 = 5。要把它算进来，得写 department_id <> 1 OR department_id IS NULL。",
+              "whyEn": "NULL <> 1 is NULL, not true, so that row is filtered out: 10 - 4 - 1 = 5. To include it, write department_id <> 1 OR department_id IS NULL."
+            },
+            {
+              "qZh": "子查询的结果里有一个 NULL，WHERE x NOT IN (子查询) 会怎样？",
+              "qEn": "A subquery's result contains a NULL. What does WHERE x NOT IN (subquery) do?",
+              "choices": [
+                {
+                  "zh": "忽略那个 NULL，正常过滤",
+                  "en": "It ignores the NULL and filters normally"
+                },
+                {
+                  "zh": "报错",
+                  "en": "It raises an error"
+                },
+                {
+                  "zh": "一行也查不出来",
+                  "en": "It returns no rows at all"
+                },
+                {
+                  "zh": "返回所有行",
+                  "en": "It returns every row"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "NOT IN 展开后包含 x <> NULL，结果总是 NULL，整个条件永远不为真。在子查询里排除 NULL，或者改用 NOT EXISTS。",
+              "whyEn": "NOT IN expands to include x <> NULL, which is always NULL, so the condition is never true. Exclude NULLs in the subquery or use NOT EXISTS."
+            },
+            {
+              "qZh": "在 SQLite 里，SELECT 7 / 2 的结果是？",
+              "qEn": "In SQLite, what does SELECT 7 / 2 return?",
+              "choices": [
+                {
+                  "zh": "3.5",
+                  "en": "3.5"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "报错",
+                  "en": "An error"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "两个整数相除是整数除法，结果向零取整。要得到 3.5，写 7 / 2.0 或 1.0 * 7 / 2。",
+              "whyEn": "Two integers divide as integers, truncating toward zero. For 3.5, write 7 / 2.0 or 1.0 * 7 / 2."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "joins",
+          "titleZh": "JOIN 连接",
+          "titleEn": "Joins",
+          "bodyZh": "连接把多张表按条件拼成一张宽表。面试里最常考的是：INNER 和 LEFT 的区别、\"从未……\"的反连接、自连接，以及连接后行数变多导致的重复计算。\n\n## INNER JOIN 和 LEFT JOIN\n\n- `JOIN`（即 `INNER JOIN`）：只保留两边都匹配上的行。\n- `LEFT JOIN`：左表的行全部保留；右表没有匹配时，右表的列都是 NULL。\n\n```sql run\nSELECT d.name AS department, e.name AS employee\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nORDER BY d.id, e.id;\n```\n\n```text\ndepartment | employee\nEngineering | Ava\nEngineering | Ben\nEngineering | Chloe\nEngineering | Dan\nSales | Eve\nSales | Finn\nSales | Gia\nSupport | Hugo\nSupport | Jack\nLegal | NULL\n```\n\nLegal 没有员工，LEFT JOIN 仍然保留它，员工列是 NULL。反过来，没有部门的 Iris 不在结果里：她在右表，左表的部门里没有能和她匹配的。三种连接的行数对比：\n\n```sql run\nSELECT\n  (SELECT COUNT(*) FROM employees e JOIN departments d ON d.id = e.department_id) AS inner_join,\n  (SELECT COUNT(*) FROM employees e LEFT JOIN departments d ON d.id = e.department_id) AS employees_left,\n  (SELECT COUNT(*) FROM departments d LEFT JOIN employees e ON e.department_id = d.id) AS departments_left;\n```\n\n```text\ninner_join | employees_left | departments_left\n9 | 10 | 10\n```\n\n## 条件放在 ON 还是 WHERE\n\n对 LEFT JOIN 来说，右表的筛选条件放在哪里，结果完全不同。统计每个部门工资不低于 8000 的人数：\n\n```sql run\nSELECT d.name, COUNT(e.id) AS well_paid\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id AND e.salary >= 8000\nGROUP BY d.id, d.name\nORDER BY d.id;\n```\n\n```text\nname | well_paid\nEngineering | 3\nSales | 2\nSupport | 0\nLegal | 0\n```\n\n把 `e.salary >= 8000` 挪到 WHERE：\n\n```sql run\nSELECT d.name, COUNT(e.id) AS well_paid\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nWHERE e.salary >= 8000\nGROUP BY d.id, d.name\nORDER BY d.id;\n```\n\n```text\nname | well_paid\nEngineering | 3\nSales | 2\n```\n\nSupport 和 Legal 不见了。WHERE 在连接之后执行，没匹配上的行 `e.salary` 是 NULL，`NULL >= 8000` 不成立，这些行被过滤掉，LEFT JOIN 实际上退化成了 INNER JOIN。**要保留左表全部行，右表的条件写在 ON 里。** 另外注意计数用的是 `COUNT(e.id)`：`COUNT(*)` 会把只有 NULL 的那一行也算成 1。\n\n## 反连接：\"从来没有……\"\n\n\"没有人选的课\"\"从未下单的客户\"这类问题叫反连接。两种标准写法：\n\n```sql run\nSELECT c.title\nFROM courses c\nLEFT JOIN enrollments e ON e.course_id = c.id\nWHERE e.course_id IS NULL;\n```\n\n```text\ntitle\nDrama\n```\n\n```sql run\nSELECT c.title\nFROM courses c\nWHERE NOT EXISTS (SELECT 1 FROM enrollments e WHERE e.course_id = c.id);\n```\n\n```text\ntitle\nDrama\n```\n\n`LEFT JOIN ... IS NULL` 判断的列要选右表里**本身不会是 NULL** 的列（比如连接键），否则右表里本来就是 NULL 的值会被误判成\"没匹配上\"。`NOT EXISTS` 不受子查询里 NULL 的影响，比上一课的 `NOT IN` 稳妥。\n\n## 自连接\n\n同一张表起两个别名，就能把\"员工\"和\"他的经理\"放在一行里比较：\n\n```sql run\nSELECT e.name AS employee, m.name AS manager, m.salary - e.salary AS gap\nFROM employees e\nJOIN employees m ON m.id = e.manager_id\nORDER BY gap DESC, e.name;\n```\n\n```text\nemployee | manager | gap\nIris | Ava | 7500\nBen | Ava | 3000\nChloe | Ava | 3000\nDan | Ben | 2000\nGia | Eve | 2000\nFinn | Eve | -500\nJack | Hugo | -500\n```\n\n只有 7 行：Ava 和 Eve 没有经理，Hugo 的 `manager_id` 是 42，表里没有这个人，INNER JOIN 把他们都去掉了。要列出每个员工（经理可以为空），改用 LEFT JOIN。\n\n## 连接会让行数变多\n\n一对多的连接会把\"一\"那边的行复制多份。Alice 有 4 个订单，连上订单明细之后：\n\n```sql run\nSELECT COUNT(*) AS item_rows, COUNT(DISTINCT o.id) AS orders\nFROM orders o\nJOIN order_items i ON i.order_id = o.id\nWHERE o.customer_id = 1;\n```\n\n```text\nitem_rows | orders\n5 | 4\n```\n\n连接之后再 `COUNT(*)` 或 `SUM` 订单级别的字段，就会重复计算。要么用 `COUNT(DISTINCT ...)`，要么先在子查询里按订单汇总，再去连接。\n\n## 练习\n\n- [SQL 专项的\"连接\"分组](/?view=problems&library=sql#sql-group-joins)\n- 按题型：[反连接](/?view=problems&library=sql&pattern=anti-join)、[自连接](/?view=problems&library=sql&pattern=self-join)",
+          "bodyEn": "A join combines tables row by row on a condition. Interviews mostly probe the difference between INNER and LEFT, anti-joins for \"never ...\", self-joins, and the double counting that comes from joins multiplying rows.\n\n## INNER JOIN and LEFT JOIN\n\n- `JOIN` (that is, `INNER JOIN`): keeps only rows that match on both sides.\n- `LEFT JOIN`: keeps every row of the left table; when the right table has no match, its columns are NULL.\n\n```sql run\nSELECT d.name AS department, e.name AS employee\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nORDER BY d.id, e.id;\n```\n\n```text\ndepartment | employee\nEngineering | Ava\nEngineering | Ben\nEngineering | Chloe\nEngineering | Dan\nSales | Eve\nSales | Finn\nSales | Gia\nSupport | Hugo\nSupport | Jack\nLegal | NULL\n```\n\nLegal has no employees, yet the LEFT JOIN keeps it with a NULL employee. Iris, who has no department, is missing: she is on the right side, and no department on the left matches her. The row counts of three joins side by side:\n\n```sql run\nSELECT\n  (SELECT COUNT(*) FROM employees e JOIN departments d ON d.id = e.department_id) AS inner_join,\n  (SELECT COUNT(*) FROM employees e LEFT JOIN departments d ON d.id = e.department_id) AS employees_left,\n  (SELECT COUNT(*) FROM departments d LEFT JOIN employees e ON e.department_id = d.id) AS departments_left;\n```\n\n```text\ninner_join | employees_left | departments_left\n9 | 10 | 10\n```\n\n## Conditions in ON or in WHERE\n\nWith a LEFT JOIN, where you put a condition on the right table changes the result completely. Count each department's employees earning at least 8000:\n\n```sql run\nSELECT d.name, COUNT(e.id) AS well_paid\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id AND e.salary >= 8000\nGROUP BY d.id, d.name\nORDER BY d.id;\n```\n\n```text\nname | well_paid\nEngineering | 3\nSales | 2\nSupport | 0\nLegal | 0\n```\n\nNow move `e.salary >= 8000` to WHERE:\n\n```sql run\nSELECT d.name, COUNT(e.id) AS well_paid\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nWHERE e.salary >= 8000\nGROUP BY d.id, d.name\nORDER BY d.id;\n```\n\n```text\nname | well_paid\nEngineering | 3\nSales | 2\n```\n\nSupport and Legal are gone. WHERE runs after the join; unmatched rows have a NULL `e.salary`, `NULL >= 8000` does not hold, and those rows are filtered out, so the LEFT JOIN has quietly become an INNER JOIN. **To keep every left row, put right-table conditions in ON.** Note the count is `COUNT(e.id)`: `COUNT(*)` would count the all-NULL row as 1.\n\n## Anti-joins: \"never ...\"\n\n\"Courses nobody took\" and \"customers who never ordered\" are anti-joins. Two standard forms:\n\n```sql run\nSELECT c.title\nFROM courses c\nLEFT JOIN enrollments e ON e.course_id = c.id\nWHERE e.course_id IS NULL;\n```\n\n```text\ntitle\nDrama\n```\n\n```sql run\nSELECT c.title\nFROM courses c\nWHERE NOT EXISTS (SELECT 1 FROM enrollments e WHERE e.course_id = c.id);\n```\n\n```text\ntitle\nDrama\n```\n\nIn `LEFT JOIN ... IS NULL`, test a right-table column that is **never NULL by itself** (the join key, say); otherwise a value that was NULL all along looks like a missing match. `NOT EXISTS` is not thrown by NULLs in the subquery, so it is safer than the previous lesson's `NOT IN`.\n\n## Self-joins\n\nGive one table two aliases and an employee and their manager sit on the same row:\n\n```sql run\nSELECT e.name AS employee, m.name AS manager, m.salary - e.salary AS gap\nFROM employees e\nJOIN employees m ON m.id = e.manager_id\nORDER BY gap DESC, e.name;\n```\n\n```text\nemployee | manager | gap\nIris | Ava | 7500\nBen | Ava | 3000\nChloe | Ava | 3000\nDan | Ben | 2000\nGia | Eve | 2000\nFinn | Eve | -500\nJack | Hugo | -500\n```\n\nOnly 7 rows: Ava and Eve have no manager, and Hugo's `manager_id` is 42, which nobody has, so the INNER JOIN drops them. To list every employee with a possibly empty manager, use a LEFT JOIN.\n\n## Joins multiply rows\n\nA one-to-many join repeats the \"one\" side. Alice has 4 orders; joined with their lines:\n\n```sql run\nSELECT COUNT(*) AS item_rows, COUNT(DISTINCT o.id) AS orders\nFROM orders o\nJOIN order_items i ON i.order_id = o.id\nWHERE o.customer_id = 1;\n```\n\n```text\nitem_rows | orders\n5 | 4\n```\n\nAfter such a join, `COUNT(*)` or `SUM` over an order-level column counts things twice. Use `COUNT(DISTINCT ...)`, or aggregate per order in a subquery first and join afterwards.\n\n## Practice\n\n- The [SQL track's Joins group](/?view=problems&library=sql#sql-group-joins)\n- By pattern: [anti-joins](/?view=problems&library=sql&pattern=anti-join), [self-joins](/?view=problems&library=sql&pattern=self-join)",
+          "quiz": [
+            {
+              "qZh": "departments LEFT JOIN employees，把 e.salary >= 8000 写在 WHERE 里，会发生什么？",
+              "qEn": "In departments LEFT JOIN employees, what happens when e.salary >= 8000 is written in WHERE?",
+              "choices": [
+                {
+                  "zh": "没有匹配员工的部门被过滤掉，相当于 INNER JOIN",
+                  "en": "Departments without a matching employee are filtered out, as with an INNER JOIN"
+                },
+                {
+                  "zh": "和写在 ON 里结果一样",
+                  "en": "The same result as putting it in ON"
+                },
+                {
+                  "zh": "所有部门都保留，没有符合条件员工的部门，人数会显示为 0",
+                  "en": "Every department stays, and those without a matching employee show a count of 0"
+                },
+                {
+                  "zh": "语法错误",
+                  "en": "A syntax error"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "WHERE 在连接之后执行，没匹配上的行 e.salary 是 NULL，条件不成立被删掉。要保留左表全部行，条件写在 ON 里。",
+              "whyEn": "WHERE runs after the join; unmatched rows have a NULL e.salary, fail the condition and are dropped. To keep every left row, put the condition in ON."
+            },
+            {
+              "qZh": "用 LEFT JOIN 找\"没人选的课\"，WHERE 里应该判断哪一列 IS NULL？",
+              "qEn": "Finding courses nobody took with a LEFT JOIN, which column should WHERE test with IS NULL?",
+              "choices": [
+                {
+                  "zh": "左表的 c.id",
+                  "en": "The left table's c.id"
+                },
+                {
+                  "zh": "右表中本身不会为 NULL 的列，比如 e.course_id",
+                  "en": "A right-table column that is never NULL by itself, such as e.course_id"
+                },
+                {
+                  "zh": "右表的 e.score",
+                  "en": "The right table's e.score"
+                },
+                {
+                  "zh": "任意一列都可以，因为没匹配上的行里，右表的所有列都会是 NULL",
+                  "en": "Any column will do, since every right-table column is NULL when there is no match"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "e.score 在缺考时本来就是 NULL，会把有人选的课误判为没人选；c.id 永远不是 NULL。连接键在匹配上时一定不为 NULL，最可靠。",
+              "whyEn": "e.score is NULL for missed exams, so courses with enrollments would look empty; c.id is never NULL. The join key is never NULL on a match, which makes it reliable."
+            },
+            {
+              "qZh": "orders 和 order_items 一对多连接后，想统计订单数，应该用？",
+              "qEn": "After joining orders to order_items (one to many), how do you count orders?",
+              "choices": [
+                {
+                  "zh": "COUNT(*)",
+                  "en": "COUNT(*)"
+                },
+                {
+                  "zh": "COUNT(o.id)",
+                  "en": "COUNT(o.id)"
+                },
+                {
+                  "zh": "COUNT(DISTINCT o.id)",
+                  "en": "COUNT(DISTINCT o.id)"
+                },
+                {
+                  "zh": "COUNT(DISTINCT i.product_id)",
+                  "en": "COUNT(DISTINCT i.product_id)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "每个订单被复制成它的明细行数，COUNT(*) 和 COUNT(o.id) 数的都是明细行，COUNT(DISTINCT i.product_id) 数的是商品种数。对订单号去重才是订单数。",
+              "whyEn": "Each order is repeated once per line, so COUNT(*) and COUNT(o.id) count lines, and COUNT(DISTINCT i.product_id) counts products. Only distinct order ids give orders."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "group-by-having",
+          "titleZh": "GROUP BY 与 HAVING",
+          "titleEn": "GROUP BY and HAVING",
+          "bodyZh": "GROUP BY 把行按某些列分组，每组只输出一行，聚合函数（`COUNT`、`SUM`、`AVG`、`MIN`、`MAX`）对组内的行计算。面试里的坑主要在三处：`COUNT` 的几种写法、WHERE 和 HAVING 的分工、条件聚合。\n\n## COUNT(*)、COUNT(列)、COUNT(DISTINCT 列)\n\n- `COUNT(*)`：行数。\n- `COUNT(列)`：这一列**不是 NULL** 的行数。\n- `COUNT(DISTINCT 列)`：不同的非 NULL 值有几个。\n\n`SUM`、`AVG`、`MIN`、`MAX` 也都跳过 NULL。\n\n```sql run\nSELECT COUNT(*) AS enrolled,\n       COUNT(score) AS sat,\n       COUNT(DISTINCT student_id) AS students,\n       ROUND(AVG(score), 2) AS avg_score\nFROM enrollments;\n```\n\n```text\nenrolled | sat | students | avg_score\n7 | 3 | 4 | 84.33\n```\n\n7 条选课记录里只有 3 个分数，`AVG` 只在这 3 个分数上算平均。如果题目要求缺考按 0 分算，就得写 `AVG(COALESCE(score, 0))`。先想清楚 NULL 在题目里是什么意思，再决定用哪种写法。\n\n## GROUP BY 和 HAVING\n\nWHERE 在分组**之前**过滤行，HAVING 在分组**之后**过滤组，所以只有 HAVING 能用聚合函数做条件。\n\n```sql run\nSELECT d.name AS department, COUNT(*) AS people, AVG(e.salary) AS avg_salary\nFROM employees e\nJOIN departments d ON d.id = e.department_id\nGROUP BY d.id, d.name\nHAVING COUNT(*) >= 3\nORDER BY avg_salary DESC;\n```\n\n```text\ndepartment | people | avg_salary\nEngineering | 4 | 9250\nSales | 3 | 7500\n```\n\n两者一起用的例子：找出已支付订单分布在不止一个月份的客户。\n\n```sql run\nSELECT c.name, COUNT(*) AS paid_orders, COUNT(DISTINCT strftime('%m', o.order_date)) AS months\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.name\nHAVING COUNT(DISTINCT strftime('%m', o.order_date)) > 1\nORDER BY c.name;\n```\n\n```text\nname | paid_orders | months\nAlice | 3 | 2\nCara | 2 | 2\n```\n\nWHERE 先去掉了取消的订单，HAVING 再去掉只在一个月里下单的客户（Elle）。\n\n分组时，SELECT 里出现的非聚合列都要写进 GROUP BY。SQLite 和旧版 MySQL 允许不写，那一列会取组内任意一行的值；PostgreSQL 和开启了 `ONLY_FULL_GROUP_BY` 的 MySQL 会直接报错。上面按 `d.id, d.name` 分组也是这个原因：只按 `d.name` 分组，两个同名部门会被合并。\n\n## 条件聚合：一行算出多个统计量\n\n把条件放进聚合函数里，可以在一次分组中同时统计多种情况，这也是\"行转列\"（pivot）的标准写法：\n\n```sql run\nSELECT strftime('%Y-%m', order_date) AS month,\n       COUNT(*) AS orders,\n       SUM(status = 'paid') AS paid,\n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled\nFROM orders\nGROUP BY month\nORDER BY month;\n```\n\n```text\nmonth | orders | paid | cancelled\n2024-01 | 3 | 2 | 1\n2024-02 | 3 | 3 | 0\n2024-03 | 3 | 2 | 1\n```\n\n在 SQLite 和 MySQL 里，比较的结果就是 1 或 0，所以 `SUM(status = 'paid')` 能直接计数。PostgreSQL 的比较结果是布尔值，不能直接求和，要写 `CASE WHEN ... THEN 1 ELSE 0 END` 或者 `COUNT(*) FILTER (WHERE ...)`。`CASE` 的写法在所有数据库里都能用。\n\n## 练习\n\n- [SQL 专项的\"分组与 HAVING\"分组](/?view=problems&library=sql#sql-group-grouping)\n- 按题型：[条件聚合与行转列](/?view=problems&library=sql&pattern=pivot)、[占比与比率](/?view=problems&library=sql&pattern=ratio)",
+          "bodyEn": "GROUP BY splits rows into groups by some columns and outputs one row per group, with aggregate functions (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`) computed over each group's rows. Interviews trip people up in three places: the forms of `COUNT`, the split between WHERE and HAVING, and conditional aggregation.\n\n## COUNT(*), COUNT(column), COUNT(DISTINCT column)\n\n- `COUNT(*)`: the number of rows.\n- `COUNT(column)`: the number of rows where the column is **not NULL**.\n- `COUNT(DISTINCT column)`: how many different non-NULL values there are.\n\n`SUM`, `AVG`, `MIN` and `MAX` skip NULLs too.\n\n```sql run\nSELECT COUNT(*) AS enrolled,\n       COUNT(score) AS sat,\n       COUNT(DISTINCT student_id) AS students,\n       ROUND(AVG(score), 2) AS avg_score\nFROM enrollments;\n```\n\n```text\nenrolled | sat | students | avg_score\n7 | 3 | 4 | 84.33\n```\n\nOnly 3 of the 7 enrollments have a score, and `AVG` averages just those 3. If the task says a missed exam counts as 0, you need `AVG(COALESCE(score, 0))`. Decide what NULL means in the task before choosing the form.\n\n## GROUP BY and HAVING\n\nWHERE filters rows **before** grouping and HAVING filters groups **after** it, so only HAVING can test an aggregate.\n\n```sql run\nSELECT d.name AS department, COUNT(*) AS people, AVG(e.salary) AS avg_salary\nFROM employees e\nJOIN departments d ON d.id = e.department_id\nGROUP BY d.id, d.name\nHAVING COUNT(*) >= 3\nORDER BY avg_salary DESC;\n```\n\n```text\ndepartment | people | avg_salary\nEngineering | 4 | 9250\nSales | 3 | 7500\n```\n\nAn example using both: customers whose paid orders fall in more than one month.\n\n```sql run\nSELECT c.name, COUNT(*) AS paid_orders, COUNT(DISTINCT strftime('%m', o.order_date)) AS months\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.name\nHAVING COUNT(DISTINCT strftime('%m', o.order_date)) > 1\nORDER BY c.name;\n```\n\n```text\nname | paid_orders | months\nAlice | 3 | 2\nCara | 2 | 2\n```\n\nWHERE removes the cancelled orders first, then HAVING removes the customers who ordered in a single month (Elle).\n\nEvery non-aggregated column in SELECT belongs in GROUP BY. SQLite and older MySQL let you leave it out and take the value from an arbitrary row of the group; PostgreSQL, and MySQL with `ONLY_FULL_GROUP_BY`, reject the query. That is also why the query above groups by `d.id, d.name`: grouping by `d.name` alone would merge two departments that share a name.\n\n## Conditional aggregation: several statistics in one pass\n\nPutting the condition inside the aggregate counts several cases in one grouping, which is also the standard way to pivot rows into columns:\n\n```sql run\nSELECT strftime('%Y-%m', order_date) AS month,\n       COUNT(*) AS orders,\n       SUM(status = 'paid') AS paid,\n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled\nFROM orders\nGROUP BY month\nORDER BY month;\n```\n\n```text\nmonth | orders | paid | cancelled\n2024-01 | 3 | 2 | 1\n2024-02 | 3 | 3 | 0\n2024-03 | 3 | 2 | 1\n```\n\nIn SQLite and MySQL a comparison evaluates to 1 or 0, so `SUM(status = 'paid')` counts directly. In PostgreSQL a comparison is a boolean and cannot be summed; write `CASE WHEN ... THEN 1 ELSE 0 END` or `COUNT(*) FILTER (WHERE ...)`. The `CASE` form works everywhere.\n\n## Practice\n\n- The [SQL track's GROUP BY & HAVING group](/?view=problems&library=sql#sql-group-grouping)\n- By pattern: [conditional aggregation and pivots](/?view=problems&library=sql&pattern=pivot), [ratios and shares](/?view=problems&library=sql&pattern=ratio)",
+          "quiz": [
+            {
+              "qZh": "enrollments 有 7 行，其中 4 行 score 为 NULL。COUNT(*) 和 COUNT(score) 分别是？",
+              "qEn": "enrollments has 7 rows, 4 of them with a NULL score. What are COUNT(*) and COUNT(score)?",
+              "choices": [
+                {
+                  "zh": "7 和 7",
+                  "en": "7 and 7"
+                },
+                {
+                  "zh": "3 和 3",
+                  "en": "3 and 3"
+                },
+                {
+                  "zh": "7 和 4",
+                  "en": "7 and 4"
+                },
+                {
+                  "zh": "7 和 3",
+                  "en": "7 and 3"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "COUNT(*) 数行，COUNT(列) 只数这一列不为 NULL 的行。",
+              "whyEn": "COUNT(*) counts rows; COUNT(column) counts only the rows where that column is not NULL."
+            },
+            {
+              "qZh": "想保留\"人数至少 3 人\"的部门，条件应该写在哪里？",
+              "qEn": "To keep departments with at least 3 people, where does the condition go?",
+              "choices": [
+                {
+                  "zh": "HAVING COUNT(*) >= 3",
+                  "en": "HAVING COUNT(*) >= 3"
+                },
+                {
+                  "zh": "WHERE COUNT(*) >= 3",
+                  "en": "WHERE COUNT(*) >= 3"
+                },
+                {
+                  "zh": "ON COUNT(*) >= 3",
+                  "en": "ON COUNT(*) >= 3"
+                },
+                {
+                  "zh": "ORDER BY COUNT(*) >= 3",
+                  "en": "ORDER BY COUNT(*) >= 3"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "WHERE 在分组之前执行，还没有 COUNT 可用；对分组结果的筛选只能写在 HAVING。",
+              "whyEn": "WHERE runs before grouping, when there is no COUNT yet; filtering on group results belongs in HAVING."
+            },
+            {
+              "qZh": "在 PostgreSQL 里统计已支付订单数，下面哪种写法可以用？",
+              "qEn": "In PostgreSQL, which expression counts paid orders?",
+              "choices": [
+                {
+                  "zh": "SUM(status = 'paid')",
+                  "en": "SUM(status = 'paid')"
+                },
+                {
+                  "zh": "SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END)",
+                  "en": "SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END)"
+                },
+                {
+                  "zh": "COUNT(status = 'paid')",
+                  "en": "COUNT(status = 'paid')"
+                },
+                {
+                  "zh": "SUM(IF(status = 'paid', 1, 0)) OVER (PARTITION BY status)",
+                  "en": "SUM(IF(status = 'paid', 1, 0)) OVER (PARTITION BY status)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "PostgreSQL 的比较结果是布尔值，不能直接 SUM；它也没有 IF 函数。COUNT(条件) 会把真和假都算进去，因为两者都不是 NULL。CASE 的写法在所有数据库里都能用。",
+              "whyEn": "In PostgreSQL a comparison is a boolean and cannot be summed, and there is no IF function. COUNT(condition) counts both true and false, since neither is NULL. The CASE form works in every database."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "subqueries-cte",
+          "titleZh": "子查询与 CTE",
+          "titleEn": "Subqueries and CTEs",
+          "bodyZh": "子查询是写在另一条查询里面的查询。复杂的题往往要\"先算出一个中间结果，再在它上面查询\"，这时用 CTE（`WITH` 子句）给中间结果起个名字，代码会清楚很多。\n\n## 子查询可以出现在哪里\n\n- **标量子查询**：返回一行一列，可以出现在 SELECT 或 WHERE 里，当成一个值用。\n- **IN 子查询**：返回一列，判断某个值在不在里面。\n- **EXISTS 子查询**：只关心有没有行。\n- **FROM 里的子查询**（派生表）：把一个查询结果当成表再查。\n\n子查询里引用了外层的列，就叫**相关子查询**：外层每一行都要重新算一遍。\n\n```sql run\nSELECT c.name,\n       (SELECT COUNT(*) FROM orders o WHERE o.customer_id = c.id) AS orders\nFROM customers c\nORDER BY orders DESC, c.name;\n```\n\n```text\nname | orders\nAlice | 4\nCara | 2\nBob | 1\nElle | 1\nDev | 0\nFemi | 0\n```\n\n标量子查询找不到行时返回 NULL，但 `COUNT(*)` 永远返回一个数，所以没下过单的客户是 0 而不是 NULL。\n\n## IN 和 EXISTS\n\nAlice（客户 1）买过哪些商品：\n\n```sql run\nSELECT name\nFROM products\nWHERE id IN (\n  SELECT i.product_id\n  FROM order_items i\n  JOIN orders o ON o.id = i.order_id\n  WHERE o.customer_id = 1\n)\nORDER BY name;\n```\n\n```text\nname\nChef Knife\nChess Set\nSQL Basics\n```\n\n`IN` 天然去重：同一件商品出现在多个订单里，结果里也只有一次。如果改用 JOIN，就要自己写 `DISTINCT`。\n\n哪些部门有人工资不低于 9000：\n\n```sql run\nSELECT d.name\nFROM departments d\nWHERE EXISTS (SELECT 1 FROM employees e WHERE e.department_id = d.id AND e.salary >= 9000);\n```\n\n```text\nname\nEngineering\n```\n\n`EXISTS` 只要找到一行就停，子查询里 SELECT 什么都无所谓，习惯写 `SELECT 1`。\n\n## CTE：给中间结果起名字\n\n\"花费高于平均水平的客户\"要分两步：先算每个客户的花费，再和所有客户的平均花费比较。用 CTE 写：\n\n```sql run\nWITH spend AS (\n  SELECT o.customer_id, SUM(i.quantity * i.unit_price) AS total\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid' AND o.customer_id IS NOT NULL\n  GROUP BY o.customer_id\n)\nSELECT c.name, s.total\nFROM spend s\nJOIN customers c ON c.id = s.customer_id\nWHERE s.total > (SELECT AVG(total) FROM spend)\nORDER BY s.total DESC;\n```\n\n```text\nname | total\nCara | 415\nAlice | 375\n```\n\n`spend` 在同一条查询里用了两次：一次连接客户表，一次求平均。写成嵌套子查询也可以，但要把同一段 SQL 重复写两遍。多个 CTE 用逗号隔开：`WITH a AS (...), b AS (... FROM a ...)`，后面的可以引用前面的。\n\n## 递归 CTE：生成连续的日期\n\n`WITH RECURSIVE` 可以生成一串连续的值。最常见的用途是做一张日历，让没有数据的日子也出现在结果里：\n\n```sql run\nWITH RECURSIVE days(day) AS (\n  SELECT '2024-02-27'\n  UNION ALL\n  SELECT date(day, '+1 day') FROM days WHERE day < '2024-03-04'\n)\nSELECT d.day, COUNT(DISTINCT l.user_id) AS active_users\nFROM days d\nLEFT JOIN logins l ON l.login_date = d.day\nGROUP BY d.day\nORDER BY d.day;\n```\n\n```text\nday | active_users\n2024-02-27 | 2\n2024-02-28 | 2\n2024-02-29 | 2\n2024-03-01 | 2\n2024-03-02 | 2\n2024-03-03 | 1\n2024-03-04 | 0\n```\n\n只按 `logins` 分组，3 月 4 日根本不会出现；先生成日历再 LEFT JOIN，它才会以 0 出现。2024 年是闰年，`date()` 正确地经过了 2 月 29 日。\n\n## 练习\n\n- [SQL 专项的\"子查询\"分组](/?view=problems&library=sql#sql-group-subqueries)\n- 按题型：[全称条件（\"每一个都……\"）](/?view=problems&library=sql&pattern=relational-division)",
+          "bodyEn": "A subquery is a query inside another query. Harder questions often need \"compute an intermediate result, then query it\", and a CTE (a `WITH` clause) gives that intermediate result a name and makes the SQL much clearer.\n\n## Where subqueries go\n\n- **Scalar subqueries** return one row and one column and act as a value in SELECT or WHERE.\n- **IN subqueries** return one column to test membership against.\n- **EXISTS subqueries** only care whether any row exists.\n- **Subqueries in FROM** (derived tables) turn a result into a table you can query.\n\nA subquery that refers to the outer query's columns is **correlated**: it is evaluated again for each outer row.\n\n```sql run\nSELECT c.name,\n       (SELECT COUNT(*) FROM orders o WHERE o.customer_id = c.id) AS orders\nFROM customers c\nORDER BY orders DESC, c.name;\n```\n\n```text\nname | orders\nAlice | 4\nCara | 2\nBob | 1\nElle | 1\nDev | 0\nFemi | 0\n```\n\nA scalar subquery that finds no row returns NULL, but `COUNT(*)` always returns a number, so customers with no orders get 0, not NULL.\n\n## IN and EXISTS\n\nWhich products has Alice (customer 1) bought?\n\n```sql run\nSELECT name\nFROM products\nWHERE id IN (\n  SELECT i.product_id\n  FROM order_items i\n  JOIN orders o ON o.id = i.order_id\n  WHERE o.customer_id = 1\n)\nORDER BY name;\n```\n\n```text\nname\nChef Knife\nChess Set\nSQL Basics\n```\n\n`IN` deduplicates for free: a product in several orders still appears once. With a JOIN you would add `DISTINCT` yourself.\n\nWhich departments have someone earning at least 9000?\n\n```sql run\nSELECT d.name\nFROM departments d\nWHERE EXISTS (SELECT 1 FROM employees e WHERE e.department_id = d.id AND e.salary >= 9000);\n```\n\n```text\nname\nEngineering\n```\n\n`EXISTS` stops at the first row it finds, and what the subquery selects does not matter; `SELECT 1` is the habit.\n\n## CTEs: naming an intermediate result\n\n\"Customers who spend more than average\" takes two steps: each customer's spend, then a comparison with the average over all customers. As a CTE:\n\n```sql run\nWITH spend AS (\n  SELECT o.customer_id, SUM(i.quantity * i.unit_price) AS total\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid' AND o.customer_id IS NOT NULL\n  GROUP BY o.customer_id\n)\nSELECT c.name, s.total\nFROM spend s\nJOIN customers c ON c.id = s.customer_id\nWHERE s.total > (SELECT AVG(total) FROM spend)\nORDER BY s.total DESC;\n```\n\n```text\nname | total\nCara | 415\nAlice | 375\n```\n\n`spend` is used twice in one query: once joined to customers, once averaged. Nested subqueries would work too, but you would write the same SQL twice. Separate several CTEs with commas, `WITH a AS (...), b AS (... FROM a ...)`; later ones can use earlier ones.\n\n## Recursive CTEs: a run of dates\n\n`WITH RECURSIVE` generates a sequence of values. The everyday use is a calendar, so days without data still appear in the result:\n\n```sql run\nWITH RECURSIVE days(day) AS (\n  SELECT '2024-02-27'\n  UNION ALL\n  SELECT date(day, '+1 day') FROM days WHERE day < '2024-03-04'\n)\nSELECT d.day, COUNT(DISTINCT l.user_id) AS active_users\nFROM days d\nLEFT JOIN logins l ON l.login_date = d.day\nGROUP BY d.day\nORDER BY d.day;\n```\n\n```text\nday | active_users\n2024-02-27 | 2\n2024-02-28 | 2\n2024-02-29 | 2\n2024-03-01 | 2\n2024-03-02 | 2\n2024-03-03 | 1\n2024-03-04 | 0\n```\n\nGrouping `logins` alone, March 4 would never appear; build the calendar first and LEFT JOIN, and it shows up with 0. 2024 is a leap year, and `date()` correctly passes through February 29.\n\n## Practice\n\n- The [SQL track's Subqueries group](/?view=problems&library=sql#sql-group-subqueries)\n- By pattern: [for-all conditions (\"every one of ...\")](/?view=problems&library=sql&pattern=relational-division)",
+          "quiz": [
+            {
+              "qZh": "什么是相关子查询？",
+              "qEn": "What is a correlated subquery?",
+              "choices": [
+                {
+                  "zh": "写在 FROM 里的子查询",
+                  "en": "A subquery in the FROM clause"
+                },
+                {
+                  "zh": "只返回一行一列的子查询",
+                  "en": "A subquery that returns one row and one column"
+                },
+                {
+                  "zh": "引用了外层查询的列，外层每行都要重新计算",
+                  "en": "One that uses the outer query's columns and is evaluated again for each outer row"
+                },
+                {
+                  "zh": "用 WITH 定义、可以在同一条查询里被多次引用的子查询",
+                  "en": "A subquery defined with WITH so that it can be referenced several times in one query"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "关键是\"引用外层的列\"，比如子查询里的 o.customer_id = c.id。FROM 里的叫派生表，一行一列的叫标量子查询，WITH 定义的是 CTE。",
+              "whyEn": "The defining trait is referring to the outer query, as in o.customer_id = c.id inside the subquery. One in FROM is a derived table, one row and column is a scalar subquery, and WITH defines a CTE."
+            },
+            {
+              "qZh": "WITH spend AS (...) 之后，在同一条查询里 spend 可以用几次？",
+              "qEn": "After WITH spend AS (...), how many times can spend be used in the same query?",
+              "choices": [
+                {
+                  "zh": "只能用一次",
+                  "en": "Only once"
+                },
+                {
+                  "zh": "只能在 FROM 里用一次",
+                  "en": "Once, and only in FROM"
+                },
+                {
+                  "zh": "不能在子查询里用",
+                  "en": "Never inside a subquery"
+                },
+                {
+                  "zh": "任意多次",
+                  "en": "As many times as needed"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "CTE 在整条查询里都可见，可以连接、也可以在子查询里求平均。这正是它比重复嵌套子查询清楚的地方。",
+              "whyEn": "A CTE is visible throughout the query: you can join it and also average it in a subquery. That is exactly why it beats repeating a nested subquery."
+            },
+            {
+              "qZh": "统计每天的活跃用户数，要求没有登录的日子也显示为 0，最直接的做法是？",
+              "qEn": "To count daily active users with days without logins shown as 0, what is the most direct approach?",
+              "choices": [
+                {
+                  "zh": "用递归 CTE 生成日历，再 LEFT JOIN 登录表",
+                  "en": "Generate a calendar with a recursive CTE and LEFT JOIN the logins"
+                },
+                {
+                  "zh": "对 logins 按日期 GROUP BY",
+                  "en": "GROUP BY date on logins"
+                },
+                {
+                  "zh": "在 COUNT 外面套 COALESCE(…, 0)，让没有数据的日子显示 0",
+                  "en": "Wrap the COUNT in COALESCE(…, 0) so that days without any logins show 0"
+                },
+                {
+                  "zh": "把 INNER JOIN 换成 CROSS JOIN",
+                  "en": "Replace INNER JOIN with CROSS JOIN"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "没有登录的日子在 logins 里根本没有行，分组也变不出来。先生成完整的日期序列，LEFT JOIN 之后这些日子才会以 0 出现。",
+              "whyEn": "Days without logins have no rows in logins, and no grouping can create them. Generate the full date range first; after a LEFT JOIN those days appear with 0."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "window-functions",
+          "titleZh": "窗口函数",
+          "titleEn": "Window functions",
+          "bodyZh": "窗口函数在**不合并行**的前提下，让每一行都能看到\"和它相关的一组行\"：同部门的人、按时间排在它前面的记录。排名、累计、环比这些题几乎都靠它。\n\n## 语法\n\n```sql\n函数() OVER (PARTITION BY 分组列 ORDER BY 排序列 窗口范围)\n```\n\n- `PARTITION BY`：按哪些列分成互不相干的组，省略就是全表一组。\n- `ORDER BY`：组内的顺序，排名和累计都依赖它。\n- 窗口范围：每一行参与计算的是组内哪些行，后面单独讲。\n\n和 GROUP BY 的区别：GROUP BY 每组只剩一行，窗口函数保留所有行，只是多了一列计算结果。\n\n## 三种排名\n\n```sql run\nSELECT name, salary,\n       ROW_NUMBER() OVER (ORDER BY salary DESC, name) AS row_num,\n       RANK() OVER (ORDER BY salary DESC) AS rnk,\n       DENSE_RANK() OVER (ORDER BY salary DESC) AS dense\nFROM employees\nORDER BY salary DESC, name\nLIMIT 6;\n```\n\n```text\nname | salary | row_num | rnk | dense\nAva | 12000 | 1 | 1 | 1\nBen | 9000 | 2 | 2 | 2\nChloe | 9000 | 3 | 2 | 2\nFinn | 8500 | 4 | 4 | 3\nEve | 8000 | 5 | 5 | 4\nDan | 7000 | 6 | 6 | 5\n```\n\n- `ROW_NUMBER`：1, 2, 3, …，并列时也编不同的号。顺序要确定，ORDER BY 里就得有能区分并列的列（这里是 `name`）。\n- `RANK`：并列同号，之后**跳号**（1, 2, 2, 4）。\n- `DENSE_RANK`：并列同号，之后**不跳号**（1, 2, 2, 3）。\n\n\"第 N 高的工资\"通常指第 N 个不同的工资值，用 `DENSE_RANK`；\"前 N 名员工\"要看并列的人算不算，题目会说清楚。\n\n## PARTITION BY：组内的聚合\n\n聚合函数加上 `OVER` 就变成窗口函数，每一行都拿到自己所在组的统计值：\n\n```sql run\nSELECT category, name, price,\n       MAX(price) OVER (PARTITION BY category) AS top_price,\n       COUNT(*) OVER (PARTITION BY category) AS in_category\nFROM products\nORDER BY category, price DESC;\n```\n\n```text\ncategory | name | price | top_price | in_category\nBooks | Graph Theory | 45 | 45 | 2\nBooks | SQL Basics | 30 | 45 | 2\nGames | Chess Set | 60 | 60 | 2\nGames | Puzzle Box | 25 | 60 | 2\nKitchen | Chef Knife | 80 | 80 | 1\n```\n\n## LAG 和 LEAD：看前一行、后一行\n\n`LAG(列, n)` 取组内往前第 n 行的值（默认 1），`LEAD` 取往后的。第一行没有前一行，结果是 NULL。\n\n```sql run\nSELECT user_id, login_date,\n       LAG(login_date) OVER (PARTITION BY user_id ORDER BY login_date) AS prev_login\nFROM (SELECT DISTINCT user_id, login_date FROM logins)\nWHERE user_id IN (1, 2)\nORDER BY user_id, login_date;\n```\n\n```text\nuser_id | login_date | prev_login\n1 | 2024-02-27 | NULL\n1 | 2024-02-28 | 2024-02-27\n1 | 2024-02-29 | 2024-02-28\n1 | 2024-03-02 | 2024-02-29\n2 | 2024-02-27 | NULL\n2 | 2024-03-01 | 2024-02-27\n```\n\n先用 `DISTINCT` 去掉同一天的重复登录，否则\"上一次登录\"可能就是同一天。两次登录相隔几天：`julianday(login_date) - julianday(prev_login)`。\n\n## 累计\n\n带 `ORDER BY` 的聚合窗口默认算的是\"从组的第一行到当前行\"：\n\n```sql run\nSELECT name, hire_date,\n       COUNT(*) OVER (ORDER BY hire_date) AS headcount,\n       SUM(salary) OVER (ORDER BY hire_date) AS payroll\nFROM employees\nORDER BY hire_date;\n```\n\n```text\nname | hire_date | headcount | payroll\nAva | 2018-04-02 | 1 | 12000\nEve | 2018-11-30 | 2 | 20000\nBen | 2019-07-15 | 3 | 29000\nChloe | 2020-01-20 | 4 | 38000\nDan | 2021-03-08 | 5 | 45000\nHugo | 2021-09-12 | 6 | 50000\nFinn | 2022-05-16 | 7 | 58500\nJack | 2022-10-03 | 8 | 64000\nGia | 2023-02-01 | 9 | 70000\nIris | 2024-01-08 | 10 | 74500\n```\n\n## 窗口范围：RANGE 和 ROWS\n\n上面\"从第一行到当前行\"的准确说法是默认范围 `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`。`RANGE` 把 ORDER BY 值相同的行（并列行）当成一个整体，一起算进来。排序值有重复时，结果就和直觉不一样：\n\n```sql run\nSELECT id, order_date,\n       COUNT(*) OVER (ORDER BY order_date) AS range_count,\n       COUNT(*) OVER (ORDER BY order_date, id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS rows_count\nFROM orders\nORDER BY order_date, id;\n```\n\n```text\nid | order_date | range_count | rows_count\n1 | 2024-01-05 | 1 | 1\n2 | 2024-01-20 | 3 | 2\n3 | 2024-01-20 | 3 | 3\n4 | 2024-02-02 | 4 | 4\n5 | 2024-02-14 | 6 | 5\n6 | 2024-02-14 | 6 | 6\n7 | 2024-03-01 | 8 | 7\n8 | 2024-03-01 | 8 | 8\n9 | 2024-03-09 | 9 | 9\n```\n\n需要逐行累计，或者\"最近 3 行的移动平均\"这类按行数算的窗口，就用 `ROWS`，例如 `AVG(x) OVER (ORDER BY d ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`。\n\n## 窗口函数不能写在 WHERE 里\n\n窗口函数在 WHERE 之后才计算，`WHERE ROW_NUMBER() OVER (...) = 1` 会报错。先在子查询或 CTE 里算出来，再在外层过滤，下一课的\"分组 Top N\"就是这样写的。\n\n## 练习\n\n- [SQL 专项的\"窗口函数\"分组](/?view=problems&library=sql#sql-group-windows)\n- 按题型：[排名与第 N 高](/?view=problems&library=sql&pattern=ranking)、[累计与移动窗口](/?view=problems&library=sql&pattern=running-total)、[环比与间隔](/?view=problems&library=sql&pattern=period-over-period)",
+          "bodyEn": "A window function lets each row see **a related set of rows without merging them**: the people in its department, the records before it in time. Rankings, running totals and period-over-period questions almost all rely on them.\n\n## Syntax\n\n```sql\nfunction() OVER (PARTITION BY group columns ORDER BY sort columns frame)\n```\n\n- `PARTITION BY`: which columns split the rows into independent groups; without it the whole table is one group.\n- `ORDER BY`: the order inside each group, which rankings and running totals depend on.\n- The frame: which rows of the group each row computes over, covered below.\n\nThe difference from GROUP BY: GROUP BY leaves one row per group, while a window function keeps every row and adds a computed column.\n\n## Three rankings\n\n```sql run\nSELECT name, salary,\n       ROW_NUMBER() OVER (ORDER BY salary DESC, name) AS row_num,\n       RANK() OVER (ORDER BY salary DESC) AS rnk,\n       DENSE_RANK() OVER (ORDER BY salary DESC) AS dense\nFROM employees\nORDER BY salary DESC, name\nLIMIT 6;\n```\n\n```text\nname | salary | row_num | rnk | dense\nAva | 12000 | 1 | 1 | 1\nBen | 9000 | 2 | 2 | 2\nChloe | 9000 | 3 | 2 | 2\nFinn | 8500 | 4 | 4 | 3\nEve | 8000 | 5 | 5 | 4\nDan | 7000 | 6 | 6 | 5\n```\n\n- `ROW_NUMBER`: 1, 2, 3, …, different numbers even for ties. For a fixed order, the ORDER BY needs a column that breaks ties (here `name`).\n- `RANK`: ties share a number and the next one **skips** (1, 2, 2, 4).\n- `DENSE_RANK`: ties share a number and nothing is skipped (1, 2, 2, 3).\n\n\"The Nth highest salary\" usually means the Nth distinct salary value, which is `DENSE_RANK`; whether \"the top N employees\" includes ties is something the task spells out.\n\n## PARTITION BY: aggregates per group\n\nAdd `OVER` to an aggregate and it becomes a window function: every row gets its own group's statistic.\n\n```sql run\nSELECT category, name, price,\n       MAX(price) OVER (PARTITION BY category) AS top_price,\n       COUNT(*) OVER (PARTITION BY category) AS in_category\nFROM products\nORDER BY category, price DESC;\n```\n\n```text\ncategory | name | price | top_price | in_category\nBooks | Graph Theory | 45 | 45 | 2\nBooks | SQL Basics | 30 | 45 | 2\nGames | Chess Set | 60 | 60 | 2\nGames | Puzzle Box | 25 | 60 | 2\nKitchen | Chef Knife | 80 | 80 | 1\n```\n\n## LAG and LEAD: the previous and next row\n\n`LAG(column, n)` reads the value n rows back in the group (1 by default) and `LEAD` reads forward. The first row has nothing before it, so it gets NULL.\n\n```sql run\nSELECT user_id, login_date,\n       LAG(login_date) OVER (PARTITION BY user_id ORDER BY login_date) AS prev_login\nFROM (SELECT DISTINCT user_id, login_date FROM logins)\nWHERE user_id IN (1, 2)\nORDER BY user_id, login_date;\n```\n\n```text\nuser_id | login_date | prev_login\n1 | 2024-02-27 | NULL\n1 | 2024-02-28 | 2024-02-27\n1 | 2024-02-29 | 2024-02-28\n1 | 2024-03-02 | 2024-02-29\n2 | 2024-02-27 | NULL\n2 | 2024-03-01 | 2024-02-27\n```\n\n`DISTINCT` removes repeat logins on the same day first; otherwise \"the previous login\" could be the same day. The gap in days is `julianday(login_date) - julianday(prev_login)`.\n\n## Running totals\n\nAn aggregate window with `ORDER BY` covers \"from the group's first row to the current row\" by default:\n\n```sql run\nSELECT name, hire_date,\n       COUNT(*) OVER (ORDER BY hire_date) AS headcount,\n       SUM(salary) OVER (ORDER BY hire_date) AS payroll\nFROM employees\nORDER BY hire_date;\n```\n\n```text\nname | hire_date | headcount | payroll\nAva | 2018-04-02 | 1 | 12000\nEve | 2018-11-30 | 2 | 20000\nBen | 2019-07-15 | 3 | 29000\nChloe | 2020-01-20 | 4 | 38000\nDan | 2021-03-08 | 5 | 45000\nHugo | 2021-09-12 | 6 | 50000\nFinn | 2022-05-16 | 7 | 58500\nJack | 2022-10-03 | 8 | 64000\nGia | 2023-02-01 | 9 | 70000\nIris | 2024-01-08 | 10 | 74500\n```\n\n## Frames: RANGE versus ROWS\n\n\"From the first row to the current row\" is, precisely, the default frame `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. `RANGE` treats rows with the same ORDER BY value (peers) as one unit and includes them together. With repeated sort values, the result is not what you might expect:\n\n```sql run\nSELECT id, order_date,\n       COUNT(*) OVER (ORDER BY order_date) AS range_count,\n       COUNT(*) OVER (ORDER BY order_date, id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS rows_count\nFROM orders\nORDER BY order_date, id;\n```\n\n```text\nid | order_date | range_count | rows_count\n1 | 2024-01-05 | 1 | 1\n2 | 2024-01-20 | 3 | 2\n3 | 2024-01-20 | 3 | 3\n4 | 2024-02-02 | 4 | 4\n5 | 2024-02-14 | 6 | 5\n6 | 2024-02-14 | 6 | 6\n7 | 2024-03-01 | 8 | 7\n8 | 2024-03-01 | 8 | 8\n9 | 2024-03-09 | 9 | 9\n```\n\nFor a row-by-row running total, or a window counted in rows such as \"the moving average of the last 3 rows\", use `ROWS`, as in `AVG(x) OVER (ORDER BY d ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`.\n\n## Window functions cannot go in WHERE\n\nWindow functions are computed after WHERE, so `WHERE ROW_NUMBER() OVER (...) = 1` is an error. Compute it in a subquery or CTE and filter outside; the next lesson's \"top N per group\" is written that way.\n\n## Practice\n\n- The [SQL track's Window functions group](/?view=problems&library=sql#sql-group-windows)\n- By pattern: [ranking and the Nth highest](/?view=problems&library=sql&pattern=ranking), [running totals](/?view=problems&library=sql&pattern=running-total), [period over period](/?view=problems&library=sql&pattern=period-over-period)",
+          "quiz": [
+            {
+              "qZh": "工资依次是 9000、8000、8000、7000，按工资降序 RANK() 得到的是？",
+              "qEn": "Salaries are 9000, 8000, 8000 and 7000. What does RANK() by salary descending give?",
+              "choices": [
+                {
+                  "zh": "1, 2, 2, 3",
+                  "en": "1, 2, 2, 3"
+                },
+                {
+                  "zh": "1, 2, 2, 4",
+                  "en": "1, 2, 2, 4"
+                },
+                {
+                  "zh": "1, 2, 3, 4",
+                  "en": "1, 2, 3, 4"
+                },
+                {
+                  "zh": "1, 1, 2, 3",
+                  "en": "1, 1, 2, 3"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "RANK 并列同号，之后跳过被占用的名次。1, 2, 2, 3 是 DENSE_RANK，1, 2, 3, 4 是 ROW_NUMBER。",
+              "whyEn": "RANK gives ties the same number and skips the places they use. 1, 2, 2, 3 is DENSE_RANK, and 1, 2, 3, 4 is ROW_NUMBER."
+            },
+            {
+              "qZh": "SUM(x) OVER (ORDER BY d) 在 d 有重复值时，并列的行得到什么？",
+              "qEn": "With repeated values of d, what do tied rows get from SUM(x) OVER (ORDER BY d)?",
+              "choices": [
+                {
+                  "zh": "逐行递增的累计值",
+                  "en": "Totals that grow row by row"
+                },
+                {
+                  "zh": "NULL",
+                  "en": "NULL"
+                },
+                {
+                  "zh": "相同的累计值，包含所有并列行",
+                  "en": "The same total, including every tied row"
+                },
+                {
+                  "zh": "只包含当前行之前的行，不含当前行本身",
+                  "en": "A total of the rows before the current one only"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "默认范围是 RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW，并列行被当作一个整体一起计入。要逐行累计，写 ROWS，并在 ORDER BY 里加能打破并列的列。",
+              "whyEn": "The default frame is RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW, which takes tied rows in together. For row-by-row totals, use ROWS and add a tie-breaking column to the ORDER BY."
+            },
+            {
+              "qZh": "为什么不能写 WHERE ROW_NUMBER() OVER (...) = 1？",
+              "qEn": "Why is WHERE ROW_NUMBER() OVER (...) = 1 not allowed?",
+              "choices": [
+                {
+                  "zh": "ROW_NUMBER 不能和等号一起用",
+                  "en": "ROW_NUMBER cannot be compared with ="
+                },
+                {
+                  "zh": "WHERE 里只能写列名",
+                  "en": "WHERE may only contain column names"
+                },
+                {
+                  "zh": "只有 SQLite 不允许，PostgreSQL 和 MySQL 都可以",
+                  "en": "Only SQLite forbids it; PostgreSQL and MySQL accept it"
+                },
+                {
+                  "zh": "窗口函数在 WHERE 之后才计算",
+                  "en": "Window functions are computed after WHERE"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "执行顺序是 FROM、WHERE、GROUP BY、HAVING，然后才是 SELECT 里的窗口函数。所有主流数据库都不允许，要先在子查询或 CTE 里算出来再过滤。",
+              "whyEn": "The order is FROM, WHERE, GROUP BY and HAVING before the window functions in SELECT. No major database allows it; compute it in a subquery or CTE, then filter."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "interview-patterns",
+          "titleZh": "面试套路",
+          "titleEn": "Interview patterns",
+          "bodyZh": "SQL 面试题换来换去，核心套路就那么几种。这一课把最常见的五种各写一遍：分组 Top N、连续区间、累计、留存、去重。认出题型，再套对应的骨架。\n\n## 分组 Top N\n\n\"每个类目最贵的商品\"\"每个部门工资前三\"：先用窗口函数在组内编号，再在外层筛选编号。\n\n```sql run\nSELECT category, name, price\nFROM (\n  SELECT category, name, price,\n         ROW_NUMBER() OVER (PARTITION BY category ORDER BY price DESC) AS rn\n  FROM products\n)\nWHERE rn = 1\nORDER BY category;\n```\n\n```text\ncategory | name | price\nBooks | Graph Theory | 45\nGames | Chess Set | 60\nKitchen | Chef Knife | 80\n```\n\n选哪个排名函数取决于并列怎么算：每组严格只要 N 行用 `ROW_NUMBER`（再加一个列打破并列）；并列的都要用 `RANK`；\"前 N 个不同的值\"用 `DENSE_RANK`。\n\n## 连续区间（gaps and islands）\n\n\"连续登录了几天\"：对每个用户按日期编号，**日期减去编号**，同一段连续日期得到的值相同，它就是这一段的组号。\n\n```sql run\nWITH days AS (\n  SELECT DISTINCT user_id, login_date FROM logins\n), marked AS (\n  SELECT user_id, login_date,\n         julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) AS island\n  FROM days\n)\nSELECT user_id, MIN(login_date) AS first_day, MAX(login_date) AS last_day, COUNT(*) AS days_in_row\nFROM marked\nGROUP BY user_id, island\nORDER BY user_id, first_day;\n```\n\n```text\nuser_id | first_day | last_day | days_in_row\n1 | 2024-02-27 | 2024-02-29 | 3\n1 | 2024-03-02 | 2024-03-02 | 1\n2 | 2024-02-27 | 2024-02-27 | 1\n2 | 2024-03-01 | 2024-03-01 | 1\n3 | 2024-03-01 | 2024-03-03 | 3\n4 | 2024-02-28 | 2024-02-29 | 2\n```\n\n两个关键点：先 `DISTINCT` 去掉同一天的重复记录，否则编号会多算；日期要转成能做减法的数（SQLite 用 `julianday`），这样跨月、跨年也不会出错。\n\n## 累计\n\n累计 = 带 ORDER BY 的 `SUM() OVER`。常和\"先汇总再累计\"一起出现。下面统计每个月新增了多少客户（以首次下单的月份算），以及截至当月的累计客户数：\n\n```sql run\nWITH firsts AS (\n  SELECT customer_id, MIN(order_date) AS first_day\n  FROM orders\n  WHERE customer_id IS NOT NULL\n  GROUP BY customer_id\n)\nSELECT strftime('%Y-%m', first_day) AS month,\n       COUNT(*) AS new_customers,\n       SUM(COUNT(*)) OVER (ORDER BY strftime('%Y-%m', first_day)) AS total_customers\nFROM firsts\nGROUP BY month\nORDER BY month;\n```\n\n```text\nmonth | new_customers | total_customers\n2024-01 | 2 | 2\n2024-02 | 1 | 3\n2024-03 | 1 | 4\n```\n\n`SUM(COUNT(*)) OVER (...)` 是窗口函数套聚合函数：先按月分组算出 `COUNT(*)`，再对分组后的结果做累计。\n\n## 留存\n\n留存题的骨架：先找出每个用户的\"第一天\"，再看他在第 N 天有没有回来。下面按首次登录日期分组（每组叫一个 cohort），看第 2 天回来的比例：\n\n```sql run\nWITH firsts AS (\n  SELECT user_id, MIN(login_date) AS first_day FROM logins GROUP BY user_id\n)\nSELECT f.first_day AS cohort,\n       COUNT(DISTINCT f.user_id) AS users,\n       COUNT(DISTINCT l.user_id) AS back_on_day_2,\n       ROUND(1.0 * COUNT(DISTINCT l.user_id) / COUNT(DISTINCT f.user_id), 2) AS rate\nFROM firsts f\nLEFT JOIN logins l ON l.user_id = f.user_id AND l.login_date = date(f.first_day, '+2 days')\nGROUP BY f.first_day\nORDER BY cohort;\n```\n\n```text\ncohort | users | back_on_day_2 | rate\n2024-02-27 | 2 | 1 | 0.5\n2024-02-28 | 1 | 0 | 0\n2024-03-01 | 1 | 1 | 1\n```\n\n三个细节：回访条件写在 LEFT JOIN 的 ON 里，没回来的用户才不会被过滤掉；计数用 `COUNT(DISTINCT ...)`，同一天登录多次不会重复计；除法前乘 `1.0`，否则整数除法得到 0。\n\n## 去重\n\n先找出重复，再决定保留哪一条：\n\n```sql run\nSELECT user_id, login_date, COUNT(*) AS copies\nFROM logins\nGROUP BY user_id, login_date\nHAVING COUNT(*) > 1;\n```\n\n```text\nuser_id | login_date | copies\n1 | 2024-02-28 | 2\n```\n\n每组只保留一行时，用 `ROW_NUMBER` 在组内编号，留下编号为 1 的（ORDER BY 决定留下哪一条，比如最新的一条）：\n\n```sql run\nSELECT COUNT(*) AS kept\nFROM (\n  SELECT user_id, login_date,\n         ROW_NUMBER() OVER (PARTITION BY user_id, login_date ORDER BY user_id) AS rn\n  FROM logins\n)\nWHERE rn = 1;\n```\n\n```text\nkept\n11\n```\n\n12 条登录记录去掉 1 条重复，剩 11 条。只需要去重后的值时，`SELECT DISTINCT` 就够了；需要保留整行并控制留哪一条时，才用 `ROW_NUMBER`。\n\n## 练习\n\n按题型练习，每个链接打开 SQL 专项里对应题型的题目：\n\n- [分组 Top N](/?view=problems&library=sql&pattern=top-n-per-group)、[排名与第 N 高](/?view=problems&library=sql&pattern=ranking)\n- [连续区间](/?view=problems&library=sql&pattern=gaps-islands)\n- [累计与移动窗口](/?view=problems&library=sql&pattern=running-total)\n- [留存](/?view=problems&library=sql&pattern=retention)、[占比与比率](/?view=problems&library=sql&pattern=ratio)\n- [去重与找重复](/?view=problems&library=sql&pattern=dedupe)\n\n字符串和日期处理也常考，见 [字符串处理](/?view=problems&library=sql#sql-group-strings) 和 [日期处理](/?view=problems&library=sql#sql-group-dates) 两个分组。",
+          "bodyEn": "SQL interview questions vary on the surface, but a handful of patterns sit underneath. This lesson writes out the five most common: top N per group, gaps and islands, running totals, retention and deduplication. Recognize the pattern, then fill in its skeleton.\n\n## Top N per group\n\n\"The priciest product in each category\", \"the top three salaries in each department\": number the rows within each group with a window function, then filter on the number outside.\n\n```sql run\nSELECT category, name, price\nFROM (\n  SELECT category, name, price,\n         ROW_NUMBER() OVER (PARTITION BY category ORDER BY price DESC) AS rn\n  FROM products\n)\nWHERE rn = 1\nORDER BY category;\n```\n\n```text\ncategory | name | price\nBooks | Graph Theory | 45\nGames | Chess Set | 60\nKitchen | Chef Knife | 80\n```\n\nThe ranking function depends on how ties count: exactly N rows per group is `ROW_NUMBER` (plus a column that breaks ties); everyone tied is `RANK`; \"the top N distinct values\" is `DENSE_RANK`.\n\n## Gaps and islands\n\n\"How many days in a row did each user log in\": number each user's dates in order and **subtract the number from the date**. Every date in one consecutive run gives the same value, which labels the run.\n\n```sql run\nWITH days AS (\n  SELECT DISTINCT user_id, login_date FROM logins\n), marked AS (\n  SELECT user_id, login_date,\n         julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) AS island\n  FROM days\n)\nSELECT user_id, MIN(login_date) AS first_day, MAX(login_date) AS last_day, COUNT(*) AS days_in_row\nFROM marked\nGROUP BY user_id, island\nORDER BY user_id, first_day;\n```\n\n```text\nuser_id | first_day | last_day | days_in_row\n1 | 2024-02-27 | 2024-02-29 | 3\n1 | 2024-03-02 | 2024-03-02 | 1\n2 | 2024-02-27 | 2024-02-27 | 1\n2 | 2024-03-01 | 2024-03-01 | 1\n3 | 2024-03-01 | 2024-03-03 | 3\n4 | 2024-02-28 | 2024-02-29 | 2\n```\n\nTwo essentials: `DISTINCT` the repeat logins on one day first, or the numbering runs ahead; and turn dates into numbers you can subtract (`julianday` in SQLite), so runs across months and years still work.\n\n## Running totals\n\nA running total is `SUM() OVER` with an ORDER BY, often after an aggregation step. Below: how many customers each month brought in (counted by the month of their first order) and the running total of customers so far:\n\n```sql run\nWITH firsts AS (\n  SELECT customer_id, MIN(order_date) AS first_day\n  FROM orders\n  WHERE customer_id IS NOT NULL\n  GROUP BY customer_id\n)\nSELECT strftime('%Y-%m', first_day) AS month,\n       COUNT(*) AS new_customers,\n       SUM(COUNT(*)) OVER (ORDER BY strftime('%Y-%m', first_day)) AS total_customers\nFROM firsts\nGROUP BY month\nORDER BY month;\n```\n\n```text\nmonth | new_customers | total_customers\n2024-01 | 2 | 2\n2024-02 | 1 | 3\n2024-03 | 1 | 4\n```\n\n`SUM(COUNT(*)) OVER (...)` is a window function over an aggregate: grouping by month computes `COUNT(*)`, and the window then runs over the grouped rows.\n\n## Retention\n\nThe retention skeleton: find each user's first day, then check whether they came back on day N. Below, users are grouped by their first login date (each group is a cohort), and we measure the share who returned two days later:\n\n```sql run\nWITH firsts AS (\n  SELECT user_id, MIN(login_date) AS first_day FROM logins GROUP BY user_id\n)\nSELECT f.first_day AS cohort,\n       COUNT(DISTINCT f.user_id) AS users,\n       COUNT(DISTINCT l.user_id) AS back_on_day_2,\n       ROUND(1.0 * COUNT(DISTINCT l.user_id) / COUNT(DISTINCT f.user_id), 2) AS rate\nFROM firsts f\nLEFT JOIN logins l ON l.user_id = f.user_id AND l.login_date = date(f.first_day, '+2 days')\nGROUP BY f.first_day\nORDER BY cohort;\n```\n\n```text\ncohort | users | back_on_day_2 | rate\n2024-02-27 | 2 | 1 | 0.5\n2024-02-28 | 1 | 0 | 0\n2024-03-01 | 1 | 1 | 1\n```\n\nThree details: the return condition goes in the LEFT JOIN's ON, so users who never came back are not filtered out; counts use `COUNT(DISTINCT ...)`, so several logins on one day count once; and the division is multiplied by `1.0` first, or integer division gives 0.\n\n## Deduplication\n\nFind the duplicates first, then decide which copy to keep:\n\n```sql run\nSELECT user_id, login_date, COUNT(*) AS copies\nFROM logins\nGROUP BY user_id, login_date\nHAVING COUNT(*) > 1;\n```\n\n```text\nuser_id | login_date | copies\n1 | 2024-02-28 | 2\n```\n\nTo keep one row per group, number the rows in each group with `ROW_NUMBER` and keep number 1 (the ORDER BY decides which copy survives, such as the latest):\n\n```sql run\nSELECT COUNT(*) AS kept\nFROM (\n  SELECT user_id, login_date,\n         ROW_NUMBER() OVER (PARTITION BY user_id, login_date ORDER BY user_id) AS rn\n  FROM logins\n)\nWHERE rn = 1;\n```\n\n```text\nkept\n11\n```\n\nTwelve logins minus one duplicate leaves 11. When you only need the distinct values, `SELECT DISTINCT` is enough; `ROW_NUMBER` is for keeping whole rows and choosing which one survives.\n\n## Practice\n\nPractise by pattern; each link opens the SQL track's problems of that pattern:\n\n- [Top N per group](/?view=problems&library=sql&pattern=top-n-per-group), [ranking and the Nth highest](/?view=problems&library=sql&pattern=ranking)\n- [Gaps and islands](/?view=problems&library=sql&pattern=gaps-islands)\n- [Running totals](/?view=problems&library=sql&pattern=running-total)\n- [Retention](/?view=problems&library=sql&pattern=retention), [ratios and shares](/?view=problems&library=sql&pattern=ratio)\n- [Dedupe and duplicates](/?view=problems&library=sql&pattern=dedupe)\n\nStrings and dates come up often too: see the [Strings](/?view=problems&library=sql#sql-group-strings) and [Dates](/?view=problems&library=sql#sql-group-dates) groups.",
+          "quiz": [
+            {
+              "qZh": "\"每个部门工资最高的员工，并列的都要\"，应该用哪个排名函数，筛选什么？",
+              "qEn": "\"Each department's top earners, ties included\": which ranking function, filtered how?",
+              "choices": [
+                {
+                  "zh": "RANK() 按部门分组、工资降序，筛选 = 1",
+                  "en": "RANK() partitioned by department, salary descending, keeping = 1"
+                },
+                {
+                  "zh": "ROW_NUMBER() 按部门分组、工资降序，筛选 = 1",
+                  "en": "ROW_NUMBER() partitioned by department, salary descending, keeping = 1"
+                },
+                {
+                  "zh": "RANK() 不分组、工资降序，筛选 = 1",
+                  "en": "RANK() over all rows, salary descending, keeping = 1"
+                },
+                {
+                  "zh": "DENSE_RANK() 按部门分组、工资升序，筛选 = 1",
+                  "en": "DENSE_RANK() partitioned by department, salary ascending, keeping = 1"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "ROW_NUMBER 并列时只留一个；不分组得到的是全公司最高；升序得到的是最低。RANK（或 DENSE_RANK）按部门降序取 1 才对。",
+              "whyEn": "ROW_NUMBER keeps one of the tied rows; without partitioning you get the company-wide top; ascending gives the lowest. RANK (or DENSE_RANK) by department, descending, equal to 1 is right."
+            },
+            {
+              "qZh": "连续登录题里，\"日期减去组内行号\"为什么能标出连续区间？",
+              "qEn": "In consecutive-login problems, why does \"date minus row number\" label each run?",
+              "choices": [
+                {
+                  "zh": "行号等于日期中的\"日\"",
+                  "en": "The row number equals the day of the month"
+                },
+                {
+                  "zh": "连续的日期每次加 1，行号也加 1，差值不变",
+                  "en": "Consecutive dates and row numbers both rise by 1, so the difference stays the same"
+                },
+                {
+                  "zh": "julianday 会把连续的日期自动合并成同一个数",
+                  "en": "julianday turns every run of consecutive dates into the same number, so they group together"
+                },
+                {
+                  "zh": "相减后得到的是区间的长度",
+                  "en": "The difference is the length of the run"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "一段连续日期里，日期和行号同步加 1，差值相同；一出现间断，日期多跳了几天，差值就变了。按 (用户, 差值) 分组就得到每一段。",
+              "whyEn": "Within a run, date and row number rise together, so the difference is constant; after a gap the date jumps further and the difference changes. Grouping by (user, difference) gives each run."
+            },
+            {
+              "qZh": "计算留存时，\"第 2 天是否回来\"的条件应该放在哪里？",
+              "qEn": "When computing retention, where does the \"came back on day 2\" condition go?",
+              "choices": [
+                {
+                  "zh": "WHERE 里",
+                  "en": "In WHERE"
+                },
+                {
+                  "zh": "HAVING 里，等分组之后再判断",
+                  "en": "In HAVING, after the users are grouped"
+                },
+                {
+                  "zh": "LEFT JOIN 的 ON 里",
+                  "en": "In the LEFT JOIN's ON clause"
+                },
+                {
+                  "zh": "ORDER BY 里",
+                  "en": "In ORDER BY"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "写在 WHERE 里，没回来的用户（右表为 NULL）会被过滤掉，分母也随之变小，留存率被高估。写在 ON 里，所有用户都留在分母中。",
+              "whyEn": "In WHERE, users who never came back (NULL on the right) are filtered out, shrinking the denominator and inflating the rate. In ON, every user stays in the denominator."
+            }
+          ],
+          "homework": [],
           "solves": []
         }
       ]

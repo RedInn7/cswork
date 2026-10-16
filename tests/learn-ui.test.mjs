@@ -42,7 +42,7 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
   let doc = parse(renderToStaticMarkup(await Index()));
   assert.deepEqual(
     [...doc.querySelectorAll('.learn-courses a')].map((a) => a.getAttribute('href')),
-    ['/learn/big-o', '/learn/python'],
+    ['/learn/big-o', '/learn/python', '/learn/cpp', '/learn/java', '/learn/go', '/learn/sql'],
   );
   doc = parse(renderToStaticMarkup(await Course({ params: Promise.resolve({ course: 'big-o' }) })));
   assert.equal(doc.querySelector('h1').textContent, 'Big-O 与数据结构速成课');
@@ -80,6 +80,24 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
   // The last lesson points on to the skill exams.
   doc = parse(renderToStaticMarkup(await Chapter({ params: Promise.resolve({ course: 'python', slug: 'pitfalls' }) })));
   assert.equal(doc.querySelector('.sd-pager a[href="/certify"]').textContent, 'FinishedTake a skill exam');
+
+  // A SQL lesson practises on the SQL track: its links open the track's topics and patterns, no homework list.
+  doc = parse(renderToStaticMarkup(await Chapter({ params: Promise.resolve({ course: 'sql', slug: 'joins' }) })));
+  assert.equal(doc.querySelector('.learn-practice'), null);
+  assert.ok(![...doc.querySelectorAll('.sd-toc a')].some((a) => a.getAttribute('href') === '#learn-practice-title'));
+  assert.deepEqual(
+    [...doc.querySelectorAll('.public-library-prose a')].map((a) => a.getAttribute('href')),
+    [
+      '/?view=problems&library=sql#sql-group-joins',
+      '/?view=problems&library=sql&pattern=anti-join',
+      '/?view=problems&library=sql&pattern=self-join',
+    ],
+  );
+  assert.ok(doc.querySelector('.public-library-prose pre code.language-sql'), 'run blocks render as SQL code');
+  doc = parse(renderToStaticMarkup(await Course({ params: Promise.resolve({ course: 'sql' }) })));
+  assert.equal(doc.querySelector('.sd-sheet-meta').textContent, '3-question quiz');
+  doc = parse(renderToStaticMarkup(await Course({ params: Promise.resolve({ course: 'cpp' }) })));
+  assert.equal(doc.querySelector('.sd-sheet-meta').textContent, '3-question quiz · 3 problems');
 });
 
 test('marking the last chapter read shows the course certificate', async () => {
