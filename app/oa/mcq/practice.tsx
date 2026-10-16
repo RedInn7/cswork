@@ -43,16 +43,28 @@ export function parseAnswers(raw: string | null): Answers {
   }
 }
 
-/** This browser's review; answers saved before spaced review count as answered today. */
+/**
+ * This browser's review. Answers saved before spaced review count as answered the day they
+ * move over and are saved as moved right away, so a reload does not restart their clock; old
+ * answers to questions not in `items` (a topic page's short quiz) wait for the full page.
+ */
 function readLocal(items: PracticeItem[]): McqReview {
+  let review: McqReview = {};
   try {
-    const review = parseMcqReview(localStorage.getItem(KEY));
+    review = parseMcqReview(localStorage.getItem(KEY));
     const old = parseAnswers(localStorage.getItem(OLD_KEY));
-    for (const q of items) if (old[q.id]) review[q.id] ??= reviewMcq(undefined, q.answer, old[q.id], mcqDay());
-    return review;
-  } catch {
-    return {};
-  }
+    if (!Object.keys(old).length) return review;
+    for (const q of items)
+      if (old[q.id]) {
+        review[q.id] ??= reviewMcq(undefined, q.answer, old[q.id], mcqDay());
+        delete old[q.id];
+      }
+    localStorage.setItem(KEY, JSON.stringify(review));
+    // ponytail: on the full page only ids gone from the bank are left; they sit here until Clear.
+    if (Object.keys(old).length) localStorage.setItem(OLD_KEY, JSON.stringify(old));
+    else localStorage.removeItem(OLD_KEY);
+  } catch {}
+  return review;
 }
 function writeLocal(review: McqReview) {
   if (Object.keys(review).length) return localStorage.setItem(KEY, JSON.stringify(review));
@@ -132,12 +144,17 @@ export function McqPractice({
         const moved = compact ? {} : local;
         const merged = { ...moved, ...saved };
         setReview(merged);
-        if (Object.keys(moved).length) {
-          queue.current = queue.current.then(() => putReview(merged).then((ok) => setSaveFailed(!ok)));
-          try {
-            writeLocal({});
-          } catch {}
-        }
+        // This browser's copy goes only once the account has it.
+        if (Object.keys(moved).length)
+          queue.current = queue.current.then(() =>
+            putReview(merged).then((ok) => {
+              setSaveFailed(!ok);
+              if (ok)
+                try {
+                  writeLocal({});
+                } catch {}
+            }),
+          );
         if (!sd?.length) return;
         const notes = await fetch('/api/oj/notes?prefix=sd:').then((r) => (r.ok ? r.json() : null), () => null);
         const rows: { target: string; body: string }[] = Array.isArray(notes?.items) ? notes.items : [];
@@ -331,10 +348,18 @@ export function McqPractice({
                 '作答记录和复习进度保存在你的账号里。答错的题第二天再出现；答对的隔 3、7、21 天再出现，连续答对就算掌握。',
                 'Your answers and review schedule are saved to your account. A missed question comes back the next day; a right one after 3, 7 and 21 days, until it is mastered.',
               )
-            : t(
-                '作答记录只保存在这台设备的浏览器里；登录后再打开本页，会存进账号。',
-                'Your answers stay in this browser on this device; open this page signed in to keep them in your account.',
-              )}
+            : compact
+              ? (
+                  <>
+                    {t('作答记录只保存在这台设备的浏览器里；登录后打开', 'Your answers stay in this browser on this device; open ')}
+                    <a href="/oa/mcq">{t('OA 选择题练习页', 'OA multiple-choice practice')}</a>
+                    {t('，会存进账号。', ' signed in to keep them in your account.')}
+                  </>
+                )
+              : t(
+                  '作答记录只保存在这台设备的浏览器里；登录后再打开本页，会存进账号。',
+                  'Your answers stay in this browser on this device; open this page signed in to keep them in your account.',
+                )}
         {saveFailed && (
           <span role="alert"> {t('最近一次保存失败，刷新后可能看不到。', 'The last save failed; it may be gone after a reload.')}</span>
         )}

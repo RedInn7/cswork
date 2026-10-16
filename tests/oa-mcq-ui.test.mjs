@@ -55,6 +55,9 @@ test('practice: submit grades and explains, answers persist in this browser, fil
   // An answer saved before spaced review shows as answered today.
   assert.match(document.body.textContent, /1 of 3 answered/);
   assert.match(document.body.textContent, /stay in this browser/);
+  // Moved over and saved at once, so a reload keeps the day it moved instead of restarting it.
+  assert.equal(localStorage.getItem('cswork:oa-mcq:v1'), null);
+  assert.equal(JSON.parse(localStorage.getItem('cswork:oa-mcq:v2'))['mcq-python-1'][1], today);
   assert.equal(document.querySelectorAll('input[type="checkbox"]').length, multi.en.choices.length);
   assert.match(document.querySelector('pre code').textContent, /def add/);
   // The snippet describes its question's radio group (the legend alone is only "what does this print?").
@@ -141,6 +144,21 @@ test('practice signed in: the review lives in the account note, due questions co
   assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
   assert.deepEqual(JSON.parse(puts.at(-1)[1])[single.id], [1, today, ...single.answer]);
   root.unmount();
+  globalThis.fetch = realFetch;
+
+  // A failed move keeps this browser's copy for the next visit.
+  dom({ 'cswork:oa-mcq:v2': JSON.stringify({ 'mcq-python-1': [1, today, 0] }) });
+  globalThis.fetch = async (url, init) =>
+    init?.method === 'PUT' ? new Response('{}', { status: 429 }) : Response.json({ target: 'mcq:answers', body: '', updatedAt: null });
+  const failed = await render(createElement(McqPractice, { items, zh: false }));
+  assert.match(document.body.textContent, /The last save failed/);
+  assert.deepEqual(JSON.parse(localStorage.getItem('cswork:oa-mcq:v2'))['mcq-python-1'], [1, today, 0]);
+  failed.unmount();
+  // Signed out on a topic page's quiz, which never moves answers: the note points to the full page.
+  globalThis.fetch = async () => new Response('{}', { status: 401 });
+  const quiz = await render(createElement(McqPractice, { items, zh: false, compact: true }));
+  assert.equal(document.querySelector('.oa-mcq-note a').getAttribute('href'), '/oa/mcq');
+  quiz.unmount();
   globalThis.fetch = realFetch;
 
   // Chapter quiz answers: only full, well-formed ones count.
