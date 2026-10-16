@@ -4,7 +4,8 @@ import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
 import { spawn } from 'node:child_process';
-import { randomUUID, createHmac } from 'node:crypto';
+import { randomUUID, createHash, createHmac } from 'node:crypto';
+import { passingPrograms, programKey } from '../lib/oa-solution-evidence.mjs';
 import { setTimeout as delay } from 'node:timers/promises';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
@@ -126,7 +127,22 @@ try {
     const solution = await (
       await req(`/api/oj/oa-library/${first.id}/solution`)
     ).json();
-    assert.deepEqual(solution.solutions, verified.authoredSolutions);
+    // The registry's programs first, then only extra languages a solutions report verified.
+    const own = verified.authoredSolutions.length;
+    assert.deepEqual(solution.solutions.slice(0, own), verified.authoredSolutions);
+    const passing = passingPrograms(resolve('content/oa-judge'));
+    for (const extra of solution.solutions.slice(own))
+      assert(
+        passing.has(
+          programKey({
+            id: first.id,
+            language: extra.language,
+            sha256: createHash('sha256').update(extra.code).digest('hex'),
+            packageChecksum: verified.packageChecksum,
+          }),
+        ),
+        `${first.id} ${extra.language} is served without a passing report`,
+      );
     assert.equal(solution.explanation, verified.editorial);
   } else await req(`/api/oj/oa-library/${first.id}/solution`, 409);
   await req('/api/oj/oa-library/oa-missing-1', 404);
