@@ -124,7 +124,7 @@ void test('posted pay: Lever’s salary range and Ashby’s Salary component, pl
     unit: 'year',
   });
   assert.deepEqual(ashby([{ compensationType: 'Salary', interval: '1 HOUR', currencyCode: 'USD', minValue: 40, maxValue: 40 }]), { min: 40, max: 40, currency: 'USD', unit: 'hour' });
-  assert.deepEqual(ashby([{ compensationType: 'Salary', interval: '1 MONTH', currencyCode: 'USD', minValue: 7000, maxValue: 9000 }]).unit, 'month');
+  assert.deepEqual(ashby([{ compensationType: 'Salary', interval: '1 MONTH', currencyCode: 'USD', minValue: 7000, maxValue: 9000 }])?.unit, 'month');
   for (const bad of [
     undefined,
     [equity],
@@ -367,7 +367,7 @@ void test('the digest: a saved search’s new matches, merged with followed-comp
   assert.deepEqual(notices('js-dan'), [
     { id: 'jobs:2027-10-12:js-dan', kind: 'company-jobs', title: '保存的筛选有 1 个新岗位', body: 'Stripe 1', href: '/career/jobs?role=tech&paid=1' },
   ]);
-  assert.deepEqual(notices('js-eve').map((n: { body: string; href: string }) => [n.body, n.href]), [['Stripe 3', '/career/jobs?role=all&q=york']]);
+  assert.deepEqual((notices('js-eve') as { body: string; href: string }[]).map((n) => [n.body, n.href]), [['Stripe 3', '/career/jobs?role=all&q=york']]);
   // The day's scan is done: later ticks send nothing.
   assert.equal(await sendCompanyDigest(nine + 15 * 60000), 0);
   assert.equal(englishMessage('保存的筛选有 1 个新岗位'), '1 new opening matches your saved search');

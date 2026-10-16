@@ -184,7 +184,7 @@ test('hiding: kept in this browser, out of the list until shown again, focus mov
   assert.deepEqual(JSON.parse(localStorage.getItem('cswork:jobs:hidden')), ['greenhouse:stripe:2']);
   assert.equal(document.activeElement.textContent, 'Hide: Data Engineer, New Grad', 'focus moves to the next row');
   const bar = view.host.querySelector('.job-hidden-bar');
-  assert.equal(bar.querySelector('[role="status"]').textContent, '1 hidden opening');
+  assert.equal(bar.querySelector('output').textContent, '1 hidden opening');
   const toggle = bar.querySelector('button');
   assert.equal(toggle.getAttribute('aria-pressed'), 'false');
   await act(async () => toggle.click());
@@ -203,7 +203,7 @@ test('hiding: kept in this browser, out of the list until shown again, focus mov
   await act(async () => last.host.querySelector('.job-openings-hide').click());
   assert.deepEqual(last.titles(), []);
   assert.equal(document.activeElement.textContent, 'Show hidden');
-  assert.equal(last.host.querySelector('[role="status"]').textContent, '3 hidden openings');
+  assert.equal(last.host.querySelector('output').textContent, '3 hidden openings');
   await act(async () => last.root.unmount());
 });
 

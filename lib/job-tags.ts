@@ -98,7 +98,8 @@ export function jobLinkKey(link: string) {
   try {
     const url = new URL(link);
     url.hash = '';
-    for (const key of [...url.searchParams.keys()]) if (/^(?:utm_.*|gh_src|ref|source)$/i.test(key)) url.searchParams.delete(key);
+    // A copy: deleting while iterating the live keys would skip some.
+    for (const key of Array.from(url.searchParams.keys())) if (/^(?:utm_.*|gh_src|ref|source)$/i.test(key)) url.searchParams.delete(key);
     url.pathname = url.pathname.replace(/\/+$/, '');
     return url.href;
   } catch {

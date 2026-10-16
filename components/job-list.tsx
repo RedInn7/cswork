@@ -103,7 +103,7 @@ export function JobList({
     <>
       {hiddenHere > 0 && (
         <p className="job-hidden-bar">
-          <span role="status">{zh ? `已隐藏 ${hiddenHere} 个岗位` : `${hiddenHere} hidden ${hiddenHere === 1 ? 'opening' : 'openings'}`}</span>
+          <output>{zh ? `已隐藏 ${hiddenHere} 个岗位` : `${hiddenHere} hidden ${hiddenHere === 1 ? 'opening' : 'openings'}`}</output>
           <button ref={toggleRef} type="button" aria-pressed={showHidden} onClick={() => setShowHidden((on) => !on)}>
             {t('显示已隐藏', 'Show hidden')}
           </button>
