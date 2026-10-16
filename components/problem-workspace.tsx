@@ -2926,6 +2926,7 @@ function Workspace({
                     checker={problem.checker}
                     params={submission.codingMode === 'leetcode' ? problem.leetcodeParams : null}
                     returnType={submission.codingMode === 'leetcode' ? problem.leetcodeReturnType : null}
+                    sealHidden={examMode}
                   />
                 </>
               ) : (
@@ -3410,6 +3411,7 @@ function Workspace({
         currentCode={code}
         language={language}
         settings={settings}
+        sealHidden={examMode}
         note={inspected && boot.person && !examMode && <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />}
         restore={(item) => {
           if (item.code === undefined) return;
