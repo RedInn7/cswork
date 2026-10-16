@@ -66,6 +66,7 @@ import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { SubmissionNote } from './submission-note';
+import { ReviewLink } from './code-review';
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
@@ -3463,7 +3464,19 @@ function Workspace({
         language={language}
         settings={settings}
         sealHidden={examMode}
-        note={inspected && boot.person && !examMode && <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />}
+        note={
+          inspected &&
+          boot.person &&
+          !examMode && (
+            <>
+              <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />
+              {/* Only on the learner's own accepted formal submission of a public problem (lib/server/code-reviews.ts). */}
+              {inspected.mode === 'judge' && inspected.status === 'accepted' && communityProblem(inspected.problem_id) && (
+                <ReviewLink key={`review-${inspected.id}`} submissionId={inspected.id} />
+              )}
+            </>
+          )
+        }
         restore={(item) => {
           if (item.code === undefined) return;
           setInspected(null);
