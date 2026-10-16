@@ -28,6 +28,40 @@
       }
     ]
   },
+  "lc-8": {
+    "edges": [
+      {
+        "zh": "空字符串",
+        "en": "An empty string",
+        "input": "\"\""
+      },
+      {
+        "zh": "只有空格",
+        "en": "Spaces only",
+        "input": "\"   \""
+      },
+      {
+        "zh": "两个符号",
+        "en": "Two signs",
+        "input": "\"+-12\""
+      },
+      {
+        "zh": "小于 −2^31，截断",
+        "en": "Below −2^31, clamped",
+        "input": "\"-91283472332\""
+      },
+      {
+        "zh": "恰好 2^31，截断",
+        "en": "Exactly 2^31, clamped",
+        "input": "\"2147483648\""
+      },
+      {
+        "zh": "前导零后面跟字母",
+        "en": "Leading zeros, then letters",
+        "input": "\"  0000042abc\""
+      }
+    ]
+  },
   "lc-26": {
     "edges": [
       {
@@ -73,6 +107,35 @@
         "zh": "没有要删的；val 超出元素的值域",
         "en": "Nothing to remove; val is outside the element range",
         "input": "[0,50,0]\n100"
+      }
+    ]
+  },
+  "lc-28": {
+    "edges": [
+      {
+        "zh": "一个字符就匹配",
+        "en": "A one-character match",
+        "input": "\"a\"\n\"a\""
+      },
+      {
+        "zh": "一个字符不匹配",
+        "en": "A one-character miss",
+        "input": "\"a\"\n\"b\""
+      },
+      {
+        "zh": "needle 比 haystack 长",
+        "en": "needle longer than haystack",
+        "input": "\"ab\"\n\"abc\""
+      },
+      {
+        "zh": "部分匹配后失配",
+        "en": "A partial match that fails",
+        "input": "\"aaab\"\n\"aab\""
+      },
+      {
+        "zh": "重叠的前缀",
+        "en": "Overlapping prefixes",
+        "input": "\"abababc\"\n\"ababc\""
       }
     ]
   },
@@ -192,6 +255,69 @@
       }
     ]
   },
+  "lc-65": {
+    "edges": [
+      {
+        "zh": "只有一个小数点",
+        "en": "A lone dot",
+        "input": "\".\""
+      },
+      {
+        "zh": "指数前面没有数字",
+        "en": "No digits before the exponent",
+        "input": "\"e9\""
+      },
+      {
+        "zh": "符号后面直接是小数点",
+        "en": "A sign right before the dot",
+        "input": "\"+.8\""
+      },
+      {
+        "zh": "指数后面没有数字",
+        "en": "No digits after the exponent",
+        "input": "\"1e\""
+      },
+      {
+        "zh": "小数、指数都带符号",
+        "en": "Signed decimal and exponent",
+        "input": "\"-.9e+10\""
+      },
+      {
+        "zh": "指数不能是小数",
+        "en": "The exponent cannot be a decimal",
+        "input": "\"4e1.5\""
+      }
+    ]
+  },
+  "lc-68": {
+    "edges": [
+      {
+        "zh": "一个词正好占满一行",
+        "en": "One word filling the line",
+        "input": "[\"a\"]\n1"
+      },
+      {
+        "zh": "一个词，后面补空格",
+        "en": "One word padded with spaces",
+        "input": "[\"a\"]\n3"
+      },
+      {
+        "zh": "一行只放得下一个词",
+        "en": "A line that fits one word",
+        "input": "[\"ab\",\"c\"]\n2"
+      },
+      {
+        "zh": "全部放进最后一行",
+        "en": "Everything fits on the last line",
+        "input": "[\"a\",\"b\",\"c\"]\n5"
+      },
+      {
+        "zh": "空格分不均，左边多",
+        "en": "Uneven spaces: the left gets more",
+        "input": "[\"x\",\"y\",\"z\",\"w\"]\n6"
+      }
+    ]
+  },
   "lc-75": {
     "edges": [
       {
@@ -303,6 +429,35 @@
       }
     ]
   },
+  "lc-151": {
+    "edges": [
+      {
+        "zh": "只有一个字符",
+        "en": "A single character",
+        "input": "\"a\""
+      },
+      {
+        "zh": "首尾都有空格",
+        "en": "Spaces at both ends",
+        "input": "\"  hello  \""
+      },
+      {
+        "zh": "单词之间有多个空格",
+        "en": "Several spaces between words",
+        "input": "\"a   b\""
+      },
+      {
+        "zh": "数字也算单词",
+        "en": "Digits form words too",
+        "input": "\"Hello World 2024\""
+      },
+      {
+        "zh": "空格包着一个单词",
+        "en": "One word wrapped in spaces",
+        "input": "\" x \""
+      }
+    ]
+  },
   "lc-169": {
     "edges": [
       {
@@ -358,6 +513,40 @@
         "zh": "周期为 4 的串",
         "en": "A string with period 4",
         "input": "\"ACGTACGTACGTACGT\""
+      }
+    ]
+  },
+  "lc-214": {
+    "edges": [
+      {
+        "zh": "空字符串",
+        "en": "An empty string",
+        "input": "\"\""
+      },
+      {
+        "zh": "一个字符",
+        "en": "A single character",
+        "input": "\"a\""
+      },
+      {
+        "zh": "两个不同字符",
+        "en": "Two different characters",
+        "input": "\"ab\""
+      },
+      {
+        "zh": "已经是回文",
+        "en": "Already a palindrome",
+        "input": "\"aba\""
+      },
+      {
+        "zh": "最长回文前缀是 \"aa\"",
+        "en": "The longest palindromic prefix is \"aa\"",
+        "input": "\"aab\""
+      },
+      {
+        "zh": "最长回文前缀只有一个字符",
+        "en": "The longest palindromic prefix is one character",
+        "input": "\"abb\""
       }
     ]
   },
@@ -535,6 +724,40 @@
       }
     ]
   },
+  "lc-273": {
+    "edges": [
+      {
+        "zh": "零",
+        "en": "Zero",
+        "input": "0"
+      },
+      {
+        "zh": "十",
+        "en": "Ten",
+        "input": "10"
+      },
+      {
+        "zh": "整百",
+        "en": "An even hundred",
+        "input": "100"
+      },
+      {
+        "zh": "中间一组全是 0",
+        "en": "A middle group of zeros",
+        "input": "1000010"
+      },
+      {
+        "zh": "最大值 2^31−1",
+        "en": "The maximum, 2^31−1",
+        "input": "2147483647"
+      },
+      {
+        "zh": "十几是特殊词",
+        "en": "The teens are special words",
+        "input": "19"
+      }
+    ]
+  },
   "lc-283": {
     "edges": [
       {
@@ -648,6 +871,93 @@
         "zh": "最小值被后面更小的替换",
         "en": "The smallest candidate gets replaced later",
         "input": "[20,100,10,12,5,13]"
+      }
+    ]
+  },
+  "lc-336": {
+    "edges": [
+      {
+        "zh": "只有一个单词",
+        "en": "A single word",
+        "input": "[\"a\"]"
+      },
+      {
+        "zh": "有空串",
+        "en": "An empty string",
+        "input": "[\"a\",\"\"]"
+      },
+      {
+        "zh": "互为反转",
+        "en": "Reverses of each other",
+        "input": "[\"ab\",\"ba\"]"
+      },
+      {
+        "zh": "只有一种顺序可以",
+        "en": "Only one order works",
+        "input": "[\"abc\",\"cb\"]"
+      },
+      {
+        "zh": "长短不同的两个回文",
+        "en": "Two palindromes of different lengths",
+        "input": "[\"aa\",\"a\"]"
+      }
+    ]
+  },
+  "lc-344": {
+    "edges": [
+      {
+        "zh": "只有一个字符",
+        "en": "A single character",
+        "input": "[\"a\"]"
+      },
+      {
+        "zh": "两个字符",
+        "en": "Two characters",
+        "input": "[\"a\",\"b\"]"
+      },
+      {
+        "zh": "奇数长度的回文",
+        "en": "An odd-length palindrome",
+        "input": "[\"r\",\"a\",\"c\",\"e\",\"c\",\"a\",\"r\"]"
+      },
+      {
+        "zh": "空格和标点",
+        "en": "Spaces and punctuation",
+        "input": "[\"A\",\" \",\"!\"]"
+      },
+      {
+        "zh": "偶数长度",
+        "en": "Even length",
+        "input": "[\"a\",\"b\",\"c\",\"d\"]"
+      }
+    ]
+  },
+  "lc-345": {
+    "edges": [
+      {
+        "zh": "只有一个元音",
+        "en": "A single vowel",
+        "input": "\"a\""
+      },
+      {
+        "zh": "没有元音",
+        "en": "No vowels",
+        "input": "\"b\""
+      },
+      {
+        "zh": "全是大写元音",
+        "en": "Only uppercase vowels",
+        "input": "\"AEIOU\""
+      },
+      {
+        "zh": "大小写混合",
+        "en": "Mixed case",
+        "input": "\"aA\""
+      },
+      {
+        "zh": "空格隔开的两个单词",
+        "en": "Two words with a space",
+        "input": "\"hello world\""
       }
     ]
   },
@@ -791,6 +1101,40 @@
       }
     ]
   },
+  "lc-459": {
+    "edges": [
+      {
+        "zh": "只有一个字符",
+        "en": "A single character",
+        "input": "\"a\""
+      },
+      {
+        "zh": "两个相同字符",
+        "en": "Two equal characters",
+        "input": "\"aa\""
+      },
+      {
+        "zh": "两个不同字符",
+        "en": "Two different characters",
+        "input": "\"ab\""
+      },
+      {
+        "zh": "首尾相同但不是重复",
+        "en": "Same ends, but not a repeat",
+        "input": "\"aba\""
+      },
+      {
+        "zh": "重复三次",
+        "en": "Repeated three times",
+        "input": "\"abcabcabc\""
+      },
+      {
+        "zh": "重复单元内部也有重复",
+        "en": "A unit with its own repeats",
+        "input": "\"abaababaab\""
+      }
+    ]
+  },
   "lc-554": {
     "edges": [
       {
@@ -849,6 +1193,103 @@
       }
     ]
   },
+  "lc-686": {
+    "edges": [
+      {
+        "zh": "一份就够",
+        "en": "One copy is enough",
+        "input": "\"a\"\n\"a\""
+      },
+      {
+        "zh": "需要两份",
+        "en": "Two copies needed",
+        "input": "\"a\"\n\"aa\""
+      },
+      {
+        "zh": "跨过两份的边界",
+        "en": "Across the copy boundary",
+        "input": "\"ab\"\n\"ba\""
+      },
+      {
+        "zh": "永远不可能",
+        "en": "Never possible",
+        "input": "\"abc\"\n\"d\""
+      },
+      {
+        "zh": "需要三份",
+        "en": "Three copies needed",
+        "input": "\"abc\"\n\"cabca\""
+      },
+      {
+        "zh": "b 比 a 短",
+        "en": "b shorter than a",
+        "input": "\"aa\"\n\"a\""
+      }
+    ]
+  },
+  "lc-796": {
+    "edges": [
+      {
+        "zh": "一个字符，相同",
+        "en": "One character, equal",
+        "input": "\"a\"\n\"a\""
+      },
+      {
+        "zh": "一个字符，不同",
+        "en": "One character, different",
+        "input": "\"a\"\n\"b\""
+      },
+      {
+        "zh": "长度不同",
+        "en": "Different lengths",
+        "input": "\"ab\"\n\"abc\""
+      },
+      {
+        "zh": "全是同一个字符",
+        "en": "One repeated character",
+        "input": "\"aa\"\n\"aa\""
+      },
+      {
+        "zh": "字符相同但不是旋转",
+        "en": "Same letters, not a rotation",
+        "input": "\"abcde\"\n\"abced\""
+      },
+      {
+        "zh": "周期串的旋转",
+        "en": "Rotating a periodic string",
+        "input": "\"abab\"\n\"baba\""
+      }
+    ]
+  },
+  "lc-809": {
+    "edges": [
+      {
+        "zh": "完全相同",
+        "en": "Identical",
+        "input": "\"a\"\n[\"a\"]"
+      },
+      {
+        "zh": "一段拉伸到 3",
+        "en": "One run stretched to 3",
+        "input": "\"aaa\"\n[\"a\"]"
+      },
+      {
+        "zh": "拉伸到 2 不算",
+        "en": "Stretching to 2 does not count",
+        "input": "\"aa\"\n[\"a\"]"
+      },
+      {
+        "zh": "少了一段",
+        "en": "A missing run",
+        "input": "\"abc\"\n[\"ab\"]"
+      },
+      {
+        "zh": "三个词都能拉伸成 s",
+        "en": "All three words stretch to s",
+        "input": "\"heeelllo\"\n[\"helo\",\"hello\",\"heelo\"]"
+      }
+    ]
+  },
   "lc-912": {
     "edges": [
       {
@@ -878,6 +1319,35 @@
       }
     ]
   },
+  "lc-917": {
+    "edges": [
+      {
+        "zh": "只有一个字母",
+        "en": "A single letter",
+        "input": "\"a\""
+      },
+      {
+        "zh": "一个字母都没有",
+        "en": "No letters at all",
+        "input": "\"-\""
+      },
+      {
+        "zh": "数字和连字符不动",
+        "en": "Digits and dashes stay",
+        "input": "\"Ab-1C\""
+      },
+      {
+        "zh": "只有数字",
+        "en": "Digits only",
+        "input": "\"123\""
+      },
+      {
+        "zh": "等号两边的大小写字母",
+        "en": "Letters of both cases around a symbol",
+        "input": "\"z=Z\""
+      }
+    ]
+  },
   "lc-1010": {
     "edges": [
       {
@@ -904,6 +1374,93 @@
         "zh": "1 和 59",
         "en": "1 and 59",
         "input": "[1,59,2]"
+      }
+    ]
+  },
+  "lc-1023": {
+    "edges": [
+      {
+        "zh": "完全相同",
+        "en": "Identical",
+        "input": "[\"a\"]\n\"a\""
+      },
+      {
+        "zh": "大小写不同",
+        "en": "Different case",
+        "input": "[\"A\"]\n\"a\""
+      },
+      {
+        "zh": "多出一个大写字母",
+        "en": "An extra uppercase letter",
+        "input": "[\"Ab\",\"AB\"]\n\"A\""
+      },
+      {
+        "zh": "前面插入小写字母",
+        "en": "A lowercase letter inserted in front",
+        "input": "[\"aBc\"]\n\"Bc\""
+      },
+      {
+        "zh": "pattern 比 query 长",
+        "en": "pattern longer than the query",
+        "input": "[\"FooBar\"]\n\"FooBarTest\""
+      }
+    ]
+  },
+  "lc-1044": {
+    "edges": [
+      {
+        "zh": "最短，没有重复",
+        "en": "Shortest, no repeat",
+        "input": "\"ab\""
+      },
+      {
+        "zh": "两个相同字符",
+        "en": "Two equal characters",
+        "input": "\"aa\""
+      },
+      {
+        "zh": "重叠的重复子串",
+        "en": "Overlapping repeats",
+        "input": "\"aaaa\""
+      },
+      {
+        "zh": "前后两半相同",
+        "en": "Two equal halves",
+        "input": "\"abcabc\""
+      },
+      {
+        "zh": "全部不同",
+        "en": "All different",
+        "input": "\"abcd\""
+      }
+    ]
+  },
+  "lc-1328": {
+    "edges": [
+      {
+        "zh": "长度为 1：无解",
+        "en": "Length 1 has no answer",
+        "input": "\"a\""
+      },
+      {
+        "zh": "全是 a",
+        "en": "All a",
+        "input": "\"aa\""
+      },
+      {
+        "zh": "奇数长度，中间字符不能改",
+        "en": "Odd length: the middle cannot help",
+        "input": "\"aba\""
+      },
+      {
+        "zh": "改第一个字符",
+        "en": "Change the first character",
+        "input": "\"zz\""
+      },
+      {
+        "zh": "全是 a，改最后一个",
+        "en": "All a: change the last one",
+        "input": "\"aaaaa\""
       }
     ]
   },
@@ -962,6 +1519,74 @@
         "zh": "10^9 加 10^9 不等于 k",
         "en": "10^9 + 10^9 is not k",
         "input": "[1000000000,1000000000]\n1000000000"
+      }
+    ]
+  },
+  "lc-1750": {
+    "edges": [
+      {
+        "zh": "只有一个字符",
+        "en": "A single character",
+        "input": "\"a\""
+      },
+      {
+        "zh": "两个相同字符",
+        "en": "Two equal characters",
+        "input": "\"aa\""
+      },
+      {
+        "zh": "中间剩一个",
+        "en": "One left in the middle",
+        "input": "\"aba\""
+      },
+      {
+        "zh": "一层层删光",
+        "en": "Deleted layer by layer",
+        "input": "\"abba\""
+      },
+      {
+        "zh": "删到最后两个也能删",
+        "en": "Even the last two go",
+        "input": "\"cabaabac\""
+      },
+      {
+        "zh": "两端不同",
+        "en": "Different ends",
+        "input": "\"abc\""
+      }
+    ]
+  },
+  "lc-1763": {
+    "edges": [
+      {
+        "zh": "一个字母：没有答案",
+        "en": "One letter: no answer",
+        "input": "\"a\""
+      },
+      {
+        "zh": "一对大小写",
+        "en": "One case pair",
+        "input": "\"aA\""
+      },
+      {
+        "zh": "整个串都是美好的",
+        "en": "The whole string is nice",
+        "input": "\"abBA\""
+      },
+      {
+        "zh": "大写在前",
+        "en": "Uppercase first",
+        "input": "\"Bb\""
+      },
+      {
+        "zh": "末尾的坏字符",
+        "en": "A bad character at the end",
+        "input": "\"cCdDa\""
+      },
+      {
+        "zh": "等长时取最早的",
+        "en": "Earliest wins a tie",
+        "input": "\"aAxbB\""
       }
     ]
   },

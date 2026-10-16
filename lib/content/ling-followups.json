@@ -25,6 +25,25 @@
       }
     ]
   },
+  "lc-8": {
+    "takeawayZh": "解析题先把阶段列出来，每个阶段只做一件事；溢出要在乘 10 之前判断。",
+    "takeawayEn": "For parsing, list the phases first, one job each; check overflow before multiplying by 10.",
+    "followUps": [
+      {
+        "qZh": "不允许用 64 位整数时，怎么判断溢出？",
+        "qEn": "How do you detect overflow without 64-bit integers?",
+        "aZh": "在乘 10 之前比较：若 result > (INT_MAX − d) / 10，再加这一位就会溢出，按符号直接返回 INT_MAX 或 INT_MIN。",
+        "aEn": "Compare before multiplying: if result > (INT_MAX − d) / 10, appending digit d overflows, so return INT_MAX or INT_MIN by sign."
+      },
+      {
+        "qZh": "这类规则题怎么写清楚？",
+        "qEn": "How do you keep rule-heavy parsing clean?",
+        "aZh": "按阶段写：跳过空格 → 读符号 → 读数字 → 遇到非数字就停。每一步只看当前字符，也可以画成一个有限状态机。",
+        "aEn": "Write it by phase: skip spaces, read a sign, read digits, stop at the first non-digit. Each step looks at one character; it can also be drawn as a finite-state machine.",
+        "problem": "lc-65"
+      }
+    ]
+  },
   "lc-26": {
     "takeawayZh": "有序数组去重：读指针扫描，写指针守住「已经处理好的前缀」。先把这个不变量说清楚，变体只是比较的对象变了。",
     "takeawayEn": "Deduplicating a sorted array: the read pointer scans, the write pointer guards the finished prefix. State that invariant first; the variants only change what you compare against.",
@@ -59,6 +78,24 @@
         "qEn": "What if a whole set of values must go?",
         "aZh": "把这组值放进哈希集合，判断条件换成「不在集合里才保留」，其余不变，时间仍是 O(n)。",
         "aEn": "Put the values in a hash set and keep an element only when it is not in the set; nothing else changes and it stays O(n)."
+      }
+    ]
+  },
+  "lc-28": {
+    "takeawayZh": "KMP 的前缀函数记录「已匹配部分自身的最长相同前后缀」，失配时文本指针不回退。",
+    "takeawayEn": "KMP's prefix function stores the longest border of what has matched, so the text pointer never moves back on a mismatch.",
+    "followUps": [
+      {
+        "qZh": "要找出所有出现位置（可以重叠）？",
+        "qEn": "Find every occurrence, overlaps included?",
+        "aZh": "KMP 匹配成功后不要重置，令 j = π[j−1] 继续，就能找到所有位置，包括重叠的，总共 O(n + m)。",
+        "aEn": "After a full match, do not reset: set j = π[j−1] and continue. That finds every occurrence, overlapping ones too, in O(n + m)."
+      },
+      {
+        "qZh": "还有别的线性做法吗？",
+        "qEn": "Any other linear-time methods?",
+        "aZh": "Rabin-Karp 滚动哈希：平均 O(n + m)，哈希相同时再逐字比对。Z 函数：对 needle + \"#\" + haystack 求 Z 数组，值等于 m 的位置就是匹配。",
+        "aEn": "Rabin-Karp with a rolling hash, O(n + m) on average, comparing characters on a hash match. Or the Z-function of needle + \"#\" + haystack: positions with value m are matches."
       }
     ]
   },
@@ -141,6 +178,42 @@
       }
     ]
   },
+  "lc-65": {
+    "takeawayZh": "格式校验题：先写出文法（符号、整数部分、小数部分、指数），再照着文法写状态。",
+    "takeawayEn": "For format validation, write the grammar first (sign, integer part, fraction, exponent), then code states that follow it.",
+    "followUps": [
+      {
+        "qZh": "还要支持十六进制（\"0x1F\"）或数字中的下划线（\"1_000\"）？",
+        "qEn": "Also accept hex (\"0x1F\") or underscores in digits (\"1_000\")?",
+        "aZh": "在状态机里加状态和转移：0x 之后只接受十六进制数字；下划线只能出现在两个数字之间。规则越多，状态表越比一串 if 好维护。",
+        "aEn": "Add states and transitions: after 0x accept only hex digits; an underscore only between two digits. The more rules, the more a state table beats a chain of ifs."
+      },
+      {
+        "qZh": "能直接用 float() 或正则吗？",
+        "qEn": "Could you just call float() or use a regex?",
+        "aZh": "面试里通常要求自己实现。float() 还接受 \"inf\"、\"nan\" 和 \"1_0\"，和题意不同。正则可以写成 `^[+-]?(\\d+\\.?\\d*|\\.\\d+)([eE][+-]?\\d+)?$`，但要能解释每一段。",
+        "aEn": "Interviews usually want it by hand. float() also accepts \"inf\", \"nan\" and \"1_0\", which the problem rejects. A regex such as `^[+-]?(\\d+\\.?\\d*|\\.\\d+)([eE][+-]?\\d+)?$` works if you can explain every part."
+      }
+    ]
+  },
+  "lc-68": {
+    "takeawayZh": "模拟题先分清几类行：普通行、只有一个词的行、最后一行，各自的对齐规则不同。",
+    "takeawayEn": "For simulations, separate the cases first: ordinary lines, single-word lines and the last line each align differently.",
+    "followUps": [
+      {
+        "qZh": "空格不能均分时，多出来的放在哪？",
+        "qEn": "Where do leftover spaces go when they do not divide evenly?",
+        "aZh": "从左往右，每个间隔多放一个：总空格数 s、间隔数 g，前 s mod g 个间隔放 ⌊s/g⌋+1 个，其余放 ⌊s/g⌋ 个。",
+        "aEn": "Left to right, one extra per gap: with s spaces and g gaps, the first s mod g gaps get ⌊s/g⌋+1 and the rest ⌊s/g⌋."
+      },
+      {
+        "qZh": "要让每行末尾空白的平方和最小（更好看的排版）？",
+        "qEn": "Minimise the sum of squared trailing spaces for nicer layout?",
+        "aZh": "贪心就不再最优了，要用动态规划：dp[i] 表示从第 i 个词排到结尾的最小代价，枚举这一行放到第几个词。这是 TeX 断行思路的简化版。",
+        "aEn": "Greedy is no longer optimal; use DP: dp[i] is the least cost to lay out words i onward, trying every last word for the current line. It is a simplified form of TeX line breaking."
+      }
+    ]
+  },
   "lc-75": {
     "takeawayZh": "三指针维护三段不变量：[0, lo) 全是 0，[lo, i) 全是 1，(hi, n) 全是 2。和 hi 交换过来的元素还没检查，所以 i 不前进。",
     "takeawayEn": "Three pointers keep three regions: [0, lo) holds 0s, [lo, i) holds 1s, (hi, n) holds 2s. An element swapped in from hi is unchecked, so i does not advance.",
@@ -215,6 +288,24 @@
       }
     ]
   },
+  "lc-151": {
+    "takeawayZh": "「反转单词顺序」= 整体反转一次，再把每个单词反转回来；清理多余空格是单独的一步。",
+    "takeawayEn": "Reversing word order is reversing everything, then each word back; collapsing extra spaces is a separate step.",
+    "followUps": [
+      {
+        "qZh": "字符串是可变的字符数组，要求 O(1) 额外空间？",
+        "qEn": "If the string is a mutable char array, can you use O(1) extra space?",
+        "aZh": "先整体反转，再逐个反转每个单词，最后用读写双指针原地压缩多余的空格。",
+        "aEn": "Reverse the whole array, reverse each word, then squeeze out extra spaces in place with read and write pointers."
+      },
+      {
+        "qZh": "改成每个单词内部反转、单词顺序不变？",
+        "qEn": "Reverse each word but keep the word order?",
+        "aZh": "只做「逐个反转单词」那一步即可，整体反转那一步不要。",
+        "aEn": "Do only the per-word reversal and skip reversing the whole string."
+      }
+    ]
+  },
   "lc-169": {
     "takeawayZh": "摩尔投票靠「两两抵消」：多数元素抵消不完。得到的只是候选人；题目不保证存在时，要再数一遍验证。",
     "takeawayEn": "Boyer-Moore voting cancels pairs, and a majority cannot be cancelled out. It yields only a candidate; unless a majority is guaranteed, count it again to verify.",
@@ -250,6 +341,25 @@
         "aZh": "对长度二分：有长度 L 的重复子串，就一定有更短的。每次用滚动哈希检查，O(n log n)；也可以用后缀数组。",
         "aEn": "Binary search on the length, since a repeat of length L implies shorter ones; check each length with a rolling hash, O(n log n). A suffix array also works.",
         "problem": "lc-1044"
+      }
+    ]
+  },
+  "lc-214": {
+    "takeawayZh": "「最长回文前缀」可以变成字符串匹配：找 s 的前缀和 reverse(s) 的后缀相等的最长长度。",
+    "takeawayEn": "The longest palindromic prefix is a matching problem: the longest prefix of s equal to a suffix of reverse(s).",
+    "followUps": [
+      {
+        "qZh": "改成只能在后面添加字符？",
+        "qEn": "What if characters may only be appended?",
+        "aZh": "对称地找最长的回文后缀，把它前面的部分反转后加到末尾；也可以对反转后的串套用同一个做法。",
+        "aEn": "Find the longest palindromic suffix instead and append the reverse of what precedes it, or run the same method on the reversed string."
+      },
+      {
+        "qZh": "为什么要用 s + \"#\" + reverse(s) 的前缀函数？",
+        "qEn": "Why the prefix function of s + \"#\" + reverse(s)?",
+        "aZh": "它的最后一个值，就是「s 的前缀等于 reverse(s) 的后缀」的最长长度，也就是 s 的最长回文前缀；\"#\" 防止匹配越过分界。",
+        "aEn": "Its last value is the longest prefix of s that equals a suffix of reverse(s), which is the longest palindromic prefix of s; the \"#\" stops matches from crossing the boundary.",
+        "problem": "lc-28"
       }
     ]
   },
@@ -363,6 +473,24 @@
       }
     ]
   },
+  "lc-273": {
+    "takeawayZh": "三位一组，组内处理百、十、个；组与组之间加单位，全 0 的组跳过。",
+    "takeawayEn": "Work in groups of three digits, handling hundreds, tens and ones inside; add a scale word between groups and skip all-zero groups.",
+    "followUps": [
+      {
+        "qZh": "要支持负数或 64 位整数？",
+        "qEn": "Support negatives or 64-bit numbers?",
+        "aZh": "负数加 \"Negative\" 前缀再处理绝对值；注意 −2^63 取绝对值会溢出，要先换成更宽或无符号的类型。更大的数只需继续加 Trillion、Quadrillion 等单位，三位一组的逻辑不变。",
+        "aEn": "Prefix \"Negative\" and convert the absolute value; −2^63 overflows when negated, so widen or go unsigned first. Larger numbers only need more scale words such as Trillion and Quadrillion."
+      },
+      {
+        "qZh": "哪些地方最容易错？",
+        "qEn": "What goes wrong most often?",
+        "aZh": "0 要单独处理；11 到 19 是特殊词；全 0 的组（比如 1,000,010 中间的 000）不能输出单位；单词之间只留一个空格，末尾不留空格。",
+        "aEn": "Zero needs its own case; 11 to 19 are special words; an all-zero group (the middle 000 of 1,000,010) gets no scale word; words are separated by single spaces with none at the end."
+      }
+    ]
+  },
   "lc-283": {
     "takeawayZh": "稳定地「挑出一类元素」：写指针收下要留的，最后统一填尾巴；或者交换，让零自然沉到后面。",
     "takeawayEn": "Stably pulling out one kind of element: the write pointer takes what stays and the tail is filled at the end, or swap so the zeros sink back on their own.",
@@ -435,6 +563,61 @@
         "qEn": "Why is it still correct after first is replaced by a later, smaller value?",
         "aZh": "second 存在就说明它前面曾经有过比它小的数。first 变小只影响以后能不能形成新的二元组，不会让已有的 second 失效。",
         "aEn": "second existing already proves a smaller value came before it. A smaller first only affects future pairs; it never invalidates the current second."
+      }
+    ]
+  },
+  "lc-336": {
+    "takeawayZh": "两段拼成回文就枚举切分点：一边是回文，另一边反转后必须是另一个单词。",
+    "takeawayEn": "Two pieces forming a palindrome: try every split point; one side must be a palindrome and the reverse of the other must be another word.",
+    "followUps": [
+      {
+        "qZh": "空串要怎么处理？",
+        "qEn": "How do you handle the empty string?",
+        "aZh": "空串和任何本身是回文的单词，两种顺序都能拼成回文。按切分点枚举时，切在开头或末尾正好覆盖这种情况，但要避免同一对被算两次。",
+        "aEn": "The empty string pairs both ways with every palindromic word. Splitting at the very start or end covers it, but avoid counting the same pair twice."
+      },
+      {
+        "qZh": "能不能用字典树？",
+        "qEn": "Could a trie help?",
+        "aZh": "把所有单词反转后插入字典树，每个节点记下「从这里往下剩余部分是回文」的单词。逐个单词在树上走，走完或经过某个单词的结尾时检查剩下的部分。复杂度仍是 O(n·k²)，但不需要哈希、常数更小。",
+        "aEn": "Insert every reversed word into a trie and store at each node the words whose remainder below it is a palindrome. Walk each word down the trie and check the rest whenever it ends or passes a word end. Still O(n·k²), but no hashing and a smaller constant."
+      }
+    ]
+  },
+  "lc-344": {
+    "takeawayZh": "原地反转：两端指针交换，向中间收拢，相遇就停。",
+    "takeawayEn": "Reversing in place: swap at both ends, move inward, stop when they meet.",
+    "followUps": [
+      {
+        "qZh": "字符串含有 emoji 或带声调的组合字符时，逐个字符反转会怎样？",
+        "qEn": "What happens with emoji or combining accents if you reverse unit by unit?",
+        "aZh": "代理对和组合符号会被拆开，结果变成乱码。要先按「字形簇」切分再反转；面试里至少要能指出这个风险。",
+        "aEn": "Surrogate pairs and combining marks get split and the result is garbled. Split into grapheme clusters first, then reverse; at least name the risk in an interview."
+      },
+      {
+        "qZh": "用递归写，代价是什么？",
+        "qEn": "What does a recursive version cost?",
+        "aZh": "reverse(l, r)：交换两端，再递归处理 (l+1, r−1)。逻辑一样，但要 O(n) 的栈深度，n = 10^5 时容易栈溢出，不如循环。",
+        "aEn": "reverse(l, r) swaps the ends and recurses on (l+1, r−1). Same logic, but O(n) stack depth, which can overflow at n = 10^5; a loop is better."
+      }
+    ]
+  },
+  "lc-345": {
+    "takeawayZh": "「只处理一部分字符」的反转：两端指针各自跳过不相关的字符，再交换。",
+    "takeawayEn": "Reversing only some characters: each pointer skips the irrelevant ones, then they swap.",
+    "followUps": [
+      {
+        "qZh": "改成只反转字母，其余字符位置不动？",
+        "qEn": "Reverse only the letters, keeping everything else in place?",
+        "aZh": "同一个模板，把「是不是元音」换成「是不是字母」。",
+        "aEn": "Same template; replace \"is a vowel\" with \"is a letter\".",
+        "problem": "lc-917"
+      },
+      {
+        "qZh": "元音判断怎么写才不容易漏？",
+        "qEn": "How do you test for vowels without missing any?",
+        "aZh": "用一个包含大小写共 10 个元音的集合查表。只写小写会漏掉 \"A\"、\"E\" 这样的大写元音。",
+        "aEn": "Look up a set of all ten vowels in both cases. Listing only lowercase misses uppercase vowels such as \"A\" and \"E\"."
       }
     ]
   },
@@ -538,6 +721,24 @@
       }
     ]
   },
+  "lc-459": {
+    "takeawayZh": "周期问题想到两件事：s 和它的旋转是什么关系，以及前缀函数给出的最小周期 n − π[n−1]。",
+    "takeawayEn": "For periodicity, think of two things: how s relates to its rotations, and the minimal period n − π[n−1] from the prefix function.",
+    "followUps": [
+      {
+        "qZh": "为什么「s 出现在 (s+s) 去掉首尾字符之后」就说明能重复构成？",
+        "qEn": "Why does finding s inside (s+s) minus its first and last characters prove it repeats?",
+        "aZh": "去掉首尾字符正好排除了位置 0 和 n 两个平凡的匹配。若 s 在中间位置 k 出现，说明 s 旋转 k 位后不变，于是 s 有周期 gcd(k, n)：它整除 n 且小于 n。反过来，有这样的周期就一定能在中间找到 s。",
+        "aEn": "Dropping the ends removes the trivial matches at 0 and n. A match at k in between means s equals its rotation by k, so s has period gcd(k, n), which divides n and is less than n. Conversely, such a period always yields a middle match."
+      },
+      {
+        "qZh": "要返回最短的重复单元？",
+        "qEn": "Return the shortest repeating unit?",
+        "aZh": "用前缀函数：p = n − π[n−1]。若 p < n 且 n 能被 p 整除，最短单元就是 s[0:p]，否则不存在。",
+        "aEn": "With the prefix function, p = n − π[n−1]. If p < n and p divides n, the unit is s[0:p]; otherwise there is none."
+      }
+    ]
+  },
   "lc-554": {
     "takeawayZh": "「穿过的砖最少」就是「对齐的缝最多」：反过来数最常见的缝位置。",
     "takeawayEn": "Crossing the fewest bricks means lining up with the most gaps: count the most common gap position instead.",
@@ -575,6 +776,62 @@
       }
     ]
   },
+  "lc-686": {
+    "takeawayZh": "「重复若干次后包含」：先界定次数的上限，再变成普通的子串匹配。",
+    "takeawayEn": "\"Contains after repeating\": bound the number of copies first, then it is ordinary substring search.",
+    "followUps": [
+      {
+        "qZh": "为什么最多只要试 ⌈m/n⌉ + 1 份？",
+        "qEn": "Why is ⌈m/n⌉ + 1 copies always enough to try?",
+        "aZh": "b 若能出现，起点一定可以落在第一份 a 里（0 到 n−1）。从那里覆盖 m 个字符最多跨 ⌈m/n⌉ + 1 份，再多重复只是把同样的起点再试一遍。",
+        "aEn": "If b occurs, some occurrence starts inside the first copy of a (0 to n−1). Covering m characters from there spans at most ⌈m/n⌉ + 1 copies; more copies only retry the same starts."
+      },
+      {
+        "qZh": "怎么避免真的拼出一个很长的字符串？",
+        "qEn": "How do you avoid building the long string?",
+        "aZh": "把 a 当作循环文本，用 i mod n 取字符，直接在上面跑 KMP；只需检查起点落在第一份 a 里的匹配。",
+        "aEn": "Treat a as cyclic text, reading index i mod n, and run KMP on it directly; only matches starting in the first copy matter.",
+        "problem": "lc-28"
+      }
+    ]
+  },
+  "lc-796": {
+    "takeawayZh": "旋转问题都可以放到 s+s 里看：s 的所有旋转，都是 s+s 里长度为 n 的子串。",
+    "takeawayEn": "Rotations live inside s+s: every rotation of s is a length-n substring of s+s.",
+    "followUps": [
+      {
+        "qZh": "为什么一定要先比较长度？",
+        "qEn": "Why compare lengths first?",
+        "aZh": "只检查 goal 在不在 s+s 里，s = \"ab\"、goal = \"a\" 也会返回 true。长度相等才说明 goal 是一个完整的旋转。",
+        "aEn": "Checking only that goal occurs in s+s would accept s = \"ab\", goal = \"a\". Equal lengths make it a whole rotation."
+      },
+      {
+        "qZh": "要返回最少旋转几位？",
+        "qEn": "Return the smallest number of rotations?",
+        "aZh": "在 s+s 里找 goal 第一次出现的位置 k（0 ≤ k < n），就是左移 k 位；用 KMP 可以做到 O(n)。",
+        "aEn": "Find the first occurrence k of goal in s+s (0 ≤ k < n); that is k left rotations, O(n) with KMP.",
+        "problem": "lc-28"
+      }
+    ]
+  },
+  "lc-809": {
+    "takeawayZh": "处理「连续相同的字符」时先做游程编码：比较的是一段一段，而不是单个字符。",
+    "takeawayEn": "For runs of equal characters, run-length encode first: compare runs, not single characters.",
+    "followUps": [
+      {
+        "qZh": "拉伸的阈值不是 3，而是 k？",
+        "qEn": "What if the stretch threshold is k instead of 3?",
+        "aZh": "条件换成：两段字符相同，并且 s 的段长等于 word 的段长，或者 s 的段长 ≥ max(k, word 的段长)。",
+        "aEn": "Require the same character and either equal run lengths or an s run of at least max(k, the word's run)."
+      },
+      {
+        "qZh": "先把字符串压成 (字符, 次数) 列表再比，可以吗？",
+        "qEn": "Could you compress both into (char, count) lists first?",
+        "aZh": "可以。s 和 word 各做一次游程编码，比较段数和每一段，代码更清楚，复杂度相同。",
+        "aEn": "Yes. Run-length encode s and each word, compare the number of runs and each run; the code is clearer at the same cost."
+      }
+    ]
+  },
   "lc-912": {
     "takeawayZh": "选排序算法先问三件事：要不要稳定，额外空间能给多少，最坏情况能不能接受。",
     "takeawayEn": "Before picking a sort, ask three things: must it be stable, how much extra space is allowed, and is the worst case acceptable.",
@@ -600,6 +857,24 @@
       }
     ]
   },
+  "lc-917": {
+    "takeawayZh": "反转一个子集：先确定哪些字符参与，指针跳过其余的，交换参与的字符。",
+    "takeawayEn": "Reversing a subset: decide which characters take part, let the pointers skip the rest, and swap the ones that do.",
+    "followUps": [
+      {
+        "qZh": "改成每个单词内部反转、单词顺序不变？",
+        "qEn": "Reverse each word internally but keep the word order?",
+        "aZh": "按分隔符切出每个单词，单词内部用双指针反转；或者一遍扫描，遇到单词边界就反转刚结束的那一段。",
+        "aEn": "Split at the separators and reverse each word with two pointers, or scan once and reverse each word as it ends."
+      },
+      {
+        "qZh": "怎么判断「字母」？",
+        "qEn": "How should you test for a letter?",
+        "aZh": "Python 的 str.isalpha() 对 é 这类非 ASCII 字母也返回 True。题目只有 ASCII，直接比较 a–z、A–Z 的范围最稳。",
+        "aEn": "Python's str.isalpha() is also True for non-ASCII letters such as é. With ASCII input, comparing against a–z and A–Z is the safest test."
+      }
+    ]
+  },
   "lc-1010": {
     "takeawayZh": "「和能被 k 整除」就是余数互补；余数 0 和 k/2 是和自己配对的特例。",
     "takeawayEn": "\"Sum divisible by k\" means complementary remainders; remainders 0 and k/2 pair with themselves.",
@@ -616,6 +891,60 @@
         "aZh": "那要对前缀和取余数，再数余数相同的前缀对。",
         "aEn": "Then take prefix sums modulo k and count pairs of prefixes with the same remainder.",
         "problem": "lc-974"
+      }
+    ]
+  },
+  "lc-1023": {
+    "takeawayZh": "带约束的子序列匹配：双指针扫描 query，能匹配就推进 pattern；不能跳过的字符（这里是大写字母）一出现就失败。",
+    "takeawayEn": "Subsequence matching with a constraint: scan the query with two pointers, advancing the pattern on a match; any character that may not be skipped (an uppercase letter here) fails at once.",
+    "followUps": [
+      {
+        "qZh": "如果允许插入任意字符，不只小写字母？",
+        "qEn": "What if any character may be inserted, not only lowercase?",
+        "aZh": "那就只是判断 pattern 是不是 query 的子序列，去掉「遇到多余大写字母就失败」这条检查即可。",
+        "aEn": "Then it is plain subsequence testing; drop the rule that an extra uppercase letter fails."
+      },
+      {
+        "qZh": "有很多 pattern，要判断一个 query 能匹配哪些？",
+        "qEn": "With many patterns, which ones does a query match?",
+        "aZh": "逐个 pattern 跑双指针是 O(|query|·P)。pattern 很多时，可以把它们建成字典树，用 query 在树上走，维护「当前可能所在的节点」集合：小写字母既可以沿边走，也可以留在原地；大写字母必须沿边走。最后落在某个 pattern 结尾的节点，就是匹配上的。",
+        "aEn": "Running two pointers per pattern costs O(|query|·P). With many patterns, put them in a trie and walk it with the query, keeping the set of nodes you could be at: a lowercase letter may follow an edge or stay put, an uppercase one must follow an edge. Nodes that end a pattern at the finish are the matches."
+      }
+    ]
+  },
+  "lc-1044": {
+    "takeawayZh": "「有长度 L 的答案，就有更短的」这种单调性，提示对长度二分。",
+    "takeawayEn": "Monotonicity (\"a repeat of length L implies shorter ones\") is the cue to binary search on the length.",
+    "followUps": [
+      {
+        "qZh": "哈希碰撞怎么处理？",
+        "qEn": "How do you handle hash collisions?",
+        "aZh": "用两个不同的模数做双哈希，降低碰撞概率；或者哈希相同时再比较原始子串确认。只用一个哈希又不验证，可能被特意构造的数据卡掉。",
+        "aEn": "Use two moduli (a double hash) to make collisions unlikely, or confirm by comparing the substrings on a hash match. A single unverified hash can be broken by crafted data."
+      },
+      {
+        "qZh": "有没有不依赖哈希的做法？",
+        "qEn": "Is there a method without hashing?",
+        "aZh": "后缀数组加 LCP 数组：最长重复子串就是相邻后缀最长公共前缀的最大值，构造 O(n log n)。后缀自动机也可以做。",
+        "aEn": "A suffix array with its LCP array: the answer is the largest common prefix of adjacent suffixes, built in O(n log n). A suffix automaton works too."
+      }
+    ]
+  },
+  "lc-1328": {
+    "takeawayZh": "求字典序最小：越靠前的位置影响越大，贪心地改最左边能改的那一位。",
+    "takeawayEn": "For the lexicographically smallest result, earlier positions matter most: greedily change the leftmost position that can change.",
+    "followUps": [
+      {
+        "qZh": "为什么只看前一半？",
+        "qEn": "Why only look at the first half?",
+        "aZh": "把前一半某个不是 a 的字符改成 a，既打破了回文，又让字典序变小；改后一半的对应位置字典序反而更大。奇数长度的正中间改了仍是回文，不能用。",
+        "aEn": "Changing a non-a in the first half to a breaks the palindrome and makes the string smaller; the mirrored change in the second half would be larger. The middle of an odd length stays a palindrome, so it cannot be used."
+      },
+      {
+        "qZh": "改成要字典序最大的非回文？",
+        "qEn": "What about the lexicographically largest non-palindrome?",
+        "aZh": "对称地做：前一半第一个不是 z 的字符改成 z；前一半全是 z 时，把最后一个字符改成 y。长度为 1 时同样无解。",
+        "aEn": "Mirror it: change the first non-z in the first half to z; if the first half is all z, change the last character to y. Length 1 still has no answer."
       }
     ]
   },
@@ -653,6 +982,42 @@
         "aZh": "左右双指针：和等于 k 时两边都收缩并计数，和小了左边前进，和大了右边后退，O(1) 额外空间。",
         "aEn": "Two pointers: on a sum equal to k, count and move both; move left when the sum is small and right when large, O(1) extra space.",
         "problem": "lc-167"
+      }
+    ]
+  },
+  "lc-1750": {
+    "takeawayZh": "两端同时收缩的题，循环条件和「指针交叉」时的处理最容易错，先拿全相同的串检查。",
+    "takeawayEn": "When both ends shrink, the loop condition and the crossing case are where bugs hide; test with a string of one repeated character.",
+    "followUps": [
+      {
+        "qZh": "全是同一个字符时为什么要特别小心？",
+        "qEn": "Why be careful when every character is the same?",
+        "aZh": "前缀和后缀不能重叠。外层循环要求 l < r（至少剩两个字符才能各删一段），删除时指针可以越过对方；越过就说明全删光了，答案是 0。",
+        "aEn": "The prefix and suffix may not overlap. The outer loop needs l < r (two characters to delete from), while the inner deletion may cross over; crossing means everything is gone and the answer is 0."
+      },
+      {
+        "qZh": "为什么每次都删到最长不会更差？",
+        "qEn": "Why is deleting the longest run each time never worse?",
+        "aZh": "只删一部分，剩下的同样字符还在两端，下一步仍然得删它们；一次删完不会影响之后能删什么。",
+        "aEn": "Deleting part of a run leaves the same character at the ends to be deleted next anyway; taking it all at once never limits later deletions."
+      }
+    ]
+  },
+  "lc-1763": {
+    "takeawayZh": "「坏字符」不可能出现在答案里，就以它为界把问题切开，分治求解。",
+    "takeawayEn": "A bad character can never be in the answer, so split the problem around it and recurse.",
+    "followUps": [
+      {
+        "qZh": "分治为什么正确，复杂度是多少？",
+        "qEn": "Why is divide and conquer correct, and how fast is it?",
+        "aZh": "若某个字母在整个串里只以一种大小写出现，任何包含它的子串都不美好，所以它把串切成几段，答案只在某一段里。每深入一层，至少少一种字母，深度不超过 26，总共 O(26·n)。",
+        "aEn": "If a letter appears in only one case across the string, no substring containing it is nice, so it splits the string and the answer lies within one piece. Each level loses at least one letter, so depth is at most 26 and the total O(26·n)."
+      },
+      {
+        "qZh": "有多个等长答案时返回哪个？",
+        "qEn": "Which answer when several have the same length?",
+        "aZh": "返回最早出现的。分治时从左到右处理各段，只有严格更长才替换，就能保证这一点。",
+        "aEn": "The earliest. Process the pieces left to right and replace only on a strictly longer one."
       }
     ]
   },
