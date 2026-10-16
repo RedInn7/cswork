@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-40",
+  "packageChecksum": "ad1c311d56f795801f846d34328dd52f1c37199f30b28a4c97a4f74a202d1640",
+  "sourceContentHash": "06cf9e13dbed7026e157a692bc0ba599d6ed2c7221d3597cab514f22f8f41564",
+  "editorialSha256": "a40bc6042380f486bcac6f88b865e8f03f8435e5e0d60190ec8434e478dd8f44",
+  "hints": {
+    "zh": [
+      "比较的单位是整行日志：行里的空格属于内容，不能按空格拆词，也不能去掉首尾空格；空行同样是一条合法日志。“只出现一次”要看整个输入的频次，所以在读完所有日志之前，无法判断前面的某条是不是答案。",
+      "分两遍：第一遍用哈希表统计每条完整日志出现的次数；第二遍按原顺序扫描，第一条次数恰好为 1 的就是答案。若没有这样的日志，输出一个空行。",
+      "一次性读入全部输入，按换行切分（只去掉末尾那一个换行）。第一行是 n，接下来 n 行是日志，空行也要算。用哈希表计数后，从第一条开始找计数为 1 的日志并原样输出加换行；找不到就只输出换行。n 可达 100 万、输入可达 32MiB，尽量用切片引用原缓冲区，避免逐行复制。"
+    ],
+    "en": [
+      "The unit of comparison is the whole log line: spaces inside a line are part of its content, so do not split into words or trim leading or trailing spaces, and an empty line is a valid log too. \"Appears only once\" depends on frequencies over the entire input, so you cannot decide whether an early log is the answer before reading all of them.",
+      "Use two passes: in the first, count how many times each full log line occurs with a hash map; in the second, scan in the original order, and the first log whose count is exactly 1 is the answer. If there is no such log, output an empty line.",
+      "Read the whole input at once and split it on newlines (removing only the single trailing newline). The first line is n, and the next n lines are the logs, including empty ones. After counting with a hash map, search from the first log for one with count 1 and print it unchanged followed by a newline; if there is none, print just a newline. n can be 1 million and the input up to 32MiB, so prefer slices that reference the original buffer over copying every line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the frequency of each full string, then find the first string with frequency 1 in the original order.\n\n## Correctness\n\nThe frequency count covers every entry, so a frequency of 1 means exactly that the string appears only once in the end. Checking again in the original order, the first matching string is the earliest position the problem asks for; if nothing matches, output an empty line.\n\n## Complexity\n\nTime O(total input bytes), space O(total input bytes+n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-11",
+  "packageChecksum": "7954b128fd0801295ae0e94d7db75c989d0ee22b56150830f25f4e059e279a17",
+  "sourceContentHash": "060033c5587df11a52ec4cc0fdc6a4c31334e1746dc2d59ff12dd0a75a9b45c2",
+  "editorialSha256": "b7640f3989d46ffe7a04106942dd5b8919ec53186e1e3a2fb5319acebe550dfc",
+  "hints": {
+    "zh": [
+      "团队越小越容易满足：从一个可行团队里删掉任意成员，剩下每个人两侧的人数都不会增加，所以“能否组成 K 人团队”对 K 是单调的。只有一个人的团队总是可行（要求都是非负数），答案至少为 1。",
+      "二分团队人数 K，问题变成判定能否选出恰好 K 人。固定 K 后按技能从低到高扫描：已经选了 c 人时，当前这个人若被选，比他低的恰有 c 人、比他高的还需 K−1−c 人，所以条件是 lower≥c 且 higher≥K−1−c。能选就立刻选（贪心）：任何可行方案中的下一位都可以换成更早的合格者，而不影响其他人。",
+      "读入 n、lower、higher（n 可达 200 万，用快速读入）。设 low=1、high=n，二分 target=(low+high+1)/2：从 c=0 开始扫描所有人，满足 lower[i]≥c 且 higher[i]≥target−1−c 就 c++，c 达到 target 时提前结束；若 c==target 则 low=target，否则 high=target−1。最后输出 low，总时间 O(n log n)。"
+    ],
+    "en": [
+      "Smaller teams are easier to satisfy: removing any member from a feasible team never increases the number of people on either side of anyone remaining, so \"a team of K people can be formed\" is monotone in K. A team of a single person is always feasible (all requirements are non-negative), so the answer is at least 1.",
+      "Binary search on the team size K, which turns the question into deciding whether exactly K people can be chosen. For a fixed K, scan the developers from lowest to highest skill: when c people have been chosen, choosing the current person means exactly c members are below them and K−1−c more must come above, so the condition is lower≥c and higher≥K−1−c. Choose a person as soon as they qualify (greedy): in any feasible team, the next member can be swapped for an earlier qualifying person without affecting anyone else.",
+      "Read n, lower and higher (n can reach 2 million, so use fast input). Set low=1 and high=n and binary search with target=(low+high+1)/2: scan everyone starting from c=0, increment c whenever lower[i]≥c and higher[i]≥target−1−c, and stop early once c reaches target; if c==target set low=target, otherwise high=target−1. Print low at the end; the total time is O(n log n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the team size K and scan from low skill to high skill: when c people have been selected, select this person if lower≥c and higher≥K−1−c. Use compact 32-bit arrays and token-by-token parsing to cover the 2,000,000 domain.\n\n## Proof of correctness\n\nFor a fixed K, when c people have been selected, the condition for the next person to be valid is exactly the two inequalities above. In any feasible team, if its (c+1)-th member comes later than the earliest currently qualifying person, it can be replaced by that person; the counts on each side of the earlier and later members do not change, and the replacement's own conditions are satisfied. So the greedy finds K people if and only if K is feasible. Removing members never increases the number of people on either side of the remaining members, so feasibility is monotone downward and the binary search is correct.\n\n## Complexity\n\nTime O(n log n), and O(n) space with compact arrays; input reading does not use a split that would create millions of string objects."
+}

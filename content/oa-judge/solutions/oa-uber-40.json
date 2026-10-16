@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-40",
+  "packageChecksum": "ad1c311d56f795801f846d34328dd52f1c37199f30b28a4c97a4f74a202d1640",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string raw, data;\n    char chunk[1 << 16];\n    for (size_t got; (got = fread(chunk, 1, sizeof chunk, stdin)) > 0;) raw.append(chunk, got);\n    // Treat CRLF and lone CR as newlines, like text-mode input.\n    data.reserve(raw.size());\n    for (size_t i = 0; i < raw.size(); i++) {\n        if (raw[i] == '\\r') { data += '\\n'; if (i + 1 < raw.size() && raw[i + 1] == '\\n') i++; }\n        else data += raw[i];\n    }\n    string().swap(raw);\n    if (!data.empty() && data.back() == '\\n') data.pop_back();\n    vector<string_view> lines;\n    for (size_t start = 0;;) {\n        size_t end = data.find('\\n', start);\n        if (end == string::npos) { lines.emplace_back(data.data() + start, data.size() - start); break; }\n        lines.emplace_back(data.data() + start, end - start);\n        start = end + 1;\n    }\n    long long n = stoll(string(lines[0]));\n    size_t last = min<size_t>(lines.size(), 1 + n);\n    unordered_map<string_view, int> counts;\n    counts.reserve(2 * last);\n    for (size_t i = 1; i < last; i++) counts[lines[i]]++;\n    string_view answer;\n    for (size_t i = 1; i < last; i++)\n        if (counts[lines[i]] == 1) { answer = lines[i]; break; }\n    fwrite(answer.data(), 1, answer.size(), stdout);\n    putchar('\\n');\n}\n",
+      "sha256": "c9735f114167375d6581d001623c31ce8a67dcb52ac7117b162916a4590563f7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.nio.charset.StandardCharsets;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // Latin-1 keeps every byte as one char; CRLF and lone CR count as newlines.\n        String data = new String(System.in.readAllBytes(), StandardCharsets.ISO_8859_1);\n        if (data.indexOf('\\r') >= 0) data = data.replace(\"\\r\\n\", \"\\n\").replace('\\r', '\\n');\n        if (data.endsWith(\"\\n\")) data = data.substring(0, data.length() - 1);\n        ArrayList<String> lines = new ArrayList<>();\n        for (int start = 0;;) {\n            int end = data.indexOf('\\n', start);\n            if (end < 0) { lines.add(data.substring(start)); break; }\n            lines.add(data.substring(start, end));\n            start = end + 1;\n        }\n        long n = Long.parseLong(lines.get(0).trim());\n        int last = (int) Math.min(lines.size(), 1 + n);\n        HashMap<String, Integer> counts = new HashMap<>(2 * last);\n        for (int i = 1; i < last; i++) counts.merge(lines.get(i), 1, Integer::sum);\n        String answer = \"\";\n        for (int i = 1; i < last; i++) {\n            if (counts.get(lines.get(i)) == 1) { answer = lines.get(i); break; }\n        }\n        OutputStream out = new BufferedOutputStream(System.out);\n        out.write((answer + \"\\n\").getBytes(StandardCharsets.ISO_8859_1));\n        out.flush();\n    }\n}\n",
+      "sha256": "0d28f2b1443ef5d33db2975af4f3a5f6de86fdfda60cfa05420a2883a44d4b75"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\tdata := string(raw)\n\t// Treat CRLF and lone CR as newlines, like text-mode input.\n\tif strings.IndexByte(data, '\\r') >= 0 {\n\t\tdata = strings.ReplaceAll(strings.ReplaceAll(data, \"\\r\\n\", \"\\n\"), \"\\r\", \"\\n\")\n\t}\n\tdata = strings.TrimSuffix(data, \"\\n\")\n\tlines := strings.Split(data, \"\\n\")\n\tn, _ := strconv.Atoi(strings.TrimSpace(lines[0]))\n\tlast := min(len(lines), 1+n)\n\tlogs := lines[1:last]\n\tcounts := make(map[string]int, len(logs))\n\tfor _, line := range logs {\n\t\tcounts[line]++\n\t}\n\tanswer := \"\"\n\tfor _, line := range logs {\n\t\tif counts[line] == 1 {\n\t\t\tanswer = line\n\t\t\tbreak\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tw.WriteString(answer)\n\tw.WriteByte('\\n')\n\tw.Flush()\n}\n",
+      "sha256": "78329232edbea21290c15d32735bb71ef4dbac67c46abb94fe1994dbcfa316a6"
+    }
+  ]
+}

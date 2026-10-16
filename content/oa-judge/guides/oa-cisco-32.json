@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-32",
+  "packageChecksum": "ca2440e6e5b8954b1f94ab9ff8f08ea734a5b03fdda8720140f57ad8f8ffacde",
+  "sourceContentHash": "e3c1b153a432f77d17476140c5e2675476c51abaac6bab4c34be37d3f12f298d",
+  "editorialSha256": "cb1d105a0fa3095291d09b0808f41bfc8c6c3001f91e4fc9fa4c4b89866d6e60",
+  "hints": {
+    "zh": [
+      "顺时针旋转 90 度把原坐标 (r, c) 移到 (c, N−1−r)。换个角度看：新矩阵的第 c 行，正是原矩阵第 c 列从下往上读出来的结果。旋转方向以原样例为准，不能写成逆时针。",
+      "不需要真的构造新矩阵：把原矩阵按行展平存下来，输出时对每个新行 c，让原行号 r 从 N−1 递减到 0，依次取 a[r][c] 即可。每个元素恰好输出一次，位置由一一对应的坐标映射保证。",
+      "读入 N、M（N=M）和 N·N 个整数，存进一维数组 a，下标 r·N+c。外层循环 c 从 0 到 N−1，内层 r 从 N−1 到 0，把 a[r·N+c] 用空格连接成一行输出。N 可达 1000，输出约 1200 万字节，需要快速读入并把输出攒在缓冲区里一次写出。"
+    ],
+    "en": [
+      "A 90-degree clockwise rotation moves the original coordinate (r, c) to (c, N−1−r). Seen another way, row c of the new matrix is exactly column c of the original matrix read from bottom to top. The direction follows the original example; do not rotate counterclockwise.",
+      "There is no need to build the new matrix: store the original matrix flattened row by row, and when printing each new row c, let the original row index r go down from N−1 to 0 and take a[r][c] in turn. Every element is printed exactly once, and its position is guaranteed by the one-to-one coordinate mapping.",
+      "Read N, M (N=M) and the N·N integers into a one-dimensional array a with index r·N+c. Loop c from 0 to N−1 on the outside and r from N−1 down to 0 on the inside, joining a[r·N+c] with spaces into one output line. N can be 1000 and the output is about 12 million bytes, so read input quickly and collect the output in a buffer to write it once."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRow c of the new matrix is column c of the original matrix read from bottom to top. Store the original matrix compactly and generate the output row by row.\n\n## Proof of correctness\n\nThe rotation maps the original coordinate (r,c) to (c,N−1−r), so fixing new row c and increasing the new column is exactly equivalent to decreasing the original row from N−1 to 0. This coordinate mapping is a bijection, so every element is output once and in the correct position.\n\n## Complexity\n\nTime O(N²), with O(N²) storage for input and output; the worst-case output is 12000000 bytes, and the output limit is 16MiB."
+}

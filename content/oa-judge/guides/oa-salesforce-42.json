@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-42",
+  "packageChecksum": "aa6f4eba38a02d0868396d78fa1ecb7bb1320e1e32615eb985506bc444bb98a4",
+  "sourceContentHash": "c6cc929fb1b6051a5d790a1b3f6d582353f2448a229efb5cdf3283584e59e453",
+  "editorialSha256": "741dd1e8e6c00b3081bf24617c1cca6027cdf8aadf358a349589df557a27731c",
+  "hints": {
+    "zh": [
+      "在环上从 startIndex 走到某个固定位置 i，最短路线只能一直朝一个方向走：设 d=|i−startIndex|，顺着走要 d 步，反方向绕环要 n−d 步。目标名称可能出现多次，任意一个出现位置都可以作为终点。",
+      "枚举所有名称与 target 完全相等的位置 i，对每个位置取 min(d, n−d)，再在所有位置中取最小值；一个匹配位置都没有就输出 -1。名称比较必须逐字符精确，不能忽略大小写或空白，空字符串也可以是合法的名称和目标。",
+      "解析 JSON 数组 [tools, startIndex, target]，字符串要正确处理转义（包括 \\uXXXX 和代理对）后再比较。答案初值设为 n 作为“未找到”的标记；遍历 tools，名称等于 target 时计算 d=|i−startIndex| 并用 min(d, n−d) 更新答案。最后答案仍为 n 则输出 -1，否则输出答案。时间 O(总字符数+n)。"
+    ],
+    "en": [
+      "To go around the ring from startIndex to a fixed position i, the shortest route keeps moving in one direction: with d=|i−startIndex|, going straight takes d steps and going the other way around the ring takes n−d steps. The target name may appear several times, and any of its positions can serve as the destination.",
+      "Enumerate every position i whose name is exactly equal to target, take min(d, n−d) for each, and take the minimum over all of them; if there is no matching position at all, output -1. Names must be compared exactly, character by character, without ignoring case or whitespace, and the empty string can be a valid name and target.",
+      "Parse the JSON array [tools, startIndex, target], decoding escapes in the strings correctly (including \\uXXXX and surrogate pairs) before comparing. Initialize the answer to n as the \"not found\" marker; go over tools, and whenever a name equals target, compute d=|i−startIndex| and update the answer with min(d, n−d). If the answer is still n at the end, output -1, otherwise output the answer. The time is O(total characters+n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGo over every position i where a name matches, take the smaller of the straight index distance d and the wrap-around distance n−d, then take the minimum over all target positions.\n\n## Proof of correctness\n\nFix a target i: the shortest path can only go along one of the two directions of the ring without repeating edges, and the two paths have lengths d and n−d. Enumerating all positions where the target occurs covers every possible endpoint, so the global minimum is correct.\n\n## Complexity\n\nTime O(total name characters+n), space O(input bytes+n). The worst-case ASCII-escaped name input is about 19.5MB, below the 32MiB input limit."
+}

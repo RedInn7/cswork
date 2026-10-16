@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-26",
+  "packageChecksum": "21fddd13fa2cf043541121882fb44e8ea557b049b7c3a0630ce3145fd145e06c",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    tokens = sys.stdin.read().split()\n    n = int(tokens[0])\n    words = tokens[1:1 + n]\n    q = int(tokens[1 + n])\n    queries = tokens[2 + n:2 + n + q]\n    # Sorted characters form the signature shared by all anagrams.\n    groups = {}\n    for word in words:\n        groups.setdefault(''.join(sorted(word)), []).append(word)\n    for group in groups.values():\n        group.sort()\n    # Output can reach tens of MB: write line by line instead of joining everything.\n    write = sys.stdout.write\n    for query in queries:\n        group = groups.get(''.join(sorted(query)))\n        if group is None:\n            write('0\\n')\n        else:\n            write(str(len(group)) + ' ' + ' '.join(group) + '\\n')\n\n\nmain()\n",
+      "sha256": "7b7ae802269563ef7f68d0b8ababdf7de76a97190424707883e8bdc8bacde7ab"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static String signature(String s) {\n        char[] c = s.toCharArray();\n        Arrays.sort(c);\n        return new String(c);\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StreamTokenizer st = new StreamTokenizer(br);\n        st.resetSyntax();\n        st.wordChars('!', '~');\n        st.whitespaceChars(0, ' ');\n        st.nextToken();\n        int n = Integer.parseInt(st.sval);\n        // Sorted characters form the signature shared by all anagrams.\n        HashMap<String, ArrayList<String>> groups = new HashMap<>();\n        for (int i = 0; i < n; i++) {\n            st.nextToken();\n            String w = st.sval;\n            groups.computeIfAbsent(signature(w), k -> new ArrayList<>()).add(w);\n        }\n        for (ArrayList<String> g : groups.values()) Collections.sort(g);\n        st.nextToken();\n        int q = Integer.parseInt(st.sval);\n        // Output can reach tens of MB: stream bytes and build each group's line once.\n        BufferedOutputStream out = new BufferedOutputStream(System.out, 1 << 16);\n        HashMap<ArrayList<String>, byte[]> lines = new HashMap<>();\n        for (int i = 0; i < q; i++) {\n            st.nextToken();\n            ArrayList<String> g = groups.get(signature(st.sval));\n            if (g == null) { out.write(\"0\\n\".getBytes()); continue; }\n            byte[] line = lines.computeIfAbsent(g, k -> {\n                StringBuilder sb = new StringBuilder().append(k.size());\n                for (String w : k) sb.append(' ').append(w);\n                return sb.append('\\n').toString().getBytes();\n            });\n            out.write(line);\n        }\n        out.flush();\n    }\n}\n",
+      "sha256": "1e502cded83e68f935c3360d54d4176b9406a5f870738609b55e34ee15014edb"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nfunc signature(s string) string {\n\tb := []byte(s)\n\tslices.Sort(b)\n\treturn string(b)\n}\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\t// Sorted characters form the signature shared by all anagrams.\n\tgroups := map[string][]string{}\n\tfor i := 0; i < n; i++ {\n\t\tw := next()\n\t\tk := signature(w)\n\t\tgroups[k] = append(groups[k], w)\n\t}\n\tfor _, g := range groups {\n\t\tslices.Sort(g)\n\t}\n\tq, _ := strconv.Atoi(next())\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\tg, ok := groups[signature(next())]\n\t\tif !ok {\n\t\t\tw.WriteString(\"0\\n\")\n\t\t\tcontinue\n\t\t}\n\t\tw.WriteString(strconv.Itoa(len(g)))\n\t\tfor _, word := range g {\n\t\t\tw.WriteByte(' ')\n\t\t\tw.WriteString(word)\n\t\t}\n\t\tw.WriteByte('\\n')\n\t}\n}\n",
+      "sha256": "56847113e5ea95bc119b05e034ff93831aa97b54a825be3bfe9534aaf512396b"
+    }
+  ]
+}
