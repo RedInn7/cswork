@@ -106,7 +106,9 @@ export function jobLinkKey(link: string) {
   }
 }
 
-/** The /career/jobs filter (also a learner's saved search, note career:jobs-search). H-1B is page-only. */
+/** The note holding a learner's one saved search (JSON JobSearch; lib/server/my-practice.ts). */
+export const JOB_SEARCH_NOTE = 'career:jobs-search';
+/** The /career/jobs filter, also a learner's saved search. H-1B is page-only: the worker never loads that data. */
 export type JobSearch = {
   kind: '' | 'intern' | 'new-grad';
   role: 'tech' | 'all' | RoleCategory;

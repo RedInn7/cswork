@@ -617,6 +617,12 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
   [/^关注的公司上线了 (\d+) 道新 OA 题$/, (n) => `${n} new OA ${n === '1' ? 'problem' : 'problems'} at companies you follow`],
   [/^关注的公司有 (\d+) 条新动态$/, (n) => `${n} ${n === '1' ? 'update' : 'updates'} at companies you follow`],
+  // The daily digest with a saved /career/jobs search (lib/server/company-follows.ts).
+  [/^保存的筛选有 (\d+) 个新岗位$/, (n) => `${n} new ${n === '1' ? 'opening matches' : 'openings match'} your saved search`],
+  [
+    /^保存的筛选有 (\d+) 个新岗位，关注的公司有 (\d+) 条新动态$/,
+    (n, m) => `${n} new ${n === '1' ? 'opening matches' : 'openings match'} your saved search; ${m} ${m === '1' ? 'update' : 'updates'} at companies you follow`,
+  ],
   [/^(.+) 有新面经$/, (company) => `New interview report: ${company}`],
 ];
 

@@ -1,6 +1,7 @@
-// New-grad and intern openings (lib/server/job-openings.ts): parsing the three ATS boards' JSON,
-// the title filter, the 20-hour sync throttle, hiding stale openings and hidden companies, and the
-// openings in the followed-company digest (lib/server/company-follows.ts).
+// New-grad and intern openings (lib/server/job-openings.ts): parsing the three ATS boards' JSON and
+// posted pay, the title filter, the 20-hour sync throttle, hiding stale openings and hidden
+// companies, hiring seasons (lib/server/job-seasons.ts), and the openings in the followed-company
+// and saved-search digest (lib/server/company-follows.ts).
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -12,8 +13,11 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 const dir = mkdtempSync(join(tmpdir(), 'cswork-job-openings-'));
 process.env.DATABASE_PATH = join(dir, 'app.sqlite');
 const { sqlite } = await import('../db/sqlite');
-const { BOARDS, boardOpenings, freshOpenings, openingKind, syncJobOpenings } = await import('../lib/server/job-openings');
+const { BOARDS, boardOpenings, freshOpenings, openingKind, parseJobSearch, syncJobOpenings, viewerJobSearch } = await import('../lib/server/job-openings');
+const { jobSeasons, seasonsSince } = await import('../lib/server/job-seasons');
 const { sendCompanyDigest } = await import('../lib/server/company-follows');
+const { DEFAULT_SEARCH } = await import('../lib/job-tags');
+const { englishMessage } = await import('../lib/messages-en');
 
 before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }));
 after(() => {
@@ -70,17 +74,17 @@ void test('the title filter keeps early-career roles and drops senior ones', () 
 
 void test('each board’s JSON parses to openings with https links and dates', () => {
   assert.deepEqual(boardOpenings('acme', { ats: 'greenhouse', board: 'acme' }, greenhouse), [
-    { id: 'greenhouse:acme:101', companySlug: 'acme', title: 'Software Engineer, New Grad', location: 'Seattle, WA', url: 'https://example.com/jobs?gh_jid=101', kind: 'new-grad', postedAt: Date.parse('2026-10-01T13:00:00Z') },
+    { id: 'greenhouse:acme:101', companySlug: 'acme', title: 'Software Engineer, New Grad', location: 'Seattle, WA', url: 'https://example.com/jobs?gh_jid=101', kind: 'new-grad', postedAt: Date.parse('2026-10-01T13:00:00Z'), pay: null },
     // 103 is http: left out. A date that does not parse is no date.
-    { id: 'greenhouse:acme:104', companySlug: 'acme', title: 'Data Science Intern', location: 'Austin, TX', url: 'https://example.com/jobs?gh_jid=104', kind: 'intern', postedAt: null },
+    { id: 'greenhouse:acme:104', companySlug: 'acme', title: 'Data Science Intern', location: 'Austin, TX', url: 'https://example.com/jobs?gh_jid=104', kind: 'intern', postedAt: null, pay: null },
   ]);
   // Credentials in the link: left out.
   assert.deepEqual(boardOpenings('acme', { ats: 'lever', board: 'acme' }, lever), [
-    { id: 'lever:acme:a1', companySlug: 'acme', title: 'Forward Deployed Engineer, Internship', location: 'London', url: 'https://jobs.lever.co/acme/a1', kind: 'intern', postedAt: 1790000000000 },
+    { id: 'lever:acme:a1', companySlug: 'acme', title: 'Forward Deployed Engineer, Internship', location: 'London', url: 'https://jobs.lever.co/acme/a1', kind: 'intern', postedAt: 1790000000000, pay: null },
   ]);
   // Unlisted Ashby postings are left out; whitespace in titles is tidied.
   assert.deepEqual(boardOpenings('acme', { ats: 'ashby', board: 'acme' }, ashby), [
-    { id: 'ashby:acme:u1', companySlug: 'acme', title: 'Software Engineer, University Graduate', location: 'San Francisco', url: 'https://jobs.ashbyhq.com/acme/u1', kind: 'new-grad', postedAt: Date.parse('2026-10-10T00:00:00Z') },
+    { id: 'ashby:acme:u1', companySlug: 'acme', title: 'Software Engineer, University Graduate', location: 'San Francisco', url: 'https://jobs.ashbyhq.com/acme/u1', kind: 'new-grad', postedAt: Date.parse('2026-10-10T00:00:00Z'), pay: null },
   ]);
   // Junk is no opening, never an exception.
   for (const body of [null, 'oops', { jobs: 'x' }, [{ id: 1 }], { ok: false, error: 'Document not found' }])
@@ -88,6 +92,49 @@ void test('each board’s JSON parses to openings with https links and dates', (
   // A link too long for the tracker's link field is left out.
   const long = { jobs: [{ ...greenhouse.jobs[0], absolute_url: `https://example.com/${'x'.repeat(500)}` }] };
   assert.deepEqual(boardOpenings('acme', { ats: 'greenhouse', board: 'acme' }, long), []);
+});
+
+void test('posted pay: Lever’s salary range and Ashby’s Salary component, plausible USD or CAD only', () => {
+  const lever = (salaryRange: unknown) =>
+    boardOpenings('acme', { ats: 'lever', board: 'acme' }, [{ id: 'p', text: 'Software Engineer Intern', categories: {}, hostedUrl: 'https://jobs.lever.co/acme/p', salaryRange }])[0].pay;
+  assert.deepEqual(lever({ min: 40, max: 55.5, currency: 'USD', interval: 'per-hour-wage' }), { min: 40, max: 56, currency: 'USD', unit: 'hour' });
+  assert.deepEqual(lever({ min: 120000, max: 150000, currency: 'CAD', interval: 'per-year-salary' }), { min: 120000, max: 150000, currency: 'CAD', unit: 'year' });
+  assert.deepEqual(lever({ min: 8000, max: 9500, currency: 'USD', interval: 'per-month-salary' }), { min: 8000, max: 9500, currency: 'USD', unit: 'month' });
+  for (const bad of [
+    undefined,
+    { min: 5000, max: 5000, currency: 'USD', interval: 'one-time' }, // a bonus, not a rate
+    { min: 50000, max: 60000, currency: 'EUR', interval: 'per-year-salary' }, // bounds are in dollars
+    { min: 60, max: 40, currency: 'USD', interval: 'per-hour-wage' }, // min above max
+    { min: 5, max: 9, currency: 'USD', interval: 'per-hour-wage' },
+    { min: 40, max: 400, currency: 'USD', interval: 'per-hour-wage' },
+    { min: 45, max: 55, currency: 'USD', interval: 'per-year-salary' }, // an hourly rate as a salary
+    { min: 900000, max: 2000000, currency: 'USD', interval: 'per-year-salary' },
+    { min: 500, max: 900, currency: 'USD', interval: 'per-month-salary' },
+    { min: '40', max: '50', currency: 'USD', interval: 'per-hour-wage' },
+    { max: 50, currency: 'USD', interval: 'per-hour-wage' },
+  ])
+    assert.equal(lever(bad), null, JSON.stringify(bad));
+  const ashby = (summaryComponents: unknown) =>
+    boardOpenings('acme', { ats: 'ashby', board: 'acme' }, { jobs: [{ id: 'q', title: 'Software Engineer, New Grad', location: 'NYC', jobUrl: 'https://jobs.ashbyhq.com/acme/q', compensation: { summaryComponents } }] })[0].pay;
+  const equity = { compensationType: 'EquityCashValue', interval: '1 YEAR', currencyCode: 'USD', minValue: null, maxValue: null };
+  assert.deepEqual(ashby([equity, { compensationType: 'Salary', interval: '1 YEAR', currencyCode: 'USD', minValue: 140000, maxValue: 180000 }]), {
+    min: 140000,
+    max: 180000,
+    currency: 'USD',
+    unit: 'year',
+  });
+  assert.deepEqual(ashby([{ compensationType: 'Salary', interval: '1 HOUR', currencyCode: 'USD', minValue: 40, maxValue: 40 }]), { min: 40, max: 40, currency: 'USD', unit: 'hour' });
+  assert.deepEqual(ashby([{ compensationType: 'Salary', interval: '1 MONTH', currencyCode: 'USD', minValue: 7000, maxValue: 9000 }]).unit, 'month');
+  for (const bad of [
+    undefined,
+    [equity],
+    [{ compensationType: 'Salary', interval: '1 MONTH', currencyCode: 'SEK', minValue: 40000, maxValue: 50000 }],
+    [{ compensationType: 'Salary', interval: '1 WEEK', currencyCode: 'USD', minValue: 2000, maxValue: 2500 }],
+    [{ compensationType: 'Bonus', interval: '1 YEAR', currencyCode: 'USD', minValue: 20000, maxValue: 30000 }],
+  ])
+    assert.equal(ashby(bad), null, JSON.stringify(bad));
+  // Greenhouse's list has no pay.
+  assert.equal(boardOpenings('acme', { ats: 'greenhouse', board: 'acme' }, greenhouse)[0].pay, null);
 });
 
 void test('every mapped board is a known ATS with a plain board name', () => {
@@ -117,9 +164,13 @@ globalThis.fetch = async (input: string | URL | Request) => {
 
 void test('sync: at most every 20 hours, a failed board skipped, stale openings hidden', async () => {
   const t0 = Date.UTC(2026, 9, 12, 1);
-  replies = { 'greenhouse.io/v1/boards/acme/jobs': greenhouse, 'lever.co/v0/postings/leverco?mode=json': lever, 'ashbyhq.com/posting-api/job-board/ashco': ashby };
+  const paid = [{ ...lever[0], salaryRange: { min: 45, max: 55, currency: 'USD', interval: 'per-hour-wage' } }, ...lever.slice(1)];
+  replies = { 'greenhouse.io/v1/boards/acme/jobs': greenhouse, 'lever.co/v0/postings/leverco?mode=json': paid, 'ashbyhq.com/posting-api/job-board/ashco': ashby };
   assert.equal(await syncJobOpenings(t0, boards), 4);
   assert.equal(asked.length, 4);
+  assert.ok(asked.includes('https://api.ashbyhq.com/posting-api/job-board/ashco?includeCompensation=true'));
+  // Pay is stored and read back.
+  assert.deepEqual(freshOpenings(t0, 'leverco')[0].pay, { min: 45, max: 55, currency: 'USD', unit: 'hour' });
   // Each board that answered gets its own row, listed nowhere.
   assert.deepEqual(sqlite().prepare("SELECT id FROM job_openings WHERE kind='board' ORDER BY id").pluck().all(), ['ashby:ashco:', 'greenhouse:acme:', 'lever:leverco:']);
   assert.deepEqual(
@@ -132,13 +183,16 @@ void test('sync: at most every 20 hours, a failed board skipped, stale openings 
   assert.equal(await syncJobOpenings(t0 + 19 * HOUR, boards), null);
   assert.equal(asked.length, 4);
   // Next day: Acme's new-grad posting is gone, the Lever board fails; both keep their old rows.
-  replies = { 'greenhouse.io/v1/boards/acme/jobs': { jobs: greenhouse.jobs.slice(1) }, 'ashbyhq.com/posting-api/job-board/ashco': ashby };
+  // Ashby now publishes a salary for u1: an update writes it.
+  const ashbyPaid = { jobs: [{ ...ashby.jobs[0], compensation: { summaryComponents: [{ compensationType: 'Salary', interval: '1 YEAR', currencyCode: 'USD', minValue: 130000, maxValue: 160000 }] } }, ...ashby.jobs.slice(1)] };
+  replies = { 'greenhouse.io/v1/boards/acme/jobs': { jobs: greenhouse.jobs.slice(1) }, 'ashbyhq.com/posting-api/job-board/ashco': ashbyPaid };
   const t1 = t0 + 21 * HOUR;
   assert.equal(await syncJobOpenings(t1, boards), 2);
   assert.equal(asked.length, 8);
   const first = sqlite().prepare('SELECT first_seen_at AS f,last_seen_at AS l FROM job_openings WHERE id=?');
   assert.deepEqual(first.get('ashby:ashco:u1'), { f: t0, l: t1 });
   assert.deepEqual(first.get('greenhouse:acme:101'), { f: t0, l: t0 });
+  assert.deepEqual(freshOpenings(t1, 'ashco')[0].pay, { min: 130000, max: 160000, currency: 'USD', unit: 'year' });
   // Three days after it was last seen, an opening is no longer shown.
   assert.equal(freshOpenings(t0 + 72 * HOUR).length, 4);
   assert.deepEqual(
@@ -223,4 +277,107 @@ void test('the digest: a board’s first early-career role, a new season after o
   await sync(s2 + 21 * HOUR, [], [intern('b1')]);
   assert.equal(await sendCompanyDigest(Date.UTC(2026, 10, 21, 1)), 1);
   assert.deepEqual(notices()[1], { title: '关注的公司有 1 条新动态', body: 'Lyft 1', href: '/company/lyft#jobs' });
+});
+
+void test('seasons: each opening’s own first sighting or title year, kept after the openings expire', async () => {
+  const one = { seasonco: { ats: 'lever', board: 'seasonco' } } as const;
+  const posting = (id: string, text: string) => ({ id, text, categories: {}, hostedUrl: `https://jobs.lever.co/seasonco/${id}` });
+  const sync = async (at: number, list: unknown[]) => {
+    replies = { 'lever.co/v0/postings/seasonco?mode=json': list };
+    assert.notEqual(await syncJobOpenings(at, one), null);
+  };
+  const seasons = () =>
+    jobSeasons(2000, 'seasonco')
+      .map(({ kind, cycle, firstSeenAt, lastSeenAt, peak, firstSync }) => ({ key: `${kind}:${cycle}`, firstSeenAt, lastSeenAt, peak, firstSync }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+  const june = Date.UTC(2027, 5, 20, 2),
+    aug1 = Date.UTC(2027, 7, 1, 2),
+    aug5 = Date.UTC(2027, 7, 5, 2),
+    aug6 = Date.UTC(2027, 7, 6, 2);
+  // The board's first sync: recorded, marked as such.
+  await sync(june, [posting('a', 'Software Engineer Intern'), posting('b', 'Software Engineer, New Grad')]);
+  // June's intern role is still up in August: it stays in June's cycle, it opens no new one. Two
+  // roles open: one with no term (next year's cycle, from August), one naming its own.
+  await sync(aug1, [posting('a', 'Software Engineer Intern'), posting('c', 'Software Engineer Intern'), posting('d', 'Software Engineer Intern, Summer 2029')]);
+  await sync(aug5, [posting('c', 'Software Engineer Intern'), posting('e', 'Firmware Engineer Intern')]);
+  await sync(aug6, [posting('c', 'Software Engineer Intern')]);
+  const expected = [
+    { key: 'intern:2027', firstSeenAt: june, lastSeenAt: aug1, peak: 1, firstSync: true },
+    { key: 'intern:2028', firstSeenAt: aug1, lastSeenAt: aug6, peak: 2, firstSync: false },
+    { key: 'intern:2029', firstSeenAt: aug1, lastSeenAt: aug1, peak: 1, firstSync: false },
+    { key: 'new-grad:2027', firstSeenAt: june, lastSeenAt: june, peak: 1, firstSync: true },
+  ];
+  assert.deepEqual(seasons(), expected);
+  // Two months on every opening row is gone; the seasons are not.
+  await sync(Date.UTC(2027, 9, 6, 2), []);
+  assert.deepEqual(sqlite().prepare("SELECT id FROM job_openings WHERE company_slug='seasonco'").pluck().all(), ['lever:seasonco:']);
+  assert.deepEqual(seasons(), expected);
+  assert.equal(jobSeasons(2028, 'seasonco').length, 2);
+  assert.equal(jobSeasons(2027, 'seasonco')[0].boardSeenAt, Date.UTC(2027, 9, 6, 2));
+  // Records start with the earliest sync that found an opening (the first test's).
+  assert.equal(seasonsSince(), Date.UTC(2026, 9, 12, 1));
+});
+
+void test('the digest: a saved search’s new matches, merged with followed-company news in one notice', async () => {
+  const db = sqlite();
+  db.prepare('DELETE FROM job_openings').run();
+  db.prepare('DELETE FROM company_follows').run();
+  // Beijing 2027-10-12 09:00.
+  const nine = Date.UTC(2027, 9, 12, 1);
+  const row = (id: string, company: string, title: string, firstSeen: number, kind = 'intern', unit = '') =>
+    db
+      .prepare(
+        `INSERT INTO job_openings(id,company_slug,title,location,url,kind,first_seen_at,last_seen_at,pay_min,pay_max,pay_currency,pay_unit)
+        VALUES(?,?,?,'New York, NY','https://example.com/j',?,?,?,?,?,?,?)`,
+      )
+      .run(id, company, title, kind, firstSeen, nine - HOUR, unit ? 40 : null, unit ? 50 : null, unit ? 'USD' : '', unit);
+  row('greenhouse:stripe:', 'stripe', '', nine - 90 * 24 * HOUR, 'board');
+  row('ashby:newco:', 'newco', '', nine - 3 * HOUR, 'board');
+  row('greenhouse:stripe:1', 'stripe', 'Software Engineer Intern, Summer 2028', nine - 5 * HOUR, 'intern', 'hour');
+  row('greenhouse:stripe:2', 'stripe', 'Marketing Intern', nine - 4 * HOUR);
+  row('greenhouse:stripe:3', 'stripe', 'Machine Learning Engineer, New Grad', nine - 30 * HOUR, 'new-grad');
+  row('greenhouse:stripe:4', 'stripe', 'Data Engineer, New Grad', nine - 2 * HOUR, 'new-grad');
+  // Found by its board's first sync: no news.
+  row('ashby:newco:1', 'newco', 'Software Engineer Intern', nine - 3 * HOUR);
+  const save = (user: string, search: object | string) =>
+    db
+      .prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,'career:jobs-search',?,?)")
+      .run(user, typeof search === 'string' ? search : JSON.stringify({ ...DEFAULT_SEARCH, ...search }), nine - 50 * 24 * HOUR);
+  save('js-amy', { kind: 'intern' }); // stripe:1; marketing is no tech role
+  save('js-bob', { role: 'ml' }); // stripe:3 came before the window
+  save('js-cat', '{"kind":"boss"}'); // off-shape: skipped
+  save('js-dan', { paid: true }); // stripe:1 posts pay
+  save('js-eve', { role: 'all', q: 'york' }); // stripe:1, 2 and 4
+  db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at,last_digest_at) VALUES(?,?,?,?)').run('js-amy', 'stripe', nine - 60 * 24 * HOUR, nine - 24 * HOUR);
+  const notices = (user: string) => db.prepare('SELECT id,kind,title,body,href FROM notifications WHERE user_id=?').all(user);
+  assert.equal(await sendCompanyDigest(nine + 5 * 60000), 3);
+  // Amy's followed company had three new openings too: one notice says both.
+  assert.deepEqual(notices('js-amy'), [
+    {
+      id: 'jobs:2027-10-12:js-amy',
+      kind: 'company-jobs',
+      title: '保存的筛选有 1 个新岗位，关注的公司有 3 条新动态',
+      body: 'Stripe 1',
+      href: '/career/jobs?role=tech&kind=intern',
+    },
+  ]);
+  assert.ok(db.prepare("SELECT 1 FROM company_follows WHERE user_id='js-amy' AND last_digest_at=?").get(nine + 5 * 60000), 'the follow moved on');
+  assert.deepEqual(notices('js-bob'), []);
+  assert.deepEqual(notices('js-cat'), []);
+  assert.deepEqual(notices('js-dan'), [
+    { id: 'jobs:2027-10-12:js-dan', kind: 'company-jobs', title: '保存的筛选有 1 个新岗位', body: 'Stripe 1', href: '/career/jobs?role=tech&paid=1' },
+  ]);
+  assert.deepEqual(notices('js-eve').map((n: { body: string; href: string }) => [n.body, n.href]), [['Stripe 3', '/career/jobs?role=all&q=york']]);
+  // The day's scan is done: later ticks send nothing.
+  assert.equal(await sendCompanyDigest(nine + 15 * 60000), 0);
+  assert.equal(englishMessage('保存的筛选有 1 个新岗位'), '1 new opening matches your saved search');
+  assert.equal(
+    englishMessage('保存的筛选有 2 个新岗位，关注的公司有 3 条新动态'),
+    '2 new openings match your saved search; 3 updates at companies you follow',
+  );
+  // What the page reads back.
+  assert.deepEqual(viewerJobSearch('js-amy'), { saved: { ...DEFAULT_SEARCH, kind: 'intern' }, targetRole: '' });
+  assert.deepEqual(viewerJobSearch('js-cat'), { saved: null, targetRole: '' });
+  for (const body of ['', 'nope', '[]', JSON.stringify({ ...DEFAULT_SEARCH, q: 'x'.repeat(61) }), JSON.stringify({ ...DEFAULT_SEARCH, company: '../x' })])
+    assert.equal(parseJobSearch(body), null, body);
 });
