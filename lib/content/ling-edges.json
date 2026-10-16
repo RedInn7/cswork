@@ -1,4 +1,33 @@
 {
+  "lc-1": {
+    "edges": [
+      {
+        "zh": "只有两个元素",
+        "en": "Only two elements",
+        "input": "[3,5]\n8"
+      },
+      {
+        "zh": "两个相同的值配成一对",
+        "en": "Two equal values form the pair",
+        "input": "[3,3]\n6"
+      },
+      {
+        "zh": "同一个元素不能用两次",
+        "en": "An element cannot pair with itself",
+        "input": "[4,3,5]\n8"
+      },
+      {
+        "zh": "±10^9 相加为 0",
+        "en": "±10^9 summing to 0",
+        "input": "[-1000000000,7,1000000000]\n0"
+      },
+      {
+        "zh": "答案在最后两个",
+        "en": "The pair is the last two",
+        "input": "[1,2,3,9,10]\n19"
+      }
+    ]
+  },
   "lc-26": {
     "edges": [
       {
@@ -102,6 +131,35 @@
         "zh": "4×4：外圈和内圈都要转",
         "en": "4×4: both the outer and inner ring turn",
         "input": "[[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]"
+      }
+    ]
+  },
+  "lc-49": {
+    "edges": [
+      {
+        "zh": "只有一个空串",
+        "en": "A single empty string",
+        "input": "[\"\"]"
+      },
+      {
+        "zh": "多个空串",
+        "en": "Several empty strings",
+        "input": "[\"\",\"\"]"
+      },
+      {
+        "zh": "只有一个字符",
+        "en": "One character",
+        "input": "[\"a\"]"
+      },
+      {
+        "zh": "字母相同但次数不同",
+        "en": "Same letters, different counts",
+        "input": "[\"aab\",\"abb\",\"bab\"]"
+      },
+      {
+        "zh": "全部互为异位词",
+        "en": "All anagrams of each other",
+        "input": "[\"abc\",\"cab\",\"bca\"]"
       }
     ]
   },
@@ -216,6 +274,35 @@
       }
     ]
   },
+  "lc-128": {
+    "edges": [
+      {
+        "zh": "空数组",
+        "en": "An empty array",
+        "input": "[]"
+      },
+      {
+        "zh": "只有一个元素",
+        "en": "A single element",
+        "input": "[5]"
+      },
+      {
+        "zh": "全是重复值",
+        "en": "Only repeats",
+        "input": "[1,1,1]"
+      },
+      {
+        "zh": "±10^9 不相邻",
+        "en": "±10^9, not adjacent",
+        "input": "[-1000000000,1000000000]"
+      },
+      {
+        "zh": "跨过 0 的负数段",
+        "en": "A run crossing zero",
+        "input": "[0,-1,1,2,-2]"
+      }
+    ]
+  },
   "lc-169": {
     "edges": [
       {
@@ -242,6 +329,93 @@
         "zh": "交替出现，多数元素只多一个",
         "en": "Alternating, majority ahead by one",
         "input": "[3,4,3,4,3]"
+      }
+    ]
+  },
+  "lc-187": {
+    "edges": [
+      {
+        "zh": "比 10 短",
+        "en": "Shorter than 10",
+        "input": "\"A\""
+      },
+      {
+        "zh": "恰好 10 个字符，不会重复",
+        "en": "Exactly 10 characters, nothing repeats",
+        "input": "\"AAAAAAAAAA\""
+      },
+      {
+        "zh": "11 个 A：两个窗口重叠",
+        "en": "Eleven As: two overlapping windows",
+        "input": "\"AAAAAAAAAAA\""
+      },
+      {
+        "zh": "12 个 A：同一个串只报一次",
+        "en": "Twelve As: report each sequence once",
+        "input": "\"AAAAAAAAAAAA\""
+      },
+      {
+        "zh": "周期为 4 的串",
+        "en": "A string with period 4",
+        "input": "\"ACGTACGTACGTACGT\""
+      }
+    ]
+  },
+  "lc-219": {
+    "edges": [
+      {
+        "zh": "只有一个元素",
+        "en": "A single element",
+        "input": "[1]\n0"
+      },
+      {
+        "zh": "k = 0：不可能满足",
+        "en": "k = 0 can never hold",
+        "input": "[1,1]\n0"
+      },
+      {
+        "zh": "相邻相等，k = 1",
+        "en": "Adjacent equal values with k = 1",
+        "input": "[1,1]\n1"
+      },
+      {
+        "zh": "相等的值隔得太远",
+        "en": "Equal values too far apart",
+        "input": "[1,2,1]\n1"
+      },
+      {
+        "zh": "k 远大于数组长度",
+        "en": "k far exceeds the length",
+        "input": "[7,7,7]\n100000"
+      }
+    ]
+  },
+  "lc-220": {
+    "edges": [
+      {
+        "zh": "值差 4 > 3",
+        "en": "A value gap of 4 > 3",
+        "input": "[1,5]\n1\n3"
+      },
+      {
+        "zh": "值差恰好等于 valueDiff",
+        "en": "A value gap exactly valueDiff",
+        "input": "[1,5]\n1\n4"
+      },
+      {
+        "zh": "±10^9：差值超过 32 位",
+        "en": "±10^9: the difference exceeds 32 bits",
+        "input": "[-1000000000,1000000000]\n1\n1000000000"
+      },
+      {
+        "zh": "valueDiff = 0 时就是判等",
+        "en": "valueDiff = 0 means equality",
+        "input": "[3,3]\n1\n0"
+      },
+      {
+        "zh": "相等的值隔得太远",
+        "en": "Equal values too far apart",
+        "input": "[1,2,1]\n1\n0"
       }
     ]
   },
@@ -300,6 +474,64 @@
         "zh": "值域两端",
         "en": "The range ends",
         "input": "[-30,30,1,-1]"
+      }
+    ]
+  },
+  "lc-249": {
+    "edges": [
+      {
+        "zh": "只有一个串",
+        "en": "A single string",
+        "input": "[\"a\"]"
+      },
+      {
+        "zh": "单个字符都在一组",
+        "en": "Single letters share one group",
+        "input": "[\"a\",\"z\"]"
+      },
+      {
+        "zh": "跨过 z 回到 a",
+        "en": "Wrapping from z back to a",
+        "input": "[\"az\",\"ba\"]"
+      },
+      {
+        "zh": "差分方向相反，不是一组",
+        "en": "Opposite steps are different groups",
+        "input": "[\"ab\",\"ba\"]"
+      },
+      {
+        "zh": "重复的串都保留",
+        "en": "Duplicate strings are all kept",
+        "input": "[\"abc\",\"abc\"]"
+      }
+    ]
+  },
+  "lc-266": {
+    "edges": [
+      {
+        "zh": "只有一个字符",
+        "en": "A single character",
+        "input": "\"a\""
+      },
+      {
+        "zh": "两个不同字符",
+        "en": "Two different characters",
+        "input": "\"ab\""
+      },
+      {
+        "zh": "一个字符做中心",
+        "en": "One character in the middle",
+        "input": "\"aabbc\""
+      },
+      {
+        "zh": "两个字符出现奇数次",
+        "en": "Two characters with odd counts",
+        "input": "\"aabbcd\""
+      },
+      {
+        "zh": "全部不同",
+        "en": "All different",
+        "input": "\"code\""
       }
     ]
   },
@@ -443,6 +675,35 @@
       }
     ]
   },
+  "lc-409": {
+    "edges": [
+      {
+        "zh": "只有一个字符",
+        "en": "A single character",
+        "input": "\"a\""
+      },
+      {
+        "zh": "大小写不同的字母不能配对",
+        "en": "Different cases do not pair",
+        "input": "\"Aa\""
+      },
+      {
+        "zh": "一个字母出现奇数次",
+        "en": "One letter an odd number of times",
+        "input": "\"ccc\""
+      },
+      {
+        "zh": "全部成对",
+        "en": "Everything pairs up",
+        "input": "\"aabb\""
+      },
+      {
+        "zh": "全部不同",
+        "en": "All different",
+        "input": "\"abc\""
+      }
+    ]
+  },
   "lc-442": {
     "edges": [
       {
@@ -501,6 +762,64 @@
       }
     ]
   },
+  "lc-454": {
+    "edges": [
+      {
+        "zh": "每个数组只有一个 0",
+        "en": "Each array is a single 0",
+        "input": "[0]\n[0]\n[0]\n[0]"
+      },
+      {
+        "zh": "凑不出 0",
+        "en": "No way to reach 0",
+        "input": "[1]\n[1]\n[1]\n[1]"
+      },
+      {
+        "zh": "值在 ±2^28",
+        "en": "Values at ±2^28",
+        "input": "[268435456]\n[268435456]\n[-268435456]\n[-268435456]"
+      },
+      {
+        "zh": "全是 0：每种组合都算",
+        "en": "All zeros: every combination counts",
+        "input": "[0,0]\n[0,0]\n[0,0]\n[0,0]"
+      },
+      {
+        "zh": "正负抵消",
+        "en": "Signs cancelling out",
+        "input": "[1,-1]\n[1,-1]\n[1,-1]\n[1,-1]"
+      }
+    ]
+  },
+  "lc-554": {
+    "edges": [
+      {
+        "zh": "一行一块砖",
+        "en": "One row, one brick",
+        "input": "[[1]]"
+      },
+      {
+        "zh": "三行都只有一块砖",
+        "en": "Three rows of one brick",
+        "input": "[[1],[1],[1]]"
+      },
+      {
+        "zh": "一行有缝、一行没有",
+        "en": "One row with a gap, one without",
+        "input": "[[1,1],[2]]"
+      },
+      {
+        "zh": "砖宽 2^31−1",
+        "en": "Bricks 2^31−1 wide",
+        "input": "[[2147483647],[2147483647]]"
+      },
+      {
+        "zh": "缝在不同位置",
+        "en": "Gaps in different places",
+        "input": "[[1,2],[2,1],[1,2]]"
+      }
+    ]
+  },
   "lc-645": {
     "edges": [
       {
@@ -556,6 +875,233 @@
         "zh": "完全逆序",
         "en": "Fully reversed",
         "input": "[5,4,3,2,1]"
+      }
+    ]
+  },
+  "lc-1010": {
+    "edges": [
+      {
+        "zh": "只有一首歌",
+        "en": "A single song",
+        "input": "[60]"
+      },
+      {
+        "zh": "余数为 0 的歌两两成对",
+        "en": "Songs with remainder 0 pair among themselves",
+        "input": "[60,60,60]"
+      },
+      {
+        "zh": "余数为 30 的两首",
+        "en": "Two songs with remainder 30",
+        "input": "[30,30]"
+      },
+      {
+        "zh": "余数都是 30",
+        "en": "All with remainder 30",
+        "input": "[30,90,150]"
+      },
+      {
+        "zh": "1 和 59",
+        "en": "1 and 59",
+        "input": "[1,59,2]"
+      }
+    ]
+  },
+  "lc-1657": {
+    "edges": [
+      {
+        "zh": "长度不同",
+        "en": "Different lengths",
+        "input": "\"a\"\n\"aa\""
+      },
+      {
+        "zh": "字符集不同",
+        "en": "Different character sets",
+        "input": "\"a\"\n\"b\""
+      },
+      {
+        "zh": "次数互换",
+        "en": "Swapped counts",
+        "input": "\"aab\"\n\"bba\""
+      },
+      {
+        "zh": "三种字符的次数整体轮换",
+        "en": "Three counts rotated",
+        "input": "\"abbccc\"\n\"aabbbc\""
+      },
+      {
+        "zh": "多一个新字符",
+        "en": "One new character",
+        "input": "\"aabbcc\"\n\"aabbcd\""
+      }
+    ]
+  },
+  "lc-1679": {
+    "edges": [
+      {
+        "zh": "只有一个元素",
+        "en": "A single element",
+        "input": "[1]\n2"
+      },
+      {
+        "zh": "两个相同的值配成一对",
+        "en": "Two equal values make a pair",
+        "input": "[1,1]\n2"
+      },
+      {
+        "zh": "奇数个相同的值，多出一个",
+        "en": "An odd number of equal values: one left over",
+        "input": "[1,1,1]\n2"
+      },
+      {
+        "zh": "一个值和自己配对两次",
+        "en": "One value pairs with itself twice",
+        "input": "[2,2,2,2]\n4"
+      },
+      {
+        "zh": "10^9 加 10^9 不等于 k",
+        "en": "10^9 + 10^9 is not k",
+        "input": "[1000000000,1000000000]\n1000000000"
+      }
+    ]
+  },
+  "lc-1814": {
+    "edges": [
+      {
+        "zh": "只有一个数",
+        "en": "A single number",
+        "input": "[0]"
+      },
+      {
+        "zh": "末尾有 0 的数",
+        "en": "A number ending in 0",
+        "input": "[10,21]"
+      },
+      {
+        "zh": "回文数之间两两成对",
+        "en": "Palindromes pair with each other",
+        "input": "[11,22,33]"
+      },
+      {
+        "zh": "10^9 反转后是 1",
+        "en": "10^9 reverses to 1",
+        "input": "[1000000000,1000000000]"
+      },
+      {
+        "zh": "没有好数对",
+        "en": "No nice pairs",
+        "input": "[13,42]"
+      }
+    ]
+  },
+  "lc-1930": {
+    "edges": [
+      {
+        "zh": "三个相同字母",
+        "en": "Three equal letters",
+        "input": "\"aaa\""
+      },
+      {
+        "zh": "没有回文",
+        "en": "No palindrome",
+        "input": "\"abc\""
+      },
+      {
+        "zh": "恰好一个",
+        "en": "Exactly one",
+        "input": "\"aba\""
+      },
+      {
+        "zh": "重复的回文只算一次",
+        "en": "A repeated palindrome counts once",
+        "input": "\"aaaa\""
+      },
+      {
+        "zh": "两种外层字母",
+        "en": "Two different outer letters",
+        "input": "\"abab\""
+      }
+    ]
+  },
+  "lc-2131": {
+    "edges": [
+      {
+        "zh": "一个不对称的词",
+        "en": "One asymmetric word",
+        "input": "[\"ab\"]"
+      },
+      {
+        "zh": "一个对称词放中间",
+        "en": "One symmetric word in the middle",
+        "input": "[\"aa\"]"
+      },
+      {
+        "zh": "一对互为反转的词，多出一个",
+        "en": "A reversed pair plus a spare",
+        "input": "[\"ab\",\"ba\",\"ab\"]"
+      },
+      {
+        "zh": "三个对称词：两个成对，一个居中",
+        "en": "Three symmetric words: two pair, one centres",
+        "input": "[\"cc\",\"cc\",\"cc\"]"
+      },
+      {
+        "zh": "什么都配不上",
+        "en": "Nothing pairs",
+        "input": "[\"ab\",\"cd\"]"
+      }
+    ]
+  },
+  "lc-2342": {
+    "edges": [
+      {
+        "zh": "只有一个数",
+        "en": "A single number",
+        "input": "[5]"
+      },
+      {
+        "zh": "两个数数位和相同",
+        "en": "Two numbers with equal digit sums",
+        "input": "[18,36]"
+      },
+      {
+        "zh": "数位和都不同",
+        "en": "All digit sums differ",
+        "input": "[1,2,3]"
+      },
+      {
+        "zh": "同一组里有三个数，取最大的两个",
+        "en": "Three in one group: take the two largest",
+        "input": "[10,1,100]"
+      },
+      {
+        "zh": "和接近 2^31",
+        "en": "A sum close to 2^31",
+        "input": "[999999999,999999999]"
+      }
+    ]
+  },
+  "lc-2364": {
+    "edges": [
+      {
+        "zh": "只有一个数",
+        "en": "A single number",
+        "input": "[1]"
+      },
+      {
+        "zh": "没有坏数对",
+        "en": "No bad pairs",
+        "input": "[1,2,3,4]"
+      },
+      {
+        "zh": "全部都是坏数对",
+        "en": "Every pair is bad",
+        "input": "[5,5,5]"
+      },
+      {
+        "zh": "值相差很大",
+        "en": "Very different values",
+        "input": "[1,1000000000]"
       }
     ]
   }

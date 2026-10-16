@@ -1,4 +1,30 @@
 {
+  "lc-1": {
+    "takeawayZh": "「找另一半」的问题：边扫边查补数。先查再插入，同一个元素就不会和自己配对。",
+    "takeawayEn": "For \"find the other half\" problems, look up the complement while scanning. Look up before inserting, so no element pairs with itself.",
+    "followUps": [
+      {
+        "qZh": "如果数组已经排好序？",
+        "qEn": "What if the array is sorted?",
+        "aZh": "左右双指针：和小了左指针右移，和大了右指针左移，O(n) 时间、O(1) 空间。",
+        "aEn": "Two pointers from both ends: move left when the sum is too small, right when too large. O(n) time, O(1) space.",
+        "problem": "lc-167"
+      },
+      {
+        "qZh": "要返回所有和为 target 的数对（按值去重）？",
+        "qEn": "Return every pair summing to target, without duplicate values?",
+        "aZh": "排序后双指针，找到一对后两边都跳过相同的值。用哈希表也行，但 x 和 target − x 相等时要求 x 至少出现两次。",
+        "aEn": "Sort and use two pointers, skipping equal values on both sides after each hit. A hash map also works, but when x equals target − x it needs at least two copies of x."
+      },
+      {
+        "qZh": "三个数的和呢？",
+        "qEn": "And three numbers?",
+        "aZh": "排序后固定第一个数，在它右边做双指针，O(n²)，同时跳过重复值。",
+        "aEn": "Sort, fix the first number and run two pointers to its right: O(n²), skipping repeated values.",
+        "problem": "lc-15"
+      }
+    ]
+  },
   "lc-26": {
     "takeawayZh": "有序数组去重：读指针扫描，写指针守住「已经处理好的前缀」。先把这个不变量说清楚，变体只是比较的对象变了。",
     "takeawayEn": "Deduplicating a sorted array: the read pointer scans, the write pointer guards the finished prefix. State that invariant first; the variants only change what you compare against.",
@@ -69,6 +95,24 @@
         "qEn": "What if the matrix is m×n, not square?",
         "aZh": "没法原地做：旋转后形状变成 n×m。新建一个矩阵，按 `new[j][m-1-i] = old[i][j]` 填进去。",
         "aEn": "It cannot be done in place, because the shape becomes n×m. Allocate a new matrix and fill `new[j][m-1-i] = old[i][j]`."
+      }
+    ]
+  },
+  "lc-49": {
+    "takeawayZh": "分组问题：给每个元素算一个「等价类的规范键」，再按键放进哈希表。",
+    "takeawayEn": "Grouping comes down to a canonical key per equivalence class, then a hash map from key to group.",
+    "followUps": [
+      {
+        "qZh": "字符串不只小写字母，而是任意 Unicode 呢？",
+        "qEn": "What if strings hold any Unicode, not just lowercase letters?",
+        "aZh": "长度 26 的计数数组不够用了。键可以用排序后的字符串，或者把 (字符, 次数) 排好序拼成一个键。",
+        "aEn": "A 26-slot count array no longer works. Use the sorted string as the key, or sort the (character, count) pairs and join them."
+      },
+      {
+        "qZh": "只判断两个字符串是不是异位词？",
+        "qEn": "Only decide whether two strings are anagrams?",
+        "aZh": "长度不同直接返回 false；否则一次计数，第一个串加、第二个串减，最后全为 0 就是。",
+        "aEn": "Different lengths mean false. Otherwise count once, adding for the first string and subtracting for the second, and check that everything ends at 0."
       }
     ]
   },
@@ -153,6 +197,24 @@
       }
     ]
   },
+  "lc-128": {
+    "takeawayZh": "只从序列的起点（x − 1 不存在）开始往后数，每个数最多被数一次，总共 O(n)。",
+    "takeawayEn": "Count only from the start of a run (where x − 1 is absent); each number is counted at most once, O(n) in total.",
+    "followUps": [
+      {
+        "qZh": "还要返回这段连续序列本身？",
+        "qEn": "Also return the run itself?",
+        "aZh": "记下最长时的起点 x 和长度 L，答案就是 x, x+1, …, x+L−1。",
+        "aEn": "Remember the start x and length L of the longest run; the answer is x, x+1, …, x+L−1."
+      },
+      {
+        "qZh": "数字是流式到来的，要随时回答当前最长？",
+        "qEn": "Numbers arrive as a stream; answer the current longest at any time?",
+        "aZh": "用「端点哈希表」：新数 x 到来时，查以 x − 1 结尾和以 x + 1 开头的区间长度，合并后只更新新区间两端的记录，每次 O(1)。也可以用并查集。",
+        "aEn": "Keep a map from run endpoints to lengths: when x arrives, look up the run ending at x − 1 and the one starting at x + 1, merge them and update only the two new endpoints, O(1) each. Union-find also works."
+      }
+    ]
+  },
   "lc-169": {
     "takeawayZh": "摩尔投票靠「两两抵消」：多数元素抵消不完。得到的只是候选人；题目不保证存在时，要再数一遍验证。",
     "takeawayEn": "Boyer-Moore voting cancels pairs, and a majority cannot be cancelled out. It yields only a candidate; unless a majority is guaranteed, count it again to verify.",
@@ -169,6 +231,62 @@
         "aZh": "这样的元素最多两个。用两个候选人、两个计数器投票，最后再分别验证。",
         "aEn": "There are at most two. Vote with two candidates and two counters, then verify each one.",
         "problem": "lc-229"
+      }
+    ]
+  },
+  "lc-187": {
+    "takeawayZh": "定长子串去重：用滚动编码把每个窗口变成一个整数，O(1) 更新。",
+    "takeawayEn": "Deduplicating fixed-length substrings: a rolling encoding turns each window into an integer updated in O(1).",
+    "followUps": [
+      {
+        "qZh": "把长度 10 换成任意 L，L 很大时怎么办？",
+        "qEn": "What if the length is any L, possibly large?",
+        "aZh": "直接存子串是 O(nL)。用滚动哈希（Rabin-Karp）每步 O(1) 更新，哈希相同时再比对原串防碰撞。DNA 只有 4 种字符，L ≤ 32 时可以用每字符 2 位装进 64 位整数，不会碰撞。",
+        "aEn": "Storing substrings costs O(nL). A rolling hash (Rabin-Karp) updates in O(1) per step; compare the actual strings on a hash match. With 4 letters and L ≤ 32, 2 bits per letter fit in a 64-bit integer with no collisions."
+      },
+      {
+        "qZh": "改成找最长的重复子串？",
+        "qEn": "Find the longest repeated substring instead?",
+        "aZh": "对长度二分：有长度 L 的重复子串，就一定有更短的。每次用滚动哈希检查，O(n log n)；也可以用后缀数组。",
+        "aEn": "Binary search on the length, since a repeat of length L implies shorter ones; check each length with a rolling hash, O(n log n). A suffix array also works.",
+        "problem": "lc-1044"
+      }
+    ]
+  },
+  "lc-219": {
+    "takeawayZh": "「下标距离 ≤ k」就是一个长度为 k 的滑动窗口；记住每个值最后出现的位置就够了。",
+    "takeawayEn": "\"Index distance ≤ k\" is a sliding window of length k; remembering each value's last position is enough.",
+    "followUps": [
+      {
+        "qZh": "改成「值相差不超过 t」呢？",
+        "qEn": "What if values only need to be within t of each other?",
+        "aZh": "窗口里要找最接近的值：用有序集合，O(n log k)；或者按宽度 t + 1 分桶，同桶必然满足，只需再查相邻两个桶，O(n)。",
+        "aEn": "You need the closest value in the window: an ordered set gives O(n log k); buckets of width t + 1 give O(n), since one bucket always satisfies it and only the two neighbouring buckets need checking.",
+        "problem": "lc-220"
+      },
+      {
+        "qZh": "能只用 O(k) 的空间吗？",
+        "qEn": "Can you use only O(k) space?",
+        "aZh": "用大小为 k 的滑动窗口集合：放入 nums[i] 前先删掉 nums[i − k − 1]；集合里已有同样的值就返回 true。",
+        "aEn": "Keep a window set of size k: before adding nums[i], remove nums[i − k − 1]; if the value is already in the set, return true."
+      }
+    ]
+  },
+  "lc-220": {
+    "takeawayZh": "「值接近」可以用分桶变成「同桶或邻桶」，把有序结构的 log 去掉。",
+    "takeawayEn": "Bucketing turns \"close in value\" into \"same or neighbouring bucket\" and removes the log factor of an ordered set.",
+    "followUps": [
+      {
+        "qZh": "为什么桶宽要取 valueDiff + 1？",
+        "qEn": "Why make buckets valueDiff + 1 wide?",
+        "aZh": "宽度为 t + 1 时，同一个桶里任意两数之差 ≤ t，必然满足；不同桶里只有相邻的桶可能满足，所以每个数只需查三个桶。t = 0 时桶宽为 1，正好退化成判等。",
+        "aEn": "With width t + 1, any two numbers in one bucket differ by at most t; across buckets only neighbours can qualify, so each number checks three buckets. With t = 0 the width is 1 and it reduces to equality."
+      },
+      {
+        "qZh": "负数分桶要注意什么？",
+        "qEn": "What goes wrong with negative numbers?",
+        "aZh": "桶号必须向下取整。Python 的 // 本来就是；Java 和 C++ 的除法向零取整，要用 Math.floorDiv 或手动修正。否则桶宽为 2 时，−1 和 1 都会被分进桶 0，而它们相差 2。",
+        "aEn": "Bucket ids must round down. Python's // does; Java and C++ division truncates toward zero, so use Math.floorDiv or adjust by hand. Otherwise, with width 2, both −1 and 1 land in bucket 0 although they differ by 2."
       }
     ]
   },
@@ -205,6 +323,43 @@
         "qEn": "If division were allowed, what must you watch?",
         "aZh": "零的个数。没有零：总积除以自己。恰好一个零：只有零所在的位置是其余数的积，其余为 0。两个及以上零：全部为 0。",
         "aEn": "The number of zeros. None: divide the total product by the element. Exactly one: only the zero's slot gets the product of the rest, the others are 0. Two or more: all 0."
+      }
+    ]
+  },
+  "lc-249": {
+    "takeawayZh": "找一个在「平移」下不变的量作为键：相邻字符的差（对 26 取模）。",
+    "takeawayEn": "Use a quantity that shifting does not change as the key: the differences between adjacent letters, modulo 26.",
+    "followUps": [
+      {
+        "qZh": "为什么差值要对 26 取模？",
+        "qEn": "Why take the differences modulo 26?",
+        "aZh": "z 之后回到 a，所以 \"az\" 和 \"ba\" 是同一组：它们的差分分别是 25 和 −1，模 26 后都是 25。不取模就会把它们分开。",
+        "aEn": "After z comes a again, so \"az\" and \"ba\" belong together: their steps are 25 and −1, both 25 modulo 26. Without the modulo they would be split."
+      },
+      {
+        "qZh": "能不能不用差分，换一种键？",
+        "qEn": "Is there a key other than the differences?",
+        "aZh": "把每个串平移到首字母是 a：每个字符减去首字母的偏移再模 26。平移后的串本身就是键，效果相同。",
+        "aEn": "Shift every string so it starts with a: subtract the first letter's offset from each character, modulo 26. The shifted string itself is the key."
+      }
+    ]
+  },
+  "lc-266": {
+    "takeawayZh": "能不能排成回文，只取决于出现奇数次的字符有几个：不超过一个就行。",
+    "takeawayEn": "Whether a palindrome can be formed depends only on how many characters occur an odd number of times: at most one.",
+    "followUps": [
+      {
+        "qZh": "列出所有不重复的回文排列？",
+        "qEn": "List every distinct palindromic permutation?",
+        "aZh": "每个字符取一半的个数组成左半的多重集，回溯生成不重复的排列（同一层跳过相同字符），再拼上中心字符和左半的反转。",
+        "aEn": "Take half of each character's count as the left-half multiset, backtrack over its distinct permutations (skipping equal letters at the same depth), then add the centre and the mirror.",
+        "problem": "lc-267"
+      },
+      {
+        "qZh": "能只用一个整数记录状态吗？",
+        "qEn": "Can a single integer hold the state?",
+        "aZh": "小写字母只有 26 个，用 26 位掩码：遇到一个字符就翻转对应的位。最后掩码为 0，或只有一位是 1（`mask & (mask - 1) == 0`），就可以。",
+        "aEn": "With 26 lowercase letters, keep a 26-bit mask and flip a bit per character. The answer is yes when the mask ends as 0 or with one bit set (`mask & (mask - 1) == 0`)."
       }
     ]
   },
@@ -307,6 +462,25 @@
       }
     ]
   },
+  "lc-409": {
+    "takeawayZh": "回文的计数视角：成对的字符左右各放一个，最多一个字符放在正中间。",
+    "takeawayEn": "Counting view of a palindrome: paired characters go one on each side, and at most one sits in the middle.",
+    "followUps": [
+      {
+        "qZh": "要把这个最长回文串构造出来？",
+        "qEn": "Build the longest palindrome itself?",
+        "aZh": "每个字符取 ⌊cnt/2⌋ 个组成左半，左半反转作右半；有出现奇数次的字符，就任选一个放在正中间。",
+        "aEn": "Take ⌊cnt/2⌋ of each character for the left half and mirror it for the right; if any character occurs an odd number of times, put one of them in the middle."
+      },
+      {
+        "qZh": "只问整个字符串能不能重排成回文？",
+        "qEn": "Only ask whether the whole string can be rearranged into a palindrome?",
+        "aZh": "出现奇数次的字符不超过一个即可。",
+        "aEn": "Yes exactly when at most one character occurs an odd number of times.",
+        "problem": "lc-266"
+      }
+    ]
+  },
   "lc-442": {
     "takeawayZh": "原地标记时「翻之前已经是负数」就说明重复。改数组之前先问一句：能改吗？",
     "takeawayEn": "With in-place marking, a slot that is already negative means a repeat. Before modifying the array, ask whether you may.",
@@ -342,6 +516,43 @@
         "aZh": "同一遍标记里，要去翻的位置如果已经是负数，说明这个值是第二次出现。",
         "aEn": "In the same marking pass, if the slot you are about to flip is already negative, this value is appearing a second time.",
         "problem": "lc-442"
+      }
+    ]
+  },
+  "lc-454": {
+    "takeawayZh": "折半（meet in the middle）：把 n⁴ 拆成两个 n²，一半存成计数表，另一半去查补数。",
+    "takeawayEn": "Meet in the middle: split n⁴ into two n² halves, store one as counts and look up complements from the other.",
+    "followUps": [
+      {
+        "qZh": "如果是 k 个数组？",
+        "qEn": "What about k arrays?",
+        "aZh": "分成前后两半，各自枚举所有组合的和（各 n^(k/2) 个），一半存计数表、另一半查补数，O(n^(k/2))。",
+        "aEn": "Split them into two halves, enumerate every sum of each half (n^(k/2) each), count one half and look up complements from the other: O(n^(k/2))."
+      },
+      {
+        "qZh": "改成从同一个数组里选四个不同下标，结果按值去重？",
+        "qEn": "Pick four distinct indices from one array and list unique value quadruples?",
+        "aZh": "那是四数之和：排序后两层枚举加双指针，O(n³)，每一层都跳过重复值。",
+        "aEn": "That is 4Sum: sort, two nested loops and two pointers, O(n³), skipping repeats at every level.",
+        "problem": "lc-18"
+      }
+    ]
+  },
+  "lc-554": {
+    "takeawayZh": "「穿过的砖最少」就是「对齐的缝最多」：反过来数最常见的缝位置。",
+    "takeawayEn": "Crossing the fewest bricks means lining up with the most gaps: count the most common gap position instead.",
+    "followUps": [
+      {
+        "qZh": "为什么不统计每行最右边的那条缝？",
+        "qEn": "Why skip the rightmost edge of each row?",
+        "aZh": "墙的右边界不算缝，线画在边界上等于没穿过墙。只统计每行最后一块砖之前的累计宽度。",
+        "aEn": "The wall's right edge is not a gap; a line there would not cross the wall. Count prefix widths only before each row's last brick."
+      },
+      {
+        "qZh": "墙宽到 2^31−1，能不能按宽度开数组？",
+        "qEn": "With widths up to 2^31−1, can you index an array by position?",
+        "aZh": "不能。用哈希表只存实际出现过的缝位置，大小不超过砖块总数。每行宽度不超过 2^31−1，累计宽度用 32 位整数就够。",
+        "aEn": "No. A hash map stores only the gap positions that occur, at most the number of bricks. Each row is at most 2^31−1 wide, so 32-bit prefix sums suffice."
       }
     ]
   },
@@ -386,6 +597,154 @@
         "qEn": "With values only in [−5×10^4, 5×10^4], is there something faster?",
         "aZh": "计数排序：O(n + 值域)。这里值域约 10^5，和 n 同一个量级，可以线性完成。",
         "aEn": "Counting sort, O(n + range). The range here is about 10^5, the same order as n, so it runs in linear time."
+      }
+    ]
+  },
+  "lc-1010": {
+    "takeawayZh": "「和能被 k 整除」就是余数互补；余数 0 和 k/2 是和自己配对的特例。",
+    "takeawayEn": "\"Sum divisible by k\" means complementary remainders; remainders 0 and k/2 pair with themselves.",
+    "followUps": [
+      {
+        "qZh": "改成和能被任意 k 整除？",
+        "qEn": "Generalise to any k?",
+        "aZh": "同样按余数计数：余数 r 和 (k − r) % k 配对。r = 0，以及 k 为偶数时的 r = k/2，要和自己配对，个数是 C(cnt, 2)。",
+        "aEn": "Count by remainder the same way: r pairs with (k − r) % k. r = 0, and r = k/2 when k is even, pair with themselves, giving C(cnt, 2)."
+      },
+      {
+        "qZh": "改成子数组的和能被 k 整除？",
+        "qEn": "What about subarrays whose sum is divisible by k?",
+        "aZh": "那要对前缀和取余数，再数余数相同的前缀对。",
+        "aEn": "Then take prefix sums modulo k and count pairs of prefixes with the same remainder.",
+        "problem": "lc-974"
+      }
+    ]
+  },
+  "lc-1657": {
+    "takeawayZh": "先看操作保留了什么不变量，判定条件就是「不变量相等」。",
+    "takeawayEn": "Find what the operations preserve; the test is that those invariants match.",
+    "followUps": [
+      {
+        "qZh": "为什么这两个条件就够了？",
+        "qEn": "Why are these two conditions enough?",
+        "aZh": "操作 1 可以任意交换位置，所以顺序无关，只剩每个字符的次数。操作 2 可以任意调换「字符 → 次数」的对应，但不能引入新字符。所以字符集相同、次数的多重集相同，就能互相转换。",
+        "aEn": "Operation 1 can reorder freely, so only counts matter. Operation 2 can permute which character has which count but cannot introduce a new character. Equal character sets and equal count multisets are therefore enough."
+      },
+      {
+        "qZh": "字符集很大（Unicode）时怎么做？",
+        "qEn": "What if the alphabet is huge (Unicode)?",
+        "aZh": "计数用哈希表；字符集用集合比较；次数的多重集用排序后的次数列表，或者「次数 → 出现几次」的计数表比较。",
+        "aEn": "Count with a hash map, compare the character sets as sets, and compare the count multisets as sorted lists or as count-of-counts maps."
+      }
+    ]
+  },
+  "lc-1679": {
+    "takeawayZh": "配对计数：用哈希表记下「等着被配对」的值，来一个能配上的就消掉一个。",
+    "takeawayEn": "Counting pairs: keep the values waiting for a partner in a hash map, and cancel one whenever a match arrives.",
+    "followUps": [
+      {
+        "qZh": "为什么逐个贪心配对不会少配？",
+        "qEn": "Why does greedy pairing never lose a pair?",
+        "aZh": "能不能配只取决于值。x 和 k − x 最多配 min(cnt[x], cnt[k − x]) 对（x = k − x 时是 ⌊cnt/2⌋），不同的值之间互不影响，所以怎么配结果都一样。",
+        "aEn": "Pairing depends only on values: x and k − x make at most min(cnt[x], cnt[k − x]) pairs (⌊cnt/2⌋ when x = k − x), and different values never compete, so any order gives the same total."
+      },
+      {
+        "qZh": "数组已经排好序时？",
+        "qEn": "What if the array is sorted?",
+        "aZh": "左右双指针：和等于 k 时两边都收缩并计数，和小了左边前进，和大了右边后退，O(1) 额外空间。",
+        "aEn": "Two pointers: on a sum equal to k, count and move both; move left when the sum is small and right when large, O(1) extra space.",
+        "problem": "lc-167"
+      }
+    ]
+  },
+  "lc-1814": {
+    "takeawayZh": "等式两边都含 i 和 j 的项时，先移项，把同一个下标的放在一边，再按键计数。",
+    "takeawayEn": "When both sides mix terms in i and j, move terms so each side has one index, then count by key.",
+    "followUps": [
+      {
+        "qZh": "为什么要取模？取模时要注意什么？",
+        "qEn": "Why the modulus, and what to watch with it?",
+        "aZh": "n = 10^5 且所有键都相同时，数对约有 5×10^9 个，题目要求对 10^9+7 取模。边累加边取模，Java 和 C++ 里累加用 long。",
+        "aEn": "With n = 10^5 and one shared key there are about 5×10^9 pairs, so the answer is taken modulo 10^9+7. Reduce as you add, accumulating in a long in Java and C++."
+      },
+      {
+        "qZh": "反转函数有什么坑？",
+        "qEn": "What is the trap in rev?",
+        "aZh": "末尾的 0 反转后会消失，rev(120) = 21，所以不能按字符串直接比较；用整数逐位反转即可。",
+        "aEn": "Trailing zeros disappear, rev(120) = 21, so string comparison is wrong; reverse digit by digit as an integer."
+      }
+    ]
+  },
+  "lc-1930": {
+    "takeawayZh": "去重计数时，先固定最外层，再把它放到最宽的位置。",
+    "takeawayEn": "When counting distinct results, fix the outermost choice first and stretch it as wide as possible.",
+    "followUps": [
+      {
+        "qZh": "为什么只看每个字母第一次和最后一次出现？",
+        "qEn": "Why only the first and last occurrence of each letter?",
+        "aZh": "两端都是字母 c 时，把区间拉到最宽（第一次到最后一次），中间能选的字母最多；任何更窄的区间能组成的回文，这里都能组成。",
+        "aEn": "With c at both ends, the widest span (first to last occurrence) offers the most middle letters; anything a narrower span can form, this one can too."
+      },
+      {
+        "qZh": "改成长度为 5 的回文子序列个数（不去重）？",
+        "qEn": "Count length-5 palindromic subsequences instead, with repeats?",
+        "aZh": "枚举中间位置，左边统计每种有序字符对出现的次数，右边同理；把左边的 (a, b) 和右边的 (b, a) 相乘累加，O(26²·n)，结果取模。",
+        "aEn": "Fix the middle position; count each ordered letter pair on the left and on the right, and add left (a, b) times right (b, a): O(26²·n), modulo the given prime."
+      }
+    ]
+  },
+  "lc-2131": {
+    "takeawayZh": "把每个词当作一个「字符」：互为反转的成对使用，自对称的词多出一个可以放中心。",
+    "takeawayEn": "Treat each word as a character: reversed pairs are used together, and one leftover symmetric word can be the centre.",
+    "followUps": [
+      {
+        "qZh": "为什么最多只能放一个对称词在正中间？",
+        "qEn": "Why at most one symmetric word in the middle?",
+        "aZh": "中心以外的词都要和镜像位置的词互为反转。\"gg\" 这样的词自己就是自己的反转，落单的那个只能放在正中间，而正中间只有一个位置。",
+        "aEn": "Every word off-centre must mirror its partner. A word like \"gg\" mirrors itself, so an unpaired one can only sit in the middle, and there is one middle."
+      },
+      {
+        "qZh": "改成单个字母、可以任意重排呢？",
+        "qEn": "What if the pieces were single letters, freely rearranged?",
+        "aZh": "那就是按字符次数凑回文：成对的全用上，再加一个中心。",
+        "aEn": "Then it is building a palindrome from letter counts: use every pair, plus one centre.",
+        "problem": "lc-409"
+      }
+    ]
+  },
+  "lc-2342": {
+    "takeawayZh": "分组求「组内最好的两个」：每组只存当前最大值，新元素来了先和它配对更新答案，再更新最大值。",
+    "takeawayEn": "For the best two within each group, store only the group's current maximum: pair each newcomer with it to update the answer, then update the maximum.",
+    "followUps": [
+      {
+        "qZh": "为什么不需要把每组都排序？",
+        "qEn": "Why not sort every group?",
+        "aZh": "一组只需要最大的两个。边扫边维护「组内最大值」就能算出组内最大的两数之和，O(n)，不用 O(n log n) 排序。",
+        "aEn": "A group only needs its two largest values. Tracking the group maximum while scanning yields the best pair in O(n), without an O(n log n) sort."
+      },
+      {
+        "qZh": "改成数位和相同的数对中和最小的？",
+        "qEn": "What about the smallest sum among such pairs?",
+        "aZh": "对称地改：每组只保留当前最小值，新数到来时用「它 + 组内最小值」更新答案。",
+        "aEn": "Mirror it: keep each group's minimum and update the answer with the newcomer plus that minimum."
+      }
+    ]
+  },
+  "lc-2364": {
+    "takeawayZh": "把含两个下标的等式移项成「f(i) = f(j)」，就能按键计数；正面难数就用总数减反面。",
+    "takeawayEn": "Rewrite a condition on two indices as f(i) = f(j) and count by key; if the pairs you want are hard to count, subtract the others from the total.",
+    "followUps": [
+      {
+        "qZh": "结果会不会超出 32 位？",
+        "qEn": "Can the result overflow 32 bits?",
+        "aZh": "会。n = 10^5 时数对总数约为 5×10^9，超过 2^31−1；Java 和 C++ 要用 long，相乘之前就转成 long。",
+        "aEn": "Yes. With n = 10^5 there are about 5×10^9 pairs, beyond 2^31−1; use long in Java and C++, and convert before multiplying."
+      },
+      {
+        "qZh": "「好数对」的条件 j − i == nums[j] − nums[i] 是怎么变形的？",
+        "qEn": "How does j − i == nums[j] − nums[i] become countable?",
+        "aZh": "移项得 nums[i] − i == nums[j] − j。按键 nums[i] − i 计数，同一个键里的都是好数对；坏数对 = 总对数 − 好数对。",
+        "aEn": "Rearrange to nums[i] − i == nums[j] − j. Count by the key nums[i] − i; pairs within a key are good, and bad pairs are the total minus those.",
+        "problem": "lc-1814"
       }
     ]
   }
