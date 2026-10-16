@@ -123,7 +123,7 @@ test('every whitelisted problem has a verified reference, a text checker and val
       const cases = stressCases(params, bounds, rule, seed);
       assert.ok(cases, `${id}: supported`);
       for (const text of cases) {
-        const split = splitFields(text, params.length)!;
+        const split: string[] = splitFields(text, params.length)!;
         params.forEach((p, i) => assert.ok(checkField(split[i], p.type).ok, `${id}: ${p.name} = ${split[i]}`));
         assert.deepEqual(checkConstraints(split, params, bounds ?? {}).filter(Boolean), [], `${id}: ${text}`);
         // The rules' own bounds (filling the statement's gaps) hold too.
