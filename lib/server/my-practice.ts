@@ -34,7 +34,10 @@ const VOTE = { up: 'down', down: 'up' } as const;
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
 
-type HistoryRow = Omit<PracticeHistoryItem, 'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds'> & {
+type HistoryRow = Omit<
+  PracticeHistoryItem,
+  'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds' | 'whiteboard' | 'brute'
+> & {
   languages: string;
   acAt: string | null;
 };
@@ -63,6 +66,8 @@ export function practiceHistory(userId: string): PracticeHistoryItem[] {
     ...row,
     help: aids.get(row.problemId)?.help ?? 'none',
     solveSeconds: aids.get(row.problemId)?.solveSeconds ?? null,
+    whiteboard: aids.get(row.problemId)?.whiteboard ?? null,
+    brute: aids.get(row.problemId)?.brute ?? false,
     languages: row.languages.split(','),
     acAt: row.acAt ? row.acAt.split(',').map(Number) : [],
     stop:
