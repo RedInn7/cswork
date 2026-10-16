@@ -530,6 +530,8 @@ export type McqQuestion = {
   answer: number[];
   /** The public OA item a question was adapted from. */
   source?: string;
+  /** The Line 500 stop (lib/route-stops.ts) whose topic page quizzes on it. */
+  stop?: string;
 };
 /** A preset's MCQ section: how many questions, how long, and where they come from. */
 export type McqConfig = {
@@ -541,7 +543,8 @@ export type McqConfig = {
 
 /**
  * `count` question ids from the config's sections (and topics, when set) in a seeded random
- * order, ones not in `exclude` (recently seen) first.
+ * order, ones not in `exclude` (recently seen) first. Topics take turns, so a big topic (DSA
+ * concepts, complexity) never crowds out the small ones.
  */
 export function drawMcq(
   bank: readonly McqQuestion[],
@@ -550,14 +553,21 @@ export function drawMcq(
   exclude: ReadonlySet<string> = new Set(),
 ) {
   const random = seededRandom(seed);
+  const turns = new Map<string, number>();
   return bank
     .filter(
       (q) =>
         config.sections.includes(q.section) &&
         (!config.topics?.length || config.topics.includes(q.topic)),
     )
-    .map((q) => ({ id: q.id, seen: +exclude.has(q.id), order: random() }))
+    .map((q) => ({ id: q.id, topic: q.topic, seen: +exclude.has(q.id), order: random() }))
     .sort((a, b) => a.seen - b.seen || a.order - b.order)
+    .map((q) => {
+      const turn = turns.get(q.topic) ?? 0;
+      turns.set(q.topic, turn + 1);
+      return { ...q, turn };
+    })
+    .sort((a, b) => a.seen - b.seen || a.turn - b.turn || a.order - b.order)
     .slice(0, config.count)
     .map((q) => q.id);
 }
@@ -565,6 +575,54 @@ export function drawMcq(
 /** Right only when the pick is exactly the answer set: no partial credit on "select all". */
 export const mcqRight = (answer: readonly number[], pick: readonly number[] = []) =>
   pick.length === answer.length && answer.every((a) => pick.includes(a));
+
+/**
+ * Spaced review of answered questions, per question id: [box, day, ...picks]. A wrong answer
+ * goes to box 0; a right one moves up a box when the question is new or due. Boxes 0–3 come
+ * back after 1/3/7/21 days; box 4 is mastered and does not come back. `day` is the UTC day
+ * number of the answer that set the box.
+ */
+export type McqReview = Record<string, number[]>;
+export const MCQ_REVIEW_DAYS = [1, 3, 7, 21];
+export const MCQ_MASTERED = MCQ_REVIEW_DAYS.length;
+export const mcqDay = (now = Date.now()) => Math.floor(now / 86_400_000);
+export const mcqDue = (entry: readonly number[] | undefined, today: number) =>
+  !!entry && entry[0] < MCQ_MASTERED && today - entry[1] >= MCQ_REVIEW_DAYS[entry[0]];
+
+/** The entry after answering; a right answer before it is due keeps its box (no cramming). */
+export function reviewMcq(entry: readonly number[] | undefined, answer: readonly number[], picks: number[], today: number) {
+  if (!mcqRight(answer, picks)) return [0, today, ...picks];
+  if (entry && !mcqDue(entry, today)) return [entry[0], entry[1], ...picks];
+  return [entry ? Math.min(entry[0] + 1, MCQ_MASTERED) : 1, today, ...picks];
+}
+
+/** A stored review, keeping only well-formed entries; anything else reads as none. */
+export function parseMcqReview(raw: string | null | undefined): McqReview {
+  try {
+    const value: unknown = JSON.parse(raw || '{}');
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+    return Object.fromEntries(
+      Object.entries(value).filter(
+        ([, e]) =>
+          Array.isArray(e) && e.length > 2 && e.every(Number.isInteger) && e[0] >= 0 && e[0] <= MCQ_MASTERED,
+      ),
+    ) as McqReview;
+  } catch {
+    return {};
+  }
+}
+
+/** The review as JSON within `maxBytes`, dropping the longest-unseen entries first. */
+export function fitMcqReview(review: McqReview, maxBytes: number) {
+  const entries = Object.entries(review).sort((a, b) => b[1][1] - a[1][1]);
+  let body = JSON.stringify(Object.fromEntries(entries));
+  // ponytail: one entry at a time is O(n²) bytes, fine for a few hundred questions.
+  while (new TextEncoder().encode(body).length > maxBytes && entries.length) {
+    entries.pop();
+    body = JSON.stringify(Object.fromEntries(entries));
+  }
+  return body;
+}
 
 /**
  * The MCQ section's result. It counts as one more 100-point block next to the coding

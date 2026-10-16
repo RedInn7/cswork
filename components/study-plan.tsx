@@ -8,6 +8,7 @@ import { classicList } from '@/lib/classic-lists';
 import { PLAN_TOPICS_PARAM } from '@/lib/jd-skills';
 import { SLOTS, type Slot } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
+import { masteredStops, openStart, type PlacementResult } from '@/lib/placement';
 import { ROUTE_SLUGS, STOP_NAMES, type RouteStop } from '@/lib/route-stops';
 import {
   addDays,
@@ -303,6 +304,7 @@ export function StudyPlan({
         today={today || localDay()}
         stops={stops}
         english={english}
+        handoff={Boolean(handed)}
         onDone={close}
       />
     );
@@ -579,12 +581,15 @@ function PlanForm({
   today,
   stops,
   english,
+  handoff,
   onDone,
 }: {
   goal: PlanGoal;
   today: string;
   stops: RouteStop[];
   english: boolean;
+  /** The topics were handed over (?planTopics=): the learner's pick, which a placement result leaves alone. */
+  handoff: boolean;
   onDone: (goal?: PlanGoal) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -598,6 +603,10 @@ function PlanForm({
   const [levels, setLevels] = useState<Slot[]>(goal.difficulties);
   const [topics, setTopics] = useState<string[]>(goal.topics.length ? goal.topics : ROUTE_SLUGS);
   const [presets, setPresets] = useState<Preset[] | null>(null);
+  // The latest placement quiz (/placement); placementAt moves on once a newer result is applied.
+  const [placement, setPlacement] = useState<PlacementResult | null>(null);
+  const [placementAt, setPlacementAt] = useState(goal.placementAt);
+  const [unticked, setUnticked] = useState(0);
   const [error, setError] = useState('');
   const first = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -609,12 +618,36 @@ function PlanForm({
     );
     return () => controller.abort();
   }, []);
+  // A result newer than the one applied unticks its known stops and moves the start past them,
+  // unless that would leave no stop to plan (then it stays unapplied). Ticking one back undoes it:
+  // the start moves back to it. Signed out the request fails and nothing changes. Handed-over
+  // topics stay as handed (the result is applied next time); known stops are still tagged.
+  // ponytail: kept from the topics as the form opened; a tick made before the fetch lands is lost.
+  useEffect(() => {
+    const controller = new AbortController();
+    ojRequest<{ latest?: PlacementResult | null }>('speedrun/placement', undefined, controller.signal).then(
+      ({ latest }) => {
+        if (!latest || !Array.isArray(latest.groups)) return;
+        setPlacement(latest);
+        if (latest.at <= goal.placementAt || handoff) return;
+        const known = masteredStops(latest);
+        const kept = topics.filter((slug) => !known.has(slug));
+        if (!kept.length) return;
+        setTopics(kept);
+        setUnticked(topics.length - kept.length);
+        setStart((at) => openStart(at, known));
+        setPlacementAt(latest.at);
+      },
+      () => {},
+    );
+    return () => controller.abort();
+  }, [goal.placementAt]);
   // Until the presets arrive (or if they fail), keep the saved company choosable.
   const companies = presets ?? (goal.company ? [goal.company] : []);
-  const suggested = suggestStartStop(
-    stops.map((stop) => stop.total),
-    Number(solved),
-  );
+  const known = masteredStops(placement);
+  const skipped = new Set([...known].filter((slug) => !topics.includes(slug)));
+  const suggestFor = (count: number) => openStart(suggestStartStop(stops.map((stop) => stop.total), count), skipped);
+  const suggested = suggestFor(Number(solved));
   const stopName = (stop: RouteStop) => `${stop.code} ${english ? stop.shortEn : stop.shortZh}`;
   function submit() {
     const weeklyHours = Number(weekly);
@@ -648,6 +681,7 @@ function PlanForm({
       difficulties: SLOTS.filter((slot) => levels.includes(slot)),
       // Every stop is saved as "all", so stops added later join the plan.
       topics: topics.length === ROUTE_SLUGS.length ? [] : ROUTE_SLUGS.filter((slug) => topics.includes(slug)),
+      placementAt,
     });
   }
   const levelNames: Record<Slot, string> = { easy: t('简单', 'Easy'), medium: t('中等', 'Medium'), hard: t('困难', 'Hard') };
@@ -741,12 +775,7 @@ function PlanForm({
             value={solved}
             onChange={(event) => {
               setSolved(event.target.value);
-              setStart(
-                suggestStartStop(
-                  stops.map((stop) => stop.total),
-                  Number(event.target.value),
-                ),
-              );
+              setStart(suggestFor(Number(event.target.value)));
             }}
           />
         </label>
@@ -765,7 +794,10 @@ function PlanForm({
             </label>
           ))}
         </fieldset>
-        <details className="route-plan-topics route-plan-wide" open={goal.topics.length > 0 || undefined}>
+        <details
+          className="route-plan-topics route-plan-wide"
+          open={goal.topics.length > 0 || placementAt > goal.placementAt || undefined}
+        >
           <summary>
             {t('知识点', 'Topics')}
             <span>
@@ -775,6 +807,20 @@ function PlanForm({
             </span>
             <ChevronDown size={14} aria-hidden="true" />
           </summary>
+          {placement ? (
+            unticked > 0 && (
+              <p className="route-plan-note" role="status">
+                {t(
+                  `已按定位测验取消勾选 ${unticked} 个已掌握的站，想练可以重新勾上。`,
+                  `Your placement quiz unticked ${unticked} known ${unticked === 1 ? 'stop' : 'stops'}; tick any you still want to practise.`,
+                )}
+              </p>
+            )
+          ) : (
+            <a className="route-plan-link" href="/placement">
+              {t('不确定哪些已经掌握？先做定位测验', 'Not sure what you already know? Take the placement quiz')}
+            </a>
+          )}
           <fieldset>
             <legend className="sr-only">{t('排进计划的知识点', 'Topics to plan')}</legend>
             <button
@@ -789,11 +835,14 @@ function PlanForm({
                 <input
                   type="checkbox"
                   checked={topics.includes(slug)}
-                  onChange={(event) =>
-                    setTopics(event.target.checked ? [...topics, slug] : topics.filter((s) => s !== slug))
-                  }
+                  onChange={(event) => {
+                    setTopics(event.target.checked ? [...topics, slug] : topics.filter((s) => s !== slug));
+                    // A stop before the start is never planned: ticking one moves the start back to it.
+                    if (event.target.checked && i < start) setStart(i);
+                  }}
                 />
                 {String(i + 1).padStart(2, '0')} {STOP_NAMES[slug][english ? 1 : 0]}
+                {known.has(slug) && <span className="route-plan-note">{t('已掌握', 'Known')}</span>}
               </label>
             ))}
           </fieldset>
@@ -814,10 +863,10 @@ function PlanForm({
               ))}
             </select>
             <small id="route-plan-start-hint" aria-live="polite">
-              {suggested > 0
+              {suggested > 0 && stops[suggested]
                 ? t(
-                    `按已刷题数，建议从 ${stopName(stops[suggested])} 出发；之前的站不计入每日题量。`,
-                    `From what you’ve solved, start at ${stopName(stops[suggested])}; earlier stops leave the daily count.`,
+                    `按已刷题数${skipped.size ? '和定位测验' : ''}，建议从 ${stopName(stops[suggested])} 出发；之前的站不计入每日题量。`,
+                    `From what you’ve solved${skipped.size ? ' and your placement quiz' : ''}, start at ${stopName(stops[suggested])}; earlier stops leave the daily count.`,
                   )
                 : t('从第一站开始，按顺序走完全线。', 'Start at the first stop and ride the whole line.')}
             </small>

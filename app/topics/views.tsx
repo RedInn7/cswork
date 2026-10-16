@@ -6,6 +6,10 @@ import { RatingBadge } from '@/components/rating-badge';
 import { AlgorithmDemo } from '@/components/algorithm-demo';
 import { stopDemos } from '@/lib/route-stops';
 import { TOPIC_GROUPS, TOPIC_STOPS, type TopicStop } from './stops';
+import bankFile from '@/lib/content/oa-mcq.json';
+import type { McqQuestion } from '@/lib/mock-oa';
+import { McqPractice } from '@/app/oa/mcq/practice';
+import { TemplateDrill } from '@/components/template-drill';
 
 export const INDEX_COPY = {
   zh: {
@@ -254,10 +258,47 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           </details>
         ))}
       </section>
+      <StopDrills stop={stop} zh={zh} />
       <nav className="topics-adjacent" aria-label={t('相邻站点', 'Adjacent stops')}>
         <Adjacent stop={TOPIC_STOPS[stop.index - 1]} rel="prev" zh={zh} />
         <Adjacent stop={TOPIC_STOPS[stop.index + 1]} rel="next" zh={zh} />
       </nav>
+    </>
+  );
+}
+
+/** The stop's concept and complexity questions (oa-mcq.json `stop`), then drills on its template. */
+function StopDrills({ stop, zh }: { stop: TopicStop; zh: boolean }) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  const quiz = (bankFile.questions as McqQuestion[])
+    .filter((q) => q.stop === stop.slug)
+    .slice(0, 5)
+    .map(({ zh: zhText, en, ...q }) => ({ ...q, text: zh ? zhText : en }));
+  return (
+    <>
+      {quiz.length > 0 && (
+        <section className="topics-template topics-quiz" aria-labelledby="topic-quiz">
+          <h2 id="topic-quiz">{t('小测', 'Quick quiz')}</h2>
+          <p className="topics-template-lead">
+            {t(
+              `${quiz.length} 道概念题和复杂度题。答过的题会和 OA 选择题练习一起按间隔回来复习。`,
+              `${quiz.length} concept and complexity questions. Answered ones come back for spaced review along with the OA multiple-choice practice.`,
+            )}{' '}
+            <a href="/oa/mcq">{t('去 OA 选择题练习', 'Open the OA multiple-choice practice')}</a>
+          </p>
+          <McqPractice items={quiz} zh={zh} compact />
+        </section>
+      )}
+      <section className="topics-template topics-drill" aria-labelledby="topic-drill">
+        <h2 id="topic-drill">{t('模板练习', 'Template drills')}</h2>
+        <p className="topics-template-lead">
+          {t(
+            '用上面的模板出题：把打乱的行排回原序，或者把挖掉的边界条件填回去。每次「换一题」都会重新出题。',
+            'Drills cut from the template above: put shuffled lines back in order, or fill the blanked boundary conditions back in. Another one gives a new drill.',
+          )}
+        </p>
+        <TemplateDrill code={stop.code} langs={TEMPLATE_LANGS} zh={zh} />
+      </section>
     </>
   );
 }

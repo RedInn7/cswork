@@ -195,6 +195,7 @@ void test('the public profile is off by default, names nobody and counts only pu
     visible: false,
     indexable: false,
     showContest: false,
+    showPractice: false,
     bio: 'grinding',
     featuredBadge: null,
     links: [],

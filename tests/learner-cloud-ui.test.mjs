@@ -327,10 +327,12 @@ test('the public profile card is off until switched on and saves a lowercase han
     const root = await mount(createElement(PublicProfileSettings));
     // No page yet: no badges and no picker.
     assert.equal(document.querySelector('select'), null);
-    const [visible, indexable, showContest] = document.querySelectorAll('.cloud-check input');
+    const [visible, indexable, showContest, showPractice] = document.querySelectorAll('.cloud-check input');
     assert.equal(visible.checked, false);
     assert.equal(indexable.disabled, true, 'search indexing needs a public page first');
     assert.equal(showContest.disabled, true, 'so does the contest rating');
+    assert.equal(showPractice.disabled, true, 'and the practice leaderboard');
+    assert.equal(document.querySelector('.cloud-profile-badge'), null, 'no badge before the page is public');
     await act(async () => type(document.querySelector('.cloud-handle input'), 'Line-Rider'));
     await act(async () => visible.click());
     await act(async () => document.querySelector('form.cloud-profile-form').requestSubmit());
@@ -341,6 +343,7 @@ test('the public profile card is off until switched on and saves a lowercase han
         visible: true,
         indexable: false,
         showContest: false,
+        showPractice: false,
         bio: '',
         featuredBadge: null,
         links: [],
@@ -350,6 +353,10 @@ test('the public profile card is off until switched on and saves a lowercase han
       },
     ]);
     assert.ok(document.querySelector('a[href="/u/line-rider"]') !== null);
+    assert.equal(
+      document.querySelector('.cloud-profile-badge input').value,
+      '[![CSWork @line-rider](https://cswork.org/u/line-rider/badge.svg?lang=en)](https://cswork.org/u/line-rider)',
+    );
     // The first save brings the earned badges, so the picker shows without a reload.
     assert.deepEqual([...document.querySelector('select').options].map((o) => o.value), ['', 'daily:2026-02']);
     await act(async () => root.unmount());

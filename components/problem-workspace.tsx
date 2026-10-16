@@ -1815,7 +1815,7 @@ function Workspace({
                   : problem.difficulty}
               </span>
               {/* Contest rating (zerotrac); kept out of a mock like the company tags. */}
-              {!examMode && <RatingBadge rating={problem.rating} english={uiEnglish} />}
+              {!examMode && <RatingBadge rating={problem.rating} estimated={problem.ratingEstimated} english={uiEnglish} />}
               {/* Line 500's best approach, like GfG's expected complexity: folded until asked for. */}
               {!examMode && problem.targetComplexity && (
                 <button

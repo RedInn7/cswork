@@ -271,9 +271,22 @@
     background: #101213;
     color: #b4c3cf;
   }
+  /* Stop page template drills (app/topics/topics.css): the same navy picked kind/language and
+     Check button; .is-quiet keeps its generated surface. */
+  .dark .topics-drill-bar button[aria-pressed='true'],
+  .dark .topics-drill-actions button:not(.is-quiet) {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
   /* Same 1.04:1 navy-on-dark-page fill: the career guide's primary buttons (Add application,
      Save, Review) take the brand fill; .is-quiet (more specific) keeps its generated surface. */
   .dark .resume-actions button {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  /* And the /leaderboard Filter button (app/u/u.css). */
+  .dark .practice-filters button {
     background: var(--primary);
     color: var(--primary-foreground);
   }

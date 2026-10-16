@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useId, useState } from 'react';
-import { Globe } from 'lucide-react';
+import { Copy, Globe } from 'lucide-react';
 import { api } from '@/lib/types';
-import { useT } from '@/lib/i18n';
+import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -15,6 +15,7 @@ type Profile = {
   visible: boolean;
   indexable: boolean;
   showContest: boolean;
+  showPractice: boolean;
   bio: string;
   featuredBadge: string | null;
   links: { kind: LinkKind; url: string }[];
@@ -41,6 +42,7 @@ export function PublicProfileSettings() {
     visible: false,
     indexable: false,
     showContest: false,
+    showPractice: false,
     bio: '',
     featuredBadge: null,
     links: [],
@@ -60,6 +62,8 @@ export function PublicProfileSettings() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [copied, setCopied] = useState(false);
+  const english = useLocale() === 'en';
   useEffect(() => {
     let live = true;
     api<{ profile: Profile | null; badges?: Earned[] }>('oj/profile').then(
@@ -83,6 +87,8 @@ export function PublicProfileSettings() {
     };
   }, []);
   const href = saved?.visible ? `/u/${saved.handle}` : null;
+  const badge =
+    href && `[![CSWork @${saved!.handle}](https://cswork.org${href}/badge.svg${english ? '?lang=en' : ''})](https://cswork.org${href})`;
   return (
     <section className="form-card commerce-account-card" aria-labelledby={`${id}-title`}>
       <h2 id={`${id}-title`}>
@@ -107,6 +113,7 @@ export function PublicProfileSettings() {
             handle: form.handle.trim().toLowerCase(),
             indexable: form.visible && form.indexable,
             showContest: form.visible && form.showContest,
+            showPractice: form.visible && form.showPractice,
             // A contest badge goes with the hidden curve.
             featuredBadge:
               form.featuredBadge?.startsWith('contest:') && !(form.visible && form.showContest) ? null : form.featuredBadge,
@@ -238,6 +245,23 @@ export function PublicProfileSettings() {
             </small>
           </span>
         </label>
+        <label className="cloud-check">
+          <input
+            type="checkbox"
+            checked={form.visible && form.showPractice}
+            disabled={!form.visible}
+            onChange={(e) => setForm({ ...form, showPractice: e.target.checked })}
+          />
+          <span>
+            {t('出现在练习排行榜', 'List me on the practice leaderboard')}
+            <small>
+              {t(
+                '榜上显示你的主页名、练习积分、通过题数和连续打卡天数，可按你填写的学校和提交语言筛选；README 徽章也会带上积分和名次。',
+                'The board shows your handle, practice points, problems solved and daily streak, filterable by the school you fill in and by language; your README badge adds your points and rank.',
+              )}
+            </small>
+          </span>
+        </label>
         {badges.length > 0 && (
           <>
             <label htmlFor={`${id}-featured`}>{t('主页名旁展示的徽章（可选）', 'Badge beside your handle (optional)')}</label>
@@ -266,6 +290,27 @@ export function PublicProfileSettings() {
             cswork.org{href}
           </a>
         </p>
+      )}
+      {badge && (
+        <div className="cloud-profile-badge">
+          <label htmlFor={`${id}-badge`}>{t('README 徽章（Markdown）', 'README badge (Markdown)')}</label>
+          <div>
+            <Input id={`${id}-badge`} readOnly value={badge} onFocus={(e) => e.currentTarget.select()} />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                void navigator.clipboard?.writeText(badge).then(
+                  () => setCopied(true),
+                  () => {},
+                )
+              }
+            >
+              <Copy size={14} aria-hidden="true" />
+              {copied ? t('已复制', 'Copied') : t('复制', 'Copy')}
+            </Button>
+          </div>
+        </div>
       )}
       {error && (
         <p role="alert" className="notice error">

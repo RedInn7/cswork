@@ -18,6 +18,9 @@ export default async function ContestLayout({ children }: { children: React.Reac
           <Link href="/contest/leaderboard" prefetch={false}>
             {zh ? 'Rating 排行榜' : 'Rating board'}
           </Link>
+          <Link href="/leaderboard" prefetch={false}>
+            {zh ? '练习排行榜' : 'Practice board'}
+          </Link>
           <Link href="/?view=problems" prefetch={false}>
             {zh ? '回到题库' : 'Problem bank'} <span aria-hidden="true">↗</span>
           </Link>
