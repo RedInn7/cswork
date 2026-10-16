@@ -82,7 +82,7 @@ const input = z
 const clip = (text: string, max: number) => (text.length > max ? `${text.slice(0, max)}\n…(truncated)` : text);
 
 /** The learner's latest finished run of this task as its result panel shows it: hidden tests as counts only. */
-function lastRun(userId: string, slug: string) {
+export function lastRun(userId: string, slug: string) {
   const row = sqlite()
     .prepare(
       `SELECT s.status,r.stdout,r.stderr FROM submissions s JOIN oj_results r ON r.submission_id=s.id AND r.ordinal=0
@@ -152,7 +152,8 @@ export async function handleAiPair(request: Request, p: Person) {
   // A code-writing assistant must not be a way around a running contest's closed tutor.
   if (runningContestProblems(p.id).size) throw new HttpError(403, '比赛进行中，AI 结对暂停，赛后开放');
   const task = aiTask(data.task);
-  if (!task) throw new HttpError(404, '练习任务不存在');
+  // A take-home allows no AI (/take-home).
+  if (!task || task.track === 'take-home') throw new HttpError(404, '练习任务不存在');
   const question = data.question.trim();
   if (!question) throw new HttpError(400, '请先输入问题');
   // The newest turns within HISTORY_CHARS, oldest first, starting with a question.
