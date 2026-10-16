@@ -61,16 +61,19 @@ export function parseResumeText(text: string): Resume {
     .map((l) => l.trim())
     .filter(Boolean);
   const header: string[] = [];
-  const lists: Record<'education' | 'experience' | 'projects', ResumeItem[]> = { education: [], experience: [], projects: [] };
+  // An entry collects its bullets in `list` until the end.
+  type Entry = ResumeItem & { list: string[] };
+  const lists: Record<'education' | 'experience' | 'projects', Entry[]> = { education: [], experience: [], projects: [] };
   const plain: Record<'skills' | 'awards', string[]> = { skills: [], awards: [] };
   let section: Section | null = null;
-  let entry: (ResumeItem & { list: string[] }) | null = null;
+  let entry: Entry | null = null;
   let lastMarked = false;
   const open = (key: keyof typeof lists) => {
-    entry = { ...blank(), list: [] };
-    lists[key].push(entry);
+    const fresh: Entry = { ...blank(), list: [] };
+    lists[key].push(fresh);
+    entry = fresh;
     lastMarked = false;
-    return entry;
+    return fresh;
   };
   const head = (e: ResumeItem, line: string) => {
     const found = dates(line);
@@ -100,7 +103,7 @@ export function parseResumeText(text: string): Resume {
       continue;
     }
     const marker = BULLET.exec(content);
-    const current = entry as (ResumeItem & { list: string[] }) | null;
+    const current = entry as Entry | null;
     if (marker) {
       (current ?? open(section)).list.push(content.slice(marker[0].length).trim());
       lastMarked = true;

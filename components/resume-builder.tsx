@@ -358,7 +358,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
   const contactLine = contact(resume);
   return (
     <div className="resume-builder">
-      <div className="resume-actions resume-versions" role="group" aria-label={t('简历版本', 'Resume versions')}>
+      <div className="resume-actions resume-versions">
         <label>
           {t('正在编辑', 'Editing')}
           <select value={version} onChange={(e) => setVersion(e.target.value)}>
@@ -634,7 +634,7 @@ function PastePreview({ parsed, zh, onApply, replacing }: { parsed: Resume; zh: 
     [t('奖项与证书', 'Awards'), lines(parsed.awards).join('; ')],
   ];
   return (
-    <div className="resume-paste-preview" role="region" aria-label={t('解析结果', 'What was read')}>
+    <section className="resume-paste-preview" aria-label={t('解析结果', 'What was read')}>
       <dl>
         {rows.map(([label, value]) => (
           <div key={label}>
@@ -648,6 +648,6 @@ function PastePreview({ parsed, zh, onApply, replacing }: { parsed: Resume; zh: 
           {t(`用它覆盖${replacing}`, `Replace ${replacing} with this`)}
         </button>
       </div>
-    </div>
+    </section>
   );
 }
