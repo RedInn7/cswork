@@ -79,10 +79,14 @@ export function autoTitle(body: string) {
   const chars = Array.from(plain);
   return chars.length > 80 ? `${chars.slice(0, 79).join('')}…` : plain;
 }
-/** A post as plain text (list teasers, a thread's meta description): code blocks, and so spoilers, and Markdown marks dropped. */
+/**
+ * A post as plain text (list teasers, a thread's meta description): code blocks, and so spoilers, and Markdown marks dropped.
+ * Linear on a whole 20000-character body: a fence starts only at the head of a run, takes the whole run,
+ * and an unclosed one (even on the last line) runs to the end, so no start is retried.
+ */
 export const plainExcerpt = (md: string) =>
   md
-    .replace(/(`{3,}|~{3,})[^\n]*\n[\s\S]*?(?:\1|$)/g, ' ')
+    .replace(/(?<![`~])(`{3,}(?!`)|~{3,}(?!~))[^\n]*(?:\n|$)[\s\S]*?(?:\1|$)/g, ' ')
     .replace(/[#>*_`~|]/g, '')
     .replace(/\s+/g, ' ')
     .trim();

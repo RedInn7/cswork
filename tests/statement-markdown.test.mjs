@@ -168,4 +168,11 @@ test('server-rendered library pages offer the playground and fold member spoiler
   // The thread's meta description drops code blocks, so a spoiler stays out of search results.
   const { plainExcerpt } = await import('../lib/community.ts');
   assert.equal(plainExcerpt('Try it.\n\n```spoiler Answer\nUse a **heap**.\n```\n\nGood luck'), 'Try it. Good luck');
+  assert.equal(plainExcerpt('a\n````md\n```\nin\n```\n````\nb ~~~\nx'), 'a b');
+  // A whole post body runs through it on the server: a run of fence marks must not backtrack.
+  for (const body of ['`'.repeat(20000), '~'.repeat(20000), '```a'.repeat(5000), '```\n'.repeat(5000)]) {
+    const start = performance.now();
+    plainExcerpt(body);
+    assert.ok(performance.now() - start < 50, `${JSON.stringify(body.slice(0, 4))}… took too long`);
+  }
 });
