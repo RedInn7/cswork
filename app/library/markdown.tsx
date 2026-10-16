@@ -60,6 +60,7 @@ export function PublicLibraryMarkdown({
   math,
   ugc = false,
   sectionIds = false,
+  nested = false,
 }: {
   body: string;
   math: boolean;
@@ -67,6 +68,8 @@ export function PublicLibraryMarkdown({
   ugc?: boolean;
   /** Section headings get ids, for a table of contents (markdownToc). */
   sectionIds?: boolean;
+  /** Inside a spoiler: a ```spoiler there stays code, so folds cannot nest (each one parses its body again). */
+  nested?: boolean;
 }) {
   const rehypePlugins: NonNullable<Options['rehypePlugins']> = [];
   if (math) rehypePlugins.push([rehypeKatex, { maxSize: 10, maxExpand: 200 }]);
@@ -86,12 +89,12 @@ export function PublicLibraryMarkdown({
           // Our own mermaid blocks draw in the browser; the server page carries their source.
           if (!ugc && tag === 'mermaid') return <CourseDiagram source={source} />;
           // A member's ```spoiler Title stays folded here too (the app's post view does the same).
-          if (ugc && tag === 'spoiler') {
+          if (ugc && !nested && tag === 'spoiler') {
             const title = (node?.children[0] as { data?: { meta?: string | null } } | undefined)?.data?.meta?.trim();
             return (
               <details className="cs-spoiler">
                 <summary>{title || '剧透 · Spoiler'}</summary>
-                <PublicLibraryMarkdown body={source} math={false} ugc />
+                <PublicLibraryMarkdown body={source} math={false} ugc nested />
               </details>
             );
           }

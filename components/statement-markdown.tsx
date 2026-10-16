@@ -292,15 +292,26 @@ const remarkMoney = () => (tree: MdNode, file: { value?: unknown }) => {
     node.children?.forEach((child, i, list) => {
       if (child.type !== 'inlineMath') return walk(child);
       const raw = source.slice(child.position?.start.offset ?? 0, child.position?.end.offset ?? 0);
-      if (/^\$+\s|\s\$+$/.test(raw) || /^\d/.test(list[i + 1]?.value ?? '')) list[i] = { type: 'text', value: raw };
+      // `$$ x $$` on one line is display math (inline in remark-math): spaces inside are fine.
+      if (!raw.startsWith('$$') && (/^\$\s|\s\$$/.test(raw) || /^\d/.test(list[i + 1]?.value ?? '')))
+        list[i] = { type: 'text', value: raw };
     });
   walk(tree);
 };
 // Loaded only when a post has a diagram: mermaid and its dialog stay out of every other bundle.
 const CourseDiagram = lazy(() => import('./course-diagram').then((m) => ({ default: m.CourseDiagram })));
 
-/** A post's code block: a ```mermaid diagram (with `diagrams`), a ```spoiler fold, or code that opens in the playground. */
-function PostPre({ node, children, diagrams = false }: ExtraProps & { children?: React.ReactNode; diagrams?: boolean }) {
+/**
+ * A post's code block: a ```mermaid diagram (with `diagrams`), a ```spoiler fold, or code that opens in the playground.
+ * `nested`: inside a fold, where a ```spoiler stays code. Each fold parses its body again, and a ```spoiler line
+ * never closes a fence, so unbounded folds would nest `'```spoiler\n'.repeat(n)` n deep in O(n²).
+ */
+function PostPre({
+  node,
+  children,
+  diagrams = false,
+  nested = false,
+}: ExtraProps & { children?: React.ReactNode; diagrams?: boolean; nested?: boolean }) {
   const t = useT();
   const code = Children.toArray(children)[0];
   if (!isValidElement<{ className?: string; children?: unknown }>(code) || typeof code.props.children !== 'string')
@@ -314,14 +325,14 @@ function PostPre({ node, children, diagrams = false }: ExtraProps & { children?:
         <CourseDiagram source={source} />
       </Suspense>
     );
-  if (tag === 'spoiler') {
+  if (tag === 'spoiler' && !nested) {
     // ```spoiler Title: the words after the tag are the code element's meta.
     const title = (node?.children[0] as { data?: { meta?: string | null } } | undefined)?.data?.meta?.trim();
     return (
       <details className="cs-spoiler">
         <summary>{title || t('剧透', 'Spoiler')}</summary>
         <div className="cs-spoiler-body">
-          <PostMarkdown body={source} diagrams={diagrams} />
+          <PostMarkdown body={source} diagrams={diagrams} nested />
         </div>
       </details>
     );
@@ -380,27 +391,35 @@ function CodeTabs({ langs, children }: { langs: string[]; children?: React.React
 
 // The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
 // Posts cannot write HTML, so the only div is remarkCodeTabs'.
-const UNTRUSTED_COMPONENTS: Components = {
+const postComponents = (diagrams: boolean, nested: boolean): Components => ({
   a: components.a,
-  pre: ({ node, children }) => <PostPre node={node}>{children}</PostPre>,
+  pre: ({ node, children }) => (
+    <PostPre node={node} diagrams={diagrams} nested={nested}>
+      {children}
+    </PostPre>
+  ),
   div: ({ node, className, children }) =>
     className === 'cs-code-tabs' ? (
       <CodeTabs langs={String(node?.properties.dataLangs ?? '').split(' ')}>{children}</CodeTabs>
     ) : (
       <div className={className}>{children}</div>
     ),
-};
-const DIAGRAM_COMPONENTS: Components = {
-  ...UNTRUSTED_COMPONENTS,
-  pre: ({ node, children }) => (
-    <PostPre node={node} diagrams>
-      {children}
-    </PostPre>
-  ),
-};
+});
+// [without, with diagrams], each [top level, inside a spoiler].
+const POST_COMPONENTS = [false, true].map((diagrams) => [postComponents(diagrams, false), postComponents(diagrams, true)]);
 
 /** Another learner's text; TeX (anything with a `$`) renders once KaTeX has loaded. */
-function PostMarkdown({ body, diagrams, plain = false }: { body: string; diagrams: boolean; plain?: boolean }) {
+function PostMarkdown({
+  body,
+  diagrams,
+  plain = false,
+  nested = false,
+}: {
+  body: string;
+  diagrams: boolean;
+  plain?: boolean;
+  nested?: boolean;
+}) {
   const dollar = body.includes('$');
   const [math, setMath] = useState<MathPlugins | null>(null);
   useEffect(() => {
@@ -412,7 +431,7 @@ function PostMarkdown({ body, diagrams, plain = false }: { body: string; diagram
     <Markdown
       remarkPlugins={on ? [...POST_PLUGINS, on.remarkMath, remarkMoney] : POST_PLUGINS}
       rehypePlugins={on ? [[on.rehypeKatex, KATEX]] : undefined}
-      components={diagrams ? DIAGRAM_COMPONENTS : UNTRUSTED_COMPONENTS}
+      components={POST_COMPONENTS[+diagrams][+nested]}
       disallowedElements={plain ? PLAIN : UNTRUSTED_HIDDEN}
       unwrapDisallowed={plain}
     >

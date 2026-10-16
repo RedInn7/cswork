@@ -99,6 +99,12 @@ test('spoiler fences fold closed under their title and render Markdown inside', 
   assert.equal(hint.querySelectorAll('.cs-run-playground').length, 1);
   assert.equal(plain.querySelector('summary').textContent, 'Spoiler');
   assert.equal(render('```spoiler\nanswer\n```').querySelectorAll('details').length, 0);
+  // A ```spoiler line never closes a fence: folds do not nest, so this is one fold, not a thousand.
+  const deep = '```spoiler\n'.repeat(1000) + 'x\n```';
+  assert.equal(post(deep).querySelectorAll('details').length, 1);
+  const inner = post('````spoiler A\n```spoiler B\nx\n```\n````');
+  assert.equal(inner.querySelectorAll('details').length, 1);
+  assert.equal(inner.querySelector('details pre').textContent.trim(), 'x');
 });
 test('consecutive blocks in different languages become one tab set; others stay', () => {
   const doc = post('```python\nprint(1)\n```\n\n```cpp\nint main() {}\n```\n\n```java\nclass A {}\n```\n\ntext\n\n```go\nfunc main() {}\n```\n\n```python\na = 1\n```\n\n```python\nb = 2\n```');
@@ -124,13 +130,13 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
   const { createRoot } = await import('react-dom/client');
   const { decodeShare } = await import('../lib/playground-share.ts');
   const root = createRoot(document.getElementById('root'));
-  const body = 'Time is $O(n^2)$; it costs $5 和 $10, or $3-$4.\n\n```python\nprint(input())\n```\n\n```go\nfunc main() {}\n```';
+  const body = 'Time is $O(n^2)$; it costs $5 和 $10, or $3-$4.\n\n$$ x^2 $$\n\n```python\nprint(input())\n```\n\n```go\nfunc main() {}\n```';
   await act(async () => root.render(React.createElement(StatementMarkdown, { body, untrusted: true })));
   try {
     for (let i = 0; i < 100 && !document.querySelector('.katex'); i++)
       await act(async () => { await new Promise(r => setTimeout(r, 20)); });
-    assert.equal(document.querySelectorAll('.katex').length, 1);
-    assert.ok(document.querySelector('.katex annotation').textContent.includes('O(n^2)'));
+    const tex = [...document.querySelectorAll('.katex annotation')].map(x => x.textContent.trim());
+    assert.deepEqual(tex, ['O(n^2)', 'x^2'], 'spaces inside one-line $$ … $$ are display math, not money');
     assert.ok(document.body.textContent.includes('it costs $5 和 $10, or $3-$4.'));
     const href = document.querySelector('.cs-run-playground a').getAttribute('href');
     assert.deepEqual(await decodeShare(new URL(href, 'https://cswork.test').hash), { language: 'python', code: 'print(input())\n', stdin: '' });
@@ -158,4 +164,8 @@ test('server-rendered library pages offer the playground and fold member spoiler
   assert.equal(spoiler.hasAttribute('open'), false);
   assert.equal(spoiler.querySelector('summary').textContent, 'Answer');
   assert.equal(spoiler.querySelector('strong').textContent, 'heap');
+  assert.equal(page('```spoiler\n'.repeat(1000) + 'x\n```', true).querySelectorAll('details').length, 1);
+  // The thread's meta description drops code blocks, so a spoiler stays out of search results.
+  const { plainExcerpt } = await import('../lib/community.ts');
+  assert.equal(plainExcerpt('Try it.\n\n```spoiler Answer\nUse a **heap**.\n```\n\nGood luck'), 'Try it. Good luck');
 });
