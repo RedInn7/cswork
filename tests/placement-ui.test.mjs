@@ -109,7 +109,7 @@ test('a refused start shows the server’s message and keeps the intro', async (
   await act(async () => root.unmount());
 });
 
-test('the sprint plan form unticks a new result’s known stops once and starts past them', async () => {
+test('the sprint plan form unticks a new result’s known stops once, starts past them, and never plans nothing', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.org/?view=problems' });
   for (const name of ['window', 'document', 'location', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
@@ -135,7 +135,7 @@ test('the sprint plan form unticks a new result’s known stops once and starts 
     solved: 0,
   }));
   const saved = [];
-  const root = createRoot(document.getElementById('root'));
+  let root = createRoot(document.getElementById('root'));
   const render = (goal) =>
     act(async () =>
       root.render(createElement(StudyPlan, { goal, plan: null, today: '2026-10-15', onSave: (g) => saved.push(g), stops, english: true })),
@@ -152,12 +152,13 @@ test('the sprint plan form unticks a new result’s known stops once and starts 
   assert.match(document.querySelector('.route-plan-topics [role="status"]').textContent, /unticked 8 known stops/);
   assert.equal(document.querySelector('#route-plan-start').value, String(first.length), 'the start moves past them');
   assert.match(document.querySelector('#route-plan-start-hint').textContent, /and your placement quiz/);
-  // Ticking one back is the learner's call, and it is saved.
+  // Ticking one back is the learner's call: the start moves back to it, so it is planned.
   await act(async () => box('binary-search').click());
+  assert.equal(document.querySelector('#route-plan-start').value, String(ROUTE_SLUGS.indexOf('binary-search')));
   await act(async () => button('Save plan').click());
   assert.equal(saved.length, 1);
   assert.equal(saved[0].placementAt, 5000);
-  assert.equal(saved[0].startStop, first.length);
+  assert.equal(saved[0].startStop, ROUTE_SLUGS.indexOf('binary-search'));
   assert.deepEqual(
     saved[0].topics.filter((slug) => first.includes(slug)),
     ['binary-search'],
@@ -169,5 +170,16 @@ test('the sprint plan form unticks a new result’s known stops once and starts 
   assert.equal(box('binary-search').checked, true);
   assert.equal(box('array-foundations').checked, false);
   assert.equal(document.querySelector('.route-plan-topics [role="status"]'), null);
+  await act(async () => root.unmount());
+
+  // Every chosen stop known: unticking them would plan nothing, so the result is not applied.
+  root = createRoot(document.getElementById('root'));
+  await render({ ...DEFAULT_GOAL, status: 'planned', topics: first });
+  await act(async () => button('Edit sprint plan').click());
+  for (const slug of first) assert.equal(box(slug).checked, true, slug);
+  assert.equal(document.querySelector('#route-plan-start').value, String(DEFAULT_GOAL.startStop));
+  assert.equal(document.querySelector('.route-plan-topics [role="status"]'), null);
+  await act(async () => button('Save plan').click());
+  assert.deepEqual([saved[1].startStop, saved[1].topics, saved[1].placementAt], [DEFAULT_GOAL.startStop, first, DEFAULT_GOAL.placementAt]);
   await act(async () => root.unmount());
 });

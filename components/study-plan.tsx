@@ -613,8 +613,10 @@ function PlanForm({
     );
     return () => controller.abort();
   }, []);
-  // A result newer than the one applied unticks its known stops (ticking one back undoes it) and
-  // moves the start past them. Signed out the request fails and nothing changes.
+  // A result newer than the one applied unticks its known stops and moves the start past them,
+  // unless that would leave no stop to plan (then it stays unapplied). Ticking one back undoes it:
+  // the start moves back to it. Signed out the request fails and nothing changes.
+  // ponytail: kept from the topics as the form opened; a tick made before the fetch lands is lost.
   useEffect(() => {
     const controller = new AbortController();
     ojRequest<{ latest?: PlacementResult | null }>('speedrun/placement', undefined, controller.signal).then(
@@ -623,7 +625,9 @@ function PlanForm({
         setPlacement(latest);
         if (latest.at <= goal.placementAt) return;
         const known = masteredStops(latest);
-        setTopics((list) => (list.some((slug) => !known.has(slug)) ? list.filter((slug) => !known.has(slug)) : list));
+        const kept = topics.filter((slug) => !known.has(slug));
+        if (!kept.length) return;
+        setTopics(kept);
         setStart((at) => openStart(at, known));
         setPlacementAt(latest.at);
       },
@@ -824,9 +828,11 @@ function PlanForm({
                 <input
                   type="checkbox"
                   checked={topics.includes(slug)}
-                  onChange={(event) =>
-                    setTopics(event.target.checked ? [...topics, slug] : topics.filter((s) => s !== slug))
-                  }
+                  onChange={(event) => {
+                    setTopics(event.target.checked ? [...topics, slug] : topics.filter((s) => s !== slug));
+                    // A stop before the start is never planned: ticking one moves the start back to it.
+                    if (event.target.checked && i < start) setStart(i);
+                  }}
                 />
                 {String(i + 1).padStart(2, '0')} {STOP_NAMES[slug][english ? 1 : 0]}
                 {known.has(slug) && <span className="route-plan-note">{t('已掌握', 'Known')}</span>}
