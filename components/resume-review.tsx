@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { JD_HANDOFF_KEY } from '@/lib/jd-skills';
 import { ojRequest } from '@/lib/oj-client';
 import type { ResumeReview as Review } from '@/lib/server/ai-resume';
 import { REVIEW_KEY } from './resume-builder';
@@ -200,6 +201,20 @@ export function ResumeReview({ zh }: { zh: boolean }) {
               </p>
             </div>
           )}
+          {/* The pasted posting goes over once (components/jd-readiness.tsx reads and removes it). */}
+          <a
+            href="/career/jd"
+            onClick={() => {
+              try {
+                if (job.trim()) sessionStorage.setItem(JD_HANDOFF_KEY, job);
+              } catch {}
+            }}
+          >
+            {job.trim()
+              ? t('用这份职位描述检查技能准备度', 'Check your skills against this job description')
+              : t('粘贴一份职位描述，检查技能准备度', 'Check your skills against a job description')}{' '}
+            →
+          </a>
         </section>
       )}
     </div>
