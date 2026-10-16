@@ -492,6 +492,29 @@
 .cs-posts-head .cs-posts-write {
   margin-left: auto;
 }
+/* ?q=: a search inside one target's posts. */
+.cs-posts-search {
+  display: inline-flex;
+  gap: 4px;
+  min-width: 0;
+}
+.cs-posts-search input {
+  width: 170px;
+  min-width: 0;
+  padding: 4px 8px;
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  background: var(--cs-surface, #fff);
+  color: var(--cs-text);
+  font-size: 12px;
+}
+.cs-posts-search button {
+  padding: 4px 10px;
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  color: var(--cs-text);
+  font-size: 12px;
+}
 /* A technique or company on a post: a quiet tinted chip beside the language. */
 .cs-post-tag {
   padding: 1px 7px;
@@ -850,6 +873,15 @@
   .dark .cs-posts-filter select {
     border: 1px solid var(--cs-border);
     background: var(--cs-surface, #191919);
+    color: var(--cs-text);
+  }
+  .dark .cs-posts-search input {
+    border: 1px solid var(--cs-border);
+    background: var(--cs-surface, #191919);
+    color: var(--cs-text);
+  }
+  .dark .cs-posts-search button {
+    border: 1px solid var(--cs-border);
     color: var(--cs-text);
   }
   .dark .cs-post-tag {
