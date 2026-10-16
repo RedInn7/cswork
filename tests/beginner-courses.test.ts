@@ -10,6 +10,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import file from '../lib/content/beginner-courses.json';
 import contracts from '../lib/content/leetcode-contracts.json';
+import sqlTrack from '../lib/content/sql-track.json';
 import { curatedByNumber } from '../lib/ling-curated';
 import type { Person } from '../lib/server/auth';
 
@@ -27,6 +28,14 @@ const COURSE = ['chapters', 'slug', 'summaryEn', 'summaryZh', 'titleEn', 'titleZ
 const CHAPTER = ['bodyEn', 'bodyZh', 'homework', 'quiz', 'slug', 'solves', 'titleEn', 'titleZh'];
 const QUESTION = ['answer', 'choices', 'qEn', 'qZh', 'whyEn', 'whyZh'];
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/** Courses whose lessons run code (scripts/learn/check-snippets.mjs builds every run block). */
+const RUN = { cpp: 'cpp', java: 'java', go: 'go', sql: 'sql' } as Record<string, string>;
+/** The SQL course practises on the SQL track: links to its topics and patterns, never sql-* homework. */
+const TRACK_LINK = /\]\((\/[^)]*)\)/g;
+const trackLink = (href: string) => {
+  const m = /^\/\?view=problems&library=sql(?:&pattern=([a-z-]+)|#sql-group-([a-z]+))?$/.exec(href);
+  return !!m && (!m[1] || sqlTrack.patterns.some((p) => p.key === m[1])) && (!m[2] || sqlTrack.groups.some((g) => g.key === m[2]));
+};
 const text = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
 
 before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }));
@@ -35,18 +44,21 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-void test('two courses of complete bilingual chapters, quizzes and three practice problems each', () => {
+void test('six courses of complete bilingual chapters, quizzes and practice', () => {
   assert.deepEqual(Object.keys(file), ['courses']);
   assert.deepEqual(
     beginnerCourses.map((c) => [c.slug, c.chapters.length]),
     [
       ['big-o', 10],
       ['python', 8],
+      ['cpp', 8],
     ],
   );
+  assert.equal(new Set(beginnerCourses.map((c) => c.slug)).size, beginnerCourses.length, 'course slugs repeat');
   const bad: string[] = [];
   for (const course of file.courses as Record<string, unknown>[]) {
     assert.deepEqual(Object.keys(course).sort(), COURSE);
+    const assigned = new Set<string>();
     for (const key of ['titleZh', 'titleEn', 'summaryZh', 'summaryEn']) if (!text(course[key])) bad.push(`${course.slug}.${key}`);
     const slugs = new Set<string>();
     for (const chapter of course.chapters as Record<string, unknown>[]) {
@@ -61,9 +73,22 @@ void test('two courses of complete bilingual chapters, quizzes and three practic
         if (/^# /m.test(body.replace(/^```[\s\S]*?^```/gm, ''))) bad.push(`${at}.${key}: has an h1`);
         for (const [, source] of body.matchAll(/^```mermaid\n([\s\S]*?)^```/gm))
           if (source.length > DIAGRAM_MAX_LENGTH || !/accTitle: /.test(source)) bad.push(`${at}.${key}: diagram`);
-        // Pages link problems themselves; the renderer would print a relative link as text.
-        if (/\]\(\//.test(body)) bad.push(`${at}.${key}: relative link`);
+        // Pages link problems themselves; the renderer prints other relative links as text.
+        for (const [, href] of body.matchAll(TRACK_LINK))
+          if (course.slug !== 'sql' || !trackLink(href)) bad.push(`${at}.${key}: relative link ${href}`);
+        // Code the lesson runs is a whole program (or one query) and comes with what it prints.
+        const runs = [...body.matchAll(/^```(\w+) run\n([\s\S]*?)^```/gm)];
+        if (RUN[String(course.slug)] && !runs.length) bad.push(`${at}.${key}: no run block`);
+        for (const [, language, code] of runs) {
+          if (language !== RUN[String(course.slug)]) bad.push(`${at}.${key}: ${language} run block`);
+          if (language === 'java' && !/^(public )?class Main \{/m.test(code)) bad.push(`${at}.${key}: no class Main`);
+          if (language === 'go' && !code.startsWith('package main\n')) bad.push(`${at}.${key}: not package main`);
+          if (/^(cpp|java|go)$/.test(language) && !/\bmain\b/.test(code)) bad.push(`${at}.${key}: no main`);
+        }
       }
+      // The same programs in both languages, comments aside.
+      const runCount = (body: unknown) => String(body).match(/^```\w+ run$/gm)?.length ?? 0;
+      if (runCount(chapter.bodyZh) !== runCount(chapter.bodyEn)) bad.push(`${at}: run blocks differ`);
       if (!/[一-鿿]/.test(String(chapter.bodyZh))) bad.push(`${at}.bodyZh: no Chinese`);
       const quiz = chapter.quiz as Record<string, unknown>[];
       if (quiz.length !== 3) bad.push(`${at}: ${quiz.length} questions`);
@@ -75,8 +100,13 @@ void test('two courses of complete bilingual chapters, quizzes and three practic
         if (!Number.isInteger(question.answer) || !choices[question.answer as number]) bad.push(`${at}.quiz[${q}].answer`);
       }
       const homework = chapter.homework as { id: string; zh: string; en: string }[];
-      if (homework.length !== 3) bad.push(`${at}: ${homework.length} problems`);
+      // SQL lessons send learners to the SQL track instead: sql-* homework would shrink the SQL exam's pool.
+      if (homework.length !== (course.slug === 'sql' ? 0 : 3)) bad.push(`${at}: ${homework.length} problems`);
+      if (course.slug === 'sql' && !/\]\(\/\?view=problems&library=sql/.test(String(chapter.bodyZh)))
+        bad.push(`${at}: no SQL track link`);
       for (const problem of homework) {
+        if (assigned.has(problem.id)) bad.push(`${at}: ${problem.id} assigned twice`);
+        assigned.add(problem.id);
         // Line 500 problems: judged here with a LeetCode-mode contract.
         if (!curatedByNumber.has(Number(/^lc-(\d+)$/.exec(problem.id)?.[1]))) bad.push(`${at}: ${problem.id} not in Line 500`);
         if (!Object.hasOwn(contracts.problems, problem.id)) bad.push(`${at}: ${problem.id} has no contract`);
@@ -121,15 +151,28 @@ void test('problems a lesson solves or assigns are known, so exams and duels can
     for (const id of [...chapter.solves, ...chapter.homework.map((h) => h.id)]) assert.ok(learnProblems.has(id), id);
 });
 
+void test('the language and SQL courses reuse Big-O and Python problems, so no draw pool shrinks', () => {
+  const base = beginnerCourses.filter((c) => c.slug === 'big-o' || c.slug === 'python');
+  const used = new Set(base.flatMap((c) => c.chapters.flatMap((ch) => [...ch.solves, ...ch.homework.map((h) => h.id)])));
+  assert.deepEqual([...learnProblems].filter((id) => !used.has(id)), []);
+  assert.ok(![...learnProblems].some((id) => id.startsWith('sql-') || id.startsWith('pd-')), 'the SQL exam keeps its pool');
+});
+
 void test('paths, lookups and the self-paced course behind each course', () => {
   assert.equal(beginnerCourse('python')?.titleEn, 'Python for Coding Interviews');
   assert.equal(beginnerCourse('__proto__'), undefined);
   assert.equal(learnPath(), '/learn');
   assert.equal(learnPath('big-o', 'heaps'), '/learn/big-o/heaps');
   const paths = learnPaths().map((p) => p.path);
-  assert.equal(paths.length, 1 + 2 + 18);
+  assert.equal(paths.length, 1 + beginnerCourses.length + beginnerCourses.reduce((n, c) => n + c.chapters.length, 0));
   assert.equal(new Set(paths).size, paths.length);
   assert.ok(paths.includes('/learn/python/pitfalls'));
+  assert.ok(paths.includes('/learn/cpp/cheatsheet'));
+  // Every course, the new ones included, issues its own certificate.
+  assert.deepEqual(
+    SELF_PACED.filter((c) => c.id.startsWith('sd:') && c.id !== 'sd:system-design').map((c) => c.id),
+    beginnerCourses.map((c) => `sd:${c.slug}`),
+  );
   const python = SELF_PACED.find((c) => c.id === 'sd:python')!;
   assert.equal(python.zh, 'Python 面试速成课');
   assert.deepEqual(

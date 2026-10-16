@@ -1907,6 +1907,848 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "cpp",
+      "titleZh": "C++ STL 面试速成课",
+      "titleEn": "C++ STL for Coding Interviews",
+      "summaryZh": "8 节课讲清用 C++ 刷题最常用的 STL：vector 和 string、栈和队列、priority_queue、set/multiset/map、unordered_map、sort 和 lower_bound，以及溢出和 long long 等只有 C++ 才有的坑，最后一节是速查表。示例都是可编译运行的完整程序，每节有小测验和 3 道练习题。",
+      "summaryEn": "Eight lessons on the STL you use most when solving problems in C++: vector and string, stacks and queues, priority_queue, set/multiset/map, unordered_map, sort and lower_bound, plus the C++-only traps such as overflow and long long, ending with a cheat sheet. Every example is a complete program that compiles and runs, and each lesson ends with a quiz and three practice problems.",
+      "chapters": [
+        {
+          "slug": "vector-string",
+          "titleZh": "vector 与 string",
+          "titleEn": "vector and string",
+          "bodyZh": "C++ 刷题几乎离不开 STL（标准模板库）。这门课按面试最常用的顺序讲容器和算法，每节都给出能直接编译运行的完整程序。先从最常用的两个开始：`vector` 和 `string`。\n\n## 头文件和 using\n\n判题机用的是 g++，所以很多人一行 `#include <bits/stdc++.h>` 引入全部标准库。它只是 GCC 的内部头文件，macOS 自带的 clang 和 MSVC 都没有，本地编译不过时改回逐个包含即可。本课的示例都逐个写出头文件，方便你在任何编译器上运行。`using namespace std;` 在面试和刷题里很常见，写工程代码时不要放在头文件里。\n\n## vector：会自己扩容的数组\n\n```cpp\nvector<int> a;               // 空数组\nvector<int> b(5, 0);         // 5 个 0\nvector<vector<int>> g(3, vector<int>(4, -1));   // 3 行 4 列，全是 -1\n\na.push_back(7);              // 尾部追加，均摊 O(1)\na.back();                    // 最后一个元素\na.pop_back();                // 删除最后一个，不返回值\na.size(); a.empty();\na.insert(a.begin() + i, x);  // 在中间插入：O(n)\na.erase(a.begin() + i);      // 在中间删除：O(n)\n```\n\n`push_back` 偶尔要换一块更大的内存并整体搬过去，但容量按倍数增长，平均到每次仍是 O(1)。已知最终大小时，先 `a.reserve(n)` 可以省掉这些搬迁。\n\n**传引用。** `void dfs(vector<int> path)` 每次调用都会把整个数组复制一遍，递归里很容易因此超时。不打算修改就写 `const vector<int>& path`，要修改就写 `vector<int>& path`。范围 for 同理：`for (int x : a)` 拿到的是副本，要改元素得写 `for (int& x : a)`，遍历二维数组写 `for (auto& row : g)`。\n\n## size() 是无符号数\n\n`a.size()` 的类型是 `size_t`，一种无符号整数。空数组的 `a.size() - 1` 不是 -1，而是一个巨大的正数：\n\n```cpp\nfor (int i = 0; i < a.size() - 1; i++)   // a 为空时越界\n```\n\n两种写法都安全：先转成 `int` 再减，`(int)a.size() - 1`；或者把减法挪到另一边，`i + 1 < a.size()`。\n\n## string：可以修改的字符数组\n\n和 Python、Java 不同，C++ 的 `string` 是可变的，`s[i] = 'x'` 直接改原字符串。\n\n```cpp\ns += 'a';              // 追加一个字符，均摊 O(1)\ns += \"bc\";             // 追加一段\ns.substr(pos, len);    // 第二个参数是长度，不是结束下标；O(len)\ns.find(\"ab\");          // 找不到时返回 string::npos\nto_string(42);         // 数字转字符串\nstoi(\"123\"); stoll(\"12345678901\");   // 字符串转 int / long long\nc - 'a';               // 小写字母转 0~25\n```\n\n循环里写 `s = s + c` 会每次新建一个字符串，总共 O(n²)；用 `s += c` 或 `s.push_back(c)`。\n\n## 例子：反转字符串\n\n双指针从两端往中间走，交换对应字符。下面的程序同时演示了 `substr`、`find` 和无符号减法：\n\n```cpp run\n#include <iostream>\n#include <string>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nvoid reverseString(vector<char>& s) {\n    int i = 0, j = (int)s.size() - 1;\n    while (i < j) swap(s[i++], s[j--]);\n}\n\nint main() {\n    vector<char> s = {'h', 'e', 'l', 'l', 'o'};\n    reverseString(s);\n    cout << string(s.begin(), s.end()) << '\\n';\n\n    string t = \"interview\";\n    cout << t.substr(2, 3) << '\\n';    // 从下标 2 开始取 3 个字符\n    cout << (t.find(\"view\") != string::npos) << ' ' << (t.find(\"xyz\") == string::npos) << '\\n';\n\n    vector<int> empty;\n    cout << empty.size() - 1 << '\\n';  // 不是 -1\n}\n```\n\n```text\nolleh\nter\n1 1\n18446744073709551615\n```\n\n最后一行在 64 位机器上就是 2⁶⁴ − 1。拿它去当下标，程序会直接越界。\n\n## 常见错误\n\n- `substr(i, j)` 的第二个参数当成结束下标。它是长度，取 `[i, j)` 要写 `substr(i, j - i)`。\n- 函数参数按值传 `vector` 或 `string`，递归时反复复制导致超时。\n- `a.size() - 1`、`a.size() - k` 在数组较短时变成巨大的无符号数。\n- 用 `a[i]` 访问越界不会报错，只会读到垃圾值或崩溃；调试时可以换成 `a.at(i)`，越界会抛异常。",
+          "bodyEn": "Coding interviews in C++ lean on the STL, the Standard Template Library. This course covers its containers and algorithms in the order interviews use them, and every lesson includes complete programs you can compile and run. We start with the two you will use most: `vector` and `string`.\n\n## Headers and using\n\nThe judge compiles with g++, so many people write a single `#include <bits/stdc++.h>` to pull in the whole standard library. That is a GCC internal header: the clang that ships with macOS and MSVC do not have it, so if it fails to compile locally, include the headers one by one. The examples here list their headers so they build on any compiler. `using namespace std;` is normal in interviews and practice; just keep it out of headers in production code.\n\n## vector: an array that grows\n\n```cpp\nvector<int> a;               // empty\nvector<int> b(5, 0);         // five zeros\nvector<vector<int>> g(3, vector<int>(4, -1));   // 3 rows, 4 columns, all -1\n\na.push_back(7);              // append, amortized O(1)\na.back();                    // the last element\na.pop_back();                // removes the last element and returns nothing\na.size(); a.empty();\na.insert(a.begin() + i, x);  // insert in the middle: O(n)\na.erase(a.begin() + i);      // erase from the middle: O(n)\n```\n\nNow and then `push_back` moves everything into a bigger block, but capacity grows by a factor, so each append is still O(1) on average. When you know the final size, `a.reserve(n)` skips those moves.\n\n**Pass by reference.** `void dfs(vector<int> path)` copies the whole vector on every call, a common way to time out in recursion. Write `const vector<int>& path` when you only read it and `vector<int>& path` when you change it. Range-for works the same way: `for (int x : a)` gives copies, so changing elements needs `for (int& x : a)`, and a 2D vector is walked with `for (auto& row : g)`.\n\n## size() is unsigned\n\n`a.size()` returns a `size_t`, an unsigned integer. For an empty vector, `a.size() - 1` is not -1 but a huge positive number:\n\n```cpp\nfor (int i = 0; i < a.size() - 1; i++)   // out of bounds when a is empty\n```\n\nEither form is safe: convert first, `(int)a.size() - 1`, or move the subtraction to the other side, `i + 1 < a.size()`.\n\n## string: a mutable array of characters\n\nUnlike Python and Java, a C++ `string` is mutable: `s[i] = 'x'` changes it in place.\n\n```cpp\ns += 'a';              // append a character, amortized O(1)\ns += \"bc\";             // append a piece\ns.substr(pos, len);    // the second argument is a length, not an end index; O(len)\ns.find(\"ab\");          // string::npos when not found\nto_string(42);         // number to string\nstoi(\"123\"); stoll(\"12345678901\");   // string to int / long long\nc - 'a';               // a lowercase letter to 0..25\n```\n\n`s = s + c` in a loop builds a new string every time, O(n²) overall; use `s += c` or `s.push_back(c)`.\n\n## Example: reverse a string\n\nTwo pointers walk in from both ends and swap. The program also shows `substr`, `find` and the unsigned subtraction:\n\n```cpp run\n#include <iostream>\n#include <string>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nvoid reverseString(vector<char>& s) {\n    int i = 0, j = (int)s.size() - 1;\n    while (i < j) swap(s[i++], s[j--]);\n}\n\nint main() {\n    vector<char> s = {'h', 'e', 'l', 'l', 'o'};\n    reverseString(s);\n    cout << string(s.begin(), s.end()) << '\\n';\n\n    string t = \"interview\";\n    cout << t.substr(2, 3) << '\\n';    // 3 characters starting at index 2\n    cout << (t.find(\"view\") != string::npos) << ' ' << (t.find(\"xyz\") == string::npos) << '\\n';\n\n    vector<int> empty;\n    cout << empty.size() - 1 << '\\n';  // not -1\n}\n```\n\n```text\nolleh\nter\n1 1\n18446744073709551615\n```\n\nThe last line is 2⁶⁴ − 1 on a 64-bit machine. Use it as an index and the program reads far out of bounds.\n\n## Common mistakes\n\n- Reading `substr(i, j)` as \"from i to j\". The second argument is a length: `[i, j)` is `substr(i, j - i)`.\n- Passing a `vector` or `string` by value, so recursion copies it again and again and times out.\n- `a.size() - 1` or `a.size() - k` turning into a huge unsigned number on a short vector.\n- `a[i]` out of bounds is not reported; you get garbage or a crash. While debugging, `a.at(i)` throws instead.",
+          "quiz": [
+            {
+              "qZh": "a 是空的 vector<int>，a.size() - 1 的值是什么？",
+              "qEn": "a is an empty vector<int>. What is a.size() - 1?",
+              "choices": [
+                {
+                  "zh": "一个巨大的正数",
+                  "en": "A huge positive number"
+                },
+                {
+                  "zh": "-1",
+                  "en": "-1"
+                },
+                {
+                  "zh": "0",
+                  "en": "0"
+                },
+                {
+                  "zh": "编译错误：不能对 size() 做减法",
+                  "en": "A compile error: size() cannot be subtracted from"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "size() 返回无符号的 size_t，0 - 1 会绕回到最大值 2⁶⁴ − 1。写 (int)a.size() - 1 或 i + 1 < a.size()。",
+              "whyEn": "size() returns an unsigned size_t, so 0 - 1 wraps around to 2⁶⁴ − 1. Write (int)a.size() - 1 or i + 1 < a.size()."
+            },
+            {
+              "qZh": "s = \"abcdef\"，s.substr(2, 3) 是什么？",
+              "qEn": "s = \"abcdef\". What is s.substr(2, 3)?",
+              "choices": [
+                {
+                  "zh": "\"c\"",
+                  "en": "\"c\""
+                },
+                {
+                  "zh": "\"cde\"",
+                  "en": "\"cde\""
+                },
+                {
+                  "zh": "\"cd\"",
+                  "en": "\"cd\""
+                },
+                {
+                  "zh": "\"bcd\"",
+                  "en": "\"bcd\""
+                }
+              ],
+              "answer": 1,
+              "whyZh": "substr 的第二个参数是长度：从下标 2（字符 c）开始取 3 个字符，得到 \"cde\"。",
+              "whyEn": "The second argument of substr is a length: three characters starting at index 2 (the c) give \"cde\"."
+            },
+            {
+              "qZh": "递归函数写成 void dfs(vector<int> path)，每层都把 path 传给下一层。最大的问题是什么？",
+              "qEn": "A recursive function is declared void dfs(vector<int> path) and passes path down at every level. What is the main problem?",
+              "choices": [
+                {
+                  "zh": "递归里不能使用 vector",
+                  "en": "vector cannot be used in recursion"
+                },
+                {
+                  "zh": "path 会在函数返回时被自动清空",
+                  "en": "path is cleared automatically when the function returns"
+                },
+                {
+                  "zh": "每次调用都复制整个数组，容易超时",
+                  "en": "Every call copies the whole vector, which can time out"
+                },
+                {
+                  "zh": "编译器会报错要求加 const",
+                  "en": "The compiler rejects it and demands const"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "按值传参会复制。只读时写 const vector<int>&，要修改时写 vector<int>&。",
+              "whyEn": "Passing by value copies. Use const vector<int>& to read and vector<int>& to modify."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-283",
+              "zh": "移动零",
+              "en": "Move Zeroes"
+            },
+            {
+              "id": "lc-917",
+              "zh": "仅仅反转字母",
+              "en": "Reverse Only Letters"
+            },
+            {
+              "id": "lc-48",
+              "zh": "旋转图像",
+              "en": "Rotate Image"
+            }
+          ],
+          "solves": [
+            "lc-344"
+          ]
+        },
+        {
+          "slug": "stack-queue-deque",
+          "titleZh": "栈、队列与 deque",
+          "titleEn": "Stacks, queues and deque",
+          "bodyZh": "栈、队列和双端队列在 STL 里各有现成的类型。它们的接口很像，但有几个细节和 Python、Java 都不一样，最典型的是 `pop()` 不返回值。\n\n## stack：后进先出\n\n```cpp\nstack<int> st;\nst.push(1);\nst.push(2);\nst.top();      // 2：看栈顶，不删除\nst.pop();      // 删除栈顶，返回 void\nst.empty(); st.size();\n```\n\n`int x = st.pop();` 编译不过。要先 `st.top()` 取值，再 `st.pop()` 删除。对空栈调用 `top()` 或 `pop()` 不会抛异常，而是未定义行为，所以先判断 `empty()`。\n\n`vector` 也能当栈用：`push_back`、`back`、`pop_back`。它还能随时遍历和按下标访问，很多人刷题时更喜欢直接用 `vector`。\n\n## queue：先进先出\n\n```cpp\nqueue<int> q;\nq.push(1);     // 从队尾进\nq.front();     // 队头\nq.back();      // 队尾\nq.pop();       // 删除队头，同样返回 void\n```\n\nBFS 的标准写法：\n\n```cpp\nqueue<int> q;\nq.push(start);\nseen[start] = true;\nwhile (!q.empty()) {\n    int u = q.front();\n    q.pop();\n    for (int v : adj[u])\n        if (!seen[v]) { seen[v] = true; q.push(v); }\n}\n```\n\n入队时就标记 `seen`，而不是出队时才标记，否则同一个点可能被放进队列很多次。\n\n`stack` 和 `queue` 都是\"适配器\"：它们包着一个底层容器，只开放受限的接口，不能用范围 for 遍历，也没有 `clear()`。要清空可以直接赋一个新对象：`q = queue<int>();`。\n\n## deque：两头都能进出\n\n`deque` 两端插入和删除都是 O(1)，还支持 `d[i]` 随机访问：\n\n```cpp\ndeque<int> d;\nd.push_back(x); d.push_front(x);\nd.pop_back(); d.pop_front();\nd.front(); d.back(); d[i];\n```\n\n滑动窗口里常用的\"单调队列\"就建立在 `deque` 上：新元素从队尾进，同时从队尾弹出所有比它差的元素，过期的元素从队头弹出。`queue` 的默认底层容器也是 `deque`。\n\n## 例子：有效的括号\n\n遇到左括号入栈，遇到右括号就和栈顶配对。\n\n```cpp run\n#include <deque>\n#include <iostream>\n#include <queue>\n#include <stack>\n#include <string>\nusing namespace std;\n\nbool isValid(const string& s) {\n    stack<char> st;\n    for (char c : s) {\n        if (c == '(' || c == '[' || c == '{') {\n            st.push(c);\n            continue;\n        }\n        if (st.empty()) return false;   // 右括号多了\n        char open = st.top();\n        st.pop();\n        if ((c == ')' && open != '(') || (c == ']' && open != '[') || (c == '}' && open != '{')) return false;\n    }\n    return st.empty();                   // 左括号多了\n}\n\nint main() {\n    cout << isValid(\"([]{})\") << isValid(\"(]\") << isValid(\"((\") << '\\n';\n\n    queue<int> q;\n    for (int x : {1, 2, 3}) q.push(x);\n    q.pop();\n    cout << q.front() << ' ' << q.back() << ' ' << q.size() << '\\n';\n\n    deque<int> d = {2, 3};\n    d.push_front(1);\n    d.push_back(4);\n    cout << d[0] << ' ' << d[3] << ' ' << d.size() << '\\n';\n}\n```\n\n```text\n100\n2 3 2\n1 4 4\n```\n\n## 常见错误\n\n- 写 `int x = st.pop();`。C++ 的 `pop()` 只删除不返回。\n- 对空的 `stack`、`queue` 调用 `top()`、`front()`、`pop()`，程序不会报错，只会出现诡异结果或崩溃。\n- BFS 出队时才标记已访问，导致同一个点重复入队，最坏情况下内存和时间都会爆掉。\n- 想用范围 for 遍历 `stack` 或 `queue`。需要遍历时改用 `vector` 或 `deque`。",
+          "bodyEn": "The STL has a ready-made type for stacks, queues and double-ended queues. Their interfaces look alike, and a few details differ from Python and Java, most famously that `pop()` returns nothing.\n\n## stack: last in, first out\n\n```cpp\nstack<int> st;\nst.push(1);\nst.push(2);\nst.top();      // 2: look at the top without removing it\nst.pop();      // remove the top; returns void\nst.empty(); st.size();\n```\n\n`int x = st.pop();` does not compile. Read the value with `st.top()` first, then remove it with `st.pop()`. Calling `top()` or `pop()` on an empty stack throws nothing; it is undefined behavior, so check `empty()` first.\n\nA `vector` works as a stack too: `push_back`, `back`, `pop_back`. It can also be iterated and indexed at any time, so many people simply use a `vector`.\n\n## queue: first in, first out\n\n```cpp\nqueue<int> q;\nq.push(1);     // enter at the back\nq.front();     // the front\nq.back();      // the back\nq.pop();       // remove the front; also returns void\n```\n\nThe standard BFS loop:\n\n```cpp\nqueue<int> q;\nq.push(start);\nseen[start] = true;\nwhile (!q.empty()) {\n    int u = q.front();\n    q.pop();\n    for (int v : adj[u])\n        if (!seen[v]) { seen[v] = true; q.push(v); }\n}\n```\n\nMark `seen` when a node enters the queue, not when it leaves, or the same node can be queued many times.\n\n`stack` and `queue` are adaptors: they wrap another container and expose a narrow interface. You cannot range-for over them and they have no `clear()`. To empty one, assign a fresh object: `q = queue<int>();`.\n\n## deque: in and out at both ends\n\nA `deque` inserts and removes at either end in O(1) and still supports `d[i]`:\n\n```cpp\ndeque<int> d;\nd.push_back(x); d.push_front(x);\nd.pop_back(); d.pop_front();\nd.front(); d.back(); d[i];\n```\n\nThe monotonic queue used in sliding-window problems is built on a `deque`: a new element enters at the back after popping every worse element from the back, and expired elements leave from the front. `queue` uses a `deque` underneath by default.\n\n## Example: valid parentheses\n\nPush opening brackets; match each closing bracket against the top of the stack.\n\n```cpp run\n#include <deque>\n#include <iostream>\n#include <queue>\n#include <stack>\n#include <string>\nusing namespace std;\n\nbool isValid(const string& s) {\n    stack<char> st;\n    for (char c : s) {\n        if (c == '(' || c == '[' || c == '{') {\n            st.push(c);\n            continue;\n        }\n        if (st.empty()) return false;   // too many closing brackets\n        char open = st.top();\n        st.pop();\n        if ((c == ')' && open != '(') || (c == ']' && open != '[') || (c == '}' && open != '{')) return false;\n    }\n    return st.empty();                   // too many opening brackets\n}\n\nint main() {\n    cout << isValid(\"([]{})\") << isValid(\"(]\") << isValid(\"((\") << '\\n';\n\n    queue<int> q;\n    for (int x : {1, 2, 3}) q.push(x);\n    q.pop();\n    cout << q.front() << ' ' << q.back() << ' ' << q.size() << '\\n';\n\n    deque<int> d = {2, 3};\n    d.push_front(1);\n    d.push_back(4);\n    cout << d[0] << ' ' << d[3] << ' ' << d.size() << '\\n';\n}\n```\n\n```text\n100\n2 3 2\n1 4 4\n```\n\n## Common mistakes\n\n- Writing `int x = st.pop();`. In C++, `pop()` removes and returns nothing.\n- Calling `top()`, `front()` or `pop()` on an empty `stack` or `queue`: no error, just strange results or a crash.\n- Marking BFS nodes as visited when they leave the queue, so a node is queued repeatedly and time and memory blow up.\n- Trying to range-for over a `stack` or `queue`. Use a `vector` or `deque` when you need to iterate.",
+          "quiz": [
+            {
+              "qZh": "stack<int> st 里有元素。怎样取出并删除栈顶？",
+              "qEn": "stack<int> st is not empty. How do you take the top and remove it?",
+              "choices": [
+                {
+                  "zh": "int x = st.pop();",
+                  "en": "int x = st.pop();"
+                },
+                {
+                  "zh": "int x = st.back(); st.pop_back();",
+                  "en": "int x = st.back(); st.pop_back();"
+                },
+                {
+                  "zh": "int x = st.front(); st.pop();",
+                  "en": "int x = st.front(); st.pop();"
+                },
+                {
+                  "zh": "int x = st.top(); st.pop();",
+                  "en": "int x = st.top(); st.pop();"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "pop() 返回 void，只删除不取值，所以要先用 top() 读出栈顶。stack 没有 back() 和 front()。",
+              "whyEn": "pop() returns void: it removes without returning, so read the top with top() first. A stack has neither back() nor front()."
+            },
+            {
+              "qZh": "BFS 里什么时候把结点标记为已访问最合适？",
+              "qEn": "In BFS, when is the best moment to mark a node as visited?",
+              "choices": [
+                {
+                  "zh": "放进队列的时候",
+                  "en": "When it is pushed into the queue"
+                },
+                {
+                  "zh": "从队列里取出的时候",
+                  "en": "When it is popped from the queue"
+                },
+                {
+                  "zh": "所有邻居都处理完以后",
+                  "en": "After all its neighbors are processed"
+                },
+                {
+                  "zh": "整个 BFS 结束以后统一标记",
+                  "en": "All at once after the BFS finishes"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "入队时就标记，同一个点只会入队一次。出队时才标记，同一个点可能被不同的邻居重复放进队列。",
+              "whyEn": "Marking on push queues each node once. Marking on pop lets several neighbors push the same node again and again."
+            },
+            {
+              "qZh": "下面哪种容器两端插入删除都是 O(1)，并且支持下标访问？",
+              "qEn": "Which container inserts and removes at both ends in O(1) and supports indexing?",
+              "choices": [
+                {
+                  "zh": "queue",
+                  "en": "queue"
+                },
+                {
+                  "zh": "deque",
+                  "en": "deque"
+                },
+                {
+                  "zh": "stack",
+                  "en": "stack"
+                },
+                {
+                  "zh": "vector",
+                  "en": "vector"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "deque 两端都是 O(1)，还能 d[i]。vector 在头部插入是 O(n)；queue 和 stack 不能按下标访问。",
+              "whyEn": "deque is O(1) at both ends and allows d[i]. vector inserts at the front in O(n); queue and stack have no indexing."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1047",
+              "zh": "删除字符串中的所有相邻重复项",
+              "en": "Remove All Adjacent Duplicates In String"
+            },
+            {
+              "id": "lc-921",
+              "zh": "使括号有效的最少添加",
+              "en": "Minimum Add to Make Parentheses Valid"
+            },
+            {
+              "id": "lc-225",
+              "zh": "用队列实现栈",
+              "en": "Implement Stack using Queues"
+            }
+          ],
+          "solves": [
+            "lc-20"
+          ]
+        },
+        {
+          "slug": "priority-queue",
+          "titleZh": "priority_queue 与比较器",
+          "titleEn": "priority_queue and comparators",
+          "bodyZh": "`priority_queue` 是 C++ 的堆。堆的原理见\"Big-O 与数据结构速成课\"的堆一课，这里讲用法，以及最容易写反的比较器。\n\n## 默认是最大堆\n\n和 Python 的 `heapq` 相反，`priority_queue<int>` 默认**堆顶是最大值**：\n\n```cpp\npriority_queue<int> pq;\npq.push(3); pq.push(1); pq.push(4);\npq.top();      // 4，O(1)\npq.pop();      // 删除堆顶，O(log n)，返回 void\n```\n\n最小堆要写出全部三个模板参数：\n\n```cpp\npriority_queue<int, vector<int>, greater<int>> minq;\n```\n\n已经有一个数组时，用区间构造一次建好堆，是 O(n)，比逐个 `push` 的 O(n log n) 快：\n\n```cpp\npriority_queue<int> pq(a.begin(), a.end());\n```\n\n## pair 和 tuple 按字典序比较\n\n`priority_queue<pair<int, int>>` 先比 `first`，相等再比 `second`，堆顶是最大的那对。Dijkstra 常写成最小堆加 `{距离, 结点}`：\n\n```cpp\npriority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;\npq.push({0, src});\nwhile (!pq.empty()) {\n    auto [d, u] = pq.top();\n    pq.pop();\n    if (d > dist[u]) continue;   // 过期的记录，跳过\n    ...\n}\n```\n\n`priority_queue` 不支持修改堆里某个元素的优先级。常见做法是直接再放一条新记录，弹出旧记录时发现它已经过期就跳过，这叫\"懒删除\"。\n\n## 自定义比较器：方向和直觉相反\n\n比较器 `cmp(a, b)` 返回 `true` 表示 **a 的优先级更低，应该排在 b 后面出堆**。所以：\n\n- `less<T>`（`a < b`）：大的先出，最大堆，也就是默认行为。\n- `greater<T>`（`a > b`）：小的先出，最小堆。\n\n写结构体或 lambda 时同理：想让小的先出，比较器就写 `a.x > b.x`。\n\n```cpp run\n#include <iostream>\n#include <queue>\n#include <string>\n#include <vector>\nusing namespace std;\n\nstruct Task {\n    int priority;\n    string name;\n};\n\nint main() {\n    // later(a, b) 为 true 表示 a 比 b 晚出堆：数字大的晚出，所以数字小的先出\n    auto later = [](const Task& a, const Task& b) { return a.priority > b.priority; };\n    priority_queue<Task, vector<Task>, decltype(later)> pq(later);\n    pq.push({3, \"deploy\"});\n    pq.push({1, \"fix bug\"});\n    pq.push({2, \"review\"});\n    while (!pq.empty()) {\n        cout << pq.top().priority << ' ' << pq.top().name << '\\n';\n        pq.pop();\n    }\n}\n```\n\n```text\n1 fix bug\n2 review\n3 deploy\n```\n\n## 例子：第 K 大的元素、最后一块石头\n\n求第 k 大：维护一个大小为 k 的最小堆，里面始终是目前最大的 k 个数，堆顶就是第 k 大，时间 O(n log k)。石头问题每次取最重的两块，正好用最大堆。\n\n```cpp run\n#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nint findKthLargest(vector<int>& nums, int k) {\n    priority_queue<int, vector<int>, greater<int>> h;   // 最大的 k 个数组成的最小堆\n    for (int x : nums) {\n        h.push(x);\n        if ((int)h.size() > k) h.pop();                 // 弹出最小的\n    }\n    return h.top();\n}\n\nint lastStoneWeight(vector<int>& stones) {\n    priority_queue<int> h(stones.begin(), stones.end());   // 最大堆，O(n) 建堆\n    while (h.size() > 1) {\n        int y = h.top(); h.pop();\n        int x = h.top(); h.pop();\n        if (y != x) h.push(y - x);\n    }\n    return h.empty() ? 0 : h.top();\n}\n\nint main() {\n    vector<int> a = {3, 2, 1, 5, 6, 4};\n    cout << findKthLargest(a, 2) << '\\n';\n    vector<int> s = {2, 7, 4, 1, 8, 1};\n    cout << lastStoneWeight(s) << '\\n';\n}\n```\n\n```text\n5\n1\n```\n\n## 常见错误\n\n- 以为 `priority_queue<int>` 是最小堆。默认是最大堆，最小堆要写 `greater<int>`。\n- 自定义比较器写反，得到的顺序和预期正好相反。记住：返回 `true` 的那一方后出堆。\n- 想遍历堆或者修改堆里的元素。`priority_queue` 只能看到堆顶；要修改优先级，就放一条新记录，再懒删除旧记录。\n- 对空堆调用 `top()`。",
+          "bodyEn": "`priority_queue` is the C++ heap. How heaps work is covered in the Big-O course's heap chapter; this one is about usage and the comparator, which is the part people most often write backwards.\n\n## A max-heap by default\n\nThe opposite of Python's `heapq`: `priority_queue<int>` keeps the **largest value on top**:\n\n```cpp\npriority_queue<int> pq;\npq.push(3); pq.push(1); pq.push(4);\npq.top();      // 4, O(1)\npq.pop();      // remove the top, O(log n); returns void\n```\n\nA min-heap needs all three template arguments:\n\n```cpp\npriority_queue<int, vector<int>, greater<int>> minq;\n```\n\nWhen you already have the values, building from a range is O(n), faster than n pushes at O(n log n):\n\n```cpp\npriority_queue<int> pq(a.begin(), a.end());\n```\n\n## pairs and tuples compare lexicographically\n\n`priority_queue<pair<int, int>>` compares `first`, then `second` on a tie, and the largest pair is on top. Dijkstra is usually a min-heap of `{distance, node}`:\n\n```cpp\npriority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;\npq.push({0, src});\nwhile (!pq.empty()) {\n    auto [d, u] = pq.top();\n    pq.pop();\n    if (d > dist[u]) continue;   // a stale entry: skip it\n    ...\n}\n```\n\nA `priority_queue` cannot change the priority of an element already inside. The usual trick is to push a new entry and skip the old one when it surfaces and turns out stale; this is called lazy deletion.\n\n## Custom comparators run backwards\n\nA comparator `cmp(a, b)` returns `true` when **a has lower priority and should leave the heap after b**. So:\n\n- `less<T>` (`a < b`): larger values leave first, a max-heap, the default.\n- `greater<T>` (`a > b`): smaller values leave first, a min-heap.\n\nThe same goes for structs and lambdas: to pop the smallest first, the comparator says `a.x > b.x`.\n\n```cpp run\n#include <iostream>\n#include <queue>\n#include <string>\n#include <vector>\nusing namespace std;\n\nstruct Task {\n    int priority;\n    string name;\n};\n\nint main() {\n    // later(a, b) is true when a leaves after b: larger numbers wait, so the smallest comes out first\n    auto later = [](const Task& a, const Task& b) { return a.priority > b.priority; };\n    priority_queue<Task, vector<Task>, decltype(later)> pq(later);\n    pq.push({3, \"deploy\"});\n    pq.push({1, \"fix bug\"});\n    pq.push({2, \"review\"});\n    while (!pq.empty()) {\n        cout << pq.top().priority << ' ' << pq.top().name << '\\n';\n        pq.pop();\n    }\n}\n```\n\n```text\n1 fix bug\n2 review\n3 deploy\n```\n\n## Examples: the k-th largest element and the last stone\n\nFor the k-th largest, keep a min-heap of size k holding the k largest values so far; its top is the answer, in O(n log k). The stone problem smashes the two heaviest stones each round, a natural max-heap.\n\n```cpp run\n#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nint findKthLargest(vector<int>& nums, int k) {\n    priority_queue<int, vector<int>, greater<int>> h;   // a min-heap of the k largest values\n    for (int x : nums) {\n        h.push(x);\n        if ((int)h.size() > k) h.pop();                 // drop the smallest\n    }\n    return h.top();\n}\n\nint lastStoneWeight(vector<int>& stones) {\n    priority_queue<int> h(stones.begin(), stones.end());   // a max-heap, built in O(n)\n    while (h.size() > 1) {\n        int y = h.top(); h.pop();\n        int x = h.top(); h.pop();\n        if (y != x) h.push(y - x);\n    }\n    return h.empty() ? 0 : h.top();\n}\n\nint main() {\n    vector<int> a = {3, 2, 1, 5, 6, 4};\n    cout << findKthLargest(a, 2) << '\\n';\n    vector<int> s = {2, 7, 4, 1, 8, 1};\n    cout << lastStoneWeight(s) << '\\n';\n}\n```\n\n```text\n5\n1\n```\n\n## Common mistakes\n\n- Assuming `priority_queue<int>` is a min-heap. It is a max-heap; a min-heap needs `greater<int>`.\n- Writing the custom comparator backwards and getting exactly the reverse order. The side that returns `true` leaves later.\n- Trying to iterate over the heap or change an element inside it. Only the top is visible; to change a priority, push a new entry and lazily skip the old one.\n- Calling `top()` on an empty heap.",
+          "quiz": [
+            {
+              "qZh": "priority_queue<int> pq 依次 push 3、1、4，pq.top() 是多少？",
+              "qEn": "priority_queue<int> pq gets 3, 1 and 4 pushed. What is pq.top()?",
+              "choices": [
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "不确定，堆里没有顺序",
+                  "en": "Undefined; a heap has no order"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "priority_queue 默认是最大堆，堆顶是最大值。要最小堆得写 greater<int>。",
+              "whyEn": "priority_queue is a max-heap by default, so the top is the maximum. A min-heap needs greater<int>."
+            },
+            {
+              "qZh": "比较器写成 [](int a, int b) { return a > b; }，这个 priority_queue 每次弹出的是？",
+              "qEn": "With the comparator [](int a, int b) { return a > b; }, what does this priority_queue pop each time?",
+              "choices": [
+                {
+                  "zh": "当前最大值",
+                  "en": "The current maximum"
+                },
+                {
+                  "zh": "最早放进去的元素",
+                  "en": "The earliest element pushed"
+                },
+                {
+                  "zh": "任意一个元素",
+                  "en": "Any element"
+                },
+                {
+                  "zh": "当前最小值",
+                  "en": "The current minimum"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "cmp(a, b) 为真表示 a 后出堆。a > b 时 a 后出，大的晚出，所以小的先出，是最小堆。",
+              "whyEn": "cmp(a, b) true means a leaves later. Here larger values leave later, so the smallest comes out first: a min-heap."
+            },
+            {
+              "qZh": "用 priority_queue 求 n 个数里第 k 大，最省的做法是什么？",
+              "qEn": "What is the leanest way to find the k-th largest of n numbers with a priority_queue?",
+              "choices": [
+                {
+                  "zh": "维护大小为 k 的最小堆，O(n log k)",
+                  "en": "Keep a min-heap of size k, O(n log k)"
+                },
+                {
+                  "zh": "维护大小为 k 的最大堆，O(n log k)",
+                  "en": "Keep a max-heap of size k, O(n log k)"
+                },
+                {
+                  "zh": "全部放进最小堆，再弹出 k 次",
+                  "en": "Push everything into a min-heap and pop k times"
+                },
+                {
+                  "zh": "先排序再建堆，O(n log n)",
+                  "en": "Sort first, then build a heap, O(n log n)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "最小堆里保留目前最大的 k 个数，超过 k 个就弹出最小的，堆顶就是第 k 大。全部放进最小堆再弹 k 次得到的是第 k 小。",
+              "whyEn": "The min-heap keeps the k largest values so far and drops its minimum when it grows past k; its top is the k-th largest. Popping a full min-heap k times gives the k-th smallest."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1338",
+              "zh": "数组大小减半",
+              "en": "Reduce Array Size to The Half"
+            },
+            {
+              "id": "lc-373",
+              "zh": "查找和最小的 K 对数字",
+              "en": "Find K Pairs with Smallest Sums"
+            },
+            {
+              "id": "lc-1834",
+              "zh": "单线程 CPU",
+              "en": "Single-Threaded CPU"
+            }
+          ],
+          "solves": [
+            "lc-215",
+            "lc-1046"
+          ]
+        },
+        {
+          "slug": "set-map",
+          "titleZh": "set、multiset 与 map",
+          "titleEn": "set, multiset and map",
+          "bodyZh": "`set`、`multiset` 和 `map` 底层是红黑树（一种平衡二叉搜索树），元素**始终有序**，插入、删除、查找都是 O(log n)。需要\"比 x 大的最小值\"这类查询时，它们是 C++ 相对 Python 的一大优势：Python 标准库里没有现成的有序集合。\n\n## set：有序、去重\n\n```cpp\nset<int> s = {10, 30, 20, 30};   // {10, 20, 30}\ns.insert(25);\ns.erase(10);                     // 按值删除\ns.count(20);                     // 0 或 1\ns.find(20) != s.end();           // 是否存在\n*s.begin();                      // 最小值\n*s.rbegin();                     // 最大值\nfor (int x : s) ...              // 从小到大遍历\n```\n\n## lower_bound 和 upper_bound\n\n- `s.lower_bound(x)`：第一个 **≥ x** 的元素。\n- `s.upper_bound(x)`：第一个 **> x** 的元素。\n\n找不到时返回 `s.end()`，解引用前一定要先判断。前驱（最后一个 < x 的元素）是 `prev(s.lower_bound(x))`，前提是迭代器不等于 `s.begin()`。\n\n**一个隐蔽的性能坑**：对 `set` 调用通用算法 `lower_bound(s.begin(), s.end(), x)` 能编译，结果也对，但它是 O(n)：`set` 的迭代器不能随机跳转，二分时只能一步步往前走。永远用成员函数 `s.lower_bound(x)`。\n\n## multiset：允许重复\n\n`multiset` 可以存多个相同的值，常用来维护\"可删除的有序多重集合\"，例如滑动窗口里的中位数。删除时注意：\n\n```cpp\nms.erase(5);              // 删掉所有的 5\nms.erase(ms.find(5));     // 只删一个 5（先确认 find 的结果不是 end()）\n```\n\n`ms.count(x)` 的复杂度是 O(log n + k)，k 是 x 的个数。只想知道存不存在，用 `find`。\n\n## map：有序的键值对\n\n```cpp\nmap<string, int> cnt;\ncnt[\"apple\"]++;               // 键不存在时先插入默认值 0\nfor (auto& [key, value] : cnt) ...   // 按键从小到大\ncnt.lower_bound(\"b\");         // 第一个键 ≥ \"b\" 的元素\n```\n\n**`[]` 会插入。** 只想查询时写 `cnt[\"x\"]`，就算 `\"x\"` 原来不存在，也会插进去一个 `{\"x\", 0}`。这会悄悄改变 `size()`，遍历时也会多出这一项。只查询时用 `count`、`find`，或 C++20 的 `contains`。\n\n## 程序：把这些行为跑一遍\n\n```cpp run\n#include <iostream>\n#include <iterator>\n#include <map>\n#include <set>\n#include <string>\nusing namespace std;\n\nint main() {\n    set<int> s = {10, 30, 20, 30};\n    cout << s.size() << ' ' << *s.begin() << ' ' << *s.rbegin() << '\\n';\n    auto it = s.lower_bound(15);                     // 第一个 >= 15\n    cout << *it << ' ' << *prev(it) << '\\n';         // 它和它的前驱\n    cout << (s.upper_bound(30) == s.end()) << '\\n';  // 没有 > 30 的元素\n\n    multiset<int> ms = {5, 5, 5, 7};\n    ms.erase(ms.find(5));                            // 只删一个\n    cout << ms.count(5) << ' ';\n    ms.erase(5);                                     // 全删\n    cout << ms.count(5) << ' ' << ms.size() << '\\n';\n\n    map<string, int> m;\n    cout << m.count(\"bob\") << ' ';\n    int bob = m[\"bob\"];                              // 读取，也插入了 \"bob\"\n    cout << bob << ' ' << m.size() << '\\n';\n    m[\"amy\"] += 2;\n    m[\"cat\"] += 1;\n    for (const auto& [name, n] : m) cout << name << '=' << n << '\\n';\n}\n```\n\n```text\n3 10 30\n20 10\n1\n2 0 1\n0 0 1\namy=2\nbob=0\ncat=1\n```\n\n## 自定义排序\n\n`set` 和 `map` 也可以传比较器，比如 `set<int, greater<int>>` 从大到小排列。比较器必须是严格弱序（用 `<` 或 `>`，不能用 `<=`）。另外，`set` 认为 `!(a < b) && !(b < a)` 的两个元素是\"同一个\"：如果比较器只比较结构体的一个字段，这个字段相同的两个元素只能留下一个。\n\n## 常见错误\n\n- 用 `lower_bound(s.begin(), s.end(), x)` 查 `set`，每次 O(n) 导致超时。\n- `multiset::erase(x)` 想删一个，结果删光了所有的 x。\n- 用 `m[key]` 判断键是否存在，结果把键插了进去。\n- 没判断 `end()` 就解引用 `lower_bound` 的结果，或者对 `begin()` 调用 `prev`。",
+          "bodyEn": "`set`, `multiset` and `map` are red-black trees (balanced binary search trees) underneath: their elements are **always sorted**, and insert, erase and lookup are O(log n). For queries like \"the smallest value larger than x\" they are a real advantage of C++ over Python, whose standard library has no sorted set.\n\n## set: sorted and unique\n\n```cpp\nset<int> s = {10, 30, 20, 30};   // {10, 20, 30}\ns.insert(25);\ns.erase(10);                     // erase by value\ns.count(20);                     // 0 or 1\ns.find(20) != s.end();           // membership\n*s.begin();                      // the minimum\n*s.rbegin();                     // the maximum\nfor (int x : s) ...              // ascending order\n```\n\n## lower_bound and upper_bound\n\n- `s.lower_bound(x)`: the first element **≥ x**.\n- `s.upper_bound(x)`: the first element **> x**.\n\nBoth return `s.end()` when there is none, so check before dereferencing. The predecessor (the last element < x) is `prev(s.lower_bound(x))`, as long as that iterator is not `s.begin()`.\n\n**A hidden performance trap**: the generic algorithm `lower_bound(s.begin(), s.end(), x)` compiles on a `set` and gives the right answer, but it is O(n): set iterators cannot jump, so the binary search has to walk step by step. Always call the member function `s.lower_bound(x)`.\n\n## multiset: duplicates allowed\n\nA `multiset` holds repeated values and is the usual way to keep a sorted multiset you can delete from, such as the window in a sliding median. Be careful when erasing:\n\n```cpp\nms.erase(5);              // removes every 5\nms.erase(ms.find(5));     // removes one 5 (check that find did not return end())\n```\n\n`ms.count(x)` costs O(log n + k), where k is how many x there are. To test membership, use `find`.\n\n## map: sorted key-value pairs\n\n```cpp\nmap<string, int> cnt;\ncnt[\"apple\"]++;               // a missing key is inserted with the default 0 first\nfor (auto& [key, value] : cnt) ...   // keys in ascending order\ncnt.lower_bound(\"b\");         // the first entry whose key is ≥ \"b\"\n```\n\n**`[]` inserts.** Reading `cnt[\"x\"]` inserts `{\"x\", 0}` if `\"x\"` was missing. That silently changes `size()` and adds an entry to every later loop. For lookups use `count`, `find` or C++20's `contains`.\n\n## A program that runs all of this\n\n```cpp run\n#include <iostream>\n#include <iterator>\n#include <map>\n#include <set>\n#include <string>\nusing namespace std;\n\nint main() {\n    set<int> s = {10, 30, 20, 30};\n    cout << s.size() << ' ' << *s.begin() << ' ' << *s.rbegin() << '\\n';\n    auto it = s.lower_bound(15);                     // the first >= 15\n    cout << *it << ' ' << *prev(it) << '\\n';         // it and its predecessor\n    cout << (s.upper_bound(30) == s.end()) << '\\n';  // nothing is > 30\n\n    multiset<int> ms = {5, 5, 5, 7};\n    ms.erase(ms.find(5));                            // removes one\n    cout << ms.count(5) << ' ';\n    ms.erase(5);                                     // removes them all\n    cout << ms.count(5) << ' ' << ms.size() << '\\n';\n\n    map<string, int> m;\n    cout << m.count(\"bob\") << ' ';\n    int bob = m[\"bob\"];                              // a read that also inserts \"bob\"\n    cout << bob << ' ' << m.size() << '\\n';\n    m[\"amy\"] += 2;\n    m[\"cat\"] += 1;\n    for (const auto& [name, n] : m) cout << name << '=' << n << '\\n';\n}\n```\n\n```text\n3 10 30\n20 10\n1\n2 0 1\n0 0 1\namy=2\nbob=0\ncat=1\n```\n\n## Custom ordering\n\n`set` and `map` take a comparator too: `set<int, greater<int>>` keeps values in descending order. The comparator must be a strict weak ordering (`<` or `>`, never `<=`). Also, a `set` treats two elements with `!(a < b) && !(b < a)` as the same element: if the comparator looks at only one field of a struct, two elements that tie on that field cannot both be stored.\n\n## Common mistakes\n\n- Calling `lower_bound(s.begin(), s.end(), x)` on a `set`: O(n) per call, then a time-out.\n- Calling `multiset::erase(x)` to remove one x and removing all of them.\n- Testing for a key with `m[key]` and inserting it in the process.\n- Dereferencing a `lower_bound` result without checking for `end()`, or calling `prev` on `begin()`.",
+          "quiz": [
+            {
+              "qZh": "s 是 set<int>，下面哪种写法找\"第一个 ≥ x 的元素\"是 O(log n)？",
+              "qEn": "s is a set<int>. Which call finds the first element ≥ x in O(log n)?",
+              "choices": [
+                {
+                  "zh": "lower_bound(s.begin(), s.end(), x)",
+                  "en": "lower_bound(s.begin(), s.end(), x)"
+                },
+                {
+                  "zh": "s.lower_bound(x)",
+                  "en": "s.lower_bound(x)"
+                },
+                {
+                  "zh": "s.upper_bound(x)",
+                  "en": "s.upper_bound(x)"
+                },
+                {
+                  "zh": "s.find(x)",
+                  "en": "s.find(x)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "通用算法 lower_bound 在 set 的迭代器上只能逐步移动，是 O(n)。upper_bound 找的是第一个 > x；find 只找等于 x 的。",
+              "whyEn": "The generic lower_bound has to step through set iterators, O(n). upper_bound finds the first element > x, and find only finds x itself."
+            },
+            {
+              "qZh": "multiset<int> ms = {5, 5, 5}，执行 ms.erase(5) 后 ms.size() 是多少？",
+              "qEn": "multiset<int> ms = {5, 5, 5}. After ms.erase(5), what is ms.size()?",
+              "choices": [
+                {
+                  "zh": "2",
+                  "en": "2"
+                },
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "0",
+                  "en": "0"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "按值 erase 会删除所有等于 5 的元素。只删一个要写 ms.erase(ms.find(5))。",
+              "whyEn": "Erasing by value removes every 5. To remove one, write ms.erase(ms.find(5))."
+            },
+            {
+              "qZh": "map<string, int> m 是空的。执行 if (m[\"x\"] > 0) {} 之后，m.size() 是多少？",
+              "qEn": "map<string, int> m is empty. After if (m[\"x\"] > 0) {}, what is m.size()?",
+              "choices": [
+                {
+                  "zh": "0",
+                  "en": "0"
+                },
+                {
+                  "zh": "抛出异常，\"x\" 不存在",
+                  "en": "It throws, because \"x\" is missing"
+                },
+                {
+                  "zh": "编译错误",
+                  "en": "A compile error"
+                },
+                {
+                  "zh": "1",
+                  "en": "1"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "operator[] 在键不存在时会插入默认值，所以 \"x\" 被插入了，值为 0。只查询要用 count、find 或 contains。",
+              "whyEn": "operator[] inserts a default value for a missing key, so \"x\" is now in the map with value 0. Use count, find or contains for lookups."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-128",
+              "zh": "最长连续序列",
+              "en": "Longest Consecutive Sequence"
+            },
+            {
+              "id": "lc-2342",
+              "zh": "数位和相等数对的最大和",
+              "en": "Max Sum of a Pair With Equal Sum of Digits"
+            },
+            {
+              "id": "lc-1657",
+              "zh": "确定两个字符串是否接近",
+              "en": "Determine if Two Strings Are Close"
+            }
+          ],
+          "solves": []
+        },
+        {
+          "slug": "unordered-containers",
+          "titleZh": "unordered_map 与 unordered_set",
+          "titleEn": "unordered_map and unordered_set",
+          "bodyZh": "`unordered_map` 和 `unordered_set` 是哈希表：查找、插入、删除平均 O(1)，最坏 O(n)，元素**没有顺序**。计数、判重、\"见过没有\"这类需求用它们；需要有序或者要找前驱、后继时，用上一课的 `set` 和 `map`。\n\n## 基本用法\n\n```cpp\nunordered_map<int, int> cnt;\nfor (int x : nums) cnt[x]++;          // 键不存在时从 0 开始\ncnt.count(7);                          // 0 或 1\nauto it = cnt.find(7);                 // 找到后用 it->first、it->second\nif (it != cnt.end()) ...\ncnt.erase(7);\n\nunordered_set<string> seen;\nseen.insert(\"a\");\nif (seen.count(\"a\")) ...\n```\n\n`[]` 会插入默认值，这一点和 `map` 一样。只查询时用 `find` 或 `count`。`find` 返回迭代器，找到后可以直接用 `it->second`，避免再查一次。\n\n## 选 map 还是 unordered_map\n\n| | `map` | `unordered_map` |\n|---|---|---|\n| 底层 | 红黑树 | 哈希表 |\n| 查找、插入 | O(log n) | 平均 O(1)，最坏 O(n) |\n| 遍历顺序 | 按键有序 | 不确定 |\n| 键的要求 | 能用 `<` 比较 | 要有哈希函数 |\n\n面试里默认用 `unordered_map`。需要按键有序输出、需要 `lower_bound`，或者键是 `pair`、`vector` 这类没有默认哈希的类型时，用 `map`。\n\n## pair 当键\n\n标准库没有给 `pair` 提供哈希，`unordered_set<pair<int, int>>` 编译不过。三种办法：\n\n1. 改用 `set<pair<int, int>>`，多一个 log。\n2. 把两个数编码成一个整数，例如网格坐标写成 `r * cols + c`。\n3. 自己写一个哈希函数（见下面的程序）。\n\n## 例子：两数之和、字母异位词分组、存在重复元素 II\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <unordered_set>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nvector<int> twoSum(vector<int>& nums, int target) {\n    unordered_map<int, int> seen;              // 值 -> 下标\n    for (int i = 0; i < (int)nums.size(); i++) {\n        auto it = seen.find(target - nums[i]);\n        if (it != seen.end()) return {it->second, i};\n        seen[nums[i]] = i;\n    }\n    return {};\n}\n\nvector<vector<string>> groupAnagrams(vector<string>& strs) {\n    unordered_map<string, vector<string>> groups;\n    for (const string& w : strs) {\n        string key = w;\n        sort(key.begin(), key.end());          // 排序后的字母当键\n        groups[key].push_back(w);\n    }\n    vector<vector<string>> out;\n    for (auto& [key, words] : groups) out.push_back(words);\n    return out;\n}\n\nbool containsNearbyDuplicate(vector<int>& nums, int k) {\n    unordered_set<int> window;                 // 最近 k 个数\n    for (int i = 0; i < (int)nums.size(); i++) {\n        if (window.count(nums[i])) return true;\n        window.insert(nums[i]);\n        if ((int)window.size() > k) window.erase(nums[i - k]);\n    }\n    return false;\n}\n\nstruct PairHash {\n    size_t operator()(const pair<int, int>& p) const {\n        return hash<long long>()((long long)p.first << 32 | (unsigned)p.second);\n    }\n};\n\nint main() {\n    vector<int> a = {2, 7, 11, 15};\n    auto r = twoSum(a, 9);\n    cout << r[0] << ' ' << r[1] << '\\n';\n\n    vector<string> w = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n    cout << groupAnagrams(w).size() << '\\n';   // 3 组，组的顺序不确定\n\n    vector<int> b = {1, 2, 3, 1};\n    cout << containsNearbyDuplicate(b, 3) << containsNearbyDuplicate(b, 2) << '\\n';\n\n    unordered_set<pair<int, int>, PairHash> cells = {{0, 1}, {1, 0}, {0, 1}};\n    cout << cells.size() << '\\n';\n}\n```\n\n```text\n0 1\n3\n10\n2\n```\n\n## 哈希表也会退化\n\n所有键落进同一个桶时，每次操作都变成 O(n)。面试一般不会考到这一点，但有些竞赛会专门构造让 `unordered_map` 冲突的数据。预先知道元素个数时，`m.reserve(n)` 可以避免多次重新哈希。\n\n## 常见错误\n\n- 依赖 `unordered_map` 的遍历顺序。它在不同编译器、不同数据下都可能不一样，需要顺序就排序或者改用 `map`。\n- 用 `[]` 查询，把不存在的键插了进去。\n- 遍历时直接 `erase(it)` 然后 `++it`。`erase` 之后原迭代器失效，要写 `it = m.erase(it);`。\n- 拿 `pair` 或 `vector` 当 `unordered_map` 的键，没提供哈希函数。",
+          "bodyEn": "`unordered_map` and `unordered_set` are hash tables: lookup, insert and erase are O(1) on average and O(n) at worst, and the elements have **no order**. Use them for counting, duplicate checks and \"have I seen this\"; when you need order, or a predecessor or successor, use the previous lesson's `set` and `map`.\n\n## The basics\n\n```cpp\nunordered_map<int, int> cnt;\nfor (int x : nums) cnt[x]++;          // a missing key starts at 0\ncnt.count(7);                          // 0 or 1\nauto it = cnt.find(7);                 // when found, use it->first and it->second\nif (it != cnt.end()) ...\ncnt.erase(7);\n\nunordered_set<string> seen;\nseen.insert(\"a\");\nif (seen.count(\"a\")) ...\n```\n\n`[]` inserts a default value, exactly as with `map`. Use `find` or `count` for lookups. `find` returns an iterator, so once found you can read `it->second` without a second lookup.\n\n## map or unordered_map\n\n| | `map` | `unordered_map` |\n|---|---|---|\n| Underneath | red-black tree | hash table |\n| Lookup, insert | O(log n) | O(1) average, O(n) worst |\n| Iteration order | sorted by key | unspecified |\n| Key needs | comparison with `<` | a hash function |\n\nDefault to `unordered_map` in interviews. Use `map` when you need keys in order, need `lower_bound`, or the key is a type such as `pair` or `vector` that has no standard hash.\n\n## pair as a key\n\nThe standard library has no hash for `pair`, so `unordered_set<pair<int, int>>` does not compile. Three ways out:\n\n1. Use `set<pair<int, int>>` and pay a log factor.\n2. Encode the two numbers as one integer, e.g. a grid cell as `r * cols + c`.\n3. Write a hash function yourself (see the program below).\n\n## Examples: two sum, grouping anagrams, nearby duplicates\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <unordered_set>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nvector<int> twoSum(vector<int>& nums, int target) {\n    unordered_map<int, int> seen;              // value -> index\n    for (int i = 0; i < (int)nums.size(); i++) {\n        auto it = seen.find(target - nums[i]);\n        if (it != seen.end()) return {it->second, i};\n        seen[nums[i]] = i;\n    }\n    return {};\n}\n\nvector<vector<string>> groupAnagrams(vector<string>& strs) {\n    unordered_map<string, vector<string>> groups;\n    for (const string& w : strs) {\n        string key = w;\n        sort(key.begin(), key.end());          // the sorted letters are the key\n        groups[key].push_back(w);\n    }\n    vector<vector<string>> out;\n    for (auto& [key, words] : groups) out.push_back(words);\n    return out;\n}\n\nbool containsNearbyDuplicate(vector<int>& nums, int k) {\n    unordered_set<int> window;                 // the last k values\n    for (int i = 0; i < (int)nums.size(); i++) {\n        if (window.count(nums[i])) return true;\n        window.insert(nums[i]);\n        if ((int)window.size() > k) window.erase(nums[i - k]);\n    }\n    return false;\n}\n\nstruct PairHash {\n    size_t operator()(const pair<int, int>& p) const {\n        return hash<long long>()((long long)p.first << 32 | (unsigned)p.second);\n    }\n};\n\nint main() {\n    vector<int> a = {2, 7, 11, 15};\n    auto r = twoSum(a, 9);\n    cout << r[0] << ' ' << r[1] << '\\n';\n\n    vector<string> w = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n    cout << groupAnagrams(w).size() << '\\n';   // 3 groups, in no particular order\n\n    vector<int> b = {1, 2, 3, 1};\n    cout << containsNearbyDuplicate(b, 3) << containsNearbyDuplicate(b, 2) << '\\n';\n\n    unordered_set<pair<int, int>, PairHash> cells = {{0, 1}, {1, 0}, {0, 1}};\n    cout << cells.size() << '\\n';\n}\n```\n\n```text\n0 1\n3\n10\n2\n```\n\n## Hash tables can degrade\n\nWhen every key lands in the same bucket, each operation becomes O(n). Interviews rarely go there, but some contests craft inputs that make `unordered_map` collide. When you know the number of elements in advance, `m.reserve(n)` avoids repeated rehashing.\n\n## Common mistakes\n\n- Relying on `unordered_map` iteration order. It can differ between compilers and inputs; sort, or use `map`, when order matters.\n- Looking up with `[]` and inserting missing keys.\n- Calling `erase(it)` and then `++it` in a loop. `erase` invalidates the iterator; write `it = m.erase(it);`.\n- Using a `pair` or `vector` as an `unordered_map` key without a hash function.",
+          "quiz": [
+            {
+              "qZh": "为什么 unordered_set<pair<int, int>> 默认编译不过？",
+              "qEn": "Why does unordered_set<pair<int, int>> not compile by default?",
+              "choices": [
+                {
+                  "zh": "标准库没有为 pair 提供哈希函数",
+                  "en": "The standard library has no hash for pair"
+                },
+                {
+                  "zh": "pair 不能比较大小",
+                  "en": "pairs cannot be compared"
+                },
+                {
+                  "zh": "unordered_set 只能存整数",
+                  "en": "unordered_set can only hold integers"
+                },
+                {
+                  "zh": "pair 是不可复制的类型",
+                  "en": "pair cannot be copied"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "哈希容器需要 hash<Key>。可以改用 set<pair<int, int>>、把两个数编码成一个整数，或自己写哈希函数。",
+              "whyEn": "Hash containers need hash<Key>. Use set<pair<int, int>>, encode the two numbers as one integer, or write a hash function."
+            },
+            {
+              "qZh": "下面哪种情况更适合用 map 而不是 unordered_map？",
+              "qEn": "When is map a better choice than unordered_map?",
+              "choices": [
+                {
+                  "zh": "只需要统计每个数出现的次数",
+                  "en": "You only count how often each number appears"
+                },
+                {
+                  "zh": "需要按键从小到大输出",
+                  "en": "You need the keys in ascending order"
+                },
+                {
+                  "zh": "只需要判断某个字符串是否出现过",
+                  "en": "You only check whether a string was seen"
+                },
+                {
+                  "zh": "需要平均 O(1) 的查找",
+                  "en": "You need O(1) average lookups"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "map 是红黑树，按键有序，还支持 lower_bound。单纯计数、判重用 unordered_map 更快。",
+              "whyEn": "map is a red-black tree, ordered by key, with lower_bound. Plain counting and membership are faster with unordered_map."
+            },
+            {
+              "qZh": "遍历 unordered_map 时要删除某些元素，正确的循环写法是？",
+              "qEn": "What is the correct way to erase some entries while iterating over an unordered_map?",
+              "choices": [
+                {
+                  "zh": "m.erase(it); 然后 ++it",
+                  "en": "m.erase(it); then ++it"
+                },
+                {
+                  "zh": "用范围 for 遍历，直接 m.erase(key)",
+                  "en": "Range-for over it and call m.erase(key)"
+                },
+                {
+                  "zh": "it = m.erase(it); 不删时才 ++it",
+                  "en": "it = m.erase(it); and ++it only when not erasing"
+                },
+                {
+                  "zh": "不能删除，只能先复制一份",
+                  "en": "Impossible; you must copy the map first"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "erase 之后原迭代器失效，再 ++ 是未定义行为。erase 返回下一个有效迭代器，用它继续。",
+              "whyEn": "erase invalidates the iterator, so ++ on it is undefined behavior. erase returns the next valid iterator; continue from that."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1010",
+              "zh": "总持续时间可被 60 整除的歌曲",
+              "en": "Pairs of Songs With Total Durations Divisible by 60"
+            },
+            {
+              "id": "lc-187",
+              "zh": "重复的DNA序列",
+              "en": "Repeated DNA Sequences"
+            },
+            {
+              "id": "lc-645",
+              "zh": "错误的集合",
+              "en": "Set Mismatch"
+            }
+          ],
+          "solves": [
+            "lc-1",
+            "lc-49",
+            "lc-219"
+          ]
+        },
+        {
+          "slug": "sort-search",
+          "titleZh": "排序、比较器与二分",
+          "titleEn": "Sorting, comparators and binary search",
+          "bodyZh": "`<algorithm>` 里的 `sort`、`lower_bound` 这几个函数，在刷题时几乎每天都要用。这一课讲比较器的写法、排序稳定性，以及有序数组上的二分查找。\n\n## sort\n\n```cpp\nsort(a.begin(), a.end());                    // 升序，O(n log n)\nsort(a.begin(), a.end(), greater<int>());    // 降序\nsort(a.rbegin(), a.rend());                  // 也是降序\nsort(a.begin() + l, a.begin() + r);          // 只排 [l, r)\n```\n\n`vector<pair<int, int>>`、`vector<vector<int>>` 直接 `sort` 就按字典序排：先比第一个元素，相等再比第二个。\n\n## 比较器必须是\"严格小于\"\n\n自定义比较器 `cmp(a, b)` 的含义是\"a 是否应该排在 b 前面\"。它必须满足严格弱序：`cmp(a, a)` 必须是 `false`。\n\n```cpp\nsort(a.begin(), a.end(), [](int x, int y) { return x <= y; });   // 错！\n```\n\n用 `<=` 时 `cmp(a, a)` 为真，这是未定义行为：数据里有大量相等元素时，GCC 的 `sort` 可能越界读写，直接崩溃。永远用 `<` 或 `>`。多个关键字可以用 `tie` 比较，省得写一串 if：\n\n```cpp\n// 按分数降序，分数相同按名字升序\nsort(v.begin(), v.end(), [](const Student& a, const Student& b) {\n    return tie(b.score, a.name) < tie(a.score, b.name);\n});\n```\n\n## 稳定性\n\n`sort` **不稳定**：相等的元素排序后谁在前不确定。`stable_sort` 保证相等元素保持原来的相对顺序，复杂度同样是 O(n log n)。先按次要关键字排，再用 `stable_sort` 按主要关键字排，就得到\"主要关键字相同时按次要关键字\"的结果。\n\n## 有序数组上的二分\n\n```cpp\nauto lo = lower_bound(a.begin(), a.end(), x);   // 第一个 >= x\nauto hi = upper_bound(a.begin(), a.end(), x);   // 第一个 > x\nint idx = lo - a.begin();                       // 转成下标\nint cnt = hi - lo;                              // x 出现的次数\nbinary_search(a.begin(), a.end(), x);           // 只回答在不在\n```\n\n数组必须已经按同样的顺序排好。降序数组要传同样的比较器：`lower_bound(a.begin(), a.end(), x, greater<int>())`。\n\n排序后去重是固定搭配：`unique` 把重复元素挪到末尾并返回新的结尾，再用 `erase` 删掉。\n\n```cpp\nsort(a.begin(), a.end());\na.erase(unique(a.begin(), a.end()), a.end());\n```\n\n## 例子：合并区间、最大数、搜索插入位置\n\n合并区间按起点排序后扫一遍。\"最大数\"的比较器是这一课最经典的例子：两个数字串 a、b，`a + b > b + a` 时 a 排在前面。\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nvector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());          // 按起点，再按终点\n    vector<vector<int>> out;\n    for (auto& iv : intervals) {\n        if (!out.empty() && iv[0] <= out.back()[1])\n            out.back()[1] = max(out.back()[1], iv[1]);   // 和上一个重叠：延长\n        else\n            out.push_back(iv);\n    }\n    return out;\n}\n\nstring largestNumber(vector<int>& nums) {\n    vector<string> s;\n    for (int x : nums) s.push_back(to_string(x));\n    sort(s.begin(), s.end(), [](const string& a, const string& b) { return a + b > b + a; });\n    if (s[0] == \"0\") return \"0\";                        // 全是 0\n    string out;\n    for (auto& t : s) out += t;\n    return out;\n}\n\nint searchInsert(vector<int>& nums, int target) {\n    return lower_bound(nums.begin(), nums.end(), target) - nums.begin();\n}\n\nint main() {\n    vector<vector<int>> iv = {{8, 10}, {1, 3}, {2, 6}, {15, 18}};\n    auto m = merge(iv);\n    for (size_t i = 0; i < m.size(); i++) cout << (i ? \" \" : \"\") << m[i][0] << '-' << m[i][1];\n    cout << '\\n';\n\n    vector<int> nums = {3, 30, 34, 5, 9};\n    cout << largestNumber(nums) << '\\n';\n\n    vector<int> sorted = {1, 3, 5, 6};\n    cout << searchInsert(sorted, 5) << searchInsert(sorted, 2) << searchInsert(sorted, 7) << '\\n';\n}\n```\n\n```text\n1-6 8-10 15-18\n9534330\n214\n```\n\n## 程序：lower_bound、stable_sort 和去重\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <string>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> a = {1, 2, 2, 2, 5, 7};\n    auto lo = lower_bound(a.begin(), a.end(), 2);\n    auto hi = upper_bound(a.begin(), a.end(), 2);\n    cout << lo - a.begin() << ' ' << hi - a.begin() << ' ' << hi - lo << '\\n';\n    cout << lower_bound(a.begin(), a.end(), 6) - a.begin() << '\\n';   // 6 应插入的位置\n\n    vector<pair<string, int>> people = {{\"ann\", 30}, {\"bob\", 25}, {\"cat\", 30}, {\"dan\", 25}};\n    stable_sort(people.begin(), people.end(),\n                [](const auto& x, const auto& y) { return x.second < y.second; });\n    for (size_t i = 0; i < people.size(); i++) cout << (i ? \" \" : \"\") << people[i].first;\n    cout << '\\n';                                                     // 同龄人保持原顺序\n\n    vector<int> b = {3, 1, 3, 2, 1};\n    sort(b.begin(), b.end());\n    b.erase(unique(b.begin(), b.end()), b.end());\n    cout << b.size() << \": \" << b[0] << b[1] << b[2] << '\\n';\n}\n```\n\n```text\n1 4 3\n5\nbob dan ann cat\n3: 123\n```\n\n## 常见错误\n\n- 比较器写成 `<=`，在有很多相等元素的数据上崩溃。\n- 以为 `sort` 是稳定的。需要稳定时用 `stable_sort`。\n- 在没有排序的数组上用 `lower_bound`，或者数组降序却没传比较器。\n- 只调用 `unique` 忘了 `erase`，数组长度不变，末尾留着垃圾值。",
+          "bodyEn": "`sort`, `lower_bound` and their neighbors in `<algorithm>` come up in almost every practice session. This lesson covers writing comparators, sort stability and binary search on sorted vectors.\n\n## sort\n\n```cpp\nsort(a.begin(), a.end());                    // ascending, O(n log n)\nsort(a.begin(), a.end(), greater<int>());    // descending\nsort(a.rbegin(), a.rend());                  // also descending\nsort(a.begin() + l, a.begin() + r);          // only [l, r)\n```\n\nA `vector<pair<int, int>>` or `vector<vector<int>>` sorts lexicographically with a plain `sort`: the first element, then the second on a tie.\n\n## The comparator must be strictly \"less than\"\n\nA custom comparator `cmp(a, b)` answers \"should a come before b?\". It must be a strict weak ordering, so `cmp(a, a)` must be `false`.\n\n```cpp\nsort(a.begin(), a.end(), [](int x, int y) { return x <= y; });   // wrong!\n```\n\nWith `<=`, `cmp(a, a)` is true. That is undefined behavior: on data with many equal elements, GCC's `sort` can read and write out of bounds and crash. Always use `<` or `>`. For several keys, compare with `tie` instead of a chain of ifs:\n\n```cpp\n// score descending, then name ascending\nsort(v.begin(), v.end(), [](const Student& a, const Student& b) {\n    return tie(b.score, a.name) < tie(a.score, b.name);\n});\n```\n\n## Stability\n\n`sort` is **not stable**: equal elements can end up in any order. `stable_sort` keeps equal elements in their original order, still in O(n log n). Sort by the secondary key first, then `stable_sort` by the primary key, and ties on the primary key stay ordered by the secondary one.\n\n## Binary search on a sorted vector\n\n```cpp\nauto lo = lower_bound(a.begin(), a.end(), x);   // the first >= x\nauto hi = upper_bound(a.begin(), a.end(), x);   // the first > x\nint idx = lo - a.begin();                       // as an index\nint cnt = hi - lo;                              // how many times x occurs\nbinary_search(a.begin(), a.end(), x);           // just yes or no\n```\n\nThe vector must already be sorted the same way. For a descending vector, pass the same comparator: `lower_bound(a.begin(), a.end(), x, greater<int>())`.\n\nSorting and then deduplicating is a fixed pair: `unique` moves the duplicates to the end and returns the new end, and `erase` removes them.\n\n```cpp\nsort(a.begin(), a.end());\na.erase(unique(a.begin(), a.end()), a.end());\n```\n\n## Examples: merge intervals, largest number, search insert position\n\nMerging intervals is a sort by start and one pass. Largest Number has this lesson's classic comparator: for digit strings a and b, a goes first when `a + b > b + a`.\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nvector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());          // by start, then end\n    vector<vector<int>> out;\n    for (auto& iv : intervals) {\n        if (!out.empty() && iv[0] <= out.back()[1])\n            out.back()[1] = max(out.back()[1], iv[1]);   // overlaps the last one: extend it\n        else\n            out.push_back(iv);\n    }\n    return out;\n}\n\nstring largestNumber(vector<int>& nums) {\n    vector<string> s;\n    for (int x : nums) s.push_back(to_string(x));\n    sort(s.begin(), s.end(), [](const string& a, const string& b) { return a + b > b + a; });\n    if (s[0] == \"0\") return \"0\";                        // all zeros\n    string out;\n    for (auto& t : s) out += t;\n    return out;\n}\n\nint searchInsert(vector<int>& nums, int target) {\n    return lower_bound(nums.begin(), nums.end(), target) - nums.begin();\n}\n\nint main() {\n    vector<vector<int>> iv = {{8, 10}, {1, 3}, {2, 6}, {15, 18}};\n    auto m = merge(iv);\n    for (size_t i = 0; i < m.size(); i++) cout << (i ? \" \" : \"\") << m[i][0] << '-' << m[i][1];\n    cout << '\\n';\n\n    vector<int> nums = {3, 30, 34, 5, 9};\n    cout << largestNumber(nums) << '\\n';\n\n    vector<int> sorted = {1, 3, 5, 6};\n    cout << searchInsert(sorted, 5) << searchInsert(sorted, 2) << searchInsert(sorted, 7) << '\\n';\n}\n```\n\n```text\n1-6 8-10 15-18\n9534330\n214\n```\n\n## A program: lower_bound, stable_sort and deduplication\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <string>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> a = {1, 2, 2, 2, 5, 7};\n    auto lo = lower_bound(a.begin(), a.end(), 2);\n    auto hi = upper_bound(a.begin(), a.end(), 2);\n    cout << lo - a.begin() << ' ' << hi - a.begin() << ' ' << hi - lo << '\\n';\n    cout << lower_bound(a.begin(), a.end(), 6) - a.begin() << '\\n';   // where 6 would go\n\n    vector<pair<string, int>> people = {{\"ann\", 30}, {\"bob\", 25}, {\"cat\", 30}, {\"dan\", 25}};\n    stable_sort(people.begin(), people.end(),\n                [](const auto& x, const auto& y) { return x.second < y.second; });\n    for (size_t i = 0; i < people.size(); i++) cout << (i ? \" \" : \"\") << people[i].first;\n    cout << '\\n';                                                     // same age: original order\n\n    vector<int> b = {3, 1, 3, 2, 1};\n    sort(b.begin(), b.end());\n    b.erase(unique(b.begin(), b.end()), b.end());\n    cout << b.size() << \": \" << b[0] << b[1] << b[2] << '\\n';\n}\n```\n\n```text\n1 4 3\n5\nbob dan ann cat\n3: 123\n```\n\n## Common mistakes\n\n- A `<=` comparator that crashes on data with many equal elements.\n- Assuming `sort` is stable. Use `stable_sort` when you need stability.\n- Calling `lower_bound` on an unsorted vector, or on a descending one without the comparator.\n- Calling `unique` without `erase`: the size stays the same and the tail holds leftovers.",
+          "quiz": [
+            {
+              "qZh": "sort 的比较器写成 return a <= b; 会怎样？",
+              "qEn": "What happens when the comparator passed to sort is return a <= b;?",
+              "choices": [
+                {
+                  "zh": "和 a < b 完全一样",
+                  "en": "Exactly the same as a < b"
+                },
+                {
+                  "zh": "变成稳定排序",
+                  "en": "The sort becomes stable"
+                },
+                {
+                  "zh": "结果变成降序",
+                  "en": "The result comes out descending"
+                },
+                {
+                  "zh": "未定义行为，相等元素多时可能崩溃",
+                  "en": "Undefined behavior; it may crash when many elements are equal"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "比较器必须是严格弱序，cmp(a, a) 必须为 false。<= 违反了这一点，GCC 的 sort 可能越界。",
+              "whyEn": "A comparator must be a strict weak ordering with cmp(a, a) false. <= breaks that, and GCC's sort can run out of bounds."
+            },
+            {
+              "qZh": "a = {1, 2, 2, 2, 5} 已排序，upper_bound(2) - lower_bound(2) 等于多少？",
+              "qEn": "a = {1, 2, 2, 2, 5} is sorted. What is upper_bound(2) - lower_bound(2)?",
+              "choices": [
+                {
+                  "zh": "3",
+                  "en": "3"
+                },
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "2",
+                  "en": "2"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "lower_bound 指向第一个 2（下标 1），upper_bound 指向 5（下标 4），相减就是 2 出现的次数 3。",
+              "whyEn": "lower_bound points at the first 2 (index 1) and upper_bound at the 5 (index 4); the difference is the count of 2s, 3."
+            },
+            {
+              "qZh": "什么时候必须用 stable_sort 而不是 sort？",
+              "qEn": "When do you need stable_sort instead of sort?",
+              "choices": [
+                {
+                  "zh": "数组里有负数",
+                  "en": "The vector contains negative numbers"
+                },
+                {
+                  "zh": "相等元素必须保持原来的先后顺序",
+                  "en": "Equal elements must keep their original order"
+                },
+                {
+                  "zh": "需要降序排列",
+                  "en": "You want descending order"
+                },
+                {
+                  "zh": "数组长度超过 10⁵",
+                  "en": "The vector is longer than 10⁵"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "sort 不保证相等元素的相对顺序，stable_sort 保证。负数、降序、长度都和稳定性无关。",
+              "whyEn": "sort does not keep equal elements in order; stable_sort does. Negative numbers, descending order and size have nothing to do with stability."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1029",
+              "zh": "两地调度",
+              "en": "Two City Scheduling"
+            },
+            {
+              "id": "lc-875",
+              "zh": "爱吃香蕉的珂珂",
+              "en": "Koko Eating Bananas"
+            },
+            {
+              "id": "lc-34",
+              "zh": "在排序数组中查找元素的第一个和最后一个位置",
+              "en": "Find First and Last Position of Element in Sorted Array"
+            }
+          ],
+          "solves": [
+            "lc-56",
+            "lc-179",
+            "lc-35"
+          ]
+        },
+        {
+          "slug": "overflow-pitfalls",
+          "titleZh": "溢出、long long 与常见坑",
+          "titleEn": "Overflow, long long and other traps",
+          "bodyZh": "C++ 的整数有固定位数，溢出时不会报错，结果却已经错了。这一课集中讲整数溢出和几个只有 C++ 才有的坑。\n\n## int 有多大\n\n| 类型 | 位数 | 大约范围 |\n|---|---|---|\n| `int` | 32 | ±2.1×10⁹（`INT_MAX` = 2147483647） |\n| `long long` | 64 | ±9.2×10¹⁸（`LLONG_MAX`） |\n\n估算一下就知道 `int` 很容易不够用：10⁵ × 10⁵ = 10¹⁰，n = 10⁵ 个 10⁹ 相加是 10¹⁴。**有符号整数溢出是未定义行为**：不一定\"绕回负数\"，编译器优化后可能出现任何结果。\n\n## 算之前就要是 long long\n\n```cpp\nint a = 100000, b = 100000;\nlong long bad = a * b;          // 先用 int 算乘法，已经溢出，再转成 long long 也救不回来\nlong long ok1 = 1LL * a * b;    // 先把一个操作数变成 long long\nlong long ok2 = (long long)a * b;\n```\n\n类似的地方：\n\n- `accumulate(v.begin(), v.end(), 0)` 用 `int` 累加。初值写 `0LL`，累加才是 `long long`。\n- `1 << 31` 超出了 `int`；位移超过 31 位要写 `1LL << k`。\n- 二分的中点写 `lo + (hi - lo) / 2`，不写 `(lo + hi) / 2`。\n- 比较 `mid * mid <= x` 时，`mid` 用 `long long`，或者改成 `mid <= x / mid`。\n- `abs(INT_MIN)` 仍然溢出。\n\n## 例子：x 的平方根\n\n二分找最大的 m，使 m² ≤ x。x 最大是 2³¹ − 1，m² 用 `int` 计算会溢出，所以全程用 `long long`。\n\n```cpp run\n#include <climits>\n#include <iostream>\n#include <numeric>\n#include <vector>\nusing namespace std;\n\nint mySqrt(int x) {\n    long long lo = 0, hi = x;\n    while (lo < hi) {\n        long long mid = lo + (hi - lo + 1) / 2;   // 向上取中点，避免死循环\n        if (mid * mid <= x) lo = mid;\n        else hi = mid - 1;\n    }\n    return (int)lo;\n}\n\nint main() {\n    cout << mySqrt(8) << ' ' << mySqrt(INT_MAX) << '\\n';\n\n    int a = 100000, b = 100000;\n    cout << 1LL * a * b << '\\n';\n\n    vector<int> v = {2000000000, 2000000000};\n    cout << accumulate(v.begin(), v.end(), 0LL) << '\\n';\n\n    cout << INT_MAX << ' ' << LLONG_MAX << '\\n';\n    cout << -7 / 2 << ' ' << -7 % 2 << '\\n';      // 向零取整\n}\n```\n\n```text\n2 46340\n10000000000\n4000000000\n2147483647 9223372036854775807\n-3 -1\n```\n\n## 除法和取模向零取整\n\nC++ 的 `/` 向零取整，`%` 的结果和被除数同号：`-7 / 2` 是 -3，`-7 % 2` 是 -1。Python 的 `-7 // 2` 是 -4，`-7 % 2` 是 1。要得到非负余数，写 `((x % m) + m) % m`。\n\n## 其他只有 C++ 才有的坑\n\n- **局部变量不会自动初始化。** `int sum;` 里是随机值，数组同理。写 `int sum = 0;`，或者用 `vector<int> a(n)`（会初始化为 0）。\n- **`pow` 返回 `double`。** `(int)pow(10, 2)` 在某些平台上可能得到 99。整数的幂用循环自己乘。\n- **`endl` 会刷新缓冲区。** 输出很多行时比 `'\\n'` 慢得多。读入量大时，在 `main` 开头加 `ios::sync_with_stdio(false); cin.tie(nullptr);`。\n- **有符号数和无符号数比较。** `-1 < v.size()` 的结果是 `false`：-1 先被转成巨大的无符号数。\n- **返回局部变量的引用。** 函数返回后局部变量就销毁了，引用指向的内存已经无效。\n\n## 常见错误\n\n- 结果用 `long long` 存，中间的乘法还是 `int`。\n- `accumulate` 的初值写成 `0`。\n- 对负数取模，直接拿结果当数组下标。\n- 输出几十万行时用 `endl`，导致超时。",
+          "bodyEn": "C++ integers have a fixed width, and overflow raises no error: the result is simply wrong. This lesson is about integer overflow and a few traps that only C++ has.\n\n## How big is an int\n\n| Type | Bits | Roughly |\n|---|---|---|\n| `int` | 32 | ±2.1×10⁹ (`INT_MAX` = 2147483647) |\n| `long long` | 64 | ±9.2×10¹⁸ (`LLONG_MAX`) |\n\nA quick estimate shows how easily `int` runs out: 10⁵ × 10⁵ = 10¹⁰, and 10⁵ values of 10⁹ add up to 10¹⁴. **Signed overflow is undefined behavior**: it does not reliably \"wrap to a negative number\", and after optimization anything can happen.\n\n## Be long long before the arithmetic\n\n```cpp\nint a = 100000, b = 100000;\nlong long bad = a * b;          // multiplied as int, already overflowed; converting afterwards is too late\nlong long ok1 = 1LL * a * b;    // make one operand long long first\nlong long ok2 = (long long)a * b;\n```\n\nThe same trap elsewhere:\n\n- `accumulate(v.begin(), v.end(), 0)` sums in `int`. Start from `0LL` to sum in `long long`.\n- `1 << 31` does not fit in an `int`; shifts past 31 bits need `1LL << k`.\n- Write a binary search midpoint as `lo + (hi - lo) / 2`, not `(lo + hi) / 2`.\n- When comparing `mid * mid <= x`, make `mid` a `long long`, or test `mid <= x / mid`.\n- `abs(INT_MIN)` still overflows.\n\n## Example: square root of x\n\nBinary search for the largest m with m² ≤ x. x can be 2³¹ − 1, and m² overflows an `int`, so everything is `long long`.\n\n```cpp run\n#include <climits>\n#include <iostream>\n#include <numeric>\n#include <vector>\nusing namespace std;\n\nint mySqrt(int x) {\n    long long lo = 0, hi = x;\n    while (lo < hi) {\n        long long mid = lo + (hi - lo + 1) / 2;   // round up so the loop always shrinks\n        if (mid * mid <= x) lo = mid;\n        else hi = mid - 1;\n    }\n    return (int)lo;\n}\n\nint main() {\n    cout << mySqrt(8) << ' ' << mySqrt(INT_MAX) << '\\n';\n\n    int a = 100000, b = 100000;\n    cout << 1LL * a * b << '\\n';\n\n    vector<int> v = {2000000000, 2000000000};\n    cout << accumulate(v.begin(), v.end(), 0LL) << '\\n';\n\n    cout << INT_MAX << ' ' << LLONG_MAX << '\\n';\n    cout << -7 / 2 << ' ' << -7 % 2 << '\\n';      // truncates toward zero\n}\n```\n\n```text\n2 46340\n10000000000\n4000000000\n2147483647 9223372036854775807\n-3 -1\n```\n\n## Division and modulo truncate toward zero\n\nC++ `/` truncates toward zero, and `%` takes the sign of the dividend: `-7 / 2` is -3 and `-7 % 2` is -1. In Python, `-7 // 2` is -4 and `-7 % 2` is 1. For a non-negative remainder, write `((x % m) + m) % m`.\n\n## Other traps only C++ has\n\n- **Locals are not initialized.** `int sum;` holds garbage, and so do plain arrays. Write `int sum = 0;`, or use `vector<int> a(n)`, which zero-fills.\n- **`pow` returns a `double`.** `(int)pow(10, 2)` can come out as 99 on some platforms. Multiply in a loop for integer powers.\n- **`endl` flushes the buffer.** Printing many lines with it is much slower than `'\\n'`. For large input, start `main` with `ios::sync_with_stdio(false); cin.tie(nullptr);`.\n- **Signed versus unsigned comparisons.** `-1 < v.size()` is `false`: -1 is converted to a huge unsigned number first.\n- **Returning a reference to a local.** The local is destroyed when the function returns, so the reference points at dead memory.\n\n## Common mistakes\n\n- Storing the result in a `long long` while the multiplication is still done in `int`.\n- Starting `accumulate` from `0`.\n- Taking a negative number modulo m and using the result as an index.\n- Printing hundreds of thousands of lines with `endl` and timing out.",
+          "quiz": [
+            {
+              "qZh": "int a = 100000, b = 100000; 哪种写法能得到正确的 10¹⁰？",
+              "qEn": "int a = 100000, b = 100000; which expression gives the correct 10¹⁰?",
+              "choices": [
+                {
+                  "zh": "long long c = a * b;",
+                  "en": "long long c = a * b;"
+                },
+                {
+                  "zh": "long long c = (long long)(a * b);",
+                  "en": "long long c = (long long)(a * b);"
+                },
+                {
+                  "zh": "long long c = 1LL * a * b;",
+                  "en": "long long c = 1LL * a * b;"
+                },
+                {
+                  "zh": "int c = a * b;",
+                  "en": "int c = a * b;"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "乘法按操作数的类型计算。a * b 两边都是 int，在赋值或转换之前就溢出了。1LL * a 先变成 long long。",
+              "whyEn": "The multiplication uses the operands' type. a * b is int times int and overflows before any conversion. 1LL * a is long long first."
+            },
+            {
+              "qZh": "C++ 里 -7 / 2 和 -7 % 2 分别是多少？",
+              "qEn": "In C++, what are -7 / 2 and -7 % 2?",
+              "choices": [
+                {
+                  "zh": "-4 和 1",
+                  "en": "-4 and 1"
+                },
+                {
+                  "zh": "-3 和 1",
+                  "en": "-3 and 1"
+                },
+                {
+                  "zh": "-4 和 -1",
+                  "en": "-4 and -1"
+                },
+                {
+                  "zh": "-3 和 -1",
+                  "en": "-3 and -1"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "C++ 的除法向零取整，余数和被除数同号。-4 和 1 是 Python 的结果。",
+              "whyEn": "C++ division truncates toward zero and the remainder takes the dividend's sign. -4 and 1 are Python's answers."
+            },
+            {
+              "qZh": "v 是 vector<int>，元素和可能超过 2³¹。下面哪种写法求和是安全的？",
+              "qEn": "v is a vector<int> whose sum can exceed 2³¹. Which sum is safe?",
+              "choices": [
+                {
+                  "zh": "accumulate(v.begin(), v.end(), 0LL)",
+                  "en": "accumulate(v.begin(), v.end(), 0LL)"
+                },
+                {
+                  "zh": "accumulate(v.begin(), v.end(), 0)",
+                  "en": "accumulate(v.begin(), v.end(), 0)"
+                },
+                {
+                  "zh": "(long long)accumulate(v.begin(), v.end(), 0)",
+                  "en": "(long long)accumulate(v.begin(), v.end(), 0)"
+                },
+                {
+                  "zh": "accumulate(v.begin(), v.end(), 0u)",
+                  "en": "accumulate(v.begin(), v.end(), 0u)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "accumulate 用初值的类型累加。0 是 int，先溢出再转换已经晚了；0u 是 32 位无符号数，也会绕回。",
+              "whyEn": "accumulate sums in the type of its initial value. 0 is an int, and converting afterwards is too late; 0u is a 32-bit unsigned and wraps too."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1283",
+              "zh": "使结果不超过阈值的最小除数",
+              "en": "Find the Smallest Divisor Given a Threshold"
+            },
+            {
+              "id": "lc-136",
+              "zh": "只出现一次的数字",
+              "en": "Single Number"
+            },
+            {
+              "id": "lc-62",
+              "zh": "不同路径",
+              "en": "Unique Paths"
+            }
+          ],
+          "solves": [
+            "lc-69"
+          ]
+        },
+        {
+          "slug": "cheatsheet",
+          "titleZh": "速查表",
+          "titleEn": "Cheat sheet",
+          "bodyZh": "前面七课的要点压缩成几张表，面试前快速过一遍。复杂度里的 n 是容器当前的元素个数，\"均摊\"表示偶尔一次慢，平均下来仍是这个量级。\n\n## 序列容器\n\n| 容器 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| `vector` | 尾部追加 / 删除 | 均摊 O(1) / O(1) | `a.push_back(x); a.pop_back();` |\n| `vector` | 下标访问 | O(1) | `a[i]`，调试时用 `a.at(i)` |\n| `vector` | 中间插入 / 删除 | O(n) | `a.insert(a.begin() + i, x); a.erase(a.begin() + i);` |\n| `vector` | 二维数组 | O(nm) | `vector<vector<int>> g(n, vector<int>(m));` |\n| `string` | 追加字符 | 均摊 O(1) | `s += c;` |\n| `string` | 子串 | O(len) | `s.substr(i, len)`（第二个参数是长度） |\n| `string` | 查找 | 最坏 O(nm) | `s.find(t) != string::npos` |\n| `deque` | 两端进出 | O(1) | `d.push_front(x); d.pop_back();` |\n| `stack` | 入栈 / 看栈顶 / 出栈 | O(1) | `st.push(x); st.top(); st.pop();` |\n| `queue` | 入队 / 看队头 / 出队 | O(1) | `q.push(x); q.front(); q.pop();` |\n\n## 堆、有序容器、哈希容器\n\n| 容器 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| `priority_queue` | 最大堆 push / pop | O(log n) | `priority_queue<int> pq;` |\n| `priority_queue` | 最小堆 | O(log n) | `priority_queue<int, vector<int>, greater<int>> pq;` |\n| `priority_queue` | 用区间建堆 | O(n) | `priority_queue<int> pq(a.begin(), a.end());` |\n| `set` | 插入 / 删除 / 查找 | O(log n) | `s.insert(x); s.erase(x); s.count(x);` |\n| `set` | 最小 / 最大 | O(1) | `*s.begin(); *s.rbegin();` |\n| `set` | 第一个 ≥ x / > x | O(log n) | `s.lower_bound(x); s.upper_bound(x);` |\n| `multiset` | 只删一个 x | O(log n) | `ms.erase(ms.find(x));` |\n| `map` | 计数 | O(log n) | `cnt[x]++;` |\n| `map` | 按键有序遍历 | O(n) | `for (auto& [k, v] : m)` |\n| `unordered_map` | 计数 / 查找 | 平均 O(1) | `cnt[x]++; m.find(k) != m.end();` |\n| `unordered_set` | 判重 | 平均 O(1) | `if (!seen.insert(x).second) /* 重复 */;` |\n\n## 算法\n\n| 操作 | 复杂度 | 一行写法 |\n|---|---|---|\n| 排序 / 降序 | O(n log n) | `sort(a.begin(), a.end()); sort(a.rbegin(), a.rend());` |\n| 稳定排序 | O(n log n) | `stable_sort(a.begin(), a.end(), cmp);` |\n| 第一个 ≥ x 的下标 | O(log n) | `lower_bound(a.begin(), a.end(), x) - a.begin()` |\n| x 出现的次数 | O(log n) | `upper_bound(...) - lower_bound(...)` |\n| 排序后去重 | O(n) | `a.erase(unique(a.begin(), a.end()), a.end());` |\n| 最大值 / 最小值 | O(n) | `*max_element(a.begin(), a.end())` |\n| 求和 | O(n) | `accumulate(a.begin(), a.end(), 0LL)` |\n| 反转 | O(n) | `reverse(a.begin(), a.end());` |\n| 填 0, 1, 2, … | O(n) | `iota(a.begin(), a.end(), 0);` |\n| 下一个排列 | O(n) | `next_permutation(a.begin(), a.end())` |\n\n## 验证：表里的写法都能跑\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <map>\n#include <numeric>\n#include <queue>\n#include <set>\n#include <string>\n#include <unordered_set>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> a = {4, 1, 3, 1, 2};\n    cout << *max_element(a.begin(), a.end()) << ' ' << accumulate(a.begin(), a.end(), 0LL) << '\\n';\n    sort(a.begin(), a.end());\n    cout << upper_bound(a.begin(), a.end(), 1) - lower_bound(a.begin(), a.end(), 1) << ' ';\n    a.erase(unique(a.begin(), a.end()), a.end());\n    cout << a.size() << '\\n';\n\n    vector<int> p(3);\n    iota(p.begin(), p.end(), 1);              // 1 2 3\n    int perms = 1;\n    while (next_permutation(p.begin(), p.end())) perms++;\n    cout << perms << '\\n';\n\n    unordered_set<int> seen;\n    int dup = -1;\n    for (int x : {5, 8, 5}) if (!seen.insert(x).second) dup = x;\n    cout << dup << '\\n';\n\n    priority_queue<int, vector<int>, greater<int>> pq(a.begin(), a.end());\n    multiset<int> ms = {2, 2, 9};\n    ms.erase(ms.find(2));\n    map<char, int> cnt;\n    for (char c : string(\"banana\")) cnt[c]++;\n    cout << pq.top() << ' ' << ms.size() << ' ' << cnt['a'] << ' ' << cnt.begin()->first << '\\n';\n}\n```\n\n```text\n4 11\n2 4\n6\n5\n1 2 3 a\n```\n\n## 面试前最后检查一遍\n\n- 乘法、累加会不会超过 2×10⁹？会就用 `long long`，而且在运算之前就转换。\n- `a.size() - 1` 在空数组上会不会出问题？\n- 比较器是不是严格的 `<` 或 `>`？\n- 查询 `map` 时有没有误用 `[]`？\n- 大容器是不是按引用传参？\n- 输出很多行时，用的是 `'\\n'` 还是 `endl`？",
+          "bodyEn": "The first seven lessons squeezed into a few tables for a last look before an interview. In the complexities, n is the container's current size, and \"amortized\" means an occasional slow step that averages out to the stated cost.\n\n## Sequence containers\n\n| Container | Operation | Cost | One-liner |\n|---|---|---|---|\n| `vector` | append / remove at the back | amortized O(1) / O(1) | `a.push_back(x); a.pop_back();` |\n| `vector` | index | O(1) | `a[i]`, or `a.at(i)` while debugging |\n| `vector` | insert / erase in the middle | O(n) | `a.insert(a.begin() + i, x); a.erase(a.begin() + i);` |\n| `vector` | 2D grid | O(nm) | `vector<vector<int>> g(n, vector<int>(m));` |\n| `string` | append a character | amortized O(1) | `s += c;` |\n| `string` | substring | O(len) | `s.substr(i, len)` (the second argument is a length) |\n| `string` | search | O(nm) worst | `s.find(t) != string::npos` |\n| `deque` | in and out at both ends | O(1) | `d.push_front(x); d.pop_back();` |\n| `stack` | push / top / pop | O(1) | `st.push(x); st.top(); st.pop();` |\n| `queue` | push / front / pop | O(1) | `q.push(x); q.front(); q.pop();` |\n\n## Heaps, sorted containers, hash containers\n\n| Container | Operation | Cost | One-liner |\n|---|---|---|---|\n| `priority_queue` | max-heap push / pop | O(log n) | `priority_queue<int> pq;` |\n| `priority_queue` | min-heap | O(log n) | `priority_queue<int, vector<int>, greater<int>> pq;` |\n| `priority_queue` | build from a range | O(n) | `priority_queue<int> pq(a.begin(), a.end());` |\n| `set` | insert / erase / lookup | O(log n) | `s.insert(x); s.erase(x); s.count(x);` |\n| `set` | minimum / maximum | O(1) | `*s.begin(); *s.rbegin();` |\n| `set` | first ≥ x / > x | O(log n) | `s.lower_bound(x); s.upper_bound(x);` |\n| `multiset` | erase one x | O(log n) | `ms.erase(ms.find(x));` |\n| `map` | count | O(log n) | `cnt[x]++;` |\n| `map` | walk in key order | O(n) | `for (auto& [k, v] : m)` |\n| `unordered_map` | count / lookup | O(1) average | `cnt[x]++; m.find(k) != m.end();` |\n| `unordered_set` | spot a repeat | O(1) average | `if (!seen.insert(x).second) /* repeat */;` |\n\n## Algorithms\n\n| Operation | Cost | One-liner |\n|---|---|---|\n| sort / descending | O(n log n) | `sort(a.begin(), a.end()); sort(a.rbegin(), a.rend());` |\n| stable sort | O(n log n) | `stable_sort(a.begin(), a.end(), cmp);` |\n| index of the first ≥ x | O(log n) | `lower_bound(a.begin(), a.end(), x) - a.begin()` |\n| occurrences of x | O(log n) | `upper_bound(...) - lower_bound(...)` |\n| dedupe after sorting | O(n) | `a.erase(unique(a.begin(), a.end()), a.end());` |\n| maximum / minimum | O(n) | `*max_element(a.begin(), a.end())` |\n| sum | O(n) | `accumulate(a.begin(), a.end(), 0LL)` |\n| reverse | O(n) | `reverse(a.begin(), a.end());` |\n| fill 0, 1, 2, … | O(n) | `iota(a.begin(), a.end(), 0);` |\n| next permutation | O(n) | `next_permutation(a.begin(), a.end())` |\n\n## Proof: the one-liners run\n\n```cpp run\n#include <algorithm>\n#include <iostream>\n#include <map>\n#include <numeric>\n#include <queue>\n#include <set>\n#include <string>\n#include <unordered_set>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> a = {4, 1, 3, 1, 2};\n    cout << *max_element(a.begin(), a.end()) << ' ' << accumulate(a.begin(), a.end(), 0LL) << '\\n';\n    sort(a.begin(), a.end());\n    cout << upper_bound(a.begin(), a.end(), 1) - lower_bound(a.begin(), a.end(), 1) << ' ';\n    a.erase(unique(a.begin(), a.end()), a.end());\n    cout << a.size() << '\\n';\n\n    vector<int> p(3);\n    iota(p.begin(), p.end(), 1);              // 1 2 3\n    int perms = 1;\n    while (next_permutation(p.begin(), p.end())) perms++;\n    cout << perms << '\\n';\n\n    unordered_set<int> seen;\n    int dup = -1;\n    for (int x : {5, 8, 5}) if (!seen.insert(x).second) dup = x;\n    cout << dup << '\\n';\n\n    priority_queue<int, vector<int>, greater<int>> pq(a.begin(), a.end());\n    multiset<int> ms = {2, 2, 9};\n    ms.erase(ms.find(2));\n    map<char, int> cnt;\n    for (char c : string(\"banana\")) cnt[c]++;\n    cout << pq.top() << ' ' << ms.size() << ' ' << cnt['a'] << ' ' << cnt.begin()->first << '\\n';\n}\n```\n\n```text\n4 11\n2 4\n6\n5\n1 2 3 a\n```\n\n## A last check before the interview\n\n- Can a product or a sum pass 2×10⁹? Then use `long long`, converted before the arithmetic.\n- Does `a.size() - 1` break on an empty vector?\n- Is the comparator a strict `<` or `>`?\n- Did a `map` lookup use `[]` by mistake?\n- Are large containers passed by reference?\n- When printing many lines, is it `'\\n'` rather than `endl`?",
+          "quiz": [
+            {
+              "qZh": "set 取最大值用哪个写法，复杂度多少？",
+              "qEn": "How do you read the maximum of a set, and at what cost?",
+              "choices": [
+                {
+                  "zh": "*s.end()，O(1)",
+                  "en": "*s.end(), O(1)"
+                },
+                {
+                  "zh": "*s.rbegin()，O(1)",
+                  "en": "*s.rbegin(), O(1)"
+                },
+                {
+                  "zh": "*max_element(s.begin(), s.end())，O(log n)",
+                  "en": "*max_element(s.begin(), s.end()), O(log n)"
+                },
+                {
+                  "zh": "s.back()，O(1)",
+                  "en": "s.back(), O(1)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "rbegin 指向最后一个元素。end() 指向最后一个元素之后，不能解引用；max_element 是 O(n)；set 没有 back()。",
+              "whyEn": "rbegin points at the last element. end() is one past it and cannot be dereferenced; max_element is O(n); a set has no back()."
+            },
+            {
+              "qZh": "已排序的 vector 去重，标准写法是？",
+              "qEn": "What is the standard way to dedupe a sorted vector?",
+              "choices": [
+                {
+                  "zh": "unique(a.begin(), a.end());",
+                  "en": "unique(a.begin(), a.end());"
+                },
+                {
+                  "zh": "a.erase(unique(a.begin(), a.end()));",
+                  "en": "a.erase(unique(a.begin(), a.end()));"
+                },
+                {
+                  "zh": "a.erase(unique(a.begin(), a.end()), a.end());",
+                  "en": "a.erase(unique(a.begin(), a.end()), a.end());"
+                },
+                {
+                  "zh": "a.resize(unique(a.begin(), a.end()));",
+                  "en": "a.resize(unique(a.begin(), a.end()));"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "unique 只把不重复的元素挪到前面并返回新结尾，不改变长度。要用 erase 删掉从新结尾到 end() 的整段。",
+              "whyEn": "unique only moves the distinct elements forward and returns the new end; the size is unchanged. erase the whole range from the new end to end()."
+            },
+            {
+              "qZh": "multiset 里只删一个值为 x 的元素，复杂度是？",
+              "qEn": "What does erasing a single x from a multiset cost?",
+              "choices": [
+                {
+                  "zh": "O(1)：ms.erase(x)",
+                  "en": "O(1): ms.erase(x)"
+                },
+                {
+                  "zh": "O(n)：必须先遍历",
+                  "en": "O(n): it needs a full scan"
+                },
+                {
+                  "zh": "O(log n)：ms.erase(x)",
+                  "en": "O(log n): ms.erase(x)"
+                },
+                {
+                  "zh": "O(log n)：ms.erase(ms.find(x))",
+                  "en": "O(log n): ms.erase(ms.find(x))"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "find 是 O(log n)，按迭代器删除是均摊 O(1)。ms.erase(x) 会删掉所有的 x。",
+              "whyEn": "find is O(log n) and erasing by iterator is amortized O(1). ms.erase(x) removes every x."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-169",
+              "zh": "多数元素",
+              "en": "Majority Element"
+            },
+            {
+              "id": "lc-977",
+              "zh": "有序数组的平方",
+              "en": "Squares of a Sorted Array"
+            },
+            {
+              "id": "lc-26",
+              "zh": "删除有序数组中的重复项",
+              "en": "Remove Duplicates from Sorted Array"
+            }
+          ],
+          "solves": []
+        }
+      ]
     }
   ]
 }
