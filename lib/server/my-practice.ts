@@ -18,7 +18,8 @@ const MAX_BATCH = 500;
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
 // sub:<submission id> is a note on one submission; q:<slug> is a content library question;
 // post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post):[\w./-]{1,200}$/);
+// mcq:answers holds the concept-drill multiple-choice review state as JSON (app/oa/mcq/practice.tsx).
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item.
