@@ -47,7 +47,12 @@ export function EffortChart({ effort, zh }: { effort: { start: number; days: num
   const slot = (W - 2 * PAD) / days.length;
   const names = LEVELS.map((key) => levelOf(key)![zh ? 1 : 2]);
   const sums = LEVELS.map((_, l) => days.reduce((sum, d) => sum + d[l], 0));
-  const summary = names.map((name, l) => `${name} ${sums[l]}`).join(zh ? '，' : ', ');
+  const [comma, colon] = zh ? ['，', '：'] : [', ', ': '];
+  const summary = names.map((name, l) => `${name} ${sums[l]}`).join(comma);
+  // One line per active day: the bar's mouse tooltip, and the screen-reader list (role=img hides the <title>s).
+  const lines = days.map((d, i) =>
+    d[0] + d[1] + d[2] ? `${utcDate(effort.start + i * DAY, zh)}${colon}${names.map((name, l) => `${name} ${d[l]}`).join(comma)}` : '',
+  );
   return (
     <figure className="rating-curve practice-chart">
       <svg
@@ -57,20 +62,25 @@ export function EffortChart({ effort, zh }: { effort: { start: number; days: num
       >
         <line className="practice-axis" x1={PAD} x2={W - PAD} y1={H - PAD} y2={H - PAD} />
         {days.map((d, i) => {
-          if (!(d[0] + d[1] + d[2])) return null;
+          if (!lines[i]) return null;
           let base = H - PAD;
           return (
             <g key={i}>
-              <title>{`${utcDate(effort.start + i * DAY, zh)}: ${names.map((name, l) => `${name} ${d[l]}`).join(', ')}`}</title>
+              <title>{lines[i]}</title>
               {LEVELS.map((key, l) => {
                 const height = d[l] * unit;
                 base -= height;
-                return height ? <rect key={key} data-level={key} x={PAD + i * slot + 1} width={slot - 2} y={base} height={height} /> : null;
+                // A gap under each segment, so stacked levels stay apart without relying on hue.
+                const gap = Math.min(2, height / 2);
+                return height ? <rect key={key} data-level={key} x={PAD + i * slot + 1} width={slot - 2} y={base} height={height - gap} /> : null;
               })}
             </g>
           );
         })}
       </svg>
+      <ul className="sr-only" aria-label={zh ? '每日明细' : 'Daily breakdown'}>
+        {lines.map((line, i) => (line ? <li key={i}>{line}</li> : null))}
+      </ul>
       <figcaption>
         {LEVELS.map((key, l) => (
           <span key={key}>
