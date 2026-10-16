@@ -2293,7 +2293,7 @@ function Workspace({
             <select
               aria-label={t('提交模式', 'Submission mode')}
               value={codingMode}
-              disabled={!ready}
+              disabled={!ready || wb.on}
               onChange={(event) =>
                 switchLanguage(
                   language,
@@ -2311,6 +2311,8 @@ function Workspace({
           <select
             aria-label={t('编程语言', 'Programming language')}
             value={language}
+            // Whiteboard mode keeps its language: another one's draft would come in unwritten.
+            disabled={wb.on}
             onChange={(event) => switchLanguage(event.target.value as Language)}
           >
             {languageUnavailable && (
@@ -2481,7 +2483,17 @@ function Workspace({
           )}
         </output>
       )}
-      <WhiteboardResult wb={wb} />
+      <WhiteboardResult
+        wb={wb}
+        onRestore={(previous) =>
+          setReplaceRequest({
+            language,
+            codingMode,
+            code: previous,
+            title: t('恢复进入白板模式前的代码？', 'Restore the code from before whiteboard mode?'),
+          })
+        }
+      />
       {restored && (
         <output className="cs-draft-restored">
           <span>
@@ -3148,7 +3160,13 @@ function Workspace({
           {wb.available && (
             <WhiteboardToggle
               wb={wb}
-              onEnter={() => setLeftTab((tab) => (tab === 'editorial' || tab === 'solutions' ? 'statement' : tab))}
+              onEnter={() => {
+                // From the template: a draft already run or accepted is no whiteboard attempt.
+                const template = templateFor(language, codingMode);
+                wb.enter(code === template ? null : code);
+                updateCode(template);
+                setLeftTab((tab) => (tab === 'editorial' || tab === 'solutions' ? 'statement' : tab));
+              }}
             />
           )}
           <button

@@ -23,7 +23,9 @@ export type Whiteboard = ReturnType<typeof useWhiteboard>;
 
 /**
  * Whiteboard mode in components/problem-workspace.tsx: a plain-text editor with no runs, custom
- * cases, stress tests, hints, editorials or AI, and one submission. Submitting leaves the mode;
+ * cases, stress tests, hints, editorials or AI, and one submission. It starts from the language
+ * template, so an attempt is code written in the mode, not a draft already run or accepted; the
+ * code from before stays here for a restore once the mode ends. Submitting leaves the mode;
  * once judged, the result bar says whether it passed and the learner's first whiteboard attempt
  * on the problem is recorded for the progress page (POST problems/<id>/aids, kind whiteboard).
  * `available` is false in a mock exam or contest, a drill and on the SQL track.
@@ -33,6 +35,8 @@ export function useWhiteboard(problemId: string, signedIn: boolean, submission: 
   // The whiteboard submission still being judged, then its outcome.
   const [pending, setPending] = useState<string | null>(null);
   const [result, setResult] = useState<'passed' | 'failed' | 'void' | null>(null);
+  // The editor's code before the mode replaced it with the template; null when it was the template.
+  const [before, setBefore] = useState<string | null>(null);
   useEffect(() => {
     if (!pending || submission?.id !== pending || activeStatuses.has(submission.status)) return;
     const status = submission.status;
@@ -49,9 +53,12 @@ export function useWhiteboard(problemId: string, signedIn: boolean, submission: 
     available,
     on: on && available,
     result,
-    enter() {
+    /** The code to offer back once the mode ends. */
+    before: on && available ? null : before,
+    enter(previous: string | null) {
       setOn(true);
       setResult(null);
+      setBefore(previous);
     },
     exit: () => setOn(false),
     /** A submission was created: the one whiteboard submission, so the mode ends. */
@@ -60,7 +67,10 @@ export function useWhiteboard(problemId: string, signedIn: boolean, submission: 
       setOn(false);
       setPending(id);
     },
-    dismiss: () => setResult(null),
+    dismiss() {
+      setResult(null);
+      setBefore(null);
+    },
   };
 }
 
@@ -87,8 +97,8 @@ export function WhiteboardToggle({ wb, onEnter }: { wb: Whiteboard; onEnter: () 
             <AlertDialogTitle>{t('进入白板模式？', 'Start whiteboard mode?')}</AlertDialogTitle>
             <AlertDialogDescription>
               {t(
-                '编辑器变成纯文本：没有补全、括号自动补齐和报错提示。不能运行、不能用自定义用例和对拍，提示、题解和 AI 助教也会隐藏。只能提交一次，提交后自动退出，你的第一次白板结果会记入进度页。',
-                "The editor becomes plain text: no completion, auto-closing brackets or error marks. You can't run code, use custom cases or stress tests, and hints, editorials and the AI tutor are hidden. You get one submission; it ends the mode, and your first whiteboard result goes on your progress page.",
+                '编辑器换成当前语言的模板，从头写，变成纯文本：没有补全、括号自动补齐和报错提示。不能运行、不能用自定义用例和对拍，也不能换语言，提示、题解和 AI 助教会隐藏。只能提交一次，提交后自动退出，你的第一次白板结果会记入进度页。现在的代码会先替你留着，退出后可以恢复。',
+                "The editor starts over from this language's template and becomes plain text: no completion, auto-closing brackets or error marks. You can't run code, use custom cases or stress tests, or switch languages, and hints, editorials and the AI tutor are hidden. You get one submission; it ends the mode, and your first whiteboard result goes on your progress page. Your current code is kept aside, and you can restore it once you leave.",
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -96,7 +106,6 @@ export function WhiteboardToggle({ wb, onEnter }: { wb: Whiteboard; onEnter: () 
             <AlertDialogCancel>{t('取消', 'Cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                wb.enter();
                 onEnter();
                 setAsking(false);
               }}
@@ -160,19 +169,32 @@ export function WhiteboardPad({ userId, problemId }: { userId: string | null; pr
   );
 }
 
-/** After the whiteboard submission is judged: passed on the first try or not. */
-export function WhiteboardResult({ wb }: { wb: Whiteboard }) {
+/** After the mode: whether the whiteboard submission passed, and the code from before it to restore. */
+export function WhiteboardResult({ wb, onRestore }: { wb: Whiteboard; onRestore: (code: string) => void }) {
   const t = useT();
-  if (!wb.result) return null;
+  if (!wb.result && wb.before === null) return null;
   return (
     <output className="cs-draft-restored">
       <span>
-        {wb.result === 'passed'
+        {!wb.result
+          ? t('已退出白板模式。', 'Whiteboard mode is off.')
+          : wb.result === 'passed'
           ? t('白板一次通过：没运行过就写对了。', 'Whiteboard pass: right on the first try, without running it.')
           : wb.result === 'failed'
             ? t('白板没通过。现在可以运行、看提示，接着改。', 'Whiteboard attempt failed. You can now run, use hints and keep going.')
             : t('这次判题没有完成，不算白板结果，可以再进一次白板模式。', "Judging didn't finish, so this doesn't count. You can start whiteboard mode again.")}
       </span>
+      {wb.before !== null && (
+        <button
+          type="button"
+          onClick={() => {
+            onRestore(wb.before!);
+            wb.dismiss();
+          }}
+        >
+          {t('恢复白板前的代码', 'Restore the code from before')}
+        </button>
+      )}
       <button type="button" aria-label={t('关闭提示', 'Dismiss')} onClick={wb.dismiss}>
         <X size={13} />
       </button>

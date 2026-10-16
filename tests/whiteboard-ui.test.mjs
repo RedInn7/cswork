@@ -92,6 +92,13 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
   };
   const run = () => byText('Run', $('.cs-code-caption'));
   const editor = () => labelled('test editor');
+  const type = async (node, value) => {
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(node, value);
+      node.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await settle();
+  };
   try {
     await act(async () =>
       root.render(
@@ -112,14 +119,36 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
     assert.equal(!!labelled('Ask the AI tutor'), true);
     assert.equal(!!byText('Custom input'), true);
     assert.equal(editor().dataset.bare, 'false');
+    // A draft written (and run) with the usual help: no whiteboard attempt.
+    const template = editor().value;
+    const draft = 'print(sum(map(int, input().split())))\n';
+    await type(editor(), draft);
 
     // Entering asks first; cancelling changes nothing.
     await click(labelled('Whiteboard mode'));
     assert.match($('[role="alertdialog"]').textContent, /one submission/);
+    assert.match($('[role="alertdialog"]').textContent, /starts over from this language's template/);
     await click(byText('Cancel', $('[role="alertdialog"]')));
     assert.equal(editor().dataset.bare, 'false');
+    assert.equal(editor().value, draft);
+
+    // Leaving without submitting offers the draft back.
     await click(labelled('Whiteboard mode'));
     await click(byText('Start', $('[role="alertdialog"]')));
+    assert.equal(editor().value, template, 'the mode starts from the template');
+    assert.equal(labelled('Programming language').disabled, true, "another language's draft can't come in");
+    await type(editor(), 'abandoned');
+    await click(labelled('Whiteboard mode'));
+    assert.equal(labelled('Programming language').disabled, false);
+    assert.match(document.body.textContent, /Whiteboard mode is off/);
+    await click(byText('Restore the code from before'));
+    await click(byText('Replace', $('[role="alertdialog"]')));
+    assert.equal(editor().value, draft);
+    assert.equal(!!byText('Restore the code from before'), false);
+
+    await click(labelled('Whiteboard mode'));
+    await click(byText('Start', $('[role="alertdialog"]')));
+    assert.equal(editor().value, template);
 
     assert.equal(labelled('Whiteboard mode').getAttribute('aria-pressed'), 'true');
     assert.equal(editor().dataset.bare, 'true');
@@ -139,25 +168,28 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
     // The dry-run pad saves to the account as note wb:lc-1.
     const pad = document.getElementById('whiteboard-dry-run');
     assert.equal($('label[for="whiteboard-dry-run"]').textContent, 'Manual dry run');
-    await act(async () => {
-      Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(pad, 'i=0: seen={}');
-      pad.dispatchEvent(new Event('input', { bubbles: true }));
-    });
+    await type(pad, 'i=0: seen={}');
     await settle(900);
     const put = calls.find((c) => c.method === 'PUT' && c.url.includes('/oj/notes'));
     assert.equal(decodeURIComponent(put.url.split('target=')[1]), 'wb:lc-1');
     assert.deepEqual(put.body, { body: 'i=0: seen={}' });
 
     // One submission ends the mode; once judged, the attempt is recorded and the bar shows.
+    const written = 'a, b = map(int, input().split())\nprint(a + b)\n';
+    await type(editor(), written);
     await click(byText('Submit', $('.cs-code-caption')));
     await settle();
-    assert.equal(calls.filter((c) => c.url.endsWith('/submissions') && c.method === 'POST')[0].body.mode, 'judge');
+    const sent = calls.filter((c) => c.url.endsWith('/submissions') && c.method === 'POST')[0].body;
+    assert.equal(sent.mode, 'judge');
+    assert.equal(sent.code, written, 'the code written in the mode');
     assert.equal(editor().dataset.bare, 'false');
     assert.equal(run().hidden, false);
     assert.equal(labelled('Whiteboard mode').getAttribute('aria-pressed'), 'false');
     const aids = calls.filter((c) => c.url === '/api/oj/problems/lc-1/aids');
     assert.deepEqual(aids.map((c) => c.body), [{ kind: 'whiteboard', submissionId: '6f1c2a3b-0000-4000-8000-000000000001' }]);
     assert.match(document.body.textContent, /Whiteboard attempt failed/);
+    // The draft from before the mode can still come back.
+    assert.equal(!!byText('Restore the code from before'), true);
     // A normal submission afterwards records nothing more.
     await click(byText('Submit', $('.cs-code-caption')));
     await settle();
