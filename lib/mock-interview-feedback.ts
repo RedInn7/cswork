@@ -4,7 +4,7 @@
  * reaches it or its logs. Pure, so the interviewer's sheet encodes, the candidate's view
  * decodes, and tests cover both. Texts are [zh, en].
  */
-import type { Text } from './mock-interview';
+import type { KindId, Text } from './mock-interview';
 
 export type RubricId =
   | 'communication'
@@ -14,7 +14,21 @@ export type RubricId =
   | 'complexity'
   | 'motivation'
   | 'anchoring'
-  | 'leverage';
+  | 'leverage'
+  | 'star'
+  | 'ownership'
+  | 'impact'
+  | 'reflection'
+  | 'requirements'
+  | 'hld'
+  | 'scale'
+  | 'tradeoffs'
+  | 'deepdive'
+  | 'metric'
+  | 'experiment'
+  | 'stats'
+  | 'modeling'
+  | 'mltradeoffs';
 /** Scored 1–4 each, in this order on the wire: a new dimension goes at the end, or old links read shifted. */
 export const RUBRIC: { id: RubricId; name: Text; hint: Text }[] = [
   {
@@ -58,11 +72,119 @@ export const RUBRIC: { id: RubricId; name: Text; hint: Text }[] = [
     name: ['筹码', 'Leverage'],
     hint: ['用好竞争 offer 和时间线，截止期限前稳住，要到实际的让步。', 'Uses competing offers and timelines, holds steady under a deadline, and wins real concessions.'],
   },
+  // Behavioral rounds.
+  {
+    id: 'star',
+    name: ['结构（STAR）', 'Structure (STAR)'],
+    hint: ['按情境、任务、行动、结果讲，背景一两句带过，篇幅留给自己做了什么。', 'Tells it as situation, task, action, result: a line or two of context, most of the time on what they did.'],
+  },
+  {
+    id: 'ownership',
+    name: ['担当', 'Ownership'],
+    hint: ['讲清自己的角色和决定，多说“我”而不只是“我们”，是自己推动而不是等人安排。', 'Makes their own role and decisions clear ("I", not only "we") and drove the work instead of waiting to be told.'],
+  },
+  {
+    id: 'impact',
+    name: ['影响', 'Impact'],
+    hint: ['结果具体，有数字或看得见的变化，说得出对团队或用户意味着什么。', 'Gives concrete results, with numbers or a visible change, and says what they meant for the team or users.'],
+  },
+  {
+    id: 'reflection',
+    name: ['复盘', 'Reflection'],
+    hint: ['说得出学到了什么、下次会怎么做；讲失败也坦诚，不甩锅。', 'Says what they learned and would do differently; talks about failures candidly, without blaming others.'],
+  },
+  // System design rounds.
+  {
+    id: 'requirements',
+    name: ['需求澄清', 'Requirements'],
+    hint: ['动手前先问清功能、规模和非功能约束（延迟、一致性、可用性）。', 'Pins down features, scale and non-functional limits (latency, consistency, availability) before designing.'],
+  },
+  {
+    id: 'hld',
+    name: ['整体设计', 'High-level design'],
+    hint: ['给出完整可行的架构：组件、数据模型和接口，主要请求能从头走到尾。', 'Lays out a complete, workable architecture (components, data model, APIs) and walks the main requests through it.'],
+  },
+  {
+    id: 'scale',
+    name: ['规模与扩展', 'Scale'],
+    hint: ['会粗估 QPS、存储和带宽，看得出哪里先成为瓶颈，知道用分片、缓存或副本去扛。', 'Estimates QPS, storage and bandwidth, sees what breaks first, and scales it with sharding, caching or replicas.'],
+  },
+  {
+    id: 'tradeoffs',
+    name: ['取舍', 'Trade-offs'],
+    hint: ['比较两三种做法，权衡一致性、延迟和成本，说清为什么选这一种。', 'Compares two or three options, weighs consistency, latency and cost, and says why this one.'],
+  },
+  {
+    id: 'deepdive',
+    name: ['深挖', 'Deep dive'],
+    hint: ['能把一个组件讲到细节：故障、并发、热点和边界情况分别怎么处理。', 'Takes one component down to the details: how it handles failures, concurrency, hot spots and edge cases.'],
+  },
+  // Data science and analytics rounds.
+  {
+    id: 'metric',
+    name: ['指标', 'Metrics'],
+    hint: ['选对成功指标和护栏指标，口径定义清楚，知道指标会在哪里误导人。', 'Picks the right success and guardrail metrics, defines them precisely, and knows where they mislead.'],
+  },
+  {
+    id: 'experiment',
+    name: ['实验设计', 'Experiment design'],
+    hint: ['说清随机单位、样本量和实验时长，认得出新奇效应、网络效应这类陷阱。', 'Sets the randomization unit, sample size and duration, and spots traps such as novelty or network effects.'],
+  },
+  {
+    id: 'stats',
+    name: ['统计推理', 'Statistical reasoning'],
+    hint: ['概率和推断用得对（检验、置信区间、条件概率），并说出依赖的前提假设。', 'Uses probability and inference correctly (tests, confidence intervals, conditional probability) and states the assumptions.'],
+  },
+  // Machine learning rounds.
+  {
+    id: 'modeling',
+    name: ['建模', 'Modeling'],
+    hint: ['先把问题定义清楚，再选特征、模型和评估方式，说得出数据和标签从哪来。', 'Frames the problem, then picks features, model and evaluation, and says where the data and labels come from.'],
+  },
+  {
+    id: 'mltradeoffs',
+    name: ['模型取舍', 'ML trade-offs'],
+    hint: ['权衡偏差与方差、效果与延迟、离线指标与线上表现，并说明上线后怎么监控。', 'Weighs bias against variance, accuracy against latency, offline metrics against online results, and says how to monitor it once live.'],
+  },
 ];
-/** What a role-play is scored on; every other interview is scored on the first five. */
+/** What a role-play is scored on. */
 export const ROLEPLAY_RUBRIC: RubricId[] = ['communication', 'motivation', 'anchoring', 'leverage'];
-export const rubricFor = (roleplay: boolean): RubricId[] =>
-  roleplay ? ROLEPLAY_RUBRIC : RUBRIC.slice(0, 5).map((r) => r.id);
+const CORE: RubricId[] = ['communication', 'problem', 'coding', 'testing', 'complexity'];
+/** Each round's dimensions, most telling first; a kind not listed is scored on CORE. */
+export const KIND_RUBRIC: Partial<Record<KindId, RubricId[]>> = {
+  coding: CORE,
+  sql: CORE,
+  lld: CORE,
+  behavioral: ['star', 'ownership', 'impact', 'reflection'],
+  design: ['requirements', 'hld', 'scale', 'tradeoffs', 'deepdive'],
+  analytics: ['metric', 'experiment', 'stats'],
+  stats: ['stats', 'problem'],
+  ml: ['modeling', 'mltradeoffs'],
+  recruiter: ROLEPLAY_RUBRIC,
+  negotiation: ROLEPLAY_RUBRIC,
+};
+/** A design slot can draw a fundamentals question (TCP vs UDP), not a system to design. */
+const FUNDAMENTALS_RUBRIC: RubricId[] = ['problem', 'tradeoffs', 'deepdive'];
+/** The most dimensions one interview is scored on, so the sheet and the report stay readable. */
+export const MAX_DIMS = 9;
+/**
+ * What an interview of these rounds (slot kind, and the drawn question's category when known) is
+ * scored on: communication, then each round's dimensions taken in turn (so a mixed loop keeps some
+ * of every round's under MAX_DIMS), in RUBRIC order.
+ */
+export function rubricFor(rounds: readonly { kind: KindId; category?: string | null }[]): RubricId[] {
+  const lists = [
+    ...new Set(
+      rounds.map(({ kind, category }) =>
+        kind === 'design' && category && category !== 'System Design' ? FUNDAMENTALS_RUBRIC : (KIND_RUBRIC[kind] ?? CORE),
+      ),
+    ),
+  ].map((l) => l.filter((id) => id !== 'communication'));
+  const picked = new Set<RubricId>(['communication']);
+  for (let i = 0; lists.some((l) => i < l.length); i++)
+    for (const l of lists) if (l[i] && picked.size < MAX_DIMS) picked.add(l[i]);
+  return RUBRIC.flatMap((r) => (picked.has(r.id) ? [r.id] : []));
+}
 
 export type VerdictId = 'strong-no' | 'no' | 'yes' | 'strong-yes';
 export const VERDICTS: [VerdictId, Text][] = [
@@ -235,4 +357,17 @@ export function calibration(rows: { self: Scores; ai: Scores }[]) {
   });
   if (!sessions.length) return null;
   return { sessions, gap: mean(sessions.map((s) => s.gap)), bias: mean(sessions.map((s) => s.bias)) };
+}
+
+/**
+ * Per dimension, its scores over these reports (oldest first), the last `n` of each: only the
+ * dimensions scored at least twice, since one point is no trend.
+ */
+export function rubricTrend(rows: Scores[], n = 20) {
+  const out: Partial<Record<RubricId, number[]>> = {};
+  for (const { id } of RUBRIC) {
+    const xs = rows.map((s) => s[id]).filter((v): v is number => typeof v === 'number' && Number.isInteger(v) && v >= 1 && v <= 4);
+    if (xs.length >= 2) out[id] = xs.slice(-n);
+  }
+  return out;
 }

@@ -96,10 +96,11 @@ void test('role-plays are AI-only templates of their own, scored on the role-pla
   assert.equal(KINDS.recruiter.aiOnly && KINDS.negotiation.aiOnly, true);
   assert.equal(resolveTemplate('custom', 'negotiation.1'), null);
   assert.equal(isRoleplay('negotiation') && !isRoleplay('behavioral'), true);
-  // Old links carry the rubric by position: the first five stay where they were.
-  assert.deepEqual(RUBRIC.map((r) => r.id), ['communication', 'problem', 'coding', 'testing', 'complexity', 'motivation', 'anchoring', 'leverage']);
-  assert.deepEqual(rubricFor(false), ['communication', 'problem', 'coding', 'testing', 'complexity']);
-  assert.deepEqual(rubricFor(true), ROLEPLAY_RUBRIC);
+  // Old links carry the rubric by position: the first eight stay where they were.
+  assert.deepEqual(RUBRIC.slice(0, 8).map((r) => r.id), ['communication', 'problem', 'coding', 'testing', 'complexity', 'motivation', 'anchoring', 'leverage']);
+  assert.deepEqual(rubricFor([{ kind: 'coding' }]), ['communication', 'problem', 'coding', 'testing', 'complexity']);
+  assert.deepEqual(rubricFor([{ kind: 'recruiter' }]), ROLEPLAY_RUBRIC);
+  assert.deepEqual(rubricFor([{ kind: 'negotiation' }]), ROLEPLAY_RUBRIC);
   assert.match(openerFor('negotiation')[1], /written offer/);
   assert.match(openerFor('recruiter')[1], /recruiter/);
 });
@@ -187,12 +188,16 @@ void test('a role-play report scores its four dimensions, keeps the self-assessm
   assert.deepEqual((JSON.parse(Buffer.from(five, 'base64url').toString()) as { k: number[] }).k, [2, 0, 0, 0, 3]);
   assert.deepEqual(decodeFeedback(five)!.rubric, { communication: 2, complexity: 3 });
 
-  // Skipped self-assessment: no self_json. An ordinary interview keeps the five-dimension schema.
+  // Skipped self-assessment: no self_json. A behavioral interview is scored on its own dimensions.
   sent = [];
-  reply = ok(JSON.stringify({ rubric: { communication: 3, problem: null, coding: null, testing: null, complexity: null }, verdict: null, strengths: '', improvements: '', questions: [] }));
+  reply = ok(JSON.stringify({ rubric: { communication: 3, star: 2, ownership: null, impact: null, reflection: null }, verdict: null, strengths: '', improvements: '', questions: [] }));
   const plainQuestions = [{ itemId: 'iq-bq', minutes: 8, elapsedSec: 300, code: '', history }];
   assert.equal((await call('interview-report', { ...body('s2'), questions: plainQuestions, template: 'behavioral' })).status, 200);
-  assert.deepEqual((sent[0].output_config!.format.schema.properties as { rubric: { required: string[] } }).rubric.required, rubricFor(false));
+  assert.deepEqual((sent[0].output_config!.format.schema.properties as { rubric: { required: string[] } }).rubric.required, [
+    'communication', 'star', 'ownership', 'impact', 'reflection',
+  ]);
+  assert.match(sent[0].system, /- star: Tells it as situation, task, action, result/);
+  assert.equal(sent[0].system.includes('- coding: '), false);
   assert.equal(sent[0].system.includes('role-play'), false);
   assert.equal(
     sqlite().prepare("SELECT self_json FROM ai_interview_scores WHERE user_id=? AND kind='behavioral'").pluck().get(me.id),
@@ -211,7 +216,7 @@ void test('calibration: the mean gap and its sign over the last ten self-rated r
     { sessions: [{ gap: 1, bias: 1 }, { gap: 2, bias: -2 }], gap: 1.5, bias: -0.5 },
   );
   sqlite().prepare('DELETE FROM ai_interview_scores').run();
-  assert.deepEqual((await call('interview-calibration', undefined, 'GET')).body, { calibration: null });
+  assert.deepEqual((await call('interview-calibration', undefined, 'GET')).body, { calibration: null, trend: {} });
   const insert = sqlite().prepare(
     'INSERT INTO ai_interview_scores(id,user_id,kind,level,scores_json,verdict,created_at,self_json) VALUES(?,?,?,?,?,?,?,?)',
   );
@@ -226,6 +231,15 @@ void test('calibration: the mean gap and its sign over the last ten self-rated r
   assert.deepEqual(result.sessions.map((s) => s.gap), [2, 0, 1, 2, 0, 1, 2, 0, 1, 2]);
   assert.equal(result.gap, 1.1);
   assert.equal(result.bias, 1.1);
+  // The trend counts every report, self-rated or not, and keeps each dimension's last 20, oldest first.
+  assert.deepEqual(body.trend, { communication: Array(13).fill(1) });
+  for (let i = 0; i < 25; i++)
+    insert.run(`t${i}`, me.id, 'behavioral', '', JSON.stringify({ communication: null, star: 1 + (i % 4), impact: i === 3 ? 2 : null }), null, 6000 + i, null);
+  const trend = (await call('interview-calibration', undefined, 'GET')).body.trend as Record<string, number[]>;
+  assert.deepEqual(trend.star, Array.from({ length: 20 }, (_, k) => 1 + ((k + 5) % 4)));
+  assert.deepEqual(trend.communication, Array(13).fill(1));
+  // One score is no trend.
+  assert.equal(trend.impact, undefined);
   // Answered without the AI switched on; read-only.
   delete process.env.ANTHROPIC_API_KEY;
   assert.equal((await call('interview-calibration', undefined, 'GET')).status, 200);
