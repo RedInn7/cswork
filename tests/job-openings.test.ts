@@ -351,13 +351,13 @@ void test('the digest: a saved search’s new matches, merged with followed-comp
   db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at,last_digest_at) VALUES(?,?,?,?)').run('js-amy', 'stripe', nine - 60 * 24 * HOUR, nine - 24 * HOUR);
   const notices = (user: string) => db.prepare('SELECT id,kind,title,body,href FROM notifications WHERE user_id=?').all(user);
   assert.equal(await sendCompanyDigest(nine + 5 * 60000), 3);
-  // Amy's followed company had three new openings too: one notice says both.
+  // Amy's followed company had three new openings too: one notice says both, the search's side first.
   assert.deepEqual(notices('js-amy'), [
     {
       id: 'jobs:2027-10-12:js-amy',
       kind: 'company-jobs',
       title: '保存的筛选有 1 个新岗位，关注的公司有 3 条新动态',
-      body: 'Stripe 1',
+      body: 'Stripe 1 | Stripe 3',
       href: '/career/jobs?role=tech&kind=intern',
     },
   ]);
@@ -380,4 +380,35 @@ void test('the digest: a saved search’s new matches, merged with followed-comp
   assert.deepEqual(viewerJobSearch('js-cat'), { saved: null, targetRole: '' });
   for (const body of ['', 'nope', '[]', JSON.stringify({ ...DEFAULT_SEARCH, q: 'x'.repeat(61) }), JSON.stringify({ ...DEFAULT_SEARCH, company: '../x' })])
     assert.equal(parseJobSearch(body), null, body);
+});
+
+void test('the digest waits for a running sync round, so rows it stamps before 09:00 are not missed', async () => {
+  const db = sqlite();
+  db.prepare('DELETE FROM user_notes').run();
+  db.prepare('DELETE FROM company_follows').run();
+  // Beijing 2028-03-01 09:00; the round starts five minutes before it and is still fetching after.
+  const nine = Date.UTC(2028, 2, 1, 1);
+  db.prepare("INSERT INTO job_openings(id,company_slug,title,location,url,kind,first_seen_at,last_seen_at) VALUES('greenhouse:waitco:','waitco','','','','board',?,?)").run(
+    nine - 90 * 24 * HOUR,
+    nine - 24 * HOUR,
+  );
+  db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at,last_digest_at) VALUES(?,?,?,?)').run('jw-amy', 'waitco', nine - 60 * 24 * HOUR, nine - 24 * HOUR);
+  replies = { 'greenhouse.io/v1/boards/waitco/jobs': greenhouse };
+  const answer = globalThis.fetch;
+  let release = () => {};
+  const held = new Promise<void>((resolve) => (release = resolve));
+  globalThis.fetch = async (input: string | URL | Request) => {
+    await held;
+    return answer(input);
+  };
+  const round = syncJobOpenings(nine - 5 * 60000, { waitco: { ats: 'greenhouse', board: 'waitco' } });
+  try {
+    assert.equal(await sendCompanyDigest(nine + 60000), 0);
+  } finally {
+    release();
+    globalThis.fetch = answer;
+  }
+  assert.equal(await round, 2);
+  assert.equal(await sendCompanyDigest(nine + 11 * 60000), 1);
+  assert.deepEqual(db.prepare("SELECT body FROM notifications WHERE user_id='jw-amy'").pluck().all(), ['waitco 2']);
 });

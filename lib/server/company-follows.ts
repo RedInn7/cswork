@@ -5,7 +5,7 @@ import lcMapFile from '@/lib/content/company-lc-map.json';
 import { JOB_SEARCH_NOTE, matchesSearch, searchQuery, type JobSearch } from '@/lib/job-tags';
 import { canonicalCompany, companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { hiddenCompanies } from './env';
-import { parseJobSearch } from './job-openings';
+import { jobSyncRunning, parseJobSearch } from './job-openings';
 import { notify } from './notify';
 import { oaReadyProblems } from './oa-judge';
 import { pushTo } from './web-push';
@@ -55,7 +55,8 @@ let searchedFor = 0;
 export async function sendCompanyDigest(now = Date.now()) {
   // Today's Beijing 09:00 (UTC+8, no daylight saving).
   const cutoff = Math.floor((now + 8 * HOUR) / DAY) * DAY + HOUR;
-  if (now < cutoff) return 0;
+  // A running sync round may still commit rows stamped before 09:00, after the day's scan: wait for it.
+  if (now < cutoff || jobSyncRunning()) return 0;
   const db = sqlite();
   const searched: ReturnType<typeof searchMatches> = searchedFor === cutoff ? new Map() : searchMatches(cutoff);
   searchedFor = cutoff;
@@ -127,8 +128,8 @@ export async function sendCompanyDigest(now = Date.now()) {
           userId,
           kind: 'company-jobs',
           title: total || openings ? `保存的筛选有 ${n} 个新岗位，关注的公司有 ${total + openings} 条新动态` : `保存的筛选有 ${n} 个新岗位`,
-          // A followed company the search already names is not listed twice; the title has both counts.
-          body: [...counts, ...news.filter((c) => !search.slugs.includes(c.slug)).map(line)].join(' · '),
+          // The search's matches, then the followed companies' news, in the title's order.
+          body: [counts.join(' · '), news.map(line).join(' · ')].filter(Boolean).join(' | '),
           href: `/career/jobs?${searchQuery(search.search)}`,
           now,
         });

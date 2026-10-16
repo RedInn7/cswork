@@ -109,6 +109,12 @@ export function boardOpenings(companySlug: string, { ats, board }: Board, body: 
 // ponytail: an in-process clock, not MAX(last_seen_at): a round where every board failed still
 // waits its 20 hours, and a worker restart costs at most one extra round.
 let lastAttempt = 0;
+let syncing = false;
+/**
+ * Whether a round is running. Its rows all carry the round's start time but commit board by board,
+ * so the daily digest (lib/server/company-follows.ts) waits for the round to end.
+ */
+export const jobSyncRunning = () => syncing;
 /**
  * Fetches every board one after another (10 s each, a failed board is skipped until the next
  * round) at most once per 20 hours; returns the openings seen, or null when it is not yet time.
@@ -116,6 +122,14 @@ let lastAttempt = 0;
 export async function syncJobOpenings(now = Date.now(), boards: Record<string, Board> = BOARDS) {
   if (now - lastAttempt < SYNC_EVERY) return null;
   lastAttempt = now;
+  syncing = true;
+  try {
+    return await syncBoards(now, boards);
+  } finally {
+    syncing = false;
+  }
+}
+async function syncBoards(now: number, boards: Record<string, Board>) {
   const db = sqlite();
   const upsert = db.prepare(
     `INSERT INTO job_openings(id,company_slug,title,location,url,kind,posted_at,first_seen_at,last_seen_at,pay_min,pay_max,pay_currency,pay_unit)
