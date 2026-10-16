@@ -65,10 +65,19 @@ export type ResumeReview = {
 const RESUME_TAGS = ['resume', 'target_role', 'job_description'];
 /**
  * Our prompt's own tags inside pasted text would let it close a block early: `tags` are every
- * tag the caller's prompt wraps pasted text in (code constants, word characters only).
+ * tag the caller's prompt wraps pasted text in (code constants, word characters only). Stripped
+ * until none is left, so a nested `<</answer>/answer>` cannot rebuild one.
  */
-export const untagged = (text: string, tags: readonly string[] = RESUME_TAGS) =>
-  text.replace(new RegExp(`<\\/?\\s*(?:${tags.join('|')})\\b[^>]*>`, 'gi'), '');
+export function untagged(text: string, tags: readonly string[] = RESUME_TAGS) {
+  const tag = new RegExp(`<\\/?\\s*(?:${tags.join('|')})\\b[^>]*>`, 'gi');
+  // ponytail: a pass per nesting level, quadratic at worst; callers cap pasted text first (24k chars: ~30 ms).
+  let last;
+  do {
+    last = text;
+    text = text.replace(tag, '');
+  } while (text !== last);
+  return text;
+}
 /** One plain line: no links, images or code (tidyReply), no line breaks, at most `max` characters. */
 export const line = (value: unknown, max: number) =>
   typeof value === 'string' ? tidyReply(value, 'resume').replace(/\s+/g, ' ').trim().slice(0, max) : '';

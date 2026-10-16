@@ -26,8 +26,8 @@ const TAGS = ['question', 'reference_notes', 'answer', 'story'];
 // A library question, or a system design case (the reader's note target, `/draft` and all).
 const TARGET = /^(?:content:(?:interview|coding)_question\/.+|sd:[a-z0-9-]{1,80}(?:\/draft)?)$/;
 const locale = z.enum(['zh', 'en']).default('en');
-// Past ANSWER_CHARS is a 413 with the limit in it (sized); twice that is not worth reading.
-const field = z.string().max(ANSWER_CHARS * 2);
+// No max: readJson caps the body, and past ANSWER_CHARS is a 413 that names the limit (sized).
+const field = z.string();
 const input = z.union([
   z.object({ target: z.string().max(400).regex(TARGET), answer: field, locale }).strict(),
   z
@@ -98,10 +98,10 @@ export function gradeSource(target: string, zh: boolean) {
   if (sd) {
     const chapter = sdCases.has(sd[1]) ? sdChapter(sd[1]) : undefined;
     if (!chapter) throw new HttpError(404, '内容不存在');
-    // "Case 1: URL Shortener" → "URL Shortener".
+    // "Case 1: URL Shortener" → "URL Shortener"; "Case 4: Design a Chat App" asks to design "a Chat App".
     const title = chapter.titleEn.replace(/^[^:]*:\s*/, '');
     return {
-      question: `${title}\n\nDesign ${title} as in a system design interview: requirements, core entities, the API and the high-level architecture, then the deep dives.`,
+      question: `${title}\n\nDesign ${title.replace(/^Design\s+/i, '')} as in a system design interview: requirements, core entities, the API and the high-level architecture, then the deep dives.`,
       reference: (zh && chapter.bodyZh) || chapter.bodyEn,
     };
   }
@@ -116,6 +116,7 @@ export function gradeSource(target: string, zh: boolean) {
   return { question: `${row.title}\n\n${question}`, reference: [rubric, solution].filter(Boolean).join('\n\n') };
 }
 
+/** Checked before untagged, which then reads at most ANSWER_CHARS. */
 function sized(text: string) {
   if (text.length < ANSWER_MIN) throw new HttpError(400, '至少写 80 个字符再请求 AI 点评');
   if (text.length > ANSWER_CHARS) throw new HttpError(413, '内容过长，AI 点评最多读取 6000 个字符');
@@ -134,7 +135,7 @@ export async function handleAiGrade(request: Request, p: Person) {
   let user: string;
   let fitsTwoMinutes: boolean | undefined;
   if ('target' in data) {
-    const answer = sized(untagged(data.answer.trim(), TAGS));
+    const answer = untagged(sized(data.answer.trim()), TAGS);
     const source = gradeSource(data.target, data.locale === 'zh');
     user = `<question>
 ${untagged(source.question, TAGS).slice(0, QUESTION_CHARS)}
@@ -149,7 +150,7 @@ ${answer}
 Grade the answer against the question and the reference notes. Write every field in ${language}; write "tighter" in the answer's own language.`;
   } else {
     const { story } = data;
-    const told = sized(STAR.map((f) => untagged(story[f].trim(), TAGS)).join('\n'));
+    const told = untagged(sized(STAR.map((f) => story[f].trim()).join('\n')), TAGS);
     // Counted, not judged by the model: about 140 spoken words a minute (lib/story-bank.ts).
     fitsTwoMinutes = speakingSeconds(wordCount(told)) <= 120;
     const question = untagged(data.question.trim(), TAGS);
