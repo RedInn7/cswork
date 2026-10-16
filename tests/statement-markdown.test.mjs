@@ -133,7 +133,8 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
   const body = 'Time is $O(n^2)$; it costs $5 和 $10, or $3-$4.\n\n$$ x^2 $$\n\n```python\nprint(input())\n```\n\n```go\nfunc main() {}\n```';
   await act(async () => root.render(React.createElement(StatementMarkdown, { body, untrusted: true })));
   try {
-    for (let i = 0; i < 100 && !document.querySelector('.katex'); i++)
+    // KaTeX loads and the playground link is encoded asynchronously: wait for both.
+    for (let i = 0; i < 100 && !(document.querySelector('.katex') && document.querySelector('.cs-run-playground a')); i++)
       await act(async () => { await new Promise(r => setTimeout(r, 20)); });
     const tex = [...document.querySelectorAll('.katex annotation')].map(x => x.textContent.trim());
     assert.deepEqual(tex, ['O(n^2)', 'x^2'], 'spaces inside one-line $$ … $$ are display math, not money');
