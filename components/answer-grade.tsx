@@ -16,6 +16,9 @@ const SCORES: [zh: string, en: string][] = [
   ['完整清晰', 'Interview-ready'],
 ];
 type Reply = { feedback: AnswerFeedback; remaining: number; bonus?: number };
+/** Feedback left today; `ai/usage` answers 404 when AI is off. */
+const remaining = () =>
+  ojRequest<Record<string, number>>('ai/usage').then((usage) => (usage.grade ?? 0) + (usage.bonus ?? 0));
 
 /**
  * "AI feedback on my answer" (lib/server/ai-answer.ts) for a signed-in learner. Hidden until the
@@ -36,10 +39,7 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
   useEffect(() => {
     if (!ready || asked.current) return;
     asked.current = true;
-    ojRequest<Record<string, number>>('ai/usage').then(
-      (usage) => setLeft((usage.grade ?? 0) + (usage.bonus ?? 0)),
-      () => setLeft('off'),
-    );
+    remaining().then(setLeft, () => setLeft('off'));
   }, [ready]);
   // A new review takes focus, so a screen reader starts reading it.
   useEffect(() => {
@@ -55,7 +55,8 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
     } catch (e) {
       const failure = e as Error & { status?: number | string };
       setError(failure.message);
-      if (failure.status === 429) setLeft(0);
+      // The day's quota, or the AI routes' shared per-minute limit: ask which.
+      if (failure.status === 429) remaining().then(setLeft, () => setLeft(0));
     } finally {
       setBusy(false);
     }
@@ -131,7 +132,10 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
                 <dd>
                   {feedback.fitsTwoMinutes
                     ? t('讲得完（按每分钟约 140 词估算）。', 'Yes, at about 140 words a minute.')
-                    : t('超过两分钟了，删掉背景细节，留住行动和结果。', 'No: cut background detail and keep the actions and the result.')}
+                    : t(
+                        '超过两分钟：细节多的故事讲到三分钟内也可以，但先删背景，留住行动和结果。',
+                        'Over two minutes: up to three is fine for a detailed story, but trim the background first and keep the actions and the result.',
+                      )}
                 </dd>
               </div>
             </dl>
@@ -143,10 +147,15 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
             </div>
           )}
           <p className="ip-muted">
-            {t(
-              'AI 点评可能有错，以参考答案为准；方括号里的 [X%] 是占位符，只填你能证实的数字。',
-              'AI feedback can be wrong; the reference answer has the last word. Brackets such as [X%] are placeholders: fill in only numbers you can back up.',
-            )}
+            {star
+              ? t(
+                  'AI 点评可能有错；方括号里的 [X%] 是占位符，只填你能证实的数字。',
+                  'AI feedback can be wrong. Brackets such as [X%] are placeholders: fill in only numbers you can back up.',
+                )
+              : t(
+                  'AI 点评可能有错，以参考答案为准；方括号里的 [X%] 是占位符，只填你能证实的数字。',
+                  'AI feedback can be wrong; the reference answer has the last word. Brackets such as [X%] are placeholders: fill in only numbers you can back up.',
+                )}
           </p>
         </section>
       )}

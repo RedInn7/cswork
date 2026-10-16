@@ -32,15 +32,20 @@ async function type(el, value) {
   });
 }
 const feedback = { score: 3, covered: ['Names the trade-off'], missing: ['Eviction under load'], tighter: 'Use LRU with a map and a list.' };
-function server({ ai = true } = {}) {
+// `left`: what each ai/usage call answers in turn (the last repeats); `busy`: grading answers 429.
+function server({ ai = true, left = [5], busy = false } = {}) {
   const graded = [];
+  let asked = 0;
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
     if (u.endsWith('/api/oj/ai/usage'))
-      return ai ? Response.json({ grade: 5, bonus: 0 }) : Response.json({ error: 'Endpoint not found' }, { status: 404 });
+      return ai
+        ? Response.json({ grade: left[Math.min(asked++, left.length - 1)], bonus: 0 })
+        : Response.json({ error: 'Endpoint not found' }, { status: 404 });
     if (u.endsWith('/api/oj/ai/grade')) {
       const body = JSON.parse(init.body);
       graded.push(body);
+      if (busy) return Response.json({ error: 'Too many requests. Try again shortly' }, { status: 429 });
       return Response.json({ feedback: body.story ? { ...feedback, specificity: 'Concrete enough.', measurableResult: 'Has p99.', iVsWe: 'Clear.', fitsTwoMinutes: true } : feedback, remaining: 4, limit: 5, bonus: 0 });
     }
     if (init.method === 'PUT') return Response.json({ updatedAt: 9 });
@@ -81,6 +86,8 @@ test('try first: no button without AI, for guests or for targets the server cann
     [{ userId: 'u1', target: 'content:interview_question/cache' }, false],
     [{ userId: null, target: 'content:interview_question/cache', local: { value: long, onChange() {} } }, true],
     [{ userId: 'u1', target: 'content:course_chapter/lld' }, true],
+    // A drawn mock interview question with no reference answer.
+    [{ userId: 'u1', target: 'content:interview_question/bare', gradeable: false }, true],
   ]) {
     server({ ai });
     const root = createRoot(document.getElementById('root'));
@@ -121,5 +128,29 @@ test('story bank: a story goes with the behavioral question typed beside it, and
   });
   const notes = document.querySelector('.ip-grade-result .ip-star').textContent;
   assert.equal(notes.includes('Has p99.') && notes.includes('Fits in two minutes?') && notes.includes('Yes, at about 140 words'), true);
+  // A story has no reference answer to defer to.
+  assert.equal(document.querySelector('.ip-grade-result').textContent.includes('reference answer'), false);
   await act(async () => root.unmount());
+});
+
+test('a 429 asks what is left: the per-minute limit keeps the button, a spent day turns it off', async () => {
+  for (const [left, label, off] of [
+    [5, '5 left today', false],
+    [0, "You've used today's feedback. Come back tomorrow", true],
+  ]) {
+    server({ left: [5, left], busy: true });
+    const root = createRoot(document.getElementById('root'));
+    await act(async () =>
+      root.render(createElement(TryFirst, { userId: 'u1', target: 'content:interview_question/cache', revealed: false, onReveal() {} })),
+    );
+    await settle();
+    await type(document.querySelector('.ip-try-input'), long);
+    await settle();
+    await act(async () => button('AI feedback on my answer').click());
+    await settle();
+    assert.equal(document.querySelector('.ip-grade-go small').textContent, label);
+    assert.equal(button('AI feedback on my answer').disabled, off);
+    assert.equal(document.querySelector('.ip-grade [role="alert"]').textContent, 'Too many requests. Try again shortly');
+    await act(async () => root.unmount());
+  }
 });

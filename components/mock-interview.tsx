@@ -1219,6 +1219,7 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
                 revealed={!!shown.answer}
                 onReveal={() => show('answer')}
                 code={code}
+                gradeable={!!(item.rubric || item.solution)}
                 local={{ value: run.notes[run.index] ?? '', onChange: (v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } })) }}
               />
             ) : (
