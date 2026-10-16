@@ -63,7 +63,7 @@ export function aidsByProblem(userId: string) {
   );
 }
 
-const id = z.string().uuid();
+const id = z.uuid();
 const event = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('hint') }).strict(),
   z.object({ kind: z.literal('time'), seconds: z.number().int().min(1).max(MAX_SOLVE_SECONDS) }).strict(),

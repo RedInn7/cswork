@@ -105,7 +105,7 @@ const BARE: EditorProps['options'] = {
   autoSurround: 'never',
   matchBrackets: 'never',
   bracketPairColorization: { enabled: false },
-  hover: { enabled: false },
+  hover: { enabled: 'off' },
   occurrencesHighlight: 'off',
   renderValidationDecorations: 'off',
 };
