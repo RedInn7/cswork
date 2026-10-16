@@ -12,7 +12,8 @@ process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { listStudyLibrary } = await import('../lib/server/study-library');
-const { dueReviews, wrongBook, REVIEW_LADDER } = await import('../lib/practice-review');
+const { dueReviews, wrongBook, REVIEW_LADDER, solveQuality } = await import('../lib/practice-review');
+const { recordAid } = await import('../lib/server/practice-aids');
 type History = import('../lib/practice-review').PracticeHistoryItem;
 
 const me: Person = {
@@ -105,6 +106,8 @@ void test('history aggregates formal submissions per problem for the signed-in l
       languages: ['cpp', 'python'],
       acAt: [t0 + 3, t0 + DAY],
       stop: 'hash-counting',
+      help: 'none',
+      solveSeconds: null,
     },
   );
   assert.equal(oa.firstAcAt, null);
@@ -290,7 +293,7 @@ void test('reviews climb the 3/7/21/60-day ladder by distinct AC days', () => {
   assert.deepEqual(REVIEW_LADDER, [3, 7, 21, 60]);
   const noon = new Date(2026, 9, 1, 12).getTime();
   const day = (d: number, h = 12) => new Date(2026, 9, 1 + d, h).getTime();
-  const item = (problemId: string, acAt: number[], failuresBeforeAc = 0): History => ({
+  const item = (problemId: string, acAt: number[], failuresBeforeAc = 0, help: History['help'] = 'none'): History => ({
     problemId,
     attempts: acAt.length || 1,
     firstAt: acAt[0] ?? noon,
@@ -301,6 +304,8 @@ void test('reviews climb the 3/7/21/60-day ladder by distinct AC days', () => {
     languages: ['python'],
     acAt,
     stop: null,
+    help,
+    solveSeconds: null,
   });
   const history = [
     item('once', [noon]), // Level 1: due on day 3.
@@ -315,8 +320,107 @@ void test('reviews climb the 3/7/21/60-day ladder by distinct AC days', () => {
   assert.deepEqual(due(8), ['once', 'twice-same-day', 'twice'], 'overdue stays listed, oldest first');
   assert.equal(dueReviews(history, day(8))[2].level, 2);
   assert.ok(!due(400).includes('mastered'));
+  // A solve with help comes back after a day first and takes one review more to master.
+  const helped = [item('hinted', [noon], 0, 'hint'), item('read', [noon, day(1)], 0, 'solution')];
+  assert.deepEqual(dueReviews(helped, day(1)).map((r) => [r.item.problemId, r.level, r.steps]), [['hinted', 1, 5]]);
+  assert.deepEqual(dueReviews(helped, day(4)).map((r) => [r.item.problemId, r.level, r.steps]), [['hinted', 1, 5], ['read', 2, 5]]);
+  assert.equal(dueReviews(history, day(3))[0].steps, 4);
+  const days = (n: number) => Array.from({ length: n }, (_, i) => day(i));
+  assert.deepEqual(dueReviews([item('h5', days(5), 0, 'hint')], day(400)).map((r) => r.level), [5]);
+  assert.deepEqual(dueReviews([item('h6', days(6), 0, 'hint')], day(400)), []);
   assert.deepEqual(
     wrongBook([item('a', []), item('b', [noon], 2), item('c', [noon], 1)]).map((i) => i.problemId),
     ['a', 'b'],
   );
+});
+
+void test('solve quality: independent and first-try rates, median first-solve time per difficulty', () => {
+  const solved = (problemId: string, extra: Partial<History>): History => ({
+    problemId,
+    attempts: 1,
+    firstAt: t0,
+    lastAt: t0,
+    firstAcAt: t0,
+    failuresBeforeAc: 0,
+    lastStatus: 'accepted',
+    languages: ['python'],
+    acAt: [t0],
+    stop: null,
+    help: 'none',
+    solveSeconds: null,
+    ...extra,
+  });
+  const levels: Record<string, string> = { a: '简单', b: '简单', c: '简单', d: '中等', e: '中等', f: '困难', x: '困难' };
+  const q = solveQuality(
+    [
+      solved('a', { solveSeconds: 600 }),
+      solved('b', { solveSeconds: 1200, help: 'hint', failuresBeforeAc: 2 }),
+      solved('c', { solveSeconds: 300 }),
+      solved('d', { solveSeconds: 1000, help: 'solution' }),
+      solved('e', { solveSeconds: 2001 }),
+      solved('f', {}), // Untimed: no Hard median.
+      { ...solved('x', { help: 'hint', failuresBeforeAc: 3 }), firstAcAt: null, acAt: [] }, // Unsolved: not counted.
+    ],
+    (id) => levels[id],
+  );
+  assert.deepEqual(q, {
+    solved: 6,
+    independent: 4,
+    firstTry: 5,
+    medians: [
+      { difficulty: '简单', seconds: 600, budget: 900, count: 3 },
+      { difficulty: '中等', seconds: 1501, budget: 1500, count: 2 },
+    ],
+  });
+});
+
+void test('aids: hints and first-AC time from the client, help derived against the first AC', async () => {
+  sqlite()
+    .prepare(
+      `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES('lc-9','c','l','v-9',1,1,1)`,
+    )
+    .run();
+  const post = (body: unknown, p: Person | null = me, id = 'lc-9') => status(p, 'POST', `problems/${id}/aids`, body);
+  assert.equal(await post({ kind: 'hint' }, null), 401);
+  // Only hint and time, time in whole seconds within the timer's cap, nothing else in the body.
+  for (const body of [
+    { kind: 'ai' },
+    { kind: 'editorial' },
+    { kind: 'nope' },
+    { kind: 'time' },
+    { kind: 'time', seconds: 0 },
+    { kind: 'time', seconds: 21601 },
+    { kind: 'time', seconds: 1.5 },
+    { kind: 'time', seconds: '60' },
+    { kind: 'hint', seconds: 5 },
+  ])
+    assert.equal(await post(body), 400, JSON.stringify(body));
+  assert.equal(await post({ kind: 'hint' }, me, 'lc-nope'), 404, 'only a published problem');
+  type Recorded = { recorded: boolean };
+  const aid = (body: unknown) => ok<Recorded>(me, 'POST', 'problems/lc-9/aids', body);
+  assert.deepEqual(await aid({ kind: 'hint' }), { recorded: true });
+  assert.deepEqual(await aid({ kind: 'hint' }), { recorded: false }, 'the first time only');
+  assert.deepEqual(await aid({ kind: 'time', seconds: 600 }), { recorded: false }, 'no AC yet');
+  const later = Date.now() + 60_000;
+  submit(me.id, 'lc-9', 'accepted', later);
+  assert.deepEqual(await aid({ kind: 'time', seconds: 21600 }), { recorded: true });
+  assert.deepEqual(await aid({ kind: 'time', seconds: 60 }), { recorded: false });
+  type Items = { items: History[] };
+  const find = async (id: string) => (await ok<Items>(me, 'GET', 'history')).items.find((i) => i.problemId === id)!;
+  assert.deepEqual([(await find('lc-9')).help, (await find('lc-9')).solveSeconds], ['hint', 21600]);
+  // The AI or the editorial before the first AC outranks a hint.
+  sqlite().prepare("INSERT INTO practice_aids(user_id,problem_id,kind,value,created_at) VALUES(?,'lc-9','ai',0,?)").run(me.id, later - 1);
+  assert.equal((await find('lc-9')).help, 'solution');
+  // After the first AC help is inert, and a review's AC never sends a time.
+  assert.equal(recordAid(me.id, 'lc-1', 'editorial'), true);
+  assert.equal(recordAid(me.id, 'lc-1', 'editorial'), false);
+  assert.equal((await find('lc-1')).help, 'none');
+  submit(me.id, 'lc-10', 'accepted', Date.now() - 1000);
+  submit(me.id, 'lc-10', 'accepted', Date.now());
+  assert.deepEqual(await ok(me, 'POST', 'problems/lc-10/aids', { kind: 'time', seconds: 60 }), { recorded: false });
+  assert.equal((await find('lc-10')).solveSeconds, null);
+  // Still unsolved: any help so far counts. Nobody else's record leaks.
+  assert.equal(recordAid(me.id, 'oa-acme-1', 'editorial'), true);
+  assert.equal((await find('oa-acme-1')).help, 'solution');
+  assert.equal((await ok<Items>(other, 'GET', 'history')).items[0].help, 'none');
 });

@@ -48,6 +48,13 @@ test('hints open one at a time, unlock on failures or time, and similar problems
   const button = (text) =>
     [...document.querySelectorAll('button')].find((b) => b.textContent.includes(text));
   const click = (text) => act(async () => button(text).click());
+  // Hints 2 and 3 go on the learner's assisted-solve record; hint 1 does not.
+  const aids = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    aids.push([url, JSON.parse(init.body)]);
+    return Response.json({ recorded: true });
+  };
   try {
     // A paused timer reading from an earlier attempt counts, but cannot hold hint 2 shut.
     localStorage.setItem(
@@ -85,6 +92,10 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     assert.equal(button('Show next hint') === undefined, true);
     assert.equal($('.cs-route-hint-locked') === null, true);
     assert.equal(beacons.filter((b) => b.name === 'hint_open').length, 3);
+    assert.deepEqual(aids, [
+      ['/api/oj/problems/lc-1/aids', { kind: 'hint' }],
+      ['/api/oj/problems/lc-1/aids', { kind: 'hint' }],
+    ]);
 
     // A fresh page: the problem timer's reading counts, and a locked hint can be shown after a confirm.
     await act(async () => root.unmount());
@@ -142,6 +153,7 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     assert.deepEqual(went, [['problem', { problem: 'oa-acme-2' }]]);
     await act(async () => again.unmount());
   } finally {
+    globalThis.fetch = originalFetch;
     for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator'])
       delete globalThis[name];
   }

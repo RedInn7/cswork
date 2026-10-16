@@ -49,6 +49,8 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       languages: ['python'],
       acAt: [],
       stop: null,
+      help: 'hint',
+      solveSeconds: null,
     },
     {
       problemId: 'lc-1',
@@ -61,6 +63,9 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       languages: ['cpp'],
       acAt: [now - 40 * day],
       stop: 'hash-counting',
+      // The editorial before the first AC: back after a day first, on a five-step ladder.
+      help: 'solution',
+      solveSeconds: 1200,
     },
   ];
   const searches = [];
@@ -168,6 +173,11 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       'history, mistakes, due, starred (problems only), redo, notes, badges earned (a stop and a month)',
     );
     assert.deepEqual(titles(), ['Acme OA', '1. Two Sum']);
+    assert.match(document.querySelectorAll('.progress-detail')[1].textContent, /Editorial or AI used · 20 min to solve/);
+    // Solve quality: one solve, with help, after three failures; 20 minutes against Easy's 15.
+    const quality = document.getElementById('solve-quality-title').parentElement.textContent;
+    assert.match(quality, /Solved on your own 0% \(0 of 1\) · First-try AC 0%/);
+    assert.match(quality, /Median first-solve time \(interview budget\): Easy 20 min \(15\), over budget/);
     assert.ok(!!document.querySelector('.progress-row .study-star'), 'starred rows show the star');
     assert.match(document.querySelectorAll('.progress-row strong')[1].textContent, /\(starred\)/);
     assert.match(document.querySelector('.progress-stop').textContent, /Hashing/);
@@ -187,9 +197,17 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(tab('mistakes').getAttribute('aria-selected'), 'true');
     assert.ok(document.activeElement === tab('mistakes'));
     assert.deepEqual(titles(), ['Acme OA', '1. Two Sum']);
+    // Beside the wrong book: solves made with help (an unsolved problem is not one yet).
+    const view = document.querySelector('.progress-filters select');
+    await act(async () => {
+      view.value = 'assisted';
+      view.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    assert.deepEqual(titles(), ['1. Two Sum']);
+    assert.match(document.querySelector('.progress-detail').textContent, /Editorial or AI used · Solved/);
     await act(async () => tab('review').click());
     assert.deepEqual(titles(), ['1. Two Sum']);
-    assert.match(document.querySelector('.progress-detail').textContent, /overdue/);
+    assert.match(document.querySelector('.progress-detail').textContent, /Review 1 of 5 · Editorial or AI used · \d+ days overdue/);
     await act(async () => tab('starred').click());
     assert.deepEqual(titles(), ['1. Two Sum'], 'the Starred tab lists star marks');
     await act(async () => tab('redo').click());
