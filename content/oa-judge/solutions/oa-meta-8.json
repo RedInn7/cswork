@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-8",
+  "packageChecksum": "218d66879a73edffebcdbc698f9f9b884551f5c78dc22f1e6659b3a6db8e70f3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // lengths[x]: length of the run whose endpoint is x (only endpoints stay accurate)\n    unordered_map<long long, int> lengths;\n    lengths.reserve(n * 4);\n    int best = 0;\n    string out;\n    for (int i = 0; i < n; i++) {\n        long long x;\n        cin >> x;\n        if (!lengths.count(x)) {\n            auto get = [&](long long key) {\n                auto it = lengths.find(key);\n                return it == lengths.end() ? 0 : it->second;\n            };\n            int left = get(x - 1), right = get(x + 1), total = left + right + 1;\n            lengths[x] = total;\n            lengths[x - left] = total;\n            lengths[x + right] = total;\n            best = max(best, total);\n        }\n        if (i) out += ' ';\n        out += to_string(best);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "194331b3d75443aa6885f9ae120f9807699f5c52c32a54cf9e21a3d1b351971a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        // lengths[x]: length of the run whose endpoint is x (only endpoints stay accurate)\n        HashMap<Long, Integer> lengths = new HashMap<>(n * 4);\n        int best = 0;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            long x = nextLong();\n            if (!lengths.containsKey(x)) {\n                int left = lengths.getOrDefault(x - 1, 0), right = lengths.getOrDefault(x + 1, 0);\n                int total = left + right + 1;\n                lengths.put(x, total);\n                lengths.put(x - left, total);\n                lengths.put(x + right, total);\n                best = Math.max(best, total);\n            }\n            if (i > 0) sb.append(' ');\n            sb.append(best);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "399c5787e9c218fd57eee9f75936f18b27f6265f8391ebd0df9d914113914e39"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn := next()\n\t// lengths[x]: length of the run whose endpoint is x (only endpoints stay accurate)\n\tlengths := make(map[int]int, n*4)\n\tbest := 0\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < n; i++ {\n\t\tx := next()\n\t\tif _, ok := lengths[x]; !ok {\n\t\t\tleft, right := lengths[x-1], lengths[x+1]\n\t\t\ttotal := left + right + 1\n\t\t\tlengths[x] = total\n\t\t\tlengths[x-left] = total\n\t\t\tlengths[x+right] = total\n\t\t\tbest = max(best, total)\n\t\t}\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(best))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "160e1830c661a2c19d14985ee613b2c498f09c0e07477a9b00e09820a1180c54"
+    }
+  ]
+}

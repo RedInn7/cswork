@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-34",
+  "packageChecksum": "d7cf278ab851fd79333d327309b68c72931a9124f88c691919a8ab0e91adf80c",
+  "sourceContentHash": "fc71b37f571a8e6fc1b9ef2dd7c9bcd1ca2c16ad9ccd0933a9589748c0bd8ac2",
+  "editorialSha256": "8191bf3815b93a9066f54c6bbaa9558acad6026024e692c4d4381493725c0786",
+  "hints": {
+    "zh": [
+      "不同地点的请求不能混在一组，所以各地点可以独立求最少组数再相加。在同一地点，最早的请求一定要和某些请求同组，让它带上紧随其后、时间差不超过 10 分钟的请求最划算。",
+      "每个地点内按时间排序，从最早尚未分组的请求开始，向后最多再拿两个、且与它的时间差不超过 10 分钟的请求组成一组，然后从下一个未分组的请求继续。最后整理输出顺序。",
+      "把每个请求的时间换算成分钟，按完整地点字符串分组，并记下输入下标和 ID；每组按 (分钟, 下标) 排序，用指针 start 开始一组，向后扩展直到已有 3 个或时间差超过 10；组内 ID 升序排列，组的排序键为组内最小的输入下标；所有组按该键升序输出，先输出组数，再逐行输出组大小和 ID。"
+    ],
+    "en": [
+      "Requests at different locations can never share a group, so each location can be solved on its own and the group counts added up. At one location, the earliest request must share a group with something, and the best choice is to take the requests right after it that are within 10 minutes.",
+      "Sort each location's requests by time. Starting from the earliest ungrouped request, take at most two more requests after it whose time differs from it by at most 10 minutes, form a group, and continue from the next ungrouped request. Arrange the output order at the end.",
+      "Convert each time to minutes and group requests by the full location string, keeping the input index and the ID. Sort each location by (minute, index); open a group at a pointer start and extend it until it has 3 requests or the time gap exceeds 10. Sort the IDs inside each group, and key each group by its smallest input index. Print the number of groups, then the groups in ascending key order, each as its size followed by its IDs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit by location, and sort each location's requests by time. Each time, start from the earliest request not yet grouped and take at most two following requests whose time difference is ≤10. Finally arrange the IDs inside each group and the groups by original index.\n\n## Correctness\n\nAt any location, the group of the earliest request can be swapped into one containing the earliest at most 3 compatible requests: putting earlier requests into the earliest group does not exceed the window, and putting a swapped-out later request back into a later group does not break that group's existing time span. If the earliest group is not full and a compatible request exists, moving it in does not increase the number of groups. Hence there is an optimal solution that starts with this greedy group, and induction applies to the remaining requests; different locations cannot share groups, so their optima add up.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

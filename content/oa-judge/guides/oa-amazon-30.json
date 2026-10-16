@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-30",
+  "packageChecksum": "63db8ae0efef19f94ffaafda2757130fea2adab8e2f14d514d3f63f057116d54",
+  "sourceContentHash": "36aabbba0fd9cc8c1269e4fb0d4af38b4982c73f41b8e6b2910491b72f1c3355",
+  "editorialSha256": "8e760c9348aae27ce89b7e2d25f79faee62b492a8564ee1d0ce215d7205bae36",
+  "hints": {
+    "zh": [
+      "切分点只有 n−1 个，字母只有 26 种。只要能快速知道每个切分点左右两边各字母的出现次数，就能数出两边共有的字母种数。",
+      "把切分点从左往右移动，每次只有一个字符从右边移到左边，左右两个计数数组各改一处；某个字母属于交集，当且仅当它在左右两边的计数都大于 0。",
+      "先把整个串计入右侧计数；依次处理前 n−1 个字符：左侧对应字母加 1、右侧减 1，然后扫 26 个字母，数出两侧都为正的个数，若严格大于 m 就把答案加 1；输出答案（长度为 1 时答案为 0）。"
+    ],
+    "en": [
+      "There are only n−1 split points and only 26 letters. If you can quickly know how often each letter appears on each side of a split point, you can count the letters the two sides share.",
+      "Move the split point from left to right; each step moves just one character from the right side to the left, changing one entry in each count array; a letter is in the intersection exactly when its counts on both sides are positive.",
+      "Put the whole string into the right-side counts; for each of the first n−1 characters, add 1 to its letter on the left and subtract 1 on the right, then scan the 26 letters to count those positive on both sides, and add 1 to the answer if that count is strictly greater than m; print the answer, which is 0 when the length is 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUpdate the left and right frequencies as the split point moves, and each time count the letters whose left and right frequencies are both non-zero.\n\n## Proof of correctness\n\nAfter moving one character, the frequency arrays correspond exactly to the current left and right substrings. A letter belongs to the intersection if and only if its frequencies on both sides are positive. Every non-empty split is enumerated one by one and counted against the strict threshold.\n\n## Complexity\n\nTime O(26n), space O(26)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-blackrock-1",
+  "packageChecksum": "d63ee5cf33dbdf88d7d3c0055d680440cc1e989d610fb5fe47e156263679d502",
+  "sourceContentHash": "15a860ced70b4c539d1e8ad4e8fe7a287ca7f05ae999fe1c95407416b0f71dcb",
+  "editorialSha256": "5f885ff13d6d45e7777832c7de5f57720f7c6827fc3d2e387ff0a7d720f72666",
+  "hints": {
+    "zh": [
+      "城市名不影响答案，只需要从每一项里取出距离。城市名里可能有空格，先按分号切分，再取每项最后一个逗号之后的部分最稳妥。",
+      "沿直线行驶时经过加油站的顺序就是距离从小到大的顺序。把起点看作坐标 0，每一段的长度就是排序后相邻坐标之差。",
+      "按分号切分并跳过空白项，解析出所有距离后升序排序；第一段输出最小的距离，之后每段输出相邻距离之差，用英文逗号加空格连接，位置相同的站之间输出 0。"
+    ],
+    "en": [
+      "City names do not affect the answer; you only need the distance from each item. Names may contain spaces, so the safe way is to split on semicolons and take the part after the last comma of each item.",
+      "Driving along a straight line, the stations are passed in increasing order of distance. Treat the start as coordinate 0; each segment length is the difference between adjacent sorted coordinates.",
+      "Split on semicolons, skip blank items, parse all distances and sort them ascending. Output the smallest distance first, then each difference between adjacent distances, joined by a comma and a space; stations at the same position give 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the gas station distances in ascending order. The first segment is the distance from the start to the nearest station, and each subsequent segment equals the difference between adjacent distances.\n\n## Correctness\n\nThe one-dimensional route extends in the chosen direction, so sorting by distance from the start gives the order along the route. Treating the start as coordinate 0, all adjacent segments are exactly the differences between adjacent sorted coordinates, so the algorithm outputs the unique correct segment lengths; repeated distances correspond to length 0.\n\n## Complexity\n\nSorting takes O(n log n), space O(n)."
+}

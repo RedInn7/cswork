@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-70",
+  "packageChecksum": "98140cce6b049ee3fae687ecf6c260a31ecda4b893b64d8ec5e4efc609ea07e4",
+  "sourceContentHash": "99049070a075b60f350b936e2f7ae3f0e618a7f3f9262d28d7e6a7b1c44bceb6",
+  "editorialSha256": "f3df1429db3fa1bc3530cd2cb6972ae9eb10b74e99f791daea6f01aafd57c5b6",
+  "hints": {
+    "zh": [
+      "每一行只看开头：以“# ”开头是章，以“## ”开头是节，其余行忽略。编号只依赖于之前出现过多少章、当前章里出现过多少节。",
+      "顺序扫描并维护章号和节号：遇到章时章号加一、节号清零；遇到节时节号加一。标题文本只去掉固定长度的前缀，其余字符（包括空白和任意 Unicode）原样保留。",
+      "解析输入的 JSON 字符串数组；对章行输出“章号. ”加去掉前 2 个字符后的原文，对节行输出“章号.节号. ”加去掉前 3 个字符后的原文；最后把结果按题目规定的规范 JSON 输出：逗号后一个空格，非 ASCII 字符直接输出，双引号、反斜杠和控制字符按 JSON 转义（与 Python 的 json.dumps(ensure_ascii=False) 一致）。"
+    ],
+    "en": [
+      "Only the start of each line matters: a line starting with \"# \" is a chapter, one starting with \"## \" is a section, and all other lines are ignored. The numbering depends only on how many chapters have appeared so far and how many sections have appeared in the current chapter.",
+      "Scan in order and keep a chapter number and a section number: a chapter increments the chapter number and resets the section number; a section increments the section number. The title text only loses its fixed-length prefix; every other character, including whitespace and any Unicode, is kept as is.",
+      "Parse the input JSON array of strings; for a chapter line output \"chapter. \" followed by the original text without its first 2 characters, for a section line output \"chapter.section. \" followed by the text without its first 3 characters; finally print the result as the canonical JSON the statement requires: one space after each comma, non-ASCII characters written directly, and double quotes, backslashes and control characters escaped per JSON (the same as Python's json.dumps with ensure_ascii=False)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan in order, maintaining the chapter number and the current section number. On a chapter, increment the chapter number and reset the section number to zero; on a section, increment the section number. Join the number, one separating space, and the original title with its marker removed.\n\n## Proof of correctness\n\nAt any position the chapter number equals the number of chapter titles so far, and the section number equals the number of section titles since the most recent chapter; the corresponding incremental updates preserve these two invariants, so the numbering is correct. Slicing removes only the fixed-length marker and does not change any character of the title, and the output in scan order is exactly the outline order of the original text.\n\n## Complexity\n\nTime O(total number of input characters), space O(total number of characters in the outline)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-18",
+  "packageChecksum": "3375adda4395ce93202ab6a2c32d4428e2cfb7c17df3906654771bda5ad91ce4",
+  "sourceContentHash": "2fdce5212b08f9715d4e94f1c214218c809f92c56fcdbaf1a2b4239c7a6cd471",
+  "editorialSha256": "d301b68905f49a24bb1b337f48da43f4edf4262dfc593a02a53f8aab92fd5641",
+  "hints": {
+    "zh": [
+      "对一栋房屋来说，只有它左边最靠右的商店和右边最靠左的商店有可能最近；更远的商店都被这两个挡在后面，不可能更近。",
+      "先把商店位置排序。每栋房屋用二分查找找到它在商店序列中的插入位置，插入点两侧的相邻商店就是全部候选。",
+      "商店排序；对每栋房屋用 lower_bound 找到第一个位置不小于它的商店 idx；候选为 stores[idx]（若存在）和 stores[idx−1]（若存在）；先比距离，距离相同取位置较小者；按房屋原始顺序输出。"
+    ],
+    "en": [
+      "For one house, only the rightmost store on its left and the leftmost store on its right can be nearest; every other store lies behind one of these two and cannot be closer.",
+      "Sort the store positions. For each house, binary search its insertion point in the sorted stores; the stores right next to that point are the only candidates.",
+      "Sort the stores; for each house use lower_bound to find the first store idx with position >= the house; the candidates are stores[idx] (if it exists) and stores[idx-1] (if it exists); compare distances and break ties by the smaller position; print the results in the original house order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the store positions. Binary search the insertion point of each house and compare only the neighbouring stores on its left and right.\n\n## Why it is correct\n\nAmong the stores to the left of the house, the rightmost one is the closest; the same holds on the right. No other store can be closer. Comparing these two candidates and breaking ties by position is enough.\n\n## Complexity\n\nTime O(m log m + n log m), extra space O(m + n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-40",
+  "packageChecksum": "51976fe78dd1e979b82086aee569386434668026e6733f184054ea7af8080076",
+  "sourceContentHash": "9eebbd4c8060f1616ef9dbddd33acdd163416e834871793725928c53f4d44f36",
+  "editorialSha256": "cddae2263ec8200db291695ddcf9404cf25d70dbda25c1dd0f44f72726a89ef0",
+  "hints": {
+    "zh": [
+      "箱子总数固定，最终的最小极差只可能是 0 或 1：每堆要么是平均值向下取整，要么向上取整，且向上取整的堆数恰好等于总数除以堆数的余数。",
+      "每次搬运只能把一个多余的箱子挪到一个缺箱子的堆，所以最少次数就是所有堆超过各自目标值的部分之和。目标的分配方式会影响这个和：把较大的目标值分给原本较大的堆。",
+      "读入后算出总和 S，令 low = S / n、extra = S mod n；把数组升序排序，最后 extra 个位置的目标是 low+1，其余是 low；逐个累加 max(0, 当前值 − 目标)，用 64 位整数输出。"
+    ],
+    "en": [
+      "The total number of boxes is fixed, so the smallest possible range is 0 or 1: every final pile is either the average rounded down or rounded up, and the number of piles that get the rounded-up value equals the remainder of the total divided by n.",
+      "Each move takes one surplus box to a pile that is short, so the minimum number of moves is the total surplus above the targets. How the targets are assigned changes that sum: give the larger targets to the originally larger piles.",
+      "Compute the sum S, low = S / n and extra = S mod n; sort ascending; the last extra positions get target low+1 and the rest get low; add up max(0, value - target) over all piles and print it as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEvery final pile can only be the average rounded down or rounded up, and the larger targets go to the originally larger piles. Sort, then compute the total number of boxes above the targets.\n\n## Proof of correctness\n\nWith a fixed total, the smallest possible range is 0 or 1, so the final targets are determined by the quotient and the remainder. Giving the larger targets to the larger original values never increases the total absolute deviation (exchange inequality), so matching in sorted order is optimal. The total surplus equals the total shortage, and each move removes exactly one unit of surplus, so the lower bound is reached.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-flexport-7",
+  "packageChecksum": "10210a451b5eaddc0f65a1dfeb8fae25707d730088566578d306afb52e4b1ec9",
+  "sourceContentHash": "519f52246fba0b694ef7b720d7f77f148bda9fbc1a1c58c44036e1d7e8cd3cd2",
+  "editorialSha256": "c1912efee54ffe047c5995b37a4331e3d78b80bc691c18ac39a46a5a2a410fd8",
+  "hints": {
+    "zh": [
+      "剩余能量 = 100 − 路径上格子数值之和，所以最大化剩余能量就是最小化路径和。路径每一步都走到下一行，并且列号最多变化 1。",
+      "这是典型的逐行 DP：dp[c] 表示走到当前行第 c 列时的最小路径和。到达下一行第 c 列，只能来自上一行的 c−1、c、c+1 列（不越界）。",
+      "dp 初始化为第一行的值；对第 2 到第 4 行，令新 dp[c] = a[r][c] + min(旧 dp[k])，k 取 max(0, c−1) 到 min(3, c+1)。最后输出 100 − min(dp)，结果可能为负。"
+    ],
+    "en": [
+      "Remaining energy is 100 minus the sum of the cells on the path, so maximizing the energy means minimizing the path sum. Each step goes to the next row and changes the column by at most 1.",
+      "This is a classic row-by-row DP: dp[c] is the smallest path sum reaching column c of the current row. Column c of the next row can only be reached from columns c-1, c and c+1 of the previous row (within bounds).",
+      "Initialize dp with the first row. For rows 2 to 4, set the new dp[c] = a[r][c] + min of the old dp[k] for k from max(0, c-1) to min(3, c+1). Print 100 - min(dp); the result may be negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStart from any cell in the first row of the 4x4 matrix; at each step move to an adjacent column in the next row, and maximize the initial 100 energy minus the total of the values of the cells visited.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is handled by the definition, so nothing is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

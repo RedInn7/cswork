@@ -1,0 +1,19 @@
+{
+  "id": "oa-applied-intuition-1",
+  "packageChecksum": "f62164d8c894875a55bf2967135bd5d1d318635d6ae342cf309a8daf94e8cf6a",
+  "sourceContentHash": "a1ed813c3b037cae07e9dc25f0b421a7bc2c3b2b41394af2197cf3fa89bdc8fa",
+  "editorialSha256": "188ceb2929e86dd24e218cdb82c68935a8086be18ec0df3642b621a6507b5fb5",
+  "hints": {
+    "zh": [
+      "依赖关系构成一张有向图：前置模块指向依赖它的模块。当前可以编译的模块，就是所有前置都已编译、入度为 0 的模块。",
+      "用 Kahn 拓扑排序，但把普通队列换成最小堆，每次弹出当前可编译模块中字典序最小的那个，就满足题目的选择规则。",
+      "对每条依赖 [module, prerequisite] 建边 prerequisite→module，并给 module 的入度加一；把入度为 0 的模块全部放入堆；反复弹出最小者加入结果，把它指向的模块入度减一，减到 0 就入堆。结果数量少于 n 说明有环，输出 IMPOSSIBLE。"
+    ],
+    "en": [
+      "The dependencies form a directed graph in which each prerequisite points to the modules that depend on it. A module can be compiled now exactly when all its prerequisites are done, that is, when its in-degree is 0.",
+      "Run Kahn topological sort, but replace the plain queue with a min-heap so that each step pops the lexicographically smallest module that can currently be compiled, which is the selection rule required.",
+      "For each dependency [module, prerequisite], add an edge prerequisite -> module and increase the in-degree of module. Push all modules with in-degree 0 into the heap; repeatedly pop the smallest, append it to the result, and decrease the in-degree of its successors, pushing any that reach 0. If the result has fewer than n modules there is a cycle, so print IMPOSSIBLE."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKahn topological sort, using a min-heap to decide which module to pick among those available at the same moment.\n\n## Proof of Correctness\n\nAn in-degree that reaches zero means that all prerequisite dependencies are complete; taking the smallest available item at each step implements the lexicographic rule, and if the result has fewer than n items, a cycle exists.\n\n## Complexity\n\nO((n+m) log n) time, O(n+m) space."
+}

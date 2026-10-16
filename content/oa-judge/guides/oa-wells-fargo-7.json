@@ -1,0 +1,19 @@
+{
+  "id": "oa-wells-fargo-7",
+  "packageChecksum": "11e3e9e12d4f47f0793f01977b7d14bcf6cd641c0faefdc29377f85004951856",
+  "sourceContentHash": "debb6fba5cfa56889ff3413b33afa0ee3dd99b03981b811fe1577f106adab045",
+  "editorialSha256": "a0e350185be57aedc62a9ab16eb011fa2c2efc00d9f25609218dfdedb6ab157e",
+  "hints": {
+    "zh": [
+      "一个子数组按最大连续相同值段分成长度 L₁..L_m 的段，选法数是各段长度之积；但如果所有段长度都是 1（本身已压缩），按题意记 0 而不是 1。",
+      "先把所有子数组都按“段长度乘积”求和，再减去已压缩的子数组个数。落在一个段内部的子数组总贡献是 L(L+1)(L+2)/6；跨段的子数组贡献为首段后缀长度 × 中间各段长度 × 末段前缀长度。",
+      "把数组分段；扫描每段 L：令 T=L(L+1)/2，total += L(L+1)(L+2)/6 + T·acc，然后 acc = acc·L + T（acc 是之前每段的 T 乘以其后各完整段长度之和）；再统计相邻元素都不同的极大连续块，每块长 G 减去 G(G+1)/2；全程对 1,000,000,007 取模，注意中间乘积别溢出。"
+    ],
+    "en": [
+      "A subarray splits into maximal runs of equal values with lengths L₁..L_m, and the number of choices is the product of the run lengths; but if every run has length 1 (the subarray is already compressed), the statement counts it as 0, not 1.",
+      "First sum the product of run lengths over all subarrays, then subtract the number of already compressed subarrays. Subarrays inside a single run contribute L(L+1)(L+2)/6 in total; a subarray spanning several runs contributes (suffix length in the first run) × (lengths of the full middle runs) × (prefix length in the last run).",
+      "Split the array into runs; for each run L let T = L(L+1)/2, add L(L+1)(L+2)/6 + T·acc to total, then set acc = acc·L + T (acc is the sum over earlier runs of their T times the lengths of the full runs after them); then for each maximal block with no equal neighbors, of length G, subtract G(G+1)/2; reduce modulo 1,000,000,007 throughout and keep intermediate products from overflowing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepresent the array by the lengths L of its maximal runs of equal values. All subarrays within a single run contribute L(L+1)(L+2)/6 in total. A subarray spanning runs contributes the product of the suffix length in its first run, the prefix length in its last run, and the lengths of the complete runs in between; maintaining a weighted sum over earlier endpoints allows an O(1) update. Finally subtract all subarrays with no equal adjacent elements, since they are already compressed and contribute 0.\n\n## Correctness\n\nIf a subarray splits into maximal runs of equal values with lengths L_i, the standard compressed result keeps one original index from each run, independently, so the number of choices is ∏L_i; if every L_i=1, the statement's example says an already compressed subarray counts as 0. For intervals inside a single run, summing over their lengths gives L(L+1)(L+2)/6. For intervals with first run i and last run j (i<j), the first run can contribute a suffix of length x=1..L_i and the last run a prefix of length y=1..L_j, with the middle runs complete; the sum factors as T(L_i)T(L_j)∏(middle L_k), where T(L)=L(L+1)/2; maintaining a weighted prefix sum computes all j online. The already compressed subarrays are exactly the intervals of the original sequence with no equal adjacent pair; a maximal such block of length G contains G(G+1)/2 of them, and each one is subtracted once since it contributed 1. Reducing modulo the modulus throughout gives the required sum.\n\n## Complexity\n\nEach test case takes O(n) time and O(n) extra space (reading the input and splitting it into runs)."
+}

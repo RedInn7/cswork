@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-11",
+  "packageChecksum": "ebf1553fe7cbb9d2ffff63bcc53484641dad367e3f0f68ed713c0007fc042483",
+  "sourceContentHash": "669a388ed023d2d95f9331214b3301728dd9b110126d289f7fa2fff9bf81b47f",
+  "editorialSha256": "267a3fff7afd086f63674b1764261e7aeb12b18751751807ecbc9275ba21d5b7",
+  "hints": {
+    "zh": [
+      "每一堆合并的结果是唯一的：留下的块数是总数对 2 取余，送到右边的块数是总数整除 2，这和二进制加法的进位完全一样。",
+      "从左往右处理，维护进位 carry：当前堆的总数是原有块数加上 carry；处理完一堆，左边已经确定，不会再被影响。",
+      "对每堆计算 total=原块数+carry，答案加上 total 对 2 的余数，carry 变为 total 整除 2。数组结束后 carry 还会继续向右传递，它二进制中每个 1 对应一堆剩一块，所以答案再加上 carry 的二进制 1 的个数。注意 carry 可能很大，用 64 位整数。"
+    ],
+    "en": [
+      "Each pile's merging has a unique outcome: it keeps its total mod 2 and sends its total divided by 2 to the right, exactly like carrying in binary addition.",
+      "Sweep left to right with a carry: a pile's total is its own blocks plus the carry, and once a pile is processed nothing to its left can change again.",
+      "For each pile let total = blocks + carry, add total mod 2 to the answer, and set carry to total divided by 2. After the array ends the carry keeps moving right, and each 1 bit of it leaves one pile with a single block, so add the number of 1 bits of carry. The carry can be large, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep a carry; the parity of the current total v+carry decides whether one block stays, half of it carries into the next pile, and at the end the binary bits of the carry are processed further.\n\n## Proof of correctness\n\nThe pairwise merging of the current pile has a unique result: the remainder is the value mod 2 and the carry is the value divided by 2. Processing piles one by one never affects the already settled piles on the left, so it is equivalent to performing all operations; each 1 bit of the final carry corresponds to one pile with a single remaining block.\n\n## Complexity\n\nTime O(n+log M), extra space O(1) excluding standard input parsing, where M is the largest input block count."
+}

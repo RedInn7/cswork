@@ -1,0 +1,21 @@
+{
+  "id": "oa-thoughtspot-1",
+  "packageChecksum": "c489220452d933eb2f1ca781f2a0f340ecc8c681531443cadcbb0c3054e28840",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    vector<long long> counts(n, 0);\n    for (int i = 0; i < m; i++) { int s; scanf(\"%d\", &s); counts[s - 1]++; }\n    long long low = 0, high = *max_element(counts.begin(), counts.end());\n    // Binary search the finishing time T: overloaded services hand off count-T requests,\n    // the others absorb floor((T-count)/2) foreign requests each.\n    while (low < high) {\n        long long mid = (low + high) / 2, excess = 0, capacity = 0;\n        for (long long c : counts) {\n            if (c > mid) excess += c - mid;\n            else capacity += (mid - c) / 2;\n        }\n        if (capacity >= excess) high = mid;\n        else low = mid + 1;\n    }\n    printf(\"%lld\\n\", low);\n}\n",
+      "sha256": "97edfd0748799a57c78b80dfa05763a00fe52ff8bf9e73bbcd4796e1f9c093ea"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        long[] counts = new long[n];\n        for (int i = 0; i < m; i++) counts[nextInt() - 1]++;\n        long low = 0, high = 0;\n        for (long c : counts) high = Math.max(high, c);\n        // Binary search the finishing time T: overloaded services hand off count-T requests,\n        // the others absorb floor((T-count)/2) foreign requests each.\n        while (low < high) {\n            long mid = (low + high) / 2, excess = 0, capacity = 0;\n            for (long c : counts) {\n                if (c > mid) excess += c - mid;\n                else capacity += (mid - c) / 2;\n            }\n            if (capacity >= excess) high = mid;\n            else low = mid + 1;\n        }\n        System.out.println(low);\n    }\n}\n",
+      "sha256": "b88c1c42d6a5163aa841bb635a22a079c53b7a7ae08b7dd5ec4341d1f97fc9b5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, m := readInt(), readInt()\n\tcounts := make([]int, n)\n\tfor i := 0; i < m; i++ {\n\t\tcounts[readInt()-1]++\n\t}\n\tlow, high := 0, 0\n\tfor _, c := range counts {\n\t\thigh = max(high, c)\n\t}\n\t// Binary search the finishing time T: overloaded services hand off count-T requests,\n\t// the others absorb floor((T-count)/2) foreign requests each.\n\tfor low < high {\n\t\tmid := (low + high) / 2\n\t\texcess, capacity := 0, 0\n\t\tfor _, c := range counts {\n\t\t\tif c > mid {\n\t\t\t\texcess += c - mid\n\t\t\t} else {\n\t\t\t\tcapacity += (mid - c) / 2\n\t\t\t}\n\t\t}\n\t\tif capacity >= excess {\n\t\t\thigh = mid\n\t\t} else {\n\t\t\tlow = mid + 1\n\t\t}\n\t}\n\tfmt.Println(low)\n}\n",
+      "sha256": "ef303c94d6581615b6a44c3365dc591f290aeef9efdf56056316d77c7b3ea2ec"
+    }
+  ]
+}

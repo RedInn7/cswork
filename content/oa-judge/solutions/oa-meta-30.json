@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-30",
+  "packageChecksum": "0465b8e3566e68fe7c8223e8737cabd053d2cf3927f62c2bf3a55b24225070bc",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long k;\n    cin >> n >> k;\n    vector<long long> v(n);\n    for (auto &x : v) cin >> x;\n    // compress values so the frequency table is a plain array\n    vector<long long> s = v;\n    sort(s.begin(), s.end());\n    s.erase(unique(s.begin(), s.end()), s.end());\n    vector<int> id(n), freq(s.size(), 0);\n    for (int i = 0; i < n; i++) id[i] = lower_bound(s.begin(), s.end(), v[i]) - s.begin();\n    long long pairs = 0, answer = 0;\n    int left = 0;\n    for (int right = 0; right < n; right++) {\n        if (++freq[id[right]] % 2 == 0) pairs++;\n        while (pairs >= k) {\n            answer += n - right;\n            if (--freq[id[left++]] % 2 == 1) pairs--;\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "a2ea9a9a25d0b12875e9435a6c0d83cc473414a2c7f5fad60ed98b9709a80c01"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long k = nextLong();\n        long[] v = new long[n];\n        for (int i = 0; i < n; i++) v[i] = nextLong();\n        // compress values so the frequency table is a plain array\n        long[] s = v.clone();\n        Arrays.sort(s);\n        int u = 0;\n        for (int i = 0; i < n; i++) if (i == 0 || s[i] != s[i - 1]) s[u++] = s[i];\n        int[] id = new int[n], freq = new int[u];\n        for (int i = 0; i < n; i++) id[i] = Arrays.binarySearch(s, 0, u, v[i]);\n        long pairs = 0, answer = 0;\n        int left = 0;\n        for (int right = 0; right < n; right++) {\n            if (++freq[id[right]] % 2 == 0) pairs++;\n            while (pairs >= k) {\n                answer += n - right;\n                if (--freq[id[left++]] % 2 == 1) pairs--;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "89e54f0295a8d4c5f7bfe9775ba6292714df97a38d292a464accc87761b8f7b5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, k := next(), next()\n\tv := make([]int, n)\n\tfor i := range v {\n\t\tv[i] = next()\n\t}\n\t// compress values so the frequency table is a plain slice\n\ts := append([]int(nil), v...)\n\tsort.Ints(s)\n\tu := 0\n\tfor i := range s {\n\t\tif i == 0 || s[i] != s[i-1] {\n\t\t\ts[u] = s[i]\n\t\t\tu++\n\t\t}\n\t}\n\ts = s[:u]\n\tid := make([]int, n)\n\tfor i, x := range v {\n\t\tid[i] = sort.SearchInts(s, x)\n\t}\n\tfreq := make([]int, u)\n\tpairs, answer, left := 0, 0, 0\n\tfor right := 0; right < n; right++ {\n\t\tfreq[id[right]]++\n\t\tif freq[id[right]]%2 == 0 {\n\t\t\tpairs++\n\t\t}\n\t\tfor pairs >= k {\n\t\t\tanswer += n - right\n\t\t\tfreq[id[left]]--\n\t\t\tif freq[id[left]]%2 == 1 {\n\t\t\t\tpairs--\n\t\t\t}\n\t\t\tleft++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "d9bf531cb49bdd0affc4734cb0ef875a98ee7e81c0695e5e77ed00c7a094f593"
+    }
+  ]
+}

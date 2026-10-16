@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-64",
+  "packageChecksum": "0125ebf85b18d954ec6b0045f0fc5f4941e5cf8092a5205de1986183325768c3",
+  "sourceContentHash": "b0a47e7b149d8b752f3ed374793af51b2af4e5a2f3056be16d8196fdabed032b",
+  "editorialSha256": "70b0585e2cfe08da86b8dfa2271b0608c4056786c3a15c7883d4a7043b157bcb",
+  "hints": {
+    "zh": [
+      "既是真前缀又是真后缀的串叫作“边界”，所求就是整串最长真边界的长度，前后缀允许重叠。",
+      "KMP 的前缀函数在位置 i 的值，正是 s[0..i] 的最长真边界长度，所以答案就是前缀函数的最后一项，线性时间可得。",
+      "前缀函数首项为 0，用 j 表示当前已匹配的长度：对 i 从 1 到 n−1，当 j>0 且 s[i] 与 s[j] 不同时，令 j 退回到前缀函数在 j−1 处的值；若 s[i] 与 s[j] 相同则 j 加一；把 j 记为位置 i 的值。输出最后一项。长度可达 10^6，用紧凑的整数数组和快速读入。"
+    ],
+    "en": [
+      "A string that is both a proper prefix and a proper suffix is called a border; the task asks for the length of the longest proper border of the whole string, and the prefix and suffix may overlap.",
+      "The KMP prefix function at position i is exactly the length of the longest proper border of s[0..i], so the answer is its last entry, computed in linear time.",
+      "The prefix function starts with 0; let j be the current matched length. For i from 1 to n−1: while j>0 and s[i] differs from s[j], set j to the prefix function value at j−1; if s[i] equals s[j], increase j; store j as the value at i. Print the last value. The length can reach 10^6, so use a compact integer array and fast input."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the KMP prefix function; its last entry is the length of the longest proper border of the whole string.\n\n## Correctness\n\nAt each position, the prefix function records the longest proper border of the prefix ending at that position. On a mismatch, the only possible fallback is to a shorter border of the already matched prefix, and following this chain of candidates exhausts every possibility, so the final entry is exactly what is asked.\n\n## Complexity\n\nTime O(N), space O(N), using a compact integer array."
+}

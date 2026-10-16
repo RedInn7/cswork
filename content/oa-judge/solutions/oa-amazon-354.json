@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-354",
+  "packageChecksum": "90000a76a36343bc3ac0d7fca1992b90c54979e03b275e377b9000dbf8a0f83b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, target;\n    cin >> n >> target;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    long long l = 0, r = n - 1;\n    string out;\n    while (l < r) {\n        long long v = a[l] + a[r];\n        if (v < target) l++;\n        else if (v > target) r--;\n        else {\n            long long low = a[l], high = a[r];\n            out += to_string(low) + \",\" + to_string(high) + \"\\n\";\n            while (l < r && a[l] == low) l++;\n            while (l < r && a[r] == high) r--;\n        }\n    }\n    cout << (out.empty() ? string(\"None\\n\") : out);\n}\n",
+      "sha256": "236cf0dec763d250116070c948561c4a455991bcd5e5334d7de0fe0b545dbfa4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long target = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        int l = 0, r = n - 1;\n        StringBuilder out = new StringBuilder();\n        while (l < r) {\n            long v = a[l] + a[r];\n            if (v < target) l++;\n            else if (v > target) r--;\n            else {\n                long low = a[l], high = a[r];\n                out.append(low).append(',').append(high).append('\\n');\n                while (l < r && a[l] == low) l++;\n                while (l < r && a[r] == high) r--;\n            }\n        }\n        System.out.print(out.length() == 0 ? \"None\\n\" : out.toString());\n    }\n}\n",
+      "sha256": "db062011b33a71a36d5efffeca7b8de318ef2ce408752dfb45db951545538e9a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ttarget := nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\tl, r := 0, n-1\n\tvar out []byte\n\tfor l < r {\n\t\tv := a[l] + a[r]\n\t\tif v < target {\n\t\t\tl++\n\t\t} else if v > target {\n\t\t\tr--\n\t\t} else {\n\t\t\tlow, high := a[l], a[r]\n\t\t\tout = strconv.AppendInt(out, low, 10)\n\t\t\tout = append(out, ',')\n\t\t\tout = strconv.AppendInt(out, high, 10)\n\t\t\tout = append(out, '\\n')\n\t\t\tfor l < r && a[l] == low {\n\t\t\t\tl++\n\t\t\t}\n\t\t\tfor l < r && a[r] == high {\n\t\t\t\tr--\n\t\t\t}\n\t\t}\n\t}\n\tif len(out) == 0 {\n\t\tout = []byte(\"None\\n\")\n\t}\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "06ed8ef6021a706a479521134ce032c63951e3078b9744d8e70f5b929963863e"
+    }
+  ]
+}

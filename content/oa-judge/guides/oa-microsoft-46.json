@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-46",
+  "packageChecksum": "fa537d2874afb35cb84b3c9216538f6a0487ba637bd9f8daa2015024077a6bd7",
+  "sourceContentHash": "ba0a219a29c35fbe6f8e7f4b0a651f57860b6ed27f56914f2e0535371d848b7f",
+  "editorialSha256": "7a0215bc607dcabcefe94d18be14d38eb4f0ef4da4f91994ff7e6488c3718e22",
+  "hints": {
+    "zh": [
+      "删得最少等于留得最多：要找最长的骨牌子序列，使相邻两块的点数首尾相接。",
+      "一条链能否接上下一块只取决于链尾骨牌的右点数，而点数只有 1 到 6 六种，所以状态只需按“结尾点数”划分。",
+      "令 dp[v] 为已扫描部分中以右点数 v 结尾的最长链长度，初始全为 0。遇到骨牌 (l, r) 时，用旧的 dp[l] 加 1 去更新 dp[r]（取较大值），单独一块也因此算长度 1。最后输出 N 减去 dp 中的最大值。"
+    ],
+    "en": [
+      "Removing the fewest dominoes means keeping the most: find the longest subsequence of dominoes in which neighbors match end to start.",
+      "Whether a chain can take the next domino depends only on the right value of its last domino, and there are only six values 1 to 6, so the state is just the ending value.",
+      "Let dp[v] be the longest chain so far that ends with right value v, all starting at 0. For a domino (l, r), update dp[r] with the old dp[l] plus 1 if that is larger; a single domino thereby counts as length 1. Print N minus the maximum of dp."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[v] stores the length of the longest valid subsequence ending with value v. On (l,r), update dp[r] with the old dp[l]+1; all other states stay unchanged.\n\n## Correctness\n\nIf a valid subsequence uses the current domino, the previous domino must end with l; if it does not use the current domino, the old state is kept. Every valid choice appears in the recurrence, and the maximum number kept is the complement of the minimum number removed.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."
+}

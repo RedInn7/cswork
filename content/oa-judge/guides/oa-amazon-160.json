@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-160",
+  "packageChecksum": "7f9204a2f5debe0fa4695c76c6b18862a8a65acdbd16632c4e63848abc34b639",
+  "sourceContentHash": "7421e5ade728c046361dbeb843be3bf39fa722314089aa5044715b43a2fbb506",
+  "editorialSha256": "9766f74d8273aabd57ae6c34ba83c03e403ce002730636e8d1ef60c4e03470f5",
+  "hints": {
+    "zh": [
+      "金额是按位置分段为常数的函数。窗口每右移一格，金额变化等于新进入的值减去离开的值；两端都没碰到区间边界时这个变化量不变，所以最优窗口总能推到某个端点对齐的位置。",
+      "只需检查两类候选：窗口左端对齐某个区间的左端l，或窗口右端对齐某个区间的右端r（即起点为max(1,r−k+1)）。区间排序后建立前缀金额，再配合二分，可以在O(log n)内算出任意窗口的真实金额。",
+      "按l排序区间，prefix[i]为前i个区间的金额之和；定义F(x)为1到x号袋子的总金额：二分找到最后一个起点不超过x的区间，返回它之前的前缀加上(min(x,r)−l+1)乘以v。对每个区间的两个候选起点s计算F(s+k−1)−F(s−1)并取最大值，全部比较完后再对1000000007取模。金额可达10^18左右，需要64位整数。"
+    ],
+    "en": [
+      "The amount is a piecewise-constant function of the position. Each step right changes the window's amount by the value entering minus the value leaving, and while neither end touches an interval boundary that change stays the same, so an optimal window can always be pushed to a position where an end lines up with a boundary.",
+      "Only two kinds of candidates matter: the window's left end at some interval's left end l, or its right end at some interval's right end r (start max(1, r-k+1)). Prefix amounts over the sorted intervals plus a binary search give any window's real amount in O(log n).",
+      "Sort the intervals by l and let prefix[i] be the total of the first i intervals; let F(x) be the total in bags 1..x: binary search the last interval starting at or before x and return the prefix before it plus (min(x, r) - l + 1) * v. For both candidate starts s of every interval compute F(s+k-1) - F(s-1), keep the maximum, and only after all comparisons take it modulo 1000000007. Amounts reach about 10^18, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, build the cumulative amount over the intervals, so the prefix amount up to any position can be found by binary search. Only the candidates whose window's left end aligns with an interval's left end, or whose right end aligns with an interval's right end, need to be tested.\n\n## Proof of correctness\n\nWhen the window shifts by one bag, the amount changes by the incoming value minus the outgoing value. If neither end of the window touches a breakpoint of the pieces, the rate of change is constant, so a maximum can be moved to a boundary without decreasing. An increase can only stop when the right end leaves a positive interval or the left end enters a positive interval, so these aligned candidates cover an optimum; the prefix integral computes every window exactly. The amounts are compared before taking the modulus.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

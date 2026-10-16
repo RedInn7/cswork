@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-19",
+  "packageChecksum": "a1a6c573cfcb9b1c4a2b93088d1afc85f5880dc4c6db3ede43759a2da32757fa",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    vector<long long> h(n);\n    for (auto &v : h) cin >> v;\n    vector<long long> total(n + 1, 0);\n    for (int i = 0; i < n; i++) {\n        int t;\n        cin >> t;\n        total[t] += h[i];\n    }\n    // Take whole types, the m largest totals.\n    sort(total.rbegin(), total.rend());\n    long long answer = 0;\n    for (int i = 0; i < m && i <= n; i++) answer += total[i];\n    cout << answer << '\\n';\n}\n",
+      "sha256": "8ecf8d2d24e4e506cb4afd5973fa55a2faa30a334eb1367759932f9a41e53247"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        long[] h = new long[n];\n        for (int i = 0; i < n; i++) h[i] = nextLong();\n        long[] total = new long[n + 1];\n        for (int i = 0; i < n; i++) total[nextInt()] += h[i];\n        // Take whole types, the m largest totals.\n        Arrays.sort(total);\n        long answer = 0;\n        for (int i = 0; i < m; i++) answer += total[n - i];\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "95f7c4745570ba68a7bf68aabc69c6d1fd52d60e4a8d3f3c33a099ae2eaaac60"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := int(nextInt()), int(nextInt())\n\th := make([]int64, n)\n\tfor i := range h {\n\t\th[i] = nextInt()\n\t}\n\ttotal := make([]int64, n+1)\n\tfor i := 0; i < n; i++ {\n\t\ttotal[nextInt()] += h[i]\n\t}\n\t// Take whole types, the m largest totals.\n\tslices.Sort(total)\n\tvar answer int64\n\tfor i := 0; i < m; i++ {\n\t\tanswer += total[n-i]\n\t}\n\tfmt.Println(answer)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "aa572f78872b300ba6843d7416d61eda05888fb5aba747887f568a473c17429c"
+    }
+  ]
+}

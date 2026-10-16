@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-17",
+  "packageChecksum": "df8522be0d5ad1508e9c7cd059346d4248b0dd2259c98ae47c34396034b86a0c",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    a = [0] + [int(x) for x in data[1:1 + n]]\n    # dp[i]: best strength sum of the first i elements\n    dp = [0] * (n + 1)\n    for i in range(1, n + 1):\n        dp[i] = dp[i - 1] + a[i] * i\n        if i >= 2:\n            dp[i] = max(dp[i], dp[i - 2] + a[i] * (i - 1) + a[i - 1] * i)\n    print(dp[n])\n\n\nmain()\n",
+      "sha256": "2a9951ead09d36eaa5c60e65c806b30b147f1cdd9a7f12aab02c33f5e2a303f9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n + 1];\n        for (int i = 1; i <= n; i++) a[i] = nextLong();\n        // dp[i]: best strength sum of the first i elements\n        long[] dp = new long[n + 1];\n        for (int i = 1; i <= n; i++) {\n            dp[i] = dp[i - 1] + a[i] * i;\n            if (i >= 2) dp[i] = Math.max(dp[i], dp[i - 2] + a[i] * (i - 1) + a[i - 1] * i);\n        }\n        System.out.println(dp[n]);\n    }\n}\n",
+      "sha256": "807e812e0c99e67b4632f67358bc7cc4db263ad868ceb3ffc45eb251de2dd3f7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n+1)\n\tfor i := 1; i <= n; i++ {\n\t\ta[i] = nextInt()\n\t}\n\t// dp[i]: best strength sum of the first i elements\n\tdp := make([]int64, n+1)\n\tfor i := 1; i <= n; i++ {\n\t\tdp[i] = dp[i-1] + a[i]*int64(i)\n\t\tif i >= 2 {\n\t\t\tdp[i] = max(dp[i], dp[i-2]+a[i]*int64(i-1)+a[i-1]*int64(i))\n\t\t}\n\t}\n\tfmt.Println(dp[n])\n}\n",
+      "sha256": "81bc1edfb9e6d07b3c53cad330039344c52a04b37a1636edf3a5f36f0536da56"
+    }
+  ]
+}

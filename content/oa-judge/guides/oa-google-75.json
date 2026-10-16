@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-75",
+  "packageChecksum": "5c4b1877c3750d786f7cbcaf9507dc31afc60211938a9036243bf2a5e3fd40c3",
+  "sourceContentHash": "d9b908d85acc3c52b37674e6bf39a2b46a52e1035876844ed3e70ef3eb03dfc0",
+  "editorialSha256": "57a32513a553aa563332fccfd523be4717f24e96cd8f1d5a14100da30b7b182c",
+  "hints": {
+    "zh": [
+      "把元素依次放进若干条严格递减的序列，一个新值 x 只能接在末尾大于 x 的序列后面。为了给以后留余地，应当接在“末尾大于 x 且最小”的那一条上。",
+      "把各条序列的末尾值保持有序，用 upper_bound 二分找到第一个大于 x 的末尾：找到就把它替换为 x，找不到就新开一条。这和求最长非降子序列的贪心是同一个过程。",
+      "维护有序数组 tails。对每个 x，找第一个满足 tails[j] > x 的位置 j；若 j 等于长度就追加 x，否则令 tails[j]=x。最后 tails 的长度就是答案（也等于最长非降子序列的长度，这是下界）。"
+    ],
+    "en": [
+      "Put the elements one by one into strictly decreasing sequences; a new value x can only follow a sequence whose last value is greater than x. To keep options open for later, attach it to the sequence with the smallest such last value.",
+      "Keep the last values sorted and use an upper_bound binary search for the first one greater than x: replace it with x if found, otherwise start a new sequence. This is the same greedy as the one for the longest non-decreasing subsequence.",
+      "Maintain a sorted array tails. For each x find the first index j with tails[j] > x; if j equals the length append x, otherwise set tails[j]=x. The final length of tails is the answer, and it equals the length of the longest non-decreasing subsequence, which is a lower bound."
+    ]
+  },
+  "explanationEn": "## Idea\n\nKeep the last values of all decreasing sequences in sorted order. A new value x is attached to the sequence whose last value is the smallest one greater than x; if there is none, start a new sequence. Update with an upper_bound binary search.\n\n## Correctness\n\nAmong the sequences that can take x, choosing the smallest greater last value keeps the other, larger last values available for future elements; an exchange argument shows this is never worse. Equivalently, this maintains the smallest last values of the longest non-decreasing subsequences: the elements of such a subsequence must lie in different decreasing groups, and the number of groups used by the greedy reaches exactly this lower bound.\n\n## Complexity\n\nO(n log n) time, O(n) space."
+}

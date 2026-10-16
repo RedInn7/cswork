@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-14",
+  "packageChecksum": "34ff947fe8d2d1d69e328cf190fbd1b7d22f2591371bd639abe7a8e125d8b8c5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n\nint main() {\n    int s;\n    if (scanf(\"%d\", &s) != 1) return 0;\n    // dp[t] = number of codes of the current length with digit sum t.\n    long long dp[37] = {1};\n    for (int pos = 0; pos < 4; pos++) {\n        long long next[37] = {0};\n        for (int t = 0; t < 37; t++)\n            for (int d = 0; d < 10; d++)\n                if (t + d < 37) next[t + d] += dp[t];\n        for (int t = 0; t < 37; t++) dp[t] = next[t];\n    }\n    printf(\"%lld\\n\", dp[s]);\n}\n",
+      "sha256": "0b5d02ee02f0a8d665cbc6c5af8676aa1dee1b817209bd85bd14e00b6808513f"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        int s = new Scanner(System.in).nextInt();\n        // dp[t] = number of codes of the current length with digit sum t.\n        long[] dp = new long[37];\n        dp[0] = 1;\n        for (int pos = 0; pos < 4; pos++) {\n            long[] next = new long[37];\n            for (int t = 0; t < 37; t++)\n                for (int d = 0; d < 10; d++)\n                    if (t + d < 37) next[t + d] += dp[t];\n            dp = next;\n        }\n        System.out.println(dp[s]);\n    }\n}\n",
+      "sha256": "f0f0d5fb651926b17d0ffe4548aa2932563ddf1687e13b5e4bdd94e4060078a0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s int\n\tfmt.Scan(&s)\n\t// dp[t] = number of codes of the current length with digit sum t.\n\tvar dp [37]int64\n\tdp[0] = 1\n\tfor pos := 0; pos < 4; pos++ {\n\t\tvar next [37]int64\n\t\tfor t := 0; t < 37; t++ {\n\t\t\tfor d := 0; d < 10; d++ {\n\t\t\t\tif t+d < 37 {\n\t\t\t\t\tnext[t+d] += dp[t]\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tdp = next\n\t}\n\tfmt.Println(dp[s])\n}\n",
+      "sha256": "74b2128fa84730e5f30caa2b214b6d4b0d20fa18c798bd9730daf8a66b199460"
+    }
+  ]
+}

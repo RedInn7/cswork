@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-33",
+  "packageChecksum": "66354acea473b1686184aceaa066fbf8b8e35a01a8b277aaf213ad7f21ed5e67",
+  "sourceContentHash": "774e5bcccb8354204b78c936f6115ecf0bd9728b632e77674576a0cb65df9116",
+  "editorialSha256": "1b4e62c75b3a50a57dbe93d98748bceaf2725089db5475a66c6ab23e74167b3d",
+  "hints": {
+    "zh": [
+      "时刻 t 的连通关系恰好由时间不晚于 t 的日志决定，而且连接只增不减；所以只要按时间顺序加入连接，第一次所有人连成一体的时刻就是答案。",
+      "把用户名映射为编号，日志按时间排序后依次用并查集合并两端。每次成功合并两个不同的集合，连通分量数减一，第一次减到 1 时输出当前时间。",
+      "若只有 1 个用户直接输出 0；否则建立用户名到编号的映射，分量数设为 n；按时间升序处理日志，找到两端的根，若不同就按大小合并并让分量数减 1，减到 1 时立刻输出该日志的时间；全部处理完仍未连通则输出 −1。"
+    ],
+    "en": [
+      "Connectivity at time t is determined exactly by the log entries with time at most t, and connections are never removed. So if you add connections in time order, the first moment everyone is in one group is the answer.",
+      "Map usernames to ids, sort the logs by time, and union the two endpoints of each entry with a disjoint set union. Every successful union of two different sets reduces the component count by one; when it first reaches 1, output the current time.",
+      "If there is only one user, print 0. Otherwise map names to ids and set the component count to n. Process the logs in ascending time; find the roots of both endpoints, and if they differ, union by size and decrease the count by 1; the moment it reaches 1, print that entry's time. If the logs run out first, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the logs by time and merge their two ends one by one with a disjoint set union; every successful merge reduces the number of components by one, and the time at which it first drops to 1 is the answer.\n\n## Correctness\n\nThe connections at time t are generated exactly by the logs no later than t, and the disjoint set union maintains the connectivity of these edges equivalently. Scanning in time order, the first moment of full connectivity is the earliest time; if multiple components remain after the scan, there is no solution.\n\n## Complexity\n\nTime O(m log m+(n+m)α(n)), space O(n+m)."
+}

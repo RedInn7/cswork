@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-46",
+  "packageChecksum": "3deb894dabf2968f7cc2949c653e7f626eb7ef961446b0831d124a9eb5985091",
+  "sourceContentHash": "411ad042a894d99a5d7b8063e05d3c4fce66cf924e9add8a0511cf8d7c80f98c",
+  "editorialSha256": "4f7f33ae1b818923383ef4ab7215a734479954b6189c982de5a0b50fe0e8bd8f",
+  "hints": {
+    "zh": [
+      "每次查询都从原数组开始旋转，彼此独立；最大元素唯一，旋转只改变它所在的位置，不改变它是哪个元素。",
+      "左移一次，每个元素的下标减 1（对 n 取模），左移 r 次就减 r。所以只要知道最大元素在原数组里的下标 p。",
+      "扫描一遍求出 p，然后对每个旋转次数 r 输出 ((p − r) mod n + n) mod n（r 可达 10^9，要保证结果非负）；先输出 m，再输出这 m 个下标。"
+    ],
+    "en": [
+      "Every query rotates the original array, so queries are independent; the maximum is unique, and rotation only moves it without changing which element it is.",
+      "One left rotation decreases every index by 1 modulo n, so r rotations decrease it by r. All you need is the index p of the maximum in the original array.",
+      "Find p with one scan, then for each rotation count r print ((p - r) mod n + n) mod n (r can be 10^9, so make sure the result is non-negative); print m first, then the m indices."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst find the index p of the original maximum element; each query directly outputs (p−r) mod n, normalized to 0..n−1.\n\n## Correctness\n\nOne left rotation decreases every position by 1 modulo n, so r consecutive rotations decrease it by r. The identity of the maximum does not change under rotation, and distinctness guarantees that it is unique, so tracking its index is enough. Computing from the same original index every time keeps the queries independent.\n\n## Complexity\n\nO(n+m) time, O(n+m) space including input and output."
+}

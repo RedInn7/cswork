@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-221",
+  "packageChecksum": "eac4bd03b54856431c64823bfb4cbd944ad03583ae0495380e3adf89b8683580",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> d(n);\n    for (auto &x : d) cin >> x;\n    for (auto &x : d) {\n        long long t;\n        cin >> t;\n        x = t - x;  // needed increments per index\n    }\n    // Every adjacent drop needs prefix operations ending there.\n    long long down = 0;\n    for (int i = 0; i + 1 < n; i++) down += max(0LL, d[i] - d[i + 1]);\n    cout << (d[0] < down ? -1 : d[n - 1] + down) << '\\n';\n}\n",
+      "sha256": "1ef30c73914af7919d881ed52cb3fd5cf0dadce12d5d101727643e673a431e87"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] d = new long[n];\n        for (int i = 0; i < n; i++) d[i] = nextLong();\n        for (int i = 0; i < n; i++) d[i] = nextLong() - d[i]; // needed increments per index\n        // Every adjacent drop needs prefix operations ending there.\n        long down = 0;\n        for (int i = 0; i + 1 < n; i++) down += Math.max(0, d[i] - d[i + 1]);\n        System.out.println(d[0] < down ? -1 : d[n - 1] + down);\n    }\n}\n",
+      "sha256": "4109370804befeebe9ce0f27961b66b3e99260dec3317970584d26e356ce6184"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\td := make([]int64, n)\n\tfor i := range d {\n\t\td[i] = nextInt()\n\t}\n\tfor i := range d {\n\t\td[i] = nextInt() - d[i] // needed increments per index\n\t}\n\t// Every adjacent drop needs prefix operations ending there.\n\tvar down int64\n\tfor i := 0; i+1 < n; i++ {\n\t\tdown += max(0, d[i]-d[i+1])\n\t}\n\tif d[0] < down {\n\t\tfmt.Println(-1)\n\t} else {\n\t\tfmt.Println(d[n-1] + down)\n\t}\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "0a1969c702e14b68debc07e242e42b40d3ef5099a1b7b11821d1fdc373982b61"
+    }
+  ]
+}

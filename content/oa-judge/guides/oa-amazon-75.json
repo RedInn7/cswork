@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-75",
+  "packageChecksum": "70450b25c5edeb4f0944295e873e56cf3420f2c97cec35b9ba34afc576dd9820",
+  "sourceContentHash": "99d25d5706aadc84e66f74fec61fb1c274e3a846eb278295ccb0efbb5d832051",
+  "editorialSha256": "a7c214d21179c20384faffeb7ab6bb242fd1755f73f4ad6c875686a93b1f8fc9",
+  "hints": {
+    "zh": [
+      "一个城市只可能被两种单位覆盖：本城市原地不动的单位，或者右边相邻城市左移过来的单位。所以对当前城市的决策只和右邻是否移进来有关。",
+      "从右往左做 DP，状态只需记录“右边城市的单位是否移入当前城市”。当前城市若有单位，可以选择留下（当前城市一定被覆盖），或在不是最左城市时左移（当前城市只有右邻移入时才被覆盖），并把“是否移入左邻”传给下一步。",
+      "设 dp[0]、dp[1] 为处理完右侧城市后、右邻单位未移入 / 已移入当前城市时的最大人口，初值 dp = [0, −∞]；对 i 从 n−1 到 0 枚举 incoming：无单位时只能转移到新状态 0，有单位时留下转移到 0（加上本城人口），左移（i>0）转移到 1（仅当 incoming=1 时加本城人口）；最后输出 dp[0]。"
+    ],
+    "en": [
+      "A city can be covered by only two kinds of units: its own unit staying put, or the unit of the right neighbor moving left. So the decision at the current city depends only on whether the right neighbor moved in.",
+      "Run a DP from right to left whose state records only whether the right city's unit moved into the current city. If the current city has a unit, it can stay (the city is certainly covered) or, unless it is the leftmost city, move left (the city is covered only if the right neighbor moved in), passing on whether it moves into the left neighbor.",
+      "Let dp[0] and dp[1] be the best population of the processed cities when the right neighbor's unit did not / did move into the current city, starting with dp = [0, -infinity]; for i from n-1 down to 0, try each incoming state: with no unit the only new state is 0; with a unit, staying goes to state 0 and adds this city's population, while moving left (i > 0) goes to state 1 and adds the population only when incoming = 1; print dp[0] at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDo a DP from right to left, where the state says whether the unit of the right neighbor moved into the current city. Enumerate whether the current unit stays or moves left, add the current city's population if it is covered, and pass on whether a unit moves into the left neighbor.\n\n## Proof of correctness\n\nThe current city can only be covered by its own unit or by the right neighbor's unit, and all other decisions on the right can be summarized by the single state of whether a unit moved in. Enumerating the legal moves at the current position counts the city's population only once, at the current position. The leftmost unit cannot move out of range, so the terminal state is correct; all plans are covered and the maximum is taken.\n\n## Complexity\n\nO(n) time; O(n) space to store the populations, and O(1) extra space for the DP states."
+}

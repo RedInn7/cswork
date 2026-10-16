@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-14",
+  "packageChecksum": "aabd0486113a6a4f3c28fb0af6eeeb4e618f2fbfd2c042224114a373e71aba45",
+  "sourceContentHash": "1a8fc69ae380fb756d02a7a49507d32c47a7e29e04925ef5bcd9b2cbe703af55",
+  "editorialSha256": "69c4ed0c6c5fb482bd3e9d24e91915fe7c8a84e08f9ece75a1e0697718a54aca",
+  "hints": {
+    "zh": [
+      "同一条对角线上的格子行号加列号相同，记为 d，d 从 0 取到 R+C−2，一共 R+C−1 条对角线，按 d 递增依次处理即可。",
+      "对第 d 条对角线，合法的行号范围是 max(0, d−C+1) 到 min(R−1, d)，列号就是 d 减行号；剩下只需决定这一段行号是正序还是倒序走。",
+      "d 为偶数时从左下走向右上，即行号从大到小；d 为奇数时从右上走向左下，即行号从小到大；按这个顺序依次取出元素，全部用空格连接输出。"
+    ],
+    "en": [
+      "Cells on the same diagonal share the same row-plus-column sum d, which runs from 0 to R+C-2, giving R+C-1 diagonals to handle in increasing order of d.",
+      "For diagonal d the valid rows run from max(0, d-C+1) to min(R-1, d), and the column is d minus the row; all that remains is deciding whether to walk those rows forward or backward.",
+      "For even d go from bottom-left to top-right, so rows decrease; for odd d go from top-right to bottom-left, so rows increase; collect the elements in this order and print them separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the row-plus-column index sum d and determine the valid row index range for that diagonal. For even d iterate the row indices in reverse; for odd d iterate them forward.\n\n## Why it is correct\n\nEvery cell belongs to exactly one diagonal d=i+j, and the valid row range guarantees no out-of-bounds access and complete coverage. Increasing d and alternating the row direction matches the given traversal rule exactly.\n\n## Complexity\n\nTime and output space O(RC)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-13",
+  "packageChecksum": "0fa751dea71e346ac03c3c3a98af7dff0221f58b5dec875d07ce6309ee120ee6",
+  "sourceContentHash": "7361633b34bdb8d992f706f84ebab86db4fc9ac004eeeb4b200a9bf21ea6aab7",
+  "editorialSha256": "20d602141d7416711353d961b62f9efa87ba0539c82f8706e22d9e4f5bad3e07",
+  "hints": {
+    "zh": [
+      "机器人下一步怎么走只取决于它当前的位置和朝向，地图是固定的；同一个（位置，朝向）状态第二次出现后，运动就会无限循环。",
+      "状态总数只有 4×N×M 个，可以直接模拟，直到遇到重复状态为止；另外用一个标记数组统计走过的不同格子。",
+      "从 (0,0) 朝右开始，用一个大小为 4NM 的数组记录见过的状态。每一步：若当前状态已见过就停止；否则标记它，若当前格首次经过就计数加一；前方格在界内且为空就前进，否则顺时针转 90 度。最后输出计数。"
+    ],
+    "en": [
+      "The robot's next move depends only on its current cell and direction, and the map never changes; once a (cell, direction) state repeats, the motion loops forever.",
+      "There are only 4×N×M states, so simulate directly until a state repeats, and use a separate marker array to count the distinct cells visited.",
+      "Start at (0,0) facing right, with an array of size 4NM for seen states. Each step: stop if the current state was seen; otherwise mark it, and count the cell if it is visited for the first time; move forward if the cell ahead is inside the grid and empty, otherwise turn 90 degrees clockwise. Print the count at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord states made of position and direction and stop when a state repeats; use a separate marker to record the distinct visited cells.\n\n## Proof of correctness\n\nThe motion is fully determined by the current position, the direction and the fixed map, so after a repeated state it cycles and finds no new cells. There are only 4NM states in total, so all cleaned cells are obtained after a finite simulation.\n\n## Complexity\n\nTime O(NM), space O(NM), using compact byte arrays."
+}

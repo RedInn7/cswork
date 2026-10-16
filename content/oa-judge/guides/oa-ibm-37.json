@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-37",
+  "packageChecksum": "d95f5504a27d14b710dd15b80003d9a4a271123b51ddd8478ebb9c407d3198fe",
+  "sourceContentHash": "b8291a055d3fb020071936673f270cdb4870998aef5ee0675afe2d9d10651bc8",
+  "editorialSha256": "afc3709b44a7295d733d55995d87f9d2249da8b793bbc4b765a182737da548c6",
+  "hints": {
+    "zh": [
+      "原数组中每一处下降a[i]<a[i−1]，只能通过增大右端而不增大左端来修复，所以下降边的右端点必须选、左端点必须不选。",
+      "被强制选中的位置都要加同一个x，所以x至少是所有下降幅度中的最大值；如果两个强制位置相邻，违反不相邻的要求，立即无解。",
+      "标记所有下降边的右端点，x取最大下降幅度；若有两个相邻的标记位置输出-1；否则只给标记位置加x，再检查整个数组是否非递减，是则输出x，否则输出-1（这时新出现的下降无法靠增大x或多选位置修复）。没有下降时x为0。"
+    ],
+    "en": [
+      "Every descent a[i]<a[i−1] in the original array can only be fixed by increasing the right end without increasing the left end, so the right end of a descent must be chosen and its left end must not be.",
+      "All forced positions receive the same x, so x is at least the largest descent amount; if two forced positions are adjacent, the non-adjacency rule is violated and there is no solution at once.",
+      "Mark the right end of every descent and take x as the largest descent amount; print -1 if two marked positions are adjacent; otherwise add x only to the marked positions and check whether the whole array is non-decreasing: print x if it is, otherwise -1 (a new descent then cannot be fixed by a larger x or by choosing more positions). With no descent, x is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach descent in the original array forces its right end to be chosen and its left end not to be chosen; if two forced positions are adjacent, there is immediately no solution. Take the maximum descent amount as x, add x only to the forced positions, then verify the whole array.\n\n## Proof of correctness\n\nA descent can only be repaired by increasing its right end without increasing its left end, so these choices are mandatory and x is at least the largest descent amount. No additional choice changes this lower bound. After increasing the forced positions by this lower-bound x, if a new descent appears to the right of one of them, that right neighbor cannot be chosen (adjacent positions are forbidden), and increasing x does not help either; so in that case there is no solution. Otherwise a valid solution reaching the lower bound has been constructed.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

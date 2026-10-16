@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-19",
+  "packageChecksum": "639068d765a7bfcbd5b4f26832a13532df19003fb0338e2df7e5aac8f01c3be0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<int> a(n);\n    unordered_map<int, int> total;\n    for (auto &x : a) { scanf(\"%d\", &x); total[x]++; }\n    int limit = INT_MAX;\n    for (auto &kv : total) limit = min(limit, kv.second);\n    // Longest window in which every player appears at most `limit` times.\n    unordered_map<int, int> counts;\n    int left = 0, answer = 0;\n    for (int right = 0; right < n; right++) {\n        int v = a[right];\n        counts[v]++;\n        while (counts[v] > limit) { counts[a[left]]--; left++; }\n        answer = max(answer, right - left + 1);\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "2de961eb646f319887b9eb3b4f0bd969c465667296954581d6f331b5c35bb962"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StreamTokenizer st = new StreamTokenizer(br);\n        st.nextToken();\n        int n = (int) st.nval;\n        int[] a = new int[n];\n        HashMap<Integer, Integer> total = new HashMap<>();\n        for (int i = 0; i < n; i++) {\n            st.nextToken();\n            a[i] = (int) st.nval;\n            total.merge(a[i], 1, Integer::sum);\n        }\n        int limit = Integer.MAX_VALUE;\n        for (int c : total.values()) limit = Math.min(limit, c);\n        // Longest window in which every player appears at most `limit` times.\n        HashMap<Integer, Integer> counts = new HashMap<>();\n        int left = 0, answer = 0;\n        for (int right = 0; right < n; right++) {\n            int v = a[right];\n            counts.merge(v, 1, Integer::sum);\n            while (counts.get(v) > limit) {\n                counts.merge(a[left], -1, Integer::sum);\n                left++;\n            }\n            answer = Math.max(answer, right - left + 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "fb5cd34bd6222a753443bcbfa241c908fcff47ee2cf1a575eef6b354b503d916"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\ta := make([]int, n)\n\ttotal := map[int]int{}\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\ttotal[a[i]]++\n\t}\n\tlimit := n\n\tfor _, c := range total {\n\t\tlimit = min(limit, c)\n\t}\n\t// Longest window in which every player appears at most `limit` times.\n\tcounts := map[int]int{}\n\tleft, answer := 0, 0\n\tfor right, v := range a {\n\t\tcounts[v]++\n\t\tfor counts[v] > limit {\n\t\t\tcounts[a[left]]--\n\t\t\tleft++\n\t\t}\n\t\tanswer = max(answer, right-left+1)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "b1984295c36d720cf6fd610eaf3c03c96c4ac09f707abf0a15f979e94cf63e7d"
+    }
+  ]
+}

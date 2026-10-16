@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-170",
+  "packageChecksum": "f97d0cb0fe1f51332f2bf8704ea54f7148c65895a56e9be8108ba69431bd2a01",
+  "sourceContentHash": "737e8b1aa08a8b37902c5c3bc4a8cf1c28efdef11f286ce751c8dadee90370f6",
+  "editorialSha256": "3d74458061228aa0ff2ef851357bb7541ed78957e5a31b1096334bb4ecc1338c",
+  "hints": {
+    "zh": [
+      "只能单向运输时，每条边上的流量都非负且方向相同。相邻两条边的流量之差等于夹在中间的那个容器多出来的量，所以一旦定下一条边的流量，其余所有边就都确定了。",
+      "设P_i为前i个容器相对平均值的累计盈余，顺时针时第i条边的流量是P_i加上同一个常数c；为保证流量非负，c最小取−min(P)，总费用为sum(P)−n·min(P)。逆时针对称，费用为n·max(P)−sum(P)。两者取较小值。",
+      "求平均值avg；遍历容器，累加prefix+=a[i]−avg，同时把每个prefix累加进total，并记录prefix的最小值low和最大值high（都从0开始）；输出min(total−n·low, n·high−total)。中间量可能非常大，要用足够宽的整数（或无符号运算）避免溢出。"
+    ],
+    "en": [
+      "With transport in one direction only, every edge carries a non-negative flow in that direction. The flows on two neighbouring edges differ by the surplus of the container between them, so fixing one edge's flow fixes all the others.",
+      "Let P_i be the cumulative surplus of the first i containers over the average. Clockwise, edge i carries P_i plus one common constant c; non-negative flows need c >= -min(P), so the cost is sum(P) - n*min(P). Counterclockwise is symmetric with cost n*max(P) - sum(P). Take the smaller.",
+      "Compute avg; walk the containers with prefix += a[i] - avg, add each prefix into total, and track the smallest prefix low and the largest high (both starting at 0); print min(total - n*low, n*high - total). The intermediate values can be huge, so use a wide enough integer type (or unsigned arithmetic) to avoid overflow."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute each container's prefix surplus P relative to the average. The clockwise cost is sum(P)-n min(P) and the counterclockwise cost is n max(P)-sum(P); take the smaller.\n\n## Proof of correctness\n\nFor clockwise edge flows, the difference between adjacent edge flows equals that container's surplus, so all flows are P plus one common constant. Non-negativity requires the constant to be at least -min(P), and taking this lower bound minimizes the cost. Counterclockwise works the same way, shifting the prefixes down by max(P) so they are non-positive. Take the smaller of the two one-direction plans; the two-direction median may not be used instead.\n\n## Complexity\n\nTime O(n), space O(n) including the input."
+}

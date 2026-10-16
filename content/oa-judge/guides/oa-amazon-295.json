@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-295",
+  "packageChecksum": "07e6da4aee1087a8020fa382affd2df33fd392210467099166e818fea954f3be",
+  "sourceContentHash": "ab8ac8c06cf450985dc022f2222cc0a591d17e78c49b485b4d4b770e943ed3e3",
+  "editorialSha256": "a487f89244299c01588ad89435e0b23b3378302a8829181c25e731013166a271",
+  "hints": {
+    "zh": [
+      "环上只能沿一个方向运货。设 P[i] 是从起点到第 i 个仓库的累计盈余（相对平均值），沿顺时针方向时每条边上的流量都可以写成 P[i]+c，c 是同一个常数，总费用就是所有边的流量之和。",
+      "只能单向运，要求每条边的流量都非负，即 c≥−min(P)；c 越小费用越低，所以取 c=−min(P)，顺向费用为 sum(P)−n·min(P)。逆向同理，流量为 c−P[i]，需 c≥max(P)，费用为 n·max(P)−sum(P)。两个方向取较小者。允许双向流动的中位数公式在这里不适用。",
+      "先求平均值；从左到右累计 P（包括最后的 0），同时记录 P 的总和、最小值（初值 0）和最大值（初值 0）；输出 min(总和 − n×最小值, n×最大值 − 总和)。中间量可能超出 64 位有符号整数的范围，要用更宽的整数类型。"
+    ],
+    "en": [
+      "Goods can only flow in one direction around the ring. Let P[i] be the cumulative surplus, relative to the average, from the start through warehouse i; going clockwise, the flow on each edge can be written as P[i]+c with one shared constant c, and the total cost is the sum of all edge flows.",
+      "One-way transport requires every flow to be non-negative, so c ≥ −min(P); a smaller c costs less, so take c = −min(P), giving a forward cost of sum(P) − n·min(P). In the reverse direction the flows are c−P[i] with c ≥ max(P), costing n·max(P) − sum(P). Take the cheaper direction. The median formula, which allows flow in both directions, does not apply here.",
+      "Compute the average; accumulate P from left to right, including the final 0, while tracking the sum of P, its minimum (starting at 0) and its maximum (starting at 0); print min(sum − n×minimum, n×maximum − sum). Intermediate values can exceed the signed 64-bit range, so use a wider integer type."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the prefix surplus P of each warehouse relative to the average, including the final 0. The minimum cost in the forward direction is sum(P)−n·min(P), and in the reverse direction n·max(P)−sum(P); take the smaller one.\n\n## Proof of correctness\n\nFlow conservation in the forward direction fixes every edge's flow as P[i]+c. Forbidding reverse transport requires every flow to be non-negative, so c≥−min(P), and taking the smallest such c minimizes the cost. Then at least one edge has flow 0, and passing goods forward starting right after that edge actually completes the plan, reaching the lower bound. The reverse direction is the same with flow c−P[i] and c≥max(P). Minimize each direction separately and then choose between them; the median formula, which allows flow in both directions, must not be used.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input; the cost uses 64 bits."
+}

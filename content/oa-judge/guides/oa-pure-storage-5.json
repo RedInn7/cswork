@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-5",
+  "packageChecksum": "ea62307f44f070b67480d670b8c5bf2afc1c3d1f7b2aab7dd80b57f0a600fb63",
+  "sourceContentHash": "0f51e13a9e3070e92bb145c72540ed84bb34ac00c687a8b87b5912d0c8bbae40",
+  "editorialSha256": "ea36554e1147b1ddf022cecbffa65e56c4b810b7a2b5aca40a3ffaa4ca015c6d",
+  "hints": {
+    "zh": [
+      "这五条规则彼此独立，同一位数字可以被多条规则重复计分，所以可以分别计算再相加。",
+      "一次扫描就能处理逐位规则（数字 5 加 2、奇数位加 1）和相邻规则（每对相邻的 33 加 4）；“+1 递增游程”需要把数字串按“后一位恰比前一位大 1”切成极长段；整除 5 只看末位是不是 0 或 5。",
+      "用双指针切游程：i 为段首，j 一直向右推进，直到 s[j] 不等于 s[j−1]+1，然后加 (j−i)²，令 i=j 继续；长度为 1 的段也要加 1。末位为 0 或 5 时再加 6。最多 10^5 位，平方和可达 10^10，用 64 位整数。时间 O(d)。"
+    ],
+    "en": [
+      "The five rules are independent and the same digit may score under several of them, so compute each part separately and add them up.",
+      "One pass handles the per-digit rules (add 2 for each 5, add 1 for each odd digit) and the adjacency rule (add 4 for each adjacent pair 33). The +1 runs require splitting the digit string into maximal segments where each digit is exactly one more than the previous. Divisibility by 5 only depends on whether the last digit is 0 or 5.",
+      "Split runs with two pointers: i is the start of a segment and j moves right until s[j] is not s[j-1] + 1; then add (j - i)^2 and continue with i = j. A segment of length 1 also adds 1. Add 6 if the last digit is 0 or 5. With up to 10^5 digits the sum of squares can reach 10^10, so use 64-bit integers. Time O(d)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the digit string and accumulate the scores for digit 5, odd digits and adjacent 33 pairs; then split it into maximal increasing runs wherever adjacent digits do not differ by exactly 1 and add the square of each run length; finally add the divisibility bonus depending on whether the last digit is 0 or 5.\n\n## Correctness\n\nThe per-digit rules are checked once at every digit, so the 5 and odd-digit terms are neither missed nor duplicated; walking over adjacent positions counts exactly all adjacent 33 pairs; the split condition ends a run exactly where adjacent digits do not step up by one, giving all maximal +1 runs; checking the last digit is equivalent to the decimal number being divisible by 5. Adding the independent terms matches the statement.\n\n## Complexity\n\nLet d be the number of digits: time O(d), extra space O(d)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-box-3",
+  "packageChecksum": "8c1f48ec015ee5ea3d45fafd31024f051ffd42b2346d34f86952b036e82b4c9e",
+  "sourceContentHash": "e2e2246f16fccaddedc7966dd2bb7c0a8a2da047429444c2dadbfbc9f9a64480",
+  "editorialSha256": "57f0fb20eb134389318457dccd5479255251f4283392b884156cc38e05bfbf2f",
+  "hints": {
+    "zh": [
+      "转盘是环形的，从一个位置到另一个位置只有顺时针和逆时针两种走法，最少步数是两者中较小的那个。",
+      "目标位置为 t、当前位置为 s、环长为 n 时，两个方向的步数分别是 (t−s) mod n 和 (s−t) mod n。目标口味可能出现多次，每一个出现位置都是候选。",
+      "解析输入的 JSON 得到 flavors、startIndex 和 target；遍历所有等于 target 的下标，计算两个方向步数中的较小值，再在所有候选中取最小值输出。"
+    ],
+    "en": [
+      "The carousel is circular, so there are only two ways to get from one position to another, clockwise and counterclockwise, and the minimum number of moves is the shorter of the two.",
+      "With the target at position t, the current position s and ring length n, the two directions take (t - s) mod n and (s - t) mod n steps. The target flavor may appear several times, and every occurrence is a candidate.",
+      "Parse the JSON input to get flavors, startIndex and target. For every index whose flavor equals target, take the smaller of the two directional distances, and print the minimum over all candidates."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTreat flavors as a ring of length n. With the target flavor at index t and the current position startIndex, the clockwise and counterclockwise step counts are (t-startIndex) mod n and (startIndex-t) mod n respectively; take the smaller one. If the same flavor appears several times, take the shortest distance over all target positions.\n\nThe source example input writes target as banana, but its explanation clearly says the target is originalart at index 0 and computes 1 step accordingly. Therefore only the example's target is corrected to originalart, keeping the source output 1; with the original input banana, the correct output according to the statement would be 0.\n\n## Correctness\n\nThe two simple directional paths on the ring have lengths equal to the two distances modulo n; any shortest movement must go in the shorter direction, so the distance is the minimum of the two. If the target name repeats, any of its slots satisfies the request, and the minimum number of steps is the minimum distance over all slots.\n\n## Complexity\n\nOne scan of the flavor array: time O(n), extra space O(1).\n\n## Verification and Source\n\n#3 of the fixed OAMaster snapshot explicitly gives the circular carousel, the startIndex/target parameters, and the solution min(|t-startIndex|, n-|t-startIndex|). The explanation of the original example also explicitly places originalart at index 0 and describes moving left by 1 or right by 3, which directly supports that the target field should be originalart with the answer still 1. This site wraps these three function parameters into a single JSON line as standard input; the input format has the same semantics as the function problem.\n\nLocally, the formula was independently verified on 54 example/random inputs, and two wrong programs that run normally were used for validation: one that does not wrap around the ring, and one that counts the current position as a step. The candidate has not yet been verified in the official server sandbox."
+}

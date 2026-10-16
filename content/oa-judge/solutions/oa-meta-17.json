@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-17",
+  "packageChecksum": "5c64b0a950a8df6c048563cf5a74323035bb1f5f034529f5c923c5d5c4282308",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    int left = 0, right = n - 1;\n    // Keep a range that always contains a peak: climb towards the larger neighbour.\n    while (left < right) {\n        int middle = (left + right) / 2;\n        if (a[middle] < a[middle + 1]) left = middle + 1;\n        else right = middle;\n    }\n    printf(\"%d\\n\", left);\n}\n",
+      "sha256": "9ee99b3e551e8aada30568c221656c2ddc9d87b80e4a5f71601e5c7fe1be01e7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        int left = 0, right = n - 1;\n        // Keep a range that always contains a peak: climb towards the larger neighbour.\n        while (left < right) {\n            int middle = (left + right) / 2;\n            if (a[middle] < a[middle + 1]) left = middle + 1;\n            else right = middle;\n        }\n        System.out.println(left);\n    }\n}\n",
+      "sha256": "782110a0b83fd2f6a5f54ef4cf968725a648b6150aa1b707bcf144aa417cc5e4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tleft, right := 0, n-1\n\t// Keep a range that always contains a peak: climb towards the larger neighbour.\n\tfor left < right {\n\t\tmiddle := (left + right) / 2\n\t\tif a[middle] < a[middle+1] {\n\t\t\tleft = middle + 1\n\t\t} else {\n\t\t\tright = middle\n\t\t}\n\t}\n\tfmt.Println(left)\n}\n",
+      "sha256": "119830e09db98a43615acb1fd7fe62f8456634edd9c7228a1a94f8bc9bc2886b"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-susquehanna-international-group-2",
+  "packageChecksum": "853dd5a3a8c388df0c58133438a7bb7f9e8565b423a36f00f4203b773734abe5",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    a = data[1:1 + n]\n    b = data[1 + n:1 + 2 * n]\n    # a[i]-b[j] == a[j]-b[i]  <=>  a[i]+b[i] == a[j]+b[j]\n    cnt = {}\n    ans = 0\n    for x, y in zip(a, b):\n        key = int(x) + int(y)\n        c = cnt.get(key, 0) + 1\n        cnt[key] = c\n        ans += c  # pairs (i, j) with i <= j ending at j, including i == j\n    print(ans)\n\n\nmain()\n",
+      "sha256": "b5ed2630f07f464bce79c5995edd98a115ac1a08e229a00a7216991f9e0b2e76"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // a[i]-b[j] == a[j]-b[i]  <=>  a[i]+b[i] == a[j]+b[j]\n        HashMap<Long, Integer> cnt = new HashMap<>(4 * n + 16);\n        long ans = 0;\n        for (int i = 0; i < n; i++) {\n            long key = a[i] + nextLong();\n            int c = cnt.merge(key, 1, Integer::sum);\n            ans += c; // pairs (i, j) with i <= j ending at j, including i == j\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "9547ba03bb3399c8f25d6731821923459d015f13e66e5c53985e7a949638b570"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// a[i]-b[j] == a[j]-b[i]  <=>  a[i]+b[i] == a[j]+b[j]\n\tcnt := make(map[int]int, n)\n\tans := 0\n\tfor i := 0; i < n; i++ {\n\t\tkey := a[i] + readInt()\n\t\tcnt[key]++\n\t\tans += cnt[key] // pairs (i, j) with i <= j ending at j, including i == j\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "0a4e6accba67382a97d70537fa28513edf8f582e25bcb143767ee2705322dd90"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-crusoe-1",
+  "packageChecksum": "4a25d52176c3206889c670c0231c1357e93378ec7d46faa7e2505af025a17a00",
+  "sourceContentHash": "d94172a0fcc92fa3d7fc98c4b56fa74d236f3469b24a9a7e0ea09165ff4d77b9",
+  "editorialSha256": "892c3c2baaac9fe3e87b4dbca0dcc7ebaa0e55f467d883f4882958895ae63d3f",
+  "hints": {
+    "zh": [
+      "每一天的结果分两步决定：先看是否被至少一个 usage = 1 的区间覆盖（usage = 0 的区间什么也不改），再看是否落在某个 override 区间里；override 优先级最高。",
+      "“是否被覆盖”只需要覆盖次数是否大于 0，可以用差分数组：区间 [l, r] 在 l 处加一、r+1 处减一，前缀和就是每天的覆盖数。override 两两不重叠，所以逐格写入它们的值总代价只有 O(D)。",
+      "开长度 D+2 的差分数组处理 usage 区间；再开一个初始为“无 override”的数组，把每个 override 区间内的天直接写成其值；最后从第 1 天到第 D 天累加前缀和，若该天有 override 就输出 override 值，否则输出覆盖数是否大于 0，拼成长度 D 的 0/1 字符串。"
+    ],
+    "en": [
+      "Each day is decided in two steps: first whether at least one usage = 1 interval covers it (usage = 0 intervals change nothing), then whether it lies in an override interval, which has the highest priority.",
+      "Coverage only matters as \"count greater than 0\", so a difference array works: add one at l and subtract one at r + 1 for each interval [l, r], and the prefix sums give the coverage of each day. Overrides never overlap, so writing their values cell by cell costs only O(D) in total.",
+      "Use a difference array of length D + 2 for the usage intervals, and a separate array initialized to \"no override\" in which every day of each override interval is set to its value. Then sweep days 1..D with a running prefix sum, printing the override value if one exists and otherwise whether the coverage is positive, building a 0/1 string of length D."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor Usage, use a difference array to check whether the coverage count is greater than 0; each override directly overwrites its closed interval. A day-by-day simulation serves as an independent oracle. Time O(D+U+total covered override length), space O(D).\n\n## Proof of correctness\n\nThe prefix sum of the difference array on each day equals the number of usage intervals with value 1 that cover the day, and whether it is greater than zero is the default state. Overrides are disjoint and have the highest priority, so replacing the default state with the override value day by day gives exactly the final state.\n\n## Complexity\n\nIntervals must be fully inside the timeline; overlap between usage intervals is allowed.\n\nO(D + U + O) time and O(D) space; override intervals are disjoint.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));p=0;D=z[p];p+=1;U=z[p];p+=1;diff=[0]*(D+2)\n for _ in range(U):\n  l,r,v=z[p:p+3];p+=3\n  if v:diff[l]+=1;diff[r+1]-=1\n O=z[p];p+=1;over=[None]*(D+1)\n for _ in range(O):\n  l,r,v=z[p:p+3];p+=3\n  for i in range(l,r+1):over[i]=v\n cur=0;out=[]\n for i in range(1,D+1):\n  cur+=diff[i];out.append(str(int(cur>0) if over[i] is None else over[i]))\n return ''.join(out)\n```"
+}

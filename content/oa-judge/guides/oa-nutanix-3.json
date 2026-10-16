@@ -1,0 +1,19 @@
+{
+  "id": "oa-nutanix-3",
+  "packageChecksum": "d7486038320d7945a205b70c56d05e3315932e34f6854b3141eb6121be1d132a",
+  "sourceContentHash": "6d69c5cc21d71e434d4091c13a4317bd6d03587c295d2ef526ebd64a19dee193",
+  "editorialSha256": "8d6fddbb32cadb0587e5e9482b109379f0e1ca680af9b408a8c1be67b385da82",
+  "hints": {
+    "zh": [
+      "要让任意两点之间恰好有一条简单路径，选出的边必须构成一棵树，所以这就是在完全图上求最小生成树，边权是曼哈顿距离。",
+      "n 最多 1000，完全图约 50 万条边；不必把边都列出来排序，用不带堆的稠密 Prim 就能 O(n²) 完成：每轮把离当前树最近的点并进来。",
+      "维护 best[i] 表示点 i 到当前树的最小距离，起点设为 0、其余为无穷大。共做 n 轮：在未加入的点里挑 best 最小的点 u，把 best[u] 加进答案并标记 u；再用 u 到每个未加入点的曼哈顿距离去更新它们的 best。答案可能超过 32 位，用 64 位整数累加。"
+    ],
+    "en": [
+      "For every pair of points to have exactly one simple path, the chosen edges must form a tree, so this is a minimum spanning tree on the complete graph with Manhattan distances as edge weights.",
+      "With n up to 1000 the complete graph has about half a million edges. Instead of listing and sorting them, run dense Prim without a heap in O(n^2): each round adds the point closest to the current tree.",
+      "Keep best[i], the smallest distance from point i to the current tree: 0 for the start point, infinity for the rest. Repeat n times: among the points not yet added, pick u with the smallest best, add best[u] to the answer and mark u; then update best of every unadded point with its Manhattan distance to u. The total can exceed 32 bits, so sum it in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun dense Prim on the complete graph: each time, add the unvisited point closest to the current tree, and update the other points' minimum Manhattan distances.\n\n## Proof of correctness\n\nIn each round Prim picks the minimum edge crossing between the current spanning tree and the set of unvisited points. Adding that edge cannot create a cycle; after the update, every unvisited point still holds its minimum edge weight to the tree. After n rounds the result is a minimum spanning tree.\n\n## Complexity\n\nTime O(n^2), space O(n)."
+}

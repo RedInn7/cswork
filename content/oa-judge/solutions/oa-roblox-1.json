@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-1",
+  "packageChecksum": "b249e7311b28660828dac731966193916ff6a7fe7e75a3473bebc4bc3114eca2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int q;\n    scanf(\"%d\", &q);\n    // Run length stored at each run's endpoints (and at each newly built house).\n    unordered_map<int, int> len;\n    len.reserve(q * 2 + 1);\n    int best = 0;\n    string out;\n    for (int i = 0; i < q; i++) {\n        int x;\n        scanf(\"%d\", &x);\n        auto l = len.find(x - 1), r = len.find(x + 1);\n        int left = l == len.end() ? 0 : l->second, right = r == len.end() ? 0 : r->second;\n        int length = left + right + 1;\n        len[x] = len[x - left] = len[x + right] = length;\n        best = max(best, length);\n        if (i) out += ' ';\n        out += to_string(best);\n    }\n    puts(out.c_str());\n}\n",
+      "sha256": "7c232ea31b224d33c688e90cd3d8fcd76b0031579c9030af90c7fc91a14cadbf"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int q = Integer.parseInt(st.nextToken());\n        // Run length stored at each run's endpoints (and at each newly built house).\n        HashMap<Integer, Integer> len = new HashMap<>(q * 4);\n        int best = 0;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            int x = Integer.parseInt(st.nextToken());\n            int left = len.getOrDefault(x - 1, 0), right = len.getOrDefault(x + 1, 0);\n            int length = left + right + 1;\n            len.put(x, length);\n            len.put(x - left, length);\n            len.put(x + right, length);\n            best = Math.max(best, length);\n            if (i > 0) sb.append(' ');\n            sb.append(best);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "2de41113c2213f58f1fbb5e2904b1233ac92bbee7ac16f0509119521b2f16a27"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tq := next()\n\t// Run length stored at each run's endpoints (and at each newly built house).\n\tlength := make(map[int]int, 2*q)\n\tbest := 0\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\tx := next()\n\t\tleft, right := length[x-1], length[x+1]\n\t\tl := left + right + 1\n\t\tlength[x], length[x-left], length[x+right] = l, l, l\n\t\tbest = max(best, l)\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(best))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "de9289b2426d056061e29e0d46f2ab87afd6514cd84c58d0cc3275cb95aa837e"
+    }
+  ]
+}

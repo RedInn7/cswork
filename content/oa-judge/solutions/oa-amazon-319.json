@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-319",
+  "packageChecksum": "7032287246fd6462f80d040d5162a6630f04625cf49f1a4420858533726f5b3e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    string s; cin >> s;\n    int n = s.size(), last = -1, keep = n;\n    for (int j = 0; j < n; j++) {\n        if (s[j] == s[0]) last = j;  // nearest original first character so far\n        if (s[j] == s[n - 1] && last >= 0) keep = min(keep, j - last + 1);\n    }\n    cout << n - keep << \"\\n\";\n}\n",
+      "sha256": "3c6dbe80a799d5d0948b68489358642d481d96604bc4198c4b294cbefccfb097"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        String s = new FastReader().next();\n        int n = s.length(), last = -1, keep = n;\n        char first = s.charAt(0), end = s.charAt(n - 1);\n        for (int j = 0; j < n; j++) {\n            char c = s.charAt(j);\n            if (c == first) last = j;  // nearest original first character so far\n            if (c == end && last >= 0) keep = Math.min(keep, j - last + 1);\n        }\n        System.out.println(n - keep);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "b3b73997bb36ff6e9805bfc4d20065d357e24b651e34048ade0f683a5a347a73"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\ts := readToken()\n\tn := len(s)\n\tlast, keep := -1, n\n\tfor j := 0; j < n; j++ {\n\t\tif s[j] == s[0] { // nearest original first character so far\n\t\t\tlast = j\n\t\t}\n\t\tif s[j] == s[n-1] && last >= 0 {\n\t\t\tkeep = min(keep, j-last+1)\n\t\t}\n\t}\n\tfmt.Println(n - keep)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "a9d0dd9bb45dc6ebd7f7436b38de085e8754620a5b1579eb271ee780202b9a7f"
+    }
+  ]
+}

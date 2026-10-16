@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-22",
+  "packageChecksum": "c11b83aee84c851763b518deb16334f1886c4843af53abc0c9b7c57e31ff4b83",
+  "sourceContentHash": "42852f242f5f7771f4d9d570eb130955d13480a2adafb294da56f1c836f21bc7",
+  "editorialSha256": "1348d24c8d2c4ae72f801b0dc203ef97b261e7ebdc8de1bdd7f7192b81a0dd39",
+  "hints": {
+    "zh": [
+      "区间异或不能直接作用在区间和上，但如果把每个数拆成 20 个二进制位，区间里某一位被异或 1 时，这一位上 1 的个数就变成“区间长度减原个数”，区间和也随之确定。",
+      "用带懒标记的线段树：每个结点维护 20 个位上 1 的个数和区间和，懒标记是一个 20 位的异或掩码；两次异或同一位会抵消，所以懒标记之间直接异或合并。",
+      "建树时叶子按位填计数和数值，内部结点相加；整段异或 z 时，对 z 的每个置位 b，令 cnt[b]=len−cnt[b]，区间和加上 (len−2×原cnt[b])×2^b，并把 z 异或进懒标记；访问子结点前下推标记；查询时累加覆盖结点的和，用 64 位整数输出。"
+    ],
+    "en": [
+      "An interval XOR cannot be applied to an interval sum directly. But if each number is split into its 20 binary bits, then XORing a whole interval at bit b turns the count of 1s at that bit into the interval length minus the old count, and the interval sum follows from those counts.",
+      "Use a segment tree with lazy propagation: each node stores the count of 1s at each of the 20 bits and the interval sum, and the lazy tag is a 20-bit XOR mask. Flipping the same bit twice cancels out, so tags combine by XOR.",
+      "Build leaves from each value's bits and sum the children for internal nodes. To XOR a whole node by z, for every set bit b of z set cnt[b]=len-cnt[b], add (len-2*oldcnt[b])*2^b to the sum, and XOR z into the lazy tag; push tags down before visiting children. A query adds up the sums of the covering nodes; use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDecompose the rock masses into 20 binary bits. Each segment tree node maintains the number of 1s at each bit, the interval sum, and a 20-bit lazy XOR mask. When a whole segment is XORed, for every bit set in the mask, flip that bit's count to the interval length minus the original count; the sum is adjusted by the corresponding change of 2^bit. An interval sum query reads the node sums directly. Lazy tags can be combined by XOR, because flipping the same bit twice restores it.\n\n## Correctness\n\nFor a leaf, the bit counts exactly describe the single mass. Merging nodes adds the counts, so internal nodes are exact as well. If a whole segment is XORed at some bit, items that had 0 become 1 and items that had 1 become 0, so the new number of 1s is the length minus the original number of 1s; the sum is updated simultaneously from the change of each bit. Combining XOR masks is associative and self-inverse, so after a push the children's state is equivalent to applying the operation to the whole segment. Hence after every update the tree always represents the current array, and a range query combining the covering nodes gives the exact sum.\n\n## Complexity\n\nBuilding takes O(20n); each operation takes O(20 log n) in the worst case; space O(20n). Masses and z are below 2^20, so after XOR they can still be represented with 20 bits; interval sums use Python's arbitrary-precision integers."
+}

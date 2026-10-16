@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-14",
+  "packageChecksum": "c00c5132986ee0be2e6610fdfddc3aad1ef659463436428b61c9bb5fe0adef4f",
+  "sourceContentHash": "73e676cc56fbedcc7187d65d0043023a6bb2d5d5a0539ce6e3ab5ef7964acfcb",
+  "editorialSha256": "de94dab1124299cd7460c103b1f98347b2ffc0159088dbe340030279295e99c7",
+  "hints": {
+    "zh": [
+      "每个 0 至少要填 1，所以一排的最小可能和是“原和 + 0 的个数”。含 0 的那一排还能把和调到任意更大的整数，而不含 0 的那一排和是固定的。",
+      "两排能共同达到的和必须不小于两个最小和中的较大者；含 0 的排可以只加大某一个填入值来凑到这个目标。所以候选答案就是两个最小和的较大值，只需检查固定排是否恰好等于它。",
+      "分别统计两排的和与 0 的个数，算出 sa = 和A + 零A、sb = 和B + 零B，令 target = max(sa, sb)；若某排没有 0 且它的和不等于 target，输出 -1，否则输出 target。和最大约 10^9 级，用 64 位整数。"
+    ],
+    "en": [
+      "Every 0 must become at least 1, so a row's smallest possible sum is its original sum plus its number of zeros. A row with a 0 can then be raised to any larger integer, while a row without zeros has a fixed sum.",
+      "A common sum must be at least the larger of the two minimum sums, and a row with a 0 can reach that target by increasing just one filled value. So the only candidate is the larger minimum sum; you only need to check that a fixed row equals it.",
+      "Compute each row's sum and number of zeros, let sa = sumA + zerosA and sb = sumB + zerosB, and target = max(sa, sb). If some row has no zeros and its sum differs from target, print -1; otherwise print target. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFilling every 0 in a row with 1 gives that row's minimum sum; a row containing a 0 can be raised to any larger integer, while a row without zeros has a fixed total. Take the larger of the two minimum sums, then check whether any fixed row equals it.\n\n## Proof of correctness\n\nEvery 0 becomes at least 1, so the computed value is a lower bound for that row; if the row has a 0, increasing just one of them reaches any sum not smaller than the lower bound. If the row has no 0, its sum cannot change. The smallest value common to the two reachable sets is exactly the larger lower bound; if a fixed row does not match it, the intersection is empty.\n\n## Complexity\n\nO(n+m) time and O(1) extra space besides the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-hsbc-3",
+  "packageChecksum": "861372e3ea71836d831590c327b7094e72f442d7c19ae29bb1f68a5b4b119e91",
+  "sourceContentHash": "bc491c62512372ce7be7577a7bddababee74bfcb3e6c5f6a6e16ba8ae3e85292",
+  "editorialSha256": "7ec24a19df8a58346f0764d81e65400f28f828f440bbe864a53f173a2ea2f728",
+  "hints": {
+    "zh": [
+      "每个屋顶格子恰好属于一个四连通分量（一栋房屋），房屋面积就是分量的格子数，对角线不算相连。",
+      "对每个还没访问过的 1 做一次 BFS 或 DFS，就能完整走遍它所在的房屋并数出格子数。",
+      "用访问标记数组扫描整个网格；遇到未访问的 1 就从它出发只沿上下左右扩展到值为 1 的未访问格子，统计个数并更新最大值。没有 1 时答案是 0。网格最多 2×10⁵ 格，用队列或显式栈避免递归过深。"
+    ],
+    "en": [
+      "Every roof cell belongs to exactly one 4-connected component (one house), and a house's area is the number of its cells; diagonal cells are not connected.",
+      "Running one BFS or DFS from each unvisited 1 visits its whole house and counts its cells.",
+      "Scan the grid with a visited array; at each unvisited 1, expand only up, down, left and right to unvisited cells with value 1, count them and update the maximum. With no 1 the answer is 0. The grid has up to 2×10^5 cells, so use a queue or an explicit stack instead of deep recursion."
+    ]
+  },
+  "explanationEn": "## Idea\n\nRun a 4-directional BFS/DFS from every 1 not yet visited, count the size of that connected component and update the maximum.\n\n## Proof of correctness\n\nEvery 1 belongs to exactly one 4-connected component, and the BFS visits exactly that component; the maximum of all component sizes is what the problem asks for.\n\n## Complexity\n\nO(nm) time, O(nm) space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/hsbc#3-find-largest-house-area; the connectivity rule of the original problem is clear; this site adds the grid size and the result for a grid without houses."
+}

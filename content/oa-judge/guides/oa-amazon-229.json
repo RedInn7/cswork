@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-229",
+  "packageChecksum": "d214eb4fe7c4537f8d0559fc2a96432afedc779b545fb473654bae3e30bc9169",
+  "sourceContentHash": "ca01bec4abd895004e5f22d02c89bca083ba9ae6c0f59dee6d814e8fa0060a70",
+  "editorialSha256": "397ad5521972e2aeb73874c907a6bc46eb1f30c3ee816676f7e8f31253e54fe2",
+  "hints": {
+    "zh": [
+      "总件数除以 C 向上取整、最大类别件数除以 L 向上取整，都是车辆数的显然下界。",
+      "包裹可以逐件独立分配，一类可以分散到多辆车；只要车数同时满足这两个下界，就总能凑出每车总量不超过 C、每类不超过 L 的装法，所以答案就是两者较大值。",
+      "读入时累加总件数并记录最大类别件数；分别计算 ⌈总数/C⌉ 和 ⌈最大值/L⌉，输出较大者；全部为 0 时两项都为 0。总数可达 2×10^14，用 64 位整数。"
+    ],
+    "en": [
+      "The total count divided by C rounded up and the largest category divided by L rounded up are both obvious lower bounds on the number of trucks.",
+      "Packages are assigned one by one and a category may be spread over many trucks; whenever the number of trucks meets both bounds, a loading with at most C per truck and at most L per category per truck always exists, so the answer is the larger bound.",
+      "While reading, sum the counts and track the largest category; compute ceil(total/C) and ceil(max/L) and output the larger; when everything is 0 both terms are 0. The total can reach 2*10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the larger of the total count divided by C rounded up and the largest category count divided by L rounded up.\n\n## Proof of correctness\n\nBoth terms are obviously lower bounds. Let the number of trucks m satisfy both. In the network where each category sends to every truck with capacity L and each truck sends to the sink with capacity C, everything can be loaded: for any subset S of categories, the required amount sum(S) <= min(total, |S|*m*L) <= m*min(C, |S|*L), which satisfies the cut condition of the complete bipartite capacity network. An integral flow gives a valid item-by-item loading, so the lower bound suffices.\n\n## Complexity\n\nTime O(n), space O(n) including the input; the answer uses 64-bit integers."
+}

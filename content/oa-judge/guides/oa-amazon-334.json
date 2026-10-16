@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-334",
+  "packageChecksum": "a1a31bda73c74df1e9985290add7fb33c5ef6381ffb53012d7622f7b3dee7082",
+  "sourceContentHash": "9f29a8a1111672d16ebd6dd1f9b813ff62369df1ebbbbda7dfaec6cb3c7b6d17",
+  "editorialSha256": "db142937d76b6fd6a321a15d853a94e86e330f44983e02f2baf792db2634f779",
+  "hints": {
+    "zh": [
+      "看相邻差d[i]=a[i]−a[i−1]：整体加1不改变任何差；前缀减1只改变它右边界处的那个差；后缀减1只改变它左边界处的那个差。终态所有差都为0。",
+      "每个负差（下降）只能靠在它左侧结束的前缀减1来抹平，每个正差（上升）只能靠从它开始的后缀减1来抹平，所以至少需要P（下降总量）+Q（上升总量）次。做完之后数组变成常数a[0]−P。",
+      "一次遍历累加P和Q；常数c=a[0]−P为正时再做c次整段的前缀减1，为负时做−c次整体加1。答案为P+Q+|a[0]−P|，用64位整数。"
+    ],
+    "en": [
+      "Look at the adjacent differences d[i]=a[i]−a[i−1]: adding 1 to everything changes no difference; a prefix decrement changes only the difference at its right boundary; a suffix decrement changes only the difference at its left boundary. In the final state every difference is 0.",
+      "Each negative difference (a drop) can only be flattened by prefix decrements ending just to its left, and each positive difference (a rise) only by suffix decrements starting at it, so at least P (total drop) + Q (total rise) operations are needed. After these, the array becomes the constant a[0]−P.",
+      "Accumulate P and Q in one pass. If the constant c=a[0]−P is positive, use c more full-length prefix decrements; if it is negative, use −c whole-array increments. The answer is P+Q+|a[0]−P|, computed with 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet P be the total of the adjacent decreases and Q the total of the adjacent increases. Removing all interior differences needs at least P matching prefix decrements and Q matching suffix decrements, after which every temperature equals a[0]−P; the answer is P+Q+abs(a[0]−P).\n\n## Proof of correctness\n\nAn interior difference d[i]=a[i]−a[i−1] can only be increased by a prefix decrement ending at i−1, or decreased by a suffix decrement starting at i. A negative difference needs at least −d[i] prefix operations and a positive one at least d[i] suffix operations, P+Q in total. Afterwards the array is the constant c=a[0]−P, and |c| whole-array raise or lower operations finish the job. Extra interior operations must come in pairs at some boundary, adding 2z operations and lowering the constant by another z, so the total cost is ≥P+Q+2z+|c−z|≥P+Q+|c|; therefore the construction reaches the global lower bound.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding input; the result uses 64 bits."
+}

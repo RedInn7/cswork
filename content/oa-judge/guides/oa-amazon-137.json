@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-137",
+  "packageChecksum": "fe761d6b28528eab2d833ec4d1d1cc5f12b56e37918f23b5bb8f43115ad66623",
+  "sourceContentHash": "1cf402a20c025cb449ba5eaee165c3b2caab53ab19a952932fbd41a38d295676",
+  "editorialSha256": "08419b69cf0b19705b934e9712832a301587b1f33d48f8ac17bff372199663cd",
+  "hints": {
+    "zh": [
+      "请求必须按顺序访问，每一段的起点和终点都是确定的，所以总时间就是各段最短时间之和，段与段之间没有取舍。",
+      "环上两站之间只有顺时针、逆时针两条不绕圈的路径，长度之和是周长；用边长前缀和得到顺向距离 d，另一方向是周长减 d，取较小者。",
+      "求前缀和 prefix 与周长 total，当前站 at=0；依次读入请求站 s（转成 0 起点），d=|prefix[s]-prefix[at]|，答案加上 min(d,total-d)，再令 at=s。答案用 64 位整数。"
+    ],
+    "en": [
+      "Requests must be visited in order, so every leg has a fixed start and end; the total time is the sum of the shortest time of each leg, and legs do not interact.",
+      "Between two stations on a ring there are only two non-looping paths, clockwise and counterclockwise, whose lengths add up to the perimeter; prefix sums of the edge lengths give the forward distance d, the other direction is the perimeter minus d, and you take the smaller.",
+      "Build prefix and the perimeter total, start with at = 0; for each requested station s (converted to 0-based) compute d = |prefix[s] - prefix[at]|, add min(d, total - d) to the answer, and set at = s. Use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrefix sums give the distance d along the forward unrolling; choose min(d, (total perimeter) - d) for each leg and update the current station.\n\n## Correctness\n\nBetween consecutive requests the drone must go from a fixed start to a fixed end, and on a ring with positive edge weights the shortest path is one of the two simple arcs. Every leg's endpoint is fixed, so there is no trade-off across legs; choosing the shortest for each and adding them up is globally optimal.\n\n## Complexity\n\nTime O(m+q), space O(m+q)."
+}

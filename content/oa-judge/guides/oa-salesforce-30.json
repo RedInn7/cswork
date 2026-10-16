@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-30",
+  "packageChecksum": "0a085dd0b2840617c81e2909acdfa97e42b64f8d483d57a3c20dd8e5a7c4bfcb",
+  "sourceContentHash": "e17a55a74bce96501425b1be56300c6ca200111d7b053850985bf610d9515988",
+  "editorialSha256": "5d8992be51f8fee6fb814533b8e56db3409c4ef67b6d861ac3b0af288bc0dd7c",
+  "hints": {
+    "zh": [
+      "保留下来的数组再删至多一个就严格递增，说明它去掉一个元素后是原数组的一个严格递增子序列；所以能保留多少个元素，取决于原数组最长严格递增子序列的长度 L。",
+      "保留的元素数最多是 L+1：先保留一个最长严格递增子序列，再任意加回一个没选的元素即可，删掉这个额外元素就递增；反过来保留更多一定会导致去掉一个后仍有长于 L 的递增子序列，矛盾。因此答案是 max(0, n−L−1)。",
+      "用经典的 O(n log n) 方法求严格 LIS：维护 tails 数组，tails[i] 为长度 i+1 的递增子序列的最小结尾；对每个数 x 用二分找第一个 ≥x 的位置（严格递增要用 lower_bound），替换或追加；最后输出 max(0, n−len(tails)−1)。"
+    ],
+    "en": [
+      "If the kept array becomes strictly increasing after deleting at most one more element, then without that element it is a strictly increasing subsequence of the original array. So how many elements you can keep depends on the length L of the longest strictly increasing subsequence.",
+      "At most L+1 elements can be kept: keep one longest strictly increasing subsequence and add back any one unused element; deleting that extra element leaves an increasing array. Keeping more would leave an increasing subsequence longer than L after one deletion, a contradiction. So the answer is max(0, n-L-1).",
+      "Compute the strict LIS in O(n log n): keep an array tails where tails[i] is the smallest tail of an increasing subsequence of length i+1. For each x, binary search the first position with a value >= x (lower_bound, because the order is strict) and replace it or append. Print max(0, n-len(tails)-1)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the length L of the longest strictly increasing subsequence; the answer is max(0,n-L-1).\n\n## Proof of correctness\n\nIf m elements are kept and deleting at most one more makes them increasing, then the original array has an increasing subsequence of length at least m-1, so m<=L+1. Conversely, choose an LIS and add any one unchosen element; deleting that extra element gives an increasing array, which reaches min(n,L+1).\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-5",
+  "packageChecksum": "4ef2931231ca48db336b173c1464e95e2be6571928e30280625cd78fc06a8ccf",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nstring readAll() {\n    string s;\n    char buf[1 << 16];\n    size_t n;\n    while ((n = fread(buf, 1, sizeof buf, stdin)) > 0) s.append(buf, n);\n    return s;\n}\nint main() {\n    string data = readAll();\n    size_t p1 = data.find('\\n');\n    size_t p2 = data.find('\\n', p1 + 1);\n    string a = data.substr(0, p1);\n    string b = data.substr(p1 + 1, p2 == string::npos ? string::npos : p2 - p1 - 1);\n    string out;\n    out.reserve(a.size() + b.size() + 1);\n    for (size_t i = 0; i < max(a.size(), b.size()); i++) {\n        if (i < a.size()) out += a[i];\n        if (i < b.size()) out += b[i];\n    }\n    out += '\\n';\n    cout << out;\n}\n",
+      "sha256": "1dee909f8f97c897d06d7f17ef9eb91cc948becd2bce5c6a7812aa065105f506"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        byte[] data = System.in.readAllBytes();\n        int p1 = 0;\n        while (p1 < data.length && data[p1] != '\\n') p1++;\n        int p2 = p1 + 1;\n        while (p2 < data.length && data[p2] != '\\n') p2++;\n        p2 = Math.min(p2, data.length);\n        int la = p1, lb = Math.max(0, p2 - p1 - 1);\n        byte[] out = new byte[la + lb + 1];\n        int o = 0;\n        for (int i = 0; i < Math.max(la, lb); i++) {\n            if (i < la) out[o++] = data[i];\n            if (i < lb) out[o++] = data[p1 + 1 + i];\n        }\n        out[o++] = '\\n';\n        System.out.write(out, 0, o);\n        System.out.flush();\n    }\n}\n",
+      "sha256": "a06f0cdd2f681ae1e570396cc78bb4e1f09f8323d39fef7cc4e25c2a4dbc755c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"bytes\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tparts := bytes.SplitN(data, []byte(\"\\n\"), 3)\n\ta, b := parts[0], parts[1]\n\tfor i := 0; i < max(len(a), len(b)); i++ {\n\t\tif i < len(a) {\n\t\t\tw.WriteByte(a[i])\n\t\t}\n\t\tif i < len(b) {\n\t\t\tw.WriteByte(b[i])\n\t\t}\n\t}\n\tw.WriteByte('\\n')\n\t_ = strconv.Itoa\n}\n",
+      "sha256": "6e5c55e06825e7dc3939bcdb257056a712e832ebb403e10b5d3c7ff9f7469cd4"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-flexport-7",
+  "packageChecksum": "10210a451b5eaddc0f65a1dfeb8fae25707d730088566578d306afb52e4b1ec9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int a[4][4];\n    for (auto &row : a)\n        for (int &x : row) cin >> x;\n    // dp[c]: smallest total cost of a path ending at column c of the current row.\n    vector<int> dp(a[0], a[0] + 4);\n    for (int r = 1; r < 4; r++) {\n        vector<int> nd(4);\n        for (int c = 0; c < 4; c++) {\n            int best = INT_MAX;\n            for (int k = max(0, c - 1); k <= min(3, c + 1); k++) best = min(best, dp[k]);\n            nd[c] = a[r][c] + best;\n        }\n        dp = nd;\n    }\n    cout << 100 - *min_element(dp.begin(), dp.end()) << \"\\n\";\n}\n",
+      "sha256": "fcf3556c35eeae6b4493b5b8f8d678f246576fdf099b06c5a45a78a3fd5fefed"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int[][] a = new int[4][4];\n        for (int r = 0; r < 4; r++)\n            for (int c = 0; c < 4; c++) a[r][c] = nextInt();\n        int[] dp = a[0].clone();\n        for (int r = 1; r < 4; r++) {\n            int[] nd = new int[4];\n            for (int c = 0; c < 4; c++) {\n                int best = Integer.MAX_VALUE;\n                for (int k = Math.max(0, c - 1); k <= Math.min(3, c + 1); k++) best = Math.min(best, dp[k]);\n                nd[c] = a[r][c] + best;\n            }\n            dp = nd;\n        }\n        System.out.println(100 - Arrays.stream(dp).min().getAsInt());\n    }\n}\n",
+      "sha256": "06035c1e77d608f84dbb2a1f489f4e8d04b54424a7bc9feb2ba119eb73ce93bf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tvar a [4][4]int\n\tfor r := range a {\n\t\tfor c := range a[r] {\n\t\t\ta[r][c] = nextInt()\n\t\t}\n\t}\n\tdp := a[0]\n\tfor r := 1; r < 4; r++ {\n\t\tvar nd [4]int\n\t\tfor c := 0; c < 4; c++ {\n\t\t\tbest := dp[c]\n\t\t\tfor k := max(0, c-1); k <= min(3, c+1); k++ {\n\t\t\t\tbest = min(best, dp[k])\n\t\t\t}\n\t\t\tnd[c] = a[r][c] + best\n\t\t}\n\t\tdp = nd\n\t}\n\tfmt.Println(100 - slices.Min(dp[:]))\n}\n",
+      "sha256": "1173d848ed9519f74156d188e10bd5dcaea67a52adc0ac2e922d3a8f044ae335"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-23",
+  "packageChecksum": "6d383592e1a9394213a042ebc01b0ca91dbdcb18386d66e557716d26e95ef336",
+  "sourceContentHash": "70043df8927abfaff2b86420dff82299073b1d6f9c16e6c9914756fe5b1a526c",
+  "editorialSha256": "5a1c698ae869f59a7fdad4f47f29bc1250f8ae3e6a8afa802b41f5d5c5177c5e",
+  "hints": {
+    "zh": [
+      "没有乘客的叶子永远不必去，可以一层层剥掉；剩下的树里，最外侧的乘客在向内两步的位置就能接到，所以还可以再剥掉两层叶子。剩余树中的每条边都必须走一个来回。",
+      "先用队列反复删除没有乘客的叶子，删到不能再删；然后对剩余的树同时剥去两整层叶子。最后剩下的边数乘以 2 就是答案。",
+      "统计度数；把所有度数不超过 1 且无乘客的节点入队，出队时若仍存活就删除它，对每个存活邻居把剩余边数减 1、度数减 1，若邻居变为无乘客叶子就入队；然后把所有存活且度数不超过 1 的节点作为第一层，连续两轮把当前层全部删除，删除时同样更新边数和度数，度数恰好降为 1 的邻居进入下一层；输出 2×max(0, 剩余边数)。"
+    ],
+    "en": [
+      "A leaf without passengers never needs to be visited, so such leaves can be peeled off layer by layer. In the remaining tree, the outermost passengers can be picked up from two steps further in, so two more layers of leaves can be peeled. Every edge left after that must be walked there and back.",
+      "First use a queue to keep deleting leaves without passengers until none remain. Then peel two full layers of leaves from what is left, all at once per layer. The answer is twice the number of remaining edges.",
+      "Compute degrees. Enqueue every node with degree at most 1 and no passenger; when one is dequeued and still alive, delete it, and for each alive neighbor decrease the remaining edge count and the neighbor's degree, enqueueing the neighbor if it became a leaf without passengers. Then take every alive node with degree at most 1 as the first layer and, for two rounds, delete the whole current layer, updating edges and degrees the same way, with neighbors whose degree drops to exactly 1 forming the next layer. Print 2 * max(0, remaining edges)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst keep peeling leaves without passengers, then peel two layers of leaves at once. Every edge of the remaining tree must be traversed there and back, so the answer is twice the number of remaining edges.\n\n## Correctness\n\nA leaf without passengers does not need to be visited and does not affect picking anyone up. Passengers on the outer side of the remaining tree can be picked up from two steps inward, so two layers are peeled. Each edge further inside has passengers on both sides that cannot be covered from the same side, so it must be crossed. A closed route on a tree walks every edge it uses at least twice, and traversing the remaining tree achieves this lower bound; when there are no edges, staying in place is enough.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

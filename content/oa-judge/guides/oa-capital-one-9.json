@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-9",
+  "packageChecksum": "8258614eac1dc7d7dc062bcd344139499e707a8c5c94f3d43d83b07bfddc159e",
+  "sourceContentHash": "14fc47ff3e0157cb710677863023d6ad9981d72e77bd55155a852b664becfa6d",
+  "editorialSha256": "611ad3b804370fbbd619e423d346b5a8f1f806b73f3c5aa7f43f4dc00ad09ab1",
+  "hints": {
+    "zh": [
+      "对固定的书名 j，所有是它前缀的书名，都恰好在字典树（Trie）中从根走到 j 的路径上结束。",
+      "把所有书名插入 Trie，并在每个书名结束的节点记录它出现的次数；对每个书名，路径上各结束节点的次数之和就是“它的前缀书名”的个数，再减去它自己一次。",
+      "第一遍：逐个插入书名，在终点节点的计数加 1（重复书名也会累加）。第二遍：对每个书名沿 Trie 走一遍，累加经过节点（不含根）的终点计数，然后减 1 去掉与自身配对；所有书名的结果相加就是答案，用 64 位整数保存。"
+    ],
+    "en": [
+      "For a fixed title j, every title that is a prefix of j ends at a node on the trie path from the root to j.",
+      "Insert all titles into a trie and record at each end node how many titles end there; for each title, the sum of those counts along its path is the number of titles that are its prefix, minus one for itself.",
+      "First pass: insert the titles one by one and increment the count at the end node (duplicates add up). Second pass: walk each title through the trie again, summing the end counts of the nodes passed (not the root), then subtract 1 to drop the pair with itself; the sum over all titles is the answer, kept in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInsert every title into a trie and record, at each end node, how many times that complete title occurs. For each title, walk down the trie adding the counts of the end nodes on the path; finally subtract one for the current title itself.\n\n## Correctness\n\nFor a fixed title j, the titles that are prefixes of j correspond exactly to the end nodes on the trie path from the root to j's end. The end counts include the distinct indices of duplicate titles, and subtracting 1 removes only the pairing of j with itself, which matches the requirement i != j.\n\n## Complexity\n\nLet L be the total number of characters in all titles. Building and querying both take O(L), and space is O(L)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-366",
+  "packageChecksum": "079eec1fbd4249cde48560a7d0c5613c9fe4a10a3e95f96e4b56a40fc0b57439",
+  "sourceContentHash": "33ce3405d07c8a3f29462d61d4e4e6118adb676d7d79d685951dbb86de4c08fd",
+  "editorialSha256": "3ad683bd71412a2e3acfe98bad2c137c36270a7939c109fb5f3902a8bbba235f",
+  "hints": {
+    "zh": [
+      "把问号全部去掉，只看固定字符组成的序列：两个相邻固定字符之间那段问号怎么填，只影响这一段。",
+      "相邻两个固定字符相同时，中间全填同一个值，没有变化；不同时至少要变一次，而恰好变一次也能做到；开头和结尾的问号填最近的固定值即可。",
+      "扫描字符串，跳过 ?，记住上一个固定字符；当前固定字符与它不同就计数加一，最后输出计数。"
+    ],
+    "en": [
+      "Drop the question marks and look at the sequence of fixed characters: how a run of ? between two neighboring fixed characters is filled only affects that run.",
+      "If two neighboring fixed characters are equal, fill the run with the same value for zero changes; if they differ, at least one change is needed and exactly one is achievable. Leading and trailing ? copy the nearest fixed value.",
+      "Scan the string, skip ?, remember the previous fixed character, and add one whenever the current fixed character differs from it; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIgnore the ? characters and count only the changes between consecutive characters of the remaining fixed sequence.\n\n## Proof of correctness\n\nIf two consecutive fixed characters differ, at least one change appears between them however the gap is filled; if they are equal, filling the gap with that value gives 0 changes. Between different endpoints, a single switch somewhere is enough; leading and trailing unknown segments take the nearest fixed value, and an all-unknown string can use any single value, so all the independent interval lower bounds are reached at the same time.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

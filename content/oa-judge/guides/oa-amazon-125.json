@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-125",
+  "packageChecksum": "ef8d4ca675c17e5b71f1ea745d01f9c86f75a153c45fd33f3904ad6d71b121a8",
+  "sourceContentHash": "de499c456a1e7d850ea9d0e34daab7f91708d840141862e0f214414e0ccbf6c2",
+  "editorialSha256": "053882df64c603479e864fd84014c05d1bd1ac362e92b8feb85fb4b1d19f6f0a",
+  "hints": {
+    "zh": [
+      "合法子串分两类：整段都是同一个字符；或者首尾是同一个字符，中间是另一种字符组成的一段。",
+      "把字符串压成游程（连续相同字符为一段）。第一类就是在每个游程内任取两个端点；第二类的中间必须恰好是一整个游程，首尾只能是它左右相邻游程里紧挨着的那个字符。",
+      "做游程编码得到 (字符, 长度) 列表；每个长度为 L 的游程贡献 L(L-1)/2；再对每个既有左邻又有右邻的游程，若左右两个游程的字符相同就加 1。答案可能超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "Valid substrings come in two kinds: all characters are the same, or the first and last characters are equal and the middle is a block of one other character.",
+      "Compress the string into runs of equal characters. The first kind is any choice of two endpoints inside one run; for the second kind the middle must be exactly one whole run, and the two ends can only be the adjacent characters of its neighbouring runs.",
+      "Run-length encode into (character, length) pairs; each run of length L contributes L(L-1)/2; then for every run that has both a left and a right neighbour, add 1 when those two neighbouring runs have the same character. The answer can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse run-length encoding. A run of equal characters of length L contributes L(L-1)/2 internally. The case where the two ends differ from the middle character corresponds exactly to three consecutive runs whose outer characters are equal, and each such middle run contributes 1.\n\n## Correctness\n\nSubstrings consisting entirely of one character are all counted by the in-run counts. For any other valid substring the middle must be one complete single run, and each end can only take the one character of the adjacent run that is next to it; this works only when the two sides are equal, and there is no other choice. The two kinds are disjoint and together cover all valid substrings.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

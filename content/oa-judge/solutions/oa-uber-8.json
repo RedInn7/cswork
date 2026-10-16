@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-8",
+  "packageChecksum": "e2c63421a4faf087c737c0d9a49b9623a1800a933304d9b0c77b488bf8cd8c75",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    if (!s.empty() && s.back() == '\\n') s.pop_back();\n    auto vowel = [](char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; };\n    int count = 0, ans = 0;\n    // Sliding window of the last three characters.\n    for (int i = 0; i < (int)s.size(); i++) {\n        count += vowel(s[i]);\n        if (i >= 3) count -= vowel(s[i - 3]);\n        if (i >= 2 && count == 2) ans++;\n    }\n    printf(\"%d\\n\", ans);\n}\n",
+      "sha256": "6946db2c4ba63e0f4e8a55bc097e62c453c09de0e00dd3c50ac618c58c61ae61"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static boolean vowel(char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }\n\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);\n        if (s.endsWith(\"\\n\")) s = s.substring(0, s.length() - 1);\n        int count = 0, ans = 0;\n        // Sliding window of the last three characters.\n        for (int i = 0; i < s.length(); i++) {\n            if (vowel(s.charAt(i))) count++;\n            if (i >= 3 && vowel(s.charAt(i - 3))) count--;\n            if (i >= 2 && count == 2) ans++;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "35888b7c802079787af56d2ad6ab662b14b2a2ce65140ff39c6d54e2e121ebe7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc vowel(c byte) bool { return strings.IndexByte(\"aeiou\", c) >= 0 }\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSuffix(string(data), \"\\n\")\n\tcount, ans := 0, 0\n\t// Sliding window of the last three characters.\n\tfor i := 0; i < len(s); i++ {\n\t\tif vowel(s[i]) {\n\t\t\tcount++\n\t\t}\n\t\tif i >= 3 && vowel(s[i-3]) {\n\t\t\tcount--\n\t\t}\n\t\tif i >= 2 && count == 2 {\n\t\t\tans++\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "c99fb00dfc3b381381a565d57253d87816ea171c8da05516a9f441dccc5821e9"
+    }
+  ]
+}

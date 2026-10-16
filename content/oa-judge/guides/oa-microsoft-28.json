@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-28",
+  "packageChecksum": "bf6f94b187a1bf7cf3c2484323e5c06f3c8bfebebbc75ffec78d27d1f7c4929e",
+  "sourceContentHash": "0f66cbce48fdac40261efdb885be0384b83848e1caf2026c26c1aa5344b9e917",
+  "editorialSha256": "7d2ac935be0995a3ec132c96869e1058c6e495144ddfb89a61a05928d7a7e850",
+  "hints": {
+    "zh": [
+      "每天的耗时只取决于当天保留的第一节和最后一节课；跳过一定数量的课时，最好是保留按时间连续的一段课，跳掉两头的课。",
+      "先对每一天求出 cost[s]：跳过 s 节课时当天的最少在校时间（保留的课是连续的一段，枚举这段的起点）；再把各天看作分组背包，按总跳课数不超过 K 做 DP。",
+      "对每天取出所有有课的小时位置 pos（共 c 节），对 s 从 0 到 min(K,c)：保留 c−s 节，若为 0 则代价为 0，否则代价为所有起点 i（0 到 s）中 pos[i+c−s−1]−pos[i]+1 的最小值。dp[u] 表示目前共跳过 u 节的最少总时间，用每天的 cost 转移成新的 dp，最后取 dp 的最小值。"
+    ],
+    "en": [
+      "A day's time depends only on the first and last classes attended. When skipping a given number of classes that day, it is best to keep a consecutive block of classes and skip those at the two ends.",
+      "First compute cost[s] for every day: the least time at school when skipping s classes (the kept classes form a consecutive block; enumerate its start). Then treat the days as groups in a knapsack and run a DP over the total number of skips, at most K.",
+      "For each day list the hours with a class as pos (c classes in all). For s from 0 to min(K,c), keep c−s classes: the cost is 0 if none are kept, otherwise the minimum of pos[i+c−s−1]−pos[i]+1 over starts i from 0 to s. Let dp[u] be the least total time with u classes skipped so far, build a new dp from each day's costs, and print the minimum of dp at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each day, enumerate the number of skipped classes and find the shortest covering width over the remaining consecutive block of class indices; then run a knapsack over the days on the skip budget.\n\n## Proof of correctness\n\nWith the number of kept classes fixed, if some class between the first and last kept ones is skipped, an inner class can replace an outer one without enlarging the span, so only consecutive blocks of class indices are needed. The days' costs are independent, and the DP over the budget allocation enumerates every skipping plan.\n\n## Complexity\n\nTime O(NM²+NK²), space O(K+M)."
+}

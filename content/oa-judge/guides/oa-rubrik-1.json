@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-1",
+  "packageChecksum": "6fc982e98e6caaa50ee8b795f30f5de513500ee1c11123c79cc11b326026add8",
+  "sourceContentHash": "41010fdfe116f69d0f77dc944e2681ce9ea5b33180e83d20ddf7cf9f72cec537",
+  "editorialSha256": "ab08b68c42949a5eed2129ba9b468c08c5b7cdd413f10f929a1cacd385bcf664",
+  "hints": {
+    "zh": [
+      "合法子串只能由两段相邻的不同字符组成，所以它一定横跨某一对相邻游程（极长连续相同字符段）的分界线。",
+      "把字符串压缩成游程长度序列。对于长度为 p、q 的一对相邻游程，以分界线为中心向两边各取 t 个字符（t=1..min(p,q)），恰好得到 min(p,q) 个合法子串。",
+      "一次扫描即可：维护上一段长度 previous 和当前段长度 current；字符变化时把 min(previous,current) 加进答案，并令 previous=current、current=1；扫描结束后再加一次 min(previous,current)。答案可达约 10^10，用 64 位整数。时间 O(n)，空间 O(1)。"
+    ],
+    "en": [
+      "A valid substring consists of exactly two adjacent blocks of different characters, so it always straddles the boundary between some pair of adjacent runs (maximal blocks of equal characters).",
+      "Compress the string into run lengths. For adjacent runs of lengths p and q, taking t characters on each side of the boundary (t = 1..min(p, q)) gives exactly min(p, q) valid substrings.",
+      "One pass is enough: keep the previous run length previous and the current run length current; when the character changes, add min(previous, current) to the answer and set previous = current, current = 1; after the scan, add min(previous, current) once more. The answer can reach about 10^10, so use 64-bit integers. Time O(n), space O(1)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompress the string into the lengths of runs of equal adjacent characters. Each pair of adjacent runs with lengths p and q forms min(p,q) qualifying substrings.\n\n## Correctness\n\nA valid substring must consist of only two adjacent blocks of different characters, so it corresponds uniquely to one pair of adjacent runs. For two runs of lengths p and q, taking t characters from each run at their boundary gives the valid substrings for t=1..min(p,q), and there are no other valid substrings. Each substring belongs to exactly one run pair without overlap, so the sum is exactly the total.\n\n## Complexity\n\nLet n be the string length. Time O(n), space O(1)."
+}

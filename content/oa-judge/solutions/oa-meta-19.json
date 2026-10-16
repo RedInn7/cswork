@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-19",
+  "packageChecksum": "c18cbf12f356dd5c6ef1f70d085d6d60eea779521f4eb45b85c1aa10f69f57da",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    if (scanf(\"%d %d\", &n, &k) != 2) return 0;\n    vector<int> a(n);\n    for (auto &x : a) scanf(\"%d\", &x);\n    int left = 0, zeros = 0, best = 0;\n    for (int right = 0; right < n; right++) {\n        if (a[right] == 0) zeros++;\n        while (zeros > k) {\n            if (a[left] == 0) zeros--;\n            left++;\n        }\n        best = max(best, right - left + 1);\n    }\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "e9fe8dcea99cd052db4e267aad790cc090af4f44537cf95b31357618e77f29be"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = nextInt();\n        int left = 0, zeros = 0, best = 0;\n        for (int right = 0; right < n; right++) {\n            if (a[right] == 0) zeros++;\n            while (zeros > k) {\n                if (a[left] == 0) zeros--;\n                left++;\n            }\n            best = Math.max(best, right - left + 1);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "48c7d430d4f70cc25416dfbb40ceec43f3cbacc2774b4fe71d44c75c354a04f6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tleft, zeros, best := 0, 0, 0\n\tfor right := 0; right < n; right++ {\n\t\tif a[right] == 0 {\n\t\t\tzeros++\n\t\t}\n\t\tfor zeros > k {\n\t\t\tif a[left] == 0 {\n\t\t\t\tzeros--\n\t\t\t}\n\t\t\tleft++\n\t\t}\n\t\tbest = max(best, right-left+1)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "c9b1129d4161046168f556a804ea6d41d38620cde6d1d3062e0434e83396f4bd"
+    }
+  ]
+}

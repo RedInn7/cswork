@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-13",
+  "packageChecksum": "aec9101fbfb83fe0f4c3d4819a92d9b170b0e11215bca0de094e60a4c42c278e",
+  "sourceContentHash": "9444e70a2d0272df098f4ec31841de57524de6ecf5f9a65ab3add75dd6b8a952",
+  "editorialSha256": "119315e3049bdfc297806f0f161538f72fdf0ff0ff21e836269717e829b67c2e",
+  "hints": {
+    "zh": [
+      "每次操作同时翻转两个数的符号，负数个数的奇偶性永远不变。",
+      "负数为偶数个时可以两两翻转，全部变成非负；为奇数个时至少要留一个负数，留绝对值最小的那个损失最小（借助它可以把其余负号都两两消掉）。",
+      "求所有绝对值之和 S、负数个数和最小绝对值 m；负数个数为偶数输出 S，否则输出 S−2m。和可达 2×10¹⁴，用 64 位整数。"
+    ],
+    "en": [
+      "Each operation flips the signs of two numbers at once, so the parity of the number of negative values never changes.",
+      "With an even number of negatives you can flip them in pairs until everything is non-negative; with an odd number at least one value stays negative, and leaving the one with the smallest absolute value loses the least (it can be paired with each remaining negative to clear the rest).",
+      "Compute S, the sum of absolute values, the count of negatives, and m, the minimum absolute value; print S if the count is even, otherwise S−2m. The sum reaches 2×10¹⁴, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA sign flip changes two positions at a time, so the parity of the number of negatives does not change. If the number of negatives is even, all of them can be flipped to positive; if it is odd, keep the element with the smallest absolute value negative.\n\n## Correctness\n\nThe parity of the minus signs is an invariant of the operation. An even number of minus signs can be cancelled in pairs; an odd number leaves at least one. The element with the smallest absolute value causes the smallest loss, so the answer is the sum of absolute values, or that sum minus twice the smallest absolute value.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

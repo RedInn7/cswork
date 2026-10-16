@@ -1,0 +1,19 @@
+{
+  "id": "oa-hudson-river-trading-3",
+  "packageChecksum": "36ca205eda9f090382b7fba5a2913d3baa2e2689a340f508a819195e5269c66c",
+  "sourceContentHash": "6f39a6d3f353ad28359e05867f5cde622533f18cc82ab900005a082145649eed",
+  "editorialSha256": "f27ffeb6cc4604cab27819db315837be897ba43e00fbb57757a61496ec111088",
+  "hints": {
+    "zh": [
+      "四进制下每位只能是 0 或 1，这些数和“二进制串”一一对应。位数为 k 的正 fancy 数首位必须是 1，其余 k−1 位随意，共 2^(k−1) 个。",
+      "把 n 转成四进制，设有 L 位。位数少于 L 的 fancy 数全部小于 n，直接累加；位数等于 L 的，像数位 DP 一样从高位到低位逐位比较。",
+      "若最高位 ≥2，长度为 L 的 fancy 数全部小于 n，再加 2^(L−1)。否则最高位为 1，从第二位起：当前位能选的比 n 这一位小的合法数字有几个（0 和 1 中小于它的个数），就加上“个数 × 2^(剩余位数)”；若这一位本身不是 0 或 1，后面不可能再相等，立即结束。注意严格小于 n，n 本身不计。"
+    ],
+    "en": [
+      "In base 4 every digit must be 0 or 1, so fancy numbers correspond one to one to binary strings. A positive fancy number with k digits must start with 1 and the other k−1 digits are free, giving 2^(k−1) of them.",
+      "Convert n to base 4 with L digits. All fancy numbers with fewer than L digits are below n, so add them directly; for those with exactly L digits, compare digit by digit from the top, as in a digit DP.",
+      "If the top digit is ≥2, every fancy number of length L is below n, so add 2^(L−1). Otherwise the top digit is 1; from the second digit on, add (how many of 0 and 1 are smaller than n's digit there) × 2^(remaining digits), and if that digit is not 0 or 1 nothing later can stay equal, so stop. The count is strictly below n, so n itself is never counted."
+    ]
+  },
+  "explanationEn": "## Idea\n\nConvert n to base 4. First count all valid positive numbers with fewer digits, then go from the highest to the lowest digit counting the combinations where the current digit takes a smaller valid value; the first digit can only be 1.\n\n## Proof of correctness\n\nThere are 2^(k-1) positive fancy numbers with k digits, for every shorter length k. With the same length fixed, the first digit can only be 1; at each digit, first add the valid choices smaller than n's current digit times the number of suffix combinations; if the current digit is not 0/1, a later prefix can no longer be equal, so the process can stop. Hence every valid number smaller than n is counted exactly once.\n\n## Complexity\n\nO(log n) time, O(log n) space.\n\n## Source note\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-42",
+  "packageChecksum": "dfa1813e7b9d01e0cfecc09b0cb0fcba4ed6f733db5db8f9e49ba63f41dfd363",
+  "sourceContentHash": "54bdfd31feefd06e44a00d895d7b659ff38bdd50da41d5baa95da20a47867164",
+  "editorialSha256": "dc5ea2e51a938d22d49edffc520f13b447c6325a5eca750d846655645cf5cc73",
+  "hints": {
+    "zh": [
+      "要让 k 个元素之和最大，只要选中的某个元素比某个未选中的元素小，交换它们就能让和变大。",
+      "所以最优方案就是取最大的 k 个元素；值相同的元素按不同下标分别计算，互换不影响答案。",
+      "把数组从大到小排序，累加前 k 项并输出；总和可达 10¹⁴，必须用 64 位整数。"
+    ],
+    "en": [
+      "To maximise the sum of k elements: whenever a chosen element is smaller than an unchosen one, swapping them increases the sum.",
+      "So the optimal choice is the k largest elements; equal values at different indices count separately, and swapping equal values does not change the answer.",
+      "Sort the array in descending order, add up the first k values and print the sum; it can reach 10^14, so 64-bit integers are required."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort in descending order and sum the first k values using 64-bit integers.\n\n## Correctness\n\nIf a chosen element is smaller than an unchosen element, swapping them increases the total. Therefore an optimal plan can and must take the k largest values (swapping equal values does not affect the answer).\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

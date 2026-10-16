@@ -1,0 +1,19 @@
+{
+  "id": "oa-linkedin-3",
+  "packageChecksum": "903d8ba04677ed003889892d8694ce2b942a442dc6cb0856337188888b3a4df4",
+  "sourceContentHash": "447c48d6cafba6a83e41e3e06716d11dbcbc1b74e63bb59be19f4a73ea289469",
+  "editorialSha256": "1050b580bb892762ee293126f26f3ea7804da07cc7c3685c723842ae58b3f66d",
+  "hints": {
+    "zh": [
+      "可行性对阈值单调：如果只用权值 ≤w 的边就能在 K 条边以内从 1 走到 N，那么任何更大的阈值也一定可以；而且答案一定等于某条边的权值。",
+      "对排序去重后的边权做二分；判断某个阈值 w 是否可行时，只保留权值 ≤w 的边，用 BFS 求 1 到 N 的最少边数，看它是否 ≤K。",
+      "建邻接表并把所有边权排序去重；二分下标区间 [lo, hi]，取 mid 后从结点 1 做 BFS，只走权值 ≤ ws[mid] 的边，深度已达 K 的结点不再扩展；若 N 被访问到且距离 ≤K 则 hi=mid，否则 lo=mid+1；最后输出 ws[lo]。总复杂度 O((N+M) log M)。"
+    ],
+    "en": [
+      "Feasibility is monotone in the threshold: if edges of weight <= w are enough to reach N from 1 within K edges, any larger threshold works too, and the answer is always the weight of some edge.",
+      "Binary search over the sorted, de-duplicated edge weights; to test a threshold w, keep only edges of weight <= w, run BFS for the fewest edges from 1 to N, and check whether that is at most K.",
+      "Build an adjacency list and sort and de-duplicate all weights; binary search an index range [lo, hi]: for mid, run BFS from node 1 over edges of weight <= ws[mid], not expanding nodes already at depth K; if N is reached with distance <= K set hi=mid, else lo=mid+1; print ws[lo]. Total time O((N+M) log M)."
+    ]
+  },
+  "explanationEn": "## Problem\n\nAn undirected weighted graph has nodes 1..N. Among all paths from 1 to N that use at most K edges, make the largest edge weight on the path as small as possible, and output that minimum maximum edge weight. The data guarantees that at least one path with at most K edges exists.\n\n## Approach\n\nThe answer is monotone: if you can go from 1 to N within K steps using only edges of weight ≤w, then any larger threshold also works. So binary search the threshold w over the sorted, de-duplicated edge weights; each time keep only the edges of weight ≤w, use BFS to find the minimum number of edges from 1 to N, and check whether it is ≤K.\n\n## Correctness\n\nIf some path has at most K edges and maximum edge weight w*, then under threshold w* the BFS shortest edge count is ≤K; conversely, the shortest path found by BFS under threshold w uses only edges ≤w, so its maximum edge weight is ≤w. Therefore the minimum feasible threshold equals the answer, and the answer is always the weight of some edge.\n\n## Complexity\n\nO((N+M) log M).\n\n## Independent verification\n\nThe oracle uses a min-max DP layered by edge count: f[k][v] is the smallest possible maximum edge weight for reaching v in exactly k steps, relaxed layer by layer up to layer K, without binary search or BFS. Smaller data additionally enumerates every path with at most K edges (repeated nodes allowed) and directly takes the minimum maximum edge weight. All edge subsets on 3 nodes (weights 1..2) with K=1..2 are enumerated exhaustively, and the reference program is actually run on each one. The wrong solutions cover ignoring K, requiring strictly fewer than K edges, treating the graph as directed, and using DFS depth instead of the minimum number of edges."
+}

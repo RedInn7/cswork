@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-7",
+  "packageChecksum": "fd8de1f4d136a82be410237fc6571e1d71a54d53f8b9dc22e0b00f2856625708",
+  "sourceContentHash": "ba9dd669bb3640eb6c7592e8ce4114137ed091d6cbaf26f6a89cddde485cf36a",
+  "editorialSha256": "f9b3a14b51cf5957cae537aac98366fa34fe2bb3bdbc89aef4f4e266f19eb890",
+  "hints": {
+    "zh": [
+      "每件商品只需要知道“右边第一个价格不高于自己的商品”，这是经典的“下一个更小或相等元素”问题。",
+      "从右往左扫描并维护单调栈：价格比当前商品高的栈顶不可能给当前商品打折，而且已经被当前商品挡住，以后也用不到，可以直接弹出。",
+      "对每件商品，先弹出所有价格高于它的栈顶；栈非空就用自己的价格减去栈顶价格作为售价，栈空则按原价出售并记下下标；然后把它入栈。累加售价得到总额（可能超过 32 位）。原价商品的下标是倒序收集的，输出前要变成升序；第一行输出总额，第二行先输出个数再输出这些下标。"
+    ],
+    "en": [
+      "Each item only needs the first item to its right whose price is not higher than its own, the classic next-smaller-or-equal element problem.",
+      "Scan from right to left with a monotonic stack: a stack top priced higher than the current item can never discount it, and it is now hidden behind the current item, so it will never be needed again and can be popped.",
+      "For each item, pop every stack top priced higher than it; if the stack is not empty the selling price is its price minus the top's price, otherwise it sells at full price and its index is recorded; then push it. Sum the selling prices (this may exceed 32 bits). The full-price indices are collected in reverse, so output them in ascending order: the total on the first line, then the count followed by the indices on the second."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a monotonic stack from right to left; after popping the elements priced higher than the current item, the top of the stack is the first price to the right that is not higher than the current price.\n\n## Proof of correctness\n\nA popped, more expensive item can never discount the current item; it is also blocked by an item further left that is not more expensive, so it is never needed in the future. The top of the stack is therefore exactly the nearest valid discount, and accounting item by item gives the total price.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

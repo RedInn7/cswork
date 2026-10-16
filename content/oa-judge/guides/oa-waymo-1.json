@@ -1,0 +1,19 @@
+{
+  "id": "oa-waymo-1",
+  "packageChecksum": "0426ba431a0e4c1931997742537e3fb0c9b51a99602da81fdb5b260773a302a5",
+  "sourceContentHash": "68aeff686aa01dff96510f204c903d440e5ee10be0e37841a32a4f1c51695813",
+  "editorialSha256": "70c8d4f9828713df0ea50ac62d6cf96f2b95c6ccefb59417c6654954b5b592a7",
+  "hints": {
+    "zh": [
+      "重复组可以嵌套，括号内的内容必须先完整解码，才能被重复 k 次再拼到外层；k 可以是 0，也可能是多位数。",
+      "用栈保存每一层正在构造的字符串：遇到 '(' 压入新的一层，遇到 ')' 弹出这一层，读出后面 {k} 中的次数，把这一层重复 k 次接到外层末尾。",
+      "栈初始只有一个空串；逐字符扫描：字母直接追加到栈顶；'(' 压入空串；')' 弹出栈顶 t，跳过 \"){\"，读连续数字得 k，再跳过 '}'，把 t 追加 k 次到新栈顶；每行编码独立解码，逐行输出。"
+    ],
+    "en": [
+      "Repeat groups can nest: the content inside the parentheses must be fully decoded before it is repeated k times and appended to the outer level; k can be 0 and may have several digits.",
+      "Use a stack holding the string being built at each level: on '(' push a new level, on ')' pop that level, read the count from the following {k}, and append the popped level k times to the end of the outer level.",
+      "Start the stack with one empty string; scan character by character: append letters to the top; push an empty string on '('; on ')' pop the top t, skip \"){\", read the run of digits as k, skip '}', and append t k times to the new top; decode each encoded line independently and print one result per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse an explicit stack to accumulate the content of each level; when a parenthesis closes, append the substring to its parent level the given number of times.\n\n## Proof of correctness\n\nEach group repeats its substring and concatenates it, from the inside out, exactly as defined; reducing with the stack matches the recursive evaluation of the nested grammar.\n\n## Complexity\n\nO(output length) time and space."
+}

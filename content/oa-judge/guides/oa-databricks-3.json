@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-3",
+  "packageChecksum": "4a64a7ec7d0b8c0c897a8513e9d3bd685a9bac000469b608c9ba2b900a452fa6",
+  "sourceContentHash": "a1ea08656410bc1089d51640040823110281eb87619ae0470ca649979b5bbc54",
+  "editorialSha256": "2e9ada87e12838011f77605feaab307e39bafd22f0e19b8aa8acfe2c62062593",
+  "hints": {
+    "zh": [
+      "真的去翻转整个字符串每次要 O(n)，太慢。注意一次全串翻转后，某个前缀里 0 的个数就变成“前缀长度 − 原来 0 的个数”。",
+      "连续翻转两次等于没翻，所以只需记录翻转次数的奇偶。预先算出初始串的 0 前缀和，查询时根据当前是否处于翻转状态，选择原前缀 0 数或前缀长度减去它。",
+      "建立 zero[i+1] = 前 i+1 个字符中 0 的个数；flip 只切换一个布尔标记；count i 时令 z = zero[i+1]，未翻转输出 z，已翻转输出 (i+1) − z。所有答案按顺序空格分隔输出在一行，没有查询时输出空行。"
+    ],
+    "en": [
+      "Actually flipping the whole string costs O(n) each time, which is too slow. Notice that after one full flip, the number of 0s in a prefix becomes the prefix length minus the original number of 0s.",
+      "Flipping twice is the same as not flipping, so only the parity of the number of flips matters. Precompute prefix counts of 0s in the initial string, and for a query choose either the original count or the prefix length minus it, depending on the current state.",
+      "Build zero[i+1] = number of 0s among the first i+1 characters; flip just toggles a boolean; for count i let z = zero[i+1] and print z if not flipped, or (i+1) - z if flipped. Print all answers in order on one line separated by spaces, or an empty line if there are no queries."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute prefix sums of 0s in the initial string. Flipping the whole string only toggles one boolean state; when querying position i, the answer is the original prefix count of 0s if unflipped, or (i+1) minus the original prefix count of 0s if flipped.\n\n## Proof of correctness\n\nThe initial prefix sums record exactly the number of 0s up to each position. A full flip swaps every 0 and 1 within the prefix, so the number of 0s becomes the prefix length minus the original count. Multiple flips depend only on the parity of the number of flips; outputting each operation by this rule is exactly equivalent to actually modifying the whole string and counting again.\n\n## Complexity\n\nO(n+q) time and O(n) space."
+}

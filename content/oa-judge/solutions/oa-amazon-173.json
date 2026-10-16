@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-173",
+  "packageChecksum": "2edabcc79c3db67917bfdd95acc3fd7c6000a3f1f684e1636daeae8b670ae116",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // Collapse runs of equal values.\n    vector<long long> a;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        if (a.empty() || v != a.back()) a.push_back(v);\n    }\n    if (a.size() == 1) {\n        cout << 1 << \"\\n\";\n        return 0;\n    }\n    // Keep both ends and every strict turning point.\n    int answer = 2;\n    for (size_t i = 1; i + 1 < a.size(); i++)\n        if ((a[i] > a[i - 1]) != (a[i + 1] > a[i])) answer++;\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "b038dcdf5ed832fc6b26d2a75b7e968a4cce1523e35d06f9a447eaa1a600fbb6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // Collapse runs of equal values.\n        long[] a = new long[n];\n        int size = 0;\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            if (size == 0 || v != a[size - 1]) a[size++] = v;\n        }\n        if (size == 1) {\n            System.out.println(1);\n            return;\n        }\n        // Keep both ends and every strict turning point.\n        int answer = 2;\n        for (int i = 1; i + 1 < size; i++)\n            if ((a[i] > a[i - 1]) != (a[i + 1] > a[i])) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "23ded59dcb33fefd6d04a2aa9190a4e4f3d2923df713de6a6c0b84bcb60bd9b3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\t// Collapse runs of equal values.\n\ta := make([]int, 0, n)\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tif len(a) == 0 || v != a[len(a)-1] {\n\t\t\ta = append(a, v)\n\t\t}\n\t}\n\tif len(a) == 1 {\n\t\tos.Stdout.WriteString(\"1\\n\")\n\t\treturn\n\t}\n\t// Keep both ends and every strict turning point.\n\tanswer := 2\n\tfor i := 1; i+1 < len(a); i++ {\n\t\tif (a[i] > a[i-1]) != (a[i+1] > a[i]) {\n\t\t\tanswer++\n\t\t}\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "2bcb794a69b54d4adb9f6f24089bb32141580eb762cc9351ab4fd07d33f1d352"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-9",
+  "packageChecksum": "7a399c8ec57e3afbb25d80f0239c0918c5241d875c03788656431a2c701143da",
+  "sourceContentHash": "a4b70bbf1c53c341c24c387c3376ec45b2205d2860e62890a3484037c3d7a48f",
+  "editorialSha256": "c11bef12dbda58d254ab91db1ebcc22107b8675e39ad1ce75b3c34bd4ab9c111",
+  "hints": {
+    "zh": [
+      "固定窗口策略下，一条请求是否放行只取决于它的 key 和它所在的窗口编号 floor(timestamp/window)，不同窗口之间的额度互不影响。",
+      "把每条请求映射为组合键 (key, floor(timestamp/window))，用哈希表记录该组合已经放行的次数即可，不需要保存具体时间戳。",
+      "对每条请求：若该组合的已放行次数小于 limit，就输出 ALLOW 并把计数加一；否则输出 REJECT，计数不变（被拒请求不占额度）。时间戳可能很大，用 64 位整数做除法。所有结果用空格连接成一行输出。总时间期望 O(q)。"
+    ],
+    "en": [
+      "With fixed windows, whether a request is allowed depends only on its key and its window number floor(timestamp / window); quotas of different windows never affect each other.",
+      "Map each request to the combined key (key, floor(timestamp / window)) and count in a hash map how many requests of that combination have been allowed; no individual timestamps need to be stored.",
+      "For each request: if the combination's allowed count is below limit, output ALLOW and increment the count; otherwise output REJECT and leave the count unchanged (rejected requests use no quota). Timestamps can be large, so divide with 64-bit integers. Join all results with spaces on one line. Expected total time O(q)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAmong the strategies the original problem allows, this site chooses fixed windows. Map each request to (key, floor(timestamp/window)) and maintain the number of times that combination has been allowed; if it has not reached limit, allow and increment, otherwise reject.\n\n## Correctness\n\nUnder the fixed-window strategy, each request is affected only by its own key and window number, and the quota is used only by earlier allowed requests of that group. The hash map stores each group's count exactly, so the decisions agree with the definition.\n\n## Complexity\n\nExpected O(1) per request, total time O(q), space O(q)."
+}

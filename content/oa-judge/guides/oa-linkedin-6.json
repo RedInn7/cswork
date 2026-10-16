@@ -1,0 +1,19 @@
+{
+  "id": "oa-linkedin-6",
+  "packageChecksum": "9bc46d300f8d3cb8db39eb1437c9793375ea342a7c6f98fd09f63aff01f1fb12",
+  "sourceContentHash": "08b1c5e8f3067eca9a2f60186bb86763b5748fba4666ec4879d2f3a24a7e94be",
+  "editorialSha256": "8a8a02c980815f1d43cd0f874195afd1d703c14e8dacc36c46ec0fbfd76ddee5",
+  "hints": {
+    "zh": [
+      "前驱一定比后继少一个字母，所以词链是一张按长度分层的有向无环图；长度相同的词不可能相连。",
+      "按长度从短到长处理，某个词的前驱只能是删掉它某一个位置后得到的词；用哈希表记录以每个词结尾的最长链长度做动态规划。",
+      "把词按长度排序；对每个词，枚举删除每个位置得到的字符串，在哈希表中查它的最长链长度（不存在记 0），取最大值加 1 后存入哈希表；过程中取全局最大值输出。重复的词不会让链变长。"
+    ],
+    "en": [
+      "A predecessor is always exactly one letter shorter than its successor, so word chains form a directed acyclic graph layered by length; words of equal length can never be linked.",
+      "Process words from shortest to longest; a word's predecessor can only be the word obtained by deleting one of its positions, so keep a hash map from each word to the longest chain ending there and do dynamic programming.",
+      "Sort the words by length; for each word, delete each position in turn, look up the resulting string's chain length in the map (0 if absent), store the maximum plus 1 for the word, and print the largest value seen. Duplicate words never make a chain longer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by length; delete each position of the current word, look up the longest chain of the resulting predecessor, and take the maximum plus 1.\n\n## Proof of correctness\n\nEvery valid predecessor can be obtained from the current word by deleting exactly one position, so the enumeration misses nothing. Predecessors are shorter, so sorting guarantees their optimal values have already been computed; the longest-path recurrence on the DAG is correct by induction. Repeated identical words do not increase the length.\n\n## Complexity\n\nO(nL²) time including string construction and O(nL) space, with L≤16."
+}

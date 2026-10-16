@@ -1,0 +1,21 @@
+{
+  "id": "oa-citadel-21",
+  "packageChecksum": "f3cf951da6d3bcc6be84149d17c6d6135f8c1960a127a0fe75f38a05e3070c2f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    long long answer = 0;\n    // Expand around every odd and even center.\n    for (int center = 0; center < 2 * n - 1; center++) {\n        int left = center / 2, right = (center + 1) / 2;\n        while (left >= 0 && right < n && s[left] == s[right]) {\n            answer++;\n            left--;\n            right++;\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "6762b6eb9420d294496a26e9c4d2d490b7334c902868be0dde1a7ff9cd3e908f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int n = s.length();\n        long answer = 0;\n        // Expand around every odd and even center.\n        for (int center = 0; center < 2 * n - 1; center++) {\n            int left = center / 2, right = (center + 1) / 2;\n            while (left >= 0 && right < n && s.charAt(left) == s.charAt(right)) {\n                answer++;\n                left--;\n                right++;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e5b252a46414b7d04c4a62642851f813e3b3974d2d1f77e6f1d0bf3b88835a0a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := token()\n\tn := len(s)\n\tanswer := 0\n\t// Expand around every odd and even center.\n\tfor center := 0; center < 2*n-1; center++ {\n\t\tleft, right := center/2, (center+1)/2\n\t\tfor left >= 0 && right < n && s[left] == s[right] {\n\t\t\tanswer++\n\t\t\tleft--\n\t\t\tright++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "4e2a95a0b1f5770aa48812bcf2586f29d220b12f83768b6d7ccf32c2ae60775e"
+    }
+  ]
+}

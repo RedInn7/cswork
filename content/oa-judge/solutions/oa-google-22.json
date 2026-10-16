@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-22",
+  "packageChecksum": "586523154445b8d4ffffd2c76d787008aaa6d2cc75728e1d1fd5f7e7f9d3b89c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    long long k;\n    cin >> s >> k;\n    // Survivors are always an arithmetic progression head, head+step, ...\n    long long count = (long long)s.size() * k, head = 0, step = 1;\n    bool left = true;\n    while (count > 1) {\n        if (left || count % 2) head += step;\n        count /= 2;\n        step *= 2;\n        left = !left;\n    }\n    cout << s[head % s.size()] << \"\\n\";\n}\n",
+      "sha256": "8ebc5409e25f1684b9aeb8e8354e5f8484c17083a14f31fbbb15b7a06334b0eb"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        long k = sc.nextLong();\n        // Survivors are always an arithmetic progression head, head+step, ...\n        long count = s.length() * k, head = 0, step = 1;\n        boolean left = true;\n        while (count > 1) {\n            if (left || count % 2 == 1) head += step;\n            count /= 2;\n            step *= 2;\n            left = !left;\n        }\n        System.out.println(s.charAt((int) (head % s.length())));\n    }\n}\n",
+      "sha256": "30cdcc4299c60bd00b43f8a4bb6da52e0e2d7deff361d267704d05af3d4575df"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s string\n\tvar k int\n\tfmt.Scan(&s, &k)\n\t// Survivors are always an arithmetic progression head, head+step, ...\n\tcount, head, step := len(s)*k, 0, 1\n\tleft := true\n\tfor count > 1 {\n\t\tif left || count%2 == 1 {\n\t\t\thead += step\n\t\t}\n\t\tcount /= 2\n\t\tstep *= 2\n\t\tleft = !left\n\t}\n\tfmt.Println(string(s[head%len(s)]))\n}\n",
+      "sha256": "69973df92d63f49c2110e54ce28ebad63e8e90c6c210956a6f69686918015627"
+    }
+  ]
+}

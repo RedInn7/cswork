@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-223",
+  "packageChecksum": "e14a6289553973f66ea61561ae461a80b4c268e29ad17fa4b3e1e97b38620c79",
+  "sourceContentHash": "7e260f4de7d7074855010b1ee1f9f8c433909bf542a01ed61cf14a9b1bc8fade",
+  "editorialSha256": "9f50dea4a4ba2a48f157480e622827be7f83234e6a1b5ff8b8f21363cc41fff5",
+  "hints": {
+    "zh": [
+      "这是经典的任务调度问题：每个请求耗时 1，同地区两次请求之间至少要隔 minGap 个单位。最紧的约束来自出现次数最多的地区。",
+      "设最高频次为 f，达到 f 的地区有 c 个。最高频地区的前 f−1 次各自占据长度为 minGap+1 的一轮，最后一轮还要放下这 c 个地区，得到下界 (f−1)(minGap+1)+c；另一个下界是请求总数 n。",
+      "统计 26 个字母的出现次数，求 f 和 c，输出 max(n, (f−1)·(minGap+1)+c)；这两个下界中较大的那个总能被构造达到。"
+    ],
+    "en": [
+      "This is the classic task scheduler: each request takes 1 unit and two requests of the same region need at least minGap idle units between them. The tightest constraint comes from the most frequent region.",
+      "Let f be the highest frequency and c the number of regions reaching it. The first f-1 occurrences of a most frequent region each open a round of length minGap+1, and the last round must still hold those c regions, giving the lower bound (f-1)(minGap+1)+c; the other lower bound is the total n.",
+      "Count the 26 letters, find f and c, and print max(n, (f-1)*(minGap+1)+c); the larger of the two lower bounds can always be achieved."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f be the highest occurrence count and c the number of regions reaching it; the answer is max(total number of requests, (f-1)(minGap+1)+c).\n\n## Proof of correctness\n\nThe total number of requests is a necessary lower bound on the time. The first f-1 rounds of a most frequent region must each be at least minGap+1 apart, and the last round contains c regions, which gives the second lower bound. Fill the requests by frequency into the f-1 spaced rounds, with the other requests taking empty slots first; if there are not enough, pad with idle time, and if they exceed the capacity, widen the rounds. This attains exactly the larger of the two lower bounds.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

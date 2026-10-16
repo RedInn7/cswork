@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-42",
+  "packageChecksum": "d9167266b4127499bade713a983d4d66f38a7c7a9ab2f7973b3c3cbd3d21c328",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, q; cin >> n >> q;\n    unordered_map<string, string> table;\n    table.reserve(2 * n);\n    string t, k, v;\n    for (int i = 0; i < n; i++) {\n        cin >> t >> k >> v;\n        table[k + ' ' + t] = v; // composite key (key, timestamp)\n    }\n    string out;\n    for (int i = 0; i < q; i++) {\n        cin >> k >> t;\n        out += table[k + ' ' + t]; out += '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "94c19d82b0b0048d8acecb6012ecf9d86e9aeb1bdd92b78939310b6858ce1785"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), q = nextInt();\n        HashMap<String, String> table = new HashMap<>(2 * n);\n        for (int i = 0; i < n; i++) {\n            String t = next(), k = next(), v = next();\n            table.put(k + \" \" + t, v); // composite key (key, timestamp)\n        }\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String k = next(), t = next();\n            out.append(table.get(k + \" \" + t)).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "163763439a0fcc6cdd9f72ecf5612fe4feb50b9943a536a1a7f95ffa3d257fe7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn, q := int(nextInt()), int(nextInt())\n\ttable := make(map[string][]byte, n)\n\tfor i := 0; i < n; i++ {\n\t\tt, k, v := next(), next(), next()\n\t\ttable[string(k)+\" \"+string(t)] = v // composite key (key, timestamp)\n\t}\n\tfor i := 0; i < q; i++ {\n\t\tk, t := next(), next()\n\t\tw.Write(table[string(k)+\" \"+string(t)])\n\t\tw.WriteByte('\\n')\n\t}\n\t_ = strconv.Itoa\n}\n",
+      "sha256": "3ee683af13de9783a45b17c43b661ef04f654e14924e6950d32b5c673d9aa95b"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-142",
+  "packageChecksum": "3523225cc7dc40f6a4a8e628fd8aefba1d20f7d937f5157c916b09f496ccc3fa",
+  "sourceContentHash": "30fea45d90150b90a7ab8f959aa3d2ccc819045ce4520cb4700505223107df5d",
+  "editorialSha256": "bd912a920cfc8cd52ff30c5b4f5eee8536a36703bfee415c139aaa6f6c925b83",
+  "hints": {
+    "zh": [
+      "把每个人的三个值排序为 a<b<c。要赢两回合，最有利的安排是拿自己最大的两个值去对付对方最小的两个值。",
+      "于是 X 能击败 Y 当且仅当 X 的 b 大于 Y 的 a 且 X 的 c 大于 Y 的 b。要击败所有其他人，只需和所有人的 a 的最大值、b 的最大值比较；把自己也算进去不影响，因为自己的 b>a、c>b 天然成立。",
+      "读入每行三个数并排序，同时求出所有行 a 的最大值 maxA 和 b 的最大值 maxB；再统计满足 b>maxA 且 c>maxB 的行数并输出。"
+    ],
+    "en": [
+      "Sort each player's three values as a < b < c. To win two rounds, the best arrangement is to put your two largest values against the opponent's two smallest.",
+      "So X beats Y exactly when X's b is greater than Y's a and X's c is greater than Y's b. To beat everyone else, compare against the maximum a and the maximum b over all players; including yourself does not matter, because your own b > a and c > b always hold.",
+      "Read each row of three values and sort it, tracking maxA, the largest a over all rows, and maxB, the largest b; then count the rows with b > maxA and c > maxB and print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort each player's values as a < b < c; a player can beat another if their own b is greater than the other's a and their own c is greater than the other's b. So precompute the maximum of all a and of all b, then filter.\n\n## Correctness\n\nTo win two rounds, the most favorable plan is to match your two largest values against the opponent's two smallest; the sorted greedy condition is exactly bX > aY and cX > bY, and no other pairing can relax it. To beat every opponent, take the maximum of the opponents' thresholds. Including your own thresholds changes nothing, because your own b > a and c > b hold automatically.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

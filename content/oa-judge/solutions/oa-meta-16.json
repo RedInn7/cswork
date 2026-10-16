@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-16",
+  "packageChecksum": "73cbe70aba9ed6eab7352a11f28e1443b84e7d7731ed03836ab371c8017b42be",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    if (scanf(\"%d %lld\", &n, &target) != 2) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    int left = 0, right = n - 1;\n    long long distance = -1, ansA = a[0], ansB = a[n - 1];\n    while (left < right) {\n        long long total = a[left] + a[right], delta = llabs(total - target);\n        if (distance < 0 || delta < distance) {\n            distance = delta;\n            ansA = a[left];\n            ansB = a[right];\n        }\n        if (total < target) left++;\n        else right--;\n    }\n    printf(\"%lld %lld\\n\", ansA, ansB);\n}\n",
+      "sha256": "12d42c32e16ffb724a8cd34d08a19dc301a21c2da099625173ce1d996a02b609"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long target = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        int left = 0, right = n - 1;\n        long distance = -1, ansA = a[0], ansB = a[n - 1];\n        while (left < right) {\n            long total = a[left] + a[right], delta = Math.abs(total - target);\n            if (distance < 0 || delta < distance) {\n                distance = delta;\n                ansA = a[left];\n                ansB = a[right];\n            }\n            if (total < target) left++;\n            else right--;\n        }\n        System.out.println(ansA + \" \" + ansB);\n    }\n}\n",
+      "sha256": "89d306be096a1edd9afd4371da6af2866ef6195ca2405c8ac91ee07d7389d69e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ttarget := nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tleft, right := 0, n-1\n\tdistance, ansA, ansB := int64(-1), a[0], a[n-1]\n\tfor left < right {\n\t\ttotal := a[left] + a[right]\n\t\tdelta := total - target\n\t\tif delta < 0 {\n\t\t\tdelta = -delta\n\t\t}\n\t\tif distance < 0 || delta < distance {\n\t\t\tdistance, ansA, ansB = delta, a[left], a[right]\n\t\t}\n\t\tif total < target {\n\t\t\tleft++\n\t\t} else {\n\t\t\tright--\n\t\t}\n\t}\n\tfmt.Println(ansA, ansB)\n}\n",
+      "sha256": "356bc0b252fba679e44c4b06a4eac262eaee2d479c655ea60f4e8e1aad204d5c"
+    }
+  ]
+}

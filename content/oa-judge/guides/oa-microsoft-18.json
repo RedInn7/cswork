@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-18",
+  "packageChecksum": "7db803c7f155cbc6b29fef7d0e3da35c022657374da779f202627275d4aadede",
+  "sourceContentHash": "4ba71117268600356cfbc68fede8b96c296ce872ea9a774c0c22dbfe2bc3c6ea",
+  "editorialSha256": "9f709f531daceae65b852cd99fa425c60e646db62f7ce7a71205c9c5c2826f67",
+  "hints": {
+    "zh": [
+      "以同一个位置结尾的子数组，越往左延伸 OR 只会增加二进制位；值不超过 10⁹，所以以某个位置结尾的所有子数组只有大约 31 种不同的 OR 值。",
+      "维护以当前位置结尾的所有不同 OR 值及其出现次数：新元素自己是一个，再把上一轮每个 OR 与新元素再 OR 一次，相同结果合并计数。",
+      "把原数组的所有值放进集合（或排序后二分查找）。每处理一个元素，新状态从 (该元素,1) 开始，依次加入上一轮每个 (OR 值,次数) 与该元素 OR 的结果，相同 OR 的次数相加；然后把 OR 值在集合中的那些状态的次数都加到答案上。答案可能超过 32 位整数。"
+    ],
+    "en": [
+      "Among subarrays ending at the same position, extending further left can only add bits to the OR; since values are at most 10⁹, there are only about 31 distinct OR values among them.",
+      "Keep every distinct OR of subarrays ending at the current position together with how many subarrays give it: the new element alone is one, and every OR from the previous round ORed with the new element gives the rest, merging equal results.",
+      "Put all values of the array into a set (or sort them and binary search). For each element, start the new state list with (element, 1), then add each previous (OR, count) ORed with the element, summing counts of equal ORs; add the counts of states whose OR is in the set to the answer. The answer can exceed 32-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain all distinct ORs of subarrays ending at the current position, with their counts. OR the new element into each OR from the previous round, merge identical states, and count how many results lie in the global value set.\n\n## Proof of correctness\n\nEvery subarray ending at the current position is either a single element or a subarray ending at the previous position with the current value appended. The transition covers these one-to-one and merges them by count, with no omission or double counting. OR only adds binary bits, so each round has at most about 31 distinct states.\n\n## Complexity\n\nTime O(30n), space O(n+30)."
+}

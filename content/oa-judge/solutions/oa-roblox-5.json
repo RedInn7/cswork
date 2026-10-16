@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-5",
+  "packageChecksum": "94f22367a0d27b03ab42b543810f4026f6d24e98bd03ab721149f1200a39daa9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, q;\n    scanf(\"%d %d\", &n, &q);\n    unordered_set<long long> live;\n    live.reserve(2 * n + 1);\n    vector<long long> init(n);\n    for (auto& x : init) { scanf(\"%lld\", &x); live.insert(x); }\n    // A segment starts at every house without a left neighbour.\n    int segments = 0;\n    for (long long x : init) if (!live.count(x - 1)) segments++;\n    string out;\n    for (int i = 0; i < q; i++) {\n        long long x;\n        scanf(\"%lld\", &x);\n        bool left = live.count(x - 1), right = live.count(x + 1);\n        if (left && right) segments++;        // a segment splits in two\n        else if (!left && !right) segments--; // a single-house segment vanishes\n        live.erase(x);\n        if (i) out += ' ';\n        out += to_string(segments);\n    }\n    puts(out.c_str());\n}\n",
+      "sha256": "e9599326d76680ca4a8e642d3156f06dc3029b64160cc3f9b7563bcbdeab0161"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        boolean neg = buf[bp] == '-';\n        if (neg) bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong(), q = (int) nextLong();\n        HashSet<Long> live = new HashSet<>(4 * n);\n        long[] init = new long[n];\n        for (int i = 0; i < n; i++) live.add(init[i] = nextLong());\n        // A segment starts at every house without a left neighbour.\n        int segments = 0;\n        for (long x : init) if (!live.contains(x - 1)) segments++;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            long x = nextLong();\n            boolean left = live.contains(x - 1), right = live.contains(x + 1);\n            if (left && right) segments++;        // a segment splits in two\n            else if (!left && !right) segments--; // a single-house segment vanishes\n            live.remove(x);\n            if (i > 0) sb.append(' ');\n            sb.append(segments);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "6c3c8d3ac8f44e049db6916b69d5604e444ffa058bf73531fd20d64d5c7ee03e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn, q := int(next()), int(next())\n\tlive := make(map[int64]bool, n)\n\tinit := make([]int64, n)\n\tfor i := range init {\n\t\tinit[i] = next()\n\t\tlive[init[i]] = true\n\t}\n\t// A segment starts at every house without a left neighbour.\n\tsegments := 0\n\tfor _, x := range init {\n\t\tif !live[x-1] {\n\t\t\tsegments++\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\tx := next()\n\t\tleft, right := live[x-1], live[x+1]\n\t\tif left && right {\n\t\t\tsegments++ // a segment splits in two\n\t\t} else if !left && !right {\n\t\t\tsegments-- // a single-house segment vanishes\n\t\t}\n\t\tdelete(live, x)\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(segments))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "e53d77d1fc83b0196e37a6d19e6e2aef8414df29fdec1d96cf8284557bcc43c3"
+    }
+  ]
+}

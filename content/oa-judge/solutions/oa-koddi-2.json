@@ -1,0 +1,21 @@
+{
+  "id": "oa-koddi-2",
+  "packageChecksum": "d5dae69c01c79b27b7c619406faac93eeb315b303a09d8d02fe615328683c6d1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, bird;\n    cin >> n >> bird;\n    vector<int> forest(n);\n    for (auto &x : forest) cin >> x;\n    // Sticks on each side ordered from nearest to farthest from the fixed nest.\n    vector<int> left, right;\n    for (int i = bird - 1; i >= 0; i--)\n        if (forest[i]) left.push_back(i);\n    for (int i = bird + 1; i < n; i++)\n        if (forest[i]) right.push_back(i);\n    vector<int> answer;\n    long long total = 0;\n    while (total < 100) {\n        const vector<int> &side = answer.size() % 2 == 0 ? right : left;\n        int index = side[answer.size() / 2];\n        answer.push_back(index);\n        total += forest[index];\n    }\n    for (size_t i = 0; i < answer.size(); i++) cout << (i ? \" \" : \"\") << answer[i];\n    cout << \"\\n\";\n}\n",
+      "sha256": "5c723d1661e5e54e6fd1b20469e90f59d2711ecb46e83b591a2afdbd19a3ec10"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), bird = sc.nextInt();\n        int[] forest = new int[n];\n        for (int i = 0; i < n; i++) forest[i] = sc.nextInt();\n        // Sticks on each side ordered from nearest to farthest from the fixed nest.\n        List<Integer> left = new ArrayList<>(), right = new ArrayList<>();\n        for (int i = bird - 1; i >= 0; i--)\n            if (forest[i] != 0) left.add(i);\n        for (int i = bird + 1; i < n; i++)\n            if (forest[i] != 0) right.add(i);\n        List<Integer> answer = new ArrayList<>();\n        long total = 0;\n        while (total < 100) {\n            List<Integer> side = answer.size() % 2 == 0 ? right : left;\n            int index = side.get(answer.size() / 2);\n            answer.add(index);\n            total += forest[index];\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < answer.size(); i++) sb.append(i > 0 ? \" \" : \"\").append(answer.get(i));\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "43fe8688f5807bec1f0e5f8bfb8b3e419393ed4057a4c852f4525df9f97a4b9f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tvar n, bird int\n\tfmt.Scan(&n, &bird)\n\tforest := make([]int, n)\n\tfor i := range forest {\n\t\tfmt.Scan(&forest[i])\n\t}\n\t// Sticks on each side ordered from nearest to farthest from the fixed nest.\n\tvar left, right []int\n\tfor i := bird - 1; i >= 0; i-- {\n\t\tif forest[i] != 0 {\n\t\t\tleft = append(left, i)\n\t\t}\n\t}\n\tfor i := bird + 1; i < n; i++ {\n\t\tif forest[i] != 0 {\n\t\t\tright = append(right, i)\n\t\t}\n\t}\n\tvar answer []string\n\ttotal := 0\n\tfor total < 100 {\n\t\tside := right\n\t\tif len(answer)%2 == 1 {\n\t\t\tside = left\n\t\t}\n\t\tindex := side[len(answer)/2]\n\t\tanswer = append(answer, strconv.Itoa(index))\n\t\ttotal += forest[index]\n\t}\n\tfmt.Println(strings.Join(answer, \" \"))\n}\n",
+      "sha256": "14712881929afc1ede2d85472eb98ebcf3cc374c58bf6d2e8a606023ec26bed9"
+    }
+  ]
+}

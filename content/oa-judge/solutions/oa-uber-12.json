@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-12",
+  "packageChecksum": "305994e60085c64a1332c13c0090fb8e7a61e514f443940b6025397a73427f96",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int counts[10] = {0};\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        counts[v == 0 ? 0 : 1 + (v - 1) % 9]++; // digital root\n    }\n    int best = 0;\n    for (int d = 1; d < 10; d++) if (counts[d] >= counts[best]) best = d; // ties go to the larger digit\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "d35b93d47baca0318b665c11eb97faaa51adf44a12c464b03af969043dd40403"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] counts = new int[10];\n        for (int i = 0; i < n; i++) {\n            long v = sc.nextLong();\n            counts[v == 0 ? 0 : (int) (1 + (v - 1) % 9)]++; // digital root\n        }\n        int best = 0;\n        for (int d = 1; d < 10; d++) if (counts[d] >= counts[best]) best = d; // ties go to the larger digit\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "c10ab2653d2348a42100f73982b2e2fa748eb259a3cd12e1651c26117310afa9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tvar counts [10]int\n\tfor i := 0; i < n; i++ {\n\t\tvar v int\n\t\tfmt.Fscan(in, &v)\n\t\tif v == 0 {\n\t\t\tcounts[0]++\n\t\t} else {\n\t\t\tcounts[1+(v-1)%9]++ // digital root\n\t\t}\n\t}\n\tbest := 0\n\tfor d := 1; d < 10; d++ {\n\t\tif counts[d] >= counts[best] { // ties go to the larger digit\n\t\t\tbest = d\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "fa6d1f61b2bb664c506957fdffd4cd39a5d436791c6f20aeb02c634b82a46cc0"
+    }
+  ]
+}

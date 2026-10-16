@@ -1,0 +1,19 @@
+{
+  "id": "oa-ukg-1",
+  "packageChecksum": "81a5a9e0a43cb6e2d1a4b469d0c3b474752693e39dcfd3f07c964e92201e8d95",
+  "sourceContentHash": "64da5fd334269ab5f9f08eaa8889395a1cb332b36947b303d23a0971799b03db",
+  "editorialSha256": "1654e0e046d29608c2ec4b45ba68e546fa27b99a9697f868d221e826f92d44c0",
+  "hints": {
+    "zh": [
+      "节点 u 的值只会被它自己以及与它编号奇偶相同的祖先上的操作翻转。从根往下处理时，等到处理 u 的时候，所有祖先的选择都已经定下来了。",
+      "所以可以从根开始贪心：沿途记录祖先操作分别给偶数编号和奇数编号节点带来的累计翻转奇偶。到达 u 时如果它的当前值仍与目标不同，后代的操作影响不到 u，只能在 u 上操作一次。",
+      "从根 0 做 DFS（用显式栈避免递归过深），每个栈元素带上 (节点, 父节点, 偶数翻转位, 奇数翻转位)。取出 u 后计算 initial[u] 异或与 u 同奇偶的翻转位，若不等于 expected[u]，答案加一并翻转这一位。再把所有非父邻居连同更新后的两个翻转位压栈。最后输出答案。"
+    ],
+    "en": [
+      "The value of node u is flipped only by operations on u itself and on its ancestors whose index has the same parity as u. When processing from the root downward, every ancestor's choice is already fixed by the time u is reached.",
+      "So a greedy pass from the root works: carry the accumulated flip parity that ancestor operations apply to even-indexed nodes and to odd-indexed nodes. If u's current value still differs from the target when you reach it, no descendant can affect u, so an operation on u is required.",
+      "Run a DFS from root 0 with an explicit stack to avoid deep recursion; each stack entry holds (node, parent, even flip bit, odd flip bit). For a popped node u, XOR initial[u] with the flip bit of u's parity; if the result differs from expected[u], increase the answer and toggle that bit. Then push every neighbor except the parent along with the updated flip bits. Output the answer at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTraverse from the root. Record the parity of the flips that ancestor operations apply to even-indexed and odd-indexed nodes respectively; if the current node still does not match, an operation must be performed here.\n\n## Proof of Correctness\n\nThe value of node u is affected only by operations on those of its ancestors whose index has the same parity as u. When the traversal reaches u, these effects are already fixed; if u still differs from the target, no descendant can change u unless an operation is performed on u, so this operation is necessary. After performing it, the state of the same-parity descendants is updated recursively, which yields the unique greedy plan.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

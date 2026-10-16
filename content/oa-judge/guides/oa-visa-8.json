@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-8",
+  "packageChecksum": "b0ea92f021fc26cbcaed3549d8722eebe249e275755c0ffbad76920a6cde2fc5",
+  "sourceContentHash": "2daccf03f5768ec130660709a12300f9ff2946cf43b3379f63b86c8b974f2c2d",
+  "editorialSha256": "3c0b670d245568a727a0f38f08f2ff4146065a5993e879828970e5478911e1ea",
+  "hints": {
+    "zh": [
+      "固定较长的书名 j，所有作为其前缀的书名，正好是 j 在前缀树（Trie）中从根到终点路径上结束的那些书名。",
+      "把所有书名插入 Trie，每个节点记录有多少个书名在此结束；查询书名 j 时把路径上各节点的结束次数累加，再减去 j 自己的那一次。",
+      "第一遍插入并在终点节点计数加一；第二遍对每个书名沿路径累加结束次数后减 1；重复书名按下标分别计数，自然被包含。答案可达 n² 量级，用 64 位整数。"
+    ],
+    "en": [
+      "Fix the longer title j: the titles that are prefixes of j are exactly those ending on the path from the root to j's end node in a trie.",
+      "Insert every title into a trie and record at each node how many titles end there; for title j, add up the end counts along its path, then subtract the one occurrence that is j itself.",
+      "First pass: insert and increment the count at each title's end node; second pass: for each title, sum the end counts along its path and subtract 1. Duplicate titles are counted per index, so they are included naturally. The answer can be on the order of n², so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInsert the titles into a trie and record how many titles end at each node. For each title, add up the end counts of all nodes on its path, then subtract one for the current index itself.\n\n## Correctness\n\nFix the matched title j: all of its prefixes are exactly the titles ending on the path from the root to j's end node. Node counts are per index, which covers duplicate titles; subtracting the title itself leaves exactly the pairs with i≠j.\n\n## Complexity\n\nTime and space are both O(L), where L is the total number of characters."
+}

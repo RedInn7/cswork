@@ -1,0 +1,21 @@
+{
+  "id": "oa-oura-1",
+  "packageChecksum": "c701a2bd530bbcfaa033f04cd0ee5535bdb1e4ade98ecb92b176a0853d96d06e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int q;\n    cin >> q;\n    // Per type: a min-heap of released ids and the next never-used id.\n    unordered_map<string, int> ids;\n    vector<priority_queue<long long, vector<long long>, greater<long long>>> freed;\n    vector<long long> nxt;\n    string op, type, out;\n    for (int i = 0; i < q; i++) {\n        cin >> op >> type;\n        auto it = ids.emplace(type, (int)nxt.size());\n        if (it.second) freed.emplace_back(), nxt.push_back(1);\n        int t = it.first->second;\n        if (op == \"allocate\") {\n            long long x;\n            if (!freed[t].empty()) x = freed[t].top(), freed[t].pop();\n            else x = nxt[t]++;\n            out += to_string(x) + \"\\n\";\n        } else {\n            long long x;\n            cin >> x;\n            freed[t].push(x);\n        }\n    }\n    cout << out;\n}\n",
+      "sha256": "e257af9f7f514950b67a2233f367c32c3d7a51795fa7b2d895b0073841a29e2f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int q = Integer.parseInt(st.nextToken());\n        // Per type: a min-heap of released ids and the next never-used id.\n        HashMap<String, PriorityQueue<Long>> freed = new HashMap<>();\n        HashMap<String, Long> nxt = new HashMap<>();\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String op = st.nextToken(), type = st.nextToken();\n            PriorityQueue<Long> heap = freed.computeIfAbsent(type, k -> new PriorityQueue<>());\n            if (op.equals(\"allocate\")) {\n                long x;\n                if (!heap.isEmpty()) x = heap.poll();\n                else {\n                    x = nxt.getOrDefault(type, 1L);\n                    nxt.put(type, x + 1);\n                }\n                sb.append(x).append('\\n');\n            } else {\n                heap.add(Long.parseLong(st.nextToken()));\n            }\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "bb49828badd3d801e6dc1b1e2d6f9c63165e83c8721e497d5727e2f97debb37d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"os\"\n\t\"strconv\"\n)\n\ntype minHeap []int64\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tv := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn v\n}\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string {\n\t\tsc.Scan()\n\t\treturn sc.Text()\n\t}\n\tq, _ := strconv.Atoi(next())\n\t// Per type: a min-heap of released ids and the next never-used id.\n\tfreed := map[string]*minHeap{}\n\tnxt := map[string]int64{}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\top, t := next(), next()\n\t\th, ok := freed[t]\n\t\tif !ok {\n\t\t\th = &minHeap{}\n\t\t\tfreed[t] = h\n\t\t\tnxt[t] = 1\n\t\t}\n\t\tif op == \"allocate\" {\n\t\t\tvar x int64\n\t\t\tif h.Len() > 0 {\n\t\t\t\tx = heap.Pop(h).(int64)\n\t\t\t} else {\n\t\t\t\tx = nxt[t]\n\t\t\t\tnxt[t]++\n\t\t\t}\n\t\t\tw.WriteString(strconv.FormatInt(x, 10) + \"\\n\")\n\t\t} else {\n\t\t\tx, _ := strconv.ParseInt(next(), 10, 64)\n\t\t\theap.Push(h, x)\n\t\t}\n\t}\n}\n",
+      "sha256": "6692aabf891925e0a394f0d15857381d1099d1c56711ef3d2df5027e0dd0e790"
+    }
+  ]
+}

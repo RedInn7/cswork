@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-37",
+  "packageChecksum": "c4babe414083425f96f79f2a35a9395421af0b931259620903c2d3aa2875afbc",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long budget;\n    cin >> n >> budget;\n    vector<pair<long long, long long>> orders(n);\n    for (auto &o : orders) cin >> o.first;\n    for (auto &o : orders) cin >> o.second;\n    // nearer first; at equal distance, cheaper first\n    sort(orders.begin(), orders.end());\n    int answer = 0;\n    for (auto &[dist, cost] : orders) {\n        if (cost > budget) break;\n        budget -= cost;\n        answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "9689a6a79b5dda2ab7264799548b80ca618d521e6375e35b6ad163aa5ed60643"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long budget = nextLong();\n        long[][] orders = new long[n][2];\n        for (int i = 0; i < n; i++) orders[i][0] = nextLong();\n        for (int i = 0; i < n; i++) orders[i][1] = nextLong();\n        // nearer first; at equal distance, cheaper first\n        Arrays.sort(orders, (p, q) -> p[0] != q[0] ? Long.compare(p[0], q[0]) : Long.compare(p[1], q[1]));\n        int answer = 0;\n        for (long[] o : orders) {\n            if (o[1] > budget) break;\n            budget -= o[1];\n            answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "124b765744ed54feb14ecfdca55f3e75e77d6cec9e8252bf19bbb74a792806c2"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, budget := next(), next()\n\torders := make([][2]int, n)\n\tfor i := range orders {\n\t\torders[i][0] = next()\n\t}\n\tfor i := range orders {\n\t\torders[i][1] = next()\n\t}\n\t// nearer first; at equal distance, cheaper first\n\tsort.Slice(orders, func(p, q int) bool {\n\t\tif orders[p][0] != orders[q][0] {\n\t\t\treturn orders[p][0] < orders[q][0]\n\t\t}\n\t\treturn orders[p][1] < orders[q][1]\n\t})\n\tanswer := 0\n\tfor _, o := range orders {\n\t\tif o[1] > budget {\n\t\t\tbreak\n\t\t}\n\t\tbudget -= o[1]\n\t\tanswer++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "84471bf3ba78bcafc3d71433684d7f4dddc68e8b52c4d804905a4d1e3731c6e6"
+    }
+  ]
+}

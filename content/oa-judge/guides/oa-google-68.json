@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-68",
+  "packageChecksum": "80c1a8df663776a6bb7a69f9a538d8c4afab85e8062e3b9ae4fa2aed0c059661",
+  "sourceContentHash": "4b7124461ec4a44b76045bc95cc36002ebc2aec9b63f851a4469c8e214f346b5",
+  "editorialSha256": "d0b1a4a1315bf199ffec1881d102ec5245e8ec57959c910f52a437589ec2d60a",
+  "hints": {
+    "zh": [
+      "总分由两部分组成：所有 T 格子的基础分，以及每一对相邻 TT 的额外 1 分，两部分可以分别计算。",
+      "基础分按格子独立累加；相邻对在其右端点处统计，就不会重复也不会遗漏。",
+      "遍历字符串：当前是 T 就加上对应分数；若当前和前一个都是 T，再加 1。循环以字符串长度为准，输出总和。"
+    ],
+    "en": [
+      "The score has two parts: the base points of every T cell, and 1 extra point for each adjacent TT pair. Compute them separately.",
+      "Base points add up cell by cell; count each adjacent pair at its right end so none is missed or doubled.",
+      "Walk over the string: on a T add its points; if the current and previous characters are both T, add 1. Loop over the string's length and print the total."
+    ]
+  },
+  "explanationEn": "## Idea\n\nAdd up the points of all T cells, then count the adjacent TT pairs.\n\n## Correctness\n\nBase points are accumulated per cell independently; each adjacent pair is counted only at its right end, so none is missed or counted twice.\n\n## Complexity\n\nO(n) time, O(n) space (including the input)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-the-d-e-shaw-group-2",
+  "packageChecksum": "1f517334a3210a91a307e6513a25fb7b2a8a082297fe0820e56e53d1d4eaa842",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // Nearest strictly taller student on each side (pop <= on both scans).\n    vector<int> left(n, -1), right(n, n), st;\n    for (int i = 0; i < n; i++) {\n        while (!st.empty() && a[st.back()] <= a[i]) st.pop_back();\n        if (!st.empty()) left[i] = st.back();\n        st.push_back(i);\n    }\n    st.clear();\n    for (int i = n - 1; i >= 0; i--) {\n        while (!st.empty() && a[st.back()] <= a[i]) st.pop_back();\n        if (!st.empty()) right[i] = st.back();\n        st.push_back(i);\n    }\n    long long answer = 0;\n    for (int i = 0; i < n; i++) answer += right[i] - left[i] - 1;\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "d7c4a940173b8ff6e1d2f6914979848487ce270295071ca34ca4e99adfc88af8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Nearest strictly taller student on each side (pop <= on both scans).\n        int[] left = new int[n], right = new int[n], st = new int[n];\n        int top = 0;\n        for (int i = 0; i < n; i++) {\n            while (top > 0 && a[st[top - 1]] <= a[i]) top--;\n            left[i] = top > 0 ? st[top - 1] : -1;\n            st[top++] = i;\n        }\n        top = 0;\n        for (int i = n - 1; i >= 0; i--) {\n            while (top > 0 && a[st[top - 1]] <= a[i]) top--;\n            right[i] = top > 0 ? st[top - 1] : n;\n            st[top++] = i;\n        }\n        long answer = 0;\n        for (int i = 0; i < n; i++) answer += right[i] - left[i] - 1;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "07c2ad7c8eb1fe977020de2b5bd19fe182266f58f155bf74b0c10e85eebbf0bf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// Nearest strictly taller student on each side (pop <= on both scans).\n\tleft, right := make([]int, n), make([]int, n)\n\tst := make([]int, 0, n)\n\tfor i := 0; i < n; i++ {\n\t\tfor len(st) > 0 && a[st[len(st)-1]] <= a[i] {\n\t\t\tst = st[:len(st)-1]\n\t\t}\n\t\tleft[i] = -1\n\t\tif len(st) > 0 {\n\t\t\tleft[i] = st[len(st)-1]\n\t\t}\n\t\tst = append(st, i)\n\t}\n\tst = st[:0]\n\tfor i := n - 1; i >= 0; i-- {\n\t\tfor len(st) > 0 && a[st[len(st)-1]] <= a[i] {\n\t\t\tst = st[:len(st)-1]\n\t\t}\n\t\tright[i] = n\n\t\tif len(st) > 0 {\n\t\t\tright[i] = st[len(st)-1]\n\t\t}\n\t\tst = append(st, i)\n\t}\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tanswer += right[i] - left[i] - 1\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0c2743af147874ef6b73744ca95c0b31cf59a71fe4e12b5d63579835e390f770"
+    }
+  ]
+}

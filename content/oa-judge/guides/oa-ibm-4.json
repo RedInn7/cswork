@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-4",
+  "packageChecksum": "cdbc8ec0ab4447bc0c1a1e90036d834f1f80621145809098ae8370ba89adebce",
+  "sourceContentHash": "a0cde7de4a581fb1e07a169f19ce794c03b0d85742270daa9ae265f64479697d",
+  "editorialSha256": "d118d79fa3fd5c0c2024fd0d05cf29b8941e6828aadcdfca3b791557444dc19b",
+  "hints": {
+    "zh": [
+      "只有奇偶不同的相邻两项可以交换，所以所有奇数之间的相对顺序、所有偶数之间的相对顺序永远不会改变。",
+      "反过来，奇数子序列和偶数子序列的任意交错方式都能通过合法交换得到，所以问题变成：把两个顺序固定的序列归并成字典序最小的结果。",
+      "按原顺序分别取出奇数序列和偶数序列，用两个指针归并：每次比较两个队首（奇偶不同所以不会相等），输出较小者；一队取完后把另一队剩下的部分依次接上。"
+    ],
+    "en": [
+      "Only adjacent items of different parity can be swapped, so the relative order among the odd numbers, and among the even numbers, never changes.",
+      "Conversely, every interleaving of the odd subsequence and the even subsequence can be reached by legal swaps, so the task becomes merging two fixed-order sequences into the lexicographically smallest result.",
+      "Take the odd numbers and the even numbers in their original order and merge them with two pointers: each time compare the two heads (they have different parity, so they are never equal) and output the smaller one; when one sequence runs out, append the rest of the other."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTake the subsequences of odd digits and of even digits in their original order, and at each step take the smaller of the two heads.\n\n## Proof of correctness\n\nThe relative order of items with the same parity cannot change, and any interleaving of the two subsequences can be realized by legal swaps. The two heads have different parity and are therefore unequal; choosing the smaller head makes the current first difference as small as possible, and induction gives the globally lexicographically smallest sequence.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

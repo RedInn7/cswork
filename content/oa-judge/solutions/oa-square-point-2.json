@@ -1,0 +1,21 @@
+{
+  "id": "oa-square-point-2",
+  "packageChecksum": "87c9851f8db4ff317b3e59b738e8e62f133944d4cfa6ff0b94fe03842adb6ca0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n, m;\n    cin >> n >> m;\n    vector<string> p(n);\n    for (auto &x : p) cin >> x;\n    string s;\n    cin >> s;\n    sort(p.begin(), p.end());\n    for (size_t i = 1; i <= s.size(); i++) {\n        string prefix = s.substr(0, i);\n        // First product >= prefix; matches are contiguous from there.\n        auto j = lower_bound(p.begin(), p.end(), prefix);\n        vector<string> ans;\n        while (j != p.end() && j->compare(0, prefix.size(), prefix) == 0 && ans.size() < 3) ans.push_back(*j++);\n        if (ans.empty()) { puts(\"-\"); continue; }\n        string line;\n        for (size_t t = 0; t < ans.size(); t++) { if (t) line += ' '; line += ans[t]; }\n        puts(line.c_str());\n    }\n}\n",
+      "sha256": "414ad42e2262fa93cacd51f78f379cb62ba951b58c34cec136dde5ae8b9d8152"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder all = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) all.append(line).append(' ');\n        StringTokenizer st = new StringTokenizer(all.toString());\n        int n = Integer.parseInt(st.nextToken());\n        st.nextToken();\n        String[] p = new String[n];\n        for (int i = 0; i < n; i++) p[i] = st.nextToken();\n        String s = st.nextToken();\n        Arrays.sort(p);\n        StringBuilder out = new StringBuilder();\n        for (int i = 1; i <= s.length(); i++) {\n            String prefix = s.substring(0, i);\n            // First product >= prefix; matches are contiguous from there.\n            int lo = 0, hi = n;\n            while (lo < hi) {\n                int mid = (lo + hi) >>> 1;\n                if (p[mid].compareTo(prefix) < 0) lo = mid + 1; else hi = mid;\n            }\n            int taken = 0;\n            for (int j = lo; j < n && p[j].startsWith(prefix) && taken < 3; j++, taken++) {\n                if (taken > 0) out.append(' ');\n                out.append(p[j]);\n            }\n            if (taken == 0) out.append('-');\n            out.append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "1a7bce73023ac97f1f41b39249c0f09ceb01a5b883db851808f4b0e0e8d71208"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strings\"\n)\n\nfunc main() {\n\trd := bufio.NewReader(os.Stdin)\n\tvar n, m int\n\tfmt.Fscan(rd, &n, &m)\n\tp := make([]string, n)\n\tfor i := range p {\n\t\tfmt.Fscan(rd, &p[i])\n\t}\n\tvar s string\n\tfmt.Fscan(rd, &s)\n\tsort.Strings(p)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 1; i <= len(s); i++ {\n\t\tprefix := s[:i]\n\t\t// First product >= prefix; matches are contiguous from there.\n\t\tj := sort.SearchStrings(p, prefix)\n\t\tvar ans []string\n\t\tfor ; j < n && strings.HasPrefix(p[j], prefix) && len(ans) < 3; j++ {\n\t\t\tans = append(ans, p[j])\n\t\t}\n\t\tif len(ans) == 0 {\n\t\t\tfmt.Fprintln(w, \"-\")\n\t\t} else {\n\t\t\tfmt.Fprintln(w, strings.Join(ans, \" \"))\n\t\t}\n\t}\n}\n",
+      "sha256": "04b1bcd34fec73960b19bcf4a7fb041e57da370e42f4d5cee091324bc6f97db5"
+    }
+  ]
+}

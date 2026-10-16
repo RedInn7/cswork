@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-57",
+  "packageChecksum": "feb5034ead3876cc863ddb9401c4821f0966315ac80da27de413a91e391fc96f",
+  "sourceContentHash": "04179dd66fbd4c664fcbc9a477f54ae855823d2bf21812d2d90e11576b298707",
+  "editorialSha256": "2e8aa618836e834f984baed22da3807283dd0baddc3531c7c12dad9bf2f4b412",
+  "hints": {
+    "zh": [
+      "从左往右看，第一段应该尽量长：只要当前段里还没有出现重复字符，就没有必要提前切开。",
+      "贪心地延长当前段，直到下一个字符在当前段里已经出现过，就在这个字符前面切一刀，让它成为新段的第一个字符。把首段延长到贪心端点不会让后面的段数变多。",
+      "答案初值为 1，并维护当前段出现过的字符集合；逐个读字符，若它已在集合中，就把答案加一并清空集合；然后把该字符放入集合；扫描结束后输出答案。"
+    ],
+    "en": [
+      "Going from left to right, the first segment should be as long as possible: as long as no character repeats inside the current segment, there is no reason to cut early.",
+      "Greedily extend the current segment until the next character already appears in it, then cut just before that character so that it starts a new segment. Extending the first segment to the greedy end point never increases the number of later segments.",
+      "Start the answer at 1 and keep the set of characters seen in the current segment; for each character, if it is already in the set, add one to the answer and clear the set; then add the character to the set; print the answer after the scan."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the characters that appear in the current segment; when a repeated character shows up, cut right before it and start a new segment.\n\n## Proof of correctness\n\nThe greedy first segment is the longest valid prefix that can be taken from the start. The first segment of any optimal solution cannot be longer; extending it to the greedy end point only removes or shortens some later segments, which remain valid, and the number of segments does not increase. Applying this recursively gives an optimal solution.\n\n## Complexity\n\nTime O(n), extra space O(26)."
+}

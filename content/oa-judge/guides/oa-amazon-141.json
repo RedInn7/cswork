@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-141",
+  "packageChecksum": "eeec2f0e15b3ebe18528e6d6ef896bc91deb92dd129c81a1dfc1fb9eeee9de50",
+  "sourceContentHash": "3812d27215b68ef8b9484f865c42eb8aced0a91fb71cf89b412dccdc748958ca",
+  "editorialSha256": "86ebdef137e777fb36904f017d1209838fba433fbfe58620af398a750a4cd925",
+  "hints": {
+    "zh": [
+      "同一组（原始时长相同）里所有还没执行的任务，当前时长始终一样；不同组之间互不影响，后来时长恰好相同也不会合并。",
+      "所以每组只需要记一个数：这组下一个任务将要花的时间。执行一个任务时把这个数加到总耗时，再把它更新成一半向上取整。",
+      "用以原始时长为键的哈希表 next；按顺序处理每个任务的原始时长 x：取 value=next 中 x 的值（没有则为 x），总耗时加 value，再令 next[x]=(value+1)/2；最后输出总耗时，用 64 位整数。"
+    ],
+    "en": [
+      "All not-yet-run tasks of one group (same original duration) always share the same current duration; different groups never affect each other, and they do not merge even if their durations later coincide.",
+      "So each group needs just one number: how long its next task will take. When a task runs, add that number to the total and then update it to half, rounded up.",
+      "Use a hash map next keyed by original duration; for each task's original duration x in order: let value be next[x] (or x if absent), add value to the total, and set next[x] = (value + 1)/2; print the total as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep a dictionary keyed by original duration storing the group's next execution time; take it out and add it to the total, then update it to half, rounded up.\n\n## Correctness\n\nAll not-yet-run tasks in a group always have the same duration; one execution within the group updates all of them uniformly, and other groups are unaffected. Using the original duration as the key maintains exactly this group invariant, and accumulating step by step gives the true total time.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

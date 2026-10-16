@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-27",
+  "packageChecksum": "921bd9dfe89a939951bd5be358097d2679047f3c3ead77bbed44089eb21e3d2f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string line, s;\n    getline(cin, line);\n    getline(cin, s);\n    if (!s.empty() && s.back() == '\\r') s.pop_back();\n    int counts[26] = {0};\n    for (char c : s) counts[c - 'a']++;\n    long long answer = -1;\n    for (size_t i = 0; i < s.size(); i++)\n        if (counts[s[i] - 'a'] == 1) {\n            answer = i + 1;\n            break;\n        }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "da68c5a3aa288424318b5f597aed985fb928ac265c0b3ed44b25ae59af781f23"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).split(\"\\r?\\n\", -1)[1];\n        int[] counts = new int[26];\n        for (int i = 0; i < s.length(); i++) counts[s.charAt(i) - 'a']++;\n        int answer = -1;\n        for (int i = 0; i < s.length(); i++)\n            if (counts[s.charAt(i) - 'a'] == 1) {\n                answer = i + 1;\n                break;\n            }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "d9312b79ed2a7166ad443da6350670b182b1551172b21f28aaab3042a9dcc040"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := strings.TrimSuffix(strings.Split(string(raw), \"\\n\")[1], \"\\r\")\n\tvar counts [26]int\n\tfor i := 0; i < len(s); i++ {\n\t\tcounts[s[i]-'a']++\n\t}\n\tanswer := -1\n\tfor i := 0; i < len(s); i++ {\n\t\tif counts[s[i]-'a'] == 1 {\n\t\t\tanswer = i + 1\n\t\t\tbreak\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "87316c354732b6662d6b619a25e573905722f2050a898f0c1413f36c864289e8"
+    }
+  ]
+}

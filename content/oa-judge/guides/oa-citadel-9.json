@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-9",
+  "packageChecksum": "4d0c8bf7d3abfd0d7b82c5a5886d0863fab3f33715af9c858997d3a1f8c478c4",
+  "sourceContentHash": "8c946056d9fb4ab3ba4f6b50776c9f1fb9f46368ecffdbcd8e3aac6fcca51ed1",
+  "editorialSha256": "680fc41e95051e046dae2d3b37737b3b097a795f1be0a91baaf7d33c07767c69",
+  "hints": {
+    "zh": [
+      "所有收益都是正的，所以应把能加的工作日全部加上：加上的天数是 min(k, 0 的个数)。剩下的问题只是如何摆放这些天，使相邻“11”对最多。",
+      "已有工作日时，每新增一天都能贴在某个工作块旁边，至少带来一个新的相邻对；如果恰好把一段夹在两个工作块之间的 0 全部填满，两个块连起来，还能多得一个相邻对，而且这个额外收益与这段长度无关。所以优先填最短的内部 0 段。",
+      "统计 1 的个数、原有相邻对数和所有内部 0 段长度（两端都是 1 的段）；把段长升序排序，在剩余新增天数够用时依次填满并计数 extra。答案 = (ones + add)·fixedPay + (pairs + add + extra)·bonus。全 0 时把 add 天连续摆放，得 add·fixedPay + max(0, add−1)·bonus。用 64 位整数。"
+    ],
+    "en": [
+      "Every gain is positive, so add as many workdays as possible: min(k, number of 0s). What remains is where to place them to maximize the number of adjacent \"11\" pairs.",
+      "If some workday already exists, each new day can be attached next to a work block and adds at least one adjacent pair; filling an entire run of 0s that sits between two work blocks joins them and adds one extra pair, regardless of the run's length. So fill the shortest interior runs first.",
+      "Count the ones, the existing adjacent pairs and the lengths of all interior runs of 0s (runs with a 1 on both sides). Sort the run lengths and fill them in ascending order while the remaining added days suffice, counting extra. The answer is (ones + add) * fixedPay + (pairs + add + extra) * bonus. If the string is all 0s, place the add days contiguously for add * fixedPay + max(0, add - 1) * bonus. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAll gains are positive, so add as many workdays as possible; first fill the shortest interior 0 segments to connect work blocks, then use the remaining added days to extend existing work blocks. If the string is all 0s, place the added days as one contiguous segment.\n\n## Proof of correctness\n\nTotal pay is determined by the number of workdays and the number of adjacent 11 pairs. When workdays already exist, each added day brings at least one adjacent 11 pair; completely filling an interior gap adds one more, and this gain does not depend on the gap's length. Therefore filling the shortest gaps first maximizes the number of completed gaps. Added days that do not complete a gap can be attached to the edge of an existing block and still reach the base gain. When the string is all 0s, k ones have at most k-1 adjacent pairs, which a contiguous placement achieves.\n\n## Complexity\n\nO(n log n) time and O(n) space; pay is computed with 64-bit integers."
+}

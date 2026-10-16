@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-245",
+  "packageChecksum": "3d47f6b61eb860ccc3a05390491586c242da7dd5d9f18f8691c77cfec3aef35d",
+  "sourceContentHash": "008104bbf2a2323f5341879c51be176511cf72ab044b1f9540d9c500d4eca541",
+  "editorialSha256": "1f068ffd156a70c65f7668ae87caf67f012eb91a5ad8113d17318ceb6341721a",
+  "hints": {
+    "zh": [
+      "第一组获胜的条件 a[i]+a[j] > b[i]+b[j] 可以移项为 (a[i]−b[i]) + (a[j]−b[j]) > 0，只和每个下标自己的差值有关。",
+      "先按原下标算出差值 d[i]，问题变成统计 d 中和严格大于 0 的无序对数；对 d 排序不改变对数，排序后可以用双指针。",
+      "d 升序排序，left=0、right=n−1；若 d[left]+d[right]>0，则 right 与 left..right−1 都配对成功，累加 right−left 并左移 right，否则右移 left；最后对 1000000007 取模。不能把两组分别排序。"
+    ],
+    "en": [
+      "The win condition a[i]+a[j] > b[i]+b[j] rearranges to (a[i]-b[i]) + (a[j]-b[j]) > 0, which depends only on each index's own difference.",
+      "Compute the differences d[i] at the original indices first; the task becomes counting unordered pairs in d with a sum strictly greater than 0, and since sorting d does not change that count, two pointers apply after sorting.",
+      "Sort d ascending with left=0 and right=n-1; if d[left]+d[right] > 0, then right pairs successfully with every index in left..right-1, so add right-left and move right left; otherwise move left right; finally reduce modulo 1000000007. The two teams must not be sorted separately."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute the skill difference between the two teams at each original index, then sort the differences and use two pointers to count unordered index pairs whose sum is strictly greater than 0.\n\n## Proof of correctness\n\nThe original inequality is equivalent to d[i]+d[j]>0. Sorting only rearranges these complete differences and does not change the number of index pairs. If the smallest plus the largest is >0, the largest also succeeds with every number in between, contributing right−left, after which the largest is removed; otherwise the smallest cannot pair with the current or any smaller maximum and can be removed. The two branches count everything exactly once.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

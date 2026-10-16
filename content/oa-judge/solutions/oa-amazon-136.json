@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-136",
+  "packageChecksum": "579e0824b0bca14de0bd838ffeca4a449c681cda7f6577ca3d3b70d8438d60eb",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, p;\n    cin >> n >> p;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long sum = accumulate(a.begin(), a.end(), 0LL);\n    // Lower bound for any plan: the current maximum and the rounded-up average.\n    long long cap = max(*max_element(a.begin(), a.end()), (sum + p + n - 1) / n);\n    string out;\n    for (int i = 0; i < n; i++) {\n        long long put = min(p, cap - a[i]);\n        a[i] += put;\n        p -= put;\n        out += to_string(a[i]);\n        out += i + 1 < n ? ' ' : '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "b7d8a8628d28fad73099d83c54a4b088f09a7040d23bec98d3ab7409801fa7a7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long p = nextLong();\n        long[] a = new long[n];\n        long sum = 0, biggest = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            sum += a[i];\n            biggest = Math.max(biggest, a[i]);\n        }\n        // Lower bound for any plan: the current maximum and the rounded-up average.\n        long cap = Math.max(biggest, (sum + p + n - 1) / n);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            long put = Math.min(p, cap - a[i]);\n            a[i] += put;\n            p -= put;\n            sb.append(a[i]).append(i + 1 < n ? ' ' : '\\n');\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "745098f3b9ec56adf8acc11e8c65e22aea3ae319fc81a4fee3983cc70f5f2781"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn, p := readInt(), readInt()\n\ta := make([]int, n)\n\tsum, biggest := 0, 0\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t\tsum += a[i]\n\t\tbiggest = max(biggest, a[i])\n\t}\n\t// Lower bound for any plan: the current maximum and the rounded-up average.\n\tcapacity := max(biggest, (sum+p+n-1)/n)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := range a {\n\t\tput := min(p, capacity-a[i])\n\t\ta[i] += put\n\t\tp -= put\n\t\tw.WriteString(strconv.Itoa(a[i]))\n\t\tif i+1 < n {\n\t\t\tw.WriteByte(' ')\n\t\t} else {\n\t\t\tw.WriteByte('\\n')\n\t\t}\n\t}\n}\n",
+      "sha256": "556053dce657b9fc87e5d58783eacc789d09454df919efb573a7b4019eabf68c"
+    }
+  ]
+}

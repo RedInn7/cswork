@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-45",
+  "packageChecksum": "42f92ff1de233b011ec8d847d082e4d2941bb0d75946d7c1c85c221b48b96648",
+  "sourceContentHash": "d5aff9c1d3a736c6fff6585d72289850c7c17065b990bc2219267dcb0639e4ea",
+  "editorialSha256": "3569950dd4f1d58013d5c4b93e4fa66646d146bdfab79dd30e75d84d4d4fb5a0",
+  "hints": {
+    "zh": [
+      "每支股票最多买一股，买或不买二选一，总花费受 saving 限制——这正是 0/1 背包：费用是现价，价值是未来价减现价。",
+      "利润不为正的股票买了只会更差，直接跳过；用一维 dp[j] 表示预算不超过 j 时的最大利润，容量必须倒序遍历才能保证每支股票只用一次。",
+      "dp 长度 saving+1 全部初始化为 0（表示一股都不买）；对每支 gain=future−cost>0 且 cost≤saving 的股票，令 j 从 saving 递减到 cost，dp[j]=max(dp[j], dp[j−cost]+gain)。答案是 dp[saving]，利润总和用 64 位整数。"
+    ],
+    "en": [
+      "Each stock can be bought at most once, so for each one you either buy or skip, and the total spending is limited by saving. This is exactly a 0/1 knapsack: the cost is the current price and the value is future price minus current price.",
+      "A stock with non-positive profit can only make things worse, so skip it. Let a one-dimensional dp[j] be the best profit with a budget of at most j; iterate capacities in decreasing order so that each stock is used only once.",
+      "Initialize dp[0..saving] to 0, meaning buy nothing. For each stock with gain = future - cost > 0 and cost <= saving, let j go from saving down to cost and set dp[j] = max(dp[j], dp[j - cost] + gain). The answer is dp[saving]; keep profits in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\n0/1 knapsack: the cost is the current price and the gain is the future price minus the current price. Iterate capacities in reverse so each stock is bought at most once; stocks with non-positive gain can be skipped.\n\n## Correctness\n\nAfter processing the first i stocks, dp[j] is the maximum profit with a budget of at most j. A new stock is either not bought, inheriting the value, or bought once on top of the previous layer's dp[j - cost] + gain. Iterating in reverse makes the referenced smaller capacities still belong to the previous layer; when the cost is 0, each capacity is updated only once, so the stock is still bought exactly once. Induction guarantees optimality, and the initial value 0 represents not investing.\n\n## Complexity\n\nO(n * saving) time and O(saving) space."
+}

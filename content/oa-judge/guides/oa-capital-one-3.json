@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-3",
+  "packageChecksum": "1f19ba90c461059be446b01e5678373106c757092d372f3df13048069dd30bcd",
+  "sourceContentHash": "231f0144a6361b327def0680e0cd4d529c4f1ae981cb576c2ab9109edf52e71e",
+  "editorialSha256": "9e19865c484b08150edd919fc7dd7f1947754972032c65b9df22b4e098cc65dd",
+  "hints": {
+    "zh": [
+      "每条命令只依赖执行它时的矩阵，按输入顺序逐条照定义执行即可，没有需要推导的规律。",
+      "把矩阵存成二维数组：行交换直接交换两行，列交换和列反转对每一行做对应操作，行反转反转该行；顺时针旋转需要构造新矩阵。",
+      "顺时针旋转 90 度时，新矩阵第 i 行第 j 列等于原矩阵第 (行数−1−j) 行第 i 列；列反转只需交换第 i 行和倒数第 i 行在该列的元素（i 只到行数的一半）；全部命令执行完后逐行输出，数值用空格分隔。"
+    ],
+    "en": [
+      "Each command depends only on the matrix at the moment it runs, so applying the commands one by one in input order, exactly as defined, is all it takes.",
+      "Store the matrix as a 2D array: a row swap exchanges two rows, a column swap or column reversal does the matching work in every row, a row reversal reverses that row; a clockwise rotation needs a new matrix.",
+      "For a 90-degree clockwise rotation, entry (i, j) of the new matrix is entry (rows - 1 - j, i) of the old one; reversing a column swaps its entries in row i and in row rows - 1 - i for i up to half the rows; after all commands print the matrix row by row with values separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nApply the matrix operations directly in input order.\n\n## Proof of correctness\n\nEach operation is applied, by its definition, to the matrix as it is at that moment, so the state after executing them in order is the result of all the commands.\n\n## Complexity\n\nO(rc) per operation, O(rc) space.\n\n## Source notes\n\nThe original problem gives neither a stdin/stdout format nor the indexing base; this problem adds a 0-based serialization protocol and specifies that only square matrices can be rotated."
+}

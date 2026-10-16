@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-181",
+  "packageChecksum": "ce55485e89865eb6e41de946b8fbf3ace9e27ccc177aa61c3995778577bd8f20",
+  "sourceContentHash": "90709c4031ea5e5567f2fc9e45fa3827c296a4189538546ae3395c87b503ee0d",
+  "editorialSha256": "54aafd347624da37481048101928ba15b1b91bc6307caf2ba2f70e7be13bb3ef",
+  "hints": {
+    "zh": [
+      "包裹身份互不相同，所以是在数完美匹配的个数。看当前最轻的未配对重量v：它不可能再和更轻的包裹配对，只能全部去配重量为v+wt的包裹。",
+      "wt大于0时按重量从小到大处理：重量v还剩r个未配对，重量v+wt有c个可用，若c小于r则答案为0，否则方案数乘上从c个中有序选出r个的排列数c·(c−1)·…·(c−r+1)，再把v+wt的可用数减去r。wt等于0时同重量组内部两两配对，c个的配法是(c−1)·(c−3)·…·1，c为奇数则无解。",
+      "n为奇数直接输出0；统计每种重量的个数。wt等于0时：任一组个数为奇数就输出0，否则把每组的1·3·…·(c−1)乘起来。wt大于0时：按重量升序遍历，need为该重量的剩余个数（为0则跳过），available为重量v+wt的剩余个数，不足就输出0，否则把available−need+1到available依次乘进答案，并把v+wt的剩余个数改为available−need。所有乘法都对1000000007取模。"
+    ],
+    "en": [
+      "The packages are all distinct, so this counts perfect matchings. Look at the lightest unpaired weight v: it can no longer pair with anything lighter, so all of its packages must pair with packages of weight v + wt.",
+      "For wt > 0, process weights in increasing order: if r packages of weight v are unpaired and c packages of weight v + wt are available, the answer is 0 when c < r; otherwise multiply by the number of ordered choices c(c-1)...(c-r+1) and reduce the available count of v + wt by r. For wt = 0, each weight group pairs up internally, a group of c in (c-1)(c-3)...1 ways, impossible when c is odd.",
+      "If n is odd print 0; count each weight. For wt = 0: print 0 if any group size is odd, otherwise multiply together 1*3*...*(c-1) for every group. For wt > 0: go through the weights in increasing order, let need be the remaining count of this weight (skip it when 0) and available the remaining count of weight v + wt; print 0 if it is short, otherwise multiply in every factor from available - need + 1 to available and set the remaining count of v + wt to available - need. Take every product modulo 1000000007."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen wt is 0, each group of equal weights is matched perfectly within itself, so multiply by odd double factorials. When wt>0, process the weights in increasing order: the packages not yet paired can only match the next weight v+wt, so choose and arrange them among that weight's remaining identities, multiply by the falling factorial, then subtract the number used.\n\n## Proof of correctness\n\nThe smallest unpaired weight can no longer match a smaller weight, so all of its identities must match v+wt. If not enough remain there is no solution; otherwise the number of ways to choose ordered distinct objects is P(c,r), each complete matching determines these objects uniquely, and recursively handling the rest counts everything once with nothing missed. When wt=0, the first chosen identity has c-1 possible partners, and recursion gives (c-1)!!; different weights do not affect each other.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

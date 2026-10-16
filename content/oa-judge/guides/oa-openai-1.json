@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-1",
+  "packageChecksum": "f80bd152727b53c58658dffceb48fa62ca0ebb011f06a042359db1469419062e",
+  "sourceContentHash": "d361c94789b119eb99555b5078c657012cf64cba5c46c0bc60e66511447868ee",
+  "editorialSha256": "036cd0c5a1a9d583fd9e6dab79f00b9c93599e74663131366f5b321db98d2dee",
+  "hints": {
+    "zh": [
+      "比较的是完整坐标集合：第二张图的一个连通块要计入，必须和第一张图某个连通块的格子完全相同，既不能是子集，也不能只是形状相同。",
+      "分别求出两张图的所有四连通块，把每个块表示成格子编号的集合；问题就变成统计第二张图有多少个集合也出现在第一张图的集合里。",
+      "对每张图用栈或队列做迭代遍历（避免递归过深），每找到一个块就记下它的格子编号集合（编号为 r*m+c），第一张图的块放进哈希集合。再对第二张图的每个块查它是否在集合里并计数。等价的做法是给第一张图的格子标上块号，第二张图的块若所有格子都落在同一个块号里且大小相等就算匹配。"
+    ],
+    "en": [
+      "The comparison is on full coordinate sets: a component of the second grid counts only if its cells are exactly the cells of some component of the first grid, not a subset and not merely the same shape.",
+      "Find all 4-connected components of both grids and represent each as the set of its cell ids; the question becomes how many sets of the second grid also appear among the sets of the first grid.",
+      "Traverse each grid iteratively with a stack or queue to avoid deep recursion, recording each component as the set of its cell ids r*m+c, and put the first grid's components in a hash set. Then count the second grid's components found in that set. Equivalently, label the first grid's cells with component ids; a second-grid component matches when all its cells carry the same label and both components have the same size."
+    ]
+  },
+  "explanationEn": "## Approach\n\nExtract the set of cell ids of each connected component with an iterative traversal, use the immutable set as a key, and count the keys of the second grid that also appear in the first grid.\n\n## Correctness\n\nThe traversal only expands along 1-cells in the four directions and stops only when it cannot expand further, so each run extracts exactly one complete component. Two sets of absolute cell ids are equal if and only if all coordinates are exactly equal; set lookup implements exactly what the problem asks.\n\n## Complexity\n\nExpected time O(nm), space O(nm)."
+}

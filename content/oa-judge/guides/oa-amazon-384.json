@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-384",
+  "packageChecksum": "f3097641e9c58150cc14098fcd63a35e34a1eb05e0b924a59bf0be257d7ff39f",
+  "sourceContentHash": "2b1e96fbca85eef012bf4b484cb6ec75b729f9cee3f8a25fcb5bcf2fa3278c75",
+  "editorialSha256": "adf84a55945f2ce328842c4843a0a4e7e610f93448d46f5ba6bca91acb1da606",
+  "hints": {
+    "zh": [
+      "每个前缀的带符号和都要大于 0，等价于：每个前缀里取负号的那些数之和，必须严格小于这个前缀原总和的一半。",
+      "贪心：先假设每个新数都取负号；一旦当前前缀和不再为正，就必须撤销一个负号，而撤销已取负的数中最大的那个最划算：同样只少一个负号，余额恢复得最多。",
+      "维护当前带符号和 balance 和一个存放已取负数的最大堆：每读到 v，令 balance−=v 并把 v 入堆；若 balance≤0，弹出堆顶 t 并令 balance+=2t。最后堆的大小就是答案，balance 用 64 位。"
+    ],
+    "en": [
+      "Every prefix sum being positive means that, within each prefix, the numbers given a minus sign must sum to strictly less than half of that prefix's original total.",
+      "Greedy: assume each new number gets a minus sign; as soon as the prefix sum is no longer positive, one minus sign must be undone, and undoing the largest negated number is best, since it costs only one sign and restores the most balance.",
+      "Keep the signed sum balance and a max-heap of negated numbers: for each v, do balance−=v and push v; if balance≤0, pop the top t and add 2t to balance. The heap size at the end is the answer; use a 64-bit balance."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTentatively make each new item negative and push it into a max-heap; if the prefix is no longer positive, undo the negative item with the largest absolute value among all current negative items.\n\n## Proof of correctness\n\nMaintain the maximum number of chosen negative items and, for that count, the smallest total of negative items (that is, the largest balance). If adding a new negative item exceeds the budget allowed by this prefix, no plan with the same count is feasible either, so one item must be removed; removing the largest one leaves the smallest sum. With the growing original positive total of the prefix as the budget, swapping out the largest item only reduces the negative burden of every affected prefix and does not break past constraints. The balance was positive before, and the largest value is at least the new value, so a single undo restores a positive balance. Induction gives the maximum count.\n\n## Complexity\n\nO(n log n) time and O(n) space; the balance can reach 10^14."
+}

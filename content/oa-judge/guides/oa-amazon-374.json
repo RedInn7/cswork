@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-374",
+  "packageChecksum": "4faad325605672d7ef4c3b357aae5c8d42001814106f5a6a5576aaecbfcd5acf",
+  "sourceContentHash": "e21ad15dacb9fe4337605d36bb3039014460b73aebae65c01c5c938c1885fe29",
+  "editorialSha256": "6e6349a249c49a0eabd7fe359801a2a514f98889480e33c12b5e044e43366f20",
+  "hints": {
+    "zh": [
+      "固定返程时刻 j，最好的出发一定是所有 i<j 中费用最低的那一个。",
+      "从小到大扫描 j，维护“严格早于 j 的出发费用最小值”，每一步只需要加入出发 j−1（如果它存在）。",
+      "遍历返程数组：若 j−1 是合法的出发下标就更新前缀最小值；若已经有出发可选，就用 最小值+返程费用 更新答案。两数组长度可能不同、费用可能为负，没有任何合法组合时输出 −1。"
+    ],
+    "en": [
+      "For a fixed return time j, the best departure is the cheapest one among all i<j.",
+      "Scan j in increasing order and maintain the minimum departure cost strictly before j; each step only needs to add departure j−1 if it exists.",
+      "Go through the return array: if j−1 is a valid departure index, update the prefix minimum; if some departure is available, update the answer with minimum + return cost. The lengths can differ and costs can be negative; print −1 if no valid pair exists."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the return time j; add the departure at j−1, if it exists, to the running minimum; update the answer with the minimum departure cost so far plus this return.\n\n## Proof of correctness\n\nWhen j is processed, the maintained minimum covers exactly all existing departures with i<j, and for a fixed return, choosing the cheapest departure is optimal. Every actual return is visited, and every valid combination is compared at the time of its return, so the global minimum is covered. When the lengths differ, the departure index is checked independently, and the return list is not truncated.\n\n## Complexity\n\nO(n+m) time and O(1) space besides the input arrays."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-209",
+  "packageChecksum": "a3c8d0f46783269e01d5dd3bf2c769a26a834eb05da08f90f9f857b3de7aa5da",
+  "sourceContentHash": "5b195876f99974f785b7c65aca3ddd78d266362c5fd865fa7311dbab0ed8c7a2",
+  "editorialSha256": "30c0b9123a778f98d8588d9e1bd4ce8ae951304f6eaf7904743a7952cb440d99",
+  "hints": {
+    "zh": [
+      "每天的必做任务固定占用一部分时间，剩下的 H−必做耗时就是当天还能放下的选做任务容量；问题变成容量与选做任务之间的匹配。",
+      "把容量和选做耗时都升序排序，最小的选做任务应该交给能装下它的最小容量；装不下最小选做任务的容量什么也装不下。",
+      "计算 cap[i]=H−必做耗时[i] 并排序，选做耗时排序；指针 j=0，按容量从小到大：若 optional[j]≤cap 则 j 加 1；输出 j。"
+    ],
+    "en": [
+      "Each day's mandatory task uses a fixed amount of time, and H minus that time is the room left for an optional task that day; the task becomes a matching between capacities and optional tasks.",
+      "Sort both capacities and optional times ascending; the smallest optional task should go to the smallest capacity that holds it, and a capacity that cannot hold the smallest optional task cannot hold any.",
+      "Compute cap[i] = H - mandatory[i] and sort it, sort the optional times; j = 0; for capacities from small to large: if optional[j] <= cap, increment j; print j."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTurn each mandatory task into a remaining capacity H minus its time. Sort the capacities and the optional times ascending, and match the current smallest optional task with the smallest capacity that can hold it.\n\n## Proof of correctness\n\nA capacity that cannot hold the smallest task cannot hold any other optional task either, so it can be skipped. Otherwise some optimal solution matches these two smallest available elements: if the original solution matches them crosswise, the pairs can be swapped while staying feasible, and otherwise adding this pair directly does not reduce the count. Repeating this yields a maximum matching.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

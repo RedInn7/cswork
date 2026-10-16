@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-349",
+  "packageChecksum": "71d15b08b6283d9fcd4add61e81bab115bd13701ae69a3b2a3cc2d408df340ac",
+  "sourceContentHash": "9782d22b9c452f9d836ad2b8cc6f33b972230373f50c5eb6c666cc1f252a130c",
+  "editorialSha256": "a11e8c09eb1ac8e81921e51ae6ac8ce69f7d9b953858f581534a8d165f42ef68",
+  "hints": {
+    "zh": [
+      "n最大10^12，不能枚举每个k。注意floor(n/k)随k增大而不增，相同的商出现在一段连续的k上。",
+      "对当前k，商q=floor(n/k)，能得到同一个商的最大k是floor(n/q)。整段只需把q加一次，然后直接跳到floor(n/q)+1。这样不同的商最多约2√n个。",
+      "k=1，answer=0；当k≤n时：q=n/k（整除），answer加q，k=n/q+1。n=0时循环不执行，答案为0。结果在64位整数范围内。"
+    ],
+    "en": [
+      "n can be as large as 10^12, so you cannot try every k. Note that floor(n/k) never increases as k grows, so equal quotients appear over a contiguous range of k.",
+      "For the current k with quotient q=floor(n/k), the largest k giving the same quotient is floor(n/q). Add q once for the whole range and jump straight to floor(n/q)+1. There are at most about 2√n distinct quotients this way.",
+      "Set k=1 and answer=0; while k≤n: q=n/k (integer division), add q to answer, and set k=n/q+1. When n=0 the loop does not run and the answer is 0. The result fits in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStart from k=1. The last divisor that gives the same current quotient q=n//k is n//q; add q once, then jump past that range.\n\n## Proof of correctness\n\nThe quotient never increases as k grows, and the contiguous range with quotient q ends at the largest k with floor(n/k)=q, namely k=n//q. Skipping the whole range adds q only once and misses no other positive quotient; for k>n every quotient is 0, so there is no need to enumerate further. Hence the sum of the distinct quotients is computed exactly. There are only √n small divisors ≤√n, and the large divisors give quotients ≤√n, so there are at most √n distinct values there as well.\n\n## Complexity\n\nTime O(√n), extra space O(1)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-maven-securities-3",
+  "packageChecksum": "1609d2e16355ba00bae369284a7f64b148ef8ae0386e5bf27952b83d96247906",
+  "sourceContentHash": "dfe20dacd04ab389a20b8953bcf2290650fa170eeaa05b57d98be8e6b7d22af3",
+  "editorialSha256": "ad86cc2c44915d4a6758e34adf48b0133f5198360e2c6ff3bdb1655a9400afe4",
+  "hints": {
+    "zh": [
+      "gcd 大于 1 等价于两个数有公共质因数，所以“直接相连”可以改写成“通过某个质因数相连”，不必两两计算 gcd。",
+      "用并查集：对每台服务器分解出不同的质因数，把它和该质因数第一次出现时的服务器合并；共享同一质因数的服务器因此都落进同一个集合，传递性自然得到连通分量。",
+      "先筛出 1..max 的最小质因数，分解时不断用最小质因数去除；记录每个质因数第一次出现的服务器并做合并；最后统计每个根的集合大小，按位置输出成方括号包住、逗号分隔、没有空格的数组。值为 1 的服务器没有质因数，自成大小为 1 的簇。"
+    ],
+    "en": [
+      "A gcd above 1 means the two numbers share a prime factor, so a direct connection can be rephrased as being linked through some prime, with no pairwise gcd computations.",
+      "Use union-find: factor each server into its distinct primes and union it with the first server that had the same prime; all servers sharing a prime end up in one set, and transitivity gives the connected components for free.",
+      "Sieve the smallest prime factor for 1..max and factor each value by repeatedly dividing out its smallest prime factor; remember the first owner of each prime and union with it; finally count each root's set size and print, per position, an array wrapped in square brackets with comma separators and no spaces. A value of 1 has no prime factors and forms a cluster of size 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFactor each property into its distinct prime factors. Any two servers sharing a prime factor have a gcd greater than 1, so merging each of them with the first server where that prime factor appeared yields the same connected component; transitive merging covers every path. Finally, count the size of each union-find root and map it back to each position. A value of 1 has no prime factors and stays in its own cluster.\n\n## Proof of Correctness\n\nThe two endpoints of any edge in the original graph have a gcd greater than 1 if and only if they share some prime factor; that prime factor's representative merges the two endpoints. Conversely, every merge joins servers that really do share the current prime factor, so different connected components of the original graph are never merged. After merging for all distinct prime factors, the union-find groups are exactly the connected components of the original graph, and the root count is the size of each server's cluster. A value of 1 shares no prime factor and remains a single-node component.\n\n## Complexity\n\nLet V=1000000 and let M be the array length. Sieving smallest prime factors takes O(V loglogV), factorization takes a bounded O(M log V) of work in total, and union-find merging takes O(M α(M)); space is O(V+M)."
+}

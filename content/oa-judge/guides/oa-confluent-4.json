@@ -1,0 +1,19 @@
+{
+  "id": "oa-confluent-4",
+  "packageChecksum": "f2fb96f7b4b07132c5241165637d596a92d266a2c71052936cb5e9d8fe365ca1",
+  "sourceContentHash": "156bdf3f839e54cd920a5ca4c9297ca81554b9c3ba28df872a0e9e00d483cbdf",
+  "editorialSha256": "346e77dceb521d4b7ee566606aa338e95741c17ce5a2ae3f375b94198c922688",
+  "hints": {
+    "zh": [
+      "结果只是最后 n 行，所以读入时只需要一直保留“最近的至多 n 行”，更早的行可以丢掉。",
+      "用一个队列：每读一行就放到队尾，长度超过 n 时从队首弹出最早的一行；全部读完后队列里按原顺序就是答案。n = 0 时队列始终为空，n 大于行数时保留全部。",
+      "输入要按字节解析：先读一行长度 L，再原样取接下来的 L 个字节（可能是空串、含空格、制表符或非 ASCII 字符），然后跳过紧跟的换行。输出同样先写行数，再对每行写字节长度和原始内容各占一行；不要按空白切分，也不要做字符编码转换。"
+    ],
+    "en": [
+      "The result is only the last n lines, so while reading you just keep the most recent at most n lines and drop anything older.",
+      "Use a queue: append each line at the back and pop the oldest from the front whenever the size exceeds n; after reading everything, the queue holds the answer in original order. With n = 0 the queue stays empty, and with n larger than the line count everything is kept.",
+      "Parse the input as bytes: read a line holding the length L, take exactly the next L raw bytes (which may be empty or contain spaces, tabs or non-ASCII characters), and skip the newline right after them. Write the output the same way: the number of lines, then for each line its byte length on one line and its raw content on the next. Never split on whitespace or re-encode the text."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead the length-prefixed strings in order and keep at most n items in a double-ended queue. Each item read is added at the back, and if the count exceeds n the front item is removed. When reading finishes, the queue holds the last n lines; when n=0 the queue is always empty. Serialization likewise writes the UTF-8 byte length, which preserves empty strings and spaces within lines exactly.\n\n## Correctness\n\nAfter the first i lines have been processed, the queue holds the last min(i,n) of these i lines in unchanged order: a new line is appended at the back, and the earliest item is removed when there are more than n, so the claim holds by induction. After all lines have been processed this is exactly what the problem asks for; the case n=0 is empty.\n\n## Complexity\n\nLet L be the total number of input content bytes and r the number of returned lines; time is O(L), auxiliary space is O(min(n,lineCount)) string references, and serializing the output needs another O(L_out)."
+}

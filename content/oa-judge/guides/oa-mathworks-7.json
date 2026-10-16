@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-7",
+  "packageChecksum": "279d652059a1b08c7aa90a1f6eeaf6c7d0389587043b04f3b0bbfff4270183d5",
+  "sourceContentHash": "330931520e5cf9a1d56ee29f6f3b031be4fb67338d7e1dcc6d75e329a9e4cee5",
+  "editorialSha256": "91a300fcc8754047a5d3bc87b57deeb3673e549d39a4061929339b1089f43b46",
+  "hints": {
+    "zh": [
+      "密码不合法只可能是出现了长度达到 k 的同字母连续段；换句话说，只要每一段连续相同字母的长度都在 1..k−1 之间就合法。",
+      "设 d[i] 为长度 i 的合法密码数，按最后一段同字母连续段的长度 L（1..k−1）分类：前面 i−L 个字符是任意一个合法密码，最后一段要换成与之不同的字母，有 25 种选择；若整串只有一段（L=i），则有 26 种。",
+      "d[1]=26；i 从 2 到 n，用滑动窗口维护最近 k−1 个 d 值之和（加入 d[i−1]，移出 d[i−k]），d[i] 等于 25 乘以窗口和，当 i<k 时再加 26；全程对 1000000007 取模，减法后要加回模数，答案是 d[n]。"
+    ],
+    "en": [
+      "A password is invalid only when some run of identical letters reaches length k; in other words, it is valid exactly when every run of identical letters has length between 1 and k-1.",
+      "Let d[i] be the number of valid passwords of length i and classify them by the length L (1..k-1) of the final run: the first i-L characters form any valid password and the final run uses a different letter, 25 choices; if the whole string is one run (L = i) there are 26 choices.",
+      "Set d[1] = 26; for i from 2 to n keep a sliding-window sum of the last k-1 values of d (add d[i-1], remove d[i-k]); d[i] is 25 times the window sum, plus 26 when i < k. Reduce modulo 1000000007 throughout, add the modulus back after subtracting, and output d[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the source constraint k<=n; boundary tests cover k=2 and k=n.\n\n## Proof of correctness\n\nClassify strings by the length of their trailing run of identical characters. Appending a different character has 25 choices; appending the same character extends the old trailing run by 1. Summing over the classes gives 25 times the sum of the most recent at most k-1 length states; the rolling window only speeds up that sum and is equivalent to an independent DP over the trailing-run length.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

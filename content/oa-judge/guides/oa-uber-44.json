@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-44",
+  "packageChecksum": "9f5226907463dae90ef3629ba87d0a64b5a222b4f71091db11059e08cd20abbd",
+  "sourceContentHash": "e24b03122168a9ca443e11a0d6dbf5f8cef4de01fcb94ea89b81aa4cbe02cecb",
+  "editorialSha256": "1a9e40e032a5677331d84a21de1123f177881bc5a2f8e5b2a305f334ec4cc121",
+  "hints": {
+    "zh": [
+      "跳跃只会让下标变大，所以按下标从小到大处理到达过的位置，就是一次拓扑顺序的传播。一个位置一次能到达的落点是“当前下标 + 不超过跳长的某个质数”，这正是质数集合整体平移后再截断。",
+      "把小于 n 的质数筛出来存成位集，把已到达位置也存成位集。处理每个可达下标 i 时，取质数位集中不超过 min(nums[i], n−1−i) 的那一段，平移 i 位后按位或进可达集合，一次处理 64 个落点。",
+      "用埃氏筛得到质数位集 primes，可达位集 reach 初始只有第 0 位。从小到大扫描 i，遇到整字为空就直接跳到下一个字；若 i 可达且 i=n−1 则答案为 1。否则令 bound=min(nums[i], n−1−i)，bound≥2 时把 primes 的第 0..bound 位逐字移位后或进 reach 中从 i 开始的部分，或完检查第 n−1 位。扫完仍未到达输出 0。n=1 时直接输出 1。"
+    ],
+    "en": [
+      "Jumps only move to larger indices, so processing reached positions in increasing index order is a topological propagation. The landing spots from index i are i plus some prime not exceeding the jump length, which is the set of primes shifted by i and then truncated.",
+      "Sieve the primes below n into a bitset and keep the reached positions in another bitset. For each reachable index i, take the part of the prime bitset up to min(nums[i], n - 1 - i), shift it by i and OR it into the reached set, handling 64 landing spots per machine word.",
+      "Build the prime bitset with a sieve; the reach bitset starts with only bit 0. Scan i upward, skipping whole empty words; if i is reachable and i = n - 1 the answer is 1. Otherwise let bound = min(nums[i], n - 1 - i); when bound >= 2, shift primes bits 0..bound word by word and OR them into reach starting at i, then test bit n - 1. If the scan ends without reaching it, output 0. For n = 1 output 1 directly."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSieve the primes below n and store them as a big-integer bitset. The pending positions are kept in a bitset relative to the current index: take the prime bits that do not exceed the jump length and merge them in, then shift right to skip positions already processed. This avoids shifting the whole prime set left to absolute indices on every step.\n\n## Correctness\n\nOnly allowed prime step lengths create new positions, so nothing is reported falsely. Every edge points strictly forward, so processing reached positions in increasing order is a topological propagation; by induction on path length, every position reachable from 0 is eventually marked.\n\n## Complexity\n\nThe sieve is O(n log log n); bitset propagation takes O(n²/W) machine-word operations in the worst case, with O(n) space, where W is the word size used internally by the big integer."
+}

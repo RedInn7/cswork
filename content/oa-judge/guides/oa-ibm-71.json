@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-71",
+  "packageChecksum": "e85396b5373872cb880fc57855442bc0e1aea0f10d64cefad5556cbf29e4c3a9",
+  "sourceContentHash": "fc6d0db8d2ab27a110d1da37702a6ff7e0028bf7c8ca22c38271f0767a053412",
+  "editorialSha256": "3f79a5c2895cb71729cfbf2d51565e742bae1d7cf0368e01d64691510d7026bc",
+  "hints": {
+    "zh": [
+      "一个用户能看到的人数就是他所在连通块的大小（包括他自己），孤立用户的答案是 1；边可以多跳传递，自环和重边不影响连通性。",
+      "用并查集合并每条边的两个端点所在集合，并在每个根上记录集合大小；所有边处理完后，每个查询只需找到该用户的根，读出根上记录的大小。",
+      "初始化 parent[i]=i、size[i]=1；对每条边分别找两个端点的根，若不同就把较小的集合挂到较大的集合下并累加大小（按大小合并），查找时做路径压缩；最后对每个查询输出 size[find(v)]，用空格分隔。"
+    ],
+    "en": [
+      "The number of users someone can see is the size of their connected component (themselves included), so an isolated user's answer is 1; connections chain over multiple hops, and self-loops or repeated edges do not change connectivity.",
+      "Use a disjoint-set union to merge the sets of the two endpoints of every edge, keeping the set size on each root; after all edges, a query only needs the user's root and the size stored there.",
+      "Initialize parent[i] = i and size[i] = 1; for each edge find the roots of both endpoints, and if they differ attach the smaller set under the larger one and add the sizes (union by size), compressing paths during find; finally print size[find(v)] for every query, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a disjoint-set union with union by size and path compression, maintaining the component size at each root; a query returns the size stored at its root.\n\n## Proof of correctness\n\nInitially every user forms a component of their own with size 1. Each edge can only merge the two connected components of its endpoints; if they already share a root, no new users are added. By induction the DSU groups are exactly the connected components of the processed edges, and the root sizes are exact. After all edges are processed, the root size for each query is the number of visible users including the user themselves.\n\n## Complexity\n\nTime O((n+m+q)α(n)), extra DSU space O(n); including input and output storage, O(n+m+q)."
+}

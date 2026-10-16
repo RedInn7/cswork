@@ -1,0 +1,19 @@
+{
+  "id": "oa-pinterest-5",
+  "packageChecksum": "9f6e3a49d0f4c78a560a85ae27ad8b00d29cd41694288de93ed367d77bf1c145",
+  "sourceContentHash": "886843ff4caac0be7d078ffee28752fcd3beab87bcbeb3791498a51bb942608b",
+  "editorialSha256": "4305846830063de5cef2e4a924843ae41bec7f893bf56f065c68d0ba5381badf",
+  "hints": {
+    "zh": [
+      "在一个同色连通块里，只要块大小至少为 3，块内每个泡泡要么自己有两个同色邻居，要么挨着这样的泡泡，所以整块都会爆；大小为 1 或 2 的块一个都不会爆。",
+      "所以问题变成：在原棋盘上找所有同色四连通块，把大小 ≥3 的块整体标记为爆炸。标记阶段不能修改棋盘，因为爆炸是同时发生的。",
+      "用 BFS/DFS 求连通块并标记；全部标记完后把被标记的格子视为空。然后逐列从下往上收集未爆的泡泡，保持相对顺序紧贴到底部，上方空位填 0。按行输出矩阵。时间 O(rows×cols)。"
+    ],
+    "en": [
+      "In a same-color connected group of size at least 3, every bubble either has two same-color neighbors itself or is next to such a bubble, so the whole group explodes; groups of size 1 or 2 have no bubble that explodes.",
+      "So the task becomes: on the original board, find every same-color 4-connected group and mark the groups of size at least 3 as exploding. Do not modify the board while marking, because the explosion happens simultaneously.",
+      "Find the groups with BFS or DFS and mark them; after all marking is done, treat marked cells as empty. Then for each column, collect the surviving bubbles from the bottom up, pack them against the bottom in the same relative order and fill the cells above with 0. Print the matrix row by row. Time O(rows * cols)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind same-color 4-neighbor connected groups on the original board: every group of size at least 3 is marked to explode as a whole. All marks are decided simultaneously from the original board, and then each column is stably compacted so the remaining bubbles sit at the bottom.\n\n## Correctness\n\nWithin a same-color connected group, every non-leaf node has at least two same-color neighbors and is therefore eligible; every leaf node is adjacent to some non-leaf node and is therefore marked together as a same-color neighbor of an eligible bubble. So whole groups of size at least 3, and only those, are marked; groups of size 1 or 2 have no eligible bubble. The problem requires a simultaneous explosion, so the group-marking phase does not modify the board; the column compaction afterwards keeps the relative order of the surviving bubbles and packs them against the bottom edge.\n\n## Complexity\n\nLet R = rows and C = cols. Time O(RC), space O(RC)."
+}

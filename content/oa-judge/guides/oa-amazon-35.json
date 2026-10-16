@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-35",
+  "packageChecksum": "58b2482c7495107c0adb8d6d8c56a0c015b07406702830adec8fa581c47a0aba",
+  "sourceContentHash": "fafecf2c1f96d59c6985eac0900af66f6805263b16da1db053b115117dc7d624",
+  "editorialSha256": "2ee2c8004e203f6865c7980efa1dc38fdda222e049be50016b1e2e67b863d5fa",
+  "hints": {
+    "zh": [
+      "每次删除都是两个不同种类各一个，真正卡住你的只有数量最多的那一种；另外每次删 2 个，剩余个数的奇偶性始终和 n 相同。",
+      "设最多的种类出现 f 次：如果 f 超过一半，其余 n−f 个水果最多各抵消它一个；否则总能一直配对下去，最后只剩由奇偶决定的 0 或 1 个。",
+      "统计每个种类的出现次数，取最大值 f，输出 max(2f−n, n mod 2)。"
+    ],
+    "en": [
+      "Every removal takes one fruit from each of two different kinds, so the only real obstacle is the most frequent kind; also, each step removes 2 fruits, so the number left always has the same parity as n.",
+      "Let the most frequent kind appear f times. If f is more than half, the other n−f fruits can each cancel at most one of it; otherwise you can keep pairing until parity alone decides whether 0 or 1 remains.",
+      "Count the occurrences of each kind, take the maximum f, and print max(2f−n, n mod 2)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f be the maximum frequency. The answer is max(2f−n, n mod 2).\n\n## Proof of correctness\n\nIf the most frequent kind is a majority, each of the other n−f fruits can cancel at most one fruit of that kind, so 2f−n must remain, and this is achievable. Otherwise, repeatedly pair the two currently most frequent kinds; this never creates a majority too large to keep pairing, so in the end only parity matters and 0 or 1 fruit remains.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

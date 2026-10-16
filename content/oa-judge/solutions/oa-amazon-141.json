@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-141",
+  "packageChecksum": "eeec2f0e15b3ebe18528e6d6ef896bc91deb92dd129c81a1dfc1fb9eeee9de50",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // Keyed by original duration: the time the group's next task will take.\n    unordered_map<long long, long long> nextTime;\n    nextTime.reserve(2 * n);\n    long long total = 0;\n    for (int i = 0; i < n; i++) {\n        long long original;\n        cin >> original;\n        auto it = nextTime.find(original);\n        long long value = it == nextTime.end() ? original : it->second;\n        total += value;\n        nextTime[original] = (value + 1) / 2;\n    }\n    cout << total << '\\n';\n}\n",
+      "sha256": "1176b4632c8b91bccc23b4b0aff64e5217348a7826772c3ca757aae51a812165"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // Keyed by original duration: the time the group's next task will take.\n        HashMap<Long, Long> nextTime = new HashMap<>(2 * n);\n        long total = 0;\n        for (int i = 0; i < n; i++) {\n            long original = nextLong();\n            long value = nextTime.getOrDefault(original, original);\n            total += value;\n            nextTime.put(original, (value + 1) / 2);\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "497cc47b138d10d34fcc825cee55b6521f15742f07f2585b7b64552add1c4ffb"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn := readInt()\n\t// Keyed by original duration: the time the group's next task will take.\n\tnextTime := make(map[int]int, n)\n\ttotal := 0\n\tfor i := 0; i < n; i++ {\n\t\toriginal := readInt()\n\t\tvalue, ok := nextTime[original]\n\t\tif !ok {\n\t\t\tvalue = original\n\t\t}\n\t\ttotal += value\n\t\tnextTime[original] = (value + 1) / 2\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "9d64029797c7d12a1ed73ac7a7be04c52ff9f2418b933ed4c7575e6d8f77ff23"
+    }
+  ]
+}

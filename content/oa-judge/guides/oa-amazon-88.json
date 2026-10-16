@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-88",
+  "packageChecksum": "f7e8073b0b92995c540262bfc7b4cb4b38f4f4ce29371767332a7aca0477d0e2",
+  "sourceContentHash": "4dd4e27e91588c259ea5b88a5aca72a8124561187205ffea5d96159a897b1653",
+  "editorialSha256": "096f2e2abb72580c2998a75b8f73e5ff070b6ad4f742dd2eef68ebd83f249d19",
+  "hints": {
+    "zh": [
+      "容量每配送一次就减半，只会越来越小。关键在于：每一步应该选哪个包裹。",
+      "当前装得下的包裹里，选最重的那个不会更差：轻的包裹留到后面容量更小时更可能装得下；而现在就装不下的包裹，以后也永远装不下。",
+      "把重量从大到小排序后依次检查：重量不超过当前容量就计数并把容量整除 2，否则跳过；扫描结束时的计数就是答案。"
+    ],
+    "en": [
+      "The capacity is halved after every delivery, so it only shrinks. The key question is which package to take at each step.",
+      "Among the packages that fit now, taking the heaviest is never worse: lighter packages are more likely to fit the smaller capacities later, and a package that does not fit now will never fit again.",
+      "Sort the weights in descending order and check them one by one: if a weight is at most the current capacity, count it and halve the capacity (rounding down); otherwise skip it. The count at the end is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the weights from largest to smallest; deliver a package if it fits and halve the capacity, and skip it if it does not.\n\n## Proof of Correctness\n\nAmong the packages that currently fit, choosing the largest one first does not lose any later capacity slot: if an optimal plan chooses a smaller package, swap it with the current one and keep the smaller package for a later capacity that is not larger; the total number of deliveries does not decrease. A package that is too heavy will never fit later either, since the capacity only decreases.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

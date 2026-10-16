@@ -1,0 +1,19 @@
+{
+  "id": "oa-paypal-1",
+  "packageChecksum": "54173847da8c82c7b4ca50d7e2358570bc2cdd7983ec5ad42349c95613e9843b",
+  "sourceContentHash": "c41b0a3cc36628f948ecb00c9a1bd1c58b773c9aec208c0756f0f92cf25f4616",
+  "editorialSha256": "9cdb543f44a0db6b91bfed00f1cd2cc02231b7326bda843360bda1776259cb07",
+  "hints": {
+    "zh": [
+      "一次加一或减一只改变一个字符；只有当字符从元音变成辅音或反过来时，元音总数才会变化，而且一次跨类只改变 1。",
+      "设长度为 n、元音数为 v，目标元音数为 n/2，必须把 |v-n/2| 个字符从数量多的一类改到另一类。每个字符改到另一类的最小代价是它在字母表上到最近的另一类字母的距离，字符之间互不影响。",
+      "统计元音数 v。若 v 大于 n/2，候选是所有元音，每个的代价是到最近辅音的距离；否则候选是所有辅音，代价是到最近元音的距离（v 恰好等于 n/2 时答案为 0）。对每个候选枚举 26 个字母求最小距离，把代价排序后取最小的 |v-n/2| 个求和输出。"
+    ],
+    "en": [
+      "One increment or decrement changes a single character, and the vowel count changes only when a character crosses from vowel to consonant or back, by exactly 1 per crossing.",
+      "With length n and v vowels, the target is n/2 vowels, so |v-n/2| characters must move from the larger class to the other. The cheapest way to move one character is its alphabet distance to the nearest letter of the other class, and characters do not affect each other.",
+      "Count the vowels v. If v is greater than n/2, the candidates are all vowels, each costing its distance to the nearest consonant; otherwise the candidates are all consonants, costing their distance to the nearest vowel (when v equals n/2 the answer is 0). Find each candidate's minimum distance by trying all 26 letters, sort the costs, and print the sum of the smallest |v-n/2| of them."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet v be the number of vowels and n the length; the target vowel count is n/2, so |v-n/2| characters must be changed from the more numerous class to the other. Each candidate character's cost is the shortest distance, by incrementing and decrementing along the alphabet, to the opposite class. Sort these costs and take the smallest required number of them. This site restricts the length to even values, avoiding the return value the original problem leaves undefined for the unsolvable odd-length case.\n\n## Correctness\n\nEach operation changes only one character, the total changes only when a character crosses the vowel/consonant boundary, and one crossing changes the vowel count by exactly 1. So at least |v-n/2| characters must be converted. The cost of making a chosen character cross the boundary is at least its shortest distance to a letter of the opposite class, and that distance can be achieved on its own; characters do not affect each other. Choosing the cheapest characters in the required number reaches the lower bound for all of them at once.\n\n## Complexity\n\nWith L the password length, each character checks at most 26 letters and the costs are sorted, for O(26L+L log L) time and O(L) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-67",
+  "packageChecksum": "8e6570c91f103d824cefdceedf4c25af255c5e8bd7b7027abfcf66e4d640f47e",
+  "sourceContentHash": "90f662d31bc9fe5f642c3a7c563c895c31433c9d670997c22f8e6832737b80df",
+  "editorialSha256": "be6812d6b48f20d7537ce48400f97a84b705597322eaf110096111c5590da539",
+  "hints": {
+    "zh": [
+      "严格上升的一段里同一个值最多出现一次，严格下降的一段也一样；峰值由两段共享，只能出现一次。",
+      "所以除最大值外，每种值最多用两次（左右各一次），最大值作为峰顶只用一次；这个上界总能达到：以最大值为峰，较小值的一份升序放在左边，若有第二份就降序放在右边。",
+      "统计每种值的出现次数（可以排序后分组，也可以用哈希表），答案为 1 加上所有非最大值的“出现次数与 2 中的较小者”之和。"
+    ],
+    "en": [
+      "In a strictly increasing part each value appears at most once, and the same holds for the strictly decreasing part; the peak is shared by both parts and appears only once.",
+      "So every value other than the maximum can be used at most twice, once per side, and the maximum only once as the peak; this bound is always reached by using the maximum as the peak, one copy of each smaller value ascending on the left and a second copy, if any, descending on the right.",
+      "Count the occurrences of each value (sort and group, or use a hash map); the answer is 1 plus the sum, over all values except the maximum, of the smaller of the count and 2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe maximum value can be used only once, at the peak, and every other value can appear at most once on each side. So the answer is 1 plus the sum of min(frequency,2) over the non-maximum values.\n\n## Correctness\n\nA value can appear at most once on a strictly monotonic side, and the maximum can only be the single peak, which gives this upper bound. Choosing the maximum as the peak, placing one copy of each smaller value in ascending order on the left and, if there is a second copy, in descending order on the right reaches the bound exactly.\n\n## Complexity\n\nExpected time O(N), space O(number of distinct values)."
+}

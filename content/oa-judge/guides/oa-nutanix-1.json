@@ -1,0 +1,19 @@
+{
+  "id": "oa-nutanix-1",
+  "packageChecksum": "5022cab08e8509b1245f06a623ca43d1ae67105dba0bb056f37c0d5fd873ef18",
+  "sourceContentHash": "2880ceb366e345a49604a768218a46244094c08dec12e9675223c67d69e339df",
+  "editorialSha256": "62d8f461d9090e99fee95297cdc6a0cbae0b760cc96b5374210bc1dc6219d2d6",
+  "hints": {
+    "zh": [
+      "好子序列里出现的每个字符次数都相同，设这个共同次数为 k；每个非空好子序列恰好对应一个 k，所以可以按 k 分类计数再求和。",
+      "固定 k 后，各字符之间相互独立：出现次数 cnt 不少于 k 的字符，要么不选，要么从它的 cnt 个位置中选 k 个，共 C(cnt,k) 种。把每个字符的“1 加 C(cnt,k)”相乘，再减去所有字符都不选的那一种。",
+      "统计 26 个字母的出现次数，预处理阶乘和阶乘的逆元（模 1000000007，用费马小定理求逆元），以 O(1) 计算组合数。对 k 从 1 到最大出现次数，把所有次数不少于 k 的字母的 C(cnt,k)+1 连乘，减 1 后加入答案，全程取模。"
+    ],
+    "en": [
+      "In a good subsequence every character that appears has the same count k, and each non-empty good subsequence has exactly one such k, so count by k and add up.",
+      "For a fixed k the characters are independent: a character with cnt≥k occurrences is either skipped or contributes k of its cnt positions, in C(cnt,k) ways. Multiply 1+C(cnt,k) over those characters and subtract the one choice that picks nothing.",
+      "Count the 26 letters and precompute factorials and inverse factorials modulo 1000000007 (inverses via Fermat's little theorem) to get binomial coefficients in O(1). For k from 1 to the largest count, multiply C(cnt,k)+1 over the letters with count at least k, subtract 1, and add it to the answer, all modulo the prime."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the common frequency k. For each character that appears at least k times, either choose its indices in C(count,k) ways or leave the character out; the option where nothing is chosen must be excluded.\n\n## Proof of correctness\n\nEvery non-empty good subsequence has a unique positive frequency k. For a fixed k, the index choices of different characters are independent, so the product enumerates every subsequence in which each present character appears exactly k times; subtracting the empty choice leaves only non-empty ones. Summing over all k counts nothing twice.\n\n## Complexity\n\nTime O(n+26·maxCount), space O(n)."
+}

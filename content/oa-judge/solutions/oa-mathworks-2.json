@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-2",
+  "packageChecksum": "9c88ee1667e37189b05bad5075ede0c492c1d9f1ce0b280c6572ad4ae4381812",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<int> a(n);\n    int limit = 1;\n    for (auto &x : a) {\n        scanf(\"%d\", &x);\n        limit = max(limit, x);\n    }\n    // Sieve Euler's totient: for each prime p, phi[x] -= phi[x] / p on its multiples.\n    vector<int> phi(limit + 1);\n    iota(phi.begin(), phi.end(), 0);\n    for (int p = 2; p <= limit; p++)\n        if (phi[p] == p)\n            for (int x = p; x <= limit; x += p) phi[x] -= phi[x] / p;\n    string out;\n    for (int i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(phi[a[i]]);\n    }\n    out += '\\n';\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "fc8518c721dab185013ad5420e14d2fa2fe7c7584844cef638f2c648fc149347"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        int[] a = new int[n];\n        int limit = 1;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextInt();\n            limit = Math.max(limit, a[i]);\n        }\n        // Sieve Euler's totient: for each prime p, phi[x] -= phi[x] / p on its multiples.\n        int[] phi = new int[limit + 1];\n        for (int i = 0; i <= limit; i++) phi[i] = i;\n        for (int p = 2; p <= limit; p++)\n            if (phi[p] == p)\n                for (int x = p; x <= limit; x += p) phi[x] -= phi[x] / p;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(phi[a[i]]);\n        }\n        sb.append('\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "5541e03df05adec6945b004ef3833bbf0aa3412108d8cc27947a33ffc868c689"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int, n)\n\tlimit := 1\n\tfor i := range a {\n\t\ta[i] = int(nextInt())\n\t\tlimit = max(limit, a[i])\n\t}\n\t// Sieve Euler's totient: for each prime p, phi[x] -= phi[x] / p on its multiples.\n\tphi := make([]int, limit+1)\n\tfor i := range phi {\n\t\tphi[i] = i\n\t}\n\tfor p := 2; p <= limit; p++ {\n\t\tif phi[p] == p {\n\t\t\tfor x := p; x <= limit; x += p {\n\t\t\t\tphi[x] -= phi[x] / p\n\t\t\t}\n\t\t}\n\t}\n\tout := make([]byte, 0, 8*n)\n\tfor i, v := range a {\n\t\tif i > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, int64(phi[v]), 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "99a3d7cdc94c00b905fcdf7b580f531e5411afe8d820bcf6c5cbe2a27b0982f6"
+    }
+  ]
+}

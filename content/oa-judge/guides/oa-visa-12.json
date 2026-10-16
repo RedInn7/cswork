@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-12",
+  "packageChecksum": "c4b1553c8f54ec4a2cb695e1ca93946ab9fce38bc81604d725e77ddcdbd3cf54",
+  "sourceContentHash": "ef5aa4f979ba4fd7e6b6cb2891de78c17c49a9679f83e7f3035f052b9b584283",
+  "editorialSha256": "32c225555317e8a73cda3db41cee2455cbe220d11a4eb4840795c3f8035da234",
+  "hints": {
+    "zh": [
+      "每条查询都要精确匹配 key 和 timestamp 两个字段，而本站保证这一对唯一且查询一定存在。",
+      "把 (key, timestamp) 这对字段合成一个键放进哈希表，值存对应的 value，每次查询就是一次查表。",
+      "读入 n 条记录，以 key+分隔符+timestamp 为键存 value（按原字符串保存即可）；再对 q 条查询逐个取出 value，用空格连接后输出一行。"
+    ],
+    "en": [
+      "Every query must match both fields, key and timestamp, exactly, and the site guarantees that each pair is unique and that every query exists.",
+      "Combine the pair (key, timestamp) into a single key in a hash map whose value is the record's value; each query is then a single lookup.",
+      "Read the n records and store value under key + separator + timestamp (keeping the original strings); then look up each of the q queries in order and print the values joined by spaces on one line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse (key, timestamp) as a dictionary key; for each query, look it up exactly and output the value.\n\n## Correctness\n\nThe site guarantees that every query exists and that keys are unique. A lookup on the full two-field key matches if and only if both fields match, so it finds the single corresponding record.\n\n## Complexity\n\nExpected time O(n+q), space O(n)."
+}

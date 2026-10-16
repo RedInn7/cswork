@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-18",
+  "packageChecksum": "94f1d3198575a5f6fe8689b4b23e7b8cb5ef7a88a71da6982c965d998bbdb045",
+  "sourceContentHash": "694325525f583d671fec70b3cbee27444e3ae8077648ef204d07f7ab65f0e5d3",
+  "editorialSha256": "60b624b1069238e7215a05a39231a4ffbabd132727e58a6b2986bcea9be5d45e",
+  "hints": {
+    "zh": [
+      "判断条件只与数值有关，与下标顺序无关，所以可以先排序；排序后，与某个数相差不超过m的数在数组里是连续的一段。",
+      "排序后用双指针：对每个右端right，把左指针left右移到第一个满足values[right]−values[left]不超过m的位置，于是区间[left,right)里的每个数都能与right配对，共right−left对，每对只在其右端被统计一次。",
+      "升序排序，left=0；right从0到n−1，当values[right]−values[left]大于m时left加1；然后答案加上right−left。答案可能超过32位，用64位整数。"
+    ],
+    "en": [
+      "The condition depends only on the values, not on the index order, so sort first; after sorting, the values within m of a given value form one contiguous block.",
+      "With the array sorted, use two pointers: for each right end, move left forward to the first position with values[right] - values[left] <= m; every element in [left, right) then pairs with right, giving right - left pairs, and each pair is counted only at its right end.",
+      "Sort ascending with left = 0; for right from 0 to n-1, advance left while values[right] - values[left] > m, then add right - left to the answer. The answer can exceed 32 bits, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the loads and use a left pointer to maintain the range of loads within m of the current right end. For each right end, add right-left pairs.\n\n## Why it works\n\nAfter sorting, the right end differs by at most m from every item in [left,right), and every item further left is invalid. Therefore right-left is exactly the number of valid pairs in which the current item is the right index, and each pair is counted only once, at its right end.\n\n## Complexity\n\nTime O(n log n), extra space O(n) (the sorted array)."
+}

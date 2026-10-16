@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-246",
+  "packageChecksum": "a1eeee991624a958315620b3fc335955a24eedba1cfb9fd9aeed64c442088e48",
+  "sourceContentHash": "c8ab1eb05f0b42ba0e2631de020c89bf34b87560e853fffebe82e34cee9a4dba",
+  "editorialSha256": "32587d06883eeb8e3bca43d4a5ec8d51bab431526a7129b5bcfb02fb5940ceaa",
+  "hints": {
+    "zh": [
+      "一个任务想活到最后，最好的策略是先吞掉所有比自己小的，再按从小到大的顺序挑战更大的，累计量越滚越大。",
+      "把数量升序排列做前缀和：若某个值严格大于它前面所有值之和，那么它前面的任务无论怎样合并都打不过它，全部不可能幸存。",
+      "升序扫描并维护此前总和，每当当前值大于此前总和就把阈值设为当前值，再把它加入总和；最后按原下标升序输出数量不小于阈值的全部下标（1 基）；总和用 64 位。"
+    ],
+    "en": [
+      "A task's best chance to survive is to absorb everything smaller than itself first, then challenge the larger tasks in increasing order, so its total keeps growing.",
+      "Sort the counts ascending and take prefix sums: if a value is strictly greater than the sum of all values before it, the tasks before it can never beat it however they merge, so none of them can survive.",
+      "Scan in ascending order keeping the sum so far; whenever the current value exceeds that sum, set the threshold to the current value, then add it to the sum; finally output, in increasing order, every 1-based index whose count is at least the threshold. Use 64 bits for the sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the counts in ascending order and accumulate from left to right. Whenever the current value is greater than the sum of all previous values, move the start of the candidate surviving suffix to the current position; finally output the original indices whose count is not less than the value at that start.\n\n## Proof of correctness\n\nIf at some point the total of a prefix is smaller than the next number, then no task in that prefix, however it merges first, can defeat any task to the right, so none of them can survive. After the last such breakpoint, a candidate first absorbs all tasks smaller than itself and then absorbs the larger tasks in ascending order; since there are no later breakpoints, its accumulated amount is always enough, and in a tie it may choose to win. Thus everything excluded is impossible and everything kept can be constructed.\n\n## Complexity\n\nTime O(n log n), space O(n); the accumulated amount uses 64-bit integers."
+}

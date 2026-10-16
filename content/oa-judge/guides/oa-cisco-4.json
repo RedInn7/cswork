@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-4",
+  "packageChecksum": "b463b71fe85b3c1266b6049d4b3ec26151c4df329b28d10828c35b3d384c2b6f",
+  "sourceContentHash": "d6a11516f4a8279fe4fdc7324987300641d9a8cb49fea596c7bca0ea4417636f",
+  "editorialSha256": "86ce63d25574cc411eb228c1f0f1915d77f68fc317d34c643a8683fdee5e9ea9",
+  "hints": {
+    "zh": [
+      "从高位读到低位时，每多读一位，之前所有位的权重都翻倍，再加上新的最低位。",
+      "从 0 开始依次执行 value = 2×value + bit，即可得到整个二进制数的值；前导 0 不影响结果。",
+      "最多 64 位，最大值是 2^64−1，超出有符号 64 位范围：C++/Go 用无符号 64 位整数，Java 用 long 累加后以无符号方式输出（或用大整数）；Python 的整数天然任意精度。"
+    ],
+    "en": [
+      "Reading from the most significant bit down, every new bit doubles the weight of all earlier bits and then adds the new lowest bit.",
+      "Starting from 0, apply value = 2 * value + bit for every node in order to get the value of the whole binary number; leading zeros change nothing.",
+      "There are at most 64 bits and the maximum is 2^64 - 1, beyond signed 64-bit range: use an unsigned 64-bit integer in C++ or Go, and in Java accumulate in a long and print it as unsigned (or use a big integer); Python integers already have arbitrary precision."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGo from head to tail, setting value=2*value+bit each time. Python uses arbitrary-precision integers; other languages can use unsigned 64-bit integers or big integers.\n\n## Proof of correctness\n\nAfter processing the first k nodes, value equals the binary number formed by those k bits. Appending the next bit multiplies the weight of every existing bit by 2 and adds the new least significant bit, which is exactly 2*value+bit; by induction from 0 we get the exact value of all the bits. Leading zeros naturally do not change the result.\n\n## Complexity\n\nO(N) time, and O(1) auxiliary space under the fixed original bound of 64 bits."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-airbnb-8",
+  "packageChecksum": "56418fc1ca719ae321922cbe6599a362a3b69c31111a45909fe6acfaf37935f4",
+  "sourceContentHash": "572aa1c9f1b2ab2fad2ed47b9be724ef54b60089343b4a212e74151a88102491",
+  "editorialSha256": "905a2fd18c6290df22d03911fbee7c3b4934fc1b09779e5cf5be3f2c3736c0f7",
+  "hints": {
+    "zh": [
+      "先把所有价格都向下取整，和为 base，还差 k=target−base 个价格要改成向上取整；整数价格向上取整等于向下取整，不能用来凑数。",
+      "小数部分为 f 的价格向下取整误差是 f，向上取整误差是 1−f，改成向上取整让总误差增加 1−2f，f 越大越划算。所以应该把小数部分最大的 k 个价格向上取整。",
+      "把每个价格按字符串解析成整数部分和两位小数（以 0.01 为单位），避免浮点误差；累加整数部分得到 base；取出小数部分大于 0 的下标，按小数部分从大到小（相同时按下标）排序，对前 k 个加一；按原顺序输出整数数组。"
+    ],
+    "en": [
+      "Round every price down first; the sum is base, and k = target - base prices still have to be rounded up instead. An integer price rounds up to itself, so it cannot help reach the target.",
+      "A price with fractional part f has error f when rounded down and 1 - f when rounded up, so switching it to round up adds 1 - 2f to the total error; the larger f, the cheaper the switch. So round up the k prices with the largest fractional parts.",
+      "Parse each price as a string into its integer part and two decimals (units of 0.01) to avoid floating-point error; sum the integer parts into base; collect the indices with a non-zero fractional part, sort them by fractional part descending (ties by index), and add one to the first k; print the integers in the original order."
+    ]
+  },
+  "explanationEn": "## Problem\n\nGiven prices x1..xn and an integer target, round each price down or up to get yi so that Σyi = target and Σ|xi - yi| is minimal, and output y. The data guarantees a solution exists and the optimum is unique.\n\n## Approach\n\nFirst round everything down, giving the sum base; then k = target - base non-integer prices still have to be rounded up. When price xi has fractional part fi > 0, rounding down has error fi and rounding up has error 1 - fi, so switching it to round up increases the total error by 1 - 2fi, and the larger fi, the better the deal. So round up the k non-integer prices with the largest fractional parts. An integer price rounds up to the same value as it rounds down, so it cannot be used to make up the sum.\n\nTo avoid floating-point error, parse each price as a string into its integer part and two decimal digits (units of 0.01).\n\n## Correctness\n\nTotal error = Σfi + Σ over the round-up set of (1 - 2fi). The first term is fixed, and minimizing the second means choosing k non-integer prices that minimize the sum of (1 - 2fi), that is, the k with the largest fi. The data guarantees a unique optimum, so the k-th and (k+1)-th largest fractional parts differ.\n\n## Complexity\n\nSorting, O(n log n).\n\n## Independent verification\n\nThe oracle enumerates every down/up combination of the non-integer prices (small data), keeps those whose sum equals target, takes the minimum error and checks that the optimum is unique, without using the sorting greedy. It exhaustively tries all combinations of 3 prices with fractional parts from {0, .25, .5, .75} and every feasible target (keeping only inputs with a unique optimum), actually running the reference program on each. The wrong solutions cover rounding up the smallest fractions first, rounding up by index, looking only at the first decimal digit, and plain rounding without adjustment."
+}

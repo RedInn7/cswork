@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-77",
+  "packageChecksum": "663fce3b2db0e1485a5eb388f38149589dae323ee496a14ad06847891d0ae3fa",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s, f;\n    cin >> s >> f;\n    // Longest gap before or between failed services; the tail after the last one survives.\n    int previous = 0, answer = 0;\n    for (int i = 0; i < (int)s.size(); i++)\n        if (s[i] == f[0]) {\n            answer = max(answer, i - previous);\n            previous = i;\n        }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "b2467e9da781eb246757402834bc2f1d523618f964047f350ee933d50e3c4f44"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        char f = next().charAt(0);\n        // Longest gap before or between failed services; the tail after the last one survives.\n        int previous = 0, answer = 0;\n        for (int i = 0; i < s.length(); i++)\n            if (s.charAt(i) == f) {\n                answer = Math.max(answer, i - previous);\n                previous = i;\n            }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "15e3b4a445a1445c562d3cefe2fe1410793adbd767507192d5718c668ac356b3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := token()\n\tf := token()[0]\n\t// Longest gap before or between failed services; the tail after the last one survives.\n\tprevious, answer := 0, 0\n\tfor i, c := range s {\n\t\tif c == f {\n\t\t\tanswer = max(answer, i-previous)\n\t\t\tprevious = i\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "235cba06fef14923460dfefa3863cfbae981e2c30a2b4e25f31b394973016021"
+    }
+  ]
+}

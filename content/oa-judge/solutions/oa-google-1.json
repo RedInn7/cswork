@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-1",
+  "packageChecksum": "f7985aa4fd73e152bf3628c1adab1283404285cf1d1c71c26e5bbaeae83b2b17",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<long long> p(n);\n    for (auto &x : p) cin >> x;\n    string t;\n    cin >> t;\n    long long score = 0;\n    for (int i = 0; i < n; i++) {\n        if (t[i] != 'T') continue;\n        score += p[i];\n        if (i > 0 && t[i - 1] == 'T') score++;  // one bonus per adjacent T-T pair\n    }\n    printf(\"%lld\\n\", score);\n}\n",
+      "sha256": "e9e55d0cce26003e9f830094aa3f343e539910235e3298abbbf9b301fcd53738"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        long[] p = new long[n];\n        for (int i = 0; i < n; i++) p[i] = sc.nextLong();\n        String t = sc.next();\n        long score = 0;\n        for (int i = 0; i < n; i++) {\n            if (t.charAt(i) != 'T') continue;\n            score += p[i];\n            if (i > 0 && t.charAt(i - 1) == 'T') score++; // one bonus per adjacent T-T pair\n        }\n        System.out.println(score);\n    }\n}\n",
+      "sha256": "ae1505087cd323ea6692365d4784ece39c3dd2f68536988e25dc87490fd56fec"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tp := make([]int64, n)\n\tfor i := range p {\n\t\tfmt.Fscan(in, &p[i])\n\t}\n\tvar t string\n\tfmt.Fscan(in, &t)\n\tvar score int64\n\tfor i := 0; i < n; i++ {\n\t\tif t[i] != 'T' {\n\t\t\tcontinue\n\t\t}\n\t\tscore += p[i]\n\t\tif i > 0 && t[i-1] == 'T' { // one bonus per adjacent T-T pair\n\t\t\tscore++\n\t\t}\n\t}\n\tfmt.Println(score)\n}\n",
+      "sha256": "a5393e5082d34d5f45eaf8a1d8a23008c780a688f9c97fc65974b21799218564"
+    }
+  ]
+}

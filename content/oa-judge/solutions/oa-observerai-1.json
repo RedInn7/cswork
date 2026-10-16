@@ -1,0 +1,21 @@
+{
+  "id": "oa-observerai-1",
+  "packageChecksum": "afef84ab5c4dec886ac7021a022df519c87501a2b0f36ff39d738751ecefda75",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> req(n);\n    for (auto &v : req) cin >> v;\n    sort(req.begin(), req.end());\n    int f;\n    cin >> f;\n    long long bestCost = -1;\n    int bestId = -1;\n    vector<long long> a;\n    for (int i = 0; i < f; i++) {\n        int m;\n        cin >> m;\n        a.resize(m);\n        for (auto &v : a) cin >> v;\n        // Sorted orders: a monotone pointer finds the first marking >= each order.\n        int j = 0;\n        long long cost = 0;\n        bool ok = true;\n        for (long long x : req) {\n            while (j < m && a[j] < x) j++;\n            if (j == m) { ok = false; break; }\n            cost += a[j] - x;\n        }\n        if (ok && (bestId < 0 || cost < bestCost)) bestCost = cost, bestId = i;\n    }\n    cout << bestId << \"\\n\";\n}\n",
+      "sha256": "6ed8c0d09b80b247a5fc35888d8d77d753033611eb28e0845a03b88f973b9639"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long[] req = new long[n];\n        for (int i = 0; i < n; i++) req[i] = nextLong();\n        Arrays.sort(req);\n        int f = (int) nextLong();\n        long bestCost = -1;\n        int bestId = -1;\n        for (int i = 0; i < f; i++) {\n            int m = (int) nextLong();\n            long[] a = new long[m];\n            for (int k = 0; k < m; k++) a[k] = nextLong();\n            // Sorted orders: a monotone pointer finds the first marking >= each order.\n            int j = 0;\n            long cost = 0;\n            boolean ok = true;\n            for (long x : req) {\n                while (j < m && a[j] < x) j++;\n                if (j == m) {\n                    ok = false;\n                    break;\n                }\n                cost += a[j] - x;\n            }\n            if (ok && (bestId < 0 || cost < bestCost)) {\n                bestCost = cost;\n                bestId = i;\n            }\n        }\n        System.out.println(bestId);\n    }\n}\n",
+      "sha256": "4531ffef5052ff3dc2426f8530e5d070cc884907c4cb8bd359590ef067a9bb16"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\treq := make([]int64, n)\n\tfor i := range req {\n\t\tfmt.Fscan(in, &req[i])\n\t}\n\tsort.Slice(req, func(a, b int) bool { return req[a] < req[b] })\n\tvar f int\n\tfmt.Fscan(in, &f)\n\tvar bestCost int64 = -1\n\tbestID := -1\n\tfor i := 0; i < f; i++ {\n\t\tvar m int\n\t\tfmt.Fscan(in, &m)\n\t\ta := make([]int64, m)\n\t\tfor k := range a {\n\t\t\tfmt.Fscan(in, &a[k])\n\t\t}\n\t\t// Sorted orders: a monotone pointer finds the first marking >= each order.\n\t\tj := 0\n\t\tvar cost int64\n\t\tok := true\n\t\tfor _, x := range req {\n\t\t\tfor j < m && a[j] < x {\n\t\t\t\tj++\n\t\t\t}\n\t\t\tif j == m {\n\t\t\t\tok = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tcost += a[j] - x\n\t\t}\n\t\tif ok && (bestID < 0 || cost < bestCost) {\n\t\t\tbestCost, bestID = cost, i\n\t\t}\n\t}\n\tfmt.Println(bestID)\n}\n",
+      "sha256": "d5c7a1db456a63d6620dfcde14ce755a6bcd75460f3180545f9acff981aabd10"
+    }
+  ]
+}

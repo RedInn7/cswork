@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-17",
+  "packageChecksum": "b9323700ff2ed4875cda2881729c32286aceb8d888233c7b2717c773b2061e3d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    string st;\n    for (char c : s) {\n        st.push_back(c);\n        size_t k = st.size();\n        if (k >= 3 && st[k - 3] == 'A' && st[k - 2] == 'W' && st[k - 1] == 'S') st.resize(k - 3);\n    }\n    cout << (st.empty() ? \"-1\" : st) << \"\\n\";\n}\n",
+      "sha256": "d98e36c1c5657b4d7b977701bb59254898414c8523bf990cb8319322cf894d36"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).strip();\n        char[] st = new char[s.length()];\n        int k = 0;\n        for (int i = 0; i < s.length(); i++) {\n            st[k++] = s.charAt(i);\n            if (k >= 3 && st[k - 3] == 'A' && st[k - 2] == 'W' && st[k - 1] == 'S') k -= 3;\n        }\n        System.out.println(k == 0 ? \"-1\" : new String(st, 0, k));\n    }\n}\n",
+      "sha256": "12e675c96fcc4afa475c49c0e67f07289a1abd0d665be550b19867c15248563b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"bytes\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := bytes.TrimSpace(raw)\n\tst := make([]byte, 0, len(s)+1)\n\tfor _, c := range s {\n\t\tst = append(st, c)\n\t\tif k := len(st); k >= 3 && st[k-3] == 'A' && st[k-2] == 'W' && st[k-1] == 'S' {\n\t\t\tst = st[:k-3]\n\t\t}\n\t}\n\tif len(st) == 0 {\n\t\tst = append(st, '-', '1')\n\t}\n\tos.Stdout.Write(append(st, '\\n'))\n}\n",
+      "sha256": "70fdfba59a0b5b6f489f149180e586e243a39ff0d1258dfa679b2417e62c96bf"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-duolingo-2",
+  "packageChecksum": "26f65f27fc2701394ed3cc70f3962dd3dce7a529b8772ed3de42e6be58dee4b7",
+  "sourceContentHash": "a238924722ede837d90ab8bf93e498361b7531aef54b18a51f9553f60e18f009",
+  "editorialSha256": "892ada4e25524c5ac32ae59ed41e3f19f9bafafd866d22cfb79ef5620d789efe",
+  "hints": {
+    "zh": [
+      "区间和能被 k 整除，等价于区间两端的前缀和对 k 同余，所以问题变成：找两个余数相同、下标相距最远的前缀。",
+      "固定右端点时，左端越早区间越长，所以只需记录每个余数第一次出现的下标；空前缀的余数 0 记为下标 −1，这样从开头开始的区间也能被统计。",
+      "从左到右累加前缀和并取模（交易额可能为负，要取数学意义上的非负余数，并用 64 位防止溢出）；若余数已出现，用 i − 最早下标更新答案，否则记录 i。没有合法区间时答案为 0。"
+    ],
+    "en": [
+      "An interval sum is divisible by k exactly when the prefix sums at its two ends are congruent modulo k, so the task becomes finding two prefixes with the same remainder that are as far apart as possible.",
+      "For a fixed right end, the earlier the left end, the longer the interval, so store only the first index of each remainder; give remainder 0 of the empty prefix index -1 so that intervals starting at the beginning are counted too.",
+      "Scan left to right, adding to the prefix sum and reducing modulo k (amounts can be negative, so take the mathematical non-negative remainder, and use 64-bit arithmetic). If the remainder has been seen, update the answer with i minus its earliest index; otherwise record i. With no valid interval the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen two prefix sums have the same remainder modulo k, the sum of the contiguous interval between them is divisible by k. Scan from left to right and record the position where each remainder first appears; when it appears again, update the longest length with the current position minus the earliest position. Use a positive k, and reduce negative transaction amounts modulo k in the mathematical sense.\n\n## Proof of correctness\n\nLet the prefix sum P[j] be the sum of the first j items. The sum of the interval (i,j] is divisible by the positive integer k if and only if P[i] and P[j] are congruent modulo k. For a fixed right end j, the earliest congruent prefix produces the longest interval; the algorithm stores the earliest index of each remainder and checks every later prefix, so it never misses the optimal interval and never counts an interval that fails the divisibility condition.\n\n## Complexity\n\nThe n items are scanned once, for expected time O(n); at most n+1 remainder positions are stored, for O(n) space."
+}

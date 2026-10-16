@@ -1,0 +1,21 @@
+{
+  "id": "oa-intuit-16",
+  "packageChecksum": "6faecd35425dbea5234640b87c92d5e17340fffa4e9e70c2aedb194b1964fe4e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    s += '0';  // sentinel digit closes the last letter segment\n    // Digits split the string into letter-only segments; a segment counts if it has an uppercase letter.\n    int best = -1, start = 0;\n    for (int i = 0; i < (int)s.size(); i++)\n        if (isdigit((unsigned char)s[i])) {\n            bool upper = false;\n            for (int k = start; k < i; k++) upper |= isupper((unsigned char)s[k]) != 0;\n            if (upper) best = max(best, i - start);\n            start = i + 1;\n        }\n    cout << best << '\\n';\n}\n",
+      "sha256": "86e7b1a271c5d0961eaebd6c916cdffd29768a07d33194cc9623b4bc9fbdd826"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next() + \"0\"; // sentinel digit closes the last letter segment\n        // Digits split the string into letter-only segments; a segment counts if it has an uppercase letter.\n        int best = -1, start = 0;\n        for (int i = 0; i < s.length(); i++)\n            if (Character.isDigit(s.charAt(i))) {\n                boolean upper = false;\n                for (int k = start; k < i; k++) upper |= Character.isUpperCase(s.charAt(k));\n                if (upper) best = Math.max(best, i - start);\n                start = i + 1;\n            }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "4b1b09650b693c08516f7bce9e09932e70970c6d5297f013e4c1e9cd10cc5e44"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := nextToken() + \"0\" // sentinel digit closes the last letter segment\n\t// Digits split the string into letter-only segments; a segment counts if it has an uppercase letter.\n\tbest, start := -1, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] >= '0' && s[i] <= '9' {\n\t\t\tupper := false\n\t\t\tfor k := start; k < i; k++ {\n\t\t\t\tupper = upper || (s[k] >= 'A' && s[k] <= 'Z')\n\t\t\t}\n\t\t\tif upper {\n\t\t\t\tbest = max(best, i-start)\n\t\t\t}\n\t\t\tstart = i + 1\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "9c08ac96c0cfc5f998b2d7ddba3cf0322db303e64e792731128fd8bb4488b2c7"
+    }
+  ]
+}

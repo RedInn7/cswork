@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-6",
+  "packageChecksum": "cfc715977fa552b8426c0b1ff98602ffed9e24647e1a7698c978c780ea708ae8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    map<pair<int, int>, long long> seen;\n    long long answer = 0;\n    for (int i = 0; i < n; i++) {\n        int x, y;\n        cin >> x >> y;\n        // every earlier object within distance 1 on both axes sits on one of 9 cells\n        for (int dx = -1; dx <= 1; dx++)\n            for (int dy = -1; dy <= 1; dy++) {\n                auto it = seen.find({x + dx, y + dy});\n                if (it != seen.end()) answer += it->second;\n            }\n        seen[{x, y}]++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "e2ddf6b59db2c30e727bbdcb0cfaa94f86d96ad200841ef3b43f339f3b626989"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        HashMap<Long, Long> seen = new HashMap<>();\n        long answer = 0;\n        for (int i = 0; i < n; i++) {\n            long x = nextLong(), y = nextLong();\n            // every earlier object within distance 1 on both axes sits on one of 9 cells\n            for (long dx = -1; dx <= 1; dx++)\n                for (long dy = -1; dy <= 1; dy++) answer += seen.getOrDefault((x + dx) * 100000 + (y + dy), 0L);\n            seen.merge(x * 100000 + y, 1L, Long::sum);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "db9cb5fc9fc76312429e59830da57a901c0d19094f44d58766133dd27b5d00ed"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tseen := map[[2]int]int{}\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tvar x, y int\n\t\tfmt.Fscan(in, &x, &y)\n\t\t// every earlier object within distance 1 on both axes sits on one of 9 cells\n\t\tfor dx := -1; dx <= 1; dx++ {\n\t\t\tfor dy := -1; dy <= 1; dy++ {\n\t\t\t\tanswer += seen[[2]int{x + dx, y + dy}]\n\t\t\t}\n\t\t}\n\t\tseen[[2]int{x, y}]++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0b5116b4e5c9e572ff225758d9a31d6aeab742eb0ad30ddcd62fbf7b2907e679"
+    }
+  ]
+}

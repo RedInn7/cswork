@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-7",
+  "packageChecksum": "ba4296f8f9fd4085bb72eac54f47505807427bfeec409b75866e5ac376670237",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // The smallest feasible start height is the tightest lower bound over all buildings.\n    long long asc = LLONG_MIN, desc = LLONG_MIN, total = 0;\n    for (int i = 0; i < n; i++) {\n        asc = max(asc, a[i] - i);\n        desc = max(desc, a[i] + i);\n        total += a[i];\n    }\n    long long offset = (long long)n * (n - 1) / 2;\n    printf(\"%lld\\n\", min(n * asc + offset - total, n * desc - offset - total));\n}\n",
+      "sha256": "d0a0307860b46377d84d836cb087b5b7dfff7af232b9f196f6bde0ca7ef36e0b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long asc = Long.MIN_VALUE, desc = Long.MIN_VALUE, total = 0;\n        // The smallest feasible start height is the tightest lower bound over all buildings.\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            asc = Math.max(asc, v - i);\n            desc = Math.max(desc, v + i);\n            total += v;\n        }\n        long offset = (long) n * (n - 1) / 2;\n        System.out.println(Math.min(n * asc + offset - total, n * desc - offset - total));\n    }\n}\n",
+      "sha256": "35234a63d992dedc6df51fd4dfa7b034f13e89290cd73b4e812f38bebf0f97ec"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\tasc, desc, total := math.MinInt64, math.MinInt64, 0\n\t// The smallest feasible start height is the tightest lower bound over all buildings.\n\tfor i := 0; i < n; i++ {\n\t\tv := readInt()\n\t\tasc = max(asc, v-i)\n\t\tdesc = max(desc, v+i)\n\t\ttotal += v\n\t}\n\toffset := n * (n - 1) / 2\n\tfmt.Println(min(n*asc+offset-total, n*desc-offset-total))\n}\n",
+      "sha256": "688cd5a8942a4641c98c67b61fba44edc4269b457a585ddf8b363395f0648d75"
+    }
+  ]
+}

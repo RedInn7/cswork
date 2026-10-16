@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-312",
+  "packageChecksum": "35a5987bb0e007c4c31882d5d945581023d4f06b974994a05383d9a37a235ec6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string in((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    // The JSON array holds [name, price, weight] rows: collect its strings and numbers in order.\n    vector<string> tokens;\n    for (size_t i = 0; i < in.size(); i++) {\n        char c = in[i];\n        if (c == '\"') {\n            string s;\n            for (i++; i < in.size() && in[i] != '\"'; i++) {\n                if (in[i] == '\\\\') i++;\n                s += in[i];\n            }\n            tokens.push_back(s);\n        } else if (c == '-' || isdigit((unsigned char)c)) {\n            size_t j = i;\n            while (j + 1 < in.size() && isdigit((unsigned char)in[j + 1])) j++;\n            tokens.push_back(in.substr(i, j - i + 1));\n            i = j;\n        }\n    }\n    unordered_map<string, int> count;\n    for (size_t i = 0; i + 2 < tokens.size(); i += 3)\n        count[tokens[i] + '|' + to_string(stoll(tokens[i + 1])) + '|' + to_string(stoll(tokens[i + 2]))]++;\n    long long answer = 0;\n    for (auto &[key, c] : count) if (c > 1) answer += c;\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "7c7faca3379b63832f47612835616056e99fe5c77df82267d08f4cf7fa1ebf1e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.nio.charset.StandardCharsets;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String in = new String(System.in.readAllBytes(), StandardCharsets.UTF_8);\n        // The JSON array holds [name, price, weight] rows: collect its strings and numbers in order.\n        List<String> tokens = new ArrayList<>();\n        int len = in.length();\n        for (int i = 0; i < len; i++) {\n            char c = in.charAt(i);\n            if (c == '\"') {\n                StringBuilder sb = new StringBuilder();\n                for (i++; i < len && in.charAt(i) != '\"'; i++) {\n                    if (in.charAt(i) == '\\\\') i++;\n                    sb.append(in.charAt(i));\n                }\n                tokens.add(sb.toString());\n            } else if (c == '-' || Character.isDigit(c)) {\n                int j = i;\n                while (j + 1 < len && Character.isDigit(in.charAt(j + 1))) j++;\n                tokens.add(Long.toString(Long.parseLong(in.substring(i, j + 1))));\n                i = j;\n            }\n        }\n        HashMap<String, Integer> count = new HashMap<>();\n        for (int i = 0; i + 2 < tokens.size(); i += 3)\n            count.merge(tokens.get(i) + \"|\" + tokens.get(i + 1) + \"|\" + tokens.get(i + 2), 1, Integer::sum);\n        long answer = 0;\n        for (int c : count.values()) if (c > 1) answer += c;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "17d24275a91ab7c61a4be0e24e1b9d9724ec372acd467406a3b30d27e6f24696"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\tvar rows [][3]json.RawMessage // [name, price, weight]\n\tif err := json.Unmarshal(data, &rows); err != nil {\n\t\tpanic(err)\n\t}\n\ttype product struct {\n\t\tname          string\n\t\tprice, weight int\n\t}\n\tcount := map[product]int{}\n\tfor _, row := range rows {\n\t\tvar p product\n\t\tjson.Unmarshal(row[0], &p.name)\n\t\tjson.Unmarshal(row[1], &p.price)\n\t\tjson.Unmarshal(row[2], &p.weight)\n\t\tcount[p]++\n\t}\n\tanswer := 0\n\tfor _, c := range count {\n\t\tif c > 1 {\n\t\t\tanswer += c\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "ad22fca021780f8e8a04920db8642ed814d8628613dfcfb4004f9d125b9a3bff"
+    }
+  ]
+}

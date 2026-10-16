@@ -1,0 +1,19 @@
+{
+  "id": "oa-ge-vernova-1",
+  "packageChecksum": "6508d51df30fdd44d92d72ae37a25b32eacf56adf31b9361e814bafa618ba2d4",
+  "sourceContentHash": "b1556b757a15f4f2a1a8b9d37cf3ad2930b3ab16da7aec6167ce3494c6378e35",
+  "editorialSha256": "0d8448d921284b61a2cb18c10668f4fedcc9473da85ef091f98f72242435aeb7",
+  "hints": {
+    "zh": [
+      "子序列的代价只由相邻两个选中元素决定，所以可以按“已选了多少个、最后一个是谁”来做动态规划：dp[t][i] 表示选了 t 个且以 i 结尾的最小代价。",
+      "转移是对所有 j<i 求 dp[t−1][j] + |a[i] − a[j]| 的最小值。按 a[j] 与 a[i] 的大小拆掉绝对值：a[j] ≤ a[i] 时是 (dp[j] − a[j]) + a[i]，a[j] ≥ a[i] 时是 (dp[j] + a[j]) − a[i]，于是变成两个按值域的区间最小值查询。",
+      "先把数值离散化。每一层长度 t 新建两棵最小值线段树（或树状结构）；从左到右扫描 i：先在第一棵树查值不超过 a[i] 的前缀最小值加 a[i]，在第二棵树查值不小于 a[i] 的后缀最小值减 a[i]，两者取小作为当前层 dp[i]；再把上一层的 dp[i] − a[i] 和 dp[i] + a[i] 插入两棵树，保证只用到更早的元素。长度为 1 时代价为 0，做完 k 层后取最小值。"
+    ],
+    "en": [
+      "The cost of a subsequence depends only on adjacent chosen elements, so do dynamic programming over how many elements have been chosen and which one is last: dp[t][i] is the minimum cost of choosing t elements ending at i.",
+      "The transition takes the minimum of dp[t-1][j] + |a[i] - a[j]| over j < i. Split the absolute value by comparing a[j] with a[i]: when a[j] <= a[i] it is (dp[j] - a[j]) + a[i], and when a[j] >= a[i] it is (dp[j] + a[j]) - a[i], which turns into two range-minimum queries over the value domain.",
+      "Compress the values first. For each length t build two fresh min segment trees; scan i from left to right: query the first tree for the prefix minimum over values not above a[i] and add a[i], query the second tree for the suffix minimum over values not below a[i] and subtract a[i], and take the smaller as this layer's dp[i]; only then insert the previous layer's dp[i] - a[i] and dp[i] + a[i] into the two trees, so only earlier elements are used. Length 1 costs 0; after k layers take the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDo dynamic programming over the subsequence length. The transition is `min_j(dp[j]+|a[i]-a[j]|)`; split it into a prefix minimum of `dp[j]-a[j]` and a suffix minimum of `dp[j]+a[j]` over values in sorted order, and update them while scanning. Exhaustive enumeration of combinations provides an independent check.\n\n## Proof of correctness\n\nThe dp value for length t ending at i enumerates every predecessor j<i, and the transition `dp[t−1][j]+|a[i]−a[j]|` covers every valid subsequence. After splitting the values of j by size, the two range minima are each maintained by a segment tree; taking the minimum over all endings with length k gives the global optimum.\n\n## Complexity\n\nThis site adds n≤800 so that the O(kn log n) solution is feasible; |arr[i]|≤10^9.\n\nO(kn log n) time, O(n) space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n import bisect\n z=list(map(int,raw.split()));n,k=z[:2];a=z[2:2+n];v=sorted(set(a));m=len(v);size=1\n while size<m:size*=2\n INF=10**30;prev=[0]*n\n for length in range(2,k+1):\n  lo=[INF]*(2*size);hi=[INF]*(2*size);cur=[INF]*n\n  def query(tree,l,r):\n   l+=size;r+=size;ans=INF\n   while l<r:\n    if l&1:ans=min(ans,tree[l]);l+=1\n    if r&1:r-=1;ans=min(ans,tree[r])\n    l//=2;r//=2\n   return ans\n  def update(tree,pos,val):\n   pos+=size;tree[pos]=min(tree[pos],val);pos//=2\n   while pos:tree[pos]=min(tree[2*pos],tree[2*pos+1]);pos//=2\n  for i,x in enumerate(a):\n   t=bisect.bisect_left(v,x);cur[i]=min(query(lo,0,t+1)+x,query(hi,t,m)-x)\n   if prev[i]<INF:update(lo,t,prev[i]-x);update(hi,t,prev[i]+x)\n  prev=cur\n return str(min(prev))\n```"
+}

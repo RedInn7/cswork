@@ -1,0 +1,19 @@
+{
+  "id": "oa-two-sigma-2",
+  "packageChecksum": "6e32318726d6c6d3a59ef21d1c2bd48339c13adbd8a7fb360eb950c527ade25a",
+  "sourceContentHash": "ed553019a2f7cae89c8309ab9970535587de7e41a513eee520bad7502f4ccbaa",
+  "editorialSha256": "df265a24284bf5cc3fd7e1b41901e4ea8e995939cc553cb83f2db12f391748e8",
+  "hints": {
+    "zh": [
+      "两个数的和能被 N 整除，只取决于它们各自除以 N 的余数：余数相加为 0 或 N 才行。所以只需要关心每个余数出现了多少次。",
+      "从左到右扫描，用字典记录之前出现过的余数频次。处理当前元素时，先累加与它互补的余数在之前出现的次数，再把它自己的余数加入字典，这样不会和自己配对，也不会重复计数。",
+      "字典 seen 初始为空、答案为 0；对每个元素求 r = 值 mod N，补余数为 (N−r) mod N，把 seen 中补余数的次数加到答案上，再让 seen[r] 加 1；最后输出答案，注意需要 64 位整数。"
+    ],
+    "en": [
+      "Whether the sum of two numbers is divisible by N depends only on their remainders modulo N: the remainders must add up to 0 or N. So all you need is how many times each remainder occurs.",
+      "Scan from left to right with a dictionary of the remainders seen so far. For the current element, first add the count of its complementary remainder among earlier elements, then insert its own remainder. That way it never pairs with itself and no pair is counted twice.",
+      "Start with an empty dictionary seen and answer = 0. For each element, let r = value mod N and the complement be (N - r) mod N; add seen[complement] to the answer, then increase seen[r] by 1. Print the answer, which needs a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the remainders in order, keep a dictionary of the frequencies of earlier remainders, add the count of the complementary remainder, and then insert the current element.\n\n## Proof of correctness\n\nThe sum being divisible by N is equivalent to the remainders being complementary. When j is processed, the dictionary contains only indices i<j, so the complementary entries are exactly all valid pairs with j as the right end; going through every j counts each pair once, misses none, and never pairs an element with itself.\n\n## Complexity\n\nO(n) expected time and O(n) space, without allocating an array of length N."
+}

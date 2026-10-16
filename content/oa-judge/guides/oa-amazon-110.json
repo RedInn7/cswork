@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-110",
+  "packageChecksum": "f8eead38aecc84545218b71564cb4a205b49c0023e04239dc6aef02955d701a4",
+  "sourceContentHash": "f5d7234736899d42d3e3390555d14a8b1f517fc57b53455c4b29f0fab5d25760",
+  "editorialSha256": "d80250289a7a2ce81abd4240cbb602c207eec6b2d6f19c0aa9d32de9f2adf4b9",
+  "hints": {
+    "zh": [
+      "固定两个仓库后，每个中心去较近的仓库；把中心排序后，归属关系沿数轴最多切换一次，所以两座仓库各自服务一段连续的中心。",
+      "单个仓库服务一段中心时，放在这段的中位数上距离和最小；用前缀和就能 O(1) 算出一段到其中位数的距离和，再枚举切口。",
+      "排序并求前缀和；cost(l,r) 取 m=(l+r)/2，距离和为 a[m]*(m-l)-(sum[l..m)) + (sum(m..r)) - a[m]*(r-m-1)，空段为 0；枚举 i 从 0 到 n，取 cost(0,i)+cost(i,n) 的最小值。"
+    ],
+    "en": [
+      "Once the two warehouses are fixed, each center goes to the nearer one; after sorting the centers, the assignment switches at most once along the line, so each warehouse serves a contiguous block.",
+      "A single warehouse serving one block is best placed at the block's median, and with prefix sums the total distance of a block to its median takes O(1); then try every cut.",
+      "Sort and build prefix sums; for cost(l,r) take m=(l+r)/2 and compute a[m]*(m-l) - sum(a[l..m)) + sum(a(m..r)) - a[m]*(r-m-1), with an empty block costing 0; for every i from 0 to n take the minimum of cost(0,i)+cost(i,n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, the service areas of the two warehouses are split by one cut into two contiguous parts. A single part is optimal at its median; use prefix sums to compute a part's distance in O(1), and enumerate every cut.\n\n## Correctness\n\nFor two fixed warehouses, the nearest-warehouse assignment switches at most once along the number line, and the sum of absolute distances to a single warehouse is minimized at the median. So some optimal plan corresponds to one contiguous cut with each side's median, and the enumeration covers it. Empty parts are enumerated as well, which also handles the case of a single center.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

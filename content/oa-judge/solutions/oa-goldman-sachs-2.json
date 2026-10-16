@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-2",
+  "packageChecksum": "b37bedf38a51ec1e12215d3d9a06ad1052c60d616d5798c1112ef70b832ec34b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long counts[26] = {0};\n    size_t i = 0;\n    while (i < s.size()) {\n        int letter = s[i++] - 'a';\n        // Parse digit by digit: leading zeros are allowed.\n        long long freq = 0;\n        while (i < s.size() && isdigit((unsigned char)s[i])) freq = freq * 10 + (s[i++] - '0');\n        counts[letter] += freq;\n    }\n    string out;\n    for (int j = 0; j < 26; j++)\n        if (counts[j]) out += char('a' + j) + to_string(counts[j]);\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "9c22bb9759cea6bfd9ecc6ded129a1bb8ece55cc5fc4e25ddc1c62aeab76af21"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();\n        long[] counts = new long[26];\n        int i = 0, n = s.length();\n        while (i < n) {\n            int letter = s.charAt(i++) - 'a';\n            // Parse digit by digit: leading zeros are allowed.\n            long freq = 0;\n            while (i < n && Character.isDigit(s.charAt(i))) freq = freq * 10 + (s.charAt(i++) - '0');\n            counts[letter] += freq;\n        }\n        StringBuilder out = new StringBuilder();\n        for (int j = 0; j < 26; j++)\n            if (counts[j] > 0) out.append((char) ('a' + j)).append(counts[j]);\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "a1399b2953041f98e9dc4a68ce9b4bd8d01094f15ff517a1421535014386c0fe"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tline, _ := in.ReadString('\\n')\n\ts := strings.TrimSpace(line)\n\tvar counts [26]int64\n\tfor i := 0; i < len(s); {\n\t\tletter := s[i] - 'a'\n\t\ti++\n\t\t// Parse digit by digit: leading zeros are allowed.\n\t\tvar freq int64\n\t\tfor i < len(s) && s[i] >= '0' && s[i] <= '9' {\n\t\t\tfreq = freq*10 + int64(s[i]-'0')\n\t\t\ti++\n\t\t}\n\t\tcounts[letter] += freq\n\t}\n\tvar out strings.Builder\n\tfor j, c := range counts {\n\t\tif c > 0 {\n\t\t\tout.WriteByte(byte('a' + j))\n\t\t\tout.WriteString(strconv.FormatInt(c, 10))\n\t\t}\n\t}\n\tfmt.Println(out.String())\n}\n",
+      "sha256": "7af44668590a532a693fd8488c6733d12989b3f541beffe90d2ec92616266357"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-62",
+  "packageChecksum": "7bb3459dcfc7713d85ae759a0ce5121eee8fdc3a3d8a53877e514ace485d4b03",
+  "sourceContentHash": "cbb671298d24029a394196ffea8ba8f32bda670643c54a0ac7f6777fa0006334",
+  "editorialSha256": "cac1d568c17b2417c54c9264393abe9d7a96f83cf993ff63006ec5268f9ce417",
+  "hints": {
+    "zh": [
+      "边长为 L 的正方形需要 L² 个格子，而总面积最多是 m+4n，所以 L 不会超过 m+4n 的整数平方根。",
+      "偶数边长可以用 2×2 砖铺满，大砖不够就用小砖补，只要总面积够即可。奇数边长时最多只能放 floor(L/2) 的平方块大砖，至少剩下一行一列共 2L−1 个格子只能用小砖。",
+      "取 L 为 m+4n 的整数平方根（用整数方法求或求后校正，避免浮点误差，并使用 64 位整数）。若 L 是奇数且 m 小于 2L−1，就把 L 减 1；此时 L 是偶数且面积更小，必然可行。输出 L。"
+    ],
+    "en": [
+      "A square of side L needs L² cells and the total area is at most m+4n, so L cannot exceed the integer square root of m+4n.",
+      "An even side can be tiled by 2×2 tiles, with unit tiles filling in when large tiles run out, so only the total area matters. For an odd side at most floor(L/2) squared large tiles fit, and the remaining row and column of 2L−1 cells can only take unit tiles.",
+      "Let L be the integer square root of m+4n (compute it with integers, or correct a floating-point estimate, using 64-bit integers). If L is odd and m is less than 2L−1, decrease L by 1; the new L is even with a smaller area, so it is always feasible. Print L."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst take the square root L of the total area. An even side length is limited only by the total area; an odd L needs at least 2L−1 unit tiles, and if there are not enough, drop to L−1.\n\n## Correctness\n\nA square of side L holds at most floor(L/2)² large tiles, and the remaining cells can be filled with unit tiles. For an even L, if there are not enough large tiles, the total-area constraint guarantees enough unit tiles to fill in; for an odd L, besides the total area, the 2L−1 border cells that the largest array of large tiles cannot cover must also be filled. When L is not feasible, L−1 is even with a smaller area, so it is necessarily feasible and optimal.\n\n## Complexity\n\nTime O(log(m+4n)) for the integer square root, space O(1)."
+}

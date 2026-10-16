@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-1",
+  "packageChecksum": "05135348dd6dcb577cdab386084c12b5694e76e8b2b2d060387aee12296e7284",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long k;\n    cin >> n >> k;\n    // earliest prefix index for each remainder of the prefix sum\n    unordered_map<long long, int> first;\n    first.reserve(2 * n + 2);\n    first[0] = 0;\n    long long rem = 0;\n    int answer = 0;\n    for (int i = 1; i <= n; i++) {\n        long long v;\n        cin >> v;\n        rem = (rem + v) % k;\n        auto it = first.find(rem);\n        if (it != first.end()) answer = max(answer, i - it->second);\n        else first[rem] = i;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "4ab4d3e5144104319c2f6c54972c8144ce3d85f1a7303c6e1e7559924edd91d2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long k = nextLong();\n        // earliest prefix index for each remainder of the prefix sum\n        HashMap<Long, Integer> first = new HashMap<>(2 * n + 2);\n        first.put(0L, 0);\n        long rem = 0;\n        int answer = 0;\n        for (int i = 1; i <= n; i++) {\n            rem = (rem + nextLong()) % k;\n            Integer at = first.get(rem);\n            if (at != null) answer = Math.max(answer, i - at);\n            else first.put(rem, i);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "bee0d1404d3fbbe60275d4af11a9abfd61af13361d04c032c012ab01f488cb1e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\t// earliest prefix index for each remainder of the prefix sum\n\tfirst := make(map[int]int, n+1)\n\tfirst[0] = 0\n\trem, answer := 0, 0\n\tfor i := 1; i <= n; i++ {\n\t\trem = (rem + readInt()) % k\n\t\tif at, ok := first[rem]; ok {\n\t\t\tanswer = max(answer, i-at)\n\t\t} else {\n\t\t\tfirst[rem] = i\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e66bce3a1f41fbd3c3704631b076029c5a1815e2b42501453fafdc4c7614f0d7"
+    }
+  ]
+}

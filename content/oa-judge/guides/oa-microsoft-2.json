@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-2",
+  "packageChecksum": "1fa4105afb3c1e4df25622a280f2d2a98f91f3ab2cc4090feb22420c5ddfb691",
+  "sourceContentHash": "489e028886469baa3d609245c4e14b85286344ae28a65f2f918ddb31ba2cd7d5",
+  "editorialSha256": "e188fd63d558f63a5dc48b4d2457a4c1bf535215bc22db0ca922ba40bab811a3",
+  "hints": {
+    "zh": [
+      "只有 A[i]=B[i] 的位置会强迫某个值一定出现在 C 中；A[i]≠B[i] 的位置总能避开任意一个指定的值。",
+      "一个值 x 能从 C 中缺失，当且仅当 x 没有被任何位置强迫：每个位置都选不等于 x 的那个选项即可。所以答案就是\"被强迫的值\"集合中缺失的最小正整数。",
+      "遍历每个位置，A[i] 与 B[i] 相等时把这个值标记为被强迫（值大于 N 的可以忽略，因为答案不超过 N+1）。然后从 1 开始往上找第一个没被标记的正整数并输出。"
+    ],
+    "en": [
+      "Only positions with A[i]=B[i] force a value to appear in C; a position with A[i]≠B[i] can always avoid any one chosen value.",
+      "A value x can be missing from C exactly when no position forces it: at every position pick the option that is not x. So the answer is the smallest positive integer missing from the set of forced values.",
+      "Go through the positions and mark the value as forced whenever A[i] equals B[i] (values above N can be ignored, since the answer is at most N+1). Then search upward from 1 for the first unmarked positive integer and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOnly positions with A[i]=B[i] force a value to appear. Collect these forced values and output the smallest positive integer not in that set.\n\n## Proof of correctness\n\nA forced value appears in every C and cannot be missing. If x is not forced, every position has at least one option other than x, and choosing it at every position gives a C without x. So the smallest positive integer that can be missing equals the smallest value missing from the forced set.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

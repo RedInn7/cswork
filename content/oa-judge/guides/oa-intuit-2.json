@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-2",
+  "packageChecksum": "bde4d6080dd45603f4540cabfdb7d67cd366288c52a2b1b0c360bac4e977eff4",
+  "sourceContentHash": "79360b13168df2814dba5041eb72728e69dd998864384fce29d1d2f84e0151b0",
+  "editorialSha256": "0971ea36df306f5f16a531a07b177bf05c0589d0737ec7eda45ca02d493c185f",
+  "hints": {
+    "zh": [
+      "规模只有 n,x≤1000，每轮最多处理 x 个元素，总共 x 轮，直接按规则模拟队列就足够快。",
+      "每个元素要同时记住原始下标和当前值。每轮取出队头至多 x 个，选出值最大的那个（并列取最靠前的），其余元素值减一（不低于 0）后按原顺序放回队尾。",
+      "用双端队列存 (原下标, 值)；重复 x 轮：弹出 min(x,队列长度) 个组成一批，从前往后扫描，只有严格更大时才更新最大位置；记录该元素的原下标且不放回；其余元素按原顺序以 max(0,值−1) 重新入队；最后按选择顺序用空格输出 x 个下标。"
+    ],
+    "en": [
+      "The sizes are only n, x <= 1000, each round handles at most x elements, and there are x rounds, so simulating the queue exactly as described is fast enough.",
+      "Each element must remember both its original index and its current value. Each round takes at most x elements from the front, picks the one with the largest value (ties go to the one closest to the front), decreases the others by one (not below 0), and puts them back at the end in their original order.",
+      "Store (original index, value) in a deque; repeat x rounds: pop min(x, queue length) elements as a batch, scan it from front to back and update the maximum position only on a strictly larger value; record that element's original index and do not put it back; push the others back in order with value max(0, value - 1); finally print the x indices in selection order, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a deque holding each item's original index and value. Each round, pop the first min(x, queue length) items, scan them to find the first maximum and record its index; decrease the values of the other items in the batch by 1 with a lower bound of 0, and put them back at the end of the queue in their original order.\n\n## Proof of correctness\n\nThe batch taken in each round is exactly the at most x items at the front of the queue that the rules specify. The front-to-back scan updates the maximum position only when the value becomes strictly larger, so on ties the earliest item is kept. That item is recorded and not put back; each of the other items gets max(0,value−1) and is enqueued in the original order, exactly matching the operation in the statement. By induction on the number of rounds, both the queue state and the sequence of selected indices agree with the statement.\n\n## Complexity\n\nTime O(x²), space O(n+x); on this site x,n≤1000."
+}

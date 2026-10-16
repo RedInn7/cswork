@@ -1,0 +1,21 @@
+{
+  "id": "oa-hackerearth-1",
+  "packageChecksum": "3b26754375c3d8b3ccd927f32045d9faa667740f1181c5ffe875ec833b2e7fe8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    vector<int> day(n + 1);\n    for (int i = 1; i <= n; i++) {\n        int x;\n        cin >> x;\n        day[x] = i;\n    }\n    // monotonic deque: window maximum of move-in days over each length-m window\n    deque<int> q;\n    int answer = n;\n    for (int i = 1; i <= n; i++) {\n        while (!q.empty() && day[q.back()] <= day[i]) q.pop_back();\n        q.push_back(i);\n        while (!q.empty() && q.front() <= i - m) q.pop_front();\n        if (i >= m) answer = min(answer, day[q.front()]);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "ad7b1b2493c88dd5bdeb18e27b50561b89ef1ffebb21725404529d6dda930286"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c != -1 && c <= ' ') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = readByte(); }\n        return sb.toString();\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), m = (int) nextLong();\n        int[] day = new int[n + 1];\n        for (int i = 1; i <= n; i++) day[(int) nextLong()] = i;\n        // monotonic deque: window maximum of move-in days over each length-m window\n        int[] q = new int[n];\n        int head = 0, tail = 0, answer = n;\n        for (int i = 1; i <= n; i++) {\n            while (tail > head && day[q[tail - 1]] <= day[i]) tail--;\n            q[tail++] = i;\n            while (tail > head && q[head] <= i - m) head++;\n            if (i >= m) answer = Math.min(answer, day[q[head]]);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "fe4727644d0c3c28ca07b5e5f0215f02677861cd19297ac67318c9bdb3618bf7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, m := nextInt(), nextInt()\n\tday := make([]int, n+1)\n\tfor i := 1; i <= n; i++ {\n\t\tday[nextInt()] = i\n\t}\n\t// monotonic deque: window maximum of move-in days over each length-m window\n\tq := make([]int, 0, n)\n\thead, answer := 0, n\n\tfor i := 1; i <= n; i++ {\n\t\tfor len(q) > head && day[q[len(q)-1]] <= day[i] {\n\t\t\tq = q[:len(q)-1]\n\t\t}\n\t\tq = append(q, i)\n\t\tfor len(q) > head && q[head] <= i-m {\n\t\t\thead++\n\t\t}\n\t\tif i >= m {\n\t\t\tanswer = min(answer, day[q[head]])\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "9f92b84d51c0a246e0f866acfa99d60f541c6e2ef8c4149ec958d22297997f38"
+    }
+  ]
+}

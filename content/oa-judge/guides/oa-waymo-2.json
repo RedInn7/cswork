@@ -1,0 +1,19 @@
+{
+  "id": "oa-waymo-2",
+  "packageChecksum": "231128439c45c46474e317508787206691678a387a297b2d720e0dec0cc5f10e",
+  "sourceContentHash": "ab6c2b9b232d4b2260a3ee8472fbe255b0d345e9f46533e815499a24c78d5462",
+  "editorialSha256": "a5f982b35d6017eccb8a01b6d845b578d2f09044627181772c2666f01ab3e6b3",
+  "hints": {
+    "zh": [
+      "所有询问都从同一个 source 出发，边权非负，跑一次单源最短路就能回答全部目标。",
+      "用 Dijkstra：小根堆按当前距离出队，出队时若记录已过期就跳过，否则松弛所有出边。",
+      "建有向邻接表（节点转成 0-based）；距离初始化为无穷、source 为 0；堆上 Dijkstra 结束后，按询问顺序输出 dist，仍为无穷的输出 −1。距离可达 2×10¹⁴，用 64 位整数。"
+    ],
+    "en": [
+      "All queries start from the same source and edge weights are non-negative, so a single single-source shortest-path run answers every target.",
+      "Use Dijkstra: pop from a min-heap by current distance, skip the entry if it is stale, and otherwise relax all outgoing edges.",
+      "Build a directed adjacency list (convert nodes to 0-based); initialize distances to infinity and the source to 0; after the heap-based Dijkstra, print dist for the targets in query order, with −1 for those still at infinity. Distances reach 2×10¹⁴, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun Dijkstra from source and answer each query with its distance.\n\n## Proof of correctness\n\nNon-negative weights guarantee that a distance popped by Dijkstra can no longer be improved; relaxation covers every reachable path, and a node still at infinity is unreachable.\n\n## Complexity\n\nO((n+m) log n) time, O(n+m) space."
+}

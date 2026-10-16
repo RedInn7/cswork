@@ -1,0 +1,21 @@
+{
+  "id": "oa-nvidia-3",
+  "packageChecksum": "7e9cfd3d1eb201f718865662f6780a9f791d7b5dafa971e54e98000bae5f39a3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // arr[i] = pref[i-1] ^ pref[i]; the shared prefix cancels out.\n    long long previous = 0, value;\n    string out;\n    bool first = true;\n    while (cin >> value) {\n        if (!first) out += ' ';\n        first = false;\n        out += to_string(previous ^ value);\n        previous = value;\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "e2f6922428e6837479a2e7cb2b97bfc18e41a58eaf7c090a2da044aafee59f70"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static boolean hasNext() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n        return pos < buf.length;\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        nextLong();\n        // arr[i] = pref[i-1] ^ pref[i]; the shared prefix cancels out.\n        long previous = 0;\n        StringBuilder sb = new StringBuilder();\n        while (hasNext()) {\n            long value = nextLong();\n            if (sb.length() > 0) sb.append(' ');\n            sb.append(previous ^ value);\n            previous = value;\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "c6cb96ee339172071fb91d1b0280494ea322e7459b22e2ea1ac9ab5b7abb02c6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\t// arr[i] = pref[i-1] ^ pref[i]; the shared prefix cancels out.\n\tvar previous int64\n\tfirst := true\n\tfor sc.Scan() {\n\t\tvalue, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tw.WriteString(strconv.FormatInt(previous^value, 10))\n\t\tprevious = value\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "39afaeec3b2697799917fa7f938eed889981057effd367777c18399b4d5163d3"
+    }
+  ]
+}

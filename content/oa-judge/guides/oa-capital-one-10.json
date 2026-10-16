@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-10",
+  "packageChecksum": "0a858142b65413bf2aa57f4f60e7b68733554f5edf10532a93b3962f13f7912c",
+  "sourceContentHash": "c4cfdc26d6f6f3d9b39c3a9ca16c03ea5cd996ef1435e31e6d3ed8828977f6e6",
+  "editorialSha256": "64025722acbcdf47d2e46877acadbf067bad670cab3bfcf44544907651058c70",
+  "hints": {
+    "zh": [
+      "不管覆盖哪一段，区间以外的收益都不变，只需关心把一段改成\"全部卖出\"能多赚多少。",
+      "某天原本是买入（−price），改成卖出（+price）后收益增加 2×price；原本就是卖出的天不受影响。于是问题变成：在长度恰为 k 的连续区间里，增量之和的最大值。",
+      "先算出原始收益，再为每天算出增量（买入日为 2×price，卖出日为 0），用长度为 k 的滑动窗口求增量和的最大值，与原始收益相加后输出。全程用 64 位整数。"
+    ],
+    "en": [
+      "Whichever range you override, the profit outside it does not change; all that matters is how much extra profit turning one range into all sells brings.",
+      "A day that was a buy (-price) becomes a sell (+price), gaining 2*price; days that were already sells are unaffected. So the task becomes the maximum sum of these gains over a contiguous range of length exactly k.",
+      "Compute the original profit, then the gain of each day (2*price for a buy day, 0 for a sell day), find the maximum gain sum over all windows of length k with a sliding window, and print it plus the original profit. Use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe base profit is the same for every plan. Changing a day from buy to sell increases the profit by 2×price; a day that is already a sell adds 0. Use a sliding window of length k to maximize the increase.\n\n## Correctness\n\nFor each range of length k, the profit after the change equals the original profit plus 2×price for every 0 position inside the range. The sliding window enumerates all valid ranges and maintains the sum of this increase, so taking the maximum and adding the base profit gives the global optimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

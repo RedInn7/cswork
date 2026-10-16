@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-18",
+  "packageChecksum": "bff6902d20894ddfc32181c6e5fdffbcf624078fa9d48ea2ac405bcbf5ac4b58",
+  "sourceContentHash": "aae9d36df5cf4144c477b3dc94c84ae79f11a5259b64700da7da1ae6b58b6ac5",
+  "editorialSha256": "d01d6e0c6c6c97a145b1246ba8009947e77125bab4c4ccde535f0f8598a473d5",
+  "hints": {
+    "zh": [
+      "开发可以无限并行，所以“全开发”的耗时只取决于最慢的那个开发；集成只能由组长串行完成，总耗时是这些集成时间之和。两者同时进行，工期是两者中的较大值。",
+      "直接决定每个功能怎么做不好处理，可以反过来二分工期 T：在 T 内开发不完的功能（developmentTime>T）只能交给集成，其余功能全部并行开发即可；判断这些必须集成的耗时之和是否 ≤T。T 越大越容易满足，所以可以二分。",
+      "在 [0, max(developmentTime)] 上二分 T：累加所有 developmentTime[i]>T 的 integrationTime[i]（用 64 位），若和 ≤T 则 T 可行、向左收缩，否则向右；输出最小可行的 T。"
+    ],
+    "en": [
+      "Development runs in unlimited parallel, so developing a set of features takes as long as the slowest one; integration is done serially by the lead, so it takes the sum of those integration times. Both run at the same time, and the schedule is the larger of the two.",
+      "Choosing the method for every feature directly is awkward, so binary search the schedule length T instead: a feature whose developmentTime exceeds T must be integrated, and every other feature can simply be developed in parallel. Check whether the forced integration times sum to at most T. A larger T is always easier, so binary search applies.",
+      "Binary search T over [0, max(developmentTime)]: add up integrationTime[i] for every developmentTime[i] > T (in 64 bits); if the sum is at most T, T is feasible and you move left, otherwise move right. Print the smallest feasible T."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the schedule length T. Features whose development time is >T must be integrated, and T is feasible when the sum of their integration times is <=T; all other features can simply be developed in parallel.\n\n## Correctness\n\nAny plan that finishes within T must integrate the features whose development exceeds T, so this sum being <=T is a necessary condition. If the condition holds, the team lead integrates those features serially while all others are developed simultaneously from time 0, everything finishes within T, so it is also sufficient. Feasibility is monotone in T, and the upper bound max(developmentTime) is reached by developing everything.\n\n## Complexity\n\nTime O(n log maxTime), space O(n)."
+}

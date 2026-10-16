@@ -1,0 +1,19 @@
+{
+  "id": "oa-pinterest-1",
+  "packageChecksum": "5bde2265ce5b721962fcd392e46146be225d05957cc48ab297a0a03ff3c72dce",
+  "sourceContentHash": "dd4b4f197bd048a0e2af7095fed4f73ccc2c7ea9e5e9748e67e78ac162073384",
+  "editorialSha256": "e58a5e9b5cb9266214b20f6a078bf20dc17e3f5c90e2bef2429a335d9285910f",
+  "hints": {
+    "zh": [
+      "答案一定是某个“极长的连续相同字符段”（左右都无法再延伸的游程），字符串被这些游程不重不漏地划分。",
+      "从左到右把字符串切成一段段游程，记录每段的长度，比较出最长的那段；长度相同时要取更靠右的。",
+      "用双指针：i 为当前游程起点，j 向右推进直到字符变化，长度为 j−i。因为是从左往右扫描，长度大于或等于当前最佳时都更新，就自然保留了最靠右的那段。最后输出该字符紧跟长度，例如 b3。"
+    ],
+    "en": [
+      "The answer is always one of the maximal runs of identical characters (runs that cannot be extended left or right), and these runs partition the string with no overlap and nothing left out.",
+      "Split the string into runs from left to right, record each run's length and keep the longest; on equal length, prefer the one further right.",
+      "Use two pointers: i is the start of the current run and j moves right until the character changes, giving length j - i. Because you scan left to right, updating whenever the length is greater than or equal to the current best keeps the rightmost run automatically. Output the character immediately followed by the length, such as b3."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan runs of identical consecutive characters from left to right and compare their lengths; on equal length, switch to the run whose start is further right.\n\n## Correctness\n\nEvery valid answer is exactly one maximal run of identical consecutive characters in the string. The scan covers every run and maximizes by (length, start) in lexicographic order, which first maximizes the length and then picks the rightmost position.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

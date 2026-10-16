@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-354",
+  "packageChecksum": "90000a76a36343bc3ac0d7fca1992b90c54979e03b275e377b9000dbf8a0f83b",
+  "sourceContentHash": "bdcfbb0f95e8390ac725a933adf07a202f0c31fe19fa2bf258f752a50ec520a2",
+  "editorialSha256": "35eabe07511010f03a0dc160e9e3c14a5d2de45fa77a3a4aee63918719c7ad68",
+  "hints": {
+    "zh": [
+      "输出要求按数值排序并且去重，先把数组排好序，很多麻烦会自然消失。",
+      "在有序数组上用左右双指针：和偏小就右移左指针，偏大就左移右指针；两个指针始终指向不同下标，所以同一个值和自己配对时，它必须真的出现两次。",
+      "相等时记录 a[l],a[r]，然后跳过左边所有等于 a[l] 的值和右边所有等于 a[r] 的值，避免重复；l≥r 时结束，没有任何结果就输出 None。和可达 2×10^9，用 64 位。"
+    ],
+    "en": [
+      "The output must be numerically sorted and free of duplicates; sorting the array first takes care of most of that.",
+      "Run two pointers on the sorted array: if the sum is too small move the left pointer right, if too large move the right pointer left. The pointers always sit on different indices, so pairing a value with itself requires two real occurrences.",
+      "On a match, record a[l],a[r] and skip every copy of a[l] on the left and of a[r] on the right to avoid repeats; stop when l ≥ r and print None if nothing was found. Sums reach 2×10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort, then use two pointers: when the sum is below the target, move the left pointer right; when it is above, move the right pointer left; when it is equal, record the pair and skip all duplicate values at both ends.\n\n## Proof of correctness\n\nWith the left value fixed, if the current sum is below the target, pairing it with any smaller right value cannot reach the target either, so the left end can be safely discarded; the case above the target is symmetric. When the sum is equal, this value pair is fully represented, and skipping duplicates only removes repeated output while keeping every distinct value pair. The left and right indices are always different, so no single element is used twice, and the increasing left value naturally gives numeric lexicographic order.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

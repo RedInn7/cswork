@@ -1,0 +1,19 @@
+{
+  "id": "oa-paycom-6",
+  "packageChecksum": "433e507168c8fffd594dfa1d91c815cd7760d231c485b389f0d07a23bd7d2ab2",
+  "sourceContentHash": "c50b2fac17e2a7efcfed49bf2c68be3e251faf0ccc276d5aaaf12bbaf9765713",
+  "editorialSha256": "23e3b770f93c356862c820d605b306f673ff9750dfbc8028466a8319f41c5148",
+  "hints": {
+    "zh": [
+      "try 块里只有整数除法可能抛异常，而整数除法只在除数为 0 时抛出；返回值从来没有被打印。",
+      "按 try/catch/finally 的执行顺序推演：除数为 0 时先进入 catch 打印 Exception，再执行 finally 打印 Finally；除数不为 0 时跳过 catch，只执行 finally。",
+      "读入 a 和 b：b 等于 0 时输出 Exception Finally，否则只输出 Finally。不要输出除法结果，也不要把其他情况（例如最小整数除以 -1）当作异常。"
+    ],
+    "en": [
+      "Inside the try block only the integer division can throw, and integer division throws only when the divisor is 0; the return value is never printed.",
+      "Follow the try/catch/finally order: with divisor 0, control enters catch and prints Exception, then runs finally and prints Finally; with a non-zero divisor, catch is skipped and only finally runs.",
+      "Read a and b: if b is 0, print Exception Finally; otherwise print just Finally. Do not print the quotient, and do not treat other cases, such as the minimum integer divided by -1, as exceptions."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf the divisor is 0, the integer division throws, and catch prints Exception first; then finally runs regardless of whether an exception occurred and prints Finally. If the divisor is non-zero, only Finally is printed. The returned c is never passed to a print statement, so it does not appear in the output.\n\n## Correctness\n\nInside try, only the division can throw ArithmeticException. When the divisor is zero, control enters catch and then leaves try/catch to run finally; when the divisor is non-zero, catch is skipped and finally still runs. The output order of each of the two paths matches the statement's definition uniquely. This site explicitly compares the text on the same System.err stream as the standard output trace.\n\n## Complexity\n\nTime and extra space are both O(1). This site generalizes the original fixed call divide(4,0) to arbitrary integer inputs, so both the normal and the exception branch can be tested."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-25",
+  "packageChecksum": "f2cbc835b64d712130391448124ab64a89f0b0fd03332c696fc18d2372230d12",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, k;\n    cin >> n >> k;\n    long long champion;\n    cin >> champion;\n    long long wins = 0;\n    // Until the maximum takes over, each challenger is simply the next player in the original queue.\n    for (long long i = 1; i < n; i++) {\n        long long v;\n        cin >> v;\n        if (v > champion) champion = v, wins = 1;\n        else wins++;\n        if (wins >= k) break;\n    }\n    // If the scan ends first, the champion is the global maximum and never loses again.\n    cout << champion << \"\\n\";\n}\n",
+      "sha256": "6c83e4f358a0eb0b8d2dd589d4d4cb1046263785c4b66346f6f243320e36eb13"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long n = next(), k = next();\n        long champion = next(), wins = 0;\n        // Until the maximum takes over, each challenger is simply the next player in the original queue.\n        for (long i = 1; i < n; i++) {\n            long v = next();\n            if (v > champion) {\n                champion = v;\n                wins = 1;\n            } else wins++;\n            if (wins >= k) break;\n        }\n        // If the scan ends first, the champion is the global maximum and never loses again.\n        System.out.println(champion);\n    }\n}\n",
+      "sha256": "6aa74061185e44991b2bfc63868c66ec1cafc5ce103c070798c040c806761d7e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, k := next(), next()\n\tchampion, wins := next(), int64(0)\n\t// Until the maximum takes over, each challenger is simply the next player in the original queue.\n\tfor i := int64(1); i < n; i++ {\n\t\tv := next()\n\t\tif v > champion {\n\t\t\tchampion, wins = v, 1\n\t\t} else {\n\t\t\twins++\n\t\t}\n\t\tif wins >= k {\n\t\t\tbreak\n\t\t}\n\t}\n\t// If the scan ends first, the champion is the global maximum and never loses again.\n\tfmt.Println(champion)\n}\n",
+      "sha256": "ddbab6c8665a086d92c6373ccf2f48b29253886f2cbb9b8109042c75d9d08305"
+    }
+  ]
+}

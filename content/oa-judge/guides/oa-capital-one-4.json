@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-4",
+  "packageChecksum": "fad690ee8a04fe4ed387dc74f8d34a9766e3c5f85a6c41629095439d456cc61c",
+  "sourceContentHash": "4a1b5fa0bbff58d39f2f132825fb9fa2ccd8f10ef0914a968b978b1fa3a31092",
+  "editorialSha256": "c046ce13ed2f61fd998ccc10c625248599172e8b7049ac278173522565591c82",
+  "hints": {
+    "zh": [
+      "把每张照片看成一条无向边，所有照片就连成一条简单路径；路径的两个端点度数为 1，中间点度数为 2。",
+      "建邻接表，在度数为 1 的两个端点里选编号较小的作为起点，然后一直沿“不是上一个节点”的那个邻居往前走，直到走不动。",
+      "读入 n−1 条边建立无向邻接表（编号可能很大或为负，可以先离散化或用哈希表）；找出度为 1 且编号最小的节点作起点，prev 设为空；循环输出当前节点，选出不等于 prev 的邻居作为下一个，没有就结束；按顺序输出这 n 个编号。"
+    ],
+    "en": [
+      "Treat each photo as an undirected edge: all photos together form one simple path, whose two endpoints have degree 1 and whose inner nodes have degree 2.",
+      "Build an adjacency list, start from the smaller-labelled of the two degree-1 endpoints, and keep stepping to the neighbour that is not the node you just came from until you cannot move.",
+      "Read the n - 1 edges into an undirected adjacency list (labels may be large or negative, so compress them or use a hash map); start at the smallest-labelled node of degree 1 with prev empty; repeatedly output the current node and move to its neighbour that differs from prev, stopping when there is none; print the n labels in that order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst build an undirected adjacency list from the photo pairs. A simple path has exactly two endpoints of degree 1; starting from the endpoint with the smaller label, step each time to the neighbour that is not the previous node, which recovers the order.\n\n## Correctness\n\nApart from the start, every node on the path has exactly one neighbour that has not been visited yet. Moving along the edges without turning back visits every landmark exactly once; on reaching the other end there is no new neighbour, and the complete path has been produced.\n\n## Complexity\n\nO(n) time, O(n) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-323",
+  "packageChecksum": "df08d4b2a637cd3f72d475aadf2fe1f70e8746cb480633688739ca757f79c73f",
+  "sourceContentHash": "a3cb831d63d3dd2ef94a12150d86aad9b0077d528b360cc8f4a9acc87172a372",
+  "editorialSha256": "96dc22c5f862007965c6125195e6cf81c2f82f0de63a22b201bbdf65d915bfd3",
+  "hints": {
+    "zh": [
+      "每一段都要同时含元音和辅音；想让段数最多，就应该让每一段尽量短。",
+      "贪心：从左往右，一旦当前段已经同时出现元音和辅音就立刻切开。最后凑不齐的尾巴可以并入前一段，不破坏它的合法性，也不改变段数。",
+      "用两个布尔标记表示当前段是否见过元音、辅音；每读一个字符更新标记，两者都为真时答案加1并清空标记。最终答案就是这个计数（从未凑齐时为0）。"
+    ],
+    "en": [
+      "Every segment needs both a vowel and a consonant; to get as many segments as possible, each segment should be as short as possible.",
+      "Greedy: go from left to right and cut as soon as the current segment contains both a vowel and a consonant. A leftover tail that cannot complete a segment can be merged into the previous one, which keeps it valid and does not change the count.",
+      "Keep two flags for whether the current segment has seen a vowel and a consonant; update them for each character, and when both are true add 1 to the answer and reset the flags. The answer is that count (0 if a segment was never completed)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan from the left; as soon as the current segment has collected both a vowel and a consonant, end it and start counting again. A tail at the end that cannot form a valid segment joins the last valid segment and does not increase the count.\n\n## Proof of correctness\n\nAny valid first segment must extend at least to the position where both kinds of characters are first collected. Shrinking the first segment of an optimal split to this earliest position only moves extra characters into the next segment, which does not break the next segment's validity, so the total number of segments does not decrease; repeating this exchange gives the greedy cut points. The final tail can be merged into the previous segment, which still has both kinds; if no valid segment ever forms, the whole string is not valid either, and the answer is 0.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-58",
+  "packageChecksum": "e453ad0405de0ccf872d5a00d111aaeb28eab085f77fa694beb2cda439c60946",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // index floor*26+letter keeps lexicographic room order\n    vector<int> cnt(260, 0);\n    for (int i = 0; i < n; i++) {\n        string op;\n        cin >> op;\n        if (op[0] == '+') cnt[(op[1] - '0') * 26 + (op[2] - 'A')]++;\n    }\n    int best = 0;\n    for (int r = 1; r < 260; r++)\n        if (cnt[r] > cnt[best]) best = r;\n    cout << char('0' + best / 26) << char('A' + best % 26) << \"\\n\";\n}\n",
+      "sha256": "22758af46301b3f3d4412240cf1fbcbd8d609fdeab964ed7b40d9770485fb726"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder all = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) all.append(line).append(' ');\n        StringTokenizer st = new StringTokenizer(all.toString());\n        int n = Integer.parseInt(st.nextToken());\n        // index floor*26+letter keeps lexicographic room order\n        int[] cnt = new int[260];\n        for (int i = 0; i < n; i++) {\n            String op = st.nextToken();\n            if (op.charAt(0) == '+') cnt[(op.charAt(1) - '0') * 26 + (op.charAt(2) - 'A')]++;\n        }\n        int best = 0;\n        for (int r = 1; r < 260; r++) if (cnt[r] > cnt[best]) best = r;\n        System.out.println(\"\" + (char) ('0' + best / 26) + (char) ('A' + best % 26));\n    }\n}\n",
+      "sha256": "d33c4305c1b8237aaa342ee2826ff646e25c5e198de568b63d1c444554b24bb3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(sc.Text())\n\t// index floor*26+letter keeps lexicographic room order\n\tcnt := make([]int, 260)\n\tfor i := 0; i < n; i++ {\n\t\tsc.Scan()\n\t\top := sc.Text()\n\t\tif op[0] == '+' {\n\t\t\tcnt[int(op[1]-'0')*26+int(op[2]-'A')]++\n\t\t}\n\t}\n\tbest := 0\n\tfor r := 1; r < 260; r++ {\n\t\tif cnt[r] > cnt[best] {\n\t\t\tbest = r\n\t\t}\n\t}\n\tfmt.Printf(\"%c%c\\n\", '0'+best/26, 'A'+best%26)\n}\n",
+      "sha256": "1b4db97319a78971fb2256f44604e1aadad84b578274b018e58ce74b24dfdb53"
+    }
+  ]
+}

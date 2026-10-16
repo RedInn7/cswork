@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-66",
+  "packageChecksum": "a7896b12d7aa92b5b5f317273ef544d9df7fcd0f5f87f185dbbe12e183e95976",
+  "sourceContentHash": "11bb8c13c93e5a7f0fa78af4c809c7c735c0e22b8d6c42ccc123056bf28999aa",
+  "editorialSha256": "65e612b37c661e063d4d5e3953243830c4ae62040c987fff25922147e563991d",
+  "hints": {
+    "zh": [
+      "每走一步都花 1 秒，所以“能否在 maxTime 内到达”等价于“最短步数是否不超过 maxTime”。",
+      "边权全为 1 的网格最短路用广度优先搜索：BFS 按距离从小到大出队，第一次到达终点时的距离就是最少用时。",
+      "从 (0,0) 开始 BFS，只走到界内、是 '.' 且未访问的格子。终点出队时比较距离与 maxTime 输出 Yes 或 No；距离已经等于 maxTime 的格子不必再扩展。队列耗尽仍未到达则输出 No。"
+    ],
+    "en": [
+      "Every step costs one second, so reaching the target within maxTime is the same as the shortest number of steps being at most maxTime.",
+      "For a grid where every move costs 1, use breadth-first search: BFS dequeues cells in increasing distance, so the first time the target is reached gives the minimum time.",
+      "BFS from (0,0), moving only to in-bounds, unvisited '.' cells. When the target is dequeued, print Yes if its distance is at most maxTime and No otherwise; cells already at distance maxTime need no expansion. If the queue empties first, print No."
+    ]
+  },
+  "explanationEn": "## Idea\n\nRun a breadth-first search for the shortest distance; when the target is reached compare the distance with the limit. Layers beyond the limit need not be expanded.\n\n## Correctness\n\nEvery edge costs 1 and BFS processes cells in increasing distance, so the first time the target is reached gives the minimum time. A plan within the limit exists exactly when that distance does not exceed the limit.\n\n## Complexity\n\nO(rc) time, O(rc) space."
+}

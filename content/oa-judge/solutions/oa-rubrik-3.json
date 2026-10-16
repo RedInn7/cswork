@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-3",
+  "packageChecksum": "697d693ead90102cbc6141dc7485a195225d4fe4a143ea701d17ab6c904e0371",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    auto isVowel = [](char c) { return strchr(\"aeiouAEIOU\", c) != nullptr; };\n    int count = 0;\n    size_t i = 0, n = s.size();\n    while (i < n) {\n        while (i < n && isspace((unsigned char)s[i])) i++;\n        if (i >= n) break;\n        size_t j = i;\n        while (j < n && !isspace((unsigned char)s[j])) j++;\n        // token s[i, j)\n        bool ok = j - i >= 3, vowel = false, consonant = false;\n        for (size_t k = i; k < j && ok; k++) {\n            unsigned char c = s[k];\n            if (c >= 128 || !isalnum(c)) ok = false;\n            else if (isVowel(c)) vowel = true;\n            else if (isalpha(c)) consonant = true;\n        }\n        if (ok && vowel && consonant) count++;\n        i = j;\n    }\n    printf(\"%d\\n\", count);\n}\n",
+      "sha256": "4bd613eeaf224ee3b75f4a8a5f8bc753d31919e5526a6d202e27312e4983757a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] s = System.in.readAllBytes();\n        int count = 0, i = 0, n = s.length;\n        while (i < n) {\n            while (i < n && isSpace(s[i])) i++;\n            if (i >= n) break;\n            int j = i;\n            while (j < n && !isSpace(s[j])) j++;\n            // token s[i, j)\n            boolean ok = j - i >= 3, vowel = false, consonant = false;\n            for (int k = i; k < j && ok; k++) {\n                int c = s[k] & 0xFF;\n                if (\"aeiouAEIOU\".indexOf(c) >= 0) vowel = true;\n                else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') consonant = true;\n                else if (c < '0' || c > '9') ok = false; // not an ASCII letter or digit\n            }\n            if (ok && vowel && consonant) count++;\n            i = j;\n        }\n        System.out.println(count);\n    }\n\n    static boolean isSpace(byte c) {\n        return c == ' ' || (c >= 9 && c <= 13);\n    }\n}\n",
+      "sha256": "36e68e10a1d94403a2a582853ace80f5dcce615527c7da297aafdf5cffe6394b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tcount := 0\n\tfor _, w := range strings.Fields(string(data)) {\n\t\tok, vowel, consonant := len(w) >= 3, false, false\n\t\tfor i := 0; i < len(w) && ok; i++ {\n\t\t\tc := w[i]\n\t\t\tswitch {\n\t\t\tcase strings.IndexByte(\"aeiouAEIOU\", c) >= 0:\n\t\t\t\tvowel = true\n\t\t\tcase c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z':\n\t\t\t\tconsonant = true\n\t\t\tcase c >= '0' && c <= '9':\n\t\t\tdefault:\n\t\t\t\tok = false // not an ASCII letter or digit\n\t\t\t}\n\t\t}\n\t\tif ok && vowel && consonant {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "69028cf201d495820feed8608cd1e7156c7dd894989193a8214731f25caadb8d"
+    }
+  ]
+}

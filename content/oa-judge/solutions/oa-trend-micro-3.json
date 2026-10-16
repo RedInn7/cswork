@@ -1,0 +1,21 @@
+{
+  "id": "oa-trend-micro-3",
+  "packageChecksum": "4b922c7cb25e27840f28b864fa4783b5b0f7d5b8ed89383ccf97388d2de35c43",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    long long r = sqrtl((long double)n);\n    while (r * r > n) r--;\n    while ((r + 1) * (r + 1) <= n) r++;\n    long long left = 1, total = 0;\n    vector<pair<long long, long long>> iv;\n    for (long long right = 1; right <= r; right++) {\n        total += right * right;\n        while (total > n) { total -= left * left; left++; }\n        if (total == n) iv.push_back({left, right});\n    }\n    // longest first: a smaller left end means a longer sequence for a fixed sum\n    stable_sort(iv.begin(), iv.end(), [](auto &a, auto &b) { return a.second - a.first > b.second - b.first; });\n    string out = to_string(iv.size()) + \"\\n\";\n    for (auto &[l, rr] : iv) {\n        out += to_string(rr - l + 1);\n        for (long long x = l; x <= rr; x++) { out += ' '; out += to_string(x); }\n        out += '\\n';\n    }\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "837a2716b6667c7dd281876fcbfbd4125f0f71187e051a492f1ee9cc37fab0aa"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        long n = new Scanner(System.in).nextLong();\n        long r = (long) Math.sqrt((double) n);\n        while (r * r > n) r--;\n        while ((r + 1) * (r + 1) <= n) r++;\n        long left = 1, total = 0;\n        List<long[]> iv = new ArrayList<>();\n        for (long right = 1; right <= r; right++) {\n            total += right * right;\n            while (total > n) { total -= left * left; left++; }\n            if (total == n) iv.add(new long[]{left, right});\n        }\n        iv.sort((a, b) -> Long.compare(b[1] - b[0], a[1] - a[0]));\n        StringBuilder sb = new StringBuilder();\n        sb.append(iv.size()).append('\\n');\n        for (long[] p : iv) {\n            sb.append(p[1] - p[0] + 1);\n            for (long x = p[0]; x <= p[1]; x++) sb.append(' ').append(x);\n            sb.append('\\n');\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "2cb0fa155d803d1dacc1f79c1007355cce52cbdfef52f200fcd3f9f83861ec25"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tvar n int64\n\tfmt.Scan(&n)\n\tr := int64(math.Sqrt(float64(n)))\n\tfor r*r > n {\n\t\tr--\n\t}\n\tfor (r+1)*(r+1) <= n {\n\t\tr++\n\t}\n\tleft, total := int64(1), int64(0)\n\tvar iv [][2]int64\n\tfor right := int64(1); right <= r; right++ {\n\t\ttotal += right * right\n\t\tfor total > n {\n\t\t\ttotal -= left * left\n\t\t\tleft++\n\t\t}\n\t\tif total == n {\n\t\t\tiv = append(iv, [2]int64{left, right})\n\t\t}\n\t}\n\tsort.SliceStable(iv, func(i, j int) bool { return iv[i][1]-iv[i][0] > iv[j][1]-iv[j][0] })\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tw.WriteString(strconv.Itoa(len(iv)) + \"\\n\")\n\tbuf := make([]byte, 0, 32)\n\tfor _, p := range iv {\n\t\tw.WriteString(strconv.FormatInt(p[1]-p[0]+1, 10))\n\t\tfor x := p[0]; x <= p[1]; x++ {\n\t\t\tbuf = append(buf[:0], ' ')\n\t\t\tbuf = strconv.AppendInt(buf, x, 10)\n\t\t\tw.Write(buf)\n\t\t}\n\t\tw.WriteByte('\\n')\n\t}\n}\n",
+      "sha256": "b7c253c8aeb76ca0396ad97b2678fe92404c10399bc124ed1ae67d692cd0a055"
+    }
+  ]
+}

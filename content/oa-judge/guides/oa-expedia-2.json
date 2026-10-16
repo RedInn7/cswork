@@ -1,0 +1,19 @@
+{
+  "id": "oa-expedia-2",
+  "packageChecksum": "189de834f5d9163fb39ddb334e22cec8402e7614a6f58fb48142afe732c8a914",
+  "sourceContentHash": "d2fef227db0b2347dbfd54328b19f61583d6ee9579171d4fc6f672e32f18d7c2",
+  "editorialSha256": "2e82f9b5cee1784f1f51725a858762f125c507b2260e6aa5e27bf2bdb4f8f79b",
+  "hints": {
+    "zh": [
+      "要判断歌 x 是否击败歌 y，只需知道有多少用户把 x 排在 y 前面。如果能 O(1) 查到“某用户心中某首歌的名次”，这个比较就很容易。",
+      "先把每个用户的偏好排列转成名次表 pos[u][s]。对每一对不同的歌 (x, y)，统计 pos[u][x] < pos[u][y] 的用户数 v：若 2v > n，或 2v == n 且 x < y，则 x 击败 y。n、m ≤ 200，O(n·m²) 完全可行。",
+      "累计每首歌击败的歌曲数 wins[x]，然后把歌曲 id 按 (−wins, id) 排序，用空格分隔输出。"
+    ],
+    "en": [
+      "To decide whether song x beats song y you only need the number of users who rank x above y. If a user's rank of a song can be looked up in O(1), the comparison is easy.",
+      "First turn each user's preference permutation into a rank table pos[u][s]. For every pair of different songs (x, y), count the users v with pos[u][x] < pos[u][y]: x beats y if 2v > n, or 2v == n and x < y. With n, m <= 200, O(n * m^2) is fine.",
+      "Accumulate wins[x], the number of songs each song beats, then sort the song ids by (-wins, id) and print them separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst convert each user's preference permutation into the rank of every song. For every pair of different songs (x,y), count the users who prefer x, and decide by the majority rule and the id tie rule whether x beats y. After counting how many songs each song beats, sort by that count descending and by id ascending.\n\n## Correctness\n\nThe rank table determines exactly whether each user prefers x over y. Examining every other song one by one and applying the majority/tie rules given in the problem, the accumulated value is exactly the number of songs beaten in the definition. The final sort key is identical to the one the problem specifies, so the ranking obtained is unique.\n\n## Complexity\n\nO(nm^2 + m log m) time and O(nm) space; this site limits n and m to 200."
+}

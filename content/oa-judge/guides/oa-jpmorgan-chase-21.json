@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-21",
+  "packageChecksum": "9cff335a58f1ce2720e464fdc902325a03afce461a761723980e786d12777e9c",
+  "sourceContentHash": "40e06ccecf28db36b88899587852a3bf49b7f54be7828e1834061ee4f6a931db",
+  "editorialSha256": "e6f11fc892528a97b77110c62d26d8f0d37d8e34608212c3e11e037039938f12",
+  "hints": {
+    "zh": [
+      "两种可删除的串 AB 和 BB 右边都是 B、左边可以是任意字符，所以每次删除都相当于一个 B 带走它左边紧挨着的一个字符。",
+      "像括号匹配一样从左到右扫描：遇到 B 且前面还有未消去的字符时就让二者抵消，否则这个字符保留下来。",
+      "只需维护未消去字符的数量 left：遇到 B 且 left > 0 时 left 减 1，否则 left 加 1；扫描结束后 left 就是能得到的最短长度。"
+    ],
+    "en": [
+      "Both deletable strings, AB and BB, end in B and may start with any letter, so every deletion is a B removing the character immediately to its left.",
+      "Scan from left to right as in bracket matching: when you see a B and some earlier character is still alive, the two cancel; otherwise the current character survives.",
+      "Only the number of surviving characters matters: on a B with left > 0 decrease left by 1, otherwise increase it by 1; after the scan, left is the shortest reachable length."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan in order while maintaining the stack length: on a B with a non-zero length, cancel one existing character; otherwise increase the length by one.\n\n## Proof of correctness\n\nAny deletion process is equivalent to pairing each deleted B with one uncancelled character before it, and the paired intervals cannot cross. Consider the current B and its nearest unpaired predecessor: if an optimal plan does not pair these two, the at most two pairs they were originally involved in can be replaced by this pair, and when two remaining endpoints exist they can be paired with each other, keeping B as each right end and the pairs non-crossing, without reducing the number of deletions. Therefore these two can be cancelled first. Doing this prefix by prefix yields the maximum number of pairs and hence the minimum remaining length; the left character of both AB and BB can be matched, so only the stack length is needed.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

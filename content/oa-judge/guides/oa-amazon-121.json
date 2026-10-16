@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-121",
+  "packageChecksum": "cbc9b2118fd703a3a32ea7eb9fd2ece3a6642baeefc31bb7dcbf7c9a94392e33",
+  "sourceContentHash": "31b6dc72bc0cf433a69c70a2d4f3ecdb30900d73a9d07a647f13ebf91fa11dbd",
+  "editorialSha256": "394a680dc9962155cbbf175d0ea22fe19ab0fdfa8f019c7497fef63ae839ad71",
+  "hints": {
+    "zh": [
+      "各台服务器互不影响，只需分别跟踪每台服务器自己“最近一次 success 之后连续错了几次”。",
+      "error 让连续计数加一，success 把它清零；计数到 3 时就换一台新服务器，记一次更换，并从 0 重新计数。",
+      "开一个长度为 n 的数组 streak；按日志顺序处理每条记录 (编号, 结果)：结果是 error 则 streak 加一，否则置 0；若 streak 等于 3，答案加一并把 streak 置 0。最后输出答案。"
+    ],
+    "en": [
+      "Servers do not affect each other, so you only need to track, for each server separately, how many errors it has had in a row since its last success.",
+      "An error increases the streak by one and a success resets it to zero; when the streak reaches 3, the server is replaced, which counts as one replacement, and counting restarts from 0.",
+      "Keep an array streak of length n; process the log entries (server, result) in order: on error increment streak, otherwise set it to 0; if streak equals 3, add one to the answer and reset streak to 0. Print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStore the consecutive error count for each server; success resets it to zero, and an error adds one, replacing the server and resetting the count when it reaches 3.\n\n## Correctness\n\nThe invariant is that the count equals the number of consecutive failures of the current (new) server since its most recent success. After a replacement a brand new server is in use, so the count also starts from zero. A replacement is counted exactly at the third error, so all replacements are simulated completely.\n\n## Complexity\n\nTime O(n+m), space O(n+m) including the input."
+}

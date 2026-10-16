@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-12",
+  "packageChecksum": "dc00c6f8df7737bd1c02ed76bdefc995a8eef0d7615db85911b232082833a379",
+  "sourceContentHash": "d6ff718ac94280f3fb10f4f0e1a6443215dffe018ac9a3ba127bfe098b428552",
+  "editorialSha256": "b7223da4ac7b940eb835f7f50a71ef9499d9279431e03df48d523d5607940ea3",
+  "hints": {
+    "zh": [
+      "最终计分的连续段里，每个位置相对于放大片段只可能处在三个阶段之一：放大片段之前、之内、之后，而且顺序只能是 前→内→后，不能倒退。",
+      "用三个状态做类似最大子数组和的 DP：before、inside、after 分别表示以当前位置结尾、当前位置处于对应阶段时的最大连续和。普通位置加 x，放大位置加 z·x。",
+      "转移：before = max(0, before + x)（0 表示空段）；inside = max(before, inside) + z·x（开始或延续放大段）；after = max(inside, after) + x（放大段结束后继续）。inside 和 after 初值取一个很小的负数，答案取所有位置三个状态与 0 的最大值。z·x 可达 10^11、总和可达 2×10^16，用 64 位整数，哨兵别取到会溢出的极值。时间 O(n)，空间 O(1)。"
+    ],
+    "en": [
+      "Within the scored segment, each position is in one of three stages relative to the amplified segment: before it, inside it or after it, and the order can only be before, inside, after, never backwards.",
+      "Run a maximum-subarray-style DP with three states: before, inside and after are the best sums of a segment ending at the current position while that position is in the corresponding stage. A normal position adds x and an amplified position adds z * x.",
+      "Transitions: before = max(0, before + x), where 0 stands for an empty segment; inside = max(before, inside) + z * x (start or continue the amplified segment); after = max(inside, after) + x (continue after the amplified segment ends). Start inside and after at a very negative value, and the answer is the maximum of 0 and all three states at every position. z * x reaches 10^11 and sums reach 2 * 10^16, so use 64-bit integers and pick a sentinel that cannot overflow. Time O(n), space O(1)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse three states to describe the scored segment being before, inside or after the amplified segment. Each state records the maximum sum of a segment ending at the current position; a normal position adds `x` and an amplified position adds `z*x`. The answer includes the empty range with 0, because the original problem explicitly says the beauty of an all-negative array is 0, and not using the amplifier is also allowed. Time O(n), space O(1).\n\n## Why it is correct\n\nEvery position in any optimal scored segment is in one of only three stages: before the amplified range, inside it, or after it, and the order cannot be reversed. The three states keep, position by position, the maximum sum ending at the current position for each stage; the transitions only allow a normal continuation, starting or continuing the amplified range, and a normal continuation after the amplified range ends, so they cover every valid choice and never produce an invalid order. Taking the maximum over all stages and the empty range gives the global optimum.\n\n## Example correction\n\nThe pinned source defines the task as amplifying one contiguous segment and then finding the maximum sum of any contiguous segment; the amplified segment may be the whole array. In example 2, multiplying the whole array by -3 gives `[15,27,6,-3,18]`, whose total and maximum contiguous sum are both 63. The original output 30 and the `[9,6,-3,18]` listed in its explanation do not match the original array. Only that example's output and explanation are corrected; the rules are unchanged. The source's lower bound `10^-9` conflicts with the integer type and the negative examples; this site adopts the explicitly disclosed executable bounds `n<=200000`, `-10^9<=a[i]<=10^9`, `-100<=z<=100`, without claiming they are known upstream constraints."
+}

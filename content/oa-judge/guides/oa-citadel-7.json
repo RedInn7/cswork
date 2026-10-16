@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-7",
+  "packageChecksum": "227f36bf9ab447a0e7fb26bf28a4397ddd14539ad6529ab25b8da050a783943f",
+  "sourceContentHash": "78e45ac961fd5089f077b378c2b34dad36d8b42c63ee3d5298e206fbcf31580f",
+  "editorialSha256": "7633b154c22b39597135b0d2e56740587f430419bcac50f2690aeeb4687aeffa",
+  "hints": {
+    "zh": [
+      "在 t 轮内，每个任务无论是否当主要任务都至少得到 t·y 的执行量；当一次主要任务只是在此基础上额外多得 x − y。",
+      "轮数越多越容易完成，可以二分轮数 t。对执行量 v > t·y 的任务，它至少要当 ceil((v − t·y) / (x − y)) 次主要任务；所有任务所需次数之和不超过 t，就能在 t 轮内完成。",
+      "二分范围取 0 到 ceil(max(v) / y)；检查时累加每个任务所需的主要次数，一旦超过 t 就提前判失败；可行就收缩右端，否则左端加一。乘积 t·y 和累加值用 64 位整数。"
+    ],
+    "en": [
+      "Within t rounds every task receives at least t * y of execution whether or not it is the primary task; being the primary task once only adds an extra x - y on top of that.",
+      "More rounds can only help, so binary search on the number of rounds t. A task with v > t * y must be the primary task at least ceil((v - t * y) / (x - y)) times; if these counts sum to at most t, the pool can be cleared within t rounds.",
+      "Search t in the range 0 to ceil(max(v) / y). In each check add up the primary turns each task needs and fail early once the sum exceeds t; if feasible move the right end down, otherwise move the left end up. Use 64-bit integers for t * y and the sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the number of rounds t: treat each task's base progress as t*y; for the shortfall, each turn as the primary task contributes an extra x-y, and the pool can be finished if the total number of primary turns needed is <= t.\n\n## Proof of correctness\n\nWithin t rounds each task gets at most the base t*y plus its number of primary turns times (x-y), so requiring the total of the needed turns to be <= t is a necessary condition. Conversely, these primary turns can be distributed over the rounds; if a task finishes early, giving its remaining reserved turns to other unfinished tasks only increases effective progress. A task still unfinished after t rounds would always have received the base y per round plus its required primary turns, a contradiction, so the condition is sufficient. Feasibility is monotone in t, so the binary search finds the minimum.\n\n## Complexity\n\nO(n log(max execution amount / y + 1)) time and O(n) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-34",
+  "packageChecksum": "1ec7181490b615fc802ce193c62b52db6a7874b78fb8b5331f020f311e013673",
+  "sourceContentHash": "f1e806d948eed3a3230b7c44ca36fb3125a4e17776f771b648e51c3c4167af04",
+  "editorialSha256": "c107998a43623c904cf0eb9b8d295388dd7771ba160e4559527f119c290796d4",
+  "hints": {
+    "zh": [
+      "合法子串一定是一段连续的 0 接一段连续的 1（或反过来），两段长度相同，因此它恰好跨过原串中两个相邻游程之间的一个边界。",
+      "若边界左侧游程长 x、右侧游程长 y，从两边各取 k 个字符（1 ≤ k ≤ min(x, y)）都得到不同的合法子串，所以每个边界恰好贡献 min(x, y) 个。",
+      "扫描时维护上一游程长度 previous 和当前游程长度 current：字符与上一个相同时 current 加 1；否则把 min(previous, current) 加入答案，再令 previous = current、current = 1；扫描结束后再加一次 min(previous, current)。空串输出 0。"
+    ],
+    "en": [
+      "A valid substring is a block of 0s followed by an equally long block of 1s, or the reverse, so it crosses exactly one boundary between two adjacent runs of the original string.",
+      "If the run left of a boundary has length x and the run right of it has length y, taking k characters from each side for 1 ≤ k ≤ min(x, y) gives distinct valid substrings, so every boundary contributes exactly min(x, y).",
+      "Track the previous run length and the current run length: when a character repeats the last one, extend the current run; otherwise add min(previous, current) to the answer, then set previous = current and current = 1; after the scan add min(previous, current) once more. An empty string gives 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTrack the lengths of adjacent runs; each run boundary contributes the smaller of the lengths on its two sides.\n\n## Proof of correctness\n\nA valid substring crosses exactly one boundary between runs of different characters; if the two sides have lengths x and y, choosing k characters on each side works for 1≤k≤min(x,y), and each k is unique. Different boundaries correspond to different substrings, so the sum of the contributions is exact, with no double counting and no omissions.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-317",
+  "packageChecksum": "40f504005bbbe872b9d33ff28de222caa1d6568f6e1d7c30dc7ae63f0ad99f91",
+  "sourceContentHash": "64cf0dd7a82e5f7e77b1d4ec2f43989da9c420a11e6e1eaeaa5fe7eb89b2b564",
+  "editorialSha256": "d01268bd4f2bd9d72265e6287bb9c5869263e086b1349ab929665f95ca28bb22",
+  "hints": {
+    "zh": [
+      "先只求最优总内存：固定一个前台应用，最好的后台应用就是内存不超过“容量−前台内存”的最大者。",
+      "把后台应用按内存分组，再对内存值排序，就能为每个前台二分出可配的最大内存，从而得到全局最优和best。注意同一内存可能对应多个后台ID，它们都要输出。",
+      "第一遍：对每个前台在排序后的内存表中找≤capacity−其内存的最大值，更新best。第二遍：对每个前台取内存恰为best−其内存的那组后台ID，生成所有(前台ID, 后台ID)。按两个ID字典序排序后输出紧凑JSON；一个都没有时输出[[]]。"
+    ],
+    "en": [
+      "First find only the best total memory: for a fixed foreground app, the best background app is the one with the largest memory not exceeding capacity minus the foreground memory.",
+      "Group the background apps by memory and sort the memory values; then for each foreground app a binary search finds the largest memory it can pair with, giving the global best sum. Note that one memory value may belong to several background IDs, and all of them must be output.",
+      "First pass: for each foreground app, find in the sorted memory list the largest value ≤ capacity − its memory and update best. Second pass: for each foreground app, take the group of background IDs whose memory is exactly best − its memory, and produce every (foreground ID, background ID). Sort by the two IDs lexicographically and print compact JSON; if there are none, print [[]]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGroup the background apps by memory and sort the memories. In the first pass, binary search for each foreground app the largest background memory it can pair with, and find the optimal sum; in the second pass, take all background IDs that reach exactly that sum, enumerate every pair, and sort by the two IDs lexicographically.\n\n## Proof of correctness\n\nFor a fixed foreground app, the best background app must have the largest memory the capacity allows; otherwise switching to a larger one would improve the sum. Enumerating the foreground apps gives the global optimum. Once that sum is reached, the background memory is uniquely determined, but every ID with that memory gives a different valid answer, so enumerating all of them covers exactly the optimal pairs. Sorting only normalizes the output and loses no result.\n\n## Complexity\n\nTime O((n+m)log m+K log K), space O(n+m+K), where K is at most nm=250000."
+}

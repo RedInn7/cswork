@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-9",
+  "packageChecksum": "df018efed8ed9b3932d24d8759c0214f6d665b07e6bd853a1e2545cac2d326da",
+  "sourceContentHash": "7332d21f2764b58d70b644615a4f740ed4d8284201db89fb7e262782b14a8038",
+  "editorialSha256": "3a13ae3d6f29b273f3891b90e2cb5bf745715e36622ed05cc808afab60a03539",
+  "hints": {
+    "zh": [
+      "不允许重排时，一个子串的修改代价就是它的镜像位置上字符不相等的对数：每个不等对至少改一次，改其中一个字符就够，而且各对互不重叠。",
+      "反过来按位置对 (i,j)（i<j）统计贡献：它在一个子串中处于镜像位置，当且仅当子串从这对位置向两侧扩展相同的距离，这样的子串有 min(i+1,n−j) 个。答案是所有字符不同的位置对的权重之和，等于全部位置对的权重和减去字符相同的位置对的权重和。",
+      "先对每个右端 j 线性求出所有 i<j 的 min(i+1,n−j) 之和；再把每个字母出现的位置按顺序分组，对组内第 k 个位置 j，用二分找到前面满足 i+1<n−j 的位置个数 split，这部分贡献为它们的 (i+1) 之和（用前缀和求），其余 k−split 个位置各贡献 n−j；两者相减即答案，全部用 64 位整数。"
+    ],
+    "en": [
+      "Without rearrangement, a substring's cost is the number of mirrored position pairs whose characters differ: each unequal pair needs at least one change, changing one of its characters is enough, and the pairs do not overlap.",
+      "Flip it around and count per position pair (i, j) with i < j: the pair is mirrored inside a substring exactly when the substring extends the same distance outward on both sides, and there are min(i + 1, n - j) such substrings. The answer is the total weight of the pairs with different characters, which equals the total weight of all pairs minus the total weight of pairs with equal characters.",
+      "First compute, for each right end j, the sum of min(i + 1, n - j) over all i < j in constant time each; then group the positions of each letter in order, and for the k-th position j in a group binary search the number split of earlier positions with i + 1 < n - j: they contribute the sum of their (i + 1) values (from prefix sums), and the other k - split positions contribute n - j each; subtract the two totals to get the answer, using 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each position pair (i,j), if the characters differ, the pair appears as a mirrored pair in min(i+1,n-j) substrings. The total weight can be computed in linear time; equal-character pairs are grouped by character and subtracted using prefix sums and binary search.\n\n## Proof of correctness\n\nFor a substring to become a palindrome, each mirrored pair of unequal characters needs at least one change, and changing either character satisfies that pair; the mirrored position pairs do not overlap, so the cost is exactly the number of unequal mirrored pairs. A pair of indices i<j is mirrored in some substring if and only if the substring's left and right ends extend outward by the same distance; the number of valid extensions is min(i+1,n-j). Therefore the answer is the total weight of all position pairs minus the total weight of the position pairs with equal characters.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

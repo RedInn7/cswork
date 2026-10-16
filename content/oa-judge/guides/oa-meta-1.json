@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-1",
+  "packageChecksum": "0e5dcf2298f7781e5aae38f235cd42ea2de9c4d149841f4c74794569862544e7",
+  "sourceContentHash": "64c170f3d0e7adfe05723c8bcdc7d6dae5bb4eb7d95345d102ae2e2dbc4b4ae3",
+  "editorialSha256": "5b4f134e8db0447c998bd7a91e042fda585d4efe351d689cd057196c880442aa",
+  "hints": {
+    "zh": [
+      "图形整体下落、不旋转也不变形，最低的那个 * 到达底行时停止，所以下落的格数 D 是确定的：底行下标减去最低的 * 所在的行。",
+      "每个 * 在下落过程中会依次经过本列下方的 D 个格子；凡是被某个 * 扫过的位置上的障碍都必须删除，而删掉这些之后每一步都不会再发生碰撞。同一个障碍可能被多个 * 扫过，只能算一次。",
+      "求出 D 后逐列处理：对该列每个位于第 i 行的 *，在差分数组上标记行区间 [i+1, i+D]；做前缀和得到每一行是否被覆盖，统计被覆盖且为 # 的格子数，把所有列的结果加起来就是答案。"
+    ],
+    "en": [
+      "The shape falls as a whole without rotating or deforming and stops when its lowest asterisk reaches the bottom row, so the fall distance D is fixed: the bottom row index minus the row of the lowest asterisk.",
+      "While falling, each asterisk passes through the D cells below it in its column; every obstacle on a cell swept by some asterisk must be removed, and once those are gone no step collides. One obstacle may be swept by several asterisks but counts only once.",
+      "After finding D, handle one column at a time: for every asterisk in row i of that column, mark the row range [i+1, i+D] in a difference array; a prefix sum tells which rows are covered, count the covered cells holding #, and add the counts of all columns."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe downward distance is determined by the shape's lowest cell. Each asterisk sweeps a row interval in its own column; merge the intervals with a per-column difference array, then count the covered obstacles.\n\n## Why it is correct\n\nBefore the lowest cell reaches the bottom row, the shape must pass through every intermediate shift exactly; every obstacle at a swept position must be removed. After removing all obstacles at swept positions, no step collides, so counting these distinct obstacles is both necessary and sufficient.\n\n## Complexity\n\nTime and space O(RC)."
+}

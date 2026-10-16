@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-1",
+  "packageChecksum": "1eb19c60e16bbbc3b920e44fdaf9a3c6ee38623762b91f4e5f49c476f9e8bc61",
+  "sourceContentHash": "ff5fa5cc5d92ee3b5def08ad1f064b929b04bcc6d241c0a932fc989d32016fd3",
+  "editorialSha256": "e8bba61a0c001635e583ed5e8c798fab34978a84f48a024fd2bb52605845adc9",
+  "hints": {
+    "zh": [
+      "n≤1000，O(n²) 可以接受，但直接枚举三元组的 O(n³) 太慢；三个数之和能否被 d 整除只取决于它们模 d 的余数。",
+      "固定中间下标 j，再枚举右边的 k，那么左边的 i 所需的余数被唯一确定为 (−arr[j]−arr[k]) mod d。只要知道 j 左边每种余数出现了多少次，就能一次查表得到合法 i 的个数。",
+      "开一个长度为 d 的计数数组，先放入 arr[0] 的余数；j 从 1 扫到 n−2，对每个 k>j 把计数数组中所需余数的次数累加到答案，处理完 j 之后再把 arr[j] 的余数计入数组。注意负数取模要调整到 0..d−1，答案用 64 位整数。"
+    ],
+    "en": [
+      "With n <= 1000, O(n^2) is fine but enumerating all triplets in O(n^3) is too slow; whether three numbers sum to a multiple of d depends only on their remainders modulo d.",
+      "Fix the middle index j and enumerate k to its right; then the remainder that i must have on the left is uniquely (-arr[j] - arr[k]) mod d. If you know how many times each remainder occurs to the left of j, a single table lookup gives the number of valid i.",
+      "Keep a count array of length d, initially holding the remainder of arr[0]; sweep j from 1 to n-2, and for each k > j add the count of the required remainder to the answer; after finishing j, add arr[j]'s remainder to the array. Normalize negative remainders into 0..d-1 and keep the answer in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the first two positions by remainder; modulo d, the third remainder is then uniquely determined. Use combinatorial counting to exclude repeated indices.\n\n## Proof of correctness\n\nWhen the middle index j is fixed, the frequency array records only the remainders of the elements to the left of j. For each k on the right, the only left remainder needed is -arr[j]-arr[k] (mod d), and a table lookup counts all valid i. Each contribution of a pair j,k corresponds to unique increasing triplets, so the total is exactly the answer.\n\n## Complexity\n\nO(n^2+d), space O(d)."
+}

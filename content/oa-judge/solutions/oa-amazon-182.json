@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-182",
+  "packageChecksum": "b288c1a4041393c3f64ec085f147027b8cb91fc67382dbaeb5ce640308c5cf07",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<int> a(n);\n    for (auto& v : a) cin >> v;\n    // Each round overwrites a[i] with (a[i] + a[i + 1]) % 10 in place; the row shrinks by one.\n    for (int len = n; len > 2; len--)\n        for (int i = 0; i + 1 < len; i++) a[i] = (a[i] + a[i + 1]) % 10;\n    cout << a[0] << a[1] << \"\\n\";\n}\n",
+      "sha256": "5138e6335ffbcd64dbe88a6f30b5480f8722ff31ce2987ee64a2333b86a5e71a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = nextInt();\n        // Each round overwrites a[i] with (a[i] + a[i + 1]) % 10 in place; the row shrinks by one.\n        for (int len = n; len > 2; len--)\n            for (int i = 0; i + 1 < len; i++) a[i] = (a[i] + a[i + 1]) % 10;\n        System.out.println(\"\" + a[0] + a[1]);\n    }\n}\n",
+      "sha256": "b6f93e75382d69198ed0210f51054e2fcbb83c4a9afd5c4d00ad6dfc15a5bdd1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// Each round overwrites a[i] with (a[i] + a[i + 1]) % 10 in place; the row shrinks by one.\n\tfor length := n; length > 2; length-- {\n\t\tfor i := 0; i+1 < length; i++ {\n\t\t\ta[i] = (a[i] + a[i+1]) % 10\n\t\t}\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(a[0]) + strconv.Itoa(a[1]) + \"\\n\")\n}\n",
+      "sha256": "ea3ab1128f3cd831f0799aa1329a4de445a6cff54b32af9984b10efc7758cd84"
+    }
+  ]
+}

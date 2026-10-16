@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-18",
+  "packageChecksum": "251f8edd969ecfbcf9ede53023a9b27e538aa9c0bd8543baa7d9d69e61d9d43e",
+  "sourceContentHash": "8688a0e2334798744d80d60461f1d9e959722c7d8187d2cb91f40175ad8b7366",
+  "editorialSha256": "959eb5e78ef58324131f612b029bee523a1d4211c488077fb7f31286fc794ebd",
+  "hints": {
+    "zh": [
+      "两个串互为字母异位词，当且仅当 26 个字母的出现次数完全相同；而所求子串的长度一定等于 pattern 的长度。",
+      "用长度为 |pattern| 的滑动窗口扫描 s：窗口右移一格时，只需把移出的字母计数减一、移入的字母计数加一，就能维护窗口的频次。",
+      "若 |pattern| > |s| 直接输出 −1。先统计 pattern 和 s 前 |pattern| 个字符的频次，然后从起点 0 开始依次比较两个 26 维计数，相等就输出当前起点，否则滑动一格；全部窗口都不相等时输出 −1。"
+    ],
+    "en": [
+      "Two strings are anagrams exactly when the counts of all 26 letters match, and the substring you need must have the same length as pattern.",
+      "Slide a window of length |pattern| over s: moving it one step right only decrements the count of the letter that leaves and increments the count of the letter that enters.",
+      "If |pattern| > |s|, print -1. Count the letters of pattern and of the first |pattern| characters of s, then starting from position 0 compare the two 26-entry count arrays; print the start on equality, otherwise slide by one. If no window matches, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sliding window of length |pattern| to maintain the counts of the 26 letters. Check the windows one by one; the first position whose counts equal those of pattern is the answer.\n\n## Proof of correctness\n\nEach contiguous substring of fixed length |pattern| corresponds to exactly one sliding window, and two strings are anagrams of each other if and only if their frequency vectors are equal. Windows are checked in increasing order of start, so the first hit is the smallest index; if none hits, there is no solution.\n\n## Complexity\n\nO(|s|+|pattern|) time and O(1) space."
+}

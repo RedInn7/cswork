@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-2",
+  "packageChecksum": "5ba4db16e755501b447a8daf66448182f3b451b6927dfe61a34c48b82a14c07f",
+  "sourceContentHash": "96bba42195ebb4cb3d1e8757d24830af8f40265a68447f13eff881fa113d5bb0",
+  "editorialSha256": "343933ddbf035abe02fe7ca9bd128a3d02936b9bded2e7106fadcae38c18a767",
+  "hints": {
+    "zh": [
+      "切分点固定后，左段和右段各自取最大子数组和，两边互不影响，所以只需对每个切分点求“前缀内的最大子数组和”和“后缀内的最大子数组和”。",
+      "用 Kadane 算法从左往右求每个前缀的最大非空子数组和，再从右往左求每个后缀的；然后枚举切分点相加取最大。",
+      "left[i] 为 a[0..i] 内最大子数组和，right[i] 为 a[i..n−1] 内最大子数组和，均用“当前结尾最大和、全局最大和”两变量递推；对 i=0..n−2 取 left[i]+right[i+1] 的最大值；数值可达 2×10^14，用 64 位整数，注意元素可能全为负。"
+    ],
+    "en": [
+      "Once the cut is fixed, the left part and the right part each take their own maximum subarray sum and do not interact, so you only need, for every cut, the best subarray inside the prefix and the best subarray inside the suffix.",
+      "Use Kadane's algorithm from the left to get the best non-empty subarray sum of every prefix, and from the right for every suffix; then try every cut and take the largest sum.",
+      "Let left[i] be the best subarray sum within a[0..i] and right[i] the best within a[i..n-1], each computed with two running values (best sum ending here, best so far); take the maximum of left[i] + right[i+1] over i = 0..n-2. Values can reach 2 * 10^14, so use 64-bit integers, and remember all elements may be negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute the best subarray sum within every prefix, and also the best subarray sum within every suffix. Try every cut point i and maximize prefixBest[i] + suffixBest[i+1].\n\n## Correctness\n\nFor a fixed cut, no valid choice in the left part can exceed that prefix's best subarray sum, and likewise for the right part; the two best subarrays can be chosen independently, so their sum is the optimum for that cut. Trying every cut 1..n-1 gives the global optimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

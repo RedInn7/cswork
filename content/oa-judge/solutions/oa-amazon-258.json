@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-258",
+  "packageChecksum": "8f87ae108dc796ab16e3fc491c708b25f4e6ab374bdf2aa52131425422da4116",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    // Each new (larger) category adds at most one batch: when the total reaches the next triangle number.\n    long long total = 0, k = 0;\n    for (long long v : a) {\n        total += v;\n        if (total >= (k + 1) * (k + 2) / 2) k++;\n    }\n    cout << k << \"\\n\";\n}\n",
+      "sha256": "bbfcf0e18ccb29f0214ca6bdc943b45dc21390b162132510337cf355cc9a66e9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Each new (larger) category adds at most one batch: when the total reaches the next triangle number.\n        long total = 0, k = 0;\n        for (long v : a) {\n            total += v;\n            if (total >= (k + 1) * (k + 2) / 2) k++;\n        }\n        System.out.println(k);\n    }\n}\n",
+      "sha256": "8e72143e433ac42de7a7d01916235cfb6f54ca72e0be71da2db73cd9659b3a69"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Each new (larger) category adds at most one batch: when the total reaches the next triangle number.\n\tvar total, k int64\n\tfor _, v := range a {\n\t\ttotal += v\n\t\tif total >= (k+1)*(k+2)/2 {\n\t\t\tk++\n\t\t}\n\t}\n\tfmt.Println(k)\n}\n",
+      "sha256": "b640750b0a1ffabce0b6012d62685d70553ce909b0a8af33ee0a91ce08e3ba02"
+    }
+  ]
+}

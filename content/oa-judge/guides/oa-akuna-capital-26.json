@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-26",
+  "packageChecksum": "9c0eb56d1ff06cde66f9d978b7470078875d823ea37ad0f2969b724162afcf69",
+  "sourceContentHash": "9c3142e57088f468bf1672a60f25d411d03882c1c76e501862533c25af9b4082",
+  "editorialSha256": "0197c6c40bde8a6d2565a1d068346ef4ecf183aad6b98b2f57af4306a8f86db0",
+  "hints": {
+    "zh": [
+      "已上传的区间把文件切成若干个未上传的空档，块不能跨过已上传的包，所以各空档互相独立。",
+      "块长必须是 2 的幂且起点不要求对齐，长度为 L 的空档最少需要 popcount(L) 块：按 L 的二进制拆分即可达到，而用 r 个 2 的幂凑出 L 时，合并进位只会减少项数，所以不可能少于 popcount(L)。",
+      "把已上传区间按左端点排序，在末尾加一个哨兵 (total+1,total+1)；用 cursor 表示下一个未覆盖的包（初始为 1），对每个区间计算空档长度 l−cursor 并累加其二进制中 1 的个数，然后 cursor=r+1；total 接近 10^18，用 64 位整数。"
+    ],
+    "en": [
+      "The uploaded ranges cut the file into gaps that still need uploading; a chunk cannot cross an uploaded packet, so the gaps are independent.",
+      "Chunk lengths must be powers of two and starts need no alignment, so a gap of length L needs at least popcount(L) chunks: splitting by L's binary representation reaches it, and when r powers of two add up to L, merging carries only reduces the number of terms, so fewer than popcount(L) is impossible.",
+      "Sort the uploaded ranges by left end and append a sentinel (total+1, total+1); keep cursor as the next uncovered packet (initially 1); for each range add the number of one bits of the gap length l - cursor, then set cursor = r + 1. total is close to 10^18, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the uploaded ranges and find the gaps of packets not yet uploaded between them. A gap of length L can be split into at least popcount(L) power-of-two chunks, and the answer is the sum of popcount over all gaps.\n\n## Correctness\n\nIf the binary representation of L has q ones, cutting the gap into those distinct power-of-two lengths covers it with q chunks. Conversely, if r power-of-two lengths cover L, the r powers sum to L; binary carries only reduce the number of terms, so popcount(L) is at most r. Different uncovered gaps cannot be spanned by one chunk across uploaded packets, so adding the optimal chunk counts of the gaps gives the global minimum. That chunk starts need not be aligned to their power-of-two length is a protocol statement this conclusion relies on.\n\n## Complexity\n\nTime O(m log m), space O(m)."
+}

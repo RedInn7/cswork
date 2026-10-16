@@ -1,0 +1,19 @@
+{
+  "id": "oa-upstart-1",
+  "packageChecksum": "43f983d2d0f30ba40108c78ad2f71fda54608ac6be83758181155d662139152a",
+  "sourceContentHash": "1e715bc92e73e852220c559808bd322926fe3b7d836a0b85970e7b6126cf3cec",
+  "editorialSha256": "faabc51540b913d6345cc75a8f705bec3305790e2f1b4862839b2d336be284e1",
+  "hints": {
+    "zh": [
+      "轴对齐的最小包围矩形，左右边界只能是所有点 x 坐标的最小值和最大值，上下边界只能是 y 坐标的最小值和最大值，再小就会漏掉某个点。",
+      "所以只要一次遍历，同时维护 x 和 y 的最小值与最大值。左下角就是 (minX, minY)，宽是 maxX−minX，高是 maxY−minY。",
+      "把 minX、minY 初始化为极大值，maxX、maxY 初始化为极小值，读入每个点时分别更新。最后输出 minX、minY、maxX−minX、maxY−minY。坐标差可达 2·10⁹，要用 64 位整数；只有一个点时宽高都是 0。"
+    ],
+    "en": [
+      "For the smallest axis-aligned bounding rectangle, the left and right sides must be the minimum and maximum x over all points, and the bottom and top must be the minimum and maximum y; anything tighter would leave a point out.",
+      "So a single pass that maintains the minimum and maximum of both x and y is enough. The bottom-left corner is (minX, minY), the width is maxX - minX and the height is maxY - minY.",
+      "Initialize minX and minY to a very large value and maxX and maxY to a very small one, updating them for every point read. Output minX, minY, maxX - minX and maxY - minY. Coordinate differences reach 2 * 10^9, so use 64-bit integers; with a single point both width and height are 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIn a single pass, maintain the minimum and maximum of x and of y.\n\n## Proof of Correctness\n\nThe left and right edges of the axis-aligned bounding box are the extreme values of all x coordinates, and its bottom and top edges are the extreme values of all y coordinates; the differences between these extremes are the width and the height.\n\n## Complexity\n\nTime O(n), extra space O(n) (to read the input)."
+}

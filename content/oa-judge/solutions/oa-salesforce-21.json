@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-21",
+  "packageChecksum": "fa472df6c9d8f31a537bbd1c1dc291b48abcdc521454feaf75edfa845fc7ce48",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a;\n    long long v;\n    while (cin >> v) a.push_back(llabs(v));\n    sort(a.begin(), a.end());\n    long long answer = 0;\n    size_t left = 0;\n    for (size_t right = 0; right < a.size(); right++) {\n        // a pair (x <= y) qualifies exactly when y <= 2x\n        while (a[right] > 2 * a[left]) left++;\n        answer += right - left;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "7f947eeb8bf4154374b77f0d39551ea5e43a267134d1936df2423bc802c586c5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        nextInt(); // n\n        long[] a = new long[16];\n        int m = 0;\n        while (hasMore()) {\n            if (m == a.length) a = Arrays.copyOf(a, m * 2);\n            a[m++] = Math.abs(nextLong());\n        }\n        a = Arrays.copyOf(a, m);\n        Arrays.sort(a);\n        long answer = 0;\n        int left = 0;\n        for (int right = 0; right < m; right++) {\n            // a pair (x <= y) qualifies exactly when y <= 2x\n            while (a[right] > 2 * a[left]) left++;\n            answer += right - left;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "6e1d595058e2d912fc4b50d6b16769056d9d7d1888ceee3a1f9547ace9e24409"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc hasMore() bool {\n\tskip()\n\treturn pos < len(data)\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tnextInt() // n\n\tvar a []int64\n\tfor hasMore() {\n\t\tv := nextInt()\n\t\tif v < 0 {\n\t\t\tv = -v\n\t\t}\n\t\ta = append(a, v)\n\t}\n\tslices.Sort(a)\n\tvar answer int64\n\tleft := 0\n\tfor right, v := range a {\n\t\t// a pair (x <= y) qualifies exactly when y <= 2x\n\t\tfor v > 2*a[left] {\n\t\t\tleft++\n\t\t}\n\t\tanswer += int64(right - left)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "a6810936c02c9e3928f9f5c54baa1e124c1f885b3ce5378f3673f4f73f59a711"
+    }
+  ]
+}

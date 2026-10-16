@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-16",
+  "packageChecksum": "f0369c3395558ce01f74ea7a4e4158ace014a7d7e4f6b0fb3924b034155d2ada",
+  "sourceContentHash": "12cd52cc18f6280d1307f1b6c323569c86b0343f3df6bd5c69c9ee4654df7708",
+  "editorialSha256": "1d99a72e989fe633fc03e29b25011b78b47f074f885c85ada98231fc7fa07231",
+  "hints": {
+    "zh": [
+      "任一时刻系统里的人恰好是“完成时刻晚于当前时刻”的那些人；完成时刻恰好等于到达时刻的人已经离开。",
+      "按到达顺序模拟，用一个队列保存系统中每个人的完成时刻（它天然递增）；到达时先弹出所有已完成的人，再按“人数大于 10 就拒绝”的规则决定接纳与否。",
+      "对每个到达时刻 a：弹出队首所有 finish ≤ a 的元素；若剩余人数 > 10，输出 null；否则开始时刻 start = max(a, 队尾的完成时刻)（队列为空时就是 a），输出 start，并把 start+30 入队。人数恰为 10 时仍然接纳，所以系统里最多 11 人。"
+    ],
+    "en": [
+      "At any moment the people in the system are exactly those whose finish time is later than now; someone finishing exactly at an arrival time has already left.",
+      "Simulate in arrival order with a queue of finish times of the people in the system (it is naturally increasing); on each arrival first pop everyone who has finished, then admit or reject by the rule \"reject when more than 10 people are present\".",
+      "For each arrival a: pop every queue front with finish <= a; if more than 10 remain, output null; otherwise start = max(a, finish time at the back of the queue) (just a if the queue is empty), output start and push start + 30. With exactly 10 present the person is still admitted, so at most 11 people are ever in the system."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate person by person in non-decreasing arrival order. Keep a queue of the finish times of everyone in the system who has not finished service yet. On an arrival, first remove everyone with `finish<=arrival`, because they have already finished and left at that moment. If more than 10 people remain, the current person leaves immediately and the output is null; otherwise the person is admitted, service starts at the later of the arrival time and the finish time at the back of the queue, and service ends at the start time plus 30.\n\nThe rule in the statement is \"reject when the current number of people is greater than 10\", so a person is still admitted when exactly 10 are present; after admission the system holds at most 11 people. This also matches the sample where 12 people arrive at the same moment: the first 11 are accepted and the 12th is rejected. Simultaneous arrivals are processed in input order.\n\n## Proof of correctness\n\nThe queue of finish times increases in service order. After removing every finish event no later than the current arrival, it contains exactly the people who are still being served or waiting at that moment. Rejection or admission is decided by the stated threshold, so nobody who has already left is counted and nobody over the limit is admitted. An admitted person starts at the arrival time or at the last person's finish time, which is exactly the single-server FCFS rule.\n\n## Complexity\n\nEach person enters and leaves the queue at most once: O(n) time and O(n) extra space.\n\n## Input convention\n\nThis site uses a stdin/stdout format of n followed by n arrival times, and adopts the suggested ranges from the source, `1<=n<=200000` and `0<=arrival[i]<=10^9`, keeping the original requirements that arrivals are non-decreasing and that simultaneous arrivals follow input order."
+}

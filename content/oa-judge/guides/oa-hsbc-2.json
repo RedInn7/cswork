@@ -1,0 +1,19 @@
+{
+  "id": "oa-hsbc-2",
+  "packageChecksum": "cddf85cbec42781ff03a6eb3a047587c561a1739c27d27e094706572a5bfe46d",
+  "sourceContentHash": "4ed59f9473c6cfa2ac20554dcd567f0b986cfc2b844ad6cdfbf699cb1902ddad",
+  "editorialSha256": "5ea3115ed0f152dd3168263f66a4ef1fe7e38f46a8da7b641028fd42a42b083e",
+  "hints": {
+    "zh": [
+      "一次操作把第 row 与第 col 个交换、再向内交换，直到两指针相遇，效果就是把区间 [row, col] 整段翻转。",
+      "区间互不重叠，所以各次翻转互不影响、顺序无关；第 K 个位置至多被一个区间覆盖。N 可达 10⁹，不能真的建数组模拟。",
+      "遍历所有区间，找到满足 l ≤ K ≤ r 的那个区间，翻转后位置 K 上是原来位置 l+r−K 的士兵，答案就是 l+r−K；若没有区间覆盖 K，答案就是 K。读入时注意第二行是操作数和每行的数字个数（固定为 2）。"
+    ],
+    "en": [
+      "One operation swaps positions row and col, then the next pair inward, until the pointers meet; the effect is reversing the whole segment [row, col].",
+      "The segments never overlap, so the reversals are independent and their order does not matter, and position K is covered by at most one segment. N can be 10^9, so you cannot simulate an array.",
+      "Go through all segments and find the one with l ≤ K ≤ r; after reversing, position K holds the soldier from position l+r−K, so the answer is l+r−K. If no segment covers K the answer is K. When reading, note that the second line gives the number of operations and the count of numbers per line (always 2)."
+    ]
+  },
+  "explanationEn": "## Problem\n\nN soldiers stand in a row in ID order 1..N. Operation i first swaps positions row_i and col_i, then positions row_i+1 and col_i−1, and so on inward; the effect is reversing the whole segment [row_i,col_i]. Every position is covered by at most one operation's segment. Find the ID of the soldier at position K after all operations.\n\n## Idea\n\nThe segments do not overlap, so the reversals do not affect each other and their order does not matter. Just find the segment [l,r] covering K: after the reversal, position K holds the soldier originally at position l+r−K, whose ID is l+r−K; if no segment covers K, the answer is K. N can reach 10^9, so the array cannot really be simulated.\n\n## Correctness\n\nSwapping the symmetric pairs (l+m, r−m) until the two pointers meet is exactly a segment reversal, and the new content of position K (l≤K≤r) comes from position l+r−K. Non-overlapping segments guarantee that K belongs to at most one segment, and that the elements in that segment still have their initial IDs before the operation.\n\n## Complexity\n\nO(Q).\n\n## Independent verification\n\nThe oracle really simulates the pairwise swaps of every operation on small N (starting from m=0 and swapping inward as described), then reads position K; it does not use the l+r−K formula. It enumerates every set of non-overlapping segments for N=1..5 and every K, and runs the reference program on each. The wrong solutions cover swapping only the two ends, excluding the endpoints, an off-by-one mapping, and handling only the first operation."
+}

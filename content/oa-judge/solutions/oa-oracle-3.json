@@ -1,0 +1,21 @@
+{
+  "id": "oa-oracle-3",
+  "packageChecksum": "1307053d4c72fa17ed0cf5ce9fb509648c85a0e045dc122514d604cbb11393b8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> a(n);\n    for (auto &v : a) cin >> v;\n    // Key: (number of set bits, value).\n    sort(a.begin(), a.end(), [](int x, int y) {\n        int px = __builtin_popcount(x), py = __builtin_popcount(y);\n        return px != py ? px < py : x < y;\n    });\n    string out;\n    for (int i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(a[i]);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "8870dfa24d86dfbe2128ddbc39f99f8eaefac85275541543bbe8f4d59a6cc970"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        // Pack the key (number of set bits, value) into one long so a plain sort orders by it.\n        long[] keys = new long[n];\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            keys[i] = ((long) Long.bitCount(v) << 32) | v;\n        }\n        Arrays.sort(keys);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(keys[i] & 0xFFFFFFFFL);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "9164900e715887876fd2b63fd979239f3c7327f67a003aeb9eb31303332e444e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math/bits\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\ta := make([]uint, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\t// Key: (number of set bits, value).\n\tsort.Slice(a, func(i, j int) bool {\n\t\tpi, pj := bits.OnesCount(a[i]), bits.OnesCount(a[j])\n\t\tif pi != pj {\n\t\t\treturn pi < pj\n\t\t}\n\t\treturn a[i] < a[j]\n\t})\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i, v := range a {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatUint(uint64(v), 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "b70c5b9ac7a03695338572b15f5a1cfd36fe4a16b8e0cbaff0cbeb42a0ae4dbe"
+    }
+  ]
+}

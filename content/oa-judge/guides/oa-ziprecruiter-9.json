@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-9",
+  "packageChecksum": "6cb6893cf25f83d02d9e7a2e4741e0fb7ed1a9c452aa54cc05314d1846da01a2",
+  "sourceContentHash": "da33953f6ded46670cd251397a8df0fe207f55b15bdd8e2afa9d89feb35a69e7",
+  "editorialSha256": "3f680f346d508e4840ec07a584730a36c5873728c01b9713cc1a2f4995c29c73",
+  "hints": {
+    "zh": [
+      "检查严格按到达顺序排队：每位被接纳客人的完成时间，等于前一位被接纳客人的完成时间与自己到达时间中的较大者再加 300。所以只要知道此刻还没完成检查的客人有哪些，就能得出等待人数和新客人的完成时间。",
+      "用队列按顺序存放尚未完成检查的客人的完成时间。新客人在时刻 t 到达时，先把完成时间 ≤t 的都出队，这样同一时刻完成的检查先结算，正好对应\"先让已等待客人开始检查\"的规则；此时队首是正在检查的人，其余都是等待者。",
+      "对每个到达时间 t：弹出队首所有 ≤t 的完成时间；等待人数 = max(0, 队列长度−1)；若大于 10，记录 t（客人离开）；否则若队列为空，完成时间为 t+300，否则为队尾完成时间+300，将它入队并记录。最后按到达顺序用空格分隔输出所有记录。"
+    ],
+    "en": [
+      "Checks are served strictly in arrival order: an admitted guest's completion time is the larger of the previous admitted guest's completion time and their own arrival time, plus 300. So knowing which guests have not finished yet is enough to get both the waiting count and the new guest's completion time.",
+      "Keep the completion times of guests who have not finished, in order, in a queue. When a guest arrives at time t, first pop every completion time <= t; checks finishing at that same moment are settled first, which matches the rule that waiting guests start before the newcomer. After that, the head of the queue is the guest being checked and the rest are waiting.",
+      "For each arrival time t: pop all head completion times <= t; waiting = max(0, queue length - 1); if it exceeds 10, record t (the guest leaves); otherwise the completion time is t + 300 if the queue is empty, or the tail completion time + 300 if not, so push it and record it. Finally print all records in arrival order, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a queue of future completion times. Before each arrival, remove everyone who has already finished; the head of the queue, if any, is the guest currently being served, and the rest are the waiting guests. If more than 10 are waiting, the guest leaves; otherwise the guest joins the end of the queue.\n\n## Proof of correctness\n\nBy induction over arrivals: after removing finished guests, an empty queue means the checker is idle; otherwise the first element is the guest being served and the rest are waiting. The threshold check is exact; an admitted guest goes after everyone currently being served or waiting, so their completion time is the tail time plus 300. The tie rule is implemented by processing completion events before enqueuing.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source notes\n\nThis site supplied a deterministic standard input/output protocol. In upstream problem 9, the dense-arrival example omitted the completion time of one admitted guest; this site corrected it to 3301 according to the explicit 300-second service and queue rules, and states this truthfully in the source evidence."
+}

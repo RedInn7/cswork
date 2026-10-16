@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-290",
+  "packageChecksum": "847c710c3b3eea1236dcbfb7c2640a3f084ca76558ed21ab199de611cc0d64fa",
+  "sourceContentHash": "d228458d8a4f85914e54d532faf3adb22e5d93c88945d567be90f9fc6262bb13",
+  "editorialSha256": "2863129052ab35ea4220d1828529c1da0e16aab853519da411eaf40ffba14bd0",
+  "hints": {
+    "zh": [
+      "先固定 A 的件数 q。q 件物品能达到的最大总重量就是最重的那 q 件；如果连这个都不能严格超过其余物品，那么任何 q 件的选法都不合法。",
+      "所以让 q 从 1 开始递增，第一次让“最重的 q 件”严格超过剩余重量的 q 就是最少件数；同时这组最重的 q 件正好也是该件数下总重量最大的选法，两个目标一并满足。",
+      "求出总重量，把重量降序排序后依次放进 A，每放一件检查已选重量是否大于“总重量 − 已选重量”，一旦成立就停止；把选出的重量按升序输出。"
+    ],
+    "en": [
+      "Fix the number q of items in A first. The heaviest total that q items can reach is that of the q heaviest items; if even that does not strictly exceed the rest, no choice of q items works.",
+      "So increase q from 1; the first q for which the q heaviest items strictly outweigh the rest is the minimum count, and those same q heaviest items also give the largest total weight for that count, satisfying both goals at once.",
+      "Compute the total weight, sort the weights in descending order and add them to A one by one, checking after each whether the chosen weight exceeds total minus chosen, and stop as soon as it does; print the chosen weights in ascending order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTake weights in descending order until the chosen weight is strictly greater than the unchosen weight; reverse the chosen prefix to output it in ascending order.\n\n## Proof of correctness\n\nFor a fixed count q, the largest possible total weight comes from the q largest items. If this upper bound still does not exceed the remaining weight, no choice of q items is valid; the first time it strictly exceeds, q is minimal, and this prefix also reaches the largest total for that q, satisfying the second objective. Printing in ascending order only changes the presentation.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

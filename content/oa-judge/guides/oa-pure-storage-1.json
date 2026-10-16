@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-1",
+  "packageChecksum": "0ff51fd98b48f8d1e9ecb1ee2cbba83a8395aacf5055f95aeac2212f67110410",
+  "sourceContentHash": "9cac9708b628e54a59554d2e44ce1187984a33b949753c332ee0c90a0659e0e6",
+  "editorialSha256": "381cdb4c9dff5986c751fe3057e06da5bd9cd161ccd229e476a41043dc3211a7",
+  "hints": {
+    "zh": [
+      "一开始手里就有 1 单位资产，它最晚可以在第 0 天按 A[0] 卖掉变现；之后的问题就变成不限次数买卖、同时最多持有 1 单位的经典问题。",
+      "任何一段持有区间的收益都可以拆成相邻两天的差价之和；负的差价不该持有，正的差价都能通过“前一天买、后一天卖”拿到。",
+      "答案 = A[0] + Σ max(0, A[i]−A[i−1])（i 从 1 到 n−1），用 64 位整数累加，最后对 10^9 取模输出。时间 O(n)，额外空间 O(1)。"
+    ],
+    "en": [
+      "You start holding 1 unit, which can be sold on day 0 for A[0]; after that the problem becomes the classic one with unlimited buys and sells while holding at most 1 unit at a time.",
+      "The profit of any holding interval splits into the sum of day-to-day price differences; you should not hold across negative differences, and every positive difference can be captured by buying the day before and selling the day after.",
+      "Answer = A[0] + sum of max(0, A[i] - A[i-1]) for i from 1 to n - 1. Accumulate in a 64-bit integer and print the result modulo 10^9. Time O(n), extra space O(1)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe unit held at the start can be cashed in on the first day at A[0]; after that, add up all positive day-to-day increases, and finally take the result modulo 10^9.\n\n## Correctness\n\nFirst sell the initial unit to get A[0]. After that, every purchase can be made after a price drop and sold during the following rise; split any holding interval into daily differences: you should not hold across negative differences, and every positive difference can be captured by an independent trade. Hence the maximum profit equals A[0] plus all positive adjacent differences, taken modulo at the end.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

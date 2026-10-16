@@ -1,0 +1,19 @@
+{
+  "id": "oa-linkedin-5",
+  "packageChecksum": "e0e4fc506864e832295a5e0f01c1289978fc2bdc21b1b57681392f5b404c1d40",
+  "sourceContentHash": "e3385cac569937a555f60d95be2d7a6e99697036f3651ec2f12236648db0fbb5",
+  "editorialSha256": "05748d139bb54e285bb0667d0a658fffc09c95f90ef1e246175dcabcd77ad21e",
+  "hints": {
+    "zh": [
+      "两核总时间之和是固定的，所以每个核最大化自己的总时间，等价于持锁者最大化“自己减对方”的差值。",
+      "从后往前考虑：设 d 为剩余后缀在持锁者视角下的最优差值。当前项给自己会把锁交出去，差值变为 time − d；给对方并保留锁，差值为 d − time；持锁者取较大者，也就是 |time − d|。",
+      "d 从 0 开始，倒序遍历每个 time 执行 d = |time − d|；得到初始持锁的核 1 的差值 d 后，核 1 的总时间为 (总和 + d)/2，核 2 为 (总和 − d)/2；总和可达 10^14，用 64 位整数。"
+    ],
+    "en": [
+      "The two cores' totals always add up to the same sum, so each core maximizing its own total is the same as the lock holder maximizing (own total − other total).",
+      "Work backward: let d be the best difference for the lock holder over the remaining suffix. Taking the current item hands over the lock and gives time − d; giving it away and keeping the lock gives d − time; the holder picks the larger, which is |time − d|.",
+      "Start with d = 0 and process the times in reverse with d = |time − d|; this d belongs to core 1, the initial lock holder, so core 1 gets (sum + d)/2 and core 2 gets (sum − d)/2; the sum can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWorking backward, compute the current lock holder's optimal payoff difference d relative to the other core with the recurrence d=|time−d|; combine it with the total to recover both cores' payoffs.\n\n## Proof of correctness\n\nIf the current item goes to the holder itself, the lock changes hands and the suffix difference is negated, giving time−d; giving it to the other core and keeping the lock gives d−time. The lock holder picks the larger value, which is exactly the absolute value. The total payoff is fixed, so maximizing one's own payoff is equivalent to maximizing the difference. Backward induction yields the difference for core 1 at the start, and the two payoffs are then solved from the total and the difference.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input; the total is ≤10^14."
+}

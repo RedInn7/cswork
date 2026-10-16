@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-17",
+  "packageChecksum": "a84b694d04404a505c43494656551923d84f76cea7b836223ddd2f31bbfd50d1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    int k;\n    cin >> s >> k;\n    vector<int> ones;\n    for (int i = 0; i < (int)s.size(); i++)\n        if (s[i] == '1') ones.push_back(i);\n    // Each window of k consecutive ones gives the shortest candidate covering them.\n    string best;\n    bool found = false;\n    for (int i = 0; i + k <= (int)ones.size(); i++) {\n        string z = s.substr(ones[i], ones[i + k - 1] - ones[i] + 1);\n        if (!found || z.size() < best.size() || (z.size() == best.size() && z < best)) {\n            best = z;\n            found = true;\n        }\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "d1ff6001fe015eb3088b1a02d3afb5837f58d6714f5b1984c458258b2fb7a90e"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        int k = sc.nextInt();\n        List<Integer> ones = new ArrayList<>();\n        for (int i = 0; i < s.length(); i++)\n            if (s.charAt(i) == '1') ones.add(i);\n        // Each window of k consecutive ones gives the shortest candidate covering them.\n        String best = null;\n        for (int i = 0; i + k <= ones.size(); i++) {\n            String z = s.substring(ones.get(i), ones.get(i + k - 1) + 1);\n            if (best == null || z.length() < best.length() || (z.length() == best.length() && z.compareTo(best) < 0)) best = z;\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "65d418cb571a24aec8527944055ca3f2437bdca798462aedff10733b2c4f4ed2"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s string\n\tvar k int\n\tfmt.Scan(&s, &k)\n\tones := []int{}\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == '1' {\n\t\t\tones = append(ones, i)\n\t\t}\n\t}\n\t// Each window of k consecutive ones gives the shortest candidate covering them.\n\tbest, found := \"\", false\n\tfor i := 0; i+k <= len(ones); i++ {\n\t\tz := s[ones[i] : ones[i+k-1]+1]\n\t\tif !found || len(z) < len(best) || (len(z) == len(best) && z < best) {\n\t\t\tbest, found = z, true\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "eb40210c98931f0b377e5cf3f5391b70891090a6886460a4691585f44440b8b2"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-4",
+  "packageChecksum": "7b90a4cc96891e89a6f5687cee32c537c17fdc97f51cf9a725a62c77711ea62c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    long long days;\n    scanf(\"%d %lld\", &n, &days);\n    vector<long long> bucket(10001, 0);\n    long long total = 0;\n    int top = 0;\n    for (int i = 0; i < n; i++) {\n        int w;\n        scanf(\"%d\", &w);\n        bucket[w]++;\n        total += w;\n        top = max(top, w);\n    }\n    // Always halve a piece from the heaviest non-empty bucket.\n    for (long long t = 0; t < days; t++) {\n        while (top > 1 && bucket[top] == 0) top--;\n        if (top == 1) break;\n        bucket[top]--;\n        int v = (top + 1) / 2;\n        bucket[v]++;\n        total -= top - v;\n    }\n    printf(\"%lld\\n\", total);\n}\n",
+      "sha256": "ba3a7ee0f17636e109cbb62a63173959e7c223bcaeff7317f95ec77ee6c172cf"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long days = nextLong();\n        long[] bucket = new long[10001];\n        long total = 0;\n        int top = 0;\n        for (int i = 0; i < n; i++) {\n            int w = (int) nextLong();\n            bucket[w]++;\n            total += w;\n            top = Math.max(top, w);\n        }\n        // Always halve a piece from the heaviest non-empty bucket.\n        for (long t = 0; t < days; t++) {\n            while (top > 1 && bucket[top] == 0) top--;\n            if (top == 1) break;\n            bucket[top]--;\n            int v = (top + 1) / 2;\n            bucket[v]++;\n            total -= top - v;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "3feceb61547c8c6c4f98c66333b043db6a05f88e4937e5f7cacb5539c3d061bd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int64 {\n\tvar n int64\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int64(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := int(readInt())\n\tdays := readInt()\n\tbucket := make([]int64, 10001)\n\tvar total int64\n\ttop := 0\n\tfor i := 0; i < n; i++ {\n\t\tw := int(readInt())\n\t\tbucket[w]++\n\t\ttotal += int64(w)\n\t\tif w > top {\n\t\t\ttop = w\n\t\t}\n\t}\n\t// Always halve a piece from the heaviest non-empty bucket.\n\tfor t := int64(0); t < days; t++ {\n\t\tfor top > 1 && bucket[top] == 0 {\n\t\t\ttop--\n\t\t}\n\t\tif top == 1 {\n\t\t\tbreak\n\t\t}\n\t\tbucket[top]--\n\t\tv := (top + 1) / 2\n\t\tbucket[v]++\n\t\ttotal -= int64(top - v)\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "354bc14cc4947e0d6e6ffa41f03f4cba99ee9640bb5240f303862e36c32b6044"
+    }
+  ]
+}

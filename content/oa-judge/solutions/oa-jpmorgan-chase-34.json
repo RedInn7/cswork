@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-34",
+  "packageChecksum": "1ec7181490b615fc802ce193c62b52db6a7874b78fb8b5331f020f311e013673",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    string s;\n    cin >> n;\n    if (n) cin >> s;\n    // Each boundary between two runs contributes min(previous run, current run).\n    long long previous = 0, current = 0, answer = 0;\n    char last = 0;\n    for (char c : s) {\n        if (c == last) current++;\n        else {\n            answer += min(previous, current);\n            previous = current;\n            current = 1;\n            last = c;\n        }\n    }\n    cout << answer + min(previous, current) << \"\\n\";\n}\n",
+      "sha256": "425a7f402cce05343ddae406af46e104eafe96e0d1aabdeafbf900e4e365d36d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String[] lines = new String(System.in.readAllBytes()).split(\"\\r?\\n\", -1);\n        String s = Long.parseLong(lines[0].trim()) != 0 ? lines[1] : \"\";\n        // Each boundary between two runs contributes min(previous run, current run).\n        long previous = 0, current = 0, answer = 0;\n        char last = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == last) current++;\n            else {\n                answer += Math.min(previous, current);\n                previous = current;\n                current = 1;\n                last = c;\n            }\n        }\n        System.out.println(answer + Math.min(previous, current));\n    }\n}\n",
+      "sha256": "7c16d6b60cc60a152de8af6831cf8fa42fae50ac3b0c4f8f3c625f70d9d32662"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tlines := strings.Split(string(raw), \"\\n\")\n\ts := \"\"\n\tif strings.TrimSpace(lines[0]) != \"0\" {\n\t\ts = strings.TrimSuffix(lines[1], \"\\r\")\n\t}\n\t// Each boundary between two runs contributes min(previous run, current run).\n\tvar previous, current, answer int64\n\tvar last byte\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == last {\n\t\t\tcurrent++\n\t\t} else {\n\t\t\tanswer += min(previous, current)\n\t\t\tprevious, current, last = current, 1, s[i]\n\t\t}\n\t}\n\tfmt.Println(answer + min(previous, current))\n}\n",
+      "sha256": "aeca9375cf374f6631c49a26e683ebac1baa15cf927ad4454dcedd8059f14451"
+    }
+  ]
+}

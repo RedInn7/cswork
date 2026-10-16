@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-229",
+  "packageChecksum": "d214eb4fe7c4537f8d0559fc2a96432afedc779b545fb473654bae3e30bc9169",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, c, l;\n    cin >> n >> c >> l;\n    long long sum = 0, largest = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        sum += v;\n        largest = max(largest, v);\n    }\n    // Both lower bounds are achievable at once.\n    cout << max((sum + c - 1) / c, (largest + l - 1) / l) << \"\\n\";\n}\n",
+      "sha256": "ec3fc3cac44ddf2c095342c4bb0e66fb2c77f76a172b52100007017c1200edc1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long c = nextLong(), l = nextLong();\n        long sum = 0, largest = 0;\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            sum += v;\n            largest = Math.max(largest, v);\n        }\n        // Both lower bounds are achievable at once.\n        System.out.println(Math.max((sum + c - 1) / c, (largest + l - 1) / l));\n    }\n}\n",
+      "sha256": "620b037865fc8219752d286f4b481222c2e590fdfb8322e8f63091f6ee3e3953"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tc, l := nextInt(), nextInt()\n\tvar sum, largest int64\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tsum += v\n\t\tlargest = max(largest, v)\n\t}\n\t// Both lower bounds are achievable at once.\n\tfmt.Println(max((sum+c-1)/c, (largest+l-1)/l))\n}\n",
+      "sha256": "fadc84a8631e2c6626e0181394700a8f996c772f607cf3c0818564408dceda7f"
+    }
+  ]
+}

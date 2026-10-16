@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-61",
+  "packageChecksum": "57cbaf2495b5e658bdd9de5595410852cd1c889d58947e98430537fcfeb0794c",
+  "sourceContentHash": "7092bb197cd00eae111c2a2ab26689b171a3c92b0100b14ffff771ba0fff4981",
+  "editorialSha256": "b980d710d50905e93ed0b49edb09f5493c48a8e6f7477a79880e323ad30dd9c4",
+  "hints": {
+    "zh": [
+      "删掉一段连续字符后，左边剩一个前缀、右边剩一个后缀，它们各自的压缩结果都不变；唯一的变化是：如果前缀最后一个字母和后缀第一个字母相同，两端的连续段会合并成一段。",
+      "一段长为 v 的连续字母压缩后长度为：v 为 1 时是 1，否则是 v 的十进制位数加 1。预处理每个前缀和每个后缀的压缩长度，以及前缀末尾、后缀开头那一段的长度，就能 O(1) 算出任意删除窗口的结果。",
+      "从左往右求出前 i 个字符的压缩长度和以第 i−1 个字符结尾的段长，从右往左求出从 i 开始的后缀压缩长度和从 i 开始的段长。枚举删除起点 l，令 r=l+K，结果为前缀 l 的长度加后缀 r 的长度；若 l>0、r<N 且两侧相接的字母相同，再减去这两段各自的成本、加上合并后段长的成本。取所有 l 的最小值输出。字符串长达 10^6，用紧凑的整数数组。"
+    ],
+    "en": [
+      "After deleting a block, a prefix remains on the left and a suffix on the right, and each compresses exactly as before; the only change is that when the last letter of the prefix equals the first letter of the suffix, the two boundary runs merge into one.",
+      "A run of v equal letters compresses to length 1 when v is 1 and otherwise to the number of decimal digits of v plus 1. Precompute the compressed length of every prefix and every suffix, plus the length of the run ending the prefix and the run starting the suffix, and each deletion window costs O(1) to evaluate.",
+      "From left to right compute the compressed length of the first i characters and the length of the run ending at character i−1; from right to left compute the compressed length of the suffix starting at i and the length of the run starting at i. For each start l with r=l+K, the result is the prefix length at l plus the suffix length at r; if l>0, r<N and the letters meeting at the boundary are equal, subtract the costs of the two runs and add the cost of the merged run. Print the minimum over all l. The string can be 10^6 long, so use compact integer arrays."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute the compressed length of every prefix and suffix and the lengths of the runs at the boundaries. Enumerate the deletion window: if the characters on the two sides differ, simply add the two lengths; if they are the same, remove the old costs of the two runs and add the cost of the merged run.\n\n## Correctness\n\nA deletion can only change the two runs that meet at the left and right boundaries; all other compressed runs stay exactly the same. Recording the boundary run lengths is enough to compute the merge adjustment exactly. Enumerating all N−K+1 valid start positions and taking the minimum covers every possible operation.\n\n## Complexity\n\nTime is O(N log N) as a character-level upper bound (computing a decimal length of at most 7 digits); under the fixed constraints it is O(N). Space is O(N), in four compact integer arrays."
+}

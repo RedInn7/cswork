@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-127",
+  "packageChecksum": "04803b67ba592a64d9228c39c26fa5339961ce4eea64ffd467795e7eae6d4907",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    long long answer = 0;\n    // Centers 0..2n-2: even ones sit on a character, odd ones between two characters.\n    for (int center = 0; center < 2 * n - 1; center++) {\n        int left = center / 2, right = (center + 1) / 2;\n        while (left >= 0 && right < n && s[left] == s[right]) {\n            answer++;\n            left--;\n            right++;\n        }\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "7589692309026ae6387653c588f2f647c7d8d5eaa89a10161ecbaae8a5adc2bd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int n = s.length();\n        long answer = 0;\n        // Centers 0..2n-2: even ones sit on a character, odd ones between two characters.\n        for (int center = 0; center < 2 * n - 1; center++) {\n            int left = center / 2, right = (center + 1) / 2;\n            while (left >= 0 && right < n && s.charAt(left) == s.charAt(right)) {\n                answer++;\n                left--;\n                right++;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "c5c25d0d9492d4c28f01b6e1e141d720f39fe0a8f4fff1bae34f5fce3e6d67f0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts := readToken()\n\tn := len(s)\n\tanswer := 0\n\t// Centers 0..2n-2: even ones sit on a character, odd ones between two characters.\n\tfor center := 0; center < 2*n-1; center++ {\n\t\tleft, right := center/2, (center+1)/2\n\t\tfor left >= 0 && right < n && s[left] == s[right] {\n\t\t\tanswer++\n\t\t\tleft--\n\t\t\tright++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "b6d643fd07d5f889849fedf3a8b935b32c97e06eb095084ff8c02468580a398d"
+    }
+  ]
+}

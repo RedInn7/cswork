@@ -1,0 +1,19 @@
+{
+  "id": "oa-atlassian-1",
+  "packageChecksum": "40a73b27b08f65415a6fa83d1e275fbdf44587e286f9cb976b21e5d68cf94a16",
+  "sourceContentHash": "4255e79cc879442c4442d2a44a5bb7d78a82654a639023a95e4c6e86bbd0a34d",
+  "editorialSha256": "7e43374342893c0c2019b72b3d5c1da98054082cbfc0b2ce30f251df7f025609",
+  "hints": {
+    "zh": [
+      "不需要真的把压缩串解压出来，只关心每个字母一共出现了多少次。",
+      "准备 26 个计数器。扫描时先读一个字母，再把紧跟其后的连续数字完整地读成一个整数（频次可能有好几位），加到这个字母的计数上。",
+      "扫描结束后按 a 到 z 的顺序，对计数非零的字母输出\"字母+总频次\"，拼接成一个字符串即可。"
+    ],
+    "en": [
+      "There is no need to decompress the string; all that matters is how many times each letter occurs in total.",
+      "Keep 26 counters. While scanning, read one letter, then read the whole run of digits right after it as one integer (a frequency can have several digits) and add it to that letter.",
+      "After the scan, go from a to z and, for every letter with a non-zero count, append the letter followed by its total frequency to the output string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the complete number of each segment and add it to one of 26 counters, then concatenate them in alphabetical order.\n\n## Proof of Correctness\n\nEach original segment is read exactly once and only adds its frequency to the corresponding character, so each accumulated value equals the number of occurrences after decompression; outputting in ascending order produces the prescribed unique canonical representation.\n\n## Complexity\n\nO(|S|) time and O(26) counter space, without expanding large frequencies into strings."
+}

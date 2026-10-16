@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-77",
+  "packageChecksum": "f60a4a88380ade835e42de374a75ea095dd31aadd3360eed4c67ff22cae13276",
+  "sourceContentHash": "bf2c7d8e603f95dc8bee2a9e13ffeb1cb7a7f06cfd440cf17cfcf3a8248f3467",
+  "editorialSha256": "58f81c17a1e9daeebc84ad1e2752e4673930919a7651d75fc493f2bb74bda1e0",
+  "hints": {
+    "zh": [
+      "在还没有赢家时，新出现的三连一定包含刚落下的这颗子，所以每步只需要检查经过新落子的直线。",
+      "经过新落子有四个方向（横、竖、两条斜线）。连胜长度固定为 3，每个方向往两侧各看最多 2 格、统计同一玩家的连续棋子即可。",
+      "用一维数组存棋盘。每次操作依次判断：已有赢家输出 Game Over；格子已占用输出 Invalid Move；否则落子、计数加一，检查四个方向是否有一侧加另一侧再加自身 ≥3，是则 Player x won，否则棋盘满了输出 Draw，不然输出 In Progress。"
+    ],
+    "en": [
+      "While there is no winner yet, any new line of three must contain the stone just placed, so each move only needs to check the lines through that cell.",
+      "There are four directions through the new stone (horizontal, vertical and two diagonals). The winning length is always 3, so in each direction look at most 2 cells to each side and count the same player's consecutive stones.",
+      "Store the board in a flat array. For each move check in order: if a winner exists print Game Over; if the cell is taken print Invalid Move; otherwise place the stone, increase the occupied count, and if some direction has at least 3 in a row (both sides plus the stone) print Player x won, else Draw when the board is full, else In Progress."
+    ]
+  },
+  "explanationEn": "## Idea\n\nStore the board in an array. After a stone is placed, check only the four directions through it, looking at most 2 cells to each side. Check for an existing winner and for an occupied cell first.\n\n## Correctness\n\nSince there was no winner before, any new line of three must include the newly placed cell. The four directions enumerate every line, and at most 2 cells on each side are enough to decide whether a line of length 3 is formed. The order of the status checks matches the rules.\n\n## Complexity\n\nO(n²+m) time and O(n²) space; each win check is O(1)."
+}

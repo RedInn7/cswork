@@ -1,0 +1,19 @@
+{
+  "id": "oa-maven-securities-1",
+  "packageChecksum": "725366508c8ffbbd7613b6361e1e440373191d68e863ca0ab693342255c3eb73",
+  "sourceContentHash": "154adef6dee404bfb1f4c081e24f22d7bdb9cc5eb716c9b2c89aa9001f370262",
+  "editorialSha256": "5abbfe6af7dbb3fda43adb9d36b85118e22282f8db64090c8696916d82391fd3",
+  "hints": {
+    "zh": [
+      "切点只有 n−1 个，左边是一个前缀、右边是对应的后缀，而右边的和等于总和减去左边的和。",
+      "先求出总和，再从左到右累加前缀和，就能在 O(1) 内判断每个切点是否满足“左边之和严格大于右边之和”。",
+      "前缀和依次加上第 1 个到第 n−1 个元素，每加一次就检查前缀和是否大于总和减去前缀和，满足就计数；n=1 时没有切点，答案为 0。元素可能为负，和可达 2·10^14，用 64 位整数。"
+    ],
+    "en": [
+      "There are only n-1 cut points; the left part is a prefix, the right part is the matching suffix, and the right sum equals the total minus the left sum.",
+      "Compute the total once and accumulate the prefix sum from left to right; then each cut point's condition, left sum strictly greater than right sum, is checked in O(1).",
+      "Add the 1st through (n-1)-th elements to the prefix sum one at a time, and after each addition count the cut if the prefix sum exceeds the total minus the prefix sum; for n = 1 there is no cut and the answer is 0. Elements may be negative and sums reach 2 * 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the prefix sum and compare it with the total minus the prefix sum.\n\n## Proof of correctness\n\nFor each valid cut point i, the left sum is exactly the prefix sum of the first i items and the right sum is exactly total-left; checking all n-1 cut points one by one, the count is the answer.\n\n## Complexity\n\nTime O(n), space O(1).\n\n## Source notes\n\nInteger sums use arbitrary precision; the standard input/output protocol and the upper bound on n are explicitly supplied by this site.\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided this protocol."
+}

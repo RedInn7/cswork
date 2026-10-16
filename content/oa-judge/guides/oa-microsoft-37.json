@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-37",
+  "packageChecksum": "c4babe414083425f96f79f2a35a9395421af0b931259620903c2d3aa2875afbc",
+  "sourceContentHash": "2d3ae601493ca014d1cc7b32fdeb995ab48d39e54d2ba6648f7efc6419924692",
+  "editorialSha256": "837fbd42e830155146fbc7e01186db1819d31aa14a2e223ab84053cae851d593",
+  "hints": {
+    "zh": [
+      "不同距离之间的先后顺序是规则规定死的，唯一能选择的只有同一距离内部的顺序。",
+      "同一距离内应该先送需求小的订单：这样完成的数量不会更少；一旦当前最便宜的订单都送不起，这一组剩下的和更远的订单就都不能再服务了。",
+      "把订单按（距离，需求）升序排序，依次检查：需求不超过剩余库存就扣掉并计数加一，否则立即停止，输出计数。库存可达 10¹⁰，用 64 位整数。"
+    ],
+    "en": [
+      "The order between different distances is fixed by the rules; the only freedom is the order within one distance.",
+      "Within one distance, serve the smaller demands first, which never lowers the number completed. As soon as the cheapest remaining order cannot be paid for, nothing else in that group or any farther group can be served.",
+      "Sort the orders by (distance, demand) ascending and go through them: if the demand fits in the remaining stock, subtract it and add one to the count, otherwise stop at once; print the count. Stock can reach 10¹⁰, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by distance ascending, and by demand ascending within the same distance; deduct stock order by order and stop at the first shortfall.\n\n## Proof of correctness\n\nThe order across different distances is fixed by the rules. Within the same distance, swapping so that a smaller demand is delivered first never lowers the number completed; if delivering all of them is feasible, the order within the group does not affect the remaining stock. When even the cheapest cannot be paid for, neither this group nor any farther group can be served, so stopping is optimal.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

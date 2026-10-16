@@ -1,0 +1,21 @@
+{
+  "id": "oa-sig-2",
+  "packageChecksum": "5af05615d9748f73beba7602f0707c70eca99b244caf4d008e82f764dfe8de9f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int v = 0, c;\n    while ((c = getchar()) != EOF) {\n        if (c == 'U') v++;\n        else if (c == 'D') v--;\n    }\n    puts(v > 0 ? \"U\" : v < 0 ? \"D\" : \"\");\n}\n",
+      "sha256": "14f78cf7c969619593123e318a678a47fea87cb680aa2a8061736f66a9230f54"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] b = System.in.readAllBytes();\n        int v = 0;\n        for (byte c : b) {\n            if (c == 'U') v++;\n            else if (c == 'D') v--;\n        }\n        System.out.println(v > 0 ? \"U\" : v < 0 ? \"D\" : \"\");\n    }\n}\n",
+      "sha256": "4102e294e8e4c89ff8aa6574abc120e7321b226ccd777ebbd6d9cec5fcbaf30e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tb, _ := io.ReadAll(os.Stdin)\n\tv := 0\n\tfor _, c := range b {\n\t\tif c == 'U' {\n\t\t\tv++\n\t\t} else if c == 'D' {\n\t\t\tv--\n\t\t}\n\t}\n\tswitch {\n\tcase v > 0:\n\t\tfmt.Println(\"U\")\n\tcase v < 0:\n\t\tfmt.Println(\"D\")\n\tdefault:\n\t\tfmt.Println(\"\")\n\t}\n}\n",
+      "sha256": "cfb9e21e39e40aa802d3e7ba954daa4046fb2e23f4f54d99e067f832b2150490"
+    }
+  ]
+}

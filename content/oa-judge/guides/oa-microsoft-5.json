@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-5",
+  "packageChecksum": "8f9e92e70bb12654d102907ca857555be182371deeab80df1e1cb1ae380263c0",
+  "sourceContentHash": "231172e68734532427c043fe80c94e26b569f39575e793bde099f1b4bd3af606",
+  "editorialSha256": "dceb199f9acea5800cb1bc7d8cfe14a8eac88e44405249bf5506d4ea5310eb9d",
+  "hints": {
+    "zh": [
+      "先假设所有任务都交给第二人，总奖励就是第二人奖励之和；把某个任务改给第一人，总和的变化量正好是两人在这个任务上的奖励差。",
+      "于是问题变成：在 n 个差值“第一人奖励减第二人奖励”中恰好选 k 个，使它们的和最大。即使差值为负，也必须选够 k 个。",
+      "算出所有差值并降序排序，答案是第二人奖励总和加上前 k 个差值之和；k=0 时就是第二人的总和。"
+    ],
+    "en": [
+      "Start by giving every task to the second person; the total is the sum of the second person's rewards. Moving one task to the first person changes the total by exactly the difference of the two rewards for that task.",
+      "So the task is to pick exactly k of the n differences (first reward minus second reward) with the largest sum. Even negative differences must be taken if fewer than k are positive.",
+      "Compute all differences, sort them in descending order, and answer the second person's total plus the sum of the first k differences; with k=0 it is just the second person's total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst give all tasks to the second person, then choose the k tasks where the first person's gain over the second person is largest.\n\n## Proof of correctness\n\nAny assignment equals the total of the second person doing everything plus k gain differences. If a smaller difference was chosen while a larger one was left out, swapping them never makes the result worse, so choosing the k largest is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

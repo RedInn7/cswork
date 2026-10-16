@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-25",
+  "packageChecksum": "6a1028ad601d0f6a70401da1a38a61fe33092b08d2c1d32bb5d139f2da0d8737",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic int minutes(const string &s) {\n    size_t colon = s.find(':');\n    return stoi(s.substr(0, colon)) * 60 + stoi(s.substr(colon + 1));\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<string> times(n);\n    for (auto &t : times) cin >> t;\n    string nowText;\n    cin >> nowText;\n    int now = minutes(nowText), latest = -1;\n    for (auto &t : times) {\n        int m = minutes(t);\n        if (m < now) latest = max(latest, m);\n    }\n    cout << (latest >= 0 ? now - latest : -1) << \"\\n\";\n}\n",
+      "sha256": "8f6c5baca99e79b73fa4500474d082fec15b40b05a20976054b8e3b3114d000d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    static int minutes(String s) {\n        int colon = s.indexOf(':');\n        return Integer.parseInt(s.substring(0, colon)) * 60 + Integer.parseInt(s.substring(colon + 1));\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        int[] times = new int[n];\n        for (int i = 0; i < n; i++) times[i] = minutes(next());\n        int now = minutes(next()), latest = -1;\n        for (int t : times)\n            if (t < now) latest = Math.max(latest, t);\n        System.out.println(latest >= 0 ? now - latest : -1);\n    }\n}\n",
+      "sha256": "e87bd8107515083a253cee153292e81fc3ebd964c31d06b4956ab84e57b596e9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc minutes(s string) int {\n\th, m, _ := strings.Cut(s, \":\")\n\thh, _ := strconv.Atoi(h)\n\tmm, _ := strconv.Atoi(m)\n\treturn hh*60 + mm\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ttimes := make([]int, n)\n\tfor i := range times {\n\t\ttimes[i] = minutes(next())\n\t}\n\tnow, latest := minutes(next()), -1\n\tfor _, t := range times {\n\t\tif t < now {\n\t\t\tlatest = max(latest, t)\n\t\t}\n\t}\n\tif latest >= 0 {\n\t\tfmt.Println(now - latest)\n\t} else {\n\t\tfmt.Println(-1)\n\t}\n}\n",
+      "sha256": "b89e9bb7114d1d3e6719fbcbdfea4b7040d7a648df76f2155e6289e9738e9004"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-14",
+  "packageChecksum": "7aacf994ee11dc60a8c6aa770606240adfd9bee943b3d978ff44d50bf896d99c",
+  "sourceContentHash": "e48395a9c525367eaabe0e60fa410d0293ad569a6a38fbfbe110ea58902b2f3d",
+  "editorialSha256": "d18962f3a664810cb36db69968477c20c5cbb8a9c6d4a11b656fa4370aaee5d5",
+  "hints": {
+    "zh": [
+      "每一跳的欧氏距离必须恰好为 X，也就是整数位移 (dr,dc) 满足 dr²+dc²=X²；这样的位移只有很少几种，可以预先全部枚举出来。",
+      "把每个格子看作图的节点、每种合法位移看作一条无权边，问题就变成无权图上的最短路，从起点做 BFS，第一次到达终点时的层数就是最少跳数。",
+      "枚举 dr=0..X，若 X²−dr² 是完全平方数 dc²，就加入 (±dr,±dc) 四种组合并去重；起点等于终点时答案为 0；否则 BFS：从队首格子尝试每个位移，跳出棋盘的忽略，未访问的格子记录距离并入队，遇到终点立即输出距离；BFS 结束仍未到达则输出 -1。"
+    ],
+    "en": [
+      "Every jump must have Euclidean length exactly X, meaning an integer displacement (dr, dc) with dr^2 + dc^2 = X^2; there are only a few such displacements, so all of them can be enumerated up front.",
+      "Treat each cell as a node and each valid displacement as an unweighted edge; the problem becomes a shortest path in an unweighted graph, so a BFS from the start reaches the target for the first time at the minimum number of jumps.",
+      "Enumerate dr = 0..X, and when X^2 - dr^2 is a perfect square dc^2, add the four combinations (+-dr, +-dc) without duplicates; if the start equals the target the answer is 0; otherwise run BFS: from the cell at the front of the queue try every displacement, ignore jumps that leave the board, record the distance of unvisited cells and enqueue them, and print the distance as soon as the target is reached; print -1 if the BFS ends without reaching it."
+    ]
+  },
+  "explanationEn": "## Approach and example correction\n\nA legal jump corresponds to an integer displacement `(dr,dc)` with `dr²+dc²=X²`. Treat the board cells as nodes and these displacements as unweighted edges, and run BFS from the start; the first time the target is reached gives the minimum number of steps, and if it is still not reached after the traversal, return -1.\n\nThe jump rule of the pinned source explicitly requires the distance to be exactly X. The original example gives the target as `(6,2)`, whose distance from `(1,2)` is 5, so by the rules it is reachable in one step; but the source explanation explicitly writes the route `(1,2)→(6,2)→(2,5)` and says it needs 2 steps, so the final target in the explanation is `(2,5)`, and the example input mistakenly filled in the intermediate point as the target. After changing `u,v` from `6,2` to `2,5`, both steps in the explanation have length 5, and the distance between start and target is √10, so it cannot be reached in one step. Only the example coordinates are corrected; the statement and the answer are unchanged.\n\n## Correctness\n\nThe algorithm only adds edges that satisfy the sum-of-squares equation and stay on the board, so every path in the graph is a legal jump path. Conversely, every legal jump corresponds to one of the enumerated integer displacements, so every route of the original problem is in the graph. The distance at which BFS on an unweighted graph first visits the target is the minimum number of edges; not visiting it means it is unreachable.\n\n## Complexity\n\nLet V=mn and let D be the number of integer displacements. Precomputing by scanning the differences of squares takes O(X), BFS takes O(VD) time, and space is O(V+D). The source constraints m,n,X≤1000 are used."
+}

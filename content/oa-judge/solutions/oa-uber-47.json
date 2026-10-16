@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-47",
+  "packageChecksum": "17da35e82ddc2d2d7f7be760c00d9c3c4c77f327ca2fcc1d01ef8a450c1d1ea2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<int> diff(n + 2, 0);\n    for (int i = 0; i < n; i++) {\n        int l, r;\n        scanf(\"%d %d\", &l, &r);\n        diff[l]++;\n        diff[r + 1]--;\n    }\n    // A group of k works iff at least k intervals cover k-1 \"others\".\n    int cnt = 0, ans = 0;\n    for (int others = 0; others < n; others++) {\n        cnt += diff[others];\n        if (cnt >= others + 1) ans = others + 1;\n    }\n    printf(\"%d\\n\", ans);\n}\n",
+      "sha256": "a13ed04a696a0f4d0a33f9067889a55fc5d4dd81d224b605c7d66e67466f1e12"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] diff = new int[n + 2];\n        for (int i = 0; i < n; i++) {\n            int l = nextInt(), r = nextInt();\n            diff[l]++;\n            diff[r + 1]--;\n        }\n        // A group of k works iff at least k intervals cover k-1 \"others\".\n        int cnt = 0, ans = 0;\n        for (int others = 0; others < n; others++) {\n            cnt += diff[others];\n            if (cnt >= others + 1) ans = others + 1;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "5d1f9fb17f230293886f20e95de48f6e3e47f1474112796455f8f033a1c3b973"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\tdiff := make([]int, n+2)\n\tfor i := 0; i < n; i++ {\n\t\tl, r := readInt(), readInt()\n\t\tdiff[l]++\n\t\tdiff[r+1]--\n\t}\n\t// A group of k works iff at least k intervals cover k-1 \"others\".\n\tcnt, ans := 0, 0\n\tfor others := 0; others < n; others++ {\n\t\tcnt += diff[others]\n\t\tif cnt >= others+1 {\n\t\t\tans = others + 1\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "05b547abe77180b191edd3ac35b26d95e134deaab856baf06a9f6c307cf1cc89"
+    }
+  ]
+}

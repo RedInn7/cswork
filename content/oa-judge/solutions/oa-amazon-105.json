@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-105",
+  "packageChecksum": "ec004aa4f7c495f9dc13d38b663d7c17f050502b0020980b5129203b584201da",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    sort(a.begin(), a.end());\n    // The k-1 largest packets get their own channels; the rest share one channel.\n    int remaining = n - k + 1, j = remaining / 2;\n    long long middle = remaining % 2 ? 2 * a[j] : a[j - 1] + a[j];  // twice the median\n    long long total = 0;\n    for (int i = remaining; i < n; i++) total += a[i];\n    cout << total + (middle + 1) / 2 << \"\\n\";\n}\n",
+      "sha256": "20d15e1f0f280b3ad9b5a22eef70d65d4bbbb90d378109deeefb4558205888ec"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), k = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // The k-1 largest packets get their own channels; the rest share one channel.\n        int remaining = n - k + 1, j = remaining / 2;\n        long middle = remaining % 2 == 1 ? 2 * a[j] : a[j - 1] + a[j]; // twice the median\n        long total = 0;\n        for (int i = remaining; i < n; i++) total += a[i];\n        System.out.println(total + (middle + 1) / 2);\n    }\n}\n",
+      "sha256": "10abba9cefb64159d953f4cd0ab165b83bd107dea9532e2fd653320d662d9d01"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, k := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// The k-1 largest packets get their own channels; the rest share one channel.\n\tremaining := n - k + 1\n\tj := remaining / 2\n\tmiddle := 2 * a[j] // twice the median\n\tif remaining%2 == 0 {\n\t\tmiddle = a[j-1] + a[j]\n\t}\n\ttotal := int64(0)\n\tfor i := remaining; i < n; i++ {\n\t\ttotal += a[i]\n\t}\n\tfmt.Println(total + (middle+1)/2)\n}\n",
+      "sha256": "545aea7a2d34ba1a2f5920653ef98419cbc041e3050ab27c9e2967de2a8cab80"
+    }
+  ]
+}

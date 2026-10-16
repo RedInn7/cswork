@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-31",
+  "packageChecksum": "27da768570b806df807e183a5ac9c8643ce9bce1e1451fc6868a03da514437cc",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n; long long target;\n    if (scanf(\"%d %lld\", &n, &target) != 2) return 0;\n    unordered_set<long long> s;\n    s.reserve(2 * n);\n    for (int i = 0; i < n; i++) { long long x; scanf(\"%lld\", &x); s.insert(x); }\n    // target > 0, so each pair is counted once from its smaller value.\n    long long count = 0;\n    for (long long x : s) count += s.count(x + target);\n    printf(\"%lld\\n\", count);\n}\n",
+      "sha256": "acb87b3b78e18f0e7ca64d098ad60aa2068ff9214c3fbf8461a703cdd1a1321d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        st.nextToken(); long target = (long) st.nval;\n        HashSet<Long> s = new HashSet<>(2 * n);\n        for (int i = 0; i < n; i++) { st.nextToken(); s.add((long) st.nval); }\n        // target > 0, so each pair is counted once from its smaller value.\n        long count = 0;\n        for (long x : s) if (s.contains(x + target)) count++;\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "ed0eb38fe69ad20811f3530bfecd98b3929e557be6230057d92853ba24b43785"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n int\n\tvar target int64\n\tfmt.Fscan(in, &n, &target)\n\ts := make(map[int64]struct{}, n)\n\tfor i := 0; i < n; i++ {\n\t\tvar x int64\n\t\tfmt.Fscan(in, &x)\n\t\ts[x] = struct{}{}\n\t}\n\t// target > 0, so each pair is counted once from its smaller value.\n\tcount := 0\n\tfor x := range s {\n\t\tif _, ok := s[x+target]; ok {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "a90022ccde28e97e78172031dc32c744ec5cecd0aafcf6c75f7cf1a4c564f53c"
+    }
+  ]
+}

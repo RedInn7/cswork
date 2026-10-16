@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-262",
+  "packageChecksum": "144ffe0d7210effcad6e216750c68e6e36e7b3a132c34f2905990e98fc4c10fb",
+  "sourceContentHash": "b6cc946c5d520a6937b61afc9c6b6d13781d6b6f1aa629726b820f60cf43a268",
+  "editorialSha256": "7b88cbb23730800a0b43ea1ce104f1cfffec6a1b2f8aa734d79ce27062de8048",
+  "hints": {
+    "zh": [
+      "末元素能升到多高受两点限制：从 1 出发每一步最多升 1，而且每个值只能减小、不能增大。顺序可以任意重排，所以先想清楚应该怎样排列。",
+      "把数组升序排列后从左往右处理，维护当前位置能取到的最大值：它不能超过自己的原值，也不能比前一个位置大 1 以上。按这个贪心一路推进，最后位置的值就是答案。",
+      "排序；令当前值为 0；对每个值 v，把当前值更新为 v 与“当前值加 1”中的较小者；遍历结束输出当前值。由于 v≥1，首元素自然变成 1；单元素数组的答案是 1。"
+    ],
+    "en": [
+      "How high the last element can go is limited in two ways: starting from 1 it can rise by at most 1 per step, and each value can only be decreased, never increased. Since the order is free, first decide how the values should be arranged.",
+      "Sort the array in ascending order and process it from left to right, keeping the largest value the current position can take: it cannot exceed its own original value, and it cannot be more than 1 above the previous position. Pushing this greedy through gives the answer at the last position.",
+      "Sort; set the current value to 0; for each value v, set the current value to the smaller of v and the current value plus 1; after the loop, print the current value. Since v ≥ 1, the first element automatically becomes 1, and a single-element array gives 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, start from current=0 and update current=min(v,current+1) for each value v; the final current is the answer.\n\n## Proof of correctness\n\nA first element of 1 with each step rising by at most 1 gives a final value h≤n. For the sorted value a[i], for the final value to reach h>a[i], working backwards the last h−a[i] items must all be greater than a[i], but the original array has at most n−1−i items greater than a[i], so h≤a[i]+n−1−i. Unrolling the greedy recurrence shows the final value is exactly the minimum of n and all of these upper bounds; the construction never exceeds any original value, starts at 1, and has differences ≤1, so reaching this common upper bound makes it optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

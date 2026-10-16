@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-14",
+  "packageChecksum": "634585ae6bb2aa6b54d702b8104e3e8e48669c362c694db03c09931325aaa0f5",
+  "sourceContentHash": "b2e01c76e6bc89ca3c006327585cbe7197a65fe6bf60c9f904eaa63bfd97d3f0",
+  "editorialSha256": "3fcdde75a0d19d8afc473e1f1bd3a2cf26b9eb4334e4aaa5487e1902e2acea38",
+  "hints": {
+    "zh": [
+      "把高度排序后，最优的一对一定是排序后某个连续区间的两端：若一个高度区间里存在下标相距至少 gap 的两个位置，它的高度跨度就是一个可行差值的上界。问题变成找满足条件的最窄高度区间。",
+      "按高度排序后用双指针维护窗口，同时用两个单调队列维护窗口内原下标的最小值和最大值。只要最大下标减最小下标达到 gap，窗口就可行，记录跨度后收缩左端。",
+      "把 (高度, 原下标) 按高度排序；右指针每加入一个元素，就分别从两个单调队列尾部弹出不再可能成为最小或最大下标的元素后入队；当两队首下标之差不小于 gap 时，用右端高度减左端高度更新答案，若队首正是左端就弹出，然后左端右移；全部处理完后输出最小值。"
+    ],
+    "en": [
+      "After sorting by height, the optimal pair is always the two ends of some contiguous range in sorted order: if a height range contains two positions whose indices differ by at least gap, its height span bounds a feasible difference. The task becomes finding the narrowest such height range.",
+      "Sort by height and run two pointers over the sorted list, using two monotonic deques to track the smallest and largest original index in the window. Whenever the largest index minus the smallest index reaches gap, the window is feasible: record its span and shrink it from the left.",
+      "Sort the pairs (height, original index) by height. For each new right element, pop from the back of each deque the entries that can no longer be the smallest or largest index, then push it. While the indices at the two deque fronts differ by at least gap, update the answer with the right height minus the left height, pop any front that equals the left position, and move left forward. Print the minimum at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by height, and inside the two-pointer window use two monotonic deques to maintain the minimum and maximum original index. When the difference of the two indices reaches gap, record the height span and shrink the left boundary.\n\n## Correctness\n\nA height range contains a valid pair of positions if and only if its largest and smallest original indices differ by at least gap. The span of a sorted window is an upper bound on every height difference inside it; the height range of any optimal pair is either checked by the two pointers or replaced by a narrower feasible window, so the minimum width of a feasible window is the optimal difference.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

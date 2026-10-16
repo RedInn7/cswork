@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-17",
+  "packageChecksum": "ca409a69e03aa61afa37d028ba98c70e980c88d27a6cafe18392d53b2dd027d2",
+  "sourceContentHash": "1d33f458c6923a094ecac317726b9fb98cd6dfcfe159f7b009402a3c02880063",
+  "editorialSha256": "201a86b8feff2f32afaf6120608f5e59d71cfb75e290cd1c300527fdbaa3af2a",
+  "hints": {
+    "zh": [
+      "相邻交换是可逆的：窗口交换一次能变成 key，等价于 key 交换一次能变成这个窗口。",
+      "所以先把 key 本身和 key 所有一次相邻交换后的结果放进一个集合，然后看 text 的每个等长窗口是否在集合中；用集合去重，同一个起点只算一次。",
+      "集合里放 key，以及对每个 i 交换 key 的第 i、i+1 个字符得到的字符串。枚举 text 中每个长度为 |key| 的窗口，在集合中就计数加一，最后输出计数。长度都不超过 50，直接截取子串即可。"
+    ],
+    "en": [
+      "An adjacent swap is reversible: a window can become key with one swap exactly when key can become that window with one swap.",
+      "So put key itself and every result of one adjacent swap of key into a set, then check whether each equal-length window of text is in the set; the set removes duplicates, so each start position counts once.",
+      "Fill the set with key and, for every i, the string obtained by swapping characters i and i+1 of key. Enumerate every window of text of length |key| and add one when it is in the set, then print the count. Lengths are at most 50, so plain substrings are fine."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGenerate key itself and all distinct strings obtained from one adjacent swap, then enumerate the equal-length windows of text and look each one up in the set.\n\n## Proof of correctness\n\nAn adjacent swap is reversible, so a window can become key with one swap exactly when it belongs to key's one-swap set. The set avoids counting the same start twice through duplicate swaps, and enumerating the windows covers every start.\n\n## Complexity\n\nTime O(|key|²+|text|·|key|), space O(|key|²)."
+}

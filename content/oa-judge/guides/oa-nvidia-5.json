@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-5",
+  "packageChecksum": "713e537b26c5132bdeed8dd02cc0eb0e104aa62d8066b0927512fc1399de0aab",
+  "sourceContentHash": "09d5152f1d46a5d9df92e94a2b0ce7942f7a25dcb094e7dc96a9fff3be5c0f76",
+  "editorialSha256": "48e06097ce269e2597dfcf9b31e87e5328fb80630260eb72f552433369f07761",
+  "hints": {
+    "zh": [
+      "结果必须严格小于原串，而改一个字符想变小，只能把它改成更小的字母；要字典序最小，就希望改动越靠前越好、改成的字母越小越好。",
+      "在前半部分找第一个不是 a 的字符改成 a，就能得到最小结果，而且它的对称位置没变，结果自然不是回文。如果前半全是 a，后半由对称性也全是 a，只剩中心字符可以变小，但改中心后仍是回文。",
+      "扫描下标 0 到 len/2-1，遇到第一个不等于 a 的字符就把它改成 a 并输出整个字符串；扫完都没有就输出 IMPOSSIBLE。长度为 1 的串直接无解。注意不能套用把末位改成 b 的常见做法，因为本题要求结果变小。"
+    ],
+    "en": [
+      "The result must be strictly smaller than the original, and changing one character makes the string smaller only if that character becomes a smaller letter. For the lexicographically smallest result, the change should be as early as possible and the new letter as small as possible.",
+      "Changing the first non-'a' character in the first half to 'a' gives the smallest result, and since its mirror position is unchanged, the result is no longer a palindrome. If the first half is all 'a', the second half is too by symmetry, and only the center could be lowered, but changing the center keeps a palindrome.",
+      "Scan indices 0 to len/2-1; at the first character that is not 'a', change it to 'a' and print the whole string. If none exists, print IMPOSSIBLE; a string of length 1 is always impossible. Do not use the common variant that changes the last character to 'b', because here the result must get smaller."
+    ]
+  },
+  "explanationEn": "## Approach\n\nChange the first non-'a' character of the first half to 'a'; if there is none, it is impossible. The common variant that changes the last character to 'b' cannot be used, because this problem explicitly requires the string to become smaller.\n\n## Correctness\n\nThe earliest position that can be lowered gives the lexicographically best change, and changing it to 'a' creates an asymmetry. If the first half is all 'a', the symmetric second half is all 'a' too, so only the center, which may be larger, can be lowered; but changing the center still leaves a palindrome, so there is no solution.\n\n## Complexity\n\nTime O(N), output space O(N)."
+}

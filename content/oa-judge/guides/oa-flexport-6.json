@@ -1,0 +1,19 @@
+{
+  "id": "oa-flexport-6",
+  "packageChecksum": "4c2f0fbb96a7a778de516ff5366bc7df52f1d335a1156314e89411e1454306eb",
+  "sourceContentHash": "ab588621a787de8141075eca692b260a06aee59e05d2bacd7eab834ebb236bbd",
+  "editorialSha256": "5cc32e175c2d805f33b24e014cd3a1cbeb4e3771c78977c33188e033995a1013",
+  "hints": {
+    "zh": [
+      "n 和 m 都不超过 1000，所以可以直接枚举删除哪个节点（包括健康节点），每种情况各做一次图遍历来统计最终感染数。",
+      "删掉一个节点后，最终感染的集合恰好是“剩余的初始感染点在剩余图中能到达的所有节点”。把被删节点标记为已访问，就等于把它和它的边一起去掉。",
+      "对每个 removed：新建访问标记，标记 removed，再把除它之外的初始感染点全部入队，做多源 BFS 统计访问到的节点数（被删节点不计入）。只在数量严格更小时更新答案，这样并列时自然保留最小编号；最后输出 1-based 编号。"
+    ],
+    "en": [
+      "n and m are both at most 1000, so you can simply try deleting every node (healthy ones included) and run one graph traversal per choice to count the final infections.",
+      "After deleting a node, the final infected set is exactly the set of nodes reachable from the remaining initially infected nodes in the remaining graph. Marking the deleted node as visited is the same as removing it together with its edges.",
+      "For each removed node: create fresh visited flags, mark removed, enqueue every initially infected node except it, and run a multi-source BFS counting the visited nodes (the deleted node is not counted). Update the answer only when the count is strictly smaller, so ties keep the smallest index automatically; print the 1-based index."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate every node that could be deleted. After blocking that node, run a multi-source DFS/BFS from the remaining initially infected nodes and count the reachable nodes; take the deletion with the fewest infections, and on ties the smallest index. Healthy nodes are candidates too.\n\n## Proof of correctness\n\nAfter a node is deleted, the final infected set is exactly the set reachable from the undeleted infection sources in the remaining undirected graph. The graph traversal visits exactly that set. The algorithm enumerates all nodes, so it covers every valid deletion, and comparing by infection count and then by index makes the chosen deletion satisfy the objective and the tie rule of the problem.\n\n## Complexity\n\nO(n(n+m)) time and O(n+m) extra space.\n\n## Reference implementation\n\n```python\nfrom collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in range(n):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n```"
+}

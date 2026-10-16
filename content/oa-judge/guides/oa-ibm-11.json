@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-11",
+  "packageChecksum": "ab0772de801c00b5a27215691e2633a67c5ea28d7e2bb7d1c4f4333f20c7d788",
+  "sourceContentHash": "911bb8226590508b9e2aab99fd362ee781bda48353cfb5e7ac5a302fc1798c84",
+  "editorialSha256": "267c45e077a7dd64f5db507cbb50a779089386bca0fc170a7d3977038d5673c2",
+  "hints": {
+    "zh": [
+      "查询给的是精确的时间和键，并且保证存在，不需要找最近时间，所以 (时间, 键) 这个二元组就能唯一确定一条缓存记录。",
+      "用哈希表以 (时间, 键) 为索引保存对应的值，查询时直接查表。",
+      "值要按原字符串保存（可能有前导 0），不要转成整数。时间也直接当字符串用即可。把每个查询的结果按顺序用空格连接输出；输入较大，注意使用快速读入。"
+    ],
+    "en": [
+      "A query gives an exact time and key and is guaranteed to exist, with no need to find the nearest time, so the pair (time, key) identifies one cache record.",
+      "Store each value in a hash map keyed by (time, key) and answer each query with a direct lookup.",
+      "Keep values as their original strings (they may have leading zeros) rather than integers, and use the time strings as they are. Print the results in query order separated by spaces; the input is large, so read it quickly."
+    ]
+  },
+  "explanationEn": "## Idea\n\nBuild a hash map keyed by the pair (time, key), and answer each query with a direct lookup.\n\n## Proof of correctness\n\nA given pair identifies a cache record uniquely; the hash map stores the original string for every valid pair, and the guarantee that every query exists makes each lookup return exactly the requested data.\n\n## Complexity\n\nExpected O(number of input characters) time, O(n) space."
+}

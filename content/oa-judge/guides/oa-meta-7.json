@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-7",
+  "packageChecksum": "68c5ee077f626a95d479a890b9f1358548db02b4b87a1f3ce9197c6c4cd71fa7",
+  "sourceContentHash": "eed5b1ca47c08d2601782c6525c3e5c610990137280b567eb9c61f83aef2dbe0",
+  "editorialSha256": "fda78ef6b6dbab1168b632952d6d1da45bf4d3a144815d9f1668728ed8c31da6",
+  "hints": {
+    "zh": [
+      "非元音字符完全不动，只有元音之间按出现顺序做一次循环右移，元音所在的位置集合也不变。",
+      "先按顺序取出所有元音组成一个序列，把它整体右旋一位（最后一个放到最前面），再按顺序填回原来的元音位置。",
+      "记录所有元音的下标；若没有元音就原样输出。否则从后往前让第 i 个元音位置取第 i−1 个元音的字符，第一个元音位置取原来最后一个元音的字符。注意整行读入、保留空格，只去掉行尾换行。"
+    ],
+    "en": [
+      "Non-vowel characters never move; only the vowels shift one step to the right in order of appearance, and the set of vowel positions stays the same.",
+      "Collect the vowels in order, rotate that sequence right by one (the last vowel goes to the front), and write it back into the original vowel positions in order.",
+      "Record the indices of all vowels; if there are none, print the line unchanged. Otherwise, going from the back, give the i-th vowel position the character of vowel i−1, and give the first vowel position the original last vowel. Read the whole line keeping its spaces and strip only the trailing newline."
+    ]
+  },
+  "explanationEn": "## Approach\n\nExtract the vowels, rotate them right by one, and write them back into the original vowel positions in order.\n\n## Why it works\n\nAfter rotation the first vowel comes from the original last one and the i-th comes from the original (i−1)-th, which moves every original vowel to the next vowel position. Only vowel positions are replaced; the other characters stay unchanged.\n\n## Complexity\n\nTime and extra space O(n)."
+}

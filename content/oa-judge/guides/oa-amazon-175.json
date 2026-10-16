@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-175",
+  "packageChecksum": "4ec4a145987a4f2acbfaebbc1d3c3a3ffe97e0aee5705139687bc14f74b52fce",
+  "sourceContentHash": "985b5dea2d216e9c5cf1c8047aa01d2635b9a0b8949d64d4ac4e2196017a803d",
+  "editorialSha256": "9f50dea4a4ba2a48f157480e622827be7f83234e6a1b5ff8b8f21363cc41fff5",
+  "hints": {
+    "zh": [
+      "出现次数最多的那类任务决定了骨架：它的相邻两次之间至少隔minGap个时间单位，这一点与其他任务怎么排无关。",
+      "设最高次数为f、达到f的种类数为c：最高频任务形成f−1个长度为minGap+1的轮次，最后一轮再放c个任务，得到下界(f−1)(minGap+1)+c；另一个下界是任务总数。答案就是两者中的较大值。",
+      "统计26个字母的出现次数，求出最大值f以及次数等于f的字母个数c；输出串长与(f−1)·(minGap+1)+c中的较大者。minGap可达10^9，乘积要用64位整数。"
+    ],
+    "en": [
+      "The most frequent task type sets the skeleton: two of its runs must be at least minGap units apart no matter how the other tasks are arranged.",
+      "Let f be the highest count and c the number of types reaching it: the most frequent tasks form f-1 rounds of length minGap+1, and the last round holds c tasks, giving the lower bound (f-1)(minGap+1)+c; the number of tasks is the other lower bound. The answer is the larger of the two.",
+      "Count the 26 letters, find the maximum count f and the number c of letters with that count, and print the larger of the string length and (f-1)*(minGap+1)+c. minGap can be 10^9, so compute the product in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet the highest occurrence count be f and the number of task types reaching it be c; the answer is max(total number of tasks, (f-1)(minGap+1)+c).\n\n## Proof of correctness\n\nThe total number of tasks is a necessary lower bound on the time. The first f-1 rounds of the most frequent task are each at least minGap+1 apart, and the last round contains c types, which gives the second lower bound. Placing the tasks by frequency into the f-1 spaced rounds, the other tasks fill the empty slots first; if there are not enough of them, idle time fills the rest, and if they exceed the capacity, the rounds are widened with more tasks between them; this reaches exactly the maximum of the two lower bounds.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

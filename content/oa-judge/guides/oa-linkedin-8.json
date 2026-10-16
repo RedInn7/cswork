@@ -1,0 +1,19 @@
+{
+  "id": "oa-linkedin-8",
+  "packageChecksum": "be8c312a8f2d3f5cf82e3f59afdc73c509470cbda2fa44b66d98c955cf535d9f",
+  "sourceContentHash": "d67e787679ab2f0119e37a5bfe2f435a9a00a5b2112e33e98afc5965c329f692",
+  "editorialSha256": "d4e81640ee10d1e856aa541e1dd440e91685b205da34d26d61c28494a99067a8",
+  "hints": {
+    "zh": [
+      "要最小化的是“各段最大值之和”，不是“最大的段和”；n 小于 300，三次方级别的做法完全可以接受。",
+      "按段推进做动态规划：设 dp[g][e] 为把前 e 个数恰好分成 g 段的最小代价。最后一段是某个区间 [s, e)，代价就是 dp[g−1][s] 加上这一段的最大值；任何最优划分的前 g−1 段本身也必须最优。",
+      "外层枚举段数 g=1..K，内层枚举终点 e，再让起点 s 从 e−1 往左移动（s 不小于 g−1，保证前面每段非空），一边移动一边更新这一段的最大值，用 dp[g−1][s] 加该最大值更新 dp[g][e]。只需保留上一层数组滚动更新，答案是 dp[K][n]。"
+    ],
+    "en": [
+      "The quantity to minimize is the sum of the segment maximums, not the largest segment sum; with n below 300, a cubic algorithm is perfectly fine.",
+      "Use a DP that advances one segment at a time: let dp[g][e] be the minimum cost of splitting the first e numbers into exactly g segments. The last segment is some range [s, e), so the cost is dp[g-1][s] plus that segment's maximum; the first g-1 segments of an optimal split must themselves be optimal.",
+      "Loop over the segment count g = 1..K and over the end e, then move the start s leftward from e-1 (keeping s at least g-1 so every earlier segment is non-empty), updating the segment maximum as you go and relaxing dp[g][e] with dp[g-1][s] plus that maximum. Keeping only the previous layer is enough; the answer is dp[K][n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdvance the DP one segment at a time, enumerate the start of the last segment, and extend it to the left while maintaining that segment's maximum.\n\n## Proof of correctness\n\nAny optimal partition has a unique start for its last segment; the segments before it must themselves be optimal, otherwise they could be replaced to improve the total. Enumerating every start and taking the best previous value plus the current maximum covers all cases and never introduces an illegal empty segment. By induction we obtain the optimal value for exactly K segments.\n\n## Complexity\n\nO(Kn^2) time, O(n) space with rolling arrays."
+}

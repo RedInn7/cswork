@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-16",
+  "packageChecksum": "09c6735e358df9a47428fba976b4b68ec760f50457846fbb2937976d18f7163b",
+  "sourceContentHash": "f4f2c46615f94ef71cbb7198a5858fe079d87525f4c99817b8ebafe9bb3a41ff",
+  "editorialSha256": "4034e46e97f3215e64dfcd732063c3880ecbf2320f31689430fab573ffe8dd60",
+  "hints": {
+    "zh": [
+      "单元素批次的效率是 0；每个至少有两台服务器的批次恰好贡献“一个最大值减一个最小值”，所以先数一数这样的批次有多少个，记为 q。",
+      "总效率不可能超过“全体容量中最大的 q 个之和减去最小的 q 个之和”；而这个上界可以达到：给每个非单元素批次分配一个全局大值作最大值、一个全局小值作最小值，其余容量都介于两者之间，随便填进剩余名额都不改变极值。",
+      "统计组大小≥2 的组数 q；把容量排序；答案为排序后后 q 项之和减去前 q 项之和，用 64 位整数。"
+    ],
+    "en": [
+      "A single-server batch has efficiency 0, and every batch with at least two servers contributes exactly one maximum minus one minimum. So first count how many such batches there are; call it q.",
+      "The total efficiency can never exceed the sum of the q largest capacities minus the sum of the q smallest, and this bound is reachable: give each multi-server batch one of the large values as its maximum and one of the small values as its minimum; all other capacities lie between them, so filling the remaining slots with them does not change any extreme.",
+      "Count q, the number of group sizes that are at least 2. Sort the capacities. The answer is the sum of the last q values minus the sum of the first q values, in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet q be the number of groups of size at least 2; use the q largest capacities overall as the group maxima and the q smallest as the group minima, and fill the remaining slots with the other elements.\n\n## Correctness\n\nEach non-singleton group contributes exactly one maximum and one minimum, so the total is at most the sum of the q largest values minus the sum of the q smallest values. Assign one of each kind of extreme value to every non-singleton group; all remaining capacities lie between the extremes, so filling the required remaining slots in any way does not change the extremes, and singleton groups take the leftover items, reaching the upper bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

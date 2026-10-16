@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-70",
+  "packageChecksum": "bc0d0de8cea381fe495818d8db50dab75367aab7b70dc0336b2a145da3e56473",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long n = s.size();\n    // ones[j]: prefixes (after each char) where letter j has odd count\n    int parity[26] = {0};\n    long long ones[26] = {0};\n    for (char c : s) {\n        parity[c - 'a'] ^= 1;\n        for (int j = 0; j < 26; j++) ones[j] += parity[j];\n    }\n    long long odd = 0; // total odd-frequency letters over all substrings\n    for (int j = 0; j < 26; j++) odd += ones[j] * (n + 1 - ones[j]);\n    long long oddLengths = ((n + 2) / 2) * ((n + 1) / 2);\n    cout << (odd - oddLengths) / 2 << \"\\n\";\n}\n",
+      "sha256": "59c30f1065a19232e3ae3af02fff9f4b3056cdec7c1105a8502184be0c17d8dd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine().trim();\n        long n = s.length();\n        // ones[j]: prefixes (after each char) where letter j has odd count\n        int[] parity = new int[26];\n        long[] ones = new long[26];\n        for (int i = 0; i < n; i++) {\n            parity[s.charAt(i) - 'a'] ^= 1;\n            for (int j = 0; j < 26; j++) ones[j] += parity[j];\n        }\n        long odd = 0; // total odd-frequency letters over all substrings\n        for (int j = 0; j < 26; j++) odd += ones[j] * (n + 1 - ones[j]);\n        long oddLengths = ((n + 2) / 2) * ((n + 1) / 2);\n        System.out.println((odd - oddLengths) / 2);\n    }\n}\n",
+      "sha256": "2ec3a0c416dd0171732a5f5c186aadfc05c46229ab138a2ae24ec86be1049cbe"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar s string\n\tfmt.Fscan(r, &s)\n\tn := int64(len(s))\n\t// ones[j]: prefixes (after each char) where letter j has odd count\n\tvar parity [26]int64\n\tvar ones [26]int64\n\tfor i := 0; i < len(s); i++ {\n\t\tparity[s[i]-'a'] ^= 1\n\t\tfor j := 0; j < 26; j++ {\n\t\t\tones[j] += parity[j]\n\t\t}\n\t}\n\tvar odd int64 // total odd-frequency letters over all substrings\n\tfor j := 0; j < 26; j++ {\n\t\todd += ones[j] * (n + 1 - ones[j])\n\t}\n\toddLengths := ((n + 2) / 2) * ((n + 1) / 2)\n\tfmt.Println((odd - oddLengths) / 2)\n}\n",
+      "sha256": "e2d87de34209da23537fbfed5afff86fa287689f172d3531bfdf012d573846c6"
+    }
+  ]
+}

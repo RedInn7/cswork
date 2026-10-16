@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-8",
+  "packageChecksum": "e2c63421a4faf087c737c0d9a49b9623a1800a933304d9b0c77b488bf8cd8c75",
+  "sourceContentHash": "387a11d510328bf5e5ae686f0ed2af60e6581bf2555ba35269b336d8a524e668",
+  "editorialSha256": "a4f66cd45697ea94698a0447dc5897f8d181ca3a69a670e519fcbc17a371556e",
+  "hints": {
+    "zh": [
+      "每个长度为 3 的子串都由它的右端位置唯一确定，所以只要在扫描到每个右端时检查一次即可，不会重复也不会遗漏。",
+      "维护一个长度为 3 的滑动窗口里元音的个数：右边加入一个字符，左边移出三格之前的字符，计数始终准确，窗口满 3 个字符后计数为 2 就算一个。",
+      "读入整行（可能为空串）。从左到右遍历下标 i：若 s[i] 是元音则计数加一；若 i≥3 且 s[i−3] 是元音则计数减一；若 i≥2 且计数恰为 2，答案加一。最后输出答案，空串和长度不足 3 的串答案为 0。"
+    ],
+    "en": [
+      "Every substring of length 3 is identified uniquely by its right end, so checking once when the scan reaches each right end counts every window exactly once.",
+      "Keep the number of vowels in a sliding window of length 3: add the character entering on the right and remove the one three positions back, so the count stays exact; once the window holds 3 characters, count it when the vowel count is 2.",
+      "Read the whole line, which may be empty. For each index i from left to right: if s[i] is a vowel, increase the count; if i >= 3 and s[i - 3] is a vowel, decrease it; if i >= 2 and the count is exactly 2, increase the answer. Output the answer; an empty string or one shorter than 3 gives 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the number of vowels among the last three characters; once the window has length 3, add one to the answer whenever the count is 2.\n\n## Correctness\n\nEach window of length 3 is checked exactly once, when the scan reaches its right end. Adding the new character and removing the character three positions back keeps the window's vowel count exact.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

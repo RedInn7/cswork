@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-1",
+  "packageChecksum": "f7985aa4fd73e152bf3628c1adab1283404285cf1d1c71c26e5bbaeae83b2b17",
+  "sourceContentHash": "8d30f23d0f5154d1554118830a3620c1e3f234564b1d7b9f2695b793d887eaa1",
+  "editorialSha256": "88b1c1296542c0519ae1b3878a839e7c00d21ea7cafe74041303a50666b6e034",
+  "hints": {
+    "zh": [
+      "总分由两部分组成：每个有令牌（T）的格子贡献自己的分值，每一对相邻且都有令牌的格子额外贡献 1 分。两部分可以分开算。",
+      "基础分直接累加所有 T 格子的分值；奖励分要数“相邻的 T-T 对”，连续 k 个 T 会贡献 k−1 对，不是整段只加一次。",
+      "逐个扫描格子：若第 i 格是 T，把 points[i] 加入总分，并且若 i > 0 且第 i−1 格也是 T，再加 1；扫描结束输出总分。"
+    ],
+    "en": [
+      "The score has two parts: every cell with a token (T) contributes its own value, and every pair of adjacent cells that both hold tokens adds 1 more. The two parts can be computed separately.",
+      "The base part sums the values of all T cells; the bonus counts adjacent T-T pairs, and a run of k consecutive Ts contributes k-1 pairs, not just one bonus for the whole run.",
+      "Scan the cells: if cell i is T, add points[i] to the score, and if i > 0 and cell i-1 is also T, add 1; print the score after the scan."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst add up the values of all T cells, then check every pair of adjacent cells for whether both are T. A run of k consecutive Ts contributes k−1 adjacent pairs, not just a single bonus.\n\n## Why it is correct\n\nEach base point corresponds to exactly one T cell, and each bonus point corresponds to exactly one T-T adjacent edge. The loop checks every cell and every adjacent edge exactly once, so nothing is counted twice or missed.\n\n## Complexity\n\nO(n) time and O(1) extra space apart from the input."
+}

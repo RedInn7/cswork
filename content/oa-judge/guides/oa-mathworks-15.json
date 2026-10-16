@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-15",
+  "packageChecksum": "f51d5afcbdd8198f101693ee26335b3e3b9d5e122327ab2ec8c521ba5dcce202",
+  "sourceContentHash": "d6babafe7d60990b2313d5edb3b6c2a9c6ec57ff49394a5fc0cd690f330616a8",
+  "editorialSha256": "f05b0f9b2e84ddf13d0c302314c17ac699342d1b060d334a25f5fb7f55a46e1b",
+  "hints": {
+    "zh": [
+      "操作只会让元素加 1，所以先看增量 d[i]=target[i]−source[i]；只要有一个 d[i] 是负数就不可能完成，输出 −1。",
+      "观察相邻增量的变化：一次前缀操作只会在它右端的边界让 d 下降 1，一次后缀操作只会在它左端的边界让 d 上升 1。所以所有下降量之和 N 就是至少需要的前缀操作次数；这些前缀都覆盖第一个位置，因此 N 不能超过 d[0]。",
+      "遍历 i=1..n−1，把相邻下降量 max(0, d[i−1]−d[i]) 累加得到 N；若 N 大于 d[0] 输出 −1，否则最少操作数为 d[n−1]+N。n=1 时直接输出 d[0]。数值可达 10^13，累加和更大，用 64 位整数。"
+    ],
+    "en": [
+      "Operations only add 1, so look at the increments d[i] = target[i] - source[i]; if any d[i] is negative the target is unreachable and the answer is -1.",
+      "Look at how adjacent increments change: a prefix operation lowers d by 1 only at its right boundary, and a suffix operation raises d by 1 only at its left boundary. So the total of all drops, N, is the minimum number of prefix operations; every prefix covers the first position, so N cannot exceed d[0].",
+      "For i = 1..n-1 add the drop max(0, d[i-1] - d[i]) to get N; if N > d[0] output -1, otherwise the minimum number of operations is d[n-1] + N. For n = 1 just output d[0]. Values reach 10^13 and the sums are larger, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet d[i]=target[i]-source[i], which must be non-negative everywhere. Every drop from d[i-1] to d[i] needs at least one prefix operation ending at that boundary. If the total drop N exceeds d[0], it is impossible; otherwise N prefix operations plus some suffix/whole-array operations fill in the rest, and the minimum number of operations is d[n-1]+N.\n\n## Proof of correctness\n\nLet N be the sum of all drops between adjacent increments. Each prefix operation contributes at most one unit of drop, so at least N prefix operations are needed; the first increment only has d[0] units of prefix/whole-array operations available, so there is no solution when N>d[0]. If N<=d[0], placing prefix operations at each drop position and filling the rest with whole-array and suffix operations constructs the target; after simplification the total number of operations is d[last]+N, which reaches the lower bound.\n\n## Complexity\n\nO(n), space O(n)."
+}

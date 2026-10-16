@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-6",
+  "packageChecksum": "a9ea5f317544549ef147899e483e45d1e1e9153a48690230605a1b0d6a93047d",
+  "sourceContentHash": "0c433aeb611e840334e81722795db400c96392e0cc4ce018b3beb6ba0b1fa40c",
+  "editorialSha256": "bbc5f9502e6b96cded9beefb38364e1c59f9e3a2a7e4249711a04a77042b8a94",
+  "hints": {
+    "zh": [
+      "题目不要求行数最少，只要每行合法即可。所以分行可以按最简单的方式贪心：每行尽量多放单词，只要单词长度加最少的单个空格不超过 width。",
+      "分好行之后，每行只有两种排版：段落的最后一行或只有一个单词的行要居中，其余多词行要两端对齐。两端对齐把多出的空格用商和余数平均分到各个间隙，余数给最左边的几个间隙。",
+      "先输出一行 width+4 个星号。逐段处理：从 start 起不断加入单词，直到再加一个会超过 width。若这是段末行或只有一个词，用单空格连接后把剩余空格 padding 分成左 padding/2、右 padding−padding/2；否则 gaps=词数−1，每个间隙放 (width−字母数)/gaps 个空格，前 (width−字母数) mod gaps 个间隙各多一个。每行输出为 \"* \"+内容+\" *\"，最后再输出一行星号。"
+    ],
+    "en": [
+      "The statement does not require the fewest lines, only that every line follows the rules. So lines can be broken greedily in the simplest way: put as many words on a line as fit when separated by single spaces within width.",
+      "After breaking, each line has one of two layouts: the last line of a paragraph or a single-word line is centered, and every other multi-word line is fully justified. Justification spreads the spare spaces over the gaps by quotient and remainder, with the remainder going to the leftmost gaps.",
+      "Print a row of width + 4 asterisks first. For each paragraph, starting at start, keep adding words until one more would exceed width. If this is the paragraph's last line or holds one word, join with single spaces and split the leftover padding into padding/2 on the left and the rest on the right; otherwise gaps = words - 1, each gap gets (width - letters) / gaps spaces and the first (width - letters) mod gaps gaps get one more. Print each line as \"* \" + content + \" *\", and finish with another row of asterisks."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe reference solution greedily puts as many words as possible on each line. An ordinary line that is not the last line of a paragraph spreads its spaces using the quotient and remainder; the last line of a paragraph or a single-word line computes left and right centering spaces. Any other valid line breaking is equally correct.\n\n## Correctness\n\nProcessing words in order keeps the word order and the paragraph boundaries unchanged, and the fit condition guarantees each line's length. Distributing spaces by quotient and remainder is even and favors the left; centering keeps the left and right sides within 1 of each other, with the right side never shorter than the left. Adding the outer margins and the star frame produces a valid output that meets every requirement.\n\n## Complexity\n\nTime O(output length), space O(output length)."
+}

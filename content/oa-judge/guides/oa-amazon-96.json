@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-96",
+  "packageChecksum": "5a2576aa4ebcb3cb46dd2ba32fb49266686845c25e9ab144110d274251c485ec",
+  "sourceContentHash": "8234248872fed6c994d2490e6ba83ce3b361e0c1df1e329492a13f13302ab334",
+  "editorialSha256": "d4696312790363790359bff0418c17effccb1f4feb9d0634a1e93ad7360656aa",
+  "hints": {
+    "zh": [
+      "冠军拿 n 分，其他人最多拿 n−1 分。想一想对冠军威胁最大的对手是谁、最多能拿多少分。",
+      "设最高初始分为 M。初始分为 a 的人夺冠后有 a+n 分，而任何对手最多有 M+n−1 分，所以只要 a≥M−1 就一定保持最高；若 a<M−1，让最高分者拿第二名就会超过他。",
+      "求出最大初始分 M，统计初始分不小于 M−1 的人数即为答案。"
+    ],
+    "en": [
+      "The champion gets n points and everyone else gets at most n-1. Think about which opponent is the biggest threat and how many points that opponent can reach.",
+      "Let M be the highest initial score. A participant with initial score a has a+n after winning, while any opponent has at most M+n-1, so a >= M-1 guarantees staying on top; if a < M-1, letting the top scorer finish second puts them ahead.",
+      "Find the maximum initial score M and count the participants whose initial score is at least M-1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet M be the maximum initial score, and count the people whose initial score is ≥M−1.\n\n## Proof of Correctness\n\nFor a champion with initial score a, the strongest opponent gets at most M+n−1, so a≥M−1 is enough to stay on top. If a<M−1, letting the person with the maximum initial score take second place puts them above the champion, so that participant does not qualify. The person with the maximum initial score always qualifies, including when they are the only participant.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

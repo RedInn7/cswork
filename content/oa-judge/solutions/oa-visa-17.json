@@ -1,0 +1,21 @@
+{
+  "id": "oa-visa-17",
+  "packageChecksum": "acdc66f91639a5c3757f688dac347ac7f8c532fd838428fee9928cfa445648e4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <algorithm>\n#include <functional>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> a(n), b(n);\n    for (auto &v : a) cin >> v;\n    for (auto &v : b) cin >> v;\n    long long base = 0;\n    vector<long long> gain(n);\n    for (int i = 0; i < n; i++) {\n        base += min(a[i], b[i]);\n        gain[i] = min(a[i], 2 * b[i]) - min(a[i], b[i]);\n    }\n    sort(gain.begin(), gain.end(), greater<long long>());\n    for (int i = 0; i < k && i < n; i++) base += max(0LL, gain[i]);\n    cout << base << '\\n';\n}\n",
+      "sha256": "ea6326c5c3b936a2fc0afa989e530fbf6ce24f64dd21cc41ad5c4d367b6ed92f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), k = (int) nextLong();\n        long[] a = new long[n], b = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = 0; i < n; i++) b[i] = nextLong();\n        long base = 0;\n        long[] gain = new long[n];\n        for (int i = 0; i < n; i++) {\n            base += Math.min(a[i], b[i]);\n            gain[i] = Math.min(a[i], 2 * b[i]) - Math.min(a[i], b[i]);\n        }\n        Arrays.sort(gain);\n        for (int i = 0; i < k; i++) base += Math.max(0, gain[n - 1 - i]);  // largest gains first\n        System.out.println(base);\n    }\n}\n",
+      "sha256": "255c78554cb33d752d3a3b55357dd2a06569d48831cb932c4b666590f9157d91"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\ta, b := make([]int64, n), make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tfor i := range b {\n\t\tb[i] = nextInt()\n\t}\n\tvar base int64\n\tgain := make([]int64, n)\n\tfor i := 0; i < n; i++ {\n\t\tbase += min(a[i], b[i])\n\t\tgain[i] = min(a[i], 2*b[i]) - min(a[i], b[i])\n\t}\n\tslices.Sort(gain)\n\tfor i := 0; i < k; i++ {\n\t\tbase += max(0, gain[n-1-i]) // largest gains first\n\t}\n\tfmt.Println(base)\n}\n",
+      "sha256": "804073e303ff85947ceaef2681404e06886349a1f0719dec007112f5ceb02193"
+    }
+  ]
+}

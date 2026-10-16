@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-11",
+  "packageChecksum": "9c03bf581a658579286aa1d13d1ff528157e7391209953b59328f29ff4f7662e",
+  "sourceContentHash": "5043cd72c3ec62e2b86269f1cf65dd0448670a5fee0e8f3f525648c241679bd2",
+  "editorialSha256": "c6436e28ceb6deeb2a20f812dac7f1bee9ca14778463043b26edc3d3e21d0c81",
+  "hints": {
+    "zh": [
+      "给长度为 i 的前缀整体加 x，只会改变第 i 个与第 i+1 个元素之间的差，其余相邻差都不变。",
+      "所有元素相等等价于每个相邻差都变成 0，消掉一个差至少要付出它的绝对值；从后往前逐个把前缀调到右邻的值，正好付出这个下界。",
+      "读入数组，累加所有相邻元素差的绝对值并输出；总和可达约 4·10^14，要用 64 位整数。"
+    ],
+    "en": [
+      "Adding x to the prefix of length i changes only the difference between elements i and i+1; every other adjacent difference stays the same.",
+      "All elements are equal exactly when every adjacent difference is 0, and erasing one difference costs at least its absolute value; adjusting prefixes from right to left to match their right neighbor pays exactly this lower bound.",
+      "Read the array, add up the absolute differences of all adjacent pairs, and print the sum; it can reach about 4·10^14, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the sum of the absolute differences between adjacent elements.\n\n## Proof of correctness\n\nAn operation on the prefix of length i only affects the i-th adjacent difference; all other adjacent differences stay the same. Eliminating that difference costs at least its absolute value, so the sum over all boundaries is a lower bound. Working from back to front and adjusting each prefix to the value of its right neighbor pays exactly this sum, reaching the lower bound; shifting the whole array does not affect equality and is never needed.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

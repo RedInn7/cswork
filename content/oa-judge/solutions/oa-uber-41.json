@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-41",
+  "packageChecksum": "bfaf43701da19d741b46c8e6ebc5ff33772838b8e57323229213b736136fc56b",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    words = data[1:1 + n]\n    # the word after the last one wraps around to words[0]\n    out = [words[i][0] + words[(i + 1) % n][-1] for i in range(n)]\n    sys.stdout.write(\"\\n\".join(out) + \"\\n\")\n\n\nmain()\n",
+      "sha256": "ae9eeaafebbe96fd9aa51c09d3418b554d56b12102388f14b09a4aae6f44f20d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        List<String> tokens = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            StringTokenizer st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) tokens.add(st.nextToken());\n        }\n        int n = Integer.parseInt(tokens.get(0));\n        StringBuilder sb = new StringBuilder(3 * n);\n        for (int i = 0; i < n; i++) {\n            String next = tokens.get(1 + (i + 1) % n); // the word after the last one wraps around\n            sb.append(tokens.get(1 + i).charAt(0)).append(next.charAt(next.length() - 1)).append('\\n');\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "23fb2824cbe017671ca0ef6013b42e4d70f3e3f6a8a3b55491134b706d5ff30e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tw := make([]string, n)\n\tfor i := range w {\n\t\tfmt.Fscan(in, &w[i])\n\t}\n\tout := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer out.Flush()\n\tfor i := 0; i < n; i++ {\n\t\tnext := w[(i+1)%n] // the word after the last one wraps around\n\t\tout.WriteByte(w[i][0])\n\t\tout.WriteByte(next[len(next)-1])\n\t\tout.WriteByte('\\n')\n\t}\n}\n",
+      "sha256": "7b5f46b4aeb73ee2af4009ac03e167c5c82da6c50f78953e8a2b872d891ee745"
+    }
+  ]
+}

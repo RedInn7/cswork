@@ -1,0 +1,16 @@
+{
+  "id": "oa-intuit-2",
+  "packageChecksum": "bde4d6080dd45603f4540cabfdb7d67cd366288c52a2b1b0c360bac4e977eff4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, x;\n    cin >> n >> x;\n    deque<pair<int, long long>> queue;  // (original 1-based index, value)\n    for (int i = 1; i <= n; i++) {\n        long long v;\n        cin >> v;\n        queue.push_back({i, v});\n    }\n    string out;\n    for (int round = 0; round < x; round++) {\n        int take = min<int>(x, queue.size());\n        vector<pair<int, long long>> batch(queue.begin(), queue.begin() + take);\n        queue.erase(queue.begin(), queue.begin() + take);\n        // First maximum wins ties (closest to the front).\n        int chosen = 0;\n        for (int i = 1; i < take; i++)\n            if (batch[i].second > batch[chosen].second) chosen = i;\n        if (round) out += ' ';\n        out += to_string(batch[chosen].first);\n        for (int i = 0; i < take; i++)\n            if (i != chosen) queue.push_back({batch[i].first, max(0LL, batch[i].second - 1)});\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "26cc2b4f82cdef199ee68ce11b67d85351a999191f4153a2862f62ffe35b3ee7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), x = nextInt();\n        ArrayDeque<long[]> queue = new ArrayDeque<>(); // {original 1-based index, value}\n        for (int i = 1; i <= n; i++) queue.add(new long[] {i, nextLong()});\n        StringBuilder sb = new StringBuilder();\n        for (int round = 0; round < x; round++) {\n            int take = Math.min(x, queue.size());\n            long[][] batch = new long[take][];\n            for (int i = 0; i < take; i++) batch[i] = queue.poll();\n            // First maximum wins ties (closest to the front).\n            int chosen = 0;\n            for (int i = 1; i < take; i++) if (batch[i][1] > batch[chosen][1]) chosen = i;\n            if (round > 0) sb.append(' ');\n            sb.append(batch[chosen][0]);\n            for (int i = 0; i < take; i++)\n                if (i != chosen) queue.add(new long[] {batch[i][0], Math.max(0, batch[i][1] - 1)});\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "febd6f7e81879d8b648979aa197f187fd05e652fb8e790cc8b4a3094efd75f86"
+    }
+  ]
+}

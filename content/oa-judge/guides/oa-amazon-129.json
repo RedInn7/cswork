@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-129",
+  "packageChecksum": "757a9b273650b2731354c65a1624a24d5020f9f66ef317c9b0116ec7124f19f7",
+  "sourceContentHash": "8b72fee3615ca4b4e72e20d228ed572f68bb2bad2d263756fc58a12366cb805e",
+  "editorialSha256": "cce47e7db9efe574417ab1a6a10876a11908293b43757d12a5a3e12b27c7c152",
+  "hints": {
+    "zh": [
+      "每一轮哪些位置可用，完全由初始 01 串和经过的轮数决定，与你选了什么无关；所以每一步都选当前可用的最大值不会影响以后的选择。",
+      "一个位置在第几轮解锁，等于它到左侧最近的初始 1 的距离；第一个 1 左边的位置永远不可用。按轮次记下新解锁的最大值，然后逐轮取“到目前为止解锁的最大值”。",
+      "从左到右扫描，遇到 1 时距离置 0，否则距离加一（第一个 1 之前视为无穷远），若距离小于 n 就用 a[i] 更新 unlock[距离] 的最大值。若 unlock[0] 为 0（初始全 0）输出 -1；否则第 step 步（step<n 时）先用 unlock[step] 更新当前最大值，再输出当前最大值，共输出 m 个数。"
+    ],
+    "en": [
+      "Which positions are available in each round is fully determined by the initial 01 string and the number of rounds passed, not by what you pick; so picking the largest available value at every step never hurts later picks.",
+      "A position unlocks in the round equal to its distance from the nearest initial 1 on its left; positions left of the first 1 are never available. Record the largest newly unlocked value per round, then for each round take the maximum unlocked so far.",
+      "Scan left to right: reset the distance to 0 at a 1, otherwise add one (positions before the first 1 count as infinitely far), and when the distance is below n update unlock[distance] with a[i]. If unlock[0] is 0 (everything starts at 0) print -1; otherwise at each step (while step < n) first raise the running maximum with unlock[step], then output the running maximum, m values in total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan to compute, for each element, its distance to the nearest initial 1 on its left, which is the round in which it unlocks; record the maximum per round, then for each round keep the maximum of the values unlocked so far.\n\n## Correctness\n\nHow the available set changes in each round is fully determined by the initial state and the time, and is not affected by the picks. So choosing the current maximum never harms any later choice, and the position-by-position greedy is optimal lexicographically. The distance is exactly the number of rounds the synchronous rightward spread needs, and positions to the left of the first initial 1 are never available.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."
+}

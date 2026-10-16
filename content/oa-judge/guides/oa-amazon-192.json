@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-192",
+  "packageChecksum": "b0fc7a8929d7cad9799e54ad0930562f07f52c8895f21fbb8d8ed273eb7360a2",
+  "sourceContentHash": "4d0e6387a5349ec927af32ab76129fe643c31a6178b8482ce129f41019d74c48",
+  "editorialSha256": "97e9d130c6e20973488128671c20a1d8174cf336ce621b86695cce236bf03dca",
+  "hints": {
+    "zh": [
+      "每次删去当前最小和最大的人，相当于把数组排序后从两端向中间配对。",
+      "平均数等于两数和除以 2，除以同一个常数不改变是否相等，所以只需统计两数和有多少种不同取值，完全不需要浮点数。",
+      "排序；对 i=0..n/2−1 计算 a[i]+a[n−1−i]，放入集合（或排序后去重）；输出不同和的个数。"
+    ],
+    "en": [
+      "Repeatedly removing the current minimum and maximum is the same as sorting and pairing from both ends toward the middle.",
+      "An average is the pair sum divided by 2, and dividing by the same constant does not change equality, so you only need the number of distinct pair sums; no floating point is needed.",
+      "Sort; for i = 0..n/2-1 compute a[i] + a[n-1-i] and put it in a set (or sort and deduplicate); print the number of distinct sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort and pair the two ends moving inward, putting each pair's sum into a set. Two averages are equal exactly when the two sums are equal, so no floating point is needed.\n\n## Proof of correctness\n\nAfter sorting, the two ends are the current minimum and maximum, and once they are removed the inner part is still sorted, so by induction this reproduces the pairing process defined by the problem. Dividing by the same nonzero constant 2 preserves equality, so the size of the set of sums equals the size of the set of averages.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-48",
+  "packageChecksum": "dcb96df076de643b037f49606e23a1fcaced0d473040c5ee70e698f4f0608913",
+  "sourceContentHash": "c3c13c0a365c28ef9bcba4654d2b07002655032d018f0646fcb2c6c209fc396e",
+  "editorialSha256": "9102f3f5565c8a1fc0afb22688d9977e7390377c8004ba1b5ddfe5b7c85a1355",
+  "hints": {
+    "zh": [
+      "已经通过的科目缺口为0，自然计入；其余每科的代价是缺口needed−answered，而每通过一科的收益都是1。",
+      "收益相同而代价不同时，应当优先满足代价最小的科目；交换论证说明最优方案总能换成“缺口最小的若干科”。",
+      "计算每科的非负缺口max(0, needed[i]−answered[i])，升序排序后依次从预算q中扣除，付得起就计数，第一次付不起就停止，输出计数。q最大为10^14，使用64位整数。"
+    ],
+    "en": [
+      "Subjects already passed have a shortfall of 0 and count automatically; every other subject costs its shortfall needed−answered, while each passed subject is worth exactly 1.",
+      "With equal value and different costs, the cheapest subjects should be satisfied first; an exchange argument shows an optimal plan can always be turned into the subjects with the smallest shortfalls.",
+      "Compute each subject's non-negative shortfall max(0, needed[i]−answered[i]), sort ascending, and subtract them from the budget q in order, counting each one you can afford and stopping at the first you cannot; print the count. q can be up to 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the non-negative shortfall of each subject, sort them in ascending order, and spend the budget on the smallest shortfalls first.\n\n## Proof of correctness\n\nEvery passed subject contributes exactly 1. If a plan picks a larger shortfall but leaves out a smaller one, swapping them keeps the number of subjects and does not increase the questions used; repeated swaps give a prefix of the smallest shortfalls. The longest prefix the budget can cover, taken greedily, is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

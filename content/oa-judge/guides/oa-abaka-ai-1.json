@@ -1,0 +1,19 @@
+{
+  "id": "oa-abaka-ai-1",
+  "packageChecksum": "5a338a30da0c63f11938942350a646aa3a5475da611ef1a4a591bced2e9075c4",
+  "sourceContentHash": "d4357c2677d6be65612c58bfa9f2f9ef30847fef8e5d26b2db448de464cf4e4f",
+  "editorialSha256": "34bf2b60015525445429cc60e247225f5fbbbe9e204bf4208c4d5693a33e99b0",
+  "hints": {
+    "zh": [
+      "只有类型相同的任务才可能并行，所以不同 taskType 之间互不影响，可以分组独立求解。每组的目标是让并行的任务对尽可能多，总时间等于 N 减去配对数。",
+      "在同一组内把内存排序，用最小和最大的任务尝试配对：如果最大的任务连最小的都配不上，它就只能单独运行；否则让这一对并行一定不亏。",
+      "按 taskType 分组；每组排序后用左右双指针：若 memory[left]+memory[right]≤maxMemory，配对数加一并左指针右移；无论能否配对，右指针都左移一步；双指针相遇后处理下一组；最后输出 N 减去配对总数。"
+    ],
+    "en": [
+      "Only tasks of the same type can run in parallel, so different taskType values never interact and each group can be solved on its own. The goal is to form as many pairs as possible; the total time is N minus the number of pairs.",
+      "Inside a group, sort by memory and try to pair the smallest task with the largest: if the largest cannot fit even with the smallest, it must run alone; otherwise pairing those two is never worse.",
+      "Group tasks by taskType; sort each group and use two pointers: if memory[left] + memory[right] <= maxMemory, count a pair and move left forward; in either case move right backward; when the pointers meet, go to the next group; finally print N minus the total number of pairs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGroup tasks by taskType. Inside each group, sort by memory and try to pair the smallest with the largest; if their sum does not exceed the limit, the two run in parallel as a pair, otherwise the largest task can only run alone.\n\n## Proof of correctness\n\nIf the current largest task cannot be paired with the smallest task of its group, it cannot be paired with any larger task either, so it must run alone. If the two can be paired, an optimal solution can be rearranged by exchange to contain this pair without reducing the number of pairs; repeating this reaches the maximum number of pairs in the group, and different groups do not affect each other.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

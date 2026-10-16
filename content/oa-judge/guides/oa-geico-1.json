@@ -1,0 +1,19 @@
+{
+  "id": "oa-geico-1",
+  "packageChecksum": "589754dec35281061cf10fa3a06b028b7f5786d22e7ca5f29d4571a8b9892df9",
+  "sourceContentHash": "165351e9882f97ad0e0799d9d325ca52da204d348d49d165c22dcd8756399177",
+  "editorialSha256": "0ffddb98a1bccfcace58a7144754398be5352746e9b822242fcf52b6ad7d66b7",
+  "hints": {
+    "zh": [
+      "要让离开的人最少，就是让留下的车最多。留下的车保持原顺序，只要求相邻两辆的重量和不超过 U；自身就超过 U 的车一定要离开。",
+      "设 dp[i] 为以第 i 辆车结尾的最长安全保留序列长度，它等于 1 加上所有更早且重量不超过 U − weight[i] 的车的 dp 最大值。这是一个“按重量阈值求前缀最大值”的查询。",
+      "把所有重量排序去重做坐标压缩，用维护前缀最大值的树状数组；按原顺序处理每辆车：重量超过 U 就跳过，否则查询重量不超过 U − w 的前缀最大值 prior，令 len = prior + 1，在自身重量的位置更新为 len，并维护全局最大值 best；最后输出 N − best。"
+    ],
+    "en": [
+      "Minimizing the drivers who leave is the same as maximizing the vehicles that stay. Kept vehicles keep their original order, and only adjacent pairs must have a total weight of at most U; a vehicle heavier than U on its own must always leave.",
+      "Let dp[i] be the length of the longest safe kept sequence ending at vehicle i; it is 1 plus the maximum dp over earlier vehicles whose weight is at most U - weight[i]. That is a prefix-maximum query keyed by a weight threshold.",
+      "Sort and deduplicate all weights for coordinate compression and use a Fenwick tree of prefix maxima; process vehicles in their original order: skip a vehicle heavier than U, otherwise query the prefix maximum prior over weights at most U - w, set len = prior + 1, update the position of its own weight with len, and track the overall maximum best; print N - best."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each vehicle i, compute the longest safe subsequence ending at i: dp[i]=1+max(dp[j]), where j<i and weight[j]≤U−weight[i]. Coordinate-compress the weights and maintain prefix maxima with a Fenwick tree. If weight[i]>U, the vehicle cannot be kept.\n\n## Proof of correctness\n\nAny safe kept subsequence is listed in the original order; the predecessor of its last vehicle must be an earlier kept vehicle whose weight meets the threshold. The recurrence considers every possible predecessor and takes the maximum, and the Fenwick tree only speeds up that prefix-maximum query, so it yields the maximum number of vehicles that can be kept; the size of the complement is the minimum number that must leave.\n\n## Complexity\n\nO(N log N) time, O(N) space."
+}

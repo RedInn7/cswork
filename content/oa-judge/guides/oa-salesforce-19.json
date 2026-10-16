@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-19",
+  "packageChecksum": "66a42fcc3620cdf3ed66617bf97ed7c660b11640b4e134b278c4b6535cbd49c4",
+  "sourceContentHash": "4c1a76ac00e8e05f6edeaf1b73ad802505fbc212f9e9409da757e67196eaeb1e",
+  "editorialSha256": "13a226bae10e9fe0b4506886b7b17829bd49c8478a78899e4c660b818ac92db3",
+  "hints": {
+    "zh": [
+      "每个区间只有两种决策：整段直接执行，或者等分成两半分别递归；两半互不影响、费用相加，所以区间最优值＝min(直接费用, 左半最优＋右半最优)。",
+      "n 可达 10^9，不能按区间长度开数组。没有高优先级进程的区间直接执行费用固定为 normal_time，而拆分只会增加正费用，可以立即返回；于是递归只会深入到含高优先级进程的区间，数量与 k·log n 同阶。",
+      "把高优先级下标排序；递归函数携带区间起点、长度和它在排序数组中对应的下标范围 [left,right)：范围为空返回 normal_time；否则算直接费用 priority_time×(right−left)×长度（可能超出 64 位，要用更宽的整数或封顶）；长度为 1 直接返回；否则用二分在下标范围中找到中点分界，递归两半并取较小值。"
+    ],
+    "en": [
+      "Each interval has only two choices: execute it directly, or split it into two equal halves and recurse. The halves are independent and their costs add, so the best cost of an interval is min(direct cost, best of left half + best of right half).",
+      "n can reach 10^9, so arrays proportional to the interval length are not allowed. An interval with no high-priority process costs normal_time when executed directly, and splitting it only adds positive costs, so return immediately. The recursion therefore only goes into intervals containing high-priority processes, about k*log n of them.",
+      "Sort the high-priority indices. The recursive function carries the interval start, its length, and its range [left,right) in the sorted array. An empty range returns normal_time. Otherwise compute the direct cost priority_time*(right-left)*length (it can exceed 64 bits, so use a wider integer or cap it); a length-1 interval returns it. Otherwise binary search the midpoint inside the range, recurse on both halves, and return the smaller value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the high-priority indices; let each recursive interval carry its corresponding range of indices, and use binary search to split it into left and right subranges. An empty interval returns normal_time immediately; otherwise, compare the direct cost with the sum of the optimal costs of the two halves.\n\n## Correctness\n\nThe only valid decisions for each interval are executing it directly or splitting it into equal halves; with the latter, the two halves are independent and their costs add, so taking the smaller of the two is a complete recurrence. Direct execution is the cheapest option for an empty interval, and splitting only adds positive costs, so it can be pruned immediately. Binary search on the sorted indices gives exact counts and never touches the full large array where there are no high-priority processes.\n\n## Complexity\n\nO(k log k log n) time as a safe upper bound, O(log n) recursion stack, O(k) space for sorting."
+}

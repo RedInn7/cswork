@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-4",
+  "packageChecksum": "3dc72b746f21ecf58806ff80768720ea6c7ec4a61f6a77aeb164a5b5775bf530",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string s;\n    int m;\n    cin >> s >> m;\n    int n = s.size();\n    vector<long long> diff(n + 1, 0);\n    for (int i = 0; i < m; i++) {\n        int k;\n        cin >> k;\n        diff[0]++;\n        diff[k]--;\n    }\n    long long count = 0;\n    for (int i = 0; i < n; i++) {\n        count += diff[i];\n        s[i] = char('a' + (s[i] - 'a' + count) % 26);\n    }\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "d58aaca7659ab01a119adb86cb709900f5d3fec0501b42382101740bc42a4bd1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        char[] s = next().toCharArray();\n        int m = nextInt();\n        int n = s.length;\n        long[] diff = new long[n + 1];\n        for (int i = 0; i < m; i++) {\n            int k = nextInt();\n            diff[0]++;\n            diff[k]--;\n        }\n        long count = 0;\n        for (int i = 0; i < n; i++) {\n            count += diff[i];\n            s[i] = (char) ('a' + (s[i] - 'a' + count) % 26);\n        }\n        System.out.println(new String(s));\n    }\n}\n",
+      "sha256": "5fbad845bbdd4533155473c1c6d1bdf288418e6122f15ee39faf3e9cb4aebee7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := []byte(string(next()))\n\tm := int(nextInt())\n\tn := len(s)\n\tdiff := make([]int64, n+1)\n\tfor i := 0; i < m; i++ {\n\t\tk := nextInt()\n\t\tdiff[0]++\n\t\tdiff[k]--\n\t}\n\tvar count int64\n\tfor i := 0; i < n; i++ {\n\t\tcount += diff[i]\n\t\ts[i] = byte('a' + (int64(s[i]-'a')+count)%26)\n\t}\n\tos.Stdout.Write(append(s, '\\n'))\n}\n",
+      "sha256": "b9af212b9344a48cf35c07100fa78b272998ebfc410e8580b9d0b6d2925d8f09"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-valkyrie-trading-4",
+  "packageChecksum": "b4d53b963f6b50234144b415bdae72c18510015d3ad918eec25c7965300674cc",
+  "sourceContentHash": "e39ba4e7ade1c02aaaeaafe58782ceb4ddedbac6aa8d767cf8952a909af26b18",
+  "editorialSha256": "f36ee97f59cf287c1084229e6eaeb7e341a2bf4864f0c7c907248f3ac1d0b057",
+  "hints": {
+    "zh": [
+      "2 的非负整数次幂一定是正数，所以先把 0 和所有负数排除。剩下的正数里，2 的幂在二进制下恰好只有一个 1。",
+      "对只有一个 1 的正数 n，n−1 会把这一位变成 0、把它右边的位全变成 1，于是 n 与 n−1 没有公共的 1，按位与为 0；反过来，按位与为 0 时 n 只可能有一个 1。",
+      "读入 n（用 64 位整数更稳妥）。若 n>0 且 (n & (n−1)) = 0，输出 1，否则输出 0。1=2⁰ 也满足条件。"
+    ],
+    "en": [
+      "A non-negative integer power of 2 is always positive, so rule out 0 and every negative number first. Among the remaining positive numbers, a power of 2 has exactly one 1 bit in binary.",
+      "For a positive n with a single 1 bit, n - 1 turns that bit into 0 and every bit to its right into 1, so n and n - 1 share no 1 bits and their bitwise AND is 0; conversely, if the AND is 0, n can only have one 1 bit.",
+      "Read n (a 64-bit integer is the safe choice). Output 1 if n > 0 and (n & (n - 1)) = 0, otherwise output 0. Note that 1 = 2^0 satisfies the condition."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst rule out non-positive numbers. For a positive n, if n is a power of 2, its binary form has a single 1 bit; n−1 turns that bit into 0 and every bit to its right into 1, so n&(n−1)=0. Conversely, when this equation holds, n can have only one set bit.\n\n## Proof of Correctness\n\nn>0 and n&(n−1)=0 holds if and only if the binary form of n contains exactly one 1 bit, which is exactly equivalent to n=2^k (k≥0).\n\n## Complexity\n\nTime O(1), space O(1).\n\n## Source Notes\n\nThe problem statement is compiled from the fixed OAMaster snapshot; the standard input/output protocol is added by this site, and it is not claimed that the original site provided that protocol."
+}

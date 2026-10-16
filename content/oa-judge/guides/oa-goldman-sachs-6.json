@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-6",
+  "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
+  "sourceContentHash": "539d4cbdb4a187083dfa42ca5c01c071a99435aa1a9277797950fdfb796ae4e7",
+  "editorialSha256": "ae5a9cae0371dda1634f85f67bb03e67a9f2df763430e7a982ebe68a3f8d09c2",
+  "hints": {
+    "zh": [
+      "saleLength 只有一个全局取值，取值范围不超过最长棒长，可以直接枚举；固定它之后，各根棒的收益互不影响，可以分别取最优。",
+      "固定 saleLength 后，一根棒最多能切出 k 段。有余料时，每保留一段都要切一刀，保留 t 段的利润是 t ×（单段售价 − 切割成本），线性函数的最优在 t = 0 或 t = k。恰好整除时，全保留只需 k−1 刀，另外还要比较只保留至多 k−1 段（每段一刀）和整根不动。",
+      "枚举 saleLength 从 1 到最大棒长；对每根棒算 k 和余数：k = 0 跳过；有余数时收益为 k ×（saleLength × price − cost）；整除时取 0、k × saleLength × price − (k−1) × cost、(k−1) ×（saleLength × price − cost）三者的最大值；每根棒只计非负收益并求和，再对所有 saleLength 取最大值输出。"
+    ],
+    "en": [
+      "saleLength takes a single global value no larger than the longest rod, so you can enumerate it; once it is fixed, the rods' profits are independent and each can be optimized on its own.",
+      "With saleLength fixed, a rod yields at most k pieces. If there is scrap, every kept piece needs one cut, so keeping t pieces earns t * (piece price - cut cost), a linear function maximized at t = 0 or t = k. If the rod divides evenly, keeping all pieces needs only k-1 cuts, and you also compare keeping at most k-1 pieces (one cut each) and leaving the rod whole.",
+      "Enumerate saleLength from 1 to the longest rod; for each rod compute k and the remainder: skip k = 0; with a remainder the gain is k * (saleLength * price - cost); if it divides evenly take the maximum of 0, k * saleLength * price - (k-1) * cost, and (k-1) * (saleLength * price - cost); add only non-negative gains over the rods, and print the maximum over all saleLength values."
+    ]
+  },
+  "explanationEn": "# Cutting Metal Surplus\n\n## Approach\n\nEnumerate saleLength=1..max(length). For each rod compute the number k of finished pieces it can yield. If there is scrap, each kept piece needs one cut, and when the per-piece profit is positive all k pieces are kept. If it divides exactly, compare: all k pieces need only k−1 cuts; or keep at most k−1 pieces and cut each one away from the remainder; or leave the whole rod uncut.\n\n## Proof of correctness\n\nOnce saleLength is fixed, the profits of the rods do not affect each other. Without exact division, keeping t pieces earns t·(saleLength·salePrice−costPerCut), so the optimum is at t=0 or t=k. With exact division, t=k earns k·saleLength·salePrice−(k−1)·costPerCut; for 0≤t<k the profit is t·(saleLength·salePrice−costPerCut), a linear function whose maximum is at t=0 or t=k−1. Taking the best of these options for each rod and then the maximum over all saleLength values enumerates every valid cutting plan.\n\n## Complexity\n\nWith L=max(length), O(nL) time and O(1) space.\n\n## Reference implementation\n\n```python\nimport sys\ndef solve(raw):\n    values=list(map(int,raw.split()));n,cost,price=values[:3];lengths=values[3:3+n]\n    best=0\n    for sale in range(1,max(lengths)+1):\n        revenue_per_piece=sale*price\n        profit=0\n        for rod in lengths:\n            pieces,remainder=divmod(rod,sale)\n            if pieces==0:continue\n            if remainder:\n                # Every saleable segment must be cut away from the scrap.\n                gain=pieces*(revenue_per_piece-cost)\n            else:\n                # Either make all pieces (one fewer cut) or keep at most\n                # pieces-1 and discard the rest after cutting each kept piece.\n                all_gain=pieces*revenue_per_piece-(pieces-1)*cost\n                partial_gain=max(0,(pieces-1)*(revenue_per_piece-cost))\n                gain=max(0,all_gain,partial_gain)\n            profit+=max(0,gain)\n        best=max(best,profit)\n    return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n```"
+}

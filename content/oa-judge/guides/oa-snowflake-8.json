@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-8",
+  "packageChecksum": "fb089aeb1a92e2285e56bba5c01cb70d5a83153ded2f5cf2605575684a85a2a3",
+  "sourceContentHash": "a3d623fb9f8ea410c19a9010bddbf1b8ef302df1e6fa845d76a1570f8e9330f2",
+  "editorialSha256": "1022438e0456c17a7a0890dd0c99ccbff8ae5bc9946a52aaf4ff0b9f016e3109",
+  "hints": {
+    "zh": [
+      "一个串是否合法只取决于它末尾连续元音的个数是否始终不超过 k，所以按“结尾有几个连续元音”分类计数就够了。",
+      "设 dp[j] 为当前长度下以恰好 j 个连续元音结尾的串数。追加辅音（21 种）把 j 归零；追加元音（5 种）把 j 变成 j+1，超过 k 的状态直接丢弃。",
+      "初始 dp[0]=1；每一步新 dp[0]=(所有 dp 之和)×21，新 dp[j]=旧 dp[j−1]×5（1≤j≤k），全部对 10⁹+7 取模。重复 n 次后输出 dp 之和取模，时间 O(nk)。"
+    ],
+    "en": [
+      "Whether a string is valid only depends on its trailing run of consecutive vowels never exceeding k, so it is enough to group strings by the length of that trailing run.",
+      "Let dp[j] be the number of strings of the current length ending with exactly j consecutive vowels. Appending a consonant (21 choices) resets j to 0; appending a vowel (5 choices) turns j into j + 1, and states above k are discarded.",
+      "Start with dp[0] = 1. Each step, the new dp[0] = (sum of all dp) * 21 and the new dp[j] = old dp[j - 1] * 5 for 1 <= j <= k, all modulo 10^9 + 7. After n steps output the sum of dp modulo 10^9 + 7; the time is O(nk)."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[j] is the number of strings currently ending in exactly j consecutive vowels. Appending a consonant resets j to 0; appending a vowel increases j by 1, but j may not exceed k.\n\n## Correctness\n\nThe last character of any non-empty string falls into exactly one of two classes, consonant or vowel, and multiplying by 21 or 5 accounts for the character choices. The transitions keep the length of the trailing vowel run exactly, and transitions beyond k are dropped, so exactly all valid strings are counted.\n\n## Complexity\n\nO(nk) time and O(k) space."
+}

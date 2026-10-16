@@ -1,0 +1,21 @@
+{
+  "id": "oa-publicis-sapient-1",
+  "packageChecksum": "945f5e06aaff518bec4992614729b735aff16cf9a22d9defd589afd7450939be",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    scanf(\"%lld\", &n);\n    // The total can reach about 1e19, beyond signed 64-bit: use unsigned.\n    unsigned long long total = 0;\n    for (long long i = 0; i < n; i++) {\n        unsigned long long b;\n        scanf(\"%llu\", &b);\n        total += b * (unsigned long long)(2 * (n - i) + 1);\n    }\n    printf(\"%llu\\n\", total);\n}\n",
+      "sha256": "b3a6f49261c55088d408423364073766c7b242566446485b493d8db704499c84"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        long n = Long.parseLong(st.nextToken());\n        // The total can reach about 1e19, beyond signed 64-bit: wrap and print as unsigned.\n        long total = 0;\n        for (long i = 0; i < n; i++) total += Long.parseLong(st.nextToken()) * (2 * (n - i) + 1);\n        System.out.println(Long.toUnsignedString(total));\n    }\n}\n",
+      "sha256": "5cb946c3133bc2fc4ee6e869e052c692a28ffcdba5841d7e5cdb5d070c21bcee"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() uint64 { sc.Scan(); v, _ := strconv.ParseUint(sc.Text(), 10, 64); return v }\n\tn := next()\n\t// The total can reach about 1e19, beyond signed 64-bit: use unsigned.\n\tvar total uint64\n\tfor i := uint64(0); i < n; i++ {\n\t\ttotal += next() * (2*(n-i) + 1)\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "d1d04092490185e2c1ae6a872cf39c7b2f19e94fd1464e9736a991c31909aede"
+    }
+  ]
+}

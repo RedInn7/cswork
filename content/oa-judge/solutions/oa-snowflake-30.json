@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-30",
+  "packageChecksum": "f53aeab92751064ca3f3e8f1c8a952ce07132a58820a6759543cd22164293a4e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    unordered_map<long long, int> id;\n    vector<vector<int>> table;\n    vector<int> best(k + 1, 0);\n    for (int i = 0; i < n; i++) {\n        long long value;\n        scanf(\"%lld\", &value);\n        auto it = id.find(value);\n        if (it == id.end()) {\n            it = id.emplace(value, (int)table.size()).first;\n            table.emplace_back(k + 1, 0);\n        }\n        vector<int> &row = table[it->second];\n        // row[j]: longest subsequence ending with this value using at most j changes.\n        for (int j = k; j >= 0; j--) {\n            row[j] = max(row[j] + 1, j ? best[j - 1] + 1 : 1);\n            best[j] = max(best[j], row[j]);\n        }\n    }\n    printf(\"%d\\n\", best[k]);\n}\n",
+      "sha256": "bb3ebaf0f45cb2ee7bf3194036c6f796e4f29b5e35683901a617e6ddb55b2db4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        HashMap<Long, int[]> table = new HashMap<>();\n        int[] best = new int[k + 1];\n        for (int i = 0; i < n; i++) {\n            int[] row = table.computeIfAbsent(nextLong(), x -> new int[k + 1]);\n            // row[j]: longest subsequence ending with this value using at most j changes.\n            for (int j = k; j >= 0; j--) {\n                row[j] = Math.max(row[j] + 1, j > 0 ? best[j - 1] + 1 : 1);\n                best[j] = Math.max(best[j], row[j]);\n            }\n        }\n        System.out.println(best[k]);\n    }\n}\n",
+      "sha256": "6329234df4a8bc098d5767b055b4c9e38540bdd82200385a81b1e30713556942"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\ttable := map[int64][]int{}\n\tbest := make([]int, k+1)\n\tfor i := 0; i < n; i++ {\n\t\tvalue := nextInt()\n\t\trow, ok := table[value]\n\t\tif !ok {\n\t\t\trow = make([]int, k+1)\n\t\t\ttable[value] = row\n\t\t}\n\t\t// row[j]: longest subsequence ending with this value using at most j changes.\n\t\tfor j := k; j >= 0; j-- {\n\t\t\tc := 1\n\t\t\tif j > 0 {\n\t\t\t\tc = best[j-1] + 1\n\t\t\t}\n\t\t\trow[j] = max(row[j]+1, c)\n\t\t\tbest[j] = max(best[j], row[j])\n\t\t}\n\t}\n\tfmt.Println(best[k])\n}\n",
+      "sha256": "70d057d5cf8e5563dea9ee4afe63a98f15f27f9741a7c590a2d52f2dca950162"
+    }
+  ]
+}

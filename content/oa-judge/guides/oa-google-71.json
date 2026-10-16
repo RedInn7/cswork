@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-71",
+  "packageChecksum": "b691cfa0dd9884d41b4885330124a7a703660294dd201f37fb75f0c13d43c046",
+  "sourceContentHash": "4d31616fb9d1c0719e2f004736c5753a5a0f456c36c5bb410ef58394d0fb7fed",
+  "editorialSha256": "c3dfcd86b2b8ca291e2b7b37e676efede02c9507efde3f89055188a1a36174f3",
+  "hints": {
+    "zh": [
+      "任何必须经过 waypoint 的路线都可以在第一次到达 waypoint 处切成两段：start→waypoint 和 waypoint→target，两段互不约束（允许重复经过节点）。",
+      "因此受限最短路就是 dist(start, waypoint) + dist(waypoint, target)，而普通最短路是 dist(start, target)。边权非负，用 Dijkstra。",
+      "按 u→v 建单向图，分别从 start 和 waypoint 各跑一次 Dijkstra。第一个答案是 start 到 target 的距离；第二个答案在两段都可达时取两段之和，否则为 −1。距离可达 10¹⁴ 量级，用 64 位整数。"
+    ],
+    "en": [
+      "Any route that must visit the waypoint can be cut where it reaches the waypoint into start→waypoint and waypoint→target, and the two parts constrain each other in no way (revisiting nodes is allowed).",
+      "So the constrained shortest distance is dist(start, waypoint) + dist(waypoint, target), and the plain one is dist(start, target). Weights are non-negative, so use Dijkstra.",
+      "Build the directed graph with edges u→v and run Dijkstra once from start and once from waypoint. The first answer is the distance from start to target; the second is the sum of the two parts when both are reachable, otherwise −1. Distances can reach about 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Idea\n\nAdd every edge strictly as `u→v`. Run Dijkstra from `start` and from `waypoint` separately to get `dist(start,target)` and `dist(start,waypoint)+dist(waypoint,target)`; output -1 when either required part is unreachable. Use 64-bit integers.\n\n## Correctness\n\nAny route through the waypoint splits into the two parts start→waypoint and waypoint→target, so its length is at least the sum of the two shortest distances; concatenating the two shortest paths gives a valid route, since the statement allows revisiting nodes. Therefore that sum is exactly the constrained shortest distance. The other value comes from the single Dijkstra run from start.\n\n## Complexity\n\nTwo Dijkstra runs: O((n+m)log n) time, O(n+m) space.\n\n## Source and site additions\n\nOAMaster snapshot of the original problem: https://oamaster.com/docs/companies/google#71-shortest-path-with-mandatory-waypoint (fingerprint `4d31616fb9d1c0719e2f004736c5753a5a0f456c36c5bb410ef58394d0fb7fed`). Its text labels the edges undirected, but example two `[2,-1]` contradicts both that and the three-language code that \"adds a reverse edge for every edge\": in an undirected graph the target is reachable via `2→0→1→3`. An external version with the same function signature, examples and constraints explicitly specifies directed edges and gives the same two answers: https://www.fastprep.io/problems/google-shortest-path-with-mandatory-waypoint. This site therefore treats the graph as directed and removes the reverse edges. Allowing a route to revisit nodes is an explicit addition by this site, so that \"route\" is precisely defined rather than meaning a simple path. This site stores the returned distances as 64-bit values to cover large-weight paths under the original constraints. The third-party version's `int[]` return signature does not fit the largest constraints; this site's data flow uses 64-bit results."
+}

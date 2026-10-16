@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-11",
+  "packageChecksum": "7b21e352d25227c07248e9ede1cc901c019b8c10ff2264c882ba95397ab05924",
+  "sourceContentHash": "0165d81b7ea22388e86342ab7b4a41c4f367f02521ac51cbfc2b5fe6a9fa3075",
+  "editorialSha256": "a91a1df56583d91973d7478f053156f4284cb95d89ab2130c0fea1d4da04c88b",
+  "hints": {
+    "zh": [
+      "先假设所有任务都交给第二个人，总分就是 reward_2 之和；之后每把一个任务 i 改给第一个人，总分的变化恰好是 reward_1[i]−reward_2[i]。",
+      "第一个人必须恰好做 k 个任务，问题就变成从 n 个差值里恰好选 k 个，使它们的和最大。交换论证说明应该选最大的 k 个差值，即使其中有负数也必须选。",
+      "求出 reward_2 的总和，计算每个任务的差值并从大到小排序，把前 k 个差值加到总和上输出；k=0 时答案就是 reward_2 之和。"
+    ],
+    "en": [
+      "Start by giving every task to the second person, so the score is the sum of reward_2; every time task i is moved to the first person, the score changes by exactly reward_1[i] - reward_2[i].",
+      "The first person must do exactly k tasks, so the problem becomes choosing exactly k of the n differences with the largest sum. An exchange argument shows you should take the k largest differences, even if some of them are negative.",
+      "Compute the sum of reward_2, compute each task's difference, sort the differences in descending order, and add the first k of them to the sum; when k = 0 the answer is just the sum of reward_2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nExample 1: if the second person does everything, the score is 15; moving the three tasks with the largest differences to the first person adds 6, for a total of 21. The addends in the source's explanation contradict its output, so the statement and the output take precedence.\n\n## Proof of correctness\n\nTake giving every task to the second person as the baseline. Reassigning task i to the first person yields a gain of reward_1[i]-reward_2[i]. When exactly k tasks are chosen, if a larger gain is left out while a smaller gain is chosen, swapping them improves or keeps the total score, so the k largest differences should be chosen.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

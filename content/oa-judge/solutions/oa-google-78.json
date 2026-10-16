@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-78",
+  "packageChecksum": "8e4c80d7ec212c969d02d0aef66bc10c7cc25c2c959430d5ee6f9552e7ffcb40",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    string start, target;\n    cin >> n >> start >> target;\n    // BFS over valid strings; each edge recolors one position\n    unordered_map<string, int> dist = {{start, 0}};\n    deque<string> q = {start};\n    while (!q.empty()) {\n        string s = q.front();\n        q.pop_front();\n        int d = dist[s];\n        if (s == target) { cout << d << \"\\n\"; return 0; }\n        for (int i = 0; i < n; i++)\n            for (char c : string(\"xyz\")) {\n                if (c == s[i] || (i && s[i - 1] == c) || (i + 1 < n && s[i + 1] == c)) continue;\n                string t = s;\n                t[i] = c;\n                if (!dist.count(t)) { dist[t] = d + 1; q.push_back(t); }\n            }\n    }\n    cout << -1 << \"\\n\";\n}\n",
+      "sha256": "f55bc15ad6a10599956d3a7efe1d1dc957f0f3e3bda3af4ca81bcfc4d6ffff40"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        int n = in.nextInt();\n        String start = in.next(), target = in.next();\n        // BFS over valid strings; each edge recolors one position\n        HashMap<String, Integer> dist = new HashMap<>();\n        dist.put(start, 0);\n        ArrayDeque<String> q = new ArrayDeque<>();\n        q.add(start);\n        while (!q.isEmpty()) {\n            String s = q.poll();\n            int d = dist.get(s);\n            if (s.equals(target)) { System.out.println(d); return; }\n            char[] arr = s.toCharArray();\n            for (int i = 0; i < n; i++)\n                for (char c : new char[]{'x', 'y', 'z'}) {\n                    if (c == arr[i] || (i > 0 && arr[i - 1] == c) || (i + 1 < n && arr[i + 1] == c)) continue;\n                    char old = arr[i];\n                    arr[i] = c;\n                    String t = new String(arr);\n                    arr[i] = old;\n                    if (!dist.containsKey(t)) { dist.put(t, d + 1); q.add(t); }\n                }\n        }\n        System.out.println(-1);\n    }\n}\n",
+      "sha256": "140a825c7079e47e44a816a4fe7f1c017b9ef5f9f3b0d5c10b1412b97456f3c0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReader(os.Stdin)\n\tvar n int\n\tvar start, target string\n\tfmt.Fscan(r, &n, &start, &target)\n\t// BFS over valid strings; each edge recolors one position\n\tdist := map[string]int{start: 0}\n\tq := []string{start}\n\tfor head := 0; head < len(q); head++ {\n\t\ts := q[head]\n\t\td := dist[s]\n\t\tif s == target {\n\t\t\tfmt.Println(d)\n\t\t\treturn\n\t\t}\n\t\tfor i := 0; i < n; i++ {\n\t\t\tfor _, c := range []byte(\"xyz\") {\n\t\t\t\tif c == s[i] || (i > 0 && s[i-1] == c) || (i+1 < n && s[i+1] == c) {\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tt := []byte(s)\n\t\t\t\tt[i] = c\n\t\t\t\tts := string(t)\n\t\t\t\tif _, ok := dist[ts]; !ok {\n\t\t\t\t\tdist[ts] = d + 1\n\t\t\t\t\tq = append(q, ts)\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(-1)\n}\n",
+      "sha256": "e2542d10ccb52bd92c438046fa4407e90e6653467ef80917c7e5209b66ba68a1"
+    }
+  ]
+}

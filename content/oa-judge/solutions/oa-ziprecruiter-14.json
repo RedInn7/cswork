@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-14",
+  "packageChecksum": "4110ddf25a6b2a85c5ba85fadfe35fd751889f16616c7fc4575a1b881a6287e1",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\ns = sys.stdin.readline().strip()\ncount = 0\nfor i in range(len(s) - 2):\n    a, b, c = s[i], s[i + 1], s[i + 2]\n    if a != b and a != c and b != c:\n        count += 1\nprint(count)\n",
+      "sha256": "1e0c9dd2b722a6ccb698b952438df5d52f24dfd233a0b1fcbdc58aeeb413df69"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));\n        String s = in.readLine().trim();\n        int count = 0;\n        for (int i = 0; i + 2 < s.length(); i++) {\n            char a = s.charAt(i), b = s.charAt(i + 1), c = s.charAt(i + 2);\n            if (a != b && a != c && b != c) count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "d7a11591c062de11c29e3c4b4c11a626b7e3542a0d19fa843bd6b42c5dc07766"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &s)\n\tcount := 0\n\tfor i := 0; i+2 < len(s); i++ {\n\t\ta, b, c := s[i], s[i+1], s[i+2]\n\t\tif a != b && a != c && b != c {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "16acbcc310c4a8486074e713675ada372bbdeba9df1869bec284940d08c66065"
+    }
+  ]
+}

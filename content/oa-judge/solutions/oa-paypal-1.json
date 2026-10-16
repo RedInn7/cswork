@@ -1,0 +1,21 @@
+{
+  "id": "oa-paypal-1",
+  "packageChecksum": "54173847da8c82c7b4ca50d7e2358570bc2cdd7983ec5ad42349c95613e9843b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool isVowel(char c) { return string(\"aeiou\").find(c) != string::npos; }\n\nint main() {\n    string s;\n    cin >> s;\n    long long n = s.size(), v = 0;\n    for (char c : s) v += isVowel(c);\n    if (n % 2) { cout << -1 << \"\\n\"; return 0; }\n    long long target = n / 2, need = llabs(v - target);\n    // Convert `need` characters of the larger class; each costs its distance to the other class.\n    bool fromVowels = v > target;\n    vector<int> costs;\n    for (char c : s) {\n        if (isVowel(c) != fromVowels) continue;\n        int best = INT_MAX;\n        for (char to = 'a'; to <= 'z'; to++)\n            if (isVowel(to) != fromVowels) best = min(best, abs(c - to));\n        costs.push_back(best);\n    }\n    sort(costs.begin(), costs.end());\n    long long total = 0;\n    for (long long i = 0; i < need; i++) total += costs[i];\n    cout << total << \"\\n\";\n}\n",
+      "sha256": "9d7990ec090cf7a7e8b759a751ce1afd16c758dc29302fe6ff3b0713fe2f05a4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static boolean isVowel(char c) {\n        return \"aeiou\".indexOf(c) >= 0;\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        int n = s.length(), v = 0;\n        for (char c : s.toCharArray()) if (isVowel(c)) v++;\n        if (n % 2 != 0) {\n            System.out.print(\"-1\\n\");\n            return;\n        }\n        int target = n / 2, need = Math.abs(v - target);\n        // Convert `need` characters of the larger class; each costs its distance to the other class.\n        boolean fromVowels = v > target;\n        int[] costs = new int[n];\n        int m = 0;\n        for (char c : s.toCharArray()) {\n            if (isVowel(c) != fromVowels) continue;\n            int best = Integer.MAX_VALUE;\n            for (char to = 'a'; to <= 'z'; to++)\n                if (isVowel(to) != fromVowels) best = Math.min(best, Math.abs(c - to));\n            costs[m++] = best;\n        }\n        Arrays.sort(costs, 0, m);\n        long total = 0;\n        for (int i = 0; i < need; i++) total += costs[i];\n        System.out.print(total + \"\\n\");\n    }\n}\n",
+      "sha256": "0b748b3521a9d81333114689938bc26d48f65845247a3d7eedb431d850146910"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strings\"\n)\n\nfunc isVowel(c byte) bool { return strings.IndexByte(\"aeiou\", c) >= 0 }\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &s)\n\tn, v := len(s), 0\n\tfor i := 0; i < n; i++ {\n\t\tif isVowel(s[i]) {\n\t\t\tv++\n\t\t}\n\t}\n\tif n%2 != 0 {\n\t\tfmt.Println(-1)\n\t\treturn\n\t}\n\ttarget := n / 2\n\tneed := v - target\n\tif need < 0 {\n\t\tneed = -need\n\t}\n\t// Convert `need` characters of the larger class; each costs its distance to the other class.\n\tfromVowels := v > target\n\tcosts := []int{}\n\tfor i := 0; i < n; i++ {\n\t\tc := s[i]\n\t\tif isVowel(c) != fromVowels {\n\t\t\tcontinue\n\t\t}\n\t\tbest := 1 << 30\n\t\tfor to := byte('a'); to <= 'z'; to++ {\n\t\t\tif isVowel(to) != fromVowels {\n\t\t\t\td := int(c) - int(to)\n\t\t\t\tif d < 0 {\n\t\t\t\t\td = -d\n\t\t\t\t}\n\t\t\t\tbest = min(best, d)\n\t\t\t}\n\t\t}\n\t\tcosts = append(costs, best)\n\t}\n\tsort.Ints(costs)\n\ttotal := 0\n\tfor i := 0; i < need; i++ {\n\t\ttotal += costs[i]\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "15f08a0895f174739039b81758d45d8ecc810f488ae61c16adc747e5cf4b0329"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-26",
+  "packageChecksum": "606415dbe633f32835b3f991a88b25f37bc15d1cbb9e6a8389b39df22a618e42",
+  "sourceContentHash": "9d1e125397704c11f8bb6aae7d679404462530f4ce71aa9701d3b47612fc7ab4",
+  "editorialSha256": "a514830909c0e9acdd3ab23f23097c8ba12f878247b973507d6a710508593655",
+  "hints": {
+    "zh": [
+      "比较字典序时，越靠前的位置越重要；删掉一个字符后，结果和原串的第一个不同位置出现在被删位置附近。",
+      "如果某处 s[i]>s[i+1]，删掉 s[i] 能让这个位置变小；在第一个这样的下降处删除最好。如果整个串不下降，删任何非末尾字符都不会更小，删最后一个字符最好。",
+      "从左到右找第一个满足 s[i]>s[i+1] 的 i；找到就删除 s[i]，找不到就删除最后一个字符，输出剩余的字符串。"
+    ],
+    "en": [
+      "In lexicographic order earlier positions matter most; after deleting one character, the first place the result differs from the original string is near the deleted position.",
+      "If s[i]>s[i+1] somewhere, deleting s[i] makes that position smaller, and the first such descent is the best place to delete. If the string never decreases, deleting any non-final character cannot help, so delete the last character.",
+      "Scan left to right for the first i with s[i]>s[i+1]; if it exists delete s[i], otherwise delete the last character, and print what remains."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDelete at the first position whose character is strictly greater than the next one; if there is no descent, delete the last character.\n\n## Proof of correctness\n\nBefore the first descent the characters are non-decreasing, so deleting an earlier position is no better than keeping the smaller current character; deleting at the first descent makes the first differing position smaller. When there is no descent, keeping the longest prefix and deleting the last character is optimal.\n\n## Complexity\n\nTime O(N), output space O(N)."
+}

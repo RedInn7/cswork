@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-119",
+  "packageChecksum": "39fb71eba38d686f5053a488a762ba5311caba31f41be0690e00669842eca4fb",
+  "sourceContentHash": "5ab9912b38a94d5ea047132d7750199e18d023fa61b73968f297d08b48873416",
+  "editorialSha256": "e8dc3ad09bafca4e44dcf0e620edf303588cd4ea97d1a341b4c32f4141398893",
+  "hints": {
+    "zh": [
+      "固定一个字符 c：c 恰好占子串一半，等价于把 c 记为 +1、其他字符记为 -1 后子串和为 0，也就是两个前缀和相等。",
+      "对每种字符分别数“相等前缀和对”再相加，会把“只由两种字符组成且两者各占一半”的子串数两次；三种字符不可能同时各占一半，所以只要对每一对字符扣掉一次这类子串。",
+      "第一步：对每个出现过的字符扫一遍全串，用计数数组记录各前缀和出现次数，累加相等对数。第二步：对每对字符 (a,b)，按下标归并两者的出现位置，位置不连续时说明中间夹了别的字符，就把余额和计数清零重新开始；a 记 +1、b 记 -1，在每段内同样数相等前缀和对并从答案里减去。答案用 64 位整数。"
+    ],
+    "en": [
+      "Fix one character c: c makes up exactly half of a substring exactly when, with c as +1 and every other character as -1, the substring sums to 0, which means two prefix sums are equal.",
+      "Counting equal prefix-sum pairs for each character and adding them counts twice every substring made of exactly two characters in equal numbers; three characters can never each make up half, so subtract such substrings once per pair of characters.",
+      "Step one: for each character that occurs, scan the whole string, count how often each prefix sum has appeared, and add the number of equal pairs. Step two: for each pair of characters (a,b), merge their positions by index; when positions are not consecutive another character lies between them, so reset the balance and the counts; with a as +1 and b as -1, count equal prefix-sum pairs inside each stretch and subtract them. Use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each character, map it to +1 and every other character to -1, and count pairs of equal prefix sums to find the substrings where it makes up exactly half. The only double counting happens when there are exactly two characters in equal numbers; for each pair of characters, merge their positions, do a balance count within the stretches that contain no other character, and subtract it.\n\n## Correctness\n\nA single character being balanced is equivalent to its frequency being exactly half the length. A non-empty substring cannot have three characters that each make up half; when two characters do, the substring necessarily contains no other character. Going pair by pair subtracts exactly those substrings that were counted one extra time, so every valid substring is counted once. Each position takes part in at most 25 pair merges.\n\n## Complexity\n\nTime O(26n), space O(n)."
+}

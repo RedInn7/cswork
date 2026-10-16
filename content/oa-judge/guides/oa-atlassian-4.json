@@ -1,0 +1,19 @@
+{
+  "id": "oa-atlassian-4",
+  "packageChecksum": "7151f111b0a0e34ac06a41efe9358a3f2c6da4876c8bca59bee9ad69a7962861",
+  "sourceContentHash": "dfc90a5dbccb20c791ee2e7e7040098f6af1a62f1a09ea4b084e5b983c2ce7bc",
+  "editorialSha256": "b5cd9628358b0f5cb012d3769ea61a0d7985afbcdc084eae0ba59c68bab306b0",
+  "hints": {
+    "zh": [
+      "标准罗马数字可以看成 13 种\"面值\"：M、CM、D、CD、C、XC、L、XL、X、IX、V、IV、I，六种减法形式也当作独立的符号。",
+      "从大到小贪心：能用大面值就尽量多用，剩下的交给更小的面值。千位只能用 M 表示，其余每一位都会被恰好拆成它的标准写法。",
+      "准备从 1000 到 1 的 13 组（数值，符号），对每个数依次用整除得到每个符号的重复次数，追加相应符号并减去其值；每个数单独输出一行。"
+    ],
+    "en": [
+      "Standard Roman numerals can be viewed as 13 denominations: M, CM, D, CD, C, XC, L, XL, X, IX, V, IV, I, treating the six subtractive forms as symbols of their own.",
+      "Go greedily from large to small: use each large denomination as many times as possible and leave the rest to smaller ones. Thousands can only be written with M, and every other digit is split into exactly its standard form.",
+      "Prepare the 13 (value, symbol) pairs from 1000 down to 1. For each number, use integer division to get how many times each symbol repeats, append the symbols and subtract their value; print one line per number."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUsing the 13 standard symbol values from 1000 down to 1, determine each repeat count by integer division from largest to smallest and subtract the corresponding value.\n\n## Proof of Correctness\n\nThe thousands can only use M, and the hundreds, tens, and ones are each uniquely represented by the largest available symbol together with the prescribed subtractive combinations; taking values from largest to smallest realizes exactly the standard representation of each digit without affecting the remaining lower digits, and induction over the digits gives the unique result.\n\n## Complexity\n\nAt most 15 characters per number, O(n) time, and O(n) space to store the results; stdout ≤1600000 bytes."
+}

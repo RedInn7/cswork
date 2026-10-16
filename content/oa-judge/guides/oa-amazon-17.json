@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-17",
+  "packageChecksum": "9cc6a1c712b949fbbac5e47ea8956049183ac9ef2999b2c77ee2a44a7ca911c1",
+  "sourceContentHash": "138a467f26393465ad3f52b7018a3d1605efa96a5f1eb09c0431d5c0d3c705a6",
+  "editorialSha256": "5e92b735d2be9b78ac00218382d5b2c8b4f1454af21a8346ace6221fef6346dc",
+  "hints": {
+    "zh": [
+      "每人拿1个或2个，k个人分完n个游戏，所以恰好有n−k个人拿两个、其余人拿一个；容量至少是最大那个游戏的大小。",
+      "让最大的2k−n个游戏各自单独分配，剩下最小的2(n−k)个游戏两两配对；配对时最小配最大、次小配次大，能让最大的配对和尽可能小。",
+      "升序排序，pairs=n−k，答案初值为最大值a[n−1]；对i从0到pairs−1，用a[i]+a[2·pairs−1−i]更新最大值，输出结果。和可能超过32位，用64位整数。"
+    ],
+    "en": [
+      "Each child takes 1 or 2 games and k children take all n, so exactly n-k children take two and the rest take one; the capacity is at least the size of the largest game.",
+      "Let the 2k-n largest games go alone and pair up the 2(n-k) smallest ones; pairing the smallest with the largest, the second smallest with the second largest, and so on keeps the largest pair sum as small as possible.",
+      "Sort ascending, let pairs = n - k and start the answer at the maximum a[n-1]; for i from 0 to pairs-1 raise it to a[i] + a[2*pairs - 1 - i] when larger, then print it. Sums can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nExactly n-k pairs must be formed. Let the largest games go alone, and pair the smallest 2(n-k) numbers from both ends inward. The capacity is the maximum of all pair sums and the largest single game.\n\n## Proof of correctness\n\nIf a game assigned alone is smaller than a game in some pair, the two can be swapped: the pair sum does not increase, and the largest single game does not exceed the original largest game. So the largest games can be the ones assigned alone. For the remaining pairs, pairing the smallest with the largest can be reached by exchanges that do not increase the largest pair sum, and the argument continues by induction.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

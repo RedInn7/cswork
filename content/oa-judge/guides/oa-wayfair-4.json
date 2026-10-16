@@ -1,0 +1,19 @@
+{
+  "id": "oa-wayfair-4",
+  "packageChecksum": "0402c49d4ce997fa555711a39f44da1f7aebe2dcb2a2c6ed2731745155e36f25",
+  "sourceContentHash": "f16fea7a633e124c4b7d7f294286e074b845348f459fe21ba4acc83c4a875185",
+  "editorialSha256": "35e0e1aec287cb3aaa8dd62257515c10d967e3eb3ad29919785e19fa45c59def",
+  "hints": {
+    "zh": [
+      "条件有三条：首字符是 1、0 的个数至少为 2、0 的个数是偶数，三条同时满足才是 True。",
+      "输入只含 0 和 1，所以只需看首字符并统计 0 的个数，不必真的写正则。",
+      "读入 q 和每个字符串；统计 '0' 的数量 z，若 s[0]=='1' 且 z≥2 且 z 为偶数输出 True，否则输出 False，每个结果单独一行。"
+    ],
+    "en": [
+      "There are three conditions: the first character is 1, there are at least two 0s, and the number of 0s is even; the answer is True only when all three hold.",
+      "The input contains only 0 and 1, so it is enough to look at the first character and count the 0s; no actual regex is needed.",
+      "Read q and each string; count the zeros z, print True if s[0] == '1' and z ≥ 2 and z is even, otherwise False, one result per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCheck the first character and the number of 0s; the string qualifies when there are at least two 0s and their count is even.\n\n## Proof of correctness\n\nThe definition is exactly the conjunction of the three conditions. Since the input characters are restricted to binary, checking the first character and the count of 0s covers all conditions.\n\n## Complexity\n\nTime O(total length), extra space O(1)."
+}

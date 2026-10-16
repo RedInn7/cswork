@@ -1,0 +1,21 @@
+{
+  "id": "oa-ebay-6",
+  "packageChecksum": "1ab6fe04258df81ad210e57775b5615ba069891f3ab1ce48798756bbb9c4bc47",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long answer = 0;\n    // Every position left of i is already 0, so a[i] (if nonzero) is the leftmost nonzero element.\n    for (int i = 0; i < n; i++) {\n        long long x = a[i];\n        if (x == 0) continue;\n        answer += x;\n        for (int j = i; j < n && a[j] >= x; j++) a[j] -= x;  // stop at the first smaller value\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "c219766485fb7e3586a4a65d3c5430a23092b7e868f93b53adc0e315c4ea826a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long answer = 0;\n        for (int i = 0; i < n; i++) {\n            long x = a[i];\n            if (x == 0) continue;\n            answer += x;\n            for (int j = i; j < n && a[j] >= x; j++) a[j] -= x;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "152954c370d1b173344a11325dd007c9c0a4a48524474826a36f75495407b665"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tx := a[i]\n\t\tif x == 0 {\n\t\t\tcontinue\n\t\t}\n\t\tanswer += x\n\t\tfor j := i; j < n && a[j] >= x; j++ {\n\t\t\ta[j] -= x\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "d0df20ff20ab5d6c75e6979b4f45095131f48b5b846aa414649aa7825425125a"
+    }
+  ]
+}

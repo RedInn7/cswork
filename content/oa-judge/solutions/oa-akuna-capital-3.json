@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-3",
+  "packageChecksum": "f0ccbba8bccfb0dbb3d79be8b6efec3385a0d034d3e42eb6e9402fa13f5ddec8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<pair<long long, long long>> u(n);\n    for (auto &x : u) cin >> x.first;\n    for (auto &x : u) cin >> x.second;\n    sort(u.begin(), u.end());\n    // In planned order, use the alternate date when it is not earlier than the current day.\n    long long day = 0;\n    for (auto [planned, alt] : u) day = alt >= day ? alt : planned;\n    cout << day << \"\\n\";\n}\n",
+      "sha256": "4178eddb031a3a65f2fa1d01cf8cf4857702bb2cf20732e2ba259ff90d8a463d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] planned = new long[n];\n        for (int i = 0; i < n; i++) planned[i] = nextLong();\n        // Both dates are below 2^30: sort (planned, alternate) packed into one long.\n        long[] key = new long[n];\n        for (int i = 0; i < n; i++) key[i] = (planned[i] << 30) | nextLong();\n        Arrays.sort(key);\n        // In planned order, use the alternate date when it is not earlier than the current day.\n        long day = 0, mask = (1L << 30) - 1;\n        for (long k : key) {\n            long alt = k & mask;\n            day = alt >= day ? alt : k >>> 30;\n        }\n        System.out.println(day);\n    }\n}\n",
+      "sha256": "10f8f573088c761c5da93b13231904a4de00c122b9869d865d16dd733af9d19c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\tplanned := make([]int64, n)\n\tfor i := range planned {\n\t\tplanned[i] = nextInt()\n\t}\n\t// Both dates are below 2^30: sort (planned, alternate) packed into one int64.\n\tkey := make([]int64, n)\n\tfor i := range key {\n\t\tkey[i] = planned[i]<<30 | nextInt()\n\t}\n\tslices.Sort(key)\n\t// In planned order, use the alternate date when it is not earlier than the current day.\n\tday := int64(0)\n\tfor _, k := range key {\n\t\tif alt := k & (1<<30 - 1); alt >= day {\n\t\t\tday = alt\n\t\t} else {\n\t\t\tday = k >> 30\n\t\t}\n\t}\n\tfmt.Println(day)\n}\n",
+      "sha256": "3e35ed14062d6c963c7a0e0550e3f84f8490641177a4d2a5a91ccd087f39ecc2"
+    }
+  ]
+}

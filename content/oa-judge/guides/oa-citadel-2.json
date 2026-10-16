@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-2",
+  "packageChecksum": "8cf97852d65ddea4863f6b1372cafb9d29da18a6bfffde20e17dd1b6ef0990c5",
+  "sourceContentHash": "97ceef566fb76d01dcac2198a10ad955f2cee642268cca7daf9a858e2db7e9e6",
+  "editorialSha256": "746dad4a51da15bb3692a6ceddee686802f8f0ff6c328cbb5b1c0e27d52328c9",
+  "hints": {
+    "zh": [
+      "u 和 w 的共同朋友数，恰好等于路径 u − v − w 的条数（v 是中间人）。每人至多 15 个朋友，所以枚举“朋友的朋友”很便宜。",
+      "对每个 u 枚举所有二跳路径，给既不是 u 也不是 u 的朋友的 w 计数；有正分候选时取分数最高、再取编号最小者。没有正分候选时，任意非朋友的共同数都是 0，取最小的非朋友编号即可。",
+      "用邻接表存图；处理 u 时先标记 u 的朋友，再统计二跳次数并记下被触及的节点，选完后只清零这些节点。回退扫描从 0 开始跳过 u 和朋友，最多看 17 个编号；扫到 n 仍没有就输出 -1。"
+    ],
+    "en": [
+      "The number of mutual friends of u and w is exactly the number of paths u - v - w through a middle person v. Everyone has at most 15 friends, so enumerating friends of friends is cheap.",
+      "For each u, walk every two-hop path and count the endpoints w that are neither u nor a friend of u; if there is a positive-score candidate, take the highest score and then the smallest ID. If there is none, every non-friend has 0 mutual friends, so take the smallest non-friend ID.",
+      "Store the graph as adjacency lists. For u, mark its friends, count two-hop hits while remembering which nodes were touched, choose the best, and reset only those nodes. The fallback scan starts at 0 and skips u and its friends, checking at most 17 IDs; if it reaches n, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the friends of each person's friends to count two-hop occurrences, excluding the person and their direct friends; if there is no candidate with a positive score, scan for the smallest ID not in the set formed by the person and their friends.\n\n## Proof of correctness\n\nEach path u-v-w corresponds to exactly one mutual friend v, and the absence of multi-edges guarantees that the count equals the number of mutual friends. Every positive-score candidate appears, so choosing by score and then by ID is exact; a non-friend that never appears has 0 mutual friends and can only be optimal when there is no positive-score candidate, in which case the smallest such ID is chosen directly.\n\n## Complexity\n\nO(n*15^2) time and O(n+m) space; the zero-score fallback checks at most 17 IDs."
+}

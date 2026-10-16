@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-105",
+  "packageChecksum": "ec004aa4f7c495f9dc13d38b663d7c17f050502b0020980b5129203b584201da",
+  "sourceContentHash": "315e4f7365bc54e7529fb4e2d08616865e34c6398bf321c15919a3f70dc1e5a3",
+  "editorialSha256": "fdb2822d7b650935876598cc3fa8698c728724910c18ef6ac7a381c964eb993f",
+  "hints": {
+    "zh": [
+      "单独占一个通道的包，它的中位数就是自己；要让总和最大，应该让最大的包尽量独占通道。",
+      "可以证明最优方案中至多只有一个通道包含多个包：把最大的 k−1 个包各自独占一个通道，剩下的所有较小的包合成最后一个通道，取它的中位数。",
+      "排序；remaining=n−k+1 个最小的包组成一组，记 j=remaining/2，两倍中位数为奇数个时 2·a[j]，偶数个时 a[j−1]+a[j]；答案为最大 k−1 个包之和加上 (两倍中位数+1)/2（即 0.5 向上取整）；用 64 位整数，全程整数运算避免浮点。"
+    ],
+    "en": [
+      "A packet alone in a channel has itself as the median, so to maximize the total the largest packets should get channels of their own.",
+      "An optimal plan can be shown to have at most one channel with several packets: give each of the k-1 largest packets its own channel and put all the remaining smaller packets in the last channel, taking its median.",
+      "Sort; the remaining = n - k + 1 smallest packets form one group; with j = remaining / 2, twice the median is 2*a[j] for an odd count and a[j-1] + a[j] for an even count; the answer is the sum of the k-1 largest packets plus (twice the median + 1) / 2, which rounds .5 up. Use 64-bit integers and integer arithmetic only, no floating point."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGive each of the k-1 largest items its own channel and put the remaining smaller items together in the last channel. Add the solo values and the median of the last group, using twice-the-value integers to avoid floating point.\n\n## Proof of correctness\n\nIf there are two multi-item groups, the larger element behind the higher of their medians can be promoted to a solo group and the remaining elements merged into the other group; comparing the medians by ordered pairing shows the total does not decrease. Repeating this leaves at most one multi-item group; taking the largest k-1 items as solos is optimal, and the remaining group contributes its median.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

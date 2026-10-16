@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-23",
+  "packageChecksum": "07fe2ef958b63c800bd36b7c9c2be14ede17c9cfbd5a25fedf8f82b95bebe76a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // The survivor is always a sum of original values of one index parity.\n    long long even = 0, odd = 0, largest = LLONG_MIN;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        largest = max(largest, v);\n        if (v > 0) (i % 2 ? odd : even) += v;\n    }\n    long long best = max(even, odd);\n    cout << (best > 0 ? best : largest) << \"\\n\";\n}\n",
+      "sha256": "07db94ad0d5f2abf5fbb63fbfee7ac60be41b8ac98c996aad0f6e60aef104ded"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // The survivor is always a sum of original values of one index parity.\n        long even = 0, odd = 0, largest = Long.MIN_VALUE;\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            largest = Math.max(largest, v);\n            if (v > 0) {\n                if (i % 2 == 1) odd += v;\n                else even += v;\n            }\n        }\n        long best = Math.max(even, odd);\n        System.out.println(best > 0 ? best : largest);\n    }\n}\n",
+      "sha256": "72d83e4e5393757ed789706d2b8e682f87abbe2de1e65169f0d9fe7d2d2f53a3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"math\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\t// The survivor is always a sum of original values of one index parity.\n\tvar even, odd int64\n\tlargest := int64(math.MinInt64)\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tlargest = max(largest, v)\n\t\tif v > 0 {\n\t\t\tif i%2 == 1 {\n\t\t\t\todd += v\n\t\t\t} else {\n\t\t\t\teven += v\n\t\t\t}\n\t\t}\n\t}\n\tif best := max(even, odd); best > 0 {\n\t\tfmt.Println(best)\n\t} else {\n\t\tfmt.Println(largest)\n\t}\n}\n",
+      "sha256": "222564e9e8b751c3bcd578d4ab3fbf95ec096951a5d42faeda47a34f211b1c5e"
+    }
+  ]
+}

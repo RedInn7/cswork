@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-18",
+  "packageChecksum": "1df94ecee0cb08b52cd269da4d760092d67c300aca0f442b4a882f65d9b26926",
+  "sourceContentHash": "24d5f53efc8f1b5a1264746f395da2191293b92bbe5dbd82c362658de5836cb6",
+  "editorialSha256": "df2e19c0bcea8122d7a2285b03553665e48160e7ea972460ce437b6a51c4040e",
+  "hints": {
+    "zh": [
+      "对任意一行 i 和一列 j，都有“列 j 的最小值 ≤ a[i][j] ≤ 行 i 的最大值”，所以所有列最小值都不超过所有行最大值。",
+      "只需要两个量：所有行最大值中的最小值 R，和所有列最小值中的最大值 C；合法元素存在当且仅当 R=C，而且这时它的值就是 R。",
+      "逐行读入，每行求出最大值并更新 R=min(R, 行最大值)，同时用长度为 M 的数组维护每列最小值；读完后 C=max(列最小值)；若 C==R 输出该值，否则输出 −1。不必保存整个矩阵。"
+    ],
+    "en": [
+      "For any row i and column j, the minimum of column j <= a[i][j] <= the maximum of row i, so every column minimum is at most every row maximum.",
+      "Only two numbers matter: R, the smallest of the row maxima, and C, the largest of the column minima; a valid element exists exactly when R = C, and then its value is R.",
+      "Read row by row, take each row maximum and update R = min(R, row maximum), while an array of length M keeps every column minimum; at the end C = max(column minima); print the value if C == R, otherwise -1. The whole matrix never needs to be stored."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the matrix row by row, recording the minimum of each column and R, the minimum of all row maxima. Let C be the maximum of the column minima; if R=C output that value, otherwise -1. Only M column values are kept; no copy of a million-integer matrix is built.\n\n## Proof of correctness\n\nFor any row i and column j, the minimum of column j <= a[i][j] <= the maximum of row i, hence C<=R. If R=C, take a row attaining R and a column attaining C; their intersection is squeezed between the same value on both sides, so it is exactly a valid element. Conversely, if some intersection is both a row maximum and a column minimum, then C>=that value and R<=that value, which together with C<=R makes all three equal; every valid intersection has the same value, so no rule for choosing among several positions needs to be invented.\n\n## Complexity\n\nO(NM) time and O(M) auxiliary space, not counting the input text; parsing row by row avoids keeping a million number objects."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-6",
+  "packageChecksum": "2046535d9058342382d3b715494ae7fe582b7bc3de7e442545eec764b077a383",
+  "sourceContentHash": "63c3c7d66f17a514c913f4938477a19ed4b0550824e542e0fb04078067d50f60",
+  "editorialSha256": "afb0e4fa5c68e2dc5bba75b6f8c8098d8a3d4770261e8e03449e45284e902f6e",
+  "hints": {
+    "zh": [
+      "一对相邻的相同字母可以把紧挨着的下一个字母改成同一个字母，改完后又形成新的一对，于是能一路向右推进，把右侧后缀中与它不同的字母逐个改掉。",
+      "顺序很关键：先让靠右的相同字母对把它右侧的后缀改完，靠左的对再向右传播时，右侧那些与它不同的字母还能再被改一次。所以按从右到左的顺序处理每一对，能把机会用满。",
+      "从右往左扫描，维护当前后缀 s[i..] 中每个字母的个数。当 s[i] 与 s[i+1] 相同时，它右侧长度为 n−i−1 的后缀里所有不等于 s[i] 的字母都能各改一次，答案加上后缀长度减去其中 s[i] 的个数，然后把计数重置为“整个右侧后缀都是 s[i]”。每一步再把 s[i] 自身计入。答案可能超过 32 位。"
+    ],
+    "en": [
+      "A pair of equal adjacent letters can turn the next letter into the same letter, which forms a new pair, so it can keep moving right and change every different letter of the suffix to its right one by one.",
+      "Order matters: let the pair further right finish converting its suffix first; when a pair further left then spreads to the right, every letter there that differs from it can be changed once more. Processing the pairs from right to left uses every opportunity.",
+      "Scan from right to left, keeping the count of each letter in the current suffix s[i..]. When s[i] equals s[i+1], every letter different from s[i] in the suffix of length n−i−1 to its right can be changed once, so add that length minus the count of s[i] in it, then reset the counts to the whole suffix being s[i]. At every step also count s[i] itself. The answer may exceed 32 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan from right to left. Whenever you meet a pair of equal adjacent characters, every different character in the suffix to its right can be changed to it one at a time; add the number of differing characters and reset the suffix frequencies.\n\n## Proof of correctness\n\nA pair of equal characters further left can spread step by step over the whole suffix to its right. Finishing the operations the right side can produce before letting the left character spread loses none of the left side's spreading ability and keeps every opportunity on the right; reordering the operations yields this optimal right-to-left order. Each character in the suffix that differs requires, and can contribute, exactly one operation each time.\n\n## Complexity\n\nTime O(N), letter-count space O(26)."
+}

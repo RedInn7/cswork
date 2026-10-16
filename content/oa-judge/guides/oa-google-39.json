@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-39",
+  "packageChecksum": "c915922a1c40f633d4589ad1561bc11a13a070e91e5c2bdbd1316c791bffe7bf",
+  "sourceContentHash": "4d0321ac16710b4a6eed035d57e3362f423faca2951be03b7f0f3d279b79777c",
+  "editorialSha256": "606d582d11184d6ad19cb0accca2f740af9077d67382af229dc762435926695a",
+  "hints": {
+    "zh": [
+      "每一步都要在当前位置找“能匹配的最长词条”，而所有以当前位置开头的匹配词条都在同一条路径上：沿文本字符一路往下走就能全部遇到。",
+      "把字典建成 Trie，终止节点只记录第一次出现的标识。从当前位置沿 Trie 往下走，记下最后经过的终止节点，就是最长匹配；没有匹配就输出当前字符并前进一位。",
+      "插入每个词条，若终止节点尚无标识才写入；令 i=0，循环：从根出发沿 text[i..] 向下走，遇到终止节点就记下其标识和结束位置；若找到则输出该标识并把 i 跳到结束位置，否则输出 text[i] 并 i+1；最后先输出结果个数，再依次输出各项。"
+    ],
+    "en": [
+      "Each step needs the longest dictionary entry matching at the current position, and every entry that matches there lies on one path: walking down the text characters meets all of them.",
+      "Build a trie of the dictionary where each terminal node keeps only the first identifier given. Walk down the trie from the current position and remember the last terminal node passed: that is the longest match. Without a match, output the current character and advance by one.",
+      "Insert every entry and write its identifier only if the terminal node has none yet; with i = 0, loop: walk from the root along text[i..], recording the identifier and end position at each terminal node; if one was found output that identifier and jump i to the end position, otherwise output text[i] and advance i by one; finally print the number of results followed by the results."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild a trie in which every terminal node records only the first identifier. Walk down from the current position, remembering the last terminal node met; if a longest match exists, output it and skip over it, otherwise output the original character.\n\n## Correctness\n\nThe unique path along the text in the trie enumerates every matching entry, and the deepest terminal node corresponds to the longest entry. Only setting the identifier on an empty terminal mark keeps the first mapping. Each step makes the unique output required by the problem and advances correctly, and induction gives the complete greedy segmentation.\n\n## Complexity\n\nTime O(total dictionary length + text length * longest word length), space O(total dictionary length + output size)."
+}

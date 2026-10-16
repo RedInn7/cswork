@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-3",
+  "packageChecksum": "2be9e3b3af655f7bfd37230be1939890589636404e160a6ef1f9794248fdd31f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<long long> a(n);\n    for (auto& x : a) scanf(\"%lld\", &x);\n    sort(a.rbegin(), a.rend());\n    long long diff = 0;\n    for (int i = 0; i < n; i++) diff += i % 2 == 0 ? a[i] : -a[i];\n    printf(\"%lld\\n\", diff);\n}\n",
+      "sha256": "f45783cf9813c29cf7e409cd62bce528a61688b70b90f2f22552542c883d695e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        boolean neg = buf[bp] == '-';\n        if (neg) bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);  // ascending: the first player takes a[n-1], a[n-3], ...\n        long diff = 0;\n        for (int i = 0; i < n; i++) diff += i % 2 == 0 ? a[n - 1 - i] : -a[n - 1 - i];\n        System.out.println(diff);\n    }\n}\n",
+      "sha256": "415f2cb29d71ab3ae73505ee4d4216bb3e795dbd8235153bfab5966831d6c514"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn := int(next())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tslices.Sort(a)\n\tslices.Reverse(a)\n\tvar diff int64\n\tfor i, v := range a {\n\t\tif i%2 == 0 {\n\t\t\tdiff += v\n\t\t} else {\n\t\t\tdiff -= v\n\t\t}\n\t}\n\tfmt.Println(diff)\n}\n",
+      "sha256": "58a98dd07bddfaacdbacd22f3b28cde5bc5aa3b5e6af6ae649e6bb38ce27ff2b"
+    }
+  ]
+}

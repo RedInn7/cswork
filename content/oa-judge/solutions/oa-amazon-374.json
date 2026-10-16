@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-374",
+  "packageChecksum": "4faad325605672d7ef4c3b357aae5c8d42001814106f5a6a5576aaecbfcd5acf",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, m;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    cin >> m;\n    vector<long long> b(m);\n    for (auto &x : b) cin >> x;\n    bool hasBest = false, hasAnswer = false;\n    long long best = 0, answer = 0;\n    for (long long j = 0; j < m; j++) {\n        // Departures strictly before j: add departure j-1 if it exists.\n        if (j - 1 >= 0 && j - 1 < n) { best = hasBest ? min(best, a[j - 1]) : a[j - 1]; hasBest = true; }\n        if (hasBest) { answer = hasAnswer ? min(answer, best + b[j]) : best + b[j]; hasAnswer = true; }\n    }\n    cout << (hasAnswer ? answer : -1) << \"\\n\";\n}\n",
+      "sha256": "56d1c2a4dd115afbd66586398e36a9ba25774ac7c9b4db70f726e168bdb564a8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        int m = nextInt();\n        boolean hasBest = false, hasAnswer = false;\n        long best = 0, answer = 0;\n        for (int j = 0; j < m; j++) {\n            long value = nextLong();\n            // Departures strictly before j: add departure j-1 if it exists.\n            if (j - 1 >= 0 && j - 1 < n) {\n                best = hasBest ? Math.min(best, a[j - 1]) : a[j - 1];\n                hasBest = true;\n            }\n            if (hasBest) {\n                answer = hasAnswer ? Math.min(answer, best + value) : best + value;\n                hasAnswer = true;\n            }\n        }\n        System.out.println(hasAnswer ? answer : -1);\n    }\n}\n",
+      "sha256": "1d42136480a3ec436e29df37ba145ba73b867ec2a59fdaa47ab348adeeb41fab"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tm := int(nextInt())\n\thasBest, hasAnswer := false, false\n\tvar best, answer int64\n\tfor j := 0; j < m; j++ {\n\t\tvalue := nextInt()\n\t\t// Departures strictly before j: add departure j-1 if it exists.\n\t\tif j-1 >= 0 && j-1 < n {\n\t\t\tif !hasBest || a[j-1] < best {\n\t\t\t\tbest = a[j-1]\n\t\t\t}\n\t\t\thasBest = true\n\t\t}\n\t\tif hasBest {\n\t\t\tif !hasAnswer || best+value < answer {\n\t\t\t\tanswer = best + value\n\t\t\t}\n\t\t\thasAnswer = true\n\t\t}\n\t}\n\tif !hasAnswer {\n\t\tanswer = -1\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "f6221b910539f77b8360cb20cff3d24bfc9546a70245f3bf9d128d117c86993e"
+    }
+  ]
+}

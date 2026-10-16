@@ -1,0 +1,19 @@
+{
+  "id": "oa-publicis-sapient-1",
+  "packageChecksum": "945f5e06aaff518bec4992614729b735aff16cf9a22d9defd589afd7450939be",
+  "sourceContentHash": "384fffa3b5ae2a3e8a0bac86549638d5822bf0b3e3d1862a5eb2d32faf21308f",
+  "editorialSha256": "94e5cf860486c9fe1332a3ba568b665b3fda86187b9301f76a2c716db4343191",
+  "hints": {
+    "zh": [
+      "每个箱子的耗时都是固定的，彼此之间没有任何共享或取舍：它只取决于箱子所在的楼层。",
+      "楼层 i（从 0 开始编号，顶层为 n）上的每个箱子需要一次往返 2(n−i) 分钟，再加 1 分钟装卸，所以总时间就是 boxes[i]×(2(n−i)+1) 的总和。",
+      "一次线性扫描累加即可。注意数值范围：箱子数可达 10^9、系数可达约 2×10^5，总和最高约 10^19，超过有符号 64 位整数上限，要用无符号 64 位（或大整数）来累加并输出。"
+    ],
+    "en": [
+      "Each box costs a fixed amount of time with nothing shared or traded off between boxes: it depends only on the floor the box is on.",
+      "Every box on floor i (numbered from 0, with the top floor being n) needs a round trip of 2(n - i) minutes plus 1 minute for loading and unloading, so the total is the sum of boxes[i] * (2(n - i) + 1).",
+      "A single linear pass that accumulates this sum is enough. Watch the range: a floor can hold 10^9 boxes and the factor can be about 2 * 10^5, so the total can reach about 10^19, above the signed 64-bit limit; accumulate and print with an unsigned 64-bit integer (or a big integer)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach box on floor i takes `2(n−i)` minutes for the round trip plus 1 minute for loading and unloading, so the costs simply add up linearly. Time O(n), constant extra space.\n\n## Proof of correctness\n\nEvery box on floor i must make one round trip from that floor to the top floor and back, taking `2(n−i)`, plus 1 minute of loading and unloading. Round trips of different boxes share nothing, so adding up all these fixed costs gives the unique total time, which is also the minimum time.\n\n## Complexity\n\nEach trip visits only one floor and then returns to the top floor; boxes may repeat round trips any number of times.\n\nO(n) time, O(1) extra space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));n=z[0];a=z[1:1+n];return str(sum(b*(2*(n-i)+1) for i,b in enumerate(a)))\n```\n"
+}

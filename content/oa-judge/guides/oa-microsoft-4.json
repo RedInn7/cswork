@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-4",
+  "packageChecksum": "3dc72b746f21ecf58806ff80768720ea6c7ec4a61f6a77aeb164a5b5775bf530",
+  "sourceContentHash": "141b8f58c42a3ea1168902b5f4a53dd426bbd97a72f6f964dfe3547bfd3c7349",
+  "editorialSha256": "f4eb59870c9959d21f29d341398e9a71c3f26a80f48dea64c54645562cd4891b",
+  "hints": {
+    "zh": [
+      "每次操作都作用在一个前缀上，而且字母的循环递增可以随意交换先后顺序：一个位置最后变成什么，只取决于它一共被多少次操作覆盖。",
+      "位置 i 被覆盖的次数等于 k 大于 i 的操作个数。用差分数组记录每次“前 k 个加 1”，就不必每次逐个修改字符。",
+      "对每个 k，在差分数组下标 0 处加 1、下标 k 处减 1；然后从左到右累加得到每个位置的递增次数 c，把该字符换成（原字母序号加 c）对 26 取模后的字母，最后输出整串。"
+    ],
+    "en": [
+      "Every operation acts on a prefix, and cyclic increments commute: what a position finally becomes depends only on how many operations cover it.",
+      "Position i is covered by exactly the operations whose k is greater than i. Record each \"add 1 to the first k\" in a difference array instead of touching the characters one by one.",
+      "For each k, add 1 at index 0 of the difference array and subtract 1 at index k; then accumulate from left to right to get the increment count c of each position, replace the letter by the one at (its index plus c) modulo 26, and print the whole string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a difference array to record each prefix increment of 1, scan the prefix sums to get the total number of increments at each position, then take it modulo 26.\n\n## Proof of correctness\n\nThe increments at each position are commutative additions modulo 26. Each operation adds 1 at index 0 and subtracts 1 at index k, so the prefix sum counts exactly the operations covering that position; one scan is therefore equivalent to performing all the operations.\n\n## Complexity\n\nTime O(|s|+m), space O(|s|)."
+}

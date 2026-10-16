@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-253",
+  "packageChecksum": "43dda09f0aece1b121dd0188c8be712da93c1f1eb8b3efaea0cf41a8d379335b",
+  "sourceContentHash": "0d11ac3296838eeffdf6d4a28ab0c6837f3a9c8bd60156b143550cd27437eaf2",
+  "editorialSha256": "a5d9a6bbde271da30a2af41689e2a0d983b69bb4be486377097a72f06106e0d6",
+  "hints": {
+    "zh": [
+      "只能删最左元素，所以最后留下的一定是原数组的某个后缀，问题变成找最长的元素互异后缀。",
+      "从右往左逐个把值加入集合，第一次遇到已经见过的值时，这个位置及其左边都不能保留。",
+      "i 从 n−1 递减，若 a[i] 已在集合中，答案为 i+1（0 基下标）并结束；否则把 a[i] 加入集合；扫完都没有重复则输出 0。"
+    ],
+    "en": [
+      "Only the leftmost element can be deleted, so what remains is always a suffix of the original array, and the task is to find the longest suffix with distinct elements.",
+      "Add values to a set from right to left; the first time a value has already been seen, that position and everything to its left cannot be kept.",
+      "Go from i=n-1 down; if a[i] is already in the set, the answer is i+1 (with 0-based i) and you stop; otherwise insert a[i]; if no repeat appears, output 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdd values to a set from right to left; at the first position i whose value has already been seen, everything up to it must be deleted, so the answer is i+1; if there is never a repeat, the answer is 0.\n\n## Proof of correctness\n\nAt the first repeat met from the right, positions i+1..end are already distinct and can be kept. Any suffix starting at or before i contains a[i] and a later position with the same value, so it is invalid; hence at least i+1 items must be deleted, and this attains the minimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

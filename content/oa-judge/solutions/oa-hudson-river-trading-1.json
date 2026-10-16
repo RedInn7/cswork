@@ -1,0 +1,21 @@
+{
+  "id": "oa-hudson-river-trading-1",
+  "packageChecksum": "16a9e58bfadc0b77503a45d2ca4f43d840cb08222d4abe797ca6d304a0de5bf8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Decimal text of n built digit by digit (64-bit so INT_MIN negates safely).\nstring digits(long long n) {\n    if (n == 0) return \"0\";\n    bool neg = n < 0;\n    long long x = neg ? -n : n;\n    string out;\n    while (x) { out += char('0' + x % 10); x /= 10; }\n    if (neg) out += '-';\n    reverse(out.begin(), out.end());\n    return out;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string line, out;\n    bool first = true;\n    while (getline(cin, line)) {\n        // parse the signed integer by hand, skipping blank lines\n        size_t i = line.find_first_not_of(\" \\t\\r\");\n        if (i == string::npos) continue;\n        bool neg = false;\n        if (line[i] == '-' || line[i] == '+') neg = line[i++] == '-';\n        long long v = 0;\n        while (i < line.size() && isdigit((unsigned char)line[i])) v = v * 10 + (line[i++] - '0');\n        if (!first) out += '\\n';\n        first = false;\n        out += digits(neg ? -v : v);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "80e0a2b75ba1a7dfcedf1e3779a0454b1f6da6d7cbe4a0161e71dcb4d35aa3f9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    // Decimal text of n built digit by digit (long so INT_MIN negates safely).\n    static void digits(long n, StringBuilder out) {\n        if (n == 0) { out.append('0'); return; }\n        boolean neg = n < 0;\n        long x = neg ? -n : n;\n        char[] buf = new char[21];\n        int p = buf.length;\n        while (x > 0) { buf[--p] = (char) ('0' + x % 10); x /= 10; }\n        if (neg) buf[--p] = '-';\n        out.append(buf, p, buf.length - p);\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out = new StringBuilder();\n        boolean first = true;\n        String line;\n        while ((line = br.readLine()) != null) {\n            // parse the signed integer by hand, skipping blank lines\n            String t = line.strip();\n            if (t.isEmpty()) continue;\n            int i = 0;\n            boolean neg = false;\n            if (t.charAt(0) == '-' || t.charAt(0) == '+') neg = t.charAt(i++) == '-';\n            long v = 0;\n            while (i < t.length() && Character.isDigit(t.charAt(i))) v = v * 10 + (t.charAt(i++) - '0');\n            if (!first) out.append('\\n');\n            first = false;\n            digits(neg ? -v : v, out);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "9e59fdcb11be8ff09c137a1fd5aac6d33a809a6758f45a925d0aab7e7ea12db1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strings\"\n)\n\n// digits appends the decimal text of n built digit by digit (int64 so INT_MIN negates safely).\nfunc digits(n int64, w *bufio.Writer) {\n\tif n == 0 {\n\t\tw.WriteByte('0')\n\t\treturn\n\t}\n\tneg := n < 0\n\tx := n\n\tif neg {\n\t\tx = -n\n\t}\n\tvar buf [21]byte\n\tp := len(buf)\n\tfor x > 0 {\n\t\tp--\n\t\tbuf[p] = byte('0' + x%10)\n\t\tx /= 10\n\t}\n\tif neg {\n\t\tp--\n\t\tbuf[p] = '-'\n\t}\n\tw.Write(buf[p:])\n}\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<24)\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfirst := true\n\tfor sc.Scan() {\n\t\t// parse the signed integer by hand, skipping blank lines\n\t\tt := strings.TrimSpace(sc.Text())\n\t\tif t == \"\" {\n\t\t\tcontinue\n\t\t}\n\t\ti, neg := 0, false\n\t\tif t[0] == '-' || t[0] == '+' {\n\t\t\tneg = t[0] == '-'\n\t\t\ti++\n\t\t}\n\t\tvar v int64\n\t\tfor ; i < len(t) && t[i] >= '0' && t[i] <= '9'; i++ {\n\t\t\tv = v*10 + int64(t[i]-'0')\n\t\t}\n\t\tif !first {\n\t\t\tw.WriteByte('\\n')\n\t\t}\n\t\tfirst = false\n\t\tif neg {\n\t\t\tv = -v\n\t\t}\n\t\tdigits(v, w)\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "2d2ec31d807287a411645e88f2ea14c06c00e6c5c4f39ffc224c91dc6ebaef86"
+    }
+  ]
+}

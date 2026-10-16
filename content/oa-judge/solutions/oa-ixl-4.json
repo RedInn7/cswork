@@ -1,0 +1,21 @@
+{
+  "id": "oa-ixl-4",
+  "packageChecksum": "d2451d741f726ce7199da5c71601717fa70fc52f116157c75af5879777e8c3d6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Longest run of consecutive indices in a sorted list.\nlong long longestRun(const vector<long long> &a) {\n    long long best = 0, cur = 0;\n    for (size_t i = 0; i < a.size(); i++) {\n        cur = (i > 0 && a[i] == a[i - 1] + 1) ? cur + 1 : 1;\n        best = max(best, cur);\n    }\n    return best;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, m, hn, vn;\n    cin >> n >> m >> hn >> vn;\n    vector<long long> h(hn), w(vn);\n    for (auto &x : h) cin >> x;\n    for (auto &x : w) cin >> x;\n    sort(h.begin(), h.end());\n    sort(w.begin(), w.end());\n    cout << (longestRun(h) + 1) * (longestRun(w) + 1) << \"\\n\";\n}\n",
+      "sha256": "d678c2282b0d347431f3287e4e0d49135c68e40b42081e98ceab586167ac79b9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    // Longest run of consecutive indices in a sorted list.\n    static long longestRun(long[] a) {\n        long best = 0, cur = 0;\n        for (int i = 0; i < a.length; i++) {\n            cur = (i > 0 && a[i] == a[i - 1] + 1) ? cur + 1 : 1;\n            best = Math.max(best, cur);\n        }\n        return best;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        next();\n        next();\n        int hn = (int) next(), vn = (int) next();\n        long[] h = new long[hn], w = new long[vn];\n        for (int i = 0; i < hn; i++) h[i] = next();\n        for (int i = 0; i < vn; i++) w[i] = next();\n        Arrays.sort(h);\n        Arrays.sort(w);\n        System.out.println((longestRun(h) + 1) * (longestRun(w) + 1));\n    }\n}\n",
+      "sha256": "94f3efb3b71c41e288241c8aecd28f39d9c76459edfdf601e9e215c87ab6ea1e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\n// longestRun returns the longest run of consecutive indices in a sorted list.\nfunc longestRun(a []int64) int64 {\n\tvar best, cur int64\n\tfor i := range a {\n\t\tif i > 0 && a[i] == a[i-1]+1 {\n\t\t\tcur++\n\t\t} else {\n\t\t\tcur = 1\n\t\t}\n\t\tbest = max(best, cur)\n\t}\n\treturn best\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tnext()\n\tnext()\n\thn, vn := next(), next()\n\th := make([]int64, hn)\n\tw := make([]int64, vn)\n\tfor i := range h {\n\t\th[i] = next()\n\t}\n\tfor i := range w {\n\t\tw[i] = next()\n\t}\n\tslices.Sort(h)\n\tslices.Sort(w)\n\tfmt.Println((longestRun(h) + 1) * (longestRun(w) + 1))\n}\n",
+      "sha256": "833a507186f0b652a079d91c9aa7096c256bcdf99d35f91297ae0cfac8a41e97"
+    }
+  ]
+}

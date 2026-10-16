@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-6",
+  "packageChecksum": "f51dc1259e91c5ed2f5f012f98277ee5660c69b9413643b0af7fc1ffab3cff80",
+  "sourceContentHash": "9112850651d0dbc163b69fe56598fe3e9a25eb1e75d2c50ac7b63b32d584235d",
+  "editorialSha256": "d40bd5c49fecae81049a0d521c815857585793b296afa6ba00c5288fc88d3219",
+  "hints": {
+    "zh": [
+      "两轮车和四轮车的轮子数都是偶数，所以轮子总数为奇数时无解；方案只由两类车各有多少辆决定，不考虑排列。",
+      "轮子数为偶数 w 时，四轮车的数量可以是 0 到 ⌊w/4⌋ 中的任意一个，每个取值都唯一确定两轮车的数量。",
+      "对每个查询：w 为奇数输出 0，否则输出 ⌊w/4⌋ + 1；按输入顺序逐行输出。"
+    ],
+    "en": [
+      "Both two-wheelers and four-wheelers have an even number of wheels, so an odd total has no solution; an option is determined only by how many vehicles of each type there are, not by their order.",
+      "For an even total w, the number of four-wheelers can be any value from 0 to floor(w/4), and each choice fixes the number of two-wheelers uniquely.",
+      "For each query print 0 if w is odd, otherwise floor(w/4) + 1, one line per query in input order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOdd totals are impossible; for an even total, the number of four-wheelers ranges from 0 to w//4, and each such count uniquely determines the number of two-wheelers.\n\n## Proof of correctness\n\nBoth vehicle types have an even number of wheels, so odd totals have no solution. For an even total, every four-wheeler count in 0..floor(w/4) leaves a non-negative even number of wheels, which corresponds to a unique number of two-wheelers, so the number of options is floor(w/4)+1.\n\n## Complexity\n\nO(n) time and O(n) output space."
+}

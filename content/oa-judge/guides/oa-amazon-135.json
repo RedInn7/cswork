@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-135",
+  "packageChecksum": "d25300e33150067e508640fc366f748e5bf62a351f64b1051ed546ffec99f1b9",
+  "sourceContentHash": "e09fdb2c13c677afbed23244c270c12c42f42c0ba627ee465c1973a6d339fa28",
+  "editorialSha256": "41ac9d7d0d525485ca30ed32b7acfc188579f4cd870508c5d3e1b6e2129af556",
+  "hints": {
+    "zh": [
+      "容量越大越容易装下，可行性对容量单调，可以二分容量；游戏最多 15 个，判断“给定容量能否用至多 N 块硬盘装下全部游戏”可以对子集做状态压缩。",
+      "对每个已装入的游戏子集，只需记住最少用了几块盘，以及在这个盘数下最后一块盘的最小已用量；盘数少的状态更好，盘数相同时最后一块更空的更好。转移时枚举最后放进去的是哪个游戏。如果最少盘数小于 N，因为 m≥N，可以把非空的盘拆开凑到恰好 N 块而不增加容量。",
+      "二分下界取 max(最大游戏, ⌈总和/N⌉)，上界取总和。判定时 dp[0]=(1,0)；对每个 mask 枚举其中的游戏 i，从 dp[mask 去掉 i]=(r,l) 出发：若 l+g[i]≤容量 得 (r,l+g[i])，否则得 (r+1,g[i])，取字典序最小者作为 dp[mask]；最后看 dp[全集] 的盘数是否 ≤N。"
+    ],
+    "en": [
+      "A larger capacity is always easier to fit, so feasibility is monotone in the capacity and you can binary search it; with at most 15 games, checking whether everything fits into at most N disks of a given capacity can be done with a bitmask DP over subsets.",
+      "For each subset of games already packed, remember only the fewest disks used and, for that number of disks, the smallest load on the last disk; fewer disks is better, and with equal disks a lighter last disk is better. Transition by choosing which game was added last. If the fewest disks is below N, since m >= N you can split non-empty disks to reach exactly N without raising the capacity.",
+      "Binary search between max(largest game, ceil(total/N)) and the total. In the check set dp[0] = (1, 0); for each mask try every game i in it, starting from dp[mask without i] = (r, l): if l + g[i] <= capacity you get (r, l + g[i]), otherwise (r + 1, g[i]); keep the lexicographically smallest as dp[mask]; the capacity works when dp[full set] uses at most N disks."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the capacity, and use a subset DP to decide whether everything fits into at most N bins. The state stores the minimum number of bins needed to pack the subset, and, for that number of bins, the minimum load of the last bin; enumerate which game is added last.\n\n## Correctness\n\nFor the same chosen set, fewer bins is better, and with the same number of bins a lighter last bin is never worse, so this lexicographically smallest state dominates every other arrangement. Enumerating the last added item builds every packing order, which yields the minimum number of bins. If it is less than N, then because m >= N and every item is independent, non-empty bins can be split until there are exactly N bins without increasing the capacity. Feasibility is monotone in the capacity, so binary search finds the optimum.\n\n## Complexity\n\nTime O(m * 2^m * log S), space O(2^m), where S is the total size."
+}

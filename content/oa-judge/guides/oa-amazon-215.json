@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-215",
+  "packageChecksum": "969de479adf24e5119ae6d89ae9ca9ff271f231b488836f3053a025cdb33680b",
+  "sourceContentHash": "5ce8dbc07bdecf2d7b95da3208f3dde08cf52246f50de0030531178727c42af7",
+  "editorialSha256": "f09f3ab5f423e6b42de2c5e9a00a995b581785e2c3df7cd0c30cdcadaf75d8ac",
+  "hints": {
+    "zh": [
+      "给定 x 时，各评分互相独立：评分 v 需要 ⌈v/x⌉ 次操作才能不大于 0，总次数就是这些值之和。",
+      "x 越大，每个评分所需次数不增，可行性具有单调性；x 取最大评分时只需 n≤M 次，一定可行。所以可以二分答案。",
+      "在 [1, 最大评分] 上二分：mid 的总需求 Σ(v+mid−1)/mid（用 64 位累加）不超过 M 则 hi=mid，否则 lo=mid+1；输出 lo。"
+    ],
+    "en": [
+      "For a given x the ratings are independent: rating v needs ceil(v/x) operations to drop to 0 or below, and the total is the sum of those values.",
+      "A larger x never increases any rating's requirement, so feasibility is monotone; x = the largest rating needs only n <= M operations and is always feasible. So binary search the answer.",
+      "Binary search on [1, max rating]: if the total demand sum of (v + mid - 1) / mid (accumulated in 64-bit) is at most M, set hi = mid, otherwise lo = mid + 1; print lo."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search x. A rating v needs ceil(v/x) operations; check whether the total demand is at most M.\n\n## Proof of correctness\n\nEach operation reduces a single rating by only x, so a rating needs at least the ceiling number of operations, and repeating the operation achieves it. Ratings are independent, so adding up the demands gives exactly the minimum total. As x grows no demand increases, so feasibility is monotone; x equal to the largest rating needs at most n operations and is guaranteed feasible, so binary search finds the minimum.\n\n## Complexity\n\nTime O(n log(max rating)), space O(n), with the operation total accumulated in 64-bit."
+}

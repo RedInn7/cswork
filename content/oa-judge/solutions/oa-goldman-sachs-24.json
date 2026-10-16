@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-24",
+  "packageChecksum": "ddfa0b2d827d93b88d984ae9d6af126873bce62c8cdaae8500fb6d5f974a83ac",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string line;\n    getline(cin, line);\n    int n = stoi(line);\n    string out;\n    for (int i = 0; i < n; i++) {\n        getline(cin, line);\n        if (!line.empty() && line.back() == '\\r') line.pop_back();\n        // Chairs needed = maximum number of people in the office at any time.\n        int inside = 0, best = 0;\n        for (char e : line) {\n            inside += (e == 'C' || e == 'U') ? 1 : -1;\n            best = max(best, inside);\n        }\n        if (i) out += ' ';\n        out += to_string(best);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "68e347eee562cbd8fab5bec035fe1ece147918abe05d8d603adf037271571c3a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            String line = br.readLine();\n            // Chairs needed = maximum number of people in the office at any time.\n            int inside = 0, best = 0;\n            for (int j = 0; j < line.length(); j++) {\n                char e = line.charAt(j);\n                inside += (e == 'C' || e == 'U') ? 1 : -1;\n                best = Math.max(best, inside);\n            }\n            if (i > 0) out.append(' ');\n            out.append(best);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "af651f1c262158408d8c64f110242c7bf64bf4a414425a486f57f8d9756d3633"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(strings.TrimSpace(sc.Text()))\n\tout := make([]string, 0, n)\n\tfor i := 0; i < n && sc.Scan(); i++ {\n\t\tline := strings.TrimRight(sc.Text(), \"\\r\")\n\t\t// Chairs needed = maximum number of people in the office at any time.\n\t\tinside, best := 0, 0\n\t\tfor _, e := range line {\n\t\t\tif e == 'C' || e == 'U' {\n\t\t\t\tinside++\n\t\t\t} else {\n\t\t\t\tinside--\n\t\t\t}\n\t\t\tbest = max(best, inside)\n\t\t}\n\t\tout = append(out, strconv.Itoa(best))\n\t}\n\tfmt.Println(strings.Join(out, \" \"))\n}\n",
+      "sha256": "e007826289d4912e924700217d910fa136014278a60d3ffe6bb6e945f8ce5b2c"
+    }
+  ]
+}

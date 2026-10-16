@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-237",
+  "packageChecksum": "16ff6ab4c779412e65ec012d45653a6547468b579cafa57b1692dd1541c87ff3",
+  "sourceContentHash": "16b153be93705531219a1d6908c87f0920bd1831ab81e858ee595679b08e8ff4",
+  "editorialSha256": "8a4c174bfd807620511f7032b20266c8ecbf8578251b45717da9d2c40b761107",
+  "hints": {
+    "zh": [
+      "看排序后相邻的两个值 u<v：若原数组中 v 在 u 左边，只有阈值 x 满足 u<x≤v 的操作才能把它们调成正序，而 x 必须是数组中存在的值。",
+      "因此每个这样的逆序相邻对都强制选择 v 作为阈值；其余相邻对本来就有序，不需要操作；把这些必须的阈值按升序各做一次恰好能排好。",
+      "记录每个值的原位置并把值升序排列；对 i=1..n−1，若 b[i−1] 的原位置大于 b[i] 的原位置，就收集 b[i]；按升序输出收集到的值，没有则输出 -1。"
+    ],
+    "en": [
+      "Look at two values u<v that are adjacent in sorted order: if v lies left of u in the original array, only an operation with a threshold u<x<=v can put them in order, and x must be a value present in the array.",
+      "So every such inverted adjacent pair forces v to be chosen as a threshold; the other adjacent pairs are already in order and need nothing; applying the forced thresholds once each in ascending order sorts the array.",
+      "Record each value's original position and sort the values into b; for i=1..n-1, collect b[i] whenever the original position of b[i-1] is greater than that of b[i]; output the collected values in ascending order, or -1 if there are none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the values into b and record the original positions pos; output, in ascending order, every b[i] satisfying pos[b[i−1]]>pos[b[i]].\n\n## Proof of correctness\n\nIf two values u<v that are adjacent in sorted order are inverted in their original positions, only a threshold u<x≤v can change their relative order; x must exist in the array, so v must be chosen. Within a block of consecutive values that needs no threshold between them, the original relative order is already correct. Executing every necessary threshold once in ascending order sorts between blocks while preserving the order within blocks, which is enough to finish. This set is a subset of every solution, so the number of operations is minimal, and ascending order is its lexicographically smallest arrangement.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

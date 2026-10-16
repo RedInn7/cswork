@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-13",
+  "packageChecksum": "5c5acaf10a4619aa51c50be2e9b977036a81d64819c4d49f88239dd95e53b3cd",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n;\n    ll th;\n    scanf(\"%d %lld\", &n, &th);\n    vector<ll> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    ll lo = 0, hi = *max_element(a.begin(), a.end());\n    // Total energy is non-increasing in the barrier: find the last barrier that keeps it >= th.\n    while (lo < hi) {\n        ll mid = (lo + hi + 1) / 2, sum = 0;\n        for (ll v : a)\n            if (v > mid) sum += v - mid;\n        if (sum >= th) lo = mid;\n        else hi = mid - 1;\n    }\n    printf(\"%lld\\n\", lo);\n}\n",
+      "sha256": "601e54fd799c82364afbe70bf2292f088fdcea614b3322cb416e115aa4c77cc9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long th = nextLong();\n        long[] a = new long[n];\n        long lo = 0, hi = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            hi = Math.max(hi, a[i]);\n        }\n        // Total energy is non-increasing in the barrier: find the last barrier that keeps it >= th.\n        while (lo < hi) {\n            long mid = (lo + hi + 1) / 2, sum = 0;\n            for (long v : a)\n                if (v > mid) sum += v - mid;\n            if (sum >= th) lo = mid;\n            else hi = mid - 1;\n        }\n        System.out.println(lo);\n    }\n}\n",
+      "sha256": "90f637011d4fd5842e0bb11b1718d680b9b2f3300da1a0ca41f1337f4e693f39"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tth := nextInt()\n\ta := make([]int64, n)\n\tvar lo, hi int64\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\thi = max(hi, a[i])\n\t}\n\t// Total energy is non-increasing in the barrier: find the last barrier that keeps it >= th.\n\tfor lo < hi {\n\t\tmid := (lo + hi + 1) / 2\n\t\tvar sum int64\n\t\tfor _, v := range a {\n\t\t\tif v > mid {\n\t\t\t\tsum += v - mid\n\t\t\t}\n\t\t}\n\t\tif sum >= th {\n\t\t\tlo = mid\n\t\t} else {\n\t\t\thi = mid - 1\n\t\t}\n\t}\n\tfmt.Println(lo)\n}\n",
+      "sha256": "ea3514fb8e6ab3bd263c8c10be018077cad7723fcfadb10b3d10f49eeb1337f2"
+    }
+  ]
+}

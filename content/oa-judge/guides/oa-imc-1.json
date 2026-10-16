@@ -1,0 +1,19 @@
+{
+  "id": "oa-imc-1",
+  "packageChecksum": "d4e789d3e1a352d1cc6490ba157e71133531356890808442a1fec1cf10e7e940",
+  "sourceContentHash": "6b291f9fe330f3a64def816434d4d277d3055442c6cf79b57ecd89eaee7e88c2",
+  "editorialSha256": "c5c10a6ba114e5fca575e35682f7a2b8a085dc71038fe2e48a211199f6875cea",
+  "hints": {
+    "zh": [
+      "每个订单独立占用一个容器，所以一个容器组的总浪费就是每个订单各自浪费之和；对单个订单，能装下它的容器里容量最小的那个浪费最少。",
+      "把每个容器组的容量排序，对每笔需求二分查找第一个容量不小于需求的容器；找不到说明该组不可行。各组算出总浪费后取最小者。",
+      "对每组：排序容量，逐个订单二分查找第一个不小于需求的位置，越界就标记不可行并停止，否则累加容量减需求（用 64 位整数）；扫描各组时只在总浪费严格更小时更新答案，这样并列时自然保留较小下标；没有可行组则输出 -1。"
+    ],
+    "en": [
+      "Each order uses its own container, so a group's total waste is the sum of the waste of each order; for a single order, the smallest container that can hold it wastes the least.",
+      "Sort each group's capacities and, for each demand, binary search the first container whose capacity is not less than the demand; if there is none, the group is infeasible. Compute each group's total waste and take the minimum.",
+      "For each group: sort the capacities, binary search the first position not less than each demand, mark the group infeasible and stop if it falls off the end, otherwise add capacity minus demand (in 64-bit integers); while scanning the groups update the answer only when the total waste is strictly smaller, so ties keep the smaller index; output -1 if no group is feasible."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort each container group separately. For each demand r, use lower_bound to find the first container with capacity `c≥r`, contributing `c-r`. If some order finds no such container, the group is infeasible; otherwise accumulate the total waste. Scan the container groups and keep the one with strictly smaller total waste, so ties naturally keep the earlier index. If every group is infeasible, return -1 by this site's convention.\n\n## Correctness\n\nFor a fixed order r, every container that can fill it has capacity `c≥r`, and the waste grows as c grows, so the smallest feasible container found by lower_bound produces the least waste. Each order uses one container independently, so minimizing order by order and summing gives the minimum total waste of the group. Going through all feasible groups and updating on strictly smaller values gives the global optimum and the earliest index; when no group is feasible, output -1.\n\n## Complexity\n\nLet S be the number of container groups, R the number of orders, and C_i the number of capacities in group i. Time `O(Σ C_i log C_i + RΣ log C_i)`, space `O(max C_i)`."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-138",
+  "packageChecksum": "19405a84f4fe9966020093b5b8511bf8587a273781ce179197f2fd755768a64a",
+  "sourceContentHash": "82722c3b7ecbaf989b5360438cd9e21f0c2b5016ce2b3a7cf0bf92e871acf277",
+  "editorialSha256": "964ff45c3d669c6c57f1a783a8b9c62481fad9887fcbd952f7988a42be2b1c20",
+  "hints": {
+    "zh": [
+      "时间是非递减的，所以“某个窗口里的请求数超过上限 k”等价于“往前数第 k 个请求仍然落在这个窗口里”。",
+      "被丢弃的请求照样计入统计，因此直接用原始下标比较即可：第 i 个请求与第 i-3 个同秒，或与第 i-20 个相差不到 10 秒，或与第 i-60 个相差不到 60 秒，就超限。",
+      "读入时间数组 t（下标从 1 开始）；对每个 i，若 (i>3 且 t[i]==t[i-3]) 或 (i>20 且 t[i]-t[i-20]<10) 或 (i>60 且 t[i]-t[i-60]<60)，答案加一；三个条件取“或”，同一请求只计一次。"
+    ],
+    "en": [
+      "Times are non-decreasing, so a window holding more than k requests is equivalent to the request k places earlier still lying inside that window.",
+      "Dropped requests still count, so compare original indices directly: request i breaks a limit if it is in the same second as request i-3, or less than 10 seconds after request i-20, or less than 60 seconds after request i-60.",
+      "Read the times t (1-based); for every i, add one to the answer when (i > 3 and t[i] == t[i-3]) or (i > 20 and t[i] - t[i-20] < 10) or (i > 60 and t[i] - t[i-60] < 60); combining the three conditions with OR counts each request at most once."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRequest i exceeds a limit if it is in the same second as request i-3, or less than 10 apart from request i-20, or less than 60 apart from request i-60. Take the OR of the three conditions.\n\n## Correctness\n\nThe times are sorted, so the number of requests in a recent window exceeds the threshold if and only if the request that many places earlier is still inside the window. Using the original request indices directly naturally includes the dropped requests, and counting with OR avoids counting one request twice for several rules.\n\n## Complexity\n\nTime O(n), space O(n) for storing the input; the whole integer array is not copied."
+}

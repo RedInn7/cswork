@@ -1,0 +1,21 @@
+{
+  "id": "oa-xperi-1",
+  "packageChecksum": "20809533de9404ef405b7fe337d57c0d17e653a55bb32b4384c517813220eeee",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    const long long MOD = 998244353;\n    int n, m, target;\n    cin >> n >> m >> target;\n    vector<long long> dp(64, 0);\n    dp[0] = 1;\n    for (int i = 0; i < n; i++) {\n        vector<long long> nxt(64, 0);\n        for (int old = 0; old < 64; old++)\n            for (int v = 0; v <= m; v++) nxt[old ^ v] = (nxt[old ^ v] + dp[old]) % MOD;\n        dp = nxt;\n    }\n    cout << dp[target] << '\\n';\n}\n",
+      "sha256": "4a009d6728bb471020bfae1426a08f7e74391921eecd577a57614da536d1f94a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        final long MOD = 998244353L;\n        int n = (int) nextLong(), m = (int) nextLong(), target = (int) nextLong();\n        long[] dp = new long[64];\n        dp[0] = 1;\n        for (int i = 0; i < n; i++) {\n            long[] nxt = new long[64];\n            for (int old = 0; old < 64; old++)\n                for (int v = 0; v <= m; v++) nxt[old ^ v] = (nxt[old ^ v] + dp[old]) % MOD;\n            dp = nxt;\n        }\n        System.out.println(dp[target]);\n    }\n}\n",
+      "sha256": "b5fa505e6a0acb66a3a41ea543f64743cf1bf3db2d0f527c98b3877d94e97e22"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tconst mod = 998244353\n\tvar n, m, target int\n\tfmt.Scan(&n, &m, &target)\n\tdp := make([]int64, 64)\n\tdp[0] = 1\n\tfor i := 0; i < n; i++ {\n\t\tnxt := make([]int64, 64)\n\t\tfor old := 0; old < 64; old++ {\n\t\t\tfor v := 0; v <= m; v++ {\n\t\t\t\tnxt[old^v] = (nxt[old^v] + dp[old]) % mod\n\t\t\t}\n\t\t}\n\t\tdp = nxt\n\t}\n\tfmt.Println(dp[target])\n}\n",
+      "sha256": "2f69edf5957836a2d329210f6154b85dff78c8a8dc44bc139d8194b39cd6bcd0"
+    }
+  ]
+}

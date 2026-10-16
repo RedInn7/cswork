@@ -1,0 +1,21 @@
+{
+  "id": "oa-tesla-1",
+  "packageChecksum": "204dba8f08a5a4c2e0e03b4c0e9a74269644f55472402b8fff185a8ff44b520f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string s;\n    cin >> s;\n    for (char &c : s) c = 'A' + (c - 'A' + 4) % 26; // shift right by 4, wrapping Z -> A\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "e14028d85aaba4731ade2ce5d3233f9b14809e17f79aa03e605fd0ebd936a27e"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        String s = new Scanner(System.in).next();\n        StringBuilder sb = new StringBuilder();\n        for (char c : s.toCharArray()) sb.append((char) ('A' + (c - 'A' + 4) % 26)); // shift right by 4, wrapping\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "79b8f949480989fadc9948ba5b44f2933a439d4d479adeac7e60775873191172"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s string\n\tfmt.Scan(&s)\n\tb := []byte(s)\n\tfor i, c := range b {\n\t\tb[i] = 'A' + (c-'A'+4)%26 // shift right by 4, wrapping Z -> A\n\t}\n\tfmt.Println(string(b))\n}\n",
+      "sha256": "e37a0b166c79ff7d55a7e66a4fb628707ceaac335ba7101622bd40ba497479af"
+    }
+  ]
+}

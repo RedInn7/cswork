@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-51",
+  "packageChecksum": "2a78d3f7513b7b3f9f14c36f55658caf54dac8a941203ee441dff4a4a33d0383",
+  "sourceContentHash": "99b912248ec18bf0121fe570f591f45272ea2ec4fdcb3b9f0da9d21ed04155b3",
+  "editorialSha256": "1da93a911754e8a388dfd133838d88ed50b710947e13d823d6dbdc42ab29e6f4",
+  "hints": {
+    "zh": [
+      "把进程分成两组，相当于选出分给第一台服务器的子集，其和为 x，差值就是 |S−2x|（S 为总和）。所以关键是知道哪些子集和可以达到。",
+      "所有负载绝对值之和不超过 20 万，可以用位集合记录可达子集和；有负数时把位集合的下标整体偏移，维护表示区间的下界 low。由于子集与补集对称，只需在不超过 ⌊S/2⌋ 的可达和里取最大的。",
+      "位集合初始只有 0；对每个负载 v：位集合 |= 位集合 << |v|，若 v<0 再令 low+=v（下标 i 表示和 i+low）；最后令 limit=⌊S/2⌋−low（负数向下取整），找下标不超过 limit 的最高置位 i，chosen=i+low，输出 |S−2×chosen|。"
+    ],
+    "en": [
+      "Splitting the processes into two groups is choosing the subset for the first server; if its sum is x, the difference is |S - 2x| where S is the total. So the key is knowing which subset sums are reachable.",
+      "The sum of absolute loads is at most 200000, so reachable subset sums fit in a bitset; negative loads shift the indices, so keep a lower bound low of the represented range. Because a subset and its complement are symmetric, take the largest reachable sum that is at most floor(S/2).",
+      "Start the bitset with only 0; for each load v: bitset |= bitset << |v|, and if v < 0 also add v to low (index i means sum i + low); finally let limit = floor(S/2) - low (rounding down for negatives), find the highest set index i <= limit, set chosen = i + low and print |S - 2 * chosen|."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the reachable subset sums in an integer bitset; when a load is negative, shift the lower bound of the represented range accordingly. Finally find the largest reachable sum not exceeding half of the total.\n\n## Correctness\n\nWhen a load is added, every subset either skips it or takes it, and the union of the shifted sets fully represents the new subset sums. Any subset sum x assigned to the first server gives the difference |S - 2x|. Complementary subsets guarantee that the optimum can be taken with x <= floor(S/2), and on that side a larger x is better.\n\n## Complexity\n\nLet A be the total of absolute values. Time is about O(nA/w + A/w) and space O(A/w), where w is the machine word width used inside the big integer."
+}

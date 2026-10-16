@@ -1,0 +1,19 @@
+{
+  "id": "oa-agoda-4",
+  "packageChecksum": "8a60e75d86f0b8809beacd7578a6f06da23df3129411145c3232d832cf13547c",
+  "sourceContentHash": "ad4afecb26c3a62396e8e4b999faf5b687be79b6f45cc5a926065788b53659ce",
+  "editorialSha256": "d58cb32d494c0c49570449c27c92e23acfdf3add25bf1e931b83a90c74751a90",
+  "hints": {
+    "zh": [
+      "区间计数可以转化为前缀计数：设 F(x) 为 [0,x] 中各位互不相同的整数个数，答案就是 F(b)−F(a−1)。超过 10 位的数一定有重复数字。",
+      "F(x) 用数位计数：先数位数比 x 短的正整数，再从高位到低位，枚举在当前位放一个比 x 对应位小且未用过的数字，剩下的位置用未用数字的排列数计数。",
+      "设 x 有 L 位：0 本身计 1 个；长度为 1..L−1 的正整数各有 9×P(9,len−1) 个；再从最高位起，对每个小于当前位且未使用的候选（首位不能为 0）加上 P(剩余可用数字数, 剩余位数)；若当前位数字已用过就停止，全部位都无重复时 x 自身再加 1；a=0 时 F(−1)=0。"
+    ],
+    "en": [
+      "Turn the range count into prefix counts: let F(x) be the number of integers in [0, x] with pairwise distinct digits; the answer is F(b) - F(a-1). Any number with more than 10 digits must repeat a digit.",
+      "Compute F(x) digit by digit: first count positive integers shorter than x, then go from the most significant digit down, try every unused digit smaller than x's digit at that position, and count the remaining positions as permutations of the unused digits.",
+      "Let x have L digits: the number 0 counts once; each length 1..L-1 contributes 9 * P(9, len-1); then from the top digit, for every unused candidate smaller than the current digit (the first digit cannot be 0) add P(number of digits still available, positions left); stop as soon as the current digit was already used, and if all digits of x are distinct add 1 for x itself; F(-1) = 0 handles a = 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the positive integers with fewer digits, then go digit by digit over the legal choices smaller than the bound's digit; the remaining positions are counted as permutations of the unused digits. Finally take the difference of prefix functions for the range.\n\n## Proof of correctness\n\nEvery valid number has a unique decimal digit string. The digit-by-digit branching enumerates exactly the numbers that are smaller than the bound at their first differing digit, with permutation counts covering the other unused digits; the bound itself is added if it has no repeated digit. F(b) - F(a-1) therefore corresponds exactly to the closed interval.\n\n## Complexity\n\nO(log b * 10) time, O(10) extra space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/agoda#4-unique-digits-in-range; the original rules are clear; this site adds the handling of zero, the upper bound and the standard input/output."
+}

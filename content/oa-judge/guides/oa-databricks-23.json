@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-23",
+  "packageChecksum": "bb71e3b1dd70ca28072897c412fed1a76b009a4cc28b3d2719f348cb7daad14d",
+  "sourceContentHash": "2249de054670f276a542b9f98ad48c7ac4e47499450f03169cc65bc5af2e0f74",
+  "editorialSha256": "2463243d8a060cda24b8761fb1d6658cc112d1f7df69e78672e67b10910db637",
+  "hints": {
+    "zh": [
+      "真的去翻转整个字符串每次要 O(n)，太慢。注意一次全串翻转后，某个前缀里 0 的个数就变成“前缀长度 − 原来 0 的个数”。",
+      "连续翻转两次等于没翻，所以只需记录翻转次数的奇偶。预先算出初始串的 0 前缀和，查询时根据当前是否处于翻转状态，选择原前缀 0 数或前缀长度减去它。",
+      "建立 zero[i+1] = 前 i+1 个字符中 0 的个数；flip 只切换一个布尔标记；count i 时令 z = zero[i+1]，未翻转输出 z，已翻转输出 (i+1) − z。所有答案按顺序空格分隔输出在一行，没有查询时输出空行。"
+    ],
+    "en": [
+      "Actually flipping the whole string costs O(n) each time, which is too slow. Notice that after one full flip, the number of 0s in a prefix becomes the prefix length minus the original number of 0s.",
+      "Flipping twice is the same as not flipping, so only the parity of the number of flips matters. Precompute prefix counts of 0s in the initial string, and for a query choose either the original count or the prefix length minus it, depending on the current state.",
+      "Build zero[i+1] = number of 0s among the first i+1 characters; flip just toggles a boolean; for count i let z = zero[i+1] and print z if not flipped, or (i+1) - z if flipped. Print all answers in order on one line separated by spaces, or an empty line if there are no queries."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute prefix sums of 0s in the initial string, and keep a boolean flag for the parity of the number of flips; for a query, return either the original prefix count of zeros or the prefix length minus that count, depending on the state.\n\n## Proof of correctness\n\nAfter each full flip, the number of 0s in a prefix becomes the prefix length minus the original number of 0s; consecutive flips depend only on parity. Applying this identity operation by operation in order makes every query answer agree with the actual current string.\n\n## Complexity\n\nO(n+q) time and O(n) extra space."
+}

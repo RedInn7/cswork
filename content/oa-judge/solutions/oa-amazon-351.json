@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-351",
+  "packageChecksum": "063ed91c3150c23b2198f28cd7d2d8ef5f2d23f25d07df4fcd985c72ed17f6cf",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string tasks;\n    long long cool;\n    cin >> tasks >> cool;\n    long long freq[26] = {0};\n    for (char c : tasks) freq[c - 'A']++;\n    long long f = *max_element(freq, freq + 26), c = 0;\n    for (long long v : freq) c += v == f;\n    long long total = tasks.size();\n    cout << max(total, (f - 1) * (cool + 1) + c) << \"\\n\";\n}\n",
+      "sha256": "9b422f143a763ea38ea2c5aa75856b6d200af0064ae2f130e084e92e1d16a57d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String tasks = next();\n        long cool = nextLong();\n        long[] freq = new long[26];\n        for (int i = 0; i < tasks.length(); i++) freq[tasks.charAt(i) - 'A']++;\n        long f = 0, c = 0;\n        for (long v : freq) f = Math.max(f, v);\n        for (long v : freq) if (v == f) c++;\n        System.out.println(Math.max(tasks.length(), (f - 1) * (cool + 1) + c));\n    }\n}\n",
+      "sha256": "ac275479e86d49d75ed49e18dea5f0050c1166ac8ae32b550a246e84b41f4d1f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc next() string {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\ttasks := next()\n\tcool := nextInt()\n\tvar freq [26]int64\n\tfor i := 0; i < len(tasks); i++ {\n\t\tfreq[tasks[i]-'A']++\n\t}\n\tf, c := int64(0), int64(0)\n\tfor _, v := range freq {\n\t\tf = max(f, v)\n\t}\n\tfor _, v := range freq {\n\t\tif v == f {\n\t\t\tc++\n\t\t}\n\t}\n\tfmt.Println(max(int64(len(tasks)), (f-1)*(cool+1)+c))\n}\n",
+      "sha256": "db9cba75befb2022822145115c41bf6e93824483608d94f751669a08f035c140"
+    }
+  ]
+}

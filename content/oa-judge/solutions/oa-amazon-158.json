@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-158",
+  "packageChecksum": "eb7d2d2441fbcd9ad0c9b1f2d5e02cfecf4f92644f1e762329af7b43f00ad7c5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto& v : a) cin >> v;\n    sort(a.begin(), a.end());\n    // From the ground, alternate between the highest and the lowest remaining stone.\n    int lo = 0, hi = n - 1;\n    long long at = 0, answer = 0;\n    bool highest = true;\n    while (lo <= hi) {\n        long long v = highest ? a[hi--] : a[lo++];\n        answer += (v - at) * (v - at);\n        at = v;\n        highest = !highest;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "7dac4bd0b087c44536f640a7cd2a36462e0e0bfa4f072c0e6db395fa80192b30"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // From the ground, alternate between the highest and the lowest remaining stone.\n        int lo = 0, hi = n - 1;\n        long at = 0, answer = 0;\n        boolean highest = true;\n        while (lo <= hi) {\n            long v = highest ? a[hi--] : a[lo++];\n            answer += (v - at) * (v - at);\n            at = v;\n            highest = !highest;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "aaac177e5ee85a8b79536dd40126ea976a736595ec1075027f33d68012f437ae"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// From the ground, alternate between the highest and the lowest remaining stone.\n\tlo, hi, at, answer, highest := 0, n-1, 0, 0, true\n\tfor lo <= hi {\n\t\tvar v int\n\t\tif highest {\n\t\t\tv = a[hi]\n\t\t\thi--\n\t\t} else {\n\t\t\tv = a[lo]\n\t\t\tlo++\n\t\t}\n\t\tanswer += (v - at) * (v - at)\n\t\tat = v\n\t\thighest = !highest\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "e1208cdd09d7ef762ce88257c5097a32dcdc041f386296bb808cea75e35a004e"
+    }
+  ]
+}

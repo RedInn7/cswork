@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-25",
+  "packageChecksum": "c7c3ec0833eb6b2d5b1ab634158de5d546bbe71e1f6fb6086a8c66700ed3f333",
+  "sourceContentHash": "d521dd417b47dbd4210837c6e7b925d3c8dc92e5e69532313dd02367100f6c84",
+  "editorialSha256": "392d74de3213b16d69f6bcafce9c3a00584602ac03df585db199196fac664802",
+  "hints": {
+    "zh": [
+      "对任意一行 i 和一列 j，都有“列 j 的最小值 ≤ a[i][j] ≤ 行 i 的最大值”，所以所有列最小值都不超过所有行最大值。",
+      "只需要两个量：所有行最大值中的最小值 R，和所有列最小值中的最大值 C；合法元素存在当且仅当 R=C，而且这时它的值就是 R。",
+      "逐行读入，每行求出最大值并更新 R=min(R, 行最大值)，同时用长度为 M 的数组维护每列最小值；读完后 C=max(列最小值)；若 C==R 输出该值，否则输出 −1。不必保存整个矩阵。"
+    ],
+    "en": [
+      "For any row i and column j, the minimum of column j <= a[i][j] <= the maximum of row i, so every column minimum is at most every row maximum.",
+      "Only two numbers matter: R, the smallest of the row maxima, and C, the largest of the column minima; a valid element exists exactly when R = C, and then its value is R.",
+      "Read row by row, take each row maximum and update R = min(R, row maximum), while an array of length M keeps every column minimum; at the end C = max(column minima); print the value if C == R, otherwise -1. The whole matrix never needs to be stored."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan row by row, keeping R, the minimum of the row maxima, and the minimum of every column; at the end let C be the maximum of the column minima, and output the common value when R=C.\n\n## Proof of correctness\n\nEvery column minimum is no greater than every row maximum, hence C<=R. When a saddle point exists, its row maximum and column minimum lie between R and C, which forces the two to be equal; conversely, the intersection of a row attaining R and a column attaining C is squeezed between the same value and is therefore a valid saddle point.\n\n## Complexity\n\nO(NM) time and O(M) extra space with streaming parsing; repeated maxima within a row cannot cause a solution to be missed."
+}

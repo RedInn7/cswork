@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-16",
+  "packageChecksum": "f9a663360c9f8e68a30250fb676914916e6c0aa32fc088503a7f8e7fbdcb99b8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n\nint main() {\n    long long n, t, d;\n    if (scanf(\"%lld %lld %lld\", &n, &t, &d) != 3) return 0;\n    // 0-based start d-1, then move forward t-1 seats around the circle.\n    printf(\"%lld\\n\", (d - 1 + t - 1) % n + 1);\n}\n",
+      "sha256": "f1d079b1c7d9555f98d06be8f6998b4373cf647d1fa467745eebe13f62f3f6e1"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long n = sc.nextLong(), t = sc.nextLong(), d = sc.nextLong();\n        // 0-based start d-1, then move forward t-1 seats around the circle.\n        System.out.println((d - 1 + t - 1) % n + 1);\n    }\n}\n",
+      "sha256": "bd7aa974311eb24b1aebbde642096fea7468961d9a22ff2f916b132b5023daec"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n, t, d int64\n\tfmt.Scan(&n, &t, &d)\n\t// 0-based start d-1, then move forward t-1 seats around the circle.\n\tfmt.Println((d-1+t-1)%n + 1)\n}\n",
+      "sha256": "9d47c4758237c3a4b07b6ca3e36564ebb4663b5dc85648925aa89fc9b2aad370"
+    }
+  ]
+}

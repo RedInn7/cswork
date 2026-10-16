@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-4",
+  "packageChecksum": "7b90a4cc96891e89a6f5687cee32c537c17fdc97f51cf9a725a62c77711ea62c",
+  "sourceContentHash": "1dd8704e60e8bfa5fe0cb8991449768e7b0dceb1ba9d0cf8c61eebdbf0292d8d",
+  "editorialSha256": "37412ae13480a25cec2d46f89ea283ccee054d614e1ff439eee89b9cb2412ee5",
+  "hints": {
+    "zh": [
+      "每块巧克力被反复选中时，每次吃掉的量 floor(w/2) 只会越来越小；而且重量只有 1 到 10000，可以按重量计数，而不必逐块保存。",
+      "贪心：每天都去吃当前最重的那一块，它带来的减少量最大。用一个按重量分桶的计数数组代替堆，指针从最大重量往下移动。",
+      "建立 b[w] 统计每种重量的块数并求总和，top 指向最大重量；每天先把 top 下移到非空桶，若 top 已经是 1 就提前结束；否则从 b[top] 取出一块，放进 b[ceil(top/2)]，总和减去 top−ceil(top/2)。总和用 64 位整数。"
+    ],
+    "en": [
+      "When the same piece is chosen again and again, the amount eaten each time, floor(w/2), never increases. Weights are only 1..10000, so you can count pieces per weight instead of storing every piece.",
+      "Greedy: every day eat from the currently heaviest piece, which gives the largest reduction. Replace a heap with an array of buckets indexed by weight, with a pointer that only moves down from the largest weight.",
+      "Build b[w] = number of pieces of weight w and the total weight, and let top be the largest weight. Each day, move top down to a non-empty bucket; if top is 1, stop early. Otherwise take one piece out of b[top], put it into b[ceil(top/2)], and subtract top - ceil(top/2) from the total. Keep the total in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBucket the pieces by weight, and each day take one piece from the highest non-empty bucket and halve it; as soon as every weight is 1, stop.\n\n## Correctness\n\nFor each piece, the gains of its future operations form a non-increasing sequence of floor(w/2) values. Choices from these sequences must respect the prefix constraint, and the largest gain currently available can always belong to an optimal choice: exchanging it for a smaller gain never makes the result worse. The largest weight gives the largest current gain, so the greedy choice is optimal.\n\n## Complexity\n\nO(n + d + 10000) time and O(10000) space."
+}

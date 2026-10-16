@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-226",
+  "packageChecksum": "92e5046d4033e970b1cac7bd7b314a8c16b8f75af9df351f8dc285386dcca805",
+  "sourceContentHash": "f9878f26e767b0d1725136c4cf81983febf0a67f3a41a693bfedff81e66e224d",
+  "editorialSha256": "db820401ff5f23af293d2dbf407083c1252d68b3f69ce99ffd50806d94873c1a",
+  "hints": {
+    "zh": [
+      "只保留的箱子由其中最小值和最大值决定是否合法；一旦最小、最大值固定，夹在它们之间的所有箱子都可以一起保留。",
+      "所以最优保留集合可以取成排序后的一个连续窗口，问题变成求满足 最大值 ≤ capacity × 最小值 的最长连续窗口。",
+      "尺寸升序排序；右端逐个右移，若当前右端大于 capacity 乘左端就不断右移左端；每步用窗口长度更新最大值；答案为 n 减最长窗口长度。乘积可达 5×10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Whether the kept boxes are valid depends only on their minimum and maximum; once those are fixed, every box in between can be kept as well.",
+      "So an optimal kept set can be taken as a contiguous window of the sorted sizes, and the task becomes finding the longest window with maximum <= capacity times minimum.",
+      "Sort the sizes ascending; advance the right end one by one, and while the right value exceeds capacity times the left value, move the left end right; update the best window length each step; the answer is n minus the longest length. The product can reach 5*10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort, then use two pointers to keep the maximum at most capacity times the minimum, maximizing the window length.\n\n## Proof of correctness\n\nOnce the minimum and maximum of the kept set are fixed, every box between them can be kept without breaking the condition, so some optimal solution is a contiguous window of the sorted order. As the right end increases, the left end is moved until the condition holds; this gives the longest valid window for the current right end, and taking the maximum covers every possible optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

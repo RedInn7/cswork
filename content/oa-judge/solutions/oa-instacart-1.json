@@ -1,0 +1,21 @@
+{
+  "id": "oa-instacart-1",
+  "packageChecksum": "a7e0b4a912ed1527f8997e72c3a6c871babca3f9c8ba5b0e94f23047012facea",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    vector<long long> a(n, 0);  // 0 = uncolored\n    long long pairs = 0;\n    string out;\n    for (int j = 0; j < q; j++) {\n        int i;\n        long long c;\n        cin >> i >> c;\n        // Only the two edges touching i can change: remove their old contribution, add the new one.\n        if (a[i]) {\n            if (i && a[i - 1] == a[i]) pairs--;\n            if (i + 1 < n && a[i + 1] == a[i]) pairs--;\n        }\n        a[i] = c;\n        if (i && a[i - 1] == c) pairs++;\n        if (i + 1 < n && a[i + 1] == c) pairs++;\n        if (j) out += ' ';\n        out += to_string(pairs);\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "635af70ffaf33e9a6ee3fc1cdb2c9d023222328c5e8271e5939bd7176e9483c8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), q = nextInt();\n        long[] a = new long[n]; // 0 = uncolored\n        long pairs = 0;\n        StringBuilder sb = new StringBuilder();\n        for (int j = 0; j < q; j++) {\n            int i = nextInt();\n            long c = nextLong();\n            // Only the two edges touching i can change: remove their old contribution, add the new one.\n            if (a[i] != 0) {\n                if (i > 0 && a[i - 1] == a[i]) pairs--;\n                if (i + 1 < n && a[i + 1] == a[i]) pairs--;\n            }\n            a[i] = c;\n            if (i > 0 && a[i - 1] == c) pairs++;\n            if (i + 1 < n && a[i + 1] == c) pairs++;\n            if (j > 0) sb.append(' ');\n            sb.append(pairs);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "e1305611e3be602df00d994a692bf9266fa0a19225efce13343e45a600b03332"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, q := int(nextInt()), int(nextInt())\n\ta := make([]int64, n) // 0 = uncolored\n\tvar pairs int64\n\tvar out []byte\n\tfor j := 0; j < q; j++ {\n\t\ti, c := int(nextInt()), nextInt()\n\t\t// Only the two edges touching i can change: remove their old contribution, add the new one.\n\t\tif a[i] != 0 {\n\t\t\tif i > 0 && a[i-1] == a[i] {\n\t\t\t\tpairs--\n\t\t\t}\n\t\t\tif i+1 < n && a[i+1] == a[i] {\n\t\t\t\tpairs--\n\t\t\t}\n\t\t}\n\t\ta[i] = c\n\t\tif i > 0 && a[i-1] == c {\n\t\t\tpairs++\n\t\t}\n\t\tif i+1 < n && a[i+1] == c {\n\t\t\tpairs++\n\t\t}\n\t\tif j > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, pairs, 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "450ab03cdd6332baab33fcbc24a4281d443fd18862b37246c62c803153a2de89"
+    }
+  ]
+}

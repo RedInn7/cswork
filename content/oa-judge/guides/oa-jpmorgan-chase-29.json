@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-29",
+  "packageChecksum": "e83a026c57f260a594ce8094a46fd4d8f0737f89fc880dcc6f03f7b14208c345",
+  "sourceContentHash": "d3316b942b5a7a0cbfc087e99a0a64b92f02c11bf4cccc2e811f172ff8e524c1",
+  "editorialSha256": "2664527b594be87fd76a69397681d326b337993f1f68db0addc5f437fdce0ad4",
+  "hints": {
+    "zh": [
+      "起点一旦选定，之后的路线就是唯一的：每次向后跳 k，直到下一跳越界才停，不能提前停下。所以只需比较 n 个起点各自的总和。",
+      "从 i 出发的总和等于 a[i] 加上从 i+k 出发的总和；若 i+k 已越界，就只有 a[i]。从右往左计算，就能直接复用后面算好的结果。",
+      "让 i 从 n−k−1 递减到 0，执行 a[i] += a[i+k]（最后 k 个位置保持原值）；完成后每个位置的值就是以它为起点的总和，输出其中最大值。数值可能全为负，答案不能取 0。"
+    ],
+    "en": [
+      "Once the starting point is chosen the route is fixed: jump +k each time and stop only when the next jump would leave the array, with no early stop. So you just compare the totals of the n possible starting points.",
+      "The total from i equals a[i] plus the total from i+k; if i+k is out of bounds it is just a[i]. Computing from right to left lets you reuse the totals already computed further right.",
+      "For i from n-k-1 down to 0 do a[i] += a[i+k] (the last k positions keep their values); afterwards every position holds the total for starting there, so print the maximum. All values may be negative, so the answer must not default to 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute from right to left the total from each starting point until jumping out of bounds: dp[i]=a[i]+dp[i+k], where a term beyond the end counts as 0; the largest dp is the answer.\n\n## Proof of correctness\n\nStarting from one of the last k positions you can only collect that position, so the recurrence is correct there. For any other position, starting at i you must collect a[i] and then carry out the complete process starting at i+k, so the recurrence gives the sum of the unique valid path. By induction in reverse order every starting point is correct, and taking the maximum covers every non-empty choice.\n\n## Complexity\n\nO(n) time and O(n) space, accumulating in place in the input array."
+}

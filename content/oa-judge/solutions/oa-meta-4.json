@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-4",
+  "packageChecksum": "7cca3716517aa4c564f088b5654a2aca364de54190f89b07798518f98e12789e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int b, length;\n    cin >> b >> length;\n    vector<pair<int, int>> v(b);\n    for (auto &p : v) cin >> p.first >> p.second;\n    sort(v.begin(), v.end());\n    int end = 0;  // right edge of the busy time scanned so far\n    for (auto &p : v) {\n        if (p.first - end >= length) {\n            cout << end << \"\\n\";\n            return 0;\n        }\n        end = max(end, p.second);\n    }\n    cout << (1440 - end >= length ? end : -1) << \"\\n\";\n}\n",
+      "sha256": "a92ce6bfbaa1b8578a9c0e4803373e67d4c5faf3a3b97c704669ba77543fa174"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int b = (int) nextLong(), length = (int) nextLong();\n        long[] v = new long[b];\n        // pack (start, finish) into one long so a primitive sort orders by start then finish\n        for (int i = 0; i < b; i++) v[i] = nextLong() * 2048 + nextLong();\n        Arrays.sort(v);\n        long end = 0;  // right edge of the busy time scanned so far\n        for (long x : v) {\n            long start = x / 2048, finish = x % 2048;\n            if (start - end >= length) {\n                System.out.println(end);\n                return;\n            }\n            end = Math.max(end, finish);\n        }\n        System.out.println(1440 - end >= length ? end : -1);\n    }\n}\n",
+      "sha256": "6d9b4c9d2d88f1e4690517ee34f698c547da9170b402b85eddc9320ee7f5deb0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tb, length := next(), next()\n\tv := make([][2]int, b)\n\tfor i := range v {\n\t\tv[i][0], v[i][1] = next(), next()\n\t}\n\tsort.Slice(v, func(x, y int) bool {\n\t\tif v[x][0] != v[y][0] {\n\t\t\treturn v[x][0] < v[y][0]\n\t\t}\n\t\treturn v[x][1] < v[y][1]\n\t})\n\tend := 0 // right edge of the busy time scanned so far\n\tfor _, p := range v {\n\t\tif p[0]-end >= length {\n\t\t\tfmt.Println(end)\n\t\t\treturn\n\t\t}\n\t\tend = max(end, p[1])\n\t}\n\tif 1440-end >= length {\n\t\tfmt.Println(end)\n\t} else {\n\t\tfmt.Println(-1)\n\t}\n}\n",
+      "sha256": "4cbdb0e1cf97f1965567b84a5e4a606f1107556c7c03872b4b2dab7721a8492b"
+    }
+  ]
+}

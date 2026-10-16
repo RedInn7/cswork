@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-167",
+  "packageChecksum": "0e1d321ca90c03f557da63f59e14d0ac44362b8ff7402ec69499b32b1d263ddb",
+  "sourceContentHash": "c820040d01a167d3851268d822f38c731435ec5af39962fe71d54a9435536c93",
+  "editorialSha256": "e4b643b8aa94c47b77ef05d1287acfcbd7f4a9eb3460b53f7d1e74c623238cd3",
+  "hints": {
+    "zh": [
+      "先排序再看：保留下来的数排好序后，相邻差就是排序数组里它们之间的跨度。直觉上，保留排序后连续的n−k个数不会更差。",
+      "排序后计算相邻差数组gaps；保留连续的n−k个数时，它们的最大相邻差就是gaps中一段长度为n−k−1的窗口最大值。对所有窗口取最小即可，滑动窗口最大值用单调队列求。",
+      "排序；若n−k等于1直接输出0；求gaps[i]=a[i+1]−a[i]；用存下标、值单调递减的队列扫描gaps：新元素入队前弹出所有不大于它的队尾，队首下标滑出窗口时出队，窗口凑满n−k−1个后用队首的值更新最小答案。差值可能超过32位，用64位整数。"
+    ],
+    "en": [
+      "Think in sorted order: once the kept numbers are sorted, each adjacent difference spans the stretch between them in the sorted array. Intuitively, keeping n-k consecutive numbers of the sorted array is never worse.",
+      "Sort and build the array gaps of adjacent differences; for n-k consecutive kept numbers, the largest adjacent difference is the maximum over a window of n-k-1 gaps. Take the smallest such window maximum, computing the sliding-window maxima with a monotonic queue.",
+      "Sort; if n-k equals 1 print 0. Compute gaps[i] = a[i+1] - a[i] and scan them with a queue of indices whose values decrease: before pushing, pop every tail value not larger than the new one, drop the head once its index leaves the window, and once the window holds n-k-1 gaps update the minimum with the head's value. Differences can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, only n-k consecutive elements need to be considered; on the array of adjacent differences, maintain the maximum of each window of length n-k-1, then take the minimum.\n\n## Proof of correctness\n\nFor any selection that skips interior elements, compressing the chosen numbers into the same number of consecutive elements of the sorted sequence makes every new adjacent gap contained in some old gap, so the maximum gap does not increase. More directly: if a threshold is feasible, the chosen numbers cannot cross an original adjacent gap larger than the threshold, so they lie in the same contiguous connected block, whose length is at least n-k; hence a contiguous selection is feasible too. A monotone queue maintains the maximum difference of each window.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

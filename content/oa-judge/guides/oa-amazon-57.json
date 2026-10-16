@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-57",
+  "packageChecksum": "ee1313b59689e1fcf14650e6a0bed11fbd318db3752de0944a6b83eb65b1390b",
+  "sourceContentHash": "581b5c46578e0b181db6639bc1aa62f2bc52a218d1567524a65afebc9c2a1a74",
+  "editorialSha256": "65aa6d362c9a996831ab605c2d1d7cb48480b526d68d38b4b48624c62d1b7bc2",
+  "hints": {
+    "zh": [
+      "把保留的连线按起点（下标）顺序排列后，两条线不交叉，等价于它们的目标值不出现“严格逆序”；目标相同不算交叉。",
+      "所以问题等价于在 match 数组里找最长非降子序列。经典的 O(n log n) 做法：维护每个长度的子序列可能的最小末尾值。",
+      "维护数组 tails；对每个值 v，二分找第一个严格大于 v 的位置（upper_bound，这样相等的值可以接在后面）；若不存在就追加，否则替换为 v；最后 tails 的长度就是答案。"
+    ],
+    "en": [
+      "Listing the kept lines by their start index, two lines do not cross exactly when their targets are not strictly reversed; equal targets do not count as crossing.",
+      "So the task is the longest non-decreasing subsequence of the match array. The classic O(n log n) method keeps, for each length, the smallest possible last value of a subsequence of that length.",
+      "Keep an array tails; for each value v, binary search the first position whose value is strictly greater than v (upper_bound, so equal values can extend a subsequence); append v if there is none, otherwise overwrite that position with v; the final length of tails is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the longest non-decreasing subsequence; use upper_bound to maintain the smallest last value for each length, which lets equal values extend a subsequence.\n\n## Proof of correctness\n\nOnce the chosen lines are listed in the order of their starting points, being non-crossing is equivalent to the target values being non-decreasing. Keeping the smallest last value never weakens any future extension, and updating the first position strictly greater than the current value, found by binary search, keeps the best last value for every length.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

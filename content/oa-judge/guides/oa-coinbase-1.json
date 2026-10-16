@@ -1,0 +1,19 @@
+{
+  "id": "oa-coinbase-1",
+  "packageChecksum": "1b4e3ca9759e886da83665e5e23d8f2e6fe433edaac5733368e8d444f2ba77dc",
+  "sourceContentHash": "b91bc41667c2977e0dc93e775c3ccfcb2ebc921909bdc80f4dcf0999c66d7804",
+  "editorialSha256": "9e43fb105af951890115769f9ddbd19f6c9bfac8666bd3e1ab7d409689024eb5",
+  "hints": {
+    "zh": [
+      "两个正整数的十进制公共前缀，必然是它们各自的某个前缀；而一个数的所有非空前缀，就是不断去掉末位（整除 10）得到的那些数。",
+      "把第一个数组每个数的全部前缀放进哈希集合；对第二个数组的每个数，从长到短检查它的前缀是否在集合中，第一个命中的位数就是它与第一个数组的最长公共前缀。",
+      "第一个数组每个数最多 9 位，集合约 9n 个元素；遍历第二个数组时边除以 10 边查集合，命中就用该前缀的位数更新答案并停止。没有任何命中时答案为 0。"
+    ],
+    "en": [
+      "A common decimal prefix of two positive integers is a prefix of each of them, and the non-empty prefixes of a number are exactly the numbers you get by repeatedly dropping its last digit (integer division by 10).",
+      "Put every prefix of every number of the first array into a hash set. For each number of the second array, check its prefixes from longest to shortest; the first hit gives its longest common prefix with the first array.",
+      "Each number has at most 9 digits, so the set holds about 9n values. While scanning the second array, divide by 10 step by step and look the value up; on a hit, update the answer with the digit count of that prefix and stop. If nothing ever hits, the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepeatedly divide each number in the first array by 10 to get all its non-empty prefixes and put them in a set; then enumerate the prefixes of the other array to find the longest match.\n\n## Proof of correctness\n\nThe non-empty decimal prefixes of a positive integer are exactly the positive numbers obtained by repeatedly removing the last digit. Two prefixes are equal if and only if the corresponding cross-array pair has a common prefix of that length, and taking the largest number of digits gives the answer.\n\n## Complexity\n\nO(9(n+m)) time and O(9n) space."
+}

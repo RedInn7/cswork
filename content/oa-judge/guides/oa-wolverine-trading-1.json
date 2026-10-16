@@ -1,0 +1,19 @@
+{
+  "id": "oa-wolverine-trading-1",
+  "packageChecksum": "9eabf0131123b478043102aaa945a33374dc99f8acb2759f29a30ef8bb95d48e",
+  "sourceContentHash": "321c8b63275863d66808aad94dc420caeedecd89ffc0e795f38ac5df9f5b68f4",
+  "editorialSha256": "0bc34f61993e961cc3d388d54a12f764e220167ee5a91d340a02529fb4f7a7a1",
+  "hints": {
+    "zh": [
+      "元素互不相同时，数组复原等价于下标置换回到恒等，把置换拆成不相交的循环来看。",
+      "长度为 k 的循环经过 t 次操作复原当且仅当 k 整除 t，所以整体复原的最小正次数是所有循环长度的最小公倍数。",
+      "用 seen 数组沿 p 走出每个循环求长度；LCM 可能远超 64 位，把每个长度分解质因数，记录每个质数的最高次幂，最后把这些幂相乘对 10⁹+7 取模。"
+    ],
+    "en": [
+      "With distinct elements, restoring the array is the same as the index permutation returning to the identity; look at the permutation as disjoint cycles.",
+      "A cycle of length k is restored after t operations exactly when k divides t, so the smallest positive number of operations restoring everything is the least common multiple of all cycle lengths.",
+      "Walk each cycle along p with a seen array to get its length; the LCM can far exceed 64 bits, so factor each length, keep the highest power of each prime, and multiply those powers modulo 10⁹+7."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDecompose the permutation into disjoint cycles; the answer is the least common multiple of all cycle lengths.\n\n## Proof of correctness\n\nAn element on a cycle of length k returns to its place after t operations if and only if k divides t. The whole array is restored simultaneously if and only if every cycle length divides t, so the smallest positive t is the least common multiple of all lengths.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source notes\n\nThe constraints are complete; the direction in which the permutation is applied does not affect the cycle lengths or the answer.\n\nThis site separately compiled the standard input/output protocol; it does not claim the original site provided it."
+}

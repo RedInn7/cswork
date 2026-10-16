@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-184",
+  "packageChecksum": "df997fd4e781c0b64394d9e1dba62198c807178d05dfcf73b50b785c48997b11",
+  "sourceContentHash": "4c55806e92c6af9f0e7b5ddc1f4aafb8f6f6d49f4d929aea0f5b7b7585ad5168",
+  "editorialSha256": "b5feb0b2494ee4184e995f5a8bf47c2423f6cd2a1724c571ade72b56d073931c",
+  "hints": {
+    "zh": [
+      "最终最低库存至少为T是否可行，随T单调变化：T越小越容易做到。因此可以二分T，只需要写一个可行性判断。",
+      "固定T：低于T的库存a至少要被加(T−a)/incVal向上取整次；高于T的库存最多能被减(a−T)/decVal向下取整次而不低于T。每次操作恰好一加一减，只要总供给次数不少于总需求次数就可行。",
+      "二分区间的下界取原来的最小库存、上界取总和除以n；对mid统计所有小于mid的库存需要的接收次数之和need（向上取整），以及所有不小于mid的库存能提供的次数之和supply（向下取整）；supply不少于need则下界移到mid，否则上界改为mid−1；取偏上的中点避免死循环，最后输出下界。计数要用64位整数。"
+    ],
+    "en": [
+      "Whether the final minimum can be at least T is monotone in T: smaller T is easier. So binary search T and only write a feasibility test.",
+      "With T fixed, an inventory a below T must receive at least (T - a)/incVal rounded up times, and an inventory above T can give at most (a - T)/decVal rounded down times without dropping below T. Each operation is exactly one give and one receive, so T is feasible when the total supply is at least the total demand.",
+      "Search between the smallest original inventory and the total divided by n. For mid, add up need, the rounded-up receptions required by every inventory below mid, and supply, the rounded-down gives available from every inventory at or above mid; if supply >= need move the lower bound to mid, otherwise set the upper bound to mid - 1. Use the upper middle to avoid an endless loop and print the lower bound at the end. Count in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the target minimum inventory T. An item below T needs ceil((T-a)/inc) receptions; an item above T can provide floor((a-T)/dec) times; T is feasible if the total supply is no less than the demand.\n\n## Proof of correctness\n\nIn any final plan, if some item both receives and provides, canceling one such pair does not lower that item's final value, because dec>=inc, and it reduces the global numbers of receptions and provisions together. So mixed roles can be eliminated, and it suffices for items above T to give directly to the items that are short. Rounding the demand up and the supply down are both necessary bounds, and any sufficient supply can be handed directly to the short items to build a plan. Feasibility is monotone in T, so binary search finds the maximum.\n\n## Complexity\n\nTime O(n log 10^9), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-8",
+  "packageChecksum": "2d07d4ab26b3ab505636c4dc07058532ec096306e22f122734d5f4660de9f992",
+  "sourceContentHash": "faf1170fba22ec3200ba1a423919b92bb32944a309f890f10d0403a59c955396",
+  "editorialSha256": "33e54f5afd9a2f560b5171c71776d4a61cfccdd69f6c67191ab312b46fd102fc",
+  "hints": {
+    "zh": [
+      "和上一题相同的逐日传播规则，只多了免疫格 I：它永远不会被感染，也不算作任何格子的感染邻居。",
+      "仍然按天分层传播：维护每格已感染邻居数，只有新感染发生时才通知它的 8 个邻居，达到阈值的健康格进入下一天的队列。免疫格既不入队，也从不给邻居加计数。",
+      "初始化时只让 X 格给邻居计数加一；把计数 ≥ T 的 . 格标记后放入第一层（T=0 时所有 . 格都在第一层）。每处理一层天数加一：层内格子变为 X 并给邻居加一，只有未标记的 . 格在计数达到 T 时进入下一层，I 格始终跳过。队列为空时的天数即答案。"
+    ],
+    "en": [
+      "The daily spread rule is the same as in the previous problem, plus immune cells I: they are never infected and never count as an infected neighbour of anyone.",
+      "Still spread layer by layer by day: keep each cell's number of infected neighbours, notify the 8 neighbours only when a new infection happens, and move healthy cells that reach the threshold into the next day's queue. Immune cells are never queued and never add to a neighbour's count.",
+      "When initializing, only X cells add one to their neighbours' counts; mark the . cells with count >= T and put them in layer 1 (when T=0 every . cell is in layer 1). Each processed layer adds one day: its cells become X and increment their neighbours, and only unmarked . cells whose count reaches T enter the next layer, while I cells are always skipped. The day count when the queue empties is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep, for every cell, the number of its infected neighbours. First find the cells that will be infected on day 1; after that, process the queue of newly infected cells layer by layer. When a cell becomes infected it notifies only its at most 8 neighbours, and the next layer is processed on the following day. When T=0, every healthy cell enters layer 1.\n\n## Correctness\n\nThe initial counts are exactly the infected neighbours on day 0. While processing layer d, only the infections new on that day are added to the neighbours' counts; a healthy cell that reaches the threshold is marked as pending right away but can only enter layer d+1, so infection never spreads further on the same day. Each cell is queued once, the first time it reaches the threshold, so nothing is missed or repeated. When the queue is empty, no healthy cell can still reach the threshold, and the number of the last non-empty layer is the answer. Immune cells are never queued and never add to any count.\n\n## Complexity\n\nTime O(nm), space O(nm)."
+}

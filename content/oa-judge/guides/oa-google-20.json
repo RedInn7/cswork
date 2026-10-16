@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-20",
+  "packageChecksum": "8c40b9db6a2f22dfbb07844b8f928627432bce250c3b751031e471de385716b9",
+  "sourceContentHash": "78a3d13a3a73e710a16bed2ac9f7c09f75f2d42605045613967f940842f72eb5",
+  "editorialSha256": "326731f8b9e058eedd5fa830556590d79474d143c6be317b88fa71fe8c967e5e",
+  "hints": {
+    "zh": [
+      "长度至少为 2 的区间里，最大值旁边一定有另一个元素，而这个邻居不小于整个区间的最小值。",
+      "因此任何长区间的“最小值+最大值”都不超过某一对相邻元素之和，只需要考虑长度恰为 2 的区间。",
+      "遍历 i=0..n−2，计算 a[i]+a[i+1]，取最大值输出；数值可到 2×10⁹，注意使用 64 位整数。"
+    ],
+    "en": [
+      "In a subarray of length at least 2, the maximum element always has a neighbour inside it, and that neighbour is no smaller than the subarray's minimum.",
+      "So min plus max of any long subarray is at most the sum of some adjacent pair; only subarrays of length exactly 2 need to be considered.",
+      "Loop i = 0..n-2, compute a[i] + a[i+1] and print the largest value; the sum can reach 2 * 10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIt is enough to enumerate every pair of adjacent elements and take the maximum of their sums.\n\n## Why it is correct\n\nTake any valid subarray and its maximum element M; M has at least one adjacent element x inside the subarray. Since x is no smaller than the subarray's minimum m, this adjacent pair has sum M + x >= M + m. Therefore no longer subarray is better than some subarray of length 2.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."
+}

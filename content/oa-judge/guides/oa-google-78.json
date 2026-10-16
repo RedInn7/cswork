@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-78",
+  "packageChecksum": "8e4c80d7ec212c969d02d0aef66bc10c7cc25c2c959430d5ee6f9552e7ffcb40",
+  "sourceContentHash": "d9f0d2f6d8bc41271ec89e305ce4a999693bab3957dcc8e4affdfd890a3814e7",
+  "editorialSha256": "8e1c5d631d0b9190bbb137b3910590a6694733599689ab874e321b425344c723",
+  "hints": {
+    "zh": [
+      "把每个合法字符串看成图上的一个点，一次合法修改就是一条边，所有边权都是 1，求最少步数就是无权图最短路。",
+      "n 很小，合法的相邻不同串最多 3·2^(n−1) 个，完全可以把整个状态空间搜一遍。",
+      "从起点做 BFS：对每个位置尝试另外两种字符，只要与左右邻居都不同就得到一个新串，未访问过就入队并记录距离。第一次取出目标串时的距离就是答案，搜完都没遇到则输出 −1。"
+    ],
+    "en": [
+      "Treat each valid string as a node and each legal single change as an edge of weight 1; the fewest steps is a shortest path in an unweighted graph.",
+      "n is small: there are at most 3·2^(n−1) strings with no equal neighbours, so the whole state space can be searched.",
+      "BFS from the start string. For each position try the two other characters; if the new character differs from both neighbours you get a new string, and you enqueue it with its distance if unseen. The distance when the target is first dequeued is the answer; print −1 if it never appears."
+    ]
+  },
+  "explanationEn": "## Idea\n\nBFS from the start. At each position try the other two colours, and add the next state whenever the new character differs from its left and right neighbours; the distance at which the target is first reached is the answer.\n\n## Correctness\n\nEvery legal single-character change corresponds to exactly one edge of the state graph, and every edge has weight 1. Enumerating positions and replacement characters produces all legal edges and only those, so BFS finds the minimum number of operations.\n\n## Complexity\n\nThere are at most 3·2^(n−1) valid states. O(n²·2^n) time (including string copies), O(n·2^n) space."
+}

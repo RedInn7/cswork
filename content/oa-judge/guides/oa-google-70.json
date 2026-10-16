@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-70",
+  "packageChecksum": "bc0d0de8cea381fe495818d8db50dab75367aab7b70dc0336b2a145da3e56473",
+  "sourceContentHash": "bf334bd30b87c8b4ab5cf75d3376b56753d519a447804d0b601e948b3836b59e",
+  "editorialSha256": "eb3ffdf4a9c367f9eb4886317cd4cfa806d2a9ff82552b86d1c12849c423e76f",
+  "hints": {
+    "zh": [
+      "单个子串的最少替换次数只取决于出现奇数次的字母个数 odd：一次替换最多消掉两个奇数频次，所以代价是 ⌊odd/2⌋，并且能达到。",
+      "子串中某字母出现次数的奇偶，等于两端前缀中该字母奇偶的异或。对每个字母，奇偶不同的前缀对数是“奇前缀数 × 偶前缀数”，把 26 个字母加起来就是所有子串 odd 的总和。",
+      "odd 的奇偶性与子串长度相同，所以 Σ⌊odd/2⌋ = (Σodd − 奇数长度子串个数)/2。扫描时维护 26 个字母的前缀奇偶，统计每个字母奇前缀的个数 v（共 n+1 个前缀），Σodd = Σ v·(n+1−v)，奇数长度子串数为 ⌈(n+1)/2⌉·⌊(n+1)/2⌋，全部用 64 位整数。"
+    ],
+    "en": [
+      "The minimum replacements for one substring depend only on odd, the number of letters with odd frequency: one replacement removes at most two odd frequencies, so the cost is floor(odd/2), and that is achievable.",
+      "A letter's frequency parity in a substring is the XOR of its parities in the two bounding prefixes. For each letter the number of prefix pairs with different parity is (odd prefixes) × (even prefixes); summing over the 26 letters gives the total of odd over all substrings.",
+      "The parity of odd equals the parity of the substring length, so the sum of floor(odd/2) is (sum of odd − number of odd-length substrings)/2. While scanning keep the 26 prefix parities and count, per letter, the prefixes with odd parity v (out of n+1 prefixes). Then sum of odd = Σ v·(n+1−v) and the odd-length substring count is ceil((n+1)/2)·floor((n+1)/2). Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Idea\n\nThe cost of one substring is the number of letters with odd frequency divided by 2, rounded down. For each letter, the number of prefix pairs with different parity is zero·one; summing gives the total number of odd-frequency letters over all substrings. Then subtract the number of odd-length substrings and finally divide by 2.\n\n## Correctness\n\nEach replacement removes at most two odd frequencies, so the cost is at least floor(odd/2), and changing one odd letter into another odd letter achieves it. The parity of a letter's frequency in a substring is the XOR of the parities of the two bounding prefixes. The parity of odd equals the parity of the substring length, so subtracting the number of odd-length substrings implements the rounding down for all substrings at once.\n\n## Complexity\n\nO(26n) time, O(26) space; the answer needs a 64-bit integer."
+}

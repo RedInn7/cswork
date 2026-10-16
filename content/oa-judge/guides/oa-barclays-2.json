@@ -1,0 +1,19 @@
+{
+  "id": "oa-barclays-2",
+  "packageChecksum": "4d101778d679066d2d42f83acbdca0bbad112283f7faabc4e5e2a58f8e60fdc9",
+  "sourceContentHash": "78ba31d7ed2aeb75a9ef6c7c8afdb1721abb73070cf0f6a311a9468cfc7c10f6",
+  "editorialSha256": "88b1c1296542c0519ae1b3878a839e7c00d21ea7cafe74041303a50666b6e034",
+  "hints": {
+    "zh": [
+      "得分分成两部分：每个 T 格子自身的分值，以及每一对相邻且都是 T 的格子额外得到的 1 分。",
+      "连续 k 个 T 会形成 k−1 对相邻的 T，每一对都要加 1 分，而不是整段只加一次。",
+      "从左到右扫描：当前格是 T 就加上它的分值，若前一格也是 T 再加 1；最后输出总分。"
+    ],
+    "en": [
+      "The score has two parts: the value of every T cell, and one extra point for every pair of adjacent cells that are both T.",
+      "A run of k consecutive Ts forms k-1 adjacent T pairs, and each pair adds a point; the run does not get just a single bonus.",
+      "Scan from left to right: when the current cell is T add its value, and if the previous cell is also T add 1 more; print the total at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst add up the values of all T cells, then check each pair of adjacent cells for whether both are T. A run of k consecutive Ts contributes k−1 adjacent pairs, not a single bonus.\n\n## Why It Is Correct\n\nEach base point corresponds uniquely to one T cell, and each bonus point corresponds uniquely to one T-T adjacent edge. The loop checks each cell and each adjacent edge exactly once, so nothing is repeated or missed.\n\n## Complexity\n\nTime O(n), extra space O(1) besides the input."
+}

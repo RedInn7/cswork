@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-27",
+  "packageChecksum": "a0fcedb8296959fe44ef2e33ee6ce491f925b4c989ddc0da6fb9852b962eda3e",
+  "sourceContentHash": "d72bc7fd9ba8c01ea163eefe9c29b78542d4170d1fbf88bdf3a411c01d1a5b8d",
+  "editorialSha256": "1d30ebb118e93c83c283618b0ac2de7f389118b3323984a1048855a701e8e666",
+  "hints": {
+    "zh": [
+      "每次只能删叶子，所以保留一个节点就必须保留它的全部祖先；反过来，一个不安全的节点只能连同它的整棵子树一起删掉。",
+      "设 D[v] 为根到 v 的路径和，则 v 到严格祖先 u 的路径和为 D[v]−D[u]，最大值是 D[v] 减去严格祖先中最小的 D。所以 v 安全当且仅当 D[v] − min(严格祖先的 D) ≤ threshold[v]。",
+      "从根做迭代 DFS（避免深链递归爆栈），栈中携带（节点、父节点、D、严格祖先的最小 D、是否已被删）；节点被删当且仅当父节点被删或它自身不安全，统计被删节点的个数；根永远不删。路径和用 64 位整数，负边权和负阈值照常参与比较。"
+    ],
+    "en": [
+      "Only leaves can be deleted, so keeping a node means keeping all of its ancestors; conversely an unsafe node can only go away together with its entire subtree.",
+      "Let D[v] be the path sum from the root to v; the path sum from v to a strict ancestor u is D[v]-D[u], whose maximum is D[v] minus the smallest D among the strict ancestors. So v is safe exactly when D[v] - min(D of strict ancestors) <= threshold[v].",
+      "Run an iterative DFS from the root (deep chains would overflow recursion), carrying node, parent, D, the minimum D over strict ancestors and whether it is already deleted; a node is deleted exactly when its parent is deleted or it is unsafe itself, and you count deleted nodes; the root is never deleted. Use 64-bit path sums and compare negative weights and thresholds as they are."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDuring the traversal maintain the root path sum D and the minimum root path sum M over the strict ancestors. v is safe if and only if D[v]−M≤threshold[v]. If a node is unsafe, or its parent has already been determined to be deleted, its entire subtree must be deleted; the iterative traversal counts these nodes at the same time.\n\n## Proof of correctness\n\nThe path sum to a strict ancestor u is D[v]−D[u], whose maximum is D[v]−M. Keeping any node requires keeping all of its ancestors, so an unsafe node and all of its descendants cannot be kept. These subtrees can be deleted from the leaves up towards the root, and every remaining node then satisfies the condition exactly, so the number of deletions is both necessary and achievable. Negative edges and negative thresholds take part in the comparison as they are, without being clamped to 0.\n\n## Complexity\n\nO(n) time, O(n) space. The adjacency list uses compact arrays with streaming lexical parsing and no recursion, and path sums use 64-bit or arbitrary-precision integers."
+}

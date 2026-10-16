@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-23",
+  "packageChecksum": "290d861837e5fabf23114d2f9eb060a798aee61fd47e6ae64274163a97de024b",
+  "sourceContentHash": "8614d9f01caa8c41476a3a58eaa80104b2038be8f83f86c198c3a5df9f29c850",
+  "editorialSha256": "0d1c0c2731b81e72d4c785a87949b985c9c316c706c6215444ee7ac03bb3b5c1",
+  "hints": {
+    "zh": [
+      "把第i个房子和第n+1−i个房子看成一对（到两端距离相同），从两端向中间一对一对地涂色，每对内部必须异色。",
+      "最外层一对有3×2=6种涂法。之后每一对(c,d)只需满足c与左边已涂的a不同、d与右边已涂的b不同、c≠d；分情况数一数可知无论a、b是什么都恰好有3种。",
+      "所以答案是6×3^(n/2−1)，对10^9+7取模，用快速幂计算。"
+    ],
+    "en": [
+      "Pair house i with house n + 1 - i (same distance from the two ends) and paint pair by pair from the ends toward the middle; the two houses of a pair must differ.",
+      "The outermost pair has 3 * 2 = 6 colorings. Every later pair (c, d) only needs c to differ from the already painted a on its left, d from b on its right, and c != d; checking the cases shows there are exactly 3 options whatever a and b are.",
+      "So the answer is 6 * 3^(n/2 - 1) modulo 10^9+7, computed with fast exponentiation."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPaint pair by pair from both ends toward the middle: the first pair has 6 options, and every later pair has 3.\n\n## Correctness\n\nThe left and right colors already painted are different values a,b; the new pair (c,d) requires c!=a, d!=b, and c!=d. With three colors there are exactly 3 ordered choices, the same for any a,b. The innermost adjacency constraint is just that the two houses of a pair differ, with no extra condition, so by the multiplication principle the answer is 6×3^(n/2-1).\n\n## Complexity\n\nTime O(log n), space O(1)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-42",
+  "packageChecksum": "dfa1813e7b9d01e0cfecc09b0cb0fcba4ed6f733db5db8f9e49ba63f41dfd363",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    if (scanf(\"%d %d\", &n, &k) != 2) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    sort(a.rbegin(), a.rend());\n    // The k largest values give the maximum sum.\n    printf(\"%lld\\n\", accumulate(a.begin(), a.begin() + k, 0LL));\n}\n",
+      "sha256": "272ff5d587c395e6ada3bc2c57c69a3454b1fce7dcc19d7d78e408646768eba9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        st.nextToken();\n        int k = (int) st.nval;\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        Arrays.sort(a);\n        // The k largest values give the maximum sum.\n        long sum = 0;\n        for (int i = n - k; i < n; i++) sum += a[i];\n        System.out.println(sum);\n    }\n}\n",
+      "sha256": "7febadc0b06165f4a0fc5d738e8933326b94016b9e624c3176d9f945ba888aee"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn, k := nextInt(), nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tsort.Sort(sort.Reverse(sort.IntSlice(a)))\n\t// The k largest values give the maximum sum.\n\tsum := 0\n\tfor _, v := range a[:k] {\n\t\tsum += v\n\t}\n\tfmt.Println(sum)\n}\n",
+      "sha256": "c84587966a4e3077d5f5f1391a7deda1e632f5e112dea544637731a5daa60079"
+    }
+  ]
+}

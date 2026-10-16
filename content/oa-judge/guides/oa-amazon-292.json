@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-292",
+  "packageChecksum": "b75b52da4785e4bfcf4e846291433e19c3583c34a263523cffa6bbae25b8287f",
+  "sourceContentHash": "91df18c838bae93c553b63a8b850131b8f88256e34148ed19afa2fcc3ffa52ca",
+  "editorialSha256": "afb715311cd9e0dd887f5573a7a91b375fad0a855ca119d209fb976492ed7ebb",
+  "hints": {
+    "zh": [
+      "替换操作只会把某个值改成数组里已有的另一个值，永远不会产生新数值；而整除具有传递性，所以一个原值最终只能变成原数组中某个能整除它的值。",
+      "于是每个原值的下界就是“原数组中能整除它的最小值”。这些最小除数本身不会再被更小的原数整除（否则那个更小的数也整除原值），可以原地不动作为支点，其余元素直接替换成各自的最小除数，同时达到每一项的下界。",
+      "统计每个值的出现次数；让 d 从小到大，只处理原数组中出现过的 d，遍历它的所有倍数，若某个倍数还没有记录最小除数就记为 d；最后对每个出现过的值 v 累加 出现次数×最小除数，用 64 位整数输出。"
+    ],
+    "en": [
+      "A replacement only changes a value into another value already in the array and never creates new values; since divisibility is transitive, an original value can only end up as some value of the original array that divides it.",
+      "So each original value is bounded below by the smallest value of the original array that divides it. Those smallest divisors are not divisible by any smaller original value, otherwise that value would also divide the original, so they can stay fixed as pivots while every other element is replaced directly by its smallest divisor, reaching every bound at once.",
+      "Count how many times each value occurs; for d from small to large, and only for values d present in the array, walk its multiples and record d as the smallest divisor of any multiple that has none yet; finally, for every present value v, add its count times its smallest divisor, and print the sum as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the frequencies. Enumerate the numbers d present in the original array from smallest to largest, and mark with d every multiple of d that has not yet been assigned a smallest divisor; finally, sum each original value's frequency times its smallest present divisor.\n\n## Proof of correctness\n\nThe copy operation never produces a value that was not in the original array; divisibility is transitive, so an original value can finally become only some value of the original array that divides it, and the smallest one gives a lower bound. Each such smallest divisor has no smaller divisor in the original array, since that divisor would also divide the original value, contradicting minimality. So these pivots can be kept and every other element replaced directly by its smallest divisor, reaching every per-element lower bound at the same time.\n\n## Complexity\n\nTime O(n+V log V), space O(V), where V is the maximum value ≤200000; the sum uses 64 bits."
+}

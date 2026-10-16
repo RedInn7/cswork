@@ -1,0 +1,19 @@
+{
+  "id": "oa-paycom-15",
+  "packageChecksum": "024de95c17910c1805fca6eaf17129acaf5b377afa97c2278d948ad20e7bdf0a",
+  "sourceContentHash": "08ca83efb0dcbe9d4be7b37f0ad301124da91a63b67e5465a09aa58b41e19d34",
+  "editorialSha256": "e0285a6d32d7a4cec3bb1debe419189d6385220bcb1440df958d4079e1bdfa62",
+  "hints": {
+    "zh": [
+      "while (s++ < n) 先用旧值和 n 比较再自增，所以 s 从 0 开始时，循环体里 s 依次取 1 到 n，每个值恰好执行一次。",
+      "continue 的条件是 s 同时小于两个阈值，这等价于 s 小于两个阈值中较小的那个；不满足条件的值才会被打印。",
+      "读入 n、a、b，令 cut 为 a 与 b 的较小值。按原循环让 s 从 1 走到 n，跳过 s < cut 的值，其余依次用空格分隔输出，也就是输出 cut 到 n 的所有整数。"
+    ],
+    "en": [
+      "while (s++ < n) compares the old value with n before incrementing, so starting from s = 0 the loop body sees s = 1 to n, each value exactly once.",
+      "The continue condition requires s to be below both thresholds, which is the same as s being below the smaller threshold; only values that fail this condition are printed.",
+      "Read n, a, b and let cut be the smaller of a and b. Following the original loop, let s run from 1 to n, skip values with s < cut, and print the rest separated by spaces; that is, every integer from cut to n."
+    ]
+  },
+  "explanationEn": "## Approach\n\n`while (s++ < n)` checks the old value before incrementing on every iteration, so inside the loop body s takes the values 1 to n in order. The continue condition `s<a && s<b` is equivalent to `s<min(a,b)`; the remaining values are output in order.\n\n## Correctness\n\nThe loop body runs exactly once for each integer s in [1,n]. If s is below both thresholds, continue skips the print; otherwise the condition is false and s is printed. Since the conjunction is equivalent to s<min(a,b), the output set is exactly min(a,b) through n, in increasing order.\n\n## Complexity\n\nTime O(n), extra space O(n) (for buffering the output). This site parameterizes the original problem's constants but fully keeps the increment, the loop bound and the continue test."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-79",
+  "packageChecksum": "276af286d8b53baafa18444a1c426459c4197750812eba521c07249e7ea48455",
+  "sourceContentHash": "0f7b693faeac3e271c461bdcbccacc2c053662f3b0adbd20ca59a0b3a8959106",
+  "editorialSha256": "277127aed71867c346c40b8fc5e446fcee7205dbab1ec5bd96019d5c3d3fe587",
+  "hints": {
+    "zh": [
+      "第 t 轮里每件商品的价格是 t×cost[i]，所以一整轮的总价是 t×sum(cost)，前 k 个完整轮的总花费是 sum(cost)×k×(k+1)/2，并且随 k 单调递增。",
+      "用二分（先倍增找上界）求出能完整买完的最大轮数 k；剩下的钱只够买第 k+1 轮的一部分，按顺序逐件检查，按本题约定遇到第一件买不起的就停止，不跳过。",
+      "计算总价 T = sum(cost)；令 spent(k) = T × (k(k+1)/2)；high 从 1 倍增直到 spent(high) > m，再在 [0, high) 二分出最大的 k；剩余 m − spent(k)，已买 k×n 件；然后按顺序检查 (k+1)×cost[i]，买得起就扣钱并计数，买不起立即停止；输出总件数。所有量用 64 位整数，注意先算 k(k+1)/2 再乘 T 以免溢出。"
+    ],
+    "en": [
+      "In round t every item costs t*cost[i], so a full round costs t*sum(cost), the first k full rounds cost sum(cost)*k*(k+1)/2 in total, and that grows monotonically with k.",
+      "Binary search (after doubling to find an upper bound) for the largest number k of complete rounds you can afford; the remaining money only covers part of round k+1, so check the items in order and, by this problem's rule, stop at the first item you cannot afford instead of skipping it.",
+      "Let T = sum(cost) and spent(k) = T * (k(k+1)/2); double high from 1 until spent(high) > m, then binary search the largest k in [0, high); the remainder is m - spent(k) and k*n items are already bought; then check (k+1)*cost[i] in order, paying and counting while affordable and stopping at the first unaffordable item; print the count. Use 64-bit integers and compute k(k+1)/2 before multiplying by T to avoid overflow."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst binary search the number k of complete rounds that can be afforded. In each round every item is bought once, and the price of item i goes cost[i], 2cost[i], ... from round to round, so the total cost of k rounds is sum(cost) x k x (k+1)/2. After deducting it, check items in order starting from the first at the round-(k+1) prices, and stop at the first item that cannot be afforded.\n\n## Correctness\n\nThe cost of complete rounds is monotonically increasing, so the k found by binary search is exactly the largest number of rounds that can be completed. After that, the purchase order and the next price of each item are determined by the statement, and scanning until the first unaffordable item gives the stopping point; the stop rule is made explicit following the same-origin solutions in OAMaster's three languages, so the resulting count is maximal and unique.\n\n## Complexity\n\nO(n log m) time and O(n) space (for storing the input).\n\n## Source of the rule\n\nThe Python, Java, and C++ solutions of the fixed OAMaster version e66f809 all break at the first unaffordable item. The statement gives no input/output examples; this site's own examples clearly distinguish stopping from skipping."
+}

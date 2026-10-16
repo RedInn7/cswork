@@ -1,0 +1,21 @@
+{
+  "id": "oa-millennium-3",
+  "packageChecksum": "77b45b830973c96b0a92b5107246c77f4e4ded1c9ca791a753dc74c4f5e36fd4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> x(n);\n    for (auto &v : x) cin >> v;\n    // dp[i]: best extra gain from disjoint swaps within x[i..]; swapping (i, i+1) gains x[i]-x[i+1]\n    vector<long long> dp(n + 2, 0);\n    for (int i = n - 1; i >= 0; i--) {\n        dp[i] = dp[i + 1];\n        if (i + 1 < n) dp[i] = max(dp[i], dp[i + 2] + max(0LL, x[i] - x[i + 1]));\n    }\n    long long base = 0;\n    for (int i = 0; i < n; i++) base += (i + 1) * x[i];\n    cout << base + dp[0] << \"\\n\";\n}\n",
+      "sha256": "4c049f6419d9ebab7f5959867bce0425b3158618496a830ad20033b949a0a734"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] x = new long[n];\n        for (int i = 0; i < n; i++) x[i] = nextLong();\n        // dp[i]: best extra gain from disjoint swaps within x[i..]; swapping (i, i+1) gains x[i]-x[i+1]\n        long[] dp = new long[n + 2];\n        for (int i = n - 1; i >= 0; i--) {\n            dp[i] = dp[i + 1];\n            if (i + 1 < n) dp[i] = Math.max(dp[i], dp[i + 2] + Math.max(0, x[i] - x[i + 1]));\n        }\n        long base = 0;\n        for (int i = 0; i < n; i++) base += (i + 1) * x[i];\n        System.out.println(base + dp[0]);\n    }\n}\n",
+      "sha256": "dc20a9de8a021461a2ee9433d6bd8fd9d2f1bdf6f83c7d612e181b6579e649e7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tx := make([]int64, n)\n\tfor i := range x {\n\t\tx[i] = nextInt()\n\t}\n\t// dp[i]: best extra gain from disjoint swaps within x[i..]; swapping (i, i+1) gains x[i]-x[i+1]\n\tdp := make([]int64, n+2)\n\tfor i := n - 1; i >= 0; i-- {\n\t\tdp[i] = dp[i+1]\n\t\tif i+1 < n {\n\t\t\tdp[i] = max(dp[i], dp[i+2]+max(0, x[i]-x[i+1]))\n\t\t}\n\t}\n\tvar base int64\n\tfor i, v := range x {\n\t\tbase += int64(i+1) * v\n\t}\n\tfmt.Println(base + dp[0])\n}\n",
+      "sha256": "e295be5c1934058cd18eac3beb91b75f1a8af41dc912ef19ed5deb5255713cea"
+    }
+  ]
+}

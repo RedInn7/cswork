@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-2",
+  "packageChecksum": "9c88ee1667e37189b05bad5075ede0c492c1d9f1ce0b280c6572ad4ae4381812",
+  "sourceContentHash": "22ba65cd4d4485ba11b2451ad0f82492bf82b705bc758b28c2e1848502935f61",
+  "editorialSha256": "81ad02eebd0be5181fc54c3e37c74587847944c239a7a60dd7d8abbb7b74af44",
+  "hints": {
+    "zh": [
+      "[1, A[i]] 中与 A[i] 互质的整数个数就是欧拉函数 φ(A[i])，而 φ(x)=x·∏(1−1/p)，其中 p 取遍 x 的不同质因数。",
+      "数值不超过 10^5，可以像埃氏筛那样一次性算出 1..max(A) 的全部 φ 值，再按输入顺序查表，而不必逐个分解质因数。",
+      "令 φ[x]=x；p 从 2 递增，若 φ[p] 仍等于 p 说明 p 是质数，就对 p 的每个倍数 x 让 φ[x] 减去 φ[x]/p；筛完后按输入顺序输出 φ[A[i]]，用空格分隔，其中 φ[1]=1。"
+    ],
+    "en": [
+      "The number of integers in [1, A[i]] coprime to A[i] is Euler's totient phi(A[i]), and phi(x) = x times the product of (1 - 1/p) over the distinct primes p dividing x.",
+      "Values are at most 10^5, so you can compute phi for all of 1..max(A) at once with a sieve, like the sieve of Eratosthenes, and then look values up in input order instead of factoring each one.",
+      "Set phi[x] = x; for p increasing from 2, if phi[p] still equals p then p is prime, and for every multiple x of p subtract phi[x] / p from phi[x]; after the sieve output phi[A[i]] in input order separated by spaces, with phi[1] = 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSieve-style update: start with phi[x]=x; for each prime p, subtract phi[x]/p from phi[x] for each of its multiples, then read phi[A[i]] in input order.\n\n## Proof of correctness\n\nThe initial value of phi is x. For the multiples of each prime p, exactly the fraction 1/p containing the factor p can be excluded, so for the multiples of every prime we successively subtract 1/p of the current value; by the multiplicative property of Euler's function this yields every phi(x), which is the number of coprime integers required by the definition.\n\n## Complexity\n\nO(M log log M+n), where M=max(A); space O(M)."
+}

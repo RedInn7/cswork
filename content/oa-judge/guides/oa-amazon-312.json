@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-312",
+  "packageChecksum": "35a5987bb0e007c4c31882d5d945581023d4f06b974994a05383d9a37a235ec6",
+  "sourceContentHash": "bfa25905b81c6fd1aef3f1ffd8813c68090dd1ee7d669eee5cfc4c63c5598ae6",
+  "editorialSha256": "89daead5db4359a3aed5e4256278871de161b6ebacea891a08dd6d22cc0236cb",
+  "hints": {
+    "zh": [
+      "一个产品算重复，只要存在另一个三项完全相同的产品。把完全相同的产品归为一组来看。",
+      "一组只有1个产品时贡献0；一组有c≥2个产品时，组内每一个都有伙伴，贡献c（而不是c−1）。",
+      "用哈希表以(名称, 价格, 重量)为键计数（名称可能是空串），遍历所有组，把计数≥2的组的计数累加后输出。"
+    ],
+    "en": [
+      "A product counts as a duplicate as soon as some other product matches it in all three fields. Look at identical products as one group.",
+      "A group with a single product contributes 0; a group with c≥2 products contributes c (not c−1), because every product in it has a partner.",
+      "Count with a hash map keyed by (name, price, weight) (the name may be an empty string), then go over all groups and add up the counts that are ≥2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount by the (name,price,weight) tuple and add up the full counts of all groups that appear ≥2 times.\n\n## Proof of correctness\n\nIf a group occurs once, its only product has no other identical product and contributes 0; if it occurs at least twice, every product in the group can use another one as a witness, so all of them count. Different groups are mutually exclusive because they differ in at least one field, so summing group by group neither double counts nor misses anything.\n\n## Complexity\n\nExpected time O(n), space O(n); names have at most 10 characters."
+}

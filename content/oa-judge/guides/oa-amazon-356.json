@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-356",
+  "packageChecksum": "dd8a62f84477a4ba440da6d4876f7952a25a4761fe5b2b71c87586365b03defb",
+  "sourceContentHash": "c459ca6dda61b9266db028864bb417b70e63826452713ab815ca340f7bdf3a88",
+  "editorialSha256": "9f46ec93fa130dc5ef0bc6655df0304ffaf1dc11f04f613ccbc20d85eda61429",
+  "hints": {
+    "zh": [
+      "每次都从库存最大的种类租出一件，所以最大值像“削平山顶”一样一层层往下降；在削到最低正库存之前，最小非零库存始终不变。m 可达 10^12，不能逐次模拟。",
+      "把正库存降序排序，维护顶部平台的种类数 c 和高度 h。把这 c 个种类一起削到下一个不同高度需要 c·(h−next) 次，每次收费是“当前最大值 + 固定的最小值”，用完整轮数 q 和余数 r 按等差数列一次求和。所有种类等高后，每轮第一笔收 2h、其余各收 2h−1；全部降到 1 以后，剩下每次都收 2。",
+      "去掉 0 后降序排序，low 取最小正值，c=1，h 为最大值。当还有下一层且请求未用完时：take=min(剩余, c·(h−next))，q=take/c，r=take%c，收入加上 c·q·(2h−q+1)/2 + r·(h−q) + take·low；若 take 不足整层就直接结束，否则 h=next、c 加一。之后全体等高：take=min(剩余, c·(h−1))，加上 q·(c·(2h−q)+1)，余数 r>0 时再加 2(h−q)+(r−1)(2(h−q)−1)，最后剩下的每次加 2。全程使用 64 位整数。"
+    ],
+    "en": [
+      "Every request rents from a type with the largest stock, so the maximum is shaved down level by level like flattening a mountain top; until it reaches the lowest positive stock, the minimum non-zero stock stays the same. m can be 10^12, so you cannot simulate request by request.",
+      "Sort the positive stocks in descending order and keep the top plateau as c types at height h. Lowering all c of them to the next distinct height takes c*(h-next) requests, each charged the current maximum plus the fixed minimum; with q full rounds and a remainder r this is an arithmetic series you can sum at once. Once all types are equal, each round charges 2h for its first request and 2h-1 for the others; once everything is down to 1, every remaining request is charged 2.",
+      "Drop zeros, sort descending, let low be the smallest positive value, c=1 and h the maximum. While there is a next level and requests remain: take=min(remaining, c*(h-next)), q=take/c, r=take%c, add c*q*(2h-q+1)/2 + r*(h-q) + take*low; stop if take did not fill the whole level, otherwise set h=next and increase c. Then all types are equal: take=min(remaining, c*(h-1)), add q*(c*(2h-q)+1), and if r>0 add 2(h-q)+(r-1)(2(h-q)-1); finally add 2 for every request still left. Use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort in descending order and flatten the highest plateau first; until it reaches the lowest positive stock, the minimum does not change. Once all stocks are equal, charge by complete rounds plus a remainder; once everything is down to 1, every remaining request is charged 2.\n\n## Proof of correctness\n\nOne unit is always taken from a highest type, so the top c types take turns dropping from h to the next level; over t=cq+r steps the sum of the maxima is cq(2h−q+1)/2+r(h−q), and as long as the lowest plateau is not touched the minimum is fixed. When all c types have the same height h≥2, the first charge of a round is 2h and the remaining c−1 charges are 2h−1, for a total of c(2h−1)+1; an arithmetic-series sum skips q rounds at once. After dropping to 1, types that reach zero are removed but the minimum non-zero stock is still 1, so each charge is 2 until everything is rented out. The segments cover all requests exactly, and each charge happens before the stock is decremented.\n\n## Complexity\n\nO(n log n) time and O(n) space, with no loop over individual requests; the income is at most 2×10^18."
+}

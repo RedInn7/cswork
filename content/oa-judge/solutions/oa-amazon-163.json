@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-163",
+  "packageChecksum": "c01224ec9e3444cb66e8ebe0ebbe7eec8dae616bf120845e6c3a3f95751d94de",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto& v : a) cin >> v;\n    sort(a.begin(), a.end());\n    // Each category (in ascending quantity) adds at most one batch: batch g + 1 needs (g+1)(g+2)/2 items in total.\n    long long total = 0, groups = 0;\n    for (long long v : a) {\n        total += v;\n        if (total >= (groups + 1) * (groups + 2) / 2) groups++;\n    }\n    cout << groups << \"\\n\";\n}\n",
+      "sha256": "e00c3d7581dc41414c6bba9e7de205264e3ad4caacff2d58dcf24d66f170f743"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Each category (in ascending quantity) adds at most one batch: batch g + 1 needs (g+1)(g+2)/2 items in total.\n        long total = 0, groups = 0;\n        for (long v : a) {\n            total += v;\n            if (total >= (groups + 1) * (groups + 2) / 2) groups++;\n        }\n        System.out.println(groups);\n    }\n}\n",
+      "sha256": "b0896ef0eb6166d36c9519c95b31e4af5c897ae1747736ecdfdd82bd64f385b1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Each category (in ascending quantity) adds at most one batch: batch g + 1 needs (g+1)(g+2)/2 items in total.\n\ttotal, groups := 0, 0\n\tfor _, v := range a {\n\t\ttotal += v\n\t\tif total >= (groups+1)*(groups+2)/2 {\n\t\t\tgroups++\n\t\t}\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(groups) + \"\\n\")\n}\n",
+      "sha256": "23ad906ef7d12470a22f90126131f01a36b79528a715ee0800b9c770c020ca3f"
+    }
+  ]
+}

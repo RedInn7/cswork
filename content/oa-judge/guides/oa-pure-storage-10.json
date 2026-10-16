@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-10",
+  "packageChecksum": "9b72de71cff07120498be35fa774660896b45658f77d0b556115f4bdca42ae3f",
+  "sourceContentHash": "9c362302f5a580b7420d7e0a3314f32a4bacd1afea972a31608a7a05c3d92432",
+  "editorialSha256": "892266f9efca538fd6e1b5b5ee2a613cbef4c5802933e7eae9ebb5c0f3077d94",
+  "hints": {
+    "zh": [
+      "两个字符串“物品一致”只要求每种字符出现的次数相同，与字符的排列顺序无关——也就是两者的字符多重集相同。",
+      "对每一对 (box, template) 分别统计 26 个字母的频次，频次表不相等就算一个不匹配的盒子。",
+      "可以用一个长度 26 的计数数组：box 的字符加一、template 的字符减一，最后只要有一项不为 0 就计数加一（等价地也可以把两个字符串排序后比较）。每个字符串长度至多 10，总时间 O(n·10)。n=0 时输出 0。"
+    ],
+    "en": [
+      "Two strings hold the same items exactly when every character occurs the same number of times in both, regardless of order; that is, their character multisets are equal.",
+      "For each pair (box, template), count the frequency of the 26 letters in each; if the frequency tables differ, that box is a mismatch.",
+      "Use one array of 26 counters: add one for each character of box and subtract one for each character of template; if any entry is non-zero, count a mismatch (sorting both strings and comparing works too). Each string has length at most 10, so the total time is O(n * 10). With n = 0, print 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each pair of strings, count the character frequencies separately; if the frequency maps differ, the box is a mismatch.\n\n## Correctness\n\nThe problem says the order of the items does not matter but the number of repeats must be preserved. A character frequency table is insensitive to permutation, and two tables are equal only when every character's count is equal, which is exactly equivalent to the multisets of items in the box being the same. Count pair by pair and add up.\n\n## Complexity\n\nEach string has length at most 10, so time O(n*10) and space O(26)."
+}

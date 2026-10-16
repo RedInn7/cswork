@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-17",
+  "packageChecksum": "5c64b0a950a8df6c048563cf5a74323035bb1f5f034529f5c923c5d5c4282308",
+  "sourceContentHash": "870324628eadc04a56c4b691d9c98bbe4f274a4da5b40871aeea92b180b81612",
+  "editorialSha256": "6fe2100b9a3284dc2d869be93418fca0190345f625d22779696313d8f1a30450",
+  "hints": {
+    "zh": [
+      "数组两端之外视为负无穷，且相邻元素互不相同；从任何位置出发一直沿上升方向走，最终一定会碰到下降处或数组边界，那里就是一个峰。",
+      "比较中点和它右边的邻居：若中点更小，往右一直上升必然有峰，可以舍弃中点及其左侧；否则中点及其左侧必然有峰（中点本身也可能就是）。这样每次都能把区间缩小一半。",
+      "维护闭区间 [left, right]，初始为整个数组；当 left<right 时取中点 mid，若 a[mid]<a[mid+1] 则 left 变为 mid+1，否则 right 变为 mid；区间缩成一个点时输出这个下标（从 0 开始）。"
+    ],
+    "en": [
+      "Positions beyond both ends count as negative infinity and adjacent elements differ; walking uphill from any position must eventually reach a drop or the array boundary, and that spot is a peak.",
+      "Compare the midpoint with its right neighbor: if the midpoint is smaller, climbing to the right must reach a peak, so discard the midpoint and everything to its left; otherwise a peak exists at the midpoint or to its left (the midpoint itself may be one). Each comparison halves the range.",
+      "Keep a closed range [left, right] covering the whole array; while left < right take mid as their middle, set left to mid+1 if a[mid] < a[mid+1], otherwise set right to mid; when the range shrinks to one index, print it (0-based)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search by comparing the midpoint with its right neighbor. When the midpoint is smaller, a peak exists in the right half; otherwise a peak exists in the left half together with the midpoint.\n\n## Proof of correctness\n\nMoving in the ascending direction must eventually hit a descending position or the array boundary, and that is a peak. The binary search always keeps an interval that contains a peak: when ascending, discard the midpoint and its left side; when descending, keep the midpoint and the left half. When only one index is left in the interval, that point is a peak.\n\n## Complexity\n\nTime O(log n), space O(1) excluding input storage."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-the-d-e-shaw-group-11",
+  "packageChecksum": "124687b1aeac2bba48f6dfc80348dc1f42e12bace0ea236f62eebfadd91cc5c5",
+  "sourceContentHash": "44b579d957776ec864bed2ef71f441ee3d1052c4246d6488a771c1a595857699",
+  "editorialSha256": "d4d7a9e44569dd59d40f94257c7087c4396d03e06f27beda6e64d8b1ed6a5feb",
+  "hints": {
+    "zh": [
+      "c 由 b 唯一确定：c[i]=arr[i]−b[i]。所以只需要数合法的 b；条件“b 非降且 c 非增”可以合并成对 b 相邻差的一个下界。",
+      "由 c[i]≤c[i−1] 得 b[i]−b[i−1]≥arr[i]−arr[i−1]，再加上 b[i]≥b[i−1]，即 b[i]−b[i−1]≥max(0,arr[i]−arr[i−1])，同时 0≤b[i]≤arr[i]。用 dp[x] 表示当前位置 b 取 x 的方案数，转移只需前缀和。",
+      "初始 dp[x]=1（0≤x≤arr[0]）；第 i 步令 need=max(0,arr[i]−arr[i−1])，对 dp 求前缀和 pref；新 dp[x]=pref[min(x−need, 旧长度−1)]（x−need≥0 时），否则为 0，x 取 0..arr[i]。所有加法对 10⁹+7 取模，最后输出 dp 之和，总时间 O(n·max(arr))。"
+    ],
+    "en": [
+      "c is determined by b: c[i] = arr[i] - b[i]. So only the valid b need counting, and the conditions b non-decreasing and c non-increasing merge into one lower bound on the adjacent difference of b.",
+      "From c[i] <= c[i-1] we get b[i] - b[i-1] >= arr[i] - arr[i-1]; together with b[i] >= b[i-1] this is b[i] - b[i-1] >= max(0, arr[i] - arr[i-1]), and also 0 <= b[i] <= arr[i]. Let dp[x] count the ways with b equal to x at the current position; the transition only needs prefix sums.",
+      "Start with dp[x] = 1 for 0 <= x <= arr[0]. At step i let need = max(0, arr[i] - arr[i-1]) and take prefix sums pref of dp; the new dp[x] = pref[min(x - need, old length - 1)] when x - need >= 0, otherwise 0, for x = 0..arr[i]. Do all additions modulo 10^9 + 7 and output the sum of dp; the total time is O(n * max(arr))."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGiven the previous value b[i-1], the next value x = b[i] must be at least b[i-1] + max(0, arr[i] - arr[i-1]), and also x <= arr[i]. Maintain the number of ways for each last value together with its prefix sums, which gives O(n * max(arr)) transitions.\n\n## Proof of correctness\n\nSince c[i] = arr[i] - b[i], the conditions b[i] >= b[i-1] and c[i] <= c[i-1] combine into b[i] - b[i-1] >= max(0, arr[i] - arr[i-1]). So for the current last value x, the valid previous states are exactly the last values not exceeding x - need. The prefix sum aggregates these mutually exclusive previous states exactly, and the transition yields all ways ending at x; summing covers every possible b, and c is uniquely determined by b.\n\n## Complexity\n\nO(n * M) time and O(M) space, where M = max(arr[i]) <= 3000."
+}

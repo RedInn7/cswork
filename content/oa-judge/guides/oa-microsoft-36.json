@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-36",
+  "packageChecksum": "704477282fac651f30a0467da8ab983d0fec73e931f2e0b8a38fea6630165e8c",
+  "sourceContentHash": "94fcc88d2a47165adaa94b4fbf17cd596e1be0d263a8859767fe7fd62deba0e4",
+  "editorialSha256": "a09e09635b32f19bd1a7b7adb8bc84cff824839baee7a33579dde310be9876f7",
+  "hints": {
+    "zh": [
+      "如果能造 k 辆车，那么换成最短的 k 辆一定也能造：把选中的长车换成没选的短车，任何一条线都不会超时。",
+      "所以把时长升序排列，逐个尝试前缀能否造完；判断一组车能否分到两条线上，就是看是否存在分给第一条线的总时长 s 满足 s≤X 且总时长−s≤Y，这是一个子集和问题。",
+      "用位集合记录第一条线可能达到的总时长（只保留 0..X 位），初始只有 0。依次加入第 i 短的车：总时长累加，若超过 X+Y 就停止；位集合与其左移该时长后的结果取并，再截到 X；若存在不小于 总时长−Y 的可达位，答案更新为 i+1，否则停止。"
+    ],
+    "en": [
+      "If some k cars can be built, the k shortest cars can be built too: swapping a chosen long car for an unchosen short one never pushes either line over its budget.",
+      "So sort the durations ascending and test prefixes one at a time. A group of cars fits on the two lines when some total s assigned to line 1 satisfies s≤X and total−s≤Y, which is a subset-sum question.",
+      "Keep a bitset of the totals line 1 can reach, limited to bits 0..X, starting with only 0. Add the i-th shortest car: increase the running total and stop if it exceeds X+Y; OR the bitset with itself shifted left by the duration and cut it back to X; if some reachable bit is at least total−Y, set the answer to i+1, otherwise stop."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTry adding prefixes in ascending order of duration, and use a bitset to maintain the reachable total durations on the first line for this group of cars. The prefix can be built if there is a total s≤X with total sum−s≤Y.\n\n## Proof of correctness\n\nWhenever some k cars are feasible, swapping a selected longer car for an unselected shorter one never makes either line exceed its budget, so the k shortest cars are feasible too. The bitset exactly enumerates the subset sums of every assignment of each car to the first or second line; the longest feasible prefix is the optimal number of cars.\n\n## Complexity\n\nTime O(N log N+NX/w), bitset space O(X/w), plus O(N) to store the input, where w is the machine word width."
+}

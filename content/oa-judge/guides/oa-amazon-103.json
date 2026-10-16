@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-103",
+  "packageChecksum": "059810f95850fd00577d0cb2c86759db53a4d1b99a7d5f1f8ff69fec760b669b",
+  "sourceContentHash": "acee9e77870232e14ce66ae941e09cabd55cf1c37e21172f38f396eca075c652",
+  "editorialSha256": "617565a600edaa61afc5f1db4e8a23a692e1e3c3270db4846e6e278db392bb7e",
+  "hints": {
+    "zh": [
+      "必须恰好对一个非空区间做乘法或做除法，之后取最大子数组和。两种操作可以分开算，各取一次最好结果。",
+      "对固定的一种操作，把最终的子数组看成“原值段＋修改段＋原值段”，用三个状态做最大子数组 DP：还没进入修改区间、正在修改区间内、已离开修改区间，并要求最终子数组至少包含一个修改位置。",
+      "对乘法和除法（向 0 取整）各扫一遍：changed 为当前元素修改后的值；after=max(inside+v, after+v)，inside=max(changed, before+changed, inside+changed)，before=max(v, before+v)（都用上一步的旧值），每步用 inside 和 after 更新答案；初值取足够小的负数并防止溢出，数值可达约 2×10^14。"
+    ],
+    "en": [
+      "You must apply exactly one multiplication or one division to a non-empty range and then take the maximum subarray sum. The two operations can be handled separately, keeping the better result.",
+      "For a fixed operation, view the final subarray as original part + modified part + original part and run a maximum-subarray DP with three states: before the modified range, inside it, and after it, requiring the final subarray to contain at least one modified position.",
+      "Make one pass for multiplication and one for division (truncating toward zero): with changed as the modified value of the current element, set after = max(inside + v, after + v), inside = max(changed, before + changed, inside + changed), before = max(v, before + v) (all from the previous step's values), and update the answer with inside and after at every step. Start from a sufficiently small negative value without overflowing; sums can reach about 2 * 10^14."
+    ]
+  },
+  "explanationEn": "## Approach\n\nHandle multiplication and division separately, with a three-state contiguous-subarray DP whose states mean: not yet in the modified range, inside the modified range, and already past it. Take the maximum subarray sum that contains at least one modified position.\n\n## Proof of correctness\n\nAny final subarray that intersects the modified range splits into an original part, a modified part and an original part, and the three states enumerate all of these forms. There is also always an optimal solution in which the modification intersects the target subarray: if the target sum is non-negative, multiplying exactly the target range by the factor is no worse; if every non-empty subarray sum is negative, dividing only the largest element is no worse. So better solutions with the operation outside the target are not missed.\n\n## Complexity\n\nTime O(n), O(n) space to store the array, O(1) extra for the DP."
+}

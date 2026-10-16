@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-391",
+  "packageChecksum": "5620257c3247b464b07227c0b4bd353cb2cc78108969a859cffc3a41b4eefc46",
+  "sourceContentHash": "7f3a8cdd54e2c328bb050963413ca46bf084b1304e76ff9dd1f396fa65dcaf64",
+  "editorialSha256": "95bb14189c73f9834a04fa69b19fc6fe91eb87bd6cdd691aaf11bcbb021ae30a",
+  "hints": {
+    "zh": [
+      "总箱数不变，最小差距只能是 0 或 1，所以最终每堆只能是 base=⌊总和/n⌋ 或 base+1。",
+      "低于 base 的堆必须补箱（总缺口 D），高于 base+1 的堆必须搬走箱子（总超额 E）；一次搬运最多同时减少一个缺口和一个超额。",
+      "求出总和与 base，累加 D=Σmax(0, base−v) 和 E=Σmax(0, v−base−1)，输出 max(D, E)；总和可达 10^14，用 64 位。"
+    ],
+    "en": [
+      "The total is fixed, so the smallest possible gap is 0 or 1, and every final pile must be base=floor(total/n) or base+1.",
+      "Piles below base must receive boxes (total deficit D) and piles above base+1 must give boxes away (total excess E); one move reduces at most one unit of deficit and one unit of excess.",
+      "Compute the total and base, accumulate D=Σmax(0, base−v) and E=Σmax(0, v−base−1), and print max(D, E). The total reaches 10^14, so use 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet base=floor(sum/n); compute the total deficit D below base and the total excess E above base+1; the answer is max(D,E).\n\n## Proof of correctness\n\nWith a fixed total, the minimum difference is 0 or 1, and every final pile must be base or base+1. Let r=sum mod n and let H be the number of piles originally above base. Giving as many of the r high targets as possible to these H piles minimizes how much must be taken from the surplus piles. If r≤H, exactly the low-end deficit D must be filled; if r>H, the extra r−H high targets also need one box each. From the total we also have E=D+r−H, so the optimal number of moves is D+max(0,r−H)=max(D,E). Moving one box per step from a surplus pile to a deficit pile achieves this lower bound.\n\n## Complexity\n\nO(n) time and O(1) space besides the input, using 64-bit or arbitrary-precision integers."
+}

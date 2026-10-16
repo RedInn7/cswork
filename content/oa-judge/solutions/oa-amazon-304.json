@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-304",
+  "packageChecksum": "b08aaa4f90774c4ff4694a4a0479d28ddd578850e7e7cc2a6a7a2ef7909160c7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    long long n, k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    if (k > n || n > 2 * k) { cout << -1 << \"\\n\"; return 0; }\n    long long pairs = n - k, answer = a[n - 1];\n    // pair the smallest 2*pairs games from both ends; the rest stay alone\n    for (long long i = 0; i < pairs; i++) answer = max(answer, a[i] + a[2 * pairs - 1 - i]);\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "49474b602c9f835e09f8407a5fb7e62c6452825abb4e42afce3cdad2bcf05d3a"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt(), k = r.nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = r.nextLong();\n        Arrays.sort(a);\n        if (k > n || n > 2L * k) {\n            System.out.println(-1);\n            return;\n        }\n        int pairs = n - k;\n        long answer = a[n - 1];\n        // pair the smallest 2*pairs games from both ends; the rest stay alone\n        for (int i = 0; i < pairs; i++) answer = Math.max(answer, a[i] + a[2 * pairs - 1 - i]);\n        System.out.println(answer);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "e3fdd9e927e8e1280ea3d1c3cf1b9c65fac5dcb29c365fa4614b4922b355aea6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\tslices.Sort(a)\n\tif k > n || n > 2*k {\n\t\tfmt.Println(-1)\n\t\treturn\n\t}\n\tpairs := n - k\n\tanswer := a[n-1]\n\t// pair the smallest 2*pairs games from both ends; the rest stay alone\n\tfor i := 0; i < pairs; i++ {\n\t\tanswer = max(answer, a[i]+a[2*pairs-1-i])\n\t}\n\tfmt.Println(answer)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "5e51400db494fe282ee4940c5724f8c17e8b1548197bead6a03b45b6399b4c12"
+    }
+  ]
+}

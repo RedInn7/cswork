@@ -1,0 +1,19 @@
+{
+  "id": "oa-adobe-3",
+  "packageChecksum": "9e21650d750d417e332582e9ae626ed2fc58a07e8a9cae2bc00143a33748c0ed",
+  "sourceContentHash": "e8a19d370c298bfef1cae6105162983df908cf4ac8f6700ffbfe7ea1cff586f9",
+  "editorialSha256": "717301548acb8a3492686f506becd26896f48c7c51905d2eb689ec3cdddfe810",
+  "hints": {
+    "zh": [
+      "本题的难点不在查找，而在输出：数字要精确、对象键要按码点排序、字符串要按 ASCII JSON 转义。只要把 JSON 完整解析成树，查路径本身非常简单。",
+      "按点号切分路径（保留空段），从根对象开始逐段查键；当前值不是对象或键不存在就立即得到 null。数字不要用浮点数，按十进制字符串精确处理。",
+      "解析 JSON：字符串解码成码点（处理转义和代理对），数字记录全部数位与十进制指数；沿路径逐层查找；输出时对象键按码点升序，数字去掉指数、多余的小数尾零和小数点并把 −0 写成 0，字符串只保留可打印 ASCII（除引号和反斜线），其余用短转义或小写四位 \\u 转义，非 BMP 字符写成代理对；最后输出一行。"
+    ],
+    "en": [
+      "The hard part is not the lookup but the output: numbers must stay exact, object keys must be sorted by code point, and strings must use ASCII JSON escapes. Once the JSON is parsed into a tree, following the path is simple.",
+      "Split the path on dots (keeping empty segments) and look up one key at a time starting from the root object; if the current value is not an object or the key is missing, the answer is null right away. Do not use floating point for numbers; handle them as exact decimal strings.",
+      "Parse the JSON: decode strings into code points (handling escapes and surrogate pairs) and record each number's digits and decimal exponent; walk the path level by level; when printing, sort object keys by ascending code point, write numbers without an exponent, without redundant trailing zeros or decimal point, and with -0 as 0, keep only printable ASCII other than the quote and backslash in strings and use short escapes or lowercase four-digit \\u escapes for everything else, with non-BMP characters as surrogate pairs; print one line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nParse the JSON with exact decimals, check segment by segment that the current value is an object containing the key, and finally serialize the result as the unique canonical JSON.\n\n## Proof of correctness\n\nThe initial value is the whole object. At each step, if the key exists, the current position is replaced by that key's value, which is exactly the meaning of the path consumed so far; if the key is missing or the value is not an object, the remaining path cannot exist. Induction gives the correct value. Canonicalization only changes the representation: object keys are sorted by Unicode code point, numbers use exact decimals without redundant zeros, and strings use ASCII JSON escapes.\n\n## Complexity\n\nO(JSON input size + result size + path length), plus Σ k log k for sorting object keys; space O(JSON tree size)."
+}

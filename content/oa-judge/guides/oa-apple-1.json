@@ -1,0 +1,19 @@
+{
+  "id": "oa-apple-1",
+  "packageChecksum": "211a5704ae7dd2ddeeb4fd3ffae066e43a3ef92a1f463c960e1559eb501388c3",
+  "sourceContentHash": "a943f204775c06a78c867db42b3a022d3eb51ba98c5374cf3f067755163e895d",
+  "editorialSha256": "77ad253ba83fc5d1155d74ddecfe0a829be8a90d401160ccbe3632805a1d82b6",
+  "hints": {
+    "zh": [
+      "以 1 开头的区间只有在后面还有 0 时才会被删除。先想清楚：哪些 1 能找到闭合它的 0？",
+      "记下数组中最后一个 0 的位置：它之前的每个 1 都一定能被闭合，它之后的 1 都不能。于是从左到右扫描时，只要在最后一个 0 之前遇到 1 就进入删除状态，遇到 0 时连同这个 0 一起删掉并退出删除状态。",
+      "先求最后一个 0 的下标 last；扫描时若当前值为 1 且下标 < last 就进入删除状态；不处于删除状态的元素加入结果；当前值为 0 时退出删除状态。最后输出保留个数、保留的元素（为空时输出空行）以及它们的和（64 位整数）。"
+    ],
+    "en": [
+      "An interval that starts with 1 is deleted only if a 0 comes after it. First work out which 1s can find a closing 0.",
+      "Remember the position of the last 0 in the array: every 1 before it can be closed and no 1 after it can. So while scanning left to right, a 1 seen before the last 0 starts a deletion, and the next 0 is deleted too and ends it.",
+      "Find the index last of the final 0. While scanning, enter the deleting state when the value is 1 and the index is less than last; append the element to the result when not deleting; leave the deleting state when the value is 0. Print the number of kept elements, the kept elements (an empty line if there are none), and their sum as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the last 0 in the array. While scanning, a 1 encountered before it puts the scan into the deleting state, and a 0 ends that state; a 1 after the last 0 can never be closed, so everything there is kept.\n\n## Correctness\n\nEvery deleted interval needs a later 0. A 1 before the last 0 can always be closed, and the deleting state lasts until the first 0 encountered, which covers exactly the whole interval; after that a new independent scan starts. No complete interval can form after the last 0. All other elements are appended to the result in scan order, which is exactly the required list.\n\n## Complexity\n\nTime O(n), result space O(n), and O(1) extra space besides the input and output."
+}

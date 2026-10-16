@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-16",
+  "packageChecksum": "7dfe0fda3a068b4f85853367db433d85f95631baee3cbbf96382c3aa924a22e9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nstring readAll() {\n    string s;\n    char buf[1 << 16];\n    size_t n;\n    while ((n = fread(buf, 1, sizeof buf, stdin)) > 0) s.append(buf, n);\n    return s;\n}\nint main() {\n    string data = readAll();\n    vector<string> lines;\n    size_t start = 0;\n    while (true) {\n        size_t p = data.find('\\n', start);\n        if (p == string::npos) { lines.push_back(data.substr(start)); break; }\n        lines.push_back(data.substr(start, p - start));\n        start = p + 1;\n    }\n    int n = stoi(lines[0]);\n    unordered_map<int, long long> freq;\n    long long answer = 0;\n    for (int i = 1; i <= n && i < (int)lines.size(); i++) {\n        int mask = 0;\n        for (char c : lines[i]) mask |= 1 << (c - 'a');\n        auto &f = freq[mask];\n        answer += f;\n        f++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "53c9c48962cdb69ba0a6fa8ad1432583fcd86719500690feec5cb09029e55269"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        String[] lines = new String(System.in.readAllBytes()).split(\"\\n\", -1);\n        int n = Integer.parseInt(lines[0].trim());\n        HashMap<Integer, Integer> freq = new HashMap<>();\n        long answer = 0;\n        for (int i = 1; i <= n && i < lines.length; i++) {\n            int mask = 0;\n            for (int j = 0; j < lines[i].length(); j++) mask |= 1 << (lines[i].charAt(j) - 'a');\n            int f = freq.getOrDefault(mask, 0);\n            answer += f;\n            freq.put(mask, f + 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e148547e13904b806768fade4a167c7507e07f9d4024ed02d10cd32104b75b30"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"bytes\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tlines := bytes.Split(data, []byte(\"\\n\"))\n\tn, _ := strconv.Atoi(string(bytes.TrimSpace(lines[0])))\n\tfreq := map[int]int64{}\n\tvar answer int64\n\tfor i := 1; i <= n && i < len(lines); i++ {\n\t\tmask := 0\n\t\tfor _, c := range lines[i] {\n\t\t\tmask |= 1 << (int(c) - 'a')\n\t\t}\n\t\tanswer += freq[mask]\n\t\tfreq[mask]++\n\t}\n\tw.WriteString(strconv.FormatInt(answer, 10) + \"\\n\")\n}\n",
+      "sha256": "19e6817e9f4735fc83bd6cdd9eafed8cb2b01db88b7934aa1f4c4050d05aca53"
+    }
+  ]
+}

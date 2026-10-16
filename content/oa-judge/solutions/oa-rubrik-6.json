@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-6",
+  "packageChecksum": "91c5f38e044960c7424495b38de126d38ff7b00fb1c979eea50a3131dc68f032",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string x, y;\n    cin >> x >> y;\n    int best = 0;\n    for (size_t start = 0; start < y.size(); start++) {\n        // greedily match the suffix of y starting here as a subsequence of x\n        size_t matched = 0;\n        for (size_t i = 0; i < x.size() && start + matched < y.size(); i++)\n            if (x[i] == y[start + matched]) matched++;\n        best = max(best, (int)matched);\n    }\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "8529b6b4ff3422f634ae474ae21101e71c9cc68a1e45995995d23b6c4ebe6bb4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String x = next(), y = next();\n        int best = 0;\n        for (int start = 0; start < y.length(); start++) {\n            // greedily match the suffix of y starting here as a subsequence of x\n            int matched = 0;\n            for (int i = 0; i < x.length() && start + matched < y.length(); i++)\n                if (x.charAt(i) == y.charAt(start + matched)) matched++;\n            best = Math.max(best, matched);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "3e7b8fe60c3db376ec715d1cc3e750b68c28e654142577081e2341dbb96c62a6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tf := strings.Fields(string(data))\n\tx, y := f[0], f[1]\n\tbest := 0\n\tfor start := 0; start < len(y); start++ {\n\t\t// greedily match the suffix of y starting here as a subsequence of x\n\t\tmatched := 0\n\t\tfor i := 0; i < len(x) && start+matched < len(y); i++ {\n\t\t\tif x[i] == y[start+matched] {\n\t\t\t\tmatched++\n\t\t\t}\n\t\t}\n\t\tbest = max(best, matched)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "db3945c2f0fe4420a3142cf7fc2628469138e9b00c73744131a4c2b7430e24aa"
+    }
+  ]
+}

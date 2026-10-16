@@ -1,0 +1,21 @@
+{
+  "id": "oa-deloitte-6",
+  "packageChecksum": "ae30f668417da0591ef4112da1437b943f90a5ee5af8412eddf3d7470c4fb39c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Earliest position of each prefix parity mask; equal masks bound an all-even substring.\n    unordered_map<int, int> first;\n    first.reserve(s.size() * 2 + 2);\n    first[0] = -1;\n    int mask = 0, best = 0;\n    for (int i = 0; i < (int)s.size(); i++) {\n        mask ^= 1 << (s[i] - 'a');\n        auto it = first.find(mask);\n        if (it != first.end()) best = max(best, i - it->second);\n        else first[mask] = i;\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "6ea5d87a5c26dc0155f920a7d945efa6c68d1f0b2fe79cc6ddac1e1f434bc58b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        HashMap<Integer, Integer> first = new HashMap<>();\n        first.put(0, -1);\n        int mask = 0, best = 0;\n        for (int i = 0; i < s.length(); i++) {\n            mask ^= 1 << (s.charAt(i) - 'a');\n            Integer at = first.get(mask);\n            if (at != null) best = Math.max(best, i - at);\n            else first.put(mask, i);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "d93306853b25feafbca236effe97b4f151115566ea637cd7fd0c0caff48b740b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := token()\n\tfirst := map[int]int{0: -1}\n\tmask, best := 0, 0\n\tfor i, c := range s {\n\t\tmask ^= 1 << (c - 'a')\n\t\tif at, ok := first[mask]; ok {\n\t\t\tbest = max(best, i-at)\n\t\t} else {\n\t\t\tfirst[mask] = i\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "c18f80578b52c840b25fc06da1ce37d402b2e35166e611dc68444787430af5c0"
+    }
+  ]
+}

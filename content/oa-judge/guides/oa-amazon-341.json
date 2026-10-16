@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-341",
+  "packageChecksum": "97cbc919590c4f633e3446bf5101637723f02fa3a7fd5a3de488df950a838ef0",
+  "sourceContentHash": "bb8c000e544a56766ca613194a8a1bf9dccc74392f3be23affb7c522c573a513",
+  "editorialSha256": "f5824c963c81e6aa3e0fec7273d40acdb4361b5e8d93770fbe3c1f6183b26fdf",
+  "hints": {
+    "zh": [
+      "每天固定一项主任务，当天剩给副任务的容量就是limit−primary；若有主任务本身超限则无解，输出−1。问题变成：用这些容量去装副任务，每个容量最多装一个，最多能装几个。",
+      "经典贪心：容量和副任务都升序排序，从最小的容量开始，看最小的未用副任务能否放进去。放得进就配对；放不进说明这个容量对谁都没用，直接跳过。",
+      "先检查是否有主任务大于limit；然后把limit−primary升序排序、副任务升序排序，用指针answer指向最小的未用副任务，遍历每个容量，若secondary[answer]≤容量就让answer加1。输出answer。"
+    ],
+    "en": [
+      "Each day has one fixed primary task, so the capacity left for a secondary task that day is limit−primary; if some primary task alone exceeds the limit, there is no solution and the output is −1. The problem becomes: use these capacities to hold secondary tasks, at most one each, and hold as many as possible.",
+      "Classic greedy: sort both the capacities and the secondary tasks in ascending order, and starting from the smallest capacity, check whether the smallest unused secondary task fits. If it fits, pair them; if not, that capacity is useless for every task and can be skipped.",
+      "First check whether any primary task is larger than limit. Then sort limit−primary ascending and the secondary tasks ascending, keep a pointer answer at the smallest unused secondary task, and for each capacity, if secondary[answer] ≤ capacity, increase answer by 1. Output answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach primary task leaves a remaining capacity limit−primary; sort these in ascending order, and sort the secondary tasks in ascending order as well. Go through the capacities one by one: if the smallest unused secondary task fits, pair them; otherwise skip that capacity.\n\n## Proof of correctness\n\nA primary task over the limit makes the whole problem unsolvable. Otherwise, if the smallest capacity cannot hold the smallest secondary task, it cannot hold any other task either; if it can, any optimal matching can be rearranged so that these two smallest available items are paired without losing any pairs, because the larger capacity involved in the exchange still holds the larger secondary task it originally had. So optimality is preserved at every step, and the final number of pairs is maximal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

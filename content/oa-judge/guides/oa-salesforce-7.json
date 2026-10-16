@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-7",
+  "packageChecksum": "aa8e960a9eea28592006b23e71731ddf73efb1083ce28d19bad49a7f325f8bc0",
+  "sourceContentHash": "397360b8ec7f08733d26d47633e85589113146719c70d84371317baadde597bf",
+  "editorialSha256": "c39c1559b83764b312c276e15e1b56a9a2154d8aae5388afb31c2039aef5b05a",
+  "hints": {
+    "zh": [
+      "值域里只有d=hi−lo+1个数，严格上升段和严格下降段各自最多用到d个不同值且共享峰值，所以长度必须在3到2d−1之间，否则无解。",
+      "峰值取hi总不吃亏。为了让第一项尽量大，上升段要尽量短：峰右侧最多放d−1个数，所以上升边数至少是n−d，同时至少为1。",
+      "令p=max(1,n−d)：从hi−p开始每次加1直到hi（共p+1个数），然后从hi−1开始每次减1，补满剩下的n−p−1个位置；有解时先输出n再输出序列，无解输出−1。"
+    ],
+    "en": [
+      "The range holds only d = hi - lo + 1 values; the strictly rising part and the strictly falling part each use at most d distinct values and share the peak, so the length must be between 3 and 2d - 1, otherwise there is no solution.",
+      "Putting the peak at hi never hurts. To make the first item as large as possible the rising part should be as short as possible: the right side of the peak holds at most d - 1 numbers, so there are at least n - d rising edges, and at least 1.",
+      "Let p = max(1, n - d): start at hi - p and add 1 each step up to hi (p + 1 numbers), then go down by 1 from hi - 1 to fill the remaining n - p - 1 positions; when a solution exists print n and then the sequence, otherwise print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet d=hi-lo+1. At least 3 positions are needed and at most 2d-1. To make the first item as large as possible, use the shortest feasible rising phase: the number of rising edges is p=max(1,n-d); start at hi-p, increase one by one up to hi, then decrease one by one.\n\n## Correctness\n\nRaising the peak to hi does not reduce the available room and can improve the lexicographic order. The right side of the peak can hold at most d-1 elements, so the left side needs at least n-d rising edges, and at least 1; taking the smallest p maximizes the first item hi-p. With the first item fixed, each next number is taken as large as possible, but p rising positions must be kept before reaching hi, so the sequence can only increase by 1 at each step; after the peak, decreasing by 1 each time maximizes each corresponding position, and the length bound guarantees it never drops below lo.\n\n## Complexity\n\nTime O(n), output space O(n)."
+}

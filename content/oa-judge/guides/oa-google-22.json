@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-22",
+  "packageChecksum": "586523154445b8d4ffffd2c76d787008aaa6d2cc75728e1d1fd5f7e7f9d3b89c",
+  "sourceContentHash": "14379e16f5c400321a9aead8d2261842a507d811eaa93e5b9a13fe74242cf98c",
+  "editorialSha256": "4a65bfcf5c585468ac3450b23727f96335be311be3a19cd30dd6dac511788f81",
+  "hints": {
+    "zh": [
+      "字符串重复 K 次后总长可达一百万，直接模拟删除虽然可行但没必要：每轮都删掉一半，幸存者在原序列中的下标始终构成等差数列。",
+      "只需维护等差数列的首项 head、公差 step 和剩余个数 count。每轮公差翻倍、个数减半；关键是判断这一轮首项是否被删掉。",
+      "count=|S|×K，head=0，step=1，方向从左开始；当 count>1 时：若本轮从左删，或从右删且 count 为奇数，则 head+=step；然后 count/=2、step*=2、换方向；最后输出 S[head mod |S|]。"
+    ],
+    "en": [
+      "After repeating the string K times the length can reach one million. Simulation is possible but unnecessary: each round removes half of the characters, and the surviving original indices always form an arithmetic progression.",
+      "Keep only the first term head, the common difference step and the remaining count. Each round doubles the step and halves the count; the key question is whether this round removes the first term.",
+      "Set count = |S| * K, head = 0, step = 1, starting from the left; while count > 1: if this round deletes from the left, or deletes from the right and count is odd, add step to head; then halve count, double step and switch direction; finally print S[head mod |S|]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe surviving original indices always form an arithmetic progression. Maintain the first term head, the step and the remaining count. A deletion from the left always moves the first term; a deletion from the right moves it only when the count is odd.\n\n## Correctness\n\nEach round keeps half of the terms of the arithmetic progression, so the new step doubles. A deletion from the left removes the original first term; a deletion from the right removes the original first term if and only if the number of terms is odd. Update this way until only one term is left; its original index modulo |S| gives the corresponding character.\n\n## Complexity\n\nTime O(log(|S| K)), extra space O(1)."
+}

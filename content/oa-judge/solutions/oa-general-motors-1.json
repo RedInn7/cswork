@@ -1,0 +1,21 @@
+{
+  "id": "oa-general-motors-1",
+  "packageChecksum": "8f4ee1ff5fee05c71b7c939338c7e9b985ebfdb3f11d7f100c26836df3d6e39c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string line, msg;\n    getline(cin, line);\n    int k = stoi(line);\n    getline(cin, msg);\n    if (!msg.empty() && msg.back() == '\\r') msg.pop_back();\n    if ((int)msg.size() <= k) { cout << msg << \"\\n\"; return 0; }\n    // Add whole words while \"prefix ...\" still fits in k characters.\n    istringstream ss(msg);\n    string w, out;\n    while (ss >> w) {\n        string t = out.empty() ? w : out + \" \" + w;\n        if ((int)t.size() + 4 > k) break;\n        out = t;\n    }\n    cout << (out.empty() ? string(\"...\") : out + \" ...\") << \"\\n\";\n}\n",
+      "sha256": "713bb201d8e7365450ae66d60cd11d0339d9b14c34e111dd2f5c98bdcde4ca96"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int k = Integer.parseInt(br.readLine().trim());\n        String msg = br.readLine();\n        if (msg == null) msg = \"\";\n        if (msg.length() <= k) { System.out.println(msg); return; }\n        // Add whole words while \"prefix ...\" still fits in k characters.\n        StringBuilder out = new StringBuilder();\n        for (String w : msg.trim().split(\"\\\\s+\")) {\n            int len = out.length() + (out.length() > 0 ? 1 : 0) + w.length() + 4;\n            if (len > k) break;\n            if (out.length() > 0) out.append(' ');\n            out.append(w);\n        }\n        System.out.println(out.length() == 0 ? \"...\" : out + \" ...\");\n    }\n}\n",
+      "sha256": "f62d81edb0fb82d726a70b94f14a65cce8d955d795ff975499686cc4fdf59f73"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tfirst, _ := in.ReadString('\\n')\n\tk, _ := strconv.Atoi(strings.TrimSpace(first))\n\tmsg, _ := in.ReadString('\\n')\n\tmsg = strings.TrimRight(msg, \"\\r\\n\")\n\tif len(msg) <= k {\n\t\tfmt.Println(msg)\n\t\treturn\n\t}\n\t// Add whole words while \"prefix ...\" still fits in k characters.\n\tout := \"\"\n\tfor _, w := range strings.Fields(msg) {\n\t\tt := w\n\t\tif out != \"\" {\n\t\t\tt = out + \" \" + w\n\t\t}\n\t\tif len(t)+4 > k {\n\t\t\tbreak\n\t\t}\n\t\tout = t\n\t}\n\tif out == \"\" {\n\t\tfmt.Println(\"...\")\n\t} else {\n\t\tfmt.Println(out + \" ...\")\n\t}\n}\n",
+      "sha256": "9d13e103bc0d7a798970af4e51538e350b3ef1b9ae1e72d564dd68e8b8df70c1"
+    }
+  ]
+}

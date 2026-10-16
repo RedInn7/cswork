@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-67",
+  "packageChecksum": "46059b5d78922dfb836387648a183239a9755492b22ca8cb3f4074da0f6caa8b",
+  "sourceContentHash": "f2822457d956116cd7a35dc71bc9241db56acbe676441aae524bd13dec230b7d",
+  "editorialSha256": "ff72c8df3aebcaae9a830dd0a0af79de4af97cc8153c2a79534cec6b4bd80b0f",
+  "hints": {
+    "zh": [
+      "排序关键字是二级的：先比较这个编号在整个数组中出现的次数，再比较编号本身；重复的编号都要保留。",
+      "先统计每个编号的出现次数，之后每个元素的排序键 (频次, 编号) 就固定了，直接按这个键对原数组排序即可。",
+      "编号不超过 10⁶，可以用数组计数；然后按 (counts[v], v) 升序排序（也可以把两者打包成一个 64 位整数再排序）；最后用空格连接输出全部 n 个编号，大量输出时注意用缓冲。"
+    ],
+    "en": [
+      "The sort key has two levels: first how many times the ID occurs in the whole array, then the ID itself; duplicate IDs are all kept.",
+      "Count the occurrences of each ID first; after that every element has a fixed key (frequency, ID), so simply sort the original array by that key.",
+      "IDs are at most 10^6, so an array works for counting; then sort ascending by (counts[v], v) (or pack both into one 64-bit integer and sort that); finally print all n IDs separated by spaces, using buffered output for the large output."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the frequencies first, then sort the original array by (frequency, ID).\n\n## Proof of correctness\n\nEvery value has a fixed sort key that matches the two-level ordering of the problem; a comparison sort makes every pair of adjacent items in the output satisfy the requirement, and it only reorders elements without adding or removing any.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

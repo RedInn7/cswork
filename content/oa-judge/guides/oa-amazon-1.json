@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-1",
+  "packageChecksum": "2a1e3b2ef13e31502508992a4fc5922263c382b917bc042f9547f1da6577ea90",
+  "sourceContentHash": "87acd25991ba82c223f4c830cae6e4a5d0dc48da6c578e51188712c78606d83d",
+  "editorialSha256": "60667744388ffc0dd581b6e6abf6f431470d9cd982acbc1f84f0badf15a94963",
+  "hints": {
+    "zh": [
+      "把所有子段按“谁是最大值”来分组：每个子段的漏洞值是长度乘最大值，所以可以对每个元素计算它作为最大值的那些子段的长度总和。",
+      "用单调栈求每个位置向左、向右能扩展多远：左边找严格大于它的位置，右边找大于等于它的位置，这样相同最大值只归属其中一个位置，不会重复计数。",
+      "设位置 i 向左可选起点数为 L、向右可选终点数为 R，则这些子段长度之和为 L·R·(L+R)/2；把 a[i] 乘上这个值累加。L·R·(L+R)/2 在 64 位内，但乘上 a[i] 前要先取模，最后对 10^9+7 取模输出。"
+    ],
+    "en": [
+      "Group all segments by which element is their maximum: a segment's value is its length times its maximum, so for each element sum the lengths of the segments where it is the maximum.",
+      "Use a monotonic stack to find how far each position extends: on the left stop at a strictly greater element, on the right at a greater-or-equal one, so a repeated maximum belongs to exactly one position and nothing is counted twice.",
+      "If position i has L possible starts on the left and R possible ends on the right, those segments have total length L*R*(L+R)/2; add a[i] times this value. L*R*(L+R)/2 fits in 64 bits, but reduce it modulo 10^9+7 before multiplying by a[i], and print the sum modulo 10^9+7."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse monotonic stacks to give every maximum its left and right boundaries. On the left look for a strictly greater element and on the right for a greater-or-equal one, so a repeated maximum belongs to only one position.\n\n## Proof of correctness\n\nLet the numbers of possible extensions to the left and right be L and R. All segments containing this position and owned by it have total length Σ(a + b - 1) = LR(L + R)/2. Multiplying by the element and summing counts every contiguous segment exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

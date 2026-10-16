@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-21",
+  "packageChecksum": "172b2eb8ff80dbd46dd784c7fea7867dc7acc7d017d32dc2f2205177a358f4ac",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<int> d(n);\n    for (auto &x : d) scanf(\"%d\", &x);\n    int best = -1; // site rule: -1 when no valid three-digit number exists\n    for (int i = 0; i + 2 < n; i++) {\n        if (d[i] == 0) continue;\n        for (int j = i + 1; j + 1 < n; j++)\n            for (int k = j + 1; k < n; k++) best = max(best, d[i] * 100 + d[j] * 10 + d[k]);\n    }\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "d722fc75799a90f1903fdea1fb518c23190f3670694e2731e003735dfcfb6144"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] d = new int[n];\n        for (int i = 0; i < n; i++) d[i] = sc.nextInt();\n        int best = -1; // site rule: -1 when no valid three-digit number exists\n        for (int i = 0; i + 2 < n; i++) {\n            if (d[i] == 0) continue;\n            for (int j = i + 1; j + 1 < n; j++)\n                for (int k = j + 1; k < n; k++) best = Math.max(best, d[i] * 100 + d[j] * 10 + d[k]);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "d70ea70ff0f6d838f560e00c4c76979bec9d88d41ca8415bf00886dbaabef2ac"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n int\n\tfmt.Scan(&n)\n\td := make([]int, n)\n\tfor i := range d {\n\t\tfmt.Scan(&d[i])\n\t}\n\tbest := -1 // site rule: -1 when no valid three-digit number exists\n\tfor i := 0; i+2 < n; i++ {\n\t\tif d[i] == 0 {\n\t\t\tcontinue\n\t\t}\n\t\tfor j := i + 1; j+1 < n; j++ {\n\t\t\tfor k := j + 1; k < n; k++ {\n\t\t\t\tbest = max(best, d[i]*100+d[j]*10+d[k])\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "5374c8778db0cd601d5becc1393aa8756e433d3275ae038708719ceef2654a67"
+    }
+  ]
+}

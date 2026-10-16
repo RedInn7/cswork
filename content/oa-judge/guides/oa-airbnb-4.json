@@ -1,0 +1,19 @@
+{
+  "id": "oa-airbnb-4",
+  "packageChecksum": "0ac623cca6864933ab87f9acd3f6be3c8694f57a8fda3a0acae332ba62a6b15d",
+  "sourceContentHash": "52a3465eea204a47ad34f0d50a4e9d1e73191fa5851042cd5f85134b20d72067",
+  "editorialSha256": "4e5b1b477e7745de2522de6565164c0c83c8e6416840df2c29b65fd9d2ffc674",
+  "hints": {
+    "zh": [
+      "速度为 d 时，每一堆需要 ceil(a/d) 个时间单位，而且这是独立的；总时间随速度增大而不增，可行性是单调的。",
+      "在 [1, max(a)] 上二分最小可行速度，判断条件是各堆 ceil(a/d) 之和不超过期限 h。速度再快每堆也至少占 1 个时间单位。",
+      "若 h<n 则不可行，输出 −1；否则 lo=1、hi=max(a)；取 mid，累加每堆的 (a+mid−1)/mid，若总和≤h 则 hi=mid，否则 lo=mid+1；h 可达 10^18，需用 64 位整数读取和比较。"
+    ],
+    "en": [
+      "At speed d each pile needs ceil(a/d) time units on its own, and the total time never increases as the speed grows, so feasibility is monotone.",
+      "Binary search the smallest feasible speed in [1, max(a)]; the test is whether the sum of ceil(a/d) over all piles is at most the deadline h. However fast you eat, each pile still takes at least one unit.",
+      "If h < n it is infeasible: print -1; otherwise set lo = 1 and hi = max(a); for mid, add (a + mid - 1) / mid over all piles; if the total is <= h set hi = mid, else lo = mid + 1. h can reach 10^18, so read and compare it as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the speed, testing it with the sum of the time each pile needs, ceil(a/d).\n\n## Proof of correctness\n\nAt a fixed speed each pile needs, and is satisfied by, ceil(a/d) exclusive time units. The total time is non-increasing in the speed, so binary searching for the first feasible speed is correct. Positive quantities make the minimum total time n, so there is no solution when h < n.\n\n## Complexity\n\nO(n log max(a)) time, O(n) input space."
+}

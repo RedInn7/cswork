@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-60",
+  "packageChecksum": "529a469be9103c9ed4cf1d34eb8fa4230975734025c8230d65bb0d318cfe1c09",
+  "sourceContentHash": "908a3e0d8fd454c2cbbcd79291d9fd3a8e560d70d1731a86c760eb5215525e04",
+  "editorialSha256": "81907167a528aa746069dc48ad1939d4b724bfb52f41b178bc4d53452e22dcbb",
+  "hints": {
+    "zh": [
+      "被照亮的次数只会在区间的端点处变化。对整数坐标来说，闭区间 [x−r,x+r] 在 x−r 处开始计数，在 x+r+1 处才停止计数。",
+      "把每盏灯变成两个事件：x−r 处加一，x+r+1 处减一。按坐标排序后从左往右扫描，覆盖数最大的那一段的最左端一定是某个事件坐标，所以只需在事件点检查。",
+      "收集 2n 个事件并按坐标排序，同一坐标的事件先全部合并再判断。扫描时维护当前覆盖数 count，只有当 count 严格大于历史最大值时才更新最大值和答案坐标，这样并列时自然保留最左的坐标。坐标可达约 ±2·10⁹，要用 64 位整数。"
+    ],
+    "en": [
+      "The number of lamps lighting a point only changes at interval endpoints. On integer coordinates, the closed interval [x - r, x + r] starts counting at x - r and stops counting only at x + r + 1.",
+      "Turn each lamp into two events: +1 at x - r and -1 at x + r + 1. After sorting by coordinate, sweep from left to right; the leftmost point of the most-covered stretch is always an event coordinate, so only event points need checking.",
+      "Collect the 2n events and sort them by coordinate, merging all events at the same coordinate before checking. Maintain the current coverage count during the sweep, and update the best value and the answer only when count is strictly greater than the best so far, which keeps the leftmost coordinate on ties. Coordinates reach about ±2 * 10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor integer coordinates, add 1 at the left end and subtract 1 at the right end plus 1. Merge the events by coordinate and sweep the coverage count, recording the coordinate only when the maximum coverage strictly improves.\n\n## Correctness\n\nThese closed-interval events keep the right endpoint counted. The coverage only changes at these boundaries, so the leftmost point of the most-covered stretch is always an integer event point. Sweeping in increasing order and updating only on a strict increase keeps exactly the leftmost point among ties.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

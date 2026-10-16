@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-7",
+  "packageChecksum": "aa8e960a9eea28592006b23e71731ddf73efb1083ce28d19bad49a7f325f8bc0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n, lo, hi;\n    cin >> n >> lo >> hi;\n    long long width = hi - lo + 1;\n    if (n < 3 || n > 2 * width - 1) {\n        puts(\"-1\");\n        return 0;\n    }\n    // Shortest feasible rising run maximizes the first element.\n    long long p = max(1LL, n - width);\n    string out = to_string(n) + \"\\n\";\n    bool first = true;\n    auto put = [&](long long v) {\n        if (!first) out += ' ';\n        first = false;\n        out += to_string(v);\n    };\n    for (long long v = hi - p; v <= hi; v++) put(v);\n    for (long long k = 1; k <= n - p - 1; k++) put(hi - k);\n    puts(out.c_str());\n}\n",
+      "sha256": "0446f96ee6b597faadc778e86197da157b3994719ecba17f9e484ebdaf9187a0"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long n = nextLong(), lo = nextLong(), hi = nextLong();\n        long width = hi - lo + 1;\n        if (n < 3 || n > 2 * width - 1) {\n            System.out.println(-1);\n            return;\n        }\n        // Shortest feasible rising run maximizes the first element.\n        long p = Math.max(1, n - width);\n        StringBuilder sb = new StringBuilder();\n        sb.append(n).append('\\n');\n        for (long v = hi - p; v <= hi; v++) sb.append(v).append(' ');\n        for (long k = 1; k <= n - p - 1; k++) sb.append(hi - k).append(' ');\n        sb.setLength(sb.length() - 1);\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "063ede8b76c14f56fe019b305226c7520c35e7759339810a7f285133a2a12d16"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, lo, hi := nextInt(), nextInt(), nextInt()\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\twidth := hi - lo + 1\n\tif n < 3 || n > 2*width-1 {\n\t\tw.WriteString(\"-1\\n\")\n\t\treturn\n\t}\n\t// Shortest feasible rising run maximizes the first element.\n\tp := max(1, n-width)\n\tw.WriteString(strconv.FormatInt(n, 10) + \"\\n\")\n\tfirst := true\n\tput := func(v int64) {\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tw.WriteString(strconv.FormatInt(v, 10))\n\t}\n\tfor v := hi - p; v <= hi; v++ {\n\t\tput(v)\n\t}\n\tfor k := int64(1); k <= n-p-1; k++ {\n\t\tput(hi - k)\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "8607dddffc70746b94877af2432624b991672c94e584a9d5ab60cea73c59b605"
+    }
+  ]
+}

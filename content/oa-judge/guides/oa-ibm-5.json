@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-5",
+  "packageChecksum": "4ef2931231ca48db336b173c1464e95e2be6571928e30280625cd78fc06a8ccf",
+  "sourceContentHash": "1618df155b8337cc2ab7a761595accaf4779f214f641c7393801762943db9532",
+  "editorialSha256": "0cda8c250c85dc47ee480d936f88822ecb71784635d165dbfaa8138837a49941",
+  "hints": {
+    "zh": [
+      "合并规则就是按下标交替：先取a的第i个字符，再取b的第i个字符；某个串在该下标已经没有字符时直接跳过，剩余部分就自然被追加在后面。",
+      "两个串都可能含空格，也可能是空串，所以必须按整行读取，不能按空白切分，输出时也要原样保留空格。",
+      "读出两行a和b，下标i从0遍历到两串长度的较大值：若i小于a的长度就追加a的第i个字符，若i小于b的长度再追加b的第i个字符；最后把结果作为一整行输出。"
+    ],
+    "en": [
+      "The merge rule is simply alternating by index: take the i-th character of a, then the i-th character of b; when a string has no character at that index, skip it, and the rest of the other string is appended naturally.",
+      "Both strings may contain spaces or be empty, so read whole lines instead of splitting on whitespace, and keep the spaces unchanged in the output.",
+      "Read the two lines a and b and let i run from 0 up to the longer length: if i is less than the length of a append a's i-th character, then if i is less than the length of b append b's i-th character; finally print the result as one line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIterate over indices up to the longer length, checking and appending the corresponding characters of the two strings in turn.\n\n## Proof of correctness\n\nEach round appends exactly the next unprocessed characters, a first and then b, skipping a missing one; so each string keeps its own order, and both the interleaving rule and the rule for the remaining part are satisfied.\n\n## Complexity\n\nTime O(|a|+|b|), output space O(|a|+|b|)."
+}

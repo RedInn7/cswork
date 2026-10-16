@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-5",
+  "packageChecksum": "c59789517ea09ef3bf58433576e8013aa7d5f29445d0fc11893ecdccd9ffa9f0",
+  "sourceContentHash": "04165223f4b81b7e5093f62aff316048b02af86ba78fa1ea97cd1bf436e4b72c",
+  "editorialSha256": "17dcfb0db76dfc1bbacc4a7cf4ea61d6af1ea2a96f06de90df3522b1e5715c72",
+  "hints": {
+    "zh": [
+      "矩形可以旋转，所以比较时把矩形和查询框都写成（短边，长边），短边对短边、长边对长边即可：矩形能放进框，当且仅当它的短边 ≤ 框的短边且长边 ≤ 框的长边。",
+      "查询要求“之前保存的每个矩形都能各自放进去”，这等价于所有已存矩形的短边最大值 ≤ 框短边，并且长边最大值 ≤ 框长边，两个条件可以分开看。",
+      "只维护两个数：已存矩形短边的最大值和长边的最大值（初始为 0）。保存操作更新这两个最大值；查询操作把 a、b 规范成短边和长边后比较，满足输出 1，否则输出 0，每个查询一行。还没有保存过矩形时两个最大值为 0，查询自然输出 1。"
+    ],
+    "en": [
+      "Rectangles may be rotated, so write both rectangles and boxes as (short side, long side) and compare short with short and long with long: a rectangle fits exactly when its short side <= the box's short side and its long side <= the box's long side.",
+      "A query asks whether every stored rectangle fits on its own, which is the same as: the largest stored short side <= the box's short side and the largest stored long side <= the box's long side. The two conditions can be checked separately.",
+      "Keep just two numbers, the maximum short side and the maximum long side of the stored rectangles (both start at 0). A store updates them; a query normalizes a and b into short and long sides and prints 1 if both comparisons hold, otherwise 0, one line per query. Before anything is stored both maxima are 0, so a query prints 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nNormalize the sides of both the rectangles and the query boxes into a short side and a long side. Maintain the maximum short side and the maximum long side over all stored rectangles; a query box can hold every rectangle if and only if these two maxima do not exceed the corresponding sides of the box.\n\n## Proof of correctness\n\nRotation allows any rectangle to be compared short side to short side and long side to long side. A stored rectangle fits into the query box if and only if its short side <= the query's short side and its long side <= the query's long side. Requiring every stored rectangle to satisfy both conditions is equivalent to requiring the stored maximum short side and maximum long side to be no larger than the query's sides; the maxima maintained by the store operations are exactly the maxima over all past rectangles.\n\n## Complexity\n\nO(q) time and O(1) extra space."
+}

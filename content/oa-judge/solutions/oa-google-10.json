@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-10",
+  "packageChecksum": "f5ab93988284bbcd77577a56e0980e8961ca6b6b29f1bd83071693746a637c35",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    if (scanf(\"%d %d\", &n, &k) != 2) return 0;\n    int remove = n - k;\n    string st;  // monotonic stack of digits\n    for (int i = 0; i < n; i++) {\n        int d;\n        scanf(\"%d\", &d);\n        char c = '0' + d;\n        while (remove && !st.empty() && st.back() < c) { st.pop_back(); remove--; }\n        st.push_back(c);\n    }\n    st.resize(k);\n    size_t first = st.find_first_not_of('0');\n    puts(first == string::npos ? \"0\" : st.c_str() + first);\n}\n",
+      "sha256": "b48097186a67729921dc04f9507c9a26ace192a9dac6e707b4d2f79f321da02b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        st.nextToken(); int k = (int) st.nval;\n        int remove = n - k;\n        StringBuilder stack = new StringBuilder(); // monotonic stack of digits\n        for (int i = 0; i < n; i++) {\n            st.nextToken();\n            char c = (char) ('0' + (int) st.nval);\n            while (remove > 0 && stack.length() > 0 && stack.charAt(stack.length() - 1) < c) {\n                stack.setLength(stack.length() - 1);\n                remove--;\n            }\n            stack.append(c);\n        }\n        stack.setLength(k);\n        int first = 0;\n        while (first < k && stack.charAt(first) == '0') first++;\n        System.out.println(first == k ? \"0\" : stack.substring(first));\n    }\n}\n",
+      "sha256": "18c45e23ef6310b08a03919748b840621332872becb1c3ad917aa3fe86596a5e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n, k int\n\tfmt.Fscan(in, &n, &k)\n\tremove := n - k\n\tstack := make([]byte, 0, n) // monotonic stack of digits\n\tfor i := 0; i < n; i++ {\n\t\tvar d int\n\t\tfmt.Fscan(in, &d)\n\t\tc := byte('0' + d)\n\t\tfor remove > 0 && len(stack) > 0 && stack[len(stack)-1] < c {\n\t\t\tstack = stack[:len(stack)-1]\n\t\t\tremove--\n\t\t}\n\t\tstack = append(stack, c)\n\t}\n\tres := strings.TrimLeft(string(stack[:k]), \"0\")\n\tif res == \"\" {\n\t\tres = \"0\"\n\t}\n\tfmt.Println(res)\n}\n",
+      "sha256": "354f69eeb17169e4e93f51e34d9fd45151d0eb345cf7ed13ecfedc91e495e575"
+    }
+  ]
+}

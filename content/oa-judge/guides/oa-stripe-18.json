@@ -1,0 +1,19 @@
+{
+  "id": "oa-stripe-18",
+  "packageChecksum": "7cc4aeeb17e748ff0ff29f0b3775bfa4e2e2b1c5edc9008ce0e6fd1de9fa6eee",
+  "sourceContentHash": "4294161ba7b0f971a39cf0039be7a4bb123f09ba7faf7683f4a975b1486237ba",
+  "editorialSha256": "4d9a6ba1d7487bd269f21b5d70aecabe8c68bd54f6162cbb9ea21e7dfe670963",
+  "hints": {
+    "zh": [
+      "范围最多 366 天、每天每个时段最多 48 个半小时槽，候选总数不大，可以逐日逐时段直接枚举；难点在于槽的网格从每个时段自己的起点开始，而不是从整点开始。",
+      "逐日求出星期几，取出这一天对应的工作时段；从时段起点开始每 30 分钟产生一个候选槽，要求槽完全落在时段内，且起点不早于范围起点、终点不晚于范围终点；不同时段可能产生相同的槽，需要去重。",
+      "把日期时间换算成绝对分钟数便于比较；对每天每个时段，cur 从起点开始，当 cur+30≤结束时，若 cur≥范围起点且 cur+30≤范围终点就收集 cur；24:00 表示当天结束即次日零点。收集后排序去重，输出个数和每个槽的 YYYY-MM-DD HH:MM,YYYY-MM-DD HH:MM。"
+    ],
+    "en": [
+      "The range spans at most 366 days and each period yields at most 48 half-hour slots per day, so the candidates can be enumerated directly day by day and period by period. The subtle part is that the slot grid starts at each period's own start, not on the hour.",
+      "For each day, find its weekday and take that weekday's working periods. From each period's start, produce a candidate every 30 minutes; it must lie entirely inside the period, start no earlier than the range start and end no later than the range end. Different periods can produce the same slot, so deduplicate.",
+      "Convert date-times to absolute minutes for easy comparison. For each day and period, let cur run from the start while cur + 30 <= period end, and collect cur when cur >= range start and cur + 30 <= range end; 24:00 means the end of the day, i.e. the next midnight. Sort and deduplicate, then print the count and each slot as YYYY-MM-DD HH:MM,YYYY-MM-DD HH:MM."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDay by day, take the working periods of that weekday and enumerate candidates from each period's start in 30-minute steps. Keep only the complete slots whose start is not earlier than the given range start and whose end is not later than the range end, then deduplicate and sort.\n\n## Correctness\n\nEvery valid slot belongs to some working period and starts an integer multiple of 30 minutes after that period's start, so the enumeration is sure to examine it. The boundary filters express exactly that the slot lies completely inside the given range. Conversely, a slot that passes both boundary checks after enumeration satisfies every condition. Deduplicating with a set handles overlapping or repeated periods, and sorting gives the required time order.\n\n## Complexity\n\nLet D be the number of dates, w the number of working periods and s the number of candidate slots. O(48Dw + s log s) time and O(s) space."
+}

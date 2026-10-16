@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-26",
+  "packageChecksum": "84ee991eabfb421c8b000023a135c9b20b7fe6f65758e618f222e934cec70ef6",
+  "sourceContentHash": "0cd3f7f8f83858096b16776fea12c7392c799b6555f4a36a4014e9200a688243",
+  "editorialSha256": "e38c397eac11c06024675ed73b649b8d25b258c96036607718c3c30b1a581a81",
+  "hints": {
+    "zh": [
+      "合法的出现位置只有四类：某一行、某一列，以及它们的反向串；单词必须是其中某条线上的连续片段。",
+      "先把所有行、所有列及它们的反转都整理成码点序列，再对每个单词用 KMP 在这些线上逐条查找；相同单词的结果可以缓存。",
+      "用 JSON 解析出网格行和单词列表，按 Unicode 码点处理（不要按字节）；构造 2×(行数+列数) 条搜索线；对每个未缓存的单词计算前缀函数，依次在每条线上做 KMP 匹配，找到即为 Yes；按查询顺序输出 Yes 或 No。"
+    ],
+    "en": [
+      "There are only four kinds of legal placement: a row, a column, or either of them reversed; the word must be a contiguous piece of one of these lines.",
+      "Turn every row, every column and their reversals into code-point sequences, then search each word on these lines with KMP; repeated words can reuse a cached result.",
+      "Parse the grid rows and the word list from the JSON and work on Unicode code points (not bytes); build the 2 * (rows + columns) search lines; for each word not yet cached compute its prefix function and run KMP on each line, answering Yes on the first match; print Yes or No in query order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute all rows, all columns and their reversed strings. Build a KMP prefix table for every word and search for it on these strings one by one; cache the result for repeated queries of the same word.\n\n## Proof of correctness\n\nAll legal directions correspond exactly to the four kinds of lines: rows, columns and their reversals, and a contiguous match on a search line is exactly a straight, non-turning segment as the problem requires. KMP only skips positions already proven unable to start a match, so it does not change whether a match exists.\n\n## Complexity\n\nO(KNM + total word length) time, O(NM + total word length) space."
+}

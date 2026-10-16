@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-42",
+  "packageChecksum": "ce85bd96d0dac9ef018cc8b87a8a2f0749f315caa4e788c54fb6ac3d5352bdb5",
+  "sourceContentHash": "3ff2849b20794992a6217b079d190c4622f235539e66aedcfd44c7d743e0d3a7",
+  "editorialSha256": "939a8b4002e4aa8314d520b1b07e63554d0f8ab6accff52f4464df184576e66e",
+  "hints": {
+    "zh": [
+      "一条日志里参与的用户最多两个：发送者和接收者；自己转给自己时这条日志对他只算一次。金额与计数无关。",
+      "用哈希表统计每个用户参与的日志条数：先给发送者加一，只有接收者与发送者不同时才给接收者加一；最后挑出计数达到阈值的用户。",
+      "逐条读取 sender、recipient、amount；counts[sender]++，若 recipient≠sender 则 counts[recipient]++。筛出 counts≥threshold 的 ID，按整数大小（不是字符串字典序）升序排序，先输出个数再输出这些 ID。"
+    ],
+    "en": [
+      "A log involves at most two users, the sender and the recipient; a transfer to oneself counts only once for that user. The amount has nothing to do with the count.",
+      "Count with a hash map how many logs each user takes part in: add one for the sender, and add one for the recipient only when the recipient differs from the sender. Finally keep the users whose count reaches the threshold.",
+      "For each sender, recipient, amount: counts[sender]++, and if recipient != sender then counts[recipient]++. Collect the IDs with count >= threshold, sort them by numeric value (not lexicographic string order), and print the number of users followed by the IDs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each log, first count the sender; count the recipient as well only if it differs from the sender. Keep the users who reach the threshold and sort them as integers.\n\n## Correctness\n\nThe set of users taking part in one log has at most two members, and the conditional deduplication makes every user contribute exactly 1 per log. The accumulated frequency is therefore the number of logs the user takes part in, and filtering by >= threshold plus numeric sorting implements the requirement exactly.\n\n## Complexity\n\nO(n + U log U) time and O(U) space, where U <= 2n."
+}

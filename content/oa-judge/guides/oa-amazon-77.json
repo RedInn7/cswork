@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-77",
+  "packageChecksum": "663fce3b2db0e1485a5eb388f38149589dae323ee496a14ad06847891d0ae3fa",
+  "sourceContentHash": "dfeb3e44fb35f48282386435ec7c78d71f6aaf5df4ea06159849398ebedd84ca",
+  "editorialSha256": "e0bb718836ccf5084f15ddaa742d552f637aa42ca1de8de81439d3b2369e74cd",
+  "hints": {
+    "zh": [
+      "最右边的故障字符永远不会被删除，它每秒向左吃掉一个字符；更左边的故障字符在被右边的故障字符吃掉之前，也在独立地向左吃。",
+      "因此可以按故障字符的位置把字符串切段：第一个故障字符前面长度为 p 的前缀需要 p 秒；相邻两个故障字符之间的间隔 g（右位置减左位置，包含左边那个故障字符本身）需要 g 秒；最后一个故障字符之后的后缀永远保留。各段同时进行，答案取最大值。",
+      "扫描字符串，previous 初值为 0；每遇到一个故障字符位置 i，用 i − previous 更新答案，然后令 previous = i；没有故障字符时答案为 0。"
+    ],
+    "en": [
+      "The rightmost failed service is never deleted and eats one character to its left every second; each failed service further left also eats leftward independently until the one on its right reaches it.",
+      "So split the string at the failed positions: the prefix of length p before the first failed service needs p seconds; the gap g between two consecutive failed services (right position minus left position, including the left failed service itself) needs g seconds; the suffix after the last failed service is never touched. All parts proceed at once, so the answer is the maximum.",
+      "Scan the string with previous = 0; at each failed position i, update the answer with i - previous and set previous = i; with no failed service the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the positions of the failed characters: take the maximum of the length before the first failure and the distances between adjacent failure positions; the suffix after the last failure is never deleted.\n\n## Proof of correctness\n\nThe rightmost failure always remains and advances one step to the left every second; each failure further left independently works on the gap between the two before it is deleted by the failure to its right. A non-first gap of length g, which includes the left failure itself, takes g seconds to clear; the length p before the first failure takes p seconds. The gaps proceed in parallel, so the time is the maximum.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

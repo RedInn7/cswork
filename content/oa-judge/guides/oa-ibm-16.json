@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-16",
+  "packageChecksum": "7dfe0fda3a068b4f85853367db433d85f95631baee3cbbf96382c3aa924a22e9",
+  "sourceContentHash": "354e1e634f1d58c2d7f7a41441f400d1095f55bb05a96e68603d30a62b4e3728",
+  "editorialSha256": "4e6d3e85fe7b072e6b48efe75bdf39dde3ee6ae24fbbdd38b2fc218df053eb1f",
+  "hints": {
+    "zh": [
+      "相似只看出现了哪些字母，而字母只有26个，所以每个字母集合都能压缩成一个26位的二进制数；两个字符串相似当且仅当这个数相等。",
+      "用哈希表统计每个掩码已经出现过多少次；处理到一个字符串时，它能和之前所有掩码相同的字符串各组成一对。",
+      "逐行读取（空行表示空串，掩码为0），对每个字符把对应位设为1；先把哈希表中该掩码已有的次数加入答案，再把次数加1。答案可能约5×10^9，需要64位整数。"
+    ],
+    "en": [
+      "Similarity only depends on which letters appear, and there are just 26 letters, so each letter set compresses into a 26-bit number; two strings are similar exactly when these numbers are equal.",
+      "Use a hash map to count how many times each mask has appeared so far; when a string is processed, it forms a pair with every earlier string that has the same mask.",
+      "Read line by line (an empty line is an empty string with mask 0) and set the bit of each character; first add the count already stored for this mask to the answer, then increase that count by 1. The answer can be about 5×10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepresent each letter set as a 26-bit mask, and for each string add the number of earlier strings with the same mask.\n\n## Proof of correctness\n\nEach bit records exactly whether its letter occurs, so two masks are equal if and only if the sets are the same; each index pair is counted once, when the later of the two strings is scanned.\n\n## Complexity\n\nTime O(total length + n), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-385",
+  "packageChecksum": "022df4c1442a0b2532349a9d3ca4c08ef116a158df8ddd55b1232e7c39d53532",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    if (!s.empty() && s.back() == '\\n') s.pop_back();\n    if (!s.empty() && s.back() == '\\r') s.pop_back();\n    int n = s.size();\n    // Try half lengths from largest to smallest; h consecutive compatible pairs at distance h give 2h.\n    for (int h = n / 2; h > 0; h--) {\n        int run = 0;\n        for (int i = 0; i + h < n; i++) {\n            run = (s[i] == s[i + h] || s[i] == '?' || s[i + h] == '?') ? run + 1 : 0;\n            if (run >= h) { cout << 2 * h << \"\\n\"; return 0; }\n        }\n    }\n    cout << 0 << \"\\n\";\n}\n",
+      "sha256": "45b1afb1d8d49a6304f8f479519a88cbc04f2b11ceff62a483c2f0a04bacea0e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] raw = System.in.readAllBytes();\n        int n = raw.length;\n        if (n > 0 && raw[n - 1] == '\\n') n--;\n        if (n > 0 && raw[n - 1] == '\\r') n--;\n        byte[] s = raw;\n        // Try half lengths from largest to smallest; h consecutive compatible pairs at distance h give 2h.\n        for (int h = n / 2; h > 0; h--) {\n            int run = 0;\n            for (int i = 0; i + h < n; i++) {\n                run = (s[i] == s[i + h] || s[i] == '?' || s[i + h] == '?') ? run + 1 : 0;\n                if (run >= h) {\n                    System.out.println(2 * h);\n                    return;\n                }\n            }\n        }\n        System.out.println(0);\n    }\n}\n",
+      "sha256": "0c0079c5c715fdac792fd2d6fde1ec04cd0b6e874571eadb873a0bbcd51c3ee7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\ts, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := len(s)\n\tif n > 0 && s[n-1] == '\\n' {\n\t\tn--\n\t}\n\tif n > 0 && s[n-1] == '\\r' {\n\t\tn--\n\t}\n\t// Try half lengths from largest to smallest; h consecutive compatible pairs at distance h give 2h.\n\tfor h := n / 2; h > 0; h-- {\n\t\trun := 0\n\t\tfor i := 0; i+h < n; i++ {\n\t\t\tif s[i] == s[i+h] || s[i] == '?' || s[i+h] == '?' {\n\t\t\t\trun++\n\t\t\t} else {\n\t\t\t\trun = 0\n\t\t\t}\n\t\t\tif run >= h {\n\t\t\t\tfmt.Println(2 * h)\n\t\t\t\treturn\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(0)\n}\n",
+      "sha256": "c23ed09114bc3b2d22240f93bac0eec4e8c27352375ccfecd62863a5e3a0d38c"
+    }
+  ]
+}

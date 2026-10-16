@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-7",
+  "packageChecksum": "313e69a6cb4c3493b5b693975fb4491a16fea268d41434c8c6c60e520e7645b7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007;\nint main() {\n    long long n;\n    scanf(\"%lld\", &n);\n    // First outer pair: 6 ordered colorings, each next pair inward: 3.\n    long long result = 6, base = 3, e = n / 2 - 1;\n    while (e > 0) {\n        if (e & 1) result = result * base % MOD;\n        base = base * base % MOD;\n        e >>= 1;\n    }\n    printf(\"%lld\\n\", result);\n}\n",
+      "sha256": "db0a8109ec9ffbc7213533ec7b8a4ecf3a6ec79891edf309129fec896c1f9bd7"
+    },
+    {
+      "language": "java",
+      "code": "import java.math.BigInteger;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        long n = new Scanner(System.in).nextLong();\n        BigInteger mod = BigInteger.valueOf(1000000007);\n        // First outer pair: 6 ordered colorings, each next pair inward: 3.\n        BigInteger r = BigInteger.valueOf(3).modPow(BigInteger.valueOf(n / 2 - 1), mod).multiply(BigInteger.valueOf(6)).mod(mod);\n        System.out.println(r);\n    }\n}\n",
+      "sha256": "1549bf5a49b2d013037b31b589b21ba730dc1f4a09cc257096ca0abe9847399c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nconst mod = 1000000007\n\nfunc main() {\n\tvar n int64\n\tfmt.Scan(&n)\n\t// First outer pair: 6 ordered colorings, each next pair inward: 3.\n\tresult, base, e := int64(6), int64(3), n/2-1\n\tfor e > 0 {\n\t\tif e&1 == 1 {\n\t\t\tresult = result * base % mod\n\t\t}\n\t\tbase = base * base % mod\n\t\te >>= 1\n\t}\n\tfmt.Println(result)\n}\n",
+      "sha256": "30e352908b28f1e287dc8a03d58f1e83df829d3e1302845217ff00bf51d8e43c"
+    }
+  ]
+}

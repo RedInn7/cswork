@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-14",
+  "packageChecksum": "b25ac873f8a64fafa8f5dd05545668e0f575fb4a16bd3e25d4bff93642bb86a1",
+  "sourceContentHash": "64afc8417f3c754863993be2b640cee4ba6b282d9cff0d20193eaf138a088304",
+  "editorialSha256": "decfac1b7fb7086a0d421de87a0b429015da22882aa34ad19943084c177bedb6",
+  "hints": {
+    "zh": [
+      "1..16 之和是 136，所以每个 4×4 方块的缺失值就是 136 减去其余 15 格之和。",
+      "整块移动，块内布局不变：先求每块缺失值，再按 (缺失值, 原来的块序号) 排序，相同缺失值保持原有左右顺序。",
+      "第 b 块占第 4b..4b+3 列；对每块累加非 −1 的格子得到缺失值，并把 −1 填成它；对块下标做稳定排序，然后按新顺序逐行输出 4 行，每行把各块的 4 个数依次拼接。"
+    ],
+    "en": [
+      "The numbers 1..16 sum to 136, so the missing value of each 4×4 square is 136 minus the sum of its other 15 cells.",
+      "Squares move as whole units and keep their internal layout: compute each square's missing value, then sort by (missing value, original square index) so equal missing values keep their original left-to-right order.",
+      "Square b occupies columns 4b..4b+3; sum its cells other than −1 to get the missing value and fill the −1 with it; stable-sort the square indices, then print the 4 rows, each concatenating the 4 numbers of every square in the new order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each square compute the missing value and build the filled 4×4 square; sort by (missing value, original column index) and write the complete squares into the output column groups.\n\n## Correctness\n\nEvery output square is still one complete square from the input. The sort key makes the missing values non-decreasing, and the secondary key only preserves the original order among equal missing values; this satisfies the statement and determines a unique output.\n\n## Complexity\n\nComputing the missing values takes O(n), sorting O(n log n), and copying the grid O(n), for a total time of O(n log n) and space O(n)."
+}

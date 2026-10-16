@@ -1,0 +1,19 @@
+{
+  "id": "oa-deloitte-3",
+  "packageChecksum": "b2ca18277ff1ad22d0f5c6145df0e1a1c833b7daf7bc1f3b81fdd2186c492cff",
+  "sourceContentHash": "23993c65472748047fc2c8be237d9b9adca850b67e047328f44e76b4e658344f",
+  "editorialSha256": "03c74241ea0d5e0ec7ce047faa0a7a2c6d27ae083dbd41df9f895ea774326819",
+  "hints": {
+    "zh": [
+      "一个字符串能拼出来，当且仅当它用到的每种字母都在选中的字母集合里；字母出现几次、顺序如何都无关紧要。",
+      "字母只有 a 到 j 共 10 个，所以每个字符串可以压成一个 10 位掩码，而所有可能的选字母方案也只有 2^10 = 1024 种，可以全部枚举。",
+      "把每个字符串的字母集合压成掩码并统计每种掩码出现的次数。枚举所有 popcount ≤ K 的选择集合 mask，累加满足 (m & ~mask) == 0 的掩码 m 的出现次数，取最大值输出。"
+    ],
+    "en": [
+      "A string can be built exactly when every letter it uses is in the chosen set; how often letters repeat and in what order does not matter.",
+      "There are only 10 letters, a to j, so each string compresses to a 10-bit mask, and there are only 2^10 = 1024 possible letter choices, few enough to try them all.",
+      "Turn each string's letter set into a mask and count how many strings have each mask. For every choice mask with popcount <= K, add up the counts of the masks m with (m & ~mask) == 0, and print the largest total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompress each string into a bitmask of its letter set, then enumerate every set of at most K letters and count.\n\n## Proof of correctness\n\nA string can be built if and only if every kind of letter it uses is in the chosen set. Enumerating all valid sets covers every possible choice, and taking the maximum count gives the optimum. Choosing more letters never lowers the number of buildable strings, so choosing exactly K would also work when K<=10, but the implementation enumerates \"at most K\" directly.\n\n## Complexity\n\nO(2^10 * n + total characters) time and O(n) space."
+}

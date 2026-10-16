@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-10",
+  "packageChecksum": "9659b20a1096c0bb1206b69dbb6617b65a82a7e7f8bb8195fe6a434b302a6ae0",
+  "sourceContentHash": "1bf2da2a4fd6a01cb7e49c614a1bf2b9577beb779646c767363682ec2fcf5fef",
+  "editorialSha256": "30ec0b0eba32343cf2b850ec59ce02b462890f0935e88b7f9680bb608004bf57",
+  "hints": {
+    "zh": [
+      "题目要的是原数组中相邻两项之差的绝对值的最大值。“相邻”指的是输入顺序里的相邻，所以绝对不能先排序。",
+      "只需要从左到右扫描一次，对每一对相邻元素算一次差的绝对值，同时维护最大值。只有一个元素时没有相邻对，答案为 0。",
+      "把答案初始化为 0，记住上一个元素 prev。依次读入后续的每个元素 cur，用 |cur−prev| 更新答案，再令 prev=cur。扫描结束后输出答案。"
+    ],
+    "en": [
+      "The task asks for the maximum absolute difference between adjacent items of the original array. \"Adjacent\" means adjacent in input order, so you must not sort first.",
+      "A single left-to-right scan is enough: compute the absolute difference of each adjacent pair and keep the maximum. With a single element there is no adjacent pair, so the answer is 0.",
+      "Initialize the answer to 0 and remember the previous element prev. For each following element cur, update the answer with |cur - prev| and then set prev = cur. Output the answer after the scan."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the array once, computing the absolute difference of each pair of adjacent elements and maintaining the maximum. Sorting is not allowed, because sorting would change the adjacency defined by the statement.\n\n## Proof of Correctness\n\nWhen the scan reaches position i, the current difference is exactly the difference between items i-1 and i of the original array. The maintained maximum is therefore exactly the maximum difference over all adjacent positions, which is what the problem asks for.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

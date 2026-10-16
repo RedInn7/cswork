@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-159",
+  "packageChecksum": "68d225475cb43b919b2d5f3ae269aa5b387b77d68ae6b07122306aeb6f340083",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int freq[26] = {0}, totals[26] = {0};\n    for (char ch : s) {\n        freq[ch - 'a']++;\n        int top = *max_element(freq, freq + 26);\n        for (int i = 0; i < 26; i++)\n            if (freq[i] == top) totals[i]++;\n    }\n    cout << *max_element(totals, totals + 26) << \"\\n\";\n}\n",
+      "sha256": "3e1359fc04b59aab1a7980261bbd114eb723e595fce8d8d0bd371a5db2696aa1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static String next() throws IOException {\n        int c = skipSpaces();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int[] freq = new int[26], totals = new int[26];\n        for (int k = 0; k < s.length(); k++) {\n            freq[s.charAt(k) - 'a']++;\n            int top = 0;\n            for (int f : freq) top = Math.max(top, f);\n            for (int i = 0; i < 26; i++)\n                if (freq[i] == top) totals[i]++;\n        }\n        int answer = 0;\n        for (int t : totals) answer = Math.max(answer, t);\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "022122b87070966f1015c28e42fa2d649d67a6090b082a67c97feffcac4490b1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tvar freq, totals [26]int\n\tfor _, ch := range next() {\n\t\tfreq[ch-'a']++\n\t\ttop := slices.Max(freq[:])\n\t\tfor i := range freq {\n\t\t\tif freq[i] == top {\n\t\t\t\ttotals[i]++\n\t\t\t}\n\t\t}\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(slices.Max(totals[:])) + \"\\n\")\n}\n",
+      "sha256": "b530b8f320ee1fd68445c44a4c4d9aae9b05b2957a9f4a7955ddd757999a439c"
+    }
+  ]
+}

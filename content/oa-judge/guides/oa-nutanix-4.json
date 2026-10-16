@@ -1,0 +1,19 @@
+{
+  "id": "oa-nutanix-4",
+  "packageChecksum": "db8171ff0a99e7824cfa51aeebd737cf11d36141806f49cd253947cd29e9230c",
+  "sourceContentHash": "ab76f4e0e891a4c0a1f56942a41c331eb8cd1f46f6888126083c86798de4fee7",
+  "editorialSha256": "b70f8d3471eb78abf33b9b43db60d19f2c935678c70138e8f3ff12a993a023df",
+  "hints": {
+    "zh": [
+      "所有左移都必须发生在第一次交换之前，所以任何方案都可以拆成两段：先左移 k 次（k 只需考虑 0 到 n-1），再只用任意交换把数组排好。",
+      "固定 k 后，问题变成用最少的任意交换给一个排列排序。把排列拆成环，长度为 L 的环需要 L-1 次交换，总数是 n 减去环的个数。",
+      "对每个 k，左移后位置 j 上的值是 arr[(j+k) mod n]，它应当去的位置是该值减 1，用访问标记数出这个置换的环数 c，这个 k 的代价就是 k+n-c。枚举所有 k 取最小值输出，总复杂度 O(n²)。"
+    ],
+    "en": [
+      "Every left rotation must happen before the first swap, so any plan splits into two phases: rotate left k times (only k from 0 to n-1 matter), then sort using arbitrary swaps only.",
+      "Once k is fixed, the task is sorting a permutation with the fewest arbitrary swaps. Split the permutation into cycles: a cycle of length L needs L-1 swaps, so the total is n minus the number of cycles.",
+      "For each k, the value at position j after rotating is arr[(j+k) mod n], and it belongs at position value-1. Count the cycles c of this permutation with a visited array; the cost of this k is k+n-c. Output the minimum over all k, for O(n^2) overall."
+    ]
+  },
+  "explanationEn": "# Minimum Operations to Convert Array\n\n## Approach\n\nSuppose we rotate left k times, where k can only be 0 to n-1. Then the value at each position of the array points to its target position, forming a permutation. If a permutation of length n has c cycles, it takes at least n-c swaps of two arbitrary elements to sort it. So the total cost for that k is k+n-c; enumerate k and take the minimum.\n\n## Correctness\n\nThe rules require every left rotation to come before the first swap, so every valid plan corresponds to exactly one rotation count k followed only by swaps. With k fixed, each cycle of the permutation can be resolved independently, and a cycle of length L needs at least, and exactly, L-1 swaps, for n-c in total. Enumerating every k and taking the minimum therefore covers all possible plans and only those.\n\n## Complexity\n\nFor each k the permutation cycles are counted in linear time, for O(n^2) time and O(n) extra space in total.\n\n## Site input bounds\n\nThe source lists the constraints as N/A and gives no upper bound on n. To give the O(n^2) judge inputs a clear bound, this site sets 1 <= n <= 3000; this is a runtime constraint of this site, not a reconstruction of the original source.\n\n## Reference implementation\n\n```python\nimport sys\ndef solve(raw):\n data=list(map(int,raw.split())); n=data[0]; arr=data[1:]\n best=n\n for k in range(n):\n  seen=[False]*n; cycles=0\n  for i in range(n):\n   if not seen[i]:\n    cycles+=1; j=i\n    while not seen[j]:\n     seen[j]=True; j=arr[(j+k)%n]-1\n  best=min(best,k+n-cycles)\n return best\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n```"
+}

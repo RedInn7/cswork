@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-64",
+  "packageChecksum": "c78e7965fa11038476f50850e4ca6a6f2d08c6269cc28796e9d6dae22e08b698",
+  "sourceContentHash": "124b58b4373594038893a24604f4e4adba45e39e90972f3102b423f606421286",
+  "editorialSha256": "eee914ce4dd05144e4b5f56178c9452dd3eb11ea816c9e6d27835075f67e8113",
+  "hints": {
+    "zh": [
+      "每条日志只关心涉及了哪些用户，金额无关；一条日志最多涉及两个不同用户，自己转给自己只算一次。",
+      "用哈希表统计每个用户涉及的日志条数：发送方加一，接收方若与发送方不同也加一。统计完成后再筛选达到阈值的用户。",
+      "读入 n 和 threshold，逐条日志给发送方计数加一，接收方不等于发送方时再给接收方加一；取出计数不小于 threshold 的用户，按 ID 的整数值升序排序；先输出个数，再每行输出一个 ID。"
+    ],
+    "en": [
+      "For each log only the users involved matter, not the amount; one log involves at most two different users, and a self-transfer counts only once.",
+      "Use a hash map to count how many logs each user is involved in: add one for the sender, and add one for the recipient if it differs from the sender. Filter the users that reach the threshold after counting.",
+      "Read n and threshold; for every log add one to the sender's count and, if the recipient differs from the sender, one to the recipient's count; take the users whose count is at least threshold, sort them by the integer value of the ID; print the count, then one ID per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each log, add one for each distinct user involved, keep the IDs whose count reaches the threshold, and sort them as integers.\n\n## Proof of correctness\n\nEach user is incremented exactly once for every log that involves them; for a self-transfer, the equality check avoids counting twice. So the count equals the number of logs involved, the threshold filter is exact, and integer sorting gives the required output order.\n\n## Complexity\n\nTime O(n + u log u), space O(u), where u ≤ 2n."
+}

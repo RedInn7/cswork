@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-5",
+  "packageChecksum": "cc18b5f300d1712a6ace54aa894e3abccb763af6771e1ecc31dfb3f161896e8c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string w;\n    int ans = 0;\n    while (cin >> w) {\n        int cnt[26] = {0};\n        bool hit = false;\n        for (char ch : w) {\n            if (++cnt[tolower((unsigned char)ch) - 'a'] >= 3) hit = true;\n        }\n        if (hit) ans++;\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "10f1d61bc31ca92c4c73db1131ee152224a3212b2aa7da028ca4a25182071c1c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        int ans = 0;\n        String line;\n        while ((line = in.readLine()) != null) {\n            StringTokenizer st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) {\n                String w = st.nextToken();\n                int[] cnt = new int[26];\n                boolean hit = false;\n                for (int i = 0; i < w.length(); i++) {\n                    if (++cnt[Character.toLowerCase(w.charAt(i)) - 'a'] >= 3) hit = true;\n                }\n                if (hit) ans++;\n            }\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "2d4bc071a0b202888d12b5c35078ee3ab6290d2e307e159e9030e6da03c7951c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tans := 0\n\tfor sc.Scan() {\n\t\tvar cnt [26]int\n\t\thit := false\n\t\tfor _, ch := range sc.Bytes() {\n\t\t\tif ch >= 'A' && ch <= 'Z' {\n\t\t\t\tch += 'a' - 'A'\n\t\t\t}\n\t\t\tcnt[ch-'a']++\n\t\t\tif cnt[ch-'a'] >= 3 {\n\t\t\t\thit = true\n\t\t\t}\n\t\t}\n\t\tif hit {\n\t\t\tans++\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "7e4ee5111f7d038e4377b4066ba73946addd14f03af898fca768e2da4d7c542f"
+    }
+  ]
+}

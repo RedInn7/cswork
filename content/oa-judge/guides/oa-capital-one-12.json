@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-12",
+  "packageChecksum": "732ad38aaf8113d6b5edd6e9ec0c44edc0eb07d71b612ff195e6c710f4077d14",
+  "sourceContentHash": "a5cf05dbc8684aeb3c6265460667f4cd0d175e88c6af98982a0e193235d356eb",
+  "editorialSha256": "74ce2e763b919e06326d8d66ed69c7d646dd2b605600319183a8a6ccf02e1047",
+  "hints": {
+    "zh": [
+      "判断一个字符串能否切成若干段、每段都是给定的单词，是经典的\"单词拆分\"前缀动态规划。",
+      "dp[i] 表示 recipe 的前 i 个字符能否被切分。从每个 dp[i] 为真的位置出发向后匹配原料；为了不对每个原料逐一比较，把所有原料建成一棵字典树，沿着树一边走一边检查终止标记。",
+      "先用所有原料建字典树。对每个 recipe 令 dp[0] 为真；对每个 dp[i] 为真的 i，从树根出发依次读入 recipe[i]、recipe[i+1]……，走不下去就停，遇到终止节点就把对应的 dp[j] 置为真。dp[长度] 为真输出 YES，否则输出 NO，按输入顺序用空格分隔。"
+    ],
+    "en": [
+      "Deciding whether a string can be cut into pieces that are all given words is the classic word-break prefix dynamic program.",
+      "Let dp[i] say whether the first i characters of the recipe can be split. From every i with dp[i] true, match ingredients forward; to avoid comparing against every ingredient separately, build a trie of all ingredients and walk it while checking terminal marks.",
+      "Build a trie from all ingredients. For each recipe set dp[0] true; for every i with dp[i] true, walk from the root reading recipe[i], recipe[i+1], ... and stop when no child exists; whenever a terminal node is reached at position j, set dp[j] true. Print YES if dp[length] is true and NO otherwise, separated by spaces in input order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPut all ingredients into a trie. dp[i] says whether the first i characters of the recipe can be split. Only start scanning forward along the trie from positions where dp[i] is true; whenever an ingredient's terminal node is reached, set the corresponding dp[j] to true.\n\n## Correctness\n\ndp[0] is true, corresponding to the empty prefix. Walking along the trie from a reachable position i to a terminal at j means exactly that recipe[i:j] is an ingredient, so a valid split can be extended. The last piece of any valid split must be an ingredient, and the trie scan is guaranteed to find that terminal, so the transition is both necessary and sufficient.\n\n## Complexity\n\nLet S be the total length of the ingredients, M the maximum ingredient length, and L the total length of all recipes. Building the trie is O(S), and the DP scan follows at most O(LM) edges; this site's supplement guarantees LM≤10^7. Space O(S+Lmax)."
+}

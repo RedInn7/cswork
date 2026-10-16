@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-168",
+  "packageChecksum": "ab0e7c3545bc7e80be8bbceaaeda05f33e99684cf584374c6bbfded46dd45765",
+  "sourceContentHash": "69b81a14dfccdb30d1869f1c462a2231ccf5b3133f54e2cb335df04116c24f14",
+  "editorialSha256": "7ec54979ef174d45c606c7a3643d2b67623911b1ef3482cf2c33d80963a93c91",
+  "hints": {
+    "zh": [
+      "容量越大越不会出问题，题目只要求两架无人机容量不同，那么直接选最大的两个容量10^9和10^9−1最有利。",
+      "容量10^9的无人机能送任何包裹，容量10^9−1的只送不了重量恰为10^9的包裹。两架交替配送，小无人机要么负责奇数位置、要么负责偶数位置，选其中重量为10^9的包裹更少的那一侧。",
+      "遍历包裹，按下标奇偶分别统计重量等于10^9的个数，输出两个计数中较小的那个；需要替换的包裹改成任意较小的重量即可。"
+    ],
+    "en": [
+      "A larger capacity never causes trouble, and the only rule is that the two capacities differ, so the best choice is the two largest capacities, 10^9 and 10^9 - 1.",
+      "The 10^9 drone can carry every package; the 10^9 - 1 drone fails only on packages weighing exactly 10^9. Since they alternate, the smaller drone takes either the odd or the even positions; give it the side with fewer packages of weight 10^9.",
+      "Go through the packages and count those of weight exactly 10^9 separately for even and odd indices; print the smaller count. Each package that must change can be given any small weight."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTaking the two capacities as the largest, 10^9, and the second largest, 10^9-1, is never worse than any other choice. Only packages weighing exactly 10^9 exceed the smaller capacity; give the smaller drone the parity of positions that has fewer such packages.\n\n## Proof of correctness\n\nRaising any usable pair of capacities, in order of size, to the two largest capacities never makes a previously deliverable package undeliverable, so there is an optimal plan that uses this pair. The large capacity can deliver every package, and the small one fails only on weight 10^9; take the smaller violation count of the two alternating orientations, and replacing those weights with 1 achieves this lower bound.\n\n## Complexity\n\nTime O(n), space O(n) including the input, auxiliary O(1)."
+}

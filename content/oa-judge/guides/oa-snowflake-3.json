@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-3",
+  "packageChecksum": "cf786ac64b7bbadd6e9676ddd7f9dc8fbe2c04ec79fe2faf6fc2d7f20ae41f02",
+  "sourceContentHash": "426c792eca30e7781dec2f321ca9e7ec4b679504768725cd176345fd13e27ff7",
+  "editorialSha256": "680e4ce1350a242de1a4a0f9ebe9bddd407d332d05f499c454f78249617f68b1",
+  "hints": {
+    "zh": [
+      "把一个非空真后缀移到前面，相当于把字符串循环移动一个非零位移，所以任何时刻字符串都是src的某个旋转；每一步恰好有n−1种切法，各对应一个不同的非零位移。",
+      "设src的n个旋转中有c个等于target。只关心当前旋转是否等于target：从“匹配”出发，有c−1种位移仍到匹配、n−c种到不匹配；从“不匹配”出发，有c种到匹配、n−c−1种到不匹配。",
+      "先用O(n²)数出c（两串长度不同直接输出0），初始向量为(src等于target, src不等于target)，用2×2矩阵[[c−1,c],[n−c,n−c−1]]做k次快速幂并对10^9+7取模（负数先取模变成非负），输出匹配状态的方案数。"
+    ],
+    "en": [
+      "Moving a non-empty proper suffix to the front is a cyclic shift by a nonzero offset, so the string is always some rotation of src; each step has exactly n - 1 cut points, each giving a different nonzero shift.",
+      "Let c of the n rotations of src equal target. Only whether the current rotation equals target matters: from a matching state, c - 1 shifts stay matching and n - c lead to mismatching; from a mismatching state, c shifts lead to matching and n - c - 1 stay mismatching.",
+      "Count c in O(n^2) (print 0 if the lengths differ), start from the vector (src == target, src != target), raise the 2x2 matrix [[c-1, c], [n-c, n-c-1]] to the k-th power by fast exponentiation modulo 10^9+7 (normalizing negative entries first), and print the number of ways in the matching state."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the c positions among all n rotation positions that match the target, then use fast exponentiation of a two-state (match/mismatch) matrix.\n\n## Correctness\n\nA matching position has c-1 nonzero shifts leading to matching positions and n-c leading to mismatching ones; a mismatching position has c shifts leading to matching and n-c-1 leading to mismatching. Each cut point corresponds to a unique shift, so aggregating states preserves the number of paths, and fast exponentiation gives exactly k steps.\n\n## Complexity\n\nTime O(n^2+log k), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-309",
+  "packageChecksum": "b898a4ac901270d7df36869ffcf05a6695ad9d581de65fa5b7cafd70673a4a2c",
+  "sourceContentHash": "ce2e1fcf9101f16aa7e11b8583c37ab5c4c1a7d0c7a8d47a466c60e8bdb433ff",
+  "editorialSha256": "837b7ea197a0deb99736f3247f9f5c836d0f838656391f9ff4e552aaefa5d6a9",
+  "hints": {
+    "zh": [
+      "活动不能重排，每周是一段连续区间，而且必须恰好分成weeks段。想一想最后一周覆盖的是哪一段。",
+      "设dp[w][i]为前i个活动分成w周的最小总投入。最后一周是某个后缀cost[j..i−1]，于是dp[w][i]=min(dp[w−1][j]+这一段的最大值)。n≤300，O(weeks·n²)足够快。",
+      "初始dp[0][0]=0，其余为无穷大。对每个w和每个i≥w，让j从i−1向左走到w−1，一边走一边维护区间最大值并取最小的转移。只需保留上一层数组，答案为dp[weeks][n]。"
+    ],
+    "en": [
+      "Activities cannot be reordered, each week is a contiguous range, and there must be exactly weeks ranges. Think about which range the last week covers.",
+      "Let dp[w][i] be the minimum total effort for splitting the first i activities into w weeks. The last week is some suffix cost[j..i−1], so dp[w][i]=min(dp[w−1][j] + the maximum of that range). With n≤300, O(weeks·n²) is fast enough.",
+      "Start with dp[0][0]=0 and infinity everywhere else. For each w and each i≥w, move j from i−1 leftward down to w−1, maintaining the running range maximum as you go and taking the minimum transition. Only the previous layer needs to be kept; the answer is dp[weeks][n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[w][i] is the minimum total effort for splitting the first i activities into w weeks. Enumerate the start j of the last week and transition with dp[w−1][j]+max(cost[j:i]). Maintain the range maximum while enumerating j leftward, and roll over the week layers.\n\n## Proof of correctness\n\nIn any valid plan the last week is a non-empty suffix, and everything before it is split into exactly w−1 weeks; if the earlier part were not optimal, replacing it would lower the total cost. Enumerating every j covers every last split point, and w≤j+1 guarantees that no week is empty. Starting from cost 0 for 0 items in 0 weeks and infinity elsewhere, induction gives the required optimum.\n\n## Complexity\n\nTime O(weeks·n²), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-64",
+  "packageChecksum": "0125ebf85b18d954ec6b0045f0fc5f4941e5cf8092a5205de1986183325768c3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string s;\n    cin >> s;\n    int n = s.size();\n    vector<int> prefix(n, 0);  // KMP prefix function\n    for (int i = 1, j = 0; i < n; i++) {\n        while (j && s[i] != s[j]) j = prefix[j - 1];\n        if (s[i] == s[j]) j++;\n        prefix[i] = j;\n    }\n    cout << prefix[n - 1] << \"\\n\";\n}\n",
+      "sha256": "fb3d651da763176e978f79947839424ca83b3bdde5f054732aefe406145e9e04"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] buf = System.in.readAllBytes();\n        int start = 0;\n        while (buf[start] <= ' ') start++;\n        int end = start;\n        while (end < buf.length && buf[end] > ' ') end++;\n        int n = end - start;\n        int[] prefix = new int[n]; // KMP prefix function\n        for (int i = 1, j = 0; i < n; i++) {\n            while (j > 0 && buf[start + i] != buf[start + j]) j = prefix[j - 1];\n            if (buf[start + i] == buf[start + j]) j++;\n            prefix[i] = j;\n        }\n        System.out.println(prefix[n - 1]);\n    }\n}\n",
+      "sha256": "042b9763b58b3752d46f22e568fab075a12e617eae7fd48e7a74246b0d52d9ad"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := next()\n\tn := len(s)\n\tprefix := make([]int32, n) // KMP prefix function\n\tj := int32(0)\n\tfor i := 1; i < n; i++ {\n\t\tfor j > 0 && s[i] != s[j] {\n\t\t\tj = prefix[j-1]\n\t\t}\n\t\tif s[i] == s[j] {\n\t\t\tj++\n\t\t}\n\t\tprefix[i] = j\n\t}\n\tfmt.Println(prefix[n-1])\n}\n",
+      "sha256": "f02b860a09d8a3b3c1726147dc3ea93be539d929d258f1317d7b3db629beb1cf"
+    }
+  ]
+}

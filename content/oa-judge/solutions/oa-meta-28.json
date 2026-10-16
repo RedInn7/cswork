@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-28",
+  "packageChecksum": "2aedb9542904b7159c5c57ccbbc238ca87432231f9af4baa032c99cd02ecefc6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    vector<pair<long long, long long>> v(n + m);\n    for (auto &p : v) cin >> p.first >> p.second;\n    sort(v.begin(), v.end());\n    vector<pair<long long, long long>> res;\n    for (auto &p : v) {\n        if (!res.empty() && p.first <= res.back().second)\n            res.back().second = max(res.back().second, p.second);\n        else\n            res.push_back(p);\n    }\n    string out = to_string(res.size()) + \"\\n\";\n    for (auto &p : res) out += to_string(p.first) + \" \" + to_string(p.second) + \"\\n\";\n    cout << out;\n}\n",
+      "sha256": "6fc4d548457963e53d13715093c6fdee86be2cd544b6b8c59cbd268b96b0fc97"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong(), m = (int) nextLong();\n        int k = n + m;\n        long[][] v = new long[k][];\n        for (int i = 0; i < k; i++) v[i] = new long[] {nextLong(), nextLong()};\n        Arrays.sort(v, (a, b) -> a[0] != b[0] ? Long.compare(a[0], b[0]) : Long.compare(a[1], b[1]));\n        List<long[]> res = new ArrayList<>();\n        for (long[] p : v) {\n            if (!res.isEmpty() && p[0] <= res.get(res.size() - 1)[1]) {\n                long[] last = res.get(res.size() - 1);\n                last[1] = Math.max(last[1], p[1]);\n            } else {\n                res.add(new long[] {p[0], p[1]});\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        sb.append(res.size()).append('\\n');\n        for (long[] p : res) sb.append(p[0]).append(' ').append(p[1]).append('\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "b0604952bc71f3dd351dbbd796480daf4f622cf9da680d2ab1df0b3548ce0894"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, m := next(), next()\n\tv := make([][2]int, n+m)\n\tfor i := range v {\n\t\tv[i][0], v[i][1] = next(), next()\n\t}\n\tsort.Slice(v, func(a, b int) bool {\n\t\tif v[a][0] != v[b][0] {\n\t\t\treturn v[a][0] < v[b][0]\n\t\t}\n\t\treturn v[a][1] < v[b][1]\n\t})\n\tvar res [][2]int\n\tfor _, p := range v {\n\t\tif len(res) > 0 && p[0] <= res[len(res)-1][1] {\n\t\t\tres[len(res)-1][1] = max(res[len(res)-1][1], p[1])\n\t\t} else {\n\t\t\tres = append(res, p)\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tw.WriteString(strconv.Itoa(len(res)) + \"\\n\")\n\tfor _, p := range res {\n\t\tw.WriteString(strconv.Itoa(p[0]) + \" \" + strconv.Itoa(p[1]) + \"\\n\")\n\t}\n}\n",
+      "sha256": "18145469ea51ae7e069fe07b78157d75733f4894db3b1f3472bc49d42a04c73f"
+    }
+  ]
+}

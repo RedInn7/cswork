@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-9",
+  "packageChecksum": "f559a42cdc6f74a532baf8bec7c3c21c1471daf88f07f9d43ce0395024dc7f83",
+  "sourceContentHash": "0ac6504999ef0620f80c7d57feb3f21d158afb9c4e155fd81774e13727588f8e",
+  "editorialSha256": "894f2d94e4c3323bdb530eac6905250fcac68fb17513434bfb8a9033360095f9",
+  "hints": {
+    "zh": [
+      "两个数组都已经非递减，每个数组尚未输出部分的第一个元素就是该部分的最小值。",
+      "用两个指针分别指向两个数组的当前位置，每次比较两个首元素，较小者就是所有未输出元素中的最小值，把它输出并移动对应指针。",
+      "当两个指针都没走完时，取 a[i] 与 b[j] 中较小者（相等时取哪个都行）输出并前移；一边走完后把另一边剩下的元素依次输出。全部 2n 个数都要保留，空格分隔。"
+    ],
+    "en": [
+      "Both arrays are already non-decreasing, so the first element of each array's not-yet-output part is the minimum of that part.",
+      "Keep one pointer into each array and compare the two front elements each time; the smaller one is the minimum of all elements not yet output, so output it and advance that pointer.",
+      "While neither pointer is at the end, output the smaller of a[i] and b[j] (either one on a tie) and advance it; once one side is exhausted, output the rest of the other side in order. All 2n numbers are kept, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTwo pointers compare the smallest values not yet output and take the smaller one; once one side is exhausted, output the remaining items of the other side.\n\n## Proof of correctness\n\nThe first item of each array's not-yet-output part is the minimum of that part, so the smaller of the two first items is the minimum of all values not yet output. Outputting them one by one keeps the result sorted and outputs every item exactly once.\n\n## Complexity\n\nO(n) time, O(n) input and output space."
+}

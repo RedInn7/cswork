@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-266",
+  "packageChecksum": "18fbf12d53556c1e53e7b34bfa52ca406313b155e5fad01a959b035fd8934ddd",
+  "sourceContentHash": "3ce251d7c61ac06a351fef53fe3a06888106da144f80914238334a6c0d6401d1",
+  "editorialSha256": "7136ecba0f555239e9357c162fbe996be30d3699a21e26ffee196bff676be2b3",
+  "hints": {
+    "zh": [
+      "每条连向孩子的边要么切、要么留。切掉时，孩子子树里的块全部封口，贡献一个与上方无关的乘积；留下时，只有包含孩子的那一块会和父亲所在的块合并，其余块照样独立相乘。",
+      "做树形背包：dp[u][k] 表示在 u 的子树中，“包含 u 的未封口块”大小为 k 时，其余已封口块大小之积的最大值。合并孩子时，切边就乘上孩子子树的最佳封口值（所有 j 中 j×dp[孩子][j] 的最大值），留边就把两个开放块的大小相加、乘积相乘。",
+      "自底向上（例如按 BFS 序倒序）计算，初值 dp[u][1]=1；每合并一个孩子就开一个新数组，枚举 k 和 j 两种转移取最大，用完立即释放孩子的表；最后在根处取 k 从 1 到 n−1 的 k×dp[根][k] 最大值，排除 k=n 就保证至少切了一刀。答案会远超 64 位，需要大整数。"
+    ],
+    "en": [
+      "Each edge to a child is either cut or kept. If it is cut, every component inside the child's subtree is closed and contributes a product independent of what is above; if it is kept, only the component containing the child merges with the parent's component, and the others still multiply in independently.",
+      "Use a tree knapsack: dp[u][k] is the maximum product of the closed component sizes in u's subtree when the open component containing u has size k. When merging a child, cutting the edge multiplies by the child's best closed value (the maximum of j×dp[child][j] over all j), and keeping it adds the two open sizes and multiplies the products.",
+      "Compute bottom-up, for example in reverse BFS order, starting from dp[u][1]=1; for each child build a new array, try both transitions over every k and j and keep the maxima, then free the child's table right away; at the root take the maximum of k×dp[root][k] for k from 1 to n−1, where excluding k=n enforces at least one cut. The answer is far beyond 64 bits, so use big integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a tree knapsack where dp[u][k] keeps the open component containing u at size k, with value equal to the maximum product of the other, already closed components. For each child edge, cutting it multiplies by the child subtree's best closed value, while keeping it convolves the two component sizes. When closing at the root, exclude k=n.\n\n## Proof of correctness\n\nBetween a subtree and the rest of the tree there is only the single edge leading to the parent. Every valid edge-deletion plan either cuts or keeps that edge: if it is cut, the whole subtree is closed; if it is kept, only the component containing the child root merges with the parent's component, and the products of the other components multiply independently. Enumerating both cases and all component sizes covers, by induction, exactly the valid plans. Multiplying by the open component's size at the root completes the scoring; the only state with no cut, of size n, is excluded, which enforces exactly the at-least-one-cut requirement.\n\n## Complexity\n\nO(n²) integer operations; the integers have O(n) bits, so the bit-level cost must be counted separately. Freeing each subtree's DP after use keeps the space at O(n) big integers plus the tree structure."
+}

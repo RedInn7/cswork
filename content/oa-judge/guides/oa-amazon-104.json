@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-104",
+  "packageChecksum": "d8b05095c0dadfed7d0f3afe2121b7bb8f7228a14d4d1b5ca0d0cc7945a9633e",
+  "sourceContentHash": "6ff4ebb6b332077a2b79744ce8282099e2798c1199087a265e5c3ddf12c4bcb8",
+  "editorialSha256": "20e17e934329bad11dc2789fb6ddabde2400c6fdb66bb7ae5820482d4e0604ae",
+  "hints": {
+    "zh": [
+      "某天的工资是加还是减，只取决于它后面出现过的最高等级；从右往左看，后缀对当前位置的影响只有“右边最高等级”这一个量。",
+      "从右往左做 DP，状态为（右侧最高等级，是否已经用掉那一次修改）。在每个位置枚举保留原字符或改成五种等级之一，根据与右侧最高等级的比较决定加还是减。",
+      "状态共 6×2 个（最高等级可为“无”）；初始只有（无，未修改）=0；对每个位置和每个可达状态枚举字母 c，若 c 与原字母不同则修改次数加一（超过 1 跳过），当 c≥右侧最高等级时加上其工资否则减去，新状态的最高等级为 max(原最高, c)；最后在所有状态中取最大值输出。"
+    ],
+    "en": [
+      "Whether a day's pay is added or subtracted depends only on the highest grade appearing after it; scanning from the right, the suffix affects the current position only through the highest grade to its right.",
+      "Run a DP from right to left with state (highest grade to the right, whether the one change has been used). At each position try keeping the original letter or changing it to each of the five grades, and add or subtract its pay by comparing with the highest grade on the right.",
+      "There are 6 x 2 states (the highest grade may be none); initially only (none, unchanged) = 0; for each position and reachable state try every letter c: a letter different from the original uses the change (skip if that makes two), add its pay when c is at least the highest grade on the right and subtract it otherwise, and the new highest grade is max(old highest, c); finally print the largest value over all states."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a DP from right to left whose state is the highest grade to the right and whether the change has been used. At each position, try keeping the letter or changing it to each of the five grades, and decide the sign of the contribution by comparing with the highest grade to the right.\n\n## Proof of correctness\n\nThe processed suffix affects the current pay only through its highest grade, and the change budget needs only one boolean bit. Enumerating every legal letter choice at each position and accumulating the signed contributions covers all plans with at most one change.\n\n## Complexity\n\nTime O(25n), space O(1)."
+}

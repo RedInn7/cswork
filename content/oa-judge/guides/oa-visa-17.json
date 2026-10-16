@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-17",
+  "packageChecksum": "acdc66f91639a5c3757f688dac347ac7f8c532fd838428fee9928cfa445648e4",
+  "sourceContentHash": "7b7ae084f1c173df2de36ba9cf8301149f5bf65d0c1d3125c94a367345ef3a5f",
+  "editorialSha256": "39058e1b5a0d4b8a69cac0afb34bfc749aec2664eed5df3b01bcba7e2aad1d07",
+  "hints": {
+    "zh": [
+      "各位置互不影响：每个位置要么保持 min(a, b)，要么在被选中后变成 min(a, 2b)。",
+      "把每个位置被选中的增益 min(a, 2b) − min(a, b) 算出来（可能为负或 0），基准分加上最大的至多 k 个正增益即可。",
+      "先累加基准分 Σmin(a[i], b[i])；求出每个增益并从大到小排序，取前 k 个中的正数加上去。2b 可达 2×10⁹、总和可达 2×10¹⁴，全程用 64 位整数。"
+    ],
+    "en": [
+      "Positions are independent: each one either keeps min(a, b) or, if chosen, becomes min(a, 2b).",
+      "Compute each position's gain from being chosen, min(a, 2b) − min(a, b) (which may be negative or zero); the answer is the base score plus the largest at most k positive gains.",
+      "First sum the base score Σmin(a[i], b[i]); compute every gain, sort them in descending order, and add the positive ones among the first k. 2b reaches 2×10⁹ and the total 2×10¹⁴, so use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe gain from operating on a position is min(aᵢ, 2bᵢ) − min(aᵢ, bᵢ). Add the largest at most k positive gains to the base score.\n\n## Correctness\n\nA plan's score equals the base score plus the sum of the chosen gains. Positions do not interact, so taking the largest sum of positive gains among at most k positions is globally optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-222",
+  "packageChecksum": "834f48b530ba27cb09684f99791fda440bf1510c4a6f7df6d8ff23176d81432f",
+  "sourceContentHash": "71a4c78b6c02ef2c259e0f3737cd0946146bc21c2f3d9354a5108fabd7fe86bf",
+  "editorialSha256": "6e26b6c253e390c3721e6568196fd65c430ef7e3eab48f6b0c6876b904962d5e",
+  "hints": {
+    "zh": [
+      "一旦决定保留某个类别，就应该保留它的全部商品；要删除的只是没被保留的类别里的所有商品。",
+      "删得最少就是保留得最多：在至多 k 个类别里选商品总数最大的组合，自然就是出现次数最多的 k 个类别。",
+      "统计每个类别的出现次数，降序排序，取前 k 个之和作为保留数（不足 k 类就全部保留），输出 n − 保留数。"
+    ],
+    "en": [
+      "Once you decide to keep a category, keep all of its products; the deletions are exactly the products of the categories you do not keep.",
+      "Deleting the fewest means keeping the most: among sets of at most k categories, the one with the most products is simply the k most frequent categories.",
+      "Count how often each category appears, sort the counts descending, keep the sum of the first k (all of them if there are fewer than k categories), and print n minus that sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the category frequencies in descending order, keep the k most frequent categories and delete everything else.\n\n## Proof of correctness\n\nFor a fixed set of kept categories, keeping every product of those categories is never worse. If a lower-frequency category is kept while a higher-frequency one is dropped, swapping them increases the number kept, so the optimum keeps the at most k most frequent categories.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

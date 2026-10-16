@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-64",
+  "packageChecksum": "457bbdd26935826efdf07f6ca2cc348929974de5757af34eaa4350354ef70bc1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long total = 0, sevens = 0;\n    for (char c : s) {\n        total += c - '0';  // n mod 3 == digit sum mod 3\n        sevens += c == '7';\n    }\n    cout << (total % 3 == 0 && sevens >= 2 ? 1 : 0) << \"\\n\";\n}\n",
+      "sha256": "0d9ee1d080aced0ab7cafa2ff4fea8dd61c9c61f569180ec2da08e2be57b198f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        InputStream in = new BufferedInputStream(System.in, 1 << 16);\n        long total = 0, sevens = 0;\n        int c;\n        while ((c = in.read()) != -1) {\n            if (c < '0' || c > '9') continue;\n            total += c - '0';  // n mod 3 == digit sum mod 3\n            if (c == '7') sevens++;\n        }\n        System.out.println(total % 3 == 0 && sevens >= 2 ? 1 : 0);\n    }\n}\n",
+      "sha256": "ce375ac607c03a88be1f60a12b44594e86c166d7dd6a6a149f37e21ea4a0d641"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\ts := readToken()\n\ttotal, sevens := 0, 0\n\tfor i := 0; i < len(s); i++ {\n\t\ttotal += int(s[i] - '0') // n mod 3 == digit sum mod 3\n\t\tif s[i] == '7' {\n\t\t\tsevens++\n\t\t}\n\t}\n\tif total%3 == 0 && sevens >= 2 {\n\t\tfmt.Println(1)\n\t} else {\n\t\tfmt.Println(0)\n\t}\n}\n",
+      "sha256": "f52403d76ecc9f61a8dd125f6d58372581e7f12184b72cdbdcc0d1785a23ed7f"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-12",
+  "packageChecksum": "90f055bc77d52302b2f766ff00d53b60b5ea65cd7d53060270c83da3dea9cf09",
+  "sourceContentHash": "da49d0edf35172bafd020e59939e1088c49817d92fb6d6bd107b1c05571b4f32",
+  "editorialSha256": "d2764ad7b85fd9bdc25c0a26bbbc9ffda0ebcab1db2dfa9ad3b2c4862089ef63",
+  "hints": {
+    "zh": [
+      "每个维度互相独立地限流，但一条请求是否放行取决于所有维度；而且只有被放行的请求才占用额度，被拒绝的请求不能计入任何维度的历史。",
+      "对每个维度，按字段值分别维护一个已放行请求时间戳的队列。时间戳非递减，所以过期的总是队首，可以像滑动窗口一样从队首弹出。",
+      "处理请求时，先对每个维度把对应队列中 ≤ now−window 的时间戳弹掉（窗口是 [now−window, now)，等于 now−window 的也算过期）；再检查是否每个维度的队列长度都小于该维度的 limit。全部满足才输出 ALLOW，并把 now 追加到所有维度的对应队列；否则输出 REJECT 且不记录。每个时间戳最多入队出队一次，总时间 O(qd)。"
+    ],
+    "en": [
+      "Each dimension limits independently, but whether a request is allowed depends on all dimensions together; and only allowed requests use quota, so a rejected request must not enter any dimension's history.",
+      "For each dimension, keep a separate queue of allowed-request timestamps per field value. Timestamps are non-decreasing, so expired entries are always at the front and can be popped like a sliding window.",
+      "For a request, first pop from each dimension's matching queue every timestamp <= now - window (the window is [now - window, now), so one equal to now - window has expired); then check that every dimension's queue length is below that dimension's limit. Only if all pass, output ALLOW and append now to the matching queue of every dimension; otherwise output REJECT and record nothing. Each timestamp is enqueued and dequeued at most once, so the total time is O(qd)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each dimension, maintain a deque of allowed request times keyed by the field value. When handling a request, first remove expired times that are <= now-window, then check whether every dimension's current count is below its limit. Only if all dimensions pass is the time recorded in every dimension.\n\n## Correctness\n\nThe sliding window is defined as [now-window, now), so an old request exactly at the boundary now-window must expire. Checking dimension by dimension guarantees that any single dimension over its limit causes a rejection; appending records only for requests allowed overall implements exactly the quota semantics this site specifies.\n\n## Complexity\n\nEach request checks at most d dimensions; each timestamp is enqueued and dequeued at most once in a deque. Total time O(qd), space O(qd)."
+}

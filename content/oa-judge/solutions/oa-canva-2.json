@@ -1,0 +1,21 @@
+{
+  "id": "oa-canva-2",
+  "packageChecksum": "97ee20a5e519bf3feecf13aaf7706814f54bc8ebcd42c0ef85116d71a45d243a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char ibuf[1 << 16];\nstatic size_t ilen = 0, ipos = 0;\n\nstatic inline int gc() {\n    if (ipos == ilen) {\n        ilen = fread(ibuf, 1, sizeof ibuf, stdin);\n        ipos = 0;\n        if (ilen == 0) return -1;\n    }\n    return ibuf[ipos++];\n}\n\nstatic long long readInt() {\n    int c = gc();\n    while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = gc();\n    bool neg = c == '-';\n    if (neg) c = gc();\n    long long v = 0;\n    while (c >= '0' && c <= '9') {\n        v = v * 10 + (c - '0');\n        c = gc();\n    }\n    return neg ? -v : v;\n}\n\nstatic string readToken() {\n    int c = gc();\n    while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = gc();\n    string s;\n    while (c > ' ') {\n        s.push_back((char)c);\n        c = gc();\n    }\n    return s;\n}\n\nint main() {\n    int n = (int)readInt();\n    vector<long long> a(n);\n    for (auto &x : a) x = readInt();\n    vector<long long> b = a;\n    sort(b.begin(), b.end());\n    int answer = 0;\n    for (int i = 0; i < n; i++) answer += a[i] != b[i];\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "e969d89737a979eacd2a54ebaea1ebabe4add76015527a1094448545d85381cc"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long[] b = a.clone();\n        Arrays.sort(b);\n        int answer = 0;\n        for (int i = 0; i < n; i++) if (a[i] != b[i]) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "ef4368be308e3e9e49464098ec472c91a7dba90b089dcacf532ff9ae52f633f2"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tb := append([]int(nil), a...)\n\tsort.Ints(b)\n\tanswer := 0\n\tfor i := range a {\n\t\tif a[i] != b[i] {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e91ac68e8c1a8c3882537940441812e8f46083c70a3acb9c45f5b5910f2bf98f"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-59",
+  "packageChecksum": "f60a932214ddba4a63ce0c910029599e21e291c70a7d425029f55c485a8cdb71",
+  "sourceContentHash": "615610227cf515fc8898415a10a344566e0468a39f1d4f46e342934be4b89082",
+  "editorialSha256": "df7a125e6c8666d15dc245a58cd7b6d7cf957cd3c60639b52e5f31c03dcd4cde",
+  "hints": {
+    "zh": [
+      "先确定选哪 K 个下标，再决定输出顺序，这两步可以分开做。",
+      "选择规则是值大的优先、值相同时下标小的优先，所以按“值降序、下标升序”排序后取前 K 个下标，恰好满足题目的截断规则。",
+      "对下标排序后取前 K 个，再把这 K 个下标按升序排列，依次输出对应元素，以空格分隔；K 为 0 时输出空行。"
+    ],
+    "en": [
+      "Decide which K indices to take first, then decide the output order; the two steps are independent.",
+      "Larger values win and, among equal values, smaller indices win, so sorting indices by value descending and index ascending and taking the first K matches the cutoff rule exactly.",
+      "Sort the indices that way and take the first K, then sort those K indices in ascending order and print the corresponding elements separated by spaces; print an empty line when K is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPick K indices by value in descending order and index in ascending order, then sort these indices in ascending order and output the corresponding elements.\n\n## Correctness\n\nThe first sort strictly follows the rule of larger values first and, for equal values, earliest first, so the chosen set is correct; the second sort by original index only restores the original relative order and does not change which elements are chosen.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

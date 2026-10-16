@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-63",
+  "packageChecksum": "7c90f09eaa5c1d0346ea54a06d05579479867b26bdc93e3c15ec347371440141",
+  "sourceContentHash": "5233d30879b47452e760f7f0115da86260d89fe85128264dcc49f322ba3c7cc0",
+  "editorialSha256": "c90900dc5128d1b5adee4e6b414476803f41d487dd61c5b136a713beaf1b65a3",
+  "hints": {
+    "zh": [
+      "每次最多发 2 件，所以至少要 ⌈n/2⌉ 次；同一仓库的商品不能配对，出现最多的仓库有 f 件，就至少要 f 次。",
+      "较大的那个下界总是可以达到：若某仓库占多数，就把它的商品逐个和其它仓库配对，剩下的单发；否则可以把商品配成不同仓库的对，最多剩一件单发。",
+      "统计各仓库编号的出现次数（排序后数连续段或用哈希表），取最大频次 f，输出 max(f, (n+1)/2)。"
+    ],
+    "en": [
+      "Each shipment carries at most 2 items, so at least ceil(n/2) shipments are needed; items from the same warehouse cannot be paired, so if the busiest warehouse has f items, at least f shipments are needed.",
+      "The larger of these lower bounds is always achievable: if one warehouse is a majority, pair its items one by one with items from other warehouses and ship the rest alone; otherwise the items can be paired across different warehouses with at most one left over.",
+      "Count the occurrences of each warehouse number (sort and count runs, or use a hash map), take the largest frequency f, and print max(f, (n+1)/2)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f be the largest warehouse frequency; the answer is max(f, ceil(n/2)).\n\n## Proof of correctness\n\nAt most 2 items per shipment gives the lower bound ceil(n/2), and the busiest warehouse can send only 1 item per shipment, giving the lower bound f. If one warehouse is a majority, pair it with the other warehouses and then ship the rest alone; otherwise items from different warehouses can be paired until at most 1 item remains, reaching the larger lower bound.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

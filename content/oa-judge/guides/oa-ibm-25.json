@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-25",
+  "packageChecksum": "687f04d61f480796dfba4301ec9063a3be2fbe908fb1b840bec134167f00f13b",
+  "sourceContentHash": "71081b6508e9791d56eda96f4eedf3da75566118405316acce57296e0d67f0dd",
+  "editorialSha256": "cc7091dc08e9d6a71392e600dfcfe63525e7dc59ea5a996ddad41d56c9617a5d",
+  "hints": {
+    "zh": [
+      "重复值不影响哪些数缺失，所以先去重；排序后，相邻两个出现值之间的所有整数都是缺失数。",
+      "从previous=0开始按升序看每个出现值v，它前面的缺口长度是v−previous−1；k落在某个缺口里就能直接算出答案，否则把k减去缺口长度继续。",
+      "对去重排序后的数组逐个处理：若k不超过缺口长度，输出previous+k；否则k减去缺口长度，previous更新为v。全部处理完仍未找到时，答案在最大值之后，为previous+k。k最大为10^12，使用64位整数。"
+    ],
+    "en": [
+      "Duplicates do not change which numbers are missing, so deduplicate first; after sorting, every integer strictly between two consecutive present values is missing.",
+      "Start with previous=0 and look at each present value v in increasing order; the gap before it has length v−previous−1. If k falls inside a gap the answer follows directly; otherwise subtract the gap length from k and continue.",
+      "Walk through the deduplicated sorted array: if k is at most the gap length, print previous+k; otherwise subtract the gap length from k and set previous to v. If nothing is found, the answer lies after the maximum and equals previous+k. k can be up to 10^12, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDeduplicate and sort the array, then starting from 1 compute, segment by segment, the gaps between consecutive present values to locate the gap containing k, or the range after the maximum value.\n\n## Proof of correctness\n\nThe numbers between two consecutive distinct present values are exactly all missing numbers, and these gaps do not overlap and are ordered by value. Subtracting each gap's length keeps the current rank, and the first gap that can hold that rank gives the unique answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

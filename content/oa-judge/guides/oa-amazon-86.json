@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-86",
+  "packageChecksum": "f23b4ae1c61737eb3e0fa06bda23ce5074a485a4a476bffcaa628be335ca5b99",
+  "sourceContentHash": "9d3e8e0060ad405c04618657283a2ba7b6ca55107a8184409a4037f8a17e6778",
+  "editorialSha256": "b10dc5181c656d41a906cd28d5f29edbd5e01eedc1425d1556eca8f0ab8f312f",
+  "hints": {
+    "zh": [
+      "一次操作只花 x，与区间长度无关，所以把增量一直延伸到数组末尾不会更贵。想一想这样的后缀加法会改变哪些相邻差。",
+      "对后缀整体加 x，只改变后缀起点与前一个元素之间的差，其余相邻差都不变。而每个下降处 power[i−1]>power[i]，都必须靠从 i 开始的增量补齐下降量。",
+      "遍历每对相邻元素，累加 max(0, power[i−1]−power[i])，用 64 位整数输出总和即可。"
+    ],
+    "en": [
+      "One operation costs only x regardless of the range length, so extending an increment all the way to the end of the array is never more expensive. Think about which adjacent differences such a suffix increment changes.",
+      "Adding x to a whole suffix changes only the difference between the start of the suffix and the element before it; all other adjacent differences stay the same. Every drop with power[i-1] > power[i] must be covered by increments that start at i.",
+      "Walk over every adjacent pair, add max(0, power[i-1] - power[i]) to the total, and print the sum as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdd up every adjacent drop max(0, power[i−1]−power[i]).\n\n## Proof of Correctness\n\nEach drop boundary must be made up by increments of ranges that start on its right side, and one range can produce a positive improvement on at most one starting boundary, so the sum of the drops is a lower bound. At each drop position, increasing the whole suffix by that drop fixes the boundary without changing any later adjacent difference, which achieves exactly the lower bound.\n\n## Complexity\n\nTime O(n), space O(n) (to store the input)."
+}

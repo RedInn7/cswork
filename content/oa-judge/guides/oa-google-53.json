@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-53",
+  "packageChecksum": "daf9676e50ee61756df15f5099947ae38b018fd4887c701ba6bdeb7528e88b0a",
+  "sourceContentHash": "6b5c6f4e69770339a010ec13bb80de66860d0873a8d6f5f882185773423615a4",
+  "editorialSha256": "21af27001aac3195835919f3dc6eb3e953222c26bda8c22319319b893bb3d8c9",
+  "hints": {
+    "zh": [
+      "按 pickup 升序（再按 return 升序）处理请求时，只有归还时间不晚于当前 pickup 的车可以复用；同刻归还的车可以立即再用。",
+      "用两个最小堆：忙碌堆按归还时间存（归还时间, 车号），空闲堆按车号存。每个请求先把所有已归还的车从忙碌堆移到空闲堆，再取编号最小的空闲车；没有空闲车时才新建车辆。",
+      "请求排序后依次处理：当忙碌堆顶归还时间 ≤ pickup 时弹出并放入空闲堆；有空闲车就取堆顶车号，否则车号=当前车辆数并新建列表；把 (pickup,return) 追加到该车列表，并把 (return, 车号) 压入忙碌堆；最后输出车辆数，以及每辆车一行“车号: (p,r) (p,r) …”。"
+    ],
+    "en": [
+      "When requests are processed by pickup ascending (then return ascending), only cars returned no later than the current pickup can be reused; a car returned at the same moment can be used again immediately.",
+      "Use two min-heaps: a busy heap of (return time, car id) ordered by return time, and a free heap ordered by car id. For each request first move every returned car from the busy heap to the free heap, then take the free car with the smallest id; create a new car only when no car is free.",
+      "Sort the requests and process them in order: while the busy heap's earliest return time <= pickup, pop it into the free heap; if a car is free take the smallest id, otherwise the id is the current number of cars and a new list is created; append (pickup, return) to that car's list and push (return, id) onto the busy heap; finally print the number of cars and one line per car in the form 'id: (p,r) (p,r) ...'."
+    ]
+  },
+  "explanationEn": "## Approach\n\nManage the cars with a busy min-heap keyed by return time and a free min-heap keyed by id. For each request, first release every car that has been returned, then take the smallest free id or a new car.\n\n## Correctness\n\nOnly cars with return time <= pickup can be reused, and the busy heap releases exactly that batch of cars. The free heap gives the smallest id exactly as the canonical rule requires. When a new car is created, all existing cars are in use, so the number of currently overlapping requests requires one more car; creating it is therefore necessary, and the final number of cars is minimal.\n\n## Complexity\n\nTime O(n log n), space O(n + output size)."
+}

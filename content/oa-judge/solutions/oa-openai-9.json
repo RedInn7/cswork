@@ -1,0 +1,21 @@
+{
+  "id": "oa-openai-9",
+  "packageChecksum": "1a224ea01d0cb32f1230c1ae28cb69eef50080231ede3b1bcdcddf4ddf9cd218",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string ip;\n    unsigned long long count;\n    cin >> ip >> count;\n    unsigned long long start = 0;\n    stringstream ss(ip);\n    string part;\n    while (getline(ss, part, '.')) start = start * 256 + stoull(part);\n    vector<string> out;\n    while (count) {\n        // Largest block aligned at start (start 0 allows 2^32) that does not exceed the rest.\n        unsigned long long align = start ? (start & -start) : (1ULL << 32);\n        unsigned long long size = min(align, 1ULL << (63 - __builtin_clzll(count)));\n        string addr;\n        for (int s = 24; s >= 0; s -= 8) addr += to_string((start >> s) & 255) + (s ? \".\" : \"\");\n        out.push_back(addr + \"/\" + to_string(32 - __builtin_ctzll(size)));\n        start += size;\n        count -= size;\n    }\n    cout << out.size() << \"\\n\";\n    for (auto &s : out) cout << s << \"\\n\";\n}\n",
+      "sha256": "8eb4a8355c56e9279b19c0246cd0845cb665af5d46a228c44d7ed64a3430e036"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        String ip = st.nextToken();\n        long count = Long.parseLong(st.nextToken());\n        long start = 0;\n        for (String part : ip.split(\"\\\\.\")) start = start * 256 + Long.parseLong(part);\n        List<String> out = new ArrayList<>();\n        while (count > 0) {\n            // Largest block aligned at start (start 0 allows 2^32) that does not exceed the rest.\n            long align = start != 0 ? (start & -start) : (1L << 32);\n            long size = Math.min(align, Long.highestOneBit(count));\n            String addr = ((start >> 24) & 255) + \".\" + ((start >> 16) & 255) + \".\" + ((start >> 8) & 255) + \".\"\n                    + (start & 255);\n            out.add(addr + \"/\" + (32 - Long.numberOfTrailingZeros(size)));\n            start += size;\n            count -= size;\n        }\n        StringBuilder sb = new StringBuilder();\n        sb.append(out.size()).append('\\n');\n        for (String s : out) sb.append(s).append('\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "a3474f20a7cd3ab903215e30ff50cbd546e835d769e9f4e81bfa9556f5b29988"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math/bits\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tvar ip string\n\tvar count uint64\n\tfmt.Scan(&ip, &count)\n\tvar start uint64\n\tfor _, part := range strings.Split(ip, \".\") {\n\t\tv, _ := strconv.ParseUint(part, 10, 64)\n\t\tstart = start*256 + v\n\t}\n\tout := []string{}\n\tfor count > 0 {\n\t\t// Largest block aligned at start (start 0 allows 2^32) that does not exceed the rest.\n\t\talign := uint64(1) << 32\n\t\tif start != 0 {\n\t\t\talign = start & -start\n\t\t}\n\t\tsize := min(align, uint64(1)<<(bits.Len64(count)-1))\n\t\taddr := fmt.Sprintf(\"%d.%d.%d.%d\", (start>>24)&255, (start>>16)&255, (start>>8)&255, start&255)\n\t\tout = append(out, fmt.Sprintf(\"%s/%d\", addr, 32-bits.TrailingZeros64(size)))\n\t\tstart += size\n\t\tcount -= size\n\t}\n\tfmt.Println(len(out))\n\tfor _, s := range out {\n\t\tfmt.Println(s)\n\t}\n}\n",
+      "sha256": "9c59580a07b42f31c7a370dda1a58b33e8d743d0cfb854dda72e188a0ea59e35"
+    }
+  ]
+}

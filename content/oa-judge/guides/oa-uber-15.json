@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-15",
+  "packageChecksum": "9396b06144d4cd1c4df726cb415efbdf2b6c098dcc837ac404388026c57a42b6",
+  "sourceContentHash": "90dac29ac7d6cba55e62e12f7b9bdb727acd885905c3a6f5bb63e56db51095e3",
+  "editorialSha256": "d870a3bfdd303691c2e645f6cff7aa955187feed1efaaa08ac60dbc0c4ab8c0e",
+  "hints": {
+    "zh": [
+      "只能向右跳，下标严格增加，所以到达每个格子的最高得分只依赖它左边的格子；合法步长是 1 以及所有末位为 3 的质数，种类不多。",
+      "先用筛法找出小于 n 且末位为 3 的质数，和步长 1 一起作为全部合法步长。然后按下标从小到大做动态规划：到达 i 的最高分等于本格分值加上所有合法前驱的最高分中的最大值。",
+      "用埃氏筛标记小于 n 的质数，收集 3、13、23 这样末位为 3 的质数，再加上步长 1；dp[0] 为 0；对 i 从 1 到 n−1，在所有不超过 i 的步长 s 中取 dp[i−s] 的最大值，加上 cell[i] 得到 dp[i]；输出 dp[n−1]。"
+    ],
+    "en": [
+      "You only jump to the right and indices strictly increase, so the best score at each cell depends only on cells to its left. The legal steps are 1 and the primes ending in 3, and there are not many of those.",
+      "First sieve the primes below n that end in 3 and add step 1; these are all legal steps. Then run a DP in increasing index order: the best score at i is the cell's value plus the best score among all legal predecessors.",
+      "Mark the primes below n with the sieve of Eratosthenes, collect those whose last digit is 3 (3, 13, 23, ...), and add step 1. Set dp[0] = 0. For i from 1 to n - 1, take the maximum of dp[i - s] over all steps s not exceeding i and add cell[i] to get dp[i]. Print dp[n - 1]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sieve to find the primes below n whose last digit is 3, and use them together with step 1 as the legal transitions. Dynamic programming: dp[i]=cell[i]+max(dp[i−step]).\n\n## Correctness\n\nEvery route that reaches i comes from the cell one legal step before it, and an optimal prefix can replace any suboptimal prefix. Indices strictly increase, so computing in order covers all routes, and dp[n−1] is the optimum.\n\n## Complexity\n\nTime O(n log log n+n·π₃(n)), space O(n), where π₃(n) is the number of primes below n whose last digit is 3."
+}

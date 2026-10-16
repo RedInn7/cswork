@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-2",
+  "packageChecksum": "b6bea3fde27721d0d9269ebb091ec61bdb85f662529c902911b38fb3941c3a29",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long k;\n    scanf(\"%d %lld\", &n, &k);\n    vector<int> a(n);\n    for (auto& x : a) scanf(\"%d\", &x);\n    unordered_map<int, int> freq;\n    freq.reserve(2 * n + 1);\n    long long pairs = 0, answer = 0;\n    int left = 0;\n    for (int right = 0; right < n; right++) {\n        // Disjoint pairs in the window = sum of floor(count / 2) over values.\n        if (freq[a[right]]++ % 2) pairs++;\n        while (pairs >= k) {\n            if (freq[a[left]]-- % 2 == 0) pairs--;\n            left++;\n        }\n        answer += left;  // every start in [0, left) keeps at least k pairs\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "4a3805f2072f4e44ac1bc71f9b0515c1c68943e0b4928a52d75440017aaa604a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        boolean neg = buf[bp] == '-';\n        if (neg) bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long k = nextLong();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = (int) nextLong();\n        // Compress values to ids so frequencies live in an int array.\n        int[] sorted = a.clone();\n        Arrays.sort(sorted);\n        int[] id = new int[n];\n        for (int i = 0; i < n; i++) id[i] = Arrays.binarySearch(sorted, a[i]);\n        int[] freq = new int[n];\n        long pairs = 0, answer = 0;\n        int left = 0;\n        for (int right = 0; right < n; right++) {\n            // Disjoint pairs in the window = sum of floor(count / 2) over values.\n            if (freq[id[right]]++ % 2 == 1) pairs++;\n            while (pairs >= k) {\n                if (freq[id[left]]-- % 2 == 0) pairs--;\n                left++;\n            }\n            answer += left;  // every start in [0, left) keeps at least k pairs\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "f4f7ee7bb7c893eb45dca7965493fdcc9758133f8d08bf0b4f6a302e56a1d946"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn, k := int(next()), next()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tfreq := make(map[int64]int, n)\n\tvar pairs, answer int64\n\tleft := 0\n\tfor right := 0; right < n; right++ {\n\t\t// Disjoint pairs in the window = sum of floor(count / 2) over values.\n\t\tif freq[a[right]]%2 == 1 {\n\t\t\tpairs++\n\t\t}\n\t\tfreq[a[right]]++\n\t\tfor pairs >= k {\n\t\t\tif freq[a[left]]%2 == 0 {\n\t\t\t\tpairs--\n\t\t\t}\n\t\t\tfreq[a[left]]--\n\t\t\tleft++\n\t\t}\n\t\tanswer += int64(left) // every start in [0, left) keeps at least k pairs\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "f9ee81028aaab58c7088cd770ae1c05c3334125db17abd8166293faca39ae01c"
+    }
+  ]
+}

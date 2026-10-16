@@ -1,0 +1,19 @@
+{
+  "id": "oa-weride-4",
+  "packageChecksum": "d58b94b04c17051f962d82235a29442c22f9f831498e72c4d27ca8ce4c2ea008",
+  "sourceContentHash": "714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3",
+  "editorialSha256": "c82b7b16495751b59a0bf9cc7bc1522a9b43c91fdfbd014efee6fe78a4c3a61c",
+  "hints": {
+    "zh": [
+      "x 与 y 的共同好友数，就是从 y 出发经过一个好友 z 走到 x 的二跳路径条数；每人最多 15 个好友，二跳路径最多 15×15 条。",
+      "对每个 y 枚举所有二跳邻居并计数，跳过 y 自己和 y 的好友；计数最多者胜，并列取编号最小。没有任何二跳候选时，所有合格候选的共同好友数都是 0。",
+      "对每个 y 先标记 y 和它的好友为不可选；遍历 y 的好友 f 的好友 x 并累加计数；有计数则取 (次数最大, 编号最小)，用完把计数清零；否则从 0 开始找第一个未被标记的编号，找不到输出 −1。按用户顺序用空格输出。"
+    ],
+    "en": [
+      "The number of mutual friends of x and y is the number of two-step paths from y through a friend z to x; everyone has at most 15 friends, so there are at most 15×15 such paths.",
+      "For each y, enumerate and count all two-step neighbors, skipping y itself and y's friends; the highest count wins, ties going to the smallest number. If there is no two-step candidate at all, every eligible candidate has 0 mutual friends.",
+      "For each y, first mark y and its friends as not selectable; walk every friend x of every friend f of y and add to x's count; if anything was counted pick (largest count, smallest number) and reset the counts afterwards; otherwise take the first unmarked number starting from 0, or −1 if there is none. Print the results in user order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIt suffices to count how often each two-step neighbor appears. If there is no two-step candidate, every non-friend candidate has 0 mutual friends, so take the smallest available number.\n\n## Proof of correctness\n\nEvery mutual friend z corresponds to a path y-z-x, so x's accumulated count is exactly the number of mutual friends; traversing all two-step neighbors covers every candidate with a positive score. When no candidate has a count, the maximum is 0 and all eligible users tie, and the statement requires the smallest number.\n\n## Complexity\n\nEach user checks at most 15×15 two-step paths, so time is O(n·15²+m) and space O(n+m).\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends; the original problem's ordering rule and the limit of at most 15 friends per person are explicit; this site adds no duplicate edges and the input/output protocol."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-3",
+  "packageChecksum": "0db0397ad97a0eac373c2912281e410ead41bfceee2093466574068904136fa0",
+  "sourceContentHash": "e1ee016801e95428b148f27445d81679b03257d0da7efffab62292c89abce18f",
+  "editorialSha256": "42cbf8c5b4f2db127ca54f69b48ca95016096515a33c9031ccf2b9f57bc32c20",
+  "hints": {
+    "zh": [
+      "对每个顶点都做一遍 BFS 求距离是 O(n²)，太慢；但相邻两个顶点的 beauty 之间有很简单的关系。",
+      "以顶点 1 为根，先用深度直接算出根的 beauty，并求出每棵子树的权值和 sub。根从 u 移到子节点 v 时，v 子树里每个点的距离减 1，其余点的距离加 1，所以 beauty[v]=beauty[u]+总权值−2·sub[v]。",
+      "用 BFS（避免深递归）得到父节点、深度和访问顺序；按访问顺序的逆序把子树权值累加到父节点得到 sub；再按访问顺序从根往下推出每个顶点的 beauty 并取最大值。结果可达约 5·10^18，用 64 位整数。"
+    ],
+    "en": [
+      "Running a BFS from every vertex is O(n^2), which is too slow; but the beauties of two adjacent vertices are related in a very simple way.",
+      "Root the tree at vertex 1, compute the root's beauty directly from depths, and compute every subtree's weight sum sub. When the root moves from u to its child v, every vertex in v's subtree gets 1 closer and every other vertex gets 1 farther, so beauty[v] = beauty[u] + total weight - 2 * sub[v].",
+      "Use a BFS (avoiding deep recursion) to get parents, depths and a visiting order; add subtree weights into parents in reverse visiting order to obtain sub; then walk the visiting order from the root downward to derive every vertex's beauty and keep the maximum. Results can reach about 5 * 10^18, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRoot the tree at node 1 and first compute the weighted distance sum and the subtree weights; when the root moves from u to a child v, the subtree's contribution decreases and the rest increases, so re-rooting takes linear time.\n\n## Proof of correctness\n\nThe weighted distance sum of the initial root is computed directly by summing over depths. When the root crosses an edge, every weight inside the subtree gets 1 closer and every distance outside the subtree grows by 1, so the change is the total weight minus twice the subtree weight. Traverse all nodes and take the maximum.\n\n## Complexity\n\nO(n), space O(n)."
+}

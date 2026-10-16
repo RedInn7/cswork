@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-176",
+  "packageChecksum": "0929b0d64bc3abe618e9c5895a1e1e422e55ad93ab84b3af9b7d460ac2375252",
+  "sourceContentHash": "9c35e98e192f321ccf299aec90a85fc5d8ada2a3303d118e1e50146baf6f58af",
+  "editorialSha256": "f30ba1622d65b5affa3f59f2779648689de6faa7921c250dc1a1febb9181957e",
+  "hints": {
+    "zh": [
+      "给每个格子标上它被涂黑的分钟数，一个k×k正方形完成的时刻就是其中所有格子时间的最大值；答案是所有正方形中这个最大值的最小者。",
+      "二维窗口最大值可以拆成两次一维：先对每一行求长度为k的滑动窗口最大值，再对得到的矩阵按列求长度为k的滑动窗口最大值，两步都用单调队列均摊O(1)完成。",
+      "读入时把第t个坐标对应的格子设为t；对每一行用单调递减队列求出m−k+1个窗口最大值；再在这些结果上对每一列做长度为k的滑动最大值，每得到一个完整窗口就用它更新最小答案；最后输出最小值。"
+    ],
+    "en": [
+      "Label each cell with the minute it turns black; a k x k square is complete at the largest label inside it, and the answer is the smallest such maximum over all squares.",
+      "A 2D window maximum splits into two 1D passes: sliding-window maxima of width k along every row, then sliding-window maxima of height k down every column of that result, each pass in amortized O(1) per cell with a monotonic queue.",
+      "While reading, set the cell of the t-th coordinate to t. For each row, a decreasing monotonic queue gives its m-k+1 window maxima; then run a height-k sliding maximum down each column of those values, and every complete window updates the minimum answer. Print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFill each cell with its painting time; a square's completion time is the maximum time inside it. Compute the 2D k-window maximum with a monotone queue, first along each row and then along each column, and finally take the minimum.\n\n## Proof of correctness\n\nA cell is black exactly when the current time is no less than its own painting time, so a square's completion time equals its maximum. Composing two 1D window maxima gives the exact 2D maximum; the monotone queue removes expired candidates and those dominated by later larger values, keeping the correct maximum. Enumerating all windows and taking the minimum gives the first moment of success.\n\n## Complexity\n\nTime O(nm), space O(nm)."
+}

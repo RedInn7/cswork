@@ -1,0 +1,19 @@
+{
+  "id": "oa-wells-fargo-1",
+  "packageChecksum": "3fa622e011fac229e53f66529e5ec2ef6c55b07857b7d1fe13f692508cab623d",
+  "sourceContentHash": "e74a36ca7db4ec42fb4180ceb08781b23faa5a62ae8d372ff15399307509d7a8",
+  "editorialSha256": "13c486cd1a3cf42f796c20181be00a50c3193bde4f32e07202f43fc8fa240f87",
+  "hints": {
+    "zh": [
+      "元素互不相同时，数组复原等价于位置置换回到恒等；把排列拆成若干个不相交的循环来看。",
+      "长度为 L 的循环恰好在 L 的倍数次操作后复原，所以全部复原的最小正次数是所有循环长度的最小公倍数。",
+      "用 visited 数组沿 p 走出每个循环并记长度；LCM 可能非常大，不能直接用 64 位相乘，要把每个长度分解质因数，记录每个质数出现的最高次幂，最后把这些幂相乘取模 1,000,000,007。"
+    ],
+    "en": [
+      "With distinct elements, restoring the array is the same as the position permutation returning to the identity; look at the permutation as disjoint cycles.",
+      "A cycle of length L returns to its start exactly after a multiple of L operations, so the smallest positive number of operations restoring everything is the least common multiple of all cycle lengths.",
+      "Walk each cycle along p with a visited array and record its length; the LCM can be huge, so do not multiply it directly in 64 bits: factor each length, keep the highest power of each prime, and multiply those powers modulo 1,000,000,007."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDecompose the permutation into disjoint cycles. A cycle of length L needs a multiple of L operations to return to its original state, and the overall period is the least common multiple of the cycle lengths.\n\n## Correctness\n\nBecause the array's elements are distinct, the array is restored after the operations if and only if the position permutation returns to the identity. A permutation cycle of length L first returns to its start after exactly L operations, so the moment everything is restored must be, and only needs to be, a common multiple of all cycle lengths; the smallest positive such moment is their least common multiple.\n\n## Complexity\n\nTime O(n log n + the cost of big-integer arithmetic), space O(n)."
+}

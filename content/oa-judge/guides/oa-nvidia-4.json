@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-4",
+  "packageChecksum": "996fda50a4d162b4752bda14de8a60e872ba6c9d6cb3eb991fcc8a49bd78eff6",
+  "sourceContentHash": "de5e141d5fe660cd7ec52520890e2bd36ab4a7fef9df1e3112acaa17099451cd",
+  "editorialSha256": "90d80b14fe35476229d181d25f9907a668e2eb876347e4ce528a764f11a9e4e1",
+  "hints": {
+    "zh": [
+      "切分位置只有 N-1 个：切在第 i 个元素之后（i 从 0 到 N-2），两边都非空。",
+      "先求出总和，切分时左边的和就是前缀和，右边的和等于总和减去前缀和，不必每次重新求和。",
+      "一边扫描一边把元素加进左和，对前 N-1 个位置检查左和是否严格大于总和减左和，满足就计数。相等的情况不算。"
+    ],
+    "en": [
+      "There are only N-1 split positions: cut after element i for i from 0 to N-2, so both sides are non-empty.",
+      "Compute the total first; at a cut, the left sum is a prefix sum and the right sum is the total minus that prefix, so nothing needs to be re-summed.",
+      "Scan the array adding each element to the left sum, and for the first N-1 positions check whether the left sum is strictly greater than the total minus the left sum; count it if so. Equal sums do not count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the total first, then enumerate the first N-1 split positions and compare the prefix sum with the remaining sum.\n\n## Correctness\n\nValid splits correspond one-to-one with the first N-1 indices, and the strict comparison is exactly what the problem asks for.\n\n## Complexity\n\nTime O(N), O(1) besides the input."
+}

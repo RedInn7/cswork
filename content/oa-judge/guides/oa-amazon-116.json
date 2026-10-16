@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-116",
+  "packageChecksum": "e0b66a845a78d25c7d0677929bfabe176b2c4d364067e5d8058548ae610c7251",
+  "sourceContentHash": "7a1088c3e5d4a4ff8777ceb5a8ccb9b9be2fc4607a275b5e26866614b034ed56",
+  "editorialSha256": "c591119ef29c7788332987fa6ab36158dc262557f203396aaa0815f5d1678efe",
+  "hints": {
+    "zh": [
+      "如果字符串里 0 和 1 来回切换了两次或更多，就一定能挑出形如 x y x 的子序列；所以好串里字符最多只切换一次。",
+      "好串只有两种形状：前面全 0 后面全 1，或前面全 1 后面全 0（全 0、全 1 也包括在内）。枚举分界点 k，分别算出变成这两种目标串需要翻转多少个字符，取最小值。",
+      "先数出总共的 0 和 1；从 k=0 扫到 n，维护前 k 个字符里 1 的个数 p1 和 0 的个数 p0。变成“前 k 个 0、其余 1”的代价是 p1+(总 0 数-p0)，变成“前 k 个 1、其余 0”的代价是 p0+(总 1 数-p1)；在每个 k 上取两者较小值，再对所有 k 取最小。"
+    ],
+    "en": [
+      "If the characters switch between 0 and 1 two or more times, you can always pick a subsequence of the form x y x; so in a good string the characters switch at most once.",
+      "A good string has one of only two shapes: all 0s then all 1s, or all 1s then all 0s (all-0 and all-1 included). Enumerate the split point k, compute how many flips each of the two targets needs, and take the minimum.",
+      "Count all 0s and 1s first; sweep k from 0 to n while keeping p1 and p0, the numbers of 1s and 0s among the first k characters. Turning s into k zeros followed by ones costs p1 + (zeros - p0), and into k ones followed by zeros costs p0 + (ones - p1); take the smaller one at every k and the minimum over all k."
+    ]
+  },
+  "explanationEn": "## Problem\n\nA 01 string is good if it contains neither the subsequence 010 nor the subsequence 101. Each operation flips one character; find the minimum number of operations to make the string good.\n\n## Approach\n\nContaining neither 010 nor 101 as a subsequence is equivalent to the characters switching at most once, that is, having the form 0...01...1 or 1...10...0 (including all 0s and all 1s). Enumerate the split point k (0..n): turning the string into \"first k characters 0, the rest 1\" costs the number of 1s in the prefix plus the number of 0s in the suffix; turning it into \"first k characters 1, the rest 0\" costs the number of 0s in the prefix plus the number of 1s in the suffix. Use prefix counts in a single scan and take the minimum.\n\n## Correctness\n\nIf a string switches two or more times, it necessarily contains a subsequence x y x (x != y), that is, 010 or 101; conversely, with at most one switch, no choice of three positions yields x y x. So the set of good strings is exactly the 2(n+1) target strings above, and the minimum number of flips equals the minimum Hamming distance to these targets.\n\n## Complexity\n\nO(n) time, O(1) extra space.\n\n## Independent verification\n\nThe oracle explicitly builds all 2(n+1) target strings and computes the Hamming distance to each one (O(n^2), small data only); on even smaller data it enumerates all 2^n binary strings, decides which are good with a subsequence check, and takes the minimum distance, directly verifying the \"at most one switch\" equivalence. Every binary string of length 1..10 is enumerated exhaustively and the reference program is actually run on each one. The wrong solutions cover considering only 0*1*, allowing only all-equal strings, counting by the number of switches, and missing the all-0/all-1 targets."
+}

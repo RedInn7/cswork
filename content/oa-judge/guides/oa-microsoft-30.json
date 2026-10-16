@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-30",
+  "packageChecksum": "b4cd04ea9bf770424ceb343ed2567e4e45353d254f572876f3659be586092d66",
+  "sourceContentHash": "5277c574c6ed0f3ab634ecb08bd5a17738e33d7f622778aa19e1fcaf0a797974",
+  "editorialSha256": "3f2d94662cd416d6bccfe8ddcdb087c57e5ac12f744c3557c8461f9ae89b3080",
+  "hints": {
+    "zh": [
+      "总时长可能达到 10⁹ 小时，不能逐小时模拟；要直接算出每个订单的完成时刻再相加。",
+      "订单 i 完成前先经过 T[i]−1 整轮，这期间每个订单 j 消耗 min(T[j],T[i]−1) 小时；最后一轮里，排在 i 前面（含 i）且 T[j]≥T[i] 的订单各再消耗 1 小时。",
+      "把 T 排序并求前缀和，二分找到小于 T[i] 的订单数 split，第一部分为 前缀和[split]+(N−split)×(T[i]−1)。按下标顺序处理，用树状数组记录已处理订单的 T 值，第二部分为 i+1 减去其中 T 小于 T[i] 的个数。两部分相加得到完成时刻，累加后对 10⁹ 取模输出，累加过程用 64 位整数。"
+    ],
+    "en": [
+      "The total time can reach 10⁹ hours, so simulating hour by hour is too slow; compute each order's completion time directly and add them up.",
+      "Before order i finishes, T[i]−1 full rounds pass, during which every order j uses min(T[j],T[i]−1) hours; in the final round, each order at or before i with T[j]≥T[i] uses one more hour.",
+      "Sort T and take prefix sums; binary search the number split of orders with T less than T[i], so the first part is prefix[split]+(N−split)×(T[i]−1). Process orders by index with a Fenwick tree over the T values seen so far; the second part is i+1 minus how many of them have T less than T[i]. Their sum is the completion time; add these up in 64-bit integers and print the total mod 10⁹."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBefore order i is finished, T[i]−1 full rounds pass in total, contributing Σmin(T[j],T[i]−1), plus the number of still unfinished orders before i in the final round. Sorted prefix sums give the first term and a Fenwick tree counts the second.\n\n## Proof of correctness\n\nIn the first T[i]−1 rounds each order consumes exactly min(T[j],T[i]−1) hours; in the final round the original order is unchanged, and only orders with index ≤ i and T[j] ≥ T[i] are processed. These two parts neither overlap nor miss anything, and summing the completion times gives the total waiting time.\n\n## Complexity\n\nTime O(N log N+N log V), space O(N+V), where V≤10000."
+}

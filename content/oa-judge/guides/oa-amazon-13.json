@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-13",
+  "packageChecksum": "1385215d393b4bf3bf374c641f0db0372124aaf6c201b9c7d093ece6a70432f5",
+  "sourceContentHash": "f8a7964b779cdd72a90837a3e7e1beb31b547146ead64b8f699654deafb1a297",
+  "editorialSha256": "c14fc0df3ff6622b779b9f04486597b4a273a3047f47e7ded96e1ec91900a427",
+  "hints": {
+    "zh": [
+      "子段 [l,r] 的中间部分之和可以用前缀和表示；条件里有两个等式：两端相等，以及中间之和等于端点值。",
+      "设 prefix[i] 为前 i 项和，中间之和是 prefix[r]-prefix[l+1]=prefix[r]-prefix[l]-arr[l]，所以条件化为 arr[l]=arr[r] 且 prefix[l]+2·arr[l]=prefix[r]。把每个左端点编码成键 (arr[l], prefix[l]+2·arr[l])，用哈希表计数，右端点只需查 (arr[r], prefix[r])。",
+      "求前缀和；右端点 r 从 2 扫到 n-1：先把 l=r-2 的键 (arr[l], prefix[l]+2·arr[l]) 计数加一（这样表里恰好是所有 l≤r-2，保证长度至少 3），再把键 (arr[r], prefix[r]) 的计数加进答案。前缀和与答案用 64 位整数。"
+    ],
+    "en": [
+      "The sum of the inner part of a segment [l,r] can be written with prefix sums; the condition consists of two equalities: equal ends, and the inner sum equal to the end value.",
+      "With prefix[i] the sum of the first i items, the inner sum is prefix[r] - prefix[l+1] = prefix[r] - prefix[l] - arr[l], so the condition becomes arr[l] = arr[r] and prefix[l] + 2*arr[l] = prefix[r]. Encode each left end as the key (arr[l], prefix[l] + 2*arr[l]) and count keys in a hash table; a right end only needs to look up (arr[r], prefix[r]).",
+      "Build prefix sums; sweep the right end r from 2 to n-1: first increment the count of the key (arr[l], prefix[l] + 2*arr[l]) for l = r-2 (so the table holds exactly the left ends l <= r-2, which guarantees length at least 3), then add the count of the key (arr[r], prefix[r]) to the answer. Use 64-bit integers for the prefix sums and the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet prefix[i] be the sum of the first i items. For a segment [l,r], the condition is arr[l] = arr[r] and prefix[l] + 2*arr[l] = prefix[r]. While iterating over the right end r, first add l = r-2 to a hash table, then query (arr[r], prefix[r]).\n\n## Why it works\n\nThe inner sum is prefix[r] - prefix[l+1], and prefix[l+1] = prefix[l] + arr[l]; rearranging gives the hash-key condition. Right before each query, exactly the left ends with l <= r-2 have been inserted, which guarantees a length of at least 3. Each valid pair of left and right ends is counted once.\n\n## Complexity\n\nExpected time O(n), extra space O(n). Use 64-bit integers for the prefix sums and the answer."
+}

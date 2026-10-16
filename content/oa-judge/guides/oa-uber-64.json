@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-64",
+  "packageChecksum": "457bbdd26935826efdf07f6ca2cc348929974de5757af34eaa4350354ef70bc1",
+  "sourceContentHash": "1f3086f5336479e83aa0471c7f9c42a56fa28bbc55eb56465c9d5f1ec23b1b0f",
+  "editorialSha256": "0e6187fb3cfabafb0e7581654880f1679aabbffe33b7476c0ff9aa588413e22c",
+  "hints": {
+    "zh": [
+      "字符串可能长达一百万位，不能转成整数。但判断能否被 3 整除不需要真的算出这个数：10 的任意次幂模 3 都等于 1。",
+      "所以整数模 3 等于各位数字之和模 3。另一个条件“7 至少出现两次”与之独立，同一次扫描里顺便计数即可，最后两个条件同时成立才输出 1。",
+      "扫描每个字符，把 c−'0' 累加到 total，遇到 '7' 就让计数加一。结束后若 total mod 3 = 0 且计数 ≥ 2，输出 1，否则输出 0。前导 0 不影响结果。"
+    ],
+    "en": [
+      "The string can have a million digits, so it cannot be converted to an integer. Deciding divisibility by 3 does not need the actual number, though: every power of 10 is 1 modulo 3.",
+      "So the integer modulo 3 equals the sum of its digits modulo 3. The other condition, that 7 appears at least twice, is independent; count it during the same scan, and output 1 only when both conditions hold.",
+      "Scan every character, adding c - '0' to total and increasing a counter on each '7'. At the end output 1 if total mod 3 is 0 and the counter is at least 2, otherwise 0. Leading zeros do not affect the result."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the string to get the digit sum and the number of 7s, then check that the digit sum is 0 modulo 3 and that the count is at least 2.\n\n## Correctness\n\nEvery power of the decimal base 10 is 1 modulo 3, so the integer modulo 3 equals its digit sum modulo 3. The number of 7s is counted separately, and the conjunction enforces both conditions.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

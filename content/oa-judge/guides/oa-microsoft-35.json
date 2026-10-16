@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-35",
+  "packageChecksum": "da20c3957d4885bdfa2f12d4b061be6d4fc2f08c23209d3918868ff2c67f1508",
+  "sourceContentHash": "1109006a1d39547e9c653cf658a6633157b224f87c6d124dffb822ea28870214",
+  "editorialSha256": "b84b16f1a7b82b549436fa14076b7409037232910ae76f4279ec5a58ae8a55b9",
+  "hints": {
+    "zh": [
+      "所有操作的和必须相同，而第一次操作只能删前两个、后两个或首尾两个，所以目标和只有三种可能。",
+      "固定目标和之后，不管怎么删，剩下的总是原数组的一段连续区间，可以对区间做 DP：dp[l][r] 表示在 a[l..r] 上最多还能操作多少次。",
+      "对三个候选目标分别计算：按区间长度从 2 到 N 递推，dp[l][r] 取以下三项中可行者的最大值：a[l]+a[l+1] 等于目标时为 1+dp[l+2][r]，a[r−1]+a[r] 等于目标时为 1+dp[l][r−2]，a[l]+a[r] 等于目标时为 1+dp[l+1][r−1]（长度为 2 时剩余部分记 0）。答案是三个目标下 dp[0][N−1] 的最大值，N<2 时为 0。"
+    ],
+    "en": [
+      "All operations must have the same sum, and the first operation can only remove the first two, the last two, or the first and last elements, so there are only three possible target sums.",
+      "Once the target is fixed, whatever is removed, what remains is always a contiguous range of the original array, so run an interval DP: dp[l][r] is the most operations still possible on a[l..r].",
+      "For each of the three targets, fill lengths from 2 to N: dp[l][r] is the largest of the feasible options 1+dp[l+2][r] when a[l]+a[l+1] equals the target, 1+dp[l][r−2] when a[r−1]+a[r] does, and 1+dp[l+1][r−1] when a[l]+a[r] does (the remainder counts 0 when the length is 2). The answer is the largest dp[0][N−1] over the three targets, or 0 when N<2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe sum of the first step has only three candidates. For each target sum, run an interval DP that enumerates the three valid endpoint-pair deletions and takes the maximum operation count of the remaining interval plus 1.\n\n## Proof of correctness\n\nAfter deleting endpoints, what remains is always a contiguous interval, so the state needs no history; with the target sum fixed, the three transitions cover all and only the valid next steps. Computing intervals in increasing length guarantees the subproblems are known, and enumerating the possible first-step targets gives the global optimum.\n\n## Complexity\n\nTime O(N²), space O(N²)."
+}

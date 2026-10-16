@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-22",
+  "packageChecksum": "efdbb0d47691c9a267c2476363f6155d99bc5647c3e0d78ece8e117bcef3e986",
+  "sourceContentHash": "b8fd646556eefb36946ef549f674403f01f3677c548373035e87d307ba1c0e35",
+  "editorialSha256": "30bebc6a339e9109781a9b3f11e688e0e11d63ca71ec8fc351842b9afd9b7b4b",
+  "hints": {
+    "zh": [
+      "同一时刻正在运行的任务必须各占一台机器，所以最大并发数是机器数的下界；而按开始时间贪心分配机器恰好能用这么多台。",
+      "把每个任务拆成两个事件：开始时刻 +1，结束后的下一时刻（end+1）−1，按时间扫描求同时运行数量的最大值；端点包含在内，所以 end 时刻任务仍占用机器。",
+      "生成 2n 个事件 (start, +1) 与 (end+1, −1)，按时间排序，同一时刻先处理 −1 再处理 +1；依次累加当前运行数并记录最大值输出。"
+    ],
+    "en": [
+      "Tasks running at the same moment need separate machines, so the maximum concurrency is a lower bound on the machine count, and greedily assigning machines by start time achieves exactly that many.",
+      "Turn each task into two events: +1 at its start and −1 at the moment right after its end (end+1), then sweep in time order for the largest number running at once; endpoints are inclusive, so a task still occupies its machine at time end.",
+      "Create 2n events (start, +1) and (end+1, −1), sort them by time with −1 before +1 at equal times, accumulate the running count, and print its maximum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdd one at a task's start and subtract one at the moment right after its end, then sweep in time order for the maximum number of tasks running at once.\n\n## Proof of correctness\n\nTasks running concurrently at any moment must use different machines, so the maximum concurrency is a lower bound. Assign tasks in order of start time, reusing a machine whenever one is free and adding a new one otherwise; when a new machine is added, all existing machines are still busy, so exactly that many tasks are running concurrently, and the number of machines never exceeds the lower bound. The sweep line computes this number exactly.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

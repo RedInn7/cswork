@@ -1,0 +1,19 @@
+{
+  "id": "oa-wells-fargo-3",
+  "packageChecksum": "db6317c645254cf9b3966173ea5f69dbf593d2c9367b39ff3e2e1b5c30fd45da",
+  "sourceContentHash": "c2b2cbec4af4a597fe813bdccddab369ebd00ee219edf2cf86d86b46bf296f31",
+  "editorialSha256": "c0cc6822d765a5a8873d601bbd65cb983653a0ee994aa39ba9953417a32f0b10",
+  "hints": {
+    "zh": [
+      "先把每个格子到最近障碍的曼哈顿距离求出来；网格四联通且所有格子都能走，这个距离就是从所有 * 出发的 BFS 步数。",
+      "路径的安全值是路径上距离的最小值，要最大化它，就是“最大瓶颈路径”：把 Dijkstra 改成最大堆，扩展时新值取 min(当前值, 邻格距离)。",
+      "多源 BFS 求出 d；best[S]=d[S] 入最大堆；每次弹出值最大的格子，若已不是该格最优值就跳过，弹出 E 时即为答案；向四邻扩展 nv=min(v, d[邻格])，比 best 大则更新并入堆。"
+    ],
+    "en": [
+      "First compute each cell's Manhattan distance to the nearest obstacle; since the grid is 4-connected and every cell is walkable, that distance is the BFS step count from all * cells at once.",
+      "A path's safety value is the minimum distance along it, so maximizing it is a widest (maximum-bottleneck) path problem: run Dijkstra with a max-heap and let the new value be min(current value, neighbor's distance).",
+      "Get d with a multi-source BFS; push best[S] = d[S] into a max-heap; repeatedly pop the cell with the largest value, skip it if the value is no longer that cell's best, and stop with the answer when E is popped; for each of the 4 neighbors set nv = min(v, d[neighbor]) and update and push it if it beats best."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA multi-source BFS gives every cell's Manhattan distance to the nearest *; then run a maximum-bottleneck path search: when expanding to a neighbor, the safety value is the smaller of the current value and the neighbor's distance, and keep the best known safety value for each cell.\n\n## Correctness\n\nIn an unweighted 4-neighbor grid, a multi-source BFS gives the shortest distance to the nearest obstacle, which equals the Manhattan distance (the whole grid is walkable). For a path prefix, the best safety value transitions to the minimum of the prefix's bottleneck and the new cell's distance. The max-heap always takes the state with the largest current value; no unprocessed state can produce a bottleneck exceeding the heap top through later expansion, so the first time E is popped its value is the global optimum.\n\n## Complexity\n\nV = rows×cols. Time O(V log V), space O(V)."
+}

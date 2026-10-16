@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-10",
+  "packageChecksum": "5c5e8d942dd48ce0cba34e4fa6669cadcd114e944afb932712a43412fa6ab4b2",
+  "sourceContentHash": "dcc14ade2f998ad084c2849a2894e4d452db864a4f460feecb7c0f7c438e2e01",
+  "editorialSha256": "d6222bbda99d64745324424cdf32ab3c5785e743afab3e86791d5d71abe284f8",
+  "hints": {
+    "zh": [
+      "任何一种合法切分，最后一块的长度只能是 1 或 2：一位数必须是 1 到 9，两位数必须在 10 到 26 之间（以 0 开头的两位数不合法）。",
+      "设 dp[i] 为前 i 位的解码方法数。最后一块是一位时从 dp[i−1] 转移，是两位时从 dp[i−2] 转移，两种情况互不重叠。",
+      "dp[0] = 1；对 i 从 1 到 n：若第 i 位不是 0，dp[i] 加上 dp[i−1]；若 i ≥ 2 且第 i−1、i 两位组成的数在 10 到 26 之间，dp[i] 再加上 dp[i−2]；输出 dp[n]。长度可到 1000，结果会非常大，需要用大整数（Python 自带，其他语言用 BigInteger 或自己实现加法）。"
+    ],
+    "en": [
+      "In any valid split the last block has length 1 or 2: a single digit must be 1 to 9, and a two-digit block must be between 10 and 26 (a two-digit block starting with 0 is invalid).",
+      "Let dp[i] be the number of decodings of the first i digits. A one-digit last block comes from dp[i-1] and a two-digit last block from dp[i-2]; the two cases never overlap.",
+      "Set dp[0] = 1; for i from 1 to n: if digit i is not 0, add dp[i-1] to dp[i]; if i >= 2 and digits i-1 and i form a number between 10 and 26, also add dp[i-2]; print dp[n]. The length can reach 1000, so the count is huge and needs big integers (built into Python; use BigInteger or hand-written addition elsewhere)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDynamic programming: dp[i] is the number of decodings of the first i digits. When the last digit is not 0 it can be decoded on its own; when the last two digits are in 10..26 they can be decoded together.\n\n## Proof of correctness\n\nThe last block of any valid split has length 1 or 2. A one-character block contributes dp[i−1] and must not be 0; a two-character block contributes dp[i−2] and its value must be in 10..26. The two cases are mutually exclusive and cover every valid split.\n\n## Complexity\n\nO(n) time, O(n) space."
+}

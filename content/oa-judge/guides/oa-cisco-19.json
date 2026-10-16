@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-19",
+  "packageChecksum": "2cd98b5032ca5ad55f032d64e433ff163b833065539a4a7e53b7343eb65e38d0",
+  "sourceContentHash": "9f7bafa557a4a6d0cb28f3b9116852f388e2801f2c7ee8ce406a2601fc882e85",
+  "editorialSha256": "d17cce3424f9257683135b34d4a36a9485a10e1d3716e9fe0ec1f3829bb6dead",
+  "hints": {
+    "zh": [
+      "以位置 i 结尾的最优非空片段，要么只包含 a[i]，要么是以 i−1 结尾的最优片段再接上 a[i]。",
+      "扫描时维护“以当前元素结尾的最大片段和” ending，以及到目前为止所有 ending 的最大值；这就是 Kadane 算法。",
+      "用第一个元素初始化 ending 和 answer（保证全负数组也选非空片段）；对后续每个值 v，ending = max(v, ending+v)，answer = max(answer, ending)；最后输出 answer，求和用 64 位整数。"
+    ],
+    "en": [
+      "The best non-empty segment ending at position i either contains only a[i] or is the best segment ending at i - 1 extended by a[i].",
+      "While scanning keep ending, the best sum of a segment ending at the current element, and the maximum of all endings so far; this is Kadane's algorithm.",
+      "Initialise ending and answer with the first element (so an all-negative array still picks a non-empty segment); for every later value v set ending = max(v, ending + v) and answer = max(answer, ending); print answer, using 64-bit sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the best sum of a non-empty segment ending at the current element, and the maximum of that value over all end positions.\n\n## Proof of correctness\n\nA segment ending at i either contains only a[i] or consists of the best segment ending at i-1 extended by a[i]. These two kinds cover all non-empty segments; initializing with the first element guarantees that a non-empty segment is chosen even when all values are negative.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space apart from the input storage; sums use 64-bit integers."
+}

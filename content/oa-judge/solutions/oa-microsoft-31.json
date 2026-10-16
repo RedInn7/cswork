@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-31",
+  "packageChecksum": "c0f13836142db397e44623fd86c3a57a3c60579ca4ca203a8771fb2a84c9230e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int q;\n    cin >> q;\n    vector<string> incoming, outgoing, out;  // two stacks\n    for (int i = 0; i < q; i++) {\n        string op;\n        cin >> op;\n        if (op == \"push\") {\n            string x;\n            cin >> x;\n            incoming.push_back(x);\n            out.push_back(\"null\");\n        } else if (op == \"empty\") {\n            out.push_back(incoming.empty() && outgoing.empty() ? \"true\" : \"false\");\n        } else {\n            // refill only when the outgoing stack is empty, reversing the order\n            if (outgoing.empty())\n                while (!incoming.empty()) outgoing.push_back(incoming.back()), incoming.pop_back();\n            out.push_back(outgoing.back());\n            if (op == \"pop\") outgoing.pop_back();\n        }\n    }\n    for (size_t i = 0; i < out.size(); i++) cout << (i ? \" \" : \"\") << out[i];\n    cout << \"\\n\";\n}\n",
+      "sha256": "39bec7594612b017d531bd4fb73de52f39723055f936bd7e5e7c202886a38499"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int q = nextInt();\n        ArrayDeque<String> incoming = new ArrayDeque<>(), outgoing = new ArrayDeque<>(); // two stacks\n        StringJoiner out = new StringJoiner(\" \");\n        for (int i = 0; i < q; i++) {\n            String op = next();\n            if (op.equals(\"push\")) {\n                incoming.push(next());\n                out.add(\"null\");\n            } else if (op.equals(\"empty\")) {\n                out.add(incoming.isEmpty() && outgoing.isEmpty() ? \"true\" : \"false\");\n            } else {\n                // refill only when the outgoing stack is empty, reversing the order\n                if (outgoing.isEmpty())\n                    while (!incoming.isEmpty()) outgoing.push(incoming.pop());\n                out.add(op.equals(\"pop\") ? outgoing.pop() : outgoing.peek());\n            }\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "fab6a0feb18bc521aaf3b419536350a34bfcabca7779d2dbfd991db1d4ee1a27"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar q int\n\tfmt.Fscan(in, &q)\n\tvar incoming, outgoing, out []string // two stacks\n\tfor i := 0; i < q; i++ {\n\t\tvar op string\n\t\tfmt.Fscan(in, &op)\n\t\tswitch op {\n\t\tcase \"push\":\n\t\t\tvar x string\n\t\t\tfmt.Fscan(in, &x)\n\t\t\tincoming = append(incoming, x)\n\t\t\tout = append(out, \"null\")\n\t\tcase \"empty\":\n\t\t\tif len(incoming) == 0 && len(outgoing) == 0 {\n\t\t\t\tout = append(out, \"true\")\n\t\t\t} else {\n\t\t\t\tout = append(out, \"false\")\n\t\t\t}\n\t\tdefault:\n\t\t\t// refill only when the outgoing stack is empty, reversing the order\n\t\t\tif len(outgoing) == 0 {\n\t\t\t\tfor len(incoming) > 0 {\n\t\t\t\t\toutgoing = append(outgoing, incoming[len(incoming)-1])\n\t\t\t\t\tincoming = incoming[:len(incoming)-1]\n\t\t\t\t}\n\t\t\t}\n\t\t\tout = append(out, outgoing[len(outgoing)-1])\n\t\t\tif op == \"pop\" {\n\t\t\t\toutgoing = outgoing[:len(outgoing)-1]\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(strings.Join(out, \" \"))\n}\n",
+      "sha256": "2f1e526c28ff052ec47d61e00d7428ea7baec77901f2d3566b91f078b9186fc1"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-96",
+  "packageChecksum": "5a2576aa4ebcb3cb46dd2ba32fb49266686845c25e9ab144110d274251c485ec",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char ibuf[1 << 16];\nstatic size_t ilen = 0, ipos = 0;\n\nstatic inline int gc() {\n    if (ipos == ilen) {\n        ilen = fread(ibuf, 1, sizeof ibuf, stdin);\n        ipos = 0;\n        if (ilen == 0) return -1;\n    }\n    return ibuf[ipos++];\n}\n\nstatic long long readInt() {\n    int c = gc();\n    while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = gc();\n    bool neg = c == '-';\n    if (neg) c = gc();\n    long long v = 0;\n    while (c >= '0' && c <= '9') {\n        v = v * 10 + (c - '0');\n        c = gc();\n    }\n    return neg ? -v : v;\n}\n\nstatic string readToken() {\n    int c = gc();\n    while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = gc();\n    string s;\n    while (c > ' ') {\n        s.push_back((char)c);\n        c = gc();\n    }\n    return s;\n}\n\nint main() {\n    int n = (int)readInt();\n    vector<long long> a(n);\n    for (auto &x : a) x = readInt();\n    long long threshold = *max_element(a.begin(), a.end()) - 1;\n    int answer = 0;\n    for (long long v : a) answer += v >= threshold;\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "81e9b6acf034707df13510552445cb94e726fa50fcbf34cf692219c0d3b3920c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        long best = Long.MIN_VALUE;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            best = Math.max(best, a[i]);\n        }\n        int answer = 0;\n        for (long v : a) if (v >= best - 1) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "54f6823d1b32d720c2941cee0be2df4df003f95cf491de55694a5f2c663ea0c6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tbest := 0\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\tif i == 0 || a[i] > best {\n\t\t\tbest = a[i]\n\t\t}\n\t}\n\tanswer := 0\n\tfor _, v := range a {\n\t\tif v >= best-1 {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "09826f919e5ce541cfb77f7969a3a613521486888da9a945aa014e0ed5de76a0"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-atlassian-3",
+  "packageChecksum": "4dc69fcdeec923d9dd015586a1787d0c30377ceddacd8afe413fab12d3ae061b",
+  "sourceContentHash": "e65f9965e7179129b9c1755263caf400b7e8b32d82fc173d148fe9867b371f64",
+  "editorialSha256": "9f81902b4811cd1b328a4e544a7761d3d21ccb2023b48cfeea0de6f77f9b4f41",
+  "hints": {
+    "zh": [
+      "固定一个生产顺序后，所需初始资金就是对每件产品取\"之前已花掉的 e 之和 + 它的 w\"的最大值。问题变成如何选顺序。",
+      "比较相邻两件 a、b：若 w_a−e_a ≥ w_b−e_b，先做 a 所需的资金不超过先做 b。所以按余量 w−e 从大到小排序最优。",
+      "按 w−e 降序排序后依次处理：答案取 max(答案, 已花费 + w)，然后把 e 加入已花费。答案可达 10^10，要用 64 位整数。"
+    ],
+    "en": [
+      "For a fixed production order, the required initial cash is the maximum over products of (sum of e already spent) + w. The problem reduces to choosing the order.",
+      "Compare two adjacent products a and b: if w_a - e_a >= w_b - e_b, doing a first never needs more cash than doing b first. So sorting by the slack w - e in descending order is optimal.",
+      "Sort by w - e in descending order and process the products in turn: answer = max(answer, spent + w), then add e to spent. The answer can reach 10^10, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by w−e in descending order, keep track of the amount already spent, and the answer is the maximum of spent+w.\n\n## Proof of Correctness\n\nFor adjacent products a and b with slack wa−ea≥wb−eb, the requirement when a goes first, max(wa, ea+wb), does not exceed the requirement when b goes first, max(wb, eb+wa): wa≤eb+wa, and ea+wb≤eb+wa. Swapping an inverted pair never increases the requirement, so the sorted order is optimal, and the prefix formula gives the minimum cash for that order.\n\n## Complexity\n\nO(n log n) time, O(n) space; the answer can reach 10^10."
+}

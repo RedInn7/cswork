@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-11",
+  "packageChecksum": "cbc6fffd9b66f66dd00c1c67d6b76033930d287dd878633c3a58e0b49481cc12",
+  "sourceContentHash": "2f8e6f37c172f6f895a71685f64c35a010432b93d6a1dfc46d0818f25fb37c4f",
+  "editorialSha256": "28765514029d848bddbcc173c4462877b5a870c76d933acd0e624d9e7b63dede",
+  "hints": {
+    "zh": [
+      "把合并过程画成一棵二叉树，每个初始值对总代价的贡献是它的值乘以它所在叶子的深度，所以越小的值应该被合并越多次。",
+      "这就是哈夫曼编码的结构：存在一种最优方案先合并当前最小的两个数，合并后问题规模减一、形式不变，于是每次都合并最小的两个即可。",
+      "把所有数放进最小堆。只要堆里多于一个数，就弹出两个最小值，把它们的和累加进答案，再把和放回堆。答案可能超过 32 位，用 64 位整数；值为 0 的元素同样适用。"
+    ],
+    "en": [
+      "Draw the merging process as a binary tree: each initial value contributes its value times the depth of its leaf to the total cost, so smaller values should take part in more merges.",
+      "This is the Huffman coding structure: some optimal plan merges the two smallest numbers first, and after that merge the problem keeps the same form with one fewer element, so always merging the two smallest works.",
+      "Put all numbers in a min-heap. While it holds more than one number, pop the two smallest, add their sum to the answer, and push the sum back. The answer can exceed 32 bits, so use a 64-bit integer; zero values work the same way."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWith a min-heap, repeatedly pop the two smallest numbers, merge them, add the merged value to the total, and push it back into the heap.\n\n## Proof of correctness\n\nView the merging process as a binary tree: each initial value's total cost is its value times its leaf depth. The deepest sibling leaves can be swapped for the two smallest weights without increasing the total cost; contracting them gives a problem of the same kind with one fewer element. So some optimal solution merges the two smallest items first, and by induction the greedy is optimal; zero weights also satisfy the exchange inequality.\n\n## Complexity\n\nO(n log n) time, O(n) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-zolostays-2",
+  "packageChecksum": "e1efb88ce11dae480daf071728d1a2c00c61576bdca0ed20cb2e2812c6801e19",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    h = list(map(int, data[1:1 + n]))\n    left, right = 0, n - 1\n    left_max = right_max = 0\n    answer = 0\n    # settle the side whose known maximum is lower: its water level is already fixed\n    while left <= right:\n        if left_max <= right_max:\n            if h[left] > left_max:\n                left_max = h[left]\n            answer += left_max - h[left]\n            left += 1\n        else:\n            if h[right] > right_max:\n                right_max = h[right]\n            answer += right_max - h[right]\n            right -= 1\n    print(answer)\n\n\nmain()\n",
+      "sha256": "e6f410b684670eef05d6953c1202732b1782022d59550bee2419df663dd14f47"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer in = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in), 1 << 16));\n        in.nextToken();\n        int n = (int) in.nval;\n        int[] h = new int[n];\n        for (int i = 0; i < n; i++) {\n            in.nextToken();\n            h[i] = (int) in.nval;\n        }\n        int left = 0, right = n - 1, leftMax = 0, rightMax = 0;\n        long answer = 0;\n        // settle the side whose known maximum is lower: its water level is already fixed\n        while (left <= right) {\n            if (leftMax <= rightMax) {\n                leftMax = Math.max(leftMax, h[left]);\n                answer += leftMax - h[left];\n                left++;\n            } else {\n                rightMax = Math.max(rightMax, h[right]);\n                answer += rightMax - h[right];\n                right--;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "9b584b5562bfa9650112a3e16447ed58609b9705a3d6863958da78d212ec7b9e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn := next()\n\th := make([]int, n)\n\tfor i := range h {\n\t\th[i] = next()\n\t}\n\tleft, right, leftMax, rightMax := 0, n-1, 0, 0\n\tvar answer int64\n\t// settle the side whose known maximum is lower: its water level is already fixed\n\tfor left <= right {\n\t\tif leftMax <= rightMax {\n\t\t\tleftMax = max(leftMax, h[left])\n\t\t\tanswer += int64(leftMax - h[left])\n\t\t\tleft++\n\t\t} else {\n\t\t\trightMax = max(rightMax, h[right])\n\t\t\tanswer += int64(rightMax - h[right])\n\t\t\tright--\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "bba904a890ff222c0bac1fac1d114acfcbf953fcdfc29c7f2d1cef0d453bb2a9"
+    }
+  ]
+}

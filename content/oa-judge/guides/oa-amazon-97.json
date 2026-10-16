@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-97",
+  "packageChecksum": "4bff08220a26b5f940d583f18cb79156f8e985128c76d7529df24661ec55b587",
+  "sourceContentHash": "83cd7cb983205c1846d945f5e2312e82e5b34942f6222f5e0d8b7012ff1ba704",
+  "editorialSha256": "05d05a9c2502ed8784e114b7114f87fe511a8bd570b963611806704c6a550a38",
+  "hints": {
+    "zh": [
+      "按到达顺序处理请求时，需要随时知道\"当前空闲的最小编号\"和\"最早什么时候有服务器释放\"，这两个问题各对应一个堆。",
+      "维护当前时间 now，它不早于请求的到达时间 i，也不早于上一个请求开始处理的时间。若没有空闲服务器，就把 now 推进到忙碌堆里最早的结束时间，然后把所有结束时间不晚于 now 的服务器放回空闲堆。",
+      "空闲堆存编号，忙碌堆存（结束时间，编号）。每个请求：now=max(now, i)；空闲堆为空时 now=max(now, 忙碌堆顶的结束时间)；弹出所有结束时间 ≤ now 的服务器放入空闲堆；取空闲堆的最小编号分配，并把（now+时长，编号）放入忙碌堆。时长为 0 的服务器在同一时刻就会被释放，结束时间用 64 位整数。"
+    ],
+    "en": [
+      "Processing requests in arrival order needs two answers at all times: the smallest idle ID, and the earliest moment a busy server frees up. Each of these is a heap.",
+      "Keep a current time now that is never earlier than the request arrival time i or than the time the previous request started. If no server is idle, advance now to the earliest end time in the busy heap, then move every server whose end time is at most now back to the idle heap.",
+      "The idle heap holds IDs and the busy heap holds (end time, ID). For each request: now = max(now, i); if the idle heap is empty, now = max(now, end time at the top of the busy heap); pop every server with end time <= now into the idle heap; assign the smallest idle ID and push (now + duration, ID) into the busy heap. A 0-second request frees its server at the same moment; keep end times in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a min-heap of idle IDs plus a min-heap of busy (end time, ID) pairs. For each request, advance to its arrival time; if no server is idle, advance to the earliest end time, then release every server whose time has come, and take the smallest ID.\n\n## Proof of Correctness\n\nThe two heaps represent the current idle and busy states exactly. The waiting moment is uniquely determined by the earliest end time; after releasing all servers that end at the same time, the ID heap breaks ties correctly. Requests are processed in input order, so requests that are already queued are handled first.\n\n## Complexity\n\nTime O((servers+n)log servers), space O(servers+n)."
+}

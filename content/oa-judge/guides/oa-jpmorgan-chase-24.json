@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-24",
+  "packageChecksum": "e0418095fa0e3bd1a7fca5c3d3e02571db6cf1c1c93d640a361f7592703e3936",
+  "sourceContentHash": "25094c994b7e78969e29f53fa409f5273a3a11ed5a2c4ce5bdcb99ac55879e6c",
+  "editorialSha256": "48722cf31a8c24e3fd2f2261a4681b7c3b469bd6e9faf8923e6d585fdf66cb37",
+  "hints": {
+    "zh": [
+      "相邻元素奇偶都不同的数组只有两种奇偶模式：偶奇偶奇…或奇偶奇偶…；模式一旦固定，各个位置的操作互不影响。",
+      "对每种模式，让每个元素独立地不断除以 2，直到奇偶与该位置的目标相符，把次数加起来；两种模式取较小值。正数不断减半一定会经过 1 和 0，所以目标奇偶总能达到。",
+      "设 first ∈ {0, 1}，位置 i 的目标奇偶为 first 异或 (i mod 2)；对每个元素重复“奇偶不符就除以 2 并计数”，累加得到该模式的总成本，输出两种模式中的较小者。"
+    ],
+    "en": [
+      "An array whose adjacent elements all differ in parity follows one of only two patterns, even-odd-even... or odd-even-odd...; once the pattern is fixed, positions do not affect each other.",
+      "For each pattern, halve every element independently until its parity matches the target for its position and add up the counts; take the smaller of the two totals. A positive number that keeps halving passes through 1 and 0, so either parity is always reachable.",
+      "Let first ∈ {0, 1}; the target parity at position i is first xor (i mod 2). For each element, keep halving and counting while its parity is wrong; the sum is that pattern's cost, and the answer is the smaller of the two costs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe final parities can only alternate starting from even or starting from odd. For each case, compute the minimum number of right shifts each item needs to reach its required parity, then take the smaller of the two totals.\n\n## Proof of correctness\n\nOnce an alternating pattern is fixed, operations on different positions do not affect each other, so the minimum cost equals the sum, over all items, of the number of steps until each first reaches its target parity. Repeatedly halving a positive number must pass through 1 and 0, so both parities are reachable. Every valid final array follows one of these two patterns, so taking the minimum covers all plans.\n\n## Complexity\n\nO(n log V) time and O(1) space apart from the input."
+}

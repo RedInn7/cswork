@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-53",
+  "packageChecksum": "895a993c7c13a7ff6b2e354fff94c5778e1a46f9d6bc41daeb41049b7aa1ff76",
+  "sourceContentHash": "e1f3e2da693b722ad2055dd619896a118c339e5919bef95b2405ac9be36d5003",
+  "editorialSha256": "a88f85c21da213947a33f70cece1f8af3a3ad51533b70f12ac3b647c5935916a",
+  "hints": {
+    "zh": [
+      "所有记录连成一条链，链头就是唯一一个 start 不出现在任何记录的 end 中的记录。",
+      "用哈希表把 start 映射到它的记录，再把所有 end 放进一个集合，就能找到链头，并沿着 end 一条条找到下一条记录。",
+      "按行读取：payload 可能带首尾空格甚至为空，必须整行保留，不能按空白切分。找到链头后走 N 步，依次收集 payload，最后一次性拼接输出，避免反复拼接字符串带来平方级开销，末尾补一个换行。"
+    ],
+    "en": [
+      "The records form a single chain, and its head is the only record whose start never appears as any record's end.",
+      "Map each start to its record in a hash table and put every end in a set; that finds the head, and following end leads from one record to the next.",
+      "Read line by line: a payload may have leading or trailing spaces or be empty, so keep the whole line instead of splitting on whitespace. From the head, walk N steps collecting payloads, join them once at the end to avoid quadratic string building, and finish with a newline."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMap the records by start, find the starting key that does not appear in the set of end keys, walk along end from it record by record collecting payloads, and concatenate them once at the end.\n\n## Correctness\n\nThe first key of the unique chain has no predecessor, while every other start key has one, so the starting point is unique. Looking up the next record by end each time follows exactly the required order, and walking N steps covers all records exactly once; the concatenation is the answer.\n\n## Complexity\n\nTime O(input bytes), space O(input bytes+N)."
+}

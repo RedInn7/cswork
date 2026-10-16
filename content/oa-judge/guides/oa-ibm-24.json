@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-24",
+  "packageChecksum": "eaf8cf111e8887dd7442572ab87c3a0556c9a5852070d8c78c920ef14a08b418",
+  "sourceContentHash": "4b20314fbe086ee7735effa7a6dde5160d8ff2ad3c80fbefbd20ef50893fa498",
+  "editorialSha256": "39220bc1807361980060c3814331f8cf90b14f71240f898e637c30661bb60a01",
+  "hints": {
+    "zh": [
+      "最终串由若干个abc块拼接而成，原串中落在同一个块里的字符必须严格递增（a<b<c）。",
+      "因此只要相邻两个原字符不是严格递增（后一个不大于前一个），它们之间就必须切到下一个块；而按这些位置切开后，每段都是abc的子序列，都能补全成abc。",
+      "块数等于1加上相邻位置中s[i]≤s[i−1]的次数；答案为3×块数−原串长度。"
+    ],
+    "en": [
+      "The final string is a concatenation of abc blocks, and the original characters that fall in the same block must be strictly increasing (a<b<c).",
+      "So whenever two adjacent original characters are not strictly increasing (the later one is not greater than the earlier one), a new block must start between them; after cutting at these places, every piece is a subsequence of abc and can be completed to abc.",
+      "The number of blocks is 1 plus the number of adjacent positions with s[i]≤s[i−1]; the answer is 3 × blocks − original length."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhenever adjacent characters are not strictly increasing, a new abc block must start; multiply the number of blocks by 3 and subtract the original length.\n\n## Proof of correctness\n\nThe original characters kept within one abc block must be strictly increasing, so every non-increasing boundary forces a cut. After cutting at these boundaries, each block is a subsequence of abc and can be completed to abc, which reaches the forced lower bound on the number of blocks.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

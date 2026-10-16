@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-22",
+  "packageChecksum": "6e6683cf45604fd46507fccab200e7ed32380ab99f9d3dd9e1e98537c30a07d1",
+  "sourceContentHash": "bba94e610a2fc5199b7b52f71dd2c904b4dd6ec4ac0b5c206c9082b7d3e8cda9",
+  "editorialSha256": "05109745fad9b003c368e7840d2640be19810ec98c27caa0662349969e368bf7",
+  "hints": {
+    "zh": [
+      "已经拥有的不同编号（包括超出1到n范围的）都直接计入答案，重复编号只算一次；需要最大化的只是新买商品的数量。",
+      "每件新商品贡献都是1，而价格等于编号，所以应当从最便宜的未拥有商品开始买；交换论证可以证明按价格递增购买是最优的。",
+      "先对已拥有的编号去重并计数；再从1到n依次检查：已拥有则跳过；否则若价格超过剩余预算就停止，不然扣除价格、答案加1。"
+    ],
+    "en": [
+      "Every distinct owned number counts directly, including those outside 1..n, and duplicates count once; only the number of newly bought items needs to be maximized.",
+      "Each new item contributes exactly 1 while its price equals its number, so buy the cheapest items you do not own first; an exchange argument shows that buying in increasing order of price is optimal.",
+      "Deduplicate and count the owned numbers first; then check 1 to n in order: skip owned items; otherwise stop if the price exceeds the remaining budget, else subtract the price and add 1 to the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDeduplicate the owned numbers, then go from 1 to n buying each item you do not own while you can afford it; stop when you cannot.\n\n## Proof of correctness\n\nAll distinct owned numbers count for free, and each newly bought item contributes 1. If a plan buys a more expensive unowned item but skips a cheaper one, swapping them keeps the count and does not increase the cost; repeated swaps turn it into a prefix of items chosen in increasing order of price, so the greedy choice is optimal.\n\n## Complexity\n\nTime O(n+m), space O(m)."
+}

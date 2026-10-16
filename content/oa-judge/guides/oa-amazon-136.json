@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-136",
+  "packageChecksum": "579e0824b0bca14de0bd838ffeca4a449c681cda7f6577ca3d3b70d8438d60eb",
+  "sourceContentHash": "6fe8def2e8f217574370320a5b3a10e87a9db8198d0c9ab287259b234cb079b4",
+  "editorialSha256": "a3cec29e1778ba29f4ba047101249a5ea197ee6364b5d9c8ceaa010f8f4a00c6",
+  "hints": {
+    "zh": [
+      "先想最大负载至少是多少：原来的包裹拿不走，所以它不会小于原最大负载；所有包裹总量摊到 n 辆车上，最大值也不会小于平均值向上取整。",
+      "取上限 C=max(原最大负载, ⌈(原总和+P)/n⌉)。因为 nC 减去原总和不小于 P，把每辆车尽量补到 C 一定能把新包裹分完，而且最大值正好达到下界，所以就是最优。",
+      "计算 C；按输入顺序遍历每辆车，放入 min(剩余P, C-当前负载)，更新负载并从 P 中扣除，直到 P 为 0；输出最终负载数组（任意最优解都可以）。总和可达 10^14 量级，用 64 位整数。"
+    ],
+    "en": [
+      "First ask how small the maximum load can be: original packages cannot be removed, so it is at least the original maximum; and spreading the total over n vehicles, it is at least the average rounded up.",
+      "Take the cap C = max(original maximum, ceil((original total + P)/n)). Since nC minus the original total is at least P, filling each vehicle up to C is guaranteed to place all new packages, and the maximum then equals the lower bound, so it is optimal.",
+      "Compute C; walk the vehicles in input order and add min(remaining P, C - current load) to each, subtracting it from P until P reaches 0; print the final loads (any optimal answer is accepted). Totals reach around 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe optimal cap C is the larger of the original maximum and the total load averaged and rounded up. Fill each vehicle up to C in input order as far as possible, until the added packages run out.\n\n## Correctness\n\nIn any plan the maximum is at least the original maximum, and at least the total divided by n rounded up. Taking C as the larger of these two, the total remaining capacity nC - (original total) is >= P, so filling vehicle by vehicle always finishes. The resulting maximum reaches a lower bound that cannot be beaten, so the plan is optimal.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-10",
+  "packageChecksum": "61ab48c9dd19b89335ef4f192bf2d046204e9d534b43b9a89dc676b4257e6928",
+  "sourceContentHash": "7bed77b484cfd25b93b6029865b13a280a3dd77f5aa59cc700f950e31212e651",
+  "editorialSha256": "cbf8f97ca3a7a552a41297ed3dddd473479b12606ec540df8a7dc5d2bd98e1a6",
+  "hints": {
+    "zh": [
+      "形如 0^k1^k 或 1^k0^k 的子串一定恰好跨过一个“相邻字符不同”的边界，边界左边是 k 个相同字符，右边是 k 个另一种字符。",
+      "把字符串切成若干段连续相同字符；相邻两段长度为 a、b 时，跨过它们交界的合法子串可以取 k=1..min(a,b)，正好贡献 min(a,b) 个，不同交界之间互不重复。",
+      "从左到右扫描，用 current 记录当前段长度、previous 记录上一段长度；每当字符变化时把 min(previous,current) 加进答案，并令 previous=current、current=1；扫描结束后再加一次 min(previous,current)。"
+    ],
+    "en": [
+      "A substring of the form 0^k1^k or 1^k0^k always crosses exactly one boundary between different adjacent characters, with k equal characters on its left and k of the other character on its right.",
+      "Split the string into runs of equal characters. For two adjacent runs of lengths a and b, the valid substrings crossing their boundary can use k=1..min(a,b), contributing exactly min(a,b), and different boundaries never produce the same substring.",
+      "Scan from left to right, keeping current as the length of the current run and previous as the length of the run before it. Whenever the character changes, add min(previous,current) to the answer and set previous=current, current=1. After the scan, add min(previous,current) once more."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the string into runs of identical consecutive characters; two adjacent runs of lengths a,b contribute min(a,b).\n\n## Correctness\n\nEvery valid substring crosses exactly one run boundary, and the lengths on both sides must be equal, ranging from 1 to min(a,b). Different boundaries or different lengths determine different intervals; conversely, every valid interval is counted exactly once.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

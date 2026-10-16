@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-318",
+  "packageChecksum": "5e7dde0eb72a50aa7442ef5460578a4b603881b73919870911a7405b4841815f",
+  "sourceContentHash": "91d822d720f74539321c7ca594ae78d0a60f18499180ef075eb5100c7ac92b8a",
+  "editorialSha256": "75ff23df71193c1dc09ed39914a183e2a8cf8c7d1897937d9c3b3bd494fe013b",
+  "hints": {
+    "zh": [
+      "不管怎样从两端删除，剩下的总是原串的一段连续子串；反过来任何连续子串都能删出来。中间过程的类型不重要。",
+      "删除最多等价于保留最短的子串，它必须以原首字符开头、以原末字符结尾（单字符a的类型是aa，所以首末字符相同时可以只留一个字符）。",
+      "从左到右扫描j，记录最近一次出现原首字符s[0]的位置last；若s[j]等于原末字符且last存在，就用j−last+1更新最短保留长度。最后输出n减最短长度。"
+    ],
+    "en": [
+      "However you delete from the two ends, what remains is always one contiguous substring of the original string, and conversely any contiguous substring can be reached. The type along the way does not matter.",
+      "Deleting the most means keeping the shortest substring, which must start with the original first character and end with the original last character (a single character a has type aa, so when the first and last characters are equal you can keep just one character).",
+      "Scan j from left to right and remember last, the latest position where the original first character s[0] appeared. If s[j] equals the original last character and last exists, update the shortest kept length with j−last+1. Finally output n minus the shortest length."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhat remains is always a contiguous substring of the original string. Scan every end position j while maintaining the nearest position i holding the original first character; if the current character equals the original last character, try keeping [i,j] and update the shortest length. Return n minus the shortest length.\n\n## Proof of correctness\n\nDeleting from both ends can leave exactly any contiguous substring, and whether it is valid depends only on its endpoints. For a fixed end, the nearest valid first character makes the kept length shortest; scanning all ends covers every valid substring, which gives the maximum number of deletions. When the first and last characters are equal, i=j may keep just one character, which by definition still has the same type; the original type is non-empty, so not everything can be deleted.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."
+}

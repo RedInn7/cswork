@@ -1,0 +1,19 @@
+{
+  "id": "oa-geneva-trading-1",
+  "packageChecksum": "a204b778ad345a33f1d8f6579a99f57ae0c02a3b2c0aab86713978dd82735b80",
+  "sourceContentHash": "a86fe9cc0e918b4cf8fc159e98309ca7b7ef2265cd03ec895f7aa4293648ae95",
+  "editorialSha256": "f0ae6d88accd224cacd2d9efc726b5a4bfb25011df7692fd2fc7f2e0bf4a6d03",
+  "hints": {
+    "zh": [
+      "排列可以拆成若干互不相交的循环。每次操作让每个循环里的元素沿循环走一步，长度为 L 的循环恰好在步数是 L 的倍数时复原。",
+      "整个数组复原要求所有循环同时复原，所以答案是全部循环长度的最小公倍数。LCM 可能非常大，不能直接算出再取模，而要用质因数分解：对每个质数取它在各循环长度中出现的最高次幂。",
+      "用 visited 数组找出所有循环并得到长度；用最小质因子筛预处理到 n，把每个循环长度分解质因数，记录每个质数的最大指数；最后把每个质数的最大指数次幂用快速幂对 10^9+7 取模后乘起来输出。"
+    ],
+    "en": [
+      "A permutation splits into disjoint cycles. Each operation moves every element one step along its cycle, and a cycle of length L is restored exactly when the number of steps is a multiple of L.",
+      "The whole array is restored only when all cycles are restored at once, so the answer is the least common multiple of all cycle lengths. That LCM can be huge, so do not compute it and then reduce; use prime factorization instead and take, for each prime, the highest power that appears in any cycle length.",
+      "Find all cycles and their lengths with a visited array; build a smallest-prime-factor sieve up to n, factor each cycle length and record the maximum exponent of every prime; finally multiply each prime raised to its maximum exponent with fast modular exponentiation modulo 10^9+7 and print the product."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA permutation consists of disjoint cycles. One operation moves the element at each position one step along the permutation; a cycle of length L returns to its original state only after L operations. So the total number of steps must be, and only needs to be, a common multiple of all cycle lengths, and the smallest positive number of steps is their least common multiple. Since the LCM can be very large, record the maximum exponent of each prime factor over the cycle lengths, then rebuild the LCM with modular multiplication.\n\n## Proof of correctness\n\nIf the array is restored after t operations, then because the elements are distinct, every position must return to its original element; on each cycle this is equivalent to L|t. All cycles are restored at the same time if and only if t is a common multiple of all cycle lengths. A number is divisible by every cycle length if and only if each of its prime exponents is at least the maximum exponent of that prime among the cycle lengths, so the product of the highest prime powers is exactly the smallest positive solution.\n\n## Complexity\n\nFactoring the cycle lengths and building the smallest-prime-factor table take O(n log n) time and O(n) space.\n\n## Source note\n\nThe statement is compiled from a fixed OAMaster snapshot; the standard input/output protocol is added by this site, and this site does not claim the original site provides it."
+}

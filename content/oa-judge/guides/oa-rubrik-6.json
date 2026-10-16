@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-6",
+  "packageChecksum": "91c5f38e044960c7424495b38de126d38ff7b00fb1c979eea50a3131dc68f032",
+  "sourceContentHash": "385f169d21a8b96207bf9ad2b1f9c12e2793f5c1273efeba76fa297544f89076",
+  "editorialSha256": "6ae212327485ec23bc26af5bf1d81c02cde290c757ab67b5f42899d526e85cc3",
+  "hints": {
+    "zh": [
+      "答案一定是 y 中某个连续子串，而这个子串要能在 x 里按顺序（可跳跃）找到；|x|、|y| 都不超过 2000，可以承受 O(|x|·|y|) 的枚举。",
+      "固定 y 中子串的起点后，问题变成：从这个起点开始的前缀，最长能有多长仍是 x 的子序列。对这个问题，在 x 中从左到右贪心地取最早能匹配的位置是最优的。",
+      "枚举 y 的每个起点 start：用指针 i 扫描 x，matched 表示已经匹配的长度，若 x[i]==y[start+matched] 就让 matched 加一，直到 x 扫完或 y 到头；取所有起点的 matched 最大值输出（没有匹配则为 0）。"
+    ],
+    "en": [
+      "The answer is always some contiguous substring of y that can be found in x in order (with skips allowed). Both |x| and |y| are at most 2000, so an O(|x|*|y|) enumeration is affordable.",
+      "Once the start of the substring in y is fixed, the question becomes: how long can the prefix starting there be while still being a subsequence of x? For that question, greedily taking the earliest matching position in x from left to right is optimal.",
+      "For each start in y, scan x with a pointer i and keep matched, the length matched so far: whenever x[i]==y[start+matched], increase matched, until x runs out or y ends. Print the maximum matched over all starts (0 if nothing matches)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the start of the substring in y, and greedily match that suffix against x; for each start, the longest matchable prefix is the best substring length starting there.\n\n## Correctness\n\nFor a fixed substring start, taking the earliest matchable position in x for each character from left to right never reduces the characters that can be matched later, so the greedy obtains the longest substring for that start. Enumerating all starts covers every candidate substring.\n\n## Complexity\n\nWith n=|x| and m=|y|, time O(nm), extra space O(1)."
+}

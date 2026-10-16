@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-70",
+  "packageChecksum": "3039ae4e7e8943935ad6715e154924a768e075900e342f4c93bc0ea760e65049",
+  "sourceContentHash": "a3499a9c7642502b90e61d9e9a41e6ef97267857c51141ef1844dbd229757ae4",
+  "editorialSha256": "b03dd99acbcbdbf312420176698770c00521f8bcc9f125790da5292aa6a6dcd5",
+  "hints": {
+    "zh": [
+      "每一步都必须到达指定的枢纽，下一步的起点因此是固定的，所以总时间就是每一段“相邻两次请求之间最短距离”的独立相加。",
+      "环上没有负权边，两点之间的最短路只可能是顺时针或逆时针的那段弧；用边权前缀和给每个枢纽一个线性坐标，顺时针弧长就是坐标差的绝对值，另一侧弧长是周长减去它。",
+      "求前缀和 prefix[i]（枢纽 1 的坐标为 0），从枢纽 1 出发；对每个请求 h，距离 d = |prefix[h−1] − prefix[当前]|，累加 min(d, 周长 − d)，再把当前位置更新为 h；结果用 64 位整数。"
+    ],
+    "en": [
+      "Every step must reach the requested hub, so the start of the next step is fixed, and the total time is simply the sum of the shortest distances between consecutive requests, each computed independently.",
+      "The ring has no negative edges, so the shortest path between two hubs is either the clockwise arc or the counterclockwise arc; with prefix sums of the edge weights as linear coordinates, one arc length is the absolute coordinate difference and the other is the perimeter minus it.",
+      "Compute prefix[i] with hub 1 at coordinate 0 and start at hub 1; for each request h, let d = |prefix[h-1] - prefix[current]|, add min(d, perimeter - d), then move to h; use a 64-bit total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrefix sums give each hub's position on the unrolled line; for each pair of consecutive requests, the distance is the smaller of the two arc lengths.\n\n## Proof of correctness\n\nOn a ring without negative edges, the shortest path between two points can only be the clockwise or the counterclockwise simple arc. Each step must reach the specified hub, so the start of the next step is fixed, and minimizing each step separately and adding them up is correct.\n\n## Complexity\n\nO(m+n) time and O(m) space."
+}

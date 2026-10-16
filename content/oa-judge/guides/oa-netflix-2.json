@@ -1,0 +1,19 @@
+{
+  "id": "oa-netflix-2",
+  "packageChecksum": "7161c7fca49ea74b60e637fbb20c9f6816cc85af411688ee04e83cf46806371d",
+  "sourceContentHash": "e0df87fada995bab462edb49a909d989c8f613c0bfb4ff65ccac66135c61b380",
+  "editorialSha256": "1175bf5c7f1e6a101f8a6db1fb43243712d507fd1b2c35ee106a40e57c8c46f2",
+  "hints": {
+    "zh": [
+      "各组互相独立，每组的分数就是组内相似度最大的 k 个之和，按输入顺序输出，不要给组排序。",
+      "对一组成员，取出他们的相似度并降序排列，前 k 个之和就是这一组的最高分；所有组的成员总数不超过 2×10^5，逐组排序足够快。",
+      "先读入所有电影的相似度；然后对每一组读入大小 m 和 m 个编号，收集对应的相似度降序排序，累加前 k 项。先输出 G，再输出各组分数；输出允许 1e-5 的误差，用双精度浮点并保留足够的有效数字即可。"
+    ],
+    "en": [
+      "Groups are independent; a group's score is the sum of its k largest similarities, and the scores are printed in input order without reordering the groups.",
+      "For one group, collect its members' similarities and sort them in descending order; the sum of the first k is the group's score. All groups together have at most 2×10^5 members, so sorting each group is fast enough.",
+      "Read every movie's similarity first; then for each group read its size m and the m indices, gather the similarities, sort them in descending order and add up the first k. Print G, then the group scores; an error of 1e-5 is allowed, so double-precision floats printed with enough significant digits are fine."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each group, take the members' scores, sort them in descending order, and add up the first k.\n\n## Correctness\n\nAny set of k elements that includes a smaller score while leaving out a larger one can swap the two without decreasing the total. Repeated swaps lead to the k largest values, so their sum is the highest total for the group. Each group is computed independently, keeping the input order.\n\n## Complexity\n\nWith M members in total, time O(N+Σm log m) and space O(max m) apart from input and output."
+}

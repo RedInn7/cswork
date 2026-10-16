@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-68",
+  "packageChecksum": "8a8c04f83192ffc7070d0bbe89594ef5c7da12cdca6ef01d67105f74dc1345c7",
+  "sourceContentHash": "9f9375981bcb0af2aca4f08d9c3d873e66400637174b4ba3e06e309d2c8a696f",
+  "editorialSha256": "e846d4d4d1a349caba458c3edfb8d26afa9df944392df3a24dab82b19c0b28b1",
+  "hints": {
+    "zh": [
+      "是否超时只取决于同一服务内按时间排序后的相邻心跳间隔；输入顺序是乱的，所以关键是把同一服务的心跳排到一起并按时间排好。",
+      "把 (服务ID, 时间戳) 二元组整体排序：同一服务的记录会连续出现，组内按时间递增，而且服务 ID 本身已按字典序排列。之后只需比较排序结果中的相邻两条记录。",
+      "读入所有记录并按 (ID, 时间) 排序；扫描相邻两条，若 ID 相同且时间差严格大于 threshold，且该 ID 还不是结果的最后一个，就把它加入结果；先输出结果个数，再逐行输出 ID。只有一次心跳的服务不会被加入。"
+    ],
+    "en": [
+      "Whether a service timed out depends only on the gaps between its adjacent heartbeats in time order; the input is unordered, so the key is to bring each service's heartbeats together in time order.",
+      "Sort the (service ID, timestamp) pairs as a whole: records of the same service become contiguous and increase in time within the group, and the service IDs themselves come out in lexicographic order. Afterwards you only need to compare adjacent records of the sorted list.",
+      "Read all records and sort them by (ID, time); scan adjacent pairs, and if both have the same ID, their time difference is strictly greater than threshold, and that ID is not already the last one in the result, append it; print the number of results and then one ID per line. A service with a single heartbeat is never added."
+    ]
+  },
+  "explanationEn": "## Problem\n\nEach heartbeat has a timestamp and a service ID. For each service, sort its heartbeats by time; if the interval between some two adjacent heartbeats is strictly greater than threshold, the service counts as having timed out. Output all services that timed out in lexicographic order of their IDs. The heartbeats in the input are not sorted by time; a service with only one heartbeat never times out.\n\n## Approach\n\nSort the (service ID, timestamp) pairs as a whole, so the heartbeats of the same service become contiguous and increase in time. Scan adjacent records: if they belong to the same service and their time difference is greater than threshold, add the service to the result (each service only once). After sorting, the service IDs themselves are in lexicographic order, so the result is naturally sorted.\n\n## Correctness\n\nAfter sorting, adjacent records of the same service are exactly that service's adjacent heartbeats in time order, so the test matches the statement exactly; the interval between equal timestamps is 0 and never exceeds the non-negative threshold.\n\n## Complexity\n\nO(n log n · L), where L ≤ 10 is the ID length.\n\n## Independent verification\n\nThe oracle groups heartbeats by service with a dictionary, sorts each group, checks the adjacent intervals one by one, and finally sorts the result, which differs from the reference's global sort-and-scan. All combinations of 2 services, 1..4 heartbeats, timestamps 1..3 and thresholds 0..2 are enumerated, and the reference program is actually run on each of them. The wrong solutions cover using the first-to-last span, also counting an interval equal to the threshold, not sorting by time, and outputting in order of first appearance."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-279",
+  "packageChecksum": "57520c38dc06463313da2787257eb1c326a04f8bbb54c4c3a9dc8e0fda5495cc",
+  "sourceContentHash": "65e5616e32d27fa99cb3471eab17ce8f33d38e452d31bf178056ec69f5479c1d",
+  "editorialSha256": "eda762417ce5285950d2de73804c6e73cdef89e90d0f6bebf3cdb55ce527851b",
+  "hints": {
+    "zh": [
+      "中位数只看排在中间的元素，把几个大元素塞进同一个频道往往只是浪费。任取两个频道合起来，设其中最大值为 M：让 M 单独成一个频道、其余放在一起，两个中位数之和不会变小。",
+      "反复应用这个交换，可以让最大的 channels−1 个包各自单独成频道，其余所有包放进最后一个频道。于是答案就是这 channels−1 个大值之和，再加上剩余部分的中位数。",
+      "排序；剩下的个数为 n−channels+1，它们是最小的那些值；为避免小数，把所有质量乘 2 后累加：每个大值算两次，剩余部分为奇数个时加中间值的 2 倍，偶数个时加中间两项之和；最后输出（和+1）整除 2，即向上取整。"
+    ],
+    "en": [
+      "A median only looks at the middle element, so putting several large packets into one channel mostly wastes them. Take any two channels together and let M be their maximum: putting M alone and everything else together never lowers the sum of the two medians.",
+      "Applying this exchange repeatedly, the largest channels−1 packets can each form their own channel, and all remaining packets go into the last channel. The answer is then the sum of those channels−1 large values plus the median of the rest.",
+      "Sort; the remaining count is n−channels+1, and these are the smallest values; to avoid fractions, add up every quality times 2: each large value counts twice, and for the rest add twice the middle value when the count is odd, or the sum of the two middle values when it is even; finally print (sum+1) divided by 2 and rounded down, which rounds the real total up."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, put each of the largest channels−1 items in its own channel and everything else in the last channel. Sum all qualities multiplied by 2, then round up with (sum2+1)//2 at the end to avoid floating point.\n\n## Proof of correctness\n\nFor any two groups, let M be the maximum of their union and q the median of the remaining elements; then the sum of the two original medians is at most M+q: counting by the median positions of the two groups, after removing M at least half of the remaining numbers are no less than the sum of the two medians minus M, and in the even case averaging the two middle values works the same way. So M can be split off on its own and the rest merged into one group without lowering the total quality. Repeatedly exchanging between the channel holding the current maximum and another non-singleton channel yields an optimal form in which the largest channels−1 items are each alone. Computing the median of the rest directly is then optimal, and rounding once at the end preserves the order of the objective.\n\n## Complexity\n\nTime O(n log n), space O(n); the doubled quality sum uses 64 bits."
+}

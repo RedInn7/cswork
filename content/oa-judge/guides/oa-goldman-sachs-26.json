@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-26",
+  "packageChecksum": "4655d01d620441f99a2458255542d4427a59fe10123e77ee224485e12c954e06",
+  "sourceContentHash": "f209172c895d18a9794fc0097540560ac78f2d7b809556d2544da26e792f1644",
+  "editorialSha256": "67a5f9c31b046284c9540ebdf88234e177c528446547d5a95096a61e78c0762e",
+  "hints": {
+    "zh": [
+      "正向操作每次只会让一个坐标变大（加上另一个坐标），两个坐标都是正数，所以坐标只增不减。",
+      "从目标 (c, d) 反着往回推：若 c > d，它只能由 (c − d, d) 得到；若 d > c，只能由 (c, d − c) 得到。每一步的前驱是唯一确定的，所以沿着这条唯一路径往回走即可。",
+      "若 c < a 或 d < b 直接输出 No；循环直到 (c, d) 等于 (a, b)：途中若某个坐标小于起点对应坐标，或 c = d（且不等于起点），输出 No；否则把较大的坐标减去较小的坐标。到达起点就输出 Yes。"
+    ],
+    "en": [
+      "A forward operation only ever makes one coordinate larger (by adding the other one), and both coordinates are positive, so coordinates never decrease.",
+      "Work backwards from the target (c, d): if c > d it can only come from (c - d, d); if d > c it can only come from (c, d - c). Every predecessor is forced, so just follow that unique path back.",
+      "If c < a or d < b, print No; loop until (c, d) equals (a, b): if along the way a coordinate drops below the starting one, or c = d (while not equal to the start), print No; otherwise subtract the smaller coordinate from the larger. Reaching the start means Yes."
+    ]
+  },
+  "explanationEn": "# Is Possible\n\n## Approach\n\nRestore backwards from (c,d). If c>d, the only possible predecessor is (c−d,d); if d>c, the only possible predecessor is (c,d−c). Each time subtract the smaller coordinate; if a coordinate drops below the start, or the pair reaches an equal state other than the start, the target is unreachable.\n\n## Proof of correctness\n\nEach forward operation increases only one coordinate. For any positive target pair with c>d, it cannot be produced by the second operation (which would make the second coordinate larger), so its only predecessor is (c−d,d). The case d>c is symmetric. Repeatedly applying the unique predecessor misses no path; once (a,b) is reached, a corresponding forward path exists. If any coordinate drops below the start, it cannot be reached from the start because forward operations never decrease coordinates; if c=d, that state cannot be produced by a forward operation unless it is already the start.\n\n## Complexity\n\nEach step decreases at least one coordinate, and coordinates do not exceed 1000; O(c+d) time, O(1) space.\n\n## Reference implementation\n\n```python\nimport sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    if c<a or d<b:return 'No'\n    # Each reverse step is forced: if c>d, only (c-d,d) can precede\n    # (c,d); if d>c, only (c,d-c) can precede it. Coordinates stay positive.\n    while (c,d)!=(a,b):\n        if c<a or d<b:return 'No'\n        if c==d:return 'No'\n        if c>d:c-=d\n        else:d-=c\n    return 'Yes'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n```"
+}

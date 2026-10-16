@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-41",
+  "packageChecksum": "d463304661803ad5517aff5083b2c5a24bfcb1fef4f4bd89ae575dad95fdc41d",
+  "sourceContentHash": "64d48b3746fffc2361b76708fe40922040ae5f5495335556f4d67f5aaa958e48",
+  "editorialSha256": "e81c664e423739ae502465cffc65743c9cd3cdf07427d942500fcccb35c02463",
+  "hints": {
+    "zh": [
+      "第 i 个读的章节，其记忆值会被计入之后每一次得分，也就是被计算 n−i+1 次；越早读的章节权重越大。",
+      "这是一个“值乘以递减权重”的配对问题：把大的值配给大的权重最优，这个交换论证对负数同样成立，所以直接按记忆值降序阅读。",
+      "把记忆值降序排序，维护当前已读章节的前缀和 prefix，每读一章先把它加进 prefix，再把 prefix 加到答案里；答案可能为负，也可能很大，用 64 位整数。"
+    ],
+    "en": [
+      "The chapter read i-th contributes its memory value to every later score, that is n-i+1 times; chapters read earlier carry larger weights.",
+      "This is a pairing of values with decreasing weights: matching larger values with larger weights is optimal, and the exchange argument also holds for negative values, so simply read in descending order of memory value.",
+      "Sort the memory values in descending order and keep a running prefix sum of the chapters read so far; for each chapter add it to the prefix, then add the prefix to the answer. The answer may be negative or large, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead in descending order of memory value and add up the prefix sum at each step.\n\n## Proof of correctness\n\nThe value read i-th is counted in the next n-i+1 scores, so the weights decrease along the reading order. The exchange inequality that pairs larger values with larger weights holds for negative numbers as well, so descending order is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

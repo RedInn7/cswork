@@ -5,7 +5,7 @@ import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
@@ -25,6 +25,13 @@ const student: Person = { id: 'guide-student', name: 'S', email: 's@guides.test'
 const GUIDED = 'oa-meta-10';
 const PLAIN = 'oa-capital-one-2';
 const guide = JSON.parse(readFileSync(`content/oa-judge/guides/${GUIDED}.json`, 'utf8'));
+// Only GUIDED's sidecars, so PLAIN stays a problem without a guide however much content ships.
+const sidecars = join(dir, 'sidecars');
+for (const sub of ['guides', 'solutions', 'reports']) mkdirSync(join(sidecars, sub), { recursive: true });
+copyFileSync(`content/oa-judge/guides/${GUIDED}.json`, join(sidecars, 'guides', `${GUIDED}.json`));
+copyFileSync(`content/oa-judge/solutions/${GUIDED}.json`, join(sidecars, 'solutions', `${GUIDED}.json`));
+copyFileSync('content/oa-judge/reports/solutions-pilot.json', join(sidecars, 'reports', 'solutions-pilot.json'));
+(await import('../lib/server/oa-judge')).useOaSidecarRoot(sidecars);
 
 before(async () => {
   const db = sqlite();

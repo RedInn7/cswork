@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-2",
+  "packageChecksum": "1fa4105afb3c1e4df25622a280f2d2a98f91f3ab2cc4090feb22420c5ddfb691",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> a(n), b(n);\n    for (auto &x : a) cin >> x;\n    for (auto &x : b) cin >> x;\n    // a value is forced into C only where both choices equal it\n    vector<char> forced(n + 2, 0);\n    for (int i = 0; i < n; i++)\n        if (a[i] == b[i] && a[i] <= n) forced[a[i]] = 1;\n    int answer = 1;\n    while (forced[answer]) answer++;\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "3a432ef23d71515d0e2ac300a4a9d9ce1c531a455b3acea518b0f42f539a49aa"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = nextInt();\n        // a value is forced into C only where both choices equal it\n        boolean[] forced = new boolean[n + 2];\n        for (int i = 0; i < n; i++) {\n            int b = nextInt();\n            if (a[i] == b && b <= n) forced[b] = true;\n        }\n        int answer = 1;\n        while (forced[answer]) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "015f63efe31f513320d14a686b1829d5b31d2e14bd20ec10791bf2149b37b29e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn := next()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\t// a value is forced into C only where both choices equal it\n\tforced := make([]bool, n+2)\n\tfor i := 0; i < n; i++ {\n\t\tif b := next(); a[i] == b && b <= n {\n\t\t\tforced[b] = true\n\t\t}\n\t}\n\tanswer := 1\n\tfor forced[answer] {\n\t\tanswer++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "9c286ad75ce3e9ee627123199ca97a82800cc1a4c5661d78ae3bdfaf8b1ae423"
+    }
+  ]
+}

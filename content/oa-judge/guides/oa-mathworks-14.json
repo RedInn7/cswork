@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-14",
+  "packageChecksum": "bd31a1179048bc3efe289168f38abc4d7bc0fd8d8f52853bbea5f2d7d2665f50",
+  "sourceContentHash": "c9faa6a042f6a3c3e595536c2ca408bffd568ff03d0d2db0fa489cae917cf680",
+  "editorialSha256": "250327a5142d459a2a060e7481c0a5231bee396c97c0fa98fd8dd8c330d3a690",
+  "hints": {
+    "zh": [
+      "如果某个负载上限 L 能做到，那么更大的上限也一定能做到；答案落在“最大的单个任务”和“所有任务之和”之间。",
+      "二分这个上限 L。给定 L 时，按顺序贪心地往当前段里放任务、放不下就开新段，得到的段数是最少的。最少段数不超过 n 就可行：任务都是正数且 m≥n，可以把段继续拆开直到恰好 n 段，而最大负载不会增加。",
+      "令下界为最大任务、上界为任务总和；每次取中点，贪心统计段数（当前负载加上新任务超过中点就段数加一，并从这个任务重新开始累计）；段数不超过 n 就把上界移到中点，否则把下界移到中点加一；两者相等时输出。"
+    ],
+    "en": [
+      "If some load cap L is achievable, every larger cap is achievable too; the answer lies between the largest single task and the sum of all tasks.",
+      "Binary search on the cap L. For a fixed L, greedily put tasks into the current segment in order and open a new segment when the next task does not fit; this uses the fewest segments. L is feasible when that count is at most n: since tasks are positive and m >= n, segments can be split further until there are exactly n of them without raising the maximum load.",
+      "Let the lower bound be the largest task and the upper bound the total; at each midpoint count segments greedily (if the current load plus the next task exceeds the midpoint, start a new segment with that task); if the count is at most n move the upper bound to the midpoint, otherwise move the lower bound to midpoint plus one; output when they meet."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWith positive tasks and m>=n, any feasible assignment into at most n segments can be subdivided into exactly n segments without raising the maximum load.\n\n## Proof of correctness\n\nGiven a load cap, filling the current contiguous segment as much as possible in order gives the minimum number of segments needed. If that number exceeds n there is no solution; if it does not, then since m>=n and all tasks are positive, the assignment can be subdivided into exactly n segments without increasing the maximum load. Feasibility is monotone in the cap, so binary search yields the minimum.\n\n## Complexity\n\nTime O(m log(sum(burstTime))), space O(m)."
+}

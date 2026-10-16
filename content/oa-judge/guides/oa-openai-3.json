@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-3",
+  "packageChecksum": "0565cfa02bca27e0996229ee1ba6f50bc7eb1648ef3d50a071234fbc9c6c78b7",
+  "sourceContentHash": "59273b8fbdbc7e5eae9a203411ec53b121df0eacfa643b3e491d756e05b6cc95",
+  "editorialSha256": "b5dc20c24238d1a0102b57e4fe32c79d267bfb581d7e75616183fb7451a93e37",
+  "hints": {
+    "zh": [
+      "COUNT 只能看到在它之前输入的事件，而时间戳并不递增：后输入的事件即使时间戳更早也不能算进前面的查询。所以要按输入顺序处理，对每个用户频道维护一个可动态插入、可按时间范围计数的结构。",
+      "先离线扫一遍，把每个用户频道出现过的 EVENT 时间收集起来排序去重作为坐标，这一步只建坐标不计数；再按输入顺序重放，用树状数组记录每个时间点已发生的事件数。",
+      "第二遍处理时：EVENT 在对应键的树状数组上把该时间坐标加一；COUNT 用二分找出不超过 t 的坐标个数和小于 t-15 的坐标个数，两个前缀和相减就是闭区间 [t-15,t] 内的事件数。没有出现过事件的键直接回答 0。最后先输出 COUNT 的个数，再逐行输出答案。"
+    ],
+    "en": [
+      "A COUNT sees only the events input before it, and timestamps are not increasing: an event input later must not be counted by an earlier query even if its timestamp is smaller. So process in input order, keeping for each user-channel pair a structure that supports insertions and counting over a time range.",
+      "First make an offline pass that collects, per user-channel pair, the EVENT timestamps, sorted and deduplicated as coordinates; this only builds coordinates and counts nothing. Then replay the input in order with a Fenwick tree recording how many events have occurred at each timestamp.",
+      "In the second pass, an EVENT adds one at its timestamp's coordinate in that key's Fenwick tree. A COUNT binary-searches the number of coordinates <= t and the number < t-15; the difference of the two prefix sums is the number of events in the closed range [t-15,t]. A key that never had an event answers 0. Output the number of COUNT commands first, then the answers one per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst collect the EVENT timestamps for each user-channel pair, then sort and deduplicate them, and keep the frequencies of processed events in a Fenwick tree. Then process the input again in order: an EVENT adds one, and a COUNT takes the difference between the prefix frequencies of timestamps <=t and <t-15.\n\n## Correctness\n\nThe preprocessing only builds coordinates and adds no frequency. At any position of the scan, the Fenwick tree contains exactly the multiplicities of the EVENTs processed before that position. The two binary searches give the bounds of the closed range, and the difference of prefix sums excludes timestamps that are too early as well as future ones, so it includes exactly the required events. Each key is independent, so users and channels are never mixed up.\n\n## Complexity\n\nTime O(q log q), space O(q)."
+}

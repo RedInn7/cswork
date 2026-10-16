@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-39",
+  "packageChecksum": "df134f5b86570575b750b294d9b5a95320f9ed257bddc58790b1ee18dbb03bfd",
+  "sourceContentHash": "2afcdce9e7fe115817aad201e84414f2498d51fd864f73d5c7b1316ec6af4d3f",
+  "editorialSha256": "d522beab2f11788125f07bc715e4cb99bc403d00bfc9d4b7beb576dddceb28d5",
+  "hints": {
+    "zh": [
+      "把每对冲突的相邻字符（相同或在字母表中相邻）看成一条边，每条冲突边至少要修改一个端点，这是路径上的边覆盖问题。",
+      "对最左边尚未被覆盖的冲突边，修改它的右端点不会比修改左端点差，因为右端点还能顺带覆盖下一条边；被修改的字符总能在26个字母里找到与两侧都不冲突的替换。",
+      "从左往右扫描相邻对：若两字符的差的绝对值不超过1，答案加1并跳过紧接着的下一条边（指针前进2）；否则指针前进1。"
+    ],
+    "en": [
+      "Treat every conflicting adjacent pair (equal letters or letters next to each other in the alphabet) as an edge; each conflicting edge needs at least one endpoint changed, which is edge covering on a path.",
+      "For the leftmost uncovered conflicting edge, changing its right endpoint is never worse than changing its left one, because the right endpoint also covers the next edge; a changed character can always be replaced by one of the 26 letters that conflicts with neither neighbor.",
+      "Scan adjacent pairs from left to right: if the two characters differ by at most 1 in absolute value, add 1 to the answer and skip the edge right after it (advance by 2); otherwise advance by 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGoing from left to right, whenever you meet a conflicting edge, modify its right end and skip the edge immediately after it; continue from the next unprocessed edge.\n\n## Proof of correctness\n\nEvery original conflicting edge needs at least one endpoint changed, which is an edge-covering problem on a path. For the leftmost uncovered edge, choosing the right endpoint never covers fewer future edges than choosing the left endpoint, so an exchange shows the greedy choice is optimal. The positions chosen by the greedy are never adjacent, and each one must avoid at most 6 characters, namely its two neighbors and the letters adjacent to each; with 26 letters a valid character can always be filled in, so the covering lower bound is achievable.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-1",
+  "packageChecksum": "43a4261778841be8d04a47421ea3adfcc429325b26669a0719755c3a2a9a5f2c",
+  "sourceContentHash": "93630d84ed9389d85a9befcac4303ce5ed13bfbee87e5a102e046d1b4a103660",
+  "editorialSha256": "02cfcc3406fbb2176e5c6e48bbcf86adfcc35de5748d3bc04c972342cbca2c86",
+  "hints": {
+    "zh": [
+      "“最多转两次弯”这个限制让普通的按格子 BFS 不够用：到达同一格时，最后的行驶方向和已经用掉的转弯次数不同，后面能走的路线也不同。",
+      "把状态扩展为 (行, 列, 最后方向, 已转弯次数)，转弯次数只能是 0、1、2，方向有 4 个，所以状态总数至多约 12·b·p，在这个状态图上 BFS 就能判断能否到达 W。",
+      "从 Q 出发时还没有方向，第一步朝任意方向都不算转弯；之后每一步若新方向与上一步不同，转弯数加一，超过 2 的扩展直接丢弃；越界或障碍 x 也丢弃；用访问标记避免重复入队，一旦扩展到 W 就输出 DRIVE!，队列耗尽仍未到达则输出 DON'T DRIVE!。"
+    ],
+    "en": [
+      "The limit of at most two turns makes a plain BFS over cells insufficient: arriving at the same cell with a different last direction or a different number of turns already used leads to different possible continuations.",
+      "Extend the state to (row, column, last direction, turns used); turns can only be 0, 1 or 2 and there are 4 directions, so there are at most about 12 * b * p states, and a BFS on this state graph decides whether W is reachable.",
+      "At Q there is no direction yet, so the first step in any direction is not a turn; afterwards, each step whose direction differs from the previous one adds a turn, and expansions with more than 2 turns are dropped; moves out of the grid or onto an obstacle x are dropped too; use visited flags to avoid queueing a state twice, print DRIVE! as soon as an expansion reaches W, and DON'T DRIVE! if the queue empties first."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf a solution exists, there is a simple path that does not repeat cells; BFS visits at most 12bp states on the (row, column, direction, turns) state graph.\n\n## Proof of correctness\n\nBFS exhaustively explores the state graph by path length. A state keeps the current position, the last direction and the number of turns made, so two paths with different feasible continuations are never wrongly merged. Only states with at most two turns are enqueued; reaching W means a valid path exists, and if the traversal ends without reaching it, none exists.\n\n## Complexity\n\nTime O(bp), space O(bp)."
+}

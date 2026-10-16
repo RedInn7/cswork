@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-72",
+  "packageChecksum": "131789534c12811f18e96a608bbb8440ff368d6dedcfa4907f7f82f91d14e0dc",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string layout, word;\n    cin >> layout >> word;\n    int pos[26];\n    for (int i = 0; i < 26; i++) pos[layout[i] - 'a'] = i;\n    long long answer = 0;\n    int current = 0;\n    for (char c : word) {\n        answer += abs(pos[c - 'a'] - current);\n        current = pos[c - 'a'];\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "8bd5a904f6a83c8b6b7a09536c24fe777d48aa2016d4720d1a6b082dc4e81399"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder all = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) all.append(line).append(' ');\n        StringTokenizer st = new StringTokenizer(all.toString());\n        String layout = st.nextToken(), word = st.nextToken();\n        int[] pos = new int[26];\n        for (int i = 0; i < 26; i++) pos[layout.charAt(i) - 'a'] = i;\n        long answer = 0;\n        int current = 0;\n        for (int i = 0; i < word.length(); i++) {\n            int p = pos[word.charAt(i) - 'a'];\n            answer += Math.abs(p - current);\n            current = p;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "ff4b36b5b5b9865aed69fcc7e3f51b49dd1b4e003bed55412f275a10c6600ab5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar layout, word string\n\tfmt.Fscan(r, &layout, &word)\n\tvar pos [26]int\n\tfor i := 0; i < 26; i++ {\n\t\tpos[layout[i]-'a'] = i\n\t}\n\tvar answer int64\n\tcurrent := 0\n\tfor i := 0; i < len(word); i++ {\n\t\tp := pos[word[i]-'a']\n\t\td := p - current\n\t\tif d < 0 {\n\t\t\td = -d\n\t\t}\n\t\tanswer += int64(d)\n\t\tcurrent = p\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "87e05b9db50bb43f5bfa0866bc0f3d53a0134e52e81effef6afbc45c70953d3e"
+    }
+  ]
+}

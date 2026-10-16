@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-34",
+  "packageChecksum": "12480e31ca5a45539952c11532565656e5cc3370b2f575a908d401ca9434eccd",
+  "sourceContentHash": "ef1545c4d912247dc057e06be164cc68cec90bb77d405d236840b80fde997adf",
+  "editorialSha256": "6e59524c00b1ee3b7a0dae9567169c3b539b6efef9b10693423bde4b3540e499",
+  "hints": {
+    "zh": [
+      "删得越多，剩下的串越短，target只可能从子序列变成不是子序列，不会反过来；所以“前t次删除后仍是子序列”对t单调，可以二分最大的t。",
+      "记录每个位置在第几步被删除（when[i]）。检查某个t时，只保留when[i]>t的位置即可，不需要真的去删除字符。",
+      "二分t∈[0,|source|]：检查时从左到右扫描未删除的位置，用贪心双指针匹配target（字符相等就推进target指针，全部匹配即可行）；可行则lo=mid，否则hi=mid−1，输出lo。比较区分大小写。"
+    ],
+    "en": [
+      "Deleting more only makes the remaining string shorter, so target can only stop being a subsequence, never become one again; whether target survives the first t deletions is monotone in t, and the largest t can be binary searched.",
+      "Record the step at which each position is deleted (when[i]). To test some t, just keep the positions with when[i] > t instead of actually deleting characters.",
+      "Binary search t in [0, |source|]: scan the kept positions left to right and greedily match target with two pointers (advance in target on equal characters; matching all of it means feasible); set lo = mid when feasible, otherwise hi = mid - 1, and print lo. Comparisons are case-sensitive."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the deletion time of each position and binary search on the number of deletions. When checking a candidate, ignore positions whose deletion time is <= the candidate, and greedily match the target subsequence.\n\n## Correctness\n\nThe greedy always takes the earliest available matching position, which leaves the most positions for later characters, so it decides the subsequence question exactly. Extra deletions cannot create a new subsequence, so the feasible deletion counts form a prefix, and binary search finds the last feasible value.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-16",
+  "packageChecksum": "f9a663360c9f8e68a30250fb676914916e6c0aa32fc088503a7f8e7fbdcb99b8",
+  "sourceContentHash": "3e55f109780ba3f09c3ec7c8dfceb33b45e0c0cdc338ce209c117d240906fe5e",
+  "editorialSha256": "c96ed7e249ffc51d64f76a29dad4aed6cad0cdb41fe03d5c754dd220c56588d3",
+  "hints": {
+    "zh": [
+      "孩子坐成一圈，玩具一个一个按编号递增方向发下去，本质上就是在环上从 D 出发往前走若干步。",
+      "第一个玩具在 D 手里不需要移动，之后每个玩具都往前移动一位，总共移动 T−1 次；环形编号可以用对 N 取模来处理，先把编号改成从 0 开始更方便。",
+      "把起点换成 0 起的 D−1，加上 T−1 后对 N 取模，再加 1 转回 1 起编号，即 (D − 1 + T − 1) mod N + 1；数值可到 2×10^9，用 64 位整数计算。"
+    ],
+    "en": [
+      "The children sit in a circle and toys are handed out one by one in increasing order of number, so this is just walking forward around a ring starting from D.",
+      "The first toy goes to D without moving, and every later toy moves one seat forward, for T-1 moves in total; the circular numbering is handled by taking the result modulo N, which is easiest with 0-based numbers.",
+      "Convert the start to the 0-based D-1, add T-1, take it modulo N, and add 1 to return to 1-based numbering: (D - 1 + T - 1) mod N + 1; the intermediate value can reach 2*10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRenumber the children from 0. The first toy is at d−1; move forward T−1 more seats and take the result modulo N.\n\n## Proof of correctness\n\nThe first toy, starting at D, needs no move; each later toy moves forward by one seat. That is T−1 moves in total, the circular numbering corresponds to taking the result modulo N, and finally convert back to 1-based numbering.\n\n## Complexity\n\nO(1) time, O(1) space."
+}

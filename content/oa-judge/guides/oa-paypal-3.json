@@ -1,0 +1,19 @@
+{
+  "id": "oa-paypal-3",
+  "packageChecksum": "c968862aa5fcefd8335d07cf097e08f0f204cf84f1ae695df94dd00cd232f292",
+  "sourceContentHash": "19e8241f1108d6fe67329131891ab63dc485a22f75fdebba0d60d3bb4c71a703",
+  "editorialSha256": "cb5a9d8eb887a25bc84fa2643e053dbba307a1ca79a02b39fb3d4d559dcf8699",
+  "hints": {
+    "zh": [
+      "一张券把价格 p 变成 floor(p/2)，省下 p−floor(p/2)，价格越高省得越多。所以最优策略就是每次都把券用在当前最贵的商品上——但 m 可达 10^9，不能一张一张模拟。",
+      "贪心的结果等价于：存在一个阈值 H，所有商品都被折半到不超过 H，剩下的券再各用一次在恰好等于 H 的商品上。把所有价格压到不超过 H 所需的券数随 H 增大而不增，可以二分最小的可行 H。",
+      "p>H 时把 p 压到不超过 H 的最少折半次数是 floor(p/(H+1)) 的二进制位数。若 H=0 所需券数已不超过 m，答案为 0；否则二分出最小可行 H，算出每件商品的折半次数 steps、已用券数 used 和折半后的总价（p 右移 steps 位），再减去 (m−used)×(H−floor(H/2))。总价可达约 10^14，用 64 位整数。"
+    ],
+    "en": [
+      "A coupon turns price p into floor(p/2) and saves p - floor(p/2), which grows with p. So the optimal strategy always spends the next coupon on the currently most expensive item, but m can be 10^9, so you cannot simulate coupon by coupon.",
+      "The greedy outcome is equivalent to this: there is a threshold H such that every item is halved down to at most H, and the remaining coupons are each used once on items that are exactly H. The number of coupons needed to bring all prices to at most H does not increase as H grows, so binary search for the smallest feasible H.",
+      "For p > H, the fewest halvings that bring p to at most H equals the bit length of floor(p/(H+1)). If H = 0 already needs at most m coupons, the answer is 0. Otherwise binary search the smallest feasible H, compute each item's number of halvings steps, the coupons used and the total after halving (p shifted right by steps), then subtract (m - used) * (H - floor(H/2)). The total can reach about 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor a cap H, compute the number of coupons needed to repeatedly halve (rounding down) every price until it is at most H. If p > H, the minimum number of halvings is bit_length(floor(p/(H+1))). This total does not increase as H grows, so binary search for the smallest feasible H. Once the cap is reached, the remaining coupons only need to be used once each on items still equal to H; the definition of the smallest feasible H guarantees there are enough such items.\n\n## Correctness\n\nEvery coupon changes one current price p into floor(p/2), saving p - floor(p/2), and this saving is non-decreasing in p. Therefore spending each successive coupon on the currently most expensive item is optimal. The number of coupons needed for threshold H is exactly the number of halving steps until each item first drops to at most H; the smallest feasible H found by binary search means that halving any remaining H any further would push the total number of coupons over the budget, so the extra coupons within the budget can only be used on items whose current price is H. Each of them saves the same amount, giving the same minimum total as the greedy that takes the largest marginal saving.\n\nThe function implementation on the source compilation site explicitly uses integer floor halving; another \"Items Purchase\" version in the same directory also explicitly states floor and the same greedy rule. This site uniformly uses integer floor and extends the int return value to a 64-bit decimal result that can hold about 10^14.\n\n## Complexity\n\nEach threshold count takes O(n), and binary searching over the price range takes O(log max(price)) rounds, for a total of O(n log max(price)) time and O(n) extra space."
+}

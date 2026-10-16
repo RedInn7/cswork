@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-116",
+  "packageChecksum": "e0b66a845a78d25c7d0677929bfabe176b2c4d364067e5d8058548ae610c7251",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom itertools import accumulate\nfrom operator import sub\n\n\ndef main():\n    s = sys.stdin.buffer.read().split()[0]\n    n = len(s)\n    ones = s.count(b\"1\")\n    zeros = n - ones\n    # With p1 ones among the first k characters, d = 2*p1 - k:\n    # target 0^k 1^(n-k) costs p1 + (zeros - p0) = d + zeros,\n    # target 1^k 0^(n-k) costs p0 + (ones - p1) = ones - d.\n    doubled_ones = accumulate(s.translate(bytes.maketrans(b\"01\", b\"\\x00\\x02\")), initial=0)\n    d = list(map(sub, doubled_ones, range(n + 1)))\n    print(min(min(d) + zeros, ones - max(d)))\n\n\nmain()\n",
+      "sha256": "5bdfbf6e753d273cf8e71f9bb1858163b99cfed511248bf7114962ec0492f428"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int n = s.length(), ones = 0;\n        for (int i = 0; i < n; i++) if (s.charAt(i) == '1') ones++;\n        int zeros = n - ones;\n        // p1 / p0: ones and zeros among the first k characters.\n        int p1 = 0, p0 = 0, best = n;\n        for (int k = 0; k <= n; k++) {\n            int a = p1 + (zeros - p0); // 0...01...1\n            int b = p0 + (ones - p1); // 1...10...0\n            best = Math.min(best, Math.min(a, b));\n            if (k < n) {\n                if (s.charAt(k) == '1') p1++;\n                else p0++;\n            }\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "ebd18012b7c406647a959071e2aed406884753827583b4d267950aeb76de7464"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts := readToken()\n\tn, ones := len(s), 0\n\tfor i := 0; i < n; i++ {\n\t\tif s[i] == '1' {\n\t\t\tones++\n\t\t}\n\t}\n\tzeros := n - ones\n\t// p1 / p0: ones and zeros among the first k characters.\n\tp1, p0, best := 0, 0, n\n\tfor k := 0; k <= n; k++ {\n\t\ta := p1 + (zeros - p0) // 0...01...1\n\t\tb := p0 + (ones - p1)  // 1...10...0\n\t\tbest = min(best, a, b)\n\t\tif k < n {\n\t\t\tif s[k] == '1' {\n\t\t\t\tp1++\n\t\t\t} else {\n\t\t\t\tp0++\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "e291c2d6d4ed2705eedf3fe8b046e0e4be428543842c1a5877ace820bac0f2a6"
+    }
+  ]
+}

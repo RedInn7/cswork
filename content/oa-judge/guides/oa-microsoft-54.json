@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-54",
+  "packageChecksum": "a176e929ec76a72e088ae257cc6a123ce529db858399a9823d7db4cb60b15360",
+  "sourceContentHash": "a9fd1df14a65f01f6c3cb58f2c78a13b300fbad449996d3fe6f751ccfead661a",
+  "editorialSha256": "10be1366651d771d45184df71cde33cadaeb4b186abdec475a8f948ac711ebff",
+  "hints": {
+    "zh": [
+      "只有两行且只能向右或向下，所以每条路径恰好在某一列向下走一次，路径完全由这一列决定。",
+      "若在第 i 列下移，路径经过上行的第 0 到 i 列和下行的第 i 到 N−1 列，路径上的最大值就是这两段最大值中的较大者。",
+      "先从右往左求出下行的后缀最大值，再从左往右维护上行的前缀最大值；对每一列取两者较大值，再在所有列中取最小值输出。数字可能为负，最小值的初始值要足够大。"
+    ],
+    "en": [
+      "With two rows and only right or down moves, every path goes down exactly once, and that column determines the whole path.",
+      "Going down at column i visits the top row over columns 0..i and the bottom row over columns i..N−1, so the path maximum is the larger of the maxima of those two segments.",
+      "Compute suffix maxima of the bottom row from right to left, then walk left to right keeping the prefix maximum of the top row; for each column take the larger of the two and print the minimum over all columns. Numbers can be negative, so start the minimum from a large enough value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain prefix maxima of the top row and suffix maxima of the bottom row. Enumerate the single column where the path moves down; the path maximum there is the larger of the two, and the answer is the minimum over all columns.\n\n## Correctness\n\nEvery valid path moves down exactly once; before that it passes through a prefix of the top row and afterwards through a suffix of the bottom row. Each down-move column corresponds to exactly one valid path, so enumerating them finds the optimum without omission or repetition.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-300",
+  "packageChecksum": "0ad4e1e7d4412d19e47606949f357f5f074f4918d3ed9493bf543d9a7079b399",
+  "sourceContentHash": "481c39574d90ff10910ba9144adf81dbb8be8f010eadf491c39ce9ad32cc3119",
+  "editorialSha256": "f69d81bfa59c3630a9ce7ad53a93f1b8174e49769426f721c9c1facbcab119af",
+  "hints": {
+    "zh": [
+      "位置 i 必须正好被 target[i] 次操作覆盖。这些操作中，最多只有 target[i−1] 次能从左边相邻位置延续过来，其余都必须从 i 开始新开。",
+      "所以每当 target[i] 比前一项高，就必须新开 target[i]−target[i−1] 个区间，首项也必须新开 target[0] 个；反过来，按高度维护活跃区间，上升时开新区间、下降时结束多出来的区间，就恰好能达到这个下界。",
+      "答案初值为 target[0]；从第二项起，累加 max(0, target[i]−target[i−1])；输出总和。"
+    ],
+    "en": [
+      "Position i must be covered by exactly target[i] operations. Of those, at most target[i−1] can continue from the neighbor on the left, and the rest must start at i.",
+      "So whenever target[i] is higher than the previous item, target[i]−target[i−1] new ranges must start, and the first item needs target[0] new ranges; conversely, keeping active ranges by height, opening ranges on rises and closing the extra ones on drops, reaches this bound exactly.",
+      "Start the answer at target[0]; from the second item on, add max(0, target[i]−target[i−1]); print the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGoing from left to right, the first element needs target[0] new operations; after that, add as many operations as the difference only when the current element is higher than the previous one. Sum the first element and all positive differences.\n\n## Proof of correctness\n\nAt most target[i−1] of the operations covering position i can continue from its left neighbor, so every positive rise must open at least that many new ranges, and the first element must open target[0] ranges as well. Maintaining active ranges by height, opening ranges on a rise and ending the extra ranges on a drop, forms every target height exactly and reaches this lower bound.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."
+}

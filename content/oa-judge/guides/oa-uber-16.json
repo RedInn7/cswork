@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-16",
+  "packageChecksum": "48ad467a5d167bb6a13d4ed8c222c01138bb9d739a61ac69b76f8d62cc0f58b2",
+  "sourceContentHash": "6c25a51d936172a381317d09c692990a29c5f8a7a598f604bf9782896311bebc",
+  "editorialSha256": "d40555de7cce156b0390882358e947f13ff2ed88856e4cceea3944cafb15a6d3",
+  "hints": {
+    "zh": [
+      "一段字母能重排成回文，当且仅当出现奇数次的字母至多一个；用 26 位掩码记录每个字母出现次数的奇偶，条件就是掩码为 0 或只有一位为 1。路径 q 到祖先 v 的掩码等于根到 q 的前缀掩码异或根到 v 的父节点的前缀掩码。",
+      "做一次深度优先遍历，维护当前根路径上每个节点对应的父前缀掩码出现次数。到达节点 q 时，算出它的前缀掩码，查询与它完全相同或只差一位的掩码各有多少个，求和就是答案；回溯时撤销。",
+      "计数表初始放入掩码 0 一次（代表根的父前缀）；用显式栈遍历：进入节点时把它的字母位异或进掩码，答案等于表中该掩码的次数加上 26 个只差一位的掩码的次数，然后把该掩码次数加 1，并压入一个退出标记和所有子节点；处理退出标记时把该掩码次数减 1；最后按查询顺序输出各节点答案。"
+    ],
+    "en": [
+      "Letters can be rearranged into a palindrome exactly when at most one letter has an odd count. Keep a 26-bit parity mask; the condition becomes: the mask is 0 or has exactly one bit set. The mask of the path from q to an ancestor v equals the root-to-q prefix mask XOR the root-to-parent(v) prefix mask.",
+      "Do one depth-first traversal and keep counts of the parent prefix masks for the nodes on the current root path. At node q, compute its prefix mask and look up how many stored masks are identical to it or differ in exactly one bit; their sum is the answer. Undo the change when backtracking.",
+      "Start the count table with mask 0 once, standing for the root's parent prefix. Traverse with an explicit stack: on entering a node, XOR its letter bit into the mask; its answer is the count of that mask plus the counts of the 26 masks that differ in one bit; then increase the count of the mask by 1 and push an exit marker followed by all children. When an exit marker is popped, decrease that mask's count by 1. Finally print the answers of the queried nodes in order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDuring DFS, maintain the XOR mask of the letters on the root path, together with the frequencies of the parents' prefix masks for the ancestors on the current path. Count the cases where the current prefix XOR a candidate mask is 0 or a single bit, which means checking 27 masks; remove the current mask when backtracking.\n\n## Correctness\n\nThe letter parity mask from q to v is exactly the root-to-q prefix XOR the root-to-parent(v) prefix. The frequency table contains only these parent prefixes along the current ancestor chain, and checking 0 and the 26 single-bit differences enumerates exactly all paths that can be rearranged into a palindrome. Removing on backtrack guarantees that sibling subtrees never get mixed in.\n\n## Complexity\n\nTime O(26n+m), space O(n+m)."
+}

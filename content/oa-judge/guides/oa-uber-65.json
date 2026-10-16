@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-65",
+  "packageChecksum": "cc41e45e2c2e47855817ec448a1e273778b9fbd46445aff8c8b8d7c54b179b6a",
+  "sourceContentHash": "279fd974bb09927c9da0a11292aa40e8e01e71d29eb0fb01382f0a768fe8f270",
+  "editorialSha256": "2312f50e8d8cdfe943cfc824317ab6cdb35803c3d190175e6011ff165577b686",
+  "hints": {
+    "zh": [
+      "一对词合法，等价于较短（或相同）的那个是另一个的前缀。排好字典序之后，所有以某个词为前缀的词会挤在它后面连成一段。",
+      "小写字母都小于字符 '{'，所以以 word 为前缀的串恰好落在区间 [word, word+'{') 里。对排好序的数组二分出 word+'{' 的插入位置，就知道这一段的右端。",
+      "把所有词排序。对每个下标 i，二分查找第一个不小于 w[i]+'{' 的位置 p，这一段中位于 i 之后的词有 p−i−1 个，累加进答案（相同的词也会落在这一段里，按下标分别计数）。答案可能很大，用 64 位整数。"
+    ],
+    "en": [
+      "A pair is valid exactly when the shorter (or equal) word is a prefix of the other. After sorting lexicographically, all words that start with a given word form a contiguous block right after it.",
+      "Every lowercase letter is smaller than the character '{', so the strings with prefix word lie exactly in the range [word, word + '{'). Binary search the insertion point of word + '{' in the sorted array to find the right end of that block.",
+      "Sort all words. For each index i, binary search the first position p whose word is not less than w[i] + '{'; the block holds p - i - 1 words after i, and you add that to the answer (equal words fall into the block too and are counted per index). The answer can be large, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort lexicographically. Taking each word as the earlier member of a pair, all words that start with it form a contiguous range, whose right end is the insertion point of the word followed by the character { found by binary search; only words after the current position are counted.\n\n## Correctness\n\nEvery lowercase letter is smaller than {, so the strings with prefix word lie exactly in [word, word+{). Every valid unordered pair appears exactly once, in the query of the shorter word (or the earlier of two equal words) after sorting, and invalid pairs never fall inside this prefix range.\n\n## Complexity\n\nTime O(total characters · log n), space O(total characters + n)."
+}

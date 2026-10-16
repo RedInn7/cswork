@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-91",
+  "packageChecksum": "8a27db6eb030123b2e914327b7233f73d8307bd62877b09064d50f4aa7966734",
+  "sourceContentHash": "ff746d139efd48590a100cd2f79b81a6f4cc7843e21118dfc15ad6d51acd5159",
+  "editorialSha256": "81da6002bdfe938c413697cb6863dc6bb6b1dbf0ff10f674c26edf2681824f96",
+  "hints": {
+    "zh": [
+      "01 对和 10 对的单价不同。若 x>y，把字符串反转后 01 对与 10 对互换，于是只需考虑 x≤y 的情况。",
+      "当 x≤y 时，若两个未知位填成\"先 1 后 0\"，把它们交换成\"先 0 后 1\"不会更贵。因此存在最优解：所有 ! 中靠前的一部分填 0、其余填 1，只需枚举这个分界点。",
+      "先把所有 ! 填 1 算出总代价，再从左到右依次把每个 ! 改成 0：维护左右两侧 0 和 1 的个数，改动一位带来的代价变化等于它与左边的 1、右边的 1 以及左边的 0、右边的 0 配对关系的增减。取所有状态中的最小代价，最后才对 10^9+7 取模，比较时不能先取模。"
+    ],
+    "en": [
+      "A 01 pair and a 10 pair have different prices. If x > y, reversing the string swaps 01 pairs and 10 pairs, so you only need to handle x <= y.",
+      "When x <= y, if two unknown positions are filled as 1 then 0, swapping them to 0 then 1 is never more expensive. So some optimal filling sets a prefix of the unknown positions to 0 and the rest to 1, and only the split point needs to be enumerated.",
+      "Fill every unknown with 1 and compute the total cost, then turn the unknowns into 0 one at a time from left to right. Keep the counts of 0s and 1s on each side; flipping one position changes the cost by the pairs it forms with the 1s and 0s on its left and right. Take the minimum cost over all states and apply the modulus 10^9+7 only at the very end, never before comparing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf x>y, reverse the string and swap the costs. After that x≤y, and there is an optimal solution in which the unknown bits are 0s first and then 1s. Start with every unknown bit set to 1, then change them to 0 one by one from left to right, updating the cost with the counts of 0s and 1s on the left and right, and take the minimum over all split points.\n\n## Proof of Correctness\n\nWhen x≤y, if two unknown bits appear as 1 then 0, swap them: the contributions outside stay the same, and the total change involving the two positions and the characters between them is (x−y) times a non-negative quantity, so it is never worse. Repeated swaps give a monotone assignment of the unknown bits. The scan enumerates all such assignments and computes the cost change from all left/right pairs involving the current position, so it finds the global optimum.\n\n## Complexity\n\nTime O(n), space O(n) (for the reversed and working strings); the cost uses big integers, and the modulus is taken at the end."
+}

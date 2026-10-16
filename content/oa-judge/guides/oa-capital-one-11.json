@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-11",
+  "packageChecksum": "936c80fe843f0ae4c31e26bb8b85e7c07207167f47a8a6aa466d1c5abc07fca2",
+  "sourceContentHash": "c7d44fb1b8b5ad220158eb46010c83e861242d41c93fe6b506545f555db5dfdd",
+  "editorialSha256": "c6ef1c1594496da8c00dc46ae2e934ac3a3054f2a87d06e2d0661a205fe396b9",
+  "hints": {
+    "zh": [
+      "走法是完全确定的：每个位置的下一步只取决于这个位置本身。所以一旦回到走过的位置，就会无限循环下去。",
+      "逐步模拟并用集合记录进入过的位置（传送起点和终点都算）：先检查是否重访，再看是否站在传送起点上，然后判断是否已到右下角，最后按\"能往右就往右，否则往下\"移动。",
+      "计数从起点的 1 开始，每次移动或传送都加一。重访位置输出 −2；到达 (n−1, m−1) 输出计数；右边和下边都走不了（越界或是障碍）输出 −1。障碍和传送可以用哈希表或二维数组保存。"
+    ],
+    "en": [
+      "The walk is fully deterministic: the next step depends only on the current position. So as soon as a position is revisited, the walk loops forever.",
+      "Simulate step by step and record every position entered (teleport starts and ends included) in a set: first check for a revisit, then whether you stand on a teleport start, then whether you are at the bottom-right corner, and finally move right if possible, otherwise down.",
+      "The count starts at 1 for the start cell and increases by one for every move or teleport. A revisit prints -2; reaching (n-1, m-1) prints the count; if neither right nor down is possible (out of bounds or an obstacle), print -1. Store obstacles and teleports in hash maps or 2D arrays."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate deterministically cell by cell, recording the coordinates already entered to detect cycles. At each step apply a teleport first, then check for the exit; an ordinary move prefers right and otherwise goes down.\n\n## Proof of Correctness\n\nThe simulated state transitions follow the rules of the statement one by one, and the count covers the start, every cell moved into, and the teleport ends. If the same position is revisited, the path repeats periodically from then on, because the map and the choice rules are fixed.\n\n## Complexity\n\nO(1) per step, at most O(nm) cells visited; space O(nm).\n\n## Source Note\n\nThe source writes the bottom-right index as (n,m); this site specifies it explicitly as (n−1,m−1) using 0-based matrix indices."
+}

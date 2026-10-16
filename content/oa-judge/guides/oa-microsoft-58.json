@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-58",
+  "packageChecksum": "eefcf180e03ccbd45044a5e48fb15393acae373e23704b3b7ff4afe024f384a8",
+  "sourceContentHash": "0cb4d356e99cdb57cac7b8021aa5a6a887b2ebfdc8169558ad24e74674f9f27d",
+  "editorialSha256": "a4c1b23cbbbbf381f7b80cc433cd941941f8640ca88a520f85e9a325f9e974d5",
+  "hints": {
+    "zh": [
+      "底图是一棵树，所以每个城市到首都 0 只有唯一一条路径；要让所有城市都能到达 0，每条边都必须指向离 0 更近的那一端。",
+      "以 0 为根，每条边的目标方向就是“子节点指向父节点”。原本就是子到父的边不用动，父到子的边必须反转，没有任何选择余地。",
+      "建立无向邻接表，并为每条边记录原方向：a→b 在 a 的邻接里记 1（从 a 出发），在 b 的邻接里记 0。从 0 出发遍历整棵树，沿父到子方向经过某条边时累加它的标记，结果就是需要反转的边数。N 可达 50000，用显式栈代替递归。"
+    ],
+    "en": [
+      "The underlying graph is a tree, so every city has exactly one path to the capital 0; for every city to reach 0, each edge must point toward the end closer to 0.",
+      "Rooting the tree at 0, the required direction of every edge is from child to parent. Edges already pointing from child to parent stay, edges pointing from parent to child must be reversed, and there is no choice either way.",
+      "Build an undirected adjacency list and tag each edge with its original direction: a→b is stored with tag 1 in a's list (it leaves a) and tag 0 in b's list. Traverse the tree from 0, and whenever you go from parent to child along an edge, add its tag; the total is the number of reversals. N can reach 50000, so use an explicit stack instead of recursion."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTraverse the undirected tree from 0. If a parent–child edge originally points from parent to child, it must be reversed; if it points from child to parent, keep it. Count the edges of the first kind.\n\n## Correctness\n\nEvery non-root city has a unique undirected path to the root, and every edge on that path must point toward the parent; therefore the final direction of each edge is unique. The algorithm counts exactly the edges whose original direction differs from the required one, which is both necessary and sufficient.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

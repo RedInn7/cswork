@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-57",
+  "packageChecksum": "a476eb2b08ba93be47c4328870c0d3b0683869567c4920a33646e9dbf11423bf",
+  "sourceContentHash": "29d844348c7eed8ffd7f09dea1ad523f9326a49b76192004145dda3cb372453d",
+  "editorialSha256": "51656d71e32d89982a27f48f0e2a34b62cfa8fbb2124bb6a8e0cdbed6e99de99",
+  "hints": {
+    "zh": [
+      "关闭的商家完全不参与排名，先把它们过滤掉。",
+      "剩下的按三个关键字排序：评分降序；评分相同时距离升序；再相同时按原输入下标升序。这样排名是唯一确定的。",
+      "收集所有营业商家的下标，用自定义比较排序，然后输出前 K 个与营业数中较小者那么多个下标，以空格分隔；没有可输出的下标时输出空行。"
+    ],
+    "en": [
+      "Closed merchants take no part in the ranking, so filter them out first.",
+      "Sort the rest by three keys: rating descending, then distance ascending on equal ratings, then original index ascending. This makes the ranking unique.",
+      "Collect the indices of the open merchants, sort them with a custom comparison, and print the first min(K, number open) indices separated by spaces; print an empty line when there is nothing to output."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFilter out the closed merchants, sort by the three ranking keys, and take the first K indices.\n\n## Correctness\n\nFiltering removes exactly the options that cannot be chosen; the sort applies the comparison priorities required by the problem level by level, so the resulting prefix is the unique valid top K.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

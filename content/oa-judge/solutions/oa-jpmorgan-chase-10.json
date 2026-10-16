@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-10",
+  "packageChecksum": "9e046f3a12f9f2caf4de2c468c4d10156746c6f4b6868b25d0ee6a8c59b5b917",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long a, b, p;\n    cin >> a >> b >> p;\n    long long best = p + 1;\n    // Enumerate the number of a-sized teams; the rest must split evenly into b-sized teams.\n    for (long long x = 0; x <= p / a; x++) {\n        long long rest = p - a * x;\n        if (rest % b == 0) best = min(best, x + rest / b);\n    }\n    cout << (best <= p ? best : -1) << \"\\n\";\n}\n",
+      "sha256": "38e82e71c2f787c00f232bda23ce7b0c6fb7b886c65050fb7639ef35b0708d36"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long a = sc.nextLong(), b = sc.nextLong(), p = sc.nextLong();\n        long best = p + 1;\n        // Enumerate the number of a-sized teams; the rest must split evenly into b-sized teams.\n        for (long x = 0; x <= p / a; x++) {\n            long rest = p - a * x;\n            if (rest % b == 0) best = Math.min(best, x + rest / b);\n        }\n        System.out.println(best <= p ? best : -1);\n    }\n}\n",
+      "sha256": "9eaadc531a866e81c21e6753080d27a1af31df0302a105d1d281799b637f7662"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar a, b, p int64\n\tfmt.Scan(&a, &b, &p)\n\tbest := p + 1\n\t// Enumerate the number of a-sized teams; the rest must split evenly into b-sized teams.\n\tfor x := int64(0); x <= p/a; x++ {\n\t\trest := p - a*x\n\t\tif rest%b == 0 {\n\t\t\tbest = min(best, x+rest/b)\n\t\t}\n\t}\n\tif best > p {\n\t\tbest = -1\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "8d6168ad3a12a6e59a9d69e8e85b51768697b9ef709c0bb5eb9ed9f476e0395c"
+    }
+  ]
+}

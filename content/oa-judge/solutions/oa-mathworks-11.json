@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-11",
+  "packageChecksum": "7b21e352d25227c07248e9ede1cc901c019b8c10ff2264c882ba95397ab05924",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    if (scanf(\"%d %d\", &n, &k) != 2) return 0;\n    vector<long long> a(n), b(n), diff(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    long long total = 0;\n    for (int i = 0; i < n; i++) {\n        scanf(\"%lld\", &b[i]);\n        total += b[i];\n        diff[i] = a[i] - b[i];\n    }\n    // Start with everything on person 2, then move the k largest gains to person 1.\n    sort(diff.begin(), diff.end(), greater<long long>());\n    for (int i = 0; i < k; i++) total += diff[i];\n    printf(\"%lld\\n\", total);\n}\n",
+      "sha256": "ec1534355bdad8b8a0b9901f922837c0bd4b88cbbb75730f96daeb7ca8100ad8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        long[] a = new long[n];\n        long[] diff = new long[n];\n        long total = 0;\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = 0; i < n; i++) {\n            long b = nextLong();\n            total += b;\n            diff[i] = a[i] - b;\n        }\n        // Start with everything on person 2, then move the k largest gains to person 1.\n        Arrays.sort(diff);\n        for (int i = 0; i < k; i++) total += diff[n - 1 - i];\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "59c9ce2dca4a75f201e64ad980a571f6bddd83b840c9f3c47c3c9221db6eb9a0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tdiff := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tvar total int64\n\tfor i := range a {\n\t\tb := nextInt()\n\t\ttotal += b\n\t\tdiff[i] = a[i] - b\n\t}\n\t// Start with everything on person 2, then move the k largest gains to person 1.\n\tsort.Slice(diff, func(i, j int) bool { return diff[i] > diff[j] })\n\tfor i := 0; i < k; i++ {\n\t\ttotal += diff[i]\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "6f985ead7c2640b58097b75dff71dbf476b103bcc859511dda1853886e9a0b4d"
+    }
+  ]
+}

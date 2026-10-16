@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-21",
+  "packageChecksum": "f49be287111c1a05bb73736f0441b9aa65bcab9cdb823ce4e43ffcd09e39ee7b",
+  "sourceContentHash": "6ced9e282b36235ee74b7246cea1cacdc1ae8fb1897a992636b1e960cb2b64e7",
+  "editorialSha256": "7b08538a16a099c70779a345960d7b580f53e6c3fe5603985e6a9a3b84b21fc4",
+  "hints": {
+    "zh": [
+      "一个整数的深度就是包住它的列表层数，最外层列表里的整数深度为 1；答案是每个整数乘以自己的深度后求和。",
+      "不需要递归遍历嵌套结构（嵌套可能很深）：用显式栈保存“列表和它的深度”，或者干脆从左到右扫描文本，遇到左括号层数加一、遇到右括号层数减一，读到整数时当前层数就是它的深度。",
+      "按上面的方式遍历，每读到一个整数（可能带负号）就把它乘以当前深度累加到答案；空的子列表只改变层数，不贡献任何值；最后输出总和，用 64 位整数更稳妥。"
+    ],
+    "en": [
+      "An integer's depth is the number of lists enclosing it, with depth 1 for integers in the outermost list; the answer is the sum of every integer times its own depth.",
+      "There is no need to recurse through the nesting, which can be deep: keep an explicit stack of lists with their depths, or simply scan the text from left to right, adding one level at each opening bracket and removing one at each closing bracket, so the current level is the depth of any integer you read.",
+      "Traverse as above and, for each integer read (it may have a minus sign), add the integer times the current depth to the answer; empty sublists only change the level and contribute nothing; print the total, preferably as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter parsing the list, use an explicit stack holding lists together with their depths; an integer contributes its value times its depth, and a sublist is pushed with the depth plus one.\n\n## Proof of correctness\n\nEach integer is visited exactly once, by its direct parent list. On the stack the depth starts at 1 for the outermost level and increases by exactly 1 when entering a sublist, which equals the number of lists containing that integer, so the accumulation gives the defined weighted sum.\n\n## Complexity\n\nTime O(L), extra space O(L), where L is the input length; it does not rely on deep recursive traversal."
+}

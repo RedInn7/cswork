@@ -1,0 +1,19 @@
+{
+  "id": "oa-samsung-2",
+  "packageChecksum": "038eeb28290982fd7c0eacb1280eec0208408b9f7548d3e971c139270299661b",
+  "sourceContentHash": "d386d1cc2124075a3cc5d17ca657d045c1261668c0cee3caaef250e27c89362a",
+  "editorialSha256": "e29e9a3282fd4ec90395bea4413ae4b20d18ac09f733ab30f53f523cc89cf823",
+  "hints": {
+    "zh": [
+      "不必纠结升级和移动的先后，先固定最终强度k：需要k−1次升级，每个坐标至少需要ceil(坐标/k)步，而且这个下界能达到（升级途中在强度等于余数时先走一步）。",
+      "于是答案是对k取最小的f(k)=k−1+ceil(a/k)+ceil(b/k)。f大致像k+S/k（S=a+b），最优k在sqrt(S)附近，但取整会让最优点偏移，不能只试一个点。",
+      "先取r=isqrt(S)，用B=min(f(r),f(r+1))作上界；任何不差于B的k都满足k²−(B+1)k+S≤0，令q=isqrt((B+1)²−4S)，在区间[(B+1−q)/2−1,(B+1+q)/2+1]内逐个计算f(k)取最小，全程用64位整数。"
+    ],
+    "en": [
+      "Do not worry about the order of upgrades and moves; fix the final strength k first: it needs k - 1 upgrades, each coordinate needs at least ceil(coordinate / k) moves, and this bound is reachable (take one move on the way up when the strength equals the remainder).",
+      "So the answer is the minimum over k of f(k) = k - 1 + ceil(a/k) + ceil(b/k). f behaves roughly like k + S/k with S = a + b, so the best k is near sqrt(S), but rounding shifts the optimum, so trying one point is not enough.",
+      "Take r = isqrt(S) and the upper bound B = min(f(r), f(r+1)); every k at least as good satisfies k^2 - (B+1)k + S <= 0, so with q = isqrt((B+1)^2 - 4S) evaluate f(k) for every k in [(B+1-q)/2 - 1, (B+1+q)/2 + 1] and keep the minimum, using 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor a fixed final strength k, the minimum number of operations is k-1+ceil(a/k)+ceil(b/k). First find an upper bound near sqrt(a+b), then use a quadratic inequality to narrow down the range of integers k that could do better.\n\n## Proof of correctness\n\nA final strength k requires k-1 upgrades, and each coordinate needs at least ceil(coordinate/k) moves. On the way up, take one move when the strength passes each coordinate's remainder modulo k, then take the quotient number of moves at strength k; this attains the lower bound. Let S=a+b and let B be a value already found to be achievable; any k no worse than B satisfies k-1+S/k<=B, i.e., k^2-(B+1)k+S<=0. The integer square root together with outward-extended endpoints includes all feasible candidates, and taking the minimum over them one by one misses nothing.\n\n## Complexity\n\nO((a+b)^(1/4)) integer computations and O(1) extra space per test case; input and output O(t)."
+}

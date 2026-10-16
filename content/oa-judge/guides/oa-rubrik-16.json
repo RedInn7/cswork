@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-16",
+  "packageChecksum": "bed4215eab02ccf584d638344cda9def20145a95a9d535fff80cf91e32fe5b71",
+  "sourceContentHash": "af9003c3f78074861ac68ae2b55561fe43eb9a357700a11dbee69436d884cc11",
+  "editorialSha256": "6c4a564495937bc338c0ed4304636fdcebbdfda9dfda996573b291eb6ccaf579",
+  "hints": {
+    "zh": [
+      "三数之和能被 d 整除只与三个价格各自对 d 的余数有关；n 只有 1000，O(n²) 的做法就足够，关键是把第三个下标的枚举换成一次查表。",
+      "固定 i 和 j 后，第三个数需要的余数是唯一确定的：(−a[i]−a[j]) mod d。只要知道 j 右侧每种余数出现了多少次，就能一次性加上所有合法的 k。",
+      "枚举 i：先把 i 右侧所有价格的余数计入频次表；然后让 j 从 i+1 往右走，每走到一个 j 先把它自己从频次表中移除，再把所需余数的出现次数加进答案；答案用 64 位整数。"
+    ],
+    "en": [
+      "Whether the sum of three prices is divisible by d depends only on each price modulo d. With n at most 1000, an O(n^2) method is enough; the key is to replace the loop over the third index with a single table lookup.",
+      "Once i and j are fixed, the residue the third price needs is uniquely determined: (-a[i]-a[j]) mod d. If you know how many times each residue occurs to the right of j, you can add all valid k at once.",
+      "Loop over i: first add the residues of every price to the right of i into a frequency table. Then move j from i+1 to the right; at each j, first remove j itself from the table, then add the count of the required residue to the answer. Keep the answer in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFix i and build the frequencies of the residues modulo d of the prices to its right. While iterating over j, first remove j, then look up the count of the required residue `(-a[i]-a[j]) mod d`; that count is the contribution of all k>j.\n\n## Proof of correctness\n\nAfter j is removed, the frequency table contains exactly the indices k>j. The residue condition is equivalent to the sum of the three numbers being divisible by d. Each i<j<k corresponds to exactly one lookup, so the count has no omissions and no duplicates.\n\n## Complexity\n\nTime O(n^2), space O(n)."
+}

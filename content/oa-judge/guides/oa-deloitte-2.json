@@ -1,0 +1,19 @@
+{
+  "id": "oa-deloitte-2",
+  "packageChecksum": "02b6cce3dcb758e191e460dab029609045a541d4b4e9900e8aa5047042f5f4ff",
+  "sourceContentHash": "bf5f0197c427de3cf538858d1c9b1d465e4b23dd89d0d191a6eac2f1e6bf87c3",
+  "editorialSha256": "1bb91cd2455270a84c5c57c26cf067dc8958ec26f8c46ede4b5ef08347b279a6",
+  "hints": {
+    "zh": [
+      "判断一个节点是否平衡，只需要它每个直接孩子的子树大小；叶子没有孩子，条件自然成立，也算平衡。",
+      "子树大小可以自底向上求：节点的子树大小 = 1 + 所有孩子的子树大小之和。只要保证处理一个节点时它的孩子都已处理完，就能顺便比较这些孩子的大小是否全相等。",
+      "用父节点列表建出孩子表，用显式栈从根 1 做一次先序遍历得到访问顺序（链长可达 200000，不要递归），再倒序处理：累加孩子的子树大小，同时检查它们是否都等于第一个孩子的值，全相等（或没有孩子）就计数加一。"
+    ],
+    "en": [
+      "To decide whether a node is balanced you only need the subtree sizes of its direct children; a leaf has no children, so the condition holds vacuously and it counts as balanced.",
+      "Subtree sizes can be computed bottom-up: a node's size is 1 plus the sizes of all its children. As long as every child is finished before its parent, you can compare the children's sizes at the same time.",
+      "Build child lists from the parent array, run one preorder traversal from root 1 with an explicit stack (a chain can have 200000 nodes, so avoid recursion), then process the order in reverse: add up the children's subtree sizes and check that they all equal the first child's size; if they do, or there are no children, count the node."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor every node, compute the total number of nodes in the subtree rooted at it. When nodes are processed in post-order, the subtree size is 1 plus the sum of the subtree sizes of all direct children; the node is balanced if and only if all these child subtree sizes are the same. With no children the condition holds vacuously, so leaves are counted too.\n\nTo handle trees as deep as 200,000, use an explicit stack to produce the traversal order and then compute in reverse, without recursion.\n\n## Proof of correctness\n\nThe reverse traversal guarantees that all children of a node are finished before the node itself, so each child's `subtree_size` already equals the number of nodes in the definition. The algorithm compares the values of these direct children one by one, which implements exactly the problem's definition of a balanced node; with no children there are no differing values, and the node is counted by the leaf rule of the statement. Every node is processed exactly once, so the count is the total number of balanced nodes.\n\n## Complexity\n\nO(n) time and O(n) space.\n\n## Validation\n\n163 inputs were compared against an independent oracle; for every node and child, the oracle explicitly traverses the descendants to count them and does not reuse the post-order subtree-size algorithm. In addition, all parent assignments with n<=5 were enumerated, keeping only valid trees rooted at 1. The formal tests include a single node, a chain, a star, unequal subtree sizes, the same number of direct children but different subtree sizes, children of the same height but different subtree sizes, and stress cases with a chain and a star at n=200000. Two wrong programs that return normally are each rejected by the formal cases.\n\n## Source and this site's input protocol\n\nThe fixed OAMaster Deloitte #2 explicitly gives a rooted tree, the definition of balanced (compare the number of nodes in the subtree of each direct child), and that leaves count as balanced, but it gives no standard input format, no node-numbering or root-label convention, and no size limits. This site adds: the first item is n, the next n-1 integers are the parents of nodes 2..n in order, and the root is always node 1; the input is guaranteed to form a tree rooted at 1. This site's resource limit is 1<=n<=200000. These are this site's serialization and resource conventions and are not claimed to be constraints of the original problem.\n\nThe candidate is implemented only from the semantics of the statement and still awaits validation in the real GoJudge sandbox."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-109",
+  "packageChecksum": "1e35c1b912277c3aeda7640343c784f0df746a5d78de4ea4a02d93718216b2d3",
+  "sourceContentHash": "e69b124af07cfe509fc97356cd69a70b7cf1895c08c7c2e2409e6678d08e1d0e",
+  "editorialSha256": "dfe477b73cbf2b28e09f01ab917d2d7b16941d61711154a968a1d293c63c518e",
+  "hints": {
+    "zh": [
+      "把排列分解成若干个环：每次交换恰好让环的个数加一或减一，所以排好所需的最少交换数和交换次数的奇偶性都由环数决定。",
+      "最少交换数是 n 减去环数；只要 n≥2，就能先用最少步数排好，再把同一对下标来回交换两次来补足多出的偶数步。n=1 时一步都做不了。",
+      "用访问标记沿 p[j]-1 走遍每个环并计数，得到 minimum=n-cycles；对每个 moves，当 n>1、moves≥minimum 且 moves-minimum 为偶数时输出 1，否则输出 0，最后把整串一次输出。"
+    ],
+    "en": [
+      "Decompose the permutation into cycles: every swap changes the number of cycles by exactly one, so both the minimum number of swaps and the parity of any valid swap count are fixed by the cycle count.",
+      "The minimum is n minus the number of cycles; as long as n>=2 you can sort in that many steps and then pad with an even number of extra steps by swapping the same pair twice. With n=1 no step is possible at all.",
+      "Walk every cycle with a visited array following p[j]-1 and count the cycles, giving minimum = n - cycles; for each moves value print 1 when n>1, moves>=minimum and moves-minimum is even, otherwise 0, and output the whole string at once."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe minimum number of swaps is n minus the number of permutation cycles. When n>=2, a count is feasible if it is at least the minimum and has the same parity, because two extra steps can swap the same pair and then swap it back. When n=1 there is no valid swap at all.\n\n## Correctness\n\nOne swap increases or decreases the number of cycles by exactly 1, so at least n - cycles steps are needed and the parity of the number of swaps is fixed. Each cycle can be sorted in (its length - 1) steps, and any extra even number of steps can be filled with swaps that cancel each other, so the condition is also sufficient. The single-element case has to be handled separately.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."
+}

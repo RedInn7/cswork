@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-19",
+  "packageChecksum": "a8db6b78656358d61b98dca8193ab51820b7dcbea9f81af5709a5995032c3c31",
+  "sourceContentHash": "9b6fbec30f8669c111fd6637ba8a6a4a58c3957b6a47f7eeece291e9af318c1b",
+  "editorialSha256": "51de96302aaf41a7b8ce6ebf5ca311672e9686b81ed18fced15da2c9ae7c00eb",
+  "hints": {
+    "zh": [
+      "先固定最终的公共人数v：人数小于v的队伍无法变成v，等于v的队伍免费计入，大于v的队伍每支需要消耗一次修改机会。",
+      "最优的v一定可以取为某支现有队伍的人数：把v提高到入选队伍中最小的原人数，不会减少能加入的队伍，还可能省下修改次数。所以只需枚举数组中出现过的值。",
+      "排序后按人数相同分组；对每组，候选答案是该组队伍数加上min(k, 严格更大的队伍数)，后者就是n减去该组末尾之后的位置；取所有组的最大值。"
+    ],
+    "en": [
+      "Fix the final common size v first: teams smaller than v can never become v, teams already equal to v join for free, and every larger team costs one modification.",
+      "The best v can always be taken as some existing team size: raising v to the smallest original size among the chosen teams never loses a team and may save modifications. So only values present in the array need to be tried.",
+      "Sort and group equal sizes; for each group the candidate is the group size plus min(k, number of strictly larger teams), where the latter is n minus the index just past the group; take the maximum over all groups."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort and group teams by equal size v; the candidate is the frequency of that size plus min(k, number of strictly larger teams).\n\n## Proof of correctness\n\nWith a fixed target v, teams smaller than v cannot join, teams already equal to v join for free, and each larger team costs one modification. If the optimal target is not an existing value, raising it to the smallest original size among the chosen teams does not reduce the teams that can join and may save modifications, so only existing values v need to be enumerated.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

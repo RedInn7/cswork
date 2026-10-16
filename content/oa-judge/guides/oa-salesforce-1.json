@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-1",
+  "packageChecksum": "658f1896724e693611b08c503c62c7103ad7e6f3a9737812e1238e733adeb4b3",
+  "sourceContentHash": "37bb64b3335470a2f027f1c653b44e8105a7dce4814e8f4c2b6b6f8f0780a176",
+  "editorialSha256": "5aba7a809913aaa9abc071ad8fb4668045e48a3fb2ced924b4cafda3aa0dbb98",
+  "hints": {
+    "zh": [
+      "模式串只有 3 个字符，可以按“已经匹配了模式的前几个字符”来分类计数，状态只有 0、1、2、3 四种。",
+      "设 dp[j] 为在已扫描的文本前缀中选位置、拼出模式前 j 个字符的方案数，初始 dp[0]=1。读到一个文本字符时，如果它等于模式第 j 个字符，就能接在每个 dp[j−1] 方案后面；为了不让同一个文本位置被用两次，j 要从大到小更新。",
+      "依次读入文本字符 c：对 j=3,2,1，若 c 等于 pattern[j−1]，则 dp[j]+=dp[j−1]；扫描结束输出 dp[3]。结果最大约 2×10^16，用 64 位整数。"
+    ],
+    "en": [
+      "The pattern has only 3 characters, so you can classify the counts by how many leading pattern characters have been matched: just the four states 0, 1, 2, 3.",
+      "Let dp[j] be the number of ways to choose positions in the scanned text prefix that spell the first j pattern characters, with dp[0]=1 initially. When a text character equals the j-th pattern character, it can extend every dp[j-1] way; update j from large to small so that the same text position is never used twice.",
+      "For each text character c, for j=3,2,1: if c equals pattern[j-1], do dp[j]+=dp[j-1]. After the scan, print dp[3]. The result can reach about 2*10^16, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain, updating in reverse order, the number of ways to match the first 0, 1, 2, 3 characters of the pattern; initially dp[0]=1.\n\n## Correctness\n\nAfter a prefix of the text has been processed, dp[j] counts the ways to choose positions from that prefix that form the first j characters of the pattern. When a new character matches the j-th character of the pattern, it can be appended to every way counted in the old dp[j-1]; updating in reverse order ensures the same text position is not used twice. Adding the old ways that do not choose the current character keeps the invariant.\n\n## Complexity\n\nTime O(text length), extra space O(1)."
+}

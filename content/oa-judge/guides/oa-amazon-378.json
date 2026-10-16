@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-378",
+  "packageChecksum": "8ceaba81d5b4af3398e6a61de1f5e38b332f317d3c882d2e61c7a6b9aa462b33",
+  "sourceContentHash": "f7300fdfccc7500a66bdc598ab9f924c38b049e6d6e3b8b49c7d0bad601f2be1",
+  "editorialSha256": "894e798e9ed27c7165fb69c41100bd5e1e6df36e1e1cecf5c64bc0547924801d",
+  "hints": {
+    "zh": [
+      "前 k 名地区就是观众数最大的 k 个，与它们原来的位置无关。",
+      "所有查询都基于同一个数组，排一次序之后就能反复使用。",
+      "把观众数降序排序并求前缀和 prefix[k]，每个查询直接输出 prefix[k]；最大和约 10^14，用 64 位。"
+    ],
+    "en": [
+      "The top k regions are simply the k largest viewer counts, regardless of their original positions.",
+      "All queries use the same array, so a single sort can serve all of them.",
+      "Sort the counts in descending order, build prefix sums prefix[k], and answer each query with prefix[k]; sums reach about 10^14, so use 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the viewer counts in descending order and build prefix sums; the k-th prefix is the answer to query k.\n\n## Proof of correctness\n\nIf a chosen set misses a larger value, swapping it in does not decrease the sum; repeated swaps give the first k values in descending order. So their sum is the maximum, and the prefix sums store that sum exactly.\n\n## Complexity\n\nO(n log n+q) time and O(n+q) space; the largest answer is 10^14."
+}

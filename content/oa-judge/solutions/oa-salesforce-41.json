@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-41",
+  "packageChecksum": "1b934b5c3cb13f9c6883a0331a4e8ff40df1e55875b08093a1248d2252e057c5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    const long long MOD = 1000000007;\n    long long n, k;\n    cin >> n >> k;\n    if (k == 1) {\n        puts(\"0\");\n        return 0;\n    }\n    // counts[i]: strings of length i without k equal letters in a row\n    vector<long long> counts(n + 1, 1);\n    for (long long i = 1; i <= n; i++) {\n        counts[i] = 26 * counts[i - 1] % MOD;\n        if (i == k) counts[i] = (counts[i] - 26 % MOD + MOD) % MOD;\n        else if (i > k) counts[i] = ((counts[i] - 25 * counts[i - k]) % MOD + MOD) % MOD;\n    }\n    printf(\"%lld\\n\", counts[n]);\n}\n",
+      "sha256": "9fed1b012673ee414563650ec81382d10c11645cf7427cec6f352acd735037d1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        final long MOD = 1_000_000_007L;\n        int n = nextInt(), k = nextInt();\n        if (k == 1) {\n            System.out.println(0);\n            return;\n        }\n        // counts[i]: strings of length i without k equal letters in a row\n        long[] counts = new long[n + 1];\n        counts[0] = 1;\n        for (int i = 1; i <= n; i++) {\n            counts[i] = 26 * counts[i - 1] % MOD;\n            if (i == k) counts[i] = (counts[i] - 26 + MOD) % MOD;\n            else if (i > k) counts[i] = ((counts[i] - 25 * counts[i - k]) % MOD + MOD) % MOD;\n        }\n        System.out.println(counts[n]);\n    }\n}\n",
+      "sha256": "e3a2934e8a59404f228a4652c3013f48c58bb662a4c0ca6d52c2f8ade6f2c0dd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tconst MOD = 1000000007\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, k := int(nextInt()), int(nextInt())\n\tif k == 1 {\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\t// counts[i]: strings of length i without k equal letters in a row\n\tcounts := make([]int64, n+1)\n\tcounts[0] = 1\n\tfor i := 1; i <= n; i++ {\n\t\tcounts[i] = 26 * counts[i-1] % MOD\n\t\tif i == k {\n\t\t\tcounts[i] = (counts[i] - 26 + MOD) % MOD\n\t\t} else if i > k {\n\t\t\tcounts[i] = ((counts[i]-25*counts[i-k])%MOD + MOD) % MOD\n\t\t}\n\t}\n\tfmt.Println(counts[n])\n}\n",
+      "sha256": "8202da9b901ac89ba19e0736a4404e086e48eba3c30a5a0a59792b7bacd4d3cc"
+    }
+  ]
+}

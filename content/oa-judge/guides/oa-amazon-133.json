@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-133",
+  "packageChecksum": "2cbd7d2c4e3be26537d81faf661d2c6e5a0e282673841c50a837f0a9c4282a24",
+  "sourceContentHash": "ea9d5e8ecdde4ac9992f69c55aba86ae4a3ca673eb40c9a108cf362e0dc50eb4",
+  "editorialSha256": "8b18020bb1a4475e18a8bc726fbe40f6e7272dd49f17f577a3c4ee7d0a439956",
+  "hints": {
+    "zh": [
+      "如果同事不跳过，每一整轮你和同事一共会出掉 a+b 件；真正决定谁出最后一次货的只是最后不到一整轮的那点余量。",
+      "把库存化成余数 r（1..a+b）：r≤a 时你直接清空，不需要跳过；否则每让你多出一次都需要同事跳过一次，最少需要 (r-1)//a 次。每个仓库都值 1 分，所以按所需跳过次数从小到大贪心购买。",
+      "对每个库存 v 算 cost=((v-1) mod (a+b)) // a；把 cost 排序，依次在跳过预算够用时扣掉 cost 并得 1 分，遇到不够的就停止；输出得分。a+b 可能超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "Without skips, every full round you and your coworker together ship a+b items; who makes the final shipment is decided only by the leftover of less than one full round.",
+      "Reduce the stock to a remainder r in 1..a+b: if r <= a you empty it right away with no skips; otherwise every extra shipment of yours needs one coworker skip, so at least (r-1)//a skips are needed. Every warehouse is worth 1 point, so buy points greedily in increasing order of skips needed.",
+      "For each stock v compute cost = ((v-1) mod (a+b)) // a; sort the costs and, while the skip budget covers the next cost, subtract it and gain a point, stopping at the first one you cannot afford; print the score. a+b can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA full round without skips always consumes a+b. Reduce the stock to a remainder r in 1..a+b; scoring a warehouse needs at least (r-1)//a skips. Sort these costs and buy as many cheap points as possible.\n\n## Correctness\n\nSkips can be postponed to the final stretch that decides who ships last without increasing the number needed. If the remainder r is greater than a, every extra shipment of yours needs one coworker skip, so at least ceil(r/a) - 1 skips are required. Each warehouse independently offers a point of the same value, and swapping a more expensive chosen warehouse with a cheaper unchosen one never lowers the score and never increases the total cost, so taking them in order of cost is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

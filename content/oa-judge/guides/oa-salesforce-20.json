@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-20",
+  "packageChecksum": "8e84524335f777f51a2d6ecb01dd4177fd14a9c7d6991f947aceb651d1982b0e",
+  "sourceContentHash": "44e3d3f290215aaa8163d9417c6c9aeaddddd457eac819ecbeb707d6d1893dd2",
+  "editorialSha256": "fb54159100f39228ac25bbca2cd19dd4a9e53cb041775fcc97ec151ca98ee1a0",
+  "hints": {
+    "zh": [
+      "删掉一个节点后，最终被感染的就是从剩余初始感染节点出发、在剩余图中能到达的所有节点；n 和 m 都只有 1000，可以逐个尝试删除每个节点。",
+      "注意可以删除健康节点：一个健康的割点可能把感染源和大片节点隔开，效果比删除某个感染源还好，所以必须把全部 n 个节点都当作候选。",
+      "对每个候选节点 r：把 r 标为已访问（相当于删除），把其余初始感染节点全部入队，做一次多源 BFS 统计访问到的节点数；若该数严格小于当前最优则更新答案（这样同分时自然保留编号最小者）；最后输出 1 起编号。"
+    ],
+    "en": [
+      "After a node is deleted, the finally infected nodes are exactly those reachable in the remaining graph from the remaining initially infected nodes. With n and m both at most 1000, you can try deleting every node in turn.",
+      "Remember that a healthy node may be deleted: a healthy cut vertex can separate the infection sources from a large part of the graph, which can be better than deleting any single source. So all n nodes must be candidates.",
+      "For each candidate r: mark r as visited (this deletes it), push every other initially infected node into the queue, run one multi-source BFS, and count the visited nodes. Update the answer only when the count is strictly smaller than the best so far, which keeps the smallest number on ties. Print the 1-based number."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate every node as the deletion candidate, simulate the spread in the remaining graph with a multi-source BFS each time, and compare the final infected counts and node numbers.\n\n## Correctness\n\nThe spread closure after the deletion is exactly the set of nodes reachable from all the non-deleted infection sources. BFS traverses exactly this set, so each candidate's cost is exact; enumerating all n nodes, including healthy cut vertices, and comparing first by infected count and then by node number gives the global optimum.\n\n## Complexity\n\nTime O(n(n+m)), extra space O(n+m)."
+}

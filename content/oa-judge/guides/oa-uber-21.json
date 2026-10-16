@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-21",
+  "packageChecksum": "fb5e24ab8e318e6b1822672b66c69f6785927ce75c7c77394dc9fc413442ec6d",
+  "sourceContentHash": "f3b196adde19c78fbc6b88483fa6b2ae2c142ce82e0a2f87d199d968087d36d7",
+  "editorialSha256": "1b890f95a4fd65a30be4aaad8679f5c319b46f244e828aac1df8a6f590037f5a",
+  "hints": {
+    "zh": [
+      "每次操作把两个不同的 R 变成 O，开放得越多可达范围只会越大。R 的个数为偶数时可以全部开放，每个起点都能到达全部 n 个国家；为奇数时最好的做法是只留下一个 R。",
+      "R 为奇数时，枚举留下哪个 R：删掉它后树被分成若干连通块，块内每个起点能到达整个块。用先序遍历让每棵子树对应一段连续区间，子树方向的块是一段区间、父方向的块是该子树区间的补集，对这些区间做取最大值，最后每个起点取到的最大值之和就是答案。",
+      "若 R 的个数为偶数直接输出 n²；否则用栈做先序遍历得到每个节点的位置和子树大小；对每个 R 节点 v，把区间 [0, pos[v]) 和 [pos[v]+size[v], n) 用 n−size[v] 取最大，再对 v 的每个孩子 w 把 [pos[w], pos[w]+size[w]) 用 size[w] 取最大；区间取最大可用不下推的线段树完成，最后把标记一路下推到叶子，累加所有叶子的值并输出。"
+    ],
+    "en": [
+      "Each operation turns two different R countries into O, and opening more never shrinks what is reachable. With an even number of R, all can be opened and every start reaches all n countries; with an odd number, the best plan leaves exactly one R.",
+      "With an odd number of R, try each R as the one left closed. Removing it splits the tree into components, and every start inside a component reaches the whole component. A preorder makes each subtree a contiguous range: a child-side component is one range and the parent-side component is the complement of the subtree's range. Apply range-maximum updates for these, and the answer is the sum of the maxima received by all starts.",
+      "If the number of R is even, print n squared. Otherwise do a preorder with a stack to get every node's position and subtree size. For every R node v, apply max with n - size[v] on [0, pos[v]) and [pos[v] + size[v], n), and for each child w apply max with size[w] on [pos[w], pos[w] + size[w]). Range max updates can be done on a segment tree without pushing; at the end push all tags down to the leaves, add up the leaf values and print the sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen the number of R is even, all of them can be opened. When it is odd, only one R needs to remain. After removing each candidate R, each of its adjacent connected components gives a reachable size to the starts inside that component; an Euler order represents these components as subtree ranges or subtree complements, and they are aggregated with range maximum.\n\n## Correctness\n\nOpening more never decreases the number of reachable countries, so with an even number of R opening all is optimal, and with an odd number there is always an optimal solution that keeps only one R. After removing v, each child branch has size size[c], and the parent-side branch has n−size[v]. Covering every branch of every candidate v and taking the maximum for each start enumerates exactly all optimal plans.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

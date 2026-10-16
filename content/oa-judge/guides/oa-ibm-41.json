@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-41",
+  "packageChecksum": "d2a3fe35b7abdb105057164a34de946925711accef076e50ec240f07d7ebf4ee",
+  "sourceContentHash": "c88cd2f2daa20c3dcc0854d74a7e53ba3c063032a7219b269bd007f250981841",
+  "editorialSha256": "0d9fee6ce5cf2d5a0b1bf9121e5132df92dba0c345449b1a178967ec16e9e3f0",
+  "hints": {
+    "zh": [
+      "势能最大的选手一旦站到队首就再也不会输；在此之前，队首的冠军只会依次遇到原队列中下一个还没上过场的人。",
+      "因此只需按原顺序扫描一遍，维护当前冠军和它的连胜场数，不必真正模拟队尾排队，也不必一直模拟到巨大的k。",
+      "冠军初始为第一个人；依次看后面每个人v：v更大则成为冠军且连胜记为1，否则冠军连胜加1；一旦连胜达到k就输出冠军。扫描结束仍未达到k时，当前冠军就是全局最大值，直接输出它。"
+    ],
+    "en": [
+      "Once the player with the largest potential reaches the front, they never lose; before that, the champion at the front only meets, in order, the next player from the original queue who has not played yet.",
+      "So a single pass over the original order suffices: keep the current champion and its win streak, with no need to simulate the back of the queue or to run up to a huge k.",
+      "Start with the first player as champion; for each following player v: if v is larger, v becomes champion with a streak of 1, otherwise the champion's streak increases by 1; as soon as the streak reaches k, print the champion. If the pass ends without reaching k, the current champion is the global maximum, so print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the original queue, maintaining the current champion and its win streak; when the champion changes, the streak becomes 1. If the scan ends without reaching k, the global maximum potential is bound to win.\n\n## Proof of correctness\n\nBefore the global maximum is first met, the champion at the front only plays the next person who has not yet played, so the single-pass simulation is exact. Once the maximum becomes champion it never loses, so if no winner has appeared before then, the final winner must be it, and there is no need to keep simulating a huge k.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

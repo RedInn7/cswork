@@ -1,0 +1,21 @@
+{
+  "id": "oa-waymo-1",
+  "packageChecksum": "0426ba431a0e4c1931997742537e3fb0c9b51a99602da81fdb5b260773a302a5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cctype>\n#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nstring decode(const string &s) {\n    vector<string> st(1);\n    size_t i = 0;\n    while (i < s.size()) {\n        if (s[i] == '(') {\n            st.emplace_back();\n            i++;\n        } else if (s[i] == ')') {\n            string t = move(st.back());\n            st.pop_back();\n            i += 2;  // skip \")\" and \"{\"\n            size_t j = i;\n            while (isdigit((unsigned char)s[j])) j++;\n            long long k = stoll(s.substr(i, j - i));\n            i = j + 1;  // skip \"}\"\n            for (long long r = 0; r < k; r++) st.back() += t;\n        } else {\n            st.back() += s[i++];\n        }\n    }\n    return st[0];\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string line;\n    getline(cin, line);\n    int q = stoi(line);\n    string out;\n    for (int i = 0; i < q; i++) {\n        if (!getline(cin, line)) line.clear();\n        if (!line.empty() && line.back() == '\\r') line.pop_back();\n        out += decode(line);\n        out += '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "2946980c979a6bed3a05a4bc98c01d8327c483d8c83922aa10048f727c1352d6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static String decode(String s) {\n        ArrayDeque<StringBuilder> st = new ArrayDeque<>();\n        st.push(new StringBuilder());\n        int i = 0;\n        while (i < s.length()) {\n            char ch = s.charAt(i);\n            if (ch == '(') {\n                st.push(new StringBuilder());\n                i++;\n            } else if (ch == ')') {\n                String t = st.pop().toString();\n                i += 2;  // skip \")\" and \"{\"\n                int j = i;\n                while (j < s.length() && Character.isDigit(s.charAt(j))) j++;\n                long k = Long.parseLong(s.substring(i, j));\n                i = j + 1;  // skip \"}\"\n                StringBuilder top = st.peek();\n                for (long r = 0; r < k; r++) top.append(t);\n            } else {\n                st.peek().append(ch);\n                i++;\n            }\n        }\n        return st.peek().toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));\n        int q = Integer.parseInt(in.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String line = in.readLine();\n            out.append(decode(line == null ? \"\" : line)).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "1d9cca32a92e9da6b5a420a5c77b11d7488449edd94da000a514fbceced39af9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc decode(s string) []byte {\n\tst := [][]byte{nil}\n\ti := 0\n\tfor i < len(s) {\n\t\tswitch s[i] {\n\t\tcase '(':\n\t\t\tst = append(st, nil)\n\t\t\ti++\n\t\tcase ')':\n\t\t\tt := st[len(st)-1]\n\t\t\tst = st[:len(st)-1]\n\t\t\ti += 2 // skip \")\" and \"{\"\n\t\t\tj := i\n\t\t\tfor j < len(s) && s[j] >= '0' && s[j] <= '9' {\n\t\t\t\tj++\n\t\t\t}\n\t\t\tk, _ := strconv.Atoi(s[i:j])\n\t\t\ti = j + 1 // skip \"}\"\n\t\t\ttop := len(st) - 1\n\t\t\tfor r := 0; r < k; r++ {\n\t\t\t\tst[top] = append(st[top], t...)\n\t\t\t}\n\t\tdefault:\n\t\t\tst[len(st)-1] = append(st[len(st)-1], s[i])\n\t\t\ti++\n\t\t}\n\t}\n\treturn st[0]\n}\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\tlines := strings.Split(strings.ReplaceAll(string(raw), \"\\r\\n\", \"\\n\"), \"\\n\")\n\tq, _ := strconv.Atoi(strings.TrimSpace(lines[0]))\n\tout := []byte{}\n\tfor i := 1; i <= q; i++ {\n\t\tline := \"\"\n\t\tif i < len(lines) {\n\t\t\tline = lines[i]\n\t\t}\n\t\tout = append(out, decode(line)...)\n\t\tout = append(out, '\\n')\n\t}\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "482ef83405233c19038b5072ef054cf2d9351c676d71fd2134a42ce1fc15d29f"
+    }
+  ]
+}

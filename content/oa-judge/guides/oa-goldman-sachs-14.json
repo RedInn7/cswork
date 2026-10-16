@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-14",
+  "packageChecksum": "99593ff2eeccd9457d99cafdf6f4041b1245c8206c97f99bddd44beac3ca97dd",
+  "sourceContentHash": "f0e323de37b0f99a5803006e9bc1d7140f10d0edb565c1363d1e05c2b3ca754d",
+  "editorialSha256": "599fb739f04687c72d58415d3a76dc7a46136a5da9424d0e8387353af7f0739a",
+  "hints": {
+    "zh": [
+      "Ramu 的粉笔只决定每一对相邻位置必须“上升”还是“下降”；真正要排列的是 Sonu 的粉笔。N 最多 14，可以考虑用子集枚举。",
+      "做状压 DP：状态是“已经放了哪些粉笔（位掩码）+ 最后放的是哪一根”。已放粉笔的数量决定了下一对相邻位置的方向，下一根粉笔必须满足这个升降关系，收益是两根长度差的绝对值。",
+      "先对每个位置 p 算出 Ramu[p] < Ramu[p+1] 是否成立；dp[mask][last] 初始为不可达，单独一根的状态为 0；按掩码从小到大，取 pos = 掩码中 1 的个数 − 1，对每个可达的 last 和未使用的 next，若 Sonu[last] < Sonu[next] 与该方向一致，就用 dp + |差| 更新 dp[mask|next][next] 的最大值；最后在全集状态中取最大。长度可能超过 64 位，注意使用大整数或足够宽的整数类型。"
+    ],
+    "en": [
+      "Ramu's chalks only decide whether each adjacent pair of positions must go up or down; the chalks being arranged are Sonu's. N is at most 14, so subset enumeration is an option.",
+      "Use a bitmask DP: the state is which chalks have been placed (a bitmask) plus which one was placed last. The number of placed chalks fixes the direction of the next adjacent pair, the next chalk must respect that up/down relation, and the gain is the absolute difference of the two lengths.",
+      "Precompute whether Ramu[p] < Ramu[p+1] for each position p; dp[mask][last] starts unreachable, and a single chalk has value 0; go through masks in increasing order, let pos = popcount(mask) - 1, and for each reachable last and unused next, if (Sonu[last] < Sonu[next]) matches that direction, update dp[mask|next][next] with the maximum of dp + |difference|; finally take the maximum over the full mask. Lengths can exceed 64 bits, so use big integers or a wide enough integer type."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst turn every adjacent pair of Ramu's chalks into a fixed direction: rising or falling. Sonu's array may only be rearranged, so use a bitmask for the chalks already placed and the last chalk as part of the state. `dp[mask][last]` stores the maximum sum of adjacent differences achievable while satisfying the prefix's direction conditions and ending with `last`. The next step only transitions when it matches the corresponding direction, and the cost increases by the absolute difference of the two chalk lengths.\n\n## Correctness\n\nEvery prefix of any valid arrangement uses some set `mask` and ends with a unique last value. The prefix score of that arrangement is at most `dp[mask][last]`; when its next element is added to the state, the transition filters by exactly the rise/fall relation at Ramu's corresponding position and adds the single new adjacent difference. Conversely, every DP transition satisfies the same direction restriction, so every state represents valid arrangements. By induction the final states enumerate all and only the valid arrangements, and taking the maximum gives the global optimum.\n\n## Complexity\n\nThis site limits `1≤N≤14`; the exact subset DP takes `O(N²·2^N)` time and `O(N·2^N)` space. Length values are computed with arbitrary-precision integers.\n\n## Source and this site's conventions\n\nThe fixed original text states clearly that each group has N chalks of distinct lengths, that Sonu must copy, position by position, the strict rise/fall relations of Ramu's adjacent lengths, and that the sum of adjacent absolute differences is maximized. The original publishes no N, no numeric constraints and no I/O examples; this problem does not claim to recover the original site's hidden limits. This site only adds the standard input: N, Ramu's N positive integers, and Sonu's N positive integers, and limits N to 14 to keep the exact algorithm's resources under control."
+}

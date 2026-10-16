@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-206",
+  "packageChecksum": "486c3eb26cac7bfd5203ed90c5f60cc0291c1ef56459e2e8a65f2983c7af38f3",
+  "sourceContentHash": "54468522d1bf137813910a8004b04248911b8c200475b65f80c8185155b7c97b",
+  "editorialSha256": "cbdaaaeace7763e1ba290674566c2ba11fc72cf3acf6bb2082083cf6af2b87ba",
+  "hints": {
+    "zh": [
+      "最终那段同速连续队伍，一定由某种速度的若干次“相邻出现”组成；它们之间夹着的其他速度选手必须全部删掉。",
+      "设某种速度的出现位置为 p，保留第 l 到第 r 次出现需要删除 p[r]−p[l]−(r−l) 人；这个量随 r 增大不减、随 l 增大不增，适合双指针。",
+      "按速度分组记录下标（哈希表，或按 (速度, 下标) 排序）；每组用双指针：右端前进，当 p[r]−p[l]−(r−l)>k 时左端前进；用 r−l+1 更新答案。"
+    ],
+    "en": [
+      "The final run of equal speeds always consists of consecutive occurrences of one speed; every racer with another speed between them must be deleted.",
+      "If p holds the positions of one speed, keeping its l-th through r-th occurrences requires deleting p[r] - p[l] - (r - l) racers; this grows with r and shrinks with l, which suits two pointers.",
+      "Group indices by speed (a hash map, or sort (speed, index) pairs); in each group move the right pointer forward and advance the left pointer while p[r] - p[l] - (r - l) > k; update the answer with r - l + 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStore the positions of each speed. Slide a window over each group's positions; the number of deletions needed inside it is positions[r]-positions[l]-(r-l), kept at most k.\n\n## Proof of correctness\n\nTo keep the l-th through r-th occurrences of a speed, every racer with another speed between the two ends must be deleted, which costs exactly the total span minus the number of same-speed racers; deleting them makes those racers contiguous. An optimal run never needs to delete same-speed racers inside it, so only consecutive occurrences within each group need to be considered, and the two pointers exhaust the longest valid windows.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-2",
+  "packageChecksum": "9287ea69ceb5fef8831b9777bfa0bb37589e6f3e87e9b3d15cf78ff8421ac46f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    string x, y, z;\n    cin >> n >> x >> y >> z;\n    // Rightmost position whose z letter differs from both x and y: drop it from that class only.\n    int star = -1;\n    for (int i = n - 1; i >= 0; i--)\n        if (z[i] != x[i] && z[i] != y[i]) { star = i; break; }\n    if (star < 0) { puts(\"-1\"); return 0; }\n    const string alpha = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    const string full = \"[\" + alpha + \"]\";\n    string reduced = \"[\";\n    for (char c : alpha) if (c != z[star]) reduced += c;\n    reduced += \"]\";\n    string out;\n    out.reserve((size_t)n * 28 + 1);\n    for (int i = 0; i < n; i++) out += i == star ? reduced : full;\n    out += '\\n';\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "b43a8d321f77673509999e1cc41d0d687131e1096c41f0c5c648f29dbee58847"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken());\n        String x = st.nextToken(), y = st.nextToken(), z = st.nextToken();\n        // Rightmost position whose z letter differs from both x and y: drop it from that class only.\n        int star = -1;\n        for (int i = n - 1; i >= 0; i--)\n            if (z.charAt(i) != x.charAt(i) && z.charAt(i) != y.charAt(i)) { star = i; break; }\n        if (star < 0) { System.out.println(\"-1\"); return; }\n        byte[] full = \"[ABCDEFGHIJKLMNOPQRSTUVWXYZ]\".getBytes();\n        byte[] reduced = (\"[\" + \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\".replace(String.valueOf(z.charAt(star)), \"\") + \"]\").getBytes();\n        byte[] out = new byte[28 * n];  // 28n - 1 characters plus the newline\n        int p = 0;\n        for (int i = 0; i < n; i++) {\n            byte[] g = i == star ? reduced : full;\n            System.arraycopy(g, 0, out, p, g.length);\n            p += g.length;\n        }\n        out[p++] = '\\n';\n        OutputStream os = new BufferedOutputStream(System.out, 1 << 16);\n        os.write(out, 0, p);\n        os.flush();\n    }\n}\n",
+      "sha256": "746d8561b7b6c9eab621708b3d7bcdd08ee253e6b78bcd95bb5d8256db1b288c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\tx, y, z := next(), next(), next()\n\t// Rightmost position whose z letter differs from both x and y: drop it from that class only.\n\tstar := -1\n\tfor i := n - 1; i >= 0; i-- {\n\t\tif z[i] != x[i] && z[i] != y[i] {\n\t\t\tstar = i\n\t\t\tbreak\n\t\t}\n\t}\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tif star < 0 {\n\t\tw.WriteString(\"-1\\n\")\n\t\treturn\n\t}\n\tconst alpha = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n\tfull := \"[\" + alpha + \"]\"\n\treduced := \"[\" + strings.Replace(alpha, string(z[star]), \"\", 1) + \"]\"\n\tfor i := 0; i < n; i++ {\n\t\tif i == star {\n\t\t\tw.WriteString(reduced)\n\t\t} else {\n\t\t\tw.WriteString(full)\n\t\t}\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "4dfe4ff0c85fa40e3733c4acd1a0109eccb85b203dfcf6bb21836e7ce8569850"
+    }
+  ]
+}

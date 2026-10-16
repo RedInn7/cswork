@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-25",
+  "packageChecksum": "2b05dac4cdf5daa5f817a53fccfd0d93620951dfcf6b42a2001df10b4d1acd7e",
+  "sourceContentHash": "12cd6b8e186a5262238ebe61971b7f5511974e505dd4d5948e5b1dc06e83553c",
+  "editorialSha256": "db87a05f113c49876b33b2e0f57c1a66b219328fe4361c965899a45e2edc170f",
+  "hints": {
+    "zh": [
+      "最优分割的最后一段长度在1..threshold之间，去掉它后剩下的前缀也应该是最优分割，所以可以做前缀DP。",
+      "dp[i]表示前i个元素的最小费用，dp[0]=0。从i−1往回枚举最后一段的起点j，最后一段的最大值可以随着j左移增量维护。",
+      "对每个i，j从i−1倒序到max(0,i−threshold)：largest=max(largest,a[j])，dp[i]=min(dp[i],dp[j]+largest)。元素可能为负，初值用足够大的数并用64位整数，输出dp[n]。"
+    ],
+    "en": [
+      "The last segment of an optimal split has length 1..threshold, and the prefix left after removing it must itself be split optimally, so a prefix DP works.",
+      "Let dp[i] be the minimum cost of the first i elements, with dp[0] = 0. Enumerate the start j of the last segment backward from i - 1; its maximum can be maintained incrementally as j moves left.",
+      "For each i, go j from i - 1 down to max(0, i - threshold): largest = max(largest, a[j]) and dp[i] = min(dp[i], dp[j] + largest). Elements may be negative, so start from a large sentinel and use 64-bit integers; print dp[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[i] is the minimum cost of the first i items. Enumerate the start of the last segment backward while maintaining its maximum, and update dp[i].\n\n## Correctness\n\nThe last segment of an optimal split must have length in 1..threshold, and after removing it the prefix must also be optimal, otherwise it could be replaced to lower the total. Since all valid last segments are enumerated and the minimum is taken, the recurrence misses no optimal solution. Negative costs do not affect the recurrence over finite splits.\n\n## Complexity\n\nTime O(n×threshold), space O(n)."
+}

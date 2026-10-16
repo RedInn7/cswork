@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-177",
+  "packageChecksum": "bf5499a3905a56b89717fd3d6ab77110d9f3b79f057514d897256645e71db24a",
+  "sourceContentHash": "32b0fd5a27f422e46757895a31f0c542c863a158bc8848c1d872cb7454b940fb",
+  "editorialSha256": "fe42ad5c2af1ff598911089d67b8b800b7530da7afdb7bdd048cd19978aefa2c",
+  "hints": {
+    "zh": [
+      "走过的范围一定是一段包含0的区间，吃到的苹果就是区间里的所有苹果；所以只需要考虑排序后连续的k个苹果。",
+      "对连续k个苹果组成的窗口[L,R]，最短路线是先走到离0较近的一端，再走到另一端，费用为(R−L)+min(|L|,|R|)；窗口整体在0同一侧时这个式子同样成立。",
+      "坐标升序排序后，对每个i计算a[i+k−1]−a[i]+min(|a[i]|,|a[i+k−1]|)，输出所有窗口中的最小值。"
+    ],
+    "en": [
+      "The ground you cover is always an interval containing 0, and you eat every apple inside it; so only k apples that are consecutive in sorted order need to be considered.",
+      "For a window [L, R] of k consecutive apples, the shortest route goes first to the end nearer 0 and then to the other end, costing (R - L) + min(|L|, |R|); the formula still holds when the whole window lies on one side of 0.",
+      "Sort the coordinates; for each i compute a[i+k-1] - a[i] + min(|a[i]|, |a[i+k-1]|) and print the smallest value over all windows."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort, then enumerate the two ends of every k consecutive coordinates; the cost is the distance between the two ends plus the distance from 0 to the nearer end, which is visited first.\n\n## Proof of correctness\n\nThe coordinates walked over form an interval; if at least k apples are eaten, it contains k consecutive sorted coordinates. Visiting that window requires walking over both of its ends, and the shortest route to visit it goes from 0 to the nearer end and then to the other end; when both ends are on the same side of 0, the formula likewise equals the distance to the far end. Hence take the minimum cost over all windows.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

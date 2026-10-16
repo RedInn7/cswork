@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-5",
+  "packageChecksum": "ea62307f44f070b67480d670b8c5bf2afc1c3d1f7b2aab7dd80b57f0a600fb63",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long score = 0;\n    size_t n = s.size();\n    for (size_t i = 0; i < n; i++) {\n        if (s[i] == '5') score += 2;\n        if ((s[i] - '0') % 2) score += 1;\n        if (i && s[i - 1] == '3' && s[i] == '3') score += 4;\n    }\n    if (s[n - 1] == '0' || s[n - 1] == '5') score += 6;\n    // Maximal runs where each digit is exactly one more than the previous.\n    for (size_t i = 0; i < n;) {\n        size_t j = i + 1;\n        while (j < n && s[j] == s[j - 1] + 1) j++;\n        score += (long long)(j - i) * (j - i);\n        i = j;\n    }\n    printf(\"%lld\\n\", score);\n}\n",
+      "sha256": "3afd7c209701243a9305376b4b337d74862eec696e033fe4f13c1a8c9140eb78"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        int n = s.length();\n        long score = 0;\n        for (int i = 0; i < n; i++) {\n            char c = s.charAt(i);\n            if (c == '5') score += 2;\n            if ((c - '0') % 2 == 1) score += 1;\n            if (i > 0 && s.charAt(i - 1) == '3' && c == '3') score += 4;\n        }\n        char last = s.charAt(n - 1);\n        if (last == '0' || last == '5') score += 6;\n        // Maximal runs where each digit is exactly one more than the previous.\n        for (int i = 0; i < n;) {\n            int j = i + 1;\n            while (j < n && s.charAt(j) == s.charAt(j - 1) + 1) j++;\n            score += (long) (j - i) * (j - i);\n            i = j;\n        }\n        System.out.println(score);\n    }\n}\n",
+      "sha256": "ccde10c1b1c97adbb8aa6597fad57e7975758730588baa90dce70d36f5153619"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(data))\n\tn := len(s)\n\tvar score int64\n\tfor i := 0; i < n; i++ {\n\t\tif s[i] == '5' {\n\t\t\tscore += 2\n\t\t}\n\t\tif (s[i]-'0')%2 == 1 {\n\t\t\tscore++\n\t\t}\n\t\tif i > 0 && s[i-1] == '3' && s[i] == '3' {\n\t\t\tscore += 4\n\t\t}\n\t}\n\tif s[n-1] == '0' || s[n-1] == '5' {\n\t\tscore += 6\n\t}\n\t// Maximal runs where each digit is exactly one more than the previous.\n\tfor i := 0; i < n; {\n\t\tj := i + 1\n\t\tfor j < n && s[j] == s[j-1]+1 {\n\t\t\tj++\n\t\t}\n\t\tscore += int64(j-i) * int64(j-i)\n\t\ti = j\n\t}\n\tfmt.Println(score)\n}\n",
+      "sha256": "399d04adf098ff65019e1dc8e4c5bb32f2414807b7a37fa7a5b45736b7a8810e"
+    }
+  ]
+}

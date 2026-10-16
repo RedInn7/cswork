@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-18",
+  "packageChecksum": "5dafac86f39761bca212f73f601d21fe64558387d54c0b4f7f7da3c5a35df36b",
+  "sourceContentHash": "6a908560aff16e2ab2db858f041057a4fec4468549fec60492933e230c301a55",
+  "editorialSha256": "457432b95aa84ff2980cc90f9397763a0fac8204b7d59ba50b0dcc6d20a62a8f",
+  "hints": {
+    "zh": [
+      "排序规则只取决于两个量：该数值在整个数组里的出现次数，以及数值本身。",
+      "先统计每个数值的频次，再以（频次，数值）为键对所有元素排序；相同数值键相同，会自然排在一起并保留原有次数。",
+      "用数组或哈希表统计频次（数值≤10^6 可直接开数组）；对原数组按频次升序、频次相同按数值升序排序；空格分隔输出排序后的 n 个数。"
+    ],
+    "en": [
+      "The order depends only on two quantities: how often the value occurs in the whole array, and the value itself.",
+      "Count each value's frequency first, then sort all elements by the key (frequency, value); equal values share a key, so they end up together and keep their multiplicity.",
+      "Count frequencies in an array or hash map (values are at most 10^6, so an array works); sort the original array by frequency ascending and then by value ascending; print the n sorted numbers space-separated."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count each value's frequency, then sort all elements of the original array by (frequency, value).\n\n## Correctness\n\nThe comparison key determines a total order for every element. After sorting by this key every element still appears exactly once, values with smaller frequencies come first as whole blocks, and values with equal frequency are in ascending order, which is exactly the required ordering.\n\n## Complexity\n\nWith n the array length and u the number of distinct values: time O(n log n), space O(u)."
+}

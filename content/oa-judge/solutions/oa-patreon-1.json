@@ -1,0 +1,21 @@
+{
+  "id": "oa-patreon-1",
+  "packageChecksum": "d9ba9491e154acc0f7c25a60288ba7cb2a2227ea697c322e2c1d8d10d8fd5418",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // Each distinct even value is halved once, all its copies together; process the largest first.\n    unordered_set<long long> seen;\n    priority_queue<long long> evens;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        if (seen.insert(v).second && v % 2 == 0) evens.push(v);\n    }\n    long long ans = 0;\n    while (!evens.empty()) {\n        long long x = evens.top();\n        evens.pop();\n        ans++;\n        long long half = x / 2;\n        if (seen.insert(half).second && half % 2 == 0) evens.push(half);\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "7598e2e4fefa40c7d5a692257fd5e8101a177860cad454151c4f8ed2f5537625"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        // Each distinct even value is halved once, all its copies together; process the largest first.\n        HashSet<Long> seen = new HashSet<>();\n        PriorityQueue<Long> evens = new PriorityQueue<>(Collections.reverseOrder());\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            if (seen.add(v) && v % 2 == 0) evens.add(v);\n        }\n        long ans = 0;\n        while (!evens.isEmpty()) {\n            long half = evens.poll() / 2;\n            ans++;\n            if (seen.add(half) && half % 2 == 0) evens.add(half);\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "680b3d7f6964c55f66e5709d1e1e15882b2462f697df8fcdc8aa09d0fe428352"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"fmt\"\n\t\"os\"\n)\n\ntype maxHeap []int64\n\nfunc (h maxHeap) Len() int           { return len(h) }\nfunc (h maxHeap) Less(i, j int) bool { return h[i] > h[j] }\nfunc (h maxHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *maxHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *maxHeap) Pop() any {\n\told := *h\n\tv := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn v\n}\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\t// Each distinct even value is halved once, all its copies together; process the largest first.\n\tseen := map[int64]bool{}\n\tevens := &maxHeap{}\n\tfor i := 0; i < n; i++ {\n\t\tvar v int64\n\t\tfmt.Fscan(in, &v)\n\t\tif !seen[v] {\n\t\t\tseen[v] = true\n\t\t\tif v%2 == 0 {\n\t\t\t\theap.Push(evens, v)\n\t\t\t}\n\t\t}\n\t}\n\tans := 0\n\tfor evens.Len() > 0 {\n\t\thalf := heap.Pop(evens).(int64) / 2\n\t\tans++\n\t\tif !seen[half] {\n\t\t\tseen[half] = true\n\t\t\tif half%2 == 0 {\n\t\t\t\theap.Push(evens, half)\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "519103bbfe13f23a0137d6b2699535431f8f1a891ec30c300e24ce2520a177d4"
+    }
+  ]
+}

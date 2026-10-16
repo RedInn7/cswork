@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-126",
+  "packageChecksum": "95af1d8b12a67235c543739ce9682c6a52979e0d649257071848a9b22187fef6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    vector<int> prefix(n + 1, 0);\n    for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + (s[i] == '1');\n    long long answer = 0;\n    // k ones force length k*k + k.\n    for (long long k = 1; k * k + k <= n; k++) {\n        int length = k * k + k;\n        for (int i = 0; i + length <= n; i++)\n            if (prefix[i + length] - prefix[i] == k) answer++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "6c58867ccaa8407e6babbf75fedbddfddca1c68d60b8949b3cb59b020340ad09"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int n = s.length();\n        int[] prefix = new int[n + 1];\n        for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + (s.charAt(i) == '1' ? 1 : 0);\n        long answer = 0;\n        // k ones force length k*k + k.\n        for (int k = 1; (long) k * k + k <= n; k++) {\n            int length = k * k + k;\n            for (int i = 0; i + length <= n; i++) if (prefix[i + length] - prefix[i] == k) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "1149c8e6c04f63cb097c973d4f41fab7e6d7216bc2adccc75e2ee5df8b0a9a30"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts := readToken()\n\tn := len(s)\n\tprefix := make([]int, n+1)\n\tfor i := 0; i < n; i++ {\n\t\tprefix[i+1] = prefix[i]\n\t\tif s[i] == '1' {\n\t\t\tprefix[i+1]++\n\t\t}\n\t}\n\tanswer := 0\n\t// k ones force length k*k + k.\n\tfor k := 1; k*k+k <= n; k++ {\n\t\tlength := k*k + k\n\t\tfor i := 0; i+length <= n; i++ {\n\t\t\tif prefix[i+length]-prefix[i] == k {\n\t\t\t\tanswer++\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "d316d732ab4ddb679f92c36334e79ae4c7d6ee350cf394d11079bc0ef5febc5d"
+    }
+  ]
+}

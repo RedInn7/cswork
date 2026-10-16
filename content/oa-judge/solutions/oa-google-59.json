@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-59",
+  "packageChecksum": "b93655d391e446e8f7cdc8e6ad99467c5faf3f11aa32e4c9f48e982cb8a3d55d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long ones = 0, answer = 0;\n    char previous = '0';\n    for (char c : s) {\n        if (c == '1') ones++;\n        else {\n            answer += ones;                     // inversions: total distance\n            if (previous == '1') answer += ones; // one extra move per zero block\n        }\n        previous = c;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "2c65e896f10ac59915c595b20631a64f6a0956c29db631871783949cb6428d78"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine().trim();\n        long ones = 0, answer = 0;\n        char previous = '0';\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == '1') ones++;\n            else {\n                answer += ones;                      // inversions: total distance\n                if (previous == '1') answer += ones; // one extra move per zero block\n            }\n            previous = c;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "6c75f51a53589a81ba2a7758502c30344a0d5536bbc092cd8a6fdef5bd87e5b6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar s string\n\tfmt.Fscan(r, &s)\n\tvar ones, answer int64\n\tprevious := byte('0')\n\tfor i := 0; i < len(s); i++ {\n\t\tc := s[i]\n\t\tif c == '1' {\n\t\t\tones++\n\t\t} else {\n\t\t\tanswer += ones // inversions: total distance\n\t\t\tif previous == '1' {\n\t\t\t\tanswer += ones // one extra move per zero block\n\t\t\t}\n\t\t}\n\t\tprevious = c\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "76afb5b6e40dd394387e085f7d48f3ec5fdedc417993eccfce17b61510da6a7b"
+    }
+  ]
+}

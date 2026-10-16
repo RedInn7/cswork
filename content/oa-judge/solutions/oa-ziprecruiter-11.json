@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-11",
+  "packageChecksum": "a6557155b7098850861d82fcd3580641469d2b5ef57710c6b446463dc4211654",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom bisect import bisect_left, bisect_right\n\n\ndef main():\n    data = list(map(int, sys.stdin.buffer.read().split()))\n    n, m = data[0], data[1]\n    lamps = data[2:2 + 2 * n]\n    left = sorted(lamps[0::2])\n    right = sorted(lamps[1::2])\n    points = data[2 + 2 * n:2 + 2 * n + m]\n    # Lamps starting at or before p, minus lamps that already ended before p.\n    print(' '.join(str(bisect_right(left, p) - bisect_left(right, p)) for p in points))\n\n\nmain()\n",
+      "sha256": "01be94631c0234e8e52c70de41083ade2a6113a7080f8a007554de3589c68b04"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    // number of elements < x (strict) or <= x (inclusive) in sorted a\n    static int bound(long[] a, long x, boolean inclusive) {\n        int lo = 0, hi = a.length;\n        while (lo < hi) {\n            int mid = (lo + hi) >>> 1;\n            if (a[mid] < x || (inclusive && a[mid] == x)) lo = mid + 1;\n            else hi = mid;\n        }\n        return lo;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), m = (int) nextLong();\n        long[] l = new long[n], r = new long[n];\n        for (int i = 0; i < n; i++) {\n            l[i] = nextLong();\n            r[i] = nextLong();\n        }\n        Arrays.sort(l);\n        Arrays.sort(r);\n        StringBuilder out = new StringBuilder();\n        for (int j = 0; j < m; j++) {\n            long p = nextLong();\n            if (j > 0) out.append(' ');\n            // lamps starting at or before p, minus lamps that already ended before p\n            out.append(bound(l, p, true) - bound(r, p, false));\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "57f9d81b26bfd68f92f884ca2bb37d9383bd0a5273251ded3b3090c5bc05e524"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := int(nextInt()), int(nextInt())\n\tl, r := make([]int64, n), make([]int64, n)\n\tfor i := 0; i < n; i++ {\n\t\tl[i], r[i] = nextInt(), nextInt()\n\t}\n\tslices.Sort(l)\n\tslices.Sort(r)\n\tout := []byte{}\n\tfor j := 0; j < m; j++ {\n\t\tp := nextInt()\n\t\t// lamps starting at or before p, minus lamps that already ended before p\n\t\tstarted := sort.Search(n, func(i int) bool { return l[i] > p })\n\t\tended := sort.Search(n, func(i int) bool { return r[i] >= p })\n\t\tif j > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, int64(started-ended), 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "05b75f872c84301e33b214c903a1c768ed90b9462d2350f57ff6473613c72f5c"
+    }
+  ]
+}

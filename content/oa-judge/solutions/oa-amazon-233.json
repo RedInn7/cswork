@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-233",
+  "packageChecksum": "962adf491bb095b8bb16f1da0769fd1b41cd372592fed8a5ed86573e9dca610a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    // Values ascending (rearrangement inequality); equal values by original index.\n    vector<int> order(n);\n    iota(order.begin(), order.end(), 0);\n    sort(order.begin(), order.end(), [&](int x, int y) { return a[x] != a[y] ? a[x] < a[y] : x < y; });\n    string out;\n    for (int i = 0; i < n; i++) {\n        out += to_string(order[i] + 1);\n        out += i + 1 < n ? ' ' : '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "2598e66074e1a4ad7792ddf2c5d6d920e6f0f46c28e3227d5776450f10e9932e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // Values ascending (rearrangement inequality); equal values by original index.\n        // Key = (value + 10^9) * 2^18 + index, since index < 2^18.\n        long[] key = new long[n];\n        for (int i = 0; i < n; i++) key[i] = (nextLong() + 1_000_000_000L) << 18 | i;\n        Arrays.sort(key);\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) out.append(' ');\n            out.append((key[i] & ((1 << 18) - 1)) + 1);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "f1212765d8cbc4ab53bb5549ff405c4afb77fb91b85fa7ff021858817b8d802d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\t// Values ascending (rearrangement inequality); equal values by original index.\n\t// Key = (value + 10^9) * 2^18 + index, since index < 2^18.\n\tkey := make([]int64, n)\n\tfor i := range key {\n\t\tkey[i] = (nextInt()+1_000_000_000)<<18 | int64(i)\n\t}\n\tslices.Sort(key)\n\tout := make([]byte, 0, 7*n)\n\tfor i, k := range key {\n\t\tif i > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, k&(1<<18-1)+1, 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "9d7a88b018d6ac861770121efe04d90ce3dc658bad3ceebae588d5634b7957e7"
+    }
+  ]
+}

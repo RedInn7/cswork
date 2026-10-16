@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-26",
+  "packageChecksum": "6ab66f74b2cd5411315bfe4a949d96fdcc74fbc490453b5ab5cd93f87b677f45",
+  "sourceContentHash": "b2e47c07ec720419096a8a54916f94a58a3b45d0e16c8758e58404b0a4c39779",
+  "editorialSha256": "9f08cb997bb4bc631e6dbfd6ca1917f92722be83ab7721a9db2feb72426f1c1c",
+  "hints": {
+    "zh": [
+      "最优的连续段要么不包含被修改的位置，要么恰好包含一个修改点；修改点两侧在原数组里必须各自非降。",
+      "预处理每个位置结尾的非降段长度 left[i] 和开头的非降段长度 right[i]，然后枚举修改点 i，考虑只接左段、只接右段、以及把左右两段桥接起来。",
+      "求出 left、right；答案初值为 max(left)；对每个 i 令 l=left[i−1]、r=right[i+1]（越界为 0），用 l+1 和 r+1 更新答案；若 0<i<n−1 且 a[i−1]≤a[i+1]，再用 l+r+1 更新；输出答案。"
+    ],
+    "en": [
+      "An optimal segment either contains no changed position or contains exactly one changed position; on both sides of that position the original array must be non-decreasing.",
+      "Precompute left[i], the non-decreasing run ending at i, and right[i], the run starting at i. Then enumerate the changed position i and consider joining only the left run, only the right run, or bridging both runs.",
+      "Compute left and right; start the answer at max(left); for each i let l = left[i-1] and r = right[i+1] (0 when out of range) and update the answer with l + 1 and r + 1; if 0 < i < n-1 and a[i-1] <= a[i+1], also update with l + r + 1; print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute, for every position, the length of the unmodified non-decreasing run ending there and starting there. When a position is modified, consider joining only the left run, only the right run, and, when the neighbouring values allow a bridge, merging both runs.\n\n## Correctness\n\nIf the optimal segment contains no modified position, it is already covered by an original non-decreasing run. If it contains the modified position, both sides of it must be non-decreasing on their own. When both sides are non-empty, a suitable integer for the middle exists if and only if the left neighbour is not greater than the right neighbour. Enumerating the modified position and these three cases covers every option.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

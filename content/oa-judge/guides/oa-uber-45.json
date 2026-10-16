@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-45",
+  "packageChecksum": "967c907311c5ab3f4b09097b79b072eb06c23c3ea8b355ff901335edd3395a1e",
+  "sourceContentHash": "1f375bec186d000c5a30ce9006b58adac3e3504743b93c18e91306e8d9eb8e90",
+  "editorialSha256": "e4b0a974bfd8ca89cf57c72f75c7b89577cb12962df92a7bfe39f4c9ccd04f5e",
+  "hints": {
+    "zh": [
+      "一个长度为 m+1 的子数组是否匹配，只取决于它内部 m 个相邻比较的结果。先把原数组转换成由 −1/0/1 组成的比较序列，问题就变成在这条序列里数模式串出现了多少次。",
+      "这就是经典的字符串匹配，而且出现位置允许重叠。用 KMP 先对模式算失配函数，再在比较序列上扫一遍即可，不需要对每个起点逐项比对。",
+      "对模式求前缀函数 failure。然后对 i=0..n−2 算出 v=sign(a[i+1]−a[i])，失配时用 failure 回退 j，相等则 j 加一；当 j 达到 m 时计数加一，并令 j=failure[m−1] 以继续统计重叠的出现。最后输出计数。"
+    ],
+    "en": [
+      "Whether a subarray of length m + 1 matches depends only on its m adjacent comparisons. Convert the array into a sequence of -1/0/1 comparison results, and the task becomes counting how many times the pattern occurs in that sequence.",
+      "This is classic string matching with overlapping occurrences allowed. Compute the KMP failure function of the pattern and scan the comparison sequence once instead of checking every starting point term by term.",
+      "Compute the prefix function of the pattern. Then for i = 0..n - 2 compute v = sign(a[i+1] - a[i]); on a mismatch fall back j through the failure function, on a match increase j. When j reaches m, increase the count and set j = failure[m - 1] so overlapping occurrences are still found. Output the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst turn the adjacent comparisons of the array into a -1/0/1 sequence, then count the occurrences of the pattern in it with KMP, allowing overlaps.\n\n## Correctness\n\nA subarray of length m+1 corresponds uniquely to a comparison sequence of length m, and the two matching conditions are equivalent term by term. A KMP failure jump only skips starting points that cannot match, so no occurrence is missed or counted twice.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."
+}

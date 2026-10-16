@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-16",
+  "packageChecksum": "8785d93bbf10f6920c2bf06fd9ace2c4a4ce7462d9dc993325fc57459c3cbc8e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    vector<char> ops;        // pending operators: '+' for add, '-' for sub\n    vector<long long> vals;  // evaluated arguments\n    for (size_t i = 0; i < s.size();) {\n        char c = s[i];\n        if (c == 'a' || c == 's') { ops.push_back(c == 'a' ? '+' : '-'); i += 3; }\n        else if (c == ')') {\n            // Both arguments of the innermost open call are on top of the value stack.\n            long long right = vals.back(); vals.pop_back();\n            long long left = vals.back(); vals.pop_back();\n            vals.push_back(ops.back() == '+' ? left + right : left - right);\n            ops.pop_back();\n            i++;\n        } else if (c == '-' || isdigit((unsigned char)c)) {\n            bool neg = c == '-';\n            if (neg) i++;\n            long long v = 0;\n            while (i < s.size() && isdigit((unsigned char)s[i])) v = v * 10 + (s[i++] - '0');\n            vals.push_back(neg ? -v : v);\n        } else i++;  // '(', ',', whitespace\n    }\n    printf(\"%lld\\n\", vals[0]);\n}\n",
+      "sha256": "e9625e7660f7f1c79f385d9093140e127319f1c31bdc0b2081dfd84704f39a50"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] s = System.in.readAllBytes();\n        int n = s.length;\n        char[] ops = new char[n + 1]; // pending operators: '+' for add, '-' for sub\n        long[] vals = new long[n + 1]; // evaluated arguments\n        int no = 0, nv = 0;\n        for (int i = 0; i < n;) {\n            byte c = s[i];\n            if (c == 'a' || c == 's') { ops[no++] = c == 'a' ? '+' : '-'; i += 3; }\n            else if (c == ')') {\n                // Both arguments of the innermost open call are on top of the value stack.\n                long right = vals[--nv], left = vals[--nv];\n                vals[nv++] = ops[--no] == '+' ? left + right : left - right;\n                i++;\n            } else if (c == '-' || (c >= '0' && c <= '9')) {\n                boolean neg = c == '-';\n                if (neg) i++;\n                long v = 0;\n                while (i < n && s[i] >= '0' && s[i] <= '9') v = v * 10 + (s[i++] - '0');\n                vals[nv++] = neg ? -v : v;\n            } else i++; // '(', ',', whitespace\n        }\n        System.out.println(vals[0]);\n    }\n}\n",
+      "sha256": "49aad50e082c9b970e4758042d027fb843982fc45beb110e051507e18537ef35"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\ts, _ := io.ReadAll(os.Stdin)\n\tvar ops []byte   // pending operators: '+' for add, '-' for sub\n\tvar vals []int64 // evaluated arguments\n\tfor i := 0; i < len(s); {\n\t\tc := s[i]\n\t\tswitch {\n\t\tcase c == 'a' || c == 's':\n\t\t\tif c == 'a' {\n\t\t\t\tops = append(ops, '+')\n\t\t\t} else {\n\t\t\t\tops = append(ops, '-')\n\t\t\t}\n\t\t\ti += 3\n\t\tcase c == ')':\n\t\t\t// Both arguments of the innermost open call are on top of the value stack.\n\t\t\tright, left := vals[len(vals)-1], vals[len(vals)-2]\n\t\t\tvals = vals[:len(vals)-2]\n\t\t\top := ops[len(ops)-1]\n\t\t\tops = ops[:len(ops)-1]\n\t\t\tif op == '+' {\n\t\t\t\tvals = append(vals, left+right)\n\t\t\t} else {\n\t\t\t\tvals = append(vals, left-right)\n\t\t\t}\n\t\t\ti++\n\t\tcase c == '-' || (c >= '0' && c <= '9'):\n\t\t\tneg := c == '-'\n\t\t\tif neg {\n\t\t\t\ti++\n\t\t\t}\n\t\t\tvar v int64\n\t\t\tfor i < len(s) && s[i] >= '0' && s[i] <= '9' {\n\t\t\t\tv = v*10 + int64(s[i]-'0')\n\t\t\t\ti++\n\t\t\t}\n\t\t\tif neg {\n\t\t\t\tv = -v\n\t\t\t}\n\t\t\tvals = append(vals, v)\n\t\tdefault: // '(', ',', whitespace\n\t\t\ti++\n\t\t}\n\t}\n\tfmt.Println(vals[0])\n}\n",
+      "sha256": "6741010ea9ae960077a96e7f0da0fd110583041e9aaccb64f86637e17499dd0b"
+    }
+  ]
+}

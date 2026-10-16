@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-6",
+  "packageChecksum": "802ee1d8567ceab703fed52b4af4556c1b14c6ee9b82111c24a774f029eab60f",
+  "sourceContentHash": "b6bf10572360363d1527cd94f323561837873ac2bdcdf103fd651ae3a0a81523",
+  "editorialSha256": "bdcdbc50142d2ea3c90950e76cba24c66f6ad79473a2aa3d2735b35f7e5fcf8d",
+  "hints": {
+    "zh": [
+      "三个字符串都不超过 50 个字符，所以 text 的非空子串最多约 1275 个，完全可以逐个枚举。",
+      "对每个候选子串 t，前缀分是满足“t 的前 k 个字符等于 prefixString 的后 k 个字符”的最大 k，后缀分同理比较 t 的后 k 个字符和 suffixString 的前 k 个字符；k 不能超过 t 的长度，两部分允许重叠。",
+      "双重循环枚举子串，再分别枚举 k 求两项得分；维护最高分和对应子串，分数相同时保留字典序更小者。总计 O(L⁴)，L ≤ 50 时很快。"
+    ],
+    "en": [
+      "All three strings have at most 50 characters, so text has only about 1275 non-empty substrings and you can enumerate them all.",
+      "For a candidate t, the prefix score is the largest k such that the first k characters of t equal the last k characters of prefixString; the suffix score likewise compares the last k characters of t with the first k characters of suffixString. k may not exceed the length of t, and the two parts may overlap.",
+      "Enumerate substrings with two nested loops and, for each, enumerate k to get both scores; keep the highest total and its substring, and on a tie keep the lexicographically smaller one. The total cost is O(L^4), fast for L <= 50."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate all non-empty candidate substrings; for each side, enumerate match lengths not exceeding the candidate's length, then find the maximum score and compare lexicographically.\n\n## Proof of correctness\n\nEvery possible answer is enumerated. All legal lengths of the candidate's prefix and suffix are checked one by one, and taking the maximum gives exactly the two scores defined by the problem; comparing all candidates by highest score and then smallest lexicographic order gives the unique required result. Characters outside the candidate must not be counted in a match.\n\n## Complexity\n\nWith the longest string length L <= 50, O(L^4) time and O(L) extra space, which covers the complete original domain."
+}

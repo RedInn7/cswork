@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-62",
+  "packageChecksum": "61cd486125214526b027a1361b191ca8d043ee50e288556634c53ed31a642a92",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int right[26] = {0};\n    bool left[26] = {false};\n    int rightDistinct = 0, leftDistinct = 0;\n    for (char c : s) if (right[c - 'a']++ == 0) rightDistinct++;\n    long long answer = 0;\n    for (size_t i = 0; i + 1 < s.size(); i++) {\n        int c = s[i] - 'a';\n        if (!left[c]) { left[c] = true; leftDistinct++; }\n        if (--right[c] == 0) rightDistinct--;\n        if (leftDistinct == rightDistinct) answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "4b0045f01fbcb13428f78aaed447bd712bae5b0d29cc2544fc25f0e2308bec54"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine().trim();\n        int[] right = new int[26];\n        boolean[] left = new boolean[26];\n        int rightDistinct = 0, leftDistinct = 0;\n        for (int i = 0; i < s.length(); i++) if (right[s.charAt(i) - 'a']++ == 0) rightDistinct++;\n        long answer = 0;\n        for (int i = 0; i + 1 < s.length(); i++) {\n            int c = s.charAt(i) - 'a';\n            if (!left[c]) { left[c] = true; leftDistinct++; }\n            if (--right[c] == 0) rightDistinct--;\n            if (leftDistinct == rightDistinct) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "bdd6539d848e607bfda66f4da98062abc2b06590ee0efeab1db21476616778d9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar s string\n\tfmt.Fscan(r, &s)\n\tvar right [26]int\n\tvar left [26]bool\n\trightDistinct, leftDistinct := 0, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif right[s[i]-'a'] == 0 {\n\t\t\trightDistinct++\n\t\t}\n\t\tright[s[i]-'a']++\n\t}\n\tanswer := 0\n\tfor i := 0; i+1 < len(s); i++ {\n\t\tc := s[i] - 'a'\n\t\tif !left[c] {\n\t\t\tleft[c] = true\n\t\t\tleftDistinct++\n\t\t}\n\t\tright[c]--\n\t\tif right[c] == 0 {\n\t\t\trightDistinct--\n\t\t}\n\t\tif leftDistinct == rightDistinct {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "bde5fcd6f54f82f0287bb8f89a38b896eb2f1260e04f8b6b9c1773e7ee5e3965"
+    }
+  ]
+}

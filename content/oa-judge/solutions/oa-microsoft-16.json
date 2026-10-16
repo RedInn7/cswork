@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-16",
+  "packageChecksum": "345179127d97cd64b8a360079fc979d609a0cccf1359334d42a55368ff41b3f8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    bool seen[26] = {false};\n    int count = 0;\n    for (char c : s) {\n        if (c >= 'A' && c <= 'Z') break;  // only the prefix before the first uppercase letter counts\n        if (c >= 'a' && c <= 'z' && !seen[c - 'a']) seen[c - 'a'] = true, count++;\n    }\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "ef8c48a65f091731288b34a3a5c6e36a52cf8fd357207ab32e7fdfd10dda0ad7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] s = System.in.readAllBytes();\n        boolean[] seen = new boolean[26];\n        int count = 0;\n        for (byte c : s) {\n            if (c >= 'A' && c <= 'Z') break; // only the prefix before the first uppercase letter counts\n            if (c >= 'a' && c <= 'z' && !seen[c - 'a']) {\n                seen[c - 'a'] = true;\n                count++;\n            }\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "f1f3e1d8a8308cf8bb783d3e8ef38b6bc47b437ac70c46fa1f31d7f084f395c5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\ts, _ := io.ReadAll(os.Stdin)\n\tvar seen [26]bool\n\tcount := 0\n\tfor _, c := range s {\n\t\tif c >= 'A' && c <= 'Z' {\n\t\t\tbreak // only the prefix before the first uppercase letter counts\n\t\t}\n\t\tif c >= 'a' && c <= 'z' && !seen[c-'a'] {\n\t\t\tseen[c-'a'] = true\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "0a53116e9be560246718df683651af8a9f00f0a3186e896687c5c6557a235a98"
+    }
+  ]
+}

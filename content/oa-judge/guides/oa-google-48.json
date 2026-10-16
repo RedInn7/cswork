@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-48",
+  "packageChecksum": "0451bbca07cb04fc39a141fb0e9f1b77f8a7b658ee5c7a33de87c0391fba0d4c",
+  "sourceContentHash": "60efd7fedc0458888bbd6e558a07eb6c952a417fe99fb9068d73d5fa0ac3117e",
+  "editorialSha256": "269e83774bc4422982c20a6611658d77c5dcd32078bc28d424aa8b459fdd8baa",
+  "hints": {
+    "zh": [
+      "至多改 3 个数，就意味着至少有 n−3 个原值被保留；被修改的数可以直接改成保留区间里的某个值，不会扩大振幅。",
+      "排序后，最优的保留集合一定是一段连续的 n−3 个元素：固定最小和最大保留值后，夹在中间的元素都不必修改。连续窗口只有 4 种：左边去掉 i 个、右边去掉 3−i 个。",
+      "若 n≤4，所有数都能改成同一个值，输出 0；否则排序，对 i=0..3 计算 A[n−4+i]−A[i]，输出最小值。"
+    ],
+    "en": [
+      "Changing at most 3 numbers means at least n-3 original values are kept; each changed number can simply be set to a value inside the kept range, which never increases the amplitude.",
+      "After sorting, the best kept set is always a contiguous block of n-3 elements: once the smallest and largest kept values are fixed, the elements between them need no change. There are only 4 such windows: drop i from the left and 3-i from the right.",
+      "If n <= 4, all numbers can be made equal, so print 0; otherwise sort and compute A[n-4+i] - A[i] for i = 0..3, and print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAt most 3 elements may be changed. After sorting, changing a middle element is never more effective than changing an end element, so it is enough to enumerate removing i elements from the left and 3-i from the right (i = 0, 1, 2, 3); the width of the remaining range is `A[n-4+i] - A[i]`, and we take the minimum. If n <= 4, at most three elements of the array can be changed to the remaining value, so the answer is 0.\n\n## Correctness\n\nAfter changing at most three elements, at least n-3 original values are kept. Once the smallest and largest kept values are fixed, every element between them needs no change, and the changed values outside that range can be placed inside the final range. So the optimum is equivalent to choosing a contiguous window of n-3 items in the sorted array as the kept values; any non-contiguous choice spans no less than the contiguous window that covers it. There are four ways to assign the window's ends, and enumerating them gives the minimum amplitude. When n <= 4, all final values can be made equal, and the amplitude is 0.\n\n## Complexity\n\nSorting O(n log n), scanning O(1), space O(n) (sorted copy / sorted storage).\n\n## Sources and site conventions\n\nThe fixed OAMaster snapshot has a truncated statement and no constraints: https://oamaster.com/docs/companies/google#48-min-amplitude (upstream commit `e66f809f4c953bce129f68491726176615db6afc`, content fingerprint `60efd7fedc0458888bbd6e558a07eb6c952a417fe99fb9068d73d5fa0ac3117e`). A Google OA source of the same problem fully keeps \"replace at most three elements with any integers\", two examples consistent with OAMaster, and the constraints: https://www.fastprep.io/problems/google-min-amplitude. This site completes the missing statement from it; the standard input/output format is an addition by this site. The complete rule and constraints are not attributed to the original OAMaster snapshot."
+}

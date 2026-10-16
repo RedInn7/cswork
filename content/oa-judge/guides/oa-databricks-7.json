@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-7",
+  "packageChecksum": "9c637ef838817f59249f9ff240cd33da4c2948fcc17eb8e0e928c6caf305e1f8",
+  "sourceContentHash": "fda7ef9da5511928ad583deb83312919a72396b13e8a61a606ce9aa8518e4633",
+  "editorialSha256": "d53321c4902d602a21040745c1dcef51c91b11b99c27ad18f349af5fcac78437",
+  "hints": {
+    "zh": [
+      "合法的终态只由一对不同的数字决定：Y 上的数字和背景数字。0、1、2 中有序选两个不同的，只有 6 种组合。",
+      "固定这对数字后，每个格子要变成它所在区域（Y 内或 Y 外）的指定值，代价就是当前值不等于指定值的格子数。所以只需知道 Y 内、Y 外各有多少个 0、1、2。",
+      "令 mid = n / 2；格子 (r, c) 属于 Y 当且仅当 r ≤ mid 且 c 等于 r 或 n−1−r，或者 r > mid 且 c = mid。扫描一遍统计两组计数，再对 6 对不同数字计算 n² − inside[y] − outside[b]，取最小值输出。"
+    ],
+    "en": [
+      "A legal final matrix is determined by a pair of different digits: the digit of the Y and the background digit. Choosing an ordered pair of different values from 0, 1, 2 gives only 6 combinations.",
+      "With the pair fixed, every cell must become the value assigned to its region (inside or outside the Y), and the cost is the number of cells whose current value differs. So you only need how many 0s, 1s and 2s lie inside and outside the Y.",
+      "Let mid = n / 2; cell (r, c) is on the Y exactly when r <= mid and c equals r or n - 1 - r, or when r > mid and c = mid. Scan once to fill the two count arrays, then evaluate n^2 - inside[y] - outside[b] for the 6 pairs of different digits and print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDetermine for each cell whether it belongs to the Y, and count the 0s, 1s, and 2s inside and outside the Y separately. Enumerate the six distinct (Y digit, background digit) pairs, compute the number of mismatched cells, and take the minimum.\n\n## Proof of correctness\n\nEvery legal target matrix is determined by a unique pair of different digits: the Y digit and the background digit. Once this pair is fixed, every position must become the value assigned to its region, and the cost of modification is exactly the number of positions whose current value differs from the assigned value. The six combinations cover all legal options, and taking the minimum gives the global optimum.\n\n## Complexity\n\nO(6n^2) time and O(1) extra space."
+}

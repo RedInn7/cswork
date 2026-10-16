@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-32",
+  "packageChecksum": "ccaa10c16f24a698985f6823fd9adcccb3ccaa4be3cfc5c66b1aa51748ba1f84",
+  "sourceContentHash": "566f045b8713fdc5df1c0fc05bc2c4630d16a5919163ebe24c29f2482d022718",
+  "editorialSha256": "3fba3d26968d08b520fead51ada54982a98f611f1b6f2b9692296bb198292e4f",
+  "hints": {
+    "zh": [
+      "模式里的每个单元（一个普通字符或一个 [..] 集合）恰好匹配一个字符，所以能匹配的字符串长度必须等于单元个数。",
+      "先把模式解析成“每个位置允许的字符集合”的列表；之后每个候选串只要长度相同、且每一位都属于对应集合就算完整匹配。",
+      "扫描模式：遇到 [ 就找到配对的 ]，把中间字符放进一个集合，否则把单个字符作为集合；然后按输入顺序检查每个候选串（长度相等且逐位命中）；先输出匹配数量，再按原顺序输出匹配串，重复项保留。"
+    ],
+    "en": [
+      "Every pattern unit (a plain character or a [..] set) matches exactly one character, so a matching string must have exactly as many characters as there are units.",
+      "First parse the pattern into a list of allowed-character sets, one per position. A candidate then matches completely when it has the same length and every character belongs to the set at its position.",
+      "Scan the pattern: on [ find the matching ] and put the characters between them into one set, otherwise use the single character as a set; then check each candidate in input order (equal length and every position hits); print the number of matches first, then the matching strings in their original order, keeping duplicates."
+    ]
+  },
+  "explanationEn": "## Approach\n\nParse the pattern into the set of allowed characters for each position. Only check candidates of the same length whose every character belongs to the corresponding set.\n\n## Correctness\n\nEach pattern unit consumes exactly one character, so a matching string must have the same length as the number of units. The units do not depend on each other, so satisfying the set membership at every position is also sufficient for a complete match. Checking the original list one by one naturally keeps the order and the duplicates.\n\n## Complexity\n\nTime O(|pattern| + sum of |word|), space O(|pattern| + output size)."
+}

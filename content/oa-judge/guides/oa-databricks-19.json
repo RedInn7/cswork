@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-19",
+  "packageChecksum": "a34a0169831d7e88c2110c8e5ce38c56c0bdc9f3099c217d800add9a7ac167fd",
+  "sourceContentHash": "052689a20353b2b3757ea3bc4811440e0bb2027298f60d3c541e03570ffe245e",
+  "editorialSha256": "a4fb8125f8d270b6a84e52e4bd17844f0f9d6d2d19f01fe87ac7183a494be443",
+  "hints": {
+    "zh": [
+      "一个 bucket 的“文件数”是它里面不同文件名的个数，同名文件重复创建不增加数量，所以每个 bucket 应该用集合保存文件名。",
+      "顺序模拟命令：goto 切换当前 bucket，不存在就新建一个空 bucket；create 把文件名加入当前 bucket 的集合。所有命令处理完后，比较各 bucket 集合的大小。",
+      "用“bucket 名 → 文件名集合”的哈希表加一个当前 bucket 变量；读入每条命令的操作和名字两个 token 分别处理；最后遍历所有 bucket（包括没有文件的空 bucket），输出集合大小唯一最大的那个名字。"
+    ],
+    "en": [
+      "A bucket's file count is the number of distinct file names in it; creating the same name again adds nothing, so store each bucket's files in a set.",
+      "Simulate the commands in order: goto switches the current bucket and creates an empty one if needed; create adds the name to the current bucket's set. After all commands, compare the set sizes.",
+      "Keep a hash map from bucket name to a set of file names plus a current-bucket variable; read each command as two tokens, the operation and the name. At the end loop over all buckets (empty ones included) and print the name whose set size is the unique maximum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a set of file names for each bucket, and track the current bucket. After processing all commands, take the bucket whose set size is the unique maximum.\n\n## Proof of correctness\n\nThe set size equals exactly the number of distinct files in the problem: a repeated file name is kept only once in the set, and goto makes sure the bucket exists. Scanning the sizes of the final sets, since the problem guarantees a unique maximum, the bucket obtained is exactly the one required.\n\n## Complexity\n\nO(q) expected time and O(q) space."
+}

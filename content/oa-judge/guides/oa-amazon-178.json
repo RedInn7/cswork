@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-178",
+  "packageChecksum": "6876772dbc66d9d4f20d53395036e92888ef20d1e5e3b850192f91a3aa24b396",
+  "sourceContentHash": "3736f9fdda18e626c91c74017afc25b8cff8cd77afcc33b9801f050e2ee121fe",
+  "editorialSha256": "20175a6408dcce4321e8b37f22e7e99886f690ad2d80c8a8c360b10c79ef8f63",
+  "hints": {
+    "zh": [
+      "每个商品至少要调用|值−目标|次，而且逐个单独调整就能做到，所以每个查询的答案就是所有元素与目标的绝对差之和。",
+      "查询很多，不能每次逐项计算。排序并求前缀和后，二分出不大于目标的元素个数c：这c个需要增加到目标，其余的需要减少到目标，两部分都能用前缀和O(1)算出。",
+      "升序排序并求前缀和pre；对每个目标t，用二分求出不大于t的元素个数c，答案为c·t−pre[c]+(pre[n]−pre[c])−(n−c)·t，按查询顺序输出。结果可达10^11量级，用64位整数。"
+    ],
+    "en": [
+      "Each item needs at least |value - target| calls, and adjusting the items one by one achieves that, so each query's answer is the sum of absolute differences from the target.",
+      "There are many queries, so do not loop over all items each time. After sorting and building prefix sums, binary search the number c of items not above the target: those c are raised to it and the rest lowered, and both parts come from the prefix sums in O(1).",
+      "Sort ascending and build prefix sums pre; for each target t, binary search the count c of items <= t, and the answer is c*t - pre[c] + (pre[n] - pre[c]) - (n - c)*t; print the answers in query order. Results reach about 10^11, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort and build prefix sums; binary search the split point for the target, and compute separately the total costs of increasing the left part and decreasing the right part.\n\n## Proof of correctness\n\nEach item needs at least as many calls as its absolute difference from the target, and adjusting each item separately achieves this. After sorting, binary search splits the items into those not greater than the target and those greater than it; the prefix-sum formula computes the sum of absolute differences exactly, and queries do not affect each other.\n\n## Complexity\n\nTime O(n log n + q log n), space O(n + q)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-234",
+  "packageChecksum": "47fa5ca0bfc162b7dd8d9efc7c5aa78953d74dad20638d54277a1a160e45229f",
+  "sourceContentHash": "c5f6c005a42832cddf0f15b17d5bf210a457ea922c0daec079fbb5119edc811b",
+  "editorialSha256": "0c5f72f05df585a1f498584b7db4f95cf1a67bebae611a3e8b0b0c14c5833584",
+  "hints": {
+    "zh": [
+      "每条约束只涉及相邻两件包裹，所以只要知道上一件用了哪张邮票，就能判断下一件可以用哪些。",
+      "设 dp[j] 为前若干件、最后一件用邮票 j 的方案数；按相邻价格是升、降还是相等，分别从编号更小、更大或不同的旧状态转移。",
+      "初始五项都为 1；每对相邻价格新建一个数组，对每个 j 累加所有满足条件的 dp[i]，过程中对 1000000007 取模；最后输出五项之和取模。严格单调段过长时状态自然变为 0。"
+    ],
+    "en": [
+      "Every constraint involves only two adjacent packages, so knowing which stamp the previous package used is enough to decide which stamps the next one may use.",
+      "Let dp[j] be the number of plans for the prefix whose last package uses stamp j; depending on whether the adjacent prices rise, fall or stay equal, transition from old states with a smaller number, a larger number, or any different number.",
+      "Start with all five entries equal to 1; for each adjacent price pair build a new array where each j sums every dp[i] that satisfies the condition, reducing modulo 1000000007; finally output the sum of the five entries modulo 1000000007. A strictly monotone run that is too long naturally drives the states to 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a five-state DP on the last stamp number, transitioning from the previous numbers that satisfy the strict comparison or the not-equal condition required by the relation between adjacent prices.\n\n## Proof of correctness\n\nA single package has one plan for each stamp. Every longer valid plan splits uniquely into a prefix plan and its last stamp, and the transition condition checks exactly the new adjacent relation, so nothing is missed or counted twice. By induction over the items, the sum of the final states is the number of all plans.\n\n## Complexity\n\nTime O(25n), auxiliary space O(5) excluding the input."
+}

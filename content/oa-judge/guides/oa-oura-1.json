@@ -1,0 +1,19 @@
+{
+  "id": "oa-oura-1",
+  "packageChecksum": "c701a2bd530bbcfaa033f04cd0ee5535bdb1e4ade98ecb92b176a0853d96d06e",
+  "sourceContentHash": "7120db03da4fbfaa338a6854ff02d4318050f07da41f22e0bd68964185345d1c",
+  "editorialSha256": "f350100c5dd71609e60084cbe48144db0101e13450c2e5de0346c3b46efef8a9",
+  "hints": {
+    "zh": [
+      "不同类型的编号互不影响，可以每种类型单独维护。对一种类型，当前未占用的最小正整数要么是某个被释放过的编号，要么是从未用过的下一个新编号。",
+      "已释放的编号都比从未用过的编号小，所以给每种类型准备一个存放已释放编号的最小堆，再加一个记录下一个新编号的计数器：分配时堆非空就取堆顶，否则用新编号。",
+      "用哈希表按类型名找到对应的堆和计数器（首次出现时堆为空、计数器为 1）。allocate 时堆非空就弹出堆顶，否则取计数器的值并把计数器加一，输出得到的编号；deallocate 时把编号压回该类型的堆，不输出。"
+    ],
+    "en": [
+      "Numbers of different types do not interact, so each type can be handled on its own. For one type, the smallest positive integer not in use is either some released number or the next never-used number.",
+      "Every released number is smaller than every never-used number, so give each type a min-heap of released numbers plus a counter for the next new number: an allocation takes the heap top if the heap is non-empty, otherwise the new number.",
+      "Use a hash map from type name to its heap and counter (an empty heap and counter 1 on first sight). On allocate, pop the heap top if the heap is non-empty, otherwise take the counter value and increment the counter; print the number obtained. On deallocate, push the number back into that type's heap and print nothing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each type, maintain a min-heap of released numbers and the next new number. allocate takes the heap top or the new number; deallocate puts the number back into the heap. The independent set-scanning oracle searches for a free slot starting from 1 each time.\n\n## Proof of correctness\n\nEach type separately keeps a min-heap of released numbers and an increasing pointer to the numbers never used. The heap top is the smallest of all released numbers, and if there is no released number, the new number is necessarily the smallest. Pushing a number into the heap when it is released guarantees that later allocations follow the rule.\n\n## Complexity\n\nThere are at most 2x10^5 requests; the number pools are independent per type, and release operations are valid.\n\nO(q log q) time, O(q) space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n import heapq\n z=raw.splitlines();q=int(z[0]);free={};used={};nxt={};out=[]\n for line in z[1:1+q]:\n  p=line.split();t=p[1]\n  if t not in free:free[t]=[];used[t]=set();nxt[t]=1\n  if p[0]=='allocate':\n   if free[t]:x=heapq.heappop(free[t])\n   else:x=nxt[t];nxt[t]+=1\n   used[t].add(x);out.append(str(x))\n  else:\n   x=int(p[2]);used[t].remove(x);heapq.heappush(free[t],x)\n return '\\n'.join(out)\n```"
+}

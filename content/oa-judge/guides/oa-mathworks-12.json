@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-12",
+  "packageChecksum": "892ce36ba9dcc63a1d1b2693b5a2f88baaa394d2a25336b8810901b367bf70b9",
+  "sourceContentHash": "236903cd17dda775f66173bab3a67e3c3fe43ab61d3645ee29f77f06b0834a9b",
+  "editorialSha256": "ccf0800d5b3eea7e866af349fb03c08f5aec8032e70081477dc4d442dc0f2e39",
+  "hints": {
+    "zh": [
+      "字符串是否合法只取决于每一对相邻字母，所以在末尾追加字符时，只需要知道当前最后一个字母是什么。",
+      "设 v[c] 为以字母 c 结尾的合法字符串个数；长度加一时，新的 v[c] 等于所有与 c 距离不超过 d 的旧末尾字母的 v 值之和。",
+      "初始时 26 个状态都为 1；重复 n−1 次，每次先对旧的 v 求前缀和，再用前缀和之差在 O(1) 内取出区间 [c−d, c+d]（裁剪到 0..25）的和作为新的 v[c]，全程对 1000000007 取模；最后输出 26 个值之和。"
+    ],
+    "en": [
+      "Whether a string is valid depends only on each pair of adjacent letters, so when appending a character you only need to know the current last letter.",
+      "Let v[c] be the number of valid strings ending in letter c; when the length grows by one, the new v[c] is the sum of the old v values over all last letters within distance d of c.",
+      "Start with all 26 states equal to 1; repeat n-1 times: build prefix sums of the old v, then take the sum over [c-d, c+d] (clipped to 0..25) in O(1) as the new v[c], reducing modulo 1000000007 throughout; finally output the sum of the 26 values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a dynamic program over the last letter; a new character can only transition from last-letter states that differ from it by at most d.\n\n## Proof of correctness\n\nClassify strings by their last letter. Appending character c is valid if and only if the distance between the old last letter and c is at most d; therefore this transition counts every valid string without omission or duplication.\n\n## Complexity\n\nO(26n), space O(26)."
+}

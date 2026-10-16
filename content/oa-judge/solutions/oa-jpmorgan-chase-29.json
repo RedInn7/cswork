@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-29",
+  "packageChecksum": "e83a026c57f260a594ce8094a46fd4d8f0737f89fc880dcc6f03f7b14208c345",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char buf[1 << 16];\nstatic size_t blen = 0, bpos = 0;\nstatic inline int gc() {\n    if (bpos == blen) {\n        blen = fread(buf, 1, sizeof buf, stdin);\n        bpos = 0;\n        if (!blen) return -1;\n    }\n    return buf[bpos++];\n}\nstatic long long readLong() {\n    int c = gc();\n    while (c != '-' && (c < '0' || c > '9')) {\n        if (c == -1) return 0;\n        c = gc();\n    }\n    bool neg = false;\n    if (c == '-') { neg = true; c = gc(); }\n    long long v = 0;\n    while (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); c = gc(); }\n    return neg ? -v : v;\n}\n\nint main() {\n    int n = (int)readLong(), k = (int)readLong();\n    vector<long long> a(n);\n    for (auto &v : a) v = readLong();\n    // a[i] becomes the total collected when starting at i.\n    for (int i = n - k - 1; i >= 0; i--) a[i] += a[i + k];\n    printf(\"%lld\\n\", *max_element(a.begin(), a.end()));\n}\n",
+      "sha256": "6162dcde770f7234d0bee89e4adb1472054073ac775990a541bf7bb0905b3005"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final InputStream in = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int gc() throws IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = gc();\n        while (c != '-' && (c < '0' || c > '9')) {\n            if (c == -1) return 0;\n            c = gc();\n        }\n        boolean neg = false;\n        if (c == '-') { neg = true; c = gc(); }\n        long v = 0;\n        while (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); c = gc(); }\n        return neg ? -v : v;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), k = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // a[i] becomes the total collected when starting at i.\n        for (int i = n - k - 1; i >= 0; i--) a[i] += a[i + k];\n        long best = a[0];\n        for (long v : a) best = Math.max(best, v);\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "2dac467cf945885ac68f8228157c68f1f09ca1b19a31f8b6c7a9a97ee530931c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readInt() int64 {\n\tc, err := rd.ReadByte()\n\tfor err == nil && c != '-' && (c < '0' || c > '9') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn 0\n\t}\n\tneg := false\n\tif c == '-' {\n\t\tneg = true\n\t\tc, err = rd.ReadByte()\n\t}\n\tvar v int64\n\tfor err == nil && c >= '0' && c <= '9' {\n\t\tv = v*10 + int64(c-'0')\n\t\tc, err = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tn, k := int(readInt()), int(readInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// a[i] becomes the total collected when starting at i.\n\tfor i := n - k - 1; i >= 0; i-- {\n\t\ta[i] += a[i+k]\n\t}\n\tbest := a[0]\n\tfor _, v := range a {\n\t\tbest = max(best, v)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "1eaffac89a1ba1fec30f2436c4ffca110ab54a8763336a149b9643a24cc2a02d"
+    }
+  ]
+}

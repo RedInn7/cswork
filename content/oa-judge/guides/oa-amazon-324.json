@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-324",
+  "packageChecksum": "842f48b843a4d9109805f09518fb3d3b77a85293c2a29e8531886ec67b682194",
+  "sourceContentHash": "d85fd2feec8a8977b3b68ba314afce42a47a37b9decc7fe74474b3cad6ab0df5",
+  "editorialSha256": "d204d508d190fd93551e182841ccaf5612c5c744beccdf42fca8f6e04b0015c7",
+  "hints": {
+    "zh": [
+      "这是一个普通的先进先出队列；难点主要在于ID可以是任意Unicode字符串（包括空串、空格、表情），输入和输出都要按JSON正确解码和转义。",
+      "INSERT把ID放到队尾；SHIP时若队列不足3个，只输出[\"N/A\"]且队列不变，否则依次取出队首的三个作为一组。每个SHIP恰好产生一组结果。",
+      "先完整解析JSON数组（处理\\uXXXX转义，表情是一对代理项），模拟队列得到结果列表。输出时按JSON规则转义：引号和反斜杠前加反斜杠，控制字符、空格以及所有非ASCII字符写成小写的\\uXXXX（空格为\\u0020，BMP以外的字符写成两个代理项）。没有SHIP时输出[]。"
+    ],
+    "en": [
+      "This is an ordinary first-in, first-out queue; the main difficulty is that an ID can be any Unicode string (including the empty string, spaces and emoji), so both input and output must be decoded and escaped correctly as JSON.",
+      "INSERT puts the ID at the back of the queue. For SHIP, if the queue has fewer than 3 items, output just [\"N/A\"] and leave the queue unchanged; otherwise take the first three in order as one group. Every SHIP produces exactly one group.",
+      "Parse the whole JSON array first (handling \\uXXXX escapes; an emoji is a surrogate pair) and simulate the queue to get the list of results. When printing, escape by JSON rules: quotes and backslashes get a backslash, while control characters, spaces and every non-ASCII character are written as lowercase \\uXXXX (a space is \\u0020, and a character outside the BMP becomes two surrogate escapes). With no SHIP, output []."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep all unshipped IDs in a deque; INSERT appends, and SHIP checks the length and then takes the first three or returns N/A.\n\n## Proof of correctness\n\nThe loop invariant is that the queue holds exactly all packages not yet shipped, in the order they first entered. Appending keeps the order; a successful shipment takes the first three, which is exactly the earliest group; when there are not enough, the queue is unchanged, so those packages remain available later. Every SHIP outputs exactly one item, no more and no fewer.\n\n## Complexity\n\nTime O(q+number of input and output characters), space O(q+number of output characters)."
+}

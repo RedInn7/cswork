@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-11",
+  "packageChecksum": "9c03bf581a658579286aa1d13d1ff528157e7391209953b59328f29ff4f7662e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n;\n    cin >> n;\n    long long prev = 0, total = 0;\n    for (long long i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        if (i > 0) total += llabs(v - prev);\n        prev = v;\n    }\n    cout << total << \"\\n\";\n}\n",
+      "sha256": "2ee7cecb8ae6da1cdbfcbbd5f401ed5737b0ccf2e98b051e6ac2dcb2e69046fa"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long n = next();\n        long prev = 0, total = 0;\n        for (long i = 0; i < n; i++) {\n            long v = next();\n            if (i > 0) total += Math.abs(v - prev);\n            prev = v;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "65a97515863f29964b3cb9d77a63df7ca61addfdf2dfcbd79f8f0f5ff3546f6d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := next()\n\tvar prev, total int64\n\tfor i := int64(0); i < n; i++ {\n\t\tv := next()\n\t\tif i > 0 {\n\t\t\tif v > prev {\n\t\t\t\ttotal += v - prev\n\t\t\t} else {\n\t\t\t\ttotal += prev - v\n\t\t\t}\n\t\t}\n\t\tprev = v\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "623d92b9cd0c57e519e6878ec38d32f8d41fba911cd5b953b6ecf47da2ab8281"
+    }
+  ]
+}

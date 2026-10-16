@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-9",
+  "packageChecksum": "fa52655bf8a8eb2cc203b019ee7af4c67754d0c42df88b61cf9795a69cf1a686",
+  "sourceContentHash": "82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63",
+  "editorialSha256": "db6a9833763ef0b616d1664c60ee6620044c32f56bfd2959316025459d35ad43",
+  "hints": {
+    "zh": [
+      "平均数要按数学定义向下取整（负数时是朝负无穷取整，而不是朝 0 截断）；众数并列时取最小的值。",
+      "一次扫描同时累加总和并用哈希表统计每个整数的出现次数；平均数是 floor(总和/N)，众数是频次最大者中值最小的那个。",
+      "总和最大约 10^14，用 64 位整数；向下取整在 C++/Go 中要在“有余数且总和为负”时把截断结果再减 1，Java 可用 Math.floorDiv；遍历频次表，频次更大或频次相同且值更小时更新众数；输出 “平均数 众数”。"
+    ],
+    "en": [
+      "The mean is rounded down by the mathematical floor (toward negative infinity for negative sums, not truncated toward 0), and among tied modes the smallest value wins.",
+      "In one scan add up the total and count each integer in a hash map; the mean is floor(total / N) and the mode is the smallest value among those with the highest count.",
+      "The total can reach about 10^14, so use 64-bit integers; for the floor in C++ or Go subtract 1 from the truncated quotient when there is a remainder and the total is negative, and in Java use Math.floorDiv; walk the count table and update the mode when a count is higher, or equal with a smaller value; print \"mean mode\"."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the elements in one scan to get the total, and count the frequency of every integer at the same time. The mean is floor(sum/N) by its mathematical definition, and the mode is the value with the highest frequency; on ties take the smallest value.\n\n## Correctness\n\nBy the statement, the arithmetic mean of the array is the sum divided by N, rounded down, so the result is uniquely floor(sum/N); in particular negative values must not be truncated toward zero. The mode is by definition an element whose number of occurrences reaches the maximum; taking the smallest of these elements satisfies exactly the tie rule of the statement. One complete frequency count yields both the maximum frequency and the smallest mode.\n\n## Complexity\n\nO(N) time, O(U) space, where U is the number of distinct integers.\n\n## Sources and boundaries\n\nThe original OAMaster problem's example output is 3 2; its example explanation writes the mean as 15/2=3, which is a typo in the original: the array has 5 elements and the correct computation is 15/5=3, with the expected output unchanged. Its text states explicitly that ties among modes take the smallest value, with the constraints N<=10^5 and absolute values of the elements <=10^9. A second Fastprep record of the same problem confirms that a negative mean should be floored but does not state the tie rule for the mode; this site follows the explicit tie rule from OAMaster. The input/output protocol is supplied by this site. Source: https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode; supplementary records of the same problem: https://www.fastprep.io/problems/cisco-calculate-mean-and-mode, https://www.fastprep.io/problems/cisco-find-mean-and-mode."
+}

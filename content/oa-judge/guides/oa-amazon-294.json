@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-294",
+  "packageChecksum": "2b17b1287d2ae36b1b5f5ff9b3f2ca76fe19ffcc308344c3b78a2d85ba701c13",
+  "sourceContentHash": "e1dc041781f8454292c3e7a583093446f494e8ace6f0af2b937aa7616b26f1b5",
+  "editorialSha256": "7ba4af8dd191363f2ec28b558856d883b0a4a444f5ec4903b2048d19e7fbbbbf",
+  "hints": {
+    "zh": [
+      "先固定最终显示值的范围 [lo, hi]。每张卡至少要有一面落在范围内；正面在范围内就不用翻，否则必须翻到反面。所以最少翻牌数等于 n 减去正面落在范围内的卡数。",
+      "于是一个范围可行，当且仅当每张卡都有一面在范围内，并且范围内的正面数量至少为 n−m。把所有卡面按数值排序后，问题就变成在排好序的卡面序列里找一个满足条件的最窄窗口，可以用滑动窗口。",
+      "把每张卡的正反两面作为两个事件（数值、卡号、正面或反面）一起排序；右端逐个加入事件，记录每张卡有哪些面在窗口中、被覆盖的卡数以及窗口内的正面数；当所有卡都被覆盖且正面数 ≥ n−m 时，用“右端值 − 左端值”更新答案并右移左端；答案初值取一张都不翻时的 max(A)−min(A)。数值相同的事件不要合并。"
+    ],
+    "en": [
+      "Fix the final range of shown values [lo, hi] first. Every card needs at least one side inside the range; if its front is inside it need not be flipped, otherwise it must be flipped to its back. So the minimum number of flips is n minus the number of cards whose front lies in the range.",
+      "A range is therefore feasible exactly when every card has a side in it and the number of fronts in it is at least n−m. After sorting all card faces by value, this becomes finding the narrowest window of the sorted faces that meets these conditions, which a sliding window handles.",
+      "Put both sides of every card into one list of events (value, card, front or back) and sort it; add events at the right end one by one, tracking which sides of each card are in the window, the number of covered cards and the number of fronts in the window; while every card is covered and the fronts number at least n−m, update the answer with right value − left value and move the left end; start the answer at max(A)−min(A), the no-flip case. Do not merge events with equal values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTreat the two sides of each card as two events tagged with the card number and side, sort them by value, and slide a window. The window must cover at least one side of every card, and the number of front sides in the window must be ≥n−m; while it is valid, shrink the left end and update the minimum width of the value range.\n\n## Proof of correctness\n\nFor a given value range, if some card has no side inside it, the range is infeasible. If a card's front is inside, it need not be flipped; otherwise it must, and need only, be flipped to the back side inside the range. So the minimum number of flips equals n minus the number of fronts inside the range, and the two conditions are necessary and sufficient. The card faces covered by a window of sorted events are a subset of the faces usable in some value range; meeting the conditions gives a feasible solution of that width, and any optimal value range contains a complete window of consecutive events that the scan dominates, so two pointers reach the minimum width. Events with the same value keep their separate identities.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

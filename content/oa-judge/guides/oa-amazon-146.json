@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-146",
+  "packageChecksum": "4471896e90aa589b1717c04a883cb629cb6e58fbdf864bbe691ef6fa3473e683",
+  "sourceContentHash": "817c4d9ee6d7e9cd91eddd842f2f24c3e2faf25d936711a2aa4f4118beee3271",
+  "editorialSha256": "fce2521445cb9894b557671d84814bfca6bfff1d66a0048ba86d33c3cec6f118",
+  "hints": {
+    "zh": [
+      "回文两侧每种字母出现的次数必须相等，所以左半边每种字母的个数是固定的：总频次除以 2；输入本身是回文，最多一个字母出现奇数次。",
+      "左半边的字母多重集合已经确定，它的最小字典序排列就是按字母升序；中间字符和右半边随之唯一确定。",
+      "统计频次；按 a 到 z 把每个字母重复 频次/2 次拼成左半边；频次为奇数的字母放中间；输出 左半边 + 中间 + 左半边反转。"
+    ],
+    "en": [
+      "Each letter must occur equally often on the two sides of a palindrome, so the count of each letter in the left half is fixed at its total frequency divided by 2; since the input is a palindrome, at most one letter occurs an odd number of times.",
+      "The multiset of the left half is fixed, and its lexicographically smallest arrangement is ascending order; the middle character and the right half are then uniquely determined.",
+      "Count the frequencies; build the left half by repeating each letter from a to z frequency/2 times; put the letter with an odd count in the middle; output left + middle + reversed left."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild the left half from half of each letter in ascending order, put the character with an odd count in the middle, and make the right half the reverse of the left half.\n\n## Correctness\n\nThe two sides of a palindrome contain each character equally often, so the number of each character in the left half is fixed at its total frequency divided by 2 (integer division). The lexicographically smallest arrangement of a fixed multiset is ascending order, after which the middle and the right half are uniquely determined.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

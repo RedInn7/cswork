@@ -1,0 +1,19 @@
+{
+  "id": "oa-bny-mellon-2",
+  "packageChecksum": "f698c24454d64c54dddad2ff0c0be9dc1525ed7d0f55623ee305d69372ab3714",
+  "sourceContentHash": "24eeedabdb7b3dda04f4b6fb2c8b7f13947d995ea69a7cd6f8ad20ee47746d30",
+  "editorialSha256": "f76cecd2b03c53b0534103c641ba2125ca2460d42b553f42f885163ed28a1819",
+  "hints": {
+    "zh": [
+      "\"MEX 恰好等于 k\" 可以拆开看：每个小于 k 的值至少选一个位置，值为 k 的位置一个都不选，大于 k 的值随便选。不同的 k 互不重叠，可以分别计数再求和。",
+      "设 cnt[v] 为值 v 的出现次数，rest 为大于 k 的元素个数，则 MEX=k 的子序列数是所有 v<k 的 (2^cnt[v]−1) 之积再乘 2^rest。长度为 n 的数组 MEX 不会超过 n，所以只需考虑 k≤min(n, r)。",
+      "只统计不超过 n 的值的出现次数，并预处理 2 的幂。让 k 从 0 递增扫描：先从剩余数量中减去 cnt[k] 得到 rest，若 k≥l 就把\"当前乘积 × 2^rest\"加入答案，再把乘积乘上 (2^cnt[k]−1)。全程对 10^9+7 取模。"
+    ],
+    "en": [
+      "MEX exactly k splits into independent conditions: every value below k is chosen at least once, no position holding k is chosen, and values above k are free. Different k never overlap, so count each k separately and add them up.",
+      "Let cnt[v] be the number of occurrences of v and rest the number of elements greater than k. The number of subsequences with MEX k is the product of (2^cnt[v] - 1) over all v < k, times 2^rest. An array of length n cannot have MEX above n, so only k <= min(n, r) matters.",
+      "Count only values that are at most n and precompute powers of two. Scan k upward from 0: subtract cnt[k] from the remaining count to get rest; if k >= l add (current product) * 2^rest to the answer; then multiply the product by (2^cnt[k] - 1). Work modulo 10^9+7 throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet cnt[v] be the number of occurrences of value v in the original array. A position subsequence with MEX=k must choose at least one position for each v<k (2^cnt[v]−1 ways), must not choose any position with value k, and may choose any of the positions with values >k freely (2^rest ways in total). So its contribution is the product of these factors. Only k≤n needs to be enumerated, because a subsequence of length n cannot have a larger MEX.\n\n## Proof of Correctness\n\nFix k. The MEX is exactly k if and only if the subsequence contains at least one of each value smaller than k, contains no k, and may choose elements larger than k arbitrarily. For each v<k there are 2^cnt[v]−1 non-empty position subsets; the only choice for value k is the empty set; the remaining positions have 2^rest choices. A position set determines a unique subsequence choice, so the product counts exactly all subsequences with MEX=k, without duplicates. Different values of k give mutually exclusive MEX values, so adding the contributions inside the range gives the answer. MEX≤n, so scanning up to min(n,r) is enough.\n\n## Complexity\n\nTime O(n), space O(n); n≤3×10⁵."
+}

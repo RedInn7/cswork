@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-282",
+  "packageChecksum": "53d6875deb4b18b20f517e1f452ac2dacb795146b7a0783f9ac162ddaf05e0ae",
+  "sourceContentHash": "a52b6f16dd3129d098af54e390d7b6fae7a4844068bbeb60a03f2f2523d88a5c",
+  "editorialSha256": "4cb22faabd3b2434b781c28e3fd64f2394ab616b53e18eca7ab4209e5a65beed",
+  "hints": {
+    "zh": [
+      "两个闭区间只要有公共点就要合并，共用端点也算；但整数相邻（例如 [2,2] 与 [3,4]）不算相交。按起点排序后，能连在一起的区间一定是连续的一段。",
+      "按起点排序后从左到右扫描，维护当前合并块的起点和最远终点：下一个区间的起点不超过当前终点就并入并更新终点，否则当前块再也接不上后面的区间，可以封口。",
+      "按（起点，终点）排序；逐个检查区间：起点 ≤ 当前块终点时，终点取两者较大值，否则把当前块放进结果并开一个新块；最后先输出块数，再每行输出一个块的起点和终点。"
+    ],
+    "en": [
+      "Two closed intervals must be merged as soon as they share a point, including a shared endpoint; but adjacent integers such as [2,2] and [3,4] do not intersect. After sorting by start, intervals that join together always form a consecutive run.",
+      "Sort by start and scan from left to right, keeping the start and the farthest end of the current block: if the next interval starts no later than the current end, absorb it and update the end; otherwise no later interval can reach the current block, so close it.",
+      "Sort by (start, end); for each interval, if its start ≤ the current block's end, set the end to the larger of the two, otherwise push the current block to the result and start a new one; finally print the number of blocks, then each block's start and end on its own line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by start. If the next start is ≤ the current end, extend the current end to the larger of the two; otherwise output the current interval and start a new one.\n\n## Proof of correctness\n\nThe current interval is the exact coverage of the last connected block scanned so far. If the next interval starts no later than its end, they really intersect and it must be merged; otherwise, since the intervals are sorted, no later interval can connect back to that block, so it can safely be closed. By induction this produces all and only the maximal blocks connected by overlaps.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

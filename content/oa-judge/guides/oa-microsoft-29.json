@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-29",
+  "packageChecksum": "2912c1a7c8d525838554b8b7a81430a2724f724fb2daccea9721284a9ce67451",
+  "sourceContentHash": "ec90b7da3ea60af83ee887c20acdcdcc3d7e25cf4bd94031fd35719b9eb08336",
+  "editorialSha256": "3a74f6d2e47ea384ee58826d1027be717661794b97ca0ddd5f7b5962f4591cc7",
+  "hints": {
+    "zh": [
+      "GCD 大于 1 就是所有元素有公共质因子；直接按质因子计数会把同时有多个公共质因子的子序列重复统计，需要容斥。",
+      "对每个无平方因子的 d>1，设 count[d] 为能被 d 整除的元素个数，则 GCD>1 的子序列数等于对所有这样的 d 求和 −μ(d)(2^count[d]−1)。修改一个元素时，只有旧值和新值的无平方因子约数的 count 会变化，最多各 64 个。",
+      "用最小质因子筛求出每个数的质因子、根（质因子乘积）和莫比乌斯函数，预处理 2 的幂。初始化 count 和当前总数；每次修改先对旧值的每个无平方因子约数减去旧贡献、count 减一、加回新贡献，再对新值同样处理（count 加一），当前总数始终对 10⁹+7 取模并保持非负。把每次修改后的值直接相加（不取模），用 64 位整数输出。"
+    ],
+    "en": [
+      "A GCD greater than 1 means all elements share a prime factor; counting per prime would count subsequences with several common primes more than once, so inclusion-exclusion is needed.",
+      "For each squarefree d>1 let count[d] be how many elements d divides; then the number of subsequences with GCD greater than 1 is the sum over such d of −μ(d)(2^count[d]−1). An update changes only the counts of the squarefree divisors of the old and new values, at most 64 of each.",
+      "Sieve smallest prime factors to get each number's primes, its radical (product of distinct primes) and the Möbius function, and precompute powers of 2. Initialize count and the current total. For each update, for every squarefree divisor of the old value remove its old contribution, decrement count and add the new contribution; then do the same for the new value with count incremented, keeping the total reduced mod 10⁹+7 and non-negative. Add the value after each update to the answer without taking it mod, and print it as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse inclusion-exclusion over prime factors: each squarefree factor d>1 contributes −μ(d)(2^count[d]−1). An update only changes the counts of these factors for the old and new values. Precompute the smallest prime factors and the powers of 2.\n\n## Proof of correctness\n\nIf a subsequence has a non-empty set of common prime factors, the inclusion-exclusion coefficients over its non-empty prime combinations sum to 1, and otherwise to 0; so the sum of the contributions counts exactly the subsequences whose GCD is greater than 1. A point update affects only the factors that divide the replaced values, and removing the old terms and adding the new ones term by term maintains the invariant.\n\n## Complexity\n\nTime O(V log V+(N+Q)·2^ω), space O(V+N+Q), with V≤100000 and ω≤6."
+}

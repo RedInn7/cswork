@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-18",
+  "packageChecksum": "94f1d3198575a5f6fe8689b4b23e7b8cb5ef7a88a71da6982c965d998bbdb045",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long threshold;\n    cin >> n >> threshold;\n    vector<long long> values(n);\n    for (auto& v : values) cin >> v;\n    sort(values.begin(), values.end());\n    // For each right end, values[left..right-1] are exactly the partners within the threshold.\n    long long answer = 0;\n    for (int left = 0, right = 0; right < n; right++) {\n        while (left < right && values[right] - values[left] > threshold) left++;\n        answer += right - left;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "0e01f479bf3c5ec3ef594ed3d7e3c3a68508c06db9389b07b3b18894cb583644"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long threshold = nextLong();\n        long[] values = new long[n];\n        for (int i = 0; i < n; i++) values[i] = nextLong();\n        Arrays.sort(values);\n        // For each right end, values[left..right-1] are exactly the partners within the threshold.\n        long answer = 0;\n        for (int left = 0, right = 0; right < n; right++) {\n            while (left < right && values[right] - values[left] > threshold) left++;\n            answer += right - left;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "2bde0defa0763246785ba4934ec754ec330bfcc58ed329bfa167d85a82d46072"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, threshold := nextInt(), nextInt()\n\tvalues := make([]int, n)\n\tfor i := range values {\n\t\tvalues[i] = nextInt()\n\t}\n\tslices.Sort(values)\n\t// For each right end, values[left..right-1] are exactly the partners within the threshold.\n\tanswer, left := 0, 0\n\tfor right := 0; right < n; right++ {\n\t\tfor left < right && values[right]-values[left] > threshold {\n\t\t\tleft++\n\t\t}\n\t\tanswer += right - left\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "bc2b6bd902d206d9de123723c857e9a3933ed044d84737e758ec12a99253dfd7"
+    }
+  ]
+}

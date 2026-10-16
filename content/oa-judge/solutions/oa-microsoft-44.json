@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-44",
+  "packageChecksum": "83177832e0405f487196052cffc5dae764956824236f5e5fb3f44d97dc2f0de8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long prev2 = 0, prev = 0, last = 0;\n    string token;\n    while (cin >> token) {\n        long long value = stoll(token), shift = 1;\n        for (size_t i = 0; i < token.size(); i++) shift *= 10;\n        // keep the element alone, or join it with the previous original element\n        long long current = max(prev + value, prev2 + last * shift + value);\n        prev2 = prev;\n        prev = current;\n        last = value;\n    }\n    cout << prev << \"\\n\";\n}\n",
+      "sha256": "5ef1bb64e9b3795b43592d404cc9a5b3db42dbda1e1d89975e702873546bcc9c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long prev2 = 0, prev = 0, last = 0;\n        for (int t = 0; t < n; t++) {\n            String token = next();\n            long value = Long.parseLong(token), shift = 1;\n            for (int i = 0; i < token.length(); i++) shift *= 10;\n            // keep the element alone, or join it with the previous original element\n            long current = Math.max(prev + value, prev2 + last * shift + value);\n            prev2 = prev;\n            prev = current;\n            last = value;\n        }\n        System.out.println(prev);\n    }\n}\n",
+      "sha256": "2736da7112101d6075734a91c30082d341330ecdbaf08ea3b91dbec45ffdf510"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tvar prev2, prev, last int64\n\tfor t := 0; t < n; t++ {\n\t\ttoken := next()\n\t\tvalue, _ := strconv.ParseInt(string(token), 10, 64)\n\t\tshift := int64(1)\n\t\tfor range token {\n\t\t\tshift *= 10\n\t\t}\n\t\t// keep the element alone, or join it with the previous original element\n\t\tcurrent := max(prev+value, prev2+last*shift+value)\n\t\tprev2, prev, last = prev, current, value\n\t}\n\tfmt.Println(prev)\n}\n",
+      "sha256": "e54b4d3c85cc7f753dfb0cddf03db82ad0bb34574d39c5a2e5d8a2a8c5bae35e"
+    }
+  ]
+}

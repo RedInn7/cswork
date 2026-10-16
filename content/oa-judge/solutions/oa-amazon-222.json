@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-222",
+  "packageChecksum": "834f48b530ba27cb09684f99791fda440bf1510c4a6f7df6d8ff23176d81432f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<int> c(n);\n    int mx = 0;\n    for (auto &x : c) cin >> x, mx = max(mx, x);\n    vector<int> freq(mx + 1, 0);\n    for (int x : c) freq[x]++;\n    // Keep the k most frequent categories, delete everything else.\n    sort(freq.rbegin(), freq.rend());\n    long long kept = 0;\n    for (int i = 0; i < k && i <= mx; i++) kept += freq[i];\n    cout << n - kept << '\\n';\n}\n",
+      "sha256": "33a3dec03e8a3a55c5d86e7ea5b4f83dad09b005ddf626855c995ce35c2e3dc2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        int[] c = new int[n];\n        int mx = 0;\n        for (int i = 0; i < n; i++) mx = Math.max(mx, c[i] = nextInt());\n        int[] freq = new int[mx + 1];\n        for (int x : c) freq[x]++;\n        // Keep the k most frequent categories, delete everything else.\n        Arrays.sort(freq);\n        long kept = 0;\n        for (int i = 0; i < k && i <= mx; i++) kept += freq[mx - i];\n        System.out.println(n - kept);\n    }\n}\n",
+      "sha256": "45f0f2be91bfbc4d62e2609bfa602161e1d4d0c75c61167da7452da0c9d7de14"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\tc := make([]int, n)\n\tmx := 0\n\tfor i := range c {\n\t\tc[i] = int(nextInt())\n\t\tmx = max(mx, c[i])\n\t}\n\tfreq := make([]int, mx+1)\n\tfor _, x := range c {\n\t\tfreq[x]++\n\t}\n\t// Keep the k most frequent categories, delete everything else.\n\tslices.Sort(freq)\n\tslices.Reverse(freq)\n\tkept := 0\n\tfor i := 0; i < k && i <= mx; i++ {\n\t\tkept += freq[i]\n\t}\n\tfmt.Println(n - kept)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "8fe425d48bd891101840dd1c23658d14a27d9a636e7e48962f5ed8d1140cec06"
+    }
+  ]
+}

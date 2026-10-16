@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-23",
+  "packageChecksum": "dc57a5c9fceb232a0cb3820adf5f0d00aed8e93cc8f9fffab448842a1245e023",
+  "sourceContentHash": "10fd5f0a6473600b7bec37b5ff8b07612d23cd743532f05f1aa7ec0d161ea43e",
+  "editorialSha256": "c32cde7b4f957452e3f1392c658e233d99bde2c2672c640b7aa387f0f76f3442",
+  "hints": {
+    "zh": [
+      "竖直航线由一个横坐标完全确定，水平航线由一个纵坐标完全确定，不存在其他形式的直线。",
+      "分别统计每个横坐标、每个纵坐标出现的次数（重复的点照样计数），最大频次就是一条航线最多能覆盖的点数。",
+      "读入 n 个横坐标和 n 个纵坐标，用哈希表或排序求出两组各自的最大频次，取较大者 best；若 best ≥2 输出 best，否则输出 0。"
+    ],
+    "en": [
+      "A vertical line is fully determined by one x coordinate and a horizontal line by one y coordinate; no other lines are allowed.",
+      "Count how many times each x value and each y value occurs (repeated points count again); the highest frequency is the most points one line can cover.",
+      "Read the n x coordinates and the n y coordinates, get the highest frequency of each group with a hash map or by sorting, and let best be the larger one; print best if best >= 2, otherwise 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the occurrences of every x coordinate and every y coordinate separately, take the maximum, and apply the at-least-two-points condition.\n\n## Proof of correctness\n\nA vertical line is completely determined by a fixed x coordinate and a horizontal line by a fixed y coordinate; the two frequency tables therefore enumerate exactly the number of records covered by every possible line.\n\n## Complexity\n\nO(n) time, O(n) space."
+}

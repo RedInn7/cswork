@@ -1,0 +1,21 @@
+{
+  "id": "oa-databricks-16",
+  "packageChecksum": "b42a1c49bcdcd5b1c6271e07872d9de379b05378cda54eb2f6edfe733db37c82",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    long long even = 0, odd = 0;\n    for (int i = 0; i < n; i++) {\n        long long x;\n        cin >> x;\n        if (-100 <= x && x <= 100) (i % 2 == 0 ? even : odd) += x;\n    }\n    cout << even - odd << \"\\n\";\n}\n",
+      "sha256": "1c86defa57b926f368df773ee39ba769b0610b0705826d98d8d90ac6e6cb8d40"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long even = 0, odd = 0;\n        for (int i = 0; i < n; i++) {\n            long x = nextLong();\n            if (-100 <= x && x <= 100) {\n                if (i % 2 == 0) even += x;\n                else odd += x;\n            }\n        }\n        System.out.println(even - odd);\n    }\n}\n",
+      "sha256": "c09b104d16ea58cbe50e073ce137157fbbb0cdcadb6b3c519a0acfe65ad7de43"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\teven, odd := 0, 0\n\tfor i := 0; i < n; i++ {\n\t\tx := nextInt()\n\t\tif -100 <= x && x <= 100 {\n\t\t\tif i%2 == 0 {\n\t\t\t\teven += x\n\t\t\t} else {\n\t\t\t\todd += x\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(even - odd)\n}\n",
+      "sha256": "db280b80d69a23077464b748c86cb843d1ed32049d8d57b9c06bd9741208c67f"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-118",
+  "packageChecksum": "c558e0423693f71fc5c5bb6662f353bacf496bb604a497ad6d2dd61dbc833fcf",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    array<long long, 256> count{};\n    long long answer = 1;\n    for (size_t i = 0; i < s.size(); i++) {\n        unsigned char c = s[i];\n        answer += (long long)i - count[c]; // earlier characters different from c\n        count[c]++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "7406d376cd0502684fe85aaa8ea221c91110eb376a84891dc2cbd2b264b7940e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long[] count = new long[65536];\n        long answer = 1;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            answer += i - count[c]; // earlier characters different from c\n            count[c]++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e392045113f7e79a10e14109fc03d6273f3ca8e79274a177c1a2c697a7b98dfe"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts := readToken()\n\tvar count [256]int\n\tanswer := 1\n\tfor i := 0; i < len(s); i++ {\n\t\tanswer += i - count[s[i]] // earlier characters different from s[i]\n\t\tcount[s[i]]++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "b0812f215b587d5f46f1f4b71447e37c21aaa235ae6a887c591140a10c6f1c92"
+    }
+  ]
+}

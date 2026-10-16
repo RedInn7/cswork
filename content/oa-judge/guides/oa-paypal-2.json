@@ -1,0 +1,19 @@
+{
+  "id": "oa-paypal-2",
+  "packageChecksum": "14584bf7f16738e1c5ebc90009ca2550fbadbe88b3edde18aa1cb7d619863009",
+  "sourceContentHash": "d422c1e1d992e18aa46afb20f7543de8d7dbd629b2a318f52b523d9e274146a3",
+  "editorialSha256": "96682e77957bf568524e2e17929c2d0a0265534b8d6bb15412c1b4093af7422f",
+  "hints": {
+    "zh": [
+      "每条记录只会落到一个（用户名，日期）分组里；真正麻烦的是先判断这条记录该不该算：用户名格式、时间是否在 00:00:00..23:59:59、日期是否是真实存在的公历日期。",
+      "逐条校验，无效的直接跳过；有效的用（用户名，日期）作为键在哈希表或有序映射里计数。最后按用户名、再按日期的字符串字典序输出。",
+      "用户名必须是 user 加上无前导零的十进制数（0 本身可以）；时间按 HH:MM:SS 固定位置检查数字和冒号，再判断时<24、分<60、秒<60；日期按 YYYY-MM-DD 检查，年份 2000..3000、月份 1..12、日数不超过该月天数（闰年二月 29 天）。先输出分组数，再逐行输出“用户名 日期 次数”；没有有效记录时只输出 0。"
+    ],
+    "en": [
+      "Each record belongs to exactly one (username, date) group; the real work is deciding whether a record counts at all: the username format, whether the time lies in 00:00:00..23:59:59, and whether the date is a real Gregorian date.",
+      "Validate each record and skip invalid ones; for valid ones, count by the key (username, date) in a hash map or ordered map. Finally output the groups sorted by username, then by date, as plain string comparison.",
+      "The username must be user followed by a decimal number without leading zeros (0 itself is allowed). Check the time as HH:MM:SS with digits and colons at fixed positions, then hour < 24, minute < 60, second < 60. Check the date as YYYY-MM-DD with year 2000..3000, month 1..12 and a day not exceeding that month's length (29 for February in a leap year). Print the number of groups, then one line \"username date count\" per group; with no valid record, print just 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nValidate the username, the fixed-format time and the Gregorian date line by line. Records with an invalid time/date are skipped. Accumulate counts with (username, date) as the key, and finally sort by both strings in lexicographic order. This site's I/O first prints the number of groups, then one line per group with the username, the date and the count.\n\n## Correctness\n\nEvery valid log adds exactly one to its unique (user, date) key; invalid dates or times take no part in the count, matching the filtering rule. The dictionary count therefore equals the number of login records in that group. Sorting all keys by username and then date gives exactly the required order; the number of groups and the fields of each group correspond one to one.\n\nThe explanation of source example 1 writes user1's 2 logins on that day as 3, and user2's 2 logins as 1; the explanation of example 2 writes user2's 2 logins as 3. The actual outputs of both examples agree with the original logs, so this site keeps the outputs and records the typos in the explanations.\n\n## Complexity\n\nFor n logs, hash aggregation takes O(n), sorting the g groups takes O(g log g), and the space is O(g)."
+}

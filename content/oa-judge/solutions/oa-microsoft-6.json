@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-6",
+  "packageChecksum": "2046535d9058342382d3b715494ae7fe582b7bc3de7e442545eec764b077a383",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long n = s.size(), answer = 0;\n    // counts: letter frequencies of the suffix s[i..]\n    vector<long long> counts(26, 0);\n    counts[s[n - 1] - 'a'] = 1;\n    for (long long i = n - 2; i >= 0; i--) {\n        int c = s[i] - 'a';\n        if (s[i] == s[i + 1]) {\n            // the pair spreads its letter over the whole suffix to its right\n            answer += n - i - 1 - counts[c];\n            fill(counts.begin(), counts.end(), 0);\n            counts[c] = n - i - 1;\n        }\n        counts[c]++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "da314d4a3fcd07962652457efa699dadf9e81271faacf65d8ce45fff64306438"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String s = next();\n        int n = s.length();\n        long answer = 0;\n        // counts: letter frequencies of the suffix s[i..]\n        long[] counts = new long[26];\n        counts[s.charAt(n - 1) - 'a'] = 1;\n        for (int i = n - 2; i >= 0; i--) {\n            int c = s.charAt(i) - 'a';\n            if (s.charAt(i) == s.charAt(i + 1)) {\n                // the pair spreads its letter over the whole suffix to its right\n                answer += n - i - 1 - counts[c];\n                Arrays.fill(counts, 0);\n                counts[c] = n - i - 1;\n            }\n            counts[c]++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "22715b63a6593259627d5e7b3ef90634df105a5780a1b236db8ea34877772722"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := next()\n\tn := len(s)\n\tvar answer int64\n\t// counts: letter frequencies of the suffix s[i..]\n\tvar counts [26]int64\n\tcounts[s[n-1]-'a'] = 1\n\tfor i := n - 2; i >= 0; i-- {\n\t\tc := s[i] - 'a'\n\t\tif s[i] == s[i+1] {\n\t\t\t// the pair spreads its letter over the whole suffix to its right\n\t\t\tanswer += int64(n-i-1) - counts[c]\n\t\t\tcounts = [26]int64{}\n\t\t\tcounts[c] = int64(n - i - 1)\n\t\t}\n\t\tcounts[c]++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e524a372b7e84ea27b4450911be262596532e3779d4c2fb7bd419b8c6ebb0ce5"
+    }
+  ]
+}

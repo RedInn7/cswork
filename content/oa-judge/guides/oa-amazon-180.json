@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-180",
+  "packageChecksum": "d558a64c915a0e798a85a51f8561a66afc947e3afbe274bf3ae161766a69162f",
+  "sourceContentHash": "1bca95a81ff0bd47a6e2b3a1db8d7e37e6413b73116c5317f030a6d8d8b361d8",
+  "editorialSha256": "a2b0d32957b0af7c3133ab975935a8fcdc73461a03a2ddd66a8b9a59ca002467",
+  "hints": {
+    "zh": [
+      "如果反转区间的两端字符相同，去掉这两个端点再反转，得到的结果完全一样；一直这样收缩，要么两端变得不同，要么变成什么都不改变的操作。",
+      "对两端字符不同的区间，反转后与原串第一个和最后一个不同的位置恰好就是这两个端点，所以不同的这类区间得到的结果互不相同。答案等于1（原串本身）加上两端字符不同的下标对的个数。",
+      "从左到右扫描，用26个计数记录此前每个字母出现的次数；位置i（从0开始）贡献i减去此前与s[i]相同的字符个数，全部累加后再加1输出。结果约为n²/2量级，用64位整数。"
+    ],
+    "en": [
+      "If both ends of the reversed range hold the same character, dropping those two ends gives exactly the same result; shrinking this way ends either with different end characters or with an operation that changes nothing.",
+      "For a range whose end characters differ, the first and last positions where the result differs from the original are exactly its two ends, so distinct ranges of this kind give distinct strings. The answer is 1 (the original string) plus the number of index pairs whose characters differ.",
+      "Scan left to right with 26 counters for the letters seen so far; position i (0-based) contributes i minus the number of earlier characters equal to s[i]. Add 1 to the total and print it. It is on the order of n^2/2, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is 1 plus the number of index pairs whose end characters differ. Scan each character and accumulate the number of earlier positions minus the number of earlier equal characters.\n\n## Proof of correctness\n\nIf the two ends of the reversed range are equal, these two endpoints can be removed without changing the result, until the ends differ or the operation leaves the string unchanged. For a range whose ends differ, the first and last positions where the result differs from the original string are exactly these two endpoints, so different ranges cannot produce the same result. Every operation that changes nothing corresponds only to the original string, so the conclusion holds.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

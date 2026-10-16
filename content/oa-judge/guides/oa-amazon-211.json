@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-211",
+  "packageChecksum": "40b3f577f94f48cfd877027fae99c0ad0d2bd587a5cb4196418765cba0037a76",
+  "sourceContentHash": "4478519919cfe75bbed7842ad12a2c05d89d082642e48a3c44f71ca585f16513",
+  "editorialSha256": "e41a078f16b86d232333c56dba9238d6cf1d8e72022ff7a3df826ff5cdfebcf2",
+  "hints": {
+    "zh": [
+      "一个矩形需要两对等长边。每根木棒最多缩短 1，所以两根木棒能凑成一对等长边 ⇔ 长度差不超过 1，此时边长取较短者。",
+      "从最长的木棒开始考虑：若它与次长的差大于 1，它和谁都配不上，只能丢掉；否则让这两根配成一对。得到降序的对边序列后，相邻两对组成矩形最优（a≥b≥c≥d 时 ab+cd 最大）。",
+      "降序排序；i 从 0 开始，若 a[i]−a[i+1]≤1 则记录对边 a[i+1] 并 i+=2，否则 i+=1；把对边序列按顺序两两相乘求和（奇数个时丢掉最后一个），用 64 位整数，最后才对 1000000007 取模。"
+    ],
+    "en": [
+      "A rectangle needs two pairs of equal sides. Each stick can shrink by at most 1, so two sticks can form an equal pair if and only if their lengths differ by at most 1, and the side length is the shorter one.",
+      "Start from the longest stick: if it differs from the next one by more than 1, it can match nothing and must be dropped; otherwise pair the two. With the pair lengths in descending order, combining adjacent pairs into rectangles is optimal (for a >= b >= c >= d, ab + cd is largest).",
+      "Sort descending; starting at i = 0, if a[i] - a[i+1] <= 1 record the pair length a[i+1] and do i += 2, otherwise i += 1; multiply the pair lengths two by two in order and sum the products (dropping the last one if their count is odd), in 64-bit, and take the result modulo 1000000007 only at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIn descending length order, if the current two sticks differ by at most 1, pair them into one side with the shorter length; otherwise drop the largest stick. Once the paired sides are obtained in descending order, the largest two form a rectangle, and so on down the list.\n\n## Proof of correctness\n\nIf the two largest sticks differ by more than 1, the largest stick cannot match any remaining stick and must be dropped. If they differ by at most 1, an optimal pairing can be exchanged so that these two are paired: when both sticks had partners, their former partners still differ by at most 1 after the exchange; the largest paired side does not decrease, and neither do the remaining paired sides. When only one of them had a partner, switching directly to the two largest sticks is no worse. So the greedy produces descending paired sides that are termwise no smaller. For a >= b >= c >= d, ab+cd >= ac+bd and ab+cd >= ad+bc, so combining adjacent sides starting from the largest is optimal, and with an odd number of paired sides the smallest is dropped. The area is maximized before the modulus is taken.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

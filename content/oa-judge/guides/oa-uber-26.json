@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-26",
+  "packageChecksum": "52d2a146101b4e277d4f80b55c973040f517159cac5e58b1b849ba6ad4ebc613",
+  "sourceContentHash": "9dcb94388ae360e2eb1df31d2eb9fbfef32ce93fcf3764f24c6da369ff23e5a9",
+  "editorialSha256": "abd908c050fca75ae26817f6c5aa286582bc25447b2d40092c768b425c27d561",
+  "hints": {
+    "zh": [
+      "一个元素同时存在严格更小和严格更大的元素，等价于它严格大于全局最小值、并且严格小于全局最大值。相同的中间值出现在多个位置时，每个位置都要计数。",
+      "先扫描一遍求出最小值 lo 和最大值 hi，再扫描一遍统计满足 lo<值<hi 的位置个数。",
+      "读入数组，求出 lo=最小值、hi=最大值；遍历每个位置，若其值严格大于 lo 且严格小于 hi 则计数加 1；输出计数，所有值都相等或只有两种值时结果可能为 0。"
+    ],
+    "en": [
+      "An element has both a strictly smaller and a strictly greater element exactly when it is strictly above the global minimum and strictly below the global maximum. If the same middle value appears at several positions, each position counts.",
+      "Scan once to find the minimum lo and the maximum hi, then scan again and count the positions whose value satisfies lo < value < hi.",
+      "Read the array and compute lo = minimum and hi = maximum. For every position, add 1 to the count if its value is strictly greater than lo and strictly less than hi. Print the count; it can be 0, for example when all values are equal."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet lo=min(nums) and hi=max(nums). A position in the array satisfies the requirement if and only if its value lies strictly between lo and hi; the count is taken position by position, so equal middle values are not deduplicated.\n\n## Proof of correctness\n\nIf lo < x < hi, the array has an element equal to lo and an element equal to hi, which are strictly smaller and strictly greater than x respectively, so x satisfies the requirement. Conversely, if x satisfies the requirement, there are a smaller element and a greater element, so x must be strictly greater than the global minimum and strictly less than the global maximum. Hence the qualifying positions are exactly those with lo < nums[i] < hi, and the algorithm's position-by-position count is correct.\n\n## Complexity\n\nTwo linear scans: O(n) time and O(1) extra space.\n\n## Source and site conventions\n\nThe input protocol and bounds of this site are given in the statement. Fixed OAMaster snapshot: https://oamaster.com/docs/companies/uber#26-count-elements-with-at-least-one-smaller-and-one-greater-value; the original reason it was blocked: the body had no definable condition and only gave the result 1 for [1,2,3], so it was impossible to know what was being counted."
+}

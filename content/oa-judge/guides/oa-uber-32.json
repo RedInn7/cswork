@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-32",
+  "packageChecksum": "045637ed4681606385e389fceaa9ef170d55fbc4d37f2f3646989425f08075ab",
+  "sourceContentHash": "ef76e24814e6735f5a6ca35d14722f781c61f3787bd20e5edcaa516fd1774ec7",
+  "editorialSha256": "8e00740bcbe98c5ade0fe37932a31d76778f55507813204ad96a9ec5c11a183d",
+  "hints": {
+    "zh": [
+      "所有炸弹都必须拆，而且一次只能拆一个、不能中断，所以只要不留空闲，总耗时就是所有耗时之和；真正要判断的只是能否找到一个不违约的顺序。",
+      "按截止时间从早到晚依次拆。若某个可行安排中有相邻两个任务截止时间逆序，交换它们不会让任何任务违约，所以截止时间顺序失败就说明无解。",
+      "把炸弹按 (截止时间, 耗时) 升序排序；time 从 0 开始，依次加上每个炸弹的耗时，一旦 time 超过该炸弹的截止时间就输出 −1；全部处理完则输出 time，注意用 64 位整数。"
+    ],
+    "en": [
+      "Every bomb must be defused, one at a time and without interruption, so with no idle time the total time is simply the sum of all durations. The real question is whether some order meets every deadline.",
+      "Defuse in order of increasing deadline. If a feasible schedule had two adjacent tasks with deadlines out of order, swapping them would not make any task late, so if the deadline order fails, no order works.",
+      "Sort the bombs by (deadline, duration) in ascending order. Start time at 0 and add each bomb's duration in turn; as soon as time exceeds that bomb's deadline, print -1. If all bombs are processed, print time, using a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess in ascending order of deadline, accumulating the durations; if at any moment the time exceeds the current deadline there is no solution, otherwise the answer is the total time.\n\n## Correctness\n\nIn a feasible schedule, if two adjacent tasks have deadlines in reverse order, swapping them makes the earlier-deadline task finish earlier, and the later-deadline task finishes at the time the original pair finished, which does not violate its deadline either. Repeated swaps reach the deadline order, so if that order fails, no feasible schedule exists. All tasks must be executed, so the total time is fixed, and a schedule with no idle time reaches this lower bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

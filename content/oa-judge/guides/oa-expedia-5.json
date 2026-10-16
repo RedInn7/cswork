@@ -1,0 +1,19 @@
+{
+  "id": "oa-expedia-5",
+  "packageChecksum": "57ed983412f7b9abb22577c7f5005a5c77df1366c8fee06af41a1fa7497dd184",
+  "sourceContentHash": "e9081227a8cef898cf8f7a8773990ee261d4967f3647876b345f6a8e690d9218",
+  "editorialSha256": "8853116ec55e272b5180975d31afeee3b3f5df9b8af571dfac1b350ede9fb2c3",
+  "hints": {
+    "zh": [
+      "激活区间内的用例在按到达时间排序后一定是连续的一段，而且把区间收缩到这一段的首尾时刻不会少执行用例、只会缩短时长，所以只需考虑排序后的连续区间 [i, j]。",
+      "排序后区间 [i, j] 的效率是 (j − i + 1) − (a[j] − a[i])，可以改写成 (j − a[j]) − (i − a[i]) + 1。固定右端 j 时，只要知道之前所有 i < j 中 i − a[i] 的最小值。",
+      "把到达时间排序，令 low = 0 − a[0]。对 j = 1..n−1：用 (j − a[j]) − low + 1 更新答案，再用 j − a[j] 更新 low。答案至少覆盖两个用例，可能为负，初值要取足够小的数而不是 0。"
+    ],
+    "en": [
+      "Once the arrival times are sorted, the cases inside an activation window form a contiguous block, and shrinking the window to that block's first and last arrival never drops a case and only shortens the duration, so you only need to consider sorted ranges [i, j].",
+      "For a sorted range [i, j] the efficiency is (j - i + 1) - (a[j] - a[i]), which rewrites as (j - a[j]) - (i - a[i]) + 1. For a fixed right end j you only need the minimum of i - a[i] over all earlier i < j.",
+      "Sort the arrival times and set low = 0 - a[0]. For j = 1..n-1, update the answer with (j - a[j]) - low + 1, then update low with j - a[j]. The window must cover at least two cases and the answer can be negative, so start from a very small value rather than 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the arrival times. If the sorted index range [i,j] is chosen (at least two test cases), the shortest activation window covers both ends, and the efficiency is (j-i+1)-(a[j]-a[i]). Rewrite this as (j-a[j])-(i-a[i])+1. While iterating over j, maintain the minimum of i-a[i] over valid i<j, which gives the maximum in linear time.\n\n## Correctness\n\nThe test cases inside any activation window form a contiguous range after sorting; shrinking the window to its first and last arrival times loses none of those cases and does not increase the duration, so some optimal solution corresponds to a contiguous range. After the formula transformation, for each right end j the best left end is exactly the earlier i<j with the smallest i-a[i]. The prefix minimum enumerates and picks the largest efficiency among all ranges.\n\n## Complexity\n\nSorting is O(n log n), the scan is O(n), and the space is O(n)."
+}

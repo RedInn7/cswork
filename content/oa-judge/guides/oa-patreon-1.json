@@ -1,0 +1,19 @@
+{
+  "id": "oa-patreon-1",
+  "packageChecksum": "d9ba9491e154acc0f7c25a60288ba7cb2a2227ea697c322e2c1d8d10d8fd5418",
+  "sourceContentHash": "c58a8672e3e3bdf0824f28e8f8396d8c92da04ec2e0a247dc4bd25e2b8cf6fdd",
+  "editorialSha256": "e68baec50899e804d2cc00c39ce606569d9e10856b9d4c6731f2332c04b89b8c",
+  "hints": {
+    "zh": [
+      "一次操作会把当前所有等于某个偶数 c 的值同时减半，所以相同的值永远一起变化，只需关心出现过哪些不同的值，而不是每个值有几个。",
+      "每个出现过的偶数状态都必须被处理恰好一次：它要变成奇数就必须被减半，而减半后得到的值如果还是偶数又会产生一个新状态。答案就是从初始值出发、不断减半能到达的不同偶数值的个数。",
+      "用集合保存所有出现过的值，再用最大堆保存待处理的偶数。每次取出最大的偶数，操作数加一，把它的一半加入集合；如果一半是之前没出现过的偶数就放进堆。堆空时输出操作数。先处理大的数能保证某个值被处理后不会再由更大的值减半产生。"
+    ],
+    "en": [
+      "One operation halves every value currently equal to some even number c at the same time, so equal values always move together; what matters is which distinct values appear, not how many copies each has.",
+      "Every even value that ever appears must be processed exactly once: it has to be halved to become odd, and if its half is still even, that creates a new state. The answer is the number of distinct even values reachable from the initial values by repeated halving.",
+      "Keep a set of all values seen and a max-heap of even values waiting to be processed. Repeatedly take the largest even value, add one operation, and add its half to the set; if the half is an even value not seen before, push it onto the heap. Print the count when the heap is empty. Processing larger values first ensures that once a value is processed, no larger value can produce it again by halving."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOperate only once on each distinct current even value, because all layers with the same value are transformed together.\n\n## Proof of correctness\n\nEvery even state that appears must be processed once; each processing halves all layers of that value together, so iterating over the set of states counts exactly the necessary operations.\n\n## Complexity\n\nO(n log A) time, O(n) space."
+}

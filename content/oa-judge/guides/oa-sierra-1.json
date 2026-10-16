@@ -1,0 +1,19 @@
+{
+  "id": "oa-sierra-1",
+  "packageChecksum": "101cc97d3a2edf255fe05ea9bba23fb1dfc2c8649dc514580fdecec2d4fea804",
+  "sourceContentHash": "1837f613a81fd4560460ea700a29bee44b09fb01dfface86c15cdea724272597",
+  "editorialSha256": "8833f77e98516349bf1532369450459d5819f6978828b7e69a61bdf74c046df3",
+  "hints": {
+    "zh": [
+      "只需要两份状态：当前有效的标题路径（一个栈）和正在拼的块（若干行）。块的长度按用“ | ”连接后的字符数计算，行不能拆开。",
+      "标题行（去掉行首空白后以#开头）的级别是连续#的个数，它把栈截到前level−1项再压入自己。把一行加入当前块会超过上限且当前块非空时，就输出当前块并开启新块，新块要先重放标题栈。",
+      "逐行处理：是标题就先更新栈；算出加入该行后的长度，若当前块非空且超限，输出当前块，新块取标题栈的拷贝（该行是标题时已在栈中，否则再追加该行）；否则直接追加。最后输出剩余的块，块之间换行。累计维护块长度，避免反复拼接字符串。"
+    ],
+    "en": [
+      "Only two pieces of state are needed: the currently active header path (a stack) and the chunk being built (a list of lines). A chunk's length is the character count after joining its lines with \" | \", and lines are never split.",
+      "A header line (one whose first non-blank character is #) has level equal to its run of #; it truncates the stack to the first level - 1 entries and then pushes itself. When adding a line would exceed the limit and the chunk is not empty, emit the chunk and start a new one that first replays the header stack.",
+      "Process line by line: update the stack first if it is a header; compute the length with the line added; if the chunk is non-empty and over the limit, emit it and start the new chunk as a copy of the header stack (a header line is already on it, otherwise append the line); else just append. Finally emit the last chunk, one chunk per output line. Keep a running length instead of re-joining strings."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the current header stack and the current chunk; when the limit would be exceeded, output the old chunk and use the header stack as the prefix of the new chunk. Each line is scanned only once, so apart from copying the output the time is O(text length).\n\n## Proof of correctness\n\nProcessing line by line preserves the line order and the rule that lines cannot be split; the header stack always equals the Markdown header path that is active at the current position. When the current chunk becomes too long it is cut, and the new chunk gets this stack as its context prefix, so no content is lost and the continuation chunk has the correct context.\n\n## Complexity\n\nA header starts with # as the first non-blank character of the line; the header level is the number of consecutive # characters; whitespace and the display separators all count toward the chunk length.\n\nO(T) time and output space, where T is the total number of Markdown characters (replayed header context also counts toward the output).\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();limit=int(z[0]);doc=z[1:];heads=[];chunks=[];cur=[]\n for line in doc:\n  q=line.lstrip();ishead=q.startswith('#')\n  if ishead:\n   level=len(q)-len(q.lstrip('#'));heads=heads[:level-1]+[line]\n  trial=cur+[line]\n  if cur and len(' | '.join(trial))>limit:\n   chunks.append(' | '.join(cur));cur=[];cur=heads[:] if ishead else heads+[line] if heads else [line]\n  else:cur=trial\n if cur:chunks.append(' | '.join(cur))\n return '\\n'.join(chunks)\n```"
+}

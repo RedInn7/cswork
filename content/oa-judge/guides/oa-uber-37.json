@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-37",
+  "packageChecksum": "093d2029fcf78b3cbbed2be62c23844584bf0c034a646e483482d3ac85e47cf6",
+  "sourceContentHash": "6f474ec954cadb98c879f0d29c30c1bb2e8a20a74f793812986d08e1e508df43",
+  "editorialSha256": "214384d5ea0a9176dd3eda72338678bac485ad92daab3ec4d02dd4b36c563946",
+  "hints": {
+    "zh": [
+      "元素都是正数：如果某个长度 B 的窗口和已经至少为 k，那么任何更长的长度都能把这个窗口扩展进去，扩展后的和只会更大。所以可行的长度一定是从 0 开始的一段连续整数。",
+      "只需要找到和至少为 k 的最短子数组长度 B，答案就是 B−1；若不存在这样的子数组，任何长度都满足，答案是 n。正数保证可以用双指针在线性时间内找到最短达标窗口。",
+      "shortest 初始为 n+1，左指针和窗口和从 0 开始；右指针逐个加入元素，当窗口和不小于 k 时用当前窗口长度更新 shortest，减去左端元素并右移左指针，如此反复；最后输出 shortest−1。"
+    ],
+    "en": [
+      "All elements are positive: if some window of length B already sums to at least k, any longer length can extend that window, and the sum only grows. So the feasible lengths always form a contiguous range starting at 0.",
+      "You only need B, the length of the shortest subarray whose sum is at least k; the answer is B - 1. If no such subarray exists, every length works and the answer is n. Positivity lets two pointers find the shortest qualifying window in linear time.",
+      "Start shortest at n + 1 and left and the window sum at 0. Add elements at the right one by one; while the window sum is at least k, update shortest with the window length, subtract the left element and move left forward. Print shortest - 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst find B, the length of the shortest subarray with sum at least k; the answer is B−1, and if there is none the answer is n. Positive numbers let two pointers find the shortest qualifying window in linear time.\n\n## Correctness\n\nAny window shorter than the shortest bad window is good. Any length ≥B and ≤n can extend that bad window to this length, and positivity guarantees it stays bad after extension, so the feasible lengths are exactly 0..B−1. The sliding window expands to the right and shrinks from the left as far as possible, enumerating the shortest qualifying range for each right end.\n\n## Complexity\n\nTime O(n), space O(n) to store the input."
+}

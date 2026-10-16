@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-64",
+  "packageChecksum": "f8c4494e920cf1783c42727e712f454ea885e2d8572e3e11c4b4c491c0e09499",
+  "sourceContentHash": "ae5df8e78cb84a95bd9b371d7609216f4deadf90e5e47a2b45a65686d5cec03f",
+  "editorialSha256": "c0cae32f745187e755f9c8d09609f8062e5ac889642f664623b2f263a31e2995",
+  "hints": {
+    "zh": [
+      "两个串的距离等于两串长度之和减去两倍最长公共前缀长度。最长公共前缀对应字典树上两串路径分开的那个节点的深度。",
+      "把所有串插入二进制字典树。对每个节点，经过它的串分成三组：恰好在此结束的、走向 0 子树的、走向 1 子树的。来自不同组的两串，公共前缀恰好就是这个节点；对固定节点，距离只随两串长度增大而增大，所以每组只需保留最长长度。",
+      "建树时记录每个节点结束的串数，并自底向上求出每个子树中的最长串长度（子节点编号总比父节点大，倒序遍历即可）。再对每个节点，把“结束组的长度=当前深度”和两个子树的最长长度放在一起，至少有两组时取最大的两个相加再减去两倍深度，更新答案。答案初值为 0，覆盖相同字符串成对的情况。"
+    ],
+    "en": [
+      "The distance of two strings is the sum of their lengths minus twice the length of their longest common prefix, and that prefix ends at the trie node where the two paths split.",
+      "Insert every string into a binary trie. At each node, the strings passing through form three groups: those ending here, those going into child 0, and those going into child 1. Two strings from different groups have exactly this node as their common prefix, and for a fixed node the distance only grows with the lengths, so each group only needs its longest length.",
+      "While building, count the strings ending at each node and compute the longest string length in every subtree bottom-up (children get larger indices, so a reverse index scan works). Then at each node, collect the ending group's length (the node depth) and the two child subtrees' longest lengths; with at least two groups, add the two largest and subtract twice the depth. Start the answer at 0, which covers equal strings at different indices."
+    ]
+  },
+  "explanationEn": "## Idea\n\nInsert the strings into a binary trie. At each node, consider separately the strings that end at the node and the strings that go into the 0 and 1 subtrees. Two strings from different groups have exactly the path to this node as their longest common prefix, so the candidate distance is the sum of the longest string lengths of two groups minus twice the current depth. Each group only needs its longest string; identical strings at different indices may still be paired as the problem states, with distance 0.\n\n## Correctness\n\nAny pair of strings at different indices has a unique last common trie node: if one string ends there, it belongs to the ending group; otherwise the two strings go into different child branches. Conversely, any two strings from two different groups of a node have a common prefix of length exactly that node's depth. With the node and the groups fixed, making either string longer only increases the distance, so keeping the longest length of each group is enough. Going over all nodes and their pairs of distinct groups covers every possible pair of strings and takes the maximum.\n\n## Complexity\n\nO(S) time and O(S) space, where S is the total length of the strings.\n\n## Source and boundaries\n\nThe original LeetCode post states that the distance is the total length remaining after removing the common prefix, and asks for the pair in the list with the maximum distance. The FastPrep page for the same problem adds N≤100000, total length ≤200000, non-empty binary strings, and that equal values at different positions in the list can still form a pair. This site converts the problem to stdin/stdout; the public samples keep the original first example and add cases with prefix relations and different first characters."
+}

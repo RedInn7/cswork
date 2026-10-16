@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-17",
+  "packageChecksum": "64535b614a443d423047df977afeff4a1cb32737db8c55c6a7f548ce4db26bed",
+  "sourceContentHash": "9ad04e604a4744fce6fd114fdc4b446e5cd51d6fc91740ec88857bb7d3f52eec",
+  "editorialSha256": "47b57123587eaabfa566b5ea3de65a604574e9f244e3b91a1113ebd24ddb2486",
+  "hints": {
+    "zh": [
+      "整题分成两步：先按“出现最多的字符所占比例”给每个字符串打分，选出比例最小的全部字符串（并列都选）；再决定输出哪些字符。",
+      "被选中字符串中的一个字符要保留，当且仅当它没有出现在任何一个未选字符串里。先把所有未选字符串的字符汇总成一个集合，过滤时只需查集合。",
+      "对每个字符串统计字母频次，计算 max(freq)/length，找出最小值并标记所有取到最小值的字符串（比较时注意精度，可以用交叉相乘的整数比较）。把未选字符串中的字符放进集合 other。按输入顺序遍历被选字符串，逐个字符输出不在 other 中的字符，重复字符照常保留。"
+    ],
+    "en": [
+      "The task has two steps: score each string by the share of its most common character, select all strings with the smallest share (ties are all selected), and then decide which characters to output.",
+      "A character of a selected string is kept exactly when it does not appear in any unselected string. Collect the characters of all unselected strings into a set first, so filtering is just a set lookup.",
+      "For each string, count letter frequencies and compute max(freq) / length; find the minimum and mark every string that attains it (compare carefully, for example with integer cross-multiplication). Put the characters of the unselected strings into a set other. Walk the selected strings in input order and output, character by character, those not in other, keeping repeats."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each string compute `max(freq)/length` and select all strings with the smallest ratio. Collect the characters of the unselected strings into a set, then, following the original input order of the selected strings and the order within each string, output the characters not in that set, keeping repeated characters.\n\n## Proof of Correctness\n\nThe set of strings with the smallest ratio is uniquely determined by the definition, and all ties are kept. For each of their characters, checking whether it appears in any unselected string implements exactly the exclusion condition of the problem; outputting character by character in the original order ensures that both the order and the multiplicities of the result meet the requirements.\n\n## Complexity\n\nWith L total characters and an alphabet of size σ, time O(L+σ), space O(L+σ)."
+}

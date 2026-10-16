@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-113",
+  "packageChecksum": "53efb2f5130ec9dbea3081cf5fed199ae33a3a93495d14bfebc13b8dd2c37d78",
+  "sourceContentHash": "6d47ce052df68b65f672681b8ba50542f8d3b0312d5a3283993140c4fae24e20",
+  "editorialSha256": "c5c2cec98999394760df6146eaf743dd8de73c5c17235396e2b21b390a09aa0c",
+  "hints": {
+    "zh": [
+      "费用只取决于同字符对和异字符对各有多少个；总对数固定为 n/2，所以只要决定同字符对的数量即可。",
+      "若同字符对更便宜，就尽量多做同字符对，最多为各字符频次除以 2 之和；若异字符对更便宜，就尽量少做，只有出现次数超过一半的那个字符会被迫内部配对。",
+      "统计各字符频次，pairs=n/2；x≤y 时 same=Σ⌊f/2⌋，否则 same=max(0, 最大频次-pairs)；答案为 same*x+(pairs-same)*y。"
+    ],
+    "en": [
+      "The cost only depends on how many pairs are of equal characters and how many are mixed; the total number of pairs is fixed at n/2, so you only need to choose the number of equal pairs.",
+      "If equal pairs are cheaper, make as many as possible, which is the sum of each frequency divided by 2; if mixed pairs are cheaper, make as few equal pairs as possible, and only a character occurring more than half the time is forced to pair with itself.",
+      "Count the frequency of every character and let pairs = n/2; when x <= y set same = sum of floor(f/2), otherwise same = max(0, maxFrequency - pairs); the answer is same*x + (pairs - same)*y."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf same-character pairs are cheaper, make as many of them as possible, which is the sum of each frequency divided by 2 (integer division); if mixed pairs are cheaper, only max(0, (maximum frequency) - n/2) same-character pairs are forced, and all others are mixed.\n\n## Correctness\n\nThe maximum number of same-character pairs is determined by each character's frequency separately, and these maxima can be reached at the same time; the leftover odd items can be paired with each other as mixed pairs. When mixed pairs are cheaper, the excess of the most frequent character beyond half must be paired internally, and otherwise everything can be matched across characters, so the forced number of same-character pairs is the non-negative part of (maximum frequency - total pairs).\n\n## Complexity\n\nTime O(n), space O(26)."
+}

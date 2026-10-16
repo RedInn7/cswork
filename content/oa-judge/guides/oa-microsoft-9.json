@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-9",
+  "packageChecksum": "80b10b30a3c31803cb0ad57788326e36d7e4a4213df624fe0d522f8cf94ef6f1",
+  "sourceContentHash": "4583698d8f4270b97aa6651a37226fc6246f1fc8a9c5b58f3ea52b41ff537624",
+  "editorialSha256": "654c9bdc00ef0c954fe166ed0901dd500e23c83203e2eaa68f9b44306710f0ac",
+  "hints": {
+    "zh": [
+      "把所有边的“两端点值之和”加起来，每个顶点的值恰好被计算了“它的度数”那么多次，所以总和等于各顶点的值乘以度数之和。",
+      "要让“值乘度数”之和最大，就把大的值分给度数大的顶点（排序不等式），与图的具体结构无关。",
+      "统计每个顶点的度数并升序排序，第 i 小的度数（从 1 开始计）乘以 i，全部累加后输出。总和可能超过 32 位整数。"
+    ],
+    "en": [
+      "Adding up the endpoint sums of all edges counts each vertex's value exactly as many times as its degree, so the total is the sum of value times degree over all vertices.",
+      "To maximize the sum of value times degree, give larger values to vertices with larger degrees (the rearrangement inequality); the rest of the graph structure does not matter.",
+      "Count every vertex's degree, sort the degrees in ascending order, multiply the i-th smallest degree (counting from 1) by i, and print the sum. The total may exceed 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach node's value appears in the total as many times as its degree, so assign the larger values to the nodes with larger degrees.\n\n## Proof of correctness\n\nIf degrees d1<d2 but the former gets the larger value v1>v2, swapping increases the total by (d2−d1)(v1−v2)≥0. Repeated swaps lead to pairing degrees and values in the same order, which is optimal.\n\n## Complexity\n\nTime O(N log N+M), space O(N)."
+}

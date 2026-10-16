@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-9",
+  "packageChecksum": "43dbe8a33781301de6bcf00e57c85a46bd68137be27379a964092e5ed3e36166",
+  "sourceContentHash": "f2acb547a36ce0742ea9d8823653ec6bbb67d662553c07a5d6cd1832c76d03e9",
+  "editorialSha256": "6a4d318b1a1dcde38f4a3e738900e291350133cf1127ef5d0b4eebf7ca4c7079",
+  "hints": {
+    "zh": [
+      "[l,r]是0基的下标区间而不是数值范围，只需要看这些位置上的元素，相同数值出现多次就分别计数。",
+      "判断一个数是否有重复数字，可以逐位扫描它的十进制表示，用一个10位掩码记录已经出现过的数字。",
+      "遍历下标l到r：对每个数清空掩码，逐位取数字d，若掩码第d位已为1则判为无效，否则置位；扫描完没有冲突就计数加一。0只有一位数字，算合法。"
+    ],
+    "en": [
+      "[l, r] is a 0-based index interval, not a value range: only the elements at those positions matter, and equal values appearing several times are counted separately.",
+      "To test whether a number repeats a digit, scan its decimal representation digit by digit and record the digits already seen in a 10-bit mask.",
+      "Go over indices l to r: reset the mask for each number, take each digit d, mark the number invalid if bit d is already set and otherwise set it; if no conflict occurs, add one to the count. 0 has a single digit and is valid."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCheck items one by one, only within the target index interval, using a 10-bit mask to record decimal digits; a number is invalid as soon as a digit repeats. 0 itself is a single digit and is valid.\n\n## Correctness\n\nAt every step the digit mask records exactly the digits that have already appeared in this element, and a repeated bit is equivalent to a repeated digit. Only indices in the closed interval are visited and counted one by one, so values outside the interval have no effect and equal values at different positions are not merged.\n\n## Complexity\n\nTime O(n log V), space O(1) apart from the input."
+}

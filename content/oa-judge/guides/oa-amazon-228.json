@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-228",
+  "packageChecksum": "d22af5af583efc7f469e2482668c5681e4ca44ab698f556ae5ca47cad5b87a07",
+  "sourceContentHash": "8b5a8d883d2529360f36dacdfd6ba66c42bcb9602316b7bb7c39a55f8761b58b",
+  "editorialSha256": "1a901075776cd6322b75e5a98f22a59b5938d67476fb522437d1157788fe857a",
+  "hints": {
+    "zh": [
+      "泊位数固定时，按顺序立即开始的规则唯一确定每辆车的开始和结束时间；泊位越多，每辆车只会更早开始，所以是否可行随泊位数单调。",
+      "对泊位数二分；检验某个泊位数时用最小堆模拟，每辆车依次交给最早空闲的泊位，看最后完成时间是否不超过 T。",
+      "二分区间为 1 到 n；检验 d 时建 d 个初值为 0 的空闲时间，按输入顺序取出最早空闲时间、加上耗时再放回；全部处理完后取最大完成时间与 T 比较；可行则收缩右端，否则左端加一，输出最小可行值。时间可达 5×10^13，用 64 位整数。"
+    ],
+    "en": [
+      "With a fixed number of docks, the start-immediately-in-order rule fixes every truck's start and finish time; more docks only make each truck start earlier, so feasibility is monotone in the number of docks.",
+      "Binary search the number of docks; to test a value, simulate with a min-heap, giving each truck in turn to the dock that frees up earliest, and check whether the last finish time is at most T.",
+      "Search over 1..n; to test d, start with d free times equal to 0, and in input order take the earliest free time, add the duration and put it back; after all trucks, compare the largest finish time with T; shrink the upper end if feasible, otherwise raise the lower end, and output the smallest feasible value. Times can reach 5*10^13, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the number of docks. To check d, keep each dock's available time in a min-heap, assign each truck to the earliest free dock, then check the latest finish time.\n\n## Proof of correctness\n\nWith a fixed number of docks, the rule that trucks start immediately uniquely determines every start time, and the heap simulates the earliest available dock exactly. Adding docks never makes the i-th truck, started greedily in order, start later: by induction over the finish times of all trucks already started, extra capacity can only make the possible start times earlier. Feasibility is therefore monotone, and binary search finds the smallest feasible value.\n\n## Complexity\n\nTime O(n log^2 n), space O(n)."
+}

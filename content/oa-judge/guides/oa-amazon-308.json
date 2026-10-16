@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-308",
+  "packageChecksum": "e0d010ee130eafa073a0435477eaf030e102975cdce5da0db5522a4ffa52412c",
+  "sourceContentHash": "b4c77510ad7ec62e1b10eb4dd5b15621a1c532321864ce3ada707ff84158a5a0",
+  "editorialSha256": "f974782f21db247b8596f1c439f2aa650fa7376a7b2295240ee9097724e10297",
+  "hints": {
+    "zh": [
+      "总费用只由相邻两位决定，所以处理到某个位置时，后面的选择只关心当前这一位最终取0还是取1。",
+      "用两个状态dp[0]、dp[1]表示前缀处理完、当前位取0或1时的最小费用。转到下一位时只需枚举前一位和当前位，加上这一对的费用。",
+      "首字符为!时两个状态都为0，否则只有对应状态为0、另一个为无穷大。之后对每个字符的每个允许取值b，取“dp[b]（与前一位相同，费用0）”与“dp[另一位]+这一对的费用”的较小者：前0后1加x，前1后0加y。最后输出两个状态的较小者，用64位整数。"
+    ],
+    "en": [
+      "The total cost depends only on adjacent pairs, so once you reach a position, the later choices only care whether the current bit ended up 0 or 1.",
+      "Use two states dp[0] and dp[1]: the minimum cost of the processed prefix with the current bit set to 0 or 1. Moving to the next position only needs the previous bit and the current bit, adding the cost of that pair.",
+      "If the first character is !, both states start at 0; otherwise only the matching state is 0 and the other is infinity. For each later character and each allowed value b, take the smaller of dp[b] (same bit as before, cost 0) and dp[other bit] plus the pair cost: 0 then 1 adds x, 1 then 0 adds y. Output the smaller state at the end, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet `dp[b]` be the minimum cost after processing the current position with that bit set to `b`. A fixed character has only one possible value, while `!` can be 0 or 1. Enumerate the current bit `b` and the previous bit `p`, and transition from `dp[p]`; the added cost depends only on the adjacent pair `(p,b)`: `01` adds `x`, `10` adds `y`, and equal bits add nothing. The final answer is the smaller of the last bit being 0 or 1.\n\n## Checking the examples\n\nThe two replacements in example 1 are `0100` and `0110`, both costing `x+y=5`, so the minimum is 5, not the original 8. Example 2 can be replaced with `0001`, which has only one `01` and costs 3; the original 7 is just the cost of another replacement, `1001`, and is not the minimum. The original problem's Python, Java and C++ implementations all compute the global minimum with the same transition.\n\n## Correctness\n\nFor each prefix and each value of its last bit, dp stores the minimum feasible cost of that state. A single initial character has no adjacent pair, so its cost is 0. When extending by one character, every valid extension only chooses the current bit, and the transition adds the exact cost of the new adjacent pair to the best value so far. By induction, each dp value equals the minimum cost of its state. The two states of the last bit cover every complete replacement, so the smaller one is the global minimum.\n\n## Complexity\n\nTime `O(n)`, extra space `O(1)`."
+}

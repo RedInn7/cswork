@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-216",
+  "packageChecksum": "73b7f5ff91199b29efd8c01a29169bab5c71cc79d6f59e4cb297a30ef609b794",
+  "sourceContentHash": "43b7f4cd67a68569978ddc8d4a678216888fc3be3a2546081dc9a59f2e298a72",
+  "editorialSha256": "e636e3f1e6d37df510239c4059fb4a5806c83ed9fac39f11a63a7073ca631cc0",
+  "hints": {
+    "zh": [
+      "看似只能从两端买书，其实限制并不强：任选偶数本书，总能用“先单买两端没选中的书，再合购最外侧两本选中的书”的方式全部合购。",
+      "所以只需决定合购次数 j；j 固定时，应把最贵的 2j 本用于合购，其余按原价购买。",
+      "价格降序排序并求总价；j 从 1 到 min(k, n/2)，累加前 2j 本的价格得 saved，候选费用 = 总价 − saved + j·pairCost，与 j=0 时的总价一起取最小值；用 64 位。"
+    ],
+    "en": [
+      "Buying only from the ends looks restrictive but is not: any chosen even-sized set of books can all be pair-bought by first buying the unchosen books at the ends one by one, then pair-buying the two outermost chosen books.",
+      "So you only need to decide the number j of pair purchases; for a fixed j, pair-buy the 2j most expensive books and buy the rest at full price.",
+      "Sort prices descending and compute the total; for j from 1 to min(k, n/2), let saved be the sum of the first 2j prices, the candidate cost is total - saved + j * pairCost; take the minimum together with the total for j = 0; use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the prices and enumerate the number j of pair purchases; pair-buy the 2j most expensive books, for a cost of the total minus the sum of those 2j books plus j*pairCost.\n\n## Proof of correctness\n\nAny chosen set with an even number of books can be pair-bought: first buy all unchosen books at the two ends individually, then pair-buy the two outermost chosen books, and repeat. So for a fixed j, pair-buying the 2j most expensive books is optimal, and enumerating j over 0..min(k, n//2) gives the optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

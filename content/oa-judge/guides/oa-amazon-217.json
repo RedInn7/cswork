@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-217",
+  "packageChecksum": "ac750e9cd9fba563a008b323345f55e5b64f1ebb4dcc1a179ca91cfe385575c9",
+  "sourceContentHash": "8ddf3881ece3961ff29a5f163223dea048e8a14eab9e38a2880d258294500ce6",
+  "editorialSha256": "d82cc455aade13e7e2f281bee43fbbd313dde54cf2b5028aa38a9da7754f50f8",
+  "hints": {
+    "zh": [
+      "先统一方向：若 x>y，把串反转并交换 x、y（反转后 01 与 10 互换），之后只需处理 x≤y 的情形。",
+      "在 x≤y 时，任意两个通配符若被填成“前 1 后 0”，交换成“前 0 后 1”不会更差。所以最优解中通配符按位置是先一段 0、后一段 1，只需枚举分界点。",
+      "先把所有 ! 当成 1 算出完整代价；再按位置扫描并维护左右两侧 0、1 的个数，每遇到一个 ! 就把它从 1 改成 0，代价变化 = 左边 1 的个数·y − 左边 0 的个数·x + 右边 1 的个数·x − 右边 0 的个数·y，记录最小值。全程用 64 位，最后才对 1000000007 取模。"
+    ],
+    "en": [
+      "Normalize first: if x > y, reverse the string and swap x and y (reversing turns every 01 pair into 10 and vice versa), so only the case x <= y remains.",
+      "When x <= y, any two wildcards filled as 1 then 0 can be swapped to 0 then 1 without getting worse. So in an optimal solution the wildcards, by position, are a block of 0s followed by a block of 1s, and you only need to try every split point.",
+      "Compute the full cost with every ! set to 1; then scan by position keeping the counts of 0s and 1s on each side, and at each ! turn it from 1 into 0, changing the cost by left1*y - left0*x + right1*x - right0*y; keep the minimum. Use 64-bit throughout and take the result modulo 1000000007 only at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf x > y, reverse the string and swap x and y so that x <= y. Some optimal solution fills the wildcards, in position order, with 0s first and then 1s; start with all wildcards as 1, change them to 0 one by one while maintaining the counts of 0s and 1s on the left and right and the cost change, and enumerate every split point.\n\n## Proof of correctness\n\nWhen x <= y, swapping an inverted wildcard pair 1, 0 into 0, 1 does not increase the total contribution of that pair and the positions between them, and contributions outside are unchanged, so all inversions can be removed. Every optimal single split point appears during the scan. The change from turning a 1 into a 0 is left1*y - left0*x + right1*x - right0*y, which updates the full cost exactly; the modulus is taken only at the end.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

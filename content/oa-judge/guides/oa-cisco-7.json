@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-7",
+  "packageChecksum": "d265f020bfe161e8efeae87db7889f94b84c1fee89e6377b34d5c4fbb2bdc92f",
+  "sourceContentHash": "c4602eb3e38e5bb9da0ba1a6c3e817badd8ac96170e709898350b5e05ec5b714",
+  "editorialSha256": "72a901c8076dcf6a84a396b30717efd3fc456f3a7ec0e05baeb222de9ee116f3",
+  "hints": {
+    "zh": [
+      "合数一定有不超过其平方根的素因子；32 位范围内的正数平方根不超过 46340，小于 2 的数（含 0、1 和负数）一律按非质数输出 Composite。",
+      "先用埃氏筛求出 46340 以内的所有素数；判断一个数时只需用这些素数试除到 p²>value，重复出现的数可以缓存结果。",
+      "筛出素数表；对每个输入值：若已缓存直接取结果；否则 value<2 判为 Composite，不然依次用素数 p 试除，p×p>value 时停止，能整除就是 Composite，都不能整除就是 Prime；每个结果占一行，空列表输出空文本。"
+    ],
+    "en": [
+      "A composite number always has a prime factor no larger than its square root; for positive 32-bit values that root is at most 46340, and every value below 2 (including 0, 1 and negatives) is printed as Composite.",
+      "Sieve all primes up to 46340 once; test a value by trial division with those primes until p² > value, and cache the verdict for repeated values.",
+      "Build the prime table with a sieve; for each input value use the cached verdict if there is one; otherwise a value < 2 is Composite, else divide by the primes in order, stopping once p * p > value: any exact division means Composite, none means Prime; print one verdict per line and nothing for an empty list."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSieve all primes up to 46340 and, for a positive number, trial-divide by prime factors until p²>value; numbers below 2 are non-prime directly, and the verdict for repeated values is cached.\n\n## Proof of correctness\n\nEvery composite number has a prime factor no larger than its square root, since otherwise the product of its two smallest non-trivial factors would exceed the number itself. The square root of a 32-bit positive integer is at most 46340, so the sieve table contains every factor that can be needed; a number with a divisor is composite and one without is prime. Numbers below 2 are excluded by the definition of a prime. The cache only reuses the settled verdict of the same integer.\n\n## Complexity\n\nThe sieve takes O(V log log V) time and each distinct positive number needs at most 4792 trial divisions, with V=46340; space is O(V+N)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-36",
+  "packageChecksum": "51bf582abb5a56a1158c2086d5bf3c00a626449e0a4451ea5e3e90c943535def",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nstring readAll() {\n    string s;\n    char buf[1 << 16];\n    size_t n;\n    while ((n = fread(buf, 1, sizeof buf, stdin)) > 0) s.append(buf, n);\n    return s;\n}\nint main() {\n    string data = readAll();\n    vector<string> lines;\n    size_t start = 0;\n    while (true) {\n        size_t p = data.find('\\n', start);\n        if (p == string::npos) { lines.push_back(data.substr(start)); break; }\n        lines.push_back(data.substr(start, p - start));\n        start = p + 1;\n    }\n    int n = stoi(lines[0]);\n    string out;\n    for (int i = 0; i < n; i++) {\n        const string &a = lines[1 + 2 * i], &b = lines[2 + 2 * i];\n        if (a.size() != b.size()) { out += \"-1\\n\"; continue; }\n        long long cnt[256] = {0};\n        for (unsigned char c : a) cnt[c]++;\n        for (unsigned char c : b) cnt[c]--;\n        long long extra = 0;\n        for (int c = 0; c < 256; c++) if (cnt[c] > 0) extra += cnt[c];\n        out += to_string(extra); out += '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "97e4e69c53faba6ba9b4d35e255170f624b11472ca3be3d169ed4dd2b4e2c338"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        String[] lines = new String(System.in.readAllBytes()).split(\"\\n\", -1);\n        int n = Integer.parseInt(lines[0].trim());\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            String a = lines[1 + 2 * i], b = lines[2 + 2 * i];\n            if (a.length() != b.length()) {\n                out.append(\"-1\\n\");\n                continue;\n            }\n            int[] cnt = new int[65536];\n            for (int j = 0; j < a.length(); j++) cnt[a.charAt(j)]++;\n            for (int j = 0; j < b.length(); j++) cnt[b.charAt(j)]--;\n            long extra = 0;\n            for (int c : cnt) if (c > 0) extra += c;\n            out.append(extra).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "d9c97aeced6d8d701ca07a386105f6a08d04fa6a020470656edf50e40ebbd7be"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"bytes\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tlines := bytes.Split(data, []byte(\"\\n\"))\n\tn, _ := strconv.Atoi(string(bytes.TrimSpace(lines[0])))\n\tfor i := 0; i < n; i++ {\n\t\ta, b := lines[1+2*i], lines[2+2*i]\n\t\tif len(a) != len(b) {\n\t\t\tw.WriteString(\"-1\\n\")\n\t\t\tcontinue\n\t\t}\n\t\tvar cnt [256]int\n\t\tfor _, c := range a {\n\t\t\tcnt[c]++\n\t\t}\n\t\tfor _, c := range b {\n\t\t\tcnt[c]--\n\t\t}\n\t\textra := 0\n\t\tfor _, c := range cnt {\n\t\t\tif c > 0 {\n\t\t\t\textra += c\n\t\t\t}\n\t\t}\n\t\tw.WriteString(strconv.Itoa(extra) + \"\\n\")\n\t}\n}\n",
+      "sha256": "38b0d36e2d52e49166e6cdc8b49edaa95ea6284e14475ec46097089321e7e4f7"
+    }
+  ]
+}

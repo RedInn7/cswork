@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-8",
+  "packageChecksum": "c9fe0979e95466389f5ee139bbfa16e71a4c7210932ce2f96e683cffa4159f6d",
+  "sourceContentHash": "5dbc7a9883cb70ee7e17030b428bbbe4cfcbe7e80472e95af504d7a72dab099a",
+  "editorialSha256": "c612ced74c8020e0567a4b6c63045c06d4aaf78136c38276b5a37c17a4cb8215",
+  "hints": {
+    "zh": [
+      "不同用户的事件永远不会合并，而同一用户的会话只取决于他的事件按时间排序后相邻两次的时间差是否超过 t。",
+      "把所有事件按 (用户, 时间) 排序，同一用户的事件就会连续并按时间递增。每个会话都对应它的第一条事件，所以只需数出“开始新会话”的位置。",
+      "排序后从头扫描：第一条事件、用户与上一条不同的事件、或与上一条同用户但时间差大于 t 的事件，都会开启一个新会话，计数加一；时间可达 10^12，用 64 位整数；最后输出计数。"
+    ],
+    "en": [
+      "Events of different users are never merged, and one user's sessions depend only on whether the gap between consecutive events, in time order, exceeds t.",
+      "Sort all events by (user, time), so each user's events become contiguous and increasing in time. Every session corresponds to its first event, so it is enough to count the positions where a new session starts.",
+      "After sorting, scan from the start: the first event, an event whose user differs from the previous one, or an event of the same user whose time exceeds the previous one by more than t each start a new session and add one to the count; times reach 10^12, so use 64-bit integers; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by user and time, and count the positions where the user changes or where the gap to the previous event is greater than t.\n\n## Proof of correctness\n\nAfter sorting a user's events, a gap greater than t splits sessions, and the remaining adjacent events link into exactly the maximal consecutive runs; the first event of each run contributes 1. The first events of different users are counted separately.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-58",
+  "packageChecksum": "cec02da4703468cfd07958b6b7320d261d4f2b04fc3193eecaca2edbf6e0690c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    while (true) {\n        string res;\n        bool changed = false;\n        for (size_t i = 0; i < s.size();) {\n            size_t j = i + 1;\n            while (j < s.size() && s[j] == s[i]) j++;\n            if (j - i > 1) changed = true;\n            res += to_string((long long)(s[i] - '0') * (long long)(j - i));  // digit sum of the run\n            i = j;\n        }\n        if (!changed) break;\n        s = res;\n    }\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "48e9f1f57cb7a30b8909eaa01303863b17b915911507e81fc3da5ca33275bf2a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        while (true) {\n            StringBuilder res = new StringBuilder();\n            boolean changed = false;\n            for (int i = 0; i < s.length();) {\n                int j = i + 1;\n                while (j < s.length() && s.charAt(j) == s.charAt(i)) j++;\n                if (j - i > 1) changed = true;\n                res.append((long) (s.charAt(i) - '0') * (j - i));  // digit sum of the run\n                i = j;\n            }\n            if (!changed) break;\n            s = res.toString();\n        }\n        System.out.println(s);\n    }\n}\n",
+      "sha256": "5ad520979e444dbca50aeed82fbbc92148c82491dc368afd7ce5d43e1f3afa9d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\ts := readToken()\n\tfor {\n\t\tres := []byte{}\n\t\tchanged := false\n\t\tfor i := 0; i < len(s); {\n\t\t\tj := i + 1\n\t\t\tfor j < len(s) && s[j] == s[i] {\n\t\t\t\tj++\n\t\t\t}\n\t\t\tif j-i > 1 {\n\t\t\t\tchanged = true\n\t\t\t}\n\t\t\tres = strconv.AppendInt(res, int64(s[i]-'0')*int64(j-i), 10) // digit sum of the run\n\t\t\ti = j\n\t\t}\n\t\tif !changed {\n\t\t\tbreak\n\t\t}\n\t\ts = string(res)\n\t}\n\tfmt.Println(s)\n}\n",
+      "sha256": "3adea21f156cb6272588ecf732a383c79c52aaa08b85fb2727a1a35e6abe481a"
+    }
+  ]
+}

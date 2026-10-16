@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-340",
+  "packageChecksum": "926dcd0f54f1bc5603df9464de37ad76b2e224b84d81dc5cd7241b28c2ac642c",
+  "sourceContentHash": "6b7313ec37f99655b638d27a4866ffa9e7a405b27811acc3734b776ca1c5f7db",
+  "editorialSha256": "bbbaf610c7bd1cb1a2b9584f2158213ad761792b71d71d1dad72306a7b44c35d",
+  "hints": {
+    "zh": [
+      "每个请求都要在前缀区间[0, requests[i]]里找“分配数最少、其次编号最小”的服务器，再让它的分配数加1。暴力扫描最坏是O(servers·n)。",
+      "把(分配数, 编号)编码成一个整数，例如分配数·2^20+编号，比较整数大小就等于先比分配数再比编号。需要的操作就是“区间最小值查询+单点修改”，用线段树即可。",
+      "建一棵大小为2的幂的自底向上线段树，叶子初值为编号（分配数为0），多余的叶子设为无穷大。每个请求查询[0, requests[i]]的最小值，取低20位得到编号，把该叶子加2^20并沿父节点更新最小值，然后输出编号。"
+    ],
+    "en": [
+      "Each request looks in the prefix range [0, requests[i]] for the server with \"the fewest assignments, then the smallest number\", and then adds 1 to its count. A brute-force scan costs O(servers·n) in the worst case.",
+      "Encode (assignment count, number) as a single integer, for example count·2^20+number, so comparing integers is the same as comparing counts first and numbers second. What you need is \"range minimum query + point update\", which a segment tree provides.",
+      "Build a bottom-up segment tree whose size is a power of two; leaves start at their number (count 0), and unused leaves are infinity. For each request, query the minimum over [0, requests[i]], take the low 20 bits as the number, add 2^20 to that leaf, update the minimums along its ancestors, and output the number."
+    ]
+  },
+  "explanationEn": "## Problem\n\nThere are servers servers (numbered 0..servers−1). Process the requests in order: request i can only go to a server numbered 0..requests[i], and it picks the currently least busy one; ties go to the smallest number. A server's busyness is the number of requests already assigned to it (requests are never completed or released). Output the server number each request is assigned to.\n\n## Approach\n\nWe need to support \"take the minimum of (assignment count, number) over a prefix range\" and \"add one at a single point\". Encode (assignment count, number) as the single integer cnt·2^20+idx and keep range minimums in a segment tree: querying the minimum over [0,requests[i]] gives the server number, then add 2^20 to that leaf and update upward.\n\n## Correctness\n\nThe order of the encoded integers matches the lexicographic order \"compare the assignment count first, then the number\" (numbers are <2^20). Each time, the segment tree gives the smallest code in the prefix, which is the server the rule picks; after the update the tree still stores the true assignment counts.\n\n## Complexity\n\nBuilding is O(servers), and each request is O(log servers).\n\n## Independent verification\n\nFor each request, the oracle scans a count array linearly over 0..requests[i] and takes the minimum by (count, number), without a segment tree. Expected values for large cases come from another Python bottom-up segment tree (comparing tuples). All request sequences with servers=1..3 and 1..4 requests are enumerated exhaustively and the reference program is actually run on each. The wrong solutions cover breaking ties with the largest number, ignoring the allowed range, excluding the right end of the range, and not accumulating busyness."
+}

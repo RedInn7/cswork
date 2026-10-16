@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-41",
+  "packageChecksum": "a5ca529993a8a214ec166c7bfd5ab1e8beeec56388c6a1454b7f2662399a5357",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    long long seed, n, k, b, m, area;\n    scanf(\"%lld %lld %lld %lld %lld %lld\", &seed, &n, &k, &b, &m, &area);\n    // Side lengths strictly increase; every value fits in 32 bits.\n    vector<uint32_t> s(n);\n    long long value = seed;\n    s[0] = (uint32_t)value;\n    for (long long i = 1; i < n; i++) {\n        value += 1 + (k * value + b) % m;\n        s[i] = (uint32_t)value;\n    }\n    long long right = n - 1, answer = 0;\n    for (long long left = 0; left < n; left++) {\n        while (right >= 0 && (long long)s[left] * s[right] > area) right--;\n        if (right < 0) break;\n        answer += right + 1;\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "06dad8894efe5056e399889a9d560c1d61e1c8b26ea23a9aa544a49901df3075"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new BufferedReader(new InputStreamReader(System.in)).readLine());\n        long seed = Long.parseLong(st.nextToken());\n        int n = Integer.parseInt(st.nextToken());\n        long k = Long.parseLong(st.nextToken());\n        long b = Long.parseLong(st.nextToken());\n        long m = Long.parseLong(st.nextToken());\n        long area = Long.parseLong(st.nextToken());\n        // Side lengths strictly increase; every value is at most 1e9, so int storage is safe.\n        int[] s = new int[n];\n        long value = seed;\n        s[0] = (int) value;\n        for (int i = 1; i < n; i++) {\n            value += 1 + (k * value + b) % m;\n            s[i] = (int) value;\n        }\n        int right = n - 1;\n        long answer = 0;\n        for (int left = 0; left < n; left++) {\n            while (right >= 0 && (long) s[left] * s[right] > area) right--;\n            if (right < 0) break;\n            answer += right + 1;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "95333ae735436602497c530d0e87c993fbea3e0c619ee2a946c1b9a20efc0160"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar seed, n, k, b, m, area int64\n\tfmt.Scan(&seed, &n, &k, &b, &m, &area)\n\t// Side lengths strictly increase; every value fits in 32 bits.\n\ts := make([]uint32, n)\n\tvalue := seed\n\ts[0] = uint32(value)\n\tfor i := int64(1); i < n; i++ {\n\t\tvalue += 1 + (k*value+b)%m\n\t\ts[i] = uint32(value)\n\t}\n\tright := n - 1\n\tvar answer int64\n\tfor left := int64(0); left < n; left++ {\n\t\tfor right >= 0 && int64(s[left])*int64(s[right]) > area {\n\t\t\tright--\n\t\t}\n\t\tif right < 0 {\n\t\t\tbreak\n\t\t}\n\t\tanswer += right + 1\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "fd6bcf2d68f827753dc6f8c8b3b47e5f71c224dcaa2f1d321fa4af2ba6bf5825"
+    }
+  ]
+}

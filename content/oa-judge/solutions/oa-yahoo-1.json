@@ -1,0 +1,21 @@
+{
+  "id": "oa-yahoo-1",
+  "packageChecksum": "ea552d9e84a33cf3f6d9faf834eb45559aa6a07aaf65f514582146ac0c96e56b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int left[26] = {0};\n    bool inside[26] = {false};\n    for (char c : s) left[c - 'a']++;\n    string st;\n    for (char c : s) {\n        left[c - 'a']--;\n        if (inside[c - 'a']) continue;\n        // A smaller letter on top can be dropped when another copy still follows.\n        while (!st.empty() && st.back() < c && left[st.back() - 'a'] > 0) {\n            inside[st.back() - 'a'] = false;\n            st.pop_back();\n        }\n        st += c;\n        inside[c - 'a'] = true;\n    }\n    cout << st << '\\n';\n}\n",
+      "sha256": "7461da8003404c6e8aa6a537f98538eb4a5c18281ce87cab607cd16d94530884"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int[] left = new int[26];\n        boolean[] inside = new boolean[26];\n        for (int i = 0; i < s.length(); i++) left[s.charAt(i) - 'a']++;\n        StringBuilder st = new StringBuilder();\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            left[c - 'a']--;\n            if (inside[c - 'a']) continue;\n            // A smaller letter on top can be dropped when another copy still follows.\n            while (st.length() > 0) {\n                char top = st.charAt(st.length() - 1);\n                if (top >= c || left[top - 'a'] == 0) break;\n                inside[top - 'a'] = false;\n                st.setLength(st.length() - 1);\n            }\n            st.append(c);\n            inside[c - 'a'] = true;\n        }\n        System.out.println(st);\n    }\n}\n",
+      "sha256": "6c53bca6b4cc9a8447fedf4f797c9e073a9575cd62f30caf0aa867cf9eb8ba58"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(raw))\n\tvar left [26]int\n\tvar inside [26]bool\n\tfor i := 0; i < len(s); i++ {\n\t\tleft[s[i]-'a']++\n\t}\n\tst := []byte{}\n\tfor i := 0; i < len(s); i++ {\n\t\tc := s[i]\n\t\tleft[c-'a']--\n\t\tif inside[c-'a'] {\n\t\t\tcontinue\n\t\t}\n\t\t// A smaller letter on top can be dropped when another copy still follows.\n\t\tfor len(st) > 0 && st[len(st)-1] < c && left[st[len(st)-1]-'a'] > 0 {\n\t\t\tinside[st[len(st)-1]-'a'] = false\n\t\t\tst = st[:len(st)-1]\n\t\t}\n\t\tst = append(st, c)\n\t\tinside[c-'a'] = true\n\t}\n\tfmt.Println(string(st))\n}\n",
+      "sha256": "c2a9fd453d6b63a2932d0fa01e2f1ae1698c9564604c7522b8b80529c07bcc60"
+    }
+  ]
+}

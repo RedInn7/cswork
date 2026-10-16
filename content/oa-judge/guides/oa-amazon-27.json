@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-27",
+  "packageChecksum": "f4fe08385fdda329ff6db30080cd4808bf1912c59d0ddca2186a5d359d45158a",
+  "sourceContentHash": "a7c0140abd8f074969558b12ed77fe0c3ba58a656acdd86e98719d00c4bb7f8f",
+  "editorialSha256": "2798a90f83a91f84d5694657748dc37eeb0a9d8dff89edfd1dfddaa4315fd14f",
+  "hints": {
+    "zh": [
+      "每一轮伤害都是正数，所以累计伤害在最后一轮结束时最大；只要撑得过最后一轮，前面每一轮也都撑得过。",
+      "护甲只能用一次，能抵消的量是 min(armor, 那一轮的伤害)，放在伤害最大的那一轮抵消得最多。",
+      "求出伤害总和与单轮最大伤害，答案为总和减去 min(armor, 最大伤害) 再加 1，因为生命值必须严格大于 0。总和可达 10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Every round deals positive damage, so the accumulated damage is largest after the final round; surviving the final round means surviving every earlier one.",
+      "The armor can be used only once and blocks min(armor, that round's damage), which is largest on the round with the highest damage.",
+      "Compute the total damage and the largest single-round damage; the answer is the total minus min(armor, largest damage) plus 1, because health must stay strictly above 0. The total can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSubtract the most that can be blocked, min(armor,max(power)), from the total damage, then add 1.\n\n## Proof of correctness\n\nEffective damage is always non-negative, so the accumulated damage is largest at the last moment. The armor can block, once, an amount no greater than armor and no greater than the chosen round's damage, and the largest reduction comes on the round with the maximum damage. Adding 1 exactly guarantees strict survival.\n\n## Complexity\n\nTime O(n), extra space O(1) (excluding the input)."
+}

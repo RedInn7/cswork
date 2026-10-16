@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-16",
+  "packageChecksum": "2539ccc597d0dabc17a482b39a18d5e231d0cc5f56757ff603d47c804a643f9d",
+  "sourceContentHash": "dc95e132c314bb84ac45653e0d9cdf4a708aa1afa4af4a3486d03f6d0370048b",
+  "editorialSha256": "783a364556e6222f57f6f9f0882c2ada505d77e55dcf2fc1cc5afd290334f1df",
+  "hints": {
+    "zh": [
+      "一个方案只由“每个目标字符用的是哪一列、哪一个单词”决定。同一列里有多少个单词在该位置是所需字母，就有多少种选法，所以先统计每一列各字母的出现次数。",
+      "按列从左到右做DP：dp[j]表示已经拼出target前j个字符的方案数。处理一列时，每个方案要么不用这一列，要么用这一列拼出下一个字符。",
+      "dp[0]=1；对每一列i，j从min(i+1,|target|)倒序到1：dp[j]加上dp[j−1]×freq[i][target[j−1]]并对10^9+7取模；倒序保证同一列只用一次。答案为dp[|target|]。"
+    ],
+    "en": [
+      "A way is determined only by which column and which word each target character uses. Within a column there are as many choices as words having the needed letter there, so first count each letter's frequency in every column.",
+      "Run a DP over columns from left to right: dp[j] is the number of ways to have built the first j characters of target. For each column, every way either skips it or uses it for the next character.",
+      "dp[0] = 1; for each column i, go j from min(i+1, |target|) down to 1: add dp[j-1] * freq[i][target[j-1]] to dp[j] modulo 10^9+7; the reverse order ensures a column is used at most once. The answer is dp[|target|]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the frequency of each letter in every column, scan column by column, and update the number of ways for each prefix of target in reverse order.\n\n## Correctness\n\nFor the current column, each way either does not use it or uses it for the next character of the target. The latter comes from the old prefix count multiplied by the frequency of the needed target letter in the current column. The reverse order prevents using the same column twice, so every way with strictly increasing columns is generated exactly once.\n\n## Complexity\n\nTime O(total word length + number of columns × target length), space O(26 × number of columns + target length)."
+}

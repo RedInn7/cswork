@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-342",
+  "packageChecksum": "16406580aab1fb0fc8e714a73843a3d637377ec84478ef0b8f3aeeddd16bbbf0",
+  "sourceContentHash": "add66de26449020982ad751f1b4473de2f880a64fb421285e3e514e73ba95113",
+  "editorialSha256": "10defcd9220796b5156e4d2624ef1f330c3c4a87228b2c569a722c277627c5c2",
+  "hints": {
+    "zh": [
+      "圆环中相邻差≤1，所以选中的值一定构成一段连续整数[l, r]。想一想从最小值l走到最大值r再绕回来，每个中间值需要几份。",
+      "环上从l到r有两条路径，每条都必须逐个经过l和r之间的每个值，所以严格位于中间的值至少要出现2次，两个端点至少1次；满足这一点就一定能排成环，同一个值的多余副本挨着放即可。",
+      "统计每个值的频数并按值排序，做频数前缀和。扫描每个值作为右端：若它与前一个值不连续，左端重置为它自己；否则若前一个值只出现1次，它只能当端点，左端至少移到前一个值。用窗口内的频数和更新答案。"
+    ],
+    "en": [
+      "Adjacent differences on the ring are ≤1, so the chosen values must form a run of consecutive integers [l, r]. Think about going from the minimum l to the maximum r and back around: how many copies does each intermediate value need?",
+      "There are two paths around the ring from l to r, and each must pass through every value between l and r, so every value strictly in between must appear at least twice and the two endpoints at least once. That condition is enough to form a ring; extra copies of the same value just sit next to each other.",
+      "Count each value's frequency, sort by value, and build prefix sums of the frequencies. Scan each value as the right end: if it is not consecutive with the previous value, reset the left end to itself; otherwise, if the previous value appears only once, it can only be an endpoint, so move the left end at least to the previous value. Update the answer with the total frequency in the window."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount frequencies and sort by value. A valid range of values must be consecutive, with every interior value appearing at least twice and each endpoint at least once. Scan the right end: restart at a gap between values, and when the previous value has frequency 1, make it the new left end; maintain the window's total frequency and the maximum.\n\n## Proof of correctness\n\nIf the ring contains the minimum value l and the maximum value r, both paths around the ring between them must pass through every strictly intermediate value level by level, so each intermediate value needs at least two copies and no level can be missing. Conversely, use one copy of each level to walk from l to r and the other copy of each interior level to walk back to l; extra equal values can be inserted next to each other, so the condition is sufficient, and a single value is also valid. For a fixed right end, every earlier left end that violates the condition must be excluded, and the earliest remaining left end contains the most elements. The scan enumerates all optimal candidates.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

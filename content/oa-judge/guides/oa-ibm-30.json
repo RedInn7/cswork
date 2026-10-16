@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-30",
+  "packageChecksum": "44067cd25a582f301fa62ac3af810bdbe88f762be2b3d3601da8862460eae7ad",
+  "sourceContentHash": "353ae43ffcd3256a0258d761c17aa162605f9d5125d4c4f24896afe75ae28f60",
+  "editorialSha256": "8f189396b5000a8bf31d3e3f091cf9c6f3398c398152da241ccbb7585bba60ba",
+  "hints": {
+    "zh": [
+      "在线人数只会在某位访客到达或离开时变化；闭区间意味着访客在end时刻仍然在线，直到end+1才离开。",
+      "借助差分，在start处加1，在end+1处减1，按时间升序做前缀和，就得到每个事件时刻起的在线人数。同一时刻的多个事件必须先合并再判断。",
+      "收集所有事件并按时间排序，把相同时间的增减量合并后累加到当前人数；只有当前人数严格大于已记录的最大值时，才更新最大值和对应时刻，这样平局时保留最早的时刻。"
+    ],
+    "en": [
+      "The number of online visitors only changes when someone arrives or leaves; a closed interval means the visitor is still online at time end and leaves only at end+1.",
+      "Use a difference array that adds 1 at start and subtracts 1 at end+1; a prefix sum in increasing time order gives the online count from each event time onward. Several events at the same time must be merged before checking.",
+      "Collect all events and sort them by time, merge the changes that share a time and add them to the current count; update the maximum and its time only when the current count is strictly greater than the recorded maximum, so ties keep the earliest time."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdd 1 at start and subtract 1 at end+1, merge events by time and scan; record the time only when the maximum count is strictly exceeded.\n\n## Proof of correctness\n\nThe count does not change between event points, and with closed intervals a visitor is still online at end and leaves only at end+1, so the prefix sum of the differences equals the online count exactly. Scanning in increasing order and updating only on strictly larger values keeps the first time at which the maximum count appears.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-36",
+  "packageChecksum": "7c61df2261930c850ea1abadc4bb82c03bb2f3fe3b208fba6dc8c9f7d0a4de4e",
+  "sourceContentHash": "40c26fbb186f75a1fd34c7d7eb44a5b5578d69987a55b987db0c0e7f610156d2",
+  "editorialSha256": "09b294cd12d8c549c69f1b651ab6246761936bdc1bbc51b5da0637b8892a6010",
+  "hints": {
+    "zh": [
+      "先看两个中心和两个目的地的小例子：交叉配对和按大小顺序配对，哪个总距离更小？",
+      "对 a≤b、x≤y，有 |a−x|+|b−y| ≤ |a−y|+|b−x|，所以任何交叉都能交换掉而不变差，最优方案就是按排序后的位置一一配对。",
+      "两组坐标分别排序，累加第 i 小的中心与第 i 小的目的地之差的绝对值；总和可能超过 32 位。"
+    ],
+    "en": [
+      "Look at two centers and two destinations: which is shorter in total, a crossing pairing or pairing them in sorted order?",
+      "For a≤b and x≤y, |a−x|+|b−y| ≤ |a−y|+|b−x|, so any crossing can be swapped away without getting worse; the optimum pairs elements by sorted position.",
+      "Sort both lists and sum the absolute differences between the i-th smallest center and the i-th smallest destination; the total can exceed 32 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort both coordinate lists and pair the elements at the same sorted position.\n\n## Proof of correctness\n\nFor a≤b and x≤y, |a−x|+|b−y|≤|a−y|+|b−x|. Hence any crossing pair can be swapped into an order-preserving pair without increasing the cost; removing inversions repeatedly yields the sorted pairing.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

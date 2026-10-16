@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-13",
+  "packageChecksum": "e0f664ce92df441856f35f62478aeda13c5f6a07301af71f329329e212c356b5",
+  "sourceContentHash": "ef22ce0ade39ea36dd83a4addca4c6d47d37a83cbddd7d23ff3cb844b89fb717",
+  "editorialSha256": "7a45e9b6710bda80d74ca449f7654403af20169dde7a3d4389035be7c937d87f",
+  "hints": {
+    "zh": [
+      "每一行的内容由贪心决定：在不拆开条目的前提下尽量多放，条目之间放一个空格。确定了每行的文字之后，剩余空格按对齐方式补到右侧或左侧，再加上边框即可。",
+      "逐段处理，维护当前行的字符串；尝试把下一个条目接上（中间加一个空格），超出宽度就先输出当前行，再用这个条目开新行。注意条目本身可能含空格，必须整行读取。",
+      "按行读入；第一行得到 width 和段数；每段先读对齐标记和条目数，再逐行读条目；当前行为空时候选串就是条目，否则是当前行加空格加条目；候选长度超过 width 就输出当前行并以条目开新行，否则接受候选；段末输出当前行；输出时左对齐在右边补空格、右对齐在左边补空格，两侧加星号，首尾各加一行 width+2 个星号。"
+    ],
+    "en": [
+      "Each line's content is decided greedily: fit as many whole entries as possible, with one space between entries. Once a line's text is fixed, pad the leftover width on the right or on the left according to the alignment, then add the border.",
+      "Process paragraph by paragraph and keep the current line as a string. Try appending the next entry with one space; if that exceeds the width, output the current line first and start a new line with this entry. Entries may contain spaces, so read them as whole lines.",
+      "Read the input line by line. The first line gives width and the number of paragraphs. For each paragraph read the alignment tag and entry count, then the entries one per line. The candidate is the entry itself when the current line is empty, otherwise current line + space + entry. If the candidate is longer than width, output the current line and start over with the entry; otherwise accept the candidate. Output the current line at the end of the paragraph. LEFT pads spaces on the right, RIGHT pads on the left, each content line gets a star at both ends, and a line of width + 2 stars goes at the top and bottom."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the current line string paragraph by paragraph; when the next entry does not fit, output the current line and start a new one. Pad spaces on one side according to the tag and add the border.\n\n## Correctness\n\nA line break happens only when adding the next entry would exceed the width, so the lines are exactly the required greedy split; the original order of characters in every line is unchanged, and all missing spaces go to the specified side, giving the unique layout.\n\n## Complexity\n\nTime O(number of input and output characters), space O(number of input and output characters)."
+}

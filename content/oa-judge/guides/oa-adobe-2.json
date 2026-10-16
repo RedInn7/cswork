@@ -1,0 +1,19 @@
+{
+  "id": "oa-adobe-2",
+  "packageChecksum": "5d97a4b8abbb5ee0216090e59f8832d6cd62562fd6ae8f274fc6e4c0cc5b5414",
+  "sourceContentHash": "1c5826687c0f21f25953cda7010c534f19884f1757c80354eb56cc0fab8e206b",
+  "editorialSha256": "9a07b50c3ba4762c81d8c0c37d76a7f1df596898b789b3bf0b4a10ccde21cbc3",
+  "hints": {
+    "zh": [
+      "分数只在 0 到 100 之间，名次只取决于严格更高分的人数，同分的人名次相同、要么一起升级要么一起不升级。",
+      "用 101 个桶统计每个分数的人数，从高分往低分扫，扫到某个分数时，之前累计的人数就是严格高于它的人数。",
+      "建立 buckets[0..100]；从 100 递减到 1（0 分永远不升级），若已累计人数加 1 不超过 k，就把该分数桶的人数计入答案；然后把该桶人数加入累计；k≤0 时自然无人升级；输出答案。"
+    ],
+    "en": [
+      "Scores only range from 0 to 100, and a rank depends only on how many players have a strictly higher score; players with equal scores share a rank and are promoted or not together.",
+      "Count players per score in 101 buckets and sweep from high scores to low; when you reach a score, the count accumulated so far is exactly the number of players strictly above it.",
+      "Fill buckets[0..100]; go from 100 down to 1 (score 0 is never promoted); if the accumulated count plus 1 is at most k, add that bucket's size to the answer; then add the bucket to the accumulated count; when k <= 0 nobody is promoted automatically; print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse 101 score buckets and sweep from high to low, keeping the number of players seen so far; the rank of the current non-zero score is that count plus 1.\n\n## Proof of correctness\n\nThe players strictly above the current score are exactly those in the buckets already accumulated, so the rank is exact. All players in one bucket are promoted or not together, and score 0 is excluded separately, so the count matches all the conditions exactly.\n\n## Complexity\n\nO(n + 101) time and O(101) extra space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-the-d-e-shaw-group-9",
+  "packageChecksum": "15ce7e7ab82af73a372a158db33c216fc27e3ffa8ffe19fceede9735d5813a1e",
+  "sourceContentHash": "bd03c821dee1b45225d7a37409225acbe0e25bf3572c8ec1126572dc8502d2b9",
+  "editorialSha256": "6f5098ab3214bfa3035085c97875fba0acb3dc23451036f905c37c8b81da2f41",
+  "hints": {
+    "zh": [
+      "一个空地的费用是它到最近警局的距离；要买 capacity 块费用最小的地，就是要按距离从小到大挑出最近的若干个非警局整数坐标。",
+      "把所有警局看成多个源点，在数轴上做多源最短路：每个警局左右相邻的格子距离为 1，从一个格子向两侧扩展时距离加一。用最小堆总是先取出距离最小的格子。",
+      "把每个警局的 s−1、s+1 以距离 1 入堆，警局坐标放进已占用集合；循环弹出堆顶 (d,pos)：若 pos 已占用（是警局或已买）就跳过，否则买下它、答案加 d、计数加一，并把 pos−1、pos+1 以 d+1 入堆，直到买满 capacity 块。坐标用 64 位整数。"
+    ],
+    "en": [
+      "The cost of an empty plot is its distance to the nearest police station; buying capacity plots of least total cost means picking the nearest non-station integer coordinates in increasing order of distance.",
+      "Treat all stations as sources and run a multi-source shortest path on the number line: each station's neighbouring cells have distance 1, and expanding from a cell to either side adds one. A min-heap always yields the cell with the smallest distance first.",
+      "Push s - 1 and s + 1 of every station with distance 1 and put the station coordinates into an occupied set. Repeatedly pop (d, pos): if pos is occupied (a station or already bought), skip it; otherwise buy it, add d to the answer, count it, and push pos - 1 and pos + 1 with distance d + 1, until capacity plots are bought. Use 64-bit integers for coordinates."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStart from the integer coordinates immediately left and right of every police station and push them into a min-heap with distance 1. Each time, pop the nearest coordinate that is neither a police station nor already bought, add its cost to the answer, and push its left and right neighbours with distance `d+1`. A set deduplicates bought coordinates. The min-heap guarantees plots are chosen in increasing order of distance until capacity plots are chosen.\n\n## Correctness\n\nThe two neighbouring coordinates of each police station have distance 1 and serve as search sources. For any non-station integer coordinate, move cell by cell along the number line from its nearest police station toward it; if another police station lies in between, that station has also been expanded as a source with its neighbouring coordinates. So the coordinate is generated from a closer, unblocked coordinate, and when it is first popped by distance, that distance is its distance to the nearest police station. The min-heap always chooses the smallest cost among all currently reachable plots not yet bought, so repeating this capacity times selects exactly the capacity distinct legal coordinates of least cost.\n\n## Complexity\n\nLet n be the number of police stations and k the number of plots bought. Initially 2n positions are pushed, and each purchase pushes at most two neighbours; each valid coordinate is bought only once, so the total number of heap operations is O(n + k), with O((n + k) log(n + k)) time and O(n + k) space. This site has k <= 50000, and the worst-case answer is 625025000, which fits in an int."
+}

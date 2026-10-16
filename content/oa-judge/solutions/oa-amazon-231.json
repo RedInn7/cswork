@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-231",
+  "packageChecksum": "1545fefe9e320c338a2ea42d051bca9e5a4de5cd008c85e66ce074fc9b465059",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    // Each prefix operation changes exactly one difference a[i] - a[i+1] (or the last value) by 1.\n    long long answer = llabs(a[n - 1]);\n    for (int i = 0; i + 1 < n; i++) answer += llabs(a[i] - a[i + 1]);\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "251fd9d17766a4e72d6077161b71d54f3e9504553389c031743eef819c47fb1a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Each prefix operation changes exactly one difference a[i] - a[i+1] (or the last value) by 1.\n        long answer = Math.abs(a[n - 1]);\n        for (int i = 0; i + 1 < n; i++) answer += Math.abs(a[i] - a[i + 1]);\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "1c2655930aafafd44b4ed6c40f38a17336eef14ff37ce0c045880ddb1f946652"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tabs := func(x int64) int64 {\n\t\tif x < 0 {\n\t\t\treturn -x\n\t\t}\n\t\treturn x\n\t}\n\t// Each prefix operation changes exactly one difference a[i] - a[i+1] (or the last value) by 1.\n\tanswer := abs(a[n-1])\n\tfor i := 0; i+1 < n; i++ {\n\t\tanswer += abs(a[i] - a[i+1])\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "40133e3026b6e08b3dbf05e3487c6e59d702050d3bfe348af7f678f7b7569111"
+    }
+  ]
+}

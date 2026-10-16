@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-49",
+  "packageChecksum": "81c7bb6e426dcac14cdef51c69d6d088e5956926ff54ad190c1516cf82f3d099",
+  "sourceContentHash": "f78ac9f02134127bb9bc616f6ab44d43feeb9a7f56a77020775ca6df915e17c5",
+  "editorialSha256": "ab56d59c2abe776d343ece8f6cdb9310810aec88c4e34790e9ef1ada9e73b107",
+  "hints": {
+    "zh": [
+      "需要同时满足的约束有三类：a和b都在[lo,hi]内、a<b、a XOR b≤k，并且要让异或值最大。这些约束都可以按二进制位从高到低逐位比较，适合数位DP。",
+      "从最高位往低位同时决定a和b的当前位，状态记录六个标志：a是否仍贴着lo、是否仍贴着hi，b的同样两个标志，a是否已经确定小于b，以及异或值是否仍贴着k。每一位只需枚举a、b各取0或1的四种组合。",
+      "定义一个函数，输入当前位和六个标志，返回剩余低位能得到的最大异或值，不可行时返回−1：贴边的标志限制当前位可选的比特，异或贴着k时当前异或位不能超过k的对应位；处理完所有位后只有a<b已经成立才算可行。对状态记忆化，从max(hi,k)的最高位开始调用，结果为−1就输出−1。"
+    ],
+    "en": [
+      "Three kinds of constraints must hold together: both a and b lie in [lo,hi], a<b, and a XOR b≤k, while the XOR is maximized. All of them are comparisons made bit by bit from the highest bit down, which suits a digit DP.",
+      "Decide the current bit of a and b together from the highest bit to the lowest, with six flags in the state: whether a is still tight against lo and against hi, the same two flags for b, whether a is already known to be smaller than b, and whether the XOR is still tight against k. Each bit only needs the four combinations of a and b being 0 or 1.",
+      "Define a function of the current bit and the six flags that returns the largest XOR obtainable from the remaining low bits, or −1 if infeasible: tight flags restrict which bits are allowed, and while the XOR is tight against k the current XOR bit may not exceed k's bit; after the last bit, a state is feasible only if a<b already holds. Memoize the states, start from the highest bit of max(hi,k), and print −1 if the result is −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a two-number digit DP from the high bit to the low bit, tracking whether each number is still tight against its lower and upper bounds, whether a is already less than b, and whether the XOR is still tight against k, and enumerate the current pair of bits.\n\n## Proof of correctness\n\nEach constraint depends only on how the already fixed prefix compares with the bounds, so the state keeps all information needed later. Every bit enumerates all legal bit combinations, and leaves accept only strictly a<b, so exactly the feasible pairs are covered; taking the maximum XOR gives the optimum, and if no path is accepted the answer is -1.\n\n## Complexity\n\nTime O(2^6·4·log(max(hi,k))), space O(2^6·log(max(hi,k)))."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-2",
+  "packageChecksum": "2387fce6ddedf0c60e9e33c7b6c1b360ea824dbcdf7681c5d280c29ec9f6ff25",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<int> a(n);\n    for (auto &x : a) scanf(\"%d\", &x);\n    int i = 0, answer = 0;\n    // Take the earliest zero-sum triplet, then skip its three positions.\n    while (i + 2 < n) {\n        if (a[i] + a[i + 1] + a[i + 2] == 0) { answer++; i += 3; }\n        else i++;\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "350da7e1bca0e71eb217e485a01eebfde33ec094e1776a3e58da3eaadef87811"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        int i = 0, answer = 0;\n        // Take the earliest zero-sum triplet, then skip its three positions.\n        while (i + 2 < n) {\n            if (a[i] + a[i + 1] + a[i + 2] == 0) { answer++; i += 3; }\n            else i++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "b47e826355b468127b5a950b316a0ae500602d696bdf876705e217963abbf141"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n int\n\tfmt.Scan(&n)\n\ta := make([]int, n)\n\tfor i := range a {\n\t\tfmt.Scan(&a[i])\n\t}\n\ti, answer := 0, 0\n\t// Take the earliest zero-sum triplet, then skip its three positions.\n\tfor i+2 < n {\n\t\tif a[i]+a[i+1]+a[i+2] == 0 {\n\t\t\tanswer++\n\t\t\ti += 3\n\t\t} else {\n\t\t\ti++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "ca83a586c9b1d7375058cb8f50e3b0972c85ae3a94c8008fc492acc67dd7b48d"
+    }
+  ]
+}

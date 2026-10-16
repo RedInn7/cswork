@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-3",
+  "packageChecksum": "8ccb7edef66d125e4c99e050bd5e32305343919ba06f0aea48de647fa0feba95",
+  "sourceContentHash": "a30c37de2da847ec96a2232b679f22919247c701127362aed45cabc39471f3c2",
+  "editorialSha256": "5bb63f033dc4814de526e31241304f2d6c3aae5a40a1aa2a362d9274d2b36d7b",
+  "hints": {
+    "zh": [
+      "|行差|+|列差|<r 的菱形，按行切开看：与中心行差为 dr 的那一行，被覆盖的是一段连续的列区间，列差不超过 r−1−|dr|。",
+      "所以先对每一行做前缀和，一行的连续区间和就能 O(1) 求出；再枚举每个能放下完整菱形的中心，按行累加 2r−1 段区间和。",
+      "完整菱形要求中心行在 [r−1, rows−r]、中心列在 [r−1, cols−r] 之间；若这两个范围有一个为空就输出 0。对每个中心枚举 dr 从 −(r−1) 到 r−1，取 span=r−1−|dr|，加上该行 [cc−span, cc+span] 的区间和，取所有中心的最大值。和可达约 4×10^10，用 64 位整数。时间 O(rows·cols·r)。"
+    ],
+    "en": [
+      "Slice the rhombus |row difference| + |column difference| < r by rows: in the row at offset dr from the center, the covered cells form one contiguous column range with column offset at most r - 1 - |dr|.",
+      "So build prefix sums for each row, which gives any contiguous range sum in a row in O(1); then enumerate every center that can hold a complete rhombus and add up its 2r - 1 row ranges.",
+      "A complete rhombus needs the center row in [r - 1, rows - r] and the center column in [r - 1, cols - r]; if either range is empty, output 0. For each center, loop dr from -(r - 1) to r - 1, let span = r - 1 - |dr| and add that row's range sum over [cc - span, cc + span]; take the maximum over all centers. Sums can reach about 4 * 10^10, so use 64-bit integers. Time O(rows * cols * r)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFix each center and enumerate the rows the rhombus covers by row offset dr; that row can include column offsets up to radius-1-|dr|. Clip the range to the matrix bounds and add it up. Scan all centers and take the maximum. If the radius footprint cannot fit around any center, return 0 as this site explicitly specifies.\n\n## Correctness\n\nThe distance defined by the original problem is the Manhattan distance plus one, so the inclusion condition is equivalent to |dr|+|dc|<radius. For a fixed dr, all columns satisfying the condition form exactly the contiguous range |dc| <= radius-1-|dr|; summing row by row covers the rhombus cells and only those. Going through all centers gives the sums of all allowed regions, and the maximum is taken.\n\n## Complexity\n\nFor an R x C matrix and radius K: time O(RCK), space O(RC)."
+}

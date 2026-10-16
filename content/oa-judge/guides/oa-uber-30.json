@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-30",
+  "packageChecksum": "266220caf7bb093506c04ff933b75b017e840001017222ac60bd6569429797cf",
+  "sourceContentHash": "72a1c7a52b98e878fdeda4f25f0d352dbf3e6348d583ad7c1a65252856b2bcda",
+  "editorialSha256": "49547a86586b4bbe62d1d444ebbcfc9e63f5ebd82c17865ff4741014efc4ce92",
+  "hints": {
+    "zh": [
+      "数组 a 很短（至多 100 个）而且从不改变；固定 a 中的一个下标后，满足条件的 b 下标恰好是值等于 target 减去该数的那些位置，所以只需要知道 b 中每个值出现了多少次。",
+      "用哈希表维护 b 的值频次。更新时先把旧值的次数减一，再把新值的次数加一；查询时枚举 a 的每个数，累加 b 中补数的出现次数。",
+      "读入 a 和 b 并统计 b 的频次；对每个操作：若是更新，把 b[i] 旧值的频次减 1，令 b[i] 加上 x，再把新值频次加 1；若是查询，对 a 中每个数 v 累加频次表中 target−v 的次数并输出一行；没有查询时输出一个空行。"
+    ],
+    "en": [
+      "Array a is tiny (at most 100 elements) and never changes. For a fixed index of a, the valid indices of b are exactly those whose value equals target minus that number, so you only need how many times each value occurs in b.",
+      "Keep a hash map of value frequencies for b. On an update, decrease the count of the old value and increase the count of the new value. On a query, go over every number in a and add the frequency of its complement in b.",
+      "Read a and b and build the frequency map of b. For an update, decrease the count of the old b[i], add x to b[i], and increase the count of the new value. For a query, add up the count of target - v over every v in a and print it on its own line. If there are no queries, print an empty line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the frequencies of b. An update first decreases the old value's frequency and then increases the new value's; a query enumerates every number in a and adds up how many times target minus that number appears in b.\n\n## Correctness\n\nFor a fixed index of a, all complement indices in b are exactly the valid partners. Different indices of a give different pairs, so summing the frequencies is exact; before and after each update the frequencies stay consistent with the array.\n\n## Complexity\n\nTime O(nb+q·na), space O(nb+q+na), where storing the queries belongs to input parsing."
+}

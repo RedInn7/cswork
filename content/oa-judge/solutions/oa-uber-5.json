@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-5",
+  "packageChecksum": "9bcd5678ce365da00cb1ff7e51d02bb2e89c881b0dcff5511625bdeec6f2c99d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, rate;\n    string s;\n    cin >> n >> rate >> s;\n    long long a = count(s.begin(), s.end(), 'A'), p = count(s.begin(), s.end(), 'P');\n    // Each conversion is one cycle and creates one A that later costs another cycle.\n    cout << a + 2 * (p / rate) << \"\\n\";\n}\n",
+      "sha256": "c7dc075291e1db67a8a7b16b825f575cdb1742f88a69d4bbadcb5d55e50d1548"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        nextInt();\n        int rate = nextInt();\n        String s = next();\n        long a = 0, p = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (s.charAt(i) == 'A') a++;\n            else if (s.charAt(i) == 'P') p++;\n        }\n        // Each conversion is one cycle and creates one A that later costs another cycle.\n        System.out.println(a + 2 * (p / rate));\n    }\n}\n",
+      "sha256": "c85aec04cd86046b94d16af79881244584e284c523c47cadc9c540e303a3a5a8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\treadInt()\n\trate := readInt()\n\ts := readToken()\n\ta, p := strings.Count(s, \"A\"), strings.Count(s, \"P\")\n\t// Each conversion is one cycle and creates one A that later costs another cycle.\n\tfmt.Println(a + 2*(p/rate))\n}\n",
+      "sha256": "916b577786493a765a09a32fdf981d00551268f5acebdc7c95bb30322bf41545"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-359",
+  "packageChecksum": "066b2935e2b4db4187aaca2597e8dfb5f5ae2fa9e7e7cc6c61c662e1149fb07c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string raw((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    // The JSON holds only [new, old] pairs of lowercase strings: collect the quoted strings in order.\n    vector<string> strs;\n    for (size_t p = 0; p < raw.size(); p++) {\n        if (raw[p] != '\"') continue;\n        size_t q = raw.find('\"', p + 1);\n        strs.push_back(raw.substr(p + 1, q - p - 1));\n        p = q;\n    }\n    string out;\n    for (size_t i = 0; i + 1 < strs.size(); i += 2) {\n        const string &nw = strs[i], &old = strs[i + 1];\n        size_t j = 0;\n        // Greedy: match old[j] at the earliest position equal to it or to its cyclic predecessor.\n        for (char c : nw) {\n            char next = c == 'z' ? 'a' : c + 1;\n            if (j < old.size() && (c == old[j] || next == old[j])) j++;\n        }\n        out += j == old.size() ? \"YES\\n\" : \"NO\\n\";\n    }\n    cout << out;\n}\n",
+      "sha256": "b24bf8456523cfdb58d089d45cb663f779ffdc006d5da5735e99c7e2ea470634"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String raw = new String(System.in.readAllBytes(), \"UTF-8\");\n        // The JSON holds only [new, old] pairs of lowercase strings: collect the quoted strings in order.\n        List<String> strs = new ArrayList<>();\n        for (int p = 0; p < raw.length(); p++) {\n            if (raw.charAt(p) != '\"') continue;\n            int q = raw.indexOf('\"', p + 1);\n            strs.add(raw.substring(p + 1, q));\n            p = q;\n        }\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i + 1 < strs.size(); i += 2) {\n            String nw = strs.get(i), old = strs.get(i + 1);\n            int j = 0;\n            // Greedy: match old[j] at the earliest position equal to it or to its cyclic predecessor.\n            for (int t = 0; t < nw.length(); t++) {\n                char c = nw.charAt(t), next = c == 'z' ? 'a' : (char) (c + 1);\n                if (j < old.length() && (c == old.charAt(j) || next == old.charAt(j))) j++;\n            }\n            out.append(j == old.length() ? \"YES\\n\" : \"NO\\n\");\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "fa9028a3c1e43b364c8fff5483ecc25ef1333cc63816ba6505a2847cad3284ee"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\t// The JSON holds only [new, old] pairs of lowercase strings: collect the quoted strings in order.\n\tparts := strings.Split(string(raw), \"\\\"\")\n\tvar strs []string\n\tfor i := 1; i < len(parts); i += 2 {\n\t\tstrs = append(strs, parts[i])\n\t}\n\tvar out strings.Builder\n\tfor i := 0; i+1 < len(strs); i += 2 {\n\t\tnw, old := strs[i], strs[i+1]\n\t\tj := 0\n\t\t// Greedy: match old[j] at the earliest position equal to it or to its cyclic predecessor.\n\t\tfor t := 0; t < len(nw); t++ {\n\t\t\tc := nw[t]\n\t\t\tnext := c + 1\n\t\t\tif c == 'z' {\n\t\t\t\tnext = 'a'\n\t\t\t}\n\t\t\tif j < len(old) && (c == old[j] || next == old[j]) {\n\t\t\t\tj++\n\t\t\t}\n\t\t}\n\t\tif j == len(old) {\n\t\t\tout.WriteString(\"YES\\n\")\n\t\t} else {\n\t\t\tout.WriteString(\"NO\\n\")\n\t\t}\n\t}\n\tos.Stdout.WriteString(out.String())\n}\n",
+      "sha256": "20fb7950f8e2a08eb87ae2fa82fc5bbb9f74e4bcd5f75300dd824a90774b615d"
+    }
+  ]
+}

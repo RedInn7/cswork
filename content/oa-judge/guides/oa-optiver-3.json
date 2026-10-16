@@ -1,0 +1,19 @@
+{
+  "id": "oa-optiver-3",
+  "packageChecksum": "4e831ada1898adbe423ae530801e002f01ca9dab32b9ebfb093513c407fec9b1",
+  "sourceContentHash": "b3eda53e3279ee861de861d9a0d89385906d70163d8f87d0d84508d2e6bdf0e1",
+  "editorialSha256": "f558ccbab145be0d7a549b6437cdb989480713a2a1810040dfd2cc1d52982b8a",
+  "hints": {
+    "zh": [
+      "两个日期之差等于它们各自到同一个固定起点的天数之差，所以只要能把一个日期换算成从公元 1 年 1 月 1 日起经过的天数即可。",
+      "某个日期之前的天数由三部分组成：之前完整年份的天数（365 乘年数再加闰年个数，闰年个数用 4 年一闰、100 年不闰、400 年再闰的容斥公式算）、当年之前完整月份的天数、以及当月的日数减 1。",
+      "写一个函数：令 p = 年份-1，天数 = 365p + p/4 - p/100 + p/400，加上月份前缀表的值，若月份大于 2 且当年是闰年再加 1，最后加上日减 1。对两个日期各算一次，用第二个减第一个输出。本站年份不超过 9999，结果在 32 位范围内。"
+    ],
+    "en": [
+      "The difference between two dates equals the difference of their day counts from a common fixed origin, so it suffices to convert a date into the number of days elapsed since January 1 of year 1.",
+      "The days before a date have three parts: the days of all earlier full years (365 times the number of years plus the number of leap years, counted with the inclusion-exclusion rule every 4 years, not every 100, again every 400), the days of the earlier full months of the current year, and the day of the month minus 1.",
+      "Write a function: with p = year-1, days = 365p + p/4 - p/100 + p/400, plus the month prefix table entry, plus 1 if the month is after February in a leap year, plus day-1. Compute it for both dates and print the second minus the first. Years here are at most 9999, so the result fits in 32 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDefine a date's ordinal as the number of days elapsed before that date. The number of leap years before year y is floor((y-1)/4)-floor((y-1)/100)+floor((y-1)/400); add the total days of the common years, the full months before this one in the current year, and day-1. The answer is the second ordinal minus the first.\n\n## Proof of correctness\n\nThere are y-1 complete years before Gregorian year y, and the number of leap years among them is given exactly by the inclusion-exclusion formula: a leap year every 4 years, none every 100, and again every 400. The month prefix table, plus the extra day after February in a leap year, plus day-1, gives the exact number of days elapsed since January 1 of year 1. The difference of the two ordinals is the number of elapsed days; the problem guarantees the order, so no absolute value is needed.\n\n## Complexity\n\nTime O(1), space O(1). Within this site's year range the answer is at most 3,652,058, which is safe in int32."
+}

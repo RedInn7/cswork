@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-214",
+  "packageChecksum": "536ef096428574447eb1faf0fc2af6128d34b30e5f558a9cc56dd1cb0633948c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long answer = 0;\n    // Fix the right end, take it full, then go left taking min(capacity, previous - 1).\n    for (int right = 0; right < n; right++) {\n        long long limit = a[right] + 1, total = 0;\n        for (int left = right; left >= 0; left--) {\n            limit = min(a[left], limit - 1);\n            if (limit <= 0) break;\n            total += limit;\n        }\n        answer = max(answer, total);\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "a325aaa9a393a5072db7b7761e1c7d6225ca670021967419659b4fc0da7fbec5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long answer = 0;\n        // Fix the right end, take it full, then go left taking min(capacity, previous - 1).\n        for (int right = 0; right < n; right++) {\n            long limit = a[right] + 1, total = 0;\n            for (int left = right; left >= 0; left--) {\n                limit = Math.min(a[left], limit - 1);\n                if (limit <= 0) break;\n                total += limit;\n            }\n            answer = Math.max(answer, total);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "b1b1227818408c7037b2b01145adbf275a4af5de9f54ab1dcf3fd224f653ec80"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tvar answer int64\n\t// Fix the right end, take it full, then go left taking min(capacity, previous - 1).\n\tfor right := 0; right < n; right++ {\n\t\tlimit, total := a[right]+1, int64(0)\n\t\tfor left := right; left >= 0; left-- {\n\t\t\tlimit = min(a[left], limit-1)\n\t\t\tif limit <= 0 {\n\t\t\t\tbreak\n\t\t\t}\n\t\t\ttotal += limit\n\t\t}\n\t\tanswer = max(answer, total)\n\t}\n\tfmt.Println(answer)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "2b88d42843e47828630365c86b215676b642779360fb5440d1d0aef2f838dcd5"
+    }
+  ]
+}

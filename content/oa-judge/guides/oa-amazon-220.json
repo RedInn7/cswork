@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-220",
+  "packageChecksum": "1574c6867d70191962bb20730d4bd473c0145adc19cb26a6f54454a43251e20b",
+  "sourceContentHash": "faceb0f5cbe591c5c800860806574cf3a8d80feaf4670e68cda05c517b670d87",
+  "editorialSha256": "629aa040f113f7a2a031ef8152b126c0dbc1efea13862c954be54570d689ab1b",
+  "hints": {
+    "zh": [
+      "一盏灯能保持亮着，当且仅当它的亮度不小于前面仍亮的灯的亮度之和；被关掉的灯不再计入，所以要牺牲的灯可以全部放到最后。",
+      "被保留的灯（0 除外）亮度一定非降，因为每一盏都至少等于之前所有保留灯之和。按亮度从小到大考虑，能保留就保留，可以让累计和尽量小，对后面最有利。",
+      "升序排序；total=0、kept=0；对每个 v：若 v≥total，则 total+=v、kept 加 1；输出 n−kept（total 用 64 位）。"
+    ],
+    "en": [
+      "A bulb stays on exactly when its brightness is at least the sum of the bulbs still on before it; bulbs turned off no longer count, so every bulb you give up can be moved to the end.",
+      "The kept bulbs (apart from zeros) must be non-decreasing, since each is at least the sum of all kept bulbs before it. Going from small to large and keeping a bulb whenever possible keeps the running sum as small as possible, which helps every later choice.",
+      "Sort ascending; total = 0, kept = 0; for each v: if v >= total, total += v and kept += 1; print n - kept (use 64-bit for total)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the brightness values ascending and keep the sum of the kept bulbs; when v >= sum, keep the bulb, otherwise move it to the end of the final arrangement.\n\n## Proof of correctness\n\nIn any sequence of kept bulbs, the positive brightness values must be non-decreasing, because each later one is at least the sum of all earlier ones; zeros can be moved forward. Among the ascending candidates, greedily taking the smallest usable next bulb makes the running sum as small as possible for every number of chosen bulbs, which is the most favourable for continuing to choose. By induction this keeps the maximum number of bulbs, and placing the discarded bulbs at the end does not affect them.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-17",
+  "packageChecksum": "c06537874b9ebb3e8f4d8102ba6063ad7786092f04715f972b44c55481352989",
+  "sourceContentHash": "ddb04649d6e9821fc9fafa6da027da69c2bec65f2a42afb42c41378db4d60bf1",
+  "editorialSha256": "915f31e00a1cb66094b5f38eaba49031e61fd0bf348aa390b2aa4f1ae639c546",
+  "hints": {
+    "zh": [
+      "技能不在[minLevel,maxLevel]内的玩家永远不能入队，可以直接忽略；剩下m名合格玩家中，任意至少minPlayers人的子集都是一个合法团队。",
+      "答案就是k从minPlayers到m的组合数C(m,k)之和。题目不取模，结果可能有几千位，需要任意精度整数。",
+      "先数出m；令C=1（即C(m,0)），k从0递增到m：若k≥minPlayers就把C加入答案，然后用C←C·(m−k)/(k+1)得到C(m,k+1)，这一步的除法总是整除。最后输出这个大整数。"
+    ],
+    "en": [
+      "Players whose skill is outside [minLevel,maxLevel] can never join, so ignore them; among the remaining m qualified players, every subset of at least minPlayers people is a valid team.",
+      "The answer is the sum of the binomial coefficients C(m,k) for k from minPlayers to m. No modulo is taken and the result can have thousands of digits, so arbitrary-precision integers are needed.",
+      "Count m first; set C=1 (that is C(m,0)) and let k go from 0 to m: if k≥minPlayers add C to the answer, then update C to C·(m−k)/(k+1) to get C(m,k+1); this division is always exact. Finally print the big integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the number m of qualified players, then compute the binomial coefficients C(m,k) iteratively and sum those with k≥minPlayers. Use arbitrary-precision integers.\n\n## Proof of correctness\n\nA valid team is exactly a subset of the qualified indices; there are C(m,k) subsets of size k, and different sizes are mutually exclusive. The binomial recurrence always divides exactly, so the sum is the answer.\n\n## Complexity\n\nO(n+m) integer operations on integers of at most O(m) bits; space O(m) bits."
+}

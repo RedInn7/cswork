@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-73",
+  "packageChecksum": "88f72d2ac32926cbf22fda8d13146674aa134571204a4e27d4aebdadd0f04930",
+  "sourceContentHash": "e6d384ad84b2f01d300c905de563e1546a30fc6f457b93bc6bacc17b52202cfe",
+  "editorialSha256": "78363c4ee48a6bfb6dba43b65ddaaee046d6e198db32a9f995de0006ba60763a",
+  "hints": {
+    "zh": [
+      "候选人 c 和用户 i 的共同好友数，就是从 i 出发经过一个好友再到 c 的两步路径条数。每人最多 15 个好友，两步路径非常少。",
+      "对每个用户枚举“好友的好友”，跳过自己和已有好友，统计每个候选出现的次数；没出现的候选共同好友数都是 0。",
+      "如果有正计数，取次数最多、编号最小的候选；否则从编号 1 开始找第一个既不是自己也不是好友的用户，找不到输出 −1。用全局计数数组加“本轮修改过的下标列表”来清零，避免每次 O(n) 重置。"
+    ],
+    "en": [
+      "The number of mutual friends between user i and a candidate c is the number of two-step paths i → friend → c. With at most 15 friends per user there are very few such paths.",
+      "For each user enumerate friends of friends, skip the user and existing friends, and count how often each candidate appears; every candidate that never appears has 0 mutual friends.",
+      "If some count is positive, take the candidate with the largest count and then the smallest id; otherwise find the smallest id that is neither the user nor a friend, or output −1 if none exists. Use one global count array plus a list of touched indices to reset it, instead of clearing O(n) each time."
+    ]
+  },
+  "explanationEn": "## Idea\n\nFor each person, walk over the friends of their friends and count every candidate that is not a friend; if some count is positive, take the best by count and then by id. If no count is positive, it is enough to find the smallest id that is neither the person nor a friend.\n\n## Correctness\n\nEach mutual friend between a candidate and the current user corresponds to one two-step path, so the enumeration counts exactly. Candidates that never appear have 0 and cannot beat a positive count; if all counts are 0, the valid candidate with the smallest id is the answer.\n\n## Complexity\n\nO(n+Σ degree²) time, bounded by O(n+30m); O(n+m) space, with at most 225 local counts."
+}

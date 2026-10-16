@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-3",
+  "packageChecksum": "a94de6d5d271f68c79066a06c846ba86f6e50df50a658fce47f33cff98a18981",
+  "sourceContentHash": "988f67f2448c75c9c95468553c7bc7684c5e32188705f86ca8855ee71527d3a2",
+  "editorialSha256": "bb27544cfdc330a7b64d2b58bcf1317a890fb7c42d413def943c1349792d9c52",
+  "hints": {
+    "zh": [
+      "长度为 5 的回文一定形如 a b c b a，而字符只有 0 和 1，所以只有 8 种可能的回文模式。",
+      "对每种固定模式，统计它作为子序列在串中出现的下标组合数：dp[j] 表示已扫描部分中匹配模式前 j 位的方案数。8 种模式互不重叠，结果相加即可。",
+      "对每种模式令 dp = [1,0,0,0,0,0]，逐个字符从 j = 5 倒序到 1，若字符等于模式第 j 位就 dp[j] += dp[j−1]（倒序保证同一位置不被用两次），全部取模 1000000007；最后把 8 个 dp[5] 相加取模。"
+    ],
+    "en": [
+      "A palindrome of length 5 always has the form a b c b a, and with only the characters 0 and 1 there are just 8 possible patterns.",
+      "For each fixed pattern, count the index tuples where it occurs as a subsequence: dp[j] is the number of ways to match the first j characters of the pattern within the scanned prefix. The 8 patterns do not overlap, so add their counts.",
+      "For each pattern start with dp = [1,0,0,0,0,0]; for every character loop j from 5 down to 1 and, when the character equals the pattern's j-th symbol, add dp[j-1] to dp[j] (going downward keeps one position from being used twice), all modulo 1000000007. Finally sum the eight values of dp[5] modulo the same number."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA palindrome has the form abcba, giving 8 patterns in total. Count each fixed pattern with a subsequence DP updated in reverse order, then sum them.\n\n## Proof of correctness\n\nFor a fixed pattern, dp[j] is the number of index choices in the scanned prefix that match the first j characters of the pattern. When the character matches, dp[j] increases by dp[j-1], and updating in reverse order prevents the same position from being used twice. Every length-5 palindrome belongs to exactly one abcba pattern, so adding the 8 counts has neither duplicates nor omissions.\n\n## Complexity\n\nO(40n) time and O(1) extra space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-5",
+  "packageChecksum": "ec5314f3089eb60f3e9ec20f11680b88025147ccdf5d5bb09fd958d1d5b640d3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string s;\n    cin >> s;\n    // Latest index of each vowel and of the latest non-vowel.\n    long long last[5] = {-1, -1, -1, -1, -1};\n    long long bad = -1, answer = 0;\n    const string vowels = \"aeiou\";\n    for (long long i = 0; i < (long long)s.size(); i++) {\n        size_t p = vowels.find(s[i]);\n        if (p != string::npos) last[p] = i;\n        else bad = i;\n        long long lo = *min_element(last, last + 5);\n        answer += max(0LL, lo - bad);\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "823eeea0fd5efc88b8e9984eae78722b03fa3a837aef4b37a6daeb86f6523ada"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();\n        // Latest index of each vowel and of the latest non-vowel.\n        long[] last = {-1, -1, -1, -1, -1};\n        long bad = -1, answer = 0;\n        String vowels = \"aeiou\";\n        for (int i = 0; i < s.length(); i++) {\n            int p = vowels.indexOf(s.charAt(i));\n            if (p >= 0) last[p] = i;\n            else bad = i;\n            long lo = Math.min(Math.min(Math.min(last[0], last[1]), Math.min(last[2], last[3])), last[4]);\n            answer += Math.max(0, lo - bad);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "94a0f940577e8eae773a824b99715ea2b4586b0d8035987a92b8d00a1f45bea7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReaderSize(os.Stdin, 1<<20), &s)\n\t// Latest index of each vowel and of the latest non-vowel.\n\tlast := [5]int{-1, -1, -1, -1, -1}\n\tbad, answer := -1, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif p := strings.IndexByte(\"aeiou\", s[i]); p >= 0 {\n\t\t\tlast[p] = i\n\t\t} else {\n\t\t\tbad = i\n\t\t}\n\t\tlo := last[0]\n\t\tfor _, v := range last[1:] {\n\t\t\tlo = min(lo, v)\n\t\t}\n\t\tanswer += max(0, lo-bad)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "4ddfd9ccd3f9f56529c03871dff3e4e1845eebda8e6c3f2bb518b52ebf7d284d"
+    }
+  ]
+}

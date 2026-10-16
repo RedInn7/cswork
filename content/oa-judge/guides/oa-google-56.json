@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-56",
+  "packageChecksum": "c14ba62de5a7a892ca6ab735706f172250259c88386980005048cf7cf2b67e16",
+  "sourceContentHash": "b44446404ff98e6bf74fd5f10b0b0a052137ca8517023ae77b14aa159093ea8d",
+  "editorialSha256": "04fbbdb5a83527a593c83b839b9e07d6c26461eabc88fa2bdf1f723b313b9588",
+  "hints": {
+    "zh": [
+      "答案就是 N 与最近的二进制回文数之间的距离。固定位数后，回文数由前半部分唯一决定，而且数值随前半部分严格递增。",
+      "所以对每个位数，只需检查由 N 的高位前缀 p 以及 p−1、p+1 镜像得到的回文（限制在该位数的合法前缀范围内），再加上该位数最小和最大的回文，覆盖跨位数的情况。N<2³¹，位数枚举 1 到 31 即可。",
+      "best 初值为 N（0 本身是回文）；对 bits=1..31：half=⌈bits/2⌉，合法前缀范围 [2^(half−1), 2^half−1]，p=N 右移 ⌊bits/2⌋ 位；对候选前缀 {下界, 上界, clamp(p), clamp(p−1), clamp(p+1)}，把前缀拼上自身（奇数位时去掉最后一位）的反转得到回文，用 |回文−N| 更新 best；输出 best。"
+    ],
+    "en": [
+      "The answer is the distance from N to the nearest binary palindrome. For a fixed bit length, a palindrome is uniquely determined by its first half, and its value increases strictly with that half.",
+      "So for each length it is enough to check the palindromes mirrored from N's high prefix p and from p-1 and p+1 (clamped to that length's valid prefix range), plus the smallest and largest palindromes of that length to cover crossing a length boundary. N < 2^31, so lengths 1 to 31 suffice.",
+      "Start best at N (0 is itself a palindrome); for bits = 1..31: half = ceil(bits/2), the valid prefix range is [2^(half-1), 2^half - 1], and p = N shifted right by floor(bits/2); for each candidate prefix in {lower end, upper end, clamp(p), clamp(p-1), clamp(p+1)}, append the reverse of the prefix (dropping its last bit when bits is odd) to form the palindrome and update best with |palindrome - N|; print best."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate target binary palindromes by bit length. For a fixed length, the second half of the palindrome is the mirror of the first half. Let p be the high prefix of N; the nearest candidates of that length only require checking p and its neighbouring prefixes (clamped to the valid range for that length). Also check the smallest and largest palindromes of that length to cover crossing a length boundary. Enumerate candidates of 1 to 31 bits and take the smallest absolute difference from N.\n\n## Correctness\n\nFor a fixed length, valid binary palindromes correspond one-to-one to their first halves, and their values increase strictly with the first half. The best distance from a candidate palindrome to N only changes when the prefix crosses the prefix corresponding to N, so checking the neighbouring prefixes gives the nearest value within that length; both ends of the valid prefix range are also checked. N is at most 2 * 10^9, less than 2^31, so the nearest palindrome must have between 1 and 31 bits. Taking the minimum difference over all lengths gives the minimum number of increment/decrement operations.\n\n## Complexity\n\nAt most 31 lengths are enumerated and each checks a constant number of candidates; time O(log N), extra space O(1).\n\n## Sources and site conventions\n\nThe Python, Java and C++ implementations of the fixed OAMaster snapshot all add or subtract integers and check whether the standard binary representation is a palindrome; the original example N = 6 has answer 1. The snapshot constraint is 0 <= N <= 2 * 10^9. The input/output format is an addition by this site. Source: https://oamaster.com/docs/companies/google#56-minimum-operations-to-make-binary-palindromic"
+}

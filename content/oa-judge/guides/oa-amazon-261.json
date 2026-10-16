@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-261",
+  "packageChecksum": "0b0077a7c9c76b14bfc3da49dbc95be9dc2f5527261af725367cb36083fe37c9",
+  "sourceContentHash": "f70a39146b3171e919e6bd7adf8944a8d562680c636ce14f5abbd396c4ae7dc1",
+  "editorialSha256": "0b9b6e4636b1f84785b3fb522285a417597c003d39db74158edebb91d3f20ae2",
+  "hints": {
+    "zh": [
+      "一组的中位数需要组里还有一个不小于它的数；把各组中位数从大到小排，第 j 大的中位数至少需要 2j 个不小于它的元素。",
+      "所以第 j 个中位数不超过降序第 2j 个元素；用最大的若干个数两两配成（最大值, 中位数），再各配一个最小的数，就能同时取到这些上界。",
+      "降序排序后依次取第 2、4、…、2⌊n/3⌋ 个元素（0 基下标 1、3、5…），只累加正数，负收益的组不建；输出总和，用 64 位整数。"
+    ],
+    "en": [
+      "A group's median needs another member at least as large; listing the medians from largest to smallest, the j-th largest median needs at least 2j elements not smaller than it.",
+      "So the j-th median is at most the 2j-th element in descending order; pairing the largest numbers two by two as (maximum, median) and adding one of the smallest numbers to each group reaches all these bounds at once.",
+      "Sort in descending order and take the 2nd, 4th, ..., 2*floor(n/3)-th elements (0-based indices 1, 3, 5, ...), adding only the positive ones, since groups with negative gain are not built; output the sum using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort in descending order and examine the 2nd, 4th, … 2⌊n/3⌋-th items in turn, adding only the positive ones.\n\n## Proof of correctness\n\nWhen building q groups, ordered by median from largest to smallest, the j-th median needs at least 2j elements not smaller than it, so it does not exceed the 2j-th item in descending order. Using the largest 2q items in pairs as maximums and medians, and then matching them with the smallest q items, reaches all these upper bounds at once. Since q≤⌊n/3⌋ and the candidate medians are non-increasing, adding only the positive contributions is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

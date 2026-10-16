@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-3",
+  "packageChecksum": "edf2b307d28f7d786c94b5c4515d345ef96582b41bb08f0d03c4a9b8c5e03878",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int remaining[26] = {0};\n    for (char c : s) remaining[c - 'A']++;\n    // letters with odd frequency keep exactly one copy; the rest vanish\n    bool required[26], used[26] = {false};\n    for (int c = 0; c < 26; c++) required[c] = remaining[c] % 2;\n    string stack;\n    for (char ch : s) {\n        int c = ch - 'A';\n        remaining[c]--;\n        if (!required[c] || used[c]) continue;\n        // pop larger letters that still appear later\n        while (!stack.empty() && stack.back() > ch && remaining[stack.back() - 'A'] > 0) {\n            used[stack.back() - 'A'] = false;\n            stack.pop_back();\n        }\n        stack.push_back(ch);\n        used[c] = true;\n    }\n    cout << stack << \"\\n\";\n}\n",
+      "sha256": "42dc11d0ece37850bc950cd4c0223fca1b684d5b28f49c9cb83bc18fb984bee4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String s = next();\n        int[] remaining = new int[26];\n        for (int i = 0; i < s.length(); i++) remaining[s.charAt(i) - 'A']++;\n        // letters with odd frequency keep exactly one copy; the rest vanish\n        boolean[] required = new boolean[26], used = new boolean[26];\n        for (int c = 0; c < 26; c++) required[c] = remaining[c] % 2 == 1;\n        StringBuilder stack = new StringBuilder();\n        for (int i = 0; i < s.length(); i++) {\n            char ch = s.charAt(i);\n            int c = ch - 'A';\n            remaining[c]--;\n            if (!required[c] || used[c]) continue;\n            // pop larger letters that still appear later\n            while (stack.length() > 0) {\n                char top = stack.charAt(stack.length() - 1);\n                if (top <= ch || remaining[top - 'A'] == 0) break;\n                used[top - 'A'] = false;\n                stack.setLength(stack.length() - 1);\n            }\n            stack.append(ch);\n            used[c] = true;\n        }\n        System.out.println(stack);\n    }\n}\n",
+      "sha256": "f88b1fbdbcba01b781aecd47593f65b51b5915a723abdfab43737a2f6dff538e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &s)\n\tvar remaining [26]int\n\tfor i := 0; i < len(s); i++ {\n\t\tremaining[s[i]-'A']++\n\t}\n\t// letters with odd frequency keep exactly one copy; the rest vanish\n\tvar required, used [26]bool\n\tfor c := range required {\n\t\trequired[c] = remaining[c]%2 == 1\n\t}\n\tvar stack []byte\n\tfor i := 0; i < len(s); i++ {\n\t\tch := s[i]\n\t\tc := ch - 'A'\n\t\tremaining[c]--\n\t\tif !required[c] || used[c] {\n\t\t\tcontinue\n\t\t}\n\t\t// pop larger letters that still appear later\n\t\tfor len(stack) > 0 && stack[len(stack)-1] > ch && remaining[stack[len(stack)-1]-'A'] > 0 {\n\t\t\tused[stack[len(stack)-1]-'A'] = false\n\t\t\tstack = stack[:len(stack)-1]\n\t\t}\n\t\tstack = append(stack, ch)\n\t\tused[c] = true\n\t}\n\tfmt.Println(string(stack))\n}\n",
+      "sha256": "5b36da035179da95c469a4ecffa92a247a64cbee9b552ad5c1b59eacd7ce5a3e"
+    }
+  ]
+}

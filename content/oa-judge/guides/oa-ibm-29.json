@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-29",
+  "packageChecksum": "4cb9d5c6fbfa5fb61c85b0df153443853fe9f881a830031c165dd9ada3d530af",
+  "sourceContentHash": "1955daefe1afada9b3caaf7e2609f94ef1ca9b171e3dfa29a9f5d501f926a4c9",
+  "editorialSha256": "fbfcfe34d13cad68edc716f9d2f544b1b2b6648b8b73385f45c9ecf8dd5b9c1d",
+  "hints": {
+    "zh": [
+      "一个更长的合法子串，它长度为minLength的前缀同样满足字符种类限制；而且长串每出现一次，这个前缀也跟着出现一次，所以前缀的出现次数不会更少。",
+      "因此最优值一定能在长度恰好为minLength的子串上取到，maxLength实际上不影响答案，只需统计所有长度为minLength的窗口。",
+      "按字符（码点）处理字符串，枚举每个起点开始、长度为minLength的窗口：若其中不同字符数不超过maxUnique，就在哈希表里把这个子串的计数加1；最后输出最大计数，没有合法窗口时输出0。"
+    ],
+    "en": [
+      "For any longer valid substring, its prefix of length minLength also satisfies the character-variety limit, and every occurrence of the long substring brings an occurrence of that prefix, so the prefix occurs at least as often.",
+      "Therefore the optimum is always reached by a substring of length exactly minLength, maxLength does not affect the answer, and only windows of length minLength need to be counted.",
+      "Treat the string as a sequence of characters (code points) and enumerate every window of length minLength: if it has at most maxUnique distinct characters, increase that substring's count in a hash map; finally print the largest count, or 0 if no window is valid."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount only windows of length minLength, filter out windows with too many distinct characters, and accumulate frequencies in a hash map.\n\n## Proof of correctness\n\nFor any valid longer substring, its prefix of the fixed length minLength is still valid, and each occurrence of the long substring corresponds to one occurrence of this prefix, so the prefix's frequency is not smaller. Hence the global optimum can always be reached at the shortest length, and counting all windows of that length does not miss it.\n\n## Complexity\n\nTime O(n·minLength), space O(n·minLength), where minLength≤26."
+}

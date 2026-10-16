@@ -1,0 +1,19 @@
+{
+  "id": "oa-stripe-17",
+  "packageChecksum": "eba4519ba03361601ce766bfc221b9ff551977e9dc7b58f624427adbc22b47b4",
+  "sourceContentHash": "8edcfc526cb4ae5bdd1fd560c5f28fd90879d1108530ddb7f2b1e18a08d6f585",
+  "editorialSha256": "a0de4887e1cd132c5fc06ee9a49a8b41dabab42ac477590218e3d84ff452aed3",
+  "hints": {
+    "zh": [
+      "这是一个按时间顺序执行的状态机：商户有余额和退款时限，每个 Intent 有所属商户、金额、状态、是否已退款和成功时间。每条命令只在其要求的起始状态下生效，否则忽略。",
+      "状态转换：ATTEMPT 只能 REQUIRES_ACTION→PROCESSING；SUCCEED 只能 PROCESSING→COMPLETED 并给商户入账；FAIL 只能 PROCESSING→REQUIRES_ACTION；UPDATE 只在 REQUIRES_ACTION 且新金额非负时改金额；REFUND 只对已完成且未退款的 Intent，并受商户退款时限约束。",
+      "用两个哈希表保存商户和 Intent。INIT 只认第一次；CREATE 要求 Intent ID 未出现、商户已存在且金额≥0。REFUND 时：时限缺失或为负表示不限；为 0 表示不允许；为正数 n 时要求当前时间−成功时间≤n；退款成功则扣回金额并打上已退款标记。最后按商户 ID 字典序输出数量和各商户余额，全部用 64 位整数。"
+    ],
+    "en": [
+      "This is a state machine executed in time order. A merchant has a balance and a refund limit; an Intent has its merchant, amount, state, refunded flag and success time. Each command takes effect only from the starting state it requires, and is ignored otherwise.",
+      "Transitions: ATTEMPT only REQUIRES_ACTION -> PROCESSING; SUCCEED only PROCESSING -> COMPLETED, crediting the merchant; FAIL only PROCESSING -> REQUIRES_ACTION; UPDATE changes the amount only in REQUIRES_ACTION and only to a non-negative value; REFUND only for a completed, not yet refunded Intent, subject to the merchant's refund limit.",
+      "Keep merchants and Intents in two hash maps. Only the first INIT counts; CREATE needs an unused Intent ID, an existing merchant and an amount >= 0. For REFUND: a missing or negative limit means no limit, 0 means refunds are not allowed, and a positive n requires current time - success time <= n; a successful refund subtracts the amount and sets the refunded flag. Finally print the count and each merchant's balance in lexicographic order of merchant ID, all in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse hash maps to store each merchant's balance and refund limit, and each Intent's merchant, amount, state, refunded flag and success time. Scan the commands in time order and update only when the current state satisfies the transition's condition; finally sort the merchants and output them.\n\n## Correctness\n\nEach command checks its unique required prior state by definition. The existence checks of INIT/CREATE ensure identifiers are never overwritten; every state transition runs only from its specified starting state, and success can only go from PROCESSING to COMPLETED once, so a balance is credited only once. A refund checks the completed state, the not-yet-refunded flag and the time limit together, and marking a successful refund prevents a second deduction. By induction over the prefix of commands, the states in the tables match a system executing the rules, so the final balances are correct.\n\n## Complexity\n\nLet q be the number of commands and m the number of merchants. State processing takes O(q) on average, the final sort O(m log m), and the space is O(q + m)."
+}

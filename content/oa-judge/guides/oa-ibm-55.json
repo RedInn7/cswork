@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-55",
+  "packageChecksum": "65e51fcc68b0e98e7fb6d1a46f40167a78e88acc58abd8f15f475268823ed14b",
+  "sourceContentHash": "a19ad065b00c7f50af1241ed7b8ccd17ad7c2edb2c8266a5297d1934f1681895",
+  "editorialSha256": "5cb4a1f4b38bd67d0eab2366b0079d970f1fb50e543f099c6187df842a17034b",
+  "hints": {
+    "zh": [
+      "员工身份不重要，只需要关心每一时刻室内（不含会议室）有多少人：C 和 U 让室内人数加一，R 和 L 让室内人数减一。",
+      "任何时刻室内每个人都要坐一把椅子，所以椅子数至少等于室内人数的历史最大值；而空椅会被复用，只有人数超过已有椅子数时才需要买，所以这个最大值也够用。",
+      "对每条模拟从 0 开始维护室内人数和历史最大值：遇到 C 或 U 加一，遇到 R 或 L 减一，每步后更新最大值；该模拟的答案就是这个最大值，按输入顺序用空格连接输出。"
+    ],
+    "en": [
+      "Employee identities do not matter; only the number of people currently in the room matters: C and U add one person, R and L remove one.",
+      "At any moment every person in the room needs a chair, so the number of chairs is at least the maximum headcount ever reached; empty chairs are reused and a purchase happens only when the headcount exceeds the chairs already owned, so that maximum is also enough.",
+      "For each simulation keep the current headcount and the maximum so far, both starting at 0: add one for C or U, subtract one for R or L, and update the maximum after every event; that maximum is the answer for the simulation, and the answers are printed in input order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate the number of employees in the room: C and U increase it by one, R and L decrease it by one. The answer is the maximum number of people in the room over the whole process; each time someone enters and there is no empty chair, exactly one more chair has to be bought.\n\n## Correctness\n\nAt any moment every employee in the room must have a chair of their own, so the number of chairs is at least the maximum headcount in the room. Reusing empty chairs according to the rules, and buying only when someone enters while the headcount has reached the number of chairs already bought, keeps the number of chairs equal to the maximum headcount so far after every purchase. At the end the number bought exactly reaches this lower bound. A valid event sequence guarantees that every departure or return corresponds to an existing employee, so the state is unique.\n\n## Complexity\n\nLet L be the total number of characters over all simulations. Time O(L), extra space O(1)."
+}

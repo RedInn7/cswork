@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-74",
+  "packageChecksum": "b8770cebdc627c0010a1a1c92832db85bc8352f4726ff3940d06215236fa8d88",
+  "sourceContentHash": "d354933cc3f0a4c55bef7316b423bd713e5e193628704f09d72a8bb878a9fbba",
+  "editorialSha256": "81b2bc985291a97fcd1f70877e60097baf1cee3e4d685eb744da206a84cd7ac6",
+  "hints": {
+    "zh": [
+      "两段各自排序后内部都已经非降，拼接后唯一可能出问题的地方是两段的交界处。",
+      "交界处没有逆序，当且仅当前段的最大值不超过后段的最小值。",
+      "先从右往左求后缀最小值数组 suffix。再从左往右维护前缀最大值，对每个切口 i（前段为 0..i，i 从 0 到 n−2），若前缀最大值 ≤ suffix[i+1] 则计数加一。"
+    ],
+    "en": [
+      "After sorting each part on its own, both parts are non-decreasing inside, so the only place the concatenation can fail is the boundary between them.",
+      "The boundary has no inversion exactly when the maximum of the left part is at most the minimum of the right part.",
+      "Build the suffix-minimum array from the right. Then scan from the left keeping the prefix maximum; for each cut after index i (i from 0 to n−2), count it when the prefix maximum is ≤ suffix[i+1]."
+    ]
+  },
+  "explanationEn": "## Idea\n\nPrecompute the minimum of every suffix and scan the prefix maximum; a cut is valid when the prefix maximum is at most the suffix minimum.\n\n## Correctness\n\nAfter sorting, each part is already non-decreasing inside, so the only possible inversion is between the two parts; the left part's maximum not exceeding the right part's minimum rules out every such inversion.\n\n## Complexity\n\nO(n) time, O(n) space."
+}

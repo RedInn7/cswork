@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-383",
+  "packageChecksum": "dc9bf802e366c019f9f4da383e531f90cc5a829310358fd3df07b49f1fc9e367",
+  "sourceContentHash": "dad00ca45162b2247c33e8055caa0a2b98be15683da30c4c241a30189051cf42",
+  "editorialSha256": "886237cfccde4ac2c6d86b136746d2192523e8f32f78b33e7558e4a3a7d9ad97",
+  "hints": {
+    "zh": [
+      "选定最小的那袋之后，后面每一袋都被唯一确定为前一袋的平方，所以整条链只取决于起点。",
+      "数值不超过 10^6，平方增长极快：一条链最多 5 项（2, 4, 16, 256, 65536），从每个起点暴力延伸就足够了。",
+      "把所有数放进集合（或大小为 10^6+1 的布尔数组）；对每个数 v，在 v≤1000 且 v² 在集合中时不断平方并计长度；取最大长度，小于 2 时输出 −1。"
+    ],
+    "en": [
+      "Once the smallest bag is chosen, every later bag is uniquely the square of the previous one, so a chain depends only on its start.",
+      "Values are at most 10^6 and squares grow very fast: a chain has at most 5 elements (2, 4, 16, 256, 65536), so extending from every start by brute force is enough.",
+      "Put all numbers in a set (or a boolean array of size 10^6+1); for each v, keep squaring while v≤1000 and v² is present, counting the length. Take the maximum length and print −1 if it is below 2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStore all numbers in a set; starting from each number, square repeatedly and count the chain length while the value stays in the set.\n\n## Proof of correctness\n\nOnce the first element of a valid sequence is chosen, every later element is uniquely the square of the previous one. Extending from each start until the first missing value therefore finds the longest valid sequence for that start, and the maximum over all starts is the global optimum.\n\n## Complexity\n\nO(n log log 10^6) expected time and O(n) space; the longest chain is 2, 4, 16, 256, 65536, with 5 elements."
+}

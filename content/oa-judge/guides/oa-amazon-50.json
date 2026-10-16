@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-50",
+  "packageChecksum": "1baae9f3166fc73c4238bc21f4f013512780036134681ab769b3c9b82d4a9b9e",
+  "sourceContentHash": "cdba6df42026507802a20d652f71544567bde0f214e75fee98e8a8b9a8803973",
+  "editorialSha256": "0701018a2be676372c934079f04a1de3ff3e7e19f4715e72e1d42eaa3fb787d9",
+  "hints": {
+    "zh": [
+      "删掉一段连续元素后，段外原本相邻的元素对不受影响；变化只有两种：与被删元素相连的边全部消失，以及（左右两边都还有元素时）左邻和右邻之间新增一条边。",
+      "用前缀和记录相邻差的绝对值之和，就能 O(1) 算出任意一段连续边的总费用；于是可以枚举所有长度为 k 的删除窗口。",
+      "令 prefix[i] 为前 i 条边（位置 0..i）的费用和；对每个起点 start、终点 end = start+k−1，取 lo = max(0, start−1)、hi = min(n−1, end+1)，费用 = 总费用 − (prefix[hi] − prefix[lo])，若 start>0 且 end+1<n 再加上 |a[end+1] − a[start−1]|；所有窗口取最小值，用 64 位整数。"
+    ],
+    "en": [
+      "After removing a contiguous block, the pairs of originally adjacent elements outside it are untouched; only two things change: every edge touching a removed element disappears, and (when elements remain on both sides) one new edge joins the left neighbor and the right neighbor.",
+      "A prefix sum of the absolute adjacent differences gives the total cost of any run of consecutive edges in O(1), so you can try every removal window of length k.",
+      "Let prefix[i] be the cost of the edges between positions 0..i; for each start with end = start+k-1, take lo = max(0, start-1) and hi = min(n-1, end+1); the cost is total - (prefix[hi] - prefix[lo]), plus |a[end+1] - a[start-1]| when start > 0 and end+1 < n; take the minimum over all windows using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStore the costs of adjacent edges in a prefix sum. Enumerate the removal window, subtract the edges inside it and those connecting to it, and when both sides remain, add the new connecting edge.\n\n## Proof of correctness\n\nAfter removing a range, the originally adjacent edges outside it stay unchanged; every edge involving a removed element disappears; and at most one new edge, from the left neighbor to the right neighbor, can appear. The prefix sum gives the weight of the disappearing edges exactly, and taking the minimum over all valid starts gives the answer.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

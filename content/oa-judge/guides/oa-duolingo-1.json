@@ -1,0 +1,19 @@
+{
+  "id": "oa-duolingo-1",
+  "packageChecksum": "1cae262158a193629eea96de7cf25341f73b11bf7a45fee77b002ecb5ee15d80",
+  "sourceContentHash": "6421b5e81cbfa156157f058717ac36dbf29766d4da06d2edcf91ddd1095837ae",
+  "editorialSha256": "1a2aaf2b85acbb2d6749c11d6b5b34f5879dc3ba8af1be20390b92fe13c4fada",
+  "hints": {
+    "zh": [
+      "新数组的顺序就是“左、右、左、右……”轮流从原数组两端取元素，取过的不再用，不需要任何排序或额外计算。",
+      "用两个指针 l 和 r 分别指向还没取的最左和最右元素，每轮先取 l，再在还有剩余时取 r，两个指针相遇就结束。",
+      "令 l = 0、r = n − 1，当 l ≤ r 时：输出 a[l] 并 l++；若此时仍有 l ≤ r，再输出 a[r] 并 r−−。注意 n 为奇数时最后中间那个元素只输出一次，最后用空格分隔输出。"
+    ],
+    "en": [
+      "The new order simply alternates left, right, left, right... taking elements from the two ends of the original array, and an element is used once; no sorting or extra computation is needed.",
+      "Keep two pointers l and r at the leftmost and rightmost elements not yet taken. Each round take l first, then r if anything is left, and stop when the pointers cross.",
+      "Set l = 0 and r = n - 1. While l <= r: output a[l] and increment l; if l <= r still holds, output a[r] and decrement r. When n is odd the middle element is output only once. Print the values separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTake, in order, the leftmost, the rightmost, the second from the left, the second from the right, and so on from the original array to form the new array.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is handled by the definition, so nothing is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

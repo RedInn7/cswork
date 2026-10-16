@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-1",
+  "packageChecksum": "59073c6d08f358ceb16fbfc49a7039e47af597ebcb77c7f6229770c3e060bf9c",
+  "sourceContentHash": "076d72d336a8aa643dcda92163a2e582e7082ffb91cb8a8c97f1faf4f3a415e2",
+  "editorialSha256": "89d256076c6ead3cfbc64874acdf86aee16641440c1fc4443b4c20fa9e963f61",
+  "hints": {
+    "zh": [
+      "3 和 5 互素，“同时被 3 和 5 整除”等价于“被 15 整除”，所以要先判断 15，再分别判断 3 和 5。",
+      "依次判断：被 15 整除输出 FizzBuzz；否则被 3 整除输出 Fizz；否则被 5 整除输出 Buzz；否则输出数字本身。这几个分支互斥，每个整数恰好输出一行。",
+      "从 1 循环到 N，按上面的顺序生成每一行；N 接近 2×10^6，输出约 13MB，应该把所有行写进一个大缓冲区后一次性输出，而不是每行都刷新输出流。"
+    ],
+    "en": [
+      "3 and 5 are coprime, so being divisible by both is the same as being divisible by 15; check 15 first, then 3 and 5 separately.",
+      "Check in order: divisible by 15 prints FizzBuzz; otherwise divisible by 3 prints Fizz; otherwise divisible by 5 prints Buzz; otherwise print the number itself. The branches are mutually exclusive, so each integer produces exactly one line.",
+      "Loop from 1 to N and build each line in that order; N is close to 2*10^6 and the output is about 13 MB, so write all lines into one large buffer and output it at once instead of flushing the stream on every line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nClassify each integer by divisibility by 15, 3 and 5 in that priority; merge every 8192 lines into one string block, and finally join the blocks for the return value, so that nearly two million separate string objects are never held at once.\n\n## Proof of correctness\n\n3 and 5 are coprime, so being divisible by both is equivalent to being divisible by 15. Once 15 is handled first, the following 3 and 5 branches are mutually exclusive and match the requirement of dividing only one of them; the last branch is exactly the case of dividing neither. The integers are traversed in increasing order and each is output once; the blocking only changes how the output is buffered, not the order of the lines.\n\n## Complexity\n\nO(N + output bytes) time and an O(output bytes) output buffer, with only about 8192 short-line objects; the largest valid output, including the final newline, is 13140738 bytes, and the output limit is configured at 16 MiB."
+}

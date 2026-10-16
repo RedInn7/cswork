@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-40",
+  "packageChecksum": "4d3f2ee18faf2af73db046da6201e52b65c4bf94c4417133fa1ba72fddffbb4f",
+  "sourceContentHash": "f2f45d0a834d55e2ebe9f13496c94ad703754d6d6f440de10a70dae036f365dd",
+  "editorialSha256": "41d30a82653525f95841a2d458e16186c4b395b00066ae1a37f7f265b403b099",
+  "hints": {
+    "zh": [
+      "最终排列里，偶数恰好占据前 e 个位置（e 是偶数的个数），奇数占据其余位置；组内顺序无所谓。",
+      "前 e 个位置中每个奇数都必须被换走，一次交换最多把其中一个换走；同时后面恰有同样多的偶数放错了位置，可以两两配对交换。",
+      "先数出偶数个数 e，再统计 a[0..e−1] 中奇数的个数，这个数就是答案；一次扫描数偶数，再扫描前 e 个元素即可。"
+    ],
+    "en": [
+      "In the final arrangement the even numbers occupy exactly the first e positions, where e is the number of even values, and the odd numbers occupy the rest; the order inside each group does not matter.",
+      "Every odd number among the first e positions has to be swapped out, and one swap fixes at most one of them. At the same time, exactly as many even numbers are misplaced behind, so the two kinds can be swapped in pairs.",
+      "First count the even numbers e, then count the odd numbers among a[0..e-1]; that count is the answer. One pass counts the evens and a second pass over the first e elements counts the misplaced odds."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the even numbers e; the number of odd numbers among the first e positions is the answer.\n\n## Correctness\n\nEvery odd number in the first e positions must leave, and one swap fixes at most one of them, so their count is a lower bound. Behind them there are exactly as many misplaced even numbers; swapping the two kinds one pair at a time fixes one pair per swap and reaches the lower bound.\n\n## Complexity\n\nO(n) time and O(n) space including the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-202",
+  "packageChecksum": "66cd83ce8195762923e2977c256256b0a62050d87b9a099fb27cd54d30172be7",
+  "sourceContentHash": "515a945d2d246185d77adddbbb6802df96b23fb86ce73d0ecc6f809c94eb7811",
+  "editorialSha256": "ac30c4287846b4bfd9987491a8ccccd35e75aadc1183309e38c9cb18cfb6826e",
+  "hints": {
+    "zh": [
+      "把任意排列在“不上升”的位置切开，会得到若干严格递增段，上升位置数 = n − 段数。所以要让段数尽量少。",
+      "同一个值不能在同一个严格递增段里出现两次，所以段数至少是单个值的最大出现次数 F；而这个下界总能达到。",
+      "用计数数组统计每个分数的出现次数，求最大频次 F，输出 n−F。（构造方法：把每个值的各次出现分到 F 行、每行至多一次，各行排序后依次相接。）"
+    ],
+    "en": [
+      "Cut any arrangement at every non-increasing step to get strictly increasing segments; the number of increasing positions is n minus the number of segments, so you want as few segments as possible.",
+      "The same value cannot appear twice in one strictly increasing segment, so there are at least F segments, where F is the largest multiplicity of a single value; this lower bound can always be reached.",
+      "Count each score with an array, take the largest frequency F, and print n - F. (Construction: spread the occurrences of each value over F rows, at most one per row, sort each row and concatenate the rows.)"
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is n minus the largest number of occurrences of a single value.\n\n## Proof of correctness\n\nCut the arrangement at its non-increasing steps into strictly increasing segments; equal values cannot share a segment, so there are at least F segments, where F is the largest frequency, and at most n-F increasing positions. Distribute the occurrences of each value over F rows, at most once per row, and sort each row; a value with frequency F appears in every row, so the last item of a row is at least that value, which is at least the first item of the next row, and no increasing position appears between rows. This gives exactly n-F and attains the upper bound.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

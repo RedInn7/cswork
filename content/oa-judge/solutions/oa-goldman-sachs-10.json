@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-10",
+  "packageChecksum": "5c5e8d942dd48ce0cba34e4fa6669cadcd114e944afb932712a43412fa6ab4b2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef vector<int> Big;  // little-endian base-1e9 digits\n\nBig add(const Big &a, const Big &b) {\n    Big r;\n    int carry = 0;\n    for (size_t i = 0; i < max(a.size(), b.size()) || carry; i++) {\n        long long s = carry + (i < a.size() ? a[i] : 0) + (i < b.size() ? b[i] : 0);\n        r.push_back(s % 1000000000);\n        carry = s / 1000000000;\n    }\n    return r;\n}\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    // dp[i] = number of decodings of the first i digits.\n    vector<Big> dp(n + 1, Big{0});\n    dp[0] = Big{1};\n    for (int i = 1; i <= n; i++) {\n        if (s[i - 1] != '0') dp[i] = add(dp[i], dp[i - 1]);\n        if (i > 1) {\n            int two = (s[i - 2] - '0') * 10 + (s[i - 1] - '0');\n            if (two >= 10 && two <= 26) dp[i] = add(dp[i], dp[i - 2]);\n        }\n    }\n    const Big &r = dp[n];\n    printf(\"%d\", r.back());\n    for (int i = (int)r.size() - 2; i >= 0; i--) printf(\"%09d\", r[i]);\n    printf(\"\\n\");\n}\n",
+      "sha256": "6efff1bc100f757a9174cb4f9b6eb0eb0c15c680eadbf4892180269308b671f4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.math.BigInteger;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();\n        int n = s.length();\n        // dp[i] = number of decodings of the first i digits.\n        BigInteger[] dp = new BigInteger[n + 1];\n        dp[0] = BigInteger.ONE;\n        for (int i = 1; i <= n; i++) {\n            dp[i] = BigInteger.ZERO;\n            if (s.charAt(i - 1) != '0') dp[i] = dp[i].add(dp[i - 1]);\n            if (i > 1) {\n                int two = Integer.parseInt(s.substring(i - 2, i));\n                if (two >= 10 && two <= 26) dp[i] = dp[i].add(dp[i - 2]);\n            }\n        }\n        System.out.println(dp[n]);\n    }\n}\n",
+      "sha256": "b0024d24c54957d19dc9070705f865e277792a46df405f0f4f7871d0fa7e1c29"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math/big\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Scan(&s)\n\tn := len(s)\n\t// dp[i] = number of decodings of the first i digits.\n\tdp := make([]*big.Int, n+1)\n\tdp[0] = big.NewInt(1)\n\tfor i := 1; i <= n; i++ {\n\t\tdp[i] = new(big.Int)\n\t\tif s[i-1] != '0' {\n\t\t\tdp[i].Add(dp[i], dp[i-1])\n\t\t}\n\t\tif i > 1 {\n\t\t\ttwo := int(s[i-2]-'0')*10 + int(s[i-1]-'0')\n\t\t\tif two >= 10 && two <= 26 {\n\t\t\t\tdp[i].Add(dp[i], dp[i-2])\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(dp[n].String())\n}\n",
+      "sha256": "de393c041a9a317304da1e026f704fa47b511528ecf4755bd5fdc98cbad43021"
+    }
+  ]
+}

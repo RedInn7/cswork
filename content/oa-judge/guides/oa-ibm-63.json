@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-63",
+  "packageChecksum": "a9a1700ca783a60eb77b69c3cc9557e5fb03191f3c79c7844cadad182ea28304",
+  "sourceContentHash": "8ae1a89034f78302cec4b92cf06202d4e3f92ce69bfef449915fe991133563e2",
+  "editorialSha256": "03f74efe0820fe340fa3312adb0dd7530690b091461f92b7b19d922d4ff09c60",
+  "hints": {
+    "zh": [
+      "要数的是被至少一个区间覆盖的整数时刻个数，也就是所有闭区间并集的大小；重叠部分只能算一次。",
+      "把区间按起点排序后，重叠的区间会连成一块。维护当前合并块的左右端点：新区间起点不超过当前右端点就并进来，否则当前块已经完全确定，可以结算。",
+      "按 (start,end) 排序；以第一个区间初始化 left、right；依次处理后续区间：若 start>right，就把 right−left+1 累加到答案并用该区间重新开始，否则把 right 更新为 max(right,end)；最后再加上最后一块的 right−left+1。"
+    ],
+    "en": [
+      "What is counted is the number of integer moments covered by at least one interval, that is, the size of the union of all closed intervals; overlaps count only once.",
+      "After sorting by start, overlapping intervals chain into blocks. Keep the left and right end of the current merged block: if the next interval starts no later than the current right end, merge it; otherwise the current block is final and can be settled.",
+      "Sort by (start, end); initialize left and right from the first interval; for each following interval, if start > right add right - left + 1 to the answer and restart from that interval, otherwise set right to max(right, end); finally add right - left + 1 for the last block."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the intervals by left end and maintain the current merged interval; when a new interval does not intersect it, settle the length of the old block, otherwise extend the right end.\n\n## Proof of correctness\n\nAfter sorting by start, if a new interval starts after the current right end, no later interval can fill anything back into the old block either, so it can be settled for good. When they intersect, replace the block with the union of the two intervals. Induction shows that the settled blocks are pairwise disjoint and, together with the current block, cover exactly the processed intervals, so the final total is the size of the union.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

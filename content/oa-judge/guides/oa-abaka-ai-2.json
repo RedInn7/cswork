@@ -1,0 +1,19 @@
+{
+  "id": "oa-abaka-ai-2",
+  "packageChecksum": "b3f2fe8dbaeb87c6cb6f183887a56195571f016cfc2948108471009a1db73362",
+  "sourceContentHash": "f316159a4fdeff446f6170908f833df25261bd6bfe8bfcd76ede778866a52ba7",
+  "editorialSha256": "58a726175d63ec3f0a2dbaeb3b0bb5ff038b2a7c3d9ff4674af53afe8490ab91",
+  "hints": {
+    "zh": [
+      "每次操作的收益是 arr 上一段闭区间的和，arr 非负，所以区间越宽越好；所有位置最终都要两两配对，问题变成如何配对使区间和的总和最大。",
+      "把位置排序后，最外侧的两个配对、次外侧的两个配对……这样每个切分点被跨越的次数都达到上限。区间和用前缀和 O(1) 求出。",
+      "计算 arr 的前缀和；把 K 个位置排序为 p；对 i=0..K/2−1，累加 prefix[p[K−1−i]+1]−prefix[p[i]]；总和最后对 10^9+7 取模输出（用 64 位整数累加不会溢出）。"
+    ],
+    "en": [
+      "Each operation earns the sum of a closed interval of arr, and arr is non-negative, so wider intervals are better. All positions must end up paired, so the question is which pairing maximizes the total of the interval sums.",
+      "After sorting the positions, pair the outermost two, then the next outermost two, and so on; this makes every cut point be crossed the maximum possible number of times. Interval sums come from prefix sums in O(1).",
+      "Build prefix sums of arr; sort the K positions into p; for i = 0..K/2-1 add prefix[p[K-1-i]+1] - prefix[p[i]]; print the total modulo 10^9+7 (a 64-bit accumulator does not overflow)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the power positions, compute each interval's contribution with prefix sums, and pair positions from both ends inward.\n\n## Proof of correctness\n\nSplit the positions into any pairing. For any cut point of the array, the outer pairing makes the number of intervals crossing that cut reach its upper bound, the smaller count of elements on either side. Since arr is non-negative, using the outer pairing for all cut points at once maximizes the weighted sum of intervals. Therefore pairing first with last after sorting is optimal.\n\n## Complexity\n\nTime O(N + K log K), space O(N + K)."
+}

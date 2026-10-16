@@ -1,0 +1,19 @@
+{
+  "id": "oa-zalando-2",
+  "packageChecksum": "3361403376dcfe7d50129670795631e3b40fe4cd4c9b8e30b577ef1812813989",
+  "sourceContentHash": "b6e0942423718d045aa9eec5eb3a3866961a05e4cc50a8cbda8e904382382d1d",
+  "editorialSha256": "8762ba0677612fdc6c3b6f5d35576444ef105638374b3646e54f957ab014d53b",
+  "hints": {
+    "zh": [
+      "可删除的只有相邻的 A/B 或 C/D（顺序不限），这和括号匹配很像：A、B 互相抵消，C、D 互相抵消。",
+      "从左到右维护一个栈：新字符若与栈顶构成可删除的一对就弹栈，否则压栈；栈里始终是已处理前缀的不可再删形式。",
+      "逐字符扫描（忽略换行等空白）：栈非空且栈顶与当前字符不同、且两者同属 {A,B} 或同属 {C,D} 时弹栈，否则压入；最后输出栈内容，空结果输出空行。"
+    ],
+    "en": [
+      "Only adjacent A/B or C/D pairs (in either order) can be deleted, which is much like bracket matching: A and B cancel each other, and so do C and D.",
+      "Keep a stack from left to right: if the new character forms a deletable pair with the top, pop; otherwise push. The stack always holds the irreducible form of the processed prefix.",
+      "Scan character by character (ignoring newlines and other whitespace): pop when the stack is non-empty and its top differs from the current character while both belong to {A,B} or both to {C,D}; otherwise push; print the stack contents at the end, or an empty line for an empty result."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a stack from left to right. If the new character forms an A/B or C/D pair of different letters with the top of the stack, pop; otherwise push.\n\n## Proof of correctness\n\nThe rule is equivalent to adjacent reduction over two pairs of mutually inverse symbols, A↔B and C↔D. The stack algorithm keeps only the reduced form of the processed prefix; a new character can cancel at most with the top of the stack, and cascading cancellations are already handled by the stack. The reduced form over this alphabet of inverses is unique, so the output is a valid result that cannot be reduced further.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

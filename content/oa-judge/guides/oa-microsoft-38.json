@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-38",
+  "packageChecksum": "0600618ae8cd053817a0ee7cc76670e65339b8b0ba6e15610d2dbff997bed5f7",
+  "sourceContentHash": "e538e4ac1a7d150d7a299b42c0f2e5503dd756fd92208cbbf5182d09547ab3a2",
+  "editorialSha256": "2f521ec456048e8196715aea954725bdff62c3d29412556034fb5f5707be48b1",
+  "hints": {
+    "zh": [
+      "两个车在不同行，可以理解为每一对都在\"较晚的那一行\"被枚举到：当前格去配之前所有行中列不同的最好格子。",
+      "对之前的行，只需要保留两个分数最大、且列不同的候选：当前列最多和其中一个冲突，另一个就是列不同的最优选择。",
+      "候选初始为两个极小值（列号用不存在的值）。逐行处理：先对本行每一格，用其分数加上候选中列与它不同的最大分数更新答案；整行查询完后，再把本行每一格并入候选——同列的取较大分数，然后按（分数，列）保留前两名。先查后更新保证不会同行配对。分数可能为负，答案初值要足够小，用 64 位整数。"
+    ],
+    "en": [
+      "The two rooks are in different rows, so every pair can be enumerated at its later row: the current cell pairs with the best cell of an earlier row in a different column.",
+      "From the earlier rows only two candidates are needed: the two best scores kept in different columns. The current column conflicts with at most one of them, and the other is then the best choice in a different column.",
+      "Start the candidates as two very small scores with columns that do not exist. For each row, first update the answer for every cell with its score plus the best candidate score whose column differs; after the whole row is queried, merge each cell of the row into the candidates, keeping the larger score for a shared column and then the top two by (score, column). Querying before updating prevents same-row pairs. Scores can be negative, so start the answer very low and use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess row by row, keeping the two best scores over all previous rows, distinguished by different columns. Pair the current cell with the best of these whose column differs, then add this row to the candidates.\n\n## Proof of correctness\n\nThe current row and a previous row are always different rows, and a column conflict can rule out at most one column among the historical best candidates, so the top two from different columns suffice. Querying the whole row before updating rules out pairs within the same row; every pair of rooks is enumerated at its later row.\n\n## Complexity\n\nTime O(NM), space O(NM) to store the input, with O(1) extra for the candidates."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-56",
+  "packageChecksum": "c14ba62de5a7a892ca6ab735706f172250259c88386980005048cf7cf2b67e16",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Reverse the lowest `len` bits of x.\nlong long reverseBits(long long x, int len) {\n    long long r = 0;\n    for (int i = 0; i < len; i++) r = (r << 1) | ((x >> i) & 1);\n    return r;\n}\n\nint main() {\n    long long n;\n    cin >> n;\n    long long best = n; // 0 is itself a binary palindrome\n    for (int bits = 1; bits < 32; bits++) {\n        int half = (bits + 1) / 2, lowLen = bits / 2;\n        long long low = 1LL << (half - 1), high = (1LL << half) - 1, prefix = n >> lowLen;\n        auto clamp = [&](long long v) { return max(low, min(high, v)); };\n        // Nearest palindromes of this length come from the prefix of n, its neighbours, or the range ends.\n        for (long long first : {low, high, clamp(prefix), clamp(prefix - 1), clamp(prefix + 1)}) {\n            long long candidate = (first << lowLen) | reverseBits(first >> (bits % 2), lowLen);\n            best = min(best, llabs(candidate - n));\n        }\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "fdf355542c8e754a602f382e9af11425c54c3bdfddeb9ce468ec3bae68cfcea3"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    // Reverse the lowest `len` bits of x.\n    static long reverseBits(long x, int len) {\n        long r = 0;\n        for (int i = 0; i < len; i++) r = (r << 1) | ((x >> i) & 1);\n        return r;\n    }\n\n    public static void main(String[] args) {\n        long n = new Scanner(System.in).nextLong();\n        long best = n; // 0 is itself a binary palindrome\n        for (int bits = 1; bits < 32; bits++) {\n            int half = (bits + 1) / 2, lowLen = bits / 2;\n            long low = 1L << (half - 1), high = (1L << half) - 1, prefix = n >> lowLen;\n            // Nearest palindromes of this length come from the prefix of n, its neighbours, or the range ends.\n            long[] firsts = {low, high, Math.max(low, Math.min(high, prefix)),\n                Math.max(low, Math.min(high, prefix - 1)), Math.max(low, Math.min(high, prefix + 1))};\n            for (long first : firsts) {\n                long candidate = (first << lowLen) | reverseBits(first >> (bits % 2), lowLen);\n                best = Math.min(best, Math.abs(candidate - n));\n            }\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "a944c69ac7ebd45f42c80794212181fb44ac4746d5b349332da55ab8a0f7ab45"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\n// reverseBits reverses the lowest length bits of x.\nfunc reverseBits(x, length int) int {\n\tr := 0\n\tfor i := 0; i < length; i++ {\n\t\tr = r<<1 | (x>>i)&1\n\t}\n\treturn r\n}\n\nfunc main() {\n\tvar n int\n\tfmt.Scan(&n)\n\tbest := n // 0 is itself a binary palindrome\n\tfor bits := 1; bits < 32; bits++ {\n\t\thalf, lowLen := (bits+1)/2, bits/2\n\t\tlow, high, prefix := 1<<(half-1), 1<<half-1, n>>lowLen\n\t\tclamp := func(v int) int { return max(low, min(high, v)) }\n\t\t// Nearest palindromes of this length come from the prefix of n, its neighbours, or the range ends.\n\t\tfor _, first := range []int{low, high, clamp(prefix), clamp(prefix - 1), clamp(prefix + 1)} {\n\t\t\tcandidate := first<<lowLen | reverseBits(first>>(bits%2), lowLen)\n\t\t\tdiff := candidate - n\n\t\t\tif diff < 0 {\n\t\t\t\tdiff = -diff\n\t\t\t}\n\t\t\tbest = min(best, diff)\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "64a635be65e632995399895f52158d9edf30ac516bb7bccd6d5d03c7232f9b1c"
+    }
+  ]
+}

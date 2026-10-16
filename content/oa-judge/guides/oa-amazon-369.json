@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-369",
+  "packageChecksum": "e78bf2ab9dcfc1e9b915a4f25c26fd2133baf09821038fab4bb9a3a4ddd86d01",
+  "sourceContentHash": "7fa8432bd3db4092a62e42bddb530121f68f75fa8dfa41914c2d71efb5a5dac7",
+  "editorialSha256": "650ada5a45d12a334841744e93d61b10f34b2b82d882de83cc562233f9765296",
+  "hints": {
+    "zh": [
+      "某件商品在第 i 次（从 0 开始）被买时，它已经被前面每次购买各减了 1，收益是 max(0, 初值−i)，只与它的初值和购买次序有关。",
+      "越早买损失越小，所以应该先买初值大的：交换一对“小的先买、大的后买”不会让总收益变少。",
+      "把积分降序排序，第 i 个贡献 max(0, a[i]−i)，求和；收益不会为负，所以全部买下也无妨；总和用 64 位。"
+    ],
+    "en": [
+      "When an item is bought as the i-th purchase (0-based), every earlier purchase has already reduced it by 1, so it earns max(0, initial−i), which depends only on its initial value and its position.",
+      "Earlier purchases lose less, so buy larger values first: swapping a smaller-earlier, larger-later pair never decreases the total.",
+      "Sort the points in descending order and add max(0, a[i]−i) for each i; gains are never negative, so buying everything is fine. Use a 64-bit total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the initial points in descending order; the i-th purchase (0-based) earns max(0, a[i]−i); sum these gains.\n\n## Proof of correctness\n\nThe gain from buying an item with initial value v at step i depends only on v and i. For an earlier step i and a later step j with initial values x≥y, max(0,x−i)+max(0,y−j)≥max(0,y−i)+max(0,x−j), because the same time loss leaves the larger initial value with no smaller gain. Swapping inversions never lowers the total, so descending order is optimal; gains are non-negative, so putting the unbought items at the end does not reduce the total.\n\n## Complexity\n\nO(n log n) time and O(n) space; the total points need 64 bits."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-f5-1",
+  "packageChecksum": "55b0210819d61f9364ab6a897c0677faa0bdb24b45ba434731ad8c3a23219bc4",
+  "sourceContentHash": "740aa275a4edbbaf5c393730180fa76343a82e16876778e8c496d5cc826af1e1",
+  "editorialSha256": "6c31389495b185c9262fb81dd5ff869844de5c6761ba8a0e760e370b60043c0e",
+  "hints": {
+    "zh": [
+      "时间窗之外的推文完全不用看；窗内推文只需逐字符扫描找出标签并计数，最后排序取前三。",
+      "标签是 # 后面紧跟着至少一个 ASCII 字母、数字或下划线组成的最长一段；只有一个 # 后面不是这些字符时不构成标签。时间窗是闭区间 [currentTime − timeWindow, currentTime]。",
+      "读第一行的 n、currentTime、timeWindow，之后每行在第一个制表符处切开得到时间戳和正文。时间在窗内时，从左到右扫：遇到 # 就向后延伸到第一个非标签字符，长度大于 1 则把这段（含 #）计数加一，并从延伸终点继续扫。统计完后按 (−次数, 标签字典序) 排序，每行输出一个，最多三个；没有标签时输出空内容。"
+    ],
+    "en": [
+      "Tweets outside the time window can be ignored entirely; inside the window you only need to scan each tweet character by character to find and count tags, then sort and take the top three.",
+      "A tag is a # followed by the longest run of at least one ASCII letter, digit or underscore; a # not followed by such a character is not a tag. The time window is the closed interval [currentTime - timeWindow, currentTime].",
+      "Read n, currentTime and timeWindow from the first line; split each following line at its first tab into the timestamp and the text. If the time is inside the window, scan left to right: at a #, extend to the first non-tag character, and if the run is longer than 1, count that substring (including the #) and continue scanning from where it ended. Finally sort by (-count, tag in lexicographic order) and print at most three tags, one per line; print nothing if there are no tags."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan only the text inside the time window, recognize and count tags character by character, then sort by `(-count, tag)`. The total scan is O(total text length), and sorting is O(H log H).\n\n## Proof of correctness\n\nThe scan recognizes complete hashtags only inside the valid time window and counts each occurrence once; the sort key matches the required order of frequency descending and lexicographic ascending exactly, and taking the first three items gives the answer.\n\n## Complexity\n\nThe text is scanned according to the ASCII hashtag syntax; an empty # does not form a tag; timestamps and the window are non-negative integers.\n\nO(T + H log H) time and O(H) space, where T is the length of the scanned text and H is the number of distinct tags.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();n,now,w=map(int,z[0].split());c={}\n for line in z[1:1+n]:\n  t,tw=line.split('\\t',1);t=int(t)\n  if now-w<=t<=now:\n   i=0\n   while i<len(tw):\n    if tw[i]=='#':\n     j=i+1\n     while j<len(tw) and (tw[j].isascii() and (tw[j].isalnum() or tw[j]=='_')):j+=1\n     if j>i+1:c[tw[i:j]]=c.get(tw[i:j],0)+1\n     i=j\n    else:i+=1\n return '\\n'.join(sorted(c,key=lambda x:(-c[x],x))[:3])\n```"
+}

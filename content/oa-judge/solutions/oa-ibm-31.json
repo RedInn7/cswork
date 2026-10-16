@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-31",
+  "packageChecksum": "6e70f74e6366eed9b3d2a69237bed72ca05813b733a09a1ea3859c4ebbcd9937",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; long long m; cin >> n >> m;\n    priority_queue<long long> heap;\n    for (int i = 0; i < n; i++) { long long q; cin >> q; heap.push(q); }\n    long long revenue = 0;\n    for (long long i = 0; i < m; i++) {\n        long long q = heap.top(); heap.pop();\n        revenue += q;\n        if (q > 1) heap.push(q - 1);\n    }\n    cout << revenue << '\\n';\n}\n",
+      "sha256": "890a363c3aa3abaf5df9183e5f851bb0ace9f1c8d4bc1d75213d86ae6588113b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long m = nextLong();\n        PriorityQueue<Long> heap = new PriorityQueue<>(Collections.reverseOrder());\n        for (int i = 0; i < n; i++) heap.add(nextLong());\n        long revenue = 0;\n        for (long i = 0; i < m; i++) {\n            long q = heap.poll();\n            revenue += q;\n            if (q > 1) heap.add(q - 1);\n        }\n        System.out.println(revenue);\n    }\n}\n",
+      "sha256": "38070714ffa50555fb00469c2752fd2752fb03655ca35492dc84e783a617a3ee"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"container/heap\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\ntype maxHeap []int64\n\nfunc (h maxHeap) Len() int           { return len(h) }\nfunc (h maxHeap) Less(i, j int) bool { return h[i] > h[j] }\nfunc (h maxHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *maxHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *maxHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn, m := int(nextInt()), nextInt()\n\th := make(maxHeap, n)\n\tfor i := range h {\n\t\th[i] = nextInt()\n\t}\n\theap.Init(&h)\n\tvar revenue int64\n\tfor i := int64(0); i < m; i++ {\n\t\tq := h[0]\n\t\trevenue += q\n\t\tif q > 1 {\n\t\t\th[0] = q - 1\n\t\t\theap.Fix(&h, 0)\n\t\t} else {\n\t\t\theap.Pop(&h)\n\t\t}\n\t}\n\tw.WriteString(strconv.FormatInt(revenue, 10) + \"\\n\")\n}\n",
+      "sha256": "2d213d6b96463ce62ca6408bcca5440add3c318b8664b84d81226890e9d63230"
+    }
+  ]
+}

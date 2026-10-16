@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-11",
+  "packageChecksum": "5a43cdadde9db260c37c25d73a2ba246ff6df9565b1462ae38712f7e892df700",
+  "sourceContentHash": "80099506badc59ba18bb911d4c71f2a2dc4bdd9108952e306f95e84012f181df",
+  "editorialSha256": "d78abc123b50d4142bac1a1bd6c997ac9861bc5b0b14d34c5c69477a0cf0229a",
+  "hints": {
+    "zh": [
+      "只能交换奇偶性不同的相邻数字，所以两个同奇偶的数字永远无法互相越过：奇数子序列和偶数子序列各自的内部顺序是固定的。",
+      "反过来，任何保持这两条子序列内部顺序的交错排列都能通过这种交换得到。所以问题变成：把两条固定顺序的序列归并成字典序最小的串。",
+      "把数字串拆成偶数子序列和奇数子序列，用两个指针归并：每一步比较两个队首，取较小的那个（两个队首奇偶不同，不会相等）；一条用完后把另一条剩余部分接上。允许前导零。每个测试用例单独输出一行，总时间 O(总长度)。"
+    ],
+    "en": [
+      "Only adjacent digits of different parity can be swapped, so two digits of the same parity can never pass each other: the internal order of the odd subsequence and of the even subsequence is fixed.",
+      "Conversely, every interleaving that keeps both subsequences' internal order is reachable by such swaps. So the task becomes merging two fixed-order sequences into the lexicographically smallest string.",
+      "Split the digit string into its even subsequence and odd subsequence and merge with two pointers: at each step compare the two front digits and take the smaller (they have different parity, so they are never equal); when one runs out, append the rest of the other. Leading zeros are allowed. Print one line per test case; total time O(total length)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDigits of different parity can be swapped, but digits of the same parity cannot pass each other, so the internal order of the odd subsequence and of the even subsequence is fixed. Merge the two subsequences by taking whichever front digit is smaller.\n\n## Proof of correctness\n\nThe allowed swaps produce exactly all interleavings that keep the relative order of the two subsequences. If at some step the larger front were chosen instead of the smaller one, the current first differing position would be larger; choosing the smaller front is lexicographically optimal.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source notes\n\nThe original problem explicitly allows any number of swaps of adjacent digits with different parity; this site adds the standard input/output format and the total length bound."
+}

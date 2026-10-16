@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-14",
+  "packageChecksum": "dd4467613ccd8c5f3a7acef449a95bbb5dfe18bd71b5741f5fa73b7f31c73da6",
+  "sourceContentHash": "cde232d40384b50f2ae736ba4ffd40cd892f2386a29e25d3ac8fc7b32ab34586",
+  "editorialSha256": "47ba6818e01c9a08f4878aefe05c2a4457abeed2fd179509271dee37cf28a180",
+  "hints": {
+    "zh": [
+      "t 是给定的，不需要枚举旋转量；旋转后的数组里每个位置对应原数组的哪个下标，可以直接用公式算出来。",
+      "不必真的构造新数组：旋转后第 i 个元素就是原数组下标 (i−t) mod n 的元素，按这个顺序逐对比较相邻元素即可。",
+      "先取 prev = nums[(n−t) mod n]；再让 i 从 1 到 n−1，取 cur = nums[(i−t) mod n]（注意把负数取模调成非负）；一旦 prev ≤ cur 就输出 false；全部检查完都满足 prev > cur 才输出 true。相等也算失败，因为要求严格递减。"
+    ],
+    "en": [
+      "t is given, so there is nothing to search over; the original index behind every position of the rotated array can be computed by a formula.",
+      "There is no need to build the rotated array: its i-th element is nums[(i - t) mod n], so compare adjacent elements in that order.",
+      "Start with prev = nums[(n - t) mod n]; for i from 1 to n - 1 take cur = nums[(i - t) mod n] (make the modulo non-negative); as soon as prev <= cur print false; if every pair has prev > cur print true. Equal neighbours fail because the order must be strictly decreasing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe shift t for this run is given in the input; it does not have to be chosen. After the rotation, the i-th element equals the element of the original array at index `(i-t) mod n`. Scan adjacent elements in rotated order: as soon as some pair has `a[i] <= a[i+1]`, the array is not strictly decreasing.\n\n## Proof of correctness\n\nThe modular index formula moves exactly the last t elements to the front and keeps the relative order of the remaining elements, so the scan checks exactly all n-1 adjacent pairs of the rotated array. The array is strictly decreasing if and only if, in every pair, the first element is greater than the second.\n\n## Complexity\n\nThe scan uses O(1) extra space; reading and storing the input array takes O(n) space. Total time is O(n).\n\n## Input convention\n\nOn the original site the function receives the full input text; this site turns it into stdin/stdout: n, then n integers, then t. This site adopts the suggested ranges given by the source: `1<=n<=200000`, `0<=t<n` and `|nums[i]|<=10^9`."
+}

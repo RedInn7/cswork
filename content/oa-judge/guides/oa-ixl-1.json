@@ -1,0 +1,19 @@
+{
+  "id": "oa-ixl-1",
+  "packageChecksum": "6c95d096c9243b086cfa5cc39822524dfb05a15de6f5ed03d3221128937f8e13",
+  "sourceContentHash": "641d72bab754db9b8368f30729de8b69b2befbdf394a6e9afca59f877074f42c",
+  "editorialSha256": "c9618b54fb22bef6f0bb1410b76b05d3203cc7a06aa430fa963e78b3c1f58396",
+  "hints": {
+    "zh": [
+      "固定包数 k 之后，每种卡片都要补到 k 的倍数，各种卡片互不影响；某种卡片要补多少张只和它的数量除以 k 的余数有关。",
+      "枚举包数 k，对每种数量 c 计算补齐量 (k − c mod k) mod k 并求和，在所有 k 中取最小值。k 只需枚举到最大数量 M 再加 1：再大的 k 会让每种卡片都补得更多。",
+      "先把数量相同的种类合并计数；对 k = 2..M+1 逐个计算“频次 × 补齐量”的总和，维护最小值后输出。注意 cardTypes=[1] 时最优包数是 2，需要补 1 张。"
+    ],
+    "en": [
+      "Once the number of packs k is fixed, every card type must be padded up to a multiple of k, and types do not affect each other; how many cards a type needs depends only on its count modulo k.",
+      "Enumerate the pack count k, compute the padding (k − c mod k) mod k for each count c, sum it, and take the minimum over all k. It is enough to try k up to the largest count M plus 1: any larger k makes every type need more cards.",
+      "Group types with equal counts first; for k = 2..M+1 compute the sum of frequency times padding, keep the minimum, and print it. Note that for cardTypes=[1] the best pack count is 2, which needs 1 extra card."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the number of packs k≥2. For each type with count c, padding it to a multiple of k takes (k−c mod k) mod k cards; add up the cards needed over all types and take the minimum. It suffices to enumerate up to M+1, where M=max(cardTypes): when k>M each type needs k−c cards, and the total strictly increases with k, so a larger k can never be better.\n\n## Proof of correctness\n\nFor any fixed pack count k, to split one card type evenly into k packs, the number of added cards must be the smallest non-negative x such that c+x is divisible by k, namely (k−c mod k) mod k. Types are independent, so the sum is the minimum number of additions for that k. Every k that could improve the optimum lies in 2..M+1: M+1 already pads every type up to M+1, and for any larger k the amount added to each type strictly increases. Iterating over these k and taking the minimum gives the global optimum.\n\n## Complexity\n\nO(n+M²) time and O(M) space; on this site M=max(cardTypes)≤1000."
+}

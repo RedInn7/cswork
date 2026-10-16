@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-17",
+  "packageChecksum": "7ae67b990e639d6a159fe656989bfd37b742c75ddf4d084909b69ba17c135353",
+  "sourceContentHash": "26190e252cbeca4c323fd07cb5a36e1a58af1fb0d3d74fa1c249c1f8b6511374",
+  "editorialSha256": "60e98e05cb1d5b7f9a1ec985df5b26628b5b2212818ffec055f1ae61137cbd90",
+  "hints": {
+    "zh": [
+      "任意两个相邻日志事件之间，CPU 只被调用栈顶的那个函数占用；结束事件的那个时间戳本身也属于结束的函数。",
+      "用栈模拟调用关系，并记录上一个事件之后的起始时刻 prev；每来一个事件，就把 prev 到该事件之间的时间记到当前栈顶函数上。",
+      "遇到 start：若栈非空，给栈顶加 ts−prev，然后把新函数压栈，prev=ts；遇到 end：给栈顶加 ts−prev+1（包含结束这一秒）并弹栈，prev=ts+1；最后按编号输出每个函数的独占时间。"
+    ],
+    "en": [
+      "Between two consecutive log events the CPU is used only by the function on top of the call stack; the timestamp of an end event itself still belongs to the finishing function.",
+      "Simulate the calls with a stack and remember prev, the first time unit not yet assigned; on every event charge the time from prev up to that event to the function on top of the stack.",
+      "On start: if the stack is non-empty add ts - prev to its top, push the new function and set prev = ts; on end: add ts - prev + 1 to the top (the ending unit is included), pop it and set prev = ts + 1; finally print every function exclusive time in id order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe top of the call stack is the function currently running. When a new event arrives, charge the time from prev up to just before the event to the top of the stack; a start pushes the new function, and an end charges the stretch including the ending unit to that function and pops it.\n\n## Proof of correctness\n\nBetween two adjacent events only the function on top of the stack runs; at a start the CPU switches to the new top, and at an end the finishing function is charged with +1. Therefore every unit of execution time is assigned exactly to the function running at that time.\n\n## Complexity\n\nO(m) time, O(n) space.\n\n## Source notes\n\nPart of the original description is truncated, but the complete example it gives matches the standard definition of exclusive time; this site adds the serialization format of the logs."
+}

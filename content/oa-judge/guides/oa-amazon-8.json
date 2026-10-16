@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-8",
+  "packageChecksum": "c6974f2961862c175bf55c769102482419fea284c855c833a4676f663978afb5",
+  "sourceContentHash": "040b9b027c8ee9a6fe0f753b96c02c82a16c49608f9a90cfddf5faba83fa9a68",
+  "editorialSha256": "e56dd9cc5edca995f54b34192ea65007453fc02a3af70415c169ba36c23976d2",
+  "hints": {
+    "zh": [
+      "n 可达 10¹⁰，不能逐个枚举 k；但 ⌊n/k⌋ 只有大约 2√n 种不同取值，而且相同的商在 k 上是连续一段。",
+      "当商为 q = ⌊n/k⌋ 时，满足 ⌊n/k′⌋ = q 的 k′ 恰好是区间 [k, ⌊n/q⌋]；所以每段只需把 q 加一次，然后直接跳到 ⌊n/q⌋ + 1。商严格递减，天然去重。",
+      "令 k = 1、答案 = 0；当 k ≤ n 时：q = n / k，答案加上 q，k = n / q + 1；循环结束输出答案（商 0 不影响和）。全程使用 64 位整数，复杂度 O(√n)。"
+    ],
+    "en": [
+      "n can be as large as 10^10, so you cannot try every k; but floor(n/k) takes only about 2*sqrt(n) distinct values, and each quotient occupies a contiguous range of k.",
+      "With quotient q = floor(n/k), the values k' with floor(n/k') = q are exactly the interval [k, floor(n/q)]; so add q once per interval and jump straight to floor(n/q) + 1. The quotients strictly decrease, so each is counted only once.",
+      "Start with k = 1 and answer = 0; while k <= n: q = n / k, add q to the answer, and set k = n / q + 1; print the answer at the end (the quotient 0 does not affect the sum). Use 64-bit integers throughout; the complexity is O(sqrt n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStart from k=1. The current quotient q = n//k stays the same over the whole interval [k, n//q]; add q once, then jump directly to n//q+1.\n\n## Why it is correct\n\nfloor(n/k)=q is equivalent to n/(q+1) < k <= n/q, so the given right end is exactly the end of the current quotient's contiguous interval. The intervals neither overlap nor leave gaps, and the quotients strictly decrease, so adding each once removes duplicates.\n\n## Complexity\n\nO(sqrt n) time and O(1) extra space."
+}

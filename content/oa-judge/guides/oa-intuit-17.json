@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-17",
+  "packageChecksum": "0545a1c149b7b063c304da3b66824eb03aa3b846b28014271a099f8ad466dc16",
+  "sourceContentHash": "705e4f65e2354cdec1b4dbbe2fbfab1a9a1510f8b1f94050ad1f7104481e5a01",
+  "editorialSha256": "df4e7ca3aebd2c3272b15f649538744b1ab4a9b66ba0e46cb0393c01e69ede66",
+  "hints": {
+    "zh": [
+      "每次接球的奖励是后一格减前一格，沿路径累加后中间项全部抵消，总奖励只等于终点值减起点值。",
+      "于是问题变成：对每个终点，找一个能只向右、向下走到它的不同起点，使起点值最小。能到达 (r,c) 的起点就是行、列都不超过它的格子，这个最小值可以从上方和左方递推得到。",
+      "设 low[r][c] 为能到达 (r,c) 的所有格子（含自身）中的最小值；对除左上角外的每个格子，取上方和左方 low 的较小值 best，用当前值减 best 更新答案（答案可能为负），再令 low[r][c]=min(当前值,best)；扫描完输出答案。"
+    ],
+    "en": [
+      "Each catch earns the receiving cell minus the passing cell, so along a path all middle terms cancel and the total reward is just the end value minus the start value.",
+      "So the task becomes: for each end cell, find a different start cell that can reach it by moving only right and down and has the smallest value. The cells that can reach (r, c) are those whose row and column are both not larger, and that minimum can be built from the cells above and to the left.",
+      "Let low[r][c] be the minimum value over all cells that can reach (r, c), itself included; for every cell except the top-left one, take best as the smaller of low above and low on the left, update the answer with the current value minus best (the answer may be negative), then set low[r][c] = min(current value, best); print the answer after the scan."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the matrix, maintaining the minimum over the earlier cells that can reach the current position, and subtract it from the current value.\n\n## Proof of correctness\n\nEach reward along the path is the later cell minus the earlier cell, so the cumulative sum telescopes to end minus start. A start and an end that can be connected by moving only right or down are exactly those whose row and column both do not decrease and that are different cells; each end only needs to subtract the minimum among the earlier cells that can reach it. Merging the prefix minima from above and from the left with the current value allows an O(NM) scan.\n\n## Complexity\n\nTime O(NM), space O(NM); the absolute value of the maximum cumulative reward does not exceed 10000."
+}

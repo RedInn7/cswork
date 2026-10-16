@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-164",
+  "packageChecksum": "6cf7e8ceb4d8cf169aeaf603bd0dfc07cdb07de9dd702d66e1f19dcc6613276f",
+  "sourceContentHash": "d3a2653241c9b88fedf21bc82e69d9e5e73358a43a264106122417bbfbbccf98",
+  "editorialSha256": "c4ceb886e3890723d74e5f42eaede33d37805e7a99d6be2c0827a8551f584537",
+  "hints": {
+    "zh": [
+      "一个前端如果连最小的未配对后端都赢不了，就赢不了任何后端，可以直接放弃；如果能赢，让它去配最小的后端最不浪费。",
+      "两组都升序排序，用指针j指向最小的未配对后端；按从小到大遍历前端，若当前前端严格大于b[j]，就配成一对并让j前进，否则跳过这个前端。",
+      "排序a和b，j=0；对a中的每个值v：若j小于n且v严格大于b[j]，则j加1。遍历结束后j就是最大配对数。注意相等不算胜过。"
+    ],
+    "en": [
+      "A frontend that cannot beat the smallest unmatched backend cannot beat any backend, so drop it; one that can should take the smallest backend, which wastes nothing.",
+      "Sort both groups ascending and let j point at the smallest unmatched backend; go through the frontends from small to large, and when the current frontend is strictly greater than b[j], pair them and advance j; otherwise skip that frontend.",
+      "Sort a and b, j = 0; for each v in a, if j < n and v > b[j], increase j. When the loop ends, j is the maximum number of pairs. Equal values do not count as a win."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort both lists and pair each backend with the smallest unused frontend that can beat it.\n\n## Proof of correctness\n\nIf the smallest frontend is not large enough, it cannot beat any larger backend either, so it can be skipped; if it can be paired, some optimal plan can be changed by exchanging pairings so that these two smallest available elements form a pair, without reducing the count. Repeating the exchange proves the greedy optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

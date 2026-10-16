@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-250",
+  "packageChecksum": "5126811f12038d06ab9e7531a32989fc2fa9755bf52ff743441db51d1bd309fd",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    // best[i]: earliest index of the maximum of a[i..n-1].\n    vector<int> best(n);\n    int at = n - 1;\n    for (int i = n - 1; i >= 0; i--) {\n        if (a[i] >= a[at]) at = i;\n        best[i] = at;\n    }\n    string out;\n    for (long long i = 0; i < n;) {\n        int j = best[i];\n        if (!out.empty()) out += ' ';\n        out += to_string(a[j]);\n        i = j + k + 1;\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "c06f412df69f2910966066af9bc2933ca840e159f96392dda62c217b2dd4cdaa"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long k = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // best[i]: earliest index of the maximum of a[i..n-1].\n        int[] best = new int[n];\n        int at = n - 1;\n        for (int i = n - 1; i >= 0; i--) {\n            if (a[i] >= a[at]) at = i;\n            best[i] = at;\n        }\n        StringBuilder out = new StringBuilder();\n        for (long i = 0; i < n;) {\n            int j = best[(int) i];\n            if (out.length() > 0) out.append(' ');\n            out.append(a[j]);\n            i = j + k + 1;\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "452c5b0ac87f0f0f0ca058636a32605bfb5274b9bbf8b6abfe70522ee0ae949f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tk := nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// best[i]: earliest index of the maximum of a[i..n-1].\n\tbest := make([]int, n)\n\tat := n - 1\n\tfor i := n - 1; i >= 0; i-- {\n\t\tif a[i] >= a[at] {\n\t\t\tat = i\n\t\t}\n\t\tbest[i] = at\n\t}\n\tvar out []byte\n\tfor i := int64(0); i < int64(n); {\n\t\tj := best[i]\n\t\tif len(out) > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, a[j], 10)\n\t\ti = int64(j) + k + 1\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "d7ba8854faf2916a5418a8258e66c55ce2f7d45fcfdeffeef41a04dd2d1c5dfa"
+    }
+  ]
+}

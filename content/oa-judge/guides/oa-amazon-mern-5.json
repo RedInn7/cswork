@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-mern-5",
+  "packageChecksum": "a03579fb1610cc42aa2ef59d4b900cba20141851af44609fbf52bb7130a8d582",
+  "sourceContentHash": "b94891c8d475a9067469b99a7ef984d82088645c66f6a816280b1c24b0658629",
+  "editorialSha256": "306b1e792b0b45e0fb3d1b197a5cacef9494a6ea10e2cdd7a28e9ce5d20edecd",
+  "hints": {
+    "zh": [
+      "被移动过的数字可以插到任意位置，所以最终答案一定是所有最终数字的升序排列。问题就变成：哪些数字必须被移动（从而加一）。",
+      "如果一个数字右边还有比它小的数字，不动它就会挡住那个更小的数字，所以它必须移动一次；移动一次就够了，多移只会让它更大。右边没有更小数字的数字保持原值。",
+      "从右往左扫描并维护右侧最小值：当前数字大于这个最小值时，把 min(d+1, 9) 计入计数；否则按原值计数并更新最小值。最后按 0 到 9 的顺序输出各数字的计数，保留前导零。"
+    ],
+    "en": [
+      "A moved digit can be inserted anywhere, so the final answer is always all final digits in ascending order. The real question is which digits must be moved, and therefore incremented.",
+      "If a digit has a smaller digit somewhere to its right, leaving it in place blocks that smaller digit, so it must be moved once; one move is enough, since moving again only makes it larger. Digits with nothing smaller on their right keep their value.",
+      "Scan from right to left while keeping the minimum digit seen so far: if the current digit is greater than that minimum, count min(d+1, 9); otherwise count the digit itself and update the minimum. Finally print the counted digits from 0 to 9, keeping leading zeros."
+    ]
+  },
+  "explanationEn": "## Source Mapping\n\nAmazon MERN #5 is labeled in the original as an interleaved algorithm problem and is already included in the main algorithm library. In the fixed snapshot its title is \"Optimize Box IDs\"; the operation and examples of the Fastprep original are exactly the same as Amazon #34. The link on #5 points to Amazon #13 \"Get Total Balanced\", which is unrelated to this string problem, so the #5 company number is kept and the verified package of #34 is reused.\n\n## Approach\n\nScan from right to left while maintaining the minimum digit on the right. If the current digit is greater than that minimum, it must be moved and incremented by 1; otherwise it stays. Finally sort the transformed digits.\n\n## Proof of Correctness\n\nIf a digit has a smaller digit after it, not moving it would block the smaller digit from moving forward; an optimal solution can move it and increment it only once, since extra increments are never better. The unmoved digits form a non-decreasing sequence, and moved digits can be inserted at any position, so all digits can be merged in ascending order to obtain the smallest result.\n\n## Complexity\n\nTime O(n+10), space O(n)."
+}

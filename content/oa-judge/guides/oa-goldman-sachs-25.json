@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-25",
+  "packageChecksum": "95e16e4dc1d12154ebb039df98723892154a243e215a8fb4daefebb92f65f29b",
+  "sourceContentHash": "31ced7e174690302c8f4006bf22de2a663e70899c9801806997b83990b277adf",
+  "editorialSha256": "8bc8816981401819a9093b88da10ad7a86eac09ff4fc72798d8247da2c45497e",
+  "hints": {
+    "zh": [
+      "加完前 i 个元素后的累计值等于初值 x 加上前 i 个元素的前缀和，所以所有约束都可以写成“x + 某个前缀和 ≥ 1”。",
+      "这些约束里最紧的一条来自最小的前缀和 minPrefix。只要 x + minPrefix ≥ 1，其余前缀自然也满足；而 x 还必须是正数。",
+      "令前缀和 s 与 minPrefix 都从 0 开始（把空前缀算作 0 恰好保证 x ≥ 1）；逐个加入元素并更新 minPrefix = min(minPrefix, s)；输出 1 − minPrefix。前缀和最多约 10^11，用 64 位整数。"
+    ],
+    "en": [
+      "After adding the first i elements, the running value equals the initial x plus the prefix sum of those i elements, so every constraint reads x + (some prefix sum) >= 1.",
+      "The tightest of these constraints comes from the smallest prefix sum minPrefix. Once x + minPrefix >= 1, all other prefixes are fine too; x must also be positive.",
+      "Start both the prefix sum s and minPrefix at 0 (counting the empty prefix as 0 is exactly what forces x >= 1); add the elements one by one and update minPrefix = min(minPrefix, s); print 1 - minPrefix. Prefix sums reach about 10^11, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the minimum minPrefix over all prefix sums. The initial value x must satisfy x+minPrefix≥1, so the answer is 1−minPrefix.\n\n## Proof of correctness\n\nThe running sum after each step equals x plus the corresponding prefix sum. All running sums are at least 1 if and only if x≥1−minPrefix; that value itself satisfies the constraint, and anything one smaller fails at the minimum prefix.\n\n## Complexity\n\nO(n) time, O(1) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-10",
+  "packageChecksum": "7724a65853297256c41a40463349e13b6a0312bceba078505a274a6ee6fe9335",
+  "sourceContentHash": "0c5e4f5fb329c25c22ad63de3a6011f10e7c05ad37afea4e2523424c3a1734ce",
+  "editorialSha256": "1cc0436cd0a51c94877bd35070d6b419f65e2f2ab43b13ff4e76d771cea59c3a",
+  "hints": {
+    "zh": [
+      "题目保证 usage 两两不同，所以用量最大的设备是唯一的，只要找到最大值对应的 ID 即可。",
+      "逐条读入记录，把四位数字（可能有前导零）按整数解析，一边扫描一边维护当前最大用量及其设备 ID。",
+      "初始最大值设为 −1；新记录的用量严格大于当前最大值时，就更新最大值和 ID。扫描结束后输出这个 ID（单独一行）。时间 O(n)，额外空间 O(1)。"
+    ],
+    "en": [
+      "The usage values are guaranteed to be pairwise distinct, so the device with the largest usage is unique; you only need the ID that goes with the maximum.",
+      "Read the records one by one, parse the four-digit usage (possibly with leading zeros) as an integer, and keep the current maximum usage and its device ID while scanning.",
+      "Start the maximum at -1; whenever a record's usage is strictly greater than the current maximum, update both the maximum and the ID. After the scan, print that ID on its own line. Time O(n), extra space O(1)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nParse each record's ID and the integer given by its four digits, and keep the entry with the largest usage. The statement guarantees that usage values are distinct, so the maximum corresponds to a unique device.\n\n## Correctness\n\nAfter scanning the first i records, best is always the ID of the device with the largest usage among them. Update it when a new record has larger usage, otherwise keep it. When the scan ends, best therefore corresponds to the overall maximum usage.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

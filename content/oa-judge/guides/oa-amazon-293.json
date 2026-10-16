@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-293",
+  "packageChecksum": "91f76ac622318146ba6d7a34efecc126d8fc0ec864e28d1d6bf8791bb57fd05a",
+  "sourceContentHash": "37dbaca43484308db3412e8d243e042fc97d09a2e6bee4b23fb4c9b0d074fb01",
+  "editorialSha256": "f631e1f322e5dbf8540236bed5eee7a600c40a7a39852c36d5f402c3479a125b",
+  "hints": {
+    "zh": [
+      "看两对交叉的配对：若 x≤y 且 u≤v，那么 x 配 u、y 配 v 的绝对差之和不会超过 x 配 v、y 配 u。也就是说，交叉的配对总能换成不交叉的而不变差。",
+      "反复消除交叉，最后得到的就是两边都按大小排好后按顺序一一配对，所以这种配对就是最优的。",
+      "两个数组分别升序排序，对每个下标 i 累加 |a[i]−b[i]|，输出总和。数值可以为负，总和最大约 2×10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Look at two crossing pairs: if x ≤ y and u ≤ v, then pairing x with u and y with v gives a total absolute difference no larger than pairing x with v and y with u. In other words, a crossing pairing can always be uncrossed without getting worse.",
+      "Removing crossings repeatedly ends with both sides sorted and paired in order, so that pairing is optimal.",
+      "Sort both arrays in ascending order, add |a[i]−b[i]| for every index i, and print the total. Values can be negative and the total can reach about 2×10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort both arrays in ascending order, pair them in that order, and add up the absolute differences.\n\n## Proof of correctness\n\nIf x≤y and u≤v, then |x−u|+|y−v|≤|x−v|+|y−u|. So any crossing pairing can be swapped into a non-crossing one without increasing the cost. Repeatedly removing crossings gives the sorted, same-order pairing, which is exactly what the algorithm builds, so it is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n); the total cost is at most 2×10^14 and needs 64 bits."
+}

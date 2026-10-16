@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-5",
+  "packageChecksum": "cc18b5f300d1712a6ace54aa894e3abccb763af6771e1ecc31dfb3f161896e8c",
+  "sourceContentHash": "c9a1b053c7551d4945991330c4f59a10cd1a639f100a77cfc8522d12f1ce6a25",
+  "editorialSha256": "501833a262a95afd758adb6f09892fefdca15860fe782cd957f83de3cf9dbf21",
+  "hints": {
+    "zh": [
+      "单词之间互不影响，可以逐个单词独立判断；判断时大小写视为同一个字母，所以先把字母统一成小写（或大写）再计数。",
+      "对每个单词用长度为 26 的计数数组统计各字母出现次数；只要某个字母的次数达到 3，这个单词就符合条件，而且只算一次，不按满足条件的字母个数重复计。",
+      "按空白把输入切成单词，答案置 0；对每个单词清空计数数组，逐字符转小写后计数，一旦某个计数达到 3 就标记命中；命中则答案加一。最后输出答案。"
+    ],
+    "en": [
+      "Words do not affect each other, so each word can be judged independently; upper and lower case count as the same letter, so normalize every letter to lower (or upper) case before counting.",
+      "For each word, count letters in an array of size 26; as soon as some letter reaches 3 occurrences the word qualifies, and it is counted only once no matter how many letters reach that threshold.",
+      "Split the input on whitespace into words and set the answer to 0; for each word, reset the counts, count each character after lowercasing it, and mark a hit once any count reaches 3; add one to the answer for each hit word. Print the answer at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each word, count letter frequencies ignoring case. If some letter has a frequency of at least 3, the word counts as one.\n\n## Proof of correctness\n\nThe frequency condition is the same as in the statement, and each word contributes only one boolean count, so each word contributes at most 1; summing over all words gives the answer.\n\n## Complexity\n\nTime O(L), space O(1) for the alphabet.\n\n## Source notes\n\nThis site supplied a deterministic standard input/output protocol. In upstream problem 9, the dense-arrival example omitted the completion time of one admitted guest; this site corrected it to 3301 according to the explicit 300-second service and queue rules, and states this truthfully in the source evidence."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-335",
+  "packageChecksum": "9c63eb5408a81cf31d36bc046215130df3af9b639b57c8d63d6be8a759be22c6",
+  "sourceContentHash": "3f4fdcc306c014c45384163dbffea59f0b9639d110bf7336506585d34a91e782",
+  "editorialSha256": "7ff7a22b7844b074ae0ed6bc32f38cf1ca5dc51be105d3c3464716fbe20bce66",
+  "hints": {
+    "zh": [
+      "删除后两边会拼接，原本不相邻的相同字符可能后来变得相邻并被一次删掉，所以不能只数原串里的连续段。考虑区间[l, r]，盯住最左边的字符s[l]是怎么被删掉的。",
+      "s[l]要么单独被删（代价1，再加清空[l+1, r]），要么和后面某个同字符位置k一起被删：这时[l+1, k−1]必须先清空，然后s[l]可以免费跟着k那一次删除，剩下的就是清空[k, r]。",
+      "设dp[l][r]为清空s[l..r]的最少次数，空区间为0、单字符为1。按l从右到左、r从左到右计算：初值1+dp[l+1][r]，再对每个l<k≤r且s[k]=s[l]的k，用dp[l+1][k−1]+dp[k][r]取最小值。字符按Unicode码点比较（先解码JSON，一对代理项算一个字符），空串答案为0。"
+    ],
+    "en": [
+      "After a deletion the two sides join, so equal characters that were not adjacent may become adjacent later and be deleted at once; you cannot just count the runs of the original string. Consider an interval [l, r] and focus on how the leftmost character s[l] gets deleted.",
+      "Either s[l] is deleted on its own (cost 1 plus clearing [l+1, r]), or together with some later position k holding the same character: then [l+1, k−1] must be cleared first, after which s[l] rides along with k's deletion for free, and what remains is clearing [k, r].",
+      "Let dp[l][r] be the minimum number of deletions to clear s[l..r], with 0 for an empty interval and 1 for a single character. Compute with l from right to left and r from left to right: start from 1+dp[l+1][r], then for every k with l<k≤r and s[k]=s[l] take the minimum with dp[l+1][k−1]+dp[k][r]. Compare characters by Unicode code point (decode the JSON first; a surrogate pair is one character), and the empty string gives 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInterval DP. Deleting the left character on its own gives 1+dp[l+1][r]; if s[k]=s[l], first clear the middle and then handle the left character in the same deletion as k, giving the candidate dp[l+1][k−1]+dp[k][r]. An empty interval is 0; enumerate every k with the same character and take the minimum.\n\n## Proof of correctness\n\nConsider the operation that deletes the left-end character. If it is not deleted together with any other original position, the cost is at least 1 plus the optimum for the rest; otherwise let k be the next original position in the same deletion. Everything in between must be cleared first, after which the left character can be attached to k's deletion at no extra charge. The independent optima of the two intervals give a lower bound; conversely, clearing the middle first, running the plan for the right part, and attaching the left character to the deletion that removes k achieves it. So the transitions cover every optimal plan, and computing by increasing length is correct.\n\n## Complexity\n\nTime O(n³), space O(n²); with n≤200 on this site, the triple loop is on the order of 8 million steps."
+}

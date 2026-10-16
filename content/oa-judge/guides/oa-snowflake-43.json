@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-43",
+  "packageChecksum": "549ded4aa764e4a047185f6194c5928af4c2b8dd6776b6aea9fcf29c1e7600f8",
+  "sourceContentHash": "eec5283f43c81446b5cb800113e82eb35ee7db412a331087a278bb630dea6a00",
+  "editorialSha256": "b890a54169df65e049e82416d20c04348939639dfcfee1fe37098c9556d581b0",
+  "hints": {
+    "zh": [
+      "频率差为 2 的边（1 和 3 相连）永远不能用，可以直接删掉；剩下的每个连通块仍是一棵树，合法路径就是这片森林里的路径。",
+      "答案是森林中所有树的直径的最大值。一棵树的直径可以用两次遍历求出：从任意点出发找到最远点，再从这个最远点出发的最远距离就是直径。",
+      "建图时只保留 |f[a]−f[b]|≤1 的边；对每个尚未访问的点，先 BFS 找到本块最远点 end（同时标记整块已访问），再从 end BFS 得到最大距离，用它更新答案。用迭代 BFS，避免十万个点的链导致递归过深；单点块贡献 0。"
+    ],
+    "en": [
+      "An edge whose endpoint frequencies differ by 2 (a 1 next to a 3) can never be used, so delete it. Every remaining connected component is still a tree, and the valid paths are exactly the paths in this forest.",
+      "The answer is the largest diameter among the trees of the forest. The diameter of a tree takes two traversals: from any node find the farthest node, then the largest distance from that farthest node is the diameter.",
+      "Keep only edges with |f[a] - f[b]| <= 1. For each unvisited node, run a BFS to find the farthest node end of its component (marking the whole component visited), then BFS from end and use the largest distance to update the answer. Use iterative BFS so a chain of 100,000 nodes cannot overflow the recursion stack; a single-node component contributes 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDelete the edges whose frequency difference is 2 to get a forest. For each unvisited component, first traverse to its farthest endpoint, then traverse from that endpoint to get the component's diameter, and take the maximum.\n\n## Correctness\n\nValid paths are exactly the paths in the forest left after the deletion. In a tree, the farthest node from any node can serve as an endpoint of some diameter, and the largest distance from it is the component's diameter. Each component is handled independently, and the largest component diameter is the global answer; a single-node component contributes 0.\n\n## Complexity\n\nO(n) time and O(n) space; the iterative traversal does not overflow on a chain of one hundred thousand nodes."
+}

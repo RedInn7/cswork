@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-31",
+  "packageChecksum": "c6de1d9a9e71c6fc5c4418a2c687a36c1a0dd5179753570e7b73d589530b134a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    priority_queue<long long, vector<long long>, greater<>> heap;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        heap.push(v);\n    }\n    // Huffman merging: always combine the two smallest values.\n    long long cost = 0;\n    while (heap.size() > 1) {\n        long long x = heap.top();\n        heap.pop();\n        long long y = heap.top();\n        heap.pop();\n        cost += x + y;\n        heap.push(x + y);\n    }\n    cout << cost << \"\\n\";\n}\n",
+      "sha256": "723cf964171ae8343d950464e1a995a408a2d28f5f30311aed2381d2402c1423"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        PriorityQueue<Long> heap = new PriorityQueue<>();\n        for (int i = 0; i < n; i++) heap.add(next());\n        // Huffman merging: always combine the two smallest values.\n        long cost = 0;\n        while (heap.size() > 1) {\n            long value = heap.poll() + heap.poll();\n            cost += value;\n            heap.add(value);\n        }\n        System.out.println(cost);\n    }\n}\n",
+      "sha256": "5a14750915c0e9b69a8fe567e082af230dfc9ead336068157e143e6b096a6849"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\ntype minHeap []int64\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\th := make(minHeap, n)\n\tfor i := range h {\n\t\th[i] = next()\n\t}\n\theap.Init(&h)\n\t// Huffman merging: always combine the two smallest values.\n\tvar cost int64\n\tfor h.Len() > 1 {\n\t\tvalue := heap.Pop(&h).(int64) + heap.Pop(&h).(int64)\n\t\tcost += value\n\t\theap.Push(&h, value)\n\t}\n\tfmt.Println(cost)\n}\n",
+      "sha256": "cba15469772ea516764215004ec0fdd9a66c77c2f41c9affe72e91c94dd1edf4"
+    }
+  ]
+}

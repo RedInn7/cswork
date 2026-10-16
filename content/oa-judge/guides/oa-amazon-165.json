@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-165",
+  "packageChecksum": "836178a125504def1acc99118cedb4121402512b3497c7f3becd72d5bc78a859",
+  "sourceContentHash": "95a04a92cfddb80af5bd0fed79d1c14d75c5bbe1d1d157d8a3abb78f9a3d1e50",
+  "editorialSha256": "3b5f6aa6ef318857a6791c7f3270ee622b63767637f06c78706ac97ee944f96d",
+  "hints": {
+    "zh": [
+      "不做修改时，总分等于以每个位置结尾的平滑段长度之和。修改位置i只会影响包含i的子串，其余子串的贡献保持不变。",
+      "预处理left[i]（以i结尾的最长平滑段长度）和right[i]（以i开头的最长平滑段长度）。包含i的平滑子串原来有left[i]乘right[i]个；把i换成字母c后，若c与左邻相差不超过1就能接上左边的left[i−1]段，右边同理，新的个数是(l+1)乘(r+1)。",
+      "基准分baseline为所有left之和；对每个位置i和每个字母c：若i大于0且c与s[i−1]相差不超过1，则l=left[i−1]，否则l=0；若i+1小于n且c与s[i+1]相差不超过1，则r=right[i+1]，否则r=0；候选值为baseline−left[i]·right[i]+(l+1)·(r+1)。输出所有候选值与baseline中的最大者。数值可达约n²/2，用64位整数。"
+    ],
+    "en": [
+      "Without changes, the score is the sum over positions of the length of the smooth run ending there. Changing position i only affects substrings that contain i; all other substrings keep their contribution.",
+      "Precompute left[i], the longest smooth run ending at i, and right[i], the longest starting at i. The smooth substrings containing i number left[i] * right[i]; after replacing s[i] with a letter c, the left run left[i-1] joins when c is within 1 of its left neighbour, the right side likewise, and the new number is (l+1) * (r+1).",
+      "Let baseline be the sum of left. For every position i and letter c: l = left[i-1] if i > 0 and c is within 1 of s[i-1], else 0; r = right[i+1] if i+1 < n and c is within 1 of s[i+1], else 0; the candidate is baseline - left[i]*right[i] + (l+1)*(r+1). Print the maximum of baseline and all candidates. Values reach about n^2/2, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute, for each position, the maximum smooth run length extending to the left and to the right. A changed position only affects the substrings containing it; enumerate the 26 replacements and compute the new (left extension + 1)(right extension + 1) minus the old contribution.\n\n## Proof of correctness\n\nSubstrings not containing the changed position stay unchanged; for valid substrings containing it, how far to extend to the left and to the right can be chosen independently, which is exactly the product of the numbers of choices on the two sides. The adjacent edges decide whether the precomputed runs can be joined, and enumerating all positions and characters exhausts all allowed changes.\n\n## Complexity\n\nTime O(26n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-superhuman-2",
+  "packageChecksum": "2a72cbc67f46b4dccee8b1da2c9134efc3b0b52004e38d52c32b3f5f6decceeb",
+  "sourceContentHash": "2a71880c07705e989b70b6bbf3908701882993f14186c129978967bd1a6ca9b4",
+  "editorialSha256": "d238925b7140d98159f2ae520d0deeab2a76fd9cf16436faa03cc66ed6a6bcc1",
+  "hints": {
+    "zh": [
+      "分值非降，所以已解题目的跨度就是“最后到达位置的分值 − 第一题分值”，它随最后下标单调不减；要尽快达到阈值，就要尽快走远。",
+      "每步只能 +1 或 +2，到达下标 j 至少需要 ceil(j/2) 步，而一直走 +2 恰好达到这个下界；所以贪心地每次跳 2，跳不了 2 时跳 1。",
+      "i=0、计数 c=1；当 a[i]−a[0]<threshold 时：若 i+2<n 则 i+=2，否则若 i+1<n 则 i+=1，否则已到末尾仍未达标，直接输出 n；每走一步 c 加一。循环结束输出 c。"
+    ],
+    "en": [
+      "The points are non-decreasing, so the spread of the solved problems is the score at the last position reached minus the first score, which never decreases as the last index grows. To reach the threshold quickly, move as far as quickly as possible.",
+      "Each step moves +1 or +2, so reaching index j takes at least ceil(j/2) steps, and always moving +2 meets that bound exactly. So greedily jump by 2, and by 1 only when 2 is impossible.",
+      "Set i = 0 and c = 1. While a[i] - a[0] < threshold: if i + 2 < n then i += 2, else if i + 1 < n then i += 1, else the end is reached without meeting the threshold, so output n; each move adds one to c. When the loop ends, output c."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBecause the scores are non-decreasing, the spread grows monotonically with the last index; jumping +2 every time reaches the farthest position with the fewest steps.\n\n## Proof of correctness\n\nEvery path moves at most two cells per step, so reaching any index j takes at least ceil(j/2) steps; jumping two cells repeatedly reaches this lower bound.\n\n## Complexity\n\nO(n) time, O(1) space."
+}

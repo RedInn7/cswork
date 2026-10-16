@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-200",
+  "packageChecksum": "f41cbd213d94fb6e35f345ae4f74e1a8b8e907c5dbf7b0d5e47ba4b7a2d40301",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    long long k;\n    cin >> s >> k;\n    int n = s.size(), left = 0, answer = 0;\n    long long groups = 0;  // runs of '0' inside the window; each needs one flip\n    for (int right = 0; right < n; right++) {\n        if (s[right] == '0' && (right == 0 || s[right - 1] == '1')) groups++;\n        while (groups > k) {\n            if (s[left] == '0' && (left == right || s[left + 1] == '1')) groups--;\n            left++;\n        }\n        answer = max(answer, right - left + 1);\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "d3505f615d7f62e3c402e1f3b50db4fd05fc6cfc27618635590ab2bd4ea89c0c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long k = nextLong();\n        int n = s.length(), left = 0, answer = 0;\n        long groups = 0; // runs of '0' inside the window; each needs one flip\n        for (int right = 0; right < n; right++) {\n            if (s.charAt(right) == '0' && (right == 0 || s.charAt(right - 1) == '1')) groups++;\n            while (groups > k) {\n                if (s.charAt(left) == '0' && (left == right || s.charAt(left + 1) == '1')) groups--;\n                left++;\n            }\n            answer = Math.max(answer, right - left + 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e7281f62b5c622370a6464f0f97165a4ccd9d8c1c4ce3efae3437860b58d97cd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := nextToken()\n\tk := nextInt()\n\tn, left, answer := len(s), 0, 0\n\tvar groups int64 // runs of '0' inside the window; each needs one flip\n\tfor right := 0; right < n; right++ {\n\t\tif s[right] == '0' && (right == 0 || s[right-1] == '1') {\n\t\t\tgroups++\n\t\t}\n\t\tfor groups > k {\n\t\t\tif s[left] == '0' && (left == right || s[left+1] == '1') {\n\t\t\t\tgroups--\n\t\t\t}\n\t\t\tleft++\n\t\t}\n\t\tanswer = max(answer, right-left+1)\n\t}\n\tfmt.Println(answer)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "b4964e714c316b55b6e356b04096a3a1760e4041c34ef5a30397ab451b0ba55b"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-210",
+  "packageChecksum": "512c9eabb987d0c3497a630ad8d9aca243b6ecd881412fd7b55694b5af5f2328",
+  "sourceContentHash": "3e7e4567cf2f8c81f1edf8982e64aa416abcc1ee954fb078f2b76fadf257a66d",
+  "editorialSha256": "2ca15b178031e46cddd6c0ed931984439810279bfd876d69c57a96f72f0d2e6e",
+  "hints": {
+    "zh": [
+      "中位数是组内第二大的数，所以想要高中位数，组里需要一个更大的数和中位数本身，第三个数越小越好。",
+      "若组成 q 组，第 j 大的中位数至多是全局第 2j 大的值；把最大的 2q 个数相邻两两配对、再各配一个较小的数，能同时达到所有上界。值都为正，所以 q 取 floor(n/3)。",
+      "升序排序；答案 = 对 i=0..floor(n/3)−1 求 a[n−2−2i] 之和，用 64 位整数。"
+    ],
+    "en": [
+      "The median is the second largest member of a group, so a high median needs one larger value plus the median itself, and the third member should be as small as possible.",
+      "With q groups, the j-th largest median is at most the 2j-th largest value overall; pairing the largest 2q values two by two and adding one small value to each pair attains all bounds at once. Values are positive, so take q = floor(n/3).",
+      "Sort ascending; the answer is the sum of a[n-2-2i] for i = 0..floor(n/3)-1, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, form at most floor(n/3) groups: repeatedly take two servers from the largest end, the smaller of which contributes the median, and give the group one of the smallest remaining servers.\n\n## Proof of correctness\n\nWhen q groups are formed, list the group medians in descending order; the j-th median needs at least 2j servers not smaller than it, so its upper bound is the 2j-th largest value overall. Pairing the largest 2q servers with their neighbours and adding q smaller servers attains all of these bounds at once. All values are positive, so a larger q gives a larger sum of bounds, hence take floor(n/3).\n\n## Complexity\n\nTime O(n log n), space O(n), with a 64-bit answer."
+}

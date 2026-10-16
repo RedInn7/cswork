@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-305",
+  "packageChecksum": "5a6180987719170fd553499034d1ceff113f6f6e675a63f0ee28318d727879dd",
+  "sourceContentHash": "851b6b0b8524268b854b546a0515be7edc002d02448c48ccb566d9856ff19d79",
+  "editorialSha256": "91707c100799930171eeb7c7d1df3d6cf7599ad546325f601f09c8ca5ce8f6f1",
+  "hints": {
+    "zh": [
+      "每个孩子拿1或2个，所以k个孩子最少装k个、最多装2k个游戏；在可行时，拿两个游戏的孩子数量是固定的。",
+      "双件组恰好有p=n−k个。直觉上大游戏应单独成组，把最小的2p个游戏两两配对；配对时让其中最大的配最小的，次大的配次小的，依此类推。",
+      "若k>n或n>2k输出−1。否则升序排序，答案初值取最大游戏的大小，再对i=0..p−1用a[i]+a[2p−1−i]更新最大值。"
+    ],
+    "en": [
+      "Each child gets 1 or 2 games, so k children hold at least k and at most 2k games; when it is feasible, the number of children who get two games is fixed.",
+      "There are exactly p=n−k two-game groups. Intuitively, large games should stay alone and the smallest 2p games should be paired up, with the largest of them paired with the smallest, the second largest with the second smallest, and so on.",
+      "If k>n or n>2k, output −1. Otherwise sort ascending, start the answer at the size of the largest game, and update the maximum with a[i]+a[2p−1−i] for i=0..p−1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf k>n or n>2k, there is no solution. Otherwise there must be exactly p=n−k two-game groups. After sorting, pair the smallest 2p games from both ends, put each remaining larger game in a group by itself, and take the maximum load over all groups.\n\n## Proof of correctness\n\nThe numbers of groups and games force exactly p two-game groups. If a larger game is in a two-game group while a smaller game is alone, swapping them does not raise any new group above the original maximum load, so pairing the smallest 2p games is never worse. Among these numbers, if the largest is not paired with the smallest, swap the partners of the two groups involved; neither new sum exceeds the larger of the two original sums. By induction, pairing the extremes is optimal. Including the loads of all single-game groups gives the answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

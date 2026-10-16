@@ -1,0 +1,19 @@
+{
+  "id": "oa-jane-street-1",
+  "packageChecksum": "3d82238576b2a22bff75d5ea99b0339fb30ca2b5ad52ca0c4bf2326f123344a0",
+  "sourceContentHash": "1690b0b662ef88bb13d22a4967d957cc0b92ad07e9874cd58eb2fc87c43815a6",
+  "editorialSha256": "7c1fb043223fabf6fb0b60375934a15aa32d95ad6008d8c9aba470a636b45095",
+  "hints": {
+    "zh": [
+      "每次删除只涉及相邻的一对字符；删掉之后，新出现的相邻关系只可能在被删位置的两侧。",
+      "从左到右扫描，用栈保存还没被消掉的字符：新字符与栈顶组成 AB、BA、CD 或 DC 时二者一起消掉，否则把新字符压栈。",
+      "栈为空或新字符与栈顶不能配对时压入；能配对时弹出栈顶并丢弃新字符。扫描结束后按栈底到栈顶的顺序拼接输出，结果为空时输出空行。"
+    ],
+    "en": [
+      "Each deletion involves one adjacent pair; after it, the only new adjacency appears between the two sides of the deleted spot.",
+      "Scan from left to right and keep the characters not yet removed on a stack: if the new character forms AB, BA, CD, or DC with the top, remove both; otherwise push the new character.",
+      "Push when the stack is empty or the new character cannot pair with the top; when it can, pop the top and drop the new character. At the end, print the stack from bottom to top, or an empty line if it is empty."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan from left to right and keep the characters not yet removed on a stack. When the new character forms AB, BA, CD, or DC with the top of the stack, pop the top; otherwise push the new character.\n\n## Proof of correctness\n\nAfter a prefix is scanned, the stack is one irreducible result of that prefix under the removal rules. After a new character is appended, any newly created adjacent removable pair can only span the new character and the end of the old prefix; if they match, both are removed, otherwise the new character stays. By induction, the final string cannot be transformed further and can be obtained from the original string by valid transformations.\n\n## Complexity\n\nO(n) time and O(n) space.\n\n## Source notes\n\nThe statement is compiled from a fixed OAMaster snapshot; the standard input/output protocol is added by this site, which does not claim that the original site provides this protocol."
+}

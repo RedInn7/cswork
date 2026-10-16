@@ -1,0 +1,16 @@
+{
+  "id": "oa-dtcc-1",
+  "packageChecksum": "d906759b72265db94b814672d2629fb315c4fe691369653f1ccc1ea9c11d80e2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Long division; a repeated remainder marks where the cycle starts.\n    vector<int> firstPos(n, -1);\n    string digits;\n    int remainder = 1;\n    while (remainder != 0 && firstPos[remainder] < 0) {\n        firstPos[remainder] = digits.size();\n        remainder *= 10;\n        digits += char('0' + remainder / n);\n        remainder %= n;\n    }\n    string prefix, cycle;\n    if (remainder == 0) prefix = digits, cycle = \"0\";\n    else prefix = digits.substr(0, firstPos[remainder]), cycle = digits.substr(firstPos[remainder]);\n    cout << \"0.\" << prefix << cycle << \" \" << cycle << \"\\n\";\n}\n",
+      "sha256": "49b9317b72abbd33dffdb9c491c73171db517e4a1d1b2b92678f22a4b09760a4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] firstPos = new int[n];\n        Arrays.fill(firstPos, -1);\n        StringBuilder digits = new StringBuilder();\n        int remainder = 1;\n        while (remainder != 0 && firstPos[remainder] < 0) {\n            firstPos[remainder] = digits.length();\n            remainder *= 10;\n            digits.append((char) ('0' + remainder / n));\n            remainder %= n;\n        }\n        String prefix, cycle;\n        if (remainder == 0) {\n            prefix = digits.toString();\n            cycle = \"0\";\n        } else {\n            prefix = digits.substring(0, firstPos[remainder]);\n            cycle = digits.substring(firstPos[remainder]);\n        }\n        System.out.print(\"0.\" + prefix + cycle + \" \" + cycle + \"\\n\");\n    }\n}\n",
+      "sha256": "c1f82cdc2722fa78270daea263fd839e35b3293efae6ba85f780510b2f765953"
+    }
+  ]
+}

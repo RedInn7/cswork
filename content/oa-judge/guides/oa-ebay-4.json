@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-4",
+  "packageChecksum": "e01c9af00118ea5ee727dc3bb0f524defdb726d762f4dbafa4304787650e32a6",
+  "sourceContentHash": "e05c99c756d04cafe3a5e89feaeaf3487334206d17f9f143fffd41300d17e007",
+  "editorialSha256": "4d3b8aaa13f7ba522e194e5f359d353a995c9bc09c009a298b41efbb1d0df8d8",
+  "hints": {
+    "zh": [
+      "窗口外的策略不变，所以先算出不改动时的基准总利润，再看把哪个长度为 k 的窗口改掉能多赚多少。",
+      "窗口内每一天都可以独立选 −1、0、+1，当天利润 −s·rate 的最大值是 |rate|。所以把第 i 天重设后的增益是 |rate[i]| − (−s[i]·rate[i]) = |rate[i]| + s[i]·rate[i]，问题变成求长度 k 的子数组增益和的最大值。",
+      "基准 base = Σ −s[i]·rate[i]；增益 g[i] = |rate[i]| + s[i]·rate[i]（都非负）。先求前 k 个 g 的和，再滑动窗口每次加进一个、减出一个并取最大值 best，输出 base + best。数值可达 2·10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Strategies outside the window stay the same, so first compute the baseline total profit with no change, then see how much more each length-k window can earn when reset.",
+      "Inside the window each day can independently pick -1, 0 or +1, and the best value of that day's profit -s * rate is |rate|. So resetting day i gains |rate[i]| - (-s[i] * rate[i]) = |rate[i]| + s[i] * rate[i], and the task becomes the maximum sum of gains over a length-k subarray.",
+      "Let base = sum of -s[i] * rate[i] and gain g[i] = |rate[i]| + s[i] * rate[i] (never negative). Sum the first k gains, then slide the window, adding one gain and removing one each step and keeping the maximum best; print base + best. Values reach about 2 * 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe baseline profit is -sum(strategy*rate). After resetting a day's strategy, the best profit for that day is |rate|, so the single-day gain inside the window is |rate|+strategy*rate; take the window with the maximum gain using a sliding window.\n\n## Correctness\n\nStrategies outside the window are fixed. Inside the window each day can independently take -1, 0, or +1, and the best profit is the absolute value of the rate; therefore comparing the gains of all windows of length k one by one gives the optimum.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

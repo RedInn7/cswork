@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-8",
+  "packageChecksum": "fb089aeb1a92e2285e56bba5c01cb70d5a83153ded2f5cf2605575684a85a2a3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007;\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    // p[j]: strings ending in exactly j consecutive vowels.\n    vector<long long> p(k + 1, 0), q(k + 1);\n    p[0] = 1;\n    for (int step = 0; step < n; step++) {\n        long long total = 0;\n        for (long long v : p) total += v;\n        q[0] = total % MOD * 21 % MOD;\n        for (int j = 1; j <= k; j++) q[j] = p[j - 1] * 5 % MOD;\n        swap(p, q);\n    }\n    long long total = 0;\n    for (long long v : p) total += v;\n    printf(\"%lld\\n\", total % MOD);\n}\n",
+      "sha256": "55e3a11877e201ecef3427fabdcaa1dd47226ecc18926529fee12825b4869640"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), k = sc.nextInt();\n        final long MOD = 1000000007L;\n        // p[j]: strings ending in exactly j consecutive vowels.\n        long[] p = new long[k + 1], q = new long[k + 1];\n        p[0] = 1;\n        for (int step = 0; step < n; step++) {\n            long total = 0;\n            for (long v : p) total += v;\n            q[0] = total % MOD * 21 % MOD;\n            for (int j = 1; j <= k; j++) q[j] = p[j - 1] * 5 % MOD;\n            long[] t = p; p = q; q = t;\n        }\n        long total = 0;\n        for (long v : p) total += v;\n        System.out.println(total % MOD);\n    }\n}\n",
+      "sha256": "398c9689a2264d52cac7ab291c9dcb8d9f19adb49f764808a58fa336a4db5a4c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nconst mod = 1000000007\n\nfunc main() {\n\tvar n, k int\n\tfmt.Scan(&n, &k)\n\t// p[j]: strings ending in exactly j consecutive vowels.\n\tp, q := make([]int64, k+1), make([]int64, k+1)\n\tp[0] = 1\n\tfor step := 0; step < n; step++ {\n\t\tvar total int64\n\t\tfor _, v := range p {\n\t\t\ttotal += v\n\t\t}\n\t\tq[0] = total % mod * 21 % mod\n\t\tfor j := 1; j <= k; j++ {\n\t\t\tq[j] = p[j-1] * 5 % mod\n\t\t}\n\t\tp, q = q, p\n\t}\n\tvar total int64\n\tfor _, v := range p {\n\t\ttotal += v\n\t}\n\tfmt.Println(total % mod)\n}\n",
+      "sha256": "e4bc63fb0fd1f01385cff7718a4b62da1c0658e09a52700aa855622cae7dc2aa"
+    }
+  ]
+}

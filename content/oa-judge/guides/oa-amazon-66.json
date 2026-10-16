@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-66",
+  "packageChecksum": "95011ae961ff0c66687cc1dd52bc9eeb10875ee10bc9fe0f03e2fd7cca5570eb",
+  "sourceContentHash": "4d8264be23c06086e897dc2929a9e2c0fec0383d4105b19e17c2bea3b4864665",
+  "editorialSha256": "df985b0ff1be93ba8479ec0f988ef33a3a49727491e397c4095430671e228830",
+  "hints": {
+    "zh": [
+      "任何一种合并方式，最后一个字符要么来自第一个串，要么来自第二个串；把它去掉就得到一个“用完两个前缀”的更小状态。",
+      "设 dp[i][j] 为用完 a 的前 i 个和 b 的前 j 个字符时的最少逆序数。追加一个字符 c 时，新增的逆序对恰好是两个已用前缀中所有严格大于 c 的字符，与它们之前怎么交错无关。",
+      "预处理 ga[i][c]、gb[j][c]：a 前 i 个、b 前 j 个字符中严格大于字母 c 的个数；转移 dp[i][j] = min(dp[i−1][j] + ga[i−1][a_i] + gb[j][a_i], dp[i][j−1] + ga[i][b_j] + gb[j−1][b_j])，按行滚动数组；答案是 dp[n][m]。"
+    ],
+    "en": [
+      "In any merge, the last character comes either from the first string or from the second; removing it leaves a smaller state that has used up a prefix of each string.",
+      "Let dp[i][j] be the fewest inversions after using the first i characters of a and the first j of b. Appending a character c adds exactly one inversion for every character strictly greater than c in the two used prefixes, regardless of how those prefixes were interleaved.",
+      "Precompute ga[i][c] and gb[j][c], the number of characters strictly greater than letter c among the first i of a and the first j of b; the transition is dp[i][j] = min(dp[i-1][j] + ga[i-1][a_i] + gb[j][a_i], dp[i][j-1] + ga[i][b_j] + gb[j-1][b_j]), rolling over rows; the answer is dp[n][m]."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[i,j] is the minimum number of inversions after using up the first i and j characters. When appending a character, the number of new inversions equals the number of characters greater than it in the two used prefixes; precompute, for each prefix, the count of greater characters for all 26 letters, and roll the DP.\n\n## Proof of correctness\n\nThe last character of any merge comes from one of the strings. Removing it gives the corresponding prefix state, and the new inversion pairs are exactly the pairs from earlier greater characters to it, independent of the earlier interleaving. Taking the smaller of the two transitions therefore covers every valid merge.\n\n## Complexity\n\nO(nm + 26(n+m)) time and O(26(n+m) + m) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-yahoo-1",
+  "packageChecksum": "ea552d9e84a33cf3f6d9faf834eb45559aa6a07aaf65f514582146ac0c96e56b",
+  "sourceContentHash": "c0841dc7d9d3b891043512e319a6f966bd2a9362e56ec4336687761e02bfb64c",
+  "editorialSha256": "e99d3f162dcfceeb10e3dfcf8dec258d7c8c3811e60d423193f27abca5953311",
+  "hints": {
+    "zh": [
+      "结果里每种字母恰好保留一次，并保持原有相对顺序；要让字典序最大，越靠前的位置越希望放大的字母。",
+      "用单调栈：遇到较大的字母时，如果栈顶字母比它小、而且后面还会再出现，就把栈顶弹掉，以后再补回来。",
+      "先统计每个字母剩余出现次数；扫描时剩余次数减一，若该字母已在栈中就跳过；否则当栈顶 < 当前字母且栈顶剩余次数 >0 时不断弹栈并取消“在栈中”标记，再压入当前字母；最后栈内容即答案。"
+    ],
+    "en": [
+      "Each letter is kept exactly once in the result, in its original relative order; to maximize the result lexicographically, earlier positions should hold larger letters.",
+      "Use a monotonic stack: when a larger letter arrives and the top of the stack is smaller and will appear again later, pop the top and pick it up again later.",
+      "First count the remaining occurrences of each letter; while scanning, decrement the current letter's count and skip it if it is already on the stack; otherwise, while the top is smaller than the current letter and still has remaining occurrences, pop it and clear its on-stack flag, then push the current letter; the stack is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen a larger letter arrives, a monotonic stack pops smaller letters that will still appear later.\n\n## Proof of correctness\n\nA popped letter has a later copy that can take its place; moving the current larger letter forward raises the result lexicographically; letters that cannot be replaced later are kept.\n\n## Complexity\n\nO(n) time, O(σ) space."
+}

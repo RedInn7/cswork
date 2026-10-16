@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-13",
+  "packageChecksum": "9c4f6c71d1d48edefd017ed7800c3d77e00bbe168c7ab7a9d510bd85b94109d8",
+  "sourceContentHash": "bce447a40a8795062311716ffa703c0012e6ac0a96802e2e37a06c393474748d",
+  "editorialSha256": "53b51dabefefa0fd400c6e4d4d74f7b841cb9d6873944df82f95d6aae85745a8",
+  "hints": {
+    "zh": [
+      "f 是整个数组中出现过的用户的最少出现次数；要找的窗口满足“所有用户在窗口内的次数都 ≤f，且至少有一个用户恰好出现 f 次”。",
+      "先统计全局频次得到 f；再用滑动窗口：右端加入元素后若某用户次数超过 f，就移动左端直到不超过；同时维护“窗口内次数恰为 f 的用户数”。",
+      "维护 counts 与 at（次数恰为 f 的用户数）：每次改变某用户的次数前，若原来为 f 则 at 减 1，改变后若等于 f 则 at 加 1；右端加入 v 后，当 counts[v]>f 时不断移出左端元素；每个右端处理完若 at>0，就用窗口长度更新答案；最后输出答案。"
+    ],
+    "en": [
+      "f is the smallest number of occurrences among users in the whole array; the window you want has every user count <= f inside it, and at least one user with exactly f occurrences.",
+      "Count global frequencies to get f, then slide a window: after adding the right element, if some user exceeds f, advance the left end until it no longer does; also track how many users have exactly f occurrences in the window.",
+      "Keep counts and at (users with count exactly f): before changing a count, decrement at if it was f, and after the change increment at if it is now f; after adding v at the right, remove left elements while counts[v] > f; after each right end, if at > 0 update the answer with the window length; print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute f. Use a sliding window that keeps every user's count <= f, and additionally maintain the number of users whose count is exactly f; update the longest length only when that number is non-zero.\n\n## Proof of correctness\n\nAdding the right end can only push that one user above f; moving the left end until it is <= f again makes all counts <= f. A non-zero number of users with count f is exactly what guarantees that the window's maximum frequency equals f. For each right end the left pointer is as far left as possible, so no shorter valid window can be better; if the widest window has no user reaching f, its sub-windows only have smaller frequencies and are invalid as well.\n\n## Complexity\n\nO(n) time, O(number of distinct users) space."
+}

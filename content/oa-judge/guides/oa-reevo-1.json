@@ -1,0 +1,19 @@
+{
+  "id": "oa-reevo-1",
+  "packageChecksum": "c4508af0a731f0d355f6dd0487f4f5d2a515de4d593e3dc348a67fbd9ea029c6",
+  "sourceContentHash": "084de1fc045bfbbfa206d67ba6328f20fc8ae9394f263391fef169fe920a7d9a",
+  "editorialSha256": "9e1c2009fca3e629cddee7f78e9db71d953a50ce03904660f6e5e305d5167228",
+  "hints": {
+    "zh": [
+      "压缩结果只取决于字符串被切成的一个个“极长同字母段”，每一段独立地变成输出的一小块。",
+      "从左到右扫描，找出每一段相同字母的起点和终点，按段长决定输出形式。",
+      "用双指针：i 为段首，j 向右推进直到字母变化，段长 L=j−i。L=1 时只输出该字母，L>1 时输出字母后接十进制的 L（可能是多位数，如 a12）。把各段结果依次拼接后一次输出。时间 O(n)。"
+    ],
+    "en": [
+      "The compressed result depends only on how the string splits into maximal runs of one letter, and each run independently becomes one piece of the output.",
+      "Scan from left to right, find where each run of identical letters starts and ends, and choose the output form by the run length.",
+      "Use two pointers: i is the start of a run and j moves right until the letter changes, so the length is L = j - i. For L = 1 output just the letter; for L > 1 output the letter followed by L in decimal (possibly several digits, such as a12). Concatenate the pieces and print once. Time O(n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMerge adjacent runs of the same letter from left to right: a run of length 1 outputs only the letter, and a run longer than 1 outputs the letter followed by the run length.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is processed according to the definition, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

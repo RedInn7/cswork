@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-27",
+  "packageChecksum": "b99215354877e4802061e0758cba980b5202ee5a27c0f965612a9b05b675504e",
+  "sourceContentHash": "2eadbb916f5be07e1dce15a5e922ef6e2cf9a7c4a5066dc30350d1aa087b612c",
+  "editorialSha256": "0cac44f54d93cade481685a511803407b1a21139a5140fccee5423fe5a9d6918",
+  "hints": {
+    "zh": [
+      "一旦出现下降（后一个数小于前一个数），任何跨过这条边的连续段都不合法。",
+      "维护以当前元素结尾的最长非降段长度：不下降就在前一段基础上加一，下降就从 1 重新开始。",
+      "current=answer=1；对 i=1..n−1，若 a[i−1]≤a[i] 则 current 加一，否则 current=1；每步用 current 更新 answer，最后输出。"
+    ],
+    "en": [
+      "As soon as there is a drop (an element smaller than the one before it), no contiguous segment crossing that edge can be valid.",
+      "Maintain the length of the longest non-decreasing run ending at the current element: extend it by one when there is no drop, and restart from 1 after a drop.",
+      "Set current = answer = 1; for i = 1..n-1, if a[i-1] <= a[i] increment current, otherwise set current = 1; update answer with current at each step and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the length of the non-decreasing run ending at the current element: reset it to 1 on a drop, otherwise increase it.\n\n## Correctness\n\nWhen the current value is not smaller than the previous one, it can and can only extend the previous non-decreasing tail run. When a drop occurs, no segment crossing that edge is valid, so the run must restart from the current element. The largest tail length over the whole scan covers all contiguous segments.\n\n## Complexity\n\nTime O(n), extra space O(1) (not counting the input)."
+}

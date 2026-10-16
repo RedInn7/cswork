@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-11",
+  "packageChecksum": "937325e370052320e1b2ef16b641afb831d6d98e6f53145e53b25ffdb81351f0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string a, b, c;\n    cin >> a >> b >> c;\n    int n = a.size(), chosen = -1;\n    for (int i = 0; i < n; i++)\n        if (c[i] != a[i] && c[i] != b[i]) chosen = i;\n    if (chosen < 0) {\n        cout << \"-1\\n\";\n        return 0;\n    }\n    const string alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    string full = \"[\" + alphabet + \"]\", shortClass = \"[\";\n    for (char ch : alphabet)\n        if (ch != c[chosen]) shortClass += ch;\n    shortClass += \"]\";\n    string out;\n    out.reserve((size_t)n * full.size() + 1);\n    for (int i = 0; i < n; i++) out += (i == chosen ? shortClass : full);\n    out += '\\n';\n    cout << out;\n}\n",
+      "sha256": "3c63bc4c11fd45936ab657cd18297a1ab10769ba390b974ba6f886c6f86390d4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        StreamTokenizerLite t = new StreamTokenizerLite(br);\n        String a = t.next(), b = t.next(), c = t.next();\n        int n = a.length(), chosen = -1;\n        for (int i = 0; i < n; i++)\n            if (c.charAt(i) != a.charAt(i) && c.charAt(i) != b.charAt(i)) chosen = i;\n        if (chosen < 0) {\n            System.out.println(\"-1\");\n            return;\n        }\n        byte[] full = new byte[28], shortClass = new byte[27];\n        full[0] = '[';\n        shortClass[0] = '[';\n        int s = 1;\n        for (int k = 0; k < 26; k++) {\n            byte ch = (byte) ('A' + k);\n            full[k + 1] = ch;\n            if (ch != c.charAt(chosen)) shortClass[s++] = ch;\n        }\n        full[27] = ']';\n        shortClass[26] = ']';\n        BufferedOutputStream out = new BufferedOutputStream(System.out, 1 << 16);\n        for (int i = 0; i < n; i++) out.write(i == chosen ? shortClass : full);\n        out.write('\\n');\n        out.flush();\n    }\n\n    // Reads whitespace-separated tokens across lines.\n    static class StreamTokenizerLite {\n        final BufferedReader br;\n        java.util.StringTokenizer st;\n\n        StreamTokenizerLite(BufferedReader br) {\n            this.br = br;\n        }\n\n        String next() throws IOException {\n            while (st == null || !st.hasMoreTokens()) st = new java.util.StringTokenizer(br.readLine());\n            return st.nextToken();\n        }\n    }\n}\n",
+      "sha256": "3c691b1c39546dc882696a534156c4e9fcbf096baf75ca3befbb3b2e9a6b221d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n)\n\nfunc main() {\n\treader := bufio.NewReaderSize(os.Stdin, 1<<20)\n\treadToken := func() []byte {\n\t\tvar tok []byte\n\t\tc, err := reader.ReadByte()\n\t\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\t\tc, err = reader.ReadByte()\n\t\t}\n\t\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\t\ttok = append(tok, c)\n\t\t\tc, err = reader.ReadByte()\n\t\t}\n\t\treturn tok\n\t}\n\ta, b, c := readToken(), readToken(), readToken()\n\tn, chosen := len(a), -1\n\tfor i := 0; i < n; i++ {\n\t\tif c[i] != a[i] && c[i] != b[i] {\n\t\t\tchosen = i\n\t\t}\n\t}\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tif chosen < 0 {\n\t\tw.WriteString(\"-1\\n\")\n\t\treturn\n\t}\n\tfull := []byte(\"[ABCDEFGHIJKLMNOPQRSTUVWXYZ]\")\n\tshort := []byte{'['}\n\tfor ch := byte('A'); ch <= 'Z'; ch++ {\n\t\tif ch != c[chosen] {\n\t\t\tshort = append(short, ch)\n\t\t}\n\t}\n\tshort = append(short, ']')\n\tfor i := 0; i < n; i++ {\n\t\tif i == chosen {\n\t\t\tw.Write(short)\n\t\t} else {\n\t\t\tw.Write(full)\n\t\t}\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "bf90779cee8e0bb01a23284f53334801ea001a22376b6d5806b3dfea3a963e5e"
+    }
+  ]
+}

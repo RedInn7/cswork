@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-22",
+  "packageChecksum": "efdbb0d47691c9a267c2476363f6155d99bc5647c3e0d78ece8e117bcef3e986",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // Event (time, delta): +1 at start, -1 one moment after the end; ends sort before starts at equal times.\n    vector<pair<long long, int>> events;\n    events.reserve(2 * n);\n    for (int i = 0; i < n; i++) {\n        long long l, h;\n        cin >> l >> h;\n        events.push_back({l, 1});\n        events.push_back({h + 1, -1});\n    }\n    sort(events.begin(), events.end());\n    int active = 0, answer = 0;\n    for (auto [t, d] : events) {\n        active += d;\n        answer = max(answer, active);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "d10018cd7a5c428711ac5610cbd70c8bb2262ba7b9f87f8966f8578604060da4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        // Event key 2*time+bit: bit 1 for a start, 0 for the moment after an end,\n        // so ends sort before starts at equal times.\n        long[] events = new long[2 * n];\n        for (int i = 0; i < n; i++) {\n            long l = next(), h = next();\n            events[2 * i] = 2 * l + 1;\n            events[2 * i + 1] = 2 * (h + 1);\n        }\n        Arrays.sort(events);\n        int active = 0, answer = 0;\n        for (long e : events) {\n            active += (e & 1) == 1 ? 1 : -1;\n            answer = Math.max(answer, active);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "6954a616935886d0312db6cc06b3efe11a000d68448523f16d2f46fe465ff1d1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\t// Event key 2*time+bit: bit 1 for a start, 0 for the moment after an end,\n\t// so ends sort before starts at equal times.\n\tevents := make([]int64, 0, 2*n)\n\tfor i := 0; i < n; i++ {\n\t\tl, h := next(), next()\n\t\tevents = append(events, 2*l+1, 2*(h+1))\n\t}\n\tslices.Sort(events)\n\tactive, answer := 0, 0\n\tfor _, e := range events {\n\t\tif e&1 == 1 {\n\t\t\tactive++\n\t\t} else {\n\t\t\tactive--\n\t\t}\n\t\tanswer = max(answer, active)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "b3ea1e596e620d203737dea265bf29d1f42a94fe734837a67e79013dc9a26f7a"
+    }
+  ]
+}

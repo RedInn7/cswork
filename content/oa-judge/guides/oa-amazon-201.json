@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-201",
+  "packageChecksum": "84e07e7897fa1f7c2f3ae373f6955473a628cc106ca5a68e15c4cdfc2c399e33",
+  "sourceContentHash": "106bb4372d86726c2521f8b472b6159a2788e791fd2469561f0e4d96047ec0df",
+  "editorialSha256": "d1e038c1b20b8dfd3ed013750cb5c1c0483fa21608dffef1456872205d404120",
+  "hints": {
+    "zh": [
+      "两数之和不超过最大价格的 2 倍，所以可能的目标 3^e 只有二十个左右（包括 3^0=1）。",
+      "对每个目标幂 P，问题就是“两数之和等于 P”的计数；按顺序扫描时，当前价格 v 能与之前所有价格为 P−v 的商品配对。",
+      "先列出所有不超过 2·最大价格的 3 的幂；用哈希表（或离散化数组）记录已出现价格的次数；对每个 v：先对每个幂 P 累加 P−v 的出现次数，再把 v 的次数加 1（避免自己配自己）。答案用 64 位。"
+    ],
+    "en": [
+      "A pair sum is at most twice the largest price, so there are only about twenty possible targets 3^e (including 3^0 = 1).",
+      "For each target power P, this is a count of pairs summing to P; scanning in order, the current price v pairs with every earlier item whose price is P - v.",
+      "List all powers of 3 up to 2 * max price; keep a hash map (or a compressed array) of how many times each price has appeared; for each v, first add the count of P - v for every power P, then increment the count of v (so an item never pairs with itself). Use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the powers of 3 not exceeding the largest possible sum. Scan the prices in order: for each one, query how many times each complement appeared before, then add the current price.\n\n## Proof of correctness\n\nA valid pair has a unique larger index j and a unique target power; when j is processed, the other price must be that power minus the current price, and the frequency query counts every earlier item with that price. Inserting after the query prevents an item from pairing with itself, so every valid pair is counted exactly once.\n\n## Complexity\n\nTime O(n log_3 V), space O(n), where V is the largest price."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-35",
+  "packageChecksum": "819c73f45a8e82a192fa984d283b77ad47a5c08edad4dabf5d68f662f3c2fb47",
+  "sourceContentHash": "7321586cc3b33c575f0cd35169a9ba34e6e4be8f88ca050f6e891f282a27edb3",
+  "editorialSha256": "ce2b8879c61d3fdfdf607c54ec3abfd88fb075f8b69606186e9c5217beb6dfae",
+  "hints": {
+    "zh": [
+      "固定套装数量z之后，剩下的只需要用单件补足各自的缺口：A补max(0,x−z)个，B补max(0,y−z)个，总费用是z的函数。",
+      "这个费用函数关于z分段线性，转折点只在z=x和z=y处，而z超过max(x,y)只会多花钱；线性段的最小值一定在端点处取得。",
+      "只需计算z=0、z=min(x,y)、z=max(x,y)三种情况下的费用z·costAB+max(0,x−z)·costA+max(0,y−z)·costB，取最小值。数值可达约2×10^18，使用64位整数。"
+    ],
+    "en": [
+      "Once the number of bundles z is fixed, the rest only needs single items to cover each shortfall: max(0,x−z) of A and max(0,y−z) of B, so the total cost is a function of z.",
+      "This cost is piecewise linear in z with breakpoints only at z=x and z=y, and going beyond max(x,y) only costs more; a linear piece reaches its minimum at an endpoint.",
+      "Just compute the cost z·costAB + max(0,x−z)·costA + max(0,y−z)·costB for z=0, z=min(x,y) and z=max(x,y), and take the minimum. Values can reach about 2×10^18, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate bundle counts 0, min(x,y) and max(x,y), make up the missing single items for each, and take the minimum cost.\n\n## Proof of correctness\n\nAfter fixing the bundle count z, single items only need to cover each shortfall. The total cost is a piecewise linear function of z whose only breakpoints are x and y, and buying beyond max(x,y) only increases the cost. The minimum of each linear piece is at an endpoint, so the three candidates cover the optimum.\n\n## Complexity\n\nTime O(1), space O(1), using 64-bit integers."
+}

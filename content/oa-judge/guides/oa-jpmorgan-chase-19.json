@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-19",
+  "packageChecksum": "0cddca6e1b4ff44f6beb69d700f6fdcc85c805616263aef14ef9af52de5369f6",
+  "sourceContentHash": "d83c63c67f469b8439ad1c4260c657c934e15051516865bfea56390df11e761d",
+  "editorialSha256": "915afa79d68736b98a842edad8d70bf45bb1329287f820f2ad10b71f3418bdd5",
+  "hints": {
+    "zh": [
+      "终点只取决于 U、D、L、R 各自的数量，与顺序无关；任何到达同一终点的走法至少需要曼哈顿距离那么多步。",
+      "必须保留的只有净竖直位移 |U − D| 和净水平位移 |L − R| 对应的移动，其余方向相反的移动都可以成对删除。",
+      "统计四种字符的个数，答案为指令总长度减去 |U − D| 再减去 |L − R|。"
+    ],
+    "en": [
+      "The endpoint depends only on how many U, D, L, and R moves there are, not on their order; any route to the same endpoint needs at least the Manhattan distance in steps.",
+      "Only the moves that make up the net vertical displacement |U − D| and the net horizontal displacement |L − R| must stay; all other moves cancel in opposite pairs and can be deleted.",
+      "Count the four letters; the answer is the total length minus |U − D| minus |L − R|."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the necessary net vertical and net horizontal displacement, and delete the remaining opposite moves in pairs.\n\n## Proof of correctness\n\nAny path reaching the same endpoint needs at least the Manhattan distance |U−D|+|L−R| steps. After deleting the UD pairs and the LR pairs, the number of remaining instructions is exactly this distance and the endpoint is unchanged, so the lower bound is reached.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

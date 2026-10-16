@@ -1,0 +1,21 @@
+{
+  "id": "oa-two-sigma-2",
+  "packageChecksum": "6e32318726d6c6d3a59ef21d1c2bd48339c13adbd8a7fb360eb950c527ade25a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long k;\n    cin >> n >> k;\n    unordered_map<long long, long long> seen;\n    seen.reserve(2 * n + 1);\n    long long answer = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        long long r = v % k;\n        auto it = seen.find((k - r) % k);\n        if (it != seen.end()) answer += it->second;\n        seen[r]++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "6327d5db0bfd6597bc7ca3930e41513d0d27e7940e72535e719f73f104dd0065"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long k = nextLong();\n        HashMap<Long, Integer> seen = new HashMap<>(2 * n + 1);\n        long answer = 0;\n        for (int i = 0; i < n; i++) {\n            long r = nextLong() % k;\n            answer += seen.getOrDefault((k - r) % k, 0);\n            seen.merge(r, 1, Integer::sum);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "b22ea1d708f32d32abd1ea3ad46d3b762b3dc8b0390517de69e923502a28ceb3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\tseen := make(map[int]int, n)\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tr := readInt() % k\n\t\tanswer += seen[(k-r)%k]\n\t\tseen[r]++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "88b89e771b2c3d6dcddade4fd7a335541634c1646664362b1abce496103277c3"
+    }
+  ]
+}

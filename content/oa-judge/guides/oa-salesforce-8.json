@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-8",
+  "packageChecksum": "f54d230a9af31812f3407b8150b0a6d4740edfd88584cfd482c445db657bfc94",
+  "sourceContentHash": "420e4311c38f5687e74e556722e2bfd211cc5dea5e143e43d7239dfa32c673da",
+  "editorialSha256": "69dd4a9025f80c7a948e5a59a3db07b5ea4e11a3bd9b16085476e0e2511e4d46",
+  "hints": {
+    "zh": [
+      "两个方向的折叠互不影响，可以分别计算再相加。一次折叠后长度至少是原来的一半，而且可以折到[L/2,L)中的任意长度。",
+      "对一个维度，t次折叠后最短也只能到original/2^t，所以需要target×2^t≥original；反过来只要满足这个条件，前面对折、最后一次不居中地折，就能恰好得到target。",
+      "对高和宽分别执行：当target<original时把target翻倍并计数一次；两个计数相加即为答案。用64位整数翻倍，不要用浮点对数。"
+    ],
+    "en": [
+      "Folds along the two directions do not affect each other, so compute them separately and add. After one fold the length is at least half of the original, and it can be any length in [L/2, L).",
+      "For one dimension, t folds can bring the length down to original/2^t at best, so target * 2^t >= original is required; conversely, when it holds, fold in half first and make the last fold off-center to land exactly on target.",
+      "For height and width separately: while target < original, double target and count one fold; the sum of the two counts is the answer. Double with 64-bit integers instead of using floating-point logarithms."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each dimension separately, find the smallest t such that target*2^t>=original, then add the two; use integer doubling to avoid floating-point error.\n\n## Correctness\n\nOne fold keeps at least half of the original length, so after t folds the length is at least original/2^t, which gives a necessary condition. Conversely, first fold in half t-1 times; the current length is then at most twice the target and still larger than the target, so a final off-center fold reaches the target exactly. Operations on the two dimensions cannot replace each other, so adding them is optimal.\n\n## Complexity\n\nTime O(log h+log w), space O(1)."
+}

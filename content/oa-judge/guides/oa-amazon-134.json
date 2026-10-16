@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-134",
+  "packageChecksum": "674e14de6b0f63899c62928ead299dd7ca31439079419b122de1061c3a6d9029",
+  "sourceContentHash": "4a28b920dbac247d1062dd13163bd71d14cf8c94a0f873ae592effb3a1f554b4",
+  "editorialSha256": "ba37a397d8c949fc889384f31a4e21723c7a8e2ff99ef6493e08c783ca2f22a9",
+  "hints": {
+    "zh": [
+      "一个位置的最终价格只取决于它最后一次被单点赋值的值，以及那之后出现过的所有全局保底；更早的操作都会被覆盖。",
+      "倒着处理操作，同时维护“后面出现过的保底的最大值”；倒序第一次遇到某个下标的单点赋值，就是它的最后一次赋值，最终价格为 max(赋值, 当前保底最大值)，之后再遇到它的赋值都忽略。",
+      "读入全部操作；floor=0，答案数组初始化为未确定；从最后一个操作往前：类型 2 就用 v 更新 floor，类型 1 且该下标未确定时把答案定为 max(v, floor)；最后把仍未确定的下标设为 max(初始价格, floor)，按顺序输出。"
+    ],
+    "en": [
+      "An item's final price depends only on its last point assignment and on all global floors that come after it; earlier operations are overwritten.",
+      "Process the operations backwards while tracking the largest floor seen among later operations; the first point assignment to an index met in reverse is its last one, so its final price is max(assigned value, current largest floor), and later-met (earlier) assignments to it are ignored.",
+      "Read all operations; set floor = 0 and mark every answer as undecided; walk from the last operation to the first: for type 2 raise floor with v, for type 1 on an undecided index set its answer to max(v, floor); finally set every still-undecided index to max(initial price, floor) and print the array in order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess in reverse, tracking the maximum of the later global floors; the first time you meet a point assignment for an index, its final value is fixed as max(assigned value, later floor), and earlier assignments are ignored. Indices never assigned use their initial price.\n\n## Correctness\n\nThe last point assignment overrides every earlier operation on that item, and the floor operations after it are equivalent to taking the maximum of all those lower bounds. The first assignment met in reverse is exactly the last assignment, and the maintained maximum is exactly the later floor, so every item's result is correct.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."
+}

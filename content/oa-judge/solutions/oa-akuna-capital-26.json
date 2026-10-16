@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-26",
+  "packageChecksum": "9c0eb56d1ff06cde66f9d978b7470078875d823ea37ad0f2969b724162afcf69",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long total;\n    int m;\n    cin >> total >> m;\n    vector<pair<long long, long long>> a(m);\n    for (auto &[l, r] : a) cin >> l >> r;\n    sort(a.begin(), a.end());\n    a.push_back({total + 1, total + 1});\n    // A gap of length L splits into popcount(L) power-of-two chunks at minimum.\n    long long cursor = 1, answer = 0;\n    for (auto [l, r] : a) {\n        answer += __builtin_popcountll(l - cursor);\n        cursor = r + 1;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "9ccf1027c4e845c2bee08f58b79009dfd076c65deca8c34ea862555133bcd9be"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        long total = nextLong();\n        int m = (int) nextLong();\n        long[][] a = new long[m + 1][];\n        for (int i = 0; i < m; i++) a[i] = new long[] {nextLong(), nextLong()};\n        Arrays.sort(a, 0, m, (x, y) -> x[0] != y[0] ? Long.compare(x[0], y[0]) : Long.compare(x[1], y[1]));\n        a[m] = new long[] {total + 1, total + 1};\n        // A gap of length L splits into popcount(L) power-of-two chunks at minimum.\n        long cursor = 1, answer = 0;\n        for (long[] seg : a) {\n            answer += Long.bitCount(seg[0] - cursor);\n            cursor = seg[1] + 1;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e919a8a0da38b2c61eb6eaa6fafa22a440b3c07c9b1f0a8eaea2537902280a94"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"cmp\"\n\t\"fmt\"\n\t\"io\"\n\t\"math/bits\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\ttotal := nextInt()\n\tm := int(nextInt())\n\ta := make([][2]int64, m)\n\tfor i := range a {\n\t\ta[i] = [2]int64{nextInt(), nextInt()}\n\t}\n\tslices.SortFunc(a, func(x, y [2]int64) int {\n\t\tif x[0] != y[0] {\n\t\t\treturn cmp.Compare(x[0], y[0])\n\t\t}\n\t\treturn cmp.Compare(x[1], y[1])\n\t})\n\ta = append(a, [2]int64{total + 1, total + 1})\n\t// A gap of length L splits into popcount(L) power-of-two chunks at minimum.\n\tcursor, answer := int64(1), 0\n\tfor _, seg := range a {\n\t\tanswer += bits.OnesCount64(uint64(seg[0] - cursor))\n\t\tcursor = seg[1] + 1\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "ffa393b82ad108db38129fd0dd57a5b21fac8916772cdb1f29424fa684619cda"
+    }
+  ]
+}

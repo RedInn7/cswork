@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-6",
+  "packageChecksum": "10bc42d00fcef6d6cb01f837d654805d3984d4508a4554aa9cf657bc94d4b501",
+  "sourceContentHash": "3a93aaf92dd9dfb450cd70f99c1af192926bd15534e44c486f416d1223f68571",
+  "editorialSha256": "e5463a79aa801ecf4c1f600f1521130c3b8bf8442a8712eb39703ed8fa52b928",
+  "hints": {
+    "zh": [
+      "同组内不能有相邻节点，这正是图的染色问题。至少两个节点的树一定有边，所以至少要分两组；而树是二分图，两组一定够用。",
+      "连通的树的二染色，除了把两种颜色互换之外是唯一的：按深度奇偶分组。所以最少分组方案是确定的，只需要分别求两组的最大值减最小值。",
+      "从任意节点出发用迭代 DFS 或 BFS 给每个节点染上与父节点相反的颜色，同时维护两种颜色各自的最小值和最大值，答案是两组差值之和。只有一个节点时直接输出 0。注意节点数可达 10⁵，避免递归过深。"
+    ],
+    "en": [
+      "No two adjacent nodes may share a group, which is exactly graph colouring. A tree with at least two nodes has an edge, so at least two groups are needed, and since a tree is bipartite two groups always suffice.",
+      "A connected tree has a unique 2-colouring up to swapping the colours: split nodes by depth parity. So the minimum grouping is fixed and you only need max minus min within each of the two groups.",
+      "From any node run an iterative DFS or BFS, giving each node the colour opposite to its parent, and keep the minimum and maximum value per colour. The answer is the sum of the two ranges. With a single node print 0. With up to 10^5 nodes, avoid deep recursion."
+    ]
+  },
+  "explanationEn": "## Idea\n\n2-colour the tree with an iterative traversal and keep the minimum and maximum value of each colour.\n\n## Why it is correct\n\nA tree with at least two nodes has an edge, so at least two groups are needed. Grouping by depth parity is valid, and the 2-colouring of a connected tree is unique up to swapping the colours, so these two colour classes are exactly the grouping with the minimum number of groups. A single node is handled separately.\n\n## Complexity\n\nO(n) time, O(n) extra space."
+}

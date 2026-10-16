@@ -1,0 +1,21 @@
+{
+  "id": "oa-pinterest-4",
+  "packageChecksum": "efaee6f40ab495751ef5f7ae089387fd9a208ea00b7f06e9ab88a428841f1629",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    // Min-heap keyed by (height, index).\n    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> heap;\n    for (int i = 0; i < k; i++) heap.push({0, i});\n    vector<ll> h(k, 0);\n    string out;\n    for (int t = 0; t < n; t++) {\n        ll pin;\n        scanf(\"%lld\", &pin);\n        auto [cur, i] = heap.top(); heap.pop();\n        if (t) out += ' ';\n        out += to_string(i);\n        h[i] = cur + pin;\n        heap.push({h[i], i});\n    }\n    out += '\\n';\n    for (int i = 0; i < k; i++) { if (i) out += ' '; out += to_string(h[i]); }\n    puts(out.c_str());\n}\n",
+      "sha256": "7ab97e007fac609b36f7cf995a0e0092661dafda3e6fa9b49d5f0f0734ee2eba"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong(), k = (int) nextLong();\n        long[] h = new long[k];\n        // Min-heap keyed by (height, index).\n        PriorityQueue<Integer> heap = new PriorityQueue<>((a, b) -> h[a] != h[b] ? Long.compare(h[a], h[b]) : Integer.compare(a, b));\n        for (int i = 0; i < k; i++) heap.add(i);\n        StringBuilder sb = new StringBuilder();\n        for (int t = 0; t < n; t++) {\n            long pin = nextLong();\n            int i = heap.poll();\n            if (t > 0) sb.append(' ');\n            sb.append(i);\n            h[i] += pin;\n            heap.add(i);\n        }\n        sb.append('\\n');\n        for (int i = 0; i < k; i++) { if (i > 0) sb.append(' '); sb.append(h[i]); }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "ff329d5888fb127d3fae2ea7f9a6d305c25810b0f539c0575859af44eefeb807"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"os\"\n\t\"strconv\"\n)\n\n// colHeap is a min-heap of column indices keyed by (height, index).\ntype colHeap struct {\n\tidx []int\n\th   []int64\n}\n\nfunc (c colHeap) Len() int { return len(c.idx) }\nfunc (c colHeap) Less(i, j int) bool {\n\ta, b := c.idx[i], c.idx[j]\n\tif c.h[a] != c.h[b] {\n\t\treturn c.h[a] < c.h[b]\n\t}\n\treturn a < b\n}\nfunc (c colHeap) Swap(i, j int)  { c.idx[i], c.idx[j] = c.idx[j], c.idx[i] }\nfunc (c *colHeap) Push(x any)    { c.idx = append(c.idx, x.(int)) }\nfunc (c *colHeap) Pop() any      { x := c.idx[len(c.idx)-1]; c.idx = c.idx[:len(c.idx)-1]; return x }\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn, k := int(next()), int(next())\n\tch := &colHeap{idx: make([]int, k), h: make([]int64, k)}\n\tfor i := range ch.idx {\n\t\tch.idx[i] = i\n\t}\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfor t := 0; t < n; t++ {\n\t\tpin := next()\n\t\ti := ch.idx[0]\n\t\tch.h[i] += pin\n\t\theap.Fix(ch, 0)\n\t\tif t > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(i))\n\t}\n\tw.WriteByte('\\n')\n\tfor i, v := range ch.h {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatInt(v, 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "9be00fa292f37a3b155340b3654afa3dceabfccbaf2107ec04ff7a5edc93599e"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-100",
+  "packageChecksum": "e22ed69ce303b8a92ffec5678e7995b0ae4bcabfa21633fc922703f34851bba4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<char> stock(n + 2, 0);\n    int next = 1;  // smallest volume not bought yet\n    string out;\n    for (int day = 0; day < n; day++) {\n        int v;\n        cin >> v;\n        stock[v] = 1;\n        int start = next;\n        while (next <= n && stock[next]) next++;\n        if (start == next) out += \"-1\";\n        for (int x = start; x < next; x++) {\n            if (x > start) out += ' ';\n            out += to_string(x);\n        }\n        out += '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "9818120b30dd9824290430c0cc047d881d2ba404d3bd648a9425584b076dd926"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        boolean[] stock = new boolean[n + 2];\n        int next = 1; // smallest volume not bought yet\n        StringBuilder sb = new StringBuilder();\n        for (int day = 0; day < n; day++) {\n            stock[(int) nextLong()] = true;\n            int start = next;\n            while (next <= n && stock[next]) next++;\n            if (start == next) sb.append(\"-1\");\n            for (int x = start; x < next; x++) {\n                if (x > start) sb.append(' ');\n                sb.append(x);\n            }\n            sb.append('\\n');\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "df1d972f0ce2471fd661354f917f597f5cfb95910b6dcc167d0a0455bd6e9f3e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\tstock := make([]bool, n+2)\n\tnext := 1 // smallest volume not bought yet\n\tw := bufio.NewWriterSize(os.Stdout, 1<<16)\n\tdefer w.Flush()\n\tfor day := 0; day < n; day++ {\n\t\tstock[nextInt()] = true\n\t\tstart := next\n\t\tfor next <= n && stock[next] {\n\t\t\tnext++\n\t\t}\n\t\tif start == next {\n\t\t\tw.WriteString(\"-1\")\n\t\t}\n\t\tfor x := start; x < next; x++ {\n\t\t\tif x > start {\n\t\t\t\tw.WriteByte(' ')\n\t\t\t}\n\t\t\tw.WriteString(strconv.Itoa(x))\n\t\t}\n\t\tw.WriteByte('\\n')\n\t}\n}\n",
+      "sha256": "dd2f7227d4f5ae649c0e153abe91cc1a2d3bfa4c7405fa24f405f5bc6fe73ce0"
+    }
+  ]
+}

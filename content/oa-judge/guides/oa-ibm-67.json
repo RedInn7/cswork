@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-67",
+  "packageChecksum": "f2d4670492ef10f7fe93cabe7bd7efeb93ac493fffff28361969735898f530bc",
+  "sourceContentHash": "a422d16f32ac51805c65b1976feec95b91edc6f63bfca3a656544baea8efa401",
+  "editorialSha256": "4217a54ef09edea95f4e4196d51e45602be6f37796db8ee4570f8fc9984a2ab7",
+  "hints": {
+    "zh": [
+      "火星车每次只走一格，越界的命令直接忽略、后续命令照常执行，所以只要逐条模拟当前坐标即可。",
+      "对每条命令先算出移动后的候选行列；只有候选位置仍在 0..n−1 的范围内时才真正移动，否则留在原地。",
+      "从 (0,0) 出发；UP 行减一、DOWN 行加一、LEFT 列减一、RIGHT 列加一，得到候选坐标后检查是否越界，合法才更新；处理完 m 条命令后输出 row×n+column。"
+    ],
+    "en": [
+      "The rover moves one cell at a time, a command that would leave the grid is simply ignored and later commands still run, so it is enough to simulate the current position command by command.",
+      "For each command first compute the candidate row and column after the move; move only if the candidate stays within 0..n-1, otherwise stay where you are.",
+      "Start at (0, 0); UP decreases the row, DOWN increases it, LEFT decreases the column, RIGHT increases it; after computing the candidate check the bounds and update only if it is valid; after all m commands print row * n + column."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the row and column; for each command compute the candidate coordinates and update only if they are valid.\n\n## Proof of correctness\n\nThe initial coordinates are correct; each command moves to the adjacent target if it is valid and otherwise keeps the current cell, exactly as the statement says. By induction the final coordinates are correct, and plugging them into the given numbering formula yields the answer.\n\n## Complexity\n\nTime O(m), extra space O(1)."
+}

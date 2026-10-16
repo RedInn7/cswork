@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-17",
+  "packageChecksum": "df8522be0d5ad1508e9c7cd059346d4248b0dd2259c98ae47c34396034b86a0c",
+  "sourceContentHash": "a465e6d607f732b5cc13732325da351784fa05334ac4ee885ab1da9bd001bd9d",
+  "editorialSha256": "94608ed7a69f4677b56509aed05c5367a1eb94095a15027bfdec04c0414e2de3",
+  "hints": {
+    "zh": [
+      "交换相邻的 arr[i] 与 arr[i+1] 只会改变这两项的强度，强度和的变化量正好是 arr[i]−arr[i+1]，与数组其他位置无关。",
+      "每个元素至多参与一次交换，所以最终做的交换是一组互不重叠的相邻对；数组被划分为“不动的单点”和“交换的相邻对”两类块，可以在前缀上做动态规划。注意从左往右遇到逆序就交换的贪心是错的。",
+      "令 dp[i] 为前 i 个元素（1 起）的最大强度和：不交换时 dp[i]=dp[i−1]+arr[i]×i；与前一个元素交换时 dp[i]=dp[i−2]+arr[i]×(i−1)+arr[i−1]×i；取两者最大值，答案为 dp[n]。最大约 5×10^14，必须用 64 位整数。"
+    ],
+    "en": [
+      "Swapping adjacent arr[i] and arr[i+1] changes only the strengths of those two positions, and the change in the total is exactly arr[i]-arr[i+1], independent of the rest of the array.",
+      "Each element takes part in at most one swap, so the chosen swaps form a set of non-overlapping adjacent pairs. The array splits into blocks that are either a single element left in place or a swapped adjacent pair, which suggests dynamic programming over prefixes. Note that the greedy of swapping every inversion from left to right is wrong.",
+      "Let dp[i] be the best strength sum of the first i elements (1-based). Without a swap, dp[i]=dp[i-1]+arr[i]*i; swapping with the previous element gives dp[i]=dp[i-2]+arr[i]*(i-1)+arr[i-1]*i. Take the larger one; the answer is dp[n]. It can reach about 5*10^14, so 64-bit integers are required."
+    ]
+  },
+  "explanationEn": "## Problem\n\nThe strength of each position i (0-based) of the array is arr[i]×(i+1). Adjacent elements may be swapped, but each element can take part in at most one swap, so the swaps performed form a set of non-overlapping adjacent pairs. Find the maximum strength sum.\n\n## Approach\n\nSwapping the adjacent pair (i,i+1) changes only these two terms: the new value minus the old value is exactly arr[i]-arr[i+1]. The gains of different pairs are independent; the only restriction is that the chosen pairs cannot share an element. So use a prefix DP: dp[i] is the maximum strength sum of the first i elements (1-based). The i-th element either is not swapped, giving dp[i]=dp[i-1]+arr[i]·i, or is swapped with the (i-1)-th element, giving dp[i]=dp[i-2]+arr[i]·(i-1)+arr[i-1]·i. The answer is dp[n].\n\n## Correctness\n\nAny valid set of swaps partitions the array into single-element blocks of length 1 and swap blocks of length 2; the strength inside a block depends only on the block's position and its elements, and blocks do not affect each other. dp[i] enumerates both shapes of the last block and takes the larger value, so by induction it is the optimum for the prefix. The greedy that swaps whenever it meets an inversion from left to right is wrong: in [4,3,1], swapping (3,1) gains 2, more than swapping (4,3), which gains 1, but the two share the element 3.\n\n## Complexity\n\nO(n) time, O(n) space. The maximum is about 10^5×n(n+1)/2≈5×10^14, so 64-bit integers are required.\n\n## Independent verification\n\nThe oracle first computes the strength sum without swaps, then takes the maximum sum of non-adjacent picks of the gains max(0,arr[i]-arr[i+1]), a different formulation from the reference's block DP. On small domains it also enumerates every set of non-overlapping adjacent swaps and takes the maximum directly, exhaustively covering all arrays of length 1..7 with values 1..3 and actually running the reference program on each. The wrong solutions cover the left-to-right greedy, allowing an element to be swapped repeatedly, 32-bit overflow, and misaligned weights."
+}

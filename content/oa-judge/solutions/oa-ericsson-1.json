@@ -1,0 +1,21 @@
+{
+  "id": "oa-ericsson-1",
+  "packageChecksum": "a6b03d2d75a1544a22bbdfa800a43c155812572df078a2b6e7c3a5c0ca7af438",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int numRows;\n    cin >> numRows;\n    vector<vector<long long>> t;\n    for (int i = 0; i < numRows; i++) {\n        vector<long long> row(i + 1, 1);\n        for (int c = 1; c < i; c++) row[c] = t[i - 1][c - 1] + t[i - 1][c];\n        t.push_back(row);\n    }\n    // Compact JSON: no spaces.\n    string out = \"[\";\n    for (int i = 0; i < numRows; i++) {\n        if (i) out += ',';\n        out += '[';\n        for (int c = 0; c <= i; c++) {\n            if (c) out += ',';\n            out += to_string(t[i][c]);\n        }\n        out += ']';\n    }\n    cout << out << \"]\\n\";\n}\n",
+      "sha256": "3e2592ca9655e471af7d4ce9b0f89cb70867fc46c8fa2b148f9c2d84e544b347"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int numRows = nextInt();\n        long[][] t = new long[numRows][];\n        StringBuilder sb = new StringBuilder(\"[\");\n        for (int i = 0; i < numRows; i++) {\n            t[i] = new long[i + 1];\n            t[i][0] = t[i][i] = 1;\n            for (int c = 1; c < i; c++) t[i][c] = t[i - 1][c - 1] + t[i - 1][c];\n            if (i > 0) sb.append(',');\n            sb.append('[');\n            for (int c = 0; c <= i; c++) {\n                if (c > 0) sb.append(',');\n                sb.append(t[i][c]);\n            }\n            sb.append(']');\n        }\n        System.out.println(sb.append(']'));\n    }\n}\n",
+      "sha256": "66358532db800d66a27c8a24b83258df61ca2a6bb55338fac02160d11e74a29c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tnumRows := nextInt()\n\tt := make([][]int, numRows)\n\tfor i := range t {\n\t\tt[i] = make([]int, i+1)\n\t\tt[i][0], t[i][i] = 1, 1\n\t\tfor c := 1; c < i; c++ {\n\t\t\tt[i][c] = t[i-1][c-1] + t[i-1][c]\n\t\t}\n\t}\n\tout, _ := json.Marshal(t)\n\tif numRows == 0 {\n\t\tout = []byte(\"[]\") // a nil slice would marshal as null\n\t}\n\tfmt.Println(string(out))\n}\n",
+      "sha256": "673e67265b32495970779c358e47bc613703cbc5545fa8ccc45275ecbf26b406"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-19",
+  "packageChecksum": "99191dbb97da2667e4881e17b760fd9fbb1db9e54c78c0769f5af0fc6371d0b3",
+  "sourceContentHash": "6b05ce426c537add55f72dba3f0a9d36f00e015e99752982ed8eba3e10f2e06d",
+  "editorialSha256": "94c607b5ef85d2807836b90afc1961e994fcdccdcdd9f8fba6111d8a0e40bc88",
+  "hints": {
+    "zh": [
+      "相邻电影的时长要么相同要么加 1，所以一条观影序列一定是从某个时长 t 开始，依次用完 t、t+1、t+2……这些连续时长。",
+      "从时长 t 开始时，所有时长为 t 的电影都可以连着看；只有存在时长 t+1 的电影，才能接到下一段。设 best[t]=count[t]+（count[t+1]>0 时的 best[t+1]）。",
+      "统计每种时长的数量；按时长从大到小处理，best[t]=count[t]，若 t+1 存在则再加 best[t+1]；答案是所有 best 的最大值。"
+    ],
+    "en": [
+      "Adjacent movies must have equal runtimes or runtimes that grow by 1, so a viewing sequence starts at some runtime t and uses the consecutive runtimes t, t+1, t+2, and so on.",
+      "Starting from runtime t, all movies of runtime t can be watched back to back, and you can move on only if a movie of runtime t+1 exists. Define best[t] = count[t] + best[t+1] when count[t+1] > 0.",
+      "Count the movies per runtime; process runtimes from largest to smallest with best[t] = count[t], plus best[t+1] when runtime t+1 exists; the answer is the largest best value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the number of movies of each runtime. If some movie of runtime t+1 exists, then starting from t you can first watch all movies of runtime t and then continue to t+1; otherwise only movies of runtime t can be used.\n\n## Correctness\n\nStarting from runtime t, all movies of runtime t can be watched consecutively; you can move on to the next runtime only when at least one movie of runtime t+1 exists. Each movie is used once, so the transition value is count[t] + best[t+1] (when count[t+1] > 0) and count[t] otherwise. Taking the maximum over every runtime that occurs as a start covers all valid sequences.\n\n## Complexity\n\nWith u the number of distinct runtimes, time O(u log u), space O(u)."
+}

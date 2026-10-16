@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-148",
+  "packageChecksum": "b33fded7ef54ff0975e3b70de1e0cc77857b0c1f1fefd5a473d14bf51b0e7266",
+  "sourceContentHash": "347ec0bba96ac6cfcdefc89e587ae831fb0b8d28b1d1b8d244ef564c2d4ac5b5",
+  "editorialSha256": "54112590215a857f208ee807f01d744ab6d8be19b960472c10aadf71e8f43f66",
+  "hints": {
+    "zh": [
+      "一个字符是否只出现一次取决于它在整串里的总次数，与位置无关；先知道每个字母出现几次，再找最早的那个。",
+      "两遍扫描：第一遍统计26个字母的出现次数，第二遍按原顺序找第一个次数为1的字符。",
+      "用长度26的数组计数；再从左到右遍历下标i，遇到计数为1的字符就输出i+1（题目使用1-based位置）并结束；遍历完都没有就输出-1。"
+    ],
+    "en": [
+      "Whether a character occurs only once depends on its total count in the whole string, not on where it sits; know how often each letter occurs first, then look for the earliest one.",
+      "Make two passes: the first counts the 26 letters, the second walks the string in its original order and stops at the first character whose count is 1.",
+      "Count with an array of 26; then go through the indices i from left to right, and at the first character whose count is 1 print i+1 (positions are 1-based) and stop; if the walk ends without one, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the frequency of each character, then scan in the original order for the first character whose frequency is 1.\n\n## Proof of correctness\n\nThe frequency table decides uniqueness exactly, and the first unique character met in the original order is exactly the earliest position asked for.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

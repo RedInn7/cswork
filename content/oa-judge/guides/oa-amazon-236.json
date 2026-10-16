@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-236",
+  "packageChecksum": "fcb572bfb5381bcf2868be844d28268613c7059037503cb39a91f36b483f95cd",
+  "sourceContentHash": "3cf00d8786370456e888a1c56c5c835fa52a7851ae4105d4d33e1cc1f07e5b44",
+  "editorialSha256": "e51d0bbe9631a0fddac67184fd2cdfb70589f0e97ded22a8abce008a09f5bd70",
+  "hints": {
+    "zh": [
+      "第一段无论怎么切都不能越过第一次出现重复字符的位置，而让第一段尽量长不会让后面更难切。",
+      "贪心：每一段尽量往后延伸，直到下一个字符已经在本段出现过，才在它前面切开。",
+      "维护当前段已出现字符的集合（26 位掩码即可），段数初始为 1；逐字符扫描，若该字符已在集合中，段数加一并清空集合；再把它加入集合；最后输出段数。"
+    ],
+    "en": [
+      "However the first segment is cut, it cannot pass the first position where a character repeats, and making the first segment as long as possible never makes the rest harder to split.",
+      "Greedy: extend each segment as far as possible and cut only right before a character that already appears in the current segment.",
+      "Keep the set of characters in the current segment (a 26-bit mask is enough) and start with one segment; scan the characters, and if a character is already in the set, add one segment and clear the set; then add the character; output the number of segments."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the character set of the current segment; if the next character is a repeat, end the current segment and start a new one, otherwise add it.\n\n## Proof of correctness\n\nThe first segment cannot go past the first repeated position, so the longest valid prefix is no shorter than any other first segment. Extending the first segment of any optimal split to this prefix only removes or shortens later segments and does not increase the number of segments. Repeating the exchange argument on the remaining suffix shows that the greedy method reaches the minimum number of segments.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

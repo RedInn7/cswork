@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-41",
+  "packageChecksum": "95685dfad35f93cd7c7d956af6443230a3cacdf2008cdf3b79b974a996a97798",
+  "sourceContentHash": "74bee5351163b0062f6a345ce1cd9510b59de430ae8addfa41ee6ef3c66b5fad",
+  "editorialSha256": "b384eb08d2dd5aa09e17bd8f63eb1dec912b46f6630d0d53ba5a89aa0f362d2a",
+  "hints": {
+    "zh": [
+      "第 N/3 小的数由最小的 N/3 个数中的最大值决定，第 N/3 大的数由最大的 N/3 个数中的最小值决定。想让差变大，只需把前者往下压或把后者往上抬，两侧互不干扰。",
+      "以下侧为例：要让分位值降 1，必须把当前所有等于该最大值的数都降 1，代价是这一组的大小；降到与下一个较小值相等时组会变大，所以每侧的单位代价随推进单调不减。两侧的代价序列可以像归并一样处理，每次购买当前更便宜的一侧。",
+      "排序后取 m=N/3，初始差为 a[N−m]−a[m−1]。下侧用前 m 个数取反后升序表示，上侧用后 m 个数升序表示，于是两侧都变成“把最小值往上推”。用堆保存每侧的（当前组大小，当前值）：弹出组大小最小的一侧，算出到下一个不同值的距离（组已含全部 m 个数时视为无穷远），本次推进 min(距离, 剩余 K 除以组大小)，答案加上推进量并扣除费用；没推进满距离就结束，否则重新计算组大小后放回堆。"
+    ],
+    "en": [
+      "The N/3-th smallest element is the maximum of the smallest N/3 numbers, and the N/3-th largest is the minimum of the largest N/3 numbers. To widen the gap you only push the former down or the latter up, and the two sides do not interact.",
+      "Take the lower side: lowering the quantile by 1 means lowering every number currently equal to that maximum, so the cost is the size of that group; once it reaches the next smaller value the group grows, so the unit cost on each side never decreases. Treat the two cost sequences like a merge and always buy from the cheaper side.",
+      "Sort and let m=N/3; the initial gap is a[N−m]−a[m−1]. Represent the lower side by the negated first m numbers in ascending order and the upper side by the last m numbers in ascending order, so both sides become \"push the minimum up\". Keep (current group size, current value) for each side in a heap: pop the side with the smaller group, compute the distance to the next different value (infinite once the group holds all m numbers), advance by min(distance, remaining K divided by the group size), add the advance to the answer and pay for it; stop if the full distance could not be covered, otherwise recompute the group size and push it back."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, you only need to lower the maximum of the smallest N/3 numbers or raise the minimum of the largest N/3 numbers. On either side, the cost of increasing the gap by 1 equals the current size of the extreme group; since this cost grows monotonically as the group expands, merge the cost segments of both sides with a heap and buy the cheapest increments first.\n\n## Correctness\n\nTo reach a given lower quantile, lowering the originally smallest group costs the least; the same holds for the upper quantile, and the two groups are disjoint. Whenever a side's extreme crosses the next value, its group grows, so the marginal cost is non-decreasing. Merging the two sorted cost sequences minimizes the cost of every prefix, so the budget buys the largest possible increase of the gap.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

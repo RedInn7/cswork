@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-18",
+  "packageChecksum": "5dafac86f39761bca212f73f601d21fe64558387d54c0b4f7f7da3c5a35df36b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> a(n), count(1000001, 0);\n    for (auto &v : a) {\n        cin >> v;\n        count[v]++;\n    }\n    // Sort by (frequency, value).\n    sort(a.begin(), a.end(), [&](int x, int y) { return count[x] != count[y] ? count[x] < count[y] : x < y; });\n    string out;\n    for (int i = 0; i < n; i++) {\n        out += to_string(a[i]);\n        out += i + 1 < n ? ' ' : '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "df50a09cf6ee24ce5114aa4705c0ac7131c09a8550481ff94d719afd9f98c5bc"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        int[] a = new int[n], count = new int[1000001];\n        for (int i = 0; i < n; i++) count[a[i] = (int) nextLong()]++;\n        // Sort by (frequency, value): both fit in one long key.\n        long[] key = new long[n];\n        for (int i = 0; i < n; i++) key[i] = ((long) count[a[i]] << 21) | a[i];\n        Arrays.sort(key);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) sb.append(key[i] & ((1 << 21) - 1)).append(i + 1 < n ? ' ' : '\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "3d2ee870bd3e6b2f6b479a46f47e8a0eee63b06b1b3d723373ad0dfa6bbe2a2f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tcount := make([]int64, 1000001)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\tcount[a[i]]++\n\t}\n\t// Sort by (frequency, value): both fit in one int64 key.\n\tkey := make([]int64, n)\n\tfor i, v := range a {\n\t\tkey[i] = count[v]<<21 | v\n\t}\n\tslices.Sort(key)\n\tw := bufio.NewWriterSize(os.Stdout, 1<<16)\n\tdefer w.Flush()\n\tfor i, k := range key {\n\t\tw.WriteString(strconv.FormatInt(k&(1<<21-1), 10))\n\t\tif i+1 < n {\n\t\t\tw.WriteByte(' ')\n\t\t} else {\n\t\t\tw.WriteByte('\\n')\n\t\t}\n\t}\n}\n",
+      "sha256": "100032a0d57721ac868fb06bb56c9a524488a6bf2933243f9da5aa5eb759f5df"
+    }
+  ]
+}

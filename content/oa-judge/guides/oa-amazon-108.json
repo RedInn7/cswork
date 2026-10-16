@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-108",
+  "packageChecksum": "9cbd44f01372b69c7f723904a3913d764dbf08233de2411566f87f22a26854e2",
+  "sourceContentHash": "8ede69d2fe8d72f0fb8255c0ff64830f68217ad65643de8e69b2299ecff4005c",
+  "editorialSha256": "4d1d58b051d0e841fb3fc1e06ab8e171129d8691fcfcd6e55e87173f9399589d",
+  "hints": {
+    "zh": [
+      "每天都会运走最左和最右的包裹，所以第 i 个包裹（从 0 开始）最迟只能在第 min(i+1, n−i) 天被选中。问题变成：每天选一个、每个包裹有截止日、最大化所选重量和。",
+      "这是单位耗时带截止日的带权调度：按截止日从早到晚加入候选，若已选数量超过当前天数，就丢掉其中最轻的一个。小根堆可以高效完成。",
+      "对 day=1..ceil(n/2)：把截止日为 day 的包裹（a[day−1] 和 a[n−day]，两者是同一个时只加一次）放入小根堆；当堆大小超过 day 时弹出最小值；最后输出堆中元素之和，用 64 位整数。"
+    ],
+    "en": [
+      "Every day the leftmost and rightmost packages are shipped, so package i (0-based) can be chosen no later than day min(i+1, n-i). The task becomes: pick one per day, each package has a deadline, maximize the chosen weight.",
+      "This is weighted scheduling of unit jobs with deadlines: add candidates in order of deadline, and whenever the number chosen exceeds the current day, drop the lightest one. A min-heap does this efficiently.",
+      "For day = 1..ceil(n/2): push the packages whose deadline is day (a[day-1] and a[n-day], only once when they are the same package) into a min-heap; while the heap is larger than day, pop its minimum; finally print the sum of the heap, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPackage i can be chosen no later than day min(i+1, n-i), which makes this a weighted selection of unit-time jobs with deadlines. Add jobs to a min-heap in increasing order of deadline, and whenever the heap exceeds the current day count, remove the smallest weight.\n\n## Proof of correctness\n\nAt most d chosen packages can have deadlines <= d, and this condition is enough to guarantee a schedule in deadline order. When the capacity is exceeded while scanning tasks with the same deadline, removing the smallest weight is a choice that is no worse by exchange; every deadline prefix stays feasible, and the heap's total is maximal. Non-negative weights mean the final selection can fill all the days.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

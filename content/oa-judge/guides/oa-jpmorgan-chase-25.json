@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-25",
+  "packageChecksum": "f2cbc835b64d712130391448124ab64a89f0b0fd03332c696fc18d2372230d12",
+  "sourceContentHash": "53c2735b9037eca8700517c840595ac6fac8178f89094f4086c2cb02b520b2ce",
+  "editorialSha256": "bf4928d89f55a9209e086775388c7295b539c18bee746c63661b613dc70f4bd8",
+  "hints": {
+    "zh": [
+      "势能最大的选手一旦成为擂主就再也不会输；在此之前，每个挑战者恰好是原队列中下一个还没上场的人。",
+      "所以只需按原顺序扫描一遍，维护当前擂主和他的连胜场数；k 可以大到 10^18，不能真的模拟 k 场比赛。",
+      "擂主初始为第一个人、连胜为 0；依次与后面每个人比较：对手更大就换擂主并把连胜设为 1，否则连胜加 1；连胜达到 k 立即输出擂主；扫描完仍未达到 k 时，擂主就是全局最大值，直接输出。"
+    ],
+    "en": [
+      "Once the player with the largest potential becomes champion, they never lose again; before that, every challenger is simply the next player in the original queue who has not played yet.",
+      "So one pass over the original order is enough, tracking the current champion and their win streak; k can be as large as 10^18, so never simulate k games.",
+      "Start with the first player as champion and a streak of 0; compare with each following player: a larger challenger becomes champion with a streak of 1, otherwise the streak grows by 1; print the champion as soon as the streak reaches k; if the scan ends first, the champion is the global maximum, so print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the original queue while maintaining the champion and its win streak, counting from 1 again whenever the champion changes; if the process has not ended when the scan finishes, return the global maximum potential.\n\n## Proof of correctness\n\nBefore the maximum potential first becomes champion, each opponent is exactly the next player in the original queue who has not yet played, so the scan simulates the process exactly. Once the maximum potential becomes champion it never loses again; if the scan is finished without reaching k, the eventual winner can only be that player. Therefore there is no need to play a huge number k of games.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

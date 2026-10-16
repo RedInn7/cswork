@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-33",
+  "packageChecksum": "4fc0b63972a0ecd548250eaed232cd0dd4b64795266bb3e165ca86b8e5867994",
+  "sourceContentHash": "4ba05e7dc2a762d8c57955e2d0359aa0b86ba439a5cb43ab70328d1f4bce387e",
+  "editorialSha256": "5b189c0fd87e638f13c966ab58d0dfb4bc56f6b18176863666d205fb2a64c3d4",
+  "hints": {
+    "zh": [
+      "删除若干条边之后，剩下的边决定了连通性：保留下来的边两端一定在同一个分量里。",
+      "忽略被删除的边，把其余每条边的两个端点用并查集合并；最后每个根代表一个连通分量，集合大小就是它的节点数。",
+      "把待删除的父子边放进集合；遍历所有树边，不在删除集合里的边就做 union（按大小合并、路径压缩）；收集所有根的集合大小并从小到大排序；先输出分量数，再输出这些大小。"
+    ],
+    "en": [
+      "After some edges are deleted, the remaining edges determine connectivity: the two ends of every kept edge must be in the same component.",
+      "Ignore the deleted edges and merge the endpoints of every other edge with a union-find structure; in the end each root represents one connected component and its set size is the number of nodes.",
+      "Put the parent-child edges to delete into a set; go through all tree edges and union the endpoints of every edge not in that set (union by size, path compression); collect the set size of every root and sort ascending; print the number of components followed by these sizes."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIgnore the deleted edges, merge the remaining edges with union-find, then count the size of each root and sort the sizes.\n\n## Correctness\n\nThe two ends of an edge that is not deleted must be in the same component, and union-find merges exactly the nodes reachable through these edges. The final roots correspond to the connected components, and the set sizes are their numbers of nodes. Sorting only fixes the display order and does not change the components.\n\n## Complexity\n\nTime O(n alpha(n) + n log n), space O(n)."
+}

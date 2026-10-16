@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-34",
+  "packageChecksum": "1f9f6f777a5936a9755d5d6d42ba2262a7360dad4e8ff628ea52085db2efb63d",
+  "sourceContentHash": "afb81e65af5ef39a41c42eb0f1b38d27ca9fe07aa28aa42ca535de0ab5ca4fdc",
+  "editorialSha256": "3a2e3936acb9011dfb044db7d4aafdcad5f94bca25724e878a17f17dc89fe058",
+  "hints": {
+    "zh": [
+      "树上任何一条简单路径都有唯一的最高点，路径在那里最多分成两条向下的链，分别进入不同的子树。",
+      "自底向上为每个节点求出向下、相邻字符都不同的最长链；在节点 u 处只考虑字符与 u 不同的孩子，取它们中最长的两条链接起来，就是以 u 为最高点的最长路径。",
+      "根是 0，从根 BFS 得到顺序后倒序处理。对节点 u，遍历字符与 u 不同的孩子，记录向下链长的最大值 first 和次大值 second；u 的链长为 first+1，用 first+second+1 更新答案（初值 1）。注意输入先给父节点数组再给字符串。"
+    ],
+    "en": [
+      "Every simple path in a tree has a unique highest node, where it splits into at most two downward chains going into different subtrees.",
+      "Compute bottom-up, for every node, the longest downward chain whose adjacent characters always differ. At node u consider only children whose character differs from u, and join the two longest of their chains; that is the longest path with u as its highest node.",
+      "The root is 0; get an order by BFS from the root and process it in reverse. For node u, scan the children whose character differs from u and keep the largest chain length first and the second largest second; set u's chain length to first+1 and update the answer, which starts at 1, with first+second+1. Note that the parent array comes before the string in the input."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute bottom-up the longest valid downward chain of each node, and update the answer with the two longest connectable child chains.\n\n## Proof of correctness\n\nA path's highest node is unique, and the rest of the path belongs to at most two subtrees. Edges with equal letters cannot be connected; choosing the two longest chains among children with different letters gives the best path through that highest node, and enumerating all nodes covers the global optimum.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-hudson-river-trading-5",
+  "packageChecksum": "c1efa42a17ef72e92a84a8029982f351122254b21292abd7e19fe10bab09cfef",
+  "sourceContentHash": "bd6b46581b9f89560a382cf3f10c9707483dd3a782ecb9f97575f7c12f50185e",
+  "editorialSha256": "b174516fe6113469a42286d3505327068e5815477d2090df12bd77149d1f90c5",
+  "hints": {
+    "zh": [
+      "每一步数值严格增大，所以“小值指向相邻大值”构成一张有向无环图，递增路径就是这张图上的路径。",
+      "按数值从小到大处理格子，处理某格时它所有更小的邻居都已算完。以该格结尾的路径数 = 1（只含自己）+ 所有更小邻居的结尾路径数之和。",
+      "把存在的格子（各行长度可能不同，只有存在的格子才相邻）按值升序排序，依次计算 dp 值；答案是所有 dp 之和减去单格路径，也就是每格累加 dp−1。"
+    ],
+    "en": [
+      "Values strictly increase along a path, so edges from smaller to larger neighbouring values form a directed acyclic graph, and increasing paths are paths in it.",
+      "Process cells by increasing value; when a cell is processed, all its smaller neighbours are done. The number of paths ending at the cell is 1 (the cell alone) plus the sum over smaller neighbours of their ending counts.",
+      "Sort the existing cells (rows may differ in length, and only existing cells are adjacent) by value, compute dp in that order, and add dp−1 for every cell, which removes the single-cell paths."
+    ]
+  },
+  "explanationEn": "## Idea\n\nTreat the cells as a directed acyclic graph where a smaller value points to an adjacent larger value. Do dynamic programming in increasing order of value: the number of paths ending at a cell is 1 (the single cell) plus the counts of all smaller neighbours; finally subtract all single-cell paths.\n\n## Proof of correctness\n\nStrictly increasing values make the path graph acyclic, and increasing value order guarantees that all smaller neighbours of a cell are finished before it is processed. Every path of length at least 2 ending at the current cell comes uniquely from a path of one smaller neighbour extended by the current cell; so the recurrence is complete and counts nothing twice. Each subtracted single cell corresponds exactly to one path that does not meet the length requirement.\n\n## Complexity\n\nLet V be the number of cells and E≤4V. O(V log V+E) time, O(V) space.\n\n## Source note\n\nThe original example output 4 matches the adjacency-path definition, but the listed path endpoints are inaccurate: the four actual paths are 1→5, 1→2, 2→7 and 1→2→7. This site keeps the rule and the answer, corrects the explanation and records the original error.\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-11",
+  "packageChecksum": "d301b908e72cd020f21ec2d7999615f41d5f237fef0ba7e47466a2d00f9c2eb8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int answer = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        string s = to_string(v);\n        answer += count(s.begin(), s.end(), '0') % 2;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "c8f4e24c7cdd3958ba9cbf29f6949d412b033f7a5744f9415c0bc07d79ac3f3d"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), answer = 0;\n        for (int i = 0; i < n; i++) {\n            String s = Long.toString(sc.nextLong());\n            int zeros = 0;\n            for (char c : s.toCharArray()) if (c == '0') zeros++;\n            answer += zeros % 2;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e5b09a61a363a00ce8f4c12c2dcba3d637f8472e98cf894a3e1c17c0b602e229"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tvar v int64\n\t\tfmt.Fscan(in, &v)\n\t\tanswer += strings.Count(strconv.FormatInt(v, 10), \"0\") % 2\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "115496dde0536120a2324667744a81d381ae12a35bd64d726096616a8fb9a287"
+    }
+  ]
+}

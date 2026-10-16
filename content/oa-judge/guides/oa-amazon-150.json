@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-150",
+  "packageChecksum": "c0a52f8bed65d6029d44861cf4a1a39234ee6921e0f325c33b31bb85af3240d6",
+  "sourceContentHash": "fa155776c956f69da2fbabee21566b9e4aa882445195f0117975a5148198b651",
+  "editorialSha256": "f6bcc882955c493fea873591d87d8fd7312c319072c3825d26aff8f55f9539fd",
+  "hints": {
+    "zh": [
+      "答案等于技能总数减去窗口内至少出现过一次的技能数。窗口[q−window,q]随着q增大只会整体右移，适合离线排序后滑动处理。",
+      "把日志按时间排序、查询也按时间排序（记住原下标），用双指针维护落在当前窗口里的日志，同时维护每个技能在窗口内的出现次数，以及出现次数大于0的技能个数。",
+      "按时间升序处理查询q：右指针把所有时间不超过q的日志加入，某技能次数从0变成1时活跃数加1；左指针移除所有时间小于q−window的日志，次数从1变成0时活跃数减1；把总数减活跃数写回该查询的原位置，最后按原顺序输出。"
+    ],
+    "en": [
+      "The answer is the number of skills minus the number of skills seen at least once in the window. As q grows, the window [q-window, q] only slides right, which suits sorting the queries offline and sliding.",
+      "Sort the logs by time and the queries by time (keeping their original indices); two pointers keep the logs inside the current window, along with each skill's count in the window and how many skills have a positive count.",
+      "Handle queries in increasing time: the right pointer adds every log with time <= q, and a skill whose count goes from 0 to 1 makes the active count grow by one; the left pointer removes every log with time < q - window, and a count going from 1 to 0 makes it shrink by one. Store numSkills minus the active count at the query's original index and print the answers in the original order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the logs by time, and sort the queries by time as well. Two pointers maintain the logs inside the window; keep a frequency per skill and maintain the number of active skills; the answer = total number of skills - number of active skills.\n\n## Proof of correctness\n\nWhen the window moves through the queries in ascending order, all new logs with time <= q are added and all old logs with time < q - window are removed, so exactly the logs in the closed interval remain. The number of distinct skills is updated only when a frequency changes from 0 to 1 or from 1 to 0, which keeps repeated logs from counting a skill as active more than once.\n\n## Complexity\n\nTime O(m log m + q log q), space O(numSkills + m + q)."
+}

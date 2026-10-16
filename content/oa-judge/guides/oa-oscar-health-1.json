@@ -1,0 +1,19 @@
+{
+  "id": "oa-oscar-health-1",
+  "packageChecksum": "8943e0e6a3d51a483e8491aeaefb7fda47db291141982f205323d17846e26f38",
+  "sourceContentHash": "44cb962fd41bc970eff650bacca1f8945f451df0a5da27642aefcdde82db694c",
+  "editorialSha256": "e4750ee9aa31739223e0efb0b83335466d6b8c620912851868be4216b347965c",
+  "hints": {
+    "zh": [
+      "一个会员达标，当且仅当他需要的每个 specialty 都至少有一个服务者在距离上限之内；只要有一个 specialty 找不到就要报告他。",
+      "先把服务者按 specialty 分组，这样检查会员的某个 specialty 时只需遍历该组的服务者。坐标是整数，比较距离时用平方距离与上限的平方比较，既精确又包含等于上限的情况。",
+      "读入服务者时以 specialty 为键存坐标列表。对每个会员把所需 specialty 按竖线切开，逐个检查对应列表里是否存在平方距离 ≤ maxDistance² 的服务者，某个 specialty 找不到就记下该会员编号并停止检查。最后把记下的编号按数值升序每行输出一个，没有则输出空内容。"
+    ],
+    "en": [
+      "A member is adequately served exactly when every required specialty has at least one provider within the distance limit; a single specialty with no such provider means the member is reported.",
+      "Group providers by specialty first, so checking one of a member's specialties only scans that group. Coordinates are integers, so compare squared distance with the squared limit, which is exact and includes distances equal to the limit.",
+      "When reading providers, store their coordinates in a list keyed by specialty. For each member, split the required specialties on the vertical bar and check each one's list for a provider with squared distance <= maxDistance^2; if some specialty has none, record the member id and stop checking. Finally print the recorded ids in ascending numeric order, one per line, or nothing if there are none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild an index of provider coordinates by specialty. For each member, check each required specialty in turn for a provider whose squared distance is not greater than d^2. The time is O(P+M*R*P_s), where P_s is the number of providers with the relevant specialty.\n\n## Proof of correctness\n\nA member is adequately served if and only if each required specialty has at least one provider within the distance limit. The algorithm checks this existence specialty by specialty; as soon as one is missing, the member is added to the result. Sorting at the end only affects the display order.\n\n## Complexity\n\nCoordinates are integers, so squared distances can be compared to avoid floating-point error; the distance bound includes being equal to maxDistance.\n\nO(P + M*R*P) time and O(P) space, where R is the number of specialties a member requires.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();P,M,d=map(int,z[0].split());by={}\n for line in z[1:1+P]:\n  i,s,x,y=line.split();by.setdefault(s,[]).append((int(x),int(y)))\n ans=[]\n for line in z[1+P:1+P+M]:\n  mid,x,y,req=line.split();x=int(x);y=int(y);bad=False\n  for s in req.split('|'):\n   if not any((a-x)**2+(b-y)**2<=d*d for a,b in by.get(s,[])):bad=True;break\n  if bad:ans.append(int(mid))\n return '\\n'.join(map(str,sorted(ans)))\n```"
+}

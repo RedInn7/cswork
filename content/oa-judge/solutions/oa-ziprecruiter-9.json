@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-9",
+  "packageChecksum": "6cb6893cf25f83d02d9e7a2e4741e0fb7ed1a9c452aa54cc05314d1846da01a2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    deque<long long> q;  // completion times of the guest being checked and those waiting\n    vector<long long> out;\n    out.reserve(n);\n    for (int k = 0; k < n; k++) {\n        long long t;\n        scanf(\"%lld\", &t);\n        // checks finishing at or before t are done before this guest is considered\n        while (!q.empty() && q.front() <= t) q.pop_front();\n        long long waiting = q.empty() ? 0 : (long long)q.size() - 1;\n        if (waiting > 10) {\n            out.push_back(t);\n        } else {\n            long long done = (q.empty() ? t : q.back()) + 300;\n            q.push_back(done);\n            out.push_back(done);\n        }\n    }\n    for (int i = 0; i < n; i++) printf(i ? \" %lld\" : \"%lld\", out[i]);\n    printf(\"\\n\");\n}\n",
+      "sha256": "136bc3ab1e1ccb0bde89769d90c3bafe1226fe5051d1a666113c3f4d508a6aa6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n    static StringTokenizer st = new StringTokenizer(\"\");\n\n    static long next() throws IOException {\n        while (!st.hasMoreTokens()) st = new StringTokenizer(in.readLine());\n        return Long.parseLong(st.nextToken());\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) next();\n        ArrayDeque<Long> q = new ArrayDeque<>();  // completion times of the guest being checked and those waiting\n        StringBuilder sb = new StringBuilder();\n        for (int k = 0; k < n; k++) {\n            long t = next();\n            // checks finishing at or before t are done before this guest is considered\n            while (!q.isEmpty() && q.peekFirst() <= t) q.pollFirst();\n            int waiting = Math.max(0, q.size() - 1);\n            long res;\n            if (waiting > 10) {\n                res = t;\n            } else {\n                res = (q.isEmpty() ? t : q.peekLast()) + 300;\n                q.addLast(res);\n            }\n            if (k > 0) sb.append(' ');\n            sb.append(res);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "3da5c4d2fa21beb42be74c4f61272c3efddcc032d30485a9276f98d8d7022840"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 {\n\t\tsc.Scan()\n\t\tv, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\treturn v\n\t}\n\tn := int(next())\n\tq := []int64{} // completion times of the guest being checked and those waiting\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor k := 0; k < n; k++ {\n\t\tt := next()\n\t\t// checks finishing at or before t are done before this guest is considered\n\t\tfor len(q) > 0 && q[0] <= t {\n\t\t\tq = q[1:]\n\t\t}\n\t\twaiting := max(0, len(q)-1)\n\t\tres := t\n\t\tif waiting <= 10 {\n\t\t\tif len(q) > 0 {\n\t\t\t\tres = q[len(q)-1] + 300\n\t\t\t} else {\n\t\t\t\tres = t + 300\n\t\t\t}\n\t\t\tq = append(q, res)\n\t\t}\n\t\tif k > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatInt(res, 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "d5793ad228749b50c8506e1e3e57f55f7427f76e28519f370b382e655b657348"
+    }
+  ]
+}

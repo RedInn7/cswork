@@ -1,0 +1,21 @@
+{
+  "id": "oa-paycom-15",
+  "packageChecksum": "024de95c17910c1805fca6eaf17129acaf5b377afa97c2278d948ad20e7bdf0a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, a, b;\n    cin >> n >> a >> b;\n    // while (s++ < n) runs the body with s = 1..n; \"s < a && s < b\" means s < min(a, b).\n    int s = 0, cut = min(a, b);\n    string out;\n    while (s++ < n) {\n        if (s < cut) continue;\n        if (!out.empty()) out += ' ';\n        out += to_string(s);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "6fe808049d0579c88938cfdfd2f496878b47a860f40c57caa94a972d91f0ccbc"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), a = sc.nextInt(), b = sc.nextInt();\n        // while (s++ < n) runs the body with s = 1..n; \"s < a && s < b\" means s < min(a, b).\n        int s = 0, cut = Math.min(a, b);\n        StringBuilder sb = new StringBuilder();\n        while (s++ < n) {\n            if (s < cut) continue;\n            if (sb.length() > 0) sb.append(' ');\n            sb.append(s);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "3bdf4bfa04af1edc2eeb5ff5ddfff6c3678f44977f0a81b54107a9d68dc8d5e9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tvar n, a, b int\n\tfmt.Scan(&n, &a, &b)\n\t// while (s++ < n) runs the body with s = 1..n; \"s < a && s < b\" means s < min(a, b).\n\tcut := min(a, b)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfirst := true\n\tfor s := 1; s <= n; s++ {\n\t\tif s < cut {\n\t\t\tcontinue\n\t\t}\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tw.WriteString(strconv.Itoa(s))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "961e6418bf53ef7e450ca081faf3aa38c21e70aadb2eb93a90756a1f46a95556"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-xperi-2",
+  "packageChecksum": "4a750b382fdb6bc2fed2780efca92d9542bb0c415722e41e625a030f2dfc5744",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    a, b = map(int, sys.stdin.read().split()[:2])\n    cost = 0\n    # Subtraction-based Euclid, merging runs of the same subtraction.\n    while a != b:\n        if a < b:\n            a, b = b, a\n        q, r = divmod(a, b)\n        if r == 0:\n            cost += q - 1  # stop as soon as a reaches b\n            a = b\n        else:\n            cost += q\n            a = r\n    print(cost)\n\n\nmain()\n",
+      "sha256": "982d3c7192505fb46e2af796883609233be60ee01d3f51247bcaa331f494a71c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        long a = nextLong(), b = nextLong(), cost = 0;\n        // Subtraction-based Euclid, merging runs of the same subtraction.\n        while (a != b) {\n            if (a < b) {\n                long t = a;\n                a = b;\n                b = t;\n            }\n            long q = a / b, r = a % b;\n            if (r == 0) {\n                cost += q - 1;  // stop as soon as a reaches b\n                a = b;\n            } else {\n                cost += q;\n                a = r;\n            }\n        }\n        System.out.println(cost);\n    }\n}\n",
+      "sha256": "1a893d23613bafbf3e2986dd6ed42cd4f85cd0b6b2d540ce84a4cae471f0a45c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar a, b uint64\n\tfmt.Scan(&a, &b)\n\tvar cost uint64\n\t// Subtraction-based Euclid, merging runs of the same subtraction.\n\tfor a != b {\n\t\tif a < b {\n\t\t\ta, b = b, a\n\t\t}\n\t\tq, r := a/b, a%b\n\t\tif r == 0 {\n\t\t\tcost += q - 1 // stop as soon as a reaches b\n\t\t\ta = b\n\t\t} else {\n\t\t\tcost += q\n\t\t\ta = r\n\t\t}\n\t}\n\tfmt.Println(cost)\n}\n",
+      "sha256": "3874cc119633bb318ce4f817b9e0fef5f46fd91db250416a27233447623aa9ff"
+    }
+  ]
+}

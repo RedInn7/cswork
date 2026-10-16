@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-74",
+  "packageChecksum": "f498451d0006661cd7a8d015d4941147fa5281246fc44c14fbc16ec5359f68c3",
+  "sourceContentHash": "832345f00c81f14338c83314c18939250e877b2fbe5669ee903d20acaf12e079",
+  "editorialSha256": "690355308fccb59e6deeb41b25309a7bae845012aeb52395ec7a8bf1d9931f79",
+  "hints": {
+    "zh": [
+      "每次只能排序一个真子串，所以任何一次操作都至少有一个端点不动。先想清楚什么情况下一次就够、什么情况下两次一定不够。",
+      "一次够：首字符已经是全局最小，或末字符已经是全局最大，排序其余部分即可。两次通常够：先把一个最小值挪到开头或把一个最大值挪到末尾，再排序剩余部分。唯一例外是首字符是唯一最大、末字符是唯一最小，此时第一步无法固定任何一端。",
+      "依次判断：已有序输出 0；s[0] 等于最小字符或 s[n−1] 等于最大字符输出 1；s[0] 是最大字符且只出现一次、s[n−1] 是最小字符且只出现一次时输出 3（前 n−1 位、后 n−1 位、前 n−1 位各排一次）；其余输出 2。"
+    ],
+    "en": [
+      "Each operation sorts a proper substring, so every operation leaves at least one end untouched. Work out when one operation suffices and when two can never be enough.",
+      "One is enough when the first character is already a global minimum or the last is already a global maximum: sort the rest. Two usually suffice: first move a minimum to the front or a maximum to the end, then sort the remainder. The only exception is a unique maximum first and a unique minimum last, where the first step cannot fix either end.",
+      "Check in order: already sorted, print 0; s[0] equals the smallest character or s[n-1] equals the largest, print 1; s[0] is the largest character and occurs once while s[n-1] is the smallest and occurs once, print 3 (sort the first n-1, the last n-1, then the first n-1 characters); otherwise print 2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf already sorted, the answer is 0. If the first character is the global minimum or the last character is the global maximum, sorting the rest takes only 1. Otherwise, if the first character is the unique maximum and the last character is the unique minimum, 3 are needed; in every other case, 2.\n\n## Proof of correctness\n\nOne operation must leave at least one end in place, so it requires that end to already hold its correct final extreme value. Two operations can first move a minimum to the front or a maximum to the end, then sort the rest; the only exception is a unique maximum at the front and a unique minimum at the end, where no proper substring can handle both ends at once, the first step cannot fix any end, and 2 operations are not enough. In that case, sorting the first n-1 characters, then the last n-1, then the first n-1 again completes it in 3.\n\n## Complexity\n\nO(n) time and O(1) space."
+}

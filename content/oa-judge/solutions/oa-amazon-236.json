@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-236",
+  "packageChecksum": "fcb572bfb5381bcf2868be844d28268613c7059037503cb39a91f36b483f95cd",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string s;\n    cin >> s;\n    // Greedy: extend the current segment until a character repeats.\n    int seen = 0, answer = 1;\n    for (char c : s) {\n        int bit = 1 << (c - 'a');\n        if (seen & bit) {\n            answer++;\n            seen = 0;\n        }\n        seen |= bit;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "9c3f15e7daf5afbc2ac92af2c6fbfb249d7d515c756a339ac6536a5034d70f52"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        // Greedy: extend the current segment until a character repeats.\n        int seen = 0, answer = 1;\n        for (int i = 0; i < s.length(); i++) {\n            int bit = 1 << (s.charAt(i) - 'a');\n            if ((seen & bit) != 0) {\n                answer++;\n                seen = 0;\n            }\n            seen |= bit;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "1b1c3236ebb098a686237ae3b60ebdbe1dcba6b334ef9c0ea7f7353545264a47"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextToken() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := nextToken()\n\t// Greedy: extend the current segment until a character repeats.\n\tseen, answer := 0, 1\n\tfor _, c := range s {\n\t\tbit := 1 << (c - 'a')\n\t\tif seen&bit != 0 {\n\t\t\tanswer++\n\t\t\tseen = 0\n\t\t}\n\t\tseen |= bit\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "6d690e6bb9b5df2b8f22500963f3b3d35aa5036788980bdcf2e1fb9435f13a47"
+    }
+  ]
+}

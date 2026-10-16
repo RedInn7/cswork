@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-2",
+  "packageChecksum": "e809548b5d2f4f6a74417f311895aa803e47a96a463ef1acb0634a299dfe40a0",
+  "sourceContentHash": "83c2674fb7cf6e62702084989fc4ecb7610e25cba136fb75df183c5a9582fd04",
+  "editorialSha256": "5f94505a59d308c1cbacf8c8dae1682f3972df5d674550253b90b5a2d3627c99",
+  "hints": {
+    "zh": [
+      "从左往右看，一个右括号如果前面没有尚未匹配的左括号，任何合法结果都必须在它前面补一个左括号。",
+      "用一个余额记录尚未匹配的左括号数：遇到左括号加一，遇到右括号能匹配就减一，不能匹配就记一次必须的插入。扫完后剩下的左括号每个都还需要补一个右括号。",
+      "初始化余额和缺失数为 0，逐字符扫描：'(' 让余额加一；')' 在余额大于 0 时让余额减一，否则缺失数加一。最后输出缺失数加余额。"
+    ],
+    "en": [
+      "Scanning left to right, a ')' with no unmatched '(' before it forces any valid result to insert a '(' somewhere before it.",
+      "Track a balance of unmatched '(': an opening bracket adds one, a closing bracket subtracts one if it can be matched and otherwise counts one required insertion. After the scan, every remaining unmatched '(' still needs a ')' inserted.",
+      "Start with balance and missing at 0 and scan the characters: '(' increments the balance; ')' decrements the balance when it is positive, otherwise increments missing. Print missing plus balance."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhile scanning, keep a balance of left parentheses that are not yet matched. When a right parenthesis appears with balance 0, a left parenthesis must be inserted; at the end, insert a right parenthesis for each remaining left one.\n\n## Proof of correctness\n\nWhen a right parenthesis has no available left parenthesis before it, any valid result must add a new left parenthesis. Every other right parenthesis can directly match an existing left one without any extra operation. At the end, each unmatched left parenthesis needs at least one right parenthesis, and the construction uses exactly these necessary insertions, so it is optimal.\n\n## Complexity\n\nO(n) time, O(1) space."
+}

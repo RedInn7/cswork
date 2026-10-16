@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-18",
+  "packageChecksum": "87e46784b3dd995a8283f4ad4be4c466385f279365431929fcd32acb9f1da6ef",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long k;\n    if (scanf(\"%d %lld\", &n, &k) != 2) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // First index whose missing count a[i]-i-1 reaches k.\n    int lo = 0, hi = n;\n    while (lo < hi) {\n        int mid = (lo + hi) / 2;\n        if (a[mid] - mid - 1 < k) lo = mid + 1;\n        else hi = mid;\n    }\n    printf(\"%lld\\n\", k + lo);\n}\n",
+      "sha256": "61eb628899614ee9c514001dd3090c060d5b80ad97f3ac378c704fecb9cedf22"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long k = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // First index whose missing count a[i]-i-1 reaches k.\n        int lo = 0, hi = n;\n        while (lo < hi) {\n            int mid = (lo + hi) / 2;\n            if (a[mid] - mid - 1 < k) lo = mid + 1;\n            else hi = mid;\n        }\n        System.out.println(k + lo);\n    }\n}\n",
+      "sha256": "2f7b9d6ed4d648e628910904bd920391b951b5e47a9b4736bad91ca05b9db832"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tk := nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// First index whose missing count a[i]-i-1 reaches k.\n\tlo, hi := 0, n\n\tfor lo < hi {\n\t\tmid := (lo + hi) / 2\n\t\tif a[mid]-int64(mid)-1 < k {\n\t\t\tlo = mid + 1\n\t\t} else {\n\t\t\thi = mid\n\t\t}\n\t}\n\tfmt.Println(k + int64(lo))\n}\n",
+      "sha256": "ec929a9e82a98e9e19e5d1ad02c044677b5a111e3289738da95d425437210bbd"
+    }
+  ]
+}

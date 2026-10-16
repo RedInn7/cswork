@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-1",
+  "packageChecksum": "333bb2c7aba9393980d1c712eefae0237554c6616a8289ef534cff4753f899f8",
+  "sourceContentHash": "ec6452a87a37d14c83ac87f231633982364f87d73d4af108da9beb82579319f4",
+  "editorialSha256": "4124a18c31f5fa981e5085edb23b9be5f7e7ed59ba59cc90a54ed9bac4d76656",
+  "hints": {
+    "zh": [
+      "n 个有编号的顶点之间共有 n(n−1)/2 个不同的顶点对，每一对都可以独立地选择连边或不连边。",
+      "不同的选择方式与不同的图一一对应，由乘法原理答案是 2^(n(n−1)/2)。",
+      "n 可达 10⁹，指数 n(n−1)/2 约 5×10¹⁷，仍在 64 位范围内；用快速幂计算 2 的这个次方对 1000000007 取模，每次乘法后取模。"
+    ],
+    "en": [
+      "Among n labelled vertices there are n(n−1)/2 distinct vertex pairs, and each pair independently has an edge or not.",
+      "Different choices correspond one to one to different graphs, so by the multiplication principle the answer is 2^(n(n−1)/2).",
+      "n can be 10^9, so the exponent n(n−1)/2 is about 5×10^17, still within 64 bits; compute 2 to that power modulo 1000000007 with fast exponentiation, reducing after every multiplication."
+    ]
+  },
+  "explanationEn": "## Idea\n\nEach distinct vertex pair corresponds to one independent optional edge; compute 2 to the power n(n−1)/2 with fast exponentiation.\n\n## Proof of correctness\n\nThere are n(n−1)/2 vertex pairs, and each pair either has an edge or not; all choices correspond one to one to graphs, and the multiplication principle gives the result.\n\n## Complexity\n\nO(log n) time, O(1) extra space."
+}

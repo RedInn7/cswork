@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-255",
+  "packageChecksum": "fd03d2e1eb567ce839d343bdc84d2516502ca6253cd35d25021e964bc55a559f",
+  "sourceContentHash": "af2c1a71953f27f1b1f4a83b28ad4ae80a5019471c246583c97dcfe82c29e523",
+  "editorialSha256": "1c6c9934d8883298dd95c2759d5316aba1d405515b7e5f55cba3c04880880edf",
+  "hints": {
+    "zh": [
+      "每次对所有正数减去同一个量，原本不同的正值之间的差保持不变，相同的正值则始终一起变化。",
+      "因此一次操作至多让一种正值（当前最小的那种）变成 0，次数下界就是不同正值的种数；每次减去当前最小正值恰好达到这个下界。",
+      "用集合统计数组中所有大于 0 的不同值，输出集合大小；0 不计入。"
+    ],
+    "en": [
+      "Each step subtracts the same amount from every positive value, so differences between distinct positive values never change, and equal positive values always move together.",
+      "Hence one operation can turn at most one kind of positive value (the current smallest) into 0, so the number of distinct positive values is a lower bound; subtracting the current smallest positive value each time reaches it exactly.",
+      "Collect the distinct values greater than 0 in a set and output its size; zeros are not counted."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the distinct positive values; 0 does not count.\n\n## Proof of correctness\n\nAn operation subtracts the same amount from all positive values at once, so the differences between originally different positive values stay the same, and at most the smallest kind of positive value can become 0. Hence at least as many operations as there are distinct positive values are needed. Taking the current smallest positive value each time eliminates exactly one kind, which attains the lower bound.\n\n## Complexity\n\nTime O(n), space O(101)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-69",
+  "packageChecksum": "f14a8a43d867384f5214f3b6a424723575d2e71eb92c3acd483c3083aa19c5a7",
+  "sourceContentHash": "08c4f4129c0c8b14e155018483fa0b2f5313fc92109a02cd156e3e1afbe36399",
+  "editorialSha256": "63622812f53634db23ff4c3f44a456a341082a476a313f44980a99df0cb9c86b",
+  "hints": {
+    "zh": [
+      "A 的元素个数要最少，而在个数固定为 k 时，和最大的选法显然是取最大的 k 个数；sum(A)>sum(B) 等价于 A 的和大于总和减去 A 的和。",
+      "把数组降序排列，依次取最大的剩余元素。第一次出现“已取之和严格大于剩余之和”时停止：此前的任何 k 都连最大的 k 个数都不够，所以这个 k 最小，同时这个前缀也让该 k 下的和最大。",
+      "降序排序并求总和（可达 10^10，用 64 位）；逐个累加前缀和 taken，一旦 taken>total−taken 就停止，记录个数 k；把这 k 个数反转成升序；先输出 k，再每行输出一个数，重复值照常保留。"
+    ],
+    "en": [
+      "A must have as few elements as possible, and for a fixed size k the largest possible sum clearly comes from the k largest numbers; sum(A) > sum(B) means the sum of A exceeds the total minus the sum of A.",
+      "Sort in descending order and keep taking the largest remaining element. Stop the first time the taken sum is strictly greater than the remaining sum: for any smaller k even the k largest numbers were not enough, so this k is minimal, and this prefix also has the largest sum for that k.",
+      "Sort descending and compute the total (up to 10^10, so use 64 bits); add elements to the running sum taken one by one and stop as soon as taken > total - taken, recording the count k; reverse those k numbers into ascending order; print k, then one number per line, keeping duplicates."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the elements in descending order and take the largest remaining element one at a time; stop the first time the taken sum is strictly greater than the remaining sum, and output the taken prefix reversed.\n\n## Proof of correctness\n\nFor a fixed number k of taken elements, the k largest elements have the largest possible sum. If this prefix still does not qualify, no k-element choice qualifies; therefore the first k that qualifies is the minimum. That prefix also gives the largest total for this k, so both levels of optimization are satisfied. Reversing the descending prefix gives the ascending output.\n\n## Complexity\n\nTime O(n log n), space O(n); the sum can reach 10^10, so 64-bit or arbitrary-precision integers are required."
+}

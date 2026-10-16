@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-35",
+  "packageChecksum": "7ea1d08cec72c22029746bf12844eb4cbd274420f21e636eb63b322fa3197dbb",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m, q;\n    cin >> n >> m >> q;\n    vector<string> images(n), favs(m);\n    for (auto &s : images) cin >> s;\n    for (auto &s : favs) cin >> s;\n    unordered_set<string> marked(favs.begin(), favs.end());\n    int first = 0, second = 0; // cursors into favorites and the original list\n    string out;\n    for (int t = 0; t < q; t++) {\n        if (t) out += ' ';\n        if (first < m) { out += favs[first++]; continue; }\n        while (second < n && marked.count(images[second])) second++;\n        if (second < n) out += images[second++];\n        else out += \"NULL\";\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "f9bbcdace4def0183eb4fdaf97361186dca33125bec8602f07a0c0e653c392b9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        List<String> tokens = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            StringTokenizer st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) tokens.add(st.nextToken());\n        }\n        int n = Integer.parseInt(tokens.get(0)), m = Integer.parseInt(tokens.get(1)), q = Integer.parseInt(tokens.get(2));\n        List<String> images = tokens.subList(3, 3 + n), favs = tokens.subList(3 + n, 3 + n + m);\n        HashSet<String> marked = new HashSet<>(favs);\n        int first = 0, second = 0; // cursors into favorites and the original list\n        StringBuilder sb = new StringBuilder();\n        for (int t = 0; t < q; t++) {\n            if (t > 0) sb.append(' ');\n            if (first < m) { sb.append(favs.get(first++)); continue; }\n            while (second < n && marked.contains(images.get(second))) second++;\n            if (second < n) sb.append(images.get(second++));\n            else sb.append(\"NULL\");\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "c8b1106dc30034e1d6fed864c9bf81d02a4b4aa24e21cfe29c8881d65a1846fe"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\tm, _ := strconv.Atoi(next())\n\tq, _ := strconv.Atoi(next())\n\timages := make([]string, n)\n\tfor i := range images {\n\t\timages[i] = next()\n\t}\n\tfavs := make([]string, m)\n\tmarked := make(map[string]bool, m)\n\tfor i := range favs {\n\t\tfavs[i] = next()\n\t\tmarked[favs[i]] = true\n\t}\n\tout := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer out.Flush()\n\tfirst, second := 0, 0 // cursors into favorites and the original list\n\tfor t := 0; t < q; t++ {\n\t\tif t > 0 {\n\t\t\tout.WriteByte(' ')\n\t\t}\n\t\tif first < m {\n\t\t\tout.WriteString(favs[first])\n\t\t\tfirst++\n\t\t\tcontinue\n\t\t}\n\t\tfor second < n && marked[images[second]] {\n\t\t\tsecond++\n\t\t}\n\t\tif second < n {\n\t\t\tout.WriteString(images[second])\n\t\t\tsecond++\n\t\t} else {\n\t\t\tout.WriteString(\"NULL\")\n\t\t}\n\t}\n\tout.WriteByte('\\n')\n}\n",
+      "sha256": "1dfa6203fcc5c94b1eb095c0ff6013ece1f734b918760677ffb3e2695a91c5d8"
+    }
+  ]
+}

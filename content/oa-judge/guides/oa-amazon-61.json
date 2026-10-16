@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-61",
+  "packageChecksum": "650adeb038f63b5602253cc8a739af215badcdfcbf79647e2ee3639f90db2669",
+  "sourceContentHash": "c11a1bc53a141016ed6484c1f00e4d83c21b90165052fa927285e0105d8f23c9",
+  "editorialSha256": "3853f7dab018aec99f3fca81dedb32ecd213bf06413406efd1cd7e415de038a7",
+  "hints": {
+    "zh": [
+      "一轮扫描内处理的编号，在数组中的位置必须是递增的；能否在同一轮里接着处理 v+1，只取决于 v+1 是否在 v 的右边。",
+      "所以每当 v+1 的位置在 v 的左边，就必须（也只需要）开启新的一轮；答案等于“位置下降”的次数加 1。",
+      "读入排列时记录 position[值] = 下标；然后对 v = 1..n−1 统计 position[v+1] < position[v] 的个数，输出它加 1。n 可达 10⁶，注意使用快速输入和紧凑的整数数组。"
+    ],
+    "en": [
+      "Within one round the numbers processed must appear at increasing positions; whether v+1 can be processed in the same round as v depends only on whether v+1 lies to the right of v.",
+      "So whenever v+1 sits to the left of v, a new round must start, and nothing else forces one; the answer is the number of such position drops plus 1.",
+      "While reading the permutation, record position[value] = index; then count v = 1..n-1 with position[v+1] < position[v] and print that count plus 1. n can reach 10^6, so use fast input and a compact integer array."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the position of each number. One round is needed to start; every time pos[v+1] < pos[v], a new scan is required, adding a round.\n\n## Proof of correctness\n\nWithin one round, only numbers at increasing positions can be visited. When the positions of consecutive numbers drop, the current round cannot continue, and a next round must be started and is sufficient, so the answer is the number of position drops plus 1.\n\n## Complexity\n\nO(n) time and O(n) auxiliary space, with positions stored in a compact integer array."
+}

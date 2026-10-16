@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-2",
+  "packageChecksum": "3220fc0aef1e7be8fc40a6556575b8455933c2f64f4aafaee32a3aa008af1aa6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long spread;\n    cin >> n >> spread;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    // The lowest unassigned level opens a class that takes everything within start + spread.\n    int classes = 0;\n    long long start = 0;\n    for (int i = 0; i < n; i++)\n        if (i == 0 || a[i] - start > spread) classes++, start = a[i];\n    cout << classes << '\\n';\n}\n",
+      "sha256": "d48f957b7c27cb954f96b54a1249732319240f70a853a209e67fa4902d46c1b4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long spread = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // The lowest unassigned level opens a class that takes everything within start + spread.\n        int classes = 0;\n        long start = 0;\n        for (int i = 0; i < n; i++)\n            if (i == 0 || a[i] - start > spread) {\n                classes++;\n                start = a[i];\n            }\n        System.out.println(classes);\n    }\n}\n",
+      "sha256": "2c5627d2665d838c852779944b7e7b371befd1086854d7a2f099112163f3fcc1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, spread := int(nextInt()), nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// The lowest unassigned level opens a class that takes everything within start + spread.\n\tclasses := 0\n\tvar start int64\n\tfor i, x := range a {\n\t\tif i == 0 || x-start > spread {\n\t\t\tclasses++\n\t\t\tstart = x\n\t\t}\n\t}\n\tfmt.Println(classes)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "2eabd2f387d64d096745249023dc56aead3415e759e0fbec52ae554213e401f7"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-31",
+  "packageChecksum": "a14f6dcd7e145346de16bc069597187abd8e9b0c92f53801943d73ed3e11ff75",
+  "sourceContentHash": "d977a68e211c0f1b650ef58e2d5fc8d4f868f1009a9c55a15cdf59fb6e06326a",
+  "editorialSha256": "69a96d27fa45299c211c826ab17de9505b52c7f7b87ce27b65ed7f2de55c8336",
+  "hints": {
+    "zh": [
+      "删除链表中的若干节点不会改变其余节点的相对顺序，所以结果就是原序列中所有值不超过 x 的节点。",
+      "按原顺序扫描节点值，只保留 ≤x 的，跳过 >x 的；这相当于把被删节点的前驱直接接到它的后继上。",
+      "读入 n、x 和 n 个值；依次判断每个值，值 ≤x 就加入输出（等于 x 的要保留），否则跳过；最后用空格连接输出，全部被删时输出空行，不要输出节点个数。"
+    ],
+    "en": [
+      "Deleting some nodes of a linked list does not change the relative order of the others, so the result is exactly the nodes whose value is at most x, in the original order.",
+      "Scan the values in order, keeping those <= x and skipping those > x; this is the same as linking each deleted node's predecessor straight to its successor.",
+      "Read n, x and the n values; test each value in turn and append it to the output when it is <= x (values equal to x stay), skipping it otherwise; print the kept values separated by spaces, an empty line if everything was deleted, and never the node count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead the nodes in order and output only those whose value does not exceed x; in a linked-list implementation this is equivalent to pointing each deleted node's predecessor at its successor.\n\n## Proof of correctness\n\nEvery node with a value greater than x is skipped exactly once, and every other node is output exactly once; the order from head to tail is unchanged, so the result is exactly the list after deleting the target nodes.\n\n## Complexity\n\nO(n) time, O(n) output buffer."
+}

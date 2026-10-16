@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-40",
+  "packageChecksum": "51976fe78dd1e979b82086aee569386434668026e6733f184054ea7af8080076",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    long long total = 0;\n    for (auto &v : a) {\n        cin >> v;\n        total += v;\n    }\n    sort(a.begin(), a.end());\n    long long low = total / n, extra = total % n, answer = 0;\n    for (int i = 0; i < n; i++) {\n        // The largest `extra` piles get target low + 1.\n        long long target = low + (i >= n - extra ? 1 : 0);\n        if (a[i] > target) answer += a[i] - target;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "8c3979f650fb045726ef93c3b1a81be81d47f0b1ecd5122e0bcf65d5d2e90f02"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        long total = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            total += a[i];\n        }\n        Arrays.sort(a);\n        long low = total / n, extra = total % n, answer = 0;\n        for (int i = 0; i < n; i++) {\n            // The largest `extra` piles get target low + 1.\n            long target = low + (i >= n - extra ? 1 : 0);\n            if (a[i] > target) answer += a[i] - target;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "922dfcb4d5ac7000b27c7c8c900cefc404ba3b8e354b3dff6ad0d6bfa6e1b314"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\ttotal := 0\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\ttotal += a[i]\n\t}\n\tsort.Ints(a)\n\tlow, extra, answer := total/n, total%n, 0\n\tfor i, v := range a {\n\t\t// The largest `extra` piles get target low + 1.\n\t\ttarget := low\n\t\tif i >= n-extra {\n\t\t\ttarget++\n\t\t}\n\t\tif v > target {\n\t\t\tanswer += v - target\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "69122abb27e72adac55a5a926010aa5f1d09f6f74e4ee8734a8500b29672e2ac"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-36",
+  "packageChecksum": "c8078de7fdb76b5e4fa703a57314eabb082f8d8a38277e11d1cdab64ed1815e3",
+  "sourceContentHash": "f397cc7f27f92f51c7c043f84283075084bea701587a27af3d7bc05d6ca9041f",
+  "editorialSha256": "a333f56c428f78f536ebe6c1d8feb9b3e2283875fe34fa9a51da6928852e7845",
+  "hints": {
+    "zh": [
+      "任意两个数的公共前缀，一定是第一个数的某个前缀，也一定是第二个数的某个前缀；所以只要把一边所有数的所有前缀都准备好，就能逐个检查另一边的前缀。",
+      "把 arr1 中每个数的十进制字符串的所有非空前缀放进集合。再扫描 arr2 中每个数的前缀，从短到长检查是否在集合中，命中就更新最大长度，一旦不命中就可以停止，因为更长的前缀也不可能命中。",
+      "把 arr1 每个数转成字符串，依次把长度为 1 到全长的前缀加入集合；答案初始为 0；对 arr2 每个数的字符串，按长度 1、2、… 取前缀，不在集合中就跳出，否则用当前长度更新答案；输出答案。"
+    ],
+    "en": [
+      "The common prefix of any two numbers is a prefix of the first and also a prefix of the second. So if you prepare every prefix of every number on one side, you can check the prefixes of the other side one by one.",
+      "Put every non-empty prefix of the decimal string of each number in arr1 into a set. Then scan the prefixes of each number in arr2 from short to long: each hit updates the maximum length, and the first miss lets you stop, since longer prefixes cannot hit either.",
+      "Convert each number in arr1 to a string and add its prefixes of lengths 1 through full length to a set. Start the answer at 0. For each number in arr2, take prefixes of length 1, 2, ...; stop at the first prefix not in the set, otherwise update the answer with the current length. Print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPut all non-empty prefixes of the decimal representation of every number in arr1 into a set. Then scan the prefixes of each number in arr2; every prefix found in the set updates the maximum length, and after the first miss there is no need to keep scanning that number.\n\n## Proof of correctness\n\nFor any number x in arr1 and number y in arr2, the common prefix of x and y is necessarily a prefix of x, so it has been added to the set; when y is scanned, this common prefix hits the set. Conversely, if some prefix of y hits the set, it is a prefix of some number in arr1 and also a prefix of y, so it corresponds to a valid pair. The algorithm checks all possible prefixes and takes the maximum length, so it obtains the longest common prefix over all cross-array pairs.\n\n## Complexity\n\nLet D be the total number of digits of all numbers in both arrays. Building and querying the set takes O(D) expected time, with O(D) extra space.\n\n## Source and site conventions\n\nThe input protocol and bounds of this site are given in the statement. Fixed OAMaster snapshot: https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix; the original reason it was blocked: the statement was cut off at \"Given two arrays of strictly i\", and from [123,4,5,955] and [12345,63,95,2] with output 3 alone the comparison rule could not be determined."
+}

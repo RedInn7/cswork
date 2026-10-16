@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-20",
+  "packageChecksum": "d36efe3970b1a9c4a2ee7c6ea9729d7d5d17f3c82d2348c8f8735c56f02a5593",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<pair<long long, long long>> a(n);\n    for (auto &[l, h] : a) cin >> l >> h;\n    sort(a.begin(), a.end());\n    vector<pair<long long, long long>> out;\n    for (auto [l, h] : a) {\n        // Sharing an endpoint counts as overlapping.\n        if (!out.empty() && l <= out.back().second) out.back().second = max(out.back().second, h);\n        else out.push_back({l, h});\n    }\n    string s = to_string(out.size()) + \"\\n\";\n    for (auto [l, h] : out) s += to_string(l) + \" \" + to_string(h) + \"\\n\";\n    cout << s;\n}\n",
+      "sha256": "be3da02c8533441aaa7037447cea1a3682c07dd0c6d54eeef5ab125efc77cf04"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        long[][] a = new long[n][];\n        for (int i = 0; i < n; i++) a[i] = new long[] {next(), next()};\n        Arrays.sort(a, (x, y) -> x[0] != y[0] ? Long.compare(x[0], y[0]) : Long.compare(x[1], y[1]));\n        List<long[]> out = new ArrayList<>();\n        for (long[] iv : a) {\n            // Sharing an endpoint counts as overlapping.\n            if (!out.isEmpty() && iv[0] <= out.get(out.size() - 1)[1]) {\n                long[] last = out.get(out.size() - 1);\n                last[1] = Math.max(last[1], iv[1]);\n            } else out.add(new long[] {iv[0], iv[1]});\n        }\n        StringBuilder sb = new StringBuilder().append(out.size()).append('\\n');\n        for (long[] iv : out) sb.append(iv[0]).append(' ').append(iv[1]).append('\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "ff40d0ba10935a5c3a29efa1b8b2f904fcb3203d997a540dfc26e23d2c863ec9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"cmp\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\ta := make([][2]int64, n)\n\tfor i := range a {\n\t\ta[i] = [2]int64{next(), next()}\n\t}\n\tslices.SortFunc(a, func(x, y [2]int64) int {\n\t\tif x[0] != y[0] {\n\t\t\treturn cmp.Compare(x[0], y[0])\n\t\t}\n\t\treturn cmp.Compare(x[1], y[1])\n\t})\n\tvar out [][2]int64\n\tfor _, iv := range a {\n\t\t// Sharing an endpoint counts as overlapping.\n\t\tif k := len(out); k > 0 && iv[0] <= out[k-1][1] {\n\t\t\tout[k-1][1] = max(out[k-1][1], iv[1])\n\t\t} else {\n\t\t\tout = append(out, iv)\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tw.WriteString(strconv.Itoa(len(out)) + \"\\n\")\n\tfor _, iv := range out {\n\t\tw.WriteString(strconv.FormatInt(iv[0], 10) + \" \" + strconv.FormatInt(iv[1], 10) + \"\\n\")\n\t}\n}\n",
+      "sha256": "3dac647f5f63d5e679789ea5dbe8b04b23d03bfe8ee33867b07f66dfe3851371"
+    }
+  ]
+}

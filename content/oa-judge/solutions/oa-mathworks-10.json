@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-10",
+  "packageChecksum": "d7b808028f80249b2d581f4fcf55114bd0b1cce1e3e6ae136fb14b8bcc6565d2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<string> words(n);\n    vector<vector<int>> pat(n);\n    map<vector<int>, int> cnt;\n    for (int i = 0; i < n; i++) {\n        cin >> words[i];\n        for (size_t j = 0; j + 1 < words[i].size(); j++) pat[i].push_back(words[i][j + 1] - words[i][j]);\n        cnt[pat[i]]++;\n    }\n    for (int i = 0; i < n; i++)\n        if (cnt[pat[i]] == 1) {\n            cout << words[i] << \"\\n\";\n            return 0;\n        }\n}\n",
+      "sha256": "421ca6eb94e5372a273854cb3b4b616c24f4330bbeaad89703e2821ca77f51f5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        String[] words = new String[n];\n        String[] pat = new String[n];\n        Map<String, Integer> cnt = new HashMap<>();\n        for (int i = 0; i < n; i++) {\n            words[i] = next();\n            // Signature: the signed differences between adjacent letters.\n            StringBuilder sb = new StringBuilder();\n            for (int j = 0; j + 1 < words[i].length(); j++) sb.append(words[i].charAt(j + 1) - words[i].charAt(j)).append(',');\n            pat[i] = sb.toString();\n            cnt.merge(pat[i], 1, Integer::sum);\n        }\n        for (int i = 0; i < n; i++)\n            if (cnt.get(pat[i]) == 1) {\n                System.out.println(words[i]);\n                return;\n            }\n    }\n}\n",
+      "sha256": "938883c69b6cfb43720164adfe6a192e3bdda56416c131e65abd51488e8ee7f6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\twords := make([]string, n)\n\tpat := make([]string, n)\n\tcnt := map[string]int{}\n\tfor i := range words {\n\t\twords[i] = next()\n\t\t// Signature: the signed differences between adjacent letters.\n\t\tvar sb strings.Builder\n\t\tw := words[i]\n\t\tfor j := 0; j+1 < len(w); j++ {\n\t\t\tfmt.Fprintf(&sb, \"%d,\", int(w[j+1])-int(w[j]))\n\t\t}\n\t\tpat[i] = sb.String()\n\t\tcnt[pat[i]]++\n\t}\n\tfor i := range words {\n\t\tif cnt[pat[i]] == 1 {\n\t\t\tfmt.Println(words[i])\n\t\t\treturn\n\t\t}\n\t}\n}\n",
+      "sha256": "89e7657b548869c16dfd8c636236661af097287c0169a531b33401e56dd8b691"
+    }
+  ]
+}

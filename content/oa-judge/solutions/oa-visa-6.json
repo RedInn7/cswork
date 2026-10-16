@@ -1,0 +1,21 @@
+{
+  "id": "oa-visa-6",
+  "packageChecksum": "b53b1640400822e155e770b02cdcb99f59258061fabb1e73b495e85d8eed4b56",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <algorithm>\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string w;\n    cin >> w;\n    int n = w.size();\n    string best;\n    bool have = false;\n    for (int k = 1; k <= n; k++) {\n        string p = w.substr(0, k);\n        reverse(p.begin(), p.end());\n        p += w.substr(k);  // reverse the prefix of length k\n        string s = w.substr(n - k);\n        reverse(s.begin(), s.end());\n        s = w.substr(0, n - k) + s;  // reverse the suffix of length k\n        for (const string &c : {p, s})\n            if (!have || c < best) {\n                best = c;\n                have = true;\n            }\n    }\n    cout << best << '\\n';\n}\n",
+      "sha256": "8cbf8ac6b23247bfafbd81c9f6b1d6b1cb6bad7b17ed02ac08c99cd02926563f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String w = next();\n        int n = w.length();\n        String best = null;\n        for (int k = 1; k <= n; k++) {\n            String p = new StringBuilder(w.substring(0, k)).reverse() + w.substring(k);\n            String s = w.substring(0, n - k) + new StringBuilder(w.substring(n - k)).reverse();\n            if (best == null || p.compareTo(best) < 0) best = p;\n            if (s.compareTo(best) < 0) best = s;\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "0ab15aefe5c64884561d2b425c31c844a53023972aa22307dbd049edb53388bf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\tw := strings.TrimSpace(string(raw))\n\tn := len(w)\n\tbest := \"\"\n\tfor k := 1; k <= n; k++ {\n\t\tpre := []byte(w[:k])\n\t\tslices.Reverse(pre)\n\t\tsuf := []byte(w[n-k:])\n\t\tslices.Reverse(suf)\n\t\tp := string(pre) + w[k:]   // reverse the prefix of length k\n\t\ts := w[:n-k] + string(suf) // reverse the suffix of length k\n\t\tif k == 1 || p < best {\n\t\t\tbest = p\n\t\t}\n\t\tif s < best {\n\t\t\tbest = s\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "105b85a5d4c8e5fd798263445b459b9996bfecfb7dcc2b0bb29a4a44004a6171"
+    }
+  ]
+}

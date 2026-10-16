@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-27",
+  "packageChecksum": "0033a1dffaf6d66d001bc99df3691ec9ab2b519891a7cd6ac2645a421e00838d",
+  "sourceContentHash": "bc9fa4573c1621942566970836db7c51ffb05e7d8633f9ee453c258d677d42cc",
+  "editorialSha256": "74664216b4782ceb2a30aab7c487c028ac1784fe2e99e4502c97b4aee7e7fe17",
+  "hints": {
+    "zh": [
+      "删除一个AWS后左右两部分会拼接起来，可能形成新的AWS，所以需要一种能自然处理“删完再接上”的结构。",
+      "用栈来模拟，逐个字符入栈；已在栈中的前缀不可能再被删除，新的AWS只可能以刚入栈的字符结尾。AWS的前缀和后缀没有重叠，删除顺序不影响最终结果。",
+      "每压入一个字符，就检查栈顶三个字符是否依次为A、W、S，是则把这三个弹出；扫描结束后栈中内容即为结果，栈为空时输出-1。"
+    ],
+    "en": [
+      "After an AWS is deleted, the left and right parts join and may form a new AWS, so you need a structure that naturally handles joining after deletion.",
+      "Simulate with a stack, pushing characters one by one; the prefix already on the stack can never be deleted again, so a new AWS can only end with the character just pushed. AWS has no overlap between its prefixes and suffixes, so the deletion order does not change the final result.",
+      "After each push, check whether the top three characters are A, W, S in order and pop them if so; when the scan ends, the stack content is the result, and print -1 if it is empty."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPush characters onto a stack one by one, and whenever the top of the stack is exactly AWS, delete those three characters.\n\n## Proof of correctness\n\nBefore a character is pushed, the prefix on the stack is already undeletable, so a newly formed AWS can only end with the new character, and the prefix exposed after a deletion is still a previously undeletable stack prefix. AWS has no non-empty proper prefix equal to a suffix, so two occurrences that are deletable at the same time do not overlap and their deletions commute; any deletion order gives the same result.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

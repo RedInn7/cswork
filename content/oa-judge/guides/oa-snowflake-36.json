@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-36",
+  "packageChecksum": "44cc75d6748bbfbc48576bbacc4cc617a62393a712247a5928b767992c887d59",
+  "sourceContentHash": "079a26c997d4d9a4caac458d119edd3880feb75be92ec45ebc1c5534db6899de",
+  "editorialSha256": "5c55b6c5678f25fc28e0a374642b0d790797038de850a97e241905dbb48ebb9c",
+  "hints": {
+    "zh": [
+      "返程只能向左或向上走，把它倒过来就是另一条从左上到右下、只向右或向下走的路径。于是问题等价于两个人同时从左上出发走到右下，经过的乘客只算一次。",
+      "让两人同步走：走了t步之后，在第r行的人一定在第t−r列，所以状态只需要两人的行(a,b)。同一个格子如果两人都经过，必然是在同一步，此时乘客只加一次。",
+      "dp[a][b]为走t步后两人分别在第a、b行时的最大乘客数，不可达记为负无穷；每步从(a,b)、(a−1,b)、(a,b−1)、(a−1,b−1)四种前驱转移，落在墙上的状态跳过，加上两格的乘客（a=b时只加一次）。起点或终点是墙输出0，最后输出max(0,dp[n−1][n−1])。"
+    ],
+    "en": [
+      "The return trip moves only left or up; reversed, it is another path from the top-left to the bottom-right moving only right or down. So the task is two people walking together from the top-left to the bottom-right, with each passenger counted once.",
+      "Let them move in step: after t moves a person in row r is in column t - r, so the state only needs the two rows (a, b). If both pass the same cell they do so at the same step, and the passenger is added once.",
+      "dp[a][b] is the most passengers after t moves with the people in rows a and b, minus infinity if unreachable; each step takes the best of the four predecessors (a, b), (a-1, b), (a, b-1), (a-1, b-1), skips states on walls, and adds both cells' passengers (once if a = b). Print 0 if the start or end is a wall, otherwise max(0, dp[n-1][n-1])."
+    ]
+  },
+  "explanationEn": "## Approach\n\nReverse the return trip so that it becomes two people walking simultaneously from the top-left to the bottom-right. The shared step count t determines the column t-row, so the DP state only records the two people's rows; a shared cell adds its passenger only once.\n\n## Correctness\n\nEvery round trip corresponds one-to-one to a pair of one-way paths moving right/down. Every cell has a fixed row+column sum, so if both paths pass through it, they reach it at the same synchronized step; therefore deduplicating shared cells implements picking up each passenger only once. Each step enumerates the four predecessor combinations of the two people moving right or down, covering all path pairs.\n\n## Complexity\n\nTime O(n^3), space O(n^2)."
+}

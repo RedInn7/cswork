@@ -1,0 +1,19 @@
+{
+  "id": "oa-epifi-1",
+  "packageChecksum": "559baa3a73b61469debc8967cf9171bff7fe722d19743a21c299e0836426b4dd",
+  "sourceContentHash": "f76463ee6eb92e5986c4d065a1c547a11f945931bd08562345cd85eae2fa8d06",
+  "editorialSha256": "3cb888e405cf0333e9e870497e4ca96def47e3d63f799a46868494793dd09bc4",
+  "hints": {
+    "zh": [
+      "“最大重定向距离不超过 d 是否可行”关于 d 是单调的：d 越大，每个请求可去的服务器越多。所以可以二分 d，把问题变成判定。注意容量是严格上限，每台服务器实际最多承载 max_req − 1。",
+      "固定 d 后，位置 i 上的请求只能送到 [i−d, i+d] 内的容量，这是一个区间型的二分匹配，可以从左到右贪心：总是用最左剩余的容量去满足最左剩余的请求，能匹配就匹配，不会让后面的选择变差。",
+      "先判断请求总数是否超过总容量（cap = max_req − 1 之和），超过输出 −1。判定 ok(d)：双指针 i 指向最左的非零请求、j 指向最左的非零容量；若 j 在 i 左边超过 d，这份容量再也用不上，j 右移；若 j 在 i 右边超过 d，这个请求无处可去，判失败；否则匹配 min(a[i], b[j])。在 [0, n−1] 上二分最小可行 d，最后再确认一次可行性。"
+    ],
+    "en": [
+      "Whether a maximum redirection distance of at most d is feasible is monotone in d: a larger d gives every request more servers to choose from. So binary search on d and turn the problem into a yes/no check. Note the capacity is a strict upper bound, so each server can actually hold at most max_req - 1.",
+      "For a fixed d, a request at position i can only go to capacity inside [i-d, i+d], an interval-shaped bipartite matching that can be solved greedily from left to right: always use the leftmost remaining capacity for the leftmost remaining request; matching whenever possible never hurts later choices.",
+      "First, if the total requests exceed the total capacity (the sum of max_req - 1), print -1. To check ok(d), keep pointer i at the leftmost nonzero request and j at the leftmost nonzero capacity: if j is more than d to the left of i, that capacity can never be used, so move j right; if j is more than d to the right of i, that request has nowhere to go, so fail; otherwise match min(a[i], b[j]). Binary search the smallest feasible d in [0, n-1], and confirm feasibility once more at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the maximum distance. For a fixed distance, the source and receiving servers form an interval bipartite graph; greedily match the leftmost remaining request with the leftmost remaining capacity by position, and fail if they are too far apart. A small-scale oracle enumerates the destination of every request.\n\n## Proof of correctness\n\nFor a fixed distance d, each source can only be matched with capacity in the position interval [i-d,i+d]. If the leftmost unmatched source and the leftmost unmatched capacity are farther apart than allowed, the object on the left cannot be matched with any later object further right or left; otherwise, matching them first does not reduce the feasible choices later. Feasibility checked by this interval-graph greedy is monotone, and binary search gives the smallest d.\n\n## Complexity\n\nRequests and max_req both have length n; requests[i]>=0 and max_req[i]>=1. max_req is a strict upper bound, so each server's final capacity is max_req[i]-1. One request can be sent from its original server to any one receiving server.\n\nO(n log n) time and O(n) space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));n=z[0];req=z[1:1+n];cap=[x-1 for x in z[1+n:1+2*n]]\n if sum(req)>sum(cap):return '-1'\n def ok(d):\n  i=j=0;a=req[:];b=cap[:]\n  while i<n and j<n:\n   while i<n and a[i]==0:i+=1\n   while j<n and b[j]==0:j+=1\n   if i==n or j==n:break\n   if j<i and i-j>d:j+=1;continue\n   if i<j and j-i>d:return False\n   x=min(a[i],b[j]);a[i]-=x;b[j]-=x\n  return all(x==0 for x in a)\n lo,hi=0,n-1\n while lo<hi:\n  mid=(lo+hi)//2\n  if ok(mid):hi=mid\n  else:lo=mid+1\n return str(lo if ok(lo) else -1)\n```"
+}

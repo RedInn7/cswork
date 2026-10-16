@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-161",
+  "packageChecksum": "8ce2395da5382bb6f04bfae453e1bdbcd95de2e00e9b398bf52434d54f6cbe3d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long q;\n    cin >> n >> q;\n    vector<long long> a(n), costs(n);\n    for (auto& v : a) cin >> v;\n    for (int i = 0; i < n; i++) {\n        long long need;\n        cin >> need;\n        costs[i] = max(0LL, need - a[i]);\n    }\n    sort(costs.begin(), costs.end());\n    // Pay for the cheapest subjects first.\n    int answer = 0;\n    for (long long cost : costs) {\n        if (cost > q) break;\n        q -= cost;\n        answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "4a451a604ea8ce8d285376d9449a76253c6055568c9d1bcdc3fa176781ced515"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long q = nextLong();\n        long[] a = new long[n], costs = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = 0; i < n; i++) costs[i] = Math.max(0, nextLong() - a[i]);\n        Arrays.sort(costs);\n        // Pay for the cheapest subjects first.\n        int answer = 0;\n        for (long cost : costs) {\n            if (cost > q) break;\n            q -= cost;\n            answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "306bf984d860b1f15322147657e42643a1d289600e9ff3ca986b7a09c410358e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, q := nextInt(), nextInt()\n\ta, costs := make([]int, n), make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tfor i := range costs {\n\t\tcosts[i] = max(0, nextInt()-a[i])\n\t}\n\tslices.Sort(costs)\n\t// Pay for the cheapest subjects first.\n\tanswer := 0\n\tfor _, cost := range costs {\n\t\tif cost > q {\n\t\t\tbreak\n\t\t}\n\t\tq -= cost\n\t\tanswer++\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "cf0d5d92e7ffa3b7cf010780eb37eb3d71cb797673516b5ea4489630285b9c31"
+    }
+  ]
+}

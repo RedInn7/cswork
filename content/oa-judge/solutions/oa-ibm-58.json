@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-58",
+  "packageChecksum": "f0acf490b9d9e0c67bdf7d389f898fd135ce41d7e2e93f01128ae8dfcc912e54",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // left: unmatched '('; missing: ')' that had no '(' to match.\n    long long left = 0, missing = 0;\n    for (char c : s) {\n        if (c == '(') left++;\n        else if (left) left--;\n        else missing++;\n    }\n    cout << left + missing << '\\n';\n}\n",
+      "sha256": "ea3c0509d2b712207be422b1d295ee0b9b2d48142606af67bf7b6861e82857e8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        // left: unmatched '('; missing: ')' that had no '(' to match.\n        long left = 0, missing = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == '(') left++;\n            else if (left > 0) left--;\n            else missing++;\n        }\n        System.out.println(left + missing);\n    }\n}\n",
+      "sha256": "b39c5337520a72d553400167ef03ca3b0cbdb5f630ff8438de4b6e87efc7e2a0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := nextToken()\n\t// left: unmatched '('; missing: ')' that had no '(' to match.\n\tleft, missing := 0, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == '(' {\n\t\t\tleft++\n\t\t} else if left > 0 {\n\t\t\tleft--\n\t\t} else {\n\t\t\tmissing++\n\t\t}\n\t}\n\tfmt.Println(left + missing)\n}\n",
+      "sha256": "7dae4b59d9ba36d7446cedf33a406fa241ba84bb06807c09236eddfbae0ad610"
+    }
+  ]
+}

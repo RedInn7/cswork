@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-265",
+  "packageChecksum": "108a5bf2caac7f9970dba35164e8e6097b0885b624966e9a85fbc42b57df8317",
+  "sourceContentHash": "c8aaf4460e569fd5684097a3c5c55958eb77c1f2934c407a0a267e8cd6666062",
+  "editorialSha256": "0be2d06bb22bbd4c7c92f7d4310ca3c10c5e12dd8dd376666bd79959f95eb110",
+  "hints": {
+    "zh": [
+      "整体 AND 中为 1 的每一位，在任何一段的 AND 中也都为 1。所以如果整体 AND 不为 0，切成 k 段的成本至少是整体 AND 的 k 倍，只能不切。",
+      "整体 AND 为 0 时最小成本就是 0，这要求每一段的 AND 都等于 0。为了段数最多，每段应在 AND 第一次变成 0 时立刻结束；最后剩下的、没能归零的尾巴并到前一段，成本仍为 0。",
+      "先求整体 AND，非零就输出 1；否则用全 1 作初值从左往右累计 AND，一旦变为 0 就把计数加一并重置为全 1；输出计数（尾部残段不单独计数）。"
+    ],
+    "en": [
+      "Every bit set in the AND of the whole array is also set in the AND of every segment. So if the whole AND is non-zero, k segments cost at least k times that value, and the best choice is not to cut at all.",
+      "When the whole AND is 0, the minimum cost is 0, which requires every segment's AND to be 0. To get the most segments, end each segment the moment its AND first becomes 0; a leftover tail that never reaches 0 is merged into the previous segment and the cost stays 0.",
+      "Compute the AND of the whole array and print 1 if it is non-zero; otherwise accumulate the AND from left to right starting from all ones, and each time it becomes 0, increase the count and reset to all ones; print the count, without counting the leftover tail separately."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf the AND of the whole array is non-zero, only 1 segment is possible. Otherwise, scan from left to right and cut as soon as the current segment's AND becomes 0; merge a final tail that never reaches 0 into the previous segment.\n\n## Proof of correctness\n\nEvery 1 bit of the overall AND G is 1 in every segment's AND, so if G>0, k segments cost at least kG while one whole segment costs G, and the optimum must have k=1. When G=0 the minimum cost is 0, which requires every segment's AND to be 0. Taking the earliest prefix whose AND reaches 0 as the first segment never reduces the number of segments possible in the rest: cut any optimal first segment earlier, and merging the extra suffix into the next segment keeps that segment's AND at 0. So the greedy number of resets to zero is maximal, and merging the tail into the previous segment does not change the zero cost.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."
+}

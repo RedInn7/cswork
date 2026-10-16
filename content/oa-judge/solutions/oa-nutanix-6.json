@@ -1,0 +1,21 @@
+{
+  "id": "oa-nutanix-6",
+  "packageChecksum": "065053704e7b1f396ff9cf460c56f466ab7f6fa51b124b0aab4ce3a825823507",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<int> s(n);\n    for (auto &v : s) cin >> v;\n    sort(s.rbegin(), s.rend());\n    // Competition ranking: equal scores share a rank, a new score's rank is its index + 1.\n    long long ans = 0;\n    int rank = 1;\n    for (int i = 0; i < n; i++) {\n        if (i && s[i] != s[i - 1]) rank = i + 1;\n        if (rank <= k && s[i] > 0) ans++;\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "a14bb8bccca6417215b96bbb0d5e79f0a3be3b059800f92eb82d8027a76df4e2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static int nextInt() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        int r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        int[] s = new int[n];\n        for (int i = 0; i < n; i++) s[i] = nextInt();\n        Arrays.sort(s);\n        // Walk in descending order; equal scores share a rank, a new score's rank is its index + 1.\n        long ans = 0;\n        int rank = 1;\n        for (int i = 0; i < n; i++) {\n            int cur = s[n - 1 - i];\n            if (i > 0 && cur != s[n - i]) rank = i + 1;\n            if (rank <= k && cur > 0) ans++;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "c380d01e11967aed75e424ca4791946b63db3217ec486e9587aa712040afbbe5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n, k int\n\tfmt.Fscan(in, &n, &k)\n\ts := make([]int, n)\n\tfor i := range s {\n\t\tfmt.Fscan(in, &s[i])\n\t}\n\tsort.Sort(sort.Reverse(sort.IntSlice(s)))\n\t// Competition ranking: equal scores share a rank, a new score's rank is its index + 1.\n\tans, rank := 0, 1\n\tfor i := 0; i < n; i++ {\n\t\tif i > 0 && s[i] != s[i-1] {\n\t\t\trank = i + 1\n\t\t}\n\t\tif rank <= k && s[i] > 0 {\n\t\t\tans++\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "892ef9f3d417ea4ba84cfaae03f63a964e409ce096cde6151316fc5df805d0ad"
+    }
+  ]
+}

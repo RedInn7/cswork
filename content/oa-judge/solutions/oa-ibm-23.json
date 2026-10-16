@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-23",
+  "packageChecksum": "a96f24a0ffca8f14b7d73333f462a4355fd48c070c51dfda8f8da17b2e991560",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    long long even = 0, odd = 0;\n    bool hasOdd = false; // odd sum reachable yet?\n    for (int i = 0; i < n; i++) {\n        long long v; cin >> v;\n        if (v % 2 != 0) {\n            long long ne = max(even, hasOdd ? odd + v : even);\n            long long no = max(hasOdd ? odd : v, even + v);\n            even = ne; odd = no; hasOdd = true;\n        } else {\n            even = max(even, even + v);\n            if (hasOdd) odd = max(odd, odd + v);\n        }\n    }\n    cout << even << '\\n';\n}\n",
+      "sha256": "ccdeca07c312d00f348a791d10276c0e1a573810668af78aeb039801d583ec89"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long even = 0, odd = 0;\n        boolean hasOdd = false; // odd sum reachable yet?\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            if (v % 2 != 0) {\n                long ne = Math.max(even, hasOdd ? odd + v : even);\n                long no = Math.max(hasOdd ? odd : v, even + v);\n                even = ne;\n                odd = no;\n                hasOdd = true;\n            } else {\n                even = Math.max(even, even + v);\n                if (hasOdd) odd = Math.max(odd, odd + v);\n            }\n        }\n        System.out.println(even);\n    }\n}\n",
+      "sha256": "8a29db47ff378df16ee54c1ba0a29e756803364a3ebde5bdb4b0a24eeceb140d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn := int(nextInt())\n\tvar even, odd int64\n\thasOdd := false // odd sum reachable yet?\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tif v%2 != 0 {\n\t\t\tne := even\n\t\t\tif hasOdd {\n\t\t\t\tne = max(even, odd+v)\n\t\t\t}\n\t\t\tno := even + v\n\t\t\tif hasOdd {\n\t\t\t\tno = max(odd, no)\n\t\t\t} else {\n\t\t\t\tno = max(v, no)\n\t\t\t}\n\t\t\teven, odd, hasOdd = ne, no, true\n\t\t} else {\n\t\t\teven = max(even, even+v)\n\t\t\tif hasOdd {\n\t\t\t\todd = max(odd, odd+v)\n\t\t\t}\n\t\t}\n\t}\n\tw.WriteString(strconv.FormatInt(even, 10) + \"\\n\")\n}\n",
+      "sha256": "2f9ddd86980434bd699700ffc1991531d79af9f4d2d8bf6a7d5f61f6e529cd44"
+    }
+  ]
+}

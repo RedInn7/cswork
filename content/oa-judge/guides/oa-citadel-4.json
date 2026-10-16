@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-4",
+  "packageChecksum": "c7f51262ccd797db09e54c1c9c91f0cb926d8b0d5d1039e3916fcf92a16b1883",
+  "sourceContentHash": "fe28edcb4dacc69ae3a6f60e5b48a5b37e7a6ca8abe45953de71c50ddf361037",
+  "editorialSha256": "34d9f2f9664f792223adb211518027cd918cdc9f11687af0e66b3a8a58dc3760",
+  "hints": {
+    "zh": [
+      "每在末尾追加一个字符，最多只会产生一个此前没出现过的回文子串，而且它一定是当前最长的回文后缀。",
+      "回文树（回文自动机）正好按这个性质建：每个节点代表一个不同的回文，有长度、失败链接（最长真回文后缀）和按字符的扩展边；两个特殊根分别表示长度 −1 和 0。",
+      "维护 last 为当前最长回文后缀节点；加入 s[i] 时沿失败链接找到能在两侧加上 s[i] 的节点 p，若 p 没有该字符的边就新建节点（长度 = len(p) + 2），再沿 link(p) 找它的失败链接（长度为 1 时指向长度 0 的根）。最终节点数减 2 就是答案。"
+    ],
+    "en": [
+      "Appending one character at the end creates at most one palindromic substring that has not appeared before, and if it exists it is the new longest palindromic suffix.",
+      "A palindromic tree (eertree) is built on exactly this fact: each node is one distinct palindrome with a length, a failure link to its longest proper palindromic suffix, and outgoing edges by character; two special roots have lengths -1 and 0.",
+      "Keep last as the node of the current longest palindromic suffix. To add s[i], follow failure links to the node p that can be wrapped by s[i] on both sides; if p has no edge for that character, create a node of length len(p) + 2 and find its failure link by continuing from link(p) (a length-1 node links to the length-0 root). The answer is the number of nodes minus 2."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild a palindromic tree with two special roots of lengths -1 and 0; for each added character, follow the failure links from the longest palindromic suffix to find a node that can be extended, then create the new palindrome and its failure link.\n\n## Proof of correctness\n\nEach palindrome is uniquely determined by the shorter palindrome obtained by removing its first and last characters together with the outer character, and an edge represents this extension. If appending a character creates a new palindrome, it must be the new longest palindromic suffix; the other palindromic suffixes have appeared before, so at most one node is created per step. The failure links enumerate all candidate suffixes, nodes correspond one-to-one with distinct non-empty palindromes, and subtracting the two roots gives the answer.\n\n## Complexity\n\nO(n * transition cost of the dictionary) time and O(n) space."
+}

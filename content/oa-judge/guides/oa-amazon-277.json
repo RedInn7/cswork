@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-277",
+  "packageChecksum": "6b450f3ff54108a2196bb8d978b69769206610a4162fe1d25cc163a9080bc12f",
+  "sourceContentHash": "7685434f59940802df6bc10967087752eaf6fcb93ba6df9ac05e11cbfd9c932c",
+  "editorialSha256": "aefb763b60094100f728db0853e3a358c4b464374e0dfc358f41ace4e8bb1803",
+  "hints": {
+    "zh": [
+      "固定右端点时，在最后一个货架取满库存总是不亏；每往左一格，取量至少要少 1，所以位置 j 能取的量受“右侧各位置库存减去距离”的最小值限制。令 b[i]=products[i]−i，这个限制就变成看一段区间里 b 的最小值。",
+      "对右端 i，找左边最近的满足 b[j]<b[i] 的位置 j：j+1..i 这一段全部受 b[i] 限制，取量是以 products[i] 结尾、每步加 1 的递增数列；而 j 及更左的部分不受 i 影响，可以直接接上以 j 为右端的最优值 dp[j]。这个 j 用单调栈找。",
+      "维护一个 b 严格递增的下标栈；处理 i 时弹出所有 b 不小于 b[i] 的下标；若栈非空，取栈顶 j，dp[i]=dp[j]+从 products[i]−(i−j)+1 加到 products[i] 的和；若栈空，长度取 min(i+1, products[i])，只保留正数部分，dp[i] 就是这段等差数列的和；把 i 压栈。答案是所有 dp 的最大值，用 64 位整数。"
+    ],
+    "en": [
+      "With the right end fixed, taking the full stock at the last shelf is never worse; each step to the left must take at least one fewer item, so what position j can take is limited by the minimum, over positions to its right, of stock minus distance. With b[i]=products[i]−i, that limit becomes the minimum of b over a range.",
+      "For a right end i, find the nearest position j to the left with b[j]<b[i]: the whole range j+1..i is limited by b[i], so the amounts form an increasing run with step 1 ending at products[i], while j and everything to its left are unaffected by i and can reuse the best value dp[j] for right end j. A monotonic stack finds this j.",
+      "Keep a stack of indices with strictly increasing b; at i, pop every index whose b is not smaller than b[i]; if the stack is non-empty with top j, dp[i] = dp[j] + the sum from products[i]−(i−j)+1 to products[i]; if it is empty, use length min(i+1, products[i]) so only positive amounts remain, and dp[i] is that arithmetic sum; push i. The answer is the maximum dp, kept in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet b[i]=products[i]−i and maintain a stack of indices with strictly increasing b. Pop indices whose b is ≥ the current b; if a top j remains, dp[i]=dp[j]+ the arithmetic sum from products[i]−(i−j)+1 to products[i]; if there is no j, take only the last min(i+1,products[i]) positive integers. The answer is max(dp).\n\n## Proof of correctness\n\nWith the right end fixed, taking its entire stock is never worse, and the optimal amount going left is j plus the minimum of b over the range. Positions before the nearest smaller-b position j are not affected by the new right end, while all of j+1..i are limited by the current b and form a positive increasing arithmetic run; its first value is strictly greater than products[j], so it can be joined with dp[j]. If there is no smaller b, the whole range is limited by the current b, and only the positive suffix is kept. So the recurrence computes exactly the best plan for each right end, and taking the maximum covers all subarrays.\n\n## Complexity\n\nTime O(n), space O(n); the total number of items uses 64 bits."
+}

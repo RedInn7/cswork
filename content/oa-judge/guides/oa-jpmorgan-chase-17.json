@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-17",
+  "packageChecksum": "b9323700ff2ed4875cda2881729c32286aceb8d888233c7b2717c773b2061e3d",
+  "sourceContentHash": "4cdd8db4746d68bda897e8f64acdbfb05a7d4fd25a06dc0db549006671742fcd",
+  "editorialSha256": "dea7b09dd1db37b8ee1c7c422a9742367b0ea6a61d59106d7730746fc1598aa8",
+  "hints": {
+    "zh": [
+      "删掉 AWS 后左右拼接，拼接处可能形成新的 AWS，所以只扫一遍找子串是不够的；但新形成的 AWS 一定以刚处理到的字符结尾。",
+      "用栈模拟：逐个字符入栈，每次入栈后检查栈顶三个字符是否依次为 A、W、S，是就一起弹出。",
+      "遍历字符串并压入当前字符；若栈长度至少为 3 且末尾三个字符依次是 A、W、S，就删除这三个；最后把栈拼成字符串输出，为空时输出 −1。"
+    ],
+    "en": [
+      "After deleting AWS the two sides are joined, and a new AWS may form at the seam, so a single substring scan is not enough; but any newly formed AWS must end at the character just processed.",
+      "Simulate with a stack: push characters one by one and, after each push, check whether the top three characters are A, W, S in order; if so, pop all three.",
+      "Walk through the string pushing each character; whenever the stack has at least 3 characters ending in A, W, S, remove those three; finally print the stack as a string, or −1 if it is empty."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPush characters onto a stack one by one, and whenever the stack ends with AWS, delete those three characters.\n\n## Proof of correctness\n\nAfter a prefix is processed, the stack contains no AWS; appending one character can only form AWS at the new suffix, and after it is deleted the rest already had no match. AWS has no non-empty proper prefix equal to a suffix, so two deletable matches never overlap and the order of deletions can be swapped; the terminating process has a unique result, and the stack produces it.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

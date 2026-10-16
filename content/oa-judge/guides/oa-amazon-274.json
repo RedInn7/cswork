@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-274",
+  "packageChecksum": "4b29053755074a1439fafe37b7a4c63471b53a03f05733b9c83c4925aea70600",
+  "sourceContentHash": "35a391776013522998891bd10cc270c5fbc1a1ee62c11a9e351a1643144437ec",
+  "editorialSha256": "777c39c2c6e007a04f065615b95164dcd2e37d56a93deb080aefa02c2d049e9d",
+  "hints": {
+    "zh": [
+      "把选出的主按容量降序排列，第 j 个主以及它前面的每个主都需要一台不小于自己、互不相同的备，所以第 j 大的主不可能超过全部容量降序排列后的第 2j 项。",
+      "把容量降序后相邻两两配对，较大的作备、较小的作主，恰好让每个主都达到上面的上界；容量都是正数，配满 ⌊n/2⌋ 对不会更差。",
+      "将 memory 降序排序，累加第 2、4、6…项（从 0 开始的下标为 1、3、5…）；n 为奇数时最小的那台不用。答案最大约 10^14，需要 64 位整数。"
+    ],
+    "en": [
+      "Sort the chosen primaries by capacity in descending order: the j-th primary and every primary before it each need a distinct backup at least as large as itself, so the j-th largest primary cannot exceed the 2j-th item of all capacities in descending order.",
+      "Sort the capacities in descending order and pair adjacent items, the larger as the backup and the smaller as the primary; this makes every primary reach that bound. Since capacities are positive, filling ⌊n/2⌋ pairs is never worse.",
+      "Sort memory in descending order and add the 2nd, 4th, 6th, … items (zero-based indices 1, 3, 5, …); with odd n the smallest server is left unused. The answer can reach about 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort capacities in descending order and group adjacent items in pairs, making the smaller one the primary; sum items 2, 4, …, and with an odd count leave the smallest item unused.\n\n## Proof of correctness\n\nOrder the primaries by capacity in descending order: the j-th primary and every primary before it each need a distinct backup no smaller than itself, so the j-th primary is at most the 2j-th item of the overall descending order. Pairing the largest even number of servers adjacently reaches all of these bounds at once. Capacities are positive, so filling ⌊n/2⌋ pairs is never worse, and this construction is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n); the answer is at most 10^14 and needs 64 bits."
+}

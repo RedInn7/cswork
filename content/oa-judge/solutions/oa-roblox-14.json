@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-14",
+  "packageChecksum": "ce4de1e7d2fa5990d5d63634da6c9c020c40f42277113aab649521113bb05c26",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    # Two digit strings are rotations of each other iff their smallest rotations match.\n    count = {}\n    ans = 0\n    for tok in data[1:1 + n]:\n        s = tok.decode()\n        key = min(s[k:] + s[:k] for k in range(len(s)))\n        c = count.get(key, 0)\n        ans += c\n        count[key] = c + 1\n    print(ans)\n\n\nmain()\n",
+      "sha256": "bd030a4352fa6d9f598b5af0639d0d31596932a9fcf4ffbafaa543368a849099"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken());\n        // Two digit strings are rotations of each other iff their smallest rotations match.\n        HashMap<String, Integer> count = new HashMap<>(2 * n + 1);\n        long ans = 0;\n        for (int i = 0; i < n; i++) {\n            String s = st.nextToken(), best = s;\n            for (int k = 1; k < s.length(); k++) {\n                String t = s.substring(k) + s.substring(0, k);\n                if (t.compareTo(best) < 0) best = t;\n            }\n            int c = count.getOrDefault(best, 0);\n            ans += c;\n            count.put(best, c + 1);\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "dd128acf025827fd41d50d42ae1fe6dd32a0080496d0b47807e58e2f298e6b84"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(sc.Text())\n\t// Two digit strings are rotations of each other iff their smallest rotations match.\n\tcount := make(map[string]int64, 2*n)\n\tvar ans int64\n\tfor i := 0; i < n; i++ {\n\t\tsc.Scan()\n\t\ts := sc.Text()\n\t\tbest := s\n\t\tfor k := 1; k < len(s); k++ {\n\t\t\tif t := s[k:] + s[:k]; t < best {\n\t\t\t\tbest = t\n\t\t\t}\n\t\t}\n\t\tans += count[best]\n\t\tcount[best]++\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "a82d8ab5ae6af1800865a217cccf50129c64ef6d4aeeeedf4339dcffced8813f"
+    }
+  ]
+}

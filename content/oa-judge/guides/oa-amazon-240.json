@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-240",
+  "packageChecksum": "478cc2f26ab7ca172ebee4bee8fc9d218a908026af1f66b4c3fb8a7253c7e33f",
+  "sourceContentHash": "b5145f01727a7e1a99acfab7cf89f9e3a2004006d8bc010ea9b595edd71dd097",
+  "editorialSha256": "d0f49def61081e095e21de58ee535a1ab2fdcc5ef9bfb4b4a332e5013712adbb",
+  "hints": {
+    "zh": [
+      "固定右端点时，左端点越靠左，区间内的不同值越多，所以合法的左端点构成一段连续范围。",
+      "右端点右移时，最左的合法左端点不会往左退，可以用滑动窗口双指针维护，并用频次表记录窗口内各值的出现次数和不同值个数。",
+      "右端每加入一个值就更新频次和种类数；种类数超过 k 时不断移出左端元素，频次降为 0 时种类数减一；然后累加 right−left+1；最后对 1000000007 取模输出。"
+    ],
+    "en": [
+      "For a fixed right end, moving the left end further left only adds distinct values, so the valid left ends form one contiguous range.",
+      "As the right end moves right, the leftmost valid left end never moves back left, so a sliding window with two pointers works, with a frequency table holding each value's count in the window and the number of distinct values.",
+      "Each time the right end adds a value, update its frequency and the distinct count; while the distinct count exceeds k, remove the left element, decreasing the distinct count when a frequency drops to 0; then add right-left+1; finally output the total modulo 1000000007."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain each value's frequency in a sliding window and shrink the left end whenever there are more than k distinct values; each right end contributes the window length.\n\n## Proof of correctness\n\nFor a fixed right end, every start between the leftmost valid start and the right end is valid, and every earlier start is not. Moving the window right can only keep the earliest valid start from moving left, so two pointers find this boundary, and contributing right−left+1 counts every period exactly once by its right end.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

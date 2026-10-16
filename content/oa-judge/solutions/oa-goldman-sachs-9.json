@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-9",
+  "packageChecksum": "e1a909b8c87120d8aee999414dab76d541abd22bda5bc21eeb58d668f89881d9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    ll rate, duration; int n;\n    if (scanf(\"%lld %lld %d\", &rate, &duration, &n) != 3) return 0;\n    vector<int> keys(n);\n    for (auto &x : keys) scanf(\"%d\", &x);\n    int limit = *max_element(keys.begin(), keys.end());\n    vector<ll> freq(limit + 1, 0);\n    for (int x : keys) freq[x]++;\n    // Divisibility of a key = sum of freq[d] over its divisors d > 1.\n    ll best = 0;\n    for (int v : keys) {\n        ll degree = 0;\n        for (int d = 1; (ll)d * d <= v; d++) {\n            if (v % d) continue;\n            if (d > 1) degree += freq[d];\n            if (v / d != d && v / d > 1) degree += freq[v / d];\n        }\n        best = max(best, degree);\n    }\n    ll strength = best * 100000;\n    printf(\"%d %lld\\n\", rate * duration >= strength ? 1 : 0, strength);\n}\n",
+      "sha256": "4941d519bc3249d006ac8390ec151df80b9a592bfdbb09279eba9582d6498f14"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); long rate = (long) st.nval;\n        st.nextToken(); long duration = (long) st.nval;\n        st.nextToken(); int n = (int) st.nval;\n        int[] keys = new int[n];\n        int limit = 0;\n        for (int i = 0; i < n; i++) { st.nextToken(); keys[i] = (int) st.nval; limit = Math.max(limit, keys[i]); }\n        long[] freq = new long[limit + 1];\n        for (int x : keys) freq[x]++;\n        // Divisibility of a key = sum of freq[d] over its divisors d > 1.\n        long best = 0;\n        for (int v : keys) {\n            long degree = 0;\n            for (int d = 1; (long) d * d <= v; d++) {\n                if (v % d != 0) continue;\n                if (d > 1) degree += freq[d];\n                if (v / d != d && v / d > 1) degree += freq[v / d];\n            }\n            best = Math.max(best, degree);\n        }\n        long strength = best * 100000;\n        System.out.println((rate * duration >= strength ? 1 : 0) + \" \" + strength);\n    }\n}\n",
+      "sha256": "1cd2b836a68cb3934f86650c77dbf8a8b09c42560219a6740e40839168c711d5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar rate, duration int64\n\tvar n int\n\tfmt.Fscan(in, &rate, &duration, &n)\n\tkeys := make([]int, n)\n\tfor i := range keys {\n\t\tfmt.Fscan(in, &keys[i])\n\t}\n\tfreq := make([]int64, slices.Max(keys)+1)\n\tfor _, x := range keys {\n\t\tfreq[x]++\n\t}\n\t// Divisibility of a key = sum of freq[d] over its divisors d > 1.\n\tvar best int64\n\tfor _, v := range keys {\n\t\tvar degree int64\n\t\tfor d := 1; d*d <= v; d++ {\n\t\t\tif v%d != 0 {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tif d > 1 {\n\t\t\t\tdegree += freq[d]\n\t\t\t}\n\t\t\tif v/d != d && v/d > 1 {\n\t\t\t\tdegree += freq[v/d]\n\t\t\t}\n\t\t}\n\t\tbest = max(best, degree)\n\t}\n\tstrength := best * 100000\n\tbroken := 0\n\tif rate*duration >= strength {\n\t\tbroken = 1\n\t}\n\tfmt.Println(broken, strength)\n}\n",
+      "sha256": "1be6c2c34405f1ba647cf7e45f49bab0a7117c4f97afb9473a2df18682184e3a"
+    }
+  ]
+}

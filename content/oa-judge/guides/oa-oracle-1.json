@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-1",
+  "packageChecksum": "3add536424b82307d557f172dbd505067f0ea01e6ef5fd43973e1c2046630955",
+  "sourceContentHash": "b15d93204d41848b9ae853eb34d318c5c968d63356df305846e0379b1a7310c1",
+  "editorialSha256": "340881748d683b63361fe6ba1c1912cb1d27ec708774d4d6b3fd79b176daad17",
+  "hints": {
+    "zh": [
+      "直接用浮点数相加再向下取整很危险：像 0.10000001 + 0.89999999 这样恰好等于整数的和，可能被浮点误差算成略小于 1。",
+      "输入最多 8 位小数，把每个数乘以 10^8 就变成精确的整数；两个整数相加后再整除 10^8，就是原和的下取整。",
+      "把每个数按小数点拆成整数部分和小数部分，小数部分右侧补零到 8 位（没有小数点时视为 0），得到整数部分乘 10^8 加小数部分。两数相加后整除 10^8 输出。数值不超过约 2×10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Adding as floating point and then flooring is risky: a sum that is exactly an integer, like 0.10000001 + 0.89999999, may come out slightly below 1 because of rounding error.",
+      "The inputs have at most 8 decimal places, so multiplying each by 10^8 gives an exact integer; adding the two integers and dividing by 10^8 with integer division gives the floor of the original sum.",
+      "Split each number at the decimal point into an integer part and a fractional part, pad the fractional part on the right with zeros to 8 digits (treat it as 0 when there is no point), and form integer part times 10^8 plus fractional part. Add the two values and print the sum divided by 10^8 with integer division. Values stay below about 2x10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPad each decimal to 8 decimal places and convert it to an integer, add the integers, then divide by 10^8.\n\n## Proof of correctness\n\nAfter multiplying by 10^8, every valid input is an exact integer; adding the integers and then dividing down by 10^8 gives exactly the floor of the original sum, with none of the rounding issues floating point has near integers.\n\n## Complexity\n\nO(input length) time, O(1) numeric space."
+}

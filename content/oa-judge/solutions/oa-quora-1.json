@@ -1,0 +1,21 @@
+{
+  "id": "oa-quora-1",
+  "packageChecksum": "3a42d8de408862f8b8df731ed858c757487fe64e98ac9778b8a0694365412c4a",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, k = int(data[0]), int(data[1])\n    limit = 10**18\n    # All positive powers of k up to 10^18 (at most 60 of them).\n    powers = set()\n    p = k\n    while True:\n        powers.add(p)\n        if p > limit // k:\n            break\n        p *= k\n    print(sum(1 for x in data[2:2 + n] if int(x) in powers))\n\n\nmain()\n",
+      "sha256": "8a1a6e02ac585c98ff992703bd03d5b92d00ef2d7879458aa5542aef5abb0f15"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long k = nextLong();\n        final long LIM = 1_000_000_000_000_000_000L;\n        // All positive powers of k up to 10^18 (at most 60 of them); check before multiplying to avoid overflow.\n        HashSet<Long> powers = new HashSet<>();\n        for (long p = k; ; p *= k) {\n            powers.add(p);\n            if (p > LIM / k) break;\n        }\n        long c = 0;\n        for (int i = 0; i < n; i++) if (powers.contains(nextLong())) c++;\n        System.out.println(c);\n    }\n}\n",
+      "sha256": "e3f8bf19c7a6f53ae44a67e8a6c0d8087780b149aab6099b730623baa11b49fb"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() uint64 { sc.Scan(); v, _ := strconv.ParseUint(sc.Text(), 10, 64); return v }\n\tn, k := int(next()), next()\n\tconst lim uint64 = 1_000_000_000_000_000_000\n\t// All positive powers of k up to 10^18 (at most 60 of them); check before multiplying to avoid overflow.\n\tpowers := map[uint64]bool{}\n\tfor p := k; ; p *= k {\n\t\tpowers[p] = true\n\t\tif p > lim/k {\n\t\t\tbreak\n\t\t}\n\t}\n\tc := 0\n\tfor i := 0; i < n; i++ {\n\t\tif powers[next()] {\n\t\t\tc++\n\t\t}\n\t}\n\tfmt.Println(c)\n}\n",
+      "sha256": "d7601f52a2442aadd2d255d94f7f5a9fe70dbd4080aa71eb615e91e6566a0b3e"
+    }
+  ]
+}

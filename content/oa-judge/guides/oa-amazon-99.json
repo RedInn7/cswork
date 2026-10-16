@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-99",
+  "packageChecksum": "fb983485711d72dc4b763e5b1fd9f3476a1de3474494f7c3801702335bcf7d84",
+  "sourceContentHash": "530d8cdc5afd0417f65460227f09aa13dfd0ce1903a21f17e5b6f690cd5d68be",
+  "editorialSha256": "a8ebeb06b95eca5425f4172ea87c070a2dd763fbb27914596c823f52b975b056",
+  "hints": {
+    "zh": [
+      "一台服务器需要 ceil(health/k) 秒才能关掉，关掉之前每秒都贡献 request 个请求。把它看成\"长度为 p、权重为 request\"的任务，总请求数就是各任务完成时间乘权重之和再加 1。",
+      "穿插着攻击不会让任何一台服务器更早关掉，所以可以一台接一台地连续处理，只剩排序问题。比较相邻两台 i、j 的先后顺序，代价差取决于 p_i·w_j 与 p_j·w_i 的大小。",
+      "按 p/request 升序排序（用整数交叉相乘比较，避免浮点误差），然后依次累加：已用时间加上 p，答案加上\"已用时间 × request\"；最后再加 1。答案用 64 位整数。"
+    ],
+    "en": [
+      "A server needs ceil(health/k) seconds to shut down and contributes request requests every second until then. Treat it as a job of length p and weight request; the total is the sum of completion time times weight over all jobs, plus 1.",
+      "Interleaving attacks never makes any server shut down earlier, so servers can be handled one after another and only the order matters. For two adjacent servers i and j, the cost difference between the two orders depends on p_i*w_j versus p_j*w_i.",
+      "Sort by p/request in ascending order, comparing with integer cross products to avoid floating-point error. Then accumulate: add p to the elapsed time and add elapsed time times request to the answer; finally add 1. Use 64-bit integers for the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA server needs p=ceil(health/k) attacks and has weight request. Process the servers consecutively in ascending order of p/request, comparing the ratios with integer cross products.\n\n## Proof of Correctness\n\nAny interleaved attack plan can be rearranged to process the servers consecutively in order of completion without making any server finish later, so an optimal solution without interleaving exists. For adjacent jobs i and j, the cost saved by putting i before j instead of the reverse is determined by p_i w_j−p_j w_i; sorting by this ratio removes every inversion and is therefore optimal. The total number of requests is Σ completion time×request, plus the final 1.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

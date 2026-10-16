@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-185",
+  "packageChecksum": "7e012b0b1393099d3a1425cd371852122b9ecb466f9909efdd72788f83449347",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, p;\n    cin >> n >> p;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    // Every cut between i and i+1 adds a[i] + a[i+1] on top of the fixed ends.\n    vector<long long> cuts;\n    for (int i = 0; i + 1 < n; i++) cuts.push_back(a[i] + a[i + 1]);\n    sort(cuts.begin(), cuts.end());\n    long long base = a[0] + a[n - 1], low = base, high = base;\n    int m = cuts.size();\n    for (int i = 0; i < p - 1; i++) {\n        low += cuts[i];\n        high += cuts[m - 1 - i];\n    }\n    cout << low << ' ' << high << '\\n';\n}\n",
+      "sha256": "76444c41a2ca6252748dc71b63a6e0eb083e34a79170ab71193fd36bfdbf6167"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), p = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Every cut between i and i+1 adds a[i] + a[i+1] on top of the fixed ends.\n        long[] cuts = new long[n - 1];\n        for (int i = 0; i + 1 < n; i++) cuts[i] = a[i] + a[i + 1];\n        Arrays.sort(cuts);\n        long base = a[0] + a[n - 1], low = base, high = base;\n        int m = cuts.length;\n        for (int i = 0; i < p - 1; i++) {\n            low += cuts[i];\n            high += cuts[m - 1 - i];\n        }\n        System.out.println(low + \" \" + high);\n    }\n}\n",
+      "sha256": "35074aeaf8eadf68fd05e54bf30d2267af2f489589c81a156daf4f674a76a381"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, p := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// Every cut between i and i+1 adds a[i] + a[i+1] on top of the fixed ends.\n\tcuts := make([]int64, 0, n)\n\tfor i := 0; i+1 < n; i++ {\n\t\tcuts = append(cuts, a[i]+a[i+1])\n\t}\n\tslices.Sort(cuts)\n\tbase := a[0] + a[n-1]\n\tlow, high := base, base\n\tm := len(cuts)\n\tfor i := 0; i < p-1; i++ {\n\t\tlow += cuts[i]\n\t\thigh += cuts[m-1-i]\n\t}\n\tfmt.Println(low, high)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "305172397412e874fa4a023f6cfc24f7eb914142630b6332a5752f65646f7949"
+    }
+  ]
+}

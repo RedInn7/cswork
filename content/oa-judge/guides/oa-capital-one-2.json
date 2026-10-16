@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-2",
+  "packageChecksum": "e45d52a0bf83ebffe906e46546ebe73091d4fca892fc53a08d76964fb7b82666",
+  "sourceContentHash": "7e3e9fbd6723b55cba29edef27c4558a57c4864a486b9450cb87749c9601a219",
+  "editorialSha256": "fc2cb9f679c15971d2271eaeadfdf64b533950b28def21b8fbd00017f8d0c778",
+  "hints": {
+    "zh": [
+      "月相每天前进一格、8 天一个循环，所以只需要知道从年初到该日期一共过去了多少天。",
+      "把日期换成“年内第几天”（从 0 开始）的偏移量：前面所有完整月份的天数之和，加上 day−1；再用这个偏移量对 8 取模去移动起始月相。",
+      "准备 8 个月相名字的列表和固定的非闰年 12 个月天数 [31,28,31,30,31,30,31,31,30,31,30,31]；offset = 前 month−1 个月天数之和 + day − 1；答案是 names[(起始月相下标 + offset) mod 8]。"
+    ],
+    "en": [
+      "The phase advances by one every day and cycles every 8 days, so all you need is how many days have passed since the start of the year.",
+      "Turn the date into a 0-based day-of-year offset: the days of all complete earlier months plus day - 1; then move the starting phase forward by that offset modulo 8.",
+      "Keep the list of the 8 phase names and the fixed non-leap month lengths [31,28,31,30,31,30,31,31,30,31,30,31]; offset = sum of the first month - 1 month lengths + day - 1; the answer is names[(index of the start phase + offset) mod 8]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert the date into a 0-based offset in days from the start of the year, take it modulo 8 and add it to the index of the starting phase.\n\n## Correctness\n\nEach day the phase moves forward by one of its 8 states. The number of days elapsed within the year is exactly the number of days in all earlier complete months plus the day of the month minus one, so cycling by that offset gives the unique answer.\n\n## Complexity\n\nO(12) time, O(1) space."
+}

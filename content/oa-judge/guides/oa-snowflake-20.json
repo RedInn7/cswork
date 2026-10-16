@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-20",
+  "packageChecksum": "8713bb00747f2800888dd7cc25d0c19f895b82fd723ac8aed4c0972e62e0d865",
+  "sourceContentHash": "fbf8ed9fab801dacfb9c3c3ef2049f131a06902012b028a81fabb1c04933203b",
+  "editorialSha256": "fb5baf4c00c53c48e29c5367827b58ffb72c216fb9adcd715fd145d0210532af",
+  "hints": {
+    "zh": [
+      "先处理重合点：按坐标排序后若有相邻两点相同，答案直接为0。坐标不超过10^9，平方距离不超过2×10^18，可以用64位整数精确计算，不要用浮点数。",
+      "经典分治求最近点对：按x排序后从中间切开，两边递归求出最小平方距离best；跨越分割线又可能更近的点对，两个点到分割线的水平距离平方都必须小于best。",
+      "递归返回时把区间按y归并有序；筛出满足(x−cut)²<best的条带点（已按y有序），对每个点只向后检查(Δy)²<best的点并更新best。区间不超过3个点时直接暴力计算并按y排序。输出最终的best。"
+    ],
+    "en": [
+      "Handle duplicates first: after sorting by coordinates, if two adjacent points are equal the answer is 0. Coordinates are below 10^9, so squared distances stay below 2*10^18 and fit exactly in 64-bit integers; do not use floating point.",
+      "Use the classic divide-and-conquer closest pair: sort by x, split in the middle and solve both halves recursively for the smallest squared distance best; for a pair that crosses the dividing line to be closer, both of its points must have a squared horizontal distance to the line smaller than best.",
+      "On the way back, merge each range by y; collect the strip points with (x - cut)^2 < best (already sorted by y) and, for each one, check only the following points while (dy)^2 < best, updating best. Brute-force ranges of at most 3 points and sort them by y. Print the final best."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by x and divide and conquer; each half recursively returns its minimum distance and its points sorted by y. When merging, scan only the strip whose squared distance to the dividing line is less than the current best, pruning by the difference in y.\n\n## Correctness\n\nThe closest pair is either found recursively on one side or crosses the dividing line. Points that cross the line and can improve the answer must lie inside the strip; after sorting by y, once the difference in y is already no smaller than the current distance, later points cannot do better either. Distances between points on the same side of the strip are already bounded by the subproblems' optima, and a packing argument guarantees that each point has only a constant number of candidates, so the scan is complete and linear.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

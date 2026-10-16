@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-15",
+  "packageChecksum": "b8a9fe5f3ae8a273ff417b2902dbb9bf8f176ca146ec63d2fbbab8a358654225",
+  "sourceContentHash": "113352f040a4a01829c95ed34757d2a62c282b90363d44307f8899eaa7a4982e",
+  "editorialSha256": "97b5aaa5fa99b8b718f8848ddac2b962b7698b5027006f651043e3f5e8ea5bef",
+  "hints": {
+    "zh": [
+      "边长 s 可行当且仅当存在连续 s 栋楼，它们的最低高度至少为 s；s 越大条件越难满足，可行性单调。",
+      "对边长二分：判断某个 k 是否可行，只需看所有长度为 k 的窗口里，是否有窗口的最小值 ≥ k，这可以用单调队列求滑动窗口最小值。",
+      "二分范围 [0, min(n, max h)]；check(k) 用单调递增的下标队列扫描，队头过期就弹出、队尾不小于当前高度就弹出，窗口满 k 且队头高度 ≥ k 即返回可行；取最大可行 k，输出 k²（用 64 位）。"
+    ],
+    "en": [
+      "Side s is feasible exactly when some s consecutive buildings all have height at least s; a larger s only makes this harder, so feasibility is monotone.",
+      "Binary search on the side length: to check a given k, ask whether some window of length k has minimum ≥ k, which a monotonic deque computes as a sliding-window minimum.",
+      "Search k in [0, min(n, max h)]; check(k) scans with a deque of indices of increasing heights, popping expired indices from the front and indices with height ≥ the current one from the back, and returns true once a full window of size k has front height ≥ k; print the largest feasible k squared (as a 64-bit value)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhether a square of side k fits can be decided with a sliding-window minimum: is there a window of width k whose lowest building is ≥ k? Feasibility is monotone in k, so binary search the largest side and square it.\n\n## Correctness\n\nAny square of side k must rest on at least k consecutive buildings, each of height ≥ k; conversely, a window satisfying this condition really does hold a k×k square. So the window test is necessary and sufficient. Increasing k only makes the condition harder, so the largest k can be binary searched.\n\n## Complexity\n\nEach check takes O(n), the binary search takes O(log min(n, max(h))) rounds, and space is O(n)."
+}

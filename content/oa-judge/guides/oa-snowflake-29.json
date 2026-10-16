@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-29",
+  "packageChecksum": "24865b366a6742673b8813122ec1d23212d6e7e8ac5a6e2e16208fa86bab0486",
+  "sourceContentHash": "6803e093fa63507a9c2a5725e6b3594fcdf6f144aece33fee4fe364c9d2643b3",
+  "editorialSha256": "e3368cf2857bbb07b25e1a708461e0651f42a7971032e64d704a6eaec98c33fc",
+  "hints": {
+    "zh": [
+      "单点赋值会覆盖之前的全部历史；而一次全局提升[2,−1,x]相当于把每个值与x取max，多次提升叠加起来只需要知道其中最大的x。",
+      "所以一个服务的最终值只取决于它最后一次单点赋值，以及这次赋值之后所有全局提升的最大值；从未被赋值的服务则是初值与全部提升的最大值取max。",
+      "逆序扫描日志并维护floor=已见全局提升的最大值：遇到全局提升就更新floor；遇到对p的赋值且p还没有确定最终值，就记为max(x,floor)。扫描结束后，未确定的服务取max(初值,floor)。先输出n，再输出结果。"
+    ],
+    "en": [
+      "A point assignment wipes out all earlier history for that service, while a global raise [2, -1, x] is a max with x, and several raises combined only depend on their largest x.",
+      "So a service's final value depends only on its last point assignment and the largest raise after it; a service never assigned ends at the max of its initial value and the largest raise overall.",
+      "Scan the logs backward keeping floor = the largest raise seen so far: a raise updates floor; an assignment to p, when p has no final value yet, sets it to max(x, floor). After the scan, every undetermined service gets max(initial, floor). Print n and then the values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the logs in reverse order, maintaining the maximum of the global raises seen so far. When the last point assignment of a service is reached, its final value is determined; every other service combines its initial value with all the raises.\n\n## Correctness\n\nThe last point assignment overrides all history before it, and the global raises after it are equivalent to taking the max with the largest threshold of that suffix. The first time the reverse scan meets an assignment to the service, it has exactly the needed suffix value; services that are never assigned keep their initial values and then apply all the raises.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."
+}

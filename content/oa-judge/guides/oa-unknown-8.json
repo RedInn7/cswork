@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-8",
+  "packageChecksum": "cab131c09b98368035b026175b42c1708577483543f21a2dc29572f3dfb19120",
+  "sourceContentHash": "8537513459118ef5e427da6317d39987441dc94242e85bafab70232298328823",
+  "editorialSha256": "34d5a324f10a4b6a3638afc5aadfab3ff4ae48a2abb54c8b54e69d4ada17db13",
+  "hints": {
+    "zh": [
+      "排序规则是两级的：先按优先级数字从小到大，再按时间戳的数值从小到大；两项都相同的消息要保持输入顺序，也就是稳定排序。",
+      "每条消息原样输出，所以要把原始行保存下来，只从中解析出优先级和时间戳作为排序键。用稳定排序，或者把原始下标作为第三个比较键，都能保证并列时的先后。",
+      "读入 n 行，按冒号拆出时间戳和优先级并转成整数，与原始下标组成键 (priority, timestamp, index)。按键升序排序后，依次输出对应的原始行，每行一条。不要对时间戳做字符串比较以外的改写，输出时保持原样（包括前导 0）。"
+    ],
+    "en": [
+      "The order has two levels: first by priority number ascending, then by the numeric timestamp ascending; messages whose keys are both equal keep their input order, which means a stable sort.",
+      "Each message is printed exactly as given, so keep the original lines and only parse the priority and timestamp out of them as sort keys. Either a stable sort or the original index as a third key guarantees the order of ties.",
+      "Read the n lines, split each at the colon into timestamp and priority, convert them to integers, and build the key (priority, timestamp, index) with the original index. Sort by that key ascending and print the corresponding original lines, one per line, keeping each line unchanged, including leading zeros."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort ascending by `(priority, timestamp, originalIndex)`. Timestamps are compared after conversion to integers, the original lines are saved separately so they can be echoed as the statement requires, and the original index handles fully identical keys stably.\n\n## Proof of Correctness\n\nThe sort key compares priority first and then the numeric timestamp, which implements exactly the primary and secondary order required by the problem. When the first two items are equal, ordering by the original index keeps the input order in the output. Sorting the lines by this key gives the unique valid result.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

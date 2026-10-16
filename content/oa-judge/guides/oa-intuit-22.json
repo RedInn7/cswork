@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-22",
+  "packageChecksum": "d35fd89d8fd4676feec7fdd78de406224b852f469c35eca2863bf6c82a475182",
+  "sourceContentHash": "b367c3eb964fd009c6c5a789c47990af04792b02f3ebb4a0482f7e83f3c65b34",
+  "editorialSha256": "9b0ee0678ea6d87d663d05ee2759246a2d145bcb784594aea160d9fb099424ca",
+  "hints": {
+    "zh": [
+      "火势在时刻 t 的半径是 R×t，所以 T 时刻每个火源烧到的范围就是以它为圆心、半径 R×T 的闭圆；格点包括边界，即 0≤x≤N、0≤y≤M。",
+      "规模很小（N,M,K≤100），可以直接枚举所有格点，再逐个检查它是否落在某个火源的闭圆里；用平方距离和半径的平方比较，避免开方误差。",
+      "计算 radius²=(R×T)²；双重循环枚举 x=0..N、y=0..M，对每个点检查所有火源，只要有一个满足 (x−fx)²+(y−fy)²≤radius² 就算被烧到；所有火源都更远时安全点数加一；最后输出安全点数。"
+    ],
+    "en": [
+      "The fire's radius at time t is R * t, so at time T each fire covers the closed disk of radius R * T around it; lattice points include the boundary, that is 0 <= x <= N and 0 <= y <= M.",
+      "The sizes are tiny (N, M, K <= 100), so you can enumerate every lattice point and check whether it lies in some fire's closed disk; compare squared distances with the squared radius to avoid square-root errors.",
+      "Compute radius^2 = (R * T)^2; loop over x = 0..N and y = 0..M, and for each point check all fires: it is burned as soon as one fire has (x - fx)^2 + (y - fy)^2 <= radius^2; if every fire is farther away, count the point as safe; finally print the number of safe points."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAt time T the fire's radius is R×T. Go through the full rectangle of integer lattice points and, for each point, check the squared distance to every fire; if all distances are greater than the squared radius, the point is safe. The coordinate list in the example enumerates points over the closed ranges 0..N and 0..M.\n\n## Proof of correctness\n\nEach lattice point is visited exactly once in the double loop. For that point, the algorithm checks exactly every fire; there is a fire whose squared distance does not exceed the squared radius if and only if the point lies inside the corresponding closed disk, so the algorithm counts as safe exactly the points that are not inside any fire's closed disk. The example establishes that boundary lattice points also belong to the plane, so the ranges must include N and M.\n\n## Complexity\n\nTime O(NMK), space O(K); on this site N,M,K≤100."
+}

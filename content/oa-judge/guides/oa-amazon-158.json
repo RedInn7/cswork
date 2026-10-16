@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-158",
+  "packageChecksum": "eb7d2d2441fbcd9ad0c9b1f2d5e02cfecf4f92644f1e762329af7b43f00ad7c5",
+  "sourceContentHash": "79a3fa36e9c72b40c0ceb205c18f5666326c1534d150c8abe2b8698b137ea8a1",
+  "editorialSha256": "74e725eaa3d3b19e3d960800c6513e3e9d68f5ddabac0271363ab4730ea5b762",
+  "hints": {
+    "zh": [
+      "每一跳的收益是高度差的平方，差越大越好；直觉是让每一跳都在剩余的最高和最低之间来回。从地面0出发时，所有石头都比当前位置高。",
+      "排序后先跳到剩余最高的石头，再跳到剩余最低的，然后是剩余次高、次低……交替取两端，把每一跳（包括从0起跳的第一跳）高度差的平方累加起来。",
+      "高度升序排序，lo指向最小、hi指向最大，当前高度at=0；轮流取a[hi]（hi减1）和a[lo]（lo加1），每取出一个高度v就累加(v−at)的平方并令at=v，直到取完。平方和会超过32位，要用64位整数。"
+    ],
+    "en": [
+      "Each jump earns the square of the height difference, so bigger gaps are better; intuitively every jump should go between the highest and the lowest stones still left. Starting from the ground at 0, every stone is above you.",
+      "After sorting, jump to the highest remaining stone, then to the lowest remaining, then the next highest, the next lowest, and so on, alternating between the two ends and adding the squared difference of every jump, including the first one from 0.",
+      "Sort the heights ascending, with lo at the smallest and hi at the largest, and the current height at = 0; take a[hi] (then decrease hi) and a[lo] (then increase lo) in turn, and for each taken height v add (v - at) squared and set at = v, until all are used. The total exceeds 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the heights and visit, in turn, the highest remaining, the lowest remaining, the next highest, the next lowest, and so on, summing the squared differences of consecutive heights, including the first jump from 0.\n\n## Proof of correctness\n\nLet the current height x be no greater than every remaining height, and let M be the remaining maximum. Any subsequent order x,a,...,b,M,c,... can be turned, by reversing the segment from a to M, into x,M,b,...,a,c,...; the inner edges are unchanged because squared differences are symmetric, and the gain of the two changed edges changes by 2(M-a)(c-x)>=0. If M was at the end, only the edge from x to a is replaced by the edge from x to M, which also does not decrease the total. Hence some optimal plan chooses M next. When the current height is no less than every remaining height, the symmetric argument shows the next step can choose the remaining minimum. The starting point 0 satisfies the first condition, and fixing the prefix step by step shows that the alternating-extremes greedy is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-29",
+  "packageChecksum": "4bf316970c2844d20aba6cbbe3feb9a2dba8249bcfeaceab5c1586aa6717e792",
+  "sourceContentHash": "b4cffa5e9e62162765f12c640812c691dda0f112494d12af168de69d2a092926",
+  "editorialSha256": "6d606c061b3fd7ca47c4e3f1ba2f520dd12966f1347e283edae99d965803e924",
+  "hints": {
+    "zh": [
+      "窗口向右扩展时，配对数只增不减。因此对于固定的左端，一旦某个右端让配对数达到 k，之后所有更远的右端都满足条件。",
+      "用双指针维护窗口和每个值的出现次数：加入一个值时新增的配对数等于它原来的出现次数。窗口满足条件时，当前左端对应的满足条件的子数组个数是 n−right，计入后把左端移出。",
+      "cnt 记录窗口内各值出现次数，pairs 和答案初始为 0；右端逐个加入元素 v，pairs 加上 cnt[v] 后 cnt[v] 加 1；当 pairs 不小于 k 时，答案加上 n−right，再把左端元素的次数减 1、pairs 减去减后的次数，左端右移；最后输出答案，用 64 位整数。"
+    ],
+    "en": [
+      "Extending the window to the right never decreases the number of pairs. So for a fixed left end, once some right end reaches k pairs, every farther right end also qualifies.",
+      "Run two pointers with a count of each value in the window: adding a value creates as many new pairs as its previous count. When the window qualifies, the current left end contributes n - right subarrays; count them and then remove the left element.",
+      "Keep cnt for the window and start pairs and the answer at 0. For each new element v at the right, add cnt[v] to pairs and then increase cnt[v]. While pairs is at least k, add n - right to the answer, decrease the count of the left element, subtract the decreased count from pairs, and move left forward. Print the answer as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the window and the frequencies with two pointers. A new element adds as many pairs as its previous frequency. When the window reaches k, the current left end is valid with the current right end and every farther one; count them and then remove the left end.\n\n## Correctness\n\nExtending to the right never decreases the number of pairs. When a left end first reaches k, all longer windows are valid and all earlier ones were not, so it contributes n−right. Each left end is removed only once, so the contributions neither overlap nor miss anything.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

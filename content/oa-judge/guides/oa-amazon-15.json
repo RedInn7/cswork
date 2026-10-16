@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-15",
+  "packageChecksum": "b2f20d2da2f7b358c009e56ab83a32a47d95a8d2d735a24a5444a8e1f014cafa",
+  "sourceContentHash": "e91d6d9df0780215096eaf78fe924f67fecf6f7178f672c907540e2dbe29cf36",
+  "editorialSha256": "25ad08f313f0f4c7674a2bf062e0024b45870732a91530906edc0e0427896699",
+  "hints": {
+    "zh": [
+      "多重集合可能非常大，不能真的展开。每个商品对答案的贡献只取决于两件事：它的值，以及它被多少个订单覆盖。",
+      "用差分数组求出每个位置被覆盖的次数，把（商品值，覆盖次数）按值排序并对次数做前缀和；统计严格小于t的元素个数，就是二分找到第一个不小于t的位置后对应的前缀和。",
+      "对每个订单令diff[l]加1、diff[r+1]减1，前缀累加得到每个位置的覆盖次数；把（值，次数）按值排序，prefix[i]为前i项次数之和；对每个查询t用lower_bound找到第一个值不小于t的下标j，输出prefix[j]。累计和可能超过32位整数。"
+    ],
+    "en": [
+      "The multiset can be huge, so never expand it. An item's contribution depends only on two things: its value and how many orders cover it.",
+      "Use a difference array to get how many orders cover each position, sort the (value, coverage) pairs by value and take prefix sums of the coverage; the count strictly below t is the prefix sum up to the first value that is not below t, found by binary search.",
+      "For each order add 1 at diff[l] and subtract 1 at diff[r+1]; a running sum gives each position's coverage. Sort the (value, coverage) pairs by value, let prefix[i] be the total coverage of the first i pairs, and for each query t find with lower_bound the first index j whose value is >= t and print prefix[j]. The sums can exceed 32-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a difference array to compute how many times each position is covered. Sort the items by value and accumulate the coverage counts; for each query, binary search for the first position whose value is not less than the query value.\n\n## Proof of correctness\n\nThe prefix sum of the range difference array equals the number of times each position is contributed. Sorting does not change the multiset; the items strictly smaller than the query value lie exactly before the lower_bound, and summing the weights of those positions gives the answer.\n\n## Complexity\n\nTime O((n+q) log n + m), space O(n+q)."
+}

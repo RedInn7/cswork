@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-264",
+  "packageChecksum": "54dc5d66565810dbbc32ce134e9cb4bf80574d76eaaafd8034c81d3f742e4d60",
+  "sourceContentHash": "ca47015c894115ab756713f2e9d0090b7b17758cf77c02680180224f54acdc8a",
+  "editorialSha256": "731cf6b6e31f82630f0d09319deda1253e767bbc7754c6e2d32b40f44c96ff6e",
+  "hints": {
+    "zh": [
+      "原串的最低前缀余额决定至少要补多少个左括号，最终余额再决定至少要补多少个右括号；把新增的左括号都放最前、右括号都放最后就能修好。除此之外再多插入的括号，左右数量必须相同。",
+      "同一类括号用的数量固定时，选评分最高的那些最好。所以两类评分各自降序，必需的数量直接从最高处取；剩下的再一对一对地看，左右各取下一个，只有和为正才值得多插这一对。",
+      "扫描 s 求余额和最低前缀，得 L=−最低前缀、R=L+最终余额；把 kit 中左括号和右括号的评分分别降序；先加上左边前 L 个和右边前 R 个；再同步遍历两边剩余部分，每一对累加 max(0, 左+右)，任一边用完就停。必需的括号即使是负分也必须计入。"
+    ],
+    "en": [
+      "The lowest prefix balance of s fixes how many left brackets must be added, and the final balance then fixes how many right brackets must be added; putting all new left brackets first and all new right ones last repairs the string. Any extra brackets beyond that must come in equal numbers of left and right.",
+      "For a fixed number of brackets of one type, the highest-scoring ones are best. So sort each type's scores in descending order and take the required count from the top; then look at the rest pair by pair, taking the next left and the next right, and insert the pair only if its sum is positive.",
+      "Scan s for the balance and the lowest prefix, giving L = −(lowest prefix) and R = L + final balance; sort the scores of the left and right brackets in kit in descending order; add the first L left scores and the first R right scores; then walk both remaining parts together, adding max(0, left + right) for each pair, and stop when either side runs out. Required brackets count even when their scores are negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the minimum numbers of left brackets L and right brackets R that are needed. Sort the scores of each type in descending order, take the required L/R first, then take the remaining left-right pairs one by one whenever the pair's sum is positive.\n\n## Proof of correctness\n\nThe minimum prefix balance means at least L left brackets must be added, and the final total balance means at least R=L+(original balance) right brackets must be added; putting all new left brackets at the front and all new right brackets at the end achieves this. Extra brackets must come in equal numbers of left and right. For a fixed count, taking the highest scores of each type is optimal, and after sorting the gains of successive pairs are non-increasing, so taking every positive pair and nothing else reaches the maximum.\n\n## Complexity\n\nTime O(|s|+|kit| log |kit|), space O(|kit|)."
+}

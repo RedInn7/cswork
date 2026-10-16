@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-21",
+  "packageChecksum": "d69728830e26dc38440fbd775f132544d31c4b445aac094a5346ce7627ba916c",
+  "sourceContentHash": "a0185464e5796f8f7bed2f427627091ea987feb698a571875592c888da2b29a1",
+  "editorialSha256": "1c90ce965af9a1aeecc8c7bc60f6a72cf55c445d5766820b18c06a0b9b060be0",
+  "hints": {
+    "zh": [
+      "允许重排时，一个子串能变成回文当且仅当至多一个字母出现奇数次；改一个字符最多同时修正两个奇数次字母，所以代价是 ⌊odd/2⌋，odd 为出现奇数次的字母种数。",
+      "用 26 位奇偶掩码表示每个前缀中各字母出现次数的奇偶，子串的 odd 就是两个前缀掩码异或后的 1 的个数。按每一位分别统计“当前前缀与之前前缀在该位不同”的对数，就能求出所有子串 odd 的总和；而 odd 与子串长度奇偶相同，所以 Σ⌊odd/2⌋ = (Σodd − 奇数长度子串个数)/2。",
+      "扫描字符串维护掩码和 prefixCount[b]（之前的前缀中第 b 位为 1 的个数，空前缀全为 0）：每读一个字符翻转对应位，对每一位，若当前位为 1 就加上“之前前缀总数减 prefixCount[b]”，否则加 prefixCount[b]，再更新 prefixCount；同时按前缀长度的奇偶统计以当前位置结尾的奇数长度子串个数；最后输出 (总 odd − 奇数长度子串数)/2，全部用 64 位整数。"
+    ],
+    "en": [
+      "With rearrangement allowed, a substring can become a palindrome exactly when at most one letter occurs an odd number of times; one change fixes at most two odd letters at once, so the cost is floor(odd / 2), where odd is the number of letters with odd counts.",
+      "Represent the parity of every letter count in a prefix with a 26-bit mask; a substring's odd is the number of set bits in the XOR of two prefix masks. Counting, bit by bit, the pairs of prefixes that differ in that bit gives the sum of odd over all substrings; and odd has the same parity as the substring length, so the sum of floor(odd / 2) equals (sum of odd - number of odd-length substrings) / 2.",
+      "Scan the string keeping the mask and prefixCount[b] (how many earlier prefixes have bit b set; the empty prefix has none): for each character flip its bit, then for every bit add (number of earlier prefixes - prefixCount[b]) if the current bit is 1, otherwise prefixCount[b], and update prefixCount; also count the odd-length substrings ending here using the parity of the prefix lengths; finally print (total odd - odd-length substrings) / 2, using 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the 26-bit parity mask of every prefix. The number of odd-frequency characters of a substring is the popcount of the XOR of two prefix masks; accumulate the XOR contributions bit by bit, then subtract the odd-length terms and divide by two.\n\n## Proof of correctness\n\nA substring can be rearranged into a palindrome if and only if at most one character occurs an odd number of times. Each change of one character can change at most two parity bits at once, so the cost is floor(odd/2). Over all pairs of prefix parity masks, the number odd equals the number of set bits of the XOR. Accumulating, bit by bit, how many times the current mask differs from earlier masks gives the sum of all odd values; odd has the same parity as the substring length, so subtracting the number of odd-length substrings and then dividing by two gives exactly the total cost.\n\n## Complexity\n\nTime O(26n), space O(26)."
+}

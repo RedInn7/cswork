@@ -1,0 +1,16 @@
+{
+  "id": "oa-nutanix-4",
+  "packageChecksum": "db8171ff0a99e7824cfa51aeebd737cf11d36141806f49cd253947cd29e9230c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (!(cin >> n)) return 0;\n    vector<int> arr(n);\n    for (auto &v : arr) cin >> v;\n    // Try every number k of left rotations; sorting the rest needs n - cycles swaps.\n    int best = n;\n    vector<char> seen(n);\n    for (int k = 0; k < n; k++) {\n        fill(seen.begin(), seen.end(), 0);\n        int cycles = 0;\n        for (int i = 0; i < n; i++) {\n            if (seen[i]) continue;\n            cycles++;\n            int j = i;\n            while (!seen[j]) {\n                seen[j] = 1;\n                int p = j + k;\n                if (p >= n) p -= n;\n                j = arr[p] - 1;\n            }\n        }\n        best = min(best, k + n - cycles);\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "6a0ddc4ba919c0995797c806854246f21648f9dbc86a25e1f0c3192ec4781a90"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static int nextInt() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        int r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) arr[i] = nextInt();\n        // Try every number k of left rotations; sorting the rest needs n - cycles swaps.\n        int best = n;\n        boolean[] seen = new boolean[n];\n        for (int k = 0; k < n; k++) {\n            java.util.Arrays.fill(seen, false);\n            int cycles = 0;\n            for (int i = 0; i < n; i++) {\n                if (seen[i]) continue;\n                cycles++;\n                int j = i;\n                while (!seen[j]) {\n                    seen[j] = true;\n                    int p = j + k;\n                    if (p >= n) p -= n;\n                    j = arr[p] - 1;\n                }\n            }\n            best = Math.min(best, k + n - cycles);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "91d663bb4557ce6cbcc816f60f30c75c7ff89eba2e27a17dc44bd98bfc28ac42"
+    }
+  ]
+}

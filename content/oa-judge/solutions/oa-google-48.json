@@ -1,0 +1,16 @@
+{
+  "id": "oa-google-48",
+  "packageChecksum": "0451bbca07cb04fc39a141fb0e9f1b77f8a7b658ee5c7a33de87c0391fba0d4c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    if (n <= 4) { puts(\"0\"); return 0; }\n    sort(a.begin(), a.end());\n    // Keep a contiguous window of n-3 sorted values: drop i from the left and 3-i from the right.\n    long long best = LLONG_MAX;\n    for (int i = 0; i < 4; i++) best = min(best, a[n - 4 + i] - a[i]);\n    printf(\"%lld\\n\", best);\n}\n",
+      "sha256": "8ee5260c4b9f671b01094975cd5de3442c9e3df568a9f9c83bd5e8c900914658"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        if (n <= 4) { System.out.println(0); return; }\n        Arrays.sort(a);\n        // Keep a contiguous window of n-3 sorted values: drop i from the left and 3-i from the right.\n        long best = Long.MAX_VALUE;\n        for (int i = 0; i < 4; i++) best = Math.min(best, a[n - 4 + i] - a[i]);\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "8a04b991674321b0972199ddb7ba3961b2eb6d0a778fa82f7578de6fc26af634"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-30",
+  "packageChecksum": "44067cd25a582f301fa62ac3af810bdbe88f762be2b3d3601da8862460eae7ad",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<pair<long long, int>> events;\n    events.reserve(2 * n);\n    for (int i = 0; i < n; i++) {\n        long long l, h; cin >> l >> h;\n        events.push_back({l, 1});\n        events.push_back({h + 1, -1});\n    }\n    sort(events.begin(), events.end());\n    long long current = 0, best = 0, answer = 0;\n    for (size_t i = 0; i < events.size();) {\n        long long t = events[i].first;\n        while (i < events.size() && events[i].first == t) current += events[i++].second; // merge same time\n        if (current > best) { best = current; answer = t; }\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "792cd6b6c3ff076e89f93bd67b3c9a992f63defebb26bac7fd0893b507e84195"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        // Encode each event as time * 4 + (delta + 1) so one primitive sort orders by time.\n        long[] events = new long[2 * n];\n        for (int i = 0; i < n; i++) {\n            long l = nextLong(), h = nextLong();\n            events[2 * i] = l * 4 + 2;\n            events[2 * i + 1] = (h + 1) * 4;\n        }\n        Arrays.sort(events);\n        long current = 0, best = 0, answer = 0;\n        int i = 0;\n        while (i < events.length) {\n            long t = events[i] >> 2;\n            while (i < events.length && (events[i] >> 2) == t) current += (events[i++] & 3) - 1; // merge same time\n            if (current > best) {\n                best = current;\n                answer = t;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "95376601b0cd237a0a9a6eec41161447135f9243f9a786e7ce76a3f13b2eaff3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn := int(nextInt())\n\ttype event struct{ t, d int64 }\n\tevents := make([]event, 0, 2*n)\n\tfor i := 0; i < n; i++ {\n\t\tl, h := nextInt(), nextInt()\n\t\tevents = append(events, event{l, 1}, event{h + 1, -1})\n\t}\n\tsort.Slice(events, func(i, j int) bool { return events[i].t < events[j].t })\n\tvar current, best, answer int64\n\tfor i := 0; i < len(events); {\n\t\tt := events[i].t\n\t\tfor i < len(events) && events[i].t == t { // merge same time\n\t\t\tcurrent += events[i].d\n\t\t\ti++\n\t\t}\n\t\tif current > best {\n\t\t\tbest, answer = current, t\n\t\t}\n\t}\n\tw.WriteString(strconv.FormatInt(answer, 10) + \"\\n\")\n}\n",
+      "sha256": "049ecfaf82717fda3625c4acd6c8f0abe7bd734a1b1afbd7b36c45751aa03cc0"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-4",
+  "packageChecksum": "5bb35d83150ec20efc4bf9fb3492997026815ea72c947a0de0dc7709cec89212",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    size_t i = 0;\n    while (i < s.size() && s[i] == '0') i++;  // strip leading zeros\n    // a power of two is a single 1 followed only by zeros\n    bool ok = i < s.size() && s[i] == '1' && s.find('1', i + 1) == string::npos;\n    puts(ok ? \"True\" : \"False\");\n}\n",
+      "sha256": "f57081e1d3d89984d660128400c45c5da5092b8ec01a91ad8fd4fda47bd26c12"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).strip();\n        int i = 0;\n        while (i < s.length() && s.charAt(i) == '0') i++; // strip leading zeros\n        // a power of two is a single 1 followed only by zeros\n        boolean ok = i < s.length() && s.charAt(i) == '1' && s.indexOf('1', i + 1) < 0;\n        System.out.println(ok ? \"True\" : \"False\");\n    }\n}\n",
+      "sha256": "94d47db72733f36d41b1e92a4a5bcf9fe8b57313591858e609f749851866531c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tt := strings.TrimLeft(strings.TrimSpace(string(data)), \"0\")\n\t// a power of two is a single 1 followed only by zeros\n\tif t != \"\" && t[0] == '1' && strings.Trim(t[1:], \"0\") == \"\" {\n\t\tfmt.Println(\"True\")\n\t} else {\n\t\tfmt.Println(\"False\")\n\t}\n}\n",
+      "sha256": "703a0c53e5aabb7123fb5310d5ad87dd7bbd242caffe3d4a63af01253ba94a37"
+    }
+  ]
+}

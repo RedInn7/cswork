@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-47",
+  "packageChecksum": "17da35e82ddc2d2d7f7be760c00d9c3c4c77f327ca2fcc1d01ef8a450c1d1ea2",
+  "sourceContentHash": "331eb5281f07469cc6d0d3d1f234cdf8300cec86496a3773408faa634f835428",
+  "editorialSha256": "72da38f9089158bfe66917a33a1212cb60f66565bd351d9360498690d1b36ed8",
+  "hints": {
+    "zh": [
+      "如果选出的组有 k 个人，那么组里每个人面对的“其他人数”都是 k−1。所以可行性只和 k−1 是否落在各自区间里有关，跟选了谁无关。",
+      "人数 k 可行，当且仅当至少有 k 个区间覆盖 k−1：必要性显然，反过来从这些覆盖 k−1 的人里任选 k 个即可。于是只需统计每个整数被多少区间覆盖。",
+      "用差分数组：对每个区间 [low,high] 在 low 处加一、在 high+1 处减一。对 others=0..n−1 做前缀和得到覆盖次数 cnt，若 cnt≥others+1，就把答案更新为 others+1。一个都不满足时答案是 0（空集）。"
+    ],
+    "en": [
+      "If the chosen group has k people, then every member sees exactly k - 1 others. Feasibility depends only on whether k - 1 lies in each member's range, not on who else is chosen.",
+      "A group size k is feasible exactly when at least k intervals cover k - 1: that is clearly necessary, and conversely any k of the people covering k - 1 work. So you only need to know how many intervals cover each integer.",
+      "Use a difference array: for each interval [low, high], add 1 at low and subtract 1 at high + 1. Take prefix sums for others = 0..n - 1 to get the coverage cnt, and whenever cnt >= others + 1 set the answer to others + 1. If no size works, the answer is 0 (the empty set)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA group size k is feasible if and only if at least k intervals cover k-1. Use a difference array to count how many intervals cover each possible number of other passengers, then take the largest feasible k.\n\n## Correctness\n\nEvery member of the group must have k-1 inside their range, so the condition is necessary. If at least k people cover k-1, choosing any k of them makes everyone comfortable, so it is also sufficient. The difference array counts closed-interval coverage exactly, and trying every group size gives the maximum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

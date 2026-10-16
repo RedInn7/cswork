@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-23",
+  "packageChecksum": "23d15ed58192692c59c0755931ebeeef5df4077f08bd00ee4f89f72d597c5758",
+  "sourceContentHash": "540f5474d1e0eed9c32414fc03b80c92ac44a750551453d1d91a98f0364e722f",
+  "editorialSha256": "2e20ff0517806d37db627b7bc2c8d6cbc8261a8b60b8834f292bc356774992ae",
+  "hints": {
+    "zh": [
+      "相邻两个窗口只差一个离开的元素和一个进入的元素，所以不必每次都重新求和；窗口长度大于数组长度时没有完整窗口，只输出 0。",
+      "用滑动和维护每个窗口的精确整数和；平均值只需要保留 6 位小数，可以用整数运算完成四舍五入，避免二进制浮点误差，也不会产生 NaN 或无穷大。",
+      "先求前 w 个数的和，之后每次减去离开的元素、加上进入的元素。对每个和取绝对值，按商和余数分开算出放大 10^6 倍并四舍五入后的整数，再按“整数部分.六位小数”输出，和为负且结果非零时加上负号；第一行输出窗口个数 n−w+1。"
+    ],
+    "en": [
+      "Two neighboring windows differ by one element leaving and one entering, so there is no need to re-add every window; when the window is longer than the array there is no complete window and the output is just 0.",
+      "Keep the exact integer sum of each window with a sliding sum; an average only needs six decimal places, so the rounding can be done with integer arithmetic, avoiding binary floating-point error and never producing NaN or infinity.",
+      "Sum the first w numbers, then repeatedly subtract the element that leaves and add the one that enters. For each sum take its absolute value, compute the value scaled by 10^6 and rounded using the quotient and remainder separately, then print it as the integer part, a dot and six decimals, with a minus sign when the sum is negative and the result is non-zero; the first line is the window count n-w+1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUpdate the window total with a sliding sum. Scale the absolute value of the total by 10^6 and use integer division and the remainder to round to six decimal places, avoiding binary floating-point error.\n\n## Proof of correctness\n\nThe first window is summed directly; when moving right, subtract the element that leaves and add the element that enters, keeping the exact window total. Dividing by w gives the average; after integer scaling, add one depending on whether the remainder is at least w/2, which gives six decimal places; the rounding error is at most 0.5x10^-6, which satisfies the allowed absolute error.\n\n## Complexity\n\nTime O(n), space O(1) excluding input and output."
+}

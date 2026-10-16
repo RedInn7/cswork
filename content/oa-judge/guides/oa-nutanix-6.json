@@ -1,0 +1,19 @@
+{
+  "id": "oa-nutanix-6",
+  "packageChecksum": "065053704e7b1f396ff9cf460c56f466ab7f6fa51b124b0aab4ce3a825823507",
+  "sourceContentHash": "47448d02a181ef186161d8570261da22cdce7523f19abfc2eb9dfe2fbb771668",
+  "editorialSha256": "e6e4030c553a2338cf47291150468aecbd5ba29f4f4e1c11ae60e13c5a672be0",
+  "hints": {
+    "zh": [
+      "竞赛排名只和比自己分数高的人数有关：一个分数的名次等于严格比它高的人数加一，同分的人名次相同。",
+      "把分数从高到低排序后，顺着扫描就能算出每个人的名次：分数和前一个相同就沿用前一个名次，不同就把名次设为当前下标加一。",
+      "降序排序后从下标 0 开始扫，名次初值为 1；遇到与前一个不同的分数时把名次改成 i+1。对每个人，若名次不超过 k 且分数大于 0 就计数一次。注意分数为 0 的人即使名次够也不能计入。"
+    ],
+    "en": [
+      "Competition ranking depends only on how many players score higher: a score's rank is the number of strictly higher scores plus one, and equal scores share a rank.",
+      "Sort the scores in descending order and scan them to assign ranks: a score equal to the previous one keeps the previous rank, and a different score gets rank equal to its index plus one.",
+      "After sorting in descending order, scan from index 0 with rank starting at 1; whenever a score differs from the previous one, set the rank to i+1. Count each player whose rank is at most k and whose score is greater than 0. A player with score 0 is never counted, even with a good enough rank."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the scores in descending order; an equal score keeps the previous rank, and a different score gets rank index plus one.\n\n## Proof of correctness\n\nThe position in descending order is exactly the definition of competition ranking. Only players whose rank is at most k and whose score is non-zero are counted, which matches the problem's eligibility conditions one by one.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

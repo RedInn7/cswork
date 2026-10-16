@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-3",
+  "packageChecksum": "697d693ead90102cbc6141dc7485a195225d4fe4a143ea701d17ab6c904e0371",
+  "sourceContentHash": "839b05acaa2e6b375550d158bef20d65063ea5e7e86efffb10e12f4fb3041f7e",
+  "editorialSha256": "e0fca79125fa028f3b3c8e65661ca7907232ae88fe3f3bdad5dbf34b7554ba6b",
+  "hints": {
+    "zh": [
+      "单词只按空白切分，每个单词能否计数完全由它自身决定，与其他单词无关；所以只需逐个检查切出来的 token。",
+      "一个 token 有效需要同时满足四个条件：长度至少 3、每个字符都是 ASCII 字母或数字、至少一个元音（a/e/i/o/u，大小写都算）、至少一个辅音（不是元音的字母；数字既不是元音也不是辅音）。",
+      "按空白切出所有 token；对每个 token 扫描一遍字符，遇到非 ASCII 字母数字的字符立即判无效，同时记录是否出现过元音、是否出现过辅音字母；长度≥3 且两个标记都为真时计数加一，最后输出计数。"
+    ],
+    "en": [
+      "Words are split only on whitespace, and whether a word counts depends only on the word itself, so you just need to check each token on its own.",
+      "A token is valid only when all four conditions hold: length at least 3, every character an ASCII letter or digit, at least one vowel (a/e/i/o/u in either case), and at least one consonant (a letter that is not a vowel; digits are neither).",
+      "Split the input on whitespace. For each token, scan its characters once: any character that is not an ASCII letter or digit makes it invalid, and along the way record whether a vowel and a consonant letter have appeared. Count the token when its length is at least 3 and both flags are set, then print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the tokens split on whitespace, recording for each whether it is valid, whether it contains a vowel, and whether it contains a consonant.\n\n## Correctness\n\nA token is counted only when it satisfies the character domain, the length, and both letter conditions at the same time; this is equivalent, item by item, to the original definition, and each token is processed exactly once.\n\n## Complexity\n\nTime O(|s|), space O(1) (not counting the split result)."
+}

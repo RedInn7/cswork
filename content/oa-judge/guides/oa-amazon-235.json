@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-235",
+  "packageChecksum": "2d8dc72173c14c501a6c94438edfae301bd993a9d316451ba3c3789ee32fd50f",
+  "sourceContentHash": "c511a885beb330780154ab14add4cf7a77be9a1ee178ce57180532c7830ef8c8",
+  "editorialSha256": "eb71184efaa9af6091521b91ebeb86b803ad22b7b968f8eb2f340b060a668bd1",
+  "hints": {
+    "zh": [
+      "和落在闭区间 [L, R] 的对数，等于和 ≤ R 的对数减去和 ≤ L−1 的对数；配对只看两人的技能，与下标顺序无关，可以先排序。",
+      "排序后用相向双指针统计和不超过 K 的对数：若当前最左与最右之和不超过 K，最左者与中间所有人配对都合格。",
+      "count(K)：left=0、right=n−1，当 left<right 时，若 a[left]+a[right]≤K 就累加 right−left 并右移 left，否则左移 right；答案为 count(maxSkill) − count(minSkill−1)，计数和求和都用 64 位。"
+    ],
+    "en": [
+      "The number of pairs with a sum in the closed range [L, R] equals the pairs with sum <= R minus the pairs with sum <= L-1; a pair depends only on the two skills, not on index order, so the skills can be sorted first.",
+      "After sorting, count pairs with sum at most K using two pointers moving toward each other: if the current leftmost plus rightmost is at most K, the leftmost pairs validly with everyone in between.",
+      "count(K): left=0, right=n-1; while left<right, if a[left]+a[right] <= K add right-left and move left right, otherwise move right left; the answer is count(maxSkill) - count(minSkill-1), using 64-bit integers for counts and sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort, and use two pointers to count the pairs with sum ≤K. The answer is count(maxSkill)−count(minSkill−1).\n\n## Proof of correctness\n\nFor a fixed left end, if its sum with the current largest right end is ≤K, then it also qualifies with every right end in between, contributing right−left at once; otherwise that right end cannot pair with the current or any larger left end and can be discarded. Grouping by the left end this way counts every pair exactly once, and subtracting the two prefix thresholds leaves exactly the closed range.\n\n## Complexity\n\nTime O(n log n), space O(n); counts use 64-bit integers."
+}

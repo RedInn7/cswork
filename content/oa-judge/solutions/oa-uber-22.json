@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-22",
+  "packageChecksum": "e845aa784c6afa7faa636bffc3985083202be16a63210b6b1723f18707fbd6b1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, health, change;\n    cin >> n >> health;\n    // clamp after every step; summing first would lose the clipped parts\n    while (cin >> change) health = max(0LL, min(100LL, health + change));\n    cout << health << \"\\n\";\n}\n",
+      "sha256": "5bff0f5fcf78215e6652820e0d0e95b6fcb9e38fbbd3ff53a8639ae1579fc055"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long health = nextLong();\n        // clamp after every step; summing first would lose the clipped parts\n        for (int i = 0; i < n; i++) health = Math.max(0, Math.min(100, health + nextLong()));\n        System.out.println(health);\n    }\n}\n",
+      "sha256": "5a14404c560adf024eb0849e067ae8bd8153416ef2fd2ef3d7b2e77eef1f228d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, health := readInt(), readInt()\n\t// clamp after every step; summing first would lose the clipped parts\n\tfor i := 0; i < n; i++ {\n\t\thealth = max(0, min(100, health+readInt()))\n\t}\n\tfmt.Println(health)\n}\n",
+      "sha256": "0e2fe0bd177b364083f886c99bc4ddabc85a514c26a4ee6da77bd9c07e999c11"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-23",
+  "packageChecksum": "290d861837e5fabf23114d2f9eb060a798aee61fd47e6ae64274163a97de024b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007;\n\nint main() {\n    long long n;\n    cin >> n;\n    // First outer pair: 6 ordered choices; every inner pair: 3.\n    long long r = 6, b = 3, e = n / 2 - 1;\n    for (; e > 0; e >>= 1, b = b * b % MOD)\n        if (e & 1) r = r * b % MOD;\n    printf(\"%lld\\n\", r);\n}\n",
+      "sha256": "208685b408090d8dac866a93aca045025aec250952b9ae267409fc953eb82761"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.math.BigInteger;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        long n = Long.parseLong(new String(System.in.readAllBytes()).trim());\n        BigInteger mod = BigInteger.valueOf(1000000007L);\n        // First outer pair: 6 ordered choices; every inner pair: 3.\n        BigInteger r = BigInteger.valueOf(3).modPow(BigInteger.valueOf(n / 2 - 1), mod);\n        System.out.println(r.multiply(BigInteger.valueOf(6)).mod(mod));\n    }\n}\n",
+      "sha256": "2aef7701595a643afc104ce8e0656f02250fe9ef9243ad9e8c4ea4cae16d01af"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tconst MOD = 1000000007\n\tvar n int64\n\tfmt.Scan(&n)\n\t// First outer pair: 6 ordered choices; every inner pair: 3.\n\tr, b := int64(6), int64(3)\n\tfor e := n/2 - 1; e > 0; e >>= 1 {\n\t\tif e&1 == 1 {\n\t\t\tr = r * b % MOD\n\t\t}\n\t\tb = b * b % MOD\n\t}\n\tfmt.Println(r)\n}\n",
+      "sha256": "9f09910f02dc1318fb8956b76765607d00dee4b359c3112d8fc92c330b5c18d8"
+    }
+  ]
+}

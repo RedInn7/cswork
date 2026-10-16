@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-32",
+  "packageChecksum": "442ee430fb18ee0d97929fa975e272098ba65b512be9cdebdbf7e8b09cfd77c6",
+  "sourceContentHash": "3c66d6116e28f6dbc7804fb2867dd2ac9e7fef18ad146f3ca6b827172b3101df",
+  "editorialSha256": "d4d1834c0e74356655a9e39113f739f4167d81573a880ec5782c4436fb70dbfc",
+  "hints": {
+    "zh": [
+      "从某一位开始的翻转会影响它和右边的所有位，但不影响左边；所以从左往右处理时，左边已经正确的位不会再被破坏。",
+      "维护“当前有效位”：初始为 0，每翻转一次就取反。扫描到某一位时，如果有效位和目标不同，就必须从这一位开始翻转一次。",
+      "current 初始为 0、答案为 0；依次检查目标串的每一位，若与 current 不同则答案加 1 并把 current 设为该位；n = 0 时第二行为空，直接输出 0。"
+    ],
+    "en": [
+      "A flip starting at some position changes it and everything to its right but nothing to its left, so when you go left to right, positions already correct are never disturbed again.",
+      "Track the current effective bit: it starts at 0 and toggles with every flip. When the effective bit at a position differs from the target, a flip must start exactly there.",
+      "Start with current = 0 and answer = 0; for each target bit in order, if it differs from current, add 1 to the answer and set current to that bit; when n = 0 the second line is empty and the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan from left to right while maintaining the current effective bit; whenever it differs from the target, flip the suffix once and update the effective bit.\n\n## Proof of correctness\n\nWhen a position is reached, all earlier positions are already correct, and flips starting later cannot change the current position. If the current bit differs from the target, there must be a flip starting at this position; if it matches, none is needed. Each position takes only the flip that is required and does not break the prefix, so the lower bound is reached.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

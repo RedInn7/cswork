@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-37",
+  "packageChecksum": "d95f5504a27d14b710dd15b80003d9a4a271123b51ddd8478ebb9c407d3198fe",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    vector<char> chosen(n, 0);\n    long long x = 0;\n    for (int i = 1; i < n; i++)\n        if (a[i] < a[i - 1]) { chosen[i] = 1; x = max(x, a[i - 1] - a[i]); }\n    for (int i = 1; i < n; i++)\n        if (chosen[i] && chosen[i - 1]) { cout << -1 << '\\n'; return 0; }\n    vector<long long> b(n);\n    for (int i = 0; i < n; i++) b[i] = chosen[i] ? a[i] + x : a[i];\n    for (int i = 1; i < n; i++)\n        if (b[i] < b[i - 1]) { cout << -1 << '\\n'; return 0; }\n    cout << x << '\\n';\n}\n",
+      "sha256": "fef54d975909c7153993009b8c779add236f5771f002c5022de3c64d4e0cafa9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        boolean[] chosen = new boolean[n];\n        long x = 0;\n        for (int i = 1; i < n; i++)\n            if (a[i] < a[i - 1]) {\n                chosen[i] = true;\n                x = Math.max(x, a[i - 1] - a[i]);\n            }\n        for (int i = 1; i < n; i++)\n            if (chosen[i] && chosen[i - 1]) {\n                System.out.println(-1);\n                return;\n            }\n        long[] b = new long[n];\n        for (int i = 0; i < n; i++) b[i] = chosen[i] ? a[i] + x : a[i];\n        for (int i = 1; i < n; i++)\n            if (b[i] < b[i - 1]) {\n                System.out.println(-1);\n                return;\n            }\n        System.out.println(x);\n    }\n}\n",
+      "sha256": "b87fb04b4d1b2ee3c88a97ddbe579b058e51954ab7673ef57f58c409f3f41dd1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tchosen := make([]bool, n)\n\tvar x int64\n\tfor i := 1; i < n; i++ {\n\t\tif a[i] < a[i-1] {\n\t\t\tchosen[i] = true\n\t\t\tx = max(x, a[i-1]-a[i])\n\t\t}\n\t}\n\tfor i := 1; i < n; i++ {\n\t\tif chosen[i] && chosen[i-1] {\n\t\t\tw.WriteString(\"-1\\n\")\n\t\t\treturn\n\t\t}\n\t}\n\tb := make([]int64, n)\n\tfor i, v := range a {\n\t\tb[i] = v\n\t\tif chosen[i] {\n\t\t\tb[i] += x\n\t\t}\n\t}\n\tfor i := 1; i < n; i++ {\n\t\tif b[i] < b[i-1] {\n\t\t\tw.WriteString(\"-1\\n\")\n\t\t\treturn\n\t\t}\n\t}\n\tw.WriteString(strconv.FormatInt(x, 10) + \"\\n\")\n}\n",
+      "sha256": "418feea69ab161c7638e0d57c4f4aa6e0878a0a4f2b2689260321ba6b46c49e1"
+    }
+  ]
+}

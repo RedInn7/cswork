@@ -1,0 +1,21 @@
+{
+  "id": "oa-hackerearth-2",
+  "packageChecksum": "ae342a1ad951c428cb7e4d7b1eb5f891201ca9d44f46de5212dd0af2e3c037f5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    string s;\n    cin >> n >> s;\n    vector<int> girls; // unmatched girls; the top is the nearest one ahead\n    string out;\n    for (int i = 0; i < n && i < (int)s.size(); i++) {\n        if (s[i] == '0') { girls.push_back(i + 1); continue; }\n        int g = -1;\n        if (!girls.empty()) { g = girls.back(); girls.pop_back(); }\n        if (!out.empty()) out += ' ';\n        out += to_string(g);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "f6e790d80d5ca464e5d4c273119215d94e0ef872643a78cdf490605d501ae476"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder all = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) all.append(line).append(' ');\n        StringTokenizer st = new StringTokenizer(all.toString());\n        int n = Integer.parseInt(st.nextToken());\n        String s = st.nextToken();\n        int[] girls = new int[s.length()]; // unmatched girls; the top is the nearest one ahead\n        int top = 0;\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n && i < s.length(); i++) {\n            if (s.charAt(i) == '0') { girls[top++] = i + 1; continue; }\n            if (out.length() > 0) out.append(' ');\n            out.append(top > 0 ? girls[--top] : -1);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "51ba58c0a410b265310dab1fb325be9835d3315ba58c1f09d352ee431b47d3b1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar n int\n\tvar s string\n\tfmt.Fscan(r, &n, &s)\n\tvar girls []int // unmatched girls; the top is the nearest one ahead\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfirst := true\n\tfor i := 0; i < n && i < len(s); i++ {\n\t\tif s[i] == '0' {\n\t\t\tgirls = append(girls, i+1)\n\t\t\tcontinue\n\t\t}\n\t\tg := -1\n\t\tif len(girls) > 0 {\n\t\t\tg = girls[len(girls)-1]\n\t\t\tgirls = girls[:len(girls)-1]\n\t\t}\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tw.WriteString(strconv.Itoa(g))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "794267d5d5cae13803636713a69ad5c3d62ef4c7d98ec80fd6d2c1cb11bcc7ae"
+    }
+  ]
+}

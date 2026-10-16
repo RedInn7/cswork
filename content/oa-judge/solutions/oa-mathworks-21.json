@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-21",
+  "packageChecksum": "d517ac6036814f96aa3bb08ec9269847d204224ea522aee2159c9b8c1bf9697e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long x, y;\n    if (scanf(\"%d %lld %lld\", &n, &x, &y) != 3) return 0;\n    vector<long long> a(n);\n    long long mx = 0;\n    for (auto &v : a) {\n        scanf(\"%lld\", &v);\n        mx = max(mx, v);\n    }\n    long long extra = x - y, lo = 0, hi = (mx + y - 1) / y;\n    // T rounds give every task T*y; count how many main-task picks are still needed.\n    while (lo < hi) {\n        long long t = (lo + hi) / 2, need = 0;\n        for (long long v : a) {\n            long long rest = v - t * y;\n            if (rest > 0) need += (rest + extra - 1) / extra;\n        }\n        if (need <= t) hi = t;\n        else lo = t + 1;\n    }\n    printf(\"%lld\\n\", lo);\n}\n",
+      "sha256": "7701f26fbef6ba2ba94e0e78e331b7649601948e727e8491aec4e8384444a07d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long x = nextLong(), y = nextLong();\n        long[] a = new long[n];\n        long mx = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            mx = Math.max(mx, a[i]);\n        }\n        long extra = x - y, lo = 0, hi = (mx + y - 1) / y;\n        // T rounds give every task T*y; count how many main-task picks are still needed.\n        while (lo < hi) {\n            long t = (lo + hi) / 2, need = 0;\n            for (long v : a) {\n                long rest = v - t * y;\n                if (rest > 0) need += (rest + extra - 1) / extra;\n            }\n            if (need <= t) hi = t;\n            else lo = t + 1;\n        }\n        System.out.println(lo);\n    }\n}\n",
+      "sha256": "03d08a989f8b90b355f39e09d90d7d81dc4faf76a24a82043237169619f7e431"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tx, y := nextInt(), nextInt()\n\ta := make([]int64, n)\n\tvar mx int64\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\tmx = max(mx, a[i])\n\t}\n\textra := x - y\n\tlo, hi := int64(0), (mx+y-1)/y\n\t// T rounds give every task T*y; count how many main-task picks are still needed.\n\tfor lo < hi {\n\t\tt := (lo + hi) / 2\n\t\tvar need int64\n\t\tfor _, v := range a {\n\t\t\tif rest := v - t*y; rest > 0 {\n\t\t\t\tneed += (rest + extra - 1) / extra\n\t\t\t}\n\t\t}\n\t\tif need <= t {\n\t\t\thi = t\n\t\t} else {\n\t\t\tlo = t + 1\n\t\t}\n\t}\n\tfmt.Println(lo)\n}\n",
+      "sha256": "8d2529a905b82c2279fae385d8f72d01ec246d24769f168b77ff1c8b24be84c3"
+    }
+  ]
+}

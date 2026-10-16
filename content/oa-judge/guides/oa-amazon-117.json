@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-117",
+  "packageChecksum": "5cdcb80bfcaf0e2c7bb3b92f317a6e94c96655fc70bdbda46212068fb5b65e3a",
+  "sourceContentHash": "b79b2e394f3854911f280da73472d0d14115c55f920cafcf182c44e70635c4dd",
+  "editorialSha256": "cc169eeb1833367cfc96b6b744ae833d9202a8586a779015dfcac0e85bdec9de",
+  "hints": {
+    "zh": [
+      "连通分量数只和“哪些点被边连在了一起”有关；重边、自环不会带来新的连通关系，孤立点各自算一个分量。",
+      "用并查集：一开始每个点自成一个分量，共 n 个；处理每条边时，若两个端点的根不同就合并，分量数减一，根相同则不变。",
+      "初始化 parent[i]=i、size[i]=1、answer=n；对每条边 (u,v) 用带路径压缩的 find 求出两个根，不同则按大小把小树挂到大树下并让 answer 减一；所有边处理完输出 answer。"
+    ],
+    "en": [
+      "The number of connected components only depends on which nodes the edges join together; duplicate edges and self-loops add no new connectivity, and each isolated node is its own component.",
+      "Use union-find: initially every node is its own component, n in total; for each edge, if the two endpoints have different roots, merge them and decrease the count by one, otherwise nothing changes.",
+      "Initialize parent[i]=i, size[i]=1 and answer=n; for each edge (u,v) find both roots with path compression, and if they differ attach the smaller tree under the larger one and decrement answer; print answer after all edges."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse union-find to merge the two endpoints of each edge; there are n components initially, and each merge of two different roots removes one.\n\n## Correctness\n\nInitially every node is on its own, and adding an edge can only connect the two components containing its endpoints. If the roots differ the count drops by exactly one; if they are the same nothing changes. After all edges are processed, the structure reflects exactly the connectivity of the graph.\n\n## Complexity\n\nTime O((n+m) alpha(n)), space O(n+m) including the input."
+}

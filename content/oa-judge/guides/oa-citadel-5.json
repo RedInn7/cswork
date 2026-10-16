@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-5",
+  "packageChecksum": "21c7fbd981ed2fdbcbf36f0a550e1f19101745f7bf98f22547817bc0f701b392",
+  "sourceContentHash": "b0b4d15a7542e4ce0974b6713da7ce30500d5175f5d5ca200920af1dbc2b3366",
+  "editorialSha256": "6618873244623d7b66b7efd78f5291ed38c4d87a2ce8db275a01aa0430b48ea2",
+  "hints": {
+    "zh": [
+      "从某个节点出发向下的路径，要么只有它自己，要么接上恰好一个孩子出发的向下路径；路径不能在一个节点处同时伸向两棵子树。",
+      "设 best[u] 为从 u 出发向下的最大路径和，则 best[u] = value[u] + max(0, 各孩子的 best)。孩子的结果要先算好，答案是所有 best[u] 的最大值；全为负数时它就是最大的单个节点值。",
+      "先由 parent 数组建孩子列表（父下标不一定小于子下标），从根 0 做 BFS 得到父先于子的顺序，再逆序计算 best；不要用递归，深链可达 10^5 层。"
+    ],
+    "en": [
+      "A downward path starting at a node either is just that node or continues into exactly one child's downward path; it can never branch into two subtrees at a node.",
+      "Let best[u] be the maximum sum of a downward path starting at u; then best[u] = value[u] + max(0, best of each child). Children must be computed first, and the answer is the maximum best[u]; when everything is negative it is simply the largest single value.",
+      "Build child lists from the parent array (a parent index is not guaranteed to be smaller than its child), run BFS from root 0 to get an order where parents come before children, then compute best in reverse order. Avoid recursion: a chain can be 10^5 deep."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTraverse iteratively to get an order in which parents come before children, then process it in reverse to compute each node's best downward sum: its own value plus the largest positive child path; the answer is the maximum over all nodes.\n\n## Proof of correctness\n\nA valid path starting at u either contains only u or continues into the downward path of exactly one child, so the recurrence enumerates every possibility. The post-order guarantees that the children's results are already correct, so by induction we get the optimum for every start, and taking the maximum gives the global optimum over non-empty paths; when all values are negative it still returns the largest single node value.\n\n## Complexity\n\nO(n) time and O(n) space; no recursion is used, which avoids overflow on deep chains."
+}

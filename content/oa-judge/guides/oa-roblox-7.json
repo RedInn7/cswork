@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-7",
+  "packageChecksum": "87f3fc68843b24aa2ebdb1508f98b0becfc3af50cf288c4cbc7d3ac57520255b",
+  "sourceContentHash": "c000a105af1f1c92cbeae930b369d89038adbd0d2d2d02360c92d63b736513d8",
+  "editorialSha256": "9f9dbb1d679ac1b3b338fc895e69cc41dd69d4668f6d09e151d8900e7bd45dde",
+  "hints": {
+    "zh": [
+      "沿对角线走时行和列同时变化，所以除了起点之外，线段第一次碰到边界的那一格就是走出矩阵前的最后一格。“结束在边界”其实等价于：从起点沿该方向一直走到出界，途经的每一格都要符合模式。",
+      "对每个方向，从出口一侧往回递推：len2[x] 表示从 x 出发、期望值为 2、一直匹配到出界的长度（不合法为 0），len0[x] 同理期望值为 0。这样每个值为 1 的格子就能 O(1) 得到它在该方向的线段长度。",
+      "按“下一格先算”的顺序遍历：若 x 的值为 2，len2[x] 为 1（下一格出界）或 len0[下一格]+1（需 len0[下一格]>0），否则为 0；len0 对称地依赖 len2[下一格]。值为 1 的格子在该方向的长度是 1（下一格出界）或 len2[下一格]+1（需大于 0）。对 4 个方向各做一遍，取最大值，总时间 O(4RC)。"
+    ],
+    "en": [
+      "Along a diagonal the row and the column change together, so apart from the start, the first border cell the segment touches is the last cell before leaving the matrix. Ending at the border is therefore equivalent to every cell from the start to the point of leaving the matrix in that direction matching the pattern.",
+      "For each direction, work backwards from the exit side: len2[x] is the length of a tail starting at x with expected value 2 that matches all the way out of the matrix (0 if invalid), and len0[x] is the same with expected value 0. Then each cell holding 1 gets its segment length in that direction in O(1).",
+      "Visit cells so the next cell is always computed first: if x holds 2, len2[x] is 1 when the next cell is outside, or len0[next] + 1 when len0[next] > 0, else 0; len0 depends symmetrically on len2[next]. A cell holding 1 has length 1 when the next cell is outside, or len2[next] + 1 when that is positive. Do this for all 4 directions and take the maximum: O(4RC) in total."
+    ]
+  },
+  "explanationEn": "## Problem\n\nThe matrix elements are only 0, 1 and 2. Find a segment along a diagonal direction: the first element is 1, followed by 2,0,2,0,... in turn; it may start anywhere, proceed in one of the 4 diagonal directions, and must end on an element of the first row, last row, first column or last column. Find the maximum length. The data guarantees a segment of length at least 2 exists.\n\n## Approach\n\nWhen moving diagonally, the row and column change at the same time, so apart from the start, the first time the segment touches the border is the last cell before leaving the matrix. Hence \"ending at the border\" is equivalent to: going from the start in that direction until leaving the matrix, every cell passed matches the pattern.\n\nFor each direction, recurse backwards from that direction's exit side: len2[x] is the length starting at x with expected value 2 that matches the pattern all the way out of the matrix (0 if invalid), and len0 likewise. len2[x] = (x is 2) and (1 if the next cell is outside, otherwise len0[next] > 0 is required and the value is that plus 1). For a cell with value 1, the answer in that direction is 1 + len2[next] (1 when the next cell is outside).\n\n## Correctness\n\nThe recursion order guarantees that the next cell is computed first; len2/len0 describe exactly \"matching the pattern from here until leaving the matrix\". Taking the maximum over all starts and directions gives the answer.\n\n## Complexity\n\nO(4RC).\n\n## Independent verification\n\nThe oracle walks cell by cell from every 1 in every direction until leaving the matrix, comparing with the pattern at each cell (O(RC*min(R,C))), without using the recursion arrays. All 3^4 assignments of 2x2 matrices and the 2x3 and 3x2 matrices that satisfy the guarantee were exhausted, running the reference program on each. The wrong solutions cover not requiring the border to be reached, considering only two directions, reversing the pattern, and mistakenly using horizontal/vertical directions."
+}

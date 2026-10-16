@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-137",
+  "packageChecksum": "fe761d6b28528eab2d833ec4d1d1cc5f12b56e37918f23b5bb8f43115ad66623",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    vector<long long> prefix(n + 1, 0);\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        prefix[i + 1] = prefix[i] + v;\n    }\n    long long total = prefix[n], answer = 0;\n    int at = 0, station;\n    while (cin >> station) {\n        int target = station - 1;\n        long long distance = llabs(prefix[target] - prefix[at]);\n        answer += min(distance, total - distance); // shorter of the two arcs\n        at = target;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "64b7b27313537502457b5c8d980b3bae329d49a48dd2fc6f6128349851afdb8c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), q = nextInt();\n        long[] prefix = new long[n + 1];\n        for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + nextLong();\n        long total = prefix[n], answer = 0;\n        int at = 0;\n        for (int k = 0; k < q; k++) {\n            int target = nextInt() - 1;\n            long distance = Math.abs(prefix[target] - prefix[at]);\n            answer += Math.min(distance, total - distance); // shorter of the two arcs\n            at = target;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "3c8f470e673578f1f4a5218899a17c2fb87452ab53a3205a45b98a12d73b60db"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn, q := readInt(), readInt()\n\tprefix := make([]int, n+1)\n\tfor i := 0; i < n; i++ {\n\t\tprefix[i+1] = prefix[i] + readInt()\n\t}\n\ttotal, answer, at := prefix[n], 0, 0\n\tfor k := 0; k < q; k++ {\n\t\ttarget := readInt() - 1\n\t\tdistance := prefix[target] - prefix[at]\n\t\tif distance < 0 {\n\t\t\tdistance = -distance\n\t\t}\n\t\tanswer += min(distance, total-distance) // shorter of the two arcs\n\t\tat = target\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "1ff92fe8579f00aff90018c2f3a0640cb1a1821cdf19e00733b62fc2e7523800"
+    }
+  ]
+}

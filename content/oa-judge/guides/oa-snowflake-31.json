@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-31",
+  "packageChecksum": "8ef8d3b04ab9c2dedca83117637761a4bfb1eda61bb0b49296af635f52cba7ae",
+  "sourceContentHash": "8fad4a8ae3f79da78e45d7dcff95b3f048e16002094647204997adf0aceefea4",
+  "editorialSha256": "87580145cfe06097d5b96432c726c5128cdc5982e7e4fca1b7b2e0cc0d785910",
+  "hints": {
+    "zh": [
+      "一天只有1440分钟，人是谁并不重要：某分钟所有人都空闲，当且仅当没有任何事件覆盖这一分钟。事件的开始分钟和结束分钟都算忙碌。",
+      "把每个事件[start,end]在分钟轴上做差分：diff[start]加1，diff[end+1]减1，前缀和就是每分钟的忙碌事件数。",
+      "从00:00扫到23:59，维护连续空闲分钟数run（忙碌数为0则加一，否则清零）；第一次run≥k时，会议开始时刻为t−k+1，按两位小时和两位分钟输出；扫完仍不满足就输出−1。"
+    ],
+    "en": [
+      "A day has only 1440 minutes and who is busy does not matter: everyone is free in a minute exactly when no event covers it. Both the start and the end minute of an event are busy.",
+      "Add each event [start, end] to a difference array on the minute axis: diff[start] += 1, diff[end+1] -= 1; prefix sums give the number of busy events in each minute.",
+      "Scan from 00:00 to 23:59 keeping run, the number of consecutive free minutes (add one when the busy count is 0, reset otherwise); the first time run >= k the meeting starts at t - k + 1, printed as two-digit hours and minutes; if it never happens print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nApply a difference array over [start,end+1) on the minute axis for each event to get the number of busy people in each minute. Scan the run of consecutive minutes with zero occupancy; the first time it reaches k gives the earliest slot.\n\n## Correctness\n\nEveryone is free if and only if no event covers that minute. The prefix sums of the difference array count the occupancy of closed intervals exactly, and k consecutive zeros mean exactly that a complete meeting can take place. The first time the condition is met in increasing time order is the earliest.\n\n## Complexity\n\nTime O(n+1440), space O(1440)."
+}

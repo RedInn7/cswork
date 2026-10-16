@@ -1,0 +1,21 @@
+{
+  "id": "oa-wells-fargo-5",
+  "packageChecksum": "84a5f12923914f492157ab9f5eb767c199b59444b0bdc6632ba8a8c7f9280769",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    string s;\n    int k;\n    cin >> s >> k;\n    vector<int> ones;\n    for (int i = 0; i < (int)s.size(); i++)\n        if (s[i] == '1') ones.push_back(i);\n    string best;\n    bool have = false;\n    // Each window of k consecutive ones, trimmed to start and end on a one.\n    for (int i = 0; i + k <= (int)ones.size(); i++) {\n        string z = s.substr(ones[i], ones[i + k - 1] - ones[i] + 1);\n        if (!have || z.size() < best.size() || (z.size() == best.size() && z < best)) {\n            best = z;\n            have = true;\n        }\n    }\n    cout << best << '\\n';\n}\n",
+      "sha256": "6178a5f739cf90055bc0848a2ff4722711a446b54aaa200c14baa4cbfebf0c07"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int k = (int) nextLong();\n        List<Integer> ones = new ArrayList<>();\n        for (int i = 0; i < s.length(); i++)\n            if (s.charAt(i) == '1') ones.add(i);\n        String best = null;\n        // Each window of k consecutive ones, trimmed to start and end on a one.\n        for (int i = 0; i + k <= ones.size(); i++) {\n            String z = s.substring(ones.get(i), ones.get(i + k - 1) + 1);\n            if (best == null || z.length() < best.length() || (z.length() == best.length() && z.compareTo(best) < 0))\n                best = z;\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "fde00b632437943664bbbee5c21449489816a906db8ec954a57f5efdbe20ed1d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() string {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := nextToken()\n\tk := int(nextInt())\n\tvar ones []int\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == '1' {\n\t\t\tones = append(ones, i)\n\t\t}\n\t}\n\tbest := \"\"\n\t// Each window of k consecutive ones, trimmed to start and end on a one.\n\tfor i := 0; i+k <= len(ones); i++ {\n\t\tz := s[ones[i] : ones[i+k-1]+1]\n\t\tif best == \"\" || len(z) < len(best) || (len(z) == len(best) && z < best) {\n\t\t\tbest = z\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "48ba740968b590ce345c147c399bc73c7437ba9a73a5350afa7642bc421feed7"
+    }
+  ]
+}

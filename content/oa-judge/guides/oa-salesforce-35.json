@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-35",
+  "packageChecksum": "d3b509b4f94729c7b537b79630c708700075b390807dbbdb7804ba13b19e5ce7",
+  "sourceContentHash": "6efce3ecf019afc26a82d375153d43bbd0e51a11f70d4056630c103fb86f08bc",
+  "editorialSha256": "4ced17636c77bb33178fb3d8ea10ec0e66083ae4b50d72aeb1958f0f316949d5",
+  "hints": {
+    "zh": [
+      "不要模拟切割顺序，先想最后一刀：最后一刀切开的杆只剩下一个未切的标记，所以它一定恰好由两个相邻的最终段组成。",
+      "因此“存在相邻两段长度和 ≥ minLength”是必要条件。它也是充分的：先从原杆两端依次切掉其他最终段，剩下的杆始终包含这一对相邻段、长度不小于阈值，最后再切开这一对即可。",
+      "读入 n、各段长度和 minLength（可达 10^18，用 64 位）；遍历所有相邻对，只要某对 a[i]+a[i+1] ≥ minLength 就输出 Possible，否则输出 Impossible。"
+    ],
+    "en": [
+      "Do not simulate the cutting order; think about the last cut instead. The rod cut last has exactly one uncut mark left, so it consists of exactly two adjacent final segments.",
+      "So having two adjacent segments whose total length is at least minLength is necessary. It is also sufficient: cut off the other final segments one by one from both ends of the original rod; the remaining rod always contains that adjacent pair and stays at or above the threshold, and the pair is cut last.",
+      "Read n, the segment lengths, and minLength (up to 10^18, so use 64 bits). Check every adjacent pair: if some a[i]+a[i+1] >= minLength, print Possible; otherwise print Impossible."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCheck whether there are two adjacent segments whose total length is at least minLength.\n\n## Proof of correctness\n\nThe rod cut by the last cut must consist of two adjacent final segments, so the condition is necessary. If an adjacent pair satisfies it, cut off the other final segments one by one from both ends of the original rod; the remaining rod always contains this pair and its length is not below the threshold; finally cut this pair apart, which constructs a valid order, so the condition is sufficient.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input; segment sums and the threshold use 64 bits."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-9",
+  "packageChecksum": "1a224ea01d0cb32f1230c1ae28cb69eef50080231ede3b1bcdcddf4ddf9cd218",
+  "sourceContentHash": "97c3c79aa1e01820542523d5c384eeeb9e908ea505f28d9b36a2ea97cbe860c5",
+  "editorialSha256": "da13c45cc1e50a0bf7312562e9163e9057c5fbf81c44ab0fbc1c55d27e817bb7",
+  "hints": {
+    "zh": [
+      "一个 CIDR 网段覆盖的是从某个对齐位置开始、长度为 2 的幂的一段地址；网段的起点必须是其长度的整数倍。",
+      "把地址转成整数后贪心：每次从当前起点出发，取起点所允许的最大对齐块，同时不能超过剩余要覆盖的地址数。起点为 0 时对齐上限是 2^32，不能用最低位的 1 来算。",
+      "用 64 位整数保存起点和 count（count 可以等于 2^32）。循环直到 count 为 0：对齐上限取起点的最低位 1（起点为 0 时取 2^32），再与不超过 count 的最大 2 的幂取较小者作为块大小；输出起点的点分十进制和前缀长度 32 减去块大小的以 2 为底的对数，然后起点加块大小、count 减块大小。最后先输出块数再逐行输出网段。"
+    ],
+    "en": [
+      "A CIDR block covers a run of addresses whose length is a power of two, starting at an aligned position: the block's start must be a multiple of its length.",
+      "Convert the address to an integer and be greedy: from the current start, take the largest block the start's alignment allows, without exceeding the number of addresses still to cover. When the start is 0 the alignment limit is 2^32; the lowest set bit cannot be used there.",
+      "Keep the start and count in 64-bit integers (count can equal 2^32). Loop until count is 0: the alignment limit is the lowest set bit of the start (2^32 when the start is 0); the block size is the smaller of that and the largest power of two not exceeding count. Record the start in dotted decimal with prefix length 32 minus log2 of the block size, then advance the start and reduce count by the block size. Print the number of blocks first, then one block per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert the address to a 64-bit integer. At each step, take from the current start the largest aligned power-of-two block that also does not exceed the remaining length. For start 0 the alignment limit is 2^32; lowbit(0)=0 must not be used.\n\n## Correctness\n\nCIDR ranges are nodes of a binary prefix tree, so any two of them are either disjoint or nested. The maximal complete subtrees inside the target range form a unique disjoint decomposition; no valid cover may cross the boundaries of these subtrees, since it would then include addresses outside the target, and each maximal subtree needs at least one block. The greedy step always takes the largest block allowed at the current leftmost address, which extracts exactly these maximal subtrees in order, so it meets this lower bound.\n\n## Complexity\n\nAt most 64 blocks, time O(32), output space O(32); 64 bits are used to hold 2^32."
+}

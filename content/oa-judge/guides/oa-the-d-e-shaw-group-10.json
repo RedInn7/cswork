@@ -1,0 +1,19 @@
+{
+  "id": "oa-the-d-e-shaw-group-10",
+  "packageChecksum": "1f86ec40dbc5a7e8863d25192e3cf70de40d3f643b6937d8b2b3195144830ed4",
+  "sourceContentHash": "9bf45029d79fafaa248a36979686fa17c23781144dc72fdbef95612a3218ad7b",
+  "editorialSha256": "85010b3f8ae2601e7b1af3866afc500a742475001671dd608143d8f950a8cc4c",
+  "hints": {
+    "zh": [
+      "令 y[i]=(−1)^i·(target[i]−source[i])。一次操作对 source 施加 +1,−1,+1,…，换到 y 上看，就是给一个偶数长度的区间整体加上同一个常数（正负由区间左端的奇偶决定）。",
+      "对 y 做相邻差分 z（末尾补 z[n]=−y[n−1]）。一次操作只在区间左端 l 和 r+1 两处改变差分，而且两个位置奇偶相同、方向相反。所以偶数下标与奇数下标的差分可以分开检查。",
+      "对偶数下标的 z 依次累加前缀和，任何时刻必须 ≥0，结束时必须为 0；对奇数下标的 z 依次累加，任何时刻必须 ≤0，结束时为 0。任一条件不满足输出 −1；否则答案是所有 max(0,z[i]) 之和。数值用 64 位整数。"
+    ],
+    "en": [
+      "Let y[i] = (-1)^i * (target[i] - source[i]). One operation adds +1, -1, +1, ... to source; seen on y, it adds the same constant to a whole even-length range, with the sign determined by the parity of the range's left end.",
+      "Take adjacent differences z of y (with z[n] = -y[n-1] at the end). An operation changes the differences only at the left end l and at r + 1; these two positions have the same parity and opposite directions. So differences at even and at odd indices can be checked separately.",
+      "Accumulate z over even indices in order: the prefix sum must always be >= 0 and end at 0. Accumulate z over odd indices: the prefix sum must always be <= 0 and end at 0. If any condition fails, output -1; otherwise the answer is the sum of max(0, z[i]) over all i. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet y[i] = (-1)^i * (target[i] - source[i]); then one legal operation adds a constant to an even-length range of y, with the constant determined by the parity of the range's left index. Taking adjacent differences of y, an operation produces one unit of change in a fixed direction at two boundaries of the same parity. Check, for each parity of boundaries, the direction of the prefix sums of the differences and their total; when feasible, the number of operations needed equals the number of positive difference units.\n\n## Proof of correctness\n\nThe range [l, r] has even length, and after the transformation every position in it increases by s = (-1)^l. The adjacent differences change only at l, increasing by s, and at r + 1, decreasing by s; since r + 1 - l is even, the two boundary indices have the same parity. For even boundaries, every operation puts +1 at the earlier end and -1 at the later end, so the sum of differences over any prefix must be non-negative; for odd boundaries the signs are reversed, so the prefix sums must be non-positive. The totals of both groups must also be zero. Conversely, if these conditions hold, scanning from left to right pairs every pending unit at an earlier end with a later opposite end; they have the same parity and are ordered, which uniquely determines a legal even-length range. Each operation supplies exactly one unit, so the total number of positive difference units is the minimum number of operations.\n\n## Complexity\n\nO(n) time and O(n) extra space."
+}

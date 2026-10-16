@@ -1,0 +1,19 @@
+{
+  "id": "oa-hackerearth-1",
+  "packageChecksum": "3b26754375c3d8b3ccd927f32045d9faa667740f1181c5ffe875ec833b2e7fe8",
+  "sourceContentHash": "1633934e74babfd2810869e76ba676cb70c1be4d445da618d87ea22a68da506c",
+  "editorialSha256": "3fdb28393d6c45c4e699ff7484cc4f4247be95b6d3b85c5d1b9d3fdb6332c642",
+  "hints": {
+    "zh": [
+      "一个窗口全部入住的最早日期，就是窗口里最晚入住的那个房子的入住日，也就是窗口内入住日的最大值。",
+      "所以先把排列转换成“每个房子的入住日”，答案就是所有长度为 M 的连续窗口的入住日最大值中的最小值。",
+      "用 day[x]=i 记录房子 x 在第 i 天入住。再用单调队列求每个长度 M 窗口的最大值：队尾弹出入住日不大于当前的下标，队首弹出已离开窗口的下标，窗口完整后用队首的入住日更新答案的最小值。"
+    ],
+    "en": [
+      "The earliest day a window is fully occupied is the move-in day of its last occupied house, i.e. the maximum move-in day inside the window.",
+      "So first turn the permutation into each house's move-in day; the answer is the minimum, over all windows of M consecutive houses, of the window's maximum move-in day.",
+      "Record day[x]=i when house x is occupied on day i. Then compute every length-M window maximum with a monotonic deque: pop from the back indices whose day is not larger than the current one, pop from the front indices that left the window, and once the window is full update the answer with the front's day."
+    ]
+  },
+  "explanationEn": "## Idea\n\nRecord the move-in day of each house. For every window of M consecutive houses take the maximum move-in day, then take the minimum over all windows.\n\n## Proof of correctness\n\nThe earliest day on which a window is fully occupied equals the move-in day of the last house to be occupied in it, i.e. the window's maximum move-in day. Enumerating all windows and taking the minimum gives exactly the first day the condition holds.\n\n## Complexity\n\nO(N) time, O(N) space."
+}

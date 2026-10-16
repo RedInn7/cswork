@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-232",
+  "packageChecksum": "1c7c743aa63d6b5e2680b2b6b6e0f640f86894a5c21dd5d3ebf46692b09034ad",
+  "sourceContentHash": "8653d21a162040cb4e327e484889089f432396026130be5046cc9c96fd853341",
+  "editorialSha256": "b3476901297dd5be41e0d8958cbf26fcb1da80aa1bd4a7179d5c42ff7d4fc093",
+  "hints": {
+    "zh": [
+      "伤害都非负，生命值一路只减不增，所以只需保证打完最后一关后剩余生命仍严格大于 0。",
+      "护甲只能用一次，能抵消的量是 min(armor, 该关伤害)，用在伤害最大的一关抵消得最多。",
+      "累加总伤害并记录最大伤害，答案为 总伤害 − min(armor, 最大伤害) + 1；总伤害可达 10^14，用 64 位整数。"
+    ],
+    "en": [
+      "All damage is non-negative, so health only goes down; it is enough to keep health strictly above 0 after the last level.",
+      "The armor is used once and cancels min(armor, that level's damage), so it cancels the most on the level with the largest damage.",
+      "Sum the damage and track the largest one; the answer is total damage - min(armor, largest damage) + 1. The total can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse the armor on the level with the largest damage; the answer is total damage−min(armor, largest damage)+1.\n\n## Proof of correctness\n\nThe actual damage of every level is non-negative, so health is lowest at the end, and at least the actual total damage plus 1 is required. The armor can be used only once, and its largest possible reduction is min(armor, max(power)), which is achieved by using it on the level with the largest damage, so the formula is optimal.\n\n## Complexity\n\nTime O(n), space O(n) including the input; the answer uses 64-bit integers."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-33",
+  "packageChecksum": "0a834028a9ae596e0c5c2cd2a8655892f709b05a459d8a2467913845c7367758",
+  "sourceContentHash": "9189777e693122b127efb09ab0c851ca10983b1bd9f8b57bc3792f82f0974f0f",
+  "editorialSha256": "91d739792415c7712018b25750e1fe2298ccfefb503b561e61e56df4fdb0053c",
+  "hints": {
+    "zh": [
+      "岛屿的周长等于所有陆地格的边数之和，减去两块陆地之间共享的内部边。",
+      "每块陆地先算 4 条边；每条共享边被两边的格子各算了一次，而且不属于外周，所以每遇到一条共享边就减 2。",
+      "逐格扫描：遇到陆地加 4；若它上方是陆地减 2，左方是陆地再减 2（只看上和左，每条共享边恰好处理一次），最后输出总和。"
+    ],
+    "en": [
+      "The island's perimeter is the total number of sides of its land cells minus the interior edges shared by two land cells.",
+      "Count 4 sides for every land cell; each shared edge was counted once by each of its two cells and is not on the outer boundary, so subtract 2 for each shared edge.",
+      "Scan every cell: for land add 4, subtract 2 if the cell above is land and another 2 if the cell to the left is land (looking only up and left handles each shared edge exactly once), then print the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach land cell first contributes 4, and each edge shared with land above or to the left subtracts 2.\n\n## Proof of correctness\n\nAmong a single cell's four sides, each interior shared edge is counted twice by the two cells and is not part of the outer perimeter, so 2 must be subtracted. Checking only upward and leftward handles each shared edge exactly once.\n\n## Complexity\n\nTime O(NM), space O(NM) to store the input."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-22",
+  "packageChecksum": "ddef978a3736d1727d072a75d4e02eaf40063cf1f98bc2533f28d81a5327e941",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007;\n\nint main() {\n    string s;\n    cin >> s;\n    const int LIM = 1000000;\n    vector<char> p(LIM, 1);\n    p[0] = p[1] = 0;\n    for (int v = 2; (long long)v * v < LIM; v++)\n        if (p[v])\n            for (int m = v * v; m < LIM; m += v) p[m] = 0;\n    int n = s.size();\n    vector<long long> dp(n + 1, 0);\n    dp[0] = 1;\n    for (int i = 0; i < n; i++) {\n        if (s[i] == '0' || dp[i] == 0) continue;  // no leading zeros\n        int value = 0;\n        for (int j = i; j < min(n, i + 6); j++) {\n            value = value * 10 + (s[j] - '0');\n            if (p[value]) dp[j + 1] = (dp[j + 1] + dp[i]) % MOD;\n        }\n    }\n    printf(\"%lld\\n\", dp[n]);\n}\n",
+      "sha256": "b12685af86195722c728b40853c76a718af0b5168d281afbcc91e038ea94d2db"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] raw = System.in.readAllBytes();\n        int a = 0, b = raw.length;\n        while (a < b && raw[a] <= ' ') a++;\n        while (b > a && raw[b - 1] <= ' ') b--;\n        int n = b - a;\n        final int LIM = 1000000;\n        final long MOD = 1000000007L;\n        boolean[] comp = new boolean[LIM];\n        comp[0] = comp[1] = true;\n        for (int v = 2; (long) v * v < LIM; v++)\n            if (!comp[v])\n                for (int m = v * v; m < LIM; m += v) comp[m] = true;\n        long[] dp = new long[n + 1];\n        dp[0] = 1;\n        for (int i = 0; i < n; i++) {\n            if (raw[a + i] == '0' || dp[i] == 0) continue; // no leading zeros\n            int value = 0;\n            for (int j = i; j < Math.min(n, i + 6); j++) {\n                value = value * 10 + (raw[a + j] - '0');\n                if (!comp[value]) dp[j + 1] = (dp[j + 1] + dp[i]) % MOD;\n            }\n        }\n        System.out.println(dp[n]);\n    }\n}\n",
+      "sha256": "9d503774cdfe492748652f377587f7de5551eb6fd5b0d1a5acdb62591bd36b2f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\ts := bytes.TrimSpace(raw)\n\tconst LIM = 1000000\n\tconst MOD = 1000000007\n\tcomp := make([]bool, LIM)\n\tcomp[0], comp[1] = true, true\n\tfor v := 2; v*v < LIM; v++ {\n\t\tif !comp[v] {\n\t\t\tfor m := v * v; m < LIM; m += v {\n\t\t\t\tcomp[m] = true\n\t\t\t}\n\t\t}\n\t}\n\tn := len(s)\n\tdp := make([]int64, n+1)\n\tdp[0] = 1\n\tfor i := 0; i < n; i++ {\n\t\tif s[i] == '0' || dp[i] == 0 { // no leading zeros\n\t\t\tcontinue\n\t\t}\n\t\tvalue := 0\n\t\tfor j := i; j < min(n, i+6); j++ {\n\t\t\tvalue = value*10 + int(s[j]-'0')\n\t\t\tif !comp[value] {\n\t\t\t\tdp[j+1] = (dp[j+1] + dp[i]) % MOD\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(dp[n])\n}\n",
+      "sha256": "c465f332bb37fcc53ab0030416ab7e545341658b55f4cf8bdcca46d3b14b636f"
+    }
+  ]
+}

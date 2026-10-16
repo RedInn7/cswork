@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-130",
+  "packageChecksum": "4dd3a8e8af34ee6105a0c2de0c542af2a3325a390fef1a86f37acef11f1b4e4a",
+  "sourceContentHash": "a16188121428e7c1197a2c411ee7c6d1fec4aed704712d7e9fa7b0d22ade2c89",
+  "editorialSha256": "43396ce000f7a9bcf4a22b8330145774aed69ebb508e8534381fc633d70bdd34",
+  "hints": {
+    "zh": [
+      "自定义字典序和普通字典序的规则完全一样：在第一个不同的位置比较两个字符的先后，没有不同位置时较短的在前；区别只在于字符的大小关系由 order 给出。",
+      "把每个字符换成它在 order 中的名次（0..61），每个字符串就变成一个名次序列；按名次序列做普通字典序比较，结果正好是要求的顺序，所以只需按这个键排序。",
+      "读入 order 建立 名次表；读入 n 个字符串，把 - 还原为空串，并为每个串生成名次序列作为排序键；按键排序（保留全部重复）；输出时空串再写回 -，用空格分隔。"
+    ],
+    "en": [
+      "Custom lexicographic order follows exactly the usual rules: compare the characters at the first differing position, and if there is none the shorter string comes first; the only difference is that the order of characters comes from order.",
+      "Replace every character by its rank in order (0..61), turning each string into a rank sequence; ordinary lexicographic comparison of rank sequences gives exactly the required order, so simply sort by that key.",
+      "Read order and build the rank table; read the n strings, turning - back into the empty string, and build each string's rank sequence as its sort key; sort by the key (keeping all duplicates); when printing, write empty strings as - again, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMap each character to its rank 0..61 to get a byte-string sort key; comparing byte strings in Python naturally implements the custom lexicographic order.\n\n## Correctness\n\nAt the first differing position, comparing byte ranks gives the same result as the custom character order; if there is no differing position, the shorter key comes first, which satisfies the prefix rule. So sorting by the key is exactly equivalent to the requirement, and sorting does not remove any duplicates.\n\n## Complexity\n\nTime O((L+n) log n), including the cost of comparing empty strings, and space O(L+n), where L is the total length."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-21",
+  "packageChecksum": "f3cf951da6d3bcc6be84149d17c6d6135f8c1960a127a0fe75f38a05e3070c2f",
+  "sourceContentHash": "882cb95fa64b6af79efac7d58d1f5662b494aaff2b2ce31fdfe45243e6099556",
+  "editorialSha256": "d6ccef93a8fa8b9f39d1ec445bb637f3949e47f19bed312efbb1b69d87043bf4",
+  "hints": {
+    "zh": [
+      "每个回文子串都有唯一的中心：要么是某个字符（奇数长度），要么是两个相邻字符之间（偶数长度）。",
+      "从每个中心向两边同时扩展，只要两端字符相等就得到一个新的回文子串，一旦不等或越界就停止。不同位置的同一文本分别计数，正好符合这种按中心的枚举。",
+      "枚举 2n − 1 个中心，用 left = center / 2、right = (center + 1) / 2 统一处理奇偶情况；当 left ≥ 0、right < n 且两端相等时计数加一并向外扩展。总时间 O(n²)，n ≤ 1000 足够。"
+    ],
+    "en": [
+      "Every palindromic substring has a unique center: either a character (odd length) or the gap between two adjacent characters (even length).",
+      "Expand from each center outward on both sides at once; every time the two ends match you get one new palindrome, and you stop at the first mismatch or boundary. Equal texts at different positions are counted separately, which is exactly what center enumeration does.",
+      "Loop over the 2n - 1 centers and set left = center / 2 and right = (center + 1) / 2 to handle both parities; while left >= 0, right < n and the ends match, add one and move outward. This is O(n^2), fine for n <= 1000."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate each character as a center and each gap between adjacent characters as a center, expanding outward on both sides simultaneously; each match contributes one palindrome.\n\n## Proof of correctness\n\nEvery palindrome has a unique center and radius; an expansion produces exactly one new palindrome when the characters on both sides are equal, and it cannot continue after a mismatch or the boundary. Enumerating all odd and even centers covers every substring without repetition.\n\n## Complexity\n\nO(n^2) time and O(1) extra space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-1",
+  "packageChecksum": "6fc982e98e6caaa50ee8b795f30f5de513500ee1c11123c79cc11b326026add8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Adjacent runs of lengths p and q give min(p, q) valid substrings.\n    long long prev = 0, cur = 1, ans = 0;\n    for (size_t i = 1; i < s.size(); i++) {\n        if (s[i] == s[i - 1]) cur++;\n        else { ans += min(prev, cur); prev = cur; cur = 1; }\n    }\n    ans += min(prev, cur);\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "fe8f39378becaab9fe884169c3927852300aaac6a811b9ecd4fca51b2d32bfd1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        // Adjacent runs of lengths p and q give min(p, q) valid substrings.\n        long prev = 0, cur = 1, ans = 0;\n        for (int i = 1; i < s.length(); i++) {\n            if (s.charAt(i) == s.charAt(i - 1)) cur++;\n            else { ans += Math.min(prev, cur); prev = cur; cur = 1; }\n        }\n        ans += Math.min(prev, cur);\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "6be99342bc906768c963e12289a1a3895fbcf84eda2f119e8a6d6317c2d4c834"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(data))\n\t// Adjacent runs of lengths p and q give min(p, q) valid substrings.\n\tvar prev, cur, ans int64 = 0, 1, 0\n\tfor i := 1; i < len(s); i++ {\n\t\tif s[i] == s[i-1] {\n\t\t\tcur++\n\t\t} else {\n\t\t\tans += min(prev, cur)\n\t\t\tprev, cur = cur, 1\n\t\t}\n\t}\n\tans += min(prev, cur)\n\tfmt.Println(ans)\n}\n",
+      "sha256": "652a52dea372847458d19c5a1a13434631acd98094326c6cd8e3440e59883578"
+    }
+  ]
+}

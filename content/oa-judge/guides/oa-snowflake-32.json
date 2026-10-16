@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-32",
+  "packageChecksum": "472feb62f31167dcb1d05158968f3b4091362e8a21ee5de846f5cd085a295c02",
+  "sourceContentHash": "89dcfa8009828e7ed1645c3cbe4f32e48a74bfd5d24522b916ea1663f62d0d95",
+  "editorialSha256": "cfb9eb98daeae2996f95713bf6bf0bdfa68e5105e207baf89f17ce42022fcc82",
+  "hints": {
+    "zh": [
+      "补全后的串可以分解成若干极长同色段，长度为l的段贡献l(l+1)/2个同色子串，总数就是各段贡献之和。",
+      "一段能被补成同一种颜色，当且仅当它里面的固定字母至多一种。于是可以做前缀DP，枚举最后一段的起点；相邻两段若碰巧同色只会让真实子串数更多，不会让DP高估。",
+      "dp[0]=0；对每个end，从end−1往左移动起点start，记录遇到的固定字母，遇到第二种不同字母就停止；每个start用dp[start]+len(len+1)/2更新dp[end]。总复杂度O(n²)，用64位整数，输出dp[n]。"
+    ],
+    "en": [
+      "The filled string splits into maximal single-color runs; a run of length l contributes l(l+1)/2 single-color substrings, and the total is the sum over runs.",
+      "A segment can be filled with one color exactly when it contains at most one kind of fixed letter. So a prefix DP can enumerate the start of the last run; if two neighboring runs end up with the same color, the real count only grows, so the DP never overestimates.",
+      "dp[0] = 0; for each end, move start left from end - 1, tracking the fixed letter seen and stopping at a second distinct letter; each start updates dp[end] with dp[start] + len(len+1)/2. This is O(n^2) with 64-bit integers; print dp[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDecompose the filled string into single-color runs; a run of length l contributes l(l+1)/2. Use a prefix DP that enumerates the last run, scanning backward and stopping as soon as a second distinct fixed letter is met.\n\n## Correctness\n\nA run can be filled into a single color if and only if it contains at most one kind of fixed character. All final single-color runs form a valid partition, which the DP enumeration covers; conversely, every valid partition can have each of its runs filled, and if adjacent runs get the same color this only adds extra substrings, so the DP never exceeds the achievable optimum. Together, the two directions show the optima are equal.\n\n## Complexity\n\nTime O(n^2), space O(n)."
+}

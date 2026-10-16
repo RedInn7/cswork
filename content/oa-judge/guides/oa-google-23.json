@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-23",
+  "packageChecksum": "74a09c5383112e538eab11ab747aef84b27e6d27001bc16ef19aaad210b51e26",
+  "sourceContentHash": "61c8b1a3f5207130b119a20859b1a27795d84c64aa75336fcdeab2504d527590",
+  "editorialSha256": "a13e1072909cb81a201fd5a25d6e0d528f77261b2e5469065f08c58e406dc51c",
+  "hints": {
+    "zh": [
+      "不同活动等级之间互不影响，每个等级只关心自己组内的最大心率和最小心率。",
+      "用哈希表以等级为键，扫描一遍记录每组的最小值和最大值，最后在所有组的极差里取最大。",
+      "对每条记录 (心率 v, 等级 c)：若 c 第一次出现，记为 (v,v)，否则更新该组的 min 和 max；扫描结束后计算每组 max−min，输出其中最大值（单条记录的组为 0）。"
+    ],
+    "en": [
+      "Different activity levels never interact; each level only cares about the largest and smallest heart rate inside its own group.",
+      "Use a hash map keyed by level, record the minimum and maximum of each group in one pass, and finally take the largest range over all groups.",
+      "For every record (heart rate v, level c): if c is new, store (v, v), otherwise update that group's min and max; after the scan compute max - min for each group and print the largest (a group with one record gives 0)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the minimum and maximum heart rate for each level, and finally take the largest range.\n\n## Correctness\n\nA single scan adds each record only to its own level, and the two updated extremes exactly cover all records of that group. Taking the maximum of max - min over the groups is exactly what the problem asks for.\n\n## Complexity\n\nExpected time O(n), space O(g), where g is the number of levels."
+}

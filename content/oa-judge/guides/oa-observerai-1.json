@@ -1,0 +1,19 @@
+{
+  "id": "oa-observerai-1",
+  "packageChecksum": "afef84ab5c4dec886ac7021a022df519c87501a2b0f36ff39d738751ecefda75",
+  "sourceContentHash": "c8c043dd55afb2212c9fe02c58fb5288a3c493764f5d05d4826104c2ddc4e6d5",
+  "editorialSha256": "c1f0fd10675ba0a60f508dce4c35bc5056ae2688b7f10c47f3e651ae630a3e73",
+  "hints": {
+    "zh": [
+      "对一种烧杯，每笔订单都应选不小于订单量的最小标记，用更大的标记只会增加浪费；各订单之间互不影响。",
+      "把订单量排好序，烧杯的标记本身就是升序的，这样订单变大时对应的最小标记位置只会右移，用一个单调指针就能为所有订单找到答案。",
+      "订单升序排序。对每种烧杯，指针从 0 开始，对每笔订单把指针右移到第一个不小于订单量的标记，若越界说明这种烧杯无法满足，跳过；否则累加标记减订单量。在所有可行烧杯中取浪费最小的，平局取编号小的（按顺序比较时只在严格更小时更新），都不可行输出 -1。浪费总和用 64 位整数。"
+    ],
+    "en": [
+      "For a single flask type, each order should use the smallest marking that is not less than the order volume; any larger marking only adds waste, and orders do not affect each other.",
+      "Sort the orders; a flask's markings are already ascending, so as orders grow, the position of the smallest fitting marking only moves right, and one monotone pointer finds it for every order.",
+      "Sort the orders ascending. For each flask type, start a pointer at 0; for each order, advance the pointer to the first marking not less than the order. If it runs past the end, this type cannot serve all orders, so skip it; otherwise add marking minus order to its waste. Among feasible types take the smallest waste, breaking ties by the smaller index (update only on a strictly smaller waste while scanning in order); print -1 if none is feasible. Sum the waste in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each flask type, use a monotone pointer over its markings to find, for each order, the first marking not less than the order volume; accumulate the waste and take the minimum by `(waste, index)`. The independent oracle scans every marking linearly for each order.\n\n## Proof of correctness\n\nFor one flask, the first marking in ascending order that is not less than the order volume is the smallest capacity that order can use; any larger marking only increases the waste. Summing this minimum difference order by order, then ranking the flasks that can serve every order by waste and index, gives the global optimum.\n\n## Complexity\n\nEach flask's markings are ascending integers; flask capacities and orders are positive integers, 0<=f<=1000, and the total number of orders and markings is <=2x10^5.\n\nO(n log n + f*n + M) time and O(n + M) space, where M is the total number of markings.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();p=0;n=int(z[p]);p+=1;req=list(map(int,z[p].split()));p+=1;req.sort();f=int(z[p]);p+=1;best=None\n for i in range(f):\n  m=int(z[p]);p+=1;a=list(map(int,z[p].split()))[:m];p+=1;j=0;cost=0;ok=True\n  for x in req:\n   while j<m and a[j]<x:j+=1\n   if j==m:ok=False;break\n   cost+=a[j]-x\n  if ok and (best is None or (cost,i)<best):best=(cost,i)\n return str(-1 if best is None else best[1])\n```"
+}

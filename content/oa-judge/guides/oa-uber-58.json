@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-58",
+  "packageChecksum": "cec02da4703468cfd07958b6b7320d261d4f2b04fc3193eecaca2edbf6e0690c",
+  "sourceContentHash": "4ab1860d22f07cd64ac9644445ce224556d88932eeab52cd3884410970e8ab29",
+  "editorialSha256": "29e2bbade48ca38ee0293ae54db218a22d10a0c238efb5db17d126dcdf230ced",
+  "hints": {
+    "zh": [
+      "每一轮里，连续相同数字段的划分是唯一的，一段由 len 个数字 d 组成，它的数字和就是 d·len。所以一轮替换就是一次线性扫描。",
+      "直接按规则模拟：逐轮扫描，把每一段替换成 d·len 的十进制串。如果某轮所有段的长度都是 1，说明已经没有相邻相同数字，停止。不用担心轮数太多：串长不会变长，而“串长加各位数字和”每轮严格下降。",
+      "循环：用双指针找出每个相同字符段 [i,j)，把 str(digit·(j−i)) 拼到新串里，同时记录是否出现过长度大于 1 的段。若没有，就输出当前串；否则用新串替换旧串继续下一轮。多个 0 合并后得到单个 0，前导 0 原样保留。"
+    ],
+    "en": [
+      "In each round the split into runs of equal digits is unique, and a run of len copies of digit d has digit sum d * len. So one round of replacement is a single linear scan.",
+      "Simulate the rules directly: in each round replace every run with the decimal string of d * len. If every run in a round has length 1, no two adjacent digits are equal, so stop. The number of rounds stays small: the length never grows, and the length plus the digit sum strictly decreases every round.",
+      "Loop: use two pointers to find each run [i, j) of equal characters, append str(digit * (j - i)) to a new string, and remember whether any run was longer than 1. If none was, output the current string; otherwise replace the old string with the new one and continue. Several 0s merge into a single 0, and leading 0s are kept as they are."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the runs of identical characters round by round, computing each replacement string as the digit value times the run length. Stop when every run has length 1.\n\n## Correctness\n\nThe split into runs in each round is unique, and the scan-and-replace matches the simultaneous rule. The length never increases; if a repeated run's replacement does not shorten the string, its digit sum decreases because of decimal carrying. Therefore \"string length + digit sum\" strictly decreases, and the process ends after at most O(n) rounds.\n\n## Complexity\n\nTime is bounded by O(n²), space O(n); the initial digit sum is at most 9n."
+}

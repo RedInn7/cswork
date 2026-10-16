@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-16",
+  "packageChecksum": "345179127d97cd64b8a360079fc979d609a0cccf1359334d42a55368ff41b3f8",
+  "sourceContentHash": "69dd0a72d98bfaa4d66905ccde9f09dc70552b7091072c364fc2334da3ed3611",
+  "editorialSha256": "5460831491e385ee33112a50968690e3d1fd16ae2d53e3c7000e9519f0b742c6",
+  "hints": {
+    "zh": [
+      "只需要看第一个大写字母之前的那一段；没有大写字母时就是整段文本。",
+      "从头扫描，遇到第一个大写字母立即停止，途中把见到的小写字母放进集合去重。",
+      "用长度 26 的布尔数组代替集合：逐字符读，若是 A 到 Z 就停止；若是 a 到 z 且尚未标记，就标记并计数加一。整行读入（可能为空、含空格），最后输出计数。"
+    ],
+    "en": [
+      "Only the part before the first uppercase letter matters; if there is no uppercase letter, that is the whole text.",
+      "Scan from the start, stop at the first uppercase letter, and put the lowercase letters seen along the way into a set to remove duplicates.",
+      "Use a boolean array of 26 entries as the set: read character by character, stop on A to Z, and on a to z mark the letter and add one to the count if it was not marked yet. Read the whole line (it may be empty or contain spaces) and print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan and stop at the first uppercase letter, adding the lowercase letters before it to a set.\n\n## Proof of correctness\n\nThe scanned range is exactly the defined prefix, and the set removes duplicates, so the set's size is the number of distinct lowercase letters.\n\n## Complexity\n\nTime O(N), space O(26)."
+}

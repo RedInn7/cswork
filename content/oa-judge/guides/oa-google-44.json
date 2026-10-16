@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-44",
+  "packageChecksum": "49fc3422c4d490dd86bccce29941621acfe37f76c8996fa5aeecea1165242074",
+  "sourceContentHash": "020870410b91803fb5bd6b0092077abd8eeab544bb5c0ba2f6354101551af263",
+  "editorialSha256": "27eb6a1715173cfac91bc7a73e88eb4dbde2f75669f02997236d4e6e7380c9cc",
+  "hints": {
+    "zh": [
+      "比较两个 hh:mm 时间的大小，等价于从高位到低位逐位比较数字，所以应当从最高位开始，每一位都在“后面还能补成合法时间”的前提下取最大数字。",
+      "小时两位互相约束：十位能取 2 的前提是个位为 ? 或不超过 3，否则十位只能取 1；个位上限由十位决定（十位为 2 时最多为 3，否则为 9）。分钟两位独立，分别取 5 和 9。",
+      "若 s[0] 是 ?：当 s[1] 为 ? 或 s[1]≤'3' 时填 '2'，否则填 '1'；若 s[1] 是 ?：s[0] 为 '2' 时填 '3'，否则填 '9'；s[3] 为 ? 填 '5'；s[4] 为 ? 填 '9'；已有数字保持不变，输出结果。"
+    ],
+    "en": [
+      "Comparing two hh:mm times is the same as comparing their digits from the most significant one, so go from the highest digit and take the largest digit that still allows a valid completion of the remaining positions.",
+      "The two hour digits constrain each other: the tens digit can be 2 only if the units digit is ? or at most 3, otherwise it must be 1; the units digit's maximum depends on the tens digit (3 when the tens digit is 2, else 9). The minute digits are independent and take 5 and 9.",
+      "If s[0] is ?: fill '2' when s[1] is ? or s[1] <= '3', otherwise '1'; if s[1] is ?: fill '3' when s[0] is '2', otherwise '9'; if s[3] is ? fill '5'; if s[4] is ? fill '9'; keep existing digits unchanged and print the result."
+    ]
+  },
+  "explanationEn": "## Approach\n\nChoose the largest feasible digit from the most significant position down. Take 2 for the hour tens digit when possible, otherwise 1; the hour tens digit then determines the upper limit of the units digit. The minute tens digit takes 5 and the units digit takes 9.\n\n## Correctness\n\nComparing times is equivalent to comparing digit strings lexicographically. Each step keeps the fixed digits and takes the largest digit for which a valid suffix still exists, making the first differing position as large as possible. The hour constraint involves only two digits and the minute limits are independent, so these choices give the largest valid time.\n\n## Complexity\n\nTime and space O(1)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-27",
+  "packageChecksum": "6d0e86abd453a3b2cdbbddc513a41a3e203a70ced8fcb0e963a1247e20097398",
+  "sourceContentHash": "3083bfb4749cf0427402d9df7458552226dac21ce447d68b6548c9a43a21b4ae",
+  "editorialSha256": "abbe749c5b54b735b907e96206d2260a4a1a5e9855f28e000d6ce70b202c9765",
+  "hints": {
+    "zh": [
+      "每次操作后都要知道多重集合当前的最小值和最大值；插入很容易，难点在于删除任意一个值后，堆顶可能已经不在集合里了。",
+      "用频次表记录每个值当前有几个副本，再用一个最小堆和一个最大堆。pop 时只把频次减一，不真正从堆里删除；读取答案前，把堆顶频次已为 0 的元素弹掉（延迟删除）。",
+      "push x：频次加一，并把 x 分别放入最小堆和最大堆；pop x：频次减一；每次操作后，分别清理两个堆顶上频次为 0 的值；若集合为空输出 0，否则输出两个堆顶的乘积（最大 10^18，用 64 位整数）。输出行数多，注意批量输出。"
+    ],
+    "en": [
+      "After every operation you need the current minimum and maximum of a multiset; insertion is easy, and the difficulty is that after removing an arbitrary value, a heap top may no longer be in the set.",
+      "Keep a frequency table of how many copies of each value are present, plus a min-heap and a max-heap. A pop only decrements the frequency and does not delete from the heaps; before reading the answer, pop heap tops whose frequency has dropped to 0 (lazy deletion).",
+      "push x: increment its frequency and add x to both the min-heap and the max-heap; pop x: decrement its frequency; after every operation clean values with frequency 0 off both heap tops; if the set is empty output 0, otherwise output the product of the two tops (up to 10^18, use 64 bits). There are many output lines, so buffer the output."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the element frequencies, a min-heap and a max-heap. On push, increment the frequency and push x and −x onto the two heaps respectively; on pop, only decrement the frequency. Before reading the answer, repeatedly remove heap tops whose frequency is already 0. The two heap tops give the current minimum and maximum, and their product is the answer; when the set is empty, output 0 as the source code does.\n\n## Correctness\n\nThe frequency table records exactly how many copies of each value the multiset holds. With lazy deletion, heap elements whose frequency is 0 do not belong to the current set, and after cleaning, the valid tops of the min-heap and max-heap are the current minimum and maximum respectively, so the product is correct. If the frequency table is empty, all three source implementations return 0, and the candidate follows the same rule.\n\n## Complexity\n\nEach operation inserts at most once into each heap, and each heap element is popped at most once, giving O(n log n) time and O(n) space. The original n≤100000 and x≤10^9 are fully supported; the product is at most 10^18, so a 64-bit signed integer suffices. At most 100000 lines of 19 digits plus a newline make 2000000 bytes, below this problem's 8192 KiB output limit. Independent verification uses a direct list oracle and a compressed Fenwick order-statistics oracle, and the full-size cases are additionally cross-checked against closed-form expectations."
+}

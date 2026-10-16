@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-18",
+  "packageChecksum": "b9924f78c2702e87482363e0c9e78cc9424db2fa12bf8b00e9410fbaec323354",
+  "sourceContentHash": "fff10d191de51e25785b23215df87c24ca48dd187ab355d5d1f09c14df8dbd3c",
+  "editorialSha256": "7d2b81f3b2826d8eeba6c71c05bcf42805c2ba48fed41f377b33b111e3de6fe3",
+  "hints": {
+    "zh": [
+      "要覆盖整段 [0,N]，可以把被选中的喷头按覆盖区间向右延伸的顺序排好：每个新喷头都必须接住前面已覆盖前缀的末端，否则中间会留下缺口。",
+      "设 dp[x] 为覆盖 [0,x] 的最低费用。一个覆盖区间为 [L,R] 的喷头可以把任何已覆盖到 x（L≤x<R）的前缀延伸到 R 及其左边的每个位置；半径不超过 100，所以每个位置只需考虑附近的喷头和附近的前驱。",
+      "dp[0]=0；对 right=1..N：先从 right−1 往左到 max(0,right−200) 求 dp 的后缀最小值，记作 base[x]=min(dp[x..right−1])；再枚举位置在 [right−100,right+100] 内的喷头，其区间 [max(0,i−r),min(N,i+r)] 必须满足右端不小于 right 且左端小于 right，用 base[左端]+费用 更新 dp[right]；最后 dp[N] 不可达则输出 -1。"
+    ],
+    "en": [
+      "To cover all of [0, N], order the chosen sprinklers by how far right they extend: each new sprinkler must pick up the end of the prefix covered so far, otherwise a gap is left.",
+      "Let dp[x] be the minimum cost to cover [0, x]. A sprinkler covering [L, R] can extend any prefix already covered up to x (L <= x < R) to R and to every position to its left; ranges are at most 100, so each position only needs nearby sprinklers and nearby predecessors.",
+      "dp[0] = 0; for right = 1..N: first take suffix minima of dp from right - 1 down to max(0, right - 200), base[x] = min(dp[x..right-1]); then enumerate the sprinklers at positions in [right - 100, right + 100] whose interval [max(0, i - r), min(N, i + r)] ends at or after right and starts before right, and update dp[right] with base[start] + cost; finally print -1 if dp[N] is unreachable, otherwise dp[N]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInterval-cover dynamic programming: dp[x] is the minimum cost to cover [0,x]. When a sprinkler extends an already covered prefix, the end of that prefix must lie within the sprinkler's coverage interval; using the upper bound on the radius, scan the predecessors directly.\n\n## Proof of correctness\n\nAny optimal solution, taken in the order the sprinklers are turned on, can be viewed as a chain of mutually overlapping intervals extending to the right. The last sprinkler can continue from any covered end point L≤x<R and cover up to R; conversely, each such extension keeps the prefix free of gaps. Therefore, taking the lowest dp value over all valid predecessors in increasing order of right end, and enumerating every possible last sprinkler, gives the optimum.\n\n## Complexity\n\nTime O(N·201), space O(N). Costs are non-negative, and the answer is at most 100010000."
+}

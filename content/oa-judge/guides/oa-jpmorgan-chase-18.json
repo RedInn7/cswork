@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-18",
+  "packageChecksum": "80691af3a3acfcee362f083181e39edafffa7d63d5823d0408365522609c6667",
+  "sourceContentHash": "a365bc72b02a9aa0c5cddddbf9d989189c70873494a9de88ff18ec639a2cc435",
+  "editorialSha256": "cdc77726a8245811ff171785e29470db6944f11ae6c95aef49bcc8dcb1493757",
+  "hints": {
+    "zh": [
+      "只能交换相邻且奇偶相同的两位，所以一个数字永远越不过奇偶不同的数字；每个最长同奇偶连续段占据的位置范围是固定的。",
+      "段内通过相邻交换可以得到任意排列，所以每段各自降序排列，就得到字典序最大、也是数值最大的结果。",
+      "从左到右切出最长的同奇偶段，用 10 个桶统计段内各数字的个数，再从 9 到 0 依次输出；所有的 0（包括前导零）都必须保留。"
+    ],
+    "en": [
+      "Only adjacent digits of the same parity can be swapped, so a digit can never pass a digit of the other parity; each maximal run of equal parity occupies a fixed range of positions.",
+      "Adjacent swaps can produce any order inside a run, so sorting every run in descending order gives the lexicographically largest, and also numerically largest, result.",
+      "Cut the string from left to right into maximal same-parity runs, count each run's digits in 10 buckets, and output them from 9 down to 0; every 0, including leading zeros, must be kept."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the string into maximal runs of the same parity and output each run's digits from largest to smallest, counting them with 10 buckets.\n\n## Proof of correctness\n\nSwaps never cross a boundary between different parities, so the range of positions of each run is fixed; any arrangement within a run can be achieved by adjacent swaps. Sorting each run in descending order puts the largest value at the first differing position, giving the lexicographically largest string overall, and the same holds for numerical comparison at equal length.\n\n## Complexity\n\nO(n) time, O(n) space for the output, and O(1) for the buckets."
+}

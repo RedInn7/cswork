@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-13",
+  "packageChecksum": "1fb13c0ae686b98f0550ac590a6494d87e375da9c15bb0ea4b5185689e068d67",
+  "sourceContentHash": "5ba20323837b2f6938cb66c2b72906a464289690de0a7617dc1fb8f7136bfa7a",
+  "editorialSha256": "d13191ccf853741ab8b205ba5f65daba027164936d94acbd31434ca0d3784902",
+  "hints": {
+    "zh": [
+      "每个字符串是否“首尾都是元音”可以单独判断，每个查询只是在问一段连续区间里有多少个这样的字符串。",
+      "n 和 q 都能到 10^5，每次查询都扫描整个区间太慢；用前缀和可以把每次查询降到 O(1)。",
+      "令 prefix[0]=0，prefix[t] 等于 prefix[t−1] 再加上第 t 个字符串是否首尾皆为元音（是记 1，否则记 0）；每个查询按“-”拆出 i 和 r，答案是 prefix[r]−prefix[i−1]。注意下标从 1 开始，区间两端都包含，结果逐行输出。"
+    ],
+    "en": [
+      "Whether a string starts and ends with a vowel can be decided on its own, and each query just asks how many such strings lie in a contiguous range.",
+      "Both n and q reach 10^5, so scanning the range for every query is too slow; prefix sums bring each query down to O(1).",
+      "Set prefix[0] = 0 and prefix[t] = prefix[t-1] plus 1 if the t-th string starts and ends with a vowel (0 otherwise); split each query at the dash to get i and r, and the answer is prefix[r] - prefix[i-1]. Indices are 1-based, both ends are inclusive, and each answer goes on its own line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFollowing the source's explanation, use 1-based closed ranges.\n\n## Proof of correctness\n\nprefix[t] records how many of the first t strings both start and end with a vowel. The answer for the closed range [i,r] is exactly prefix[r]-prefix[i-1].\n\n## Complexity\n\nTime O(n+q), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-11",
+  "packageChecksum": "d301b908e72cd020f21ec2d7999615f41d5f237fef0ba7e47466a2d00f9c2eb8",
+  "sourceContentHash": "0e9b1cb28c43e66633db75d821daf972d0653cfb8dd6b9e0b224faf8fc30f1d6",
+  "editorialSha256": "9a990b472ee15a8e1346f89e6e2d23bed7fff539460317f970c90e87057c3f17",
+  "hints": {
+    "zh": [
+      "每个元素是否计入只看它自己的标准十进制写法里有几个 0，元素之间互不影响。注意整数 0 本身写作一个 0，正好是奇数个。",
+      "把每个数转成标准十进制字符串，数出其中字符 0 的个数，判断奇偶后累加。",
+      "读入 n 和 n 个整数；对每个整数取其十进制字符串，统计字符 0 的数量，数量为奇数则答案加 1；最后输出答案。"
+    ],
+    "en": [
+      "Whether an element counts depends only on how many zeros its own standard decimal form contains, so elements are independent. Note that the integer 0 is written as a single 0, which is an odd count.",
+      "Convert each number to its standard decimal string, count the zero characters, and add one to the answer when the count is odd.",
+      "Read n and the n integers. For each one, take its decimal string and count the character 0; if the count is odd, add 1 to the answer. Print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert each element to its standard decimal string, count the zeros, and check the parity.\n\n## Correctness\n\nEach character in the standard representation corresponds to one digit, so the elements with an odd count are exactly those that satisfy the definition; add them up element by element.\n\n## Complexity\n\nTime O(n·D) with D≤10; extra space O(D)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-6",
+  "packageChecksum": "467eb26883947a5140a0f2cc7ff9b73c66e372644a6739ee5a51d32e9485c0c9",
+  "sourceContentHash": "9ef141ca09739216f16bf053c2804e9895076574e6f32c5f4bd9505aa616228c",
+  "editorialSha256": "d1aa7333ad8b88f46c4d8bf3ce6a14471af499fa530beef548bd3b4ad52fea30",
+  "hints": {
+    "zh": [
+      "合法子数组里不能出现小于 min_price 或大于 max_price 的数，这些越界值把数组切成若干独立的段；同时子数组必须至少包含一个 min_price 和一个 max_price。",
+      "固定右端点 i 时，合法的左端点是一段连续区间：从当前段的起点开始，到 min_price 与 max_price 最近一次出现位置中较早的那个为止。",
+      "从左到右扫描，记录当前段的起点以及两个目标值最近出现的下标；遇到越界值就把起点设为下一个位置并清空记录。若两个下标都不早于起点，就把（两个下标中较小者−起点+1）加到答案。min_price 等于 max_price 时同一个位置同时更新两者；答案用 64 位整数。"
+    ],
+    "en": [
+      "A valid subarray cannot contain any value below min_price or above max_price, so those out-of-range values cut the array into independent pieces; the subarray must also contain at least one min_price and at least one max_price.",
+      "For a fixed right end i, the valid left ends form a contiguous range: from the start of the current piece up to the earlier of the latest positions of min_price and max_price.",
+      "Scan left to right, tracking the start of the current piece and the latest index of each target value; an out-of-range value moves the start to the next position and clears both indices. When both indices are at or after the start, add (the smaller index - start + 1) to the answer. If min_price equals max_price one position updates both; keep the answer in 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe source's three examples can be checked directly; this local problem counts closed-range subarrays, and the maximum and the minimum must equal their targets exactly.\n\n## Proof of correctness\n\nFor a fixed right end, a valid left end must lie in the contiguous run that has not gone out of range, and must be no later than the earlier of the most recent occurrences of the two endpoint values. Such left ends include both endpoint values, while any later start misses at least one of them; adding up the contributions counts everything exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

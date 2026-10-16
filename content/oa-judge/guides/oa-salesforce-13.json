@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-13",
+  "packageChecksum": "4d3fcd64814f8210b91796a39e2a97ee7b06d34debbb9e1b5a48d3dddfd952c8",
+  "sourceContentHash": "0b0301e553889874f39436c0023213f9512b4fa19001d145dccbb5a9586379e3",
+  "editorialSha256": "b504547670b5bec242eb389dd5e898bfd1fd79359ca1863492b7d4f7d3b8e64a",
+  "hints": {
+    "zh": [
+      "答案 L 越大越容易做到，可行性对 L 单调，可以二分；但 L=1 是特例：它要求整串变成严格交替的 abab… 或 baba…。",
+      "当目标 L≥2 时，各个原始连续段可以独立处理：长度为 r 的段要保证没有超过 L 的同字符片段，至少需要翻转 floor(r/(L+1)) 次，并且总能恰好用这么多次做到（翻转位置隔开，并在段尾调整避免与相邻段拼接）。",
+      "先分别数出与 abab…、baba… 两种交替模板的失配数，较小者≤switchCount 就输出 1；否则求出所有原始段长，在 [2, n] 上二分 L，判断 Σ floor(r/(L+1)) ≤ switchCount 是否成立，输出最小可行的 L。"
+    ],
+    "en": [
+      "The larger the target L, the easier it is to achieve, so feasibility is monotone in L and you can binary search. L=1 is a special case, though: it requires the whole string to become strictly alternating, abab... or baba....",
+      "For a target L>=2 the original runs can be handled independently: a run of length r needs at least floor(r/(L+1)) flips so that no piece longer than L remains, and that many flips always suffice (space the flips apart and adjust near the run's end so it does not merge with its neighbors).",
+      "First count the mismatches against the two alternating templates abab... and baba...; if the smaller one is at most switchCount, print 1. Otherwise collect the original run lengths and binary search L in [2, n], checking whether the sum of floor(r/(L+1)) is at most switchCount; print the smallest feasible L."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLength 1 requires an alternating string, so count the mismatches against each of the two alternating templates separately. For a target L>=2, an original run of length r needs exactly floor(r/(L+1)) flips, and no fewer; binary search for the smallest feasible L.\n\n## Correctness\n\nFor L=1, the only feasible strings are the two alternating templates. For L>=2, each flip can break an original run, and r characters need at least floor(r/(L+1)) break points; choosing one flip in every L+1 positions and adjusting the break points at the end keeps the endpoints from forming a longer run with the neighboring runs, which achieves exactly that number. The runs add up independently, so feasibility is monotone in L, and binary search gives the minimum.\n\n## Complexity\n\nTime O(n log n), space O(n) to store the run lengths."
+}

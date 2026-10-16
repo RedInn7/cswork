@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-1",
+  "packageChecksum": "05135348dd6dcb577cdab386084c12b5694e76e8b2b2d060387aee12296e7284",
+  "sourceContentHash": "69702b9d980e76ec08524b1c4915dbe6df1806ca34dd4b28dadef395948b27b1",
+  "editorialSha256": "96d0586ed04e056c20d798bec1a99965cdc3c8546c5459602c1d1de8dc7d0149",
+  "hints": {
+    "zh": [
+      "子数组的和等于两个前缀和之差，它能被 k 整除，当且仅当这两个前缀和除以 k 的余数相同。",
+      "从左到右计算前缀和的余数，记录每种余数第一次出现的位置。固定右端时，与它余数相同的最早前缀给出最长的合法子数组。",
+      "在字典里先放入余数 0 对应位置 0；依次累加元素并对 k 取模，得到第 i 个前缀的余数；若这个余数出现过，用 i 减去它首次出现的位置更新答案，否则记录它首次出现在 i；最后输出答案，没有合法子数组时就是 0。"
+    ],
+    "en": [
+      "A subarray sum is the difference of two prefix sums, and it is divisible by k exactly when those two prefix sums have the same remainder modulo k.",
+      "Compute prefix-sum remainders from left to right and remember where each remainder first appears. For a fixed right end, the earliest prefix with the same remainder gives the longest valid subarray.",
+      "Put remainder 0 at position 0 in a dictionary. Add the elements one by one modulo k to get the remainder of prefix i; if this remainder was seen before, update the answer with i minus its first position, otherwise record i as its first position. Print the answer, which stays 0 when no valid subarray exists."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the position where each prefix-sum remainder first appears; the range between two prefixes with the same remainder is a valid subarray.\n\n## Correctness\n\nThe difference of two prefixes is divisible by k if and only if their remainders are the same. For a fixed right end, the earliest prefix with the same remainder gives the longest length; scanning all right ends and taking the maximum gives the optimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

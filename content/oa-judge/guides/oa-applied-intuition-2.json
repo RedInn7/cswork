@@ -1,0 +1,19 @@
+{
+  "id": "oa-applied-intuition-2",
+  "packageChecksum": "13c19c12bc020699448988a5d7500dfd5ee8a6f00431d877643e83e81577023b",
+  "sourceContentHash": "4ee06698ff0bfe8986226d6a29d8ee5c2c1501ec65ab7cc74d3c850e094046e2",
+  "editorialSha256": "2dafc5081c4dd57df040517b102fb937831644fb5de189de7930b2bd6a963b10",
+  "hints": {
+    "zh": [
+      "嵌套事务就像一摞覆盖层：每层只记录本层改动过的键，查询时越靠里的改动越优先。",
+      "用一个基础字典加上一个字典栈表示事务层。SET 和 DELETE 写进栈顶（没有事务时写进基础字典）；DELETE 要记成\"已删除\"标记而不是直接移除，这样才能遮住外层的旧值。",
+      "GET 从栈顶往下找，第一次找到的记录就是结果（\"已删除\"或一直找不到都输出 NULL）；BEGIN 压入一个空字典；ROLLBACK 弹出栈顶；COMMIT 弹出栈顶并把其中所有记录覆盖到新的栈顶或基础字典。栈为空时 ROLLBACK 和 COMMIT 输出 NO TRANSACTION。"
+    ],
+    "en": [
+      "Nested transactions behave like a stack of overlays: each layer records only the keys it changed, and inner changes take priority when reading.",
+      "Represent the state as a base map plus a stack of maps for the transaction layers. SET and DELETE write into the top layer, or into the base map when no transaction is open; DELETE must store a deleted marker rather than removing the key, so that it hides the value in outer layers.",
+      "GET searches from the top of the stack downward and uses the first record it finds (a deleted marker or no record at all prints NULL). BEGIN pushes an empty map, ROLLBACK pops the top, and COMMIT pops the top and copies all its records over the new top or the base map. With an empty stack, ROLLBACK and COMMIT print NO TRANSACTION."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach transaction layer records key changes, and GET searches from the innermost layer outward; commit merges this layer's overrides into the parent layer, and rollback discards this layer.\n\n## Proof of Correctness\n\nThe value in the newest transaction layer takes priority; commit keeps its changes, and rollback restores the state from before the transaction began.\n\n## Complexity\n\nread O(depth), writes amortized O(1), space O(q)."
+}

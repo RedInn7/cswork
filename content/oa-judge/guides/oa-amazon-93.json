@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-93",
+  "packageChecksum": "05f0d93d8a21db962bde92ddfcbc70417e4fc614f1a53b6a4c6c1dd3dfcfe8e3",
+  "sourceContentHash": "39188ed30cebbace090a25a24b00b7be6a70f264550526ceb98808ade938ba11",
+  "editorialSha256": "8cdea5edb2d53c3be9b04d6932849773155fc12cde0c416fabbee378dd94f1e9",
+  "hints": {
+    "zh": [
+      "每门科目通过后的收益都一样（各算一门），区别只在于还差多少道题。",
+      "第 i 门还需 max(0, needed[i]−answered[i]) 道题。要让通过的门数最多，应先通过最便宜的科目；用交换论证可知这样不会更差。",
+      "把所有差额排序，从小到大依次从预算中扣除，扣不动时停止，扣掉的科目数就是答案；差额为 0 的科目直接计入。"
+    ],
+    "en": [
+      "Passing any subject is worth the same (one subject); subjects differ only in how many questions are still missing.",
+      "Subject i needs max(0, needed[i] - answered[i]) more questions. To maximize the number of passes, pass the cheapest subjects first; an exchange argument shows this is never worse.",
+      "Sort the gaps and subtract them from the budget in ascending order, stopping at the first gap that does not fit; the number of subjects paid for is the answer, and subjects with a gap of 0 count for free."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe remaining cost of each subject is max(0, needed−answered); choose subjects in ascending order of cost until the budget is insufficient.\n\n## Proof of Correctness\n\nEvery subject is worth exactly one pass. If a plan picks a higher cost while leaving out a lower cost, swapping them does not increase the budget used and does not decrease the gain. Therefore picking from low to high achieves the maximum count, and subjects already passed cost 0.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-123",
+  "packageChecksum": "b98b98cd09f63d47271941250a936389d816e0b52ad41b3d706fa7158f9c46ce",
+  "sourceContentHash": "bb216b65e82d729482ae968598ee89c6cec55fc25a6fe3fd681d38ff962269ae",
+  "editorialSha256": "762c944eafd463116e64c8759ee645a4f74d0f98f5e271392533756e1ec019fe",
+  "hints": {
+    "zh": [
+      "一个流程失败，当且仅当规定顺序里排在它前面的某个流程实际执行得比它晚；失败不会传递，所以每个流程可以独立判断。",
+      "把“实际执行位置”记下来，再按规定顺序扫描：只要前面某个流程的实际位置比当前的大，当前流程就失败，只需维护前面实际位置的最大值。",
+      "建 position[v]=v 在实际顺序中的下标；按规定顺序遍历，若 position[v] 小于此前的最大值就计数加一，然后用 position[v] 更新最大值；输出计数。"
+    ],
+    "en": [
+      "A process fails exactly when some process prescribed before it actually runs later than it; failures do not propagate, so every process can be judged on its own.",
+      "Record each process's actual position and scan in the prescribed order: the current process fails if any earlier one has a larger actual position, so you only need the maximum actual position seen so far.",
+      "Build position[v] = index of v in the actual order; walk the prescribed order, add one to the count when position[v] is less than the running maximum, then update the maximum with position[v]; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord each process's actual position and scan in the prescribed order; if the current position is less than the maximum actual position seen so far, at least one prerequisite runs after it.\n\n## Correctness\n\nThe maximum of the earlier positions is greater than the current one if and only if some prerequisite runs later than the current process. Each process is counted independently by this necessary and sufficient condition, which is exactly the problem's \"already run\" requirement; the source's example also makes clear that failed results do not propagate recursively.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

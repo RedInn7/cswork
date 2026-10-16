@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-3",
+  "packageChecksum": "09ca415cfe3d40b9d79de2159393d6c074a7db3961aec8d75b86c6adf42c5a00",
+  "sourceContentHash": "2b5fe33704138b6709c3f0adbe9e6a80ea1ec9e4ad809b6908e0fc8afc8de093",
+  "editorialSha256": "3f1705b738c0a74c7b2734b0247bf103496d00e6f5a79cfacb66e2cf9cebad2b",
+  "hints": {
+    "zh": [
+      "切点固定后，一次加一或减一最多让两批总量的差缩小 1；而只要不断给较小那批里的某个品类加一，就能恰好用“差值”次操作做到相等，数量也始终为正。",
+      "所以每个切点的代价就是 |左批总量 − 右批总量|，答案是所有使两批都非空的切点中这个值的最小值。",
+      "先求总和 total；从左到右累加前缀和 prefix（只累加到倒数第二个元素，保证两批都非空），用 |2·prefix − total| 更新最小值并输出；总和可达 6·10^14，用 64 位整数。"
+    ],
+    "en": [
+      "With the cut fixed, one +1 or −1 shrinks the gap between the two totals by at most 1; repeatedly adding 1 to any category in the smaller shipment closes the gap in exactly that many operations while keeping every quantity positive.",
+      "So the cost of a cut is |left total − right total|, and the answer is the minimum of this value over all cuts that leave both shipments non-empty.",
+      "Compute the total; accumulate the prefix sum from the left (stopping before the last element so both sides stay non-empty), update the minimum with |2·prefix − total|, and print it; the total can reach 6·10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan every non-empty split point and take the minimum absolute difference between the left and right totals.\n\n## Proof of correctness\n\nOne operation reduces the difference between the two sides by at most 1, so a fixed split needs at least the absolute value of the difference. Repeatedly increasing any category in the smaller shipment achieves equality in exactly that many operations while keeping every quantity positive, so the lower bound of each split is reachable. Enumerating all splits gives the optimum.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

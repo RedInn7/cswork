@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-5",
+  "packageChecksum": "3b4c10830567615c685532c035236cd56547e628034130b3f056d1b70b0b3446",
+  "sourceContentHash": "fcff1e5f6c03d3dc5481b0669a0ffd24ad75613e91020c590ba09daa175a48f0",
+  "editorialSha256": "db18a3751afb7ddca86fe30e379110a7357458e3a9986eda2fa5f073060c6676",
+  "hints": {
+    "zh": [
+      "每一轮是“同时”过滤：某个元素留不留只看本轮开始时数组里它的左右邻居，首尾元素永远保留。",
+      "直接模拟就够快：内部的严格局部峰不可能相邻，所以每个有删除的轮次后长度大约减半，轮数是 O(log n)。",
+      "循环：按旧数组生成新数组，保留下标 0、最后一个以及严格大于两侧邻居的元素；若新数组长度没变就停止，否则用新数组继续；最后输出长度和各元素。"
+    ],
+    "en": [
+      "Each round filters simultaneously: whether an element stays depends only on its neighbors in the array as it was at the start of the round, and the first and last elements always stay.",
+      "Plain simulation is fast enough: strict interior local peaks cannot be adjacent, so after every round that removes something the length roughly halves, giving O(log n) rounds.",
+      "Loop: build a new array from the old one, keeping index 0, the last index and every element strictly greater than both neighbors; stop if the length did not change, otherwise continue with the new array; finally print the length and the elements."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIn each round, mark the first and last elements and every strict local peak according to the old array, and keep them all at once; if the result is unchanged the array is stable, otherwise repeat on the new array.\n\n## Correctness\n\nWithin a round, whether each element is kept depends only on its neighbors in that round's original array, so the scanned list is exactly the next round's array. Looping until nothing changes reaches the fixed point the definition asks for, and every round that changes something removes at least one element, so the process terminates.\n\n## Complexity\n\nEach round costs O(n). Strict interior local peaks cannot be adjacent, so after a non-trivial round the array length roughly halves at most, giving O(log n) rounds; total time O(n log n), space O(n)."
+}

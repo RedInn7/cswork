@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-26",
+  "packageChecksum": "94d11c83cf752279e81d48983f66b0c2b4c0a02dbddfbff672047bd21b6d44ba",
+  "sourceContentHash": "80e25d99dfd4bfce10e5c5997ac3d6f78e5437fce0882d0e7652f2de9ab0c1df",
+  "editorialSha256": "91d4cb44ef4bab57dc0fd12bced1ed805517bcfacf58ecfcd15615f35ebae1e6",
+  "hints": {
+    "zh": [
+      "每个处理器的收益只取决于部署它时有几个邻居已经部署。把每条相邻边定向为“先部署→后部署”，收益就只看每个点的入度。",
+      "链上任意一种边定向都没有环，总能找到对应的部署顺序；所以问题变成给n−1条边各选一个方向，使所有点按入度取no/one/both的收益之和最大。",
+      "从左到右DP，状态是当前点与右邻居之间那条边的方向：dp0表示右邻居先部署（当前点入度加1），dp1表示当前点先部署。结算点i时，入度=来自左边的（前一状态为dp1时加1）+来自右边的；最后一个点没有右邻居，取两种状态的最大值。n=1时答案为no[0]。"
+    ],
+    "en": [
+      "A processor's profit depends only on how many neighbors were deployed before it. Orient every adjacent edge from the earlier deployment to the later one, and the profit depends only on each node's in-degree.",
+      "No orientation of a chain has a cycle, so every orientation corresponds to some deployment order; the task becomes choosing a direction for each of the n - 1 edges to maximize the sum of no/one/both chosen by in-degree.",
+      "DP from left to right with the state being the direction of the edge between the current node and its right neighbor: dp0 means the right neighbor goes first (adding 1 to the current node's in-degree), dp1 means the current node goes first. When node i is settled, its in-degree is the part from the left (1 if the previous state was dp1) plus the part from the right; the last node has no right neighbor, so take the better of the two states. For n = 1 the answer is no[0]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOrient each adjacent edge from earlier to later (earlier->later); any orientation of a chain is acyclic and can be realized topologically. Run a two-state DP over edge directions, and once the current node is complete, collect its profit according to its number of incoming edges.\n\n## Correctness\n\nEach deployment order produces a unique edge orientation, and the profit depends only on the in-degree of each node. Conversely, no orientation of an undirected chain has a directed cycle, so every orientation has a topological deployment order. Enumerating the two directions of the left and right edges covers all achievable profits; the DP fixes the direction of the right edge and takes the best prefix, and after the last node is settled the result is optimal.\n\n## Complexity\n\nTime O(n), extra space O(1) not counting the input."
+}

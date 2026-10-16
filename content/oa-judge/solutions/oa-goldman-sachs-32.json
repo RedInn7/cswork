@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-32",
+  "packageChecksum": "25e2965f8a1444f474bf0db018a86e670e1f4d78eace21a1ee8548fd790742bd",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    k, th, n = int(data[0]), int(data[1]), int(data[2])\n    a = list(map(int, data[3:3 + n]))\n    # Window sum s over the last k minutes; average > th  <=>  s > th * k.\n    limit = th * k\n    s = count = 0\n    for i in range(n):\n        s += a[i]\n        if i >= k:\n            s -= a[i - k]\n        if i >= k - 1 and s > limit:\n            count += 1\n    print(count)\n\n\nmain()\n",
+      "sha256": "17b0d1f665cd92a3177d28c2adcdf54e966531abd8756e45cd1eac5669d79028"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int k = (int) st.nval;\n        st.nextToken(); long th = (long) st.nval;\n        st.nextToken(); int n = (int) st.nval;\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        // Window sum s over the last k minutes; average > th  <=>  s > th * k.\n        long s = 0;\n        int count = 0;\n        for (int i = 0; i < n; i++) {\n            s += a[i];\n            if (i >= k) s -= a[i - k];\n            if (i >= k - 1 && s > th * k) count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "352b39b6826e2cef60b8e17a614732d31861759f980c4870c2f43e73a9fe17b4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar k, n int\n\tvar th int64\n\tfmt.Fscan(in, &k, &th, &n)\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\t// Window sum s over the last k minutes; average > th  <=>  s > th * k.\n\tvar s int64\n\tcount := 0\n\tfor i := 0; i < n; i++ {\n\t\ts += a[i]\n\t\tif i >= k {\n\t\t\ts -= a[i-k]\n\t\t}\n\t\tif i >= k-1 && s > th*int64(k) {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "395aabf5e64875be083f1109746b0558314f3f3b4baa0053fa85fc43733ba642"
+    }
+  ]
+}

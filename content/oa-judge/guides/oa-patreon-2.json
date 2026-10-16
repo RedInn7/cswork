@@ -1,0 +1,19 @@
+{
+  "id": "oa-patreon-2",
+  "packageChecksum": "be797720c31e15ddf3296ed74bf3322d2f207ca59f90d4e30816a3f3dafec3af",
+  "sourceContentHash": "93cb86783e877aeca6ccff1bba98eedd6860ded3349e73e0e248bb1ddc4d9f64",
+  "editorialSha256": "ec90f873c85ac5aedab11bcbc3aed363e3fdc29065e2840cf052ec91ae169d6a",
+  "hints": {
+    "zh": [
+      "位置 i 的区域向左右延伸，只会被严格更高的高度挡住；相等的高度仍然允许它是最大值，所以可以越过。",
+      "区域的左边界是左侧最近的严格更高位置，右边界是右侧最近的严格更高位置，长度为二者下标之差减一。这两个最近更高位置都能用单调栈在线性时间求出。",
+      "从左往右维护单调栈：弹出所有高度不超过当前值的下标，栈顶（若有）就是左侧最近严格更高位置，否则记为 -1，再把当前下标入栈；从右往左同样做一遍，没有时记为 n。把每个位置的 右边界 - 左边界 - 1 累加，用 64 位整数输出。"
+    ],
+    "en": [
+      "The region of position i extends left and right and is blocked only by a strictly higher height; equal heights still let it be the maximum, so the region passes over them.",
+      "The region's left boundary is the nearest strictly higher position on the left and its right boundary the nearest strictly higher position on the right; its length is the difference of those indices minus one. Both nearest higher positions can be found in linear time with monotonic stacks.",
+      "Scan left to right with a monotonic stack: pop every index whose height is not greater than the current one; the top, if any, is the nearest strictly higher position on the left, otherwise use -1; then push the current index. Do the same from right to left, using n when there is none. Sum right minus left minus 1 over all positions in a 64-bit integer and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse monotonic stacks to find the nearest strictly higher heights on the left and on the right.\n\n## Proof of correctness\n\nA valid interval cannot cross a higher position; inside the two boundaries the current value is the maximum throughout, so that whole interval is the longest.\n\n## Complexity\n\nO(n) time, O(n) space."
+}

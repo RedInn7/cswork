@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-14",
+  "packageChecksum": "f7d659a125777eb4fded7411507e43bd3705f5c0cb01367e6418533141b2634f",
+  "sourceContentHash": "37aff2e1a8d1dafb484ea8f6c79f588cd904a0ca04bb698f19b13b7e1a9f63e9",
+  "editorialSha256": "568ce57a4620cd50db76d1f3cfcf7450490a2121d67f2bcb99326b7bd3c72948",
+  "hints": {
+    "zh": [
+      "过程是确定的：每轮都要同时取出当前最小值和最大值，所以需要能同时快速取两端的数据结构；值相同时两者也必须来自两个不同位置。",
+      "用一个最小堆和一个最大堆维护所有元素，给每个元素分配唯一编号并用有效标记做懒删除；成本用整数恒等式 ceil(p/q) = −floor(−p/q)（q>0）计算，负数也精确，避免浮点误差。",
+      "两个堆都存（值，编号）；每轮先从最小堆弹出有效的最小元素并标记失效，再从最大堆弹出另一个有效的最大元素并标记失效；累加 ceil((min+max)/(max−min+1))，把两者之和用新编号压入两个堆；共做 n−1 轮，全程用 64 位整数。"
+    ],
+    "en": [
+      "The process is deterministic: every round removes both the current minimum and the current maximum, so you need a structure that gives fast access to both ends; with equal values the two must still come from different positions.",
+      "Keep every element in both a min-heap and a max-heap, give each element a unique id, and delete lazily with validity flags; compute the cost with the integer identity ceil(p/q) = −floor(−p/q) for q>0, which is exact for negative numbers and avoids floating-point error.",
+      "Both heaps hold (value, id); each round pop the valid minimum from the min-heap and mark it dead, then pop a different valid maximum from the max-heap and mark it dead; add ceil((min+max)/(max−min+1)) to the total and push their sum under a new id into both heaps; repeat n−1 times using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the elements, each with a unique ID, in both a min-heap and a max-heap, and use validity flags for lazy deletion. In each round, pop the two valid extremes, compute the exact ceiling, and insert the new element.\n\n## Proof of correctness\n\nThe validity flags ensure that the valid elements represented by the two heaps are always exactly the current multiset; once invalid entries are cleared from the top, each heap top is the corresponding extreme. Removing the minimum first and then taking the maximum guarantees that duplicate values also come from different positions. Inserting the sum of the two preserves the set invariant, so by induction every round matches the original process. The integer identity ceil(p/q)=−floor(−p/q) for q>0 also holds for negative numbers and is not affected by floating-point error.\n\n## Complexity\n\nO(n log n) time and O(n) space; intermediate results use exact integers."
+}

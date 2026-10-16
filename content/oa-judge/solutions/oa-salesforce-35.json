@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-35",
+  "packageChecksum": "d3b509b4f94729c7b537b79630c708700075b390807dbbdb7804ba13b19e5ce7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long minimum;\n    cin >> minimum;\n    // the last cut always splits two adjacent final segments\n    bool ok = false;\n    for (int i = 0; i + 1 < n; i++)\n        if (a[i] + a[i + 1] >= minimum) ok = true;\n    cout << (ok ? \"Possible\" : \"Impossible\") << \"\\n\";\n}\n",
+      "sha256": "e5fe1f513d758bf0f8ecf387cb64af3d0362c64e31cbf6b7e376014c891a7ad8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long minimum = nextLong();\n        // the last cut always splits two adjacent final segments\n        boolean ok = false;\n        for (int i = 0; i + 1 < n; i++)\n            if (a[i] + a[i + 1] >= minimum) ok = true;\n        System.out.println(ok ? \"Possible\" : \"Impossible\");\n    }\n}\n",
+      "sha256": "505d505783aba96c366cd9232c64b61b4fe6d777aa941279e1990b958081f6f9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tminimum := nextInt()\n\t// the last cut always splits two adjacent final segments\n\tok := false\n\tfor i := 0; i+1 < n; i++ {\n\t\tif a[i]+a[i+1] >= minimum {\n\t\t\tok = true\n\t\t}\n\t}\n\tif ok {\n\t\tfmt.Println(\"Possible\")\n\t} else {\n\t\tfmt.Println(\"Impossible\")\n\t}\n}\n",
+      "sha256": "19e128eeffabe8bc106dac3afcea1685bfc4d8bd1569469b7ce6b2d81172531b"
+    }
+  ]
+}

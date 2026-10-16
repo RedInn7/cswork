@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-258",
+  "packageChecksum": "8f87ae108dc796ab16e3fc491c708b25f4e6ab374bdf2aa52131425422da4116",
+  "sourceContentHash": "88e0f706a83265f8e0dd7e58e9e2e62e23a501f614cd51d7487d647a49876546",
+  "editorialSha256": "cddd7b460ff935041f2d4fe78f13a6633949b32acfc2a545e1d9d35f0af0a315",
+  "hints": {
+    "zh": [
+      "k 批至少需要 1+2+…+k = k(k+1)/2 件物品，且每类每批至多一件，所以一类物品最多参与 k 批，库存超过批数的部分用不上。",
+      "把库存从小到大依次加入：每加入一个新类别，可构造的批数至多增加 1，而能否增加只取决于当前总量是否达到下一个三角数。",
+      "库存升序排序，总量和批数都从 0 开始；依次加上每个库存，若总量 ≥ (k+1)(k+2)/2 就把 k 加 1；最后输出 k；总量用 64 位。"
+    ],
+    "en": [
+      "k batches need at least 1+2+...+k = k(k+1)/2 items, and each category gives at most one item per batch, so a category takes part in at most k batches and any stock beyond that is useless.",
+      "Add the inventories from small to large: each new category raises the number of buildable batches by at most 1, and whether it does depends only on whether the running total reaches the next triangular number.",
+      "Sort the inventories ascending and start with total 0 and k 0; add each inventory to the total, and if total >= (k+1)(k+2)/2, increase k by 1; output k at the end, using 64 bits for the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the inventories in ascending order while maintaining the number of batches k that can be built; each time a new category is included, if the total reaches (k+1)(k+2)/2, increase k by 1. Each category adds at most one batch.\n\n## Proof of correctness\n\nAny k batches can be shrunk by removing items down to sizes 1..k. The cut condition of the bipartite integral flow is: for any j batches, their demand does not exceed the sum over categories of min(inventory, j), and it suffices to check the j batches with the largest demand, D_k(j)=j(2k−j+1)/2. Let k be the old optimum and let the new category have the largest capacity c. The new optimum is at most k+1, because after removing the new category and deleting the smallest batch, every remaining batch still holds at least sizes 1..k. If the total is below the next triangular number, k cannot increase; otherwise, for j≤c the new capacity contributes j, and the old cut condition D_k(j) plus j is exactly D_(k+1)(j) (for j=k+1 the old total demand also holds). For j>c every inventory is ≤c, so the capacity sum is the total, which is at least the next triangular number, so the cut condition also holds. All cut conditions hold, the integral flow guarantees that the new staircase can be built, and induction proves the algorithm.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

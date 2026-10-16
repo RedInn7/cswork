@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-34",
+  "packageChecksum": "812b016379c3525d491473bec81afbb007614572df3f7de02ed1752c8e77fe31",
+  "sourceContentHash": "424c7856173e2a76b208a0a3631d929da688de5c37df1e966d485d37958923d8",
+  "editorialSha256": "f979aa01be99d7a5fe7077f647d89e113fa3eebae82f125e8c6c5a6615c021dc",
+  "hints": {
+    "zh": [
+      "先求出所有会议覆盖的时间并集，它是一些互不相交的区间；再从中扣掉一段免打扰区间即可。区间是半开的，首尾相接的区间要合并。",
+      "按开始时间排序后线性合并：与当前段相交或相接就延长，否则开新段。得到并集后，每一段减去免打扰区间最多只会剩下左、右两块。",
+      "排序后合并（a ≤ 当前段结束时并入）；对每个合并段 [a,b)：若 b≤ds 或 a≥de，原样保留；否则若 a<ds 保留 [a,ds)，若 b>de 保留 [de,b)；输出段数和各段起止。"
+    ],
+    "en": [
+      "First compute the union of all meeting times, which is a set of disjoint intervals; then subtract the do-not-disturb interval. Intervals are half-open, and touching intervals must be merged.",
+      "After sorting by start time, merge linearly: extend the current segment when the next interval overlaps or touches it, otherwise start a new segment. Once the union is known, subtracting the do-not-disturb interval leaves at most a left piece and a right piece of each segment.",
+      "Sort and merge (merge when a <= the current segment's end); for each merged segment [a, b): if b <= ds or a >= de, keep it as is; otherwise keep [a, ds) when a < ds and [de, b) when b > de; print the number of segments and their start and end values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst sort by start and merge the covered intervals, then subtract the do-not-disturb interval from each segment, keeping the non-empty left and right parts.\n\n## Correctness\n\nAfter sorting, an interval that overlaps or touches the current segment makes their union a single segment; otherwise a new segment must be started. Once the full union of meetings is known, the difference with the do-not-disturb interval can only leave its left part and its right part; keeping every non-empty part gives exactly the required set of times.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

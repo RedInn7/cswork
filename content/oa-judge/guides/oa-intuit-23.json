@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-23",
+  "packageChecksum": "af3662bb1f5c52489c35ad21e5e4e1048c614c7e8932bc45033195b158a3d4bf",
+  "sourceContentHash": "073bf0202d0abd536633c3af51e4511f57404ddf031c6285b2ba26c6ffa89e7e",
+  "editorialSha256": "ba70dde4e30d1946577983a92ad102627e0fcd461725a07d7962e1c4aa092585",
+  "hints": {
+    "zh": [
+      "所有初始感染格同时开始扩散，每秒只向上下左右相邻的健康格扩散一步，这正是多源最短路，每个健康格被感染的时间就是它到最近初始感染格的步数。",
+      "把所有值为 2 的格子一起作为 BFS 的第 0 层，逐层向外感染健康格，层数就是秒数；最后一个健康格被感染的层数就是答案。被 0 隔开、永远到不了的健康格要单独判断。",
+      "先统计健康格数量 left 并把所有感染格放入当前层；当当前层非空且 left>0 时：遍历当前层的每个格子，把相邻的健康格改为 2、left 减一并放入下一层，然后时间加一；结束后 left 为 0 输出时间，否则输出 -1；一开始就没有健康格时答案是 0。"
+    ],
+    "en": [
+      "All initially infected cells start spreading at the same time, one step per second to healthy neighbours up, down, left and right; this is a multi-source shortest path, and each healthy cell's infection time is its distance to the nearest initially infected cell.",
+      "Put every cell with value 2 into layer 0 of a BFS and infect healthy cells layer by layer; the layer number is the number of seconds, and the layer at which the last healthy cell gets infected is the answer. Healthy cells cut off by 0 cells and never reached must be detected separately.",
+      "First count the healthy cells as left and put all infected cells into the current layer; while the current layer is non-empty and left > 0: for every cell in it, turn each healthy neighbour into 2, decrease left and add it to the next layer, then increase the time by one; afterwards print the time if left is 0, otherwise -1; when there are no healthy cells at all the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse all initially infected cells as BFS sources at the same time and infect healthy cells layer by layer.\n\n## Proof of correctness\n\nLayer t of the multi-source BFS is exactly the set of cells whose minimum time to be reached is t seconds. The layer of the last infected healthy cell is the completion time; if healthy cells remain afterwards, they are not connected to any infected cell, and -1 should be returned. When there are no healthy cells, the answer is 0.\n\n## Complexity\n\nTime O(NM), space O(NM)."
+}

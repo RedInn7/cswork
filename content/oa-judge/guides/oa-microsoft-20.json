@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-20",
+  "packageChecksum": "1792841259195a22d9ef107f8a5e0bb4ef0a78fe80a1550c7378e535debea63e",
+  "sourceContentHash": "f4b3e23b4f009b8fe7c5c92ea89d53df665db800213e90f149278fbddc3ebc5f",
+  "editorialSha256": "c60e0dda819bfe43223897e1a1e3c327438fda06fa7eb55905cf5ac2bc3ca0e1",
+  "hints": {
+    "zh": [
+      "四段的和都相等，意味着两个数组的总和必须相等，而且每个数组在切分点前的前缀和都正好是总和的一半。",
+      "先比较两个总和：不相等或者是奇数，答案直接为 0；否则同步累加两个数组的前缀和，统计两者同时等于总和一半的切分点。",
+      "计算总和 sa、sb；若 sa≠sb 或 sa 为奇数输出 0。否则令 half=sa/2，对 i 从 0 到 N−2 分别累加 A[i]、B[i]，两个前缀和都等于 half 时计数加一（只考虑两侧非空的切分）。数值可能很大，用 64 位整数。"
+    ],
+    "en": [
+      "All four parts being equal means the two arrays must have equal totals, and each array's prefix before the split must be exactly half of its total.",
+      "Compare the totals first: if they differ or are odd, the answer is 0. Otherwise accumulate both prefix sums together and count the split points where both equal half of the total.",
+      "Compute the totals sa and sb; print 0 if sa≠sb or sa is odd. Otherwise let half = sa/2 and, for i from 0 to N−2, add A[i] and B[i] to the two running prefixes, counting the positions where both equal half (only splits with non-empty sides). Values can be large, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compare the two array totals, which must be equal and even; then accumulate both prefixes together and count the positions where both equal half of the total.\n\n## Proof of correctness\n\nFour equal parts force the two totals to be equal and each prefix to be half of its total. Conversely, when both prefixes reach the same half value, both suffixes also equal that value, so the condition is necessary and sufficient. Only non-empty splits are checked.\n\n## Complexity\n\nTime O(N), extra space O(1)."
+}

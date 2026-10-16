@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-53",
+  "packageChecksum": "3f8750708603dda78aba5532a1e40af6e2527ebe2dbb064b01487d7b750c740d",
+  "sourceContentHash": "3032b711800bb078a2e247def51701989bee7856bb567c9f519141f46ff9f88e",
+  "editorialSha256": "5da0ac90043e7243d014caab9123ea01f52536784a0191021ed0324512ce79ba",
+  "hints": {
+    "zh": [
+      "保留下来的非空序列，第一个元素一定是某组的组头。所以从左往右看，每个位置只有两种命运：被删掉，或者作为组头带走后面若干个元素。",
+      "若保留位置 i 作组头，直接选紧挨着它的 a[i] 个元素当组员最优：组员的数值没有任何要求，跳过某些元素只会多删、并给后面留下更少的元素。于是可以从后往前做 DP。",
+      "设 dp[i] 为让后缀 a[i..] 合法的最少删除数，dp[n]=0。从 i=n−1 倒推：先取 dp[i]=1+dp[i+1]（删除 a[i]）；若 i+a[i]+1≤n，再与 dp[i+a[i]+1] 取较小值（以 a[i] 为组头、带走紧随的 a[i] 个元素）。答案是 dp[0]。"
+    ],
+    "en": [
+      "In any non-empty sequence that remains, the first element must be a group header. So, scanning from the left, each position has only two fates: it is deleted, or it becomes a header that takes some following elements with it.",
+      "If position i is kept as a header, taking the a[i] elements immediately after it as its members is optimal: member values have no requirement, and skipping elements only causes more deletions and leaves fewer elements for later. That allows a DP from right to left.",
+      "Let dp[i] be the minimum number of deletions that make the suffix a[i..] valid, with dp[n] = 0. Going from i = n - 1 down to 0, set dp[i] = 1 + dp[i+1] (delete a[i]); if i + a[i] + 1 <= n, also take the minimum with dp[i + a[i] + 1] (a[i] is a header followed by the next a[i] elements). The answer is dp[0]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDP from right to left. The current position can be deleted, costing 1 + dp[i+1]; or it can serve as a group header that keeps the next a[i] elements, costing dp[i+a[i]+1], which requires staying in bounds.\n\n## Correctness\n\nThe first element of any non-empty valid remaining sequence is a group header. If i is kept as a header, choosing the a[i] elements immediately after it is never worse than skipping over some elements: the values chosen as group content have no requirement, so using earlier elements means fewer deletions and leaves more elements available for what follows. Therefore an optimal solution only needs to consider this complete contiguous group or deleting i, and these two cases cover the optimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

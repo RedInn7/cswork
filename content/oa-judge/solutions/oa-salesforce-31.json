@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-31",
+  "packageChecksum": "2f4f77805feff70e063bd9be817dc59a985b9a7161aa881003d0eac732443c63",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char buf[1 << 16];\nstatic size_t blen = 0, bpos = 0;\nstatic inline int gc() {\n    if (bpos == blen) {\n        blen = fread(buf, 1, sizeof buf, stdin);\n        bpos = 0;\n        if (!blen) return -1;\n    }\n    return buf[bpos++];\n}\n\nint main() {\n    int c = gc();\n    while (c != -1 && (c < '0' || c > '9')) c = gc();\n    int n = 0;\n    while (c >= '0' && c <= '9') { n = n * 10 + (c - '0'); c = gc(); }\n    string out;\n    for (int w = 0; w < n; w++) {\n        while (c != -1 && c <= ' ') c = gc();\n        // Each run of L equal letters needs floor(L/2) replacements.\n        long long answer = 0, run = 0;\n        int last = -1;\n        while (c > ' ') {\n            if (c == last) run++;\n            else { answer += run / 2; run = 1; last = c; }\n            c = gc();\n        }\n        answer += run / 2;\n        if (w) out += ' ';\n        out += to_string(answer);\n    }\n    out += '\\n';\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "6dd58c3c6ec06945873fd01f2f97300f0cfd9b606379cb95023195f171622a66"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final InputStream in = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int gc() throws IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    public static void main(String[] args) throws IOException {\n        int c = gc();\n        while (c != -1 && (c < '0' || c > '9')) c = gc();\n        int n = 0;\n        while (c >= '0' && c <= '9') { n = n * 10 + (c - '0'); c = gc(); }\n        StringBuilder out = new StringBuilder();\n        for (int w = 0; w < n; w++) {\n            while (c != -1 && c <= ' ') c = gc();\n            // Each run of L equal letters needs floor(L/2) replacements.\n            long answer = 0, run = 0;\n            int last = -1;\n            while (c > ' ') {\n                if (c == last) run++;\n                else { answer += run / 2; run = 1; last = c; }\n                c = gc();\n            }\n            answer += run / 2;\n            if (w > 0) out.append(' ');\n            out.append(answer);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "cd9878bd5f34b5e6ec848290947f266a704e21dddf729d50d25ba554d1d02430"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\trd := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c < '0' || c > '9') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tn := 0\n\tfor err == nil && c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, err = rd.ReadByte()\n\t}\n\tvar out []byte\n\tfor w := 0; w < n; w++ {\n\t\tfor err == nil && c <= ' ' {\n\t\t\tc, err = rd.ReadByte()\n\t\t}\n\t\t// Each run of L equal letters needs floor(L/2) replacements.\n\t\tanswer, run := 0, 0\n\t\tlast := -1\n\t\tfor err == nil && c > ' ' {\n\t\t\tif int(c) == last {\n\t\t\t\trun++\n\t\t\t} else {\n\t\t\t\tanswer += run / 2\n\t\t\t\trun, last = 1, int(c)\n\t\t\t}\n\t\t\tc, err = rd.ReadByte()\n\t\t}\n\t\tanswer += run / 2\n\t\tif w > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, int64(answer), 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "7e5ed364e478b63093597735dc69a4f817e0d12f6cca0f5f0d3ed2a372476b98"
+    }
+  ]
+}

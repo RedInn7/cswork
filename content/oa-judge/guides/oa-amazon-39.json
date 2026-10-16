@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-39",
+  "packageChecksum": "3f2abdd87e3939837f1fd415dee164c12244b10ef7ca8d6a0d399a04e678194b",
+  "sourceContentHash": "6a2fe8f92738cc43ffa45826625777dce73b41478927e1dc7a90a5ddad4ab53a",
+  "editorialSha256": "2a6961ccc2f0ea98412db200be55ca19e999cfee4673453b00a61bc8bd6261a0",
+  "hints": {
+    "zh": [
+      "尺寸只能增大，所以可以从小到大逐个确定“下一个可用的最终尺寸”该分给谁。",
+      "当前尺寸能分给多个商品时，应该给单位费用最大的：它多等一步的代价最高，交换论证可知这样不会更差。",
+      "商品按原尺寸排序；用按单位费用排序的最大堆收集原尺寸 ≤ 当前尺寸的商品，每次弹出堆顶，费用加上（当前尺寸−原尺寸）×单价，当前尺寸加一；堆为空时把当前尺寸跳到下一件商品的原尺寸。结果用 64 位。"
+    ],
+    "en": [
+      "Sizes can only grow, so you can decide, from small to large, which item receives the next available final size.",
+      "When several items can take the current size, give it to the one with the largest unit cost: it pays the most for every extra step of waiting, and an exchange argument shows this is never worse.",
+      "Sort items by original size; collect into a max-heap by unit cost every item whose size is at most the current size, pop the top, add (current size − original size) × cost, and increment the current size; when the heap is empty, jump to the next item's size. Use 64-bit arithmetic."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAssign final sizes from small to large, adding to a max-cost heap every item whose original size is not greater than the current value. The current size goes first to the item with the largest unit cost.\n\n## Proof of correctness\n\nOf two items that can both be placed, if the cheaper one takes the current position and the more expensive one is delayed, swapping them reduces or keeps the cost, and both items still only increase. So there is always an optimal solution that gives priority to the largest cost. When the heap is empty, jumping to the next original size never misses an available item.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

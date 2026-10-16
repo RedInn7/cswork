@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-46",
+  "packageChecksum": "1e8141edfc95f96f0ca16ba163ab58513c816ebd85a6de456a0a61fae03ecd60",
+  "sourceContentHash": "a109a111452d111f9b27e9c55fd08e9cd808259bfd9d09b9670b81f6b6d5e8fe",
+  "editorialSha256": "5d3e2c431fe6bcbde871c38da06238c8c06f508204045e083ec18c54f46b9940",
+  "hints": {
+    "zh": [
+      "q 可能很大，每次都真的旋转或翻转 n×n 矩阵太慢。旋转和沿对角线翻转都是坐标的仿射变换，几次操作复合后仍是仿射变换。",
+      "只跟踪原坐标系在变换后的样子：原点 (0,0) 被送到哪里，以及“行方向 +1”和“列方向 +1”两个单位向量变成了什么。每次操作只更新这三个二维量，最后一次性把元素放到目标位置。",
+      "初始 origin=(0,0)、dr=(1,0)、dc=(0,1)。顺时针旋转把点 (r,c) 变为 (c,n−1−r)，向量 (x,y) 变为 (y,−x)；主对角线翻转交换两维；副对角线翻转把点变为 (n−1−c,n−1−r)，向量变为 (−y,−x)。处理完所有操作后，原 (i,j) 处的元素填到 origin+i·dr+j·dc，再逐行输出。"
+    ],
+    "en": [
+      "q can be large, so physically rotating or reflecting the n x n matrix each time is too slow. Rotations and diagonal reflections are affine maps on coordinates, and any composition of them is still affine.",
+      "Track only how the original coordinate frame is transformed: where the origin (0,0) goes and what the unit steps \"row + 1\" and \"column + 1\" become. Each operation updates just these three 2D quantities, and at the end every element is placed once.",
+      "Start with origin = (0,0), dr = (1,0), dc = (0,1). A clockwise rotation maps a point (r,c) to (c, n-1-r) and a vector (x,y) to (y, -x); the main-diagonal reflection swaps the two coordinates; the anti-diagonal reflection maps a point to (n-1-c, n-1-r) and a vector to (-y, -x). After all operations, put the original element at (i,j) into origin + i*dr + j*dc and print the result row by row."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInstead of moving the whole matrix over and over, maintain the origin of the coordinate mapping and its two direction vectors. Each operation transforms the origin and the vectors; at the end, fill the result matrix once using the resulting coordinate mapping.\n\n## Correctness\n\nRotations and reflections are affine transformations, and an origin plus two unit vectors uniquely determine the entire coordinate mapping. Applying each transformation to the mapping in turn is equivalent to applying it to every element, so the final fill is exactly the composition of all the operations.\n\n## Complexity\n\nTime O(q+n²), space O(n²)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-231",
+  "packageChecksum": "1545fefe9e320c338a2ea42d051bca9e5a4de5cd008c85e66ce074fc9b465059",
+  "sourceContentHash": "d9bea7ebd250091dd81553b211ef18add98c43748f958b7aa7410d7abb04a746",
+  "editorialSha256": "d01bbf3624f10679f18ab26f7d945c15b7edfdbdafef71c240826bbcd2237880",
+  "hints": {
+    "zh": [
+      "对长度为 i+1 的前缀整体加减 1，只会改变 a[i] 与 a[i+1] 的差，其它相邻差都不变。",
+      "把数组看成差分 a[i]−a[i+1]，最后一项看作 a[n−1] 与 0 的差；全部归零等价于所有差分都为 0，而每次操作只能让一个差分变化 1。",
+      "答案为 |a[n−1]| 加上所有 |a[i]−a[i+1]| 之和，一次扫描累加；结果可达 2×10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Adding or subtracting 1 on the prefix of length i+1 changes only the difference between a[i] and a[i+1]; every other adjacent difference stays the same.",
+      "View the array as the differences a[i]-a[i+1], with the last term being a[n-1] minus 0; making everything zero means making every difference 0, and each operation changes exactly one difference by 1.",
+      "The answer is |a[n-1]| plus the sum of all |a[i]-a[i+1]|, accumulated in one pass; it can reach 2*10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the absolute value of the last element plus the absolute value of every adjacent difference.\n\n## Proof of correctness\n\nTurn the array into differences b[i]=a[i]−a[i+1], with the last b[n−1]=a[n−1]. An operation on the prefix of length i+1 changes only b[i] by ±1 and leaves the other differences unchanged, so each difference needs at least its absolute value in operations; eliminating each difference independently attains exactly the total lower bound.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."
+}

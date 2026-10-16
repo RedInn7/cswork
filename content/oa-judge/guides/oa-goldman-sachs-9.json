@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-9",
+  "packageChecksum": "e1a909b8c87120d8aee999414dab76d541abd22bda5bc21eeb58d668f89881d9",
+  "sourceContentHash": "4cfa5dad347bb0a1ce0746e56386d045288b1b3dac188a23ce610b4e911074f8",
+  "editorialSha256": "20cfa2abf0819703ec7a30b9546c34bd9e5bfbe8620a66c5d22a6024db76921b",
+  "hints": {
+    "zh": [
+      "一个密钥的“可整除度”是列表中大于 1 且能整除它的元素个数，重复元素要按出现次数计算。所以关键是对每个密钥，统计它的所有大于 1 的因数在列表里出现了几次。",
+      "先用频次数组记录每个值在列表中出现的次数，然后对每个密钥枚举它的因数，把这些因数的频次加起来，就是它的可整除度；取所有密钥中的最大值。",
+      "建 freq[0..max(keys)]；对每个密钥 v，枚举 d 从 1 到 √v：若 d 整除 v，则 d > 1 时累加 freq[d]，另一个因数 v/d 若不等于 d 且大于 1 也累加 freq[v/d]；取最大可整除度 best；强度 = best × 100000；若 instructionCount × validityPeriod ≥ 强度输出“1 强度”，否则输出“0 强度”。乘积可到 10^16，用 64 位整数。"
+    ],
+    "en": [
+      "A key's divisibility is the number of list elements greater than 1 that divide it, with duplicates counted once per occurrence. So for each key, count how many times its divisors greater than 1 appear in the list.",
+      "First record how many times each value occurs in a frequency array, then for each key enumerate its divisors and add up their frequencies to get its divisibility; take the maximum over all keys.",
+      "Build freq[0..max(keys)]; for each key v, enumerate d from 1 to sqrt(v): if d divides v, add freq[d] when d > 1, and add freq[v/d] when the co-divisor v/d differs from d and is greater than 1; let best be the maximum divisibility; strength = best * 100000; print \"1 strength\" if instructionCount * validityPeriod >= strength, otherwise \"0 strength\". The product can reach 10^16, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStore the number of occurrences of each key in a frequency array. For each key, enumerate its divisors greater than 1 and add up their frequencies to get the maximum divisibility, then compute the strength and whether the encryption can be broken according to the definition.\n\n## Proof of correctness\n\nThe frequency array keeps the contribution of the duplicate items in the list; adding up the frequencies of all divisors of key counts exactly the list elements greater than 1 that divide it. Taking the maximum gives the base of the strength defined in the statement, and finally the product comparison decides whether it can be broken.\n\n## Complexity\n\nWith M=max(keys), O(M log M + n) time and O(M) space."
+}

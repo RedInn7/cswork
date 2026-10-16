@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-3",
+  "packageChecksum": "09ca415cfe3d40b9d79de2159393d6c074a7db3961aec8d75b86c6adf42c5a00",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    long long total = 0;\n    for (auto &x : a) cin >> x, total += x;\n    // Each split needs exactly |left - right| unit changes.\n    long long prefix = 0, best = total;\n    for (int i = 0; i + 1 < n; i++) {\n        prefix += a[i];\n        best = min(best, llabs(2 * prefix - total));\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "0a3b3700300e7c85402d6d5d67bf7f9d5de125973d8c8839f26414d46a9ab252"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        long[] a = new long[n];\n        long total = 0;\n        for (int i = 0; i < n; i++) total += a[i] = next();\n        // Each split needs exactly |left - right| unit changes.\n        long prefix = 0, best = total;\n        for (int i = 0; i + 1 < n; i++) {\n            prefix += a[i];\n            best = Math.min(best, Math.abs(2 * prefix - total));\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "b3816c504ebfd0d2afeed6fb1d83343ab0fb075c93e2fb0008e81576e5e229c4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\ta := make([]int64, n)\n\tvar total int64\n\tfor i := range a {\n\t\ta[i] = next()\n\t\ttotal += a[i]\n\t}\n\t// Each split needs exactly |left - right| unit changes.\n\tvar prefix int64\n\tbest := total\n\tfor i := 0; i+1 < n; i++ {\n\t\tprefix += a[i]\n\t\td := 2*prefix - total\n\t\tif d < 0 {\n\t\t\td = -d\n\t\t}\n\t\tbest = min(best, d)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "621a7d56fbbdf3b2ca220e9719656666fc46a34ee21791203be9e49ba9a23777"
+    }
+  ]
+}

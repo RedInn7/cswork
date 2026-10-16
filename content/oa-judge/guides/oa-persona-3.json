@@ -1,0 +1,19 @@
+{
+  "id": "oa-persona-3",
+  "packageChecksum": "8e28de194efd53eb56290dbd145ae72c7138fbcd2705d152a6919ddbf177b8a9",
+  "sourceContentHash": "648a6110ae538e621002ad6c1bb1fa72dd7542f5702c8fbc9a20ab06948dc63f",
+  "editorialSha256": "7bcb68213faec36f493851cfa0449da73672fa9931f4c05c53cb048e22ed5631",
+  "hints": {
+    "zh": [
+      "网格上每步代价相同，最少步数就是 BFS 距离。所有最短路上的每一步都从距离 d 的格子走到距离 d+1 的格子，这些边构成一个有向无环图。",
+      "在 BFS 的同时做 DP：best[格子] 表示沿最短路到达该格最多能捡到的宝藏数，只从距离恰好小 1 的邻格转移。",
+      "起点 best=起点是否有宝藏；BFS 弹出格子 u 时检查四个邻格 z（不越界、不是墙）：z 未访问则 dist[z]=dist[u]+1、best[z]=best[u]+[z 有宝藏] 并入队；若 dist[z]==dist[u]+1 则用 best[u]+[z 有宝藏] 更新 best[z] 的最大值。出口不可达输出 -1 0，否则输出 dist[end] 和 best[end]。"
+    ],
+    "en": [
+      "Every step costs the same on the grid, so the minimum number of steps is the BFS distance. On any shortest path each step goes from a cell at distance d to a cell at distance d + 1, and these edges form a directed acyclic graph.",
+      "Run a DP alongside the BFS: best[cell] is the maximum number of treasures collectable on a shortest path to that cell, and it only takes transitions from neighbors whose distance is exactly one less.",
+      "Set best at the start to whether the start holds a treasure. When BFS pops a cell u, look at the four neighbors z that are in bounds and not walls: if z is unvisited, set dist[z] = dist[u] + 1, best[z] = best[u] + [z has treasure] and enqueue it; if dist[z] == dist[u] + 1, raise best[z] to best[u] + [z has treasure] if larger. If the exit is unreachable print -1 0, otherwise print dist[end] and best[end]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it.\n\n## Proof of correctness\n\nWith the BFS distances, every edge of a shortest path goes from d to d+1, which forms a directed acyclic graph. Processing in increasing distance, the DP has already considered all shortest-path predecessors, so taking the maximum gives the maximum number of treasures over shortest paths to that cell. The exit's distance and DP value are exactly what is asked.\n\n## Complexity\n\nTime O(rows*cols), space O(rows*cols)."
+}

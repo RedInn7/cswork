@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-31",
+  "packageChecksum": "8ef8d3b04ab9c2dedca83117637761a4bfb1eda61bb0b49296af635f52cba7ae",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    vector<int> diff(1441, 0);\n    char person[64], action[64];\n    for (int i = 0; i < n; i++) {\n        int h1, m1, h2, m2;\n        scanf(\"%63s %63s %d:%d %d:%d\", person, action, &h1, &m1, &h2, &m2);\n        // Busy minutes are the closed range [start, end].\n        diff[h1 * 60 + m1]++;\n        diff[h2 * 60 + m2 + 1]--;\n    }\n    int busy = 0, run = 0;\n    for (int t = 0; t < 1440; t++) {\n        busy += diff[t];\n        run = busy == 0 ? run + 1 : 0;\n        if (run >= k) {\n            int start = t - k + 1;\n            printf(\"%02d:%02d\\n\", start / 60, start % 60);\n            return 0;\n        }\n    }\n    puts(\"-1\");\n}\n",
+      "sha256": "b934a5a6c0769a5bd7d19e97d7563ff473ba7582f7d3baefd91ba776def658e5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    static int minute(String s) {\n        int c = s.indexOf(':');\n        return Integer.parseInt(s.substring(0, c)) * 60 + Integer.parseInt(s.substring(c + 1));\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        int[] diff = new int[1441];\n        for (int i = 0; i < n; i++) {\n            next();\n            next();\n            // Busy minutes are the closed range [start, end].\n            diff[minute(next())]++;\n            diff[minute(next()) + 1]--;\n        }\n        int busy = 0, run = 0;\n        for (int t = 0; t < 1440; t++) {\n            busy += diff[t];\n            run = busy == 0 ? run + 1 : 0;\n            if (run >= k) {\n                int start = t - k + 1;\n                System.out.printf(\"%02d:%02d%n\", start / 60, start % 60);\n                return;\n            }\n        }\n        System.out.println(-1);\n    }\n}\n",
+      "sha256": "20fe372d4e0d69c8846eebdd4dc07410df83a4a03bf8ea533a55da5fc3e0324f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc minute(s []byte) int {\n\tc := bytes.IndexByte(s, ':')\n\th, _ := strconv.Atoi(string(s[:c]))\n\tm, _ := strconv.Atoi(string(s[c+1:]))\n\treturn h*60 + m\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\tdiff := make([]int, 1441)\n\tfor i := 0; i < n; i++ {\n\t\tnext()\n\t\tnext()\n\t\t// Busy minutes are the closed range [start, end].\n\t\tdiff[minute(next())]++\n\t\tdiff[minute(next())+1]--\n\t}\n\tbusy, run := 0, 0\n\tfor t := 0; t < 1440; t++ {\n\t\tbusy += diff[t]\n\t\tif busy == 0 {\n\t\t\trun++\n\t\t} else {\n\t\t\trun = 0\n\t\t}\n\t\tif run >= k {\n\t\t\tstart := t - k + 1\n\t\t\tfmt.Printf(\"%02d:%02d\\n\", start/60, start%60)\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Println(-1)\n}\n",
+      "sha256": "0d8a24a06ddb4c32e193992e3fc568994d17ed7ef626feb97a56075913a6647f"
+    }
+  ]
+}

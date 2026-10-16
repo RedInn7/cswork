@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-343",
+  "packageChecksum": "7674c1a536c8d04ab4d37e83ee0ac8833855ad787ecab98652afe5853f2e0e45",
+  "sourceContentHash": "ca80df38a5e8dbfac9be07bb91c06b84bc0bfaa1962edeb7281378d64e4ff910",
+  "editorialSha256": "0177055611dc3baf86c7fae478eb0089088db2de828bfd0fe4c887ac12a7f32e",
+  "hints": {
+    "zh": [
+      "两个串长度都不超过50，可以枚举content中每个长度为|target|的窗口，逐个单独判断。",
+      "一次相邻交换只改动两个相邻位置。所以窗口要么与target完全相同，要么恰好有两个不同的位置，而且这两个位置相邻。",
+      "对每个起点收集窗口与target不同的下标：没有不同就计数；恰有两个下标i、i+1，并且窗口[i]=target[i+1]、窗口[i+1]=target[i]时也计数；其余情况不计。输出总数。"
+    ],
+    "en": [
+      "Both lengths are at most 50, so you can enumerate every window of length |target| in content and judge each one separately.",
+      "One adjacent swap changes only two adjacent positions. So a window either equals target exactly, or differs in exactly two positions that are next to each other.",
+      "For each start, collect the indices where the window differs from target: with no difference, count it; with exactly two indices i and i+1 where window[i]=target[i+1] and window[i+1]=target[i], count it too; otherwise do not. Output the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each window, find the positions that differ. If there are none, it is valid; otherwise there must be exactly two differing positions, adjacent to each other, whose characters match crosswise after the swap.\n\n## Proof of correctness\n\nOne adjacent swap affects at most two adjacent positions. If the window is not equal to begin with, a valid swap must fix exactly those two differing positions, and crosswise equality is both necessary and sufficient; zero differing positions are handled by doing nothing. Enumerating every start position misses nothing.\n\n## Complexity\n\nTime O(|content|·|target|), space O(|target|)."
+}

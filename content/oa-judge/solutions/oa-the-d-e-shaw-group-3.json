@@ -1,0 +1,21 @@
+{
+  "id": "oa-the-d-e-shaw-group-3",
+  "packageChecksum": "65fff9be6adf62722f6f4872f516b578747c68176ce6ed9fadc1f94bf5e90975",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // Last index of the longest strictly increasing prefix.\n    int left = 0;\n    while (left + 1 < n && a[left] < a[left + 1]) left++;\n    if (left == n - 1) { printf(\"%lld\\n\", (long long)n * (n + 1) / 2); return 0; }\n    // Start of the longest strictly increasing suffix.\n    int right = n - 1;\n    while (right > 0 && a[right - 1] < a[right]) right--;\n    long long ans = 0;\n    int j = right;\n    // Keep prefix a[0..i-1]; j is the earliest suffix start that joins it strictly.\n    for (int i = 0; i < left + 2; i++) {\n        j = max(j, i + 1);\n        if (i) while (j < n && a[j] <= a[i - 1]) j++;\n        ans += n - j + 1;\n    }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "4bbbf3256f943955e2e8a89169251569647d63884cd735ef2d061cc04d8f6f48"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Last index of the longest strictly increasing prefix.\n        int left = 0;\n        while (left + 1 < n && a[left] < a[left + 1]) left++;\n        if (left == n - 1) { System.out.println((long) n * (n + 1) / 2); return; }\n        // Start of the longest strictly increasing suffix.\n        int right = n - 1;\n        while (right > 0 && a[right - 1] < a[right]) right--;\n        long ans = 0;\n        int j = right;\n        // Keep prefix a[0..i-1]; j is the earliest suffix start that joins it strictly.\n        for (int i = 0; i < left + 2; i++) {\n            j = Math.max(j, i + 1);\n            if (i > 0) while (j < n && a[j] <= a[i - 1]) j++;\n            ans += n - j + 1;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "5a4e725e6695d6da4947cf57aa83f5fcef3f3fc3768b374151e0f20a57019ee7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// Last index of the longest strictly increasing prefix.\n\tleft := 0\n\tfor left+1 < n && a[left] < a[left+1] {\n\t\tleft++\n\t}\n\tif left == n-1 {\n\t\tfmt.Println(n * (n + 1) / 2)\n\t\treturn\n\t}\n\t// Start of the longest strictly increasing suffix.\n\tright := n - 1\n\tfor right > 0 && a[right-1] < a[right] {\n\t\tright--\n\t}\n\tans, j := 0, right\n\t// Keep prefix a[0..i-1]; j is the earliest suffix start that joins it strictly.\n\tfor i := 0; i < left+2; i++ {\n\t\tj = max(j, i+1)\n\t\tif i > 0 {\n\t\t\tfor j < n && a[j] <= a[i-1] {\n\t\t\t\tj++\n\t\t\t}\n\t\t}\n\t\tans += n - j + 1\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "6290f06cd173e004c326e768336a90c8bfe26808607639171f66e2eb351a1e85"
+    }
+  ]
+}

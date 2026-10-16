@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-6",
+  "packageChecksum": "b677b7025420ac5bef2a0c362b5b0b18ce97f4fee25e9606a3c3f198851b2f63",
+  "sourceContentHash": "2c31241b71eb6153bff5ae9875b806029ec323432c94172f260e4d263c0d5b51",
+  "editorialSha256": "4e7bf6a7d45ab23aa3b7bd3ab524178e2fe64d11df7eb3a1ba741aa3204201e8",
+  "hints": {
+    "zh": [
+      "下标对的数量只取决于两边“每个值出现了几次”，所以维护两张值到频次的表就够了，更新 a[i] 只是让一个旧值减一、一个新值加一。",
+      "查询 x 时遍历两张频次表中不同值较少的那一张，对其中每个值 v，乘上另一张表里 x−v 的频次并累加。",
+      "建立 freqA、freqB；更新 0 i x：freqA[a[i]] 减 1（为 0 就删掉，保证不同值数量准确），a[i]+=x，freqA[a[i]] 加 1；查询 1 x：选不同值更少的一侧逐项累加 cnt[v]×另一侧[x−v]，用 64 位整数，结果按顺序以空格分隔输出（没有查询时输出空行）。"
+    ],
+    "en": [
+      "The number of index pairs depends only on how often each value appears on each side, so two value-to-frequency tables are enough; updating a[i] just moves one count from the old value to the new one.",
+      "For a query x, walk the frequency table with fewer distinct values and, for each value v in it, add its count times the frequency of x - v in the other table.",
+      "Build freqA and freqB; for update 0 i x decrement freqA[a[i]] (delete the entry when it reaches 0 so the distinct count stays exact), do a[i] += x and increment freqA[a[i]]; for query 1 x pick the side with fewer distinct values and sum cnt[v] * other[x - v] in 64-bit integers; print the answers in order separated by spaces (an empty line when there are no queries)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the value frequencies of both a and b. An update decrements the count of a's old value and increments the count of the new value. For a query with target x, walk the side with fewer distinct values and add up `freqA[v] * freqB[x-v]`.\n\n## Correctness\n\nEvery index pair (i,j) corresponds to exactly one pair of complementary values in the two arrays. Walking every distinct value v of the smaller frequency table and multiplying by the frequency of the target minus v on the other side counts exactly all pairs that satisfy the condition, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nLet Da and Db be the numbers of distinct values on the two sides at the time of a query. An update takes O(1) expected time and a query O(min(Da,Db)); this site guarantees that this quantity summed over all queries is at most 10^7. Space is O(n+m)."
+}

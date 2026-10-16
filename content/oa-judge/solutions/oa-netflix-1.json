@@ -1,0 +1,21 @@
+{
+  "id": "oa-netflix-1",
+  "packageChecksum": "481e6603e02da3bd3fc969e5188fe7d13ceec92b44aeb6c535c80e568d06efe8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int q;\n    cin >> q;\n    vector<long long> history, out;  // history: states before each live change\n    long long value = 0;\n    for (int i = 0; i < q; i++) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == \"ADD\" || cmd == \"MUL\") {\n            long long x;\n            cin >> x;\n            history.push_back(value);\n            value = cmd == \"ADD\" ? value + x : value * x;\n        } else if (cmd == \"UNDO\") {\n            value = history.back();\n            history.pop_back();\n        } else {\n            out.push_back(value);\n        }\n    }\n    string text = to_string(out.size()) + \"\\n\";\n    for (long long v : out) text += to_string(v) + \"\\n\";\n    cout << text;\n}\n",
+      "sha256": "c0878c8de4ecb99152ff0dc66734aec35408a42e930c411f885a028776dbe3a0"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int q = nextInt();\n        long[] history = new long[q]; // states before each live change\n        int top = 0, printed = 0;\n        long value = 0;\n        StringBuilder lines = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String cmd = next();\n            if (cmd.equals(\"ADD\") || cmd.equals(\"MUL\")) {\n                long x = nextLong();\n                history[top++] = value;\n                value = cmd.equals(\"ADD\") ? value + x : value * x;\n            } else if (cmd.equals(\"UNDO\")) {\n                value = history[--top];\n            } else {\n                lines.append(value).append('\\n');\n                printed++;\n            }\n        }\n        System.out.print(printed + \"\\n\" + lines);\n    }\n}\n",
+      "sha256": "3ccdbb7ea08d07818b5fc4d7e13ea3f12b2bd2aea796d442c13f3d435a0a49e5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tq := int(nextInt())\n\thistory := []int64{} // states before each live change\n\tout := []int64{}\n\tvar value int64\n\tfor i := 0; i < q; i++ {\n\t\tcmd := string(next())\n\t\tswitch cmd {\n\t\tcase \"ADD\", \"MUL\":\n\t\t\tx := nextInt()\n\t\t\thistory = append(history, value)\n\t\t\tif cmd == \"ADD\" {\n\t\t\t\tvalue += x\n\t\t\t} else {\n\t\t\t\tvalue *= x\n\t\t\t}\n\t\tcase \"UNDO\":\n\t\t\tvalue = history[len(history)-1]\n\t\t\thistory = history[:len(history)-1]\n\t\tdefault:\n\t\t\tout = append(out, value)\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tw.WriteString(strconv.Itoa(len(out)) + \"\\n\")\n\tfor _, v := range out {\n\t\tw.WriteString(strconv.FormatInt(v, 10) + \"\\n\")\n\t}\n}\n",
+      "sha256": "1a5133fc5fba3967d954d43503bd0c03e623f5fa46947461cb340039582c5059"
+    }
+  ]
+}

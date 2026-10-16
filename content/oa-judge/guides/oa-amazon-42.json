@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-42",
+  "packageChecksum": "9277b4681133d056713d038af19f95aefa423039646d0913189b39522ed91151",
+  "sourceContentHash": "98d11acdc7c7e8f709720ed648b9e3004837055e6b023444d689930a1b5bead2",
+  "editorialSha256": "f2360cf50a09b8d1115cfb288344e6e266533c4617a507db331d59659b3c60b4",
+  "hints": {
+    "zh": [
+      "一个机器人是否在某个方向有邻居，只取决于同一行（或同一列）里是否存在严格更小或严格更大的坐标，与距离无关。",
+      "对每一行只需要知道该行出现过的最小 x 和最大 x，对每一列只需要知道最小 y 和最大 y；一个点严格夹在这两组极值之间就是空闲的。",
+      "第一遍遍历所有点，用哈希表（或有序映射）按 y 记录行的最小/最大 x，按 x 记录列的最小/最大 y；第二遍对每个点检查 minX < x < maxX 且 minY < y < maxY，满足则计数。重合的点各自判断、各自计数。"
+    ],
+    "en": [
+      "Whether a robot has a neighbor in some direction depends only on whether its row (or column) contains a strictly smaller or strictly larger coordinate; distance does not matter.",
+      "For each row you only need the smallest and largest x that appear in it, and for each column the smallest and largest y; a point is idle exactly when it lies strictly between both pairs of extremes.",
+      "In a first pass, use a hash map (or ordered map) keyed by y to record each row's min and max x, and one keyed by x to record each column's min and max y; in a second pass, count every point with minX < x < maxX and minY < y < maxY. Coincident points are checked and counted separately."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each row, record the minimum and maximum x; for each column, record the minimum and maximum y. A point is idle if it lies strictly between both pairs of extremes.\n\n## Proof of correctness\n\nThe row's minimum x is less than the current x if and only if there is a neighbor to the left, and the row's maximum x is greater than the current x if and only if there is a neighbor to the right; columns work the same way. The four strict comparisons correspond exactly to all the necessary and sufficient conditions.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

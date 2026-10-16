@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-47",
+  "packageChecksum": "a71dfe9fc0165a61632d39c95528004e29728ab9a59ba846794ec6c5bdb8cde0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    long long total = accumulate(a.begin(), a.end(), 0LL), answer = llabs(total);\n    // Negating x changes the sum to total - 2x.\n    for (long long x : a) answer = min(answer, llabs(total - 2 * x));\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "489ef4e3c98a36d417d2f6364ac166ac10dbca3d5a4e4f7db24f3c91f5dd548b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        long[] a = new long[n];\n        long total = 0;\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; total += a[i]; }\n        long answer = Math.abs(total);\n        // Negating x changes the sum to total - 2x.\n        for (long x : a) answer = Math.min(answer, Math.abs(total - 2 * x));\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "c832fea8fbf8e95a37c5abc18fac42c2885e8f522823c0cd70396bb1f651a98a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc abs(x int) int {\n\tif x < 0 {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\ta := make([]int, n)\n\ttotal := 0\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\ttotal += a[i]\n\t}\n\tanswer := abs(total)\n\t// Negating x changes the sum to total - 2x.\n\tfor _, x := range a {\n\t\tanswer = min(answer, abs(total-2*x))\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "5132a9e98c7dada2444dbcd214bac7708e6195da51fc896e03ea5891bb7e58f2"
+    }
+  ]
+}

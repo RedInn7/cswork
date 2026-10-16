@@ -1,0 +1,19 @@
+{
+  "id": "oa-point72-1",
+  "packageChecksum": "aced25ccf3a397a1a259621e81c7b07670451a7bea11610685120e37db8f2d23",
+  "sourceContentHash": "590c68ffe13c9b2b080c753a44f5a1d6661445888feea26332e7922fddef4d9c",
+  "editorialSha256": "7490c4355f01f6646d9f1a324ad59cbaea71387402947df5533b4a47677a2edc",
+  "hints": {
+    "zh": [
+      "三数之和能否被 d 整除只取决于三个数各自除以 d 的余数，具体数值无关紧要。",
+      "先统计每个余数 0..d−1 出现的次数。枚举两个余数 r1≤r2，第三个余数 r3=(−r1−r2) mod d 被唯一确定；只处理 r3≥r2，保证每个余数组合只算一次。",
+      "三个余数互不相同时贡献 cnt[r1]·cnt[r2]·cnt[r3]；恰有两个相同时用 C(cnt,2) 乘另一个的频次；三个都相同时用 C(cnt,3)。负数取余要先调整到 0..d−1。总复杂度 O(n+d²)，答案最大约 1.33×10^9，用 64 位整数累加。"
+    ],
+    "en": [
+      "Whether a sum of three numbers is divisible by d depends only on each number's remainder modulo d, not on the values themselves.",
+      "Count how often each remainder 0..d-1 occurs. Enumerate two remainders r1 <= r2; the third remainder r3 = (-r1 - r2) mod d is then fixed. Only handle r3 >= r2 so each remainder combination is counted once.",
+      "When the three remainders are distinct, add cnt[r1] * cnt[r2] * cnt[r3]; when exactly two are equal, use C(cnt, 2) times the other count; when all three are equal, use C(cnt, 3). Normalize remainders of negative numbers into 0..d-1 first. Total O(n + d^2); the answer can reach about 1.33 * 10^9, so accumulate in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the occurrences of each remainder 0..d-1. Enumerate r1 <= r2 and let r3 = (-r1-r2) mod d; only handle r3 >= r2 to avoid counting a remainder triple twice. When the three remainders are distinct, use the product of their frequencies; when two are equal, use C(cnt,2) times the other frequency; when all three are equal, use C(cnt,3).\n\n## Proof of correctness\n\nEvery valid index triple corresponds to exactly one non-decreasing remainder combination (r1,r2,r3) whose sum is 0 mod d, so the enumeration passes it exactly once. Given the first two remainders, the third is uniquely determined by the divisibility condition. Using a product or a binomial coefficient according to which remainders coincide chooses exactly the corresponding number of distinct array indices; conversely, the remainders of each such choice sum to 0 mod d, so every chosen triple is valid. Therefore the accumulated value is the answer.\n\n## Complexity\n\nTime O(n+d^2), space O(d); on this site n <= 2000 and d <= 1000. The largest answer is C(2000,3) = 1,331,334,000."
+}

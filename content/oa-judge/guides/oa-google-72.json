@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-72",
+  "packageChecksum": "131789534c12811f18e96a608bbb8440ff368d6dedcfa4907f7f82f91d14e0dc",
+  "sourceContentHash": "f4eb15cb57dac89633606d2ae21cff13d45da6ac02af9857aa643a917d55816e",
+  "editorialSha256": "2e00f853e31a4d4982f5aaec888e9cbadba01d0978b6e49fb4d2b0e31a1daa84",
+  "hints": {
+    "zh": [
+      "每个字母在键盘上的位置唯一，手指当前位置又由上一个输入的字母确定，所以每一步的移动量是确定的。",
+      "先建立字母到下标的映射，再顺着单词累加相邻两次位置之差的绝对值，起点是下标 0。",
+      "用长度 26 的数组记录每个字母的下标。current 初始为 0，遍历 word，每个字符把 |pos[c]−current| 加到答案上并把 current 更新为 pos[c]，最后输出总和。"
+    ],
+    "en": [
+      "Each letter has a unique key position and the finger's position is fixed by the previous letter, so every move is determined.",
+      "Map each letter to its index first, then walk the word adding the absolute difference between consecutive positions, starting from index 0.",
+      "Store each letter's index in an array of 26. Set current to 0; for each character of word add |pos[c]−current| to the answer and set current to pos[c]. Print the total."
+    ]
+  },
+  "explanationEn": "## Idea\n\nPrecompute the position of every letter and add up the distance from the previous position for each character in turn.\n\n## Correctness\n\nEach character's target position is unique and the current finger position is fixed by the previous character, so every necessary move is exactly the difference of the two positions; their sum is the total time.\n\n## Complexity\n\nO(26+n) time, O(26) space."
+}

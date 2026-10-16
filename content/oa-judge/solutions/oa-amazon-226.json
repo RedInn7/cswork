@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-226",
+  "packageChecksum": "92e5046d4033e970b1cac7bd7b314a8c16b8f75af9df351f8dc285386dcca805",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    // Longest sorted window with max <= capacity * min.\n    long long left = 0, best = 0;\n    for (long long right = 0; right < n; right++) {\n        while (left < right && a[right] > k * a[left]) left++;\n        best = max(best, right - left + 1);\n    }\n    cout << n - best << \"\\n\";\n}\n",
+      "sha256": "eaa74727dfd97ff43758e28d58691a7b4c0bab0c9d260db4853eaa17ce393694"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long k = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Longest sorted window with max <= capacity * min.\n        int left = 0, best = 0;\n        for (int right = 0; right < n; right++) {\n            while (left < right && a[right] > k * a[left]) left++;\n            best = Math.max(best, right - left + 1);\n        }\n        System.out.println(n - best);\n    }\n}\n",
+      "sha256": "ddbe17b92cc001a2b6dd7a434baf4c8801851898a4f78b94cfe6d96be61b5d2e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tk := nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Longest sorted window with max <= capacity * min.\n\tleft, best := 0, 0\n\tfor right := 0; right < n; right++ {\n\t\tfor left < right && a[right] > k*a[left] {\n\t\t\tleft++\n\t\t}\n\t\tbest = max(best, right-left+1)\n\t}\n\tfmt.Println(n - best)\n}\n",
+      "sha256": "636692f44fb64a885f9e3d75c693297e41a87bc6dff9aaf23c0870b72b6b1a94"
+    }
+  ]
+}

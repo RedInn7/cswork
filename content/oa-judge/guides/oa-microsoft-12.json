@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-12",
+  "packageChecksum": "47ee361fccdb1511ee82b801aa01899477af19659e10ee49ac0b100b5bf1a421",
+  "sourceContentHash": "4726e50ea69c0eb16be32482ea6e7f1b03f120f5fc75a00eeee1eba8d762c3a9",
+  "editorialSha256": "88934724928a389e3b1c73d665dd0604221be9424d1a84330285610d8794cce7",
+  "hints": {
+    "zh": [
+      "要求的路径是 1、2、…、N 依次直接相连，所以它用到的每条边都必须恰好是 (i,i+1)，其他边完全无关。",
+      "只需检查 N−1 条边 (1,2)、(2,3)、…、(N−1,N) 是否全部出现在图中：全部出现时按编号走就行，缺一条就不可能。",
+      "开一个布尔数组，读到端点差的绝对值为 1 的边时，把较小端点标记为已有（重复边只算一次），并统计不同的标记个数；个数等于 N−1 输出 1，否则输出 0。N=1 时需要 0 条边，直接满足。"
+    ],
+    "en": [
+      "The required path goes 1, 2, …, N with direct edges, so every edge it uses must be exactly (i,i+1); all other edges are irrelevant.",
+      "Just check whether the N−1 edges (1,2), (2,3), …, (N−1,N) are all present: if they are, walk in numeric order; if one is missing, it is impossible.",
+      "Use a boolean array. For each edge whose endpoints differ by exactly 1, mark the smaller endpoint (duplicate edges count once) and count the distinct marks; print 1 if the count equals N−1 and 0 otherwise. With N=1 no edges are needed, so the answer is 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCollect the edges whose endpoints differ by 1 and check whether they cover all N−1 pairs of consecutive numbers.\n\n## Proof of correctness\n\nEvery edge of the required path must be (i,i+1), so having all of them is necessary; when all of them exist, walking in numeric order is a valid path, so it is also sufficient.\n\n## Complexity\n\nTime O(N+M), space O(N+M)."
+}

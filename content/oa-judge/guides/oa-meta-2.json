@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-2",
+  "packageChecksum": "f405c1a99df7561252fd8af2aee9a5277c729e6c1ae63eb5ae064fd674794b47",
+  "sourceContentHash": "ed0a1af04c8bdfe69b3cc165618ba7281f96343c566081e9aa93785efdef2b68",
+  "editorialSha256": "ff744849e387444a99c48c9bc2841ed1bc433ebb2b301ac1fffca3486a7a2df2",
+  "hints": {
+    "zh": [
+      "一个数是 k 的非负整数次幂，当且仅当能用 k 不断整除它直到变成 1；1 本身是 k⁰，也要计入。",
+      "对每个数，只要它大于 1 且能被 k 整除就除以 k；k≥2 保证每次都严格变小，最多除 log_k(10^9) 次，总耗时很小。",
+      "逐个读入数值，反复用 k 整除，直到不能整除或已经变成 1；最终等于 1 就计数加一。重复出现的数分别计数，最后输出计数。"
+    ],
+    "en": [
+      "A number is a non-negative integer power of k exactly when dividing it by k over and over reaches 1; 1 itself is k^0 and must be counted too.",
+      "For each number, divide by k as long as it is greater than 1 and divisible by k; k >= 2 guarantees it shrinks every time, so there are at most log_k(10^9) divisions and the total work is small.",
+      "Read the values one by one, divide each by k repeatedly until it is no longer divisible or has become 1, and count it if it ends at exactly 1. Duplicates are counted separately; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepeatedly divide each number by the factor k, and count it when it finally equals 1.\n\n## Why it is correct\n\nk>=2, so every exact division strictly decreases the value. Dividing down to exactly 1 is equivalent to the original number being a non-negative integer power of k; 1 needs no division and is k^0.\n\n## Complexity\n\nTime O(n log_k M), extra space O(1)."
+}

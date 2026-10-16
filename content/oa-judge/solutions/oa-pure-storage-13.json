@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-13",
+  "packageChecksum": "8c09e762258e7a1a8bb1558cd3da7927231352c5fd9552ee24e74a6cda6de042",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string p, s;\n    getline(cin, p);\n    getline(cin, s);\n    while (!p.empty() && p.back() == '\\r') p.pop_back();\n    while (!s.empty() && s.back() == '\\r') s.pop_back();\n    if (p.empty() || s.empty()) { puts(\"0\"); return 0; }\n    size_t m = p.size(), n = s.size();\n    // dp[i]: consecutive copies of p ending exactly at position i of s.\n    vector<int> dp(n + 1, 0);\n    int best = 0;\n    for (size_t end = m; end <= n; end++)\n        if (s.compare(end - m, m, p) == 0) { dp[end] = dp[end - m] + 1; best = max(best, dp[end]); }\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "e86700d5b4126d0b1c8837cfa066610bb870cd4b131d860ab73d7295c25d6589"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        String p = br.readLine(), s = br.readLine();\n        if (p == null) p = \"\";\n        if (s == null) s = \"\";\n        if (p.isEmpty() || s.isEmpty()) { System.out.println(0); return; }\n        int m = p.length(), n = s.length(), best = 0;\n        // dp[i]: consecutive copies of p ending exactly at position i of s.\n        int[] dp = new int[n + 1];\n        for (int end = m; end <= n; end++)\n            if (s.startsWith(p, end - m)) { dp[end] = dp[end - m] + 1; best = Math.max(best, dp[end]); }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "7c10cb10e78a46a255bdf65ac49160a9b461bf2bae050a9157465887b9589c25"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\tlines := strings.Split(strings.ReplaceAll(string(data), \"\\r\\n\", \"\\n\"), \"\\n\")\n\tp, s := lines[0], \"\"\n\tif len(lines) > 1 {\n\t\ts = lines[1]\n\t}\n\tif p == \"\" || s == \"\" {\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\tm, n, best := len(p), len(s), 0\n\t// dp[i]: consecutive copies of p ending exactly at position i of s.\n\tdp := make([]int, n+1)\n\tfor end := m; end <= n; end++ {\n\t\tif s[end-m:end] == p {\n\t\t\tdp[end] = dp[end-m] + 1\n\t\t\tbest = max(best, dp[end])\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "fd1b8b9073eb79a7c53529ed34ab15532c993d8d27060bf1080be19a29212d08"
+    }
+  ]
+}

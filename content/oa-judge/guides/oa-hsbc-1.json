@@ -1,0 +1,19 @@
+{
+  "id": "oa-hsbc-1",
+  "packageChecksum": "bc49e2db9dac0f803bb8a35f7fb3d5f12160a1ece39f99bf2263dcb3269ff57f",
+  "sourceContentHash": "202828234228ff5cb0a8c031b73eb1b597d94aa826375ba5e422f5233f41012e",
+  "editorialSha256": "8567fb812c40949809c41a7c9cecd379e670f276043281d1d4186decb05d99b9",
+  "hints": {
+    "zh": [
+      "前 K 根和其余花枝的分界由输入位置决定，与长度无关；两部分互不影响。",
+      "把数组按下标 K 切成两段，前段升序排序，后段降序排序，然后按原先的前后顺序拼接。",
+      "读入 n、n 个长度和 K（注意 n 可以为 0，K 也可以为 0 或 n）。对 [0,K) 升序排序，对 [K,n) 降序排序（或升序后倒序输出），用空格连接输出。"
+    ],
+    "en": [
+      "The split between the first K sticks and the rest is fixed by input position, not by length; the two parts do not affect each other.",
+      "Cut the array at index K, sort the first part ascending and the second part descending, then join them in their original order.",
+      "Read n, the n lengths and K (n may be 0, and K may be 0 or n). Sort [0,K) ascending and [K,n) descending (or ascending and printed in reverse), and print them separated by spaces."
+    ]
+  },
+  "explanationEn": "## Idea\n\nSplit the array at K, sort the two parts separately and join them in the required directions.\n\n## Proof of correctness\n\nThe problem requires the first K items and the remaining items to be sorted separately, and the boundary between the parts is fixed by input position; sorting each part locally and joining them meets every requirement directly.\n\n## Complexity\n\nO(n log n) time, O(n) extra space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/hsbc#1-arrange-flower-sticks; the core of the original problem is clear but its constraints were damaged by OCR. This site adds n and the value ranges and fixes an obvious typo in the sample."
+}

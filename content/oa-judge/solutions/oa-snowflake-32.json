@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-32",
+  "packageChecksum": "472feb62f31167dcb1d05158968f3b4091362e8a21ee5de846f5cd085a295c02",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    vector<ll> dp(n + 1, 0);\n    for (int end = 1; end <= n; end++) {\n        // Last run s[start..end-1] can be one color iff it holds at most one fixed letter.\n        char color = 0;\n        ll best = 0;\n        for (int start = end - 1; start >= 0; start--) {\n            char c = s[start];\n            if (c != '.') {\n                if (color && c != color) break;\n                color = c;\n            }\n            ll len = end - start;\n            best = max(best, dp[start] + len * (len + 1) / 2);\n        }\n        dp[end] = best;\n    }\n    printf(\"%lld\\n\", dp[n]);\n}\n",
+      "sha256": "56ecf5d29c7b6ddb4de5f6d14bac4c5618729955cb239c588376405712454675"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        char[] s = next().toCharArray();\n        int n = s.length;\n        long[] dp = new long[n + 1];\n        for (int end = 1; end <= n; end++) {\n            // Last run s[start..end-1] can be one color iff it holds at most one fixed letter.\n            char color = 0;\n            long best = 0;\n            for (int start = end - 1; start >= 0; start--) {\n                char c = s[start];\n                if (c != '.') {\n                    if (color != 0 && c != color) break;\n                    color = c;\n                }\n                long len = end - start;\n                best = Math.max(best, dp[start] + len * (len + 1) / 2);\n            }\n            dp[end] = best;\n        }\n        System.out.println(dp[n]);\n    }\n}\n",
+      "sha256": "52617add3573791ae00efbd0e9f0b34d00b1eaf4b2c05cb08edc8768d4c7cfed"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\ts := bytes.TrimSpace(raw)\n\tn := len(s)\n\tdp := make([]int64, n+1)\n\tfor end := 1; end <= n; end++ {\n\t\t// Last run s[start..end-1] can be one color iff it holds at most one fixed letter.\n\t\tvar color byte\n\t\tvar best int64\n\t\tfor start := end - 1; start >= 0; start-- {\n\t\t\tif c := s[start]; c != '.' {\n\t\t\t\tif color != 0 && c != color {\n\t\t\t\t\tbreak\n\t\t\t\t}\n\t\t\t\tcolor = c\n\t\t\t}\n\t\t\tl := int64(end - start)\n\t\t\tbest = max(best, dp[start]+l*(l+1)/2)\n\t\t}\n\t\tdp[end] = best\n\t}\n\tfmt.Println(dp[n])\n}\n",
+      "sha256": "3ed882b1db6e3c499fa597f1a590b93dbe966c8e2d727ba8f8fc20ed91554531"
+    }
+  ]
+}

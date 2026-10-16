@@ -1,0 +1,19 @@
+{
+  "id": "oa-doordash-4",
+  "packageChecksum": "94664784a1b2321fee91a0241042c4a44faec7e35e367a54710ab72233fa93ff",
+  "sourceContentHash": "129cf5e454586707eb0e470ed707c84a84c2dcbd373bd8f6ff3ef00389741977",
+  "editorialSha256": "06b32ee9ee14582339f8273371ea844f42a7fa68d797d81128b939e5165ee3f1",
+  "hints": {
+    "zh": [
+      "正着模拟时全局抬价要改动整个数组，代价太大。换个角度看：每件商品的最终价格只取决于它最后一次单点赋值，以及这之后发生的所有全局下限。",
+      "倒序扫描操作，维护“到目前为止见过的全局下限最大值” floor。对某个位置，倒序遇到的第一个单点赋值就是它正向的最后一次赋值，此时的 floor 恰好是之后作用于它的全部下限的最大值。",
+      "倒序处理：遇到 2 类操作就令 floor = max(floor, v)；遇到 1 x v 且第 x 项还没有记录时，记录 max(v, floor)。扫描完后，记录过的位置直接输出记录值，没被赋值过的位置输出 max(初始价, floor)。"
+    ],
+    "en": [
+      "Simulating forward, every global raise touches the whole array, which is too slow. Instead note that an item's final price depends only on its last point assignment and all the global lower bounds applied after it.",
+      "Scan the operations backwards while keeping floor, the largest global lower bound seen so far. For each position, the first point assignment met in reverse is its last assignment in forward time, and floor at that moment is exactly the largest bound applied to it afterwards.",
+      "Process in reverse: for a type 2 operation set floor = max(floor, v); for 1 x v when item x has no record yet, record max(v, floor). After the scan, a recorded position prints its record, and a position never assigned prints max(initial price, floor)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the operations in reverse while maintaining `floor`, the global lower bound accumulated so far. For each position, record only the first point assignment met in reverse; if there is no point assignment, take the larger of the initial price and the final lower bound.\n\n## Proof of correctness\n\nIn forward time, a global lower-bound operation can only raise prices. During the reverse scan, the accumulated `floor` is exactly the largest of all lower bounds that can act on a position after a given point assignment. The lower bounds after the last point assignment of the position are already included in `floor`, so its final value is `max(assigned value, floor)`; if there is no assignment, all lower bounds act on the initial value and the result is `max(initial value, floor)`. Computing each position independently gives the unique final array.\n\n## Complexity\n\nO(n+q) time and O(n+q) space."
+}

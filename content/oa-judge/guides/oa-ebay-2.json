@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-2",
+  "packageChecksum": "d1e0abf7bfd8bd3b34bcc91ffba3a7420a986ae943c22de924e3db417e1e3fbf",
+  "sourceContentHash": "4f38455ef99f72af888ec134e2650ae6cbab16cb59550c18d506820f85feb064",
+  "editorialSha256": "3d51c662a6471bc21ff5600c382fc28355dace91af7de9525c7e67c4b0c02d50",
+  "hints": {
+    "zh": [
+      "整行扫描一次就够：维护已经遇到的辅音个数，只有计数恰好是 n 的倍数的那个辅音才需要改。",
+      "辅音表是按字母顺序去掉元音后的 21 个字母 bcdfghjklmnpqrstvwxyz，在表中前进一位并对表长取模就实现了 z 回到 b；只有 ASCII 的 A–Z/a–z 参与判断，大小写先转小写查表再恢复。",
+      "第一行读 n，第二行完整读入 message（保留空格，只去掉行尾换行）。逐字符：是 ASCII 字母且不是元音就计数加一，计数 % n == 0 时替换为辅音表中的下一个字母并保持大小写；其余字符原样输出。n 可达 10^9，计数用 64 位或直接取模比较都行。"
+    ],
+    "en": [
+      "One scan over the line is enough: keep the number of consonants seen, and only the consonants whose count is a multiple of n need to change.",
+      "The consonant list is the 21 letters bcdfghjklmnpqrstvwxyz (the alphabet without vowels); stepping forward one place modulo its length makes z wrap to b. Only ASCII A-Z/a-z take part; look the letter up in lowercase and restore its case.",
+      "Read n from the first line and the entire second line as message (keep spaces, strip only the line break). For each character: if it is an ASCII letter and not a vowel, increment the count, and when count % n == 0, replace it with the next letter in the consonant list, keeping its case; output all other characters unchanged. n can be up to 10^9, so use a 64-bit count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the index of the consonants seen; only when it is a multiple of n, advance one position in the fixed consonant alphabet.\n\n## Correctness\n\nThe consonant alphabet is the English alphabet in order with the vowels removed, and taking the index modulo its length implements the wraparound. The scan only counts ASCII letter consonants, so spaces, digits, punctuation, and non-ASCII characters are output unchanged.\n\n## Complexity\n\nO(|message|) time and output space."
+}

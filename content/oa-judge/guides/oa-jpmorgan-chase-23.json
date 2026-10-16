@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-23",
+  "packageChecksum": "169face47e01d5e39d5fae3fa7011ca9d3016b180013ec1ec8458b6eea506e5d",
+  "sourceContentHash": "f9de36953b433ff80a814a9ba4757c10d85d5e9a7e9e027e292e7b800237f121",
+  "editorialSha256": "2c4d63f54acb25ec9d31cee62f8ead146852b45202caf1c7022e01ad3503e581",
+  "hints": {
+    "zh": [
+      "倒过来看：从目标值走回 0，奇数只能减 1，偶数则可以除以 2；这与目标值的二进制表示一一对应。",
+      "从最高位开始构造：最高位的 1 需要一次加 1，之后每多一位需要一次乘 2，每个为 1 的低位再需要一次加 1。",
+      "对每个 k：k = 0 时输出 0；否则输出“二进制位数 − 1”加上“二进制中 1 的个数”。k 最大为 10^16，需要 64 位整数。"
+    ],
+    "en": [
+      "Think backward from the target to 0: an odd number can only subtract 1, while an even number may be halved; this mirrors the target's binary representation.",
+      "Build the number from its most significant bit: the leading 1 takes one +1, every further bit takes one doubling, and every lower bit that is 1 takes one more +1.",
+      "For each k, print 0 if k = 0; otherwise print (number of binary digits − 1) + (number of 1 bits). k can be up to 10^16, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor a positive number, the answer is its number of binary digits minus one, plus its number of 1 bits; for 0 the answer is simply 0.\n\n## Proof of correctness\n\nWorking backward, an odd number can only subtract one, while an even number may be halved. If an even number subtracts one first, it still has to reach the next even number by subtracting again or by longer steps; moving paired additions before the doubling does not increase the number of operations. Therefore there is an optimal path that builds the number from the most significant binary digit, with one doubling for each subsequent bit and one addition for each 1 bit, achieving the stated count.\n\n## Complexity\n\nO(n log K) time and O(n) output space."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "oa-intuit-22",
+  "packageChecksum": "d35fd89d8fd4676feec7fdd78de406224b852f469c35eca2863bf6c82a475182",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n, m, k;\n    cin >> n >> m >> k;\n    vector<long long> fx(k), fy(k);\n    for (int i = 0; i < k; i++) cin >> fx[i] >> fy[i];\n    long long r, t;\n    cin >> r >> t;\n    long long radius2 = (r * t) * (r * t);\n    // A lattice point is safe iff it lies strictly outside every fire's closed disk.\n    long long safe = 0;\n    for (long long x = 0; x <= n; x++)\n        for (long long y = 0; y <= m; y++) {\n            bool ok = true;\n            for (int i = 0; i < k && ok; i++)\n                if ((x - fx[i]) * (x - fx[i]) + (y - fy[i]) * (y - fy[i]) <= radius2) ok = false;\n            safe += ok;\n        }\n    cout << safe << '\\n';\n}\n",
+      "sha256": "5319f1ad7d947b5e7ea93fefd5c8330aa74a1a453a3f13e41efc0726ac1f488e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong(), m = nextLong();\n        int k = nextInt();\n        long[] fx = new long[k], fy = new long[k];\n        for (int i = 0; i < k; i++) {\n            fx[i] = nextLong();\n            fy[i] = nextLong();\n        }\n        long radius = nextLong() * nextLong(), radius2 = radius * radius;\n        // A lattice point is safe iff it lies strictly outside every fire's closed disk.\n        long safe = 0;\n        for (long x = 0; x <= n; x++)\n            for (long y = 0; y <= m; y++) {\n                boolean ok = true;\n                for (int i = 0; i < k && ok; i++)\n                    if ((x - fx[i]) * (x - fx[i]) + (y - fy[i]) * (y - fy[i]) <= radius2) ok = false;\n                if (ok) safe++;\n            }\n        System.out.println(safe);\n    }\n}\n",
+      "sha256": "300d752651f354d19035984ff7d01b50ec4d13aaa2d24a79033a5751130a8262"
+    }
+  ]
+}

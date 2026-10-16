@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-360",
+  "packageChecksum": "dabc73a160926ff51afc3302f63994c0423d7350e48ba201c1940a91f1983e3a",
+  "sourceContentHash": "2677ca9e7acc0f3a0cdf550c45d7b999a2ad516a6ac93e273721fd51b5d3a56d",
+  "editorialSha256": "e905fa001bb425aecfeff0e2494ccbab276fc003fc37a4c2d3b399f0c250618e",
+  "hints": {
+    "zh": [
+      "排序后，跨度限制只与队内的最大值和最小值有关，因此每支队都可以看成排序数组里连续的一段：两支交错的队总能重新分成“较小的 k 人”和“较大的 k 人”而不违反限制。",
+      "看当前剩下的技能最低的人：如果他和紧随其后的 k−1 人跨度不超过 maxDiff，就立刻让他们组队；否则任何包含他的队都不合法，直接放弃他。",
+      "排序；指针 i 从 0 开始，当 i+k≤n 时：若 a[i+k−1]−a[i]≤maxDiff，则队数加一并令 i+=k，否则 i+=1；输出队数。"
+    ],
+    "en": [
+      "After sorting, the span constraint only involves a team's minimum and maximum, so every team can be taken as a contiguous block of the sorted array: two interleaved teams can always be regrouped into the smaller k and the larger k without breaking the limit.",
+      "Look at the remaining person with the lowest skill: if they and the next k−1 people fit within maxDiff, form that team right away; otherwise no team containing them is valid, so drop them.",
+      "Sort; with i starting at 0, while i+k≤n: if a[i+k−1]−a[i]≤maxDiff, count a team and set i+=k, otherwise set i+=1. Print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the skills. If the leftmost k consecutive people can form a team, take that whole block; otherwise discard the current smallest person.\n\n## Proof of correctness\n\nIf the earliest k people already exceed the span, no k-person team containing the smallest person is valid, so that person can only be skipped. For any two interleaved valid k-person teams, the merged people can be split into the smaller k and the larger k: the smaller team's span does not exceed that of the original team containing the overall minimum; for the larger team, if its maximum is in the other team, its span does not exceed that team's span, and otherwise it does not exceed the span of the team containing the overall minimum. So by repeatedly removing interleavings we obtain contiguous groups in the sorted order of the selected people. Now, if the overall earliest k people can form a team, use it to replace the first team of an optimal solution; all members of later teams have indices after that first team, hence also after the overall earliest k people, so the replacement does not affect them. Thus taking the team immediately loses no teams, and induction proves the algorithm correct.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

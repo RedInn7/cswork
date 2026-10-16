@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-307",
+  "packageChecksum": "3f834897e4fb92d2a59d6190c6d74f40a4a28934bed181a07142f0f8fd134038",
+  "sourceContentHash": "57896f31168baaf2ed8894e129d950c5bce53714e8bc9d3764325b0487ab3f8f",
+  "editorialSha256": "35e624822b9de729c8635c943494a04b3953174c072a9ae4d5876695b6283517",
+  "hints": {
+    "zh": [
+      "总费用=全部effort之和−免费件之和，所以目标是让免费件的总值最大。一个中心的免费件不能比该中心任何付费件更大，而且每个中心最多用一次。",
+      "让高价值物品尽量成为免费件：把effort降序排列，按阈值从小到大依次使用中心，每个中心付掉接下来阈值个最大的物品，再免掉紧随其后的两件。特别注意：如果用到了最后一个中心，它必须装下所有剩余物品，免费件只能是全局最小的两件。",
+      "维护指针cursor与累计节省saving，依次看第j个中心：若cursor+阈值+2>m就停止；若j是最后一个中心，用saving加上最小两件更新最优值后停止；否则cursor加上阈值，saving加上接下来两件，cursor再加2，并更新最优值。最优值初值为0（不用任何优惠），答案为总和减去最优节省。"
+    ],
+    "en": [
+      "Total cost = sum of all efforts − sum of the free items, so the goal is to maximize the total value of the free items. A center's free items cannot be larger than any item paid at that center, and each center is used at most once.",
+      "Make high-value items free whenever possible: sort effort in descending order and use the centers in ascending order of threshold; each center pays for the next threshold largest items and then frees the two right after them. Watch out: if the last center gets used, it must hold every remaining item, so its free items can only be the two globally smallest.",
+      "Keep a pointer cursor and the accumulated saving, and go through center j: stop if cursor+threshold+2>m; if j is the last center, update the best with saving plus the two smallest items and stop; otherwise add the threshold to cursor, add the next two items to saving, advance cursor by 2, and update the best. The best starts at 0 (no offer used), and the answer is the total minus the best saving."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort effort in descending order and thresholds in ascending order, and use the centers with the smallest thresholds in turn: first pay for threshold items, then get the next two free, and record the savings. While an unused center remains, all leftover items can be paid for there; if the last center is used, it must take all leftover items, so its free items become the two globally smallest. Compare every prefix count of centers used, as well as using no offer at all.\n\n## Proof of correctness\n\nFor a fixed set of paid items, the free items must not exceed the smallest of them. When the offer groups are arranged by value, if a larger item of a later group interleaves with a smaller item of an earlier group, they can be swapped until the groups are contiguous without lowering the total free value; putting smaller thresholds first makes the free positions of the earlier groups come earlier while the end position of the later groups stays the same, so the savings do not decrease. A center that is not the last only needs to pay for its threshold number of items; moving extra paid items to the group holding the leftovers does not affect its offer. If an unused center remains, it can hold all leftover items and give up its offer; if not, the last group must contain all remaining items, and only the two globally smallest items can be no larger than every remaining paid item. The algorithm enumerates each possible number of offer groups and obtains the best achievable savings via these exchanges; subtracting them from the total gives the minimum cost.\n\n## Complexity\n\nTime O(m log m+n log n), space O(m+n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-20",
+  "packageChecksum": "d24a35a120b3a2cbfa7c3d4567eb9072627e2a9c8df6a8f458ea29e3aa52f46f",
+  "sourceContentHash": "19a296e4c586cbb0a554e175259aea0bd6543c0138f3b2ae2739fdd0d7e4c09d",
+  "editorialSha256": "0ad37b58f03b19a0186922841f971d6896372dd1a7dd87da6a175bed7df5b81f",
+  "hints": {
+    "zh": [
+      "一组的中位数需要组内另有一个不小于它的数陪着；所以第 j 大的组中位数，至少需要 2j 个不小于它的数。",
+      "因此第 j 大的中位数不可能超过全局第 2j 大的值；只要能同时取到这些上界就是最优。吞吐量都为正，组数越多越好，取 floor(n/3) 组。",
+      "降序排序后，第 i 组（i 从 0 开始）用 a[2i] 作最大值、a[2i+1] 作中位数，再从剩下最小的数里给每组配一个；答案是 i=0..floor(n/3)−1 的 a[2i+1] 之和，用 64 位。"
+    ],
+    "en": [
+      "A group's median needs another member at least as large as itself; so the j-th largest group median needs at least 2j values that are not smaller than it.",
+      "Hence the j-th largest median cannot exceed the 2j-th largest value overall, and a construction reaching all these bounds at once is optimal. Throughputs are positive, so more groups are better: use floor(n/3) groups.",
+      "Sort descending; group i (from 0) uses a[2i] as its maximum and a[2i+1] as its median, and gets one of the smallest remaining values; the answer is the sum of a[2i+1] for i = 0..floor(n/3)-1, in 64-bit."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort in descending order. Take floor(n/3) groups, choosing the 2nd, 4th, 6th, ... largest values as the medians, each with the larger value paired with it as the maximum, and use the remaining small values as the third members.\n\n## Proof of correctness\n\nThe j-th largest group median needs at least 2j values not smaller than it (each group's median and maximum), so it is at most the 2j-th largest value overall. The construction attains all of these upper bounds at once, and enough values remain to give every group a minimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

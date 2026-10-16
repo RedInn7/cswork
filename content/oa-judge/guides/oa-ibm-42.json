@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-42",
+  "packageChecksum": "d9167266b4127499bade713a983d4d66f38a7c7a9ab2f7973b3c3cbd3d21c328",
+  "sourceContentHash": "2ce52004a54150949b1a33036bda1656c13a08ae872ffe6ad7ef2a072f9db20f",
+  "editorialSha256": "3b10e319918525bbfe6a1049e22309aa613b9a6fbb610300f1ca0ff16610017f",
+  "hints": {
+    "zh": [
+      "查询要求键和写入时刻都精确匹配，不需要找最接近的时间版本，所以这只是一个按（键, 时刻）查找的字典问题。",
+      "同一时刻同一个键不会重复出现，因此（键, 时刻）可以作为唯一的复合键，直接映射到对应的值。",
+      "读入每个条目时以（键, 时刻）为复合键存入哈希表；每个查询用同样的复合键取出值并逐行输出。注意条目的字段顺序是时刻、键、值，而查询是先键后时刻。"
+    ],
+    "en": [
+      "A query must match both the key and the write time exactly, with no search for the nearest time version, so this is just a dictionary lookup by (key, timestamp).",
+      "The same key never appears twice at the same time, so (key, timestamp) is a unique composite key that maps directly to its value.",
+      "Store each entry in a hash map under the composite key (key, timestamp); answer each query by looking up the same composite key and print one value per line. Note that entries list timestamp, key, value, while queries give the key first and then the timestamp."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild a hash map with (key,timestamp) as a composite key and answer the queries one by one.\n\n## Proof of correctness\n\nThe composite key is unique because no key repeats at the same time, so after writing each entry the stored value is exactly that entry's value; a query that is guaranteed to hit accesses the same composite key and must return the corresponding value.\n\n## Complexity\n\nTime O(number of input characters), space O(n·key length)."
+}

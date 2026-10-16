@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-3",
+  "packageChecksum": "7e9cfd3d1eb201f718865662f6780a9f791d7b5dafa971e54e98000bae5f39a3",
+  "sourceContentHash": "5cb663b03503e299d1a9cd7b1d724275a2d73c53bab346d34c361fbc45c6e940",
+  "editorialSha256": "aaa4da90ed5cbeedccb9d76712618cbb5709173e489eb9b9cdd85b69d74d343e",
+  "hints": {
+    "zh": [
+      "相邻两个前缀异或 pref[i-1] 和 pref[i] 共享前面所有元素，异或运算中相同的值会两两抵消。",
+      "因此 pref[i-1] 异或 pref[i] 只剩下 a[i]；第一个元素就是 pref[0] 本身（相当于和 0 异或）。",
+      "用一个变量记住上一个 pref（初值为 0），依次读入每个 pref，输出它与上一个值的异或，再把上一个值更新为当前 pref。全程只需一次扫描，结果小于 2^30。"
+    ],
+    "en": [
+      "Two consecutive prefix XORs pref[i-1] and pref[i] share all earlier elements, and equal values cancel out under XOR.",
+      "So pref[i-1] XOR pref[i] leaves only a[i]; the first element is pref[0] itself, which is the same as XOR with 0.",
+      "Keep the previous pref in a variable starting at 0; for each pref read, output its XOR with the previous value, then set the previous value to the current pref. One pass suffices, and every result is below 2^30."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe first element equals pref[0]; every other element is the XOR of adjacent prefixes.\n\n## Correctness\n\nThe elements of the shared prefix are each XORed twice and cancel, leaving only the current element, so each element is uniquely determined. The independent oracle recomputes the prefixes by walking all already recovered elements again, rather than using the adjacent-input formula.\n\n## Complexity\n\nTime O(N), O(1) besides input and output."
+}

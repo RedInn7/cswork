@@ -1,0 +1,19 @@
+{
+  "id": "oa-nutanix-2",
+  "packageChecksum": "32124d4f769b48536fb090d921a85688e597429238137b86f652c22365dfccb3",
+  "sourceContentHash": "8e7a95308c5c01bced8d39537478ab84da7ac569234c64148b83e8ab16968a3a",
+  "editorialSha256": "13e08b50b68f3be18fed11b7312dd8cbafe064cb15be0221028885a2b0f336a0",
+  "hints": {
+    "zh": [
+      "固定的数字不能改，也不受每日上限约束；只有 ? 位置需要填 0 到 day_hours 之间的整数，并且七天加起来恰好等于 work_hours。",
+      "问号最多 7 个，可以回溯枚举：先求固定数字之和，得到还需安排的工时；再从左到右给每个问号尝试 0 到 day_hours。按位置从左到右、数值从小到大枚举，得到的结果天然按字典序排好。",
+      "递归时带上剩余工时：小于 0，或大于“剩余问号数乘以每日上限”时立即剪枝；问号全部填完且剩余恰为 0 时记录当前字符串。最后把所有结果输出成紧凑的 JSON 字符串数组（方括号内用逗号分隔、每项带双引号、不加空格），没有结果时输出空数组。"
+    ],
+    "en": [
+      "Fixed digits cannot change and are not bound by the daily limit; only the ? positions get an integer from 0 to day_hours, and the seven days must add up to exactly work_hours.",
+      "There are at most 7 question marks, so backtracking works: subtract the fixed digits to get the hours still to place, then try 0 to day_hours for each question mark from left to right. Enumerating positions left to right and values in increasing order produces the results already in lexicographic order.",
+      "Carry the remaining hours through the recursion and prune when they drop below 0 or exceed the number of remaining question marks times the daily limit; when every question mark is filled and exactly 0 remains, record the string. Print all results as a compact JSON array of strings (comma-separated, each in double quotes, no spaces), or an empty array when there are none."
+    ]
+  },
+  "explanationEn": "# Work Schedules\n\n## Approach\n\nFirst sum the fixed days, then try 0 to day_hours for each question mark from left to right. Prune when the remaining hours are below 0 or exceed the capacity of the remaining positions. A schedule is valid when all positions are filled and the remainder is 0; enumerating in increasing order guarantees lexicographic order.\n\n## Example correction\n\nOAMaster's third example input says day_hours=8, but its explanation and output are listed for 2; the FastPrep copy of the same problem also uses 2. This site only corrects that example's input to 2; the algorithm still works from the input parameter, and limits 4 and 8 were verified as well. The original first example's fixed schedule contains an 8-hour day while the limit is 4, so day_hours constrains only the question marks to be filled, and fixed characters stay unchanged.\n\n## Correctness\n\nEvery question mark enumerates all allowed values, and only results whose total hours match are kept, so no solution is missed and no invalid schedule is introduced.\n\n## Complexity\n\nWith q question marks, time is O((day_hours+1)^q) plus the output cost, and recursion space is O(q).\n\n## Reference implementation\n\n```python\nimport json,sys\ndef solve(raw):\n p=raw.split(); work,limit=map(int,p[:2]); pattern=p[2]\n if not 1<=work<=56 or not 1<=limit<=8 or len(pattern)!=7: raise ValueError(\"invalid input\")\n fixed=sum(int(c) for c in pattern if c!=\"?\"); slots=[i for i,c in enumerate(pattern) if c==\"?\"]; chars=list(pattern); out=[]\n def visit(i,left):\n  if left<0 or left>(len(slots)-i)*limit:return\n  if i==len(slots):\n   if left==0:out.append(\"\".join(chars))\n   return\n  pos=slots[i]\n  for x in range(limit+1):chars[pos]=str(x);visit(i+1,left-x)\n  chars[pos]=\"?\"\n visit(0,work-fixed);return json.dumps(out,separators=(\",\",\":\"))\nif __name__==\"__main__\":print(solve(sys.stdin.read()))\n```"
+}

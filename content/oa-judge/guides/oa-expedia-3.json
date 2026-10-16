@@ -1,0 +1,19 @@
+{
+  "id": "oa-expedia-3",
+  "packageChecksum": "bbb354db5e40834d5381b65075d215d560c47cfde04b8576a2d5e8a60dbe3b63",
+  "sourceContentHash": "e2be5562ebaeedbe9008bf9def0c40a720f9660a7043d203a533585d6aaf287f",
+  "editorialSha256": "d3af2a033e99a3ee187d5fad8d302822df2296214727ce55d48db06f4c3e8152",
+  "hints": {
+    "zh": [
+      "正着走每一步都有两种选择，分支太多；反过来从目标往回推，每一步的前驱却是唯一的：坐标都为正，较大的那一维一定是最后一步加出来的。",
+      "若 tx > ty，上一步一定是 (tx − ty, ty)；连续多次同方向的回退可以用取模一次跳过，即 tx %= ty。但要小心：当 ty 已经等于 sy 时不能再取模越过起点，此时只需判断 (tx − sx) 能否被 ty 整除。ty > tx 的情况对称。",
+      "循环条件是 tx ≥ sx 且 ty ≥ sy：两维都相等时输出 Yes；tx > ty 时，若 ty == sy 就返回 (tx − sx) % ty == 0 的结果，否则 tx %= ty；反之对称处理 ty。循环退出说明越过了起点，输出 No。用 64 位整数。"
+    ],
+    "en": [
+      "Going forward, every step has two choices and the branching explodes; going backward from the target, each step has a unique predecessor: both coordinates are positive, so the larger one must have been produced by the last step.",
+      "If tx > ty, the previous point must be (tx - ty, ty), and a run of repeated steps in that direction collapses into one modulo, tx %= ty. Be careful: once ty already equals sy you must not jump past the start with the modulo; just check whether (tx - sx) is divisible by ty. The case ty > tx is symmetric.",
+      "Loop while tx >= sx and ty >= sy: if both coordinates match, print Yes; if tx > ty, return whether (tx - sx) % ty == 0 when ty == sy, otherwise set tx %= ty; handle ty symmetrically. Leaving the loop means you went past the start, so print No. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nReconstruct backwards from the target. If tx>ty, the last step can only have increased the first coordinate by ty, so the predecessor's first coordinate is tx-ty; repeated backward steps can be skipped in one go with a modulo. Handle ty>tx symmetrically. If one coordinate already equals the corresponding starting value, the other coordinate must be able to return to the start in steps of the fixed size, that is, by exact division.\n\n## Correctness\n\nEach forward operation increases only one coordinate, and the increase is exactly the other positive coordinate. Therefore the larger coordinate determines the last step and the unique predecessor; consecutive subtractions in the same direction can be merged with a modulo. Reaching the start means success; overshooting the start, or a remainder mismatch while the other coordinate is fixed, means no valid chain of predecessors can exist.\n\n## Complexity\n\nEach modulo shrinks one coordinate significantly, for O(log(max(tx,ty))) time and O(1) space."
+}

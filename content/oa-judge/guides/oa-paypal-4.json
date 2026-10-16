@@ -1,0 +1,19 @@
+{
+  "id": "oa-paypal-4",
+  "packageChecksum": "37baa29e5e7fcfad6606421d6fa93c4b07a83c014159642e526ce488da796a7c",
+  "sourceContentHash": "85e4f45af1a42e058fd1587eef88d982c3c492ceb868099f7185143ec89c5bab",
+  "editorialSha256": "d0644b9c542d4a210dee6ae00ad53756982f3f92e77cd6cb027cec43ad3e459e",
+  "hints": {
+    "zh": [
+      "非递增的情况可以把数组反转后变成非递减，所以只需要会算“改成非递减的最小代价”，两个方向取较小值。最优解里每个位置的新值都可以取成原数组中出现过的某个值。",
+      "把原数组的不同值排序成 v[0..k−1]，做 DP：dp[j] 表示处理完当前前缀、且当前位置取值 v[j] 时的最小代价。非递减要求前一位置的取值不超过 v[j]。",
+      "第一个位置 dp[j]=|a[0]−v[j]|；之后每个位置 x 从左到右扫 j，维护上一行 dp[0..j] 的前缀最小值 best，新值为 best+|x−v[j]|。最后一行的最小值就是非递减代价；对反转数组再算一次，取两者较小值。时间 O(nk)，代价用 64 位整数。"
+    ],
+    "en": [
+      "The non-increasing case becomes the non-decreasing case after reversing the array, so you only need the minimum cost to make the array non-decreasing, then take the smaller of the two directions. In an optimal solution every new value can be chosen among the values that appear in the original array.",
+      "Sort the distinct original values into v[0..k-1] and run a DP: dp[j] is the minimum cost for the processed prefix when the current position takes the value v[j]. Non-decreasing means the previous position's value is at most v[j].",
+      "For the first position, dp[j] = |a[0] - v[j]|. For each later value x, scan j from left to right while keeping best, the prefix minimum of the previous row dp[0..j]; the new value is best + |x - v[j]|. The minimum of the last row is the non-decreasing cost; compute it again on the reversed array and take the smaller one. Time O(nk); keep costs in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute the non-decreasing cost. An optimal new value can always be one of the values that appear in the original array; compress these values into v[j]. Let dp[j] be the minimum cost after processing up to the current position with the current value set to v[j]; then the new state is |arr[i] - v[j]| plus the minimum dp of the previous row over all indices <= j. Maintaining a prefix minimum during the scan is enough. The non-increasing cost equals the non-decreasing cost of the reversed array, and the answer is the smaller of the two.\n\n## Correctness\n\nIf the current position takes v[j], the non-decreasing constraint requires exactly that the previous position takes a value not exceeding v[j]; choosing the lowest cost among all prefix states satisfying this and adding the current absolute difference gives the optimum for that state. Induction covers every prefix and every final value. Any optimal integer monotone regression can move each plateau's value to the median of that plateau's original values without increasing the cost, so coordinate compression misses no optimal value. Reversal maps non-increasing sequences one to one onto non-decreasing sequences and preserves the total cost.\n\n## Complexity\n\nLet k be the number of distinct elements: time O(nk), extra space O(k); on this site n <= 1000.\n\nSource example 3 contains 0, but the lower bound listed in the same original text is 1. Both the statement and that example naturally support non-negative integers; this site explicitly widens the value range to 0..10^9 without changing the objective function."
+}

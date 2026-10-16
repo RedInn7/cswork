@@ -1,0 +1,19 @@
+{
+  "id": "oa-millennium-3",
+  "packageChecksum": "77b45b830973c96b0a92b5107246c77f4e4ded1c9ca791a753dc74c4f5e36fd4",
+  "sourceContentHash": "a38d258726f01d5fa0a6661ac87a8f0005f4e25935deb57c3222abbf39a2bb9f",
+  "editorialSha256": "698a8d86bb912f1c7f5fe1ca87bbd6d4a45ccdebd2460d231d2594063ee7e4d3",
+  "hints": {
+    "zh": [
+      "先算出完全不交换时的强度作为基线；交换相邻的 i 和 i+1 之后，强度的变化只与这两个元素有关，和其他交换互不影响。",
+      "交换 i 与 i+1 带来的增益是 arr[i]−arr[i+1]，为负时不如不换。每个元素最多参与一次交换，选中的交换对不能共用元素，于是问题变成在一条链上选一些互不相交的相邻对，使增益之和最大。",
+      "从右往左做 DP：dp[i] 表示只考虑从 i 开始的元素时能得到的最大增益，取 dp[i+1]（i 不参与交换）与 dp[i+2] 加上 arr[i]−arr[i+1] 和 0 中的较大者（交换 i 与 i+1）两者中的较大值。答案为基线 Σ arr[i]×(i+1) 加上 dp[0]，需要 64 位整数。"
+    ],
+    "en": [
+      "First compute the strength with no swaps as a baseline; swapping neighbors i and i+1 changes the strength by an amount that depends only on those two elements and not on any other swap.",
+      "Swapping i and i+1 gains arr[i]−arr[i+1], and a negative gain is worse than not swapping. Each element takes part in at most one swap, so the chosen pairs cannot share elements: pick disjoint adjacent pairs along a line to maximize the total gain.",
+      "Run a DP from right to left: dp[i] is the best gain using only the elements from i on, the larger of dp[i+1] (i is not swapped) and dp[i+2] plus the larger of arr[i]−arr[i+1] and 0 (swap i and i+1). The answer is the baseline Σ arr[i]×(i+1) plus dp[0], which needs 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse the contribution without any swaps as the baseline. Swapping i and i+1 gains arr[i]−arr[i+1]; use a linear DP to take the better of making an adjacent swap or skipping.\n\n## Proof of correctness\n\nAll operations form a matching of disjoint adjacent edges. If i and i+1 are swapped, the change in the weighted sum is (i+1)arr[i+1]+(i+2)arr[i]−(i+1)arr[i]−(i+2)arr[i+1]=arr[i]−arr[i+1]. For each i, the optimal choice either skips i or takes the edge (i,i+1) and skips the next edge, and the recurrence covers every valid plan.\n\n## Complexity\n\nTime O(n), space O(n).\n\n## Source note\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided this protocol."
+}

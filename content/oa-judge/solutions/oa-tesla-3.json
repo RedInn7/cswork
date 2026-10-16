@@ -1,0 +1,21 @@
+{
+  "id": "oa-tesla-3",
+  "packageChecksum": "223d2a2ca54f5204e5ad5d2407642f7b43fa287a09e62c3e14563788f4b5b78e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string s;\n    cin >> s;\n    // Cut every time the L/R balance returns to zero.\n    int balance = 0, answer = 0;\n    for (char c : s) {\n        balance += c == 'L' ? 1 : -1;\n        if (balance == 0) answer++;\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "226964cf99cbc82799ae8acd7a91f2b1b65831c47374cb6a1eebbf10f32f6239"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();\n        // Cut every time the L/R balance returns to zero.\n        int balance = 0, answer = 0;\n        for (int i = 0; i < s.length(); i++) {\n            balance += s.charAt(i) == 'L' ? 1 : -1;\n            if (balance == 0) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "2ef9f126152fa835b26583dc627403133c9fb886436633f0d7c860d8f9491027"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReaderSize(os.Stdin, 1<<20), &s)\n\t// Cut every time the L/R balance returns to zero.\n\tbalance, answer := 0, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == 'L' {\n\t\t\tbalance++\n\t\t} else {\n\t\t\tbalance--\n\t\t}\n\t\tif balance == 0 {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "6fed86ccb6e389f9da6e6f34ef92aef3d3c26105635a004d3895391aecae46f1"
+    }
+  ]
+}

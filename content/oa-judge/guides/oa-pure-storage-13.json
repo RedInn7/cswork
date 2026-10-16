@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-13",
+  "packageChecksum": "8c09e762258e7a1a8bb1558cd3da7927231352c5fd9552ee24e74a6cda6de042",
+  "sourceContentHash": "c4f287c01a0a3ee2da6f5cb331372ccb2533a4c04fc0cea229ae611ca12728e3",
+  "editorialSha256": "5464b7766700e026fe1f2b8dca24f26da6b8f44aefe21c1a7e81c4787588b8bf",
+  "hints": {
+    "zh": [
+      "一段连续重复的模式串，最后一个副本一定结束在文本的某个位置 i，而去掉这个副本后，剩下的部分正好是结束在 i−m 的更短的连续重复段（m 为模式长度）。",
+      "设 dp[i] 为恰好在文本前 i 个字符处结束的模式连续重复次数：若以 i 结尾、长度为 m 的子串等于模式，则 dp[i]=dp[i−m]+1，否则为 0。答案是所有 dp 的最大值。",
+      "先处理边界：模式或文本为空（读入空行）时直接输出 0。然后对 end 从 m 到 n 依次比较 long_s[end−m..end) 与模式，按递推更新并维护最大值。m<10，时间 O(nm)，空间 O(n)。"
+    ],
+    "en": [
+      "In a run of consecutive copies of the pattern, the last copy ends at some text position i, and removing it leaves exactly a shorter run of copies ending at i - m, where m is the pattern length.",
+      "Let dp[i] be the number of consecutive pattern copies ending exactly after the first i characters of the text: if the length-m substring ending at i equals the pattern, dp[i] = dp[i - m] + 1, otherwise 0. The answer is the maximum dp value.",
+      "Handle the edge cases first: if the pattern or the text is empty (an empty input line), print 0. Then for end from m to n compare long_s[end - m .. end) with the pattern, apply the recurrence and track the maximum. Since m < 10, the time is O(nm) and the space O(n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet dp[i] be the number of consecutive repetitions of the pattern that end exactly at the first i characters of long_s. If the substring of length m at the end equals the pattern, then dp[i] = dp[i-m] + 1; otherwise it is 0. The answer is the maximum dp value.\n\n## Correctness\n\nThe last pattern copy of any run of consecutive repetitions must end at some position i, and just before it a shorter run of consecutive repetitions ended exactly at i-m; the recurrence therefore yields the true run length. If the end does not match, the position cannot belong to a repetition run ending there, so its value is 0. Going through every end position covers all candidates.\n\n## Complexity\n\nLet the pattern length be m and the text length n, with m < 10: time O(nm), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-188",
+  "packageChecksum": "48d1b7670d528fa25b6b723a0cac1f57852eee4f2ab558557dffeeda010159a4",
+  "sourceContentHash": "7249c7fb9d1f917a8a3a76615708fbde9104f77233f8e181e98de51277d0e007",
+  "editorialSha256": "6e3cdedf8048c80c59d1deb200ac707383996850a797e7d9c5895a4cf42c064d",
+  "hints": {
+    "zh": [
+      "队列中请求的相对顺序永远不变，只会被删除：要么作为队首被服务后离开，要么到期被移除。所以只需知道“现在谁还在队里”，不必真的维护能在中间删除的队列。",
+      "按期限把下标放进桶；用存活标记表示队列成员，用一个只向前移动的指针找队首。每秒先记录当前人数，再删去队首，然后删去期限恰为下一时刻且仍存活的请求。",
+      "count=n，t=0；当 count>0 时：输出 count；指针跳过已删除下标，把队首标记删除、count−1；t 加 1；遍历期限为 t 的桶，把仍存活的标记删除并 count−1。循环结束后再输出一个 0。每个请求只删除一次，复杂度 O(n+最大期限)。"
+    ],
+    "en": [
+      "The relative order of requests in the queue never changes; requests are only removed, either by being served at the head or by expiring. So you only need to know who is still in the queue, not a queue that supports deletion in the middle.",
+      "Put indices into buckets by deadline; keep an alive flag per request and a forward-only pointer to find the head. Each second, record the current count, remove the head, then remove the still-alive requests whose deadline is the next moment.",
+      "count = n, t = 0; while count > 0: output count; advance the pointer past removed indices, mark the head removed and decrement count; t += 1; for every index in bucket t that is still alive, mark it removed and decrement count. After the loop output a final 0. Each request is removed once, so the total is O(n + max deadline)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBucket the indices by deadline and maintain the queue head with alive flags and a forward pointer. Each second, remove the request that was served, then remove the still-alive requests in the bucket that expires at that moment.\n\n## Proof of correctness\n\nThe flags always match the current queue members. Served requests and requests whose deadline has just been reached are removed as the rules say, and the flags prevent counting a removal twice when an index is hit again; after the forward pointer skips removed items it points to the first alive request in the original order, so the FIFO order and the count at every moment are correct. Each request is removed at most once.\n\n## Complexity\n\nTime O(n + maximum deadline), space O(n + maximum deadline)."
+}

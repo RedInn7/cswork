@@ -1,0 +1,21 @@
+{
+  "id": "oa-twilio-2",
+  "packageChecksum": "1252fdf544fa1071810c97f0c0e57ad329868ce0c6e9549f2735307733fa21e8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    // i points at the smallest still-unmatched element; each z beats it if strictly larger\n    int i = 0;\n    for (long long z : a)\n        if (i < n && z > a[i]) i++;\n    cout << i << \"\\n\";\n}\n",
+      "sha256": "570590f834960de8afcddee45c17ff7322aecc17600da2a6a0043b2ab5cc4a4e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = nextInt();\n        Arrays.sort(a);\n        // i points at the smallest still-unmatched element; each z beats it if strictly larger\n        int i = 0;\n        for (int z : a) if (i < n && z > a[i]) i++;\n        System.out.println(i);\n    }\n}\n",
+      "sha256": "ae124165a4c425d9cb0a99c18d9c6b61da201d0241d9f572a392fe82800d9500"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\tsort.Ints(a)\n\t// i points at the smallest still-unmatched element; each z beats it if strictly larger\n\ti := 0\n\tfor _, z := range a {\n\t\tif i < n && z > a[i] {\n\t\t\ti++\n\t\t}\n\t}\n\tfmt.Println(i)\n}\n",
+      "sha256": "c4449cb12695006662917e7adf36437b25cbcf93a589d6756e29a8b4d197736c"
+    }
+  ]
+}

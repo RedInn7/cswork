@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-5",
+  "packageChecksum": "ec5314f3089eb60f3e9ec20f11680b88025147ccdf5d5bb09fd958d1d5b640d3",
+  "sourceContentHash": "fb6fdc961495d714d3feac5fd7ca9df5c4b6074dd3db77bcbe7c312e18f68463",
+  "editorialSha256": "a6168656871deba420ea38810dfa7e24713378f0c615109b06fe793612b7ec1c",
+  "hints": {
+    "zh": [
+      "按右端点统计子串：以位置 i 结尾的合法子串，起点不能越过最近的一个辅音，并且起点要足够靠左，使五种元音都至少出现一次。",
+      "记录五种元音各自最近出现的位置和最近辅音的位置；以 i 结尾时，合法起点恰好落在“最近辅音之后”到“五个最近元音位置的最小值”这一段里。",
+      "初始化 last[a,e,i,o,u]=−1、bad=−1、answer=0；对每个字符，若是元音则更新它的 last，否则 bad=i；然后 answer 加上 max(0, min(last)−bad)。答案可能很大，用 64 位整数。"
+    ],
+    "en": [
+      "Count substrings by their right end: a valid substring ending at position i cannot start at or before the latest consonant, and its start must be far enough left that all five vowels appear at least once.",
+      "Track the latest position of each of the five vowels and the latest consonant. For a right end i, the valid starts are exactly the positions after the latest consonant and no later than the minimum of the five latest vowel positions.",
+      "Initialize last[a, e, i, o, u] = -1, bad = -1, answer = 0. For each character, update its last entry if it is a vowel, otherwise set bad = i; then add max(0, min(last) - bad) to answer. The answer can be large, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTrack the latest position of each of the five vowels and of the latest consonant. For each right end, the number of valid starts is min(latest vowel positions) - latest consonant position, or 0 if that is negative.\n\n## Correctness\n\nA valid start must come after the latest consonant and be no later than the latest position of every vowel; these two conditions give exactly one closed interval. After counting it, every substring is classified uniquely by its right end.\n\n## Complexity\n\nO(n) time and O(1) space."
+}

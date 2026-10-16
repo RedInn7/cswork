@@ -1,0 +1,19 @@
+{
+  "id": "oa-reevo-2",
+  "packageChecksum": "4900269c2ed625db15c9e8a84ad13206d8603592f9b4160aed92f3dab84329c6",
+  "sourceContentHash": "d9f2814d16a1b7b334d9cfd64171fc092173037ea7535f3647810fd8c4cb9d00",
+  "editorialSha256": "741e72cf770cd312b7b29733248bc002f162c720bb1a5cde0608ca914968b33e",
+  "hints": {
+    "zh": [
+      "p 是排列，任何窗口里的元素都两两不同。长度为 k 的窗口恰好是 {1..k}，当且仅当窗口最小值为 1、最大值为 k。",
+      "于是对每个长度 k，只要检查是否存在某个长度为 k 的窗口满足 min=1 且 max=k。用两个单调双端队列滑动维护窗口的最大值和最小值即可。",
+      "外层枚举 k=1..n，内层从左到右滑动：新元素入队时从尾部弹出不再可能成为最值的下标，队首下标滑出窗口时弹出；当窗口满 k 个且最大值等于 k、最小值等于 1 时，第 k 位记为 1 并提前结束该长度。总时间 O(n²)，n≤2000 足够。输出长度为 n 的 0/1 串。"
+    ],
+    "en": [
+      "p is a permutation, so the elements of any window are pairwise distinct. A window of length k is exactly {1..k} if and only if its minimum is 1 and its maximum is k.",
+      "So for each length k, just check whether some window of length k has min = 1 and max = k. Two monotonic deques maintain the sliding window maximum and minimum.",
+      "The outer loop runs k = 1..n and the inner loop slides from left to right: when a new element enters, pop from the back the indices that can no longer be the extreme, and pop the front index once it leaves the window; when the window holds k elements with maximum k and minimum 1, set the k-th character to 1 and stop for that length early. Total time O(n^2), fine for n <= 2000. Output the 0/1 string of length n."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSlide over the array once for each window length k. Two monotonic deques maintain the window maximum and minimum. Because p is a permutation, the elements of a window are distinct, so a window of length k is exactly {1,...,k} if and only if its minimum is 1 and its maximum is k.\n\n## Proof of correctness\n\nIf the window's value set is {1,...,k}, its minimum is 1 and its maximum is k. Conversely, if the window contains k distinct integers with minimum 1 and maximum k, these k integers all lie in [1,k], so they can only be all of the integers in [1,k]. Hence the condition is necessary and sufficient. The monotonic deques always maintain the maximum/minimum of the current window, so every window is checked correctly.\n\n## Complexity\n\nEach length scans n positions, and each deque entry enters and leaves a constant number of times; total time O(n^2), space O(n)."
+}

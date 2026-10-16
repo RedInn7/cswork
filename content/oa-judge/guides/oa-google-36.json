@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-36",
+  "packageChecksum": "8358e53d3b04790c26811319f52c9bac78bda8812e24c530eaa7a0bd66efe02d",
+  "sourceContentHash": "f2d720d421038f1ab8e51fa51d4d95c22ad8aef59a69116f57a3b1849f539557",
+  "editorialSha256": "a91cbc0f13dcae50258d9db85a5179521793d177d3ce07aeea76dd7d9c7bcc2e",
+  "hints": {
+    "zh": [
+      "每天只新增一栋入住房屋，它只可能把左边相邻的连续段和右边相邻的连续段连起来，不会影响其他段。",
+      "只在每个连续段的两个端点上记录段长。新增位置 x 时，读取 x−1 和 x+1 处的段长（它们正好是左段右端点和右段左端点），合并出新段长。",
+      "开长度 N+2 的数组 length；第 day 天入住 x：left=length[x−1]，right=length[x+1]，total=left+right+1；把 total 写到 length[x]、length[x−left]、length[x+right]；第一次 total≥M 时输出 day。"
+    ],
+    "en": [
+      "Each day adds one occupied house, which can only join the run directly to its left and the run directly to its right; other runs are unaffected.",
+      "Store the run length only at the two endpoints of every run. When position x is added, read the lengths at x-1 and x+1 (exactly the right end of the left run and the left end of the right run) and combine them into the new run length.",
+      "Use an array length of size N+2; on day d occupying x: left = length[x-1], right = length[x+1], total = left + right + 1; write total to length[x], length[x-left] and length[x+right]; print d the first time total >= M."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the run length at the two endpoints of every occupied run. When a new position x is added, read the run lengths of its left and right neighbours, form the new run and update its two outer endpoints.\n\n## Correctness\n\nIf the positions to the left and right of the new position are occupied, those neighbours must be the right endpoint of the left run and the left endpoint of the right run, so the stored run lengths are accurate. The new occupation can only join these two runs and itself, and does not affect other runs. The first day a run of length at least M is formed is the earliest day that satisfies the condition.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

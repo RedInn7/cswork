@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-3",
+  "packageChecksum": "5231ad18070fa0e040605c8c237eae4ee5b86e61d152f81b81cdc40b1c90b987",
+  "sourceContentHash": "1af8be130f1e8add6f8845ec0cd0e07d6a90265551caf792042ba02a28c1f42e",
+  "editorialSha256": "90305245e9f388115e9102dbde8855d895efac099783198954422d672bdd30ba",
+  "hints": {
+    "zh": [
+      "只有发过消息的人才算“已存在”，发言会让人变成活跃，OFFLINE 只是让人不再活跃，并不抹掉其存在。",
+      "按事件顺序维护已存在集合、活跃集合和计数表；每条消息把直接提及、ALL（全部已存在用户）和 HERE（当前活跃用户）合并成一个集合，再给集合里每人加一。",
+      "遇到 MESSAGE 先把发送者加入两个集合，再读 m 个 token 构造本条的去重集合并计数；遇到 OFFLINE 只从活跃集合删除；最后按 ID 字符串字典序输出 id=count，用空格分隔，没有计数时输出空行。"
+    ],
+    "en": [
+      "Only people who have sent a message count as existing; posting makes a person active, and OFFLINE only makes them inactive without erasing their existence.",
+      "Maintain the existing set, the active set and a count table in event order; for each message, merge the direct mentions, ALL (every existing user) and HERE (currently active users) into one set, then add one for each person in it.",
+      "On MESSAGE, first add the sender to both sets, then read the m tokens to build this message's de-duplicated set and count it; on OFFLINE, only remove the user from the active set; finally print id=count in lexicographic order of the ID strings, separated by spaces, or an empty line if nothing was counted."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the set of existing users, the set of active users and a count table. A message first activates its sender, then merges this message's explicit mentions with the expansions of ALL/HERE into a set; each user in the set is incremented once. OFFLINE only removes a user from the active set.\n\n## Correctness\n\nProcessing events one by one keeps the state consistent with the event order. For any message, the mention set is exactly the union, token by token, of direct IDs, existing users, or active users; de-duplicating with a set ensures each person is counted at most once per message. Removing a user only from active does not erase their existence.\n\n## Complexity\n\nLet U be the number of IDs that appear, q ≤ 1000, and M the total number of direct tokens. Explicit expansion costs O(qU+M) in the worst case and space is O(U+M); the site's limits keep the expansion size under control."
+}

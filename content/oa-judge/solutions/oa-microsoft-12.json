@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-12",
+  "packageChecksum": "47ee361fccdb1511ee82b801aa01899477af19659e10ee49ac0b100b5bf1a421",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    // has[i]: the direct edge i -- i+1 exists\n    vector<char> has(n + 1, 0);\n    int found = 0;\n    for (int e = 0; e < m; e++) {\n        int a, b;\n        cin >> a >> b;\n        if (abs(a - b) == 1 && !has[min(a, b)]) {\n            has[min(a, b)] = 1;\n            found++;\n        }\n    }\n    cout << (found == n - 1 ? 1 : 0) << \"\\n\";\n}\n",
+      "sha256": "7e36773cc0f72d989d7c826d102cbc496dc5efad4c9318e39ab81b7cbede3341"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), m = nextInt(), found = 0;\n        // has[i]: the direct edge i -- i+1 exists\n        boolean[] has = new boolean[n + 1];\n        for (int e = 0; e < m; e++) {\n            int a = nextInt(), b = nextInt();\n            if (Math.abs(a - b) == 1 && !has[Math.min(a, b)]) {\n                has[Math.min(a, b)] = true;\n                found++;\n            }\n        }\n        System.out.println(found == n - 1 ? 1 : 0);\n    }\n}\n",
+      "sha256": "e4075ed7410f207400759cd0912b3d035015aebd29aff35988dedbb9df62c726"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, m := next(), next()\n\t// has[i]: the direct edge i -- i+1 exists\n\thas := make([]bool, n+1)\n\tfound := 0\n\tfor e := 0; e < m; e++ {\n\t\ta, b := next(), next()\n\t\tif a-b == 1 || b-a == 1 {\n\t\t\tif !has[min(a, b)] {\n\t\t\t\thas[min(a, b)] = true\n\t\t\t\tfound++\n\t\t\t}\n\t\t}\n\t}\n\tif found == n-1 {\n\t\tfmt.Println(1)\n\t} else {\n\t\tfmt.Println(0)\n\t}\n}\n",
+      "sha256": "3ca0c25f90724befc253ad239a6e4e1ec9cd049c6e98d32c88957765f67eb158"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-cisco-6",
+  "packageChecksum": "96c9c7e314b43723b2ee1b5963b8405e913dacdb37df1fa83dd433aab235c724",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic string in;\nstatic size_t p = 0;\nstatic void readAll() {\n    char b[1 << 16];\n    size_t k;\n    while ((k = fread(b, 1, sizeof b, stdin)) > 0) in.append(b, k);\n}\nstatic bool skipSpace() {\n    while (p < in.size() && (unsigned char)in[p] <= ' ') p++;\n    return p < in.size();\n}\nstatic string token() {\n    skipSpace();\n    size_t s = p;\n    while (p < in.size() && (unsigned char)in[p] > ' ') p++;\n    return in.substr(s, p - s);\n}\nstatic long long num() {\n    skipSpace();\n    bool neg = false;\n    if (p < in.size() && (in[p] == '-' || in[p] == '+')) neg = in[p++] == '-';\n    long long v = 0;\n    while (p < in.size() && in[p] >= '0' && in[p] <= '9') v = v * 10 + (in[p++] - '0');\n    return neg ? -v : v;\n}\n\nint main() {\n    readAll();\n    long long n = num();\n    // Membership flips with every occurrence: the set holds labels seen an odd number of times.\n    unordered_set<long long> odd;\n    odd.reserve(2 * n + 1);\n    for (long long i = 0; i < n; i++) {\n        long long v = num();\n        if (!odd.erase(v)) odd.insert(v);\n    }\n    printf(\"%zu\\n\", odd.size());\n}\n",
+      "sha256": "06ad7d0c7669fd6fc10237056fab3297a7760502a49ce1cc1470e45abdc47586"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.HashSet;\n\npublic class Main {\n    static byte[] data;\n    static int pos = 0;\n\n    static boolean skipSpace() {\n        while (pos < data.length && (data[pos] & 0xff) <= ' ') pos++;\n        return pos < data.length;\n    }\n\n    static String token() {\n        skipSpace();\n        int s = pos;\n        while (pos < data.length && (data[pos] & 0xff) > ' ') pos++;\n        return new String(data, s, pos - s, java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    static long num() {\n        skipSpace();\n        boolean neg = false;\n        if (pos < data.length && (data[pos] == '-' || data[pos] == '+')) neg = data[pos++] == '-';\n        long v = 0;\n        while (pos < data.length && data[pos] >= '0' && data[pos] <= '9') v = v * 10 + (data[pos++] - '0');\n        return neg ? -v : v;\n    }\n\n    public static void main(String[] args) throws Exception {\n        data = System.in.readAllBytes();\n        long n = num();\n        // Membership flips with every occurrence: the set holds labels seen an odd number of times.\n        HashSet<Long> odd = new HashSet<>();\n        for (long i = 0; i < n; i++) {\n            long v = num();\n            if (!odd.remove(v)) odd.add(v);\n        }\n        System.out.println(odd.size());\n    }\n}\n",
+      "sha256": "a335335172fda7547d4a0aa4280e208a38a170990ec4e966d520f1f9ee81e819"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() bool {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\treturn pos < len(data)\n}\n\nfunc token() string {\n\tskipSpace()\n\ts := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[s:pos])\n}\n\nfunc num() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && (data[pos] == '-' || data[pos] == '+') {\n\t\tneg = data[pos] == '-'\n\t\tpos++\n\t}\n\tvar v int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tv = v*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := num()\n\t// Membership flips with every occurrence: the set holds labels seen an odd number of times.\n\todd := map[int64]bool{}\n\tfor i := int64(0); i < n; i++ {\n\t\tv := num()\n\t\tif odd[v] {\n\t\t\tdelete(odd, v)\n\t\t} else {\n\t\t\todd[v] = true\n\t\t}\n\t}\n\tfmt.Println(len(odd))\n}\n",
+      "sha256": "903961fa030caf9601210c11a88e4f52b82705019bf561f551fcde185cd070ce"
+    }
+  ]
+}

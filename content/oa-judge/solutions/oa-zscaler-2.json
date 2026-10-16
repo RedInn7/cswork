@@ -1,0 +1,21 @@
+{
+  "id": "oa-zscaler-2",
+  "packageChecksum": "450370c3554fe7dd5529dd3ca1489f65d8fe8e62c694b8b0340d4a8b1d46fa56",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m;\n    if (scanf(\"%d %d\", &n, &m) != 2) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // the intersection of all intervals is [max of left ends, min of right ends]\n    long long lo = LLONG_MIN, hi = LLONG_MAX;\n    for (int i = 0; i < m; i++) {\n        long long l, r;\n        scanf(\"%lld %lld\", &l, &r);\n        lo = max(lo, l);\n        hi = min(hi, r);\n    }\n    long long count = 0;\n    for (long long x : a)\n        if (lo <= x && x <= hi) count++;\n    printf(\"%lld\\n\", count);\n}\n",
+      "sha256": "5d115e8abfcfb77229e3f48a459702f5ffe4b6c7db2759651f672dca0e17b8f7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int n = (int) readLong(in), m = (int) readLong(in);\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = readLong(in);\n        // the intersection of all intervals is [max of left ends, min of right ends]\n        long lo = Long.MIN_VALUE, hi = Long.MAX_VALUE;\n        for (int i = 0; i < m; i++) {\n            lo = Math.max(lo, readLong(in));\n            hi = Math.min(hi, readLong(in));\n        }\n        long count = 0;\n        for (long x : a) if (lo <= x && x <= hi) count++;\n        System.out.println(count);\n    }\n\n    static long readLong(DataInputStream in) throws IOException {\n        int c = in.read();\n        while (c != '-' && (c < '0' || c > '9')) c = in.read();\n        boolean neg = c == '-';\n        if (neg) c = in.read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = in.read(); }\n        return neg ? -r : r;\n    }\n}\n",
+      "sha256": "3018f35b1f84fe734fc4ce483dbad003a905093261ccaf9410c3c7a187dbefbf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 {\n\t\tsc.Scan()\n\t\tv, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\treturn v\n\t}\n\tn, m := int(next()), int(next())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\t// the intersection of all intervals is [max of left ends, min of right ends]\n\tvar lo, hi int64 = math.MinInt64, math.MaxInt64\n\tfor i := 0; i < m; i++ {\n\t\tlo = max(lo, next())\n\t\thi = min(hi, next())\n\t}\n\tcount := 0\n\tfor _, x := range a {\n\t\tif lo <= x && x <= hi {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "01ec331dc7b942226439acec6b133065aacb3993018a91b4e9c0490aad4e111f"
+    }
+  ]
+}

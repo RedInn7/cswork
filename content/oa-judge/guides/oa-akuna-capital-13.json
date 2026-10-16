@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-13",
+  "packageChecksum": "5bd5a9d2cce1210c413ed8b4822fd4c879961e7d9eb0bf85439a9e6b372fd08f",
+  "sourceContentHash": "28f2aa9462c6dfd12ed6b921318bd7800e4ad4a6f52699e6dfb8f89a0e3875a8",
+  "editorialSha256": "59d2e0cac57ca8d74af4f8c88d774635da34894328f88ec761ba2ae71c99151e",
+  "hints": {
+    "zh": [
+      "道路无权，按“最短路距离”配送就是按 BFS 层数配送；同一层内再按城市编号排序。",
+      "从工厂城市做一次 BFS 得到每个可达城市的最短边数，然后把可达城市（除起点）按（距离，编号）排序输出即可。",
+      "建无向邻接表；dist 全设为 −1，起点为 0，BFS 扩展；收集 dist≥0 且不是起点的城市，按距离升序、距离相同按编号升序排序；用空格连接输出，没有可达城市时输出空行。"
+    ],
+    "en": [
+      "Roads are unweighted, so delivering in order of shortest-path distance means delivering in BFS layer order, and within a layer by city number.",
+      "Run one BFS from the factory city to get every reachable city's shortest edge count, then output the reachable cities other than the start sorted by (distance, number).",
+      "Build an undirected adjacency list; set every distance to -1 and the start to 0, then BFS; collect the cities with distance >= 0 other than the start, sort by distance ascending and then by number ascending; print them space-separated, or an empty line when no other city is reachable."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun BFS from the factory city to get the shortest edge-count distance of every reachable city, then sort them by (distance, number) for output.\n\n## Correctness\n\nBFS on an unweighted graph expands layer by layer, so the layer at which a node is first reached is its shortest distance. Sorting by distance and then by number matches exactly the problem's two-level ordering; filtering out the start and the unvisited nodes respectively avoids delivering twice and ignores unreachable cities.\n\n## Complexity\n\nTime O(n + m), space O(n + m)."
+}

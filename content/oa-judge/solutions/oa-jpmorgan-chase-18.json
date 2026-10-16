@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-18",
+  "packageChecksum": "80691af3a3acfcee362f083181e39edafffa7d63d5823d0408365522609c6667",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    string out;\n    size_t i = 0;\n    while (i < s.size()) {\n        // Digits can only move inside a maximal run of the same parity: sort each run descending.\n        size_t j = i;\n        int counts[10] = {0};\n        while (j < s.size() && (s[j] - '0') % 2 == (s[i] - '0') % 2) counts[s[j++] - '0']++;\n        for (int d = 9; d >= 0; d--) out.append(counts[d], char('0' + d));\n        i = j;\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "976b54ddf4b7b8d8052e012bf538b260c1d8e6f1425b3c26e299e30b145319a7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).strip();\n        StringBuilder out = new StringBuilder();\n        int i = 0, n = s.length();\n        while (i < n) {\n            // Digits can only move inside a maximal run of the same parity: sort each run descending.\n            int j = i;\n            int[] counts = new int[10];\n            while (j < n && (s.charAt(j) - '0') % 2 == (s.charAt(i) - '0') % 2) counts[s.charAt(j++) - '0']++;\n            for (int d = 9; d >= 0; d--) out.repeat((char) ('0' + d), counts[d]);\n            i = j;\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "09c86b37ace4a76bfaddacf2162254870b0bd9b71a23f3e24317a05bd102e5d1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"bytes\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := bytes.TrimSpace(raw)\n\tout := make([]byte, 0, len(s)+1)\n\tfor i := 0; i < len(s); {\n\t\t// Digits can only move inside a maximal run of the same parity: sort each run descending.\n\t\tj := i\n\t\tvar counts [10]int\n\t\tfor j < len(s) && (s[j]-'0')%2 == (s[i]-'0')%2 {\n\t\t\tcounts[s[j]-'0']++\n\t\t\tj++\n\t\t}\n\t\tfor d := 9; d >= 0; d-- {\n\t\t\tfor c := 0; c < counts[d]; c++ {\n\t\t\t\tout = append(out, byte('0'+d))\n\t\t\t}\n\t\t}\n\t\ti = j\n\t}\n\tos.Stdout.Write(append(out, '\\n'))\n}\n",
+      "sha256": "ab2f2b8a8ff4f0c7b8e2b454bad4045ebf8b6a9ecf52bb5e082e1af0e2d7c68b"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-44",
+  "packageChecksum": "b3a8227172d0261f81da8a10943a3e077c268cf774c78771a914e04b4ac54675",
+  "sourceContentHash": "6e8045bb7573fa97fd4cd3b992d555f875bc705d369a3784d6b868b297692704",
+  "editorialSha256": "7a5d267080b119f83c0997177b4e5703706a1a7a44e6de4071b5d89371623165",
+  "hints": {
+    "zh": [
+      "单线程下任意时刻只有调用栈栈顶的函数在执行，所以两条相邻日志之间的那段时间整块属于当时的栈顶函数。",
+      "维护调用栈和尚未结算的起始时刻previous。start在该秒开始时抢占，所以旧栈顶只结算到t之前；end包含该秒，所以当前函数要结算到t为止，下一段从t+1开始。",
+      "遇到start：若栈非空，给栈顶函数加上t−previous，然后把新函数入栈，previous=t；遇到end：给栈顶函数加上t−previous+1并出栈，previous=t+1。最后按ID从0到n−1输出累计时间，递归调用会自然累加到同一个ID上。"
+    ],
+    "en": [
+      "In a single thread only the function on top of the call stack runs at any moment, so the whole stretch between two consecutive log entries belongs to the top of the stack at that time.",
+      "Keep the call stack and the start previous of the stretch not yet credited. A start takes over at the beginning of its second, so the old top is credited only up to just before t; an end includes its second, so the current function is credited through t and the next stretch starts at t+1.",
+      "On start: if the stack is not empty, add t−previous to the top function, then push the new function and set previous=t. On end: add t−previous+1 to the top function, pop it, and set previous=t+1. Finally print the accumulated times for IDs 0 to n−1; recursive calls naturally add up under the same ID."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the call stack and the last settled time; on a start, credit the old stack top up to just before t; on an end, credit the current function up to t and set the next time to t+1.\n\n## Proof of correctness\n\nBetween two consecutive events only the top of the stack occupies the CPU, so crediting that whole stretch is exact and stretches never overlap. A start does not give second t to the old function, and an end does give second t to the current function, hence t−previous and t−previous+1 respectively; after each update the uncredited stretch again starts at previous, so induction proves correctness.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-28",
+  "packageChecksum": "662fa401e2be0f7f367ffb2b95c54cb1feb83d17c444e315a71cbb93017ef270",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    vector<int> order(n);\n    iota(order.begin(), order.end(), 0);\n    stable_sort(order.begin(), order.end(), [&](int i, int j) { return a[i] < a[j]; });\n    string out;\n    for (int i = 0; i < n; i++) { if (i) out += ' '; out += to_string(order[i] + 1); }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "6d3967ec96d5fcb0f219bd2138fc0d3298128a97d03e6cd97c110eb45a4ab6c3"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt();\n        // Key sorts by (value, index); values are shifted to be non-negative.\n        long[] key = new long[n];\n        for (int i = 0; i < n; i++) key[i] = ((r.nextLong() + 1_000_000_000L) << 18) | i;\n        Arrays.sort(key);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append((key[i] & ((1 << 18) - 1)) + 1);\n        }\n        System.out.println(sb);\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "5919802195289a46a755373c54c8ee9465499aa7ab3b4de1d244fb203eb927f5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"cmp\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\torder := make([]int, n)\n\tfor i := range order {\n\t\torder[i] = i\n\t}\n\t// Sort indices by (value, index).\n\tslices.SortFunc(order, func(i, j int) int {\n\t\tif a[i] != a[j] {\n\t\t\treturn cmp.Compare(a[i], a[j])\n\t\t}\n\t\treturn cmp.Compare(i, j)\n\t})\n\tout := make([]byte, 0, 8*n)\n\tfor i, idx := range order {\n\t\tif i > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, int64(idx+1), 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "08a4ee21490655b53cdb18a02078dbd10528c5a97c6a8f079d764d65259487ff"
+    }
+  ]
+}

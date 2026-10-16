@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-21",
+  "packageChecksum": "d517ac6036814f96aa3bb08ec9269847d204224ea522aee2159c9b8c1bf9697e",
+  "sourceContentHash": "b0a4985f8d491bbcb6adaa2db0b0c02cddc3469764143110ac987600020a89de",
+  "editorialSha256": "4e520179e43269dd11662c2bd721d2b968df6bca975772691e90eab4e478d6d6",
+  "hints": {
+    "zh": [
+      "每一轮里，非主任务也会前进 y，被选为主任务的那一个前进 x；所以执行 T 轮后，每个任务至少得到 T·y，每被选为主任务一次就额外多得 x−y。",
+      "轮数越多越容易完成，可行性对 T 单调，可以二分 T。固定 T 后，任务 i 还需要当主任务 ceil(max(0, executionTime[i]−T·y)/(x−y)) 次；这些次数加起来不超过 T 就可行。",
+      "下界取 0，上界取 ceil(max(executionTime)/y)，这么多轮仅靠 y 就能完成全部任务；检查中点时累加每个任务还需要的主任务次数，总和不超过中点就收缩上界，否则抬高下界。T·y 可达 10^18，用 64 位整数。"
+    ],
+    "en": [
+      "In every round the non-main tasks still advance by y and the chosen main task advances by x; so after T rounds every task has at least T*y, and each time it is the main task it gains an extra x - y.",
+      "More rounds only make finishing easier, so feasibility is monotone in T and you can binary search on T. For a fixed T, task i still needs to be the main task ceil(max(0, executionTime[i] - T*y) / (x - y)) times; T is feasible when these counts add up to at most T.",
+      "Use 0 as the lower bound and ceil(max(executionTime) / y) as the upper bound, since that many rounds finish everything with y alone; when testing a midpoint, add up the main-task picks every task still needs, shrink the upper bound if the total is at most the midpoint, otherwise raise the lower bound. T*y can reach 10^18, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the number of operations T. With T rounds, every task gets at least T*y of base execution; for the remaining demand, each main-task operation adds an extra x-y, so task i still needs to be chosen as the main task ceil(max(0, executionTime[i]-T*y)/(x-y)) times. T is feasible when the total of these counts does not exceed T.\n\n## Proof of correctness\n\nFor a fixed T, every task first receives T*y of execution; each time it is chosen as the main task it gains another x-y. So each task needs at least the ceiling count above, and the total not exceeding T is a necessary condition. If the total does not exceed T, scheduling main tasks with these counts finishes everything; feasibility is monotone in T, so binary search finds the minimum.\n\n## Complexity\n\nTime O(n log(max executionTime)); storing the execution-time array needs O(n) extra space."
+}

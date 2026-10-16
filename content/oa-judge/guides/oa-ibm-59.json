@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-59",
+  "packageChecksum": "05fcb4303a2298f43b9a019feccb00b665bc5cc5fa272bcbccc4492ea1321691",
+  "sourceContentHash": "082bf0ab6e507e8748c2b02e8e0f292b0ac5f3931563f37129382c25a2b345d8",
+  "editorialSha256": "0fb2520c1f01345d75546da1cf50e73d755bf11167f0f994d3e2a936556b7eb7",
+  "hints": {
+    "zh": [
+      "一次操作只改变某个整数的某一个数位，而且不进位、不移位，所以不同数位之间完全互不影响。",
+      "单独看一个数位：从数字 x 改到 y 每次最多靠近 1，至少需要 |x−y| 次，而一步步朝目标改恰好用这么多次。总答案就是所有对应数位差的绝对值之和。",
+      "按位置把 arr1[i] 和 arr2[i] 当作等长的数字串，逐位取对应字符的数字差的绝对值累加到总和里（总和可能超过 32 位，用 64 位整数），处理完所有 n 对后输出总和。"
+    ],
+    "en": [
+      "One operation changes only one digit of one integer, with no carrying and no moving digits, so different digits are completely independent.",
+      "Look at a single digit: going from digit x to y moves at most 1 closer per operation, so it needs at least |x - y| operations, and stepping straight toward the target uses exactly that many. The answer is the sum of the absolute differences of all corresponding digits.",
+      "For each index treat arr1[i] and arr2[i] as digit strings of equal length, add the absolute difference of each pair of corresponding digits to a running total (use a 64-bit integer), and print the total after all n pairs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each number, add up digit by digit the absolute differences of the corresponding digit characters.\n\n## Proof of correctness\n\nEach operation can move one digit at most 1 closer to its target, so that digit needs at least as many operations as the absolute difference of the two digits. Changing each digit step by step toward its target reaches exactly this lower bound; digits are independent and there is no carrying, so the sum of all lower bounds is optimal.\n\n## Complexity\n\nTime O(10n), extra space O(1)."
+}

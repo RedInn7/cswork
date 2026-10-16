@@ -1,0 +1,19 @@
+{
+  "id": "oa-xperi-2",
+  "packageChecksum": "4a750b382fdb6bc2fed2780efca92d9542bb0c415722e41e625a030f2dfc5744",
+  "sourceContentHash": "766b82070a3a6bef645e0fd81a4481490904e5af0ece8559ff51b1b268fabcfc",
+  "editorialSha256": "37d2833ae5d9b68644193c15da249f759187d3123fcc2c059130608615dcf4d5",
+  "hints": {
+    "zh": [
+      "操作过程完全确定，就是“减法版辗转相除”；但数值到 10¹⁸，一次一次减会太慢。",
+      "把对同一个数的连续减法合并：设 a>b，若 a mod b = r ≠ 0，就一口气做 a div b 次得到 (r, b)；若 r=0，只需做 a/b − 1 次就到 (b, b) 停止。",
+      "循环直到 a==b：保证 a 为较大者，求 q=a/b、r=a%b；r 为 0 则代价加 q−1 并令 a=b，否则代价加 q 并令 a=r；输出累计代价（可达 10¹⁸−1，用 64 位整数）。"
+    ],
+    "en": [
+      "The process is fully determined: it is subtraction-based Euclid; but values reach 10¹⁸, so subtracting one step at a time is far too slow.",
+      "Merge consecutive subtractions of the same number: with a > b, if a mod b = r ≠ 0, do a div b subtractions at once to reach (r, b); if r = 0, only a/b − 1 subtractions are needed to reach (b, b) and stop.",
+      "Loop until a == b: keep a as the larger value, compute q = a/b and r = a%b; if r is 0 add q−1 to the cost and set a = b, otherwise add q and set a = r; print the total cost (up to 10¹⁸−1, so use 64-bit integers)."
+    ]
+  },
+  "explanationEn": "## Problem\n\nTwo positive integers A and B. Each operation: if A>B then A=A−B; if B>A then B=B−A; each costs 1. Find the total cost to make A=B.\n\n## Approach\n\nThe operations are deterministic: this is subtraction-based Euclid. A and B can reach 10^18, so subtracting one step at a time is too slow; merge consecutive subtractions of the same number: let a≥b; if a mod b=r≠0, doing a div b subtractions in a row gives (r,b); if r=0, only a/b−1 subtractions are needed to reach (b,b) and stop. Repeat until the two are equal.\n\n## Correctness\n\nWhen a≥b and a>b, every operation subtracts b from a until a<b or a=b, and the merged count is exactly the quotient (one fewer when it divides evenly, because it stops once a=b). After that the two numbers swap roles, exactly like Euclid's algorithm, so the total number of rounds is O(log).\n\n## Complexity\n\nO(log min(A,B)). The answer can reach 10^18−1; use 64-bit unsigned integers.\n\n## Independent verification\n\nThe oracle simulates the subtractions one at a time (only for data up to 10^4) without merging by quotient; large data is computed separately by a recursive Python sum over quotients. All combinations of A,B∈[1,40] were enumerated and the reference program was actually run on each. Wrong solutions cover counting one extra step when it divides evenly, counting only Euclid steps, reading with 32 bits, and misusing the formula A/g+B/g−2."
+}

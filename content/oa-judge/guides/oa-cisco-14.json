@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-14",
+  "packageChecksum": "87bead382331f5cc5a41fdc5304e458381304f22c9f73ccabfdb855bbe359aa4",
+  "sourceContentHash": "ee567c49d84079907af2a06b4ed659ce5de9dbfa06a12d78d955e35cf7622442",
+  "editorialSha256": "3e6828e7ba904a90b01b5a5c6915549fdfe5d0ae06ec6e07d4b53724f1ad4ace",
+  "hints": {
+    "zh": [
+      "X 可以到 10^18，不能逐个枚举；但一个数的数位和只取决于每一位选了什么，适合从高位到低位逐位决定。",
+      "做数位 DP：状态是“当前已选数位之和”和“前缀是否仍与 X 的前缀相同（贴上界）”；贴上界时当前位最多取 X 的对应位，否则可取 0~9。",
+      "初始状态（和 0，贴上界）计数为 1；对 X 的每一位，枚举每个状态和每个可选数字 d，若和加 d 不超过 Y 就转移到 (和+d, 贴上界且 d 等于该位)；处理完所有位后，把和恰为 Y 的两个状态计数相加；结果为 0 时按题意输出 −1。计数用 64 位整数即可。"
+    ],
+    "en": [
+      "X can be as large as 10^18, so enumerating is impossible; but a digit sum only depends on the digit chosen at each position, which suits deciding digits from the most significant end.",
+      "Use a digit DP whose state is the digit sum so far and whether the prefix still equals the prefix of X (tight); while tight the current digit is at most the matching digit of X, otherwise it can be 0..9.",
+      "Start with count 1 for (sum 0, tight); for each digit of X, for each state and each allowed digit d with sum + d <= Y, move to (sum + d, tight and d equals that digit of X); after the last digit add the counts of both states whose sum is exactly Y; print -1 when the total is 0, as the statement requires. 64-bit counts are enough."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a digit DP from the most significant digit to the least significant one; the state records the current digit sum and whether the number still hugs the prefix of X.\n\n## Proof of correctness\n\nEvery integer not exceeding X has a unique representation padded with leading zeros. The tight flag limits the current digit to the corresponding digit of the bound; after choosing a smaller digit, the remaining suffix is free. Each transition enumerates exactly one legal next digit, so by induction on the prefix length nothing is counted twice and nothing is missed. The states whose final sum is Y are exactly what is asked for; Y>=1 excludes the all-zero representation.\n\n## Complexity\n\nO(digits * Y * 10) time and O(Y) space; the integer counts need no modulus."
+}

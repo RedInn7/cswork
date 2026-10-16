@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-4",
+  "packageChecksum": "3c055369ef495e5dfa581d735dbab7bb734c02c9f8d962fbb7516c0aecd0a438",
+  "sourceContentHash": "5dfc2f641c210121cf8a9fe5229a3fc7cdd4a70d1f87b99497263281fc6c6ab5",
+  "editorialSha256": "14a6df0d22e8c9747740d9d5a6ccff02f512f6980dd4d91d37c0a213a02fe011",
+  "hints": {
+    "zh": [
+      "位置 p 被区间 [l, r] 照亮，当且仅当 l≤p 且 r≥p；右端点小于 p 的灯，左端点也一定小于 p。",
+      "覆盖数 = 左端点 ≤ p 的灯数 − 右端点 < p 的灯数；把所有左端点、右端点分别排序后，两个数量都能二分得到。",
+      "分别排序 l 数组和 r 数组；每个查询 p 计算 upper_bound(l, p) − lower_bound(r, p)，注意一个是“≤”一个是“<”，端点处也算照亮；按查询顺序用空格输出。"
+    ],
+    "en": [
+      "Position p is lit by [l, r] exactly when l ≤ p and r ≥ p; any lamp whose right end is below p also has its left end below p.",
+      "Coverage = (lamps with left end ≤ p) − (lamps with right end < p); after sorting all left ends and all right ends separately, both counts come from binary search.",
+      "Sort the l array and the r array separately; for each query p compute upper_bound(l, p) − lower_bound(r, p), noting that one is \"≤\" and the other \"<\" because endpoints count as lit; print the answers in query order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the left endpoints and the right endpoints separately; the number of intervals covering p is the number of left endpoints not greater than p minus the number of right endpoints less than p.\n\n## Correctness\n\nAn interval contains p if and only if l ≤ p and r ≥ p. upper_bound(l, p) includes intervals whose left endpoint equals p, and lower_bound(r, p) only excludes intervals with r < p, so the endpoint conditions are right.\n\n## Complexity\n\nPreprocessing O(n log n), each query O(log n), space O(n)."
+}

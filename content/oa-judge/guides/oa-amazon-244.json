@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-244",
+  "packageChecksum": "40067dcbb9c4233d90a58d03794834f0b552f9eac66561c9cc94c772106b5881",
+  "sourceContentHash": "f7caeda1f0d901fa54ffd17283843b22a52da5d9871fafb3a75ab4d57de455ea",
+  "editorialSha256": "df5da79e190a075de823399ebdc317255e91514a20d0737434fdbd1990bca7de",
+  "hints": {
+    "zh": [
+      "坏子串数 = 全部子串数 n(n+1)/2 − 不含 * 的全好子串数；全好子串都落在某个连续好段里，而随着攻击进行坏子串数单调增加。",
+      "正着拆分好段不方便，可以倒过来逐个撤销攻击，相当于把位置由坏变好并与左右好段合并；新增的全好子串一定经过该位置，数量为 (L+1)(R+1)。",
+      "m=0 直接输出 1；从全坏状态开始，坏子串数为 n(n+1)/2；t 从 n 递减到 1 撤销 attackOrder[t]：读出左右邻居所在好段的长度 L、R，把新段长度 L+R+1 写到新段两端，坏子串数减去 (L+1)(R+1)；一旦小于 m 就输出 t。用 64 位整数。"
+    ],
+    "en": [
+      "Damaged substrings = all n(n+1)/2 substrings minus the all-good substrings without *; every all-good substring lies inside one contiguous good segment, and the damaged count only grows as attacks proceed.",
+      "Splitting good segments forward is awkward, so undo the attacks in reverse: each undo turns a position good and merges it with the good segments on both sides; the new all-good substrings all pass through that position, and there are (L+1)(R+1) of them.",
+      "If m=0 output 1; start from the all-damaged state with n(n+1)/2 damaged substrings; for t from n down to 1 undo attackOrder[t]: read the lengths L and R of the good segments next to it, write the new length L+R+1 at both ends of the merged segment, and subtract (L+1)(R+1); as soon as the count drops below m, output t. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUndo the attacks in reverse order, turning every position from bad back to good. Maintain the length of each good contiguous segment at its two ends; when a position is activated, read the left and right lengths L and R, and the newly created all-good substrings number exactly (L+1)(R+1). When the damaged count drops from ≥m to <m, the time before that undo is the answer.\n\n## Proof of correctness\n\nEvery all-good substring belongs to exactly one all-good segment, and the number of damaged substrings equals the total number of substrings minus the number of all-good substrings. A substring newly created by activating a position must pass through that position, with L+1 and R+1 choices of extension on the left and right, so the increment formula is exact. If a left or right neighbor is good, it must be a segment boundary, so the boundary lengths can be merged and updated directly. In forward time the damaged count increases monotonically, so in reverse time the state just before it first drops below the threshold is exactly the earliest time that meets it.\n\n## Complexity\n\nTime O(n), space O(n); substring counts use 64-bit integers."
+}

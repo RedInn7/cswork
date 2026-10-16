@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-19",
+  "packageChecksum": "1cd9f753e3ddeb83424b9ae1c4d4d5894baf0239543d961cfed46e9f274007ca",
+  "sourceContentHash": "d28e8340de136dc74da717ff7c4c7f21c5037daa642fd59803aa27e66ba621ca",
+  "editorialSha256": "755855afb1624853dcc907c403a2960cd67ec403fdc8fadec57e3202f04cf621",
+  "hints": {
+    "zh": [
+      "反复求各位数字和得到的一位数就是数根，它只由数字和对 9 的余数决定，不需要真的一轮轮求和。",
+      "对每个字符串扫一遍求数字和 S：S=0 时数根为 0，否则为 1+(S−1) mod 9；用 10 个计数器统计每个数根出现的次数。",
+      "读入 N 个字符串，逐个累加各位数字得到 S，并把对应数根的计数加 1；然后从 0 到 9 扫计数器，找出最大频次，频次相同时取较大的数根（从小到大扫时用“≥”更新即可）；输出该数根。"
+    ],
+    "en": [
+      "The single digit left after repeatedly summing digits is the digital root; it depends only on the digit sum modulo 9, so there is no need to sum round after round.",
+      "Scan each string once to get its digit sum S: the root is 0 when S = 0 and 1 + (S - 1) mod 9 otherwise; count how often each of the 10 possible roots appears.",
+      "Read the N strings, add up the digits of each one to get S and increment the counter of its root; then go over roots 0..9 to find the highest frequency, preferring the larger root on ties (scanning upwards and updating with \">=\" does that); print that root."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each digit string, repeatedly sum its digits until a single digit remains. The digital root of a non-negative integer can be computed in one linear scan: if the sum of all digits is 0 the result is 0; otherwise the result is 1 + (digit sum - 1) mod 9. Count how often each result occurs and take the digital root with the highest count.\n\n## Ties and input convention\n\nThe statement does not define which root to return when several roots tie as the mode. The explanation and implementation attached to the fixed source pick the larger root; this site adopts that as an explicit rule. The parameters are digit strings and the fixed explanation calls the inputs positive integers; this site supports non-negative decimal digit strings, allows leading zeros, and forbids minus signs or any other sign. The input/output format and the size limits are also supplements by this site.\n\n## Why it is correct\n\nFor a non-zero decimal number the digital root is determined only by its digit sum modulo 9, so the formula is equivalent to summing repeatedly; an all-zero string has digital root 0. The frequency table counts the final single digit of every input number, and taking the largest value among those tied at the maximum frequency matches this site's definition of the mode. Time is O(D) in the total number of digits, with O(10) extra space."
+}

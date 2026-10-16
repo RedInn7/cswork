@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-22",
+  "packageChecksum": "9368820ae3629458b1ebf7d8043dcef2ad23104d3745e36df380c9804ea7f038",
+  "sourceContentHash": "b67fe4158cccb441cf4f4a8069cb937c6cde9b0488ca9cb5c934aa50b23cd6dc",
+  "editorialSha256": "041d3e97a4fd1befd5176e071a01022ce8271ee594dc9336226ff00faa88a304",
+  "hints": {
+    "zh": [
+      "会议顺序可以随意安排，而目标是让累计指数在每一步后都严格大于 0，并尽量多参加几场。直觉上应该先参加效果最好的会议，把指数先抬高。",
+      "把 effectiveness 从大到小排序，依次加入。如果加入某个值后累计指数不再大于 0，后面剩下的值都不大于它，再往后加只会更糟，所以可以停止。",
+      "把数组降序排序；维护累计和 total（可能到 10^14，用 64 位）和计数 count；依次取每个值 v：若 total + v ≤ 0 就停止，否则 total 加上 v、count 加一；输出 count。"
+    ],
+    "en": [
+      "You may order the meetings freely, and the goal is to keep the running index strictly above 0 after every step while attending as many as possible. Intuitively you should attend the most effective meetings first to build the index up.",
+      "Sort effectiveness from largest to smallest and add them in that order. If adding a value makes the running index no longer positive, every remaining value is no larger, so continuing can only be worse and you can stop.",
+      "Sort the array in descending order; keep a running sum total (it can reach 10^14, use 64 bits) and a count; for each value v in turn: if total + v <= 0 stop, otherwise add v to total and increment count; print count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort effectiveness from largest to smallest and add meetings one by one; keep going as long as the new running index is still strictly greater than 0, otherwise no later value can rescue that prefix.\n\n## Proof of correctness\n\nFor any feasible arrangement of length k, swap an adjacent smaller value x and larger value y: in the original order x,y the first prefix is lower, and swapping to y,x does not lower either running sum at these two positions. So there is an optimal feasible prefix in non-increasing order. When scanning in descending order, if adding the current value makes the index not greater than 0, all remaining values are not greater than it, and no complete prefix including them can stay positive, so stop. The scanned prefix is feasible and cannot be extended.\n\n## Complexity\n\nO(n log n) time, O(n) space."
+}

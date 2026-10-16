@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-287",
+  "packageChecksum": "fe971d9e7eb358cda1d9e7cdd54265be96fe57344253bfeee9dd0598498df493",
+  "sourceContentHash": "f5b44c436cc567be6df1c17f37fcc6f7702a4c410e78a0ee8df1e4f514f39906",
+  "editorialSha256": "26b25b637b925f707bb8fda7caeaaab268318f6a11cc72eb836a02ab4c59c327",
+  "hints": {
+    "zh": [
+      "每次最多运两件，所以至少要 ⌈n/2⌉ 次；同一地点的物品每次最多运走一件，所以至少要该地点物品数那么多次。答案至少是两者中的较大值。",
+      "这个下界总能达到：如果最多的地点有 f 件、超过其他所有物品之和，就让它逐一和其他地点配对，剩下的单独运，共 f 次；否则每次从当前数量最多的两个地点各取一件，始终保持“最多的不超过其余总和加 1”，直到只剩 0 或 1 件。",
+      "统计每个地点出现的次数，取最大频次 f，输出 max(f, (n+1) 整除 2)。"
+    ],
+    "en": [
+      "Each operation ships at most two items, so at least ⌈n/2⌉ operations are needed; items from one location ship at most one per operation, so at least as many operations as that location's count are needed. The answer is at least the larger of the two.",
+      "This bound is always reachable: if the most frequent location has f items, more than all other items combined, pair it with the others one by one and ship the leftovers alone, f operations in total; otherwise always take one item from each of the two currently largest locations, keeping the largest count at most the rest plus 1, until 0 or 1 item remains.",
+      "Count the occurrences of each location, take the maximum frequency f, and print max(f, (n+1) divided by 2 and rounded down)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f be the highest frequency of a location; the answer is max(f,ceil(n/2)).\n\n## Proof of correctness\n\nEach operation ships at most two items, so at least ceil(n/2) operations are needed; one location ships at most one item per operation, so at least f operations are needed. If f exceeds the total of all other locations, pair that location with the others one by one and ship the rest alone, for exactly f operations. Otherwise you can always pair the two currently most frequent locations until 0 or 1 item remains; the invariant that the highest frequency is at most the rest plus 1 guarantees that ceil(n/2) operations are reached.\n\n## Complexity\n\nTime O(n), space O(number of distinct locations)."
+}

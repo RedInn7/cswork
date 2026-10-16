@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-8",
+  "packageChecksum": "63b4ea191e2a81c8d0ed5cb6c9f2f12096901f5fe2f98c7d21615aec29b71214",
+  "sourceContentHash": "36ebe1be5205cbe0b10aceba7d7508822373fe9f56135b62e105785fed64f484",
+  "editorialSha256": "6ba474fae113ad261f668e056842f193c172465b8a0767eb73150c7d6bd996b0",
+  "hints": {
+    "zh": [
+      "空闲柜子分两类：从未用过的（编号都不小于下一个新编号 next）和曾被释放的。被释放的编号都小于 next。",
+      "所以分配时，如果有被释放的柜子，最小空闲编号就是其中的最小值；否则就是 next。用最小堆保存被释放的编号。",
+      "哈希表记录访客当前占用的柜子。访客已在表中就把他的柜子编号放回堆并删掉记录；否则从堆顶取编号（堆空则用 next 并让 next 加一），记录下来并更新答案。只在分配时更新答案，输出最后一次分配的编号。"
+    ],
+    "en": [
+      "Free lockers are of two kinds: never used (all numbers ≥ the next new number) and released ones. Every released number is smaller than the next new number.",
+      "So when assigning, if any locker has been released, the smallest free number is the smallest released one; otherwise it is the next new number. Keep released numbers in a min-heap.",
+      "A hash map stores each visitor's current locker. If the visitor is in the map, push the locker back into the heap and remove the entry; otherwise take the heap top (or the next new number, then increment it when the heap is empty), store it and update the answer. Only assignments update the answer, so you output the last assigned number."
+    ]
+  },
+  "explanationEn": "## Idea\n\nA hash map records the locker each visitor occupies, and a min-heap holds released numbers; when no number can be reused, take the increasing next new number.\n\n## Why it is correct\n\nEvery unused locker number is at least next, and the smallest released locker number is at the heap top and smaller than next. So every assignment takes exactly the minimum among all free lockers. Updating the answer only on assignments keeps the result of the last assignment.\n\n## Complexity\n\nO(n log n) time, O(n) extra space."
+}

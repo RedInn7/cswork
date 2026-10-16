@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-183",
+  "packageChecksum": "964167cb0772221894c12f76a7b386a2d460bb6f94721c6036bb9ee8033e99e9",
+  "sourceContentHash": "221da62e34dd139620f195e250b3665938e26583113a1efc7cecd1243c746b0b",
+  "editorialSha256": "b1e574376d92d4b623cc6285e99cc6b8b60179a3c9e6e6138d962d8bfd68ff4f",
+  "hints": {
+    "zh": [
+      "右旋子串[l,r]相当于把s[r]挪到位置l，结果在位置l之前保持不变。想让字典序最小，就要找最早的、后面还存在更小字符的位置。",
+      "找到最早的位置l，使它后面的后缀里有比s[l]更小的字符；把后缀中最小的那个字符移到l。若这个最小字符出现多次，选最右边那一次更优，因为夹在中间被右移的那段字符都不比它小。",
+      "从右往左扫描，维护后缀中最小字符最右出现的位置best：若s[i]大于s[best]，记录left=i、right=best；若s[i]小于s[best]，令best=i。扫描结束若从未记录left，原串就是答案；否则输出s的前left个字符、s[right]、s[left..right−1]以及s[right+1..]依次拼接的结果。"
+    ],
+    "en": [
+      "Rotating substring [l, r] right moves s[r] to position l and leaves everything before l unchanged. For the smallest result, find the earliest position that has a smaller character somewhere after it.",
+      "Find the earliest position l whose suffix contains a character smaller than s[l], and move the smallest character of that suffix to l. If that smallest character occurs several times, take its rightmost occurrence: the characters shifted right in between are all no smaller than it.",
+      "Scan from right to left keeping best, the rightmost position of the smallest character in the suffix: if s[i] > s[best], record left = i and right = best; if s[i] < s[best], set best = i. If left was never recorded, the original string is the answer; otherwise print the first left characters of s, then s[right], then s[left..right-1], then s[right+1..]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFrom the right, maintain the minimum character of the suffix and its rightmost position; find the earliest position that can be improved by a smaller character after it, and move the rightmost occurrence of that suffix minimum to this position.\n\n## Proof of correctness\n\nAn optimal change must make a character smaller as early as possible; a position with no smaller character after it is not worth changing. At that position, choosing the smallest suffix character is optimal. If the smallest character occurs several times, moving the rightmost occurrence differs from choosing a more left one only in additionally shifting the segment between the two occurrences right by one; the characters of that segment are all no smaller than the minimum character, so at the first difference the rightmost choice is smaller or equal. Hence the rightmost minimum character gives the optimal result. If no position can be improved, the original string is optimal.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-29",
+  "packageChecksum": "3884fb081ba012f683942f4a9aca43555bf2030706954d473aafcf7be15bd663",
+  "sourceContentHash": "eebd8b20eb3f51db3c4ba479b5db235bb2161432ee3dfb71f52209698ed73cea",
+  "editorialSha256": "73a66d974b0d9a2965f0119b462fe5006da95a2c9d8eb8bd81f08f8a61ceaefe",
+  "hints": {
+    "zh": [
+      "任何回文都有一个奇数中心（某个字符）或偶数中心（两个相邻字符之间）；单个字符本身就是长度为 1 的回文。",
+      "枚举全部 2n−1 个中心，从每个中心向两边扩展到不能再扩，记录全局最长的那一个；多个最长答案任选其一都对。",
+      "对中心 middle（0..2n−2），left=middle/2，right=left+middle%2，两端字符相等就同时外扩；候选为 s[left+1..right−1]，比当前答案更长就替换；最后直接输出答案字符串，不加引号。"
+    ],
+    "en": [
+      "Every palindrome has an odd center (a character) or an even center (the gap between two neighbours); a single character is itself a palindrome of length 1.",
+      "Enumerate all 2n - 1 centers, expand each as far as possible, and remember the longest palindrome found overall; when several are longest, any one of them is accepted.",
+      "For center middle in 0..2n - 2 set left = middle / 2 and right = left + middle % 2, and widen both ends while the characters match; the candidate is s[left + 1 .. right - 1], and it replaces the answer when it is longer; print the answer string as is, without quotes."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the odd and even centers and expand toward both sides. Keep the longest substring each center can reach, and finally output one of maximum length. The reference program's internal choice among ties is not part of the output requirement; the semantic checker accepts every optimal result.\n\n## Proof of correctness\n\nEvery palindrome has an odd or an even center. Enumerating all centers and expanding each maximally necessarily covers the globally longest palindrome; the returned candidate belongs to the original string and its characters match pairwise from both ends, so it is valid and optimal.\n\n## Complexity\n\nO(n²) time; the candidate string needs O(n) auxiliary space."
+}

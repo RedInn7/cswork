@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-169",
+  "packageChecksum": "bf1755de766416887732ad612870d05f439c1512f5544122bca3c7bd3a0da1b1",
+  "sourceContentHash": "76d4ed44d12904076acdbf825409fd2096892ed0cd320e0e5b218b84444f9fc3",
+  "editorialSha256": "f6d01e977a290a56fda9b88ec69ec7d7df25800275907506bb7e307c91232572",
+  "hints": {
+    "zh": [
+      "不同重量的包裹不能同趟运送，每种重量可以单独考虑，答案是各重量所需趟数之和。",
+      "某种重量有c件：c等于1时凑不成2件或3件，整题无解；c至少为2时每趟最多3件，下界是c除以3向上取整，而且总能用若干个3件加上一两个2件恰好达到。",
+      "统计每种重量的件数；若存在件数为1的重量，输出-1；否则对每个件数c累加(c+2)/3（整数除法），输出总和。"
+    ],
+    "en": [
+      "Packages of different weights never share a trip, so each weight can be handled on its own and the answer is the sum over weights.",
+      "A weight with c packages: if c is 1, no trip of 2 or 3 can take it, so there is no solution; otherwise each trip carries at most 3, giving the lower bound c/3 rounded up, and some threes plus one or two twos always reach it.",
+      "Count the packages of each weight; if any weight occurs exactly once, print -1; otherwise add (c+2)/3 with integer division for each count c and print the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount by weight; if some weight occurs exactly once there is no solution, otherwise each weight needs ceil(count/3) trips.\n\n## Proof of correctness\n\nDifferent weights cannot be mixed, so each is solved separately and the results are added. Each trip carries at most 3, which gives the lower bound ceil(c/3); with remainder 0 use only 3s, with remainder 2 add one trip of 2, and with remainder 1 and c>=4 turn one 3 and the leftover 1 into two 2s; all of these reach the lower bound.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

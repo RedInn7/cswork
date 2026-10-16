@@ -1,0 +1,21 @@
+{
+  "id": "oa-intuit-4",
+  "packageChecksum": "8c0e406b3218a3e93b62f672e253175d3d3a248a45aa46801cbb1400b6346d61",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst long long MOD = 1000000007;\n\nlong long power(long long base, long long e) {\n    long long r = 1;\n    for (base %= MOD; e; e >>= 1, base = base * base % MOD)\n        if (e & 1) r = r * base % MOD;\n    return r;\n}\n\nint main() {\n    long long n;\n    cin >> n;\n    // Inclusion-exclusion over the three monochromatic-column events: 24^n - 9*8^n + 9*2^n + 18*3^n - 24.\n    long long ans = (power(24, n) - 9 * power(8, n) % MOD + 9 * power(2, n) + 18 * power(3, n) - 24) % MOD;\n    cout << (ans + MOD) % MOD << '\\n';\n}\n",
+      "sha256": "a8c1cf4e6b35459279be16eae97d446834c3f387a8782c05da99e6c2398d4cae"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static final long MOD = 1_000_000_007L;\n\n    static long power(long base, long e) {\n        long r = 1;\n        for (base %= MOD; e > 0; e >>= 1, base = base * base % MOD)\n            if ((e & 1) == 1) r = r * base % MOD;\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong();\n        // Inclusion-exclusion over the three monochromatic-column events: 24^n - 9*8^n + 9*2^n + 18*3^n - 24.\n        long ans = (power(24, n) - 9 * power(8, n) % MOD + 9 * power(2, n) + 18 * power(3, n) - 24) % MOD;\n        System.out.println((ans + MOD) % MOD);\n    }\n}\n",
+      "sha256": "2cad896a6566933d3444724958f602a82d6e348609af8e2915332ee5899d0b8c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nconst mod = 1_000_000_007\n\nfunc power(base, e int64) int64 {\n\tr := int64(1)\n\tfor base %= mod; e > 0; e >>= 1 {\n\t\tif e&1 == 1 {\n\t\t\tr = r * base % mod\n\t\t}\n\t\tbase = base * base % mod\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\t// Inclusion-exclusion over the three monochromatic-column events: 24^n - 9*8^n + 9*2^n + 18*3^n - 24.\n\tans := (power(24, n) - 9*power(8, n)%mod + 9*power(2, n) + 18*power(3, n) - 24) % mod\n\tfmt.Println((ans + mod) % mod)\n}\n",
+      "sha256": "16ef0025d0159b5441f78e016840179d966a4b522b15fbccb54a3de1b4d593c3"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-152",
+  "packageChecksum": "556c62f78e9db5f4f3ac4112f103ac3402f920d7c53540b27d33493492beb449",
+  "sourceContentHash": "82d7ab3ba7c2714f578ddcf112e5b57a9cb7538d97b87c23ae2f7db217f9323e",
+  "editorialSha256": "a951da53ed88bd2f5c2654bea3f4aeaf5bf482837cbc79a6d1e8769c7f557c4e",
+  "hints": {
+    "zh": [
+      "每次滑动只删除一个值、加入一个值，窗口里的多重集合变化很小；需要一个支持增删一个数、查询第k小的结构，而不是每次重新排序。",
+      "先把所有值离散化成秩，用树状数组记录当前窗口中每个秩出现的次数；第k小就是前缀计数首次达到k的那个秩，可以在树状数组上用二进制倍增直接找到。",
+      "离散化后先把前m个值的秩各加1；倍增时从不超过秩总数的最大2的幂开始，若跳过去后累计计数仍小于k就跳过去，并把k减去该节点的计数；结束时下一个秩就是答案。之后每次删去a[i−m]、加入a[i]再查询一次，按窗口起点顺序输出。"
+    ],
+    "en": [
+      "Each slide removes one value and adds one, so the window's multiset barely changes; what you need is a structure that supports adding or removing a number and asking for the k-th smallest, not a fresh sort per window.",
+      "Compress the values to ranks and keep a Fenwick tree of how many times each rank occurs in the current window; the k-th smallest is the first rank whose prefix count reaches k, which binary lifting on the Fenwick tree finds directly.",
+      "After compression add 1 at the rank of each of the first m values. For the query, start from the largest power of two not above the number of ranks; whenever stepping forward keeps the accumulated count below k, step and subtract that node's count from k; the rank right after where you stop is the answer. Then for each later window remove a[i-m], add a[i] and query again, printing the answers in order of window start."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompress all values into ranks; a Fenwick tree stores how many times each rank occurs in the current window. When the window moves, remove one value and add one, and use binary lifting to find the rank whose cumulative count first reaches k.\n\n## Proof of correctness\n\nThe counts in the tree are exactly the multiset of the current window. Prefix counts are monotone, and the rank of the k-th smallest value is exactly the rank at which the prefix count first reaches k; binary lifting keeps the largest prefix whose cumulative count is < k, and the next rank is the answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

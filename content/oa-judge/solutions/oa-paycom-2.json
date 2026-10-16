@@ -1,0 +1,21 @@
+{
+  "id": "oa-paycom-2",
+  "packageChecksum": "0f2d7aa41703581d23c904820419503e842d8ca751b0ea74636e0410e869ea7c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long a, b;\n    cin >> a >> b;\n    // Repeated subtraction keeps the gcd; taking remainders batches those subtractions.\n    while (b) {\n        long long r = a % b;\n        a = b, b = r;\n    }\n    cout << a << \"\\n\";\n}\n",
+      "sha256": "f22d3e4769448a299bc1ec3b94608aadf9946742d5d8e3b0f8fcb0768e9adf69"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long a = sc.nextLong(), b = sc.nextLong();\n        // Repeated subtraction keeps the gcd; taking remainders batches those subtractions.\n        while (b != 0) {\n            long r = a % b;\n            a = b;\n            b = r;\n        }\n        System.out.println(a);\n    }\n}\n",
+      "sha256": "eb5f045e11d1c869c128439e8d9e9d3ceb7a16abce4234e931b0832295d35dac"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar a, b int64\n\tfmt.Scan(&a, &b)\n\t// Repeated subtraction keeps the gcd; taking remainders batches those subtractions.\n\tfor b != 0 {\n\t\ta, b = b, a%b\n\t}\n\tfmt.Println(a)\n}\n",
+      "sha256": "116cd1088aef53327e837e345c43193205d432a034715ff1dbf02b97a194296e"
+    }
+  ]
+}

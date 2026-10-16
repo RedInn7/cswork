@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-6",
+  "packageChecksum": "96c9c7e314b43723b2ee1b5963b8405e913dacdb37df1fa83dd433aab235c724",
+  "sourceContentHash": "94802dc30552cf2a52f678ecc04ecc3b22c7021bace482ffc5665f50e79d81ea",
+  "editorialSha256": "ff9b5a8b5a38746030f575a919965502d4d272952c079d1ffbc7ee4f003ebbb3",
+  "hints": {
+    "zh": [
+      "问的是“出现奇数次的不同标识有几个”，而每出现一次，某个标识的次数奇偶性就翻转一次。",
+      "用一个集合表示“当前出现了奇数次的标识”：遇到标识时若已在集合中就删除，否则加入，最后集合的大小就是答案。",
+      "读入 N 和 N 个整数（N 可以为 0）；逐个在哈希集合中做“在则删、不在则加”；输出集合大小，而不是某个具体日期的值。"
+    ],
+    "en": [
+      "The question is how many distinct labels occur an odd number of times, and each occurrence flips the parity of that label's count.",
+      "Let a set hold the labels seen an odd number of times so far: when a label arrives, remove it if present, otherwise add it; the final size of the set is the answer.",
+      "Read N and the N integers (N may be 0); for each one, remove it from a hash set if present, else insert it; print the size of the set, not any particular date value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a set to hold the labels that have currently occurred an odd number of times: when a label is read, delete it if it is in the set, otherwise add it; finally return the size of the set.\n\n## Proof of correctness\n\nEach time the same label is read, the parity of its count flips, and its membership in the set flips in step. Therefore, after processing any prefix, the set contains exactly the labels with odd frequency in that prefix, and its final size is what the problem asks for.\n\n## Complexity\n\nO(N) expected time, O(number of distinct labels) space."
+}

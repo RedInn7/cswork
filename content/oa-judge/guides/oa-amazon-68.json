@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-68",
+  "packageChecksum": "038614e43dd3d316f31ef202e3fec44b397825ee71884abb962ec235197172e3",
+  "sourceContentHash": "d116b035112f2246d92a1054a023e03395edf68af766b28b8234cb82e29f1f5e",
+  "editorialSha256": "bdd00c78b6049c62cf0a535b29cbbc8274cbfae707aa821bed1f3d3f15c3489b",
+  "hints": {
+    "zh": [
+      "把每辆车看成一串依次可用的“槽位”：C、⌊C/2⌋、⌊C/4⌋……，同一辆车只能按这个顺序使用，后面的槽位不会比前面的大。",
+      "最重的包裹最难送，应该交给当前最大的可用槽位；如果此时最大槽位都装不下最重的剩余包裹，那么无论怎么安排都不可能完成。用最大堆维护每辆车当前的容量就能依次得到全局降序的槽位。",
+      "把所有容量放入最大堆，包裹按重量降序排序；对每个包裹取堆顶容量，若小于包裹重量就输出 0 结束，否则把容量除以 2（向下取整）后放回堆；全部送完输出 1。"
+    ],
+    "en": [
+      "Think of each truck as a sequence of slots used in order: C, floor(C/2), floor(C/4), ...; one truck can only use them in that order, and a later slot is never larger than an earlier one.",
+      "The heaviest package is the hardest to place, so it should get the largest available slot; if even the largest slot cannot hold the heaviest remaining package, no arrangement can succeed. A max-heap of current capacities yields the slots in globally descending order.",
+      "Put all capacities into a max-heap and sort the packages by weight in descending order; for each package take the top capacity; if it is smaller than the weight print 0 and stop, otherwise halve it (rounding down) and push it back; after delivering everything print 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the packages by weight in descending order. Each time, take the truck with the current largest capacity; if it is enough, deliver the package and put the halved capacity back into the heap; otherwise fail.\n\n## Proof of correctness\n\nEach truck provides decreasing slots C, floor(C/2), ..., which can only be used as a prefix in this order. The max-heap enumerates, step by step, the largest available value among all slots, because a later slot is never larger than its predecessor, giving the slots in globally descending order. If the largest remaining slot is smaller than the largest remaining package, there is no solution; otherwise matching in descending order is optimal for feasibility.\n\n## Complexity\n\nO(n + m log n + m log m) time and O(n + m) space."
+}

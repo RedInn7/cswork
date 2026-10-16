@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-281",
+  "packageChecksum": "6eeb9534c2effc382246a79835244ba36ccb938198aaf5138b5cfcb37794a08f",
+  "sourceContentHash": "ea464fb0a1c2e83183eb20a45fa898ad2f6e89de349a859a4b6850685d330f9f",
+  "editorialSha256": "585e6c42e2364ff886412bfa4e09994ce9ed2ffe86313bba9e636257754264fa",
+  "hints": {
+    "zh": [
+      "日期只在 0..100000 之间，可以直接算出每一天的在线人数，再数有多少天达到最大值。",
+      "每个用户在 [login, logout] 这些天都在线。用差分数组：在 login 处加 1、在 logout+1 处减 1，前缀和就是每天的在线人数，两端都包含在内。",
+      "建长度 100002 的差分数组并填好；从第 0 天扫到第 100000 天累加前缀和；当前人数大于已知最大值时更新最大值并把天数计数重置为 1，等于最大值时计数加 1；输出天数计数。"
+    ],
+    "en": [
+      "Days only range over 0..100000, so you can compute the online count for every day directly and then count how many days reach the maximum.",
+      "Each user is online on every day of [login, logout]. With a difference array, add 1 at login and subtract 1 at logout+1; the prefix sums are the daily online counts, inclusive at both ends.",
+      "Build a difference array of length 100002 and fill it; sweep days 0 through 100000 accumulating the prefix sum; when the current count exceeds the best so far, update the best and reset the day count to 1, and when it equals the best, increase the day count; print the day count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a difference array: add 1 at login and subtract 1 at logout+1, scan 0..100000, and update the maximum count and the number of days that reach it.\n\n## Proof of correctness\n\nThe prefix sum of the difference array counts exactly the users who have started and have not yet passed the day after their logout, which is the coverage count of intervals inclusive at both ends. On a higher count, reset the number of days to 1; on an equal peak, add 1; ignore lower counts. In the end every peak day is counted exactly once.\n\n## Complexity\n\nTime O(n+100001), space O(100002)."
+}

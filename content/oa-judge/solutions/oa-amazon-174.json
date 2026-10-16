@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-174",
+  "packageChecksum": "1a6d3340fd5ef2a7e1cef0b32ae552551f36f57d915bdbe582c4263df5203093",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // Only consecutive occurrences of the same value matter: the gap between them.\n    unordered_map<long long, int> last;\n    last.reserve(2 * n);\n    int answer = INT_MAX;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        auto it = last.find(v);\n        if (it != last.end()) {\n            answer = min(answer, i - it->second - 1);\n            it->second = i;\n        } else {\n            last.emplace(v, i);\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "f76256c6ae4adc47b836a5cc0fda47ed297772d619c5d36452680ae1f0091bf2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // Only consecutive occurrences of the same value matter: the gap between them.\n        HashMap<Integer, Integer> last = new HashMap<>(2 * n);\n        int answer = Integer.MAX_VALUE;\n        for (int i = 0; i < n; i++) {\n            Integer previous = last.put(nextInt(), i);\n            if (previous != null) answer = Math.min(answer, i - previous - 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "d1f391a584c53617d97c1a76596d7afd66f8eabab1992525f36fbef791d7afa9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\t// Only consecutive occurrences of the same value matter: the gap between them.\n\tlast := make(map[int]int, n)\n\tanswer := n\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tif j, ok := last[v]; ok {\n\t\t\tanswer = min(answer, i-j-1)\n\t\t}\n\t\tlast[v] = i\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "d500d47c285a3186d936b7e2b9545bb482caad051407eb992ab862e44dea9293"
+    }
+  ]
+}

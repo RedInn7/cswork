@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-22",
+  "packageChecksum": "6e6683cf45604fd46507fccab200e7ed32380ab99f9d3dd9e1e98537c30a07d1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    long long n, m, k; cin >> n >> m >> k;\n    vector<char> owned(max<long long>(n, 1000000) + 2, 0);\n    long long answer = 0;\n    for (long long i = 0; i < m; i++) {\n        long long v; cin >> v;\n        if (!owned[v]) { owned[v] = 1; answer++; }\n    }\n    for (long long v = 1; v <= n; v++) {\n        if (owned[v]) continue;\n        if (v > k) break;\n        k -= v; answer++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "e1e2755df41df7578a6d35a78dfa5e1716d04f22a83af3d54dcc881678820efe"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), m = nextInt();\n        long k = nextLong();\n        boolean[] owned = new boolean[Math.max(n, 1000000) + 2];\n        long answer = 0;\n        for (int i = 0; i < m; i++) {\n            int v = nextInt();\n            if (!owned[v]) {\n                owned[v] = true;\n                answer++;\n            }\n        }\n        for (int v = 1; v <= n; v++) {\n            if (owned[v]) continue;\n            if (v > k) break;\n            k -= v;\n            answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "26d0f20aac9896016db7a928f0325b72403b70a374246fb8a10219862411fdc5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn, m, k := nextInt(), nextInt(), nextInt()\n\towned := make([]bool, max(n, 1000000)+2)\n\tvar answer int64\n\tfor i := int64(0); i < m; i++ {\n\t\tif v := nextInt(); !owned[v] {\n\t\t\towned[v] = true\n\t\t\tanswer++\n\t\t}\n\t}\n\tfor v := int64(1); v <= n; v++ {\n\t\tif owned[v] {\n\t\t\tcontinue\n\t\t}\n\t\tif v > k {\n\t\t\tbreak\n\t\t}\n\t\tk -= v\n\t\tanswer++\n\t}\n\tw.WriteString(strconv.FormatInt(answer, 10) + \"\\n\")\n}\n",
+      "sha256": "f73f7b4a44087310b07bfca7208556415e164a391f7320210f8cdf57d3575099"
+    }
+  ]
+}

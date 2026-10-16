@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-20",
+  "packageChecksum": "42699f63bd6435466f445bb8a7f813d4d4edfa7210ef92f487d8acbeb3700955",
+  "sourceContentHash": "c31d70f6d6002775ddcb33f942a0a78e7fa02ea44aab0c1e1e84342f1c6babaf",
+  "editorialSha256": "4cb94b08897b973c5ff1faa2d204db6f9f21a80b4a1a1752562a9f10fd5c10a9",
+  "hints": {
+    "zh": [
+      "三个数组各自有序，这和归并排序的合并步骤一样：所有尚未取出的元素里，最小值一定在三个数组的当前头部之中。",
+      "按归并顺序取出所有元素后，相等的值必然挨在一起，所以只需要和输出序列的最后一个值比较，就能去重并保证结果严格递增。",
+      "为三个数组各维护一个指针；每次在尚未用完的数组里选头部最小的那个取出并移动它的指针，若它不等于上一个输出值就追加。全部取完后用空格连接输出，结果为空时输出空行；注意输入中的空数组对应空行。"
+    ],
+    "en": [
+      "Each of the three arrays is sorted, just like the merge step of merge sort: the smallest of all remaining elements must be one of the three current heads.",
+      "When elements come out in merge order, equal values are next to each other, so comparing with the last output value is enough to remove duplicates and keep the result strictly increasing.",
+      "Keep one pointer per array; each time take the smallest head among the arrays that still have elements and advance that pointer, appending the value only if it differs from the last output value. When everything is consumed print the values separated by spaces, or an empty line if there are none; note that an empty input array is an empty line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain three pointers; each time take the smallest value not yet consumed, append it only if it differs from the last output value, and then advance the pointer that supplied it.\n\n## Why it is correct\n\nEach input is already sorted, so the minimum of the unconsumed elements must be at one of the three pointers. Repeatedly taking the minimum keeps the output non-decreasing, and equal values are adjacent in merge order, so skipping repeats of the last value keeps each distinct integer exactly once.\n\n## Complexity\n\nTime O(n+m+k), extra space O(n+m+k) for the output."
+}

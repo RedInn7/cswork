@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-27",
+  "packageChecksum": "83d0517868401d39d20e7a24785ad08074b4c06311138d60ba4276075d4753df",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> a(n), suffix(n + 1, 0);\n    for (auto &x : a) cin >> x;\n    for (int i = n - 1; i >= 0; i--) suffix[i] = suffix[i + 1] | a[i];\n    // spend every doubling on one element; try each element\n    long long prefix = 0, answer = 0;\n    for (int i = 0; i < n; i++) {\n        answer = max(answer, prefix | (a[i] << k) | suffix[i + 1]);\n        prefix |= a[i];\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "f9a8186ac72dc88e52b353942076aa07ebf6e02a2ae02454183ff471ef88e515"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        long[] a = new long[n], suffix = new long[n + 1];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = n - 1; i >= 0; i--) suffix[i] = suffix[i + 1] | a[i];\n        // spend every doubling on one element; try each element\n        long prefix = 0, answer = 0;\n        for (int i = 0; i < n; i++) {\n            answer = Math.max(answer, prefix | (a[i] << k) | suffix[i + 1]);\n            prefix |= a[i];\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "dbb92b80ac5277de60fb0c81525d91fef1b344e20ccc6fb59268bf0ddc36cf0d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, k := next(), next()\n\ta, suffix := make([]int, n), make([]int, n+1)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tfor i := n - 1; i >= 0; i-- {\n\t\tsuffix[i] = suffix[i+1] | a[i]\n\t}\n\t// spend every doubling on one element; try each element\n\tprefix, answer := 0, 0\n\tfor i, v := range a {\n\t\tanswer = max(answer, prefix|(v<<k)|suffix[i+1])\n\t\tprefix |= v\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "2ec43bda79e993870da8c41182ea88c21f7af70f4ae63421b9bc67c4c1b4f289"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-koddi-1",
+  "packageChecksum": "eabcbd44c1e27189468a8a8e30ba65c9df9a6fc8d50d88c9907c0e0b1dbef1a9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string word;\n    long long count = 0;\n    while (cin >> word)\n        if (tolower((unsigned char)word.front()) == tolower((unsigned char)word.back())) count++;\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "1b8b095322ebe27c0f89c1e87dbdc4b1d3e228eb16e6048544419d3b0441a436"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String text = new String(System.in.readAllBytes()).strip();\n        long count = 0;\n        if (!text.isEmpty())\n            for (String w : text.split(\"\\\\s+\"))\n                if (Character.toLowerCase(w.charAt(0)) == Character.toLowerCase(w.charAt(w.length() - 1))) count++;\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "3e32143917d04654759e97819f7029c38ec5c541a92773bd38ecf41766a89369"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n\t\"unicode\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tcount := 0\n\tfor _, w := range strings.Fields(string(raw)) {\n\t\tif unicode.ToLower(rune(w[0])) == unicode.ToLower(rune(w[len(w)-1])) {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "c0a6e46537c7b2b09b5cedc0e67d78c356dde67a634b8a2e8cb8c812b4ff31fe"
+    }
+  ]
+}

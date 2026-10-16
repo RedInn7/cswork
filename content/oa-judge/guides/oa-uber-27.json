@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-27",
+  "packageChecksum": "ab682bc26dc028b20973866a79d651221d20809f09c4f08928047423613fd25b",
+  "sourceContentHash": "f2232e145f555ffa2e5a5afb04e69ffc8cedf28d56583208524c351a8070cb11",
+  "editorialSha256": "e697614326dae1034af7539091615ae875e2124bc3d6b0b4da9e162aa1c4dd85",
+  "hints": {
+    "zh": [
+      "一个 L 形由三个花格组成，其中拐点同时与另外两个格子分别同行、同列；三个不共线的直角点唯一确定拐点，所以可以按拐点来计数，不会重复。",
+      "先统计每行、每列的花数。固定一个花格作为拐点，同行另选一朵、同列另选一朵就构成一个 L，贡献为（该行花数−1）×（该列花数−1）。",
+      "按公式判断每个格子是否有花：(i + j×magic) mod mod 再 mod 2 等于 1；第一遍遍历统计 rows[i] 和 cols[j]；第二遍对每个花格累加 (rows[i]−1)×(cols[j]−1)；用 64 位整数保存并输出答案。"
+    ],
+    "en": [
+      "An L shape consists of three flower cells where the corner shares a row with one cell and a column with the other. Three cells forming a right angle determine the corner uniquely, so counting by corner never double counts.",
+      "First count the flowers in every row and every column. Fix a flower as the corner; choosing another flower in its row and another in its column forms an L, so the corner contributes (row count - 1) * (column count - 1).",
+      "A cell has a flower when ((i + j * magic) mod mod) mod 2 equals 1. In a first pass, compute rows[i] and cols[j]. In a second pass, add (rows[i] - 1) * (cols[j] - 1) for every flower cell. Keep the answer in a 64-bit integer and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the flowers in each row and each column, then use each flower as the unique corner, contributing (row flowers−1)×(column flowers−1).\n\n## Correctness\n\nOnce the corner is fixed, the other two points, one in the same row and one in the same column, are distinct from each other, and each choice forms exactly one L. Three non-collinear right-angle points determine the corner uniquely, so the sum has no duplicates.\n\n## Complexity\n\nTime O(nm), extra space O(n+m)."
+}

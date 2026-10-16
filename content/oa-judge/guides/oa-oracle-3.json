@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-3",
+  "packageChecksum": "1307053d4c72fa17ed0cf5ce9fb509648c85a0e045dc122514d604cbb11393b8",
+  "sourceContentHash": "aba23c9427416329f9c393d7d933815e05382691be66c0ab72089ce5633cc3e9",
+  "editorialSha256": "452e9753c5e2466158eb0618debbee1a3bae7d9b1cad216bf4917d17cbf35b74",
+  "hints": {
+    "zh": [
+      "排序有两级规则：先比二进制中 1 的个数，个数相同再比数值本身，重复的数都要保留。",
+      "把每个数映射成二元键（1 的个数，数值），按这个键做普通的升序排序就正好满足题目的优先级。",
+      "读入数组后，用比较函数先比较 popcount 再比较值进行排序（也可以把 popcount 放在高位、数值放在低位拼成一个整数再排序），最后按顺序空格分隔输出全部 n 个数。"
+    ],
+    "en": [
+      "The order has two levels: first the number of 1 bits in the binary form, then the value itself for equal counts, and duplicates are all kept.",
+      "Map each number to the pair key (number of 1 bits, value); an ordinary ascending sort by this key gives exactly the required priority.",
+      "Read the array and sort with a comparator that compares the popcount first and the value second (or pack the popcount into the high bits and the value into the low bits of one integer and sort those), then print all n numbers in order, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse (number of 1 bits, integer value) as the sort key.\n\n## Proof of correctness\n\nThis pair key compares exactly by the problem's priority. Sorting keeps every input element, including duplicates, so the output is the unique required order.\n\n## Complexity\n\nO(n log n) time, O(n) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-nutanix-3",
+  "packageChecksum": "d7486038320d7945a205b70c56d05e3315932e34f6854b3141eb6121be1d132a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (!(cin >> n)) return 0;\n    vector<long long> x(n), y(n);\n    for (int i = 0; i < n; i++) cin >> x[i] >> y[i];\n    // Dense Prim: best[j] is the cheapest edge from j to the current tree.\n    vector<long long> best(n, LLONG_MAX);\n    vector<char> used(n, 0);\n    best[0] = 0;\n    long long total = 0;\n    for (int it = 0; it < n; it++) {\n        int u = -1;\n        for (int i = 0; i < n; i++)\n            if (!used[i] && (u < 0 || best[i] < best[u])) u = i;\n        used[u] = 1;\n        total += best[u];\n        for (int j = 0; j < n; j++)\n            if (!used[j]) best[j] = min(best[j], llabs(x[u] - x[j]) + llabs(y[u] - y[j]));\n    }\n    cout << total << \"\\n\";\n}\n",
+      "sha256": "2700b3e53c3ae645f74931e18befdeab2ffdbb39b578fcaeed016f28d5d9a7bb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long[] x = new long[n], y = new long[n];\n        for (int i = 0; i < n; i++) {\n            x[i] = nextLong();\n            y[i] = nextLong();\n        }\n        // Dense Prim: best[j] is the cheapest edge from j to the current tree.\n        long[] best = new long[n];\n        java.util.Arrays.fill(best, Long.MAX_VALUE);\n        boolean[] used = new boolean[n];\n        best[0] = 0;\n        long total = 0;\n        for (int it = 0; it < n; it++) {\n            int u = -1;\n            for (int i = 0; i < n; i++)\n                if (!used[i] && (u < 0 || best[i] < best[u])) u = i;\n            used[u] = true;\n            total += best[u];\n            for (int j = 0; j < n; j++)\n                if (!used[j]) best[j] = Math.min(best[j], Math.abs(x[u] - x[j]) + Math.abs(y[u] - y[j]));\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "5eacea3d038b4c4c260149418f20fdc50d379466d4f4d91b43e47bd364f03fd2"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n)\n\nfunc abs(v int64) int64 {\n\tif v < 0 {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tx := make([]int64, n)\n\ty := make([]int64, n)\n\tfor i := 0; i < n; i++ {\n\t\tfmt.Fscan(in, &x[i], &y[i])\n\t}\n\t// Dense Prim: best[j] is the cheapest edge from j to the current tree.\n\tbest := make([]int64, n)\n\tfor i := range best {\n\t\tbest[i] = math.MaxInt64\n\t}\n\tused := make([]bool, n)\n\tbest[0] = 0\n\tvar total int64\n\tfor it := 0; it < n; it++ {\n\t\tu := -1\n\t\tfor i := 0; i < n; i++ {\n\t\t\tif !used[i] && (u < 0 || best[i] < best[u]) {\n\t\t\t\tu = i\n\t\t\t}\n\t\t}\n\t\tused[u] = true\n\t\ttotal += best[u]\n\t\tfor j := 0; j < n; j++ {\n\t\t\tif !used[j] {\n\t\t\t\tbest[j] = min(best[j], abs(x[u]-x[j])+abs(y[u]-y[j]))\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "6143b39e1e93ed1e7c177cad5c6ac388eb3c8a4c04eb3ccffafa828368b4ffbd"
+    }
+  ]
+}

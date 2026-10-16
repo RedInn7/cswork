@@ -1,0 +1,19 @@
+{
+  "id": "oa-quora-1",
+  "packageChecksum": "3a42d8de408862f8b8df731ed858c757487fe64e98ac9778b8a0694365412c4a",
+  "sourceContentHash": "80cfb0caa56d46a8e6eb755f8dd7eb3efd6ec73ed30ccbf3a6a3333dd8a363ea",
+  "editorialSha256": "d539b4468629900c2ebf2e83317a39b383f148f2c6e0795a265089fb227e3a9d",
+  "hints": {
+    "zh": [
+      "k≥2 时，不超过 10^18 的 k 的正整数次幂最多只有约 60 个（k=2 时 2^1..2^59）。",
+      "先把这些幂全部生成出来放进一张表（集合），再逐个检查数组元素是否在表里即可，不需要对每个元素做分解或取对数。",
+      "从 p=k 开始不断乘 k，每次乘之前先判断 p>10^18/k，成立就停止，避免溢出；10^18 在有符号 64 位范围内。不要用浮点对数判断，精度会出错。元素都至少为 2，所以 k^0=1 不需要考虑。最后统计命中个数。"
+    ],
+    "en": [
+      "For k >= 2 there are at most about 60 positive powers of k not exceeding 10^18 (2^1..2^59 when k = 2).",
+      "Generate all of these powers into a table (a set) first, then check whether each array element is in the table; no factoring or logarithms per element are needed.",
+      "Start from p = k and keep multiplying by k; before each multiplication check p > 10^18 / k and stop if so, which avoids overflow (10^18 fits in a signed 64-bit integer). Do not decide with floating-point logarithms, since the precision fails. All elements are at least 2, so k^0 = 1 never matters. Count the hits."
+    ]
+  },
+  "explanationEn": "## Problem\n\nGiven an array arr and an integer k, count how many numbers in arr are powers of k (k^1, k^2, ...). In this problem both k and the elements of arr are at least 2.\n\n## Approach\n\nFor k >= 2 there are at most 60 powers of k not exceeding 10^18. First generate all the powers by starting from k and repeatedly multiplying by k; before each multiplication check p > 10^18/k to see whether it would exceed the bound, which avoids overflow. Then check whether each element is in this table.\n\n## Correctness\n\nAll elements are >= 2, so k^0=1 never occurs; the generated table contains exactly all positive powers <= 10^18. Comparing element by element gives the count.\n\n## Complexity\n\nO(n*log_k 10^18), at most about 60n comparisons.\n\n## Independent verification\n\nThe oracle repeatedly divides each element by k until it is no longer divisible, and the element is a power if what remains is 1 (Python big integers, no overflow); this differs from the reference's power-table approach. All arrays of length 1..3 with k=2..4 and elements 2..20 were exhausted, running the reference program on each. The formal cases include powers and non-powers close to 10^18 (such as 10^18-1), a very large k with only its first power, all 60 powers of k=2, and so on. The wrong solutions cover floating-point logarithms, checking only divisibility, looking only at the first and second powers, and 32-bit input."
+}

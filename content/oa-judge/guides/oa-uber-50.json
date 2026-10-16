@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-50",
+  "packageChecksum": "dda19d26602cd2a3ba5e9636dd73b4f6c72177ba835c1955e443c9d434c7adfe",
+  "sourceContentHash": "4863e6356ec1b1aa394ff734e3409457b0fd34afe04cb2fd8f5d2b339ab56a45",
+  "editorialSha256": "1bbeaffa4dad5043e263ab40311c1f82b6e4e19793e90d0b8a3a35af5382d93f",
+  "hints": {
+    "zh": [
+      "把异或金字塔展开看最后一步：长度为 len 的子数组的 f，等于去掉右端和去掉左端的两个子数组 f 值的异或，即 f(l,r)=f(l,r−1) xor f(l+1,r)。",
+      "n 只有 2000，可以按长度递增预处理所有 f(l,r)，同时预处理 best(l,r)：[l,r] 内所有子数组 f 的最大值。[l,r] 的子数组要么是整段，要么落在 [l,r−1] 或 [l+1,r] 里。",
+      "上一层长度的 f 只需一个一维数组 prev，长度 1 时就是原数组。对长度 size=2..n、每个左端 l，令 r=l+size−1，新 f=prev[l] xor prev[l+1]，best[l][r]=max(新 f, best[l][r−1], best[l+1][r])。best 用 n×n 的紧凑整数表，查询时直接输出 best[l][r]。"
+    ],
+    "en": [
+      "Look at the last step of the XOR pyramid: f of a subarray equals the XOR of the f values of the two subarrays obtained by dropping its right end and its left end, so f(l,r) = f(l,r-1) xor f(l+1,r).",
+      "With n only 2000, precompute every f(l,r) in order of increasing length, together with best(l,r), the maximum f over all subarrays of [l,r]. A subarray of [l,r] is either the whole range or lies inside [l,r-1] or [l+1,r].",
+      "Keep the f values of the previous length in a 1D array prev (for length 1 it is the input). For size = 2..n and each left end l, let r = l + size - 1, compute the new f = prev[l] xor prev[l+1], and set best[l][r] = max(new f, best[l][r-1], best[l+1][r]). Store best in a compact n x n integer table and answer each query with best[l][r]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute f(l,r) = f(l,r-1) xor f(l+1,r) in order of increasing length. At the same time, best(l,r) is the maximum of f(l,r), best(l,r-1) and best(l+1,r). Keep a compact unsigned integer table to answer the queries.\n\n## Correctness\n\nThe last step of the XOR pyramid is exactly the XOR of the f values of the two subarrays one element shorter on each side. A subarray inside [l,r] is either the whole range or misses the left end or the right end, so the best recurrence covers every subarray. Processing lengths in increasing order guarantees that the dependencies are already known.\n\n## Complexity\n\nPreprocessing takes O(n²) time, each query O(1), and space is O(n²)."
+}

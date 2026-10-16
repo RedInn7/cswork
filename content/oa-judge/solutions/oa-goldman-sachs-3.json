@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-3",
+  "packageChecksum": "d3f93077a424ff6d0254ef57a21975ae84a438a4f743f3dc4f18ade9403b419b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Apply backspaces with a stack: '#' pops the last kept character if any.\nstatic string process(const string &s) {\n    string st;\n    for (char c : s) {\n        if (c == '#') { if (!st.empty()) st.pop_back(); }\n        else if (c != '\\r') st.push_back(c);\n    }\n    return st;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    string a, b;\n    getline(cin, a);\n    getline(cin, b);\n    cout << (process(a) == process(b) ? 1 : 0) << \"\\n\";\n}\n",
+      "sha256": "1b5c7076a655e9813ca09cd1ac6b6118f57bb14a7238abf9062fb40c8b30ffc8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    // Apply backspaces with a stack: '#' pops the last kept character if any.\n    static String process(String s) {\n        StringBuilder st = new StringBuilder();\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == '#') { if (st.length() > 0) st.setLength(st.length() - 1); }\n            else st.append(c);\n        }\n        return st.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String a = br.readLine(), b = br.readLine();\n        System.out.println(process(a).equals(process(b)) ? 1 : 0);\n    }\n}\n",
+      "sha256": "999e2e2cb108b4b0c0fcea4f022bff342a90b8824006cc572262a2ad6aee03a0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\n// Apply backspaces with a stack: '#' pops the last kept character if any.\nfunc process(s string) string {\n\tst := make([]byte, 0, len(s))\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == '#' {\n\t\t\tif len(st) > 0 {\n\t\t\t\tst = st[:len(st)-1]\n\t\t\t}\n\t\t} else {\n\t\t\tst = append(st, s[i])\n\t\t}\n\t}\n\treturn string(st)\n}\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<20)\n\ta, _ := in.ReadString('\\n')\n\tb, _ := in.ReadString('\\n')\n\ta, b = strings.TrimRight(a, \"\\r\\n\"), strings.TrimRight(b, \"\\r\\n\")\n\tif process(a) == process(b) {\n\t\tfmt.Println(1)\n\t} else {\n\t\tfmt.Println(0)\n\t}\n}\n",
+      "sha256": "1fd2e6a29feb02c344687799e52a7e83b9ddcffe22b18af1e31001eeac400b6e"
+    }
+  ]
+}

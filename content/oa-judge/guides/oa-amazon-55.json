@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-55",
+  "packageChecksum": "9044c4ac3f47e7b5789ee79ed807b594083b42e2ad7315b7682678b40517d271",
+  "sourceContentHash": "eb9e49dee1b2284f1a05c5b98267db65d860b4524d24cb6c38f1dda2bbae046e",
+  "editorialSha256": "2ab99bdc8b788536e1be350d9a5dc224ab666767541586f62fa81560b230234b",
+  "hints": {
+    "zh": [
+      "原串已经是回文。删掉中心位置的字符一般不会破坏对称；关键是看删掉别的位置时，对称关系会怎样错位。",
+      "删除一个位置后，从它到中心之间的字符都要“错一位”去匹配，这要求这一路上的字符全部相同，一直延伸到中心；所以只有中心那一整块连续相同字符里的位置可以删。",
+      "取中心字符 s[(n−1)/2]，令 left = (n−1)/2、right = n/2，分别向左、向右扩展，直到遇到与中心字符不同的字符；答案就是这一块的长度 right − left + 1。"
+    ],
+    "en": [
+      "The string is already a palindrome. Removing the center character usually keeps the symmetry; the key is what happens to the mirrored pairs when some other position is removed.",
+      "After removing a position, every character between it and the center has to match with a shift of one, which forces all of them to be equal all the way to the center; so only positions inside the block of equal characters covering the center can be removed.",
+      "Take the center character s[(n-1)/2], set left = (n-1)/2 and right = n/2, and extend left and right while the neighbors equal the center character; the answer is the block length right - left + 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the block of consecutive equal characters that contains the center of the string; the answer is its length.\n\n## Proof of correctness\n\nRemoving any position inside the central block of equal characters keeps every pair of mirrored characters matching. If a position outside the block is removed, then because the original string is a palindrome, the alignment shifts from the removed position toward the center, which requires all characters along the way, up to the center, to be equal; that would force the removed position to belong to the central block as well, a contradiction.\n\n## Complexity\n\nO(n) time and O(1) space."
+}

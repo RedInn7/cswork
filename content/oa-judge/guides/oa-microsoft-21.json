@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-21",
+  "packageChecksum": "a7a7b763b37997b7838eef0d3d073d75d98b2247e91f9be8c9f787babf448835",
+  "sourceContentHash": "96fa14011ce89377a122f0298e4347b728061d738ebcb05c306b33f23530654b",
+  "editorialSha256": "004b19c79eb062cae38cf7634f8ea6a42eb28e5d2ff0b87163a6442d92ea4c04",
+  "hints": {
+    "zh": [
+      "子数组一共有 n(n+1)/2 个，不能逐个列出；但\"不同值个数不超过 k 的子数组有多少个\"随 k 单调不减，可以对答案二分。",
+      "所求中位数就是第 rank=(n(n+1)/2+1)/2 小的不同值个数，也就是使\"不同值至多 k 的子数组数\"达到 rank 的最小 k。对固定的 k，这个数量可以用滑动窗口线性求出。",
+      "在 1 到全数组不同值个数之间二分 k。检查 k 时，右端逐个右移并维护窗口内每个值的次数和不同值个数，超过 k 就右移左端直到不超过；每个右端贡献窗口长度。总数不小于 rank 时收缩上界，否则提高下界。值可以先离散化，计数用 64 位整数。"
+    ],
+    "en": [
+      "There are n(n+1)/2 subarrays, too many to list, but the number of subarrays with at most k distinct values never decreases as k grows, so the answer can be binary searched.",
+      "The required median is the rank-th smallest distinct count with rank = (n(n+1)/2+1)/2, which is the smallest k for which at least rank subarrays have at most k distinct values. For a fixed k that number comes from a linear sliding window.",
+      "Binary search k between 1 and the number of distinct values in the array. To test k, move the right end one step at a time while tracking each value's count and the number of distinct values, advancing the left end while there are more than k; each right end contributes the window length. If the total is at least rank, lower the upper bound, otherwise raise the lower bound. Compress values first and use 64-bit counts."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the answer k, use a sliding window to count the subarrays with at most k distinct values, and check whether the count reaches the rank of the lower median.\n\n## Proof of correctness\n\nWindows with at most k distinct values can be maintained with a monotone left end, and each right end contributes the window length. The count never decreases as k grows; the first k whose count reaches the target rank is exactly the required order statistic.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

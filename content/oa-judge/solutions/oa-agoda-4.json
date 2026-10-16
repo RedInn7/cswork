@@ -1,0 +1,21 @@
+{
+  "id": "oa-agoda-4",
+  "packageChecksum": "8a60e75d86f0b8809beacd7578a6f06da23df3129411145c3232d832cf13547c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long perm(int n, int k) {\n    if (k > n) return 0;\n    long long v = 1;\n    for (int t = 0; t < k; t++) v *= n - t;\n    return v;\n}\n\n// Count integers in [0, x] whose decimal digits are pairwise distinct.\nlong long upto(long long x) {\n    if (x < 0) return 0;\n    string ds = to_string(x);\n    int L = ds.size();\n    long long ans = 1;  // the number 0\n    for (int length = 1; length < min(L, 10); length++) ans += 9 * perm(9, length - 1);\n    bool used[10] = {};\n    int usedCount = 0;\n    for (int i = 0; i < L; i++) {\n        int d = ds[i] - '0', low = i == 0 ? 1 : 0, remaining = L - i - 1;\n        for (int c = low; c < d; c++)\n            if (!used[c]) ans += perm(9 - usedCount, remaining);\n        if (used[d] || (i == 0 && d == 0)) return ans;\n        used[d] = true;\n        usedCount++;\n    }\n    return ans + 1;  // x itself has distinct digits\n}\n\nint main() {\n    long long a, b;\n    cin >> a >> b;\n    cout << upto(b) - upto(a - 1) << \"\\n\";\n}\n",
+      "sha256": "3c0674ecb2a84f0d2651dd62be42fc138baba8169c7f84a41e52803c6bca4416"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    static long perm(int n, int k) {\n        if (k > n) return 0;\n        long v = 1;\n        for (int t = 0; t < k; t++) v *= n - t;\n        return v;\n    }\n\n    // Count integers in [0, x] whose decimal digits are pairwise distinct.\n    static long upto(long x) {\n        if (x < 0) return 0;\n        String ds = Long.toString(x);\n        int L = ds.length();\n        long ans = 1; // the number 0\n        for (int length = 1; length < Math.min(L, 10); length++) ans += 9 * perm(9, length - 1);\n        boolean[] used = new boolean[10];\n        int usedCount = 0;\n        for (int i = 0; i < L; i++) {\n            int d = ds.charAt(i) - '0', low = i == 0 ? 1 : 0, remaining = L - i - 1;\n            for (int c = low; c < d; c++)\n                if (!used[c]) ans += perm(9 - usedCount, remaining);\n            if (used[d] || (i == 0 && d == 0)) return ans;\n            used[d] = true;\n            usedCount++;\n        }\n        return ans + 1; // x itself has distinct digits\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long a = sc.nextLong(), b = sc.nextLong();\n        System.out.println(upto(b) - upto(a - 1));\n    }\n}\n",
+      "sha256": "6efdf2154d6ce9ab69b3646f8794df65cb875cbe4fe6d2f87e16c34c77872b2d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n)\n\nfunc perm(n, k int) int64 {\n\tif k > n {\n\t\treturn 0\n\t}\n\tv := int64(1)\n\tfor t := 0; t < k; t++ {\n\t\tv *= int64(n - t)\n\t}\n\treturn v\n}\n\n// upto counts integers in [0, x] whose decimal digits are pairwise distinct.\nfunc upto(x int64) int64 {\n\tif x < 0 {\n\t\treturn 0\n\t}\n\tds := strconv.FormatInt(x, 10)\n\tL := len(ds)\n\tans := int64(1) // the number 0\n\tfor length := 1; length < min(L, 10); length++ {\n\t\tans += 9 * perm(9, length-1)\n\t}\n\tvar used [10]bool\n\tusedCount := 0\n\tfor i := 0; i < L; i++ {\n\t\td, low, remaining := int(ds[i]-'0'), 0, L-i-1\n\t\tif i == 0 {\n\t\t\tlow = 1\n\t\t}\n\t\tfor c := low; c < d; c++ {\n\t\t\tif !used[c] {\n\t\t\t\tans += perm(9-usedCount, remaining)\n\t\t\t}\n\t\t}\n\t\tif used[d] || (i == 0 && d == 0) {\n\t\t\treturn ans\n\t\t}\n\t\tused[d] = true\n\t\tusedCount++\n\t}\n\treturn ans + 1 // x itself has distinct digits\n}\n\nfunc main() {\n\tvar a, b int64\n\tfmt.Scan(&a, &b)\n\tfmt.Println(upto(b) - upto(a-1))\n}\n",
+      "sha256": "f7e817fb92627189b4ab0c23af6b85a6ae06308acbe8e652f2434dc3533bab4b"
+    }
+  ]
+}

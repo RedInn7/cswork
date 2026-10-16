@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-12",
+  "packageChecksum": "dc00c6f8df7737bd1c02ed76bdefc995a8eef0d7615db85911b232082833a379",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n;\n    ll z;\n    scanf(\"%d %lld\", &n, &z);\n    const ll NEG = -(1LL << 60);\n    // Best sum of a scored run ending here: before / inside / after the amplified segment.\n    ll before = 0, inside = NEG, after = NEG, best = 0;\n    for (int i = 0; i < n; i++) {\n        ll x;\n        scanf(\"%lld\", &x);\n        ll b = max(0LL, before + x);\n        ll in = max(before + z * x, inside + z * x);\n        ll af = max(inside + x, after + x);\n        before = b; inside = in; after = af;\n        best = max({best, before, inside, after});\n    }\n    printf(\"%lld\\n\", best);\n}\n",
+      "sha256": "3037fffbee59ee03da62aa1a94a4b99c4e499d5775eeff9a51a1536a3f27daef"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int n = (int) readLong(in);\n        long z = readLong(in);\n        final long NEG = -(1L << 60);\n        // Best sum of a scored run ending here: before / inside / after the amplified segment.\n        long before = 0, inside = NEG, after = NEG, best = 0;\n        for (int i = 0; i < n; i++) {\n            long x = readLong(in);\n            long b = Math.max(0, before + x);\n            long ins = Math.max(before + z * x, inside + z * x);\n            long af = Math.max(inside + x, after + x);\n            before = b; inside = ins; after = af;\n            best = Math.max(best, Math.max(before, Math.max(inside, after)));\n        }\n        System.out.println(best);\n    }\n\n    static long readLong(DataInputStream in) throws IOException {\n        int c = in.read();\n        while (c != '-' && (c < '0' || c > '9')) c = in.read();\n        boolean neg = c == '-';\n        if (neg) c = in.read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = in.read(); }\n        return neg ? -r : r;\n    }\n}\n",
+      "sha256": "6e61ce9ca665aa2fbfdc41ebca38cabf54a41d73023525418ae5620db4ae1195"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn, z := int(next()), next()\n\tconst neg = -(int64(1) << 60)\n\t// Best sum of a scored run ending here: before / inside / after the amplified segment.\n\tbefore, inside, after, best := int64(0), neg, neg, int64(0)\n\tfor i := 0; i < n; i++ {\n\t\tx := next()\n\t\tbefore, inside, after = max(0, before+x), max(before+z*x, inside+z*x), max(inside+x, after+x)\n\t\tbest = max(best, before, inside, after)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "2cc1735e52e17963bae6c8a7e2c73794d2a95ea6a719652919444546645d00a7"
+    }
+  ]
+}

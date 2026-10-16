@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-18",
+  "packageChecksum": "7cdc95107bb32ac545283b3a6646806b19d06b44ae0a5ea04f9b3ee64bc5112d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> pos(n + 1);\n    for (int i = 0; i < n; i++) { int v; cin >> v; pos[v] = i; }\n    int left = n, right = -1;\n    string ans(n, '0');\n    for (int k = 1; k <= n; k++) {\n        left = min(left, pos[k]);\n        right = max(right, pos[k]);\n        if (right - left + 1 == k) ans[k - 1] = '1'; // 1..k fill the span exactly\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "89bb6a4735091627200438eb6131d156cf213705a6f50df7f1b3dbebd7e58e03"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] pos = new int[n + 1];\n        for (int i = 0; i < n; i++) pos[nextInt()] = i;\n        int left = n, right = -1;\n        StringBuilder sb = new StringBuilder(n);\n        for (int k = 1; k <= n; k++) {\n            left = Math.min(left, pos[k]);\n            right = Math.max(right, pos[k]);\n            sb.append(right - left + 1 == k ? '1' : '0'); // 1..k fill the span exactly\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "a393cc1e24c6c8df9e0c1691a22fd440c747c39298cf08e33cc5ef92c55f9dc4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\tpos := make([]int, n+1)\n\tfor i := 0; i < n; i++ {\n\t\tpos[readInt()] = i\n\t}\n\tleft, right := n, -1\n\tans := make([]byte, n)\n\tfor k := 1; k <= n; k++ {\n\t\tleft = min(left, pos[k])\n\t\tright = max(right, pos[k])\n\t\tans[k-1] = '0'\n\t\tif right-left+1 == k { // 1..k fill the span exactly\n\t\t\tans[k-1] = '1'\n\t\t}\n\t}\n\tfmt.Println(string(ans))\n}\n",
+      "sha256": "51fb40dc94ad4302f06959f66bc6b95429ee9ebde99d7659596809a6640ce5f9"
+    }
+  ]
+}

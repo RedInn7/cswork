@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-8",
+  "packageChecksum": "bbe01f62f9a1041f5e036be1b64bef14ccd3512a66fa53c18e62dc2d56809391",
+  "sourceContentHash": "7d82694bb5a9de89b21c26783d15aaa2ffdfaac524ff5e1da295307e0ab18ab5",
+  "editorialSha256": "843fffdb1a8a16707b2837c8af497cfccd638867934ffec503b36e16f72d4235",
+  "hints": {
+    "zh": [
+      "查询多达 10^5 次，但值域只到 10^6，而各位数字互不相同的正整数本身并不多（不到 17 万个）。",
+      "预先用 DFS 枚举所有不超过 10^6、首位非零且数字不重复的正整数并排序，每个查询用两次二分统计区间内的个数。",
+      "DFS 从 0 开始，每次在末尾追加一个未用过的数字（首位不能是 0），新数不超过 10^6 就记录并继续向下；排序后，对查询 [lower, upper] 输出“第一个大于 upper 的下标”减去“第一个不小于 lower 的下标”。"
+    ],
+    "en": [
+      "There can be 10^5 queries, but values only go up to 10^6, and positive integers with all-distinct digits are few (fewer than 170,000).",
+      "Enumerate once, by DFS, every positive integer up to 10^6 with no leading zero and no repeated digit, sort them, and answer each query with two binary searches.",
+      "The DFS starts at 0 and appends an unused digit each step (the first digit cannot be 0), recording and recursing while the number stays ≤ 10^6; after sorting, answer [lower, upper] with (first index whose value > upper) minus (first index whose value ≥ lower)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate all positive integers without repeated digits (at most 6 digits) once and sort them; for each query, count the closed range with two binary searches.\n\n## Proof of correctness\n\nThe DFS always picks an unused digit and never starts with zero, so every number it produces is valid; every valid number corresponds, by its digits, to exactly one DFS path. After sorting, the difference between the binary-search index past the right end and the index before the left end equals exactly the number of valid numbers in the range.\n\n## Complexity\n\nO(U log U) preprocessing, O(q log U) for the queries, and O(U+q) space, where U is the number of valid numbers not exceeding one million."
+}

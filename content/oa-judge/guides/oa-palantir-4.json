@@ -1,0 +1,19 @@
+{
+  "id": "oa-palantir-4",
+  "packageChecksum": "092ecc0e719ec8439b31af19eaa6f282451a332a2fbe0d581f3402b62a9d70ee",
+  "sourceContentHash": "5e6534b95f7ca1b58f39205a4ef20d831132be99f1fc71410bc00081497151ed",
+  "editorialSha256": "f45feba7f59a85e9613ee5c2eafed77039a43c9daa81d46dffafdce84f2e16fa",
+  "hints": {
+    "zh": [
+      "一条路径的代价不是边权之和，而是路径上的最大边权；把一条路径再延长一条权为 w 的边，新代价就是原代价与 w 的较大值。",
+      "这个代价沿路径单调不减，所以可以照搬 Dijkstra 的框架：每次从优先队列取出当前瓶颈值最小的节点，它的值就已经是最优，再用 max(当前值, 边权) 去松弛邻居。",
+      "source 等于 destination 时直接输出 0。否则建无向邻接表，best 数组初始为无穷大、best[source]=0，把 (0, source) 放进最小堆。弹出 (值, u) 时若值不等于 best[u] 就跳过；u 是终点就输出该值；否则对每条边 (u,v,w) 计算候选 max(值, w)，比 best[v] 小就更新并入堆。堆空仍未到达终点则输出 -1。"
+    ],
+    "en": [
+      "A path's cost is not the sum of its weights but its largest edge weight; extending a path by an edge of weight w makes the new cost the larger of the old cost and w.",
+      "This cost never decreases along a path, so the Dijkstra framework carries over: each time take the node with the smallest bottleneck value from a priority queue, whose value is then final, and relax its neighbours with max(current value, edge weight).",
+      "If source equals destination, print 0. Otherwise build an undirected adjacency list, set best to infinity except best[source]=0, and push (0, source) into a min-heap. When popping (value, u), skip it if value differs from best[u]; if u is the destination, print the value; otherwise for each edge (u,v,w) compute max(value, w) and, if it is below best[v], update best[v] and push it. If the heap empties without reaching the destination, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a Dijkstra-style priority queue, except that the path cost is not the sum of edge weights. Let `best[v]` be the minimum bottleneck value from source to v. When extending along an edge of weight w, the candidate value is `max(best[u], w)`; update if it is smaller.\n\n## Correctness\n\nExtending any path to v by one edge of weight w gives a bottleneck of exactly `max(old path bottleneck, w)`. The priority queue always takes the unsettled state with the smallest current bottleneck; since the extension function never decreases a path's bottleneck, going through other nodes afterwards cannot find a smaller state, so the update rule yields the optimal bottleneck for every reachable node. The undirected adjacency list allows travel in both directions; if destination is never reached, it is unreachable.\n\n## Complexity\n\nTime O((N+M) log N), space O(N+M)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-313",
+  "packageChecksum": "ca2de9a5c68ef18127c36e89d8eee24ad65c99a375fca3418fa965af80dd33b6",
+  "sourceContentHash": "b5daae34a900029917fee93c9221e3c0f8355dcf73983f9f2f7755e67739b8f4",
+  "editorialSha256": "9e927f947de80917a7b6078e009755616672eb202ffd6b4d928a0f4fe5bcc65d",
+  "hints": {
+    "zh": [
+      "“左边有机器人”只需要同一行存在更小的x，距离多远都无所谓；上下左右四个方向的条件彼此独立。",
+      "同一行里同时存在更小和更大的x，当且仅当这个x严格位于该行所有x的最小值与最大值之间；列同理。所以每行、每列只需记两个极值。",
+      "第一遍用哈希表为每个y记录该行x的最小值和最大值，为每个x记录该列y的最小值和最大值；第二遍对每个机器人检查行最小<x<行最大且列最小<y<列最大，满足就计数。"
+    ],
+    "en": [
+      "\"There is a robot to the left\" only needs a smaller x in the same row, no matter how far away; the conditions for the four directions are independent of each other.",
+      "A row contains both a smaller and a larger x if and only if this x lies strictly between the minimum and maximum x of that row; columns work the same way. So each row and each column only needs its two extremes.",
+      "In a first pass, use hash maps to record for each y the minimum and maximum x in that row, and for each x the minimum and maximum y in that column. In a second pass, for each robot check row min < x < row max and column min < y < column max, and count it if both hold."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the minimum and maximum x of each row and the minimum and maximum y of each column; count a robot when its x lies strictly between its row's extremes and its y lies strictly between its column's extremes.\n\n## Proof of correctness\n\nA row contains a smaller x and a larger x if and only if x lies strictly between that row's two extremes; the same holds for above and below in a column. The four conditions are independent, and their conjunction is exactly the problem's definition of idle. Using only the extremes never requires distance 1, and never counts the robot itself as a neighbor in a strict direction.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

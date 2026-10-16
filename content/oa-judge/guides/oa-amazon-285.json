@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-285",
+  "packageChecksum": "c927298f99692ca9e8c4689fda184bb4504716b5cc820bda6f276cead6f42797",
+  "sourceContentHash": "54a86e49b2636cf98948d0da028ceaa2949efc1e88e6fb3c412e659bf7d123f2",
+  "editorialSha256": "094d1aae26acaf8b1875cdab98442b99694b903dc7378023a7b6d1d31c00978c",
+  "hints": {
+    "zh": [
+      "先把已有的相交区间合并，得到若干互不相交、按位置排好的块。新加的一条区间要把第 l 块到第 r 块连起来，至少要覆盖从第 l 块终点到第 r 块起点这一段。",
+      "能被一条区间连起来的块在排序后一定是连续的，而且长度条件只看 L[r]−R[l]≤k。连起 q 块会让块数减少 q−1，所以要找满足条件的最长连续块段。即使一块都连不上，也可以把新区间放进某块内部而不增加块数。",
+      "排序合并，得到 m 个块的起点 L 和终点 R；双指针：右端逐个前进，当 L[r]−R[l]>k 时左端右移；每步用 m−(r−l) 更新最小值；输出最小值。"
+    ],
+    "en": [
+      "First merge the existing intersecting intervals into disjoint blocks ordered by position. For the new interval to connect blocks l through r, it must cover at least the stretch from the end of block l to the start of block r.",
+      "Blocks joined by one interval are always consecutive after sorting, and the length condition depends only on L[r]−R[l] ≤ k. Joining q blocks reduces the count by q−1, so look for the longest consecutive run of blocks that meets the condition. Even if no two blocks can be joined, the new interval can sit inside one block without adding a block.",
+      "Sort and merge to get m blocks with starts L and ends R; with two pointers, advance the right end one at a time and move the left end right while L[r]−R[l] > k; update the minimum with m−(r−l) at each step; print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst merge the existing intersecting intervals into m separate components. Use two pointers to find the longest run of consecutive components l..r with L[r]−R[l]≤k; the answer is m−(r−l).\n\n## Proof of correctness\n\nConnecting components l through r requires spanning at least the distance from R[l] to L[r], and adding exactly that segment connects all components in between, so the condition is necessary and sufficient. Components that can be connected must be consecutive in sorted order, so two pointers enumerate every best span. Connecting q components turns them into one, reducing the count by q−1; if the new interval can only cover a single original component, a zero-length segment inside it can still be added without increasing the count.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

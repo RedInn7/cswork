@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-1",
+  "packageChecksum": "5ab20899961cc39802ff29e10d714d7be893185811584013bb5992110f7f708b",
+  "sourceContentHash": "c342cb80c9ccc2fd63f29de36a4a50cfaecc5e0a92be09f245186fadf702ff94",
+  "editorialSha256": "9608109b2614e54bd55e0a1f63d00c8a428cba8b0e62e5311f94c59e24f74fd9",
+  "hints": {
+    "zh": [
+      "树上任何一条简单路径都有唯一的最高点，路径在这个点处最多向下分成两条链，分别进入两个不同的子树。",
+      "对每个节点算出从它出发向下、相邻字母都不同的最长链长度；在每个节点处，只用字母与它不同的孩子的链，取最长的两条接起来更新答案。",
+      "从根做 BFS 得到遍历顺序，再倒序处理（孩子先于父亲）。对节点 u，遍历字母与 u 不同的孩子，维护它们向下链长的最大值 first 和次大值 second；令 u 的链长为 first+1，用 first+second+1 更新答案。答案初值为 1。"
+    ],
+    "en": [
+      "Every simple path in a tree has a unique highest node, where it splits into at most two downward chains going into two different subtrees.",
+      "For every node compute the longest downward chain starting there whose adjacent letters always differ. At each node use only children whose letter differs from it, and join the two longest of their chains to update the answer.",
+      "Get an order by BFS from the root and process it in reverse, so children come before parents. For node u, scan the children whose letter differs from u and keep the largest chain length first and the second largest second; set u's chain length to first+1 and update the answer with first+second+1. The answer starts at 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess subtrees in reverse traversal order, keeping for each node its longest valid downward chain. Take the two longest child chains that can be connected to form the path through that node.\n\n## Proof of correctness\n\nEvery simple path has a unique highest node, where it consists of at most two downward chains from different subtrees. After excluding edges with equal letters, choosing the two longest chains is exactly optimal; enumerating every highest node covers all paths.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

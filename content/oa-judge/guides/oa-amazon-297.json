@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-297",
+  "packageChecksum": "3e952e121837ee2eb699c4ffa3b10a42180bacc6deac6e80e77dd6790431bf22",
+  "sourceContentHash": "8f4cd6b5c77fd8855a9b76873dd825a4d3146586e4cb32c9b4d3cdd17efd68ba",
+  "editorialSha256": "504941492e20f31601713ff3c747868c82feb070e9cf3e15c46aba41c367bade",
+  "hints": {
+    "zh": [
+      "不管左右怎样交替，只要确定总共从左边取 l 件、从右边取 r=n−l 件，左边取走的一定是前 l 件，右边取走的一定是后 r 件，基础费用也就完全确定了。",
+      "剩下的只是连续同侧取的额外费用：r 次右取最多把 l 次左取隔成 r+1 段，所以左侧连续重复至少 l−r−1 次，右侧对称至少 r−l−1 次；尽量左右交替、把多出来的都放在同一侧的末尾，就能同时达到这两个下界。",
+      "先求总重量；枚举 l 从 0 到 n，维护前 l 件的重量和 prefix，费用 = prefix×X + (总重 − prefix)×Y + max(0, l−r−1)×El + max(0, r−l−1)×Er，取最小值输出。结果可能超过 64 位，需要 128 位或大整数。"
+    ],
+    "en": [
+      "Whatever the order of left and right takes, once you fix that l bags come from the left and r=n−l from the right, the left takes are exactly the first l bags and the right takes are exactly the last r, so the base cost is fully determined.",
+      "What remains is the extra cost for consecutive same-side takes: r right takes split the l left takes into at most r+1 groups, so there are at least l−r−1 left repeats, and symmetrically at least r−l−1 right repeats; alternating as much as possible and putting the surplus at the end on one side reaches both bounds at once.",
+      "Compute the total weight; enumerate l from 0 to n while keeping the weight sum of the first l bags, with cost = prefix×X + (total − prefix)×Y + max(0, l−r−1)×El + max(0, r−l−1)×Er, and print the minimum. The result can exceed 64 bits, so use 128-bit or big integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the final number of left takes l and right takes r=n−l. The base cost is uniquely determined by the first l items and the last r items, and the minimum numbers of consecutive left/right repeats are max(0,l−r−1) and max(0,r−l−1) respectively. Accumulate prefix sums and enumerate to find the minimum.\n\n## Proof of correctness\n\nWith the counts fixed, whatever the interleaving, the left side takes exactly the first l items and the right side exactly the last r items. r right takes can separate l left takes into at most r+1 groups, so there are at least l−r−1 left repeats, and the right side is symmetric; alternating as much as possible and attaching the surplus takes at the end on the same side reaches both lower bounds at once. Extra costs are non-negative, so this construction is optimal. Enumerating every l covers all plans.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input; use arbitrary-precision integers."
+}

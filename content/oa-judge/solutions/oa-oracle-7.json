@@ -1,0 +1,21 @@
+{
+  "id": "oa-oracle-7",
+  "packageChecksum": "b77d14c0bea2e44d36181d31b1daae4f359fa7c8fce3232894a4b4ecb41d1ff1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        // A power of two has exactly one set bit, so v & (v - 1) clears it to 0.\n        cout << (i ? \" \" : \"\") << (v > 0 && (v & (v - 1)) == 0 ? 1 : 0);\n    }\n    cout << \"\\n\";\n}\n",
+      "sha256": "b0e84041af6968ca2abd5dead6f4521d83c7a86572271069f9e4a43a6cb8c470"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            long v = sc.nextLong();\n            // A power of two has exactly one set bit, so v & (v - 1) clears it to 0.\n            if (i > 0) sb.append(' ');\n            sb.append(v > 0 && (v & (v - 1)) == 0 ? 1 : 0);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "f6f149caf932a5a3fde501c2b9649245e1866e7c6fe9a5af742108972c6a8d00"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n int\n\tfmt.Scan(&n)\n\tfor i := 0; i < n; i++ {\n\t\tvar v int64\n\t\tfmt.Scan(&v)\n\t\tif i > 0 {\n\t\t\tfmt.Print(\" \")\n\t\t}\n\t\t// A power of two has exactly one set bit, so v & (v - 1) clears it to 0.\n\t\tif v > 0 && v&(v-1) == 0 {\n\t\t\tfmt.Print(1)\n\t\t} else {\n\t\t\tfmt.Print(0)\n\t\t}\n\t}\n\tfmt.Println()\n}\n",
+      "sha256": "89e5668684aeb7a01c7e842362808c43d1f21c087b1e781c3cc19258bad36e88"
+    }
+  ]
+}

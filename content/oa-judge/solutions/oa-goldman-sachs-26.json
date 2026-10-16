@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-26",
+  "packageChecksum": "4655d01d620441f99a2458255542d4427a59fe10123e77ee224485e12c954e06",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n\nint main() {\n    long long a, b, c, d;\n    if (scanf(\"%lld %lld %lld %lld\", &a, &b, &c, &d) != 4) return 0;\n    // Walk backwards: the predecessor of (c,d) is forced by which coordinate is larger.\n    bool ok = true;\n    while (!(c == a && d == b)) {\n        if (c < a || d < b || c == d) { ok = false; break; }\n        if (c > d) c -= d; else d -= c;\n    }\n    puts(ok ? \"Yes\" : \"No\");\n}\n",
+      "sha256": "65d2dffdc5278bc58e6102f52a31383ec727a7ace2ddbbb4b3950882bfb9c9c5"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long a = sc.nextLong(), b = sc.nextLong(), c = sc.nextLong(), d = sc.nextLong();\n        // Walk backwards: the predecessor of (c,d) is forced by which coordinate is larger.\n        boolean ok = true;\n        while (!(c == a && d == b)) {\n            if (c < a || d < b || c == d) { ok = false; break; }\n            if (c > d) c -= d; else d -= c;\n        }\n        System.out.println(ok ? \"Yes\" : \"No\");\n    }\n}\n",
+      "sha256": "91c4ca80b6fe34516d216cdb71170371bbfa7a0e80eca83990810b8968891b70"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar a, b, c, d int64\n\tfmt.Scan(&a, &b, &c, &d)\n\t// Walk backwards: the predecessor of (c,d) is forced by which coordinate is larger.\n\tok := true\n\tfor !(c == a && d == b) {\n\t\tif c < a || d < b || c == d {\n\t\t\tok = false\n\t\t\tbreak\n\t\t}\n\t\tif c > d {\n\t\t\tc -= d\n\t\t} else {\n\t\t\td -= c\n\t\t}\n\t}\n\tif ok {\n\t\tfmt.Println(\"Yes\")\n\t} else {\n\t\tfmt.Println(\"No\")\n\t}\n}\n",
+      "sha256": "c585ddb60288c0b03da57a545534bd99d44fc5bee68f0c4259316635d67567c6"
+    }
+  ]
+}

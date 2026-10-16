@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-61",
+  "packageChecksum": "72cd952bea117bc2dfcd685a033ca6390886666f0edeb09594e203b602a4e0c2",
+  "sourceContentHash": "1ffdf3a5b49e872a8be83a51c644bccba2b41f3df7c6a2472e2dc0d1a7aa2802",
+  "editorialSha256": "3e057d36b96602c43147031a841c6d068f6a882e2f39224b26a9df19aec22bee",
+  "hints": {
+    "zh": [
+      "单个元素变成 t 至少需要 |a[i]−t| 次操作，而且各元素互不影响，所以每次查询的答案就是所有元素到 t 的绝对差之和。",
+      "逐个元素计算会达到 n·q 次。把数组排序并求前缀和后，小于 t 的部分和不小于 t 的部分各自可以用“个数×t 与区间和之差”一次算出。",
+      "排序并建前缀和 prefix；对每个查询 t，二分找到第一个不小于 t 的位置 p；答案为 t·p − prefix[p] 加上 (prefix[n] − prefix[p]) − t·(n−p)，全部用 64 位整数计算；原数组不修改，所以查询互不影响。"
+    ],
+    "en": [
+      "Turning one element into t takes at least |a[i] - t| operations and elements do not affect each other, so the answer to a query is the sum of absolute differences between all elements and t.",
+      "Computing it element by element costs n * q. After sorting the array and building prefix sums, the part below t and the part not below t can each be computed at once as the difference between count * t and a range sum.",
+      "Sort and build prefix sums prefix; for each query t, binary search the first position p whose value is not less than t; the answer is t * p - prefix[p] plus (prefix[n] - prefix[p]) - t * (n - p), all in 64-bit integers; the array itself is never modified, so queries stay independent."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, compute prefix sums, and use binary search to split the numbers smaller than the target from those not smaller than it; compute the total increase and the total decrease separately.\n\n## Proof of correctness\n\nA single element needs at least as many operations as its absolute difference from the target, and that is achievable; elements are independent, so the answer is the sum of absolute differences. The part left of the split contributes t·p − prefix sum, and the right part contributes remaining sum − t·(n−p), so the prefix-sum formula is exact; the original array is never changed, which keeps queries independent.\n\n## Complexity\n\nPreprocessing O(n log n), O(log n) per query, space O(n+q); answers use 64-bit integers."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-maven-securities-2",
+  "packageChecksum": "159a8de015d9865392c635b8dc8337c8b3b370c5804d16f5b0470e671496ac27",
+  "sourceContentHash": "7968878945c493e4c12e9297b08cb4415cb96fc39311ae3ac54a724327cda873",
+  "editorialSha256": "d24a59a149b8616cab6889f7cf7275bf8d9125a253f39ec451bae623510d3215",
+  "hints": {
+    "zh": [
+      "因数个数等于各质因数指数加一的乘积，要等于 3 只能是只有一个质因数且指数为 2，所以这类数恰好是质数的平方。",
+      "p² ≤ x 等价于 p ≤ ⌊√x⌋，问题变成统计不超过 ⌊√x⌋ 的质数个数；x 最大 2.5·10^13，平方根最多 5·10^6，可以直接筛出来。",
+      "对所有查询中最大的 x 求整数平方根 L，用埃氏筛求出 2..L 的质数表；每个查询先求精确的整数平方根（浮点开方后上下修正一次），再在质数表中二分出不超过它的质数个数，逐行输出。"
+    ],
+    "en": [
+      "The number of divisors is the product of (exponent + 1) over the prime factors; it equals 3 only for a single prime with exponent 2, so these numbers are exactly the squares of primes.",
+      "p^2 <= x is equivalent to p <= floor(sqrt(x)), so the task becomes counting primes up to floor(sqrt(x)); x is at most 2.5 * 10^13, so the square root is at most 5 * 10^6 and can be sieved directly.",
+      "Take the integer square root L of the largest query, sieve the primes in 2..L, then for each query compute the exact integer square root (a floating-point root corrected up or down) and binary search the prime list for how many primes do not exceed it, printing one answer per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA number with exactly 3 divisors is equivalent to the square of a prime. Sieve primes up to the largest square root; for each query, count the primes using the integer square root and binary search.\n\n## Proof of correctness\n\nIf the prime factorization of n consists of a single prime factor with exponent 2, its number of divisors is 3; therefore, and only therefore, it is the square of a prime. Sieve all primes not exceeding sqrt(max x), and prefix counts give the answer for each x.\n\n## Complexity\n\nLet M=max(x); time O(sqrt(M) log log M + q), space O(sqrt(M)).\n\n## Source notes\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided this protocol."
+}

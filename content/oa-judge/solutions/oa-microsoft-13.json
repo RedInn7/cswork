@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-13",
+  "packageChecksum": "0fa751dea71e346ac03c3c3a98af7dff0221f58b5dec875d07ce6309ee120ee6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int rows, cols;\n    cin >> rows >> cols;\n    vector<string> board(rows);\n    for (auto &r : board) cin >> r;\n    // a state is (cell, direction); a repeated state means the walk has started looping\n    vector<char> seen(rows * cols * 4, 0), clean(rows * cols, 0);\n    const int di[4] = {0, 1, 0, -1}, dj[4] = {1, 0, -1, 0};\n    int i = 0, j = 0, dir = 0, answer = 0;\n    while (!seen[(i * cols + j) * 4 + dir]) {\n        seen[(i * cols + j) * 4 + dir] = 1;\n        if (!clean[i * cols + j]) clean[i * cols + j] = 1, answer++;\n        int a = i + di[dir], b = j + dj[dir];\n        if (a >= 0 && a < rows && b >= 0 && b < cols && board[a][b] == '.') i = a, j = b;\n        else dir = (dir + 1) % 4;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "3f84fa27b094e04aee9772948138a5595bc92ad6cb6d0f00e0b05191a3d5d6af"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int rows = nextInt(), cols = nextInt();\n        byte[][] board = new byte[rows][];\n        for (int r = 0; r < rows; r++) board[r] = next().getBytes();\n        // a state is (cell, direction); a repeated state means the walk has started looping\n        boolean[] seen = new boolean[rows * cols * 4], clean = new boolean[rows * cols];\n        int[] di = {0, 1, 0, -1}, dj = {1, 0, -1, 0};\n        int i = 0, j = 0, dir = 0, answer = 0;\n        while (!seen[(i * cols + j) * 4 + dir]) {\n            seen[(i * cols + j) * 4 + dir] = true;\n            if (!clean[i * cols + j]) {\n                clean[i * cols + j] = true;\n                answer++;\n            }\n            int a = i + di[dir], b = j + dj[dir];\n            if (a >= 0 && a < rows && b >= 0 && b < cols && board[a][b] == '.') {\n                i = a;\n                j = b;\n            } else dir = (dir + 1) % 4;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "9a38493c17d2488c5434f9b295d2473327eb9b809aa915409dabea9992d12c92"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\trows, cols := next(), next()\n\tboard := make([]string, rows)\n\tfor r := range board {\n\t\tsc.Scan()\n\t\tboard[r] = sc.Text()\n\t}\n\t// a state is (cell, direction); a repeated state means the walk has started looping\n\tseen := make([]bool, rows*cols*4)\n\tclean := make([]bool, rows*cols)\n\tdi, dj := [4]int{0, 1, 0, -1}, [4]int{1, 0, -1, 0}\n\ti, j, dir, answer := 0, 0, 0, 0\n\tfor !seen[(i*cols+j)*4+dir] {\n\t\tseen[(i*cols+j)*4+dir] = true\n\t\tif !clean[i*cols+j] {\n\t\t\tclean[i*cols+j] = true\n\t\t\tanswer++\n\t\t}\n\t\ta, b := i+di[dir], j+dj[dir]\n\t\tif a >= 0 && a < rows && b >= 0 && b < cols && board[a][b] == '.' {\n\t\t\ti, j = a, b\n\t\t} else {\n\t\t\tdir = (dir + 1) % 4\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "683006a5bf1d021c4d5a2cad1c53d8fdbfa83989f78189d4ab0b80d5630b7136"
+    }
+  ]
+}

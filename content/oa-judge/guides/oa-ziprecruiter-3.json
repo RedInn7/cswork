@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-3",
+  "packageChecksum": "3657906ef38e267c1204e05196cdf9b2eb40ea676223f989ace8ab30f1ea2fdd",
+  "sourceContentHash": "1bb86181e4722c90f5aa445c51a0e37fceedc585c77d0c8159a6a0d1a8bef1d1",
+  "editorialSha256": "57f6a509c4b32489bc31a20cf3e343f082ac4f489f26e98fcb1697e36a39148b",
+  "hints": {
+    "zh": [
+      "平均成绩只取决于每位学生的总分和出现次数，这两个量都可以边读边累加；姓名区分大小写，直接用原字符串作为键即可。",
+      "用哈希表按姓名维护（总分，次数）。比较两个平均数 s1/c1 与 s2/c2 时，因为次数都是正数，可以改为比较 s1·c2 与 s2·c1，全程整数运算，避免浮点误差。",
+      "读入 n 条记录并累加到哈希表；然后遍历所有学生，维护当前最优者的（总分，次数），若某学生满足 总分×最优次数 > 最优总分×次数 就替换为它；题目保证平均成绩互不相同，最后输出最优者的姓名。"
+    ],
+    "en": [
+      "An average depends only on each student's total score and number of appearances, and both can be accumulated while reading; names are case-sensitive, so use the raw string as the key.",
+      "Keep (total, count) per name in a hash map. To compare averages s1/c1 and s2/c2, since counts are positive you can compare s1*c2 with s2*c1 instead, staying in integer arithmetic and avoiding floating-point error.",
+      "Read the n records and accumulate them in the hash map; then iterate over all students, keeping the (total, count) of the best one so far and replacing it whenever total * bestCount > bestTotal * count; averages are guaranteed distinct, so finally print the best student's name."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the total score and the count for each name. Compare averages by cross-multiplication to avoid floating-point error.\n\n## Proof of correctness\n\nThe accumulated values give each student's average as a numerator and a denominator; with positive denominators, cross-multiplication is equivalent to comparing the averages. Traversing all students and keeping the largest one finds the maximum, and uniqueness guarantees that the result is unique.\n\n## Complexity\n\nTime O(n+k), space O(k), where k is the number of distinct students.\n\n## Source notes\n\nThis site supplied a deterministic standard input/output protocol. In upstream problem 9, the dense-arrival example omitted the completion time of one admitted guest; this site corrected it to 3301 according to the explicit 300-second service and queue rules, and states this truthfully in the source evidence."
+}

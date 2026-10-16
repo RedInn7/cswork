@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-5",
+  "packageChecksum": "077f67217353b18f862d277b4900cf2774f986cd9963df68e83821f96d35c926",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    long long answer = 0;\n    // Expand around every character (odd length) and every gap (even length).\n    for (int c = 0; c < n; c++) {\n        for (int l = c, r = c; l >= 0 && r < n && s[l] == s[r]; l--, r++) answer++;\n        for (int l = c, r = c + 1; l >= 0 && r < n && s[l] == s[r]; l--, r++) answer++;\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "1e37347a6bfb182e914b2ed97783ff7509d6d34363a3e9ea3462313ba656b208"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();\n        int n = s.length();\n        long answer = 0;\n        // Expand around every character (odd length) and every gap (even length).\n        for (int c = 0; c < n; c++) {\n            for (int l = c, r = c; l >= 0 && r < n && s.charAt(l) == s.charAt(r); l--, r++) answer++;\n            for (int l = c, r = c + 1; l >= 0 && r < n && s.charAt(l) == s.charAt(r); l--, r++) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "87769e27d7859e7164888516d8ba7a5ad742f66febeb1c737c864cf66da1b109"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s string\n\tfmt.Scan(&s)\n\tn := len(s)\n\tanswer := 0\n\t// Expand around every character (odd length) and every gap (even length).\n\tfor c := 0; c < n; c++ {\n\t\tfor l, r := c, c; l >= 0 && r < n && s[l] == s[r]; l, r = l-1, r+1 {\n\t\t\tanswer++\n\t\t}\n\t\tfor l, r := c, c+1; l >= 0 && r < n && s[l] == s[r]; l, r = l-1, r+1 {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "8bd13ca5a152d19c26e60ffeb53071022302eb0066eab66aed362c85edb15c48"
+    }
+  ]
+}

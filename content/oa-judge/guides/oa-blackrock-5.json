@@ -1,0 +1,19 @@
+{
+  "id": "oa-blackrock-5",
+  "packageChecksum": "bfb7c65d1ddcfeb8e72a097278119166bff64a5885392d4f98b93f0d8b1cda7c",
+  "sourceContentHash": "da58c8f7e12fb2eb03f0b342b1561ddaf4f42ec5fbd81cf26c93344bf1d25bd0",
+  "editorialSha256": "af0c113c6aebd1405f90bfeeb97df15f7917fd57ae7d310d5cc2a64708cf722e",
+  "hints": {
+    "zh": [
+      "变换是确定的：同一个数之后的整个序列都完全一样。所以只要某个数第二次出现，就进入了一个固定的循环。",
+      "任何数经过一次变换都会迅速变小（10 位数各位平方和最多 810），所以序列最终要么到达 1，要么进入一个不含 1 的循环。",
+      "用集合记录出现过的数，反复计算各位数字的平方和：到达 1 就输出 1；遇到已经出现过的数（且不是 1）就输出 0。"
+    ],
+    "en": [
+      "The transformation is deterministic: the sequence after a given number is always the same. So as soon as a number appears for the second time, the sequence is stuck in a fixed cycle.",
+      "Any number shrinks quickly after one step (a 10-digit number has a digit-square sum of at most 810), so the sequence eventually either reaches 1 or enters a cycle that does not contain 1.",
+      "Keep a set of numbers already seen and repeatedly replace the number with the sum of the squares of its digits: print 1 when you reach 1, and print 0 when a number other than 1 repeats."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate the digit-square-sum transformation and store the visited numbers in a set. When 1 is reached the answer is 1; if some non-1 state repeats, the same cycle must repeat from then on, and the answer is 0.\n\n## Correctness\n\nThe transformation is deterministic, so a repeated state means the future sequence of states repeats exactly and does not contain 1. On the other hand, reaching 1 matches the definition of a happy number. The sequence of positive integers eventually reaches 1 or a repeated state, and the set detection distinguishes exactly these two cases.\n\n## Complexity\n\nIf there are k transformations and the numbers have d digits, the time is O(kd) and the space is O(k)."
+}
