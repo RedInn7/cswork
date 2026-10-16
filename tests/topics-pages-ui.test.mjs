@@ -5,6 +5,13 @@ import { test } from 'node:test';
 import { JSDOM } from 'jsdom';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { register } from 'node:module';
+
+// The quiz reuses the OA MCQ cards, which import their stylesheet.
+register(
+  `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};return n(u,c);}")}`,
+  import.meta.url,
+);
 
 const { TopicView, TopicsIndexView, topicCopy } = await import('../app/topics/views.tsx');
 const { TOPIC_STOPS, topicStop } = await import('../app/topics/stops.ts');
@@ -76,6 +83,17 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.ok(!('programmingLanguage' in article));
     assert.ok(article.hasPart.map((part) => part.programmingLanguage).join() === 'Python,C++,Java,Go');
     assert.ok(article.description === topicCopy(stop, zh).description);
+    // Under the templates: a quick quiz on the stop, then drills cut from its template.
+    const quiz = doc.querySelector('section.topics-quiz');
+    const questions = quiz.querySelectorAll('.oa-mcq-list > li');
+    assert.ok(questions.length >= 2 && questions.length <= 5);
+    assert.ok(doc.getElementById(quiz.getAttribute('aria-labelledby')));
+    assert.equal(quiz.querySelector('.oa-mcq-filters'), null, 'no filters on a stop page');
+    assert.ok(quiz.querySelector('a[href="/oa/mcq"]'));
+    const drill = doc.querySelector('section.topics-drill');
+    assert.ok(drill.compareDocumentPosition(quiz) & 2, 'quiz comes first');
+    assert.ok(drill.querySelectorAll('.topics-drill-lines button').length >= 6);
+    assert.equal(drill.querySelector('[role="group"] button[aria-pressed="true"]').textContent, zh ? '排序题' : 'Put in order');
   }
 });
 

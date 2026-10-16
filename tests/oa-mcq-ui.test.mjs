@@ -40,14 +40,21 @@ test('every select-all question says so, and only those', () => {
   }
 });
 
+const realFetch = globalThis.fetch;
 test('practice: submit grades and explains, answers persist in this browser, filters narrow the list', async () => {
-  dom();
+  dom({ 'cswork:oa-mcq:v1': JSON.stringify({ 'mcq-python-1': byId.get('mcq-python-1').answer }) });
+  // Signed out: the account note answers 401, so answers stay in this browser.
+  globalThis.fetch = async () => new Response('{}', { status: 401 });
   const { McqPractice, parseAnswers } = await import('../app/oa/mcq/practice.tsx');
+  const { mcqDay } = await import('../lib/mock-oa.ts');
+  const today = mcqDay();
   assert.deepEqual(parseAnswers('{"a":[1],"b":[],"c":"x","d":[0.5]}'), { a: [1] });
   assert.deepEqual(parseAnswers('nope'), {});
   const items = [single, multi, byId.get('mcq-python-1')].map((q) => ({ ...q, zh: undefined, en: undefined, text: q.en }));
   const root = await render(createElement(McqPractice, { items, zh: false }));
-  assert.match(document.body.textContent, /3 questions/);
+  // An answer saved before spaced review shows as answered today.
+  assert.match(document.body.textContent, /1 of 3 answered/);
+  assert.match(document.body.textContent, /stay in this browser/);
   assert.equal(document.querySelectorAll('input[type="checkbox"]').length, multi.en.choices.length);
   assert.match(document.querySelector('pre code').textContent, /def add/);
   // The snippet describes its question's radio group (the legend alone is only "what does this print?").
@@ -65,22 +72,82 @@ test('practice: submit grades and explains, answers persist in this browser, fil
   await act(async () => submit.click());
   assert.match(first.querySelector('.oa-mcq-why').textContent, new RegExp(`The answer is ${'ABCDEF'[single.answer[0]]}`));
   assert.equal(first.querySelector('[data-state="wrong"] .oa-mcq-mark').textContent, 'Your pick');
-  assert.deepEqual(JSON.parse(localStorage.getItem('cswork:oa-mcq:v1')), { [single.id]: [wrong] });
-  assert.match(document.body.textContent, /1 of 3 answered · 0 correct/);
+  assert.match(first.querySelector('.oa-mcq-due').textContent, /Back for review in 1 day$/);
+  // Compact entries [box, day, ...picks]: a miss is box 0.
+  const saved = JSON.parse(localStorage.getItem('cswork:oa-mcq:v2'));
+  assert.deepEqual(saved[single.id], [0, today, wrong]);
+  assert.match(document.body.textContent, /2 of 3 answered · 1 correct/);
 
+  // Missed only: just the wrong one.
+  await act(async () => button('Missed only').click());
+  assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
+  await act(async () => button('Every question').click());
   // The section filter narrows the list and the counts.
   await act(async () => button('Code output').click());
   assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
-  assert.match(document.body.textContent, /1 questions/);
+  assert.match(document.body.textContent, /1 of 1 answered/);
   root.unmount();
 
-  // A new visit restores the submitted answer; clearing forgets it.
+  // A new visit restores the submitted answer; clearing forgets it, old key included.
   const again = await render(createElement(McqPractice, { items, zh: false }));
   assert(document.querySelector('.oa-mcq-why'));
   await act(async () => button('Clear my answers').click());
   assert.equal(document.querySelector('.oa-mcq-why'), null);
+  assert.equal(localStorage.getItem('cswork:oa-mcq:v2'), null);
   assert.equal(localStorage.getItem('cswork:oa-mcq:v1'), null);
   again.unmount();
+  globalThis.fetch = realFetch;
+});
+
+test('practice signed in: the review lives in the account note, due questions come back, chapter quiz misses link back', async () => {
+  const today = Math.floor(Date.now() / 86_400_000);
+  dom({ 'cswork:oa-mcq:v2': JSON.stringify({ 'mcq-python-1': [1, today, 0] }) });
+  const { McqPractice, sdMisses } = await import('../app/oa/mcq/practice.tsx');
+  // Missed yesterday: due today. Right 2 days ago in box 1: back in 1 day.
+  const note = { [single.id]: [0, today - 1, 9], [multi.id]: [1, today - 2, ...multi.answer] };
+  const puts = [];
+  globalThis.fetch = async (url, init) => {
+    if (init?.method === 'PUT') {
+      puts.push([url, JSON.parse(init.body).body]);
+      return new Response('{}');
+    }
+    if (String(url).includes('prefix=sd')) return Response.json({ items: [{ target: 'sd:cache', body: '{"picks":[0,2]}' }] });
+    return Response.json({ target: 'mcq:answers', body: JSON.stringify(note), updatedAt: 1 });
+  };
+  const items = [single, multi, byId.get('mcq-python-1')].map((q) => ({ ...q, zh: undefined, en: undefined, text: q.en }));
+  const sd = [{ slug: 'cache', title: 'Caching', answers: [0, 1] }];
+  const root = await render(createElement(McqPractice, { items, zh: false, sd }));
+  assert.match(document.body.textContent, /saved to your account/);
+  // This browser's answers moved into the account and left the browser.
+  assert.equal(puts.length, 1);
+  assert.equal(puts[0][0], '/api/oj/notes?target=mcq%3Aanswers');
+  assert.deepEqual(JSON.parse(puts[0][1])['mcq-python-1'], [1, today, 0]);
+  assert.equal(localStorage.getItem('cswork:oa-mcq:v2'), null);
+
+  // Due today: the missed one (fresh, no answer shown) plus the chapter quiz miss.
+  assert.match(button('Due today').textContent, /2$/);
+  await act(async () => button('Due today').click());
+  assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
+  assert.equal(document.querySelector('.oa-mcq-why'), null);
+  const link = document.querySelector('.oa-mcq-sd a');
+  assert.equal(link.getAttribute('href'), '/system-design/cache#sd-quiz-title');
+  assert.match(document.querySelector('.oa-mcq-sd').textContent, /Q2/);
+  // Answering it right moves it to box 1 in the account and keeps it on screen.
+  const first = document.querySelector('.oa-mcq-list > li');
+  await act(async () => first.querySelectorAll('input')[single.answer[0]].click());
+  await act(async () => first.querySelector('.oa-mcq-actions button').click());
+  await settle();
+  assert.match(first.querySelector('.oa-mcq-why').textContent, /Correct/);
+  assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
+  assert.deepEqual(JSON.parse(puts.at(-1)[1])[single.id], [1, today, ...single.answer]);
+  root.unmount();
+  globalThis.fetch = realFetch;
+
+  // Chapter quiz answers: only full, well-formed ones count.
+  assert.deepEqual(sdMisses(sd, new Map([['cache', '{"picks":[0,1]}']])), []);
+  assert.deepEqual(sdMisses(sd, new Map([['cache', '{"picks":[0]}']])), []);
+  assert.deepEqual(sdMisses(sd, new Map([['cache', 'nope']])), []);
+  assert.deepEqual(sdMisses(sd, new Map([['cache', '{"picks":[1,1]}']])), [{ slug: 'cache', title: 'Caching', wrong: [1] }]);
 });
 
 const boot = { person: null, courses: [], problems: [], progress: [], submissions: [], notifications: [], services: {} };
