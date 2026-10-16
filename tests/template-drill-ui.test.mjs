@@ -66,9 +66,13 @@ test('blanks: typing the cut expressions, spacing aside, is right; Show answers 
   await act(async () => button('检查').click());
   assert.match(said(), /还有 \d+ 个不对/);
   assert.equal(inputs()[0].getAttribute('aria-invalid'), 'true');
+  // Each blank gets a ✓ / ✗ and words, not just a border colour.
+  const marks = () => [...document.querySelectorAll('.topics-drill-code .topics-drill-mark .sr-only')].map((m) => m.textContent);
+  assert.deepEqual(marks(), holes.map(() => '不对'));
   for (const [i, hole] of holes.entries()) await act(async () => type(inputs()[i], ` ${hole.answer.replace(/ /g, '   ')} `));
   await act(async () => button('检查').click());
   assert.equal(said(), '全部填对了。');
+  assert.deepEqual(marks(), holes.map(() => '对'));
   // A new drill clears the answers.
   await act(async () => button('换一题').click());
   assert(inputs().every((input) => input.value === ''));
@@ -76,5 +80,6 @@ test('blanks: typing the cut expressions, spacing aside, is right; Show answers 
   const fresh = blankDrill(code.python, 'python', 2).filter((l) => typeof l !== 'string');
   assert.deepEqual(inputs().map((input) => input.value), fresh.map((h) => h.answer));
   assert(inputs().every((input) => input.readOnly));
+  assert.equal(marks().length, 0, 'shown answers are not graded');
   root.unmount();
 });

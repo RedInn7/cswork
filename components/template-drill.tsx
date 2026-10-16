@@ -173,6 +173,13 @@ export function TemplateDrill({
                         setChecked(false);
                       }}
                     />
+                    {/* Not by the border colour alone, as for the order drill's lines. */}
+                    {checked && !answers && (
+                      <span className="topics-drill-mark" data-state={right ? 'right' : 'wrong'}>
+                        <span aria-hidden="true">{right ? '✓' : '✗'}</span>
+                        <span className="sr-only">{right ? t('对', 'right') : t('不对', 'not right')}</span>
+                      </span>
+                    )}
                     {line.after}
                   </Fragment>
                 );

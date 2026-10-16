@@ -547,6 +547,17 @@
   border-style: solid;
   border-color: #ff8a80;
 }
+/* The ✓ / ✗ right after a checked blank, inline in the code. */
+.topics-drill-code .topics-drill-mark {
+  float: none;
+  margin: 0 0 0 2px;
+  color: var(--route-line);
+  font: inherit;
+  font-weight: 700;
+}
+.topics-drill-code .topics-drill-mark[data-state='wrong'] {
+  color: #ff8a80;
+}
 .topics-drill-lines {
   display: grid;
   gap: 6px;
@@ -813,6 +824,12 @@
   .dark .topics-drill-code input[data-state='wrong'] {
     border-style: solid;
     border-color: #ff8a80;
+  }
+  .dark .topics-drill-code .topics-drill-mark {
+    color: var(--route-line);
+  }
+  .dark .topics-drill-code .topics-drill-mark[data-state='wrong'] {
+    color: #ff8a80;
   }
   .dark .topics-drill-lines button {
     border: 1px solid var(--topics-rule);
