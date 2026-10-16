@@ -38,6 +38,7 @@ import {
   FileText,
   Gauge,
   History,
+  Info,
   Keyboard,
   Lightbulb,
   LoaderCircle,
@@ -2306,6 +2307,13 @@ function Workspace({
               </option>
             ))}
           </select>
+          <button
+            aria-label={t('判题环境：版本、编译命令和限制', 'Judge environment: versions, commands and limits')}
+            title={t('判题环境：版本、编译命令和限制', 'Judge environment: versions, commands and limits')}
+            onClick={() => window.open('/judge-environment', '_blank', 'noopener')}
+          >
+            <Info size={15} />
+          </button>
           <button
             aria-label={t('下载当前代码', 'Download code')}
             title={t('下载当前代码', 'Download code')}
