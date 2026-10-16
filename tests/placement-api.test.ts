@@ -95,9 +95,11 @@ void test('a quiz runs group by group with the answers kept server-side, and wri
 
   let view = started;
   const groups: number[] = [];
+  const asked: string[] = [];
   while (view.session) {
     const { question, group } = view.session;
     groups.push(group);
+    asked.push(question.id);
     const answer = answerOf();
     // The first group right throughout, the second wrong.
     const pick = group === 0 ? answer : question.choices.find((c) => c !== answer)!;
@@ -121,7 +123,9 @@ void test('a quiz runs group by group with the answers kept server-side, and wri
   sqlite()
     .prepare("UPDATE user_notes SET body=json_set(body,'$.at',?) WHERE user_id=? AND target='placement:latest'")
     .run(latest!.at - 31 * 86_400_000, me.id);
-  assert.equal((await call({ start: true })).session!.index, 0);
+  const again = (await call({ start: true })).session!;
+  assert.equal(again.index, 0);
+  assert.equal(asked.includes(again.question.id), false, 'a retake opens on a question the last quiz didn’t ask');
 });
 
 void test('the notes API can neither read a session nor write a result', async () => {
@@ -146,10 +150,27 @@ void test('problems in the learner’s running contest stay out of the quiz', as
       VALUES('room-1','u-racer','Room','room',?,?,90,?)`,
     )
     .run(JSON.stringify(NUMBERS.map((n) => `lc-${n}`)), now - 60_000, now);
-  // A quiz started before the contest: its question's verdict waits until the contest ends.
-  const before = (await call({ start: true }, racer)).session!.question;
+  const room = (ids: string[]) =>
+    sqlite().prepare("UPDATE contest_rooms SET problem_ids_json=? WHERE id='room-1'").run(JSON.stringify(ids));
+  // A quiz started before the learner joined: one question answered, then the contest holds the next.
+  const q1 = (await call({ start: true }, racer)).session!.question;
+  const q2 = (await call({ id: q1.id, pick: answerOf(racer.id) }, racer)).session!.question;
+  room([q2.id]);
   sqlite().prepare("INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('room-1','u-racer','R',?)").run(now);
-  await assert.rejects(call({ id: before.id, pick: before.choices[0] }, racer), { status: 403 });
+  // Reading the quiz swaps that question out before it is shown again, keeping the answers so far.
+  const read = (await call(undefined, racer)).session!;
+  assert.notEqual(read.question.id, q2.id);
+  assert.deepEqual([read.index, read.answered], [1, [true]]);
+  // Answering a question the contest took in the meantime: no verdict, another question instead.
+  room([q2.id, read.question.id]);
+  const swapped = await call({ id: read.question.id, pick: read.question.choices[0] }, racer);
+  assert.equal(swapped.verdict, undefined);
+  assert.equal([q1.id, q2.id, read.question.id].includes(swapped.session!.question.id), false);
+  // With every problem in the room, the quiz ends on the answers so far.
+  room(NUMBERS.map((n) => `lc-${n}`));
+  const ended = await call(undefined, racer);
+  assert.equal(ended.session, null);
+  assert.deepEqual(ended.latest!.groups.map(({ group, right, total }) => ({ group, right, total })), [{ group: 0, right: 1, total: 1 }]);
   sqlite().prepare("DELETE FROM user_notes WHERE user_id='u-racer'").run();
   await assert.rejects(call({ start: true }, racer), { status: 409 });
 });

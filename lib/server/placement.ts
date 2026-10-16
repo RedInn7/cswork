@@ -12,7 +12,7 @@ import {
 } from '@/lib/placement';
 import { firstParagraph } from '@/lib/speedrun';
 import type { Person } from './auth';
-import { refuseInContest, runningContestProblems } from './contests';
+import { inRunningContest, runningContestProblems } from './contests';
 import { body, HttpError, json, limit } from './http';
 import { lcRatingOf } from './lc-ratings';
 import { speedrunPool } from './speedrun';
@@ -23,7 +23,9 @@ import { getStudySourceStatement } from './study-library';
 const SESSION = 'placement:session';
 const LATEST = 'placement:latest';
 const DAY = 86_400_000;
-type Session = { total: number; steps: PlacementStep[] };
+// seen: the last quiz's questions, asked again only where a group has no others.
+type Session = { total: number; steps: PlacementStep[]; seen?: string[] };
+type Latest = PlacementResult & { asked?: string[] };
 
 /** The speedrun's pool, scored, without the problems of the learner's running contest or exam. */
 function pool(userId: string): PlacementItem[] {
@@ -56,6 +58,36 @@ function write(userId: string, target: string, value: unknown) {
     .run(userId, target, JSON.stringify(value), Date.now());
 }
 
+/** Draws the session's next question, or writes the result and ends the quiz once none is left. */
+function advance(userId: string, session: Session) {
+  const items = pool(userId);
+  const next = nextStep(items, session.steps, undefined, new Set(session.seen));
+  if (next) return write(userId, SESSION, { ...session, steps: [...session.steps, next] });
+  if (session.steps.length) {
+    const solved = new Set(
+      sqlite()
+        .prepare("SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'")
+        .pluck()
+        .all(userId) as string[],
+    );
+    const result = placementResult(items, session.steps, solved, Date.now());
+    write(userId, LATEST, { ...result, asked: session.steps.map((s) => s.id) } satisfies Latest);
+  }
+  sqlite().prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(userId, SESSION);
+}
+
+/**
+ * A question whose problem joined a contest or exam that began mid-quiz is neither shown nor
+ * judged: another takes its place, or the quiz ends on the answers so far. True when it swapped.
+ */
+function swapStale(userId: string) {
+  const session = read<Session>(userId, SESSION);
+  const current = session?.steps.at(-1);
+  if (!session || !current || !inRunningContest(userId, current.id)) return false;
+  advance(userId, { ...session, steps: session.steps.slice(0, -1) });
+  return true;
+}
+
 /** The question on screen: no answer, score or reason until it is answered. */
 function question({ id, number, titleZh, titleEn, choices }: PlacementStep) {
   const source = getStudySourceStatement(id);
@@ -73,7 +105,7 @@ function question({ id, number, titleZh, titleEn, choices }: PlacementStep) {
 }
 
 function view(userId: string) {
-  const latest = read<PlacementResult>(userId, LATEST);
+  const latest = read<Latest>(userId, LATEST);
   const session = read<Session>(userId, SESSION);
   const current = session?.steps.at(-1);
   return {
@@ -107,22 +139,26 @@ const input = z.union([
 export async function handlePlacement(request: Request, p: Person): Promise<Response> {
   if (request.method === 'GET') {
     await limit(p, 'placement-read', 120);
+    swapStale(p.id);
     return json(view(p.id));
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'placement-write', 60);
   const data = input.parse(await body(request));
   // ponytail: read-modify-write without a transaction; better-sqlite3 is synchronous, so nothing interleaves.
+  // A swapped question gets no verdict: the view shows the one now on screen (or the result).
+  if (swapStale(p.id)) return json(view(p.id));
   const session = read<Session>(p.id, SESSION);
   if ('start' in data) {
     if (!session) {
-      const latest = read<PlacementResult>(p.id, LATEST);
+      const latest = read<Latest>(p.id, LATEST);
       if (latest && Date.now() < latest.at + RETAKE_DAYS * DAY)
         throw new HttpError(409, '30 天内已经测过，到期后再来重测');
       const items = pool(p.id);
-      const first = nextStep(items, []);
+      const seen = new Set(latest?.asked);
+      const first = nextStep(items, [], undefined, seen);
       if (!first) throw new HttpError(409, '题库里还没有可测的题');
-      write(p.id, SESSION, { total: placementTotal(items), steps: [first] } satisfies Session);
+      write(p.id, SESSION, { total: placementTotal(items), steps: [first], seen: [...seen] } satisfies Session);
     }
     return json(view(p.id));
   }
@@ -130,22 +166,8 @@ export async function handlePlacement(request: Request, p: Person): Promise<Resp
   if (!session || !current) throw new HttpError(409, '没有进行中的定位测验');
   if (data.id !== current.id) throw new HttpError(409, '这道题已经答过了，请刷新页面');
   if (!current.choices.includes(data.pick)) throw new HttpError(400, '选项无效');
-  // The verdict names the problem's stop and why: not while it is in a contest that began mid-quiz.
-  refuseInContest(p, current.id);
   current.pick = data.pick;
-  const items = pool(p.id);
-  const next = nextStep(items, session.steps);
-  if (next) write(p.id, SESSION, { ...session, steps: [...session.steps, next] });
-  else {
-    const solved = new Set(
-      sqlite()
-        .prepare("SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'")
-        .pluck()
-        .all(p.id) as string[],
-    );
-    write(p.id, LATEST, placementResult(items, session.steps, solved, Date.now()));
-    sqlite().prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(p.id, SESSION);
-  }
+  advance(p.id, session);
   return json({
     verdict: {
       id: current.id,

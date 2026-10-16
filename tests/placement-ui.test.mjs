@@ -109,6 +109,20 @@ test('a refused start shows the server’s message and keeps the intro', async (
   await act(async () => root.unmount());
 });
 
+test('a question swapped out for a contest shows the next one without a verdict', async () => {
+  const view = (question, answered) => ({ latest: null, retakeAt: null, session: { total: 2, index: answered.length, answered, group: 0, question } });
+  globalThis.fetch = async (_url, init) => Response.json(init.method === 'GET' ? view(first, []) : view(second, []));
+  const { createRoot } = await import('react-dom/client');
+  const { Placement } = await import('../components/placement.tsx');
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(Placement, { zh: false })));
+  await act(async () => [...document.querySelectorAll('.sr-choice')][0].click());
+  assert.ok(document.body.textContent.includes('Problem 203'));
+  assert.equal(document.querySelector('.sr-verdict').textContent, '');
+  assert.equal(document.querySelectorAll('.sr-choice:disabled').length, 0);
+  await act(async () => root.unmount());
+});
+
 test('the sprint plan form unticks a new result’s known stops once, starts past them, and never plans nothing', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.org/?view=problems' });
   for (const name of ['window', 'document', 'location', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage'])

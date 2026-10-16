@@ -87,6 +87,11 @@ export function Placement({ zh }: { zh: boolean }) {
     if (!q || answered || busy) return;
     const next = await send({ id: q.id, pick: slug });
     if (next?.verdict) setAnswered({ verdict: next.verdict, next });
+    // No verdict: the question joined a contest that began mid-quiz and was swapped for another.
+    else if (next) {
+      moved.current = true;
+      setView(next);
+    }
   }
   function proceed() {
     if (!answered) return;
