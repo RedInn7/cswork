@@ -8,6 +8,7 @@ import { useT } from '@/lib/i18n';
 import { playgroundLanguage } from '@/lib/playground-share';
 import { languages } from '@/lib/problems';
 import remarkCodeTabs from '@/lib/remark-code-tabs';
+import remarkMoney from '@/lib/remark-money';
 import { RunInPlayground } from './run-in-playground';
 
 // Imported statements use TeX-style scripts even inside Markdown inline code.
@@ -280,24 +281,6 @@ const POST_PLUGINS = [...MARKDOWN_PLUGINS, remarkCodeTabs];
 // Same limits as the library's math; trust off, so no \href, \url or HTML from a post.
 const KATEX = { maxSize: 10, maxExpand: 200, trust: false };
 type MathPlugins = typeof import('./markdown-math');
-type MdNode = { type: string; value?: string; children?: MdNode[]; position?: { start: { offset?: number }; end: { offset?: number } } };
-/**
- * `$5 和 $10` is money, not math: as in Pandoc, inline math may not start or end with a space
- * nor run into a digit, and such a pair goes back to its source text.
- * ponytail: Markdown inside a reverted pair (`$5 **off**, $10`) stays literal; `\$` always works.
- */
-const remarkMoney = () => (tree: MdNode, file: { value?: unknown }) => {
-  const source = typeof file.value === 'string' ? file.value : '';
-  const walk = (node: MdNode) =>
-    node.children?.forEach((child, i, list) => {
-      if (child.type !== 'inlineMath') return walk(child);
-      const raw = source.slice(child.position?.start.offset ?? 0, child.position?.end.offset ?? 0);
-      // `$$ x $$` on one line is display math (inline in remark-math): spaces inside are fine.
-      if (!raw.startsWith('$$') && (/^\$\s|\s\$$/.test(raw) || /^\d/.test(list[i + 1]?.value ?? '')))
-        list[i] = { type: 'text', value: raw };
-    });
-  walk(tree);
-};
 // Loaded only when a post has a diagram: mermaid and its dialog stay out of every other bundle.
 const CourseDiagram = lazy(() => import('./course-diagram').then((m) => ({ default: m.CourseDiagram })));
 

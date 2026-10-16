@@ -166,6 +166,12 @@ test('server-rendered library pages offer the playground and fold member spoiler
   assert.equal(spoiler.querySelector('summary').textContent, 'Answer');
   assert.equal(spoiler.querySelector('strong').textContent, 'heap');
   assert.equal(page('```spoiler\n'.repeat(1000) + 'x\n```', true).querySelectorAll('details').length, 1);
+  // A member's math renders on the public thread too (in a spoiler as well), and money stays text.
+  const tex = new JSDOM(
+    renderToStaticMarkup(React.createElement(PublicLibraryMarkdown, { body: 'It is $O(n^2)$; it costs $5 和 $10.\n\n```spoiler\n$x^2$\n```', math: true, ugc: true })),
+  ).window.document;
+  assert.deepEqual([...tex.querySelectorAll('.katex annotation')].map((x) => x.textContent.trim()), ['O(n^2)', 'x^2']);
+  assert.ok(tex.body.textContent.includes('it costs $5 和 $10.'));
   // The thread's meta description drops code blocks, so a spoiler stays out of search results.
   const { plainExcerpt } = await import('../lib/community.ts');
   assert.equal(plainExcerpt('Try it.\n\n```spoiler Answer\nUse a **heap**.\n```\n\nGood luck'), 'Try it. Good luck');

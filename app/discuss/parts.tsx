@@ -1,3 +1,4 @@
+import 'katex/dist/katex.min.css';
 import { PublicLibraryMarkdown } from '../library/markdown';
 import { publicPosts } from '@/lib/server/solution-posts';
 
@@ -41,8 +42,8 @@ export async function PostsPreview({
                 <span>{day(post.createdAt, zh)}</span>
                 <span>{zh ? `${post.votes} 赞` : `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`}</span>
               </p>
-              <div className="public-library-prose discuss-preview-body">
-                <PublicLibraryMarkdown body={post.body ?? ''} math={false} ugc />
+              <div className="public-library-prose discuss-preview-body cs-untrusted">
+                <PublicLibraryMarkdown body={post.body ?? ''} math ugc />
               </div>
             </li>
           ))}

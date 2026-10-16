@@ -6,6 +6,7 @@ import rehypeKatex from 'rehype-katex';
 import { CourseDiagram } from '@/components/course-diagram';
 import { RunInPlayground } from '@/components/run-in-playground';
 import { playgroundLanguage } from '@/lib/playground-share';
+import remarkMoney from '@/lib/remark-money';
 
 function safeLink(value: string | undefined) {
   if (!value) return undefined;
@@ -64,7 +65,7 @@ export function PublicLibraryMarkdown({
 }: {
   body: string;
   math: boolean;
-  /** Member-written text: its links carry no endorsement. */
+  /** Member-written text: its links carry no endorsement, and with math `$5 and $10` stays money. */
   ugc?: boolean;
   /** Section headings get ids, for a table of contents (markdownToc). */
   sectionIds?: boolean;
@@ -76,7 +77,7 @@ export function PublicLibraryMarkdown({
   if (sectionIds) rehypePlugins.push(rehypeHeadingIds);
   return (
     <ReactMarkdown
-      remarkPlugins={math ? [remarkGfm, remarkMath] : [remarkGfm]}
+      remarkPlugins={math ? [remarkGfm, remarkMath, ...(ugc ? [remarkMoney] : [])] : [remarkGfm]}
       rehypePlugins={rehypePlugins}
       components={{
         h1: ({ children, id }) => <h2 id={id}>{children}</h2>,
@@ -94,7 +95,7 @@ export function PublicLibraryMarkdown({
             return (
               <details className="cs-spoiler">
                 <summary>{title || '剧透 · Spoiler'}</summary>
-                <PublicLibraryMarkdown body={source} math={false} ugc nested />
+                <PublicLibraryMarkdown body={source} math={math} ugc nested />
               </details>
             );
           }

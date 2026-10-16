@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import 'katex/dist/katex.min.css';
 import { PublicLibraryMarkdown } from '../../library/markdown';
 import { CHANNELS, INDEX_VOTES, isChannel, plainExcerpt, targetKind, threadPath } from '@/lib/community';
 import { seoMetadata } from '@/lib/seo';
@@ -74,8 +75,8 @@ export default async function ThreadPage({ params }: Props) {
           <span>{t(`${post.votes} 赞`, `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>
         </p>
       </header>
-      <div className="public-library-prose discuss-thread-body">
-        <PublicLibraryMarkdown body={post.body ?? ''} math={false} ugc />
+      <div className="public-library-prose discuss-thread-body cs-untrusted">
+        <PublicLibraryMarkdown body={post.body ?? ''} math ugc />
       </div>
       {/* A poll's options; counts only once it has closed (voting happens in the app). */}
       {post.poll && (
