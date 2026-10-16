@@ -78,9 +78,9 @@ test('the checklist: a handed-over posting, statuses, progress, practice links a
   assert.equal(rows[0].querySelector('a').getAttribute('href'), '/?view=problems');
   // The certificate makes SQL ready; the count shown is still the real one.
   assert.match(rows[1].textContent, /4 \/ 30 problems solved \(certificate earned\)/);
-  // Nothing measures front end here: no bar and no practice link.
+  // Nothing measures front end here, so no bar; the AI mock interview's front-end round is its practice.
   assert.equal(rows[2].querySelector('.jd-bar'), null);
-  assert.equal(rows[2].querySelector('a'), null);
+  assert.equal(rows[2].querySelector('a').getAttribute('href'), '/?view=mock-interview&template=frontend');
   assert.equal(result.querySelectorAll('h3')[1].textContent, 'Required');
   const plan = result.querySelector('.jd-plan-link');
   assert.equal(new URL(plan.href).searchParams.get('planTopics'), 'binary-search,dp-grid');

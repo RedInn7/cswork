@@ -238,7 +238,7 @@ function SkillRow({ item, status, zh }: { item: JdItem; status: string; zh: bool
           </small>
         </div>
       ) : (
-        <small>{t('本站还没有这项的练习，对照职位描述自查。', 'Nothing on CSWork measures this yet: check it against the posting yourself.')}</small>
+        <small>{t('本站还不度量这项，对照职位描述自查。', 'Nothing on CSWork measures this yet: check it against the posting yourself.')}</small>
       )}
       {item.evidence && <q className="jd-evidence">{item.evidence}</q>}
       {info.href && (

@@ -129,7 +129,8 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '前端开发',
     en: 'Front end',
     hint: 'web front end: JavaScript, TypeScript, React, HTML, CSS',
-    href: null,
+    // The AI mock interview's front-end round; it keeps no count, so the skill stays unmeasured.
+    href: '/?view=mock-interview&template=frontend',
   },
   python: {
     zh: 'Python',
