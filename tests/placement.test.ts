@@ -34,7 +34,8 @@ const pool = ROUTE_SECTIONS.flatMap((group, g) =>
 function run(right: (step: PlacementStep, i: number) => boolean, from = pool, random = seededRandom(7)) {
   const steps: PlacementStep[] = [];
   for (let next = nextStep(from, steps, random); next; next = nextStep(from, steps, random)) {
-    next.pick = right(next, steps.length) ? next.answer : next.choices.find((c) => c !== next.answer);
+    const { answer } = next;
+    next.pick = right(next, steps.length) ? answer : next.choices.find((c) => c !== answer);
     steps.push(next);
   }
   return steps;
