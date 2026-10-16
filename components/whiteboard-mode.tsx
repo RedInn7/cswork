@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from './ui/alert-dialog';
+import '@/app/whiteboard.css';
 
 // The verdicts that fail a whiteboard attempt (lib/server/practice-aids.ts); a judge fault or a cancel is no attempt.
 const FAILED = ['wrong_answer', 'compile_error', 'time_limit', 'memory_limit', 'output_limit', 'runtime_error'];
@@ -139,7 +140,7 @@ export function WhiteboardPad({ userId, problemId }: { userId: string | null; pr
           'Whiteboard mode: running, custom cases and stress tests are off. Use the pad below to trace a small example by hand, line by line, then submit once you are sure (you get one try).',
         )}
       </p>
-      <label className="cs-console-note" htmlFor="whiteboard-dry-run">
+      <label className="cs-wb-label" htmlFor="whiteboard-dry-run">
         {t('手动 dry-run', 'Manual dry run')}
       </label>
       <textarea
