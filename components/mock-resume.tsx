@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { useT } from '@/lib/i18n';
 import { RESUME_KEY, normalizeResume, resumeText } from './resume-builder';
 
@@ -47,7 +48,9 @@ export function ResumeBox({ value, onChange }: { value: string | undefined; onCh
           `默认读取简历生成器里保存的内容（不含姓名和联系方式），也可以粘贴或修改，最多 ${RESUME_CHARS.toLocaleString('en-US')} 个字符。简历只随这场面试的每条消息和最后的评估发给 AI，服务器不保存；面试用不到姓名和联系方式，粘贴前可以删掉。`,
           `Filled from the resume builder (without your name and contact details); paste or edit it here, up to ${RESUME_CHARS.toLocaleString('en-US')} characters. It goes to the AI with each message of this interview and the report, and our server never stores it. The interview doesn't need your name or contact details, so leave them out.`,
         )}{' '}
-        <a href="/career/resume/builder">{t('打开简历生成器', 'Open the resume builder')}</a>
+        <Link href="/career/resume/builder" prefetch={false}>
+          {t('打开简历生成器', 'Open the resume builder')}
+        </Link>
       </p>
     </>
   );
