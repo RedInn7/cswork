@@ -34,6 +34,7 @@ export const sdParts = [
   { from: 'tech-kafka', zh: '关键技术（选读）', en: 'Key technologies (optional)' },
   { from: 'pattern-real-time-updates', zh: '通用设计模式（选读）', en: 'Patterns (optional)' },
   { from: 'lld-case-atm', zh: 'LLD 案例库（选读）', en: 'LLD case library (optional)' },
+  { from: 'api-rest-vs-rpc-graphql', zh: 'API 设计（选读）', en: 'API design (optional)' },
 ].map((part, i, parts) => {
   const at = (slug: string) => sdChapters.findIndex((chapter) => chapter.slug === slug);
   const next = parts[i + 1];

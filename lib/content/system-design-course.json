@@ -7042,6 +7042,426 @@
           "whyEn": "It is availability against completeness: logging serves the service and must not drag it down. ERROR matters more, and the code blocks for it. BlockingQueue.put blocks just fine; INFO is useful, only less critical; and a full queue is usually a passing disk stall, not a bug."
         }
       ]
+    },
+    {
+      "slug": "api-rest-vs-rpc-graphql",
+      "titleZh": "API 设计 1：REST、RPC 与 GraphQL",
+      "titleEn": "API Design 1: REST, RPC and GraphQL",
+      "bodyZh": "设计 API 时，第一个问题往往是风格：REST、RPC（以 gRPC 为代表）还是 GraphQL。这三种没有谁绝对更好。选择取决于谁来调用、要不要缓存、需不需要流式传输、客户端的数据需求有多分散。这一章先讲三者的核心差别，再用一个聊天应用说明它们怎么搭配使用。\n\n## 三种风格的核心\n\n**REST** 把系统看成一组**资源**，用 URL 表示资源，用 HTTP 方法表示动作：`GET` 读取，`POST` 创建，`PUT` 和 `PATCH` 修改，`DELETE` 删除；结果用状态码表达。它的优势在于和 HTTP 生态完全对齐：`GET` 可以被浏览器和 CDN 缓存，状态码、重定向、条件请求都现成可用，任何语言写个 HTTP 客户端就能调用。\n\n**RPC** 把系统看成一组**函数**：`GetStatus(user_id)`。gRPC 用 Protocol Buffers 定义接口，自动生成各语言的客户端和服务端代码，基于 HTTP/2 传输二进制数据，原生支持双向流。它的优势是契约严格、性能好；缺点是浏览器不能直接调用（需要 gRPC-Web 之类的代理），也不能直接利用 HTTP 缓存。\n\n**GraphQL** 只暴露一个端点，由客户端在查询里写明要哪些字段、要嵌套到多深，服务端按 schema 解析返回。它解决的是“一个页面要拼好几个接口”（请求不足）和“接口返回一堆用不上的字段”（数据过多）。代价也很明确：查询一般用 `POST` 发送，HTTP 缓存基本用不上；一个查询可能触发大量数据库访问，要限制查询深度和复杂度；字段解析器容易引发 N+1 查询。\n\n| 维度 | REST | gRPC | GraphQL |\n|---|---|---|---|\n| 基本单位 | 资源 + HTTP 方法 | 函数调用 | 带类型的查询 |\n| 契约 | OpenAPI（可选） | `.proto`，强制 | schema，强制 |\n| HTTP 缓存 | 天然支持 `GET` 缓存 | 不支持 | 需要额外手段（持久化查询） |\n| 流式 | 需要 SSE 或 WebSocket | 原生支持 | 订阅（Subscription） |\n| 浏览器直连 | 可以 | 需要代理 | 可以 |\n| 最适合 | 对外公开 API | 服务之间的内部调用 | 客户端种类多、页面数据需求多变 |\n\n## 案例：聊天应用\n\n假设要为一个聊天应用设计 API：用户有会话列表，会话里有消息，要显示在线状态和未读数，新消息要实时到达。\n\n```mermaid\nflowchart LR\n  accTitle: 聊天应用的 API 分层：对外 REST 与 WebSocket，对内 gRPC\n  app[\"手机 / 网页客户端\"] -->|\"REST 或 GraphQL\"| gw[\"API 网关\"]\n  app <-->|\"WebSocket\"| ws[\"实时网关\"]\n  gw -->|\"gRPC\"| msg[\"消息服务\"]\n  gw -->|\"gRPC\"| user[\"用户服务\"]\n  ws -->|\"gRPC 流\"| pres[\"在线状态服务\"]\n  msg -->|\"gRPC\"| push[\"推送服务\"]\n```\n\n### 对外：REST 加 WebSocket\n\n会话和消息是天然的资源，用 REST 表达很清晰：\n\n```http\nGET   /v1/conversations?limit=20&cursor=eyJ0IjoxNzM...\nGET   /v1/conversations/c_81/messages?before=m_9902&limit=50\nPOST  /v1/conversations/c_81/messages\n      {\"client_msg_id\": \"4f1c...\", \"text\": \"on my way\"}\nPATCH /v1/conversations/c_81\n      {\"last_read_message_id\": \"m_9907\"}\nPOST  /v1/messages/m_9907:recall\n```\n\n几个设计点：\n\n- **消息列表用游标翻页**：`before=m_9902` 表示“比这条更早的 50 条”。聊天记录在不断追加，按页码翻页会重复或漏掉消息，下一章会细讲。\n- **发消息带 `client_msg_id`**：客户端生成的唯一 ID。网络超时后重发，服务端发现 ID 重复就返回第一次的结果，不会出现两条一样的消息。\n- **“标记已读”不是新建资源**，而是修改会话的一个字段，用 `PATCH`。\n- **“撤回消息”是一个动作**，硬套成 CRUD 很别扭，可以用 `POST /v1/messages/{id}:recall` 这种“自定义方法”的写法，语义清楚。\n\n新消息的实时推送不适合让客户端轮询 REST 接口，而是建立一条 WebSocket 长连接，由服务端推送。连接管理和消息投递的细节见[聊天系统](/system-design/chat-messaging)和[实时更新](/system-design/pattern-real-time-updates)两章。\n\n### 对内：gRPC\n\n网关后面的消息服务、用户服务、在线状态服务之间用 gRPC。调用方和被调用方都在自己团队手里，不存在浏览器兼容问题，严格的契约和代码生成反而减少了联调成本。在线状态天然是一个变化流，gRPC 的服务端流正好合适：\n\n```protobuf\nservice Presence {\n  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);\n  // The server keeps the stream open and sends a PresenceEvent per change.\n  rpc Watch(WatchRequest) returns (stream PresenceEvent);\n}\n\nmessage PresenceEvent {\n  string user_id = 1;\n  bool online = 2;\n  int64 changed_at_ms = 3;\n}\n```\n\n`.proto` 里的字段编号一旦发布就不能改含义，新增字段用新编号，老客户端会忽略不认识的字段。这让接口可以向前演进。\n\n### 要不要上 GraphQL\n\n如果首页要同时显示会话列表、每个会话的最后一条消息、前三个成员的头像和未读数，用 REST 要么调多个接口，要么专门为首页做一个聚合接口。GraphQL 可以一次查回来：\n\n```graphql\nquery Home {\n  conversations(first: 20) {\n    nodes {\n      id\n      unreadCount\n      lastMessage { text sentAt }\n      members(first: 3) { name avatarUrl }\n    }\n    pageInfo { endCursor hasNextPage }\n  }\n}\n```\n\n值得上 GraphQL 的信号是：客户端种类多（iOS、Android、Web、小程序），每个页面要的字段都不一样，而且变化很快。只有一个 Web 客户端时，几个专门的 REST 接口通常更省事。上了 GraphQL，就要配套做三件事：用批量加载（DataLoader 一类）解决 N+1，限制查询深度和复杂度，用持久化查询换回缓存能力。\n\n## 面试里怎么回答\n\n不要说“GraphQL 比 REST 先进”。给出一个**组合方案并说明理由**：对外 REST，便于缓存，第三方也容易接入；实时消息走 WebSocket；内部服务之间用 gRPC，追求契约严格和性能；客户端数据需求复杂时，在网关层加 GraphQL。",
+      "bodyEn": "The first question in API design is often the style: REST, RPC (gRPC being the usual example) or GraphQL. None is better in general. The choice depends on who calls the API, whether responses should be cached, whether you need streaming, and how varied the clients' data needs are. This chapter covers the core differences, then shows how a chat app combines all three.\n\n## The core of each style\n\n**REST** treats the system as **resources**: URLs name them and HTTP methods act on them, `GET` to read, `POST` to create, `PUT` and `PATCH` to change, `DELETE` to remove, with status codes for the outcome. Its strength is that it lines up with the whole HTTP ecosystem: browsers and CDNs cache `GET`, status codes, redirects and conditional requests come for free, and any language with an HTTP client can call it.\n\n**RPC** treats the system as **functions**: `GetStatus(user_id)`. gRPC defines the interface in Protocol Buffers, generates clients and servers for many languages, sends binary data over HTTP/2 and supports streaming in both directions. Its strengths are a strict contract and speed; its weaknesses are that browsers cannot call it directly (they need a proxy such as gRPC-Web) and that it gets nothing from HTTP caching.\n\n**GraphQL** exposes one endpoint; the client's query names the fields it wants and how deep to nest, and the server resolves it against a schema. It fixes \"one screen needs several endpoints\" (under-fetching) and \"endpoints return fields nobody uses\" (over-fetching). The costs are just as clear: queries usually go out as `POST`, so HTTP caching barely helps; one query can trigger a lot of database work, so depth and complexity need limits; and field resolvers easily cause N+1 queries.\n\n| Aspect | REST | gRPC | GraphQL |\n|---|---|---|---|\n| Unit | Resource + HTTP method | Function call | Typed query |\n| Contract | OpenAPI (optional) | `.proto`, enforced | Schema, enforced |\n| HTTP caching | `GET` caches naturally | None | Needs extra work (persisted queries) |\n| Streaming | Needs SSE or WebSocket | Built in | Subscriptions |\n| Browser calls | Yes | Through a proxy | Yes |\n| Best for | Public APIs | Internal service-to-service calls | Many client types with changing data needs |\n\n## Case: a chat app\n\nSay we design the API for a chat app: users have conversations, conversations have messages, the app shows presence and unread counts, and new messages arrive in real time.\n\n```mermaid\nflowchart LR\n  accTitle: Chat app API layers: REST and WebSocket outside, gRPC inside\n  app[\"Mobile / web app\"] -->|\"REST or GraphQL\"| gw[\"API gateway\"]\n  app <-->|\"WebSocket\"| ws[\"Realtime gateway\"]\n  gw -->|\"gRPC\"| msg[\"Message service\"]\n  gw -->|\"gRPC\"| user[\"User service\"]\n  ws -->|\"gRPC stream\"| pres[\"Presence service\"]\n  msg -->|\"gRPC\"| push[\"Push service\"]\n```\n\n### Outside: REST plus WebSocket\n\nConversations and messages are natural resources and read cleanly as REST:\n\n```http\nGET   /v1/conversations?limit=20&cursor=eyJ0IjoxNzM...\nGET   /v1/conversations/c_81/messages?before=m_9902&limit=50\nPOST  /v1/conversations/c_81/messages\n      {\"client_msg_id\": \"4f1c...\", \"text\": \"on my way\"}\nPATCH /v1/conversations/c_81\n      {\"last_read_message_id\": \"m_9907\"}\nPOST  /v1/messages/m_9907:recall\n```\n\nSome design points:\n\n- **Messages page by cursor**: `before=m_9902` means \"the 50 messages before this one\". Chat history keeps growing, so page numbers would repeat or skip messages; the next chapter goes into detail.\n- **Sending carries a `client_msg_id`**, a unique id made by the client. If a send times out and is retried, the server sees the repeated id and returns the first result instead of creating a duplicate message.\n- **Marking as read is not a new resource** but a change to one field of the conversation: `PATCH`.\n- **Recalling a message is an action**, and forcing it into CRUD is awkward. A \"custom method\" such as `POST /v1/messages/{id}:recall` states the intent plainly.\n\nReal-time delivery should not mean clients polling a REST endpoint. A long-lived WebSocket lets the server push new messages; connection handling and delivery are covered in [chat messaging](/system-design/chat-messaging) and [real-time updates](/system-design/pattern-real-time-updates).\n\n### Inside: gRPC\n\nBehind the gateway, the message, user and presence services talk gRPC. Both ends belong to your own teams, so browser support is irrelevant, and a strict contract with generated code cuts integration work. Presence is naturally a stream of changes, which suits a server stream:\n\n```protobuf\nservice Presence {\n  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);\n  // The server keeps the stream open and sends a PresenceEvent per change.\n  rpc Watch(WatchRequest) returns (stream PresenceEvent);\n}\n\nmessage PresenceEvent {\n  string user_id = 1;\n  bool online = 2;\n  int64 changed_at_ms = 3;\n}\n```\n\nOnce published, a field number in a `.proto` never changes meaning. New fields get new numbers and old clients ignore fields they do not know, which lets the interface evolve.\n\n### Is GraphQL worth it?\n\nIf the home screen shows the conversation list with each conversation's last message, three member avatars and the unread count, REST means either several calls or an aggregate endpoint built just for that screen. GraphQL fetches it in one query:\n\n```graphql\nquery Home {\n  conversations(first: 20) {\n    nodes {\n      id\n      unreadCount\n      lastMessage { text sentAt }\n      members(first: 3) { name avatarUrl }\n    }\n    pageInfo { endCursor hasNextPage }\n  }\n}\n```\n\nThe signals for GraphQL: many client types (iOS, Android, web, mini-programs), each screen wanting different fields, and those needs changing fast. With a single web client, a few purpose-built REST endpoints are usually less work. Adopting GraphQL means three companion tasks: batch loading (DataLoader or similar) against N+1, limits on query depth and complexity, and persisted queries to win back caching.\n\n## How to answer in the interview\n\nDo not say \"GraphQL is more modern than REST\". Offer a **combination with reasons**: REST outside, because it caches and third parties integrate easily; WebSocket for real-time messages; gRPC between internal services, for a strict contract and speed; GraphQL at the gateway when client data needs get complex.",
+      "quiz": [
+        {
+          "qZh": "GraphQL 里常说的 N+1 问题指什么？",
+          "qEn": "What is the N+1 problem in GraphQL?",
+          "choices": [
+            {
+              "zh": "查询嵌套超过 N+1 层时，服务端会直接拒绝请求",
+              "en": "The server rejects queries nested more than N+1 levels deep"
+            },
+            {
+              "zh": "查列表用 1 次查询，每一项的关联字段又各查 1 次，可以按请求批量加载来合并",
+              "en": "One query for a list, then one per item for a related field; batching loads per request merges them"
+            },
+            {
+              "zh": "客户端要发 N+1 个 HTTP 请求才能拿全一个页面的数据",
+              "en": "The client needs N+1 HTTP requests to fill one screen"
+            },
+            {
+              "zh": "schema 每新增一个字段，客户端都要发布一个新版本",
+              "en": "Every new schema field forces a new client release"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "N+1 指解析器层面的数据库查询：列表 1 次，每项再各 1 次。合并的办法是在一次请求内收集所有 ID 后批量查询。多个 HTTP 请求是 REST 的“请求不足”问题，正是 GraphQL 想解决的。",
+          "whyEn": "N+1 is about database work inside resolvers: one query for the list, one per item after that. The fix collects the ids within one request and loads them in a batch. Several HTTP calls is REST's under-fetching, the very thing GraphQL addresses."
+        },
+        {
+          "qZh": "为什么 GraphQL 默认很难用上 CDN 和浏览器的 HTTP 缓存？",
+          "qEn": "Why does GraphQL get little help from CDN and browser HTTP caching by default?",
+          "choices": [
+            {
+              "zh": "GraphQL 的响应总是包含用户隐私数据，不允许缓存",
+              "en": "GraphQL responses always contain private data and must not be cached"
+            },
+            {
+              "zh": "GraphQL 只能通过 WebSocket 传输",
+              "en": "GraphQL can only travel over WebSocket"
+            },
+            {
+              "zh": "查询通常用 POST 发往同一个地址，URL 不能区分请求的内容",
+              "en": "Queries usually POST to one URL, so the URL does not identify what was asked"
+            },
+            {
+              "zh": "GraphQL 的响应体太大，超过了 CDN 的缓存上限",
+              "en": "GraphQL responses are too large for CDN cache limits"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "HTTP 缓存以 URL 为键，主要缓存 GET。所有查询都 POST 到 /graphql，缓存无从区分。持久化查询把查询换成一个 ID 并用 GET 发送，可以恢复缓存。隐私、传输方式和体积都不是根本原因。",
+          "whyEn": "HTTP caches key on the URL and mostly cache GET. With every query POSTed to /graphql, a cache cannot tell them apart. Persisted queries swap the query for an id sent by GET, which restores caching. Privacy, transport and size are not the root cause."
+        },
+        {
+          "qZh": "聊天应用内部的消息服务和在线状态服务之间，为什么常用 gRPC 而不是 REST？",
+          "qEn": "Why do internal services such as messages and presence often use gRPC rather than REST?",
+          "choices": [
+            {
+              "zh": "两端都由自己团队维护：契约严格、代码自动生成、二进制传输效率高，还原生支持流",
+              "en": "Both ends are yours: a strict contract, generated code, compact binary and built-in streaming"
+            },
+            {
+              "zh": "gRPC 的请求可以被 CDN 缓存，REST 不行",
+              "en": "gRPC requests can be cached by CDNs and REST cannot"
+            },
+            {
+              "zh": "REST 不能在服务器之间调用，只能由浏览器发起",
+              "en": "REST only works from browsers, not between servers"
+            },
+            {
+              "zh": "gRPC 不需要定义接口，开发更快",
+              "en": "gRPC needs no interface definition, so development is faster"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "内部调用不需要考虑浏览器兼容，gRPC 的优势可以完全发挥。CDN 缓存恰恰是 REST 的长处；REST 当然可以在服务器之间调用；gRPC 必须先写 .proto 定义接口。",
+          "whyEn": "Internal calls need no browser support, so gRPC's strengths count in full. CDN caching is REST's strength, servers call REST all the time, and gRPC requires a .proto definition first."
+        }
+      ]
+    },
+    {
+      "slug": "api-pagination-idempotency",
+      "titleZh": "API 设计 2：分页与幂等",
+      "titleEn": "API Design 2: Pagination and Idempotency",
+      "bodyZh": "分页和幂等是 API 设计里最常被追问的两个细节，而且都和“请求会被重复执行”有关：翻页时数据在变化，重试时同一个请求被执行两次。这一章用一个支付 API 做案例：列出账户的支付记录，以及创建一笔支付。\n\n## 分页：页码还是游标\n\n**页码分页**（`?page=3&size=50`，对应 `OFFSET 100 LIMIT 50`）最直观，可以直接跳到第 N 页。它有两个问题：\n\n- **越往后越慢**。`OFFSET 100000` 意味着数据库要先找出 10 万行再扔掉，代价和偏移量成正比。\n- **数据变化时会重复或遗漏**。按时间倒序翻页，用户看第 1 页时又进来了 3 笔新支付，所有记录往后挪 3 位，第 2 页开头就会重复出现第 1 页末尾的 3 笔；如果有记录被删除，则会漏掉。\n\n**游标分页**（也叫 keyset 分页）不记“第几页”，而是记“上一页最后一条在哪”，下一页从它之后接着取：\n\n```sql\n-- First page\nSELECT id, amount, created_at FROM payments\nWHERE account_id = :account\nORDER BY created_at DESC, id DESC\nLIMIT 51;                        -- one extra row tells whether there is a next page\n\n-- Next page: continue after the last row returned (created_at = :t, id = :id)\nSELECT id, amount, created_at FROM payments\nWHERE account_id = :account AND (created_at, id) < (:t, :id)\nORDER BY created_at DESC, id DESC\nLIMIT 51;\n```\n\n只要有 `(account_id, created_at, id)` 上的索引，每一页的查询代价都一样，和翻到第几页无关；新插入的记录排在前面，不影响往后翻。代价是不能直接跳到第 N 页，但对“无限滚动”和导出全部数据这两种最常见的场景，这不是问题。\n\n几个细节：\n\n- **排序键要唯一**。`created_at` 可能重复，两笔支付在同一毫秒创建，如果只按时间比较，翻页边界上的记录可能被跳过。加上 `id` 作为第二排序键，顺序就是确定的。\n- **游标对客户端不透明**。把 `(created_at, id)` 编码成一个字符串（比如 base64 的 JSON）返回，客户端原样带回即可。这样服务端以后换排序方式，不会影响客户端。\n- **限制每页大小**，比如最多 100 条，防止一次请求拖垮数据库。\n- **筛选条件和游标绑定**。翻页过程中换了筛选条件，旧游标就没有意义了，可以把筛选条件也编进游标，或在服务端校验。\n\n响应可以长这样：\n\n```json\n{\n  \"data\": [{\"id\": \"pay_9f2\", \"amount\": 4200, \"currency\": \"USD\", \"created_at\": \"2026-10-12T08:31:07Z\"}],\n  \"next_cursor\": \"eyJ0IjoiMjAyNi0xMC0xMlQwODozMTowN1oiLCJpZCI6InBheV85ZjIifQ\",\n  \"has_more\": true\n}\n```\n\n## 幂等：重试不能扣两次钱\n\n客户端发出“创建支付”的请求后超时了，它不知道服务端是**没收到**，还是**处理完了但响应丢了**。重试是对的，但如果服务端把重试当成一笔新支付，用户就被扣了两次。\n\nHTTP 语义上，`GET`、`PUT`、`DELETE` 本来就是幂等的：执行一次和执行多次效果相同。`POST` 不是。通用做法是**幂等键**：客户端为每个逻辑操作生成一个随机 ID（比如 UUID），放在 `Idempotency-Key` 请求头里，重试时带上同一个值。\n\n```mermaid\nsequenceDiagram\n  accTitle: 带幂等键的支付请求：第一次超时，重试拿到同一个结果\n  participant C as 客户端\n  participant A as 支付 API\n  participant D as 数据库\n  participant P as 支付渠道\n  C->>A: POST /payments（Idempotency-Key: k1）\n  A->>D: 插入 k1，状态 started\n  A->>P: 扣款（同样带上 k1）\n  P-->>A: 成功\n  A->>D: k1 改为 done，保存响应\n  A--xC: 响应在网络中丢失\n  C->>A: 重试 POST /payments（Idempotency-Key: k1）\n  A->>D: 查到 k1 已完成\n  A-->>C: 201，返回第一次保存的响应\n```\n\n服务端的处理：\n\n```python\nimport hashlib\nimport json\n\n\ndef create_payment(db, processor, user_id: str, key: str, body: dict):\n    digest = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()\n    claimed = db.execute(\n        \"INSERT INTO idempotency_keys (user_id, key, request_hash, state) \"\n        \"VALUES (?, ?, ?, 'started') ON CONFLICT (user_id, key) DO NOTHING\",\n        (user_id, key, digest),\n    ).rowcount == 1\n    if not claimed:\n        row = db.one(\n            \"SELECT request_hash, state, status, response FROM idempotency_keys \"\n            \"WHERE user_id = ? AND key = ?\", (user_id, key))\n        if row.request_hash != digest:\n            return 422, {\"code\": \"idempotency_key_reused\"}  # same key, different request\n        if row.state == \"started\":\n            return 409, {\"code\": \"request_in_progress\"}     # the first attempt is still running\n        return row.status, json.loads(row.response)         # replay the stored answer\n    result = processor.charge(body[\"amount\"], body[\"currency\"], body[\"source\"],\n                              idempotency_key=key)          # the processor dedupes too\n    status = 201 if result.approved else 402\n    response = {\"id\": result.id, \"status\": result.status}\n    db.execute(\n        \"UPDATE idempotency_keys SET state = 'done', status = ?, response = ? \"\n        \"WHERE user_id = ? AND key = ?\", (status, json.dumps(response), user_id, key))\n    return status, response\n```\n\n要点：\n\n- **用唯一约束抢占键**。`INSERT ... ON CONFLICT DO NOTHING` 只有一个请求能插入成功，两个并发的重试不会都去扣款。\n- **同一个键、不同的请求体，要报错**。客户端拿同一个键发了金额不同的请求，说明客户端有 bug，既不能重放旧结果，也不能当成新请求执行。\n- **失败的结果也要保存**。银行拒付返回 402，重试应该得到同样的 402，而不是再扣一次试试。\n- **把幂等键传给下游**。如果服务在扣款之后、写回结果之前崩溃，键会停在 `started` 状态。等它超过一定时间（比如 1 分钟）以后，可以允许重新执行：因为支付渠道也按同一个键去重，重新执行不会扣两次。\n- **键要有过期时间**，比如 24 小时后清理，否则表会无限增长。\n\n## 扩展讨论\n\n- **列表接口的总数**：`total_count` 在大表上很贵（要数全表），可以不提供、提供估算值，或单独做一个计数接口。\n- **双向翻页**：游标里带上方向，`before` 和 `after` 各一个。\n- **幂等键的作用域**：按“用户 + 键”唯一，而不是全局唯一，避免不同用户的键冲突，也防止猜测别人的键来读取别人的响应。",
+      "bodyEn": "Pagination and idempotency are the two API details interviewers probe most, and both are about requests running more than once: the data changes while a client pages through it, and a retry runs the same request twice. The case in this chapter is a payments API: list an account's payments, and create a payment.\n\n## Pagination: page numbers or cursors\n\n**Offset pagination** (`?page=3&size=50`, meaning `OFFSET 100 LIMIT 50`) is the obvious choice and can jump straight to page N. It has two problems:\n\n- **It slows down with depth.** `OFFSET 100000` makes the database find 100,000 rows and throw them away, so cost grows with the offset.\n- **It repeats or skips rows when data changes.** Paging newest first, if three payments arrive while the user reads page 1, every row shifts down three places and page 2 starts with the last three rows of page 1; deletions skip rows instead.\n\n**Cursor pagination** (also called keyset pagination) remembers not \"which page\" but \"where the last row of the previous page was\", and continues after it:\n\n```sql\n-- First page\nSELECT id, amount, created_at FROM payments\nWHERE account_id = :account\nORDER BY created_at DESC, id DESC\nLIMIT 51;                        -- one extra row tells whether there is a next page\n\n-- Next page: continue after the last row returned (created_at = :t, id = :id)\nSELECT id, amount, created_at FROM payments\nWHERE account_id = :account AND (created_at, id) < (:t, :id)\nORDER BY created_at DESC, id DESC\nLIMIT 51;\n```\n\nWith an index on `(account_id, created_at, id)`, every page costs the same, however deep; new rows sort in front and do not disturb paging backwards. You lose jumping to page N, which does not matter for the two most common uses, infinite scroll and exporting everything.\n\nSome details:\n\n- **The sort key must be unique.** `created_at` repeats when two payments land in the same millisecond, and comparing on time alone can skip rows at a page boundary. Adding `id` as a second key makes the order total.\n- **The cursor is opaque to clients.** Encode `(created_at, id)` as a string (base64 of some JSON, say) that clients send back unchanged. The server can then change how it sorts without breaking anyone.\n- **Cap the page size**, at 100 for instance, so one request cannot swamp the database.\n- **Tie filters to the cursor.** A cursor means nothing once the filters change mid-way; encode the filters in it or check them on the server.\n\nA response might look like this:\n\n```json\n{\n  \"data\": [{\"id\": \"pay_9f2\", \"amount\": 4200, \"currency\": \"USD\", \"created_at\": \"2026-10-12T08:31:07Z\"}],\n  \"next_cursor\": \"eyJ0IjoiMjAyNi0xMC0xMlQwODozMTowN1oiLCJpZCI6InBheV85ZjIifQ\",\n  \"has_more\": true\n}\n```\n\n## Idempotency: a retry must not charge twice\n\nA client sends \"create payment\" and times out. It cannot tell whether the server **never got the request** or **processed it and lost the reply**. Retrying is right, but if the server treats the retry as a new payment, the user pays twice.\n\nIn HTTP semantics `GET`, `PUT` and `DELETE` are idempotent already: running one once or many times has the same effect. `POST` is not. The standard fix is an **idempotency key**: the client generates a random id (a UUID, say) per logical operation, sends it in an `Idempotency-Key` header, and sends the same value on every retry.\n\n```mermaid\nsequenceDiagram\n  accTitle: A payment with an idempotency key: the first reply is lost, the retry gets the same result\n  participant C as Client\n  participant A as Payments API\n  participant D as Database\n  participant P as Card processor\n  C->>A: POST /payments (Idempotency-Key: k1)\n  A->>D: insert k1, state started\n  A->>P: charge (passing k1 on)\n  P-->>A: approved\n  A->>D: mark k1 done, store the response\n  A--xC: response lost on the network\n  C->>A: retry POST /payments (Idempotency-Key: k1)\n  A->>D: k1 is already done\n  A-->>C: 201 with the stored response\n```\n\nOn the server:\n\n```python\nimport hashlib\nimport json\n\n\ndef create_payment(db, processor, user_id: str, key: str, body: dict):\n    digest = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()\n    claimed = db.execute(\n        \"INSERT INTO idempotency_keys (user_id, key, request_hash, state) \"\n        \"VALUES (?, ?, ?, 'started') ON CONFLICT (user_id, key) DO NOTHING\",\n        (user_id, key, digest),\n    ).rowcount == 1\n    if not claimed:\n        row = db.one(\n            \"SELECT request_hash, state, status, response FROM idempotency_keys \"\n            \"WHERE user_id = ? AND key = ?\", (user_id, key))\n        if row.request_hash != digest:\n            return 422, {\"code\": \"idempotency_key_reused\"}  # same key, different request\n        if row.state == \"started\":\n            return 409, {\"code\": \"request_in_progress\"}     # the first attempt is still running\n        return row.status, json.loads(row.response)         # replay the stored answer\n    result = processor.charge(body[\"amount\"], body[\"currency\"], body[\"source\"],\n                              idempotency_key=key)          # the processor dedupes too\n    status = 201 if result.approved else 402\n    response = {\"id\": result.id, \"status\": result.status}\n    db.execute(\n        \"UPDATE idempotency_keys SET state = 'done', status = ?, response = ? \"\n        \"WHERE user_id = ? AND key = ?\", (status, json.dumps(response), user_id, key))\n    return status, response\n```\n\nThe essentials:\n\n- **Claim the key with a unique constraint.** With `INSERT ... ON CONFLICT DO NOTHING` only one request inserts, so two concurrent retries cannot both charge.\n- **The same key with a different body is an error.** It means a client bug; the server must neither replay the old result nor run it as a new request.\n- **Store failures too.** A decline returns 402, and a retry should get the same 402, not another charge attempt.\n- **Pass the key downstream.** If the service crashes after charging and before saving the result, the key stays `started`. Once it is old enough (a minute, say), let a retry run again: the processor dedupes on the same key, so the rerun cannot charge twice.\n- **Keys expire**, after 24 hours for example, or the table grows forever.\n\n## Extensions\n\n- **Total counts**: `total_count` on a big table is expensive (it counts everything); omit it, return an estimate, or offer a separate count endpoint.\n- **Paging both ways**: put a direction in the cursor, with `before` and `after`.\n- **Key scope**: unique per user and key, not globally, so different users' keys never clash and nobody can guess someone else's key to read their response.",
+      "quiz": [
+        {
+          "qZh": "用户按时间倒序翻支付记录，看第 1 页时又进来了 3 笔新支付。用页码分页，第 2 页会怎样？",
+          "qEn": "A user pages through payments newest first, and 3 new payments arrive while they read page 1. With offset paging, what happens on page 2?",
+          "choices": [
+            {
+              "zh": "第 2 页会报错，因为总页数变了",
+              "en": "Page 2 fails because the page count changed"
+            },
+            {
+              "zh": "第 2 页开头重复出现第 1 页末尾的 3 笔记录",
+              "en": "Page 2 starts with the last 3 rows of page 1 again"
+            },
+            {
+              "zh": "3 笔新支付会出现在第 2 页的开头",
+              "en": "The 3 new payments show up at the top of page 2"
+            },
+            {
+              "zh": "没有影响，页码分页对插入是稳定的",
+              "en": "Nothing, offset paging is stable under inserts"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "新记录插在最前面，所有记录往后挪 3 位，偏移量不变，第 2 页就从原来第 1 页的第 48 条开始取。游标分页从上一页最后一条之后接着取，不受影响。",
+          "whyEn": "New rows go to the front and push everything down three places while the offset stays put, so page 2 starts at what was row 48 of page 1. A cursor continues after the last row seen and is unaffected."
+        },
+        {
+          "qZh": "游标分页时，为什么游标里除了 created_at 还要带上 id？",
+          "qEn": "In cursor pagination, why does the cursor carry id as well as created_at?",
+          "choices": [
+            {
+              "zh": "created_at 可能重复，加上 id 才能确定唯一顺序，翻页边界上不会漏掉记录",
+              "en": "created_at can repeat; id makes the order total so nothing is skipped at a boundary"
+            },
+            {
+              "zh": "id 用来校验客户端有没有篡改游标",
+              "en": "id lets the server detect a tampered cursor"
+            },
+            {
+              "zh": "数据库要求每个 WHERE 条件里都必须出现主键",
+              "en": "Databases require the primary key in every WHERE clause"
+            },
+            {
+              "zh": "id 能让客户端直接跳到任意一页",
+              "en": "id lets clients jump to any page"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "同一毫秒创建的两条记录 created_at 相同，只按时间比较，边界上的记录可能被跳过。id 不能防篡改（那要靠签名），数据库也没有这种要求，游标分页本来就不支持跳页。",
+          "whyEn": "Two rows created in the same millisecond share created_at, and comparing on time alone can skip one at a boundary. id does not prevent tampering (that takes a signature), databases require no such thing, and cursors never allow jumping pages."
+        },
+        {
+          "qZh": "客户端用同一个幂等键又发了一次创建支付的请求，但金额从 42 元变成了 24 元。服务端应该怎么做？",
+          "qEn": "A client reuses an idempotency key to create a payment, but the amount changed from 42 to 24. What should the server do?",
+          "choices": [
+            {
+              "zh": "返回第一次 42 元那笔支付的结果",
+              "en": "Return the result of the first, 42 payment"
+            },
+            {
+              "zh": "按 24 元重新扣款，并覆盖原来的记录",
+              "en": "Charge 24 and overwrite the stored record"
+            },
+            {
+              "zh": "返回错误，说明这个键已被一个不同的请求使用",
+              "en": "Return an error saying the key was used for a different request"
+            },
+            {
+              "zh": "两笔都扣，因为金额不同说明是两笔交易",
+              "en": "Charge both, since a different amount means a different payment"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "同一个键配不同的请求体说明客户端出了 bug。重放旧结果会让客户端误以为 24 元扣款成功了；重新执行或两笔都扣都违背了“同一个键只执行一次”的承诺。",
+          "whyEn": "One key with two different bodies is a client bug. Replaying the old result would make the client think a 24 charge succeeded, and charging again or charging both breaks the promise that one key runs once."
+        }
+      ]
+    },
+    {
+      "slug": "api-versioning-errors",
+      "titleZh": "API 设计 3：版本演进与错误设计",
+      "titleEn": "API Design 3: Versioning and Errors",
+      "bodyZh": "API 一旦对外发布，就有你看不到的客户端依赖它：别人的手机 App、合作方的服务器脚本、三年前写完就没人维护的集成。这一章讲两件事：怎么修改 API 而不把这些客户端弄坏，以及出错时怎么告诉调用方发生了什么。案例是一个电商的订单 API。\n\n## 什么样的改动会破坏兼容性\n\n**通常安全的改动**：\n\n- 新增接口；\n- 请求里新增**可选**参数；\n- 响应里新增字段（前提是客户端忽略不认识的字段，这一点要写进文档）。\n\n**破坏性改动**：\n\n- 删除或重命名字段；\n- 改变字段类型或格式（比如金额从字符串改成数字，时间从秒改成毫秒）；\n- 把可选参数改成必填，或者收紧校验规则；\n- 改变默认值或语义（比如列表默认排序从旧到新改成从新到旧）；\n- 改变错误码或状态码。\n\n还有一类容易被忽略：**给枚举加新值**。服务端看来只是“新增”，但如果客户端用穷举的 `switch` 处理订单状态，遇到不认识的 `partially_refunded` 可能直接崩溃。文档里应该提前说明“枚举可能增加新值，请做好默认处理”。\n\n## 版本策略\n\n| 方式 | 例子 | 优点 | 缺点 |\n|---|---|---|---|\n| URL 路径 | `/v1/orders` | 一眼可见，路由和缓存都简单 | 粒度粗，大版本升级成本高 |\n| 请求头 | `Accept: application/vnd.shop.v2+json` | URL 保持干净 | 不直观，调试时容易忽略 |\n| 日期版本 | `Api-Version: 2026-06-01` | 小改动可以频繁发布，客户端按需升级 | 服务端要维护一串转换逻辑 |\n\n日期版本值得多说几句。每个账户在首次调用时固定在当时的版本；之后每次不兼容的改动，都发布一个带日期的新版本，同时写一个“把新格式转回旧格式”的转换器。服务端核心逻辑只处理最新格式，响应在返回前依次经过转换器，降级到该账户固定的版本：\n\n```mermaid\nflowchart LR\n  accTitle: 按版本转换响应：核心逻辑只写最新版，旧版本由一串转换器降级\n  req[\"请求，账户固定在 2025-03-01 版\"] --> core[\"订单处理逻辑，只产出最新格式\"]\n  core --> t2[\"转换器：2026-06-01 改回上一版\"]\n  t2 --> t1[\"转换器：2025-09-15 改回上一版\"]\n  t1 --> res[\"响应：2025-03-01 格式\"]\n```\n\n这样核心代码里没有一堆 `if version < ...`，每次改动的兼容逻辑都集中在一个转换器里。\n\n## 案例：金额从小数改成整数\n\n订单 API 的 v1 用小数表示金额，后来发现浮点数有精度问题，也没有币种：\n\n```json\n// v1\n{\"id\": \"ord_51\", \"total\": 19.99, \"status\": \"shipped\"}\n\n// v2: money becomes an integer in minor units plus a currency\n{\"id\": \"ord_51\", \"total\": {\"amount\": 1999, \"currency\": \"USD\"}, \"status\": \"shipped\"}\n```\n\n这是破坏性改动。可行的过渡方式：\n\n1. 发布新版本，新版本里 `total` 是对象；旧版本的转换器把对象转回小数。\n2. 通过监控统计每个客户端还在用哪个版本。\n3. 对旧版本的响应加上 `Deprecation` 头和 `Sunset` 头（RFC 8594，写明停止服务的日期），并通知开发者。\n4. 到期后，旧版本先返回明确的错误一段时间，再彻底下线。\n\n另一种更温和的做法是**新增字段而不改旧字段**：保留 `total`，新增 `total_money`。代价是响应里会长期留着两个意思相同的字段。\n\n## 错误设计\n\n错误响应要让**程序能处理，人能看懂**。推荐的格式是 RFC 9457 定义的 Problem Details（`application/problem+json`），再加上自己的扩展字段：\n\n```http\nHTTP/1.1 422 Unprocessable Content\nContent-Type: application/problem+json\n\n{\n  \"type\": \"https://api.example.com/errors/validation\",\n  \"title\": \"The request has invalid fields\",\n  \"status\": 422,\n  \"detail\": \"2 fields failed validation.\",\n  \"code\": \"validation_failed\",\n  \"request_id\": \"req_7Hq2\",\n  \"errors\": [\n    {\"field\": \"items[0].quantity\", \"code\": \"too_small\", \"message\": \"Must be at least 1.\"},\n    {\"field\": \"shipping.postcode\", \"code\": \"invalid_format\", \"message\": \"Not a valid postcode.\"}\n  ]\n}\n```\n\n- `code` 是给程序判断的稳定标识，一经发布就不改；`title`、`detail` 和 `message` 是给人看的，可以改措辞，也可以翻译。客户端绝不应该匹配错误文案。\n- `errors` 列出每个字段的问题，表单可以把错误显示在对应的输入框旁边。\n- `request_id` 方便用户联系客服时定位日志。\n\n**状态码的选择**：\n\n| 情况 | 状态码 |\n|---|---|\n| JSON 格式错误、缺少必要参数 | 400 |\n| 格式正确但内容不合法（数量为 0） | 422 |\n| 没有登录或令牌无效 | 401 |\n| 已登录但无权访问 | 403 |\n| 资源不存在（或者不想暴露它存在） | 404 |\n| 和当前状态冲突（取消已发货的订单） | 409 |\n| 条件请求失败（`If-Match` 的版本已过期） | 412 |\n| 请求太频繁 | 429 |\n| 服务端 bug | 500 |\n| 依赖的服务不可用、暂时过载 | 502 / 503 / 504 |\n\n4xx 表示调用方需要改请求，原样重试没有用（429 除外，等一会儿可以重试）；5xx 表示服务端的问题，可以带退避重试。\n\n## 扩展讨论\n\n- **SDK**：官方 SDK 固定一个 API 版本，SDK 升级时一起升级，减少开发者手动处理版本的负担。\n- **契约测试**：用 OpenAPI 描述接口，在 CI 里比对新旧描述，自动发现删除字段、改类型这类破坏性改动。\n- **乐观并发**：响应带上 `ETag`，修改时客户端带 `If-Match`，版本不一致就返回 412，避免两个人同时修改时后者覆盖前者。",
+      "bodyEn": "Once an API is public, clients you cannot see depend on it: other people's mobile apps, partners' server scripts, integrations written three years ago and never touched since. This chapter covers how to change an API without breaking them, and how to tell callers what went wrong. The case is an e-commerce orders API.\n\n## Which changes break clients\n\n**Usually safe:**\n\n- adding endpoints;\n- adding **optional** request parameters;\n- adding response fields (provided clients ignore unknown fields, which the documentation must say).\n\n**Breaking:**\n\n- removing or renaming a field;\n- changing a field's type or format (amounts from strings to numbers, times from seconds to milliseconds);\n- making an optional parameter required, or tightening validation;\n- changing defaults or meaning (list order switching from oldest first to newest first);\n- changing error codes or status codes.\n\nOne more is easy to miss: **adding a value to an enum**. To the server it is just an addition, but a client with an exhaustive `switch` over order statuses may crash on an unknown `partially_refunded`. Documentation should say up front that enums may grow and clients need a default branch.\n\n## Versioning strategies\n\n| Approach | Example | Pros | Cons |\n|---|---|---|---|\n| URL path | `/v1/orders` | Visible at a glance; simple routing and caching | Coarse; major versions are costly |\n| Header | `Accept: application/vnd.shop.v2+json` | Clean URLs | Not obvious; easy to miss while debugging |\n| Date versions | `Api-Version: 2026-06-01` | Small changes ship often; clients upgrade when ready | The server maintains a chain of transforms |\n\nDate versions deserve a closer look. Each account is pinned to the current version on its first call. Every breaking change after that ships as a new dated version together with a transform that turns the new format back into the previous one. The core logic speaks only the latest format, and each response passes through the transforms back to the account's pinned version:\n\n```mermaid\nflowchart LR\n  accTitle: Versioned responses: the core speaks only the latest version, a chain of transforms downgrades it\n  req[\"Request, account pinned to 2025-03-01\"] --> core[\"Order logic, latest format only\"]\n  core --> t2[\"Transform: undo 2026-06-01\"]\n  t2 --> t1[\"Transform: undo 2025-09-15\"]\n  t1 --> res[\"Response in the 2025-03-01 format\"]\n```\n\nThe core code then has no pile of `if version < ...`, and each change's compatibility logic lives in a single transform.\n\n## Case: money from decimals to integers\n\nVersion 1 of the orders API sent amounts as decimals, which turned out to have precision problems and no currency:\n\n```json\n// v1\n{\"id\": \"ord_51\", \"total\": 19.99, \"status\": \"shipped\"}\n\n// v2: money becomes an integer in minor units plus a currency\n{\"id\": \"ord_51\", \"total\": {\"amount\": 1999, \"currency\": \"USD\"}, \"status\": \"shipped\"}\n```\n\nThat is a breaking change. A workable transition:\n\n1. Ship a new version in which `total` is an object; the old version's transform turns it back into a decimal.\n2. Monitor which version each client still uses.\n3. Add `Deprecation` and `Sunset` headers (RFC 8594, naming the shutdown date) to old-version responses, and tell developers.\n4. At the deadline, return an explicit error from the old version for a while before removing it.\n\nA gentler alternative is **adding a field instead of changing one**: keep `total` and add `total_money`. The price is two fields meaning the same thing in every response for a long time.\n\n## Designing errors\n\nAn error response must be **handled by programs and understood by people**. A good base is RFC 9457 Problem Details (`application/problem+json`) plus your own extension fields:\n\n```http\nHTTP/1.1 422 Unprocessable Content\nContent-Type: application/problem+json\n\n{\n  \"type\": \"https://api.example.com/errors/validation\",\n  \"title\": \"The request has invalid fields\",\n  \"status\": 422,\n  \"detail\": \"2 fields failed validation.\",\n  \"code\": \"validation_failed\",\n  \"request_id\": \"req_7Hq2\",\n  \"errors\": [\n    {\"field\": \"items[0].quantity\", \"code\": \"too_small\", \"message\": \"Must be at least 1.\"},\n    {\"field\": \"shipping.postcode\", \"code\": \"invalid_format\", \"message\": \"Not a valid postcode.\"}\n  ]\n}\n```\n\n- `code` is a stable identifier for programs and never changes once published; `title`, `detail` and `message` are for people and may be reworded or translated. Clients must never match on error text.\n- `errors` lists each field's problem so a form can show it beside the right input.\n- `request_id` lets support find the logs when a user gets in touch.\n\n**Choosing status codes:**\n\n| Situation | Status |\n|---|---|\n| Malformed JSON, missing required parameter | 400 |\n| Well-formed but invalid content (quantity 0) | 422 |\n| Not signed in, or the token is invalid | 401 |\n| Signed in but not allowed | 403 |\n| No such resource (or we will not reveal it exists) | 404 |\n| Conflicts with the current state (cancel a shipped order) | 409 |\n| Conditional request failed (stale `If-Match` version) | 412 |\n| Too many requests | 429 |\n| Server bug | 500 |\n| A dependency is down, or temporary overload | 502 / 503 / 504 |\n\nA 4xx means the caller must change the request and retrying it unchanged will not help (except 429, which may be retried after a wait); a 5xx is the server's problem and may be retried with backoff.\n\n## Extensions\n\n- **SDKs**: an official SDK pins one API version and moves with it on upgrade, so developers rarely handle versions by hand.\n- **Contract tests**: describe the API in OpenAPI and diff old and new descriptions in CI to catch removed fields and type changes automatically.\n- **Optimistic concurrency**: responses carry an `ETag` and updates send `If-Match`; a mismatch returns 412, so of two simultaneous edits the second cannot silently overwrite the first.",
+      "quiz": [
+        {
+          "qZh": "下面哪个改动对已经上线的客户端是破坏性的？",
+          "qEn": "Which change breaks clients that are already live?",
+          "choices": [
+            {
+              "zh": "新增一个查询物流信息的接口",
+              "en": "Adding an endpoint for shipment tracking"
+            },
+            {
+              "zh": "在订单响应里新增一个 gift_message 字段",
+              "en": "Adding a gift_message field to order responses"
+            },
+            {
+              "zh": "在列表接口上新增一个可选的 sort 参数",
+              "en": "Adding an optional sort parameter to the list endpoint"
+            },
+            {
+              "zh": "把创建订单时原本可选的 phone 字段改成必填",
+              "en": "Making the phone field required when creating an order"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "老客户端不知道要传 phone，改成必填后它们的请求会开始失败。新增接口、可选参数和响应字段都不影响已有的调用（前提是客户端忽略不认识的字段）。",
+          "whyEn": "Old clients do not know to send phone, so their requests start failing. New endpoints, optional parameters and response fields leave existing calls alone (given clients ignore unknown fields)."
+        },
+        {
+          "qZh": "用户想取消一个已经发货的订单，接口应该返回什么状态码？",
+          "qEn": "A user tries to cancel an order that has already shipped. Which status code fits?",
+          "choices": [
+            {
+              "zh": "409 Conflict，请求和资源的当前状态冲突",
+              "en": "409 Conflict: the request clashes with the current state"
+            },
+            {
+              "zh": "404 Not Found，订单已经不在可取消列表里",
+              "en": "404 Not Found: the order is no longer among the cancellable ones"
+            },
+            {
+              "zh": "500 Internal Server Error，取消流程执行失败",
+              "en": "500 Internal Server Error: the cancel flow failed"
+            },
+            {
+              "zh": "400 Bad Request，请求的 JSON 格式有问题",
+              "en": "400 Bad Request: the JSON is malformed"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "订单存在，请求格式也没问题，只是订单当前的状态不允许取消，这正是 409 的含义。500 表示服务端 bug，会误导调用方去重试；404 会让调用方以为订单不存在。",
+          "whyEn": "The order exists and the request is well formed; the order's state forbids cancelling, which is what 409 means. A 500 claims a server bug and invites retries; a 404 suggests the order does not exist."
+        },
+        {
+          "qZh": "为什么错误响应里要有稳定的 code 字段，而不是让客户端去匹配错误文案？",
+          "qEn": "Why give errors a stable code field instead of letting clients match on the message?",
+          "choices": [
+            {
+              "zh": "code 字段比文案短，可以节省带宽",
+              "en": "A code is shorter than a message and saves bandwidth"
+            },
+            {
+              "zh": "文案是给人看的，会改措辞、会翻译；code 是给程序判断的契约",
+              "en": "Messages are for people and get reworded and translated; the code is the contract for programs"
+            },
+            {
+              "zh": "HTTP 规范要求每个错误响应都必须有 code 字段",
+              "en": "The HTTP specification requires a code field in every error"
+            },
+            {
+              "zh": "有了 code 字段就可以不用 HTTP 状态码了",
+              "en": "With a code field, HTTP status codes become unnecessary"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "“数量必须大于 0”可能被改成“数量至少为 1”，也可能被翻译成英文，匹配文案的客户端会随之出错。HTTP 规范并不要求 code 字段，它和状态码是互补的：状态码表示大类，code 表示具体原因。",
+          "whyEn": "\"Quantity must be positive\" may become \"Quantity must be at least 1\" or be translated, and clients matching the text break. HTTP does not require a code field, and it complements the status code: the status gives the class, the code the exact reason."
+        }
+      ]
+    },
+    {
+      "slug": "api-auth-ratelimit",
+      "titleZh": "API 设计 4：认证授权与限流",
+      "titleEn": "API Design 4: Auth and Rate Limits",
+      "bodyZh": "开放给第三方开发者的 API，要回答两个问题：**你是谁、你能做什么**（认证和授权），以及**你能调用多少**（限流和配额）。案例是一个天气开放平台：开发者注册项目拿到 API Key 查询天气预报；另外，用户可以授权第三方 App 读取自己在平台上收藏的地点。\n\n## 认证与授权\n\n**认证**回答“你是谁”，**授权**回答“你被允许做什么”。401 表示认证失败（没带凭证或凭证无效），403 表示认证成功但没有权限。\n\n### API Key：识别调用方的应用\n\n查询公开的天气数据，只需要知道是哪个开发者项目在调用，用于计费和限流。API Key 就够了：\n\n- Key 是一个足够长的随机串，只在创建时显示一次。\n- 服务端**只存 Key 的哈希**，数据库泄露也拿不到能用的 Key。因为 Key 本身是高熵随机数，用 SHA-256 这类快速哈希就够了，不需要专门对付弱密码的慢哈希。\n- 再存一个前缀用于展示（`wx_live_AbC1`），开发者能在控制台里认出是哪个 Key。\n- 允许一个项目同时有两个有效的 Key，方便轮换：先发新 Key，部署完成后再吊销旧 Key。\n- Key 只能放在服务端。写进网页或 App 安装包里，等于公开了。\n\n```python\nimport hashlib\nimport secrets\n\n\ndef new_api_key() -> tuple[str, str, str]:\n    \"\"\"Returns (shown once to the developer, prefix kept for display, hash kept for lookup).\"\"\"\n    key = \"wx_live_\" + secrets.token_urlsafe(32)\n    return key, key[:12], hashlib.sha256(key.encode()).hexdigest()\n\n\ndef find_key(db, presented: str):\n    digest = hashlib.sha256(presented.encode()).hexdigest()\n    row = db.one(\"SELECT project_id, revoked FROM api_keys WHERE key_hash = ?\", (digest,))\n    return None if row is None or row.revoked else row.project_id\n```\n\n### OAuth 2.0：代表用户访问\n\n“读取用户收藏的地点”涉及用户自己的数据，API Key 解决不了：第三方 App 不能拿着用户的密码来调用。这时用 OAuth 2.0 的**授权码流程**，用户在平台自己的页面上登录并同意授权，第三方 App 最终拿到一个只包含特定权限（scope，比如 `places:read`）的访问令牌：\n\n```mermaid\nsequenceDiagram\n  accTitle: OAuth 2.0 授权码流程加 PKCE：第三方 App 代表用户调用 API\n  participant U as 用户\n  participant App as 第三方 App\n  participant AS as 授权服务器\n  participant API as 天气 API\n  App->>App: 生成 code_verifier，计算 code_challenge\n  App->>AS: 跳转 /authorize（scope、code_challenge）\n  U->>AS: 登录并同意授权\n  AS-->>App: 回调，带上一次性的授权码\n  App->>AS: POST /token（授权码 + code_verifier）\n  AS-->>App: access_token（1 小时）+ refresh_token\n  App->>API: GET /v1/me/places（Bearer access_token）\n  API-->>App: 用户收藏的地点\n```\n\n**PKCE** 是给手机 App 和单页网页这类“公共客户端”加的保护。它们无法安全地保存客户端密钥，授权码在回调过程中可能被其他程序截获。PKCE 让 App 在开始时生成一个随机的 `code_verifier`，只把它的哈希 `code_challenge` 发给授权服务器；换令牌时必须出示原始的 `code_verifier`。截获授权码的人没有它，就换不到令牌。现在的建议是所有客户端都使用 PKCE。\n\n服务器之间的调用（没有用户参与）用**客户端凭证流程**：用客户端 ID 和密钥直接换令牌。\n\n### 令牌：JWT 还是不透明令牌\n\n| | JWT | 不透明令牌 |\n|---|---|---|\n| 校验方式 | 本地验签，不用查库 | 查库或调用授权服务器的校验接口 |\n| 吊销 | 到期前很难吊销 | 删掉记录立即生效 |\n| 适合 | 高频调用、多个服务各自校验 | 需要随时吊销的场景 |\n\n用 JWT 时，访问令牌的有效期要短（几分钟到一小时），再配合刷新令牌续期；用户撤销授权时，吊销刷新令牌，已发出的访问令牌最多再活一个有效期。\n\n## 限流与配额\n\n两个概念要分开：\n\n- **速率限制**防突发：每分钟最多 60 次，保护服务不被瞬时流量打垮。常用令牌桶，允许短时突发，长期平均不超过速率。\n- **配额**是商业约定：免费版每天 1,000 次，付费版每天 100 万次，按天或按月计。\n\n限流的键可以是 API Key、用户、IP，或者它们的组合。未登录的接口只能按 IP 限。计算量差别很大的接口（查当前天气和导出十年历史数据）不应该按次数一视同仁，可以给每个接口定一个“成本”，按成本扣额度。\n\n超限时返回 429，并告诉调用方还要等多久、额度还剩多少：\n\n```http\nHTTP/1.1 429 Too Many Requests\nRetry-After: 12\nX-RateLimit-Limit: 60\nX-RateLimit-Remaining: 0\nX-RateLimit-Reset: 12\nContent-Type: application/problem+json\n\n{\"type\": \"https://api.example.com/errors/rate-limited\", \"title\": \"Too many requests\",\n \"status\": 429, \"detail\": \"The free plan allows 60 requests per minute.\"}\n```\n\n`Retry-After` 是标准头；剩余额度的头还没有完全统一，常见的是 `X-RateLimit-*` 这一组，IETF 正在制定标准的 `RateLimit` 头字段。多台网关共享计数时，计数器放在 Redis 里，具体算法和分布式实现见[限流器](/system-design/rate-limiter)一章。\n\n## 扩展讨论\n\n- **Key 泄露检测**：Key 带固定前缀，代码托管平台的密钥扫描就能识别并通知你，自动吊销。\n- **最小权限**：Key 也可以有 scope，只读 Key 不能修改数据；按环境区分测试 Key 和生产 Key。\n- **审计**：记录每个 Key 和令牌的调用日志，出了安全事件能追溯是谁、在什么时候、调用了什么。",
+      "bodyEn": "An API open to third-party developers has to answer two questions: **who are you and what may you do** (authentication and authorization), and **how much may you call** (rate limits and quotas). The case is an open weather platform: developers register projects and get API keys to query forecasts, and users can also let third-party apps read the places they saved on the platform.\n\n## Authentication and authorization\n\n**Authentication** answers \"who are you\", **authorization** \"what are you allowed to do\". A 401 means authentication failed (no credentials or invalid ones); a 403 means you are known but not permitted.\n\n### API keys: identifying the calling application\n\nQuerying public weather data only requires knowing which developer project is calling, for billing and rate limits. An API key is enough:\n\n- The key is a long random string, shown once when created.\n- The server **stores only a hash of the key**, so a database leak yields no usable keys. Because the key is high-entropy random data, a fast hash such as SHA-256 is fine; the slow hashes built for weak passwords are unnecessary.\n- It also stores a prefix for display (`wx_live_AbC1`) so developers can tell their keys apart in the console.\n- A project may have two live keys at once for rotation: issue the new key, deploy it, then revoke the old one.\n- Keys belong on servers only. A key inside a web page or an app bundle is public.\n\n```python\nimport hashlib\nimport secrets\n\n\ndef new_api_key() -> tuple[str, str, str]:\n    \"\"\"Returns (shown once to the developer, prefix kept for display, hash kept for lookup).\"\"\"\n    key = \"wx_live_\" + secrets.token_urlsafe(32)\n    return key, key[:12], hashlib.sha256(key.encode()).hexdigest()\n\n\ndef find_key(db, presented: str):\n    digest = hashlib.sha256(presented.encode()).hexdigest()\n    row = db.one(\"SELECT project_id, revoked FROM api_keys WHERE key_hash = ?\", (digest,))\n    return None if row is None or row.revoked else row.project_id\n```\n\n### OAuth 2.0: acting for a user\n\n\"Read the user's saved places\" touches the user's own data, and an API key cannot cover it: a third-party app must never hold the user's password. Use the OAuth 2.0 **authorization code flow** instead: the user signs in and consents on the platform's own pages, and the app ends up with an access token limited to specific permissions (scopes such as `places:read`):\n\n```mermaid\nsequenceDiagram\n  accTitle: OAuth 2.0 authorization code flow with PKCE, a third-party app calling the API for a user\n  participant U as User\n  participant App as Third-party app\n  participant AS as Authorization server\n  participant API as Weather API\n  App->>App: make code_verifier, derive code_challenge\n  App->>AS: redirect to /authorize (scope, code_challenge)\n  U->>AS: sign in and consent\n  AS-->>App: redirect back with a one-time code\n  App->>AS: POST /token (code + code_verifier)\n  AS-->>App: access_token (1 hour) + refresh_token\n  App->>API: GET /v1/me/places (Bearer access_token)\n  API-->>App: the user's saved places\n```\n\n**PKCE** protects \"public clients\" such as mobile apps and single-page web apps. They cannot keep a client secret, and the code may be intercepted by another program during the redirect. With PKCE the app first makes a random `code_verifier` and sends only its hash, the `code_challenge`, to the authorization server; exchanging the code for tokens requires the original `code_verifier`. Whoever intercepted the code does not have it and gets no token. Current guidance is PKCE for every client.\n\nServer-to-server calls with no user involved use the **client credentials flow**: the client id and secret are exchanged for a token directly.\n\n### Tokens: JWT or opaque\n\n| | JWT | Opaque token |\n|---|---|---|\n| Checking | Verify the signature locally, no lookup | Look it up, or call the authorization server's introspection endpoint |\n| Revocation | Hard before expiry | Delete the record and it is gone |\n| Suits | High call rates, many services checking on their own | Cases that need instant revocation |\n\nWith JWTs, keep access tokens short-lived (minutes to an hour) and renew them with refresh tokens. When a user withdraws consent, revoke the refresh token; access tokens already issued live at most one more lifetime.\n\n## Rate limits and quotas\n\nKeep the two apart:\n\n- A **rate limit** stops bursts: at most 60 calls a minute, protecting the service from spikes. A token bucket is typical, allowing short bursts while capping the long-run average.\n- A **quota** is a commercial agreement: 1,000 calls a day on the free plan, a million on a paid one, counted per day or month.\n\nThe limit key can be the API key, the user, the IP address, or a combination; endpoints that need no sign-in can only be limited by IP. Endpoints with very different costs (current weather versus a ten-year history export) should not count the same; give each endpoint a cost and charge that against the allowance.\n\nOver the limit, return 429 and say how long to wait and what is left:\n\n```http\nHTTP/1.1 429 Too Many Requests\nRetry-After: 12\nX-RateLimit-Limit: 60\nX-RateLimit-Remaining: 0\nX-RateLimit-Reset: 12\nContent-Type: application/problem+json\n\n{\"type\": \"https://api.example.com/errors/rate-limited\", \"title\": \"Too many requests\",\n \"status\": 429, \"detail\": \"The free plan allows 60 requests per minute.\"}\n```\n\n`Retry-After` is standard. Headers for the remaining allowance are not yet uniform: `X-RateLimit-*` is common, and the IETF is standardizing `RateLimit` header fields. When several gateways share counters, keep them in Redis; the algorithms and the distributed version are in the [rate limiter chapter](/system-design/rate-limiter).\n\n## Extensions\n\n- **Leaked keys**: give keys a fixed prefix so code hosts' secret scanning can recognize them, notify you, and trigger automatic revocation.\n- **Least privilege**: keys can carry scopes too, so a read-only key cannot change data; separate test keys from live keys.\n- **Auditing**: log calls per key and token, so after a security incident you can trace who called what and when.",
+      "quiz": [
+        {
+          "qZh": "手机 App 使用 OAuth 授权码流程时，为什么要加 PKCE？",
+          "qEn": "Why should a mobile app add PKCE to the OAuth authorization code flow?",
+          "choices": [
+            {
+              "zh": "PKCE 能把访问令牌的有效期延长到一年",
+              "en": "PKCE extends access tokens to a year"
+            },
+            {
+              "zh": "有了 PKCE，用户就不用在授权页面登录",
+              "en": "With PKCE users no longer sign in on the consent page"
+            },
+            {
+              "zh": "PKCE 会把 API 的响应加密，防止被抓包",
+              "en": "PKCE encrypts API responses against sniffing"
+            },
+            {
+              "zh": "App 保存不了客户端密钥；PKCE 让截获授权码的人因为没有 code_verifier 而换不到令牌",
+              "en": "An app cannot keep a client secret; PKCE means an intercepted code is useless without the code_verifier"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "PKCE 把授权码和发起流程的那个 App 实例绑定在一起。它不改变令牌有效期，不跳过登录，也不负责加密传输（那是 TLS 的事）。",
+          "whyEn": "PKCE binds the code to the app instance that started the flow. It does not change token lifetimes, skip sign-in, or encrypt traffic (that is TLS's job)."
+        },
+        {
+          "qZh": "为什么 JWT 访问令牌通常只给很短的有效期？",
+          "qEn": "Why are JWT access tokens usually short-lived?",
+          "choices": [
+            {
+              "zh": "JWT 在本地验签、不查库，到期前很难吊销，短有效期限制了泄露后的损失",
+              "en": "JWTs are checked locally without a lookup and are hard to revoke, so a short life limits a leak"
+            },
+            {
+              "zh": "JWT 的签名算法在一小时后会失效",
+              "en": "JWT signature algorithms stop working after an hour"
+            },
+            {
+              "zh": "令牌越短，HTTP 请求头越小",
+              "en": "Shorter-lived tokens make smaller HTTP headers"
+            },
+            {
+              "zh": "OAuth 规范规定访问令牌不能超过 5 分钟",
+              "en": "The OAuth specification caps access tokens at 5 minutes"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "本地验签是 JWT 的优点，也让它无法被即时吊销。有效期短，泄露的令牌很快就会失效，再用刷新令牌续期。签名不会过期，有效期也不影响令牌长度，OAuth 规范没有规定具体时长。",
+          "whyEn": "Local verification is the JWT's strength and also why it cannot be revoked instantly. A short life makes a leaked token expire soon, with refresh tokens for renewal. Signatures do not expire, lifetime does not change token size, and OAuth sets no fixed duration."
+        },
+        {
+          "qZh": "免费版开发者超过了每分钟 60 次的限制，API 应该怎么响应？",
+          "qEn": "A free-plan developer goes over 60 calls a minute. How should the API respond?",
+          "choices": [
+            {
+              "zh": "返回 403，并在控制台里永久禁用这个 Key",
+              "en": "Return 403 and disable the key permanently"
+            },
+            {
+              "zh": "返回 429，带上 Retry-After 和剩余额度相关的头",
+              "en": "Return 429 with Retry-After and allowance headers"
+            },
+            {
+              "zh": "返回 503，让开发者以为服务暂时不可用",
+              "en": "Return 503 so the developer thinks the service is down"
+            },
+            {
+              "zh": "悄悄把请求排队，等到下一分钟再处理",
+              "en": "Quietly queue the request until the next minute"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "429 准确表达了“太频繁”，Retry-After 告诉调用方什么时候可以重试。403 表示没有权限，永久禁用也过于严厉；503 会把问题说成服务端故障；悄悄排队会让请求莫名变慢，调用方也不知道发生了什么。",
+          "whyEn": "429 says \"too many\" precisely, and Retry-After says when to try again. A 403 means forbidden and a permanent ban is excessive; a 503 blames the server; silent queueing makes calls mysteriously slow and tells the caller nothing."
+        }
+      ]
+    },
+    {
+      "slug": "api-webhooks-long-running",
+      "titleZh": "API 设计 5：Webhook 与长任务",
+      "titleEn": "API Design 5: Webhooks and Long-Running Jobs",
+      "bodyZh": "有些操作没法在一次请求里做完：上传一个 2GB 的视频，转码要几分钟，生成一份年度报表要半小时。这一章讲三件事：大文件怎么传，长任务的接口怎么设计，任务完成后怎么通知调用方。案例是一个视频平台的上传和转码 API。\n\n## 大文件上传：别经过你的服务器\n\n让 2GB 的文件流经 API 服务器，会长时间占着连接和带宽，服务器重启时上传就断了。更好的做法是让客户端**直接传到对象存储**：\n\n1. 客户端调用 `POST /uploads`，说明文件大小和类型；\n2. API 校验权限和大小限制，向对象存储发起分片上传，为每个分片生成一个**预签名 URL**（带签名和过期时间，只允许往这个位置写入）；\n3. 客户端用这些 URL 并行上传各个分片，失败的分片单独重传；\n4. 全部传完后调用 `POST /uploads/{id}/complete`，API 通知对象存储合并分片。\n\n分片让上传可以断点续传，也能并行提速。对象存储的细节见[对象存储](/system-design/tech-blob-storage)和[大文件处理](/system-design/pattern-large-blobs)两章。\n\n## 长任务：先返回 202\n\n转码要几分钟，不能让 HTTP 请求一直挂着等：连接会超时，网关和负载均衡器也不允许。正确的做法是立即返回 **202 Accepted**，并给出一个**操作资源**的地址：\n\n```mermaid\nsequenceDiagram\n  accTitle: 上传视频并转码：直传对象存储，异步处理，完成后用 Webhook 通知\n  participant C as 客户端\n  participant API as 视频 API\n  participant S3 as 对象存储\n  participant W as 转码任务\n  participant H as 客户的 Webhook 地址\n  C->>API: POST /uploads（文件大小、类型）\n  API-->>C: upload_id 和每个分片的预签名 URL\n  C->>S3: 并行 PUT 各个分片\n  C->>API: POST /uploads/{id}/complete\n  API-->>C: 202 Accepted，Location /operations/op_7\n  API->>W: 提交转码任务\n  C->>API: GET /operations/op_7（轮询，可选）\n  API-->>C: running，进度 40%\n  W->>API: 转码完成\n  API->>H: POST video.ready 事件（带签名）\n  H-->>API: 200\n```\n\n操作资源记录任务状态，调用方可以随时查询：\n\n```json\n{\n  \"id\": \"op_7\",\n  \"status\": \"running\",\n  \"progress\": 40,\n  \"created_at\": \"2026-10-15T09:12:00Z\",\n  \"result\": null,\n  \"error\": null\n}\n```\n\n状态一般是 `pending`、`running`、`succeeded`、`failed` 几种，成功时 `result` 指向产物（比如转码后的视频），失败时 `error` 用上一章的错误格式说明原因。如果任务支持取消，提供 `POST /operations/{id}:cancel`。长任务在服务端怎么调度、重试，见[长任务](/system-design/pattern-long-running-tasks)一章。\n\n查询方式有三种，各有适用场景：\n\n| 方式 | 怎么工作 | 适合 | 代价 |\n|---|---|---|---|\n| 轮询 | 调用方定期 GET 操作资源 | 任务较短，调用方没有公网地址 | 大量无效请求，要带退避 |\n| Webhook | 完成时服务端 POST 到调用方提供的 URL | 服务器之间的集成 | 调用方要有公网地址，要处理签名、重复和乱序 |\n| SSE 或 WebSocket | 保持连接，服务端推送进度 | 用户在页面上等着看进度条 | 要维持长连接 |\n\n实践中常常组合使用：Webhook 负责通知，轮询作为兜底，因为 Webhook 可能因为对方故障而迟到。\n\n## Webhook 的设计要点\n\n一次事件投递长这样：\n\n```http\nPOST /hooks/video HTTP/1.1\nContent-Type: application/json\nWebhook-Id: evt_3Kd9\nWebhook-Signature: t=1792055521,v1=6c1f0e4b...\n\n{\"id\": \"evt_3Kd9\", \"type\": \"video.ready\", \"created\": 1792055521,\n \"data\": {\"video_id\": \"vid_88\", \"operation_id\": \"op_7\"}}\n```\n\n**签名**。接收方要能确认请求确实来自你，而且内容没被改过。做法是为每个 Webhook 地址生成一个密钥，对“时间戳 + 请求体”做 HMAC-SHA256，把时间戳和签名放进请求头。接收方用同样的密钥重新计算，用常量时间比较；时间戳太旧就拒绝，防止有人截获一个合法请求反复重放。\n\n**至少一次投递**。对方返回非 2xx 或超时，就按指数退避重试（加随机抖动），持续一两天。这意味着同一个事件可能送达多次，接收方必须按事件 ID **去重**。\n\n**快速响应**。接收方应该验签、去重、放进自己的队列，然后马上返回 200，再慢慢处理。如果处理完才返回，处理时间一长就会触发发送方的超时重试。\n\n**顺序不保证**。重试会打乱顺序，`video.ready` 可能比 `video.processing` 先到。事件里带上资源 ID 和版本号，接收方需要时再去 API 查一次最新状态，不要依赖到达顺序。\n\n**发送方的安全**。Webhook 地址是客户填写的，你的服务器会向任意地址发请求。要校验地址：拒绝内网 IP 和本机地址，防止被利用来探测你的内网（SSRF）。\n\n接收方的参考实现：\n\n```python\nimport hashlib\nimport hmac\nimport json\nimport time\n\n\ndef verify(secret: bytes, header: str, body: bytes, tolerance: int = 300) -> bool:\n    fields = dict(p.strip().split(\"=\", 1) for p in header.split(\",\") if \"=\" in p)\n    ts, sig = fields.get(\"t\", \"\"), fields.get(\"v1\", \"\")\n    if not ts.isdigit() or abs(time.time() - int(ts)) > tolerance:\n        return False  # too old: possibly a replay\n    expected = hmac.new(secret, ts.encode() + b\".\" + body, hashlib.sha256).hexdigest()\n    return hmac.compare_digest(expected, sig)\n\n\ndef handle(db, queue, secret: bytes, header: str, body: bytes) -> int:\n    if not verify(secret, header, body):\n        return 400\n    event_id = json.loads(body)[\"id\"]\n    if not db.insert_if_absent(\"seen_events\", event_id):  # delivered before: already queued\n        return 200\n    queue.put(body)  # do the slow work later; answer fast\n    return 200\n```\n\n## 扩展讨论\n\n- **失败处理**：连续失败太多次就暂停这个地址并通知客户；控制台提供“重新发送”和最近投递记录。\n- **事件内容**：只放 ID 的“瘦事件”更安全（敏感数据不经过 Webhook），代价是接收方要多调用一次 API。\n- **密钥轮换**：轮换期间同时用新旧两个密钥签名，请求头里带两个签名，接收方任意一个验证通过即可。\n- **上传安全**：预签名 URL 要设置较短的过期时间，并限制文件大小和类型；上传完成后再做病毒扫描和格式校验。",
+      "bodyEn": "Some operations cannot finish within one request: uploading a 2 GB video, transcoding that takes minutes, an annual report that takes half an hour. This chapter covers three things: moving large files, designing the API for long-running jobs, and telling the caller when a job is done. The case is a video platform's upload and transcoding API.\n\n## Large uploads: keep them off your servers\n\nStreaming a 2 GB file through API servers ties up connections and bandwidth for a long time, and a server restart kills the upload. Better to let the client **upload straight to object storage**:\n\n1. The client calls `POST /uploads` with the file size and type.\n2. The API checks permissions and size limits, starts a multipart upload with object storage, and makes a **presigned URL** for each part (signed, expiring, and good only for writing that one location).\n3. The client uploads the parts in parallel and retries any failed part on its own.\n4. With every part in, it calls `POST /uploads/{id}/complete` and the API has object storage assemble the parts.\n\nParts make uploads resumable and faster in parallel. Object storage itself is covered in the [blob storage](/system-design/tech-blob-storage) and [large blobs](/system-design/pattern-large-blobs) chapters.\n\n## Long-running jobs: answer 202 first\n\nA transcode takes minutes, and an HTTP request cannot hang that long: connections time out, and gateways and load balancers will not allow it. Return **202 Accepted** at once with the address of an **operation resource**:\n\n```mermaid\nsequenceDiagram\n  accTitle: Upload and transcode a video: direct upload to object storage, async processing, a webhook when done\n  participant C as Client\n  participant API as Video API\n  participant S3 as Object storage\n  participant W as Transcode job\n  participant H as Customer webhook URL\n  C->>API: POST /uploads (size, type)\n  API-->>C: upload_id and a presigned URL per part\n  C->>S3: PUT the parts in parallel\n  C->>API: POST /uploads/{id}/complete\n  API-->>C: 202 Accepted, Location /operations/op_7\n  API->>W: queue the transcode\n  C->>API: GET /operations/op_7 (optional polling)\n  API-->>C: running, 40% done\n  W->>API: transcode finished\n  API->>H: POST video.ready event (signed)\n  H-->>API: 200\n```\n\nThe operation resource records the job's state for the caller to check at any time:\n\n```json\n{\n  \"id\": \"op_7\",\n  \"status\": \"running\",\n  \"progress\": 40,\n  \"created_at\": \"2026-10-15T09:12:00Z\",\n  \"result\": null,\n  \"error\": null\n}\n```\n\nTypical states are `pending`, `running`, `succeeded` and `failed`. On success `result` points to the output (the transcoded video); on failure `error` explains why in the previous chapter's error format. If jobs can be cancelled, offer `POST /operations/{id}:cancel`. How the server schedules and retries such jobs is in the [long-running tasks chapter](/system-design/pattern-long-running-tasks).\n\nThere are three ways to learn the outcome, each with its place:\n\n| Approach | How it works | Suits | Cost |\n|---|---|---|---|\n| Polling | The caller GETs the operation now and then | Short jobs; callers without a public address | Many wasted calls; needs backoff |\n| Webhook | The server POSTs to a URL the caller registered | Server-to-server integrations | The caller needs a public address and must handle signatures, duplicates and ordering |\n| SSE or WebSocket | A held connection pushes progress | A user watching a progress bar | Keeping long-lived connections |\n\nIn practice they combine: webhooks notify and polling is the fallback, because a webhook can arrive late when the receiver is down.\n\n## Designing webhooks\n\nOne event delivery looks like this:\n\n```http\nPOST /hooks/video HTTP/1.1\nContent-Type: application/json\nWebhook-Id: evt_3Kd9\nWebhook-Signature: t=1792055521,v1=6c1f0e4b...\n\n{\"id\": \"evt_3Kd9\", \"type\": \"video.ready\", \"created\": 1792055521,\n \"data\": {\"video_id\": \"vid_88\", \"operation_id\": \"op_7\"}}\n```\n\n**Signatures.** The receiver must be able to confirm the request came from you, unaltered. Give each webhook endpoint a secret, compute HMAC-SHA256 over \"timestamp + body\", and put the timestamp and signature in a header. The receiver recomputes it with the same secret and compares in constant time, rejecting old timestamps so a captured valid request cannot be replayed.\n\n**At-least-once delivery.** On a non-2xx answer or a timeout, retry with exponential backoff (plus jitter) for a day or two. The same event may therefore arrive several times, so receivers must **deduplicate** by event id.\n\n**Answer fast.** The receiver should verify, deduplicate, put the event on its own queue and return 200 straight away, then do the work. Answering only after the work is done risks the sender's timeout and a retry whenever processing is slow.\n\n**No ordering guarantee.** Retries shuffle the order, so `video.ready` may arrive before `video.processing`. Events carry the resource id and a version, and the receiver re-reads the current state from the API when needed instead of trusting arrival order.\n\n**Sender-side safety.** Customers type in webhook URLs, so your servers will send requests to arbitrary addresses. Validate them: reject private and loopback addresses so nobody can use you to probe your own network (SSRF).\n\nA reference receiver:\n\n```python\nimport hashlib\nimport hmac\nimport json\nimport time\n\n\ndef verify(secret: bytes, header: str, body: bytes, tolerance: int = 300) -> bool:\n    fields = dict(p.strip().split(\"=\", 1) for p in header.split(\",\") if \"=\" in p)\n    ts, sig = fields.get(\"t\", \"\"), fields.get(\"v1\", \"\")\n    if not ts.isdigit() or abs(time.time() - int(ts)) > tolerance:\n        return False  # too old: possibly a replay\n    expected = hmac.new(secret, ts.encode() + b\".\" + body, hashlib.sha256).hexdigest()\n    return hmac.compare_digest(expected, sig)\n\n\ndef handle(db, queue, secret: bytes, header: str, body: bytes) -> int:\n    if not verify(secret, header, body):\n        return 400\n    event_id = json.loads(body)[\"id\"]\n    if not db.insert_if_absent(\"seen_events\", event_id):  # delivered before: already queued\n        return 200\n    queue.put(body)  # do the slow work later; answer fast\n    return 200\n```\n\n## Extensions\n\n- **Failures**: after too many failures in a row, pause the endpoint and tell the customer; the console offers \"resend\" and a log of recent deliveries.\n- **Event content**: \"thin\" events carrying only ids are safer (no sensitive data in the webhook) at the cost of one more API call for the receiver.\n- **Rotating secrets**: during a rotation, sign with both the old and new secret and send both signatures; the receiver accepts either.\n- **Upload safety**: presigned URLs should expire quickly and limit file size and type; scan for malware and validate the format once the upload completes.",
+      "quiz": [
+        {
+          "qZh": "为什么 Webhook 签名里要带时间戳，并且拒绝太旧的请求？",
+          "qEn": "Why does a webhook signature include a timestamp, with old requests rejected?",
+          "choices": [
+            {
+              "zh": "时间戳让接收方可以按时间顺序处理事件",
+              "en": "The timestamp lets receivers process events in order"
+            },
+            {
+              "zh": "HMAC 算法要求输入里必须有时间戳",
+              "en": "HMAC requires a timestamp in its input"
+            },
+            {
+              "zh": "防止有人截获一个合法的请求后反复重放",
+              "en": "It stops a captured valid request from being replayed later"
+            },
+            {
+              "zh": "时间戳用来计算 Webhook 的投递费用",
+              "en": "The timestamp is used to bill webhook deliveries"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "没有时间戳，截获的请求签名永远有效，可以被无限次重放。时间戳也被签名覆盖，改不了；超过容忍窗口就拒绝。它并不能保证顺序（重试会打乱顺序），HMAC 本身也不需要时间戳。",
+          "whyEn": "Without a timestamp a captured request stays valid forever and can be replayed at will. The timestamp is covered by the signature, so it cannot be altered, and anything outside the window is rejected. It does not guarantee order (retries shuffle it), and HMAC itself needs no timestamp."
+        },
+        {
+          "qZh": "Webhook 采用“至少一次”投递，接收方应该怎么处理？",
+          "qEn": "Webhooks are delivered at least once. What should the receiver do?",
+          "choices": [
+            {
+              "zh": "按事件 ID 去重，验签后先入队并立即返回 200，再异步处理",
+              "en": "Deduplicate by event id; after verifying, queue it, return 200 at once and process later"
+            },
+            {
+              "zh": "处理完所有业务逻辑后再返回 200，确保不会丢",
+              "en": "Return 200 only after all processing, so nothing is lost"
+            },
+            {
+              "zh": "收到重复事件时返回 409，让发送方停止重试",
+              "en": "Return 409 on a duplicate so the sender stops retrying"
+            },
+            {
+              "zh": "只处理第一次收到的事件，之后的同类型事件全部丢弃",
+              "en": "Handle only the first event of each type and drop the rest"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "重复是常态，所以要按 ID 去重；先入队再返回，避免处理太慢触发重试。对重复事件返回非 2xx 反而会让发送方继续重试；按类型丢弃会丢掉不同视频的同类事件。",
+          "whyEn": "Duplicates are normal, so deduplicate by id; queue and answer first so slow work does not trigger retries. A non-2xx answer to a duplicate makes the sender keep retrying, and dropping by type loses the same event for other videos."
+        },
+        {
+          "qZh": "创建转码任务的接口，最合适的设计是？",
+          "qEn": "What is the best design for the endpoint that starts a transcode?",
+          "choices": [
+            {
+              "zh": "保持 HTTP 连接，等转码完成后再返回 200",
+              "en": "Hold the connection and return 200 when the transcode finishes"
+            },
+            {
+              "zh": "立即返回 200 和空响应体，转码好了用户自然能看到",
+              "en": "Return 200 with an empty body; users will see the video eventually"
+            },
+            {
+              "zh": "让客户端每秒重复调用创建接口，直到返回成功",
+              "en": "Have the client call the create endpoint every second until it succeeds"
+            },
+            {
+              "zh": "返回 202 和一个操作资源地址，调用方轮询它或等 Webhook 通知",
+              "en": "Return 202 with an operation resource the caller polls or waits on via webhook"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "几分钟的请求会被网关和负载均衡器超时掐断；空的 200 让调用方无从得知任务状态；反复调用创建接口会创建一堆重复任务。202 加操作资源把“提交”和“完成”分开了。",
+          "whyEn": "A request of several minutes gets cut off by gateways and load balancers; an empty 200 leaves the caller blind; calling create repeatedly makes duplicate jobs. 202 with an operation resource separates \"submitted\" from \"done\"."
+        }
+      ]
     }
   ]
 }
