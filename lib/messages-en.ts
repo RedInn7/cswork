@@ -594,6 +594,7 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   ],
   [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
   [/^关注的公司上线了 (\d+) 道新 OA 题$/, (n) => `${n} new OA ${n === '1' ? 'problem' : 'problems'} at companies you follow`],
+  [/^关注的公司有 (\d+) 条新动态$/, (n) => `${n} ${n === '1' ? 'update' : 'updates'} at companies you follow`],
   [/^(.+) 有新面经$/, (company) => `New interview report: ${company}`],
 ];
 
