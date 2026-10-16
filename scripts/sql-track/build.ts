@@ -22,7 +22,7 @@ import type { OjProblemPackage } from '../../lib/oj-types';
 import { PANDAS_HARNESS, SQL_HARNESS, SQL_ORDERED } from '../../lib/server/sql-judge';
 import { GENERATORS, SCHEMAS, seeded, type Data, type Value } from './datasets';
 import { PANDAS_SOLUTIONS, type PandasSolution } from './pandas-solutions';
-import { GROUPS, PROBLEMS, type SqlProblem } from './problems';
+import { GROUPS, PATTERNS, PROBLEMS, type SqlProblem } from './problems';
 
 export const PACKAGES_FILE = 'content/sql-track/packages.json';
 export const MANIFEST_FILE = 'lib/content/sql-track.json';
@@ -180,11 +180,13 @@ export function buildSqlTrack() {
         en,
         ids: PROBLEMS.filter((problem) => problem.group === key).map((problem) => problem.id),
       })),
+      patterns: PATTERNS.map(({ key, zh, en }) => ({ key, zh, en })),
       problems: PROBLEMS.map(({ id, title, difficulty }) => ({
         id,
         titleZh: title.zh,
         titleEn: title.en,
         difficulty,
+        patterns: PATTERNS.filter((pattern) => pattern.ids.includes(id)).map((pattern) => pattern.key),
       })),
     };
     return {

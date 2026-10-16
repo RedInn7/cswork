@@ -5,18 +5,18 @@ import { minutesLabel, totalMinutes } from '@/lib/server/system-design-course';
 
 const COPY = {
   zh: {
-    title: `入门速成课：Big-O、数据结构与 Python 面试 | ${SITE_NAME}`,
+    title: `入门速成课：Big-O、Python、C++、Java、Go 与 SQL | ${SITE_NAME}`,
     description:
-      '两门免费的入门速成课：Big-O 与数据结构速成课从复杂度讲到图和回溯，Python 面试速成课讲清刷题最常用的内置工具和常见坑。每节有小测验和 Line 500 练习题，读完全部章节可获得结业证书。',
+      '六门免费的入门速成课：Big-O 与数据结构从复杂度讲到图和回溯；Python、C++ STL、Java 集合、Go 标准库四门语言课讲清刷题最常用的工具和常见坑，C++、Java、Go 三门末尾附速查表；SQL 面试课从 NULL 讲到窗口函数和常见题型。每节有小测验和练习，读完全部章节可获得结业证书。',
     eyebrow: '入门 · 速成课',
     heading: '从零开始，把刷题的地基打牢。',
     crumb: '入门速成课',
     chapters: (n: number) => `${n} 节`,
   },
   en: {
-    title: `Beginner Crash Courses: Big-O, Data Structures and Python for Interviews | ${SITE_NAME}`,
+    title: `Beginner Crash Courses: Big-O, Python, C++, Java, Go and SQL | ${SITE_NAME}`,
     description:
-      'Two free crash courses: Big-O and data structures, from complexity to graphs and backtracking, and Python for coding interviews, covering the built-in tools and traps that matter most. Each lesson has a quiz and Line 500 practice, and reading every chapter earns a certificate.',
+      'Six free crash courses: Big-O and data structures, from complexity to graphs and backtracking; Python, the C++ STL, Java collections and the Go standard library for coding interviews, each covering the tools and traps that matter most, the C++, Java and Go courses ending with a cheat sheet; and SQL for interviews, from NULL to window functions and the classic question types. Each lesson has a quiz and practice, and reading every chapter earns a certificate.',
     eyebrow: 'BEGINNER · CRASH COURSES',
     heading: 'Start from zero and build the foundation for coding interviews.',
     crumb: 'Beginner courses',

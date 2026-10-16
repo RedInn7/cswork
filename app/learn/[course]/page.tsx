@@ -77,7 +77,9 @@ export default async function LearnCourse({ params }: Props) {
               <span className="sd-sheet-meta">
                 <span>
                   {minutesLabel(chapterMinutes(chapter, zh), zh)} ·{' '}
-                  {zh ? `${chapter.quiz.length} 道测验 · ${chapter.homework.length} 道练习` : `${chapter.quiz.length}-question quiz · ${chapter.homework.length} problems`}
+                  {zh ? `${chapter.quiz.length} 道测验` : `${chapter.quiz.length}-question quiz`}
+                  {chapter.homework.length > 0 &&
+                    (zh ? ` · ${chapter.homework.length} 道练习` : ` · ${chapter.homework.length} problems`)}
                 </span>
                 <SdReadCheck slug={learnKey(course.slug, chapter.slug)} />
               </span>
