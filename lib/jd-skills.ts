@@ -5,6 +5,9 @@ import type { CodeLanguage } from './problems';
  * the model may only pick from it (lib/server/ai-jd.ts), and each skill has its page on the site
  * and the learner data that measures it. Client-safe: no server imports.
  */
+// Postings often run 5-10k characters (the resume review's JOB_CHARS is 4000): past JD_CHARS the text is cut, not refused.
+export const JD_CHARS = 10_000;
+export const JD_MIN = 80;
 export const JD_SKILLS = [
   'dsa', 'sql', 'pandas', 'system-design', 'lld', 'concurrency', 'api-design', 'behavioral',
   'ml', 'frontend', 'python', 'java', 'cpp', 'go', 'rest-api', 'oa',
@@ -162,3 +165,5 @@ export const JD_ROUND_INFO: Record<JdRound, { zh: string; en: string; href: stri
 };
 /** The study plan's URL parameter: Line 500 stops (comma-separated slugs) to preselect as its topics. */
 export const PLAN_TOPICS_PARAM = 'planTopics';
+/** sessionStorage: the job description handed over once from the resume review, removed when read. */
+export const JD_HANDOFF_KEY = 'cswork:jd-handoff';

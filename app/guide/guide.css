@@ -531,6 +531,161 @@
   font-size: 13px;
 }
 
+/* ── the JD readiness checklist (components/jd-readiness.tsx) ── */
+.resume-form #jd-text {
+  min-height: 260px;
+  font-size: 14px;
+}
+.jd-rounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: jd-round;
+}
+.jd-rounds li {
+  counter-increment: jd-round;
+}
+.jd-rounds a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 6px;
+  border: 1px solid #c9d1da;
+  border-radius: 999px;
+  color: #1d252d;
+  font-size: 14px;
+  text-decoration: none;
+}
+.jd-rounds a::before {
+  content: counter(jd-round);
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #0e1a2b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.jd-rounds a:hover {
+  border-color: #0e1a2b;
+}
+.jd-skills {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.resume-result .jd-skills {
+  padding-left: 0;
+}
+.jd-skill {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid #e1e6eb;
+  border-left: 4px solid #a33a3a;
+  border-radius: 12px;
+  background: #fbfcfd;
+}
+.jd-skill[data-status='partial'] {
+  border-left-color: var(--guide-amber);
+}
+.jd-skill[data-status='ready'] {
+  border-left-color: #0b6b48;
+}
+.jd-skill-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.jd-status {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #fdf1f1;
+  color: #8f1f1f;
+  font-size: 12px;
+  font-weight: 700;
+}
+.jd-skill[data-status='partial'] .jd-status {
+  background: #fff3dc;
+  color: #7a4f00;
+}
+.jd-skill[data-status='ready'] .jd-status {
+  background: #ecf8f2;
+  color: #0b6b48;
+}
+.jd-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.jd-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e6eaee;
+}
+.jd-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #a33a3a;
+}
+.jd-skill[data-status='partial'] .jd-bar i {
+  background: var(--guide-amber);
+}
+.jd-skill[data-status='ready'] .jd-bar i {
+  background: #0b6b48;
+}
+.jd-skill small {
+  color: #5d6b78;
+  font-size: 13px;
+}
+.jd-evidence {
+  color: #3a4652;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.55;
+}
+.jd-skill a {
+  justify-self: start;
+  color: #0d6b57;
+  font-size: 14px;
+  font-weight: 700;
+}
+.jd-plan {
+  display: grid;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px dashed #c9d1da;
+}
+.jd-plan p {
+  margin: 0;
+  line-height: 1.6;
+}
+.jd-plan-link {
+  justify-self: start;
+  padding: 9px 22px;
+  border-radius: 999px;
+  background: #0e1a2b;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+:is(.jd-rounds a, .jd-skill a, .jd-plan-link):focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 2px;
+}
+
 /* ── the visa timeline ── */
 .visa-timeline {
   display: grid;
@@ -1066,6 +1221,73 @@
   }
   .dark .resume-rewrites small {
     color: #b5c2ce;
+  }
+  .dark .jd-rounds a {
+    border: 1px solid #31383f;
+    color: #d6dfe8;
+    text-decoration: none;
+  }
+  .dark .jd-rounds a::before {
+    background: #0e1a2b;
+    color: #ffffff;
+  }
+  .dark .jd-rounds a:hover {
+    border-color: #94a4bb;
+  }
+  .dark .jd-skill {
+    border: 1px solid #2b2f33;
+    border-left: 4px solid #a33a3a;
+    background: #171818;
+  }
+  .dark .jd-skill[data-status='partial'] {
+    border-left-color: var(--guide-amber);
+  }
+  .dark .jd-skill[data-status='ready'] {
+    border-left-color: #0b6b48;
+  }
+  .dark .jd-status {
+    background: #181212;
+    color: #fcb6ae;
+  }
+  .dark .jd-skill[data-status='partial'] .jd-status {
+    background: #191306;
+    color: #e8bf89;
+  }
+  .dark .jd-skill[data-status='ready'] .jd-status {
+    background: #0f1512;
+    color: #94d8b5;
+  }
+  .dark .jd-bar {
+    background: #111315;
+  }
+  .dark .jd-bar i {
+    background: #a33a3a;
+  }
+  .dark .jd-skill[data-status='partial'] .jd-bar i {
+    background: var(--guide-amber);
+  }
+  .dark .jd-skill[data-status='ready'] .jd-bar i {
+    background: #0b6b48;
+  }
+  .dark .jd-skill small {
+    color: #b5c2ce;
+  }
+  .dark .jd-evidence {
+    color: #c4d1dd;
+  }
+  .dark .jd-skill a {
+    color: #93d6c1;
+  }
+  .dark .jd-plan {
+    border-top: 1px dashed #31383f;
+  }
+  .dark .jd-plan-link {
+    background: #0e1a2b;
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .dark :is(.jd-rounds a, .jd-skill a, .jd-plan-link):focus-visible {
+    outline: 2px solid #87d2bb;
   }
   .dark .visa-form fieldset {
     border: 1px solid #2b2f33;

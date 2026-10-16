@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import coreSkills from '@/lib/content/core-skills.json';
 import {
+  JD_CHARS,
+  JD_MIN,
   JD_ROUNDS,
   JD_SKILL_INFO,
   JD_SKILLS,
@@ -26,9 +28,6 @@ import { sdParts } from './system-design-course';
  * skill on the learner's own data (ACs, chapters marked read, certificates, STAR stories).
  * Nothing of the posting or the reply is stored: ai_usage keeps the daily count (kind 'jd').
  */
-// Postings often run 5-10k characters (resume's JOB_CHARS is 4000): past this the text is cut, not refused.
-export const JD_CHARS = 10_000;
-export const JD_MIN = 80;
 const TAGS = ['job_description'];
 const input = z.object({ job: z.string().max(JD_CHARS * 4) }).strict();
 
