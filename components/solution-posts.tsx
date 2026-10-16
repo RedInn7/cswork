@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
-import { anonymousAllowed, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
+import { anonymousAllowed, plainExcerpt, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { Report } from './chat-log';
@@ -121,13 +121,6 @@ const day = (time: number, english: boolean) =>
     month: 'short',
     day: 'numeric',
   });
-/** The list's two-line teaser: code blocks and Markdown marks dropped, rendered as text. */
-export const plainExcerpt = (md: string) =>
-  md
-    .replace(/(`{3,}|~{3,})[^\n]*\n[\s\S]*?(?:\1|$)/g, ' ')
-    .replace(/[#>*_`~|]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
 /** A fence longer than any backtick run inside the code, so pasted code cannot close it early. */
 export function codeBlock(code: string, language: string) {
   const run = Math.max(0, ...[...code.matchAll(/`+/g)].map((m) => m[0].length));
