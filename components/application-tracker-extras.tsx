@@ -131,7 +131,7 @@ export function TrackerStats({ items, now, zh }: { items: readonly Application[]
               <input type="number" min={0} max={50} value={draft} onChange={(e) => setDraft(e.target.value)} />
             </label>
             <button type="submit">{t('保存目标', 'Save goal')}</button>
-            <small role="status">{note}</small>
+            <small aria-live="polite">{note}</small>
           </form>
         </section>
       </div>
@@ -148,18 +148,23 @@ export function TrackerStats({ items, now, zh }: { items: readonly Application[]
 export function TrackerBookmarklet({ zh }: { zh: boolean }) {
   const ref = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
+    const link = ref.current;
+    if (!link) return;
     const open = JSON.stringify(`${location.origin}/career/tracker?add=1`);
-    ref.current?.setAttribute(
+    link.setAttribute(
       'href',
       `javascript:(()=>{const d=document,e=encodeURIComponent,m=d.querySelector('meta[property="og:site_name"]'),` +
         `s=String(getSelection()).trim().slice(0,10000);window.open(${open}+'&company='+e(((m&&m.content)||location.hostname).slice(0,100))` +
         `+'&role='+e(d.title.slice(0,120))+'&link='+e(location.href)+(s?'#jd='+e(s):''))})()`,
     );
+    // Clicked here it would only open this page again: it is for dragging to the bookmarks bar.
+    const stay = (e: Event) => e.preventDefault();
+    link.addEventListener('click', stay);
+    return () => link.removeEventListener('click', stay);
   }, []);
   return (
     <div className="tracker-bookmarklet">
-      {/* Clicking it here would only open the tracker again: it is for dragging to the bookmarks bar. */}
-      <a ref={ref} onClick={(e) => e.preventDefault()}>
+      <a ref={ref} href="/career/tracker?add=1">
         {zh ? '存到投递看板' : 'Save to tracker'}
       </a>
       <p>

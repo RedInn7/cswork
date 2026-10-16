@@ -171,7 +171,15 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const [now, setNow] = useState(() => Date.now());
   // A selector to focus once the board has re-rendered: the moved card's select, or a closed form's opener.
   const [refocus, setRefocus] = useState<string | null>(null);
-  const [versions, setVersions] = useState<string[]>([]);
+  // The browser's saved resume versions, for the form's suggestions (the board only renders client-side).
+  const [versions] = useState<string[]>(() => {
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(RESUME_VERSIONS) ?? '{}');
+      return saved && typeof saved === 'object' && !Array.isArray(saved) ? Object.keys(saved).slice(0, 20) : [];
+    } catch {
+      return [];
+    }
+  });
   const formRef = useRef<HTMLFormElement>(null);
   const editing = form && (form.id ?? '');
   useEffect(() => {
@@ -185,8 +193,6 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     try {
       kept = sessionStorage.getItem(KEPT_ADD) ?? '';
       sessionStorage.removeItem(KEPT_ADD);
-      const saved: unknown = JSON.parse(localStorage.getItem(RESUME_VERSIONS) ?? '{}');
-      if (saved && typeof saved === 'object' && !Array.isArray(saved)) setVersions(Object.keys(saved).slice(0, 20));
     } catch {}
     if (new URLSearchParams(location.search).get('add') === '1') history.replaceState(history.state, '', location.pathname);
     else source = kept;
