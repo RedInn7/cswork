@@ -118,7 +118,7 @@ test('ask for a review: the link is made with the note, shown once and copied', 
 
 test('the workspace offers it on an accepted formal submission; the page is never indexed', () => {
   const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
-  assert.match(workspace, /inspected\.mode === 'judge' && inspected\.status === 'accepted' && \(\s*<ReviewLink/);
+  assert.match(workspace, /inspected\.mode === 'judge' && inspected\.status === 'accepted' && communityProblem\(inspected\.problem_id\) && \(\s*<ReviewLink/);
   const page = readFileSync(new URL('../app/review/[token]/page.tsx', import.meta.url), 'utf8');
   assert.match(page, /robots: \{ index: false, follow: false \}/);
   assert.match(page, /referrer: 'no-referrer'/);

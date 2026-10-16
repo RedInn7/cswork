@@ -3448,8 +3448,8 @@ function Workspace({
           !examMode && (
             <>
               <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />
-              {/* Only on the learner's own accepted formal submission (lib/server/code-reviews.ts). */}
-              {inspected.mode === 'judge' && inspected.status === 'accepted' && (
+              {/* Only on the learner's own accepted formal submission of a public problem (lib/server/code-reviews.ts). */}
+              {inspected.mode === 'judge' && inspected.status === 'accepted' && communityProblem(inspected.problem_id) && (
                 <ReviewLink key={`review-${inspected.id}`} submissionId={inspected.id} />
               )}
             </>
