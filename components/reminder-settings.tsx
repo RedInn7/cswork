@@ -13,6 +13,7 @@ type Prefs = {
   streak: boolean;
   daily: boolean;
   contest: boolean;
+  applications: boolean;
   email: boolean;
   hour: number;
   tz: number;
@@ -25,6 +26,7 @@ const KINDS = [
   ['streak', '连续打卡快断时', 'When a streak is about to break'],
   ['daily', '每日一题', 'The daily problem'],
   ['contest', '报名的周赛和入门赛（开赛前 1 小时再提醒一次）', 'Weeklies and starters you entered (again an hour before)'],
+  ['applications', '投递提醒（OA 截止、面试、跟进）', 'Job applications (OA deadlines, interviews, follow-ups)'],
 ] as const;
 
 const key = (base64url: string) =>
@@ -126,7 +128,7 @@ export function ReminderSettings() {
           variant="outline"
           aria-disabled={busy}
           onClick={() =>
-            void save({ review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz: 0, locale })
+            void save({ review: true, streak: true, daily: false, contest: true, applications: true, email: false, hour: 20, tz: 0, locale })
           }
         >
           {t('打开学习提醒', 'Turn reminders on')}

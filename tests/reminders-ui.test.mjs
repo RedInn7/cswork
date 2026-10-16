@@ -68,8 +68,11 @@ test('reminders: off until turned on, then each change saves with the local time
   const tz = new Date().getTimezoneOffset();
   assert.deepEqual(calls.at(-1), [
     'POST /api/oj/notify',
-    { prefs: { review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz, locale: 'en' } },
+    { prefs: { review: true, streak: true, daily: false, contest: true, applications: true, email: false, hour: 20, tz, locale: 'en' } },
   ]);
+  assert.equal(box('Job applications (OA deadlines, interviews, follow-ups)').checked, true);
+  await click(box('Job applications'));
+  assert.equal(calls.at(-1)[1].prefs.applications, false);
   assert.equal(box('The daily problem').checked, false);
   await click(box('The daily problem'));
   assert.equal(calls.at(-1)[1].prefs.daily, true);
