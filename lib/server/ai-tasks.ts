@@ -1,10 +1,11 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { AI_TASK_SLUGS, ICA_LEVELS, ICA_TASK_SLUGS, parseIcaProblemId } from '@/lib/ai-coding';
+import { AI_TASK_SLUGS, type AiTaskTrack, ICA_LEVELS, ICA_TASK_SLUGS, parseIcaProblemId, TAKE_HOME_SLUGS } from '@/lib/ai-coding';
 
 /**
- * The AI-assisted round's practice projects (lib/ai-coding.ts), read from content/ai-coding/<slug>/
- * (shipped by scripts/package-oj-worker.mjs): meta.json, README.md / README.zh.md, the learner's
+ * The AI-assisted round's practice projects and the take-home assignments (lib/ai-coding.ts), read
+ * from content/ai-coding/<slug>/ (shipped by scripts/package-oj-worker.mjs): meta.json (its "track"
+ * says which, AI-assisted unless given), README.md / README.zh.md, the learner's
  * starting src/ and tests/, and hidden_tests/, which stays on the server and only the judge reads.
  * solution/ is the reference fix the tests check (tests/ai-assisted.test.ts); it is never read here.
  */
@@ -14,6 +15,7 @@ export type AiTask = {
   summary: [string, string];
   kind: [string, string];
   minutes: number;
+  track: AiTaskTrack;
   readme: { zh: string; en: string };
   /** The starting files the learner edits: path → content. */
   files: Record<string, string>;
@@ -39,10 +41,12 @@ const testCount = (files: Record<string, string>) =>
 export function aiTasks(): AiTask[] {
   if (cache) return cache;
   const root = resolve('content/ai-coding');
-  const tasks = AI_TASK_SLUGS.flatMap((slug) => {
+  const tasks = [...AI_TASK_SLUGS, ...TAKE_HOME_SLUGS].flatMap((slug) => {
     const dir = join(root, slug);
     if (!existsSync(join(dir, 'meta.json'))) return [];
-    const meta = JSON.parse(readFileSync(join(dir, 'meta.json'), 'utf8')) as Pick<AiTask, 'title' | 'summary' | 'kind' | 'minutes'>;
+    const meta = JSON.parse(readFileSync(join(dir, 'meta.json'), 'utf8')) as Pick<AiTask, 'title' | 'summary' | 'kind' | 'minutes'> & {
+      track?: AiTaskTrack;
+    };
     const hidden = folder(join(dir, 'hidden_tests'), 'hidden_tests');
     return [
       {
@@ -51,6 +55,7 @@ export function aiTasks(): AiTask[] {
         summary: meta.summary,
         kind: meta.kind,
         minutes: meta.minutes,
+        track: meta.track ?? 'ai-assisted',
         readme: {
           en: readFileSync(join(dir, 'README.md'), 'utf8'),
           zh: readFileSync(join(dir, 'README.zh.md'), 'utf8'),

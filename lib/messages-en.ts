@@ -404,6 +404,11 @@ const EN: Record<string, string> = {
   '今天的 AI 作答点评次数已用完，明天再来': "You've used today's AI answer feedback. Come back tomorrow",
   '今天的职位描述分析次数已用完，明天再来': "You've used today's job description checks. Come back tomorrow",
   '比赛进行中，AI 结对暂停，赛后开放': 'The AI pair is paused while your contest runs; it reopens afterwards',
+  // Round review (lib/server/round-review.ts)
+  '对话过长，评估最多读取 24000 个字符': 'The conversation is too long; the review reads at most 24,000 characters',
+  '比赛或考试进行中，AI 评估暂停，结束后开放': 'AI reviews are paused while your contest or exam runs; they reopen afterwards',
+  '带回家作业没有 AI 结对可评估': 'Take-home assignments have no AI pair to review',
+  '先和 AI 结对聊几轮再评估': 'Ask the AI pair a few questions before asking for a review',
   // Answer and STAR story feedback (lib/server/ai-answer.ts)
   '这道题没有参考答案，不能 AI 点评': "This question has no reference answer, so AI feedback isn't available",
   '至少写 80 个字符再请求 AI 点评': 'Write at least 80 characters before asking for AI feedback',

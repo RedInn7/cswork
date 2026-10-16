@@ -567,6 +567,92 @@
 .ai-round-ask button {
   justify-self: end;
 }
+/* The round review (components/round-review.tsx) and a take-home's design note. */
+.ai-round-review {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
+}
+.ai-round-review-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.ai-round-review h3,
+.ai-round-review h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+.ai-round-scores {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.ai-round-scores div {
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+}
+.ai-round-scores dt {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+}
+.ai-round-scores strong {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.ai-round-scores strong[data-score='1'],
+.ai-round-scores strong[data-score='2'] {
+  color: #9a3412;
+}
+.ai-round-scores strong[data-score='3'],
+.ai-round-scores strong[data-score='4'] {
+  color: #0b5e4b;
+}
+.ai-round-scores dd {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ai-round-review-summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.ai-round-suggestions {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ai-round-notes textarea {
+  min-height: 140px;
+  padding: 8px 10px;
+  resize: vertical;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.ai-round-notes small {
+  justify-self: end;
+  color: var(--muted);
+  font-size: 12px;
+}
 
 @media (max-width: 1080px) {
   .ai-round-bench {
@@ -790,6 +876,32 @@
     border: 1px solid var(--rule);
     background: #191919;
     color: var(--ink);
+  }
+  .dark .ai-round-review {
+    border-top: 1px dashed var(--rule);
+  }
+  .dark .ai-round-scores div {
+    border: 1px solid var(--rule);
+    background: #191919;
+  }
+  .dark .ai-round-scores strong[data-score='1'],
+  .dark .ai-round-scores strong[data-score='2'] {
+    color: #fcb19a;
+  }
+  .dark .ai-round-scores strong[data-score='3'],
+  .dark .ai-round-scores strong[data-score='4'] {
+    color: #9dd9c5;
+  }
+  .dark .ai-round-scores dd {
+    color: var(--muted);
+  }
+  .dark .ai-round-notes textarea {
+    border: 1px solid var(--rule);
+    background: #191919;
+    color: var(--ink);
+  }
+  .dark .ai-round-notes small {
+    color: var(--muted);
   }
   @media (max-width: 1080px) {
     .dark .ai-round-side {
