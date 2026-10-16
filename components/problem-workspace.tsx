@@ -1129,6 +1129,9 @@ function Workspace({
     }
     // The exam clock replaces the problem timer during a mock OA; an AC stops it.
     const seconds = examMode ? null : stopTimer(userId, initialProblem.id);
+    // The server keeps it only for the first AC: the solve time on the progress page.
+    if (seconds != null)
+      void ojRequest(`problems/${encodeURIComponent(initialProblem.id)}/aids`, { kind: 'time', seconds }).catch(() => {});
     track('judge_accept', {
       problem_id: initialProblem.id,
       language: submission.language,

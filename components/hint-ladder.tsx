@@ -16,6 +16,7 @@ import {
   HINT_WAIT_SECONDS,
   hintUnlocked,
   hintsUnlocked,
+  ojRequest,
   type OJSubmission,
 } from '@/lib/oj-client';
 import { track } from '@/lib/analytics';
@@ -112,6 +113,9 @@ export function HintLadder({
     moveFocus.current = true;
     setShown(next);
     track('hint_open', { problem_id: problemId, level: next });
+    // Hint 1 is only an observation; from hint 2 a solve counts as assisted (lib/server/practice-aids.ts).
+    if (next >= 2)
+      void ojRequest(`problems/${encodeURIComponent(problemId)}/aids`, { kind: 'hint' }).catch(() => {});
   }
   const minutesLeft = Math.max(1, Math.ceil((HINT_WAIT_SECONDS - seconds) / 60));
   const lockedReason =
