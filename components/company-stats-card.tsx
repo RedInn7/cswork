@@ -1,6 +1,6 @@
 import { RESULTS, ROUND_LABELS, SENTIMENTS, SOURCES } from '@/lib/experience';
 import type { CompanyStats, Share } from '@/lib/server/company-stats';
-import type { MemberStats } from '@/lib/server/experience-submissions';
+import type { MemberStats, OaOutcomes } from '@/lib/server/experience-submissions';
 
 /** Question categories in the content library, [zh, en]. */
 export const CATEGORIES: Record<string, [string, string]> = {
@@ -250,6 +250,56 @@ export function MemberStatsCard({ stats, locale }: { stats: MemberStats; locale:
             <Bars rows={s.channel.rows} of={s.channel.n} name={(v) => label(SOURCES, v, zh)} zh={zh} />
           </div>
         )}
+        {s.oa && <OaPanel oa={s.oa} zh={zh} />}
+      </div>
+    </section>
+  );
+}
+
+/** How many members' posts say an OA led to the next round, by whether they solved it all: counts, never a rate. */
+function OaPanel({ oa, zh }: { oa: OaOutcomes; zh: boolean }) {
+  const says = (moved: number) => (zh ? `${moved} 篇说进了下一轮` : `${moved} ${moved === 1 ? 'says' : 'say'} they moved on`);
+  return (
+    <div className="company-stats-panel is-wide">
+      <h3>{zh ? 'OA 成绩和下一轮' : 'OA scores and the next round'}</h3>
+      <ul className="company-stats-oa">
+        {oa.all && (
+          <li>
+            {zh ? `全部 AC 的 ${oa.all.n} 篇里，` : `Of ${oa.all.n} posts that solved every problem, `}
+            <b>{says(oa.all.moved)}</b>
+          </li>
+        )}
+        {oa.partial && (
+          <li>
+            {zh ? `没有全部 AC 的 ${oa.partial.n} 篇里，` : `Of ${oa.partial.n} posts that left something unsolved, `}
+            <b>{says(oa.partial.moved)}</b>
+          </li>
+        )}
+      </ul>
+      <p className="company-stats-note">
+        {zh
+          ? '只算填了 OA 题数、做出几道并说了进没进下一轮的投稿；全部 AC 指每题都做出，填了用例比例的还要是 100%。每组满 8 篇才显示。'
+          : 'Counts posts that give the OA score and say whether they moved on. Solving every problem also means 100% of tests, when a post gives that. A group shows from 8 posts.'}
+      </p>
+      <p className="company-stats-note">{zh ? '自报样本，有偏差，不是通过率' : 'Self-reported and biased: not a pass rate'}</p>
+    </div>
+  );
+}
+
+/**
+ * The OA outcomes summed over every company's member posts, for a company page whose own posts
+ * are still too few (lib/server/experience-submissions.ts memberOaOutcomes).
+ */
+export function OaOutcomesCard({ oa, locale }: { oa: OaOutcomes; locale: 'zh' | 'en' }) {
+  const zh = locale === 'zh';
+  return (
+    <section className="company-stats is-members" aria-labelledby="oa-site-title">
+      <header className="company-stats-head">
+        <h2 id="oa-site-title">{zh ? '全站学员投稿' : 'Member posts, all companies'}</h2>
+        <p>{zh ? '这家公司的 OA 样本还不够，先看所有公司合计' : 'Too few OA posts for this company yet, so these add up every company'}</p>
+      </header>
+      <div className="company-stats-grid">
+        <OaPanel oa={oa} zh={zh} />
       </div>
     </section>
   );

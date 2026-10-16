@@ -5,6 +5,8 @@ import { api } from '@/lib/types';
 import {
   EMPLOYMENT,
   MEMBER_BODY,
+  OA_NEXT,
+  OA_RANGE,
   RESULTS,
   ROUND_LABELS,
   SEASON_NAMES,
@@ -36,6 +38,19 @@ const ROLES = [
   'Data Engineer', 'Quant Researcher', 'Quant Developer', 'Product Manager', 'Site Reliability Engineer',
 ];
 const QUESTIONS_MAX = 20;
+const OA = 'Online Assessment';
+/**
+ * Query params a "write this experience" link (the application tracker's) prefills the form with:
+ * a company page slug, the role, intern|fulltime and a YYYY-term season (db/applications-schema.ts).
+ */
+const PREFILL = ['company', 'role', 'employment', 'season'] as const;
+type Prefill = Partial<Record<(typeof PREFILL)[number], string>>;
+const readPrefill = () => {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  if (!PREFILL.some((key) => params.has(key))) return null;
+  return Object.fromEntries(PREFILL.map((key) => [key, params.get(key)?.trim()]).filter(([, value]) => value)) as Prefill;
+};
 const plain = (e: React.MouseEvent) => !(e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
 const localMonth = (time: number) => {
   const d = new Date(time);
@@ -57,9 +72,18 @@ export function MyExperienceSubmissions({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [items, setItems] = useState<Mine[] | null>(null);
-  const [writing, setWriting] = useState(open);
+  // A prefill link opens the form filled in, then drops its params so a reload starts clean.
+  const [prefill] = useState(readPrefill);
+  const [writing, setWriting] = useState(open || !!prefill);
   const [error, setError] = useState('');
   const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!prefill) return;
+    const url = new URL(window.location.href);
+    for (const key of PREFILL) url.searchParams.delete(key);
+    window.history.replaceState(window.history.state, '', url);
+    section.current?.scrollIntoView({ block: 'start' });
+  }, [prefill]);
   useEffect(() => {
     let live = true;
     api<{ items: Mine[] }>('oj/experiences/mine').then(
@@ -97,6 +121,7 @@ export function MyExperienceSubmissions({
       {writing && (
         <ExperienceForm
           english={english}
+          initial={prefill ?? {}}
           onCancel={() => setWriting(false)}
           onDone={(created) => {
             setWriting(false);
@@ -178,32 +203,50 @@ type Form = {
   season: string;
   location: string;
   weeks: string;
+  // With an OA round only.
+  oaTotal: string;
+  oaSolved: string;
+  oaTestsPct: string;
+  oaMinutes: string;
+  oaNext: string;
 };
+const numberOrNull = (value: string) => (value === '' ? null : Number(value));
 
 function ExperienceForm({
   english,
+  initial,
   onDone,
   onCancel,
 }: {
   english: boolean;
+  initial: Prefill;
   onDone: (created: Mine) => void;
   onCancel: () => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [companies, setCompanies] = useState<{ slug: string; name: string }[]>([]);
   const [now] = useState(() => Date.now());
-  const [form, setForm] = useState<Form>(() => ({
-    company: '', title: '', role: '', rounds: [], result: '', month: localMonth(now), body: '', questions: '', anonymous: false, agree: false,
-    difficulty: '', sentiment: '', channel: '', employment: '', season: '', location: '', weeks: '',
-  }));
   const year = new Date(now).getFullYear();
   const seasons = [year + 1, year, year - 1, year - 2].flatMap((y) => Object.keys(SEASON_NAMES).map((term) => `${y}-${term}`));
+  // Prefilled values the menus don't offer drop out (the company once the list loads).
+  const [form, setForm] = useState<Form>(() => ({
+    company: initial.company ?? '', title: '', role: initial.role?.slice(0, 80) ?? '', rounds: [], result: '', month: localMonth(now),
+    body: '', questions: '', anonymous: false, agree: false, difficulty: '', sentiment: '', channel: '',
+    employment: initial.employment && Object.hasOwn(EMPLOYMENT, initial.employment) ? initial.employment : '',
+    season: initial.season && seasons.includes(initial.season) ? initial.season : '',
+    location: '', weeks: '', oaTotal: '', oaSolved: '', oaTestsPct: '', oaMinutes: '', oaNext: '',
+  }));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
     let live = true;
     api<{ items: { slug: string; name: string }[] }>('oj/reports/companies').then(
-      (r) => live && setCompanies(Array.isArray(r.items) ? r.items : []),
+      (r) => {
+        if (!live) return;
+        const items = Array.isArray(r.items) ? r.items : [];
+        setCompanies(items);
+        setForm((f) => (!f.company || items.some((c) => c.slug === f.company) ? f : { ...f, company: '' }));
+      },
       () => {},
     );
     return () => {
@@ -222,7 +265,10 @@ function ExperienceForm({
     setBusy(true);
     setError('');
     try {
-      const { difficulty, sentiment, channel, employment, season, location, weeks, ...rest } = form;
+      const { difficulty, sentiment, channel, employment, season, location, weeks, oaTotal, oaSolved, oaTestsPct, oaMinutes, oaNext, ...rest } =
+        form;
+      // Unticking the OA round drops what was typed for it.
+      const oa = form.rounds.includes(OA);
       const created = await api<{ member: { id: string }; slug: string; title: string; company: Mine['company'] }>(
         'oj/experiences',
         {
@@ -233,7 +279,12 @@ function ExperienceForm({
           employment: employment || null,
           season: season || null,
           location: location.trim() || null,
-          durationWeeks: weeks === '' ? null : Number(weeks),
+          durationWeeks: numberOrNull(weeks),
+          oaTotal: oa ? numberOrNull(oaTotal) : null,
+          oaSolved: oa ? numberOrNull(oaSolved) : null,
+          oaTestsPct: oa ? numberOrNull(oaTestsPct) : null,
+          oaMinutes: oa ? numberOrNull(oaMinutes) : null,
+          oaNext: (oa && oaNext) || null,
           title: form.title.trim(),
           role: form.role.trim(),
           // Rounds go in the order they happen.
@@ -343,6 +394,49 @@ function ExperienceForm({
           </label>
         ))}
       </fieldset>
+      {form.rounds.includes(OA) && (
+        <fieldset className="xs-group xs-details">
+          <legend>
+            {t('OA 成绩', 'OA score')}{' '}
+            <small className="xs-hint">{t('都可以不填，用于公司页的 OA 结果统计', 'all optional; used for the OA outcomes on company pages')}</small>
+          </legend>
+          <div className="xs-row">
+            {(
+              [
+                ['oaTotal', '题数', 'Problems', OA_RANGE.total],
+                ['oaSolved', '做出几道', 'Solved', OA_RANGE.solved],
+                ['oaTestsPct', '用例通过比例（%）', 'Test cases passed (%)', OA_RANGE.testsPct],
+                ['oaMinutes', '用时（分钟）', 'Time taken (minutes)', OA_RANGE.minutes],
+              ] as const
+            ).map(([key, zh, en, [min, max]]) => (
+              <label key={key} className="xs-field">
+                <span>{t(zh, en)}</span>
+                <input
+                  type="number"
+                  min={min}
+                  // Solved stops at the total the form already has.
+                  max={key === 'oaSolved' && form.oaTotal ? form.oaTotal : max}
+                  step={1}
+                  inputMode="numeric"
+                  value={form[key]}
+                  onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
+                />
+              </label>
+            ))}
+            <label className="xs-field">
+              <span>{t('进了下一轮吗', 'Did you move on?')}</span>
+              <select value={form.oaNext} onChange={(e) => set({ oaNext: e.target.value })}>
+                <option value="">{t('不填', 'Not given')}</option>
+                {Object.entries(OA_NEXT).map(([value, [zh, en]]) => (
+                  <option key={value} value={value}>
+                    {t(zh, en)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </fieldset>
+      )}
       <fieldset className="xs-group">
         <legend>{t('结果', 'Outcome')}</legend>
         {[['', '不透露', 'Rather not say'] as const, ...Object.entries(RESULTS).map(([v, r]) => [v, r.zh, r.en] as const)].map(
