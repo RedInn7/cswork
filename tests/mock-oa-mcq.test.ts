@@ -2,12 +2,17 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import bankFile from '../lib/content/oa-mcq.json';
 import {
+  MCQ_MASTERED,
   MCQ_SECTIONS,
   drawMcq,
   finishMcq,
+  fitMcqReview,
+  mcqDue,
   mcqRight,
   mockClock,
+  parseMcqReview,
   parseMockState,
+  reviewMcq,
   scoreMcq,
   settleMockState,
   type McqQuestion,
@@ -15,9 +20,10 @@ import {
 } from '../lib/mock-oa';
 import { shownMockPresets } from '../lib/server/mock-oa-presets';
 import { SITEMAP_STATIC_ENTRIES } from '../lib/seo';
+import { ROUTE_SLUGS } from '../lib/route-stops';
 
 const bank = bankFile.questions as McqQuestion[];
-const TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'python', 'java', 'js', 'probability', 'logic'];
+const TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'dsa', 'python', 'java', 'js', 'complexity', 'probability', 'logic'];
 
 void test('the bank is well formed: unique ids, known sections and topics, answers in range, both languages', () => {
   assert.equal(new Set(bank.map((q) => q.id)).size, bank.length);
@@ -29,7 +35,13 @@ void test('the bank is well formed: unique ids, known sections and topics, answe
     assert.equal(new Set(q.answer).size, q.answer.length, q.id);
     assert(q.zh.q && q.en.q && q.zh.explain && q.en.explain, q.id);
     assert.equal(!!q.code, q.section === 'code-output', q.id);
+    // A stop names a Line 500 stop; its topic page quizzes on the question.
+    assert(q.stop === undefined || ROUTE_SLUGS.includes(q.stop), q.id);
   }
+  // Every stop page gets a quiz: concept questions in CS, complexity ones as code.
+  for (const slug of ROUTE_SLUGS) assert(bank.filter((q) => q.stop === slug).length >= 2, slug);
+  assert(bank.filter((q) => q.topic === 'dsa').every((q) => q.section === 'cs' && q.stop));
+  assert(bank.filter((q) => q.topic === 'complexity').every((q) => q.section === 'code-output'));
   assert(bank.some((q) => q.answer.length > 1), 'some questions are select-all');
   assert(SITEMAP_STATIC_ENTRIES.some((e) => e.path === '/oa/mcq'), 'the practice page is in the sitemap');
 });
@@ -60,6 +72,58 @@ void test('a draw has no repeats, follows sections and topics, is seeded, and pr
   // Seen ones only fill in once the unseen ones run out.
   assert.equal(fresh.filter((id) => ids.includes(id)).length, Math.max(0, 10 - (pool - 10)));
   assert.equal(drawMcq(bank, { count: 500, sections: ['quant'] }, 1).length, bank.filter((q) => q.section === 'quant').length);
+});
+
+void test('topics take turns, so the big DSA and complexity pools never crowd out the rest', () => {
+  const byId = new Map(bank.map((q) => [q.id, q]));
+  for (const seed of [1, 2, 3]) {
+    const perTopic = (ids: string[]) =>
+      Object.values(Object.groupBy(ids, (id) => byId.get(id)!.topic)).map((list) => list!.length);
+    // Six CS topics in 10 questions: one or two each.
+    const cs = drawMcq(bank, { count: 10, sections: ['cs'] }, seed);
+    assert.equal(cs.length, 10);
+    assert(perTopic(cs).every((n) => n <= 2), `cs ${seed}`);
+    assert.equal(perTopic(cs).length, 6);
+    // Four code topics in 8 questions: two each.
+    assert.deepEqual(perTopic(drawMcq(bank, { count: 8, sections: ['code-output'] }, seed)), [2, 2, 2, 2]);
+  }
+});
+
+void test('spaced review: a miss comes back tomorrow, a right answer climbs 1/3/7/21 days to mastered', () => {
+  const answer = [2];
+  let entry = reviewMcq(undefined, answer, [1], 100);
+  assert.deepEqual(entry, [0, 100, 1], 'missed: box 0, picks kept');
+  assert(!mcqDue(entry, 100) && mcqDue(entry, 101));
+  entry = reviewMcq(entry, answer, [2], 101);
+  assert.deepEqual(entry, [1, 101, 2]);
+  // Right again before it is due: no cramming, the box and its day stay.
+  assert.deepEqual(reviewMcq(entry, answer, [2], 102), [1, 101, 2]);
+  assert(!mcqDue(entry, 103) && mcqDue(entry, 104));
+  entry = reviewMcq(entry, answer, [2], 104);
+  entry = reviewMcq(entry, answer, [2], 111);
+  assert.deepEqual(entry, [3, 111, 2]);
+  assert(!mcqDue(entry, 131) && mcqDue(entry, 132));
+  entry = reviewMcq(entry, answer, [2], 132);
+  assert.equal(entry[0], MCQ_MASTERED);
+  assert(!mcqDue(entry, 10_000), 'mastered never comes back');
+  // A miss at any box starts over.
+  assert.deepEqual(reviewMcq(entry, answer, [0], 140), [0, 140, 0]);
+  // First answer right: box 1.
+  assert.deepEqual(reviewMcq(undefined, [0, 2], [0, 2], 5), [1, 5, 0, 2]);
+});
+
+void test('the stored review keeps only well-formed entries and fits the note cap', () => {
+  assert.deepEqual(parseMcqReview('{"a":[1,2,0],"b":[9,1,0],"c":[1,2],"d":"x","e":[0,1.5,1]}'), { a: [1, 2, 0] });
+  assert.deepEqual(parseMcqReview('[1]'), {});
+  assert.deepEqual(parseMcqReview('nope'), {});
+  assert.deepEqual(parseMcqReview(null), {});
+  // Every question answered still fits a 20 KB note in the compact form.
+  const all = Object.fromEntries(bank.map((q) => [q.id, [4, 20_000, ...q.answer]]));
+  assert.equal(fitMcqReview(all, 20 * 1024), JSON.stringify(all));
+  // Over the cap, the longest-unseen entries go first.
+  const review = { old: [1, 1, 0], mid: [1, 2, 0], recent: [1, 3, 0] };
+  const fitted = JSON.parse(fitMcqReview(review, JSON.stringify(review).length - 1));
+  assert.deepEqual(Object.keys(fitted).sort(), ['mid', 'recent']);
 });
 
 void test('a select-all question scores only the exact answer set; the section is a 100-point block', () => {
