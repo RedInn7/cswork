@@ -16,7 +16,7 @@ import { lcIdBySource } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import { HttpError } from './http';
 import { SCENARIOS, roleplayQuestion } from './roleplay-scenarios';
-import { sdChapter } from './system-design-course';
+import { sdChapter, sdChapters } from './system-design-course';
 
 /**
  * Mock interview sets over the content library (GET /api/content/mock and mock-companies).
@@ -60,8 +60,10 @@ export function mockPool(db: Database.Database): PoolRow[] {
   return pool;
 }
 
-/** The LLD template's questions: system design course chapters, asked only by the AI interviewer. */
-export const LLD_CHAPTERS = ['lld-parking-lot', 'lld-lru-cache-ttl', 'lld-elevator', 'bounded-blocking-queue', 'rate-limited-executor'];
+/** The LLD template's questions: system design course chapters (and every LLD case), asked only by the AI interviewer. */
+export const LLD_CHAPTERS = ['lld-parking-lot', 'lld-lru-cache-ttl', 'lld-elevator', 'bounded-blocking-queue', 'rate-limited-executor', ...sdChapters.map((c) => c.slug).filter((slug) => slug.startsWith('lld-case-'))];
+/** How much of an LLD chapter the AI interviewer reads as the reference (diagrams stripped); every chapter fits. */
+export const LLD_REFERENCE_CHARS = 9_000;
 /**
  * An LLD question by id (`sd-<chapter>`), or null. The statement is generic; the chapter is the
  * reference answer and the course's OOD playbook the rubric, both for the AI interviewer only.
@@ -79,7 +81,8 @@ export function lldQuestion(id: string) {
     title,
     question: `**${title}**（${titleZh}）\n\nDesign ${title} as in a low-level (object-oriented) design interview: clarify the requirements, model the classes and how they relate, define the interfaces, write the core code, then discuss how the design extends.`,
     rubric: sdChapter('ood-interview-approach')?.bodyEn ?? '',
-    solution: chapter.bodyEn,
+    // The class diagram repeats the class table; drop it so the deep-dive sections fit the cap.
+    solution: chapter.bodyEn.replace(/^```mermaid\n[\s\S]*?^```\n?/gm, ''),
   };
 }
 const lldPool = (): PoolRow[] =>

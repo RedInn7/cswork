@@ -67,6 +67,23 @@ export function SdReadCount({ slugs }: { slugs: string[] }) {
   );
 }
 
+/**
+ * "Continue: <chapter>", the first of `chapters` (in reading order) the learner has not marked
+ * read; "Start here" before the first mark. Nothing for guests or once every chapter is read.
+ */
+export function SdContinue({ chapters }: { chapters: { slug: string; title: string; href: string }[] }) {
+  const t = useT();
+  const { state, slugs: done } = useRead();
+  const next = chapters.find((chapter) => !done.has(chapter.slug));
+  if (state !== 'ready' || !next) return null;
+  return (
+    <a className="sd-continue" href={next.href}>
+      <span>{chapters.some((chapter) => done.has(chapter.slug)) ? t('继续学习', 'Continue') : t('从这里开始', 'Start here')}</span>
+      {next.title}
+    </a>
+  );
+}
+
 /** "Mark as read" at the end of a chapter, with the course total; guests are asked to sign in. */
 export function SdMarkRead({ slug, slugs }: { slug: string; slugs: string[] }) {
   const t = useT();

@@ -1,6 +1,7 @@
 import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd, seoMetadata } from '@/lib/seo';
 import { beginnerCourses, learnPath } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
+import { minutesLabel, totalMinutes } from '@/lib/server/system-design-course';
 
 const COPY = {
   zh: {
@@ -60,7 +61,10 @@ export default async function LearnIndex() {
         {beginnerCourses.map((course, i) => (
           <li key={course.slug} style={{ '--i': i } as React.CSSProperties}>
             <a href={learnPath(course.slug)}>
-              <span className="sd-sheet-no">{c.chapters(course.chapters.length)}</span>
+              <span className="sd-sheet-no">
+                {c.chapters(course.chapters.length)} ·{' '}
+                {minutesLabel(totalMinutes(course.chapters, zh), zh)}
+              </span>
               <span className="sd-sheet-title">{zh ? course.titleZh : course.titleEn}</span>
               <span className="sd-sheet-summary">{zh ? course.summaryZh : course.summaryEn}</span>
             </a>

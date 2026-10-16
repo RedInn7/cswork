@@ -151,15 +151,20 @@ test('every system design chapter lands in its course part, the ML chapters in t
   for (const slug of ['ood-interview-approach', 'solid-in-practice', 'lld-elevator']) assert.equal(part[slug], 'lld', slug);
   for (const slug of ['concurrency-primitives', 'bounded-blocking-queue', 'rate-limited-executor']) assert.equal(part[slug], 'concurrency', slug);
   assert.equal(part['url-shortener'], 'cases');
-  // The key-technology and pattern chapters are parts of their own, not case studies.
-  for (const chapter of sd)
-    if (/^(tech|pattern)-/.test(chapter.slug)) assert.equal(part[chapter.slug], chapter.slug.startsWith('tech-') ? 'tech' : 'patterns', chapter.slug);
+  // The optional chapters are parts of their own, not case studies.
+  const OPTIONAL = { tech: 'tech', pattern: 'patterns', 'lld-case': 'lld-cases', api: 'api' };
+  for (const chapter of sd) {
+    const prefix = chapter.slug.match(/^(tech|pattern|lld-case|api)-/)?.[1];
+    if (prefix) assert.equal(part[chapter.slug], OPTIONAL[prefix], chapter.slug);
+  }
+  // The roadmap's required count matches the certificate's 27 chapters.
+  assert.equal(sd.filter((chapter) => !Object.values(OPTIONAL).includes(chapter.part)).length, 27);
   const doc = new JSDOM(renderToStaticMarkup(tracks)).window.document;
   assert.deepEqual(
     [...doc.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
     [
       'Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design',
-      'Key technologies (optional)', 'Patterns (optional)',
+      'Key technologies (optional)', 'Patterns (optional)', 'LLD case library (optional)', 'API design (optional)',
     ],
   );
   assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');

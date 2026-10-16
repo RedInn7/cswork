@@ -6,7 +6,7 @@ import { RouteGraph, type StopProgress } from '@/components/route-graph';
 import { ojRequest } from '@/lib/oj-client';
 import type { RouteSectionInput } from '@/lib/route-stops';
 
-export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml' | 'tech' | 'patterns';
+export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml' | 'tech' | 'patterns' | 'lld-cases' | 'api';
 const PARTS: [SdPart, string, string][] = [
   ['framework', '答题框架', 'Framework'],
   ['blocks', '基本构件', 'Building blocks'],
@@ -16,9 +16,11 @@ const PARTS: [SdPart, string, string][] = [
   ['ml', 'ML 系统设计', 'ML system design'],
   ['tech', '关键技术（选读）', 'Key technologies (optional)'],
   ['patterns', '通用设计模式（选读）', 'Patterns (optional)'],
+  ['lld-cases', 'LLD 案例库（选读）', 'LLD case library (optional)'],
+  ['api', 'API 设计（选读）', 'API design (optional)'],
 ];
 // Outside the certificate (lib/server/system-design-course.ts sdRequired), so outside the read count.
-const OPTIONAL: SdPart[] = ['tech', 'patterns'];
+const OPTIONAL: SdPart[] = ['tech', 'patterns', 'lld-cases', 'api'];
 type Link = { title: string; href: string };
 
 /**

@@ -74,6 +74,8 @@ test('the index groups chapters into parts; a chapter renders its table of conte
     'ML 系统设计',
     '关键技术（选读）',
     '通用设计模式（选读）',
+    'LLD 案例库（选读）',
+    'API 设计（选读）',
   ]);
   assert.deepEqual(
     [...parts[3].querySelectorAll('.sd-sheets a')].map((a) => a.getAttribute('href')),
@@ -83,9 +85,17 @@ test('the index groups chapters into parts; a chapter renders its table of conte
   assert.equal(parts[3].querySelector('.sd-sheet-no').textContent, `第 ${slugs.indexOf('ml-design-framework') + 1} 章`);
   // Progress needs the learner's marks, which only the browser asks for.
   assert.equal(doc.querySelector('.sd-read-count'), null);
+  assert.equal(doc.querySelector('.sd-continue'), null);
+  // Reading time on every card, and the course totals with the drill's link.
+  assert.match(parts[0].querySelector('.sd-sheet-meta').textContent, /^约 \d+ 分钟 · \d+ 道测验题/);
+  assert.match(doc.querySelector('.sd-total').textContent, /^必修章节约 \d+ 小时.*，选读章节约 \d+ 小时/);
+  assert.equal(doc.querySelector('.sd-total a').getAttribute('href'), '/system-design/estimation');
 
   globalThis.__locale = 'en';
   doc = parse(renderToStaticMarkup(await Chapter(params('framework'))));
+  assert.match(doc.querySelector('.sd-chapter-header .sd-sheet-no').textContent, /^Chapter 1 of \d+ · ~\d+ min$/);
+  // The framework ends with the estimation drill, after its quiz.
+  assert.ok(doc.querySelector('#sd-quiz-title').compareDocumentPosition(doc.getElementById('sd-drill-title')) & 4);
   const ids = [...doc.querySelectorAll('.public-library-prose h2[id]')].map((h) => h.id);
   assert.ok(ids.length > 3);
   for (const toc of ['.sd-toc-top', '.sd-toc'])
@@ -102,6 +112,7 @@ test('the index groups chapters into parts; a chapter renders its table of conte
   assert.ok(doc.querySelector('.sd-read input[type="checkbox"]').disabled, 'mark as read waits for the marks');
 
   doc = parse(renderToStaticMarkup(await Chapter(params('url-shortener'))));
+  assert.equal(doc.getElementById('sd-drill-title'), null, 'only the framework has the drill');
   assert.ok(doc.querySelector('.sd-try .ip-try textarea'));
   const walkthrough = doc.querySelector('.sd-walkthrough');
   assert.ok(walkthrough.hasAttribute('data-closed') && walkthrough.hasAttribute('inert'));
@@ -110,6 +121,18 @@ test('the index groups chapters into parts; a chapter renders its table of conte
   const figure = walkthrough.querySelector('figure.course-diagram');
   assert.ok(figure.querySelector('details pre code').textContent.startsWith('flowchart LR'));
   assert.equal(walkthrough.querySelector(':not(details) > pre > code.language-mermaid'), null);
+});
+
+test('the estimation drill has its own page, linked back to the framework', async () => {
+  const { default: Estimation, generateMetadata } = await import('../app/system-design/estimation/page.tsx');
+  globalThis.__locale = 'zh';
+  const doc = parse(renderToStaticMarkup(await Estimation()));
+  assert.equal(doc.querySelectorAll('h1').length, 1);
+  assert.equal(doc.getElementById('sd-drill-title').textContent, '容量估算练习');
+  assert.equal(doc.querySelector('.sd-total a').getAttribute('href'), '/system-design/framework');
+  const crumbs = JSON.parse(doc.querySelector('script[type="application/ld+json"]').textContent);
+  assert.deepEqual(crumbs.itemListElement.map((item) => item.name), ['CSWork', '系统设计', '容量估算练习']);
+  assert.equal((await generateMetadata()).alternates.canonical, 'https://cswork.org/system-design/estimation');
 });
 
 test('table of contents ids match the rendered headings in every chapter', async () => {
@@ -187,6 +210,33 @@ test('signed in: one request for the marks, read ticks and count, and marking a 
     assert.equal(document.querySelector('.sd-read-error').textContent, 'Too many requests');
   } finally {
     await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});
+
+test('continue: the first unread chapter once the marks are in, nothing for guests or when all are read', async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { SdContinue } = await import('../app/system-design/reader.tsx');
+  const original = globalThis.fetch;
+  const chapters = ['framework', 'building-blocks', 'url-shortener'].map((slug) => ({ slug, title: `T ${slug}`, href: `/system-design/${slug}` }));
+  const show = async (read) => {
+    marksApi(read);
+    const root = createRoot(document.getElementById('root'));
+    await act(async () => root.render(createElement(SdContinue, { chapters })));
+    await settle();
+    const link = document.querySelector('.sd-continue');
+    const seen = link && [link.getAttribute('href'), link.textContent];
+    await act(async () => root.unmount());
+    return seen;
+  };
+  try {
+    assert.deepEqual(await show(new Set()), ['/system-design/framework', 'Start hereT framework']);
+    assert.deepEqual(await show(new Set(['sd:framework', 'sd:url-shortener'])), ['/system-design/building-blocks', 'ContinueT building-blocks']);
+    assert.equal(await show(new Set(chapters.map((c) => `sd:${c.slug}`))), null);
+    assert.equal(await show(null), null);
+  } finally {
     globalThis.fetch = original;
     dom.window.close();
   }

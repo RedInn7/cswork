@@ -12,9 +12,22 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-sd-course-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { sdCases, sdChapter, sdChapters, sdParts, sdPath, sdSummary, systemDesignPaths } = await import(
-  '../lib/server/system-design-course'
-);
+const {
+  SD_ESTIMATION,
+  chapterMinutes,
+  minutesLabel,
+  readMinutes,
+  sdCases,
+  sdChapter,
+  sdChapters,
+  sdParts,
+  sdPath,
+  sdRequired,
+  sdSummary,
+  systemDesignPaths,
+  totalMinutes,
+} = await import('../lib/server/system-design-course');
+const { LLD_CHAPTERS, LLD_REFERENCE_CHARS, lldQuestion } = await import('../lib/server/mock-interview');
 const { DIAGRAM_MAX_LENGTH } = await import('../lib/course-diagram');
 
 const CHAPTER = ['bodyEn', 'bodyZh', 'quiz', 'slug', 'titleEn', 'titleZh'];
@@ -68,7 +81,7 @@ void test('the course file has unique slugs and complete bilingual chapters and 
   assert.deepEqual(bad, []);
 });
 
-void test('the loader finds chapters by slug and lists the course pages for the sitemap', () => {
+void test('the loader finds chapters by slug and lists the course pages and the estimation drill for the sitemap', () => {
   // The mock interview's design rounds link to /system-design/framework.
   assert.equal(sdChapter('framework')?.slug, 'framework');
   assert.equal(sdChapter('nope'), undefined);
@@ -76,11 +89,13 @@ void test('the loader finds chapters by slug and lists the course pages for the 
   assert.equal(sdPath(), '/system-design');
   assert.deepEqual(
     systemDesignPaths().map((entry) => entry.path),
-    ['/system-design', ...sdChapters.map((chapter) => `/system-design/${chapter.slug}`)],
+    ['/system-design', ...sdChapters.map((chapter) => `/system-design/${chapter.slug}`), '/system-design/estimation'],
   );
+  // The drill's static page would hide a chapter of that name.
+  assert.equal(sdChapter(SD_ESTIMATION), undefined);
 });
 
-void test('the index parts cover every chapter once, in order: ML system design, then key technologies and patterns', () => {
+void test('the index parts cover every chapter once, in order: ML system design, then the optional parts', () => {
   assert.equal(sdParts[0].chapters[0], sdChapters[0]);
   assert.deepEqual(
     sdParts.flatMap((part) => part.chapters),
@@ -108,20 +123,44 @@ void test('the index parts cover every chapter once, in order: ML system design,
     'pattern-scaling-reads',
     'pattern-scaling-writes',
   ]);
-  assert.equal(sdParts.at(-1)?.from, 'pattern-real-time-updates');
+  assert.deepEqual(slugsOf('lld-case-atm'), [
+    'lld-case-atm',
+    'lld-case-vending-machine',
+    'lld-case-chess',
+    'lld-case-library',
+    'lld-case-hotel-booking',
+    'lld-case-splitwise',
+    'lld-case-movie-tickets',
+    'lld-case-amazon-locker',
+    'lld-case-food-delivery',
+    'lld-case-logging-framework',
+  ]);
+  assert.deepEqual(slugsOf('api-rest-vs-rpc-graphql'), [
+    'api-rest-vs-rpc-graphql',
+    'api-pagination-idempotency',
+    'api-versioning-errors',
+    'api-auth-ratelimit',
+    'api-webhooks-long-running',
+  ]);
+  assert.equal(sdParts.at(-1)?.from, 'api-rest-vs-rpc-graphql');
 });
 
-void test('key technologies and patterns are optional reading: not exercises, not required for the certificate', async () => {
+void test('key technologies, patterns, LLD cases and API design are optional reading: not exercises, not required for the certificate', async () => {
   const { SELF_PACED } = await import('../lib/server/certificates');
   const targets = SELF_PACED.find((c) => c.id === 'sd:system-design')!.targets;
-  const optional = sdChapters.filter((chapter) => /^(tech|pattern)-/.test(chapter.slug));
-  assert.equal(optional.length, 15);
+  const optional = sdChapters.filter((chapter) => /^(tech|pattern|lld-case|api)-/.test(chapter.slug));
+  assert.equal(optional.filter((chapter) => /^(tech|pattern)-/.test(chapter.slug)).length, 15);
+  assert.equal(optional.length, 30);
   for (const chapter of optional) {
     assert.equal(sdCases.has(chapter.slug), false, chapter.slug);
     assert.equal(targets.includes(`sd:${chapter.slug}`), false, chapter.slug);
-    assert.ok(chapter.quiz.length >= 4 && chapter.quiz.length <= 6, chapter.slug);
+    const [min, max] = /^(tech|pattern)-/.test(chapter.slug) ? [4, 6] : [3, 3];
+    assert.ok(chapter.quiz.length >= min && chapter.quiz.length <= max, chapter.slug);
   }
-  assert.equal(targets.length, sdChapters.length - optional.length);
+  // New optional chapters never change the certificate: earned ones stay earned.
+  assert.equal(sdRequired.length, 27);
+  assert.equal(targets.length, 27);
+  assert.deepEqual(targets, sdRequired.map((slug) => `sd:${slug}`));
   assert.ok(targets.includes('sd:framework') && targets.includes('sd:fraud-detection'));
   // Every link inside the course points at a chapter that exists.
   const slugs = new Set(sdChapters.map((chapter) => chapter.slug));
@@ -191,6 +230,67 @@ void test('a summary is the first paragraph as plain text, cut with an ellipsis'
   const cut = sdSummary('x'.repeat(300), 20);
   assert.equal(cut.length, 20);
   assert.ok(cut.endsWith('…'));
+});
+
+void test('every LLD case has a class diagram, its patterns and core code, every API chapter a diagram, in both languages', () => {
+  const missing: string[] = [];
+  for (const chapter of sdChapters)
+    for (const key of ['bodyZh', 'bodyEn'] as const) {
+      const body = chapter[key];
+      if (chapter.slug.startsWith('lld-case-')) {
+        if (!/^```mermaid\nclassDiagram\n/m.test(body)) missing.push(`${chapter.slug}.${key}: class diagram`);
+        if (!/^```(python|java)\n/m.test(body)) missing.push(`${chapter.slug}.${key}: core code`);
+        if (!/^## (Patterns used|用到的设计模式)$/m.test(body)) missing.push(`${chapter.slug}.${key}: patterns used`);
+      }
+      if (chapter.slug.startsWith('api-') && !/^```mermaid\n/m.test(body)) missing.push(`${chapter.slug}.${key}: diagram`);
+    }
+  assert.deepEqual(missing, []);
+  // The code is the same in both languages; only the prose is translated.
+  for (const chapter of sdChapters.filter((c) => /^(lld-case|api)-/.test(c.slug))) {
+    const code = (body: string) => [...body.matchAll(/^```(?!mermaid)\w+\n([\s\S]*?)^```/gm)].map((m) => m[1]);
+    assert.deepEqual(code(chapter.bodyZh), code(chapter.bodyEn), chapter.slug);
+  }
+});
+
+void test('the AI interviewer asks every LLD case, with the title taken from the chapter', () => {
+  const cases = sdChapters.map((chapter) => chapter.slug).filter((slug) => slug.startsWith('lld-case-'));
+  assert.equal(cases.length, 10);
+  assert.deepEqual(LLD_CHAPTERS.slice(0, 5), ['lld-parking-lot', 'lld-lru-cache-ttl', 'lld-elevator', 'bounded-blocking-queue', 'rate-limited-executor']);
+  assert.deepEqual(LLD_CHAPTERS.slice(5), cases);
+  const atm = lldQuestion('sd-lld-case-atm')!;
+  assert.equal(atm.title, 'ATM');
+  assert.match(atm.question, /^\*\*ATM\*\*（ATM 取款机）\n\nDesign ATM /);
+  assert.ok(sdChapter('lld-case-atm')!.bodyEn.startsWith(atm.solution.slice(0, 200)));
+  assert.match(atm.solution, /## Extensions/);
+  // The interviewer and the grader read the whole reference: no diagram source, nothing cut off.
+  for (const slug of LLD_CHAPTERS) {
+    const { solution } = lldQuestion(`sd-${slug}`)!;
+    assert.doesNotMatch(solution, /```mermaid/, slug);
+    assert.ok(solution.length <= LLD_REFERENCE_CHARS, `${slug}: ${solution.length}`);
+  }
+  assert.equal(lldQuestion('sd-api-auth-ratelimit'), null);
+});
+
+void test('reading time: 400 Chinese characters, 200 English words or 15 lines of code a minute, at least one', () => {
+  assert.equal(readMinutes('字'.repeat(2000)), 5);
+  assert.equal(readMinutes(Array(1000).fill('word').join(' ')), 5);
+  assert.equal(readMinutes(`Intro.\n\n\`\`\`python\n${'x = 1\n\n'.repeat(30)}\`\`\`\n`), 2);
+  assert.equal(readMinutes('## 标题\n\n很短。'), 1);
+  // Mixed: Chinese prose with English identifiers counts both.
+  assert.equal(readMinutes(`${'字'.repeat(800)} ${Array(200).fill('ParkingLot').join(' ')}`), 3);
+  assert.equal(minutesLabel(25, true), '约 25 分钟');
+  assert.equal(minutesLabel(25, false), '~25 min');
+  assert.equal(minutesLabel(190, true), '约 3 小时 10 分钟');
+  assert.equal(minutesLabel(120, false), '~2 h');
+  const framework = sdChapter('framework')!;
+  assert.equal(chapterMinutes(framework, true), readMinutes(framework.bodyZh));
+  assert.equal(chapterMinutes(framework, false), readMinutes(framework.bodyEn));
+  assert.equal(totalMinutes([framework, framework], true), 2 * readMinutes(framework.bodyZh));
+  for (const chapter of sdChapters)
+    for (const zh of [true, false]) {
+      const n = chapterMinutes(chapter, zh);
+      assert.ok(n >= 2 && n <= 30, `${chapter.slug} ${zh ? 'zh' : 'en'}: ${n} min`);
+    }
 });
 
 const me: Person = { id: 'sd-me', name: 'Me', email: 'me@example.test', role: 'student', verified: true };
