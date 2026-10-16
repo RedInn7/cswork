@@ -17,7 +17,10 @@ export type KindId =
   | 'ml'
   | 'lld'
   | 'recruiter'
-  | 'negotiation';
+  | 'negotiation'
+  | 'project'
+  | 'api'
+  | 'frontend';
 type Kind = {
   name: Text;
   /** Content library categories this slot draws from. */
@@ -57,6 +60,10 @@ export const KINDS: Record<KindId, Kind> = {
   // Role-plays over lib/content/roleplay-scenarios.json (lib/server/mock-interview.ts roleplayQuestion).
   recruiter: { name: ['招聘方初筛', 'Recruiter screen'], categories: ['Recruiter Screen'], minutes: 20, aiOnly: true },
   negotiation: { name: ['Offer 谈判', 'Offer negotiation'], categories: ['Offer Negotiation'], minutes: 20, aiOnly: true },
+  // lib/server/interview-extra.ts: the candidate's own resume, the course's API chapters, a frontend bank.
+  project: { name: ['简历项目深挖', 'Project deep dive'], categories: ['Project Deep Dive'], minutes: 30, aiOnly: true },
+  api: { name: ['API 设计', 'API design'], categories: ['API Design'], minutes: 40, aiOnly: true },
+  frontend: { name: ['前端', 'Frontend'], categories: ['Frontend', 'Frontend Components'], minutes: 45, aiOnly: true },
 };
 /** The AI plays the recruiter, not an interviewer, and scores ROLEPLAY_RUBRIC. */
 export const isRoleplay = (kind: KindId) => kind === 'recruiter' || kind === 'negotiation';
@@ -91,7 +98,8 @@ export const ROUNDS: Record<string, Text> = {
   'HR Screen': ['HR 面', 'HR screen'],
 };
 
-export type Slot = { kind: KindId; minutes: number; name?: Text; optional?: boolean };
+/** `category`: draws from that one of the kind's categories only. */
+export type Slot = { kind: KindId; minutes: number; name?: Text; optional?: boolean; category?: string };
 export type Template = {
   id: string;
   name: Text;
@@ -198,8 +206,47 @@ export const ROLEPLAY_TEMPLATES: Template[] = [
     slots: [{ kind: 'negotiation', minutes: 20 }],
   },
 ];
+/** The AI interviewer's other rounds: a resume deep dive, API design, frontend. */
+export const EXTRA_TEMPLATES: Template[] = [
+  {
+    id: 'project',
+    name: ['简历项目深挖', 'Resume project deep dive'],
+    blurb: [
+      'AI 面试官读你的简历，请你挑一个项目，然后一路追问：你本人做了什么、为什么这样设计、哪里失败过、怎么衡量结果、重做会改什么。约 30 分钟。',
+      'The AI interviewer reads your resume, has you pick a project, then keeps digging: what you built yourself, why that design, what failed, how you measured it, what you would change. About 30 minutes.',
+    ],
+    role: null,
+    round: null,
+    slots: [{ kind: 'project', minutes: 30 }],
+  },
+  {
+    id: 'api',
+    name: ['API 设计', 'API design'],
+    blurb: [
+      '设计一个真实场景的 API：资源和接口、请求与响应、错误码、分页、幂等、认证限流、版本演进。约 40 分钟。',
+      'Design the API for a real product: resources and endpoints, requests and responses, errors, pagination, idempotency, auth and rate limits, versioning. About 40 minutes.',
+    ],
+    role: 'swe',
+    round: null,
+    slots: [{ kind: 'api', minutes: 40 }],
+  },
+  {
+    id: 'frontend',
+    name: ['前端面试', 'Frontend interview'],
+    blurb: [
+      '一道 JavaScript / CSS 基础题，再实现一个小组件，代码写在代码框里，面试官会问到浏览器行为和无障碍。约 45 分钟。',
+      'One JavaScript or CSS fundamentals question, then a small component, written in the code box; expect questions on browser behavior and accessibility. About 45 minutes.',
+    ],
+    role: 'swe',
+    round: null,
+    slots: [
+      { kind: 'frontend', minutes: 15, category: 'Frontend', name: ['前端基础', 'Frontend fundamentals'] },
+      { kind: 'frontend', minutes: 30, category: 'Frontend Components', name: ['组件实现', 'Build a component'] },
+    ],
+  },
+];
 /** Templates only the AI interviewer runs, kept out of TEMPLATES (which peers and solo runs share). */
-export const AI_TEMPLATES: Template[] = [LLD_TEMPLATE, ...ROLEPLAY_TEMPLATES];
+export const AI_TEMPLATES: Template[] = [LLD_TEMPLATE, ...ROLEPLAY_TEMPLATES, ...EXTRA_TEMPLATES];
 export const CUSTOM_NAME: Text = ['自定义', 'Custom'];
 
 export type GuideStep = {
@@ -358,10 +405,11 @@ export type DrawOptions = {
 export type DrawnSlot<T> = Slot & { item: T | null; similar: boolean; pool: number };
 
 /**
- * Each kind gets one queue: its questions shuffled by the seed, then ordered best match first
- * (the company's questions, the role's, the round's) so other companies only fill in. Slots take
- * the queue in turn, and a re-roll the next question, skipping any a slot holds (or its problem).
- * Deterministic: a share link carrying seed + rerolls reproduces the set.
+ * Each kind gets one queue (a slot naming a category, one of that category alone): its questions
+ * shuffled by the seed, then ordered best match first (the company's questions, the role's, the
+ * round's) so other companies only fill in. Slots take the queue in turn, and a re-roll the next
+ * question, skipping any a slot holds (or its problem). Deterministic: a share link carrying
+ * seed + rerolls reproduces the set.
  */
 export function drawSet<T extends PoolItem>(pool: readonly T[], template: Template, o: DrawOptions) {
   const companies = o.company ? companyGroup(o.company) : null;
@@ -369,9 +417,11 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
   const titles = role && Object.hasOwn(ROLES, role) ? ROLES[role as RoleId].titles : null;
   const round = o.round || template.round;
   const atCompany = (i: T) => !companies || (!!i.company && companies.includes(i.company));
-  const queues = new Map<KindId, T[]>();
-  const queue = (kind: KindId) => {
-    let q = queues.get(kind);
+  // One queue per kind, or per kind and category for a slot that names one.
+  const queues = new Map<string, T[]>();
+  const queue = ({ kind, category }: Slot) => {
+    const key = category ? `${kind}:${category}` : kind;
+    let q = queues.get(key);
     if (!q) {
       const { categories, companyFirst } = KINDS[kind];
       const rank = (i: T) => {
@@ -379,32 +429,31 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
           fits = Number(!!titles && !(i.role && titles.includes(i.role)));
         return (companyFirst ? here * 2 + fits : fits * 2 + here) * 2 + Number(!!round && i.round !== round);
       };
-      q = pool.filter((i) => !!i.category && categories.includes(i.category));
-      const next = random(`${o.seed}:${kind}`);
+      q = pool.filter((i) => !!i.category && (category ? i.category === category : categories.includes(i.category)));
+      const next = random(`${o.seed}:${key}`);
       for (let i = q.length - 1; i > 0; i--) {
         const j = Math.floor(next() * (i + 1));
         [q[i], q[j]] = [q[j], q[i]];
       }
       // Stable: equal ranks keep the seed's shuffle.
       q.sort((a, b) => rank(a) - rank(b));
-      queues.set(kind, q);
+      queues.set(key, q);
     }
     return q;
   };
-  const slots = template.slots.filter((s) => !s.optional || queue(s.kind).length);
-  const cursor = new Map<KindId, number>();
+  const slots = template.slots.filter((s) => !s.optional || queue(s).length);
+  const cursor = new Map<T[], number>();
   const picks: (T | null)[] = slots.map(() => null);
   const taken = (c: T) => picks.includes(c) || (!!c.problem && picks.some((p) => p?.problem === c.problem));
   /** Moves a slot to the next free question in its queue; false (and unchanged) when none is left. */
   const reroll = (index: number) => {
-    const { kind } = slots[index],
-      q = queue(kind),
-      n = cursor.get(kind) ?? 0;
+    const q = queue(slots[index]),
+      n = cursor.get(q) ?? 0;
     for (let k = 0; k < q.length; k++) {
       const candidate = q[(n + k) % q.length];
       if (!taken(candidate)) {
         picks[index] = candidate;
-        cursor.set(kind, n + k + 1);
+        cursor.set(q, n + k + 1);
         return true;
       }
     }
@@ -414,7 +463,7 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
   const rerolls = (o.rerolls ?? []).filter((i) => Number.isInteger(i) && i >= 0 && i < slots.length && reroll(i));
   const skip = new Set(o.exclude);
   slots.forEach((s, index) => {
-    for (let tries = queue(s.kind).length; tries > 0 && picks[index] && skip.has(picks[index]!.id); tries--) {
+    for (let tries = queue(s).length; tries > 0 && picks[index] && skip.has(picks[index]!.id); tries--) {
       if (!reroll(index)) break;
       rerolls.push(index);
     }
@@ -426,7 +475,7 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
         ...s,
         item: picks[index],
         similar: !!companies && !!picks[index] && !atCompany(picks[index]!),
-        pool: queue(s.kind).length,
+        pool: queue(s).length,
       }),
     ),
   };
