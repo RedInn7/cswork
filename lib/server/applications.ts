@@ -110,6 +110,8 @@ export async function handleApplications(request: Request, p: Person | null, pat
   if (!own(p.id, id)) throw new HttpError(404, '投递记录不存在');
   if (action === 'delete') {
     db.prepare('DELETE FROM job_applications WHERE id=? AND user_id=?').run(id, p.id);
+    // Its reminder notices carry the company and role (lib/server/reminders.ts ids `<kind>:<id>:<at>`).
+    db.prepare("DELETE FROM notifications WHERE user_id=? AND kind='application' AND id LIKE ?").run(p.id, `%:${id}:%`);
     return json({ ok: true });
   }
   if (action) throw new HttpError(404, '接口不存在');

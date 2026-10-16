@@ -413,9 +413,10 @@ void test('tracker reminders: an open OA a day and two hours ahead, an interview
     .pluck()
     .get(kai.id);
   assert.equal(others, 0, 'tracker reminders off, or never opted in');
-  // The push shows it, translated for an English reader.
-  sqlite().prepare('UPDATE notifications SET created_at=? WHERE id=?').run(Date.now(), `app-interview:${interview}:${NOW + 50 * 60000}`);
-  assert.equal((await call(kai, 'GET', 'oj/notify/pending')).data.items[0].title, '面试将在 1 小时内开始');
+  // Each push shows every notice of the newest tick (the service worker tags them by id), not just one.
+  sqlite().prepare("UPDATE notifications SET created_at=? WHERE user_id=? AND kind='application'").run(Date.now(), kai.id);
+  const shown = (await call(kai, 'GET', 'oj/notify/pending')).data.items.map((i: { title: string }) => i.title);
+  assert.deepEqual(shown.sort(), ['OA 将在 24 小时内截止', 'OA 将在 2 小时内截止', '面试将在 1 小时内开始'].sort());
   assert.equal(englishMessage('面试将在 1 小时内开始'), 'An interview starts within the hour');
 
   // Claimed: later ticks leave them alone, the 24-hour one included once inside 2 hours for Late.
@@ -428,6 +429,11 @@ void test('tracker reminders: an open OA a day and two hours ahead, an interview
   assert.equal(await sendLearnerReminders(NOW + 20.5 * HOUR), 1);
   assert.equal(notice(`app-oa2:${oa}:${NOW + 22 * HOUR}`)!.title, 'OA 将在 2 小时内截止');
   assert.equal(await sendLearnerReminders(NOW + 21 * HOUR), 0);
+  // Deleting a card deletes its reminder notices (company and role) too, nobody else's.
+  await call(kai, 'POST', `oj/applications/${oa}/delete`, {});
+  assert.equal(notice(`app-oa24:${oa}:${NOW + 22 * HOUR}`), undefined);
+  assert.equal(notice(`app-oa2:${oa}:${NOW + 22 * HOUR}`), undefined);
+  assert.ok(notice(`app-interview:${interview}:${NOW + 50 * 60000}`));
 });
 
 void test("the digest counts tracker cards and contacts to follow up by the end of the learner's day", async () => {

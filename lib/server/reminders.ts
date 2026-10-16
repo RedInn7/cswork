@@ -299,8 +299,9 @@ function settings(p: Person) {
 /**
  * /api/oj/notify: GET the settings; POST {prefs} (null turns reminders off); POST subscription
  * {endpoint,on} for this device's push; GET pending, what the service worker shows for a push:
- * this learner's newest reminder from the last hour. Each push follows one new notice, so an
- * older one already shown (and maybe dismissed) never pops up again with the next push.
+ * the notices of this learner's newest tick from the last hour. A tick can write several (two OA
+ * deadlines, an interview and the digest), all with the tick's time; each push follows a new one,
+ * so an older one already shown (and maybe dismissed) never pops up again with the next push.
  */
 export async function handleNotify(request: Request, p: Person | null, path: string[]) {
   requirePerson(p);
@@ -312,10 +313,12 @@ export async function handleNotify(request: Request, p: Person | null, path: str
     if (!action) return json(settings(p));
     if (action !== 'pending') throw new HttpError(404, '接口不存在');
     const zh = db.prepare('SELECT locale FROM notify_prefs WHERE user_id=?').pluck().get(p.id) === 'zh';
+    // ponytail: at most 5 shown per push; the rest of a crowded tick is in the inbox.
     const items = db
       .prepare(
-        `SELECT id,title,body,href FROM notifications WHERE user_id=? AND kind IN ('reminder','contest-start','application','company-jobs') AND created_at>?
-        ORDER BY created_at DESC LIMIT 1`,
+        `WITH mine AS (SELECT id,title,body,href,created_at FROM notifications
+          WHERE user_id=? AND kind IN ('reminder','contest-start','application','company-jobs') AND created_at>?)
+        SELECT id,title,body,href FROM mine WHERE created_at=(SELECT MAX(created_at) FROM mine) LIMIT 5`,
       )
       .all(p.id, Date.now() - HOUR) as { id: string; title: string; body: string; href: string }[];
     return json({ items: items.map((n) => ({ ...n, title: zh ? n.title : englishMessage(n.title) })) });
