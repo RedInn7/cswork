@@ -458,7 +458,7 @@ export const StatementMarkdown = memo(function StatementMarkdown({
   diagrams?: boolean;
 }) {
   return (
-    <article className={className}>
+    <article className={untrusted ? `${className} cs-untrusted` : className}>
       {untrusted ? (
         <PostMarkdown body={body} diagrams={diagrams} plain={plain} />
       ) : (

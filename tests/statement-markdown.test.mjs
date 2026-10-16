@@ -138,6 +138,7 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
     const tex = [...document.querySelectorAll('.katex annotation')].map(x => x.textContent.trim());
     assert.deepEqual(tex, ['O(n^2)', 'x^2'], 'spaces inside one-line $$ … $$ are display math, not money');
     assert.ok(document.body.textContent.includes('it costs $5 和 $10, or $3-$4.'));
+    assert.ok(document.querySelector('article').classList.contains('cs-untrusted'), 'a post clips math that paints outside it');
     const href = document.querySelector('.cs-run-playground a').getAttribute('href');
     assert.deepEqual(await decodeShare(new URL(href, 'https://cswork.test').hash), { language: 'python', code: 'print(input())\n', stdin: '' });
     assert.equal(document.querySelector('.cs-run-playground a').target, '_blank');
