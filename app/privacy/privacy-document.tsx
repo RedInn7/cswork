@@ -190,7 +190,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
               <p id="privacy-answer-feedback">
-                在面试题或模拟面试里点「AI 点评我的答案」、或在故事库里点评一个 STAR 故事时，服务器会把你写的答案（或故事各部分和你选的行为面试题）、这道题的题面和参考答案（如有）发送给
+                在面试题、系统设计案例的设计草稿或模拟面试里点「AI 点评我的答案」、或在故事库里点评一个 STAR 故事时，服务器会把你写的答案（或故事各部分和你选的行为面试题）、这道题的题面和参考答案（如有；系统设计案例的参考是这一章的正文）发送给
                 Anthropic，用于生成点评；不发送邮箱、姓名或账户标识。平台不保存答案和点评，只记录每天的调用次数和用量。不点就不会发送。
               </p>
               <p id="privacy-resume-builder">
@@ -741,10 +741,12 @@ export function PrivacyDocument() {
               </p>
               <p id="privacy-answer-feedback">
                 When you choose AI feedback on your answer to an interview
-                question or in a mock interview, or on a STAR story in the story
-                bank, the server sends what you wrote (or the story&apos;s parts
-                and the behavioral question you picked), the question and its
-                reference answer (if any) to Anthropic to write the feedback.
+                question, on your draft for a system design case or in a mock
+                interview, or on a STAR story in the story bank, the server
+                sends what you wrote (or the story&apos;s parts and the
+                behavioral question you picked), the question and its reference
+                answer (if any; for a system design case, that chapter&apos;s
+                text) to Anthropic to write the feedback.
                 Your email, name and account identifier are not sent. The
                 platform does not store the answer or the feedback; it records
                 only daily call counts and usage. Nothing is sent unless you ask.
