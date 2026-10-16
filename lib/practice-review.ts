@@ -27,17 +27,33 @@ export type PracticeHistoryItem = {
   acAt: number[];
   /** Line 500 stop slug when the problem is on the line. */
   stop: string | null;
+  /**
+   * Help used before the first AC (every help while unsolved), from lib/server/practice-aids.ts:
+   * solution is the editorial tab opened or an AI tutor answer, hint is a hint past the first.
+   */
+  help: 'none' | 'hint' | 'solution';
+  /** The problem timer's seconds at the first AC, when it ran. */
+  solveSeconds: number | null;
 };
 export type DueReview = {
   item: PracticeHistoryItem;
-  /** Distinct local days with an AC, 1..REVIEW_LADDER.length. */
+  /** Distinct local days with an AC, 1..steps. */
   level: number;
+  /** Reviews on this problem's ladder: one more for a solve with help. */
+  steps: number;
   /** Local midnight of the day the review falls due. */
   dueAt: number;
 };
 
 /** Days to wait after the n-th distinct AC day; past the last step a problem is mastered. */
 export const REVIEW_LADDER = [3, 7, 21, 60];
+
+/** Solved, or tried, with a hint, the editorial or the AI. */
+export const assisted = (item: Pick<PracticeHistoryItem, 'help'>) =>
+  item.help === 'hint' || item.help === 'solution';
+/** A solve with help comes back after a day first, so mastering it takes one review more. */
+export const reviewLadder = (item: Pick<PracticeHistoryItem, 'help'>) =>
+  assisted(item) ? [1, ...REVIEW_LADDER] : REVIEW_LADDER;
 
 const localDay = (time: number) => new Date(time).toDateString();
 
@@ -52,16 +68,17 @@ export function dueReviews(
   const due: DueReview[] = [];
   for (const item of history) {
     if (!item.acAt.length) continue;
+    const ladder = reviewLadder(item);
     const level = new Set(item.acAt.map(localDay)).size;
-    if (level > REVIEW_LADDER.length) continue;
+    if (level > ladder.length) continue;
     const last = new Date(item.acAt.reduce((a, b) => Math.max(a, b)));
     // Day arithmetic on local dates keeps daylight-saving shifts out of the count.
     const dueAt = new Date(
       last.getFullYear(),
       last.getMonth(),
-      last.getDate() + REVIEW_LADDER[level - 1],
+      last.getDate() + ladder[level - 1],
     ).getTime();
-    if (dueAt <= now) due.push({ item, level, dueAt });
+    if (dueAt <= now) due.push({ item, level, steps: ladder.length, dueAt });
   }
   return due.sort((a, b) => a.dueAt - b.dueAt);
 }
@@ -69,3 +86,32 @@ export function dueReviews(
 /** Unsolved problems, and solved ones that took two or more failures first. */
 export const wrongBook = (history: PracticeHistoryItem[]) =>
   history.filter((item) => !item.firstAcAt || item.failuresBeforeAc >= 2);
+
+/**
+ * The progress page's solve quality: how many solves needed no help and no failed verdict, and
+ * the median timed first solve per difficulty against its interview budget (PRESETS).
+ */
+export function solveQuality(
+  history: PracticeHistoryItem[],
+  difficultyOf: (problemId: string) => string | undefined,
+) {
+  const solved = history.filter((item) => item.firstAcAt != null);
+  const times = new Map<string, number[]>();
+  for (const item of solved) {
+    const difficulty = difficultyOf(item.problemId);
+    if (item.solveSeconds != null && difficulty && difficulty in PRESETS)
+      times.set(difficulty, [...(times.get(difficulty) ?? []), item.solveSeconds]);
+  }
+  return {
+    solved: solved.length,
+    independent: solved.filter((item) => !assisted(item)).length,
+    firstTry: solved.filter((item) => !item.failuresBeforeAc).length,
+    medians: Object.keys(PRESETS).flatMap((difficulty) => {
+      const s = times.get(difficulty)?.sort((a, b) => a - b);
+      if (!s) return [];
+      const mid = s.length >> 1;
+      const seconds = s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
+      return [{ difficulty, seconds, budget: PRESETS[difficulty] * 60, count: s.length }];
+    }),
+  };
+}

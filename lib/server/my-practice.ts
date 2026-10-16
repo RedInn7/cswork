@@ -8,6 +8,7 @@ import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 import { lingEditorial } from './ling-editorials';
 import { oaJudgeRegistry } from './oa-judge';
+import { aidsByProblem } from './practice-aids';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
@@ -31,7 +32,7 @@ const VOTE = { up: 'down', down: 'up' } as const;
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
 
-type HistoryRow = Omit<PracticeHistoryItem, 'languages' | 'acAt' | 'stop'> & {
+type HistoryRow = Omit<PracticeHistoryItem, 'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds'> & {
   languages: string;
   acAt: string | null;
 };
@@ -55,8 +56,11 @@ export function practiceHistory(userId: string): PracticeHistoryItem[] {
       FROM s GROUP BY problem_id ORDER BY lastAt DESC,problem_id`,
     )
     .all(userId) as HistoryRow[];
+  const aids = aidsByProblem(userId);
   return rows.map((row) => ({
     ...row,
+    help: aids.get(row.problemId)?.help ?? 'none',
+    solveSeconds: aids.get(row.problemId)?.solveSeconds ?? null,
     languages: row.languages.split(','),
     acAt: row.acAt ? row.acAt.split(',').map(Number) : [],
     stop:
