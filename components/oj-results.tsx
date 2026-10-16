@@ -152,6 +152,7 @@ export function SubmissionResult({
   checker,
   params,
   returnType,
+  sealHidden,
 }: {
   submission: OJSubmission;
   cancel?: () => void;
@@ -170,6 +171,8 @@ export function SubmissionResult({
   params?: { name: string; type: string }[] | null;
   /** What the run prints: a tree or list is drawn for both expected and actual output. */
   returnType?: string | null;
+  /** A running mock OA: a hidden case shows its verdict only, never its first-failure input or output. */
+  sealHidden?: boolean;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -206,6 +209,7 @@ export function SubmissionResult({
   const diagnostic =
     !running &&
     submission.mode !== 'run' &&
+    !(sealHidden && current?.hidden) &&
     submission.firstFailure?.ordinal === current?.ordinal &&
     submission.firstFailure?.status === current?.status
       ? submission.firstFailure
@@ -576,6 +580,7 @@ export function SubmissionCodeDialog({
   settings,
   restore,
   note,
+  sealHidden,
 }: {
   submission: OJSubmission | null;
   close: () => void;
@@ -585,6 +590,8 @@ export function SubmissionCodeDialog({
   restore: (submission: OJSubmission) => void;
   /** The learner's note on this submission (components/submission-note.tsx). */
   note?: ReactNode;
+  /** See SubmissionResult. */
+  sealHidden?: boolean;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -650,7 +657,7 @@ export function SubmissionCodeDialog({
             {note}
             {view === 'result' ? (
               <div className="cs-history-result">
-                <SubmissionResult submission={submission} />
+                <SubmissionResult submission={submission} sealHidden={sealHidden} />
               </div>
             ) : submission.code === undefined ? (
               <p>

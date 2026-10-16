@@ -133,6 +133,12 @@ export default function AcmIoPage() {
           <Link href="/?view=problems" prefetch={false}>
             去题库练习 · Open the problems →
           </Link>
+          <br />
+          语言版本、编译命令、时间内存和递归深度限制见
+          <span lang="en"> Versions, compile commands and limits: </span>
+          <Link href="/judge-environment" prefetch={false}>
+            判题环境说明 · Judge environment →
+          </Link>
         </p>
       </main>
       <footer className="public-library-footer">

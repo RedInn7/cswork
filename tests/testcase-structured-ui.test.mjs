@@ -106,6 +106,7 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
     ],
     leetcodeConstraints: { nums: { len: [2, 10000] } },
     lingEditorialVerified: true,
+    targetComplexity: { time: 'O(n)', space: 'O(n)' },
     checker: 'tokens',
   };
   const posts = [];
@@ -179,6 +180,12 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
       ),
     );
     await settle();
+    // Line 500's target complexity stays folded until asked for.
+    const target = [...document.querySelectorAll('.cs-statement-pill')].find((n) => n.textContent.startsWith('Target complexity'));
+    assert.equal(target.getAttribute('aria-expanded'), 'false');
+    assert.equal(target.textContent, 'Target complexity');
+    await click(target);
+    assert.equal(target.textContent, 'Target complexity: O(n) time, O(n) extra space');
     const full = document.querySelector('[aria-label="Full screen"]');
     assert.equal(full.getAttribute('aria-pressed'), 'false');
     await click(full);

@@ -181,6 +181,8 @@ export async function handleOj(
     const dated = sourceDates();
     // Per round like Solved, over all history rather than the first page; failures open the ladder's hints.
     const failed = (hint || ladder) && p ? failedJudgeIds(p.id, id, round?.id) : [];
+    // Line 500's last (best) approach, the target to aim for; not in a running contest.
+    const best = live ? undefined : lingEditorial(id)?.approaches.at(-1);
     return json({
       ...problem,
       // The package's own hints too, in every language; copies, never the cached problem.
@@ -213,6 +215,7 @@ export async function handleOj(
       // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
       // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
       lingEditorialVerified: lingEditorial(id)?.verified ?? null,
+      targetComplexity: best ? { time: best.time, space: best.space } : null,
       // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
       stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
       // A nicety under the statement: it never fails the problem itself.
