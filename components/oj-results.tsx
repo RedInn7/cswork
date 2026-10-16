@@ -516,6 +516,14 @@ export function SubmissionResult({
                           )}
                         </p>
                       )}
+                      {submission.problem_id.startsWith('oa-') && (
+                        <p className="cs-console-note">
+                          {t(
+                            '这是参考程序在你的输入上的输出，输入未经合法性校验。',
+                            "This is the reference program's output on your input; the input wasn't checked against the constraints.",
+                          )}
+                        </p>
+                      )}
                     </>
                   ) : reference ? (
                     <p className="cs-console-note" role="status">
