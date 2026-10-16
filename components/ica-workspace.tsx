@@ -1,19 +1,15 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
-import { Check, Lock, Timer } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Check, Lock } from 'lucide-react';
+import { Countdown } from '@/components/countdown';
 import { ProjectWorkspace, type Run } from '@/components/project-workspace';
 import { StatementMarkdown } from '@/components/statement-markdown';
-import { Button } from '@/components/ui/button';
 import { ICA_LEVELS } from '@/lib/ai-coding';
 import { useLocale, useT } from '@/lib/i18n';
 import { ojRequest } from '@/lib/oj-client';
 import type { IcaView } from '@/lib/server/ica';
 
 const timerKey = (slug: string) => `cswork:ica:${slug}:started`;
-const clock = (ms: number) => {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};
 
 /**
  * An ICA set (/oa/ica/<slug>): the level bar (passed, open, locked), the open level's statement, a
@@ -41,43 +37,12 @@ export function IcaWorkspace({
   const [level, setLevel] = useState(initial.unlocked);
   // The last run's share of the chosen level's own hidden tests, per level.
   const [ratio, setRatio] = useState<Record<number, number>>({});
-  const [started, setStarted] = useState<number | null>(null);
-  const [now, setNow] = useState(0);
-
-  useEffect(() => {
-    try {
-      const value = Number(localStorage.getItem(timerKey(slug)));
-      // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
-      if (value > 0) setStarted(value);
-    } catch {
-      /* Blocked storage: the timer starts fresh. */
-    }
-  }, [slug]);
-  useEffect(() => {
-    if (!started) return;
-    // oxlint-disable-next-line react/react-compiler -- A wall clock, read once the timer runs.
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [started]);
 
   // Starting code plus the public tests of every open level; stable until a level opens.
   const files = useMemo(() => Object.assign({}, starter, ...view.levels.map((l) => l.tests)) as Record<string, string>, [starter, view]);
   const open = view.levels[level - 1] ?? view.levels[view.levels.length - 1];
   const before = view.levels[open.level - 2]?.hiddenTotal ?? 0;
   const score = view.passed.length + (view.passed.includes(open.level) ? 0 : (ratio[open.level] ?? 0));
-  const left = started ? started + minutes * 60_000 - now : minutes * 60_000;
-
-  function startTimer(reset = false) {
-    if (reset && !confirm(t('重新开始计时？', 'Restart the timer?'))) return;
-    const at = Date.now();
-    try {
-      localStorage.setItem(timerKey(slug), String(at));
-    } catch {
-      /* This visit still counts down. */
-    }
-    setStarted(at);
-  }
   async function finished(run: Run) {
     const hidden = run.project?.hidden;
     const own = open.hiddenTotal - before;
@@ -124,21 +89,7 @@ export function IcaWorkspace({
         <p className="ica-score">
           {t('得分', 'Score')} <strong>{score.toFixed(2).replace(/\.?0+$/, '')}</strong> / {ICA_LEVELS}
         </p>
-        <div className="ica-timer" role="timer" aria-live="off">
-          <Timer size={15} aria-hidden="true" />
-          {started ? (
-            <>
-              <span data-over={left <= 0 || undefined}>{left > 0 ? clock(left) : t('时间到，可以继续练', "Time's up — keep practising")}</span>
-              <button type="button" onClick={() => startTimer(true)}>
-                {t('重来', 'Restart')}
-              </button>
-            </>
-          ) : (
-            <Button size="sm" variant="outline" onClick={() => startTimer()}>
-              {t(`开始 ${minutes} 分钟计时`, `Start the ${minutes}-minute timer`)}
-            </Button>
-          )}
-        </div>
+        <Countdown storageKey={timerKey(slug)} minutes={minutes} />
       </div>
       <section className="ica-statement" aria-label={t(`第 ${open.level} 关说明`, `Level ${open.level} brief`)}>
         <StatementMarkdown body={locale === 'zh' ? open.statement.zh : open.statement.en} />

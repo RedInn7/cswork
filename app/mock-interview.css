@@ -2116,6 +2116,33 @@ td[data-over] .mi-bar i {
   flex-basis: 100%;
   color: var(--rd-muted);
 }
+/* Dictation delivery: pace, fillers, time spoken, longest pause (components/mock-delivery.tsx). */
+.mi-delivery {
+  display: grid;
+  gap: 6px;
+}
+.mi-delivery h3 {
+  margin: 0;
+  color: var(--rd-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+.mi-delivery dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 6px 14px;
+  margin: 0;
+}
+.mi-delivery dt {
+  color: var(--rd-muted);
+  font-size: 12px;
+}
+.mi-delivery dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
 @media (max-width: 860px) {
   .mi-work-side.mi-ai-side {
     overflow: visible;
@@ -2771,6 +2798,12 @@ td[data-over] .mi-bar i {
     color: var(--rd-brand-ink);
   }
   .dark .mi-guide-scores small {
+    color: var(--rd-muted);
+  }
+  .dark .mi-delivery h3 {
+    color: var(--rd-muted);
+  }
+  .dark .mi-delivery dt {
     color: var(--rd-muted);
   }
 }

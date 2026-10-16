@@ -1,15 +1,23 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
+  KIND_RUBRIC,
+  MAX_DIMS,
   MAX_FEEDBACK,
   RUBRIC,
+  ROLEPLAY_RUBRIC,
   decodeFeedback,
   encodeFeedback,
   forSet,
   questionTag,
   rubricAverage,
+  rubricFor,
+  rubricTrend,
   type Feedback,
 } from '../lib/mock-interview-feedback';
+import type { KindId } from '../lib/mock-interview';
+
+const rounds = (...kinds: KindId[]) => kinds.map((kind) => ({ kind }));
 
 const base: Feedback = {
   seed: 'k3x9q2ab',
@@ -102,9 +110,11 @@ void test('nonsense inside a valid payload is dropped, not fatal', () => {
   ]);
 });
 
-void test('the rubric covers eight distinct items and averages only what was scored', () => {
-  assert.equal(new Set(RUBRIC.map((r) => r.id)).size, 8);
+void test('the rubric covers distinct items and averages only what was scored', () => {
+  assert.equal(new Set(RUBRIC.map((r) => r.id)).size, RUBRIC.length);
   assert.ok(RUBRIC.every((r) => r.name.every(Boolean) && r.hint.every(Boolean)));
+  assert.equal(new Set(RUBRIC.map((r) => r.name[1])).size, RUBRIC.length);
+  for (const ids of Object.values(KIND_RUBRIC)) assert.ok(ids.every((id) => RUBRIC.some((r) => r.id === id)), ids.join());
   assert.equal(rubricAverage({}), null);
   assert.equal(rubricAverage(base.rubric), 3);
 });
@@ -118,4 +128,92 @@ void test('question tags tell questions apart and feedback knows its set', () =>
   assert.equal(forSet(base, { set: base.seed }), false);
   assert.equal(forSet({ ...base, rerolls: [] }, { set: base.seed }), true);
   assert.equal(forSet(base, { set: 'other', rr: '1.1.2' }), false);
+});
+
+void test('links written before the per-round rubric decode as they did', () => {
+  // Encoded by the eight-dimension version: k is positional, so the new dimensions only ever go after it.
+  const old = 'eyJ2IjoxLCJzIjoiazN4OXEyYWIiLCJyIjpbMV0sImsiOlszLDIsMCw0LDEsMCwyXSwibyI6InllcyIsImciOiJvayIsInEiOltbMywiYWIxMiIsIm4iXV19';
+  assert.deepEqual(decodeFeedback(old), {
+    seed: 'k3x9q2ab',
+    rerolls: [1],
+    rubric: { communication: 3, problem: 2, testing: 4, complexity: 1, anchoring: 2 },
+    verdict: 'yes',
+    strengths: 'ok',
+    improvements: '',
+    questions: [{ rating: 3, note: 'n', tag: 'ab12' }],
+  });
+  assert.deepEqual(
+    RUBRIC.slice(0, 8).map((r) => r.id),
+    ['communication', 'problem', 'coding', 'testing', 'complexity', 'motivation', 'anchoring', 'leverage'],
+  );
+  // A five-dimension sheet still writes the old five-long k.
+  const five = encodeFeedback({ ...base, rubric: { communication: 2, complexity: 3 } })!.value;
+  assert.deepEqual((JSON.parse(Buffer.from(five, 'base64url').toString()) as { k: number[] }).k, [2, 0, 0, 0, 3]);
+});
+
+void test('a full nine-dimension report with empty texts encodes whole and decodes back', () => {
+  const dims = rubricFor(rounds('coding', 'design', 'behavioral'));
+  assert.equal(dims.length, MAX_DIMS);
+  const rubric = Object.fromEntries(dims.map((id, i) => [id, (i % 4) + 1])) as Feedback['rubric'];
+  const nine: Feedback = {
+    seed: 'k3x9q2ab',
+    rerolls: [3, 1, 2, 0],
+    rubric,
+    verdict: 'strong-yes',
+    strengths: '',
+    improvements: '',
+    questions: Array.from({ length: 8 }, (_, i) => ({ rating: (i % 4) + 1, note: '', tag: questionTag(`q-${i}`) })),
+    ai: true,
+  };
+  const made = encodeFeedback(nine)!;
+  assert.equal(made.truncated, false);
+  assert.ok(made.value.length <= MAX_FEEDBACK, `${made.value.length}`);
+  assert.deepEqual(decodeFeedback(made.value), nine);
+  // Every dimension, new ones included, survives on its own.
+  for (const { id } of RUBRIC) {
+    const rubric = { [id]: 2 } as Feedback['rubric'];
+    assert.deepEqual(decodeFeedback(encodeFeedback({ ...base, rubric })!.value)!.rubric, rubric);
+  }
+});
+
+void test("rubricFor: communication plus each round's dimensions in turn, at most nine, in RUBRIC order", () => {
+  const order = (ids: string[]) => RUBRIC.map((r) => r.id).filter((id) => ids.includes(id));
+  const core = ['communication', 'problem', 'coding', 'testing', 'complexity'];
+  for (const kind of ['coding', 'sql', 'lld'] as KindId[]) assert.deepEqual(rubricFor(rounds(kind)), core);
+  assert.deepEqual(rubricFor(rounds('coding', 'coding', 'sql')), core);
+  assert.deepEqual(rubricFor(rounds('behavioral')), ['communication', 'star', 'ownership', 'impact', 'reflection']);
+  assert.deepEqual(rubricFor(rounds('design')), ['communication', 'requirements', 'hld', 'scale', 'tradeoffs', 'deepdive']);
+  // A design slot that drew a fundamentals question (TCP vs UDP) is not scored as a system to build;
+  // with no question drawn yet it is.
+  const fundamentals = rubricFor([{ kind: 'design', category: 'Software Engineering Fundamentals' }]);
+  assert.deepEqual(fundamentals, ['communication', 'problem', 'tradeoffs', 'deepdive']);
+  assert.deepEqual(rubricFor([{ kind: 'design', category: 'System Design' }]), rubricFor([{ kind: 'design', category: null }]));
+  assert.deepEqual(rubricFor([{ kind: 'design', category: 'System Design' }]), rubricFor(rounds('design')));
+  assert.deepEqual(rubricFor(rounds('negotiation')), ROLEPLAY_RUBRIC);
+  // A kind with no mapping yet (a newer round) is scored on the core five.
+  assert.deepEqual(rubricFor(rounds('frontend' as KindId)), core);
+  // The phone screen fits whole: behavioral + coding.
+  assert.deepEqual(rubricFor(rounds('behavioral', 'coding', 'coding')), order([...core, 'star', 'ownership', 'impact', 'reflection']));
+  // The onsite loop is over nine: every round keeps its most telling dimensions.
+  const onsite = rubricFor(rounds('coding', 'coding', 'design', 'behavioral', 'behavioral'));
+  assert.equal(onsite.length, MAX_DIMS);
+  assert.deepEqual(onsite, order(onsite));
+  for (const id of ['communication', 'problem', 'coding', 'testing', 'requirements', 'hld', 'scale', 'star', 'ownership'])
+    assert.ok(onsite.includes(id as never), id);
+  // Data science: SQL, analytics, statistics and behavioral, with stats counted once.
+  const ds = rubricFor(rounds('sql', 'analytics', 'stats', 'behavioral'));
+  assert.equal(ds.length, MAX_DIMS);
+  assert.deepEqual(ds, ['communication', 'problem', 'coding', 'testing', 'star', 'ownership', 'metric', 'experiment', 'stats']);
+  assert.deepEqual(rubricFor(rounds('ml', 'coding', 'behavioral')).slice(-2), ['modeling', 'mltradeoffs']);
+});
+
+void test("the trend keeps each dimension's last scores, oldest first, and only from two on", () => {
+  const rows = [
+    { communication: 2, coding: 3, star: null },
+    { communication: 3, coding: null, star: 4 },
+    { communication: 4, problem: 2.5, leverage: 9 },
+  ];
+  assert.deepEqual(rubricTrend(rows), { communication: [2, 3, 4] });
+  assert.deepEqual(rubricTrend(rows, 2), { communication: [3, 4] });
+  assert.deepEqual(rubricTrend([]), {});
 });

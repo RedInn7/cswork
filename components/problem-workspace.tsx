@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef, useState, useCallback, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback, type CSSProperties, type ReactNode } from 'react';
 import {
   Group,
   Panel,
@@ -16,6 +16,8 @@ import {
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
 import { AcceptedExtras } from './achievements';
+import { AnalyzerNotes, FollowUpToggle, followUpBlocked } from './analyzer-notes';
+import { followUpRule } from '@/lib/code-analyzer';
 import { RatingBadge } from './rating-badge';
 import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
@@ -64,10 +66,12 @@ import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { SubmissionNote } from './submission-note';
+import { ReviewLink } from './code-review';
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
 import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
+import { StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import {
@@ -412,6 +416,9 @@ function Workspace({
     defaultEditorSettings,
   );
   const [language, setLanguage] = useState<Language>('python');
+  // Follow-up mode: LeetCode mode only, where every line is the learner's own (no input parsing).
+  const [followUpOn, setFollowUpOn] = useState(false);
+  const followUp = !examMode && codingMode === 'leetcode' ? followUpRule(problem.id, language) : undefined;
   const editorFile =
     codingMode === 'leetcode'
       ? {
@@ -1129,6 +1136,9 @@ function Workspace({
     }
     // The exam clock replaces the problem timer during a mock OA; an AC stops it.
     const seconds = examMode ? null : stopTimer(userId, initialProblem.id);
+    // The server keeps it only for the first AC: the solve time on the progress page.
+    if (seconds != null)
+      void ojRequest(`problems/${encodeURIComponent(initialProblem.id)}/aids`, { kind: 'time', seconds }).catch(() => {});
     track('judge_accept', {
       problem_id: initialProblem.id,
       language: submission.language,
@@ -1453,6 +1463,11 @@ function Workspace({
       );
       return;
     }
+    const blocked = mode === 'judge' && followUpOn && followUp ? followUpBlocked(code, language, followUp, uiEnglish) : '';
+    if (blocked) {
+      setError(blocked);
+      return;
+    }
     cancelPrecompile();
     feedbackTiming.current ??= new FeedbackTiming(performance);
     feedbackTiming.current.start(mode);
@@ -1470,8 +1485,9 @@ function Workspace({
     if (
       mode === 'run' &&
       inputMode === 'custom' &&
-      problem.lingEditorialVerified === true &&
-      !!problem.codingModes?.includes('leetcode') &&
+      // A Line 500 editorial's best approach, or an OA package's verified program (ACM only).
+      ((problem.lingEditorialVerified === true && !!problem.codingModes?.includes('leetcode')) ||
+        problem.id.startsWith('oa-')) &&
       !examMode
     )
       void runReference(stdin, codingMode);
@@ -2317,6 +2333,7 @@ function Workspace({
               <Info size={15} />
             </button>
           )}
+          {followUp && <FollowUpToggle rule={followUp} on={followUpOn} onChange={setFollowUpOn} english={uiEnglish} />}
           <button
             aria-label={t('下载当前代码', 'Download code')}
             title={t('下载当前代码', 'Download code')}
@@ -2919,6 +2936,15 @@ function Workspace({
                           onAdd={(input) => addCase(input)}
                         />
                       )}
+                      {boot.person && !examMode && codingMode === 'leetcode' && stressReady(problem.id) && (
+                        <StressTest
+                          problemId={problem.id}
+                          code={code}
+                          language={language}
+                          checker={problem.checker}
+                          onAdd={(input) => addCase(input)}
+                        />
+                      )}
                     </>
                   )}
                 </>
@@ -3216,6 +3242,14 @@ function Workspace({
           }
           ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
           targetComplexity={problem.targetComplexity}
+          notes={
+            <AnalyzerNotes
+              code={success.code ?? code}
+              language={success.language}
+              followUp={followUpOn && success.codingMode === 'leetcode' ? followUpRule(problem.id, success.language) : undefined}
+              english={uiEnglish}
+            />
+          }
         />
       )}
       {problemError &&
@@ -3441,7 +3475,19 @@ function Workspace({
         language={language}
         settings={settings}
         sealHidden={examMode}
-        note={inspected && boot.person && !examMode && <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />}
+        note={
+          inspected &&
+          boot.person &&
+          !examMode && (
+            <>
+              <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />
+              {/* Only on the learner's own accepted formal submission of a public problem (lib/server/code-reviews.ts). */}
+              {inspected.mode === 'judge' && inspected.status === 'accepted' && communityProblem(inspected.problem_id) && (
+                <ReviewLink key={`review-${inspected.id}`} submissionId={inspected.id} />
+              )}
+            </>
+          )
+        }
         restore={(item) => {
           if (item.code === undefined) return;
           setInspected(null);
@@ -3640,6 +3686,7 @@ function AcceptedDialog({
   openSolutions,
   ai,
   targetComplexity,
+  notes,
 }: {
   problemId: string;
   language: string;
@@ -3651,6 +3698,8 @@ function AcceptedDialog({
   ai?: { tutor: ReturnType<typeof useAiTutor>; context: AiContext };
   /** Line 500's target complexity, shown beside the AI analysis to compare against. */
   targetComplexity?: OJProblem['targetComplexity'];
+  /** Rule-based notes on the accepted code (components/analyzer-notes.tsx). */
+  notes?: ReactNode;
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -3814,6 +3863,7 @@ function AcceptedDialog({
             </p>
           )}
           {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
+          {notes}
           <AcceptedExtras
             problemId={problemId}
             acceptedAt={acceptedAt}

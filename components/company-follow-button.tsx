@@ -40,8 +40,8 @@ function useCompanyFollows() {
 }
 
 /**
- * Follow a company (company and OA pages, the study plan): new member interview reports and OA
- * problems arrive as notifications. Signed out it leads to signing in. `hint` says so on the button.
+ * Follow a company (company and OA pages, the study plan): new member interview reports, OA
+ * problems and intern or new-grad openings arrive as notifications. Signed out it leads to signing in. `hint` says so on the button.
  */
 export function CompanyFollowButton({
   slug,
@@ -75,14 +75,14 @@ export function CompanyFollowButton({
         className={className}
         aria-pressed={following}
         aria-disabled={busy}
-        title={t('有新面经或新 OA 题时通知你', 'Get notified of new interview reports and OA problems')}
+        title={t('有新面经、OA 题或在招岗位时通知你', 'Get notified of new interview reports, OA problems and open roles')}
         onClick={() => void toggle(slug, !following)}
       >
         <Bell size={15} aria-hidden="true" />
         {following
           ? t(`已关注 ${name}`, `Following ${name}`)
           : hint
-            ? t(`关注 ${name}，有新面经或 OA 题时提醒我`, `Follow ${name} for new interview reports and OA problems`)
+            ? t(`关注 ${name}，有新面经、OA 题或在招岗位时提醒我`, `Follow ${name} for new interview reports, OA problems and open roles`)
             : t(`关注 ${name}`, `Follow ${name}`)}
       </button>
       {error && <span role="alert">{t(error, englishMessage(error))}</span>}
@@ -117,8 +117,8 @@ export function FollowedCompanies({ zh }: { zh: boolean }) {
       ) : (
         <p className="muted">
           {t(
-            '还没有关注公司。在公司页点「关注」，有新面经或新 OA 题时会通知你（最多 20 家）。',
-            'No companies yet. Press Follow on a company page to be notified of new interview reports and OA problems (up to 20).',
+            '还没有关注公司。在公司页点「关注」，有新面经、新 OA 题或新的实习/新毕业生岗位时会通知你（最多 20 家）。',
+            'No companies yet. Press Follow on a company page to be notified of new interview reports, OA problems and intern or new-grad openings (up to 20).',
           )}
         </p>
       )}

@@ -28,6 +28,7 @@ import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { sendPeerReminders } from './peer-reminders';
 import { sendLearnerReminders } from './reminders';
 import { sendCompanyDigest } from './company-follows';
+import { syncJobOpenings } from './job-openings';
 import { seed } from './seed';
 import {
   assertSnapshotBudget,
@@ -40,6 +41,7 @@ import {
 import {
   ACTIVE,
   formalMode,
+  ownCases,
   PLAYGROUND_SPEC,
   submissionRow,
   type SubmissionRow,
@@ -303,10 +305,11 @@ async function judgeSubmission(
       },
     };
     assertSnapshotBudget(snapshot.cases);
-    // Runs on the learner's own input: custom-input runs and playground runs.
+    // Runs on the learner's own input: custom-input runs, playground runs and a stress test's cases.
     const ownInput = !formal && claimed.custom_input !== null;
+    const own = ownInput ? ownCases(claimed) : [];
     const caseCount = ownInput
-      ? 1
+      ? own.length
       : snapshot.cases.filter((c) => formal || !c.hidden)
           .length;
     // Respect the published per-case budget, including valid long problem sets.
@@ -379,15 +382,7 @@ async function judgeSubmission(
       compile_output: (compiled.result.files?.stderr || '').slice(0, 65536),
     });
     const cases = ownInput
-      ? [
-          {
-            ordinal: 0,
-            input: claimed.custom_input ?? '',
-            expectedOutput: null,
-            hidden: false,
-            weight: 1,
-          },
-        ]
+      ? own.map((input, ordinal) => ({ ordinal, input, expectedOutput: null, hidden: false, weight: 1 }))
       : snapshot.cases.filter((c) => formal || !c.hidden);
     if (
       program.leetcodeInput &&
@@ -787,11 +782,15 @@ const reminderTimer = setInterval(() => {
       await send().catch((error: unknown) => console.error(name, error instanceof Error ? error.message : 'unknown'));
   })().finally(() => (reminding = false));
 }, 600_000);
+// New-grad and intern openings from public ATS boards, about daily (lib/server/job-openings.ts): its
+// own timer, so a slow round of boards never holds back the reminders above.
+const jobsTimer = setInterval(() => void syncJobOpenings().catch(() => console.error('job openings sync failed')), 600_000);
 async function stop() {
   if (stopping) return;
   stopping = true;
   clearInterval(timer);
   clearInterval(reminderTimer);
+  clearInterval(jobsTimer);
   clearInterval(dispatchTimer);
   clearInterval(precompileTimer);
   for (const controller of controllers.values()) controller.abort();

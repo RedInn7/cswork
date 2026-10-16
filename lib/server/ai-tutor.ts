@@ -9,6 +9,7 @@ import { leetcodeContract } from './leetcode-mode';
 import { record } from './metrics';
 import { readJson } from './my-practice';
 import { getPublishedProblem } from './oj-problems';
+import { recordAid } from './practice-aids';
 import { getStudySourceStatement } from './study-library';
 
 /**
@@ -844,18 +845,19 @@ export async function handleAiTutor(request: Request, p: Person, kind: TutorKind
     messages = [{ role: 'user', content: `${context}\n\n${ask}${kind === 'tests' ? '' : ` Reply in ${language}.`}` }];
   }
   const system = kind === 'chat' && verdict.accepted ? CHAT_SOLVED : SYSTEM[kind];
-  if (format)
-    return json({
-      kind,
-      ...(await runAi(request, p, kind, messages, system, (raw) => {
+  const caps = kind === 'chat' && verdict.accepted ? SNIPPETS : CODE_CAPS[kind];
+  const reply = format
+    ? await runAi(request, p, kind, messages, system, (raw) => {
         const cases = parseCases(raw, format.parse);
         // None in the box's format (or cut off by max_tokens): a failed call, still spent.
         if (!cases.length) throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
         return { cases };
-      })),
-    });
-  const caps = kind === 'chat' && verdict.accepted ? SNIPPETS : CODE_CAPS[kind];
-  return json({ kind, ...(await runAi(request, p, kind, messages, system, textReply(kind, caps))) });
+      })
+    : await runAi(request, p, kind, messages, system, textReply(kind, caps));
+  // An answer before the first AC makes the solve assisted (lib/server/practice-aids.ts); a
+  // statement explained, or the complexity (only after an AC), gives nothing away.
+  if (kind !== 'explain' && kind !== 'complexity') recordAid(p.id, data.problemId, 'ai');
+  return json({ kind, ...reply });
 }
 
 /** The reply as text under `caps`; nothing left after tidying (all thinking, or a hint that was only code) is a failed call, still spent. */

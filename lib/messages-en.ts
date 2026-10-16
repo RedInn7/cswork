@@ -76,6 +76,14 @@ const EN: Record<string, string> = {
   视频不属于此章节: "This video doesn't belong to this lesson",
   没有需要保存的内容: 'Nothing to save',
   提交不存在: 'Submission not found',
+  // Private code review links (lib/server/code-reviews.ts); the notice title too
+  评审链接不存在或已关闭: 'This review link does not exist or was closed',
+  只能为正式提交生成评审链接: 'Review links are for submitted solutions only',
+  '未关闭的评审链接已达上限，请先关闭不用的链接': 'You have too many open review links. Close one you no longer need first',
+  行号超出代码范围: 'That line is outside the code',
+  这条评审链接的评论已达上限: 'This review link has reached its comment limit',
+  '今天生成的评审链接已达上限，请明天再试': "You've made today's maximum of review links. Try again tomorrow",
+  你的代码收到了新的评审意见: 'Your code got new review comments',
   更新不存在: 'Update not found',
   '此章节已有未发布草稿，请在课程管理中继续编辑':
     'This lesson already has an unpublished draft. Continue editing it in course management',
@@ -313,6 +321,7 @@ const EN: Record<string, string> = {
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
   这道题没有可用的参考解: 'This problem has no reference solution to compare with',
+  这道题暂不支持对拍: "Stress testing isn't available for this problem",
   评论不存在: 'Comment not found',
   题解接口不存在: 'Solutions endpoint not found',
   仅老师可以管理题解: 'Only instructors can moderate solutions',
@@ -385,6 +394,8 @@ const EN: Record<string, string> = {
   '今天的简历点评次数已用完，明天再来': "You've used today's resume reviews. Come back tomorrow",
   '请粘贴完整的简历文字（至少 80 个字符）': 'Paste your whole resume as text (at least 80 characters)',
   '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
+  // JD readiness checklist (lib/server/ai-jd.ts)
+  '请粘贴完整的职位描述（至少 80 个字符）': 'Paste the whole job description (at least 80 characters)',
   // AI-assisted round (lib/server/ai-rounds.ts, createProjectRun)
   练习任务不存在: 'Practice task not found',
   请先通过上一关: 'Pass the previous level first',
@@ -395,6 +406,11 @@ const EN: Record<string, string> = {
   '今天的 AI 作答点评次数已用完，明天再来': "You've used today's AI answer feedback. Come back tomorrow",
   '今天的职位描述分析次数已用完，明天再来': "You've used today's job description checks. Come back tomorrow",
   '比赛进行中，AI 结对暂停，赛后开放': 'The AI pair is paused while your contest runs; it reopens afterwards',
+  // Round review (lib/server/round-review.ts)
+  '对话过长，评估最多读取 24000 个字符': 'The conversation is too long; the review reads at most 24,000 characters',
+  '比赛或考试进行中，AI 评估暂停，结束后开放': 'AI reviews are paused while your contest or exam runs; they reopen afterwards',
+  '带回家作业没有 AI 结对可评估': 'Take-home assignments have no AI pair to review',
+  '先和 AI 结对聊几轮再评估': 'Ask the AI pair a few questions before asking for a review',
   // Answer and STAR story feedback (lib/server/ai-answer.ts)
   '这道题没有参考答案，不能 AI 点评': "This question has no reference answer, so AI feedback isn't available",
   '至少写 80 个字符再请求 AI 点评': 'Write at least 80 characters before asking for AI feedback',
@@ -594,6 +610,7 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   ],
   [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
   [/^关注的公司上线了 (\d+) 道新 OA 题$/, (n) => `${n} new OA ${n === '1' ? 'problem' : 'problems'} at companies you follow`],
+  [/^关注的公司有 (\d+) 条新动态$/, (n) => `${n} ${n === '1' ? 'update' : 'updates'} at companies you follow`],
   [/^(.+) 有新面经$/, (company) => `New interview report: ${company}`],
 ];
 

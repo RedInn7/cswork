@@ -197,6 +197,8 @@ void test('the digest goes to learners whose local hour it is, once a local day,
   accept(cara.id, 'lc-1', bj(11));
   accept(cara.id, 'lc-2', bj(13));
   accept(cara.id, 'lc-3', bj(14, 23)); // 23:00 Beijing is still the 14th there (15:00 UTC).
+  // A hint before lc-2's AC brings it back a day later, as on the progress page: due on the 14th too.
+  sqlite().prepare("INSERT INTO practice_aids(user_id,problem_id,kind,value,created_at) VALUES(?,'lc-2','hint',0,?)").run(cara.id, bj(13, 9));
   await withVapid(async () => {
     await call(cara, 'POST', 'oj/notify/subscription', { endpoint: 'https://fcm.googleapis.com/fcm/send/cara', on: true });
     Object.assign(process.env, { RESEND_API_KEY: 're_test', MAIL_FROM: 'CSWork <hi@cswork.test>' });
@@ -206,7 +208,7 @@ void test('the digest goes to learners whose local hour it is, once a local day,
       const n = notice(`rem:2026-10-15:${cara.id}`)!;
       assert.equal(n.kind, 'reminder');
       assert.equal(n.title, '今日学习提醒');
-      assert.equal(n.body, '1 道题到了复习时间 · 已连续打卡 3 天，今天还没有通过的题（本月还剩 1 次断签保护） · 今天的每日一题');
+      assert.equal(n.body, '2 道题到了复习时间 · 已连续打卡 3 天，今天还没有通过的题（本月还剩 1 次断签保护） · 今天的每日一题');
       assert.equal(n.href, '/?view=progress');
       assert.equal(notice(`rem:2026-10-15:${eve.id}`), undefined, 'an empty digest is not sent');
       assert.equal(notice(`rem:2026-10-15:${dan.id}`), undefined, 'noon in London');

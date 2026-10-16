@@ -4,7 +4,7 @@ import { seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
-import { ApplicationTracker } from '@/components/application-tracker';
+import { ApplicationTracker, KeepTrackerAdd } from '@/components/application-tracker';
 
 const copy = {
   en: {
@@ -70,6 +70,7 @@ export default async function TrackerPage() {
         <ApplicationTracker zh={zh} />
       ) : (
         <div className="resume-off">
+          <KeepTrackerAdd />
           <p>{c.signIn}</p>
           <a href="/?view=account">{c.signInLink} →</a>
         </div>

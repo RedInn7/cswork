@@ -5,6 +5,7 @@ import { CalendarPlus, ChevronDown, RefreshCw } from 'lucide-react';
 import { Button } from './ui/button';
 import { CompanyFollowButton } from './company-follow-button';
 import { classicList } from '@/lib/classic-lists';
+import { PLAN_TOPICS_PARAM } from '@/lib/jd-skills';
 import { SLOTS, type Slot } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
 import { ROUTE_SLUGS, STOP_NAMES, type RouteStop } from '@/lib/route-stops';
@@ -247,6 +248,18 @@ export function StudyPlan({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [editing, setEditing] = useState(false);
+  // Stops handed over in the URL (/career/jd's gaps): the form opens with them as its topics, unsaved.
+  const [handed, setHanded] = useState<string[] | null>(null);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const topics = url.searchParams.get(PLAN_TOPICS_PARAM)?.split(',').filter((slug) => ROUTE_SLUGS.includes(slug));
+    if (!topics?.length) return;
+    url.searchParams.delete(PLAN_TOPICS_PARAM);
+    window.history.replaceState(window.history.state, '', url);
+    // oxlint-disable-next-line react/react-compiler -- The URL is read only in the browser, after hydration.
+    setHanded(topics);
+    setEditing(true);
+  }, []);
   // How the week list groups (week / stop / difficulty) and orders stops; this browser remembers.
   const [view, setView] = useState<{ by: PlanGroupBy; order: PlanOrder }>({ by: 'week', order: 'plan' });
   useEffect(() => {
@@ -276,12 +289,17 @@ export function StudyPlan({
   const close = (next?: PlanGoal) => {
     if (next) onSave(next);
     setEditing(false);
+    setHanded(null);
     refocus.current = true;
   };
   if (editing)
     return (
       <PlanForm
-        goal={goal}
+        goal={
+          handed
+            ? { ...goal, topics: handed, startStop: Math.min(goal.startStop, ...handed.map((slug) => ROUTE_SLUGS.indexOf(slug))) }
+            : goal
+        }
         today={today || localDay()}
         stops={stops}
         english={english}
@@ -747,7 +765,7 @@ function PlanForm({
             </label>
           ))}
         </fieldset>
-        <details className="route-plan-topics route-plan-wide">
+        <details className="route-plan-topics route-plan-wide" open={goal.topics.length > 0 || undefined}>
           <summary>
             {t('知识点', 'Topics')}
             <span>

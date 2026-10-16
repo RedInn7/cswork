@@ -1,0 +1,361 @@
+{
+  "lc-9": {
+    "zh": "不把整数转成字符串",
+    "en": "Without converting the integer to a string",
+    "banned": {
+      "python": ["str", "repr", "format", "join"],
+      "java": ["toString", "valueOf", "StringBuilder", "\"\" +", "+ \"\""],
+      "cpp": ["to_string", "stringstream", "ostringstream", "sprintf", "snprintf"],
+      "go": ["strconv.Itoa", "strconv.FormatInt", "fmt.Sprint", "fmt.Sprintf"]
+    }
+  },
+  "lc-28": {
+    "zh": "自己实现匹配：不用 find、indexOf 这类现成的子串查找",
+    "en": "Implement the matching yourself: no find, indexOf or other built-in substring search",
+    "banned": {
+      "python": [".find", ".index", ".rfind", ".rindex", ".partition", ".split", "re."],
+      "java": ["indexOf", "lastIndexOf", "contains", "matches", "split", "Pattern"],
+      "cpp": [".find", ".rfind", "strstr", "search", "regex"],
+      "go": ["strings.Index", "strings.Contains", "strings.Split", "strings.Cut", "regexp."]
+    }
+  },
+  "lc-34": {
+    "zh": "自己写二分：不用 bisect、lower_bound 这类库函数",
+    "en": "Write the binary search yourself: no bisect, lower_bound or similar library calls",
+    "banned": {
+      "python": ["bisect", "bisect_left", "bisect_right", "insort"],
+      "java": ["binarySearch"],
+      "cpp": ["lower_bound", "upper_bound", "equal_range", "binary_search"],
+      "go": ["sort.Search", "sort.SearchInts", "slices.BinarySearch", "slices.BinarySearchFunc"]
+    }
+  },
+  "lc-35": {
+    "zh": "自己写二分：不用 bisect、lower_bound 这类库函数",
+    "en": "Write the binary search yourself: no bisect, lower_bound or similar library calls",
+    "banned": {
+      "python": ["bisect", "bisect_left", "bisect_right", "insort"],
+      "java": ["binarySearch"],
+      "cpp": ["lower_bound", "upper_bound", "equal_range", "binary_search"],
+      "go": ["sort.Search", "sort.SearchInts", "slices.BinarySearch", "slices.BinarySearchFunc"]
+    }
+  },
+  "lc-41": {
+    "zh": "O(n) 时间、O(1) 额外空间：不排序，也不用哈希表或集合",
+    "en": "O(n) time and O(1) extra space: no sorting, hash maps or sets",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "sorted", ".sort"],
+      "java": ["Set", "HashSet", "TreeSet", "Map", "HashMap", "TreeMap", ".sort", ".sorted"],
+      "cpp": ["set", "unordered_set", "multiset", "map", "unordered_map", "sort", "stable_sort", "partial_sort"],
+      "go": ["map[", "sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-46": {
+    "zh": "自己回溯：不用 itertools.permutations 或 next_permutation",
+    "en": "Backtrack yourself: no itertools.permutations or next_permutation",
+    "banned": {
+      "python": ["itertools", "permutations"],
+      "cpp": ["next_permutation", "prev_permutation"]
+    }
+  },
+  "lc-48": {
+    "zh": "原地旋转，不另开一个矩阵",
+    "en": "Rotate in place without allocating another matrix",
+    "banned": {
+      "python": ["zip", "deepcopy", "copy", "[:]", "[::-1]", "list("],
+      "java": ["new int", "clone", "copyOf"],
+      "cpp": ["= matrix;", "copy("],
+      "go": ["make("]
+    }
+  },
+  "lc-69": {
+    "zh": "不用 sqrt、pow、** 这类现成的开方或幂运算",
+    "en": "No sqrt, pow, ** or other built-in root and power functions",
+    "banned": {
+      "python": ["sqrt", "isqrt", "pow", "**", "**=", "exp", "log", "log2", "log10"],
+      "java": ["sqrt", "pow", "cbrt", "exp", "log", "log10"],
+      "cpp": ["sqrt", "sqrtl", "sqrtf", "pow", "powl", "cbrt", "exp", "log", "log2", "log10"],
+      "go": ["math.Sqrt", "math.Pow", "math.Cbrt", "math.Exp", "math.Log", "math.Log2", "math.Log10"]
+    }
+  },
+  "lc-74": {
+    "zh": "自己写二分：不用 bisect、lower_bound 这类库函数",
+    "en": "Write the binary search yourself: no bisect, lower_bound or similar library calls",
+    "banned": {
+      "python": ["bisect", "bisect_left", "bisect_right", "insort"],
+      "java": ["binarySearch"],
+      "cpp": ["lower_bound", "upper_bound", "equal_range", "binary_search"],
+      "go": ["sort.Search", "sort.SearchInts", "slices.BinarySearch", "slices.BinarySearchFunc"]
+    }
+  },
+  "lc-75": {
+    "zh": "不用库函数排序",
+    "en": "No library sort",
+    "banned": {
+      "python": ["sorted", ".sort"],
+      "java": [".sort", ".sorted"],
+      "cpp": ["sort", "stable_sort", "partial_sort"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-78": {
+    "zh": "自己枚举：不用 itertools.combinations 这类现成的组合生成",
+    "en": "Enumerate yourself: no itertools.combinations or other ready-made generators",
+    "banned": {
+      "python": ["itertools", "combinations", "chain", "product"]
+    }
+  },
+  "lc-88": {
+    "zh": "不排序，用 O(m + n) 的双指针合并",
+    "en": "No sorting: merge with two pointers in O(m + n)",
+    "banned": {
+      "python": ["sorted", ".sort", "merge"],
+      "java": [".sort", ".sorted"],
+      "cpp": ["sort", "stable_sort", "partial_sort", "inplace_merge", "merge"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-128": {
+    "zh": "O(n) 时间：不排序，也不用堆或有序集合",
+    "en": "O(n) time: no sorting, heaps or ordered sets",
+    "banned": {
+      "python": ["sorted", ".sort", "heapq", "heapify", "heappush"],
+      "java": [".sort", ".sorted", "PriorityQueue", "TreeSet", "TreeMap"],
+      "cpp": ["sort", "stable_sort", "partial_sort", "priority_queue", "set", "multiset", "map"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc", "heap."]
+    }
+  },
+  "lc-136": {
+    "zh": "O(1) 额外空间：不用哈希表、集合计数，也不排序",
+    "en": "O(1) extra space: no hash maps or sets, and no sorting",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "sorted", ".sort"],
+      "java": ["Set", "HashSet", "TreeSet", "Map", "HashMap", "TreeMap", ".sort", ".sorted"],
+      "cpp": ["set", "unordered_set", "multiset", "map", "unordered_map", "sort", "stable_sort", "partial_sort"],
+      "go": ["map[", "sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-141": {
+    "zh": "O(1) 额外空间：不用集合或数组记录走过的结点",
+    "en": "O(1) extra memory: no set, map or list of visited nodes",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "[]", ".append", "list("],
+      "java": ["Set", "HashSet", "Map", "HashMap", "List", "ArrayList"],
+      "cpp": ["set", "unordered_set", "map", "unordered_map", "vector"],
+      "go": ["map[", "append", "make("]
+    }
+  },
+  "lc-142": {
+    "zh": "O(1) 额外空间：不用集合或数组记录走过的结点",
+    "en": "O(1) extra memory: no set, map or list of visited nodes",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "[]", ".append", "list("],
+      "java": ["Set", "HashSet", "Map", "HashMap", "List", "ArrayList"],
+      "cpp": ["set", "unordered_set", "map", "unordered_map", "vector"],
+      "go": ["map[", "append", "make("]
+    }
+  },
+  "lc-146": {
+    "zh": "自己维护使用顺序：不用 OrderedDict 或 LinkedHashMap",
+    "en": "Track recency yourself: no OrderedDict or LinkedHashMap",
+    "banned": {
+      "python": ["OrderedDict", "move_to_end", "lru_cache"],
+      "java": ["LinkedHashMap", "removeEldestEntry"]
+    }
+  },
+  "lc-160": {
+    "zh": "O(1) 额外空间：不用集合或数组记录走过的结点",
+    "en": "O(1) extra memory: no set, map or list of visited nodes",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "[]", ".append", "list("],
+      "java": ["Set", "HashSet", "Map", "HashMap", "List", "ArrayList"],
+      "cpp": ["set", "unordered_set", "map", "unordered_map", "vector"],
+      "go": ["map[", "append", "make("]
+    }
+  },
+  "lc-169": {
+    "zh": "O(1) 额外空间：不排序，也不用哈希表计数",
+    "en": "O(1) extra space: no sorting and no hash-map counting",
+    "banned": {
+      "python": ["sorted", ".sort", "set", "dict", "{", "Counter", "defaultdict", "mode"],
+      "java": [".sort", ".sorted", "Set", "HashSet", "TreeSet", "Map", "HashMap", "TreeMap", "groupingBy"],
+      "cpp": ["sort", "stable_sort", "partial_sort", "set", "unordered_set", "multiset", "map", "unordered_map", "nth_element"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc", "map["]
+    }
+  },
+  "lc-190": {
+    "zh": "只用位运算：不转成字符串，也不用现成的位反转",
+    "en": "Bit operations only: no string conversion and no built-in bit reversal",
+    "banned": {
+      "python": ["bin", "format", "zfill", "[::-1]", "reversed", "int("],
+      "java": ["Integer.reverse", "toBinaryString", "parseInt", "parseUnsignedInt", "StringBuilder"],
+      "cpp": ["bitset", "__builtin_bitreverse32", "to_string", "stoul", "stoi"],
+      "go": ["bits.Reverse", "bits.Reverse32", "strconv.", "fmt.Sprintf"]
+    }
+  },
+  "lc-191": {
+    "zh": "不用内置的数 1 函数（bin().count、bit_count、__builtin_popcount 等）",
+    "en": "No built-in bit counting (bin().count, bit_count, __builtin_popcount and the like)",
+    "banned": {
+      "python": ["bin", "bit_count", "format"],
+      "java": ["bitCount", "toBinaryString", "toString"],
+      "cpp": ["__builtin_popcount", "__builtin_popcountl", "__builtin_popcountll", "popcount", "bitset"],
+      "go": ["bits.OnesCount", "bits.OnesCount32", "bits.OnesCount64", "strconv.FormatInt", "strconv.FormatUint", "fmt.Sprintf"]
+    }
+  },
+  "lc-215": {
+    "zh": "不排序，也不用 heapq.nlargest、nth_element 这类现成的取第 k 大",
+    "en": "No sorting, and no ready-made top-k helpers such as heapq.nlargest or nth_element",
+    "banned": {
+      "python": ["sorted", ".sort", "nlargest", "nsmallest"],
+      "java": [".sort", ".sorted"],
+      "cpp": ["sort", "stable_sort", "partial_sort", "nth_element"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-224": {
+    "zh": "不用 eval 这类直接计算表达式字符串的函数",
+    "en": "No eval or anything else that evaluates the expression string for you",
+    "banned": {
+      "python": ["eval", "exec", "compile", "literal_eval"],
+      "java": ["ScriptEngine", "ScriptEngineManager"]
+    }
+  },
+  "lc-225": {
+    "zh": "只用队列的标准操作：从队尾入队、从队头出队或查看、判空和取大小",
+    "en": "Only standard queue operations: push to the back, pop or peek at the front, size and is-empty",
+    "banned": {
+      "python": [".pop()", "[-1]", "appendleft", "rotate", "reversed", "[::-1]", ".reverse", ".insert"],
+      "java": ["Stack", "Deque", ".push", ".pop", ".pollLast", ".peekLast", ".removeLast", ".getLast", ".addFirst", ".offerFirst"],
+      "cpp": ["deque", "stack", "vector", "list", ".back", ".pop_back", ".push_front"],
+      "go": ["[len(", "[:len(", "list.New", ".PushFront", ".Back", ".Remove"]
+    }
+  },
+  "lc-227": {
+    "zh": "不用 eval 这类直接计算表达式字符串的函数",
+    "en": "No eval or anything else that evaluates the expression string for you",
+    "banned": {
+      "python": ["eval", "exec", "compile", "literal_eval"],
+      "java": ["ScriptEngine", "ScriptEngineManager"]
+    }
+  },
+  "lc-231": {
+    "zh": "不用循环，也不借助数 1 函数或对数",
+    "en": "No loops, bit-count helpers or logarithms",
+    "banned": {
+      "python": ["for", "while", "bin", "bit_count", "log", "log2"],
+      "java": ["for", "while", "bitCount", "toBinaryString", "log"],
+      "cpp": ["for", "while", "goto", "__builtin_popcount", "popcount", "bitset", "log", "log2"],
+      "go": ["for", "goto", "bits.OnesCount", "math.Log2"]
+    }
+  },
+  "lc-232": {
+    "zh": "只用栈的标准操作：压入栈顶、弹出或查看栈顶、判空和取大小",
+    "en": "Only standard stack operations: push to the top, pop or peek at the top, size and is-empty",
+    "banned": {
+      "python": ["deque", "popleft", "appendleft", ".pop(0", ".insert", "[0]", "[1:", "[::-1]", "reversed", ".reverse"],
+      "java": ["Queue", "LinkedList", ".offer", ".offerLast", ".addLast", ".pollLast", ".peekLast", ".removeLast", ".getLast", ".getFirst", ".get(", ".remove(0", ".firstElement", ".elementAt"],
+      "cpp": ["queue", "deque", "list", "vector", ".front", ".pop_front", ".push_front"],
+      "go": ["[0]", "[1:", "list.New", ".PushFront", ".PushBack", ".Front", ".Back", ".Remove"]
+    }
+  },
+  "lc-234": {
+    "zh": "O(1) 额外空间：不把结点值复制到数组、栈或字符串里",
+    "en": "O(1) extra space: don't copy the values into an array, stack or string",
+    "banned": {
+      "python": ["[]", ".append", "list(", "deque", "[::-1]", "str", "join", "set", "{"],
+      "java": ["List", "ArrayList", "Stack", "Deque", "ArrayDeque", "LinkedList", "StringBuilder", "new int"],
+      "cpp": ["vector", "stack", "deque", "string", "to_string"],
+      "go": ["append", "make(", "strings.Builder"]
+    }
+  },
+  "lc-238": {
+    "zh": "不用除法",
+    "en": "No division",
+    "banned": {
+      "python": ["/", "/=", "//", "//=", "**", "pow", "divmod", "truediv", "floordiv"],
+      "java": ["/", "/=", "divideExact", "floorDiv"],
+      "cpp": ["/", "/=", "div", "ldiv"],
+      "go": ["/", "/="]
+    }
+  },
+  "lc-260": {
+    "zh": "O(1) 额外空间：不用哈希表、集合计数，也不排序",
+    "en": "O(1) extra space: no hash maps or sets, and no sorting",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "sorted", ".sort"],
+      "java": ["Set", "HashSet", "TreeSet", "Map", "HashMap", "TreeMap", ".sort", ".sorted"],
+      "cpp": ["set", "unordered_set", "multiset", "map", "unordered_map", "sort", "stable_sort", "partial_sort"],
+      "go": ["map[", "sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-283": {
+    "zh": "原地完成，不复制数组",
+    "en": "In place, without copying the array",
+    "banned": {
+      "python": ["sorted", ".sort", "[:]", ".remove", ".append", ".insert", ".pop", "list(", "filter"],
+      "java": [".sort", "new int", "ArrayList", "clone", "copyOf"],
+      "cpp": ["sort", "stable_sort", "stable_partition", "remove", "erase", "push_back", "insert"],
+      "go": ["append", "make(", "sort.", "slices."]
+    }
+  },
+  "lc-287": {
+    "zh": "不改数组、只用 O(1) 额外空间：不排序，也不用哈希表或集合",
+    "en": "Without modifying the array and in O(1) extra space: no sorting, hash maps or sets",
+    "banned": {
+      "python": ["set", "dict", "{", "Counter", "defaultdict", "sorted", ".sort"],
+      "java": ["Set", "HashSet", "TreeSet", "Map", "HashMap", "TreeMap", ".sort", ".sorted"],
+      "cpp": ["set", "unordered_set", "multiset", "map", "unordered_map", "sort", "stable_sort", "partial_sort"],
+      "go": ["map[", "sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-338": {
+    "zh": "O(n) 完成，不用内置的数 1 函数（bin().count、__builtin_popcount 等）",
+    "en": "O(n), without built-in bit counting (bin().count, __builtin_popcount and the like)",
+    "banned": {
+      "python": ["bin", "bit_count", "format"],
+      "java": ["bitCount", "toBinaryString", "toString"],
+      "cpp": ["__builtin_popcount", "__builtin_popcountl", "__builtin_popcountll", "popcount", "bitset"],
+      "go": ["bits.OnesCount", "bits.OnesCount32", "bits.OnesCount64", "strconv.FormatInt", "strconv.FormatUint", "fmt.Sprintf"]
+    }
+  },
+  "lc-344": {
+    "zh": "原地交换、O(1) 额外空间，不用现成的反转",
+    "en": "Swap in place with O(1) extra space; no built-in reverse",
+    "banned": {
+      "python": [".reverse", "reversed", "[::-1]", "[:]"],
+      "java": ["reverse", "StringBuilder", "new char"],
+      "cpp": ["reverse", "rbegin", "swap_ranges"],
+      "go": ["slices.Reverse", "make(", "append"]
+    }
+  },
+  "lc-371": {
+    "zh": "不用 + 和 -（也不用 ++、--、+=、-=）",
+    "en": "No + or - (and no ++, --, += or -=)",
+    "banned": {
+      "python": ["+", "+=", "-", "-=", "sum"],
+      "java": ["+", "++", "+=", "-", "--", "-=", "addExact", "subtractExact", "sum"],
+      "cpp": ["+", "++", "+=", "-", "--", "-=", "plus", "minus", "accumulate"],
+      "go": ["+", "++", "+=", "-", "--", "-="]
+    }
+  },
+  "lc-912": {
+    "zh": "不用内置排序，自己实现一种 O(n log n) 的排序",
+    "en": "No built-in sort: implement an O(n log n) sort yourself",
+    "banned": {
+      "python": ["sorted", ".sort"],
+      "java": [".sort", ".sorted"],
+      "cpp": ["sort", "stable_sort", "partial_sort", "sort_heap", "qsort"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  },
+  "lc-977": {
+    "zh": "不排序，O(n) 完成",
+    "en": "No sorting: do it in O(n)",
+    "banned": {
+      "python": ["sorted", ".sort"],
+      "java": [".sort", ".sorted"],
+      "cpp": ["sort", "stable_sort", "partial_sort"],
+      "go": ["sort.", "slices.Sort", "slices.SortFunc", "slices.SortStableFunc"]
+    }
+  }
+}

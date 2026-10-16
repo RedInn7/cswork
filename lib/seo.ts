@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { classicLists } from './classic-lists';
 import { ROUTE_SECTIONS } from './route-stops';
 import { GUIDE_CHAPTERS, guidePath } from './career-guide';
-import { AI_TASK_SLUGS, ICA_TASK_SLUGS } from './ai-coding';
+import { AI_TASK_SLUGS, ICA_TASK_SLUGS, TAKE_HOME_SLUGS } from './ai-coding';
 
 // Public URLs must not follow request hosts or private deployment configuration.
 export const SITE_URL = 'https://cswork.org';
@@ -177,9 +177,13 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   ...GUIDE_CHAPTERS.map((chapter) => ({ path: guidePath(chapter.slug) })),
   { path: '/career/resume' },
   { path: '/career/resume/builder' },
+  { path: '/career/jd' },
+  { path: '/career/jobs' },
   { path: '/career/visa-timeline' },
   { path: '/ai-assisted' },
   ...AI_TASK_SLUGS.map((slug) => ({ path: `/ai-assisted/${slug}` })),
+  { path: '/take-home' },
+  ...TAKE_HOME_SLUGS.map((slug) => ({ path: `/take-home/${slug}` })),
   { path: '/certify' },
   { path: '/oa/mcq' },
   { path: '/oa/ica' },

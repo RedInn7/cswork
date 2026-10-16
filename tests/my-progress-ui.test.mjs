@@ -49,6 +49,8 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       languages: ['python'],
       acAt: [],
       stop: null,
+      help: 'hint',
+      solveSeconds: null,
     },
     {
       problemId: 'lc-1',
@@ -61,6 +63,9 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       languages: ['cpp'],
       acAt: [now - 40 * day],
       stop: 'hash-counting',
+      // The editorial before the first AC: back after a day first, on a five-step ladder.
+      help: 'solution',
+      solveSeconds: 1200,
     },
   ];
   const searches = [];
@@ -71,7 +76,10 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     if (url.endsWith('/oj/history')) return Response.json({ items: history });
     // Two self-rated AI interviews: off by one, then spot on.
     if (url.endsWith('/oj/ai/interview-calibration'))
-      return Response.json({ calibration: { sessions: [{ gap: 1, bias: 1 }, { gap: 0, bias: 0 }], gap: 0.5, bias: 0.5 } });
+      return Response.json({
+        calibration: { sessions: [{ gap: 1, bias: 1 }, { gap: 0, bias: 0 }], gap: 0.5, bias: 0.5 },
+        trend: { communication: [4, 1, 4], star: [1, 3] },
+      });
     // Every daily problem of February 2026, from the points ledger.
     if (url.endsWith('/oj/points/daily'))
       return Response.json({ days: Array.from({ length: 28 }, (_, i) => `2026-02-${String(i + 1).padStart(2, '0')}`) });
@@ -162,12 +170,22 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     const calibration = document.getElementById('calibration-title').parentElement.textContent;
     assert.match(calibration, /Last 2 AI interviews, mean gap 0\.5 points · You overrate: 0\.5 above the interviewer/);
     assert.match(calibration, /Gap per interview, oldest first: 1\.0 → 0\.0/);
+    // Each dimension's scores as a small line, in rubric order, with the latest score.
+    const trend = [...document.querySelectorAll('.trend-list li')];
+    assert.deepEqual(trend.map((li) => li.textContent), ['Communication4/4 3 interviews', 'Structure (STAR)3/4 2 interviews']);
+    assert.equal(trend[0].querySelector('svg').getAttribute('aria-label'), 'Communication: 4 → 1 → 4');
+    assert.equal(trend[0].querySelector('polyline').getAttribute('points'), '3,3 48,23 93,3');
     assert.deepEqual(
       [...document.querySelectorAll('[role="tab"] .progress-count')].map((n) => n.textContent),
       ['2', '2', '1', '1', '1', '1', '2'],
       'history, mistakes, due, starred (problems only), redo, notes, badges earned (a stop and a month)',
     );
     assert.deepEqual(titles(), ['Acme OA', '1. Two Sum']);
+    assert.match(document.querySelectorAll('.progress-detail')[1].textContent, /Editorial or AI used · 20 min to solve/);
+    // Solve quality: one solve, with help, after three failures; 20 minutes against Easy's 15.
+    const quality = document.getElementById('solve-quality-title').parentElement.textContent;
+    assert.match(quality, /Solved on your own 0% \(0 of 1\) · First-try AC 0%/);
+    assert.match(quality, /Median first-solve time \(interview budget\): Easy 20 min \(15\), over budget/);
     assert.ok(!!document.querySelector('.progress-row .study-star'), 'starred rows show the star');
     assert.match(document.querySelectorAll('.progress-row strong')[1].textContent, /\(starred\)/);
     assert.match(document.querySelector('.progress-stop').textContent, /Hashing/);
@@ -187,9 +205,17 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(tab('mistakes').getAttribute('aria-selected'), 'true');
     assert.ok(document.activeElement === tab('mistakes'));
     assert.deepEqual(titles(), ['Acme OA', '1. Two Sum']);
+    // Beside the wrong book: solves made with help (an unsolved problem is not one yet).
+    const view = document.querySelector('.progress-filters select');
+    await act(async () => {
+      view.value = 'assisted';
+      view.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    assert.deepEqual(titles(), ['1. Two Sum']);
+    assert.match(document.querySelector('.progress-detail').textContent, /Editorial or AI used · Solved/);
     await act(async () => tab('review').click());
     assert.deepEqual(titles(), ['1. Two Sum']);
-    assert.match(document.querySelector('.progress-detail').textContent, /overdue/);
+    assert.match(document.querySelector('.progress-detail').textContent, /Review 1 of 5 · Editorial or AI used · \d+ days overdue/);
     await act(async () => tab('starred').click());
     assert.deepEqual(titles(), ['1. Two Sum'], 'the Starred tab lists star marks');
     await act(async () => tab('redo').click());
@@ -262,4 +288,30 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;
   }
+});
+
+test('solve quality flags over budget on the minutes it shows', async () => {
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { SolveQuality } = await import('../components/solve-quality.tsx');
+  const solved = (problemId, solveSeconds) => ({
+    problemId,
+    attempts: 1,
+    firstAt: 1,
+    lastAt: 1,
+    firstAcAt: 1,
+    failuresBeforeAc: 0,
+    lastStatus: 'accepted',
+    languages: ['python'],
+    acAt: [1],
+    stop: null,
+    help: 'none',
+    solveSeconds,
+  });
+  const text = (history) =>
+    renderToStaticMarkup(
+      createElement(SolveQuality, { history, difficultyOf: () => '中等', english: true }),
+    ).replace(/<[^>]+>/g, '');
+  // A median of 1501s shows as 25 min against 25: not over. 1531s shows as 26: over.
+  assert.match(text([solved('a', 1000), solved('b', 2002)]), /Medium 25 min \(25\)(?!, over budget)/);
+  assert.match(text([solved('a', 1531)]), /Medium 26 min \(25\), over budget/);
 });

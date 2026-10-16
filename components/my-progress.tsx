@@ -8,12 +8,14 @@ import { verdictNames } from '@/lib/oj-client';
 import { problemTitle, trackLanguageOf } from '@/lib/problems';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { STOP_NAMES } from '@/lib/route-stops';
+import { RUBRIC, type RubricId } from '@/lib/mock-interview-feedback';
 import {
+  assisted,
   dueReviews,
-  REVIEW_LADDER,
   wrongBook,
   type PracticeHistoryItem,
 } from '@/lib/practice-review';
+import { SolveQuality } from './solve-quality';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
@@ -76,23 +78,73 @@ const source = (id: string): (typeof SOURCES)[number] | 'course' =>
   trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
 
 type Calibration = { sessions: { gap: number; bias: number }[]; gap: number; bias: number };
+type Trend = Partial<Record<RubricId, number[]>>;
+const SPARK_W = 96,
+  SPARK_H = 26,
+  SPARK_PAD = 3;
+/** One dimension's 1–4 scores, oldest first, as a small line (the same polyline drawing as RatingCurve). */
+function Sparkline({ scores, label }: { scores: number[]; label: string }) {
+  const x = (i: number) => SPARK_PAD + (i / Math.max(1, scores.length - 1)) * (SPARK_W - 2 * SPARK_PAD);
+  const y = (n: number) => SPARK_PAD + ((4 - n) / 3) * (SPARK_H - 2 * SPARK_PAD);
+  return (
+    <svg className="trend-spark" viewBox={`0 0 ${SPARK_W} ${SPARK_H}`} role="img" aria-label={label}>
+      <polyline points={scores.map((n, i) => `${x(i)},${y(n)}`).join(' ')} />
+      <circle cx={x(scores.length - 1)} cy={y(scores[scores.length - 1])} r={3} />
+    </svg>
+  );
+}
+/** Each rubric dimension's last 20 AI interview scores, under the calibration. */
+function InterviewTrend({ trend, english }: { trend: Trend; english: boolean }) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const dims = RUBRIC.filter((r) => trend[r.id]);
+  if (!dims.length) return null;
+  return (
+    <section className="cloud-mocks" aria-labelledby="trend-title">
+      <div className="cloud-head">
+        <h2 id="trend-title">{t('各维度走势', 'Scores by dimension')}</h2>
+        <p>{t('每个维度最近 20 场 AI 面试的得分，从旧到新，满分 4', 'Each dimension over its last 20 AI interviews, oldest first, out of 4')}</p>
+      </div>
+      <ul className="trend-list">
+        {dims.map((r) => {
+          const scores = trend[r.id]!;
+          const name = english ? r.name[1] : r.name[0];
+          return (
+            <li key={r.id}>
+              <span>{name}</span>
+              <Sparkline scores={scores} label={`${name}: ${scores.join(' → ')}`} />
+              <span>
+                <b>{scores[scores.length - 1]}</b>/4 <small>{t(`${scores.length} 场`, `${scores.length} interviews`)}</small>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
 /**
  * How the learner's self-assessment before an AI interview report compares with the report, over
- * the last 10 self-rated interviews (GET oj/ai/interview-calibration). Nothing until there is one.
+ * the last 10 self-rated interviews (GET oj/ai/interview-calibration), then each dimension's
+ * trend. Nothing until there is one.
  */
 function InterviewCalibration({ english }: { english: boolean }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [data, setData] = useState<Calibration | null>(null);
+  const [trend, setTrend] = useState<Trend>({});
   useEffect(() => {
     let live = true;
-    api<{ calibration: Calibration | null }>('oj/ai/interview-calibration')
-      .then((r) => live && setData(r.calibration))
+    api<{ calibration: Calibration | null; trend?: Trend }>('oj/ai/interview-calibration')
+      .then((r) => {
+        if (!live) return;
+        setData(r.calibration);
+        setTrend(r.trend ?? {});
+      })
       .catch(() => {});
     return () => {
       live = false;
     };
   }, []);
-  if (!data) return null;
+  if (!data) return <InterviewTrend trend={trend} english={english} />;
   const f = (x: number) => x.toFixed(1);
   // Within a quarter point either way reads as calibrated.
   const lean =
@@ -102,21 +154,24 @@ function InterviewCalibration({ english }: { english: boolean }) {
         ? t(`偏低估：自评平均比面试官低 ${f(-data.bias)} 分`, `You underrate: ${f(-data.bias)} below the interviewer on average`)
         : t('自评和面试官基本一致', "Your ratings match the interviewer's");
   return (
-    <section className="cloud-mocks" aria-labelledby="calibration-title">
-      <div className="cloud-head">
-        <h2 id="calibration-title">{t('自评校准', 'Self-assessment calibration')}</h2>
-        <p>
-          {t(`最近 ${data.sessions.length} 次 AI 面试，平均差 `, `Last ${data.sessions.length} AI interviews, mean gap `)}
-          <b>{f(data.gap)}</b>
-          {t(' 分 · ', ' points · ')}
-          {lean}
-        </p>
-        <p>
-          {t('每次的平均差（从旧到新）：', 'Gap per interview, oldest first: ')}
-          {data.sessions.map((s) => f(s.gap)).join(' → ')}
-        </p>
-      </div>
-    </section>
+    <>
+      <section className="cloud-mocks" aria-labelledby="calibration-title">
+        <div className="cloud-head">
+          <h2 id="calibration-title">{t('自评校准', 'Self-assessment calibration')}</h2>
+          <p>
+            {t(`最近 ${data.sessions.length} 次 AI 面试，平均差 `, `Last ${data.sessions.length} AI interviews, mean gap `)}
+            <b>{f(data.gap)}</b>
+            {t(' 分 · ', ' points · ')}
+            {lean}
+          </p>
+          <p>
+            {t('每次的平均差（从旧到新）：', 'Gap per interview, oldest first: ')}
+            {data.sessions.map((s) => f(s.gap)).join(' → ')}
+          </p>
+        </div>
+      </section>
+      <InterviewTrend trend={trend} english={english} />
+    </>
   );
 }
 
@@ -141,6 +196,8 @@ export function MyProgress({
   const [origin, setOrigin] = useState('');
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
+  // The Mistakes tab's filter: '' the wrong book, 'assisted' solves made with help.
+  const [mistakeView, setMistakeView] = useState('');
   // The public profile, when there is one: earned badges can be featured on it.
   const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string>; recapYears: number[] } | null>(null);
   const [featureError, setFeatureError] = useState('');
@@ -297,6 +354,13 @@ export function MyProgress({
   };
   const tried = (item: PracticeHistoryItem) =>
     t(`提交 ${item.attempts} 次`, `${item.attempts} submission${item.attempts > 1 ? 's' : ''}`);
+  const helped = (item: PracticeHistoryItem) =>
+    item.help === 'solution'
+      ? [t('看过题解或 AI', 'Editorial or AI used')]
+      : item.help === 'hint'
+        ? [t('看过提示', 'Hints used')]
+        : [];
+  const mins = (seconds: number) => Math.max(1, Math.round(seconds / 60));
   const sourceName = (id: string) =>
     ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), course: t('课程练习', 'Course') })[
       source(id)
@@ -464,6 +528,8 @@ export function MyProgress({
                 verdict(item.lastStatus),
                 tried(item),
                 item.languages.join(' / '),
+                ...helped(item),
+                ...(item.solveSeconds ? [t(`用时 ${mins(item.solveSeconds)} 分钟`, `${mins(item.solveSeconds)} min to solve`)] : []),
                 t(`最近 ${date(item.lastAt)}`, `Last ${date(item.lastAt)}`),
               ],
             })),
@@ -474,37 +540,63 @@ export function MyProgress({
         </>
       );
     }
-    if (tab === 'mistakes')
-      return list(
-        mistakes.map((item) => ({
-          id: item.problemId,
-          detail: item.firstAcAt
-            ? [
-                t(
-                  `通过前失败 ${item.failuresBeforeAc} 次`,
-                  `${item.failuresBeforeAc} failures before AC`,
-                ),
-                t(`${date(item.firstAcAt)} 通过`, `Solved ${date(item.firstAcAt)}`),
-              ]
-            : [t(`最近：${verdict(item.lastStatus)}`, `Last: ${verdict(item.lastStatus)}`), tried(item)],
-        })),
-        ['错题本是空的：没有未通过的题，也没有失败两次以上才过的题。', 'No mistakes to revisit: nothing unsolved, nothing that took two or more failures.'],
+    if (tab === 'mistakes') {
+      const shown = mistakeView
+        ? data.history.filter((item) => item.firstAcAt && assisted(item))
+        : mistakes;
+      return (
+        <>
+          <fieldset className="study-filters progress-filters">
+            <legend className="sr-only">{t('筛选错题', 'Filter mistakes')}</legend>
+            <label>
+              {t('显示', 'Show')}
+              <select value={mistakeView} onChange={(e) => setMistakeView(e.target.value)}>
+                <option value="">{t('错题本', 'Mistakes')}</option>
+                <option value="assisted">{t('借助提示通过', 'Solved with help')}</option>
+              </select>
+            </label>
+            <output className="progress-filter-count">
+              {t(`${shown.length} 道题`, `${shown.length} problems`)}
+            </output>
+          </fieldset>
+          {list(
+            shown.map((item) => ({
+              id: item.problemId,
+              detail: item.firstAcAt
+                ? [
+                    ...(mistakeView
+                      ? helped(item)
+                      : [t(`通过前失败 ${item.failuresBeforeAc} 次`, `${item.failuresBeforeAc} failures before AC`)]),
+                    t(`${date(item.firstAcAt)} 通过`, `Solved ${date(item.firstAcAt)}`),
+                  ]
+                : [t(`最近：${verdict(item.lastStatus)}`, `Last: ${verdict(item.lastStatus)}`), tried(item)],
+            })),
+            mistakeView
+              ? ['还没有借助提示通过的题：通过前看过第 2 条起的提示、打开过题解或用过 AI 助教的题会列在这里。', 'No solves with help: problems solved after hint 2 or later, the Editorial tab or the AI tutor land here.']
+              : ['错题本是空的：没有未通过的题，也没有失败两次以上才过的题。', 'No mistakes to revisit: nothing unsolved, nothing that took two or more failures.'],
+          )}
+        </>
       );
+    }
     if (tab === 'review')
       return list(
-        due.map(({ item, level, dueAt }) => {
+        due.map(({ item, level, steps, dueAt }) => {
           const late = Math.floor((data.now - dueAt) / DAY);
           return {
             id: item.problemId,
             detail: [
-              t(`第 ${level}/${REVIEW_LADDER.length} 次复习`, `Review ${level} of ${REVIEW_LADDER.length}`),
+              t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`),
+              ...helped(item),
               late > 0
                 ? t(`逾期 ${late} 天`, `${late} day${late > 1 ? 's' : ''} overdue`)
                 : t('今天到期', 'Due today'),
             ],
           };
         }),
-        ['今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你。', 'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days.'],
+        [
+          '今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你；借助提示通过的题会先在 1 天后多复习一次。',
+          'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first.',
+        ],
       );
     if (tab === 'notes') return notesPanel();
     return list(
@@ -701,6 +793,9 @@ export function MyProgress({
           panel()
         )}
       </div>
+      {data && (
+        <SolveQuality history={data.history} difficultyOf={(id) => summaries.get(id)?.difficulty} english={english} />
+      )}
       {data && (
         <YearRecapCard
           history={data.history}

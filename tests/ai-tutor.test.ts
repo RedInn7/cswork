@@ -148,6 +148,9 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
+const aidKinds = (userId: string) =>
+  sqlite().prepare("SELECT kind FROM practice_aids WHERE user_id=? AND problem_id='lc-1'").pluck().all(userId);
+
 void test('off without ANTHROPIC_API_KEY: no route, no upstream call', async () => {
   delete process.env.ANTHROPIC_API_KEY;
   assert.equal(aiEnabled(), false);
@@ -188,6 +191,8 @@ void test('a hint: fast model, Socratic system prompt, statement + code + verdic
   assert.equal(user.content.includes('Reply in English.'), true);
   // Hidden test data never reaches the model.
   assert.equal(user.content.includes('HIDDEN-CASE-INPUT'), false);
+  // A tutor answer goes on the assisted-solve record (lib/server/practice-aids.ts).
+  assert.deepEqual(aidKinds(me.id), ['ai']);
 });
 
 void test('a review: balanced model with the default refusal fallback; short snippets survive', async () => {
@@ -546,4 +551,6 @@ void test('complexity only after an AC; explain sends the selection, not the cod
   assert.equal(prompt.includes('MY-CODE-MARKER'), false);
   assert.equal(sent[0].body.model, 'claude-haiku-5-5');
   assert.equal(await status(learner, 'explain', ask({ selection: 'x'.repeat(601) })), 400);
+  // Neither the statement explained nor the complexity after an AC counts as help.
+  assert.deepEqual(aidKinds(learner.id), []);
 });

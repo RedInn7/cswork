@@ -42,6 +42,7 @@ const copy = {
       'Ask for small, specific changes ("why does this test fail", "write a test for a duplicate order id"), not the whole solution.',
       'Run the tests after every change you accept, and add a test before trusting a fix.',
       'When the AI is wrong, say why: that is the part interviewers listen for.',
+      'Finish with "Finish and review" under the AI pair: it scores how you used the AI, the way an interviewer would.',
       'Then do one project without the AI, against the clock.',
     ],
   },
@@ -78,6 +79,7 @@ const copy = {
       '让 AI 做小而具体的事（「这个测试为什么失败」「给重复订单号写个测试」），而不是直接要整份答案。',
       '每采纳一处改动就跑一次测试；相信一个修复之前先补一个测试。',
       'AI 说错时讲出错在哪里，面试官最想听的就是这部分。',
+      '做完点 AI 结对下方的「结束并评估」，像面试官一样给你用 AI 的方式打分。',
       '最后不用 AI、限时再做一遍。',
     ],
   },
@@ -93,7 +95,8 @@ export default async function AiAssistedPage() {
   const zh = (await requestLocale()) === 'zh',
     c = copy[zh ? 'zh' : 'en'],
     i = zh ? 0 : 1;
-  const tasks = aiTasks();
+  // Take-homes have their own pages (/take-home).
+  const tasks = aiTasks().filter((task) => task.track === 'ai-assisted');
   const companies = aiRoundCompanies();
   return (
     <article>

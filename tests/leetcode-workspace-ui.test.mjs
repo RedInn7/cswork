@@ -160,12 +160,17 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   let failDetailOnce = false;
   let submitted = 0;
   let progressEvents = 0;
+  const aids = [];
   const navigations = [];
   window.addEventListener(
     'cswork:practice-progress-changed',
     () => progressEvents++,
   );
   globalThis.fetch = async (url, init) => {
+    if (url.endsWith('/aids')) {
+      aids.push([url, JSON.parse(init.body)]);
+      return Response.json({ recorded: true });
+    }
     if (url.endsWith('/submissions') && init?.method === 'POST') {
       if (holdPost)
         await new Promise((resolve) => {
@@ -514,6 +519,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       /Accepted.*Solved in 12:34/,
     );
     assert.equal(accepts.length === 1 && accepts[0].seconds === 754, true);
+    // Only a timed AC sends its seconds, for the first-solve time on the progress page.
+    assert.deepEqual(aids, [['/api/oj/problems/lc-1/aids', { kind: 'time', seconds: 754 }]]);
     delete window.gtag;
     localStorage.removeItem(timerKey);
     assert.equal(progressEvents, 2);

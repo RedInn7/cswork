@@ -27,6 +27,8 @@ import { publicLibraryPath } from '@/lib/server/public-library';
 import { OaCompanyMark, OaDifficulty } from '../../oa/parts';
 import { CompanyAsked } from '../asked-reports';
 import { H1bPanel } from '../h1b';
+import { JobOpenings } from '../jobs';
+import '../jobs.css';
 import { Facts, QUESTION_LEVELS } from '../parts';
 
 type Props = {
@@ -351,6 +353,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
         </section>
       )}
 
+      <JobOpenings slug={company.slug} name={company.name} zh={zh} />
       <H1bPanel slug={company.slug} zh={zh} />
     </>
   );

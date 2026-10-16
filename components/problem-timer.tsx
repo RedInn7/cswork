@@ -4,7 +4,10 @@ import { Hourglass, Pause, Play, RotateCcw, Timer, X } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { MAX_SOLVE_SECONDS, PRESETS } from '@/lib/practice-review';
 
-/** Stored per browser; startedAt is null while paused. Never synced to the server. */
+/**
+ * Stored per browser; startedAt is null while paused. The reading at the first AC is sent once to
+ * POST oj/problems/<id>/aids (practice_aids.time, lib/server/practice-aids.ts).
+ */
 type TimerState = {
   mode: 'up' | 'down';
   minutes: number;

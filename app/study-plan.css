@@ -350,7 +350,8 @@ a.route-plan-tag:hover {
 .route-punches {
   flex-wrap: wrap;
 }
-.study-route[data-folded] :is(.route-plan, .route-plan-entry) {
+/* An open form stays: a plan handed over in the URL opens it on a folded line. */
+.study-route[data-folded] :is(.route-plan:not(.route-plan-form), .route-plan-entry) {
   display: none;
 }
 

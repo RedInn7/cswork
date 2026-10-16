@@ -53,7 +53,7 @@ const step = (extra: Record<string, unknown> = {}) => ({
   ...extra,
 });
 const feedback = JSON.stringify({
-  scores: { problem: 3, communication: 4 },
+  scores: { requirements: 3, communication: 4 },
   keep: 'You asked about the read/write ratio first.',
   fix: 'State a latency target.\n```python\nprint(1)\n```',
 });
@@ -104,16 +104,18 @@ void test('a finished step gets scores on its own rubric dimensions, a keep and 
   const { status, body } = await call('interview-step', step());
   assert.equal(status, 200);
   assert.deepEqual(body.feedback, {
-    scores: { problem: 3, communication: 4 },
+    scores: { requirements: 3, communication: 4 },
     keep: 'You asked about the read/write ratio first.',
     fix: 'State a latency target.',
   });
   const [request] = sent;
   assert.deepEqual(request.output_config!.format.schema.required, ['scores', 'keep', 'fix']);
+  // A system design step scores the design dimensions, not the coding ones.
   assert.deepEqual((request.output_config!.format.schema.properties as { scores: { required: string[] } }).scores.required, [
-    'problem',
+    'requirements',
     'communication',
   ]);
+  assert.match(request.system, /- requirements: Pins down features, scale/);
   for (const marker of ['QUESTION-MARKER', 'SOLUTION-MARKER', 'Never reveal the reference approach', '"Requirements"'])
     assert.equal(request.system.includes(marker), true, marker);
   assert.match(String(request.messages[0].content), /Candidate: Who are the users/);
@@ -197,7 +199,7 @@ void test('reports are kept as scores and compared with the best of each other l
   assert.deepEqual(Object.keys(peers.above), ['communication']);
 
   reply = ok(
-    JSON.stringify({ rubric: { communication: 3, problem: 3, coding: null, testing: null, complexity: 2 }, verdict: 'yes', strengths: 'a', improvements: 'b', questions: [] }),
+    JSON.stringify({ rubric: { communication: 3, requirements: 3, hld: null, scale: null, tradeoffs: null, deepdive: 2 }, verdict: 'yes', strengths: 'a', improvements: 'b', questions: [] }),
   );
   const t = issueTicket(me.id, 'seed2');
   const questions = [{ itemId: 'iq-sd', minutes: 45, elapsedSec: 600, code: '', history: [{ role: 'candidate', text: 'Fan out on read.' }] }];
@@ -208,7 +210,8 @@ void test('reports are kept as scores and compared with the best of each other l
   assert.deepEqual({ ...row, scores_json: JSON.parse(row.scores_json) }, {
     kind: 'onsite',
     level: 'swe',
-    scores_json: { communication: 3, problem: 3, coding: null, testing: null, complexity: 2 },
+    // A system design question is scored on the design dimensions.
+    scores_json: { communication: 3, requirements: 3, hld: null, scale: null, tradeoffs: null, deepdive: 2 },
     verdict: 'yes',
   });
   // An unknown template is not kept.

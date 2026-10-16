@@ -115,17 +115,19 @@ export function assertSnapshotBudget(
 
 /**
  * How a submission's program is built and fed. LeetCode code is wrapped in its driver; so is a
- * reference run (the editorial's Solution class) whatever mode the learner's case was written
- * in. Custom input in LeetCode mode is JSON per line (--leetcode-input); ACM-mode input, test
- * files included, goes through the problem's own parser.
+ * Line 500 reference run (the editorial's Solution class) whatever mode the learner's case was
+ * written in, but never an OA reference (the package's own stdin program). Custom input in
+ * LeetCode mode is JSON per line (--leetcode-input); ACM-mode input, test files included, goes
+ * through the problem's own parser.
  */
 export function leetcodeShape(row: {
+  problem_id: string;
   mode: string;
   coding_mode: string | null;
   custom_input: string | null;
 }) {
   return {
-    wrap: row.coding_mode === 'leetcode' || row.mode === 'reference',
+    wrap: row.coding_mode === 'leetcode' || (row.mode === 'reference' && !row.problem_id.startsWith('oa-')),
     leetcodeInput: row.coding_mode === 'leetcode' && row.mode !== 'judge' && row.custom_input !== null,
   };
 }

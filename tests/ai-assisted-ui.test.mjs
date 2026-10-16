@@ -147,3 +147,98 @@ test('a run shows public failures and hidden counts; the AI pair sends the files
     await act(async () => root.unmount());
   }
 });
+
+const review = (keys) => ({
+  scores: keys.map((key, i) => ({ key, score: (i % 4) + 1, why: `why ${key}` })),
+  suggestions: ['Run the tests after each change', 'Ask smaller questions', 'Read the diff'],
+  summary: 'Solid start.',
+});
+
+test('after a conversation the pair review sends the turns and shows a score card', async () => {
+  const sent = [];
+  globalThis.fetch = async (/** @type {string} */ url, init) => {
+    sent.push({ url, body: init.body ? JSON.parse(init.body) : null });
+    if (url.endsWith('/ai/round-review'))
+      return Response.json({ review: review(['decomposition', 'prompting', 'verification', 'testing', 'explanation']), remaining: 1, limit: 2, bonus: 0 });
+    return Response.json({ text: 'Look at `reserve`.', remaining: 14, limit: 15, bonus: 0 });
+  };
+  const { root } = await mount({ signedIn: true, verified: true, ai: true });
+  try {
+    assert.equal(button('Finish and review'), undefined, 'nothing to review before a conversation');
+    const box = document.getElementById('ai-round-question');
+    await typeInto(box, 'Why does test_oversell fail?');
+    await act(async () => box.form.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true })));
+    await settle();
+    await click(button('Finish and review'));
+    await settle();
+    const call = sent.at(-1);
+    assert.equal(call.url, '/api/oj/ai/round-review');
+    assert.equal(call.body.mode, 'pair');
+    assert.equal(call.body.task, 'inventory-oversell');
+    assert.deepEqual(call.body.files, files);
+    assert.deepEqual(call.body.turns, [
+      { role: 'user', text: 'Why does test_oversell fail?' },
+      { role: 'assistant', text: 'Look at `reserve`.' },
+    ]);
+    const rows = [...document.querySelectorAll('.ai-round-scores dt')].map((n) => n.textContent);
+    assert.deepEqual(rows, [
+      'Breaking the task down1/4 out of 4',
+      'Specific prompts2/4 out of 4',
+      'Checking AI output3/4 out of 4',
+      'Testing4/4 out of 4',
+      'Explaining the final code1/4 out of 4',
+    ]);
+    assert.equal(document.querySelectorAll('.ai-round-suggestions li').length, 3);
+    assert.match(document.body.textContent, /1 left today/);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('a take-home has no AI pair, keeps its design note and offers the quality review after a run', async () => {
+  const sent = [];
+  globalThis.fetch = async (/** @type {string} */ url, init) => {
+    sent.push({ url, body: init.body ? JSON.parse(init.body) : null });
+    if (url.endsWith('/ai-assisted/run'))
+      return Response.json({ id: 's2', status: 'queued', mode: 'project', watchToken: 't2', passed: 0, total: 0 });
+    if (url.includes('/submissions/s2'))
+      return Response.json({ id: 's2', status: 'accepted', mode: 'project', passed: 9, total: 9, project: { visible: { passed: 4, total: 4, failures: [] }, hidden: { passed: 5, total: 5 }, output: '' } });
+    return Response.json({ review: review(['structure', 'tests', 'errors', 'readme']), remaining: 1, limit: 2, bonus: 0 });
+  };
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/take-home/url-shortener' });
+  dom.window.localStorage.setItem('cswork:take-home:url-shortener:notes', 'Run with python -m unittest.');
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  const { createRoot } = await import('react-dom/client');
+  const { TakeHomeWorkspace } = await import('../components/take-home-workspace.tsx');
+  const root = createRoot(document.getElementById('root'));
+  await act(async () =>
+    root.render(createElement(TakeHomeWorkspace, { slug: 'url-shortener', minutes: 180, files, hiddenTotal: 5, signedIn: true, verified: true, ai: true })),
+  );
+  await settle();
+  try {
+    assert.equal(document.getElementById('ai-round-question'), null, 'no AI pair');
+    assert.ok(button('Start the 180-minute timer'));
+    const note = document.getElementById('take-home-notes');
+    assert.equal(note.value, 'Run with python -m unittest.');
+    assert.equal(button('Review code quality'), undefined, 'only after a finished run');
+    await typeInto(note, 'Run with python -m unittest. Limits live in memory.');
+    await settle(450);
+    assert.equal(localStorage.getItem('cswork:take-home:url-shortener:notes'), 'Run with python -m unittest. Limits live in memory.');
+    await click(button('Run tests'));
+    await settle();
+    assert.equal(sent[0].body.task, 'url-shortener');
+    await click(button('Review code quality'));
+    await settle();
+    const call = sent.at(-1);
+    assert.equal(call.url, '/api/oj/ai/round-review');
+    assert.deepEqual({ ...call.body, files: undefined }, {
+      task: 'url-shortener', mode: 'quality', files: undefined, turns: [], notes: 'Run with python -m unittest. Limits live in memory.', locale: 'en',
+    });
+    assert.deepEqual([...document.querySelectorAll('.ai-round-scores dt')].map((n) => n.textContent.replace(/\d\/4.*/, '')), [
+      'Structure', 'Tests', 'Error handling', 'Design note',
+    ]);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});

@@ -19,6 +19,9 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
           <Link href="/career/resume/builder" prefetch={false}>
             {zh ? '简历生成器' : 'Resume builder'}
           </Link>
+          <Link href="/career/jd" prefetch={false}>
+            {zh ? 'JD 准备度检查' : 'JD readiness check'}
+          </Link>
           <Link href="/career/visa-timeline" prefetch={false}>
             {zh ? '身份时间线' : 'Visa timeline'}
           </Link>
@@ -28,6 +31,9 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
               {zh ? 'H-1B 担保' : 'H-1B sponsors'}
             </Link>
           )}
+          <Link href="/career/jobs" prefetch={false}>
+            {zh ? '在招岗位' : 'Open roles'}
+          </Link>
           <Link href="/career/tracker" prefetch={false}>
             {zh ? '投递追踪' : 'Application tracker'}
           </Link>

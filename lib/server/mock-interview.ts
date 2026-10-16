@@ -15,6 +15,7 @@ import {
 import { lcIdBySource } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import { HttpError } from './http';
+import { extraPool, extraQuestion } from './interview-extra';
 import { SCENARIOS, roleplayQuestion } from './roleplay-scenarios';
 import { sdChapter, sdChapters } from './system-design-course';
 
@@ -120,7 +121,8 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
   // AI-only questions join the pool only for their own templates.
   const lld = template.slots.some((s) => s.kind === 'lld');
   const roleplay = template.slots.some((s) => isRoleplay(s.kind));
-  const drawn = drawSet([...mockPool(db), ...(lld ? lldPool() : []), ...(roleplay ? roleplayPool() : [])], template, {
+  const extras = [...new Set(template.slots.map((s) => s.kind))].flatMap(extraPool);
+  const drawn = drawSet([...mockPool(db), ...(lld ? lldPool() : []), ...(roleplay ? roleplayPool() : []), ...extras], template, {
     seed,
     company,
     role: params.get('role'),
@@ -147,9 +149,10 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
       if (!item) return { ...slot, item: null };
       const row = bodies.get(item.id);
       const parts = splitBody(row?.body ?? '');
-      // An LLD question's reference and a role-play's limits never leave the server (lib/server/ai-interviewer.ts reads them).
+      // An LLD question's reference, a role-play's limits and an extra question's notes never leave the server
+      // (lib/server/ai-interviewer.ts reads them).
       const course = item.type === 'course_chapter';
-      const play = item.type === 'roleplay' ? roleplayQuestion(item.id) : null;
+      const play = item.type === 'roleplay' ? roleplayQuestion(item.id) : item.type === 'extra' ? extraQuestion(item.id) : null;
       if (course) parts.question = lldQuestion(item.id)?.question ?? '';
       if (play) parts.question = play.question;
       if (questionOnly || course || play) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });

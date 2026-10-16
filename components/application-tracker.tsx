@@ -17,6 +17,17 @@ import {
 import { api } from '@/lib/types';
 
 const ADD = '.tracker [data-add]';
+const KEPT_ADD = 'cswork:tracker:add';
+
+/** Signed out (app/career/tracker/page.tsx): an opening's ?add=1 query waits in this tab until the board opens after sign-in. */
+export function KeepTrackerAdd() {
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(location.search).get('add') === '1') sessionStorage.setItem(KEPT_ADD, location.search);
+    } catch {}
+  }, []);
+  return null;
+}
 type Form = {
   id: string | null;
   company: string;
@@ -70,6 +81,27 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const editing = form && (form.id ?? '');
   useEffect(() => {
     let live = true;
+    // ?add=1&company=&role=&link= (an opening's "Add to tracker", app/company/jobs.tsx): a filled-in
+    // new card at Saved, kept only once the learner saves it; the link only when it is https. Signed
+    // out, the page kept the query in this tab (KeepTrackerAdd) for after sign-in.
+    let query = new URLSearchParams(location.search),
+      kept = '';
+    try {
+      kept = sessionStorage.getItem(KEPT_ADD) ?? '';
+      sessionStorage.removeItem(KEPT_ADD);
+    } catch {}
+    if (query.get('add') === '1') history.replaceState(history.state, '', location.pathname);
+    else query = new URLSearchParams(kept);
+    if (query.get('add') === '1') {
+      const link = (query.get('link') ?? '').trim();
+      setForm({
+        ...toForm(),
+        stage: 'saved',
+        company: (query.get('company') ?? '').slice(0, 100),
+        role: (query.get('role') ?? '').slice(0, 120),
+        link: link.length <= 500 && httpsLink(link) ? link : '',
+      });
+    }
     api<{ items: Application[] }>('oj/applications').then(
       (r) => live && setItems(r.items),
       (e: unknown) => live && (setItems([]), setError(e instanceof Error ? e.message : String(e))),
@@ -91,9 +123,11 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     setRefocus(null);
   }, [refocus]);
   // The form opens above the board, off-screen from a card far down: focusing it scrolls it in.
+  // A form opened from the address is only drawn once the board has loaded.
+  const loaded = items !== null;
   useEffect(() => {
     if (editing !== null) formRef.current?.querySelector('input')?.focus();
-  }, [editing]);
+  }, [editing, loaded]);
   const close = (to: string | null = form?.id ? `[data-id="${form.id}"] .tracker-card-actions button` : ADD) => {
     setRefocus(to);
     setForm(null);
