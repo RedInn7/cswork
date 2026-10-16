@@ -21,8 +21,8 @@ export type SdChapter = {
 
 /** The system design course (lib/content/system-design-course.json), in reading order. */
 export const sdChapters = (course as { chapters: SdChapter[] }).chapters;
-/** The certificate's chapters and the progress bar's: all but the optional key-technology and pattern reading. */
-export const sdRequired = sdChapters.map((chapter) => chapter.slug).filter((slug) => !/^(tech|pattern)-/.test(slug));
+/** The certificate's chapters and the progress bar's: all but the optional key-technology, pattern, LLD case and API reading. */
+export const sdRequired = sdChapters.map((chapter) => chapter.slug).filter((slug) => !/^(tech|pattern|lld-case|api)-/.test(slug));
 export const sdChapter = (slug: string) => sdChapters.find((chapter) => chapter.slug === slug);
 /** The index's parts: each runs from its first chapter up to the next part's. */
 export const sdParts = [
@@ -33,6 +33,7 @@ export const sdParts = [
   // Optional reading: not design exercises (sdCases) and not required for the certificate.
   { from: 'tech-kafka', zh: '关键技术（选读）', en: 'Key technologies (optional)' },
   { from: 'pattern-real-time-updates', zh: '通用设计模式（选读）', en: 'Patterns (optional)' },
+  { from: 'lld-case-atm', zh: 'LLD 案例库（选读）', en: 'LLD case library (optional)' },
 ].map((part, i, parts) => {
   const at = (slug: string) => sdChapters.findIndex((chapter) => chapter.slug === slug);
   const next = parts[i + 1];
