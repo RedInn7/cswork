@@ -257,6 +257,8 @@ const EN: Record<string, string> = {
   不能举报自己的投稿: "You can't report your own submission",
   请写明不通过的原因: 'Please tell the author why it was rejected',
   '正文的引用、列表或强调嵌套太深': 'The post nests quotes, lists or emphasis too deeply',
+  '没有 OA 轮次时不能填写 OA 成绩': 'OA scores need an Online Assessment round',
+  'OA 做出的题数不能多于总题数': 'OA problems solved can’t exceed the total',
   // Study groups (lib/server/study-groups.ts)
   学习小组不存在: 'Study group not found',
   学习小组接口不存在: 'Study group endpoint not found',
