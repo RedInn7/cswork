@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import { api } from '@/lib/types';
-import '@/app/ling-editorial.css';
 
 type Vote = 'up' | 'down';
 
@@ -10,7 +9,8 @@ type Vote = 'up' | 'down';
  * "Helpful / not helpful" under an editorial (Line 500's or an OA's): one vote per learner, an
  * up/down mark on content:editorial/<problem id> (lib/server/my-practice.ts). Mounted once the
  * editorial has loaded, which takes an account; the owner's analytics list the editorials most
- * marked not helpful.
+ * marked not helpful. Styled by app/ling-editorial.css, which the workspace loads with LingEditorial
+ * (the OA library itself loads no stylesheet).
  */
 export function EditorialVote({ problemId, english }: { problemId: string; english: boolean }) {
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -19,12 +19,13 @@ export function EditorialVote({ problemId, english }: { problemId: string; engli
   const [note, setNote] = useState('');
   useEffect(() => {
     let live = true;
-    api<{ items: { mark: string }[] }>(`oj/marks?target=${encodeURIComponent(target)}`).then(
-      ({ items }) => live && setMine((items.find((m) => m.mark === 'up' || m.mark === 'down')?.mark as Vote) ?? null),
-      () => {
+    api<{ items: { mark: string }[] }>(`oj/marks?target=${encodeURIComponent(target)}`)
+      .then(({ items }) => {
+        if (live) setMine((items.find((m) => m.mark === 'up' || m.mark === 'down')?.mark as Vote) ?? null);
+      })
+      .catch(() => {
         /* A nicety: the buttons still work, starting unpressed. */
-      },
-    );
+      });
     return () => {
       live = false;
     };

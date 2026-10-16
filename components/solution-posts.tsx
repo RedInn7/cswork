@@ -505,7 +505,7 @@ export function SolutionPosts({
               className="cs-posts-search"
               onSubmit={(e) => {
                 e.preventDefault();
-                setQ(String(new FormData(e.currentTarget).get('q') ?? '').trim());
+                setQ((e.currentTarget.elements.namedItem('q') as HTMLInputElement).value.trim());
               }}
             >
               <label>

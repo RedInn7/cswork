@@ -195,8 +195,14 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
   const root = createRoot(document.getElementById('root'));
   const original = globalThis.fetch;
   const fetched = [];
+  const votes = [];
   let reply = [200, editorial];
-  globalThis.fetch = async (url) => {
+  globalThis.fetch = async (url, init) => {
+    // The helpful / not helpful vote under it (components/editorial-vote.tsx): its own mark.
+    if (String(url).startsWith('/api/oj/marks')) {
+      if (init?.method === 'POST') votes.push(JSON.parse(init.body));
+      return new Response(JSON.stringify({ items: [] }), { headers: { 'Content-Type': 'application/json' } });
+    }
     fetched.push(String(url));
     return new Response(JSON.stringify(reply[1]), { status: reply[0], headers: { 'Content-Type': 'application/json' } });
   };
@@ -235,6 +241,10 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     assert.deepEqual(fetched, [`/api/oj/problems/${editorialId}/editorial`]);
     assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
     assert.ok(document.querySelector('.cs-ling-unverified') !== null);
+    await act(async () => buttons('Helpful')[0].click());
+    assert.deepEqual(votes, [{ target: `content:editorial/${editorialId}`, mark: 'up', on: true }]);
+    assert.equal(buttons('Helpful')[0].getAttribute('aria-pressed'), 'true');
+    assert.equal(buttons('Not helpful')[0].getAttribute('aria-pressed'), 'false');
     // The editor's language picks the tab; C++ code shows first.
     assert.ok(buttons('C++')[0].getAttribute('aria-pressed') === 'true');
     assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0].cpp);
