@@ -49,6 +49,7 @@ import { handleApplications } from './applications';
 import { handleNotify } from './reminders';
 import { handleDirectMessages } from './direct-messages';
 import { handleWorkVerify } from './work-verify';
+import { handleMcqStats } from './mcq-stats';
 import { sourceDates } from './company-insights';
 import { handleContests, inRunningContest, refuseInContest } from './contests';
 import { handleDuels } from './duels';
@@ -150,6 +151,8 @@ export async function handleOj(
   if (resource === 'notify') return handleNotify(request, p, path.slice(1));
   if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
   if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
+  // MCQ answer shares read signed out; the handler checks the write.
+  if (resource === 'mcq') return handleMcqStats(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
   if (resource === 'contests' && id === 'duel') return handleDuels(request, p, path);
   if (resource === 'contests') return handleContests(request, p, path);

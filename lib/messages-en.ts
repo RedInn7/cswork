@@ -479,6 +479,10 @@ const EN: Record<string, string> = {
   '所选知识点下的题不够，减少题量或多选几个':
     'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
+  // OA multiple-choice answer stats (lib/server/mcq-stats.ts)
+  选择题不存在: 'Question not found',
+  选项不合法: 'Invalid choice',
+  '一次最多查询 50 道题': 'Ask for at most 50 questions at a time',
   // Skill certification exams (lib/server/skill-tests.ts) and their certificates
   你还有一场认证考试没有结束: 'You still have a certification exam in progress',
   '同一项认证 7 天内只能考一次': 'You can take each certification exam once every 7 days',
