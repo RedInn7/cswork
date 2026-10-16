@@ -921,8 +921,8 @@ function Plan({
               <h2>{t('和 AI 面试官对练这套题', 'Run this set with an AI interviewer')}</h2>
               <p>
                 {t(
-                  `像真实面试一样一问一答：先澄清需求，卡住时才给提示，答完再追问。每场最多 ${AI_TURNS} 轮，结束后按五项评分出报告；每天 3 场。`,
-                  `A real back-and-forth: clarify first, hints only when you're stuck, follow-ups once you've answered. Up to ${AI_TURNS} messages per interview, then a report on the five-part rubric; 3 interviews a day.`,
+                  `像真实面试一样一问一答：先澄清需求，卡住时才给提示，答完再追问。每场最多 ${AI_TURNS} 轮，结束后按这套题对应的维度（各 1–4 分）出报告；每天 3 场。`,
+                  `A real back-and-forth: clarify first, hints only when you're stuck, follow-ups once you've answered. Up to ${AI_TURNS} messages per interview, then a report scored 1–4 on this set's dimensions; 3 interviews a day.`,
                 )}
               </p>
             </div>
