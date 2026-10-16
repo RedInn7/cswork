@@ -132,9 +132,15 @@ export const stale = (a: Application, now: number) =>
   now - stageSince(a) > STALE_DAYS * DAY &&
   !(oaOpen(a) && a.oaDeadline! > now) &&
   !interviewAhead(a, now);
-/** Applied a week ago, nothing since and no follow-up planned: worth a nudge (stale cards get their own hint). */
+/**
+ * Applied a week ago, nothing since and no follow-up planned: worth a nudge (stale cards get their own hint).
+ * Counts from the last edit too, so a follow-up marked done waits another week before the next nudge.
+ */
 export const followUpDue = (a: Application, now: number) =>
-  a.stage === 'applied' && a.nextAt === null && now - stageSince(a) >= FOLLOW_UP_DAYS * DAY && !stale(a, now);
+  a.stage === 'applied' &&
+  a.nextAt === null &&
+  now - Math.max(stageSince(a), a.updatedAt) >= FOLLOW_UP_DAYS * DAY &&
+  !stale(a, now);
 /** 9:00 tomorrow, local time. */
 export function tomorrowMorning(now: number) {
   const d = new Date(now);
@@ -204,7 +210,7 @@ export function writeUpHref(a: Application) {
   const q = new URLSearchParams({ view: 'progress', tab: 'share' });
   if (a.companySlug) q.set('company', a.companySlug);
   if (a.role) q.set('role', a.role);
-  q.set('employment', /intern|实习/i.test(a.role) ? 'intern' : 'fulltime');
+  q.set('employment', /\bintern(ship)?s?\b|实习/i.test(a.role) ? 'intern' : 'fulltime');
   if (a.interviewAt !== null) {
     const d = new Date(a.interviewAt);
     q.set('season', `${d.getFullYear()}-${['winter', 'spring', 'summer', 'fall'][Math.floor(((d.getMonth() + 1) % 12) / 3)]}`);

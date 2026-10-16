@@ -264,6 +264,8 @@ void test('time per stage, the median wait for an OA, stale cards and follow-up 
   assert.equal(followUpDue(waiting(8, { nextAt: now + DAY }), now), false);
   assert.equal(followUpDue(waiting(8, { stage: 'oa' }), now), false);
   assert.equal(followUpDue(waiting(22), now), false, 'a stale card gets the stale hint instead');
+  assert.equal(followUpDue(waiting(8, { updatedAt: now }), now), false, 'a follow-up just marked done waits another week');
+  assert.equal(followUpDue(waiting(15, { updatedAt: now - 8 * DAY }), now), true);
 });
 
 void test('stats: reply rate per channel, days per stage, where rejections come, the weekly goal streak', () => {
@@ -318,6 +320,8 @@ void test('the write-up link carries company, role, internship or not and the se
   assert.equal(href, '/?view=progress&tab=share&company=amazon&role=SDE+Intern&employment=intern&season=2026-fall');
   assert.equal(writeUpHref(row({ interviewAt: new Date(2027, 0, 9).getTime() })), '/?view=progress&tab=share&employment=fulltime&season=2027-winter');
   assert.equal(writeUpHref(row({ role: '后端实习' })), '/?view=progress&tab=share&role=%E5%90%8E%E7%AB%AF%E5%AE%9E%E4%B9%A0&employment=intern');
+  for (const role of ['Internal Tools Engineer', 'International Payments SWE']) assert.match(writeUpHref(row({ role })), /employment=fulltime/, role);
+  for (const role of ['Interns Program', 'Summer Internships', 'intern - SWE']) assert.match(writeUpHref(row({ role })), /employment=intern/, role);
 });
 
 void test('the CSV has the new columns', () => {
