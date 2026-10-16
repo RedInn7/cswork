@@ -196,12 +196,17 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
   const original = globalThis.fetch;
   const fetched = [];
   const votes = [];
+  let release;
+  const stored = new Promise((resolve) => (release = resolve));
   let reply = [200, editorial];
   globalThis.fetch = async (url, init) => {
     // The helpful / not helpful vote under it (components/editorial-vote.tsx): its own mark.
     if (String(url).startsWith('/api/oj/marks')) {
       if (init?.method === 'POST') votes.push(JSON.parse(init.body));
-      return new Response(JSON.stringify({ items: [] }), { headers: { 'Content-Type': 'application/json' } });
+      // The stored vote ("not helpful") arrives only after the click below, which must win.
+      else await stored;
+      const items = init?.method === 'POST' ? [] : [{ mark: 'down' }];
+      return new Response(JSON.stringify({ items }), { headers: { 'Content-Type': 'application/json' } });
     }
     fetched.push(String(url));
     return new Response(JSON.stringify(reply[1]), { status: reply[0], headers: { 'Content-Type': 'application/json' } });
@@ -245,6 +250,9 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     assert.deepEqual(votes, [{ target: `content:editorial/${editorialId}`, mark: 'up', on: true }]);
     assert.equal(buttons('Helpful')[0].getAttribute('aria-pressed'), 'true');
     assert.equal(buttons('Not helpful')[0].getAttribute('aria-pressed'), 'false');
+    release();
+    await settle();
+    assert.equal(buttons('Helpful')[0].getAttribute('aria-pressed'), 'true', 'a late read does not undo the click');
     // The editor's language picks the tab; C++ code shows first.
     assert.ok(buttons('C++')[0].getAttribute('aria-pressed') === 'true');
     assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0].cpp);

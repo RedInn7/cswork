@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import { api } from '@/lib/types';
 
@@ -17,11 +17,15 @@ export function EditorialVote({ problemId, english }: { problemId: string; engli
   const target = `content:editorial/${problemId}`;
   const [mine, setMine] = useState<Vote | null>(null);
   const [note, setNote] = useState('');
+  // A click before the stored vote loads wins: the late read must not undo it.
+  const voted = useRef(false);
   useEffect(() => {
     let live = true;
+    voted.current = false;
     api<{ items: { mark: string }[] }>(`oj/marks?target=${encodeURIComponent(target)}`)
       .then(({ items }) => {
-        if (live) setMine((items.find((m) => m.mark === 'up' || m.mark === 'down')?.mark as Vote) ?? null);
+        if (live && !voted.current)
+          setMine((items.find((m) => m.mark === 'up' || m.mark === 'down')?.mark as Vote) ?? null);
       })
       .catch(() => {
         /* A nicety: the buttons still work, starting unpressed. */
@@ -31,6 +35,7 @@ export function EditorialVote({ problemId, english }: { problemId: string; engli
     };
   }, [target]);
   async function vote(kind: Vote) {
+    voted.current = true;
     const before = mine;
     const on = mine !== kind;
     setMine(on ? kind : null);
