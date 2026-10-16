@@ -53,6 +53,7 @@ export function useWhiteboard(problemId: string, signedIn: boolean, submission: 
     available,
     on: on && available,
     result,
+    judging: pending !== null,
     /** The code to offer back once the mode ends. */
     before: on && available ? null : before,
     enter(previous: string | null) {
@@ -177,12 +178,14 @@ export function WhiteboardResult({ wb, onRestore }: { wb: Whiteboard; onRestore:
     <output className="cs-draft-restored">
       <span>
         {!wb.result
-          ? t('已退出白板模式。', 'Whiteboard mode is off.')
+          ? wb.judging
+            ? t('白板提交判题中…', 'Judging your whiteboard submission…')
+            : t('已退出白板模式。', 'Whiteboard mode is off.')
           : wb.result === 'passed'
-          ? t('白板一次通过：没运行过就写对了。', 'Whiteboard pass: right on the first try, without running it.')
-          : wb.result === 'failed'
-            ? t('白板没通过。现在可以运行、看提示，接着改。', 'Whiteboard attempt failed. You can now run, use hints and keep going.')
-            : t('这次判题没有完成，不算白板结果，可以再进一次白板模式。', "Judging didn't finish, so this doesn't count. You can start whiteboard mode again.")}
+            ? t('白板一次通过：没运行过就写对了。', 'Whiteboard pass: right on the first try, without running it.')
+            : wb.result === 'failed'
+              ? t('白板没通过。现在可以运行、看提示，接着改。', 'Whiteboard attempt failed. You can now run, use hints and keep going.')
+              : t('这次判题没有完成，不算白板结果，可以再进一次白板模式。', "Judging didn't finish, so this doesn't count. You can start whiteboard mode again.")}
       </span>
       {wb.before !== null && (
         <button
