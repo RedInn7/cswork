@@ -240,7 +240,7 @@ export const EXTRA_TEMPLATES: Template[] = [
     role: 'swe',
     round: null,
     slots: [
-      { kind: 'frontend', minutes: 15, category: 'Frontend', name: ['JS 基础', 'JS fundamentals'] },
+      { kind: 'frontend', minutes: 15, category: 'Frontend', name: ['前端基础', 'Frontend fundamentals'] },
       { kind: 'frontend', minutes: 30, category: 'Frontend Components', name: ['组件实现', 'Build a component'] },
     ],
   },
