@@ -43,8 +43,16 @@ export function parseCard(raw: string | null | undefined): Card | null {
 export const splitTags = (text: string) =>
   [...new Set(text.split(/[\s,，]+/).filter((tag) => TAG.test(tag)))].slice(0, CARD_TAGS_MAX);
 
+// Anki reads the file as CSV: `"` opens a quoted field, a lone \r ends a row and a row starting with # is a comment.
 const html = (text: string) =>
-  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\t/g, ' ').replace(/\r?\n/g, '<br>');
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/^#/, '&#35;')
+    .replace(/\t/g, ' ')
+    .replace(/\r\n?|\n/g, '<br>');
 
 /** An Anki import file (File → Import): tab separated, HTML fields, tags in column 3. */
 export function toAnki(rows: readonly ExportRow[]) {

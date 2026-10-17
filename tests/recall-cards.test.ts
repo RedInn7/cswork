@@ -35,6 +35,14 @@ void test('sizes, tags and shape are checked', () => {
 void test('Anki: header, HTML-escaped fields, tabs and newlines made safe', () => {
   const text = toAnki([{ front: 'a<b> & c\td', back: 'line 1\nline 2\r\nline 3', tags: ['dp', 'cswork'] }]);
   assert.equal(text, '#separator:tab\n#html:true\n#tags column:3\na&lt;b&gt; &amp; c d\tline 1<br>line 2<br>line 3\tdp cswork\n');
+  // A field opening with ", a lone \r or a row opening with # would break Anki's CSV reader.
+  assert.equal(
+    toAnki([
+      { front: '"unbalanced', back: 'a\rb', tags: [] },
+      { front: '#define?', back: 'say "hi" # ok', tags: ['c'] },
+    ]).split('\n').slice(3).join('\n'),
+    '&quot;unbalanced\ta<br>b\t\n&#35;define?\tsay &quot;hi&quot; # ok\tc\n',
+  );
 });
 
 void test('CSV: BOM, RFC 4180 quoting and no formulas', () => {
