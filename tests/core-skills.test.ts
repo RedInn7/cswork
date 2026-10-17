@@ -157,6 +157,32 @@ test('OOD problems: each implements an LLD chapter, with a class diagram and des
   }
 });
 
+test('OOD tests fail a solution that breaks one of the stated rules', () => {
+  // solution.py with one rule broken: it must still run every case, and at least one answer must differ.
+  const late = 'self.failures, self.locked_until = 0, t + LOCKOUT';
+  const reversed = 'import heapq\nclass R(str):\n    __lt__ = str.__gt__';
+  const variants: [string, string, [string, string][]][] = [
+    ['amazon-locker', 'reuses a code still in use', [['while code in self.by_code:', 'while False:']]],
+    ['amazon-locker', 'counts attempts while locked', [['return "LOCKED"', 'return setattr(self, "failures", self.failures + 1) or "LOCKED"']]],
+    ['amazon-locker', 'keeps the count when it locks', [[late, 'self.locked_until = t + LOCKOUT']]],
+    ['amazon-locker', 'locks at >= 5 and keeps the count', [['self.failures == MAX', 'self.failures >= MAX'], [late, 'self.locked_until = t + LOCKOUT']]],
+    ['splitwise', 'pays equal payees largest name first', [['import heapq', reversed], ['(-v, u) for u, v', '(-v, R(u)) for u, v']]],
+    ['splitwise', 'takes equal payers largest name first', [['import heapq', reversed], ['(v, u) for u, v', '(v, R(u)) for u, v']]],
+    ['movie-tickets', 'checks taken seats before TOO_MANY', [['if len(seats) > MAX_SEATS:', 'if len(seats) > MAX_SEATS and not any(self.owner[s] for s in seats):']]],
+  ];
+  for (const [slug, rule, edits] of variants) {
+    let source = readFileSync(`content/core-skills/${slug}/solution.py`, 'utf8');
+    for (const [from, to] of edits) {
+      assert.ok(source.includes(from), `${slug}: ${from}`);
+      source = source.replace(from, to);
+    }
+    const { cases } = packages.find((p) => p.problem.id === `core-${slug}`)!;
+    const runs = cases.map((c) => spawnSync('python3', ['-I', '-c', source], { input: c.input, encoding: 'utf8' }));
+    assert.ok(runs.every((run) => run.status === 0), `${slug} (${rule}) crashed`);
+    assert.ok(runs.some((run, k) => run.stdout !== cases[k].expectedOutput), `${slug} passes although it ${rule}`);
+  }
+});
+
 test('statements split into the description, input, output, explanation and plain-text hints', () => {
   const parsed = parseStatement('# Title\n\nBody `code`.\n\n## Input\n\nn **distinct** `x`\n\n## Output\n\nA `b`\n\n## Explanation\n\nWhy\n\n## Hints\n\n- one `h`\n- two\n', 't');
   assert.deepEqual(parsed, {
