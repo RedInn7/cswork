@@ -19,7 +19,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { OjProblemPackage } from '../../lib/oj-types';
-import { PANDAS_HARNESS, SQL_HARNESS, SQL_ORDERED } from '../../lib/server/sql-judge';
+import { PANDAS_HARNESS, SQL_HARNESS, SQL_INDEX, SQL_ORDERED } from '../../lib/server/sql-judge';
 import { GENERATORS, SCHEMAS, seeded, type Data, type Value } from './datasets';
 import { PANDAS_SOLUTIONS, type PandasSolution } from './pandas-solutions';
 import { GROUPS, PATTERNS, PROBLEMS, type SqlProblem } from './problems';
@@ -35,9 +35,9 @@ export function literal(value: Value) {
   return `'${value.replaceAll("'", "''")}'`;
 }
 
-/** One test's stdin: the ordering marker, the problem's tables and their rows. */
+/** One test's stdin: the ordering or index marker, the problem's tables and their rows. */
 export function datasetSql(problem: SqlProblem, data: Data) {
-  const parts = problem.ordered ? [SQL_ORDERED] : [];
+  const parts = problem.ordered ? [SQL_ORDERED] : problem.index ? [SQL_INDEX + JSON.stringify(problem.index)] : [];
   for (const table of problem.tables) parts.push(SCHEMAS[problem.schema][table]);
   for (const table of problem.tables) {
     const rows = data[table] ?? [];
@@ -83,9 +83,34 @@ const orderNote = (problem: SqlProblem, zh: boolean) =>
       ? '行的顺序不限。'
       : 'Rows may come in any order.';
 
+/** An index problem's editor starter: comments only, so as it stands it builds no index. */
+export const indexStarter = (max: number) =>
+  `-- 只写 CREATE INDEX 语句，最多 ${max} 个 / CREATE INDEX statements only, at most ${max}\n-- CREATE INDEX idx_name ON table_name (column1, column2);\n`;
+
+function indexStatement(problem: SqlProblem, index: NonNullable<SqlProblem['index']>, schema: string, zh: boolean) {
+  const queries = index.queries
+    .map(({ sql }, k) => `-- ${zh ? '查询' : 'query'} ${k + 1}\n${sql};`)
+    .join('\n\n');
+  return {
+    title: problem.title[zh ? 'zh' : 'en'],
+    description: zh
+      ? `${problem.task.zh}\n\n数据库中的表（SQLite）：\n\n\`\`\`sql\n${schema}\n\`\`\`\n\n目标查询：\n\n\`\`\`sql\n${queries}\n\`\`\`\n\n**最多建 ${index.max} 个索引。**`
+      : `${problem.task.en}\n\nTables in the database (SQLite):\n\n\`\`\`sql\n${schema}\n\`\`\`\n\nTarget queries:\n\n\`\`\`sql\n${queries}\n\`\`\`\n\n**Create at most ${index.max} index${index.max === 1 ? '' : 'es'}.**`,
+    input: zh
+      ? `每个测试点先在空的 SQLite 内存数据库里建表、插入数据（样例输入就是其中一组；第一行 \`${SQL_INDEX.trim()}\` 后面是判题器读的上限和目标查询），然后执行你的脚本。脚本只能包含 CREATE INDEX 语句，可以写多条，用分号隔开；SELECT、INSERT、DELETE、DROP、CREATE TABLE、PRAGMA、ANALYZE 等其他语句都会被拒绝。判题器不运行 ANALYZE，所以执行计划不取决于数据。`
+      : `Each test first creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset; after \`${SQL_INDEX.trim()}\` on its first line come the limit and the target queries the judge reads), then runs your script. The script may hold only CREATE INDEX statements, as many as you like separated by semicolons; SELECT, INSERT, DELETE, DROP, CREATE TABLE, PRAGMA, ANALYZE and every other statement are refused. The judge never runs ANALYZE, so the plans do not depend on the data.`,
+    output: zh
+      ? '每条目标查询按编号输出一行：\n\n- `query k: ok`：结果和建索引之前完全相同；EXPLAIN QUERY PLAN 里没有扫描整张表的 `SCAN 表名`（`SCAN … USING INDEX` 不算）、没有 `USE TEMP B-TREE`、没有 SQLite 临时建的 `AUTOMATIC` 索引，并且用上了题目要求的查找方式。\n- `query k: result changed`：结果变了。\n- 否则是这条查询的执行计划，各步骤用 ` | ` 连成一行，方便你看到 SQLite 实际怎么执行。\n\n建的索引超过上限，或者脚本里有 CREATE INDEX 以外的语句，判为运行错误。'
+      : 'One line per target query, in order:\n\n- `query k: ok`: the result is the same as before your indexes, and its EXPLAIN QUERY PLAN has no `SCAN table` reading a whole table (`SCAN … USING INDEX` is fine), no `USE TEMP B-TREE`, no `AUTOMATIC` index SQLite builds on the fly, and uses the lookup the task asks for.\n- `query k: result changed`: the result changed.\n- Otherwise the query’s plan, its steps joined by ` | ` on one line, so you see what SQLite actually does.\n\nMore indexes than the limit, or any statement other than CREATE INDEX, is a runtime error.',
+    explanation: problem.explanation[zh ? 'zh' : 'en'],
+    hints: problem.hints[zh ? 'zh' : 'en'].map((hint) => hint.replaceAll('`', '')),
+  };
+}
+
 function statement(problem: SqlProblem, locale: 'zh' | 'en') {
   const zh = locale === 'zh';
   const schema = problem.tables.map((table) => SCHEMAS[problem.schema][table]).join('\n');
+  if (problem.index) return indexStatement(problem, problem.index, schema, zh);
   const columns = columnList(problem, zh);
   const order = orderNote(problem, zh);
   return {
@@ -137,10 +162,17 @@ export function buildSqlTrack() {
           throw new Error(`${problem.id}: no hidden dataset rejects\n${query}`);
         return killed.length;
       });
-      const rows = expected.map(rowCount);
-      if (!rows[0] || !rows.slice(1).some(Boolean))
-        throw new Error(`${problem.id}: the sample and some hidden dataset need result rows`);
-      report.push(`${problem.id} rows ${rows.join('/')} wrong-killed-on ${kills.join('/')}`);
+      if (problem.index) {
+        // The reference passes every target query everywhere; there are no result rows to count.
+        if (expected.some((output) => output !== problem.index!.queries.map((_, k) => `query ${k + 1}: ok\n`).join('')))
+          throw new Error(`${problem.id}: the reference index fails a target query\n${expected.join('')}`);
+        report.push(`${problem.id} index ok on ${expected.length} wrong-killed-on ${kills.join('/')}`);
+      } else {
+        const rows = expected.map(rowCount);
+        if (!rows[0] || !rows.slice(1).some(Boolean))
+          throw new Error(`${problem.id}: the sample and some hidden dataset need result rows`);
+        report.push(`${problem.id} rows ${rows.join('/')} wrong-killed-on ${kills.join('/')}`);
+      }
       const zh = statement(problem, 'zh');
       const group = GROUPS.find((item) => item.key === problem.group)!;
       return {
@@ -163,6 +195,7 @@ export function buildSqlTrack() {
           outputLimit: 64,
           checker: 'exact',
           languages: ['sql'],
+          ...(problem.index ? { starters: { sql: indexStarter(problem.index.max) } } : {}),
         },
         cases: datasets.map(({ name, input, hidden }, k) => ({
           name,

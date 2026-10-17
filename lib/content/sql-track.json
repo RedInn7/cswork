@@ -98,6 +98,40 @@
         "sql-49",
         "sql-50"
       ]
+    },
+    {
+      "key": "advanced",
+      "zh": "进阶：递归、JSON 与窗口帧",
+      "en": "Advanced: recursion, JSON & frames",
+      "ids": [
+        "sql-51",
+        "sql-52",
+        "sql-53",
+        "sql-54",
+        "sql-55",
+        "sql-56",
+        "sql-57",
+        "sql-58",
+        "sql-59",
+        "sql-60",
+        "sql-61",
+        "sql-62"
+      ]
+    },
+    {
+      "key": "indexing",
+      "zh": "索引设计",
+      "en": "Index design",
+      "ids": [
+        "sql-71",
+        "sql-72",
+        "sql-73",
+        "sql-74",
+        "sql-75",
+        "sql-76",
+        "sql-77",
+        "sql-78"
+      ]
     }
   ],
   "patterns": [
@@ -160,6 +194,26 @@
       "key": "relational-division",
       "zh": "全称条件",
       "en": "For all (division)"
+    },
+    {
+      "key": "recursive-cte",
+      "zh": "递归 CTE",
+      "en": "Recursive CTEs"
+    },
+    {
+      "key": "json",
+      "zh": "JSON 列",
+      "en": "JSON columns"
+    },
+    {
+      "key": "window-frame",
+      "zh": "窗口帧与分析函数",
+      "en": "Window frames & analytics"
+    },
+    {
+      "key": "index-design",
+      "zh": "索引设计",
+      "en": "Index design"
     }
   ],
   "problems": [
@@ -578,6 +632,186 @@
       "titleEn": "Full Years of Service",
       "difficulty": "中等",
       "patterns": []
+    },
+    {
+      "id": "sql-51",
+      "titleZh": "组织架构每层人数",
+      "titleEn": "Headcount per Org Level",
+      "difficulty": "中等",
+      "patterns": [
+        "recursive-cte"
+      ]
+    },
+    {
+      "id": "sql-52",
+      "titleZh": "汇报链路径",
+      "titleEn": "Reporting Chain",
+      "difficulty": "中等",
+      "patterns": [
+        "recursive-cte"
+      ]
+    },
+    {
+      "id": "sql-53",
+      "titleZh": "物料清单展开",
+      "titleEn": "Bill of Materials",
+      "difficulty": "困难",
+      "patterns": [
+        "recursive-cte"
+      ]
+    },
+    {
+      "id": "sql-54",
+      "titleZh": "每日营收补零",
+      "titleEn": "Daily Revenue with Empty Days",
+      "difficulty": "中等",
+      "patterns": [
+        "recursive-cte"
+      ]
+    },
+    {
+      "id": "sql-55",
+      "titleZh": "按事件类型统计耗时",
+      "titleEn": "Time Spent by Event Type",
+      "difficulty": "简单",
+      "patterns": [
+        "json"
+      ]
+    },
+    {
+      "id": "sql-56",
+      "titleZh": "展开 JSON 标签数组",
+      "titleEn": "Users per Tag",
+      "difficulty": "中等",
+      "patterns": [
+        "json"
+      ]
+    },
+    {
+      "id": "sql-57",
+      "titleZh": "缺失的键和 null 值",
+      "titleEn": "Missing Key or Null Value",
+      "difficulty": "中等",
+      "patterns": [
+        "json"
+      ]
+    },
+    {
+      "id": "sql-58",
+      "titleZh": "客户消费四分组",
+      "titleEn": "Spending Quartiles",
+      "difficulty": "中等",
+      "patterns": [
+        "window-frame"
+      ]
+    },
+    {
+      "id": "sql-59",
+      "titleZh": "部门内薪资百分位",
+      "titleEn": "Salary Percent Rank",
+      "difficulty": "中等",
+      "patterns": [
+        "window-frame"
+      ]
+    },
+    {
+      "id": "sql-60",
+      "titleZh": "按 30 分钟间隔切分会话",
+      "titleEn": "Sessions with a 30-Minute Gap",
+      "difficulty": "困难",
+      "patterns": [
+        "window-frame"
+      ]
+    },
+    {
+      "id": "sql-61",
+      "titleZh": "最近 7 单的移动平均",
+      "titleEn": "Moving Average of the Last 7 Orders",
+      "difficulty": "中等",
+      "patterns": [
+        "window-frame"
+      ]
+    },
+    {
+      "id": "sql-62",
+      "titleZh": "部门里最新入职的人",
+      "titleEn": "Latest Hire in the Department",
+      "difficulty": "中等",
+      "patterns": [
+        "window-frame"
+      ]
+    },
+    {
+      "id": "sql-71",
+      "titleZh": "等值列在前，范围列在后",
+      "titleEn": "Equality First, Range Last",
+      "difficulty": "中等",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-72",
+      "titleZh": "覆盖索引",
+      "titleEn": "A Covering Index",
+      "difficulty": "中等",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-73",
+      "titleZh": "让索引替你排序",
+      "titleEn": "Let the Index Sort",
+      "difficulty": "中等",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-74",
+      "titleZh": "表达式索引",
+      "titleEn": "An Expression Index",
+      "difficulty": "中等",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-75",
+      "titleZh": "LIKE 前缀搜索",
+      "titleEn": "A LIKE Prefix Search",
+      "difficulty": "困难",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-76",
+      "titleZh": "OR 两边各用一个索引",
+      "titleEn": "One Index per OR Branch",
+      "difficulty": "中等",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-77",
+      "titleZh": "给外键建索引",
+      "titleEn": "Index the Foreign Key",
+      "difficulty": "中等",
+      "patterns": [
+        "index-design"
+      ]
+    },
+    {
+      "id": "sql-78",
+      "titleZh": "一个索引服务三条查询",
+      "titleEn": "One Index, Three Queries",
+      "difficulty": "困难",
+      "patterns": [
+        "index-design"
+      ]
     }
   ]
 }
