@@ -13,51 +13,54 @@ const KINDS = `(${NOTE_KINDS.map((k) => `target LIKE '${k}:%'`).join(' OR ')})`;
 // cap, MAX_ROWS): 5000 full 20 KB bodies would be 100 MB in one request. A tag past that is missed.
 const SCAN = 5000;
 const HEAD = 8000;
-// ponytail: per-process cache, emptied past 500 learners; another process just counts again.
-const tagCache = new Map<string, { key: string; value: unknown }>();
+// Each note's tags and confidence, kept with the updated_at they were read at, so a write costs one
+// parse rather than re-reading all 5000 notes (up to 2 s of regex on the one Node thread).
+// ponytail: per process, started over past 100k notes (about 20 MB); learners who keep it full
+// make one another read every note again, a stored meta column if that happens.
+const MEMO = 100_000;
+const noteMeta = new Map<string, { at: number; tags: string[]; confidence: number | null }>();
 const problemId = z.string().regex(/^(lc|oa)-[a-z0-9-]+$/);
 const stops = new Set(curatedSections.map((s) => s.slug));
 const curated = (problem: string) => curatedByNumber.get(Number(/^lc-(\d+)$/.exec(problem)?.[1]));
 
 function tags(userId: string) {
-  const { at, n } = sqlite()
-    .prepare(`SELECT MAX(updated_at) AS at,COUNT(*) AS n FROM user_notes WHERE user_id=? AND ${KINDS}`)
-    .get(userId) as { at: number | null; n: number };
-  const key = `${at}:${n}`;
-  const cached = tagCache.get(userId);
-  if (cached?.key === key) return cached.value;
+  const db = sqlite();
+  const rows = db
+    .prepare(`SELECT target,updated_at AS at FROM user_notes WHERE user_id=? AND ${KINDS} LIMIT ${SCAN}`)
+    .all(userId) as { target: string; at: number }[];
+  const head = db.prepare(`SELECT substr(body,1,${HEAD}) FROM user_notes WHERE user_id=? AND target=?`).pluck();
+  if (noteMeta.size + rows.length > MEMO) noteMeta.clear();
   const counts = new Map<string, number>();
   const confidence: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  const bodies = sqlite()
-    .prepare(`SELECT substr(body,1,${HEAD}) FROM user_notes WHERE user_id=? AND ${KINDS} LIMIT ${SCAN}`)
-    .pluck()
-    .iterate(userId) as Iterable<string>;
-  for (const body of bodies) {
-    const meta = parseNoteMeta(body);
+  for (const { target, at } of rows) {
+    const key = `${userId}\n${target}`;
+    let meta = noteMeta.get(key);
+    if (!meta || meta.at !== at) {
+      const parsed = parseNoteMeta((head.get(userId, target) as string | undefined) ?? '');
+      noteMeta.set(key, (meta = { at, tags: parsed.tags, confidence: parsed.confidence }));
+    }
     for (const tag of meta.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
     if (meta.confidence) confidence[meta.confidence]++;
   }
-  const value = {
+  return {
     tags: [...counts]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .slice(0, 60)
       .map(([tag, count]) => ({ tag, count })),
     confidence,
   };
-  if (tagCache.size >= 500) tagCache.clear();
-  tagCache.set(userId, { key, value });
-  return value;
 }
 
 /** The learner's other notes that link [[problem]] outside code, newest first, 50 at most. */
 function backlinks(userId: string, problem: string) {
   const running = runningContestProblems(userId);
-  // ponytail: only the newest 200 notes holding the text are parsed, so links written in code cannot
-  // make one request read all 5000 bodies; an older real link past those is missed.
+  // ponytail: only the newest 100 notes holding the text are parsed (at most 0.1 s of regex on hostile
+  // 20 KB bodies, 20 requests a minute), so links written in code cannot make one request read all
+  // 5000 bodies; an older real link past those is missed.
   const rows = sqlite()
     .prepare(
       `SELECT target,body,updated_at AS updatedAt FROM user_notes
-      WHERE user_id=? AND ${KINDS} AND target<>? AND body LIKE ? ORDER BY updated_at DESC,target LIMIT 200`,
+      WHERE user_id=? AND ${KINDS} AND target<>? AND body LIKE ? ORDER BY updated_at DESC,target LIMIT 100`,
     )
     .iterate(userId, `problem:${problem}`, `%[[${problem}]]%`) as Iterable<{
     target: string;
@@ -110,7 +113,7 @@ export async function handleNoteSub(request: Request, p: Person, sub: string): P
     return json(tags(p.id));
   }
   if (sub === 'backlinks') {
-    await limit(p, 'note-backlinks', 60);
+    await limit(p, 'note-backlinks', 20);
     const problem = problemId.parse(params.get('problem'));
     refuseInContest(p, problem);
     return json({ items: backlinks(p.id, problem) });

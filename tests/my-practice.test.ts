@@ -240,7 +240,7 @@ void test('note #tags and confidence filter the hub; backlinks and Line 500 stop
     { tag: '哈希表', count: 1 },
   ]);
   assert.deepEqual(tags.confidence, { 1: 0, 2: 1, 3: 0, 4: 1, 5: 0 });
-  // The cache key is the newest updated_at and the count: let the clock move first.
+  // Each note's tags are kept with its updated_at: let the clock move first.
   await new Promise((r) => setTimeout(r, 2));
   await put(me, 'problem:lc-1', '#哈希表\n把握度: 5');
   const again = await ok<Tags>(me, 'GET', 'notes/tags');
