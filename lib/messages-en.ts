@@ -261,6 +261,8 @@ const EN: Record<string, string> = {
   请写明不通过的原因: 'Please tell the author why it was rejected',
   '正文的引用、列表或强调嵌套太深': 'The post nests quotes, lists or emphasis too deeply',
   '没有 OA 轮次时不能填写 OA 成绩': 'OA scores need an Online Assessment round',
+  题目标的轮次不在所选轮次里: "A question's round isn't one of the rounds you picked",
+  关联的题目不存在或不能关联: "That problem doesn't exist or can't be linked",
   'OA 做出的题数不能多于总题数': 'OA problems solved can’t exceed the total',
   // Study groups (lib/server/study-groups.ts)
   学习小组不存在: 'Study group not found',
@@ -490,6 +492,7 @@ const EN: Record<string, string> = {
   // Timed mock OA (lib/server/mock-oa.ts)
   '模拟 OA 接口不存在': 'Mock OA endpoint not found',
   '没有这家公司的模拟 OA': "There's no mock OA for this company",
+  这篇面经没有能判题的关联题: 'None of the problems this experience links can be judged here yet',
   '这家公司的可判题还不够，换一家公司或减少题量':
     "There aren't enough judgeable problems for this mock yet. Pick another company or fewer questions",
   '所选知识点下的题不够，减少题量或多选几个':

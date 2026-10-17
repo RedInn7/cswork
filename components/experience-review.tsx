@@ -2,10 +2,12 @@
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { api } from '@/lib/types';
+import { problemAppHref } from '@/lib/classic-lists';
 import { useLocale, useT } from '@/lib/i18n';
 import {
   EMPLOYMENT,
   oaLine,
+  prepLine,
   RESULTS,
   ROUND_LABELS,
   seasonLabel,
@@ -13,6 +15,7 @@ import {
   SOURCES,
   type MemberDetails,
   type MemberOa,
+  type MemberQuestion,
 } from '@/lib/experience';
 import { SafeMarkdown } from './experience-report';
 import { Button } from './ui/button';
@@ -27,7 +30,7 @@ type Item = {
   rounds: string[];
   interviewDate: string | null;
   body: string;
-  questions: string[];
+  questions: MemberQuestion[];
   status: 'pending' | 'approved' | 'rejected';
   note: string;
   createdAt: number;
@@ -138,6 +141,7 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
         d.sentiment && label(SENTIMENTS, d.sentiment),
         d.durationWeeks !== null && t(`流程 ${d.durationWeeks} 周`, `${d.durationWeeks}-week process`),
         oaLine(item.oa, zh),
+        prepLine(d, zh),
       ].filter((x): x is string => !!x)
     : [];
   return (
@@ -179,7 +183,16 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
           {!!item.questions.length && (
             <ol>
               {item.questions.map((q, i) => (
-                <li key={i}>{q}</li>
+                <li key={i}>
+                  {q.round && <span className="xs-q-round">{Object.hasOwn(ROUND_LABELS, q.round) ? t(...ROUND_LABELS[q.round]) : q.round}</span>}
+                  {q.text}
+                  {/* The id as stored: the reviewer checks that the link fits the question. */}
+                  {q.problem && (
+                    <a className="xs-q-go" href={problemAppHref(q.problem)} target="_blank" rel="noreferrer">
+                      {q.similar ? t(`类似 ${q.problem}`, `similar to ${q.problem}`) : `→ ${q.problem}`}
+                    </a>
+                  )}
+                </li>
               ))}
             </ol>
           )}

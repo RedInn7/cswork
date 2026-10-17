@@ -293,6 +293,8 @@ export type MockSession = {
   source: MockSource;
   /** A custom mock drawn only from these Line 500 stops (kept for "draw again"). */
   topics?: string[];
+  /** Drawn from this member experience's linked problems (kept for "draw again"; the account history drops it). */
+  experience?: string;
   slots: Slot[];
   ids: string[];
   minutes: number;

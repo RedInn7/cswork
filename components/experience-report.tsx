@@ -1,7 +1,8 @@
 'use client';
 import { Component, useState, type ReactNode } from 'react';
 import { api } from '@/lib/types';
-import { oaLine, type MemberOa } from '@/lib/experience';
+import { problemAppHref } from '@/lib/classic-lists';
+import { oaLine, ROUND_LABELS, type MemberOa, type MemberQuestion } from '@/lib/experience';
 import { useLocale, useT } from '@/lib/i18n';
 import { OaMarkdown } from './oa-library';
 import '@/app/experience-submissions.css';
@@ -114,13 +115,73 @@ export type MemberInfo = {
   oa?: MemberOa | null;
 };
 
+/** "LC 146 · LRU Cache" for a linked LeetCode problem, the title alone for an OA one. */
+const problemLabel = (q: MemberQuestion, zh: boolean) => {
+  const title = (!zh && q.titleEn) || q.title;
+  const lc = /^lc-(\d+)$/.exec(q.problem)?.[1];
+  return lc ? (title ? `LC ${lc} · ${title}` : `LC ${lc}`) : title || q.problem;
+};
+
+/**
+ * A post's questions, each with its round and, when it links a site problem, a way to practise
+ * it; a public post with any link also offers the whole loop as a timed mock. No hooks: the
+ * server-rendered page uses it too.
+ */
+export function MemberQuestions({
+  id,
+  questions,
+  zh,
+  live,
+  className,
+}: {
+  id: string;
+  questions: readonly MemberQuestion[];
+  zh: boolean;
+  /** Public: only then can a mock be drawn from it. */
+  live: boolean;
+  className: string;
+}) {
+  if (!questions.length) return null;
+  const t = (a: string, b: string) => (zh ? a : b);
+  return (
+    <section className={`${className} xs-questions`} aria-labelledby="xs-questions-h">
+      <h2 id="xs-questions-h">{t('被问到的题目', 'Questions asked')}</h2>
+      <ol>
+        {questions.map((q, i) => (
+          <li key={i}>
+            {q.round && (
+              <span className="xs-q-round">
+                {Object.hasOwn(ROUND_LABELS, q.round) ? ROUND_LABELS[q.round][zh ? 0 : 1] : q.round}
+              </span>
+            )}
+            {q.text}
+            {q.problem && (
+              <a className="xs-q-go" href={problemAppHref(q.problem)}>
+                {t('去做 ', 'Practise ')}
+                {problemLabel(q, zh)}
+                {q.similar && t('（类似）', ' (similar)')}
+              </a>
+            )}
+          </li>
+        ))}
+      </ol>
+      {live && questions.some((q) => q.problem) && (
+        <a className="xs-loop" href={`/?${new URLSearchParams({ view: 'mock', experience: id })}`}>
+          {t('按这场面经模拟', 'Practise this loop as a timed mock')}
+        </a>
+      )}
+    </section>
+  );
+}
+
 /**
  * The part of a member's post the library has no equivalent for: who wrote it (a public handle
  * at most), its review status for the author, the questions asked and a report control.
  */
-export function MemberPost({ member, questions }: { member: MemberInfo; questions: string[] }) {
+export function MemberPost({ member, questions }: { member: MemberInfo; questions: readonly MemberQuestion[] }) {
   const t = useT();
-  const oa = oaLine(member.oa, useLocale() !== 'en');
+  const zh = useLocale() !== 'en';
+  const oa = oaLine(member.oa, zh);
   return (
     <>
       {!member.public && (
@@ -140,16 +201,7 @@ export function MemberPost({ member, questions }: { member: MemberInfo; question
         </output>
       )}
       {oa && <p className="xs-byline xs-oa">{oa}</p>}
-      {!!questions.length && (
-        <section className="rd-card ct-body xs-questions" aria-labelledby="xs-questions-h">
-          <h2 id="xs-questions-h">{t('被问到的题目', 'Questions asked')}</h2>
-          <ol>
-            {questions.map((q, i) => (
-              <li key={i}>{q}</li>
-            ))}
-          </ol>
-        </section>
-      )}
+      <MemberQuestions id={member.id} questions={questions} zh={zh} live={member.public} className="rd-card ct-body" />
       <div className="xs-byline">
         <span className="rd-badge is-member">{t('学员投稿', 'Member submission')}</span>
         <span>

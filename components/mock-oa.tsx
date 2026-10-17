@@ -106,10 +106,12 @@ type Drawn = {
   scoring: Scoring;
   source: MockSource;
   topics?: string[];
+  experience?: string;
   now: number;
 };
 type DrawRequest =
   | { company: string }
+  | { experience: string }
   | {
       custom: {
         company?: string;
@@ -155,7 +157,9 @@ const platformKey = (platform: string | null) =>
 const recentIds = (state: MockState) =>
   [state.active, ...state.history.slice(0, 5)].flatMap((s) => s?.ids ?? []);
 const drawRequest = (s: MockSession): DrawRequest =>
-  s.preset && s.company
+  s.experience
+    ? { experience: s.experience }
+    : s.preset && s.company
     ? { company: s.company }
     : {
         custom: {
@@ -294,6 +298,7 @@ export function MockOa({
         scoring: drawn.scoring,
         source: drawn.source,
         ...(drawn.topics?.length ? { topics: drawn.topics } : {}),
+        ...(drawn.experience ? { experience: drawn.experience } : {}),
         slots: drawn.slots,
         ids: drawn.ids,
         minutes: drawn.minutes,
@@ -318,6 +323,17 @@ export function MockOa({
     }
   }
 
+  // "Practise this loop" (?experience=, from a member's post) draws once per visit, through the
+  // same replace prompt as any draw; never over a skill exam on the clock.
+  const fromExperience = useRef(false);
+  const examRunning = !!(state.active?.cert && state.active.startedAt);
+  useEffect(() => {
+    if (!params.experience || fromExperience.current) return;
+    fromExperience.current = true;
+    // oxlint-disable-next-line react/react-compiler -- the draw is the effect: it posts, then sets state as it goes.
+    if (!examRunning) void draw('exp', { experience: params.experience });
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- once per visit; draw reads fresh state itself.
+  }, [params.experience]);
   const report = findMock(state, params.report);
   const briefing = findMock(state, params.session);
   return (
@@ -334,6 +350,11 @@ export function MockOa({
       >
         {t('还要练面试？一键抽一套模拟面试题', 'Practising interviews too? Draw a mock interview set')}
       </a>
+      {params.experience && examRunning && (
+        <p className="mock-note" role="alert">
+          {t('技能考试正在进行，交卷后再来按这场面经模拟。', 'A skill exam is in progress. Hand it in, then come back to practise this loop.')}
+        </p>
+      )}
       {storageFailed && (
         <p className="mock-note" role="alert">
           {t(
@@ -1318,7 +1339,17 @@ function MockBriefing({
       </ul>
       {missing && (
         <p className="mock-note" role="alert">
-          {t('有题目暂时打不开了，请换一套。', 'Some of these problems are unavailable right now. Draw another set.')}
+          {session.experience ? (
+            <>
+              {t(
+                '这场面经里有题目暂时打不开了：可以回到面经逐题练，或取消后按公司抽一套。',
+                'Some problems from this post are unavailable right now. Practise them one by one from the post, or cancel and draw a company mock.',
+              )}
+              <a href={`/library/experience-ugc/${session.experience}`}>{t('回到面经', 'Back to the post')}</a>
+            </>
+          ) : (
+            t('有题目暂时打不开了，请换一套。', 'Some of these problems are unavailable right now. Draw another set.')
+          )}
         </p>
       )}
       <div className="mock-actions">
@@ -1326,10 +1357,13 @@ function MockBriefing({
           <Timer size={18} />
           {t('开始计时', 'Start the clock')}
         </button>
-        <button type="button" className="mock-ghost" onClick={redraw} disabled={busy}>
-          {busy ? <LoaderCircle size={14} className="cs-spin" /> : <RotateCcw size={14} />}
-          {t('换一套', 'Redraw')}
-        </button>
+        {/* A post always draws the same problems: nothing to redraw. */}
+        {!session.experience && (
+          <button type="button" className="mock-ghost" onClick={redraw} disabled={busy}>
+            {busy ? <LoaderCircle size={14} className="cs-spin" /> : <RotateCcw size={14} />}
+            {t('换一套', 'Redraw')}
+          </button>
+        )}
         <button type="button" className="mock-ghost" onClick={cancel}>
           {t('取消', 'Cancel')}
         </button>

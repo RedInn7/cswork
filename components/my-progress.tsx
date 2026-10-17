@@ -846,7 +846,7 @@ export function MyProgress({
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
       {boot.person && <InterviewCalibration english={english} />}
       {boot.person && <FollowBoard english={english} />}
-      {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
+      {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} problems={boot.problems} />}
     </section>
   );
 }
