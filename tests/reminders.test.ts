@@ -26,7 +26,8 @@ const { handleOj } = await import('../lib/server/oj-api');
 const { handleNewsletterLink } = await import('../lib/server/newsletter');
 const { sendLearnerReminders } = await import('../lib/server/reminders');
 const { pushEndpoint, vapidJwt } = await import('../lib/server/web-push');
-const { sendMail } = await import('../lib/server/mail');
+const { reminderLines, sendMail } = await import('../lib/server/mail');
+const { englishMessage } = await import('../lib/messages-en');
 
 before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }));
 after(() => {
@@ -369,4 +370,95 @@ void test('a mail Resend rate-limits is sent again with the same key after Retry
     delete process.env.RESEND_API_KEY;
     delete process.env.MAIL_FROM;
   }
+});
+
+void test('tracker reminders: an open OA a day and two hours ahead, an interview an hour ahead, once per time', async () => {
+  const kai = person('r-kai'); // Beijing, in Chinese, tracker reminders on by default.
+  const lee = person('r-lee'); // Tracker reminders off.
+  const mo = person('r-mo'); // Never opted in.
+  for (const p of [kai, lee, mo]) addUser(p);
+  const quiet = { review: false, streak: false, contest: false, hour: 3 };
+  // A page cached from before the field existed still saves; it defaults to on.
+  assert.equal((await call(kai, 'POST', 'oj/notify', prefs({ ...quiet, tz: -480, locale: 'zh' }))).data.prefs.applications, true);
+  assert.equal((await call(lee, 'POST', 'oj/notify', prefs({ ...quiet, applications: false }))).data.prefs.applications, false);
+  const card = async (p: Person, body: Record<string, unknown>) => (await call(p, 'POST', 'oj/applications', body)).data.item.id as string;
+  const oa = await card(kai, { company: 'Acme', role: 'SWE Intern', stage: 'oa', oaDeadline: NOW + 20 * HOUR });
+  // Within 2 hours when first seen: the 2-hour one only, never the 24-hour one after it.
+  const late = await card(kai, { company: 'Late', stage: 'applied', oaDeadline: NOW + 90 * 60000 });
+  await card(kai, { company: 'Past OA', stage: 'phone', oaDeadline: NOW + 20 * HOUR });
+  const interview = await card(kai, { company: 'Beta', stage: 'phone', interviewAt: NOW + 50 * 60000 });
+  await card(kai, { company: 'No', stage: 'rejected', interviewAt: NOW + 50 * 60000 });
+  const ghosted = await card(kai, { company: 'Silent', stage: 'onsite', interviewAt: NOW + 50 * 60000 });
+  sqlite().prepare("UPDATE job_applications SET stage='ghosted' WHERE id=?").run(ghosted);
+  for (const p of [lee, mo]) await card(p, { company: 'Acme', stage: 'oa', oaDeadline: NOW + 20 * HOUR, interviewAt: NOW + 50 * 60000 });
+
+  await withVapid(async () => {
+    await call(kai, 'POST', 'oj/notify/subscription', { endpoint: 'https://fcm.googleapis.com/fcm/send/kai', on: true });
+    sent.length = 0;
+    assert.equal(await sendLearnerReminders(NOW), 3);
+    assert.equal(pushes().length, 3);
+  });
+  // Times in the learner's zone: NOW is 20:00 in Beijing.
+  assert.deepEqual({ ...notice(`app-oa24:${oa}:${NOW + 20 * HOUR}`)!, created_at: 0 }, {
+    kind: 'application',
+    title: 'OA 将在 24 小时内截止',
+    body: 'Acme · SWE Intern · 10-16 16:00',
+    href: '/career/tracker',
+    created_at: 0,
+  });
+  assert.equal(notice(`app-oa2:${late}:${NOW + 90 * 60000}`)!.body, 'Late · 10-15 21:30');
+  assert.equal(notice(`app-interview:${interview}:${NOW + 50 * 60000}`)!.title, '面试将在 1 小时内开始');
+  const others = sqlite()
+    .prepare("SELECT COUNT(*) FROM notifications WHERE kind='application' AND user_id<>?")
+    .pluck()
+    .get(kai.id);
+  assert.equal(others, 0, 'tracker reminders off, or never opted in');
+  // Each push shows every notice of the newest tick (the service worker tags them by id), not just one.
+  sqlite().prepare("UPDATE notifications SET created_at=? WHERE user_id=? AND kind='application'").run(Date.now(), kai.id);
+  const shown = (await call(kai, 'GET', 'oj/notify/pending')).data.items.map((i: { title: string }) => i.title);
+  assert.deepEqual(shown.sort(), ['OA 将在 24 小时内截止', 'OA 将在 2 小时内截止', '面试将在 1 小时内开始'].sort());
+  assert.equal(englishMessage('面试将在 1 小时内开始'), 'An interview starts within the hour');
+
+  // Claimed: later ticks leave them alone, the 24-hour one included once inside 2 hours for Late.
+  assert.equal(await sendLearnerReminders(NOW + 10 * 60000), 0);
+  // Moved to a new time: reminded again.
+  await call(kai, 'POST', `oj/applications/${oa}`, { oaDeadline: NOW + 22 * HOUR });
+  assert.equal(await sendLearnerReminders(NOW + 20 * 60000), 1);
+  assert.ok(notice(`app-oa24:${oa}:${NOW + 22 * HOUR}`));
+  // Two hours before the new time, then nothing more.
+  assert.equal(await sendLearnerReminders(NOW + 20.5 * HOUR), 1);
+  assert.equal(notice(`app-oa2:${oa}:${NOW + 22 * HOUR}`)!.title, 'OA 将在 2 小时内截止');
+  assert.equal(await sendLearnerReminders(NOW + 21 * HOUR), 0);
+  // Deleting a card deletes its reminder notices (company and role) too, nobody else's.
+  await call(kai, 'POST', `oj/applications/${oa}/delete`, {});
+  assert.equal(notice(`app-oa24:${oa}:${NOW + 22 * HOUR}`), undefined);
+  assert.equal(notice(`app-oa2:${oa}:${NOW + 22 * HOUR}`), undefined);
+  assert.ok(notice(`app-interview:${interview}:${NOW + 50 * 60000}`));
+});
+
+void test("the digest counts tracker cards and contacts to follow up by the end of the learner's day", async () => {
+  const kai = person('r-kai');
+  const lee = person('r-lee');
+  // 03:00 on Oct 17 in Beijing, Kai's hour; Lee's (UTC) comes later.
+  const at = Date.UTC(2026, 9, 16, 19);
+  const bj = (day: number, hour: number) => Date.UTC(2026, 9, day, hour) - 8 * HOUR;
+  const card = async (p: Person, stage: string, nextAt: number) => {
+    const id = (await call(p, 'POST', 'oj/applications', { company: 'Follow', stage })).data.item.id as string;
+    sqlite().prepare('UPDATE job_applications SET next_at=? WHERE id=?').run(nextAt, id);
+  };
+  await card(kai, 'applied', bj(17, 0));
+  await card(kai, 'onsite', bj(17, 23));
+  await card(kai, 'rejected', bj(16, 9)); // Over: not followed up.
+  await card(kai, 'applied', bj(18, 0)); // Tomorrow.
+  await call(kai, 'POST', 'oj/contacts', { name: 'Sam', nextAt: bj(15, 0) });
+  await call(kai, 'POST', 'oj/contacts', { name: 'Kim' });
+  await card(lee, 'applied', Date.UTC(2026, 9, 16));
+  assert.equal(await sendLearnerReminders(at), 1);
+  assert.deepEqual([notice(`rem:2026-10-17:${kai.id}`)!.body, notice(`rem:2026-10-17:${kai.id}`)!.href], ['3 项求职跟进到期了', '/career/tracker']);
+  await sendLearnerReminders(Date.UTC(2026, 9, 17, 3));
+  assert.equal(notice(`rem:2026-10-17:${lee.id}`), undefined, 'tracker reminders off');
+  // Only contacts due: the line opens the contacts page.
+  assert.deepEqual(reminderLines(false, { reviews: 0, streak: null, daily: false, contests: [], followUps: { applications: 0, contacts: 1 } }), [
+    ['1 job-search follow-up is due', '/career/contacts'],
+  ]);
 });

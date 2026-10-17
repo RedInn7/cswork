@@ -1,6 +1,8 @@
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import coreSkills from '@/lib/content/core-skills.json';
+import { problemAppHref } from '@/lib/classic-lists';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
@@ -20,9 +22,12 @@ import {
 import { EstimationDrill } from '@/components/estimation-drill';
 import { PublicLibraryMarkdown, markdownToc } from '../../library/markdown';
 import { SdQuiz } from '../quiz';
-import { SdMarkRead, SdReadCheck, SdTryFirst } from '../reader';
+import { SdMarkRead, SdReadCheck, SdReportIssue, SdTryFirst } from '../reader';
 
 type Props = { params: Promise<{ slug: string }> };
+type CoreProblem = { id: string; titleZh: string; titleEn: string; sdChapter?: string };
+/** LLD chapters with a judged Core Skills problem (scripts/core-skills/build.ts sets sdChapter). */
+const judged = new Map((coreSkills.problems as CoreProblem[]).filter((p) => p.sdChapter).map((p) => [p.sdChapter!, p]));
 
 /** The signed-in reader: their "design it first" draft is a private note; they may join the discussion. */
 async function viewerId() {
@@ -54,6 +59,7 @@ export default async function SystemDesignChapter({ params }: Props) {
   const body = zh ? chapter.bodyZh : chapter.bodyEn;
   const toc = markdownToc(body);
   const userId = await viewerId();
+  const practice = judged.get(chapter.slug);
   const tocList = (
     <ol>
       {toc.map((section) => (
@@ -117,6 +123,15 @@ export default async function SystemDesignChapter({ params }: Props) {
         ) : (
           prose
         )}
+        {practice && (
+          <p className="sd-practice">
+            <a href={problemAppHref(practice.id)}>
+              {t('动手实现（可判题）：', 'Build it yourself (judged): ')}
+              {zh ? practice.titleZh : practice.titleEn}{' '}
+              <span aria-hidden="true">→</span>
+            </a>
+          </p>
+        )}
         {chapter.quiz.length > 0 && <SdQuiz slug={chapter.slug} quiz={chapter.quiz} zh={zh} />}
         {/* The framework's estimation section, practised (also at /system-design/estimation). */}
         {chapter.slug === 'framework' && <EstimationDrill zh={zh} />}
@@ -142,6 +157,7 @@ export default async function SystemDesignChapter({ params }: Props) {
             </a>
           )}
         </nav>
+        <SdReportIssue refId={`sd:${chapter.slug}`} />
         <section className="ct-community sd-discussion" aria-labelledby="sd-discussion-title">
           <h2 id="sd-discussion-title">{t('章节讨论', 'Chapter discussion')}</h2>
           <SolutionPosts problemId={`sd:${chapter.slug}`} english={!zh} signedIn={!!userId} />

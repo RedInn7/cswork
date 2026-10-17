@@ -107,3 +107,37 @@ export type MemberDetails = {
 export const MEMBER_FACETS = ['employment', 'season', 'channel'] as const;
 /** Filters that list member posts only: the facts, and verified=1 (authors with a verified address). */
 export const MEMBER_FILTERS = [...MEMBER_FACETS, 'verified'] as const;
+
+/** An OA round's optional outcome a member gives: the ranges the form and the server share. */
+export const OA_RANGE = { solved: [0, 10], total: [1, 10], testsPct: [0, 100], minutes: [1, 300] } as const;
+/** Whether the OA led to the next round, [zh, en]. */
+export const OA_NEXT: Readonly<Record<string, [string, string]>> = {
+  yes: ['进了下一轮', 'Moved on'],
+  no: ['没进下一轮', 'Did not move on'],
+  pending: ['还在等', 'Waiting'],
+};
+export type MemberOa = {
+  solved: number | null;
+  total: number | null;
+  testsPct: number | null;
+  minutes: number | null;
+  next: string | null;
+};
+/** One line for a post's OA outcome, e.g. "OA 2/3 题 · 用例 85% · 70 分钟 · 进了下一轮"; null when none is given. */
+export function oaLine(oa: MemberOa | null | undefined, zh: boolean) {
+  if (!oa || Object.values(oa).every((v) => v === null)) return null;
+  const { solved, total, testsPct, minutes, next } = oa;
+  const parts = [
+    solved !== null && total !== null
+      ? zh ? `OA ${solved}/${total} 题` : `OA ${solved}/${total} solved`
+      : total !== null
+        ? zh ? `OA 共 ${total} 题` : `OA, ${total} ${total === 1 ? 'problem' : 'problems'}`
+        : solved !== null
+          ? zh ? `OA 做出 ${solved} 题` : `OA, ${solved} solved`
+          : 'OA',
+    testsPct !== null && (zh ? `用例 ${testsPct}%` : `${testsPct}% of tests`),
+    minutes !== null && (zh ? `${minutes} 分钟` : `${minutes} min`),
+    next && Object.hasOwn(OA_NEXT, next) && OA_NEXT[next][zh ? 0 : 1],
+  ].filter((x): x is string => !!x);
+  return parts.join(' · ');
+}

@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, index, primaryKey } from 'drizzle-orm/sqlite-core';
 
 // New-grad and intern openings from public ATS boards (company-job-openings): id is
 // '<ats>:<board>:<jobId>', kind 'intern' or 'new-grad'; no description text is stored. Each board
@@ -17,9 +17,30 @@ export const jobOpenings = sqliteTable(
     postedAt: integer('posted_at'),
     firstSeenAt: integer('first_seen_at').notNull(),
     lastSeenAt: integer('last_seen_at').notNull(),
+    // Posted pay range when the board publishes one; unit is year|hour|month, '' when none.
+    payMin: integer('pay_min'),
+    payMax: integer('pay_max'),
+    payCurrency: text('pay_currency').notNull().default(''),
+    payUnit: text('pay_unit').notNull().default(''),
   },
   (t) => [
     index('job_openings_company').on(t.companySlug, t.lastSeenAt),
     index('job_openings_first_seen').on(t.firstSeenAt),
   ],
+);
+
+// When each company's openings of a kind showed up per hiring cycle (the start year they hire
+// for), so past seasons stay visible after job_openings rows age out. peak is the most openings
+// seen at once. Rows are never deleted: KEEP_FOR pruning applies to job_openings only.
+export const jobSeasons = sqliteTable(
+  'job_seasons',
+  {
+    companySlug: text('company_slug').notNull(),
+    kind: text('kind').notNull(),
+    cycle: integer('cycle').notNull(),
+    firstSeenAt: integer('first_seen_at').notNull(),
+    lastSeenAt: integer('last_seen_at').notNull(),
+    peak: integer('peak').notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.companySlug, t.kind, t.cycle] })],
 );

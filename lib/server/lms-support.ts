@@ -58,6 +58,10 @@ export async function ticketDetail(p: Person, id: string) {
     ),
   };
 }
+/** A ticket's ref (POST /api/tickets): a correction on an MCQ, SD chapter, course or /learn lesson. */
+export const TICKET_REF = /^(?:mcq|sd|course|learn):[\w./-]{1,120}$/;
+export const CONTENT_TICKET =
+  "(t.title LIKE '[mcq:%' OR t.title LIKE '[sd:%' OR t.title LIKE '[course:%' OR t.title LIKE '[learn:%')";
 export async function ticketPage(p: Person, url: URL) {
   const where: string[] = [],
     args: SqlValue[] = [];
@@ -78,6 +82,10 @@ export async function ticketPage(p: Person, url: URL) {
     if (assigned !== 'unassigned')
       args.push(assigned === 'me' ? p.id : assigned);
   }
+  // Corrections on public content (POST /api/tickets with a ref) apart from support questions.
+  const kind = url.searchParams.get('kind');
+  if (kind === 'content' || kind === 'support')
+    where.push(`${kind === 'support' ? 'NOT ' : ''}${CONTENT_TICKET}`);
   const q = searchText(url);
   if (q) {
     where.push(

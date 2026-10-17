@@ -13,6 +13,7 @@ type Prefs = {
   streak: boolean;
   daily: boolean;
   contest: boolean;
+  applications: boolean;
   email: boolean;
   hour: number;
   tz: number;
@@ -25,6 +26,11 @@ const KINDS = [
   ['streak', '连续打卡快断时', 'When a streak is about to break'],
   ['daily', '每日一题', 'The daily problem'],
   ['contest', '报名的周赛和入门赛（开赛前 1 小时再提醒一次）', 'Weeklies and starters you entered (again an hour before)'],
+  [
+    'applications',
+    '投递提醒（OA 截止前 24 小时和 2 小时、面试前 1 小时各一次，到期的跟进并入每日汇总）',
+    'Job applications (24 hours and 2 hours before an OA deadline, an hour before an interview; follow-ups due go in the daily digest)',
+  ],
 ] as const;
 
 const key = (base64url: string) =>
@@ -115,8 +121,8 @@ export function ReminderSettings() {
       </h2>
       <p className="muted">
         {t(
-          '默认关闭。打开后每天在你选的时间汇总成一条提醒，没有要提醒的就不发；站内消息一定有，推送和邮件按你的选择。',
-          'Off by default. When on, you get one reminder a day at the hour you pick, and none when there is nothing to say: always in your notifications, and by push or email if you choose.',
+          '默认关闭。打开后每天在你选的时间汇总成一条提醒，没有要提醒的就不发；报名的比赛和投递的 OA、面试临近时，还会按下面写的时间另外提醒，不受这个时间限制。站内消息一定有，推送按你的选择；邮件只发每日汇总。',
+          'Off by default. When on, you get one digest a day at the hour you pick, and none when there is nothing to say. Contests you entered and OA deadlines and interviews you track also get their own reminders at the times listed below, whatever hour you pick. They always appear in your notifications and by push if you choose; email carries only the daily digest.',
         )}
       </p>
       {!settings ? (
@@ -126,7 +132,7 @@ export function ReminderSettings() {
           variant="outline"
           aria-disabled={busy}
           onClick={() =>
-            void save({ review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz: 0, locale })
+            void save({ review: true, streak: true, daily: false, contest: true, applications: true, email: false, hour: 20, tz: 0, locale })
           }
         >
           {t('打开学习提醒', 'Turn reminders on')}

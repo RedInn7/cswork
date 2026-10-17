@@ -351,7 +351,7 @@ Sleep, test your camera and editor, keep water nearby, and re-read your stories 
 - **年度奖金**目标、搬家补贴、入职日期、地点和团队。
 - **答复截止日期。**
 
-比较 offer 时，按四年的预期总额算，不要只看第一年；也想想团队和你能学到什么。
+比较 offer 时，按四年的预期总额算，不要只看第一年；也想想团队和你能学到什么。[Offer 对比计算器](/career/offers) 可以把几份 offer 的归属方式和签字费逐年摊开，算出 4 年税前总额。
 
 ## 礼貌地谈
 1. 先感谢招聘方，并请对方提供书面 offer，再讨论调整。
@@ -373,7 +373,7 @@ Sleep, test your camera and editor, keep water nearby, and re-read your stories 
 - **Annual bonus** target, relocation support, start date, location and team.
 - **The deadline.**
 
-Compare offers by their expected total over four years, not the first year alone, and weigh the team and what you will learn.
+Compare offers by their expected total over four years, not the first year alone, and weigh the team and what you will learn. The [offer comparison calculator](/career/offers) lays out each offer’s vesting and sign-on year by year and adds up four years, pre-tax.
 
 ## Negotiate politely
 1. Thank the recruiter and ask for the offer in writing before you discuss changes.

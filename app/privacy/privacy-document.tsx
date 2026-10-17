@@ -206,11 +206,11 @@ export function PrivacyDocument() {
                 Anthropic，用于生成点评；不发送邮箱、姓名或账户标识。平台不保存答案和点评，只记录每天的调用次数和用量。不点就不会发送。
               </p>
               <p id="privacy-jd">
-                在「JD 准备度检查」（/career/jd）提交时，服务器只把你粘贴的职位描述发送给
+                「JD 准备度检查」（/career/jd）没有启用 AI 时，职位描述只在你的浏览器里做关键词匹配，不会上传；登录后只有匹配到的技能名称（例如 python、sql）会发送给服务器，用来读取你的练习进度，不保存。和简历的比对读取简历生成器存在这个浏览器里的简历（包括各个版本），也只在浏览器里进行。启用 AI 时，提交后服务器只把你粘贴的职位描述发送给
                 Anthropic，用于整理出这个岗位要的技能和面试轮次；不发送邮箱、姓名、账户标识或你的练习记录，你的练习进度在服务器上读取，只和结果一起显示给你。职位描述和检查结果都不保存，只记录每天的调用次数和用量。从简历 AI 点评页带过来的职位描述经当前标签页的会话存储传递，读取后立即删除。
               </p>
               <p id="privacy-resume-builder">
-                在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「导出 JSON」的文件也在浏览器里生成。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。AI 模拟面试的简历项目深挖也会读取这里的内容（不含姓名和联系方式），只随你发出的消息和最后的评估发送，方式见上面 AI 面试官一段。
+                在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「复制为新版本」保存的各个版本也一样；「导出 JSON」的文件也在浏览器里生成。规则检查和「粘贴文本导入」都在浏览器里完成，粘贴的简历文字不会上传。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。AI 模拟面试的简历项目深挖也会读取这里的内容（不含姓名和联系方式），只随你发出的消息和最后的评估发送，方式见上面 AI 面试官一段。
               </p>
               <p id="privacy-ai-round">
                 在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
@@ -841,9 +841,16 @@ export function PrivacyDocument() {
                 only daily call counts and usage. Nothing is sent unless you ask.
               </p>
               <p id="privacy-jd">
-                When you submit on the JD readiness check (/career/jd), the
-                server sends only the job description you pasted to Anthropic,
-                to pick out the skills and interview rounds the role asks for.
+                Without AI, the JD check (/career/jd) matches the job
+                description against its keyword list in your browser and never
+                uploads it. When you are signed in, only the names of the skills
+                found (such as python or sql) go to the server to read your
+                progress, and nothing is stored. The comparison with your resume
+                reads the resume (and its versions) that the resume builder
+                keeps in this browser, and runs only there too. With AI enabled,
+                when you submit, the server sends only the job description you
+                pasted to Anthropic, to pick out the skills and interview rounds
+                the role asks for.
                 Your email, name, account identifier and practice records are
                 not sent; your progress is read on the server and shown only to
                 you beside the result. The job description and the result are
@@ -854,7 +861,10 @@ export function PrivacyDocument() {
               <p id="privacy-resume-builder">
                 What you enter in the resume builder (/career/resume/builder)
                 is kept only in this browser&apos;s local storage and is never
-                uploaded; Export JSON makes its file in the browser too. When
+                uploaded, and so are the versions saved with “Copy as new
+                version”; Export JSON makes its file in the browser too. The
+                rule check and “Paste text to import” run in the browser as well,
+                and pasted resume text is not uploaded. When
                 you are signed in and choose “Fill in from CSWork”, the page
                 reads your own certificates, contest rating, solved counts and
                 public handle (if your profile is public) from the server into

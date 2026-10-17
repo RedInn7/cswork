@@ -19,6 +19,14 @@ test('code examples, XOR, identifiers, money and malformed scripts remain litera
   assert.equal(doc.querySelectorAll('sup,sub').length, 0);
   for (const raw of ['a ^ b','a^2','snake_case','$1','$3','a_{，}','a_{ }']) assert.ok(doc.body.textContent.includes(raw));
 });
+test('authored statements draw ```mermaid blocks as course diagrams; other blocks stay code', () => {
+  const doc = render('```mermaid\nclassDiagram\n  class ParkingLot\n```\n\n```text\nInput: 1\n```');
+  // The diagram loads lazily, so server markup is its fallback: the source, still marked as mermaid.
+  const diagram = doc.querySelector('pre code.language-mermaid');
+  assert.match(diagram.textContent, /classDiagram/);
+  assert.equal(doc.querySelectorAll('pre').length, 2);
+  assert.equal(doc.querySelector('pre strong').textContent, 'Input:');
+});
 test('example and constraint labels retain their heading semantics', () => {
   const doc = render('**Example 1:**\n\n**Constraints:**\n\n**示例 1：**\n\n**提示：**');
   assert.deepEqual([...doc.querySelectorAll('h3')].map(x => x.textContent), ['Example 1:', 'Constraints:', '示例 1：', '提示：']);

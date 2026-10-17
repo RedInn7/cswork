@@ -257,6 +257,8 @@ const EN: Record<string, string> = {
   不能举报自己的投稿: "You can't report your own submission",
   请写明不通过的原因: 'Please tell the author why it was rejected',
   '正文的引用、列表或强调嵌套太深': 'The post nests quotes, lists or emphasis too deeply',
+  '没有 OA 轮次时不能填写 OA 成绩': 'OA scores need an Online Assessment round',
+  'OA 做出的题数不能多于总题数': 'OA problems solved can’t exceed the total',
   // Study groups (lib/server/study-groups.ts)
   学习小组不存在: 'Study group not found',
   学习小组接口不存在: 'Study group endpoint not found',
@@ -328,6 +330,8 @@ const EN: Record<string, string> = {
   题解不存在: 'Solution not found',
   这道题没有可用的参考解: 'This problem has no reference solution to compare with',
   这道题暂不支持对拍: "Stress testing isn't available for this problem",
+  // Whiteboard and stress-before-AC records (lib/server/practice-aids.ts)
+  '还在判题，判完后再记录': "Still judging. It's recorded once judging finishes",
   评论不存在: 'Comment not found',
   题解接口不存在: 'Solutions endpoint not found',
   仅老师可以管理题解: 'Only instructors can moderate solutions',
@@ -366,6 +370,12 @@ const EN: Record<string, string> = {
   // Application tracker (lib/server/applications.ts)
   投递记录已达上限: "You've reached the limit for tracked applications",
   投递记录不存在: 'Application not found',
+  // Career contacts (lib/server/contacts.ts) and tracker reminders (lib/server/reminders.ts)
+  联系人已达上限: "You've reached the limit for contacts",
+  联系人不存在: 'Contact not found',
+  'OA 将在 24 小时内截止': 'An OA is due within 24 hours',
+  'OA 将在 2 小时内截止': 'An OA is due within 2 hours',
+  '面试将在 1 小时内开始': 'An interview starts within the hour',
   今天的评论已达上限: "You've reached today's limit for comments",
   今天的举报次数已达上限: "You've reached today's limit for reports",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',
@@ -479,6 +489,10 @@ const EN: Record<string, string> = {
   '所选知识点下的题不够，减少题量或多选几个':
     'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
+  // OA multiple-choice answer stats (lib/server/mcq-stats.ts)
+  选择题不存在: 'Question not found',
+  选项不合法: 'Invalid choice',
+  '一次最多查询 50 道题': 'Ask for at most 50 questions at a time',
   // Skill certification exams (lib/server/skill-tests.ts) and their certificates
   你还有一场认证考试没有结束: 'You still have a certification exam in progress',
   '同一项认证 7 天内只能考一次': 'You can take each certification exam once every 7 days',
@@ -617,6 +631,12 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
   [/^关注的公司上线了 (\d+) 道新 OA 题$/, (n) => `${n} new OA ${n === '1' ? 'problem' : 'problems'} at companies you follow`],
   [/^关注的公司有 (\d+) 条新动态$/, (n) => `${n} ${n === '1' ? 'update' : 'updates'} at companies you follow`],
+  // The daily digest with a saved /career/jobs search (lib/server/company-follows.ts).
+  [/^保存的筛选有 (\d+) 个新岗位$/, (n) => `${n} new ${n === '1' ? 'opening matches' : 'openings match'} your saved search`],
+  [
+    /^保存的筛选有 (\d+) 个新岗位，关注的公司有 (\d+) 条新动态$/,
+    (n, m) => `${n} new ${n === '1' ? 'opening matches' : 'openings match'} your saved search; ${m} ${m === '1' ? 'update' : 'updates'} at companies you follow`,
+  ],
   [/^(.+) 有新面经$/, (company) => `New interview report: ${company}`],
 ];
 

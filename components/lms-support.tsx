@@ -269,10 +269,11 @@ function TicketList({
         typeof location === 'undefined' ? '' : location.search,
       ).get('status') || '',
     ),
-    [query, setQuery] = useState('');
+    [query, setQuery] = useState(''),
+    [kind, setKind] = useState('');
   const debounced = useDebounced(query),
     list = useCursorPage<LmsTicket>(
-      'lms/tickets?' + new URLSearchParams({ status: filter, q: debounced }),
+      'lms/tickets?' + new URLSearchParams({ status: filter, q: debounced, kind }),
     );
   return (
     <>
@@ -318,6 +319,13 @@ function TicketList({
             {t('已解决', 'Resolved')}
           </NativeSelectOption>
         </NativeSelect>
+        {boot.person?.role === 'teacher' && (
+          <NativeSelect aria-label={t('工单类型', 'Ticket type')} value={kind} onChange={(e) => setKind(e.target.value)}>
+            <NativeSelectOption value="">{t('全部类型', 'All types')}</NativeSelectOption>
+            <NativeSelectOption value="support">{t('学员提问', 'Student questions')}</NativeSelectOption>
+            <NativeSelectOption value="content">{t('内容纠错', 'Content corrections')}</NativeSelectOption>
+          </NativeSelect>
+        )}
         <Button variant="outline" onClick={list.refresh}>
           <RefreshCw size={15} />
           {t('刷新', 'Refresh')}

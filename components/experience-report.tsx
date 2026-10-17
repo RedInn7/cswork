@@ -1,7 +1,8 @@
 'use client';
 import { Component, useState, type ReactNode } from 'react';
 import { api } from '@/lib/types';
-import { useT } from '@/lib/i18n';
+import { oaLine, type MemberOa } from '@/lib/experience';
+import { useLocale, useT } from '@/lib/i18n';
 import { OaMarkdown } from './oa-library';
 import '@/app/experience-submissions.css';
 
@@ -110,6 +111,7 @@ export type MemberInfo = {
   public: boolean;
   mine: boolean;
   note: string;
+  oa?: MemberOa | null;
 };
 
 /**
@@ -118,6 +120,7 @@ export type MemberInfo = {
  */
 export function MemberPost({ member, questions }: { member: MemberInfo; questions: string[] }) {
   const t = useT();
+  const oa = oaLine(member.oa, useLocale() !== 'en');
   return (
     <>
       {!member.public && (
@@ -136,6 +139,7 @@ export function MemberPost({ member, questions }: { member: MemberInfo; question
           )}
         </output>
       )}
+      {oa && <p className="xs-byline xs-oa">{oa}</p>}
       {!!questions.length && (
         <section className="rd-card ct-body xs-questions" aria-labelledby="xs-questions-h">
           <h2 id="xs-questions-h">{t('被问到的题目', 'Questions asked')}</h2>

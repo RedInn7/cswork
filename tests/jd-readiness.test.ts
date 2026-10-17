@@ -164,7 +164,8 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
   // The SQL exam certificate makes SQL ready without a single SQL AC, and the count stays real.
   assert.deepEqual(by.sql, ['ready', 0, 30]);
   assert.deepEqual(reply.skills.filter((s) => s.certified).map((s) => s.skill), ['sql']);
-  assert.deepEqual(by.lld, ['partial', 2, chapters(['ood-interview-approach', 'lld-case-atm'])]);
+  // Two chapters read out of its two parts, plus the 8 Core Skills OOD problems.
+  assert.deepEqual(by.lld, ['partial', 2, chapters(['ood-interview-approach', 'lld-case-atm']) + 8]);
   // 3 chapters + 7 concurrency problems; core-dynamic-array is not one of them.
   assert.deepEqual(by.concurrency, ['partial', 3, chapters(['concurrency-primitives']) + 7]);
   assert.deepEqual(by.oa, ['partial', 5, 30]);
@@ -219,8 +220,9 @@ void test('limits: a long posting is cut, not refused; too short is 400; three a
   assert.equal(await status(learner, { job }), 429);
   assert.equal(used(learner.id), 3);
   assert.equal(await status(learner, null, 'GET'), 404);
+  // AI off: the keyword mode takes skill ids only (tests/jd-keywords.test.ts), never the posting.
   delete process.env.ANTHROPIC_API_KEY;
-  assert.equal(await status(me, { job }), 404);
+  assert.equal(await status(me, { job }), 400);
 });
 
 void test('an unusable reply is a failed call that still counts', async () => {

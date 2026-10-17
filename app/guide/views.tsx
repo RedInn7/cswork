@@ -140,7 +140,7 @@ export function guideChapterCopy(chapter: GuideChapter, zh: boolean) {
   };
 }
 
-export function GuideChapterView({ chapter, zh }: { chapter: GuideChapter; zh: boolean }) {
+export function GuideChapterView({ chapter, zh, children }: { chapter: GuideChapter; zh: boolean; children?: React.ReactNode }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const index = GUIDE_CHAPTERS.indexOf(chapter);
   const { title, description } = guideChapterCopy(chapter, zh);
@@ -203,6 +203,7 @@ export function GuideChapterView({ chapter, zh }: { chapter: GuideChapter; zh: b
               labels={{ table: t('表格，可横向滚动', 'Table, scrolls sideways'), code: t('模板，可横向滚动', 'Template, scrolls sideways') }}
             />
           </div>
+          {children}
           <nav className="guide-adjacent" aria-label={t('相邻章节', 'Adjacent chapters')}>
             {prev ? (
               <a href={guidePath(prev.slug)} rel="prev">

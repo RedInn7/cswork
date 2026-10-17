@@ -5,12 +5,14 @@ import { api } from '@/lib/types';
 import { useLocale, useT } from '@/lib/i18n';
 import {
   EMPLOYMENT,
+  oaLine,
   RESULTS,
   ROUND_LABELS,
   seasonLabel,
   SENTIMENTS,
   SOURCES,
   type MemberDetails,
+  type MemberOa,
 } from '@/lib/experience';
 import { SafeMarkdown } from './experience-report';
 import { Button } from './ui/button';
@@ -36,6 +38,7 @@ type Item = {
   anonymous?: boolean;
   member: { handle: string | null };
   details?: MemberDetails;
+  oa?: MemberOa | null;
 };
 type Queue = { pending: Item[]; flagged: Item[]; approved: Item[] };
 
@@ -134,6 +137,7 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
         d.difficulty && t(`难度 ${d.difficulty}/5`, `Difficulty ${d.difficulty}/5`),
         d.sentiment && label(SENTIMENTS, d.sentiment),
         d.durationWeeks !== null && t(`流程 ${d.durationWeeks} 周`, `${d.durationWeeks}-week process`),
+        oaLine(item.oa, zh),
       ].filter((x): x is string => !!x)
     : [];
   return (

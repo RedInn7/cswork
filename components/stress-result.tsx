@@ -7,6 +7,7 @@ import { activeStatuses, ojRequest, type OJCase, type OJSubmission } from '@/lib
 import { firstMismatch, STRESS_CASES } from '@/lib/stress-gen';
 import { diffLines } from '@/lib/testcase-fields';
 import { CopyBlock, Verdict } from './oj-results';
+import '@/app/stress-steps.css';
 
 /** A whitelisted Line 500 problem (lib/content/stress-safe.json); the server checks it again. */
 export const stressReady = (id: string) => Object.hasOwn(safe, id);
@@ -29,6 +30,7 @@ export function StressTest({
   language,
   checker,
   onAdd,
+  solved = false,
 }: {
   problemId: string;
   code: string;
@@ -37,9 +39,13 @@ export function StressTest({
   checker?: string;
   /** Adds the input as a custom case; false when there is no room. */
   onAdd: (input: string) => boolean;
+  /** Accepted already: step 2 of the steps above is done. */
+  solved?: boolean;
 }) {
   const t = useT();
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  // Step 1 stays done once a batch agreed, whatever later batches say.
+  const [agreed, setAgreed] = useState(false);
   const [added, setAdded] = useState(false);
   const controller = useRef<AbortController | null>(null);
   useEffect(() => () => controller.current?.abort(), []);
@@ -75,6 +81,16 @@ export function StressTest({
         });
       const references = reference.cases ?? [];
       const index = firstMismatch(mine.cases ?? [], references, checker ?? 'exact');
+      if (index < 0) {
+        setAgreed(true);
+        // The progress page counts problems stress-checked before their first AC; the server compares the runs again.
+        if (!solved)
+          void ojRequest(`problems/${encodeURIComponent(problemId)}/aids`, {
+            kind: 'brute',
+            submissionId: pair.id,
+            referenceId: pair.referenceId,
+          }).catch(() => {});
+      }
       setOutcome(
         index < 0 ? { state: 'agree' } : { state: 'differ', index, mine: mine.cases?.[index], reference: references[index] },
       );
@@ -90,6 +106,20 @@ export function StressTest({
       : undefined;
   return (
     <section className="cs-ai-cases" aria-label={t('对拍', 'Stress test')}>
+      <ol className="cs-stress-steps">
+        {(
+          [
+            [agreed, t('第 1 步：小数据上和参考解一致', 'Step 1: match the reference on small cases')],
+            [solved, t('第 2 步：通过全部测试', 'Step 2: pass every test')],
+          ] as const
+        ).map(([done, label], i) => (
+          <li key={i} data-done={done || undefined}>
+            <i aria-hidden="true">{done ? <Check size={12} /> : i + 1}</i>
+            {label}
+            {done && <span className="sr-only">{t('（已完成）', ' (done)')}</span>}
+          </li>
+        ))}
+      </ol>
       <button type="button" className="cs-ai-cases-ask" disabled={outcome?.state === 'running' || !code.trim()} onClick={() => void run()}>
         {outcome?.state === 'running' ? (
           <LoaderCircle size={14} className="cs-spin" aria-hidden="true" />

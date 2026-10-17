@@ -311,3 +311,73 @@ void test('an anonymous post names no one in any public read; the review queue s
     assert.ok(!JSON.stringify(read).includes('anon-handle'));
   }
 });
+
+void test('OA scores: ranges, only with an OA round, solved within the total; the post and the author’s list carry them', async () => {
+  const { oaLine } = await import('../lib/experience');
+  const p: Person = { ...me, id: 'ugc-oa', email: 'oa@example.test' };
+  const oa = { oaSolved: 2, oaTotal: 3, oaTestsPct: 85, oaMinutes: 70, oaNext: 'yes' };
+  for (const bad of [
+    { oaSolved: 11 }, { oaSolved: -1 }, { oaSolved: 1.5 }, { oaSolved: '2' }, { oaTotal: 0 }, { oaTotal: 11 },
+    { oaTestsPct: 101 }, { oaTestsPct: -1 }, { oaMinutes: 0 }, { oaMinutes: 301 }, { oaNext: 'maybe' },
+  ])
+    await assert.rejects(ugc.submitExperience(p, post({ ...oa, ...bad })), { name: 'ZodError' }, JSON.stringify(bad));
+  await assert.rejects(ugc.submitExperience(p, post({ rounds: ['Onsite'], oaNext: 'no' })), {
+    status: 400,
+    message: '没有 OA 轮次时不能填写 OA 成绩',
+  });
+  await assert.rejects(ugc.submitExperience(p, post({ oaSolved: 3, oaTotal: 2 })), { status: 400, message: 'OA 做出的题数不能多于总题数' });
+  const created = await ugc.submitExperience(p, post(oa));
+  const expected = { solved: 2, total: 3, testsPct: 85, minutes: 70, next: 'yes' };
+  assert.deepEqual(created.member.oa, expected);
+  assert.equal(oaLine(created.member.oa, true), 'OA 2/3 题 · 用例 85% · 70 分钟 · 进了下一轮');
+  assert.equal(oaLine(created.member.oa, false), 'OA 2/3 solved · 85% of tests · 70 min · Moved on');
+  assert.equal(oaLine({ solved: null, total: null, testsPct: null, minutes: null, next: 'pending' }, false), 'OA · Waiting');
+  // Without an OA round, all-null OA fields are fine and the post has no OA line.
+  // A second later, so the author's list orders the two.
+  const plain = await ugc.submitExperience(p, post({ rounds: ['Onsite'], oaSolved: null, oaNext: null }), Date.now() + 1000);
+  assert.equal(plain.member.oa, null);
+  assert.equal(oaLine(plain.member.oa, true), null);
+  assert.deepEqual(ugc.mySubmissions(p.id).map((i) => i.oa), [null, expected]);
+});
+
+void test('OA outcomes: all-solved and the rest, each from OA_MIN public posts, per company or over shown companies', async () => {
+  const { reportCompanies } = await import('../lib/server/learner-cloud');
+  const other = reportCompanies().find((c) => c.slug !== 'amazon')?.slug;
+  assert.ok(other, 'a second company with a page');
+  const insert = sqlite().prepare(
+    `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,interview_month,body,status,reviewed_at,created_at,
+      oa_solved,oa_total,oa_tests_pct,oa_next) VALUES(?,'ugc-oa-rows',?,'OA','SWE','["Online Assessment"]',?,'Body',?,1,1,?,?,?,?)`,
+  );
+  let n = 0;
+  const add = (company: string, solved: number | null, total: number | null, pct: number | null, next: string, times = 1, status = 'approved') => {
+    for (let i = 0; i < times; i++) insert.run(`oa${String(n++).padStart(10, '0')}`, company, month, status, solved, total, pct, next);
+  };
+  // Amazon: seven that solved everything (five moved on), and posts that never count.
+  add('amazon', 3, 3, null, 'yes', 5);
+  add('amazon', 2, 2, 100, 'no', 2);
+  add('amazon', 3, 3, null, 'pending', 3); // still waiting
+  add('amazon', 3, 3, null, 'yes', 3, 'pending'); // not public
+  add('amazon', 3, 3, null, 'yes', 1, 'rejected');
+  add('amazon', null, 3, null, 'yes', 2); // no score
+  add('amazon', 2, null, null, 'yes', 2);
+  assert.equal(ugc.memberOaOutcomes('amazon'), null, 'seven are too few');
+  add('amazon', 2, 2, 100, 'yes');
+  assert.deepEqual(ugc.memberOaOutcomes('amazon'), { all: { n: 8, moved: 6 }, partial: null });
+  // Every problem solved but not every test: the second group, with the unsolved ones.
+  add('amazon', 3, 3, 85, 'yes', 2);
+  add('amazon', 0, 2, 40, 'no', 3);
+  add('amazon', 1, 3, null, 'no', 2);
+  assert.equal(ugc.memberOaOutcomes('amazon')?.partial, null, 'seven again');
+  add('amazon', 2, 3, 90, 'no');
+  const amazon = { all: { n: 8, moved: 6 }, partial: { n: 8, moved: 2 } };
+  assert.deepEqual(ugc.memberOaOutcomes('amazon'), amazon);
+  assert.deepEqual(ugc.memberExperienceStats('amazon')?.oa, amazon);
+  // All shown companies together: a hidden company's posts never count.
+  add(other!, 4, 4, null, 'no', 8);
+  add('google', 4, 4, null, 'yes', 8);
+  assert.deepEqual(ugc.memberOaOutcomes(other!), { all: { n: 8, moved: 0 }, partial: null });
+  assert.equal(ugc.memberOaOutcomes('google'), null);
+  assert.equal(ugc.memberOaOutcomes('no-such-co'), null);
+  assert.deepEqual(ugc.memberOaOutcomes(), { all: { n: 16, moved: 6 }, partial: { n: 8, moved: 2 } });
+  assert.equal(ugc.OA_MIN, 8);
+});

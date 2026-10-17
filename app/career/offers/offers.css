@@ -1,0 +1,359 @@
+/* Offer comparison (/career/offers): offer cards, the year-by-year table with its navy total rows,
+   and one stacked bar per offer per year. */
+.offer-compare {
+  display: grid;
+  gap: 28px;
+}
+.offer-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.offer-card {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 18px 18px 20px;
+  border: 1px solid #e1e6eb;
+  border-top: 4px solid #0e1a2b;
+  border-radius: 14px;
+  background: #ffffff;
+}
+.offer-card > legend {
+  max-width: calc(100% - 80px);
+  overflow: hidden;
+  padding: 0 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1d252d;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.offer-card select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+  font-weight: 400;
+}
+.offer-card select:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 1px;
+  border-color: #0d7a63;
+}
+.offer-remove {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: 4px 10px;
+  border: 1px solid #c9d1da;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3a4652;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.offer-remove:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 2px;
+}
+.offer-custom {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border: 1px dashed #c9d1da;
+  border-radius: 10px;
+}
+.offer-custom legend {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #3a4652;
+}
+/* An empty live region stays in the accessibility tree, so its next message is read out,
+   but takes no grid track or gap. */
+.offer-live:empty {
+  position: absolute;
+}
+.offer-note {
+  margin: 0;
+  color: #3a4652;
+  font-size: 14px;
+}
+
+.offer-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e1e6eb;
+  border-radius: 14px;
+  background: #ffffff;
+}
+.offer-table-wrap:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 3px;
+}
+.offer-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  color: #1d252d;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.offer-table :is(th, td) {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e1e6eb;
+  text-align: right;
+  vertical-align: top;
+}
+.offer-table :is(th[scope='row'], thead th:first-child, .offer-text) {
+  text-align: left;
+}
+.offer-table thead th {
+  background: #f1f4f7;
+  font-size: 13px;
+  color: #1d252d;
+}
+.offer-table th[scope='row'] {
+  font-size: 13px;
+  font-weight: 700;
+  color: #3a4652;
+  white-space: nowrap;
+}
+.offer-table :is(th, td) small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #5d6b78;
+}
+.offer-table .offer-text {
+  max-width: 220px;
+  font-size: 13px;
+}
+.offer-table tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+.offer-table .offer-key :is(th, td) {
+  background: #0e1a2b;
+  color: #eef3f8;
+  font-weight: 800;
+  border-bottom-color: #2a3a52;
+}
+.offer-table .offer-key td[data-best] {
+  box-shadow: inset 0 -3px 0 var(--guide-amber);
+}
+.offer-best {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--guide-amber);
+  color: #1d252d;
+  font-size: 11px;
+  font-weight: 800;
+  vertical-align: 2px;
+}
+
+.offer-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  color: #3a4652;
+  font-size: 13px;
+}
+.offer-legend li::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border-radius: 3px;
+  vertical-align: -1px;
+  background: var(--offer-part);
+}
+.offer-year {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.offer-year h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1d252d;
+}
+.offer-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 9em) minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  color: #1d252d;
+}
+.offer-bar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.offer-bar {
+  display: flex;
+  height: 16px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #f1f4f7;
+}
+.offer-bar-total {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.offer-compare [data-part='base'] {
+  --offer-part: #0b5c8a;
+}
+.offer-compare [data-part='bonus'] {
+  --offer-part: #0d7a63;
+}
+.offer-compare [data-part='stock'] {
+  --offer-part: #b45309;
+}
+.offer-compare [data-part='signOn'] {
+  --offer-part: #7e3fb0;
+}
+.offer-compare [data-part='other'] {
+  --offer-part: #5d6b78;
+}
+.offer-bar [data-part] {
+  background: var(--offer-part);
+}
+
+.offer-why ul {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding-left: 1.2em;
+  color: #1d252d;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.offer-why p {
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .offer-bar-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .offer-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .offer-card {
+    border: 1px solid #2b2f33;
+    border-top: 4px solid #94a4bb;
+    background: #191919;
+  }
+  .dark .offer-card > legend {
+    color: #d6dfe8;
+  }
+  .dark .offer-card select {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .offer-card select:focus-visible {
+    outline: 2px solid #87d2bb;
+    border-color: #0d7a63;
+  }
+  .dark .offer-remove {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #c4d1dd;
+  }
+  .dark .offer-remove:focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .offer-custom {
+    border: 1px dashed #31383f;
+  }
+  .dark .offer-custom legend {
+    color: #c4d1dd;
+  }
+  .dark .offer-note {
+    color: #c4d1dd;
+  }
+  .dark .offer-table-wrap {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .offer-table-wrap:focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .offer-table {
+    color: #d6dfe8;
+  }
+  .dark .offer-table :is(th, td) {
+    border-bottom: 1px solid #2b2f33;
+  }
+  .dark .offer-table thead th {
+    background: #121315;
+    color: #d6dfe8;
+  }
+  .dark .offer-table th[scope='row'] {
+    color: #c4d1dd;
+  }
+  .dark .offer-table :is(th, td) small {
+    color: #b5c2ce;
+  }
+  .dark .offer-table tr:last-child :is(th, td) {
+    border-bottom: 0;
+  }
+  .dark .offer-table .offer-key :is(th, td) {
+    background: #0e1a2b;
+    color: #eef3f8;
+    border-bottom-color: #2a3a52;
+  }
+  .dark .offer-table .offer-key td[data-best] {
+    box-shadow: inset 0 -3px 0 var(--guide-amber);
+  }
+  .dark .offer-best {
+    background: var(--guide-amber);
+    color: #1d252d;
+  }
+  .dark .offer-legend {
+    color: #c4d1dd;
+  }
+  .dark .offer-legend li::before {
+    background: var(--offer-part);
+  }
+  .dark .offer-year h3 {
+    color: #d6dfe8;
+  }
+  .dark .offer-bar-row {
+    color: #d6dfe8;
+  }
+  .dark .offer-bar {
+    background: #121315;
+  }
+  .dark .offer-bar [data-part] {
+    background: var(--offer-part);
+  }
+  .dark .offer-why ul {
+    color: #d6dfe8;
+  }
+}
+/* ── end dark theme ── */

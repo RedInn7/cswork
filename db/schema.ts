@@ -42,6 +42,8 @@ export * from './notify-schema';
 export * from './practice-aids-schema';
 export * from './job-openings-schema';
 export * from './code-reviews-schema';
+export * from './career-contacts-schema';
+export * from './mcq-answers-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

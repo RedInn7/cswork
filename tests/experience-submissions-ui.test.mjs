@@ -25,6 +25,7 @@ const { createRoot } = await import('react-dom/client');
 const { MyExperienceSubmissions } = await import('../components/experience-submissions.tsx');
 const { ExperienceReview } = await import('../components/experience-review.tsx');
 const { MemberPost, ReportExperience } = await import('../components/experience-report.tsx');
+const { MemberStatsCard, OaOutcomesCard } = await import('../components/company-stats-card.tsx');
 
 const wait = (ms = 5) =>
   act(async () => {
@@ -210,4 +211,115 @@ test('a member post shows its status to the author and a report control to other
   } finally {
     restore();
   }
+});
+
+test('a tracker link prefills the form and clears its params; OA fields post only with an OA round', async () => {
+  const year = new Date().getFullYear();
+  const { calls, restore } = stub({
+    'GET oj/experiences/mine': { items: [] },
+    'GET oj/reports/companies': { items: [{ slug: 'amazon', name: 'Amazon' }, { slug: 'uber', name: 'Uber' }] },
+    'POST oj/experiences': (body) => ({ member: { id: 'DDDDDDDDDDDD' }, slug: 'member.DDDDDDDDDDDD', title: body.title, company: { slug: 'uber', name: 'Uber' } }),
+  });
+  const field = (form, text) =>
+    [...form.querySelectorAll('.xs-field')].find((l) => l.querySelector('span').textContent.startsWith(text))?.querySelector('input,select,textarea');
+  const chip = (form, text) => [...form.querySelectorAll('.xs-chip')].find((l) => l.textContent === text).querySelector('input');
+  const fill = (form) =>
+    act(async () => {
+      set(form.querySelector('input[minlength="4"]'), 'Uber OA then onsite');
+      set(form.querySelectorAll('textarea')[0], 'An OA with three problems, then two onsite rounds. '.repeat(3));
+      form.querySelector('.xs-agree input').click();
+    });
+  const submit = async (form) => {
+    await act(async () => form.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
+    await wait();
+    return calls.filter((c) => c.key === 'POST oj/experiences').at(-1).body;
+  };
+  try {
+    // No prefill params: nothing opens, the address stays.
+    dom.reconfigure({ url: 'https://cswork.test/?view=progress' });
+    let root = await mount(createElement(MyExperienceSubmissions, { english: true, navigate: () => {} }));
+    assert.equal(document.querySelector('form.xs-form'), null);
+    assert.equal(location.search, '?view=progress');
+    root.unmount();
+
+    // ?tab=share already opened it blank; the params still fill it in.
+    const role = encodeURIComponent(' Software Engineer Intern ');
+    dom.reconfigure({ url: `https://cswork.test/?view=progress&tab=share&company=uber&role=${role}&employment=intern&season=${year}-fall&ref=x#top` });
+    root = await mount(createElement(MyExperienceSubmissions, { english: true, navigate: () => {}, open: true }));
+    let form = document.querySelector('form.xs-form');
+    assert.deepEqual(
+      ['Company', 'Role', 'Full-time / intern', 'Season'].map((l) => field(form, l).value),
+      ['uber', 'Software Engineer Intern', 'intern', `${year}-fall`],
+    );
+    assert.equal(location.search, '?view=progress&tab=share&ref=x', 'the prefill params go, the rest stay');
+    assert.equal(location.hash, '#top');
+    // OA fields appear with the OA round; solved stops at the total.
+    assert.equal(field(form, 'Problems'), undefined);
+    await fill(form);
+    await act(async () => chip(form, 'OA').click());
+    await act(async () => {
+      set(field(form, 'Problems'), '3');
+      set(field(form, 'Solved'), '2');
+      set(field(form, 'Test cases passed'), '85');
+      set(field(form, 'Time taken'), '70');
+      set(field(form, 'Did you move on?'), 'yes');
+    });
+    assert.equal(field(form, 'Solved').getAttribute('max'), '3');
+    let posted = await submit(form);
+    assert.deepEqual(
+      [posted.company, posted.role, posted.employment, posted.season, posted.rounds],
+      ['uber', 'Software Engineer Intern', 'intern', `${year}-fall`, ['Online Assessment']],
+    );
+    assert.deepEqual([posted.oaTotal, posted.oaSolved, posted.oaTestsPct, posted.oaMinutes, posted.oaNext], [3, 2, 85, 70, 'yes']);
+    // The prefill is single-use: the next experience starts blank.
+    await act(async () => button('Share an experience').click());
+    form = document.querySelector('form.xs-form');
+    assert.deepEqual(['Company', 'Role', 'Full-time / intern', 'Season'].map((l) => field(form, l).value), ['', '', '', '']);
+    root.unmount();
+
+    // Values the menus don't offer drop out; OA fields typed and then unticked post nothing.
+    dom.reconfigure({ url: `https://cswork.test/?view=progress&company=nope&employment=parttime&season=${year - 5}-fall` });
+    root = await mount(createElement(MyExperienceSubmissions, { english: true, navigate: () => {} }));
+    form = document.querySelector('form.xs-form');
+    assert.ok(form, 'the params open the form');
+    assert.deepEqual(['Company', 'Role', 'Full-time / intern', 'Season'].map((l) => field(form, l).value), ['', '', '', '']);
+    assert.equal(location.search, '?view=progress');
+    await act(async () => {
+      set(field(form, 'Company'), 'amazon');
+      set(field(form, 'Role'), 'SWE');
+    });
+    await fill(form);
+    await act(async () => chip(form, 'OA').click());
+    await act(async () => set(field(form, 'Problems'), '4'));
+    await act(async () => {
+      chip(form, 'OA').click();
+      chip(form, 'Onsite').click();
+    });
+    posted = await submit(form);
+    assert.deepEqual(posted.rounds, ['Onsite']);
+    assert.deepEqual([posted.oaTotal, posted.oaSolved, posted.oaTestsPct, posted.oaMinutes, posted.oaNext], [null, null, null, null, null]);
+    root.unmount();
+  } finally {
+    dom.reconfigure({ url: 'https://cswork.test/?view=progress&tab=share' });
+    restore();
+  }
+});
+
+test('a post shows its OA line; company pages count OA outcomes, never as a rate', () => {
+  const member = { id: 'CCCCCCCCCCCC', handle: null, status: 'approved', public: true, mine: false, note: '' };
+  const html = (el) => new JSDOM(renderToStaticMarkup(el)).window.document;
+  let doc = html(createElement(MemberPost, { member: { ...member, oa: { solved: 2, total: 3, testsPct: 85, minutes: 70, next: 'yes' } }, questions: [] }));
+  assert.equal(doc.querySelector('.xs-oa').textContent, 'OA 2/3 solved · 85% of tests · 70 min · Moved on');
+  doc = html(createElement(MemberPost, { member: { ...member, oa: null }, questions: [] }));
+  assert.equal(doc.querySelector('.xs-oa'), null);
+
+  const oa = { all: { n: 12, moved: 9 }, partial: null };
+  doc = html(createElement(MemberStatsCard, { stats: { posts: 12, difficulty: null, sentiment: null, channel: null, weeks: null, oa }, locale: 'zh' }));
+  const panel = doc.querySelector('.company-stats-oa').parentElement;
+  assert.equal(doc.querySelector('.company-stats-oa').textContent, '全部 AC 的 12 篇里，9 篇说进了下一轮');
+  assert.ok(panel.textContent.includes('自报样本，有偏差，不是通过率'));
+  assert.ok(!panel.querySelector('.company-stats-oa').textContent.includes('%'), 'counts, not a rate');
+  doc = html(createElement(OaOutcomesCard, { oa: { all: null, partial: { n: 8, moved: 1 } }, locale: 'en' }));
+  assert.equal(doc.querySelector('.company-stats-oa').textContent, 'Of 8 posts that left something unsolved, 1 says they moved on');
+  assert.ok(doc.querySelector('h2').textContent.includes('all companies'));
 });

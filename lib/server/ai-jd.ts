@@ -27,9 +27,12 @@ import { sdParts } from './system-design-course';
  * quote and must/nice each, and the interview rounds it implies. The server then measures every
  * skill on the learner's own data (ACs, chapters marked read, certificates, STAR stories).
  * Nothing of the posting or the reply is stored: ai_usage keeps the daily count (kind 'jd').
+ * With AI off, lib/jd-keywords.ts reads the posting in the browser and only the skill ids it
+ * found come here to be measured: the posting never reaches the server.
  */
 const TAGS = ['job_description'];
 const input = z.object({ job: z.string().max(JD_CHARS * 4) }).strict();
+const found = z.object({ skills: z.array(z.enum(JD_SKILLS)).max(JD_SKILLS.length * 2) }).strict();
 
 const string = { type: 'string' };
 const SCHEMA = {
@@ -177,9 +180,25 @@ export function skillProgress(skill: JdSkill, learner: Learner, weak = weakStops
 // Line 500 is the study plan's pool: these skills' gaps become its topics.
 const PLANNED = new Set<JdSkill>(['dsa', 'oa']);
 
-/** POST oj/ai/jd: a job description's skills measured on the learner's data; nothing stored. */
+/** Each skill with the learner's progress on it, and the Line 500 stops to plan when dsa or oa falls short. */
+function measured<T extends { skill: JdSkill }>(asked: T[], userId: string) {
+  const learner = learnerData(userId);
+  const weak = weakStops(learner);
+  const skills = asked.map((s) => ({ ...s, ...skillProgress(s.skill, learner, weak) }));
+  return { skills, planStops: skills.some((s) => PLANNED.has(s.skill) && s.status !== 'ready') ? weak : [] };
+}
+
+/**
+ * POST oj/ai/jd: a job description's skills measured on the learner's data; nothing stored.
+ * With AI off it takes {skills: JdSkill[]} (the browser's keyword reading) instead of the posting.
+ */
 export async function handleAiJd(request: Request, p: Person) {
-  if (!aiEnabled() || request.method !== 'POST') throw new HttpError(404, '接口不存在');
+  if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
+  if (!aiEnabled()) {
+    await limit(p, 'jd-keywords', 30, 3600);
+    const { skills } = found.parse(await readJson(request, 4000));
+    return json({ likelyRounds: [], ...measured([...new Set(skills)].map((skill) => ({ skill })), p.id) });
+  }
   await limit(p, 'ai-tutor', 6);
   // Room for escaped characters; zod refuses past four postings' worth, untagged then reads JD_CHARS.
   const data = input.parse(await readJson(request, JD_CHARS * 4 * 6));
@@ -203,9 +222,5 @@ List the skills this job description asks for and the interview rounds it implie
     },
     SCHEMA,
   );
-  const learner = learnerData(p.id);
-  const weak = weakStops(learner);
-  const skills: JdItem[] = reply.skills.map((s) => ({ ...s, ...skillProgress(s.skill, learner, weak) }));
-  const planStops = skills.some((s) => PLANNED.has(s.skill) && s.status !== 'ready') ? weak : [];
-  return json({ ...reply, skills, planStops });
+  return json({ ...reply, ...measured(reply.skills, p.id) });
 }

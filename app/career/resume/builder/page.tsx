@@ -2,6 +2,7 @@ import './resume-print.css';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import { seoMetadata } from '@/lib/seo';
+import { aiEnabled } from '@/lib/server/ai-tutor';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -61,7 +62,7 @@ export default async function ResumeBuilderPage() {
           {c.privacy} <a href="/privacy#privacy-resume-builder">{c.more}</a>
         </p>
       </div>
-      <ResumeBuilder zh={zh} signedIn={!!viewer} />
+      <ResumeBuilder zh={zh} signedIn={!!viewer} ai={aiEnabled()} />
     </>
   );
 }
