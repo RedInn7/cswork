@@ -1,0 +1,27 @@
+{
+  "slug": "polite-crawler",
+  "titleZh": "遵守 robots 并限速的爬虫",
+  "titleEn": "Polite web crawler",
+  "summaryZh": "同站广度优先：先读 robots.txt 并选对 User-agent 组、网址规范化去重、请求间隔、按 Retry-After 重试。",
+  "summaryEn": "Same-site breadth-first crawling: robots.txt with the right user-agent group, URL normalization, request gaps and Retry-After retries.",
+  "level": "intermediate",
+  "roles": ["generalist", "data", "ml"],
+  "hours": 10,
+  "run": "cmd",
+  "milestones": [
+    { "zh": "广度优先抓取和链接解析：相对网址、去片段、同站过滤、去重", "en": "Breadth-first crawling and link parsing: relative URLs, fragments, same-site filtering, no repeats" },
+    { "zh": "读 robots.txt，按 User-agent 选组，抓取前检查", "en": "Read robots.txt, pick the user-agent group, and check before each request" },
+    { "zh": "请求间隔、429/503 按 Retry-After 重试、max-pages，跑通验收脚本", "en": "Request gaps, Retry-After retries on 429/503 and max-pages, passing the acceptance script" },
+    { "zh": "断点续爬或多站点并发二选一，写 README", "en": "Add resume or multi-site concurrency, and write the README" }
+  ],
+  "bulletZh": "用 {语言} 实现礼貌爬虫：遵守 robots.txt 的分组规则、按站点限速并按 Retry-After 退避重试，网址规范化去重；在 {站点类型} 上抓取 {N} 个页面零违规请求。",
+  "bulletEn": "Built a polite web crawler in {language} that obeys robots.txt groups, rate-limits per site and backs off on Retry-After, with URL normalization and de-duplication; crawled {N} pages of {site type} with zero disallowed requests.",
+  "deepDive": [
+    { "zh": "robots.txt 里有多个 User-agent 组时，你怎么选？Allow 和 Disallow 冲突时谁优先？", "en": "With several User-agent groups in robots.txt, which do you use? When Allow and Disallow conflict, which wins?" },
+    { "zh": "网址规范化你做了哪些？还有哪些情况会让同一个页面被抓两次？", "en": "What URL normalization do you do, and what else could make you fetch the same page twice?" },
+    { "zh": "广度优先和深度优先在爬虫里各有什么问题？怎么防止陷进无限生成的链接里？", "en": "What goes wrong with breadth first and with depth first in a crawler, and how do you avoid infinite link traps?" },
+    { "zh": "要抓一亿个网页，已抓集合放不进内存怎么办？", "en": "To crawl a hundred million pages, what do you do when the seen set no longer fits in memory?" },
+    { "zh": "多线程抓很多站点时，怎么保证对每个站点仍然有礼貌？", "en": "Crawling many sites with many threads, how do you stay polite to each site?" },
+    { "zh": "抓下来的数据要拿去训练模型，还需要考虑哪些法律和伦理问题？", "en": "If the pages will train a model, which legal and ethical questions come up?" }
+  ]
+}
