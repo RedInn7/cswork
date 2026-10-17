@@ -59,9 +59,10 @@ type Comment = {
 type Post = { id: string; author: string; anonymous: boolean; pinned: boolean; reputation: number | null; mine: boolean };
 type Detail = { post: Post; comments: Comment[]; moderator: boolean };
 type List = { items: Post[] };
+// rowid: notices written in the same millisecond keep their insert order (ids are random).
 const notices = (userId: string, kind = '') =>
   sqlite()
-    .prepare(`SELECT kind,title,body,href,read_at AS readAt FROM notifications WHERE user_id=? AND (?='' OR kind=?) ORDER BY created_at,id`)
+    .prepare(`SELECT kind,title,body,href,read_at AS readAt FROM notifications WHERE user_id=? AND (?='' OR kind=?) ORDER BY created_at,rowid`)
     .all(userId, kind, kind) as { kind: string; title: string; body: string; href: string; readAt: number | null }[];
 const thread = (p: Person, extra: Record<string, unknown> = {}) =>
   ok<Detail>(p, 'POST', 'posts', { problemId: 'discuss:interview', title: 'Loop prep', body: 'How did it go?', ...extra });

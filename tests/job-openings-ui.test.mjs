@@ -90,7 +90,10 @@ globalThis.fetch = async (url, init = {}) => {
   if (key === 'POST /api/oj/applications') {
     const body = JSON.parse(init.body);
     posted.push(body);
-    return Response.json({ item: { id: 'n', companySlug: '', createdAt: 1, updatedAt: 1, links: null, ...body } });
+    // The server's card: wave 8 fields included (lib/server/applications.ts).
+    return Response.json({
+      item: { id: 'n', companySlug: '', stageLog: [[body.stage, Date.now()]], hasJd: false, createdAt: Date.now(), updatedAt: Date.now(), links: null, closedAt: null, prep: null, ...body },
+    });
   }
   return Response.json({ error: 'no route' }, { status: 404 });
 };
@@ -109,7 +112,7 @@ test('the tracker opens the add form filled in, at Saved, and saves only on conf
   const { host, root } = await open(new URLSearchParams({ add: '1', company: 'Stripe', role: opening.title, link: opening.url }));
   assert.equal(location.search, '', 'the address is cleaned');
   assert.equal(location.pathname, '/career/tracker');
-  const form = host.querySelector('form');
+  const form = host.querySelector('form.resume-form');
   assert.ok(form, 'the add form is open');
   const [company, role] = form.querySelectorAll('input');
   assert.equal(company.value, 'Stripe');
@@ -120,8 +123,12 @@ test('the tracker opens the add form filled in, at Saved, and saves only on conf
   assert.equal(posted.length, 0, 'nothing is saved before the learner confirms');
   await act(async () => form.requestSubmit());
   assert.equal(posted.length, 1);
-  assert.deepEqual(posted[0], { company: 'Stripe', role: opening.title, stage: 'saved', appliedAt: null, oaDeadline: null, interviewAt: null, referral: '', link: opening.url, notes: '' });
-  assert.equal(host.querySelector('form'), null);
+  assert.deepEqual(posted[0], {
+    company: 'Stripe', role: opening.title, stage: 'saved', appliedAt: null, oaDeadline: null, interviewAt: null, referral: '', link: opening.url, notes: '',
+    // The wave 8 card fields, left at their defaults.
+    channel: '', referralStatus: '', nextAction: '', nextAt: null, resumeVersion: '', jdText: '',
+  });
+  assert.equal(host.querySelector('form.resume-form'), null);
   await act(async () => root.unmount());
 });
 
@@ -133,7 +140,7 @@ test('a non-https link is dropped, and without add=1 nothing opens', async () =>
   assert.equal(view.host.querySelector('input[type="url"]').value, '');
   await act(async () => view.root.unmount());
   view = await open(new URLSearchParams({ company: 'Acme' }));
-  assert.equal(view.host.querySelector('form'), null);
+  assert.equal(view.host.querySelector('form.resume-form'), null);
   assert.equal(location.search, '?company=Acme', 'an address without add=1 is left alone');
   await act(async () => view.root.unmount());
 });
@@ -148,14 +155,14 @@ test('signed out, the opening waits in this tab and fills in the form once the b
   await act(async () => signedOut.unmount());
   // Signed in, back at the tracker from the nav: no query in the address.
   const view = await open('');
-  const form = view.host.querySelector('form');
+  const form = view.host.querySelector('form.resume-form');
   assert.ok(form, 'the add form is open');
   assert.equal(form.querySelector('input').value, 'Acme');
   assert.equal(form.querySelector('input[type="url"]').value, 'https://example.com/j');
   assert.equal(sessionStorage.getItem('cswork:tracker:add'), null, 'read once');
   await act(async () => view.root.unmount());
   const again = await open('');
-  assert.equal(again.host.querySelector('form'), null);
+  assert.equal(again.host.querySelector('form.resume-form'), null);
   await act(async () => again.root.unmount());
 });
 

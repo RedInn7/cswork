@@ -99,7 +99,13 @@ export function GuideChecklist({ slug, items, zh }: { slug: string; items: Check
         {items.map((item) => (
           <li key={item.id} data-done={done.includes(item.id) || undefined}>
             <label>
-              <input type="checkbox" checked={done.includes(item.id)} onChange={(e) => toggle(item.id, e.target.checked)} />
+              {/* Off until we know where ticks go, so one made mid-load isn't overwritten by the load. */}
+              <input
+                type="checkbox"
+                checked={done.includes(item.id)}
+                disabled={where === 'loading'}
+                onChange={(e) => toggle(item.id, e.target.checked)}
+              />
               <span>{item.text[zh ? 0 : 1]}</span>
             </label>
             <details>

@@ -90,7 +90,7 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
         '看成果有没有量化、动词够不够有力、关键词有没有漏。',
         'Look at whether results are measured, verbs are strong and keywords are covered.',
       ],
-      href: '/career/resume',
+      href: '/career/jd',
     },
   ],
   referrals: [

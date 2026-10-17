@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 15 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 17 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -59,7 +59,7 @@ export function PrivacyDocument() {
                 你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
               </p>
               <p>
-                在面经讨论、求职、上岸故事频道，以及面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，也不会出现在你的公开主页上；你在自己匿名帖下的回复同样显示为匿名。匿名面经通过审核后，你在它评论区里发的帖子和评论（包括回复别人的评论）一律匿名发出，评论标为「楼主」。平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名）时，你会收到站内通知，内容是对方的主页名或打码后的昵称和一行摘要。有人赞了你的帖子时，通知只写当天点赞的人数和帖子标题，不显示是谁点的赞；同一帖子一天内的点赞合并成一条。你屏蔽的人回复或提到你，不会通知你。匿名作者（包括在自己匿名面经下发言的投稿人）的通知不显示名字，它 @ 别人不发通知，它回复你时不论屏蔽与否都会通知你，这样有没有通知都推断不出作者是谁。题目在你正在进行的比赛或认证考试里时，关于它题解讨论的回复和 @ 通知不带摘要。这些通知不发邮件。
+                在面经讨论、求职、上岸故事频道，以及面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。面经里有 OA 轮次时，可以选填 OA 成绩（做出几题、共几题、通过用例的比例、用时，以及是否进了下一轮），随面经一起公开；公司页上的 OA 统计只显示汇总的人数，同一组不足 8 篇公开面经时不显示。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，也不会出现在你的公开主页上；你在自己匿名帖下的回复同样显示为匿名。匿名面经通过审核后，你在它评论区里发的帖子和评论（包括回复别人的评论）一律匿名发出，评论标为「楼主」。平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名）时，你会收到站内通知，内容是对方的主页名或打码后的昵称和一行摘要。有人赞了你的帖子时，通知只写当天点赞的人数和帖子标题，不显示是谁点的赞；同一帖子一天内的点赞合并成一条。你屏蔽的人回复或提到你，不会通知你。匿名作者（包括在自己匿名面经下发言的投稿人）的通知不显示名字，它 @ 别人不发通知，它回复你时不论屏蔽与否都会通知你，这样有没有通知都推断不出作者是谁。题目在你正在进行的比赛或认证考试里时，关于它题解讨论的回复和 @ 通知不带摘要。这些通知不发邮件。
               </p>
               <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
@@ -77,16 +77,19 @@ export function PrivacyDocument() {
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
               <p id="privacy-reminders">
-                学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛）、每天的提醒时间、时区偏移和语言，每天最多一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核、上线新的 OA 题或有新的实习/新毕业生岗位时，你会收到站内消息，不发邮件，也不推送。
+                学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛、投递提醒）、每天的提醒时间、时区偏移和语言，每天最多汇总成一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。投递提醒在打开学习提醒时默认勾选，可以单独关掉：服务器读取你投递追踪卡片上的 OA 截止和面试时间，在 OA 截止前 24 小时和 2 小时、面试前 1 小时各写一条站内消息，内容是公司、岗位和时间；投递卡和联系人的跟进日期到了，只在每日汇总里写到期的数量。删除一张投递卡时，它的投递提醒消息一并删除。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），只含每日汇总，每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核、上线新的 OA 题或有新的实习/新毕业生岗位时，你会收到站内消息，不发邮件；只有当这条消息里同时有你保存的岗位筛选的新结果时才会推送（见下方「在招岗位」一段）。
               </p>
               <p id="privacy-tracker">
-                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息、职位链接和备注，每个账号最多 300 条。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。导出的 CSV 和 OA 截止日历文件在你的浏览器里生成，截止提醒由你自己的日历应用发出，平台不发送提醒。
+                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息和内推进度、投递渠道、下一步和跟进日期、所用简历版本的名字、职位链接和备注，以及阶段变更记录（每张卡片最近 40 次）和可选的职位描述快照（最多 1 万字），每个账号最多 300 条。职位描述快照只在打开这张卡片时读取，不随列表返回。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。每周投递目标存在你账号里的私人笔记（career:goal）中；可选的简历版本名从简历生成器存在这个浏览器里的版本读取。「岗位已下线」提示只是在服务器上拿卡片链接比对本站已同步的公开岗位，不会因此向外部网站发请求。「存到投递看板」书签只在你点它时读取当前招聘页的标题、站点名（或主机名）、网址和你选中的文字，打开投递追踪页并预填表单：选中的文字放在网址 # 后面，浏览器不会把它发给服务器；未登录时，预填内容临时存在当前标签页的会话存储里，登录后读取一次就删除；只有你点保存才会写进账号。导出的 CSV 和日历文件（OA 截止、面试和跟进事项）在你的浏览器里生成；平台自己发出的投递提醒见上一段。
               </p>
               <p id="privacy-jobs">
-                「在招岗位」（/career/jobs 和公司页）列出的是各公司在 Greenhouse、Lever、Ashby 上公开发布的招聘信息，由服务器定时抓取，抓取时不发送任何用户数据；点岗位标题会打开第三方的招聘页面。点「加入投递追踪」只是预填表单，你点保存后才写进自己的投递记录；未登录时，这个岗位的公司、职位和链接会临时存在当前标签页的会话存储里，登录后打开投递追踪读取一次就删除。
+                「在招岗位」（/career/jobs 和公司页）列出的是各公司在 Greenhouse、Lever、Ashby 上公开发布的招聘信息，由服务器定时抓取，抓取时不发送任何用户数据；点岗位标题会打开第三方的招聘页面。点「加入投递追踪」只是预填表单，你点保存后才写进自己的投递记录；未登录时，这个岗位的公司、职位和链接会临时存在当前标签页的会话存储里，登录后打开投递追踪读取一次就删除。登录后可以保存一个岗位筛选，存成你账号里的私人笔记（career:jobs-search）：不带参数打开 /career/jobs 时会套用它；每天北京时间 9 点后，之前 24 小时内新出现、符合这个筛选的岗位会合成一条站内消息（和关注公司的动态合在一起），开启推送的设备也会收到推送，推送本身不带内容。保存的筛选随时可以删除。登录后，页面还会读取你投递记录里的职位链接，标出已经在投递看板上的岗位；没有保存筛选时，会按你资料里填的目标岗位预选方向。点「隐藏」的岗位只记在当前浏览器的本地存储里（最多 500 个），不会上传。
+              </p>
+              <p id="privacy-contacts">
+                联系人（/career/contacts）是你记录的他人信息：姓名、公司、职位、怎么认识的、链接、上次联系和下次跟进的日期、备注，以及可选关联的一张投递卡，每个账号最多 200 位。它们只保存在你自己的账号里，其他人都看不到，可以随时删除；关联的投递卡删除后，联系人保留，只是不再关联。请只记录求职需要的内容。求职指南各章清单的勾选状态，登录时存成你账号里的私人笔记（checklist:&lt;章节&gt;），未登录时只存在当前浏览器，登录后打开这一章会并入账号并从浏览器删除。外联模板页（/career/templates）登录后在浏览器里读取你的投递卡和联系人来填空；你填的「你的名字」只存在当前浏览器。复制和「在邮件应用中打开」都在你的设备上完成，平台不替你发送任何消息。
               </p>
               <p id="privacy-practice-aids">
-                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。
               </p>
               <p id="privacy-code-review">
                 在提交详情里生成「代码评审链接」后，拿到链接并登录的人都能看到这次提交的代码、你的留言和全部评论；页面只显示公开主页名，没有主页名时显示「作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。你可以随时关闭链接：关闭后链接失效，评论不再对任何人显示，但仍保留在数据库里。有新评论时只发站内通知。每个账号最多同时开 20 条链接，每天最多新建 50 条。
@@ -98,7 +101,7 @@ export function PrivacyDocument() {
                 验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页、讨论帖和题解、内推帖三处展示，换成另一家公司的邮箱验证后三处都会重新关闭；讨论帖只限算法、内推和站务频道，面经讨论、求职、上岸故事频道、公司 OA 题的题解和面经评论里永远不显示。公开主页显示徽章时，主页的帖子列表不列出面经讨论、求职、上岸故事帖和公司 OA 题的题解，但这些帖子本身仍署你的主页名。账号设置里随时可以删除验证记录。
               </p>
               <p>
-                工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
+                工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。在选择题、系统设计章节和学习页点「纠错」时，你选的原因和写的说明作为一张工单提交，标题带上对应内容的标记（例如 [mcq:…]），同样只有你和负责的老师能看到。
               </p>
               <p>
                 算法判题会把提交的代码与测试输入交给平台的隔离执行环境运行。你在工单或作业中主动提供的外部链接，则仍由对应网站按其自身设置控制访问。
@@ -146,7 +149,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司和岗位。模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -250,7 +253,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 15, 2026</p>
+            <p className="privacy-updated">Updated October 17, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -340,8 +343,13 @@ export function PrivacyDocument() {
                 You may post anonymously in the Interviews, Careers and Offers
                 channels, under interview experiences and questions and in a
                 system design chapter’s discussion, and you may submit an
-                interview experience anonymously. Others then see no handle,
-                name, employee badge or reputation, it stays off your public
+                interview experience anonymously. An experience with an OA round
+                may give its score (problems solved of how many, share of tests
+                passed, minutes taken and whether it led to the next round),
+                published with the post; company pages show only OA counts
+                summed over posts, and none for a group of fewer than 8 public
+                posts. Anonymous posts show no handle,
+                name, employee badge or reputation, stay off your public
                 profile, and your replies under your own anonymous post show as
                 anonymous too. Once an anonymous interview report is approved,
                 everything you post in its comments, replies to others’
@@ -449,10 +457,18 @@ export function PrivacyDocument() {
               <p id="privacy-reminders">
                 Reminders are off by default. Turn them on in your account and
                 the server keeps what you want reminding of (reviews due,
-                streaks, the daily problem, weeklies and starters you entered),
-                the hour, your time zone offset and language: at most one
-                reminder a day, in your notifications, plus one an hour before
-                a contest you entered. When you turn push on for a device, the
+                streaks, the daily problem, weeklies and starters you entered,
+                job applications), the hour, your time zone offset and
+                language: at most one digest a day, in your notifications, plus
+                one an hour before a contest you entered. Job application
+                reminders come ticked when you turn reminders on and can be
+                turned off on their own: the server reads the OA deadlines and
+                interview times on your tracker cards and writes a notification
+                (company, role and time) 24 hours and 2 hours before an OA
+                deadline and an hour before an interview; follow-ups due on
+                your cards and contacts appear only as a count in the daily
+                digest. Deleting a card deletes its reminder notifications.
+                When you turn push on for a device, the
                 platform keeps the push address its browser gives (a Google,
                 Mozilla, Apple or Microsoft push service; at most 10 devices an
                 account). Pushes carry no content: the device then fetches the
@@ -460,23 +476,44 @@ export function PrivacyDocument() {
                 Turning push off on that device, or signing out there, deletes
                 the address. With email reminders on, at most one email a day
                 goes to your verified account address (sent through Resend),
-                each with one-click unsubscribe. Turning reminders off deletes
+                carrying only the daily digest, each with one-click
+                unsubscribe. Turning reminders off deletes
                 these settings and every device’s push address. The
                 companies you follow (up to 20) are visible
                 only to you; a newly approved interview report, a new OA
                 problem or a new intern or new-grad opening at one of them is a
-                notification, never an email or push.
+                notification, never an email, and pushed only when the same
+                notification also carries new matches for your saved job
+                search (see Open roles below).
               </p>
               <p id="privacy-tracker">
                 When you use the application tracker (/career/tracker), your
                 account keeps the company, role, stage, application date, OA
-                deadline and interview time, referral, job link and notes you
-                enter, up to 300 applications. Only you can see them: they never
-                appear on your public profile, on leaderboards or in any
-                statistics, and deleting one removes it from the server. The CSV
-                and the OA deadline calendar file are made in your browser, and
-                the reminders come from your own calendar app; the platform sends
-                none.
+                deadline and interview time, referral and its status, channel,
+                next step and follow-up date, the name of the resume version
+                used, job link and notes you enter, plus each card&apos;s stage
+                history (its last 40 moves) and an optional snapshot of the job
+                description (up to 10,000 characters), up to 300 applications.
+                The snapshot is read only when you open that card, never with
+                the list. Only you can see them: they never appear on your
+                public profile, on leaderboards or in any statistics, and
+                deleting one removes it from the server. Your weekly
+                application goal is a private note on your account
+                (career:goal); the resume version names come from the versions
+                the resume builder keeps in this browser. &ldquo;Posting
+                closed&rdquo; only compares a card&apos;s link on the server with
+                the public postings this site has already synced; no request
+                goes to another site for it. The &ldquo;Save to tracker&rdquo;
+                bookmarklet, only when you click it, reads the job page&apos;s
+                title, site name (or host), address and any text you selected,
+                and opens the tracker with the form filled in: the selected text
+                travels after the # in the address, which browsers never send
+                to a server; signed out, the filled-in values wait in this
+                tab&apos;s session storage and are deleted once read after you
+                sign in; nothing reaches your account until you press save. The
+                CSV and the calendar file (OA deadlines, interviews and
+                follow-ups) are made in your browser; the reminders the platform
+                itself sends are described above.
               </p>
               <p id="privacy-jobs">
                 Open roles (/career/jobs and company pages) are the postings
@@ -487,7 +524,37 @@ export function PrivacyDocument() {
                 applications until you press save. When you are signed out, the
                 role&apos;s company, title and link wait in this tab&apos;s
                 session storage and are deleted once the tracker reads them
-                after you sign in.
+                after you sign in. Signed in, you can save one job search as a
+                private note on your account (career:jobs-search): /career/jobs
+                opened without filters applies it, and after 09:00 Beijing time
+                each day the new postings of the previous 24 hours that match it
+                arrive as one notification (together with your followed
+                companies&apos; news), also pushed to devices with push on; the
+                push itself carries no content. You can delete the saved search
+                at any time. Signed in, the page also reads the job links on
+                your own applications to mark roles already on your tracker,
+                and without a saved search it preselects the role from the
+                target role in your profile. Roles you hide are remembered only
+                in this browser&apos;s local storage (up to 500) and never
+                uploaded.
+              </p>
+              <p id="privacy-contacts">
+                Contacts (/career/contacts) are details you record about other
+                people: name, company, role, how you met, a link, when you last
+                and next get in touch, notes and optionally one of your tracker
+                cards, up to 200 people. They are kept only in your own account,
+                nobody else can see them, and you can delete any at any time; when
+                a linked card is deleted, the contact stays without the link.
+                Please keep to what your job search needs. Ticks on a career
+                guide chapter&apos;s checklist are a private note on your account
+                (checklist:&lt;chapter&gt;) when you are signed in, or stay only
+                in this browser when you are not, and move into your account (and
+                out of the browser) the next time you open that chapter signed in.
+                Signed in, the outreach templates page (/career/templates) reads
+                your tracker cards and contacts in your browser to fill in the
+                blanks; the &ldquo;Your name&rdquo; you enter stays only in this
+                browser. Copying and &ldquo;Open in your mail app&rdquo; happen on your
+                device, and the platform sends no message for you.
               </p>
               <p id="privacy-practice-aids">
                 While you solve a problem, your account records when you first
@@ -497,7 +564,13 @@ export function PrivacyDocument() {
                 to tell independent solves from assisted ones, show your solve
                 times and space your reviews. Only you can see it; it is never
                 public and never counts toward points or leaderboards. Nothing
-                is recorded when you are signed out.
+                is recorded when you are signed out. It also records whether
+                your first whiteboard-mode submission on a problem passed, and
+                whether a stress test agreed with the reference before you first
+                passed; only you see these, in My progress, and nothing is
+                recorded when you are signed out. The whiteboard dry-run pad is
+                saved as a private note on your account (wb:&lt;problem id&gt;),
+                or only in this browser when you are signed out.
               </p>
               <p id="privacy-code-review">
                 When you create a code review link from a submission&apos;s
@@ -555,7 +628,11 @@ export function PrivacyDocument() {
                 permissions; they are not public discussion content for other
                 students. Teachers use this information to answer questions,
                 review assignments, manage access, and follow up on learning
-                issues.
+                issues. &ldquo;Report an issue&rdquo; on a multiple-choice
+                question, a system design chapter or a lesson files the reason
+                and note you give as a ticket, its title tagged with that
+                content (such as [mcq:…]), seen likewise only by you and the
+                teachers responsible.
               </p>
               <p>
                 For algorithm judging, submitted code and test inputs are sent
@@ -673,14 +750,24 @@ export function PrivacyDocument() {
                 local drafts. On a shared device, you can clear this site’s
                 stored data in your browser; this also clears local content that
                 has not been submitted yet. Dates you enter in the visa timeline
-                stay in the current browser and are never uploaded. So do your
+                stay in the current browser and are never uploaded, and so do
+                the figures in the offer comparison (/career/offers), kept in
+                local storage (&ldquo;Import from my tracker&rdquo; reads only the
+                company and role of your own tracker cards at the Offer stage),
+                and your
                 answers in a mock OA&apos;s multiple-choice section: they are not
                 uploaded and do not sync to your account with mock OA results.
                 Answers and the review schedule on the OA multiple-choice practice
                 page (/oa/mcq) and the topic pages&apos; quick quizzes stay in this
                 browser while you are signed out; signed in, they are kept in a
                 private note on your account (up to 20KB), and the browser copy
-                is deleted once the account has saved it. The practice page also
+                is deleted once the account has saved it. Signed in with a
+                verified email, the first time you submit a question on /oa/mcq
+                or in a topic page&apos;s quick quiz the server also records that answer on its own (question,
+                choices picked, whether right, and when), used only for the
+                site-wide share of right answers and how many picked each choice; a
+                question answered by fewer than 20 people shows nothing, and
+                nobody&apos;s answers are ever shown. The practice page also
                 reads your own system design chapter quiz answers to list the
                 ones you missed, never your design drafts. Which
                 debugging and code-review drills (/oa/drills) you have

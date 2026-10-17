@@ -51,6 +51,7 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
     codingModes: ['acm'],
     judgeAvailable: true,
     lingEditorialVerified: true,
+    leetcodeParams: [{ name: 'a', type: 'integer' }],
   };
   const calls = [];
   const originalFetch = globalThis.fetch;
@@ -118,6 +119,7 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
     assert.equal(!!byText('Hint'), true);
     assert.equal(!!labelled('Ask the AI tutor'), true);
     assert.equal(!!byText('Custom input'), true);
+    assert.equal(!!$('.cs-clarify'), true);
     assert.equal(editor().dataset.bare, 'false');
     // A draft written (and run) with the usual help: no whiteboard attempt.
     const template = editor().value;
@@ -159,6 +161,7 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
     assert.equal(!!byText('Hint'), false);
     assert.equal(!!labelled('Ask the AI tutor'), false);
     assert.equal(!!byText('Custom input'), false, 'custom cases and the stress test are gone');
+    assert.equal($('.cs-clarify'), null, 'so are the edge-case checklist and its add buttons');
     assert.match($('.cs-intelligence-status').textContent, /Whiteboard: plain text/);
     // Ctrl / ⌘ + Enter goes through onRun: nothing is sent.
     await act(async () => globalThis.editorProps.onRun());

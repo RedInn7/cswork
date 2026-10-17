@@ -41,6 +41,7 @@ void test('a clean resume scores 100: Led, Built, Wrote and Ran are past tense, 
     'Conducted 40 user interviews to shape the onboarding flow for new users',
     'Proposed a sharded index layout that cut query latency by 30% across shards',
     'Found and fixed 12 race conditions in the job scheduler before the launch',
+    'Deployed the API to AWS us-east-1 behind an ALB, cutting p99 latency by 40%',
   ].join('\n');
   s.projects[0].bullets = 'Co-founded a startup that served 2,000 users in its first six months';
   assert.deepEqual(rules(s), []);
@@ -69,6 +70,11 @@ void test('each rule on one bad bullet: weak verb, no number, short, pronoun, va
   assert.deepEqual(rules(r), ['length@experience.0.bullets']);
   r.experience[0].bullets = 'Built 3 APIs';
   assert.deepEqual(rules(r), ['length@experience.0.bullets']);
+  // Digits inside tool names are no numbers; a p99 is.
+  r.experience[0].bullets = 'Built a REST API on EC2 with OAuth2 login and S3 uploads for the team portal';
+  assert.deepEqual(rules(r), ['metric@experience.0.bullets']);
+  r.experience[0].bullets = 'Built a REST API on EC2 with OAuth2 login and S3 uploads, tracking p99 latency';
+  assert.deepEqual(rules(r), []);
 });
 
 void test('Chinese bullets: their own length range, 负责/参与 flagged, no tense check', () => {

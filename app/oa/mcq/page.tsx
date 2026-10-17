@@ -13,11 +13,11 @@ function copy(zh: boolean) {
   return zh
     ? {
         title: 'OA 选择题练习：数据结构、复杂度、操作系统、数据库、网络与读代码 | CSWork',
-        lead: `${bank.length} 道原创 OA 风格选择题，覆盖 CS 基础（数据结构与算法、操作系统、数据库、网络、并发、面向对象、Linux 命令行、Git、计算机体系结构、Web 安全、设计模式、Web 前端）、读代码（时间复杂度、Python、JavaScript、Java、C++、SQL）和数学逻辑。读代码题的答案都是实际运行得出的。提交后立即判分并给出解析；答过的题按 1、3、7、21 天的间隔回来复习。`,
+        lead: `${bank.length} 道原创 OA 风格选择题，覆盖 CS 基础（数据结构与算法、操作系统、数据库、网络、并发、面向对象、Linux 命令行、Git、计算机体系结构、Web 安全、设计模式、Web 前端）、读代码（时间复杂度、Python、JavaScript、Java、C++、SQL）和数学逻辑。读代码题里问输出的（复杂度题和标为未定义行为的除外），答案都是实际运行得出的。提交后立即判分并给出解析；答过的题按 1、3、7、21 天的间隔回来复习。`,
       }
     : {
         title: 'OA Multiple-Choice Practice: DSA, Complexity, OS, Databases, Code Output | CSWork',
-        lead: `${bank.length} original OA-style multiple-choice questions on CS fundamentals (data structures and algorithms, OS, databases, networking, concurrency, OOP, the Linux command line, Git, computer architecture, web security, design patterns, web frontend), code output (time complexity, Python, JavaScript, Java, C++, SQL) and quant. Every code-output answer comes from running the code. Each question is graded the moment you submit, with an explanation, and comes back for review after 1, 3, 7 and 21 days.`,
+        lead: `${bank.length} original OA-style multiple-choice questions on CS fundamentals (data structures and algorithms, OS, databases, networking, concurrency, OOP, the Linux command line, Git, computer architecture, web security, design patterns, web frontend), code output (time complexity, Python, JavaScript, Java, C++, SQL) and quant. Every “what does this print” answer (all but the big-O and undefined-behaviour questions) comes from running the code. Each question is graded the moment you submit, with an explanation, and comes back for review after 1, 3, 7 and 21 days.`,
       };
 }
 

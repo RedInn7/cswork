@@ -2138,7 +2138,7 @@ function Workspace({
                 }}
               />
             )}
-            {!!problem.leetcodeParams?.length && !examMode && (
+            {!!problem.leetcodeParams?.length && !examMode && !wb.on && (
               <ClarifyPanel
                 problemId={problem.id}
                 params={problem.leetcodeParams}

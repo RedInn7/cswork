@@ -332,6 +332,7 @@ function sentences(text: string) {
     const colon = /^([^:：]{2,60})[:：]\s*(.*)$/.exec(line);
     const kind = headKind(colon ? colon[1] : line.replace(/[:：]$/, ''));
     if (kind) {
+      if (kind === 'skip' && colon?.[2]) continue; // "Location: Remote" is a field, not a section
       section = kind;
       line = colon ? colon[2] : '';
       if (!line) continue;

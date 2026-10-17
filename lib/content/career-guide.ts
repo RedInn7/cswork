@@ -101,7 +101,7 @@ Languages: Python, Go, Java, SQL · Tools: Git, Docker, Linux, AWS
 \`\`\`
 
 ## 先针对岗位改，再检查
-在属实的前提下，用职位描述里的原词（同一种语言、框架或业务领域）。改完后，把简历和职位描述贴进 [简历 AI 点评](/career/resume)，看看成果量化、动词和关键词还缺什么。`,
+在属实的前提下，用职位描述里的原词（同一种语言、框架或业务领域）。改完后，把职位描述贴进 [JD 准备度检查](/career/jd)，和简历生成器里保存的简历比对，看看关键词还缺什么。`,
     en: `A recruiter often decides in under a minute whether to pass your resume on. So every line should say what you did and what changed because of it.
 
 ## The basics
@@ -148,7 +148,7 @@ Languages: Python, Go, Java, SQL · Tools: Git, Docker, Linux, AWS
 \`\`\`
 
 ## Tailor it, then check it
-Where it is true for you, use the posting’s own words (the same language, framework or domain). Then paste your resume and the posting into the [AI resume review](/career/resume) for a second opinion on impact, verbs and missing keywords.`,
+Where it is true for you, use the posting’s own words (the same language, framework or domain). Then paste the posting into the [JD readiness check](/career/jd) to compare its keywords with the resume saved in the resume builder and see what is missing.`,
   },
 
   referrals: {
