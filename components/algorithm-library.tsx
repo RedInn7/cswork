@@ -5,17 +5,18 @@ import { OaLibrary } from './oa-library';
 import { ClassicList } from './classic-list';
 import { SqlTrack } from './sql-track';
 import { CoreSkills } from './core-skills';
+import { MlCoding } from './ml-coding';
 import { classicList, classicLists } from '@/lib/classic-lists';
 import type { Navigate } from './learning';
 import { useT } from '@/lib/i18n';
 
-/** Problem bank sections: Ling's list, OA problems, the timed mock OA, the SQL and Core Skills tracks and the classic lists. */
+/** Problem bank sections: Ling's list, OA problems, the timed mock OA, the SQL, Core Skills and ML Coding tracks and the classic lists. */
 export function LibrarySwitch({
   section,
   navigate,
   list = '',
 }: {
-  section: 'leetcode' | 'oa' | 'mock' | 'sql' | 'core' | 'classic';
+  section: 'leetcode' | 'oa' | 'mock' | 'sql' | 'core' | 'ml' | 'classic';
   navigate: Navigate;
   /** The classic list shown, when section is 'classic'. */
   list?: string;
@@ -59,6 +60,13 @@ export function LibrarySwitch({
       >
         Core Skills <span>{t('手写实现', 'By hand')}</span>
       </button>
+      <button
+        type="button"
+        aria-pressed={section === 'ml'}
+        onClick={() => navigate('problems', { library: 'ml' })}
+      >
+        ML Coding <span>numpy</span>
+      </button>
       <label className="algorithm-library-lists" data-active={!!list || undefined}>
         <span>{t('经典题单', 'Classic lists')}</span>
         <select
@@ -99,7 +107,9 @@ export function AlgorithmLibrary(props: {
         ? 'sql'
         : props.collection === 'core'
           ? 'core'
-          : list
+          : props.collection === 'ml'
+            ? 'ml'
+            : list
             ? 'classic'
             : 'leetcode';
   return (
@@ -116,6 +126,13 @@ export function AlgorithmLibrary(props: {
         />
       ) : section === 'core' ? (
         <CoreSkills
+          navigate={props.navigate}
+          availableProblemIds={props.availableProblemIds}
+          activity={props.activity}
+          signedIn={props.signedIn}
+        />
+      ) : section === 'ml' ? (
+        <MlCoding
           navigate={props.navigate}
           availableProblemIds={props.availableProblemIds}
           activity={props.activity}
