@@ -259,7 +259,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
   const score = (key: string) => {
     const s = scores[key];
     return (
-      <div className="eng-score" role="status">
+      <output className="eng-score">
         {s === 'none'
           ? t('没有听到声音。允许麦克风后再试一次。', "Didn't catch anything. Allow the microphone and try again.")
           : s && (
@@ -276,7 +276,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                 </span>
               </>
             )}
-      </div>
+      </output>
     );
   };
 
@@ -388,7 +388,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                     {drill.zh}
                   </p>
                 )}
-                <p className="eng-verdict" role="status">
+                <output className="eng-verdict">
                   {blank.state === 'right' ? (
                     <>
                       <Check size={14} aria-hidden="true" /> {t('对了', 'Correct')}
@@ -403,7 +403,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                       <span lang="en">{drill.answers.join(' / ')}</span>
                     </span>
                   )}
-                </p>
+                </output>
                 {blank.state !== 'right' && !blank.shown && (
                   <button type="button" className="eng-link" onClick={() => editBlank(i, { shown: true })}>
                     {t('看答案', 'Show answer')}
@@ -433,7 +433,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                     {drill.zh}
                   </p>
                 )}
-                <div className="eng-line" role="group" aria-label={t('你的句子', 'Your sentence')}>
+                <fieldset className="eng-line" aria-label={t('你的句子', 'Your sentence')}>
                   {chosen.length ? (
                     chosen.map((at) => (
                       <button
@@ -451,8 +451,8 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                   ) : (
                     <span className="eng-muted">{t('按顺序点下面的短语', 'Tap the pieces below in order')}</span>
                   )}
-                </div>
-                <div className="eng-pool" role="group" aria-label={t('可选短语', 'Pieces')}>
+                </fieldset>
+                <fieldset className="eng-pool" aria-label={t('可选短语', 'Pieces')}>
                   {scramble(drill.parts)
                     .filter((at) => !chosen.includes(at))
                     .map((at) => (
@@ -460,8 +460,8 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                         {drill.parts[at]}
                       </button>
                     ))}
-                </div>
-                <p className="eng-verdict" role="status">
+                </fieldset>
+                <output className="eng-verdict">
                   {complete &&
                     (ordered[i] ? (
                       <>
@@ -470,7 +470,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                     ) : (
                       t('顺序不对', 'Not in the right order')
                     ))}
-                </p>
+                </output>
                 {complete && !ordered[i] && (
                   <button type="button" className="eng-link" onClick={() => editPicked(i, () => [])}>
                     <RotateCcw size={13} aria-hidden="true" /> {t('重来', 'Start over')}

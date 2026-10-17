@@ -44,6 +44,7 @@ export function useSpeech(
   const [listening, setListening] = useState(false);
   const recognition = useRef<Recognition | null>(null);
   const heard = useRef(onText);
+  // oxlint-disable-next-line react/react-compiler -- The latest callback, read only in the recognizer's events.
   heard.current = onText;
   useEffect(
     () => () => {

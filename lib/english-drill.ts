@@ -74,7 +74,7 @@ export function similarity(said: string, target: string) {
   const a = words(said);
   const b = words(target);
   if (!a.length || !b.length) return 0;
-  let row = new Array<number>(b.length + 1).fill(0);
+  let row = Array.from({ length: b.length + 1 }, () => 0);
   for (const word of a) {
     const next = [0];
     for (let j = 1; j <= b.length; j++) next[j] = word === b[j - 1] ? row[j - 1] + 1 : Math.max(row[j], next[j - 1]);

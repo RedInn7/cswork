@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
@@ -42,7 +43,9 @@ export default async function EnglishUnitPage({ params }: Props) {
         }}
       />
       <nav className="public-library-breadcrumb" aria-label={t('导航路径', 'Breadcrumb')}>
-        <a href="/english">{t('面试英语', 'Interview English')}</a>
+        <Link href="/english" prefetch={false}>
+          {t('面试英语', 'Interview English')}
+        </Link>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{title(unit)}</span>
       </nav>
@@ -69,10 +72,10 @@ export default async function EnglishUnitPage({ params }: Props) {
             {title(next)}
           </a>
         ) : (
-          <a href="/mock-interview">
+          <Link href="/mock-interview" prefetch={false}>
             <span>{t('学完了', 'All done')}</span>
             {t('来一场模拟面试', 'Run a mock interview')}
-          </a>
+          </Link>
         )}
       </nav>
     </article>
