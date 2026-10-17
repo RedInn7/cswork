@@ -156,6 +156,18 @@ test('the tracker import marks intern roles as internships, by the tracker rule'
   );
 });
 
+test('the tracker import leaves an internship card with pay in it alone, and sets the kind of an empty card from the role', () => {
+  const start = [offer({ id: 'pay', kind: 'intern', hourly: 50, weeks: 12 }), offer({ id: 'blank', kind: 'intern' })];
+  const { offers } = importOffers(start, [{ company: 'Stripe', role: 'Software Engineer, New Grad' }]);
+  assert.deepEqual(
+    offers.map((o) => [o.id, o.company, o.kind, o.hourly]),
+    [
+      ['pay', '', 'intern', 50],
+      ['blank', 'Stripe', 'fulltime', undefined],
+    ],
+  );
+});
+
 test('internship pay: hourly × hours (blank = 40) × weeks, or monthly × 12/52 × weeks; extras on top; nothing without weeks', () => {
   const hourly = offer({ kind: 'intern', hourly: 50, weeks: 12, housing: 3000, housingMonthly: 1300, relocation: 1000, travel: 500 });
   assert.deepEqual(internTotals(hourly), { pay: 24000, gross: 32100, weekly: 2675, annualized: 104000 });
@@ -269,6 +281,16 @@ test('the share payload drops id, deadline and clawback, rounds money and can le
     ['', ''],
   );
   assert.equal(offers[0].base, 152500);
+  // A card switched kind keeps the other kind's figures, but its link carries only the shown kind's.
+  const [wasFull, wasIntern] = shareOffers(
+    [
+      offer({ kind: 'intern', hourly: 40, weeks: 10, relocation: 2000, base: 180000, grant: 300000, bonusPct: 10, schedule: '5-15-40-40', custom: [1, 2, 3, 94] }),
+      offer({ hourly: 40, weeks: 10, housingProvided: true, returnOffer: 'likely', base: 180000 }),
+    ],
+    { anon: true },
+  );
+  assert.deepEqual(wasFull, { kind: 'intern', company: '', role: '', schedule: 'even', hourly: 40, weeks: 10, relocation: 2000 });
+  assert.deepEqual(wasIntern, { kind: 'fulltime', company: '', role: '', schedule: 'even', base: 180000 });
   // A shared link reads back through the same cleanup, with fresh ids and no deadline.
   const back = readOffers(JSON.parse(JSON.stringify(shareOffers(offers, { anon: true }))));
   assert.deepEqual(

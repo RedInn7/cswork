@@ -173,7 +173,8 @@ export function readOffers(raw: unknown): Offer[] {
 
 const sameJob = (a: { company: string; role: string }, b: { company: string; role: string }) =>
   a.company.trim().toLowerCase() === b.company.trim().toLowerCase() && a.role.trim().toLowerCase() === b.role.trim().toLowerCase();
-const unused = (o: Offer) => !o.company.trim() && !o.role.trim() && !num(o.base) && !num(o.grant);
+const unused = (o: Offer) =>
+  !o.company.trim() && !o.role.trim() && !num(o.base) && !num(o.grant) && !num(o.hourly) && !num(o.monthly) && !num(o.weeks);
 
 /**
  * Tracker cards at the offer stage, as names in empty cards first, then new ones up to OFFERS_MAX;
@@ -192,7 +193,7 @@ export function importOffers(offers: readonly Offer[], jobs: readonly { company:
       role: job.role,
       ...(job.deadline && { deadline: job.deadline }),
       // The tracker's employment rule (lib/applications.ts).
-      ...(/\bintern(ship)?s?\b|实习/i.test(job.role) && { kind: 'intern' as const }),
+      kind: /\bintern(ship)?s?\b|实习/i.test(job.role) ? ('intern' as const) : ('fulltime' as const),
     };
     if (at >= 0) next[at] = filled;
     else if (next.length < OFFERS_MAX) next.push(filled);
@@ -281,10 +282,23 @@ const ROUND: Partial<Record<NumKey, number>> = {
   housing: 500,
   travel: 500,
 };
-/** The offers as a read-only link carries them: no id, deadline or clawback note, money rounded, company blank when `anon`. */
+/**
+ * The offers as a read-only link carries them: no id, deadline or clawback note, only the fields of
+ * each offer's kind, money rounded, company blank when `anon`.
+ */
 export function shareOffers(offers: readonly Offer[], { anon }: { anon: boolean }) {
   return offers.map(({ id: _id, deadline: _deadline, clawbackNote: _clawback, ...o }) => {
     const out: Omit<Offer, 'id' | 'deadline' | 'clawbackNote'> = { ...o, company: anon ? '' : o.company };
+    // The card keeps the other kind's figures for switching back; the link, which shows only this kind, does not.
+    if (o.kind === 'intern') {
+      for (const key of NUM_KEYS) if (key !== 'relocation') delete out[key];
+      delete out.custom;
+      out.schedule = 'even';
+    } else {
+      for (const key of INTERN_KEYS) delete out[key];
+      delete out.housingProvided;
+      delete out.returnOffer;
+    }
     for (const key of [...NUM_KEYS, ...INTERN_KEYS]) {
       const step = key === 'relocation' && o.kind === 'intern' ? 500 : ROUND[key];
       const v = out[key];
