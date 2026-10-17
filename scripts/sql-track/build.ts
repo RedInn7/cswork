@@ -21,8 +21,9 @@ import { pathToFileURL } from 'node:url';
 import type { OjProblemPackage } from '../../lib/oj-types';
 import { PANDAS_HARNESS, SQL_HARNESS, SQL_INDEX, SQL_ORDERED } from '../../lib/server/sql-judge';
 import { GENERATORS, SCHEMAS, seeded, type Data, type Value } from './datasets';
-import { PANDAS_SOLUTIONS, type PandasSolution } from './pandas-solutions';
-import { GROUPS, PATTERNS, PROBLEMS, type SqlProblem } from './problems';
+import { PANDAS_GROUPS, PANDAS_NATIVE, type PandasProblem } from './pandas-native';
+import { PANDAS_SOLUTIONS } from './pandas-solutions';
+import { GROUPS, PATTERNS, PROBLEMS, type GroupKey, type SqlProblem } from './problems';
 
 export const PACKAGES_FILE = 'content/sql-track/packages.json';
 export const MANIFEST_FILE = 'lib/content/sql-track.json';
@@ -37,9 +38,17 @@ export function literal(value: Value) {
 
 /** One test's stdin: the ordering or index marker, the problem's tables and their rows. */
 export function datasetSql(problem: SqlProblem, data: Data) {
-  const parts = problem.ordered ? [SQL_ORDERED] : problem.index ? [SQL_INDEX + JSON.stringify(problem.index)] : [];
-  for (const table of problem.tables) parts.push(SCHEMAS[problem.schema][table]);
-  for (const table of problem.tables) {
+  const marker = problem.ordered ? [SQL_ORDERED] : problem.index ? [SQL_INDEX + JSON.stringify(problem.index)] : [];
+  return writeDataset(
+    marker,
+    problem.tables.map((table) => [table, SCHEMAS[problem.schema][table]]),
+    data,
+  );
+}
+
+function writeDataset(marker: string[], tables: [string, string][], data: Data) {
+  const parts = [...marker, ...tables.map(([, ddl]) => ddl)];
+  for (const [table] of tables) {
     const rows = data[table] ?? [];
     if (rows.length)
       parts.push(
@@ -70,11 +79,12 @@ export function sqlRunner() {
 
 const rowCount = (output: string) => output.split('\n').length - 2;
 
-const columnList = (problem: SqlProblem, zh: boolean) =>
+type Shape = Pick<SqlProblem, 'columns' | 'ordered'>;
+const columnList = (problem: Shape, zh: boolean) =>
   problem.columns
     .map(([name, meaningZh, meaningEn]) => `- \`${name}\`${zh ? '：' : ': '}${zh ? meaningZh : meaningEn}`)
     .join('\n');
-const orderNote = (problem: SqlProblem, zh: boolean) =>
+const orderNote = (problem: Shape, zh: boolean) =>
   problem.ordered
     ? zh
       ? `**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 \`${SQL_ORDERED}\` 就是这个标记。`
@@ -221,6 +231,19 @@ export function buildSqlTrack() {
         difficulty,
         patterns: PATTERNS.filter((pattern) => pattern.ids.includes(id)).map((pattern) => pattern.key),
       })),
+      // Pandas-only problems (pandas-native.ts): listed in the track's Pandas mode only.
+      pandasGroups: PANDAS_GROUPS.map(({ key, zh, en }) => ({
+        key,
+        zh,
+        en,
+        ids: PANDAS_NATIVE.filter((problem) => problem.group === key).map((problem) => problem.id),
+      })),
+      pandasProblems: PANDAS_NATIVE.map(({ id, title, difficulty }) => ({
+        id,
+        titleZh: title.zh,
+        titleEn: title.en,
+        difficulty,
+      })),
     };
     return {
       packages: JSON.stringify(packages, null, 1) + '\n',
@@ -281,90 +304,187 @@ export function pandasRunner(python = process.env.PANDAS_PYTHON || 'python3') {
 /** A table as solve() receives it: its columns and dtypes, from the CREATE TABLE. */
 function frameColumns(table: string, ddl: string) {
   const columns = [...ddl.matchAll(/^\s+(\w+) (\w+)[^-\n]*(?:-- (.*))?$/gm)].map(
-    ([, name, type, note]) => [name, type.includes('INT') ? 'Int64' : 'object', note] as const,
+    ([, name, type, note]) =>
+      [name, type.includes('INT') ? 'Int64' : type === 'REAL' ? 'float64' : 'object', note] as const,
   );
   const width = Math.max(...columns.map(([name]) => name.length));
+  const typeWidth = Math.max(6, ...columns.map(([, dtype]) => dtype.length));
   return [
     `tables['${table}']`,
-    ...columns.map(([name, dtype, note]) => `  ${name.padEnd(width)}  ${note ? `${dtype.padEnd(6)}  # ${note}` : dtype}`),
+    ...columns.map(
+      ([name, dtype, note]) => `  ${name.padEnd(width)}  ${note ? `${dtype.padEnd(typeWidth)}  # ${note}` : dtype}`,
+    ),
   ].join('\n');
 }
 
-function pandasStatement(problem: SqlProblem, solution: PandasSolution, locale: 'zh' | 'en') {
+type PandasText = { title: string; task: string; explanation: string; hints: string[] };
+
+/** A pandas statement: an SQL problem's twin, or (native) a pandas-only problem with its own tables. */
+function pandasStatement(
+  problem: Shape,
+  tables: [string, string][],
+  text: PandasText,
+  locale: 'zh' | 'en',
+  native = false,
+) {
   const zh = locale === 'zh';
-  const sql = statement(problem, locale);
   const signature = [
     'import pandas as pd',
     '',
     'def solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:',
-    ...problem.tables.map((table) => `    ${table} = tables['${table}']`),
+    ...tables.map(([table]) => `    ${table} = tables['${table}']`),
     '    ...',
   ].join('\n');
-  const frames = problem.tables.map((table) => frameColumns(table, SCHEMAS[problem.schema][table])).join('\n\n');
-  // The tasks name SQL's ROUND; pandas rounds with .round().
-  const task = problem.task[locale].replace(/`ROUND\(x, (\d)\)`/g, '`.round($1)`');
+  const frames = tables.map(([table, ddl]) => frameColumns(table, ddl)).join('\n\n');
+  const real = tables.some(([, ddl]) => /^\s+\w+ REAL\b/m.test(ddl));
   return {
-    title: `${sql.title}${zh ? '（Pandas）' : ' (Pandas)'}`,
+    title: text.title,
     description: zh
-      ? `${task}\n\n写一个函数 \`solve(tables)\`，返回结果 DataFrame：\n\n\`\`\`python\n${signature}\n\`\`\`\n\n\`tables\` 里的 DataFrame 和各列的 dtype：\n\n\`\`\`text\n${frames}\n\`\`\``
-      : `${task}\n\nWrite a function \`solve(tables)\` that returns the result DataFrame:\n\n\`\`\`python\n${signature}\n\`\`\`\n\nThe DataFrames in \`tables\` and their column dtypes:\n\n\`\`\`text\n${frames}\n\`\`\``,
+      ? `${text.task}\n\n写一个函数 \`solve(tables)\`，返回结果 DataFrame：\n\n\`\`\`python\n${signature}\n\`\`\`\n\n\`tables\` 里的 DataFrame 和各列的 dtype：\n\n\`\`\`text\n${frames}\n\`\`\``
+      : `${text.task}\n\nWrite a function \`solve(tables)\` that returns the result DataFrame:\n\n\`\`\`python\n${signature}\n\`\`\`\n\nThe DataFrames in \`tables\` and their column dtypes:\n\n\`\`\`text\n${frames}\n\`\`\``,
     input: zh
-      ? "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组，和 SQL 版的数据相同），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期以 'YYYY-MM-DD' 文本保存，需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。"
-      : "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset, the same data as the SQL version), then reads every table into a DataFrame and passes them to solve(tables) as a {table name: DataFrame} dict. INTEGER columns are the nullable Int64 (NULL is pd.NA) and TEXT columns are object (NULL is None); dates are 'YYYY-MM-DD' text, so convert them with pd.to_datetime when needed. pandas and numpy are available; anything solve prints is not part of the output.",
+      ? `每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组${native ? '' : '，和 SQL 版的数据相同'}），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），${real ? 'REAL 列是 float64（NULL 为 NaN），' : ''}TEXT 列是 object（NULL 为 None）；${native ? '日期和时间以文本保存（格式见各列的注释）' : "日期以 'YYYY-MM-DD' 文本保存"}，需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。`
+      : `Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset${native ? '' : ', the same data as the SQL version'}), then reads every table into a DataFrame and passes them to solve(tables) as a {table name: DataFrame} dict. INTEGER columns are the nullable Int64 (NULL is pd.NA)${real ? ', REAL columns are float64 (NULL is NaN)' : ''} and TEXT columns are object (NULL is None); ${native ? 'dates and times are text (each column’s note gives the format)' : "dates are 'YYYY-MM-DD' text"}, so convert them with pd.to_datetime when needed. pandas and numpy are available; anything solve prints is not part of the output.`,
     output: zh
-      ? `返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。`
-      : `Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).`,
-    explanation: sql.explanation,
-    hints: [solution.hint[locale].replaceAll('`', '')],
+      ? `返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\n判题器把返回的 DataFrame 整理成${native ? '统一的' : '和 SQL 版相同的'}格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。`
+      : `Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\nThe judge formats the returned DataFrame ${native ? 'into one canonical form' : "like the SQL version's result"} before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).`,
+    explanation: text.explanation,
+    hints: text.hints.map((hint) => hint.replaceAll('`', '')),
+  };
+}
+
+/** SQL groups without a pandas twin: recursive SQL, JSON functions and SQLite's own indexes. */
+export const SQL_ONLY_GROUPS: GroupKey[] = ['advanced', 'indexing'];
+
+/** A pandas-only problem: its datasets run through the reference, with the SQL track's checks. */
+function nativePackage(problem: PandasProblem, runner: ReturnType<typeof pandasRunner>, report: string[]): OjProblemPackage {
+  const datasets = [
+    { name: '样例 1', data: problem.sample, hidden: false },
+    ...problem.hidden.map((data, k) => ({ name: `边界 ${k + 1}`, data, hidden: true })),
+  ].map((item) => ({ ...item, input: writeDataset(problem.ordered ? [SQL_ORDERED] : [], problem.tables, item.data) }));
+  const inputs = datasets.map(({ input }) => input);
+  const expected = runner.run(problem.reference, inputs).map(([stdout, error], k) => {
+    if (stdout === null) throw new Error(`${problem.id} ${datasets[k].name}: reference failed: ${error}`);
+    return stdout;
+  });
+  for (const code of problem.accepted ?? [])
+    runner.run(code, inputs).forEach(([stdout, error], k) => {
+      if (stdout !== expected[k])
+        throw new Error(`${problem.id} ${datasets[k].name}: accepted solution disagrees\n${code}\n${error || stdout}`);
+    });
+  const kills = problem.wrong.map((code) => {
+    const killed = runner
+      .run(code, inputs)
+      .flatMap(([stdout], k) => (stdout !== expected[k] ? [datasets[k].name] : []));
+    if (!killed.some((name) => !name.startsWith('样例')))
+      throw new Error(`${problem.id}: no hidden dataset rejects\n${code}`);
+    return killed.length;
+  });
+  const rows = expected.map(rowCount);
+  if (!rows[0] || !rows.slice(1).some(Boolean))
+    throw new Error(`${problem.id}: the sample and some hidden dataset need result rows`);
+  report.push(`${problem.id} rows ${rows.join('/')} wrong-killed-on ${kills.join('/')}`);
+  const text = (locale: 'zh' | 'en') =>
+    pandasStatement(
+      problem,
+      problem.tables,
+      {
+        title: problem.title[locale],
+        task: problem.task[locale],
+        explanation: problem.explanation[locale],
+        hints: problem.hints[locale],
+      },
+      locale,
+      true,
+    );
+  const zh = text('zh');
+  return {
+    schemaVersion: 1,
+    problem: {
+      id: problem.id,
+      courseId: 'gomall',
+      lessonId: '00-overview',
+      title: zh.title,
+      difficulty: problem.difficulty,
+      translations: { en: text('en') },
+      tags: ['Pandas', PANDAS_GROUPS.find((group) => group.key === problem.group)!.zh],
+      description: zh.description,
+      input: zh.input,
+      output: zh.output,
+      explanation: zh.explanation,
+      hints: zh.hints,
+      timeLimit: 3,
+      memoryLimit: 262144,
+      outputLimit: 64,
+      checker: 'exact',
+      languages: ['pandas'],
+    },
+    cases: datasets.map(({ name, input, hidden }, k) => ({ name, input, expectedOutput: expected[k], hidden, weight: 1 })),
   };
 }
 
 /**
- * The Pandas track from the committed SQL packages: same cases, a pandas
- * statement, and the reference solution checked against every expected output.
+ * The Pandas track: each committed SQL package outside SQL_ONLY_GROUPS again as
+ * pd-xx (same cases, a pandas statement, the reference solution checked against
+ * every expected output), then the pandas-only problems.
  */
 export function buildPandasTrack() {
-  const sql = JSON.parse(readFileSync(PACKAGES_FILE, 'utf8')) as OjProblemPackage[];
+  const sql = new Map(
+    (JSON.parse(readFileSync(PACKAGES_FILE, 'utf8')) as OjProblemPackage[]).map((pkg) => [pkg.problem.id, pkg]),
+  );
   const runner = pandasRunner();
   const report: string[] = [];
   try {
-    const packages = PROBLEMS.map((problem, index): OjProblemPackage => {
-      const source = sql[index];
-      const solution = PANDAS_SOLUTIONS[problem.id];
-      const id = pandasId(problem.id);
-      if (source?.problem.id !== problem.id || !solution)
-        throw new Error(`${id}: needs ${problem.id}'s committed package and a pandas solution`);
-      runner.run(solution.code, source.cases.map((c) => c.input)).forEach(([stdout, error], k) => {
-        if (stdout !== source.cases[k].expectedOutput)
-          throw new Error(
-            `${id} ${source.cases[k].name}: the pandas solution disagrees with the SQL expected output\n${error || stdout}\nexpected:\n${source.cases[k].expectedOutput}`,
-          );
-      });
-      report.push(`${id} matches ${source.cases.length} datasets`);
-      const zh = pandasStatement(problem, solution, 'zh');
-      const group = GROUPS.find((item) => item.key === problem.group)!;
-      return {
-        schemaVersion: 1,
-        problem: {
-          ...source.problem,
-          id,
-          title: zh.title,
-          translations: { en: pandasStatement(problem, solution, 'en') },
-          tags: ['Pandas', group.zh],
-          description: zh.description,
-          input: zh.input,
-          output: zh.output,
-          explanation: zh.explanation,
-          hints: zh.hints,
-          // A fresh python imports pandas per test (~0.5 s) before the learner's code runs.
-          timeLimit: 3,
-          memoryLimit: 262144,
-          languages: ['pandas'],
-        },
-        cases: source.cases,
-      };
-    });
-    return { packages: JSON.stringify(packages, null, 1) + '\n', report };
+    const twins = PROBLEMS.filter((problem) => !SQL_ONLY_GROUPS.includes(problem.group)).map(
+      (problem): OjProblemPackage => {
+        const source = sql.get(problem.id);
+        const solution = PANDAS_SOLUTIONS[problem.id];
+        const id = pandasId(problem.id);
+        if (!source || !solution) throw new Error(`${id}: needs ${problem.id}'s committed package and a pandas solution`);
+        runner.run(solution.code, source.cases.map((c) => c.input)).forEach(([stdout, error], k) => {
+          if (stdout !== source.cases[k].expectedOutput)
+            throw new Error(
+              `${id} ${source.cases[k].name}: the pandas solution disagrees with the SQL expected output\n${error || stdout}\nexpected:\n${source.cases[k].expectedOutput}`,
+            );
+        });
+        report.push(`${id} matches ${source.cases.length} datasets`);
+        const text = (locale: 'zh' | 'en'): PandasText => {
+          const statementText = statement(problem, locale);
+          return {
+            title: `${statementText.title}${locale === 'zh' ? '（Pandas）' : ' (Pandas)'}`,
+            // The tasks name SQL's ROUND; pandas rounds with .round().
+            task: problem.task[locale].replace(/`ROUND\(x, (\d)\)`/g, '`.round($1)`'),
+            explanation: statementText.explanation,
+            hints: [solution.hint[locale]],
+          };
+        };
+        const tables = problem.tables.map((table): [string, string] => [table, SCHEMAS[problem.schema][table]]);
+        const zh = pandasStatement(problem, tables, text('zh'), 'zh');
+        const group = GROUPS.find((item) => item.key === problem.group)!;
+        return {
+          schemaVersion: 1,
+          problem: {
+            ...source.problem,
+            id,
+            title: zh.title,
+            translations: { en: pandasStatement(problem, tables, text('en'), 'en') },
+            tags: ['Pandas', group.zh],
+            description: zh.description,
+            input: zh.input,
+            output: zh.output,
+            explanation: zh.explanation,
+            hints: zh.hints,
+            // A fresh python imports pandas per test (~0.5 s) before the learner's code runs.
+            timeLimit: 3,
+            memoryLimit: 262144,
+            languages: ['pandas'],
+          },
+          cases: source.cases,
+        };
+      },
+    );
+    const native = PANDAS_NATIVE.map((problem) => nativePackage(problem, runner, report));
+    return { packages: JSON.stringify([...twins, ...native], null, 1) + '\n', report };
   } finally {
     runner.close();
   }

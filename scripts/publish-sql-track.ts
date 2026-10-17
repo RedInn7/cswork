@@ -57,7 +57,8 @@ const verified = new Set(report?.problems.map((p) => p.packageSha256));
 const prepared = (
   [
     ['content/sql-track/packages.json', /^sql-\d{2}$/, 'sql'],
-    ['content/sql-track/pandas-packages.json', /^pd-\d{2}$/, 'pandas'],
+    // pd-NN: an SQL problem's pandas twin; pd-1NN: pandas-only (scripts/sql-track/pandas-native.ts).
+    ['content/sql-track/pandas-packages.json', /^pd-(\d{2}|1\d{2})$/, 'pandas'],
     // REST API problems on offline HTTP fixtures (scripts/rest-api/build.py, tests/oa-rest-fixtures.test.ts).
     ['content/rest-api/packages.json', /^rest-\d{2}$/, 'python'],
   ] as const
