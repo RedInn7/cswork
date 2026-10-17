@@ -1,4 +1,5 @@
 import scenarios from '@/lib/content/roleplay-scenarios.json';
+import type { Setting } from '@/lib/content/negotiation-scripts';
 import type { Text } from '@/lib/mock-interview';
 
 /* The role-play scenarios (lib/content/roleplay-scenarios.json): content, not messages, so
@@ -22,6 +23,13 @@ type Scenario = {
 };
 // Via unknown: the JSON infers string[] where Scenario has [zh, en] pairs and literal kinds.
 export const SCENARIOS = (scenarios as unknown as { scenarios: Scenario[] }).scenarios;
+/** What the candidate sees of a scenario (the practice scripts' setting card): never the floor, concessions or notes. */
+export function scenarioSetting(id: string): Setting | null {
+  const s = SCENARIOS.find((x) => x.id === id);
+  if (!s) return null;
+  const { company, role, level, location, brief } = s;
+  return { company, role, level, location, brief, ...(s.kind === 'negotiation' && { offer: { ...s.offer } }) };
+}
 const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
 const offerTable = (o: Money, zh: boolean) =>
   (zh
