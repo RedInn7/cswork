@@ -968,8 +968,8 @@
       {
         "qZh": "有的数可能出现三次或更多呢？",
         "qEn": "What if some numbers appear three or more times?",
-        "aZh": "正负号只能记「见过没见过」。可以改成每见到值 v 就给 `nums[v-1]` 加 n，最后用 `nums[i] // n` 得到出现次数，仍是 O(1) 额外空间；Java 和 C++ 里要注意加完后的值会不会超出 int。",
-        "aEn": "A sign only records seen or not. Add n to `nums[v-1]` for every v instead, and read counts as `nums[i] // n`, still O(1) extra space; in Java and C++ check that the sums still fit in an int."
+        "aZh": "正负号只能记「见过没见过」。改成计数：遍历时先用 `v = (nums[i]-1) % n + 1` 还原这一格的原值（它可能已经被加过 n），再给 `nums[v-1]` 加 n；最后出现次数是 `(nums[i]-1) // n`，仍是 O(1) 额外空间。Java 和 C++ 里格子最大到 n + n²，要注意会不会超出 int。",
+        "aEn": "A sign only records seen or not. Count instead: read each slot's original value as `v = (nums[i]-1) % n + 1` (it may already have had n added), add n to `nums[v-1]`, and read counts as `(nums[i]-1) // n`, still O(1) extra space. A slot can reach n + n², so in Java and C++ check that it fits in an int."
       },
       {
         "qZh": "不能修改数组时怎么办？",
@@ -1691,8 +1691,8 @@
       {
         "qZh": "窗口和会溢出吗？",
         "qEn": "Can the window sum overflow?",
-        "aZh": "会。窗口长度最多 2×10^5+1，每个值到 10^5，和约 2×10^10，超出 32 位；Java 和 C++ 用 long 累加。",
-        "aEn": "Yes. The window can hold 2×10^5+1 values of up to 10^5, about 2×10^10, beyond 32 bits; accumulate in a long in Java and C++."
+        "aZh": "会。完整的窗口最多装下 n ≤ 10^5 个数，每个到 10^5，和能到 10^10，超出 32 位；Java 和 C++ 用 long 累加。",
+        "aEn": "Yes. A full window has at most n ≤ 10^5 values of up to 10^5, so the sum reaches 10^10, beyond 32 bits; accumulate in a long in Java and C++."
       },
       {
         "qZh": "改成窗口的中位数？",
