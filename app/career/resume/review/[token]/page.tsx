@@ -29,9 +29,13 @@ export default async function ResumeReviewLinkPage({ params }: Props) {
   return (
     <>
       <nav className="mock-public-crumbs" aria-label={zh ? '导航路径' : 'Breadcrumb'}>
-        <a href="/guide">{zh ? '求职指南' : 'Career guide'}</a>
+        <Link href="/guide" prefetch={false}>
+          {zh ? '求职指南' : 'Career guide'}
+        </Link>
         <span aria-hidden="true">/</span>
-        <a href="/career/resume/builder">{zh ? '简历生成器' : 'Resume builder'}</a>
+        <Link href="/career/resume/builder" prefetch={false}>
+          {zh ? '简历生成器' : 'Resume builder'}
+        </Link>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{zh ? '简历评审' : 'Resume review'}</span>
       </nav>

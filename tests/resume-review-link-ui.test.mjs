@@ -152,7 +152,7 @@ test('the owner accepts: the server first, then this browser’s copy; an edited
   await settle();
   assert.equal(JSON.parse(localStorage.getItem(RESUME_KEY)).experience[0].bullets, '- Led a team\n- Built a parser\n• Cut CI build time 40%');
   assert.equal(document.querySelector('.rr-done').textContent, 'Accepted');
-  assert.match(document.querySelector('header [role="status"]').textContent, /Written back to the resume builder/);
+  assert.match(document.querySelector('header output').textContent, /Written back to the resume builder/);
   assert.deepEqual(asked.filter((a) => a.startsWith('POST')), ['POST resume-reviews/r1/accept', 'POST resume-reviews/r1/accept']);
   await unmount();
 });

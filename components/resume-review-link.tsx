@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { Copy, MessageSquareText } from 'lucide-react';
 import { useLocale, useT } from '@/lib/i18n';
 import { ojRequest } from '@/lib/oj-client';
@@ -218,7 +218,7 @@ export function ResumeReviewPage({ token }: { token: string }) {
   const who = (c: Comment) =>
     (c.handle ? `@${c.handle}` : c.reviewer === 0 ? t('简历作者', 'Owner') : t(`评审者 ${c.reviewer}`, `Reviewer ${c.reviewer}`)) +
     (c.mine ? t('（你）', ' (you)') : '');
-  async function send(event: FormEvent) {
+  async function send(event: SubmitEvent) {
     event.preventDefault();
     if (path === null) return;
     setSending(true);
@@ -392,11 +392,7 @@ export function ResumeReviewPage({ token }: { token: string }) {
             {error}
           </p>
         )}
-        {status && (
-          <p className="cr-hint" role="status">
-            {status}
-          </p>
-        )}
+        {status && <output className="cr-hint">{status}</output>}
       </header>
       {SECTIONS.map(([key, zh, en]) => {
         const items = r[key].map((item, index) => ({ item, index })).filter(({ item }) => item.title.trim() || lines(item.bullets).length);

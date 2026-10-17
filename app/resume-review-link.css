@@ -1,8 +1,8 @@
 /* Private resume review links (components/resume-review-link.tsx); builds on app/code-review.css. */
 
-/* Under the resume builder's tools. */
+/* Under the resume builder's tools (a grid item of .resume-builder-preview); never printed. */
 .rr-ask {
-  margin: 12px 0 0;
+  margin: 0;
   padding: 10px 14px;
   border: 1px solid #e1e6eb;
   border-radius: 10px;
@@ -138,6 +138,11 @@
 .rr-form input:focus-visible {
   outline: 2px solid #1d4ed8;
   outline-offset: 2px;
+}
+@media print {
+  .rr-ask {
+    display: none;
+  }
 }
 @media (max-width: 640px) {
   .rr-review .cr-comment,

@@ -42,7 +42,7 @@ const RESUME: Resume = {
 
 // ponytail: one loose shape for every endpoint's answer in this file.
 type Data = {
-  id: string | null;
+  id: string;
   token: string;
   mine: boolean;
   version: string | null;
