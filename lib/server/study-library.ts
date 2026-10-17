@@ -40,7 +40,7 @@ const STOP_INDEX = new Map(curatedSections.map((section, index) => [section.slug
  * A Line 500 row's selection. Its reason is the one-line approach (GET problems' curatedHint), so
  * it stays home while the problem is in the viewer's running contest or skill exam.
  */
-const selectionOf = (number: number, sealed: boolean) => {
+export const selectionOf = (number: number, sealed: boolean) => {
   const selection = curatedByNumber.get(number);
   return selection && sealed ? { ...selection, reason: '', reasonEn: '' } : selection;
 };

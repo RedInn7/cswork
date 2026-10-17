@@ -14,9 +14,10 @@ import type { SitemapEntry } from '@/lib/seo';
 import { scoreReview, type Drill, type DrillReview } from '@/lib/oa-drills';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
-import { HttpError, json, limit, limitReader, requirePerson, rows } from './http';
+import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { problemMarks, readJson } from './my-practice';
 import { recordAid } from './practice-aids';
+import { judgeProgress } from './practice-progress';
 import {
   oaExtraPrograms,
   oaGuide,
@@ -485,16 +486,7 @@ export async function handleOaLibrary(
     if (ready.has(id)) detail.statement = await oaVerifiedStatement(id);
     return json(detail);
   }
-  const progress = new Map(
-    person
-      ? (
-          await rows<{ problem_id: string; solved: number }>(
-            `SELECT problem_id,MAX(status='accepted') AS solved FROM submissions WHERE user_id=? AND mode='judge' AND problem_id LIKE 'oa-%' GROUP BY problem_id`,
-            person.id,
-          )
-        ).map((r) => [r.problem_id, r.solved ? ('solved' as const) : ('attempted' as const)])
-      : [],
-  );
+  const progress = person ? judgeProgress(person.id, 'oa-%') : new Map<string, 'solved' | 'attempted'>();
   const page = data.list(new URL(request.url).searchParams, ready, {
     progress,
     addedAt: new Map([...problems].map(([key, meta]) => [key, meta.firstAt])),

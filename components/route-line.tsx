@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { askedText, type RouteRun, type RouteStop } from '@/lib/route-stops';
+import { askedText, stopHeat, type RouteRun, type RouteStop } from '@/lib/route-stops';
 
 // The entrance plays once per page load, not on every remount or refresh.
 let routeAnimated = false;
@@ -121,7 +121,7 @@ export function RouteLine({
                   ? t(`，还差 ${left} 题`, `, ${left} to go`)
                   : '') +
             (stop.companies ? t('，', ', ') + askedText(stop, !english) : '');
-          const heat = stop.companies ? Math.ceil((3 * stop.companies) / hottest) : 0;
+          const heat = stopHeat(stop.companies, hottest);
           return (
             <label
               key={stop.slug}
