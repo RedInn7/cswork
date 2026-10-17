@@ -77,10 +77,13 @@ big = text([
 # Everyone even: nothing to settle; self-payments cancel out.
 even = text([equal("a", 900, ["a", "b", "c"]), "pay b a 300", "pay c a 300", "settle", "pay a a 50",
              equal("b", 5, ["b"]), "balance a", "balance b", "settle"])
+# Ties in settle on both sides: equal credits go to the smaller name first (y is owed first, so insertion order
+# fails), then equal debts pay in name order too.
+ties = text([equal("y", 100, ["z"]), equal("x", 100, ["z"]), "settle", equal("z", 400, ["w", "v"]), "settle"])
 names = [f"u{k:02d}" for k in range(40)]
 
 print(json.dumps({
     "samples": [sample],
-    "tests": [rounding, big, even, text(ledger(["ann", "bob", "cat", "dan"], 300, 5000, 25)),
+    "tests": [rounding, big, even, ties, text(ledger(["ann", "bob", "cat", "dan"], 300, 5000, 25)),
               text(ledger(names, 2000, 10**6, 250)), text(ledger(names[:12], 2000, 10**9, 0))],
 }))

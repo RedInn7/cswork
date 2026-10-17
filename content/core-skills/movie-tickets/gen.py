@@ -53,11 +53,12 @@ sample = text(6, 10, [
     "release 20 3 cy",
 ])
 # Expiry is exclusive of nothing: a hold made at 0 with TTL 5 is gone at 5, not at 6. Release then re-hold,
-# confirm twice, release a booking, and a hold of more than 10 seats.
+# confirm twice, release a booking, and holds of more than 10 seats: TOO_MANY is checked before taken seats.
 edge = text(12, 5, [
     "hold 0 a 3 1 2 3", "seat 4 2", "confirm 5 1 a", "seat 5 2", "hold 5 b 3 3 2 1", "release 9 2 b",
     "release 9 2 b", "confirm 9 2 b", "hold 9 c 11 1 2 3 4 5 6 7 8 9 10 11", "hold 9 c 10 1 2 3 4 5 6 7 8 9 10",
-    "confirm 13 4 c", "confirm 13 4 c", "release 13 4 c", "free 13", "hold 13 d 3 10 11 12", "free 13",
+    "confirm 13 3 c", "confirm 13 3 c", "release 13 3 c", "free 13", "hold 13 d 3 10 11 12", "free 13",
+    "hold 13 x 11 10 11 12 1 2 3 4 5 6 7 8",
     "hold 17 e 2 12 11", "free 18", "seat 18 12", "confirm 18 0 e", "release 18 99 e",
 ])
 # Huge times: t + TTL near 2 × 10^9.

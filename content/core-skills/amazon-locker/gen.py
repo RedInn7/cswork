@@ -83,13 +83,32 @@ lockout = text([2, 0, 1], 50, 7, [
     "pickup 9 444444", f"pickup 9 {e[0]}", f"pickup 38 {e[0]}", f"pickup 39 {e[0]}", "free 39 S", "returns 49",
     "returns 50", f"pickup 50 {e[2]}", "free 50 L", "returns 50",
 ])
-# Code collisions: a tiny code space would repeat, so the generator must redraw while a code is in use.
-crowd = text([300, 200, 100], 10**9, 2024, [f"deliver {k} q{k} {'SML'[k % 3]}" for k in range(700)] + ["free 700 S"])
+# The lock, closer: attempts while locked (even with the right code) neither open nor count; the 5th wrong code
+# after it locks again with a fresh count, and the keypad opens again exactly at t + 30.
+keypad = text([1, 0, 0], 1000, 7, ["deliver 0 a S"] + [f"pickup 1 10000{k}" for k in range(5)] + [
+    f"pickup 2 {e[0]}", "pickup 10 100005", "pickup 20 100006", "pickup 30 100007",
+] + [f"pickup 31 20000{k}" for k in range(5)] + [f"pickup 32 {e[0]}", f"pickup 60 {e[0]}", f"pickup 61 {e[0]}"])
+
+
+def redraws(seed, n):
+    """How often the first n codes from seed hit one already given (none expire or get picked up)."""
+    codes, seen, hits = Codes(seed), set(), 0
+    while len(seen) < n:
+        code = codes.next()
+        hits += code in seen
+        seen.add(code)
+    return hits
+
+
+# Code collisions: the new code equals one in use, so it must be redrawn. Codes mod 10^6 of this LCG cannot repeat
+# within 64 draws, so it takes a crowd: 534 parcels fit (234 S; 200 M plus 33 in L; 67 L) and none leave.
+crowd = text([300, 200, 100], 10**9, 2031, [f"deliver {k} q{k} {'SML'[k % 3]}" for k in range(700)] + ["free 700 S"])
+assert redraws(2031, 534) > 0
 
 print(json.dumps({
     "samples": [sample],
     "tests": [
-        lockout, crowd,
+        lockout, keypad, crowd,
         text([3, 2, 1], 40, 99, traffic([3, 2, 1], 40, 99, 300, 3, 0.1)),
         text([50, 30, 20], 500, 123456, traffic([50, 30, 20], 500, 123456, 4000, 2, 0.05)),
         text([2000, 1000, 500], 4320, 31337, traffic([2000, 1000, 500], 4320, 31337, 4000, 5, 0.02)),
