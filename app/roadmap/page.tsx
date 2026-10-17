@@ -66,9 +66,9 @@ export default async function RoadmapPage({ searchParams }: Props) {
   const c = COPY[zh ? 'zh' : 'en'];
   // ?role= picks a role path (lib/content/role-paths.ts), ?route=r-<id> a learner's own route, which
   // alone carries the catalog of every step (tens of KB); the canonical page stays /roadmap.
-  const params = await searchParams;
-  const route = typeof params.route === 'string' && ROUTE_ID.test(params.route) ? params.route : null;
-  const role = !route && isRole(params.role) ? params.role : null;
+  const { role: rawRole, route: rawRoute } = await searchParams;
+  const route = typeof rawRoute === 'string' && ROUTE_ID.test(rawRoute) ? rawRoute : null;
+  const role = !route && isRole(rawRole) ? rawRole : null;
   const totals: Record<string, { solved: number; total: number }> = {};
   for (const entry of curatedEntries)
     (totals[entry.sectionSlug] ??= { solved: 0, total: 0 }).total++;

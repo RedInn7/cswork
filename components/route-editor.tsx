@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import {
   ROUTE_MAX_STEPS,
   STEP_KINDS,
@@ -63,9 +63,12 @@ export function RouteSchedule({
   onChange,
   onSave,
   onExport,
+  busy,
 }: {
   english: boolean;
   doc: RouteDoc;
+  /** While the saved schedule is still loading: edits would be lost. */
+  busy: boolean;
   plan: Plan | null;
   today: string | null;
   titles: Record<string, string>;
@@ -91,7 +94,8 @@ export function RouteSchedule({
   return (
     <section className="role-path-schedule" aria-labelledby="role-path-schedule-title">
       <h3 id="role-path-schedule-title">{t('排期', 'Schedule')}</h3>
-      <div className="role-path-fields">
+      <fieldset className="role-path-fields" disabled={busy}>
+        <legend className="sr-only">{t('目标和节奏', 'Target and pace')}</legend>
         <label>
           {t('目标日期', 'Target date')}
           <input
@@ -116,7 +120,7 @@ export function RouteSchedule({
             }}
           />
         </label>
-      </div>
+      </fieldset>
       <p className="role-path-pace" role="status" data-late={(target && plan?.end && plan.end > target) || undefined}>
         {summary()}
       </p>
@@ -206,15 +210,14 @@ export function RouteEditor({
     onChange({ ...doc, steps: [...steps, { kind: step.kind, ref: step.ref }] });
     setPick('');
   };
-  const addExt = (event: FormEvent<HTMLFormElement>) => {
+  const addExt = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const title = String(data.get('title')).trim();
+    const title = (data.get('title') as string).trim();
     if (!title || full) return;
     let id = '';
-    do id = `ext-${Math.random().toString(36).slice(2, 8).padEnd(6, '0')}`;
-    while (taken.has(id));
+    while (!id || taken.has(id)) id = `ext-${Math.random().toString(36).slice(2, 8).padEnd(6, '0')}`;
     const units = Number(data.get('units')),
       unitMinutes = Number(data.get('unitMinutes'));
     onChange({ ...doc, steps: [...steps, { kind: 'ext', id, title, units, done: 0, unitMinutes }] });

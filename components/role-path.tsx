@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { MCQ_TOPIC_NAMES } from '@/components/oa-mcq';
 import {
   ROLES,
@@ -60,6 +60,7 @@ async function achievedKeys(problems: boolean, mcq: boolean, signal: AbortSignal
   return done;
 }
 
+const noUpdates = () => () => {};
 const counted = (step: ResolvedStep) => step.keys.length > 0 && !step.unavailable;
 const stateOf = ({ done, total }: Count) => (done >= total * STEP_DONE ? 'done' : done > 0 ? 'active' : 'todo');
 
@@ -96,15 +97,13 @@ export function RolePath({
   const [docs, setDocs] = useState<Record<string, RouteDoc>>({});
   const [member, setMember] = useState<boolean | null>(null);
   const [guest, setGuest] = useState<Partial<Record<RoleKey, RouteDoc>>>({});
-  // Local days only after mounting: the server's clock and zone are not the learner's.
-  const [today, setToday] = useState<string | null>(null);
+  // The learner's local day, never the server's: null while rendering on the server.
+  const today = useSyncExternalStore(noUpdates, localDay, () => null);
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
   const pending = useRef<{ timer?: ReturnType<typeof setTimeout>; flush?: () => void }>({});
 
   useEffect(() => {
-    setToday(localDay());
-    setGuest(readGuest());
     const controller = new AbortController();
     ojRequest<{ items?: { target: string; body: string }[] }>('notes?prefix=route%3A', undefined, controller.signal).then(
       (result) => {
@@ -119,8 +118,10 @@ export function RolePath({
         setMember(true);
       },
       (e: Error & { status?: unknown }) => {
-        if (e.status === 401) setMember(false);
-        else if (!controller.signal.aborted) setError(e.message);
+        if (e.status === 401) {
+          setGuest(readGuest());
+          setMember(false);
+        } else if (!controller.signal.aborted) setError(e.message);
       },
     );
     return () => {
@@ -279,8 +280,10 @@ export function RolePath({
   };
   const mark = (id: string, value: 'doing' | 'skip') => {
     if (!doc) return;
-    const { [id]: was, ...state } = doc.state;
-    update({ ...doc, state: was === value ? state : { ...state, [id]: value } });
+    const state = { ...doc.state };
+    if (state[id] === value) delete state[id];
+    else state[id] = value;
+    update({ ...doc, state });
   };
   const setSteps = (next: NonNullable<RouteDoc['steps']>) => doc && update({ ...doc, steps: next });
   const move = (i: number, by: number) => {
@@ -508,6 +511,7 @@ export function RolePath({
           )}
           <RouteSchedule
             english={english}
+            busy={member === null}
             doc={doc}
             plan={plan}
             today={today}
