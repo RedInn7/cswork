@@ -612,6 +612,377 @@
   font-weight: 600;
 }
 
+/* Index: topic frequency next to each stop's name (lib/server/topic-page.ts topicHeat). */
+.topics-heat {
+  margin-left: 6px;
+  color: #a35f00;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.topics-heat[data-heat='3'] {
+  color: #c4320a;
+}
+.topics-heat-key {
+  margin: -16px 0 24px;
+  font-size: 13px;
+  color: var(--topics-muted);
+}
+.topics-heat-key .topics-heat {
+  margin: 0 8px 0 0;
+}
+
+/* Stop header (app/topics/practice.tsx): learn first, leads to, how often asked, my progress. */
+.topics-header {
+  margin: -24px 0 40px;
+}
+.topics-header dl {
+  display: grid;
+  gap: 16px 32px;
+  margin: 0;
+}
+@media (min-width: 700px) {
+  .topics-header dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.topics-header dl > div {
+  min-width: 0;
+}
+.topics-header dt {
+  margin-bottom: 6px;
+  font: 650 12px/1.3 var(--font-route);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--topics-muted);
+}
+.topics-header dd {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--topics-text);
+}
+.topics-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.topics-chips a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 12px 0 9px;
+  border: 1px solid var(--topics-rule);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--topics-ink);
+  font: 600 13.5px/1.2 var(--font-route);
+  text-decoration: none;
+}
+/* A small roundel; filled once 60% of the stop is solved. */
+/* Border-box (Tailwind preflight): 12px leaves a 6px hole inside the 3px ring. */
+.topics-chips a::before {
+  content: '';
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 3px solid var(--route-line);
+  border-radius: 50%;
+  background: #fff;
+}
+.topics-chips a[data-met]::before {
+  background: var(--route-line);
+}
+.topics-public .topics-chips a:hover {
+  border-color: #087158;
+  text-decoration: none;
+}
+.topics-chips a:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.topics-chip-count {
+  color: var(--topics-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.topics-asked-top {
+  display: block;
+  margin-top: 2px;
+}
+.topics-asked-top small {
+  color: var(--topics-muted);
+  font-variant-numeric: tabular-nums;
+}
+.topics-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+.topics-progress strong {
+  font-family: var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color: #087158;
+}
+
+/* Warm-up */
+.topics-focus {
+  margin: 0 0 44px;
+}
+.topics-focus-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 14px;
+  align-items: center;
+  padding: 14px 18px;
+  border: 1px solid var(--topics-rule);
+  border-left: 4px solid var(--route-amber);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--topics-ink);
+  text-decoration: none;
+}
+.topics-public .topics-focus-card:hover {
+  border-color: #087158;
+  border-left-color: var(--route-amber);
+  text-decoration: none;
+}
+.topics-focus-card:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.topics-focus-no {
+  grid-row: span 2;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: var(--route-navy);
+  color: var(--route-amber);
+  font: 800 14px/1 var(--font-route);
+  font-variant-numeric: tabular-nums;
+}
+.topics-focus-card strong {
+  font-size: 16.5px;
+  overflow-wrap: anywhere;
+}
+.topics-focus-meta {
+  font-size: 13px;
+  color: var(--topics-muted);
+}
+.topics-focus-hint {
+  margin-top: 10px;
+  font-size: 14.5px;
+  color: var(--topics-text);
+}
+.topics-focus-hint summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #087158;
+}
+.topics-focus-hint summary:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.topics-focus-hint p {
+  margin: 8px 0 0;
+  line-height: 1.7;
+}
+
+/* Why it works, the 30-second script and the practice tables */
+.topics-why,
+.topics-practice {
+  margin-top: 36px;
+}
+.topics-why h3,
+.topics-practice h3 {
+  margin: 24px 0 10px;
+  font: 700 15px/1.3 var(--font-route);
+  color: var(--topics-ink);
+}
+.topics-practice h3 small {
+  margin-left: 6px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--topics-muted);
+}
+.topics-why-points {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: topics-why;
+}
+.topics-why-points li {
+  position: relative;
+  padding-left: 38px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--topics-text);
+  counter-increment: topics-why;
+  overflow-wrap: anywhere;
+}
+.topics-why-points li::before {
+  content: counter(topics-why);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--route-navy);
+  color: var(--route-amber);
+  font: 800 13px/1 var(--font-route);
+}
+.topics-say {
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 860px) {
+  .topics-say {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.topics-say figure {
+  margin: 0;
+  padding: 14px 18px 16px;
+  border: 1px solid var(--topics-rule);
+  border-radius: 12px;
+  background: #fff;
+}
+.topics-say figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 30px;
+  margin-bottom: 8px;
+  font: 650 12px/1.3 var(--font-route);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--topics-muted);
+}
+.topics-say blockquote {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--topics-text);
+}
+.topics-say-play {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--topics-rule);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--topics-text);
+  font: 600 13px/1 var(--font-route);
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+.topics-say-play:hover {
+  border-color: #087158;
+  color: #087158;
+}
+.topics-say-play:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.topics-why .rd {
+  margin-top: 18px;
+}
+.topics-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--topics-rule);
+  border-radius: 12px;
+  background: #fff;
+}
+.topics-table-scroll:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.topics-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.topics-table th {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--topics-rule);
+  text-align: left;
+  font: 650 12px/1.3 var(--font-route);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--topics-muted);
+}
+.topics-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--topics-rule);
+  vertical-align: top;
+  line-height: 1.6;
+  color: var(--topics-text);
+}
+.topics-table tr:last-child td {
+  border-bottom: 0;
+}
+.topics-table td:first-child {
+  font-family: var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color: var(--topics-muted);
+}
+.topics-table td:nth-child(2) a,
+.topics-links a {
+  font-weight: 600;
+  color: var(--topics-ink);
+}
+.topics-table td:nth-child(3) {
+  min-width: 200px;
+  color: var(--topics-muted);
+}
+.topics-table td[data-status] {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.topics-table td[data-status='solved'],
+.topics-links [data-status='solved'] {
+  font-weight: 600;
+  color: #087158;
+}
+.topics-table td[data-status='attempted'],
+.topics-links [data-status='attempted'] {
+  color: #8a5300;
+}
+.topics-links {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.topics-links li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  font-size: 14.5px;
+}
+.topics-links span {
+  font-size: 13px;
+  color: var(--topics-muted);
+}
+.topics-more {
+  display: inline-block;
+  margin-top: 12px;
+  font-weight: 600;
+  color: #087158;
+}
+
 /* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
 @media screen {
   .dark .topics-public {
@@ -855,6 +1226,159 @@
   }
   .dark .topics-drill-actions output {
     color: var(--topics-text);
+  }
+  .dark .topics-heat {
+    color: #edae72;
+  }
+  .dark .topics-heat[data-heat='3'] {
+    color: #fea28c;
+  }
+  .dark .topics-heat-key {
+    color: var(--topics-muted);
+  }
+  .dark .topics-header dt {
+    color: var(--topics-muted);
+  }
+  .dark .topics-header dd {
+    color: var(--topics-text);
+  }
+  .dark .topics-chips a {
+    border: 1px solid var(--topics-rule);
+    background: #191919;
+    color: var(--topics-ink);
+    text-decoration: none;
+  }
+  .dark .topics-chips a::before {
+    border: 3px solid var(--route-line);
+    background: #191919;
+  }
+  .dark .topics-chips a[data-met]::before {
+    background: var(--route-line);
+  }
+  .dark .topics-public .topics-chips a:hover {
+    border-color: #087158;
+    text-decoration: none;
+  }
+  .dark .topics-chips a:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-chip-count {
+    color: var(--topics-muted);
+  }
+  .dark .topics-asked-top small {
+    color: var(--topics-muted);
+  }
+  .dark .topics-progress strong {
+    color: #8ed5bc;
+  }
+  .dark .topics-focus-card {
+    border: 1px solid var(--topics-rule);
+    border-left: 4px solid var(--route-amber);
+    background: #191919;
+    color: var(--topics-ink);
+    text-decoration: none;
+  }
+  .dark .topics-public .topics-focus-card:hover {
+    border-color: #087158;
+    border-left-color: var(--route-amber);
+    text-decoration: none;
+  }
+  .dark .topics-focus-card:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-focus-no {
+    background: var(--route-navy);
+    color: var(--route-amber);
+  }
+  .dark .topics-focus-meta {
+    color: var(--topics-muted);
+  }
+  .dark .topics-focus-hint {
+    color: var(--topics-text);
+  }
+  .dark .topics-focus-hint summary {
+    color: #8ed5bc;
+  }
+  .dark .topics-focus-hint summary:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-why h3,
+  .dark .topics-practice h3 {
+    color: var(--topics-ink);
+  }
+  .dark .topics-practice h3 small {
+    color: var(--topics-muted);
+  }
+  .dark .topics-why-points li {
+    color: var(--topics-text);
+  }
+  .dark .topics-why-points li::before {
+    background: var(--route-navy);
+    color: var(--route-amber);
+  }
+  .dark .topics-say figure {
+    border: 1px solid var(--topics-rule);
+    background: #191919;
+  }
+  .dark .topics-say figcaption {
+    color: var(--topics-muted);
+  }
+  .dark .topics-say blockquote {
+    color: var(--topics-text);
+  }
+  .dark .topics-say-play {
+    border: 1px solid var(--topics-rule);
+    background: #191919;
+    color: var(--topics-text);
+  }
+  .dark .topics-say-play:hover {
+    border-color: #087158;
+    color: #8ed5bc;
+  }
+  .dark .topics-say-play:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-table-scroll {
+    border: 1px solid var(--topics-rule);
+    background: #191919;
+  }
+  .dark .topics-table-scroll:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-table th {
+    border-bottom: 1px solid var(--topics-rule);
+    color: var(--topics-muted);
+  }
+  .dark .topics-table td {
+    border-bottom: 1px solid var(--topics-rule);
+    color: var(--topics-text);
+  }
+  .dark .topics-table tr:last-child td {
+    border-bottom: 0;
+  }
+  .dark .topics-table td:first-child {
+    color: var(--topics-muted);
+  }
+  .dark .topics-table td:nth-child(2) a,
+  .dark .topics-links a {
+    color: var(--topics-ink);
+  }
+  .dark .topics-table td:nth-child(3) {
+    color: var(--topics-muted);
+  }
+  .dark .topics-table td[data-status='solved'],
+  .dark .topics-links [data-status='solved'] {
+    color: #8ed5bc;
+  }
+  .dark .topics-table td[data-status='attempted'],
+  .dark .topics-links [data-status='attempted'] {
+    color: #ecb881;
+  }
+  .dark .topics-links span {
+    color: var(--topics-muted);
+  }
+  .dark .topics-more {
+    color: #8ed5bc;
   }
 }
 /* ── end dark theme ── */

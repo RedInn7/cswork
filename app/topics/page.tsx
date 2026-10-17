@@ -1,5 +1,6 @@
 import { seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
+import { topicHeat } from '@/lib/server/topic-page';
 import { INDEX_COPY, TopicsIndexView } from './views';
 
 export async function generateMetadata() {
@@ -8,5 +9,5 @@ export async function generateMetadata() {
 }
 
 export default async function TopicsIndex() {
-  return <TopicsIndexView zh={(await requestLocale()) === 'zh'} />;
+  return <TopicsIndexView zh={(await requestLocale()) === 'zh'} heat={topicHeat()} />;
 }
