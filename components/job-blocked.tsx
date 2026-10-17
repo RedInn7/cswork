@@ -70,7 +70,7 @@ export function BlockToggle({ zh, slug, name, blocked }: { zh: boolean; slug: st
         </span>
       </button>
       {/* Always there, so the change is announced. */}
-      <p role="status">{on ? blockedHelp(zh) : ''}</p>
+      <output>{on ? blockedHelp(zh) : ''}</output>
       {error && <p role="alert">{error}</p>}
     </div>
   );

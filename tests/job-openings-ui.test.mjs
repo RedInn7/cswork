@@ -377,13 +377,13 @@ test('the company page toggle and the blocked list', async () => {
   await act(async () => root.render(createElement(BlockToggle, { zh: false, slug: 'stripe', name: 'Stripe', blocked: ['ramp'] })));
   const button = host.querySelector('button');
   assert.equal(button.textContent, 'Block this company: Stripe');
-  assert.equal(host.querySelector('[role="status"]').textContent, '');
+  assert.equal(host.querySelector('.job-block output').textContent, '');
   button.focus();
   await act(async () => button.click());
   assert.deepEqual(JSON.parse(blocks.at(-1)), ['ramp', 'stripe']);
   assert.equal(button.textContent, 'Unblock: Stripe');
   assert.equal(document.activeElement, button, 'the same button keeps focus');
-  assert.match(host.querySelector('[role="status"]').textContent, /news from companies you follow still arrives/);
+  assert.match(host.querySelector('.job-block output').textContent, /news from companies you follow still arrives/);
   await act(async () => button.click());
   assert.deepEqual(JSON.parse(blocks.at(-1)), ['ramp']);
   assert.equal(button.textContent, 'Block this company: Stripe');
