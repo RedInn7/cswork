@@ -31,7 +31,7 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers']);
+const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms']);
 
 test('every chapter has a body in both languages, with matching sections and live site links', () => {
   assert.equal(GUIDE_CHAPTERS.length, 8);
@@ -56,7 +56,7 @@ test('every chapter has a body in both languages, with matching sections and liv
 test('the guide names no employer and quotes no salary figure', () => {
   const all = Object.values(GUIDE_BODIES).flatMap((b) => [b.zh, b.en]).join('\n');
   for (const name of ['google', 'alphabet', 'meta', 'facebook', 'amazon', 'microsoft', 'apple', 'netflix', 'uber', 'airbnb', 'tiktok', 'bytedance', '谷歌', '字节', '腾讯', '阿里'])
-    assert.ok(!new RegExp(`\\b${name}\\b`, 'i').test(all), name);
+    assert.ok(!(CJK.test(name) ? all.includes(name) : new RegExp(`\\b${name}\\b`, 'i').test(all)), name);
   assert.ok(!/[$¥€£]\s?\d/.test(all));
   assert.ok(!/\d+\s?k\s?(?:\/|per)\s?(?:yr|year)/i.test(all));
   // The visa chapter opens with its disclaimer in both languages.

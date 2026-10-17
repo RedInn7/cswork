@@ -323,6 +323,13 @@ export default async function JudgeEnvironmentPage() {
               </a>
               {L('。', '.')}
             </p>
+            <p>
+              {L('各平台的计分、重交、编辑器和监考规则，见', 'Scoring, resubmission, editor and proctoring rules per platform are on the')}{' '}
+              <Link href="/interview-platforms" prefetch={false}>
+                {L('面试平台规则对照', 'interview platform rules page')}
+              </Link>
+              {L('。', '.')}
+            </p>
           </div>
         </article>
       </main>
