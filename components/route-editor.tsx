@@ -15,10 +15,11 @@ import { isDay } from '@/lib/study-plan';
 
 type Plan = ReturnType<typeof scheduleRoute>;
 
-/** Saves a route note (an empty body deletes it); throws the server's message. */
+/** Saves a route note (an empty body deletes it); throws the server's message. Keepalive: it finishes after the page is left. */
 export async function saveRoute(target: string, doc: RouteDoc | null) {
   const response = await fetch(`/api/oj/notes?target=${encodeURIComponent(target)}`, {
     method: 'PUT',
+    keepalive: true,
     headers: { 'Content-Type': 'application/json', 'X-Locale': readLocale() },
     body: JSON.stringify({ body: doc ? JSON.stringify(doc) : '' }),
   });
@@ -79,6 +80,8 @@ export function RouteSchedule({
   const t = (zh: string, en: string) => (english ? en : zh);
   const day = (date: string) => dayLabel(date, today ?? date, english);
   const target = doc.targetDate;
+  // What is being typed, so the hours can be cleared and retyped; null shows the saved value.
+  const [hoursText, setHoursText] = useState<string | null>(null);
   const summary = () => {
     if (!plan || !today) return '';
     if (!plan.end) return t('剩下的步骤都已完成、跳过或是选做，没有要排的了。', 'Every step left is done, skipped or optional: nothing to schedule.');
@@ -113,11 +116,13 @@ export function RouteSchedule({
             min={1}
             max={40}
             step={1}
-            value={doc.weeklyHours}
+            value={hoursText ?? doc.weeklyHours}
             onChange={(e) => {
+              setHoursText(e.target.value);
               const hours = Number(e.target.value);
               if (Number.isInteger(hours) && hours >= 1 && hours <= 40) onChange({ ...doc, weeklyHours: hours });
             }}
+            onBlur={() => setHoursText(null)}
           />
         </label>
       </fieldset>
@@ -281,8 +286,8 @@ export function RouteEditor({
       </form>
       <p className="role-path-note">
         {t(
-          '外部条目只记标题和进度，不存链接；每学完一个单元点一次「+1」。',
-          'Your own entries keep a title and progress, never a link; press “+1” after each unit.',
+          '外部条目只记标题和进度，不存链接；每学完一个单元点一次「+1」，点错了用「−1」改回。',
+          'Your own entries keep a title and progress, never a link; press “+1” after each unit, “−1” to take one back.',
         )}
       </p>
       <button type="button" className="role-path-delete" onClick={onDelete}>

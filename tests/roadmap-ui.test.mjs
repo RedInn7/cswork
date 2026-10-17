@@ -248,6 +248,20 @@ test('signed out, a role path is scheduled in this browser, with no marks and no
     assert.equal(Object.keys(saved.planned).length, scheduled.length);
     assert.match(document.body.textContent, /Schedule saved in this browser\./);
     assert.deepEqual(writes, [], 'a guest writes no notes');
+
+    // The hours can be cleared and retyped; leaving the field puts back the last valid value.
+    const pace = () => document.querySelector('.role-path-pace').textContent;
+    typeInto(hours, '');
+    await wait();
+    assert.equal(hours.value, '', 'not snapped back while typing');
+    assert.match(pace(), /^At 20 h a week/);
+    typeInto(hours, '15');
+    await wait();
+    assert.match(pace(), /^At 15 h a week/);
+    typeInto(hours, '');
+    hours.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true }));
+    await wait();
+    assert.equal(hours.value, '15');
   } finally {
     await page.close();
   }
@@ -279,7 +293,7 @@ test('a learner-made route mixes site steps and own entries; a step the site no 
   const page = await mountRolePath('https://cswork.test/roadmap?route=r-fall26', props, async (input, init) => {
     const url = String(input);
     if (init?.method === 'PUT') {
-      puts.push({ url, body: JSON.parse(JSON.parse(init.body).body) });
+      puts.push({ url, body: JSON.parse(JSON.parse(init.body).body), keepalive: init.keepalive });
       return Response.json({ updatedAt: 1 });
     }
     if (url.includes('prefix=route'))
@@ -315,7 +329,14 @@ test('a learner-made route mixes site steps and own entries; a step the site no 
     assert.equal(select.querySelector('option[value="sql-track:joins"]').disabled, true);
     assert.ok(select.querySelector('optgroup[label="Crash courses"] option[value="course:big-o"]'));
 
-    button('CS61B lectures 1–12: one more unit done').click();
+    // "+1" and "−1" name themselves by their visible text first (WCAG 2.5.3).
+    button('+1: CS61B lectures 1–12').click();
+    await wait();
+    assert.match(rows()[2].textContent, /4\/12/);
+    button('−1: CS61B lectures 1–12').click();
+    await wait();
+    assert.match(rows()[2].textContent, /3\/12/);
+    button('+1: CS61B lectures 1–12').click();
     await wait();
     assert.match(rows()[2].textContent, /4\/12/);
     button('Remove: Content retired').click();
@@ -328,6 +349,7 @@ test('a learner-made route mixes site steps and own entries; a step the site no 
     await wait();
     assert.equal(rows().length, 3);
     assert.match(rows()[2].textContent, /DDIA chapters 1–6Your entry0\/6/);
+    assert.equal(button('−1: DDIA chapters 1–6'), undefined, 'nothing to take back at 0');
     assert.equal(puts.length, 0, 'saves wait for the edits to settle');
     await wait(900);
     assert.equal(puts.length, 1);
@@ -337,6 +359,60 @@ test('a learner-made route mixes site steps and own entries; a step the site no 
     assert.equal(saved.steps[1].done, 4);
     assert.match(saved.steps[2].id, /^ext-[a-z0-9]{6}$/);
     assert.equal(saved.steps[2].unitMinutes, 60);
+    assert.equal(puts[0].keepalive, true);
+
+    // Following a link never unmounts the page: the pending save goes out on pagehide, once.
+    button('−1: CS61B lectures 1–12').click();
+    await wait();
+    assert.equal(puts.length, 1);
+    window.dispatchEvent(new window.Event('pagehide'));
+    await wait();
+    assert.equal(puts.length, 2);
+    assert.equal(puts[1].body.steps[1].done, 3);
+    await wait(900);
+    assert.equal(puts.length, 2, 'the timer does not save it again');
+  } finally {
+    await page.close();
+  }
+});
+
+test("a member's schedule waits for their progress: no false behind banner, no save of inflated days", async () => {
+  const { props } = await findRolePath({ role: 'generalist' });
+  const id = (s) => `${s.kind}:${s.ref}`;
+  const counted = props.steps.filter((s) => !s.optional && !s.unavailable && s.keys.length > 0);
+  const solved = counted.find((s) => s.keys.every((k) => k.startsWith('problem:')));
+  const other = counted.find((s) => s !== solved);
+  const doc = { v: 1, targetDate: '', weeklyHours: 10, state: {}, planned: { [id(solved)]: '2000-01-03', [id(other)]: '2000-01-03' } };
+  const mount = (marksFail) =>
+    mountRolePath('https://cswork.test/roadmap?role=generalist', props, async (input) => {
+      const url = String(input);
+      if (url.includes('prefix=route')) return Response.json({ items: [{ target: 'route:role-generalist', body: JSON.stringify(doc), updatedAt: 1 }] });
+      if (url.endsWith('/api/oj/marks')) return marksFail ? Response.json({ error: 'Too many requests' }, { status: 429 }) : Response.json({ items: [] });
+      if (url.endsWith('/api/oj/history'))
+        return Response.json({ items: solved.keys.map((k) => ({ problemId: k.slice('problem:'.length), firstAcAt: 1 })) });
+      if (url.includes('mcq%3Aanswers')) return Response.json({ target: 'mcq:answers', body: '' });
+      throw new Error(url);
+    });
+
+  let page = await mount(true);
+  try {
+    await wait();
+    assert.equal(document.querySelector('.role-path-error').textContent, 'Too many requests');
+    assert.equal(document.querySelector('.role-path-behind'), null);
+    assert.equal(document.querySelector('.role-path-eta'), null);
+    assert.equal(button('Save schedule'), undefined);
+    assert.equal(document.querySelector('.role-path-pace').textContent, '');
+  } finally {
+    await page.close();
+  }
+
+  page = await mount(false);
+  try {
+    await wait();
+    assert.equal(document.querySelector('.role-path-error'), null);
+    // The solved step is off the schedule; only the other one is behind.
+    assert.match(document.querySelector('.role-path-behind').textContent, /^1 step behind/);
+    assert.ok(button('Save schedule'));
   } finally {
     await page.close();
   }

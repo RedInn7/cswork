@@ -101,7 +101,7 @@ export function RolePath({
   const today = useSyncExternalStore(noUpdates, localDay, () => null);
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
-  const pending = useRef<{ timer?: ReturnType<typeof setTimeout>; flush?: () => void }>({});
+  const pending = useRef<{ timer?: ReturnType<typeof setTimeout>; flush?: () => Promise<void> }>({});
 
   useEffect(() => {
     const controller = new AbortController();
@@ -124,10 +124,16 @@ export function RolePath({
         } else if (!controller.signal.aborted) setError(e.message);
       },
     );
+    // Links, reloads and closing the tab leave without unmounting: save on the way out (keepalive outlives the page).
+    const leave = () => pending.current.flush?.();
+    const hidden = () => document.visibilityState === 'hidden' && leave();
+    window.addEventListener('pagehide', leave);
+    document.addEventListener('visibilitychange', hidden);
     return () => {
       controller.abort();
-      clearTimeout(pending.current.timer);
-      pending.current.flush?.();
+      window.removeEventListener('pagehide', leave);
+      document.removeEventListener('visibilitychange', hidden);
+      leave();
     };
   }, []);
 
@@ -153,7 +159,11 @@ export function RolePath({
   useEffect(() => {
     if (!ready) return;
     const controller = new AbortController();
-    achievedKeys(needProblems, needMcq, controller.signal).then(setDone, () => setDone(null));
+    achievedKeys(needProblems, needMcq, controller.signal).then(setDone, (e: Error & { status?: unknown }) => {
+      setDone(null);
+      // A guest's 401 is expected; anything else leaves a member's schedule waiting, so say why.
+      if (e.status !== 401 && !controller.signal.aborted) setError(e.message);
+    });
     return () => controller.abort();
   }, [ready, needProblems, needMcq]);
 
@@ -165,8 +175,9 @@ export function RolePath({
       setDocs((all) => ({ ...all, [target]: next }));
       clearTimeout(pending.current.timer);
       const flush = () => {
-        pending.current.flush = undefined;
-        saveRoute(target, next).then(
+        clearTimeout(pending.current.timer);
+        pending.current = {};
+        return saveRoute(target, next).then(
           () => setError(''),
           (e: Error) => setError(e.message),
         );
@@ -185,7 +196,8 @@ export function RolePath({
   async function create(next: RouteDoc) {
     const id = `r-${Date.now().toString(36)}`;
     try {
-      await saveRoute(`route:${id}`, next);
+      // The role's own pending edit goes too, before the page leaves.
+      await Promise.all([pending.current.flush?.(), saveRoute(`route:${id}`, next)]);
       window.location.assign(`/roadmap?route=${id}#role-path`);
     } catch (e) {
       setError((e as Error).message);
@@ -231,9 +243,11 @@ export function RolePath({
   const rowTitle = (r: Row) => (r.step ? title(r.step) : r.ext ? r.ext.title : t('内容已下线', 'Content retired'));
   const titles = Object.fromEntries(rows.map((r) => [r.id, rowTitle(r)]));
 
+  // Until a member's progress loads (or if it fails), finished steps would schedule in full and read as behind.
+  const progressKnown = member === false || (member === true && done !== null);
   const share = (r: Row, c: Count) => (r.step && counted(r.step) && c.total ? c.done / c.total : 0);
   const plan =
-    doc && today
+    doc && today && progressKnown
       ? scheduleRoute({
           steps: rows.map(
             (r) => r.ext ?? { id: r.id, minutes: r.step?.minutes ?? 0, optional: r.step?.optional, unavailable: !r.step || r.step.unavailable },
@@ -389,6 +403,9 @@ export function RolePath({
               const state = rowState(r, count);
               const marked = doc.state[r.id];
               const finish = plan?.finish[r.id];
+              // A learner's entry: one unit more done, or one back after a slip.
+              const bump = (by: number) =>
+                setSteps((doc.steps ?? []).map((x, j) => (j === i && x.kind === 'ext' ? { ...x, done: x.done + by } : x)));
               return (
                 <li
                   key={r.id}
@@ -468,14 +485,13 @@ export function RolePath({
                         </>
                       )}
                       {r.ext && r.ext.done < r.ext.units && (
-                        <button
-                          type="button"
-                          aria-label={t(`${r.ext.title}：再完成一个单元`, `${r.ext.title}: one more unit done`)}
-                          onClick={() =>
-                            setSteps((doc.steps ?? []).map((x, j) => (j === i && x.kind === 'ext' ? { ...x, done: x.done + 1 } : x)))
-                          }
-                        >
+                        <button type="button" aria-label={t(`+1：${r.ext.title}`, `+1: ${r.ext.title}`)} onClick={() => bump(1)}>
                           +1
+                        </button>
+                      )}
+                      {r.ext && r.ext.done > 0 && (
+                        <button type="button" aria-label={t(`−1：${r.ext.title}`, `−1: ${r.ext.title}`)} onClick={() => bump(-1)}>
+                          −1
                         </button>
                       )}
                       {route && (
