@@ -135,6 +135,10 @@ jobs:
       # The Pandas track's build check and harness tests run on the system python's pandas.
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
       - run: node --import tsx --test tests/sql-track.test.ts tests/sql-track-ui.test.mjs tests/pandas-track.test.ts
+      - run: node --import tsx --test tests/sql-dataset.test.ts
+      - run: node --import tsx --test tests/sql-cte.test.ts
+      - run: node --import tsx --test tests/sql-peek.test.ts
+      - run: node --import tsx --test tests/sql-workspace-ui.test.mjs
       - run: node --import tsx --test tests/book-problems.test.ts
       - run: node --import tsx --test tests/book-lists-ui.test.mjs tests/sql-result-diff.test.ts tests/sql-result-diff-ui.test.mjs tests/pandas-workspace-ui.test.mjs
       - run: node --test tests/oa-stripe-payments-capacity.test.mjs

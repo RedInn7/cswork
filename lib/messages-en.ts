@@ -386,6 +386,7 @@ const EN: Record<string, string> = {
   '代码和自定义输入分别最多 64 KiB': 'Code and custom input are limited to 64 KiB each',
   内容不能包含空字符: 'Content cannot contain null characters',
   正式提交不能携带自定义输入: "Submissions can't include custom input",
+  'SQL 预览只能在 SQL 题上用自定义输入运行': 'SQL previews run only on SQL problems, on custom input',
   此题未开放该语言: "This language isn't available for this problem",
   '此题未开放 LeetCode 模式': "LeetCode mode isn't available for this problem",
   '此请求编号已经用于另一份代码，请重新提交':

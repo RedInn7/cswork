@@ -116,6 +116,7 @@ import { LeetCodeSamples } from './leetcode-samples';
 import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
 import { checkConstraints, checkField, fieldValue, joinFields, splitFields } from '@/lib/testcase-fields';
 import { StructureView, drawable } from './structure-view';
+import { SqlInspect, SqlSample, SqlSchema, useEditorInsert } from './sql-workspace';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
@@ -657,6 +658,9 @@ function Workspace({
   // Whiteboard mode: no run, completion, help or AI, one submission (components/whiteboard-mode.tsx).
   const wb = useWhiteboard(problem.id, !!boot.person, submission, !examMode && drillN === null && !isTrackLanguage(language));
   const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language) && !wb.on;
+  // The SQL schema sidebar inserts names like completion does, so not on a whiteboard.
+  const sqlSchema = language === 'sql' && !wb.on;
+  const editorInsert = useEditorInsert();
   const editorStatus = wb.on ? t('白板模式：纯文本，没有补全和报错提示', 'Whiteboard: plain text, no completion or error marks') : intelligenceText;
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
   // A running mock OA or contest run records this question for the report's or the room's code
@@ -1982,14 +1986,20 @@ function Workspace({
                             : item.name
                           : null}
                       </h4>
-                      <CopyBlock
-                        label={uiEnglish ? 'Input' : '输入'}
-                        value={item.input}
-                      />
-                      <CopyBlock
-                        label={uiEnglish ? 'Output' : '输出'}
-                        value={item.expectedOutput}
-                      />
+                      {trackLanguageOf(problem.id) ? (
+                        <SqlSample input={item.input} expected={item.expectedOutput} english={uiEnglish} />
+                      ) : (
+                        <>
+                          <CopyBlock
+                            label={uiEnglish ? 'Input' : '输入'}
+                            value={item.input}
+                          />
+                          <CopyBlock
+                            label={uiEnglish ? 'Output' : '输出'}
+                            value={item.expectedOutput}
+                          />
+                        </>
+                      )}
                     </div>
                   ))}
                   {!sourceBody && (
@@ -2553,7 +2563,8 @@ function Workspace({
       >
         <Panel id="code" defaultSize="70%" minSize="48px">
           <div className="cs-code-panel">
-            <div className="cs-code-area">
+            <div className="cs-code-area" data-schema={sqlSchema || undefined}>
+              {sqlSchema && <SqlSchema input={sample.input} onInsert={editorInsert.insert} />}
               {ready ? (
                 <CodeEditor
                   // A new editor and model (path) for whiteboard mode: plain text, no old markers.
@@ -2576,6 +2587,7 @@ function Workspace({
                   onSubmit={() => submit('judge')}
                   onSave={persistDraft}
                   onCursor={(line, column) => setCursor({ line, column })}
+                  onEditorMount={editorInsert.mount}
                 />
               ) : (
                 <div className="cs-editor-loading">
@@ -3041,6 +3053,12 @@ function Workspace({
                     returnType={submission.codingMode === 'leetcode' ? problem.leetcodeReturnType : null}
                     sealHidden={examMode}
                   />
+                  {submission.language === 'sql' &&
+                    submission.code &&
+                    !activeStatuses.has(submission.status) &&
+                    submission.status !== 'compile_error' && (
+                      <SqlInspect key={submission.id} problemId={problem.id} code={submission.code} stdin={sample.input} />
+                    )}
                 </>
               ) : (
                 <div className="cs-empty compact">
