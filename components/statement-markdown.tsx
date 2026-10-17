@@ -122,7 +122,13 @@ const components: Components = {
     // Authored statements (the Core Skills OOD problems' class diagrams) draw ```mermaid as the course does.
     if (/(?:^|\s)language-mermaid(?:\s|$)/.test(code.props.className ?? ''))
       return (
-        <Suspense fallback={<pre>{children}</pre>}>
+        <Suspense
+          fallback={
+            <pre>
+              <code className="language-mermaid">{code.props.children}</code>
+            </pre>
+          }
+        >
           <CourseDiagram source={code.props.children} />
         </Suspense>
       );
