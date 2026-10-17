@@ -52,6 +52,7 @@ Methods to implement:
    - Direction `UP` with no work above: `DOWN` if there is work below, otherwise `IDLE`.
    - Direction `DOWN` with no work below: `UP` if there is work above, otherwise `IDLE`.
    - Direction `IDLE`: `UP` if there is work above, otherwise `DOWN` if there is work below, otherwise stay `IDLE`. With work on both sides, up goes first.
+   - None of these applies (say, `UP` with work still above): the direction stays.
 2. **Direction `IDLE`**: there is no work anywhere else, so serve this floor: remove the current floor from both sets and open the doors if anything was removed. The car does not move.
 3. **Direction `UP` or `DOWN`**:
    - If the current floor is in this direction's set (`upStops` going up, `downStops` going down), remove it and open the doors without moving.
