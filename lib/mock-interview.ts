@@ -547,7 +547,7 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
   const slots = template.slots
     .flatMap((s): Slot[] =>
       s.rapid
-        ? Array.from({ length: s.rapid }, (_, k) => ({ ...s, minutes: s.minutes / s.rapid!, name: [`快问快答 ${k + 1}/${s.rapid}`, `Rapid-fire ${k + 1}/${s.rapid}`] }))
+        ? Array.from({ length: s.rapid }, (_, k): Slot => ({ ...s, minutes: s.minutes / s.rapid!, name: [`快问快答 ${k + 1}/${s.rapid}`, `Rapid-fire ${k + 1}/${s.rapid}`] }))
         : [s],
     )
     .filter((s) => !s.optional || queue(s).length);
