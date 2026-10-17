@@ -265,6 +265,18 @@ void test('the AI tutor refuses a problem of the running contest before any quot
   assert.equal(await ai(amy, 'lc-20'), 409);
 });
 
+void test('a review self-grade refuses a problem of the running contest or exam', async () => {
+  const grade = (p: Person, problemId: string) =>
+    refusal(p, 'POST', `problems/${problemId}/aids`, { kind: 'grade', grade: 3, submissionId: crypto.randomUUID() });
+  for (const [p, id] of [[amy, 'lc-1'], [cat, 'lc-1'], [eve, 'pd-01']] as const) {
+    const refused = await grade(p, id);
+    assert.deepEqual([refused.status, refused.message], [403, LOCKED], `${p.id} ${id}`);
+  }
+  // Outside the room the gate passes: no such review AC.
+  assert.equal((await grade(bob, 'lc-1')).status, 404);
+  assert.equal((await grade(amy, 'lc-20')).status, 404);
+});
+
 void test('once the window ends everything opens again', async () => {
   sqlite().prepare("UPDATE contest_rooms SET starts_at=? WHERE id='live'").run(Date.now() - 120 * MIN);
   assert.equal(inRunningContest(amy.id, 'lc-1'), false);

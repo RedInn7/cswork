@@ -438,3 +438,51 @@ void test('aids: hints and first-AC time from the client, help derived against t
   assert.equal((await find('oa-acme-1')).help, 'solution');
   assert.equal((await ok<Items>(other, 'GET', 'history')).items[0].help, 'none');
 });
+
+void test('grades: only a review AC of your own, graded again in place, never help, in the history', async () => {
+  const { randomUUID } = await import('node:crypto');
+  // The aids test above spent most of this minute's practice-aids-write budget.
+  sqlite().prepare('DELETE FROM limits').run();
+  const graded = (user: string, problem: string, state: string, at: number) => {
+    const id = randomUUID();
+    sqlite()
+      .prepare(
+        `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,mode,created_at,updated_at)
+        VALUES(?,?,?,'python','',?,1,'judge',?,?)`,
+      )
+      .run(id, user, problem, state, at, at);
+    return id;
+  };
+  const first = graded(me.id, 'lc-11', 'accepted', t0);
+  const failed = graded(me.id, 'lc-11', 'wrong_answer', t0 + 3 * DAY);
+  const review = graded(me.id, 'lc-11', 'accepted', t0 + 3 * DAY + 1);
+  graded(other.id, 'lc-11', 'accepted', t0);
+  const theirs = graded(other.id, 'lc-11', 'accepted', t0 + 3 * DAY);
+  const grade = (submissionId: string, value: unknown = 2, id = 'lc-11') =>
+    status(me, 'POST', `problems/${id}/aids`, { kind: 'grade', grade: value, submissionId });
+  assert.equal(await status(null, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 3, submissionId: review }), 401);
+  assert.equal(await grade(theirs), 404, "someone else's submission");
+  assert.equal(await grade(failed), 404, 'not accepted');
+  assert.equal(await grade(first), 404, 'the first AC is no review');
+  assert.equal(await grade(review, 2, 'lc-1'), 404, 'another problem');
+  assert.equal(await grade(randomUUID()), 404);
+  for (const value of [0, 5, 2.5, '3']) assert.equal(await grade(review, value), 400, String(value));
+  assert.equal(await status(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 3, submissionId: 's1' }), 400);
+  assert.equal(
+    await status(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 3, submissionId: review, extra: 1 }),
+    400,
+  );
+  assert.deepEqual(await ok(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 1, submissionId: review }), { recorded: true });
+  assert.deepEqual(await ok(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 4, submissionId: review }), { recorded: true });
+  assert.deepEqual(
+    sqlite().prepare("SELECT kind,value FROM practice_aids WHERE user_id=? AND problem_id='lc-11'").all(me.id),
+    [{ kind: `grade:${review}`, value: 4 }],
+    'graded again in place',
+  );
+  const items = (await ok<{ items: History[] }>(me, 'GET', 'history')).items;
+  const lc11 = items.find((i) => i.problemId === 'lc-11')!;
+  assert.deepEqual(lc11.grades, [[t0 + 3 * DAY + 1, 4]]);
+  assert.equal(lc11.help, 'none', 'a grade is no help');
+  assert.equal(items.find((i) => i.problemId === 'lc-1')!.grades, undefined);
+  assert.equal((await ok<{ items: History[] }>(other, 'GET', 'history')).items.find((i) => i.problemId === 'lc-11')!.grades, undefined);
+});
