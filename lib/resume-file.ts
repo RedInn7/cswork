@@ -103,40 +103,48 @@ function lineText(line: Line) {
   return text.trimEnd();
 }
 /**
- * Where a page splits into two columns: the middle of the widest strip between 30% and 70% of the
- * page width that no run crosses, or null.
+ * Where a page could split into two columns: the middle of the widest strip between 30% and 70% of
+ * the page width that no run crosses, and that strip's width; null when there is none.
  */
 function seam(items: PdfItem[], width: number) {
   const [left, right] = [0.3 * width, 0.7 * width];
   let from = left;
-  let best: number | null = null;
-  let widest = 0.01 * width;
+  let best: { x: number; gap: number } | null = null;
   for (const item of [...items, { x: right, w: 0 }].sort((a, b) => a.x - b.x)) {
     const to = Math.min(item.x, right);
-    if (to - from > widest) [best, widest] = [(from + to) / 2, to - from];
+    if (to - from > Math.max(best?.gap ?? 0, 0.01 * width)) best = { x: (from + to) / 2, gap: to - from };
     from = Math.max(from, item.x + item.w);
   }
   return best;
 }
 /**
- * The text of pdf.js's text runs, page by page. A page whose lines (below up to five header lines,
- * a name spanning both columns) leave a clear vertical strip in the middle, with text on both
- * sides of it in at least 30% of them, is read as two columns: the left one, then the right.
+ * The text of pdf.js's text runs, page by page. A page is read as two columns, the left one and
+ * then the right, when a vertical strip between 30% and 70% of the width is crossed by no run below
+ * its header, at least 30% of those lines have text on both sides of it, and each side holds at
+ * least 15% of the text. The header (a centred name over both columns) is the leading lines, up to
+ * five and at most half the page, whose removal opens that strip or widens it by more than a
+ * quarter. The text share keeps a one-column page whose bullets all stop short of the right-aligned
+ * dates in one piece.
  */
 export function pdfLines(pages: PdfPage[]) {
   return pages
     .map(({ w, items }) => {
       const lines = group(items);
-      for (let top = 0; top <= Math.min(5, lines.length - 1); top++) {
-        const body = lines.slice(top);
-        const x = seam(body.flatMap((l) => l.items), w);
-        if (x === null) continue;
-        const both = body.filter((l) => l.items.some((i) => i.x < x) && l.items.some((i) => i.x > x)).length;
-        if (both < 0.3 * body.length) continue;
-        const side = (left: boolean) => group(body.flatMap((l) => l.items.filter((i) => (i.x < x) === left)));
-        return [...lines.slice(0, top), ...side(true), ...side(false)].map(lineText).join('\n');
+      const plain = () => lines.map(lineText).join('\n');
+      let top = 0;
+      let found = seam(items, w);
+      for (let k = 1; k <= Math.min(5, lines.length / 2); k++) {
+        const next = seam(lines.slice(k).flatMap((l) => l.items), w);
+        if (next && next.gap > (found?.gap ?? 0) * 1.25) [top, found] = [k, next];
       }
-      return lines.map(lineText).join('\n');
+      if (!found) return plain();
+      const { x } = found;
+      const body = lines.slice(top);
+      const both = body.filter((l) => l.items.some((i) => i.x < x) && l.items.some((i) => i.x > x)).length;
+      const text = (left: boolean) => body.reduce((n, l) => n + l.items.reduce((m, i) => m + ((i.x < x) === left ? i.s.length : 0), 0), 0);
+      if (both < 0.3 * body.length || Math.min(text(true), text(false)) < 0.15 * (text(true) + text(false))) return plain();
+      const side = (left: boolean) => group(body.flatMap((l) => l.items.filter((i) => (i.x < x) === left)));
+      return [...lines.slice(0, top), ...side(true), ...side(false)].map(lineText).join('\n');
     })
     .join('\n')
     .trim();

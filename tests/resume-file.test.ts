@@ -131,9 +131,40 @@ test('pdfLines: a two-column page under a full-width name reads the left column,
   const parsed = parseResumeText(read);
   assert.deepEqual(parsed.experience, [{ title: 'Acme Corp', subtitle: '', dates: 'Jun 2025 – Sep 2025', bullets: 'Built a cache\nShipped search' }]);
   assert.equal(parsed.education[0].title, 'MIT');
+  // A sidebar layout: the gutter sits left of centre, under a narrow centred name and contact line.
+  const sidebar = {
+    w: 612,
+    items: [
+      item('Grace Hopper', 250, 760, 112, 18),
+      item('grace@example.com | New York, NY', 210, 742, 192, 9),
+      ...rows(40, ['EDUCATION', 'Yale University', 'Ph.D. Mathematics', 'SKILLS', 'COBOL, Assembly']).map((i) => ({ ...i, y: i.y - 3 })),
+      ...rows(250, ['EXPERIENCE', ['Remington Rand', '1949 – 1971'], '• Built the A-0 compiler', '• Wrote the FLOW-MATIC manual']),
+    ],
+  };
+  assert.equal(
+    pdfLines([sidebar]),
+    'Grace Hopper\ngrace@example.com | New York, NY\nEDUCATION\nYale University\nPh.D. Mathematics\nSKILLS\nCOBOL, Assembly\nEXPERIENCE\nRemington Rand  1949 – 1971\n• Built the A-0 compiler\n• Wrote the FLOW-MATIC manual',
+  );
   // One column: a bullet crosses the middle, so the same rows stay as lines.
   const single = { w: 612, items: [...rows(40, ['EDUCATION', 'MIT']), item('Built a cache across the whole width of the page', 40, 650, 500)] };
   assert.equal(pdfLines([single]), 'EDUCATION\nMIT\nBuilt a cache across the whole width of the page');
+  // One column whose bullets all stop short of the right-aligned dates: the strip is there, but the
+  // dates are too little text to be a column (what pdf.js read from a real PDF before this check).
+  const short = {
+    w: 612,
+    items: [
+      item('Ada Lovelace', 72, 720, 95, 16),
+      item('EXPERIENCE', 72, 680, 60),
+      ...rows(72, [['Acme Corp', 'Jun 2025 – Sep 2025'], 'Software Engineer Intern', '• Built a Redis cache in front of the search API', '• Cut p99 latency 40%']).map((i) => ({ ...i, y: i.y - 34 })),
+      item('EDUCATION', 72, 610, 55),
+      item('MIT', 72, 596, 20),
+      item('2022 – 2026', 470, 596, 55),
+    ],
+  };
+  assert.equal(
+    pdfLines([short]),
+    'Ada Lovelace\nEXPERIENCE\nAcme Corp  Jun 2025 – Sep 2025\nSoftware Engineer Intern\n• Built a Redis cache in front of the search API\n• Cut p99 latency 40%\nEDUCATION\nMIT  2022 – 2026',
+  );
 });
 
 const docx = (body: string) =>
