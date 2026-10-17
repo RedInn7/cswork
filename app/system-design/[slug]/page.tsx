@@ -117,7 +117,7 @@ export default async function SystemDesignChapter({ params }: Props) {
           </details>
         )}
         {sdCases.has(chapter.slug) ? (
-          <SdTryFirst slug={chapter.slug} userId={userId}>
+          <SdTryFirst slug={chapter.slug} title={title(chapter)} userId={userId}>
             {prose}
           </SdTryFirst>
         ) : (

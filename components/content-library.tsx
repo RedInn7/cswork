@@ -21,7 +21,9 @@ import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
 import { kindOf, splitBody, type BodyParts } from '@/lib/mock-interview';
+import { keyPoints } from '@/lib/recall';
 import { TryFirst } from './try-first';
+import { RecallRate } from './recall-rate';
 import { StoryPicker } from './story-bank';
 import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
 import { CommunityPosts } from './discuss-board';
@@ -1119,6 +1121,15 @@ export function ContentDetail({
                     ),
                 )}
               </article>
+            )}
+            {gated && open && (
+              <RecallRate
+                key={key}
+                target={`content:${item.type}/${item.slug}`}
+                title={localized(locale, item.title, item.titleZh)}
+                points={keyPoints(gated.rubric, gated.solution)}
+                signedIn={!!userId}
+              />
             )}
             {item.companyPractice && (
               <PracticeCard practice={item.companyPractice} navigate={navigate} problemIds={problemIds} />
