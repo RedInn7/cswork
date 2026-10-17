@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { AlgorithmDemo } from '../components/algorithm-demo';
+import { AlgorithmDemo, DemoGraphView } from '../components/algorithm-demo';
 import { demoKinds, type DemoTrace } from '../lib/algorithm-demo';
 import {
   DEFAULT_ALLOC,
@@ -341,6 +341,38 @@ test('every simulator builds in both languages: one final done frame, a consiste
   }
 });
 
+test('captions match the numbers shown, and graphs read out only named nodes', () => {
+  const run = (kind: SimKind, text: string) => {
+    const parsed = simInputs[kind].parse(text);
+    assert.ok('args' in parsed, text);
+    return createSimTrace(kind, true, parsed.args);
+  };
+  // A gap after A finishes is not "nothing has arrived yet".
+  const gap = run('cpu-scheduling', 'fcfs; A 0 2, B 5 2').frames.map((f) => f.caption);
+  assert.ok(gap.some((c) => c.startsWith('t=2–5: no process is ready')), gap.join('\n'));
+  assert.ok(gap.every((c) => !c.includes('no process has arrived yet')));
+  assert.ok(run('cpu-scheduling', 'fcfs; A 3 1').frames[1].caption.includes('no process has arrived yet'));
+  // Granting P4 (3, 3, 0) is unsafe: the last frame undoes the trial, back to the old Available and P4's old Need.
+  const last = run('bankers', '3 3 2; 0 1 0/7 5 3, 2 0 0/3 2 2, 3 0 2/9 0 2, 2 1 1/2 2 2, 0 0 2/4 3 3; P4 3 3 0').frames.at(-1)!;
+  assert.match(last.caption, /Undo the trial grant/);
+  assert.equal(Object.fromEntries(last.stats).Available, '(3, 3, 2)');
+  assert.deepEqual(last.cells.slice(-4).map((c) => c.value), ['P4', 4, 3, 1]);
+  // The ssthresh line the invariant points at is drawn in a state with ≥ 3:1 contrast, not the faint muted grey.
+  const curve = createSimTrace('tcp-congestion', true);
+  const ssthresh = curve.frames.at(-1)!.graph!.edges.filter((e) => e.from.startsWith('T'));
+  assert.ok(ssthresh.length && ssthresh.every((e) => e.state === 'answer') && curve.invariant.includes('green line'));
+  // Bare dots (cwnd points, lifeline steps) have no text: their ids stay out of the aria-label and they are not buttons.
+  for (const kind of ['tcp-handshake', 'tcp-congestion'] as const) {
+    const graph = createSimTrace(kind, true).frames.at(-1)!.graph!;
+    const html = renderToStaticMarkup(createElement(DemoGraphView, { graph }));
+    const label = html.match(/aria-label="([^"]*)"/)![1];
+    assert.ok(label.length > 4 && !/\b[RTCS]\d+\b/.test(label), `${kind}: ${label}`);
+    const buttons = renderToStaticMarkup(createElement(DemoGraphView, { graph, onPick: () => {} })).match(/role="button"/g) ?? [];
+    assert.equal(buttons.length, graph.nodes.filter((n) => n.label || n.note).length, kind);
+    assert.ok(buttons.length < graph.nodes.length, kind);
+  }
+});
+
 test('MCQ links point at bank questions on OS or networking, and only the practice page shows them', () => {
   const byId = new Map(bank.questions.map((q) => [q.id, q]));
   assert.equal(Object.keys(MCQ_SIMS).length, 8);
@@ -348,7 +380,13 @@ test('MCQ links point at bank questions on OS or networking, and only the practi
     assert.ok(['os', 'network'].includes(byId.get(id)?.topic ?? ''), id);
     assert.ok(simKinds.includes(kind), id);
   }
-  assert.ok(readFileSync('app/oa/mcq/practice.tsx', 'utf8').includes('MCQ_SIMS[q.id]'));
+  const practice = readFileSync('app/oa/mcq/practice.tsx', 'utf8');
+  assert.ok(practice.includes('MCQ_SIMS[q.id]'));
+  // The client page imports the map from a file with only type imports, never the simulators.
+  assert.ok(!practice.includes("from '@/lib/cs-sims'"));
+  assert.ok(!/^import (?!type )/m.test(readFileSync('lib/cs-sims-links.ts', 'utf8')));
+  // mcq-network-11 asks about flow control: the sliding-window demo has to say where rwnd comes in.
+  assert.ok(createSimTrace('sliding-window-arq', true).invariant.includes('min(cwnd, rwnd)'));
   for (const file of ['components/oa-mcq.tsx', 'components/mock-oa.tsx']) assert.ok(!readFileSync(file, 'utf8').includes('cs-sims'), file);
 });
 

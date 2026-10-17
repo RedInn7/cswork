@@ -17,7 +17,7 @@ import {
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
 import { McqItem, MCQ_SECTION_NAMES, MCQ_TOPIC_NAMES, type McqText } from '@/components/oa-mcq';
 import { ReportIssue } from '@/components/report-issue';
-import { MCQ_SIMS } from '@/lib/cs-sims';
+import { MCQ_SIMS } from '@/lib/cs-sims-links';
 import type { McqStat } from '@/lib/server/mcq-stats';
 
 /** A question in the page's language only. */

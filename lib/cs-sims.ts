@@ -43,17 +43,7 @@ export function isSimKind(kind: string): kind is SimKind {
   return simKinds.includes(kind as SimKind);
 }
 
-/** Bank questions whose answer a simulator works out: /oa/mcq links them to /oa/sims#kind once answered. */
-export const MCQ_SIMS: Record<string, SimKind> = {
-  'mcq-os-3': 'cpu-scheduling',
-  'mcq-os-9': 'page-replacement',
-  'mcq-os-10': 'page-replacement',
-  'mcq-os-15': 'cpu-scheduling',
-  'mcq-network-2': 'tcp-handshake',
-  'mcq-network-8': 'tcp-handshake',
-  'mcq-network-11': 'sliding-window-arq',
-  'mcq-network-12': 'tcp-congestion',
-};
+export { MCQ_SIMS } from './cs-sims-links';
 
 const round2 = (n: number) => String(Math.round(n * 100) / 100);
 const vec = (v: number[]) => `(${v.join(', ')})`;
@@ -189,7 +179,10 @@ export function schedulingTrace(procs = DEFAULT_PROCS, algo: SchedAlgo = 'rr', q
     const before = remAt(s.start),
       after = remAt(s.end);
     let caption: string;
-    if (!s.id) caption = t(`t=${s.start}–${s.end}：还没有进程到达，CPU 空闲。`, `t=${s.start}–${s.end}: no process has arrived yet, so the CPU idles.`);
+    if (!s.id)
+      caption = s.start
+        ? t(`t=${s.start}–${s.end}：没有就绪进程，CPU 空闲到下一个进程在 t=${s.end} 到达。`, `t=${s.start}–${s.end}: no process is ready, so the CPU idles until the next one arrives at t=${s.end}.`)
+        : t(`t=${s.start}–${s.end}：还没有进程到达，CPU 空闲。`, `t=${s.start}–${s.end}: no process has arrived yet, so the CPU idles.`);
     else {
       const p = proc.get(s.id)!,
         joining = procs.filter((o) => o.arrive === s.end).map((o) => o.id);
@@ -526,7 +519,15 @@ export function bankersTrace(
   const list = (ids: number[]) => ids.map(P).join(t('、', ', '));
   const reqText = req ? `${P(req.p)} ${vec(req.vec)}` : '—';
   const frames: DemoFrame[] = [];
-  const frame = (caption: string, need: number[][], state: (i: number) => DemoCell['state'], work: number[] | null, seq: number[], done = false) =>
+  const frame = (
+    caption: string,
+    need: number[][],
+    state: (i: number) => DemoCell['state'],
+    work: number[] | null,
+    seq: number[],
+    done = false,
+    available = work === null && !done ? avail : result.available,
+  ) =>
     frames.push({
       caption,
       // One row per process: its name, then its Need for each resource type (A, B, C).
@@ -535,7 +536,7 @@ export function bankersTrace(
         ...n.map((v, r) => ({ value: v, label: 'ABC'[r], state: state(i) })),
       ]),
       stats: [
-        ['Available', vec(work === null && !done ? avail : result.available)],
+        ['Available', vec(available)],
         ['Work', work ? vec(work) : '—'],
         [t('请求', 'Request'), reqText],
       ],
@@ -620,11 +621,13 @@ export function bankersTrace(
         `Work = ${vec(work)}，剩下的 ${list(stuck)} 的 Need 都超过 Work：找不到安全序列，系统不安全。${req ? `撤销试分配，${P(req.p)} 的请求不能批准，只能等待。` : ''}`,
         `Work = ${vec(work)}, and ${list(stuck)} all need more than that: there is no safe sequence, so the state is unsafe.${req ? ` Undo the trial grant: ${P(req.p)}'s request is refused and it waits.` : ''}`,
       ),
-      result.need,
+      // Undone: Need and Available go back to before the trial grant; Work stays where the check got stuck.
+      first,
       (i) => (stuck.includes(i) ? 'blocked' : 'visited'),
       work,
       order,
       true,
+      avail,
     );
   return bankersShape(frames, req, avail.length, t);
 }
@@ -969,7 +972,8 @@ export function congestionTrace(
           label: '',
           x: px(p.round),
           y: py(p.ssthresh),
-          state: 'muted' as const,
+          // Green, not muted: the muted grey is too faint (under 3:1) for a line the reader is told to follow.
+          state: 'answer' as const,
           // Named once, above its start, where cwnd is still low.
           ...(p.round === 1 ? { note: 'ssthresh', noteDy: -12.6 } : {}),
         })),
@@ -983,7 +987,7 @@ export function congestionTrace(
         })),
       ],
       edges: [
-        ...bends.slice(1).map((p, i) => ({ from: `T${bends[i].round}`, to: `T${p.round}`, state: 'muted' as const })),
+        ...bends.slice(1).map((p, i) => ({ from: `T${bends[i].round}`, to: `T${p.round}`, state: 'answer' as const })),
         ...shown.slice(1).map((p) => ({ from: `R${p.round - 1}`, to: `R${p.round}`, state: 'visited' as const })),
       ],
     };
@@ -1011,8 +1015,8 @@ export function congestionTrace(
       `Starting from ssthresh = ${ssthresh}, what is cwnd in each round?`,
     ),
     invariant: t(
-      'cwnd 从 1 开始；小于 ssthresh 时慢启动，每轮翻倍但不超过 ssthresh；达到 ssthresh 后拥塞避免，每轮加 1。超时：ssthresh = max(⌊cwnd/2⌋, 2)，cwnd = 1。3 个重复 ACK：Tahoe 同超时；Reno 按教材简化取 cwnd = 新 ssthresh（RFC 5681 是 ssthresh + 3 进入快恢复）。虚线是 ssthresh，红点是出事件的那一轮。',
-      'cwnd starts at 1. Below ssthresh, slow start doubles it each round without passing ssthresh; from there congestion avoidance adds 1 a round. Timeout: ssthresh = max(⌊cwnd/2⌋, 2), cwnd = 1. Three duplicate ACKs: Tahoe acts as on a timeout; Reno takes cwnd = the new ssthresh, the textbook shortcut (RFC 5681 enters fast recovery at ssthresh + 3). The dashed line is ssthresh; red dots mark the rounds with an event.',
+      'cwnd 从 1 开始；小于 ssthresh 时慢启动，每轮翻倍但不超过 ssthresh；达到 ssthresh 后拥塞避免，每轮加 1。超时：ssthresh = max(⌊cwnd/2⌋, 2)，cwnd = 1。3 个重复 ACK：Tahoe 同超时；Reno 按教材简化取 cwnd = 新 ssthresh（RFC 5681 是 ssthresh + 3 进入快恢复）。绿线是 ssthresh，红点是出事件的那一轮。',
+      'cwnd starts at 1. Below ssthresh, slow start doubles it each round without passing ssthresh; from there congestion avoidance adds 1 a round. Timeout: ssthresh = max(⌊cwnd/2⌋, 2), cwnd = 1. Three duplicate ACKs: Tahoe acts as on a timeout; Reno takes cwnd = the new ssthresh, the textbook shortcut (RFC 5681 enters fast recovery at ssthresh + 3). The green line is ssthresh; red dots mark the rounds with an event.',
     ),
     frames,
   };
@@ -1204,8 +1208,8 @@ export function arqTrace(proto: ArqProto = 'gbn', n = 10, win = 4, lose: number 
       `${name} with window ${win}: how many transmissions does it take to deliver ${n} packets?`,
     ),
     invariant: t(
-      '发送方只能发 [base, base + 窗口) 里的分组。GBN 接收方只收按序到达的分组，用累计 ACK 确认最后一个按序分组，超时后发送方从 base 起全部重传；SR 接收方缓存失序分组并逐个确认，只重传超时的分组。这里一轮是一个往返，没确认的分组在下一轮结束时超时；序号不回绕（真实的 SR 要求窗口不超过序号空间的一半）。',
-      'The sender may only send packets in [base, base + window). A GBN receiver accepts only in-order packets and acknowledges the last of them cumulatively; on a timeout the sender resends everything from base. An SR receiver buffers out-of-order packets and acknowledges each one; only the timed-out packet is resent. One round is one round trip, and an unacknowledged packet times out at the end of the next round; sequence numbers never wrap (real SR needs a window of at most half the sequence space).',
+      '发送方只能发 [base, base + 窗口) 里的分组。GBN 接收方只收按序到达的分组，用累计 ACK 确认最后一个按序分组，超时后发送方从 base 起全部重传；SR 接收方缓存失序分组并逐个确认，只重传超时的分组。这里一轮是一个往返，没确认的分组在下一轮结束时超时；序号不回绕（真实的 SR 要求窗口不超过序号空间的一半）。TCP 的发送窗口还受接收方在 ACK 里通告的接收窗口 rwnd 限制，取 min(cwnd, rwnd)：rwnd 防止发送方塞满接收方的缓冲区（流量控制），cwnd 防止网络拥塞（拥塞控制）。',
+      'The sender may only send packets in [base, base + window). A GBN receiver accepts only in-order packets and acknowledges the last of them cumulatively; on a timeout the sender resends everything from base. An SR receiver buffers out-of-order packets and acknowledges each one; only the timed-out packet is resent. One round is one round trip, and an unacknowledged packet times out at the end of the next round; sequence numbers never wrap (real SR needs a window of at most half the sequence space). In TCP the send window is also capped by the receive window (rwnd) the receiver advertises in its ACKs, so it is min(cwnd, rwnd): rwnd keeps the sender from overflowing the receiver’s buffer (flow control), cwnd keeps it from congesting the network (congestion control).',
     ),
     queueLabel: t('这一步的分组（× 丢失）或 ACK', 'This step’s packets (× lost) or ACKs'),
     frames,

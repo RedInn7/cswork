@@ -59,11 +59,11 @@ const SECTIONS: Record<SimKind, { zh: [string, string]; en: [string, string] }> 
   'sliding-window-arq': {
     zh: [
       '滑动窗口：GBN 与 SR',
-      '同样丢一个分组，回退 N 步（GBN）要从丢失的分组起全部重传，选择重传（SR）只重传那一个。把第一段改成 sr，对比两者的发送次数。',
+      '同样丢一个分组，回退 N 步（GBN）要从丢失的分组起全部重传，选择重传（SR）只重传那一个。把第一段改成 sr，对比两者的发送次数。在 TCP 里，这个窗口取接收方通告的接收窗口（流量控制）和拥塞窗口（拥塞控制）中较小的一个。',
     ],
     en: [
       'Sliding window: Go-Back-N and Selective Repeat',
-      'Lose the same packet: Go-Back-N resends everything from it, Selective Repeat resends only that one. Change the first part to sr and compare the number of sends.',
+      'Lose the same packet: Go-Back-N resends everything from it, Selective Repeat resends only that one. Change the first part to sr and compare the number of sends. In TCP this window is the smaller of the receiver’s advertised window (flow control) and the congestion window (congestion control).',
     ],
   },
 };
