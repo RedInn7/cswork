@@ -111,10 +111,15 @@ export function practiceStats(
     return !!token;
   };
   const frozen = new Set<string>();
-  // Today is not over, so the last day a freeze can cover is yesterday.
-  for (let i = 1; i < todayIndex; i++) {
+  // Today is not over, so the last day a freeze can cover is yesterday. A gap spends one only
+  // when the run before it holds an AC: covered days alone have no streak to keep.
+  let runHasAc = false;
+  for (let i = 0; i < todayIndex; i++) {
     const time = noon(i);
-    if (!alive(time) && alive(time - DAY) && alive(time + DAY) && freeze(time, true)) frozen.add(dayKey(time));
+    if (count(time)) runHasAc = true;
+    else if (alive(time)) continue;
+    else if (runHasAc && alive(time - DAY) && alive(time + DAY) && freeze(time, true)) frozen.add(dayKey(time));
+    else runHasAc = false;
   }
   let best = 0;
   let run = 0;
