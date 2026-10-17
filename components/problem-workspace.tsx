@@ -1769,7 +1769,7 @@ function Workspace({
           />
         )}
         {leftTab === 'notes' && note.enabled ? (
-          <ProblemNotes note={note} english={uiEnglish} />
+          <ProblemNotes note={note} english={uiEnglish} problemId={initialProblem.id} />
         ) : leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
           <LingEditorial
             key={problem.id}

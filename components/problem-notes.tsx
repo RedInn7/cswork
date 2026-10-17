@@ -4,6 +4,8 @@ import { NotebookPen, Repeat, Star } from 'lucide-react';
 import { api } from '@/lib/types';
 import { readLocale } from '@/lib/i18n';
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
+import { PROBLEM_TEMPLATE, wikiLinks } from '@/lib/note-meta';
+import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { AskedReport, communityProblem, ListMenu } from './problem-community';
 import '@/app/problem-notes.css';
@@ -253,16 +255,92 @@ export function NotesTab({
   );
 }
 
+type Backlink = { target: string; snippet: string; updatedAt: number };
+const TEMPLATE_TARGET = 'pref:note-template';
+const TEMPLATE_MAX = 4096;
+/** Where a backlinking note lives: its problem, written answer or stop page (a submission note has none). */
+function noteLink(target: string, t: T): [string, string | null] {
+  const [kind, rest] = [target.slice(0, target.indexOf(':')), target.slice(target.indexOf(':') + 1)];
+  if (kind === 'problem')
+    return [/^lc-\d+$/.test(rest) ? `LC ${rest.slice(3)}` : rest, `/?${new URLSearchParams({ view: 'problem', problem: rest })}`];
+  // ponytail: /topics/<slug> by hand; topicPath's module carries 160 KB of templates.
+  if (kind === 'topic') return [t(`套路笔记 · ${STOP_NAMES[rest]?.[0] ?? rest}`, `Pattern notes · ${STOP_NAMES[rest]?.[1] ?? rest}`), `/topics/${rest}`];
+  const content = /^(\w+)\/(.+)$/.exec(rest);
+  if (kind === 'content' && content)
+    return [content[2], `/?${new URLSearchParams({ view: 'content', type: content[1], slug: content[2] })}`];
+  return [t('提交笔记', 'Submission note'), null];
+}
+
+/**
+ * The note editor. With `problemId` it adds the problem template (the learner's own, saved with
+ * "Set as my template", or the built-in one) and, under the preview, the learner's other notes
+ * that link [[problemId]].
+ */
 export function ProblemNotes({
   note,
   english,
+  problemId,
 }: {
   note: ProblemNote;
   english: boolean;
+  problemId?: string;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
   const [preview, setPreview] = useState(false);
+  const area = useRef<HTMLTextAreaElement>(null);
+  const [said, setSaid] = useState('');
+  const [links, setLinks] = useState<Backlink[] | null>(null);
+  const linkable = !!problemId && /^(lc|oa)-[a-z0-9-]+$/.test(problemId);
+  // Read the first time the preview opens.
+  useEffect(() => {
+    if (!preview || !linkable || !note.enabled || links) return;
+    let current = true;
+    api<{ items?: Backlink[] }>(`oj/notes/backlinks?problem=${encodeURIComponent(problemId!)}`)
+      .then((result) => current && setLinks(Array.isArray(result.items) ? result.items : []))
+      .catch(() => current && setLinks([]));
+    return () => {
+      current = false;
+    };
+  }, [preview, linkable, note.enabled, links, problemId]);
   const size = bytes(note.text);
+  async function insertTemplate() {
+    const at = area.current?.selectionStart ?? note.text.length;
+    const end = area.current?.selectionEnd ?? at;
+    let template = PROBLEM_TEMPLATE[english ? 'en' : 'zh'];
+    try {
+      const saved = await api<{ body?: unknown }>(`oj/notes?target=${encodeURIComponent(TEMPLATE_TARGET)}`);
+      // ponytail: a type check, not zod: the schema is one string and zod would join the workspace bundle.
+      const mine: unknown = typeof saved.body === 'string' && saved.body ? JSON.parse(saved.body)?.problem : null;
+      if (typeof mine === 'string' && mine.trim() && bytes(mine) <= TEMPLATE_MAX) template = mine;
+    } catch {}
+    const before = note.text.slice(0, at);
+    // Its ## headings need a line of their own.
+    const gap = before && !before.endsWith('\n') ? '\n\n' : '';
+    note.edit(before + gap + template + note.text.slice(end));
+    setPreview(false);
+    setSaid('');
+    requestAnimationFrame(() => {
+      const cursor = at + gap.length + template.length;
+      area.current?.focus();
+      area.current?.setSelectionRange(cursor, cursor);
+    });
+  }
+  async function saveTemplate() {
+    // An empty note puts the built-in template back.
+    const body = note.text.trim() ? JSON.stringify({ problem: note.text }) : '';
+    if (bytes(body) > TEMPLATE_MAX)
+      return setSaid(t('模板最多 4 KB，删减后再设。', 'A template can be at most 4 KB. Shorten it first.'));
+    try {
+      await putNote(TEMPLATE_TARGET, body);
+      setSaid(
+        body
+          ? t('已设为你的模板，之后「插入模板」都用它。', 'Saved as your template. "Insert template" uses it from now on.')
+          : t('笔记是空的，已换回内置模板。', 'The note is empty, so the built-in template is back.'),
+      );
+    } catch (reason) {
+      setSaid((reason as Error).message || t('模板没有保存。', "The template wasn't saved."));
+    }
+  }
   if (note.state === 'loading')
     return (
       <output className="cs-notes-state">
@@ -290,8 +368,8 @@ export function ProblemNotes({
       <header className="cs-notes-head">
         <p>
           {t(
-            '只有你能看到。支持 Markdown，停下输入就自动保存。',
-            'Only you can see this. Markdown works, and it saves when you pause.',
+            '只有你能看到。支持 Markdown、#标签、「把握度: 1–5」和 [[lc-42]] 双链，停下输入就自动保存。',
+            'Only you can see this. Markdown, #tags, "Confidence: 1–5" and [[lc-42]] links work, and it saves when you pause.',
           )}
         </p>
         <fieldset className="cs-notes-switch">
@@ -312,6 +390,21 @@ export function ProblemNotes({
           </button>
         </fieldset>
       </header>
+      {problemId && (
+        <div className="cs-notes-tools">
+          <button type="button" disabled={note.conflict !== null} onClick={() => void insertTemplate()}>
+            {t('插入模板', 'Insert template')}
+          </button>
+          <button
+            type="button"
+            title={t('把这条笔记存成「插入模板」用的模板；笔记为空时换回内置模板', 'Save this note as the template "Insert template" uses; an empty note restores the built-in one')}
+            onClick={() => void saveTemplate()}
+          >
+            {t('设为我的模板', 'Set as my template')}
+          </button>
+          <span role="status">{said}</span>
+        </div>
+      )}
       {note.conflict !== null && (
         <div className="cs-notes-conflict" role="alert">
           <p>
@@ -336,6 +429,7 @@ export function ProblemNotes({
       )}
       {!preview ? (
         <textarea
+          ref={area}
           className="cs-notes-input"
           aria-label={t('笔记内容', 'Note')}
           readOnly={note.conflict !== null}
@@ -349,11 +443,36 @@ export function ProblemNotes({
         />
       ) : note.text.trim() ? (
         <StatementMarkdown
-          body={note.text}
+          body={wikiLinks(note.text)}
           className="cs-statement-markdown cs-notes-preview"
         />
       ) : (
         <p className="cs-notes-empty">{t('还没有内容。', 'Nothing written yet.')}</p>
+      )}
+      {preview && links && (
+        <section className="cs-notes-links" aria-labelledby="cs-notes-links">
+          <h3 id="cs-notes-links">{t('提到这道题的笔记', 'Notes that mention this problem')}</h3>
+          {links.length ? (
+            <ul>
+              {links.map((link) => {
+                const [label, href] = noteLink(link.target, t);
+                return (
+                  <li key={link.target}>
+                    {href ? <a href={href}>{label}</a> : <strong>{label}</strong>}
+                    <span>{link.snippet}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p>
+              {t(
+                `还没有。在别的笔记里写 [[${problemId}]]，就会列在这里。`,
+                `None yet. Write [[${problemId}]] in another note and it shows up here.`,
+              )}
+            </p>
+          )}
+        </section>
       )}
       <footer className="cs-notes-foot">
         {note.state === 'unsaved' ? (
