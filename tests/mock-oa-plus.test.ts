@@ -21,15 +21,32 @@ after(() => {
 
 const DAY = 86400000;
 let n = 0;
-function mock(user: string, score: number, extra: { company?: string | null; preset?: number; source?: string; ids?: string[]; at?: number } = {}) {
+function mock(
+  user: string,
+  score: number,
+  extra: { company?: string | null; preset?: number; source?: string; ids?: string[]; at?: number; scoring?: string } = {},
+) {
   const at = extra.at ?? Date.now() - DAY;
   sqlite()
     .prepare(
       `INSERT INTO mock_sessions(id,user_id,company,name,platform,preset,scoring,source,set_hash,ids_json,slots_json,minutes,skew,
         created_at,started_at,finished_at,reason,score,max,solved,estimate,updated_at)
-      VALUES(?,?,?,NULL,NULL,?,'tests',?,'h',?,'[]',60,0,?,?,?,'manual',?,200,0,0,?)`,
+      VALUES(?,?,?,NULL,NULL,?,?,?,'h',?,'[]',60,0,?,?,?,'manual',?,200,0,0,?)`,
     )
-    .run(`m${n++}`, user, extra.company ?? null, extra.preset ?? 0, extra.source ?? 'mixed', JSON.stringify(extra.ids ?? ['lc-1', 'lc-2']), at, at, at, score, at);
+    .run(
+      `m${n++}`,
+      user,
+      extra.company ?? null,
+      extra.preset ?? 0,
+      extra.scoring ?? 'tests',
+      extra.source ?? 'mixed',
+      JSON.stringify(extra.ids ?? ['lc-1', 'lc-2']),
+      at,
+      at,
+      at,
+      score,
+      at,
+    );
 }
 
 void test('a custom mock on chosen topics draws only from problems on one of them', () => {
@@ -68,6 +85,11 @@ void test('percentiles compare each learner once, at their best, within the scen
   assert.deepEqual(await mockPeers('me', custom, 0.6), { n: PEER_MIN, below: PEER_MIN });
   assert.equal(await mockPeers('me', { ...custom, questions: 2 }, 0.6), null);
   assert.equal(await mockPeers('me', { ...custom, source: 'lc' }, 0.6), null);
+  // Single-submit mocks (first submissions only) have their own pool.
+  assert.equal(await mockPeers('me', { ...custom, scoring: 'codility' }, 0.6), null);
+  for (let i = 0; i < PEER_MIN; i++) mock(`s${i}`, 160, { source: 'oa', ids: ['oa-a-1', 'oa-a-2', 'oa-a-3'], scoring: 'codility' });
+  assert.deepEqual(await mockPeers('me', { ...custom, scoring: 'codility' }, 0.6), { n: PEER_MIN, below: 0 });
+  assert.deepEqual(await mockPeers('me', custom, 0.6), { n: PEER_MIN, below: PEER_MIN }, 'the standard pool is unchanged');
   // The report asks with its scenario; without one (the history upload's rescoring) it compares nothing.
   const person = { id: 'me', name: 'Me', email: 'me@example.test', role: 'student' as const, verified: true };
   const window = { ids: 'lc-1,lc-2', from: String(Date.now() - 3600_000), to: String(Date.now()), slots: 'easy,hard' };
@@ -135,4 +157,19 @@ void test('a problem may give some languages their own time limit, within the sa
   assert.deepEqual(parsed.data?.problem.timeLimits, { python: 3 });
   assert.equal(ojImportSchema.safeParse(pkg({ rust: 3 })).success, false);
   assert.equal(ojImportSchema.safeParse(pkg({ python: 20 })).success, false);
+});
+
+void test('a single-submit report scores each question by its first submission only', async () => {
+  const person = { id: 'single', name: 'S', email: 's@example.test', role: 'student' as const, verified: true };
+  const at = Date.now() - 600_000;
+  const insert = sqlite().prepare(
+    "INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,score,all_cases,mode,created_at,updated_at) VALUES(?,?,?,'python','x',?,?,10,?,1,'judge',?,?)",
+  );
+  insert.run('s-err', person.id, 'lc-1', 'system_error', 0, 0, at, at);
+  insert.run('s-first', person.id, 'lc-1', 'wrong_answer', 5, 50, at + 1, at + 1);
+  insert.run('s-again', person.id, 'lc-1', 'accepted', 10, 100, at + 2, at + 2);
+  const query = { ids: 'lc-1', from: String(at - 1000), to: String(Date.now()), slots: 'medium' };
+  const report = await mockReport(person, new URLSearchParams({ ...query, scoring: 'codility' }));
+  assert.deepEqual([report.scoring, report.items[0].best?.id, report.items[0].attempts, report.score.per], ['codility', 's-first', 3, [50]]);
+  assert.deepEqual((await mockReport(person, new URLSearchParams(query))).score.per, [100]);
 });

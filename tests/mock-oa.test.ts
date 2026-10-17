@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import {
   archiveMock,
   drawMock,
+  finalSubmitted,
   finishMock,
   formatClock,
   mockClock,
@@ -356,4 +357,41 @@ test('a problem is in exam mode via ?mock=, or when the running mock holds it', 
   const drawn = { active: session(), history: [] };
   assert.equal(mockExamFor(drawn, 's1', 'lc-1', now), null);
   assert.equal(mockExamFor(drawn, undefined, 'lc-1', now), null);
+});
+
+test('single-submit rules: only the first submission scores, verdicts stay sealed until the hand-in', () => {
+  const start = 1_000_000;
+  const exam = session({ scoring: 'codility', startedAt: start });
+  const list = [
+    // A judge failure does not use up the one submission; a cancelled one is not one.
+    { id: 'err', status: 'system_error', passed: 0, total: 10, created_at: start },
+    { id: 'gone', status: 'cancelled', passed: 0, total: 10, created_at: start + 1_000 },
+    { id: 'first', status: 'wrong_answer', passed: 4, total: 10, score: 40, created_at: start + 2_000 },
+    { id: 'later', status: 'accepted', passed: 10, total: 10, created_at: start + 3_000 },
+  ];
+  const first = summarizeAttempts(list, start, true);
+  assert.deepEqual([first.best?.id, first.firstAcceptedMs, first.attempts], ['first', null, 3]);
+  assert.equal(summarizeAttempts(list, start).best?.id, 'later', 'standard rules keep the best');
+  // Still judging: pending, nothing scored yet; a later finished one does not stand in.
+  const judging = summarizeAttempts([{ ...list[2], status: 'running' }, list[3]], start, true);
+  assert.deepEqual([judging.pending, judging.best], [true, null]);
+  assert.deepEqual(scoreMock([first.best, null], 'codility', ['medium', 'hard']), {
+    value: 40,
+    min: 0,
+    max: 200,
+    per: [40, 0],
+    estimate: false,
+  });
+  const rows = [
+    { problem_id: 'oa-amazon-1', status: 'accepted', created_at: start + 10_000 },
+    { problem_id: 'lc-1', status: 'wrong_answer', created_at: start + 20_000 },
+  ];
+  assert.deepEqual(questionStates(exam, rows), ['tried', 'tried'], 'an AC reads as submitted');
+  assert.deepEqual(questionStates({ ...exam, scoring: 'tests' }, rows), ['ac', 'tried']);
+  assert.equal(finalSubmitted(exam, 'oa-amazon-1', rows), true);
+  for (const status of ['cancelled', 'system_error'])
+    assert.equal(finalSubmitted(exam, 'lc-1', [{ problem_id: 'lc-1', status, created_at: start + 1 }]), false, status);
+  // Only inside this exam's window: an earlier submission of the same problem is not this exam's.
+  assert.equal(finalSubmitted(exam, 'lc-1', [{ problem_id: 'lc-1', status: 'accepted', created_at: start - 3_600_000 }]), false);
+  assert.equal(finalSubmitted(exam, 'lc-1', [{ problem_id: 'lc-1', status: 'queued', created_at: start + 1 }]), true);
 });

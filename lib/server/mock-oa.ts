@@ -216,6 +216,8 @@ const drawSchema = z
         slots: z.array(z.enum(['easy', 'medium', 'hard'])).max(4).optional(),
         source: z.enum(['mixed', 'oa', 'lc']).default('mixed'),
         topics: z.array(z.string().regex(/^[a-z0-9-]{1,60}$/)).max(5).optional(),
+        // Single-submit rules: one formal submission per question, verdicts after the hand-in.
+        rules: z.enum(['standard', 'codility']).optional(),
       })
       .strict()
       .optional(),
@@ -314,7 +316,7 @@ export async function drawMockOa(p: Person, input: unknown) {
     questions,
     minutes: custom ? custom.minutes : preset!.minutes,
     slots,
-    scoring: preset?.scoring ?? 'tests',
+    scoring: custom?.rules === 'codility' ? 'codility' : (preset?.scoring ?? 'tests'),
     source,
     topics,
     // The client keeps the offset: submissions are timed by this clock.
@@ -333,11 +335,13 @@ export type MockScenario = {
   preset: boolean;
   source: MockSource;
   questions: number;
+  /** Scores of other rules are not compared (single-submit counts first submissions only). */
+  scoring?: Scoring;
 };
 /**
  * How a score share (score / max) stands among other learners' mocks of the same scenario
- * in the last 180 days, each learner's best once: a preset against that company's preset
- * mocks, a custom one against custom mocks of the same count and source without a company.
+ * in the last 180 days, each learner's best once, under the same scoring rules: a preset
+ * against that company's preset mocks, a custom one against custom mocks of the same count and source without a company.
  * Null for a custom mock with a company, or under PEER_MIN learners.
  * ponytail: scans mock_sessions by start time; index (company, started_at) when it grows.
  * ponytail: the pool mixes scores from before partial credit (all_cases), when a failed
@@ -348,7 +352,7 @@ export async function mockPeers(userId: string, s: MockScenario, share: number, 
   const bests = (
     await rows<{ best: number }>(
       `SELECT MAX(CAST(score AS REAL)/max) AS best FROM mock_sessions
-      WHERE user_id<>? AND started_at>? AND score IS NOT NULL AND max>0 AND ${
+      WHERE user_id<>? AND started_at>? AND score IS NOT NULL AND max>0 AND scoring=? AND ${
         s.preset
           ? 'preset=1 AND company=?'
           : 'preset=0 AND company IS NULL AND source=? AND json_array_length(ids_json)=?'
@@ -356,6 +360,7 @@ export async function mockPeers(userId: string, s: MockScenario, share: number, 
       GROUP BY user_id`,
       userId,
       now - 180 * DAY,
+      s.scoring ?? 'tests',
       ...(s.preset ? [s.company] : [s.source, s.questions]),
     )
   ).map((r) => r.best);
@@ -383,7 +388,8 @@ export async function mockReport(p: Person, params: URLSearchParams) {
     to - from > 4 * 3600000
   )
     throw new HttpError(400, '模拟考试参数无效');
-  const scoring: Scoring = params.get('scoring') === 'gca' ? 'gca' : 'tests';
+  const asked = params.get('scoring');
+  const scoring: Scoring = asked === 'gca' || asked === 'codility' ? asked : 'tests';
   const slots = (params.get('slots') || '')
     .split(',')
     .map((s) => slotOf(s) ?? 'medium');
@@ -411,6 +417,7 @@ export async function mockReport(p: Person, params: URLSearchParams) {
     const summary = summarizeAttempts(
       attempts.map(({ score, all_cases, ...s }) => (all_cases ? { ...s, score } : s)),
       from + REPORT_SLACK,
+      scoring === 'codility',
     );
     const best = attempts.find((s) => s.id === summary.best?.id);
     return {
@@ -440,7 +447,7 @@ export async function mockReport(p: Person, params: URLSearchParams) {
     scenario.success && !pending
       ? await mockPeers(
           p.id,
-          { ...scenario.data, preset: scenario.data.preset === '1', questions: ids.length },
+          { ...scenario.data, preset: scenario.data.preset === '1', questions: ids.length, scoring },
           score.value / score.max,
         )
       : null;

@@ -5,7 +5,8 @@
  * account (lib/mock-cloud.ts, lib/server/learner-cloud.ts).
  */
 export type Slot = 'easy' | 'medium' | 'hard';
-export type Scoring = 'tests' | 'gca';
+/** `codility`: single-submit rules, scored like `tests` from each question's first submission only. */
+export type Scoring = 'tests' | 'gca' | 'codility';
 export type MockSource = 'mixed' | 'oa' | 'lc';
 export const SLOTS: readonly Slot[] = ['easy', 'medium', 'hard'];
 const RANK: Record<Slot, number> = { easy: 0, medium: 1, hard: 2 };
@@ -211,7 +212,7 @@ export function questionFraction(result: QuestionResult | null | undefined) {
 }
 const WEIGHT: Record<Slot, number> = { easy: 1, medium: 2, hard: 3 };
 /**
- * tests: each question 0–100 by passed fraction (HackerRank style), summed.
+ * tests (and codility): each question 0–100 by passed fraction (HackerRank style), summed.
  * gca: a CodeSignal-like estimate on its 200–600 scale, harder slots weigh more
  * (easy 1, medium 2, hard 3). It is labelled as an estimate wherever it is shown.
  */
@@ -221,7 +222,7 @@ export function scoreMock(
   slots: readonly Slot[],
 ) {
   const per = results.map((r) => Math.floor(questionFraction(r) * 100));
-  if (scoring === 'tests')
+  if (scoring !== 'gca')
     return {
       value: per.reduce((a, b) => a + b, 0),
       min: 0,
@@ -253,15 +254,21 @@ export type Attempt = {
   score?: number;
 };
 const JUDGING = new Set(['queued', 'compiling', 'running']);
-/** One question's attempts inside the exam window, oldest first. */
-export function summarizeAttempts(list: readonly Attempt[], from: number) {
+/**
+ * One question's attempts inside the exam window, oldest first. `firstOnly` (single-submit
+ * rules) scores only the first one; a system error does not use it up.
+ */
+export function summarizeAttempts(list: readonly Attempt[], from: number, firstOnly = false) {
   let best: QuestionResult | null = null,
     firstAcceptedMs: number | null = null,
     pending = false,
-    attempts = 0;
+    attempts = 0,
+    counted = false;
   for (const s of list) {
     if (s.status === 'cancelled') continue;
     attempts++;
+    if (firstOnly && (counted || s.status === 'system_error')) continue;
+    counted = true;
     if (JUDGING.has(s.status)) {
       pending = true;
       continue;
@@ -314,7 +321,15 @@ export type MockSession = {
    * The MCQ section, taken before the coding clock starts; its end is `startedAt`. Stays in
    * this browser (the account history keeps the coding part only).
    */
-  mcq?: { ids: string[]; picks: number[][]; minutes: number; startedAt?: number; finishedAt?: number };
+  mcq?: {
+    ids: string[];
+    picks: number[][];
+    /** Indexes of the questions marked for review. */
+    flags?: number[];
+    minutes: number;
+    startedAt?: number;
+    finishedAt?: number;
+  };
 };
 export type MockState = { active: MockSession | null; history: MockSession[] };
 export const MOCK_HISTORY = 30;
@@ -402,7 +417,10 @@ export function settleMockState(state: MockState, now: number): MockState {
   return archiveMock(state, finishMock(a, now, 'timeout'));
 }
 
-/** Submissions in the exam window (in the exam's language, if any): per question todo / tried / ac. */
+/**
+ * Submissions in the exam window (in the exam's language, if any): per question todo / tried / ac.
+ * Under single-submit rules (codility) an AC reads as tried: verdicts wait for the hand-in.
+ */
 export function questionStates(
   s: MockSession,
   submissions: readonly { problem_id: string; status: string; created_at: number; language?: string }[],
@@ -418,12 +436,35 @@ export function questionStates(
         x.status !== 'cancelled' &&
         (!language || x.language === language),
     );
-    return mine.some((x) => x.status === 'accepted')
+    return s.scoring !== 'codility' && mine.some((x) => x.status === 'accepted')
       ? ('ac' as const)
       : mine.length
         ? ('tried' as const)
         : ('todo' as const);
   });
+}
+
+/**
+ * Single-submit rules: this question already has its one formal submission in the exam window
+ * (`submissions` are judge rows). A cancelled one or a judge failure (system_error) does not count.
+ * ponytail: the session lives only in this browser and the verdict is sealed only in the UI; the
+ * score counts each question's first submission alone (summarizeAttempts firstOnly), so more
+ * submissions earn nothing and getting around the lock only fools yourself.
+ */
+export function finalSubmitted(
+  s: MockSession,
+  problemId: string,
+  submissions: readonly { problem_id: string; status: string; created_at: number }[],
+) {
+  const { from, to } = reportWindow(s);
+  return submissions.some(
+    (x) =>
+      x.problem_id === problemId &&
+      x.created_at >= from &&
+      x.created_at <= to &&
+      x.status !== 'cancelled' &&
+      x.status !== 'system_error',
+  );
 }
 
 export const mockStorageKey = (userId: string) => `cswork:mock:v1:${userId}`;
@@ -443,6 +484,7 @@ function validSession(value: unknown): value is MockSession {
       (Array.isArray(s.mcq?.ids) &&
         Array.isArray(s.mcq.picks) &&
         s.mcq.picks.every(Array.isArray) &&
+        (s.mcq.flags === undefined || (Array.isArray(s.mcq.flags) && s.mcq.flags.every(Number.isInteger))) &&
         Number.isFinite(s.mcq.minutes)))
   );
 }

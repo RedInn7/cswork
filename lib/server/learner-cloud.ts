@@ -75,7 +75,7 @@ const mockInput = z
     name: z.string().max(120).nullable(),
     platform: z.string().max(60).nullable(),
     preset: z.boolean(),
-    scoring: z.enum(['tests', 'gca']),
+    scoring: z.enum(['tests', 'gca', 'codility']),
     source: z.enum(['mixed', 'oa', 'lc']),
     slots: z.array(z.enum(['easy', 'medium', 'hard'])).min(1).max(4),
     ids: z.array(problemId).min(1).max(4),
