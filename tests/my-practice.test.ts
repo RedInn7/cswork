@@ -334,9 +334,20 @@ void test('wave-10 notes (brag:, retro:, route:) list whole per learner and cap 
   assert.equal((await ok<Listed>(me, 'GET', 'notes?prefix=retro%3A')).items.length, 1);
   const insert = sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)');
   for (let i = 0; i < 29; i++) insert.run(me.id, `route:r-${i}`, '{}', i);
-  await ok(me, 'PUT', 'notes?target=route:role-backend', { body: '{"v":1}' });
-  assert.equal(await status(me, 'PUT', 'notes?target=route:r-zz', { body: '{"v":1}' }), 409);
-  await ok(me, 'PUT', 'notes?target=route:role-backend', { body: '{"v":1,"weeklyHours":8}' });
+  // Route bodies are RouteDocs (lib/content/role-paths.ts parseRoute): a role's without steps, a learner's with them.
+  const route = (more: object = {}) => ({ body: JSON.stringify({ v: 1, targetDate: '', weeklyHours: 6, state: {}, planned: {}, ...more }) });
+  await ok(me, 'PUT', 'notes?target=route:role-backend', route());
+  for (const [key, body] of [
+    ['route:role-backend', { body: '{"v":1}' }],
+    ['route:role-backend', route({ steps: [] })],
+    ['route:role-manager', route()],
+    ['route:r-zz', route()],
+    ['route:custom/1', route({ steps: [] })],
+    ['route:r-zz', route({ steps: [{ kind: 'ext', id: 'ext-abc123', title: 'x'.repeat(81), units: 1, done: 0 }] })],
+  ] as const)
+    assert.equal(await status(me, 'PUT', `notes?target=${key}`, body), 400, `${key} ${body.body}`);
+  assert.equal(await status(me, 'PUT', 'notes?target=route:r-zz', route({ steps: [] })), 409);
+  await ok(me, 'PUT', 'notes?target=route:role-backend', route({ weeklyHours: 8 }));
   assert.equal((await ok<Listed>(me, 'GET', 'notes?prefix=route%3A')).items.length, 30);
   sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'brag:%' OR target LIKE 'retro:%' OR target LIKE 'route:%'").run();
 });
