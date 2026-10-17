@@ -55,9 +55,14 @@ test('the SQL workspace shows tables, inserts names and previews plans and CTEs'
   };
   const submitted = 'WITH m AS (SELECT id, name FROM employees WHERE manager_id IS NULL)\nSELECT * FROM m';
   const posts = [];
+  const cancels = [];
+  let queuedPeek = false;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, init = {}) => {
     const body = init.body ? JSON.parse(init.body) : undefined;
+    if (url.endsWith('/cancel')) return cancels.push(url), Response.json({ id: 'slow', status: 'cancelled' });
+    if (url.endsWith('/submissions/slow')) return Response.json({ id: 'slow', status: 'queued' });
+    if (queuedPeek && body?.mode === 'sql-peek') return posts.push(body), Response.json({ id: 'slow', status: 'queued' });
     if (url.endsWith('/submissions') && init.method === 'POST') {
       posts.push(body);
       const base = { problem_id: pkg.problem.id, language: 'sql', passed: 0, total: 1, created_at: Date.now() };
@@ -119,6 +124,20 @@ test('the SQL workspace shows tables, inserts names and previews plans and CTEs'
     assert.equal(globalThis.sqlFocus, 1);
     await act(async () => byText('employees', schema).click());
     assert.equal(globalThis.sqlEdits.at(-1).text, 'employees');
+    // An initially open <details> fires 'toggle' too, maybe before the stored choice is read:
+    // a toggle that reports the state the sidebar already has is not stored; a real one is.
+    const KEY = 'cswork:sql-schema';
+    localStorage.setItem(KEY, 'closed');
+    await act(async () => schema.dispatchEvent(new window.Event('toggle')));
+    assert.equal(localStorage.getItem(KEY), 'closed');
+    assert.ok(schema.open);
+    localStorage.setItem(KEY, 'open');
+    schema.open = false;
+    await settle();
+    assert.equal(localStorage.getItem(KEY), 'closed');
+    schema.open = true;
+    await settle();
+    assert.equal(localStorage.getItem(KEY), 'open');
 
     // Nothing to inspect before a submission; after one, a plan button and one per CTE.
     assert.equal($('.cs-sql-inspect'), null);
@@ -149,8 +168,45 @@ test('the SQL workspace shows tables, inserts names and previews plans and CTEs'
     assert.deepEqual([...preview.querySelectorAll('thead th')].map((th) => th.textContent), ['id', 'name']);
     assert.equal(preview.querySelector('td[data-null]').textContent, 'NULL');
     assert.equal(inspect.querySelector('.cs-sql-plan'), null, 'one preview at a time');
+    // Screen readers hear a short status, not the grid.
+    const live = inspect.querySelector('[aria-live]');
+    assert.equal(live.textContent, 'CTE m: 2 rows');
+    assert.equal(live.querySelector('table'), null);
+
+    // A replaced peek is cancelled on the server too: peeks share the learner's two judge slots.
+    queuedPeek = true;
+    await act(async () => byText('Query plan', inspect).click());
+    await settle();
+    assert.equal(live.textContent, 'Running…');
+    queuedPeek = false;
+    await act(async () => byText('CTE m', inspect).click());
+    await settle();
+    assert.deepEqual(cancels, ['/api/oj/submissions/slow/cancel']);
+    assert.equal(live.textContent, 'CTE m: 2 rows');
     // Peeks are not the learner's runs: the result above still shows the submission.
-    assert.equal(posts.filter((p) => p.mode === 'sql-peek').length, 2);
+    assert.equal(posts.filter((p) => p.mode === 'sql-peek').length, 4);
+
+    // A sidebar folded on an earlier visit mounts folded and stays so; an example follows the
+    // statement's language, not the site's.
+    const { SqlSchema, SqlSample } = await import('../components/sql-workspace.tsx');
+    localStorage.setItem(KEY, 'closed');
+    const host = document.body.appendChild(document.createElement('div'));
+    const second = createRoot(host);
+    await act(async () =>
+      second.render(
+        createElement('div', null, [
+          createElement(SqlSchema, { key: 'schema', input: sample.input, onInsert() {} }),
+          createElement(SqlSample, { key: 'sample', input: sample.input, expected: sample.expectedOutput, english: false }),
+        ]),
+      ),
+    );
+    await settle();
+    assert.equal(host.querySelector('details.cs-sql-schema').open, false);
+    assert.equal(localStorage.getItem(KEY), 'closed');
+    assert.equal([...host.querySelectorAll('.cs-sql-grid figcaption strong')].at(-1).textContent, '期望输出');
+    assert.equal(host.querySelector('.cs-sql-raw summary').textContent, '原始 SQL 和输出');
+    assert.match(host.querySelector('.cs-sql-grid figcaption span').textContent, /^\d+ 行$/);
+    await act(async () => second.unmount());
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

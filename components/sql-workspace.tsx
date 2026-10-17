@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { activeStatuses, ojRequest, type OJSubmission } from '@/lib/oj-client';
-import { CTE_PREVIEW_ROWS, ctePreview, explainQuery, parsePlan, withClause, type PlanNode } from '@/lib/sql-cte';
+import { CTE_PREVIEW_ROWS, ctePreview, explainQuery, parsePlan, planKind, withClause, type PlanNode } from '@/lib/sql-cte';
 import { parseSqlDataset, type SqlColumn } from '@/lib/sql-dataset';
 import { parseSqlResult, sqlCellText, type SqlCell } from '@/lib/sql-result';
 import type { CodeEditorProps } from './editor';
@@ -14,9 +14,24 @@ import { CopyBlock } from './oj-results';
 
 export const SQL_GRID_ROWS = 200;
 
+/** Text by an explicit language (the statement's), not the site's. */
+const by = (english: boolean) => (zh: string, en: string) => (english ? en : zh);
+
 /** A result or table as a grid: its own horizontal scroll, typed column heads, NULL dimmed. */
-export function SqlGrid({ caption, columns, rows }: { caption: string; columns: SqlColumn[]; rows: SqlCell[][] }) {
-  const t = useT();
+export function SqlGrid({
+  caption,
+  columns,
+  rows,
+  english,
+}: {
+  caption: string;
+  columns: SqlColumn[];
+  rows: SqlCell[][];
+  /** The statement's language, where the grid sits in it; the site's otherwise. */
+  english?: boolean;
+}) {
+  const siteT = useT();
+  const t = english === undefined ? siteT : by(english);
   return (
     <figure className="cs-sql-grid">
       <figcaption>
@@ -67,8 +82,8 @@ export function SqlGrid({ caption, columns, rows }: { caption: string; columns: 
 const numbered = (count: number): SqlColumn[] => Array.from({ length: count }, (_, c) => ({ name: `#${c + 1}` }));
 
 /** A SQL track example: each table and the expected result as grids, the raw text folded away. */
-export function SqlSample({ input, expected }: { input: string; expected: string }) {
-  const t = useT();
+export function SqlSample({ input, expected, english }: { input: string; expected: string; english: boolean }) {
+  const t = by(english);
   const data = parseSqlDataset(input);
   const want = parseSqlResult(expected);
   const rawInput = <CopyBlock label={t('输入', 'Input')} value={input} />;
@@ -77,11 +92,11 @@ export function SqlSample({ input, expected }: { input: string; expected: string
     <div className="cs-sql-sample">
       {data
         ? data.tables.map((table) => (
-            <SqlGrid key={table.name} caption={table.name} columns={table.columns} rows={table.rows} />
+            <SqlGrid key={table.name} caption={table.name} columns={table.columns} rows={table.rows} english={english} />
           ))
         : rawInput}
       {want ? (
-        <SqlGrid caption={t('期望输出', 'Expected output')} columns={numbered(want.columns)} rows={want.rows} />
+        <SqlGrid caption={t('期望输出', 'Expected output')} columns={numbered(want.columns)} rows={want.rows} english={english} />
       ) : (
         rawOutput
       )}
@@ -138,6 +153,8 @@ export function SqlSchema({ input, onInsert }: { input: string; onInsert: (text:
       open={open}
       onToggle={(event) => {
         const next = event.currentTarget.open;
+        // Only a real change: an initially open <details> fires 'toggle' too, maybe before the effect above.
+        if (next === open) return;
         setOpen(next);
         try {
           localStorage.setItem(SCHEMA_KEY, next ? 'open' : 'closed');
@@ -174,15 +191,7 @@ export function SqlSchema({ input, onInsert }: { input: string; onInsert: (text:
   );
 }
 
-/** Plan steps worth a second look on big data, and the index lookups that avoid them. */
-const planKind = (detail: string) =>
-  /^SCAN (?!CONSTANT ROW)/.test(detail) || detail.startsWith('USE TEMP B-TREE')
-    ? 'warn'
-    : detail.startsWith('SEARCH ')
-      ? 'ok'
-      : undefined;
-
-/** EXPLAIN QUERY PLAN as a nested list, full scans and temporary B-trees marked. */
+/** EXPLAIN QUERY PLAN as a nested list, full scans, temporary B-trees and automatic indexes marked. */
 export function PlanTree({ plan }: { plan: PlanNode[] }) {
   const t = useT();
   const list = (nodes: PlanNode[]) => (
@@ -206,6 +215,11 @@ export function PlanTree({ plan }: { plan: PlanNode[] }) {
         {t(
           '：为排序、去重或分组临时建一棵 B 树。数据一多，这两步最先变慢。',
           ': builds a temporary B-tree to sort, deduplicate or group. These two slow down first as data grows. ',
+        )}
+        <span data-plan="warn">AUTOMATIC … INDEX</span>
+        {t(
+          '：SQLite 每次运行都临时建一个索引，说明缺了一个真正的索引；',
+          ': SQLite builds a temporary index on every run, which means a real index is missing. ',
         )}
         <span data-plan="ok">SEARCH … USING INDEX</span>
         {t('：借索引直接找到要的行。', ': goes straight to the rows it needs through an index.')}
@@ -236,17 +250,27 @@ export function SqlInspect({ problemId, code, stdin }: { problemId: string; code
   async function run(cte: string | null) {
     const query = cte === null ? explainQuery(code) : ctePreview(code, cte);
     if (!query) return;
-    // ponytail: the last peek is dropped, not cancelled on the server; a SQL run takes milliseconds.
     running.current?.abort();
     const controller = new AbortController();
     running.current = controller;
     setPeek({ cte, state: 'pending' });
     try {
-      let item = await ojRequest<OJSubmission>(
-        'submissions',
-        { problemId, language: 'sql', code: query, mode: 'sql-peek', stdin, idempotencyKey: crypto.randomUUID() },
-        controller.signal,
-      );
+      // No signal: a replaced peek still needs its id, to be cancelled.
+      let item = await ojRequest<OJSubmission>('submissions', {
+        problemId,
+        language: 'sql',
+        code: query,
+        mode: 'sql-peek',
+        stdin,
+        idempotencyKey: crypto.randomUUID(),
+      });
+      // Replaced or closed, it is cancelled on the server too: peeks share the learner's two
+      // judge slots with their own Run and Submit.
+      const cancel = () => {
+        if (activeStatuses.has(item.status)) ojRequest(`submissions/${item.id}/cancel`, {}).catch(() => {});
+      };
+      if (controller.signal.aborted) return cancel();
+      controller.signal.addEventListener('abort', cancel, { once: true });
       // Plain polls, like the reference run: the server allows two long polls per learner.
       while (activeStatuses.has(item.status)) {
         await new Promise((resolve) => setTimeout(resolve, 750));
@@ -274,7 +298,10 @@ export function SqlInspect({ problemId, code, stdin }: { problemId: string; code
       setPeek({
         cte,
         state: 'error',
-        message: out?.stderr?.trim() || item.message || t('没有运行成功，请重试。', 'It did not run. Try again.'),
+        message:
+          out?.stderr?.trim() ||
+          (item.message && (locale === 'en' ? englishMessage(item.message) : item.message)) ||
+          t('没有运行成功，请重试。', 'It did not run. Try again.'),
       });
     } catch (error) {
       if (!controller.signal.aborted)
@@ -300,23 +327,31 @@ export function SqlInspect({ problemId, code, stdin }: { problemId: string; code
           {t('用这次提交的代码，在当前样例上运行，不算提交', 'Runs this submission’s code on the current example; not an attempt')}
         </small>
       </div>
-      <div aria-live="polite">
-        {peek?.state === 'pending' && (
-          <p className="cs-sql-inspect-note" role="status">
-            <LoaderCircle size={14} className="cs-spin" aria-hidden="true" />
-            {t('正在运行…', 'Running…')}
-          </p>
-        )}
-        {peek?.state === 'plan' && <PlanTree plan={peek.plan} />}
-        {peek?.state === 'rows' && (
-          <SqlGrid
-            caption={t(`CTE ${peek.cte}（最多 ${CTE_PREVIEW_ROWS} 行）`, `CTE ${peek.cte} (up to ${CTE_PREVIEW_ROWS} rows)`)}
-            columns={peek.columns}
-            rows={peek.rows}
-          />
-        )}
-        {peek?.state === 'error' && <pre className="cs-sql-inspect-error">{peek.message}</pre>}
-      </div>
+      {/* A short status for screen readers; the plan and the grid are left to browse. */}
+      <p className="sr-only" aria-live="polite">
+        {peek?.state === 'pending'
+          ? t('正在运行…', 'Running…')
+          : peek?.state === 'plan'
+            ? t('执行计划已生成', 'Query plan ready')
+            : peek?.state === 'rows'
+              ? t(`CTE ${peek.cte}：${peek.rows.length} 行`, `CTE ${peek.cte}: ${peek.rows.length} row${peek.rows.length === 1 ? '' : 's'}`)
+              : peek?.state === 'error' && peek.message}
+      </p>
+      {peek?.state === 'pending' && (
+        <p className="cs-sql-inspect-note">
+          <LoaderCircle size={14} className="cs-spin" aria-hidden="true" />
+          {t('正在运行…', 'Running…')}
+        </p>
+      )}
+      {peek?.state === 'plan' && <PlanTree plan={peek.plan} />}
+      {peek?.state === 'rows' && (
+        <SqlGrid
+          caption={t(`CTE ${peek.cte}（最多 ${CTE_PREVIEW_ROWS} 行）`, `CTE ${peek.cte} (up to ${CTE_PREVIEW_ROWS} rows)`)}
+          columns={peek.columns}
+          rows={peek.rows}
+        />
+      )}
+      {peek?.state === 'error' && <pre className="cs-sql-inspect-error">{peek.message}</pre>}
     </section>
   );
 }

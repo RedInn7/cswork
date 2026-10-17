@@ -1985,7 +1985,7 @@ function Workspace({
                           : null}
                       </h4>
                       {trackLanguageOf(problem.id) ? (
-                        <SqlSample input={item.input} expected={item.expectedOutput} />
+                        <SqlSample input={item.input} expected={item.expectedOutput} english={uiEnglish} />
                       ) : (
                         <>
                           <CopyBlock
