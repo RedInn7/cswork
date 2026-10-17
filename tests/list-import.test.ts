@@ -21,6 +21,30 @@ void test('LeetCode links on .com and .cn read as their slug, whatever follows t
     assert.deepEqual(kind(link), ['slug', 'two-sum'], link);
   assert.deepEqual(kind('https://leetcode.com/problemset/'), ['unknown', '']);
   assert.deepEqual(kind('https://leetcode.com.evil.test/problems/two-sum/'), ['unknown', '']);
+  assert.deepEqual(kind('https://evil-leetcode.com/problems/two-sum/'), ['unknown', '']);
+});
+
+void test('links inside markdown, README tables and numbered lines still read as their slug', () => {
+  for (const line of [
+    '[Two Sum](https://leetcode.com/problems/two-sum/)',
+    '| 1 | [Two Sum](https://leetcode.cn/problems/two-sum/description/) | Easy |',
+    '1. https://leetcode.com/problems/two-sum/',
+    '- [ ] <https://leetcode.com/problems/two-sum>',
+  ])
+    assert.deepEqual(kind(line), ['slug', 'two-sum'], line);
+});
+
+void test('a numbered list: the item names the problem, the number only when the item names nothing', () => {
+  assert.deepEqual(kind('1. merge-intervals'), ['slug', 'merge-intervals']);
+  assert.deepEqual(kind('2) lru-cache'), ['slug', 'lru-cache']);
+  assert.deepEqual(kind('15. 3Sum'), ['slug', '3sum']);
+  assert.deepEqual(kind('3. 206'), ['number', '206']);
+  assert.deepEqual(kind('4. oa-amazon-3'), ['id', 'oa-amazon-3']);
+  assert.deepEqual(kind('5. https://cswork.dev/?view=problem&problem=lc-1'), ['id', 'lc-1']);
+  assert.deepEqual(kind('206. Reverse Linked List'), ['number', '206']);
+  assert.deepEqual(kind('50. Pow(x, n)'), ['number', '50']);
+  assert.deepEqual(kind('6. https://example.com/x'), ['unknown', ''], 'an unknown link is not read as problem 6');
+  assert.deepEqual(kind('1.'), ['number', '1']);
 });
 
 void test('bare slugs, numbers and site ids', () => {

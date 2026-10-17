@@ -11,8 +11,10 @@ export const ITEM_MAX = 500;
 export const LINE_MAX = 300;
 
 const SITE_ID = /^(?:lc-\d{1,6}|(?:oa|core|sql)-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
-// leetcode.com, leetcode.cn (and the old leetcode-cn.com), contest pages included.
-const LEETCODE = /^(?:https?:\/\/)?(?:www\.)?leetcode(?:-cn)?\.(?:com|cn)\/(?:contest\/[^/\s]+\/)?problems\/([a-z0-9-]+)/;
+// leetcode.com, leetcode.cn (and the old leetcode-cn.com), contest pages included, anywhere in the
+// line ("[Two Sum](https://leetcode.com/problems/two-sum/)"); the host must start there, so
+// evil-leetcode.com and leetcode.com.evil.test do not count.
+const LEETCODE = /(?:^|[^a-z0-9.-])(?:www\.)?leetcode(?:-cn)?\.(?:com|cn)\/(?:contest\/[^/\s]+\/)?problems\/([a-z0-9-]+)/;
 // "1", "#1", "LC 1", "1. Two Sum" as copied from a problem title.
 const NUMBER = /^(?:(?:leetcode|lc)\s*)?#?(\d{1,5})(?:$|[.:)\s])/;
 const SLUG = /^(?=[a-z0-9-]*[a-z])[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -34,17 +36,27 @@ export function parseListLine(line: string): ImportLine | null {
   const raw = line.trim().slice(0, LINE_MAX);
   const text = raw.replace(/^[-*•]\s+/, '').toLowerCase();
   if (!text) return null;
+  // "1. merge-intervals" is a numbered list: what follows the number names the problem. The number
+  // counts only when the rest names nothing and is no link ("1. Two Sum").
+  const numbered = /^(\d{1,5})[.)]\s+(.+)$/.exec(text);
+  const [kind, value] = read(numbered ? numbered[2] : text);
+  if (numbered && kind === 'unknown' && !/[/?]/.test(numbered[2]))
+    return { raw, kind: 'number', value: String(Number(numbered[1])) };
+  return { raw, kind, value };
+}
+
+function read(text: string): [ImportKind, string] {
   const leetcode = LEETCODE.exec(text);
-  if (leetcode) return { raw, kind: 'slug', value: leetcode[1] };
+  if (leetcode) return ['slug', leetcode[1]];
   if (/[/?]/.test(text)) {
     const id = siteLink(text);
-    return { raw, kind: id ? 'id' : 'unknown', value: id };
+    return id ? ['id', id] : ['unknown', ''];
   }
-  if (SITE_ID.test(text)) return { raw, kind: 'id', value: text };
+  if (SITE_ID.test(text)) return ['id', text];
   const number = NUMBER.exec(text);
-  if (number) return { raw, kind: 'number', value: String(Number(number[1])) };
-  if (SLUG.test(text)) return { raw, kind: 'slug', value: text };
-  return { raw, kind: 'unknown', value: '' };
+  if (number) return ['number', String(Number(number[1]))];
+  if (SLUG.test(text)) return ['slug', text];
+  return ['unknown', ''];
 }
 
 /** Non-blank lines in paste order, repeats kept, at most `max` of them. */
