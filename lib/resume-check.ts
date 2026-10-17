@@ -76,10 +76,11 @@ FORMS.set('speeded', { base: 'speed', past: true });
 FORMS.set('found', { base: 'find', past: true });
 
 const VAGUE = /\b(responsible for|helped (with|to)?|worked on|various)\b|各种/i;
-// "I/O" is not a pronoun, and "US" is a country.
-const PRONOUN = /\b(I(?!\/O)|[Mm]y|[Mm]e|[Ww]e|[Oo]ur|[Uu]s)\b|我/;
+// "I/O" is not a pronoun, "US" is a country and us-east-1 a region.
+const PRONOUN = /\b(I(?!\/O)|[Mm]y|[Mm]e|[Ww]e|[Oo]ur|[Uu]s(?!-\w))\b|我/;
+// A digit glued to a name (EC2, S3, OAuth2, HTML5, K8s) is no number; p99 latency is.
 const METRIC =
-  /\d|[%×百千万亿倍半]|\b(one|two|three|four|five|six|seven|eight|nine|ten|twelve|dozens?|hundreds?|thousands?|millions?|billions?|doubled?|tripled?|halved?|half)\b/i;
+  /(?<![A-Za-z\d])\d|\bp\d{2,3}\b|[%×百千万亿倍半]|\b(one|two|three|four|five|six|seven|eight|nine|ten|twelve|dozens?|hundreds?|thousands?|millions?|billions?|doubled?|tripled?|halved?|half)\b/i;
 const ONGOING = /present|current|now|ongoing|today|至今|现在|今/i;
 const MONTHS = 'jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|spring|summer|fall|autumn|winter';
 const CN_WEAK = /^(负责|参与|协助)/;
