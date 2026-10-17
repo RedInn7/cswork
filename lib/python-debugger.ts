@@ -28,7 +28,7 @@ export type TraceStep = {
   line: number;
   /** 0 for the outermost frame of the learner's code. */
   depth: number;
-  /** One number per function call: tells recursive calls of the same function apart. */
+  /** One number per function call: tells recursive calls of the same function apart. A generator keeps its number across resumes. */
   frame: number;
   func: string;
   kind: 'line' | 'return';
@@ -49,6 +49,8 @@ export type Trace = {
   error: { type: string; message: string; line: number | null } | null;
   stopped: 'steps' | 'time' | null;
   note: HarnessNote | null;
+  /** Parameter names per call (keyed by `frame`); calls without parameters are left out. */
+  params: Record<number, string[]>;
 };
 
 const text = (value: unknown, fallback = '') => (typeof value === 'string' ? value : fallback);
@@ -76,6 +78,10 @@ export function parseTrace(json: string): Trace {
   }
   const error = raw.error as Record<string, unknown> | null;
   const note = raw.note as Record<string, unknown> | null;
+  const params: Record<number, string[]> = {};
+  for (const [key, names] of Object.entries(raw.params && typeof raw.params === 'object' ? raw.params : {}))
+    if (Number.isInteger(Number(key)) && Array.isArray(names) && names.every((name) => typeof name === 'string'))
+      params[Number(key)] = names;
   return {
     steps,
     stdout: text(raw.stdout),
@@ -94,6 +100,7 @@ export function parseTrace(json: string): Trace {
       note && typeof note === 'object' && ['json', 'entry', 'arity', 'tree', 'list'].includes(note.code as string)
         ? { code: note.code as HarnessNote['code'], detail: text(note.detail) }
         : null,
+    params,
   };
 }
 
@@ -170,6 +177,7 @@ export const TRACER_SOURCE = String.raw`
 import builtins as _b, inspect as _inspect, io as _io, json as _json, reprlib as _reprlib, sys as _sys, time as _time, types as _types
 
 _FILE = '<solution>'
+_RESUMABLE = _inspect.CO_GENERATOR | _inspect.CO_COROUTINE | _inspect.CO_ASYNC_GENERATOR
 _MISSING = object()
 _SKIP = (_types.ModuleType, _types.FunctionType, _types.BuiltinFunctionType, type)
 _PRELUDE = '''
@@ -401,7 +409,11 @@ def _cswork_debug(request):
     leetcode = req.get('mode') == 'leetcode'
     stdin = req.get('stdin') or ''
     steps, frames, state = [], {}, {'stopped': None, 'serial': 0}
-    trace = {'steps': steps, 'result': None, 'error': None, 'note': None}
+    # Generators get a 'call' event on every resume: they keep their first serial. Keyed by
+    # the frame itself, so a finished generator's serial is never handed to a new frame.
+    # ponytail: holds those frames until the run ends; fine at 5000 steps.
+    resumable, params = {}, {}
+    trace = {'steps': steps, 'result': None, 'error': None, 'note': None, 'params': params}
     out = _Out()
     ns = {'__name__': '__main__', '__builtins__': _b}
     if leetcode:
@@ -434,8 +446,19 @@ def _cswork_debug(request):
         while parent is not None and parent.f_code.co_filename != _FILE:
             parent = parent.f_back
         known = frames.get(id(parent)) if parent is not None else None
-        state['serial'] += 1
-        frames[id(frame)] = (state['serial'], known[1] + 1 if known else 0)
+        serial = resumable.get(frame)
+        if serial is None:
+            state['serial'] += 1
+            serial = state['serial']
+            code = frame.f_code
+            if code.co_flags & _RESUMABLE:
+                resumable[frame] = serial
+            # Parameters lead co_varnames: positional, keyword-only, *args, **kwargs.
+            count = (code.co_argcount + code.co_kwonlyargcount + bool(code.co_flags & _inspect.CO_VARARGS)
+                     + bool(code.co_flags & _inspect.CO_VARKEYWORDS))
+            if count:
+                params[serial] = code.co_varnames[:count]
+        frames[id(frame)] = (serial, known[1] + 1 if known else 0)
         return local
 
     saved = _sys.stdin, _sys.stdout, _sys.stderr

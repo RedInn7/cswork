@@ -226,8 +226,11 @@ test('parseTrace drops malformed steps instead of trusting them', () => {
       error: { type: 'ValueError', message: 'm', line: 'x' },
       stopped: 'nope',
       note: { code: 'other' },
+      params: { '2': ['n', 'k'], x: ['a'], '3': [1], '4': 'n' },
     }),
   );
+  assert.deepEqual(parsed.params, { 2: ['n', 'k'] });
+  assert.deepEqual(parseTrace('{}').params, {});
   assert.equal(parsed.steps.length, 2);
   assert.deepEqual(parsed.steps[0].vars, [['a', '1']]);
   assert.equal(parsed.steps[1].ret, '7');
