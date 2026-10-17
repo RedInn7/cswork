@@ -97,8 +97,8 @@ export default async function ProjectPage({ params }: Props) {
         <h2 id="accept">{t('验收脚本', 'Acceptance script')}</h2>
         <p>
           {t(
-            '一个只用 Python 标准库（3.8 及以上）的黑盒测试，从外部检查你的程序是否符合上面的需求。每一项打印 PASS 或 FAIL 和原因，全部通过时退出码为 0。',
-            'A black-box test that needs only the Python standard library (3.8 or later) and checks your program against the brief from the outside. Each check prints PASS or FAIL with the reason, and the exit code is 0 when all of them pass.',
+            '一个只用 Python 标准库（3.9 及以上）的黑盒测试，从外部检查你的程序是否符合上面的需求。每一项打印 PASS 或 FAIL 和原因，全部通过时退出码为 0。',
+            'A black-box test that needs only the Python standard library (3.9 or later) and checks your program against the brief from the outside. Each check prints PASS or FAIL with the reason, and the exit code is 0 when all of them pass.',
           )}
         </p>
         <p>
