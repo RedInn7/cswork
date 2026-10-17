@@ -145,6 +145,22 @@ void test('pdfLines: a two-column page under a full-width name reads the left co
     pdfLines([sidebar]),
     'Grace Hopper\ngrace@example.com | New York, NY\nEDUCATION\nYale University\nPh.D. Mathematics\nSKILLS\nCOBOL, Assembly\nEXPERIENCE\nRemington Rand  1949 – 1971\n• Built the A-0 compiler\n• Wrote the FLOW-MATIC manual',
   );
+  // The contact lines at the top of the sidebar, its email the widest: they are column rows, not a header.
+  const contacts = {
+    w: 612,
+    items: [
+      ...rows(40, ['Ada Lovelace', 'Seattle, WA', '(555) 123-4567', 'ada.lovelace@example.com', 'EDUCATION', 'MIT', 'SKILLS', 'Go, Python']).map((i) => (i.s.includes('@') ? { ...i, w: 190 } : i)),
+      ...rows(240, ['', '', 'EXPERIENCE', ['Acme Corp', 'Jun 2025 – Sep 2025'], '• Built a Redis cache in front of the search API, cutting p99 latency 40%']).filter((i) => i.s),
+    ].map((i) => (i.s.startsWith('•') ? { ...i, w: 330 } : i)),
+  };
+  const sidebarTop = pdfLines([contacts]);
+  assert.equal(
+    sidebarTop,
+    'Ada Lovelace\nSeattle, WA\n(555) 123-4567\nada.lovelace@example.com\nEDUCATION\nMIT\nSKILLS\nGo, Python\nEXPERIENCE\nAcme Corp  Jun 2025 – Sep 2025\n• Built a Redis cache in front of the search API, cutting p99 latency 40%',
+  );
+  assert.deepEqual(parseResumeText(sidebarTop).experience, [
+    { title: 'Acme Corp', subtitle: '', dates: 'Jun 2025 – Sep 2025', bullets: 'Built a Redis cache in front of the search API, cutting p99 latency 40%' },
+  ]);
   // One column: a bullet crosses the middle, so the same rows stay as lines.
   const single = { w: 612, items: [...rows(40, ['EDUCATION', 'MIT']), item('Built a cache across the whole width of the page', 40, 650, 500)] };
   assert.equal(pdfLines([single]), 'EDUCATION\nMIT\nBuilt a cache across the whole width of the page');

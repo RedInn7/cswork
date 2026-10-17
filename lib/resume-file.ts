@@ -117,14 +117,16 @@ function seam(items: PdfItem[], width: number) {
   }
   return best;
 }
+const across = (line: Line, x: number) => line.items.some((i) => i.x < x) && line.items.some((i) => i.x > x);
 /**
  * The text of pdf.js's text runs, page by page. A page is read as two columns, the left one and
  * then the right, when a vertical strip between 30% and 70% of the width is crossed by no run below
  * its header, at least 30% of those lines have text on both sides of it, and each side holds at
  * least 15% of the text. The header (a centred name over both columns) is the leading lines, up to
  * five and at most half the page, whose removal opens that strip or widens it by more than a
- * quarter. The text share keeps a one-column page whose bullets all stop short of the right-aligned
- * dates in one piece.
+ * quarter; it ends above a line with text on both sides of the strip left open with that line in
+ * place (a sidebar's long email beside the first job is a row of the columns). The text share keeps
+ * a one-column page whose bullets all stop short of the right-aligned dates in one piece.
  */
 export function pdfLines(pages: PdfPage[]) {
   return pages
@@ -133,14 +135,16 @@ export function pdfLines(pages: PdfPage[]) {
       const plain = () => lines.map(lineText).join('\n');
       let top = 0;
       let found = seam(items, w);
-      for (let k = 1; k <= Math.min(5, lines.length / 2); k++) {
+      for (let k = 1, prev = found; k <= Math.min(5, lines.length / 2); k++) {
+        if (prev && across(lines[k - 1], prev.x)) break;
         const next = seam(lines.slice(k).flatMap((l) => l.items), w);
         if (next && next.gap > (found?.gap ?? 0) * 1.25) [top, found] = [k, next];
+        prev = next;
       }
       if (!found) return plain();
       const { x } = found;
       const body = lines.slice(top);
-      const both = body.filter((l) => l.items.some((i) => i.x < x) && l.items.some((i) => i.x > x)).length;
+      const both = body.filter((l) => across(l, x)).length;
       const text = (left: boolean) => body.reduce((n, l) => n + l.items.reduce((m, i) => m + ((i.x < x) === left ? i.s.length : 0), 0), 0);
       if (both < 0.3 * body.length || Math.min(text(true), text(false)) < 0.15 * (text(true) + text(false))) return plain();
       const side = (left: boolean) => group(body.flatMap((l) => l.items.filter((i) => (i.x < x) === left)));
