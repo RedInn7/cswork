@@ -547,6 +547,8 @@ function CallTreeView({
 }) {
   const t = useT();
   const [folded, setFolded] = useState<ReadonlySet<number>>(() => new Set());
+  // Serials restart with every run: a new run starts unfolded.
+  useEffect(() => setFolded(new Set()), [tree]);
   const fold = (frame: number) =>
     setFolded((previous) => {
       const next = new Set(previous);
