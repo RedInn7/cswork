@@ -231,6 +231,9 @@ const EN: Record<string, string> = {
   访问令牌不存在: 'Access token not found',
   '最多保留 10 个访问令牌，请先吊销不用的': 'You can keep at most 10 access tokens. Revoke one you no longer use first',
   笔记或标记已达上限: "You've reached the limit for notes or marks",
+  // The notes export and review sheet (lib/server/note-export.ts)
+  '比赛或考试进行中，笔记导出和复习单要等结束后再用':
+    'The notes export and review sheet are closed while your contest or exam runs; they reopen afterwards',
   // Resume project repo links (lib/server/my-practice.ts, project:<slug> notes)
   '仓库链接只支持 GitHub、GitLab 或 Codeberg 的 https 地址': 'Repository links must be https addresses on GitHub, GitLab or Codeberg',
   // Points (lib/server/points.ts) and the bank's solved-date filter
@@ -314,6 +317,11 @@ const EN: Record<string, string> = {
   这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
   现在不能报告爽约: "You can't report a no-show right now",
   故事已达上限: "You've reached the limit for stories",
+  // Self-made review cards (lib/server/my-practice.ts) and the idea review (lib/server/recall-ideas.ts)
+  '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接':
+    'Invalid card: front and back up to 2,000 characters each, at most 8 tags, and the source must be a page on this site',
+  '卡片已达上限（200 张）': "You've reached the limit of 200 cards",
+  '一次最多查询 100 道题': 'Ask for at most 100 problems at a time',
   // Contest rooms and the weekly contest (lib/server/contests.ts)
   比赛不存在: 'Contest not found',
   比赛接口不存在: 'Contest endpoint not found',
@@ -335,6 +343,8 @@ const EN: Record<string, string> = {
   题解不存在: 'Solution not found',
   这道题没有可用的参考解: 'This problem has no reference solution to compare with',
   这道题暂不支持对拍: "Stress testing isn't available for this problem",
+  这道题暂不支持测复杂度: "Complexity probing isn't available for this problem",
+  '另一次复杂度测量正在运行，请稍后再试': 'Another complexity probe is running. Please try again shortly',
   // Whiteboard and stress-before-AC records (lib/server/practice-aids.ts)
   '还在判题，判完后再记录': "Still judging. It's recorded once judging finishes",
   评论不存在: 'Comment not found',

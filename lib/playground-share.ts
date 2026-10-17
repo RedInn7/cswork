@@ -36,31 +36,34 @@ const valid = (value: unknown): value is { l: CodeLanguage; c: string; s: string
   );
 };
 
-/** The #c= value for this state, or null when the link would pass SHARE_MAX_CHARS. */
-export async function encodeShare(state: PlaygroundState): Promise<string | null> {
-  const json = new TextEncoder().encode(
-    JSON.stringify({ v: 1, l: state.language, c: state.code, s: state.stdin }),
-  );
+/** `value` as deflate-raw JSON in base64url, or null when that passes `maxChars`. */
+export async function packJson(value: unknown, maxChars: number): Promise<string | null> {
+  const json = new TextEncoder().encode(JSON.stringify(value));
   const packed = await pipeBytes(json, new CompressionStream('deflate-raw'), Infinity);
-  const value = packed && toBase64Url(packed);
-  return value && value.length <= SHARE_MAX_CHARS ? value : null;
+  const text = packed && toBase64Url(packed);
+  return text && text.length <= maxChars ? text : null;
 }
+
+/** What packJson packed, or null for a broken value or one inflating past `maxBytes`. */
+export async function unpackJson(text: string, maxBytes: number): Promise<unknown> {
+  try {
+    const json = await pipeBytes(fromBase64Url(text), new DecompressionStream('deflate-raw'), maxBytes);
+    return json && JSON.parse(new TextDecoder().decode(json));
+  } catch {
+    return null;
+  }
+}
+
+/** The #c= value for this state, or null when the link would pass SHARE_MAX_CHARS. */
+export const encodeShare = (state: PlaygroundState) =>
+  packJson({ v: 1, l: state.language, c: state.code, s: state.stdin }, SHARE_MAX_CHARS);
 
 /** The state in a location hash (#c=…), or null for none, a broken link or a bomb. */
 export async function decodeShare(hash: string): Promise<PlaygroundState | null> {
   const value = /^#(?:.*&)?c=([A-Za-z0-9_-]+)/.exec(hash)?.[1];
   if (!value || value.length > SHARE_MAX_CHARS) return null;
-  try {
-    const json = await pipeBytes(
-      fromBase64Url(value),
-      new DecompressionStream('deflate-raw'),
-      JSON_MAX_BYTES,
-    );
-    const parsed: unknown = json && JSON.parse(new TextDecoder().decode(json));
-    return valid(parsed) ? { language: parsed.l, code: parsed.c, stdin: parsed.s } : null;
-  } catch {
-    return null;
-  }
+  const parsed = await unpackJson(value, JSON_MAX_BYTES);
+  return valid(parsed) ? { language: parsed.l, code: parsed.c, stdin: parsed.s } : null;
 }
 
 const TAGS = new Map<string, CodeLanguage>([

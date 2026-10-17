@@ -1,10 +1,12 @@
 import bank from '@/lib/content/interview-extra-questions.json';
-import type { KindId, Text } from '@/lib/mock-interview';
+import mlCoding from '@/lib/content/ml-coding.json';
+import { ML_CODING_ASK, type KindId, type Text } from '@/lib/mock-interview';
 import type { PoolRow } from './mock-interview';
 import { sdChapter } from './system-design-course';
 
 /*
- * The AI interviewer's project, API and frontend questions (lib/content/interview-extra-questions.json).
+ * The AI interviewer's project, API and frontend questions (lib/content/interview-extra-questions.json),
+ * and the ML coding round's (mlCodingQuestion).
  * The project deep dive is one fixed prompt over the candidate's own resume; an API question is the
  * case of an API design course chapter, which is its reference answer; the frontend ones carry their
  * own. Only the question leaves the server (lib/server/mock-interview.ts); lib/server/ai-interviewer.ts
@@ -27,10 +29,33 @@ type Extra = {
 // Via unknown: the JSON infers string[] where Extra has [zh, en] pairs and literal kinds.
 const EXTRAS = (bank as unknown as { questions: Extra[] }).questions;
 
+/**
+ * The ML coding round's questions: the ML Coding track's problems (scripts/ml-coding/build.ts), asked
+ * from their summaries. The judge problem holds the statement, so the question card links to it.
+ */
+const ML_CODING = mlCoding.problems;
+const mlCodingQuestion = (id: string) => {
+  const p = ML_CODING.find((x) => x.id === id);
+  if (!p) return null;
+  return {
+    id: p.id,
+    kind: 'mlcode' as KindId,
+    category: 'ML Coding',
+    title: p.titleEn,
+    titleZh: p.titleZh,
+    question: `${p.summaryEn}. ${ML_CODING_ASK[1]}`,
+    questionZh: `${p.summaryZh}。${ML_CODING_ASK[0]}`,
+    hints: '',
+    followUps: '',
+    rubric: '',
+    solution: '',
+  };
+};
+
 /** An extra question by id, with its interviewer-only parts; null for any other id. */
 export function extraQuestion(id: string) {
   const q = EXTRAS.find((x) => x.id === id);
-  if (!q) return null;
+  if (!q) return mlCodingQuestion(id);
   return {
     id: q.id,
     kind: q.kind as KindId,
@@ -49,7 +74,12 @@ export function extraQuestion(id: string) {
 
 /** A kind's extra questions as pool rows; none for the library's own kinds. */
 export const extraPool = (kind: KindId): PoolRow[] =>
-  EXTRAS.filter((x) => x.kind === kind).map((x) => ({
-    id: x.id, type: 'extra', slug: x.id, title: x.title[1], company: null, companyName: null, role: null,
-    category: x.category, round: null, difficulty: null, listed: false, problem: null,
-  }));
+  kind === 'mlcode'
+    ? ML_CODING.map((p) => ({
+        id: p.id, type: 'extra', slug: p.id, title: p.titleEn, company: null, companyName: null, role: null,
+        category: 'ML Coding', round: null, difficulty: null, listed: false, problem: p.id,
+      }))
+    : EXTRAS.filter((x) => x.kind === kind).map((x) => ({
+        id: x.id, type: 'extra', slug: x.id, title: x.title[1], company: null, companyName: null, role: null,
+        category: x.category, round: null, difficulty: null, listed: false, problem: null,
+      }));

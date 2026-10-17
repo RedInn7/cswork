@@ -203,6 +203,7 @@ Requests to complete strangers work far less often. A short, specific message be
 - 60–120 分钟内做 2–4 道算法题，用隐藏测试用例判分。
 - 有时还有调试题、选择题、工作风格问卷或 SQL 题。
 - 有的测试会开摄像头或录屏。开始前读清规则：很多 OA 禁止任何外部帮助（包括 AI 工具），并且会查重。
+- 各平台规则不同，见 [面试平台规则对照](/interview-platforms)。
 
 ## 考前准备
 - 用你写得最快的语言，并熟悉它怎么读标准输入。我们的 [输入模板](/acm-io) 覆盖 Python、C++、Java 和 Go。
@@ -214,7 +215,7 @@ Requests to complete strangers work far less often. A short, specific message be
 2. 先写对一个暴力解，再优化；通过部分用例往往也有分。
 3. 看数据范围：元素个数在 10^5 左右，通常就不能用 O(n²)。
 4. 自己测边界：空输入、单个元素、重复值、负数、最大值。
-5. 留几分钟，把每道题最好的版本再交一遍。
+5. 留几分钟，把每道题最好的版本再交一遍（每题只能交一次的平台除外）。
 
 ## 考完之后
 结果一般在一到三周内出来。不要干等，继续投递、继续练习。不知道该练哪些题型，可以从 [解题思路决策树](/flowchart) 和 [每站代码模板](/topics) 开始。`,
@@ -224,6 +225,7 @@ Requests to complete strangers work far less often. A short, specific message be
 - 2–4 algorithm problems in 60–120 minutes, judged by hidden test cases.
 - Sometimes a debugging task, multiple-choice questions, a work-style survey or an SQL question.
 - Some tests use the webcam or record the screen. Read the rules before you start: many forbid any outside help, AI tools included, and check for plagiarism.
+- Each platform has its own rules; see the [interview platform rules](/interview-platforms).
 
 ## Before you start
 - Use the language you are fastest in, and know how it reads standard input. Our [input templates](/acm-io) cover Python, C++, Java and Go.
@@ -235,7 +237,7 @@ Requests to complete strangers work far less often. A short, specific message be
 2. Get a correct brute force working before you optimise; passing some test cases often earns partial credit.
 3. Check the input limits: around 10^5 elements usually rules out O(n²).
 4. Test edge cases yourself: empty input, one element, duplicates, negative numbers, the largest values.
-5. Keep a few minutes to resubmit the best version of each problem.
+5. Keep a few minutes to resubmit the best version of each problem, unless the platform takes only one submission per problem.
 
 ## After the test
 Results usually arrive within one to three weeks. Don’t wait: keep applying and practising. Not sure which patterns to drill? Start with the [pattern decision tree](/flowchart) and the [topic templates](/topics).`,
@@ -267,7 +269,7 @@ Results usually arrive within one to three weeks. Don’t wait: keep applying an
 - 代码怎么评审、怎么上线？
 - 前六个月做到什么程度算是做得好？
 
-可以在 [模拟面试](/mock-interview) 里带计时、带面试官练习。`,
+可以在 [模拟面试](/mock-interview) 里带计时、带面试官练习。共享编辑器能不能运行代码、有没有补全，见 [面试平台规则对照](/interview-platforms)。`,
     en: `A phone screen (technical screen) is usually a 45–60 minute video call with one engineer, coding in a shared editor. Some companies start with a 20–30 minute recruiter call about your background, timing and work authorisation.
 
 ## Introduction templates
@@ -293,7 +295,7 @@ Interviewers grade how you communicate as much as the code. Silence is hard to g
 - How is code reviewed and shipped?
 - What would a great first six months look like?
 
-Practise with a timer and an interviewer in [mock interviews](/mock-interview).`,
+Practise with a timer and an interviewer in [mock interviews](/mock-interview). Whether the shared editor runs code or autocompletes is covered in the [interview platform rules](/interview-platforms).`,
   },
 
   onsite: {

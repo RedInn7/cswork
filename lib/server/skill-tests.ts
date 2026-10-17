@@ -54,8 +54,10 @@ export const skillSources = {
         .pluck()
         .all() as string[],
     );
+    // Index design problems answer with CREATE INDEX, not a query: not exam material.
+    const indexing = new Set(sqlTrack.groups.find((group) => group.key === 'indexing')?.ids);
     return sqlTrack.problems
-      .filter((p) => published.has(p.id))
+      .filter((p) => published.has(p.id) && !indexing.has(p.id))
       .map((p) => ({ id: p.id, difficulty: slotOf(p.difficulty), loose: false }));
   },
 };

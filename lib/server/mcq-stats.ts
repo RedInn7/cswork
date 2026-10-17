@@ -83,8 +83,25 @@ export function mcqStats(ids: readonly string[], now = Date.now()) {
   return out;
 }
 
-/** /api/oj/mcq/answers (POST, signed in) and /api/oj/mcq/stats?ids=a,b (GET, anyone). */
+/**
+ * /api/oj/mcq/answers (POST, signed in), /api/oj/mcq/stats?ids=a,b (GET, anyone) and
+ * /api/oj/mcq/questions?ids=a,b&lang=zh (GET, anyone): bank questions in one language with their
+ * answers, for a review that should not load the whole bank (components/review-session.tsx).
+ */
 export async function handleMcqStats(request: Request, p: Person | null, [what]: string[]) {
+  if (request.method === 'GET' && what === 'questions') {
+    await limitReader(request, p, 'mcq-questions-read', 60);
+    const params = new URL(request.url).searchParams;
+    const ids = (params.get('ids') || '').split(',').filter(Boolean);
+    if (ids.length > IDS_MAX) throw new HttpError(400, '一次最多查询 50 道题');
+    const lang = params.get('lang') === 'zh' ? 'zh' : 'en';
+    return json({
+      items: [...new Set(ids)].flatMap((id) => {
+        const q = bank.get(id);
+        return q ? [{ id, section: q.section, topic: q.topic, code: q.code, answer: q.answer, text: q[lang] }] : [];
+      }),
+    });
+  }
   if (request.method === 'GET' && what === 'stats') {
     await limitReader(request, p, 'mcq-stats-read', 120);
     const ids = (new URL(request.url).searchParams.get('ids') || '').split(',').filter(Boolean);

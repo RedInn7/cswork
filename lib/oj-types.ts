@@ -355,7 +355,7 @@ export const ojImportSchema = z
           .min(1)
           .max(5),
         starters: z
-          .partialRecord(z.enum(['python', 'go', 'java', 'cpp']), z.string().max(20000))
+          .partialRecord(z.enum(['python', 'go', 'java', 'cpp', 'sql']), z.string().max(20000))
           .optional(),
         httpFixtures: z
           .record(z.string().max(2000).regex(HTTP_FIXTURE_KEY), z.json())
@@ -460,6 +460,14 @@ export const ojImportSchema = z
         message: '语言不能重复',
         path: ['problem', 'languages'],
       });
+    // Starters only for languages the problem is judged in: the sql key is for the SQL
+    // track's index problems, so a code-language problem cannot carry one.
+    if (Object.keys(data.problem.starters ?? {}).some((key) => !data.problem.languages.includes(key as Language)))
+      ctx.addIssue({
+        code: 'custom',
+        message: '起始代码只能给本题的语言 / starters only for the problem’s languages',
+        path: ['problem', 'starters'],
+      });
     // sql- problems are free, publicly listed and judged by the SQL harness
     // (lib/server/sql-judge.ts), so the prefix, the language and the SQL
     // track's home lesson go together.
@@ -481,17 +489,34 @@ export const ojImportSchema = z
         message:
           'SQL 题只能用 sql- 题号、仅 SQL 语言、exact 校验并放在 gomall/00-overview / SQL problems need a sql- id, SQL only, the exact checker and gomall/00-overview',
       });
-    // core- (Core Skills) and bk- (book) problems are free, publicly listed
+    // core- (Core Skills), bk- (book) and ml- (ML Coding) problems are free, publicly listed
     // tracks (lib/free-tracks.ts), so like the SQL track they stay in its home lesson.
     if (
-      /^(core|bk|rest)-/.test(data.problem.id) &&
+      /^(core|bk|rest|ml)-/.test(data.problem.id) &&
       (data.problem.courseId !== 'gomall' || data.problem.lessonId !== '00-overview')
     )
       ctx.addIssue({
         code: 'custom',
         path: ['problem', 'id'],
         message:
-          'core- / bk- / rest- 题号只能用于 gomall/00-overview 里的 Core Skills 题、书题和 REST API 题 / core-, bk- and rest- ids are for Core Skills, book and REST API problems in gomall/00-overview',
+          'core- / bk- / rest- / ml- 题号只能用于 gomall/00-overview 里的 Core Skills 题、书题、REST API 题和 ML 题 / core-, bk-, rest- and ml- ids are for Core Skills, book, REST API and ML Coding problems in gomall/00-overview',
+      });
+    // ml- problems (scripts/ml-coding/build.ts) import numpy, which the judge has once it has
+    // pandas (lib/server/oj-problems.ts hides them until then): Python only, answers compared
+    // as floats, and room for numpy.
+    if (
+      data.problem.id.startsWith('ml-') &&
+      !(
+        data.problem.languages.join() === 'python' &&
+        data.problem.checker === 'float-array' &&
+        data.problem.memoryLimit >= 262144
+      )
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'languages'],
+        message:
+          'ML 题只能用 Python、float-array 校验，内存至少 256 MB / ML problems need Python only, the float-array checker and at least 256 MB',
       });
     // pd- problems are the SQL track's pandas versions, judged by PANDAS_HARNESS
     // (lib/server/sql-judge.ts): the same rules, plus room for a python that

@@ -26,6 +26,7 @@ const { buildPandasTrack, pandasRunner, PACKAGES_FILE, PANDAS_PACKAGES_FILE } = 
   '../scripts/sql-track/build'
 );
 const { PANDAS_SOLUTIONS } = await import('../scripts/sql-track/pandas-solutions');
+const { PANDAS_NATIVE } = await import('../scripts/sql-track/pandas-native');
 const { compile, run, engineVerdict, matchesOutput } = await import('../lib/server/oj-engine');
 const { getJudgeProblem, listPublishedProblems } = await import('../lib/server/oj-problems');
 const { createSubmission } = await import('../lib/server/oj-submissions');
@@ -118,13 +119,15 @@ test('the harness rejects what is not a result DataFrame, in both languages', { 
 test('every pandas solution reproduces the SQL expected outputs into the committed packages', { skip: noPandas }, () => {
   const built = buildPandasTrack();
   assert.equal(built.packages, readFileSync(PANDAS_PACKAGES_FILE, 'utf8'), 'rerun scripts/sql-track/build.ts --pandas');
-  assert.equal(built.report.length, 50);
+  assert.equal(built.report.length, 63);
 });
 
-test('the packages are the SQL packages as 50 valid pandas-only problems', () => {
-  assert.equal(packages.length, 50);
+test('the packages are the first 50 SQL packages in pandas, then 13 pandas-only problems', () => {
+  assert.equal(packages.length, 63);
   assert.equal(Object.keys(PANDAS_SOLUTIONS).length, 50);
-  packages.forEach((pkg, index) => {
+  // The advanced and index design SQL problems have no pandas twin.
+  assert.ok(!packages.some((pkg) => /^pd-(5[1-9]|6\d|7\d)$/.test(pkg.problem.id)));
+  packages.slice(0, 50).forEach((pkg, index) => {
     const parsed = ojImportSchema.parse(pkg);
     const sql = sqlPackages[index];
     assert.equal(parsed.problem.id, `pd-${sql.problem.id.slice(4)}`);
@@ -138,6 +141,27 @@ test('the packages are the SQL packages as 50 valid pandas-only problems', () =>
     // Hints render as plain text, so no Markdown backticks.
     assert.ok(![...parsed.problem.hints, ...(parsed.problem.translations?.en?.hints ?? [])].some((hint) => hint.includes('`')));
   });
+  // Pandas-only problems: three-digit ids, their own tables and at least three hidden datasets.
+  const native = packages.slice(50);
+  assert.deepEqual(
+    native.map((pkg) => pkg.problem.id),
+    PANDAS_NATIVE.map((problem) => problem.id),
+  );
+  native.forEach((pkg, k) => {
+    const parsed = ojImportSchema.parse(pkg);
+    assert.equal(parsed.problem.id, `pd-${101 + k}`);
+    assert.deepEqual(parsed.problem.languages, ['pandas']);
+    assert.equal(parsed.problem.timeLimit, 3);
+    assert.ok(parsed.problem.description.includes('def solve(tables'));
+    assert.ok(!parsed.problem.input.includes('SQL 版'), 'no SQL twin to point at');
+    assert.ok(!parsed.cases[0].hidden && parsed.cases.filter((c) => c.hidden).length >= 3);
+    assert.ok(parsed.problem.hints.length >= 1 && !parsed.problem.hints.some((hint) => hint.includes('`')));
+  });
+  // REAL columns are float64, and the input text says so.
+  const trades = native.find((pkg) => pkg.problem.id === 'pd-107')!.problem;
+  assert.match(trades.description, /\n {2}price +float64\n/);
+  assert.match(trades.input, /REAL 列是 float64/);
+  assert.match(trades.translations!.en!.input, /REAL columns are float64/);
   const pandas = packages[0];
   const variant = (problem: Partial<OjProblemPackage['problem']>) =>
     ojImportSchema.safeParse({ ...pandas, problem: { ...pandas.problem, ...problem } }).success;
@@ -219,6 +243,22 @@ test('the worker engine runs pandas through the harness and the exact checker', 
       verdicts.push(matchesOutput(output.files?.stdout || '', c.expectedOutput, 'exact', c.input));
     }
     assert.equal(verdicts.includes(false), true);
+    // A pandas-only problem: the reference passes everywhere, a wrong solution fails a hidden case.
+    const fill = packages.find((p) => p.problem.id === 'pd-109')!;
+    const problem = PANDAS_NATIVE.find((p) => p.id === 'pd-109')!;
+    for (const [code, passes] of [
+      [problem.reference, true],
+      [problem.wrong[0], false],
+    ] as const) {
+      const { program } = await compile('pandas', code, signal);
+      const matched: boolean[] = [];
+      for (const c of fill.cases) {
+        const output = await run(program, c.input, fill.problem, signal);
+        assert.equal(engineVerdict(output), 'accepted', `${fill.problem.id} ${c.name}`);
+        matched.push(matchesOutput(output.files?.stdout || '', c.expectedOutput, 'exact', c.input));
+      }
+      assert.equal(matched.every(Boolean), passes);
+    }
     const broken = (await compile('pandas', "def solve(tables):\n    return tables['nope']\n", signal)).program;
     const failed = await run(broken, pkg.cases[0].input, pkg.problem, signal);
     assert.equal(engineVerdict(failed), 'runtime_error');
@@ -236,10 +276,11 @@ test('pd- problems publish with the SQL track but stay hidden until the judge re
   });
   assert.equal(publish.status, 0, publish.stderr);
   assert.equal(publish.stdout.match(/"id":"pd-\d\d","status":"published"/g)?.length, 50);
+  assert.equal(publish.stdout.match(/"id":"pd-1\d\d","status":"published"/g)?.length, 13);
   const pandasListed = async () => (await listPublishedProblems(null)).filter((p) => p.id.startsWith('pd-'));
   // An image without pandas: nothing to see, open or submit.
   assert.equal((await pandasListed()).length, 0);
-  assert.equal((await listPublishedProblems(null)).filter((p) => p.id.startsWith('sql-')).length, 50);
+  assert.equal((await listPublishedProblems(null)).filter((p) => p.id.startsWith('sql-')).length, 70);
   await assert.rejects(getJudgeProblem(student, 'pd-01'), /尚未发布/);
   const heartbeat = (details: object) =>
     sqlite()
@@ -252,7 +293,7 @@ test('pd- problems publish with the SQL track but stay hidden until the judge re
   // verify-runtime.py recorded pandas and the worker reports it: listed, free for any verified account.
   heartbeat({ languageVersions: { python: 'Python 3.13.5', pandas: 'pandas 2.2.3' } });
   const listed = await pandasListed();
-  assert.equal(listed.length, 50);
+  assert.equal(listed.length, 63);
   assert.ok(listed.every((p) => p.freeJudge && p.languages.join() === 'pandas'));
   assert.equal((await getJudgeProblem(student, 'pd-01')).cases.length, packages[0].cases.length);
   const submission = (language: string, key: string) =>

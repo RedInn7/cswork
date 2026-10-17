@@ -64,6 +64,8 @@ import {
 const QUEUE = process.env.OJ_QUEUE_NAME || 'cswork-judge-v1';
 if (!/^[a-zA-Z0-9_-]{1,80}$/.test(QUEUE)) throw new Error('Invalid queue name');
 const MAX_ATTEMPTS = 3;
+/** A complexity probe's CPU budget across its cases: checked between cases, so the last one may overrun it. */
+const PROBE_CPU_MS = 10_000;
 const db = sqlite();
 const redisUrl = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6381');
 if (!['redis:', 'rediss:'].includes(redisUrl.protocol))
@@ -294,6 +296,7 @@ async function judgeSubmission(
       }).immediate();
       return;
     }
+    const probe = claimed.mode === 'complexity';
     const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
@@ -306,6 +309,8 @@ async function judgeSubmission(
         timeLimit:
           loaded.spec.timeLimits?.[claimed.language] ??
           loaded.spec.timeLimit,
+        // A probe's arrays run to 16384 values: room for its answers, which are timed, never stored.
+        ...(probe ? { outputLimit: Math.max(loaded.spec.outputLimit, 1024) } : {}),
       },
     };
     assertSnapshotBudget(snapshot.cases);
@@ -439,7 +444,12 @@ async function judgeSubmission(
         release();
       }
     };
-    const width = caseConcurrency(snapshot.spec.memoryLimit, exclusive);
+    // ponytail: a complexity probe runs its cases one at a time, smallest first, and stops at its
+    // first failure or past PROBE_CPU_MS; not exclusive, so other submissions' cases and
+    // precompiles still run beside it and nudge its CPU times a little. One probe in flight
+    // site-wide and 6 an hour each (lib/server/stress.ts) bound what it costs everyone else.
+    const width = probe ? 1 : caseConcurrency(snapshot.spec.memoryLimit, exclusive);
+    let probeMs = 0;
     for await (const { item: c, result } of orderedCaseResults(
       cases,
       executeCase,
@@ -490,8 +500,8 @@ async function judgeSubmission(
               : status,
           runtimeMs,
           memoryKb,
-          stdout: result.files?.stdout,
-          stderr: result.files?.stderr,
+          stdout: probe ? '' : result.files?.stdout,
+          stderr: probe && status === 'accepted' ? '' : result.files?.stderr,
           hidden: c.hidden,
           terminalFailure: terminal,
           capture,
@@ -506,6 +516,7 @@ async function judgeSubmission(
       if (terminal) terminalFailureCommitted = true;
       // Unexecuted cases after a stop read as skipped.
       if (stopJudging(status, { formal, runAll, heavy })) break;
+      if (probe && (probeMs += runtimeMs) > PROBE_CPU_MS) break;
     }
     if (terminalFailureCommitted) return;
     current(id, attempt, controller.signal);

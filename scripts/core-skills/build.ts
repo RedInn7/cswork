@@ -343,7 +343,7 @@ export function parseStatement(text: string, where: string) {
   };
 }
 
-const driverOf = (source: string, where: string) => {
+export const driverOf = (source: string, where: string) => {
   const lines = source.split('\n');
   const at = lines.findIndex((line) => line.includes(DRIVER_MARK));
   if (at < 0 || lines.findLastIndex((line) => line.includes(DRIVER_MARK)) !== at)

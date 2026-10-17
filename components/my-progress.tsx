@@ -20,13 +20,15 @@ import {
 } from '@/lib/practice-review';
 import { ReviewForecast } from './review-forecast';
 import { SolveQuality } from './solve-quality';
-import { RecallQueue, useRecallQueue } from './recall-queue';
+import { RecallQueue, ReviewSessionLink, useRecallQueue } from './recall-queue';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { useCoveredDays } from './daily-goal';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
 import { NoteTagChips } from './notes-filters';
+import { NotesExport } from './cheatsheet';
 import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
@@ -81,7 +83,7 @@ function highlight(text: string, words: string[]) {
   // split() with one capture group puts the matches at the odd indices.
   return text.split(pattern).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
 }
-const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
+const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk', 'ml'] as const;
 // pd- problems are the SQL track's pandas versions, so they count as 'sql'.
 const source = (id: string): (typeof SOURCES)[number] | 'course' =>
   trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
@@ -213,7 +215,7 @@ export function MyProgress({
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   // A freeze bought below counts on the calendar at once, before the bootstrap refreshes.
   const [bought, setBought] = useState<number[] | null>(null);
-  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done, bought ?? boot.purchasedFreezes);
+  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done, bought ?? boot.purchasedFreezes, useCoveredDays());
   // Line 500's daily target, read only: the trip itself lives on the bank page.
   // This view only renders after the client bootstrap, so storage is safe here.
   const [target] = useState(() => {
@@ -386,7 +388,7 @@ export function MyProgress({
         : [];
   const mins = (seconds: number) => Math.max(1, Math.round(seconds / 60));
   const sourceName = (id: string) =>
-    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), course: t('课程练习', 'Course') })[
+    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), ml: 'ML Coding', course: t('课程练习', 'Course') })[
       source(id)
     ];
 
@@ -644,6 +646,8 @@ export function MyProgress({
               ],
             )}
           <RecallQueue recall={recall} signedIn={!!boot.person} navigate={navigate} english={english} />
+          {/* Cards, ideas, multiple-choice and coding reviews in one queue (components/review-session.tsx). */}
+          <ReviewSessionLink signedIn={!!boot.person} navigate={navigate} english={english} />
         </>
       );
     if (tab === 'notes') return notesPanel();
@@ -770,6 +774,7 @@ export function MyProgress({
             {t('加载更多笔记', 'Load more notes')}
           </Button>
         )}
+        <NotesExport english={english} problems={boot.problems} />
       </>
     );
   }

@@ -62,9 +62,9 @@ const OPENERS: Record<Opener, Text> = {
 };
 /** Shown before the first message of each question; never sent, so reading costs no turn. */
 export const openerFor = (kind: KindId): Text =>
-  OPENERS[kind === 'sql' ? 'coding' : Object.hasOwn(OPENERS, kind) ? (kind as Opener) : 'other'];
+  OPENERS[kind === 'sql' || kind === 'mlcode' ? 'coding' : Object.hasOwn(OPENERS, kind) ? (kind as Opener) : 'other'];
 /** Questions whose code box goes to the interviewer with each message. */
-export const writesCode = (kind: KindId) => kind === 'coding' || kind === 'sql' || kind === 'lld' || kind === 'frontend';
+export const writesCode = (kind: KindId) => kind === 'coding' || kind === 'sql' || kind === 'mlcode' || kind === 'lld' || kind === 'frontend';
 
 export const candidateTurns = (chats: readonly (readonly Turn[] | undefined)[]) =>
   chats.reduce((n, chat) => n + (chat?.filter((t) => t.role === 'candidate').length ?? 0), 0);

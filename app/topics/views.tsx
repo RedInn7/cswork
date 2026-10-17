@@ -11,6 +11,7 @@ import type { McqQuestion } from '@/lib/mock-oa';
 import { McqPractice } from '@/app/oa/mcq/practice';
 import { TemplateDrill } from '@/components/template-drill';
 import { TopicNotebook } from '@/components/topic-notebook';
+import { SelectionAsk } from '@/components/command-palette';
 
 export const INDEX_COPY = {
   zh: {
@@ -212,7 +213,7 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           <span aria-hidden="true">→</span>
         </a>
       </header>
-      <div className="topics-notes">
+      <SelectionAsk className="topics-notes" clip={{ target: `clip:topic/${stop.slug}`, title, href: topicPath(stop.slug) }}>
         <section className="topics-points" aria-labelledby="topic-points">
           <h2 id="topic-points">{t('要点', 'Key points')}</h2>
           <ol>
@@ -229,7 +230,7 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
             ))}
           </ul>
         </section>
-      </div>
+      </SelectionAsk>
       <TopicNotebook slug={stop.slug} zh={zh} />
       {stopDemos(stop.slug).length > 0 && (
         <section className="topics-demos" id="algorithm-demo" aria-labelledby="topic-demos">

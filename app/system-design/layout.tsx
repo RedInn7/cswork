@@ -5,6 +5,7 @@ import '../discuss.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';
+import { DailyGoal } from '@/components/daily-goal';
 import { requestLocale } from '@/lib/server/locale';
 
 export default async function SystemDesignLayout({ children }: { children: React.ReactNode }) {
@@ -15,6 +16,7 @@ export default async function SystemDesignLayout({ children }: { children: React
         <Link className="public-library-brand" href="/" prefetch={false}>
           cswork<span> / {zh ? '系统设计' : 'system design'}</span>
         </Link>
+        <DailyGoal />
         <Link href="/mock-interview" prefetch={false}>
           {zh ? '来一场模拟面试' : 'Run a mock interview'} <span aria-hidden="true">↗</span>
         </Link>

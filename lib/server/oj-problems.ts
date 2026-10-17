@@ -179,12 +179,12 @@ const libraryJudgeGate = `NOT EXISTS (
 )`;
 
 /**
- * Hidden OA companies, and pd- problems until the judge reports pandas: they run
- * on the image's pandas (deploy/oj/Dockerfile.pandas), so a release can publish
- * them before the runner is upgraded, and a rollback hides them again.
+ * Hidden OA companies, and pd- and ml- problems until the judge reports pandas: they
+ * run on the image's pandas and its numpy (deploy/oj/Dockerfile.pandas), so a release
+ * can publish them before the runner is upgraded, and a rollback hides them again.
  */
 const shown = (column: string) =>
-  `${shownOaSql(column)} AND (${column} NOT LIKE 'pd-%' OR EXISTS(SELECT 1 FROM oj_runtime WHERE id='worker' AND json_extract(details,'$.languageVersions.pandas') IS NOT NULL))`;
+  `${shownOaSql(column)} AND ((${column} NOT LIKE 'pd-%' AND ${column} NOT LIKE 'ml-%') OR EXISTS(SELECT 1 FROM oj_runtime WHERE id='worker' AND json_extract(details,'$.languageVersions.pandas') IS NOT NULL))`;
 
 /** OA, first-party tracks (lib/free-tracks.ts) and study-library problems judge free for any verified account. */
 const freeJudge = `(${freeTrackSql('p.id')} OR EXISTS(SELECT 1 FROM study_library s WHERE s.judge_problem_id=p.id))`;

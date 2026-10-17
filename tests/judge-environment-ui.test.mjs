@@ -61,6 +61,7 @@ test('versions come from the heartbeat, else the image; commands match the engin
     const compared = [...doc.querySelectorAll('table')[1].querySelectorAll('tr')];
     assert.ok(compared.every((tr) => tr.children.length === 5));
     assert.ok(doc.querySelector('a[href="/acm-io"]'));
+    assert.ok(doc.querySelector('a[href="/interview-platforms"]'));
     const text = doc.body.textContent;
     assert.equal(/[一-鿿]/.test(text), locale === 'zh', locale);
     assert.match(text, locale === 'zh' ? /没有 sortedcontainers/ : /not sortedcontainers/);

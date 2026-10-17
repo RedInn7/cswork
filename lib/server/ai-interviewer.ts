@@ -194,6 +194,8 @@ const STYLE: Record<KindId, string> = {
     'Analytics round: ask how they would define the metric, segment the data and design or read the experiment; probe for biases and confounders.',
   stats: 'Statistics round: ask them to state assumptions and reason step by step; check the final number or formula with a question.',
   ml: 'Machine learning round: ask about the problem framing, data, features, the model choice, evaluation metrics and failure modes.',
+  mlcode:
+    'ML coding round: the candidate implements a model or metric with numpy alone, no sklearn, in the code box. Ask for the math and the array shapes before they code; read their code each turn, probe numerical stability, vectorization and edge cases such as ties or empty clusters, and point at a bug with a question instead of fixing it.',
   lld: 'Low-level design round: the candidate models classes and interfaces in text and writes the core code in the code box. Ask about responsibilities, relationships, method signatures, concurrency and edge cases; push on one design choice at a time, and point at a bug with a question instead of fixing it.',
   recruiter:
     "This is a recruiter screen. Cover, one at a time and in a natural order: why this company and this role; one project they are proud of (ask a follow-up on their own part in it); work authorization and whether they need sponsorship now or later; their pay expectations; their timeline and other processes. Ask for expected pay the way recruiters do and press once if they deflect; if they name a number, note it without saying whether it is high or low. Close with the next steps from your facts.",

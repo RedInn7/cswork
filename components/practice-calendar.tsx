@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Snowflake } from 'lucide-react';
-import { practiceStats, WEEKS, type Activity, type PracticeStats } from '@/lib/practice-stats';
+import { practiceStats, WEEKS, type Activity, type Covered, type PracticeStats } from '@/lib/practice-stats';
 
 export { FREEZES_PER_MONTH, practiceStats, type Activity, type PracticeCell, type PracticeStats } from '@/lib/practice-stats';
 
@@ -15,13 +15,14 @@ export function level(count: number) {
 /**
  * Stats for the local day, or null before mount so server and browser time
  * zones never disagree. Re-reads the clock on focus so a page left open past
- * midnight shows the new day.
+ * midnight shows the new day. `covered`: components/daily-goal.tsx useCoveredDays.
  */
 export function usePracticeStats(
   activity: readonly Activity[],
   english: boolean,
   daily?: readonly number[],
   bought?: readonly number[],
+  covered?: readonly Covered[],
 ) {
   const [dayStamp, setDayStamp] = useState<string | null>(null);
   useEffect(() => {
@@ -32,8 +33,8 @@ export function usePracticeStats(
   }, []);
   return useMemo(
     () =>
-      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily, WEEKS, bought),
-    [activity, dayStamp, english, daily, bought],
+      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily, WEEKS, bought, covered),
+    [activity, dayStamp, english, daily, bought, covered],
   );
 }
 
@@ -58,6 +59,17 @@ function nudge(stats: PracticeStats, signedIn: boolean, target: number, t: T) {
     return t(
       `今天已通过 ${today} 题，再刷 ${target - today} 题完成今日行程。`,
       `${today} solved today. ${target - today} more to finish today’s trip.`,
+    );
+  const covered = streak > 0 && stats.cells[stats.todayIndex].covered;
+  if (covered === 'rest')
+    return t(
+      `今天是休息日，连续 ${streak} 天不会断。`,
+      `Today is a rest day: your ${streak}-day streak holds.`,
+    );
+  if (covered === 'goal')
+    return t(
+      `今日经验已达标，连续 ${streak} 天保住了；刷一题还能多算一天。`,
+      `Today’s XP goal is met, so your ${streak}-day streak holds. Solve one to add a day.`,
     );
   if (rescue)
     return t(
@@ -102,7 +114,7 @@ export function PracticeCalendar({
     if (scroller.current)
       scroller.current.scrollLeft = scroller.current.scrollWidth;
   }, [stats]);
-  const risk = !!stats && stats.streak > 0 && stats.today === 0;
+  const risk = !!stats && stats.streak > 0 && stats.today === 0 && !stats.cells[stats.todayIndex].covered;
   const weeks = lineTotal && target ? Math.ceil(lineTotal / target / 7) : 0;
 
   return (
@@ -147,12 +159,13 @@ export function PracticeCalendar({
                   data-today={i === stats.todayIndex || undefined}
                   data-frozen={cell.frozen || undefined}
                   data-daily={cell.daily || undefined}
+                  data-covered={cell.covered}
                   title={
                     cell.future
                       ? undefined
                       : t(
-                          `${new Date(cell.time).getMonth() + 1}月${new Date(cell.time).getDate()}日 · ${cell.count ? `通过 ${cell.count} 题` : cell.frozen ? '已用保护日' : '没有通过记录'}${cell.daily ? ' · 完成每日一题' : ''}`,
-                          `${new Date(cell.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${cell.count ? `${cell.count} solved` : cell.frozen ? 'Streak freeze used' : 'Nothing solved'}${cell.daily ? ' · Daily problem solved' : ''}`,
+                          `${new Date(cell.time).getMonth() + 1}月${new Date(cell.time).getDate()}日 · ${cell.count ? `通过 ${cell.count} 题` : cell.frozen ? '已用保护日' : cell.covered === 'rest' ? '休息日' : cell.covered ? '经验已达标' : '没有通过记录'}${cell.daily ? ' · 完成每日一题' : ''}`,
+                          `${new Date(cell.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${cell.count ? `${cell.count} solved` : cell.frozen ? 'Streak freeze used' : cell.covered === 'rest' ? 'Rest day' : cell.covered ? 'XP goal met' : 'Nothing solved'}${cell.daily ? ' · Daily problem solved' : ''}`,
                         )
                   }
                 />
@@ -168,6 +181,14 @@ export function PracticeCalendar({
           {t('每日一题', 'Daily')}
           <span data-level={0} data-frozen />
           {t('保护日', 'Freeze')}
+          {stats?.cells.some((c) => c.covered) && (
+            <>
+              <span data-level={0} data-covered="goal" />
+              {t('经验达标', 'XP goal')}
+              <span data-level={0} data-covered="rest" />
+              {t('休息', 'Rest')}
+            </>
+          )}
         </span>
         {t('少', 'Less')}
         {[0, 1, 2, 3, 4].map((l) => (

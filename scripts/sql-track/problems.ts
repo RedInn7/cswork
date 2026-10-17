@@ -1,15 +1,26 @@
 /**
- * The SQL track: 50 practice problems written for CSWork (21–50 live in
- * problems-more.ts). Each one names its
+ * The SQL track: practice problems written for CSWork (21–50 live in
+ * problems-more.ts, the advanced 51–62 and index design 71–78 in
+ * problems-advanced.ts). Each one names its
  * tables, a reference query, other accepted forms, and common wrong queries the
  * hidden datasets must reject. scripts/sql-track/build.ts turns them into judge
  * packages; tests/sql-track.test.ts reruns every query on every dataset.
  */
 import { APP, COMPANY, SCHOOL, SHOP, type Data, type SchemaName } from './datasets';
+import { ADVANCED_PROBLEMS } from './problems-advanced';
 import { MORE_PROBLEMS } from './problems-more';
 
 type Text = { zh: string; en: string };
-export type GroupKey = 'basics' | 'joins' | 'grouping' | 'subqueries' | 'windows' | 'strings' | 'dates';
+export type GroupKey =
+  | 'basics'
+  | 'joins'
+  | 'grouping'
+  | 'subqueries'
+  | 'windows'
+  | 'strings'
+  | 'dates'
+  | 'advanced'
+  | 'indexing';
 export const GROUPS: { key: GroupKey; zh: string; en: string }[] = [
   { key: 'basics', zh: '过滤与 NULL', en: 'Filtering & NULL' },
   { key: 'joins', zh: '连接', en: 'Joins' },
@@ -18,6 +29,8 @@ export const GROUPS: { key: GroupKey; zh: string; en: string }[] = [
   { key: 'windows', zh: '窗口函数', en: 'Window functions' },
   { key: 'strings', zh: '字符串处理', en: 'Strings' },
   { key: 'dates', zh: '日期处理', en: 'Dates' },
+  { key: 'advanced', zh: '进阶：递归、JSON 与窗口帧', en: 'Advanced: recursion, JSON & frames' },
+  { key: 'indexing', zh: '索引设计', en: 'Index design' },
 ];
 /**
  * Interview patterns across the topic groups: the SQL track filters by them (?pattern=) and the
@@ -36,6 +49,20 @@ export const PATTERNS: { key: string; zh: string; en: string; ids: string[] }[] 
   { key: 'anti-join', zh: '反连接（从未…）', en: 'Anti-join (never …)', ids: ['sql-01', 'sql-04', 'sql-26', 'sql-35', 'sql-36'] },
   { key: 'self-join', zh: '自连接', en: 'Self-join', ids: ['sql-01', 'sql-05', 'sql-08', 'sql-25'] },
   { key: 'relational-division', zh: '全称条件', en: 'For all (division)', ids: ['sql-14', 'sql-35'] },
+  { key: 'recursive-cte', zh: '递归 CTE', en: 'Recursive CTEs', ids: ['sql-51', 'sql-52', 'sql-53', 'sql-54'] },
+  { key: 'json', zh: 'JSON 列', en: 'JSON columns', ids: ['sql-55', 'sql-56', 'sql-57'] },
+  {
+    key: 'window-frame',
+    zh: '窗口帧与分析函数',
+    en: 'Window frames & analytics',
+    ids: ['sql-58', 'sql-59', 'sql-60', 'sql-61', 'sql-62'],
+  },
+  {
+    key: 'index-design',
+    zh: '索引设计',
+    en: 'Index design',
+    ids: ['sql-71', 'sql-72', 'sql-73', 'sql-74', 'sql-75', 'sql-76', 'sql-77', 'sql-78'],
+  },
 ];
 export type SqlProblem = {
   id: string;
@@ -57,6 +84,11 @@ export type SqlProblem = {
   sample: Data;
   /** Hand-written edge cases; the build adds two seeded random datasets. */
   hidden: Data[];
+  /**
+   * An index design problem: reference, accepted and wrong are CREATE INDEX scripts, judged on
+   * these target queries (lib/server/sql-judge.ts SQL_INDEX); `need` is a regex on the plan line.
+   */
+  index?: { max: number; queries: { sql: string; need?: string }[] };
 };
 
 export const PROBLEMS: SqlProblem[] = [
@@ -891,4 +923,5 @@ SELECT ROUND(1.0 * SUM(EXISTS (SELECT 1 FROM logins l WHERE l.user_id = f.user_i
     hidden: [APP.boundaries, APP.sparse],
   },
   ...MORE_PROBLEMS,
+  ...ADVANCED_PROBLEMS,
 ];

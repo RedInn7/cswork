@@ -4,6 +4,7 @@ import { curatedByNumber } from '@/lib/ling-curated';
 import { CONFIDENCE_WORDS, parseNoteMeta } from '@/lib/note-meta';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import { parseProjectNote } from '@/lib/resume-projects';
+import { CARD_ID, CARD_MAX, parseCard } from '@/lib/recall-cards';
 import type { Person } from './auth';
 import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
@@ -36,6 +37,8 @@ const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mc
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
+// The server alone writes goal (goal:|rest:YYYY-MM-DD, a met study goal or a rest day:
+// lib/server/study-days.ts); those take none of the learner's MAX_ROWS.
 const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read', 'curated', 'doing']);
 const UPVOTED = /^content:(?:experience|interview_question)\//;
 const VOTE = { up: 'down', down: 'up' } as const;
@@ -121,7 +124,7 @@ export async function readJson(request: Request, max: number) {
 }
 function full(table: 'user_notes' | 'user_marks', userId: string) {
   const { n } = sqlite()
-    .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE user_id=?`)
+    .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE user_id=?${table === 'user_marks' ? " AND mark<>'goal'" : ''}`)
     .get(userId) as { n: number };
   if (n >= MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
 }
@@ -234,13 +237,14 @@ export async function handleMyPractice(
         // ?prefix=story: lists the story bank with its bodies in one request (MAX_STORIES); ?prefix=sd:
         // the system design quiz answers (app/oa/mcq/practice.tsx reviews the wrong ones): `sd:<chapter>`
         // only, not the `sd:<chapter>/draft` design drafts, capped well above the chapter count.
+        // ?prefix=card: the self-made cards (CARD_MAX fits the cap), ?prefix=clip: the saved excerpts.
         const listed = params.get('prefix');
-        if (listed === 'story:' || listed === 'sd:')
+        if (listed === 'story:' || listed === 'sd:' || listed === 'card:' || listed === 'clip:')
           return json({
             items: db
               .prepare(
                 `SELECT target,body,updated_at AS updatedAt FROM user_notes
-                WHERE user_id=? AND target LIKE ? AND (?='story:' OR instr(target,'/')=0)
+                WHERE user_id=? AND target LIKE ? AND (?<>'sd:' OR instr(target,'/')=0)
                 ORDER BY updated_at DESC LIMIT ?`,
               )
               .all(p.id, `${listed}%`, listed, MAX_STORIES),
@@ -261,7 +265,7 @@ export async function handleMyPractice(
       items: db
         .prepare(
           `SELECT target,mark,created_at AS createdAt FROM user_marks
-          WHERE user_id=? AND (? IS NULL OR mark=?) AND (? IS NULL OR target=?)
+          WHERE user_id=? AND mark<>'goal' AND (? IS NULL OR mark=?) AND (? IS NULL OR target=?)
           ORDER BY created_at DESC`,
         )
         .all(p.id, only, only, of, of),
@@ -285,6 +289,9 @@ export async function handleMyPractice(
     // A resume project's repo link (components/project-progress.tsx): seen by its owner only, but kept to known hosts.
     if (key.startsWith('project:') && body.trim() && !parseProjectNote(body))
       throw new HttpError(400, '仓库链接只支持 GitHub、GitLab 或 Codeberg 的 https 地址');
+    // A self-made card (lib/recall-cards.ts): its link back stays on this site.
+    if (key.startsWith('card:') && body.trim() && (!CARD_ID.test(key) || !parseCard(body)))
+      throw new HttpError(400, '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接');
     // An emptied note is removed, so "has a note" always means some text.
     if (!body.trim()) {
       db.prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(p.id, key);
@@ -301,6 +308,15 @@ export async function handleMyPractice(
         ).n >= MAX_STORIES
       )
         throw new HttpError(409, '故事已达上限');
+      if (
+        key.startsWith('card:') &&
+        (
+          db
+            .prepare("SELECT COUNT(*) AS n FROM user_notes WHERE user_id=? AND target LIKE 'card:%'")
+            .get(p.id) as { n: number }
+        ).n >= CARD_MAX
+      )
+        throw new HttpError(409, '卡片已达上限（200 张）');
     }
     const now = Date.now();
     db.prepare(
@@ -328,7 +344,7 @@ export async function handleMyPractice(
       );
       const added = db.transaction(() => {
         const { n } = db
-          .prepare('SELECT COUNT(*) AS n FROM user_marks WHERE user_id=?')
+          .prepare("SELECT COUNT(*) AS n FROM user_marks WHERE user_id=? AND mark<>'goal'")
           .get(p.id) as { n: number };
         const added = keys.reduce((sum, key) => sum + insert.run(p.id, key, batch.mark, now).changes, 0);
         // Ticks already there add nothing; the throw rolls the inserts back.

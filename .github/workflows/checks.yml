@@ -43,6 +43,7 @@ jobs:
       - run: node --import tsx --test tests/oj-failfast-ui.test.mjs tests/problem-timer-ui.test.mjs tests/hint-ladder-ui.test.mjs
       - run: node --import tsx --test tests/oj-partial-credit-ui.test.mjs
       - run: node --import tsx --test tests/editor-settings-extras.test.ts tests/problem-stats.test.ts tests/workspace-cases-ui.test.mjs tests/testcase-fields.test.ts tests/testcase-structured-ui.test.mjs tests/editor-keybar-ui.test.mjs
+      - run: node --import tsx --test tests/custom-cases.test.ts
       - run: node --check tests/oj-failfast-integration.mjs
       - run: node --check tests/oa-judge-integration.mjs
       - run: node --test tests/oa-native-reference.test.mjs
@@ -89,7 +90,11 @@ jobs:
       - run: node --import tsx --test tests/practice-review.test.ts
       - run: node --import tsx --test tests/review-load-ui.test.mjs
       - run: node --import tsx --test tests/note-meta.test.ts
+      - run: node --import tsx --test tests/notes-export.test.ts
+      - run: node --import tsx --test tests/review-sheet-ui.test.mjs
       - run: node --import tsx --test tests/recall.test.ts tests/recall-ui.test.mjs
+      - run: node --import tsx --test tests/recall-cards.test.ts tests/recall-ideas-api.test.ts
+      - run: node --import tsx --test tests/review-session-ui.test.mjs
       - run: node --import tsx --test tests/practice-modes.test.ts tests/whiteboard-ui.test.mjs tests/editor-bare-ui.test.mjs
       - run: node --import tsx --test tests/daily-problem.test.ts tests/achievements.test.ts tests/practice-loop-ui.test.mjs tests/daily-month-ui.test.mjs
       - run: node --import tsx --test tests/learner-cloud.test.ts tests/learner-cloud-ui.test.mjs
@@ -108,6 +113,7 @@ jobs:
       - run: node --import tsx --test tests/experience-links.test.ts
       - run: node --import tsx --test tests/experience-mock-ui.test.mjs
       - run: node --import tsx --test tests/reminders.test.ts tests/company-follows.test.ts tests/feeds.test.ts tests/reminders-ui.test.mjs
+      - run: node --import tsx --test tests/study-goal.test.ts tests/daily-goal-ui.test.mjs
       - run: node --import tsx --test tests/contacts.test.ts tests/outreach-templates.test.ts tests/career-outreach-ui.test.mjs
       - run: node --import tsx --test tests/study-groups.test.ts tests/study-groups-ui.test.mjs
       - run: node --import tsx --test tests/mock-peer.test.ts tests/peer-mock-plus-ui.test.mjs tests/group-camp.test.ts tests/newsletter.test.ts tests/course-gift.test.ts tests/peer-cohort-gift-ui.test.mjs
@@ -180,6 +186,7 @@ jobs:
       - run: npx tsx --test tests/coding-mode.test.ts
       - run: npx tsx --test tests/acm-io-templates.test.ts
       - run: node --import tsx --test tests/judge-environment-ui.test.mjs
+      - run: node --import tsx --test tests/interview-platforms-ui.test.mjs
       - run: node --import tsx --test tests/code-analyzer.test.ts tests/analyzer-notes-ui.test.mjs
       - run: npx tsx --test tests/leetcode-public-samples.test.ts
       - run: python3 scripts/leetcode-mode/test_runtime.py
@@ -212,11 +219,16 @@ jobs:
       - run: npm ci
       # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
       - run: node --import tsx scripts/learn/check-snippets.mjs
+      # numpy (with pandas) for the NumPy MCQs and the ML Coding track.
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
       # Runs every "what does this print" MCQ (C++, JavaScript, Python, Java, SQL) and checks its answer.
       - run: node scripts/mcq/verify-output.mjs
       # Starts every resume project's Python reference and runs its acceptance script against it.
       - run: node scripts/projects/verify.mjs
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # Reruns every ML Coding solution on the system numpy (1.x here, 2.x on the judge: compared with the judge's tolerance).
+      - run: node --import tsx --test tests/ml-coding.test.ts
+      - run: node --import tsx --test tests/ml-coding-ui.test.mjs
       # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
       - run: node --import tsx scripts/core-skills/stress.ts
       # Runs every Line 500 edge case and checklist case through the verified Python editorial.

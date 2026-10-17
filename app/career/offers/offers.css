@@ -2,6 +2,8 @@
    and one stacked bar per offer per year. */
 .offer-compare {
   display: grid;
+  /* minmax(0, …): a wide table scrolls in its own box instead of widening the page on a phone. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
 }
 .offer-cards {
@@ -250,6 +252,103 @@
   margin: 0;
 }
 
+.offer-why p + p {
+  margin-top: 8px;
+}
+
+/* Full-time / internship switch on each card, and the read-only link field. */
+.offer-kind {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  /* Clear of the Remove button in the corner. */
+  padding-right: 76px;
+}
+.offer-link {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+/* A shared link's banner above its read-only tables. */
+.offer-shared {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border-left: 4px solid var(--guide-amber);
+  border-radius: 10px;
+  background: #fff8e6;
+  color: #1d252d;
+}
+.offer-shared p {
+  margin: 0;
+}
+
+/* Decision matrix: factor rows with name, weight and remove; a 1–5 select per offer. */
+.offer-decision {
+  display: grid;
+  gap: 12px;
+}
+.offer-decision > .guide-h2 {
+  margin-bottom: 0;
+}
+.offer-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.offer-views label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #1d252d;
+  font-size: 14px;
+  font-weight: 600;
+}
+.offer-decision :is(select, input:not([type='radio'])) {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #c9d1da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 400;
+}
+.offer-decision :is(select, input, button):focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 1px;
+}
+.offer-table th.offer-factor {
+  min-width: 160px;
+  white-space: normal;
+}
+.offer-factor > * {
+  display: block;
+}
+.offer-factor > * + * {
+  margin-top: 6px;
+}
+.offer-factor input {
+  width: 100%;
+}
+.offer-factor button {
+  padding: 2px 10px;
+  border: 1px solid #c9d1da;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3a4652;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.offer-decision td select {
+  min-width: 7em;
+}
+.offer-decision td small a {
+  color: #0b5c8a;
+}
+
 @media (max-width: 560px) {
   .offer-bar-row {
     grid-template-columns: minmax(0, 1fr) auto;
@@ -354,6 +453,30 @@
   }
   .dark .offer-why ul {
     color: #d6dfe8;
+  }
+  .dark .offer-shared {
+    border-left: 4px solid var(--guide-amber);
+    background: #19150b;
+    color: #d6dfe8;
+  }
+  .dark .offer-views label {
+    color: #d6dfe8;
+  }
+  .dark .offer-decision :is(select, input:not([type='radio'])) {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .offer-decision :is(select, input, button):focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .offer-factor button {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #c4d1dd;
+  }
+  .dark .offer-decision td small a {
+    color: #94cffc;
   }
 }
 /* ── end dark theme ── */

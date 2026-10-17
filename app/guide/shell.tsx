@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DailyGoal } from '@/components/daily-goal';
 import { H1B } from '@/lib/server/h1b';
 
 /** The public shell of the career guide and the resume review: Line 500's navy board look. */
@@ -9,6 +10,8 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
         <Link className="mock-public-brand" href="/" prefetch={false}>
           cswork<span> / {zh ? '求职指南' : 'career guide'}</span>
         </Link>
+        {/* The streak and XP ring: nothing for guests, during a contest or skill test, or in a mock OA. */}
+        <DailyGoal />
         <nav className="guide-top-links" aria-label={zh ? '求职指南' : 'Career guide'}>
           <Link href="/guide" prefetch={false}>
             {zh ? '全部章节' : 'All chapters'}
@@ -55,6 +58,9 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
         </Link>
         <Link href="/mock-interview" prefetch={false}>
           {zh ? '模拟面试' : 'Mock interviews'}
+        </Link>
+        <Link href="/interview-platforms" prefetch={false}>
+          {zh ? '面试平台规则' : 'Interview platforms'}
         </Link>
         {/* The footer, not the top bar (wave 8 critique 5): the resume project library and interview English. */}
         <Link href="/projects" prefetch={false}>

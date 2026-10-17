@@ -74,6 +74,8 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     const url = typeof input === 'string' ? input : input.url;
     // The daily problem month beside the calendar reads the points ledger once.
     if (url.endsWith('oj/points/daily')) return Response.json({ days: [] });
+    // The streak reads the study goal's rest and frozen days (components/daily-goal.tsx); none here.
+    if (url.includes('oj/study-goal?')) return new Response(null, { status: 401 });
     requests.push(url);
     if (url.includes('mock-oa/presets'))
       return Response.json({

@@ -72,13 +72,15 @@ import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
 import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
-import { StressTest, stressReady } from './stress-result';
+import { ComplexityProbe, StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import { ClarifyPanel } from './clarify-panel';
 import { mergeCases } from '@/lib/clarify';
+import { customVerdict, MAX_CASES, readCases, writeCases } from '@/lib/custom-cases';
 import {
   ExamAcceptedDialog,
+  FinalSubmitDialog,
   MockExamBar,
   MockExamDone,
   useMockExam,
@@ -86,7 +88,7 @@ import {
 import { ContestBar, useContestRoom } from './contest-bar';
 import { useReplayRecorder } from './mock-replay';
 import { contestReplay } from '@/lib/mock-replay';
-import { reportWindow } from '@/lib/mock-oa';
+import { finalSubmitted, reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
   DialogContent,
@@ -125,6 +127,7 @@ import {
   SubmissionCodeDialog,
   SubmissionResult,
   Verdict,
+  sealedVerdict,
   type ReferenceOutput,
 } from './oj-results';
 import {
@@ -255,7 +258,6 @@ function draftAge(at: number, locale: 'zh' | 'en') {
       : format.format(-Math.round(minutes / 1440), 'day');
 }
 
-const MAX_CASES = 5;
 // A run or submission the learner can ask the AI tutor about.
 const FAILED_VERDICTS = new Set([
   'wrong_answer',
@@ -274,20 +276,6 @@ function exampleAsCase(problemId: string, mode: CodingMode, sample: { input: str
     ? sample.input
     : (leetcodePublicSample(problemId, sample)?.input?.replace(/^[A-Za-z_]\w*\s*=\s*/gm, '') ?? null);
 }
-function readCases(key: string): string[] {
-  try {
-    const value: unknown = JSON.parse(localStorage.getItem(key) || 'null');
-    const cases = Array.isArray(value)
-      ? value
-          .filter((item): item is string => typeof item === 'string')
-          .slice(0, MAX_CASES)
-      : [];
-    return cases.length ? cases : [''];
-  } catch {
-    return [''];
-  }
-}
-
 export function ProblemWorkspace(props: WorkspaceProps) {
   return (
     <Workspace
@@ -315,6 +303,8 @@ function Workspace({
   const exam = useMockExam(mock, userId, initialProblem.id);
   const contest = useContestRoom(room, initialProblem.id);
   const examMode = !!exam?.running || !!contest?.running;
+  // Single-submit rules: one formal submission per question, its verdict sealed until the hand-in.
+  const sealVerdict = !!exam && exam.running && exam.session.scoring === 'codility';
   // A mock or contest question starts from the template, not this browser's earlier draft of it.
   const [draftId] = useState(() =>
     exam
@@ -399,8 +389,8 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
-  // SQL track (and its pandas versions), Core Skills and REST API statements are Markdown: schema blocks, operation lists.
-  const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest)-/.test(problem.id);
+  // SQL track (and its pandas versions), Core Skills, REST API and ML Coding statements are Markdown: schema blocks, operation lists.
+  const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest|ml)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';
@@ -449,7 +439,9 @@ function Workspace({
   });
   const intelligenceText =
     language === 'sql'
-      ? t('SQLite 方言 · 一条 SELECT', 'SQLite dialect · one SELECT')
+      ? problem.starters?.sql
+        ? t('SQLite 方言 · 只写 CREATE INDEX', 'SQLite dialect · CREATE INDEX only')
+        : t('SQLite 方言 · 一条 SELECT', 'SQLite dialect · one SELECT')
       : language === 'pandas'
         ? t('Pandas · solve(tables) 返回 DataFrame', 'Pandas · solve(tables) returns a DataFrame')
         : intelligence.state === 'idle'
@@ -478,13 +470,21 @@ function Workspace({
   // Run sends the selected one, so the judge still gets one stdin per run.
   const casesKey = `cswork:cases:${userId}:${initialProblem.id}${codingMode === 'leetcode' ? ':leetcode' : ''}`;
   const [customCases, setCustomCases] = useState(['']);
+  // Each case's optional expected output, index by index ('' for none).
+  const [caseExpect, setCaseExpect] = useState(['']);
   const [caseIndex, setCaseIndex] = useState(0);
   const stdin = customCases[caseIndex] ?? '';
-  // Which custom case the shown run used, for the result's caption.
+  // Which custom case the shown run used, for the result's caption, and its input and expected output then.
   const [ranCase, setRanCase] = useState<number | null>(null);
+  const [ranWith, setRanWith] = useState({ input: '', expect: '' });
+  // ✓ / ✗ by input and expected output, for this visit only: editing a case changes its key.
+  const [caseMarks, setCaseMarks] = useState<Record<string, boolean>>({});
   useEffect(() => {
-    setCustomCases(readCases(casesKey));
+    const stored = readCases(casesKey);
+    setCustomCases(stored.cases);
+    setCaseExpect(stored.expect);
     setCaseIndex(0);
+    setCaseMarks({});
   }, [casesKey]);
   // LeetCode cases edit one labelled field per parameter; Raw text (or a line count that
   // doesn't match) shows the stored text itself.
@@ -510,6 +510,13 @@ function Workspace({
     saveCases(
       customCases.map((item, index) => (index === caseIndex ? value : item)),
       caseIndex,
+      caseExpect,
+    );
+  const editExpect = (value: string) =>
+    saveCases(
+      customCases,
+      caseIndex,
+      caseExpect.map((item, index) => (index === caseIndex ? value : item)),
     );
   // The editorial's output on the custom case just run (POST problems/:id/expected): the
   // expected output beside the learner's. Never in a mock exam or contest.
@@ -592,7 +599,7 @@ function Workspace({
   const [historyRevision, setHistoryRevision] = useState(0);
   const shownHistory = history.filter((item) => item.created_at >= examFrom);
   // A practice-round problem counts as passed only by an AC in this round (badge and editorial lock).
-  const solvedThisRound = shownHistory.some(
+  const solvedThisRound = !sealVerdict && shownHistory.some(
     (item) =>
       item.mode === 'judge' &&
       item.status === 'accepted' &&
@@ -720,6 +727,29 @@ function Workspace({
     );
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- once per finished sample run; addCase reads the current cases.
   }, [submission]);
+  // A finished run on a custom case with an expected output marks that case ✓ or ✗.
+  useEffect(() => {
+    if (submission?.mode !== 'run' || ranCase === null || activeStatuses.has(submission.status)) return;
+    const mark = customVerdict(submission.cases?.[0] ?? submission, ranWith.expect, problem.checker, submission.codingMode === 'leetcode');
+    if (mark) setCaseMarks((marks) => ({ ...marks, [`${ranWith.input}\0${ranWith.expect}`]: mark.pass }));
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- once per finished run; ranWith is what that run sent.
+  }, [submission]);
+  // Single-submit rules: this question's one submission is in (here, in the exam's judge rows, or
+  // in this problem's own history, which has a row still judging after you left and came back);
+  // a cancelled one or a judge failure gives it back.
+  const [sealedHere, setSealedHere] = useState<string | null>(null);
+  const [confirmFinal, setConfirmFinal] = useState(false);
+  useEffect(() => {
+    if (submission?.id === sealedHere && ['cancelled', 'system_error'].includes(submission.status)) setSealedHere(null);
+  }, [submission, sealedHere]);
+  const locked =
+    sealVerdict &&
+    !!exam &&
+    (!!sealedHere ||
+      finalSubmitted(exam.session, problem.id, [
+        ...(boot.submissions ?? []),
+        ...history.filter((item) => item.mode === 'judge'),
+      ]));
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -1156,7 +1186,7 @@ function Workspace({
       seconds,
     });
     setSolveSeconds(seconds);
-    setSuccess(submission);
+    if (!sealVerdict) setSuccess(submission);
     setHistory((items) => [
       submission,
       ...items.filter((item) => item.id !== submission.id),
@@ -1279,14 +1309,16 @@ function Workspace({
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
   }
-  function saveCases(next: string[], index: number) {
+  /** By default a case keeps its expected output while it stays at the same place (adding appends). */
+  function saveCases(
+    next: string[],
+    index: number,
+    expect = next.map((item, i) => (customCases[i] === item ? (caseExpect[i] ?? '') : '')),
+  ) {
     setCustomCases(next);
+    setCaseExpect(expect);
     setCaseIndex(index);
-    try {
-      localStorage.setItem(casesKey, JSON.stringify(next));
-    } catch {
-      /* Still usable for this visit. */
-    }
+    writeCases(casesKey, next, expect);
   }
   /** Adds a case and selects it; an identical one is selected instead, a lone blank one is filled. */
   function addCase(input: string) {
@@ -1312,8 +1344,8 @@ function Workspace({
   }
   function deleteCase() {
     const next = customCases.filter((_, index) => index !== caseIndex);
-    if (!next.length) return saveCases([''], 0);
-    saveCases(next, Math.min(caseIndex, next.length - 1));
+    if (!next.length) return saveCases([''], 0, ['']);
+    saveCases(next, Math.min(caseIndex, next.length - 1), caseExpect.filter((_, index) => index !== caseIndex));
   }
   function debugWithCase(input: string) {
     if (!addCase(input)) return;
@@ -1465,9 +1497,14 @@ function Workspace({
       setShuffling(false);
     }
   }
-  async function submit(mode: 'run' | 'judge') {
+  async function submit(mode: 'run' | 'judge', confirmed = false) {
     // Whiteboard mode never runs, Ctrl / ⌘ + Enter included.
     if (disabled || busyRef.current || (mode === 'run' && wb.on)) return;
+    // Single-submit: Ctrl / ⌘ + Shift + Enter too asks first, and only once per question.
+    if (mode === 'judge' && sealVerdict && (locked || !confirmed)) {
+      if (!locked) setConfirmFinal(true);
+      return;
+    }
     if (
       mode === 'run' &&
       inputMode === 'custom' &&
@@ -1497,6 +1534,7 @@ function Workspace({
     setSubmitting(true);
     setSubmission(null);
     setRanCase(mode === 'run' && inputMode === 'custom' ? caseIndex : null);
+    setRanWith({ input: stdin, expect: caseExpect[caseIndex] ?? '' });
     setCaseNote('');
     referenceController.current?.abort();
     setReference(null);
@@ -1506,7 +1544,9 @@ function Workspace({
       // A Line 500 editorial's best approach, or an OA package's verified program (ACM only).
       ((problem.lingEditorialVerified === true && !!problem.codingModes?.includes('leetcode')) ||
         problem.id.startsWith('oa-')) &&
-      !examMode
+      !examMode &&
+      // An expected output of their own needs no reference run.
+      !caseExpect[caseIndex]?.trim()
     )
       void runReference(stdin, codingMode);
     showConsole('result');
@@ -1547,6 +1587,11 @@ function Workspace({
         (result) => {
           if (!alive.current || controller.signal.aborted) return;
           idempotency.current = null;
+          if (sent === 'judge' && sealVerdict) {
+            setSealedHere(result.id);
+            // The exam bar marks this question as submitted now, not when its verdict comes in.
+            void latestRefresh.current().catch(() => {});
+          }
           wb.submitted(result.id);
           feedbackTiming.current?.bind(result.id);
           track('judge_submit', {
@@ -1776,7 +1821,12 @@ function Workspace({
           />
         )}
         {leftTab === 'notes' && note.enabled ? (
-          <ProblemNotes note={note} english={uiEnglish} problemId={initialProblem.id} />
+          <ProblemNotes
+            note={note}
+            english={uiEnglish}
+            problemId={initialProblem.id}
+            card={examMode ? undefined : { title: statement.title, href: `/?view=problem&problem=${encodeURIComponent(initialProblem.id)}` }}
+          />
         ) : leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
           <LingEditorial
             key={problem.id}
@@ -2221,13 +2271,15 @@ function Workspace({
             {shownHistory.map((item) => (
               <div key={item.id} className="cs-history-row">
                 <button onClick={() => inspect(item)}>
-                  <Verdict submission={item} />
+                  <Verdict submission={item} sealed={sealedVerdict(sealVerdict, item)} />
                   <span>
                     {item.mode === 'run'
                       ? uiEnglish
                         ? 'Test run'
                         : '测试运行'
-                      : `${item.passed} / ${item.total} ${uiEnglish ? 'passed' : '通过'}`}{' '}
+                      : sealedVerdict(sealVerdict, item)
+                        ? t('交卷后出成绩', 'Scored at hand-in')
+                        : `${item.passed} / ${item.total} ${uiEnglish ? 'passed' : '通过'}`}{' '}
                     · {item.language}
                     {!isTrackLanguage(item.language) &&
                       ` · ${item.codingMode === 'leetcode' ? 'LeetCode' : 'ACM'}`}
@@ -2310,7 +2362,7 @@ function Workspace({
             {uiEnglish ? 'Run' : '运行'}
           </Button>
           <Button
-            disabled={disabled}
+            disabled={disabled || locked}
             onClick={() => submit('judge')}
             title="Ctrl / ⌘ + Shift + Enter"
           >
@@ -2319,7 +2371,9 @@ function Workspace({
             ) : (
               <Send size={15} />
             )}
-            {submitting
+            {locked
+              ? t('已最终提交', 'Final answer in')
+              : submitting
               ? uiEnglish
                 ? 'Submitting'
                 : '正在提交'
@@ -2812,19 +2866,28 @@ function Workspace({
                           role="tablist"
                           aria-label={t('自定义用例', 'Custom cases')}
                         >
-                          {customCases.map((_, index) => (
-                            <button
-                              key={index}
-                              type="button"
-                              role="tab"
-                              aria-selected={index === caseIndex}
-                              aria-controls="custom-case-input"
-                              className={index === caseIndex ? 'selected' : ''}
-                              onClick={() => setCaseIndex(index)}
-                            >
-                              {t(`用例 ${index + 1}`, `Case ${index + 1}`)}
-                            </button>
-                          ))}
+                          {customCases.map((item, index) => {
+                            const mark = caseExpect[index]?.trim() ? caseMarks[`${item}\0${caseExpect[index]}`] : undefined;
+                            return (
+                              <button
+                                key={index}
+                                type="button"
+                                role="tab"
+                                aria-selected={index === caseIndex}
+                                aria-controls="custom-case-input"
+                                className={index === caseIndex ? 'selected' : ''}
+                                onClick={() => setCaseIndex(index)}
+                              >
+                                {t(`用例 ${index + 1}`, `Case ${index + 1}`)}
+                                {mark !== undefined && (
+                                  <span className="cs-case-mark" data-pass={mark}>
+                                    <span aria-hidden="true">{mark ? '✓' : '✗'}</span>
+                                    <span className="sr-only">{mark ? t('，符合期望', ', as expected') : t('，不符合期望', ', not as expected')}</span>
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                         <button
                           type="button"
@@ -2982,6 +3045,21 @@ function Workspace({
                           )}
                         </p>
                       )}
+                      {!isTrackLanguage(language) && (
+                        <label className="cs-custom-expect">
+                          <span>{t('期望输出（可选）', 'Expected output (optional)')}</span>
+                          <textarea
+                            className="cs-custom-input"
+                            value={caseExpect[caseIndex] ?? ''}
+                            onChange={(event) => editExpect(event.target.value)}
+                            placeholder={t(
+                              codingMode === 'leetcode' ? '填写期望的返回值，例如 [0,1]；运行后标出 ✓ 或 ✗' : '填写期望的输出；运行后标出 ✓ 或 ✗',
+                              codingMode === 'leetcode' ? 'The return value you expect, e.g. [0,1]. A run marks the case ✓ or ✗' : 'The output you expect. A run marks the case ✓ or ✗',
+                            )}
+                            spellCheck={false}
+                          />
+                        </label>
+                      )}
                       <p className="cs-console-note">
                         {codingMode === 'leetcode' &&
                           (problem.leetcodeInputHelp
@@ -3016,6 +3094,9 @@ function Workspace({
                           onAdd={(input) => addCase(input)}
                           solved={solvedThisRound}
                         />
+                      )}
+                      {boot.person && !examMode && codingMode === 'leetcode' && stressReady(problem.id) && (
+                        <ComplexityProbe problem={problem} code={code} language={language} />
                       )}
                     </>
                   )}
@@ -3053,8 +3134,12 @@ function Workspace({
                     params={submission.codingMode === 'leetcode' ? problem.leetcodeParams : null}
                     returnType={submission.codingMode === 'leetcode' ? problem.leetcodeReturnType : null}
                     sealHidden={examMode}
+                    sealVerdict={sealVerdict}
+                    ownExpected={submission.mode === 'run' && ranCase !== null && ranWith.expect.trim() ? ranWith.expect : undefined}
                   />
                   {submission.language === 'sql' &&
+                    // An index problem's code is CREATE INDEX statements: its run already prints the plans.
+                    !problem.starters?.sql &&
                     submission.code &&
                     !activeStatuses.has(submission.status) &&
                     submission.status !== 'compile_error' && (
@@ -3288,6 +3373,7 @@ function Workspace({
           )}
         </div>
       </div>
+      <FinalSubmitDialog open={confirmFinal} onOpenChange={setConfirmFinal} onConfirm={() => void submit('judge', true)} />
       {success && exam && examMode && (
         <ExamAcceptedDialog
           session={exam.session}
@@ -3566,6 +3652,7 @@ function Workspace({
         language={language}
         settings={settings}
         sealHidden={examMode}
+        sealVerdict={sealVerdict}
         note={
           inspected &&
           boot.person &&
@@ -3859,10 +3946,10 @@ function AcceptedDialog({
   const beats = standing?.beats ?? null;
   const languageName =
     languages.find((item) => item.id === language)?.name ?? language;
-  const staticTrack = library === 'sql' || library === 'core';
+  const staticTrack = library === 'sql' || library === 'core' || library === 'ml';
   const [next, setNext] = useState<NextStop | 'loading'>(() => {
     if (!staticTrack) return 'loading';
-    // The SQL and Core Skills tracks are static lists with no server collection:
+    // The SQL, Core Skills and ML Coding tracks are static lists with no server collection:
     // the next unsolved problem, in the order the track's page remembered.
     const solved = new Set(activity?.map((item) => item.problem_id));
     const id = nextUnsolved(problemSequence(), problemId, solved);

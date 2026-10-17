@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useId, useState } from 'react';
+import { lazy, Suspense, useEffect, useId, useState } from 'react';
 import { useLocale, useT } from '@/lib/i18n';
 import { mcqDay, mcqDue } from '@/lib/mock-oa';
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
@@ -11,6 +11,7 @@ import {
   mergeRecall,
   parseRecall,
   rateRecall,
+  recallHref,
   recallNext,
   type RecallCard,
   type RecallGrade,
@@ -18,7 +19,8 @@ import {
 } from '@/lib/recall';
 import '@/app/recall.css';
 
-const NOTE = `/api/oj/notes?target=${encodeURIComponent(RECALL_NOTE)}`;
+const CardEditor = lazy(() => import('./card-editor').then((m) => ({ default: m.CardEditor })));
+const noteUrl = (note: string) => `/api/oj/notes?target=${encodeURIComponent(note)}`;
 
 function readLocal() {
   try {
@@ -37,8 +39,8 @@ function writeLocal(queue: RecallQueue) {
   }
 }
 /** Saves the queue as the note; an empty body removes it (lib/server/my-practice.ts). */
-const putNote = (queue: RecallQueue) =>
-  fetch(NOTE, {
+const putNote = (queue: RecallQueue, note: string) =>
+  fetch(noteUrl(note), {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ body: fitRecall(queue, NOTE_MAX_BYTES) }),
@@ -50,18 +52,19 @@ const putNote = (queue: RecallQueue) =>
 /**
  * The learner's queue. Signed in it is the private note `recall:queue`, and cards rated while
  * signed out move into it once (this browser's copy goes when the account has them); signed
- * out, or while the account can't be reached, it is this browser's.
+ * out, or while the account can't be reached, it is this browser's. `note` RECALL_CARDS or
+ * RECALL_IDEAS reads that queue instead, which lives in the account only.
  */
-export async function loadRecall(signedIn: boolean): Promise<{ queue: RecallQueue; account: boolean }> {
-  const local = readLocal();
+export async function loadRecall(signedIn: boolean, note = RECALL_NOTE): Promise<{ queue: RecallQueue; account: boolean }> {
+  const local = note === RECALL_NOTE ? readLocal() : emptyRecall();
   if (!signedIn) return { queue: local, account: false };
   try {
-    const response = await fetch(NOTE);
+    const response = await fetch(noteUrl(note));
     if (!response.ok) throw new Error(String(response.status));
     const saved = parseRecall((await response.json())?.body);
     if (!Object.keys(local.items).length) return { queue: saved, account: true };
     const merged = mergeRecall(local, saved);
-    if (await putNote(merged)) writeLocal(emptyRecall());
+    if (await putNote(merged, note)) writeLocal(emptyRecall());
     return { queue: merged, account: true };
   } catch {
     return { queue: local, account: false };
@@ -71,15 +74,15 @@ export async function loadRecall(signedIn: boolean): Promise<{ queue: RecallQueu
 // Changes go out one at a time and each reads the latest queue first, so a rating in another
 // tab or a second component on the page is never overwritten.
 let chain: Promise<unknown> = Promise.resolve();
-/** `change` applied to the latest queue and saved; null when it could not be saved. */
-export function updateRecall(signedIn: boolean, change: (queue: RecallQueue) => RecallQueue) {
+/** `change` applied to the latest queue (of `note`) and saved; null when it could not be saved. */
+export function updateRecall(signedIn: boolean, change: (queue: RecallQueue) => RecallQueue, note = RECALL_NOTE) {
   const run = chain.then(async () => {
-    const { queue, account } = await loadRecall(signedIn);
+    const { queue, account } = await loadRecall(signedIn, note);
     // Signed in but the account can't be read (429, offline, expired session): fail rather than
     // keep the change in this browser, where the account's copy would win at the next load.
     if (signedIn && !account) return null;
     const next = change(queue);
-    return (account ? await putNote(next) : writeLocal(next)) ? next : null;
+    return (account ? await putNote(next, note) : writeLocal(next)) ? next : null;
   });
   chain = run.catch(() => null);
   return run;
@@ -163,6 +166,7 @@ export function RecallRate({
   const [card, setCard] = useState<RecallCard | null>(null);
   const [state, setState] = useState<'' | 'saving' | 'saved' | 'held' | 'failed'>('');
   const [ticked, setTicked] = useState<number[]>([]);
+  const [making, setMaking] = useState(false);
   // Callers key this by target, so another question starts with fresh state.
   useEffect(() => {
     let current = true;
@@ -188,6 +192,7 @@ export function RecallRate({
   }
 
   const back = card && recallNext(card);
+  const href = recallHref(target);
   const when = back === null || back === undefined ? '' : recallDate(back, locale);
   const status =
     state === 'saving'
@@ -239,6 +244,26 @@ export function RecallRate({
           </>
         )}
       </p>
+      {/* A card of its own (lib/recall-cards.ts): the key points prefill the back. Cards need an account. */}
+      {signedIn && (
+        <p className="recall-make">
+          <button type="button" className="rd-button is-quiet" onClick={() => setMaking(true)}>
+            {t('做成记忆卡', 'Make a review card')}
+          </button>
+        </p>
+      )}
+      {making && (
+        <Suspense fallback={null}>
+          <CardEditor
+            initial={{
+              front: title,
+              back: points.map((point) => `- ${point}`).join('\n'),
+              ...(href ? { src: { href, title: title.slice(0, 200) } } : {}),
+            }}
+            onClose={() => setMaking(false)}
+          />
+        </Suspense>
+      )}
     </section>
   );
 }

@@ -862,6 +862,32 @@
 .cs-case-tabs > .failed .cs-case-dot {
   background: #d47f7a;
 }
+.cs-case-mark {
+  margin-left: 2px;
+  font-weight: 700;
+}
+.cs-case-mark[data-pass='true'] {
+  color: #1f7a4d;
+}
+.cs-case-mark[data-pass='false'] {
+  color: #b42318;
+}
+.cs-workspace[data-theme='dark'] .cs-case-mark[data-pass='true'] {
+  color: #6fd3a3;
+}
+.cs-workspace[data-theme='dark'] .cs-case-mark[data-pass='false'] {
+  color: #f2a19b;
+}
+.cs-custom-expect {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--cs-text);
+}
+.cs-custom-expect > .cs-custom-input {
+  min-height: 56px;
+}
 .cs-case-meta {
   display: flex;
   align-items: center;
@@ -2284,6 +2310,21 @@ button.cs-statement-pill[aria-expanded='true'] {
   }
   .dark .cs-case-tabs > .failed .cs-case-dot {
     background: #d47f7a;
+  }
+  .dark .cs-case-mark[data-pass='true'] {
+    color: #8dd3a8;
+  }
+  .dark .cs-case-mark[data-pass='false'] {
+    color: #fea99c;
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-mark[data-pass='true'] {
+    color: #6fd3a3;
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-mark[data-pass='false'] {
+    color: #f2a19b;
+  }
+  .dark .cs-custom-expect {
+    color: var(--cs-text);
   }
   .dark .cs-case-meta {
     color: #a8b2c0;
