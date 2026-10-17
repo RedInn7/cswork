@@ -239,8 +239,8 @@ export function DailyGoal() {
         <details className="daily-goal-note">
           <summary>{t('经验怎么算', 'How XP works')}</summary>
           {t(
-            '每通过一道题 10，做完一场模拟 OA 15，读完一章系统设计 10，学完一个英语单元 5，写或改一条 STAR 故事 5，跑一次对拍或复杂度测试 5，答一道新选择题或自评一张复习卡 1；每项每天有上限。经验达标的日子和休息日都能接上连续天数，但只有通过题目的日子计入天数。任务只打勾，不发积分。',
-            'Each problem solved earns 10, a finished mock OA 15, a system design chapter read 10, an interview English unit 5, a STAR story written or edited 5, a stress test or complexity probe 5, and a new multiple-choice answer or self-graded review card 1, each up to a daily cap. A day you meet your goal and a rest day both keep your streak going, but only days with a solve add to it. Quests are ticks only: they pay no points.',
+            '每通过一道题 10，做完一场模拟 OA 15，读完一章系统设计 10，学完一个英语单元 5，写或改一条 STAR 故事 5，跑一次对拍或复杂度测试 5，答一道新选择题（验证邮箱后）或自评一张复习卡 1；每项每天有上限。经验达标的日子和休息日都能接上连续天数，但只有通过题目的日子计入天数。任务只打勾，不发积分。',
+            'Each problem solved earns 10, a finished mock OA 15, a system design chapter read 10, an interview English unit 5, a STAR story written or edited 5, a stress test or complexity probe 5, and a new multiple-choice answer (with a verified email) or self-graded review card 1, each up to a daily cap. A day you meet your goal and a rest day both keep your streak going, but only days with a solve add to it. Quests are ticks only: they pay no points.',
           )}
         </details>
       </PopoverContent>
