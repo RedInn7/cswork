@@ -288,7 +288,7 @@ function Setup({ params, navigate, ai }: { params: Record<string, string>; navig
             'Pick a company, role and round, and draw a full set from real interview questions. Practice on the clock, or run it with a partner.',
           )}
         </p>
-        <p><a href="/english">{t('面试用英语答？先练 12 个场景的常用表达、对话和跟读', 'Interviewing in English? Practice phrases, dialogues and shadowing for 12 situations')}</a></p>
+        <p><a className="rd-button is-quiet" href="/english">{t('练面试英语：12 个场景的表达和跟读', 'Practice interview English')}</a></p>
       </header>
       <div className="rd-stats rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
         <div>
