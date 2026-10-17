@@ -399,8 +399,8 @@ const INTERVIEWS: readonly Stage[] = ['phone', 'onsite'];
 export type WarmupIssue = { kind: 'dream-first' | 'practice-waiting'; ids: string[] };
 /**
  * Interview order hints for open dream-tier cards: its interview is ahead and would be the first
- * real one (no other card's interview before it, past ones included, and no other card logged at
- * phone or onsite before then; an ended card's interview still ahead will not happen); or it is
+ * real one (no other card's interview before it, past ones included, and no card, itself included,
+ * that left phone or onsite before then; an ended card's interview still ahead will not happen); or it is
  * applied to (Applied or OA) while practice-tier cards still wait at Saved (ids: the dream card,
  * then those).
  */
@@ -410,14 +410,17 @@ export function warmupIssues(items: readonly Application[], now: number): Warmup
     .filter((d) => d.tier === 'dream' && !ENDED.includes(d.stage))
     .flatMap((d): WarmupIssue[] => {
       const at = d.interviewAt;
+      // stageLog says when a card entered a column (a screen gets booked before it happens): a phone or
+      // onsite stage counts once the card left it before `at`; a card's current stage counts by interviewAt.
+      const held = (o: Application) =>
+        at !== null && o.stageLog.some(([s], k) => INTERVIEWS.includes(s) && k + 1 < o.stageLog.length && o.stageLog[k + 1][1] < at);
       const first =
         at !== null &&
         at > now &&
         !items.some(
           (o) =>
-            o.id !== d.id &&
-            ((o.interviewAt !== null && o.interviewAt < at && (o.interviewAt <= now || !ENDED.includes(o.stage))) ||
-              o.stageLog.some(([s, t]) => INTERVIEWS.includes(s) && t < at)),
+            held(o) ||
+            (o.id !== d.id && o.interviewAt !== null && o.interviewAt < at && (o.interviewAt <= now || !ENDED.includes(o.stage))),
         );
       const applied = (d.stage === 'applied' || d.stage === 'oa') && waiting.length > 0;
       return [

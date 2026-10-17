@@ -473,8 +473,14 @@ void test('warm-up order: a dream interview as the first real one, practice comp
   const dropped = row({ id: 'w', stage: 'withdrawn', interviewAt: now + DAY });
   const after = row({ id: 'z', stageLog: [['phone', now + 7 * DAY]] });
   assert.deepEqual(warmupIssues([dream, later, dropped, after], now).map((x) => x.kind), ['dream-first']);
-  // Its own phone move does not count; no interview date, a past one, an ended card or another tier: nothing.
+  // A screen booked (moved to Phone) yesterday but held after the dream one is no warm-up.
+  const booked = row({ id: 'b', tier: 'practice', stage: 'phone', interviewAt: now + 7 * DAY, stageLog: [['phone', now - DAY]] });
+  assert.deepEqual(warmupIssues([dream, booked], now), [{ kind: 'dream-first', ids: ['d'] }]);
+  // Its own current phone stage does not count, a phone stage it already left does.
   assert.equal(warmupIssues([{ ...dream, stageLog: [['phone', now - DAY]] }], now).length, 1);
+  const onsite = row({ id: 'd2', tier: 'dream', stage: 'onsite', interviewAt: now + 5 * DAY, stageLog: [['phone', now - 20 * DAY], ['onsite', now - 3 * DAY]] });
+  assert.deepEqual(warmupIssues([onsite], now), []);
+  // No interview date, a past one, an ended card or another tier: nothing.
   for (const d of [{ interviewAt: null }, { interviewAt: now - DAY }, { stage: 'rejected' as const }, { tier: 'target' }])
     assert.deepEqual(warmupIssues([{ ...dream, ...d }], now), [], JSON.stringify(d));
 
