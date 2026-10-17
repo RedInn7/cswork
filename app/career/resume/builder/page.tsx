@@ -1,4 +1,6 @@
 import './resume-print.css';
+import '@/app/code-review.css';
+import '@/app/resume-review-link.css';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import { seoMetadata } from '@/lib/seo';
@@ -18,7 +20,7 @@ const copy = {
     lead: 'Fill in the sections on the left; the right side is exactly what prints. Save as PDF uses your browser’s print dialog: choose “Save as PDF” and Letter paper.',
     privacyTitle: 'Saved only in this browser',
     privacy:
-      'What you type is kept in this browser’s storage and is never uploaded. Use Export JSON to move it to another device. Import PDF / DOCX reads the file in this browser as well: for a PDF it downloads pdf.js from jsDelivr, and the file itself is not sent anywhere. The autofill bookmarklet keeps your contact details in the bookmark, so do not share it. Filling in from CSWork only reads your own certificates, rating and solved counts into this page.',
+      'What you type is kept in this browser’s storage and is not uploaded unless you make a review link. Use Export JSON to move it to another device. Import PDF / DOCX reads the file in this browser as well: for a PDF it downloads pdf.js from jsDelivr, and the file itself is not sent anywhere. The autofill bookmarklet keeps your contact details in the bookmark, so do not share it. Filling in from CSWork only reads your own certificates, rating and solved counts into this page. Ask someone to review it stores a snapshot of the resume without your name or contact lines on CSWork until you close the link.',
     more: 'Privacy notice',
   },
   zh: {
@@ -29,7 +31,7 @@ const copy = {
     lead: '左边按小节填写，右边就是打印出来的样子。“保存为 PDF”会打开浏览器的打印窗口，目标选“另存为 PDF”，纸张选 Letter。',
     privacyTitle: '只保存在这个浏览器里',
     privacy:
-      '你填写的内容保存在当前浏览器的本地存储里，不会上传。换设备可以用“导出 JSON”带走。“导入 PDF / DOCX”也只在浏览器里读取文件；选 PDF 时会从 jsDelivr 下载 pdf.js，文件本身不发给任何人。填表书签把你的联系方式存在书签里，不要分享。“从 CSWork 填入”只是把你自己的证书、rating 和解题数读到这个页面上。',
+      '你填写的内容保存在当前浏览器的本地存储里，除非你生成评审链接，否则不会上传。换设备可以用“导出 JSON”带走。“导入 PDF / DOCX”也只在浏览器里读取文件；选 PDF 时会从 jsDelivr 下载 pdf.js，文件本身不发给任何人。填表书签把你的联系方式存在书签里，不要分享。“从 CSWork 填入”只是把你自己的证书、rating 和解题数读到这个页面上。“请人看简历”会把简历快照（不含姓名和联系方式）存到 CSWork 服务器上，直到你关闭链接。',
     more: '隐私说明',
   },
 };

@@ -6,6 +6,7 @@ import { checkResume, type ResumeIssue } from '@/lib/resume-check';
 import { readResumeFile, type ResumeFileError } from '@/lib/resume-file';
 import { parseResumeText } from '@/lib/resume-parse';
 import { blankItem, blankResume, ITEMS, lines, MAX, normalizeResume, type ListKey, type Resume, type ResumeItem } from '@/lib/resume-shape';
+import { ResumeReviewLink } from './resume-review-link';
 
 /**
  * /career/resume/builder: a one-page, single-column resume (standard headings, no tables, images or
@@ -468,6 +469,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
             {t('粘贴文本导入', 'Paste text to import')}
           </button>
         </div>
+        {signedIn && <ResumeReviewLink resume={resume} version={version} />}
         {pasted !== null && (
           <div className="resume-form resume-paste">
             <label>
