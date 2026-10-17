@@ -474,9 +474,13 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     assert.equal(progressEvents, 1);
     assert.ok(watchReads > 0, 'active submission uses the watch endpoint');
-    // This AC counts today before the bootstrap refresh; with no list to follow, go back.
+    // This AC counts today before the bootstrap refresh; with no list to follow, go back. The
+    // old AC (created_at 1) makes it a review, so the self-grade (components/review-grade.tsx) joins.
+    const banner = document.querySelector('.cs-accepted-banner');
+    const grade = banner.querySelector('.cs-review-grade');
+    assert.ok(grade, 'a review AC offers the self-grade');
     assert.equal(
-      document.querySelector('.cs-accepted-banner').textContent.trim(),
+      banner.textContent.replace(grade.textContent, '').trim(),
       'AcceptedToday 1 / 3 · 1-day streakBack to problems',
     );
     await click(

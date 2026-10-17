@@ -67,6 +67,7 @@ import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { SubmissionNote } from './submission-note';
 import { ReviewLink } from './code-review';
+import { ReviewGrade } from './review-grade';
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
@@ -3311,6 +3312,7 @@ function Workspace({
           }
           ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
           targetComplexity={problem.targetComplexity}
+          grade={<ReviewGrade problemId={problem.id} submission={success} history={history} activity={boot.activity} english={uiEnglish} />}
           notes={
             <AnalyzerNotes
               code={success.code ?? code}
@@ -3756,6 +3758,7 @@ function AcceptedDialog({
   ai,
   targetComplexity,
   notes,
+  grade,
 }: {
   problemId: string;
   language: string;
@@ -3769,6 +3772,8 @@ function AcceptedDialog({
   targetComplexity?: OJProblem['targetComplexity'];
   /** Rule-based notes on the accepted code (components/analyzer-notes.tsx). */
   notes?: ReactNode;
+  /** A review's self-grade (components/review-grade.tsx). */
+  grade?: ReactNode;
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -3933,6 +3938,7 @@ function AcceptedDialog({
           )}
           {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
           {notes}
+          {grade}
           <AcceptedExtras
             problemId={problemId}
             acceptedAt={acceptedAt}

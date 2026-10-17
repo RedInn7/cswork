@@ -11,10 +11,14 @@ import { STOP_NAMES } from '@/lib/route-stops';
 import { RUBRIC, type RubricId } from '@/lib/mock-interview-feedback';
 import {
   assisted,
-  dueReviews,
+  parseReviewPrefs,
+  reviewState,
+  scheduleReviews,
   wrongBook,
   type PracticeHistoryItem,
+  type ReviewPrefs,
 } from '@/lib/practice-review';
+import { ReviewForecast } from './review-forecast';
 import { SolveQuality } from './solve-quality';
 import { RecallQueue, useRecallQueue } from './recall-queue';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
@@ -51,6 +55,8 @@ type Data = {
   now: number;
   /** Daily problems solved on their day, for the month badges; absent when the ledger failed. */
   dailyDays?: string[];
+  /** The review load settings (the note pref:review); none when it failed or is unset. */
+  prefs: ReviewPrefs;
 };
 type Profile = { handle: string; visible: boolean; indexable: boolean; showContest: boolean; bio: string; featuredBadge: string | null };
 type Tab = 'history' | 'mistakes' | 'review' | 'starred' | 'redo' | 'notes' | 'badges';
@@ -197,7 +203,7 @@ export function MyProgress({
   const [origin, setOrigin] = useState('');
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
-  // The Mistakes tab's filter: '' the wrong book, 'assisted' solves made with help.
+  // The Mistakes tab's filter: '' the wrong book, 'assisted' solves made with help, 'leech' leeches.
   const [mistakeView, setMistakeView] = useState('');
   // The public profile, when there is one: earned badges can be featured on it.
   const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string>; recapYears: number[] } | null>(null);
@@ -229,8 +235,9 @@ export function MyProgress({
       api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
       api<{ days: string[] }>('oj/points/daily').catch(() => null),
       api<{ profile: Profile | null; badges: { id: string }[]; recapYears?: number[] }>('oj/profile').catch(() => null),
+      api<{ body: string }>('oj/notes?target=pref:review').catch(() => null),
     ])
-      .then(([history, marks, notes, line, oa, daily, mine]) => {
+      .then(([history, marks, notes, line, oa, daily, mine, reviewPrefs]) => {
         if (!current) return;
         setData({
           history: history.items,
@@ -240,6 +247,7 @@ export function MyProgress({
           companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
           now: Date.now(),
           dailyDays: daily?.days,
+          prefs: parseReviewPrefs(reviewPrefs?.body),
         });
         setProfile(
           mine?.profile
@@ -305,7 +313,9 @@ export function MyProgress({
       return id ? [{ id, at: m.createdAt }] : [];
     });
   const starredIds = new Set(marked('star').map((m) => m.id));
-  const due = data ? dueReviews(data.history, data.now) : [];
+  // Today's reviews under the learner's daily cap and break, and the 30-day forecast.
+  const schedule = data ? scheduleReviews(data.history, data.now, data.prefs) : null;
+  const due = schedule?.today ?? [];
   // Open questions graded by hand (components/recall-rate.tsx) share the review tab.
   const recall = useRecallQueue(!!boot.person);
   const mistakes = data ? wrongBook(data.history) : [];
@@ -544,9 +554,12 @@ export function MyProgress({
       );
     }
     if (tab === 'mistakes') {
-      const shown = mistakeView
-        ? data.history.filter((item) => item.firstAcAt && assisted(item))
-        : mistakes;
+      const shown =
+        mistakeView === 'leech'
+          ? data.history.filter((item) => item.acAt.length && reviewState(item).leech)
+          : mistakeView
+            ? data.history.filter((item) => item.firstAcAt && assisted(item))
+            : mistakes;
       return (
         <>
           <fieldset className="study-filters progress-filters">
@@ -556,6 +569,7 @@ export function MyProgress({
               <select value={mistakeView} onChange={(e) => setMistakeView(e.target.value)}>
                 <option value="">{t('错题本', 'Mistakes')}</option>
                 <option value="assisted">{t('借助提示通过', 'Solved with help')}</option>
+                <option value="leech">{t('顽固题', 'Leeches')}</option>
               </select>
             </label>
             <output className="progress-filter-count">
@@ -567,16 +581,20 @@ export function MyProgress({
               id: item.problemId,
               detail: item.firstAcAt
                 ? [
-                    ...(mistakeView
-                      ? helped(item)
-                      : [t(`通过前失败 ${item.failuresBeforeAc} 次`, `${item.failuresBeforeAc} failures before AC`)]),
+                    ...(mistakeView === 'leech'
+                      ? [t('复习时多次自评「重来」', 'Graded Again on reviews')]
+                      : mistakeView
+                        ? helped(item)
+                        : [t(`通过前失败 ${item.failuresBeforeAc} 次`, `${item.failuresBeforeAc} failures before AC`)]),
                     t(`${date(item.firstAcAt)} 通过`, `Solved ${date(item.firstAcAt)}`),
                   ]
                 : [t(`最近：${verdict(item.lastStatus)}`, `Last: ${verdict(item.lastStatus)}`), tried(item)],
             })),
-            mistakeView
-              ? ['还没有借助提示通过的题：通过前看过第 2 条起的提示、打开过题解或用过 AI 助教的题会列在这里。', 'No solves with help: problems solved after hint 2 or later, the Editorial tab or the AI tutor land here.']
-              : ['错题本是空的：没有未通过的题，也没有失败两次以上才过的题。', 'No mistakes to revisit: nothing unsolved, nothing that took two or more failures.'],
+            mistakeView === 'leech'
+              ? ['没有顽固题：复习时连续两次、或累计三次自评「重来」的题会列在这里。', 'No leeches: problems graded Again on two reviews in a row, or on three in all, land here.']
+              : mistakeView
+                ? ['还没有借助提示通过的题：通过前看过第 2 条起的提示、打开过题解或用过 AI 助教的题会列在这里。', 'No solves with help: problems solved after hint 2 or later, the Editorial tab or the AI tutor land here.']
+                : ['错题本是空的：没有未通过的题，也没有失败两次以上才过的题。', 'No mistakes to revisit: nothing unsolved, nothing that took two or more failures.'],
           )}
         </>
       );
@@ -584,14 +602,24 @@ export function MyProgress({
     if (tab === 'review')
       return (
         <>
+          {schedule && (
+            <ReviewForecast
+              schedule={schedule}
+              prefs={data.prefs}
+              now={data.now}
+              english={english}
+              onChange={(prefs) => setData((d) => d && { ...d, prefs })}
+            />
+          )}
           {(due.length > 0 || !recall.due) &&
             list(
-              due.map(({ item, level, steps, dueAt }) => {
+              due.map(({ item, level, steps, dueAt, leech }) => {
                 const late = Math.floor((data.now - dueAt) / DAY);
                 return {
                   id: item.problemId,
                   detail: [
-                    t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`),
+                    level ? t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`) : t('重学', 'Relearn'),
+                    ...(leech ? [t('顽固题', 'Leech')] : []),
                     ...helped(item),
                     late > 0
                       ? t(`逾期 ${late} 天`, `${late} day${late > 1 ? 's' : ''} overdue`)
@@ -600,8 +628,8 @@ export function MyProgress({
                 };
               }),
               [
-                '今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你；借助提示通过的题会先在 1 天后多复习一次。',
-                'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first.',
+                '今天没有到期的复习。通过的题按 3、7、21、60 天的间隔回来，借助提示通过的题先在 1 天后多复习一次。复习通过后自评：重来明天再做，吃力间隔不变，良好进入下一档，轻松跳一档，不评按良好算。',
+                'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first. Grade each review AC: Again brings it back tomorrow, Hard keeps the wait, Good moves a step, Easy skips one, and no grade counts as Good.',
               ],
             )}
           <RecallQueue recall={recall} signedIn={!!boot.person} navigate={navigate} english={english} />
