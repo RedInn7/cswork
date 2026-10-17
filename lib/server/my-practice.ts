@@ -15,8 +15,17 @@ import { aidsByProblem, gradesByProblem } from './practice-aids';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
-// The story list returns every body (up to NOTE_MAX_BYTES each), so stories get a cap of their own.
+// A ?prefix= list returns every body (up to NOTE_MAX_BYTES each), so each listed kind is capped:
+// MAX_STORIES rows per list, and PREFIX_CAP new notes per kind (409 with that message past it).
 const MAX_STORIES = 200;
+const LISTED = new Set(['story:', 'sd:', 'card:', 'clip:', 'brag:', 'retro:', 'route:']);
+const PREFIX_CAP: Record<string, [number, string]> = {
+  story: [MAX_STORIES, '故事已达上限'],
+  card: [CARD_MAX, '卡片已达上限（200 张）'],
+  brag: [200, '实习日志已达上限'],
+  retro: [200, '复盘已达上限'],
+  route: [30, '路线已达上限（30 条）'],
+};
 // One batch of marks: a list's worth of ticks (the longest classic list has 150).
 const MAX_BATCH = 500;
 // story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
@@ -29,11 +38,17 @@ const MAX_BATCH = 500;
 // JSON notes of the wave-8 features. Wave 9:
 // - card:<id> is one self-made review card as JSON (recall-custom-cards).
 // - topic:<Line 500 stop slug> is the learner's pattern notes for that stop (notes-structure).
-// - pref:<review|study|note-template> is a learner-written JSON preference; whatever reads it on
-//   the server must zod safeParse it (as parseJobSearch does) and fall back to defaults on failure.
+// - pref:<review|study|note-template|plan> is a learner-written JSON preference; whatever reads it
+//   on the server must zod safeParse it (as parseJobSearch does) and fall back to defaults on failure.
+//   pref:plan is the study plan goal (study-plan-v3).
 // - clip:<type>/<slug> and clip:lesson/<course>/<lesson> hold excerpts saved from a selection;
 //   never content:, which is the TryFirst answer.
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career|card|topic|pref|clip):[\w./-]{1,200}$/);
+// Wave 10 (all JSON: a server read zod safeParses it; none is in note-export's KINDS or NOTE_KINDS):
+// - brag:meta, brag:teams and brag:<Monday YYYY-MM-DD> are the internship log (intern-handbook).
+// - retro:<application id>/<base36 time> is one interview round's retro (tracker-tiers-retro).
+// - route:role-<key> is a built-in role path's schedule and step state; route:r-<base36> is a
+//   learner-made route (role-paths-v2).
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career|card|topic|pref|clip|brag|retro|route):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
@@ -237,9 +252,10 @@ export async function handleMyPractice(
         // ?prefix=story: lists the story bank with its bodies in one request (MAX_STORIES); ?prefix=sd:
         // the system design quiz answers (app/oa/mcq/practice.tsx reviews the wrong ones): `sd:<chapter>`
         // only, not the `sd:<chapter>/draft` design drafts, capped well above the chapter count.
-        // ?prefix=card: the self-made cards (CARD_MAX fits the cap), ?prefix=clip: the saved excerpts.
+        // ?prefix=card: the self-made cards (CARD_MAX fits the cap), ?prefix=clip: the saved excerpts;
+        // ?prefix=brag:|retro:|route: the wave-10 JSON notes (PREFIX_CAP fits the cap).
         const listed = params.get('prefix');
-        if (listed === 'story:' || listed === 'sd:' || listed === 'card:' || listed === 'clip:')
+        if (listed && LISTED.has(listed))
           return json({
             items: db
               .prepare(
@@ -299,24 +315,17 @@ export async function handleMyPractice(
     }
     if (!db.prepare('SELECT 1 FROM user_notes WHERE user_id=? AND target=?').get(p.id, key)) {
       full('user_notes', p.id);
+      const kind = key.slice(0, key.indexOf(':'));
+      const cap = Object.hasOwn(PREFIX_CAP, kind) ? PREFIX_CAP[kind] : null;
       if (
-        key.startsWith('story:') &&
+        cap &&
         (
           db
-            .prepare("SELECT COUNT(*) AS n FROM user_notes WHERE user_id=? AND target LIKE 'story:%'")
-            .get(p.id) as { n: number }
-        ).n >= MAX_STORIES
+            .prepare('SELECT COUNT(*) AS n FROM user_notes WHERE user_id=? AND target LIKE ?')
+            .get(p.id, `${kind}:%`) as { n: number }
+        ).n >= cap[0]
       )
-        throw new HttpError(409, '故事已达上限');
-      if (
-        key.startsWith('card:') &&
-        (
-          db
-            .prepare("SELECT COUNT(*) AS n FROM user_notes WHERE user_id=? AND target LIKE 'card:%'")
-            .get(p.id) as { n: number }
-        ).n >= CARD_MAX
-      )
-        throw new HttpError(409, '卡片已达上限（200 张）');
+        throw new HttpError(409, cap[1]);
     }
     const now = Date.now();
     db.prepare(

@@ -38,6 +38,8 @@ export const jobApplications = sqliteTable(
     nextAt: integer('next_at'),
     jdText: text('jd_text').notNull().default(''),
     resumeVersion: text('resume_version').notNull().default(''),
+    /** dream | target | practice, or '' (tracker-tiers-retro). */
+    tier: text('tier').notNull().default(''),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },

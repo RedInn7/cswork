@@ -89,6 +89,20 @@ test('the course index and chapters render on the server with links, quiz and pa
   assert.deepEqual([...doc.querySelectorAll('a')].map((a) => [a.getAttribute('href'), a.getAttribute('rel')]), [[`/system-design/${second.slug}`, null]]);
 });
 
+test('course Markdown groups code blocks into tabs and embeds ```algorithm-demo; a post keeps them as code', async () => {
+  const { PublicLibraryMarkdown } = await import('../app/library/markdown.tsx');
+  const render = (body, ugc = false) => parse(renderToStaticMarkup(createElement(PublicLibraryMarkdown, { body, math: false, ugc })));
+  let doc = render('```python\nprint(1)\n```\n\n```cpp\nint main() {}\n```');
+  const groups = doc.querySelectorAll('.cs-code-tabs');
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].querySelectorAll('[role="tab"]').length, 2);
+  assert.deepEqual([...groups[0].querySelectorAll('[role="tabpanel"]')].map((p) => p.querySelector('pre').textContent.trim()), ['print(1)', 'int main() {}']);
+  doc = render('```algorithm-demo\nbinary-search\n```');
+  assert.equal(doc.querySelector('pre'), null);
+  assert.ok(doc.querySelector('section.algorithm-demo'));
+  assert.equal(render('```algorithm-demo\nbinary-search\n```', true).querySelector('pre').textContent.trim(), 'binary-search');
+});
+
 test('signed out, quiz answers lock, explain and stay in this browser; bad saved data is ignored', async () => {
   const dom = useDom();
   const { createRoot } = await import('react-dom/client');

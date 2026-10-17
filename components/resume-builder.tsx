@@ -5,6 +5,7 @@ import { ojRequest } from '@/lib/oj-client';
 import { checkResume, type ResumeIssue } from '@/lib/resume-check';
 import { readResumeFile, type ResumeFileError } from '@/lib/resume-file';
 import { parseResumeText } from '@/lib/resume-parse';
+import { blankItem, blankResume, ITEMS, lines, MAX, normalizeResume, type ListKey, type Resume, type ResumeItem } from '@/lib/resume-shape';
 
 /**
  * /career/resume/builder: a one-page, single-column resume (standard headings, no tables, images or
@@ -23,20 +24,9 @@ export const RESUME_VERSIONS_KEY = 'cswork:resume:versions';
 const MAX_VERSIONS = 10;
 const VERSION_NAME = 40;
 
-export type ResumeItem = { title: string; subtitle: string; dates: string; bullets: string };
-type ListKey = 'education' | 'experience' | 'projects';
-export type Resume = {
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
-  links: string;
-  education: ResumeItem[];
-  experience: ResumeItem[];
-  projects: ResumeItem[];
-  skills: string;
-  awards: string;
-};
+// The shape lives in lib/resume-shape.ts (server code reads it too); re-exported for existing importers.
+export { blankResume, normalizeResume, type Resume, type ResumeItem };
+
 export type ResumeFacts = {
   certificates: { id: string; course: string; issuedAt: number; skill: boolean }[];
   rating: number | null;
@@ -44,63 +34,6 @@ export type ResumeFacts = {
   solved: { total: number; easy: number; medium: number; hard: number };
   handle: string | null;
 };
-
-const ITEMS = 20;
-const blankItem = (): ResumeItem => ({ title: '', subtitle: '', dates: '', bullets: '' });
-export const blankResume = (): Resume => ({
-  name: '',
-  email: '',
-  phone: '',
-  location: '',
-  links: '',
-  education: [blankItem()],
-  experience: [blankItem()],
-  projects: [blankItem()],
-  skills: '',
-  awards: '',
-});
-
-/** Field caps: the form's maxLength and what normalizeResume keeps are one and the same. */
-const MAX: Record<Exclude<keyof Resume, ListKey> | keyof ResumeItem, number> = {
-  name: 80,
-  email: 120,
-  phone: 40,
-  location: 80,
-  links: 300,
-  title: 120,
-  subtitle: 160,
-  dates: 60,
-  bullets: 3000,
-  skills: 2000,
-  awards: 2000,
-};
-const text = (value: unknown, max: number) => (typeof value === 'string' ? value.slice(0, max) : '');
-/** Anything (a stored or imported file) as a resume: unknown fields dropped, strings capped. */
-export function normalizeResume(raw: unknown): Resume {
-  const r = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
-  const items = (value: unknown) =>
-    (Array.isArray(value) ? value : []).slice(0, ITEMS).map((v) => {
-      const i = v && typeof v === 'object' ? (v as Record<string, unknown>) : {};
-      return {
-        title: text(i.title, MAX.title),
-        subtitle: text(i.subtitle, MAX.subtitle),
-        dates: text(i.dates, MAX.dates),
-        bullets: text(i.bullets, MAX.bullets),
-      };
-    });
-  return {
-    name: text(r.name, MAX.name),
-    email: text(r.email, MAX.email),
-    phone: text(r.phone, MAX.phone),
-    location: text(r.location, MAX.location),
-    links: text(r.links, MAX.links),
-    education: items(r.education),
-    experience: items(r.experience),
-    projects: items(r.projects),
-    skills: text(r.skills, MAX.skills),
-    awards: text(r.awards, MAX.awards),
-  };
-}
 
 /** The stored versions, cleaned like an import: bad names and entries past MAX_VERSIONS dropped. */
 export function readVersions(): Record<string, Resume> {
@@ -126,11 +59,6 @@ export function resumeDiff(a: Resume, b: Resume) {
   return n;
 }
 
-const lines = (value: string) =>
-  value
-    .split('\n')
-    .map((line) => line.replace(/^\s*[-•*]\s*/, '').trim())
-    .filter(Boolean);
 const filled = (item: ResumeItem) => !!(item.title.trim() || item.subtitle.trim() || item.dates.trim() || item.bullets.trim());
 const contact = (r: Resume) => [r.email, r.phone, r.location, r.links].map((s) => s.trim()).filter(Boolean).join(' | ');
 // Standard English headings: what applicant tracking systems look for.

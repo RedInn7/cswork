@@ -14,7 +14,7 @@ import {
 import { useLocale, useT } from '@/lib/i18n';
 
 // No CSS import here, so pure node tests can render pages that embed a demo:
-// app/algorithm-demo.css is imported by components/lms-shared.tsx and app/topics/layout.tsx.
+// app/algorithm-demo.css is imported by components/lms-shared.tsx, app/topics/layout.tsx and app/learn/layout.tsx.
 
 export function AlgorithmDemo({ kind }: { kind: string }) {
   const t = useT();

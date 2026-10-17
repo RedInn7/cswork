@@ -1,14 +1,14 @@
 'use client';
 
-import React, { Children, isValidElement, lazy, memo, Suspense, useEffect, useId, useRef, useState } from 'react';
+import React, { Children, isValidElement, lazy, memo, Suspense, useEffect, useState } from 'react';
 import Markdown, { type Components, type ExtraProps } from 'react-markdown';
 import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkGfm from 'remark-gfm';
 import { useT } from '@/lib/i18n';
 import { playgroundLanguage } from '@/lib/playground-share';
-import { languages } from '@/lib/problems';
 import remarkCodeTabs from '@/lib/remark-code-tabs';
 import remarkMoney from '@/lib/remark-money';
+import { CodeTabs } from './code-tabs';
 import { RunInPlayground } from './run-in-playground';
 
 // Imported statements use TeX-style scripts even inside Markdown inline code.
@@ -342,49 +342,6 @@ function PostPre({
   );
 }
 
-/** Consecutive blocks in different languages (remarkCodeTabs) as one tab set. */
-function CodeTabs({ langs, children }: { langs: string[]; children?: React.ReactNode }) {
-  const t = useT();
-  const id = useId();
-  const [at, setAt] = useState(0);
-  const list = useRef<HTMLDivElement>(null);
-  const panels = Children.toArray(children).filter(isValidElement);
-  const move = (e: React.KeyboardEvent) => {
-    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-    if (!step) return;
-    e.preventDefault();
-    const next = (at + step + langs.length) % langs.length;
-    setAt(next);
-    list.current?.querySelectorAll<HTMLElement>('[role="tab"]')[next]?.focus();
-  };
-  return (
-    <div className="cs-code-tabs">
-      <div role="tablist" aria-label={t('代码语言', 'Code language')} ref={list}>
-        {langs.map((lang, i) => (
-          <button
-            key={lang}
-            type="button"
-            role="tab"
-            id={`${id}-tab-${i}`}
-            aria-selected={i === at}
-            aria-controls={`${id}-panel-${i}`}
-            tabIndex={i === at ? 0 : -1}
-            onClick={() => setAt(i)}
-            onKeyDown={move}
-          >
-            {languages.find((item) => item.id === lang)?.name ?? lang}
-          </button>
-        ))}
-      </div>
-      {panels.map((panel, i) => (
-        <div key={i} role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`} hidden={i !== at}>
-          {panel}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 // The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
 // Posts cannot write HTML, so the only div is remarkCodeTabs'.
 const postComponents = (diagrams: boolean, nested: boolean): Components => ({
@@ -396,7 +353,10 @@ const postComponents = (diagrams: boolean, nested: boolean): Components => ({
   ),
   div: ({ node, className, children }) =>
     className === 'cs-code-tabs' ? (
-      <CodeTabs langs={String(node?.properties.dataLangs ?? '').split(' ')}>{children}</CodeTabs>
+      <CodeTabs
+        langs={String(node?.properties.dataLangs ?? '').split(' ')}
+        panels={Children.toArray(children).filter(isValidElement)}
+      />
     ) : (
       <div className={className}>{children}</div>
     ),

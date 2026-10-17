@@ -317,6 +317,9 @@ const EN: Record<string, string> = {
   这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
   现在不能报告爽约: "You can't report a no-show right now",
   故事已达上限: "You've reached the limit for stories",
+  实习日志已达上限: "You've reached the limit for internship log entries",
+  复盘已达上限: "You've reached the limit for interview retros",
+  '路线已达上限（30 条）': "You've reached the limit of 30 routes",
   // Self-made review cards (lib/server/my-practice.ts) and the idea review (lib/server/recall-ideas.ts)
   '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接':
     'Invalid card: front and back up to 2,000 characters each, at most 8 tags, and the source must be a page on this site',

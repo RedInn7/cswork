@@ -1,3 +1,4 @@
+import '../algorithm-demo.css';
 import '../library/library.css';
 import '../system-design/system-design.css';
 import './learn.css';

@@ -1,7 +1,8 @@
 // Code templates for the 35 Line 500 stops: three key points, three pitfalls and the same
 // pattern in four languages. The JSON is ~150 KB, so client components should load this
 // module lazily (`await import('@/lib/route-templates')`) rather than import it eagerly.
-// tests/route-templates.test.ts compiles and runs every template.
+// Each stop's drivers (the code that calls a template, and its expected stdout) are in
+// lib/route-template-drivers.ts; tests/route-templates.test.ts compiles and runs every template with them.
 import data from './content/route-templates.json';
 
 export type Bilingual = { zh: string; en: string };

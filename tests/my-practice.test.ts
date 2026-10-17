@@ -316,6 +316,22 @@ void test('self-made cards are checked, capped at 200 and listed whole; excerpts
   sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'card:%' OR target LIKE 'clip:%'").run();
 });
 
+void test('wave-10 notes (brag:, retro:, route:) list whole per learner and cap per prefix', async () => {
+  type Listed = { items: { target: string; body: string }[] };
+  await ok(me, 'PUT', 'notes?target=brag:2026-10-12', { body: '{"wins":[]}' });
+  await ok(me, 'PUT', 'notes?target=retro:0b5f8c1e-1f2a-4c3d-9e8f-123456789abc/mf3k2a', { body: '{"score":3}' });
+  await ok(other, 'PUT', 'notes?target=brag:meta', { body: '{"weeks":12}' });
+  assert.deepEqual((await ok<Listed>(me, 'GET', 'notes?prefix=brag%3A')).items.map((i) => [i.target, i.body]), [['brag:2026-10-12', '{"wins":[]}']]);
+  assert.equal((await ok<Listed>(me, 'GET', 'notes?prefix=retro%3A')).items.length, 1);
+  const insert = sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)');
+  for (let i = 0; i < 29; i++) insert.run(me.id, `route:r-${i}`, '{}', i);
+  await ok(me, 'PUT', 'notes?target=route:role-backend', { body: '{"v":1}' });
+  assert.equal(await status(me, 'PUT', 'notes?target=route:r-zz', { body: '{"v":1}' }), 409);
+  await ok(me, 'PUT', 'notes?target=route:role-backend', { body: '{"v":1,"weeklyHours":8}' });
+  assert.equal((await ok<Listed>(me, 'GET', 'notes?prefix=route%3A')).items.length, 30);
+  sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'brag:%' OR target LIKE 'retro:%' OR target LIKE 'route:%'").run();
+});
+
 void test('marks toggle per learner and drive the Line 500 starred/redo filters', async () => {
   const mark = (p: Person, m: string, on: boolean) =>
     ok(p, 'POST', 'marks', { target: 'problem:lc-1', mark: m, on });
