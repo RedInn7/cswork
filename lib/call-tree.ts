@@ -1,7 +1,8 @@
 /**
  * The recursion tree of one Python debugger run (lib/python-debugger.ts), rebuilt from the
- * recorded steps: a step whose frame serial is new opens a call under the call one level
- * shallower on the stack; a 'return' step gives the call its value.
+ * recorded steps: a step whose frame serial is new opens a call under its caller (the
+ * tracer's `parents`, else the call one level shallower on the stack); a 'return' step gives
+ * the call its value.
  */
 import type { TraceStep } from './python-debugger';
 
@@ -15,6 +16,8 @@ export type CallNode = {
   args: string;
   /** What it returned; undefined while it never did (the trace was cut first). */
   ret?: string;
+  /** It ended by raising an exception: ret is then not a real return value. */
+  raised?: true;
   /** Index of the call's first step, where the debugger jumps to. */
   firstStep: number;
   /** Calls of this function with these same arguments, this one included. */
@@ -33,6 +36,7 @@ export type CallTree = {
 export function buildCallTree(
   steps: readonly TraceStep[],
   params: Readonly<Record<number, readonly string[]>> = {},
+  parents: Readonly<Record<number, number>> = {},
 ): CallTree {
   const roots: CallNode[] = [],
     stack: CallNode[] = [],
@@ -55,7 +59,10 @@ export function buildCallTree(
         .map((name) => `${name}=${vars.get(name)}`)
         .join(', ');
       node = { frame: step.frame, func: step.func, args, firstStep: i, repeat: 1, children: [] };
-      const callers = stack.slice(0, step.depth);
+      // Outermost first. parseTrace keeps only parents older than their call, so this ends.
+      let callers: CallNode[] = [];
+      for (let f = parents[step.frame]; byFrame.has(f); f = parents[f]) callers.unshift(byFrame.get(f)!);
+      if (!callers.length) callers = stack.slice(0, step.depth);
       (callers.at(-1)?.children ?? roots).push(node);
       recursive ||= callers.some((caller) => caller.func === step.func);
       byFrame.set(step.frame, node);
@@ -66,7 +73,10 @@ export function buildCallTree(
     }
     stack[step.depth] = node;
     stack.length = step.depth + 1;
-    if (step.kind === 'return') node.ret = step.ret ?? '';
+    if (step.kind === 'return') {
+      node.ret = step.ret ?? '';
+      if (step.raised) node.raised = true;
+    }
   });
   for (const group of same.values()) for (const node of group) node.repeat = group.length;
   return { roots, size: byFrame.size, cut, recursive };

@@ -17,10 +17,10 @@ function run(code: string, request: Partial<DebugRequest> = {}) {
   );
   assert.equal(result.status, 0, result.stderr);
   const trace = parseTrace(result.stdout);
-  return { trace, tree: buildCallTree(trace.steps, trace.params) };
+  return { trace, tree: buildCallTree(trace.steps, trace.params, trace.parents) };
 }
 const show = (node: CallNode): string =>
-  `${node.func}(${node.args})=${node.ret ?? '…'}${node.children.length ? `[${node.children.map(show).join(' ')}]` : ''}`;
+  `${node.func}(${node.args})=${node.raised ? 'raised' : (node.ret ?? '…')}${node.children.length ? `[${node.children.map(show).join(' ')}]` : ''}`;
 const all = (nodes: CallNode[]): CallNode[] => nodes.flatMap((node) => [node, ...all(node.children)]);
 
 const fib = (n: number) =>
@@ -110,6 +110,65 @@ test('a generator stays one call across its resumes, recursive generators nest',
   assert.deepEqual(module.children.map((node) => `${node.func}(${node.args})`), ['count(n=3)', 'walk(t=[[None, 1, None], 2, None])']);
   assert.equal(show(module.children[1]), 'walk(t=[[None, 1, None], 2, None])=None[walk(t=[None, 1, None])=None[walk(t=None)=None walk(t=None)=None] walk(t=None)=None]');
   assert.equal(tree.recursive, true);
+});
+
+test('a call an exception leaves is marked raised, not "returned None"; a caught one is not', () => {
+  const crash = run(['def f(n):', '    if n == 0:', '        return [][0]', '    return f(n - 1) + 1', 'print(f(2))'].join('\n'));
+  assert.equal(crash.trace.error?.type, 'IndexError');
+  assert.equal(show(crash.tree.roots[0]), '<module>()=raised[f(n=2)=raised[f(n=1)=raised[f(n=0)=raised]]]');
+  const caught = run(
+    [
+      'def g():',
+      '    raise KeyError(1)',
+      'def f():',
+      '    try:',
+      '        g()',
+      '    except KeyError:',
+      '        return 1',
+      'def h():',
+      '    try:',
+      '        raise ValueError',
+      '    finally:',
+      '        return 5',
+      'def gen():',
+      '    try:',
+      '        yield 1',
+      '    finally:',
+      '        pass',
+      'class Two:',
+      '    def __init__(self):',
+      '        self.i = 0',
+      '    def __next__(self):',
+      '        self.i += 1',
+      '        if self.i > 2:',
+      '            raise StopIteration',
+      '        return self.i',
+      '    def __iter__(self):',
+      '        return self',
+      'def loop():',
+      '    for x in Two():',
+      '        pass',
+      'it = gen()',
+      'next(it)',
+      'it.close()',
+      'loop()',
+      'print(f(), h())',
+    ].join('\n'),
+  );
+  assert.equal(caught.trace.error, null);
+  // Iteration signals aren't crashes: gen() closed early (GeneratorExit) shows its last yield,
+  // and loop() ends on the StopIteration its for statement swallows.
+  assert.equal(
+    caught.tree.roots[0].children.map(show).join(' '),
+    'Two()=None gen()=None loop()=None[Two.__init__()=None Two.__iter__()=Two(i=0) Two.__next__()=1 Two.__next__()=2 Two.__next__()=None] f()=1[g()=raised] h()=5',
+  );
+});
+
+test('a generator resumed mid-line still owns the calls it makes before its next line', () => {
+  const { tree } = run(
+    ['def h(x):', '    return x * 2', 'def gen():', '    total = (yield 1) + h(3)', '    yield total', 'g = gen()', 'next(g)', 'print(g.send(5))'].join('\n'),
+  );
+  assert.equal(show(tree.roots[0]), '<module>()=None[gen()=11[h(x=3)=6]]');
 });
 
 test(`more than ${MAX_CALL_NODES} calls are cut; a step-limited trace leaves calls without a return`, () => {

@@ -37,6 +37,8 @@ export type TraceStep = {
   vars: [string, string][];
   /** kind 'return': the returned value. */
   ret?: string;
+  /** kind 'return': the call ended by an exception (ret is then a meaningless None). */
+  raised?: true;
 };
 /** Why the LeetCode-style call was skipped; the code then ran with plain stdin. */
 export type HarnessNote = { code: 'json' | 'entry' | 'arity' | 'tree' | 'list'; detail: string };
@@ -51,6 +53,8 @@ export type Trace = {
   note: HarnessNote | null;
   /** Parameter names per call (keyed by `frame`); calls without parameters are left out. */
   params: Record<number, string[]>;
+  /** The calling frame per call (keyed by `frame`); outermost calls are left out. */
+  parents: Record<number, number>;
 };
 
 const text = (value: unknown, fallback = '') => (typeof value === 'string' ? value : fallback);
@@ -74,6 +78,7 @@ export function parseTrace(json: string): Trace {
       out: whole(item[5]),
       vars,
       ...(item[4] === 1 ? { ret: text(item[7]) } : {}),
+      ...(item[4] === 1 && item[8] === 1 ? { raised: true as const } : {}),
     });
   }
   const error = raw.error as Record<string, unknown> | null;
@@ -82,6 +87,11 @@ export function parseTrace(json: string): Trace {
   for (const [key, names] of Object.entries(raw.params && typeof raw.params === 'object' ? raw.params : {}))
     if (Number.isInteger(Number(key)) && Array.isArray(names) && names.every((name) => typeof name === 'string'))
       params[Number(key)] = names;
+  // A caller always got its serial first: anything else (a loop, say) is dropped.
+  const parents: Record<number, number> = {};
+  for (const [key, parent] of Object.entries(raw.parents && typeof raw.parents === 'object' ? raw.parents : {}))
+    if (Number.isInteger(Number(key)) && Number.isInteger(parent) && parent > 0 && parent < Number(key))
+      parents[Number(key)] = parent;
   return {
     steps,
     stdout: text(raw.stdout),
@@ -101,6 +111,7 @@ export function parseTrace(json: string): Trace {
         ? { code: note.code as HarnessNote['code'], detail: text(note.detail) }
         : null,
     params,
+    parents,
   };
 }
 
@@ -412,8 +423,14 @@ def _cswork_debug(request):
     # Generators get a 'call' event on every resume: they keep their first serial. Keyed by
     # the frame itself, so a finished generator's serial is never handed to a new frame.
     # ponytail: holds those frames until the run ends; fine at 5000 steps.
-    resumable, params = {}, {}
-    trace = {'steps': steps, 'result': None, 'error': None, 'note': None, 'params': params}
+    resumable, params, parents = {}, {}, {}
+    # Frames an exception is passing through: their next 'return' (arg None) is that exception
+    # leaving, unless a 'line' event (an except or finally) comes first. Iteration signals
+    # aren't crashes: for/yield from/await swallow StopIteration on the same line, and a
+    # generator closed early sees GeneratorExit.
+    # ponytail: so a StopIteration that does escape a plain function shows as returning None.
+    raising = set()
+    trace = {'steps': steps, 'result': None, 'error': None, 'note': None, 'params': params, 'parents': parents}
     out = _Out()
     ns = {'__name__': '__main__', '__builtins__': _b}
     if leetcode:
@@ -421,6 +438,8 @@ def _cswork_debug(request):
     baseline = dict(ns)
 
     def local(frame, event, arg):
+        if event == 'exception' and not issubclass(arg[0], (StopIteration, StopAsyncIteration, GeneratorExit)):
+            raising.add(id(frame))
         if event != 'line' and event != 'return':
             return local
         if len(steps) >= max_steps:
@@ -433,9 +452,11 @@ def _cswork_debug(request):
         serial, depth = frames.get(id(frame), (0, 0))
         step = [frame.f_lineno, depth, serial, getattr(code, 'co_qualname', code.co_name),
                 1 if event == 'return' else 0, out.units, _vars(frame, baseline)]
+        raised = id(frame) in raising
+        raising.discard(id(frame))
         if event == 'return':
             frames.pop(id(frame), None)
-            step.append(_show(arg))
+            step += [_show(arg), 1] if raised else [_show(arg)]
         steps.append(step)
         return local
 
@@ -458,6 +479,10 @@ def _cswork_debug(request):
                      + bool(code.co_flags & _inspect.CO_VARKEYWORDS))
             if count:
                 params[serial] = code.co_varnames[:count]
+            # The caller, which the steps can't always tell: a generator resumed mid-line
+            # makes calls before its next step.
+            if known:
+                parents[serial] = known[0]
         frames[id(frame)] = (serial, known[1] + 1 if known else 0)
         return local
 

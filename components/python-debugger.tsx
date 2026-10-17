@@ -267,7 +267,7 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
   };
   const changed = useMemo(() => changedNames(steps, index), [steps, index]);
   const stack = useMemo(() => stackAt(steps, index), [steps, index]);
-  const tree = useMemo(() => buildCallTree(steps, trace?.params), [steps, trace]);
+  const tree = useMemo(() => buildCallTree(steps, trace?.params, trace?.parents), [steps, trace]);
   const [calls, setCalls] = useState<'stack' | 'tree'>('stack');
   // The tree tab only exists for runs where a function calls itself (or back into itself).
   const showTree = tree.recursive && calls === 'tree';
@@ -411,7 +411,7 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
                     {step.kind === 'return' && step.func !== '<module>' && (
                       <tr className="pydbg-return">
                         <th scope="row">{t('返回值', 'Returns')}</th>
-                        <td>{step.ret}</td>
+                        <td>{step.raised ? t('没有，抛出了异常', 'none: it raised an exception') : step.ret}</td>
                       </tr>
                     )}
                   </tbody>
@@ -580,7 +580,9 @@ function CallTreeView({
             ) : (
               <>
                 <span>{`${name}(${node.args})`}</span>
-                <small>{node.ret === undefined ? t('未返回', 'never returned') : `→ ${node.ret}`}</small>
+                <small>
+                  {node.ret === undefined ? t('未返回', 'never returned') : node.raised ? t('抛出异常', 'raised') : `→ ${node.ret}`}
+                </small>
               </>
             )}
             {node.repeat > 1 && <em>{t(`重复 ×${node.repeat}`, `repeated ×${node.repeat}`)}</em>}
