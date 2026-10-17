@@ -185,6 +185,40 @@ Best regards,
     },
   },
   {
+    id: 'expedite',
+    title: ['手里有 offer，请求加快流程', 'Ask to speed up a process (you hold an offer)'],
+    tip: [
+      '只在确实拿到 offer 时发，写清楚答复截止日。先在投递看板的加速规划里看哪些流程赶不上，再分别联系。',
+      'Send it only when you really hold an offer, and give its exact deadline. Check the tracker’s expedite plan for the processes that won’t finish in time, then write to each.',
+    ],
+    zh: {
+      subject: '面试进度：{company} {role}',
+      body: `{name}，您好：
+
+我目前在 {company} {role} 岗位的面试流程中，对这个机会依然很感兴趣。
+
+想跟您同步一个情况：我收到了 {otherCompany} 的 offer，需要在 {deadline} 前答复。我更希望先走完 {company} 的流程再做决定，请问后面的面试和结果能否安排得早一些？时间上我可以尽量配合：[你方便面试的几个时段]。
+
+如果实在来不及，也麻烦告诉我大概的时间线，方便我和对方沟通。谢谢您！
+
+祝好！
+{myName}`,
+    },
+    en: {
+      subject: 'Interview timeline: {role} at {company}',
+      body: `Hi {name},
+
+I'm currently interviewing for the {role} position at {company}, and I'm still very interested in the role.
+
+I wanted to let you know that I've received an offer from {otherCompany} and need to respond by {deadline}. I'd much rather finish the process with {company} before deciding. Would it be possible to schedule the remaining steps and the decision a little earlier? I can be flexible on timing: [a few slots when you can interview].
+
+If that isn't feasible, an approximate timeline would still help me plan with the other company. Thank you for your help.
+
+Best regards,
+{myName}`,
+    },
+  },
+  {
     id: 'counter-competing',
     title: ['有其他 offer 时谈薪', 'Negotiate with a competing offer'],
     tip: [
