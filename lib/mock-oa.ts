@@ -197,11 +197,16 @@ export type QuestionResult = {
   total: number;
   accepted: boolean;
   status?: string;
+  /** The submission this result came from. */
+  id?: string;
+  /** 0–100 by test weight, only for a submission judged on every case (submissions.all_cases). */
+  score?: number;
 };
-/** Share of a question earned: AC is 1, otherwise passed / total. */
+/** Share of a question earned: AC is 1, then the weighted score when judged on every case, otherwise passed / total. */
 export function questionFraction(result: QuestionResult | null | undefined) {
   if (!result) return 0;
   if (result.accepted) return 1;
+  if (result.score !== undefined) return Math.min(1, Math.max(0, result.score / 100));
   return result.total > 0 ? Math.min(1, Math.max(0, result.passed / result.total)) : 0;
 }
 const WEIGHT: Record<Slot, number> = { easy: 1, medium: 2, hard: 3 };
@@ -244,12 +249,11 @@ export type Attempt = {
   passed: number;
   total: number;
   created_at: number;
+  id?: string;
+  score?: number;
 };
 const JUDGING = new Set(['queued', 'compiling', 'running']);
-/**
- * One question's attempts inside the exam window, oldest first. The judge stops at
- * the first failing test, so a wrong answer's `passed` counts the tests before it.
- */
+/** One question's attempts inside the exam window, oldest first. */
 export function summarizeAttempts(list: readonly Attempt[], from: number) {
   let best: QuestionResult | null = null,
     firstAcceptedMs: number | null = null,
@@ -265,11 +269,13 @@ export function summarizeAttempts(list: readonly Attempt[], from: number) {
     const accepted = s.status === 'accepted';
     if (accepted && firstAcceptedMs === null)
       firstAcceptedMs = Math.max(0, s.created_at - from);
-    const result = {
+    const result: QuestionResult = {
       passed: accepted ? s.total : s.passed,
       total: s.total,
       accepted,
       status: s.status,
+      ...(s.id !== undefined && { id: s.id }),
+      ...(s.score !== undefined && { score: s.score }),
     };
     if (!best || questionFraction(result) > questionFraction(best)) best = result;
   }

@@ -265,6 +265,26 @@ test('attempt summaries keep the best result, the first AC and pending runs', ()
   assert.equal(summarizeAttempts([], 0).best, null);
 });
 
+test('a weighted score from a run over every case outranks passed / total', () => {
+  // 9 of 10 tests passed, but the failed one carried most of the weight: 40 points, not 90.
+  const s = summarizeAttempts(
+    [
+      { id: 'a', status: 'wrong_answer', passed: 6, total: 10, created_at: 1_000 },
+      { id: 'b', status: 'time_limit', passed: 9, total: 10, score: 40, created_at: 2_000 },
+      { id: 'c', status: 'wrong_answer', passed: 3, total: 10, score: 70, created_at: 3_000 },
+    ],
+    0,
+  );
+  assert.deepEqual([s.best?.id, s.best?.score], ['c', 70]);
+  assert.deepEqual(scoreMock([s.best], 'tests', ['medium']).per, [70]);
+  // Without a score (an older row), passed / total as before; AC is always full.
+  assert.equal(summarizeAttempts([{ status: 'wrong_answer', passed: 6, total: 10, created_at: 0 }], 0).best?.score, undefined);
+  assert.deepEqual(
+    scoreMock([{ passed: 6, total: 10, accepted: false }, { passed: 10, total: 10, accepted: true, score: 99 }], 'tests', ['easy', 'easy']).per,
+    [60, 100],
+  );
+});
+
 const session = (extra: Partial<MockSession> = {}): MockSession => ({
   id: 's1',
   company: 'amazon',

@@ -129,6 +129,8 @@ type Report = {
     pending: boolean;
     /** An OA problem's estimated difficulty (lib/content/oa-topics.json). */
     estimate?: Slot | null;
+    /** The best attempt's correctness and performance percentages, when judged on every case and split. */
+    groups?: { correctness: number; performance: number };
   }[];
   score: { value: number; min: number; max: number; per: number[]; estimate: boolean };
   pending: boolean;
@@ -1534,6 +1536,12 @@ function MockReport({
                       : ''}
                     {item?.firstAcceptedMs != null
                       ? t(` · ${formatClock(item.firstAcceptedMs)} 时通过`, ` · AC at ${formatClock(item.firstAcceptedMs)}`)
+                      : ''}
+                    {item?.groups
+                      ? t(
+                          ` · 正确性 ${item.groups.correctness}% · 性能 ${item.groups.performance}%`,
+                          ` · Correctness ${item.groups.correctness}% · Performance ${item.groups.performance}%`,
+                        )
                       : ''}
                   </small>
                 </span>
