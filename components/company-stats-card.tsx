@@ -222,6 +222,15 @@ export function MemberStatsCard({ stats, locale }: { stats: MemberStats; locale:
             </dd>
           </div>
         )}
+        {s.prep && (
+          <div>
+            <dt>{zh ? `拿到 Offer 的准备时长中位数（${s.prep.n} 篇）` : `Median prep among offers (${s.prep.n} posts)`}</dt>
+            <dd>
+              {s.prep.median}
+              <small>{zh ? ' 周' : s.prep.median === 1 ? ' week' : ' weeks'}</small>
+            </dd>
+          </div>
+        )}
       </dl>
       <div className="company-stats-grid">
         {s.sentiment && (

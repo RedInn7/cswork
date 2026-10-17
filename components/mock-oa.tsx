@@ -106,10 +106,12 @@ type Drawn = {
   scoring: Scoring;
   source: MockSource;
   topics?: string[];
+  experience?: string;
   now: number;
 };
 type DrawRequest =
   | { company: string }
+  | { experience: string }
   | {
       custom: {
         company?: string;
@@ -153,7 +155,9 @@ const platformKey = (platform: string | null) =>
 const recentIds = (state: MockState) =>
   [state.active, ...state.history.slice(0, 5)].flatMap((s) => s?.ids ?? []);
 const drawRequest = (s: MockSession): DrawRequest =>
-  s.preset && s.company
+  s.experience
+    ? { experience: s.experience }
+    : s.preset && s.company
     ? { company: s.company }
     : {
         custom: {
@@ -292,6 +296,7 @@ export function MockOa({
         scoring: drawn.scoring,
         source: drawn.source,
         ...(drawn.topics?.length ? { topics: drawn.topics } : {}),
+        ...(drawn.experience ? { experience: drawn.experience } : {}),
         slots: drawn.slots,
         ids: drawn.ids,
         minutes: drawn.minutes,
@@ -316,6 +321,18 @@ export function MockOa({
     }
   }
 
+  // "Practise this loop" (?experience=, from a member's post) draws once per visit, through the
+  // same replace prompt as any draw; never over a skill exam on the clock.
+  const fromExperience = useRef(false);
+  useEffect(() => {
+    if (!params.experience || fromExperience.current) return;
+    fromExperience.current = true;
+    const exam = readMockState(userId).active;
+    if (exam?.cert && exam.startedAt)
+      setError(t('技能考试正在进行，交卷后再来按这场面经模拟。', 'A skill exam is in progress. Hand it in, then come back to practise this loop.'));
+    else void draw('exp', { experience: params.experience });
+    // oxlint-disable-next-line react/react-compiler -- one draw per visit; draw reads fresh state itself.
+  }, [params.experience]);
   const report = findMock(state, params.report);
   const briefing = findMock(state, params.session);
   return (
