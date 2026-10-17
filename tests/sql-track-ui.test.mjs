@@ -127,7 +127,7 @@ test('the SQL track switches to the pandas versions once they are listed', async
     assert.equal(switchButtons().length, 0);
     assert.deepEqual(hrefs(), ['sql-01', 'sql-04']);
 
-    await render(['sql-01', 'sql-04', 'pd-01', 'pd-04', 'pd-05'], 'both');
+    await render(['sql-01', 'sql-04', 'pd-01', 'pd-04', 'pd-05', 'pd-101'], 'both');
     assert.deepEqual(switchButtons().map((b) => [b.textContent, b.getAttribute('aria-pressed')]), [
       ['SQL', 'true'],
       ['Pandas', 'false'],
@@ -137,18 +137,23 @@ test('the SQL track switches to the pandas versions once they are listed', async
     assert.equal(switchButtons()[1].getAttribute('aria-pressed'), 'true');
     assert.equal(localStorage.getItem('cswork:sql-track-language'), 'pandas');
     assert.ok(document.querySelector('.classic-kicker').textContent.includes('pandas edition'));
-    // The rows open the pandas versions; their solves are their own.
-    assert.deepEqual(hrefs(), ['pd-01', 'pd-04', 'pd-05']);
+    // The rows open the pandas versions; their solves are their own. Pandas-only problems join as their own groups.
+    assert.deepEqual(hrefs(), ['pd-01', 'pd-04', 'pd-05', 'pd-101']);
+    assert.equal([...document.querySelectorAll('.classic-group h2')].at(-1).textContent.replace(/\d.*$/, ''), 'Reshaping & pivots');
+    assert.ok(document.querySelectorAll('a.study-row')[3].textContent.includes('Quarterly Sales, Wide to Long'));
     assert.equal(document.querySelector('progress')?.getAttribute('value'), '1');
     assert.ok(document.querySelector('a.study-row[data-next]')?.getAttribute('href').endsWith('pd-04'));
     assert.ok(document.querySelectorAll('a.study-row')[1].textContent.includes('4.'));
     await click(document.querySelectorAll('a.study-row')[2]);
     assert.deepEqual(navigations.at(-1), ['problem', { problem: 'pd-05' }]);
-    assert.equal(sessionStorage.getItem('cswork:problem-sequence'), '["pd-01","pd-04","pd-05"]');
+    assert.equal(sessionStorage.getItem('cswork:problem-sequence'), '["pd-01","pd-04","pd-05","pd-101"]');
+    await click(document.querySelectorAll('a.study-row')[3]);
+    assert.deepEqual(navigations.at(-1), ['problem', { problem: 'pd-101' }]);
 
     // The choice is remembered for the next visit.
-    await render(['sql-01', 'sql-04', 'pd-01', 'pd-04', 'pd-05'], 'again');
-    assert.deepEqual(hrefs(), ['pd-01', 'pd-04', 'pd-05']);
+    await render(['sql-01', 'sql-04', 'pd-01', 'pd-04', 'pd-05', 'pd-101'], 'again');
+    assert.deepEqual(hrefs(), ['pd-01', 'pd-04', 'pd-05', 'pd-101']);
+    // SQL mode lists no pandas-only rows.
     await click(switchButtons()[0]);
     assert.deepEqual(hrefs(), ['sql-01', 'sql-04']);
   } finally {

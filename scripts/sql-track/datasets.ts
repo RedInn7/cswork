@@ -46,6 +46,11 @@ export const SCHEMAS: Record<SchemaName, Record<string, string>> = {
   quantity INTEGER NOT NULL,
   unit_price INTEGER NOT NULL -- price actually charged per unit
 );`,
+    product_parts: `CREATE TABLE product_parts (
+  product_id INTEGER NOT NULL, -- the assembly
+  part_id INTEGER NOT NULL,    -- a product it is built from
+  quantity INTEGER NOT NULL    -- units of the part per assembly
+);`,
   },
   school: {
     courses: `CREATE TABLE courses (
@@ -62,6 +67,12 @@ export const SCHEMAS: Record<SchemaName, Record<string, string>> = {
     logins: `CREATE TABLE logins (
   user_id INTEGER NOT NULL,
   login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible
+);`,
+    events: `CREATE TABLE events (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  ts TEXT NOT NULL,        -- 'YYYY-MM-DD HH:MM:SS'
+  payload TEXT NOT NULL    -- a JSON object
 );`,
   },
 };
@@ -408,7 +419,15 @@ export const GENERATORS: Record<SchemaName, (rng: Rng) => Data> = {
         items.push([id, product[0], int(rng, 1, 3), price - int(rng, 0, Math.floor(price / 5))]);
       }
     }
-    return { customers, products, orders, order_items: items };
+    // Drawn after everything else, so the older tables' random data stays the same.
+    // Parts only point at higher ids: the assemblies form no cycle; product 1 always has parts.
+    const parts: Value[][] = [];
+    for (let id = 1; id < products.length; id++) {
+      const later = products.slice(id).map((product) => Number(product[0]));
+      for (const part of shuffle(rng, later).slice(0, id === 1 ? int(rng, 1, 2) : pick(rng, [0, 0, 1, 2])))
+        parts.push([id, part, int(rng, 1, 4)]);
+    }
+    return { customers, products, orders, order_items: items, product_parts: parts };
   },
   school(rng) {
     const courses = shuffle(rng, ['Algebra', 'Biology', 'Chemistry', 'Databases', 'Economics', 'French'])
@@ -431,6 +450,21 @@ export const GENERATORS: Record<SchemaName, (rng: Rng) => Data> = {
         offset += pick(rng, [1, 1, 1, 2, 2, 3, 5]);
       }
     }
-    return { logins: shuffle(rng, logins) };
+    const shuffled = shuffle(rng, logins);
+    // Drawn after the logins, so their random data stays the same.
+    const events: Value[][] = [];
+    const users = int(rng, 2, 5);
+    for (let id = 1; id <= int(rng, 6, 18); id++) {
+      const at = new Date(Date.UTC(2024, 2, 1 + int(rng, 0, 2), int(rng, 8, 11), int(rng, 0, 179)));
+      const payload: Record<string, unknown> = { type: pick(rng, ['view', 'view', 'click', 'buy']) };
+      const page = rng();
+      if (page < 0.7) payload.page = pick(rng, ['/home', '/cart', '/item']);
+      else if (page < 0.85) payload.page = null;
+      if (rng() < 0.8) payload.ms = int(rng, 1, 40) * 25;
+      const tags = pick(rng, [0, 1, 1, 2, 3, -1]);
+      if (tags >= 0) payload.tags = shuffle(rng, ['new', 'promo', 'mobile', 'ad']).slice(0, tags);
+      events.push([id, int(rng, 1, users), at.toISOString().slice(0, 19).replace('T', ' '), JSON.stringify(payload)]);
+    }
+    return { logins: shuffled, events };
   },
 };

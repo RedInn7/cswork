@@ -44,7 +44,7 @@ test('every SQL and pandas dataset parses to what SQLite holds after running it'
       }
       cases++;
     }
-  assert.equal(cases, 502);
+  assert.equal(cases, 664);
   // Column notes are the schema's trailing comments.
   const employees = parseSqlDataset(packages[0].cases[0].input)!.tables.find((t) => t.name === 'employees')!;
   assert.equal(employees.columns.find((c) => c.name === 'manager_id')?.note, 'NULL: no manager');

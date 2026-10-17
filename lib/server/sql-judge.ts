@@ -15,14 +15,25 @@
  * stderr as one JSON line (a judged query that starts with it only loses the sort).
  * A learner SQL error goes to stderr (one zh / en line) with exit 1 (a
  * runtime error).
+ *
+ * Index design problems start the dataset with `-- cswork:index {json}`
+ * (SQL_INDEX: max indexes and the target queries, each with an optional
+ * `need` regex). query.sql is then a CREATE INDEX script, run under an
+ * authorizer that allows nothing else; the judge prints `query k: ok` per
+ * target query whose result is unchanged and whose EXPLAIN QUERY PLAN has no
+ * bare SCAN, temporary B-tree or automatic index and matches `need`, or else
+ * `query k: result changed` / the plan on one line. No ANALYZE, so the plans
+ * do not depend on the data. Index names must be word characters (\w+): the
+ * plan text carries them, and a quoted name could otherwise spell out `need`.
  */
 import { SQL_NAMES } from '@/lib/sql-cte';
 
 export { SQL_NAMES };
 export const SQL_ORDERED = '-- cswork:ordered';
+export const SQL_INDEX = '-- cswork:index ';
 export const SQL_MAX_ROWS = 100000;
 export const SQL_HARNESS = `
-import json, sqlite3, sys
+import json, re, sqlite3, sys
 
 def fail(message):
     # UTF-8 whatever the sandbox's locale: the messages are bilingual.
@@ -39,16 +50,72 @@ def norm(value):
         return {'blob': value.hex()}
     return value
 
+def rows_of(sql):
+    return sorted(json.dumps([norm(v) for v in row]) for row in db.execute(sql))
+
+def index_count():
+    return db.execute("SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL").fetchone()[0]
+
+def allow(action, arg1, arg2, schema, trigger):
+    # CREATE INDEX also reads columns, calls functions, writes sqlite_master and reindexes the new index.
+    if action in (sqlite3.SQLITE_CREATE_INDEX, sqlite3.SQLITE_REINDEX, sqlite3.SQLITE_FUNCTION, sqlite3.SQLITE_READ, sqlite3.SQLITE_TRANSACTION):
+        return sqlite3.SQLITE_OK
+    if action in (sqlite3.SQLITE_INSERT, sqlite3.SQLITE_UPDATE) and arg1 in ('sqlite_master', 'sqlite_schema'):
+        return sqlite3.SQLITE_OK
+    return sqlite3.SQLITE_DENY
+
+def clean_step(detail):
+    # Older SQLite writes 'SCAN TABLE t' and row estimates.
+    return re.sub(r' \\(~\\d+ rows?\\)', '', detail.replace('TABLE ', ''))
+
+def plan_line(sql):
+    return [clean_step(row[3]) for row in db.execute('EXPLAIN QUERY PLAN ' + sql)]
+
+def bad_step(step):
+    return (step.startswith('SCAN ') and ' USING ' not in step and step != 'SCAN CONSTANT ROW') or 'TEMP B-TREE' in step or 'AUTOMATIC' in step
+
+def judge_indexes(spec):
+    baseline = [rows_of(q['sql']) for q in spec['queries']]
+    before = index_count()
+    db.set_authorizer(allow)
+    try:
+        db.executescript(query)
+    except sqlite3.Error as error:
+        if 'not authorized' in str(error) or 'authorization denied' in str(error):
+            fail('只能写 CREATE INDEX 语句 / Write CREATE INDEX statements only: %s' % error)
+        fail('SQL 错误 / SQL error: %s' % error)
+    # The target queries are SELECTs, which the authorizer refuses.
+    db.set_authorizer(None)
+    # The plan text carries index names, so a quoted name like "x (a=?)" could satisfy need.
+    for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL"):
+        if not re.fullmatch(r'\\w+', name):
+            fail('索引名只能用字母、数字和下划线 / Name indexes with letters, digits and underscores only: %s' % name)
+    made = index_count() - before
+    if made > spec['max']:
+        fail('最多建 %d 个索引，这段脚本建了 %d 个。 / Create at most %d index(es); this script creates %d.' % (spec['max'], made, spec['max'], made))
+    db.execute('PRAGMA query_only = ON')
+    for k, target in enumerate(spec['queries'], 1):
+        if rows_of(target['sql']) != baseline[k - 1]:
+            verdict = 'result changed'
+        else:
+            plan = ' | '.join(plan_line(target['sql']))
+            ok = not any(bad_step(step) for step in plan.split(' | ')) and re.search(target.get('need', ''), plan)
+            verdict = 'ok' if ok else plan
+        sys.stdout.write('query %d: %s\\n' % (k, verdict))
+
 dataset = sys.stdin.read()
 with open('query.sql', encoding='utf-8') as source:
     query = source.read().strip()
-if not query:
-    fail('查询为空：请写一条 SELECT 语句。 / Empty query: write one SELECT statement.')
 db = sqlite3.connect(':memory:')
 try:
     db.executescript(dataset)
 except sqlite3.Error as error:
     fail('测试数据错误 / Dataset error: %s' % error)
+if dataset.startswith('${SQL_INDEX}'):
+    judge_indexes(json.loads(dataset.split('\\n', 1)[0][len('${SQL_INDEX}'):]))
+    sys.exit(0)
+if not query:
+    fail('查询为空：请写一条 SELECT 语句。 / Empty query: write one SELECT statement.')
 db.execute('PRAGMA query_only = ON')
 try:
     cursor = db.execute(query)

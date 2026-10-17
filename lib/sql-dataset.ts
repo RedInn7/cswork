@@ -64,8 +64,8 @@ function columns(body: string): SqlColumn[] | null {
 export function parseSqlDataset(text: string): SqlDataset | null {
   const ordered = text.startsWith('-- cswork:ordered\n');
   const tables: SqlDatasetTable[] = [];
-  // Marker lines the harnesses read (-- cswork:ordered, …).
-  let i = /^(?:-- cswork:\w+\n)*/.exec(text)![0].length;
+  // Marker lines the harnesses read (-- cswork:ordered, -- cswork:index {…}, …).
+  let i = /^(?:-- cswork:\w+(?: [^\n]*)?\n)*/.exec(text)![0].length;
   const at = (re: RegExp) => {
     re.lastIndex = i;
     const m = re.exec(text);

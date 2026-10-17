@@ -355,7 +355,7 @@ export const ojImportSchema = z
           .min(1)
           .max(5),
         starters: z
-          .partialRecord(z.enum(['python', 'go', 'java', 'cpp']), z.string().max(20000))
+          .partialRecord(z.enum(['python', 'go', 'java', 'cpp', 'sql']), z.string().max(20000))
           .optional(),
         httpFixtures: z
           .record(z.string().max(2000).regex(HTTP_FIXTURE_KEY), z.json())

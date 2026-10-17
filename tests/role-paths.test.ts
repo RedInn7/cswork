@@ -56,6 +56,11 @@ test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ top
         assert.ok(resolved.keys.length > 0 && resolved.keys.every((k) => /^content:fe-js\/[a-z-]+$/.test(k)), step.ref);
       }
     }
+  // Pandas-only groups (pd-1xx) resolve like the twins; index design is an optional backend step.
+  const reshape = resolveStep({ kind: 'pandas', ref: 'reshape' }, false, true);
+  assert.equal(reshape.title, 'Pandas: Reshaping & pivots');
+  assert.deepEqual(reshape.keys, ['problem:pd-101', 'problem:pd-102', 'problem:pd-103', 'problem:pd-104']);
+  assert.ok(ROLES.backend.steps.some((s) => s.kind === 'sql-track' && s.ref === 'indexing' && s.optional));
   assert.throws(() => resolveStep({ kind: 'line-stops', ref: 'array-foundations,nope' }, true, true), /no line-stops/);
   assert.throws(() => resolveStep({ kind: 'sd-part', ref: 'url-shortener' }, true, true), /no sd-part/, 'a part, not a chapter');
   assert.throws(() => resolveStep({ kind: 'project', ref: 'url-shortener' }, true, true), /no project/);
