@@ -180,6 +180,9 @@ test('a complexity probe scales every length to n, a grid by its cells, inside t
   assert.equal(big.length, 16384);
   assert.ok(Math.max(...big) > 1000);
   assert.equal(probe('lc-70'), null, 'no length to scale');
+  // n ≤ 50 or 100 leaves one or two sizes past the baseline: too few to fit, so no probe.
+  assert.equal(probe('lc-1039'), null);
+  assert.equal(probe('lc-198'), null);
   assert.equal(complexitySizes(leetcodeParams('lc-70')!, leetcodeConstraints('lc-70'), rules['lc-70']), null);
 });
 
@@ -194,7 +197,7 @@ test('every whitelisted probe has increasing sizes and valid cases under 512 KiB
     if (!made) continue;
     probes++;
     const sizes = levels(made.sizes);
-    assert.ok(sizes.length >= 2 && sizes.every((n, i) => i === 0 || sizes[i - 1] < n), `${id}: ${sizes}`);
+    assert.ok(sizes.length >= 4 && sizes.every((n, i) => i === 0 || sizes[i - 1] < n), `${id}: ${sizes}`);
     assert.ok(sizes.at(-1)! <= 16384 && sizes.slice(1).every((n) => n >= 32), id);
     assert.equal(made.cases.length, made.sizes.length);
     assert.ok(made.cases.reduce((sum, c) => sum + Buffer.byteLength(c), 0) <= COMPLEXITY_BYTES, `${id}: bytes`);
@@ -222,6 +225,11 @@ test('a probe reads its slope off log time on log n, net of the baseline', () =>
   // Start-up only: nothing grows past the noise floor.
   assert.deepEqual(fitComplexity(runs((n) => 30 + (n % 7))), { kind: 'fast', large: true });
   assert.deepEqual(fitComplexity(runs(() => 30).filter((p) => p.n <= 1024)), { kind: 'fast', large: false });
+  // One size past the floor is no reading at all, however large n is.
+  assert.deepEqual(fitComplexity(runs((n) => (n === 16384 ? 90 : 30))), { kind: 'one', n: 16384, ms: 60 });
+  // A 150 ms start-up (Java) hides an n² at 100 ms net under the floor: too fast to tell, no bound claimed.
+  assert.deepEqual(fitComplexity(runs((n) => 150 + (n / 16384) ** 2 * 100)), { kind: 'fast', large: false });
+  assert.deepEqual(fitComplexity(runs(() => 150)), { kind: 'fast', large: true });
   // A timeout at 4096 keeps the slope of the sizes before it.
   const cubic = runs((n) => 30 + (n / 100) ** 3).map((p) => (p.n === 4096 ? { ...p, status: 'time_limit' } : p.n > 4096 ? { ...p, status: 'skipped' } : p));
   const timeout = fitComplexity(cubic);

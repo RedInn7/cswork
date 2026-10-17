@@ -313,15 +313,20 @@ export function ComplexityProbe({
             <strong>
               {fit.kind === 'fit'
                 ? t(`增长${GRADES[fit.grade][0]}`, `Grows ${GRADES[fit.grade][1]}`) + slope(fit.slope)
-                : fit.kind === 'fast'
-                  ? t('太快，测不出增长', 'Too fast to tell')
-                  : fit.kind === 'timeout'
-                    ? t(`在 n=${fit.n} 超时`, `Timed out at n=${fit.n}`) + slope(fit.slope)
-                    : t(`这组大输入让程序出错（n=${fit.n}，${verdict(fit.status)[0]}）`, `These large inputs made it fail (n=${fit.n}, ${verdict(fit.status)[1]})`)}
+                : fit.kind === 'one'
+                  ? t(
+                      `只有 n=${fit.n.toLocaleString()} 明显慢于启动（多 ${fit.ms} ms），点太少，测不出增长`,
+                      `Only n=${fit.n.toLocaleString()} ran clearly past start-up (+${fit.ms} ms): too few points to tell`,
+                    )
+                  : fit.kind === 'fast'
+                    ? t('太快，测不出增长', 'Too fast to tell')
+                    : fit.kind === 'timeout'
+                      ? t(`在 n=${fit.n} 超时`, `Timed out at n=${fit.n}`) + slope(fit.slope)
+                      : t(`这组大输入让程序出错（n=${fit.n}，${verdict(fit.status)[0]}）`, `These large inputs made it fail (n=${fit.n}, ${verdict(fit.status)[1]})`)}
               {t('。', '.')}
             </strong>
             {fit.kind === 'fit' && fit.few && t('只有两个点，仅供参考。', ' Two points only: a rough read.')}
-            {fit.kind === 'fast' && fit.large && t('到 n ≥ 4096 仍很快，至多约 O(n log n)。', ' Still quick at n ≥ 4096, so at most about O(n log n).')}
+            {fit.kind === 'fast' && fit.large && t('到 n ≥ 8192 仍很快，至多约 O(n log n)。', ' Still quick at n ≥ 8192, so at most about O(n log n).')}
             {problem.targetComplexity && t(`题解目标：${problem.targetComplexity.time}。`, ` Editorial target: ${problem.targetComplexity.time}.`)}
           </p>
         )}

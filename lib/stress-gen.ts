@@ -158,7 +158,8 @@ export const COMPLEXITY_RUNS = 2;
 /**
  * A complexity probe's sizes, smallest first, before the byte budget: a baseline at the smallest
  * length, then up to 7 sizes halving down from min(the largest length or grid's cells, 16384),
- * none under 32. null when nothing has a length (a string, array or grid) or the bounds are too small.
+ * none under 32. null when nothing has a length (a string, array or grid) or the bounds leave
+ * fewer than 3 sizes past the baseline: too few to fit a slope.
  */
 export function complexitySizes(
   params: Param[],
@@ -172,13 +173,13 @@ export function complexitySizes(
   const sizes: number[] = [];
   for (let n = Math.min(16384, Math.max(...scaled.map(cells))); n >= 32 && n > baseline && sizes.length < 7; n = Math.floor(n / 2))
     sizes.unshift(n);
-  return sizes.length ? [baseline, ...sizes] : null;
+  return sizes.length >= 3 ? [baseline, ...sizes] : null;
 }
 
 /**
  * A complexity probe's cases, smallest first, COMPLEXITY_RUNS of each size, and the size `n` of
- * each (sizes[i] for cases[i]); the largest sizes drop until the whole fits COMPLEXITY_BYTES.
- * The worker rebuilds them from the seed (lib/server/oj-submissions.ts ownCases): never stored.
+ * each (sizes[i] for cases[i]); the largest sizes drop until the whole fits COMPLEXITY_BYTES,
+ * null if that leaves fewer than 3 past the baseline. The worker rebuilds them from the seed (lib/server/oj-submissions.ts ownCases): never stored.
  */
 export function complexityCases(
   params: Param[],
@@ -193,7 +194,7 @@ export function complexityCases(
   const int = (lo: number, hi: number) => lo + Math.floor(random() * (hi - lo + 1));
   const drawn = levels.map((n) => drawCase(specs, int, random, n));
   let bytes = drawn.reduce((sum, c) => sum + c.length * COMPLEXITY_RUNS, 0);
-  while (drawn.length > 2 && bytes > COMPLEXITY_BYTES) bytes -= drawn.pop()!.length * COMPLEXITY_RUNS;
+  while (drawn.length > 4 && bytes > COMPLEXITY_BYTES) bytes -= drawn.pop()!.length * COMPLEXITY_RUNS;
   if (bytes > COMPLEXITY_BYTES) return null;
   return {
     sizes: drawn.flatMap((_, i) => Array<number>(COMPLEXITY_RUNS).fill(levels[i])),
@@ -201,9 +202,13 @@ export function complexityCases(
   };
 }
 
-/** A probe's reading: a fitted slope, too fast to tell, a timeout at n, or another failure at n. */
+/**
+ * A probe's reading: a fitted slope, one measurable size only (`ms` past the baseline), too fast
+ * to tell, a timeout at n, or another failure at n.
+ */
 export type ComplexityFit =
   | { kind: 'fit'; slope: number; grade: 0 | 1 | 2 | 3; few: boolean }
+  | { kind: 'one'; n: number; ms: number }
   | { kind: 'fast'; large: boolean }
   | { kind: 'timeout'; n: number; slope?: number }
   | { kind: 'error'; n: number; status: string };
@@ -213,7 +218,9 @@ export type ComplexityFit =
  * (start-up and reading input); a size counts once that net time reaches max(15 ms, t0). Two or
  * more such sizes: the least-squares slope of log time on log n, graded under 1.3 about O(n) or
  * O(n log n), under 1.7 between O(n log n) and O(n²), under 2.5 about O(n²), else O(n³) or worse
- * (`few`: only two). Fewer: too fast to tell (`large`: it got to n ≥ 4096, so at most about O(n log n)).
+ * (`few`: only two). One: that size alone, no bound claimed. None: too fast to tell (`large`: n ≥ 8192 still ran
+ * under 15 ms past the baseline, so at most about O(n log n); not relative to t0, which is large
+ * for Java's start-up or a native language's bridge).
  */
 export function fitComplexity(points: { n: number; ms: number; status: string }[]): ComplexityFit {
   const failed = points.find((p) => !['finished', 'skipped', 'pending'].includes(p.status));
@@ -222,13 +229,8 @@ export function fitComplexity(points: { n: number; ms: number; status: string }[
   for (const p of points) if (p.status === 'finished') best.set(p.n, Math.min(best.get(p.n) ?? Infinity, p.ms));
   const sizes = [...new Set(points.map((p) => p.n))].sort((a, b) => a - b);
   const t0 = best.get(sizes[0]);
-  const xy =
-    t0 === undefined
-      ? []
-      : sizes
-          .slice(1)
-          .filter((n) => (best.get(n) ?? 0) - t0 >= Math.max(15, t0))
-          .map((n) => [Math.log(n), Math.log(best.get(n)! - t0)]);
+  const valid = t0 === undefined ? [] : sizes.slice(1).filter((n) => (best.get(n) ?? 0) - t0 >= Math.max(15, t0));
+  const xy = valid.map((n) => [Math.log(n), Math.log(best.get(n)! - t0!)]);
   let slope: number | undefined;
   if (xy.length >= 2) {
     const mx = xy.reduce((sum, [x]) => sum + x, 0) / xy.length,
@@ -236,7 +238,11 @@ export function fitComplexity(points: { n: number; ms: number; status: string }[
     slope = xy.reduce((sum, [x, y]) => sum + (x - mx) * (y - my), 0) / xy.reduce((sum, [x]) => sum + (x - mx) ** 2, 0);
   }
   if (failed) return { kind: 'timeout', n: failed.n, slope };
-  if (slope === undefined) return { kind: 'fast', large: Math.max(...best.keys()) >= 4096 };
+  if (valid.length === 1) return { kind: 'one', n: valid[0], ms: Math.round(best.get(valid[0])! - t0!) };
+  if (slope === undefined) {
+    const top = Math.max(...best.keys());
+    return { kind: 'fast', large: t0 !== undefined && top >= 8192 && best.get(top)! - t0 < 15 };
+  }
   return { kind: 'fit', slope, grade: slope < 1.3 ? 0 : slope < 1.7 ? 1 : slope < 2.5 ? 2 : 3, few: xy.length === 2 };
 }
 
