@@ -11,7 +11,8 @@
  *     is {"blob": hex} and +-inf {"float": "inf"}, so neither equals text;
  *   - rows sorted unless the dataset's first line is `-- cswork:ordered`.
  * A query starting with SQL_NAMES (the workspace's previews, lib/sql-cte.ts)
- * also writes its column names to stderr as one JSON line; stdout is the same.
+ * keeps its rows in the query's order and also writes its column names to
+ * stderr as one JSON line (a judged query that starts with it only loses the sort).
  * A learner SQL error goes to stderr (one zh / en line) with exit 1 (a
  * runtime error).
  */
@@ -62,7 +63,7 @@ except sqlite3.Warning as error:
     fail('只能写一条 SQL 语句 / Write exactly one SQL statement (%s)' % error)
 except sqlite3.Error as error:
     fail('SQL 错误 / SQL error: %s' % error)
-if not dataset.startswith('${SQL_ORDERED}'):
+if not dataset.startswith('${SQL_ORDERED}') and not query.startswith('${SQL_NAMES}'):
     rows.sort()
 sys.stdout.write('columns: %d\\n' % len(cursor.description))
 sys.stdout.write(''.join(r + '\\n' for r in rows))

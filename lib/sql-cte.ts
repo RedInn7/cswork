@@ -86,6 +86,18 @@ export const explainQuery = (sql: string) => `EXPLAIN QUERY PLAN ${sql}`;
 export type PlanNode = { id: number; detail: string; children: PlanNode[] };
 
 /**
+ * A plan step worth a second look on big data ('warn': a full scan, a temporary
+ * B-tree, or an index SQLite builds on every run because no real one exists),
+ * or a lookup through a real index ('ok').
+ */
+export const planKind = (detail: string) =>
+  /\bUSING AUTOMATIC\b/.test(detail) || /^SCAN (?!CONSTANT ROW)/.test(detail) || detail.startsWith('USE TEMP B-TREE')
+    ? 'warn'
+    : detail.startsWith('SEARCH ')
+      ? 'ok'
+      : undefined;
+
+/**
  * EXPLAIN QUERY PLAN's rows as a tree. They are sorted by id first: the judge
  * sorts result rows as text unless the dataset is ordered. null for any other shape.
  */

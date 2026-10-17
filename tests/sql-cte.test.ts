@@ -1,6 +1,6 @@
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
-import { ctePreview, explainQuery, parsePlan, SQL_NAMES, withClause, type PlanNode } from '../lib/sql-cte';
+import { ctePreview, explainQuery, parsePlan, planKind, SQL_NAMES, withClause, type PlanNode } from '../lib/sql-cte';
 import { parseSqlResult } from '../lib/sql-result';
 import { sqlRunner } from '../scripts/sql-track/build';
 
@@ -51,9 +51,13 @@ SELECT * FROM top;`;
   assert.equal(result.stderr, '["dept_id", "best"]\n');
   assert.equal(runner.run(ctePreview(sql, 'totals')!, data).stdout, 'columns: 2\n[1, 30]\n[2, 35]\n');
   assert.equal(ctePreview(sql, 'missing'), null);
-  // A recursive CTE stops at the preview's row limit.
+  // A recursive CTE stops at the preview's row limit, its rows in the query's order, not the judge's text sort.
   const counted = runner.run(ctePreview('WITH RECURSIVE n(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM n) SELECT 1', 'n')!, '');
-  assert.equal(parseSqlResult(counted.stdout)?.rows.length, 50);
+  assert.deepEqual(parseSqlResult(counted.stdout)?.rows, Array.from({ length: 50 }, (_, i) => [i + 1]));
+  const ranked = 'WITH r AS (SELECT id, ROW_NUMBER() OVER (ORDER BY pay DESC) AS rank FROM emp ORDER BY rank) SELECT * FROM r';
+  assert.equal(runner.run(ctePreview(ranked, 'r')!, data).stdout, 'columns: 2\n[3, 1]\n[2, 2]\n[1, 3]\n[4, 4]\n');
+  // A judged query is still sorted.
+  assert.equal(runner.run(ranked, data).stdout, 'columns: 2\n[1, 3]\n[2, 2]\n[3, 1]\n[4, 4]\n');
 });
 
 const shape = (nodes: PlanNode[]): unknown[] =>
@@ -81,6 +85,17 @@ test('EXPLAIN QUERY PLAN runs through the harness and parses into a SCAN / SEARC
     shape(parsePlan({ columns: 4, rows: [[10, 2, 0, 'child'], [2, 0, 0, 'root'], [9, 0, 0, 'second']] })!),
     [['root', ['child']], 'second'],
   );
+  // A self-join on a column without an index: SQLite builds an automatic index on every run, a warning.
+  const joined = parsePlan(
+    parseSqlResult(runner.run(explainQuery('SELECT a.id, b.id FROM emp a JOIN emp b ON a.pay = b.pay'), data).stdout),
+  )!;
+  const kinds = flat(joined).map((detail) => [detail, planKind(detail)]);
+  assert.ok(kinds.some(([detail, kind]) => /^SEARCH b USING AUTOMATIC (?:PARTIAL )?COVERING INDEX/.test(detail!) && kind === 'warn'), JSON.stringify(kinds));
+  assert.equal(planKind('SEARCH emp USING INDEX emp_dept (dept=?)'), 'ok');
+  assert.equal(planKind('SEARCH emp USING INTEGER PRIMARY KEY (rowid=?)'), 'ok');
+  assert.equal(planKind('SCAN emp'), 'warn');
+  assert.equal(planKind('SCAN CONSTANT ROW'), undefined);
+  assert.equal(planKind('USE TEMP B-TREE FOR ORDER BY'), 'warn');
   for (const bad of [
     null,
     { columns: 3, rows: [] },
