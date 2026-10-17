@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { problemTitle } from '@/lib/problems';
@@ -51,7 +51,9 @@ const TABS = [
 ] as const;
 type Tab = (typeof TABS)[number][0];
 
-async function ideasOf(ids: string[], en: boolean) {
+async function ideasOf(all: string[], en: boolean) {
+  // The ids lib/server/recall-ideas.ts accepts; any other problem has no idea to show.
+  const ids = all.filter((id) => /^[\w.-]{1,120}$/.test(id));
   const out = new Map<string, Idea>();
   for (let i = 0; i < ids.length; i += IDEAS_MAX) {
     const { items } = await api<{ items: Idea[] }>(`oj/recall/ideas?ids=${ids.slice(i, i + IDEAS_MAX).map(encodeURIComponent).join(',')}&lang=${en ? 'en' : 'zh'}`);
@@ -236,12 +238,16 @@ export function Deck({
   const [flipped, setFlipped] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  // A second key before the re-render must not grade the same card twice.
+  const lock = useRef(false);
   const flip = flips[at];
   const rate = useCallback(
     async (grade: RecallGrade) => {
-      if (!flip || busy) return;
+      if (!flip || lock.current) return;
+      lock.current = true;
       setBusy(true);
       const saved = await updateRecall(true, (queue) => rateRecall(queue, flip.key, '', grade, mcqDay()), NOTE_OF[flip.kind]);
+      lock.current = false;
       setBusy(false);
       setFailed(!saved);
       if (!saved) return;
@@ -250,12 +256,12 @@ export function Deck({
       if (at + 1 < flips.length) setAt(at + 1);
       else onDone();
     },
-    [flip, busy, at, flips.length, onGrade, onDone],
+    [flip, at, flips.length, onGrade, onDone],
   );
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const el = event.target as HTMLElement | null;
-      if (event.metaKey || event.ctrlKey || event.altKey || el?.closest?.('input, textarea, select, [contenteditable="true"], [role="dialog"]')) return;
+      if (event.repeat || event.metaKey || event.ctrlKey || event.altKey || el?.closest?.('input, textarea, select, [contenteditable="true"], [role="dialog"]')) return;
       if (event.key === ' ' && !flipped) {
         event.preventDefault();
         setFlipped(true);
