@@ -89,6 +89,9 @@ const REFERENCE_MODES = ['reference', 'stress-ref'];
 export const referenceMode = (mode: string) => REFERENCE_MODES.includes(mode);
 /** REFERENCE_MODES as an SQL list, for `mode IN …`. */
 export const REFERENCE_MODES_SQL = `(${REFERENCE_MODES.map((m) => `'${m}'`).join(',')})`;
+/** Imported lazily, from one place: the judge worker's bundle stays free of contests (oj-capacity-release test). */
+const inRunningContest = async (userId: string, problemId: string) =>
+  (await import('./contests')).inRunningContest(userId, problemId);
 /** A custom-input run's cases: its one input, or a stress test's generated ones (custom_input {"cases":[…]}). */
 export function ownCases(s: Pick<SubmissionRow, 'mode' | 'custom_input'>): string[] {
   if (s.mode !== 'stress' && s.mode !== 'stress-ref') return [s.custom_input ?? ''];
@@ -382,11 +385,8 @@ export async function createSubmission(p: Person, value: unknown) {
     run ? 12 : 6,
   );
   // Partial credit, silently off in a running contest or skill exam: both settle on passed/total
-  // and a full run would show more of the hidden cases they score. Imported lazily like below.
-  const allCases =
-    d.mode === 'judge' &&
-    !!d.allCases &&
-    !(await import('./contests')).inRunningContest(p.id, d.problemId);
+  // and a full run would show more of the hidden cases they score.
+  const allCases = d.mode === 'judge' && !!d.allCases && !(await inRunningContest(p.id, d.problemId));
   // Reserve the writer before reading duplicate/queue state. A deferred WAL
   // read transaction cannot safely upgrade while the judge is writing results.
   return db.transaction(() => {
@@ -789,7 +789,7 @@ export async function submissionDetail(p: Person, id: string) {
   const sealed =
     failed &&
     definitions.find((c) => c.ordinal === failed.ordinal)?.hidden !== false &&
-    (await import('./contests')).inRunningContest(s.user_id, s.problem_id);
+    (await inRunningContest(s.user_id, s.problem_id));
   // Old hidden results have no captured output. Do not invent a counterexample
   // for those rows, or reveal any additional cases in the version snapshot.
   if (failed && !sealed && failed.status === s.status && failed.stdout !== null) {
