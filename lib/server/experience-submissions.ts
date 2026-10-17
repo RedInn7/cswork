@@ -13,14 +13,16 @@ import {
   MEMBER_FACETS,
   OA_NEXT,
   OA_RANGE,
+  PREP_SOURCES,
   type MemberDetails,
   type MemberOa,
+  type MemberQuestion,
 } from '@/lib/experience';
 import { employerSlug } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyPractice } from './company-hub';
 import { auditStatement, HttpError, json, limit, requirePerson, requireTeacher } from './http';
-import { monthKey, recentSince, reportCompanies } from './learner-cloud';
+import { monthKey, publicCatalogue, publicProblem, recentSince, reportCompanies } from './learner-cloud';
 import { readJson } from './my-practice';
 import { settleExperience } from './points';
 import { publicLibraryDescription } from './public-library';
@@ -115,6 +117,18 @@ export function markdownDepth(text: string) {
 const keys = (map: object) => Object.keys(map) as [string, ...string[]];
 const ROUNDS = keys(ROUND_LABELS);
 const OUTCOMES = keys(RESULTS);
+/** A question as plain text (older clients), or with its round and a linked site problem. */
+const question = z.union([
+  field(3, 300),
+  z
+    .object({
+      text: field(3, 300),
+      round: z.enum(['', ...ROUNDS]).default(''),
+      problem: z.string().max(200).default(''),
+      similar: z.boolean().default(false),
+    })
+    .strict(),
+]);
 const submission = z
   .object({
     company: z.string().regex(/^[a-z0-9-]{1,80}$/),
@@ -124,7 +138,7 @@ const submission = z
     result: z.enum(OUTCOMES).nullable().default(null),
     month: z.string().regex(/^\d{4}-(?:0[1-9]|1[0-2])$/),
     body: field(BODY_MIN, BODY_MAX),
-    questions: z.array(field(3, 300)).max(20).default([]),
+    questions: z.array(question).max(20).default([]),
     // Optional structured facts (lib/experience.ts); the list filters and company stats use them.
     difficulty: z.number().int().min(1).max(5).nullable().default(null),
     sentiment: z.enum(keys(SENTIMENTS)).nullable().default(null),
@@ -142,6 +156,9 @@ const submission = z
     oaTestsPct: z.number().int().min(OA_RANGE.testsPct[0]).max(OA_RANGE.testsPct[1]).nullable().default(null),
     oaMinutes: z.number().int().min(OA_RANGE.minutes[0]).max(OA_RANGE.minutes[1]).nullable().default(null),
     oaNext: z.enum(keys(OA_NEXT)).nullable().default(null),
+    // How the author prepared, published with the post.
+    prepWeeks: z.number().int().min(0).max(104).nullable().default(null),
+    prepSources: z.array(z.enum(keys(PREP_SOURCES))).max(6).default([]),
     // Shown without the author's handle.
     anonymous: z.boolean().default(false),
     // The author confirms it is their own interview and that it shares nothing under NDA.
@@ -176,6 +193,10 @@ type Row = {
   oa_tests_pct?: number | null;
   oa_minutes?: number | null;
   oa_next?: string | null;
+  prep_weeks?: number | null;
+  prep_sources?: string;
+  /** QMETA: [idx, round, problem_id, similar] per question with metadata, as JSON. */
+  qmeta?: string | null;
   anonymous?: number;
   handle?: string | null;
   verified?: number | null;
@@ -186,9 +207,20 @@ const handleSql = (shown: string) => `(SELECT u.handle FROM user_profiles u WHER
     AND ${shown}) AS handle,
   (SELECT a.email_verified FROM "user" a WHERE a.id=s.user_id) AS verified`;
 const HANDLE = handleSql('s.anonymous=0');
-const DETAILS = 's.difficulty,s.sentiment,s.channel,s.employment,s.season,s.location,s.duration_weeks';
+const DETAILS = 's.difficulty,s.sentiment,s.channel,s.employment,s.season,s.location,s.duration_weeks,s.prep_weeks,s.prep_sources';
 const FLAGS = `(SELECT COUNT(*) FROM experience_flags f WHERE f.submission_id=s.id)`;
 const PUBLIC = `s.status='approved' AND ${FLAGS}<${FLAGS_HIDE}`;
+const QMETA = `(SELECT json_group_array(json_array(q.idx,q.round,q.problem_id,q.similar)) FROM experience_questions q
+    WHERE q.submission_id=s.id) AS qmeta`;
+/**
+ * Public posts' linked questions as "I was asked this" reports, in problem_reports' columns
+ * (learner-cloud.ts counts the two together). "Similar" links are not the question itself; a post
+ * withdrawn, rejected or reported down drops out by itself.
+ */
+export const MEMBER_ASKED = `SELECT s.user_id,q.problem_id,s.company_slug AS company,s.interview_month AS asked_month,
+    CASE q.round WHEN 'Online Assessment' THEN 'oa' WHEN 'Technical Screen' THEN 'phone' WHEN 'Onsite' THEN 'onsite' ELSE '' END AS round
+  FROM experience_questions q JOIN experience_submissions s ON s.id=q.submission_id
+  WHERE ${PUBLIC} AND q.similar=0 AND q.problem_id<>''`;
 
 /** Employers a post may name and show under: those with a company page, hidden ones left out. */
 const companyNames = () => new Map(reportCompanies().map((c) => [c.slug, c.name]));
@@ -237,8 +269,35 @@ const detailsOf = (r: Row): MemberDetails => ({
   season: r.season ?? null,
   location: r.location ?? null,
   durationWeeks: r.duration_weeks ?? null,
+  prepWeeks: r.prep_weeks ?? null,
+  prepSources: strings(r.prep_sources ?? '[]'),
   verified: !!r.verified,
 });
+/** The post's questions with their round and linked problem (metadata rows by idx; none means plain). */
+function questionsOf(r: Row): MemberQuestion[] {
+  const meta = new Map<number, [string, string, number]>();
+  try {
+    for (const [idx, round, problem, similar] of JSON.parse(r.qmeta || '[]') as [number, string, string, number][])
+      meta.set(idx, [round, problem, similar]);
+  } catch {}
+  return strings(r.questions).map((text, i) => {
+    const [round, problem, similar] = meta.get(i) ?? ['', '', 0];
+    return { text, round, problem, similar: !!similar };
+  });
+}
+/**
+ * Questions for a page: linked problems get their titles; a link to a problem no longer in the
+ * public catalogue (unpublished, hidden company) is dropped, the question stays.
+ */
+export async function titleQuestions(questions: readonly MemberQuestion[]): Promise<MemberQuestion[]> {
+  if (!questions.some((q) => q.problem)) return [...questions];
+  const catalogue = await publicCatalogue();
+  return questions.map((q) => {
+    const found = q.problem ? catalogue.get(q.problem) : undefined;
+    if (!found) return { ...q, problem: '', similar: false };
+    return { ...q, title: found.title, ...(found.titleEn ? { titleEn: found.titleEn } : {}) };
+  });
+}
 /** The post's OA outcome, or null when it gives none. */
 const oaOf = (r: Row): MemberOa | null => {
   const oa = {
@@ -384,18 +443,30 @@ export function memberFacets() {
 
 /** Below this many public member posts with a fact, a company page shows no aggregate of it. */
 export const STATS_MIN = 5;
+/** The median of an ascending list, or null with fewer than STATS_MIN values. */
+const median = (sorted: readonly number[]) =>
+  sorted.length < STATS_MIN
+    ? null
+    : {
+        n: sorted.length,
+        median:
+          sorted.length % 2
+            ? sorted[(sorted.length - 1) / 2]
+            : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2,
+      };
 /**
- * A company's member posts at a glance: average difficulty, sentiment and channel shares, and the
- * median process length, each over the posts that give it and only from STATS_MIN of them.
+ * A company's member posts at a glance: average difficulty, sentiment and channel shares, the
+ * median process length and (over posts that got an offer) the median preparation, each over the
+ * posts that give it and only from STATS_MIN of them.
  */
 export function memberExperienceStats(company: string) {
   if (!companyNames().has(company)) return null;
   const rows = sqlite()
     .prepare(
-      `SELECT s.difficulty,s.sentiment,s.channel,s.duration_weeks FROM experience_submissions s
+      `SELECT s.difficulty,s.sentiment,s.channel,s.duration_weeks,s.result,s.prep_weeks FROM experience_submissions s
       WHERE s.company_slug=? AND ${PUBLIC}`,
     )
-    .all(company) as Pick<Row, 'difficulty' | 'sentiment' | 'channel' | 'duration_weeks'>[];
+    .all(company) as Pick<Row, 'difficulty' | 'sentiment' | 'channel' | 'duration_weeks' | 'result' | 'prep_weeks'>[];
   const values = <T>(pick: (r: (typeof rows)[number]) => T | null | undefined) =>
     rows.flatMap((r) => {
       const v = pick(r);
@@ -411,8 +482,7 @@ export function memberExperienceStats(company: string) {
             .sort((a, b) => b.n - a.n || a.value.localeCompare(b.value)),
         };
   const difficulty = values((r) => r.difficulty);
-  const weeks = values((r) => r.duration_weeks).sort((a, b) => a - b);
-  const median = weeks.length % 2 ? weeks[(weeks.length - 1) / 2] : (weeks[weeks.length / 2 - 1] + weeks[weeks.length / 2]) / 2;
+  const ascending = (list: number[]) => list.sort((a, b) => a - b);
   const stats = {
     posts: rows.length,
     difficulty:
@@ -421,10 +491,12 @@ export function memberExperienceStats(company: string) {
         : { n: difficulty.length, average: difficulty.reduce((a, b) => a + b, 0) / difficulty.length },
     sentiment: shares(values((r) => r.sentiment)),
     channel: shares(values((r) => r.channel)),
-    weeks: weeks.length < STATS_MIN ? null : { n: weeks.length, median },
+    weeks: median(ascending(values((r) => r.duration_weeks))),
+    // Only offers: how long the ones who got it prepared.
+    prep: median(ascending(values((r) => (r.result === 'Offer' ? r.prep_weeks : null)))),
     oa: memberOaOutcomes(company),
   };
-  return stats.difficulty || stats.sentiment || stats.channel || stats.weeks || stats.oa ? stats : null;
+  return stats.difficulty || stats.sentiment || stats.channel || stats.weeks || stats.prep || stats.oa ? stats : null;
 }
 export type MemberStats = NonNullable<ReturnType<typeof memberExperienceStats>>;
 
@@ -511,7 +583,7 @@ export function recentMemberExperiences(since: number, max = 20, until = Number.
 export function readMember(id: string, viewer: Pick<Person, 'id' | 'role'> | null) {
   if (!ID.test(id)) return null;
   const r = sqlite()
-    .prepare(`SELECT s.*,${HANDLE},${FLAGS} AS flags FROM experience_submissions s WHERE s.id=?`)
+    .prepare(`SELECT s.*,${HANDLE},${FLAGS} AS flags,${QMETA} FROM experience_submissions s WHERE s.id=?`)
     .get(id) as Row | undefined;
   if (!r) return null;
   const names = companyNames();
@@ -522,7 +594,7 @@ export function readMember(id: string, viewer: Pick<Person, 'id' | 'role'> | nul
   return {
     ...summaryOf(r, names),
     body: r.body,
-    questions: strings(r.questions),
+    questions: questionsOf(r),
     member: {
       id: r.id,
       handle: r.handle ?? null,
@@ -543,6 +615,7 @@ export async function memberItem(db: Database.Database | null, slug: string, vie
   if (!found) throw new HttpError(404, '内容不存在');
   return {
     ...found,
+    questions: await titleQuestions(found.questions),
     updatedAt: null,
     extra: {},
     relations: [],
@@ -596,6 +669,12 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
   if (d.month > monthKey(now + DAY) || d.month < recentSince(now - DAY, 36)) throw new HttpError(400, '面试月份无效');
   const company = employerSlug(d.company);
   if (!companyNames().has(company)) throw new HttpError(400, '没有这家公司');
+  const questions = d.questions.map((q) => (typeof q === 'string' ? { text: q, round: '', problem: '', similar: false } : q));
+  for (const q of questions) {
+    if (q.round && !d.rounds.includes(q.round)) throw new HttpError(400, '题目标的轮次不在所选轮次里');
+    // Published OA and LeetCode problems only: no course exercises, no hidden companies.
+    if (q.problem && !(await publicProblem(p, q.problem))) throw new HttpError(400, '关联的题目不存在或不能关联');
+  }
   const db = sqlite();
   const counts = db
     .prepare(
@@ -608,33 +687,42 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
   // Withdrawing deletes the row, so the count above alone would reset; this one keeps counting.
   await limit(p, 'experience-submit', PER_DAY, 86400);
   const id = randomBytes(9).toString('base64url');
-  db.prepare(
-    `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,
-      difficulty,sentiment,channel,employment,season,location,duration_weeks,
-      oa_solved,oa_total,oa_tests_pct,oa_minutes,oa_next,anonymous,created_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-  ).run(
-    id,
-    p.id,
-    company,
-    d.title,
-    d.role,
-    JSON.stringify([...new Set(d.rounds)]),
-    d.result,
-    d.month,
-    d.body,
-    JSON.stringify(d.questions),
-    d.difficulty,
-    d.sentiment,
-    d.channel,
-    d.employment,
-    d.season,
-    d.location,
-    d.durationWeeks,
-    ...oa,
-    d.anonymous ? 1 : 0,
-    now,
-  );
+  const meta = db.prepare('INSERT INTO experience_questions(submission_id,idx,round,problem_id,similar) VALUES(?,?,?,?,?)');
+  db.transaction(() => {
+    db.prepare(
+      `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,
+        difficulty,sentiment,channel,employment,season,location,duration_weeks,
+        oa_solved,oa_total,oa_tests_pct,oa_minutes,oa_next,prep_weeks,prep_sources,anonymous,created_at)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    ).run(
+      id,
+      p.id,
+      company,
+      d.title,
+      d.role,
+      JSON.stringify([...new Set(d.rounds)]),
+      d.result,
+      d.month,
+      d.body,
+      JSON.stringify(questions.map((q) => q.text)),
+      d.difficulty,
+      d.sentiment,
+      d.channel,
+      d.employment,
+      d.season,
+      d.location,
+      d.durationWeeks,
+      ...oa,
+      d.prepWeeks,
+      JSON.stringify([...new Set(d.prepSources)]),
+      d.anonymous ? 1 : 0,
+      now,
+    );
+    // Rows only for questions with a round or a link; "similar" means nothing without a link.
+    questions.forEach((q, i) => {
+      if (q.round || q.problem) meta.run(id, i, q.round, q.problem, q.problem && q.similar ? 1 : 0);
+    });
+  })();
   return readMember(id, p)!;
 }
 
@@ -645,7 +733,10 @@ function withdraw(p: Person, id: string) {
   if (db.prepare('SELECT 1 FROM experience_submissions WHERE id=? AND user_id=?').get(id, p.id)) settleExperience(id, false);
   const gone = db.transaction(() => {
     const { changes } = db.prepare('DELETE FROM experience_submissions WHERE id=? AND user_id=?').run(id, p.id);
-    if (changes) db.prepare('DELETE FROM experience_flags WHERE submission_id=?').run(id);
+    if (changes) {
+      db.prepare('DELETE FROM experience_flags WHERE submission_id=?').run(id);
+      db.prepare('DELETE FROM experience_questions WHERE submission_id=?').run(id);
+    }
     return changes;
   })();
   if (!gone) throw new HttpError(404, '内容不存在');
@@ -683,7 +774,7 @@ export function reviewQueue() {
     (
       db
         .prepare(
-          `SELECT s.*,${handleSql('1')},${FLAGS} AS flags,
+          `SELECT s.*,${handleSql('1')},${FLAGS} AS flags,${QMETA},
             (SELECT group_concat(f.reason || CASE WHEN f.note<>'' THEN ': ' || f.note ELSE '' END, char(10))
               FROM experience_flags f WHERE f.submission_id=s.id) AS reasons
           FROM experience_submissions s WHERE ${where} ORDER BY ${order} LIMIT 50`,
@@ -693,7 +784,7 @@ export function reviewQueue() {
       ...summaryOf(r, names),
       id: r.id,
       body: r.body,
-      questions: strings(r.questions),
+      questions: questionsOf(r),
       status: r.status,
       note: r.review_note,
       createdAt: r.created_at,

@@ -100,9 +100,36 @@ export type MemberDetails = {
   season: string | null;
   location: string | null;
   durationWeeks: number | null;
+  /** How the author prepared: weeks spent and PREP_SOURCES keys (published with the post). */
+  prepWeeks: number | null;
+  prepSources: string[];
   /** The author's address was verified (no identity check beyond that). */
   verified: boolean;
 };
+/** Where an author practised before the interview, [zh, en]. */
+export const PREP_SOURCES: Readonly<Record<string, [string, string]>> = {
+  cswork: ['CSWork 练习', 'CSWork practice'],
+  leetcode: ['LeetCode', 'LeetCode'],
+  'oa-platform': ['OA 平台题', 'OA platforms'],
+  mock: ['模拟面试', 'Mock interviews'],
+  books: ['书和课程', 'Books and courses'],
+  other: ['其他', 'Other'],
+};
+/** One line for how a post's author prepared, e.g. "准备 6 周 · LeetCode、模拟面试"; null when not given. */
+export function prepLine(d: Pick<MemberDetails, 'prepWeeks' | 'prepSources'> | null | undefined, zh: boolean) {
+  if (!d) return null;
+  const sources = (d.prepSources ?? []).filter((s) => Object.hasOwn(PREP_SOURCES, s)).map((s) => PREP_SOURCES[s][zh ? 0 : 1]);
+  const weeks = d.prepWeeks ?? null;
+  if (weeks === null && !sources.length) return null;
+  const head = weeks === null ? (zh ? '准备' : 'Prepared with') : zh ? `准备 ${weeks} 周` : `Prepared ${weeks} ${weeks === 1 ? 'week' : 'weeks'}`;
+  return sources.length ? `${head}${weeks === null ? (zh ? '：' : ' ') : ' · '}${sources.join(zh ? '、' : ', ')}` : head;
+}
+/**
+ * A question of a member's post: its text, the round it came up in ('' when not said) and the
+ * site problem it links to ('' for none); similar when the asked question only resembled it.
+ * `title` is the linked problem's, filled in for pages (titleQuestions in lib/server).
+ */
+export type MemberQuestion = { text: string; round: string; problem: string; similar: boolean; title?: string; titleEn?: string };
 /** Facts only member posts carry, each a filter menu: imported experiences have none of these. */
 export const MEMBER_FACETS = ['employment', 'season', 'channel'] as const;
 /** Filters that list member posts only: the facts, and verified=1 (authors with a verified address). */

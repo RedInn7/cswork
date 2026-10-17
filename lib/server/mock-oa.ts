@@ -20,6 +20,7 @@ import {
 } from '@/lib/mock-oa';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
+import { readMember } from './experience-submissions';
 import {
   boundedText,
   HttpError,
@@ -217,13 +218,48 @@ const drawSchema = z
       })
       .strict()
       .optional(),
+    // A member's public interview experience: its linked problems, in order.
+    experience: z.string().regex(/^[A-Za-z0-9_-]{12}$/).optional(),
     exclude: z.array(z.string().max(200)).max(200).default([]),
   })
   .strict()
-  .refine((d) => !d.company !== !d.custom);
+  .refine((d) => [d.company, d.custom, d.experience].filter((x) => x !== undefined).length === 1);
+
+/**
+ * "Practise this loop": the judgeable problems a public experience links (similar ones too), in
+ * the post's order, at most 4, each at its own difficulty. Seen or solved ones stay: it is that
+ * loop. Never a preset, so the report compares it with no one (mockPeers).
+ */
+async function drawExperience(id: string) {
+  const post = readMember(id, null);
+  if (!post?.member.public) throw new HttpError(404, '内容不存在');
+  const hidden = hiddenCompanies();
+  const pool = new Map(mockPool(await catalogue(), null, 'mixed', hidden).map((item) => [item.id, item]));
+  const items = [...new Set(post.questions.map((q) => q.problem))].flatMap((problem) => pool.get(problem) ?? []).slice(0, 4);
+  if (!items.length) throw new HttpError(409, '这篇面经没有能判题的关联题');
+  const slug = post.company.slug;
+  const preset = shownMockPresets(hidden).find((c) => c.slug === slug || c.aliases.includes(slug));
+  const perQuestion = preset ? preset.minutes / preset.questions : 30;
+  return {
+    ids: items.map((item) => item.id),
+    company: slug,
+    name: post.company.name,
+    platform: null,
+    preset: false,
+    questions: items.length,
+    minutes: Math.min(180, Math.max(15, Math.round(perQuestion * items.length))),
+    slots: items.map((item) => item.difficulty ?? 'medium'),
+    scoring: 'tests' as Scoring,
+    source: 'mixed' as MockSource,
+    topics: [] as string[],
+    experience: id,
+    now: Date.now(),
+  };
+}
 
 export async function drawMockOa(p: Person, input: unknown) {
   const d = drawSchema.parse(input);
+  if (d.experience) return drawExperience(d.experience);
   const hidden = hiddenCompanies(),
     shown = shownMockPresets(hidden);
   const slug = d.company ?? d.custom?.company ?? null;
