@@ -201,6 +201,13 @@ test('with a clip, a selection offers saving and a card even without AI; saving 
   assert.equal(notes[0][1], '/api/oj/notes?target=clip%3Aconcept%2Ftwo-pointers');
   assert.equal(stored, '> earlier\n\n> Move both\n> — [Two Pointers](/library/concept/two-pointers)\n');
   assert.equal(host.querySelector('.cmdk-selection-ask [role="status"]').textContent.startsWith('Saved to your notes.'), true);
+  // The View link survives its own press: mousedown keeps the selection, mouseup inside the toolbar doesn't re-measure.
+  const view = host.querySelector('.cmdk-selection-ask [role="status"] a');
+  assert.equal(view.getAttribute('href'), '/?view=review-session&tab=cards');
+  assert.equal(view.dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, cancelable: true })), false, 'mousedown keeps the selection');
+  await act(async () => view.dispatchEvent(new dom.window.MouseEvent('mouseup', { bubbles: true })));
+  await act(async () => view.dispatchEvent(new dom.window.KeyboardEvent('keyup', { bubbles: true, key: 'Tab' })));
+  assert.equal(view.isConnected, true, 'still there when the click comes');
   // Signed out: a sign-in prompt instead.
   answer = 401;
   await select();

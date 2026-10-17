@@ -557,7 +557,9 @@ export function SelectionAsk({ children, className, clip }: { children: ReactNod
   const [spot, setSpot] = useState<{ x: number; y: number; text: string } | null>(null);
   const [said, setSaid] = useState<{ text: string; done?: boolean } | null>(null);
   const [card, setCard] = useState<string | null>(null);
-  const measure = useCallback(() => {
+  const measure = useCallback((event?: Event) => {
+    // A press inside the toolbar (the View link, a button) must not re-measure and unmount it before its click.
+    if ((event?.target as Element | null)?.closest?.('.cmdk-selection-ask')) return;
     const selection = window.getSelection();
     const text = selection?.toString().trim() ?? '';
     if (!selection || selection.isCollapsed || text.length < 2 || !box.current?.contains(selection.anchorNode)) return setSpot(null);
@@ -628,7 +630,9 @@ export function SelectionAsk({ children, className, clip }: { children: ReactNod
               {said.done && (
                 <>
                   {' '}
-                  <a href="/?view=review-session&tab=cards">{t('查看', 'View')}</a>
+                  <a href="/?view=review-session&tab=cards" onMouseDown={keep}>
+                    {t('查看', 'View')}
+                  </a>
                 </>
               )}
             </span>
