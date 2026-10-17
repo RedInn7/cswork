@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, ListChecks } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { StatementMarkdown } from './statement-markdown';
 import { followUpRule } from '@/lib/code-analyzer';
 import type { LingEditorial as Editorial, LingFollowUps } from '@/lib/oj-client';
@@ -13,7 +13,7 @@ const COMMON = ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)', 'O(n^3)', 'O
 // n² and n^2, m·n and mn are one answer.
 const norm = (cost: string) => cost.replace(/²/g, '^2').replace(/³/g, '^3').replace(/[\s·*]/g, '');
 
-/** Four distinct complexities: the brute force's, the other approaches', then common ones, in growth order. */
+/** Four distinct complexities: the first approach's, the other approaches', then common ones, in growth order. */
 export function timeOptions(approaches: Approach[]) {
   const seen = new Map<string, string>();
   for (const cost of [...approaches.map((a) => a.time), ...COMMON])
@@ -79,10 +79,12 @@ function Checkpoint({
 }
 
 /**
- * The editorial step by step (two or more approaches only): ① the brute force and its time,
- * ② the structure that removes the bottleneck (the stop, among its neighbours on the line),
- * ③ the best approach's idea; then `onDone` shows every approach with its code. Each step can
- * be skipped; the checkpoints only tell right from wrong, nothing is recorded.
+ * The editorial step by step (two or more approaches only): ① the first approach and its time
+ * (not asked when its idea already states it), ② the structure the problem builds on (its stop,
+ * among its neighbours on the line), ③ the best approach's idea; then `onDone` shows every
+ * approach with its code. Neutral wording: the first approach is not always a brute force nor
+ * slower (2D DP, then a rolling array). Each step can be skipped; the checkpoints only tell right
+ * from wrong, nothing is recorded.
  */
 export function EditorialSteps({
   approaches,
@@ -104,19 +106,20 @@ export function EditorialSteps({
   useEffect(() => {
     if (moved.current) heading.current?.focus();
   }, [step]);
-  const brute = approaches[0];
+  const first = approaches[0];
   const best = approaches.at(-1)!;
-  const kind = stops.length ? ['brute', 'stop', 'best'][step] : ['brute', 'best'][step];
+  const idea = english ? first.ideaEn : first.ideaZh;
+  const kind = stops.length ? ['first', 'stop', 'best'][step] : ['first', 'best'][step];
   const next = () => {
     moved.current = true;
     if (step + 1 < steps) setStep(step + 1);
     else onDone();
   };
   const title =
-    kind === 'brute'
-      ? t('先想暴力', 'Start with brute force')
+    kind === 'first'
+      ? t('先看第一种做法', 'Start with the first approach')
       : kind === 'stop'
-        ? t('找瓶颈', 'Find the bottleneck')
+        ? t('找结构', 'Name the structure')
         : t('最优解思路', 'The best approach');
   return (
     <div className="cs-ling-steps">
@@ -124,24 +127,26 @@ export function EditorialSteps({
         <span className="cs-ling-step-count">{t(`第 ${step + 1} / ${steps + 1} 步`, `Step ${step + 1} of ${steps + 1}`)}</span>
         {title}
       </h3>
-      {kind === 'brute' && (
+      {kind === 'first' && (
         <>
-          <p className="cs-ling-step-name">{english ? brute.nameEn : brute.nameZh}</p>
-          <StatementMarkdown body={english ? brute.ideaEn : brute.ideaZh} className="cs-statement-markdown cs-ling-idea" untrusted />
-          <Checkpoint
-            key="time"
-            question={t('它的时间复杂度是？', 'What is its time complexity?')}
-            options={timeOptions(approaches)}
-            answer={brute.time}
-            label={(option) => option}
-            english={english}
-          />
+          <p className="cs-ling-step-name">{english ? first.nameEn : first.nameZh}</p>
+          <StatementMarkdown body={idea} className="cs-statement-markdown cs-ling-idea" untrusted />
+          {!norm(idea).includes(norm(first.time)) && (
+            <Checkpoint
+              key="time"
+              question={t('它的时间复杂度是？', 'What is its time complexity?')}
+              options={timeOptions(approaches)}
+              answer={first.time}
+              label={(option) => option}
+              english={english}
+            />
+          )}
         </>
       )}
       {kind === 'stop' && (
         <Checkpoint
           key="stop"
-          question={t('瓶颈用什么结构消掉？', 'Which structure removes the bottleneck?')}
+          question={t('这道题用的是哪一站的结构？', 'Which stop on the line does this problem build on?')}
           options={stops}
           answer={stop!}
           label={(slug) => STOP_NAMES[slug]?.[english ? 1 : 0] ?? slug}
@@ -165,26 +170,27 @@ export function EditorialSteps({
 }
 
 /**
- * "What an interviewer may ask next": the problem's follow-up mode first (lib/content/follow-up-rules.json,
- * turned on with `onFollowUp`), then the written follow-ups, answers folded, each optionally linking
- * a problem to practise, and the takeaway.
+ * "What an interviewer may ask next": the problem's follow-up mode first (lib/content/follow-up-rules.json;
+ * `followUpOn` is the workspace's switch and `onFollowUp` sets it, absent in ACM mode), then the
+ * written follow-ups, answers folded, each optionally linking a problem to practise, and the takeaway.
  */
 export function EditorialFollowUps({
   problemId,
   extras,
   language,
   english,
+  followUpOn = false,
   onFollowUp,
 }: {
   problemId: string;
   extras: Partial<LingFollowUps>;
   language: Language;
   english: boolean;
-  onFollowUp?: () => void;
+  followUpOn?: boolean;
+  onFollowUp?: (on: boolean) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const rule = followUpRule(problemId, language);
-  const [on, setOn] = useState(false);
   const items = extras.followUps ?? [];
   if (!rule && !items.length && !extras.takeawayZh) return null;
   return (
@@ -200,22 +206,14 @@ export function EditorialFollowUps({
                 'This problem has a follow-up mode: when on, your code is checked for the disallowed constructs before it is submitted.',
               )}
             </p>
-            {onFollowUp &&
-              (on ? (
-                <p role="status">{t('已开启追问模式。', 'Follow-up mode is on.')}</p>
-              ) : (
-                <button
-                  type="button"
-                  className="cs-ling-compare"
-                  onClick={() => {
-                    onFollowUp();
-                    setOn(true);
-                  }}
-                >
-                  <ListChecks size={14} aria-hidden="true" />
-                  {t('开启追问模式', 'Turn on follow-up mode')}
-                </button>
-              ))}
+            {onFollowUp ? (
+              <label>
+                <input type="checkbox" checked={followUpOn} onChange={(event) => onFollowUp(event.target.checked)} />{' '}
+                {t('追问模式', 'Follow-up mode')}
+              </label>
+            ) : (
+              <p>{t('切到 LeetCode 模式后可以开启。', 'Switch to LeetCode mode to turn it on.')}</p>
+            )}
           </li>
         )}
         {items.map((item, i) => {

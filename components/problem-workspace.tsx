@@ -1777,7 +1777,8 @@ function Workspace({
             settings={settings}
             discussion={!!boot.person && communityProblem(problem.id)}
             stop={problem.stop}
-            onFollowUp={followUp ? () => setFollowUpOn(true) : undefined}
+            followUpOn={followUpOn}
+            onFollowUp={followUp ? setFollowUpOn : undefined}
           />
         ) : leftTab === 'editorial' && !examMode ? (
           <OaEditorial key={`editorial:${problem.id}`} problemId={problem.id} english={uiEnglish} language={language} />

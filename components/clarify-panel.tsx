@@ -59,7 +59,7 @@ export function ClarifyPanel({
   };
   const addButton = (input: string, what: string) =>
     onAdd && (
-      <button type="button" className="cs-clarify-add" onClick={() => add([input])} aria-label={t(`加为自定义用例：${what}`, `Add as a custom case: ${what}`)}>
+      <button type="button" className="cs-clarify-add" onClick={() => add([input])} aria-label={t(`加为用例：${what}`, `Add case: ${what}`)}>
         <Plus size={13} aria-hidden="true" />
         {t('加为用例', 'Add case')}
       </button>

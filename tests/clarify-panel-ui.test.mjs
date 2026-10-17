@@ -62,6 +62,8 @@ test('the checklist: tick, compare, then add one case or all of them within the 
   assert.match(text(), /10\^4 × 10\^9 = 10\^13/);
   assert.match(text(), /You asked:/);
   assert.match(text(), /Two equal values/);
+  // The accessible name starts with the visible text (WCAG 2.5.3).
+  assert.equal(buttons('Add case')[0].getAttribute('aria-label'), 'Add case: Two equal values');
   await click(buttons('Add case')[0]);
   assert.deepEqual(added, ['[3,3]\n6']);
   assert.match($('[role=status].cs-clarify-hint').textContent, /Added/);
@@ -97,7 +99,7 @@ test('step by step: answer or skip each checkpoint, then the code', async () => 
       onDone: () => done++,
     }),
   );
-  assert.match(text(), /Step 1 of 4/);
+  assert.match(text(), /Step 1 of 4Start with the first approach/);
   assert.match(text(), /Brute idea/);
   await click(buttons('O(n)')[0]);
   assert.match($('.cs-ling-check [role=status]').textContent, /Not quite: it is O\(n\^2\)/);
@@ -110,24 +112,40 @@ test('step by step: answer or skip each checkpoint, then the code', async () => 
   assert.equal(document.activeElement, $('.cs-ling-steps > h3'));
   await click(buttons('Show the code')[0]);
   assert.equal(done, 1);
+  // An idea that already states its time (n² is n^2) asks nothing about it.
+  const told = { ...approach('DP', 'O(m·n)'), ideaEn: 'Fill the table in O(m n) time.' };
+  await render(createElement(EditorialSteps, { key: 'told', approaches: [told, approach('Rolling', 'O(m·n)')], english: true, onDone() {} }));
+  assert.match(text(), /Step 1 of 3/);
+  assert.equal($('.cs-ling-check'), null);
 });
 
 test('follow-ups: the follow-up mode first, answers folded, a practice link and the takeaway', async () => {
-  let turnedOn = 0;
+  const switched = [];
   const extras = {
     takeawayZh: '要点',
     takeawayEn: 'Look up before inserting.',
     followUps: [{ qZh: '有序呢？', qEn: 'Sorted?', aZh: '双指针', aEn: 'Two pointers.', problem: 'lc-167' }],
   };
   // lc-9 has a follow-up rule (no string conversion).
-  await render(createElement(EditorialFollowUps, { problemId: 'lc-9', extras, language: 'python', english: true, onFollowUp: () => turnedOn++ }));
+  const props = { problemId: 'lc-9', extras, language: 'python', english: true, onFollowUp: (on) => switched.push(on) };
+  await render(createElement(EditorialFollowUps, { ...props, followUpOn: false }));
   assert.match(text(), /Now: Without converting the integer to a string/);
-  await click(buttons('Turn on follow-up mode')[0]);
-  assert.equal(turnedOn, 1);
-  assert.match(text(), /Follow-up mode is on/);
+  const box = () => $('.cs-ling-followups input[type=checkbox]');
+  assert.equal(box().checked, false);
+  await click(box());
+  assert.deepEqual(switched, [true]);
+  // The workspace's own switch: turned on from the toolbar, it shows on here, and turns off.
+  await render(createElement(EditorialFollowUps, { ...props, followUpOn: true }));
+  assert.equal(box().checked, true);
+  await click(box());
+  assert.deepEqual(switched, [true, false]);
   assert.equal($('.cs-ling-followups details').open, false);
   assert.equal($('.cs-ling-followups a').getAttribute('href'), '/?view=problem&problem=lc-167');
   assert.match(text(), /TakeawayLook up before inserting/);
+  // ACM mode: the rule, no switch, and where to turn it on.
+  await render(createElement(EditorialFollowUps, { ...props, onFollowUp: undefined }));
+  assert.equal(box(), null);
+  assert.match(text(), /Switch to LeetCode mode to turn it on/);
   // Nothing to show: no section at all.
   await render(createElement(EditorialFollowUps, { problemId: 'lc-1', extras: {}, language: 'python', english: true }));
   assert.equal($('.cs-ling-followups'), null);

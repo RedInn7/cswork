@@ -44,8 +44,8 @@ const MODE_KEY = 'cswork:editorial-mode';
  * `discussion`: below it, the problem's community solutions (the same posts as the Solutions
  * tab, so the contest gate holds), folded until asked for. With two or more approaches it reads
  * step by step (components/ling-editorial-steps.tsx; `stop` is the problem's Line 500 stop) or all
- * at once, remembered in this browser; then the interview follow-ups (`onFollowUp` turns on the
- * problem's follow-up mode).
+ * at once, remembered in this browser; then the interview follow-ups (`followUpOn` / `onFollowUp`:
+ * the workspace's follow-up mode switch).
  */
 export function LingEditorial({
   problemId,
@@ -58,6 +58,7 @@ export function LingEditorial({
   settings,
   discussion = false,
   stop,
+  followUpOn,
   onFollowUp,
 }: {
   problemId: string;
@@ -70,7 +71,8 @@ export function LingEditorial({
   settings: EditorSettings;
   discussion?: boolean;
   stop?: string | null;
-  onFollowUp?: () => void;
+  followUpOn?: boolean;
+  onFollowUp?: (on: boolean) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [lang, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
@@ -263,7 +265,7 @@ export function LingEditorial({
               </li>
             ))}
           </ol>
-          <EditorialFollowUps problemId={problemId} extras={editorial} language={language} english={english} onFollowUp={onFollowUp} />
+          <EditorialFollowUps problemId={problemId} extras={editorial} language={language} english={english} followUpOn={followUpOn} onFollowUp={onFollowUp} />
           <EditorialVote problemId={problemId} english={english} />
           {discussion && (
             <details className="cs-ling-discussion" onToggle={(e) => setDiscussing(e.currentTarget.open)}>
