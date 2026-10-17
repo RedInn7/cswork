@@ -85,3 +85,13 @@ test('AI-only mock interviews read as unavailable while AI is off; the others ne
   assert.equal(front.unavailable, true);
   assert.equal(front.title, '模拟面试：前端面试');
 });
+
+test('system design steps carry one label, and "optional" only as the step tag', () => {
+  // The course's part names already say "System design:" and "(optional)"; required parts must not read optional.
+  for (const role of ROLE_KEYS)
+    for (const zh of [true, false])
+      for (const step of resolveRolePath(role, zh, true).filter((s) => s.kind === 'sd-part'))
+        assert.doesNotMatch(step.title, /系统设计：系统设计|System design: System design|选读|optional/i, `${role} ${step.ref}`);
+  assert.equal(resolveStep({ kind: 'sd-part', ref: 'framework' }, false, true).title, 'System design: framework and cases');
+  assert.equal(resolveStep({ kind: 'sd-part', ref: 'tech-kafka' }, true, true).title, '系统设计：关键技术');
+});

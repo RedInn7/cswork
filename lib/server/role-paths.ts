@@ -38,7 +38,8 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       if (!part) throw missing();
       return {
         ...step,
-        title: title(pick(part.zh, part.en)),
+        // The course's part names carry their own "System design:" and "(optional)"; the step has a label and its own Optional tag.
+        title: title(pick(part.zh, part.en).replace(/^(系统设计：|System design: )|(（选读）| \(optional\))$/g, '')),
         href: sdPath(part.from),
         keys: part.chapters.map((chapter) => `sd:${chapter.slug}`),
       };
