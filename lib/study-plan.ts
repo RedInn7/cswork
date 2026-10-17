@@ -1,8 +1,8 @@
 /**
  * Sprint plan: count back from an OA date to a daily trip on the 500 line.
  * Pure (days are local 'YYYY-MM-DD' strings) and shared by the bank page and its
- * tests. v1 keeps the goal in this browser only (planStorageKey), like the mock
- * OA history; syncing it across devices needs a table.
+ * tests. The goal lives in this browser (planStorageKey) and, signed in, in the
+ * account's pref:plan note too (mergeGoals).
  */
 import { calendar, escapeText, vevent } from './ics';
 import { slotOf, SLOTS, type Slot } from './mock-oa';
@@ -41,6 +41,10 @@ export type PlanGoal = {
   shuffle: number;
   /** Time of the placement quiz result (lib/placement.ts) whose known stops the form last unticked; 0 for none. */
   placementAt: number;
+  /** When it was last saved (this device's clock); 0 before v3. */
+  updatedAt: number;
+  /** Sprint to the OA and interview dates on the application tracker too. */
+  tracker: boolean;
 };
 /**
  * One problem left to do; stop is its 0-based stop on the line (OA problems and list
@@ -65,6 +69,10 @@ export type PlanDay = {
   /** 1 or 2 on a mock OA day, which has no other problems. */
   mock?: number;
   oa?: boolean;
+  /** A tracker sprint's day (its mock OA too): the company's problems while they last. */
+  sprintFor?: PlanSprint;
+  /** A tracker OA deadline or interview: no problems. */
+  event?: PlanSprint;
 };
 export type Plan = {
   /** Days until the OA (0 = today), or null without a usable date. */
@@ -82,7 +90,31 @@ export type Plan = {
   filtered: number;
   /** Of todo, the problems left out so the rest fit before the OA (or in goal.weeks). */
   cut: number;
+  /** The tracker's sprints, soonest first. */
+  sprints: SprintGroup[];
+  /** Tracker dates in the OA's last week, which keeps its own sprint. */
+  skipped: number;
 };
+/** An OA deadline or interview on the application tracker (lib/applications.ts agenda). */
+export type PlanEvent = {
+  /** The card's id. */
+  id: string;
+  kind: 'oa' | 'interview';
+  /** Its local day. */
+  date: string;
+  company: string;
+  /** The company page's slug, or ''. */
+  slug: string;
+  /** An onsite gets a longer sprint than an OA or a phone screen. */
+  onsite: boolean;
+  /** The company's mock OA preset, or null. */
+  preset: string | null;
+  /** That mock OA's length. */
+  minutes: number;
+};
+export type PlanSprint = PlanEvent & { days: string[] };
+/** One sprint, or neighbours merged because one got fewer than 2 days. */
+export type SprintGroup = { events: PlanSprint[]; days: string[]; tight: boolean };
 export type PlanWeek = {
   start: string;
   end: string;
@@ -132,6 +164,8 @@ export const DEFAULT_GOAL: PlanGoal = {
   topics: [],
   shuffle: 0,
   placementAt: 0,
+  updatedAt: 0,
+  tracker: true,
 };
 
 const DAY = 86400000;
@@ -201,7 +235,24 @@ export function normalizeGoal(raw: unknown): PlanGoal {
       : [],
     shuffle: int(g.shuffle, 0, 1e6, 0),
     placementAt: int(g.placementAt, 0, 8.64e15, 0),
+    updatedAt: int(g.updatedAt, 0, 8.64e15, 0),
+    tracker: g.tracker !== false,
   };
+}
+
+/**
+ * This browser's goal against the account's (pref:plan). With none saved there (a first-visit
+ * card counts as none) the local one stands, and goes up unless it is a first-visit card too;
+ * a first-visit card takes the account's; otherwise the later save wins, and a later local one
+ * goes up (a failed PUT catches up on the next visit). First-visit cards never go up, so the
+ * "n a day" picker on one device cannot wipe a plan another device has not uploaded yet.
+ * ponytail: updatedAt is each device's own clock, so a clock that is off can pick the older
+ * save; a server-side version number would settle it.
+ */
+export function mergeGoals(local: PlanGoal, remote: PlanGoal | null) {
+  if (!remote || remote.status === 'new') return { goal: local, push: local.status !== 'new' };
+  if (local.status === 'new' || remote.updatedAt >= local.updatedAt) return { goal: remote, push: false };
+  return { goal: local, push: true };
 }
 
 /**
@@ -340,6 +391,52 @@ export function mixPlan(problems: readonly PlanProblem[], shuffle = 0) {
   return mixed;
 }
 
+/** The bank's list of a company's most reported problems. */
+export const reportedHref = (slug: string) =>
+  `/?${new URLSearchParams({ view: 'problems', company: slug, sort: 'frequency' })}`;
+
+/** Days a tracker date wants to sprint: 3 before an OA or a phone screen, 5 before an onsite. */
+export const sprintWant = (event: PlanEvent) => (event.onsite ? 5 : 3);
+
+/**
+ * The tracker's dates from today through horizonEnd, each with its sprint days: a day
+ * (from today on) goes to the nearest date after it that wants it (sprintWant), dates on
+ * one day take turns, and a date's own day never sprints. A sprint left with fewer than
+ * 2 days is tight; neighbours merge when either is tight and the earlier date falls in
+ * the later one's window.
+ */
+export function trackerSprints(events: readonly PlanEvent[], today: string, horizonEnd: string): SprintGroup[] {
+  const sprints: PlanSprint[] = events
+    .filter((e) => e.date >= today && e.date <= horizonEnd)
+    .toSorted((a, b) => a.date.localeCompare(b.date))
+    .map((e) => ({ ...e, days: [] }));
+  if (!sprints.length) return [];
+  const dates = new Set(sprints.map((s) => s.date));
+  const turns = new Map<string, number>();
+  const first = addDays(sprints[0].date, -5);
+  for (let date = first > today ? first : today; date < sprints.at(-1)!.date; date = addDays(date, 1)) {
+    if (dates.has(date)) continue;
+    const wanting = sprints.filter((s) => s.date > date && daysBetween(date, s.date) <= sprintWant(s));
+    if (!wanting.length) continue;
+    const nearest = wanting.filter((s) => s.date === wanting[0].date);
+    const turn = turns.get(nearest[0].date) ?? 0;
+    turns.set(nearest[0].date, turn + 1);
+    nearest[turn % nearest.length].days.push(date);
+  }
+  const groups: SprintGroup[] = [];
+  for (const s of sprints) {
+    const group = groups.at(-1);
+    const prev = group?.events.at(-1);
+    const tight = s.days.length < 2;
+    if (group && prev && (tight || prev.days.length < 2) && daysBetween(prev.date, s.date) <= sprintWant(s)) {
+      group.events.push(s);
+      group.tight = true;
+    } else groups.push({ events: [s], days: [], tight });
+  }
+  for (const group of groups) group.days = group.events.flatMap((s) => s.days).sort();
+  return groups;
+}
+
 /**
  * Todo = the pool's unsolved problems (Line 500 from goal.startStop on, or a classic
  * list's) under the goal's difficulty and topic filters, mixed across stops (mixPlan),
@@ -354,19 +451,26 @@ export function mixPlan(problems: readonly PlanProblem[], shuffle = 0) {
  * spread over every stop, instead of cutting the last stops.
  * `done` counts the problems of each kind solved earlier today: paces count from
  * this morning, so working off today's problems does not lower today's goal.
+ * The tracker's dates (trackerSprints) fill the days before the last week, or goal.weeks:
+ * a sprint's days share its company's problems (`tracker.problems` by preset),
+ * min(budget, ceil(problems / days)) a day, and ride the line once none are left; a
+ * sprint of 3+ days with a preset holds a mock OA the day before, and the date itself
+ * takes nothing. The line's pace counts the other days only.
  */
 export function buildPlan({
   goal,
   today,
   line,
-  company = [],
+  company: targetCompany = [],
   done = {},
+  tracker,
 }: {
   goal: PlanGoal;
   today: string;
   line: readonly PlanProblem[];
   company?: readonly PlanProblem[];
   done?: { line?: number; company?: number };
+  tracker?: { events: readonly PlanEvent[]; problems?: ReadonlyMap<string, readonly PlanProblem[]> };
 }): Plan {
   const d = goal.oaDate && isDay(goal.oaDate) ? daysBetween(today, goal.oaDate) : null;
   const daysLeft = d !== null && d >= 0 && d <= MAX_DAYS ? d : null;
@@ -376,9 +480,9 @@ export function buildPlan({
   // ponytail: the average leaves out today's solved problems (their difficulty is
   // not sent), so the budget can shift by one when they differ a lot from the rest.
   // It also counts problems a short plan cuts.
-  const all = wanted.length + company.length;
+  const all = wanted.length + targetCompany.length;
   const avgMinutes = all
-    ? [...wanted, ...company].reduce((sum, p) => sum + minutesFor(p.difficulty), 0) / all
+    ? [...wanted, ...targetCompany].reduce((sum, p) => sum + minutesFor(p.difficulty), 0) / all
     : MINUTES.medium;
   const budget = Math.max(1, Math.floor((goal.weeklyHours * 60) / 7 / avgMinutes));
   const sprintFrom = daysLeft === null ? Infinity : Math.max(0, daysLeft - SPRINT_DAYS);
@@ -389,9 +493,34 @@ export function buildPlan({
       )
     : [];
   const doneToday = (done.line ?? 0) + (done.company ?? 0);
-  const companyLeft = company.length + (done.company ?? 0);
   const pace = (left: number, days: number) =>
     left ? Math.min(Math.ceil(left / Math.max(1, days)), budget) : 0;
+  // The tracker's days, laid out before the line: they end before the OA's last week.
+  const end = addDays(today, (daysLeft === null ? goal.weeks * 7 : sprintFrom) - 1);
+  const events = tracker?.events ?? [];
+  const sprints = trackerSprints(events, today, end);
+  const marked = new Map<string, Pick<PlanDay, 'problems' | 'sprintFor' | 'event' | 'mock'>>();
+  const used = new Set<string>();
+  for (const s of sprints.flatMap((group) => group.events)) {
+    // ponytail: two dates on one day mark the day with the first; the sprints still split for both.
+    if (!marked.has(s.date)) marked.set(s.date, { problems: [], event: s });
+    const days = [...s.days];
+    if (s.preset && days.length >= 3 && days.at(-1) === addDays(s.date, -1))
+      marked.set(days.pop()!, { problems: [], sprintFor: s, mock: 1 });
+    const queue = (s.preset ? (tracker?.problems?.get(s.preset) ?? []) : []).filter((p) => !used.has(p.id));
+    const n = pace(queue.length, days.length);
+    let q = 0;
+    for (const date of days) {
+      const problems = queue.slice(q, q + Math.max(0, n - (date === today ? doneToday : 0)));
+      q += problems.length;
+      for (const p of problems) used.add(p.id);
+      marked.set(date, { problems, sprintFor: s });
+    }
+  }
+  const busy = [...marked.values()].filter((m) => m.event || m.mock || m.problems.length).length;
+  // The OA's own sprint skips what a tracker sprint already planned.
+  const company = targetCompany.filter((p) => !used.has(p.id));
+  const companyLeft = company.length + (done.company ?? 0);
   const companyPace = pace(companyLeft, sprintDays - mockDays.length);
   const schedule = (queue: readonly PlanProblem[]) => {
     const lineLeft = queue.length + (done.line ?? 0);
@@ -400,7 +529,7 @@ export function buildPlan({
         ? lineLeft + companyLeft
           ? budget
           : 0
-        : pace(lineLeft, daysLeft - SPRINT_DAYS);
+        : pace(lineLeft, daysLeft - SPRINT_DAYS - busy);
     let l = 0,
       c = 0;
     const days: PlanDay[] = [];
@@ -408,6 +537,20 @@ export function buildPlan({
       const date = addDays(today, i);
       if (i === daysLeft) {
         days.push({ date, problems: [], minutes: 0, sprint: true, oa: true });
+        continue;
+      }
+      const mark = marked.get(date);
+      const solved = i ? 0 : doneToday;
+      if (mark && (mark.event || mark.mock || mark.problems.length)) {
+        days.push({
+          date,
+          sprint: false,
+          ...mark,
+          minutes: mark.mock
+            ? mark.sprintFor!.minutes
+            : Math.round(mark.problems.reduce((sum, p) => sum + minutesFor(p.difficulty), 0) + solved * avgMinutes),
+          ...(solved && !mark.event && !mark.mock ? { done: solved } : {}),
+        });
         continue;
       }
       const sprint = i >= sprintFrom;
@@ -426,7 +569,6 @@ export function buildPlan({
             ? (queue[l++] ?? company[c++])
             : queue[l++];
       const problems: PlanProblem[] = [];
-      const solved = i ? 0 : doneToday;
       for (let k = solved; k < (companyDay ? companyPace : linePace); k++) {
         const problem = next();
         if (!problem) break; // Nothing left to plan.
@@ -440,6 +582,8 @@ export function buildPlan({
         ),
         sprint,
         ...(solved ? { done: solved } : {}),
+        // A tracker sprint without its company's problems rides the line.
+        ...(mark?.sprintFor ? { sprintFor: mark.sprintFor } : {}),
       });
     }
     return { days, linePace, planned: Math.min(l, queue.length) };
@@ -452,15 +596,23 @@ export function buildPlan({
     queue = mixPlan(fitPlan(wanted, run.planned), goal.shuffle);
     run = schedule(queue);
   }
+  const first = run.days[0];
   return {
     daysLeft,
     expired: d !== null && d < 0,
     todo: all,
     avgMinutes,
-    daily: sprintFrom === 0 && companyLeft ? companyPace : run.linePace,
+    daily: first?.sprintFor && !first.mock
+      ? first.problems.length + (first.done ?? 0)
+      : sprintFrom === 0 && companyLeft
+        ? companyPace
+        : run.linePace,
     days: run.days,
     filtered: ahead.length - wanted.length,
     cut: wanted.length - queue.length,
+    sprints,
+    // The OA day itself is most likely that same OA on the tracker.
+    skipped: daysLeft === null ? 0 : events.filter((e) => e.date > end && e.date < goal.oaDate).length,
   };
 }
 
@@ -503,8 +655,10 @@ export const PLAN_VIEW_KEY = 'cswork:plan:view';
 const LEVELS = ['easy', 'medium', 'hard'] as const;
 export type PlanGroup = {
   key: string;
-  /** The stop (topic grouping); null off the line (key 'oa' or 'other'). */
+  /** The stop (topic grouping); null off the line (key 'oa:<tracker company>' or 'other'). */
   stop: number | null;
+  /** An 'oa:' group's tracker company; null for the target company's (or no) OA problems. */
+  company: string | null;
   level: (typeof LEVELS)[number] | null;
   problems: number;
   minutes: number;
@@ -523,14 +677,14 @@ export function planGroups(days: readonly PlanDay[], by: 'topic' | 'difficulty',
   for (const day of days)
     for (const problem of day.problems) {
       const level = slotOf(problem.difficulty?.toLowerCase()) ?? 'medium';
-      // Off the line: the target company's OA problems, or a classic list's others.
-      const key =
-        by === 'difficulty'
-          ? level
-          : String(problem.stop ?? (problem.id.startsWith('oa-') ? 'oa' : 'other'));
+      // Off the line: OA problems by company (a tracker sprint's, else the target's), or a classic list's others.
+      const oa = by === 'topic' && problem.stop == null && problem.id.startsWith('oa-');
+      const company = oa ? (day.sprintFor?.company ?? null) : null;
+      const key = by === 'difficulty' ? level : oa ? `oa:${company ?? ''}` : String(problem.stop ?? 'other');
       const group = groups.get(key) ?? {
         key,
         stop: by === 'topic' ? (problem.stop ?? null) : null,
+        company,
         level: by === 'difficulty' ? level : null,
         problems: 0,
         minutes: 0,
@@ -555,7 +709,7 @@ const compact = (date: string) => date.replaceAll('-', '');
 /**
  * The plan as an iCalendar file: daily practice series before and in the sprint
  * (floating local time, so they ring at `time` wherever the learner is), the mock
- * OA days and the OA day.
+ * OA days, the OA day, and a series (and mock OA) for each tracker sprint.
  * UIDs are fixed, so importing an updated plan replaces the old events.
  */
 export function planIcs({
@@ -579,10 +733,10 @@ export function planIcs({
   const event = (uid: string, fields: string[], trigger: string, note: string) =>
     events.push(vevent(`cswork-plan-${uid}@cswork.org`, now, fields, { trigger, note }));
   const company = goal.company;
-  // One series before the sprint and one in it: their paces differ.
-  for (const sprint of [false, true]) {
-    const practice = plan.days.filter((day) => day.sprint === sprint && day.problems.length);
-    if (!practice.length) continue;
+  const problems = (n: number) => t(`${n} 题`, `${n} ${n === 1 ? 'problem' : 'problems'}`);
+  // A daily series over the days that have problems, the ones between skipped.
+  const series = (uid: string, practice: PlanDay[], summary: (n: string) => string, path = '/?view=problems') => {
+    if (!practice.length) return;
     const first = practice[0].date,
       last = practice.at(-1)!.date;
     const skip = plan.days.filter(
@@ -592,53 +746,74 @@ export function planIcs({
     // hold fewer, or the line's pace once the company's problems run out.
     const n = practice[0].problems.length + (practice[0].done ?? 0);
     const minutes = Math.round(n * plan.avgMinutes);
-    const summary = sprint
-      ? t(
-          `CSWork 冲刺：${n} 题${company ? ` · ${company.name}` : ''}`,
-          `CSWork sprint: ${n} ${n === 1 ? 'problem' : 'problems'}${company ? ` · ${company.name}` : ''}`,
-        )
-      : t(
-          `CSWork 今日行程：${n} 题`,
-          `CSWork daily trip: ${n} ${n === 1 ? 'problem' : 'problems'}`,
-        );
+    const text = summary(problems(n));
     event(
-      sprint ? 'sprint' : 'practice',
+      uid,
       [
         `DTSTART:${at(first)}`,
         `DURATION:PT${Math.max(15, minutes)}M`,
         `RRULE:FREQ=DAILY;COUNT=${daysBetween(first, last) + 1}`,
         ...(skip.length ? [`EXDATE:${skip.map((day) => at(day.date)).join(',')}`] : []),
-        `SUMMARY:${escapeText(summary)}`,
+        `SUMMARY:${escapeText(text)}`,
         `DESCRIPTION:${escapeText(
           t(
             `按冲刺计划每天 ${n} 题，约 ${minutes} 分钟。`,
             `Your sprint plan: ${n} a day, about ${minutes} minutes.`,
           ),
         )}`,
-        `URL:${origin}/?view=problems`,
+        `URL:${origin}${path}`,
+      ],
+      'PT0S',
+      text,
+    );
+  };
+  const mock = (uid: string, day: PlanDay, summary: string, path: string) =>
+    event(
+      uid,
+      [
+        `DTSTART:${at(day.date)}`,
+        `DURATION:PT${day.minutes}M`,
+        `SUMMARY:${escapeText(summary)}`,
+        `URL:${origin}${path}`,
       ],
       'PT0S',
       summary,
     );
-  }
+  // One series before the sprint and one in it: their paces differ. Tracker sprint days have their own.
+  for (const sprint of [false, true])
+    series(
+      sprint ? 'sprint' : 'practice',
+      plan.days.filter((day) => day.sprint === sprint && day.problems.length && !day.sprintFor),
+      (n) =>
+        sprint
+          ? t(`CSWork 冲刺：${n}${company ? ` · ${company.name}` : ''}`, `CSWork sprint: ${n}${company ? ` · ${company.name}` : ''}`)
+          : t(`CSWork 今日行程：${n}`, `CSWork daily trip: ${n}`),
+    );
   for (const day of plan.days)
-    if (day.mock) {
-      const summary = t(
-        `CSWork 模拟 OA（第 ${day.mock} 次）${company ? ` · ${company.name}` : ''}`,
-        `CSWork mock OA #${day.mock}${company ? ` · ${company.name}` : ''}`,
-      );
-      event(
+    if (day.mock && !day.sprintFor)
+      mock(
         `mock-${day.mock}`,
-        [
-          `DTSTART:${at(day.date)}`,
-          `DURATION:PT${day.minutes}M`,
-          `SUMMARY:${escapeText(summary)}`,
-          `URL:${origin}/mock-oa${company ? `/${company.slug}` : ''}`,
-        ],
-        'PT0S',
-        summary,
+        day,
+        t(
+          `CSWork 模拟 OA（第 ${day.mock} 次）${company ? ` · ${company.name}` : ''}`,
+          `CSWork mock OA #${day.mock}${company ? ` · ${company.name}` : ''}`,
+        ),
+        `/mock-oa${company ? `/${company.slug}` : ''}`,
       );
-    }
+  // Each tracker sprint (and its mock OA) keeps its card's UID, so a moved date replaces it on
+  // re-import. The OA and interview themselves are in the tracker's own .ics.
+  // ponytail: a deleted card's sprint stays in the calendar until removed there by hand.
+  for (const s of plan.sprints.flatMap((group) => group.events)) {
+    const uid = `app-${s.id}-${s.kind}`;
+    series(
+      uid,
+      plan.days.filter((day) => day.sprintFor === s && !day.mock && day.problems.length),
+      (n) => t(`CSWork 冲刺 ${s.company}：${n}`, `CSWork sprint for ${s.company}: ${n}`),
+      s.slug ? reportedHref(s.slug) : undefined,
+    );
+    const day = plan.days.find((d) => d.sprintFor === s && d.mock);
+    if (day) mock(`${uid}-mock`, day, t(`CSWork 模拟 OA · ${s.company}`, `CSWork mock OA · ${s.company}`), `/mock-oa/${s.preset}`);
+  }
   const oa = plan.days.find((day) => day.oa);
   if (oa) {
     const summary = t(

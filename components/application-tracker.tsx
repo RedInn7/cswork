@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import {
+  agenda,
   applicationsCsv,
   applicationsIcs,
   calendarItems,
@@ -650,6 +651,8 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                     const retroDue =
                       interviewed && now - a.interviewAt! < 14 * DAY && a.stage !== 'withdrawn' && !rounds.some((r) => r.at + 60000 > a.interviewAt!);
                     const retroable = rounds.length > 0 || INTERVIEWED.includes(a.stage) || a.stageLog.some(([s]) => INTERVIEWED.includes(s));
+                    // An OA or interview still ahead gets a sprint in the study plan (components/study-plan.tsx).
+                    const sprint = agenda([a], now).some((e) => e.kind === 'oa' || e.kind === 'interview');
                     return (
                       <li key={a.id} className="tracker-card" data-id={a.id} data-due={soon ? 'soon' : undefined}>
                         <p className="tracker-company">
@@ -730,7 +733,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                             </button>
                           </p>
                         )}
-                        {(a.links?.oa || a.links?.mock || a.link || a.prep || interviewed) && (
+                        {(a.links?.oa || a.links?.mock || a.link || a.prep || interviewed || sprint) && (
                           <p className="tracker-links">
                             {a.links?.oa && <a href={a.links.oa}>{t('这家的 OA 真题', 'Its OA problems')}</a>}
                             {a.links?.mock && <a href={a.links.mock}>{t('模拟 OA', 'Mock OA')}</a>}
@@ -742,6 +745,8 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                             {a.prep && <a href={a.prep.problems}>{t('这家的高频题', 'Its most reported problems')}</a>}
                             {a.prep && <a href={a.prep.stories}>{t('故事库', 'Story bank')}</a>}
                             {interviewed && <a href={writeUpHref(a)}>{t('写这场面经', 'Write up this interview')}</a>}
+                            {/* oxlint-disable-next-line next/no-html-link-for-pages -- the SPA's bank view, where the plan lives. */}
+                            {sprint && <a href="/?view=problems">{t('冲刺计划', 'Sprint plan')}</a>}
                             {a.link && (
                               <a href={a.link} rel="noopener noreferrer">
                                 {t('职位', 'Posting')}

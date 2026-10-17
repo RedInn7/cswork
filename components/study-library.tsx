@@ -1026,7 +1026,11 @@ export function StudyLibrary({
                     <span className="route-today-rest">
                       {sprint.plan?.days[0]?.oa
                         ? t('OA 日，不排练习题', 'OA day, no practice planned')
-                        : t('模拟 OA 日，不排练习题', 'Mock OA day, no practice planned')}
+                        : sprint.plan?.days[0]?.event
+                          ? sprint.plan.days[0].event.kind === 'oa'
+                            ? t(`${sprint.plan.days[0].event.company} OA 日，不排练习题`, `${sprint.plan.days[0].event.company} OA day, no practice planned`)
+                            : t(`${sprint.plan.days[0].event.company} 面试日，不排练习题`, `${sprint.plan.days[0].event.company} interview day, no practice planned`)
+                          : t('模拟 OA 日，不排练习题', 'Mock OA day, no practice planned')}
                     </span>
                   )}
                   {/* A sprint plan sets the count; its summary below says how. */}
@@ -1093,6 +1097,7 @@ export function StudyLibrary({
               onSave={sprint.save}
               stops={stops}
               english={english}
+              signedIn={!!userId}
             />
           </div>
           <div className="route-habit">
