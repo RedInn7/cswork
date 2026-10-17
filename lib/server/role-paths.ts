@@ -1,5 +1,6 @@
 import courseFile from '@/lib/content/beginner-courses.json';
 import coreSkills from '@/lib/content/core-skills.json';
+import frontendJs from '@/lib/content/frontend-js.json';
 import mcqBank from '@/lib/content/oa-mcq.json';
 import projectFile from '@/lib/content/resume-projects.json';
 import { ROLES, stepTitle, stopsName, type ResolvedStep, type RoleKey, type RoleStep } from '@/lib/content/role-paths';
@@ -90,6 +91,17 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         title: pick(course.titleZh, course.titleEn),
         href: learnPath(course.slug),
         keys: course.chapters.map((chapter) => `sd:${learnKey(course.slug, chapter.slug)}`),
+      };
+    }
+    case 'fe-js': {
+      const group = frontendJs.groups.find((g) => g.key === step.ref);
+      if (!group) throw missing();
+      return {
+        ...step,
+        title: title(pick(group.zh, group.en)),
+        href: `/frontend#fejs-group-${group.key}`,
+        // components/js-workspace.tsx marks a problem done after a full pass (lib/js-runner.ts markTarget).
+        keys: frontendJs.problems.filter((p) => p.group === group.key).map((p) => `content:fe-js/${p.slug}`),
       };
     }
     case 'mock-kind': {

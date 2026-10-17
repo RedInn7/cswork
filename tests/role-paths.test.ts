@@ -34,7 +34,7 @@ test('every role resolves in both languages, with AI on and off', () => {
   assert.ok(isRole('backend') && !isRole('manager') && !isRole(undefined));
 });
 
-test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ topics, projects, courses, mocks', () => {
+test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ topics, projects, courses, JS groups, mocks', () => {
   const sd = new Set(sdChapters.map((chapter) => chapter.slug));
   const topics = new Set(mcqBank.questions.map((q) => q.topic));
   for (const role of ROLE_KEYS)
@@ -51,12 +51,22 @@ test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ top
       if (step.kind === 'mcq-topic') assert.ok(topics.has(step.ref));
       if (step.kind === 'mock-kind') assert.deepEqual(resolved.keys, []);
       if (step.kind === 'project') assert.deepEqual(resolved.keys, [`content:project/${step.ref}`]);
+      if (step.kind === 'fe-js') {
+        assert.equal(resolved.href, `/frontend#fejs-group-${step.ref}`);
+        assert.ok(resolved.keys.length > 0 && resolved.keys.every((k) => /^content:fe-js\/[a-z-]+$/.test(k)), step.ref);
+      }
     }
   assert.throws(() => resolveStep({ kind: 'line-stops', ref: 'array-foundations,nope' }, true, true), /no line-stops/);
   assert.throws(() => resolveStep({ kind: 'sd-part', ref: 'url-shortener' }, true, true), /no sd-part/, 'a part, not a chapter');
   assert.throws(() => resolveStep({ kind: 'project', ref: 'url-shortener' }, true, true), /no project/);
   assert.throws(() => resolveStep({ kind: 'mcq-topic', ref: 'astrology' }, true, true), /no mcq-topic/);
   assert.throws(() => resolveStep({ kind: 'core-group', ref: 'lld' }, true, true), /no core-group/);
+  assert.throws(() => resolveStep({ kind: 'fe-js', ref: 'debounce' }, true, true), /no fe-js/, 'a group, not a problem');
+  // The frontend path drills the judged JS problems on /frontend; its AI mock reads unavailable in production.
+  const promise = resolveStep({ kind: 'fe-js', ref: 'promise' }, true, true);
+  assert.equal(promise.title, '前端手写题：Promise 与异步');
+  assert.ok(promise.keys.includes('content:fe-js/promise-all'));
+  assert.ok(ROLES.frontend.steps.filter((s) => s.kind === 'fe-js' && !s.optional).length >= 2);
   // The judged OOD problems (Core Skills group `ood`) follow the OOD reading on the generalist and backend paths.
   const ood = resolveStep({ kind: 'core-group', ref: 'ood' }, true, true);
   assert.equal(ood.href, '/core-skills#core-group-ood');

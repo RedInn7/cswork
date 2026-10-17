@@ -11,6 +11,7 @@
  * - mcq-topic: an OA multiple-choice topic (lib/content/oa-mcq.json);
  * - project: a resume project slug (lib/content/resume-projects.json);
  * - course: a beginner crash course slug (lib/content/beginner-courses.json);
+ * - fe-js: a frontend JS problem group key (lib/content/frontend-js.json), judged on /frontend;
  * - mock-kind: a mock interview template id (lib/mock-interview.ts); never counted, and an AI-only
  *   template reads "unavailable" while AI is off.
  */
@@ -23,6 +24,7 @@ export type StepKind =
   | 'mcq-topic'
   | 'project'
   | 'course'
+  | 'fe-js'
   | 'mock-kind';
 /** optional: shown as "optional" and left out of the role's progress. */
 export type RoleStep = { kind: StepKind; ref: string; optional?: true };
@@ -96,6 +98,9 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
     steps: [
       { kind: 'line-stops', ref: 'array-foundations,hash-counting,string-processing,two-pointers-windows,stacks-heaps' },
       { kind: 'mcq-topic', ref: 'js' },
+      { kind: 'fe-js', ref: 'timing' },
+      { kind: 'fe-js', ref: 'promise' },
+      { kind: 'fe-js', ref: 'internals' },
       { kind: 'mcq-topic', ref: 'web' },
       { kind: 'line-stops', ref: 'linked-list,binary-tree,grid-traversal' },
       { kind: 'mcq-topic', ref: 'security' },
@@ -183,7 +188,7 @@ export type ResolvedStep = RoleStep & {
   href: string;
   /**
    * What counts it done: problem:<id> solved (or ticked done), sd:<key> read, mcq:<id> answered,
-   * content:project/<slug> marked done. Empty: never counted (a mock interview).
+   * content:project/<slug> or content:fe-js/<slug> marked done. Empty: never counted (a mock interview).
    */
   keys: string[];
   /** A line-stops step's stops, and its study plan link (PLAN_TOPICS_PARAM). */
@@ -202,6 +207,7 @@ const STEP_LABELS: Record<StepKind, [string, string] | null> = {
   'mcq-topic': ['选择题', 'Multiple choice'],
   project: ['简历项目', 'Resume project'],
   course: null,
+  'fe-js': ['前端手写题', 'Frontend JS'],
   'mock-kind': ['模拟面试', 'Mock interview'],
 };
 export function stepTitle(kind: StepKind, name: string, zh: boolean) {
