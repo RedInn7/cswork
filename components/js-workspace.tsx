@@ -248,7 +248,8 @@ export function JsWorkspace({
                 {result.cases.map((c, i) => (
                   <li key={`${i}:${c.name}`} className={c.pass ? 'is-pass' : 'is-fail'}>
                     <span className="fejs-case-head">
-                      {c.pass ? <Check size={14} aria-label={t('通过', 'Passed')} /> : <X size={14} aria-label={t('未通过', 'Failed')} />}
+                      {c.pass ? <Check size={14} aria-hidden="true" /> : <X size={14} aria-hidden="true" />}
+                      <span className="sr-only">{c.pass ? t('通过：', 'Passed: ') : t('未通过：', 'Failed: ')}</span>
                       <span>{c.name}</span>
                       {!c.public && <small>{t('隐藏', 'hidden')}</small>}
                     </span>
