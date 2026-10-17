@@ -17,16 +17,20 @@ const isArray = (type: string) => /\[\]$|^list</.test(type);
 const isContainer = (type: string) => isArray(type) || isString(type) || isNode(type);
 const hasText = (type: string) => /string|character/i.test(type);
 
-/** 10^9, −2^31, 3×10^9: bounds as a statement writes them. */
+/** 10^9, −2^31, 3×10^9, 2^16−1: bounds as a statement writes them, exactly; 999999 stays 999999. */
 export function bound(x: number): string {
   const sign = x < 0 ? '−' : '';
   const a = Math.abs(x);
-  if (a === 2 ** 31) return `${sign}2^31`;
-  if (a === INT32) return `${sign}2^31−1`;
-  if (a < 10000) return `${sign}${a}`;
+  if (a < 10000 || !Number.isInteger(a)) return `${sign}${a}`;
   const k = Math.floor(Math.log10(a));
-  const m = +(a / 10 ** k).toPrecision(3);
-  return `${sign}${m === 1 ? '' : `${m}×`}10^${k}`;
+  // At most three significant digits: 1.5×10^5, never a rounded 2.68×10^8.
+  if (a % 10 ** (k - 2) === 0) {
+    const m = +(a / 10 ** k).toPrecision(3);
+    return `${sign}${m === 1 ? '' : `${m}×`}10^${k}`;
+  }
+  if (Number.isInteger(Math.log2(a))) return `${sign}2^${Math.log2(a)}`;
+  if (Number.isInteger(Math.log2(a + 1))) return `${sign}2^${Math.log2(a + 1)}−1`;
+  return `${sign}${a}`;
 }
 
 /**
@@ -98,10 +102,10 @@ export function clarifyItems(
       cases: [],
     });
   }
-  // The largest sum of one array: its longest length times its largest magnitude.
+  // The largest sum of one array, tree or list: its most elements (or nodes) times its largest magnitude.
   const overflows = params.flatMap(({ name, type }) => {
     const { len, val } = bounds[name] ?? {};
-    if (!isArray(type) || hasText(type) || !len || !val) return [];
+    if ((!isArray(type) && !isNode(type)) || hasText(type) || !len || !val) return [];
     const top = Math.max(Math.abs(val[0]), Math.abs(val[1]));
     return len[1] * top > INT32 ? [`${name}: ${bound(len[1])} × ${bound(top)} = ${bound(len[1] * top)}`] : [];
   });
@@ -110,8 +114,8 @@ export function clarifyItems(
       key: 'overflow',
       question: ['中间结果会超出 32 位整数吗？', 'Can intermediate results overflow 32 bits?'],
       answer: [
-        `会。长度上限乘以 |值| 上限（${overflows.join('；')}）超过 2^31−1，求和可能超出 32 位：Java 和 C++ 用 long。`,
-        `Yes. Longest length times largest |value| (${overflows.join('; ')}) exceeds 2^31−1, so a sum can overflow 32 bits: use long in Java and C++.`,
+        `会。长度（节点数）上限乘以 |值| 上限（${overflows.join('；')}）超过 2^31−1，求和可能超出 32 位：Java 和 C++ 用 long。`,
+        `Yes. Longest length (or node count) times largest |value| (${overflows.join('; ')}) exceeds 2^31−1, so a sum can overflow 32 bits: use long in Java and C++.`,
       ],
       cases: [],
     });
@@ -155,4 +159,20 @@ export function clarifyItems(
   if (containers.length)
     items.push({ key: 'mutate', question: ['可以直接修改输入吗？', 'May I modify the input in place?'], cases: [] });
   return items;
+}
+
+/**
+ * The custom cases after adding `inputs` in order (problem-workspace.tsx): ones already there are
+ * skipped, a lone blank case is replaced, at most `max` are kept. `index` selects the last input
+ * now among them (−1: none), `left` counts the ones that didn't fit.
+ */
+export function mergeCases(cases: string[], inputs: string[], max: number) {
+  const next = cases.length === 1 && !cases[0] ? [] : [...cases];
+  let left = 0;
+  for (const input of inputs)
+    if (next.includes(input)) continue;
+    else if (next.length < max) next.push(input);
+    else left++;
+  const last = inputs.findLast((input) => next.includes(input));
+  return { cases: next, index: last === undefined ? -1 : next.indexOf(last), left };
 }

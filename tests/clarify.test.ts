@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import safe from '../lib/content/stress-safe.json';
-import { bound, clarifyItems } from '../lib/clarify';
+import { bound, clarifyItems, mergeCases } from '../lib/clarify';
 import type { StressRule } from '../lib/stress-gen';
 import { leetcodeConstraints, leetcodeParams } from '../lib/server/leetcode-mode';
 import { checkConstraints, checkField, splitFields } from '../lib/testcase-fields';
@@ -15,6 +15,11 @@ test('bounds read like the statement', () => {
   assert.equal(bound(-(2 ** 31)), '−2^31');
   assert.equal(bound(3e9), '3×10^9');
   assert.equal(bound(5000), '5000');
+  // Exact or not at all: no rounded 10×10^5 or 2.68×10^8.
+  assert.equal(bound(999999), '999999');
+  assert.equal(bound(268435456), '2^28');
+  assert.equal(bound(65535), '2^16−1');
+  assert.equal(bound(1.5e5), '1.5×10^5');
 });
 
 test('a sum overflows 32 bits only when the longest length times the largest |value| exceeds 2^31−1', () => {
@@ -25,6 +30,9 @@ test('a sum overflows 32 bits only when the longest length times the largest |va
   assert.match(overflow.answer![1], /long/);
   // 10^4 × 10^5 = 10^9 still fits.
   assert.ok(!keys(clarifyItems(nums, { nums: { len: [1, 1e4], val: [0, 1e5] } })).includes('overflow'));
+  // Trees too: lc-437's path sums over 1000 nodes of up to 10^9.
+  const tree = clarifyItems([{ name: 'root', type: 'TreeNode' }], { root: { len: [0, 1000], val: [-1e9, 1e9] } });
+  assert.match(tree.find((item) => item.key === 'overflow')!.answer![1], /root: 1000 × 10\^9 = 10\^12/);
   // Strings carry no sum; a scalar has no length.
   assert.ok(!keys(clarifyItems([{ name: 'k', type: 'integer' }], { k: { val: [1, 2 ** 31 - 1] } })).includes('overflow'));
 });
@@ -95,4 +103,19 @@ test('every case built for a real problem fits its parameters and the statement 
       }
   }
   assert.ok(built > 150, `built ${built}`);
+});
+
+test('adding cases skips repeats, fills a lone blank case, stops at the cap and selects the last one kept', () => {
+  // The blank starter case gives way; a repeat inside the batch is added once.
+  assert.deepEqual(mergeCases([''], ['a', 'b', 'a'], 5), { cases: ['a', 'b'], index: 0, left: 0 });
+  // An existing case is selected, not duplicated.
+  assert.deepEqual(mergeCases(['a', 'b'], ['c', 'a'], 5), { cases: ['a', 'b', 'c'], index: 0, left: 0 });
+  // Full after two more: the rest are counted, the last one kept is selected.
+  assert.deepEqual(mergeCases(['a', 'b', 'c'], ['d', 'e', 'f', 'g'], 5), {
+    cases: ['a', 'b', 'c', 'd', 'e'],
+    index: 4,
+    left: 2,
+  });
+  // Nothing fits: nothing to select.
+  assert.deepEqual(mergeCases(['a', 'b'], ['c'], 2), { cases: ['a', 'b'], index: -1, left: 1 });
 });

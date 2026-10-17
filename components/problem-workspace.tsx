@@ -75,6 +75,7 @@ import { StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import { ClarifyPanel } from './clarify-panel';
+import { mergeCases } from '@/lib/clarify';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -1296,14 +1297,8 @@ function Workspace({
   }
   /** Adds cases in order, skipping ones already there, and selects the last; returns how many didn't fit. */
   function addCases(inputs: string[]) {
-    const next = customCases.length === 1 && !customCases[0] ? [] : [...customCases];
-    let left = 0;
-    for (const input of inputs)
-      if (next.includes(input)) continue;
-      else if (next.length < MAX_CASES) next.push(input);
-      else left++;
-    const last = inputs.findLast((input) => next.includes(input));
-    if (last !== undefined) saveCases(next, next.indexOf(last));
+    const { cases, index, left } = mergeCases(customCases, inputs, MAX_CASES);
+    if (index >= 0) saveCases(cases, index);
     return left;
   }
   function deleteCase() {
