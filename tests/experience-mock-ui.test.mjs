@@ -36,6 +36,7 @@ globalThis.fetch = async (url, init = {}) => {
   if (path === '/api/oj/mock-oa/presets') return Response.json({ updated: '2026-10', companies: [], others: [], all: { oa: 0, lc: 0 } });
   if (path === '/api/oj/mock-oa/history') return Response.json({ items: [], saved: [] });
   if (path === '/api/oj/mock-oa/draw') return Response.json(drawn);
+  if (path.startsWith('/api/oj/mock-oa/report?')) return Response.json({ items: [], score: { value: 0, min: 0, max: 100, per: [], estimate: false }, pending: false });
   return Response.json({});
 };
 const boot = {
@@ -72,19 +73,30 @@ test('?experience= draws that loop once and opens its check-in', async () => {
   const active = readMockState('u1').active;
   assert.deepEqual([active.experience, active.preset, active.ids], [ID, false, ['lc-1', 'lc-42']]);
   assert.deepEqual(navigated.at(-1), ['mock', { session: active.id }]);
-  // The check-in's "Redraw" asks for the same loop again.
+  // A post always draws the same problems: the check-in offers no "Redraw", and a problem that is
+  // unavailable points back to the post.
   await act(async () => {
     root.render(createElement(MockOa, { boot, params: { view: 'mock', session: active.id }, navigate() {} }));
     await settle();
   });
-  const redraw = [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Redraw'));
+  assert.ok(![...document.querySelectorAll('button')].some((b) => b.textContent.includes('Redraw')));
+  const alert = document.querySelector('[role="alert"]');
+  assert.ok(alert.textContent.includes('Practise them one by one from the post'));
+  assert.equal(alert.querySelector('a').getAttribute('href'), `/library/experience-ugc/${ID}`);
+  await act(async () => root.unmount());
+
+  // The report's "New draw" asks for the same loop again.
+  const finished = { ...active, startedAt: Date.now() - 60_000, finishedAt: Date.now() };
+  localStorage.setItem(mockStorageKey('u1'), JSON.stringify({ active: null, history: [finished] }));
+  const again = await visit({ view: 'mock', report: finished.id });
+  const draw = [...document.querySelectorAll('button')].find((b) => b.textContent.includes('New draw'));
   await act(async () => {
-    redraw.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+    draw.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
     await settle();
   });
   assert.equal(draws().length, 2);
   assert.equal(draws()[1].body.experience, ID);
-  await act(async () => root.unmount());
+  await act(async () => again.root.unmount());
 });
 
 test('a running mock asks first; a running skill exam is never replaced', async () => {

@@ -1337,7 +1337,17 @@ function MockBriefing({
       </ul>
       {missing && (
         <p className="mock-note" role="alert">
-          {t('有题目暂时打不开了，请换一套。', 'Some of these problems are unavailable right now. Draw another set.')}
+          {session.experience ? (
+            <>
+              {t(
+                '这场面经里有题目暂时打不开了：可以回到面经逐题练，或取消后按公司抽一套。',
+                'Some problems from this post are unavailable right now. Practise them one by one from the post, or cancel and draw a company mock.',
+              )}
+              <a href={`/library/experience-ugc/${session.experience}`}>{t('回到面经', 'Back to the post')}</a>
+            </>
+          ) : (
+            t('有题目暂时打不开了，请换一套。', 'Some of these problems are unavailable right now. Draw another set.')
+          )}
         </p>
       )}
       <div className="mock-actions">
@@ -1345,10 +1355,13 @@ function MockBriefing({
           <Timer size={18} />
           {t('开始计时', 'Start the clock')}
         </button>
-        <button type="button" className="mock-ghost" onClick={redraw} disabled={busy}>
-          {busy ? <LoaderCircle size={14} className="cs-spin" /> : <RotateCcw size={14} />}
-          {t('换一套', 'Redraw')}
-        </button>
+        {/* A post always draws the same problems: nothing to redraw. */}
+        {!session.experience && (
+          <button type="button" className="mock-ghost" onClick={redraw} disabled={busy}>
+            {busy ? <LoaderCircle size={14} className="cs-spin" /> : <RotateCcw size={14} />}
+            {t('换一套', 'Redraw')}
+          </button>
+        )}
         <button type="button" className="mock-ghost" onClick={cancel}>
           {t('取消', 'Cancel')}
         </button>
