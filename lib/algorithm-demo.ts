@@ -962,10 +962,15 @@ export function topoSortTrace(edges: [string, string][] = TOPO_EDGES, t: Tr = zh
       queue: [...queue],
     });
   frame(
-    t(
-      `箭头 X → Y 表示先修 X 才能修 Y。入度为 0 的 ${queue.join('、')} 没有先修要求，先入队。`,
-      `An arrow X → Y means X must come before Y. ${queue.join(', ')} have in-degree 0, so they join the queue first.`,
-    ),
+    queue.length
+      ? t(
+          `箭头 X → Y 表示先修 X 才能修 Y。入度为 0 的 ${queue.join('、')} 没有先修要求，先入队。`,
+          `An arrow X → Y means X must come before Y. ${queue.join(', ')} have in-degree 0, so they join the queue first.`,
+        )
+      : t(
+          '箭头 X → Y 表示先修 X 才能修 Y。没有入度为 0 的节点：每门课都有先修，图里有环，不存在拓扑序。',
+          'An arrow X → Y means X must come before Y. No node has in-degree 0: every course has a prerequisite, so the graph has a cycle and no topological order exists.',
+        ),
   );
   while (queue.length) {
     const u = queue.shift()!;

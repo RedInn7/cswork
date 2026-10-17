@@ -220,6 +220,11 @@ test('a custom input drives the trace from its first frame to its answer', () =>
   trace = run('topo-sort', 'A>B B>A C>D');
   assert.equal(trace.frames[0].graph!.edges.length, 3);
   assert.equal(trace.frames.at(-1)!.caption, 'Only 4 nodes came out; the rest sit on a cycle, so no topological order exists.');
+  // Every node on the cycle: nothing starts in the queue, and the first caption says so.
+  assert.equal(
+    run('topo-sort', 'A>B B>C C>D D>E E>F F>A').frames[0].caption,
+    'An arrow X → Y means X must come before Y. No node has in-degree 0: every course has a prerequisite, so the graph has a cycle and no topological order exists.',
+  );
 });
 
 test('predict mode asks for what turns current next, and skips steps with nothing new to click', () => {
