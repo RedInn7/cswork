@@ -102,7 +102,8 @@
   align-items: center;
   gap: 8px 16px;
 }
-.rs-toolbar p {
+.rs-toolbar :is(p, output),
+.rs-loading {
   margin: 0;
   color: #4d5965;
   font-size: 14px;
@@ -421,7 +422,8 @@
   .dark .rs :is(input, select, button, a):focus-visible {
     outline: 2px solid #87d2bb;
   }
-  .dark .rs-toolbar p {
+  .dark .rs-toolbar :is(p, output),
+  .dark .rs-loading {
     color: #bdc9d5;
   }
   .dark .rs-toolbar .rs-warn {

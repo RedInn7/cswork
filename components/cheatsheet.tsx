@@ -13,7 +13,7 @@ export async function exportAll(query: Record<string, string>, onCount?: (n: num
   const items: ExportItem[] = [];
   let cursor = '';
   do {
-    const page = await api<ExportPage>(`oj/notes/export?${new URLSearchParams({ ...query, ...(cursor && { cursor }) })}`);
+    const page = await api<ExportPage>(`oj/notes/export?${new URLSearchParams({ ...query, ...(cursor ? { cursor } : {}) })}`);
     items.push(...page.items);
     onCount?.(items.length);
     cursor = page.nextCursor ?? '';
@@ -89,9 +89,7 @@ export function NotesExport({ english, problems }: { english: boolean; problems:
         <input type="checkbox" checked={code} disabled={busy} onChange={(e) => setCode(e.target.checked)} />
         {t('附上每题最近一次 AC 的代码', 'Include each problem’s latest accepted code')}
       </label>
-      <p className={status?.error ? 'notes-export-status is-error' : 'notes-export-status'} role="status">
-        {status?.text}
-      </p>
+      <output className={status?.error ? 'notes-export-status is-error' : 'notes-export-status'}>{status?.text}</output>
     </section>
   );
 }

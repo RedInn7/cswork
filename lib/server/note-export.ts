@@ -75,7 +75,7 @@ function exportNotes(userId: string, params: URLSearchParams) {
     const size = Buffer.byteLength(row.body) + (code ? Buffer.byteLength(code.code) : 0);
     if (items.length && bytes + size > PAGE_BYTES) break;
     bytes += size;
-    items.push({ ...row, ...(problem && { lastAc }), ...(problemId && { problemId }), ...(code && { code }) });
+    items.push({ ...row, ...(problem !== null && { lastAc }), ...(problemId !== null && { problemId }), ...(code && { code }) });
   }
   const meta = problemMeta(items.flatMap((i) => (i.target.startsWith('problem:') ? [i.target.slice(8)] : [])));
   for (const item of items) if (item.target.startsWith('problem:') && meta.has(item.target.slice(8))) item.meta = meta.get(item.target.slice(8));

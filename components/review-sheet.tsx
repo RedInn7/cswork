@@ -147,11 +147,11 @@ function OnePager({ zh, company, stops, list }: { zh: boolean; company: string; 
       {sheet && (
         <>
           <div className="rs-toolbar">
-            <p role="status">
+            <output>
               {t(`${rows.length} 行`, `${rows.length} row${rows.length === 1 ? '' : 's'}`)}
               {sheet.total > sheet.rows.length &&
                 t(`（共 ${sheet.total} 道，只列前 ${sheet.rows.length} 道）`, ` (${sheet.total} in all, the first ${sheet.rows.length} listed)`)}
-            </p>
+            </output>
             {rows.length > ONE_PAGE && (
               <p className="rs-warn">
                 {t(
@@ -284,11 +284,10 @@ function ReviewBook({ zh, by }: { zh: boolean; by: string }) {
     return [...STOPS, '']
       .map((stop) => ({
         key: stop || 'other',
-        title: stop ? stopName(stop, zh) : t('其他题目', 'Other problems'),
+        title: stop ? stopName(stop, zh) : zh ? '其他题目' : 'Other problems',
         items: items.filter((item) => (item.meta?.stop ?? '') === stop).sort((a, b) => order(a) - order(b) || a.target.localeCompare(b.target)),
       }))
       .filter((c) => c.items.length);
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- t follows zh.
   }, [items, list, zh]);
   const ways: [string, string][] = [
     ['stop', t('按 Line 500 站', 'By Line 500 stop')],
@@ -311,7 +310,7 @@ function ReviewBook({ zh, by }: { zh: boolean; by: string }) {
           {error}
         </p>
       ) : !items ? (
-        <p role="status">{t(`正在读取笔记，已读 ${count} 条…`, `Reading your notes, ${count} so far…`)}</p>
+        <output className="rs-loading">{t(`正在读取笔记，已读 ${count} 条…`, `Reading your notes, ${count} so far…`)}</output>
       ) : !chapters.length ? (
         <p className="rs-empty">
           {list

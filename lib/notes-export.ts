@@ -92,7 +92,7 @@ export function frontMatter(fields: Record<string, string | number | readonly st
 export function safePath(path: string) {
   return path
     .split('/')
-    .map((segment) => segment.replace(/[\\:*?"<>|\x00-\x1f]/g, '-'))
+    .map((segment) => segment.replace(/[\\:*?"<>|\p{Cc}]/gu, '-'))
     .filter((segment) => segment && segment !== '.' && segment !== '..')
     .join('/');
 }
