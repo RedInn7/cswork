@@ -62,6 +62,9 @@ jobs:
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts tests/practice-stats.test.ts tests/messages-en.test.ts tests/company-tags.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/route-templates.test.ts tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
+      # Resume projects (content/projects) and the role paths on /roadmap.
+      - run: node scripts/projects/build.mjs --check
+      - run: node --import tsx --test tests/role-paths.test.ts tests/resume-projects.test.ts tests/projects-ui.test.mjs
       - run: node --import tsx --test tests/oj-deep-recursion.test.ts tests/auth-route.test.ts tests/problem-sequence.test.ts tests/health.test.ts tests/metrics-funnel.test.ts tests/bootstrap-catalogue.test.ts
       - run: node --import tsx --test tests/lazy-load-failed-ui.test.mjs tests/owner-metrics-ui.test.mjs
       - run: node --test tests/monitor-watch.test.mjs
@@ -192,6 +195,8 @@ jobs:
       - run: node --import tsx scripts/learn/check-snippets.mjs
       # Runs every "what does this print" MCQ (C++, JavaScript, Python, Java, SQL) and checks its answer.
       - run: node scripts/mcq/verify-output.mjs
+      # Starts every resume project's Python reference and runs its acceptance script against it.
+      - run: node scripts/projects/verify.mjs
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
       # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
       - run: node --import tsx scripts/core-skills/stress.ts

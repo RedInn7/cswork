@@ -142,7 +142,7 @@ test('every system design chapter lands in its course part, the ML chapters in t
         ? node
         : [node.props?.children].flat(Infinity).map(find).find(Boolean)
       : undefined;
-  const tracks = find(await RoadmapPage());
+  const tracks = find(await RoadmapPage({ searchParams: Promise.resolve({}) }));
   const course = JSON.parse(readFileSync(new URL('../lib/content/system-design-course.json', import.meta.url), 'utf8'));
   const { sd } = tracks.props;
   assert.deepEqual(sd.map((chapter) => chapter.slug), course.chapters.map((chapter) => chapter.slug));

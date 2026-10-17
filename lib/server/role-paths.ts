@@ -2,7 +2,7 @@ import courseFile from '@/lib/content/beginner-courses.json';
 import coreSkills from '@/lib/content/core-skills.json';
 import mcqBank from '@/lib/content/oa-mcq.json';
 import projectFile from '@/lib/content/resume-projects.json';
-import { ROLES, type ResolvedStep, type RoleKey, type RoleStep } from '@/lib/content/role-paths';
+import { ROLES, stepTitle, stopsName, type ResolvedStep, type RoleKey, type RoleStep } from '@/lib/content/role-paths';
 import sqlTrack from '@/lib/content/sql-track.json';
 import { PLAN_TOPICS_PARAM } from '@/lib/jd-skills';
 import { curatedEntries } from '@/lib/ling-curated';
@@ -17,6 +17,7 @@ const sqlGroup = (key: string) => sqlTrack.groups.find((group) => group.key === 
 /** One step with its title, link and keys; throws on a ref that does not exist (tests/role-paths.test.ts). */
 export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedStep {
   const pick = (cn: string, en: string) => (zh ? cn : en);
+  const title = (name: string) => stepTitle(step.kind, name, zh);
   const missing = () => new Error(`role path: no ${step.kind} "${step.ref}"`);
   switch (step.kind) {
     case 'line-stops': {
@@ -25,7 +26,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       const ids = curatedEntries.filter((e) => slugs.includes(e.sectionSlug)).map((e) => `lc-${e.number}`);
       return {
         ...step,
-        title: pick(`Line 500：${slugs.length} 站，${ids.length} 题`, `Line 500: ${slugs.length} stops, ${ids.length} problems`),
+        title: title(stopsName(slugs.length, ids.length, zh)),
         href: stopHref(slugs[0])!,
         keys: problemKeys(ids),
         stops: slugs.map((slug) => ({ slug, name: STOP_NAMES[slug][zh ? 0 : 1], href: stopHref(slug)! })),
@@ -37,7 +38,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       if (!part) throw missing();
       return {
         ...step,
-        title: pick(`系统设计：${part.zh}`, `System design: ${part.en}`),
+        title: title(pick(part.zh, part.en)),
         href: sdPath(part.from),
         keys: part.chapters.map((chapter) => `sd:${chapter.slug}`),
       };
@@ -49,7 +50,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       const pandas = step.kind === 'pandas';
       return {
         ...step,
-        title: `${pandas ? 'Pandas' : 'SQL'}${pick('：', ': ')}${pick(group.zh, group.en)}`,
+        title: title(pick(group.zh, group.en)),
         // The track's SQL / Pandas switch remembers the language in this browser.
         href: '/?view=problems&library=sql',
         keys: problemKeys(pandas ? group.ids.map((id) => id.replace(/^sql-/, 'pd-')) : group.ids),
@@ -60,7 +61,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       if (!group) throw missing();
       return {
         ...step,
-        title: `Core Skills${pick('：', ': ')}${pick(group.zh, group.en)}`,
+        title: title(pick(group.zh, group.en)),
         href: `/core-skills#core-group-${group.key}`,
         keys: problemKeys(group.ids),
       };
@@ -75,7 +76,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       if (!project) throw missing();
       return {
         ...step,
-        title: pick(`简历项目：${project.titleZh}`, `Resume project: ${project.titleEn}`),
+        title: title(pick(project.titleZh, project.titleEn)),
         href: `/projects/${project.slug}`,
         keys: [`content:project/${project.slug}`],
       };
@@ -96,7 +97,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       if (!template) throw missing();
       return {
         ...step,
-        title: pick(`模拟面试：${template.name[0]}`, `Mock interview: ${template.name[1]}`),
+        title: title(template.name[zh ? 0 : 1]),
         href: `/?view=mock-interview&template=${template.id}`,
         keys: [],
         ...(aiOnly && !ai ? { unavailable: true as const } : {}),

@@ -190,5 +190,24 @@ export type ResolvedStep = RoleStep & {
   /** An AI-only mock interview while AI is off: shown as unavailable, never counted. */
   unavailable?: true;
 };
+/** Step titles: a kind's label, then the name of what it points at. */
+const STEP_LABELS: Record<StepKind, [string, string] | null> = {
+  'line-stops': ['Line 500', 'Line 500'],
+  'sd-part': ['系统设计', 'System design'],
+  'sql-track': ['SQL', 'SQL'],
+  pandas: ['Pandas', 'Pandas'],
+  'core-group': ['Core Skills', 'Core Skills'],
+  'mcq-topic': ['选择题', 'Multiple choice'],
+  project: ['简历项目', 'Resume project'],
+  course: null,
+  'mock-kind': ['模拟面试', 'Mock interview'],
+};
+export function stepTitle(kind: StepKind, name: string, zh: boolean) {
+  const label = STEP_LABELS[kind];
+  return label ? `${label[zh ? 0 : 1]}${zh ? '：' : ': '}${name}` : name;
+}
+/** A line-stops step's name. */
+export const stopsName = (stops: number, problems: number, zh: boolean) =>
+  zh ? `${stops} 站，${problems} 题` : `${stops} stops, ${problems} problems`;
 /** A counted step is done at this share of its keys, as a Line 500 stop is "done" at 80% solved. */
 export const STEP_DONE = 0.8;

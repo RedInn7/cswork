@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { MCQ_TOPIC_NAMES } from '@/components/oa-mcq';
-import { STEP_DONE, type ResolvedStep, type RoleKey } from '@/lib/content/role-paths';
+import { STEP_DONE, stepTitle, type ResolvedStep, type RoleKey } from '@/lib/content/role-paths';
 import { parseMcqReview } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
 import '@/app/role-path.css';
@@ -63,7 +63,7 @@ export function RolePath({
   const finished = required.filter(([, c]) => stateOf(c) === 'done').length;
   const title = (s: ResolvedStep) =>
     s.kind === 'mcq-topic'
-      ? `${t('选择题：', 'Multiple choice: ')}${MCQ_TOPIC_NAMES[s.ref] ? t(...MCQ_TOPIC_NAMES[s.ref]) : s.ref}`
+      ? stepTitle(s.kind, MCQ_TOPIC_NAMES[s.ref] ? t(...MCQ_TOPIC_NAMES[s.ref]) : s.ref, !english)
       : s.title;
   return (
     <section className="roadmap-track role-path" id="role-path" aria-labelledby="role-path-title">
