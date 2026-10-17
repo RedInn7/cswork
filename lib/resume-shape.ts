@@ -79,3 +79,46 @@ export const lines = (value: string) =>
     .split('\n')
     .map((line) => line.replace(/^\s*[-•*]\s*/, '').trim())
     .filter(Boolean);
+
+/**
+ * A review comment's line (resume review links): a lib/resume-check `where` that holds lines plus
+ * the line's index among lines(), e.g. 'experience.0.bullets.2' or 'skills.3'.
+ */
+const LINE_PATH = /^(?:(education|experience|projects)\.(\d{1,2})\.bullets|(skills|awards))\.(\d{1,3})$/;
+const MARK = /^\s*(?:[-•*]\s*)?/;
+/** The text of the line at `path`, bullet mark dropped; null when there is no such line. */
+export function lineAt(r: Resume, path: string): string | null {
+  const m = LINE_PATH.exec(path);
+  const value = !m ? undefined : m[1] ? r[m[1] as ListKey][+m[2]]?.bullets : r[m[3] as 'skills' | 'awards'];
+  return value === undefined ? null : (lines(value)[+m![4]] ?? null);
+}
+/** `value` with one line equal to `original` (the `at`-th line, else the first such) rewritten, its mark kept. */
+function rewriteIn(value: string, original: string, rewrite: string, at?: number) {
+  const rows = value.split('\n');
+  const texts = rows.map((row) => lines(row)[0]);
+  const i = at === undefined ? texts.indexOf(original) : (texts.flatMap((text, k) => (text === undefined ? [] : [k]))[at] ?? -1);
+  if (i < 0 || texts[i] !== original) return null;
+  rows[i] = MARK.exec(rows[i])![0] + rewrite;
+  return rows.join('\n');
+}
+/**
+ * The resume with a reviewer's rewrite in place of `original`: on the line at `path` if it still
+ * reads so, else on the first identical line in the same section (entries and lines move); null
+ * when the line was edited since or is gone.
+ */
+export function applyRewrite(r: Resume, path: string, original: string, rewrite: string): Resume | null {
+  const m = LINE_PATH.exec(path);
+  if (!m) return null;
+  if (!m[1]) {
+    const key = m[3] as 'skills' | 'awards';
+    const value = rewriteIn(r[key], original, rewrite, +m[4]) ?? rewriteIn(r[key], original, rewrite);
+    return value === null ? null : { ...r, [key]: value };
+  }
+  const key = m[1] as ListKey;
+  const tries: [number, number?][] = [[+m[2], +m[4]], ...r[key].map((_, i): [number] => [i])];
+  for (const [i, at] of tries) {
+    const bullets = r[key][i] && rewriteIn(r[key][i].bullets, original, rewrite, at);
+    if (bullets != null) return { ...r, [key]: r[key].map((item, k) => (k === i ? { ...item, bullets } : item)) };
+  }
+  return null;
+}

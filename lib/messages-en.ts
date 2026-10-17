@@ -84,6 +84,12 @@ const EN: Record<string, string> = {
   这条评审链接的评论已达上限: 'This review link has reached its comment limit',
   '今天生成的评审链接已达上限，请明天再试': "You've made today's maximum of review links. Try again tomorrow",
   你的代码收到了新的评审意见: 'Your code got new review comments',
+  // Private resume review links (lib/server/resume-reviews.ts); the notice title too
+  简历里还没有可以批注的要点: 'Your resume has no lines to comment on yet',
+  这条要点不在简历快照里: 'That line is not in the resume snapshot',
+  批注不存在: 'Comment not found',
+  这条批注没有改写建议: 'This comment has no suggested rewrite',
+  你的简历收到了新的批注: 'Your resume got new review comments',
   更新不存在: 'Update not found',
   '此章节已有未发布草稿，请在课程管理中继续编辑':
     'This lesson already has an unpublished draft. Continue editing it in course management',

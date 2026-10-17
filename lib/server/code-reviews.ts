@@ -32,9 +32,9 @@ export const COMMENT_MAX = 2000;
 const NOTE_MAX = 500;
 // ponytail: a cap per link keeps GET bounded; nobody writes 300 line comments on one solution.
 const COMMENTS_PER_REVIEW = 300;
-const TOKEN = /^[A-Za-z0-9_-]{32}$/;
-const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const GONE = '评审链接不存在或已关闭';
+export const TOKEN = /^[A-Za-z0-9_-]{32}$/;
+export const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+export const GONE = '评审链接不存在或已关闭';
 
 export const hashToken = (token: string) => createHash('sha256').update(token).digest('hex');
 const lineCount = (code: string) => code.split('\n').length;
