@@ -528,7 +528,11 @@ export function bankersTrace(
   const frame = (caption: string, need: number[][], state: (i: number) => DemoCell['state'], work: number[] | null, seq: number[], done = false) =>
     frames.push({
       caption,
-      cells: need.map((n, i) => ({ value: n.join(' '), label: P(i), state: state(i) })),
+      // One row per process: its name, then its Need for each resource type (A, B, C).
+      cells: need.flatMap((n, i) => [
+        { value: P(i), label: 'Need', state: state(i) },
+        ...n.map((v, r) => ({ value: v, label: 'ABC'[r], state: state(i) })),
+      ]),
       stats: [
         ['Available', vec(work === null && !done ? avail : result.available)],
         ['Work', work ? vec(work) : '—'],
@@ -539,8 +543,8 @@ export function bankersTrace(
     });
   frame(
     t(
-      `每格是一个进程的 Need = Max − Allocation，也就是它还要多少资源才能运行完。Available = ${vec(avail)}。`,
-      `Each cell is a process's Need = Max − Allocation: what it still needs to run to completion. Available = ${vec(avail)}.`,
+      `每行是一个进程的 Need = Max − Allocation，也就是它还要多少 A、B、C 资源才能运行完。Available = ${vec(avail)}。`,
+      `Each row is a process's Need = Max − Allocation: how much of resources A, B, C it still needs to finish. Available = ${vec(avail)}.`,
     ),
     first,
     () => undefined,
@@ -566,7 +570,7 @@ export function bankersTrace(
         [],
         true,
       );
-      return bankersShape(frames, req, t);
+      return bankersShape(frames, req, avail.length, t);
     }
     frame(
       t(
@@ -621,10 +625,11 @@ export function bankersTrace(
       order,
       true,
     );
-  return bankersShape(frames, req, t);
+  return bankersShape(frames, req, avail.length, t);
 }
-function bankersShape(frames: DemoFrame[], req: BankerReq | null, t: Tr): DemoTrace {
+function bankersShape(frames: DemoFrame[], req: BankerReq | null, kinds: number, t: Tr): DemoTrace {
   return {
+    columns: kinds + 1,
     title: t('银行家算法 · 安全序列', "Banker's algorithm · safe sequence"),
     question: req
       ? t(`P${req.p} 请求 ${vec(req.vec)}，能批准吗？`, `P${req.p} asks for ${vec(req.vec)}. Can it be granted?`)
@@ -820,7 +825,7 @@ export function tcpTrace(kind: TcpScenario = 'normal', x = 100, y = 300, t: Tr =
         {
           id: `C${i}`,
           label: i ? '' : 'C',
-          x: 16,
+          x: 14,
           y: rowY(i),
           note: i === 0 ? at[0].c : st.client.at(-1),
           state: now && st.client.length ? 'active' : undefined,
@@ -828,7 +833,7 @@ export function tcpTrace(kind: TcpScenario = 'normal', x = 100, y = 300, t: Tr =
         {
           id: `S${i}`,
           label: i ? '' : 'S',
-          x: 84,
+          x: 86,
           y: rowY(i),
           note: i === 0 ? at[0].s : st.server.at(-1),
           state: now && st.server.length ? 'active' : undefined,
@@ -915,7 +920,7 @@ export function congestionTrace(
   t: Tr = zhText,
 ): DemoTrace {
   const table = cwnd(rounds, ssthresh, events, variant);
-  const width = Math.max(100, 16 + (rounds - 1) * 5.4),
+  const width = Math.max(100, 16 + (rounds - 1) * 7),
     top = Math.max(...table.map((r) => Math.max(r.cwnd, r.ssthresh)));
   const px = (round: number) => 8 + ((round - 1) * (width - 16)) / (rounds - 1),
     py = (v: number) => 52 - (v / top) * 42;
@@ -952,17 +957,20 @@ export function congestionTrace(
                   `Round ${r}: cwnd = ${w} ≥ ssthresh = ${th}, congestion avoidance adds 1 per round${k + 1 < rounds ? `: next round ${next}` : ''}.`,
                 );
     const shown = table.slice(0, k + 1);
+    // The ssthresh step line only needs a point where it starts, bends or (now) ends.
+    const bends = shown.filter((p, i) => !i || i === k || p.ssthresh !== shown[i - 1].ssthresh || p.ssthresh !== shown[i + 1].ssthresh);
     const graph: DemoGraph = {
       width,
       height: 60,
       nodes: [
-        ...shown.map((p) => ({
+        ...bends.map((p) => ({
           id: `T${p.round}`,
           label: '',
           x: px(p.round),
           y: py(p.ssthresh),
           state: 'muted' as const,
-          ...(p.round === r ? { note: `ssthresh ${p.ssthresh}`, noteDy: -12.6 } : {}),
+          // Named once, above its start, where cwnd is still low.
+          ...(p.round === 1 ? { note: 'ssthresh', noteDy: -12.6 } : {}),
         })),
         ...shown.map((p) => ({
           id: `R${p.round}`,
@@ -973,17 +981,17 @@ export function congestionTrace(
           ...(p.round === r || p.event ? { note: String(p.cwnd) } : {}),
         })),
       ],
-      edges: shown.slice(1).flatMap((p) => [
-        { from: `T${p.round - 1}`, to: `T${p.round}`, state: 'muted' as const },
-        { from: `R${p.round - 1}`, to: `R${p.round}`, state: 'visited' as const },
-      ]),
+      edges: [
+        ...bends.slice(1).map((p, i) => ({ from: `T${bends[i].round}`, to: `T${p.round}`, state: 'muted' as const })),
+        ...shown.slice(1).map((p) => ({ from: `R${p.round - 1}`, to: `R${p.round}`, state: 'visited' as const })),
+      ],
     };
     return {
       caption,
       graph,
       cells: shown.map((p) => ({
         value: p.cwnd,
-        label: t(`第 ${p.round} 轮`, `round ${p.round}`),
+        label: `#${p.round}`,
         state: p.round === r ? 'active' : p.event ? 'blocked' : p.cwnd < p.ssthresh ? 'visited' : undefined,
       })),
       stats: [
