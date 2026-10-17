@@ -1,6 +1,6 @@
 import bank from '@/lib/content/interview-extra-questions.json';
 import mlCoding from '@/lib/content/ml-coding.json';
-import type { KindId, Text } from '@/lib/mock-interview';
+import { ML_CODING_ASK, type KindId, type Text } from '@/lib/mock-interview';
 import type { PoolRow } from './mock-interview';
 import { sdChapter } from './system-design-course';
 
@@ -43,8 +43,8 @@ const mlCodingQuestion = (id: string) => {
     category: 'ML Coding',
     title: p.titleEn,
     titleZh: p.titleZh,
-    question: `${p.summaryEn}. Implement it with numpy alone, without sklearn.`,
-    questionZh: `${p.summaryZh}。用 numpy 实现，不调 sklearn。`,
+    question: `${p.summaryEn}. ${ML_CODING_ASK[1]}`,
+    questionZh: `${p.summaryZh}。${ML_CODING_ASK[0]}`,
     hints: '',
     followUps: '',
     rubric: '',

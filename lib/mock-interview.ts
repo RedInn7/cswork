@@ -114,6 +114,8 @@ export const RAPID_CATEGORY = 'Rapid-fire Fundamentals';
 /** A rapid-fire question's prompt and answer labels: question content, so they live outside lib/server's messages. */
 export const RAPID_PICK: Text = ['选出答案，用一两句话说明理由。', 'Pick your answer and say why in a sentence or two.'];
 export const RAPID_ANSWER: Text = ['答案：', 'Answer: '];
+/** An ML coding question's ask after its summary (lib/server/interview-extra.ts): question content too. */
+export const ML_CODING_ASK: Text = ['用 numpy 实现，不调 sklearn。', 'Implement it with numpy alone, without sklearn.'];
 export type Template = {
   id: string;
   name: Text;
