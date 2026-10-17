@@ -94,6 +94,8 @@ const stateLabel = {
   todo: ['未作答', 'not started'],
   tried: ['已提交', 'attempted'],
   ac: ['已通过', 'accepted'],
+  // Single-submit rules: the one submission is in; its verdict waits for the hand-in.
+  submitted: ['已提交', 'submitted'],
 } as const;
 
 /**
@@ -134,7 +136,8 @@ export function MockExamBar({
   }, [finished, userId, session.id, navigate]);
   const [confirm, setConfirm] = useState(false);
   const states = questionStates(session, submissions);
-  const solved = states.filter((s) => s === 'ac').length;
+  const sealed = session.scoring === 'codility';
+  const solved = states.filter((s) => s === (sealed ? 'tried' : 'ac')).length;
   const left = clock.remaining / (session.minutes * 60000);
   return (
     <div
@@ -151,7 +154,7 @@ export function MockExamBar({
       <nav className="mock-exam-stops" aria-label={t('考试题目', 'Exam questions')}>
         <ol>
           {session.ids.map((id, index) => {
-            const label = stateLabel[states[index]];
+            const label = stateLabel[sealed && states[index] === 'tried' ? 'submitted' : states[index]];
             return (
               <li key={id} data-state={states[index]}>
                 <button
@@ -194,10 +197,15 @@ export function MockExamBar({
           <AlertDialogHeader>
             <AlertDialogTitle>{t('确定交卷？', 'Finish the exam?')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t(
-                `已通过 ${solved} / ${session.ids.length} 题，还剩 ${formatClock(clock.remaining)}。交卷后计时停止，题解随即解锁。`,
-                `${solved} of ${session.ids.length} solved with ${formatClock(clock.remaining)} left. Finishing stops the clock and unlocks the solutions.`,
-              )}
+              {sealed
+                ? t(
+                    `已提交 ${solved} / ${session.ids.length} 题，还剩 ${formatClock(clock.remaining)}。交卷后计时停止，随即出成绩、解锁题解。`,
+                    `${solved} of ${session.ids.length} submitted with ${formatClock(clock.remaining)} left. Finishing stops the clock, then shows your results and unlocks the solutions.`,
+                  )
+                : t(
+                    `已通过 ${solved} / ${session.ids.length} 题，还剩 ${formatClock(clock.remaining)}。交卷后计时停止，题解随即解锁。`,
+                    `${solved} of ${session.ids.length} solved with ${formatClock(clock.remaining)} left. Finishing stops the clock and unlocks the solutions.`,
+                  )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -211,6 +219,38 @@ export function MockExamBar({
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+/** Single-submit rules: a question's one formal submission, confirmed first (Ctrl / ⌘ + Shift + Enter too). */
+export function FinalSubmitDialog({
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  const t = useT();
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t('提交这道题的最终答案？', 'Submit your final answer?')}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t(
+              '提交后不能重交，交卷后出成绩。运行样例和自定义用例仍不限次数。',
+              "You can't submit this question again, and results come after you hand in. Runs on examples and custom cases stay unlimited.",
+            )}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t('再检查一下', 'Keep checking')}</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>{t('最终提交', 'Submit final answer')}</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 

@@ -387,6 +387,7 @@ test('single-submit rules: only the first submission scores, verdicts stay seale
     { problem_id: 'lc-1', status: 'wrong_answer', created_at: start + 20_000 },
   ];
   assert.deepEqual(questionStates(exam, rows), ['tried', 'tried'], 'an AC reads as submitted');
+  assert.deepEqual(questionStates(exam, [{ problem_id: 'lc-1', status: 'system_error', created_at: start + 1 }]), ['todo', 'todo']);
   assert.deepEqual(questionStates({ ...exam, scoring: 'tests' }, rows), ['ac', 'tried']);
   assert.equal(finalSubmitted(exam, 'oa-amazon-1', rows), true);
   for (const status of ['cancelled', 'system_error'])

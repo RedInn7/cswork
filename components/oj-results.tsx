@@ -26,6 +26,7 @@ import { type EditorSettings } from '@/lib/editor-settings';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { isTrackLanguage, type Language } from '@/lib/problems';
+import { customVerdict } from '@/lib/custom-cases';
 import { diffLines, fieldValue, splitFields } from '@/lib/testcase-fields';
 import { StructureView, drawable, printedValues } from './structure-view';
 
@@ -35,16 +36,32 @@ export type ReferenceOutput =
   | { status: 'failed'; message?: string }
   | { status: 'done'; output: string };
 
+/**
+ * A single-submit mock OA (lib/mock-oa.ts finalSubmitted) seals a formal submission's verdict
+ * until the hand-in; a cancelled one or a judge failure still shows, so it can be submitted again.
+ */
+export const sealedVerdict = (seal: boolean | undefined, s: Pick<OJSubmission, 'status' | 'mode'>) =>
+  !!seal && s.mode !== 'run' && s.status !== 'cancelled' && s.status !== 'system_error';
+
 export function Verdict({
   submission,
+  sealed,
 }: {
   submission: Pick<OJSubmission, 'status' | 'mode'>;
+  /** Says only "Submitted" (sealedVerdict). */
+  sealed?: boolean;
 }) {
   const t = useT();
   const active = activeStatuses.has(submission.status);
-  const success = ['accepted', 'completed', 'executed', 'finished'].includes(
-    submission.status,
-  );
+  const success =
+    !sealed && ['accepted', 'completed', 'executed', 'finished'].includes(submission.status);
+  if (sealed)
+    return (
+      <span className="cs-verdict pending">
+        {active && <LoaderCircle size={14} className="cs-spin" />}
+        {t('已提交', 'Submitted')}
+      </span>
+    );
   return (
     <span
       className={`cs-verdict ${active ? 'pending' : success ? 'success' : 'failed'}`}
@@ -153,6 +170,8 @@ export function SubmissionResult({
   params,
   returnType,
   sealHidden,
+  sealVerdict,
+  ownExpected,
 }: {
   submission: OJSubmission;
   cancel?: () => void;
@@ -173,6 +192,10 @@ export function SubmissionResult({
   returnType?: string | null;
   /** A running mock OA: a hidden case shows its verdict only, never its first-failure input or output. */
   sealHidden?: boolean;
+  /** A single-submit mock OA: a formal submission shows no verdict until the hand-in (sealedVerdict). */
+  sealVerdict?: boolean;
+  /** The expected output the learner typed for this custom case; it wins over the reference. */
+  ownExpected?: string;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -204,6 +227,31 @@ export function SubmissionResult({
       setSelected(firstFailure);
     }
   }, [submission.id, firstFailure]);
+  if (sealedVerdict(sealVerdict, submission))
+    return (
+      <div className="cs-result-content">
+        <div className="cs-result-summary" role="status" aria-live="polite">
+          <div>
+            <Verdict submission={submission} sealed />
+            <span className="cs-result-subtitle">{t('正式提交', 'Submission')}</span>
+          </div>
+          {inspect && (
+            <div className="cs-result-tools">
+              <Button size="sm" variant="ghost" onClick={inspect}>
+                <FileCode2 size={14} />
+                {t('本次代码', 'View code')}
+              </Button>
+            </div>
+          )}
+        </div>
+        <p className="cs-result-message">
+          {t(
+            '已提交，交卷后出成绩。这道题不能再提交，运行样例和自定义用例仍不限次数。',
+            'Submitted. Results come after you hand in. This question takes no more submissions; runs on examples and custom cases are still unlimited.',
+          )}
+        </p>
+      </div>
+    );
   const current = cases[selected] || cases[0];
   const running = activeStatuses.has(submission.status);
   const diagnostic =
@@ -220,8 +268,13 @@ export function SubmissionResult({
     ['python', 'cpp', 'java', 'go'].includes(submission.language) &&
     (checker === 'exact' || checker === 'tokens');
   const expectedText =
-    output?.expected ?? (reference?.status === 'done' ? reference.output : undefined);
+    output?.expected ?? ownExpected ?? (reference?.status === 'done' ? reference.output : undefined);
+  const own =
+    output && output.expected === undefined && ownExpected !== undefined
+      ? customVerdict(output, ownExpected, checker, submission.codingMode === 'leetcode')
+      : null;
   const diff =
+    !own?.pass &&
     comparable &&
     expectedText !== undefined &&
     output?.stdout !== undefined &&
@@ -552,6 +605,24 @@ export function SubmissionResult({
                       truncated={diagnostic?.truncated?.expected}
                       diff={diff}
                     />
+                  ) : own ? (
+                    <>
+                      <CopyBlock
+                        label={t('期望输出（你填写的）', 'Expected output (yours)')}
+                        value={ownExpected!}
+                        diff={diff}
+                      />
+                      <p className="cs-console-note" role="status">
+                        {own.pass
+                          ? t('✓ 和你填写的期望输出一致。', '✓ Matches your expected output.')
+                          : t('✗ 和你填写的期望输出不一致。', '✗ Does not match your expected output.')}
+                        {own.approx &&
+                          t(
+                            '本题允许多种写法或误差，✗ 仅供参考。',
+                            ' This problem accepts other forms or small errors, so ✗ is only a hint.',
+                          )}
+                      </p>
+                    </>
                   ) : reference?.status === 'done' ? (
                     <>
                       <CopyBlock
@@ -640,6 +711,7 @@ export function SubmissionCodeDialog({
   restore,
   note,
   sealHidden,
+  sealVerdict,
 }: {
   submission: OJSubmission | null;
   close: () => void;
@@ -651,6 +723,8 @@ export function SubmissionCodeDialog({
   note?: ReactNode;
   /** See SubmissionResult. */
   sealHidden?: boolean;
+  /** See SubmissionResult. */
+  sealVerdict?: boolean;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -673,7 +747,10 @@ export function SubmissionCodeDialog({
                 {new Date(submission.created_at).toLocaleString(
                   locale === 'zh' ? 'zh-CN' : 'en-US',
                 )}{' '}
-                · {t(...verdict(submission.status, submission.mode))}
+                ·{' '}
+                {sealedVerdict(sealVerdict, submission)
+                  ? t('已提交', 'Submitted')
+                  : t(...verdict(submission.status, submission.mode))}
               </>
             )}
           </DialogDescription>
@@ -716,7 +793,7 @@ export function SubmissionCodeDialog({
             {note}
             {view === 'result' ? (
               <div className="cs-history-result">
-                <SubmissionResult submission={submission} sealHidden={sealHidden} />
+                <SubmissionResult submission={submission} sealHidden={sealHidden} sealVerdict={sealVerdict} />
               </div>
             ) : submission.code === undefined ? (
               <p>

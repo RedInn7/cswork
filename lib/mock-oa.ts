@@ -419,7 +419,8 @@ export function settleMockState(state: MockState, now: number): MockState {
 
 /**
  * Submissions in the exam window (in the exam's language, if any): per question todo / tried / ac.
- * Under single-submit rules (codility) an AC reads as tried: verdicts wait for the hand-in.
+ * Under single-submit rules (codility) an AC reads as tried, verdicts waiting for the hand-in, and
+ * a judge failure is not the question's one submission (finalSubmitted).
  */
 export function questionStates(
   s: MockSession,
@@ -427,6 +428,7 @@ export function questionStates(
 ) {
   const { from, to } = reportWindow(s);
   const language = s.cert?.language;
+  const sealed = s.scoring === 'codility';
   return s.ids.map((id) => {
     const mine = submissions.filter(
       (x) =>
@@ -434,9 +436,10 @@ export function questionStates(
         x.created_at >= from &&
         x.created_at <= to &&
         x.status !== 'cancelled' &&
+        !(sealed && x.status === 'system_error') &&
         (!language || x.language === language),
     );
-    return s.scoring !== 'codility' && mine.some((x) => x.status === 'accepted')
+    return !sealed && mine.some((x) => x.status === 'accepted')
       ? ('ac' as const)
       : mine.length
         ? ('tried' as const)
