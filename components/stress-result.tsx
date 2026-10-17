@@ -195,7 +195,7 @@ const GRADES: [string, string][] = [
   ['约 O(n) 或 O(n log n)', 'about O(n) or O(n log n)'],
   ['介于 O(n log n) 和 O(n²) 之间', 'between O(n log n) and O(n²)'],
   ['约 O(n²)', 'about O(n²)'],
-  ['O(n³) 或更高', 'O(n³) or worse'],
+  ['达 O(n³) 或更高', 'like O(n³) or worse'],
 ];
 
 /**
