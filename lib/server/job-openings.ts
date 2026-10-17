@@ -67,7 +67,7 @@ const obj = (v: unknown): Json => (v && typeof v === 'object' ? (v as Json) : {}
 const list = (v: unknown) => (Array.isArray(v) ? v.map(obj) : []);
 const str = (v: unknown) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim() : typeof v === 'number' ? String(v) : '');
 const raw = (v: unknown) => (typeof v === 'string' ? v : '');
-const ENTITY: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+const ENTITY: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“', ndash: '–', mdash: '—' };
 const decode = (s: string) =>
   s.replace(/&(?:#(\d{1,7})|#x([\da-f]{1,6})|([a-z]+));/gi, (m, dec?: string, hex?: string, name?: string) => {
     const code = dec ? Number(dec) : hex ? parseInt(hex, 16) : -1;

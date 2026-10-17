@@ -473,17 +473,18 @@ void test('a judged opening keeps its flags; a pay sample is kept once; Greenhou
   const from = asked.length;
   replies = {
     'greenhouse.io/v1/boards/judgeco/jobs': gh,
-    'greenhouse.io/v1/boards/judgeco/jobs/7': { id: 7, content: '&lt;ul&gt;&lt;li&gt;Must be a U.S. citizen&lt;/li&gt;&lt;li&gt;Python&lt;/li&gt;&lt;/ul&gt;' },
+    // Entities inside the escaped HTML are escaped twice.
+    'greenhouse.io/v1/boards/judgeco/jobs/7': { id: 7, content: '&lt;ul&gt;&lt;li&gt;Must be a U.S. citizen&lt;/li&gt;&lt;li&gt;We can&amp;rsquo;t sponsor visas&lt;/li&gt;&lt;/ul&gt;' },
     'lever.co/v0/postings/paidco?mode=json': lv('Requires an active Secret clearance.', 40),
   };
   assert.equal(await syncJobOpenings(s0, two), 2);
-  assert.deepEqual(flags(), { 'greenhouse:judgeco:7': 2, 'lever:paidco:p1': 4 });
+  assert.deepEqual(flags(), { 'greenhouse:judgeco:7': 3, 'lever:paidco:p1': 4 });
   // Next round: the judged Greenhouse opening is not asked again, and Lever's description is gone
   // (unknown): neither unknown overwrites a judged value. The pay moved on.
   replies = { 'greenhouse.io/v1/boards/judgeco/jobs': gh, 'lever.co/v0/postings/paidco?mode=json': lv('', 60) };
   assert.equal(await syncJobOpenings(s1, two), 2);
   assert.equal(asked.slice(from).filter((url) => url.endsWith('/judgeco/jobs/7')).length, 1);
-  assert.deepEqual(flags(), { 'greenhouse:judgeco:7': 2, 'lever:paidco:p1': 4 });
+  assert.deepEqual(flags(), { 'greenhouse:judgeco:7': 3, 'lever:paidco:p1': 4 });
   assert.deepEqual(freshOpenings(s1, 'paidco')[0].pay, { min: 60, max: 70, currency: 'USD', unit: 'hour' });
   // The pay sample is the first range seen, with its role and cycle; an opening without pay has none.
   assert.deepEqual(sqlite().prepare("SELECT * FROM job_pay_samples WHERE company_slug IN ('judgeco','paidco')").all(), [
