@@ -1,28 +1,62 @@
 {
   "slug": "kv-wal",
-  "titleZh": "带 WAL 和压缩的 KV 存储",
-  "titleEn": "Key-value store with a WAL and compaction",
   "summaryZh": "先写日志并 fsync 再确认、校验和识别半条记录、原子替换的压缩，kill -9 后不丢已确认的写入。",
   "summaryEn": "Log and fsync before acknowledging, checksums against torn records and atomic-rename compaction: no acknowledged write lost to kill -9.",
   "level": "advanced",
-  "roles": ["backend", "infra"],
+  "roles": [
+    "backend",
+    "infra"
+  ],
   "hours": 20,
   "run": "cmd",
   "milestones": [
-    { "zh": "命令行协议和内存里的读写", "en": "The command protocol with reads and writes in memory" },
-    { "zh": "WAL：记录格式带长度和校验和，写入后 fsync，重启重放，截掉半条记录", "en": "The WAL: records with a length and a checksum, fsync after each write, replay on restart, truncate a torn tail" },
-    { "zh": "压缩：临时文件、fsync、原子 rename，跑通全部验收（含 kill -9）", "en": "Compaction with a temporary file, fsync and an atomic rename, passing every check including kill -9" },
-    { "zh": "组提交或 SSTable 二选一，压测并写 README", "en": "Group commit or SSTables, a benchmark and the README" }
+    {
+      "zh": "命令行协议和内存里的读写",
+      "en": "The command protocol with reads and writes in memory"
+    },
+    {
+      "zh": "WAL：记录格式带长度和校验和，写入后 fsync，重启重放，截掉半条记录",
+      "en": "The WAL: records with a length and a checksum, fsync after each write, replay on restart, truncate a torn tail"
+    },
+    {
+      "zh": "压缩：临时文件、fsync、原子 rename，跑通全部验收（含 kill -9）",
+      "en": "Compaction with a temporary file, fsync and an atomic rename, passing every check including kill -9"
+    },
+    {
+      "zh": "组提交或 SSTable 二选一，压测并写 README",
+      "en": "Group commit or SSTables, a benchmark and the README"
+    }
   ],
   "bulletZh": "用 {语言} 从零实现持久化 KV 存储：带校验和的预写日志、崩溃恢复和原子压缩，kill -9 测试下零丢失已确认写入；组提交使写吞吐提升 {X} 倍。",
   "bulletEn": "Built a durable key-value store from scratch in {language} with a checksummed write-ahead log, crash recovery and atomic compaction: zero acknowledged writes lost under kill -9, and {X}x write throughput with group commit.",
   "deepDive": [
-    { "zh": "write 返回了数据就安全了吗？fsync 和 fdatasync 有什么区别？目录为什么也要 fsync？", "en": "Is data safe once write returns? How do fsync and fdatasync differ, and why fsync the directory too?" },
-    { "zh": "日志最后一条只写了一半，你怎么发现？校验和放在哪里？", "en": "How do you notice a half-written last record, and where does the checksum go?" },
-    { "zh": "每次写都 fsync 太慢了，组提交是怎么做的？对延迟有什么影响？", "en": "fsync on every write is slow. How does group commit work, and what does it do to latency?" },
-    { "zh": "压缩的时候还有新写入进来怎么办？", "en": "What happens to writes that arrive during compaction?" },
-    { "zh": "你的设计和 LSM 树（LevelDB、RocksDB）有什么相同和不同？和 B+ 树比呢？", "en": "How does your design compare with an LSM tree such as LevelDB or RocksDB, and with a B+ tree?" },
-    { "zh": "数据量大于内存时，读一个 key 要几次磁盘访问？布隆过滤器有什么用？", "en": "When the data outgrows memory, how many disk reads does a lookup take, and what does a Bloom filter buy you?" },
-    { "zh": "要做成主从复制，WAL 可以怎么复用？", "en": "How could the WAL be reused to add leader-follower replication?" }
+    {
+      "zh": "write 返回了数据就安全了吗？fsync 和 fdatasync 有什么区别？目录为什么也要 fsync？",
+      "en": "Is data safe once write returns? How do fsync and fdatasync differ, and why fsync the directory too?"
+    },
+    {
+      "zh": "日志最后一条只写了一半，你怎么发现？校验和放在哪里？",
+      "en": "How do you notice a half-written last record, and where does the checksum go?"
+    },
+    {
+      "zh": "每次写都 fsync 太慢了，组提交是怎么做的？对延迟有什么影响？",
+      "en": "fsync on every write is slow. How does group commit work, and what does it do to latency?"
+    },
+    {
+      "zh": "压缩的时候还有新写入进来怎么办？",
+      "en": "What happens to writes that arrive during compaction?"
+    },
+    {
+      "zh": "你的设计和 LSM 树（LevelDB、RocksDB）有什么相同和不同？和 B+ 树比呢？",
+      "en": "How does your design compare with an LSM tree such as LevelDB or RocksDB, and with a B+ tree?"
+    },
+    {
+      "zh": "数据量大于内存时，读一个 key 要几次磁盘访问？布隆过滤器有什么用？",
+      "en": "When the data outgrows memory, how many disk reads does a lookup take, and what does a Bloom filter buy you?"
+    },
+    {
+      "zh": "要做成主从复制，WAL 可以怎么复用？",
+      "en": "How could the WAL be reused to add leader-follower replication?"
+    }
   ]
 }

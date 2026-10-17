@@ -1,27 +1,59 @@
 {
   "slug": "rate-limiter",
-  "titleZh": "令牌桶限流服务",
-  "titleEn": "Token-bucket rate limiter service",
   "summaryZh": "按 key 配置令牌桶，突发、匀速恢复、429 和 Retry-After，并发下不多放行。",
   "summaryEn": "Per-key token buckets: bursts, steady refill, 429 with Retry-After, and no over-admission under concurrency.",
   "level": "beginner",
-  "roles": ["generalist", "backend", "infra"],
+  "roles": [
+    "generalist",
+    "backend",
+    "infra"
+  ],
   "hours": 8,
   "run": "http",
   "milestones": [
-    { "zh": "内存里的令牌桶：按时间连续补充，封顶 capacity，写单元测试", "en": "An in-memory token bucket: continuous refill capped at the capacity, with unit tests" },
-    { "zh": "HTTP 接口：PUT/GET/DELETE 配置，take 返回 200 或 429 和 Retry-After", "en": "The HTTP API: PUT/GET/DELETE a config; take answers 200, or 429 with Retry-After" },
-    { "zh": "并发安全：加锁或原子操作，跑通 60 并发的检查", "en": "Concurrency: a lock or atomic update that passes the 60-request check" },
-    { "zh": "压测并写 README：算法选择、锁粒度、测得的 QPS 和 p99", "en": "Load test and README: the algorithm, lock granularity, measured QPS and p99" }
+    {
+      "zh": "内存里的令牌桶：按时间连续补充，封顶 capacity，写单元测试",
+      "en": "An in-memory token bucket: continuous refill capped at the capacity, with unit tests"
+    },
+    {
+      "zh": "HTTP 接口：PUT/GET/DELETE 配置，take 返回 200 或 429 和 Retry-After",
+      "en": "The HTTP API: PUT/GET/DELETE a config; take answers 200, or 429 with Retry-After"
+    },
+    {
+      "zh": "并发安全：加锁或原子操作，跑通 60 并发的检查",
+      "en": "Concurrency: a lock or atomic update that passes the 60-request check"
+    },
+    {
+      "zh": "压测并写 README：算法选择、锁粒度、测得的 QPS 和 p99",
+      "en": "Load test and README: the algorithm, lock granularity, measured QPS and p99"
+    }
   ],
   "bulletZh": "用 {语言} 实现令牌桶限流服务，支持按 key 配置突发容量和恢复速率，{N} 个并发请求下零超额放行；单机压测 {QPS} QPS、p99 {毫秒} ms。",
   "bulletEn": "Built a token-bucket rate limiting service in {language} with per-key burst and refill settings and zero over-admission under {N} concurrent requests; load-tested at {QPS} QPS with {ms} ms p99 on one node.",
   "deepDive": [
-    { "zh": "令牌桶和漏桶、固定窗口、滑动窗口有什么区别？各自适合什么场景？", "en": "How does a token bucket differ from a leaky bucket, a fixed window and a sliding window? When would you pick each?" },
-    { "zh": "为什么令牌数要用单调时钟计算？墙上时间回拨会发生什么？", "en": "Why compute tokens from a monotonic clock? What happens if the wall clock jumps back?" },
-    { "zh": "你的锁是全局一把还是每个 key 一把？换成另一种，吞吐和正确性会怎么变？", "en": "Is your lock global or per key? What would switching change in throughput and correctness?" },
-    { "zh": "部署多个实例时怎么保证总量不超？用 Redis 的话，为什么要用 Lua 脚本？", "en": "With several instances, how do you keep the total within the limit? Why a Lua script if you use Redis?" },
-    { "zh": "限流服务自己挂了，调用方应该放行还是拒绝？怎么决定？", "en": "If the limiter itself is down, should callers fail open or fail closed? How do you decide?" },
-    { "zh": "上百万个 key 时内存怎么估算？怎么清理不活跃的 key？", "en": "How much memory do a million keys take, and how do you evict inactive ones?" }
+    {
+      "zh": "令牌桶和漏桶、固定窗口、滑动窗口有什么区别？各自适合什么场景？",
+      "en": "How does a token bucket differ from a leaky bucket, a fixed window and a sliding window? When would you pick each?"
+    },
+    {
+      "zh": "为什么令牌数要用单调时钟计算？墙上时间回拨会发生什么？",
+      "en": "Why compute tokens from a monotonic clock? What happens if the wall clock jumps back?"
+    },
+    {
+      "zh": "你的锁是全局一把还是每个 key 一把？换成另一种，吞吐和正确性会怎么变？",
+      "en": "Is your lock global or per key? What would switching change in throughput and correctness?"
+    },
+    {
+      "zh": "部署多个实例时怎么保证总量不超？用 Redis 的话，为什么要用 Lua 脚本？",
+      "en": "With several instances, how do you keep the total within the limit? Why a Lua script if you use Redis?"
+    },
+    {
+      "zh": "限流服务自己挂了，调用方应该放行还是拒绝？怎么决定？",
+      "en": "If the limiter itself is down, should callers fail open or fail closed? How do you decide?"
+    },
+    {
+      "zh": "上百万个 key 时内存怎么估算？怎么清理不活跃的 key？",
+      "en": "How much memory do a million keys take, and how do you evict inactive ones?"
+    }
   ]
 }
