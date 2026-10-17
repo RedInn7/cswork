@@ -66,7 +66,7 @@ hold t user k s1 … sk / confirm t holdId user / release t holdId user / free t
 
 用户名由小写字母和数字组成，长度不超过 10。
 
-1 ≤ n ≤ 10^5，1 ≤ ttl ≤ 10^9，1 ≤ q ≤ 2×10^4，0 ≤ t ≤ 10^9，1 ≤ k ≤ 20，1 ≤ si, s ≤ n，0 ≤ holdId ≤ 10^9。t + ttl 可能超过 32 位整数的范围。
+1 ≤ n ≤ 10^5，1 ≤ ttl ≤ 10^9，1 ≤ q ≤ 2×10^4，0 ≤ t ≤ 10^9，1 ≤ k ≤ 20，1 ≤ si, s ≤ n，0 ≤ holdId ≤ 10^9。
 
 ## 输出
 

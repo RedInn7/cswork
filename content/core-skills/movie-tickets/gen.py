@@ -60,7 +60,7 @@ edge = text(12, 5, [
     "confirm 13 4 c", "confirm 13 4 c", "release 13 4 c", "free 13", "hold 13 d 3 10 11 12", "free 13",
     "hold 17 e 2 12 11", "free 18", "seat 18 12", "confirm 18 0 e", "release 18 99 e",
 ])
-# Huge times: t + TTL passes 2^31.
+# Huge times: t + TTL near 2 × 10^9.
 late = text(3, 10**9, ["hold 999999999 a 1 1", "free 1000000000", "hold 1000000000 b 2 1 2", "seat 1000000000 1",
                        "confirm 1000000000 1 a", "free 1000000000", "seat 1000000000 1"])
 # Many holds expiring at the same moment.

@@ -66,7 +66,7 @@ hold t user k s1 … sk / confirm t holdId user / release t holdId user / free t
 
 User names are lowercase letters and digits, at most 10 characters.
 
-1 ≤ n ≤ 10^5, 1 ≤ ttl ≤ 10^9, 1 ≤ q ≤ 2×10^4, 0 ≤ t ≤ 10^9, 1 ≤ k ≤ 20, 1 ≤ si, s ≤ n, 0 ≤ holdId ≤ 10^9. t + ttl may not fit in a 32-bit integer.
+1 ≤ n ≤ 10^5, 1 ≤ ttl ≤ 10^9, 1 ≤ q ≤ 2×10^4, 0 ≤ t ≤ 10^9, 1 ≤ k ≤ 20, 1 ≤ si, s ≤ n, 0 ≤ holdId ≤ 10^9.
 
 ## Output
 
