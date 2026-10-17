@@ -102,6 +102,7 @@ import { CheckoutFeedback } from './checkout-feedback';
 import { EnrollmentClaim } from './enrollment';
 import { NotificationsPane } from './lms-notifications';
 import { ThemeToggle } from './theme-toggle';
+import { DailyGoal } from './daily-goal';
 import '@/app/lms.css';
 import {
   INTERVIEW_COURSE_ID,
@@ -663,6 +664,7 @@ export function Academy() {
             <span>{heading}</span>
           </div>
           <div className="topbar-actions">
+            <DailyGoal />
             {/* The site-wide ⌘K palette (components/command-palette.tsx) covers lessons too. */}
             <button className="search-shortcut" onClick={() => openCommandPalette()}>
               <Search size={15} />
