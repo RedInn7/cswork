@@ -392,15 +392,17 @@ export function DemoGraphView({
         : state === 'visited'
           ? t('，已处理', ', done')
           : '';
+  // A bare dot (no label, no note: a cwnd point, a lifeline step) is left out of what a screen reader hears.
+  const named = (n: DemoGraph['nodes'][number]) => Boolean(n.label || n.note);
   const name = (n: DemoGraph['nodes'][number]) =>
-    `${n.label || n.note || n.id}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`;
+    `${n.label || n.note}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`;
   return (
     <svg
       className="algorithm-demo-graph"
       viewBox={`0 0 ${graph.width} ${graph.height}`}
       // Predict mode: the nodes become buttons, which an img role would hide.
       role={onPick ? 'group' : 'img'}
-      aria-label={onPick ? t('图：点出下一步的节点', 'Graph: click the next node') : t('图：', 'Graph: ') + graph.nodes.map(name).join(t('；', '; '))}
+      aria-label={onPick ? t('图：点出下一步的节点', 'Graph: click the next node') : t('图：', 'Graph: ') + graph.nodes.filter(named).map(name).join(t('；', '; '))}
     >
       {graph.edges.map((e) => {
         const a = at.get(e.from)!,
@@ -433,7 +435,7 @@ export function DemoGraphView({
         <g
           key={n.id}
           className={`algorithm-demo-node ${n.state ? `is-${n.state}` : ''}`}
-          {...(onPick ? {
+          {...(onPick && named(n) ? {
             role: 'button',
             tabIndex: 0,
             'aria-label': name(n),
