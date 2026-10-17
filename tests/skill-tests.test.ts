@@ -38,6 +38,7 @@ const LINE = [
 ] as const;
 skillSources.line500 = async () =>
   LINE.map(([id, difficulty, rating]) => ({ id, difficulty, loose: false, rating }));
+const publishedSql = skillSources.sql;
 skillSources.sql = () => [];
 
 let n = 0;
@@ -203,6 +204,19 @@ void test('pd-NN is sql-NN in pandas: a pandas AC solves it for the SQL draw, an
   } finally {
     skillSources.sql = sql;
   }
+});
+
+void test('the SQL exam draws published track problems, never index design ones (answered with CREATE INDEX)', () => {
+  const db = sqlite();
+  for (const id of ['sql-01', 'sql-62', 'sql-71', 'sql-78'])
+    db.prepare(
+      "INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES(?,'gomall','00-overview',?,1,0,0)",
+    ).run(id, `v-${id}`);
+  assert.deepEqual(
+    publishedSql().map((item) => item.id),
+    ['sql-01', 'sql-62'],
+  );
+  db.prepare("DELETE FROM oj_problems WHERE id LIKE 'sql-%'").run();
 });
 
 void test('reading the last system design chapter issues the self-paced certificate once', async () => {

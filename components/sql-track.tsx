@@ -205,8 +205,8 @@ export function SqlTrack(props: TrackProps) {
       // Storage blocked: the switch still works on this page.
     }
   };
-  // pd-xx is sql-xx in pandas, listed only while the judge can run pandas.
-  const pandasId = (id: string) => `pd-${id.slice(4)}`;
+  // pd-xx is sql-xx in pandas, listed only while the judge can run pandas; pandas-only rows (pd-1xx) keep their id.
+  const pandasId = (id: string) => (id.startsWith('sql-') ? `pd-${id.slice(4)}` : id);
   const available = new Set(props.availableProblemIds);
   const hasPandas = sqlTrack.problems.some((item) => available.has(pandasId(item.id)));
   const pandas = hasPandas && language === 'pandas';
@@ -230,12 +230,16 @@ export function SqlTrack(props: TrackProps) {
     window.history.replaceState(window.history.state, '', url);
   };
   const shown = new Set(sqlTrack.problems.filter((item) => item.patterns.includes(active)).map((item) => item.id));
-  const track = active
+  // The pandas-only groups join the list in Pandas mode (they have no interview patterns).
+  const all = pandas
     ? {
-        ...sqlTrack,
-        groups: sqlTrack.groups.map((group) => ({ ...group, ids: group.ids.filter((id) => shown.has(id)) })),
+        groups: [...sqlTrack.groups, ...sqlTrack.pandasGroups],
+        problems: [...sqlTrack.problems, ...sqlTrack.pandasProblems],
       }
     : sqlTrack;
+  const track = active
+    ? { ...all, groups: all.groups.map((group) => ({ ...group, ids: group.ids.filter((id) => shown.has(id)) })) }
+    : all;
   return (
     <ProblemTrack
       {...props}

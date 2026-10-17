@@ -6,7 +6,8 @@
  * Refs by kind:
  * - line-stops: Line 500 stop slugs, comma-separated (lib/route-stops.ts);
  * - sd-part: a system design course part, named by its first chapter (sdParts `from`);
- * - sql-track / pandas: a SQL track group key (lib/content/sql-track.json; pandas is its pd- twin);
+ * - sql-track / pandas: a SQL track group key (lib/content/sql-track.json; pandas is its pd- twin),
+ *   or for pandas also a pandas-only group (its pandasGroups);
  * - core-group: a Core Skills group key (lib/content/core-skills.json);
  * - mcq-topic: an OA multiple-choice topic (lib/content/oa-mcq.json);
  * - project: a resume project slug (lib/content/resume-projects.json);
@@ -78,6 +79,7 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'sql-track', ref: 'joins' },
       { kind: 'sql-track', ref: 'grouping' },
       { kind: 'mcq-topic', ref: 'dbms' },
+      { kind: 'sql-track', ref: 'indexing', optional: true },
       { kind: 'sd-part', ref: 'concurrency-primitives' },
       { kind: 'core-group', ref: 'concurrency' },
       { kind: 'core-group', ref: 'ood' },
@@ -124,9 +126,13 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'sql-track', ref: 'subqueries' },
       { kind: 'sql-track', ref: 'windows' },
       { kind: 'sql-track', ref: 'dates' },
+      { kind: 'sql-track', ref: 'advanced', optional: true },
       { kind: 'mcq-topic', ref: 'sql' },
       { kind: 'pandas', ref: 'grouping' },
       { kind: 'pandas', ref: 'windows', optional: true },
+      { kind: 'pandas', ref: 'reshape' },
+      { kind: 'pandas', ref: 'timeseries' },
+      { kind: 'pandas', ref: 'cleaning' },
       { kind: 'mcq-topic', ref: 'probability' },
       { kind: 'line-stops', ref: 'array-foundations,hash-counting,string-processing,two-pointers-windows' },
       { kind: 'mcq-topic', ref: 'dbms', optional: true },

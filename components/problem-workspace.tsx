@@ -449,7 +449,9 @@ function Workspace({
   });
   const intelligenceText =
     language === 'sql'
-      ? t('SQLite 方言 · 一条 SELECT', 'SQLite dialect · one SELECT')
+      ? problem.starters?.sql
+        ? t('SQLite 方言 · 只写 CREATE INDEX', 'SQLite dialect · CREATE INDEX only')
+        : t('SQLite 方言 · 一条 SELECT', 'SQLite dialect · one SELECT')
       : language === 'pandas'
         ? t('Pandas · solve(tables) 返回 DataFrame', 'Pandas · solve(tables) returns a DataFrame')
         : intelligence.state === 'idle'
@@ -3055,6 +3057,8 @@ function Workspace({
                     sealHidden={examMode}
                   />
                   {submission.language === 'sql' &&
+                    // An index problem's code is CREATE INDEX statements: its run already prints the plans.
+                    !problem.starters?.sql &&
                     submission.code &&
                     !activeStatuses.has(submission.status) &&
                     submission.status !== 'compile_error' && (

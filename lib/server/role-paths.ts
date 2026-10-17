@@ -13,7 +13,8 @@ import { learnKey, learnPath } from './beginner-courses';
 import { sdParts, sdPath } from './system-design-course';
 
 const problemKeys = (ids: string[]) => ids.map((id) => `problem:${id}`);
-const sqlGroup = (key: string) => sqlTrack.groups.find((group) => group.key === key);
+/** An SQL track group, or one of its pandas-only groups (pd-1xx ids, which the pd- mapping keeps). */
+const sqlGroup = (key: string) => [...sqlTrack.groups, ...sqlTrack.pandasGroups].find((group) => group.key === key);
 
 /** One step with its title, link and keys; throws on a ref that does not exist (tests/role-paths.test.ts). */
 export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedStep {

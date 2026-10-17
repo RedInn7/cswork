@@ -63,9 +63,12 @@ def allow(action, arg1, arg2, schema, trigger):
         return sqlite3.SQLITE_OK
     return sqlite3.SQLITE_DENY
 
-def plan_line(sql):
+def clean_step(detail):
     # Older SQLite writes 'SCAN TABLE t' and row estimates.
-    return [re.sub(r' \\(~\\d+ rows?\\)', '', row[3].replace('TABLE ', '')) for row in db.execute('EXPLAIN QUERY PLAN ' + sql)]
+    return re.sub(r' \\(~\\d+ rows?\\)', '', detail.replace('TABLE ', ''))
+
+def plan_line(sql):
+    return [clean_step(row[3]) for row in db.execute('EXPLAIN QUERY PLAN ' + sql)]
 
 def bad_step(step):
     return (step.startswith('SCAN ') and ' USING ' not in step and step != 'SCAN CONSTANT ROW') or 'TEMP B-TREE' in step or 'AUTOMATIC' in step

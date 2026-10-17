@@ -3879,7 +3879,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：重塑与透视"
+    "重塑与透视"
    ],
    "description": "`sales_wide` 每家店一行，四个季度的销售额各占一列（`q1`–`q4`），没上报的季度是 NULL。把它变成长表：每家店每个上报了的季度一行，包含店名、季度名（列名本身，如 `q1`）和销售额。没上报的季度不要出现；销售额为 0 是上报了的。`region` 不是季度，不要拆开。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    sales_wide = tables['sales_wide']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['sales_wide']\n  store   object\n  region  object\n  q1      Int64   # NULL: not reported\n  q2      Int64   # NULL: not reported\n  q3      Int64   # NULL: not reported\n  q4      Int64   # NULL: not reported\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -3951,7 +3951,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：重塑与透视"
+    "重塑与透视"
    ],
    "description": "做一张一季度报表：表里出现过的每个区域一行，后面三列依次是它在 2024-01、2024-02、2024-03 的销售额之和，没有订单的月份写 0。只在其他月份有订单的区域也要出现，三列都是 0。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    orders = tables['orders']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['orders']\n  id      Int64\n  region  object\n  month   object  # 'YYYY-MM'\n  amount  Int64\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4023,7 +4023,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：重塑与透视"
+    "重塑与透视"
    ],
    "description": "每个（学生，科目）一行：秋季分数、春季分数，以及进步 = 春季 − 秋季。缺一个学期的分数时，那一列为 NULL，进步也为 NULL。整张表可能根本没有某个学期的数据，这一列仍要有，全为 NULL。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    grades = tables['grades']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['grades']\n  student  object\n  subject  object\n  term     object  # 'fall' or 'spring'; one score per student, subject and term\n  score    Int64\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4095,7 +4095,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：重塑与透视"
+    "重塑与透视"
    ],
    "description": "`tags` 是手填的逗号分隔标签，可能有多余空格、大小写不一、重复或空项。去掉每个标签两端的空格并转成小写，丢掉空标签，然后统计每个标签出现在多少篇帖子里：同一篇帖子里重复的标签只算一次。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    posts = tables['posts']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['posts']\n  id      Int64\n  author  object\n  tags    object  # comma-separated, typed by hand; NULL: none\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4167,7 +4167,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：时间序列"
+    "时间序列"
    ],
    "description": "从第一笔收款那天到最后一笔收款那天（按日历日，两端都包含），每天一行：日期和当天 `amount` 之和（退款为负数）。没有收款的日子写 0。按日期从早到晚排列。数据保证至少有一笔收款。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    payments = tables['payments']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['payments']\n  id       Int64\n  paid_at  object  # 'YYYY-MM-DD HH:MM:SS'\n  amount   Int64   # negative for a refund\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4239,7 +4239,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：时间序列"
+    "时间序列"
    ],
    "description": "对每位用户每个有训练的日子，计算以这天结束的 7 天窗口（这天和之前 6 天）里的训练分钟数之和。同一天的多次训练先合并。按用户编号、日期排列，每个（用户，日期）一行。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    workouts = tables['workouts']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['workouts']\n  user_id  Int64\n  day      object  # 'YYYY-MM-DD'; several workouts a day are possible\n  minutes  Int64\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4311,7 +4311,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：时间序列"
+    "时间序列"
    ],
    "description": "对每笔成交，找到同一个 `symbol` 在成交时刻或之前的最新一条报价，给出价格和成交金额 `qty * price`。同一时刻的报价也算。在它之前没有这个 symbol 的报价时，价格和金额都为 NULL。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    trades = tables['trades']\n    quotes = tables['quotes']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['trades']\n  id      Int64\n  symbol  object\n  ts      object  # 'YYYY-MM-DD HH:MM:SS'\n  qty     Int64\n\ntables['quotes']\n  symbol  object\n  ts      object   # 'YYYY-MM-DD HH:MM:SS'; one quote per symbol and time\n  price   float64\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），REAL 列是 float64（NULL 为 NaN），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4383,7 +4383,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：时间序列"
+    "时间序列"
    ],
    "description": "读数到达的顺序是乱的。对每条读数，给出它和同一传感器上一条读数（按时间）相隔的分钟数，以及读数的变化（这次减上次）。传感器的第一条读数两项都为 NULL；这次或上次读数失败（NULL）时变化为 NULL。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    readings = tables['readings']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['readings']\n  sensor  object\n  ts      object   # 'YYYY-MM-DD HH:MM:SS'; one reading per sensor and time\n  value   float64  # NULL: the reading failed\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），REAL 列是 float64（NULL 为 NaN），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4455,7 +4455,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：数据清洗"
+    "数据清洗"
    ],
    "description": "每个站点每天一行（中间不跳天），缺失的温度按站点各自补齐：夹在两个已知读数之间的，按天数线性插值；最后一个已知读数之后的，沿用最后的读数；第一个已知读数之前的，保持 NULL。不同站点之间互不影响。输出每一行补齐后的结果。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    temps = tables['temps']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['temps']\n  station  object\n  day      object   # 'YYYY-MM-DD'; one row per station and day, no day skipped\n  temp     float64  # NULL: missing reading\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），REAL 列是 float64（NULL 为 NaN），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4527,7 +4527,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：数据清洗"
+    "数据清洗"
    ],
    "description": "`signup_date` 应该是 'YYYY-MM-DD' 格式的真实日期。找出填了但不合法的行：格式不对（如 '03/01/2024'、空字符串），或者日期不存在（如 '2023-02-29'、'2024-13-01'）。NULL 表示没填，不算不合法。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    signups = tables['signups']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['signups']\n  id           Int64\n  email        object\n  signup_date  object  # meant to be 'YYYY-MM-DD'; NULL: not given\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4599,7 +4599,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：数据清洗"
+    "数据清洗"
    ],
    "description": "退款工单的标题里写着订单号和金额：订单号是第一处「`#` 紧跟数字」里的那串数字，金额是第一处「`$` 紧跟数字」里的那个数（可以带小数点和一到两位小数，没有千位分隔符）。只保留两样都有的工单，订单号输出为整数，金额输出为数字。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    tickets = tables['tickets']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['tickets']\n  id       Int64\n  subject  object  # free text; NULL: empty subject\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4671,7 +4671,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：数据清洗"
+    "数据清洗"
    ],
    "description": "去掉两端空格并转成小写后邮箱相同的联系人是同一个人。每人只保留一条：`created` 最早的，同一天的取编号小的。没有邮箱（NULL）的联系人不出现。输出保留的编号和规范化后的邮箱。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    contacts = tables['contacts']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['contacts']\n  id       Int64\n  name     object\n  email    object  # typed by hand: stray spaces and capitals; NULL: not given\n  created  object  # 'YYYY-MM-DD'\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",
@@ -4706,7 +4706,7 @@
    },
    {
     "name": "边界 2",
-    "input": "CREATE TABLE contacts (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT,              -- typed by hand: stray spaces and capitals; NULL: not given\n  created TEXT NOT NULL    -- 'YYYY-MM-DD'\n);\nINSERT INTO contacts VALUES\n  (7, 'Fox', 'fox@mail.com', '2024-06-01'),\n  (3, 'Fox 2', 'fox@mail.com', '2024-06-01'),\n  (5, 'Gus', NULL, '2024-01-01');\n",
+    "input": "CREATE TABLE contacts (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT,              -- typed by hand: stray spaces and capitals; NULL: not given\n  created TEXT NOT NULL    -- 'YYYY-MM-DD'\n);\nINSERT INTO contacts VALUES\n  (3, 'Fox 2', 'fox@mail.com', '2024-06-01'),\n  (5, 'Gus', NULL, '2024-01-01'),\n  (7, 'Fox', 'Fox@mail.com', '2024-06-01');\n",
     "expectedOutput": "columns: 2\n[3, \"fox@mail.com\"]\n",
     "hidden": true,
     "weight": 1
@@ -4743,7 +4743,7 @@
    },
    "tags": [
     "Pandas",
-    "Pandas：数据清洗"
+    "数据清洗"
    ],
    "description": "尺码从小到大是 XS < S < M < L < XL。对每个订单，给出其中最大的尺码，以及这个尺码有几件。注意按字母顺序比较时 'XS' 比 'XL' 大，'S' 比 'L' 大，这不是尺码的大小。\n\n写一个函数 `solve(tables)`，返回结果 DataFrame：\n\n```python\nimport pandas as pd\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    shirts = tables['shirts']\n    ...\n```\n\n`tables` 里的 DataFrame 和各列的 dtype：\n\n```text\ntables['shirts']\n  id        Int64\n  order_id  Int64\n  size      object  # 'XS', 'S', 'M', 'L' or 'XL'\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再把每张表读成一个 DataFrame，以 {表名: DataFrame} 的字典传给 solve(tables)。INTEGER 列是可空整数 Int64（NULL 为 pd.NA），TEXT 列是 object（NULL 为 None）；日期和时间以文本保存（格式见各列的注释），需要时用 pd.to_datetime 转换。可以使用 pandas 和 numpy；solve 里 print 的内容不算输出。",

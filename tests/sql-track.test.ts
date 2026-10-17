@@ -23,7 +23,7 @@ const { PROBLEMS } = await import('../scripts/sql-track/problems');
 const { compile, run, engineVerdict, matchesOutput } = await import('../lib/server/oj-engine');
 const { getJudgeProblem, listPublishedProblems } = await import('../lib/server/oj-problems');
 const { createSubmission } = await import('../lib/server/oj-submissions');
-const { SQL_NAMES } = await import('../lib/server/sql-judge');
+const { SQL_HARNESS, SQL_INDEX, SQL_NAMES } = await import('../lib/server/sql-judge');
 
 const packages = JSON.parse(readFileSync(PACKAGES_FILE, 'utf8')) as OjProblemPackage[];
 const student: Person = {
@@ -135,17 +135,96 @@ test('the harness rejects anything but one read-only query', () => {
   assert.match(broken.stderr, /Dataset error/);
 });
 
+test('index problems: the reference indexes pass; missing, misordered, wrapped or too many indexes fail', () => {
+  const index = PROBLEMS.filter((problem) => problem.index);
+  assert.deepEqual(
+    index.map((problem) => problem.id),
+    ['sql-71', 'sql-72', 'sql-73', 'sql-74', 'sql-75', 'sql-76', 'sql-77', 'sql-78'],
+  );
+  const pkg = packages.find((p) => p.problem.id === 'sql-71')!;
+  const input = pkg.cases[0].input;
+  assert.ok(input.startsWith(SQL_INDEX));
+  const ok = 'query 1: ok\n';
+  assert.equal(runner.run(PROBLEMS.find((p) => p.id === 'sql-71')!.reference, input).stdout, ok);
+  // No index, the range column first, a function on the column: the plan line instead of ok.
+  for (const script of [
+    '',
+    '-- nothing yet',
+    'CREATE INDEX i ON orders (order_date, customer_id);',
+    'CREATE INDEX i ON orders (customer_id, date(order_date));',
+  ]) {
+    const result = runner.run(script, input);
+    assert.equal(result.ok, true, script);
+    assert.match(result.stdout, /^query 1: (SCAN|SEARCH) orders[^\n]*\n$/, script);
+    assert.notEqual(result.stdout, ok, script);
+  }
+  assert.equal(runner.run('', input).stdout, 'query 1: SCAN orders\n');
+  // Over the limit, or anything but CREATE INDEX: a runtime error, one bilingual line.
+  for (const [script, message] of [
+    ['CREATE INDEX a ON orders (customer_id, order_date); CREATE INDEX b ON orders (status);', /at most 1 index/],
+    ['DROP TABLE orders', /CREATE INDEX statements only/],
+    ['DELETE FROM orders', /CREATE INDEX statements only/],
+    ["INSERT INTO orders VALUES (99, 1, '2024-01-01', 'paid')", /CREATE INDEX statements only/],
+    ['CREATE TABLE t (a)', /CREATE INDEX statements only/],
+    ['CREATE TRIGGER t AFTER INSERT ON orders BEGIN SELECT 1; END', /CREATE INDEX statements only/],
+    ['PRAGMA writable_schema = ON', /CREATE INDEX statements only/],
+    ["ATTACH ':memory:' AS other", /CREATE INDEX statements only/],
+    ['ANALYZE', /CREATE INDEX statements only/],
+    ['SELECT * FROM orders', /CREATE INDEX statements only/],
+    ['CREATE INDEX i ON orders (customer_id, order_date); DROP INDEX i', /CREATE INDEX statements only/],
+  ] as const) {
+    const result = runner.run(script, input);
+    assert.equal(result.ok, false, script);
+    assert.equal(result.stdout, '', script);
+    assert.match(result.stderr, message, script);
+    assert.match(result.stderr, /^[^\n]*\p{Script=Han}[^\n]* \/ [A-Z][^\n]*\n$/u, script);
+  }
+  // Transactions around CREATE INDEX are fine; an unchanged result with every target passing is ok.
+  assert.equal(runner.run('BEGIN; CREATE INDEX i ON orders (customer_id, order_date); COMMIT;', input).stdout, ok);
+  // Every target query gets its own line: one index serving two of sql-78's three queries.
+  const three = PROBLEMS.find((p) => p.id === 'sql-78')!;
+  const threeInput = datasetSql(three, three.sample);
+  assert.equal(runner.run(three.reference, threeInput).stdout, 'query 1: ok\nquery 2: ok\nquery 3: ok\n');
+  assert.equal(
+    runner.run('CREATE INDEX i ON orders (customer_id, status);', threeInput).stdout,
+    'query 1: ok\nquery 2: ok\nquery 3: SEARCH orders USING INDEX i (customer_id=? AND status=?) | USE TEMP B-TREE FOR ORDER BY\n',
+  );
+  // A tie under LIMIT read in another order through the index: the result changed.
+  const tie = `${SQL_INDEX}{"max":1,"queries":[{"sql":"SELECT id FROM t ORDER BY d LIMIT 1"}]}
+CREATE TABLE t (id INTEGER PRIMARY KEY, d TEXT);
+INSERT INTO t VALUES (1, 'x'), (2, 'x'), (3, 'y');
+`;
+  assert.equal(runner.run('CREATE INDEX i ON t (d, id DESC);', tie).stdout, 'query 1: result changed\n');
+  // Older SQLite's 'SCAN TABLE t (~N rows)' reads like today's 'SCAN t'.
+  const check = spawnSync(
+    'python3',
+    [
+      '-I',
+      '-S',
+      '-c',
+      `exec(${JSON.stringify(SQL_HARNESS.split('dataset = sys.stdin.read()')[0])})
+for old, new in [('SCAN TABLE orders (~100000 rows)', 'SCAN orders'), ('SEARCH TABLE orders USING INDEX i (customer_id=?) (~10 rows)', 'SEARCH orders USING INDEX i (customer_id=?)')]:
+    assert clean_step(old) == new, clean_step(old)
+assert bad_step(clean_step('SCAN TABLE orders')) and not bad_step('SCAN orders USING COVERING INDEX i')
+assert bad_step('USE TEMP B-TREE FOR ORDER BY') and bad_step('SEARCH o USING AUTOMATIC COVERING INDEX (customer_id=?)')
+assert not bad_step('SCAN CONSTANT ROW')`,
+    ],
+    { encoding: 'utf8' },
+  );
+  assert.equal(check.status, 0, check.stderr);
+});
+
 test('every reference, alternative and wrong query reruns on every dataset to the committed packages', () => {
   // The build throws if an accepted query disagrees on any dataset or a wrong
   // query passes every hidden one; the output must match what is committed.
   const built = buildSqlTrack();
   assert.equal(built.packages, readFileSync(PACKAGES_FILE, 'utf8'), 'rerun scripts/sql-track/build.ts');
   assert.equal(built.manifest, readFileSync(MANIFEST_FILE, 'utf8'), 'rerun scripts/sql-track/build.ts');
-  assert.equal(built.report.length, 50);
+  assert.equal(built.report.length, 70);
 });
 
-test('the packages are 50 valid, bilingual, SQL-only judge packages', () => {
-  assert.equal(packages.length, 50);
+test('the packages are 70 valid, bilingual, SQL-only judge packages', () => {
+  assert.equal(packages.length, 70);
   const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as {
     groups: { ids: string[]; zh: string; en: string }[];
     problems: { id: string }[];
@@ -158,7 +237,7 @@ test('the packages are 50 valid, bilingual, SQL-only judge packages', () => {
     packages.map((p) => p.problem.id),
   );
   for (const group of manifest.groups) assert.deepEqual(group.ids, [...group.ids].sort(), group.zh);
-  assert.equal(manifest.groups.length, 7);
+  assert.equal(manifest.groups.length, 9);
   assert.ok(manifest.groups.every((group) => group.ids.length >= 3));
   assert.deepEqual(
     manifest.problems.map((p) => p.id),
@@ -166,7 +245,11 @@ test('the packages are 50 valid, bilingual, SQL-only judge packages', () => {
   );
   packages.forEach((pkg, index) => {
     const parsed = ojImportSchema.parse(pkg);
-    assert.equal(parsed.problem.id, `sql-${String(index + 1).padStart(2, '0')}`);
+    // sql-01…62, then the index problems sql-71…78.
+    assert.equal(parsed.problem.id, `sql-${String(index < 62 ? index + 1 : index + 9).padStart(2, '0')}`);
+    assert.equal(parsed.problem.id, PROBLEMS[index].id);
+    // Index problems start the editor on a comment-only CREATE INDEX starter; the rest have none.
+    assert.equal(!!parsed.problem.starters?.sql, !!PROBLEMS[index].index);
     assert.deepEqual(parsed.problem.languages, ['sql']);
     assert.equal(parsed.problem.checker, 'exact');
     assert.ok(parsed.problem.translations?.en?.description.includes('CREATE TABLE'));
@@ -297,8 +380,8 @@ test('the release publisher publishes once, then skips unchanged packages; SQL p
   const first = publish();
   assert.equal(first.status, 0, first.stderr);
   // The SQL packages and their pandas versions (tests/pandas-track.test.ts).
-  assert.equal(first.stdout.match(/"id":"sql-\d\d","status":"published"/g)?.length, 50);
-  assert.equal(first.stdout.match(/"published"/g)?.length, 100);
+  assert.equal(first.stdout.match(/"id":"sql-\d\d","status":"published"/g)?.length, 70);
+  assert.equal(first.stdout.match(/"published"/g)?.length, 133);
   // The REST API problems (tests/oa-rest-fixtures.test.ts) wait for go-judge's own run of them.
   const rest = JSON.parse(readFileSync('content/rest-api/packages.json', 'utf8')) as OjProblemPackage[];
   assert.equal(first.stdout.match(/"id":"rest-\d\d","status":"unverified"/g)?.length, rest.length);
@@ -307,7 +390,7 @@ test('the release publisher publishes once, then skips unchanged packages; SQL p
   writeFileSync(report, JSON.stringify({ engine: 'go-judge', allPassed: true, problems: verified.slice(1) }));
   const again = publish();
   assert.equal(again.status, 0, again.stderr);
-  assert.equal(again.stdout.match(/"unchanged"/g)?.length, 100);
+  assert.equal(again.stdout.match(/"unchanged"/g)?.length, 133);
   assert.equal(again.stdout.match(/"id":"rest-\d\d","status":"published"/g)?.length, rest.length - 1);
   assert.match(again.stdout, new RegExp(`"id":"${rest[0].problem.id}","status":"unverified"`));
   writeFileSync(report, JSON.stringify({ engine: 'go-judge', allPassed: false, problems: verified }));
@@ -316,7 +399,7 @@ test('the release publisher publishes once, then skips unchanged packages; SQL p
   assert.match(partial.stderr, /Incomplete REST API sandbox report/);
   // Like OA problems: listed for everyone, judged for any verified account.
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('sql-'));
-  assert.equal(listed.length, 50);
+  assert.equal(listed.length, 70);
   assert.ok(listed.every((p) => p.freeJudge && p.languages.join() === 'sql'));
   const snapshot = await getJudgeProblem(student, 'sql-01');
   assert.equal(snapshot.cases.length, packages[0].cases.length);

@@ -13,9 +13,9 @@ import type { Data } from './datasets';
 type Text = { zh: string; en: string };
 export type PandasGroupKey = 'reshape' | 'timeseries' | 'cleaning';
 export const PANDAS_GROUPS: { key: PandasGroupKey; zh: string; en: string }[] = [
-  { key: 'reshape', zh: 'Pandas：重塑与透视', en: 'Pandas: reshaping & pivots' },
-  { key: 'timeseries', zh: 'Pandas：时间序列', en: 'Pandas: time series' },
-  { key: 'cleaning', zh: 'Pandas：数据清洗', en: 'Pandas: data cleaning' },
+  { key: 'reshape', zh: '重塑与透视', en: 'Reshaping & pivots' },
+  { key: 'timeseries', zh: '时间序列', en: 'Time series' },
+  { key: 'cleaning', zh: '数据清洗', en: 'Data cleaning' },
 ];
 export type PandasProblem = {
   id: string;
@@ -1409,9 +1409,9 @@ def solve(tables):
       },
       {
         contacts: [
-          [7, 'Fox', 'fox@mail.com', '2024-06-01'],
           [3, 'Fox 2', 'fox@mail.com', '2024-06-01'],
           [5, 'Gus', null, '2024-01-01'],
+          [7, 'Fox', 'Fox@mail.com', '2024-06-01'],
         ],
       },
       {
