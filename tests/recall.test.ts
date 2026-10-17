@@ -59,6 +59,8 @@ void test('know moves a new or due card up a box, partial restarts its wait, no 
   q = rateRecall(q, T, 'LRU', 'no', 105);
   assert.deepEqual(q.items[T], [0, 105, 'LRU']);
   assert.deepEqual(rateRecall(emptyRecall(), T, 'x', 'partial', 7).items[T], [0, 7, 'x']);
+  const mastered: RecallQueue = { v: 1, items: { [T]: [4, 10, 'x'] } };
+  assert.deepEqual(rateRecall(mastered, T, 'x', 'partial', 50).items[T], [3, 50, 'x'], 'partial brings a mastered card back');
   assert.equal(rateRecall(emptyRecall(), T, 'y'.repeat(200), 'no', 7).items[T][2].length, 80);
   // Up to mastered, which never comes back.
   for (const day of [106, 109, 116, 137]) q = rateRecall(q, T, 'LRU', 'know', day);

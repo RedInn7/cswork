@@ -35,6 +35,7 @@ function noteApi(state) {
     calls.push([init.method ?? 'GET', String(url)]);
     assert.equal(String(url), NOTE);
     if (state.saved === null) return Response.json({ error: 'Sign in first' }, { status: 401 });
+    if (state.failGet && !init.method) return Response.json({ error: 'Too many requests' }, { status: 429 });
     if (init.method === 'PUT') {
       if (state.failPut) return Response.json({ error: 'Too many requests' }, { status: 429 });
       state.saved = JSON.parse(init.body).body;
@@ -125,6 +126,15 @@ test("signed in, this device's cards move to the account once and each grade rea
     await act(async () => button("Didn't know").click());
     await settle();
     assert.equal(status().trim(), "Couldn't save. Try again in a moment.");
+
+    // The account can't be read: the grade fails instead of landing in this browser, where the
+    // account's copy would win at the next load (and the next person to sign in would get it).
+    state.failPut = false;
+    state.failGet = true;
+    await act(async () => button('Knew it').click());
+    await settle();
+    assert.equal(status().trim(), "Couldn't save. Try again in a moment.");
+    assert.equal(localStorage.getItem('cswork:recall:v1'), null);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = original;

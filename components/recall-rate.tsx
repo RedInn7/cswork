@@ -75,6 +75,9 @@ let chain: Promise<unknown> = Promise.resolve();
 export function updateRecall(signedIn: boolean, change: (queue: RecallQueue) => RecallQueue) {
   const run = chain.then(async () => {
     const { queue, account } = await loadRecall(signedIn);
+    // Signed in but the account can't be read (429, offline, expired session): fail rather than
+    // keep the change in this browser, where the account's copy would win at the next load.
+    if (signedIn && !account) return null;
     const next = change(queue);
     return (account ? await putNote(next) : writeLocal(next)) ? next : null;
   });

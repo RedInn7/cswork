@@ -58,8 +58,8 @@ const due = (card: RecallCard, today: number) => mcqDue([card[0], card[1]], toda
 
 /**
  * The queue after grading `target`: "know" moves a new or due card up a box (not one that isn't
- * due yet: no cramming), "partial" keeps the box and restarts its wait today, "no" goes back to
- * box 0. Over RECALL_MAX cards, mastered ones go first, then the longest unseen.
+ * due yet: no cramming), "partial" keeps the box (a mastered card drops to the 21-day box) and
+ * restarts its wait today, "no" goes back to box 0. Over RECALL_MAX cards, mastered ones go first, then the longest unseen.
  */
 export function rateRecall(queue: RecallQueue, target: string, title: string, grade: RecallGrade, today: number): RecallQueue {
   const card = queue.items[target];
@@ -68,7 +68,7 @@ export function rateRecall(queue: RecallQueue, target: string, title: string, gr
     grade === 'no'
       ? [0, today, name]
       : grade === 'partial'
-        ? [card?.[0] ?? 0, today, name]
+        ? [Math.min(card?.[0] ?? 0, MCQ_MASTERED - 1), today, name]
         : !card
           ? [1, today, name]
           : due(card, today)
