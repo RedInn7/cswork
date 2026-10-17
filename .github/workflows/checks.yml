@@ -220,7 +220,8 @@ jobs:
       - run: node scripts/projects/verify.mjs
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
       # Reruns every ML Coding solution on the system numpy (1.x here, 2.x on the judge: compared with the judge's tolerance).
-      - run: node --import tsx --test tests/ml-coding.test.ts tests/ml-coding-ui.test.mjs
+      - run: node --import tsx --test tests/ml-coding.test.ts
+      - run: node --import tsx --test tests/ml-coding-ui.test.mjs
       # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
       - run: node --import tsx scripts/core-skills/stress.ts
       # Runs every Line 500 edge case and checklist case through the verified Python editorial.
