@@ -67,6 +67,20 @@
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
+/* The opened complexity budget (components/constraint-hints.tsx): its own line under the statement pills. */
+.cs-statement-tools > .cs-budget-line {
+  flex-basis: 100%;
+  order: 1;
+  margin: 0;
+  color: var(--cs-text);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.cs-budget-line a {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 /* Follow-up mode switch in the editor toolbar. */
 .cs-editor-controls > .cs-follow-up-toggle {
   display: inline-flex;
@@ -120,6 +134,13 @@
   }
   .dark .cs-analyzer-line {
     color: #b6bdca;
+  }
+  .dark .cs-statement-tools > .cs-budget-line {
+    color: var(--cs-text);
+  }
+  .dark .cs-budget-line a {
+    color: #a8c4fd;
+    text-decoration: underline;
   }
   .dark .cs-editor-controls > .cs-follow-up-toggle[aria-pressed='true'] {
     background: #0f121f;
