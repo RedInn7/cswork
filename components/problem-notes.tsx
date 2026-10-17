@@ -304,8 +304,6 @@ export function ProblemNotes({
   }, [preview, linkable, note.enabled, links, problemId]);
   const size = bytes(note.text);
   async function insertTemplate() {
-    const at = area.current?.selectionStart ?? note.text.length;
-    const end = area.current?.selectionEnd ?? at;
     let template = PROBLEM_TEMPLATE[english ? 'en' : 'zh'];
     try {
       const saved = await api<{ body?: unknown }>(`oj/notes?target=${encodeURIComponent(TEMPLATE_TARGET)}`);
@@ -313,10 +311,14 @@ export function ProblemNotes({
       const mine: unknown = typeof saved.body === 'string' && saved.body ? JSON.parse(saved.body)?.problem : null;
       if (typeof mine === 'string' && mine.trim() && bytes(mine) <= TEMPLATE_MAX) template = mine;
     } catch {}
-    const before = note.text.slice(0, at);
+    // Read after the request, so what was typed meanwhile stays.
+    const text = area.current?.value ?? note.text;
+    const at = area.current?.selectionStart ?? text.length;
+    const end = area.current?.selectionEnd ?? at;
+    const before = text.slice(0, at);
     // Its ## headings need a line of their own.
     const gap = before && !before.endsWith('\n') ? '\n\n' : '';
-    note.edit(before + gap + template + note.text.slice(end));
+    note.edit(before + gap + template + text.slice(end));
     setPreview(false);
     setSaid('');
     requestAnimationFrame(() => {
