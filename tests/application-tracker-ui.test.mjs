@@ -328,8 +328,9 @@ test('an offer counts down with an extension link; the schedule panel lists clas
   await setValue(form.querySelector('select'), 'phone', 'change');
   assert.equal(offerField(), undefined);
   await act(async () => form.querySelector('button[type="submit"]').click());
-  const [key, sent] = calls.at(-1);
-  assert.equal(key, 'POST /api/oj/applications/o');
+  // The save ends the only offer ahead: the board is read again for the other cards (withLinks).
+  const [[key, sent], [reread]] = calls.slice(-2);
+  assert.deepEqual([key, reread], ['POST /api/oj/applications/o', 'GET /api/oj/applications']);
   assert.deepEqual([sent.stage, sent.offerDeadline], ['phone', deadline]);
   await act(async () => r.unmount());
 });
@@ -344,7 +345,8 @@ test('a card moved back to Offer with its deadline reads the board again for the
   const r = createRoot(document.getElementById('root'));
   await act(async () => r.render(createElement(ApplicationTracker, { zh: false })));
   assert.equal(document.querySelector('.tracker-expedite'), null);
-  // With an offer deadline ahead the server adds the phone card's process length (withLinks).
+  // Once the card is back at Offer the server adds the phone card's process length (withLinks).
+  items[0] = { ...items[0], stage: 'offer' };
   items[1] = { ...items[1], process: { weeks: 8 } };
   const reads = calls.filter(([key]) => key === 'GET /api/oj/applications').length;
   await setValue(document.querySelector('[data-id="o"] select'), 'offer', 'change');
