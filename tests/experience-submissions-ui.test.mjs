@@ -131,7 +131,7 @@ test('sharing an experience: the form posts ordered rounds and split questions, 
 test('the review queue: rejecting needs a note, approving posts the decision', async () => {
   const item = (id, status, extra = {}) => ({
     id, title: `Post ${id}`, company: { slug: 'amazon', name: 'Amazon' }, role: 'SWE', result: 'Offer', rounds: ['Onsite'],
-    interviewDate: '2026-09-01', body: 'Body with <script>alert(1)</script> text', questions: ['Two sum'], status, note: '',
+    interviewDate: '2026-09-01', body: 'Body with <script>alert(1)</script> text', questions: [{ text: 'Two sum', round: 'Onsite', problem: 'lc-1', similar: true }], status, note: '',
     createdAt: 1, flags: 0, reasons: [], shown: true, member: { handle: null }, ...extra,
   });
   const details = { difficulty: 4, sentiment: 'neg', channel: 'referral', employment: 'intern', season: '2026-summer', location: 'WeChat abc123', durationWeeks: null, verified: true };
@@ -148,6 +148,11 @@ test('the review queue: rejecting needs a note, approving posts the decision', a
     const facts = document.querySelector('.xs-card-facts')?.textContent ?? '';
     assert.ok(facts.includes('Location: WeChat abc123') && facts.includes('Referral') && facts.includes('Difficulty 4/5'), facts);
     assert.ok(document.querySelectorAll('.xs-card-facts').length === 1, 'a post without facts shows no row');
+    // The reviewer sees each question's round and its link as stored.
+    const asked = document.querySelector('.xs-card li');
+    assert.equal(asked.querySelector('.xs-q-round').textContent, 'Onsite');
+    assert.equal(asked.querySelector('a.xs-q-go').getAttribute('href'), '/?view=problem&problem=lc-1');
+    assert.equal(asked.querySelector('a.xs-q-go').textContent, 'similar to lc-1');
     assert.equal(button('Reject').disabled, true);
     await act(async () => set(document.querySelector('.xs-card textarea'), 'Too short'));
     assert.equal(button('Reject').disabled, false);
