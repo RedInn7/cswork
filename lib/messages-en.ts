@@ -379,6 +379,8 @@ const EN: Record<string, string> = {
   'OA 将在 24 小时内截止': 'An OA is due within 24 hours',
   'OA 将在 2 小时内截止': 'An OA is due within 2 hours',
   '面试将在 1 小时内开始': 'An interview starts within the hour',
+  'Offer 将在 3 天内截止': 'An offer deadline is within 3 days',
+  'Offer 将在 24 小时内截止': 'An offer deadline is within 24 hours',
   今天的评论已达上限: "You've reached today's limit for comments",
   今天的举报次数已达上限: "You've reached today's limit for reports",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',

@@ -22,7 +22,7 @@ import { pushEndpoint, pushReady, pushTo } from './web-push';
  * weeklies or starters they entered that start within a day, and job-search follow-ups due. It is
  * an in-app notice, a push to each device they turned push on for, and with email on a mail to the
  * verified address. Entrants of a weekly or starter also get a notice and push an hour before it
- * starts; tracker cards one before an OA deadline and an interview. Each notice has a
+ * starts; tracker cards one before an OA deadline, an interview and an offer deadline. Each notice has a
  * deterministic id: writing it is the claim, so no tick, restart or second worker sends twice.
  * The judge worker runs this every 10 minutes (lib/server/oj-worker.ts), in any TZ.
  * ponytail: tz is the offset when last saved (the card re-saves it when opened elsewhere); a
@@ -64,6 +64,8 @@ const APPLICATION_TITLES = {
   'app-oa24': 'OA 将在 24 小时内截止',
   'app-oa2': 'OA 将在 2 小时内截止',
   'app-interview': '面试将在 1 小时内开始',
+  'app-offer3': 'Offer 将在 3 天内截止',
+  'app-offer1': 'Offer 将在 24 小时内截止',
 };
 
 /**
@@ -168,7 +170,8 @@ export async function sendLearnerReminders(now = Date.now()) {
     await pushTo(c.user_id, now);
   }
   // Tracker cards: an open OA due within 24 hours and again within 2 (only the nearer one when a
-  // tick finds both), an interview within the hour. The time is in the id: a moved one is new.
+  // tick finds both), an interview within the hour, an offer deadline within 3 days and again
+  // within 1. The time is in the id: a moved one is new.
   // ponytail: scans the cards in each window per tick; index oa_deadline/interview_at if it grows.
   const cards = (stages: string, column: string, until: number) =>
     db
@@ -183,6 +186,7 @@ export async function sendLearnerReminders(now = Date.now()) {
       (a) => [a.at <= now + 2 * HOUR ? 'app-oa2' : 'app-oa24', a] as const,
     ),
     ...cards(`NOT IN ${CLOSED}`, 'interview_at', now + HOUR).map((a) => ['app-interview', a] as const),
+    ...cards("='offer'", 'offer_deadline', now + 3 * DAY).map((a) => [a.at <= now + DAY ? 'app-offer1' : 'app-offer3', a] as const),
   ];
   for (const [kind, a] of soon) {
     const id = `${kind}:${a.id}:${a.at}`;

@@ -28,8 +28,8 @@ const KINDS = [
   ['contest', '报名的周赛和入门赛（开赛前 1 小时再提醒一次）', 'Weeklies and starters you entered (again an hour before)'],
   [
     'applications',
-    '投递提醒（OA 截止前 24 小时和 2 小时、面试前 1 小时各一次，到期的跟进并入每日汇总）',
-    'Job applications (24 hours and 2 hours before an OA deadline, an hour before an interview; follow-ups due go in the daily digest)',
+    '投递提醒（OA 截止前 24 小时和 2 小时、面试前 1 小时、offer 截止前 3 天和 1 天各一次，到期的跟进并入每日汇总）',
+    'Job applications (24 hours and 2 hours before an OA deadline, an hour before an interview, 3 days and a day before an offer deadline; follow-ups due go in the daily digest)',
   ],
 ] as const;
 
@@ -121,8 +121,8 @@ export function ReminderSettings() {
       </h2>
       <p className="muted">
         {t(
-          '默认关闭。打开后每天在你选的时间汇总成一条提醒，没有要提醒的就不发；报名的比赛和投递的 OA、面试临近时，还会按下面写的时间另外提醒，不受这个时间限制。站内消息一定有，推送按你的选择；邮件只发每日汇总。',
-          'Off by default. When on, you get one digest a day at the hour you pick, and none when there is nothing to say. Contests you entered and OA deadlines and interviews you track also get their own reminders at the times listed below, whatever hour you pick. They always appear in your notifications and by push if you choose; email carries only the daily digest.',
+          '默认关闭。打开后每天在你选的时间汇总成一条提醒，没有要提醒的就不发；报名的比赛和投递的 OA、面试、offer 截止临近时，还会按下面写的时间另外提醒，不受这个时间限制。站内消息一定有，推送按你的选择；邮件只发每日汇总。',
+          'Off by default. When on, you get one digest a day at the hour you pick, and none when there is nothing to say. Contests you entered and the OA deadlines, interviews and offer deadlines you track also get their own reminders at the times listed below, whatever hour you pick. They always appear in your notifications and by push if you choose; email carries only the daily digest.',
         )}
       </p>
       {!settings ? (

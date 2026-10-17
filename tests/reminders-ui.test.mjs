@@ -70,7 +70,7 @@ test('reminders: off until turned on, then each change saves with the local time
     'POST /api/oj/notify',
     { prefs: { review: true, streak: true, daily: false, contest: true, applications: true, email: false, hour: 20, tz, locale: 'en' } },
   ]);
-  assert.equal(box('Job applications (24 hours and 2 hours before an OA deadline, an hour before an interview; follow-ups due go in the daily digest)').checked, true);
+  assert.equal(box('Job applications (24 hours and 2 hours before an OA deadline, an hour before an interview, 3 days and a day before an offer deadline; follow-ups due go in the daily digest)').checked, true);
   await click(box('Job applications'));
   assert.equal(calls.at(-1)[1].prefs.applications, false);
   assert.equal(box('The daily problem').checked, false);

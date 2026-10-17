@@ -18,6 +18,8 @@ export const STAGE_NAMES: Record<Stage, [string, string]> = {
 /** Stages with the OA still ahead: past them (or closed) a deadline gets no countdown and no calendar event. */
 export const OA_OPEN: readonly Stage[] = ['saved', 'applied', 'oa'];
 export const oaOpen = (a: Application) => a.oaDeadline !== null && OA_OPEN.includes(a.stage);
+/** An offer's answer-by date counts at the Offer stage only (kept, but ignored, at any other). */
+export const offerOpen = (a: Application) => a.offerDeadline !== null && a.stage === 'offer';
 export const APPLICATIONS_MAX = 300;
 export const NOTES_MAX = 2000;
 export const JD_MAX = 10000;
@@ -38,6 +40,8 @@ export type ApplicationFields = {
   appliedAt: number | null;
   oaDeadline: number | null;
   interviewAt: number | null;
+  /** When an offer must be answered by. */
+  offerDeadline: number | null;
   /** Who referred you (free text). */
   referral: string;
   link: string;
@@ -68,6 +72,11 @@ export type Application = ApplicationFields & {
   closedAt: number | null;
   /** Interview prep for a card at OA, phone or onsite with a company page, else null. */
   prep: { experiences: { href: string; n: number } | null; problems: string; stories: string } | null;
+  /**
+   * The company's median weeks from applying to an offer in member write-ups, for a card at OA,
+   * phone or onsite while the learner has an offer deadline ahead (expeditePlan), else null.
+   */
+  process: { weeks: number } | null;
 };
 
 /** A job posting link: https only, no credentials in it. */
@@ -154,7 +163,7 @@ export function weekStart(now: number) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime();
 }
 /** When the application went in: the applied date, else its logged move to Applied. */
-const appliedOn = (a: Application) => a.appliedAt ?? a.stageLog.find(([s]) => s === 'applied')?.[1] ?? null;
+export const appliedOn = (a: Application) => a.appliedAt ?? a.stageLog.find(([s]) => s === 'applied')?.[1] ?? null;
 const replied = (a: Application) =>
   OA_ON.includes(a.stage) || a.oaDeadline !== null || a.interviewAt !== null || a.stageLog.some(([s]) => OA_ON.includes(s));
 
@@ -270,14 +279,27 @@ export function applicationsCsv(items: readonly Application[], english: boolean)
   return '﻿' + [head, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }
 
-/** What a calendar export would hold: open OA deadlines, interviews and follow-ups still ahead. */
-export const calendarItems = (items: readonly Application[], now: number) =>
-  items.filter((a) => (oaOpen(a) && a.oaDeadline! > now) || interviewAhead(a, now) || (followUpOpen(a) && a.nextAt! > now));
+export type AgendaEvent = { kind: 'oa' | 'interview' | 'next' | 'offer'; at: number; a: Application };
+/** Every dated step still ahead, soonest first: open OA deadlines, interviews, follow-ups and offer deadlines. */
+export function agenda(items: readonly Application[], now: number): AgendaEvent[] {
+  return items
+    .flatMap((a): (AgendaEvent | false)[] => [
+      oaOpen(a) && a.oaDeadline! > now && { kind: 'oa', at: a.oaDeadline!, a },
+      interviewAhead(a, now) && { kind: 'interview', at: a.interviewAt!, a },
+      followUpOpen(a) && a.nextAt! > now && { kind: 'next', at: a.nextAt!, a },
+      offerOpen(a) && a.offerDeadline! > now && { kind: 'offer', at: a.offerDeadline!, a },
+    ])
+    .filter((e): e is AgendaEvent => e !== false)
+    .sort((x, y) => x.at - y.at);
+}
+/** The cards a calendar export would hold events for. */
+export const calendarItems = (items: readonly Application[], now: number) => [...new Set(agenda(items, now).map((e) => e.a))];
 
 /**
  * The calendar export: each open OA deadline still to come (reminded a day and two hours before),
- * each interview ahead (an hour before) and each follow-up ahead. The OA event keeps the UID it
- * always had, so a re-import updates calendars that already hold it.
+ * each interview ahead (an hour before), each follow-up ahead and each offer deadline ahead (three
+ * days and a day before). The OA event keeps the UID it always had, so a re-import updates
+ * calendars that already hold it.
  */
 export function applicationsIcs(items: readonly Application[], site: string, english: boolean, now = Date.now()) {
   const page = `${site}/career/tracker`;
@@ -294,20 +316,69 @@ export function applicationsIcs(items: readonly Application[], site: string, eng
       ],
       triggers.map((trigger) => ({ trigger, note: summary })),
     );
-  const events = calendarItems(items, now).flatMap((a) => {
+  const events = agenda(items, now).map(({ kind, at, a }) => {
     const what = `${a.company}${a.role ? ` · ${a.role}` : ''}`;
-    const out: string[][] = [];
-    if (oaOpen(a) && a.oaDeadline! > now)
-      out.push(event(`cswork-application-${a.id}@cswork`, a.oaDeadline!, english ? `OA due: ${what}` : `OA 截止：${what}`, a, ['-P1D', '-PT2H']));
-    if (interviewAhead(a, now))
-      out.push(
-        event(`cswork-application-${a.id}-interview@cswork`, a.interviewAt!, english ? `Interview: ${what}` : `面试：${what}`, a, ['-PT1H'], ['DURATION:PT1H']),
-      );
-    if (followUpOpen(a) && a.nextAt! > now) {
-      const step = a.nextAction ? ` · ${a.nextAction}` : '';
-      out.push(event(`cswork-application-${a.id}-next@cswork`, a.nextAt!, english ? `Follow up: ${what}${step}` : `跟进：${what}${step}`, a, ['PT0S']));
-    }
-    return out;
+    const uid = `cswork-application-${a.id}${kind === 'oa' ? '' : `-${kind}`}@cswork`;
+    if (kind === 'oa') return event(uid, at, english ? `OA due: ${what}` : `OA 截止：${what}`, a, ['-P1D', '-PT2H']);
+    if (kind === 'interview') return event(uid, at, english ? `Interview: ${what}` : `面试：${what}`, a, ['-PT1H'], ['DURATION:PT1H']);
+    if (kind === 'offer') return event(uid, at, english ? `Offer deadline: ${what}` : `Offer 截止：${what}`, a, ['-P3D', '-P1D']);
+    const step = a.nextAction ? ` · ${a.nextAction}` : '';
+    return event(uid, at, english ? `Follow up: ${what}${step}` : `跟进：${what}${step}`, a, ['PT0S']);
   });
   return calendar(['VERSION:2.0', 'PRODID:-//CSWork//Application tracker//EN', 'CALSCALE:GREGORIAN'], events);
+}
+
+/** Stages still in process: what an offer deadline may come before. */
+export const IN_PROCESS: readonly Stage[] = ['oa', 'phone', 'onsite'];
+/**
+ * With an offer deadline ahead, the processes that may not finish by the earliest one: each card at
+ * OA, phone or onsite with when an offer would likely come (eta), and whether that is after the
+ * deadline. The estimate is the company's median process length from member write-ups counted
+ * from the application (process.weeks), else this board's own median from that stage to an
+ * offer counted from the move there, else unknown (null). Null with no offer deadline ahead.
+ */
+export function expeditePlan(items: readonly Application[], now: number) {
+  const offer = items.filter((a) => offerOpen(a) && a.offerDeadline! > now).sort((x, y) => x.offerDeadline! - y.offerDeadline!)[0];
+  if (!offer) return null;
+  const deadline = offer.offerDeadline!;
+  const rows = items
+    .filter((a) => IN_PROCESS.includes(a.stage))
+    .map((a) => {
+      const weeks = a.process?.weeks;
+      const median = weeks === undefined ? medianDays(items, a.stage, 'offer') : null;
+      const eta =
+        weeks !== undefined ? (appliedOn(a) ?? a.createdAt) + weeks * 7 * DAY : median !== null ? stageSince(a) + median * DAY : null;
+      return { a, eta, late: eta !== null && eta > deadline };
+    });
+  return { offer, deadline, rows };
+}
+
+const SCAN_DAYS = 14;
+/** Interviews closer than this clash: an hour each plus half an hour to reset. */
+const INTERVIEW_GAP = 90 * 60000;
+export type ScheduleIssue = { kind: 'overlap' | 'oa-pile' | 'offer-clash'; day: string; ids: string[] };
+/**
+ * Clashes in the next two weeks: two interviews starting under 90 minutes apart, three or more OA
+ * deadlines on one local day, and an offer deadline on the same day as another card's interview
+ * or OA deadline. Days are this browser's local dates, soonest first.
+ */
+export function scheduleIssues(items: readonly Application[], now: number): ScheduleIssue[] {
+  const ahead = agenda(items, now).filter((e) => e.at <= now + SCAN_DAYS * DAY);
+  const issues: ScheduleIssue[] = [];
+  const interviews = ahead.filter((e) => e.kind === 'interview');
+  interviews.forEach((x, i) => {
+    for (const y of interviews.slice(i + 1))
+      if (y.at - x.at < INTERVIEW_GAP) issues.push({ kind: 'overlap', day: localStamp(x.at, false), ids: [x.a.id, y.a.id] });
+  });
+  const days = new Map<string, AgendaEvent[]>();
+  for (const e of ahead) days.set(localStamp(e.at, false), [...(days.get(localStamp(e.at, false)) ?? []), e]);
+  for (const [day, list] of days) {
+    const oas = list.filter((e) => e.kind === 'oa');
+    if (oas.length >= 3) issues.push({ kind: 'oa-pile', day, ids: oas.map((e) => e.a.id) });
+    for (const o of list.filter((e) => e.kind === 'offer')) {
+      const others = list.filter((e) => (e.kind === 'oa' || e.kind === 'interview') && e.a.id !== o.a.id).map((e) => e.a.id);
+      if (others.length) issues.push({ kind: 'offer-clash', day, ids: [o.a.id, ...new Set(others)] });
+    }
+  }
+  return issues.sort((x, y) => x.day.localeCompare(y.day));
 }
