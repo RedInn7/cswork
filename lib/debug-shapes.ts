@@ -101,8 +101,9 @@ export function stepViews(trace: Trace, index: number): StepView[] {
 const ROW = 18;
 /**
  * Nodes as a picture. Trees (any left/right) lay out like structure-view's, with next drawn as
- * dashed arrows (populating-next problems); lists get one row per pointer variable that walks
- * next until a node already placed, the rest after. Pointed-at nodes are active and named.
+ * dashed arrows (populating-next problems); lists get one row per chain, walking next from each
+ * node nothing points to (then from what's left: a cycle) until a node already placed, so a
+ * half-reversed list reads 2→1 above 3→4. Pointed-at nodes are active and named.
  * ponytail: a cycle's closing edge is a straight line back (its last node drops half a row so
  * it shows); a long cycle's edge runs under the nodes between.
  */
@@ -123,7 +124,8 @@ export function nodeGraph({ n: nodes, p }: NodesShape): DemoGraph {
     const at: { x: number; y: number }[] = [];
     let row = 0,
       widest = 0;
-    for (const start of [...p.map(([, i]) => i), ...nodes.keys()]) {
+    const pointed = new Set(nodes.map(([, next]) => next));
+    for (const start of [...[...nodes.keys()].filter((i) => !pointed.has(i)), ...nodes.keys()]) {
       let col = 0,
         last = -1,
         i = start;
@@ -153,5 +155,9 @@ export function nodeGraph({ n: nodes, p }: NodesShape): DemoGraph {
     if (left && left.y === node.y && node.x - left.x <= 14 && !left.noteDy) node.noteDy = 3.4;
   });
   if (noted.length) graph.height += 8;
+  // Room for a long name under the first or last node (~0.9 units per character each side).
+  const pad = Math.max(0, ...noted.map((node) => Math.ceil(node.note!.length * 0.9) - 5));
+  for (const node of graph.nodes) node.x += pad;
+  graph.width += 2 * pad;
   return graph;
 }
