@@ -248,6 +248,7 @@ const EN: Record<string, string> = {
   题单接口不存在: 'List endpoint not found',
   题单数量已达上限: "You've reached the limit for lists",
   '题单最多 500 道题': 'A list can hold at most 500 problems',
+  '题单内容已变化，请刷新后再排序': 'The list has changed. Refresh and reorder again',
   这个主页名已被占用: 'That handle is taken',
   这枚徽章还没有获得: 'You haven’t earned that badge yet',
   面试月份无效: 'Invalid interview month',

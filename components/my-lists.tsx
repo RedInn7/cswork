@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { ArrowRight, Check, Circle, Copy, GitFork, Globe, Lock, Star, Trash2, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowDown, ArrowRight, ArrowUp, Check, Circle, Copy, GitFork, Globe, Lock, Star, Trash2, X } from 'lucide-react';
 import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
+import { ITEM_MAX as LIST_ITEMS, parseListImport, type ImportKind } from '@/lib/list-import';
 import { problemTitle } from '@/lib/problems';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import type { PracticeHistoryItem } from '@/lib/practice-review';
@@ -23,8 +24,6 @@ import { communityProblem } from './problem-community';
 import '@/app/learner-cloud.css';
 
 type T = (zh: string, en: string) => string;
-/** The server's cap on problems per list. */
-const LIST_ITEMS = 500;
 type Summary = {
   id: string;
   title: string;
@@ -276,6 +275,42 @@ function ListDetail({
   const [confirm, setConfirm] = useState(false);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
+  // Reordering: the row being dragged, the row it is over, what a screen reader hears after a move.
+  const [drag, setDrag] = useState<number | null>(null);
+  const [over, setOver] = useState<number | null>(null);
+  const [moved, setMoved] = useState('');
+  // A moved row's button keeps focus: React may re-insert the row, which drops it.
+  const refocus = useRef('');
+  useEffect(() => {
+    if (refocus.current) document.getElementById(refocus.current)?.focus();
+    refocus.current = '';
+  });
+  // Button moves in quick succession save once, after a pause; leaving the list saves at once.
+  // Saves queue one behind another, so the server gets them in the order they were made.
+  // ponytail: a tab closed inside the pause loses that last move.
+  const unsaved = useRef<{ list: string; order: string[] } | null>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const saving = useRef<Promise<void>>(Promise.resolve());
+  function saveOrder() {
+    clearTimeout(saveTimer.current);
+    const order = unsaved.current;
+    unsaved.current = null;
+    if (order)
+      saving.current = saving.current.then(() =>
+        api(`oj/lists/${order.list}/reorder`, { problemIds: order.order }).then(
+          () => {},
+          (e: Error) => {
+            // Moves made since build on the refused order: drop them and show the server's.
+            clearTimeout(saveTimer.current);
+            unsaved.current = null;
+            setError(e.message);
+            return api<Detail>(`oj/lists/${order.list}`).then(setList, () => {});
+          },
+        ),
+      );
+    return saving.current;
+  }
+  useEffect(() => () => void saveOrder(), []);
   useEffect(() => {
     let live = true;
     api<Detail>(`oj/lists/${encodeURIComponent(id)}`).then(
@@ -291,13 +326,15 @@ function ListDetail({
       live = false;
     };
   }, [id]);
-  async function run<R>(task: () => Promise<R>) {
+  /** One list write at a time; moves wait too, since the reply replaces the list. */
+  async function run<R>(task: () => Promise<R>, onError: (message: string) => void = setError): Promise<R | null> {
     setBusy(true);
     setError('');
     try {
+      await saveOrder(); // A pending move reaches the server first, or the reply would undo it.
       return await task();
     } catch (e) {
-      setError((e as Error).message);
+      onError((e as Error).message);
       return null;
     } finally {
       setBusy(false);
@@ -320,6 +357,24 @@ function ListDetail({
   const share = `${typeof location === 'undefined' ? '' : location.origin}/u/lists/${list.id}`;
   const update = (body: Record<string, string>) =>
     run(async () => setList(await api<Detail>(`oj/lists/${list.id}`, body)));
+  const nameOf = (pid: string) => {
+    const summary = summaries.get(pid);
+    return summary ? problemTitle(summary, english ? 'en' : 'zh') : pid;
+  };
+  /** Moves a row and saves the whole order; the screen shows it at once and reloads if the save fails. */
+  function reorder(from: number, to: number, button?: 'up' | 'down') {
+    if (!list || busy || from === to || to < 0 || to >= list.items.length) return;
+    const items = [...list.items];
+    const [item] = items.splice(from, 1);
+    items.splice(to, 0, item);
+    if (button) refocus.current = `list-move-${to === 0 ? 'down' : to === items.length - 1 ? 'up' : button}-${item.problemId}`;
+    setList({ ...list, items });
+    setError('');
+    setMoved(t(`${nameOf(item.problemId)} 移到第 ${to + 1} 位`, `${nameOf(item.problemId)} moved to position ${to + 1}`));
+    unsaved.current = { list: list.id, order: items.map((i) => i.problemId) };
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(saveOrder, button ? 600 : 0);
+  }
   return (
     <>
       <nav className="cloud-crumbs" aria-label={t('导航路径', 'Breadcrumb')}>
@@ -486,19 +541,63 @@ function ListDetail({
           {t(error, englishMessage(error))}
         </p>
       )}
+      {list.mine && (
+        <BulkAdd id={list.id} empty={!ids.length} busy={busy} run={run} onAdded={setList} t={t} />
+      )}
+      {list.mine && ids.length > 1 && (
+        <p className="cloud-order-hint">
+          {t('拖动题目，或用右侧的上移、下移按钮调整顺序。', 'Drag a problem, or use the up and down buttons on its right, to change the order.')}
+        </p>
+      )}
+      <p className="sr-only" aria-live="polite">
+        {moved}
+      </p>
       {ids.length ? (
         <ul className="study-list progress-list">
-          {ids.map((pid) => {
+          {ids.map((pid, index) => {
             const summary = summaries.get(pid);
             const item = history.get(pid);
             const progress = item?.firstAcAt ? 'solved' : item ? 'attempted' : 'not_started';
             const label = { solved: t('已通过', 'Solved'), attempted: t('未通过', 'Not solved'), not_started: t('未提交', 'Not submitted') }[progress];
-            const name = summary ? problemTitle(summary, english ? 'en' : 'zh') : pid;
+            const name = nameOf(pid);
             return (
-              <li key={pid} className="cloud-item">
+              // oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- drag and drop; the up and down buttons are the keyboard path.
+              <li
+                key={pid}
+                className="cloud-item"
+                data-edit={list.mine || undefined}
+                data-dragging={drag === index || undefined}
+                data-drop={drag !== null && over === index && drag !== index ? (drag < index ? 'after' : 'before') : undefined}
+                draggable={list.mine && !busy}
+                onDragStart={(e) => {
+                  if (!list.mine || busy) return;
+                  setDrag(index);
+                  e.dataTransfer.effectAllowed = 'move';
+                  e.dataTransfer.setData('text/plain', pid);
+                }}
+                onDragOver={(e) => {
+                  if (drag === null) return;
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                  setOver(index);
+                }}
+                onDrop={(e) => {
+                  if (drag === null) return;
+                  e.preventDefault();
+                  reorder(drag, index);
+                  setDrag(null);
+                  setOver(null);
+                }}
+                onDragEnd={() => {
+                  setDrag(null);
+                  setOver(null);
+                }}
+              >
                 <a
                   className="study-row progress-row"
                   href={`/?view=problem&problem=${encodeURIComponent(pid)}`}
+                  // The row drags, not the link inside it.
+                  draggable={list.mine ? false : undefined}
                   data-progress={progress}
                   onClick={(e) => {
                     if (!plain(e)) return;
@@ -526,6 +625,28 @@ function ListDetail({
                     {summary ? t(summary.difficulty, LEVELS[summary.difficulty] ?? summary.difficulty) : '—'}
                   </span>
                 </a>
+                {list.mine && (
+                  <span className="cloud-move">
+                    <button
+                      type="button"
+                      id={`list-move-up-${pid}`}
+                      disabled={busy || index === 0}
+                      aria-label={t(`上移 ${name}`, `Move ${name} up`)}
+                      onClick={() => reorder(index, index - 1, 'up')}
+                    >
+                      <ArrowUp size={14} aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      id={`list-move-down-${pid}`}
+                      disabled={busy || index === ids.length - 1}
+                      aria-label={t(`下移 ${name}`, `Move ${name} down`)}
+                      onClick={() => reorder(index, index + 1, 'down')}
+                    >
+                      <ArrowDown size={14} aria-hidden="true" />
+                    </button>
+                  </span>
+                )}
                 {list.mine && (
                   <button
                     type="button"
@@ -586,5 +707,134 @@ function ListDetail({
         </AlertDialogContent>
       </AlertDialog>
     </>
+  );
+}
+
+type BulkResult = { added: number; duplicate: number; unknown: string[]; overflow: number };
+
+/** The owner's paste box: one problem per line, read here as a preview, resolved by the server. */
+function BulkAdd({
+  id,
+  empty,
+  busy,
+  run,
+  onAdded,
+  t,
+}: {
+  id: string;
+  empty: boolean;
+  /** Another list write is on its way: one at a time. */
+  busy: boolean;
+  run: <R>(task: () => Promise<R>, onError: (message: string) => void) => Promise<R | null>;
+  onAdded: (list: Detail) => void;
+  t: T;
+}) {
+  // Open for an empty list; kept as first rendered so adding problems does not fold it away.
+  const [open] = useState(empty);
+  const [text, setText] = useState('');
+  const [adding, setAdding] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState<BulkResult | null>(null);
+  const parsed = parseListImport(text, LIST_ITEMS + 1);
+  const lines = parsed.slice(0, LIST_ITEMS);
+  const count = (kind: ImportKind) => lines.filter((l) => l.kind === kind).length;
+  const unknown = lines.filter((l) => l.kind === 'unknown');
+  async function submit() {
+    setAdding(true);
+    setError('');
+    setResult(null);
+    const r = await run(
+      () => api<BulkResult & { list: Detail }>(`oj/lists/${id}/bulk`, { lines: lines.map((l) => l.raw) }),
+      setError,
+    );
+    setAdding(false);
+    if (!r) return;
+    onAdded(r.list);
+    setResult(r);
+    // What was not found goes back in the box to fix and add again.
+    setText(r.unknown.join('\n'));
+  }
+  return (
+    <details className="cloud-import" open={open || undefined}>
+      <summary>{t('批量添加', 'Add in bulk')}</summary>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void submit();
+        }}
+      >
+        <label>
+          {t(
+            '每行一道题：LeetCode 链接（.com 或 .cn）、slug、题号，或本站的题目链接和题目 id。',
+            'One problem per line: a LeetCode link (.com or .cn), slug or number, or a problem link or id from this site.',
+          )}
+          <textarea
+            value={text}
+            rows={6}
+            spellCheck={false}
+            aria-describedby="cloud-import-preview"
+            placeholder={'https://leetcode.com/problems/two-sum/\n15\n#42\nmerge-intervals'}
+            onChange={(e) => setText(e.target.value)}
+          />
+        </label>
+        <p id="cloud-import-preview" className="cloud-import-note">
+          {lines.length
+            ? t(
+                `${lines.length} 行：题号 ${count('number')} · LeetCode 链接或 slug ${count('slug')} · 本站题目 ${count('id')} · 无法识别 ${unknown.length}`,
+                `${lines.length} line${lines.length === 1 ? '' : 's'}: numbers ${count('number')} · LeetCode links or slugs ${count('slug')} · site problems ${count('id')} · not recognized ${unknown.length}`,
+              )
+            : t('粘贴后这里显示每类各有几行。', 'Once you paste, this shows how each line reads.')}
+          {parsed.length > LIST_ITEMS &&
+            t(`只取前 ${LIST_ITEMS} 行。`, ` Only the first ${LIST_ITEMS} lines are used.`)}
+        </p>
+        {unknown.length > 0 && (
+          <ul className="cloud-import-lines" aria-label={t('无法识别的行', 'Lines not recognized')}>
+            {unknown.slice(0, 5).map((l, i) => (
+              <li key={i}>{l.raw}</li>
+            ))}
+            {unknown.length > 5 && <li>{t(`还有 ${unknown.length - 5} 行`, `${unknown.length - 5} more`)}</li>}
+          </ul>
+        )}
+        <button type="submit" disabled={busy || lines.length === unknown.length}>
+          {adding ? t('正在添加…', 'Adding…') : t('添加到题单', 'Add to the list')}
+        </button>
+      </form>
+      {error && (
+        <p className="cloud-error" role="alert">
+          {t(error, englishMessage(error))}
+        </p>
+      )}
+      <output className="cloud-import-done">
+        {result &&
+          [
+            t(`添加了 ${result.added} 道题`, `Added ${result.added} problem${result.added === 1 ? '' : 's'}`),
+            result.duplicate
+              ? t(`${result.duplicate} 行已在题单里或重复`, `${result.duplicate} already in the list or repeated`)
+              : '',
+            result.overflow
+              ? t(
+                  `题单满 ${LIST_ITEMS} 道，另有 ${result.overflow} 道没加进去`,
+                  `the list is full at ${LIST_ITEMS}, so ${result.overflow} more did not fit`,
+                )
+              : '',
+            result.unknown.length
+              ? t(
+                  `${result.unknown.length} 行没有找到能加入题单的题（题单只收 OA 题和 LeetCode 题），已放回输入框`,
+                  `${result.unknown.length} line${result.unknown.length === 1 ? '' : 's'} found no problem a list can hold (lists take OA and LeetCode problems) and went back in the box`,
+                )
+              : '',
+          ]
+            .filter(Boolean)
+            .join(t('；', '; ')) + t('。', '.')}
+      </output>
+      {!!result?.unknown.length && (
+        <ul className="cloud-import-lines" aria-label={t('没有找到的行', 'Lines not found')}>
+          {result.unknown.slice(0, 20).map((raw, i) => (
+            <li key={i}>{raw}</li>
+          ))}
+          {result.unknown.length > 20 && <li>{t(`还有 ${result.unknown.length - 20} 行`, `${result.unknown.length - 20} more`)}</li>}
+        </ul>
+      )}
+    </details>
   );
 }
