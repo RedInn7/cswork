@@ -1,0 +1,492 @@
+/* /frontend and /frontend/js/<slug> (app/frontend, components/js-workspace.tsx): the problem list,
+   and a two-column bench with the statement on the left and the editor and results on the right. */
+.fejs-public .public-library-header,
+.fejs-public .public-library-footer,
+.fejs-public .public-library-main {
+  max-width: 1320px;
+}
+.fejs-practice {
+  max-width: 780px;
+  margin: -14px 0 34px;
+  padding-left: 12px;
+  border-left: 3px solid #087158;
+  color: #3f5a4f;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* The list */
+.fejs-list {
+  display: grid;
+  gap: 34px;
+}
+.fejs-progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #3f5a4f;
+  font-size: 14px;
+  font-weight: 600;
+}
+.fejs-progress-bar {
+  flex: 0 1 240px;
+  height: 6px;
+  border-radius: 999px;
+  background: #dce5df;
+  overflow: hidden;
+}
+.fejs-progress-bar > span {
+  display: block;
+  height: 100%;
+  background: #087158;
+}
+.fejs-group h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 650;
+}
+.fejs-group h2 small {
+  color: #60766c;
+  font-size: 13px;
+  font-weight: 500;
+}
+.fejs-group ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 10px;
+}
+.public-library .fejs-group li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid #dce5df;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #152c24;
+  text-decoration: none;
+}
+.public-library .fejs-group li a:hover {
+  border-color: #087158;
+}
+.fejs-item-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.fejs-level {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.fejs-level-easy {
+  background: #e3f4ec;
+  color: #0b5e45;
+}
+.fejs-level-medium {
+  background: #fdf1dc;
+  color: #7a4b00;
+}
+.fejs-level-hard {
+  background: #fbe5e3;
+  color: #9b2c22;
+}
+.fejs-done {
+  flex: none;
+  color: #087158;
+}
+.fejs-todo {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #b9c8bf;
+  border-radius: 50%;
+}
+.fejs-more {
+  margin-top: 44px;
+  padding-top: 26px;
+  border-top: 1px solid #dce5df;
+}
+.fejs-more h2 {
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 650;
+}
+.fejs-more ul {
+  display: grid;
+  gap: 8px;
+  font-size: 15px;
+}
+.fejs-off {
+  color: #54695f;
+}
+
+/* The workspace */
+.fejs {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 28px;
+  align-items: start;
+}
+.fejs-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fejs-solved {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #087158;
+  font-size: 13px;
+  font-weight: 600;
+}
+.public-library .fejs-statement h1 {
+  margin: 10px 0 18px;
+  font-size: clamp(26px, 3vw, 34px);
+}
+.public-library-prose.fejs-prose {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.public-library-prose.fejs-prose pre {
+  padding: 14px 16px;
+}
+.fejs-h2 {
+  margin: 28px 0 8px;
+  font-size: 17px;
+  font-weight: 650;
+}
+.fejs-note {
+  color: #54695f;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.fejs-public-cases {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding-left: 22px;
+  list-style: disc;
+  color: #253f35;
+  font-size: 14px;
+}
+.public-library .fejs-link {
+  color: #087158;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.fejs-link:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.fejs-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid #f0d9a8;
+  border-radius: 10px;
+  background: #fff8ea;
+  font-size: 14px;
+}
+.fejs-confirm p {
+  flex-basis: 100%;
+  margin: 0 0 4px;
+  color: #5a4300;
+}
+.fejs-next {
+  margin-top: 28px;
+  font-size: 14px;
+}
+.fejs-bench {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dce5df;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 18px 40px -28px rgba(21, 44, 36, 0.35);
+  overflow: hidden;
+}
+.fejs-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #dce5df;
+  background: #fafcfb;
+}
+.fejs-keys {
+  color: #4f6359;
+  font-size: 12px;
+}
+.fejs-actions {
+  display: flex;
+  gap: 6px;
+}
+.fejs-editor {
+  height: min(56vh, 560px);
+  min-height: 300px;
+  border-bottom: 1px solid #dce5df;
+}
+.fejs-results {
+  max-height: 42vh;
+  overflow: auto;
+  padding: 12px 14px;
+  font-size: 13px;
+}
+.fejs-empty {
+  color: #54695f;
+}
+.fejs-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-weight: 650;
+}
+.fejs-good {
+  color: #0b6b4f;
+}
+.fejs-bad {
+  color: #a3261b;
+}
+.fejs-cases {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+.fejs-cases li {
+  padding: 7px 10px;
+  border: 1px solid #e3e9e5;
+  border-radius: 8px;
+}
+.fejs-cases li.is-fail {
+  border-color: #f2c9c4;
+  background: #fff6f5;
+}
+.fejs-case-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #152c24;
+}
+.fejs-case-head svg {
+  flex: none;
+}
+.fejs-cases li.is-pass svg {
+  color: #0b6b4f;
+}
+.fejs-cases li.is-fail svg {
+  color: #a3261b;
+}
+.fejs-case-head small {
+  margin-left: auto;
+  color: #4f6359;
+  font-size: 11px;
+}
+.fejs-cases pre,
+.fejs-console pre {
+  margin-top: 6px;
+  color: #3a2b2a;
+  font:
+    12px/1.6 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.fejs-console {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e3e9e5;
+}
+.fejs-console summary {
+  color: #253f35;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fejs-console pre {
+  max-height: 220px;
+  overflow: auto;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f4f7f5;
+  color: #253f35;
+}
+.fejs-log-warn {
+  color: #7a4b00;
+}
+.fejs-log-error {
+  color: #a3261b;
+}
+@media (max-width: 900px) {
+  .fejs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fejs-bench {
+    position: static;
+  }
+  .fejs-editor {
+    height: 420px;
+  }
+  .fejs-results {
+    max-height: none;
+  }
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .fejs-practice {
+    border-left: 3px solid #087158;
+    color: #b6d0c5;
+  }
+  .dark .fejs-progress {
+    color: #b6d0c5;
+  }
+  .dark .fejs-progress-bar {
+    background: #121714;
+  }
+  .dark .fejs-progress-bar > span {
+    background: #087158;
+  }
+  .dark .fejs-group h2 small {
+    color: #afc3ba;
+  }
+  .dark .public-library .fejs-group li a {
+    border: 1px solid #2b322d;
+    background: #191919;
+    color: #cbe3d9;
+    text-decoration: none;
+  }
+  .dark .public-library .fejs-group li a:hover {
+    border-color: #087158;
+  }
+  .dark .fejs-level-easy {
+    background: #0a130f;
+    color: #9ddac0;
+  }
+  .dark .fejs-level-medium {
+    background: #181106;
+    color: #ecbe8b;
+  }
+  .dark .fejs-level-hard {
+    background: #1a0f0e;
+    color: #fcb1a5;
+  }
+  .dark .fejs-done {
+    color: #8ed5bc;
+  }
+  .dark .fejs-todo {
+    border: 1.5px solid #333f38;
+  }
+  .dark .fejs-more {
+    border-top: 1px solid #2b322d;
+  }
+  .dark .fejs-off {
+    color: #b4c8be;
+  }
+  .dark .fejs-solved {
+    color: #8ed5bc;
+  }
+  .dark .fejs-note {
+    color: #b4c8be;
+  }
+  .dark .fejs-public-cases {
+    color: #c1dbd0;
+  }
+  .dark .public-library .fejs-link {
+    color: #8ed5bc;
+    text-decoration: underline;
+  }
+  .dark .fejs-link:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .fejs-confirm {
+    border: 1px solid #3e3111;
+    background: #19150e;
+  }
+  .dark .fejs-confirm p {
+    color: #e2cc9b;
+  }
+  .dark .fejs-bench {
+    border: 1px solid #2b322d;
+    background: #191919;
+    box-shadow: 0 18px 40px -28px #152c2459;
+  }
+  .dark .fejs-toolbar {
+    border-bottom: 1px solid #2b322d;
+    background: #171817;
+  }
+  .dark .fejs-keys {
+    color: #b7cac0;
+  }
+  .dark .fejs-editor {
+    border-bottom: 1px solid #2b322d;
+  }
+  .dark .fejs-empty {
+    color: #b4c8be;
+  }
+  .dark .fejs-good {
+    color: #93d7bb;
+  }
+  .dark .fejs-bad {
+    color: #fbb0a3;
+  }
+  .dark .fejs-cases li {
+    border: 1px solid #2b2f2c;
+  }
+  .dark .fejs-cases li.is-fail {
+    border-color: #4b2c28;
+    background: #191414;
+  }
+  .dark .fejs-case-head {
+    color: #cbe3d9;
+  }
+  .dark .fejs-cases li.is-pass svg {
+    color: #93d7bb;
+  }
+  .dark .fejs-cases li.is-fail svg {
+    color: #fbb0a3;
+  }
+  .dark .fejs-case-head small {
+    color: #b7cac0;
+  }
+  .dark .fejs-cases pre,
+  .dark .fejs-console pre {
+    color: #e5d4d3;
+  }
+  .dark .fejs-console {
+    border-top: 1px solid #2b2f2c;
+  }
+  .dark .fejs-console summary {
+    color: #c1dbd0;
+  }
+  .dark .fejs-console pre {
+    background: #131514;
+    color: #c1dbd0;
+  }
+  .dark .fejs-log-warn {
+    color: #ecbe8b;
+  }
+  .dark .fejs-log-error {
+    color: #fbb0a3;
+  }
+}
+/* ── end dark theme ── */
