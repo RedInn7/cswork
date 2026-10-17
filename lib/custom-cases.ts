@@ -4,6 +4,7 @@
  * a run on that case. The expected outputs live under `${key}:expect`, so the inputs keep their
  * old format.
  */
+import { activeStatuses } from './oj-client';
 import { sameOutput } from './stress-gen';
 
 export const MAX_CASES = 5;
@@ -45,9 +46,12 @@ export function writeCases(key: string, cases: string[], expect: string[]) {
   }
 }
 
+// JSON text without the whitespace outside its strings. Numbers stay as written: a round trip
+// through JSON.parse would turn a long past 2^53 into the nearest double (…993 reads as …992).
 const json = (text: string) => {
   try {
-    return JSON.stringify(JSON.parse(text));
+    JSON.parse(text);
+    return text.replace(/("(?:[^"\\]|\\.)*")|\s+/g, (_, quoted?: string) => quoted ?? '');
   } catch {
     return null;
   }
@@ -55,11 +59,12 @@ const json = (text: string) => {
 const lastNewlines = (text: string) => text.replace(/(?:\r?\n)+$/, '');
 
 /**
- * A run on a custom case against the expected output the learner typed; null when there is none.
- * An exact checker compares as the judge does except for final newlines (a text box hides them);
- * tokens compares whitespace-separated tokens. Any other checker (floats, sets, any valid answer)
- * falls back to tokens and says `approx`: a ✗ may still be a right answer. `leetcode` compares
- * returned values as JSON when both sides parse, so [1, 2] matches [1,2].
+ * A run on a custom case against the expected output the learner typed; null when there is none,
+ * or no verdict to compare yet (still judging, cancelled, or a judge failure). An exact checker
+ * compares as the judge does except for final newlines (a text box hides them); tokens compares
+ * whitespace-separated tokens. Any other checker (floats, sets, any valid answer) falls back to
+ * tokens and says `approx`: a ✗ may still be a right answer. `leetcode` compares returned values
+ * as JSON, ignoring whitespace outside strings, when both sides parse, so [1, 2] matches [1,2].
  */
 export function customVerdict(
   run: { status: string; stdout?: string },
@@ -67,7 +72,7 @@ export function customVerdict(
   checker = 'tokens',
   leetcode = false,
 ) {
-  if (!expected.trim()) return null;
+  if (!expected.trim() || activeStatuses.has(run.status) || ['cancelled', 'system_error'].includes(run.status)) return null;
   const approx = checker !== 'exact' && checker !== 'tokens';
   if (run.status !== 'finished') return { pass: false, approx };
   const actual = run.stdout ?? '';

@@ -322,10 +322,12 @@ test('single-submit mock OA: one confirmed submission per question, its verdict 
         status: 'accepted', passed: 1, total: 1, runtimeMs: 12, cases: [{ ordinal: 0, status: 'accepted', hidden: true }],
       });
     }
-    if (url.includes('/submissions')) return Response.json({ items: [], nextCursor: null });
+    if (url.includes('/submissions')) return Response.json({ items: historyItems, nextCursor: null });
     if (url.includes('/status')) return Response.json({ available: true, languageVersions: {} });
     return Response.json(problem);
   };
+  let historyItems = [];
+  let refreshes = 0;
   const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
   const button = (text) => [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === text);
   let root = createRoot(document.getElementById('root'));
@@ -338,7 +340,9 @@ test('single-submit mock OA: one confirmed submission per question, its verdict 
           mock: 's1',
           navigate() {},
           ask() {},
-          refresh: async () => {},
+          refresh: async () => {
+            refreshes++;
+          },
         }),
       ),
     );
@@ -358,6 +362,7 @@ test('single-submit mock OA: one confirmed submission per question, its verdict 
     assert.equal(document.querySelector('[role="alertdialog"]'), null, 'the dialog closes');
     assert.equal(posts.length, 1);
     assert.equal(posts[0].mode, 'judge');
+    assert.ok(refreshes > 0, 'the exam bar reloads the judge rows on the receipt');
     const result = document.querySelector('.cs-result-content').textContent;
     assert.match(result, /Submitted/);
     assert.match(result, /Results come after you hand in/);
@@ -374,6 +379,18 @@ test('single-submit mock OA: one confirmed submission per question, its verdict 
     await mount([{ id: 'j2', problem_id: 'acm-1', language: 'python', status: 'system_error', passed: 0, total: 1, created_at: Date.now() }]);
     assert.equal(button('Final answer in'), undefined);
     assert.ok(button('Submit'));
+    // Left while still judging, back before the exam's rows reload: this problem's own history
+    // has the queued judge row and locks it; a run row there does not.
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    historyItems = [{ id: 'r1', problem_id: 'acm-1', language: 'python', mode: 'run', status: 'finished', passed: 0, total: 0, created_at: Date.now() }];
+    await mount([]);
+    assert.ok(button('Submit'));
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    historyItems = [{ id: 'j3', problem_id: 'acm-1', language: 'python', mode: 'judge', status: 'queued', passed: 0, total: 0, created_at: Date.now() }];
+    await mount([]);
+    assert.equal(button('Final answer in').disabled, true);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

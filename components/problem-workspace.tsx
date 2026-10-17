@@ -732,7 +732,8 @@ function Workspace({
     if (mark) setCaseMarks((marks) => ({ ...marks, [`${ranWith.input}\0${ranWith.expect}`]: mark.pass }));
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- once per finished run; ranWith is what that run sent.
   }, [submission]);
-  // Single-submit rules: this question's one submission is in (here, or in the exam's judge rows);
+  // Single-submit rules: this question's one submission is in (here, in the exam's judge rows, or
+  // in this problem's own history, which has a row still judging after you left and came back);
   // a cancelled one or a judge failure gives it back.
   const [sealedHere, setSealedHere] = useState<string | null>(null);
   const [confirmFinal, setConfirmFinal] = useState(false);
@@ -740,7 +741,13 @@ function Workspace({
     if (submission?.id === sealedHere && ['cancelled', 'system_error'].includes(submission.status)) setSealedHere(null);
   }, [submission, sealedHere]);
   const locked =
-    sealVerdict && !!exam && (!!sealedHere || finalSubmitted(exam.session, problem.id, boot.submissions ?? []));
+    sealVerdict &&
+    !!exam &&
+    (!!sealedHere ||
+      finalSubmitted(exam.session, problem.id, [
+        ...(boot.submissions ?? []),
+        ...history.filter((item) => item.mode === 'judge'),
+      ]));
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -1578,7 +1585,11 @@ function Workspace({
         (result) => {
           if (!alive.current || controller.signal.aborted) return;
           idempotency.current = null;
-          if (sent === 'judge' && sealVerdict) setSealedHere(result.id);
+          if (sent === 'judge' && sealVerdict) {
+            setSealedHere(result.id);
+            // The exam bar marks this question as submitted now, not when its verdict comes in.
+            void latestRefresh.current().catch(() => {});
+          }
           wb.submitted(result.id);
           feedbackTiming.current?.bind(result.id);
           track('judge_submit', {

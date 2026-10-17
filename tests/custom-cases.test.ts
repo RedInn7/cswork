@@ -23,6 +23,9 @@ void test('a run against the expected output the learner typed', () => {
   assert.equal(customVerdict(run('3\n'), ' \n\t'), null);
   // A run that did not finish never matches.
   assert.deepEqual(customVerdict(run('3\n', 'runtime_error'), '3', 'exact'), { pass: false, approx: false });
+  // Still judging, cancelled or a judge failure: nothing to compare yet.
+  for (const status of ['pending', 'queued', 'running', 'cancelled', 'system_error'])
+    assert.equal(customVerdict(run('', status), '3', 'exact'), null, status);
   assert.deepEqual(customVerdict({ status: 'compile_error' }, '3'), { pass: false, approx: false });
   // exact: spacing inside counts, final newlines do not (a text box hides them).
   assert.deepEqual(customVerdict(run('1 2\n'), '1 2', 'exact'), { pass: true, approx: false });
@@ -41,4 +44,9 @@ void test('a run against the expected output the learner typed', () => {
   assert.deepEqual(customVerdict(run('[2,1]\n'), '[1,2]', 'tokens', true), { pass: false, approx: false });
   assert.deepEqual(customVerdict(run('[1,2]\n'), '[1, 2', 'tokens', true), { pass: false, approx: false }, 'not JSON: tokens');
   assert.deepEqual(customVerdict(run('"a b"\n'), '"a b"', 'exact', true), { pass: true, approx: false });
+  assert.deepEqual(customVerdict(run('"a b"\n'), '"ab"', 'exact', true), { pass: false, approx: false }, 'spaces in strings count');
+  assert.deepEqual(customVerdict(run('["a\\" b", 1]'), '["a\\" b",1]', 'exact', true), { pass: true, approx: false });
+  // A long past 2^53 compares as written, not as the nearest double.
+  assert.deepEqual(customVerdict(run('9007199254740992\n'), '9007199254740993', 'exact', true), { pass: false, approx: false });
+  assert.deepEqual(customVerdict(run('[9007199254740993]\n'), '[ 9007199254740993 ]', 'exact', true), { pass: true, approx: false });
 });
