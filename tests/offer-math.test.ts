@@ -2,7 +2,7 @@
 // growth, cliffs, the custom schedule's 100% rule, saved-offer cleanup and the tracker import.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { blankOffer, firstYearCash, fourYear, importOffers, OFFERS_MAX, readOffers, yearly, type Offer } from '../lib/offer-math.ts';
+import { blankOffer, firstYearCash, fourYear, importOffers, OFFERS_MAX, readOffers, yearly, type Offer } from '../lib/offer-math';
 
 const offer = (fields: Partial<Offer>): Offer => ({ ...blankOffer('t'), ...fields });
 const stock = (o: Offer) => yearly(o).map((y) => Math.round(y.stock * 100) / 100);
