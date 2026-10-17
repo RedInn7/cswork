@@ -83,8 +83,12 @@ test('sharing an experience: the form posts ordered rounds and split questions, 
       set(form.querySelector('input[list]'), 'Software Engineer');
       set(form.querySelector('input[minlength="4"]'), '  Uber onsite  ');
       set(form.querySelectorAll('textarea')[0], 'Coding, design and behavioral rounds. '.repeat(4));
-      set(form.querySelectorAll('textarea')[1], 'LRU cache\n\n  Design a feed \n');
+      set(form.querySelector('.xs-q-text'), 'LRU cache');
     });
+    // Two more rows: one filled, one left blank (it drops out).
+    await act(async () => button('Add a question').click());
+    await act(async () => button('Add a question').click());
+    await act(async () => set(form.querySelectorAll('.xs-q-text')[1], '  Design a feed '));
     // No round picked: the form says so instead of posting.
     await act(async () => form.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
     assert.ok(document.querySelector('.xs-error[role="alert"]').textContent.includes('round'));
@@ -100,7 +104,8 @@ test('sharing an experience: the form posts ordered rounds and split questions, 
     await wait();
     const posted = calls.find((c) => c.key === 'POST oj/experiences').body;
     assert.deepEqual(posted.rounds, ['Online Assessment', 'Onsite']);
-    assert.deepEqual(posted.questions, ['LRU cache', 'Design a feed']);
+    assert.deepEqual(posted.questions, ['LRU cache', 'Design a feed'].map((text) => ({ text, round: '', problem: '', similar: false })));
+    assert.deepEqual([posted.prepWeeks, posted.prepSources], [null, []]);
     assert.equal(posted.title, 'Uber onsite');
     assert.equal(posted.result, 'Offer');
     assert.equal(posted.agree, true);
@@ -188,7 +193,7 @@ test('a post the markdown renderer chokes on shows as plain text and can still b
 test('a member post shows its status to the author and a report control to other readers', async () => {
   const member = { id: 'CCCCCCCCCCCC', handle: null, status: 'approved', public: true, mine: false, note: '' };
   const html = (props) => new JSDOM(renderToStaticMarkup(createElement(MemberPost, props))).window.document;
-  let doc = html({ member, questions: ['LRU cache'] });
+  let doc = html({ member, questions: [{ text: 'LRU cache', round: '', problem: '', similar: false }] });
   assert.ok(doc.querySelector('details.xs-report') !== null);
   assert.ok(doc.querySelector('a[href="/library/experience-ugc/CCCCCCCCCCCC"]') !== null);
   assert.equal(doc.querySelector('.xs-questions li').textContent, 'LRU cache');
@@ -322,4 +327,118 @@ test('a post shows its OA line; company pages count OA outcomes, never as a rate
   doc = html(createElement(OaOutcomesCard, { oa: { all: null, partial: { n: 8, moved: 1 } }, locale: 'en' }));
   assert.equal(doc.querySelector('.company-stats-oa').textContent, 'Of 8 posts that left something unsolved, 1 says they moved on');
   assert.ok(doc.querySelector('h2').textContent.includes('all companies'));
+});
+
+test('question rows post their round, link and similar; unticking a round clears it; prep goes with them', async () => {
+  const { calls, restore } = stub({
+    'GET oj/experiences/mine': { items: [] },
+    'GET oj/reports/companies': { items: [{ slug: 'amazon', name: 'Amazon' }] },
+    'POST oj/experiences': (body) => ({ member: { id: 'EEEEEEEEEEEE' }, slug: 'member.EEEEEEEEEEEE', title: body.title, company: { slug: 'amazon', name: 'Amazon' } }),
+  });
+  const problems = [
+    { id: 'course-1', title: '课程题' },
+    { id: 'lc-146', title: 'LRU 缓存', titleEn: 'LRU Cache' },
+    { id: 'oa-amazon-3', title: 'Amazon OA 3' },
+    ...Array.from({ length: 30 }, (_, i) => ({ id: `lc-${i + 1}`, title: `题${i + 1}` })),
+  ];
+  const chip = (form, text) => [...form.querySelectorAll('.xs-chip')].find((l) => l.textContent === text).querySelector('input');
+  const rows = (form) => [...form.querySelectorAll('.xs-q-row')];
+  const options = (select) => [...select.querySelectorAll('option')].map((o) => o.value);
+  try {
+    dom.reconfigure({ url: 'https://cswork.test/?view=progress' });
+    const root = await mount(createElement(MyExperienceSubmissions, { english: true, navigate: () => {}, open: true, problems }));
+    const form = document.querySelector('form.xs-form');
+    await act(async () => {
+      set(form.querySelector('select'), 'amazon');
+      set(form.querySelector('input[list]'), 'SWE');
+      set(form.querySelector('input[minlength="4"]'), 'Amazon OA and onsite');
+      set(form.querySelectorAll('textarea')[0], 'An OA with two problems, then an onsite with coding rounds. '.repeat(3));
+      form.querySelector('.xs-agree input').click();
+    });
+    // The round menu offers only the ticked rounds, in order.
+    assert.deepEqual(options(rows(form)[0].querySelector('select')), ['']);
+    await act(async () => {
+      chip(form, 'Onsite').click();
+      chip(form, 'OA').click();
+    });
+    assert.deepEqual(options(rows(form)[0].querySelector('select')), ['', 'Online Assessment', 'Onsite']);
+    // The problem list: LeetCode and OA ids only, 20 at most, narrowed by what is typed.
+    const list = (row) => [...document.getElementById(row.querySelector('.xs-q-problem').getAttribute('list')).querySelectorAll('option')];
+    assert.equal(list(rows(form)[0]).length, 20);
+    assert.ok(!list(rows(form)[0]).some((o) => o.value === 'course-1'));
+    const similar = (row) => row.querySelector('.xs-q-similar input');
+    assert.equal(similar(rows(form)[0]).disabled, true, 'similar needs a link');
+    await act(async () => {
+      set(rows(form)[0].querySelector('.xs-q-text'), 'LRU cache');
+      set(rows(form)[0].querySelector('select'), 'Onsite');
+      set(rows(form)[0].querySelector('.xs-q-problem'), 'lru');
+    });
+    assert.deepEqual(list(rows(form)[0]).map((o) => [o.value, o.textContent]), [['lc-146', 'LRU Cache']]);
+    await act(async () => set(rows(form)[0].querySelector('.xs-q-problem'), 'lc-146'));
+    await act(async () => similar(rows(form)[0]).click());
+    await act(async () => button('Add a question').click());
+    await act(async () => {
+      set(rows(form)[1].querySelector('.xs-q-text'), 'Two sum');
+      set(rows(form)[1].querySelector('select'), 'Online Assessment');
+    });
+    // Unticking OA clears that question's round and drops it from the menus.
+    await act(async () => chip(form, 'OA').click());
+    assert.equal(rows(form)[1].querySelector('select').value, '');
+    assert.deepEqual(options(rows(form)[1].querySelector('select')), ['', 'Onsite']);
+    assert.equal(rows(form)[0].querySelector('select').value, 'Onsite', 'other rounds stay');
+    // A third row, removed again.
+    await act(async () => button('Add a question').click());
+    await act(async () => rows(form)[2].querySelector('.xs-quiet').click());
+    assert.equal(rows(form).length, 2);
+    // How I prepared.
+    const weeks = [...form.querySelectorAll('.xs-field')].find((l) => l.querySelector('span').textContent === 'Weeks of preparation').querySelector('input');
+    await act(async () => {
+      set(weeks, '6');
+      chip(form, 'Mock interviews').click();
+      chip(form, 'LeetCode').click();
+    });
+    await act(async () => form.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
+    await wait();
+    const posted = calls.find((c) => c.key === 'POST oj/experiences').body;
+    assert.deepEqual(posted.questions, [
+      { text: 'LRU cache', round: 'Onsite', problem: 'lc-146', similar: true },
+      { text: 'Two sum', round: '', problem: '', similar: false },
+    ]);
+    assert.deepEqual(posted.rounds, ['Onsite']);
+    assert.deepEqual([posted.prepWeeks, posted.prepSources], [6, ['leetcode', 'mock']]);
+    root.unmount();
+  } finally {
+    dom.reconfigure({ url: 'https://cswork.test/?view=progress&tab=share' });
+    restore();
+  }
+});
+
+test('a post links its questions to practise and offers the loop as a mock; company pages show prep among offers', () => {
+  const member = { id: 'CCCCCCCCCCCC', handle: null, status: 'approved', public: true, mine: false, note: '' };
+  const questions = [
+    { text: 'LRU cache', round: 'Onsite', problem: 'lc-146', similar: true, title: 'LRU 缓存', titleEn: 'LRU Cache' },
+    { text: 'Tell me about a conflict', round: '', problem: '', similar: false },
+  ];
+  const html = (el) => new JSDOM(renderToStaticMarkup(el)).window.document;
+  let doc = html(createElement(MemberPost, { member, questions }));
+  const items = doc.querySelectorAll('.xs-questions li');
+  assert.equal(items[0].querySelector('.xs-q-round').textContent, 'Onsite');
+  const go = items[0].querySelector('a.xs-q-go');
+  assert.equal(go.getAttribute('href'), '/?view=problem&problem=lc-146');
+  assert.equal(go.textContent, 'Practise LC 146 · LRU Cache (similar)');
+  assert.equal(items[1].textContent, 'Tell me about a conflict');
+  assert.equal(doc.querySelector('a.xs-loop').getAttribute('href'), '/?view=mock&experience=CCCCCCCCCCCC');
+  // In review (not public): no mock to draw yet; nothing linked: none either.
+  doc = html(createElement(MemberPost, { member: { ...member, public: false, status: 'pending', mine: true }, questions }));
+  assert.equal(doc.querySelector('a.xs-loop'), null);
+  doc = html(createElement(MemberPost, { member, questions: [questions[1]] }));
+  assert.equal(doc.querySelector('a.xs-loop'), null);
+
+  doc = html(createElement(MemberStatsCard, {
+    stats: { posts: 9, difficulty: null, sentiment: null, channel: null, weeks: null, prep: { n: 5, median: 6 }, oa: null },
+    locale: 'en',
+  }));
+  const figure = [...doc.querySelectorAll('.company-stats-figures > div')].find((d) => d.textContent.includes('prep'));
+  assert.equal(figure.querySelector('dt').textContent, 'Median prep among offers (5 posts)');
+  assert.equal(figure.querySelector('dd').textContent, '6 weeks');
 });
