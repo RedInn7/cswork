@@ -20,7 +20,7 @@
  * Schedules and learner-made routes (role-paths-v2) are RouteDoc notes: route:role-<key> holds a
  * built-in role's target date, hours and step marks; route:r-<base36> a learner's own route.
  */
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import { isDay } from '../study-plan';
 
 export const STEP_KINDS = [
@@ -268,43 +268,46 @@ export const ROUTE_DEFAULT: RouteDoc = { v: 1, targetDate: '', weeklyHours: 10, 
 /** A site step is `kind:ref` (unique on a route), an entry of the learner's `ext-<6>`. */
 export const stepId = (step: RouteStep) => (step.kind === 'ext' ? step.id : `${step.kind}:${step.ref}`);
 
-const day = z.string().refine(isDay);
-const count = (min: number, max: number) => z.number().int().min(min).max(max);
-const byStep = <T extends z.ZodType>(value: T) =>
-  z.record(z.string().max(420), value).refine((o) => Object.keys(o).length <= 200);
-const routeSchema = z
-  .object({
-    v: z.literal(1),
-    name: z.string().trim().min(1).max(60).optional(),
-    from: z.enum(ROLE_KEYS).optional(),
-    steps: z
+// zod/mini: this module ships to the browser (components/role-path.tsx) and the full zod is heavy there.
+const day = z.string().check(z.refine(isDay));
+const count = (min: number, max: number) => z.int().check(z.minimum(min), z.maximum(max));
+const stepKey = z.string().check(z.maxLength(420));
+const few = (o: object) => Object.keys(o).length <= 200;
+const routeSchema = z.strictObject({
+  v: z.literal(1),
+  name: z.optional(z.string().check(z.trim(), z.minLength(1), z.maxLength(60))),
+  from: z.optional(z.enum(ROLE_KEYS)),
+  steps: z.optional(
+    z
       .array(
         z.union([
+          z.strictObject({
+            kind: z.enum(STEP_KINDS),
+            ref: z.string().check(z.regex(/^[\w,-]{1,400}$/)),
+            optional: z.optional(z.literal(true)),
+          }),
           z
-            .object({ kind: z.enum(STEP_KINDS), ref: z.string().regex(/^[\w,-]{1,400}$/), optional: z.literal(true).optional() })
-            .strict(),
-          z
-            .object({
+            .strictObject({
               kind: z.literal('ext'),
-              id: z.string().regex(/^ext-[a-z0-9]{6}$/),
-              title: z.string().trim().min(1).max(80),
+              id: z.string().check(z.regex(/^ext-[a-z0-9]{6}$/)),
+              title: z.string().check(z.trim(), z.minLength(1), z.maxLength(80)),
               units: count(1, 500),
               done: count(0, 500),
-              unitMinutes: count(5, 600).default(60),
+              unitMinutes: z._default(count(5, 600), 60),
             })
-            .strict()
-            .refine((s) => s.done <= s.units),
+            .check(z.refine((step) => step.done <= step.units)),
         ]),
       )
-      .max(ROUTE_MAX_STEPS)
-      .refine((steps) => new Set(steps.map(stepId)).size === steps.length)
-      .optional(),
-    targetDate: z.union([z.literal(''), day]),
-    weeklyHours: count(1, 40),
-    state: byStep(z.enum(['doing', 'skip'])),
-    planned: byStep(day),
-  })
-  .strict();
+      .check(
+        z.maxLength(ROUTE_MAX_STEPS),
+        z.refine((steps) => new Set(steps.map(stepId)).size === steps.length),
+      ),
+  ),
+  targetDate: z.union([z.literal(''), day]),
+  weeklyHours: count(1, 40),
+  state: z.record(stepKey, z.enum(['doing', 'skip'])).check(z.refine(few)),
+  planned: z.record(stepKey, day).check(z.refine(few)),
+});
 /** A route note's body (JSON text, or already parsed), or null when it is not a valid route. */
 export function parseRoute(body: unknown): RouteDoc | null {
   try {
