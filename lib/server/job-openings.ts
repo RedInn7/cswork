@@ -41,8 +41,8 @@ export const FRESH_FOR = 72 * HOUR;
 // Long gone openings are dropped; one back after that counts as new again.
 const KEEP_FOR = 30 * 24 * HOUR;
 const FETCH_TIMEOUT = 10_000;
-// ponytail: at most 200 Greenhouse detail requests a round, 4 at a time and none after 5 minutes,
-// so a round stays short (the digest waits for it); openings left over are judged next round.
+// ponytail: at most 200 Greenhouse detail requests a round, 4 at a time and 5 minutes of them in
+// all, so a round stays short (the digest waits for it); openings left over are judged next round.
 const DETAIL_MAX = 200;
 const DETAIL_PARALLEL = 4;
 const DETAIL_FOR = 5 * 60_000;
@@ -140,13 +140,14 @@ export function boardOpenings(companySlug: string, { ats, board }: Board, body: 
  * Greenhouse's list has no description: one detail request (10 s) per opening not yet judged, new
  * or still AUTH_UNKNOWN, within the round's budget. A failure leaves it unknown for the next round.
  */
-async function judgeGreenhouse(board: string, found: Opening[], judged: ReadonlySet<string>, budget: { left: number; until: number }) {
+async function judgeGreenhouse(board: string, found: Opening[], judged: ReadonlySet<string>, budget: { left: number; ms: number }) {
   const todo = found.filter((o) => !judged.has(o.id)).slice(0, budget.left);
   budget.left -= todo.length;
+  const until = Date.now() + budget.ms;
   let next = 0;
   const worker = async () => {
     for (let o = todo[next++]; o; o = todo[next++]) {
-      const wait = budget.until - Date.now();
+      const wait = until - Date.now();
       if (wait <= 0) return;
       const content = await fetch(`${BOARD_API.greenhouse(board)}/${encodeURIComponent(o.id.slice(`greenhouse:${board}:`.length))}`, {
         headers: { accept: 'application/json' },
@@ -158,6 +159,8 @@ async function judgeGreenhouse(board: string, found: Opening[], judged: Readonly
     }
   };
   await Promise.all(Array.from({ length: DETAIL_PARALLEL }, worker));
+  // The time the board list fetches take is not counted.
+  budget.ms = Math.max(0, until - Date.now());
 }
 
 // ponytail: an in-process clock, not MAX(last_seen_at): a round where every board failed still
@@ -196,7 +199,7 @@ async function syncBoards(now: number, boards: Record<string, Board>) {
   );
   // Openings (never the board's own row) whose flags are known.
   const judged = db.prepare("SELECT id FROM job_openings WHERE company_slug=? AND auth_flags>=0 AND kind<>'board'").pluck();
-  const budget = { left: DETAIL_MAX, until: Date.now() + DETAIL_FOR };
+  const budget = { left: DETAIL_MAX, ms: DETAIL_FOR };
   let seen = 0;
   for (const [slug, board] of Object.entries(boards)) {
     const found = await fetch(BOARD_API[board.ats](board.board), {

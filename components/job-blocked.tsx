@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { JOB_BLOCKED_MAX, JOB_BLOCKED_NOTE } from '@/lib/job-tags';
+import { api } from '@/lib/types';
 
 // Styles: app/company/jobs.css, imported by the pages that show these.
 const NOTE_URL = `/api/oj/notes?target=${encodeURIComponent(JOB_BLOCKED_NOTE)}`;
@@ -11,12 +12,22 @@ export const blockedHelp = (zh: boolean) =>
     ? '屏蔽后，这些公司的岗位不再出现在岗位列表、招聘日历和每日新岗位消息里；关注公司的动态照常推送。'
     : 'Blocked companies’ roles stay out of the openings list, the hiring calendar and the daily new-roles notice; news from companies you follow still arrives.';
 
+const savedList = (body: string): string[] => {
+  try {
+    const slugs: unknown = JSON.parse(body);
+    return Array.isArray(slugs) ? slugs.filter((s): s is string => typeof s === 'string' && /^[a-z0-9-]{1,80}$/.test(s)) : [];
+  } catch {
+    return [];
+  }
+};
 /**
- * Saves the learner's blocked companies as their private note career:jobs-blocked (lib/server/my-practice.ts);
- * none removes it. Throws Error('full') past JOB_BLOCKED_MAX, any other error when not saved.
+ * Blocks or unblocks one company in the learner's private note career:jobs-blocked
+ * (lib/server/my-practice.ts), read fresh so a change made elsewhere is kept; none left removes the
+ * note. Returns the new list; throws Error('full') past JOB_BLOCKED_MAX, any other error when not saved.
  */
-export async function putBlocked(slugs: string[]) {
-  const list = [...new Set(slugs)];
+export async function putBlocked(slug: string, on: boolean) {
+  const saved = savedList((await api<{ body: string }>(`oj/notes?target=${encodeURIComponent(JOB_BLOCKED_NOTE)}`)).body);
+  const list = on ? [...new Set([...saved, slug])] : saved.filter((s) => s !== slug);
   if (list.length > JOB_BLOCKED_MAX) throw new Error('full');
   const response = await fetch(NOTE_URL, {
     method: 'PUT',
@@ -53,7 +64,7 @@ export function BlockToggle({ zh, slug, name, blocked }: { zh: boolean; slug: st
     setBusy(true);
     setError('');
     try {
-      setList(await putBlocked(on ? list.filter((s) => s !== slug) : [...list, slug]));
+      setList(await putBlocked(slug, !on));
     } catch (e) {
       setError(blockError(e, zh));
     } finally {
@@ -86,7 +97,7 @@ export function BlockedList({ zh, blocked, names }: { zh: boolean; blocked: stri
     setBusy(true);
     setError('');
     try {
-      await putBlocked(blocked.filter((s) => s !== slug));
+      await putBlocked(slug, false);
       location.reload();
     } catch (e) {
       setError(blockError(e, zh));

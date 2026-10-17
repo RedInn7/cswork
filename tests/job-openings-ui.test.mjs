@@ -93,15 +93,19 @@ test('sponsorship badges: what the description says, none when unknown or clear'
 
 const posted = [];
 const notes = [];
+// The server's career:jobs-blocked note, and each body saved to it.
+let blockedNote = '';
 const blocks = [];
 let blockFails = false;
 let tracked = [];
 globalThis.fetch = async (url, init = {}) => {
   const key = `${init.method ?? 'GET'} ${String(url)}`;
   if (key === 'GET /api/oj/applications') return Response.json({ items: tracked, max: 300 });
+  if (key === 'GET /api/oj/notes?target=career%3Ajobs-blocked') return Response.json({ target: 'career:jobs-blocked', body: blockedNote, updatedAt: null });
   if (key === 'PUT /api/oj/notes?target=career%3Ajobs-blocked') {
     if (blockFails) return Response.json({ error: 'busy' }, { status: 429 });
-    blocks.push(JSON.parse(init.body).body);
+    blockedNote = JSON.parse(init.body).body;
+    blocks.push(blockedNote);
     return Response.json({ ok: true });
   }
   if (key === 'PUT /api/oj/notes?target=career%3Ajobs-search') {
@@ -307,6 +311,7 @@ const two = [
 test('blocking from the list: every row of the company goes, with an undo; focus kept; failures said', async () => {
   localStorage.clear();
   blocks.length = 0;
+  blockedNote = '["figma"]';
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
@@ -340,6 +345,7 @@ test('blocking from the list: every row of the company goes, with an undo; focus
   assert.equal(host.querySelector('[role="alert"]').textContent, 'Not saved. Please try again.');
   await act(async () => view.unmount());
   // Undoing the only block removes the note.
+  blockedNote = '';
   const last = createRoot(host);
   await act(async () => last.render(createElement(JobList, { items: two, names: { ramp: 'Ramp' }, zh: true, withCompany: true, signedIn: true, blocked: [] })));
   await act(async () => [...host.querySelectorAll('.job-openings-block')].at(-1).click());
@@ -356,6 +362,7 @@ test('blocking: at most 100 companies, nothing sent past that', async () => {
   document.body.append(host);
   const root = createRoot(host);
   const full = Array.from({ length: 100 }, (_, i) => `co-${i}`);
+  blockedNote = JSON.stringify(full);
   await act(async () => root.render(createElement(JobList, { items: two, names: {}, zh: true, withCompany: true, signedIn: true, blocked: full })));
   await act(async () => host.querySelector('.job-openings-block').click());
   assert.equal(blocks.length, 0);
@@ -374,6 +381,7 @@ test('the company page toggle and the blocked list', async () => {
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
+  blockedNote = '["ramp"]';
   await act(async () => root.render(createElement(BlockToggle, { zh: false, slug: 'stripe', name: 'Stripe', blocked: ['ramp'] })));
   const button = host.querySelector('button');
   assert.equal(button.textContent, 'Block this company: Stripe');
@@ -391,9 +399,11 @@ test('the company page toggle and the blocked list', async () => {
   assert.equal(host.querySelector('summary').textContent, '2 blocked companies · Manage');
   const unblock = [...host.querySelectorAll('.job-blocked button')];
   assert.deepEqual(unblock.map((b) => b.textContent), ['Unblock: Ramp', 'Unblock: Stripe']);
-  // Saved, then the page reloads (jsdom does not navigate).
+  // Saved, then the page reloads (jsdom does not navigate). The list is read fresh: one blocked
+  // since the page loaded (another tab, a row's button) stays blocked.
+  blockedNote = '["ramp","stripe","figma"]';
   await act(async () => unblock[0].click());
-  assert.deepEqual(JSON.parse(blocks.at(-1)), ['stripe']);
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['stripe', 'figma']);
   await act(async () => root.render(createElement(BlockedList, { zh: true, blocked: [], names: {} })));
   assert.equal(host.querySelector('.job-blocked'), null, 'nothing blocked: no list');
   await act(async () => root.unmount());

@@ -131,7 +131,7 @@ export function JobList({
     setBlockBusy(true);
     setBlockFailed('');
     try {
-      const next = await putBlocked(on ? [...blocked, slug] : blocked.filter((s) => s !== slug));
+      const next = await putBlocked(slug, on);
       blockFocus.current = on ? '' : slug;
       setJustBlocked(on ? slug : null);
       setBlocked(next);
