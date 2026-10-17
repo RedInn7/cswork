@@ -305,3 +305,68 @@ test('a syntax error marks its line and leaves nothing to step through', async (
     await act(async () => root.unmount());
   }
 });
+
+test('recursive runs get a recursion tree tab: repeats marked, folding, a click jumps to the call', async () => {
+  open();
+  gate.release();
+  const fib = ['def fib(n):', '    if n < 2:', '        return n', '    return fib(n - 1) + fib(n - 2)', 'print(fib(4))'].join('\n');
+  const root = await mount({ language: 'python', code: fib, stdin: '', mode: 'acm' });
+  const tab = (name) => [...document.querySelectorAll('[role="tab"]')].find((n) => n.textContent === name);
+  const calls = () => [...document.querySelectorAll('.pydbg-call-jump')].map((n) => n.textContent);
+  try {
+    await click('Debug');
+    await settle(400);
+    // The stack stays the default tab.
+    assert.equal(tab('Call stack').getAttribute('aria-selected'), 'true');
+    assert.equal(document.querySelector('#pydbg-calls').getAttribute('aria-labelledby'), 'pydbg-tab-stack');
+    assert.ok(document.querySelector('.pydbg-stack') !== null);
+    await act(async () => tab('Recursion tree').click());
+    assert.equal(tab('Recursion tree').getAttribute('aria-selected'), 'true');
+    assert.equal(tab('Recursion tree').tabIndex, 0);
+    assert.deepEqual(calls(), [
+      'main',
+      'fib(n=4)→ 3',
+      'fib(n=3)→ 2',
+      'fib(n=2)→ 1repeated ×2',
+      'fib(n=1)→ 1repeated ×3',
+      'fib(n=0)→ 0repeated ×2',
+      'fib(n=1)→ 1repeated ×3',
+      'fib(n=2)→ 1repeated ×2',
+      'fib(n=1)→ 1repeated ×3',
+      'fib(n=0)→ 0repeated ×2',
+    ]);
+    // The first step's call (main) is the current one.
+    assert.equal(document.querySelector('.pydbg-call[aria-current] .pydbg-call-jump').textContent, 'main');
+    // Click fib(n=0): the replay jumps to its first step, which becomes the current call.
+    await act(async () => document.querySelectorAll('.pydbg-call-jump')[5].click());
+    assert.match(where(), /line 2 · fib$/);
+    assert.deepEqual(vars(), { n: '0' });
+    assert.equal(document.querySelector('.pydbg-call[aria-current] .pydbg-call-jump').textContent, 'fib(n=0)→ 0repeated ×2');
+    // Fold fib(n=3): its four inner calls disappear.
+    const fold = document.querySelectorAll('.pydbg-fold[aria-expanded]')[2];
+    assert.equal(fold.getAttribute('aria-label'), 'Hide inner calls');
+    await act(async () => fold.click());
+    assert.equal(fold.getAttribute('aria-expanded'), 'false');
+    assert.equal(calls().length, 6);
+    // Arrow keys move between the tabs.
+    await act(async () => tab('Recursion tree').dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })));
+    assert.equal(tab('Call stack').getAttribute('aria-selected'), 'true');
+    assert.equal(document.activeElement, tab('Call stack'));
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('runs without recursion keep the plain call stack heading', async () => {
+  open();
+  gate.release();
+  const root = await mount({ language: 'python', code: 'def f(x):\n    return x + 1\nprint(f(f(1)))\n', stdin: '', mode: 'acm' });
+  try {
+    await click('Debug');
+    await settle(400);
+    assert.equal(document.querySelector('[role="tablist"]'), null);
+    assert.equal(document.querySelector('#pydbg-stack').textContent, 'Call stack');
+  } finally {
+    await act(async () => root.unmount());
+  }
+});

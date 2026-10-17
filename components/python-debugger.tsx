@@ -1,7 +1,9 @@
 'use client';
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import {
   ArrowDownToLine,
+  ChevronDown,
+  ChevronRight,
   ChevronsLeft,
   FastForward,
   LoaderCircle,
@@ -13,6 +15,7 @@ import { CodeEditor, type CodeEditorProps } from './editor';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog';
 import { useT } from '@/lib/i18n';
 import type { CodingMode } from '@/lib/coding-mode';
+import { buildCallTree, MAX_CALL_NODES, type CallNode, type CallTree } from '@/lib/call-tree';
 import {
   changedNames,
   entryMethod,
@@ -264,6 +267,10 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
   };
   const changed = useMemo(() => changedNames(steps, index), [steps, index]);
   const stack = useMemo(() => stackAt(steps, index), [steps, index]);
+  const tree = useMemo(() => buildCallTree(steps, trace?.params), [steps, trace]);
+  const [calls, setCalls] = useState<'stack' | 'tree'>('stack');
+  // The tree tab only exists for runs where a function calls itself (or back into itself).
+  const showTree = tree.recursive && calls === 'tree';
   const busy = phase === 'loading' || phase === 'running';
   const named = (func: string) => (func === '<module>' ? t('主程序', 'main') : func);
   const controls: [Move, Pair, string, typeof Play, boolean][] = [
@@ -413,16 +420,56 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
                 <p className="pydbg-empty">{t('这一步没有局部变量', 'No local variables at this step')}</p>
               )}
             </section>
-            <section className="pydbg-panel" aria-labelledby="pydbg-stack">
-              <h3 id="pydbg-stack">{t('调用栈', 'Call stack')}</h3>
-              <ol className="pydbg-stack">
-                {stack.map((frame, i) => (
-                  <li key={i} aria-current={i === 0 ? 'step' : undefined}>
-                    <span>{named(frame.func)}</span>
-                    <small>{t(`第 ${frame.line} 行`, `line ${frame.line}`)}</small>
-                  </li>
-                ))}
-              </ol>
+            <section className="pydbg-panel" aria-labelledby={tree.recursive ? undefined : 'pydbg-stack'}>
+              {tree.recursive ? (
+                <div
+                  className="pydbg-tabs"
+                  role="tablist"
+                  aria-label={t('调用', 'Calls')}
+                  onKeyDown={(event) => {
+                    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+                    event.preventDefault();
+                    const next = calls === 'stack' ? 'tree' : 'stack';
+                    setCalls(next);
+                    event.currentTarget.querySelector<HTMLElement>(`#pydbg-tab-${next}`)?.focus();
+                  }}
+                >
+                  {(['stack', 'tree'] as const).map((key) => (
+                    <button
+                      key={key}
+                      id={`pydbg-tab-${key}`}
+                      type="button"
+                      role="tab"
+                      aria-selected={calls === key}
+                      aria-controls="pydbg-calls"
+                      tabIndex={calls === key ? 0 : -1}
+                      onClick={() => setCalls(key)}
+                    >
+                      {key === 'stack' ? t('调用栈', 'Call stack') : t('递归树', 'Recursion tree')}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <h3 id="pydbg-stack">{t('调用栈', 'Call stack')}</h3>
+              )}
+              <div
+                id="pydbg-calls"
+                role={tree.recursive ? 'tabpanel' : undefined}
+                aria-labelledby={tree.recursive ? `pydbg-tab-${calls}` : undefined}
+              >
+                {showTree ? (
+                  <CallTreeView tree={tree} stopped={!!trace?.stopped} current={step?.frame} onJump={setIndex} />
+                ) : (
+                  <ol className="pydbg-stack">
+                    {stack.map((frame, i) => (
+                      <li key={i} aria-current={i === 0 ? 'step' : undefined}>
+                        <span>{named(frame.func)}</span>
+                        <small>{t(`第 ${frame.line} 行`, `line ${frame.line}`)}</small>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
             </section>
             <section className="pydbg-panel" aria-labelledby="pydbg-out">
               <h3 id="pydbg-out">{t('到这一步的输出', 'Output so far')}</h3>
@@ -480,5 +527,80 @@ function Depths({ trace, index, breakpoints }: { trace: Trace | null; index: num
       )}
       <line className="pydbg-now" x1={x(index)} x2={x(index)} y1={0} y2={24} />
     </svg>
+  );
+}
+
+/**
+ * The run's calls as an indented tree: a click jumps to the call's first step, the arrow folds
+ * its children, and calls repeated with the same arguments say how often.
+ */
+function CallTreeView({
+  tree,
+  stopped,
+  current,
+  onJump,
+}: {
+  tree: CallTree;
+  stopped: boolean;
+  current: number | undefined;
+  onJump: (step: number) => void;
+}) {
+  const t = useT();
+  const [folded, setFolded] = useState<ReadonlySet<number>>(() => new Set());
+  const fold = (frame: number) =>
+    setFolded((previous) => {
+      const next = new Set(previous);
+      if (!next.delete(frame)) next.add(frame);
+      return next;
+    });
+  const row = (node: CallNode): ReactNode => {
+    const open = !folded.has(node.frame);
+    const name = node.func.split('.').at(-1)!;
+    return (
+      <li key={node.frame}>
+        <div className="pydbg-call" aria-current={node.frame === current ? 'step' : undefined}>
+          {node.children.length ? (
+            <button
+              type="button"
+              className="pydbg-fold"
+              aria-expanded={open}
+              aria-label={open ? t('收起子调用', 'Hide inner calls') : t('展开子调用', 'Show inner calls')}
+              onClick={() => fold(node.frame)}
+            >
+              {open ? <ChevronDown size={12} aria-hidden="true" /> : <ChevronRight size={12} aria-hidden="true" />}
+            </button>
+          ) : (
+            <span className="pydbg-fold" />
+          )}
+          <button type="button" className="pydbg-call-jump" title={t('跳到这次调用的第一步', "Jump to this call's first step")} onClick={() => onJump(node.firstStep)}>
+            {name === '<module>' ? (
+              <span>{t('主程序', 'main')}</span>
+            ) : (
+              <>
+                <span>{`${name}(${node.args})`}</span>
+                <small>{node.ret === undefined ? t('未返回', 'never returned') : `→ ${node.ret}`}</small>
+              </>
+            )}
+            {node.repeat > 1 && <em>{t(`重复 ×${node.repeat}`, `repeated ×${node.repeat}`)}</em>}
+          </button>
+        </div>
+        {open && node.children.length > 0 && <ul>{node.children.map(row)}</ul>}
+      </li>
+    );
+  };
+  return (
+    <>
+      {(tree.cut || stopped) && (
+        <p className="pydbg-empty">
+          {tree.cut && t(`只画了前 ${MAX_CALL_NODES} 次调用。`, `Only the first ${MAX_CALL_NODES} calls are drawn. `)}
+          {stopped &&
+            t(
+              '轨迹到了上限就停了：之后的调用没有记录，标「未返回」的调用当时还没结束。',
+              'The trace hit its limit: later calls were not recorded, and calls marked "never returned" were still running.',
+            )}
+        </p>
+      )}
+      <ul className="pydbg-tree">{tree.roots.map(row)}</ul>
+    </>
   );
 }

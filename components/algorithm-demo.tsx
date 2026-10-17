@@ -405,7 +405,7 @@ export function DemoGraphView({ graph, onPick }: { graph: DemoGraph; onPick?: (k
         <g
           key={n.id}
           className={`algorithm-demo-node ${n.state ? `is-${n.state}` : ''}`}
-          {...(onPick && {
+          {...(onPick ? {
             role: 'button',
             tabIndex: 0,
             'aria-label': name(n),
@@ -415,7 +415,7 @@ export function DemoGraphView({ graph, onPick }: { graph: DemoGraph; onPick?: (k
               event.preventDefault();
               onPick(`n${n.id}`);
             },
-          })}
+          } : {})}
         >
           <circle cx={n.x} cy={n.y} r={n.label ? R : R * 0.6} />
           {n.label && (

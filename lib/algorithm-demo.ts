@@ -1517,9 +1517,9 @@ class InputError extends Error {
     super(pair[1]);
   }
 }
-const fail = (zh: string, en: string): never => {
+function fail(zh: string, en: string): never {
   throw new InputError([zh, en]);
-};
+}
 /** "a; b" → ['a', 'b']: the parts a kind's input is split into. */
 function parts(text: string, count: number, optional = 0): string[] {
   const found = text.split(/[;；|]/).map((p) => p.trim());
