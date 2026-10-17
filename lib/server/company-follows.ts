@@ -23,7 +23,7 @@ const HOUR = 3600000;
 const DAY = 24 * HOUR;
 
 // What a board's first sync found (its own row keeps that time) is no news. MAX: a remapped board's old row lingers.
-const NOT_FIRST_SYNC = `first_seen_at>(SELECT MAX(first_seen_at) FROM job_openings WHERE company_slug=j.company_slug AND kind='board')`;
+export const NOT_FIRST_SYNC = `first_seen_at>(SELECT MAX(first_seen_at) FROM job_openings WHERE company_slug=j.company_slug AND kind='board')`;
 
 /** Each saved search's matches among the openings first seen in [cutoff - 24 h, cutoff): userId → the search and the matches' companies. */
 function searchMatches(cutoff: number) {
