@@ -38,16 +38,23 @@ export type PracticeHistoryItem = {
   whiteboard: 0 | 1 | null;
   /** A stress test agreed with the reference before the first AC. */
   brute: boolean;
+  /** Self-grades of review ACs, [the graded AC's time, grade]; absent when there are none. */
+  grades?: [number, ReviewGrade][];
 };
-export type DueReview = {
-  item: PracticeHistoryItem;
-  /** Distinct local days with an AC, 1..steps. */
+/** A review AC's self-grade (components/review-grade.tsx): Again, Hard, Good, Easy. */
+export type ReviewGrade = 1 | 2 | 3 | 4;
+export type ReviewState = {
+  /** 0 relearn (back the next day), else the step on the ladder; past steps, mastered. */
   level: number;
   /** Reviews on this problem's ladder: one more for a solve with help. */
   steps: number;
-  /** Local midnight of the day the review falls due. */
+  /** Local midnight of the day the review falls due (Infinity once mastered). */
   dueAt: number;
+  /** A leech: Again on two review days in a row, or on three in all. */
+  leech: boolean;
+  mastered: boolean;
 };
+export type DueReview = ReviewState & { item: PracticeHistoryItem };
 
 /** Days to wait after the n-th distinct AC day; past the last step a problem is mastered. */
 export const REVIEW_LADDER = [3, 7, 21, 60];
@@ -59,32 +66,157 @@ export const assisted = (item: Pick<PracticeHistoryItem, 'help'>) =>
 export const reviewLadder = (item: Pick<PracticeHistoryItem, 'help'>) =>
   assisted(item) ? [1, ...REVIEW_LADDER] : REVIEW_LADDER;
 
-const localDay = (time: number) => new Date(time).toDateString();
+// Day arithmetic on local dates keeps daylight-saving shifts out of the count.
+const midnight = (time: number) => new Date(time).setHours(0, 0, 0, 0);
+const addDays = (time: number, days: number) => {
+  const d = new Date(time);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days).getTime();
+};
+
+/** Each distinct local AC day, oldest first, with that day's last self-grade (undefined: none). */
+function acDays(item: PracticeHistoryItem) {
+  const days = new Map<number, [number, ReviewGrade | undefined]>();
+  for (const at of item.acAt) if (!days.has(midnight(at))) days.set(midnight(at), [-Infinity, undefined]);
+  for (const [at, grade] of item.grades ?? []) {
+    const day = days.get(midnight(at));
+    if (day && at >= day[0]) days.set(midnight(at), [at, grade]);
+  }
+  return [...days].sort((a, b) => a[0] - b[0]).map(([day, [, grade]]) => [day, grade] as const);
+}
+
+/**
+ * Replays a solved problem's AC days: the first puts it on step 1; each later day moves it by
+ * that day's last grade (none counts as Good): Again back to 0, Hard stays, Good +1, Easy +2.
+ * All Good, the level is the count of distinct AC days, as before grades.
+ */
+export function reviewState(item: PracticeHistoryItem): ReviewState {
+  const ladder = reviewLadder(item);
+  const days = acDays(item);
+  let level = 0;
+  let again = 0;
+  let run = 0;
+  let leech = false;
+  for (const [i, [, grade = 3]] of days.entries()) {
+    if (i === 0) {
+      level = 1;
+      continue;
+    }
+    run = grade === 1 ? run + 1 : 0;
+    if (grade === 1) again++;
+    if (run >= 2 || again >= 3) leech = true;
+    level = grade === 1 ? 0 : level + grade - 2;
+  }
+  const mastered = level > ladder.length;
+  const last = days.at(-1)?.[0];
+  const dueAt = last === undefined || mastered ? Infinity : addDays(last, level ? ladder[level - 1] : 1);
+  return { level, steps: ladder.length, dueAt, leech, mastered };
+}
 
 /**
  * Accepted problems due for review on `now`'s local day or earlier, most overdue first.
  * Several ACs on one day count once, so re-submitting today never skips a step.
  */
-export function dueReviews(
-  history: PracticeHistoryItem[],
-  now: number,
-): DueReview[] {
-  const due: DueReview[] = [];
+export function dueReviews(history: PracticeHistoryItem[], now: number): DueReview[] {
+  return history
+    .flatMap((item) => {
+      if (!item.acAt.length) return [];
+      const state = reviewState(item);
+      return !state.mastered && state.dueAt <= now ? [{ item, ...state }] : [];
+    })
+    .sort((a, b) => a.dueAt - b.dueAt);
+}
+
+/**
+ * The review load settings, the learner's note `pref:review` (components/review-forecast.tsx):
+ * at most dailyCap reviews a day, and a break of pausedDays days from the local day pausedFrom.
+ */
+export type ReviewPrefs = { dailyCap?: number; pausedFrom?: string; pausedDays?: number };
+const whole = (value: unknown, max: number): value is number =>
+  Number.isInteger(value) && (value as number) >= 1 && (value as number) <= max;
+/** YYYY-MM-DD moved by n days, in calendar days. */
+const shiftDate = (date: string, n: number) =>
+  new Date(Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10) + n)).toISOString().slice(0, 10);
+/**
+ * The note's body (or parsed JSON) as ReviewPrefs: a field out of range is dropped, and a break
+ * needs both a real day and its length. No zod, so the client uses it too.
+ */
+export function parseReviewPrefs(body: unknown): ReviewPrefs {
+  let raw = body;
+  if (typeof raw === 'string')
+    try {
+      raw = JSON.parse(raw);
+    } catch {
+      return {};
+    }
+  if (!raw || typeof raw !== 'object') return {};
+  const { dailyCap, pausedFrom, pausedDays } = raw as Record<string, unknown>;
+  const prefs: ReviewPrefs = {};
+  if (whole(dailyCap, 200)) prefs.dailyCap = dailyCap;
+  if (
+    typeof pausedFrom === 'string' &&
+    /^\d{4}-\d{2}-\d{2}$/.test(pausedFrom) &&
+    shiftDate(pausedFrom, 0) === pausedFrom &&
+    whole(pausedDays, 60)
+  )
+    Object.assign(prefs, { pausedFrom, pausedDays });
+  return prefs;
+}
+/** The break's local days, first and last inclusive (YYYY-MM-DD), or null without one. */
+export function reviewPause(prefs: ReviewPrefs) {
+  const { pausedFrom: from, pausedDays: days } = prefs;
+  return from && days ? { from, to: shiftDate(from, days - 1) } : null;
+}
+
+/**
+ * Today's reviews under the learner's load settings, and the next 30 days. A break pushes back
+ * every review falling due from its first day by its length, for problems last solved before it,
+ * and shows nothing while it lasts. Past dailyCap, the most overdue go first and the rest wait
+ * for the next day with room (deferred today). forecast[i] is day i's reviews (0 is today,
+ * overdue included); retention, the review days of the last 30 with a grade, and those graded
+ * Good or Easy.
+ * ponytail: one break is kept; a new one replaces it, and the old one's push-back goes with it.
+ */
+export function scheduleReviews(history: PracticeHistoryItem[], now: number, prefs: ReviewPrefs = {}) {
+  const today = midnight(now);
+  const pause = reviewPause(prefs);
+  const [y, m, d] = (pause?.from ?? '').split('-').map(Number);
+  const from = pause ? new Date(y, m - 1, d).getTime() : Infinity;
+  const until = pause ? addDays(from, prefs.pausedDays!) : Infinity;
+  const since = addDays(today, -29);
+  const retention = { passed: 0, total: 0 };
+  const states: DueReview[] = [];
   for (const item of history) {
     if (!item.acAt.length) continue;
-    const ladder = reviewLadder(item);
-    const level = new Set(item.acAt.map(localDay)).size;
-    if (level > ladder.length) continue;
-    const last = new Date(item.acAt.reduce((a, b) => Math.max(a, b)));
-    // Day arithmetic on local dates keeps daylight-saving shifts out of the count.
-    const dueAt = new Date(
-      last.getFullYear(),
-      last.getMonth(),
-      last.getDate() + ladder[level - 1],
-    ).getTime();
-    if (dueAt <= now) due.push({ item, level, steps: ladder.length, dueAt });
+    for (const [day, grade] of acDays(item).slice(1))
+      if (grade && day >= since) {
+        retention.total++;
+        retention.passed += +(grade >= 3);
+      }
+    const state = reviewState(item);
+    if (state.mastered) continue;
+    if (midnight(Math.max(...item.acAt)) < from && state.dueAt >= from)
+      state.dueAt = addDays(state.dueAt, prefs.pausedDays!);
+    states.push({ item, ...state });
   }
-  return due.sort((a, b) => a.dueAt - b.dueAt);
+  states.sort((a, b) => a.dueAt - b.dueAt);
+  const cap = prefs.dailyCap ?? Infinity;
+  const room = (day: number) => (day >= from && day < until ? 0 : cap);
+  const due = states.filter((s) => s.dueAt <= now);
+  const shown = due.slice(0, room(today));
+  const fresh = new Map<number, number>();
+  for (const s of states) {
+    const day = Math.max(s.dueAt, today);
+    fresh.set(day, (fresh.get(day) ?? 0) + 1);
+  }
+  const forecast: number[] = [];
+  let carry = 0;
+  for (let i = 0; i < 30; i++) {
+    const day = addDays(today, i);
+    const waiting = carry + (fresh.get(day) ?? 0);
+    forecast.push(Math.min(room(day), waiting));
+    carry = waiting - forecast[i];
+  }
+  return { today: shown, deferred: due.length - shown.length, forecast, retention };
 }
 
 /** Unsolved problems, and solved ones that took two or more failures first. */
