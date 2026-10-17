@@ -112,9 +112,9 @@ export function statLine(stat: McqStat, picks: readonly number[], wrong: boolean
  * reviewMcq). Signed in, the review is the private note `mcq:answers`; signed out it stays in
  * this browser and moves to the account on the next signed-in visit. `sd` adds the system
  * design chapter quizzes' wrong answers to the review filters; `compact` is a short quiz
- * without filters (a topic page); `initial` is the page's ?section= and ?topic=. Signed in, each
- * submit also counts toward the site-wide answer shares (lib/server/mcq-stats.ts), shown under a
- * revealed question once enough people answered it.
+ * without filters (a topic page); `initial` is the page's ?section= and ?topic=. Signed in, a
+ * question's first answer also counts toward the site-wide answer shares
+ * (lib/server/mcq-stats.ts), shown under a revealed question once enough people answered it.
  */
 export function McqPractice({
   items,
@@ -156,8 +156,7 @@ export function McqPractice({
         const saved = parseMcqReview((await response.json())?.body);
         if (!current) return;
         setWhere('account');
-        // Answered while signed out: the account takes them over, on the full page (which
-        // knows every question, so nothing in this browser is left behind).
+        // Answered while signed out: the account takes them over, except on a topic page's quiz.
         const moved = compact ? {} : local;
         const merged = { ...moved, ...saved };
         setReview(merged);
@@ -168,7 +167,9 @@ export function McqPractice({
               setSaveFailed(!ok);
               if (ok)
                 try {
-                  writeLocal({});
+                  // A ?topic= page moved only its own pre-review answers (readLocal); the rest wait.
+                  if (initial) localStorage.removeItem(KEY);
+                  else writeLocal({});
                 } catch {}
             }),
           );
@@ -191,7 +192,7 @@ export function McqPractice({
     return () => {
       current = false;
     };
-  }, [items, sd, compact]);
+  }, [items, sd, compact, initial]);
 
   const keep = (next: McqReview) => {
     setReview(next);
@@ -359,8 +360,9 @@ export function McqPractice({
                       } else if (draft.length && where !== 'loading') {
                         keep({ ...review, [q.id]: reviewMcq(entry, q.answer, draft, today) });
                         setVisit((v) => ({ ...v, [q.id]: 'done' }));
-                        // Only a first answer counts there; the server ignores the rest.
-                        if (where === 'account')
+                        // Only a first answer counts there, never one after seeing the answer:
+                        // the server keeps the first row, and a question in the review is not sent.
+                        if (where === 'account' && !entry)
                           fetch('/api/oj/mcq/answers', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

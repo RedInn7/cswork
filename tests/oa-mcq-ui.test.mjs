@@ -274,11 +274,15 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
     text: { q: 'Which one?', choices: ['a', 'b', 'c', 'd'], explain: 'Because b.', whys: ['A misses x.', 'B is it.', 'C confuses y.', 'D misses z.'] },
   };
   const plain = (q) => ({ ...q, zh: undefined, en: undefined, text: q.en });
-  const items = [web, plain(single), plain(byId.get('mcq-python-1'))];
+  // The server sends only the topic's questions (mcqScope in tests/mock-oa-mcq.test.ts).
+  const fresh = bank.find((q) => q.topic === 'web');
+  const items = [web, plain(fresh)];
   // Missed today (picked C): its answer shows until it comes back tomorrow.
   const note = { [web.id]: [0, today, 2] };
   const calls = [];
-  const win = dom();
+  // This browser holds a signed-out answer and a pre-review one to another subject.
+  const old = JSON.stringify({ 'mcq-python-1': byId.get('mcq-python-1').answer });
+  const win = dom({ 'cswork:oa-mcq:v1': old, 'cswork:oa-mcq:v2': JSON.stringify({ [single.id]: [1, today, ...single.answer] }) });
   globalThis.fetch = async (url, init) => {
     calls.push([String(url), init?.method ?? 'GET', init?.body]);
     if (String(url).startsWith('/api/oj/mcq/stats')) return Response.json({ items: { [web.id]: { n: 40, right: 10, picks: [5, 10, 20, 5] } } });
@@ -289,7 +293,10 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
   const { McqPractice } = await import('../app/oa/mcq/practice.tsx');
   const root = await render(createElement(McqPractice, { items, zh: false, initial: { topic: 'web' } }));
   assert.match(document.querySelector('.oa-mcq-scope').textContent, /Showing only Web frontend/);
-  assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
+  assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 2);
+  // The signed-out answer moved to the account; the other subject's old answer waits for its page.
+  assert.equal(localStorage.getItem('cswork:oa-mcq:v2'), null);
+  assert.equal(localStorage.getItem('cswork:oa-mcq:v1'), old);
   // The wrong pick's own reason comes before the explanation.
   const why = document.querySelector('.oa-mcq-why');
   assert.equal(why.querySelector('.oa-mcq-pick-why').textContent, 'Your pick C: C confuses y.');
@@ -312,17 +319,22 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
   assert.deepEqual(JSON.parse(ticket[2]), { ref: `mcq:${web.id}`, title: 'Ambiguous question', body: 'Two answers fit.' });
   assert.equal(document.querySelector('.report-issue-sent a').getAttribute('href'), '/?view=tickets&ticket=ticket-1');
 
-  // The topic chips still widen it; a submit signed in also counts toward the shares.
-  await act(async () => button('All topics').click());
-  assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 3);
-  const os = [...document.querySelectorAll('.oa-mcq-list > li')].find((li) => li.textContent.includes(single.en.q));
-  await act(async () => os.querySelectorAll('input')[single.answer[0]].click());
-  await act(async () => os.querySelector('.oa-mcq-actions button').click());
+  // A first answer signed in also counts toward the shares.
+  const [seen, first] = document.querySelectorAll('.oa-mcq-list > li');
+  await act(async () => first.querySelectorAll('input')[fresh.answer[0]].click());
+  await act(async () => first.querySelector('.oa-mcq-actions button').click());
   await settle();
-  const answer = calls.find(([u]) => u === '/api/oj/mcq/answers');
-  assert.deepEqual(JSON.parse(answer[2]), { id: single.id, picks: single.answer });
+  const answers = () => calls.filter(([u]) => u === '/api/oj/mcq/answers');
+  assert.deepEqual(answers().map(([, , body]) => JSON.parse(body)), [{ id: fresh.id, picks: fresh.answer }]);
   // Right: no pick-why.
-  assert.equal(os.querySelector('.oa-mcq-pick-why'), null);
+  assert.equal(first.querySelector('.oa-mcq-pick-why'), null);
+  // Answering again after seeing the answer is not a first answer, so nothing more is posted.
+  await act(async () => seen.querySelector('.oa-mcq-actions button').click());
+  await act(async () => seen.querySelectorAll('input')[web.answer[0]].click());
+  await act(async () => seen.querySelector('.oa-mcq-actions button').click());
+  await settle();
+  assert.match(seen.querySelector('.oa-mcq-why').textContent, /Correct/);
+  assert.equal(answers().length, 1);
   root.unmount();
 
   // Signed out: corrections ask to sign in, and nothing is posted for the shares.
