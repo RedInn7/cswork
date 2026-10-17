@@ -13,9 +13,12 @@ import {
   type PoolItem,
 } from '@/lib/mock-interview';
 import { lcIdBySource } from '@/lib/company-tags';
+import type { Person } from './auth';
+import { runningContestProblems } from './contests';
 import { hiddenCompanies } from './env';
 import { HttpError } from './http';
 import { extraPool, extraQuestion } from './interview-extra';
+import { lingFollowUps } from './ling-editorials';
 import { SCENARIOS, roleplayQuestion } from './roleplay-scenarios';
 import { sdChapter, sdChapters } from './system-design-course';
 
@@ -55,7 +58,10 @@ export function mockPool(db: Database.Database): PoolRow[] {
       .all(...hidden) as (Omit<PoolRow, 'listed'> & { listed: number })[];
     pool = rows
       .filter((r) => !r.problem || !hidden.some((slug) => r.problem!.startsWith(`oa-${slug}-`)))
-      .map((r) => ({ ...r, listed: !!r.listed, problem: r.problem ?? (r.type === 'coding_question' ? lcIdBySource.get(r.slug) : undefined) ?? null }));
+      .map((r) => {
+        const problem = r.problem ?? (r.type === 'coding_question' ? lcIdBySource.get(r.slug) : undefined) ?? null;
+        return { ...r, listed: !!r.listed, problem, parts: !!problem && !!lingFollowUps(problem) };
+      });
     pools.set(db, pool);
   }
   return pool;
@@ -111,7 +117,7 @@ export function mockCompanies(db: Database.Database) {
 const list = (value: string | null, separator: string, max: number) =>
   (value || '').split(separator).filter(Boolean).slice(0, max);
 
-export function mockSet(db: Database.Database, params: URLSearchParams) {
+export function mockSet(db: Database.Database, params: URLSearchParams, p: Person | null = null) {
   const template = resolveTemplate(params.get('template'), params.get('mix'), params.get('min'));
   if (!template) throw new HttpError(400, '未知的面试模板');
   const seed = params.get('seed') || newSeed();
@@ -138,6 +144,11 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
         .all(...ids) as { id: string; body: string; extra: string }[]
     ).map((r) => [r.id, r]),
   );
+  // A parts slot's follow-ups (questions only: the answers stay behind the editorial's gates),
+  // never for a problem in the learner's running contest or skill test.
+  const running = p && drawn.slots.some((s) => s.parts && s.item?.problem) ? runningContestProblems(p.id) : null;
+  const partsOf = (problem: string | null | undefined) =>
+    problem && !running?.has(problem) ? lingFollowUps(problem)?.followUps.slice(0, 2).map((f) => ({ q: [f.qZh, f.qEn] as [string, string] })) : undefined;
   const amazon = companyGroup('amazon');
   // The candidate's view asks for the questions alone: no answers in its responses either.
   const questionOnly = params.get('parts') === 'question';
@@ -156,6 +167,7 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
       if (course) parts.question = lldQuestion(item.id)?.question ?? '';
       if (play) parts.question = play.question;
       if (questionOnly || course || play) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
+      const followUps = slot.parts ? partsOf(item.problem) : undefined;
       return {
         ...slot,
         item: {
@@ -175,6 +187,7 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
           principles:
             item.company && amazon.includes(item.company) ? leadershipPrinciples(`${item.title}\n${parts.question}`).slice(0, 3) : [],
           ...parts,
+          ...(followUps?.length ? { parts: followUps } : {}),
         },
       };
     }),

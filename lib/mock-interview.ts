@@ -98,8 +98,11 @@ export const ROUNDS: Record<string, Text> = {
   'HR Screen': ['HR 面', 'HR screen'],
 };
 
-/** `category`: draws from that one of the kind's categories only. */
-export type Slot = { kind: KindId; minutes: number; name?: Text; optional?: boolean; category?: string };
+/**
+ * `category`: draws from that one of the kind's categories only. `rapid`: n quick questions sharing
+ * the minutes (drawSet expands them). `parts`: a coding question with interview follow-ups.
+ */
+export type Slot = { kind: KindId; minutes: number; name?: Text; optional?: boolean; category?: string; rapid?: number; parts?: boolean };
 export type Template = {
   id: string;
   name: Text;
@@ -166,6 +169,20 @@ export const TEMPLATES: Template[] = [
       { kind: 'ml', minutes: 20 },
       { kind: 'coding', minutes: 30 },
       { kind: 'behavioral', minutes: 10 },
+    ],
+  },
+  {
+    id: 'screen-rapid',
+    name: ['快问快答 + 多段编程电面', 'Rapid-fire + multi-part coding screen'],
+    blurb: [
+      '先答 8 道基础题，每题 90 秒，计时到了自动换下一题；再做一道分几部分的编程题，做完一部分才看到下一部分。约 47 分钟。',
+      'Eight fundamentals questions at 90 seconds each, moving on when the clock runs out; then one coding question in parts, each part shown once the last is done. About 47 minutes.',
+    ],
+    role: 'swe',
+    round: 'Technical Screen',
+    slots: [
+      { kind: 'design', category: 'Software Engineering Fundamentals', minutes: 12, rapid: 8, name: ['快问快答', 'Rapid-fire fundamentals'] },
+      { kind: 'coding', minutes: 35, parts: true, name: ['多段编程题', 'Multi-part coding'] },
     ],
   },
 ];
@@ -342,6 +359,86 @@ export const GUIDED_STEPS: Record<'design' | 'lld', GuideStep[]> = {
 export const guideFor = (kind: KindId, category: string | null | undefined) =>
   kind === 'lld' ? GUIDED_STEPS.lld : kind === 'design' && category === 'System Design' ? GUIDED_STEPS.design : null;
 
+const step = (id: string, minutes: number, name: Text, points: Text, rubric: RubricId[]): GuideStep => ({ id, minutes, name, points, rubric });
+/** Answer frameworks for practicing without the AI: a metric investigation, an A/B test design, an ML system design. */
+export const FRAMEWORKS: Record<'metric' | 'ab' | 'mldesign', GuideStep[]> = {
+  metric: [
+    step('define', 2, ['澄清定义', 'Clarify the metric'], ['问清指标口径：怎么算、看哪个时间窗、变了多少、从哪天开始。', 'Pin down the metric: how it is computed, over what window, how big the change is and when it started.'], ['metric', 'communication']),
+    step('data', 2, ['校验数据', 'Check the data'], ['先排除数据本身的问题：埋点或日志改动、数据管道延迟、口径调整，再看节假日和季节性。', 'Rule out data problems first: tracking or logging changes, pipeline delays, definition changes; then holidays and seasonality.'], ['metric', 'stats']),
+    step('segment', 4, ['拆分维度', 'Segment'], ['按平台、地区、新老用户、渠道、版本拆开，看变化集中在哪一块；再把指标拆成漏斗或公式里的各项。', 'Split by platform, region, new vs returning users, channel and app version to see where the change sits; break the metric into its funnel steps or formula terms.'], ['metric', 'problem']),
+    step('causes', 3, ['内外部原因', 'Internal and external causes'], ['内部：发版、实验、营销活动、价格、故障。外部：竞品、新闻、政策、季节。', 'Internal: releases, experiments, campaigns, pricing, outages. External: competitors, news, regulation, seasons.'], ['metric', 'problem']),
+    step('validate', 2, ['验证', 'Validate'], ['每个假设说出用什么数据或分析来证实或排除，先查最可能、成本最低的。', 'For each hypothesis, say which data or analysis would confirm or rule it out; check the likeliest and cheapest first.'], ['stats', 'metric']),
+    step('recommend', 2, ['建议', 'Recommend'], ['给出结论和下一步（回滚、修复、继续观察），再说以后怎么更早发现这类问题。', 'Give the conclusion and the next step (roll back, fix, keep watching), and how to catch this sooner next time.'], ['communication', 'metric']),
+  ],
+  ab: [
+    step('hypothesis', 2, ['假设', 'Hypothesis'], ['说清改动是什么、预期改变哪种用户行为、为什么。', 'State the change, which user behavior it should move, and why.'], ['experiment', 'communication']),
+    step('metrics', 3, ['指标与护栏', 'Metrics and guardrails'], ['定一个主指标，再加护栏指标（延迟、退款、留存等），每个都说清口径。', 'One primary metric plus guardrails (latency, refunds, retention and so on), each precisely defined.'], ['metric', 'experiment']),
+    step('unit', 2, ['分流单位', 'Randomization unit'], ['按用户、会话还是地区分流？考虑网络效应和用户之间的相互影响。', 'Randomize by user, session or region? Consider network effects and interference between users.'], ['experiment']),
+    step('sample', 3, ['样本量', 'Sample size'], ['用基线、最小可检测效应、显著性水平和检验功效估算每组要多少样本。', 'Estimate the size per group from the baseline, the minimum detectable effect, the significance level and the power.'], ['stats', 'experiment']),
+    step('duration', 2, ['时长', 'Duration'], ['按流量把样本量换算成天数，至少跑满整周，留出新奇效应消退的时间。', 'Turn the sample size into days of traffic, run whole weeks at least, and leave time for novelty effects to fade.'], ['experiment']),
+    step('risks', 3, ['风险', 'Risks'], ['多重比较、中途偷看结果、样本比例失衡（SRM）、辛普森悖论；结果怎么解读，什么情况下上线。', "Multiple comparisons, peeking, sample ratio mismatch, Simpson's paradox; how you read the result and when you would launch."], ['stats', 'experiment']),
+  ],
+  mldesign: [
+    step('goal', 2, ['目标', 'Goal'], ['业务目标和成功指标，以及线上要满足的规模和延迟。', 'The business goal and success metric, and the scale and latency it has to meet.'], ['modeling', 'communication']),
+    step('framing', 3, ['建模', 'ML framing'], ['把问题写成机器学习任务：输入、输出、标签从哪来；是分类、排序还是回归。', 'Frame it as an ML task: inputs, outputs, where the labels come from; classification, ranking or regression.'], ['modeling']),
+    step('data', 4, ['数据特征', 'Data and features'], ['数据来源、采样和标签噪声；用户、物品和上下文三类特征。', 'Data sources, sampling and label noise; user, item and context features.'], ['modeling']),
+    step('model', 4, ['模型', 'Model'], ['先给一个简单基线，再说更强的模型，讲清效果、延迟和可解释性之间的取舍。', 'Start from a simple baseline, then a stronger model, with the trade-offs between quality, latency and interpretability.'], ['modeling', 'mltradeoffs']),
+    step('evaluation', 4, ['离线/在线评估', 'Offline and online evaluation'], ['离线指标（如 AUC、NDCG）和数据怎么切分；上线前用 A/B 测试看业务指标。', 'Offline metrics (AUC, NDCG and the like) and how the data is split; an online A/B test on the business metric.'], ['mltradeoffs', 'modeling']),
+    step('monitoring', 3, ['上线监控', 'Deploy and monitor'], ['部署方式，特征和预测分布漂移的监控，重新训练的频率和兜底方案。', 'How it is served, monitoring for feature and prediction drift, how often it retrains, and a fallback.'], ['mltradeoffs']),
+  ],
+};
+const PART_ONE: Text = [
+  '先把原题做出来：问清输入输出，讲思路和复杂度，写代码，再拿几个例子走一遍。',
+  'Solve the question as asked: confirm the inputs and outputs, explain the approach and its complexity, write the code, then walk through a few examples.',
+];
+/**
+ * Steps rescaled to add up to `minutes` in half minutes: rounded at the running total so the error
+ * never builds up, and each kept at half a minute or more (slots are never shorter than 3 minutes).
+ */
+function scaled(steps: GuideStep[], minutes: number) {
+  const base = steps.reduce((n, s) => n + s.minutes, 0);
+  let sum = 0,
+    end = 0;
+  return steps.map((s, i) => {
+    const start = end;
+    sum += s.minutes;
+    end = Math.min(Math.max(Math.round((sum / base) * minutes * 2) / 2, start + 0.5), minutes - (steps.length - 1 - i) / 2);
+    return { ...s, minutes: end - start };
+  });
+}
+/**
+ * The steps to answer a drawn question by, in solo and pair practice (the AI interviewer keeps
+ * guideFor): a system design question's guide, an analytics question's metric or A/B framework, an
+ * ML design question's, a coding question's parts (the question, then each follow-up). Scaled to
+ * the slot's minutes; null when none fits.
+ * ponytail: sorted by title keywords; tag the content once misfires pile up.
+ */
+export function frameworkFor(
+  slot: { kind: KindId; minutes: number },
+  item: { title: string; category?: string | null; parts?: { q: Text }[] } | null | undefined,
+): GuideStep[] | null {
+  if (!item) return null;
+  const { title } = item;
+  const steps =
+    slot.kind === 'design' && item.category === 'System Design'
+      ? GUIDED_STEPS.design
+      : slot.kind === 'analytics'
+        ? /\bA\/?B\b|experiment|split test|实验/i.test(title)
+          ? FRAMEWORKS.ab
+          : /\b(drop|declin|spike|dip|fell|fall|plummet|surg)|下降|下跌|骤降|暴涨|激增/i.test(title)
+            ? FRAMEWORKS.metric
+            : null
+        : slot.kind === 'ml' && /\b(design|build|recommend|rank)/i.test(title)
+          ? FRAMEWORKS.mldesign
+          : slot.kind === 'coding' && item.parts?.length
+            ? [
+                step('part-1', 17, ['第 1 部分', 'Part 1'], PART_ONE, ['problem', 'coding']),
+                ...item.parts.map((p, i) => step(`part-${i + 2}`, 9, [`第 ${i + 2} 部分`, `Part ${i + 2}`], p.q, ['problem', 'complexity'])),
+              ]
+            : null;
+  return steps && scaled(steps, slot.minutes);
+}
+
 /**
  * A template by id, or a custom one from `mix` ("coding.2-behavioral.1": counts per kind) and
  * `minutes` (the total, shared out by each kind's suggested time). Null when invalid.
@@ -390,6 +487,8 @@ export type PoolItem = {
   round: string | null;
   /** The judge problem it maps to: two companies' versions of one problem never share a set. */
   problem?: string | null;
+  /** It has interview follow-ups to ask as further parts (a `parts` slot draws these first). */
+  parts?: boolean;
 };
 export type DrawOptions = {
   seed: string;
@@ -405,7 +504,8 @@ export type DrawOptions = {
 export type DrawnSlot<T> = Slot & { item: T | null; similar: boolean; pool: number };
 
 /**
- * Each kind gets one queue (a slot naming a category, one of that category alone): its questions
+ * Each kind gets one queue (a slot naming a category, one of that category alone; a parts slot, one
+ * of the questions with follow-ups when there are any): its questions
  * shuffled by the seed, then ordered best match first (the company's questions, the role's, the
  * round's) so other companies only fill in. Slots take the queue in turn, and a re-roll the next
  * question, skipping any a slot holds (or its problem). Deterministic: a share link carrying
@@ -419,8 +519,8 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
   const atCompany = (i: T) => !companies || (!!i.company && companies.includes(i.company));
   // One queue per kind, or per kind and category for a slot that names one.
   const queues = new Map<string, T[]>();
-  const queue = ({ kind, category }: Slot) => {
-    const key = category ? `${kind}:${category}` : kind;
+  const queue = ({ kind, category, parts }: Slot) => {
+    const key = (category ? `${kind}:${category}` : kind) + (parts ? ':parts' : '');
     let q = queues.get(key);
     if (!q) {
       const { categories, companyFirst } = KINDS[kind];
@@ -430,6 +530,8 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
         return (companyFirst ? here * 2 + fits : fits * 2 + here) * 2 + Number(!!round && i.round !== round);
       };
       q = pool.filter((i) => !!i.category && (category ? i.category === category : categories.includes(i.category)));
+      // Questions with follow-ups only, while there are any.
+      if (parts && q.some((i) => i.parts)) q = q.filter((i) => i.parts);
       const next = random(`${o.seed}:${key}`);
       for (let i = q.length - 1; i > 0; i--) {
         const j = Math.floor(next() * (i + 1));
@@ -441,7 +543,14 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
     }
     return q;
   };
-  const slots = template.slots.filter((s) => !s.optional || queue(s).length);
+  // A rapid slot is n quick questions, each with its share of the minutes.
+  const slots = template.slots
+    .flatMap((s): Slot[] =>
+      s.rapid
+        ? Array.from({ length: s.rapid }, (_, k) => ({ ...s, minutes: s.minutes / s.rapid!, name: [`快问快答 ${k + 1}/${s.rapid}`, `Rapid-fire ${k + 1}/${s.rapid}`] }))
+        : [s],
+    )
+    .filter((s) => !s.optional || queue(s).length);
   const cursor = new Map<T[], number>();
   const picks: (T | null)[] = slots.map(() => null);
   const taken = (c: T) => picks.includes(c) || (!!c.problem && picks.some((p) => p?.problem === c.problem));
