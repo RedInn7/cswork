@@ -107,8 +107,8 @@ test('the one-page sheet loads the linked scope, warns past 40 rows, reorders, d
   };
   let printed = 0;
   dom.window.print = () => printed++;
-  const root = await mount(createElement(ReviewSheet, { zh: false, book: false, by: '', company: '', stops: 'two-pointers-windows,nowhere', list: '' }));
-  assert.deepEqual(urls, ['/api/oj/cheatsheet?stops=two-pointers-windows'], 'unknown stops are dropped from the link');
+  const root = await mount(createElement(ReviewSheet, { zh: false, book: false, by: '', company: '', stops: 'two-pointers-windows,nowhere,constructor', list: '' }));
+  assert.deepEqual(urls, ['/api/oj/cheatsheet?stops=two-pointers-windows'], 'unknown stops, prototype names too, are dropped from the link');
   assert.equal(location.search, '?stops=two-pointers-windows');
   const ids = () => [...document.querySelectorAll('.rs-rows li b')].map((b) => b.textContent);
   assert.deepEqual(ids().slice(0, 3), ['1', '2', '3']);
@@ -152,5 +152,12 @@ test('the review book reads every problem note into a chapter per stop, other pr
   );
   assert.equal(document.querySelector('.rs-entry-body a[href*="lc-15"]').textContent, 'lc-15', '[[lc-15]] becomes a link');
   assert.equal(document.querySelector('.rs-ways a[aria-current="page"]').textContent, 'By Line 500 stop');
+  const hot = [...document.querySelectorAll('.rs-ways a')].find((a) => a.textContent === 'LeetCode Top 100 Liked');
+  // dispatchEvent: the export test stubbed HTMLAnchorElement#click.
+  await act(async () => hot.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 })));
+  assert.deepEqual(urls, ['/api/oj/notes/export?prefix=problem'], 'switching chapters reads nothing again');
+  assert.equal(location.search, '?view=book&by=list%3Aleetcode-hot-100');
+  assert.equal(document.querySelector('.rs-ways a[aria-current="page"]'), hot);
+  assert.deepEqual([...document.querySelectorAll('.rs-chapter > h2')].map((h) => h.textContent), ['Hashing', 'Two Pointers']);
   await act(async () => root.unmount());
 });

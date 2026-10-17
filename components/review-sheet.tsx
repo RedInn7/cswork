@@ -40,7 +40,7 @@ function OnePager({ zh, company, stops, list }: { zh: boolean; company: string; 
   const t = (a: string, b: string) => (zh ? a : b);
   const [kind, setKind] = useState<Kind>(company ? 'company' : list ? 'list' : 'stops');
   const [companySlug, setCompanySlug] = useState(company);
-  const [picked, setPicked] = useState(() => stops.split(',').filter((s) => s in STOP_NAMES).slice(0, MAX_STOPS));
+  const [picked, setPicked] = useState(() => stops.split(',').filter((s) => Object.hasOwn(STOP_NAMES, s)).slice(0, MAX_STOPS));
   const [listSlug, setListSlug] = useState(classicList(list)?.slug ?? classicLists[0].slug);
   const [sheet, setSheet] = useState<Sheet | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
@@ -257,8 +257,10 @@ function OnePager({ zh, company, stops, list }: { zh: boolean; company: string; 
  * Every problem note (GET oj/notes/export?prefix=problem), a chapter per Line 500 stop or per group
  * of a classic list (?by=list:<slug>), each chapter on a new page when printed.
  */
-function ReviewBook({ zh, by }: { zh: boolean; by: string }) {
+function ReviewBook({ zh, by: linked }: { zh: boolean; by: string }) {
   const t = (a: string, b: string) => (zh ? a : b);
+  // Switching chapters regroups the notes already read: a reload would read every page again.
+  const [by, setBy] = useState(linked);
   const [items, setItems] = useState<ExportItem[] | null>(null);
   const [count, setCount] = useState(0);
   const [error, setError] = useState('');
@@ -298,7 +300,17 @@ function ReviewBook({ zh, by }: { zh: boolean; by: string }) {
       <div className="rs-controls">
         <nav className="rs-ways" aria-label={t('分章方式', 'Chapters')}>
           {ways.map(([key, label]) => (
-            <a key={key} href={`?${new URLSearchParams({ view: 'book', by: key })}`} aria-current={(by || 'stop') === key ? 'page' : undefined}>
+            <a
+              key={key}
+              href={`?${new URLSearchParams({ view: 'book', by: key })}`}
+              aria-current={(by || 'stop') === key ? 'page' : undefined}
+              onClick={(e) => {
+                if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+                setBy(key);
+                history.replaceState(null, '', e.currentTarget.href);
+              }}
+            >
               {label}
             </a>
           ))}
