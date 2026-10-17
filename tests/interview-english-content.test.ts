@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { BLANK, checkCloze, normalize } from '../lib/english-drill';
+import { BLANK, checkCloze, checkOrder, normalize, scramble } from '../lib/english-drill';
 import { englishUnit, englishUnits } from '../lib/interview-english';
 
 const CJK = /[一-鿿]/;
@@ -73,5 +73,25 @@ void test('every order drill has three or more distinct parts', () => {
       assert.equal(new Set(order.parts.map(normalize)).size, order.parts.length, `${at}: parts read differently`);
       order.parts.forEach((part) => english(part, at));
       chinese(order.zh, `${at}.zh`);
+    });
+});
+
+const orders = (parts: string[]): string[][] =>
+  parts.length < 2 ? [parts] : parts.flatMap((part, i) => orders(parts.toSpliced(i, 1)).map((rest) => [part, ...rest]));
+
+void test('every other accepted order uses the same parts, and the pool never starts in an accepted order', () => {
+  for (const unit of englishUnits)
+    unit.drills.order.forEach((order, i) => {
+      const at = `${unit.slug}.order[${i}]`;
+      for (const sentence of order.also ?? []) {
+        english(sentence, `${at}.also`);
+        assert.notEqual(normalize(sentence), normalize(order.parts.join(' ')), `${at}: "${sentence}" is not the sentence itself`);
+        assert.ok(
+          orders(order.parts).some((parts) => normalize(parts.join(' ')) === normalize(sentence)),
+          `${at}: "${sentence}" is the parts in another order`,
+        );
+      }
+      const pool = scramble(order.parts, order.also).map((k) => order.parts[k]);
+      assert.equal(checkOrder(pool, order.parts, order.also), false, `${at}: the pool is not an answer`);
     });
 });
