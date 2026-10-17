@@ -2,6 +2,8 @@
    and one stacked bar per offer per year. */
 .offer-compare {
   display: grid;
+  /* minmax(0, …): a wide table scrolls in its own box instead of widening the page on a phone. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
 }
 .offer-cards {
@@ -259,6 +261,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px 18px;
+  /* Clear of the Remove button in the corner. */
+  padding-right: 76px;
 }
 .offer-link {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
