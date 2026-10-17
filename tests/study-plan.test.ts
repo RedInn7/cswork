@@ -3,11 +3,13 @@ import { test } from 'node:test';
 import {
   addDays,
   buildPlan,
+  daysBetween,
   DEFAULT_GOAL,
   fitPlan,
   mixPlan,
   isDay,
   loadGoal,
+  mergeGoals,
   minutesFor,
   normalizeGoal,
   oaDateInRange,
@@ -16,6 +18,8 @@ import {
   planWeeks,
   readTodayTarget,
   suggestStartStop,
+  trackerSprints,
+  type PlanEvent,
   type PlanGoal,
   type PlanProblem,
 } from '../lib/study-plan';
@@ -584,4 +588,166 @@ void test('difficulty and topic filters, an empty result, the pool and the plan 
   assert.equal(odd.weeks, 4);
   assert.deepEqual(odd.difficulties, ['easy', 'medium', 'hard'], 'none reads as all');
   assert.deepEqual(odd.topics, [], 'every stop reads as all');
+});
+
+void test('the goal syncs: a first visit takes the account\'s, otherwise the later save wins', () => {
+  const local = goal({ oaDate: '2026-11-01', updatedAt: 200 });
+  const remote = goal({ oaDate: '2026-11-20', updatedAt: 100 });
+  assert.deepEqual(mergeGoals(local, null), { goal: local, push: true }, 'nothing in the account yet');
+  assert.deepEqual(mergeGoals(DEFAULT_GOAL, null), { goal: DEFAULT_GOAL, push: false }, 'a first-visit card stays here');
+  assert.deepEqual(mergeGoals(DEFAULT_GOAL, remote), { goal: remote, push: false });
+  assert.deepEqual(mergeGoals(local, remote), { goal: local, push: true }, 'a later local save goes up (a failed PUT catches up)');
+  assert.deepEqual(mergeGoals({ ...local, updatedAt: 50 }, remote), { goal: remote, push: false });
+  assert.deepEqual(mergeGoals({ ...local, updatedAt: 100 }, remote), { goal: remote, push: false });
+  const skipped = goal({ status: 'skipped', updatedAt: 300 });
+  assert.equal(mergeGoals(skipped, remote).goal, skipped, 'skipping is a choice too');
+  assert.equal(normalizeGoal({ updatedAt: 5, tracker: false }).updatedAt, 5);
+  assert.equal(normalizeGoal({ updatedAt: 5, tracker: false }).tracker, false);
+  assert.equal(normalizeGoal({ updatedAt: -1, tracker: 'no' }).updatedAt, 0);
+  assert.equal(normalizeGoal({ updatedAt: 1.5 }).tracker, true, 'on unless turned off');
+});
+
+// A tracker date `at` days from today.
+const event = (id: string, at: number, patch: Partial<PlanEvent> = {}): PlanEvent => ({
+  id,
+  kind: 'oa',
+  date: addDays(today, at),
+  company: id,
+  slug: id.toLowerCase(),
+  onsite: false,
+  preset: null,
+  minutes: 90,
+  ...patch,
+});
+const offsets = (days: string[]) => days.map((day) => daysBetween(today, day));
+
+void test('tracker dates get 3 days, 5 before an onsite, and close ones merge', () => {
+  const far = addDays(today, 60);
+  const spaced = trackerSprints(
+    [event('Onsite', 20, { kind: 'interview', onsite: true }), event('Google', 10)],
+    today,
+    far,
+  );
+  assert.deepEqual(
+    spaced.map((g) => [g.events.map((s) => s.id), offsets(g.days), g.tight]),
+    [
+      [['Google'], [7, 8, 9], false],
+      [['Onsite'], [15, 16, 17, 18, 19], false],
+    ],
+  );
+  // The day before Google's OA is Google's; Meta's onsite keeps the day after.
+  const close = trackerSprints([event('Google', 10), event('Meta', 12, { kind: 'interview', onsite: true })], today, far);
+  assert.equal(close.length, 1);
+  assert.equal(close[0].tight, true);
+  assert.deepEqual(close[0].events.map((s) => [s.id, offsets(s.days)]), [
+    ['Google', [7, 8, 9]],
+    ['Meta', [11]],
+  ]);
+  assert.deepEqual(offsets(close[0].days), [7, 8, 9, 11]);
+  // Two OAs due the same day take turns.
+  const same = trackerSprints([event('A', 10), event('B', 10)], today, far);
+  assert.deepEqual(same[0].events.map((s) => [s.id, offsets(s.days)]), [
+    ['A', [7, 9]],
+    ['B', [8]],
+  ]);
+  assert.equal(same[0].tight, true);
+  // Days before today are cut: tomorrow's OA gets today, today's none.
+  assert.deepEqual(trackerSprints([event('A', 1)], today, far).map((g) => [offsets(g.days), g.tight]), [[[0], true]]);
+  assert.deepEqual(trackerSprints([event('A', 0)], today, far).map((g) => [offsets(g.days), g.tight]), [[[], true]]);
+  assert.deepEqual(trackerSprints([event('A', 2)], today, far).map((g) => [offsets(g.days), g.tight]), [[[0, 1], false]]);
+  // Past dates and dates after the plan are dropped.
+  assert.deepEqual(trackerSprints([event('A', -1), event('B', 21)], today, addDays(today, 20)), []);
+});
+
+void test('tracker sprints take their company\'s problems, a mock the day before, and the line slows down less', () => {
+  const amazonOa = event('a1', 10, { company: 'Amazon', slug: 'amazon', preset: 'amazon' });
+  const stripe = event('a2', 20, { kind: 'interview', company: 'Stripe', slug: 'stripe', onsite: true });
+  const g = goal({ oaDate: addDays(today, 37), weeklyHours: 14, company: amazon });
+  const plan = buildPlan({
+    goal: g,
+    today,
+    line: line(60),
+    company: oa(6),
+    tracker: { events: [amazonOa, stripe, event('late', 33), event('same', 37)], problems: new Map([['amazon', oa(5)]]) },
+  });
+  // Amazon: 5 problems over 2 days (min(4, ceil(5 / 2)) = 3 a day), the mock OA the day before, nothing on the day.
+  assert.deepEqual(ids(plan.days[7].problems), ['oa-amazon-1', 'oa-amazon-2', 'oa-amazon-3']);
+  assert.equal(plan.days[7].sprintFor?.company, 'Amazon');
+  assert.deepEqual(ids(plan.days[8].problems), ['oa-amazon-4', 'oa-amazon-5']);
+  assert.equal(plan.days[9].mock, 1);
+  assert.equal(plan.days[9].minutes, 90);
+  assert.equal(plan.days[9].sprintFor, plan.days[7].sprintFor);
+  assert.equal(plan.days[10].event?.kind, 'oa');
+  assert.deepEqual(plan.days[10].problems, []);
+  // No preset: the onsite's 5 days ride the line, tagged, with no mock OA.
+  for (const day of plan.days.slice(15, 20)) {
+    assert.equal(day.sprintFor?.company, 'Stripe');
+    assert.ok(day.problems.every((p) => p.id.startsWith('lc-')) && day.problems.length === 3);
+  }
+  assert.equal(plan.days[20].event?.kind, 'interview');
+  // The line counts free days only: 60 over 30 - 5 busy days → 3 a day (2 without the tracker).
+  assert.equal(plan.daily, 3);
+  assert.equal(buildPlan({ goal: g, today, line: line(60), company: oa(6) }).daily, 2);
+  // The OA's last week keeps its own sprint: the tracker date in it is dropped (the OA day itself is the same OA).
+  assert.equal(plan.skipped, 1);
+  assert.equal(plan.sprints.flatMap((group) => group.events).length, 2);
+  assert.ok(plan.days.slice(30).every((day) => !day.sprintFor && !day.event));
+  // What a tracker sprint planned is not planned again in the OA's own sprint.
+  const planned = plan.days.flatMap((day) => ids(day.problems));
+  assert.equal(new Set(planned).size, planned.length);
+  assert.ok(planned.includes('oa-amazon-6'));
+  // Today in a tracker sprint: today's count is the sprint's.
+  const soon = buildPlan({
+    goal: goal({ weeklyHours: 14 }),
+    today,
+    line: line(60),
+    tracker: { events: [event('a3', 2, { preset: 'amazon' })], problems: new Map([['amazon', oa(5)]]) },
+  });
+  assert.equal(soon.daily, 3);
+  assert.equal(soon.days[0].sprintFor?.id, 'a3');
+  assert.ok(!soon.days.some((day) => day.mock), 'two days hold no mock OA');
+});
+
+void test('the .ics gives each tracker sprint its own series, and the line skips those days', () => {
+  const g = goal({ oaDate: addDays(today, 37), weeklyHours: 14 });
+  const plan = buildPlan({
+    goal: g,
+    today,
+    line: line(60),
+    tracker: {
+      events: [
+        event('a1', 10, { company: 'Amazon', slug: 'amazon', preset: 'amazon' }),
+        event('a2', 20, { kind: 'interview', company: 'Stripe', slug: 'stripe', onsite: true }),
+      ],
+      problems: new Map([['amazon', oa(5)]]),
+    },
+  });
+  const rows = unfold(
+    planIcs({ plan, goal: g, now: new Date('2026-10-14T00:00:00Z'), origin: 'https://cswork.test' }),
+  ).split('\r\n');
+  assert.deepEqual(
+    rows.filter((row) => row.startsWith('UID:')),
+    [
+      'UID:cswork-plan-practice@cswork.org',
+      'UID:cswork-plan-mock-1@cswork.org',
+      'UID:cswork-plan-mock-2@cswork.org',
+      'UID:cswork-plan-app-a1-oa@cswork.org',
+      'UID:cswork-plan-app-a1-oa-mock@cswork.org',
+      'UID:cswork-plan-app-a2-interview@cswork.org',
+      'UID:cswork-plan-oa@cswork.org',
+    ],
+  );
+  const at = (k: number) => `${addDays(today, k).replaceAll('-', '')}T200000`;
+  // The line's series runs out on day 24 and skips every tracker day.
+  assert.ok(rows.includes(`EXDATE:${[7, 8, 9, 10, 15, 16, 17, 18, 19, 20].map(at).join(',')}`), rows.join('\n'));
+  assert.ok(rows.includes('RRULE:FREQ=DAILY;COUNT=25'));
+  assert.ok(rows.includes('SUMMARY:CSWork 冲刺 Amazon：3 题'));
+  assert.ok(rows.includes(`DTSTART:${at(7)}`));
+  assert.ok(rows.includes('RRULE:FREQ=DAILY;COUNT=2'));
+  assert.ok(rows.includes('SUMMARY:CSWork 模拟 OA · Amazon'));
+  assert.ok(rows.includes('URL:https://cswork.test/mock-oa/amazon'));
+  assert.ok(rows.includes('SUMMARY:CSWork 冲刺 Stripe：3 题'));
+  assert.ok(rows.includes('URL:https://cswork.test/?view=problems&company=stripe&sort=frequency'));
+  // The OA and the interview themselves stay in the tracker's own .ics.
+  assert.equal(rows.filter((row) => row.startsWith('DTSTART;VALUE=DATE:')).length, 1);
 });
