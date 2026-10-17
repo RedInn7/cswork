@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
+import { parseRetro, RETRO_TARGET } from '@/lib/applications';
 import { curatedByNumber } from '@/lib/ling-curated';
 import { CONFIDENCE_WORDS, parseNoteMeta } from '@/lib/note-meta';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
@@ -295,6 +296,14 @@ export async function handleMyPractice(
       !db.prepare('SELECT 1 FROM submissions WHERE id=? AND user_id=?').get(key.slice(4), p.id)
     )
       throw new HttpError(404, '提交不存在');
+    // An interview retro hangs off one of the learner's own applications (lib/applications.ts).
+    const retro = key.startsWith('retro:');
+    if (retro) {
+      const card = RETRO_TARGET.exec(key)?.[1];
+      if (!card) throw new HttpError(400, '复盘记录无效');
+      if (!db.prepare('SELECT 1 FROM job_applications WHERE id=? AND user_id=?').get(card, p.id))
+        throw new HttpError(404, '投递记录不存在');
+    }
     // JSON escapes can double the body; the byte cap below is the real limit.
     const { body } = z
       .object({ body: z.string() })
@@ -308,6 +317,7 @@ export async function handleMyPractice(
     // A self-made card (lib/recall-cards.ts): its link back stays on this site.
     if (key.startsWith('card:') && body.trim() && (!CARD_ID.test(key) || !parseCard(body)))
       throw new HttpError(400, '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接');
+    if (retro && body.trim() && !parseRetro(body)) throw new HttpError(400, '复盘记录无效');
     // An emptied note is removed, so "has a note" always means some text.
     if (!body.trim()) {
       db.prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(p.id, key);
@@ -337,12 +347,13 @@ export async function handleMyPractice(
   if (resource === 'marks' && request.method === 'POST') {
     await limit(p, 'mark-write', 60);
     const body = await readJson(request, 32_000);
-    // { targets }: a guest's "done" ticks moving into the account, all or none.
+    // { targets }: a guest's "done" ticks moving into the account, all or none; or an interview
+    // retro's problems marked to redo (components/application-tracker-extras.tsx).
     if (body && typeof body === 'object' && 'targets' in body) {
       const batch = z
         .object({
           targets: z.array(target.refine((key) => key.startsWith('problem:'))).min(1).max(MAX_BATCH),
-          mark: z.literal('done'),
+          mark: z.enum(['done', 'redo']),
         })
         .strict()
         .parse(body);

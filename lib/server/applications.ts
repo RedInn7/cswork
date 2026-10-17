@@ -8,6 +8,7 @@ import {
   NOTES_MAX,
   REFERRAL_STATUS,
   STAGES,
+  TIERS,
   type Application,
   type ApplicationFields,
   type StageEntry,
@@ -52,6 +53,7 @@ const patch = z
     nextAction: text(120),
     nextAt: at,
     resumeVersion: text(40),
+    tier: key(TIERS),
     jdText: z.string().max(JD_MAX),
   })
   .partial()
@@ -71,11 +73,12 @@ const BLANK: Omit<ApplicationFields, 'company'> & { jdText: string } = {
   nextAction: '',
   nextAt: null,
   resumeVersion: '',
+  tier: '',
   jdText: '',
 };
 const COLUMNS = `id,company_slug AS companySlug,company_name AS company,role,stage,applied_at AS appliedAt,
   oa_deadline AS oaDeadline,interview_at AS interviewAt,offer_deadline AS offerDeadline,referral,link,notes,channel,
-  referral_status AS referralStatus,next_action AS nextAction,next_at AS nextAt,resume_version AS resumeVersion,stage_log AS stageLog,jd_text<>'' AS hasJd,
+  referral_status AS referralStatus,next_action AS nextAction,next_at AS nextAt,resume_version AS resumeVersion,tier,stage_log AS stageLog,jd_text<>'' AS hasJd,
   created_at AS createdAt,updated_at AS updatedAt`;
 type Row = Omit<Application, 'links' | 'stageLog' | 'hasJd' | 'closedAt' | 'prep' | 'process'> & { stageLog: string; hasJd: number };
 /** Moves kept per card, the newest. */
@@ -218,11 +221,11 @@ export async function handleApplications(request: Request, p: Person | null, pat
       if (n >= APPLICATIONS_MAX) throw new HttpError(409, '投递记录已达上限');
       db.prepare(
         `INSERT INTO job_applications(id,user_id,company_slug,company_name,role,stage,applied_at,oa_deadline,interview_at,offer_deadline,
-          referral,link,notes,channel,referral_status,next_action,next_at,resume_version,jd_text,stage_log,created_at,updated_at)
-          VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          referral,link,notes,channel,referral_status,next_action,next_at,resume_version,tier,jd_text,stage_log,created_at,updated_at)
+          VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       ).run(
         newId, p.id, companySlug(d.company), d.company, d.role, d.stage, d.appliedAt, d.oaDeadline, d.interviewAt, d.offerDeadline, d.referral, d.link, d.notes,
-        d.channel, d.referralStatus, d.nextAction, d.nextAt, d.resumeVersion, d.jdText, JSON.stringify([[d.stage, now]]), now, now,
+        d.channel, d.referralStatus, d.nextAction, d.nextAt, d.resumeVersion, d.tier, d.jdText, JSON.stringify([[d.stage, now]]), now, now,
       );
     }).immediate();
     return json({ item: withLinks([own(p.id, newId)!], p.id)[0] });
@@ -233,6 +236,8 @@ export async function handleApplications(request: Request, p: Person | null, pat
     db.prepare('DELETE FROM job_applications WHERE id=? AND user_id=?').run(id, p.id);
     // Its reminder notices carry the company and role (lib/server/reminders.ts ids `<kind>:<id>:<at>`).
     db.prepare("DELETE FROM notifications WHERE user_id=? AND kind='application' AND id LIKE ?").run(p.id, `%:${id}:%`);
+    // And its interview retros (user notes retro:<id>/<time>, lib/applications.ts RETRO_TARGET).
+    db.prepare('DELETE FROM user_notes WHERE user_id=? AND target LIKE ?').run(p.id, `retro:${id}/%`);
     return json({ ok: true });
   }
   if (action) throw new HttpError(404, '接口不存在');
@@ -256,6 +261,7 @@ export async function handleApplications(request: Request, p: Person | null, pat
     next_action: d.nextAction,
     next_at: d.nextAt,
     resume_version: d.resumeVersion,
+    tier: d.tier,
     jd_text: d.jdText,
     stage_log: moved ? JSON.stringify([...(JSON.parse(cur.stageLog) as StageEntry[]), [d.stage, now]].slice(-LOG_MAX)) : undefined,
     ...(d.company !== undefined && { company_name: d.company, company_slug: companySlug(d.company) }),
