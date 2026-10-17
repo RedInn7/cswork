@@ -536,6 +536,18 @@ export type McqQuestion = {
   /** The Line 500 stop (lib/route-stops.ts) whose topic page quizzes on it. */
   stop?: string;
 };
+/**
+ * /oa/mcq's ?section= and ?topic=: that part of the bank, filtered on the server so a link to one
+ * subject does not ship the whole bank. Unknown values are ignored; a pair matching nothing gives
+ * the whole bank.
+ */
+export function mcqScope(bank: McqQuestion[], query: Record<string, string | string[] | undefined>) {
+  const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) ?? '';
+  const section = MCQ_SECTIONS.find((s) => s === first(query.section));
+  const topic = bank.some((q) => q.topic === first(query.topic)) ? first(query.topic) : undefined;
+  const items = bank.filter((q) => (!section || q.section === section) && (!topic || q.topic === topic));
+  return items.length && (section || topic) ? { items, initial: { section, topic } } : { items: bank, initial: undefined };
+}
 /** A preset's MCQ section: how many questions, how long, and where they come from. */
 export type McqConfig = {
   count: number;

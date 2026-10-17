@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import bankFile from '@/lib/content/oa-mcq.json';
-import { MCQ_SECTIONS, type McqQuestion } from '@/lib/mock-oa';
+import { mcqScope, type McqQuestion } from '@/lib/mock-oa';
 import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { sdChapters } from '@/lib/server/system-design-course';
@@ -8,19 +8,6 @@ import { McqPractice } from './practice';
 
 const bank = bankFile.questions as McqQuestion[];
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
-const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) ?? '';
-
-/**
- * ?section= and ?topic= narrow the page to that part of the bank, filtered here so a link to one
- * subject does not ship the whole bank; ones that match nothing are ignored.
- */
-async function scope(searchParams: Props['searchParams']) {
-  const query = await searchParams;
-  const section = MCQ_SECTIONS.find((s) => s === first(query.section));
-  const topic = bank.some((q) => q.topic === first(query.topic)) ? first(query.topic) : undefined;
-  const items = bank.filter((q) => (!section || q.section === section) && (!topic || q.topic === topic));
-  return items.length && (section || topic) ? { items, initial: { section, topic } } : { items: bank, initial: undefined };
-}
 
 function copy(zh: boolean) {
   return zh
@@ -42,7 +29,7 @@ export async function generateMetadata() {
 export default async function OaMcqPage({ searchParams }: Props) {
   const zh = (await requestLocale()) === 'zh';
   const { lead } = copy(zh);
-  const { items: chosen, initial } = await scope(searchParams);
+  const { items: chosen, initial } = mcqScope(bank, await searchParams);
   // Only the page's language goes to the browser.
   const items = chosen.map(({ zh: zhText, en, ...q }) => ({ ...q, text: zh ? zhText : en }));
   // Only titles and right choices of the chapter quizzes, to find the learner's wrong answers.

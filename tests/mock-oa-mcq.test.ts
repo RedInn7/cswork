@@ -9,6 +9,7 @@ import {
   fitMcqReview,
   mcqDue,
   mcqRight,
+  mcqScope,
   mockClock,
   parseMcqReview,
   parseMockState,
@@ -238,3 +239,20 @@ void test('presets keep drawing from the subjects they had before mcq-v2', () =>
       for (const id of drawMcq(bank, p.mcq!, seed)) assert(OLD_TOPICS.includes(byIdAll.get(id)!.topic), `${p.slug} drew ${id}`);
 });
 const byIdAll = new Map(bank.map((q) => [q.id, q]));
+
+void test('/oa/mcq?topic=&section= ships only that part of the bank; unknown or empty scopes give all of it', () => {
+  const web = mcqScope(bank, { topic: 'web' });
+  assert.equal(web.items.length, 30);
+  assert(web.items.every((q) => q.topic === 'web'));
+  assert.deepEqual(web.initial, { section: undefined, topic: 'web' });
+  const code = mcqScope(bank, { section: ['code-output', 'cs'] });
+  assert(code.items.length > 0 && code.items.every((q) => q.section === 'code-output'));
+  assert.deepEqual(code.initial, { section: 'code-output', topic: undefined });
+  for (const query of [{ section: 'code-output', topic: 'web' }, { topic: 'nope' }, { section: 'nope' }, {}]) {
+    const all = mcqScope(bank, query);
+    assert.equal(all.items, bank, JSON.stringify(query));
+    assert.equal(all.initial, undefined);
+  }
+  // An unknown topic is dropped, the section still applies.
+  assert.deepEqual(mcqScope(bank, { topic: 'nope', section: 'quant' }).initial, { section: 'quant', topic: undefined });
+});
