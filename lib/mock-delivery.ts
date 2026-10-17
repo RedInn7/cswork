@@ -1,7 +1,7 @@
 /**
  * How a dictated answer in the AI interview was delivered: pace, filler words, time spoken
  * against the plan, and the longest pause. Worked out on the page from the browser's speech
- * recognition results (components/mock-interview.tsx useSpeech); neither the audio nor these
+ * recognition results (components/use-speech.ts); neither the audio nor these
  * numbers are uploaded. Pure, so tests cover it.
  */
 
