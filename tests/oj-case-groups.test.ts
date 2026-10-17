@@ -25,7 +25,7 @@ void test('a version is split only with 6+ hidden cases and an 8x size spread', 
   ]);
 });
 
-void test('the largest ceil(30%) hidden cases are performance, ties by ordinal', () => {
+void test('hidden cases within 8x of the largest are performance, capped at ceil(30%), ties by ordinal', () => {
   // 9 hidden, median 100: ceil(2.7) = 3 of the four 5000s, the last by ordinal left out.
   const sizes = [100, 5000, 100, 5000, 100, 5000, 100, 5000, 100];
   const cases = hidden(sizes, 1);
@@ -37,6 +37,14 @@ void test('the largest ceil(30%) hidden cases are performance, ties by ordinal',
   // Exactly 10 hidden: ceil(3) = 3, not 4.
   const ten = caseGroups(hidden([1, 1, 1, 1, 1, 1, 1, 9, 9, 9], 0))!;
   assert.equal(ten.filter((g) => g === 'performance').length, 3);
+  // Real OA packages: 2 stress inputs among 24 tiny edge cases. The quota (8) is not padded with tiny ones.
+  const tiny = (n: number) => Array.from({ length: n }, () => 14);
+  const stress = hidden([...tiny(12), 200_002, ...tiny(12), 200_002], 0);
+  const split = caseGroups(stress)!;
+  assert.deepEqual(
+    stress.filter((_, i) => split[i] === 'performance').map((c) => c.ordinal),
+    [12, 25],
+  );
 });
 
 void test('group scores are weighted and only 100 when every case passed', () => {

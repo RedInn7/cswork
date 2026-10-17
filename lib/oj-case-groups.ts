@@ -3,8 +3,9 @@ export type CaseGroup = 'correctness' | 'performance';
 
 /**
  * Splits a version's cases when its hidden inputs include clearly larger ones: at least 6 hidden
- * cases and the largest input at least 8x the median hidden input. The largest ceil(30%) hidden
- * cases (ties by ordinal) are performance, every other case, samples too, is correctness.
+ * cases and the largest input at least 8x the median hidden input. Hidden cases within 8x of the
+ * largest are performance, at most the largest ceil(30%) of them (ties by ordinal); every other
+ * case, samples too, is correctness.
  * Returns each case's group in input order, or null when the version is not split.
  * ponytail: input length is the only signal; a per-case label in the package replaces it if ever needed.
  */
@@ -19,7 +20,8 @@ export function caseGroups(
   const max = sizes.at(-1)!;
   if (max === 0 || max < 8 * median) return null;
   const large = new Set(
-    [...hidden]
+    hidden
+      .filter((c) => c.size * 8 >= max)
       .sort((a, b) => b.size - a.size || a.ordinal - b.ordinal)
       .slice(0, Math.ceil(hidden.length * 0.3))
       .map((c) => c.ordinal),
