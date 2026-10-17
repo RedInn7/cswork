@@ -607,7 +607,13 @@ def _cswork_debug(request):
             frames.pop(id(frame), None)
             step += [_show(arg), 1] if raised else [_show(arg)]
         if trace['shapesCut'] is None:
-            snapshot(kept)
+            # The learner's own objects run here (a __getattr__, a list subclass): if one throws,
+            # stop drawing rather than let it surface in their code as if it had thrown there.
+            try:
+                snapshot(kept)
+            except BaseException:
+                trace['shapesCut'] = len(steps)
+                views.pop(len(steps), None)
         steps.append(step)
         return local
 

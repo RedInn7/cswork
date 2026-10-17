@@ -523,6 +523,14 @@ test('pictures: snapshots are stored once, and stop for good past their size or 
   const slow = trace({ code: 'g = [[k] * 40 for k in range(40)]\nk = 0\nwhile True:\n    k += 1\n    g[k % 40][0] = k\n', maxMs: 300, maxSteps: 10 ** 9 });
   assert.equal(slow.stopped, 'time');
   assert.equal(slow.shapesCut !== null && slow.shapesCut < slow.steps.length, true);
+
+  // An object that throws while being looked at stops the pictures, not the learner's run.
+  const odd = trace({
+    code: 'class N:\n    __slots__ = ()\n    def __getattr__(self, name):\n        raise KeyError(name)\nclass Box:\n    def __init__(self):\n        self.next = N()\nb = Box()\nprint("ok")\n',
+  });
+  assert.equal(odd.error, null);
+  assert.equal(odd.stdout, 'ok\n');
+  assert.equal(Number.isInteger(odd.shapesCut), true);
 });
 
 test('parseShape and parseTrace refuse snapshots that point outside themselves', () => {
