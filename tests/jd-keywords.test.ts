@@ -130,7 +130,15 @@ void test('must and nice by heading, by "a plus", and the first must sentence wi
     ['Algorithms', 'must'],
     ['Go', 'must'],
     ['Distributed systems', 'nice'],
-  ]);
+  ]);  // A one-line "Location: …" or "Salary: …" field is skipped on its own; the lines after it still count.
+  const located = extractTerms('Software Engineer\nLocation: New York, NY\nWe build with Python and SQL.\nExperience with distributed systems.\nGo and Kubernetes.');
+  assert.deepEqual(located.map((h) => [h.term, h.importance]).sort(), [
+    ['Distributed systems', 'must'], ['Go', 'must'], ['Kubernetes', 'must'], ['Python', 'must'], ['SQL', 'must'],
+  ].sort());
+  const paid = extractTerms('Requirements:\n- Python\nSalary: $120,000 - $150,000\n- Kubernetes\n- AWS\n- SQL');
+  assert.deepEqual(paid.map((h) => [h.term, h.importance]).sort(), [['AWS', 'must'], ['Kubernetes', 'must'], ['Python', 'must'], ['SQL', 'must']].sort());
+  // A bare Benefits heading still drops what is under it.
+  assert.deepEqual(extractTerms('Requirements\nPython\nBenefits:\nFree SQL lessons').map((h) => h.term), ['Python']);
 });
 
 void test('the checklist reading: skills once each, musts first, evidence cut to 120, rounds by cue', () => {
