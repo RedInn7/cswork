@@ -13,6 +13,7 @@ import {
   minutesFor,
   normalizeGoal,
   oaDateInRange,
+  planGroups,
   planIcs,
   planStorageKey,
   planWeeks,
@@ -701,6 +702,16 @@ void test('tracker sprints take their company\'s problems, a mock the day before
   const planned = plan.days.flatMap((day) => ids(day.problems));
   assert.equal(new Set(planned).size, planned.length);
   assert.ok(planned.includes('oa-amazon-6'));
+  // By topic, a tracker sprint's OA problems are its company's group, apart from the target company's.
+  assert.deepEqual(
+    planGroups(plan.days, 'topic')
+      .filter((group) => group.key.startsWith('oa:'))
+      .map((group) => [group.key, group.company, group.problems, daysBetween(today, group.first)]),
+    [
+      ['oa:Amazon', 'Amazon', 5, 7],
+      ['oa:', null, 1, daysBetween(today, plan.days.find((day) => ids(day.problems).includes('oa-amazon-6'))!.date)],
+    ],
+  );
   // Today in a tracker sprint: today's count is the sprint's.
   const soon = buildPlan({
     goal: goal({ weeklyHours: 14 }),

@@ -523,6 +523,8 @@ export function StudyPlan({
     const stop = stops[index];
     return stop ? `${stop.code} ${english ? stop.shortEn : stop.shortZh}` : '';
   };
+  // A tracker sprint's OA problems carry its company; the rest are the target company's.
+  const oaLabel = (name?: string) => (name ? t(`${name} OA 题`, `${name} OA`) : t('公司 OA 题', 'Company OA problems'));
   const n = week?.problems ?? 0;
   const d = plan.daysLeft;
   function download() {
@@ -686,8 +688,8 @@ export function StudyPlan({
                     ? { easy: t('简单', 'Easy'), medium: t('中等', 'Medium'), hard: t('困难', 'Hard') }[g.level]
                     : g.stop !== null
                       ? stopLabel(g.stop)
-                      : g.key === 'oa'
-                        ? t('目标公司 OA', 'Target company OA')
+                      : g.key.startsWith('oa:')
+                        ? oaLabel(g.company ?? company?.name)
                         : t('其他题', 'Other problems')}
                   <small>
                     {monthDay(g.first)}

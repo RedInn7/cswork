@@ -655,8 +655,10 @@ export const PLAN_VIEW_KEY = 'cswork:plan:view';
 const LEVELS = ['easy', 'medium', 'hard'] as const;
 export type PlanGroup = {
   key: string;
-  /** The stop (topic grouping); null off the line (key 'oa' or 'other'). */
+  /** The stop (topic grouping); null off the line (key 'oa:<tracker company>' or 'other'). */
   stop: number | null;
+  /** An 'oa:' group's tracker company; null for the target company's (or no) OA problems. */
+  company: string | null;
   level: (typeof LEVELS)[number] | null;
   problems: number;
   minutes: number;
@@ -675,14 +677,14 @@ export function planGroups(days: readonly PlanDay[], by: 'topic' | 'difficulty',
   for (const day of days)
     for (const problem of day.problems) {
       const level = slotOf(problem.difficulty?.toLowerCase()) ?? 'medium';
-      // Off the line: the target company's OA problems, or a classic list's others.
-      const key =
-        by === 'difficulty'
-          ? level
-          : String(problem.stop ?? (problem.id.startsWith('oa-') ? 'oa' : 'other'));
+      // Off the line: OA problems by company (a tracker sprint's, else the target's), or a classic list's others.
+      const oa = by === 'topic' && problem.stop == null && problem.id.startsWith('oa-');
+      const company = oa ? (day.sprintFor?.company ?? null) : null;
+      const key = by === 'difficulty' ? level : oa ? `oa:${company ?? ''}` : String(problem.stop ?? 'other');
       const group = groups.get(key) ?? {
         key,
         stop: by === 'topic' ? (problem.stop ?? null) : null,
+        company,
         level: by === 'difficulty' ? level : null,
         problems: 0,
         minutes: 0,

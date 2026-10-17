@@ -615,9 +615,13 @@ test('guests never ask for the account copy or the tracker, and a running mock O
         ],
       }),
   };
-  const guest = await bank(routes, {}, { 'cswork:plan:v1:guest': planned });
+  const guest = await bank(routes, {}, { 'cswork:plan:v1:guest': planned, 'cswork:plan:view': JSON.stringify({ by: 'topic', order: 'plan' }) });
   try {
     assert.ok(guest.requests.some(([, url]) => url.includes('oa-library?company=amazon')), 'a guest plan still has its company');
+    assert.ok(
+      [...document.querySelectorAll('ol[data-group="topic"] .route-plan-week')].some((node) => node.firstChild.textContent === 'Amazon OA'),
+      'the target company’s OA problems are labelled with its name',
+    );
     await act(async () => guest.button('Edit plan').click());
     assert.equal(guest.field('Use my application tracker'), undefined, 'no tracker option without an account');
     await act(async () => guest.button('Save plan').click());
