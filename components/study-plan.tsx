@@ -4,9 +4,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarPlus, ChevronDown, RefreshCw } from 'lucide-react';
 import { Button } from './ui/button';
 import { CompanyFollowButton } from './company-follow-button';
+import { agenda, type Application } from '@/lib/applications';
 import { classicList } from '@/lib/classic-lists';
 import { PLAN_TOPICS_PARAM } from '@/lib/jd-skills';
-import { SLOTS, type Slot } from '@/lib/mock-oa';
+import { readMockState, SLOTS, type Slot } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
 import { masteredStops, openStart, type PlacementResult } from '@/lib/placement';
 import { ROUTE_SLUGS, STOP_NAMES, type RouteStop } from '@/lib/route-stops';
@@ -18,6 +19,8 @@ import {
   loadGoal,
   localDay,
   MAX_WEEKS,
+  mergeGoals,
+  normalizeGoal,
   oaDateInRange,
   PLAN_POOLS,
   planGroups,
@@ -25,16 +28,20 @@ import {
   planStorageKey,
   planWeeks,
   PLAN_VIEW_KEY,
+  reportedHref,
   suggestStartStop,
   TODAY_TARGET_KEY,
   type Plan,
   type PlanGroupBy,
   type PlanOrder,
   type PlanCompany,
+  type PlanEvent,
   type PlanGoal,
   type PlanPool,
   type PlanProblem,
+  type PlanSprint,
   type PlanWeek,
+  type SprintGroup,
 } from '@/lib/study-plan';
 import '@/app/study-plan.css';
 
@@ -83,13 +90,13 @@ type OaPage = {
 type CompanyProblem = PlanProblem & { solved: boolean };
 
 /** The target company's judgeable OA problems. */
-async function companyProblems(aliases: string[], signal: AbortSignal) {
+async function companyProblems(aliases: string[], signal: AbortSignal, pages = 4) {
   const found = new Map<string, CompanyProblem>();
   await Promise.all(
     aliases.map(async (alias) => {
       // ponytail: 4 pages (120 problems) outlast any sprint week; aliases the
       // OA bank merged into another company answer 400 and add nothing.
-      for (let page = 1; page <= 4; page++) {
+      for (let page = 1; page <= pages; page++) {
         const data = await ojRequest<OaPage>(
           `oa-library?${new URLSearchParams({ company: alias, ready: '1', page: String(page) })}`,
           undefined,
@@ -108,11 +115,22 @@ async function companyProblems(aliases: string[], signal: AbortSignal) {
   return [...found.values()];
 }
 
+const PLAN_NOTE = `/api/oj/notes?target=${encodeURIComponent('pref:plan')}`;
+/** The goal into the account (pref:plan); a failed save stays in this browser and goes up next visit (mergeGoals). */
+const pushGoal = (goal: PlanGoal) =>
+  fetch(PLAN_NOTE, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ body: JSON.stringify(goal) }),
+  }).catch(() => {});
+
 /**
- * The sprint goal on this device, the plan it makes from the line's `planTodo`,
- * and today's target: the plan's daily count (0 on a mock OA or OA day), else
- * the "n a day" picker. `sequence` and `activity` tell which of today's ACs
- * belonged to the plan this morning.
+ * The sprint goal (this browser's, merged with the account's pref:plan when signed in),
+ * the plan it makes from the line's `planTodo` and the tracker's OA and interview dates,
+ * and today's target: the plan's daily count (0 on a mock OA, OA or tracker date), else
+ * the "n a day" picker. `sequence` and `activity` tell which of today's ACs belonged to
+ * the plan this morning. While a mock OA runs here, no OA problems are fetched: their
+ * progress would give its verdicts away.
  */
 export function useStudyPlan(
   userId: string | null | undefined,
@@ -121,17 +139,12 @@ export function useStudyPlan(
   activity: readonly { problem_id: string; created_at: number }[],
 ) {
   const [goal, setGoal] = useState<PlanGoal | null>(null);
+  const latest = useRef<PlanGoal | null>(null);
   const [today, setToday] = useState('');
-  useEffect(() => {
-    let saved = DEFAULT_GOAL;
-    try {
-      saved = loadGoal(localStorage, userId);
-    } catch {}
-    // oxlint-disable-next-line react/react-compiler -- The goal and the local day exist only in the browser, after hydration.
-    setGoal(saved);
-    setToday(localDay());
-  }, [userId]);
-  function save(next: PlanGoal) {
+  const [sealed, setSealed] = useState(false);
+  // This browser keeps a copy of the goal: the page shows it at once, and it is all a guest has.
+  function keep(next: PlanGoal) {
+    latest.current = next;
     setGoal(next);
     try {
       localStorage.setItem(planStorageKey(userId), JSON.stringify(next));
@@ -139,8 +152,43 @@ export function useStudyPlan(
       localStorage.setItem(LEGACY_TARGET_KEY, String(next.dailyTarget));
     } catch {}
   }
+  useEffect(() => {
+    let saved = DEFAULT_GOAL;
+    try {
+      saved = loadGoal(localStorage, userId);
+    } catch {}
+    latest.current = saved;
+    // oxlint-disable-next-line react/react-compiler -- The goal and the local day exist only in the browser, after hydration.
+    setGoal(saved);
+    setToday(localDay());
+    setSealed(!!userId && !!readMockState(userId).active);
+    if (!userId) return;
+    const controller = new AbortController();
+    // Not ojRequest: it cannot PUT, and its 401 opens the sign-in dialog (as in daily-goal.tsx).
+    fetch(PLAN_NOTE, { signal: controller.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<{ body?: unknown }>) : null))
+      .then((note) => {
+        let remote: PlanGoal | null = null;
+        try {
+          if (typeof note?.body === 'string' && note.body) remote = normalizeGoal(JSON.parse(note.body));
+        } catch {}
+        // A save made while this was loading is the local side.
+        const local = latest.current ?? saved;
+        const merged = mergeGoals(local, remote);
+        if (merged.goal !== local) keep(merged.goal);
+        if (merged.push) void pushGoal(merged.goal);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- keep reads only userId.
+  }, [userId]);
+  function save(next: PlanGoal) {
+    const stamped = { ...next, updatedAt: Date.now() };
+    keep(stamped);
+    if (userId) void pushGoal(stamped);
+  }
   const aliases =
-    goal?.status === 'planned' && goal.company ? goal.company.aliases.join(',') : '';
+    goal?.status === 'planned' && goal.company && !sealed ? goal.company.aliases.join(',') : '';
   const [company, setCompany] = useState<{ aliases: string; problems: CompanyProblem[] }>({
     aliases: '',
     problems: [],
@@ -182,6 +230,73 @@ export function useStudyPlan(
     );
     return () => controller.abort();
   }, [pool]);
+  // The application tracker's OA deadlines and interviews still ahead, signed in only.
+  const tracking = !!userId && goal?.status === 'planned' && goal.tracker;
+  const [apps, setApps] = useState<Application[]>([]);
+  useEffect(() => {
+    if (!tracking) return;
+    const controller = new AbortController();
+    ojRequest<{ items?: Application[] }>('applications', undefined, controller.signal).then(
+      (data) => setApps(Array.isArray(data.items) ? data.items : []),
+      () => {},
+    );
+    return () => controller.abort();
+  }, [tracking]);
+  const dates = useMemo(
+    () =>
+      tracking && today
+        ? // From today's local day on (agenda's own `now` would make this render impure).
+          agenda(apps, 0).flatMap((e) => {
+            const date = localDay(new Date(e.at));
+            return (e.kind === 'oa' || e.kind === 'interview') && date >= today
+              ? [
+                  {
+                    id: e.a.id,
+                    kind: e.kind,
+                    date,
+                    company: e.a.company,
+                    slug: e.a.companySlug,
+                    onsite: e.kind === 'interview' && e.a.stage === 'onsite',
+                    preset: e.a.links?.mock?.replace(/^\/mock-oa\//, '') || null,
+                  },
+                ]
+              : [];
+          })
+        : [],
+    [tracking, today, apps],
+  );
+  // Mock OA presets give the length and the OA problems of a tracker company.
+  const wantPresets = dates.some((e) => e.preset);
+  const [presets, setPresets] = useState<Preset[]>([]);
+  useEffect(() => {
+    if (!wantPresets) return;
+    const controller = new AbortController();
+    ojRequest<{ companies: Preset[] }>('mock-oa/presets', undefined, controller.signal).then(
+      (value) => setPresets(value.companies),
+      () => {},
+    );
+    return () => controller.abort();
+  }, [wantPresets]);
+  // ponytail: page 1 for the 3 nearest presets keeps a page load to a few oa-library requests
+  // (120 a minute, shared with the rest of the site); later sprints ride the line until they come close.
+  const near = sealed ? '' : [...new Set(dates.flatMap((e) => (e.preset ? [e.preset] : [])))].slice(0, 3).join(',');
+  const [sprintPool, setSprintPool] = useState<{ near: string; problems: Map<string, CompanyProblem[]> }>({
+    near: '',
+    problems: new Map(),
+  });
+  useEffect(() => {
+    if (!near || !presets.length) return;
+    const controller = new AbortController();
+    void Promise.all(
+      near.split(',').map(async (slug) => {
+        const preset = presets.find((c) => c.slug === slug);
+        return [slug, preset ? await companyProblems(preset.aliases, controller.signal, 1) : []] as const;
+      }),
+    ).then((entries) => {
+      if (!controller.signal.aborted) setSprintPool({ near, problems: new Map(entries) });
+    });
+    return () => controller.abort();
+  }, [near, presets]);
   const plan = useMemo(() => {
     const source = pool ? (listed.pool === pool ? listed : null) : todo ? { todo, sequence } : null;
     if (goal?.status !== 'planned' || !source || !today) return null;
@@ -193,6 +308,7 @@ export function useStudyPlan(
       ),
     );
     const all = company.aliases === aliases ? company.problems : [];
+    const pooled = sprintPool.near === near ? sprintPool.problems : new Map<string, CompanyProblem[]>();
     return buildPlan({
       goal,
       today,
@@ -202,12 +318,20 @@ export function useStudyPlan(
         line: source.sequence?.filter((id) => solvedToday.has(id)).length ?? 0,
         company: all.filter((p) => solvedToday.has(p.id)).length,
       },
+      tracker: {
+        events: dates.map(
+          (e): PlanEvent => ({ ...e, minutes: presets.find((c) => c.slug === e.preset)?.minutes ?? 90 }),
+        ),
+        problems: new Map(
+          [...pooled].map(([slug, list]) => [slug, list.filter((p) => !p.solved && !solvedToday.has(p.id))]),
+        ),
+      },
     });
-  }, [goal, today, todo, sequence, pool, listed, activity, company, aliases]);
+  }, [goal, today, todo, sequence, pool, listed, activity, company, aliases, dates, presets, sprintPool, near]);
   const day = plan?.days[0];
   const from = plan && goal?.pool === 'line' ? goal.startStop : 0;
   const target =
-    day?.mock || day?.oa ? 0 : plan?.daily || goal?.dailyTarget || DEFAULT_GOAL.dailyTarget;
+    day?.mock || day?.oa || day?.event ? 0 : plan?.daily || goal?.dailyTarget || DEFAULT_GOAL.dailyTarget;
   useEffect(() => {
     if (!goal || !today) return;
     try {
@@ -226,6 +350,32 @@ export function useStudyPlan(
 }
 
 const monthDay = (date: string) => `${+date.slice(5, 7)}/${+date.slice(8, 10)}`;
+/** "Google OA 10/24" or "Meta 面试 10/25". */
+const dateLabel = (s: PlanEvent, english: boolean) =>
+  `${s.company} ${s.kind === 'oa' ? 'OA' : english ? 'interview' : '面试'} ${monthDay(s.date)}`;
+/** "A and B", or "A, B and C". */
+const both = (items: string[], english: boolean) =>
+  items.length < 2 ? items.join('') : `${items.slice(0, -1).join(english ? ', ' : '、')}${english ? ' and ' : ' 和 '}${items.at(-1)}`;
+/** Why a tracker sprint is short, and what to drop. */
+function tightNote(group: SprintGroup, today: string, english: boolean) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const short = group.events.find((s) => s.days.length < 2) ?? group.events[0];
+  const n = short.days.length;
+  const days = t(`${n} 天`, `${n} ${n === 1 ? 'day' : 'days'}`);
+  if (group.events.length > 1) {
+    const dates = both(group.events.map((s) => dateLabel(s, english)), english);
+    return t(
+      `${dates} 挨得太近，冲刺段已合并，${short.company} 只分到 ${days}：建议先做更早那家的高频题，略过另一家的模拟 OA。`,
+      `${dates} are close together, so their sprints are merged and ${short.company} gets only ${days}: do the earlier company’s most reported problems first and skip the other’s mock OA.`,
+    );
+  }
+  if (short.date === today)
+    return t(`今天就是 ${dateLabel(short, false)}，祝顺利！`, `${dateLabel(short, true)} is today. Good luck!`);
+  return t(
+    `${dateLabel(short, false)} 很近了，只排得下 ${days} 冲刺：先做这家的高频题。`,
+    `${dateLabel(short, true)} is close, so its sprint gets only ${days}: start with its most reported problems.`,
+  );
+}
 const hours = (minutes: number) => Math.round(minutes / 6) / 10;
 /** A week's problem time, without its mock OAs. */
 const practice = (week: PlanWeek) =>
@@ -239,6 +389,7 @@ export function StudyPlan({
   onSave,
   stops,
   english,
+  signedIn = false,
 }: {
   goal: PlanGoal | null;
   plan: Plan | null;
@@ -246,6 +397,8 @@ export function StudyPlan({
   onSave: (goal: PlanGoal) => void;
   stops: RouteStop[];
   english: boolean;
+  /** The tracker option needs an account. */
+  signedIn?: boolean;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [editing, setEditing] = useState(false);
@@ -305,6 +458,7 @@ export function StudyPlan({
         stops={stops}
         english={english}
         handoff={Boolean(handed)}
+        signedIn={signedIn}
         onDone={close}
       />
     );
@@ -354,7 +508,11 @@ export function StudyPlan({
   const week = weeks[0];
   const company = goal.company;
   const mockHref = `/mock-oa${company ? `/${company.slug}` : ''}`;
+  // A tracker sprint's mock OA is its own company's.
+  const mockOf = (day: { sprintFor?: PlanSprint }) => (day.sprintFor ? `/mock-oa/${day.sprintFor.preset}` : mockHref);
   const todayMock = plan.days[0]?.mock;
+  const mockName = plan.days[0]?.sprintFor?.company ?? company?.name;
+  const tracked = plan.sprints.reduce((sum, group) => sum + group.events.length, 0);
   const stopLabel = (index: number) => {
     const stop = stops[index];
     return stop ? `${stop.code} ${english ? stop.shortEn : stop.shortZh}` : '';
@@ -411,6 +569,7 @@ export function StudyPlan({
           t(`每周 ${goal.weeklyHours} 小时`, `${goal.weeklyHours} h a week`),
           goal.pool !== 'line' && t(`题池 ${poolName(goal.pool, false)}`, `Pool: ${poolName(goal.pool, true)}`),
           company && t(`目标 ${company.name}`, `Target: ${company.name}`),
+          tracked > 0 && t(`看板 ${tracked} 个日期`, `${tracked} tracker ${tracked === 1 ? 'date' : 'dates'}`),
           goal.pool === 'line' &&
             goal.startStop > 0 &&
             stops[goal.startStop] &&
@@ -434,10 +593,25 @@ export function StudyPlan({
           )}
         </p>
       ) : null}
+      {plan.sprints
+        .filter((group) => group.tight)
+        .map((group) => (
+          <p key={`${group.events[0].id}-${group.events[0].kind}`} className="route-plan-note">
+            {tightNote(group, today, english)}
+          </p>
+        ))}
+      {plan.skipped > 0 && (
+        <p className="route-plan-note">
+          {t(
+            `看板上有 ${plan.skipped} 个日期落在 OA 前的最后一周，那一周按原计划冲刺，不再另排。`,
+            `${plan.skipped} tracker ${plan.skipped === 1 ? 'date falls' : 'dates fall'} in the last week before your OA, which keeps its own sprint.`,
+          )}
+        </p>
+      )}
       {!!todayMock && (
-        <a className="route-plan-mock" href={mockHref}>
+        <a className="route-plan-mock" href={mockOf(plan.days[0])}>
           {t(`今天：模拟 OA 第 ${todayMock} 次`, `Today: mock OA #${todayMock}`)}
-          {company ? ` · ${company.name}` : ''}
+          {mockName ? ` · ${mockName}` : ''}
         </a>
       )}
       <div className="route-plan-actions">
@@ -554,13 +728,38 @@ export function StudyPlan({
                   {w.sprint && !(w.oa && w.days.length === 1) && (
                     <span className="route-plan-tag">{t('冲刺周', 'Sprint')}</span>
                   )}
+                  {[...new Set(w.days.flatMap((day) => (day.sprintFor && !day.mock ? [day.sprintFor] : [])))].map((s) =>
+                    // Without a mock OA preset the sprint rides the line: the tag links the company's reported problems.
+                    s.slug && !s.preset ? (
+                      <a
+                        key={`${s.id}-${s.kind}`}
+                        className="route-plan-tag"
+                        href={reportedHref(s.slug)}
+                        aria-label={t(`冲刺 ${s.company}：这家的高频题`, `Sprint ${s.company}: its most reported problems`)}
+                      >
+                        {t(`冲刺 ${s.company}`, `Sprint ${s.company}`)}
+                      </a>
+                    ) : (
+                      <span key={`${s.id}-${s.kind}`} className="route-plan-tag">
+                        {t(`冲刺 ${s.company}`, `Sprint ${s.company}`)}
+                      </span>
+                    ),
+                  )}
                   {w.days
                     .filter((day) => day.mock)
                     .map((day) => (
-                      <a key={day.date} className="route-plan-tag" href={mockHref}>
+                      <a key={day.date} className="route-plan-tag" href={mockOf(day)}>
                         {t(`模拟 OA ${monthDay(day.date)}`, `Mock OA ${monthDay(day.date)}`)}
                       </a>
                     ))}
+                  {w.days.map(
+                    (day) =>
+                      day.event && (
+                        <span key={day.date} className="route-plan-tag" data-oa>
+                          {dateLabel(day.event, english)}
+                        </span>
+                      ),
+                  )}
                   {w.oa && (
                     <span className="route-plan-tag" data-oa>
                       OA {monthDay(w.end)}
@@ -582,6 +781,7 @@ function PlanForm({
   stops,
   english,
   handoff,
+  signedIn,
   onDone,
 }: {
   goal: PlanGoal;
@@ -590,6 +790,7 @@ function PlanForm({
   english: boolean;
   /** The topics were handed over (?planTopics=): the learner's pick, which a placement result leaves alone. */
   handoff: boolean;
+  signedIn: boolean;
   onDone: (goal?: PlanGoal) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -602,6 +803,7 @@ function PlanForm({
   const [weeks, setWeeks] = useState(goal.weeks);
   const [levels, setLevels] = useState<Slot[]>(goal.difficulties);
   const [topics, setTopics] = useState<string[]>(goal.topics.length ? goal.topics : ROUTE_SLUGS);
+  const [tracker, setTracker] = useState(goal.tracker);
   const [presets, setPresets] = useState<Preset[] | null>(null);
   // The latest placement quiz (/placement); placementAt moves on once a newer result is applied.
   const [placement, setPlacement] = useState<PlacementResult | null>(null);
@@ -682,6 +884,7 @@ function PlanForm({
       // Every stop is saved as "all", so stops added later join the plan.
       topics: topics.length === ROUTE_SLUGS.length ? [] : ROUTE_SLUGS.filter((slug) => topics.includes(slug)),
       placementAt,
+      tracker,
     });
   }
   const levelNames: Record<Slot, string> = { easy: t('简单', 'Easy'), medium: t('中等', 'Medium'), hard: t('困难', 'Hard') };
@@ -847,6 +1050,25 @@ function PlanForm({
             ))}
           </fieldset>
         </details>
+        {signedIn && (
+          <div className="route-plan-checks route-plan-wide">
+            <label>
+              <input
+                type="checkbox"
+                checked={tracker}
+                aria-describedby="route-plan-tracker-hint"
+                onChange={(event) => setTracker(event.target.checked)}
+              />
+              {t('接上投递看板', 'Use my application tracker')}
+            </label>
+            <small id="route-plan-tracker-hint">
+              {t(
+                '在看板上每个 OA 和面试日期前排 2–5 天这家的冲刺',
+                'A 2–5 day company sprint before each OA and interview date on your tracker',
+              )}
+            </small>
+          </div>
+        )}
         {stops.length > 0 && pool === 'line' && (
           <div className="route-plan-field route-plan-wide">
             <label htmlFor="route-plan-start">{t('从哪一站出发', 'Start at stop')}</label>
