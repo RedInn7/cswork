@@ -105,3 +105,124 @@ test('the first and last stops have only one neighbour; unknown slugs are not st
   assert.ok(topicStop('nope') === undefined);
   assert.ok(TOPIC_STOPS.every((s) => s.problems > 0 && s.title && s.titleEn));
 });
+
+// A /topics/<stop> page with lib/server/topic-page.ts's practice (shape TopicPractice).
+const practiceRow = (number, stage, extra = {}) => ({
+  id: `lc-${number}`,
+  number,
+  titleZh: `题${number}`,
+  titleEn: `Problem ${number}`,
+  difficulty: '简单',
+  rating: number === 34 ? 1500 : null,
+  stage,
+  reason: `思路${number}`,
+  reasonEn: `Approach ${number}`,
+  judgeProblemId: `lc-${number}`,
+  href: `/?view=problem&problem=lc-${number}`,
+  ...extra,
+});
+const practiceFor = (signedIn) => {
+  const s = (status) => (signedIn ? status : undefined);
+  const focus = practiceRow(35, '基础', { status: s('solved') });
+  return {
+    signedIn,
+    stages: [
+      { stage: '基础', stageEn: 'Foundation', rows: [focus, practiceRow(852, '基础', { status: s('not_started') })] },
+      // lc-33 is in the viewer's running contest: its approach stays home.
+      { stage: '核心', stageEn: 'Core', rows: [practiceRow(34, '核心', { status: s('attempted') }), practiceRow(33, '核心', { reason: '', reasonEn: '', status: s('not_started') })] },
+      { stage: '进阶', stageEn: 'Advanced', rows: [practiceRow(81, '进阶', { status: s('not_started') })] },
+    ],
+    focus,
+    prereqs: [{ slug: 'array-foundations', total: 20, ...(signedIn && { solved: 12 }) }],
+    leadsTo: [
+      { slug: 'binary-search-tree', total: 15, ...(signedIn && { solved: 1 }) },
+      { slug: 'dp-scheduling', total: 6, ...(signedIn && { solved: 0 }) },
+    ],
+    asked: { companies: 7, reports: 30, top: [{ slug: 'acme', name: 'Acme', count: 12 }, { slug: 'beta', name: 'Beta', count: 5 }] },
+    oa: {
+      items: [{ id: 'oa-acme-1', title: 'Find the Slot', companySlug: 'acme', companyName: 'Acme', href: '/?view=problem&problem=oa-acme-1', status: s('solved') }],
+      total: 14,
+    },
+    core: [{ id: 'core-binary-search', titleZh: '二分查找', titleEn: 'Binary Search', difficulty: '简单', href: '/?view=problem&problem=core-binary-search', status: s('not_started') }],
+  };
+};
+
+test('with practice: header chips, a warm-up, why it works, three stage tables, OA and Core Skills', () => {
+  const stop = topicStop('binary-search');
+  for (const zh of [true, false]) {
+    const doc = render(createElement(TopicView, { stop, zh, practice: practiceFor(true) }));
+    const header = doc.querySelector('section.topics-header');
+    assert.ok(header.compareDocumentPosition(doc.querySelector('.topics-sign')) & 2, 'under the station sign');
+    const [first, next] = [...header.querySelectorAll('.topics-chips')];
+    const prereq = first.querySelector('a');
+    assert.equal(prereq.getAttribute('href'), '/topics/array-foundations');
+    assert.ok(prereq.hasAttribute('data-met'), '12/20 is past 60%');
+    assert.ok(prereq.textContent.includes('12/20'));
+    assert.deepEqual([...next.querySelectorAll('a')].map((a) => a.getAttribute('href')), ['/topics/binary-search-tree', '/topics/dp-scheduling']);
+    assert.ok(![...next.querySelectorAll('a')].some((a) => a.hasAttribute('data-met')));
+    assert.ok(header.textContent.includes(zh ? '7 家公司考过' : 'asked by 7 companies'));
+    assert.equal(header.querySelector('.topics-asked-top a').getAttribute('href'), '/company/acme');
+    assert.ok(header.querySelector('.topics-progress').textContent.includes('1/2'), 'Foundation 1/2 solved');
+
+    const focus = doc.querySelector('section.topics-focus');
+    assert.equal(focus.querySelector('a.topics-focus-card').getAttribute('href'), '/?view=problem&problem=lc-35');
+    assert.ok(focus.textContent.includes('LC 35'));
+    assert.equal(focus.querySelector('details.topics-focus-hint p').textContent, zh ? '思路35' : 'Approach 35');
+    assert.ok(!focus.querySelector('details').hasAttribute('open'));
+    assert.ok(doc.querySelector('section.topics-template .topics-template-lead').textContent.includes('LC 35'));
+
+    const why = doc.querySelector('section.topics-why');
+    assert.ok(why.compareDocumentPosition(doc.querySelector('details.topics-code')) & 2, 'after the template');
+    assert.ok(why.querySelectorAll('.topics-why-points li').length >= 2);
+    assert.deepEqual([...why.querySelectorAll('.topics-say figure')].map((f) => f.getAttribute('lang')), ['zh-CN', 'en']);
+    assert.equal(why.querySelector('.topics-say-play'), null, 'no listen button without speechSynthesis');
+    assert.ok(why.querySelector('.rd .recall'), 'a self-graded recall card');
+
+    const tables = doc.querySelector('section.topics-practice');
+    assert.ok(tables.compareDocumentPosition(doc.querySelector('section.topics-drill')) & 2, 'after the drills');
+    const stages = [...tables.querySelectorAll('table.topics-table')];
+    assert.equal(stages.length, 3);
+    assert.ok(stages.every((t) => t.querySelectorAll('thead th').length === 5));
+    assert.equal(stages[1].querySelector('tbody tr td:nth-child(3)').textContent, zh ? '思路34' : 'Approach 34');
+    assert.ok(stages[1].querySelector('.lc-rating'));
+    assert.equal(stages[1].querySelector('td[data-status]').textContent, zh ? '尝试过' : 'Attempted');
+    assert.equal(
+      stages[1].querySelectorAll('tbody tr')[1].querySelector('td:nth-child(3)').textContent,
+      zh ? '比赛或考试结束后显示' : 'Shown after your contest or exam',
+    );
+    const scroll = tables.querySelector('.topics-table-scroll');
+    assert.ok(scroll.getAttribute('tabindex') === '0' && doc.getElementById(scroll.getAttribute('aria-labelledby')));
+    assert.equal(tables.querySelector('.topics-oa a.topics-more').getAttribute('href'), '/?view=problems&library=oa&topic=binary-search');
+    assert.ok(tables.querySelector('.topics-oa a.topics-more').textContent.includes('14'));
+    assert.equal(tables.querySelector('.topics-core a').getAttribute('href'), '/?view=problem&problem=core-binary-search');
+  }
+});
+
+test('guests get no status column or progress; without practice the page is the cheat sheet', () => {
+  const stop = topicStop('binary-search');
+  const guest = render(createElement(TopicView, { stop, zh: false, practice: practiceFor(false) }));
+  assert.ok([...guest.querySelectorAll('table.topics-table')].every((t) => t.querySelectorAll('thead th').length === 4));
+  assert.equal(guest.querySelector('td[data-status]'), null);
+  assert.equal(guest.querySelector('.topics-progress'), null);
+  assert.ok(!guest.querySelector('.topics-chips').textContent.includes('/'));
+  assert.ok(guest.querySelector('.topics-focus'));
+
+  const bare = render(createElement(TopicView, { stop, zh: true }));
+  for (const selector of ['.topics-header', '.topics-focus', '.topics-practice'])
+    assert.equal(bare.querySelector(selector), null, selector);
+  assert.ok(!bare.querySelector('section.topics-template .topics-template-lead').textContent.includes('LC'));
+  // The correctness points are content, not practice: every visitor gets them.
+  assert.ok(bare.querySelector('.topics-why .topics-why-points li'));
+});
+
+test('the index marks each stop with its interview heat when given', () => {
+  const heat = Object.fromEntries(TOPIC_STOPS.map((s, i) => [s.slug, i % 4]));
+  const doc = render(createElement(TopicsIndexView, { zh: false, heat }));
+  const marks = [...doc.querySelectorAll('.topics-line .topics-heat')];
+  assert.equal(marks.length, TOPIC_STOPS.filter((_, i) => i % 4).length);
+  assert.equal(marks[0].querySelector('[aria-hidden="true"]').textContent, '•');
+  assert.ok(marks[0].querySelector('.sr-only').textContent.includes('1 of 3'));
+  assert.ok(doc.querySelector('.topics-heat-key'));
+  const plain = render(createElement(TopicsIndexView, { zh: true }));
+  assert.equal(plain.querySelector('.topics-heat'), null);
+});
