@@ -29,7 +29,7 @@ export default async function EnglishLayout({ children }: { children: React.Reac
         <Link href="/mock-interview" prefetch={false}>
           {zh ? '模拟面试' : 'Mock interview'}
         </Link>
-        <Link href="/privacy" prefetch={false}>
+        <Link href="/privacy#privacy-practice-tracks" prefetch={false}>
           {zh ? '隐私' : 'Privacy'}
         </Link>
       </footer>

@@ -31,7 +31,7 @@ export default async function ProjectsLayout({ children }: { children: React.Rea
         <Link href="/system-design" prefetch={false}>
           {zh ? '系统设计' : 'System design'}
         </Link>
-        <Link href="/privacy" prefetch={false}>
+        <Link href="/privacy#privacy-practice-tracks" prefetch={false}>
           {zh ? '隐私' : 'Privacy'}
         </Link>
       </footer>

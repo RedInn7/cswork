@@ -56,6 +56,13 @@ test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ top
   assert.throws(() => resolveStep({ kind: 'sd-part', ref: 'url-shortener' }, true, true), /no sd-part/, 'a part, not a chapter');
   assert.throws(() => resolveStep({ kind: 'project', ref: 'url-shortener' }, true, true), /no project/);
   assert.throws(() => resolveStep({ kind: 'mcq-topic', ref: 'astrology' }, true, true), /no mcq-topic/);
+  assert.throws(() => resolveStep({ kind: 'core-group', ref: 'lld' }, true, true), /no core-group/);
+  // The judged OOD problems (Core Skills group `ood`) follow the OOD reading on the generalist and backend paths.
+  const ood = resolveStep({ kind: 'core-group', ref: 'ood' }, true, true);
+  assert.equal(ood.href, '/core-skills#core-group-ood');
+  assert.ok(ood.keys.includes('problem:core-parking-lot') && ood.keys.length >= 8);
+  for (const role of ['generalist', 'backend'] as const)
+    assert.ok(ROLES[role].steps.some((s) => s.kind === 'core-group' && s.ref === 'ood' && !s.optional), role);
 });
 
 test('each role is a real path: no repeats, a project, mostly counted steps', () => {

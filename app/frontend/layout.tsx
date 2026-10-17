@@ -31,7 +31,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <Link href="/library" prefetch={false}>
           {zh ? '面试资料库' : 'Library'}
         </Link>
-        <Link href="/privacy" prefetch={false}>
+        <Link href="/privacy#privacy-practice-tracks" prefetch={false}>
           {zh ? '隐私' : 'Privacy'}
         </Link>
       </footer>

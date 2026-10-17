@@ -143,6 +143,10 @@ export function DailyView({
         <a href="/library">
           {zh ? '面试资料库' : 'Library'}
         </a>
+        {/* The page's <link rel="alternate"> feed (app/daily/page.tsx), in its language. */}
+        <a href={zh ? '/feeds/daily.xml?lang=zh' : '/feeds/daily.xml'} type="application/atom+xml">
+          {zh ? 'RSS 订阅' : 'RSS feed'}
+        </a>
         <a href="/privacy">
           {zh ? '隐私' : 'Privacy'}
         </a>
