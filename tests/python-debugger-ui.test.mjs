@@ -357,6 +357,24 @@ test('recursive runs get a recursion tree tab: repeats marked, folding, a click 
   }
 });
 
+test('calls a crash unwinds say raised in the recursion tree, not → None', async () => {
+  open();
+  gate.release();
+  const code = ['def f(n):', '    if n == 0:', '        return [][0]', '    return f(n - 1) + 1', 'print(f(2))'].join('\n');
+  const root = await mount({ language: 'python', code, stdin: '', mode: 'acm' });
+  try {
+    await click('Debug');
+    await settle(400);
+    await act(async () => [...document.querySelectorAll('[role="tab"]')].find((n) => n.textContent === 'Recursion tree').click());
+    assert.deepEqual(
+      [...document.querySelectorAll('.pydbg-call-jump')].map((n) => n.textContent),
+      ['main', 'f(n=2)raised', 'f(n=1)raised', 'f(n=0)raised'],
+    );
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
 test('runs without recursion keep the plain call stack heading', async () => {
   open();
   gate.release();

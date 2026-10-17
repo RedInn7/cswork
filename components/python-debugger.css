@@ -269,6 +269,10 @@
   list-style: none;
   font: 12px/1.6 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
+.pydbg-tree > li {
+  /* Deep recursion widens the tree (it scrolls) instead of squeezing each row to a sliver. */
+  min-width: max-content;
+}
 .pydbg-tree ul {
   list-style: none;
   margin-left: 7px;
@@ -306,9 +310,6 @@
   background: #eef3fa;
   color: #1f4fa3;
   font-weight: 600;
-}
-.pydbg-call-jump span {
-  overflow-wrap: anywhere;
 }
 .pydbg-call-jump small {
   color: #2a6f5f;
