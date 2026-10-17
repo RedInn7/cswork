@@ -48,7 +48,7 @@ const SIZE = new RegExp(String.raw`(?<![\w.])((?:\w+\.)?(?:length|len)|[nmqNMQ])
 const VALUE = new RegExp(String.raw`(?<![\w.])[A-Za-z]\w*(?:\[[a-z]\]|_\{?i\}?)\|?${LE}${NUM}`, 'g');
 
 function parseNum(text: string) {
-  const s = text.replace(new RegExp(`[${SUP}]+`, 'g'), (d) => `^${[...d].map((c) => SUP.indexOf(c)).join('')}`).replace(/[\s,{}]/g, '');
+  const s = text.replace(new RegExp(`[${SUP}]+`, 'g'), (d) => `^${d.replace(/./g, (c) => String(SUP.indexOf(c)))}`).replace(/[\s,{}]/g, '');
   const pow = /^(?:(\d+(?:\.\d+)?)[·×x*])?10\^(\d+)$/.exec(s);
   return pow ? (pow[1] ? Number(pow[1]) : 1) * 10 ** Number(pow[2]) : Number(s);
 }
