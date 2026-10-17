@@ -335,6 +335,8 @@ const EN: Record<string, string> = {
   题解不存在: 'Solution not found',
   这道题没有可用的参考解: 'This problem has no reference solution to compare with',
   这道题暂不支持对拍: "Stress testing isn't available for this problem",
+  这道题暂不支持测复杂度: "Complexity probing isn't available for this problem",
+  '另一次复杂度测量正在运行，请稍后再试': 'Another complexity probe is running. Please try again shortly',
   // Whiteboard and stress-before-AC records (lib/server/practice-aids.ts)
   '还在判题，判完后再记录': "Still judging. It's recorded once judging finishes",
   评论不存在: 'Comment not found',

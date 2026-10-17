@@ -216,3 +216,59 @@ void test('stress needs a whitelisted problem with a text checker, a verified ad
     .run(me.id, me.id);
   assert.equal(await status(me, 'POST', 'problems/lc-53/stress', body), 403);
 });
+
+const { ownCases, probeCases } = await import('../lib/server/oj-submissions');
+const probe = (p: Person, id = 'lc-53') => call(p, 'POST', `problems/${id}/complexity`, { language: 'python', code: 'class Solution: pass' });
+const failure = async (p: Person, id = 'lc-53') => {
+  try {
+    await probe(p, id);
+  } catch (error) {
+    return [(error as { status: number }).status, (error as Error).message];
+  }
+  assert.fail('expected a refusal');
+};
+
+void test('a complexity probe keeps only its seed, redraws its cases in the worker and stays unlisted', async () => {
+  const prober: Person = { ...me, id: 'probe-me' };
+  const response = await probe(prober);
+  assert.equal(response.status, 201);
+  const created = (await response.json()) as { id: string; sizes: number[] };
+  const saved = row(created.id);
+  assert.equal(saved.mode, 'complexity');
+  assert.equal(saved.coding_mode, 'leetcode');
+  assert.equal(saved.harness_version, LEETCODE_HARNESS_VERSION);
+  // Up to 512 KiB of input is never stored: the row holds the server's seed, the worker redraws.
+  const { seed } = JSON.parse(String(saved.custom_input)) as { seed: number };
+  assert.deepEqual(Object.keys(JSON.parse(String(saved.custom_input))), ['seed']);
+  const drawn = probeCases('lc-53', seed)!;
+  assert.deepEqual(created.sizes, drawn.sizes);
+  assert.equal(saved.total, drawn.cases.length);
+  const full = sqlite().prepare('SELECT * FROM submissions WHERE id=?').get(created.id) as Parameters<typeof ownCases>[0];
+  assert.deepEqual(ownCases(full), drawn.cases);
+  // The detail polls carry times and verdicts, never the inputs.
+  const detail = (await (await call(prober, 'GET', `submissions/${created.id}`)).json()) as { cases: { stdin?: string; status: string }[] };
+  assert.equal(detail.cases.length, drawn.cases.length);
+  assert.ok(detail.cases.every((c) => c.stdin === undefined && c.status === 'pending'));
+  const history = (await (await call(prober, 'GET', 'submissions?problemId=lc-53')).json()) as { items: unknown[] };
+  assert.deepEqual(history.items, []);
+  // Someone else's probe waits for this one: one in flight site-wide.
+  assert.deepEqual(await failure({ ...me, id: 'probe-other' }), [429, '另一次复杂度测量正在运行，请稍后再试']);
+  await cancelSubmission(prober, created.id);
+  // Six an hour each: the seventh is refused.
+  for (let i = 2; i <= 6; i++) {
+    const next = await probe(prober);
+    assert.equal(next.status, 201);
+    await cancelSubmission(prober, ((await next.json()) as { id: string }).id);
+  }
+  assert.deepEqual(await failure(prober), [429, '操作有些频繁，请稍后再试']);
+});
+
+void test('a probe needs a whitelisted problem with something to scale, and no running contest', async () => {
+  const someone: Person = { ...me, id: 'probe-gate' };
+  assert.equal((await failure(someone, 'lc-1'))[0], 404, 'not whitelisted');
+  assert.equal((await failure(someone, 'lc-9'))[0], 404, 'no text checker here, nor a length');
+  assert.equal((await failure({ ...someone, verified: false }))[0], 403);
+  assert.equal(await status(someone, 'POST', 'problems/lc-53/complexity', { language: 'python', code: 'x', seed: 1 }), 400, 'the seed is the server’s');
+  // `me` joined a room with lc-53 running (the stress test above).
+  assert.equal((await failure(me))[0], 403);
+});
