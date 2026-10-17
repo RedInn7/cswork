@@ -84,7 +84,8 @@ export const lines = (value: string) =>
  * A review comment's line (resume review links): a lib/resume-check `where` that holds lines plus
  * the line's index among lines(), e.g. 'experience.0.bullets.2' or 'skills.3'.
  */
-const LINE_PATH = /^(?:(education|experience|projects)\.(\d{1,2})\.bullets|(skills|awards))\.(\d{1,3})$/;
+// Canonical indexes only ('skills.00' would never match the review page's paths).
+const LINE_PATH = /^(?:(education|experience|projects)\.(0|[1-9]\d?)\.bullets|(skills|awards))\.(0|[1-9]\d{0,2})$/;
 const MARK = /^\s*(?:[-•*]\s*)?/;
 /** The text of the line at `path`, bullet mark dropped; null when there is no such line. */
 export function lineAt(r: Resume, path: string): string | null {
@@ -103,7 +104,7 @@ function rewriteIn(value: string, original: string, rewrite: string, at?: number
 }
 /**
  * The resume with a reviewer's rewrite in place of `original`: on the line at `path` if it still
- * reads so, else on the first identical line in the same section (entries and lines move); null
+ * reads so, else on the first identical line in that entry, else in the same section (entries and lines move); null
  * when the line was edited since or is gone.
  */
 export function applyRewrite(r: Resume, path: string, original: string, rewrite: string): Resume | null {
@@ -115,7 +116,8 @@ export function applyRewrite(r: Resume, path: string, original: string, rewrite:
     return value === null ? null : { ...r, [key]: value };
   }
   const key = m[1] as ListKey;
-  const tries: [number, number?][] = [[+m[2], +m[4]], ...r[key].map((_, i): [number] => [i])];
+  // The anchor entry first (a line added above moves the index), then the whole section.
+  const tries: [number, number?][] = [[+m[2], +m[4]], [+m[2]], ...r[key].map((_, i): [number] => [i])];
   for (const [i, at] of tries) {
     const bullets = r[key][i] && rewriteIn(r[key][i].bullets, original, rewrite, at);
     if (bullets != null) return { ...r, [key]: r[key].map((item, k) => (k === i ? { ...item, bullets } : item)) };

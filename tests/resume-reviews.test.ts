@@ -84,7 +84,7 @@ void test('lineAt reads a line by its path; applyRewrite keeps the mark, follows
   assert.equal(lineAt(RESUME, 'experience.0.bullets.0'), 'Built a parser');
   assert.equal(lineAt(RESUME, 'experience.0.bullets.1'), 'Cut build time by 40%', 'blank lines do not count');
   assert.equal(lineAt(RESUME, 'skills.1'), 'Tools: Git');
-  for (const bad of ['experience.0.bullets.2', 'experience.5.bullets.0', 'awards.0', 'name.0', 'experience.0.title.0', 'skills.-1', 'skills'])
+  for (const bad of ['experience.0.bullets.2', 'experience.5.bullets.0', 'awards.0', 'name.0', 'experience.0.title.0', 'skills.-1', 'skills', 'skills.00', 'experience.00.bullets.0'])
     assert.equal(lineAt(RESUME, bad), null, bad);
 
   const inPlace = applyRewrite(RESUME, 'experience.0.bullets.1', 'Cut build time by 40%', 'Cut CI build time 40% (10 → 6 min)');
@@ -95,6 +95,12 @@ void test('lineAt reads a line by its path; applyRewrite keeps the mark, follows
   // The owner moved the entry and added a line above it since the snapshot.
   const moved = { ...RESUME, experience: [RESUME.experience[1], { ...RESUME.experience[0], bullets: '- Led a team of 3\n' + RESUME.experience[0].bullets }] };
   assert.equal(applyRewrite(moved, 'experience.0.bullets.0', 'Built a parser', 'Built a recursive-descent parser')?.experience[1].bullets.split('\n')[1], '- Built a recursive-descent parser');
+
+  // The same line in an earlier entry: a line added above the anchor's keeps the rewrite in the anchor entry.
+  const twice = { ...RESUME, experience: [{ ...RESUME.experience[1], bullets: 'Used Git' }, { ...RESUME.experience[0], bullets: '- Shipped v2\n- Used Git' }] };
+  const kept = applyRewrite(twice, 'experience.1.bullets.0', 'Used Git', 'Used Git rebase daily');
+  assert.equal(kept?.experience[0].bullets, 'Used Git');
+  assert.equal(kept?.experience[1].bullets, '- Shipped v2\n- Used Git rebase daily');
 
   const edited = { ...RESUME, experience: [{ ...RESUME.experience[0], bullets: '- Built a fast parser' }] };
   assert.equal(applyRewrite(edited, 'experience.0.bullets.0', 'Built a parser', 'x'), null);
