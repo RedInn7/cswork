@@ -128,7 +128,7 @@ const NO_SPONSOR = new RegExp(
   ].join('|'),
 );
 const SPONSORS =
-  /(?<!(?:\bnot|\bnever|n't)\s+(?:\S+\s+){0,3})\b(?:we|will|can|happy to|glad to|able to)\s+(?:(?:also|gladly)\s+)?(?:sponsor\b|(?:offer|provide|support)\s+(?:(?:visa|immigration|h-?1b)\s+)*sponsorship)|(?<!\bno\s+(?:\S+\s+){0,3})\bsponsorship\s+(?:is\s+|may be\s+|will be\s+)?(?:available|offered|provided)\b/;
+  /(?<!(?:\bnot|\bnever|n't)\s+(?:\S+\s+){0,3})\b(?:we|will|can|do|does|happy to|glad to|able to)\s+(?:(?:also|gladly|do|does|still)\s+)?(?:sponsor\b|(?:offer|provide|support)\s+(?:(?:visa|immigration|h-?1b)\s+)*sponsorship)|(?<!\bno\s+(?:\S+\s+){0,3})\bsponsorship\s+(?:is\s+|may be\s+|will be\s+)?(?:available|offered|provided)\b/;
 // A negation near "required" and the word: "does not require a clearance", "citizenship is not required", "no clearance required".
 const notRequired = (word: string) =>
   `(?:\\bno\\b|\\bnot\\b|n't\\b|\\bnever\\b)(?:\\s+\\S+){0,3}?\\s+(?:require[ds]?|requirement|necessary|needed)\\b(?:\\s+\\S+){0,3}?\\s+${word}` +
@@ -147,10 +147,14 @@ const CITIZEN = new RegExp(
 // "May require", "preferred": no requirement.
 const MAYBE = String.raw`|\b(?:may|might|could|some)\s+(?:\S+\s+)?(?:require|be required|need)|\b(?:preferred|a plus|nice to have|bonus)\b`;
 // Work-authorization notices list citizens with refugees and asylees (EEO, E-Verify, export control's
-// "U.S. person", "protected individual", "or eligible to obtain the required authorizations").
+// "U.S. person", "protected individual", "or eligible to obtain the required authorizations"), or accept
+// any work authorization ("or hold a valid work visa"). Another country's citizenship or residency is no US one.
 const NOT_CITIZEN = new RegExp(
   `\\b(?:refugees?|asylees?|asylum|otherwise authorized|us persons?|protected individuals?|required authorizations?|department of state|regard(?:less)? (?:of|to)|discriminat\\w*|e-?verify)\\b` +
-    `|\\bor\\s+(?:be\\s+|those\\s+|persons\\s+|individuals\\s+)?(?:otherwise\\s+)?(?:lawfully\\s+)?(?:eligible|authori[sz]ed)\\b|${notRequired('(?:citizen\\S*|green card|permanent residen\\S*)')}${MAYBE}`,
+    `|\\bor\\s+(?:be\\s+|those\\s+|persons\\s+|individuals\\s+)?(?:otherwise\\s+)?(?:lawfully\\s+)?(?:eligible|authori[sz]ed)\\b` +
+    `|\\bor\\s+(?:have|hold|possess)\\s+(?:an?\\s+)?(?:valid\\s+)?(?:(?:work|employment)\\s+(?:authori[sz]ation|visa|permit)|ead)\\b` +
+    `|\\b(?:permanent residen\\S*|citizen\\S*)\\s+of\\s+(?!(?:the\\s+)?(?:us|usa|united states|america)\\b)\\w` +
+    `|\\b(?:canadian|australian|british|uk|eu|european|japanese|indian|singaporean|mexican)\\s+(?:citizen|permanent\\s+residen)|${notRequired('(?:citizen\\S*|green card|permanent residen\\S*)')}${MAYBE}`,
 );
 const KIND = '(?:ts\\/sci|top secret|secret|security|dod|government|federal|active|current)';
 const CLEARANCE = new RegExp(

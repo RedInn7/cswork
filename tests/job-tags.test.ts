@@ -186,6 +186,8 @@ void test('auth flags: what a description says about sponsorship, citizenship an
     ['Due to ITAR, you must be a U.S. citizen and must hold an active Secret clearance. We cannot sponsor visas.', noSponsor | citizenOrGc | clearance],
     ['Requirements\nMust be a US citizen\nSponsorship: not available', noSponsor | citizenOrGc],
     ['You must be a U.S. citizen and will not require sponsorship.', noSponsor | citizenOrGc],
+    ['Must be a U.S. citizen or permanent resident of the U.S.', citizenOrGc],
+    ['We do not sponsor visas.', noSponsor],
   ] as const)
     assert.equal(authFlags(text), flags, text);
 });
@@ -206,6 +208,13 @@ void test('auth flags: notices, offers to sponsor and lines without must, requir
     'Sponsorship is available for this role.',
     'We are happy to provide visa sponsorship.',
     'We sponsor employment visas, including H-1B and STEM OPT extensions.',
+    // A hedge and an affirmation in one sentence; any work authorization accepted; another country's residency.
+    "While we can't sponsor for every role, we do sponsor H-1B visas for this position.",
+    'We are not able to sponsor for all teams, but this role does offer visa sponsorship.',
+    'Must be a U.S. citizen, green card holder, or hold a valid work visa (H-1B, OPT, etc.).',
+    'Candidates must be US citizens or green card holders, or have a valid EAD.',
+    'Must be a permanent resident of Canada or a Canadian citizen.',
+    'Canadian citizenship or permanent residency required.',
     'No security clearance required.',
     'This role does not require a security clearance.',
     'Security clearance is not required for this internship.',
