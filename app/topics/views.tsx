@@ -10,6 +10,7 @@ import bankFile from '@/lib/content/oa-mcq.json';
 import type { McqQuestion } from '@/lib/mock-oa';
 import { McqPractice } from '@/app/oa/mcq/practice';
 import { TemplateDrill } from '@/components/template-drill';
+import { TopicNotebook } from '@/components/topic-notebook';
 
 export const INDEX_COPY = {
   zh: {
@@ -229,6 +230,7 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           </ul>
         </section>
       </div>
+      <TopicNotebook slug={stop.slug} zh={zh} />
       {stopDemos(stop.slug).length > 0 && (
         <section className="topics-demos" id="algorithm-demo" aria-labelledby="topic-demos">
           <h2 id="topic-demos">{t('看动画', 'Watch it run')}</h2>
