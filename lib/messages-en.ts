@@ -320,6 +320,8 @@ const EN: Record<string, string> = {
   实习日志已达上限: "You've reached the limit for internship log entries",
   复盘已达上限: "You've reached the limit for interview retros",
   '路线已达上限（30 条）': "You've reached the limit of 30 routes",
+  '路线无效：最多 80 步，外部条目标题最多 80 字，日期要是真实的日子':
+    'That route is not valid: at most 80 steps, entry titles up to 80 characters, and real calendar dates',
   // Self-made review cards (lib/server/my-practice.ts) and the idea review (lib/server/recall-ideas.ts)
   '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接':
     'Invalid card: front and back up to 2,000 characters each, at most 8 tags, and the source must be a page on this site',

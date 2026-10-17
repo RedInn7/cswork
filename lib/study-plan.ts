@@ -148,7 +148,7 @@ export const addDays = (date: string, n: number) => fromNumber(dayNumber(date) +
 export const daysBetween = (from: string, to: string) =>
   dayNumber(to) - dayNumber(from);
 /** Monday = 0, like the practice calendar. */
-const weekday = (date: string) => (new Date(dayNumber(date) * DAY).getUTCDay() + 6) % 7;
+export const weekday = (date: string) => (new Date(dayNumber(date) * DAY).getUTCDay() + 6) % 7;
 
 export const minutesFor = (difficulty?: string | null) =>
   MINUTES[slotOf(difficulty?.toLowerCase()) ?? 'medium'];

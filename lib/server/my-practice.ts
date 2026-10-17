@@ -5,6 +5,7 @@ import { CONFIDENCE_WORDS, parseNoteMeta } from '@/lib/note-meta';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import { parseProjectNote } from '@/lib/resume-projects';
 import { CARD_ID, CARD_MAX, parseCard } from '@/lib/recall-cards';
+import { parseRoute, routeFits } from '@/lib/content/role-paths';
 import type { Person } from './auth';
 import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
@@ -308,6 +309,11 @@ export async function handleMyPractice(
     // A self-made card (lib/recall-cards.ts): its link back stays on this site.
     if (key.startsWith('card:') && body.trim() && (!CARD_ID.test(key) || !parseCard(body)))
       throw new HttpError(400, '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接');
+    // A route (lib/content/role-paths.ts RouteDoc): its key and its shape must fit; ext entries carry no link.
+    if (key.startsWith('route:') && body.trim()) {
+      const doc = parseRoute(body);
+      if (!doc || !routeFits(key, doc)) throw new HttpError(400, '路线无效：最多 80 步，外部条目标题最多 80 字，日期要是真实的日子');
+    }
     // An emptied note is removed, so "has a note" always means some text.
     if (!body.trim()) {
       db.prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(p.id, key);

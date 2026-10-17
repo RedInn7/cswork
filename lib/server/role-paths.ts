@@ -4,16 +4,30 @@ import frontendJs from '@/lib/content/frontend-js.json';
 import mcqBank from '@/lib/content/oa-mcq.json';
 import mlCoding from '@/lib/content/ml-coding.json';
 import projectFile from '@/lib/content/resume-projects.json';
-import { ROLES, stepTitle, stopsName, type ResolvedStep, type RoleKey, type RoleStep } from '@/lib/content/role-paths';
+import {
+  ROLE_KEYS,
+  ROLES,
+  stepTitle,
+  stopsName,
+  type ResolvedStep,
+  type RoleKey,
+  type RoleStep,
+  type StepKind,
+} from '@/lib/content/role-paths';
 import sqlTrack from '@/lib/content/sql-track.json';
 import { PLAN_TOPICS_PARAM } from '@/lib/jd-skills';
 import { curatedEntries } from '@/lib/ling-curated';
 import { AI_TEMPLATES, TEMPLATES } from '@/lib/mock-interview';
-import { STOP_NAMES, stopHref } from '@/lib/route-stops';
+import { ROUTE_SLUGS, STOP_NAMES, stopHref } from '@/lib/route-stops';
+import { MINUTES, minutesFor } from '@/lib/study-plan';
 import { learnKey, learnPath } from './beginner-courses';
-import { sdParts, sdPath } from './system-design-course';
+import { sdParts, sdPath, totalMinutes } from './system-design-course';
 
 const problemKeys = (ids: string[]) => ids.map((id) => `problem:${id}`);
+/** Minutes per multiple-choice question. */
+export const MCQ_MINUTES = 1.5;
+const STAGE_MINUTES = { 基础: MINUTES.easy, 核心: MINUTES.medium, 进阶: MINUTES.hard };
+const coreDifficulty = new Map(coreSkills.problems.map((p) => [p.id, p.difficulty]));
 /** An SQL track group, or one of its pandas-only groups (pd-1xx ids, which the pd- mapping keeps). */
 const sqlGroup = (key: string) => [...sqlTrack.groups, ...sqlTrack.pandasGroups].find((group) => group.key === key);
 
@@ -26,9 +40,11 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
     case 'line-stops': {
       const slugs = step.ref.split(',');
       if (!slugs.every((slug) => Object.hasOwn(STOP_NAMES, slug))) throw missing();
-      const ids = curatedEntries.filter((e) => slugs.includes(e.sectionSlug)).map((e) => `lc-${e.number}`);
+      const entries = curatedEntries.filter((e) => slugs.includes(e.sectionSlug));
+      const ids = entries.map((e) => `lc-${e.number}`);
       return {
         ...step,
+        minutes: entries.reduce((n, e) => n + STAGE_MINUTES[e.stage], 0),
         title: title(stopsName(slugs.length, ids.length, zh)),
         href: stopHref(slugs[0])!,
         keys: problemKeys(ids),
@@ -45,6 +61,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         title: title(pick(part.zh, part.en).replace(/^(系统设计：|System design: )|(（选读）| \(optional\))$/g, '')),
         href: sdPath(part.from),
         keys: part.chapters.map((chapter) => `sd:${chapter.slug}`),
+        minutes: totalMinutes(part.chapters, zh),
       };
     }
     case 'sql-track':
@@ -58,6 +75,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         // The track's SQL / Pandas switch remembers the language in this browser.
         href: '/?view=problems&library=sql',
         keys: problemKeys(pandas ? group.ids.map((id) => id.replace(/^sql-/, 'pd-')) : group.ids),
+        minutes: group.ids.length * MINUTES.medium,
       };
     }
     case 'core-group': {
@@ -68,6 +86,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         title: title(pick(group.zh, group.en)),
         href: `/core-skills#core-group-${group.key}`,
         keys: problemKeys(group.ids),
+        minutes: group.ids.reduce((n, id) => n + minutesFor(coreDifficulty.get(id)), 0),
       };
     }
     case 'ml-group': {
@@ -79,12 +98,13 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         // The track's group heading (components/sql-track.tsx ProblemTrack, library "ml").
         href: `/?view=problems&library=ml#ml-group-${group.key}`,
         keys: problemKeys(group.ids),
+        minutes: group.ids.length * MINUTES.medium,
       };
     }
     case 'mcq-topic': {
       const ids = mcqBank.questions.filter((q) => q.topic === step.ref).map((q) => `mcq:${q.id}`);
       if (!ids.length) throw missing();
-      return { ...step, title: '', href: `/oa/mcq?topic=${step.ref}`, keys: ids };
+      return { ...step, title: '', href: `/oa/mcq?topic=${step.ref}`, keys: ids, minutes: Math.round(ids.length * MCQ_MINUTES) };
     }
     case 'project': {
       const project = projectFile.projects.find((p) => p.slug === step.ref);
@@ -94,6 +114,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         title: title(pick(project.titleZh, project.titleEn)),
         href: `/projects/${project.slug}`,
         keys: [`content:project/${project.slug}`],
+        minutes: project.hours * 60,
       };
     }
     case 'course': {
@@ -104,17 +125,20 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         title: pick(course.titleZh, course.titleEn),
         href: learnPath(course.slug),
         keys: course.chapters.map((chapter) => `sd:${learnKey(course.slug, chapter.slug)}`),
+        minutes: totalMinutes(course.chapters, zh),
       };
     }
     case 'fe-js': {
       const group = frontendJs.groups.find((g) => g.key === step.ref);
       if (!group) throw missing();
+      const problems = frontendJs.problems.filter((p) => p.group === group.key);
       return {
         ...step,
         title: title(pick(group.zh, group.en)),
         href: `/frontend#fejs-group-${group.key}`,
         // components/js-workspace.tsx marks a problem done after a full pass (lib/js-runner.ts markTarget).
-        keys: frontendJs.problems.filter((p) => p.group === group.key).map((p) => `content:fe-js/${p.slug}`),
+        keys: problems.map((p) => `content:fe-js/${p.slug}`),
+        minutes: problems.reduce((n, p) => n + minutesFor(p.difficulty), 0),
       };
     }
     case 'mock-kind': {
@@ -126,7 +150,7 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         title: title(template.name[zh ? 0 : 1]),
         href: `/?view=mock-interview&template=${template.id}`,
         keys: [],
-        ...(aiOnly && !ai ? { unavailable: true as const } : {}),
+        ...(aiOnly && !ai ? { unavailable: true as const, minutes: 0 } : { minutes: template.slots.reduce((n, s) => n + s.minutes, 0) }),
       };
     }
   }
@@ -134,3 +158,31 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
 
 export const resolveRolePath = (role: RoleKey, zh: boolean, ai: boolean) =>
   ROLES[role].steps.map((step) => resolveStep(step, zh, ai));
+
+// The SQL groups with a pandas twin for every problem (content/sql-track/pandas-packages.json; tests/role-paths.test.ts).
+const PANDAS_TWINS = ['basics', 'joins', 'grouping', 'subqueries', 'windows', 'strings', 'dates'];
+/** Every ref a learner can put on a route, by kind: each Line 500 stop on its own, and every group, part and template. */
+const SINGLE_REFS: Record<StepKind, () => string[]> = {
+  'line-stops': () => ROUTE_SLUGS,
+  'sd-part': () => sdParts.map((p) => p.from),
+  'sql-track': () => sqlTrack.groups.map((g) => g.key),
+  pandas: () => [...PANDAS_TWINS, ...sqlTrack.pandasGroups.map((g) => g.key)],
+  'core-group': () => coreSkills.groups.map((g) => g.key),
+  'ml-group': () => mlCoding.groups.map((g) => g.key),
+  'mcq-topic': () => [...new Set(mcqBank.questions.map((q) => q.topic))],
+  project: () => projectFile.projects.map((p) => p.slug),
+  course: () => courseFile.courses.map((c) => c.slug),
+  'fe-js': () => frontendJs.groups.map((g) => g.key),
+  'mock-kind': () => [...TEMPLATES, ...AI_TEMPLATES].map((t) => t.id),
+};
+/**
+ * `kind:ref` -> the resolved step, for learner-made routes (/roadmap?route=): the six roles' steps
+ * (their multi-stop Line 500 steps included) and every single ref. Never optional: a route says so itself.
+ */
+export function routeCatalog(zh: boolean, ai: boolean) {
+  const catalog: Record<string, ResolvedStep> = {};
+  const add = ({ kind, ref }: RoleStep) => (catalog[`${kind}:${ref}`] = resolveStep({ kind, ref }, zh, ai));
+  for (const role of ROLE_KEYS) ROLES[role].steps.forEach(add);
+  for (const [kind, refs] of Object.entries(SINGLE_REFS)) for (const ref of refs()) add({ kind: kind as StepKind, ref });
+  return catalog;
+}
