@@ -63,6 +63,16 @@
   color: #1f4f3a;
   font-weight: 650;
 }
+/* What the description says about sponsorship, citizenship or clearance. */
+.job-openings-auth {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fdf0dc;
+  color: #74400a;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
 .job-openings-actions {
   grid-area: add;
   display: flex;
@@ -89,8 +99,11 @@
   background: #e6f4ef;
 }
 .job-openings-hide,
+.job-openings-block,
 .job-hidden-bar button,
-.job-search-save button {
+.job-search-save button,
+.job-block button,
+.job-blocked button {
   min-height: 32px;
   padding: 4px 12px;
   border: 1px solid #c9d1da;
@@ -102,8 +115,11 @@
   cursor: pointer;
 }
 .job-openings-hide:hover,
+.job-openings-block:hover,
 .job-hidden-bar button:hover,
-.job-search-save button:hover {
+.job-search-save button:hover,
+.job-block button:hover,
+.job-blocked button:hover {
   background: #f1f3f2;
 }
 .job-hidden-bar button[aria-pressed='true'] {
@@ -114,7 +130,10 @@
 .job-openings :is(a, button):focus-visible,
 .job-hidden-bar button:focus-visible,
 .job-search-save button:focus-visible,
-.job-seasons a:focus-visible {
+.job-seasons a:focus-visible,
+.job-block :is(a, button):focus-visible,
+.job-block-signin:focus-visible,
+.job-blocked :is(summary, button):focus-visible {
   outline: 2px solid #087158;
   outline-offset: 2px;
 }
@@ -132,6 +151,58 @@
   color: #56665f;
   font-size: 13px;
   line-height: 1.6;
+}
+
+/* Blocking a company: the company page's toggle, the /career/jobs list of blocked ones. */
+.job-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: -4px 0 14px;
+  font-size: 14px;
+}
+.job-block p {
+  margin: 0;
+  color: #1f4f3a;
+}
+.job-block p[role='alert'],
+.job-blocked p[role='alert'] {
+  color: #a3261b;
+}
+.job-block-signin {
+  display: inline-block;
+  margin: -4px 0 14px;
+  color: #087158;
+  font-size: 14px;
+  font-weight: 600;
+}
+.job-blocked {
+  margin: -6px 0 16px;
+  color: #3f5149;
+  font-size: 14px;
+}
+.job-blocked summary {
+  width: fit-content;
+  color: #087158;
+  font-weight: 600;
+  cursor: pointer;
+}
+.job-blocked p {
+  margin: 8px 0;
+}
+.job-blocked ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.job-blocked li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* A company's seasons above its openings: when this and last season's roles first showed up. */
@@ -312,6 +383,10 @@
   .dark .job-openings-pay {
     color: #b0dbc5;
   }
+  .dark .job-openings-auth {
+    background: #181106;
+    color: #f3bf96;
+  }
   .dark .job-openings-add,
   .dark .job-openings-tracked {
     border: 1px solid #087158;
@@ -326,15 +401,21 @@
     background: #0c1311;
   }
   .dark .job-openings-hide,
+  .dark .job-openings-block,
   .dark .job-hidden-bar button,
-  .dark .job-search-save button {
+  .dark .job-search-save button,
+  .dark .job-block button,
+  .dark .job-blocked button {
     border: 1px solid #31383f;
     background: #191919;
     color: #bfd1c8;
   }
   .dark .job-openings-hide:hover,
+  .dark .job-openings-block:hover,
   .dark .job-hidden-bar button:hover,
-  .dark .job-search-save button:hover {
+  .dark .job-search-save button:hover,
+  .dark .job-block button:hover,
+  .dark .job-blocked button:hover {
     background: #121312;
   }
   .dark .job-hidden-bar button[aria-pressed='true'] {
@@ -345,7 +426,10 @@
   .dark .job-openings :is(a, button):focus-visible,
   .dark .job-hidden-bar button:focus-visible,
   .dark .job-search-save button:focus-visible,
-  .dark .job-seasons a:focus-visible {
+  .dark .job-seasons a:focus-visible,
+  .dark .job-block :is(a, button):focus-visible,
+  .dark .job-block-signin:focus-visible,
+  .dark .job-blocked :is(summary, button):focus-visible {
     outline: 2px solid #8ed5bc;
   }
   .dark .job-hidden-bar {
@@ -353,6 +437,22 @@
   }
   .dark .job-openings-note {
     color: #b8c7c0;
+  }
+  .dark .job-block p {
+    color: #b0dbc5;
+  }
+  .dark .job-block p[role='alert'],
+  .dark .job-blocked p[role='alert'] {
+    color: #fbb0a3;
+  }
+  .dark .job-block-signin {
+    color: #8ed5bc;
+  }
+  .dark .job-blocked {
+    color: #bfd1c8;
+  }
+  .dark .job-blocked summary {
+    color: #8ed5bc;
   }
   .dark .job-seasons {
     color: #bfd1c8;
