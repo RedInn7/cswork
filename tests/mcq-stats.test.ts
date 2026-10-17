@@ -85,7 +85,7 @@ void test('counts appear from 20 people, cached for 10 minutes, at most 50 ids a
   assert.equal((await call(null, ['nope'], undefined)).status, 404);
 });
 
-void test('a correction is a ticket tagged [ref]; teachers can list corrections apart from questions', async () => {
+void test('a correction is a ticket tagged [ref]; teachers can list corrections apart from questions, after them on the dashboard', async () => {
   const { TICKET_REF, ticketPage } = await import('../lib/server/lms-support');
   for (const ok of ['mcq:mcq-os-1', 'sd:cache', 'learn:cpp/pointers', 'course:intro_1.2']) assert.match(ok, TICKET_REF);
   for (const bad of ['mcq:', 'quiz:x', 'mcq:a b', `mcq:${'x'.repeat(121)}`, 'sd:<x>']) assert.doesNotMatch(bad, TICKET_REF);
@@ -98,4 +98,7 @@ void test('a correction is a ticket tagged [ref]; teachers can list corrections 
   assert.deepEqual(await list('content'), ['t1']);
   assert.deepEqual(await list('support'), ['t3', 't2']);
   assert.deepEqual(await list(''), ['t3', 't2', 't1']);
+  // The dashboard's queue (oldest first) puts learners' questions before corrections.
+  const { dashboard } = await import('../lib/server/lms-roster');
+  assert.deepEqual((await dashboard(teacher)).tickets.map((t) => t.id), ['t2', 't3', 't1']);
 });

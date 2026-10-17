@@ -60,7 +60,7 @@ export async function ticketDetail(p: Person, id: string) {
 }
 /** A ticket's ref (POST /api/tickets): a correction on an MCQ, SD chapter, course or /learn lesson. */
 export const TICKET_REF = /^(?:mcq|sd|course|learn):[\w./-]{1,120}$/;
-const CONTENT_TICKET =
+export const CONTENT_TICKET =
   "(t.title LIKE '[mcq:%' OR t.title LIKE '[sd:%' OR t.title LIKE '[course:%' OR t.title LIKE '[learn:%')";
 export async function ticketPage(p: Person, url: URL) {
   const where: string[] = [],
