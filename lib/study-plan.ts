@@ -241,15 +241,16 @@ export function normalizeGoal(raw: unknown): PlanGoal {
 }
 
 /**
- * This browser's goal against the account's (pref:plan). With none saved there the local one
- * stands, and goes up once it is more than the first-visit card; a first-visit card takes the
- * account's; otherwise the later save wins, and a later local one goes up (a failed PUT
- * catches up on the next visit).
+ * This browser's goal against the account's (pref:plan). With none saved there (a first-visit
+ * card counts as none) the local one stands, and goes up unless it is a first-visit card too;
+ * a first-visit card takes the account's; otherwise the later save wins, and a later local one
+ * goes up (a failed PUT catches up on the next visit). First-visit cards never go up, so the
+ * "n a day" picker on one device cannot wipe a plan another device has not uploaded yet.
  * ponytail: updatedAt is each device's own clock, so a clock that is off can pick the older
  * save; a server-side version number would settle it.
  */
 export function mergeGoals(local: PlanGoal, remote: PlanGoal | null) {
-  if (!remote) return { goal: local, push: local.status !== 'new' };
+  if (!remote || remote.status === 'new') return { goal: local, push: local.status !== 'new' };
   if (local.status === 'new' || remote.updatedAt >= local.updatedAt) return { goal: remote, push: false };
   return { goal: local, push: true };
 }

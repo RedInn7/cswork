@@ -185,7 +185,7 @@ export function useStudyPlan(
   function save(next: PlanGoal) {
     const stamped = { ...next, updatedAt: Date.now() };
     keep(stamped);
-    if (userId) void pushGoal(stamped);
+    if (userId && stamped.status !== 'new') void pushGoal(stamped);
   }
   const aliases =
     goal?.status === 'planned' && goal.company && !sealed ? goal.company.aliases.join(',') : '';

@@ -596,6 +596,11 @@ void test('the goal syncs: a first visit takes the account\'s, otherwise the lat
   assert.deepEqual(mergeGoals(local, null), { goal: local, push: true }, 'nothing in the account yet');
   assert.deepEqual(mergeGoals(DEFAULT_GOAL, null), { goal: DEFAULT_GOAL, push: false }, 'a first-visit card stays here');
   assert.deepEqual(mergeGoals(DEFAULT_GOAL, remote), { goal: remote, push: false });
+  assert.deepEqual(
+    mergeGoals(goal({ updatedAt: 0 }), { ...DEFAULT_GOAL, updatedAt: 999 }),
+    { goal: goal({ updatedAt: 0 }), push: true },
+    'a first-visit card in the account is no plan: an older local plan stays and goes up',
+  );
   assert.deepEqual(mergeGoals(local, remote), { goal: local, push: true }, 'a later local save goes up (a failed PUT catches up)');
   assert.deepEqual(mergeGoals({ ...local, updatedAt: 50 }, remote), { goal: remote, push: false });
   assert.deepEqual(mergeGoals({ ...local, updatedAt: 100 }, remote), { goal: remote, push: false });
