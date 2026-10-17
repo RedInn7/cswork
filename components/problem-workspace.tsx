@@ -1776,7 +1776,12 @@ function Workspace({
           />
         )}
         {leftTab === 'notes' && note.enabled ? (
-          <ProblemNotes note={note} english={uiEnglish} problemId={initialProblem.id} />
+          <ProblemNotes
+            note={note}
+            english={uiEnglish}
+            problemId={initialProblem.id}
+            card={examMode ? undefined : { title: statement.title, href: `/?view=problem&problem=${encodeURIComponent(initialProblem.id)}` }}
+          />
         ) : leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
           <LingEditorial
             key={problem.id}

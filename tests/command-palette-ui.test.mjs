@@ -38,7 +38,7 @@ test('the workspace search button and the lecture page use the palette', () => {
   assert.equal(academy.includes('onClick={() => openCommandPalette()}'), true);
   assert.equal(academy.includes('<PaletteKey />') && !academy.includes('<kbd>⌘K</kbd>'), true, 'Ctrl K off Apple devices');
   assert.equal(academy.includes("api<SearchResult[]>"), false, 'the old lesson-only dialog is gone');
-  assert.equal(readFileSync(new URL('../components/learning.tsx', import.meta.url), 'utf8').includes('<SelectionAsk>'), true);
+  assert.equal(readFileSync(new URL('../components/learning.tsx', import.meta.url), 'utf8').includes('<SelectionAsk clip={{ target: `clip:lesson/${id}`'), true);
   const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
   assert.equal(layout.includes('<CommandPalette ai={aiEnabled()}>{children}</CommandPalette>'), true);
 });
@@ -162,5 +162,66 @@ test('without AI there is no ask row and selections stay plain', async () => {
   await type('two');
   assert.equal(document.querySelector('.cmdk-ask') === null, true);
   assert.equal(document.querySelector('.cmdk-ask-note') === null, true);
+  await act(async () => root.unmount());
+});
+
+test('with a clip, a selection offers saving and a card even without AI; saving appends a cited quote', async () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  const clip = { target: 'clip:concept/two-pointers', title: 'Two [Pointers]', href: '/library/concept/two-pointers' };
+  const notes = [];
+  let stored = '> earlier';
+  let answer = 200;
+  globalThis.fetch = async (url, init = {}) => {
+    notes.push([init.method ?? 'GET', String(url)]);
+    if (answer !== 200) return Response.json({ error: 'x' }, { status: answer });
+    if (init.method === 'PUT') stored = JSON.parse(init.body).body;
+    return Response.json({ target: clip.target, body: stored, updatedAt: 1 });
+  };
+  await act(async () => root.render(createElement(CommandPalette, { ai: false }, createElement(SelectionAsk, { className: 'prose', clip }, createElement('p', null, 'Move both ends inward')))));
+  const text = host.querySelector('.prose p').firstChild;
+  const select = async () => {
+    const range = document.createRange();
+    range.setStart(text, 0);
+    range.setEnd(text, 9);
+    range.getBoundingClientRect = () => ({ left: 10, width: 20, bottom: 30 });
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    await act(async () => host.querySelector('.prose').dispatchEvent(new dom.window.Event('mouseup')));
+  };
+  await select();
+  const bar = host.querySelector('.cmdk-selection-ask');
+  assert.equal(bar.getAttribute('role'), 'toolbar');
+  assert.deepEqual([...bar.querySelectorAll('button')].map((b) => b.textContent.trim()), ['Save to notes', 'Make a card'], 'no Ask AI without AI');
+  await act(async () => bar.querySelector('button').click());
+  await wait(20);
+  assert.deepEqual(notes.map(([m]) => m), ['GET', 'PUT'], 'read, then the appended note');
+  assert.equal(notes[0][1], '/api/oj/notes?target=clip%3Aconcept%2Ftwo-pointers');
+  assert.equal(stored, '> earlier\n\n> Move both\n> — [Two Pointers](/library/concept/two-pointers)\n');
+  assert.equal(host.querySelector('.cmdk-selection-ask [role="status"]').textContent.startsWith('Saved to your notes.'), true);
+  // Signed out: a sign-in prompt instead.
+  answer = 401;
+  await select();
+  await act(async () => host.querySelector('.cmdk-selection-ask button').click());
+  await wait(20);
+  assert.equal(host.querySelector('.cmdk-selection-ask [role="status"]').textContent, 'Sign in to save notes.');
+  await act(async () => root.unmount());
+});
+
+test('with AI and a clip, Ask AI joins the two clip buttons', async () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  const clip = { target: 'clip:sd/caching', title: 'Caching', href: '/system-design/caching' };
+  await act(async () => root.render(createElement(CommandPalette, { ai: true }, createElement(SelectionAsk, { className: 'prose', clip }, createElement('p', null, 'Write-through cache')))));
+  const range = document.createRange();
+  range.selectNodeContents(host.querySelector('.prose p'));
+  range.getBoundingClientRect = () => ({ left: 0, width: 10, bottom: 10 });
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  await act(async () => host.querySelector('.prose').dispatchEvent(new dom.window.Event('keyup')));
+  assert.deepEqual([...host.querySelectorAll('.cmdk-selection-ask button')].map((b) => b.textContent.trim()), ['Save to notes', 'Make a card', 'Ask AI']);
   await act(async () => root.unmount());
 });

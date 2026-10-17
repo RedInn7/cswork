@@ -12,7 +12,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { CornerDownLeft, LoaderCircle, Search, Sparkles } from 'lucide-react';
+import { CornerDownLeft, Layers, LoaderCircle, NotebookPen, Search, Sparkles } from 'lucide-react';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { companyHubPath, oaProblemPath } from '@/lib/oa-company-brands';
@@ -531,32 +531,50 @@ export function PaletteButton({ className = '' }: { className?: string }) {
   );
 }
 
+/** Where saved excerpts go: the private note `clip:<…>` (never content:, sd: or topic:), and the page cited. */
+export type Clip = { target: string; title: string; href: string };
+const CardEditor = lazy(() => import('./card-editor').then((m) => ({ default: m.CardEditor })));
+
+/** The selection as a Markdown quote citing its page; `[`, `]` and parentheses can't break the link. */
+export function clipQuote(text: string, clip: Pick<Clip, 'title' | 'href'>) {
+  const title = clip.title.replace(/[[\]]/g, '') || clip.href;
+  const href = clip.href.replace(/[()]/g, encodeURIComponent);
+  return `${text.trim().split('\n').map((line) => `> ${line}`.trimEnd()).join('\n')}\n> — [${title}](${href})`;
+}
+
 /**
  * Wraps lecture and library text: selecting some of it floats an "Ask AI" button that opens the
- * palette with the selection as context. Without AI it renders the children as they are.
+ * palette with the selection as context. With `clip` it also offers "Save to notes" (appended to
+ * the clip note as a quote) and "Make a card" (components/card-editor.tsx), AI or not. Without
+ * either it renders the children as they are.
  */
-export function SelectionAsk({ children, className }: { children: ReactNode; className?: string }) {
+export function SelectionAsk({ children, className, clip }: { children: ReactNode; className?: string; clip?: Clip }) {
   const ask = useAskAi();
+  const on = !!ask || !!clip;
   const zh = useLocale() === 'zh';
+  const t = (a: string, b: string) => (zh ? a : b);
   const box = useRef<HTMLDivElement>(null);
   const [spot, setSpot] = useState<{ x: number; y: number; text: string } | null>(null);
+  const [said, setSaid] = useState<{ text: string; done?: boolean } | null>(null);
+  const [card, setCard] = useState<string | null>(null);
   const measure = useCallback(() => {
     const selection = window.getSelection();
     const text = selection?.toString().trim() ?? '';
     if (!selection || selection.isCollapsed || text.length < 2 || !box.current?.contains(selection.anchorNode)) return setSpot(null);
     const rect = selection.getRangeAt(0).getBoundingClientRect();
+    setSaid(null);
     setSpot({ x: rect.left + rect.width / 2, y: rect.bottom, text: text.slice(0, 1500) });
   }, []);
   useEffect(() => {
     const node = box.current;
-    if (!node || !ask) return;
+    if (!node || !on) return;
     node.addEventListener('mouseup', measure);
     node.addEventListener('keyup', measure);
     return () => {
       node.removeEventListener('mouseup', measure);
       node.removeEventListener('keyup', measure);
     };
-  }, [ask, measure]);
+  }, [on, measure]);
   useEffect(() => {
     if (!spot) return;
     const clear = () => {
@@ -571,24 +589,88 @@ export function SelectionAsk({ children, className }: { children: ReactNode; cla
     };
   }, [spot]);
   const style = useMemo(() => (spot ? { left: `${spot.x}px`, top: `${spot.y + 8}px` } : undefined), [spot]);
-  if (!ask) return <div className={className}>{children}</div>;
+  // ponytail: read, append, write; two saves racing from two tabs can lose one quote.
+  async function save(text: string) {
+    if (!clip) return;
+    const url = `/api/oj/notes?target=${encodeURIComponent(clip.target)}`;
+    setSaid({ text: t('正在保存…', 'Saving…') });
+    const failed = (status?: number) =>
+      setSaid({
+        text:
+          status === 401
+          ? t('登录后才能存笔记。', 'Sign in to save notes.')
+          : status === 413
+            ? t('这一页的摘录已满（20 KB），先删减一些。', 'Your excerpts from this page are full (20 KB). Trim them first.')
+            : t('没能保存，请稍后再试。', "Couldn't save. Try again in a moment."),
+      });
+    const got = await fetch(url).catch(() => null);
+    if (!got?.ok) return failed(got?.status);
+    const saved = await got.json().then((r: { body?: unknown }) => (typeof r?.body === 'string' ? r.body.trimEnd() : ''), () => '');
+    const put = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body: `${saved ? `${saved}\n\n` : ''}${clipQuote(text, clip)}\n` }),
+    }).catch(() => null);
+    if (!put?.ok) return failed(put?.status);
+    setSaid({ text: t('已存到笔记。', 'Saved to your notes.'), done: true });
+  }
+  if (!on) return <div className={className}>{children}</div>;
+  // Keep the selection while a button takes the click.
+  const keep = (event: React.MouseEvent) => event.preventDefault();
   return (
     <div ref={box} className={className}>
       {children}
       {spot && (
-        <button
-          type="button"
-          className="cmdk-selection-ask"
-          style={style}
-          // Keep the selection while the button takes the click.
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => {
-            ask(spot.text);
-            setSpot(null);
-          }}
-        >
-          <Sparkles size={14} aria-hidden="true" /> {zh ? '问 AI' : 'Ask AI'}
-        </button>
+        <div className="cmdk-selection-ask" style={style} role="toolbar" aria-label={t('选中的文字', 'Selected text')}>
+          {said ? (
+            <span role="status">
+              {said.text}
+              {said.done && (
+                <>
+                  {' '}
+                  <a href="/?view=review-session&tab=cards">{t('查看', 'View')}</a>
+                </>
+              )}
+            </span>
+          ) : (
+            <>
+              {clip && (
+                <button type="button" onMouseDown={keep} onClick={() => void save(spot.text)}>
+                  <NotebookPen size={14} aria-hidden="true" /> {t('存到笔记', 'Save to notes')}
+                </button>
+              )}
+              {clip && (
+                <button
+                  type="button"
+                  onMouseDown={keep}
+                  onClick={() => {
+                    setCard(spot.text);
+                    setSpot(null);
+                  }}
+                >
+                  <Layers size={14} aria-hidden="true" /> {t('做成卡片', 'Make a card')}
+                </button>
+              )}
+              {ask && (
+                <button
+                  type="button"
+                  onMouseDown={keep}
+                  onClick={() => {
+                    ask(spot.text);
+                    setSpot(null);
+                  }}
+                >
+                  <Sparkles size={14} aria-hidden="true" /> {zh ? '问 AI' : 'Ask AI'}
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
+      {clip && card !== null && (
+        <Suspense fallback={null}>
+          <CardEditor initial={{ front: '', back: card, src: { href: clip.href, title: clip.title.slice(0, 200) } }} onClose={() => setCard(null)} />
+        </Suspense>
       )}
     </div>
   );

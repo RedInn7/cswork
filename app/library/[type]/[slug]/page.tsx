@@ -149,8 +149,11 @@ export default async function PublicLibraryDetail({ params }: Props) {
           <p className="public-library-summary">{item.summary}</p>
         )}
       </header>
-      {/* Selecting text offers "Ask AI" about it when AI is on. */}
-      <SelectionAsk className="public-library-prose">
+      {/* Selecting text offers saving it to notes or a card, and "Ask AI" about it when AI is on. */}
+      <SelectionAsk
+        className="public-library-prose"
+        clip={{ target: `clip:${item.type}/${item.slug}`, title: item.title, href: publicLibraryPath(item.type, item.slug) }}
+      >
         <PublicLibraryMarkdown body={item.body} math={item.math} />
       </SelectionAsk>
       {(item.type === 'interview_question' || item.type === 'experience') && (

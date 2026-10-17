@@ -7,6 +7,7 @@ import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
+import { SelectionAsk } from '@/components/command-palette';
 import { SolutionPosts } from '@/components/solution-posts';
 import {
   chapterMinutes,
@@ -74,10 +75,11 @@ export default async function SystemDesignChapter({ params }: Props) {
       )}
     </ol>
   );
+  // Selected text can be saved to the learner's notes or a card (and asked about when AI is on).
   const prose = (
-    <div className="public-library-prose">
+    <SelectionAsk className="public-library-prose" clip={{ target: `clip:sd/${chapter.slug}`, title: title(chapter), href: sdPath(chapter.slug) }}>
       <PublicLibraryMarkdown body={body} math={false} sectionIds />
-    </div>
+    </SelectionAsk>
   );
   return (
     <div className="sd-chapter-layout">

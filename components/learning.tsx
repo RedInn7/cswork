@@ -770,8 +770,8 @@ export function LessonReader({
               )}
             </TabsList>
             <TabsContent value="handout">
-              {/* Selecting handout text offers "Ask AI" about it (components/command-palette.tsx). */}
-              <SelectionAsk>
+              {/* Selecting handout text offers "Ask AI", saving it to notes or a card (components/command-palette.tsx). */}
+              <SelectionAsk clip={{ target: `clip:lesson/${id}`, title: lesson.title, href: `/?view=lesson&lesson=${encodeURIComponent(id)}` }}>
                 <LessonMarkdown body={lesson.body || ''} lecture />
               </SelectionAsk>
               {/* Practice status needs the course: a preview reader gets the explanation only. */}
