@@ -45,15 +45,15 @@ test('every solution reruns in all four languages to the committed packages; eve
 });
 
 test('the packages are valid, bilingual, four-language packages with a starter per language', () => {
-  assert.equal(packages.length, 28);
+  assert.equal(packages.length, 36);
   const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as {
     groups: { key: string; ids: string[] }[];
     problems: { id: string; summaryZh: string; summaryEn: string }[];
   };
-  // Every problem sits in one of the six groups, in package order.
+  // Every problem sits in one of the seven groups, in package order.
   assert.deepEqual(
     manifest.groups.map((group) => group.key),
-    ['linear', 'hash-heap', 'sort-search', 'graph', 'advanced', 'concurrency'],
+    ['linear', 'hash-heap', 'sort-search', 'graph', 'advanced', 'concurrency', 'ood'],
   );
   assert.deepEqual(
     manifest.groups.flatMap((group) => group.ids),
@@ -109,6 +109,51 @@ test('concurrency problems: answers depend on the input, and each solution has a
     // scripts/core-skills/stress.ts reruns each racy variant, which must go wrong at least once.
     for (const ext of ['py', 'go', 'java', 'cpp'])
       assert.ok(existsSync(`content/core-skills/${id.slice('core-'.length)}/racy.${ext}`), `${id} racy.${ext}`);
+  }
+});
+
+test('OOD problems: each implements an LLD chapter, with a class diagram and design notes in both languages', () => {
+  const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as {
+    groups: { key: string; ids: string[] }[];
+    problems: { id: string; sdChapter?: string }[];
+  };
+  const ids = manifest.groups.find((group) => group.key === 'ood')!.ids;
+  assert.deepEqual(ids, [
+    'core-parking-lot',
+    'core-elevator',
+    'core-atm',
+    'core-vending-machine',
+    'core-hotel-booking',
+    'core-splitwise',
+    'core-movie-tickets',
+    'core-amazon-locker',
+  ]);
+  // The chapter pages link here by sdChapter (app/system-design/[slug]/page.tsx): one problem per chapter.
+  const chapters = new Set(
+    (JSON.parse(readFileSync('lib/content/system-design-course.json', 'utf8')) as { chapters: { slug: string }[] }).chapters.map(
+      (chapter) => chapter.slug,
+    ),
+  );
+  const linked = manifest.problems.filter((p) => p.sdChapter);
+  assert.deepEqual(
+    linked.map((p) => p.id),
+    ids,
+  );
+  assert.equal(new Set(linked.map((p) => p.sdChapter)).size, ids.length);
+  for (const { id, sdChapter } of linked) {
+    assert.ok(chapters.has(sdChapter!), `${id}: ${sdChapter}`);
+    const { problem, cases } = packages.find((p) => p.problem.id === id)!;
+    assert.ok(problem.tags.includes('面向对象设计（LLD）'), id);
+    for (const [description, notes] of [
+      [problem.description, '### 设计要点'],
+      [problem.translations!.en!.description, '### Design notes'],
+    ]) {
+      assert.match(description, /```mermaid\nclassDiagram\n {2}accTitle: /, id);
+      assert.ok(description.includes(notes), `${id}: ${notes}`);
+      assert.ok(description.includes(`](/system-design/${sdChapter})`), `${id} links its chapter`);
+    }
+    // Answers depend on the input: no two tests share one.
+    assert.equal(new Set(cases.map((c) => c.expectedOutput)).size, cases.length, id);
   }
 });
 

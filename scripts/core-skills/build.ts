@@ -35,6 +35,7 @@ export const GROUPS = [
   { key: 'graph', zh: '图', en: 'Graphs' },
   { key: 'advanced', zh: '高级结构', en: 'Advanced structures' },
   { key: 'concurrency', zh: '并发', en: 'Concurrency' },
+  { key: 'ood', zh: '面向对象设计（LLD）', en: 'Object-oriented design (LLD)' },
 ] as const;
 
 type Problem = {
@@ -42,6 +43,8 @@ type Problem = {
   group: (typeof GROUPS)[number]['key'];
   difficulty: '简单' | '中等' | '困难';
   summary: { zh: string; en: string };
+  /** The system design chapter this problem implements: its page links here (app/system-design/[slug]/page.tsx). */
+  sdChapter?: string;
 };
 
 /** Package order: by group, then as listed. A new problem joins its group's end. */
@@ -213,6 +216,61 @@ export const PROBLEMS: Problem[] = [
     group: 'concurrency',
     difficulty: '中等',
     summary: { zh: '读者共享、写者独占，用一把锁和条件变量实现', en: 'Shared readers and an exclusive writer from one lock and a condition' },
+  },  {
+    slug: 'parking-lot',
+    group: 'ood',
+    difficulty: '中等',
+    summary: { zh: '车位分配、停车票与按小时计费', en: 'Spot allocation, tickets and hourly fees' },
+    sdChapter: 'lld-parking-lot',
+  },
+  {
+    slug: 'elevator',
+    group: 'ood',
+    difficulty: '困难',
+    summary: { zh: 'LOOK 调度：按停靠方向分类的请求', en: 'LOOK scheduling with stops sorted by direction' },
+    sdChapter: 'lld-elevator',
+  },
+  {
+    slug: 'atm',
+    group: 'ood',
+    difficulty: '中等',
+    summary: { zh: '状态模式、PIN 锁卡与配钞', en: 'The State pattern, PIN lockout and note dispensing' },
+    sdChapter: 'lld-case-atm',
+  },
+  {
+    slug: 'vending-machine',
+    group: 'ood',
+    difficulty: '中等',
+    summary: { zh: '三态状态机、押金与贪心找零', en: 'A three-state machine, escrow and greedy change' },
+    sdChapter: 'lld-case-vending-machine',
+  },
+  {
+    slug: 'hotel-booking',
+    group: 'ood',
+    difficulty: '简单',
+    summary: { zh: '按晚计数的库存与周末价', en: 'Inventory counted per night, with weekend rates' },
+    sdChapter: 'lld-case-hotel-booking',
+  },
+  {
+    slug: 'splitwise',
+    group: 'ood',
+    difficulty: '中等',
+    summary: { zh: '不丢一分钱的分摊与确定的结算规则', en: 'Splits that never lose a cent, and a fixed settlement rule' },
+    sdChapter: 'lld-case-splitwise',
+  },
+  {
+    slug: 'movie-tickets',
+    group: 'ood',
+    difficulty: '中等',
+    summary: { zh: '全有或全无的锁座与过期释放', en: 'All-or-nothing seat holds that expire' },
+    sdChapter: 'lld-case-movie-tickets',
+  },
+  {
+    slug: 'amazon-locker',
+    group: 'ood',
+    difficulty: '中等',
+    summary: { zh: '格口分配、取件码与防暴力尝试', en: 'Compartments, pickup codes and a brute-force lockout' },
+    sdChapter: 'lld-case-amazon-locker',
   },
 ];
 
@@ -390,13 +448,14 @@ export function buildCoreSkills() {
       en,
       ids: PROBLEMS.filter((problem) => problem.group === key).map((problem) => `core-${problem.slug}`),
     })),
-    problems: PROBLEMS.map(({ slug, difficulty, summary }, k) => ({
+    problems: PROBLEMS.map(({ slug, difficulty, summary, sdChapter }, k) => ({
       id: `core-${slug}`,
       titleZh: packages[k].problem.title,
       titleEn: packages[k].problem.translations!.en!.title,
       difficulty,
       summaryZh: summary.zh,
       summaryEn: summary.en,
+      sdChapter, // undefined: left out of the JSON
     })),
   };
   return {
