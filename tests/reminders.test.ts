@@ -436,6 +436,55 @@ void test('tracker reminders: an open OA a day and two hours ahead, an interview
   assert.ok(notice(`app-interview:${interview}:${NOW + 50 * 60000}`));
 });
 
+void test('offer deadlines: reminded 3 days and a day before, once each, at the Offer stage only', async () => {
+  const nia = person('r-nia'); // Tracker reminders on.
+  const oz = person('r-oz'); // Tracker reminders off.
+  for (const p of [nia, oz]) addUser(p);
+  const quiet = { review: false, streak: false, contest: false, hour: 3 };
+  await call(nia, 'POST', 'oj/notify', prefs(quiet));
+  await call(oz, 'POST', 'oj/notify', prefs({ ...quiet, applications: false }));
+  const card = async (p: Person, body: Record<string, unknown>) => (await call(p, 'POST', 'oj/applications', body)).data.item.id as string;
+  // Clear of the other tests' cards: 2026-11-14 12:00 UTC, the deadline 2.5 days later.
+  const T = NOW + 30 * DAY,
+    due = T + 2.5 * DAY;
+  const offer = await card(nia, { company: 'Acme', role: 'SWE', stage: 'offer', offerDeadline: due });
+  // Under a day when first seen: the 24-hour one only.
+  const soon = await card(nia, { company: 'Soon', stage: 'offer', offerDeadline: T + 12 * HOUR });
+  const turned = await card(nia, { company: 'Beta', stage: 'offer', offerDeadline: due });
+  await call(nia, 'POST', `oj/applications/${turned}`, { stage: 'rejected' });
+  await card(nia, { company: 'Kept', stage: 'phone', offerDeadline: due });
+  await card(nia, { company: 'Far', stage: 'offer', offerDeadline: T + 6 * DAY });
+  await card(oz, { company: 'Acme', stage: 'offer', offerDeadline: due });
+  const mine = (p: Person) =>
+    sqlite().prepare("SELECT id,title,body FROM notifications WHERE user_id=? AND kind='application' ORDER BY id").all(p.id) as {
+      id: string;
+      title: string;
+      body: string;
+    }[];
+
+  await sendLearnerReminders(T);
+  assert.deepEqual(mine(nia), [
+    { id: `app-offer1:${soon}:${T + 12 * HOUR}`, title: 'Offer 将在 24 小时内截止', body: 'Soon · 11-15 00:00' },
+    { id: `app-offer3:${offer}:${due}`, title: 'Offer 将在 3 天内截止', body: 'Acme · SWE · 11-17 00:00' },
+  ]);
+  // 1.5 days left: nothing new; under a day: the 24-hour one; then nothing more.
+  await sendLearnerReminders(T + DAY);
+  assert.equal(mine(nia).length, 2);
+  await sendLearnerReminders(T + 1.6 * DAY);
+  assert.equal(mine(nia).find((n) => n.id === `app-offer1:${offer}:${due}`)?.title, 'Offer 将在 24 小时内截止');
+  await sendLearnerReminders(T + 2 * DAY);
+  assert.equal(mine(nia).length, 3);
+  assert.deepEqual(mine(oz), [], 'tracker reminders off');
+  assert.equal(englishMessage('Offer 将在 3 天内截止'), 'An offer deadline is within 3 days');
+  assert.equal(englishMessage('Offer 将在 24 小时内截止'), 'An offer deadline is within 24 hours');
+  // Deleting the card deletes its notices.
+  await call(nia, 'POST', `oj/applications/${offer}/delete`, {});
+  assert.deepEqual(
+    mine(nia).map((n) => n.id),
+    [`app-offer1:${soon}:${T + 12 * HOUR}`],
+  );
+});
+
 void test("the digest counts tracker cards and contacts to follow up by the end of the learner's day", async () => {
   const kai = person('r-kai');
   const lee = person('r-lee');

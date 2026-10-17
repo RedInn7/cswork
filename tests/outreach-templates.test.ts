@@ -1,4 +1,4 @@
-// Outreach message templates (lib/content/outreach-templates.ts): ten, each in both languages with
+// Outreach message templates (lib/content/outreach-templates.ts): eleven, each in both languages with
 // the same known placeholders, and filled in without touching what was left blank; and the guide
 // chapter checklists (lib/content/career-checklists.ts).
 import test from 'node:test';
@@ -7,9 +7,9 @@ import { fillTemplate, OUTREACH_TEMPLATES, PLACEHOLDERS, placeholdersIn } from '
 
 const CJK = /[㐀-鿿]/;
 
-void test('ten templates, each in Chinese and English with only known placeholders, the same in both', () => {
-  assert.equal(OUTREACH_TEMPLATES.length, 10);
-  assert.equal(new Set(OUTREACH_TEMPLATES.map((t) => t.id)).size, 10);
+void test('eleven templates, each in Chinese and English with only known placeholders, the same in both', () => {
+  assert.equal(OUTREACH_TEMPLATES.length, 11);
+  assert.equal(new Set(OUTREACH_TEMPLATES.map((t) => t.id)).size, 11);
   for (const t of OUTREACH_TEMPLATES) {
     for (const [zh, en] of [t.title, t.tip, [t.zh.subject, t.en.subject], [t.zh.body, t.en.body]]) {
       assert.ok(CJK.test(zh), `${t.id}: ${zh}`);
@@ -26,6 +26,16 @@ void test('ten templates, each in Chinese and English with only known placeholde
     OUTREACH_TEMPLATES.filter((t) => t.offer).map((t) => t.id),
     ['counter-competing', 'counter-no-competing'],
   );
+});
+
+void test('the expedite request names the other offer and its deadline, and no money', () => {
+  const t = OUTREACH_TEMPLATES.find((x) => x.id === 'expedite')!;
+  for (const lang of ['zh', 'en'] as const) {
+    const text = `${t[lang].subject}\n${t[lang].body}`;
+    assert.ok(placeholdersIn(text).includes('otherCompany') && placeholdersIn(text).includes('deadline'), lang);
+    assert.doesNotMatch(text, /[$¥€£\d]|薪|salary|compensation/i, lang);
+  }
+  assert.equal(t.offer, undefined, 'not a negotiation');
 });
 
 void test('filling replaces what was given and keeps the rest visible', () => {

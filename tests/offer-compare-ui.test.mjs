@@ -20,8 +20,8 @@ globalThis.fetch = async (url, init = {}) => {
   calls.push(`${init.method ?? 'GET'} ${String(url)}`);
   return Response.json({
     items: [
-      { id: '1', company: 'Acme', role: 'SWE', stage: 'offer' },
-      { id: '2', company: 'Zed', role: 'SDE', stage: 'onsite' },
+      { id: '1', company: 'Acme', role: 'SWE', stage: 'offer', offerDeadline: new Date(2099, 0, 5, 17).getTime() },
+      { id: '2', company: 'Zed', role: 'SDE', stage: 'onsite', offerDeadline: null },
     ],
   });
 };
@@ -143,6 +143,8 @@ test('signed in, the tracker import fills company and role from offer-stage card
   await act(async () => button(host, '从投递看板导入').click());
   assert.deepEqual(calls, ['GET /api/oj/applications']);
   const saved = JSON.parse(localStorage.getItem(KEY));
+  // The card's offer deadline comes along as a local date.
+  assert.equal(saved[0].deadline, '2099-01-05');
   assert.deepEqual(
     saved.map((o) => [o.company, o.role, o.base]),
     [
@@ -167,7 +169,7 @@ test('typing while the import is out is kept: the import merges into the offers 
     await act(async () => button(host, 'Import from my tracker').click());
     const [first, second] = host.querySelectorAll('.offer-card');
     await setValue(labelled(second, 'Base salary (yearly)'), '123000');
-    await act(async () => answer(Response.json({ items: [{ id: '1', company: 'Acme', role: 'SWE', stage: 'offer' }] })));
+    await act(async () => answer(Response.json({ items: [{ id: '1', company: 'Acme', role: 'SWE', stage: 'offer', offerDeadline: null }] })));
     assert.deepEqual(
       JSON.parse(localStorage.getItem(KEY)).map((o) => [o.company, o.base]),
       [

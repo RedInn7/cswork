@@ -114,7 +114,7 @@ test('templates: filled from the contact in the address and its card, copied and
   Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (text) => void copied.push(text) } });
   await act(async () => root.render(createElement(OutreachTemplates, { zh: false, signedIn: true })));
   await settle();
-  assert.equal(document.querySelectorAll('.outreach-picker input').length, 10);
+  assert.equal(document.querySelectorAll('.outreach-picker input').length, 11);
   assert.equal(field('Fill from a card or contact').value, 'c:sam');
   assert.equal(field('Their name').value, 'Sam');
   // Referral ask: the role comes from Sam's linked card.
@@ -164,6 +164,25 @@ test('templates signed out: typed by hand, nothing fetched', async () => {
   await setValue(field('公司'), 'Globex');
   assert.equal(document.querySelector('.outreach-subject').textContent, '主题：内推请求：Globex {role}');
   await act(async () => root.render(createElement('div')));
+});
+
+test("templates from the tracker's offer links: the expedite request and the extension take the offer's deadline", async () => {
+  applications.push({ id: 'off', company: 'Globex', role: 'SWE', stage: 'offer', offerDeadline: new Date(2099, 3, 1, 17).getTime() });
+  const open = async (query) => {
+    dom.reconfigure({ url: `https://cswork.test/career/templates?${query}` });
+    await act(async () => root.render(createElement(OutreachTemplates, { zh: false, signedIn: true })));
+    await settle();
+  };
+  await open('template=expedite&application=acme&offer=off');
+  assert.equal(document.querySelector('.outreach-picker input:checked').value, 'expedite');
+  assert.deepEqual([field('Other company').value, field('Current deadline').value], ['Globex', '2099-04-01']);
+  assert.equal(document.querySelector('.outreach-subject').textContent, 'Subject: Interview timeline: SWE Intern at Acme');
+  await act(async () => root.render(createElement('div')));
+  await open('template=extension&application=off');
+  assert.deepEqual([field('Company').value, field('Current deadline').value], ['Globex', '2099-04-01']);
+  await act(async () => root.render(createElement('div')));
+  applications.pop();
+  dom.reconfigure({ url: 'https://cswork.test/career/templates?contact=sam' });
 });
 
 test('checklist: ticks stay in the browser signed out and move to the note on the next signed-in visit', async () => {
