@@ -142,8 +142,10 @@ function reviewSheet(userId: string, params: URLSearchParams) {
   const rows = scope.ids.flatMap((id) => {
     const body = notes.get(id);
     const m = [...(marks.get(id) ?? [])].filter((k) => k === 'star' || k === 'redo');
-    if (!body && !m.length && !wrong.has(id) && !leeches.has(id)) return [];
     const { tags, confidence } = body ? parseNoteMeta(body) : { tags: [], confidence: null };
+    const gist = (body && noteGist(body)) || null;
+    // An inserted template left unfilled says nothing, so it counts as no note.
+    if (!gist && !tags.length && !confidence && !m.length && !wrong.has(id) && !leeches.has(id)) return [];
     const t = scope.titles.get(id);
     return [
       {
@@ -154,9 +156,9 @@ function reviewSheet(userId: string, params: URLSearchParams) {
         marks: m,
         wrong: wrong.has(id),
         leech: leeches.has(id),
-        gist: (body && noteGist(body)) || null,
+        gist,
         // The curated one-line approach, served with the problem anyway.
-        hint: body ? null : curatedHint(id),
+        hint: gist ? null : curatedHint(id),
         tags,
         confidence,
       },

@@ -671,6 +671,9 @@ void test('review sheet: a stop’s noted, marked, wrong and leech problems, lee
   note(writer.id, 'problem:lc-42', '## 关键观察\n每格的水由两侧最高决定\n```\n# code\n```\n## 复杂度\nO(n)\n\n把握度: 2\n#双指针');
   note(writer.id, 'problem:lc-1', 'out of scope');
   note(other.id, 'problem:lc-680', 'their note');
+  const { PROBLEM_TEMPLATE } = await import('../lib/note-meta');
+  note(writer.id, 'problem:lc-167', PROBLEM_TEMPLATE.en);
+  note(writer.id, 'problem:lc-18', PROBLEM_TEMPLATE.zh);
   const markIt = (id: string, m: string) =>
     sqlite().prepare('INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,1)').run(writer.id, `problem:${id}`, m);
   markIt('lc-167', 'star');
@@ -695,12 +698,14 @@ void test('review sheet: a stop’s noted, marked, wrong and leech problems, lee
   assert.deepEqual(
     sheet.rows.map((r) => r.id),
     ['lc-15', 'lc-42', 'lc-11', 'lc-167', 'lc-125', 'lc-16'],
-    'leech, confidence ≤ 2, redo, starred, then route order',
+    'leech, confidence ≤ 2, redo, starred, then route order; lc-18, an unfilled template alone, drops out',
   );
   const [lc15, lc42, lc11] = sheet.rows;
   assert.deepEqual([lc15.leech, lc15.gist, !!lc15.hint], [true, null, true], 'no note: the curated hint');
   assert.deepEqual([lc42.gist, lc42.confidence, lc42.tags], ['每格的水由两侧最高决定 · O(n)', 2, ['双指针']]);
   assert.deepEqual(lc11.marks, ['redo']);
+  const lc167 = sheet.rows[3];
+  assert.deepEqual([lc167.id, lc167.gist, !!lc167.hint], ['lc-167', null, true], 'an unfilled template: still the hint');
   assert.equal(sheet.rows.at(-1)!.wrong, true);
   assert.equal(sheet.total, 6);
   assert.deepEqual(sheet.topics, [{ stop: 'two-pointers-windows', text: '左右指针：有序或对称' }]);
