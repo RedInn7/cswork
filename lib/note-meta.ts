@@ -45,12 +45,15 @@ Confidence:
 export const CONFIDENCE_WORDS = ['把握度', 'confidence'];
 
 // Fenced blocks (an unclosed fence runs to the end, as in CommonMark), then one-line code spans.
-const CODE = /^ {0,3}(`{3,}|~{3,}).*$[\s\S]*?(?:^ {0,3}\1[`~]*[ \t]*$|(?![\s\S]))|(`+)(?!`)[^\n]*?[^`\n]\2(?!`)/gm;
+// ponytail: a span starts at a whole backtick run and holds no backtick, so every start scans only to
+// the next backtick (linear on a hostile note); ``a`b`` is not read as code, its #tags would count.
+const CODE = /^ {0,3}(`{3,}|~{3,}).*$[\s\S]*?(?:^ {0,3}\1[`~]*[ \t]*$|(?![\s\S]))|(?<!`)(`+)(?!`)[^`\n]+\2(?!`)/gm;
 // After a line start, a space or punctuation (not a letter, digit, `#` or `&`, so C#, ## and &#39; stay out);
 // a letter first (#12 is not a tag), 2–32 characters in all.
 const TAG = /(?<![\p{L}\p{N}\p{M}_#&])#(\p{L}[\p{L}\p{N}_-]{1,31})(?![\p{L}\p{N}\p{M}_-])/gu;
-// URLs and Markdown link targets carry #fragments that are not tags.
-const URLISH = /[a-z][a-z\d+.-]*:\/\/\S*|\]\([^)\s]*\)/gi;
+// URLs and Markdown link targets carry #fragments that are not tags. A scheme starts where its run of
+// scheme characters does and a link target holds no parenthesis, so no start rescans a long word (linear).
+const URLISH = /(?<![a-z\d+.-])[a-z][a-z\d+.-]*:\/\/\S*|\]\([^()\s]*\)/gi;
 const CONFIDENCE = /^[ \t]*(?:[-*>][ \t]*)?(?:把握度|confidence)[ \t]*[:：][ \t]*([1-5])(?!\d)/im;
 // Only problem ids: a bare [[1,2]] is an array in a note, not a link.
 const LINK = /\[\[(lc-\d+|oa-[a-z0-9-]+)\]\]/gi;

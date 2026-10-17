@@ -62,3 +62,16 @@ void test('the template keeps the fixed headings note-export reads', () => {
   assert.match(PROBLEM_TEMPLATE.en, /^## Key observation$/m);
   for (const t of [PROBLEM_TEMPLATE.zh, PROBLEM_TEMPLATE.en]) assert.equal(t.match(/^## /gm)?.length, 8);
 });
+
+void test('a hostile note parses in linear time (no regex backtracking blow-up)', () => {
+  let ticks = '';
+  for (let i = 1; ticks.length < 20000; i++) ticks += '`'.repeat(i) + 'x';
+  for (const body of ['a'.repeat(20000), ticks, '](](](['.repeat(4000), '`'.repeat(10000) + 'a'.repeat(10000)]) {
+    const start = performance.now();
+    parseNoteMeta(body);
+    wikiLinks(body);
+    assert.ok(performance.now() - start < 50, `${body.slice(0, 12)}… took ${performance.now() - start} ms`);
+  }
+  // Still code and still URLs: spans of any delimiter length, and fragments after a scheme.
+  assert.deepEqual(parseNoteMeta('``#a1`` `#b2` #c3 http://x.y/#d4 [x](#e5)').tags, ['c3']);
+});
