@@ -460,6 +460,14 @@ export const ojImportSchema = z
         message: '语言不能重复',
         path: ['problem', 'languages'],
       });
+    // Starters only for languages the problem is judged in: the sql key is for the SQL
+    // track's index problems, so a code-language problem cannot carry one.
+    if (Object.keys(data.problem.starters ?? {}).some((key) => !data.problem.languages.includes(key as Language)))
+      ctx.addIssue({
+        code: 'custom',
+        message: '起始代码只能给本题的语言 / starters only for the problem’s languages',
+        path: ['problem', 'starters'],
+      });
     // sql- problems are free, publicly listed and judged by the SQL harness
     // (lib/server/sql-judge.ts), so the prefix, the language and the SQL
     // track's home lesson go together.
