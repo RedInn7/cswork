@@ -184,16 +184,17 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
       (n) => `${n.textContent}${n.getAttribute('aria-selected') === 'true' ? '*' : ''}`,
     );
   const input = () => document.getElementById('custom-case-input');
-  const type = async (value) => {
+  const typeInto = async (node, value) => {
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLTextAreaElement.prototype,
       'value',
     ).set;
     await act(async () => {
-      setter.call(input(), value);
-      input().dispatchEvent(new Event('input', { bubbles: true }));
+      setter.call(node, value);
+      node.dispatchEvent(new Event('input', { bubbles: true }));
     });
   };
+  const type = (value) => typeInto(input(), value);
   const stored = () =>
     JSON.parse(localStorage.getItem('cswork:cases:student:acm-1') || 'null');
   const settingsKey = 'cswork:editor:settings:student';
@@ -236,6 +237,34 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
     await click(button('Run'));
     assert.equal(posts.at(-1).stdin, '5 6\n');
 
+    // An expected output of your own: a run marks its case ✓ or ✗ (the run prints 3).
+    const expectBox = () => document.querySelector('.cs-custom-expect textarea');
+    const caseTab = (n) => document.querySelectorAll('[aria-label="Custom cases"] [role="tab"]')[n];
+    await click(button('Test cases'));
+    await typeInto(expectBox(), '11');
+    await click(button('Run'));
+    assert.match(document.body.textContent, /Expected output \(yours\)/);
+    assert.match(document.body.textContent, /✗ Does not match your expected output\./);
+    await click(button('Test cases'));
+    assert.deepEqual(tabs(), ['Case 1✗, not as expected*', 'Case 2']);
+    assert.deepEqual(stored(), ['5 6\n', '1 2\n'], 'the cases keep their format');
+    assert.deepEqual(JSON.parse(localStorage.getItem('cswork:cases:student:acm-1:expect')), ['11', '']);
+    await click(caseTab(1));
+    assert.equal(expectBox().value, '');
+    await typeInto(expectBox(), '3\n');
+    await click(button('Run'));
+    assert.match(document.body.textContent, /✓ Matches your expected output\./);
+    await click(button('Test cases'));
+    assert.deepEqual(tabs(), ['Case 1✗, not as expected', 'Case 2✓, as expected*']);
+    // Editing a case clears its mark; clearing the expected output removes it from storage.
+    await type('1 3\n');
+    assert.deepEqual(tabs(), ['Case 1✗, not as expected', 'Case 2*']);
+    await typeInto(expectBox(), '');
+    await click(caseTab(0));
+    await typeInto(expectBox(), '');
+    assert.deepEqual(tabs(), ['Case 1*', 'Case 2']);
+    assert.equal(localStorage.getItem('cswork:cases:student:acm-1:expect'), null);
+
     // A failing case joins as a new case; at 5 cases + stops and the next one asks for room.
     verdict = 'wrong';
     await click(button('Submit'));
@@ -261,6 +290,107 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
     assert.match(banner, /Faster than 87% of people who solved it in Python 3/);
     // Unrounded, so sub-ms differences are compared on the server.
     assert.match(statsUrls.at(-1), /problem-stats\/acm-1\?language=python&runtimeMs=25\.4$/);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+    dom.window.close();
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
+});
+
+test('single-submit mock OA: one confirmed submission per question, its verdict sealed until the hand-in', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { ProblemWorkspace } = await import('../components/problem-workspace.tsx');
+  const statement = { title: 'A+B', description: 'Add.', input: 'Two numbers.', output: 'Their sum.', explanation: '', hints: [] };
+  const problem = { id: 'acm-1', courseId: 'gomall', lessonId: 'lesson', ...statement, difficulty: '简单', tags: [], sampleIn: '1 2\n', sampleOut: '3\n', languages: ['python'], translations: { en: statement }, codingModes: ['acm'] };
+  const start = Date.now() - 60_000;
+  const session = { id: 's1', company: null, name: null, platform: null, preset: false, scoring: 'codility', source: 'mixed', slots: ['medium', 'hard'], ids: ['acm-1', 'lc-2'], minutes: 120, skew: 0, createdAt: start, startedAt: start };
+  localStorage.setItem('cswork:mock:v1:student', JSON.stringify({ active: session, history: [] }));
+  const posts = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    if (url.endsWith('/submissions') && init?.method === 'POST') {
+      const body = JSON.parse(init.body);
+      posts.push(body);
+      return Response.json({
+        id: `j${posts.length}`, problem_id: 'acm-1', language: 'python', codingMode: 'acm', mode: body.mode, created_at: Date.now(),
+        status: 'accepted', passed: 1, total: 1, runtimeMs: 12, cases: [{ ordinal: 0, status: 'accepted', hidden: true }],
+      });
+    }
+    if (url.includes('/submissions')) return Response.json({ items: historyItems, nextCursor: null });
+    if (url.includes('/status')) return Response.json({ available: true, languageVersions: {} });
+    return Response.json(problem);
+  };
+  let historyItems = [];
+  let refreshes = 0;
+  const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
+  const button = (text) => [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === text);
+  let root = createRoot(document.getElementById('root'));
+  const mount = async (submissions = []) => {
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          problem: { id: 'acm-1', title: 'A+B', titleEn: 'A+B', difficulty: '简单', tags: [], lessonId: 'lesson', courseId: 'gomall' },
+          boot: { person: { id: 'student', role: 'teacher' }, courses: [], problems: [], submissions },
+          mock: 's1',
+          navigate() {},
+          ask() {},
+          refresh: async () => {
+            refreshes++;
+          },
+        }),
+      ),
+    );
+    await settle();
+  };
+  try {
+    await mount();
+    assert.match(document.querySelector('.mock-exam-bar').textContent, /Custom mock/);
+    // Submit asks first; keeping on checking sends nothing.
+    await act(async () => button('Submit').click());
+    assert.match(document.querySelector('[role="alertdialog"]').textContent, /Submit your final answer\?.*can't submit this question again/);
+    await act(async () => button('Keep checking').click());
+    assert.equal(posts.length, 0);
+    await act(async () => button('Submit').click());
+    await act(async () => button('Submit final answer').click());
+    await settle();
+    assert.equal(document.querySelector('[role="alertdialog"]'), null, 'the dialog closes');
+    assert.equal(posts.length, 1);
+    assert.equal(posts[0].mode, 'judge');
+    assert.ok(refreshes > 0, 'the exam bar reloads the judge rows on the receipt');
+    const result = document.querySelector('.cs-result-content').textContent;
+    assert.match(result, /Submitted/);
+    assert.match(result, /Results come after you hand in/);
+    assert.doesNotMatch(result, /Accepted|passed|test case/i);
+    assert.equal(document.querySelector('.cs-accepted-banner'), null, 'no AC modal');
+    assert.equal(button('Final answer in').disabled, true);
+    // Reopened later: the exam's judge row alone keeps it locked; a judge failure does not.
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    await mount([{ id: 'j1', problem_id: 'acm-1', language: 'python', status: 'accepted', passed: 1, total: 1, created_at: Date.now() }]);
+    assert.equal(button('Final answer in').disabled, true);
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    await mount([{ id: 'j2', problem_id: 'acm-1', language: 'python', status: 'system_error', passed: 0, total: 1, created_at: Date.now() }]);
+    assert.equal(button('Final answer in'), undefined);
+    assert.ok(button('Submit'));
+    // Left while still judging, back before the exam's rows reload: this problem's own history
+    // has the queued judge row and locks it; a run row there does not.
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    historyItems = [{ id: 'r1', problem_id: 'acm-1', language: 'python', mode: 'run', status: 'finished', passed: 0, total: 0, created_at: Date.now() }];
+    await mount([]);
+    assert.ok(button('Submit'));
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    historyItems = [{ id: 'j3', problem_id: 'acm-1', language: 'python', mode: 'judge', status: 'queued', passed: 0, total: 0, created_at: Date.now() }];
+    await mount([]);
+    assert.equal(button('Final answer in').disabled, true);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

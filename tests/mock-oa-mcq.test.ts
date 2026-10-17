@@ -188,6 +188,15 @@ void test('old sessions without mcq still parse; a malformed mcq drops the sessi
   assert.equal(parseMockState(JSON.stringify({ active: { ...base, mcq: { ids: 'x' } }, history: [] })).active, null);
 });
 
+void test('MCQ review flags: absent or whole question indexes; anything else drops the session', () => {
+  const mcq = { ids: ['a', 'b'], picks: [[], [1]], minutes: 15, startedAt: 2000 };
+  const parsed = (flags: unknown) => parseMockState(JSON.stringify({ active: { ...base, mcq: { ...mcq, flags } }, history: [] })).active;
+  assert.deepEqual(parsed([1])?.mcq?.flags, [1]);
+  assert.deepEqual(parsed([])?.mcq?.flags, []);
+  assert.equal(parsed(undefined)?.mcq?.flags, undefined);
+  for (const bad of ['1', [1.5], ['0'], [null], { 0: 1 }]) assert.equal(parsed(bad), null, JSON.stringify(bad));
+});
+
 void test('the MCQ section ends at hand-in or its deadline, and the coding clock starts there', () => {
   const s = { ...base, mcq: { ids: ['a'], picks: [[]], minutes: 15, startedAt: 10_000 } };
   assert.equal(mockClock(s, 20_000).phase, 'ready', 'coding has not started');
