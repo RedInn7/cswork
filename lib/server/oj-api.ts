@@ -35,7 +35,11 @@ import { handleCodeReviews } from './code-reviews';
 import { handlePlacement } from './placement';
 import { handlePracticeAids, recordAid } from './practice-aids';
 import { handleRoundReview } from './round-review';
-import { handleStress } from './stress';
+import { handleComplexity, handleStress } from './stress';
+// Wave 9 stubs: each branch fills in its own module, never these routes.
+import { handleNoteSub } from './note-links';
+import { handleCheatsheet, handleNoteExport } from './note-export';
+import { handleStudyGoal } from './study-goal';
 import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
@@ -290,6 +294,10 @@ export async function handleOj(
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
     return handleMyPractice(request, p, resource);
+  if (resource === 'notes' && id === 'export' && !action) return handleNoteExport(request, p);
+  if (resource === 'notes' && id && !action) return handleNoteSub(request, p, id);
+  if (resource === 'cheatsheet' && !id) return handleCheatsheet(request, p);
+  if (resource === 'study-goal' && !id) return handleStudyGoal(request, p);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
   if (
@@ -437,6 +445,7 @@ export async function handleOj(
   }
   // A stress test against the reference on generated cases (lib/server/stress.ts).
   if (resource === 'problems' && id && action === 'stress' && !operation) return handleStress(request, p, id);
+  if (resource === 'problems' && id && action === 'complexity' && !operation) return handleComplexity(request, p, id);
   if (resource === 'playground' && id === 'run' && !action) {
     let data: unknown;
     try {

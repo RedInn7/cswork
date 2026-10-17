@@ -2057,6 +2057,25 @@ td[data-over] .mi-bar i {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+.mi-guide-clock[data-over] {
+  color: var(--rd-red);
+}
+/* "Outline by steps" under a notes box; the interviewer's read-only answer steps. */
+.mi-scaffold {
+  justify-self: start;
+}
+.mi-sheet-steps ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--rd-ink);
+  font-size: 14px;
+}
+.mi-sheet-steps li span {
+  display: block;
+  color: var(--rd-ink-2);
+}
 .mi-guide-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2782,6 +2801,15 @@ td[data-over] .mi-bar i {
   }
   .dark .mi-guide-now strong {
     color: var(--rd-ink);
+  }
+  .dark .mi-guide-clock[data-over] {
+    color: var(--rd-red);
+  }
+  .dark .mi-sheet-steps ol {
+    color: var(--rd-ink);
+  }
+  .dark .mi-sheet-steps li span {
+    color: var(--rd-ink-2);
   }
   .dark .mi-step-card {
     border-left: 3px solid var(--mi-amber);

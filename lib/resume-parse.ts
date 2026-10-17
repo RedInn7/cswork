@@ -134,7 +134,7 @@ export function parseResumeText(text: string): Resume {
   }
 
   // The header: the name first, then email, phone and links by pattern; a leftover short text segment is the location.
-  const segments = header.flatMap((l) => l.split(/\s*[|｜•·]\s*|\s{2,}/)).map(trimSeparators).filter(Boolean);
+  const segments = header.flatMap((l) => l.split(/\s*[|｜•·\t]\s*|\s{2,}/)).map(trimSeparators).filter(Boolean);
   const [name = '', ...others] = segments;
   const contact = others.join(' | ');
   const email = EMAIL.exec(contact)?.[0] ?? '';

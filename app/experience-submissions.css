@@ -478,6 +478,126 @@
   }
 }
 
+/* Question rows in the form: the text, its round, a linked site problem and "similar". */
+.xs-group.xs-questions-edit {
+  display: grid;
+  gap: 8px;
+}
+.xs-q-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.xs-q-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+}
+.xs-q-row input:not([type='checkbox']),
+.xs-q-row select {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #d9dfe4;
+  border-radius: 10px;
+  background: #fff;
+  color: #1d252d;
+  font: inherit;
+  font-size: 13.5px;
+}
+.xs-q-row input:focus,
+.xs-q-row select:focus {
+  outline: none;
+  border-color: #327b76;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #327b76 18%, transparent);
+}
+.xs-q-row input:invalid {
+  /* The token, so dark mode gets its lighter red (the light one is 2.7:1 on the dark input). */
+  border-color: var(--destructive);
+}
+.xs-q-similar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #3a4651;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.xs-q-similar:has(input:disabled) {
+  color: #66717c;
+}
+.xs-q-row .xs-quiet {
+  padding: 6px 8px;
+}
+.xs-add {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 4px;
+  padding: 6px 11px;
+  border: 1px dashed #c3ccd4;
+  border-radius: 10px;
+  color: #1f5f5a;
+  font-size: 13px;
+  font-weight: 650;
+}
+.xs-add:hover {
+  background: #e9f1ef;
+}
+.xs-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+@media (max-width: 720px) {
+  .xs-q-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .xs-q-text {
+    grid-column: 1 / -1;
+  }
+}
+
+/* On a post: a question's round, the problem to practise, and the whole loop as a mock. */
+.xs-q-round {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #eef1f4;
+  color: #3a4651;
+  font-size: 12px;
+  font-weight: 650;
+}
+.xs-q-go {
+  margin-left: 8px;
+  color: #1f5f5a;
+  font-size: 13px;
+  font-weight: 650;
+  text-underline-offset: 2px;
+}
+.xs-loop {
+  justify-self: start;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #1d252d;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.xs-loop:hover {
+  background: #33404c;
+}
+.xs-loop:focus-visible,
+.xs-q-go:focus-visible,
+.xs-add:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
+
 /* "Verified email" on a member post: the address checked out, nothing more. */
 .public-library-facts .xs-verified {
   padding: 3px 10px;
@@ -660,6 +780,54 @@
   }
   .dark .xs-group.xs-details {
     border: 1px dashed #2e3236;
+  }
+  .dark .xs-q-row input:not([type='checkbox']),
+  .dark .xs-q-row select {
+    border: 1px solid #2e3236;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .xs-q-row input:focus,
+  .dark .xs-q-row select:focus {
+    outline: none;
+    border-color: #327b76;
+    box-shadow: 0 0 0 3px color-mix(in srgb, #327b76 18%, transparent);
+  }
+  .dark .xs-q-row input:invalid {
+    border-color: var(--destructive);
+  }
+  .dark .xs-q-similar {
+    color: #c5d1dc;
+  }
+  .dark .xs-q-similar:has(input:disabled) {
+    color: #b5bfc9;
+  }
+  .dark .xs-add {
+    border: 1px dashed #333a41;
+    color: #a0d5cf;
+  }
+  .dark .xs-add:hover {
+    background: #0d1211;
+  }
+  .dark .xs-q-round {
+    background: #101213;
+    color: #c5d1dc;
+  }
+  .dark .xs-q-go {
+    color: #a0d5cf;
+  }
+  .dark .xs-loop {
+    background: #1d252d;
+    color: #fff;
+    text-decoration: none;
+  }
+  .dark .xs-loop:hover {
+    background: #33404c;
+  }
+  .dark .xs-loop:focus-visible,
+  .dark .xs-q-go:focus-visible,
+  .dark .xs-add:focus-visible {
+    outline: 2px solid #327b76;
   }
   .dark .public-library-facts .xs-verified {
     background: #0d1412;

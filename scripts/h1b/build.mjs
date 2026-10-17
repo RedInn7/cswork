@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Builds lib/content/h1b-sponsors.json from the USCIS H-1B Employer Data Hub exports
 // (https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub), US government
-// data in the public domain. Download the yearly files into one directory, then:
+// data in the public domain. Export each fiscal year from the hub's crosstab (the "H1B Public"
+// view, six petition types per row) into one directory, then:
 //   node scripts/h1b/build.mjs <dir> [--updated=YYYY-MM-DD]
 // Only per-company yearly totals and the matched employer names are written: no tax IDs,
 // cities or ZIP codes. Companies come from lib/content/h1b-aliases.json (company page slug →
@@ -16,20 +17,20 @@ const OUT = resolve(import.meta.dirname, '../../lib/content/h1b-sponsors.json');
 const ALIASES = resolve(import.meta.dirname, '../../lib/content/h1b-aliases.json');
 const EMPLOYERS_SHOWN = 10;
 
-// Older files count Initial / Continuing; newer ones split six ways. New employment = New
-// Employment + New Concurrent + Change of Employer; continuing = Continuation + Change with
-// Same Employer + Amended, so both line up with the old two columns.
+// New employment = New Employment + New Concurrent + Change of Employer; continuing =
+// Continuation + Change with Same Employer + Amended. The archived Data Hub Files CSVs count
+// Initial / Continuing instead, and their Initial is New Employment alone (FY2021 Google: 1,453
+// against 3,317 for the three), so records() refuses that layout rather than mix the two.
 const SERIES = {
-  initial: 'new',
   newemployment: 'new',
   newconcurrent: 'new',
   changeofemployer: 'new',
-  continuing: 'cont',
   continuation: 'cont',
   changewithsameemployer: 'cont',
   amended: 'cont',
 };
 const COUNT = new RegExp(`^(${Object.keys(SERIES).join('|')})(approval|denial)s?$`);
+const OLD_COUNT = /^(initial|continuing)(approval|denial)s?$/;
 const key = (header) => header.toLowerCase().replace(/[^a-z0-9]/g, '');
 const num = (value = '') => Number(value.replace(/[,\s]/g, '')) || 0;
 
@@ -73,8 +74,10 @@ export function parseCsv(text) {
 export function records(rows, file = '') {
   const [head = [], ...body] = rows;
   const keys = head.map(key);
+  if (keys.some((k) => OLD_COUNT.test(k)))
+    throw new Error(`${file}: the old Initial/Continuing layout counts new employment differently; take every year from the hub's crosstab`);
   const fy = keys.indexOf('fiscalyear');
-  // "Employer" in older files, "Employer (Petitioner) Name" in newer ones.
+  // "Employer (Petitioner) Name" in the crosstab.
   const employer = keys.findIndex((k) => k.startsWith('employer'));
   const counts = keys.flatMap((k, i) => {
     const m = COUNT.exec(k);
@@ -145,15 +148,28 @@ export function build(tables, aliases, { updated = null, years = FISCAL_YEARS } 
     if (!c) totals.set(slug, (c = { years: new Map(fiscalYears.map((fy) => [fy, { fy, newApproved: 0, newDenied: 0, contApproved: 0, contDenied: 0 }])), employers: new Map() }));
     const y = c.years.get(r.fy);
     for (const f of ['newApproved', 'newDenied', 'contApproved', 'contDenied']) y[f] += r[f];
-    const name = r.employer.toUpperCase().replace(/\s+/g, ' ');
-    c.employers.set(name, (c.employers.get(name) ?? 0) + r.newApproved + r.contApproved);
+    // Spellings that differ only in punctuation, legal form, & / AND or spaced initials ("ADOBE INC."
+    // and "ADOBE INC", "U S" and "US", "D/B/A" and "DBA") are one name, shown as its most approved one.
+    const id = normalizeName(r.employer.replace(/\band\b/gi, ' ')).replace(/\b(\w) (?=\w\b)/g, '$1'),
+      spelling = r.employer.toUpperCase().replace(/\s+/g, ' '),
+      count = r.newApproved + r.contApproved;
+    let e = c.employers.get(id);
+    if (!e) c.employers.set(id, (e = { total: 0, spellings: new Map() }));
+    e.total += count;
+    e.spellings.set(spelling, (e.spellings.get(spelling) ?? 0) + count);
   }
+  const byCount = (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]);
   const companies = {};
   for (const slug of [...totals.keys()].sort()) {
     const c = totals.get(slug);
     companies[slug] = {
       years: [...c.years.values()],
-      employers: [...c.employers].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, EMPLOYERS_SHOWN).map(([n]) => n),
+      employers: [...c.employers.values()]
+        .map((e) => [[...e.spellings].sort(byCount)[0][0], e.total])
+        .sort(byCount)
+        .slice(0, EMPLOYERS_SHOWN)
+        .map(([n]) => n),
+      employerCount: c.employers.size,
     };
   }
   return { updated, source: SOURCE, sourceUrl: SOURCE_URL, fiscalYears, companies };

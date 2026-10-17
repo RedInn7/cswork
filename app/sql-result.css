@@ -95,6 +95,285 @@
   color: #6fd6a3;
 }
 
+/* The SQL workspace (components/sql-workspace.tsx): example tables and results
+   as grids, the schema beside the editor, and the plan / CTE previews. */
+.cs-sql-sample {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.cs-sql-grid {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--cs-border, #e2e7ef);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cs-sql-grid figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 10px;
+  padding: 6px 11px;
+  color: #5d6879;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.cs-sql-grid figcaption strong {
+  color: var(--cs-text, #263247);
+  font: 600 12px/1.4 'SFMono-Regular', Consolas, monospace;
+}
+.cs-sql-grid-scroll {
+  max-height: 320px;
+  overflow: auto;
+}
+.cs-sql-grid-scroll:focus-visible,
+.cs-sql-schema :is(summary, button):focus-visible,
+.cs-sql-inspect-actions button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.cs-sql-grid table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 12px/1.6 'SFMono-Regular', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--cs-text, #263247);
+}
+.cs-sql-grid th,
+.cs-sql-grid td {
+  padding: 3px 10px;
+  border-top: 1px solid var(--cs-border, #e2e7ef);
+  text-align: left;
+  vertical-align: top;
+  white-space: pre;
+}
+.cs-sql-grid thead th {
+  position: sticky;
+  top: 0;
+  background: var(--cs-surface-soft, #f6f8fb);
+  font-weight: 600;
+}
+.cs-sql-grid thead small {
+  display: block;
+  color: #5d6879;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.cs-sql-grid td[data-null] {
+  color: #5d6879;
+  font-style: italic;
+}
+.cs-sql-raw > summary {
+  width: fit-content;
+  color: #5d6879;
+  font-size: 12px;
+  cursor: pointer;
+}
+.cs-sql-raw[open] > summary {
+  margin-bottom: 8px;
+}
+
+/* Beside the editor from 720px, above it on a phone; folded, a narrow tab. */
+.cs-code-area[data-schema] {
+  display: flex;
+}
+.cs-code-area[data-schema] > :not(.cs-sql-schema) {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.cs-sql-schema {
+  flex: 0 0 200px;
+  width: 200px;
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--cs-border, #e2e7ef);
+  background: var(--cs-surface-soft, #f6f8fb);
+  color: var(--cs-text, #263247);
+  font: 12px/1.5 'SFMono-Regular', Consolas, monospace;
+}
+.cs-sql-schema:not([open]) {
+  flex-basis: auto;
+  width: auto;
+}
+.cs-sql-schema summary {
+  padding: 7px 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cs-sql-schema:not([open]) summary {
+  writing-mode: vertical-rl;
+  padding: 10px 6px;
+}
+.cs-sql-schema > p {
+  margin: 0 10px 6px;
+  color: #5d6879;
+  font-size: 11px;
+}
+.cs-sql-schema ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cs-sql-schema > ul > li {
+  padding: 2px 6px 8px;
+}
+.cs-sql-schema li li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  padding-left: 10px;
+}
+.cs-sql-schema li li span {
+  color: #5d6879;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.cs-sql-schema button {
+  min-width: 0;
+  padding: 1px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.cs-sql-schema button:hover {
+  background: rgb(13 122 99 / 0.1);
+}
+.cs-sql-schema-table {
+  font-weight: 700;
+}
+@media (max-width: 719px) {
+  .cs-code-area[data-schema] {
+    flex-direction: column;
+  }
+  .cs-sql-schema {
+    flex: 0 0 auto;
+    width: auto;
+    max-height: 38%;
+    border-right: 0;
+    border-bottom: 1px solid var(--cs-border, #e2e7ef);
+  }
+  .cs-sql-schema:not([open]) summary {
+    writing-mode: horizontal-tb;
+    padding: 7px 10px;
+  }
+}
+
+.cs-sql-inspect {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--cs-border, #e2e7ef);
+}
+.cs-sql-inspect-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.cs-sql-inspect-actions button {
+  padding: 3px 9px;
+  border: 1px solid var(--cs-border, #e2e7ef);
+  border-radius: 6px;
+  background: var(--cs-surface, #fff);
+  color: var(--cs-text, #263247);
+  font-size: 12px;
+  cursor: pointer;
+}
+.cs-sql-inspect-actions button[aria-pressed='true'] {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+.cs-sql-inspect-actions small,
+.cs-sql-inspect-note {
+  color: #5d6879;
+  font-size: 11px;
+}
+.cs-sql-inspect-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.cs-sql-inspect-error {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgb(214 69 65 / 0.08);
+  color: #a3302c;
+  font: 12px/1.5 'SFMono-Regular', Consolas, monospace;
+  white-space: pre-wrap;
+}
+.cs-sql-plan {
+  margin: 0;
+  padding: 8px 11px;
+  border: 1px solid var(--cs-border, #e2e7ef);
+  border-radius: 8px;
+  color: var(--cs-text, #263247);
+}
+.cs-sql-plan figcaption {
+  margin-bottom: 6px;
+  color: #5d6879;
+  font-size: 11px;
+}
+.cs-sql-plan ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 12px/1.7 'SFMono-Regular', Consolas, monospace;
+}
+.cs-sql-plan ul ul {
+  margin-left: 7px;
+  padding-left: 12px;
+  border-left: 1px solid var(--cs-border, #e2e7ef);
+}
+.cs-sql-plan [data-plan] {
+  padding: 0 4px;
+  border-radius: 4px;
+}
+.cs-sql-plan [data-plan='warn'] {
+  background: rgb(217 119 6 / 0.12);
+  color: #8f4500;
+}
+.cs-sql-plan [data-plan='ok'] {
+  background: rgb(31 150 98 / 0.1);
+  color: #17784e;
+}
+.cs-sql-plan-legend {
+  margin: 8px 0 0;
+  color: #5d6879;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.cs-sql-plan-legend [data-plan] {
+  font: 11px 'SFMono-Regular', Consolas, monospace;
+}
+.cs-workspace[data-theme='dark'] :is(.cs-sql-grid figcaption, .cs-sql-grid thead small, .cs-sql-grid td[data-null], .cs-sql-raw > summary, .cs-sql-schema > p, .cs-sql-schema li li span, .cs-sql-inspect-actions small, .cs-sql-inspect-note, .cs-sql-plan figcaption, .cs-sql-plan-legend) {
+  color: var(--cs-muted);
+}
+.cs-workspace[data-theme='dark'] .cs-sql-schema button:hover {
+  background: rgb(145 175 255 / 0.14);
+}
+.cs-workspace[data-theme='dark'] .cs-sql-inspect-error {
+  color: #ff9b95;
+}
+.cs-workspace[data-theme='dark'] .cs-sql-plan [data-plan='warn'] {
+  color: #ffb35c;
+}
+.cs-workspace[data-theme='dark'] .cs-sql-plan [data-plan='ok'] {
+  color: #6fd6a3;
+}
+
 /* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
 @media screen {
   .dark .cs-sql-diff {
@@ -153,6 +432,120 @@
     color: #ff9b95;
   }
   .dark .cs-workspace[data-theme='dark'] .cs-sql-diff tr:is([data-diff='extra'], [data-diff='actual']) th {
+    color: #6fd6a3;
+  }
+  .dark .cs-sql-grid {
+    border: 1px solid var(--cs-border, #2b2e34);
+  }
+  .dark .cs-sql-grid figcaption {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-grid figcaption strong {
+    color: var(--cs-text, #cbd8ef);
+  }
+  .dark .cs-sql-grid-scroll:focus-visible,
+  .dark .cs-sql-schema :is(summary, button):focus-visible,
+  .dark .cs-sql-inspect-actions button:focus-visible {
+    outline: 2px solid var(--primary);
+  }
+  .dark .cs-sql-grid table {
+    color: var(--cs-text, #cbd8ef);
+  }
+  .dark .cs-sql-grid th,
+  .dark .cs-sql-grid td {
+    border-top: 1px solid var(--cs-border, #2b2e34);
+  }
+  .dark .cs-sql-grid thead th {
+    background: var(--cs-surface-soft, #141617);
+  }
+  .dark .cs-sql-grid thead small {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-grid td[data-null] {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-raw > summary {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-schema {
+    border-right: 1px solid var(--cs-border, #2b2e34);
+    background: var(--cs-surface-soft, #141617);
+    color: var(--cs-text, #cbd8ef);
+  }
+  .dark .cs-sql-schema > p {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-schema li li span {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-schema button {
+    border: 0;
+    background: none;
+    color: inherit;
+  }
+  .dark .cs-sql-schema button:hover {
+    background: #0d7a631a;
+  }
+  @media (max-width: 719px) {
+    .dark .cs-sql-schema {
+      border-right: 0;
+      border-bottom: 1px solid var(--cs-border, #2b2e34);
+    }
+  }
+  .dark .cs-sql-inspect {
+    border-top: 1px dashed var(--cs-border, #2b2e34);
+  }
+  .dark .cs-sql-inspect-actions button {
+    border: 1px solid var(--cs-border, #2b2e34);
+    background: var(--cs-surface, #191919);
+    color: var(--cs-text, #cbd8ef);
+  }
+  .dark .cs-sql-inspect-actions button[aria-pressed='true'] {
+    border-color: var(--primary);
+    box-shadow: inset 0 0 0 1px var(--primary);
+  }
+  .dark .cs-sql-inspect-actions small,
+  .dark .cs-sql-inspect-note {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-inspect-error {
+    background: #d6454114;
+    color: #ffaba2;
+  }
+  .dark .cs-sql-plan {
+    border: 1px solid var(--cs-border, #2b2e34);
+    color: var(--cs-text, #cbd8ef);
+  }
+  .dark .cs-sql-plan figcaption {
+    color: #b7c2d2;
+  }
+  .dark .cs-sql-plan ul ul {
+    border-left: 1px solid var(--cs-border, #2b2e34);
+  }
+  .dark .cs-sql-plan [data-plan='warn'] {
+    background: #d977061f;
+    color: #fab386;
+  }
+  .dark .cs-sql-plan [data-plan='ok'] {
+    background: #1f96621a;
+    color: #8cd4ac;
+  }
+  .dark .cs-sql-plan-legend {
+    color: #b7c2d2;
+  }
+  .dark .cs-workspace[data-theme='dark'] :is(.cs-sql-grid figcaption, .cs-sql-grid thead small, .cs-sql-grid td[data-null], .cs-sql-raw > summary, .cs-sql-schema > p, .cs-sql-schema li li span, .cs-sql-inspect-actions small, .cs-sql-inspect-note, .cs-sql-plan figcaption, .cs-sql-plan-legend) {
+    color: var(--cs-muted);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-sql-schema button:hover {
+    background: rgb(145 175 255 / 0.14);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-sql-inspect-error {
+    color: #ff9b95;
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-sql-plan [data-plan='warn'] {
+    color: #ffb35c;
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-sql-plan [data-plan='ok'] {
     color: #6fd6a3;
   }
 }

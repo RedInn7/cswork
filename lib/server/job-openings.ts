@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { httpsLink } from '@/lib/applications';
-import { JOB_SEARCH_NOTE, ROLE_FILTERS, type JobSearch } from '@/lib/job-tags';
+import { AUTH_UNKNOWN, authFlags, JOB_BLOCKED_MAX, JOB_BLOCKED_NOTE, JOB_SEARCH_NOTE, ROLE_FILTERS, type JobSearch } from '@/lib/job-tags';
 import atsBoards from '@/lib/content/ats-boards.json';
 import { hiddenCompanies } from './env';
 import { recordSeasons } from './job-seasons';
@@ -10,8 +10,9 @@ import { recordSeasons } from './job-seasons';
  * New-grad and intern openings from three keyless public ATS job boards (db/job-openings-schema.ts).
  * lib/content/ats-boards.json maps a company page slug to its board, each one checked against the
  * company its postings name. The judge worker syncs about daily
- * (lib/server/oj-worker.ts); only title, location, link, dates and a posted pay range are kept,
- * never the description. Each sync also records the hiring seasons (lib/server/job-seasons.ts).
+ * (lib/server/oj-worker.ts); only title, location, link, dates, a posted pay range and the auth
+ * flags are kept. The description is read only to judge those flags (lib/job-tags.ts authFlags),
+ * never stored. Each sync also records the hiring seasons and pay samples (lib/server/job-seasons.ts).
  * Pages list what a sync saw in the last three days; the daily company digest
  * (lib/server/company-follows.ts) reports the ones first seen since.
  */
@@ -30,6 +31,8 @@ export type Opening = {
   kind: OpeningKind;
   postedAt: number | null;
   pay: Pay | null;
+  /** lib/job-tags.ts AUTH_FLAGS bits, AUTH_UNKNOWN until judged. */
+  authFlags: number;
 };
 
 const HOUR = 3600000;
@@ -38,6 +41,11 @@ export const FRESH_FOR = 72 * HOUR;
 // Long gone openings are dropped; one back after that counts as new again.
 const KEEP_FOR = 30 * 24 * HOUR;
 const FETCH_TIMEOUT = 10_000;
+// ponytail: at most 200 Greenhouse detail requests a round, 4 at a time and 5 minutes of them in
+// all, so a round stays short (the digest waits for it); openings left over are judged next round.
+const DETAIL_MAX = 200;
+const DETAIL_PARALLEL = 4;
+const DETAIL_FOR = 5 * 60_000;
 export const BOARDS = atsBoards as Record<string, Board>;
 
 const BOARD_API: Record<Ats, (board: string) => string> = {
@@ -58,6 +66,20 @@ type Json = Record<string, unknown>;
 const obj = (v: unknown): Json => (v && typeof v === 'object' ? (v as Json) : {});
 const list = (v: unknown) => (Array.isArray(v) ? v.map(obj) : []);
 const str = (v: unknown) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim() : typeof v === 'number' ? String(v) : '');
+const raw = (v: unknown) => (typeof v === 'string' ? v : '');
+const ENTITY: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“', ndash: '–', mdash: '—' };
+const decode = (s: string) =>
+  s.replace(/&(?:#(\d{1,7})|#x([\da-f]{1,6})|([a-z]+));/gi, (m, dec?: string, hex?: string, name?: string) => {
+    const code = dec ? Number(dec) : hex ? parseInt(hex, 16) : -1;
+    return code >= 0 ? (code <= 0x10ffff ? String.fromCodePoint(code) : m) : (ENTITY[name!.toLowerCase()] ?? m);
+  });
+/** An HTML fragment's text: entities decoded before (Greenhouse escapes its HTML) and after; block tags break lines. */
+const htmlText = (html: string) =>
+  decode(
+    decode(html)
+      .replace(/<\/?(?:p|div|li|ul|ol|br|h[1-6]|tr|td|table|section)\b[^>]*>/gi, '\n')
+      .replace(/<[^>]*>/g, ''),
+  );
 const time = (v: unknown) => {
   const at = typeof v === 'number' ? v : Date.parse(str(v));
   return Number.isFinite(at) && at > 0 ? at : null;
@@ -84,26 +106,61 @@ const ashbyPay = (j: Json) => {
   return c ? payOf(c.minValue, c.maxValue, c.currencyCode, ASHBY_UNIT[str(c.interval)]) : null;
 };
 
-/** id, title, location, url, posting time, pay (Greenhouse's list has none). */
-type Posting = [string, string, string, string, unknown, Pay | null];
+/** id, title, location, url, posting time, pay and description text (Greenhouse's list has neither). */
+type Posting = [string, string, string, string, unknown, Pay | null, string];
+// Lever: the description, its lists (requirements and the like, HTML) and the closing text.
+const leverText = (j: Json) =>
+  [raw(j.descriptionPlain), ...list(j.lists).map((l) => `${raw(l.text)}\n${htmlText(raw(l.content))}`), raw(j.additionalPlain)].join('\n');
 /** A board's postings from its API's JSON. */
 function postings(ats: Ats, body: unknown): Posting[] {
   if (ats === 'greenhouse')
-    return list(obj(body).jobs).map((j): Posting => [str(j.id), str(j.title), str(obj(j.location).name), str(j.absolute_url), j.first_published ?? j.updated_at, null]);
+    return list(obj(body).jobs).map((j): Posting => [str(j.id), str(j.title), str(obj(j.location).name), str(j.absolute_url), j.first_published ?? j.updated_at, null, '']);
   if (ats === 'lever')
-    return list(body).map((j): Posting => [str(j.id), str(j.text), str(obj(j.categories).location), str(j.hostedUrl), j.createdAt, leverPay(j)]);
+    return list(body).map((j): Posting => [str(j.id), str(j.text), str(obj(j.categories).location), str(j.hostedUrl), j.createdAt, leverPay(j), leverText(j)]);
   return list(obj(body).jobs)
     .filter((j) => j.isListed !== false)
-    .map((j): Posting => [str(j.id), str(j.title), str(j.location), str(j.jobUrl), j.publishedAt, ashbyPay(j)]);
+    .map((j): Posting => [str(j.id), str(j.title), str(j.location), str(j.jobUrl), j.publishedAt, ashbyPay(j), raw(j.descriptionPlain)]);
 }
+
+/** The flags a description states, AUTH_UNKNOWN when there is none. */
+const judge = (text: string) => (text.trim() ? authFlags(text) : AUTH_UNKNOWN);
 
 /** The early-career openings on one board; links must be https and fit the tracker's link field. */
 export function boardOpenings(companySlug: string, { ats, board }: Board, body: unknown): Opening[] {
-  return postings(ats, body).flatMap(([id, title, location, url, posted, pay]) => {
+  return postings(ats, body).flatMap(([id, title, location, url, posted, pay, text]) => {
     const kind = openingKind(title);
     if (!kind || !id || url.length > 500 || !httpsLink(url)) return [];
-    return [{ id: `${ats}:${board}:${id}`, companySlug, title: title.slice(0, 200), location: location.slice(0, 200), url, kind, postedAt: time(posted), pay }];
+    return [
+      { id: `${ats}:${board}:${id}`, companySlug, title: title.slice(0, 200), location: location.slice(0, 200), url, kind, postedAt: time(posted), pay, authFlags: judge(text) },
+    ];
   });
+}
+
+/**
+ * Greenhouse's list has no description: one detail request (10 s) per opening not yet judged, new
+ * or still AUTH_UNKNOWN, within the round's budget. A failure leaves it unknown for the next round.
+ */
+async function judgeGreenhouse(board: string, found: Opening[], judged: ReadonlySet<string>, budget: { left: number; ms: number }) {
+  const todo = found.filter((o) => !judged.has(o.id)).slice(0, budget.left);
+  budget.left -= todo.length;
+  const until = Date.now() + budget.ms;
+  let next = 0;
+  const worker = async () => {
+    for (let o = todo[next++]; o; o = todo[next++]) {
+      const wait = until - Date.now();
+      if (wait <= 0) return;
+      const content = await fetch(`${BOARD_API.greenhouse(board)}/${encodeURIComponent(o.id.slice(`greenhouse:${board}:`.length))}`, {
+        headers: { accept: 'application/json' },
+        signal: AbortSignal.timeout(Math.min(FETCH_TIMEOUT, wait)),
+      })
+        .then(async (response) => (response.ok ? raw(obj(await response.json()).content) : ''))
+        .catch(() => '');
+      o.authFlags = judge(htmlText(content));
+    }
+  };
+  await Promise.all(Array.from({ length: DETAIL_PARALLEL }, worker));
+  // The time the board list fetches take is not counted.
+  budget.ms = Math.max(0, until - Date.now());
 }
 
 // ponytail: an in-process clock, not MAX(last_seen_at): a round where every board failed still
@@ -117,7 +174,8 @@ let syncing = false;
 export const jobSyncRunning = () => syncing;
 /**
  * Fetches every board one after another (10 s each, a failed board is skipped until the next
- * round) at most once per 20 hours; returns the openings seen, or null when it is not yet time.
+ * round), and Greenhouse descriptions not yet judged, at most once per 20 hours; returns the
+ * openings seen, or null when it is not yet time.
  */
 export async function syncJobOpenings(now = Date.now(), boards: Record<string, Board> = BOARDS) {
   if (now - lastAttempt < SYNC_EVERY) return null;
@@ -132,12 +190,16 @@ export async function syncJobOpenings(now = Date.now(), boards: Record<string, B
 async function syncBoards(now: number, boards: Record<string, Board>) {
   const db = sqlite();
   const upsert = db.prepare(
-    `INSERT INTO job_openings(id,company_slug,title,location,url,kind,posted_at,first_seen_at,last_seen_at,pay_min,pay_max,pay_currency,pay_unit)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+    `INSERT INTO job_openings(id,company_slug,title,location,url,kind,posted_at,first_seen_at,last_seen_at,pay_min,pay_max,pay_currency,pay_unit,auth_flags)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     ON CONFLICT(id) DO UPDATE SET company_slug=excluded.company_slug,title=excluded.title,location=excluded.location,url=excluded.url,
     kind=excluded.kind,posted_at=excluded.posted_at,last_seen_at=excluded.last_seen_at,pay_min=excluded.pay_min,pay_max=excluded.pay_max,
-    pay_currency=excluded.pay_currency,pay_unit=excluded.pay_unit`,
+    pay_currency=excluded.pay_currency,pay_unit=excluded.pay_unit,
+    auth_flags=CASE WHEN excluded.auth_flags>=0 THEN excluded.auth_flags ELSE job_openings.auth_flags END`,
   );
+  // Openings (never the board's own row) whose flags are known.
+  const judged = db.prepare("SELECT id FROM job_openings WHERE company_slug=? AND auth_flags>=0 AND kind<>'board'").pluck();
+  const budget = { left: DETAIL_MAX, ms: DETAIL_FOR };
   let seen = 0;
   for (const [slug, board] of Object.entries(boards)) {
     const found = await fetch(BOARD_API[board.ats](board.board), {
@@ -147,12 +209,13 @@ async function syncBoards(now: number, boards: Record<string, Board>) {
       .then(async (response) => (response.ok ? boardOpenings(slug, board, await response.json()) : null))
       .catch(() => null);
     if (!found) continue;
+    if (board.ats === 'greenhouse') await judgeGreenhouse(board.board, found, new Set(judged.all(slug) as string[]), budget);
     db.transaction(() => {
       // The board's own row (kind 'board', id without a job id), refreshed on every fetch so it
       // outlives KEEP_FOR: its first_seen_at is the board's first sync, which the digest skips.
-      upsert.run(`${board.ats}:${board.board}:`, slug, '', '', '', 'board', null, now, now, null, null, '', '');
+      upsert.run(`${board.ats}:${board.board}:`, slug, '', '', '', 'board', null, now, now, null, null, '', '', AUTH_UNKNOWN);
       for (const o of found)
-        upsert.run(o.id, o.companySlug, o.title, o.location, o.url, o.kind, o.postedAt, now, now, o.pay?.min ?? null, o.pay?.max ?? null, o.pay?.currency ?? '', o.pay?.unit ?? '');
+        upsert.run(o.id, o.companySlug, o.title, o.location, o.url, o.kind, o.postedAt, now, now, o.pay?.min ?? null, o.pay?.max ?? null, o.pay?.currency ?? '', o.pay?.unit ?? '', o.authFlags);
       recordSeasons(slug, now);
     })();
     seen += found.length;
@@ -167,7 +230,7 @@ export function freshOpenings(now = Date.now(), company?: string): (Opening & { 
   const rows = sqlite()
     .prepare(
       `SELECT id,company_slug AS companySlug,title,location,url,kind,posted_at AS postedAt,first_seen_at AS firstSeenAt,pay_min AS min,pay_max AS max,
-      pay_currency AS currency,pay_unit AS unit FROM job_openings
+      pay_currency AS currency,pay_unit AS unit,auth_flags AS authFlags FROM job_openings
       WHERE last_seen_at>=? AND kind<>'board'${company ? ' AND company_slug=?' : ''} ORDER BY COALESCE(posted_at,first_seen_at) DESC,id`,
     )
     .all(...(company ? [now - FRESH_FOR, company] : [now - FRESH_FOR])) as (Omit<Opening, 'pay'> & Pay & { firstSeenAt: number })[];
@@ -184,19 +247,31 @@ const savedSearch = z.object({
   q: z.string().max(60),
   company: z.string().regex(/^[a-z0-9-]{0,80}$/),
   paid: z.boolean(),
+  // Searches saved before it are read as off.
+  sponsorOk: z.boolean().default(false),
 });
-export function parseJobSearch(body: string): JobSearch | null {
+const blockedList = z.array(z.string().regex(/^[a-z0-9-]{1,80}$/)).max(JOB_BLOCKED_MAX);
+function parseNote<T>(schema: z.ZodType<T>, body: string): T | null {
   try {
-    const parsed = savedSearch.safeParse(JSON.parse(body));
+    const parsed = schema.safeParse(JSON.parse(body));
     return parsed.success ? parsed.data : null;
   } catch {
     return null;
   }
 }
-/** The learner's saved /career/jobs search (note career:jobs-search) and their profile's target role. */
+export const parseJobSearch = (body: string): JobSearch | null => parseNote(savedSearch, body);
+/** A learner's blocked companies (note career:jobs-blocked, also learner-written): off-shape is none. */
+export const parseBlocked = (body: string): string[] => parseNote(blockedList, body) ?? [];
+/** The learner's saved /career/jobs search (note career:jobs-search), blocked companies and their profile's target role. */
 export function viewerJobSearch(userId: string) {
   const db = sqlite();
-  const body = db.prepare('SELECT body FROM user_notes WHERE user_id=? AND target=?').pluck().get(userId, JOB_SEARCH_NOTE);
+  const notes = new Map(
+    db.prepare('SELECT target,body FROM user_notes WHERE user_id=? AND target IN (?,?)').raw().all(userId, JOB_SEARCH_NOTE, JOB_BLOCKED_NOTE) as [string, string][],
+  );
   const role = db.prepare('SELECT target_role FROM user_profiles WHERE user_id=?').pluck().get(userId);
-  return { saved: typeof body === 'string' ? parseJobSearch(body) : null, targetRole: typeof role === 'string' ? role : '' };
+  return {
+    saved: parseJobSearch(notes.get(JOB_SEARCH_NOTE) ?? ''),
+    targetRole: typeof role === 'string' ? role : '',
+    blocked: parseBlocked(notes.get(JOB_BLOCKED_NOTE) ?? ''),
+  };
 }

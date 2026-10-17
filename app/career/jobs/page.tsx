@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { BlockedList } from '@/components/job-blocked';
 import { JobList } from '@/components/job-list';
 import { JobSearchSave } from '@/components/job-search-save';
 import { DEFAULT_SEARCH, matchesSearch, ROLE_CATEGORIES, ROLE_NAMES, roleCategory, searchFromQuery, searchQuery, sortTerms, termKey, termLabel, termOf } from '@/lib/job-tags';
@@ -67,7 +68,7 @@ function sponsors(slugs: Iterable<string>) {
 /**
  * /career/jobs: every company's open intern and new-grad roles (lib/server/job-openings.ts). Opened
  * with no query, a signed-in learner's saved search applies (?all=1 skips it); without one, the role
- * named in their profile picks the default role filter.
+ * named in their profile picks the default role filter. Companies the learner blocked are left out.
  */
 export default async function JobsPage({ searchParams }: Props) {
   const zh = (await requestLocale()) === 'zh',
@@ -81,7 +82,9 @@ export default async function JobsPage({ searchParams }: Props) {
   const profileRole = bare && !applied && mine?.targetRole ? roleCategory(mine.targetRole) : 'other';
   if (profileRole !== 'other') search = { ...search, role: profileRole };
   if (one(query.all) === '1' && !one(query.role)) search = { ...DEFAULT_SEARCH, role: 'all' };
-  const { names, items } = listed();
+  const { names, items: all } = listed();
+  const blocked = new Set(mine?.blocked);
+  const items = all.filter((o) => !blocked.has(o.companySlug));
   const companies = [...new Set(items.map((o) => o.companySlug))]
     .map((slug) => ({ slug, name: names.get(slug)! }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -108,7 +111,8 @@ export default async function JobsPage({ searchParams }: Props) {
       <p className="job-calendar-link">
         <a href="/career/jobs/calendar">{zh ? '各公司什么时候开放：招聘日历' : 'When companies open roles: the hiring calendar'}</a>
       </p>
-      {items.length ? (
+      {/* Everything blocked still shows the filters and the blocked list. */}
+      {all.length ? (
         <>
           {applied && (
             <p className="job-search-applied" role="note">
@@ -176,6 +180,10 @@ export default async function JobsPage({ searchParams }: Props) {
               <input type="checkbox" name="paid" value="1" defaultChecked={search.paid} />
               {zh ? '只看标了薪资的' : 'Posted pay only'}
             </label>
+            <label className="job-filters-check">
+              <input type="checkbox" name="sponsor" value="1" defaultChecked={search.sponsorOk} />
+              {zh ? '隐藏写明不担保/需身份的岗位' : 'Hide roles that rule out sponsorship or need citizenship or clearance'}
+            </label>
             {h1bOn && (
               <label className="job-filters-check">
                 <input type="checkbox" name="h1b" value="1" defaultChecked={h1bOnly} />
@@ -186,16 +194,21 @@ export default async function JobsPage({ searchParams }: Props) {
               <button type="submit">{zh ? '筛选' : 'Filter'}</button>
             </div>
           </form>
-          {viewer ? (
-            <JobSearchSave
-              key={String(searchQuery(search))}
-              zh={zh}
-              search={search}
-              saved={savedQuery === null ? 'none' : savedQuery === String(searchQuery(search)) ? 'this' : 'other'}
-            />
+          {mine ? (
+            <>
+              <JobSearchSave
+                key={String(searchQuery(search))}
+                zh={zh}
+                search={search}
+                saved={savedQuery === null ? 'none' : savedQuery === String(searchQuery(search)) ? 'this' : 'other'}
+              />
+              <BlockedList zh={zh} blocked={mine.blocked} names={Object.fromEntries(mine.blocked.map((slug) => [slug, names.get(slug) ?? slug]))} />
+            </>
           ) : (
             <p className="job-search-applied">
-              <a href="/?view=account">{zh ? '登录后可以保存筛选，有新岗位时站内通知你' : 'Sign in to save this search and hear about new matches'}</a>
+              <a href="/?view=account">
+                {zh ? '登录后可以保存筛选，有新岗位时站内通知你；也可屏蔽公司' : 'Sign in to save this search and hear about new matches, or to block companies'}
+              </a>
             </p>
           )}
           <p className="job-count">
@@ -214,6 +227,7 @@ export default async function JobsPage({ searchParams }: Props) {
               zh={zh}
               withCompany
               signedIn={!!viewer}
+              blocked={mine?.blocked}
               h1b={sponsors(page.map((o) => o.companySlug))}
             />
           ) : (

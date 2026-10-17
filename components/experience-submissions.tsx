@@ -1,18 +1,21 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { PenLine, X } from 'lucide-react';
+import { PenLine, Plus, X } from 'lucide-react';
 import { api } from '@/lib/types';
+import type { ProblemSummary } from '@/lib/problems';
 import {
   EMPLOYMENT,
   MEMBER_BODY,
   OA_NEXT,
   OA_RANGE,
+  PREP_SOURCES,
   RESULTS,
   ROUND_LABELS,
   SEASON_NAMES,
   seasonLabel,
   SENTIMENTS,
   SOURCES,
+  type MemberQuestion,
 } from '@/lib/experience';
 import type { Navigate } from './learning';
 import '@/app/learner-cloud.css';
@@ -65,10 +68,13 @@ export function MyExperienceSubmissions({
   english,
   navigate,
   open = false,
+  problems = [],
 }: {
   english: boolean;
   navigate: Navigate;
   open?: boolean;
+  /** The catalogue (boot.problems): a question can link one of its LeetCode or OA problems. */
+  problems?: readonly ProblemSummary[];
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [items, setItems] = useState<Mine[] | null>(null);
@@ -121,6 +127,7 @@ export function MyExperienceSubmissions({
       {writing && (
         <ExperienceForm
           english={english}
+          problems={problems}
           initial={prefill ?? {}}
           onCancel={() => {
             setWriting(false);
@@ -196,7 +203,7 @@ type Form = {
   result: string;
   month: string;
   body: string;
-  questions: string;
+  questions: MemberQuestion[];
   anonymous: boolean;
   agree: boolean;
   // Optional structured facts; '' means not given.
@@ -213,16 +220,32 @@ type Form = {
   oaTestsPct: string;
   oaMinutes: string;
   oaNext: string;
+  prepWeeks: string;
+  prepSources: string[];
 };
 const numberOrNull = (value: string) => (value === '' ? null : Number(value));
+const blankQuestion = (): MemberQuestion => ({ text: '', round: '', problem: '', similar: false });
+/** Catalogue problems a question may link, matching what was typed: LeetCode and OA ones, 20 at most. */
+const linkable = (problems: readonly ProblemSummary[], typed: string) => {
+  const q = typed.trim().toLowerCase();
+  const out: ProblemSummary[] = [];
+  for (const p of problems) {
+    if (out.length >= 20) break;
+    if (!/^(?:lc|oa)-/.test(p.id)) continue;
+    if (!q || p.id.includes(q) || p.title.toLowerCase().includes(q) || p.titleEn?.toLowerCase().includes(q)) out.push(p);
+  }
+  return out;
+};
 
 function ExperienceForm({
   english,
+  problems,
   initial,
   onDone,
   onCancel,
 }: {
   english: boolean;
+  problems: readonly ProblemSummary[];
   initial: Prefill;
   onDone: (created: Mine) => void;
   onCancel: () => void;
@@ -235,10 +258,10 @@ function ExperienceForm({
   // Prefilled values the menus don't offer drop out (the company once the list loads).
   const [form, setForm] = useState<Form>(() => ({
     company: initial.company ?? '', title: '', role: initial.role?.slice(0, 80) ?? '', rounds: [], result: '', month: localMonth(now),
-    body: '', questions: '', anonymous: false, agree: false, difficulty: '', sentiment: '', channel: '',
+    body: '', questions: [blankQuestion()], anonymous: false, agree: false, difficulty: '', sentiment: '', channel: '',
     employment: initial.employment && Object.hasOwn(EMPLOYMENT, initial.employment) ? initial.employment : '',
     season: initial.season && seasons.includes(initial.season) ? initial.season : '',
-    location: '', weeks: '', oaTotal: '', oaSolved: '', oaTestsPct: '', oaMinutes: '', oaNext: '',
+    location: '', weeks: '', oaTotal: '', oaSolved: '', oaTestsPct: '', oaMinutes: '', oaNext: '', prepWeeks: '', prepSources: [],
   }));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -258,7 +281,15 @@ function ExperienceForm({
     };
   }, []);
   const set = (patch: Partial<Form>) => setForm((f) => ({ ...f, ...patch }));
-  const questions = form.questions.split('\n').map((q) => q.trim()).filter(Boolean);
+  // Blank rows drop out; "similar" means nothing without a linked problem.
+  const questions = form.questions
+    .map((q) => ({ ...q, text: q.text.trim(), problem: q.problem.trim() }))
+    .filter((q) => q.text)
+    .map((q) => ({ text: q.text, round: q.round, problem: q.problem, similar: !!q.problem && q.similar }));
+  const setQuestion = (i: number, patch: Partial<MemberQuestion>) =>
+    setForm((f) => ({ ...f, questions: f.questions.map((q, j) => (j === i ? { ...q, ...patch } : q)) }));
+  // Rounds in the order they happen, as posted.
+  const rounds = Object.keys(ROUND_LABELS).filter((r) => form.rounds.includes(r));
   const length = form.body.trim().length;
   async function submit(event: { preventDefault(): void }) {
     event.preventDefault();
@@ -269,8 +300,10 @@ function ExperienceForm({
     setBusy(true);
     setError('');
     try {
-      const { difficulty, sentiment, channel, employment, season, location, weeks, oaTotal, oaSolved, oaTestsPct, oaMinutes, oaNext, ...rest } =
-        form;
+      const {
+        difficulty, sentiment, channel, employment, season, location, weeks, oaTotal, oaSolved, oaTestsPct, oaMinutes, oaNext,
+        prepWeeks, prepSources, ...rest
+      } = form;
       // Unticking the OA round drops what was typed for it.
       const oa = form.rounds.includes(OA);
       const created = await api<{ member: { id: string }; slug: string; title: string; company: Mine['company'] }>(
@@ -289,10 +322,11 @@ function ExperienceForm({
           oaTestsPct: oa ? numberOrNull(oaTestsPct) : null,
           oaMinutes: oa ? numberOrNull(oaMinutes) : null,
           oaNext: (oa && oaNext) || null,
+          prepWeeks: numberOrNull(prepWeeks),
+          prepSources: Object.keys(PREP_SOURCES).filter((s) => prepSources.includes(s)),
           title: form.title.trim(),
           role: form.role.trim(),
-          // Rounds go in the order they happen.
-          rounds: Object.keys(ROUND_LABELS).filter((r) => form.rounds.includes(r)),
+          rounds,
           result: form.result || null,
           questions,
         },
@@ -391,7 +425,15 @@ function ExperienceForm({
               type="checkbox"
               checked={form.rounds.includes(value)}
               onChange={(e) =>
-                set({ rounds: e.target.checked ? [...form.rounds, value] : form.rounds.filter((r) => r !== value) })
+                set(
+                  e.target.checked
+                    ? { rounds: [...form.rounds, value] }
+                    : {
+                        rounds: form.rounds.filter((r) => r !== value),
+                        // A question can't stay in a round the post no longer has.
+                        questions: form.questions.map((q) => (q.round === value ? { ...q, round: '' } : q)),
+                      },
+                )
               }
             />
             {t(zh, en)}
@@ -558,18 +600,127 @@ function ExperienceForm({
           )}
         />
       </label>
-      <label className="xs-field">
-        <span>
+      <fieldset className="xs-group xs-questions-edit">
+        <legend>
           {t('被问到的题目', 'Questions you were asked')}{' '}
-          <small>{t(`选填，每行一题，最多 ${QUESTIONS_MAX} 题`, `optional, one per line, up to ${QUESTIONS_MAX}`)}</small>
-        </span>
-        <textarea
-          rows={4}
-          value={form.questions}
-          onChange={(e) => set({ questions: e.target.value })}
-          placeholder={t('例如：LRU 缓存\n设计一个短链服务', 'e.g. LRU cache\nDesign a URL shortener')}
-        />
-      </label>
+          <small className="xs-hint">
+            {t(
+              `选填，最多 ${QUESTIONS_MAX} 题；能对上站内题的填上题号，读者可以直接去做`,
+              `optional, up to ${QUESTIONS_MAX}; link a site problem when one matches so readers can practise it`,
+            )}
+          </small>
+        </legend>
+        <ol className="xs-q-list">
+          {form.questions.map((q, i) => {
+            const n = i + 1;
+            return (
+              <li key={i} className="xs-q-row">
+                <input
+                  className="xs-q-text"
+                  minLength={3}
+                  maxLength={300}
+                  value={q.text}
+                  onChange={(e) => setQuestion(i, { text: e.target.value })}
+                  aria-label={t(`第 ${n} 题题目`, `Question ${n}`)}
+                  placeholder={i ? '' : t('例如：LRU 缓存', 'e.g. LRU cache')}
+                />
+                <select
+                  value={q.round}
+                  onChange={(e) => setQuestion(i, { round: e.target.value })}
+                  aria-label={t(`第 ${n} 题的轮次`, `Round of question ${n}`)}
+                >
+                  <option value="">{t('轮次不填', 'Round: not given')}</option>
+                  {rounds.map((r) => (
+                    <option key={r} value={r}>
+                      {t(...ROUND_LABELS[r])}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  className="xs-q-problem"
+                  list={`xs-problems-${i}`}
+                  maxLength={200}
+                  pattern="lc-\d{1,6}|oa-[a-z0-9\-]{1,180}"
+                  value={q.problem}
+                  onChange={(e) => setQuestion(i, { problem: e.target.value })}
+                  aria-label={t(`第 ${n} 题对应的站内题（题号，如 lc-146）`, `Site problem for question ${n} (id, e.g. lc-146)`)}
+                  placeholder={t('站内题号，如 lc-146', 'Site problem, e.g. lc-146')}
+                />
+                <datalist id={`xs-problems-${i}`}>
+                  {linkable(problems, q.problem).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {(english && p.titleEn) || p.title}
+                    </option>
+                  ))}
+                </datalist>
+                <label className="xs-q-similar">
+                  <input
+                    type="checkbox"
+                    checked={q.similar}
+                    disabled={!q.problem.trim()}
+                    onChange={(e) => setQuestion(i, { similar: e.target.checked })}
+                  />
+                  {t('类似', 'Similar')}
+                  <span className="sr-only">{t(`：第 ${n} 题只是和这道题类似`, `: question ${n} only resembled it`)}</span>
+                </label>
+                <button
+                  type="button"
+                  className="xs-quiet"
+                  onClick={() => setForm((f) => ({ ...f, questions: f.questions.filter((_, j) => j !== i) }))}
+                  aria-label={t(`删除第 ${n} 题`, `Remove question ${n}`)}
+                >
+                  <X size={14} aria-hidden="true" />
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+        <button
+          type="button"
+          className="xs-add"
+          disabled={form.questions.length >= QUESTIONS_MAX}
+          onClick={() => setForm((f) => ({ ...f, questions: [...f.questions, blankQuestion()] }))}
+        >
+          <Plus size={14} aria-hidden="true" /> {t('再加一题', 'Add a question')}
+        </button>
+      </fieldset>
+      <fieldset className="xs-group xs-details">
+        <legend>
+          {t('我是怎么准备的', 'How I prepared')}{' '}
+          <small className="xs-hint">{t('都可以不填，随帖公开', 'all optional; published with the post')}</small>
+        </legend>
+        <div className="xs-row">
+          <label className="xs-field">
+            <span>{t('准备了几周', 'Weeks of preparation')}</span>
+            <input
+              type="number"
+              min={0}
+              max={104}
+              step={1}
+              inputMode="numeric"
+              value={form.prepWeeks}
+              onChange={(e) => set({ prepWeeks: e.target.value })}
+            />
+          </label>
+        </div>
+        <fieldset className="xs-group">
+          <legend>
+            {t('练习来源', 'Where you practised')} <small className="xs-hint">{t('可多选', 'pick any')}</small>
+          </legend>
+          {Object.entries(PREP_SOURCES).map(([value, [zh, en]]) => (
+            <label key={value} className="xs-chip">
+              <input
+                type="checkbox"
+                checked={form.prepSources.includes(value)}
+                onChange={(e) =>
+                  set({ prepSources: e.target.checked ? [...form.prepSources, value] : form.prepSources.filter((v) => v !== value) })
+                }
+              />
+              {t(zh, en)}
+            </label>
+          ))}
+        </fieldset>
+      </fieldset>
       <label className="xs-agree">
         <input type="checkbox" required checked={form.agree} onChange={(e) => set({ agree: e.target.checked })} />
         <span>

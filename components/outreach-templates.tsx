@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { localStamp, type Application } from '@/lib/applications';
+import { localStamp, offerOpen, type Application } from '@/lib/applications';
 import {
   fillTemplate,
   OUTREACH_TEMPLATES,
@@ -17,17 +17,24 @@ const MY_NAME = 'cswork:outreach:my-name';
 /** Still to write: an unfilled {placeholder} or a [bracketed] hint. */
 const BLANKS = /(\{\w+\}|\[[^\]\n]+\])/;
 
-/** What a tracker card or a contact (with the card it is linked to) fills in. */
-function valuesFrom(source: string, applications: Application[], contacts: Contact[]): Values | null {
+/**
+ * What a tracker card or a contact (with the card it is linked to) fills in; `offerId`, a card
+ * holding an offer, fills in the other company and its deadline (the tracker's expedite plan).
+ */
+function valuesFrom(source: string, applications: Application[], contacts: Contact[], offerId = ''): Values | null {
   const [kind, id] = [source.slice(0, 2), source.slice(2)];
   const contact = kind === 'c:' ? contacts.find((c) => c.id === id) : undefined;
   const card = applications.find((a) => a.id === (kind === 'a:' ? id : contact?.applicationId));
   if (!card && !contact) return null;
+  const offer = offerId ? applications.find((a) => a.id === offerId) : undefined;
   return {
     ...(contact && { name: contact.name }),
     company: contact?.company || card?.company || '',
     role: card?.role ?? '',
     interviewDate: localStamp(card?.interviewAt ?? null, false),
+    // A date kept after the card left the Offer stage is stale (lib/applications.ts offerOpen).
+    ...(card && offerOpen(card) && { deadline: localStamp(card.offerDeadline, false) }),
+    ...(offer && { otherCompany: offer.company, deadline: localStamp(offer.offerDeadline, false) }),
   };
 }
 
@@ -45,7 +52,8 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
   const [status, setStatus] = useState('');
   useEffect(() => {
     let live = true;
-    // ?template=<id>, and ?contact=<id> or ?application=<id> from the contacts page and the guide.
+    // ?template=<id>, and ?contact=<id> or ?application=<id> from the contacts page and the guide,
+    // with ?offer=<id> from the tracker's expedite plan.
     const query = new URLSearchParams(location.search);
     const wanted = query.get('template');
     if (OUTREACH_TEMPLATES.some((x) => x.id === wanted)) setId(wanted!);
@@ -62,7 +70,7 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
       if (!live) return;
       setApplications(a);
       setContacts(c);
-      const filled = from && valuesFrom(from, a, c);
+      const filled = from && valuesFrom(from, a, c, query.get('offer') ?? '');
       if (!filled) return;
       setSource(from);
       setValues((v) => ({ ...v, ...filled }));

@@ -11,6 +11,7 @@ import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
+import { caseGroups, groupScores, type CaseGroup } from '@/lib/oj-case-groups';
 import { aiTask, icaTask } from './ai-tasks';
 import { icaPassed, icaUnlocked } from './ica';
 import {
@@ -45,12 +46,27 @@ export type SubmissionRow = {
    * drill-run: a run inside a drill, judged like run but unlisted like drill; its detail reads 'run'.
    * stress, stress-ref: a stress test's learner and reference sides (lib/server/stress.ts),
    * unlisted; stress-ref is a reference run (referenceMode).
+   * sql-peek: a SQL plan or CTE preview on a public sample (sql-workspace-plan); complexity: a
+   * complexity probe (complexity-probe). Both unlisted.
    */
-  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project' | 'drill' | 'drill-run' | 'stress' | 'stress-ref';
+  mode:
+    | 'judge'
+    | 'run'
+    | 'playground'
+    | 'reference'
+    | 'project'
+    | 'drill'
+    | 'drill-run'
+    | 'stress'
+    | 'stress-ref'
+    | 'sql-peek'
+    | 'complexity';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
   request_hash: string | null;
+  /** 1: a judge submission run through every case for partial credit (createSubmission decides). */
+  all_cases: number;
   passed: number;
   total: number;
   runtime: number | null;
@@ -73,6 +89,9 @@ const REFERENCE_MODES = ['reference', 'stress-ref'];
 export const referenceMode = (mode: string) => REFERENCE_MODES.includes(mode);
 /** REFERENCE_MODES as an SQL list, for `mode IN …`. */
 export const REFERENCE_MODES_SQL = `(${REFERENCE_MODES.map((m) => `'${m}'`).join(',')})`;
+/** Imported lazily, from one place: the judge worker's bundle stays free of contests (oj-capacity-release test). */
+const inRunningContest = async (userId: string, problemId: string) =>
+  (await import('./contests')).inRunningContest(userId, problemId);
 /** A custom-input run's cases: its one input, or a stress test's generated ones (custom_input {"cases":[…]}). */
 export function ownCases(s: Pick<SubmissionRow, 'mode' | 'custom_input'>): string[] {
   if (s.mode !== 'stress' && s.mode !== 'stress-ref') return [s.custom_input ?? ''];
@@ -91,9 +110,11 @@ const inputSchema = z
     problemId: z.string().min(1).max(80),
     language: z.enum(LANGUAGE_IDS),
     code: z.string().min(1).max(MAX_CODE_BYTES),
-    mode: z.enum(['judge', 'run', 'drill', 'drill-run']).default('judge'),
+    mode: z.enum(['judge', 'run', 'drill', 'drill-run', 'sql-peek']).default('judge'),
     codingMode: z.enum(['leetcode', 'acm']).default('acm'),
     stdin: z.string().max(MAX_STDIN_BYTES).optional(),
+    /** A mock OA or an OA problem asks for partial credit; createSubmission decides. */
+    allCases: z.boolean().optional(),
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
   })
   .strict();
@@ -121,7 +142,7 @@ type Queued = Pick<
   | 'practice_round_id'
   | 'coding_mode'
   | 'harness_version'
->;
+> & { all_cases?: number };
 /** The learner's earlier request under this idempotency key; another program under it is a 409. */
 function priorRequest(userId: string, key: string, hash: string) {
   const row = sqlite()
@@ -155,7 +176,7 @@ export function enqueue(p: Person, key: string, row: Queued) {
   const id = randomUUID(),
     now = Date.now();
   db.prepare(
-    'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version,all_cases) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
   ).run(
     id,
     p.id,
@@ -174,6 +195,7 @@ export function enqueue(p: Person, key: string, row: Queued) {
     row.practice_round_id,
     row.coding_mode,
     row.harness_version,
+    row.all_cases ?? 0,
   );
   db.prepare(
     'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
@@ -309,7 +331,12 @@ export function projectReport(row: { stdout: string | null; stderr: string | nul
 export async function createSubmission(p: Person, value: unknown) {
   const d = inputSchema.parse(value);
   // A drill's run is a run on the examples (or custom input), kept out of the history like the drill.
-  const run = d.mode === 'run' || d.mode === 'drill-run';
+  // A SQL peek (a CTE preview or query plan) is an unlisted run on the learner's own dataset only:
+  // no unlisted judging of the hidden cases.
+  const peek = d.mode === 'sql-peek';
+  const run = d.mode === 'run' || d.mode === 'drill-run' || peek;
+  if (peek && (d.language !== 'sql' || d.stdin === undefined))
+    throw new HttpError(400, 'SQL 预览只能在 SQL 题上用自定义输入运行');
   if (
     Buffer.byteLength(d.code) > MAX_CODE_BYTES ||
     (d.stdin !== undefined && Buffer.byteLength(d.stdin) > MAX_STDIN_BYTES)
@@ -337,6 +364,8 @@ export async function createSubmission(p: Person, value: unknown) {
         ...(d.codingMode === 'leetcode'
           ? [d.codingMode, LEETCODE_HARNESS_VERSION]
           : []),
+        // Only when asked, so earlier requests keep their hashes.
+        ...(d.allCases ? ['all'] : []),
       ]),
     )
     .digest('hex');
@@ -357,9 +386,12 @@ export async function createSubmission(p: Person, value: unknown) {
     throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
   await limit(
     p,
-    run ? 'oj-run' : 'oj-submit',
-    run ? 12 : 6,
+    peek ? 'oj-sql-peek' : run ? 'oj-run' : 'oj-submit',
+    peek ? 20 : run ? 12 : 6,
   );
+  // Partial credit, silently off in a running contest or skill exam: both settle on passed/total
+  // and a full run would show more of the hidden cases they score.
+  const allCases = d.mode === 'judge' && !!d.allCases && !(await inRunningContest(p.id, d.problemId));
   // Reserve the writer before reading duplicate/queue state. A deferred WAL
   // read transaction cannot safely upgrade while the judge is writing results.
   return db.transaction(() => {
@@ -389,6 +421,7 @@ export async function createSubmission(p: Person, value: unknown) {
       coding_mode: d.codingMode,
       harness_version:
         d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
+      all_cases: Number(allCases),
     });
   }).immediate();
 }
@@ -476,8 +509,8 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
     id: s.id,
     problem_id: s.problem_id,
     language: s.language,
-    // ponytail: the learner's page shows a drill's run as a run; only the stored mode keeps it unlisted.
-    mode: s.mode === 'drill-run' ? 'run' : s.mode,
+    // ponytail: the learner's page shows a drill's run or a SQL peek as a run; only the stored mode keeps it unlisted.
+    mode: s.mode === 'drill-run' || s.mode === 'sql-peek' ? 'run' : s.mode,
     codingMode: s.coding_mode || 'acm',
     status: s.status,
     passed: s.passed,
@@ -487,6 +520,7 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
     runtimeMs: s.runtime == null ? null : s.runtime * 1000,
     memoryKb: s.memory,
     score: s.score,
+    allCases: Boolean(s.all_cases),
     created_at: s.created_at,
     startedAt: s.started_at,
     finishedAt: s.finished_at,
@@ -652,6 +686,31 @@ export async function waitForSubmission(
     else waitingByUser.delete(p.id);
   }
 }
+/**
+ * An all_cases submission's correctness and performance scores and each case's group, or null
+ * when its version is not split (lib/oj-case-groups.ts). Reads sizes, never inputs or names.
+ */
+export function caseGroupScores(submissionId: string, versionId: string) {
+  const cases = sqlite()
+    .prepare(
+      'SELECT c.ordinal,c.hidden,c.weight,octet_length(c.input) AS size,r.status FROM oj_test_cases c LEFT JOIN oj_results r ON r.submission_id=? AND r.ordinal=c.ordinal WHERE c.version_id=? ORDER BY c.ordinal',
+    )
+    .all(submissionId, versionId) as {
+    ordinal: number;
+    hidden: number;
+    weight: number;
+    size: number;
+    status: string | null;
+  }[];
+  const groups = caseGroups(cases.map((c) => ({ ...c, hidden: Boolean(c.hidden) })));
+  if (!groups) return null;
+  return {
+    scores: groupScores(
+      cases.map((c, i) => ({ group: groups[i], weight: c.weight, accepted: c.status === 'accepted' })),
+    ),
+    byOrdinal: new Map<number, CaseGroup>(cases.map((c, i) => [c.ordinal, groups[i]])),
+  };
+}
 export async function submissionDetail(p: Person, id: string) {
   const s = owned(p, id);
   const snapshot = s.problem_version_id
@@ -690,11 +749,17 @@ export async function submissionDetail(p: Person, id: string) {
     stderr: string | null;
     hidden: number;
   }[];
+  // Once judged, so the watch loop's replies skip it; octet_length reads sizes without loading inputs.
+  const grouped =
+    s.all_cases && s.problem_version_id && !ACTIVE.includes(s.status)
+      ? caseGroupScores(id, s.problem_version_id)
+      : null;
   const cases = definitions.map((c) => {
     const r = results.find((r) => r.ordinal === c.ordinal);
     return {
       ordinal: c.ordinal,
       hidden: c.hidden,
+      ...(grouped ? { group: grouped.byOrdinal.get(c.ordinal) } : {}),
       status: r?.status ?? (ACTIVE.includes(s.status) ? 'pending' : 'skipped'),
       runtimeMs: r?.runtime_ms ?? null,
       memoryKb: r?.memory_kb ?? null,
@@ -729,7 +794,7 @@ export async function submissionDetail(p: Person, id: string) {
   const sealed =
     failed &&
     definitions.find((c) => c.ordinal === failed.ordinal)?.hidden !== false &&
-    (await import('./contests')).inRunningContest(s.user_id, s.problem_id);
+    (await inRunningContest(s.user_id, s.problem_id));
   // Old hidden results have no captured output. Do not invent a counterexample
   // for those rows, or reveal any additional cases in the version snapshot.
   if (failed && !sealed && failed.status === s.status && failed.stdout !== null) {
@@ -780,6 +845,7 @@ export async function submissionDetail(p: Person, id: string) {
     watchToken: watchToken(s),
     code: referenceMode(s.mode) ? undefined : s.code,
     cases,
+    groups: grouped?.scores,
     firstFailure,
     compileOutput: referenceMode(s.mode) ? '' : (s.compile_output ?? ''),
     queuedPosition: position,
@@ -789,8 +855,8 @@ export async function submissionDetail(p: Person, id: string) {
     project: s.mode === 'project' ? projectReport(results[0]) : undefined,
   };
 }
-/** Never the learner's own attempts: /playground, reference runs, stress tests, ai-assisted projects, OA drills and their runs. */
-const UNLISTED_MODES = "('playground','reference','stress','stress-ref','project','drill','drill-run')";
+/** Never the learner's own attempts: /playground, reference runs, stress tests, ai-assisted projects, OA drills and their runs, SQL peeks and complexity probes. */
+const UNLISTED_MODES = "('playground','reference','stress','stress-ref','project','drill','drill-run','sql-peek','complexity')";
 export function submissionHistory(
   p: Person,
   problemId: string | null,

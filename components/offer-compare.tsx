@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { countdown, type Application } from '@/lib/applications';
+import { countdown, localStamp, type Application } from '@/lib/applications';
 import {
   blankOffer,
   firstYearCash,
@@ -106,7 +106,9 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
     setNote('');
     try {
       const { items } = await api<{ items: Application[] }>('oj/applications');
-      const jobs = items.filter((a) => a.stage === 'offer');
+      const jobs = items
+        .filter((a) => a.stage === 'offer')
+        .map((a) => ({ company: a.company, role: a.role, deadline: localStamp(a.offerDeadline, false) }));
       // Merge into the offers as they are now, not as they were at the click: typing, Remove,
       // Add or Clear may have happened while the request was out. flushSync runs the updater
       // before the counts below are read; it never runs once the page is gone.

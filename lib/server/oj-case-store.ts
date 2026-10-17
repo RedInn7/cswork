@@ -26,6 +26,8 @@ export type CaseRecord = {
   stderr?: string;
   hidden: boolean;
   terminalFailure?: boolean;
+  /** The first failure of a submission judged on every case: its feedback is kept like a terminal one's, the verdict comes at the end. */
+  capture?: boolean;
 };
 export type CaseProgress = {
   passed: number;
@@ -55,12 +57,12 @@ export function persistCase(
       record.status,
       record.runtimeMs,
       record.memoryKb,
-      record.terminalFailure
+      record.terminalFailure || record.capture
         ? capturedFeedback(record.stdout)
         : record.hidden
           ? null
           : (record.stdout ?? '').slice(0, 65536),
-      record.terminalFailure
+      record.terminalFailure || record.capture
         ? capturedFeedback(record.stderr)
         : record.hidden
           ? null

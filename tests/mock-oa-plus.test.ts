@@ -77,6 +77,31 @@ void test('percentiles compare each learner once, at their best, within the scen
   assert.equal((await mockReport(person, new URLSearchParams({ ...window, preset: '1', company: 'ACME!', source: 'mixed' }))).peers, null);
 });
 
+void test('the report scores a question by weight only when its submission ran every case', async () => {
+  const person = { id: 'weighted', name: 'W', email: 'w@example.test', role: 'student' as const, verified: true };
+  const at = Date.now() - 600_000;
+  const insert = sqlite().prepare(
+    "INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,score,all_cases,mode,created_at,updated_at) VALUES(?,?,?,'python','x',?,?,10,?,?,'judge',?,?)",
+  );
+  // An older row's score stopped at its first failure: passed / total still counts, not its 90.
+  insert.run('old', person.id, 'lc-1', 'wrong_answer', 3, 90, 0, at, at);
+  // A run over every case: 9 of 10 passed, but the failed case carried most of the weight.
+  insert.run('all', person.id, 'lc-2', 'time_limit', 9, 40, 1, at, at);
+  const report = await mockReport(
+    person,
+    new URLSearchParams({ ids: 'lc-1,lc-2', from: String(at - 1000), to: String(Date.now()), slots: 'easy,hard' }),
+  );
+  assert.deepEqual(report.score.per, [30, 40]);
+  assert.deepEqual(
+    report.items.map((i) => [i.best?.id, i.best?.score, i.groups]),
+    [
+      ['old', undefined, undefined],
+      // lc-2 has no judge version here, so there are no groups to show.
+      ['all', 40, undefined],
+    ],
+  );
+});
+
 void test('a problem may give some languages their own time limit, within the same bounds', () => {
   const pkg = (timeLimits?: unknown) => ({
     schemaVersion: 1,

@@ -1,5 +1,5 @@
 import { sqlite } from '@/db/sqlite';
-import { hiringCycle } from '@/lib/job-tags';
+import { hiringCycle, roleCategory } from '@/lib/job-tags';
 
 /**
  * When each company's intern and new-grad openings show up per hiring cycle (db/job-openings-schema.ts
@@ -23,17 +23,26 @@ export type JobSeason = {
 /**
  * Called in a board's sync transaction (lib/server/job-openings.ts), after its openings are upserted
  * with last_seen_at = now: their seasons, by kind and cycle, keep the earliest first sighting, move
- * last_seen_at on and keep the most openings seen at once.
+ * last_seen_at on and keep the most openings seen at once. Each opening's posted pay range is kept
+ * as a pay sample (job_pay_samples) the first time it is seen, never updated or pruned.
  */
 export function recordSeasons(slug: string, now: number) {
   const db = sqlite();
   const rows = db
-    .prepare("SELECT kind,title,first_seen_at AS at FROM job_openings WHERE company_slug=? AND last_seen_at=? AND kind<>'board'")
-    .all(slug, now) as { kind: string; title: string; at: number }[];
+    .prepare(
+      `SELECT id,kind,title,first_seen_at AS at,pay_min AS min,pay_max AS max,pay_currency AS currency,pay_unit AS unit FROM job_openings
+      WHERE company_slug=? AND last_seen_at=? AND kind<>'board'`,
+    )
+    .all(slug, now) as { id: string; kind: string; title: string; at: number; min: number; max: number; currency: string; unit: string }[];
+  const sample = db.prepare(
+    `INSERT OR IGNORE INTO job_pay_samples(opening_id,company_slug,kind,role,cycle,unit,currency,pay_min,pay_max,first_seen_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?)`,
+  );
   const seasons = new Map<string, { kind: string; cycle: number; first: number; count: number }>();
   for (const r of rows) {
     const cycle = hiringCycle(r.at, r.title),
       key = `${r.kind}:${cycle}`;
+    if (r.unit) sample.run(r.id, slug, r.kind, roleCategory(r.title), cycle, r.unit, r.currency, r.min, r.max, r.at);
     const s = seasons.get(key);
     if (s) {
       s.first = Math.min(s.first, r.at);

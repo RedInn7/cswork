@@ -36,6 +36,8 @@ import {
   OJ_CASE_SLOTS,
   exclusiveSubmission,
   leetcodeShape,
+  RESOURCE_FAILURES,
+  stopJudging,
   SubmissionAdmission,
 } from './oj-worker-policy';
 import {
@@ -223,8 +225,10 @@ async function judgeSubmission(
   if (!claimed) return;
   const attempt = claimed.attempt,
     controller = new AbortController(),
-    // A submission or an OA drill: every case, hidden ones too, stopping at the first failure.
-    formal = formalMode(claimed.mode);
+    // A submission or an OA drill: every case, hidden ones too, stopping at the first failure,
+    // or, when createSubmission allowed all_cases, through every failure for partial credit.
+    formal = formalMode(claimed.mode),
+    runAll = formal && claimed.all_cases === 1;
   controllers.set(id, controller);
   let deadline: ReturnType<typeof setTimeout> | undefined;
   const monitor = setInterval(() => {
@@ -410,6 +414,8 @@ async function judgeSubmission(
       }
     }
     let passed = 0,
+      heavy = 0,
+      captured = false,
       weight = 0,
       runtime = 0,
       memory = 0,
@@ -461,6 +467,12 @@ async function judgeSubmission(
         memoryKb = Math.max(0, Math.ceil((result.memory || 0) / 1024));
       runtime = Math.max(runtime, runtimeMs / 1000);
       memory = Math.max(memory, memoryKb);
+      if (RESOURCE_FAILURES.includes(status)) heavy++;
+      // A formal failure publishes the verdict now. all_cases instead keeps the first failure's
+      // output for its counterexample and publishes the verdict after the last case.
+      const terminal = formal && !runAll && status !== 'accepted',
+        capture = runAll && status !== 'accepted' && !captured;
+      if (capture) captured = true;
       persistCase(
         db,
         () => {
@@ -481,7 +493,8 @@ async function judgeSubmission(
           stdout: result.files?.stdout,
           stderr: result.files?.stderr,
           hidden: c.hidden,
-          terminalFailure: formal && status !== 'accepted',
+          terminalFailure: terminal,
+          capture,
         },
         {
           passed,
@@ -490,19 +503,9 @@ async function judgeSubmission(
           score: Math.round((weight / totalWeight) * 100),
         },
       );
-      if (formal && status !== 'accepted')
-        terminalFailureCommitted = true;
-      // Expensive resource failures stop this submission; unexecuted cases are explicitly skipped.
-      if (
-        (formal && status !== 'accepted') ||
-        [
-          'time_limit',
-          'memory_limit',
-          'output_limit',
-          'runtime_error',
-        ].includes(status)
-      )
-        break;
+      if (terminal) terminalFailureCommitted = true;
+      // Unexecuted cases after a stop read as skipped.
+      if (stopJudging(status, { formal, runAll, heavy })) break;
     }
     if (terminalFailureCommitted) return;
     current(id, attempt, controller.signal);

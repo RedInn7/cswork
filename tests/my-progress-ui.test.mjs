@@ -97,6 +97,16 @@ test('progress page lists history, mistakes, reviews due today and the learner m
           { target: 'content:interview_question/x', mark: 'star', createdAt: now },
         ],
       });
+    if (url.endsWith('/oj/notes/tags'))
+      return Response.json({ tags: [{ tag: 'off-by-one', count: 2 }], confidence: { 1: 0, 2: 1, 3: 0, 4: 0, 5: 0 } });
+    if (url.includes('/oj/notes?tag=')) {
+      searches.push(url.split('?')[1]);
+      return Response.json({
+        items: [{ target: 'topic:hash-counting', updatedAt: now, snippet: '#off-by-one', problemId: null, title: null, confidence: 2 }],
+        total: 1,
+        nextCursor: null,
+      });
+    }
     if (url.endsWith('/oj/notes'))
       return Response.json({
         items: [{ target: 'problem:lc-1', updatedAt: now, snippet: 'One pass with a hash map', problemId: null, title: null }],
@@ -255,6 +265,22 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(contentRow.getAttribute('href'), '/?view=content&type=interview_question&slug=lru');
     await act(async () => contentRow.click());
     assert.deepEqual(navigations.at(-1), ['content', { type: 'interview_question', slug: 'lru' }]);
+    // A #tag chip filters the notes; a stop's pattern notes link to its topic page.
+    await act(async () => {
+      setter.call(search, '');
+      search.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    const chips = [...document.querySelectorAll('.note-chips button')];
+    assert.deepEqual(chips.map((b) => b.textContent), ['Confidence ≤2 ×1', '#off-by-one ×2']);
+    await act(async () => chips[1].click());
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 350));
+    });
+    assert.equal(searches.at(-1), 'tag=off-by-one');
+    assert.equal(chips[1].getAttribute('aria-pressed'), 'true');
+    const topicRow = document.querySelector('.progress-list .progress-row');
+    assert.equal(topicRow.getAttribute('href'), '/topics/hash-counting');
+    assert.match(topicRow.textContent, /^Hashing.*Pattern notes · Note updated .* · Confidence 2/);
     // The badge wall: stop roundels in line order, milestones with their progress.
     await act(async () => tab('badges').click());
     const stops = [...document.querySelectorAll('.badge-stops li')];

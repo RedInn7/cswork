@@ -20,6 +20,7 @@ import {
 } from '@/lib/mock-oa';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
+import { readMember } from './experience-submissions';
 import {
   boundedText,
   HttpError,
@@ -29,10 +30,11 @@ import {
   requirePerson,
   rows,
 } from './http';
-import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
+import { MOCK_PRESETS_UPDATED, mockPresetFor, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
 import { oaTopic } from './oa-topics';
 import { listProblemSummaries } from './oj-problems';
+import { caseGroupScores } from './oj-submissions';
 
 /**
  * Employer slug → its reported LeetCode ids, library spellings merged and hidden spellings'
@@ -217,13 +219,48 @@ const drawSchema = z
       })
       .strict()
       .optional(),
+    // A member's public interview experience: its linked problems, in order.
+    experience: z.string().regex(/^[A-Za-z0-9_-]{12}$/).optional(),
     exclude: z.array(z.string().max(200)).max(200).default([]),
   })
   .strict()
-  .refine((d) => !d.company !== !d.custom);
+  .refine((d) => [d.company, d.custom, d.experience].filter((x) => x !== undefined).length === 1);
+
+/**
+ * "Practise this loop": the judgeable problems a public experience links (similar ones too), in
+ * the post's order, at most 4, each at its own difficulty. Seen or solved ones stay: it is that
+ * loop. Never a preset, so the report compares it with no one (mockPeers).
+ */
+async function drawExperience(id: string) {
+  const post = readMember(id, null);
+  if (!post?.member.public) throw new HttpError(404, '内容不存在');
+  const hidden = hiddenCompanies();
+  const pool = new Map(mockPool(await catalogue(), null, 'mixed', hidden).map((item) => [item.id, item]));
+  const items = [...new Set(post.questions.map((q) => q.problem))].flatMap((problem) => pool.get(problem) ?? []).slice(0, 4);
+  if (!items.length) throw new HttpError(409, '这篇面经没有能判题的关联题');
+  const slug = post.company.slug;
+  const preset = mockPresetFor(slug);
+  const perQuestion = preset ? preset.minutes / preset.questions : 30;
+  return {
+    ids: items.map((item) => item.id),
+    company: slug,
+    name: post.company.name,
+    platform: null,
+    preset: false,
+    questions: items.length,
+    minutes: Math.min(180, Math.max(15, Math.round(perQuestion * items.length))),
+    slots: items.map((item) => item.difficulty ?? 'medium'),
+    scoring: 'tests' as Scoring,
+    source: 'mixed' as MockSource,
+    topics: [] as string[],
+    experience: id,
+    now: Date.now(),
+  };
+}
 
 export async function drawMockOa(p: Person, input: unknown) {
   const d = drawSchema.parse(input);
+  if (d.experience) return drawExperience(d.experience);
   const hidden = hiddenCompanies(),
     shown = shownMockPresets(hidden);
   const slug = d.company ?? d.custom?.company ?? null;
@@ -303,6 +340,8 @@ export type MockScenario = {
  * mocks, a custom one against custom mocks of the same count and source without a company.
  * Null for a custom mock with a company, or under PEER_MIN learners.
  * ponytail: scans mock_sessions by start time; index (company, started_at) when it grows.
+ * ponytail: the pool mixes scores from before partial credit (all_cases), when a failed
+ * question stopped at its first failing test, with weighted ones; it settles as old mocks age out of 180 days.
  */
 export async function mockPeers(userId: string, s: MockScenario, share: number, now = Date.now()) {
   if (!s.preset && s.company) return null;
@@ -349,29 +388,43 @@ export async function mockReport(p: Person, params: URLSearchParams) {
     .split(',')
     .map((s) => slotOf(s) ?? 'medium');
   const found = await rows<{
+    id: string;
     problem_id: string;
+    problem_version_id: string | null;
     status: string;
     passed: number;
     total: number;
+    score: number;
+    all_cases: number;
     created_at: number;
   }>(
-    `SELECT problem_id,status,passed,total,created_at FROM submissions WHERE user_id=? AND mode='judge' AND created_at BETWEEN ? AND ? AND problem_id IN (${ids.map(() => '?').join(',')}) ORDER BY created_at`,
+    `SELECT id,problem_id,problem_version_id,status,passed,total,score,all_cases,created_at FROM submissions WHERE user_id=? AND mode='judge' AND created_at BETWEEN ? AND ? AND problem_id IN (${ids.map(() => '?').join(',')}) ORDER BY created_at`,
     p.id,
     from,
     to,
     ...ids,
   );
-  const items = ids.map((id) => ({
-    id,
-    // An OA problem's estimate (what the draw placed it by): a slot can hold a
-    // different difficulty when its company had none to fit it.
-    estimate: oaTopic(id)?.d ?? null,
-    // First-AC times count from the real start, not the slack-widened window.
-    ...summarizeAttempts(
-      found.filter((s) => s.problem_id === id),
+  const items = ids.map((id) => {
+    const attempts = found.filter((s) => s.problem_id === id);
+    // First-AC times count from the real start, not the slack-widened window. Only a row judged
+    // on every case passes its weighted score: an older row's score stopped at its first failure.
+    const summary = summarizeAttempts(
+      attempts.map(({ score, all_cases, ...s }) => (all_cases ? { ...s, score } : s)),
       from + REPORT_SLACK,
-    ),
-  }));
+    );
+    const best = attempts.find((s) => s.id === summary.best?.id);
+    return {
+      id,
+      // An OA problem's estimate (what the draw placed it by): a slot can hold a
+      // different difficulty when its company had none to fit it.
+      estimate: oaTopic(id)?.d ?? null,
+      ...summary,
+      groups:
+        best?.all_cases && best.problem_version_id
+          ? caseGroupScores(best.id, best.problem_version_id)?.scores
+          : undefined,
+    };
+  });
   const score = scoreMock(
     items.map((i) => i.best),
     scoring,

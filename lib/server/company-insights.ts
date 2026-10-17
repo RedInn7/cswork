@@ -6,7 +6,7 @@ import { employerSlug } from '@/lib/oa-company-brands';
 import { library } from './content-library';
 import { hiddenCompanies } from './env';
 import { recentMemberExperiences } from './experience-submissions';
-import { recentSince, reportCompanies } from './learner-cloud';
+import { ASKED, recentSince, reportCompanies } from './learner-cloud';
 import { oaLibrary } from './oa-library';
 import { oaReadyProblems } from './oa-judge';
 import { publicLibraryPath } from './public-library';
@@ -38,7 +38,8 @@ export type TopProblem = {
 
 /**
  * The most reported LeetCode problems across all companies: each company's report count from
- * company-lc-map.json, plus distinct learners who reported being asked it in the last six months.
+ * company-lc-map.json, plus distinct learners who reported being asked it (by hand or in an approved
+ * experience post) in the last six months.
  * Hidden companies count nowhere; problems not in the Line 500 bank are left out (no title).
  */
 export function topProblems(max = 100, now = Date.now(), hidden: ReadonlySet<string> = hiddenCompanies()): TopProblem[] {
@@ -65,7 +66,7 @@ export function topProblems(max = 100, now = Date.now(), hidden: ReadonlySet<str
   const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
   const reports = sqlite()
     .prepare(
-      `SELECT problem_id AS id,company,COUNT(DISTINCT user_id) AS n,MAX(asked_month) AS last FROM problem_reports
+      `SELECT problem_id AS id,company,COUNT(DISTINCT user_id) AS n,MAX(asked_month) AS last FROM ${ASKED()}
        WHERE asked_month>=? AND problem_id LIKE 'lc-%' GROUP BY problem_id,company`,
     )
     .all(recentSince(now)) as { id: string; company: string; n: number; last: string }[];

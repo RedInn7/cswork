@@ -2,7 +2,7 @@
 // OA countdown and the company's OA and mock links, adding and moving cards through the API, and
 // the CSV and calendar exports built in the browser. Then the wave-8 board: the No response
 // column and the stale hint, follow-up nudges and today's list, prep links, and the bookmarklet's
-// #jd prefill (kept across sign-in).
+// #jd prefill (kept across sign-in). Then wave 9: the offer countdown and the schedule panel.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { JSDOM, VirtualConsole } from 'jsdom';
@@ -25,7 +25,7 @@ const { tomorrowMorning } = await import('../lib/applications.ts');
 const now = Date.now();
 const card = (patch) => ({
   id: 'a', companySlug: '', company: 'Acme', role: '', stage: 'applied', appliedAt: null, oaDeadline: null, interviewAt: null,
-  referral: '', link: '', notes: '', channel: '', referralStatus: '', nextAction: '', nextAt: null, resumeVersion: '',
+  offerDeadline: null, process: null, referral: '', link: '', notes: '', channel: '', referralStatus: '', nextAction: '', nextAt: null, resumeVersion: '',
   stageLog: [], hasJd: false, createdAt: 1, updatedAt: 1, links: null, closedAt: null, prep: null, ...patch,
 });
 const items = [
@@ -275,5 +275,89 @@ test('the bookmarklet opens the tracker with the page title, site, address and s
   assert.deepEqual([cut.company, cut.role, cut.jd], ['cswork.test', 'x'.repeat(119), 'y'.repeat(9999)]);
   assert.equal(run('').jd, null);
   history.replaceState(null, '', '/career/tracker');
+  await act(async () => r.unmount());
+});
+
+test('an offer counts down with an extension link; the schedule panel lists clashes, the expedite plan and the week', async () => {
+  const day = (k, h, m = 0) => {
+    const d = new Date(now);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() + k, h, m).getTime();
+  };
+  const deadline = Math.floor((now + 30 * HOUR) / 60000) * 60000;
+  items.splice(
+    0,
+    items.length,
+    card({ id: 'o', company: 'Offerco', role: 'SWE', stage: 'offer', offerDeadline: deadline }),
+    card({ id: 'i1', company: 'Slowco', stage: 'phone', interviewAt: day(5, 10), appliedAt: now - DAY, process: { weeks: 8 } }),
+    card({ id: 'i2', company: 'Newco', stage: 'onsite', interviewAt: day(5, 10, 45) }),
+    ...['A', 'B', 'C'].map((x, k) => card({ id: `oa${x}`, company: `OA ${x}`, stage: 'applied', oaDeadline: day(6, 9 + 4 * k) })),
+  );
+  const r = createRoot(document.getElementById('root'));
+  await act(async () => r.render(createElement(ApplicationTracker, { zh: true })));
+  const offer = document.querySelector('[data-id="o"]');
+  assert.equal(offer.getAttribute('data-due'), 'soon');
+  assert.match(offer.querySelector('.tracker-due time').textContent, /^Offer 还剩 1 天 [56] 小时$/);
+  const ask = offer.querySelector('.tracker-due a');
+  assert.deepEqual([ask.textContent, ask.getAttribute('href')], ['申请延期 Offerco', '/career/templates?template=extension&application=o']);
+
+  const panel = document.querySelector('.tracker-schedule');
+  assert.ok(panel.compareDocumentPosition(document.querySelector('.tracker-stats')) & window.Node.DOCUMENT_POSITION_FOLLOWING);
+  const clashes = [...panel.querySelectorAll('.tracker-clashes li')].map((li) => li.textContent.replace(/^\d{4}-\d\d-\d\d /, ''));
+  assert.deepEqual(clashes, ['两场面试开始时间相隔不到 90 分钟：Slowco、Newco', '3 个 OA 同一天截止：OA A、OA B、OA C，可以提前做掉一部分']);
+  assert.match(panel.querySelector('.tracker-expedite h3').textContent, /^Offerco 的 offer \d{4}-\d\d-\d\d \d\d:\d\d 截止/);
+  const rows = [...panel.querySelectorAll('.tracker-expedite tbody tr')];
+  assert.deepEqual(
+    rows.map((tr) => [tr.querySelector('th').textContent, tr.hasAttribute('data-late')]),
+    [['Slowco', true], ['Newco', false]],
+  );
+  assert.match(rows[0].textContent, /晚于截止 \(面经中位数\)/);
+  assert.match(rows[1].textContent, /未知，建议问 recruiter 时间线/);
+  assert.equal(rows[0].querySelector('a').getAttribute('href'), '/career/templates?template=expedite&application=i1&offer=o');
+  const week = panel.querySelector('details.tracker-week');
+  assert.equal(week.querySelectorAll(':scope > ol > li').length, 7);
+  assert.deepEqual(
+    [...week.querySelectorAll('li[data-kind]')].map((li) => li.getAttribute('data-kind')).sort(),
+    ['interview', 'interview', 'oa', 'oa', 'oa', 'offer'],
+  );
+
+  // The form shows the offer deadline at the Offer stage; moved away, the date is kept, not cleared.
+  await act(async () => offer.querySelector('.tracker-card-actions button').click());
+  const form = document.querySelector('form.resume-form');
+  const offerField = () => [...form.querySelectorAll('label')].find((l) => l.textContent.startsWith('Offer 截止'))?.querySelector('input');
+  assert.equal(new Date(offerField().value).getTime(), deadline);
+  await setValue(form.querySelector('select'), 'phone', 'change');
+  assert.equal(offerField(), undefined);
+  await act(async () => form.querySelector('button[type="submit"]').click());
+  // The save ends the only offer ahead: the board is read again for the other cards (withLinks).
+  const [[key, sent], [reread]] = calls.slice(-2);
+  assert.deepEqual([key, reread], ['POST /api/oj/applications/o', 'GET /api/oj/applications']);
+  assert.deepEqual([sent.stage, sent.offerDeadline], ['phone', deadline]);
+  await act(async () => r.unmount());
+});
+
+test('a card moved back to Offer with its deadline reads the board again for the other cards’ process lengths', async () => {
+  items.splice(
+    0,
+    items.length,
+    card({ id: 'o', company: 'Offerco', stage: 'onsite', offerDeadline: now + 3 * DAY }),
+    card({ id: 'p', company: 'Slowco', stage: 'phone', appliedAt: now - DAY }),
+  );
+  const r = createRoot(document.getElementById('root'));
+  await act(async () => r.render(createElement(ApplicationTracker, { zh: false })));
+  assert.equal(document.querySelector('.tracker-expedite'), null);
+  // Once the card is back at Offer the server adds the phone card's process length (withLinks).
+  items[0] = { ...items[0], stage: 'offer' };
+  items[1] = { ...items[1], process: { weeks: 8 } };
+  const reads = calls.filter(([key]) => key === 'GET /api/oj/applications').length;
+  await setValue(document.querySelector('[data-id="o"] select'), 'offer', 'change');
+  await act(async () => new Promise((done) => setTimeout(done, 0)));
+  assert.equal(calls.filter(([key]) => key === 'GET /api/oj/applications').length, reads + 1);
+  const row = document.querySelector('.tracker-expedite tbody tr');
+  assert.equal(row.querySelector('th').textContent, 'Slowco');
+  assert.match(row.textContent, /after the deadline \(member write-ups\)/);
+  // A follow-up change that leaves the offer as it is reads nothing again.
+  await setValue(document.querySelector('[data-id="p"] select'), 'onsite', 'change');
+  await act(async () => new Promise((done) => setTimeout(done, 0)));
+  assert.equal(calls.filter(([key]) => key === 'GET /api/oj/applications').length, reads + 1);
   await act(async () => r.unmount());
 });

@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { hiringCycle } from '@/lib/job-tags';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { seoMetadata } from '@/lib/seo';
+import { person } from '@/lib/server/auth';
+import { origin } from '@/lib/server/env';
+import { viewerJobSearch } from '@/lib/server/job-openings';
 import { jobSeasons, seasonsSince, type JobSeason } from '@/lib/server/job-seasons';
 import { reportCompanies } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
@@ -44,11 +48,12 @@ const yearOn = (at: number) => {
   return Date.UTC(d.getUTCFullYear() + 1, d.getUTCMonth(), d.getUTCDate());
 };
 
-/** Seasons of companies with a company page (hidden ones are not), this cycle and the one before. */
-function calendar(now: number) {
+/** Seasons of companies with a company page (hidden ones are not) and not blocked, this cycle and the one before. */
+function calendar(now: number, blocked: readonly string[] = []) {
   const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
   const cycle = hiringCycle(now);
-  const rows = jobSeasons(cycle - 1).filter((s) => names.has(s.companySlug));
+  const skip = new Set(blocked);
+  const rows = jobSeasons(cycle - 1).filter((s) => names.has(s.companySlug) && !skip.has(s.companySlug));
   const current = rows.filter((s) => s.cycle === cycle);
   const has = new Set(current.map((s) => `${s.companySlug}:${s.kind}`));
   // Last season's real opening date (not a first sync) a year on, within the next three weeks, and nothing yet this season.
@@ -105,12 +110,13 @@ function Columns({ seasons, names, zh, soon = false }: { seasons: JobSeason[]; n
   );
 }
 
-/** /career/jobs/calendar: when each company's roles first showed up this season (lib/server/job-seasons.ts). */
+/** /career/jobs/calendar: when each company's roles first showed up this season (lib/server/job-seasons.ts), the viewer's blocked companies left out. */
 export default async function JobCalendarPage() {
   const zh = (await requestLocale()) === 'zh',
     c = copy[zh ? 'zh' : 'en'];
   const now = Date.now();
-  const { names, cycle, soon, weeks, firstSync, any } = calendar(now);
+  const viewer = await person(new Request(origin(), { headers: await headers() })).catch(() => null);
+  const { names, cycle, soon, weeks, firstSync, any } = calendar(now, viewer ? viewerJobSearch(viewer.id).blocked : []);
   const since = seasonsSince();
   // This week's openings go first, above "opening soon".
   const top = weeks[0]?.[0] === weekOf(now) ? 1 : 0;

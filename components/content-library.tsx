@@ -15,7 +15,9 @@ import {
   SOURCES,
   MEMBER_FACETS,
   MEMBER_FILTERS,
+  prepLine,
   type MemberDetails,
+  type MemberQuestion,
 } from '@/lib/experience';
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
@@ -148,7 +150,7 @@ type Detail = ContentSummary & {
   /** Experiences and interview questions: practice for their company. */
   companyPractice?: CompanyPractice | null;
   /** Member posts: the questions they were asked. */
-  questions?: string[];
+  questions?: MemberQuestion[];
 } & { member?: MemberInfo };
 
 /**
@@ -309,6 +311,7 @@ function DetailsMeta({ details: d }: { details: MemberDetails }) {
     d.difficulty && t(`难度 ${d.difficulty}/5`, `Difficulty ${d.difficulty}/5`),
     d.sentiment && labelOf(t, SENTIMENTS, d.sentiment),
     d.durationWeeks !== null && t(`流程 ${d.durationWeeks} 周`, `${d.durationWeeks}-week process`),
+    prepLine(d, !english),
   ].filter((x): x is string => !!x);
   return (
     <>
