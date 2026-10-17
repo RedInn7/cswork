@@ -188,6 +188,8 @@ type Probe = {
   rows: { n: number; ms?: number; status: string }[];
   fit?: ComplexityFit;
   error?: string;
+  /** The failing size's stderr, for a runtime error. */
+  stderr?: string;
 };
 const GRADES: [string, string][] = [
   ['约 O(n) 或 O(n log n)', 'about O(n) or O(n log n)'],
@@ -249,7 +251,13 @@ export function ComplexityProbe({
             : ['cancelled', 'system_error'].includes(latest.status)
               ? t('这次测量没有跑完，请再测一次。', "This probe didn't finish. Please try again.")
               : undefined;
-        setProbe({ running, rows, error, fit: running || error ? undefined : fitComplexity(points) });
+        setProbe({
+          running,
+          rows: error ? [] : rows,
+          error,
+          fit: running || error ? undefined : fitComplexity(points),
+          stderr: latest.cases?.find((c) => c.status === 'runtime_error')?.stderr,
+        });
       } while (activeStatuses.has(latest.status));
     } catch (e) {
       if (!current.signal.aborted) setProbe({ running: false, rows: [], error: (e as Error).message });
@@ -317,6 +325,7 @@ export function ComplexityProbe({
             {problem.targetComplexity && t(`题解目标：${problem.targetComplexity.time}。`, ` Editorial target: ${problem.targetComplexity.time}.`)}
           </p>
         )}
+        {fit?.kind === 'error' && probe?.stderr && <CopyBlock label={t('错误输出', 'Stderr')} value={probe.stderr} />}
       </div>
     </section>
   );
