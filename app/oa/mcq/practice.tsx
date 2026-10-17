@@ -73,8 +73,8 @@ function writeLocal(review: McqReview) {
   localStorage.removeItem(KEY);
   localStorage.removeItem(OLD_KEY);
 }
-/** Saves the review as the note; an empty body removes it (lib/server/my-practice.ts). */
-const putReview = (review: McqReview) =>
+/** Saves the review as the note; an empty body removes it (lib/server/my-practice.ts). Also the review session's. */
+export const putReview = (review: McqReview) =>
   fetch(NOTE, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },

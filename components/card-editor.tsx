@@ -77,7 +77,7 @@ export function CardEditor({
     onClose();
   }
 
-  const count = (text: string) => `${[...text].length} / ${CARD_TEXT_MAX}`;
+  const count = (text: string) => `${text.length} / ${CARD_TEXT_MAX}`;
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-lg">

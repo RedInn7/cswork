@@ -26,7 +26,7 @@ export function parseCard(raw: string | null | undefined): Card | null {
     const c = JSON.parse(raw || 'null') as Record<string, unknown> | null;
     if (!c || c.v !== 1 || typeof c.front !== 'string' || typeof c.back !== 'string' || !Array.isArray(c.tags)) return null;
     const { front, back, tags, src } = c as Card;
-    if (!front.trim() || [...front].length > CARD_TEXT_MAX || [...back].length > CARD_TEXT_MAX) return null;
+    if (!front.trim() || front.length > CARD_TEXT_MAX || back.length > CARD_TEXT_MAX) return null;
     if (tags.length > CARD_TAGS_MAX || !tags.every((tag) => typeof tag === 'string' && TAG.test(tag))) return null;
     if (Object.keys(c).some((k) => !['v', 'front', 'back', 'tags', 'src'].includes(k))) return null;
     if (src !== undefined) {
