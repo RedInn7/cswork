@@ -104,7 +104,7 @@ const inputSchema = z
     problemId: z.string().min(1).max(80),
     language: z.enum(LANGUAGE_IDS),
     code: z.string().min(1).max(MAX_CODE_BYTES),
-    mode: z.enum(['judge', 'run', 'drill', 'drill-run']).default('judge'),
+    mode: z.enum(['judge', 'run', 'drill', 'drill-run', 'sql-peek']).default('judge'),
     codingMode: z.enum(['leetcode', 'acm']).default('acm'),
     stdin: z.string().max(MAX_STDIN_BYTES).optional(),
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
@@ -322,7 +322,12 @@ export function projectReport(row: { stdout: string | null; stderr: string | nul
 export async function createSubmission(p: Person, value: unknown) {
   const d = inputSchema.parse(value);
   // A drill's run is a run on the examples (or custom input), kept out of the history like the drill.
-  const run = d.mode === 'run' || d.mode === 'drill-run';
+  // A SQL peek (a CTE preview or query plan) is an unlisted run on the learner's own dataset only:
+  // no unlisted judging of the hidden cases.
+  const peek = d.mode === 'sql-peek';
+  const run = d.mode === 'run' || d.mode === 'drill-run' || peek;
+  if (peek && (d.language !== 'sql' || d.stdin === undefined))
+    throw new HttpError(400, 'SQL 预览只能在 SQL 题上用自定义输入运行');
   if (
     Buffer.byteLength(d.code) > MAX_CODE_BYTES ||
     (d.stdin !== undefined && Buffer.byteLength(d.stdin) > MAX_STDIN_BYTES)
@@ -370,8 +375,8 @@ export async function createSubmission(p: Person, value: unknown) {
     throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
   await limit(
     p,
-    run ? 'oj-run' : 'oj-submit',
-    run ? 12 : 6,
+    peek ? 'oj-sql-peek' : run ? 'oj-run' : 'oj-submit',
+    peek ? 20 : run ? 12 : 6,
   );
   // Reserve the writer before reading duplicate/queue state. A deferred WAL
   // read transaction cannot safely upgrade while the judge is writing results.
@@ -489,8 +494,8 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
     id: s.id,
     problem_id: s.problem_id,
     language: s.language,
-    // ponytail: the learner's page shows a drill's run as a run; only the stored mode keeps it unlisted.
-    mode: s.mode === 'drill-run' ? 'run' : s.mode,
+    // ponytail: the learner's page shows a drill's run or a SQL peek as a run; only the stored mode keeps it unlisted.
+    mode: s.mode === 'drill-run' || s.mode === 'sql-peek' ? 'run' : s.mode,
     codingMode: s.coding_mode || 'acm',
     status: s.status,
     passed: s.passed,
