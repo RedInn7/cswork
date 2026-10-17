@@ -5,10 +5,16 @@
  * an accepted query disagrees anywhere or a wrong query survives every hidden
  * dataset.
  *
- * --pandas builds the Pandas track instead: each SQL package again as pd-xx,
- * same datasets and expected outputs, which scripts/sql-track/pandas-solutions.ts
- * must reproduce exactly through PANDAS_HARNESS. That needs pandas in
- * PANDAS_PYTHON (default python3).
+ * Index design problems (SqlProblem.index) submit CREATE INDEX scripts; their
+ * datasets start with the SQL_INDEX header and the reference passes every
+ * target query.
+ *
+ * --pandas builds the Pandas track instead: each SQL package outside
+ * SQL_ONLY_GROUPS again as pd-xx, same datasets and expected outputs, which
+ * scripts/sql-track/pandas-solutions.ts must reproduce exactly through
+ * PANDAS_HARNESS, then the pandas-only pd-1xx problems (pandas-native.ts).
+ * That needs pandas in PANDAS_PYTHON (default python3). Run the SQL build
+ * first: the pandas build reads its committed packages.
  *
  *   node --import tsx scripts/sql-track/build.ts [--pandas]          # write the files
  *   node --import tsx scripts/sql-track/build.ts [--pandas] --check  # fail on drift
@@ -41,7 +47,7 @@ export function datasetSql(problem: SqlProblem, data: Data) {
   const marker = problem.ordered ? [SQL_ORDERED] : problem.index ? [SQL_INDEX + JSON.stringify(problem.index)] : [];
   return writeDataset(
     marker,
-    problem.tables.map((table) => [table, SCHEMAS[problem.schema][table]]),
+    problem.tables.map((table): [string, string] => [table, SCHEMAS[problem.schema][table]]),
     data,
   );
 }

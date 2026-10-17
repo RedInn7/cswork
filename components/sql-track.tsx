@@ -287,12 +287,12 @@ export function SqlTrack(props: TrackProps) {
         title: ['SQL 专项练习', 'SQL Practice Track'],
         lead: pandas
           ? [
-              '同一批题目的 pandas 版：每张表是一个 DataFrame，写 solve(tables) 返回结果 DataFrame。判题器在服务端用和 SQL 版相同的隐藏数据运行它并比较结果；答错时可以逐行对比期望和实际结果。',
-              'The same problems in pandas: each table is a DataFrame, and solve(tables) returns the result DataFrame. The judge runs it on the server against the SQL version’s hidden datasets and compares the results, and a wrong answer shows the expected and actual rows side by side.',
+              '同一批题目的 pandas 版，另有重塑、时间序列和数据清洗的 pandas 专题：每张表是一个 DataFrame，写 solve(tables) 返回结果 DataFrame。判题器在服务端用隐藏数据运行它并比较结果；答错时可以逐行对比期望和实际结果。',
+              'The same problems in pandas, plus pandas-only sets on reshaping, time series and cleaning: each table is a DataFrame, and solve(tables) returns the result DataFrame. The judge runs it on the server against hidden datasets and compares the results, and a wrong answer shows the expected and actual rows side by side.',
             ]
           : [
-              'CSWork 原创的 SQL 题：连接、分组与 HAVING、子查询、窗口函数、NULL、字符串和日期处理。提交一条 SELECT，判题器在 SQLite 内存数据库里对多组隐藏数据运行它并比较结果集；答错时可以逐行对比期望和实际结果。',
-              'Original CSWork SQL problems: joins, GROUP BY and HAVING, subqueries, window functions, NULLs, strings and dates. Submit one SELECT; the judge runs it on several hidden datasets in an in-memory SQLite database and compares the result sets, and a wrong answer shows the expected and actual rows side by side.',
+              'CSWork 原创的 SQL 题：连接、分组与 HAVING、子查询、窗口函数、NULL、字符串和日期处理，进阶的递归 CTE、JSON 和窗口帧，以及用执行计划判题的索引设计。提交一条 SELECT（索引题提交 CREATE INDEX），判题器在 SQLite 内存数据库里对多组隐藏数据运行它并比较结果；答错时可以逐行对比期望和实际结果。',
+              'Original CSWork SQL problems: joins, GROUP BY and HAVING, subqueries, window functions, NULLs, strings and dates, then recursive CTEs, JSON and window frames, and index design judged by the query plan. Submit one SELECT (CREATE INDEX for the index problems); the judge runs it on several hidden datasets in an in-memory SQLite database and compares the results, and a wrong answer shows the expected and actual rows side by side.',
             ],
         progress: pandas ? ['Pandas 版进度', 'Pandas edition progress'] : ['SQL 专项进度', 'SQL track progress'],
         empty: ['SQL 专项正在上线，稍后再来。', 'The SQL track is being published. Check back soon.'],

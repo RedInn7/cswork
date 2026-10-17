@@ -1,6 +1,7 @@
 /**
- * The SQL track: 50 practice problems written for CSWork (21–50 live in
- * problems-more.ts). Each one names its
+ * The SQL track: practice problems written for CSWork (21–50 live in
+ * problems-more.ts, the advanced 51–62 and index design 71–78 in
+ * problems-advanced.ts). Each one names its
  * tables, a reference query, other accepted forms, and common wrong queries the
  * hidden datasets must reject. scripts/sql-track/build.ts turns them into judge
  * packages; tests/sql-track.test.ts reruns every query on every dataset.
