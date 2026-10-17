@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { seoMetadata } from '@/lib/seo';
 import { guideChapter, guidePath } from '@/lib/career-guide';
+import { CAREER_CHECKLISTS } from '@/lib/content/career-checklists';
+import { GuideChecklist } from '@/components/guide-checklist';
 import { requestLocale } from '@/lib/server/locale';
 import { GuideChapterView, guideChapterCopy } from '../views';
 
@@ -21,5 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function GuideChapterPage({ params }: Props) {
   const { chapter, zh } = await load(params);
-  return <GuideChapterView chapter={chapter} zh={zh} />;
+  const checklist = CAREER_CHECKLISTS[chapter.slug];
+  return (
+    <GuideChapterView chapter={chapter} zh={zh}>
+      {checklist && <GuideChecklist slug={chapter.slug} items={checklist} zh={zh} />}
+    </GuideChapterView>
+  );
 }

@@ -163,6 +163,8 @@ export type ReminderDigest = {
   daily: boolean;
   /** Weeklies and starters entered live that start within a day, `at` in the learner's time. */
   contests: { id: string; title: string; at: string }[];
+  /** Tracker cards and contacts whose next follow-up is today or earlier (career-outreach). */
+  followUps: { applications: number; contacts: number } | null;
 };
 /** The daily reminder's lines, each with the site path it links to; the notice joins them on one line. */
 export function reminderLines(zh: boolean, d: ReminderDigest): [string, string][] {
@@ -183,6 +185,13 @@ export function reminderLines(zh: boolean, d: ReminderDigest): [string, string][
   }
   if (d.daily) lines.push([zh ? '今天的每日一题' : 'Today’s daily problem', '/daily']);
   for (const c of d.contests) lines.push([zh ? `${c.title}：${c.at} 开始` : `${c.title}: starts ${c.at}`, `/contest/${c.id}`]);
+  if (d.followUps) {
+    const n = d.followUps.applications + d.followUps.contacts;
+    lines.push([
+      zh ? `${n} 项求职跟进到期了` : `${n} job-search ${n === 1 ? 'follow-up is' : 'follow-ups are'} due`,
+      d.followUps.applications ? '/career/tracker' : '/career/contacts',
+    ]);
+  }
   return lines;
 }
 /** The daily reminder mail: the same lines with their links, where to change it and the one-click unsubscribe. */

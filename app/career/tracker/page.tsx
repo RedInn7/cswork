@@ -68,6 +68,11 @@ export default async function TrackerPage() {
         </p>
       </div>
       <TrackerBookmarklet zh={zh} />
+      <p className="guide-top-links">
+        <a href="/career/contacts">{zh ? '联系人' : 'Contacts'}</a>
+        <a href="/career/templates">{zh ? '消息模板' : 'Message templates'}</a>
+        <a href="/?view=account#reminders">{zh ? '开启 OA 截止和面试提醒' : 'Remind me of OA deadlines and interviews'}</a>
+      </p>
       {viewer ? (
         <ApplicationTracker zh={zh} />
       ) : (
