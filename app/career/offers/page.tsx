@@ -69,7 +69,9 @@ export default async function OffersPage() {
   const h1b: H1bRecords = {};
   for (const { slug, name } of reportCompanies()) {
     const y = h1bCompany(slug)?.years.at(-1);
-    if (y) h1b[slug] = h1b[name.toLowerCase()] = [y.fy, y.newApproved, y.newDenied];
+    if (!y) continue;
+    h1b[slug] = [y.fy, y.newApproved, y.newDenied];
+    h1b[name.toLowerCase()] = h1b[slug];
   }
   return (
     <>
