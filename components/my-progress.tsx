@@ -27,6 +27,7 @@ import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
 import { NoteTagChips } from './notes-filters';
+import { NotesExport } from './cheatsheet';
 import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
@@ -770,6 +771,7 @@ export function MyProgress({
             {t('加载更多笔记', 'Load more notes')}
           </Button>
         )}
+        <NotesExport english={english} problems={boot.problems} />
       </>
     );
   }
