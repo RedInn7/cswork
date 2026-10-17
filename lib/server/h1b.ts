@@ -11,7 +11,8 @@ export type H1bData = {
   source: string;
   sourceUrl: string;
   fiscalYears: number[];
-  companies: Record<string, { years: H1bYear[]; employers: string[] }>;
+  /** `employers`: the most approved names (at most 10) of `employerCount` counted. */
+  companies: Record<string, { years: H1bYear[]; employers: string[]; employerCount: number }>;
 };
 export const H1B = data as H1bData;
 

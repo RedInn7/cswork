@@ -1,5 +1,5 @@
 {
-  "note": "H-1B petitioner names per company page slug (lib/oa-company-brands.ts employerSlug), read by scripts/h1b/build.mjs. A plain string matches the employer name exactly after normalizing (upper case, punctuation to spaces, no leading THE, no trailing INC/LLC/LP/CORP/CO/LTD/PLC/NA); a /regex/ is tested against the normalized name, anchor it. Companies with a company page only; one name belongs to one company. Checked against the FY2021–FY2025 build on 2026-10-17 (unrelated look-alikes such as THE CITADEL, CHIME INC and BLACKROCK MICROSYSTEMS are excluded on purpose); spot-check what the build prints whenever new data comes in.",
+  "note": "H-1B petitioner names per company page slug (lib/oa-company-brands.ts employerSlug), read by scripts/h1b/build.mjs. A plain string matches the employer name exactly after normalizing (upper case, punctuation to spaces, no leading THE, no trailing INC/LLC/LP/CORP/CO/LTD/PLC/NA); a /regex/ is tested against the normalized name, anchor it. Companies with a company page only; one name belongs to one company. Checked against the FY2021–FY2025 build on 2026-10-17 (unrelated look-alikes such as THE CITADEL, CHIME INC and BLACKROCK MICROSYSTEMS are excluded on purpose); spot-check what the build prints whenever new data comes in. A renamed petitioner needs its old name too (OATH HOLDINGS for Yahoo, FACEBOOK for Meta) or its earlier years read as empty; tests/h1b.test.ts flags continuations that appear out of nowhere.",
   "companies": {
     "accenture": ["ACCENTURE", "ACCENTURE FEDERAL SERVICES"],
     "adobe": ["ADOBE", "ADOBE SYSTEMS"],
@@ -12,7 +12,7 @@
       "/^AMAZON (COM|WEB SERVICES|DEVELOPMENT CENTER|DATA SERVICES|TECHNOLOGIES|FULFILLMENT SERVICES|ADVERTISING|CAPITAL SERVICES|PAYMENTS|LOGISTICS|CORPORATE|STUDIOS|ROBOTICS|MEDIA VENTURE|MECHANICAL TURK|RETAIL|REGISTRY SERVICES)( |$)/",
       "/^A2Z DEVELOPMENT (CENTER|CTR)( |$)/"
     ],
-    "anthropic": ["ANTHROPIC", "ANTHROPIC PBC", "ANTHROPIC PBC D B A ANTHROPIC"],
+    "anthropic": ["/^ANTHROPIC( |$)/"],
     "apple": ["APPLE", "APPLE PAYMENTS SERVICES"],
     "applied-intuition": ["APPLIED INTUITION"],
     "arista-networks": ["ARISTA NETWORKS"],
@@ -21,7 +21,13 @@
     "blackrock": [
       "/^BLACKROCK (FINANCIAL MANAGEMENT|CORPORATION|INVESTMENT|INSTITUTIONAL|INDEX SERVICES|FUNDS?|REALTY ADVISORS)( |$)/"
     ],
-    "bloomberg": ["BLOOMBERG", "BLOOMBERG FINANCE", "BLOOMBERG INDUSTRY GROUP", "BLOOMBERG INDEX SERVICES"],
+    "bloomberg": [
+      "BLOOMBERG",
+      "BLOOMBERG FINANCE",
+      "BLOOMBERG INDUSTRY GROUP",
+      "BLOOMBERG INDEX SERVICES",
+      "/^BUREAU OF (NATIONAL|NATL) AFFAIRS( |$)/"
+    ],
     "bny-mellon": ["BANK OF NEW YORK MELLON", "BNY MELLON"],
     "bnp": ["/^BNP PARIBAS( |$)/"],
     "box": ["BOX"],
@@ -90,7 +96,15 @@
     "linkedin": ["LINKEDIN"],
     "lyft": ["LYFT"],
     "mathworks": ["MATHWORKS"],
-    "meta": ["META PLATFORMS", "META PLATFORMS TECHNOLOGIES", "FACEBOOK", "FACEBOOK TECHNOLOGIES", "META PAYMENTS"],
+    "meta": [
+      "META PLATFORMS",
+      "META PLATFORMS TECHNOLOGIES",
+      "META PAYMENTS",
+      "FACEBOOK",
+      "FACEBOOK TECHNOLOGIES",
+      "FACEBOOK PAYMENTS",
+      "FACEBOOK MIAMI"
+    ],
     "microsoft": ["MICROSOFT"],
     "millennium": ["MILLENNIUM MANAGEMENT"],
     "morgan-stanley": ["/^MORGAN STANLEY( |$)/"],
@@ -130,13 +144,13 @@
     "two-sigma": ["/^TWO SIGMA (INVESTMENTS|ADVISERS|SECURITIES|INSURANCE QUANTIFIED|OPEN SOURCE)( |$)/"],
     "uber": ["UBER TECHNOLOGIES"],
     "upstart": ["UPSTART NETWORK"],
-    "visa": ["VISA", "VISA U S A", "VISA TECHNOLOGY OPERATIONS", "VISA TECHNOLOGY AND OPERATIONS"],
+    "visa": ["VISA", "VISA U S A", "VISA USA", "VISA TECHNOLOGY OPERATIONS", "VISA TECHNOLOGY AND OPERATIONS", "VISA TECH OPERATIONS"],
     "walmart": ["/^WAL ?MART( |$)/"],
     "wayfair": ["WAYFAIR"],
     "waymo": ["WAYMO"],
     "wells-fargo": ["/^WELLS FARGO( |$)/"],
     "xai": ["X AI", "XAI"],
-    "yahoo": ["YAHOO", "YAHOO HOLDINGS"],
+    "yahoo": ["YAHOO", "YAHOO HOLDINGS", "OATH HOLDINGS"],
     "zillow": ["ZILLOW", "ZILLOW GROUP"],
     "ziprecruiter": ["ZIPRECRUITER"],
     "zscaler": ["ZSCALER"]
