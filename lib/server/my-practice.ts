@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { curatedByNumber } from '@/lib/ling-curated';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
+import { parseProjectNote } from '@/lib/resume-projects';
 import type { Person } from './auth';
 import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
@@ -253,6 +254,9 @@ export async function handleMyPractice(
       .parse(await readJson(request, NOTE_MAX_BYTES * 2 + 200));
     if (new TextEncoder().encode(body).length > NOTE_MAX_BYTES)
       throw new HttpError(413, '内容过长');
+    // A resume project's repo link (components/project-progress.tsx): seen by its owner only, but kept to known hosts.
+    if (key.startsWith('project:') && body.trim() && !parseProjectNote(body))
+      throw new HttpError(400, '仓库链接只支持 GitHub、GitLab 或 Codeberg 的 https 地址');
     // An emptied note is removed, so "has a note" always means some text.
     if (!body.trim()) {
       db.prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(p.id, key);

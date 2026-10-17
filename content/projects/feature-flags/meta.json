@@ -1,0 +1,59 @@
+{
+  "slug": "feature-flags",
+  "summaryZh": "按比例放量、按属性定向、版本号和 If-Match 防并发覆盖，调高比例不会把用户关掉。",
+  "summaryEn": "Percentage rollouts, attribute targeting, versions with If-Match against lost updates, and rollouts that only ever add users.",
+  "level": "intermediate",
+  "roles": [
+    "generalist",
+    "backend",
+    "frontend"
+  ],
+  "hours": 12,
+  "run": "http",
+  "milestones": [
+    {
+      "zh": "flag 的增删改查和版本号，PUT 支持 If-Match",
+      "en": "Flag CRUD with versions, and If-Match on PUT"
+    },
+    {
+      "zh": "求值：disabled、规则、按比例放量，写单元测试",
+      "en": "Evaluation: disabled, rules, then the percentage rollout, with unit tests"
+    },
+    {
+      "zh": "验证分桶：比例、粘性、单调、独立，跑通验收脚本",
+      "en": "Check the bucketing for accuracy, stickiness, monotonicity and independence, and pass the acceptance script"
+    },
+    {
+      "zh": "做一个带本地缓存的客户端 SDK，写 README 说明一致性取舍",
+      "en": "Build a client SDK with a local cache and explain the consistency trade-offs in the README"
+    }
+  ],
+  "bulletZh": "用 {语言} 实现 feature flag 服务，支持按属性定向和按用户哈希分桶的渐进放量（粘性、单调、各 flag 独立），用 ETag/If-Match 防止并发覆盖；附带本地缓存的客户端 SDK。",
+  "bulletEn": "Built a feature flag service in {language} with attribute targeting and hash-bucketed gradual rollouts (sticky, monotonic, independent per flag), ETag/If-Match against lost updates, and a client SDK with a local cache.",
+  "deepDive": [
+    {
+      "zh": "你的分桶函数是什么？为什么调高比例时原来打开的用户不会被关掉？",
+      "en": "What is your bucketing function, and why does raising the percentage never switch a user off?"
+    },
+    {
+      "zh": "为什么哈希里要带 flag key？不带会出什么问题？",
+      "en": "Why does the hash include the flag key? What breaks without it?"
+    },
+    {
+      "zh": "If-Match 解决的是什么问题？和直接加锁比有什么好处？",
+      "en": "What problem does If-Match solve, and why is it better here than a lock?"
+    },
+    {
+      "zh": "上千台服务器都要读 flag，每次求值都调你的服务行不行？SDK 应该怎么设计？",
+      "en": "Thousands of servers read flags. Should every evaluation call your service? How should the SDK work?"
+    },
+    {
+      "zh": "flag 服务挂了，客户端应该返回什么？默认值由谁定？",
+      "en": "If the flag service is down, what should clients return, and who chooses the default?"
+    },
+    {
+      "zh": "flag 越积越多会带来什么技术债？你会怎么清理？",
+      "en": "What tech debt do old flags create, and how would you clean them up?"
+    }
+  ]
+}

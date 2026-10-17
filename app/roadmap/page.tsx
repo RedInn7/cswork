@@ -2,10 +2,14 @@ import '../library/library.css';
 import './roadmap.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { RolePath } from '@/components/role-path';
 import { GUIDE_CHAPTERS, guidePath } from '@/lib/career-guide';
+import { ROLE_KEYS, ROLES, isRole } from '@/lib/content/role-paths';
 import { curatedEntries } from '@/lib/ling-curated';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { aiEnabled } from '@/lib/server/ai-tutor';
 import { requestLocale } from '@/lib/server/locale';
+import { resolveRolePath } from '@/lib/server/role-paths';
 import { sdChapters, sdParts, sdPath } from '@/lib/server/system-design-course';
 import { LibraryPageView } from '../library/page-view';
 import { RoadmapTracks, type SdPart } from './tracks';
@@ -55,9 +59,14 @@ export async function generateMetadata() {
   return seoMetadata({ title: c.title, description: c.description, path: '/roadmap' });
 }
 
-export default async function RoadmapPage() {
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export default async function RoadmapPage({ searchParams }: Props) {
   const zh = (await requestLocale()) === 'zh';
   const c = COPY[zh ? 'zh' : 'en'];
+  // ?role= picks a role path (lib/content/role-paths.ts); the canonical page stays /roadmap.
+  const raw = (await searchParams).role;
+  const role = isRole(raw) ? raw : null;
   const totals: Record<string, { solved: number; total: number }> = {};
   for (const entry of curatedEntries)
     (totals[entry.sectionSlug] ??= { solved: 0, total: 0 }).total++;
@@ -86,6 +95,16 @@ export default async function RoadmapPage() {
           <h1>{c.heading}</h1>
           <p>{c.description}</p>
         </div>
+        <RolePath
+          english={!zh}
+          role={role}
+          roles={ROLE_KEYS.map((key) => ({
+            key,
+            name: zh ? ROLES[key].zh : ROLES[key].en,
+            blurb: zh ? ROLES[key].blurbZh : ROLES[key].blurbEn,
+          }))}
+          steps={role ? resolveRolePath(role, zh, aiEnabled()) : []}
+        />
         <RoadmapTracks
           english={!zh}
           totals={totals}
