@@ -16,10 +16,11 @@ register(
 );
 
 const dom = new JSDOM('<!doctype html><html lang="en"><body><div id="root"></div></body></html>', { url: 'https://cswork.test/?view=review-session' });
-for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
+for (const name of ['window', 'document', 'HTMLElement', 'HTMLTextAreaElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'FocusEvent', 'localStorage', 'navigator', 'location', 'history', 'getComputedStyle'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
+globalThis.cancelAnimationFrame = (id) => clearTimeout(id);
 localStorage.setItem('cswork:locale', 'en');
 const { createRoot } = await import('react-dom/client');
 const { ReviewSession, clipSource } = await import('../components/review-session.tsx');
@@ -150,6 +151,43 @@ test('coding reviews open in a new tab and tick off once accepted today', async 
   assert.equal(document.querySelector('.rs-list li').hasAttribute('data-done'), true);
   await act(async () => button('Finish').click());
   assert.match(document.querySelector('.rs-done').textContent, /Coding: 1 of 1 accepted today/);
+  await act(async () => root.unmount());
+});
+
+test('cards & excerpts: a new card is checked and saved as its own note; excerpts list with their source', async () => {
+  notes['card:'] = [{ target: 'card:aaaaaaaaaaaa', body: card('Old card', 'Back') }];
+  notes['clip:'] = [{ target: 'clip:concept/two-pointers', body: '> both ends\n> — [Two Pointers](/library/concept/two-pointers)\n', updatedAt: 1 }];
+  notes['recall:cards'] = JSON.stringify({ v: 1, items: { 'card:aaaaaaaaaaaa': [4, today - 40, ''] } });
+  puts.length = 0;
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(ReviewSession, { boot, navigate() {}, tab: 'cards' })));
+  await settle();
+  assert.match(document.querySelector('#rs-cards-title').textContent, /My cards \(1 of 200\)/);
+  assert.match(document.querySelector('.rs-list li').textContent, /Old card.*Mastered · #dp/);
+  assert.equal(document.querySelector('.rs-clip a').getAttribute('href'), '/library/concept/two-pointers');
+  assert.equal(document.querySelector('.rs-snippet').textContent, 'both ends', 'the quote without its citation');
+  await act(async () => button('New card').click());
+  await settle();
+  const dialog = document.querySelector('[role="dialog"]');
+  assert.ok(dialog, 'the editor opens');
+  const setter = Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set;
+  const [front, back] = dialog.querySelectorAll('textarea');
+  // Empty front: refused before any request.
+  await act(async () => dialog.querySelector('form').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
+  assert.match(dialog.querySelector('[role="alert"]').textContent, /front is required/);
+  assert.equal(puts.length, 0);
+  await act(async () => {
+    setter.call(front, 'Why does Dijkstra fail with negative edges?');
+    front.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+    setter.call(back, 'A settled node can still get cheaper');
+    back.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  });
+  await act(async () => dialog.querySelector('form').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
+  await settle();
+  assert.equal(puts.length, 1);
+  assert.match(puts[0][0], /^card:[a-z0-9]{12}$/);
+  assert.deepEqual(JSON.parse(puts[0][1]), { v: 1, front: 'Why does Dijkstra fail with negative edges?', back: 'A settled node can still get cheaper', tags: [] });
+  assert.match(document.querySelector('#rs-cards-title').textContent, /My cards \(2 of 200\)/);
   await act(async () => root.unmount());
 });
 

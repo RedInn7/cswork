@@ -85,7 +85,7 @@ const midnight = () => new Date().setHours(0, 0, 0, 0);
  */
 export function ReviewSession({ boot, tab }: { boot: Boot; navigate: Navigate; tab?: string }) {
   const english = useLocale() === 'en';
-  const t: T = useCallback((zh, en) => (english ? en : zh), [english]);
+  const t: T = useCallback((zh: string, en: string) => (english ? en : zh), [english]);
   const userId = boot.person?.id ?? '';
   const [mock] = useState(() => !!userId && !!readMockState(userId).active);
   const [view, setView] = useState<Tab>(TABS.some(([key]) => key === tab) ? (tab as Tab) : 'today');
@@ -332,12 +332,12 @@ function Today({ t, english, titleOf }: { t: T; english: boolean; titleOf: (id: 
       const cardFlips: Flip[] = [
         ...queued(cardQ.queue).filter((key) => cards.has(key.slice(5))),
         ...[...cards.keys()].map((id) => `card:${id}`).filter((key) => !cardQ.queue.items[key]),
-      ].map((key) => ({ kind: 'card', key, card: cards.get(key.slice(5))! }));
+      ].map((key) => ({ kind: 'card' as const, key, card: cards.get(key.slice(5))! }));
       const ideaIds = queued(ideaQ.queue).map((key) => key.slice(5)).slice(0, IDEAS_MAX);
       const ideas = ideaIds.length ? await ideasOf(ideaIds, english) : new Map<string, Idea>();
       // Problems the server left out (a running contest) are not shown.
-      const ideaFlips: Flip[] = ideaIds.filter((id) => ideas.has(id)).map((id) => ({ kind: 'idea', key: `idea:${id}`, id, idea: ideas.get(id) }));
-      const openFlips: Flip[] = dueRecall(openQ.queue, today).map(([key, card]) => ({ kind: 'open', key, title: card[2] }));
+      const ideaFlips: Flip[] = ideaIds.filter((id) => ideas.has(id)).map((id) => ({ kind: 'idea' as const, key: `idea:${id}`, id, idea: ideas.get(id) }));
+      const openFlips: Flip[] = dueRecall(openQ.queue, today).map(([key, card]) => ({ kind: 'open' as const, key, title: card[2] }));
       const review = parseMcqReview(mcqBody);
       const dueMcq = Object.keys(review)
         .filter((id) => mcqDue(review[id], today))
@@ -538,7 +538,7 @@ function IdeaReview({ t, english, titleOf }: { t: T; english: boolean; titleOf: 
       const ideas = await ideasOf(ids, english);
       setDone(false);
       setTally(ZERO);
-      setFlips(ids.filter((id) => ideas.has(id)).map((id) => ({ kind: 'idea', key: `idea:${id}`, id, idea: ideas.get(id) })));
+      setFlips(ids.filter((id) => ideas.has(id)).map((id) => ({ kind: 'idea' as const, key: `idea:${id}`, id, idea: ideas.get(id) })));
     } catch (reason) {
       setError((reason as Error).message);
     }
@@ -768,7 +768,14 @@ function CardsAndClips({ t, english, userId, titleOf }: { t: T; english: boolean
                   {clipOpen === clip.target ? (
                     <ClipEditor userId={userId} target={clip.target} english={english} />
                   ) : (
-                    <span className="rs-snippet">{clip.body.replace(/^> ?/gm, '').replace(/\s+/g, ' ').slice(0, 160)}</span>
+                    <span className="rs-snippet">
+                      {clip.body
+                        .replace(/^> — \[.*$/gm, '')
+                        .replace(/^> ?/gm, '')
+                        .replace(/\s+/g, ' ')
+                        .trim()
+                        .slice(0, 160)}
+                    </span>
                   )}
                 </li>
               );

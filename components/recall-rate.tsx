@@ -192,6 +192,7 @@ export function RecallRate({
   }
 
   const back = card && recallNext(card);
+  const href = recallHref(target);
   const when = back === null || back === undefined ? '' : recallDate(back, locale);
   const status =
     state === 'saving'
@@ -257,7 +258,7 @@ export function RecallRate({
             initial={{
               front: title,
               back: points.map((point) => `- ${point}`).join('\n'),
-              ...(recallHref(target) && { src: { href: recallHref(target)!, title: title.slice(0, 200) } }),
+              ...(href ? { src: { href, title: title.slice(0, 200) } } : {}),
             }}
             onClose={() => setMaking(false)}
           />
