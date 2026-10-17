@@ -1,11 +1,15 @@
 'use client';
 
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState, type KeyboardEvent } from 'react';
 import {
   createDemoTrace,
+  demoInputs,
+  guessTargets,
   isDemoKind,
+  type DemoCell,
   type DemoGraph,
   type DemoKind,
+  type Pair,
 } from '@/lib/algorithm-demo';
 import { useLocale, useT } from '@/lib/i18n';
 
@@ -28,14 +32,28 @@ export function AlgorithmDemo({ kind }: { kind: string }) {
 function DemoPlayer({ kind }: { kind: DemoKind }) {
   const t = useT(),
     english = useLocale() === 'en';
-  const trace = useMemo(() => createDemoTrace(kind, english), [kind, english]);
+  const custom = demoInputs[kind];
+  const [args, setArgs] = useState<unknown[] | null>(null);
+  const trace = useMemo(() => createDemoTrace(kind, english, args ?? undefined), [kind, english, args]);
   const [step, setStep] = useState(0),
     [playing, setPlaying] = useState(false),
     [speed, setSpeed] = useState(1200);
+  const [text, setText] = useState(''),
+    [error, setError] = useState<Pair | null>(null);
+  const [guessing, setGuessing] = useState(false),
+    [score, setScore] = useState({ right: 0, total: 0 }),
+    [verdict, setVerdict] = useState<{ right: boolean; answer: string } | null>(null);
   const titleId = useId(),
-    captionId = useId();
+    captionId = useId(),
+    inputId = useId(),
+    errorId = useId();
   const frame = trace.frames[step],
     last = trace.frames.length - 1;
+  const targets = useMemo(
+    () => (guessing && step < last ? guessTargets(trace.frames[step], trace.frames[step + 1]) : new Set<string>()),
+    [guessing, step, last, trace],
+  );
+  const asking = targets.size > 0;
   useEffect(() => {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const stop = () => {
@@ -58,8 +76,36 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
   }, [playing, step, last, speed]);
   const move = (next: number) => {
     setPlaying(false);
+    setVerdict(null);
     setStep(next);
   };
+  const restart = (next: unknown[] | null) => {
+    setArgs(next);
+    setScore({ right: 0, total: 0 });
+    move(0);
+  };
+  /** A guess (a clicked cell or node key), or null for "show me": either way the step plays. */
+  const guess = (key: string | null) => {
+    const right = key !== null && targets.has(key);
+    // Name the answer by its nodes when the frame draws a graph, else by its cells.
+    const nodes = [...targets].filter((k) => k[0] === 'n');
+    const answer = (nodes.length ? nodes : [...targets]).map((k) => {
+      if (k[0] === 'n') {
+        const node = frame.graph!.nodes.find((n) => `n${n.id}` === k)!;
+        return node.label || node.note || node.id;
+      }
+      const cell = frame.cells[Number(k.slice(1))];
+      return cell.label ? `${cell.label}: ${cell.value}` : String(cell.value);
+    });
+    setScore((s) => ({ right: s.right + Number(right), total: s.total + 1 }));
+    setVerdict({ right, answer: answer.join(t('、', ', ')) });
+    setStep(step + 1);
+  };
+  const cellName = (cell: DemoCell) =>
+    t(
+      `${cell.label}：${cell.value}${cell.state === 'active' ? '，当前处理' : cell.state === 'answer' ? '，答案' : ''}`,
+      `${cell.label}: ${cell.value}${cell.state === 'active' ? ', current' : cell.state === 'answer' ? ', answer' : ''}`,
+    );
   return (
     <section className="algorithm-demo" aria-labelledby={titleId}>
       <header className="algorithm-demo-header">
@@ -69,10 +115,54 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
         <h3 id={titleId}>{trace.title}</h3>
         <p>{trace.question}</p>
       </header>
-      {frame.graph && <DemoGraphView graph={frame.graph} />}
+      {custom && (
+        <details className="algorithm-demo-input">
+          <summary>{t('换个输入', 'Try your own input')}</summary>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              const parsed = custom.parse(text);
+              if ('error' in parsed) return setError(parsed.error);
+              setError(null);
+              restart(parsed.args);
+            }}
+          >
+            <label htmlFor={inputId}>{t(...custom.label)}</label>
+            <div>
+              <input
+                id={inputId}
+                value={text}
+                placeholder={custom.placeholder}
+                spellCheck={false}
+                autoComplete="off"
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? errorId : undefined}
+                onChange={(event) => setText(event.target.value)}
+              />
+              <button type="submit">{t('应用', 'Apply')}</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setText('');
+                  setError(null);
+                  restart(null);
+                }}
+              >
+                {t('恢复默认', 'Restore default')}
+              </button>
+            </div>
+            {error && (
+              <p className="algorithm-demo-error" id={errorId} role="alert">
+                {t(...error)}
+              </p>
+            )}
+          </form>
+        </details>
+      )}
+      {frame.graph && <DemoGraphView graph={frame.graph} onPick={asking ? guess : undefined} />}
       {frame.cells.length > 0 && (
       <div
-        className={`algorithm-demo-cells ${trace.columns ? 'algorithm-demo-grid' : ''} ${(trace.columns ?? 0) >= 6 ? 'is-dense' : ''}`}
+        className={`algorithm-demo-cells ${trace.columns ? 'algorithm-demo-grid' : ''} ${(trace.columns ?? 0) >= 6 ? 'is-dense' : ''} ${(trace.columns ?? 0) > 8 ? 'is-wide' : ''}`}
         style={
           trace.columns
             ? {
@@ -82,19 +172,25 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
         }
         aria-label={t('算法当前状态', 'Current algorithm state')}
       >
-        {frame.cells.map((cell, i) => (
-          <div
-            key={i}
-            className={`algorithm-demo-cell ${cell.state ? `is-${cell.state}` : ''}`}
-            aria-label={t(
-              `${cell.label}：${cell.value}${cell.state === 'active' ? '，当前处理' : cell.state === 'answer' ? '，答案' : ''}`,
-              `${cell.label}: ${cell.value}${cell.state === 'active' ? ', current' : cell.state === 'answer' ? ', answer' : ''}`,
-            )}
-          >
-            <span>{cell.value}</span>
-            <small>{cell.label}</small>
-          </div>
-        ))}
+        {frame.cells.map((cell, i) => {
+          const className = `algorithm-demo-cell ${cell.state ? `is-${cell.state}` : ''}`;
+          const body = (
+            <>
+              <span>{cell.value}</span>
+              <small>{cell.label}</small>
+            </>
+          );
+          // Predict mode: every cell is a button, so the answer isn't given away.
+          return asking ? (
+            <button key={i} type="button" className={className} aria-label={cellName(cell)} onClick={() => guess(`c${i}`)}>
+              {body}
+            </button>
+          ) : (
+            <div key={i} className={className} aria-label={cellName(cell)}>
+              {body}
+            </div>
+          );
+        })}
       </div>
       )}
       <div className="algorithm-demo-legend">
@@ -133,6 +229,26 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
           </div>
         ))}
       </dl>
+      {guessing && (
+        <div className="algorithm-demo-guess" aria-live="polite">
+          {verdict && (
+            <p className={verdict.right ? 'is-right' : 'is-wrong'}>
+              <strong>{verdict.right ? t('✓ 猜对了', '✓ Right') : t('✗ 没猜中', '✗ Not this time')}</strong>{' '}
+              {t(`下一步变成当前处理的是 ${verdict.answer}，原因见下方说明。`, `It was ${verdict.answer}; the caption below says why.`)}
+            </p>
+          )}
+          <p>
+            {asking
+              ? t('下一步哪个格子或节点会变成「当前处理」（蓝色）？点它。', 'Which cell or node turns current (blue) next? Click it.')
+              : step < last
+                ? t('下一步没有新的格子或节点变成当前处理，按「下一步」继续。', 'Nothing new turns current next: press Next to go on.')
+                : t('演示结束。', 'That is the end of the demo.')}
+            <span className="algorithm-demo-score">
+              {t(`本轮答对 ${score.right} / ${score.total}`, `This round: ${score.right} / ${score.total} right`)}
+            </span>
+          </p>
+        </div>
+      )}
       <p
         className={`algorithm-demo-caption ${frame.done ? 'is-complete' : ''}`}
         id={captionId}
@@ -148,7 +264,7 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
       >
         <button
           type="button"
-          onClick={() => move(0)}
+          onClick={() => restart(args)}
           disabled={step === 0 && !playing}
         >
           {t('重置', 'Reset')}
@@ -164,6 +280,7 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
           type="button"
           className="algorithm-demo-play"
           aria-pressed={playing}
+          disabled={guessing}
           onClick={() => {
             if (step === last) setStep(0);
             setPlaying((p) => !p);
@@ -177,10 +294,22 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
         </button>
         <button
           type="button"
-          onClick={() => move(step + 1)}
+          onClick={() => (asking ? guess(null) : move(step + 1))}
           disabled={step === last}
         >
-          {t('下一步', 'Next')}
+          {asking ? t('看答案', 'Show me') : t('下一步', 'Next')}
+        </button>
+        <button
+          type="button"
+          aria-pressed={guessing}
+          onClick={() => {
+            setGuessing((g) => !g);
+            setPlaying(false);
+            setVerdict(null);
+            setScore({ right: 0, total: 0 });
+          }}
+        >
+          {t('先猜下一步', 'Predict the next step')}
         </button>
         <label>
           {t('速度', 'Speed')}
@@ -224,7 +353,7 @@ const R = 4.2;
  * A frame's graph or tree in SVG. Arrowheads are drawn per edge (no shared marker), so they
  * take the edge's state colour; the caption below narrates each step for screen readers.
  */
-export function DemoGraphView({ graph }: { graph: DemoGraph }) {
+export function DemoGraphView({ graph, onPick }: { graph: DemoGraph; onPick?: (key: string) => void }) {
   const t = useT();
   const at = new Map(graph.nodes.map((n) => [n.id, n]));
   const stateWord = (state?: string) =>
@@ -235,17 +364,15 @@ export function DemoGraphView({ graph }: { graph: DemoGraph }) {
         : state === 'visited'
           ? t('，已处理', ', done')
           : '';
+  const name = (n: DemoGraph['nodes'][number]) =>
+    `${n.label || n.note || n.id}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`;
   return (
     <svg
       className="algorithm-demo-graph"
       viewBox={`0 0 ${graph.width} ${graph.height}`}
-      role="img"
-      aria-label={
-        t('图：', 'Graph: ') +
-        graph.nodes
-          .map((n) => `${n.label || n.note || n.id}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`)
-          .join(t('；', '; '))
-      }
+      // Predict mode: the nodes become buttons, which an img role would hide.
+      role={onPick ? 'group' : 'img'}
+      aria-label={onPick ? t('图：点出下一步的节点', 'Graph: click the next node') : t('图：', 'Graph: ') + graph.nodes.map(name).join(t('；', '; '))}
     >
       {graph.edges.map((e) => {
         const a = at.get(e.from)!,
@@ -275,7 +402,21 @@ export function DemoGraphView({ graph }: { graph: DemoGraph }) {
         );
       })}
       {graph.nodes.map((n) => (
-        <g key={n.id} className={`algorithm-demo-node ${n.state ? `is-${n.state}` : ''}`}>
+        <g
+          key={n.id}
+          className={`algorithm-demo-node ${n.state ? `is-${n.state}` : ''}`}
+          {...(onPick && {
+            role: 'button',
+            tabIndex: 0,
+            'aria-label': name(n),
+            onClick: () => onPick(`n${n.id}`),
+            onKeyDown: (event: KeyboardEvent) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return;
+              event.preventDefault();
+              onPick(`n${n.id}`);
+            },
+          })}
+        >
           <circle cx={n.x} cy={n.y} r={n.label ? R : R * 0.6} />
           {n.label && (
             <text x={n.x} y={n.y} dominantBaseline="central" textAnchor="middle">
@@ -283,7 +424,7 @@ export function DemoGraphView({ graph }: { graph: DemoGraph }) {
             </text>
           )}
           {n.note && (
-            <text className="algorithm-demo-note" x={n.x} y={n.y + R + 3.2} dominantBaseline="middle" textAnchor="middle">
+            <text className="algorithm-demo-note" x={n.x} y={n.y + R + 3.2 + (n.noteDy ?? 0)} dominantBaseline="middle" textAnchor="middle">
               {n.note}
             </text>
           )}
