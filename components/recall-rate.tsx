@@ -100,6 +100,46 @@ const GRADES: [RecallGrade, string, string][] = [
   ['no', '不会', "Didn't know"],
 ];
 
+/** Key points to tick off against an answer, the count in the legend; `candidate`: an interviewer ticks them. */
+export function PointsChecklist({
+  points,
+  checked,
+  onChange,
+  candidate,
+}: {
+  points: string[];
+  checked: readonly number[];
+  onChange: (checked: number[]) => void;
+  candidate?: boolean;
+}) {
+  const t = useT();
+  if (!points.length) return null;
+  const n = checked.length;
+  return (
+    <fieldset className="recall-points">
+      <legend>
+        {candidate
+          ? t(`候选人讲到的要点（${n}/${points.length}）`, `Key points the candidate covered (${n} of ${points.length})`)
+          : t(`对照要点（${n}/${points.length}）`, `Key points you covered (${n} of ${points.length})`)}
+      </legend>
+      <ul>
+        {points.map((point, i) => (
+          <li key={i}>
+            <label>
+              <input
+                type="checkbox"
+                checked={checked.includes(i)}
+                onChange={(event) => onChange(event.target.checked ? [...checked, i].sort((a, b) => a - b) : checked.filter((x) => x !== i))}
+              />
+              <span>{point}</span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </fieldset>
+  );
+}
+
 /**
  * Under a revealed reference answer: tick the key points the answer covered (this visit only),
  * then grade yourself. The card comes back after 1/3/7/21 days (lib/recall.ts) and shows up
@@ -122,7 +162,7 @@ export function RecallRate({
   const id = useId();
   const [card, setCard] = useState<RecallCard | null>(null);
   const [state, setState] = useState<'' | 'saving' | 'saved' | 'held' | 'failed'>('');
-  const [ticked, setTicked] = useState<ReadonlySet<number>>(new Set());
+  const [ticked, setTicked] = useState<number[]>([]);
   // Callers key this by target, so another question starts with fresh state.
   useEffect(() => {
     let current = true;
@@ -175,32 +215,7 @@ export function RecallRate({
         )}{' '}
         {!signedIn && t('只存在这台设备上；登录后会合并到你的账号。', 'Kept on this device; sign in and it moves to your account.')}
       </p>
-      {points.length > 0 && (
-        <fieldset className="recall-points">
-          <legend>
-            {t(`对照要点（${ticked.size}/${points.length}）`, `Key points you covered (${ticked.size} of ${points.length})`)}
-          </legend>
-          <ul>
-            {points.map((point, i) => (
-              <li key={i}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={ticked.has(i)}
-                    onChange={(event) => {
-                      const next = new Set(ticked);
-                      if (event.target.checked) next.add(i);
-                      else next.delete(i);
-                      setTicked(next);
-                    }}
-                  />
-                  <span>{point}</span>
-                </label>
-              </li>
-            ))}
-          </ul>
-        </fieldset>
-      )}
+      <PointsChecklist points={points} checked={ticked} onChange={setTicked} />
       <fieldset className="recall-grades">
         <legend className="sr-only">{t('这道题你会了吗？', 'How well did you know it?')}</legend>
         {GRADES.map(([grade, zh, en], i) => (

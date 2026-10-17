@@ -1,18 +1,33 @@
 import assert from 'node:assert/strict';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve } from 'node:path';
 import { test } from 'node:test';
 import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import {
+  FRAMEWORKS,
   KINDS,
+  RAPID_CATEGORY,
   TEMPLATES,
   companyCounts,
   drawSet,
+  frameworkFor,
+  guideFor,
   leadershipPrinciples,
   resolveTemplate,
   splitBody,
+  type KindId,
   type PoolItem,
+  type Text,
 } from '../lib/mock-interview';
 import { mockPool, mockSet } from '../lib/server/mock-interview';
 import { extraPool, extraQuestion } from '../lib/server/interview-extra';
+import { keyPoints } from '../lib/recall';
+import mcqBank from '../lib/content/oa-mcq.json';
+import { sqlite } from '../db/sqlite';
+import type { Person } from '../lib/server/auth';
 
 const q = (id: string, company: string | null, category: string, role = 'Software Engineer', round = 'Onsite'): PoolItem => ({
   id, company, category, role, round,
@@ -33,7 +48,9 @@ const ids = (set: ReturnType<typeof drawSet>) => set.slots.map((s) => s.item?.id
 void test('templates are well formed and custom mixes are validated', () => {
   assert.equal(new Set(TEMPLATES.map((t) => t.id)).size, TEMPLATES.length);
   for (const t of TEMPLATES) {
-    assert.ok(t.slots.length >= 3 && t.slots.every((s) => Object.hasOwn(KINDS, s.kind) && s.minutes > 0), t.id);
+    // A rapid slot is that many questions.
+    const questions = t.slots.reduce((n, s) => n + (s.rapid ?? 1), 0);
+    assert.ok(questions >= 3 && t.slots.every((s) => Object.hasOwn(KINDS, s.kind) && s.minutes > 0), t.id);
     const total = t.slots.reduce((sum, s) => sum + s.minutes, 0);
     assert.ok(total >= 30 && total <= 180, `${t.id}: ${total} minutes`);
   }
@@ -297,4 +314,165 @@ void test('the AI-only extra templates draw their own questions, the frontend ro
   assert.notEqual(rolled.slots[1].item?.id, frontend.slots[1].item?.id);
   // Other templates never draw them.
   assert.ok(mockSet(db, new URLSearchParams({ template: 'lld', seed: 'abc' })).slots.every((s) => s.item?.type !== 'extra'));
+});
+
+void test('answer frameworks: picked by kind and title, steps scaled to add up to the slot', () => {
+  const f = (kind: KindId, title: string, category: string | null = null, minutes = 15, parts?: { q: Text }[]) =>
+    frameworkFor({ kind, minutes }, { title, category, parts });
+  const ids = (steps: ReturnType<typeof frameworkFor>) => steps?.map((s) => s.id) ?? null;
+  assert.deepEqual(ids(f('analytics', 'Design an A/B test for a new checkout button')), FRAMEWORKS.ab.map((s) => s.id));
+  assert.equal(f('analytics', 'How would you run the experiment for free shipping?')?.[0].id, 'hypothesis');
+  assert.deepEqual(ids(f('analytics', 'Daily active users dropped 10% overnight')), FRAMEWORKS.metric.map((s) => s.id));
+  assert.equal(f('analytics', 'Investigate a spike in support tickets')?.[0].id, 'define');
+  assert.equal(f('analytics', 'Bookings are declining in Europe')?.[0].id, 'define');
+  assert.equal(f('analytics', 'How would you measure the success of Stories?'), null);
+  // Ruling the experiment out makes it an observational question (real titles from the library).
+  assert.equal(f('analytics', 'Measure speaker impact without A/B testing'), null);
+  assert.equal(f('analytics', 'Determine if players prefer local creators without experiments'), null);
+  assert.equal(f('analytics', '不做实验，怎么评估新功能的效果？'), null);
+  assert.equal(f('analytics', '比较不同实验组的留存')?.[0].id, 'hypothesis');
+  assert.equal(f('analytics', 'Explain the revenue drop without running an experiment')?.[0].id, 'define');
+  assert.equal(f('analytics', 'Analyze promo anomaly and design risk guardrails')?.[0].id, 'define');
+  assert.equal(f('analytics', 'Weekly orders decreased by 8%')?.[0].id, 'define');
+  assert.equal(f('analytics', '注册转化率异常')?.[0].id, 'define');
+  assert.deepEqual(ids(f('ml', 'Design a news feed ranking model', null, 20)), FRAMEWORKS.mldesign.map((s) => s.id));
+  assert.equal(f('ml', 'Build a model to recommend restaurants')?.[0].id, 'goal');
+  assert.equal(f('ml', 'Explain the bias-variance trade-off'), null);
+  assert.equal(f('design', 'Design a URL shortener', 'System Design', 45)?.length, 5);
+  assert.equal(f('design', 'TCP vs UDP', 'Software Engineering Fundamentals'), null);
+  assert.equal(f('behavioral', 'Tell me about an A/B test that failed'), null);
+  assert.equal(f('coding', 'Two Sum', null, 35), null);
+  assert.equal(f('coding', 'Two Sum', null, 35, []), null);
+  assert.equal(frameworkFor({ kind: 'analytics', minutes: 15 }, null), null);
+  // A multi-part coding question: the question, then one step per follow-up, which is its text.
+  const parts = f('coding', 'Two Sum', null, 35, [{ q: ['如果数组已经排好序？', 'What if the array is sorted?'] }, { q: ['三个数呢？', 'And three numbers?'] }])!;
+  assert.deepEqual(parts.map((s) => [s.id, s.minutes]), [['part-1', 17], ['part-2', 9], ['part-3', 9]]);
+  assert.deepEqual(parts[1].points, ['如果数组已经排好序？', 'What if the array is sorted?']);
+  assert.deepEqual(parts[2].name, ['第 3 部分', 'Part 3']);
+  // The defaults fit each kind's suggested minutes; any slot length is shared out exactly, on half minutes.
+  assert.deepEqual([FRAMEWORKS.metric, FRAMEWORKS.ab, FRAMEWORKS.mldesign].map((x) => x.reduce((n, s) => n + s.minutes, 0)), [15, 15, 20]);
+  for (const minutes of [3, 10, 15, 20, 26, 35, 45, 60]) {
+    for (const steps of [f('analytics', 'A/B test', null, minutes), f('analytics', 'Revenue fell', null, minutes), f('ml', 'Design a ranker', null, minutes),
+      f('design', 'Design a chat app', 'System Design', minutes), f('coding', 'x', null, minutes, [{ q: ['a', 'a'] }])]) {
+      assert.equal(steps!.reduce((n, s) => n + s.minutes, 0), minutes, `${steps![0].id} ${minutes}`);
+      assert.ok(steps!.every((s) => s.minutes > 0 && Number.isInteger(s.minutes * 2)), `${steps![0].id} ${minutes}`);
+    }
+  }
+  // Every step is bilingual and scored on a dimension of its round.
+  for (const steps of Object.values(FRAMEWORKS))
+    for (const s of steps) {
+      assert.match(s.name[0] + s.points[0], /[一-鿿]/, s.id);
+      assert.doesNotMatch(s.name[1] + s.points[1], /[一-鿿]/, s.id);
+      assert.ok(s.rubric.length > 0, s.id);
+    }
+  // The AI interviewer's own guide is unchanged: analytics questions have none there.
+  assert.equal(guideFor('analytics', 'Analytics & Experimentation'), null);
+  assert.equal(guideFor('design', 'System Design')?.length, 5);
+});
+
+void test('the rapid-fire screen: eight different fundamentals at 90 seconds each, then a multi-part coding question', () => {
+  const FUNDAMENTALS = RAPID_CATEGORY;
+  const bank: PoolItem[] = [
+    ...Array.from({ length: 12 }, (_, i) => q(`f-${i}`, null, FUNDAMENTALS)),
+    // The library's long-form fundamentals never fill a rapid slot.
+    q('se-1', null, 'Software Engineering Fundamentals'),
+    q('sd-1', null, 'System Design'),
+    ...Array.from({ length: 6 }, (_, i) => q(`c-${i}`, null, CODING)),
+    { ...q('c-parts-1', null, CODING), parts: true },
+    { ...q('c-parts-2', null, CODING), parts: true },
+  ];
+  const template = resolveTemplate('screen-rapid')!;
+  assert.ok(TEMPLATES.includes(template));
+  // A generic name: the format is common to many technical screens.
+  assert.doesNotMatch(JSON.stringify(template), /karat/i);
+  for (const seed of ['a', 'b', 'c', 'd']) {
+    const set = drawSet(bank, template, { seed });
+    assert.equal(set.slots.length, 9);
+    const rapid = set.slots.slice(0, 8);
+    assert.ok(rapid.every((s) => s.item?.category === FUNDAMENTALS && s.minutes === 1.5 && s.rapid === 8), seed);
+    assert.equal(new Set(rapid.map((s) => s.item!.id)).size, 8, seed);
+    assert.deepEqual(rapid.map((s) => s.name), Array.from({ length: 8 }, (_, k) => [`快问快答 ${k + 1}/8`, `Rapid-fire ${k + 1}/8`]));
+    assert.match(set.slots[8].item!.id, /^c-parts-/, seed);
+    assert.equal(set.slots[8].parts, true);
+    assert.equal(set.slots[8].pool, 2);
+    // A re-roll stays among the questions with follow-ups; one of the rapid ones, among the fundamentals.
+    const rolled = drawSet(bank, template, { seed, rerolls: [8, 3] });
+    assert.match(rolled.slots[8].item!.id, /^c-parts-/);
+    assert.notEqual(rolled.slots[8].item!.id, set.slots[8].item!.id);
+    assert.equal(new Set(rolled.slots.slice(0, 8).map((s) => s.item!.id)).size, 8);
+  }
+  // No question with follow-ups: any coding question.
+  const plain = drawSet(bank.filter((i) => !i.parts), template, { seed: 'a' });
+  assert.match(plain.slots[8].item!.id, /^c-\d$/);
+  assert.equal(plain.slots[8].pool, 6);
+  // A bank smaller than the slot gives fewer quick questions at 90 seconds each, never an empty one.
+  const small = bank.filter((i) => i.category !== FUNDAMENTALS || /^f-[0-4]$/.test(i.id));
+  for (const seed of ['a1', 'b2', 'c3']) {
+    const set = drawSet(small, template, { seed });
+    assert.equal(set.slots.length, 6, seed);
+    assert.ok(set.slots.every((s) => s.item), seed);
+    assert.deepEqual(set.slots.slice(0, 5).map((s) => [s.minutes, s.name![1]]), Array.from({ length: 5 }, (_, k) => [1.5, `Rapid-fire ${k + 1}/5`]));
+  }
+  // The quick questions belong to no company: never marked as another company's.
+  const atAcme = drawSet([...bank, { ...q('c-acme', 'acme', CODING), parts: true }], template, { seed: 'a', company: 'acme' });
+  assert.deepEqual(atAcme.slots.map((s) => s.similar), Array(9).fill(false));
+  const none = drawSet(bank.filter((i) => i.category !== FUNDAMENTALS), template, { seed: 'a' });
+  assert.deepEqual(none.slots.map((s) => s.kind), ['coding']);
+});
+
+void test('a parts slot carries up to two follow-up questions, never their answers, and none in a running contest or exam', () => {
+  const db = new Database(':memory:');
+  db.exec(`CREATE TABLE items(id TEXT PRIMARY KEY, type TEXT, slug TEXT, title TEXT, company_slug TEXT, company_name TEXT,
+    role TEXT, category TEXT, difficulty TEXT, round TEXT, partial INTEGER, listed INTEGER, dup_of TEXT, extra TEXT, body TEXT)`);
+  const insert = db.prepare('INSERT INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+  // Two Sum (lc-1) has written follow-ups; lc-2 has none.
+  insert.run('cq-sum', 'coding_question', 'two-sum-x', 'Two sum', 'uber', 'Uber', 'Software Engineer', CODING, 'easy', 'Onsite', 0, 0,
+    JSON.stringify({ kind: 'library', id: 'lc-1', problem: 'lc-1' }), '{}', 'Find two numbers.\n\n## Solution\n\nHash map.');
+  insert.run('cq-add', 'coding_question', 'add-two-x', 'Add two numbers', 'uber', 'Uber', 'Software Engineer', CODING, 'medium', 'Onsite', 0, 0,
+    JSON.stringify({ kind: 'library', id: 'lc-2', problem: 'lc-2' }), '{}', 'Add them.');
+  assert.deepEqual(mockPool(db).map((r) => [r.id, r.parts]), [['cq-add', false], ['cq-sum', true]]);
+  const coding = (p: Person | null = null, extra = '') => mockSet(db, new URLSearchParams(`template=screen-rapid&seed=a1${extra}`), p).slots[8].item!;
+  // The rapid-fire questions come from the MCQ bank's CS questions, in both languages, the answer as two points.
+  const bankById = new Map(mcqBank.questions.map((m) => [m.id, m]));
+  const rapid = mockSet(db, new URLSearchParams('template=screen-rapid&seed=a1')).slots.slice(0, 8);
+  assert.equal(new Set(rapid.map((s) => s.item?.id)).size, 8);
+  for (const { item, minutes } of rapid) {
+    const m = bankById.get(item!.id)!;
+    assert.equal(minutes, 1.5);
+    assert.ok(m.section === 'cs' && !('code' in m), m.id);
+    assert.deepEqual([item!.type, item!.category, item!.title, item!.titleZh], ['mcq', RAPID_CATEGORY, m.en.q, m.zh.q]);
+    assert.match(item!.question, /^- A\. .+\n- B\. .+\n- C\. .+\n- D\. .+\n\nPick your answer and say why/);
+    assert.match(item!.questionZh!, /^- A\. .+\n[\s\S]*选出答案/);
+    assert.equal(item!.solution, `- Answer: ${m.answer.map((i) => `${'ABCD'[i]}. ${m.en.choices[i]}`).join('; ')}\n- ${m.en.explain}`);
+    assert.equal(item!.solutionZh, `- 答案：${m.answer.map((i) => `${'ABCD'[i]}. ${m.zh.choices[i]}`).join('; ')}\n- ${m.zh.explain}`);
+    assert.equal(keyPoints(item!.solution).length, 2);
+  }
+  // The candidate's view: the question alone.
+  const asked = mockSet(db, new URLSearchParams('template=screen-rapid&seed=a1&parts=question')).slots[0].item!;
+  assert.equal(asked.solution, '');
+  assert.equal(asked.solutionZh, undefined);
+  assert.ok(asked.questionZh);
+  const item = coding();
+  assert.equal(item.id, 'cq-sum');
+  assert.deepEqual(item.parts, [
+    { q: ['如果数组已经排好序？', 'What if the array is sorted?'] },
+    { q: ['要返回所有和为 target 的数对（按值去重）？', 'Return every pair summing to target, without duplicate values?'] },
+  ]);
+  assert.ok(item.parts!.every((part) => Object.keys(part).join() === 'q'));
+  assert.doesNotMatch(JSON.stringify(item.parts), /pointer|指针/i);
+  // The candidate's view gets the questions too (they hold no answers); other slots get none.
+  assert.equal(coding(null, '&parts=question').parts?.length, 2);
+  assert.ok(mockSet(db, new URLSearchParams('template=custom&mix=coding.2&seed=a1')).slots.every((s) => !s.item?.parts));
+
+  // Signed in with Two Sum in a running skill exam: no follow-ups; anyone else still gets them.
+  process.env.DATABASE_PATH = resolve(mkdtempSync(resolve(tmpdir(), 'cswork-mock-parts-')), 'test.sqlite');
+  migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
+  const now = Date.now();
+  sqlite()
+    .prepare("INSERT INTO skill_attempts(id,user_id,test,ids_json,language,started_at,deadline,created_at) VALUES('exam','u-exam','dsa','[\"lc-1\"]','python',?,?,0)")
+    .run(now - 60_000, now + 3_600_000);
+  const person = (id: string): Person => ({ id, name: id, email: `${id}@example.test`, role: 'student', verified: true });
+  assert.equal(coding(person('u-exam')).id, 'cq-sum');
+  assert.equal(coding(person('u-exam')).parts, undefined);
+  assert.equal(coding(person('u-other')).parts?.length, 2);
 });
