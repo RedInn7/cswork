@@ -515,7 +515,8 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, #327b76 18%, transparent);
 }
 .xs-q-row input:invalid {
-  border-color: #b42318;
+  /* The token, so dark mode gets its lighter red (the light one is 2.7:1 on the dark input). */
+  border-color: var(--destructive);
 }
 .xs-q-similar {
   display: inline-flex;
@@ -793,7 +794,7 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, #327b76 18%, transparent);
   }
   .dark .xs-q-row input:invalid {
-    border-color: #b42318;
+    border-color: var(--destructive);
   }
   .dark .xs-q-similar {
     color: #c5d1dc;
