@@ -445,6 +445,12 @@ function Setup({ params, navigate, ai }: { params: Record<string, string>; navig
             );
           })}
         </fieldset>
+        {!ai && (
+          <p className="rd-card mi-muted">
+            {t('招聘方初筛和 Offer 谈判要和 AI 面试官练，也可以先用不靠 AI 的分支剧本：', 'The recruiter screen and offer negotiation are practiced with the AI interviewer, or without it as branching scripts:')}{' '}
+            <a className="rd-button is-quiet" href="/career/negotiation">{t('谈薪对练 →', 'Negotiation practice →')}</a>
+          </p>
+        )}
         {template === 'custom' && (
           <div className="rd-card mi-custom">
             {mixable.map((k) => (
@@ -904,6 +910,12 @@ function Plan({
         {aiOnly && !ai && (
           <p className="rd-card mi-muted">
             {t('这套题只能和 AI 面试官一起练：登录后再打开。', 'This set is practiced with the AI interviewer only: sign in, then open it again.')}
+            {data.slots.some((s) => isRoleplay(s.kind)) && (
+              <>
+                {' '}
+                <a className="rd-button is-quiet" href="/career/negotiation">{t('先用剧本对练 →', 'Practice it as a script →')}</a>
+              </>
+            )}
           </p>
         )}
         {!aiOnly && (

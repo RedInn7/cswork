@@ -159,8 +159,11 @@ test('the LLD template is offered with the AI interviewer only, and never in a c
   const names = () => [...document.querySelectorAll('.mi-template strong')].map((n) => n.textContent);
   await act2(() => root.render(createElement(MockInterview, { params: { view: 'mock-interview' }, navigate() {}, problemIds: [], ai: false })));
   assert.equal(names().includes('LLD / object-oriented design'), false);
+  // The role-plays need the AI too; the practice scripts stand in.
+  assert.ok(document.querySelector('.mi-templates + .rd-card a[href="/career/negotiation"]'));
   await act2(() => root.render(createElement(MockInterview, { params: { view: 'mock-interview', template: 'custom' }, navigate() {}, problemIds: [], ai: true })));
   assert.equal(names().includes('LLD / object-oriented design'), true);
+  assert.equal(document.querySelector('a[href="/career/negotiation"]'), null);
   const counters = [...document.querySelectorAll('.mi-counter > span')].map((n) => n.textContent);
   assert.equal(counters.some((c) => c.includes('Low-level')), false);
   await act(async () => root.unmount());

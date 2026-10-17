@@ -149,7 +149,7 @@ test('templates: filled from the contact in the address and its card, copied and
   // Negotiation points to the offer comparison.
   assert.equal(document.querySelector('.outreach-tip a'), null);
   await act(async () => document.querySelector('.outreach-picker input[value="counter-competing"]').click());
-  assert.equal(document.querySelector('.outreach-tip a').getAttribute('href'), '/career/offers');
+  assert.deepEqual([...document.querySelectorAll('.outreach-tip a')].map((a) => a.getAttribute('href')), ['/career/offers', '/career/negotiation']);
   assert.ok(field('Other company'));
   await act(async () => root.render(createElement('div')));
 });

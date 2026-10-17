@@ -124,3 +124,14 @@ test('a negotiation role-play: rate yourself before the report, then see your sc
   assert.match($('.mi-table tbody').textContent, /后端软件工程师 · 新毕业生/);
   await act(async () => root.unmount());
 });
+
+test('without the AI interviewer, a role-play set points to the practice scripts', async () => {
+  const fresh = createRoot(document.getElementById('root'));
+  const { as: _, ...solo } = params;
+  await act(async () => {
+    fresh.render(createElement(MockInterview, { params: solo, navigate: () => {}, problemIds: [], ai: false }));
+    await settle();
+  });
+  assert.ok($('.mi-start a[href="/career/negotiation"]'));
+  await act(async () => fresh.unmount());
+});
