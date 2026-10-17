@@ -6,11 +6,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import mcqBank from '../lib/content/oa-mcq.json';
 import projectFile from '../lib/content/resume-projects.json';
-import { ROLE_KEYS, ROLES, isRole } from '../lib/content/role-paths';
+import { ROLE_KEYS, ROLES, ROUTE_MAX_STEPS, isRole, parseRoute, routeFits } from '../lib/content/role-paths';
 import { PLAN_TOPICS_PARAM } from '../lib/jd-skills';
 import { AI_TEMPLATES } from '../lib/mock-interview';
 import { ROUTE_SLUGS } from '../lib/route-stops';
-import { resolveRolePath, resolveStep } from '../lib/server/role-paths';
+import { MCQ_MINUTES, resolveRolePath, resolveStep, routeCatalog } from '../lib/server/role-paths';
 import { sdChapters } from '../lib/server/system-design-course';
 
 const pandasIds = new Set(
@@ -125,4 +125,85 @@ test('system design steps carry one label, and "optional" only as the step tag',
         assert.doesNotMatch(step.title, /系统设计：系统设计|System design: System design|选读|optional/i, `${role} ${step.ref}`);
   assert.equal(resolveStep({ kind: 'sd-part', ref: 'framework' }, false, true).title, 'System design: framework and cases');
   assert.equal(resolveStep({ kind: 'sd-part', ref: 'tech-kafka' }, true, true).title, '系统设计：关键技术');
+});
+
+test('every step has an estimate: problems by difficulty, reading time, MCQs, project hours, mock slots', () => {
+  for (const role of ROLE_KEYS)
+    for (const zh of [true, false])
+      for (const step of resolveRolePath(role, zh, false))
+        assert.ok(step.unavailable ? step.minutes === 0 : step.minutes > 0, `${role} ${step.kind} ${step.ref}: ${step.minutes}`);
+  // 6 basics at 25 minutes (lib/study-plan.ts MINUTES.medium); 66 complexity questions at 1.5; a 6-hour project.
+  assert.equal(resolveStep({ kind: 'sql-track', ref: 'basics' }, true, true).minutes, 150);
+  const complexity = resolveStep({ kind: 'mcq-topic', ref: 'complexity' }, true, true);
+  assert.equal(complexity.minutes, Math.round(complexity.keys.length * MCQ_MINUTES));
+  assert.equal(resolveStep({ kind: 'project', ref: 'lru-ttl-cache' }, true, true).minutes, 360);
+  assert.equal(resolveStep({ kind: 'mock-kind', ref: 'phone' }, true, true).minutes, 50);
+  assert.equal(resolveStep({ kind: 'mock-kind', ref: 'frontend' }, true, false).minutes, 0, 'unavailable');
+  // Line 500 by stage: never below all-easy, never above all-hard.
+  const linear = resolveStep(ROLES.backend.steps[0], true, true);
+  assert.ok(linear.minutes >= linear.keys.length * 15 && linear.minutes <= linear.keys.length * 40);
+});
+
+test('the route catalog holds every built-in step and every single ref, all 35 stops among them', () => {
+  const catalog = routeCatalog(false, false);
+  for (const role of ROLE_KEYS)
+    for (const step of ROLES[role].steps) {
+      const entry = catalog[`${step.kind}:${step.ref}`];
+      assert.ok(entry, `${role} ${step.kind}:${step.ref}`);
+      assert.equal(entry.optional, undefined, 'a route says itself what is optional');
+    }
+  const stops = Object.keys(catalog).filter((id) => id.startsWith('line-stops:') && !id.includes(','));
+  assert.deepEqual(stops.map((id) => id.slice('line-stops:'.length)), ROUTE_SLUGS);
+  for (const kind of ['sd-part', 'sql-track', 'pandas', 'core-group', 'ml-group', 'mcq-topic', 'project', 'course', 'fe-js', 'mock-kind'])
+    assert.ok(Object.keys(catalog).some((id) => id.startsWith(`${kind}:`)), kind);
+  assert.equal(Object.keys(catalog).filter((id) => id.startsWith('project:')).length, projectFile.projects.length);
+  assert.equal(new Set(Object.keys(catalog).filter((id) => id.startsWith('mcq-topic:'))).size, new Set(mcqBank.questions.map((q) => q.topic)).size);
+  // Every pandas entry is made of packaged pandas problems.
+  for (const [id, entry] of Object.entries(catalog))
+    if (id.startsWith('pandas:'))
+      assert.ok(entry.keys.length && entry.keys.every((k) => pandasIds.has(k.slice('problem:'.length))), id);
+  assert.equal(catalog['mock-kind:frontend'].unavailable, true, 'AI off');
+});
+
+test('parseRoute keeps a valid route and refuses long titles, too many steps and unreal dates', () => {
+  const base = { v: 1, targetDate: '2026-12-01', weeklyHours: 10, state: {}, planned: {} };
+  const ext = { kind: 'ext', id: 'ext-a1b2c3', title: 'CS61B lectures 1–12', units: 12, done: 3, unitMinutes: 90 };
+  const route = { ...base, name: 'Mine', from: 'backend', steps: [{ kind: 'sql-track', ref: 'joins', optional: true }, ext], state: { 'ext-a1b2c3': 'doing' }, planned: { 'sql-track:joins': '2026-11-02' } };
+  assert.deepEqual(parseRoute(JSON.stringify(route)), route);
+  assert.deepEqual(parseRoute(base), base);
+  // An entry without unitMinutes takes an hour a unit.
+  const { kind, id, title, units, done } = ext;
+  const bare = { kind, id, title, units, done };
+  assert.deepEqual(parseRoute({ ...base, steps: [bare] })?.steps, [{ ...bare, unitMinutes: 60 }]);
+  const bad = (doc: object, why: string) => assert.equal(parseRoute(doc), null, why);
+  bad({ ...base, steps: [{ ...ext, title: 'x'.repeat(81) }] }, 'an 81-character title');
+  assert.ok(parseRoute({ ...base, steps: [{ ...ext, title: 'x'.repeat(80) }] }));
+  bad({ ...base, steps: [{ ...ext, title: '   ' }] }, 'a blank title');
+  bad({ ...base, steps: [{ ...ext, url: 'javascript:alert(1)' }] }, 'entries carry no link');
+  bad({ ...base, steps: [{ ...ext, done: 13 }] }, 'more done than units');
+  bad({ ...base, steps: [{ ...ext, units: 501 }] }, 'units');
+  bad({ ...base, steps: [{ ...ext, unitMinutes: 4 }] }, 'unit minutes');
+  const many = Array.from({ length: ROUTE_MAX_STEPS + 1 }, (_, i) => ({ ...ext, id: `ext-${String(i).padStart(6, '0')}` }));
+  bad({ ...base, steps: many }, '81 steps');
+  assert.ok(parseRoute({ ...base, steps: many.slice(1) }), '80 steps');
+  bad({ ...base, steps: [ext, ext] }, 'a repeated step');
+  bad({ ...base, steps: [{ kind: 'sql-track', ref: 'a b' }] }, 'a ref with a space');
+  bad({ ...base, steps: [{ kind: 'nope', ref: 'joins' }] }, 'an unknown kind');
+  bad({ ...base, targetDate: '2026-02-30' }, 'Feb 30');
+  bad({ ...base, targetDate: '2026-1-5' }, 'not YYYY-MM-DD');
+  bad({ ...base, planned: { a: '2026-13-01' } }, 'a planned month 13');
+  bad({ ...base, weeklyHours: 0 }, 'no hours');
+  bad({ ...base, weeklyHours: 41 }, 'too many hours');
+  bad({ ...base, state: { a: 'done' } }, 'an unknown mark');
+  bad({ ...base, from: 'manager' }, 'an unknown role');
+  bad({ ...base, extra: 1 }, 'an unknown field');
+  assert.equal(parseRoute('{'), null);
+  // A built-in role's note holds no steps; a learner's route needs them.
+  assert.ok(routeFits('route:role-backend', parseRoute(base)!));
+  assert.ok(!routeFits('route:role-manager', parseRoute(base)!));
+  assert.ok(!routeFits('route:role-backend', parseRoute(route)!));
+  assert.ok(routeFits('route:r-lx2k9a', parseRoute(route)!));
+  assert.ok(!routeFits('route:r-lx2k9a', parseRoute(base)!));
+  assert.ok(!routeFits('route:r-UP', parseRoute(route)!));
+  assert.ok(!routeFits('route:custom/1', parseRoute(route)!));
 });
