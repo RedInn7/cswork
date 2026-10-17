@@ -536,3 +536,30 @@ void test("the digest's reviews follow the learner's daily cap and break (pref:r
   await sendLearnerReminders(NOW + DAY);
   assert.equal(notice(`rem:2026-10-16:${gil.id}`)!.body, '2 problems are due for review');
 });
+
+void test('no streak line once today is covered: the study goal met, or a rest day (pref:study)', async () => {
+  const ida = person('r-ida'); // Met her XP goal today with a chapter read.
+  const jon = person('r-jon'); // Today is his rest day.
+  const kim = person('r-kim'); // Neither: the streak line as before.
+  for (const p of [ida, jon, kim]) {
+    addUser(p);
+    await call(p, 'POST', 'oj/notify', prefs({ review: false, hour: 12 }));
+    accept(p.id, 'lc-1', Date.UTC(2026, 9, 13, 9));
+    accept(p.id, 'lc-2', Date.UTC(2026, 9, 14, 9));
+  }
+  const pref = (p: Person, body: unknown) =>
+    sqlite()
+      .prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,'pref:study',?,0)")
+      .run(p.id, JSON.stringify(body));
+  pref(ida, { goalXp: 10 });
+  sqlite()
+    .prepare("INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,'sd:intro','read',?)")
+    .run(ida.id, Date.UTC(2026, 9, 15, 10));
+  pref(jon, { restWeekdays: [4] }); // 2026-10-15 is a Thursday.
+  await sendLearnerReminders(NOW);
+  assert.equal(notice(`rem:2026-10-15:${ida.id}`), undefined);
+  assert.equal(notice(`rem:2026-10-15:${jon.id}`), undefined);
+  assert.equal(notice(`rem:2026-10-15:${kim.id}`)!.body, '2-day streak and nothing solved today (2 streak freezes left this month)');
+  // The met goal is kept for the calendar.
+  assert.equal(sqlite().prepare("SELECT COUNT(*) FROM user_marks WHERE user_id=? AND target='goal:2026-10-15'").pluck().get(ida.id), 1);
+});
