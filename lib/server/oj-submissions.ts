@@ -7,7 +7,9 @@ import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
 import { getCompileProblem } from './oj-problems';
-import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
+import { leetcodeConstraints, leetcodeContract, leetcodeParams, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
+import safe from '@/lib/content/stress-safe.json';
+import { complexityCases, type StressRule } from '@/lib/stress-gen';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
@@ -92,8 +94,22 @@ export const REFERENCE_MODES_SQL = `(${REFERENCE_MODES.map((m) => `'${m}'`).join
 /** Imported lazily, from one place: the judge worker's bundle stays free of contests (oj-capacity-release test). */
 const inRunningContest = async (userId: string, problemId: string) =>
   (await import('./contests')).inRunningContest(userId, problemId);
-/** A custom-input run's cases: its one input, or a stress test's generated ones (custom_input {"cases":[…]}). */
-export function ownCases(s: Pick<SubmissionRow, 'mode' | 'custom_input'>): string[] {
+/** A complexity probe's cases and sizes, drawn from its seed (lib/stress-gen.ts); null off the whitelist. */
+export const probeCases = (problemId: string, seed: number) =>
+  complexityCases(
+    leetcodeParams(problemId) ?? [],
+    leetcodeConstraints(problemId),
+    (safe as Record<string, Record<string, StressRule>>)[problemId] ?? {},
+    seed,
+  );
+/**
+ * A custom-input run's cases: its one input, a stress test's generated ones (custom_input
+ * {"cases":[…]}), or a complexity probe's, redrawn from its seed (custom_input {"seed":…}):
+ * up to 512 KiB a probe, so never stored.
+ */
+export function ownCases(s: Pick<SubmissionRow, 'mode' | 'custom_input' | 'problem_id'>): string[] {
+  if (s.mode === 'complexity')
+    return probeCases(s.problem_id, (JSON.parse(s.custom_input ?? '{}') as { seed?: number }).seed ?? 0)?.cases ?? [];
   if (s.mode !== 'stress' && s.mode !== 'stress-ref') return [s.custom_input ?? ''];
   return (JSON.parse(s.custom_input ?? '{}') as { cases?: string[] }).cases ?? [];
 }
@@ -718,9 +734,15 @@ export async function submissionDetail(p: Person, id: string) {
         .prepare('SELECT revision FROM oj_problem_versions WHERE id=?')
         .get(s.problem_version_id) as { revision: number } | undefined)
     : undefined;
+  // A probe's inputs (up to 512 KiB) are redrawn by the worker only, never on a poll: it shows times.
   const definitions =
     !formalMode(s.mode) && s.custom_input !== null
-      ? ownCases(s).map((input, ordinal) => ({ ordinal, input, expectedOutput: undefined, hidden: false }))
+      ? (s.mode === 'complexity' ? Array<string | undefined>(s.total).fill(undefined) : ownCases(s)).map((input, ordinal) => ({
+          ordinal,
+          input,
+          expectedOutput: undefined,
+          hidden: false,
+        }))
       : (
           sqlite()
             .prepare(
