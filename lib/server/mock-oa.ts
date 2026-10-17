@@ -33,6 +33,7 @@ import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
 import { oaTopic } from './oa-topics';
 import { listProblemSummaries } from './oj-problems';
+import { caseGroupScores } from './oj-submissions';
 
 /**
  * Employer slug → its reported LeetCode ids, library spellings merged and hidden spellings'
@@ -303,6 +304,8 @@ export type MockScenario = {
  * mocks, a custom one against custom mocks of the same count and source without a company.
  * Null for a custom mock with a company, or under PEER_MIN learners.
  * ponytail: scans mock_sessions by start time; index (company, started_at) when it grows.
+ * ponytail: the pool mixes scores from before partial credit (all_cases), when a failed
+ * question stopped at its first failing test, with weighted ones; it settles as old mocks age out of 180 days.
  */
 export async function mockPeers(userId: string, s: MockScenario, share: number, now = Date.now()) {
   if (!s.preset && s.company) return null;
@@ -349,29 +352,43 @@ export async function mockReport(p: Person, params: URLSearchParams) {
     .split(',')
     .map((s) => slotOf(s) ?? 'medium');
   const found = await rows<{
+    id: string;
     problem_id: string;
+    problem_version_id: string | null;
     status: string;
     passed: number;
     total: number;
+    score: number;
+    all_cases: number;
     created_at: number;
   }>(
-    `SELECT problem_id,status,passed,total,created_at FROM submissions WHERE user_id=? AND mode='judge' AND created_at BETWEEN ? AND ? AND problem_id IN (${ids.map(() => '?').join(',')}) ORDER BY created_at`,
+    `SELECT id,problem_id,problem_version_id,status,passed,total,score,all_cases,created_at FROM submissions WHERE user_id=? AND mode='judge' AND created_at BETWEEN ? AND ? AND problem_id IN (${ids.map(() => '?').join(',')}) ORDER BY created_at`,
     p.id,
     from,
     to,
     ...ids,
   );
-  const items = ids.map((id) => ({
-    id,
-    // An OA problem's estimate (what the draw placed it by): a slot can hold a
-    // different difficulty when its company had none to fit it.
-    estimate: oaTopic(id)?.d ?? null,
-    // First-AC times count from the real start, not the slack-widened window.
-    ...summarizeAttempts(
-      found.filter((s) => s.problem_id === id),
+  const items = ids.map((id) => {
+    const attempts = found.filter((s) => s.problem_id === id);
+    // First-AC times count from the real start, not the slack-widened window. Only a row judged
+    // on every case passes its weighted score: an older row's score stopped at its first failure.
+    const summary = summarizeAttempts(
+      attempts.map(({ score, all_cases, ...s }) => (all_cases ? { ...s, score } : s)),
       from + REPORT_SLACK,
-    ),
-  }));
+    );
+    const best = attempts.find((s) => s.id === summary.best?.id);
+    return {
+      id,
+      // An OA problem's estimate (what the draw placed it by): a slot can hold a
+      // different difficulty when its company had none to fit it.
+      estimate: oaTopic(id)?.d ?? null,
+      ...summary,
+      groups:
+        best?.all_cases && best.problem_version_id
+          ? caseGroupScores(best.id, best.problem_version_id)?.scores
+          : undefined,
+    };
+  });
   const score = scoreMock(
     items.map((i) => i.best),
     scoring,

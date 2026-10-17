@@ -2,6 +2,7 @@ import type { Problem, Language } from './problems';
 import type { CodingMode } from './coding-mode';
 import type { CompanyChip } from './company-tags';
 import type { Constraint } from './testcase-fields';
+import type { CaseGroup } from './oj-case-groups';
 import { readLocale } from './i18n';
 
 export type OJProblem = Problem & {
@@ -110,6 +111,8 @@ export type OJCase = {
   expected?: string;
   stdout?: string;
   stderr?: string;
+  /** An all_cases submission's split version: which group this case scores in (lib/oj-case-groups.ts). */
+  group?: CaseGroup;
 };
 export type OJSubmission = {
   watchToken?: string;
@@ -123,6 +126,10 @@ export type OJSubmission = {
   passed: number;
   total: number;
   score?: number;
+  /** Judged on every case for partial credit: `score` is the weighted share (createSubmission). */
+  allCases?: boolean;
+  /** Weighted percentages per group, once judged, when its version is split. */
+  groups?: Record<CaseGroup, number>;
   runtime?: number | null;
   memory?: number | null;
   runtimeMs?: number | null;

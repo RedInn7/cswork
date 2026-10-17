@@ -1522,6 +1522,8 @@ function Workspace({
       codingMode,
       mode: sent,
       ...(mode === 'run' && inputMode === 'custom' ? { stdin } : {}),
+      // Partial credit in a mock OA or on an OA problem; the server turns it off in contests and skill exams.
+      ...(sent === 'judge' && (exam?.running || problem.id.startsWith('oa-')) ? { allCases: true } : {}),
     };
     const fingerprint = JSON.stringify(payload);
     if (

@@ -5,6 +5,7 @@ import {
   workerConcurrency,
   exclusiveSubmission,
   SubmissionAdmission,
+  stopJudging,
 } from '../lib/server/oj-worker-policy';
 
 void test('worker defaults to four slots, accepts one to four and rejects unbounded overrides', () => {
@@ -127,4 +128,21 @@ void test('total snapshot budget stops multiple individually valid large cases',
       return true;
     },
   );
+});
+
+void test('judging stops at the first formal failure, a run on resource failures, all_cases at 3 resource failures', () => {
+  const judge = { formal: true, runAll: false, heavy: 0 };
+  assert.equal(stopJudging('accepted', judge), false);
+  for (const status of ['wrong_answer', 'runtime_error', 'time_limit'])
+    assert.equal(stopJudging(status, { ...judge, heavy: Number(status === 'time_limit') }), true);
+  const run = { formal: false, runAll: false, heavy: 0 };
+  assert.equal(stopJudging('wrong_answer', run), false);
+  assert.equal(stopJudging('runtime_error', run), true);
+  assert.equal(stopJudging('memory_limit', { ...run, heavy: 1 }), true);
+  const all = { formal: true, runAll: true };
+  assert.equal(stopJudging('wrong_answer', { ...all, heavy: 0 }), false);
+  assert.equal(stopJudging('runtime_error', { ...all, heavy: 2 }), false);
+  assert.equal(stopJudging('time_limit', { ...all, heavy: 2 }), false);
+  assert.equal(stopJudging('output_limit', { ...all, heavy: 3 }), true);
+  assert.equal(stopJudging('accepted', { ...all, heavy: 3 }), false);
 });
