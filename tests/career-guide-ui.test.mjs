@@ -31,7 +31,7 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/resume', '/career/visa-timeline']);
+const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/resume', '/career/visa-timeline', '/career/offers']);
 
 test('every chapter has a body in both languages, with matching sections and live site links', () => {
   assert.equal(GUIDE_CHAPTERS.length, 8);
