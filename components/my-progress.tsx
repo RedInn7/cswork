@@ -22,6 +22,7 @@ import { ReviewForecast } from './review-forecast';
 import { SolveQuality } from './solve-quality';
 import { RecallQueue, ReviewSessionLink, useRecallQueue } from './recall-queue';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { useCoveredDays } from './daily-goal';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
@@ -214,7 +215,7 @@ export function MyProgress({
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   // A freeze bought below counts on the calendar at once, before the bootstrap refreshes.
   const [bought, setBought] = useState<number[] | null>(null);
-  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done, bought ?? boot.purchasedFreezes);
+  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done, bought ?? boot.purchasedFreezes, useCoveredDays());
   // Line 500's daily target, read only: the trip itself lives on the bank page.
   // This view only renders after the client bootstrap, so storage is safe here.
   const [target] = useState(() => {

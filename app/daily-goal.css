@@ -1,0 +1,389 @@
+/* The top bar's streak and XP ring, and what it opens (components/daily-goal.tsx). */
+.daily-goal,
+.daily-goal-pop {
+  --goal-flame: #d9480f;
+  --goal-todo: #e8590c;
+  --goal-met: #2b8a3e;
+  --goal-rest: #5c7cfa;
+  --goal-ice: #1c7ed6;
+}
+.daily-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+}
+.daily-goal:hover {
+  background: var(--muted);
+}
+.daily-goal > svg:first-child {
+  color: var(--muted-foreground);
+}
+.daily-goal > svg[data-lit] {
+  color: var(--goal-flame);
+  fill: currentColor;
+  fill-opacity: 0.25;
+}
+.daily-goal-ring {
+  width: 18px;
+  height: 18px;
+  margin-inline-start: 2px;
+  transform: rotate(-90deg);
+}
+.daily-goal-ring circle {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 2.5;
+}
+.daily-goal-ring circle + circle {
+  stroke: var(--goal-todo);
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.4s ease;
+}
+.daily-goal[data-met] .daily-goal-ring circle + circle {
+  stroke: var(--goal-met);
+}
+/* The public pages' header: next to the link on the right. */
+.public-library-header .daily-goal {
+  margin-inline-start: auto;
+}
+@media (max-width: 600px) {
+  .daily-goal-ring {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .daily-goal-ring circle + circle {
+    transition: none;
+  }
+}
+
+.daily-goal-pop {
+  gap: 10px;
+  width: 300px;
+  max-width: calc(100vw - 32px);
+}
+.daily-goal-pop .daily-goal-title {
+  font-weight: 700;
+}
+.daily-goal-pop h3 {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.daily-goal-xp {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.daily-goal-xp strong {
+  color: var(--foreground);
+  font-size: 22px;
+  line-height: 1;
+}
+.daily-goal-xp span {
+  margin-inline-start: auto;
+  color: #b04a09;
+  font-size: 12px;
+  font-weight: 650;
+}
+.daily-goal-xp span[data-met] {
+  color: #237032;
+}
+.daily-goal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+.daily-goal-week li {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.daily-goal-week li[data-today] {
+  color: var(--foreground);
+  font-weight: 700;
+}
+.daily-goal-week i {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+}
+.daily-goal-week [data-state='ac'] i {
+  border-color: var(--goal-flame);
+  background: var(--goal-flame);
+}
+.daily-goal-week [data-state='goal'] i {
+  border-color: var(--goal-met);
+  background: var(--goal-met);
+}
+.daily-goal-week [data-state='rest'] i {
+  border-style: dashed;
+  border-color: var(--goal-rest);
+}
+.daily-goal-week [data-state='frozen'] i {
+  border-color: var(--goal-ice);
+  background: color-mix(in srgb, var(--goal-ice) 30%, transparent);
+}
+.daily-goal-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 650;
+}
+.daily-goal-line span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+.daily-goal-line svg {
+  color: var(--goal-ice);
+}
+.daily-goal-quests {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.daily-goal-quests li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.daily-goal-quests a {
+  flex: 1;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+.daily-goal-quests a:hover {
+  text-decoration-color: currentColor;
+}
+.daily-goal-quests li[data-done] a {
+  color: var(--muted-foreground);
+  text-decoration-line: line-through;
+}
+.daily-goal-check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+}
+.daily-goal-quests li[data-done] .daily-goal-check {
+  border-color: var(--goal-met);
+  color: #237032;
+}
+.daily-goal-count {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.daily-goal-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.daily-goal-choices legend {
+  margin-bottom: 4px;
+  padding: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.daily-goal-choices button {
+  min-width: 32px;
+  min-height: 28px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.daily-goal-choices button:hover:not(:disabled) {
+  background: var(--muted);
+}
+.daily-goal-choices button[aria-pressed='true'] {
+  border-color: var(--foreground);
+  background: var(--foreground);
+  color: var(--background);
+}
+.daily-goal-choices button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.daily-goal-note {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.daily-goal-note summary {
+  cursor: pointer;
+}
+
+/* The practice calendar's covered cells (components/practice-calendar.tsx): a met XP goal glows
+   green, a rest day or review break is a dim ring. */
+.route-habit [data-level][data-covered='goal'] {
+  background: color-mix(in srgb, var(--route-line) 55%, var(--route-led-off));
+}
+.route-habit [data-level][data-covered='rest'] {
+  background: color-mix(in srgb, var(--route-white-3) 30%, var(--route-led-off));
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .daily-goal {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+  }
+  .dark .daily-goal:hover {
+    background: var(--muted);
+  }
+  .dark .daily-goal > svg:first-child {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal > svg[data-lit] {
+    color: #fc9a7b;
+    fill: currentColor;
+  }
+  .dark .daily-goal-ring circle {
+    fill: none;
+    stroke: var(--border);
+  }
+  .dark .daily-goal-ring circle + circle {
+    stroke: var(--goal-todo);
+  }
+  .dark .daily-goal[data-met] .daily-goal-ring circle + circle {
+    stroke: var(--goal-met);
+  }
+  .dark .daily-goal-xp {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal-xp strong {
+    color: var(--foreground);
+  }
+  .dark .daily-goal-xp span {
+    color: #fda67e;
+  }
+  .dark .daily-goal-xp span[data-met] {
+    color: #97d79d;
+  }
+  .dark .daily-goal-week li {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal-week li[data-today] {
+    color: var(--foreground);
+  }
+  .dark .daily-goal-week i {
+    border: 1.5px solid var(--border);
+  }
+  .dark .daily-goal-week [data-state='ac'] i {
+    border-color: var(--goal-flame);
+    background: var(--goal-flame);
+  }
+  .dark .daily-goal-week [data-state='goal'] i {
+    border-color: var(--goal-met);
+    background: var(--goal-met);
+  }
+  .dark .daily-goal-week [data-state='rest'] i {
+    border-style: dashed;
+    border-color: var(--goal-rest);
+  }
+  .dark .daily-goal-week [data-state='frozen'] i {
+    border-color: var(--goal-ice);
+    background: color-mix(in srgb, var(--goal-ice) 30%, transparent);
+  }
+  .dark .daily-goal-line span {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal-line svg {
+    color: #86befb;
+  }
+  .dark .daily-goal-quests a {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+  }
+  .dark .daily-goal-quests a:hover {
+    text-decoration-color: currentColor;
+  }
+  .dark .daily-goal-quests li[data-done] a {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal-check {
+    border: 1.5px solid var(--border);
+  }
+  .dark .daily-goal-quests li[data-done] .daily-goal-check {
+    border-color: var(--goal-met);
+    color: #97d79d;
+  }
+  .dark .daily-goal-count {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal-choices {
+    border: 0;
+  }
+  .dark .daily-goal-choices legend {
+    color: var(--muted-foreground);
+  }
+  .dark .daily-goal-choices button {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+  }
+  .dark .daily-goal-choices button:hover:not(:disabled) {
+    background: var(--muted);
+  }
+  .dark .daily-goal-choices button[aria-pressed='true'] {
+    border-color: var(--foreground);
+    background: var(--foreground);
+    color: var(--background);
+  }
+  .dark .daily-goal-note {
+    color: var(--muted-foreground);
+  }
+  .dark .route-habit [data-level][data-covered='goal'] {
+    background: color-mix(in srgb, var(--route-line) 55%, var(--route-led-off));
+  }
+  .dark .route-habit [data-level][data-covered='rest'] {
+    background: color-mix(in srgb, var(--route-white-3) 30%, var(--route-led-off));
+  }
+}
+/* ── end dark theme ── */

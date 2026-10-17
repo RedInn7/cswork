@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberLibraryQuery, rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { useCoveredDays } from './daily-goal';
 import { DailyMonth } from './daily-month';
 import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
@@ -277,7 +278,7 @@ export function StudyLibrary({
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
-  const stats = usePracticeStats(activity, english, daily?.done, purchasedFreezes);
+  const stats = usePracticeStats(activity, english, daily?.done, purchasedFreezes, useCoveredDays());
   // The daily streak's "now"; shown only after mount (with stats), so SSR never reads it.
   const [openedAt] = useState(Date.now);
   // Per-device preferences: a folded line and the sprint plan, whose daily

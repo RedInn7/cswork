@@ -92,3 +92,40 @@ void test('daily problem days are starred and a longer grid finds an older best'
   assert.equal(practiceStats(old, dayStamp, true).best, 0);
   assert.equal(practiceStats(old, dayStamp, true, [], 52).best, 8);
 });
+
+void test('covered days (a met XP goal, a rest day) bridge the streak without adding to it', () => {
+  const acs = [ac('a', 0), ac('b', -2), ac('c', -3)];
+  const covered = (offset: number, rest = false) => ({ time: day(offset), rest });
+  const plain = practiceStats(acs, dayStamp, true);
+  const stats = practiceStats(acs, dayStamp, true, [], undefined, [], [covered(-1), covered(-3, true)]);
+  assert.equal(stats.streak, plain.streak, 'the covered day adds no day, like a freeze');
+  assert.equal(stats.freezesLeft, plain.freezesLeft + 1, 'and needs no freeze');
+  assert.equal(stats.cells[stats.todayIndex - 1].covered, 'goal');
+  assert.equal(stats.cells[stats.todayIndex - 1].frozen, undefined);
+  assert.equal(stats.cells[stats.todayIndex - 3].covered, undefined, 'an AC day stays an AC day');
+  // Today covered (a rest day): the streak holds through today with no AC, and no reminder is due.
+  const rest = practiceStats([ac('a', -1)], dayStamp, true, [], undefined, [], [covered(0, true)]);
+  assert.equal(rest.streak, 1);
+  assert.equal(rest.cells[rest.todayIndex].covered, 'rest');
+  // A gap between an AC day and a covered day still spends a freeze.
+  const gap = practiceStats([ac('a', -3)], dayStamp, true, [], undefined, [], [covered(-1)]);
+  assert.equal(gap.streak, 1);
+  assert.equal(gap.cells[gap.todayIndex - 2].frozen, true);
+  // Covered days alone make no streak, and no rescue.
+  const alone = practiceStats([], dayStamp, true, [], undefined, [], [covered(-2), covered(-3)]);
+  assert.deepEqual([alone.streak, alone.rescue, alone.best], [0, false, 0]);
+  // Nor do they spend freezes on the gaps between them: rest Mondays and Wednesdays, no AC, one
+  // bought freeze, leave every freeze in place.
+  const restDays = Array.from({ length: 183 }, (_, i) => covered(-i, true)).filter(
+    ({ time }) => [1, 3].includes(new Date(time).getDay()),
+  );
+  const resting = practiceStats([], dayStamp, true, [], undefined, [day(-5)], restDays);
+  assert.equal(resting.freezesLeft, practiceStats([], dayStamp, true, [], undefined, [day(-5)]).freezesLeft);
+  assert.equal(resting.freezesLeft, 3);
+  assert.equal(resting.cells.filter((c) => c.frozen).length, 0);
+  // After an AC the run is a streak again: its gap next to a rest day is frozen.
+  const after = practiceStats([ac('a', -3)], dayStamp, true, [], undefined, [], restDays);
+  assert.equal(after.cells[after.todayIndex - 1].frozen, true, 'Tuesday, between Monday and the rest Wednesday');
+  // Nothing covered: the same as before.
+  assert.deepEqual(practiceStats(acs, dayStamp, true, [], undefined, [], []), plain);
+});

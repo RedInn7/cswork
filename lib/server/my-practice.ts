@@ -37,6 +37,8 @@ const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mc
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
+// The server alone writes goal (goal:|rest:YYYY-MM-DD, a met study goal or a rest day:
+// lib/server/study-days.ts); those take none of the learner's MAX_ROWS.
 const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read', 'curated', 'doing']);
 const UPVOTED = /^content:(?:experience|interview_question)\//;
 const VOTE = { up: 'down', down: 'up' } as const;
@@ -122,7 +124,7 @@ export async function readJson(request: Request, max: number) {
 }
 function full(table: 'user_notes' | 'user_marks', userId: string) {
   const { n } = sqlite()
-    .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE user_id=?`)
+    .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE user_id=?${table === 'user_marks' ? " AND mark<>'goal'" : ''}`)
     .get(userId) as { n: number };
   if (n >= MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
 }
@@ -263,7 +265,7 @@ export async function handleMyPractice(
       items: db
         .prepare(
           `SELECT target,mark,created_at AS createdAt FROM user_marks
-          WHERE user_id=? AND (? IS NULL OR mark=?) AND (? IS NULL OR target=?)
+          WHERE user_id=? AND mark<>'goal' AND (? IS NULL OR mark=?) AND (? IS NULL OR target=?)
           ORDER BY created_at DESC`,
         )
         .all(p.id, only, only, of, of),
@@ -342,7 +344,7 @@ export async function handleMyPractice(
       );
       const added = db.transaction(() => {
         const { n } = db
-          .prepare('SELECT COUNT(*) AS n FROM user_marks WHERE user_id=?')
+          .prepare("SELECT COUNT(*) AS n FROM user_marks WHERE user_id=? AND mark<>'goal'")
           .get(p.id) as { n: number };
         const added = keys.reduce((sum, key) => sum + insert.run(p.id, key, batch.mark, now).changes, 0);
         // Ticks already there add nothing; the throw rolls the inserts back.
