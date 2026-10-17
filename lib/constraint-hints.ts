@@ -135,9 +135,10 @@ function intGrows(t: Token[]) {
   );
 }
 
-// ponytail: names of small direction / alphabet tables; a loop over one is not a second size.
-const SMALL_TABLE = /^(dirs?|directions?|moves|neighbou?rs|ascii_\w+|string)$/i;
-const NOT_BOUND = new Set(['range', 'enumerate', 'zip', 'reversed', 'in', 'not', 'and', 'or', 'if', 'else', 'True', 'False', 'None', 'true', 'false']);
+// ponytail: names of small direction / alphabet tables and of the test-case count (T cases, each
+// with its own n, sum bounded); a loop over one is not a second size. A name list, not data flow.
+const SMALL_TABLE = /^(dirs?|directions?|moves|neighbou?rs|ascii_\w+|string|t|tc|tt|tests?|cases?)$/i;
+const NOT_BOUND = new Set(['range', 'enumerate', 'zip', 'reversed', 'int', 'input', 'in', 'not', 'and', 'or', 'if', 'else', 'True', 'False', 'None', 'true', 'false']);
 
 /** A for loop whose count depends on the input: its bound names something other than its own variables. */
 function variableFor(head: string[]) {
@@ -481,8 +482,8 @@ export function failureChecks({
         check(
           'mle-2d',
           [
-            `二维数组：${bounds!.name} ≤ ${bound(n)}，开成 n × n 就有 ${approx(n * n)} 个格子，每格 4 字节约 ${approx((n * n * 4) / 2 ** 20)} MB。如果每一行只依赖上一行，改成两行或一行的滚动数组。`,
-            `A 2-D array: with ${bounds!.name} ≤ ${bound(n)}, an n × n table has ${approx(n * n)} cells, about ${approx((n * n * 4) / 2 ** 20)} MB at 4 bytes each. If each row depends only on the previous one, keep two rows (or one) and roll them.`,
+            `二维数组：${bounds!.name} ≤ ${bound(n)}，开成 n × n 就有 ${approx(n * n)} 个格子，每格按 4 字节算也有约 ${approx((n * n * 4) / 2 ** 20)} MB。如果每一行只依赖上一行，改成两行或一行的滚动数组。`,
+            `A 2-D array: with ${bounds!.name} ≤ ${bound(n)}, an n × n table has ${approx(n * n)} cells, about ${approx((n * n * 4) / 2 ** 20)} MB even at 4 bytes a cell. If each row depends only on the previous one, keep two rows (or one) and roll them.`,
           ],
           { href: '/topics/dp-foundations', line: at.line },
         ),

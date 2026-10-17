@@ -120,6 +120,11 @@ void test('time limit: analyzer notes, nested loops over the input and slow inpu
   // A direction loop or a while is not a second size.
   const dirs = src('for i in range(n):', '    for d in range(4):', '        pass', '    for dr, dc in dirs:', '        pass', '    while j < i:', '        j += 1');
   assert.ok(!ids({ status: 'time_limit', language: 'python', code: dirs, bounds: n(1e5) }).includes('tle-nested'));
+  // Nor is the test-case count of an ACM program.
+  const cases = (outer: string) => src(outer, '    n = int(input())', '    for i in range(n):', '        pass');
+  assert.ok(!ids({ status: 'time_limit', language: 'python', code: cases('for _ in range(int(input())):'), bounds: n(1e5) }).includes('tle-nested'));
+  assert.ok(!ids({ status: 'time_limit', language: 'python', code: cases('for _ in range(T):'), bounds: n(1e5) }).includes('tle-nested'));
+  assert.ok(ids({ status: 'time_limit', language: 'python', code: cases('for _ in range(m):'), bounds: n(1e5) }).includes('tle-nested'));
   const cpp = (inner: string) => src('for (int i = 0; i < n; i++) {', `  for (${inner}) {`, '  }', '}');
   assert.ok(ids({ status: 'time_limit', language: 'cpp', code: cpp('int j = i + 1; j < n; j++'), bounds: n(1e5) }).includes('tle-nested'));
   assert.ok(!ids({ status: 'time_limit', language: 'cpp', code: cpp('int k = 0; k < 4; k++'), bounds: n(1e5) }).includes('tle-nested'));
@@ -178,7 +183,7 @@ void test('memory limit: a 2-D table at n of 10^4 or more', () => {
   const py = 'dp = [[0] * (n + 1) for _ in range(n + 1)]';
   const [first] = failureChecks({ ...base, status: 'memory_limit', language: 'python', code: py, bounds: n(1e4) });
   assert.deepEqual([first.id, first.line, first.href], ['mle-2d', 1, '/topics/dp-foundations']);
-  assert.match(first.zh, /开成 n × n 就有 10\^8 个格子，每格 4 字节约 380 MB/);
+  assert.match(first.zh, /开成 n × n 就有 10\^8 个格子，每格按 4 字节算也有约 380 MB/);
   assert.ok(!ids({ status: 'memory_limit', language: 'python', code: py, bounds: n(1000) }).includes('mle-2d'));
   assert.ok(ids({ status: 'memory_limit', language: 'cpp', code: 'vector<vector<int>> dp(n, vector<int>(n));', bounds: n(1e5) }).includes('mle-2d'));
   assert.ok(ids({ status: 'memory_limit', language: 'java', code: 'int[][] dp = new int[n + 1][n + 1];', bounds: n(1e5) }).includes('mle-2d'));
