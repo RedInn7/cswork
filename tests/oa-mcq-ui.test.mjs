@@ -205,6 +205,36 @@ test('mock OA: the MCQ section saves picks, and handing it in starts the coding 
   root.unmount();
 });
 
+test('mock OA: the question palette shows answered, unanswered and marked questions; marks are saved', async () => {
+  const s = session({ mcq: { ids: [single.id, multi.id], picks: [[0], []], minutes: 15, startedAt: Date.now() - 1000 } });
+  dom({ 'cswork:mock:v1:guest': JSON.stringify({ active: s, history: [] }) });
+  const { MockOa } = await import('../components/mock-oa.tsx');
+  const root = await render(createElement(MockOa, { boot, params: { view: 'mock', session: s.id }, navigate() {} }));
+  const saved = () => JSON.parse(localStorage.getItem('cswork:mock:v1:guest')).active;
+  const cells = () => [...document.querySelectorAll('.oa-mcq-palette ol button')];
+  const states = () => cells().map((b) => `${b.dataset.state}: ${b.getAttribute('aria-label')}`);
+  const flagButtons = () => document.querySelectorAll('.oa-mcq-flag');
+  assert.deepEqual(states(), ['answered: Q1, answered', 'unanswered: Q2, unanswered']);
+  assert.equal(cells()[0].textContent, '1');
+  assert.match(document.querySelector('.oa-mcq-palette-key').textContent, /answered 1.*unanswered 1.*marked for review 0/);
+  assert.equal(flagButtons()[1].getAttribute('aria-pressed'), 'false');
+  await act(async () => flagButtons()[1].click());
+  assert.equal(flagButtons()[1].getAttribute('aria-pressed'), 'true');
+  assert.deepEqual(saved().mcq.flags, [1]);
+  assert.deepEqual(states(), ['answered: Q1, answered', 'flagged: Q2, marked for review']);
+  assert.match(button('Hand in and start coding').textContent, /\(1\/2 answered\) · 1 marked for review$/);
+  // A marked question that has an answer says both.
+  await act(async () => flagButtons()[0].click());
+  assert.equal(states()[0], 'flagged: Q1, marked for review, answered');
+  // A cell jumps to its question and focuses it.
+  await act(async () => cells()[1].click());
+  assert.equal(document.activeElement, document.getElementById('mcq-q-1'));
+  await act(async () => flagButtons()[1].click());
+  assert.deepEqual(saved().mcq.flags, [0]);
+  assert.match(document.querySelector('.oa-mcq-palette-key').textContent, /marked for review 1/);
+  root.unmount();
+});
+
 test('mock OA report: an MCQ row with its score, and a review with the answers', async () => {
   const start = Date.now() - 3600000;
   const picks = [single.answer, [multi.answer[0]]];

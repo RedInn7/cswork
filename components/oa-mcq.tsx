@@ -138,3 +138,61 @@ export function McqItem({
     </fieldset>
   );
 }
+
+const PALETTE_STATES = {
+  answered: ['已答', 'answered'],
+  unanswered: ['未答', 'unanswered'],
+  flagged: ['待查', 'marked for review'],
+} as const;
+/**
+ * An exam MCQ section's question palette: one cell per question, answered, unanswered or marked
+ * for review (data-state, a shape and the cell's label, not colour alone). A click scrolls to that
+ * question (`#mcq-q-<index>`) and focuses it.
+ */
+export function McqPalette({
+  picks,
+  flags = [],
+  zh,
+}: {
+  picks: readonly (readonly number[])[];
+  flags?: readonly number[];
+  zh: boolean;
+}) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  const states = picks.map((p, i) => (flags.includes(i) ? 'flagged' : p.length ? 'answered' : 'unanswered'));
+  const count = (state: keyof typeof PALETTE_STATES) => states.filter((s) => s === state).length;
+  return (
+    <nav className="oa-mcq-palette" aria-label={t('题号面板', 'Question palette')}>
+      <ol>
+        {states.map((state, i) => {
+          const label = `Q${i + 1}, ${t(...PALETTE_STATES[state])}${state === 'flagged' && picks[i].length ? t('，已答', ', answered') : ''}`;
+          return (
+            <li key={i}>
+              <button
+                type="button"
+                data-state={state}
+                aria-label={label}
+                title={label}
+                onClick={() => {
+                  const target = document.getElementById(`mcq-q-${i}`);
+                  target?.scrollIntoView?.({ block: 'center' });
+                  target?.focus({ preventScroll: true });
+                }}
+              >
+                {i + 1}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="oa-mcq-palette-key">
+        {(Object.keys(PALETTE_STATES) as (keyof typeof PALETTE_STATES)[]).map((state) => (
+          <span key={state} data-state={state}>
+            <i aria-hidden="true" />
+            {t(...PALETTE_STATES[state])} {count(state)}
+          </span>
+        ))}
+      </p>
+    </nav>
+  );
+}

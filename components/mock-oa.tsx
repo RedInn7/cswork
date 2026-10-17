@@ -62,7 +62,7 @@ import { syncMockHistory, uploadMocks } from '@/lib/mock-cloud';
 import { pruneTracks } from '@/lib/mock-replay';
 import { MockReplay } from './mock-replay';
 import { handInSkill } from './mock-exam-bar';
-import { loadMcqBank, McqItem } from './oa-mcq';
+import { loadMcqBank, McqItem, McqPalette } from './oa-mcq';
 import '@/app/mock-oa.css';
 
 type Preset = {
@@ -120,6 +120,8 @@ type DrawRequest =
         slots: Slot[];
         source: MockSource;
         topics?: string[];
+        /** Single-submit rules (scoring 'codility'). */
+        rules?: 'standard' | 'codility';
       };
     };
 type Report = {
@@ -169,6 +171,7 @@ const drawRequest = (s: MockSession): DrawRequest =>
           slots: s.slots,
           source: s.source,
           ...(s.topics?.length ? { topics: s.topics } : {}),
+          ...(s.scoring === 'codility' ? { rules: 'codility' as const } : {}),
         },
       };
 
@@ -404,6 +407,15 @@ export function MockOa({
               return { ...latest, active: { ...a, mcq: { ...a.mcq, picks: next } } };
             })
           }
+          flag={(index) =>
+            save((latest) => {
+              const a = latest.active;
+              if (!a || a.id !== briefing.id || !a.mcq || a.startedAt) return latest;
+              const flags = a.mcq.flags ?? [];
+              const next = flags.includes(index) ? flags.filter((i) => i !== index) : [...flags, index];
+              return { ...latest, active: { ...a, mcq: { ...a.mcq, flags: next } } };
+            })
+          }
           handIn={() => {
             const saved = save((latest) =>
               latest.active?.id === briefing.id
@@ -476,6 +488,7 @@ export function MockOa({
             setPresetsTry((n) => n + 1);
           }}
           focus={params.company}
+          rules={params.rules}
           busy={busy}
           draw={draw}
           navigate={navigate}
@@ -630,6 +643,7 @@ function MockLanding({
   presetsError,
   retry,
   focus,
+  rules,
   busy,
   draw,
   navigate,
@@ -640,6 +654,8 @@ function MockLanding({
   presetsError: string;
   retry: () => void;
   focus?: string;
+  /** ?rules=codility (a link from the platform guide) preselects single-submit rules. */
+  rules?: string;
   busy: string | null;
   draw: (key: string, request: DrawRequest) => void;
   navigate: Navigate;
@@ -824,7 +840,7 @@ function MockLanding({
         )}
       </section>
 
-      {presets && <CustomMock presets={presets} busy={busy === 'custom'} draw={draw} />}
+      {presets && <CustomMock presets={presets} busy={busy === 'custom'} draw={draw} rules={rules} />}
       <MockHistory history={state.history} navigate={navigate} />
     </>
   );
@@ -834,15 +850,23 @@ function CustomMock({
   presets,
   busy,
   draw,
+  rules: initialRules,
 }: {
   presets: Presets;
   busy: boolean;
   draw: (key: string, request: DrawRequest) => void;
+  rules?: string;
 }) {
   const t = useT();
+  const linked = initialRules === 'codility';
+  const [rules, setRules] = useState<'standard' | 'codility'>(linked ? 'codility' : 'standard');
   const [company, setCompany] = useState('');
   const [questions, setQuestions] = useState(2);
-  const [minutes, setMinutes] = useState(90);
+  const [minutes, setMinutes] = useState(linked ? 120 : 90);
+  // Opened from a link that picks the rules: bring the form into view.
+  useEffect(() => {
+    if (linked) document.getElementById('mock-custom-title')?.scrollIntoView?.({ block: 'start' });
+  }, [linked]);
   const [level, setLevel] = useState<'ladder' | Slot>('ladder');
   const [source, setSource] = useState<MockSource>('mixed');
   const [topics, setTopics] = useState<string[]>([]);
@@ -884,10 +908,37 @@ function CustomMock({
               slots: level === 'ladder' ? LADDER[questions] : Array(questions).fill(level),
               source,
               ...(topics.length ? { topics } : {}),
+              ...(rules === 'codility' ? { rules } : {}),
             },
           });
         }}
       >
+        <fieldset className="mock-field mock-seg">
+          <legend>{t('考试规则', 'Rules')}</legend>
+          <div>
+            {radio<'standard' | 'codility'>('mock-rules', 'standard', rules, setRules, t('标准', 'Standard'))}
+            {radio<'standard' | 'codility'>(
+              'mock-rules',
+              'codility',
+              rules,
+              (value) => {
+                // A typical single-submit test: two tasks in two hours.
+                setRules(value);
+                setQuestions(2);
+                setMinutes(120);
+              },
+              t('单次提交制', 'Single submit'),
+            )}
+          </div>
+        </fieldset>
+        {rules === 'codility' && (
+          <p className="mock-rules-note">
+            {t(
+              '单次提交制：每题只能正式提交一次，交卷前不显示判题结果，只能靠运行样例和自定义用例自测（不限次数）。默认 2 题 120 分钟，题量和时长可自选。',
+              'Single submit: one formal submission per question and no verdicts until you hand in, so you test with example runs and custom cases (unlimited). Two questions in 120 minutes by default; both can be changed.',
+            )}
+          </p>
+        )}
         <label className="mock-field">
           <span>{t('公司', 'Company')}</span>
           <select value={company} onChange={(e) => setCompany(e.target.value)}>
@@ -1103,10 +1154,13 @@ export function MockTopicBrief({ preset, navigate }: { preset: Preset; navigate:
 function MockMcqSection({
   session,
   pick,
+  flag,
   handIn,
 }: {
   session: MockSession;
   pick: (index: number, picks: number[]) => void;
+  /** Marks or unmarks a question for review. */
+  flag: (index: number) => void;
   handIn: () => void;
 }) {
   const t = useT(),
@@ -1143,6 +1197,7 @@ function MockMcqSection({
   useEffect(() => title.current?.focus(), []);
   const byId = new Map((bank ?? []).map((q) => [q.id, q]));
   const answered = mcq.picks.filter((p) => p.length).length;
+  const flags = mcq.flags ?? [];
   return (
     <>
       <section className="mock-board" aria-labelledby="mock-mcq-title">
@@ -1188,24 +1243,32 @@ function MockMcqSection({
             <LoaderCircle className="cs-spin" aria-hidden="true" /> {t('正在加载选择题…', 'Loading questions…')}
           </p>
         ) : (
-          <ol className="oa-mcq-list">
-            {mcq.ids.map((id, i) => {
-              const q = byId.get(id);
-              return q ? (
-                <li key={id}>
-                  <McqItem
-                    q={q}
-                    text={zh ? q.zh : q.en}
-                    n={i + 1}
-                    zh={zh}
-                    picks={mcq.picks[i] ?? []}
-                    onPick={(picks) => pick(i, picks)}
-                    reveal={false}
-                  />
-                </li>
-              ) : null;
-            })}
-          </ol>
+          <>
+            <McqPalette picks={mcq.picks} flags={flags} zh={zh} />
+            <ol className="oa-mcq-list">
+              {mcq.ids.map((id, i) => {
+                const q = byId.get(id);
+                return q ? (
+                  <li key={id} id={`mcq-q-${i}`} tabIndex={-1}>
+                    <McqItem
+                      q={q}
+                      text={zh ? q.zh : q.en}
+                      n={i + 1}
+                      zh={zh}
+                      picks={mcq.picks[i] ?? []}
+                      onPick={(picks) => pick(i, picks)}
+                      reveal={false}
+                    >
+                      <button type="button" className="oa-mcq-flag" aria-pressed={flags.includes(i)} onClick={() => flag(i)}>
+                        <Flag size={13} aria-hidden="true" />
+                        {t('标记待查', 'Mark for review')}
+                      </button>
+                    </McqItem>
+                  </li>
+                ) : null;
+              })}
+            </ol>
+          </>
         )}
         <div className="mock-actions">
           <button type="button" className="mock-cta" onClick={handIn}>
@@ -1214,6 +1277,7 @@ function MockMcqSection({
               `交卷，进入编程（已答 ${answered}/${mcq.ids.length}）`,
               `Hand in and start coding (${answered}/${mcq.ids.length} answered)`,
             )}
+            {flags.length > 0 && t(` · ${flags.length} 题待查`, ` · ${flags.length} marked for review`)}
           </button>
         </div>
       </section>
@@ -1263,7 +1327,11 @@ function MockBriefing({
             {session.name || t('自定义模拟', 'Custom mock')}
           </h2>
           <p className="mock-lede">
-            {[session.platform, t(`${session.ids.length} 道编程题`, `${session.ids.length} coding questions`)]
+            {[
+              session.platform,
+              t(`${session.ids.length} 道编程题`, `${session.ids.length} coding questions`),
+              session.scoring === 'codility' && t('单次提交制', 'Single submit'),
+            ]
               .filter(Boolean)
               .join(' · ')}
           </p>
@@ -1315,10 +1383,15 @@ function MockBriefing({
         </li>
         <li>
           <Flag size={16} aria-hidden="true" />
-          {t(
-            '时间到自动交卷，也可以提前交卷。成绩按考试时段内的提交计算：通过的测试用例占比。',
-            "At zero the exam hands itself in; you can also finish early. The score uses this exam's submissions: the share of tests passed.",
-          )}
+          {session.scoring === 'codility'
+            ? t(
+                '每题只能正式提交一次，提交后不显示结果，交卷后统一出成绩；运行样例和自定义用例不限次数。时间到自动交卷，也可以提前交卷。',
+                'Each question takes one formal submission and shows no result until you hand in; runs on examples and custom cases are unlimited. At zero the exam hands itself in; you can also finish early.',
+              )
+            : t(
+                '时间到自动交卷，也可以提前交卷。成绩按考试时段内的提交计算：通过的测试用例占比。',
+                "At zero the exam hands itself in; you can also finish early. The score uses this exam's submissions: the share of tests passed.",
+              )}
         </li>
         <li>
           <Info size={16} aria-hidden="true" />
@@ -1497,6 +1570,9 @@ function MockReport({
                   )}
                 </small>
               )}
+              {session.scoring === 'codility' && (
+                <small>{t('单次提交制：每题只计第一次正式提交', 'Single submit: only the first submission of each question counts')}</small>
+              )}
             </>
           ) : error ? (
             <span role="alert">
@@ -1577,6 +1653,9 @@ function MockReport({
                           ` · Correctness ${item.groups.correctness}% · Performance ${item.groups.performance}%`,
                         )
                       : ''}
+                    {item?.groups?.correctness === 100 && item.groups.performance < 100
+                      ? t(' · 正确但太慢', ' · correct but too slow')
+                      : ''}
                   </small>
                 </span>
                 <span className="mock-chip" data-state={state}>
@@ -1650,8 +1729,8 @@ function MockReport({
         )}
         <p className="mock-footnote">
           {t(
-            '部分分：判题遇到第一个未通过的用例就停止，所以按它之前通过的用例数计。成绩只统计开考到交卷之间的提交，并同步到你的账号。',
-            'Partial credit: the judge stops at the first failing test, so it counts the tests passed before that one. Only submissions between the start and the hand-in count, and the result is saved to your account.',
+            '部分分：考试中的提交会跑完全部测试点并按权重计分（超时或超限满 3 个后停止）。成绩只统计开考到交卷之间的提交，并同步到你的账号。',
+            'Partial credit: exam submissions run every test and are scored by weight (judging stops after three time, memory or output limits). Only submissions between the start and the hand-in count, and the result is saved to your account.',
           )}
         </p>
         <div className="mock-actions">
