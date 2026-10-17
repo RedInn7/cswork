@@ -468,8 +468,10 @@ async function judgeSubmission(
       runtime = Math.max(runtime, runtimeMs / 1000);
       memory = Math.max(memory, memoryKb);
       if (RESOURCE_FAILURES.includes(status)) heavy++;
-      // all_cases keeps the first failure's output for its counterexample; the verdict waits for the end.
-      const capture = runAll && status !== 'accepted' && !captured;
+      // A formal failure publishes the verdict now. all_cases instead keeps the first failure's
+      // output for its counterexample and publishes the verdict after the last case.
+      const terminal = formal && !runAll && status !== 'accepted',
+        capture = runAll && status !== 'accepted' && !captured;
       if (capture) captured = true;
       persistCase(
         db,
@@ -491,7 +493,7 @@ async function judgeSubmission(
           stdout: result.files?.stdout,
           stderr: result.files?.stderr,
           hidden: c.hidden,
-          terminalFailure: formal && !runAll && status !== 'accepted',
+          terminalFailure: terminal,
           capture,
         },
         {
@@ -501,8 +503,7 @@ async function judgeSubmission(
           score: Math.round((weight / totalWeight) * 100),
         },
       );
-      if (formal && !runAll && status !== 'accepted')
-        terminalFailureCommitted = true;
+      if (terminal) terminalFailureCommitted = true;
       // Unexecuted cases after a stop read as skipped.
       if (stopJudging(status, { formal, runAll, heavy })) break;
     }
