@@ -15,6 +15,7 @@ export type KindId =
   | 'analytics'
   | 'stats'
   | 'ml'
+  | 'mlcode'
   | 'lld'
   | 'recruiter'
   | 'negotiation'
@@ -56,6 +57,8 @@ export const KINDS: Record<KindId, Kind> = {
   },
   stats: { name: ['统计与概率', 'Statistics & probability'], categories: ['Statistics & Math'], minutes: 12 },
   ml: { name: ['机器学习', 'Machine learning'], categories: ['Machine Learning'], minutes: 20 },
+  // The ML Coding track's problems (lib/server/interview-extra.ts), each with its judge problem.
+  mlcode: { name: ['ML 手写实现', 'ML coding'], categories: ['ML Coding'], minutes: 30 },
   lld: { name: ['低层设计（OOD）', 'Low-level design (OOD)'], categories: ['Low-Level Design'], minutes: 45, aiOnly: true },
   // Role-plays over lib/content/roleplay-scenarios.json (lib/server/mock-interview.ts roleplayQuestion).
   recruiter: { name: ['招聘方初筛', 'Recruiter screen'], categories: ['Recruiter Screen'], minutes: 20, aiOnly: true },
@@ -170,12 +173,16 @@ export const TEMPLATES: Template[] = [
   {
     id: 'mle',
     name: ['机器学习工程师', 'ML Engineer'],
-    blurb: ['机器学习、编程，加一道行为题。', 'Machine learning, coding, and one behavioral question.'],
+    blurb: [
+      '机器学习概念，用 numpy 手写一个模型或指标，一道可选的编程题，再加一道行为题。',
+      'Machine learning concepts, a model or metric written from scratch in numpy, an optional coding question and one behavioral question.',
+    ],
     role: 'mle',
     round: null,
     slots: [
       { kind: 'ml', minutes: 20 },
-      { kind: 'coding', minutes: 30 },
+      { kind: 'mlcode', minutes: 30 },
+      { kind: 'coding', minutes: 25, optional: true },
       { kind: 'behavioral', minutes: 10 },
     ],
   },

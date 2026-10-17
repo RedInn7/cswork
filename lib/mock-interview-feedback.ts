@@ -153,6 +153,7 @@ const CORE: RubricId[] = ['communication', 'problem', 'coding', 'testing', 'comp
 /** Each round's dimensions, most telling first; a kind not listed is scored on CORE. */
 export const KIND_RUBRIC: Partial<Record<KindId, RubricId[]>> = {
   coding: CORE,
+  mlcode: CORE,
   sql: CORE,
   lld: CORE,
   behavioral: ['star', 'ownership', 'impact', 'reflection'],

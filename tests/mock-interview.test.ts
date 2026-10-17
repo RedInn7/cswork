@@ -26,6 +26,7 @@ import { mockPool, mockSet } from '../lib/server/mock-interview';
 import { extraPool, extraQuestion } from '../lib/server/interview-extra';
 import { keyPoints } from '../lib/recall';
 import mcqBank from '../lib/content/oa-mcq.json';
+import mlCoding from '../lib/content/ml-coding.json';
 import { sqlite } from '../db/sqlite';
 import type { Person } from '../lib/server/auth';
 
@@ -314,6 +315,35 @@ void test('the AI-only extra templates draw their own questions, the frontend ro
   assert.notEqual(rolled.slots[1].item?.id, frontend.slots[1].item?.id);
   // Other templates never draw them.
   assert.ok(mockSet(db, new URLSearchParams({ template: 'lld', seed: 'abc' })).slots.every((s) => s.item?.type !== 'extra'));
+});
+
+void test('the ML coding round asks ML Coding problems with their judge problem, never a reference', () => {
+  assert.deepEqual(resolveTemplate('mle')!.slots.map((s) => [s.kind, s.minutes, !!s.optional]), [
+    ['ml', 20, false],
+    ['mlcode', 30, false],
+    ['coding', 25, true],
+    ['behavioral', 10, false],
+  ]);
+  const rows = extraPool('mlcode');
+  assert.deepEqual(rows.map((r) => r.id), mlCoding.problems.map((p) => p.id));
+  assert.ok(rows.every((r) => r.problem === r.id && /^ml-/.test(r.id) && KINDS.mlcode.categories.includes(r.category!)));
+  const q = extraQuestion('ml-kmeans')!;
+  assert.equal(q.kind, 'mlcode');
+  assert.match(q.question, /numpy/);
+  assert.match(q.questionZh, /numpy/);
+  // A peer or solo run can draw it: not AI-only.
+  const db = new Database(':memory:');
+  db.exec(`CREATE TABLE items(id TEXT PRIMARY KEY, type TEXT, slug TEXT, title TEXT, company_slug TEXT, company_name TEXT,
+    role TEXT, category TEXT, difficulty TEXT, round TEXT, partial INTEGER, listed INTEGER, dup_of TEXT, extra TEXT, body TEXT)`);
+  const set = mockSet(db, new URLSearchParams('template=custom&mix=mlcode.1&seed=a1'));
+  const item = set.slots[0].item!;
+  assert.match(item.problem!, /^ml-[a-z0-9-]+$/);
+  assert.equal(item.problem, item.id);
+  assert.ok(item.titleZh && item.questionZh?.includes('numpy'));
+  assert.equal(item.hints + item.followUps + item.rubric + item.solution, '');
+  // The ML template draws one too; other templates never do.
+  assert.match(mockSet(db, new URLSearchParams('template=mle&seed=a1')).slots[1].item!.problem!, /^ml-/);
+  assert.ok(mockSet(db, new URLSearchParams('template=custom&mix=coding.2&seed=a1')).slots.every((s) => !s.item?.id.startsWith('ml-')));
 });
 
 void test('answer frameworks: picked by kind and title, steps scaled to add up to the slot', () => {
