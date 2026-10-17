@@ -18,7 +18,8 @@ const EMPLOYERS_SHOWN = 10;
 
 // Older files count Initial / Continuing; newer ones split six ways. New employment = New
 // Employment + New Concurrent + Change of Employer; continuing = Continuation + Change with
-// Same Employer + Amended, so both line up with the old two columns.
+// Same Employer + Amended. The old Initial column was New Employment only (FY2021 Google: 1,453
+// vs 1,445), so don't mix layouts: take every year from the hub's current crosstab export.
 const SERIES = {
   initial: 'new',
   newemployment: 'new',

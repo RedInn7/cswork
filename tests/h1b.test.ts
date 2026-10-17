@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { build, matcher, normalizeName, parseCsv, readTable, records } from '../scripts/h1b/build.mjs';
+import { build, FISCAL_YEARS, matcher, normalizeName, parseCsv, readTable, records } from '../scripts/h1b/build.mjs';
 import { approvalRate, H1B, h1bCompany, h1bPaths, h1bRanking, type H1bData } from '../lib/server/h1b';
 import { H1bPanel } from '../app/company/h1b';
 
@@ -111,4 +111,19 @@ void test('the company panel shows each year, the rate, the caveat and the sourc
   // The committed file has the build's shape.
   assert.deepEqual(Object.keys(H1B).sort(), ['companies', 'fiscalYears', 'source', 'sourceUrl', 'updated']);
   for (const slug of Object.keys(H1B.companies)) assert.ok(Object.hasOwn(aliases, slug));
+});
+
+void test('the committed data is sane: consecutive years, whole counts, the big sponsors present', { skip: !H1B.fiscalYears.length }, () => {
+  assert.match(H1B.updated ?? '', /^\d{4}-\d{2}-\d{2}$/);
+  const fys = H1B.fiscalYears;
+  assert.ok(fys.length <= FISCAL_YEARS);
+  fys.forEach((fy, i) => i && assert.equal(fy, fys[i - 1] + 1, 'consecutive fiscal years'));
+  for (const [slug, c] of Object.entries(H1B.companies)) {
+    assert.deepEqual(c.years.map((y) => y.fy), fys, `${slug}: one row per fiscal year`);
+    for (const y of c.years)
+      for (const n of [y.newApproved, y.newDenied, y.contApproved, y.contDenied]) assert.ok(Number.isInteger(n) && n >= 0, `${slug} FY${y.fy}`);
+    assert.ok(c.employers.length <= 10, slug);
+  }
+  // A broken alias or name normalization shows up here first.
+  for (const slug of ['amazon', 'google', 'microsoft', 'meta']) assert.ok(h1bCompany(slug)!.years.at(-1)!.newApproved > 100, slug);
 });
