@@ -178,6 +178,26 @@
   color: #3a4652;
   overflow-wrap: anywhere;
 }
+/* The autofill bookmarklet; its link and note are styled by .tracker-bookmarklet (app/guide/guide.css). */
+.resume-autofill {
+  padding: 12px 16px;
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+}
+.resume-autofill summary {
+  color: #0b5c8a;
+  font-weight: 700;
+  cursor: pointer;
+}
+.resume-autofill summary:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 2px;
+}
+.resume-autofill .tracker-bookmarklet {
+  margin-top: 10px;
+}
 .resume-import {
   position: relative;
   display: inline-flex;
@@ -318,6 +338,7 @@
   .resume-versions,
   .resume-check,
   .resume-paste,
+  .resume-autofill,
   .resume-builder-status,
   .resume-page-warning {
     display: none;
@@ -418,6 +439,16 @@
   }
   .dark .resume-paste-preview dd {
     color: #c4d1dd;
+  }
+  .dark .resume-autofill {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .resume-autofill summary {
+    color: #94cffc;
+  }
+  .dark .resume-autofill summary:focus-visible {
+    outline: 2px solid #87d2bb;
   }
   .dark .resume-import {
     border: 1px solid #31383f;

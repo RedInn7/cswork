@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { autofillData, autofillHref } from '@/lib/autofill-bookmarklet';
 import { ojRequest } from '@/lib/oj-client';
 import { checkResume, type ResumeIssue } from '@/lib/resume-check';
+import { readResumeFile, type ResumeFileError } from '@/lib/resume-file';
 import { parseResumeText } from '@/lib/resume-parse';
 
 /**
@@ -234,6 +236,28 @@ const SECTIONS: { key: ListKey; legend: [string, string]; fields: [keyof ResumeI
     add: ['添加项目', 'Add project'],
   },
 ];
+const FILE_ERRORS: Record<ResumeFileError, [string, string]> = {
+  'too-big': [
+    '文件超过 5 MB：导出一份不带图片的 PDF 或 .docx 再试，或者复制文字用「粘贴文本导入」。',
+    'The file is over 5 MB: export a PDF or .docx without images, or copy its text into “Paste text to import”.',
+  ],
+  type: [
+    '只能读取 PDF 和 .docx：先在 Word、WPS 或 Pages 里另存为 .docx 或 PDF。',
+    'Only PDF and .docx files can be read: save it as .docx or PDF from Word, WPS or Pages first.',
+  ],
+  docx: [
+    '读不出这个文件里的 Word 正文（文件可能损坏、加密，或者不是 .docx）：重新另存为 .docx 或 PDF，或者复制文字用「粘贴文本导入」。',
+    'No Word text could be read from this file (it may be damaged, encrypted or not a .docx): save it again as .docx or PDF, or copy its text into “Paste text to import”.',
+  ],
+  pdf: [
+    '没能读出这个 PDF（文件可能加密或损坏，也可能没能从 jsDelivr 下载 pdf.js）：复制文字用「粘贴文本导入」。',
+    'This PDF could not be read (it may be encrypted or damaged, or pdf.js could not be downloaded from jsDelivr): copy its text into “Paste text to import”.',
+  ],
+  scanned: [
+    '这个 PDF 里没有文字层（多半是扫描件或图片）：把内容整理成文字，用「粘贴文本导入」。',
+    'This PDF has no text layer (most likely a scan or an image): type or copy the text into “Paste text to import”.',
+  ],
+};
 const CONTACT: [Exclude<keyof Resume, ListKey>, string, string, string][] = [
   ['name', '姓名', 'Full name', 'name'],
   ['email', '邮箱', 'Email', 'email'],
@@ -311,6 +335,21 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
       setStatus(t('已导入简历。', 'Resume imported.'));
     } catch {
       setStatus(t('这个文件不是导出的简历 JSON。', 'That file is not an exported resume JSON.'));
+    }
+  }
+  // A PDF or .docx read in this browser lands in the paste panel with its preview: nothing is replaced until the confirm.
+  async function importFile(input: HTMLInputElement) {
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    setStatus(t('正在读取文件…', 'Reading the file…'));
+    try {
+      const text = await readResumeFile(file);
+      setPasted(text);
+      setParsed(parseResumeText(text));
+      setStatus(t('已读出文件里的文字：对照下面的解析结果，确认后才会覆盖。', 'Text read from the file: check what was read below; nothing is replaced until you confirm.'));
+    } catch (e) {
+      setStatus(t(...(FILE_ERRORS[(e as Error).message as ResumeFileError] ?? FILE_ERRORS.pdf)));
     }
   }
   function review() {
@@ -481,6 +520,14 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
             {t('导入 JSON', 'Import JSON')}
             <input type="file" accept="application/json,.json" onChange={(e) => void load(e.target.files?.[0])} />
           </label>
+          <label className="resume-import">
+            {t('导入 PDF / DOCX', 'Import PDF / DOCX')}
+            <input
+              type="file"
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={(e) => void importFile(e.target)}
+            />
+          </label>
           <button
             type="button"
             className="is-quiet"
@@ -536,6 +583,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
           )}
           <small>{t('按规则检查，不是 AI：看动词、数字、长度、用词、日期和必备小节。', 'Rules, not AI: verbs, numbers, length, wording, dates and the sections every resume needs.')}</small>
         </section>
+        <AutofillBookmarklet resume={resume} version={version} zh={zh} />
         <p className="resume-builder-status" role="status">
           {status}
         </p>
@@ -598,6 +646,42 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * The autofill bookmarklet for the resume being edited (lib/autofill-bookmarklet.ts). React blocks
+ * javascript: hrefs, so the link gets it after mount and again after every edit.
+ */
+function AutofillBookmarklet({ resume, version, zh }: { resume: Resume; version: string; zh: boolean }) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    ref.current?.setAttribute('href', autofillHref(autofillData(resume), { origin: location.origin, zh }));
+  }, [resume, zh]);
+  return (
+    <details className="resume-autofill" id="resume-autofill">
+      <summary>{t('网申填表书签（Greenhouse、Lever、Ashby）', 'Application autofill bookmarklet (Greenhouse, Lever, Ashby)')}</summary>
+      <div className="tracker-bookmarklet">
+        {/* Clicked here it would only run on this page: it is for dragging to the bookmarks bar. */}
+        <a ref={ref} href="#resume-autofill" onClick={(e) => e.preventDefault()}>
+          {t('网申填表', 'Autofill application')}
+          {version && ` · ${version}`}
+        </a>
+        <p>
+          {t(
+            '把这个按钮拖到浏览器的书签栏。在 Greenhouse、Lever、Ashby 的申请页上点它，会把姓名、邮箱、电话、城市、链接、学校、学位和最近一家公司填进还空着的文本框；已经有内容的框、下拉框、附件上传和问答题都不碰，也不会替你提交。填完逐项检查，再自己提交。公司官网里嵌着的申请表，书签会先问你要不要打开申请表本身。',
+            'Drag this button to your bookmarks bar. On a Greenhouse, Lever or Ashby application page, click it: your name, email, phone, city, links, school, degree and latest company go into the text fields that are still empty. Filled fields, dropdowns, file uploads and long answers are left alone, and nothing is submitted: check every field, then submit it yourself. When a company site embeds the form, the bookmarklet first offers to open the form itself.',
+          )}{' '}
+          <strong>
+            {t(
+              '书签里存着这些个人信息，会随浏览器同步，不要分享给别人。简历改了要重新拖一次，旧书签不会自己更新。',
+              'The bookmark holds this personal information and syncs with your browser: do not share it. After editing the resume, drag it again; an old bookmark does not update itself.',
+            )}
+          </strong>
+        </p>
+      </div>
+    </details>
   );
 }
 

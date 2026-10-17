@@ -11,6 +11,7 @@ import {
   type AgendaEvent,
   type Application,
 } from '@/lib/applications';
+import { trackerOpenJs } from '@/lib/autofill-bookmarklet';
 import { SOURCES } from '@/lib/experience';
 import { api } from '@/lib/types';
 
@@ -300,14 +301,7 @@ export function TrackerBookmarklet({ zh }: { zh: boolean }) {
     const link = ref.current;
     if (!link) return;
     const open = JSON.stringify(`${location.origin}/career/tracker?add=1`);
-    link.setAttribute(
-      'href',
-      // c cuts to n code units without leaving half an emoji, which encodeURIComponent would throw on.
-      `javascript:(()=>{const d=document,e=encodeURIComponent,c=(x,n)=>x.slice(0,n).replace(/[\\uD800-\\uDBFF]$/,''),` +
-        `m=d.querySelector('meta[property="og:site_name"]'),s=c(String(getSelection()).trim(),10000);` +
-        `window.open(${open}+'&company='+e(c((m&&m.content)||location.hostname,100))` +
-        `+'&role='+e(c(d.title,120))+'&link='+e(location.href)+(s?'#jd='+e(s):''))})()`,
-    );
+    link.setAttribute('href', `javascript:${trackerOpenJs(open)}`);
     // Clicked here it would only open this page again: it is for dragging to the bookmarks bar.
     const stay = (e: Event) => e.preventDefault();
     link.addEventListener('click', stay);
