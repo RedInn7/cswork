@@ -5,9 +5,11 @@ import { register } from 'node:module';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 
+// CSS is a no-op; next/link (aliased by the bundler) is a stub.
 register(
   `data:text/javascript,${encodeURIComponent(
-    `export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`,
+    "export async function resolve(s,c,n){if(s==='next/link')return {url:'data:text/javascript,export default function Link(){return null}',shortCircuit:true};return n(s,c);}" +
+      "export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}",
   )}`,
   import.meta.url,
 );
@@ -22,6 +24,8 @@ function useDom() {
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
+  dom.window.HTMLElement.prototype.scrollIntoView = () => {};
   return dom;
 }
 /** The note API for one signed-in learner (`saved` is the note body), or 401 when `saved` is null. */
@@ -40,7 +44,7 @@ function noteApi(state) {
   };
   return calls;
 }
-const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent === text);
+const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
 const status = () => document.querySelector('.recall-status').textContent;
 
 test('a guest ticks key points and grades an answer; knowing it again before it is due changes nothing', async () => {
@@ -60,7 +64,7 @@ test('a guest ticks key points and grades an answer; knowing it again before it 
     assert.equal(document.querySelector('.recall-points legend').textContent, 'Key points you covered (0 of 2)');
     await act(async () => document.querySelector('.recall-points input').click());
     assert.equal(document.querySelector('.recall-points legend').textContent, 'Key points you covered (1 of 2)');
-    assert.equal(document.querySelector('.recall-grades').getAttribute('role'), 'group');
+    assert.equal(document.querySelector('fieldset.recall-grades legend').textContent, 'How well did you know it?');
 
     await act(async () => button('Knew it').click());
     await settle();
@@ -186,6 +190,70 @@ test('the queue lists cards due today with links, counts its boxes and clears ma
     await settle();
     assert.equal(document.querySelector('.recall-queue'), null);
     assert.equal(due, 0);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});
+
+test('the rating card follows a revealed reference answer, with key points from the rubric, and a system design walkthrough', async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { ContentDetail } = await import('../components/content-library.tsx');
+  const { SdTryFirst } = await import('../app/system-design/reader.tsx');
+  const original = globalThis.fetch;
+  const body = [
+    '# Design an LRU cache',
+    '',
+    'Support get and put in O(1).',
+    '',
+    '### What Interviewers Look For',
+    '- **Hash map** plus a doubly linked list',
+    '- Eviction on `put` when full',
+    '',
+    '## Solution',
+    '',
+    'Keep the most recent node at the head.',
+  ].join('\n');
+  const question = {
+    type: 'interview_question', slug: 'lru', title: 'Design an LRU cache', titleZh: '设计 LRU 缓存', summary: null,
+    company: null, role: null, category: 'Coding', difficulty: null, round: null, seniority: null, tags: [],
+    publishedAt: null, partial: false, body, updatedAt: null, extra: {}, relations: [], dupOf: null, practice: null, companyPractice: null,
+  };
+  // A guest: the item loads, everything personal answers 401.
+  globalThis.fetch = async (url) =>
+    String(url).includes('/api/content/item') ? Response.json(question) : Response.json({ error: 'Sign in first' }, { status: 401 });
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () =>
+      root.render(createElement(ContentDetail, { params: { type: 'interview_question', slug: 'lru' }, navigate() {}, problemIds: [], userId: null })),
+    );
+    await settle();
+    assert.equal(document.querySelector('.recall'), null, 'nothing to grade before the answer shows');
+    await act(async () => button('Show the answer').click());
+    await act(async () => button('Show it anyway').click());
+    await settle();
+    assert.ok(document.querySelector('#ct-answer + .recall'), 'right after the reference answer');
+    assert.deepEqual(
+      [...document.querySelectorAll('.recall-points li')].map((li) => li.textContent),
+      ['Hash map plus a doubly linked list', 'Eviction on put when full'],
+    );
+    await act(async () => button('Partly').click());
+    await settle();
+    assert.deepEqual(JSON.parse(localStorage.getItem('cswork:recall:v1')).items, { [T]: [0, today, 'Design an LRU cache'] });
+
+    // A case chapter: the card shows once the walkthrough opens, with the chapter's title.
+    await act(async () => root.render(createElement(SdTryFirst, { slug: 'url-shortener', title: 'Design a URL shortener', userId: null }, 'body')));
+    await settle();
+    assert.equal(document.querySelector('.recall'), null);
+    await act(async () => button('Show the answer').click());
+    await act(async () => button('Show it anyway').click());
+    await settle();
+    assert.ok(document.querySelector('.sd-walkthrough + .rd > .recall'));
+    await act(async () => button('Knew it').click());
+    await settle();
+    assert.deepEqual(JSON.parse(localStorage.getItem('cswork:recall:v1')).items['sd:url-shortener'], [1, today, 'Design a URL shortener']);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = original;

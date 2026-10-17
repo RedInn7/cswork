@@ -13,7 +13,7 @@ export function useRecallQueue(signedIn: boolean) {
   const [queue, setQueue] = useState<Queue | null>(null);
   useEffect(() => {
     let current = true;
-    loadRecall(signedIn).then((loaded) => current && setQueue(loaded.queue));
+    void loadRecall(signedIn).then((loaded) => current && setQueue(loaded.queue));
     return () => {
       current = false;
     };

@@ -120,12 +120,10 @@ export function RecallRate({
   const [card, setCard] = useState<RecallCard | null>(null);
   const [state, setState] = useState<'' | 'saving' | 'saved' | 'held' | 'failed'>('');
   const [ticked, setTicked] = useState<ReadonlySet<number>>(new Set());
+  // Callers key this by target, so another question starts with fresh state.
   useEffect(() => {
     let current = true;
-    setCard(null);
-    setState('');
-    setTicked(new Set());
-    loadRecall(signedIn).then(({ queue }) => current && setCard(queue.items[target] ?? null));
+    void loadRecall(signedIn).then(({ queue }) => current && setCard(queue.items[target] ?? null));
     return () => {
       current = false;
     };
@@ -200,7 +198,8 @@ export function RecallRate({
           </ul>
         </fieldset>
       )}
-      <div className="recall-grades" role="group" aria-label={t('这道题你会了吗？', 'How well did you know it?')}>
+      <fieldset className="recall-grades">
+        <legend className="sr-only">{t('这道题你会了吗？', 'How well did you know it?')}</legend>
         {GRADES.map(([grade, zh, en], i) => (
           <button
             key={grade}
@@ -212,7 +211,7 @@ export function RecallRate({
             {t(zh, en)}
           </button>
         ))}
-      </div>
+      </fieldset>
       <p className="recall-status" aria-live="polite">
         {status}
         {card && signedIn && state !== 'saving' && state !== 'failed' && (
