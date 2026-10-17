@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { parseReviewPrefs, reviewPause } from '@/lib/practice-review';
+import { RECALL_CARDS, RECALL_IDEAS, RECALL_NOTE } from '@/lib/recall';
 import { tally, xpOf, type CoveredDay, type StudyEvent } from '@/lib/study-goal';
 import { localDate } from './local-day';
 
@@ -62,17 +63,20 @@ export function studyEvents(userId: string, since: number, now: number): StudyEv
         WHERE user_id=@user AND target>='story:' AND target<'story;' AND updated_at>=@since`,
     )
     .all({ user: userId, since }) as StudyEvent[];
-  // recall:queue (lib/recall.ts) keeps each card's last grade as a UTC day number: the note's last
-  // save for that day's cards, noon UTC for older ones.
+  // The recall notes (lib/recall.ts: open questions, own cards, problem ideas; their keys never
+  // collide) keep each card's last grade as a UTC day number: the note's last save for that day's
+  // cards, noon UTC for older ones.
   // ponytail: an older card graded late in the evening west of UTC counts on the next local day.
-  const queue = note(userId, 'recall:queue');
-  const items = (parsed(queue?.body) as { items?: unknown } | undefined)?.items;
-  if (queue && items && typeof items === 'object')
-    for (const [key, card] of Object.entries(items)) {
-      if (!Array.isArray(card) || !Number.isInteger(card[1])) continue;
-      const at = card[1] === Math.floor(queue.updated_at / DAY) ? queue.updated_at : card[1] * DAY + DAY / 2;
-      if (at >= since) events.push({ kind: 'recall', key, at });
-    }
+  for (const target of [RECALL_NOTE, RECALL_CARDS, RECALL_IDEAS]) {
+    const queue = note(userId, target);
+    const items = (parsed(queue?.body) as { items?: unknown } | undefined)?.items;
+    if (queue && items && typeof items === 'object')
+      for (const [key, card] of Object.entries(items)) {
+        if (!Array.isArray(card) || !Number.isInteger(card[1])) continue;
+        const at = card[1] === Math.floor(queue.updated_at / DAY) ? queue.updated_at : card[1] * DAY + DAY / 2;
+        if (at >= since) events.push({ kind: 'recall', key, at });
+      }
+  }
   return events.filter((e) => e.at <= now);
 }
 

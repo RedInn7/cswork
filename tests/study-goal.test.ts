@@ -260,6 +260,18 @@ void test('a mock finish or a review card day from the future counts nothing and
   assert.equal(data.todayXp, 1, 'the one card graded today');
 });
 
+void test('own cards and problem ideas graded today count like open questions', async () => {
+  const p = addUser('g-cards');
+  const now = Date.now();
+  const day = Math.floor(now / DAY);
+  note(p.id, 'recall:queue', JSON.stringify({ v: 1, items: { 'sd:a': [1, day, 'A'] } }), now);
+  note(p.id, 'recall:cards', JSON.stringify({ v: 1, items: { 'card:abcdefghijkl': [1, day, ''] } }), now);
+  note(p.id, 'recall:ideas', JSON.stringify({ v: 1, items: { 'idea:lc-1': [1, day, ''] } }), now);
+  const { data } = await goal(p, 0);
+  // 1 XP each; the same day count ticks the 'Self-grade 3 review cards' quest.
+  assert.equal(data.todayXp, 3);
+});
+
 void test("goal and rest marks take none of the learner's 5000 marks", async () => {
   const p = addUser('g-quota');
   const insert = sqlite().prepare('INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,0)');

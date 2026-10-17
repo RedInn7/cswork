@@ -89,7 +89,7 @@ export function PrivacyDocument() {
                 联系人（/career/contacts）是你记录的他人信息：姓名、公司、职位、怎么认识的、链接、上次联系和下次跟进的日期、备注，以及可选关联的一张投递卡，每个账号最多 200 位。它们只保存在你自己的账号里，其他人都看不到，可以随时删除；关联的投递卡删除后，联系人保留，只是不再关联。请只记录求职需要的内容。求职指南各章清单的勾选状态，登录时存成你账号里的私人笔记（checklist:&lt;章节&gt;），未登录时只存在当前浏览器，登录后打开这一章会并入账号并从浏览器删除。外联模板页（/career/templates）登录后在浏览器里读取你的投递卡和联系人来填空；你填的「你的名字」只存在当前浏览器。复制和「在邮件应用中打开」都在你的设备上完成，平台不替你发送任何消息。
               </p>
               <p id="privacy-practice-aids">
-                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA、保存的 STAR 故事和开放题复习自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA、保存的 STAR 故事，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
               </p>
               <p id="privacy-notes-export">
                 「我的进度」笔记页的导出，把你写的题目、提交和资料笔记、专题套路笔记、STAR 故事、复习卡片、摘录和系统设计草稿打包成一个 .zip（Obsidian 库）或一个 .md 文件，可以选择附上每道题最近一次通过的代码；服务器只返回你自己的记录，文件在你的浏览器里生成，平台不另存。复习单和复习册（/review-sheet）只读取你自己的笔记、收藏和重做标记、提交记录、复习自评和卡片，不新增任何存储，打印和存 PDF 都在浏览器里完成。比赛或技能认证考试进行中，导出和复习单都不可用。
@@ -614,8 +614,8 @@ export function PrivacyDocument() {
                 works out each day&apos;s XP from your accepted submissions,
                 stress tests and complexity probes, multiple-choice answers,
                 system design chapters read, interview English units finished,
-                finished mock OAs, saved STAR stories and open-question
-                self-grades. The days you reached the goal, and past rest days
+                finished mock OAs, saved STAR stories and self-grades of open
+                questions, review cards and idea cards. The days you reached the goal, and past rest days
                 and review-break days, are kept on your account to bridge the
                 streak you see in the top bar, My progress and study reminders,
                 never badges, leaderboards or your public profile; records
