@@ -251,9 +251,13 @@ void test('a complexity probe keeps only its seed, redraws its cases in the work
   assert.ok(detail.cases.every((c) => c.stdin === undefined && c.status === 'pending'));
   const history = (await (await call(prober, 'GET', 'submissions?problemId=lc-53')).json()) as { items: unknown[] };
   assert.deepEqual(history.items, []);
-  // Someone else's probe waits for this one: one in flight site-wide.
-  assert.deepEqual(await failure({ ...me, id: 'probe-other' }), [429, '另一次复杂度测量正在运行，请稍后再试']);
+  // Someone else's probe waits for this one: one in flight site-wide, and waiting costs no quota.
+  const other: Person = { ...me, id: 'probe-other' };
+  for (let i = 0; i < 7; i++) assert.deepEqual(await failure(other), [429, '另一次复杂度测量正在运行，请稍后再试']);
   await cancelSubmission(prober, created.id);
+  const theirs = await probe(other);
+  assert.equal(theirs.status, 201);
+  await cancelSubmission(other, ((await theirs.json()) as { id: string }).id);
   // Six an hour each: the seventh is refused.
   for (let i = 2; i <= 6; i++) {
     const next = await probe(prober);

@@ -106,12 +106,17 @@ export async function handleComplexity(request: Request, p: Person, problemId: s
   const probe = probeCases(problemId, seed);
   if (!probe) throw new HttpError(404, '这道题暂不支持测复杂度');
   if (!judgeReady()) throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
+  const busy = () => {
+    if (sqlite().prepare("SELECT 1 FROM submissions WHERE mode='complexity' AND status IN ('queued','compiling','running')").get())
+      throw new HttpError(429, '另一次复杂度测量正在运行，请稍后再试');
+  };
+  // Before the hourly count, so waiting for the one slot costs nothing; again inside for the race.
+  busy();
   await limit(p, 'complexity-write', 6, 3600);
   const id = sqlite()
     .transaction(() => {
       admit(p);
-      if (sqlite().prepare("SELECT 1 FROM submissions WHERE mode='complexity' AND status IN ('queued','compiling','running')").get())
-        throw new HttpError(429, '另一次复杂度测量正在运行，请稍后再试');
+      busy();
       return enqueue(p, randomUUID(), {
         problem_id: problemId,
         problem_version_id: versionId,
