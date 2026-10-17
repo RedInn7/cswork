@@ -12,6 +12,7 @@ import { CompanyFollowButton } from '@/components/company-follow-button';
 import { companyHub } from '@/lib/server/company-hub';
 import { rankInWindow, sourceDates } from '@/lib/server/company-insights';
 import { companyStats } from '@/lib/server/company-stats';
+import { feedPath, withFeed } from '@/lib/server/feeds';
 import { companyFacets } from '@/lib/server/seo-facets';
 import { CATEGORIES } from '@/components/company-stats-card';
 import {
@@ -73,11 +74,12 @@ const load = cache(async (slug: string) => {
 
 export async function generateMetadata({ params }: Props) {
   const { company, locale, lead } = await load((await params).slug);
-  return seoMetadata({
+  const metadata = seoMetadata({
     title: companyPageTitle(locale, company.name),
     description: lead,
     path: companyHubPath(company.slug),
   });
+  return withFeed(metadata, `/feeds/company/${company.slug}`, locale === 'zh');
 }
 
 const spa = (params: Record<string, string>) => `/?${new URLSearchParams(params)}`;
@@ -151,6 +153,14 @@ export default async function CompanyPage({ params, searchParams }: Props) {
           {zh ? `讨论 ${company.name}` : `Discuss ${company.name}`}
         </a>
         <CompanyFollowButton slug={company.slug} name={company.name} zh={zh} />
+        <a
+          className="oa-public-cta is-quiet"
+          href={feedPath(`/feeds/company/${company.slug}`, zh)}
+          type="application/atom+xml"
+          aria-label={zh ? `${company.name} 的 RSS 订阅：新 OA 题、面经和岗位` : `RSS feed of ${company.name}: new OA problems, reports and roles`}
+        >
+          RSS
+        </a>
       </div>
       {stops.length > 1 && (
         <nav className="company-hub-stops" aria-label={zh ? '本页内容' : 'On this page'}>
