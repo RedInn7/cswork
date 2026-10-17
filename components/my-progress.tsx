@@ -22,6 +22,7 @@ import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
+import { NoteTagChips } from './notes-filters';
 import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
@@ -37,6 +38,7 @@ type Note = {
   snippet: string;
   problemId: string | null;
   title: { title: string; titleZh: string | null } | null;
+  confidence?: number | null;
 };
 type NotePage = { items: Note[]; total: number; nextCursor: string | null };
 type Data = {
@@ -258,17 +260,25 @@ export function MyProgress({
   const [noteQuery, setNoteQuery] = useState('');
   const [noteHits, setNoteHits] = useState<NotePage | null>(null);
   const [noteError, setNoteError] = useState('');
+  // A #tag or "confidence ≤ 2" chip (components/notes-filters.tsx) narrows the search too.
+  const [noteTag, setNoteTag] = useState<string | null>(null);
+  const [noteConf, setNoteConf] = useState<number | null>(null);
   const words = noteQuery.trim().split(/\s+/).filter(Boolean).slice(0, 6);
+  const noteFilters = (): Record<string, string> => ({
+    ...(noteQuery.trim() ? { q: noteQuery.trim() } : {}),
+    ...(noteTag ? { tag: noteTag } : {}),
+    ...(noteConf ? { conf: String(noteConf) } : {}),
+  });
   useEffect(() => {
-    const q = noteQuery.trim();
+    const filters = noteFilters();
     setNoteError('');
-    if (!q) {
+    if (!Object.keys(filters).length) {
       setNoteHits(null);
       return;
     }
     let current = true;
     const timer = setTimeout(() => {
-      api<NotePage>(`oj/notes?${new URLSearchParams({ q })}`)
+      api<NotePage>(`oj/notes?${new URLSearchParams(filters)}`)
         .then((page) => {
           if (current) setNoteHits(page);
         })
@@ -280,17 +290,18 @@ export function MyProgress({
       current = false;
       clearTimeout(timer);
     };
-  }, [noteQuery]);
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- noteFilters reads these three.
+  }, [noteQuery, noteTag, noteConf]);
   const notePage = noteHits ?? data?.notes;
   async function moreNotes() {
     if (!notePage?.nextCursor) return;
-    const q = noteQuery.trim();
+    const filters = noteFilters();
     try {
       const page = await api<NotePage>(
-        `oj/notes?${new URLSearchParams({ ...(q ? { q } : {}), cursor: notePage.nextCursor })}`,
+        `oj/notes?${new URLSearchParams({ ...filters, cursor: notePage.nextCursor })}`,
       );
       const merged = { ...page, items: [...notePage.items, ...page.items] };
-      if (q) setNoteHits(merged);
+      if (Object.keys(filters).length) setNoteHits(merged);
       else setData((d) => d && { ...d, notes: merged });
     } catch (reason) {
       setNoteError((reason as Error).message);
@@ -629,7 +640,11 @@ export function MyProgress({
   function notesPanel() {
     const page = notePage!;
     const ids = page.items.flatMap((n) => problemOf(n.target) ?? n.problemId ?? []);
-    const updated = (n: Note) => t(`笔记 ${date(n.updatedAt)} 更新`, `Note updated ${date(n.updatedAt)}`);
+    const updated = (n: Note) =>
+      [
+        t(`笔记 ${date(n.updatedAt)} 更新`, `Note updated ${date(n.updatedAt)}`),
+        ...(n.confidence ? [t(`把握度 ${n.confidence}`, `Confidence ${n.confidence}`)] : []),
+      ].join(' · ');
     const rows = page.items.map((n) => {
       const snippet = highlight(n.snippet, words);
       const id = problemOf(n.target) ?? n.problemId;
@@ -644,21 +659,33 @@ export function MyProgress({
           { snippet, key: n.target, ...(n.problemId ? { tab: 'history' } : {}) },
         );
       }
-      // A written answer (content:<type>/<slug>), or a note whose submission is gone.
+      // A written answer (content:<type>/<slug>), a stop's pattern notes (topic:<slug>), or a note
+      // whose submission is gone.
       const content = /^content:(\w+)\/(.+)$/.exec(n.target);
-      const name = n.title ? (english ? n.title.title : (n.title.titleZh ?? n.title.title)) : content?.[2] ?? t('提交笔记', 'Submission note');
+      const topic = n.target.startsWith('topic:') ? n.target.slice(6) : null;
+      const name = n.title
+        ? (english ? n.title.title : (n.title.titleZh ?? n.title.title))
+        : content?.[2] ?? (topic ? (STOP_NAMES[topic] ? t(...STOP_NAMES[topic]) : topic) : t('提交笔记', 'Submission note'));
       const main = (
         <span className="study-row-main">
           <strong>{name}</strong>
           <span className="study-row-secondary progress-detail">
-            {[content ? t('题库作答', 'Written answer') : t('提交已删除', 'Submission removed'), updated(n)].join(' · ')}
+            {[
+              content ? t('题库作答', 'Written answer') : topic ? t('套路笔记', 'Pattern notes') : t('提交已删除', 'Submission removed'),
+              updated(n),
+            ].join(' · ')}
           </span>
           <span className="progress-snippet">{snippet}</span>
         </span>
       );
       return (
         <li key={n.target}>
-          {content ? (
+          {topic ? (
+            // ponytail: topicPath by hand; its module carries 160 KB of templates.
+            <a className="study-row progress-row" href={`/topics/${topic}`}>
+              {main}
+            </a>
+          ) : content ? (
             <a
               className="study-row progress-row"
               href={`/?${new URLSearchParams({ view: 'content', type: content[1], slug: content[2] })}`}
@@ -688,6 +715,7 @@ export function MyProgress({
               placeholder={t('笔记里的词，空格分隔', 'Words in your notes')}
             />
           </label>
+          <NoteTagChips english={english} tag={noteTag} conf={noteConf} onTag={setNoteTag} onConf={setNoteConf} />
           <output className="progress-filter-count">
             {t(`${page.total} 条笔记`, `${page.total} note${page.total === 1 ? '' : 's'}`)}
           </output>
@@ -704,7 +732,9 @@ export function MyProgress({
             [],
             words.length
               ? ['没有笔记同时包含这些词。', 'No note has all of these words.']
-              : ['在题目页的「笔记」标签写下思路，题目会出现在这里。', 'Write in a problem’s Notes tab and it shows up here.'],
+              : noteTag || noteConf
+                ? ['这一页没有符合筛选的笔记。', 'No note on this page matches the filter.']
+                : ['在题目页的「笔记」标签写下思路，题目会出现在这里。', 'Write in a problem’s Notes tab and it shows up here.'],
           )
         )}
         {page.nextCursor && (

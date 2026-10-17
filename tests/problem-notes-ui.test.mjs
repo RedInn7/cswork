@@ -221,3 +221,50 @@ test('the template goes in at the cursor and [[lc-42]] previews as a link, with 
     globalThis.fetch = originalFetch;
   }
 });
+
+test('a topic page notebook: nothing on the server, a sign-in line for guests, the stop note and its problems', async () => {
+  const { renderToString } = await import('react-dom/server');
+  const { TopicNotebook } = await import('../components/topic-notebook.tsx');
+  assert.equal(renderToString(createElement(TopicNotebook, { slug: 'two-pointers-windows', zh: false })), '');
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/topics/two-pointers-windows' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  let signedIn = false;
+  const auth = [];
+  dom.window.addEventListener('cswork:auth-required', () => auth.push(1));
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    const u = new URL(String(url), 'https://cswork.test');
+    if (u.pathname === '/api/oj/notes/stop') {
+      assert.equal(u.searchParams.get('slug'), 'two-pointers-windows');
+      return signedIn
+        ? Response.json({ me: 'u1', items: [{ problemId: 'lc-15', snippet: 'sort, then two pointers', confidence: 2, tags: ['双指针'] }] })
+        : Response.json({ error: 'Please sign in first' }, { status: 401 });
+    }
+    assert.equal(u.searchParams.get('target'), 'topic:two-pointers-windows');
+    return Response.json({ target: 'topic:two-pointers-windows', body: 'shrink while the window is invalid', updatedAt: 1 });
+  };
+  const wait = (ms) => act(async () => new Promise((r) => setTimeout(r, ms)));
+  try {
+    let root = createRoot(document.getElementById('root'));
+    await act(async () => root.render(createElement(TopicNotebook, { slug: 'two-pointers-windows', zh: false })));
+    await wait(5);
+    assert.match(document.querySelector('.topic-notebook').textContent, /Sign in to keep notes on this pattern/);
+    assert.equal(auth.length, 0, 'no app sign-in prompt on a public page');
+    await act(async () => root.unmount());
+    signedIn = true;
+    root = createRoot(document.getElementById('root'));
+    await act(async () => root.render(createElement(TopicNotebook, { slug: 'two-pointers-windows', zh: false })));
+    await wait(5);
+    assert.equal(document.querySelector('textarea[aria-label="Note"]').value, 'shrink while the window is invalid');
+    assert.equal(document.querySelector('.cs-notes-tools'), null, 'no problem template on a stop note');
+    const item = document.querySelector('.topic-notebook-list li');
+    assert.equal(item.querySelector('a').getAttribute('href'), '/?view=problem&problem=lc-15');
+    assert.match(item.textContent, /LC 15Confidence 2 · #双指针sort, then two pointers/);
+    await act(async () => root.unmount());
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
