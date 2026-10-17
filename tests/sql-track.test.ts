@@ -97,13 +97,14 @@ test('the ordered marker makes row order count', () => {
   assert.equal(desc.stdout, 'columns: 1\n["b"]\n["a"]\n');
 });
 
-test('the names marker adds the column names on stderr and leaves stdout alone', () => {
+test('the names marker adds the column names on stderr and keeps the rows in the query\'s order', () => {
   const data = table("('b', 2), ('a', 1)");
   const query = 'SELECT name AS "名字", x, x + 1 FROM t';
   const plain = runner.run(query, data);
   const named = runner.run(`${SQL_NAMES}\n${query}`, data);
   assert.equal(named.ok, true, named.stderr);
-  assert.equal(named.stdout, plain.stdout);
+  assert.equal(plain.stdout, 'columns: 3\n["a", 1, 2]\n["b", 2, 3]\n');
+  assert.equal(named.stdout, 'columns: 3\n["b", 2, 3]\n["a", 1, 2]\n');
   assert.equal(plain.stderr, '');
   assert.equal(named.stderr, '["名字", "x", "x + 1"]\n');
 });
