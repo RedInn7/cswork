@@ -286,6 +286,36 @@ void test('note #tags and confidence filter the hub; backlinks and Line 500 stop
   sqlite().prepare("DELETE FROM user_notes WHERE target<>'story:1'").run();
 });
 
+void test('self-made cards are checked, capped at 200 and listed whole; excerpts list across their paths', async () => {
+  const card = (front: string, extra: Record<string, unknown> = {}) => ({ body: JSON.stringify({ v: 1, front, back: 'A', tags: ['dp'], ...extra }) });
+  const path = (id: string) => `notes?target=card:${id}`;
+  assert.equal(await status(me, 'PUT', path('abc123def456'), { body: 'not json' }), 400);
+  assert.equal(await status(me, 'PUT', path('abc123def456'), card('Q', { src: { href: '//evil.test/x', title: 'x' } })), 400);
+  assert.equal(await status(me, 'PUT', path('short'), card('Q')), 400, 'ids are 12 a-z0-9');
+  await ok(me, 'PUT', path('abc123def456'), card('Q', { src: { href: '/topics/two-pointers-windows', title: 'Two pointers' } }));
+  const insert = sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)');
+  for (let i = 1; i < 200; i++) insert.run(me.id, `card:${String(i).padStart(12, '0')}`, card(`Q${i}`).body, i);
+  assert.equal(await status(me, 'PUT', path('zzzzzzzzzzzz'), card('one too many')), 409);
+  await ok(me, 'PUT', path('abc123def456'), card('Edited'));
+  await ok(other, 'PUT', path('zzzzzzzzzzzz'), card('Theirs'));
+  type Listed = { items: { target: string; body: string }[] };
+  const mine = await ok<Listed>(me, 'GET', 'notes?prefix=card%3A');
+  assert.equal(mine.items.length, 200);
+  assert.equal(JSON.parse(mine.items[0].body).front, 'Edited', 'newest first');
+  assert.deepEqual((await ok<Listed>(other, 'GET', 'notes?prefix=card%3A')).items.map((i) => i.target), ['card:zzzzzzzzzzzz']);
+  // An emptied card is removed, which makes room again.
+  await ok(me, 'PUT', path('abc123def456'), { body: '' });
+  await ok(me, 'PUT', path('zzzzzzzzzzzz'), card('Now there is room'));
+  await ok(me, 'PUT', 'notes?target=clip:lesson/course-1/lesson-2', { body: '> a quote — [Lesson](/?view=lesson&lesson=lesson-2)' });
+  await ok(me, 'PUT', 'notes?target=clip:concept/two-pointers', { body: '> another' });
+  assert.deepEqual(
+    (await ok<Listed>(me, 'GET', 'notes?prefix=clip%3A')).items.map((i) => i.target),
+    ['clip:concept/two-pointers', 'clip:lesson/course-1/lesson-2'],
+  );
+  assert.equal((await ok<Listed>(other, 'GET', 'notes?prefix=clip%3A')).items.length, 0);
+  sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'card:%' OR target LIKE 'clip:%'").run();
+});
+
 void test('marks toggle per learner and drive the Line 500 starred/redo filters', async () => {
   const mark = (p: Person, m: string, on: boolean) =>
     ok(p, 'POST', 'marks', { target: 'problem:lc-1', mark: m, on });

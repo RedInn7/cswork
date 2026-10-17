@@ -314,6 +314,11 @@ const EN: Record<string, string> = {
   这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
   现在不能报告爽约: "You can't report a no-show right now",
   故事已达上限: "You've reached the limit for stories",
+  // Self-made review cards (lib/server/my-practice.ts) and the idea review (lib/server/recall-ideas.ts)
+  '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接':
+    'Invalid card: front and back up to 2,000 characters each, at most 8 tags, and the source must be a page on this site',
+  '卡片已达上限（200 张）': "You've reached the limit of 200 cards",
+  '一次最多查询 100 道题': 'Ask for at most 100 problems at a time',
   // Contest rooms and the weekly contest (lib/server/contests.ts)
   比赛不存在: 'Contest not found',
   比赛接口不存在: 'Contest endpoint not found',

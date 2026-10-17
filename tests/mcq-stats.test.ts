@@ -85,6 +85,18 @@ void test('counts appear from 20 people, cached for 10 minutes, at most 50 ids a
   assert.equal((await call(null, ['nope'], undefined)).status, 404);
 });
 
+void test('questions: one language with the answer, known ids only, at most 50 a call', async () => {
+  const bank = (await import('../lib/content/oa-mcq.json')).default.questions;
+  const q = bank.find((x) => x.id === single)!;
+  const zh = await call(null, ['questions'], undefined, `?ids=${single},mcq-nope-1,${single}&lang=zh`);
+  assert.equal(zh.status, 200);
+  assert.deepEqual(zh.data!.items, [{ id: single, section: q.section, topic: q.topic, answer: q.answer, text: q.zh }]);
+  const en = await call(null, ['questions'], undefined, `?ids=${single}`);
+  assert.deepEqual((en.data!.items as { text: unknown }[])[0].text, q.en, 'English unless lang=zh');
+  const many = Array.from({ length: 51 }, (_, i) => `mcq-os-${i + 1}`).join(',');
+  assert.equal((await call(null, ['questions'], undefined, `?ids=${many}`)).status, 400);
+});
+
 void test('a correction is a ticket tagged [ref]; teachers can list corrections apart from questions, after them on the dashboard', async () => {
   const { TICKET_REF, ticketPage } = await import('../lib/server/lms-support');
   for (const ok of ['mcq:mcq-os-1', 'sd:cache', 'learn:cpp/pointers', 'course:intro_1.2']) assert.match(ok, TICKET_REF);

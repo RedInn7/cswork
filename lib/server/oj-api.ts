@@ -40,6 +40,7 @@ import { handleComplexity, handleStress } from './stress';
 import { handleNoteSub } from './note-links';
 import { handleCheatsheet, handleNoteExport } from './note-export';
 import { handleStudyGoal } from './study-goal';
+import { handleRecallIdeas } from './recall-ideas';
 import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
@@ -298,6 +299,7 @@ export async function handleOj(
   if (resource === 'notes' && id && !action) return handleNoteSub(request, p, id);
   if (resource === 'cheatsheet' && !id) return handleCheatsheet(request, p);
   if (resource === 'study-goal' && !id) return handleStudyGoal(request, p);
+  if (resource === 'recall' && id === 'ideas' && !action) return handleRecallIdeas(request, p);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
   if (
