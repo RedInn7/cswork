@@ -574,7 +574,7 @@ function Picture({ view: { name, shape, changed }, vars }: { view: StepView; var
       <table className="pydbg-grid">
         <thead>
           <tr>
-            <td />
+            <td aria-hidden="true" />
             {Array.from({ length: columns }, (_, c) => (
               <th key={c} scope="col">
                 {c}
