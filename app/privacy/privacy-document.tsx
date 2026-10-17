@@ -117,7 +117,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。「对拍」（随机生成小用例，拿你的代码和参考解比对）的代码和生成的输入同样保存在你的运行记录里，不出现在提交列表、统计和学习进度中；SQL 题的「执行计划」和 CTE 逐段预览（代码和所用的样例输入）也一样。「测复杂度」（用逐级变大的输入给你的代码计时）的代码同样保存在运行记录里，但只保存生成输入用的随机种子，不保存大输入和每组的输出，只有没通过的那一组会保存错误输出（stderr）。对拍和测复杂度不进提交列表和统计，只计入每日经验。通过后弹窗里的代码提示和提交前的「追问」检查都在浏览器里完成，不上传、不保存。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。「对拍」（随机生成小用例，拿你的代码和参考解比对）的代码和生成的输入同样保存在你的运行记录里，不出现在提交列表、统计和学习进度中；SQL 题的「执行计划」和 CTE 逐段预览（代码和所用的样例输入）也一样。「测复杂度」（用逐级变大的输入给你的代码计时）的代码同样保存在运行记录里，但只保存生成输入用的随机种子，不保存大输入和每组的输出，只有没通过的那一组会保存错误输出（stderr）。测复杂度不进提交列表和统计，只计入每日经验；对拍除上文的「通过前对拍一致」记录外，也只计入每日经验。通过后弹窗里的代码提示和提交前的「追问」检查都在浏览器里完成，不上传、不保存。
               </p>
             </section>
 
@@ -773,9 +773,10 @@ export function PrivacyDocument() {
                 code in your run records too, but only the random seed the
                 inputs are drawn from: neither the large inputs nor any
                 case&apos;s output is stored, and only the case that failed keeps
-                its error output (stderr). Stress tests and complexity probes
-                stay out of your submission list and statistics and count only
-                toward your daily XP.
+                its error output (stderr). A complexity probe stays out of your
+                submission list and statistics and counts only toward your daily
+                XP; a stress test does too, apart from the &lsquo;agreed before
+                your first pass&rsquo; record described above.
                 The code notes after an accepted
                 submission and the follow-up check before submitting run in your
                 browser; nothing is uploaded or stored.
