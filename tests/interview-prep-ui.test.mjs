@@ -315,3 +315,30 @@ test('story picks and editor saves build on the stories as stored now; switching
   assert.equal(document.querySelector('.ip-field input').value === 'Launch slip', true);
   await act(async () => bank.unmount());
 });
+
+test('story bank: themes interviews asked about with no story yet, each one a click from a new story', async () => {
+  const retro = (company, themes) => ({
+    target: `retro:0b5f8c1e-1f2a-4c3d-9e8f-123456789abc/${company.toLowerCase()}`,
+    body: JSON.stringify({ company, stage: 'onsite', at: 1, score: 2, questions: [], stuck: '', themes }),
+    updatedAt: 1,
+  });
+  globalThis.fetch = async (url) => {
+    const u = String(url);
+    if (u.includes('prefix=story')) return Response.json({ items: [storyNote('s1', { title: 'Schema fight', competencies: ['conflict'] })] });
+    if (u.includes('prefix=retro')) return Response.json({ items: [retro('Acme', ['conflict', 'failure']), retro('Beta', ['failure', 'Dive Deep'])] });
+    throw new Error(`unexpected ${u}`);
+  };
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(StoryBank, { userId: 'u1' })));
+  await settle();
+  const section = document.querySelector('.ip-missing');
+  assert.equal(section.querySelector('h2').textContent, 'Asked in interviews, no story yet');
+  assert.deepEqual(
+    [...section.querySelectorAll('li')].map((li) => [...li.children].map((c) => c.textContent)),
+    [['Failure', 'Acme, Beta', 'Write one Failure'], ['Dive Deep', 'Beta', 'Write one Dive Deep']],
+  );
+  await act(async () => section.querySelector('button').click());
+  const chip = [...document.querySelectorAll('#ip-editor .ip-chip')].find((l) => l.textContent === 'Failure');
+  assert.equal(chip.querySelector('input').checked, true);
+  await act(async () => root.unmount());
+});

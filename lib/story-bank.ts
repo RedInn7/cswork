@@ -158,6 +158,21 @@ export function keepLinks(edited: Story, base: Story, stored: Story | null): Sto
   return { ...edited, questions: stored.questions.filter((q) => !unlinked.has(q.key)) };
 }
 
+/**
+ * Themes real interviews asked about (interview retros, lib/applications.ts) that no story covers
+ * yet, each with the companies that asked, most companies first. A story tagged with the theme
+ * takes it off the list.
+ */
+export function missingThemes(retros: readonly { company: string; themes: readonly string[] }[], stories: readonly Story[]) {
+  const covered = new Set(stories.flatMap((s) => s.competencies));
+  const asked = new Map<string, Set<string>>();
+  for (const r of retros)
+    for (const id of r.themes) if (!covered.has(id)) asked.set(id, (asked.get(id) ?? new Set<string>()).add(r.company));
+  return [...asked]
+    .map(([id, companies]) => ({ id, companies: [...companies].filter(Boolean) }))
+    .sort((a, b) => b.companies.length - a.companies.length);
+}
+
 export const competencyName = (id: string, english: boolean) => {
   const c = COMPETENCIES.find((x) => x.id === id);
   return c ? c.name[english ? 1 : 0] : id;

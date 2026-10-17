@@ -3,6 +3,7 @@
 // the CSV and calendar exports built in the browser. Then the wave-8 board: the No response
 // column and the stale hint, follow-up nudges and today's list, prep links, and the bookmarklet's
 // #jd prefill (kept across sign-in). Then wave 9: the offer countdown and the schedule panel.
+// Wave 10: company tiers, the warm-up hints and the private interview retros.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { JSDOM, VirtualConsole } from 'jsdom';
@@ -360,4 +361,126 @@ test('a card moved back to Offer with its deadline reads the board again for the
   await act(async () => new Promise((done) => setTimeout(done, 0)));
   assert.equal(calls.filter(([key]) => key === 'GET /api/oj/applications').length, reads + 1);
   await act(async () => r.unmount());
+});
+
+test('wave 10: tiers order the Saved column, warm-up hints, and private interview retros', async () => {
+  const CARD = '0b5f8c1e-1f2a-4c3d-9e8f-123456789abc';
+  const met = now - 2 * DAY - 1234; // not on a minute: the retro form keeps minutes
+  items.splice(
+    0,
+    items.length,
+    card({ id: 'dream', company: 'Dreamco', tier: 'dream', stage: 'applied' }),
+    card({ id: 's1', company: 'Wishco', tier: 'dream', stage: 'saved' }),
+    card({ id: 's2', company: 'Plainco', tier: '', stage: 'saved' }),
+    card({ id: 's3', company: 'Warmco', tier: 'practice', stage: 'saved' }),
+    card({ id: 's4', company: 'Targetco', tier: 'target', stage: 'saved' }),
+    card({ id: CARD, company: 'Acme', stage: 'onsite', interviewAt: met, stageLog: [['phone', now - 30 * DAY], ['onsite', now - 10 * DAY]] }),
+    card({ id: 'ph', company: 'Phoneco', stage: 'phone', stageLog: [['phone', now - DAY]] }),
+    card({ id: 'wd', company: 'Dropco', stage: 'phone', stageLog: [['phone', now - DAY]] }),
+    card({ id: 'old', company: 'Oldco', stage: 'rejected', interviewAt: now - 30 * DAY, stageLog: [['onsite', now - 40 * DAY], ['rejected', now - 25 * DAY]] }),
+  );
+  const earlier = { company: 'Acme', stage: 'phone', at: now - 20 * DAY, score: 2, questions: [{ text: 'LRU', problem: 'lc-146', similar: false }], stuck: 'eviction', themes: [] };
+  const notes = [{ target: `retro:${CARD}/k1`, body: JSON.stringify(earlier), updatedAt: 1 }, { target: 'retro:junk', body: '{}', updatedAt: 1 }];
+  const base = globalThis.fetch;
+  globalThis.fetch = async (url, init = {}) => {
+    const key = `${init.method ?? 'GET'} ${String(url)}`;
+    if (key === 'GET /api/oj/notes?prefix=retro%3A') return Response.json({ items: notes });
+    if (key.startsWith('PUT /api/oj/notes') || key === 'POST /api/oj/marks') {
+      calls.push([key, JSON.parse(init.body)]);
+      return Response.json(key.startsWith('PUT') ? { updatedAt: Date.now() } : { mark: 'redo', added: 1 });
+    }
+    return base(url, init);
+  };
+  window.confirm = () => true;
+  const r = createRoot(document.getElementById('root'));
+  await act(async () => r.render(createElement(ApplicationTracker, { zh: true })));
+
+  assert.match(document.querySelector('.tracker-warmup li').textContent, /^梦想公司 Dreamco 已经投了，练手公司 Warmco 还在“想投”/);
+  assert.deepEqual(
+    [...column('saved').querySelectorAll('.tracker-company')].map((p) => p.textContent),
+    ['Warmco 练手', 'Targetco 目标', 'Plainco', 'Wishco 梦想'],
+  );
+  assert.equal(column('saved').querySelector('.tracker-tier').getAttribute('data-tier'), 'practice');
+  // The form's tier select, after the stage.
+  await act(async () => document.querySelector('[data-id="s2"] .tracker-card-actions button').click());
+  const tierSelect = document.querySelectorAll('form.resume-form select')[1];
+  await setValue(tierSelect, 'practice', 'change');
+  await act(async () => document.querySelector('form.resume-form button[type="submit"]').click());
+  assert.equal(calls.at(-1)[1].tier, 'practice');
+
+  // A card past phone or onsite has its retros; an interview gone by without one gets a nudge.
+  const acme = () => document.querySelector(`[data-id="${CARD}"]`);
+  assert.equal(acme().querySelector('[data-retro]').textContent, '复盘 (1) Acme');
+  assert.equal(document.querySelector('[data-id="dream"] [data-retro]'), null);
+  assert.match(acme().querySelector('.tracker-hint').textContent, /^面试已经结束/);
+  // A month-old interview keeps its Retros button but gets no nudge.
+  assert.equal(document.querySelector('[data-id="old"] .tracker-hint'), null);
+  assert.ok(document.querySelector('[data-id="old"] [data-retro]'));
+  await act(async () => acme().querySelector('.tracker-hint button').click());
+  const panel = document.querySelector('form.tracker-retro');
+  assert.equal(document.activeElement, panel.querySelector('select'));
+  assert.match(panel.querySelector('legend').textContent, /Acme$/);
+  assert.equal(panel.querySelector('select').value, 'onsite');
+  assert.equal(new Date(panel.querySelector('input[type="datetime-local"]').value).getTime(), Math.floor(met / 60000) * 60000);
+  assert.equal(panel.querySelectorAll('.tracker-retro-list li').length, 1);
+
+  await setValue(panel.querySelectorAll('select')[1], '3', 'change');
+  const [text, problem] = panel.querySelectorAll('.tracker-retro-qs li input');
+  await setValue(text, 'Design a rate limiter');
+  await setValue(problem, 'lc-1');
+  await act(async () => panel.querySelector('.tracker-retro-qs li input[type="checkbox"]').click());
+  // The Leadership Principles section stays open when its last box is unchecked.
+  const lp = panel.querySelector('.tracker-retro-themes details');
+  assert.equal(lp.open, false);
+  lp.open = true;
+  await act(async () => lp.dispatchEvent(new Event('toggle')));
+  const lpBox = lp.querySelector('input');
+  await act(async () => lpBox.click());
+  await act(async () => lpBox.click());
+  assert.equal(lp.open, true);
+  const theme = [...panel.querySelectorAll('.tracker-retro-themes label')].find((l) => l.textContent === '失败与犯错');
+  await act(async () => theme.querySelector('input').click());
+  await setValue(panel.querySelector('textarea'), ' ran out of time ');
+  await act(async () => panel.querySelector('button[type="submit"]').click());
+  const [[putKey, put], marks] = calls.slice(-2);
+  assert.match(putKey, new RegExp(`^PUT /api/oj/notes\\?target=retro%3A${CARD}%2F[a-z0-9]+$`));
+  assert.deepEqual(JSON.parse(put.body), {
+    company: 'Acme', stage: 'onsite', at: Math.floor(met / 60000) * 60000, score: 3,
+    questions: [{ text: 'Design a rate limiter', problem: 'lc-1', similar: true }], stuck: 'ran out of time', themes: ['failure'],
+  });
+  assert.deepEqual(marks, ['POST /api/oj/marks', { targets: ['problem:lc-1'], mark: 'redo' }]);
+  assert.match(panel.querySelector('.resume-actions small').textContent, /1 道关联题已标记重做/);
+  assert.equal(panel.querySelector('.resume-actions small a').getAttribute('href'), '/?view=review-session');
+  assert.equal(acme().querySelector('.tracker-hint'), null);
+  assert.equal(acme().querySelector('[data-retro]').textContent, '复盘 (2) Acme');
+
+  // Closing hands the focus back to the card's Retros button.
+  await act(async () => [...panel.querySelectorAll('.resume-actions button')].find((b) => b.textContent === '关闭').click());
+  assert.equal(document.querySelector('form.tracker-retro'), null);
+  assert.equal(document.activeElement, acme().querySelector('[data-retro]'));
+
+  // Moving on from onsite with a retro written since: no form. From phone without one: the form, round prefilled.
+  await setValue(acme().querySelector('select'), 'offer', 'change');
+  assert.equal(document.querySelector('form.tracker-retro'), null);
+  await setValue(document.querySelector('[data-id="ph"] select'), 'rejected', 'change');
+  const opened = document.querySelector('form.tracker-retro');
+  assert.match(opened.querySelector('legend').textContent, /Phoneco$/);
+  assert.equal(opened.querySelector('select').value, 'phone');
+  assert.equal(document.activeElement, opened.querySelector('select'));
+  // Moving back to an earlier stage opens nothing, nor does withdrawing.
+  await act(async () => [...opened.querySelectorAll('.resume-actions button')].find((b) => b.textContent === '关闭').click());
+  await setValue(document.querySelector('[data-id="ph"] select'), 'oa', 'change');
+  assert.equal(document.querySelector('form.tracker-retro'), null);
+  await setValue(document.querySelector('[data-id="wd"] select'), 'withdrawn', 'change');
+  assert.equal(document.querySelector('form.tracker-retro'), null);
+
+  // A round is deleted by emptying its note.
+  await act(async () => acme().querySelector('[data-retro]').click());
+  const list = () => [...document.querySelectorAll('form.tracker-retro .tracker-retro-list li')];
+  assert.equal(list().length, 2);
+  await act(async () => [...list().at(-1).querySelectorAll('button')].find((b) => b.textContent.startsWith('删除')).click());
+  assert.deepEqual(calls.at(-1), [`PUT /api/oj/notes?target=retro%3A${CARD}%2Fk1`, { body: '' }]);
+  assert.equal(list().length, 1);
+  await act(async () => r.unmount());
+  globalThis.fetch = base;
 });

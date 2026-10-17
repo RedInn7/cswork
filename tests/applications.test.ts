@@ -3,6 +3,8 @@
 // Stage moves are logged (capped), the job description stays out of the list, a posting its
 // board stopped listing reads as closed, and the stats and stale checks read the log. Offer
 // deadlines (Offer stage only) feed the calendar, schedule clashes and the expedite plan.
+// Wave 10: the company tier (and its CSV column), the warm-up order check, and a deleted card
+// taking its interview retros with it.
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -17,7 +19,7 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-applications-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleApplications } = await import('../lib/server/applications');
-const { APPLICATIONS_MAX, applicationsCsv, applicationsIcs, calendarItems, csvCell, DAY, expeditePlan, funnel, countdown, medianDays, scheduleIssues, stageDays, stale, followUpDue, trackerStats, weekStart, writeUpHref } =
+const { APPLICATIONS_MAX, applicationsCsv, applicationsIcs, calendarItems, csvCell, DAY, expeditePlan, funnel, countdown, medianDays, scheduleIssues, stageDays, stale, followUpDue, trackerStats, warmupIssues, weekStart, writeUpHref } =
   await import('../lib/applications');
 
 const person = (id: string): Person => ({ id, name: id, email: `${id}@example.test`, role: 'student', verified: true });
@@ -103,7 +105,7 @@ void test(`a learner keeps at most ${APPLICATIONS_MAX} applications`, async () =
 const row = (patch: Partial<Application>): Application => ({
   id: 'a1', companySlug: '', company: 'Acme', role: '', stage: 'applied', appliedAt: null, oaDeadline: null,
   interviewAt: null, offerDeadline: null, process: null, referral: '', link: '', notes: '', channel: '', referralStatus: '', nextAction: '', nextAt: null,
-  resumeVersion: '', stageLog: [], hasJd: false, createdAt: 0, updatedAt: 0, links: null, closedAt: null, prep: null, ...patch,
+  resumeVersion: '', tier: '', stageLog: [], hasJd: false, createdAt: 0, updatedAt: 0, links: null, closedAt: null, prep: null, ...patch,
 });
 
 void test('CSV cells that a spreadsheet would run as formulas are defused', () => {
@@ -441,4 +443,66 @@ void test('process weeks are looked up only while the learner has an offer deadl
   assert.equal((await listed()).process, null);
   await call(cy, [offer.id], { stage: 'offer', offerDeadline: Date.now() - DAY });
   assert.equal((await listed()).process, null);
+});
+
+void test('the tier is saved, read back and changed, checked against the three tiers, and exported', async () => {
+  const { item } = (await call(ada, [], { company: 'Dreamco', tier: 'dream' })).data!;
+  assert.equal(item.tier, 'dream');
+  assert.equal((await call(ada, [item.id], { tier: 'practice' })).data!.item.tier, 'practice');
+  assert.equal((await call(ada, [item.id], { notes: 'kept' })).data!.item.tier, 'practice', 'an update without it keeps it');
+  assert.equal((await call(ada, [], { company: 'Plain' })).data!.item.tier, '');
+  for (const tier of ['reach', 'constructor', 'Dream'])
+    assert.equal((await call(ada, [], { company: 'Bad', tier })).status, 400, tier);
+  const csv = applicationsCsv([row({ stage: 'saved', tier: 'practice' })], true);
+  assert.match(csv, /^\uFEFF"Company","Role","Stage","Tier","Applied"/);
+  assert.match(csv, /"Acme","","Saved","Practice",""/);
+  assert.match(applicationsCsv([row({ tier: 'dream' })], false), /"Acme","","已投递","梦想",""/);
+});
+
+void test('warm-up order: a dream interview as the first real one, practice companies left at Saved', () => {
+  const now = Date.UTC(2026, 9, 1);
+  const dream = row({ id: 'd', tier: 'dream', stage: 'phone', interviewAt: now + 5 * DAY });
+  assert.deepEqual(warmupIssues([dream], now), [{ kind: 'dream-first', ids: ['d'] }]);
+  // Another interview before it, ahead or already held: warmed up.
+  assert.deepEqual(warmupIssues([dream, row({ id: 'p', tier: 'practice', stage: 'phone', interviewAt: now + 2 * DAY })], now), []);
+  assert.deepEqual(warmupIssues([dream, row({ id: 'x', stage: 'rejected', interviewAt: now - 9 * DAY })], now), []);
+  // Or logged at phone or onsite before it.
+  assert.deepEqual(warmupIssues([dream, row({ id: 'y', stage: 'offer', stageLog: [['onsite', now - DAY], ['offer', now]] })], now), []);
+  // Not warm-ups: an interview after it, one withdrawn before it happened, a phone stage logged after it.
+  const later = row({ id: 'l', interviewAt: now + 6 * DAY });
+  const dropped = row({ id: 'w', stage: 'withdrawn', interviewAt: now + DAY });
+  const after = row({ id: 'z', stageLog: [['phone', now + 7 * DAY]] });
+  assert.deepEqual(warmupIssues([dream, later, dropped, after], now).map((x) => x.kind), ['dream-first']);
+  // A screen booked (moved to Phone) yesterday but held after the dream one is no warm-up.
+  const booked = row({ id: 'b', tier: 'practice', stage: 'phone', interviewAt: now + 7 * DAY, stageLog: [['phone', now - DAY]] });
+  assert.deepEqual(warmupIssues([dream, booked], now), [{ kind: 'dream-first', ids: ['d'] }]);
+  // Its own current phone stage does not count, a phone stage it already left does.
+  assert.equal(warmupIssues([{ ...dream, stageLog: [['phone', now - DAY]] }], now).length, 1);
+  const onsite = row({ id: 'd2', tier: 'dream', stage: 'onsite', interviewAt: now + 5 * DAY, stageLog: [['phone', now - 20 * DAY], ['onsite', now - 3 * DAY]] });
+  assert.deepEqual(warmupIssues([onsite], now), []);
+  // No interview date, a past one, an ended card or another tier: nothing.
+  for (const d of [{ interviewAt: null }, { interviewAt: now - DAY }, { stage: 'rejected' as const }, { tier: 'target' }])
+    assert.deepEqual(warmupIssues([{ ...dream, ...d }], now), [], JSON.stringify(d));
+
+  const saved = row({ id: 's1', tier: 'practice', stage: 'saved' });
+  const applied = row({ id: 'd2', tier: 'dream', stage: 'applied' });
+  assert.deepEqual(warmupIssues([applied, saved, row({ id: 's2', tier: 'practice', stage: 'saved' })], now), [
+    { kind: 'practice-waiting', ids: ['d2', 's1', 's2'] },
+  ]);
+  assert.deepEqual(warmupIssues([{ ...applied, stage: 'oa' }, saved], now)[0].kind, 'practice-waiting');
+  assert.deepEqual(warmupIssues([{ ...applied, stage: 'saved' }, saved], now), [], 'the dream one not sent yet');
+  assert.deepEqual(warmupIssues([applied, { ...saved, stage: 'applied' }, { ...saved, id: 's3', tier: 'target' }], now), []);
+});
+
+void test("deleting a card removes its interview retros, nobody else's notes", async () => {
+  const { item } = (await call(ada, [], { company: 'Retroco', stage: 'phone' })).data!;
+  const { item: keep } = (await call(ada, [], { company: 'Keepco' })).data!;
+  const insert = sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,1)');
+  insert.run(ada.id, `retro:${item.id}/a1`, '{}');
+  insert.run(ada.id, `retro:${item.id}/a2`, '{}');
+  insert.run(ada.id, `retro:${keep.id}/a1`, '{}');
+  insert.run(ben.id, `retro:${item.id}/a1`, '{}');
+  assert.equal((await call(ada, [item.id, 'delete'], {})).status, 200);
+  const left = sqlite().prepare("SELECT user_id||' '||target AS k FROM user_notes WHERE target LIKE 'retro:%' ORDER BY k").pluck().all();
+  assert.deepEqual(left, [`${ada.id} retro:${keep.id}/a1`, `${ben.id} retro:${item.id}/a1`]);
 });

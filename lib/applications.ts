@@ -1,5 +1,6 @@
 import { SOURCES } from './experience';
 import { calendar, escapeText, utcStamp, vevent } from './ics';
+import { COMPETENCIES } from './story-bank';
 
 /** The tracker board's columns in order (stored as the id; lib/server/applications.ts). */
 export const STAGES = ['saved', 'applied', 'oa', 'phone', 'onsite', 'offer', 'ghosted', 'rejected', 'withdrawn'] as const;
@@ -31,6 +32,12 @@ export const REFERRAL_STATUS: Readonly<Record<string, [string, string]>> = {
   submitted: ['已提交', 'Submitted'],
   declined: ['被拒', 'Declined'],
 };
+/** How much the learner wants the company (job_applications.tier), [zh, en]: practice ones are for warming up. */
+export const TIERS: Readonly<Record<string, [string, string]>> = {
+  dream: ['梦想', 'Dream'],
+  target: ['目标', 'Target'],
+  practice: ['练手', 'Practice'],
+};
 
 export type ApplicationFields = {
   company: string;
@@ -53,6 +60,8 @@ export type ApplicationFields = {
   nextAction: string;
   nextAt: number | null;
   resumeVersion: string;
+  /** A TIERS key or ''. */
+  tier: string;
 };
 /** [stage, epoch ms it moved there], oldest first. */
 export type StageEntry = [Stage, number];
@@ -255,13 +264,14 @@ export const csvCell = (value: string) => `"${(/^[=+\-@\t\r]/.test(value) ? `'${
 /** The board as CSV (UTF-8 with BOM so spreadsheets read Chinese), times in this browser's zone. */
 export function applicationsCsv(items: readonly Application[], english: boolean) {
   const head = english
-    ? ['Company', 'Role', 'Stage', 'Applied', 'OA deadline', 'Interview', 'Channel', 'Referral status', 'Referrer', 'Link', 'Resume version', 'Next step', 'Follow up on', 'Stage history', 'Notes', 'Updated']
-    : ['公司', '岗位', '阶段', '投递日期', 'OA 截止', '面试时间', '渠道', '内推状态', '内推人', '链接', '简历版本', '下一步', '跟进时间', '阶段记录', '备注', '更新时间'];
+    ? ['Company', 'Role', 'Stage', 'Tier', 'Applied', 'OA deadline', 'Interview', 'Channel', 'Referral status', 'Referrer', 'Link', 'Resume version', 'Next step', 'Follow up on', 'Stage history', 'Notes', 'Updated']
+    : ['公司', '岗位', '阶段', '档位', '投递日期', 'OA 截止', '面试时间', '渠道', '内推状态', '内推人', '链接', '简历版本', '下一步', '跟进时间', '阶段记录', '备注', '更新时间'];
   const i = english ? 1 : 0;
   const rows = items.map((a) => [
     a.company,
     a.role,
     STAGE_NAMES[a.stage][i],
+    TIERS[a.tier]?.[i] ?? '',
     localStamp(a.appliedAt, false),
     localStamp(a.oaDeadline),
     localStamp(a.interviewAt),
@@ -384,3 +394,111 @@ export function scheduleIssues(items: readonly Application[], now: number): Sche
   }
   return issues.sort((x, y) => x.day.localeCompare(y.day));
 }
+
+const INTERVIEWS: readonly Stage[] = ['phone', 'onsite'];
+export type WarmupIssue = { kind: 'dream-first' | 'practice-waiting'; ids: string[] };
+/**
+ * Interview order hints for open dream-tier cards: its interview is ahead and would be the first
+ * real one (no other card's interview before it, past ones included, and no card, itself included,
+ * that left phone or onsite before then; an ended card's interview still ahead will not happen); or it is
+ * applied to (Applied or OA) while practice-tier cards still wait at Saved (ids: the dream card,
+ * then those).
+ */
+export function warmupIssues(items: readonly Application[], now: number): WarmupIssue[] {
+  const waiting = items.filter((a) => a.tier === 'practice' && a.stage === 'saved').map((a) => a.id);
+  return items
+    .filter((d) => d.tier === 'dream' && !ENDED.includes(d.stage))
+    .flatMap((d): WarmupIssue[] => {
+      const at = d.interviewAt;
+      // stageLog says when a card entered a column (a screen gets booked before it happens): a phone or
+      // onsite stage counts once the card left it before `at`; a card's current stage counts by interviewAt.
+      const held = (o: Application) =>
+        at !== null && o.stageLog.some(([s], k) => INTERVIEWS.includes(s) && k + 1 < o.stageLog.length && o.stageLog[k + 1][1] < at);
+      const first =
+        at !== null &&
+        at > now &&
+        !items.some(
+          (o) =>
+            held(o) ||
+            (o.id !== d.id && o.interviewAt !== null && o.interviewAt < at && (o.interviewAt <= now || !ENDED.includes(o.stage))),
+        );
+      const applied = (d.stage === 'applied' || d.stage === 'oa') && waiting.length > 0;
+      return [
+        ...(first ? [{ kind: 'dream-first' as const, ids: [d.id] }] : []),
+        ...(applied ? [{ kind: 'practice-waiting' as const, ids: [d.id, ...waiting] }] : []),
+      ];
+    });
+}
+
+/** One interview round's private retro: the user note `retro:<application id>/<base36 time>`, JSON (parseRetro). */
+export const RETRO_TARGET = /^retro:([0-9a-f-]{36})\/[a-z0-9]{1,12}$/;
+export const RETRO_QUESTIONS = 10;
+/** The self-rating, 1 to 4. */
+export const RETRO_SCORES: readonly [string, string][] = [
+  ['没答好', 'Struggled'],
+  ['勉强', 'Shaky'],
+  ['还行', 'Solid'],
+  ['很顺', 'Strong'],
+];
+/** problem: a site problem id ('' for none), as on the interview write-up form; similar when it only resembled it. */
+export type RetroQuestion = { text: string; problem: string; similar: boolean };
+export type Retro = {
+  company: string;
+  stage: 'phone' | 'onsite';
+  at: number;
+  score: number;
+  questions: RetroQuestion[];
+  stuck: string;
+  /** Story bank competency ids the round asked about. */
+  themes: string[];
+};
+const PROBLEM_ID = /^(?:lc-\d{1,6}|oa-[a-z0-9-]{1,180})$/;
+const THEMES = new Set(COMPETENCIES.map((c) => c.id));
+const textOf = (v: unknown, max: number) => (typeof v === 'string' && v.length <= max ? v : null);
+const whole = (v: unknown, min: number, max: number) => Number.isInteger(v) && (v as number) >= min && (v as number) <= max;
+/**
+ * A stored retro, or null for anything else; the board and my-practice's PUT both check with this.
+ * Themes the story bank no longer knows are dropped, a malformed problem id is not.
+ */
+export function parseRetro(body: string): Retro | null {
+  let d: Record<string, unknown>;
+  try {
+    d = JSON.parse(body);
+  } catch {
+    return null;
+  }
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
+  const company = textOf(d.company, 100),
+    stuck = textOf(d.stuck, 600);
+  const { stage, at, score, questions, themes } = d;
+  if (
+    company === null ||
+    stuck === null ||
+    (stage !== 'phone' && stage !== 'onsite') ||
+    !whole(at, 0, 4102444800000) ||
+    !whole(score, 1, 4) ||
+    !Array.isArray(questions) ||
+    questions.length > RETRO_QUESTIONS ||
+    !Array.isArray(themes) ||
+    themes.length > 8
+  )
+    return null;
+  const rows: RetroQuestion[] = [];
+  for (const q of questions as unknown[]) {
+    const row = q && typeof q === 'object' ? (q as Record<string, unknown>) : {};
+    const text = textOf(row.text, 200),
+      problem = textOf(row.problem, 200);
+    if (text === null || problem === null || (problem && !PROBLEM_ID.test(problem))) return null;
+    rows.push({ text, problem, similar: !!problem && row.similar === true });
+  }
+  const known = themes.filter((t): t is string => typeof t === 'string' && THEMES.has(t));
+  return { company, stage, at: at as number, score: score as number, questions: rows, stuck, themes: [...new Set(known)] };
+}
+export type RetroEntry = Retro & { target: string; card: string };
+/** The notes API's ?prefix=retro: items as retros with their note and card ids; anything else is skipped. */
+export const retroList = (items: unknown): RetroEntry[] =>
+  (Array.isArray(items) ? (items as { target?: unknown; body?: unknown }[]) : []).flatMap((n) => {
+    const card = typeof n?.target === 'string' ? RETRO_TARGET.exec(n.target)?.[1] : undefined;
+    const retro = card && typeof n.body === 'string' ? parseRetro(n.body) : null;
+    return retro ? [{ ...retro, target: n.target as string, card: card! }] : [];
+  });

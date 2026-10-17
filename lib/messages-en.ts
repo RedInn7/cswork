@@ -319,6 +319,7 @@ const EN: Record<string, string> = {
   故事已达上限: "You've reached the limit for stories",
   实习日志已达上限: "You've reached the limit for internship log entries",
   复盘已达上限: "You've reached the limit for interview retros",
+  复盘记录无效: 'Invalid interview retro',
   '路线已达上限（30 条）': "You've reached the limit of 30 routes",
   // Self-made review cards (lib/server/my-practice.ts) and the idea review (lib/server/recall-ideas.ts)
   '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接':

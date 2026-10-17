@@ -16,7 +16,7 @@ const copy = {
     lead: 'One card per application, moved along as it goes, with its stage history, follow-ups and interview prep. OA deadlines count down here, and the calendar export adds interviews and follow-ups.',
     privacyTitle: 'Only you see this',
     privacy:
-      'Your applications, job descriptions included, are saved to your account so they follow you to other devices; nobody else can see them. The CSV and the calendar file are made in this browser.',
+      'Your applications, job descriptions and interview retros included, are saved to your account so they follow you to other devices; nobody else can see them. The CSV and the calendar file are made in this browser.',
     more: 'Privacy notice',
     signIn: 'Sign in to track your applications.',
     signInLink: 'Sign in',
@@ -28,7 +28,7 @@ const copy = {
     h1: '每一份投递，从投出到 offer。',
     lead: '一份投递一张卡片，进展到哪一步就挪到哪一列，记下阶段历史、跟进事项和面试准备。OA 截止日在这里倒计时，导出的日历里还有面试和跟进。',
     privacyTitle: '只有你能看到',
-    privacy: '投递记录（包括保存的职位描述）存在你的账号里，换设备也能看到，其他人都看不到。CSV 和日历文件在你的浏览器里生成。',
+    privacy: '投递记录（包括保存的职位描述和面试复盘）存在你的账号里，换设备也能看到，其他人都看不到。CSV 和日历文件在你的浏览器里生成。',
     more: '隐私说明',
     signIn: '登录后即可记录投递。',
     signInLink: '登录',

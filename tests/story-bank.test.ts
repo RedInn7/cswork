@@ -7,9 +7,10 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 import {
-  assignStory, blankStory, competenciesFor, keepLinks, parseStory, rankStories, storiesMarkdown, storyBody, wordCount,
+  assignStory, blankStory, competenciesFor, keepLinks, missingThemes, parseStory, rankStories, storiesMarkdown, storyBody, wordCount,
   type Story,
 } from '../lib/story-bank';
+import { parseRetro } from '../lib/applications';
 
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-story-bank-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
@@ -134,4 +135,56 @@ void test('stories are capped per learner, since the story list returns every bo
   assert.equal(await status('story:cap7'), 200, 'editing a story is fine');
   assert.equal(await status('content:interview_question/q2'), 200, 'other notes are not stories');
   sqlite().prepare("DELETE FROM user_notes WHERE user_id=? AND target LIKE 'story:cap%'").run(me.id);
+});
+
+void test('themes interviews asked about without a story, with the companies that asked; a tagged story covers one', () => {
+  const retros = [
+    { company: 'Acme', themes: ['conflict', 'failure'] },
+    { company: 'Beta', themes: ['conflict'] },
+    { company: 'Acme', themes: ['conflict', 'Ownership'] },
+  ];
+  assert.deepEqual(missingThemes(retros, []), [
+    { id: 'conflict', companies: ['Acme', 'Beta'] },
+    { id: 'failure', companies: ['Acme'] },
+    { id: 'Ownership', companies: ['Acme'] },
+  ]);
+  const story = { ...blankStory(), competencies: ['conflict', 'Ownership'] };
+  assert.deepEqual(missingThemes(retros, [story]), [{ id: 'failure', companies: ['Acme'] }]);
+  assert.deepEqual(missingThemes([], [story]), []);
+});
+
+void test('a retro body parses only in shape: unknown themes dropped, a bad problem id or field refused', () => {
+  const base = { company: 'Acme', stage: 'onsite', at: 1, score: 1, questions: [], stuck: '', themes: [] };
+  const parse = (patch: object) => parseRetro(JSON.stringify({ ...base, ...patch }));
+  assert.deepEqual(parse({}), base);
+  const full = parse({
+    score: 4,
+    stuck: '卡'.repeat(600),
+    themes: ['conflict', 'nope', 'conflict', 7, 'Dive Deep'],
+    questions: [
+      { text: 'Merge intervals', problem: 'lc-56', similar: true },
+      { text: 'x'.repeat(200), problem: 'oa-amazon-robot-1', similar: 'yes' },
+      { text: '', problem: '', similar: true },
+    ],
+  });
+  assert.deepEqual(full?.themes, ['conflict', 'Dive Deep']);
+  assert.deepEqual(full?.questions.map((q) => [q.problem, q.similar]), [['lc-56', true], ['oa-amazon-robot-1', false], ['', false]]);
+  for (const bad of [
+    { stage: 'phone ' },
+    { score: 0 },
+    { score: 2.5 },
+    { at: -1 },
+    { at: 4102444800001 },
+    { company: 3 },
+    { stuck: null },
+    { questions: {} },
+    { questions: [null] },
+    { questions: [{ text: 'a', problem: 'LC-1' }] },
+    { questions: [{ text: 'a', problem: 'lc-1234567' }] },
+    { questions: [{ text: 'a', problem: 'oa-' }] },
+    { questions: [{ text: 'a' }] },
+    { themes: 'conflict' },
+  ])
+    assert.equal(parse(bad), null, JSON.stringify(bad));
+  for (const junk of ['', 'null', '[]', '"retro"', '{']) assert.equal(parseRetro(junk), null, junk);
 });
