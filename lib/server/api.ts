@@ -39,6 +39,7 @@ import {
 } from './course-visibility';
 import { liveLesson, courseAccess } from './lms-common';
 import {
+  TICKET_REF,
   ticketDetail,
   replyTicket,
   changeTicket,
@@ -400,6 +401,8 @@ export async function handle(request: Request) {
             courseId: id.optional(),
             submissionId: id.optional(),
             problemId: id.optional(),
+            // A correction on public content: an MCQ, an SD chapter, a course or a /learn lesson.
+            ref: z.string().regex(TICKET_REF).optional(),
             videoPosition: z.number().min(0).max(86400).optional(),
             videoAssetId: id.optional(),
           })
@@ -441,8 +444,8 @@ export async function handle(request: Request) {
             p.id,
             // ponytail: tickets has no problem_id column; the title tag serves
             // lists, search and per-problem counts until one is worth a migration.
-            d.problemId
-              ? `[${d.problemId}] ${d.title}`.slice(0, 180)
+            d.problemId || d.ref
+              ? `[${d.problemId || d.ref}] ${d.title}`.slice(0, 180)
               : d.title,
             d.body,
             d.lessonId || null,

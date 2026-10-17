@@ -22,17 +22,22 @@ const MAX_BATCH = 500;
 // sub:<submission id> is a note on one submission; q:<slug> is a content library question;
 // post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
 // mcq:answers holds the concept-drill multiple-choice review state as JSON (app/oa/mcq/practice.tsx).
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq):[\w./-]{1,200}$/);
+// recall:, wb:, checklist:, project: and career: (e.g. checklist:<guide slug>, career:goal) are
+// JSON notes of the wave-8 features.
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
-// or page marked as read; curated: a teacher's pick of a library item.
-const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read', 'curated']);
+// or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
+const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read', 'curated', 'doing']);
 const UPVOTED = /^content:(?:experience|interview_question)\//;
 const VOTE = { up: 'down', down: 'up' } as const;
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
 
-type HistoryRow = Omit<PracticeHistoryItem, 'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds'> & {
+type HistoryRow = Omit<
+  PracticeHistoryItem,
+  'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds' | 'whiteboard' | 'brute'
+> & {
   languages: string;
   acAt: string | null;
 };
@@ -61,6 +66,8 @@ export function practiceHistory(userId: string): PracticeHistoryItem[] {
     ...row,
     help: aids.get(row.problemId)?.help ?? 'none',
     solveSeconds: aids.get(row.problemId)?.solveSeconds ?? null,
+    whiteboard: aids.get(row.problemId)?.whiteboard ?? null,
+    brute: aids.get(row.problemId)?.brute ?? false,
     languages: row.languages.split(','),
     acAt: row.acAt ? row.acAt.split(',').map(Number) : [],
     stop:

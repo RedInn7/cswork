@@ -14,7 +14,8 @@ register(
 
 test('the workspace shows the tutor only with AI on, signed in, outside a mock OA and off SQL problems', () => {
   const source = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
-  assert.equal(source.includes('const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language);'), true);
+  // Whiteboard mode (no aids) hides it too.
+  assert.equal(source.includes('const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language) && !wb.on;'), true);
   // The server takes code languages only, so the tutor itself hides on the SQL track (SQL and pandas) too.
   assert.equal(/\{aiOn && \(\s*<AiTutor\b/.test(source), true);
   assert.equal(source.includes('boot.services?.ai && !!boot.person && !examMode && ('), false);

@@ -101,7 +101,7 @@ Languages: Python, Go, Java, SQL · Tools: Git, Docker, Linux, AWS
 \`\`\`
 
 ## 先针对岗位改，再检查
-在属实的前提下，用职位描述里的原词（同一种语言、框架或业务领域）。改完后，把简历和职位描述贴进 [简历 AI 点评](/career/resume)，看看成果量化、动词和关键词还缺什么。`,
+在属实的前提下，用职位描述里的原词（同一种语言、框架或业务领域）。改完后，把职位描述贴进 [JD 准备度检查](/career/jd)，和简历生成器里保存的简历比对，看看关键词还缺什么。`,
     en: `A recruiter often decides in under a minute whether to pass your resume on. So every line should say what you did and what changed because of it.
 
 ## The basics
@@ -148,7 +148,7 @@ Languages: Python, Go, Java, SQL · Tools: Git, Docker, Linux, AWS
 \`\`\`
 
 ## Tailor it, then check it
-Where it is true for you, use the posting’s own words (the same language, framework or domain). Then paste your resume and the posting into the [AI resume review](/career/resume) for a second opinion on impact, verbs and missing keywords.`,
+Where it is true for you, use the posting’s own words (the same language, framework or domain). Then paste the posting into the [JD readiness check](/career/jd) to compare its keywords with the resume saved in the resume builder and see what is missing.`,
   },
 
   referrals: {
@@ -351,7 +351,7 @@ Sleep, test your camera and editor, keep water nearby, and re-read your stories 
 - **年度奖金**目标、搬家补贴、入职日期、地点和团队。
 - **答复截止日期。**
 
-比较 offer 时，按四年的预期总额算，不要只看第一年；也想想团队和你能学到什么。
+比较 offer 时，按四年的预期总额算，不要只看第一年；也想想团队和你能学到什么。[Offer 对比计算器](/career/offers) 可以把几份 offer 的归属方式和签字费逐年摊开，算出 4 年税前总额。
 
 ## 礼貌地谈
 1. 先感谢招聘方，并请对方提供书面 offer，再讨论调整。
@@ -373,7 +373,7 @@ Sleep, test your camera and editor, keep water nearby, and re-read your stories 
 - **Annual bonus** target, relocation support, start date, location and team.
 - **The deadline.**
 
-Compare offers by their expected total over four years, not the first year alone, and weigh the team and what you will learn.
+Compare offers by their expected total over four years, not the first year alone, and weigh the team and what you will learn. The [offer comparison calculator](/career/offers) lays out each offer’s vesting and sign-on year by year and adds up four years, pre-tax.
 
 ## Negotiate politely
 1. Thank the recruiter and ask for the offer in writing before you discuss changes.

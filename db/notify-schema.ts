@@ -15,6 +15,7 @@ export const notifyPrefs = sqliteTable('notify_prefs', {
   streak: integer('streak').notNull().default(1),
   daily: integer('daily').notNull().default(0),
   contest: integer('contest').notNull().default(1),
+  applications: integer('applications').notNull().default(1),
   email: integer('email').notNull().default(0),
   hour: integer('hour').notNull().default(20),
   tz: integer('tz').notNull().default(0),

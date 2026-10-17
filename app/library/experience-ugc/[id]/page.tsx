@@ -7,7 +7,7 @@ import '../../../discuss.css';
 import { PublicLibraryMarkdown } from '../../markdown';
 import { PostsPreview } from '../../../discuss/parts';
 import { ReportExperience } from '@/components/experience-report';
-import { EMPLOYMENT, RESULTS, ROUND_LABELS, seasonLabel, SENTIMENTS, SOURCES } from '@/lib/experience';
+import { EMPLOYMENT, oaLine, RESULTS, ROUND_LABELS, seasonLabel, SENTIMENTS, SOURCES } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
@@ -63,6 +63,7 @@ export default async function MemberExperiencePage({ params }: Props) {
     d.difficulty && (zh ? `难度 ${d.difficulty}/5` : `Difficulty ${d.difficulty}/5`),
     label(SENTIMENTS, d.sentiment),
     d.durationWeeks !== null && (zh ? `流程 ${d.durationWeeks} 周` : `${d.durationWeeks}-week process`),
+    oaLine(member.oa, zh),
   ].filter((x): x is string => !!x);
   return (
     <article className="public-library-article" lang={zh ? 'zh-CN' : 'en'}>

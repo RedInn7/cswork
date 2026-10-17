@@ -180,7 +180,11 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/career/resume/builder' },
   { path: '/career/jd' },
   { path: '/career/jobs' },
+  // noindex until the first sync has recorded a season (app/career/jobs/calendar/page.tsx).
+  { path: '/career/jobs/calendar' },
   { path: '/career/visa-timeline' },
+  { path: '/career/offers' },
+  { path: '/career/templates' },
   { path: '/ai-assisted' },
   ...AI_TASK_SLUGS.map((slug) => ({ path: `/ai-assisted/${slug}` })),
   { path: '/take-home' },

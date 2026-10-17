@@ -34,6 +34,10 @@ export type PracticeHistoryItem = {
   help: 'none' | 'hint' | 'solution';
   /** The problem timer's seconds at the first AC, when it ran. */
   solveSeconds: number | null;
+  /** The first whiteboard-mode submission: 1 accepted, 0 failed, null never tried. */
+  whiteboard: 0 | 1 | null;
+  /** A stress test agreed with the reference before the first AC. */
+  brute: boolean;
 };
 export type DueReview = {
   item: PracticeHistoryItem;
@@ -88,8 +92,9 @@ export const wrongBook = (history: PracticeHistoryItem[]) =>
   history.filter((item) => !item.firstAcAt || item.failuresBeforeAc >= 2);
 
 /**
- * The progress page's solve quality: how many solves needed no help and no failed verdict, and
- * the median timed first solve per difficulty against its interview budget (PRESETS).
+ * The progress page's solve quality: how many solves needed no help and no failed verdict, the
+ * median timed first solve per difficulty against its interview budget (PRESETS), whiteboard
+ * attempts and passes, and solves a stress test agreed on before the first AC.
  */
 export function solveQuality(
   history: PracticeHistoryItem[],
@@ -106,6 +111,9 @@ export function solveQuality(
     solved: solved.length,
     independent: solved.filter((item) => !assisted(item)).length,
     firstTry: solved.filter((item) => !item.failuresBeforeAc).length,
+    wbTried: history.filter((item) => item.whiteboard != null).length,
+    wbPassed: history.filter((item) => item.whiteboard === 1).length,
+    brute: solved.filter((item) => item.brute).length,
     medians: Object.keys(PRESETS).flatMap((difficulty) => {
       const s = times.get(difficulty)?.sort((a, b) => a - b);
       if (!s) return [];

@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { ojRequest } from '@/lib/oj-client';
+import { checkResume, type ResumeIssue } from '@/lib/resume-check';
+import { parseResumeText } from '@/lib/resume-parse';
 
 /**
  * /career/resume/builder: a one-page, single-column resume (standard headings, no tables, images or
@@ -10,6 +12,14 @@ import { ojRequest } from '@/lib/oj-client';
 export const RESUME_KEY = 'cswork:resume:v1';
 /** The review page (components/resume-review.tsx) picks this up once, then drops it. */
 export const REVIEW_KEY = 'cswork:resume:review';
+/**
+ * Named copies of the resume, one per kind of job ({name: Resume}, at most MAX_VERSIONS, names up
+ * to VERSION_NAME characters); RESUME_KEY stays the base. The tracker's resume-version list reads
+ * the names (it writes this key literally rather than importing this file).
+ */
+export const RESUME_VERSIONS_KEY = 'cswork:resume:versions';
+const MAX_VERSIONS = 10;
+const VERSION_NAME = 40;
 
 export type ResumeItem = { title: string; subtitle: string; dates: string; bullets: string };
 type ListKey = 'education' | 'experience' | 'projects';
@@ -88,6 +98,30 @@ export function normalizeResume(raw: unknown): Resume {
     skills: text(r.skills, MAX.skills),
     awards: text(r.awards, MAX.awards),
   };
+}
+
+/** The stored versions, cleaned like an import: bad names and entries past MAX_VERSIONS dropped. */
+export function readVersions(): Record<string, Resume> {
+  try {
+    const raw: unknown = JSON.parse(localStorage.getItem(RESUME_VERSIONS_KEY) ?? '{}');
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+    const named = Object.entries(raw).filter(([name]) => name.trim() && name.length <= VERSION_NAME);
+    return Object.fromEntries(named.slice(0, MAX_VERSIONS).map(([name, r]) => [name, normalizeResume(r)]));
+  } catch {
+    return {};
+  }
+}
+/** How many fields (contact lines, sections, each entry's fields) differ between two resumes. */
+export function resumeDiff(a: Resume, b: Resume) {
+  let n = 0;
+  for (const key of Object.keys(a) as (keyof Resume)[]) {
+    const [x, y] = [a[key], b[key]];
+    if (typeof x === 'string') n += +(x !== y);
+    else
+      for (let i = 0; i < Math.max(x.length, (y as ResumeItem[]).length); i++)
+        for (const field of ['title', 'subtitle', 'dates', 'bullets'] as const) n += +((x[i]?.[field] ?? '') !== ((y as ResumeItem[])[i]?.[field] ?? ''));
+  }
+  return n;
 }
 
 const lines = (value: string) =>
@@ -208,21 +242,29 @@ const CONTACT: [Exclude<keyof Resume, ListKey>, string, string, string][] = [
   ['links', '链接（GitHub、LinkedIn、个人网站，用逗号分隔）', 'Links (GitHub, LinkedIn, website; comma-separated)', 'url'],
 ];
 
-export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean }) {
+export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signedIn: boolean; ai?: boolean }) {
   const t = (a: string, b: string) => (zh ? a : b);
-  const [resume, setResume] = useState<Resume>(blankResume);
+  const [base, setBase] = useState<Resume>(blankResume);
+  const [versions, setVersions] = useState<Record<string, Resume>>({});
+  // '' is the base resume; otherwise the name of the version being edited.
+  const [version, setVersion] = useState('');
+  const [newName, setNewName] = useState('');
+  const [pasted, setPasted] = useState<string | null>(null);
+  const [parsed, setParsed] = useState<Resume | null>(null);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [overflow, setOverflow] = useState(false);
   const sheet = useRef<HTMLElement>(null);
+  const resume = (version && versions[version]) || base;
   useEffect(() => {
     try {
       const saved = localStorage.getItem(RESUME_KEY);
       // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
-      if (saved) setResume(normalizeResume(JSON.parse(saved)));
+      if (saved) setBase(normalizeResume(JSON.parse(saved)));
     } catch {
       // Blocked storage or a damaged entry: start blank.
     }
+    setVersions(readVersions());
   }, []);
   // The sheet is 7.5in wide (Letter less 0.5in margins): taller than 10in runs onto a second page.
   // Compared in its own units, so the preview's screen zoom doesn't matter.
@@ -231,8 +273,17 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
     // oxlint-disable-next-line react/react-compiler -- Measured after layout.
     if (el) setOverflow(el.clientWidth > 0 && el.scrollHeight > (el.clientWidth * 4) / 3 + 2);
   }, [resume]);
+  const saveVersions = (next: Record<string, Resume>) => {
+    setVersions(next);
+    try {
+      localStorage.setItem(RESUME_VERSIONS_KEY, JSON.stringify(next));
+    } catch {
+      // Private mode or full storage: the versions still work for this visit.
+    }
+  };
   const change = (next: Resume) => {
-    setResume(next);
+    if (version) return saveVersions({ ...versions, [version]: next });
+    setBase(next);
     try {
       localStorage.setItem(RESUME_KEY, JSON.stringify(next));
     } catch {
@@ -270,9 +321,69 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
     }
     location.assign('/career/resume');
   }
+  function copyVersion() {
+    const name = newName.trim();
+    if (!name || versions[name]) return setStatus(t('换一个还没用过的版本名称。', 'Pick a version name not used yet.'));
+    if (Object.keys(versions).length >= MAX_VERSIONS)
+      return setStatus(t(`最多保存 ${MAX_VERSIONS} 个版本，先删掉一个。`, `Up to ${MAX_VERSIONS} versions: delete one first.`));
+    saveVersions({ ...versions, [name]: resume });
+    setVersion(name);
+    setNewName('');
+    setStatus(t(`已复制为新版本「${name}」，接下来的修改只改这个版本。`, `Copied as “${name}”: edits now change this version only.`));
+  }
+  function deleteVersion() {
+    if (!window.confirm(t(`删除版本「${version}」？删除后无法恢复。`, `Delete the version “${version}”? This cannot be undone.`))) return;
+    const { [version]: _gone, ...rest } = versions;
+    saveVersions(rest);
+    setVersion('');
+    setStatus(t('已删除这个版本，现在编辑的是基础版。', 'Version deleted: you are editing the base resume.'));
+  }
+  // A rule-check issue's field: scrolled to and focused (a section without entries focuses its add button).
+  function jump(where: string) {
+    const el = document.getElementById(`resume-${where.replace(/\./g, '-')}`);
+    const field = el?.matches('input, textarea') ? el : el?.querySelector<HTMLElement>('input, textarea, button');
+    el?.scrollIntoView?.({ block: 'center' });
+    field?.focus({ preventScroll: true });
+  }
+  function applyPasted() {
+    if (!parsed) return;
+    change(normalizeResume(parsed));
+    setPasted(null);
+    setParsed(null);
+    setStatus(t('已导入粘贴的简历：对照预览和检查，改掉没识别对的地方。', 'Pasted resume imported: check the preview and the rule check for anything read wrong.'));
+  }
+  const check = checkResume(resume);
+  const names = Object.keys(versions);
+  const diff = version ? resumeDiff(resume, base) : 0;
   const contactLine = contact(resume);
   return (
     <div className="resume-builder">
+      <div className="resume-actions resume-versions">
+        <label>
+          {t('正在编辑', 'Editing')}
+          <select value={version} onChange={(e) => setVersion(e.target.value)}>
+            <option value="">{t('基础版', 'Base resume')}</option>
+            {names.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {version && <small>{t(`与基础版有 ${diff} 处不同`, `${diff} ${diff === 1 ? 'field differs' : 'fields differ'} from the base`)}</small>}
+        <label>
+          {t('新版本名称（例如 后端、数据）', 'New version name (e.g. Backend, Data)')}
+          <input value={newName} maxLength={VERSION_NAME} onChange={(e) => setNewName(e.target.value)} />
+        </label>
+        <button type="button" className="is-quiet" disabled={!newName.trim()} onClick={copyVersion}>
+          {t('复制为新版本', 'Copy as new version')}
+        </button>
+        {version && (
+          <button type="button" className="is-quiet" onClick={deleteVersion}>
+            {t('删除这个版本', 'Delete this version')}
+          </button>
+        )}
+      </div>
       <form className="resume-form resume-builder-form" onSubmit={(e) => e.preventDefault()}>
         <fieldset className="resume-fieldset">
           <legend>{t('基本信息', 'Contact')}</legend>
@@ -280,6 +391,7 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
             <label key={key}>
               {t(zhLabel, enLabel)}
               <input
+                id={`resume-${key}`}
                 value={resume[key] as string}
                 autoComplete={autoComplete}
                 maxLength={MAX[key]}
@@ -289,7 +401,7 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
           ))}
         </fieldset>
         {SECTIONS.map(({ key, legend, fields, add }) => (
-          <fieldset key={key} className="resume-fieldset">
+          <fieldset key={key} id={`resume-${key}`} className="resume-fieldset">
             <legend>{t(...legend)}</legend>
             {resume[key].map((item, index) => (
               <div key={index} className="resume-entry">
@@ -297,9 +409,20 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
                   <label key={field}>
                     {t(zhLabel, enLabel)}
                     {field === 'bullets' ? (
-                      <textarea rows={4} value={item[field]} maxLength={MAX.bullets} onChange={(e) => editItem(key, index, field, e.target.value)} />
+                      <textarea
+                        id={`resume-${key}-${index}-${field}`}
+                        rows={4}
+                        value={item[field]}
+                        maxLength={MAX.bullets}
+                        onChange={(e) => editItem(key, index, field, e.target.value)}
+                      />
                     ) : (
-                      <input value={item[field]} maxLength={MAX[field]} onChange={(e) => editItem(key, index, field, e.target.value)} />
+                      <input
+                        id={`resume-${key}-${index}-${field}`}
+                        value={item[field]}
+                        maxLength={MAX[field]}
+                        onChange={(e) => editItem(key, index, field, e.target.value)}
+                      />
                     )}
                   </label>
                 ))}
@@ -323,11 +446,11 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
           <legend>{t('技能、奖项与证书', 'Skills, awards and certifications')}</legend>
           <label>
             {t('技能，每行一类（例如 Languages: Python, Go）', 'Skills, one group per line (e.g. Languages: Python, Go)')}
-            <textarea rows={4} value={resume.skills} maxLength={MAX.skills} onChange={(e) => change({ ...resume, skills: e.target.value })} />
+            <textarea id="resume-skills" rows={4} value={resume.skills} maxLength={MAX.skills} onChange={(e) => change({ ...resume, skills: e.target.value })} />
           </label>
           <label>
             {t('奖项与证书，每行一条', 'Awards and certifications, one per line')}
-            <textarea rows={4} value={resume.awards} maxLength={MAX.awards} onChange={(e) => change({ ...resume, awards: e.target.value })} />
+            <textarea id="resume-awards" rows={4} value={resume.awards} maxLength={MAX.awards} onChange={(e) => change({ ...resume, awards: e.target.value })} />
           </label>
           {signedIn && (
             <div className="resume-actions">
@@ -346,9 +469,11 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
           <button type="button" onClick={() => window.print()}>
             {t('保存为 PDF', 'Save as PDF')}
           </button>
-          <button type="button" className="is-quiet" disabled={!resumeText(resume)} onClick={review}>
-            {t('送去 AI 点评', 'Send to AI review')}
-          </button>
+          {ai && (
+            <button type="button" className="is-quiet" disabled={!resumeText(resume)} onClick={review}>
+              {t('送去 AI 点评', 'Send to AI review')}
+            </button>
+          )}
           <button type="button" className="is-quiet" onClick={() => download('cswork-resume.json', JSON.stringify(resume, null, 2))}>
             {t('导出 JSON', 'Export JSON')}
           </button>
@@ -356,7 +481,61 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
             {t('导入 JSON', 'Import JSON')}
             <input type="file" accept="application/json,.json" onChange={(e) => void load(e.target.files?.[0])} />
           </label>
+          <button
+            type="button"
+            className="is-quiet"
+            aria-expanded={pasted !== null}
+            onClick={() => {
+              setPasted(pasted === null ? '' : null);
+              setParsed(null);
+            }}
+          >
+            {t('粘贴文本导入', 'Paste text to import')}
+          </button>
         </div>
+        {pasted !== null && (
+          <div className="resume-form resume-paste">
+            <label>
+              {t('粘贴简历全文（从 PDF 或文档里复制）', 'Your resume as text (copied from a PDF or a document)')}
+              <textarea
+                rows={8}
+                value={pasted}
+                maxLength={20_000}
+                onChange={(e) => {
+                  setPasted(e.target.value);
+                  setParsed(null);
+                }}
+              />
+            </label>
+            <div className="resume-actions">
+              <button type="button" disabled={!pasted.trim()} onClick={() => setParsed(parseResumeText(pasted))}>
+                {t('预览解析结果', 'Preview')}
+              </button>
+            </div>
+            {parsed && <PastePreview parsed={parsed} zh={zh} onApply={applyPasted} replacing={version ? t(`「${version}」`, `“${version}”`) : t('基础版', 'the base resume')} />}
+          </div>
+        )}
+        <section className="resume-check" id="resume-check" aria-labelledby="resume-check-title">
+          <h2 id="resume-check-title">
+            {t('规则检查', 'Rule check')} <span>{check.score}</span>
+            <small>/100</small>
+          </h2>
+          {check.issues.length ? (
+            <>
+              <p>{t('先改这几条（点一条跳到对应的输入框）：', 'Fix these first (each opens its field):')}</p>
+              <IssueList issues={check.issues.slice(0, 3)} zh={zh} jump={jump} />
+              {check.issues.length > 3 && (
+                <details>
+                  <summary>{t(`其余 ${check.issues.length - 3} 条`, `${check.issues.length - 3} more`)}</summary>
+                  <IssueList issues={check.issues.slice(3)} zh={zh} jump={jump} start={4} />
+                </details>
+              )}
+            </>
+          ) : (
+            <p>{t('规则检查没有发现问题。', 'The rule check found nothing to fix.')}</p>
+          )}
+          <small>{t('按规则检查，不是 AI：看动词、数字、长度、用词、日期和必备小节。', 'Rules, not AI: verbs, numbers, length, wording, dates and the sections every resume needs.')}</small>
+        </section>
         <p className="resume-builder-status" role="status">
           {status}
         </p>
@@ -419,5 +598,56 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
         </div>
       </div>
     </div>
+  );
+}
+
+function IssueList({ issues, zh, jump, start }: { issues: ResumeIssue[]; zh: boolean; jump: (where: string) => void; start?: number }) {
+  return (
+    <ol start={start}>
+      {issues.map((issue, i) => (
+        <li key={i}>
+          <button type="button" onClick={() => jump(issue.where)}>
+            {zh ? issue.zh : issue.en}
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** What the paste import read, section by section, before it replaces anything. */
+function PastePreview({ parsed, zh, onApply, replacing }: { parsed: Resume; zh: boolean; onApply: () => void; replacing: string }) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  const none = t('（没有识别出）', '(none found)');
+  const rows: [string, string][] = [
+    [t('姓名', 'Name'), parsed.name],
+    [t('联系方式', 'Contact'), contact(parsed)],
+    ...SECTIONS.map(({ key, legend }): [string, string] => {
+      const items = parsed[key].filter(filled);
+      const bullets = items.reduce((n, item) => n + lines(item.bullets).length, 0);
+      return [
+        t(...legend),
+        items.length ? `${items.map((item) => [item.title, item.dates].filter(Boolean).join(' · ')).join('; ')} (${t(`${bullets} 条要点`, `${bullets} ${bullets === 1 ? 'bullet' : 'bullets'}`)})` : '',
+      ];
+    }),
+    [t('技能', 'Skills'), lines(parsed.skills).join('; ')],
+    [t('奖项与证书', 'Awards'), lines(parsed.awards).join('; ')],
+  ];
+  return (
+    <section className="resume-paste-preview" aria-label={t('解析结果', 'What was read')}>
+      <dl>
+        {rows.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value || none}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="resume-actions">
+        <button type="button" onClick={onApply}>
+          {t(`用它覆盖${replacing}`, `Replace ${replacing} with this`)}
+        </button>
+      </div>
+    </section>
   );
 }

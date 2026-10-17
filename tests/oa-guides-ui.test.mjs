@@ -155,5 +155,6 @@ test('on a Chinese page the OA editorial keeps the Chinese text; the workspace n
   }
   const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
   assert.match(workspace, /leftTab === 'editorial' && !examMode \? \(\s*<OaEditorial/);
-  assert.match(workspace, /\{problem\.oaHints && !examMode && \(/);
+  // Whiteboard mode (no aids) hides the OA hints too.
+  assert.match(workspace, /\{problem\.oaHints && !examMode && !wb\.on && \(/);
 });

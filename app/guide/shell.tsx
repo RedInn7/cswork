@@ -13,14 +13,15 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
           <Link href="/guide" prefetch={false}>
             {zh ? '全部章节' : 'All chapters'}
           </Link>
-          <Link href="/career/resume" prefetch={false}>
-            {zh ? '简历 AI 点评' : 'AI resume review'}
+          {/* Production runs without AI: the rule check works either way (and offers the AI review when it is on). */}
+          <Link href="/career/resume/builder#resume-check" prefetch={false}>
+            {zh ? '简历检查' : 'Resume check'}
           </Link>
           <Link href="/career/resume/builder" prefetch={false}>
             {zh ? '简历生成器' : 'Resume builder'}
           </Link>
           <Link href="/career/jd" prefetch={false}>
-            {zh ? 'JD 准备度检查' : 'JD readiness check'}
+            {zh ? 'JD 检查' : 'JD check'}
           </Link>
           <Link href="/career/visa-timeline" prefetch={false}>
             {zh ? '身份时间线' : 'Visa timeline'}
@@ -33,6 +34,12 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
           )}
           <Link href="/career/jobs" prefetch={false}>
             {zh ? '在招岗位' : 'Open roles'}
+          </Link>
+          <Link href="/career/jobs/calendar" prefetch={false}>
+            {zh ? '招聘日历' : 'Hiring calendar'}
+          </Link>
+          <Link href="/career/offers" prefetch={false}>
+            {zh ? 'Offer 对比' : 'Offer comparison'}
           </Link>
           <Link href="/career/tracker" prefetch={false}>
             {zh ? '投递追踪' : 'Application tracker'}

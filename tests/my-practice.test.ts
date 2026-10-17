@@ -108,6 +108,8 @@ void test('history aggregates formal submissions per problem for the signed-in l
       stop: 'hash-counting',
       help: 'none',
       solveSeconds: null,
+      whiteboard: null,
+      brute: false,
     },
   );
   assert.equal(oa.firstAcAt, null);
@@ -311,6 +313,8 @@ void test('reviews climb the 3/7/21/60-day ladder by distinct AC days', () => {
     stop: null,
     help,
     solveSeconds: null,
+    whiteboard: null,
+    brute: false,
   });
   const history = [
     item('once', [noon]), // Level 1: due on day 3.
@@ -353,6 +357,8 @@ void test('solve quality: independent and first-try rates, median first-solve ti
     stop: null,
     help: 'none',
     solveSeconds: null,
+    whiteboard: null,
+    brute: false,
     ...extra,
   });
   const levels: Record<string, string> = { a: '简单', b: '简单', c: '简单', d: '中等', e: '中等', f: '困难', x: '困难' };
@@ -372,6 +378,9 @@ void test('solve quality: independent and first-try rates, median first-solve ti
     solved: 6,
     independent: 4,
     firstTry: 5,
+    wbTried: 0,
+    wbPassed: 0,
+    brute: 0,
     medians: [
       { difficulty: '简单', seconds: 600, budget: 900, count: 3 },
       { difficulty: '中等', seconds: 1501, budget: 1500, count: 2 },

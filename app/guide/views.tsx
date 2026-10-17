@@ -15,8 +15,8 @@ export const GUIDE_COPY = {
     season: '一个典型的招聘季',
     seasonNote: '月份为常见情况，各公司不同，近年整体有提前的趋势。',
     chapters: '章节',
-    review: '把简历贴进来，看看成果量化、动词和关键词还缺什么。',
-    reviewCta: '试试简历 AI 点评',
+    review: '把简历贴进来，看看成果量化、动词和要点写法还缺什么。',
+    reviewCta: '试试简历检查',
     visa: '国际学生：按项目结束日和 OPT 日期，排出 OPT、STEM OPT 和 H-1B 的窗口与截止日。',
     visaCta: '身份时间线计算器',
     aiRound: '允许用 AI 的编程面试：在多文件代码库里修 bug、加功能，旁边有 AI 结对，再用隐藏测试检验。',
@@ -33,8 +33,8 @@ export const GUIDE_COPY = {
     season: 'A typical recruiting season',
     seasonNote: 'Months are typical and vary by company; in recent years most have moved earlier.',
     chapters: 'Chapters',
-    review: 'Paste your resume to see what it lacks in impact, verbs and keywords.',
-    reviewCta: 'Try the AI resume review',
+    review: 'Paste your resume to see what it lacks in impact, verbs and bullet writing.',
+    reviewCta: 'Try the resume check',
     visa: 'International students: lay out your OPT, STEM OPT and H-1B windows and deadlines from your own dates.',
     visaCta: 'Visa timeline calculator',
     aiRound: 'Coding rounds that allow AI: fix and extend a small multi-file codebase with an AI pair, checked by hidden tests.',
@@ -111,7 +111,7 @@ export function GuideIndexView({ zh }: { zh: boolean }) {
       </section>
       <aside className="guide-review-cta" aria-label={c.reviewCta}>
         <p>{c.review}</p>
-        <a href="/career/resume">
+        <a href="/career/resume/builder#resume-check">
           {c.reviewCta} <span aria-hidden="true">→</span>
         </a>
       </aside>
@@ -140,7 +140,7 @@ export function guideChapterCopy(chapter: GuideChapter, zh: boolean) {
   };
 }
 
-export function GuideChapterView({ chapter, zh }: { chapter: GuideChapter; zh: boolean }) {
+export function GuideChapterView({ chapter, zh, children }: { chapter: GuideChapter; zh: boolean; children?: React.ReactNode }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const index = GUIDE_CHAPTERS.indexOf(chapter);
   const { title, description } = guideChapterCopy(chapter, zh);
@@ -203,6 +203,7 @@ export function GuideChapterView({ chapter, zh }: { chapter: GuideChapter; zh: b
               labels={{ table: t('表格，可横向滚动', 'Table, scrolls sideways'), code: t('模板，可横向滚动', 'Template, scrolls sideways') }}
             />
           </div>
+          {children}
           <nav className="guide-adjacent" aria-label={t('相邻章节', 'Adjacent chapters')}>
             {prev ? (
               <a href={guidePath(prev.slug)} rel="prev">
@@ -218,9 +219,9 @@ export function GuideChapterView({ chapter, zh }: { chapter: GuideChapter; zh: b
                 <strong>{next.title[zh ? 0 : 1]}</strong>
               </a>
             ) : (
-              <a href="/career/resume">
+              <a href="/career/resume/builder#resume-check">
                 <small>{t('最后一步 →', 'One more thing →')}</small>
-                <strong>{t('简历 AI 点评', 'AI resume review')}</strong>
+                <strong>{t('简历检查', 'Resume check')}</strong>
               </a>
             )}
           </nav>

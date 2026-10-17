@@ -11,7 +11,10 @@ import {
   SENTIMENTS,
   SOURCES,
   MEMBER_FACETS,
+  OA_NEXT,
+  OA_RANGE,
   type MemberDetails,
+  type MemberOa,
 } from '@/lib/experience';
 import { employerSlug } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
@@ -133,6 +136,12 @@ const submission = z
       .default(null)
       .transform((s) => s || null),
     durationWeeks: z.number().int().min(0).max(104).nullable().default(null),
+    // An OA round's outcome, only with one (checked in submitExperience).
+    oaSolved: z.number().int().min(OA_RANGE.solved[0]).max(OA_RANGE.solved[1]).nullable().default(null),
+    oaTotal: z.number().int().min(OA_RANGE.total[0]).max(OA_RANGE.total[1]).nullable().default(null),
+    oaTestsPct: z.number().int().min(OA_RANGE.testsPct[0]).max(OA_RANGE.testsPct[1]).nullable().default(null),
+    oaMinutes: z.number().int().min(OA_RANGE.minutes[0]).max(OA_RANGE.minutes[1]).nullable().default(null),
+    oaNext: z.enum(keys(OA_NEXT)).nullable().default(null),
     // Shown without the author's handle.
     anonymous: z.boolean().default(false),
     // The author confirms it is their own interview and that it shares nothing under NDA.
@@ -162,6 +171,11 @@ type Row = {
   season?: string | null;
   location?: string | null;
   duration_weeks?: number | null;
+  oa_solved?: number | null;
+  oa_total?: number | null;
+  oa_tests_pct?: number | null;
+  oa_minutes?: number | null;
+  oa_next?: string | null;
   anonymous?: number;
   handle?: string | null;
   verified?: number | null;
@@ -225,6 +239,17 @@ const detailsOf = (r: Row): MemberDetails => ({
   durationWeeks: r.duration_weeks ?? null,
   verified: !!r.verified,
 });
+/** The post's OA outcome, or null when it gives none. */
+const oaOf = (r: Row): MemberOa | null => {
+  const oa = {
+    solved: r.oa_solved ?? null,
+    total: r.oa_total ?? null,
+    testsPct: r.oa_tests_pct ?? null,
+    minutes: r.oa_minutes ?? null,
+    next: r.oa_next ?? null,
+  };
+  return Object.values(oa).some((v) => v !== null) ? oa : null;
+};
 
 // ---------------------------------------------------------------- merging into lists
 
@@ -397,10 +422,38 @@ export function memberExperienceStats(company: string) {
     sentiment: shares(values((r) => r.sentiment)),
     channel: shares(values((r) => r.channel)),
     weeks: weeks.length < STATS_MIN ? null : { n: weeks.length, median },
+    oa: memberOaOutcomes(company),
   };
-  return stats.difficulty || stats.sentiment || stats.channel || stats.weeks ? stats : null;
+  return stats.difficulty || stats.sentiment || stats.channel || stats.weeks || stats.oa ? stats : null;
 }
 export type MemberStats = NonNullable<ReturnType<typeof memberExperienceStats>>;
+
+/** Below this many public posts in an OA group, it shows no figure. */
+export const OA_MIN = 8;
+/**
+ * Public posts that give an OA score (solved of total) and say whether it led on (yes or no): of
+ * those that solved every problem (and passed every test, when they say), and of the rest, how
+ * many moved on. One company's, or every shown company's without one; a group needs OA_MIN posts.
+ * Self-reported and biased: counts only, never a pass rate.
+ */
+export function memberOaOutcomes(company?: string) {
+  const names = companyNames();
+  if (company !== undefined && !names.has(company)) return null;
+  const groups = sqlite()
+    .prepare(
+      `SELECT s.oa_solved=s.oa_total AND COALESCE(s.oa_tests_pct,100)=100 AS all_ac,COUNT(*) AS n,SUM(s.oa_next='yes') AS moved
+      FROM experience_submissions s WHERE ${PUBLIC} AND s.oa_solved IS NOT NULL AND s.oa_total IS NOT NULL
+        AND s.oa_next IN ('yes','no') AND s.company_slug IN (SELECT value FROM json_each(?)) GROUP BY all_ac`,
+    )
+    .all(JSON.stringify(company === undefined ? [...names.keys()] : [company])) as { all_ac: number; n: number; moved: number }[];
+  const group = (full: number) => {
+    const g = groups.find((r) => r.all_ac === full);
+    return g && g.n >= OA_MIN ? { n: g.n, moved: g.moved } : null;
+  };
+  const oa = { all: group(1), partial: group(0) };
+  return oa.all || oa.partial ? oa : null;
+}
+export type OaOutcomes = NonNullable<ReturnType<typeof memberOaOutcomes>>;
 
 /** A company page's newest approved posts. */
 export function companyMemberExperiences(company: string, max = 6) {
@@ -478,6 +531,7 @@ export function readMember(id: string, viewer: Pick<Person, 'id' | 'role'> | nul
       public: open,
       mine,
       note: mine || staff ? r.review_note : '',
+      oa: oaOf(r),
     },
   };
 }
@@ -510,7 +564,8 @@ export function mySubmissions(userId: string) {
   return (
     sqlite()
       .prepare(
-        `SELECT id,company_slug,title,status,review_note,interview_month,created_at,reviewed_at
+        `SELECT id,company_slug,title,status,review_note,interview_month,created_at,reviewed_at,
+          oa_solved,oa_total,oa_tests_pct,oa_minutes,oa_next
         FROM experience_submissions WHERE user_id=? ORDER BY created_at DESC LIMIT 100`,
       )
       .all(userId) as Row[]
@@ -524,12 +579,18 @@ export function mySubmissions(userId: string) {
     month: r.interview_month,
     createdAt: r.created_at,
     reviewedAt: r.reviewed_at,
+    oa: oaOf(r),
   }));
 }
 
 export async function submitExperience(p: Person, input: unknown, now = Date.now()) {
   requireVerified(p);
   const d = submission.parse(input);
+  const oa = [d.oaSolved, d.oaTotal, d.oaTestsPct, d.oaMinutes, d.oaNext];
+  if (!d.rounds.includes('Online Assessment') && oa.some((v) => v !== null))
+    throw new HttpError(400, '没有 OA 轮次时不能填写 OA 成绩');
+  if (d.oaSolved !== null && d.oaTotal !== null && d.oaSolved > d.oaTotal)
+    throw new HttpError(400, 'OA 做出的题数不能多于总题数');
   if (markdownDepth(d.body) > DEPTH_MAX) throw new HttpError(400, '正文的引用、列表或强调嵌套太深');
   // This month back to 36 months, counting this one (a day either way for time zones).
   if (d.month > monthKey(now + DAY) || d.month < recentSince(now - DAY, 36)) throw new HttpError(400, '面试月份无效');
@@ -549,8 +610,9 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
   const id = randomBytes(9).toString('base64url');
   db.prepare(
     `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,
-      difficulty,sentiment,channel,employment,season,location,duration_weeks,anonymous,created_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      difficulty,sentiment,channel,employment,season,location,duration_weeks,
+      oa_solved,oa_total,oa_tests_pct,oa_minutes,oa_next,anonymous,created_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   ).run(
     id,
     p.id,
@@ -569,6 +631,7 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
     d.season,
     d.location,
     d.durationWeeks,
+    ...oa,
     d.anonymous ? 1 : 0,
     now,
   );
@@ -637,6 +700,7 @@ export function reviewQueue() {
       flags: r.flags ?? 0,
       // Published without the handle shown here.
       anonymous: !!r.anonymous,
+      oa: oaOf(r),
       reasons: r.reasons ? r.reasons.split('\n') : [],
       // A company hidden or without a page since: approving would not publish it.
       shown: names.has(r.company_slug),
