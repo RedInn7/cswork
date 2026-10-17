@@ -31,7 +31,7 @@ const drawn = {
 };
 const calls = [];
 globalThis.fetch = async (url, init = {}) => {
-  const path = String(url);
+  const path = typeof url === 'string' ? url : url.url;
   calls.push({ path, body: init.body ? JSON.parse(init.body) : undefined });
   if (path === '/api/oj/mock-oa/presets') return Response.json({ updated: '2026-10', companies: [], others: [], all: { oa: 0, lc: 0 } });
   if (path === '/api/oj/mock-oa/history') return Response.json({ items: [], saved: [] });

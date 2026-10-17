@@ -324,14 +324,13 @@ export function MockOa({
   // "Practise this loop" (?experience=, from a member's post) draws once per visit, through the
   // same replace prompt as any draw; never over a skill exam on the clock.
   const fromExperience = useRef(false);
+  const examRunning = !!(state.active?.cert && state.active.startedAt);
   useEffect(() => {
     if (!params.experience || fromExperience.current) return;
     fromExperience.current = true;
-    const exam = readMockState(userId).active;
-    if (exam?.cert && exam.startedAt)
-      setError(t('技能考试正在进行，交卷后再来按这场面经模拟。', 'A skill exam is in progress. Hand it in, then come back to practise this loop.'));
-    else void draw('exp', { experience: params.experience });
-    // oxlint-disable-next-line react/react-compiler -- one draw per visit; draw reads fresh state itself.
+    // oxlint-disable-next-line react/react-compiler -- the draw is the effect: it posts, then sets state as it goes.
+    if (!examRunning) void draw('exp', { experience: params.experience });
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- once per visit; draw reads fresh state itself.
   }, [params.experience]);
   const report = findMock(state, params.report);
   const briefing = findMock(state, params.session);
@@ -349,6 +348,11 @@ export function MockOa({
       >
         {t('还要练面试？一键抽一套模拟面试题', 'Practising interviews too? Draw a mock interview set')}
       </a>
+      {params.experience && examRunning && (
+        <p className="mock-note" role="alert">
+          {t('技能考试正在进行，交卷后再来按这场面经模拟。', 'A skill exam is in progress. Hand it in, then come back to practise this loop.')}
+        </p>
+      )}
       {storageFailed && (
         <p className="mock-note" role="alert">
           {t(

@@ -703,7 +703,10 @@ function ExperienceForm({
             />
           </label>
         </div>
-        <div className="xs-chips" role="group" aria-label={t('练习来源（可多选）', 'Where you practised (pick any)')}>
+        <fieldset className="xs-group">
+          <legend>
+            {t('练习来源', 'Where you practised')} <small className="xs-hint">{t('可多选', 'pick any')}</small>
+          </legend>
           {Object.entries(PREP_SOURCES).map(([value, [zh, en]]) => (
             <label key={value} className="xs-chip">
               <input
@@ -716,7 +719,7 @@ function ExperienceForm({
               {t(zh, en)}
             </label>
           ))}
-        </div>
+        </fieldset>
       </fieldset>
       <label className="xs-agree">
         <input type="checkbox" required checked={form.agree} onChange={(e) => set({ agree: e.target.checked })} />

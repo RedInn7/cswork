@@ -275,13 +275,11 @@ const detailsOf = (r: Row): MemberDetails => ({
 });
 /** The post's questions with their round and linked problem (metadata rows by idx; none means plain). */
 function questionsOf(r: Row): MemberQuestion[] {
-  const meta = new Map<number, [string, string, number]>();
-  try {
-    for (const [idx, round, problem, similar] of JSON.parse(r.qmeta || '[]') as [number, string, string, number][])
-      meta.set(idx, [round, problem, similar]);
-  } catch {}
+  // json_group_array always gives valid JSON.
+  const rows = JSON.parse(r.qmeta || '[]') as [number, string, string, number][];
+  const meta = new Map(rows.map(([idx, ...rest]) => [idx, rest] as const));
   return strings(r.questions).map((text, i) => {
-    const [round, problem, similar] = meta.get(i) ?? ['', '', 0];
+    const [round, problem, similar] = meta.get(i) ?? (['', '', 0] as const);
     return { text, round, problem, similar: !!similar };
   });
 }
