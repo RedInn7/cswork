@@ -113,20 +113,22 @@ export const AUTH_UNKNOWN = -1;
 
 // Read sentence by sentence, lower-cased, "U.S." as "us". Each kind first skips a sentence that
 // says the opposite ("we will sponsor", "no clearance required"), then tries its own phrases.
-const VISA = '(?:(?:visa|immigration|employment|work|h-?1b|any)\\s+)*';
+const VISA = '(?:(?:visa|immigration|employment|employer|company|work|h-?1b|any|current|now|or|future)\\s+)*';
 const NO_SPONSOR = new RegExp(
   [
-    // "unable to sponsor", "will not be sponsoring", "does not offer visa sponsorship", "is not eligible for sponsorship"
-    `\\b(?:unable to|not able to|cannot|can ?not|can't|will not|won't|do not|does not|don't|doesn't|not eligible for|ineligible for|is not|are not)\\s+(?:(?:currently|presently|now|be|able to|in a position to)\\s+)*(?:(?:provide|offer|support|accommodate|consider|qualify for|eligible for)\\s+)?${VISA}sponsor`,
+    // "unable to sponsor", "will not be sponsoring", "does not offer relocation or visa sponsorship", "isn't eligible for sponsorship"
+    `\\b(?:unable to|not able to|cannot|can ?not|can't|will not|won't|do not|does not|don't|doesn't|not eligible for|ineligible for|is not|are not|isn't|aren't)\\s+(?:(?:currently|presently|now|be|able to|in a position to)\\s+)*(?:(?:provide|offer|support|accommodate|consider|qualify for|eligible for)\\s+)?(?:(?:\\S+\\s+){1,2}(?:or|and)\\s+)?${VISA}sponsor`,
     `\\bno\\s+${VISA}sponsorship`,
     `\\bsponsorship\\s*(?::\\s*|is\\s+|will\\s+)?not\\s+(?:be\\s+)?(?:available|offered|provided|possible)`,
     // "must not now or in the future require sponsorship", "do not apply if you will need sponsorship"
     `\\b(?:must not|will not|do not|does not|should not|cannot|won't|don't|doesn't)\\s+(?:\\S+\\s+){0,6}?(?:require|need)s?\\s+(?:\\S+\\s+){0,3}?sponsorship`,
-    `\\bwithout\\s+(?:the\\s+)?(?:(?:need|requirement)\\s+(?:for|of)\\s+|requiring\\s+|needing\\s+)?(?:(?:current|or|now|future|visa|immigration|employment|h-?1b|work)\\s+)*sponsorship`,
+    `\\bwithout\\s+(?:the\\s+)?(?:(?:need|requirement)\\s+(?:for|of)\\s+|requiring\\s+|needing\\s+)?${VISA}sponsorship`,
+    // "candidates requiring sponsorship will not be considered"
+    `\\b(?:requir|need)\\w*\\s+(?:\\S+\\s+){0,3}?sponsorship\\b(?:\\s+\\S+){0,4}?\\s+(?:(?:will not|won't|cannot|can't)\\s+be|are not|aren't|is not|isn't)\\s+(?:considered|eligible)`,
   ].join('|'),
 );
 const SPONSORS =
-  /(?<!\b(?:not|never)\s+(?:\S+\s+)?)\b(?:we|will|can|happy to|glad to|able to)\s+(?:(?:also|gladly)\s+)?(?:sponsor\b|(?:offer|provide|support)\s+(?:(?:visa|immigration|h-?1b)\s+)*sponsorship)|\bsponsorship\s+(?:is\s+|may be\s+|will be\s+)?(?:available|offered|provided)\b/;
+  /(?<!(?:\bnot|\bnever|n't)\s+(?:\S+\s+){0,3})\b(?:we|will|can|happy to|glad to|able to)\s+(?:(?:also|gladly)\s+)?(?:sponsor\b|(?:offer|provide|support)\s+(?:(?:visa|immigration|h-?1b)\s+)*sponsorship)|(?<!\bno\s+(?:\S+\s+){0,3})\bsponsorship\s+(?:is\s+|may be\s+|will be\s+)?(?:available|offered|provided)\b/;
 // A negation near "required" and the word: "does not require a clearance", "citizenship is not required", "no clearance required".
 const notRequired = (word: string) =>
   `(?:\\bno\\b|\\bnot\\b|n't\\b|\\bnever\\b)(?:\\s+\\S+){0,3}?\\s+(?:require[ds]?|requirement|necessary|needed)\\b(?:\\s+\\S+){0,3}?\\s+${word}` +
@@ -144,9 +146,11 @@ const CITIZEN = new RegExp(
 );
 // "May require", "preferred": no requirement.
 const MAYBE = String.raw`|\b(?:may|might|could|some)\s+(?:\S+\s+)?(?:require|be required|need)|\b(?:preferred|a plus|nice to have|bonus)\b`;
-// Work-authorization notices list citizens with refugees and asylees (EEO, E-Verify, export control's "U.S. person").
+// Work-authorization notices list citizens with refugees and asylees (EEO, E-Verify, export control's
+// "U.S. person", "protected individual", "or eligible to obtain the required authorizations").
 const NOT_CITIZEN = new RegExp(
-  `\\b(?:refugees?|asylees?|asylum|otherwise authorized|us persons?|regard(?:less)? (?:of|to)|discriminat\\w*|e-?verify)\\b|${notRequired('(?:citizen\\S*|green card|permanent residen\\S*)')}${MAYBE}`,
+  `\\b(?:refugees?|asylees?|asylum|otherwise authorized|us persons?|protected individuals?|required authorizations?|department of state|regard(?:less)? (?:of|to)|discriminat\\w*|e-?verify)\\b` +
+    `|\\bor\\s+(?:be\\s+|those\\s+|persons\\s+|individuals\\s+)?(?:otherwise\\s+)?(?:lawfully\\s+)?(?:eligible|authori[sz]ed)\\b|${notRequired('(?:citizen\\S*|green card|permanent residen\\S*)')}${MAYBE}`,
 );
 const KIND = '(?:ts\\/sci|top secret|secret|security|dod|government|federal|active|current)';
 const CLEARANCE = new RegExp(
@@ -158,7 +162,8 @@ const CLEARANCE = new RegExp(
     `\\b(?:ts\\/sci|top secret)\\b(?:\\s+\\S+){0,3}?\\s+(?:is\\s+)?required`,
   ].join('|'),
 );
-const NOT_CLEARANCE = new RegExp(notRequired('clearances?') + MAYBE);
+// A medical, customs or tax "clearance" is no security clearance.
+const NOT_CLEARANCE = new RegExp(notRequired('clearances?') + MAYBE + String.raw`|\b(?:medical|health|customs|tax|credit|drug|background)\s+clearances?\b`);
 
 /**
  * The AUTH_FLAGS bits a job description states. Citizenship and clearance count only with a must,
