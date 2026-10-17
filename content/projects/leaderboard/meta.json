@@ -1,0 +1,27 @@
+{
+  "slug": "leaderboard",
+  "titleZh": "排行榜服务",
+  "titleEn": "Leaderboard service",
+  "summaryZh": "多榜单、只留最高分、同分同名次、分页和「我附近的人」，名次查询不全量排序。",
+  "summaryEn": "Many boards, best score kept, shared ranks for ties, paging and \"players around me\", with no full sort per lookup.",
+  "level": "beginner",
+  "roles": ["generalist", "backend"],
+  "hours": 8,
+  "run": "http",
+  "milestones": [
+    { "zh": "先用排序数组跑通所有接口，写清楚名次和同分规则", "en": "Get every endpoint working on a sorted array, with the rank and tie rules written down" },
+    { "zh": "换成能 O(log n) 查名次的结构（平衡树、跳表或树状数组），对随机数据和暴力实现对拍", "en": "Switch to a structure with O(log n) rank lookups (balanced tree, skip list or Fenwick tree) and compare it with brute force on random data" },
+    { "zh": "处理并发提交，跑通验收脚本", "en": "Handle concurrent submissions and pass the acceptance script" },
+    { "zh": "压测十万玩家并写 README：复杂度、内存、测得的延迟", "en": "Load test 100,000 players and write the README: complexity, memory, measured latency" }
+  ],
+  "bulletZh": "用 {语言} 实现多榜单排行榜服务，基于 {跳表/平衡树} 实现 O(log n) 名次查询，{N} 万玩家下 p99 {毫秒} ms，并用随机对拍验证排序和名次规则。",
+  "bulletEn": "Built a multi-board leaderboard service in {language} with O(log n) rank lookups on a {skip list / balanced tree}, {N}k players at {ms} ms p99, verified against a brute-force model on random data.",
+  "deepDive": [
+    { "zh": "查某个玩家的名次，你的实现是什么复杂度？为什么不能每次排序？", "en": "What is the complexity of a rank lookup in your design, and why not sort each time?" },
+    { "zh": "Redis 的有序集合底层是什么结构？为什么选跳表而不是平衡树？", "en": "What is under a Redis sorted set, and why a skip list rather than a balanced tree?" },
+    { "zh": "同分时你怎么排？如果产品要求「先达到的人排前面」要改什么？", "en": "How do you order ties? What changes if product wants whoever got there first to rank higher?" },
+    { "zh": "一亿玩家放不进一台机器，怎么分片？全局前 100 名怎么算？", "en": "A hundred million players do not fit on one machine. How do you shard, and how do you compute the global top 100?" },
+    { "zh": "提交非常频繁、但大家只看前 100 名时，有什么可以近似或缓存的？", "en": "Submissions are frequent but people mostly read the top 100. What can you approximate or cache?" },
+    { "zh": "同一个玩家的并发提交，你是怎么保证不丢最高分的？", "en": "How do you make sure concurrent submissions for one player never lose the best score?" }
+  ]
+}

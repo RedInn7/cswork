@@ -1,0 +1,27 @@
+{
+  "slug": "lru-ttl-cache",
+  "titleZh": "带 TTL 的 LRU 缓存服务",
+  "titleEn": "LRU cache service with TTL",
+  "summaryZh": "哈希表加双向链表的 O(1) LRU，按 key 过期，满了先清过期再淘汰，带命中率统计。",
+  "summaryEn": "An O(1) LRU from a hash map and a linked list, per-key expiry, expired-first eviction and hit-rate stats.",
+  "level": "beginner",
+  "roles": ["generalist", "backend", "infra"],
+  "hours": 6,
+  "run": "http",
+  "milestones": [
+    { "zh": "手写哈希表加双向链表的 LRU，单元测试覆盖淘汰顺序", "en": "Hand-write the LRU from a hash map and a doubly linked list, with unit tests on eviction order" },
+    { "zh": "加 TTL：访问时检查过期，写满时先清过期", "en": "Add TTLs: check expiry on access, and drop expired entries first when full" },
+    { "zh": "包一层 HTTP 接口和 /stats，加锁后跑通验收脚本", "en": "Wrap it in the HTTP API and /stats, add locking, and pass the acceptance script" },
+    { "zh": "用一段访问日志测命中率，写进 README", "en": "Measure the hit rate on an access log and put it in the README" }
+  ],
+  "bulletZh": "用 {语言} 实现带 TTL 的 LRU 缓存服务（哈希表 + 双向链表，O(1) 读写），支持过期优先清理和命中率统计；在 {数据集} 上命中率 {X}%，单机 {QPS} QPS。",
+  "bulletEn": "Built an LRU cache service with TTLs in {language} (hash map + doubly linked list, O(1) reads and writes) with expired-first cleanup and hit-rate stats; {X}% hit rate on {dataset}, {QPS} QPS on one node.",
+  "deepDive": [
+    { "zh": "为什么 LRU 要用双向链表？单链表行不行？", "en": "Why does an LRU need a doubly linked list? Would a singly linked one do?" },
+    { "zh": "过期时间是访问时检查还是后台扫描？各有什么问题？Redis 是怎么做的？", "en": "Do you check expiry on access or sweep in the background? What goes wrong with each, and what does Redis do?" },
+    { "zh": "整个缓存一把锁会成为瓶颈吗？怎么分段加锁，分段后 LRU 顺序还准吗？", "en": "Is one lock for the whole cache a bottleneck? How would you shard the lock, and is the LRU order still exact afterwards?" },
+    { "zh": "什么访问模式下 LRU 表现很差？LFU 或 W-TinyLFU 怎么改善？", "en": "Which access patterns make LRU do badly, and how do LFU or W-TinyLFU help?" },
+    { "zh": "缓存击穿、穿透、雪崩分别是什么？你的服务能挡住哪些？", "en": "What are cache breakdown, penetration and avalanche, and which of them does your service protect against?" },
+    { "zh": "多台缓存节点用取模分片有什么问题？一致性哈希怎么解决？", "en": "What goes wrong when you shard cache nodes by modulo, and how does consistent hashing fix it?" }
+  ]
+}
