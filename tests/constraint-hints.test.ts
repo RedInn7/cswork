@@ -35,6 +35,11 @@ void test('the budget: the slowest class within 10^8 operations, and the one tha
   assert.equal(budget(n(400), 'cpp')!.target, 'O(n³)');
   assert.equal(budget(n(1e8), 'cpp')!.target, 'O(n)');
   assert.equal(budget(n(2 ** 31 - 1), 'cpp'), null);
+  // n = 500: O(n³) ≈ 1.3×10^8 is the class the usual tables give there, so borderline, not too slow; in Python still too slow.
+  assert.match(budgetMessage(n(500), 'cpp')![0], /目标 O\(n²\) 或更快；O\(n³\) ≈ 1\.3×10\^8 次，偏紧/);
+  assert.doesNotMatch(budgetMessage(n(500), 'cpp')![0], /太慢/);
+  assert.match(budgetMessage(n(500), 'java')![1], /O\(n³\) ≈ 1\.3×10\^8 is borderline/);
+  assert.match(budgetMessage(n(500), 'python')![0], /O\(n³\) ≈ 1\.3×10\^8 次，太慢/);
 
   // Rows, columns and word lengths are second sizes: no budget rather than a wrong one.
   assert.equal(lcBounds([{ name: 'grid', type: 'integer[][]' }], { grid: { len: [1, 300] } }), null);
@@ -45,6 +50,11 @@ void test('the budget: the slowest class within 10^8 operations, and the one tha
   assert.deepEqual(lcBounds([{ name: 'n', type: 'integer' }], { n: { val: [1, 45] } }), { n: 45, name: 'n' });
   assert.equal(lcBounds([{ name: 'x', type: 'integer' }], { x: { val: [0, 100] } }), null);
   assert.equal(lcBounds(nums, null), null);
+  // Coin Change: 12 coins beside amount ≤ 10^4, a second size; an exponential budget would mislead.
+  const coins = [{ name: 'coins', type: 'integer[]' }, { name: 'amount', type: 'integer' }];
+  assert.equal(lcBounds(coins, { coins: { len: [1, 12], val: [1, 2 ** 31 - 1] }, amount: { val: [0, 10000] } }), null);
+  assert.deepEqual(lcBounds([...nums, { name: 'target', type: 'integer' }], { ...big, target: { val: [-1e9, 1e9] } }), { n: 100000, name: 'nums.length' });
+  assert.deepEqual(lcBounds([...nums, { name: 'k', type: 'integer' }], { nums: { len: [1, 16], val: [1, 1e4] }, k: { val: [1, 16] } }), { n: 16, name: 'nums.length' });
 });
 
 void test('bounds read off an OA statement', () => {
@@ -61,6 +71,15 @@ void test('bounds read off an OA statement', () => {
   assert.equal(statementBounds('Print the answer modulo 10^9 + 7.'), null);
   assert.equal(statementBounds('1 ≤ k ≤ n, 1 ≤ T ≤ 10'), null);
   assert.equal(statementBounds('1 ≤ maxMemory ≤ 10^9'), null);
+  // Never the leading digits of a number it cannot read.
+  assert.equal(statementBounds('−2^31≤n≤2^31−1'), null);
+  assert.equal(statementBounds('$1 \\le n \\le 3 \\cdot 10^5$'), null);
+  assert.equal(statementBounds('1 ≤ n ≤ 10 ^ 5'), null);
+  assert.equal(statementBounds('1 <= n <= 10**5'), null);
+  assert.deepEqual(statementBounds('1 ≤ n ≤ 10^5.'), { n: 100000, name: 'n' });
+  assert.deepEqual(statementBounds('**1 ≤ n ≤ 10^5** 1 ≤ a[i] ≤ 2^31−1'), { n: 100000, name: 'n', val: 2 ** 31 });
+  assert.deepEqual(statementBounds('1 ≤ n ≤ 2·10^5, 1 ≤ items[i] ≤ 2^{30}'), { n: 200000, name: 'n', val: 2 ** 30 });
+  assert.deepEqual(statementBounds('0≤n≤2000，-2³¹≤arr[i]≤2³¹−1。'), { n: 2000, name: 'n', val: 2 ** 31 });
 });
 
 void test('loops as lines with their header tokens', () => {
@@ -94,6 +113,12 @@ void test('wrong answer: int overflow only in C++ and Java with an int that grow
   assert.ok(!ids({ status: 'wrong_answer', language: 'go', code: 'sum := 0\nfor _, x := range nums {\n\tsum += x\n}', params: nums, constraints: big }).includes('wa-overflow'));
   // An OA statement's own n·val decides there.
   assert.equal(ids({ status: 'wrong_answer', language: 'cpp', code: 'int s = 0;\ns += a[i];', bounds: { n: 200000, name: 'N', val: 1e9 } })[0], 'wa-overflow');
+  // A for loop's own counter is not a sum: a step of 2, a sieve's j += i.
+  const oa = { n: 100000, name: 'n', val: 1e9 };
+  const step = src('long s = 0;', 'for (int i = 0; i < nums.length; i += 2) s += nums[i];');
+  assert.ok(!ids({ status: 'wrong_answer', language: 'java', code: step, bounds: oa }).includes('wa-overflow'));
+  const sieve = src('for (int i = 2; i * i < n; i++)', '  for (int j = i * i; j < n; j += i) composite[j] = true;');
+  assert.ok(!ids({ status: 'wrong_answer', language: 'cpp', code: sieve, bounds: oa }).includes('wa-overflow'));
   assert.ok(!ids({ status: 'wrong_answer', language: 'cpp', code: 'int s = 0;\ns += a[i];', bounds: { n: 200000, name: 'N', val: 100 } }).includes('wa-overflow'));
 
   const edges = wa.find((c) => c.id === 'wa-edges')!;
@@ -131,6 +156,21 @@ void test('time limit: analyzer notes, nested loops over the input and slow inpu
   assert.ok(ids({ status: 'time_limit', language: 'java', code: src('for (int x : nums)', '  for (int y : nums) c++;'), bounds: n(1e5) }).includes('tle-nested'));
   assert.ok(ids({ status: 'time_limit', language: 'go', code: src('for i := 0; i < n; i++ {', '\tfor _, y := range a {', '\t}', '}'), bounds: n(1e5) }).includes('tle-nested'));
   assert.ok(!ids({ status: 'time_limit', language: 'go', code: src('for i < n {', '\tfor j < n {', '\t}', '}'), bounds: n(1e5) }).includes('tle-nested'));
+  // Neighbours of one node, and BFS levels behind a while: O(n + m) over the whole run.
+  const graph: [string, string][] = [
+    ['python', src('for u in range(n):', '    for v in adj[u]:', '        deg[v] += 1')],
+    ['cpp', src('for (int u = 0; u < n; u++)', '  for (int v : adj[u]) deg[v]++;')],
+    ['java', src('for (int u = 0; u < n; u++)', '  for (int v : adj.get(u)) deg[v]++;')],
+    ['go', src('for u := 0; u < n; u++ {', '\tfor _, v := range adj[u] {', '\t\tdeg[v]++', '\t}', '}')],
+    ['python', src('for s in range(n):', '    q = deque([s])', '    while q:', '        for _ in range(len(q)):', '            u = q.popleft()')],
+    ['python', src('while q:', '    for _ in range(len(q)):', '        u = q.popleft()', '        for v in adj[u]:', '            q.append(v)')],
+    ['go', src('for s := 0; s < n; s++ {', '\tfor len(q) > 0 {', '\t\tfor k := 0; k < sz; k++ {', '\t\t}', '\t}', '}')],
+  ];
+  for (const [language, code] of graph) assert.ok(!ids({ status: 'time_limit', language, code, bounds: n(1e5) }).includes('tle-nested'), code);
+  // A slice from i + 1 is still a second pass over the input, and so is one inside a BFS.
+  assert.ok(ids({ status: 'time_limit', language: 'python', code: src('for i in range(n):', '    for x in a[i + 1:]:', '        pass'), bounds: n(1e5) }).includes('tle-nested'));
+  assert.ok(ids({ status: 'time_limit', language: 'go', code: src('for i := range a {', '\tfor _, y := range a[i+1:] {', '\t}', '}'), bounds: n(1e5) }).includes('tle-nested'));
+  assert.ok(ids({ status: 'time_limit', language: 'python', code: src('while q:', '    u = q.popleft()', '    for v in range(n):', '        for w in range(n):', '            pass'), bounds: n(1e5) }).includes('tle-nested'));
 
   const acm = { status: 'time_limit', codingMode: 'acm', bounds: n(2e5) };
   const reads = src('n = int(input())', 'for _ in range(n):', '    a, b = map(int, input().split())');
@@ -177,6 +217,19 @@ void test('runtime error: recursion depth per mode, 1-based arrays, null nodes',
   assert.deepEqual(ids(index), ['re-bounds', 're-empty', 're-div']);
   assert.equal(ids({ status: 'runtime_error', language: 'java', stderr: 'java.lang.NullPointerException' })[0], 're-null');
   assert.equal(ids({ status: 'runtime_error', language: 'python', stderr: "AttributeError: 'NoneType' object has no attribute 'val'" })[0], 're-null');
+  // The node wording only for nodes; a missing map key or a method returning None gets its own.
+  const nul = (language: string, stderr: string, extra: Partial<Parameters<typeof failureChecks>[0]> = {}) =>
+    failureChecks({ ...base, status: 'runtime_error', language, stderr, ...extra }).find((c) => c.id === 're-null')!.zh;
+  assert.match(nul('python', "AttributeError: 'NoneType' object has no attribute 'val'"), /^访问了空节点/);
+  assert.match(nul('java', 'java.lang.NullPointerException: Cannot read field "left" because "<local1>" is null'), /^访问了空节点/);
+  assert.match(nul('go', 'panic: runtime error: invalid memory address or nil pointer dereference', { code: 'func f(root *TreeNode) int {\n\treturn root.Left.Val\n}', params: [{ name: 'root', type: 'TreeNode' }] }), /^访问了空节点/);
+  assert.match(nul('java', 'java.lang.NullPointerException', { code: 'ListNode p = head;\nwhile (true) p = p.next;' }), /^访问了空节点/);
+  const unbox = 'java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "java.util.Map.get(Object)" is null';
+  assert.match(nul('java', unbox, { code: 'int c = map.get(k);', params: [{ name: 'root', type: 'TreeNode' }] }), /getOrDefault/);
+  assert.match(nul('java', 'java.lang.NullPointerException', { code: 'int c = map.get(k);' }), /getOrDefault/);
+  assert.match(nul('python', "TypeError: 'NoneType' object is not subscriptable"), /x = nums\.sort\(\).*sorted\(nums\)/);
+  assert.match(nul('python', "AttributeError: 'NoneType' object has no attribute 'append'"), /^对 None 做了操作/);
+  assert.match(nul('go', 'panic: runtime error: invalid memory address or nil pointer dereference'), /^空指针：指针或结构体字段/);
 });
 
 void test('memory limit: a 2-D table at n of 10^4 or more', () => {
@@ -188,7 +241,20 @@ void test('memory limit: a 2-D table at n of 10^4 or more', () => {
   assert.ok(ids({ status: 'memory_limit', language: 'cpp', code: 'vector<vector<int>> dp(n, vector<int>(n));', bounds: n(1e5) }).includes('mle-2d'));
   assert.ok(ids({ status: 'memory_limit', language: 'java', code: 'int[][] dp = new int[n + 1][n + 1];', bounds: n(1e5) }).includes('mle-2d'));
   assert.ok(!ids({ status: 'memory_limit', language: 'java', code: 'int[] dp = new int[n + 1];', bounds: n(1e5) }).includes('mle-2d'));
-  assert.ok(ids({ status: 'memory_limit', language: 'go', code: 'dp := make([][]int, n)', bounds: n(1e5) }).includes('mle-2d'));
+  assert.ok(ids({ status: 'memory_limit', language: 'go', code: src('dp := make([][]int, n)', 'for i := range dp {', '\tdp[i] = make([]int, n)', '}'), bounds: n(1e5) }).includes('mle-2d'));
+  // An adjacency list's rows start empty: O(n + m), not n × n.
+  const adj: [string, string][] = [
+    ['python', 'adj = [[] for _ in range(n)]'],
+    ['python', 'adj = [[]] * n'],
+    ['cpp', 'vector<vector<int>> adj(n);'],
+    ['cpp', 'vector<vector<int>> adj(n, vector<int>());'],
+    ['cpp', 'int solve(vector<vector<int>>& edges, int n) {\n  return (int)edges.size();\n}'],
+    ['java', 'int[][] adj = new int[n][];'],
+    ['java', 'int[][] dirs = new int[][]{{0, 1}, {1, 0}};'],
+    ['go', src('adj := make([][]int, n)', 'for _, e := range edges {', '\tadj[e[0]] = append(adj[e[0]], e[1])', '}')],
+    ['go', src('adj := make([][]int, n)', 'for i := range adj {', '\tadj[i] = make([]int, 0)', '}')],
+  ];
+  for (const [language, code] of adj) assert.ok(!ids({ status: 'memory_limit', language, code, bounds: n(1e5) }).includes('mle-2d'), code);
   assert.deepEqual(ids({ status: 'memory_limit', language: 'go' }), ['mle-stack', 'mle-copy', 'mle-store']);
 });
 

@@ -31,7 +31,11 @@ export function lcBounds(params: Param[] | null | undefined, constraints: Record
   if (containers.length) {
     if (containers.some((p) => !constraints[p.name]?.len)) return null;
     const top = containers.reduce((a, b) => (constraints[b.name].len![1] > constraints[a.name].len![1] ? b : a));
-    return { n: constraints[top.name].len![1], name: nodes(top.type) ? 'n' : `${top.name}.length` };
+    const n = constraints[top.name].len![1];
+    // A container small enough for an exponential budget beside a larger integer (coins ≤ 12,
+    // amount ≤ 10^4): the integer may be a second size, and the budget would point the wrong way.
+    if (/ⁿ|!/.test(budget({ n, name: '' }, '')?.target ?? '') && params.some((p) => /^(integer|long)$/.test(p.type) && (constraints[p.name]?.val?.[1] ?? 0) > n)) return null;
+    return { n, name: nodes(top.type) ? 'n' : `${top.name}.length` };
   }
   const sized = params.filter((p) => /^(n|m|k)$/.test(p.name) && /^(integer|long)$/.test(p.type) && constraints[p.name]?.val);
   if (!sized.length) return null;
@@ -42,15 +46,17 @@ export function lcBounds(params: Param[] | null | undefined, constraints: Record
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const LE = String.raw`\s*(?:≤|<=|⩽|\\leq?)\s*`;
 const POW = String.raw`10(?:\^\{?\d+\}?|[${SUP}]+)`;
-// 2·10^5, 2×10⁵, 10^5, 1e5, 200,000, 200000
-const NUM = String.raw`(\d+(?:\.\d+)?\s*[·×x*]\s*${POW}|${POW}|\d+(?:\.\d+)?e\d+|\d{1,3}(?:,\d{3})+|\d+)`;
+// 2·10^5, 2×10⁵, 10^5, 1e5, 200,000, 200000; never the leading part of one it cannot read
+// (2^31, 3 \cdot 10^5, 10 ^ 5, 10**5), which would pass for 2, 3 or 10.
+const NUM = String.raw`(\d+(?:\.\d+)?\s*[·×x*]\s*${POW}|${POW}|\d+(?:\.\d+)?e\d+|\d{1,3}(?:,\d{3})+|\d+)(?!\d|\.\d|[${SUP}]|\s*(?:\^|\*\*\d|\\cdot|\\times|[·×]|[x*]\s*10))`;
 const SIZE = new RegExp(String.raw`(?<![\w.])((?:\w+\.)?(?:length|len)|[nmqNMQ])${LE}${NUM}`, 'g');
-const VALUE = new RegExp(String.raw`(?<![\w.])[A-Za-z]\w*(?:\[[a-z]\]|_\{?i\}?)\|?${LE}${NUM}`, 'g');
+// A value may also be 2^31 − 1; a size that large is one number, not a count.
+const VALUE = new RegExp(String.raw`(?<![\w.])[A-Za-z]\w*(?:\[[a-z]\]|_\{?i\}?)\|?${LE}(2(?:\^\{?\d+\}?|[${SUP}]+)|${NUM})`, 'g');
 
 function parseNum(text: string) {
   const s = text.replace(new RegExp(`[${SUP}]+`, 'g'), (d) => `^${d.replace(/./g, (c) => String(SUP.indexOf(c)))}`).replace(/[\s,{}]/g, '');
-  const pow = /^(?:(\d+(?:\.\d+)?)[·×x*])?10\^(\d+)$/.exec(s);
-  return pow ? (pow[1] ? Number(pow[1]) : 1) * 10 ** Number(pow[2]) : Number(s);
+  const pow = /^(?:(\d+(?:\.\d+)?)[·×x*])?(10|2)\^(\d+)$/.exec(s);
+  return pow ? (pow[1] ? Number(pow[1]) : 1) * Number(pow[2]) ** Number(pow[3]) : Number(s);
 }
 
 /**
@@ -110,10 +116,12 @@ export function budgetMessage(b: Bounds, language: string): Message | null {
   const r = budget(b, language);
   if (!r) return null;
   const head = `${b.name} ≤ ${bound(b.n)}`;
+  // Just past 10^8 (n³ at n = 500, the class the usual tables give there) is borderline, not too slow; Python stays too slow.
+  const close = !!r.slower && r.slower.ops <= 5e8 && language !== 'python';
   return [
-    `${head} → 每秒约 10^7–10^8 次运算 → 目标 ${r.target} 或更快${r.slower ? `；${r.slower.cls} ≈ ${approx(r.slower.ops)} 次，太慢` : ''}。` +
+    `${head} → 每秒约 10^7–10^8 次运算 → 目标 ${r.target} 或更快${r.slower ? `；${r.slower.cls} ≈ ${approx(r.slower.ops)} 次，${close ? '偏紧，循环体简单、常数小的话可能能过' : '太慢'}` : ''}。` +
       (r.pythonTight ? `Python 每秒大约只有 10^7 次简单操作，${r.target} 在这里约 ${approx(r.ops)} 次，已经偏紧：内层循环少调函数，多用内置函数。` : ''),
-    `${head} → about 10^7–10^8 operations a second → aim for ${r.target} or better${r.slower ? `; ${r.slower.cls} ≈ ${approx(r.slower.ops)} is too slow` : ''}.` +
+    `${head} → about 10^7–10^8 operations a second → aim for ${r.target} or better${r.slower ? `; ${r.slower.cls} ≈ ${approx(r.slower.ops)} is ${close ? 'borderline and may pass with a lean inner loop' : 'too slow'}` : ''}.` +
       (r.pythonTight ? ` Python manages only about 10^7 simple steps a second, and ${r.target} is about ${approx(r.ops)} here, so it is tight: keep function calls out of inner loops and lean on built-ins.` : ''),
   ];
 }
@@ -127,9 +135,11 @@ const IO = '/judge-environment#io';
 
 const check = (id: string, [zh, en]: Message, extra?: { href?: string; line?: number }): Check => ({ id, zh, en, ...extra });
 
-/** `int x` later grown with `x +=` or `x *=` (not by a constant): its line. */
+/** `int x` later grown with `x +=` or `x *=` (not by a constant): its line. A for loop's own counter (`for (int j = i * i; …; j += i)`) is not a sum. */
 function intGrows(t: Token[]) {
-  const ints = new Set(t.flatMap((x, i) => (x.v === 'int' && t[i + 1]?.k === 'id' && ['=', ';', ',', ')', ':'].includes(t[i + 2]?.v) ? [t[i + 1].v] : [])));
+  const ints = new Set(
+    t.flatMap((x, i) => (x.v === 'int' && t[i + 1]?.k === 'id' && ['=', ';', ',', ')', ':'].includes(t[i + 2]?.v) && !(t[i - 1]?.v === '(' && t[i - 2]?.v === 'for') ? [t[i + 1].v] : [])),
+  );
   return t.find(
     (x, i) => x.k === 'id' && ints.has(x.v) && t[i - 1]?.v !== '.' && (t[i + 1]?.v === '+=' || t[i + 1]?.v === '*=') && !(t[i + 2]?.k === 'num' && t[i + 3]?.v === ';'),
   );
@@ -166,8 +176,10 @@ function variableFor(head: string[]) {
     // for (int x : nums)
     const colon = head.indexOf(':');
     vars = head.slice(1, colon);
-    limit = head.slice(colon + 1);
+    limit = head.slice(colon + 1, -1);
   } else return false; // Go's `for cond {` and `for {` are while loops
+  // One element's list (adj[u], adj.get(u)), not a slice (a[i + 1:]): together they are bounded by the edges, not n · n.
+  if (/^[A-Za-z_]\w* (?:\[ [^:]* \]|\. get \( .* \))$/.test(limit.join(' '))) return false;
   return ids(limit).some((x) => !vars.includes(x) && !NOT_BOUND.has(x) && !SMALL_TABLE.test(x));
 }
 
@@ -184,21 +196,44 @@ function pyRecursive(t: Token[]) {
   return false;
 }
 
-/** A 2-D allocation: [[...] for ...], vector<vector, new int[n][m], make([][]. */
+/** The index of the `]` closing the `[` at j; -1 when there is none. */
+function closing(t: Token[], j: number) {
+  for (let depth = 0, k = j; k < t.length; k++) {
+    if (t[k].v === '[') depth++;
+    else if (t[k].v === ']' && --depth === 0) return k;
+  }
+  return -1;
+}
+
+/**
+ * A 2-D table whose rows have a size: [[0] * m for …], vector<vector<int>> dp(n, vector<int>(m)),
+ * new int[n][m], make([][]int, n) whose rows get make([]int, m). Not an adjacency list
+ * ([[] for …], adj(n), new int[n][], rows grown by append), which takes O(n + m).
+ */
 function grid(t: Token[], language: string) {
   return t.find((x, i) => {
-    if (language === 'python') return x.v === '[' && t[i + 1]?.v === '[' && t.slice(i + 2, i + 40).some((y) => y.v === 'for' || y.v === '*');
-    if (language === 'cpp') return x.v === 'vector' && t[i + 1]?.v === '<' && t[i + 2]?.v === 'vector';
+    if (language === 'python') return x.v === '[' && t[i + 1]?.v === '[' && t[i + 2]?.v !== ']' && t.slice(i + 2, i + 40).some((y) => y.v === 'for' || y.v === '*');
+    if (language === 'cpp') {
+      if (x.v !== 'vector' || t[i + 1]?.v !== '<' || t[i + 2]?.v !== 'vector') return false;
+      const end = t.findIndex((y, j) => j > i && (y.v === ';' || y.v === '{'));
+      const before = (j: number) => j > 0 && (end < 0 || j < end);
+      const row = t.findIndex((y, j) => j > i + 2 && y.v === 'vector');
+      const open = before(row) ? t.findIndex((y, j) => j > row && y.v === '(') : -1;
+      return before(open) && t[open + 1]?.v !== ')';
+    }
     if (language === 'java') {
       if (x.v !== 'new' || t[i + 2]?.v !== '[') return false;
-      let depth = 0;
-      for (let j = i + 2; j < t.length; j++) {
-        if (t[j].v === '[') depth++;
-        else if (t[j].v === ']' && --depth === 0) return t[j + 1]?.v === '[';
-      }
-      return false;
+      const j = closing(t, i + 2);
+      return j > 0 && t[j + 1]?.v === '[' && t[j + 2]?.v !== ']';
     }
-    return x.v === 'make' && t[i + 1]?.v === '(' && t[i + 2]?.v === '[' && t[i + 3]?.v === ']' && t[i + 4]?.v === '[';
+    if (x.v !== 'make' || t[i + 1]?.v !== '(' || t[i + 2]?.v !== '[' || t[i + 3]?.v !== ']' || t[i + 4]?.v !== '[') return false;
+    const name = t[i - 1]?.v === ':=' || t[i - 1]?.v === '=' ? t[i - 2]?.v : undefined;
+    return t.some((y, j) => {
+      if (j <= i || y.v !== name || t[j + 1]?.v !== '[') return false;
+      const k = closing(t, j + 1);
+      // name[i] = make([]int, m), not make([]int, 0)
+      return k > 0 && t[k + 1]?.v === '=' && t[k + 2]?.v === 'make' && t[k + 4]?.v === '[' && t[k + 5]?.v === ']' && t[k + 6]?.v !== '[' && t[k + 8]?.v !== '0';
+    });
   });
 }
 
@@ -346,7 +381,10 @@ export function failureChecks({
     const loops = loopLines(code, language);
     if (n >= 1e4) {
       const fors = loops.filter((l) => variableFor(l.head));
-      const inner = fors.find((b, j) => fors.some((a, i) => i < j && a.from <= b.from && b.to <= a.to));
+      const within = (b: { from: number; to: number }, a: { from: number; to: number }) => a.from <= b.from && b.to <= a.to;
+      // A while between the two (a BFS level loop) shares its count across passes: no n · n claim.
+      const isWhile = (h: string[]) => h[0] === 'while' || (language === 'go' && !h.includes(';') && !h.includes('range'));
+      const inner = fors.find((b, j) => fors.some((a, i) => i < j && within(b, a) && !loops.some((w) => isWhile(w.head) && a.from < w.from && within(b, w))));
       if (inner)
         confirmed.push(
           check(
@@ -466,13 +504,39 @@ export function failureChecks({
         );
       confirmed.push(generic(status, codingMode, bounds, language)[0]); // both ends of the index range
     }
-    if (/NullPointerException|nil pointer|'NoneType' object/.test(stderr))
+    if (/NullPointerException|nil pointer|'NoneType' object/.test(stderr)) {
+      // A node when stderr names a node's field; when stderr says nothing either way (Go, an old JVM),
+      // when the problem has nodes or the code reads .left / .right / .next. Otherwise the usual
+      // non-node causes: a missing map key unboxed into int, a method that returns None.
+      const named = /(?:field|attribute) ["'](left|right|next|val)["']|(?:field|attribute) ["']|Cannot (?:invoke|load|store)|'NoneType' object is not/.exec(stderr);
+      const node = named
+        ? !!named[1]
+        : !!params?.some((p) => p.type === 'TreeNode' || p.type === 'ListNode') || t.some((x, i) => x.v === '.' && /^(left|right|next)$/.test(t[i + 1]?.v ?? ''));
       confirmed.push(
-        check('re-null', [
-          '访问了空节点：读 root.left、node.val、head.next 之前先判断它是不是 null（Python 是 None，Go 是 nil），空树和空链表单独处理。',
-          'A null node was dereferenced: check for null (None in Python, nil in Go) before reading root.left, node.val or head.next, and handle the empty tree or list on its own.',
-        ]),
+        check(
+          're-null',
+          node
+            ? [
+                '访问了空节点：读 root.left、node.val、head.next 之前先判断它是不是 null（Python 是 None，Go 是 nil），空树和空链表单独处理。',
+                'A null node was dereferenced: check for null (None in Python, nil in Go) before reading root.left, node.val or head.next, and handle the empty tree or list on its own.',
+              ]
+            : language === 'python'
+              ? [
+                  '对 None 做了操作：函数有分支漏写 return 时返回 None；list.sort()、reverse()、append() 原地修改、返回值是 None，别写成 x = nums.sort()（要排好序的副本用 sorted(nums)）；dict.get 取不到键也返回 None。',
+                  "An operation on None: a function with a branch that never returns gives None; list.sort(), reverse() and append() work in place and return None, so don't write x = nums.sort() (sorted(nums) returns a sorted copy); dict.get returns None for a missing key.",
+                ]
+              : language === 'go'
+                ? [
+                    '空指针：指针或结构体字段没初始化就用了，先 new(T) 或 &T{} 再访问；从 map 取出的指针在键不存在时也是 nil。',
+                    'A nil pointer: a pointer or struct field was used before it was set; create it with new(T) or &T{} first. A pointer read from a map for a missing key is nil too.',
+                  ]
+                : [
+                    '空指针：map.get 取不存在的键返回 null，赋给 int 时自动拆箱就会抛异常，改用 getOrDefault 或先 containsKey；再看有没有对象或数组只声明、没有 new。',
+                    'A null reference: map.get returns null for a missing key, and unboxing that into an int throws; use getOrDefault or check containsKey first. Also look for an object or array that was declared but never created with new.',
+                  ],
+        ),
       );
+    }
   }
 
   if (status === 'memory_limit' && n >= 1e4) {
