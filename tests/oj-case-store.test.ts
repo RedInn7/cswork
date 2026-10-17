@@ -49,6 +49,31 @@ test('first failure and bounded diagnostic become durable atomically', () => {
   }
 });
 
+void test('an all_cases first failure keeps its feedback but leaves the verdict for the end', () => {
+  const f = fixture();
+  try {
+    f.db.exec(
+      "ALTER TABLE submissions ADD COLUMN status TEXT DEFAULT 'running'; ALTER TABLE submissions ADD COLUMN finished_at INTEGER",
+    );
+    persistCase(f.db, f.guard, { ...f.record, status: 'wrong_answer', capture: true }, f.progress);
+    persistCase(f.db, f.guard, { ...f.record, ordinal: 24, status: 'wrong_answer' }, f.progress);
+    assert.deepEqual(
+      f.db.prepare('SELECT ordinal,stdout,stderr FROM oj_results WHERE ordinal>=23 ORDER BY ordinal').all(),
+      [
+        { ordinal: 23, stdout: 'private', stderr: 'private' },
+        { ordinal: 24, stdout: null, stderr: null },
+      ],
+    );
+    assert.deepEqual(f.db.prepare('SELECT status,finished_at,score FROM submissions').get(), {
+      status: 'running',
+      finished_at: null,
+      score: 86,
+    });
+  } finally {
+    f.close();
+  }
+});
+
 function fixture() {
   const dir = mkdtempSync(join(tmpdir(), 'oj-case-store-'));
   const path = join(dir, 'db.sqlite');
