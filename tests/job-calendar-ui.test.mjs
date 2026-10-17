@@ -19,9 +19,14 @@ const mocks = {
   '@/lib/server/learner-cloud': `export const reportCompanies = () => [{ slug: 'jane', name: 'Jane Street' }, { slug: 'ramp', name: 'Ramp' }, { slug: 'stripe', name: 'Stripe' }];`,
   '@/lib/server/auth': `export const person = async () => globalThis.__viewer ?? null;`,
 };
+// On Node >= 22.22.3, tsx resolves the @/ aliases in-thread (module.registerHooks) before this hook
+// runs, so it sees the file URL instead: an @/ mock also matches what its specifier resolves to.
 register(
   `data:text/javascript,${encodeURIComponent(`const mocks=${JSON.stringify(mocks)};
-export async function resolve(s,c,n){if(mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
+export async function resolve(s,c,n){
+  if(mocks[s])return {url:'mock:'+s,shortCircuit:true};
+  const r=await n(s,c),k=Object.keys(mocks).find((k)=>k.startsWith('@/')&&r.url.endsWith(k.slice(1)+'.ts'));
+  return k?{url:'mock:'+k,shortCircuit:true}:r;}
 export async function load(u,c,n){
   if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
   if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};
@@ -36,7 +41,9 @@ const Calendar = (await import('../app/career/jobs/calendar/page.tsx')).default;
 const Jobs = (await import('../app/career/jobs/page.tsx')).default;
 
 const DAY = 86400000;
-const now = Date.now();
+// A pinned clock, Thursday noon UTC: "this week", the season and "opening soon" never move with the wall clock.
+const now = Date.UTC(2026, 9, 15, 12);
+Date.now = () => now;
 const cycle = hiringCycle(now);
 const SWE = `Software Engineer Intern, Summer ${cycle}`;
 before(() => {
