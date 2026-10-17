@@ -23,7 +23,8 @@
  * target query whose result is unchanged and whose EXPLAIN QUERY PLAN has no
  * bare SCAN, temporary B-tree or automatic index and matches `need`, or else
  * `query k: result changed` / the plan on one line. No ANALYZE, so the plans
- * do not depend on the data.
+ * do not depend on the data. Index names must be word characters (\w+): the
+ * plan text carries them, and a quoted name could otherwise spell out `need`.
  */
 import { SQL_NAMES } from '@/lib/sql-cte';
 
@@ -80,9 +81,15 @@ def judge_indexes(spec):
     try:
         db.executescript(query)
     except sqlite3.Error as error:
-        fail('只能写 CREATE INDEX 语句 / Write CREATE INDEX statements only: %s' % error)
+        if 'not authorized' in str(error) or 'authorization denied' in str(error):
+            fail('只能写 CREATE INDEX 语句 / Write CREATE INDEX statements only: %s' % error)
+        fail('SQL 错误 / SQL error: %s' % error)
     # The target queries are SELECTs, which the authorizer refuses.
     db.set_authorizer(None)
+    # The plan text carries index names, so a quoted name like "x (a=?)" could satisfy need.
+    for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL"):
+        if not re.fullmatch(r'\\w+', name):
+            fail('索引名只能用字母、数字和下划线 / Name indexes with letters, digits and underscores only: %s' % name)
     made = index_count() - before
     if made > spec['max']:
         fail('最多建 %d 个索引，这段脚本建了 %d 个。 / Create at most %d index(es); this script creates %d.' % (spec['max'], made, spec['max'], made))

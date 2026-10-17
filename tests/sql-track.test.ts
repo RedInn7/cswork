@@ -172,6 +172,12 @@ test('index problems: the reference indexes pass; missing, misordered, wrapped o
     ['ANALYZE', /CREATE INDEX statements only/],
     ['SELECT * FROM orders', /CREATE INDEX statements only/],
     ['CREATE INDEX i ON orders (customer_id, order_date); DROP INDEX i', /CREATE INDEX statements only/],
+    // The plan prints index names, so a quoted name must not spell out the needed lookup.
+    ['CREATE INDEX "x (customer_id=? AND order_date>? AND order_date<?)" ON orders (customer_id)', /letters, digits and underscores only/],
+    ['CREATE INDEX [USING COVERING INDEX z] ON orders (customer_id)', /letters, digits and underscores only/],
+    // A CREATE INDEX that SQLite rejects is a plain SQL error.
+    ['CREATE INDEX i ON orders (customer_id order_date)', /^SQL 错误 \/ SQL error: near "order_date": syntax error\n$/],
+    ['CREATE UNIQUE INDEX i ON orders (customer_id)', /^SQL 错误 \/ SQL error: UNIQUE constraint failed/],
   ] as const) {
     const result = runner.run(script, input);
     assert.equal(result.ok, false, script);
@@ -181,6 +187,8 @@ test('index problems: the reference indexes pass; missing, misordered, wrapped o
   }
   // Transactions around CREATE INDEX are fine; an unchanged result with every target passing is ok.
   assert.equal(runner.run('BEGIN; CREATE INDEX i ON orders (customer_id, order_date); COMMIT;', input).stdout, ok);
+  // Any word characters name an index, CJK included.
+  assert.equal(runner.run('CREATE INDEX 客户日期 ON orders (customer_id, order_date);', input).stdout, ok);
   // Every target query gets its own line: one index serving two of sql-78's three queries.
   const three = PROBLEMS.find((p) => p.id === 'sql-78')!;
   const threeInput = datasetSql(three, three.sample);

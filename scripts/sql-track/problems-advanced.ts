@@ -866,6 +866,8 @@ FROM employees WHERE department_id IS NOT NULL;`,
       'CREATE INDEX idx ON orders (customer_id);',
       'CREATE INDEX idx ON orders (customer_id, date(order_date));',
       'CREATE INDEX a ON orders (customer_id); CREATE INDEX b ON orders (order_date);',
+      // A quoted name that spells out the needed plan text.
+      'CREATE INDEX "x (customer_id=? AND order_date>? AND order_date<?)" ON orders (customer_id);',
     ],
     sample: SHOP.sample,
     hidden: [SHOP.edges, SHOP.shuffled],
