@@ -30,7 +30,7 @@ import {
   requirePerson,
   rows,
 } from './http';
-import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
+import { MOCK_PRESETS_UPDATED, mockPresetFor, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
 import { oaTopic } from './oa-topics';
 import { listProblemSummaries } from './oj-problems';
@@ -238,7 +238,7 @@ async function drawExperience(id: string) {
   const items = [...new Set(post.questions.map((q) => q.problem))].flatMap((problem) => pool.get(problem) ?? []).slice(0, 4);
   if (!items.length) throw new HttpError(409, '这篇面经没有能判题的关联题');
   const slug = post.company.slug;
-  const preset = shownMockPresets(hidden).find((c) => c.slug === slug || c.aliases.includes(slug));
+  const preset = mockPresetFor(slug);
   const perQuestion = preset ? preset.minutes / preset.questions : 30;
   return {
     ids: items.map((item) => item.id),

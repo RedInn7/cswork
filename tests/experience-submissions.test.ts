@@ -166,7 +166,11 @@ void test('approved posts merge into the experiences list and the company page, 
   assert.equal((await list('&company=uber')).total, 0);
   const item = await call(null, 'GET', `content/item?type=experience&slug=member.${id}`);
   assert.equal(item.status, 200);
-  assert.deepEqual(item.data.questions, ['LRU cache', 'Merge intervals']);
+  assert.deepEqual(
+    item.data.questions,
+    ['LRU cache', 'Merge intervals'].map((text) => ({ text, round: '', problem: '', similar: false })),
+    'plain questions come back as unlinked ones',
+  );
   assert.equal(item.data.member.note, '', 'the review note is the author’s');
   assert.equal((await call(me, 'GET', `content/item?type=experience&slug=member.${id}`)).data.member.note, 'Thanks');
   const hub = ugc.companyMemberExperiences('amazon');
