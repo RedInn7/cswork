@@ -126,6 +126,9 @@ const MockOa = lazy(() =>
 const MyProgress = lazy(() =>
   import('./my-progress').then((m) => ({ default: m.MyProgress }), loadFailed),
 );
+const ReviewSession = lazy(() =>
+  import('./review-session').then((m) => ({ default: m.ReviewSession }), loadFailed),
+);
 const MyLists = lazy(() =>
   import('./my-lists').then((m) => ({ default: m.MyLists }), loadFailed),
 );
@@ -320,6 +323,7 @@ export function Academy() {
           ? t('算法知识点', 'Algorithm Concepts')
           : t('课程学习', 'Course'),
         problem: t('算法题库', 'Problem Bank'),
+        'review-session': t('今日复习', 'Review session'),
         reviews: t('代码评审', 'Code reviews'),
         releases: t('课程更新', 'Course updates'),
         teacher: t('教师工作台', 'Teacher dashboard'),
@@ -448,6 +452,8 @@ export function Academy() {
             tab={params.tab}
           />
         );
+      case 'review-session':
+        return <ReviewSession key={boot.person?.id} boot={boot} navigate={navigate} tab={params.tab} />;
       case 'lists':
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
       case 'group':

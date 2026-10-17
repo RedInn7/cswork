@@ -1075,7 +1075,13 @@ export function ContentDetail({
               </div>
             )}
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
-              <SelectionAsk>
+              <SelectionAsk
+                clip={{
+                  target: `clip:${item.type}/${item.slug}`,
+                  title: localized(locale, item.title, item.titleZh),
+                  href: `/?view=content&type=${encodeURIComponent(item.type)}&slug=${encodeURIComponent(item.slug)}`,
+                }}
+              >
                 <SafeMarkdown body={gated ? gated.question : localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
               </SelectionAsk>
               {gated?.hints && (

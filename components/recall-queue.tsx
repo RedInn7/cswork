@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { MessageSquareText } from 'lucide-react';
 import { MCQ_MASTERED, MCQ_REVIEW_DAYS, mcqDay } from '@/lib/mock-oa';
-import { dropMastered, dueRecall, recallBoxes, recallHref, recallNext, type RecallQueue as Queue } from '@/lib/recall';
+import { api } from '@/lib/types';
+import { RECALL_CARDS, RECALL_IDEAS, dropMastered, dueRecall, recallBoxes, recallHref, recallNext, type RecallQueue as Queue } from '@/lib/recall';
 import { loadRecall, recallDate, updateRecall } from './recall-rate';
 import { Button } from './ui/button';
 import type { Navigate } from './learning';
@@ -119,5 +120,51 @@ export function RecallQueue({
         </p>
       )}
     </section>
+  );
+}
+
+/**
+ * My progress → Due for review: the way into the review session (components/review-session.tsx),
+ * saying how many self-made cards and problem ideas it has due, counted as the session does: a
+ * card never graded is due, a graded one follows its box.
+ */
+export function ReviewSessionLink({ signedIn, navigate, english }: { signedIn: boolean; navigate: Navigate; english: boolean }) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const [due, setDue] = useState(0);
+  useEffect(() => {
+    if (!signedIn) return;
+    let current = true;
+    const today = mcqDay();
+    void Promise.all([
+      loadRecall(true, RECALL_CARDS),
+      loadRecall(true, RECALL_IDEAS),
+      api<{ items: { target: string }[] }>(`oj/notes?prefix=${encodeURIComponent('card:')}`),
+    ])
+      .then(([cards, ideas, { items }]) => {
+        const graded = new Set(dueRecall(cards.queue, today).map(([key]) => key));
+        const n = items.filter(({ target }) => !cards.queue.items[target] || graded.has(target)).length;
+        if (current) setDue(n + dueRecall(ideas.queue, today).length);
+      })
+      .catch(() => {});
+    return () => {
+      current = false;
+    };
+  }, [signedIn]);
+  return (
+    <p className="recall-none">
+      {/* oxlint-disable-next-line next/no-html-link-for-pages -- an SPA view of the home page. */}
+      <a
+        href="/?view=review-session"
+        onClick={(event) => {
+          if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          navigate('review-session');
+        }}
+      >
+        {due
+          ? t(`另有 ${due} 张卡到期 → 今日复习`, `${due} more card${due > 1 ? 's' : ''} due → Review session`)
+          : t('开始今日复习：卡片、选择题和编程题放在一个队列里 →', 'Start the review session: cards, multiple-choice and coding in one queue →')}
+      </a>
+    </p>
   );
 }

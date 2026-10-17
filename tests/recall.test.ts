@@ -134,3 +134,30 @@ void test('a bad or foreign body reads as empty and malformed cards are dropped;
   );
   assert.deepEqual(merged.items, { [T]: [2, 3, 'saved'], 'sd:a': [1, 9, 'a'] });
 });
+
+void test('self-made cards and problem ideas: their own targets, empty titles, a full note under the cap', () => {
+  const parsed = parseRecall(
+    JSON.stringify({
+      v: 1,
+      items: {
+        'card:abc123def456': [1, 5, ''],
+        'idea:lc-1': [0, 5, ''],
+        'idea:oa-acme-2': [2, 5, ''],
+        'card:short': [1, 5, ''],
+        'card:ABC123DEF456': [1, 5, ''],
+        'idea:lc 1': [1, 5, ''],
+        'idea:': [1, 5, ''],
+      },
+    }),
+  );
+  assert.deepEqual(Object.keys(parsed.items).sort(), ['card:abc123def456', 'idea:lc-1', 'idea:oa-acme-2']);
+  assert.deepEqual(rateRecall(emptyRecall(), 'idea:lc-1', '', 'know', 9).items['idea:lc-1'], [1, 9, '']);
+  assert.equal(recallHref('idea:lc-1'), '/?view=problem&problem=lc-1');
+  assert.equal(recallHref('card:abc123def456'), null);
+  // A whole note of ideas with empty titles keeps every card within the 20 KB note cap.
+  const items: RecallQueue['items'] = {};
+  for (let i = 0; i < RECALL_MAX; i++) items[`idea:oa-company-name-${i}`] = [3, 20_000 + i, ''];
+  const body = fitRecall({ v: 1, items }, NOTE_MAX_BYTES);
+  assert.equal(Object.keys(parseRecall(body).items).length, RECALL_MAX);
+  assert.ok(new TextEncoder().encode(body).length < NOTE_MAX_BYTES * 0.7);
+});

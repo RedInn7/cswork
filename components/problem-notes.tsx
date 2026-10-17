@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { NotebookPen, Repeat, Star } from 'lucide-react';
 import { api } from '@/lib/types';
 import { readLocale } from '@/lib/i18n';
@@ -9,6 +9,8 @@ import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { AskedReport, communityProblem, ListMenu } from './problem-community';
 import '@/app/problem-notes.css';
+
+const CardEditor = lazy(() => import('./card-editor').then((m) => ({ default: m.CardEditor })));
 
 type T = (zh: string, en: string) => string;
 type NoteState =
@@ -274,17 +276,20 @@ function noteLink(target: string, t: T): [string, string | null] {
 /**
  * The note editor. With `problemId` it adds the problem template (the learner's own, saved with
  * "Set as my template", or the built-in one) and, under the preview, the learner's other notes
- * that link [[problemId]].
+ * that link [[problemId]]. With `card` (never in an exam) a written note can become a review card.
  */
 export function ProblemNotes({
   note,
   english,
   problemId,
+  card,
 }: {
   note: ProblemNote;
   english: boolean;
   problemId?: string;
+  card?: { title: string; href: string };
 }) {
+  const [making, setMaking] = useState(false);
   const t: T = (zh, en) => (english ? en : zh);
   const [preview, setPreview] = useState(false);
   const area = useRef<HTMLTextAreaElement>(null);
@@ -407,8 +412,25 @@ export function ProblemNotes({
           >
             {t('设为我的模板', 'Set as my template')}
           </button>
+          {card && note.has && (
+            <button type="button" onClick={() => setMaking(true)}>
+              {t('做成记忆卡', 'Make a review card')}
+            </button>
+          )}
           <span role="status">{said}</span>
         </div>
+      )}
+      {card && making && (
+        <Suspense fallback={null}>
+          <CardEditor
+            initial={{
+              front: t(`${card.title}：思路是什么？`, `${card.title}: what is the approach?`),
+              back: note.text,
+              src: { href: card.href, title: card.title.slice(0, 200) },
+            }}
+            onClose={() => setMaking(false)}
+          />
+        </Suspense>
       )}
       {note.conflict !== null && (
         <div className="cs-notes-conflict" role="alert">

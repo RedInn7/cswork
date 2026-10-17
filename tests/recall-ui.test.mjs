@@ -207,6 +207,53 @@ test('the queue lists cards due today with links, counts its boxes and clears ma
   }
 });
 
+test('the review session link counts due cards: new ones, due graded ones and due ideas, not deleted cards', async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { ReviewSessionLink } = await import('../components/recall-queue.tsx');
+  const original = globalThis.fetch;
+  const id = (c) => `card:${c.repeat(12)}`;
+  let cards = [id('a'), id('b'), id('c')];
+  const notes = {
+    'recall:cards': { v: 1, items: { [id('b')]: [0, today - 1, ''], [id('c')]: [2, today, ''], [id('d')]: [0, today - 1, ''] } },
+    'recall:ideas': { v: 1, items: { 'idea:1': [0, today - 1, ''], 'idea:2': [2, today, ''] } },
+  };
+  const calls = [];
+  globalThis.fetch = async (url) => {
+    const u = new URL(String(url), 'https://cswork.test');
+    calls.push(u.pathname + u.search);
+    if (u.searchParams.get('prefix') === 'card:') return Response.json({ items: cards.map((target) => ({ target, body: '{}' })) });
+    return Response.json({ target: u.searchParams.get('target'), body: JSON.stringify(notes[u.searchParams.get('target')]), updatedAt: 1 });
+  };
+  const navigations = [];
+  const root = createRoot(document.getElementById('root'));
+  const link = () => document.querySelector('.recall-none a');
+  try {
+    await act(async () => root.render(createElement(ReviewSessionLink, { signedIn: true, navigate: (...a) => navigations.push(a), english: true })));
+    await settle();
+    assert.equal(link().textContent, '3 more cards due → Review session', 'card a (new), card b (due), idea 1');
+    await act(async () => link().dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 })));
+    assert.deepEqual(navigations, [['review-session']]);
+    // Nothing due, or signed out: the plain way in, and signed out asks nothing.
+    cards = [id('c')];
+    notes['recall:ideas'].items = {};
+    await act(async () => root.render(createElement('div')));
+    await act(async () => root.render(createElement(ReviewSessionLink, { signedIn: true, navigate: () => {}, english: false })));
+    await settle();
+    assert.equal(link().textContent, '开始今日复习：卡片、选择题和编程题放在一个队列里 →');
+    calls.length = 0;
+    await act(async () => root.render(createElement('div')));
+    await act(async () => root.render(createElement(ReviewSessionLink, { signedIn: false, navigate: () => {}, english: true })));
+    await settle();
+    assert.equal(link().getAttribute('href'), '/?view=review-session');
+    assert.deepEqual(calls, []);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});
+
 test('the rating card follows a revealed reference answer, with key points from the rubric, and a system design walkthrough', async () => {
   const dom = useDom();
   const { createRoot } = await import('react-dom/client');
