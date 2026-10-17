@@ -1,6 +1,16 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { medianDays, STAGE_NAMES, trackerStats, type Application } from '@/lib/applications';
+import {
+  agenda,
+  expeditePlan,
+  localStamp,
+  medianDays,
+  scheduleIssues,
+  STAGE_NAMES,
+  trackerStats,
+  type AgendaEvent,
+  type Application,
+} from '@/lib/applications';
 import { SOURCES } from '@/lib/experience';
 import { api } from '@/lib/types';
 
@@ -140,6 +150,141 @@ export function TrackerStats({ items, now, zh }: { items: readonly Application[]
         </section>
       </div>
     </details>
+  );
+}
+
+const KINDS: Record<AgendaEvent['kind'], [string, string]> = {
+  oa: ['OA 截止', 'OA due'],
+  interview: ['面试', 'Interview'],
+  next: ['跟进', 'Follow up'],
+  offer: ['Offer 截止', 'Offer deadline'],
+};
+const WEEKDAYS = [
+  ['周日', 'Sun'],
+  ['周一', 'Mon'],
+  ['周二', 'Tue'],
+  ['周三', 'Wed'],
+  ['周四', 'Thu'],
+  ['周五', 'Fri'],
+  ['周六', 'Sat'],
+];
+
+/**
+ * Above the stats: clashes in the next two weeks, the expedite plan while an offer deadline is
+ * ahead (lib/applications.ts scheduleIssues, expeditePlan), and the next seven days folded away.
+ * Nothing when no dated step is ahead.
+ */
+export function SchedulePanel({ items, now, zh }: { items: readonly Application[]; now: number; zh: boolean }) {
+  const t = (cn: string, en: string) => (zh ? cn : en);
+  const i = zh ? 0 : 1;
+  const events = agenda(items, now);
+  if (!events.length) return null;
+  const issues = scheduleIssues(items, now);
+  const plan = expeditePlan(items, now);
+  const names = new Map(items.map((a) => [a.id, a.company]));
+  const list = (ids: string[]) => ids.map((id) => names.get(id)).join(t('、', ', '));
+  const d = new Date(now);
+  const week = Array.from({ length: 7 }, (_, k) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + k));
+  return (
+    <section className="tracker-schedule" aria-labelledby="tracker-schedule">
+      <h2 id="tracker-schedule">{t('日程', 'Schedule')}</h2>
+      {issues.length > 0 && (
+        <ul className="tracker-clashes" aria-label={t('日程冲突', 'Schedule clashes')}>
+          {issues.map((x) => (
+            <li key={`${x.kind}:${x.day}:${x.ids.join()}`}>
+              <strong>{x.day}</strong>{' '}
+              {x.kind === 'overlap'
+                ? t(`两场面试开始时间相隔不到 90 分钟：${list(x.ids)}`, `two interviews start under 90 minutes apart: ${list(x.ids)}`)
+                : x.kind === 'oa-pile'
+                  ? t(`${x.ids.length} 个 OA 同一天截止：${list(x.ids)}，可以提前做掉一部分`, `${x.ids.length} OAs due the same day: ${list(x.ids)}; consider doing some early`)
+                  : t(
+                      `${names.get(x.ids[0])} 的 offer 截止当天还有 ${list(x.ids.slice(1))} 的面试或 OA`,
+                      `${names.get(x.ids[0])}'s offer deadline falls on the same day as an interview or OA at ${list(x.ids.slice(1))}`,
+                    )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {plan && plan.rows.length > 0 && (
+        <div className="tracker-expedite">
+          <h3>
+            {t(
+              `${plan.offer.company} 的 offer ${localStamp(plan.deadline)} 截止，其他流程赶得上吗`,
+              `${plan.offer.company}'s offer expires ${localStamp(plan.deadline)}: will your other processes finish in time?`,
+            )}
+          </h3>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">{t('公司', 'Company')}</th>
+                <th scope="col">{t('阶段', 'Stage')}</th>
+                <th scope="col">{t('预计出结果', 'Likely decision')}</th>
+                <th scope="col">
+                  <span className="sr-only">{t('操作', 'Action')}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {plan.rows.map(({ a, eta, late, overdue }) => (
+                <tr key={a.id} data-late={late ? '' : undefined}>
+                  <th scope="row">{a.company}</th>
+                  <td>{STAGE_NAMES[a.stage][i]}</td>
+                  <td>
+                    {eta === null
+                      ? t('未知，建议问 recruiter 时间线', 'Unknown: ask the recruiter for a timeline')
+                      : overdue
+                        ? t('已超过通常时长，建议问 recruiter', 'Past the usual timeline: ask the recruiter')
+                        : `${localStamp(eta, false)} · ${late ? t('晚于截止', 'after the deadline') : t('赶得上', 'in time')}`}
+                    {eta !== null && <small> ({a.process ? t('面经中位数', 'member write-ups') : t('你看板上的中位数', 'your board’s median')})</small>}
+                  </td>
+                  <td>
+                    <a
+                      href={`/career/templates?${new URLSearchParams({ template: 'expedite', application: a.id, offer: plan.offer.id })}`}
+                    >
+                      {t('请求加速', 'Ask to speed up')}
+                      <span className="sr-only"> {a.company}</span>
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="tracker-stats-help">
+            {t(
+              '预计时间先看这家公司面经里从投递到 offer 的中位数，没有时用你看板上从这个阶段到 offer 的中位数。赶不上就早点联系 recruiter，说明你有截止日期。',
+              'Estimates use the company’s median from application to offer in member write-ups, else your board’s median from that stage to an offer. If one won’t make it, tell the recruiter about your deadline early.',
+            )}
+          </p>
+        </div>
+      )}
+      <details className="tracker-week">
+        <summary>{t('未来 7 天', 'Next 7 days')}</summary>
+        <ol>
+          {week.map((day) => {
+            const key = localStamp(day.getTime(), false);
+            const on = events.filter((e) => localStamp(e.at, false) === key);
+            return (
+              <li key={key}>
+                <h3>
+                  {WEEKDAYS[day.getDay()][i]} <small>{key.slice(5)}</small>
+                </h3>
+                {on.length ? (
+                  <ul>
+                    {on.map((e) => (
+                      <li key={`${e.kind}:${e.a.id}`} data-kind={e.kind}>
+                        <time dateTime={new Date(e.at).toISOString()}>{localStamp(e.at).slice(11)}</time> {KINDS[e.kind][i]} · {e.a.company}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>{t('无安排', 'Nothing')}</p>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </details>
+    </section>
   );
 }
 

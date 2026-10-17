@@ -135,15 +135,23 @@ const sameJob = (a: { company: string; role: string }, b: { company: string; rol
   a.company.trim().toLowerCase() === b.company.trim().toLowerCase() && a.role.trim().toLowerCase() === b.role.trim().toLowerCase();
 const unused = (o: Offer) => !o.company.trim() && !o.role.trim() && !num(o.base) && !num(o.grant);
 
-/** Tracker cards at the offer stage, as names in empty cards first, then new ones up to OFFERS_MAX; numbers stay the learner's. */
-export function importOffers(offers: readonly Offer[], jobs: readonly { company: string; role: string }[]) {
+/**
+ * Tracker cards at the offer stage, as names in empty cards first, then new ones up to OFFERS_MAX;
+ * numbers stay the learner's. A job's deadline (local "YYYY-MM-DD") goes only into a card it fills.
+ */
+export function importOffers(offers: readonly Offer[], jobs: readonly { company: string; role: string; deadline?: string }[]) {
   const next = [...offers];
   let added = 0,
     skipped = 0;
   for (const job of jobs) {
     if (next.some((o) => sameJob(o, job))) continue;
     const at = next.findIndex(unused);
-    const filled = { ...(at >= 0 ? next[at] : blankOffer()), company: job.company, role: job.role };
+    const filled = {
+      ...(at >= 0 ? next[at] : blankOffer()),
+      company: job.company,
+      role: job.role,
+      ...(job.deadline && { deadline: job.deadline }),
+    };
     if (at >= 0) next[at] = filled;
     else if (next.length < OFFERS_MAX) next.push(filled);
     else {

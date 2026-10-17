@@ -1184,9 +1184,101 @@
   margin: 0;
   color: #5d6b78;
 }
+/* Wave 9: schedule clashes, the expedite plan and the week ahead. */
+.tracker-schedule {
+  display: grid;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1d252d;
+  font-size: 14px;
+}
+.tracker-schedule h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.tracker-schedule h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.tracker-clashes {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 8px 12px 8px 28px;
+  border-left: 4px solid #b42318;
+  border-radius: 8px;
+  background: #fff4f2;
+  color: #7a1a12;
+}
+.tracker-expedite table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.tracker-expedite :is(th, td) {
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid #e1e6eb;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.tracker-expedite tr[data-late] td {
+  color: #b42318;
+  font-weight: 700;
+}
+.tracker-expedite small,
+.tracker-week small,
+.tracker-week p {
+  color: #5d6b78;
+  font-size: 12px;
+  font-weight: 400;
+}
+.tracker-week summary {
+  font-weight: 800;
+  cursor: pointer;
+}
+.tracker-week > ol {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tracker-week > ol > li {
+  min-width: 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f4f6f8;
+}
+.tracker-week ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.tracker-week p {
+  margin: 0;
+}
+.tracker-week li[data-kind='offer'] {
+  color: #8a5a00;
+  font-weight: 700;
+}
+@media (max-width: 640px) {
+  .tracker-week > ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 :is(.tracker-hint, .tracker-today, .tracker-goal) button:focus-visible,
 .tracker-more summary:focus-visible,
 .tracker-stats summary:focus-visible,
+.tracker-week summary:focus-visible,
 .tracker-goal input:focus-visible,
 .tracker-bookmarklet a:focus-visible {
   outline: 2px solid #0d7a63;
@@ -1730,9 +1822,37 @@
   .dark .tracker-bookmarklet p {
     color: #b5c2ce;
   }
+  .dark .tracker-schedule {
+    border: 1px solid #2b2f33;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .tracker-clashes {
+    border-left: 4px solid #b42318;
+    background: #191312;
+    color: #fdbeb4;
+  }
+  .dark .tracker-expedite :is(th, td) {
+    border-bottom: 1px solid #2b2f33;
+  }
+  .dark .tracker-expedite tr[data-late] td {
+    color: #fea99c;
+  }
+  .dark .tracker-expedite small,
+  .dark .tracker-week small,
+  .dark .tracker-week p {
+    color: #b5c2ce;
+  }
+  .dark .tracker-week > ol > li {
+    background: #131416;
+  }
+  .dark .tracker-week li[data-kind='offer'] {
+    color: #e6b97e;
+  }
   .dark :is(.tracker-hint, .tracker-today, .tracker-goal) button:focus-visible,
   .dark .tracker-more summary:focus-visible,
   .dark .tracker-stats summary:focus-visible,
+  .dark .tracker-week summary:focus-visible,
   .dark .tracker-goal input:focus-visible,
   .dark .tracker-bookmarklet a:focus-visible {
     outline: 2px solid #87d2bb;
