@@ -18,6 +18,8 @@ const copy = {
     h1: 'The night before, on one page.',
     lead: 'Pick a company, up to eight Line 500 stops or a classic list. The sheet gathers the problems you wrote notes on, starred, queued to redo, got wrong or keep failing, the shakiest first, in your own words. Drop or reorder rows, then print it.',
     book: 'Print every problem note as a review book',
+    bookH1: 'Every problem note, bound as a book.',
+    bookLead: 'A chapter per Line 500 stop or per group of a classic list; printed, each chapter starts on a new page.',
     privacyTitle: 'Only you see this',
     privacy: 'The sheet is built from your own notes, marks and submissions; nothing here is shared. Printing and the PDF happen in this browser.',
     more: 'Privacy notice',
@@ -31,6 +33,8 @@ const copy = {
     h1: '面试前一晚，看这一页就够。',
     lead: '选一家公司、最多 8 个 Line 500 站点，或一个经典题单。复习单会收进你写过笔记、收藏、标了重做、做错过或反复忘记的题，把握最低的排在前面，内容都是你自己写的。可以删行、调顺序，然后打印。',
     book: '把全部题目笔记打印成复习册',
+    bookH1: '全部题目笔记，装订成一本复习册。',
+    bookLead: '按 Line 500 站点或经典题单的分组分章，打印时每章从新的一页开始。',
     privacyTitle: '只有你能看到',
     privacy: '复习单只读取你自己的笔记、标记和提交记录，不会分享给任何人。打印和存 PDF 都在你的浏览器里完成。',
     more: '隐私说明',
@@ -67,8 +71,8 @@ export default async function ReviewSheetPage({ searchParams }: Props) {
       </nav>
       <section className="mock-public-hero guide-hero">
         <p className="mock-public-kicker">{c.kicker}</p>
-        <h1>{book ? c.book : c.h1}</h1>
-        {!book && <p>{c.lead}</p>}
+        <h1>{book ? c.bookH1 : c.h1}</h1>
+        <p>{book ? c.bookLead : c.lead}</p>
       </section>
       <div className="resume-privacy" role="note">
         <strong>{c.privacyTitle}</strong>

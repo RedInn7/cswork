@@ -44,11 +44,10 @@
   color: #1d252d;
   font-size: 14px;
 }
-.rs-stops {
+.rs-controls .rs-stops {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5em, 1fr));
   flex-basis: 100%;
-}
-.rs-stops label {
-  min-width: 9.5em;
 }
 .rs-controls .rs-field {
   flex-direction: column;
@@ -131,7 +130,7 @@
   width: 100%;
   max-width: 210mm;
   box-sizing: border-box;
-  padding: 14mm 12mm;
+  padding: clamp(16px, 4vw, 14mm) clamp(14px, 4vw, 12mm);
   border-radius: 4px;
   background: #ffffff;
   color: #1d252d;
