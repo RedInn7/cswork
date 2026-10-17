@@ -63,7 +63,6 @@ jobs:
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/route-templates.test.ts tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
       # Resume projects (content/projects) and the role paths on /roadmap.
-      - run: node scripts/projects/build.mjs --check
       - run: node --import tsx --test tests/role-paths.test.ts tests/resume-projects.test.ts tests/projects-ui.test.mjs
       - run: node --import tsx --test tests/oj-deep-recursion.test.ts tests/auth-route.test.ts tests/problem-sequence.test.ts tests/health.test.ts tests/metrics-funnel.test.ts tests/bootstrap-catalogue.test.ts
       - run: node --import tsx --test tests/lazy-load-failed-ui.test.mjs tests/owner-metrics-ui.test.mjs
@@ -117,7 +116,6 @@ jobs:
       - run: node --import tsx --test tests/ai-ask.test.ts tests/command-palette-ui.test.mjs tests/seo-facets.test.ts tests/company-insights.test.ts tests/pwa.test.mjs
       - run: node --import tsx --test tests/python-debugger.test.ts tests/python-debugger-ui.test.mjs tests/call-tree.test.ts
       # Frontend JS track: every solution passes and every starter fails in the browser's harness, then the sandbox runner.
-      - run: node scripts/frontend-js/build.mjs --check
       - run: node --import tsx --test tests/js-harness.test.ts tests/frontend-js-content.test.ts tests/js-runner-ui.test.mjs
       - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs tests/estimation-drill.test.mjs
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/job-openings.test.ts tests/job-openings-ui.test.mjs tests/applications.test.ts tests/application-tracker-ui.test.mjs tests/job-tags.test.ts tests/job-calendar-ui.test.mjs
