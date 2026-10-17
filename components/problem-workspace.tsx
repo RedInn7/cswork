@@ -76,6 +76,8 @@ import { ComplexityProbe, StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import { ClarifyPanel } from './clarify-panel';
+import { ComplexityBudget, FailureChecklist } from './constraint-hints';
+import { problemBounds } from '@/lib/constraint-hints';
 import { mergeCases } from '@/lib/clarify';
 import { customVerdict, MAX_CASES, readCases, writeCases } from '@/lib/custom-cases';
 import {
@@ -389,6 +391,11 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
+  // The input size for the complexity budget and the failure checklist (lib/constraint-hints.ts).
+  const bounds = useMemo(
+    () => problemBounds(problem.id, problem.leetcodeParams, problem.leetcodeConstraints, `${statement.input}\n${statement.description}`),
+    [problem.id, problem.leetcodeParams, problem.leetcodeConstraints, statement.input, statement.description],
+  );
   // SQL track (and its pandas versions), Core Skills, REST API and ML Coding statements are Markdown: schema blocks, operation lists.
   const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest|ml)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
@@ -1905,6 +1912,7 @@ function Workspace({
                       : `：时间 ${problem.targetComplexity.time}，额外空间 ${problem.targetComplexity.space}`)}
                 </button>
               )}
+              {!examMode && !wb.on && <ComplexityBudget bounds={bounds} language={language} english={uiEnglish} />}
               {!examMode && topics.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -3145,6 +3153,25 @@ function Workspace({
                     submission.status !== 'compile_error' && (
                       <SqlInspect key={submission.id} problemId={problem.id} code={submission.code} stdin={sample.input} />
                     )}
+                  {/* Never in a mock or contest, nor in a debugging drill: it would point at the planted bug. */}
+                  {!examMode && !wb.on && drillN === null && submission.mode !== 'drill' && (
+                    <FailureChecklist
+                      status={submission.status}
+                      language={submission.language}
+                      codingMode={submission.codingMode ?? 'acm'}
+                      code={submission.code ?? ''}
+                      stderr={
+                        submission.firstFailure?.stderr ||
+                        submission.cases?.find((item) => item.status === submission.status && !item.hidden)?.stderr ||
+                        ''
+                      }
+                      bounds={bounds}
+                      params={problem.leetcodeParams}
+                      constraints={problem.leetcodeConstraints}
+                      statement={`${statement.description}\n${statement.input}`}
+                      english={uiEnglish}
+                    />
+                  )}
                 </>
               ) : (
                 <div className="cs-empty compact">

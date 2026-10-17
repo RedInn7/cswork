@@ -304,7 +304,7 @@ export function failureChecks({
   statement: string;
 }): Check[] {
   if (!VERDICTS.has(status) || !isAnalyzerLanguage(language)) return [];
-  const t = code.length > 100_000 ? [] : tokenize(code, language);
+  const t: Token[] = code.length > 100_000 ? [] : tokenize(code, language);
   const n = bounds?.n ?? 0;
   const acm = codingMode === 'acm';
   const has = (v: string) => t.some((x) => x.v === v);
@@ -315,7 +315,7 @@ export function failureChecks({
   if (status === 'wrong_answer') {
     const items = params?.length ? clarifyItems(params, constraints ?? null) : [];
     // The bounds' overflow check (lib/clarify.ts); an OA statement has only its own n and val.
-    const overflow = items.some((i) => i.key === 'overflow') || (!params?.length && !!bounds?.val && n * bounds.val > INT32);
+    const overflow = items.some((i) => i.key === 'overflow') || (!params?.length && n * (bounds?.val ?? 0) > INT32);
     const grows = (language === 'cpp' || language === 'java') && overflow ? intGrows(t) : undefined;
     if (grows)
       confirmed.push(
@@ -341,7 +341,7 @@ export function failureChecks({
   if (status === 'time_limit') {
     for (const note of analyze(code, language))
       if (TLE_NOTES.has(note.id))
-        confirmed.push(check(note.id, [note.zh, note.en], { line: note.line, ...(note.topic && { href: `/topics/${note.topic}#topic-pitfalls` }) }));
+        confirmed.push(check(note.id, [note.zh, note.en], { line: note.line, href: note.topic ? `/topics/${note.topic}#topic-pitfalls` : undefined }));
     const loops = loopLines(code, language);
     if (n >= 1e4) {
       const fors = loops.filter((l) => variableFor(l.head));
