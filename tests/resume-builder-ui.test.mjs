@@ -2,6 +2,7 @@
 // headings with no tables or images, the resume lives in this browser only, a long one warns about
 // the second page, signed-in learners pull in their CSWork record, and the AI review picks it up.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { createElement, act } from 'react';
@@ -19,6 +20,7 @@ const { createRoot } = await import('react-dom/client');
 const { ResumeBuilder, REVIEW_KEY } = await import('../components/resume-builder.tsx');
 const { ResumeReview } = await import('../components/resume-review.tsx');
 const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
+const { zip } = await import('../lib/zip.ts');
 
 const calls = [];
 globalThis.fetch = async (url, init = {}) => {
@@ -231,6 +233,54 @@ test('paste to import: a preview first, and only the confirm replaces the resume
   const saved = JSON.parse(localStorage.getItem(KEY));
   assert.deepEqual([saved.email, saved.links, saved.skills, saved.experience[0].title], ['grace@example.com', 'github.com/grace', 'COBOL', 'Navy']);
   assert.equal(host.querySelector('.resume-paste'), null, 'the panel closes');
+  await unmount();
+});
+
+test('PDF / DOCX import: a .docx read in the browser only fills the preview; a wrong file says why', async () => {
+  localStorage.clear();
+  localStorage.setItem(KEY, JSON.stringify({ name: 'Old Name' }));
+  const { host, unmount } = await mount({ zh: false, signedIn: false });
+  const input = [...host.querySelectorAll('.resume-import')].find((l) => l.textContent.startsWith('Import PDF / DOCX')).querySelector('input');
+  assert.match(input.accept, /\.pdf/);
+  const pick = async (file) => {
+    Object.defineProperty(input, 'files', { configurable: true, value: [file] });
+    const status = host.querySelector('.resume-builder-status');
+    await act(async () => input.dispatchEvent(new window.Event('change', { bubbles: true })));
+    for (let i = 0; i < 100 && /^(|Reading the file…)$/.test(status.textContent); i++) await act(() => new Promise((r) => setTimeout(r, 10)));
+    return status.textContent;
+  };
+  const para = (text, list = false) =>
+    `<w:p>${list ? '<w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr>' : ''}<w:r><w:t xml:space="preserve">${text}</w:t></w:r></w:p>`;
+  const xml = [para('Grace Hopper'), para('grace@example.com | github.com/grace'), para('EXPERIENCE'), para('Navy<w:tab/>1943 – 1966'), para('Programmer'), para('Wrote the first compiler, used by 3 teams', true)].join('').replace(/<w:tab\/>/g, '</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>');
+  const docx = await zip([{ name: 'word/document.xml', data: `<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${xml}</w:body></w:document>` }], true);
+  assert.equal(await pick(new Blob([docx])), 'Text read from the file: check what was read below; nothing is replaced until you confirm.');
+  assert.match(host.querySelector('.resume-paste textarea').value, /^Grace Hopper\n/);
+  const preview = host.querySelector('.resume-paste-preview');
+  assert.match(preview.textContent, /Navy · 1943 – 1966 \(1 bullet\)/);
+  // Nothing replaced until the confirm.
+  assert.equal(host.querySelector('.resume-sheet h2').textContent, 'Old Name');
+  assert.equal(JSON.parse(localStorage.getItem(KEY)).name, 'Old Name');
+  assert.equal(input.value, '', 'the same file can be picked again');
+  assert.match(await pick(new Blob(['{\\rtf1 Grace}'])), /^Only PDF and \.docx files can be read/);
+  assert.equal(host.querySelector('.resume-sheet h2').textContent, 'Old Name');
+  await unmount();
+});
+
+test('the autofill bookmarklet carries the resume being edited, follows edits and stays out of print', async () => {
+  localStorage.clear();
+  localStorage.setItem(KEY, JSON.stringify({ name: 'Grace Hopper', email: 'grace@example.com' }));
+  const { host, unmount } = await mount({ zh: true, signedIn: false });
+  const link = host.querySelector('details.resume-autofill a');
+  const script = () => decodeURIComponent(link.getAttribute('href').slice('javascript:'.length));
+  assert.ok(link.getAttribute('href').startsWith('javascript:'));
+  assert.match(script(), /"first":"Grace","last":"Hopper"/);
+  assert.match(script(), /https:\/\/cswork\.test\/career\/tracker\?add=1/);
+  assert.ok(!link.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true })), 'a click here does nothing');
+  await setValue(host.querySelector('#resume-email'), 'g@navy.example');
+  assert.match(script(), /"email":"g@navy\.example"/);
+  assert.match(host.querySelector('.resume-autofill').textContent, /不要分享/);
+  const print = readFileSync(new URL('../app/career/resume/builder/resume-print.css', import.meta.url), 'utf8');
+  assert.match(/@media print \{[^]*?\{\s*display: none;/.exec(print)[0], /\.resume-autofill,/);
   await unmount();
 });
 
