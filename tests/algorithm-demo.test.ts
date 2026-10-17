@@ -140,6 +140,8 @@ test('custom inputs are size-limited and every rejection explains itself in both
   assert.equal(error('binary-search', '3 1 2; 2'), 'The array must be sorted from small to large');
   assert.equal(error('binary-search', '1 2 3'), 'Use 2 parts separated by semicolons');
   assert.equal(error('two-pointers', '1 2.5; 3'), '"2.5" is not a whole number');
+  assert.equal(error('two-pointers', '1 2 3; 4 5'), 'Enter exactly one whole number here');
+  assert.equal(error('dp', '; 1 2'), 'Enter exactly one whole number here');
   assert.deepEqual(ok('sliding-window', '😀ab cd😀efghijklm'), ['😀ab cd😀efghijklm']);
   assert.equal(error('sliding-window', 'abcdefghijklmnopq'), 'At most 16 characters');
   assert.deepEqual(ok('dp', '15；1，3，4，7'), [15, [1, 3, 4, 7]]);

@@ -1540,7 +1540,10 @@ function numbers(text: string, max: number, limit = 99): number[] {
     return value;
   });
 }
-const one = (text: string) => numbers(text, 1)[0];
+function one(text: string) {
+  if (tokens(text).length !== 1) fail('这里只填一个整数', 'Enter exactly one whole number here');
+  return numbers(text, 1)[0];
+}
 function sorted(values: number[]) {
   if (values.some((v, i) => i && v < values[i - 1]))
     fail('数组要先按从小到大排好序', 'The array must be sorted from small to large');
