@@ -203,6 +203,7 @@ test('the decision matrix: weighted mean of the factors scored, saved data clean
   ];
   assert.equal(decisionScore(factors, { a: 5, b: 1 }), 4);
   assert.equal(decisionScore(factors, { a: 2, b: 7 }), 2);
+  assert.equal(decisionScore(factors, { a: 4.5, b: null }), 4.5);
   assert.equal(decisionScore(factors, {}), null);
   assert.equal(decisionScore(factors, undefined), null);
 

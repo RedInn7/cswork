@@ -9,7 +9,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 const KEY = 'cswork:offers:v1';
 const dom = new JSDOM('<div id="root"></div>', { url: 'https://cswork.test/career/offers' });
-for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator'])
+for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator', 'location', 'history'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
@@ -53,10 +53,11 @@ test('the server render has two blank offer cards, the vesting choices and no fi
   const doc = new JSDOM(renderToStaticMarkup(createElement(OfferCompare, { zh: true, signedIn: false }))).window.document;
   assert.equal(doc.querySelectorAll('.offer-card').length, 2);
   assert.deepEqual(
-    [...doc.querySelector('.offer-card select').options].map((o) => o.value),
+    [...labelled(doc.querySelector('.offer-card'), '归属方式').options].map((o) => o.value),
     ['even', '5-15-40-40', 'front-40-30-20-10', 'custom'],
   );
-  assert.equal(doc.querySelectorAll('.offer-table thead th').length, 3);
+  assert.equal(doc.querySelectorAll('[aria-labelledby="offer-table-title"] thead th').length, 3);
+  assert.equal(doc.querySelector('.offer-intern-table'), null);
   assert.equal(doc.querySelector('.offer-bar'), null);
   assert.ok(![...doc.querySelectorAll('button')].some((b) => b.textContent === '从投递看板导入'));
   assert.ok(doc.querySelector('.resume-actions small').textContent.includes('不会上传'));

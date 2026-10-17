@@ -236,13 +236,13 @@ export function readDecision(raw: unknown): Decision {
   return { factors, scores, moneyWeight: grade(d.moneyWeight) ?? 3 };
 }
 
-/** Σ(weight × score) ÷ Σweight over the factors scored, or null with none scored. */
-export function decisionScore(factors: readonly Factor[], scores: Readonly<Record<string, number>> | undefined) {
+/** Σ(weight × score) ÷ Σweight over the factors scored 1–5 (money's score may be fractional), or null with none scored. */
+export function decisionScore(factors: readonly Factor[], scores: Readonly<Record<string, number | null>> | undefined) {
   let total = 0,
     weights = 0;
   for (const f of factors) {
-    const s = grade(scores?.[f.id]);
-    if (s === null) continue;
+    const s = scores?.[f.id];
+    if (typeof s !== 'number' || !(s >= 1 && s <= 5)) continue;
     total += f.weight * s;
     weights += f.weight;
   }
