@@ -41,7 +41,7 @@ function load(force = false) {
   const mine = ++latest;
   busy = true;
   // Not api(): its 401 opens the sign-in dialog, and a guest only has nothing to show here.
-  fetch(`/api/oj/study-goal?tz=${new Date().getTimezoneOffset()}`)
+  void fetch(`/api/oj/study-goal?tz=${new Date().getTimezoneOffset()}`)
     .then(async (r) => (r.ok ? ((await r.json()) as StudyGoal | { paused: true }) : r.status === 401 ? null : cached))
     .catch(() => cached)
     .then((next) => {

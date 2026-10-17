@@ -58,8 +58,8 @@ const GOAL = {
 let reply = () => Response.json(GOAL);
 const requests = [];
 globalThis.fetch = async (url, init = {}) => {
-  requests.push({ url: String(url), method: init.method ?? 'GET', body: init.body ?? null });
-  return reply(String(url), init);
+  requests.push({ url, method: init.method ?? 'GET', body: init.body ?? null });
+  return reply(url, init);
 };
 async function render() {
   const root = createRoot(document.getElementById('root'));
