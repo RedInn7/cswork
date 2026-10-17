@@ -64,8 +64,8 @@ export const PLATFORMS: Platform[] = [
       },
       resubmit: {
         k: 'fact',
-        zh: '考试结束前可以回到已交的题，改了再交，次数不限；改完先点 Run Code 再提交，不然算的是上一次编译过的版本。',
-        en: 'Until the test ends you can reopen a submitted question and resubmit as often as you like; run the changed code before submitting, or the last compiled version is what counts.',
+        zh: '考试结束前可以回到已交的题，改了再交，次数不限；算的是最后一次提交，不是得分最高的那次。改完先点 Run Code 再提交，不然算的是上一次编译过的版本。',
+        en: 'Until the test ends you can reopen a submitted question and resubmit as often as you like; the last submission counts, not the best one. Run the changed code before submitting, or the last compiled version is what counts.',
         src: [`${HR}5994519354-modifying-the-code-submissions-in-a-test`],
       },
       editor: {

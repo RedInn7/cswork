@@ -145,8 +145,14 @@ export default async function InterviewPlatformsPage() {
               </li>
               <li>
                 {L(
-                  '可以反复交（HackerRank 不限次数，CodeSignal 每题取最高分）：先交一个能过部分用例的暴力解保底，再优化。HackerRank 改完代码要先 Run 再交。',
-                  'Repeated submissions (unlimited on HackerRank, best score kept on CodeSignal): bank a brute force that passes some cases first, then optimise. On HackerRank, run changed code before you resubmit.',
+                  'CodeSignal 每题取得分最高的那次提交：先交一个能过部分用例的暴力解保底，再优化。',
+                  'CodeSignal keeps your best-scoring submission for each question: bank a brute force that passes some cases first, then optimise.',
+                )}
+              </li>
+              <li>
+                {L(
+                  'HackerRank 可以反复交，但算的是最后一次提交：优化版过的用例比暴力解少，就把暴力解再交回去。改完代码要先 Run 再交。',
+                  'HackerRank lets you resubmit as often as you like, but the last submission counts: if the optimised version passes fewer cases, resubmit the brute force. Run changed code before you resubmit.',
                 )}
               </li>
               <li>

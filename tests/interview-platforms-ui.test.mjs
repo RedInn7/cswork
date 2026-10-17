@@ -77,7 +77,19 @@ test('the page names no employer, in both languages', async () => {
     const text = (await render(locale)).body.textContent;
     // The career guide's list (tests/career-guide-ui.test.mjs).
     for (const name of ['google', 'alphabet', 'meta', 'facebook', 'amazon', 'microsoft', 'apple', 'netflix', 'uber', 'airbnb', 'tiktok', 'bytedance', '谷歌', '字节', '腾讯', '阿里'])
-      assert.ok(!new RegExp(`\\b${name}\\b`, 'i').test(text), `${locale}: ${name}`);
+      assert.ok(!(CJK.test(name) ? text.includes(name) : new RegExp(`\\b${name}\\b`, 'i').test(text)), `${locale}: ${name}`);
+  }
+});
+
+test('banking a brute force is CodeSignal advice only: HackerRank grades the last submission', async () => {
+  const hr = PLATFORMS.find((p) => p.id === 'hackerrank').cells.resubmit;
+  assert.match(hr.zh, /最后一次提交/);
+  assert.match(hr.en, /last submission counts/);
+  for (const locale of ['zh', 'en']) {
+    const banks = [...(await render(locale)).querySelectorAll('li')].filter((li) => /保底|bank a brute force/.test(li.textContent));
+    assert.equal(banks.length, 1, locale);
+    assert.match(banks[0].textContent, /CodeSignal/);
+    assert.doesNotMatch(banks[0].textContent, /HackerRank/);
   }
 });
 
