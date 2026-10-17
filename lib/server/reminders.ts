@@ -10,6 +10,7 @@ import { practiceStats } from '@/lib/practice-stats';
 import type { Person } from './auth';
 import { origin, setting } from './env';
 import { body, HttpError, json, limit, requirePerson } from './http';
+import { localDate, wall } from './local-day';
 import { mailReady, reminderLines, reminderMail, sendMail, type ReminderDigest } from './mail';
 import { notify } from './notify';
 import { aidsByProblem } from './practice-aids';
@@ -49,24 +50,6 @@ type Prefs = {
   token: string;
 };
 
-/** The local date (YYYY-MM-DD) at `at` for a Date#getTimezoneOffset of `tz` minutes. */
-const localDate = (at: number, tz: number) => new Date(at - tz * MINUTE).toISOString().slice(0, 10);
-/**
- * `at` re-anchored so this process's local time reads the learner's wall clock at `at`: dueReviews
- * and practiceStats count local days, and this makes them the learner's whatever the process TZ.
- */
-function wall(at: number, tz: number) {
-  const d = new Date(at - tz * MINUTE);
-  return new Date(
-    d.getUTCFullYear(),
-    d.getUTCMonth(),
-    d.getUTCDate(),
-    d.getUTCHours(),
-    d.getUTCMinutes(),
-    d.getUTCSeconds(),
-    d.getUTCMilliseconds(),
-  ).getTime();
-}
 /** A weekly's or starter's name in the learner's language (contest_rooms keeps the English one). */
 const contestTitle = (c: { id: string; title: string; kind: string }, zh: boolean) => {
   const week = roomWeek(c.id);

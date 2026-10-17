@@ -103,6 +103,14 @@ export function hiringCycle(firstSeenAt: number, title = '') {
   return day.getUTCMonth() >= 6 ? year + 1 : year;
 }
 
+/**
+ * job_openings.auth_flags bits: the description says no visa sponsorship, U.S. citizenship or a
+ * green card, or a security clearance. AUTH_UNKNOWN (-1, not yet judged) has every bit set, so a
+ * filter must be `auth_flags>0 AND auth_flags&?`; an upsert never overwrites a judged (>=0) value with -1.
+ */
+export const AUTH_FLAGS = { noSponsor: 1, citizenOrGc: 2, clearance: 4 } as const;
+export const AUTH_UNKNOWN = -1;
+
 /** A posting link for comparing: no hash, no tracking parameters, no trailing slash; '' when it is no URL. */
 export function jobLinkKey(link: string) {
   try {

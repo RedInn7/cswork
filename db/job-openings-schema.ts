@@ -22,6 +22,8 @@ export const jobOpenings = sqliteTable(
     payMax: integer('pay_max'),
     payCurrency: text('pay_currency').notNull().default(''),
     payUnit: text('pay_unit').notNull().default(''),
+    // lib/job-tags.ts AUTH_FLAGS bits read from the description at sync; AUTH_UNKNOWN (-1) until judged.
+    authFlags: integer('auth_flags').notNull().default(-1),
   },
   (t) => [
     index('job_openings_company').on(t.companySlug, t.lastSeenAt),
@@ -43,4 +45,25 @@ export const jobSeasons = sqliteTable(
     peak: integer('peak').notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.companySlug, t.kind, t.cycle] })],
+);
+
+// The posted pay range of each opening the first time it was seen, kept past job_openings pruning
+// for a later per-company pay view. jobs-auth-flags-block writes a row with INSERT OR IGNORE when it
+// first sees an opening with a pay range and never changes it. role is a roleCategory(title), cycle
+// a hiringCycle. Not pruned by KEEP_FOR; no foreign keys: release.sh only applies additive SQL.
+export const jobPaySamples = sqliteTable(
+  'job_pay_samples',
+  {
+    openingId: text('opening_id').primaryKey(),
+    companySlug: text('company_slug').notNull(),
+    kind: text('kind').notNull(),
+    role: text('role').notNull(),
+    cycle: integer('cycle').notNull(),
+    unit: text('unit').notNull(),
+    currency: text('currency').notNull(),
+    payMin: integer('pay_min').notNull(),
+    payMax: integer('pay_max').notNull(),
+    firstSeenAt: integer('first_seen_at').notNull(),
+  },
+  (t) => [index('job_pay_samples_company').on(t.companySlug, t.cycle)],
 );

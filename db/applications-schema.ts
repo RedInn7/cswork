@@ -23,6 +23,8 @@ export const jobApplications = sqliteTable(
     appliedAt: integer('applied_at'),
     oaDeadline: integer('oa_deadline'),
     interviewAt: integer('interview_at'),
+    /** When the offer expires; only an Offer-stage card's counts (tracker-offer-deadlines). */
+    offerDeadline: integer('offer_deadline'),
     referral: text('referral').notNull().default(''),
     link: text('link').notNull().default(''),
     notes: text('notes').notNull().default(''),

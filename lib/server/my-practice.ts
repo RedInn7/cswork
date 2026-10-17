@@ -24,8 +24,14 @@ const MAX_BATCH = 500;
 // post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
 // mcq:answers holds the concept-drill multiple-choice review state as JSON (app/oa/mcq/practice.tsx).
 // recall:, wb:, checklist:, project: and career: (e.g. checklist:<guide slug>, career:goal) are
-// JSON notes of the wave-8 features.
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career):[\w./-]{1,200}$/);
+// JSON notes of the wave-8 features. Wave 9:
+// - card:<id> is one self-made review card as JSON (recall-custom-cards).
+// - topic:<Line 500 stop slug> is the learner's pattern notes for that stop (notes-structure).
+// - pref:<review|study|note-template> is a learner-written JSON preference; whatever reads it on
+//   the server must zod safeParse it (as parseJobSearch does) and fall back to defaults on failure.
+// - clip:<type>/<slug> and clip:lesson/<course>/<lesson> hold excerpts saved from a selection;
+//   never content:, which is the TryFirst answer.
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career|card|topic|pref|clip):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.

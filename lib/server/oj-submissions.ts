@@ -45,8 +45,21 @@ export type SubmissionRow = {
    * drill-run: a run inside a drill, judged like run but unlisted like drill; its detail reads 'run'.
    * stress, stress-ref: a stress test's learner and reference sides (lib/server/stress.ts),
    * unlisted; stress-ref is a reference run (referenceMode).
+   * sql-peek: a SQL plan or CTE preview on a public sample (sql-workspace-plan); complexity: a
+   * complexity probe (complexity-probe). Both unlisted.
    */
-  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project' | 'drill' | 'drill-run' | 'stress' | 'stress-ref';
+  mode:
+    | 'judge'
+    | 'run'
+    | 'playground'
+    | 'reference'
+    | 'project'
+    | 'drill'
+    | 'drill-run'
+    | 'stress'
+    | 'stress-ref'
+    | 'sql-peek'
+    | 'complexity';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
@@ -789,8 +802,8 @@ export async function submissionDetail(p: Person, id: string) {
     project: s.mode === 'project' ? projectReport(results[0]) : undefined,
   };
 }
-/** Never the learner's own attempts: /playground, reference runs, stress tests, ai-assisted projects, OA drills and their runs. */
-const UNLISTED_MODES = "('playground','reference','stress','stress-ref','project','drill','drill-run')";
+/** Never the learner's own attempts: /playground, reference runs, stress tests, ai-assisted projects, OA drills and their runs, SQL peeks and complexity probes. */
+const UNLISTED_MODES = "('playground','reference','stress','stress-ref','project','drill','drill-run','sql-peek','complexity')";
 export function submissionHistory(
   p: Person,
   problemId: string | null,

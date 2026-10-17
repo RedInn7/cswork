@@ -79,3 +79,12 @@ export async function handleStress(request: Request, p: Person, problemId: strin
     .immediate();
   return json({ ...created, cases: cases.length }, 201);
 }
+
+/**
+ * POST oj/problems/<id>/complexity: through the same checks as handleStress (refuseInContest
+ * first), then limit(p,'complexity-write',6,3600) on top of oj-write.
+ */
+// ponytail: stub, complexity-probe implements it here, beside handleStress.
+export async function handleComplexity(_request: Request, _p: Person, _problemId: string): Promise<Response> {
+  throw new HttpError(404, '判题接口不存在');
+}

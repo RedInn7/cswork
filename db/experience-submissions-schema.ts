@@ -38,6 +38,10 @@ export const experienceSubmissions = sqliteTable(
     oaTestsPct: integer('oa_tests_pct'),
     oaMinutes: integer('oa_minutes'),
     oaNext: text('oa_next'),
+    // Optional preparation: weeks spent and a JSON array of lib/experience.ts PREP_SOURCES keys,
+    // published with the post.
+    prepWeeks: integer('prep_weeks'),
+    prepSources: text('prep_sources').notNull().default('[]'),
     // 1: shown without the author's handle (the author and teachers still know whose it is).
     anonymous: integer('anonymous').notNull().default(0),
     status: text('status').notNull().default('pending'),
@@ -64,4 +68,24 @@ export const experienceFlags = sqliteTable(
     createdAt: integer('created_at').notNull(),
   },
   (t) => [primaryKey({ columns: [t.submissionId, t.userId] })],
+);
+
+/**
+ * Per-question metadata of a submission (experience-question-links); the question text stays in
+ * experience_submissions.questions at the same idx. round is one of the post's rounds or ''; problem_id
+ * a linked site problem or ''; similar 1 when the asked question only resembled it (not counted as asked).
+ */
+export const experienceQuestions = sqliteTable(
+  'experience_questions',
+  {
+    submissionId: text('submission_id').notNull(),
+    idx: integer('idx').notNull(),
+    round: text('round').notNull().default(''),
+    problemId: text('problem_id').notNull().default(''),
+    similar: integer('similar').notNull().default(0),
+  },
+  (t) => [
+    primaryKey({ columns: [t.submissionId, t.idx] }),
+    index('experience_questions_problem').on(t.problemId),
+  ],
 );
