@@ -4,14 +4,13 @@
 Tell it how to start your store, then run:
     CMD="python3 kv.py" python3 accept_test.py
 It runs `$CMD --dir <folder>` with commands on standard input, one per line, reading one reply
-line per command, and kills it with SIGKILL to check what survives. Standard library only. Exit
-code 0 means every check passed.
+line per command, and kills it hard (SIGKILL, or TerminateProcess on Windows) to check what
+survives. Standard library only. Exit code 0 means every check passed.
 """
 import os
 import random
 import shlex
 import shutil
-import signal
 import subprocess
 import sys
 import tempfile
@@ -40,7 +39,7 @@ class Store:
         assert self.proc.wait(timeout=30) == 0, 'exit code must be 0 at end of input'
 
     def kill(self):
-        self.proc.send_signal(signal.SIGKILL)
+        self.proc.kill()  # SIGKILL on POSIX, TerminateProcess on Windows
         self.proc.wait()
 
 

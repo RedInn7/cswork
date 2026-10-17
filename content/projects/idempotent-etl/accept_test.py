@@ -13,7 +13,6 @@ import random
 import re
 import shlex
 import shutil
-import signal
 import sqlite3
 import subprocess
 import sys
@@ -179,18 +178,31 @@ def bad_header_skips_the_file():
 
 @check
 def crash_leaves_old_or_new_state():
-    """killed halfway through a big file, the database holds the old state or the new one, never a mix"""
+    """killed partway through a big file, the database holds the old state or the new one, never a mix"""
     before = dump()
     write('50-big.csv', [order_row(1000 + i % 60000, day=7, second=i % 86400, status='paid') for i in range(150_000)])
     after = model()
-    proc = subprocess.Popen(CMD + ['--input', str(INPUT), '--db', str(DB)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    time.sleep(0.3)
-    if proc.poll() is None:
-        proc.send_signal(signal.SIGKILL)
-    proc.wait()
-    state = dump()
-    assert state == before or state == after, 'a partial run is visible'
-    run()
+    saved = WORK / 'before.sqlite'
+    shutil.copy(DB, saved)
+    start = time.monotonic()
+    run()  # one uninterrupted run, timed, so each kill below lands inside a run
+    full = time.monotonic() - start
+    same(dump(), after)
+    killed = 0
+    for share in (0.9, 0.6, 0.3):  # each from the old state again; the last kill is the likeliest to land
+        for leftover in WORK.glob(DB.name + '-*'):  # a -wal, -shm or -journal of the previous run
+            leftover.unlink()
+        shutil.copy(saved, DB)
+        proc = subprocess.Popen(CMD + ['--input', str(INPUT), '--db', str(DB)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(full * share)
+        proc.kill()  # SIGKILL on POSIX, TerminateProcess on Windows; nothing if it already exited
+        if proc.wait() == 0:
+            continue  # it finished before the kill
+        killed += 1
+        state = dump()
+        assert state == before or state == after, f'a partial run is visible after a kill at {share:.0%} of a run'
+    assert killed, f'every run finished before the kill, so nothing was interrupted (a full run took {full:.2f} s)'
+    run()  # and the next run after a kill ends as an uninterrupted one
     same(dump(), after)
 
 
