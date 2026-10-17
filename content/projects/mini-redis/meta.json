@@ -1,0 +1,27 @@
+{
+  "slug": "mini-redis",
+  "titleZh": "Mini Redis（RESP 协议子集）",
+  "titleEn": "Mini Redis (a RESP subset)",
+  "summaryZh": "能被 redis-cli 连上的服务器：RESP 解析、二进制安全、管道和半包、SET 的 NX/XX/EX/PX、TTL 和 INCR。",
+  "summaryEn": "A server redis-cli can talk to: RESP parsing, binary-safe values, pipelining and split frames, SET with NX/XX/EX/PX, TTL and INCR.",
+  "level": "advanced",
+  "roles": ["backend", "infra"],
+  "hours": 24,
+  "run": "tcp",
+  "milestones": [
+    { "zh": "TCP 服务器和 RESP 解析：按长度读 bulk string，处理半包和管道", "en": "The TCP server and RESP parser: length-prefixed bulk strings, split frames and pipelining" },
+    { "zh": "SET/GET/DEL/EXISTS/INCR 和错误回复，用 redis-cli 手动试", "en": "SET/GET/DEL/EXISTS/INCR and error replies, tried by hand with redis-cli" },
+    { "zh": "过期：EX/PX/EXPIRE/TTL，跑通验收脚本", "en": "Expiry with EX/PX/EXPIRE/TTL, passing the acceptance script" },
+    { "zh": "并发模型（多线程或事件循环）、redis-benchmark 压测和 README", "en": "The concurrency model (threads or an event loop), a redis-benchmark run and the README" }
+  ],
+  "bulletZh": "用 {语言} 实现兼容 RESP2 的 Redis 子集服务器（字符串、过期、管道），可直接用 redis-cli 连接；基于 {事件循环/线程池}，redis-benchmark 下达到真 Redis 的 {X}%。",
+  "bulletEn": "Built a RESP2-compatible Redis subset server in {language} (strings, expiry, pipelining) that redis-cli connects to directly; {event loop / thread pool} design reaching {X}% of real Redis in redis-benchmark.",
+  "deepDive": [
+    { "zh": "TCP 是字节流，你怎么知道一条命令收齐了？半包和粘包分别怎么处理？", "en": "TCP is a byte stream. How do you know a command is complete, and how do you handle split and coalesced frames?" },
+    { "zh": "Redis 为什么是单线程还能这么快？你的服务器用的是什么并发模型？", "en": "Why is Redis fast while single-threaded, and what concurrency model does your server use?" },
+    { "zh": "过期 key 什么时候真正删除？只在访问时删会有什么问题？", "en": "When are expired keys actually deleted, and what goes wrong if you only delete on access?" },
+    { "zh": "管道（pipelining）为什么能提升吞吐？服务器需要做什么特别的事吗？", "en": "Why does pipelining raise throughput, and does the server need to do anything special?" },
+    { "zh": "INCR 在多客户端下怎么保证原子？如果要实现 MULTI/EXEC 呢？", "en": "How is INCR atomic across clients, and what would MULTI/EXEC take?" },
+    { "zh": "要持久化的话，AOF 和 RDB 各有什么取舍？", "en": "For persistence, what are the trade-offs between AOF and RDB?" }
+  ]
+}
