@@ -24,6 +24,7 @@ import {
 } from '../lib/mock-interview';
 import { mockPool, mockSet } from '../lib/server/mock-interview';
 import { extraPool, extraQuestion } from '../lib/server/interview-extra';
+import { openerFor, writesCode } from '../lib/mock-ai-interview';
 import { keyPoints } from '../lib/recall';
 import mcqBank from '../lib/content/oa-mcq.json';
 import mlCoding from '../lib/content/ml-coding.json';
@@ -331,6 +332,9 @@ void test('the ML coding round asks ML Coding problems with their judge problem,
   assert.equal(q.kind, 'mlcode');
   assert.match(q.question, /numpy/);
   assert.match(q.questionZh, /numpy/);
+  // The AI interviewer gets the code box, and the coding opener, as in any coding round.
+  assert.ok(writesCode('mlcode'));
+  assert.deepEqual(openerFor('mlcode'), openerFor('coding'));
   // A peer or solo run can draw it: not AI-only.
   const db = new Database(':memory:');
   db.exec(`CREATE TABLE items(id TEXT PRIMARY KEY, type TEXT, slug TEXT, title TEXT, company_slug TEXT, company_name TEXT,
