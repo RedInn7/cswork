@@ -412,8 +412,8 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
                 {shapesCut !== null && index >= shapesCut && (
                   <p className="pydbg-empty">
                     {t(
-                      `从第 ${shapesCut + 1} 步起不再画图（快照太大或太耗时），之后只有下面的文本变量。`,
-                      `No pictures from step ${shapesCut + 1} on (the snapshots got too big or too slow): later steps show only the variables below.`,
+                      `从第 ${shapesCut + 1} 步起不再画图（快照超出上限，或读取某个对象时出错），之后只有下面的文本变量。`,
+                      `No pictures from step ${shapesCut + 1} on (snapshot limit reached, or an object failed to read): later steps show only the variables below.`,
                     )}
                   </p>
                 )}
@@ -615,11 +615,21 @@ function Picture({ view: { name, shape, changed }, vars }: { view: StepView; var
   } else {
     const graph = nodeGraph(shape);
     body = (
-      <div className="pydbg-graph">
-        <div style={{ width: graph.width * SCALE }}>
-          <DemoGraphView graph={graph} />
+      <>
+        <div className="pydbg-graph">
+          <div style={{ width: graph.width * SCALE }}>
+            <DemoGraphView graph={graph} />
+          </div>
         </div>
-      </div>
+        {shape.more && (
+          <p className="pydbg-empty">
+            {t(
+              `只画了前 ${shape.n.length} 个节点，指向其余节点的链接没有画出（看起来像 None）`,
+              `First ${shape.n.length} nodes only: links to the rest are not drawn (they look like None)`,
+            )}
+          </p>
+        )}
+      </>
     );
   }
   return (

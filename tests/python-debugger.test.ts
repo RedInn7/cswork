@@ -477,6 +477,18 @@ test('pictures: a cyclic list ends and draws its edge back; a tree is drawn whol
   assert.deepEqual([...drawn.nodes].sort((p, q) => p.x - q.x).map((n) => n.label), ['9', '3', '15', '20', '7']);
 });
 
+test('pictures: a list past the 255-node cap says the picture is cut; a short one does not', () => {
+  const code = ['class Solution:', '    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:', '        return head'].join('\n');
+  const long = trace({ mode: 'leetcode', entry: 'middleNode', stdin: JSON.stringify(Array.from({ length: 300 }, (_, i) => i)), code });
+  const at = (t: Trace) => t.steps.findIndex((s) => s.vars.some(([name]) => name === 'head'));
+  const cut = view(long, at(long), '#nodes') as NodesShape;
+  assert.equal(cut.n.length, 255);
+  assert.deepEqual(cut.n[254], ['254', -1, -1, -1]);
+  assert.equal(cut.more, true);
+  const short = trace({ mode: 'leetcode', entry: 'middleNode', stdin: '[1,2,3]', code });
+  assert.equal((view(short, at(short), '#nodes') as NodesShape).more, undefined);
+});
+
 test('pictures: a 2-D dp table highlights exactly the cell the last line wrote; over 40 columns is not drawn', () => {
   const code = ['n = 3', 'dp = [[0] * n for _ in range(n)]', 'for i in range(n):', '    for j in range(n):', '        dp[i][j] = i * n + j + 1', 'end = 0'].join('\n');
   const result = trace({ code });
@@ -535,6 +547,7 @@ test('pictures: snapshots are stored once, and stop for good past their size or 
 
 test('parseShape and parseTrace refuse snapshots that point outside themselves', () => {
   assert.deepEqual(parseShape('{"k":"nodes","n":[["1",-1,-1,-1]],"p":[["a",0]]}'), { k: 'nodes', n: [['1', -1, -1, -1]], p: [['a', 0]] });
+  assert.deepEqual(parseShape('{"k":"nodes","n":[["1",-1,-1,-1]],"p":[],"more":1}'), { k: 'nodes', n: [['1', -1, -1, -1]], p: [], more: true });
   assert.equal(parseShape('{"k":"nodes","n":[["1",1,-1,-1]],"p":[]}'), null);
   assert.equal(parseShape('{"k":"nodes","n":[["1",-1,-1,-1]],"p":[["a",-1]]}'), null);
   assert.equal(parseShape('{"k":"seq","v":["1",2],"n":2}'), null);

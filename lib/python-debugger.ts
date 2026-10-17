@@ -375,7 +375,8 @@ def _node(value):
 def _graph(kept, roots):
     """The nodes the frame's variables (and the harness's input roots) reach, breadth first, at
     most 255, as JSON: [val, next, left, right] per node and [variable, node] per pointer, by
-    index (-1 for none). A cycle is just an edge back. None when no variable holds a node.
+    index (-1 for none, or for a node past the cap: then 'more' is 1). A cycle is just an edge
+    back. None when no variable holds a node.
     ponytail: a doubly linked list's prev is not drawn."""
     named = [(name, value) for name, value in kept if _node(value)]
     if not named:
@@ -394,8 +395,11 @@ def _graph(kept, roots):
     for item in order:
         fields = item.__dict__
         rows.append([_cut(_show(fields['val']), 12) if 'val' in fields else ''] + [at(fields.get(name)) for name in _LINKS])
-    return _json.dumps({'k': 'nodes', 'n': rows, 'p': [[name, at(value)] for name, value in named if id(value) in seen]},
-                       ensure_ascii=False, separators=(',', ':'))
+    data = {'k': 'nodes', 'n': rows, 'p': [[name, at(value)] for name, value in named if id(value) in seen]}
+    # Past the cap a link to an undrawn node reads -1 like None: 'more' says the picture is cut.
+    if any(id(item) not in seen and _node(item) for item in queue[head:]):
+        data['more'] = 1
+    return _json.dumps(data, ensure_ascii=False, separators=(',', ':'))
 
 
 class _Out(_io.StringIO):

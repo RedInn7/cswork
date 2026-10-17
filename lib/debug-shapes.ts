@@ -13,8 +13,11 @@ export type SeqShape = { k: 'seq'; v: string[]; n: number };
 export type GridShape = { k: 'grid'; v: string[][] };
 /** A dict's first 30 entries as [key, value]; n is its size. */
 export type DictShape = { k: 'dict'; v: [string, string][]; n: number };
-/** Linked-list or tree nodes as [val, next, left, right] (indexes, -1 for none) and the variables pointing at them. */
-export type NodesShape = { k: 'nodes'; n: [string, number, number, number][]; p: [string, number][] };
+/**
+ * Linked-list or tree nodes as [val, next, left, right] (indexes, -1 for none) and the variables
+ * pointing at them; more: nodes past the 255 cap were left out (links to them read -1 too).
+ */
+export type NodesShape = { k: 'nodes'; n: [string, number, number, number][]; p: [string, number][]; more?: true };
 export type Shape = SeqShape | GridShape | DictShape | NodesShape;
 
 const strings = (value: unknown): value is string[] =>
@@ -30,7 +33,7 @@ export function parseShape(json: string): Shape | null {
     return null;
   }
   if (!raw || typeof raw !== 'object') return null;
-  const { k, v, n, p } = raw as Record<string, unknown>;
+  const { k, v, n, p, more } = raw as Record<string, unknown>;
   const size = Number.isInteger(n) ? (n as number) : -1;
   if (k === 'seq') return strings(v) && size >= v.length ? { k: 'seq', v, n: size } : null;
   if (k === 'grid') return Array.isArray(v) && v.length > 0 && v.every(strings) ? { k: 'grid', v } : null;
@@ -42,7 +45,7 @@ export function parseShape(json: string): Shape | null {
     (node) => Array.isArray(node) && node.length === 4 && typeof node[0] === 'string' && node.slice(1).every((i) => index(i, -1)),
   );
   const pointers = p.every((item) => Array.isArray(item) && item.length === 2 && typeof item[0] === 'string' && index(item[1], 0));
-  return nodes && pointers ? { k: 'nodes', n, p } : null;
+  return nodes && pointers ? { k: 'nodes', n, p, ...(more === 1 ? { more: true as const } : {}) } : null;
 }
 
 const parsed = new WeakMap<readonly string[], (Shape | null)[]>();
