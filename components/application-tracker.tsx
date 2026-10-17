@@ -7,6 +7,7 @@ import {
   countdown,
   DAY,
   followUpDue,
+  followUpOpen,
   funnel,
   httpsLink,
   JD_MAX,
@@ -323,7 +324,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   // Follow-ups due by the end of today, overdue ones first.
   const day = new Date(now),
     tonight = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime();
-  const today = items.filter((a) => a.nextAt !== null && a.nextAt < tonight).sort((x, y) => x.nextAt! - y.nextAt!);
+  const today = items.filter((a) => followUpOpen(a) && a.nextAt! < tonight).sort((x, y) => x.nextAt! - y.nextAt!);
   return (
     <div className="tracker">
       <dl className="tracker-summary">

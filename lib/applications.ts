@@ -98,7 +98,9 @@ export const STALE_DAYS = 21;
 const FOLLOW_UP_DAYS = 7;
 const WAITING: readonly Stage[] = ['applied', 'oa', 'phone', 'onsite'];
 /** Closed for good: no interview reminders, nothing to chase. */
-const ENDED: readonly Stage[] = ['rejected', 'withdrawn', 'ghosted'];
+export const ENDED: readonly Stage[] = ['rejected', 'withdrawn', 'ghosted'];
+/** A follow-up is set and the card is still open (an ended card keeps its date but has nothing to chase). */
+export const followUpOpen = (a: Application) => a.nextAt !== null && !ENDED.includes(a.stage);
 
 /**
  * When the card reached its stage: the last logged move. An applied card counts from its applied
@@ -270,7 +272,7 @@ export function applicationsCsv(items: readonly Application[], english: boolean)
 
 /** What a calendar export would hold: open OA deadlines, interviews and follow-ups still ahead. */
 export const calendarItems = (items: readonly Application[], now: number) =>
-  items.filter((a) => (oaOpen(a) && a.oaDeadline! > now) || interviewAhead(a, now) || (a.nextAt ?? 0) > now);
+  items.filter((a) => (oaOpen(a) && a.oaDeadline! > now) || interviewAhead(a, now) || (followUpOpen(a) && a.nextAt! > now));
 
 /**
  * The calendar export: each open OA deadline still to come (reminded a day and two hours before),
@@ -301,7 +303,7 @@ export function applicationsIcs(items: readonly Application[], site: string, eng
       out.push(
         event(`cswork-application-${a.id}-interview@cswork`, a.interviewAt!, english ? `Interview: ${what}` : `面试：${what}`, a, ['-PT1H'], ['DURATION:PT1H']),
       );
-    if ((a.nextAt ?? 0) > now) {
+    if (followUpOpen(a) && a.nextAt! > now) {
       const step = a.nextAction ? ` · ${a.nextAction}` : '';
       out.push(event(`cswork-application-${a.id}-next@cswork`, a.nextAt!, english ? `Follow up: ${what}${step}` : `跟进：${what}${step}`, a, ['PT0S']));
     }

@@ -302,7 +302,7 @@ void test('the calendar adds interviews (an hour before) and follow-ups, each wi
     [
       row({ id: 'x', company: 'Acme', stage: 'oa', oaDeadline: Date.UTC(2099, 0, 2), interviewAt: Date.UTC(2099, 0, 9, 17), nextAt: Date.UTC(2099, 0, 5, 9), nextAction: 'Thank-you note' }),
       row({ id: 'r', stage: 'rejected', interviewAt: Date.UTC(2099, 0, 9) }),
-      row({ id: 'g', stage: 'ghosted', interviewAt: Date.UTC(2099, 0, 9), nextAt: Date.UTC(2097, 0, 1) }),
+      row({ id: 'g', stage: 'ghosted', interviewAt: Date.UTC(2099, 0, 9), nextAt: Date.UTC(2099, 0, 6) }),
     ],
     'https://cswork.test',
     true,

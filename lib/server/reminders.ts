@@ -3,7 +3,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { roomWeek, weeklyTitle } from '@/lib/contest';
-import { OA_OPEN } from '@/lib/applications';
+import { ENDED, OA_OPEN } from '@/lib/applications';
 import { englishMessage } from '@/lib/messages-en';
 import { dueReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
@@ -76,7 +76,7 @@ const fresh = (id: string) => !sqlite().prepare('SELECT 1 FROM notifications WHE
 /** "MM-DD HH:mm" at `at` in the learner's time. */
 const shortStamp = (at: number, tz: number) => new Date(at - tz * MINUTE).toISOString().slice(5, 16).replace('T', ' ');
 /** Stages an application is over at: no interview reminder, no follow-up due. */
-const CLOSED = "('rejected','withdrawn','ghosted')";
+const CLOSED = `(${ENDED.map((s) => `'${s}'`).join(',')})`;
 const APPLICATION_TITLES = {
   'app-oa24': 'OA 将在 24 小时内截止',
   'app-oa2': 'OA 将在 2 小时内截止',
