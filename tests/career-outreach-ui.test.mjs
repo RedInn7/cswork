@@ -167,7 +167,10 @@ test('templates signed out: typed by hand, nothing fetched', async () => {
 });
 
 test("templates from the tracker's offer links: the expedite request and the extension take the offer's deadline", async () => {
-  applications.push({ id: 'off', company: 'Globex', role: 'SWE', stage: 'offer', offerDeadline: new Date(2099, 3, 1, 17).getTime() });
+  applications.push(
+    { id: 'off', company: 'Globex', role: 'SWE', stage: 'offer', offerDeadline: new Date(2099, 3, 1, 17).getTime() },
+    { id: 'gone', company: 'Hooli', role: '', stage: 'rejected', offerDeadline: new Date(2098, 0, 1, 17).getTime() },
+  );
   const open = async (query) => {
     dom.reconfigure({ url: `https://cswork.test/career/templates?${query}` });
     await act(async () => root.render(createElement(OutreachTemplates, { zh: false, signedIn: true })));
@@ -180,8 +183,11 @@ test("templates from the tracker's offer links: the expedite request and the ext
   await act(async () => root.render(createElement('div')));
   await open('template=extension&application=off');
   assert.deepEqual([field('Company').value, field('Current deadline').value], ['Globex', '2099-04-01']);
+  // A card that left the Offer stage keeps its date, but the date no longer counts.
+  await setValue(field('Fill from a card or contact'), 'a:gone', 'change');
+  assert.deepEqual([field('Company').value, field('Current deadline').value], ['Hooli', '2099-04-01']);
   await act(async () => root.render(createElement('div')));
-  applications.pop();
+  applications.splice(1);
   dom.reconfigure({ url: 'https://cswork.test/career/templates?contact=sam' });
 });
 

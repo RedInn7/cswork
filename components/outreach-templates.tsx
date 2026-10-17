@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { localStamp, type Application } from '@/lib/applications';
+import { localStamp, offerOpen, type Application } from '@/lib/applications';
 import {
   fillTemplate,
   OUTREACH_TEMPLATES,
@@ -32,7 +32,8 @@ function valuesFrom(source: string, applications: Application[], contacts: Conta
     company: contact?.company || card?.company || '',
     role: card?.role ?? '',
     interviewDate: localStamp(card?.interviewAt ?? null, false),
-    ...(card?.offerDeadline != null && { deadline: localStamp(card.offerDeadline, false) }),
+    // A date kept after the card left the Offer stage is stale (lib/applications.ts offerOpen).
+    ...(card && offerOpen(card) && { deadline: localStamp(card.offerDeadline, false) }),
     ...(offer && { otherCompany: offer.company, deadline: localStamp(offer.offerDeadline, false) }),
   };
 }
