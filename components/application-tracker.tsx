@@ -643,7 +643,8 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                     const quiet = stale(a, now) ? Math.floor((now - stageSince(a)) / DAY) : 0;
                     const interviewed = a.interviewAt !== null && a.interviewAt < now;
                     const rounds = retros.filter((r) => r.card === a.id);
-                    const retroDue = interviewed && a.stage !== 'withdrawn' && !rounds.some((r) => r.at >= a.interviewAt!);
+                    // A retro's time is to the minute (datetime-local), the interview's may not be.
+                    const retroDue = interviewed && a.stage !== 'withdrawn' && !rounds.some((r) => r.at + 60000 > a.interviewAt!);
                     const retroable = rounds.length > 0 || INTERVIEWED.includes(a.stage) || a.stageLog.some(([s]) => INTERVIEWED.includes(s));
                     return (
                       <li key={a.id} className="tracker-card" data-id={a.id} data-due={soon ? 'soon' : undefined}>
