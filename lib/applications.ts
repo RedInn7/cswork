@@ -329,7 +329,7 @@ export function applicationsIcs(items: readonly Application[], site: string, eng
 }
 
 /** Stages still in process: what an offer deadline may come before. */
-export const IN_PROCESS: readonly Stage[] = ['oa', 'phone', 'onsite'];
+const IN_PROCESS: readonly Stage[] = ['oa', 'phone', 'onsite'];
 /**
  * With an offer deadline ahead, the processes that may not finish by the earliest one: each card at
  * OA, phone or onsite with when an offer would likely come (eta), and whether that is after the
