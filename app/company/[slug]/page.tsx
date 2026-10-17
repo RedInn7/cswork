@@ -7,7 +7,7 @@ import lcMapFile from '@/lib/content/company-lc-map.json';
 import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
-import { CompanyStatsCard, MemberStatsCard } from '@/components/company-stats-card';
+import { CompanyStatsCard, MemberStatsCard, OaOutcomesCard } from '@/components/company-stats-card';
 import { CompanyFollowButton } from '@/components/company-follow-button';
 import { companyHub } from '@/lib/server/company-hub';
 import { rankInWindow, sourceDates } from '@/lib/server/company-insights';
@@ -19,6 +19,7 @@ import {
   memberExperiencePath,
   memberExperienceStats,
   memberIdOf,
+  memberOaOutcomes,
 } from '@/lib/server/experience-submissions';
 import { library } from '@/lib/server/content-library';
 import { requestLocale } from '@/lib/server/locale';
@@ -54,12 +55,15 @@ const load = cache(async (slug: string) => {
     : `Prepare for ${name}: ${parts.join(', ')}${hub.leetcode.length ? ', and the LeetCode problems candidates report most' : ''}. Code and submit online on CSWork, or take a timed mock.`;
   // Approved member posts lead the experiences, marked as such (lib/server/experience-submissions.ts).
   const members = companyMemberExperiences(hub.company.slug, 3);
+  const memberStats = memberExperienceStats(hub.company.slug);
   return {
     ...hub,
     experiences: [...members.items, ...hub.experiences].slice(0, 6),
     experienceTotal: hub.company.experiences + members.total,
     stats: companyStats(library(), hub.company.library),
-    memberStats: memberExperienceStats(hub.company.slug),
+    memberStats,
+    // Few companies reach the OA groups' sample size on their own yet: all of them together instead.
+    oaSite: memberStats?.oa ? null : memberOaOutcomes(),
     facets: companyFacets(library(), hub.company.slug),
     ready,
     locale,
@@ -92,7 +96,7 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
 
 export default async function CompanyPage({ params, searchParams }: Props) {
   const period = reportWindow((await searchParams).window);
-  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, memberStats, facets, ready, locale, lead } = await load(
+  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, memberStats, oaSite, facets, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
@@ -164,6 +168,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
       )}
       {stats && <CompanyStatsCard stats={stats} locale={locale} />}
       {memberStats && <MemberStatsCard stats={memberStats} locale={locale} />}
+      {oaSite && <OaOutcomesCard oa={oaSite} locale={locale} />}
       {!!facets.length && (
         <nav className="company-hub-facets" aria-labelledby="company-facets">
           <h2 id="company-facets">{zh ? '按岗位和题目类别' : 'By role and question category'}</h2>
