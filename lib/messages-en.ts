@@ -231,6 +231,8 @@ const EN: Record<string, string> = {
   访问令牌不存在: 'Access token not found',
   '最多保留 10 个访问令牌，请先吊销不用的': 'You can keep at most 10 access tokens. Revoke one you no longer use first',
   笔记或标记已达上限: "You've reached the limit for notes or marks",
+  // Resume project repo links (lib/server/my-practice.ts, project:<slug> notes)
+  '仓库链接只支持 GitHub、GitLab 或 Codeberg 的 https 地址': 'Repository links must be https addresses on GitHub, GitLab or Codeberg',
   // Points (lib/server/points.ts) and the bank's solved-date filter
   积分不足: 'Not enough points',
   '本月的补签卡已经买满 3 张': "You've bought this month's 3 streak freezes",
