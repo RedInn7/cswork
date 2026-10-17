@@ -435,9 +435,18 @@ test('my lists: the owner previews a paste, adds it in bulk and reorders by butt
       detail = { ...detail, items: [...detail.items, { problemId: 'lc-3', addedAt: 3 }] };
       return Response.json({ added: 1, duplicate: 1, unknown: ['what?'], overflow: 0, list: detail });
     }
-    if (path === `oj/lists/${detail.id}/reorder`) return Response.json(detail);
+    if (path === `oj/lists/${detail.id}/reorder`) {
+      await gate;
+      detail = { ...detail, items: body.problemIds.map((id) => detail.items.find((i) => i.problemId === id)) };
+      return Response.json(detail);
+    }
+    if (path === `oj/lists/${detail.id}/items`) {
+      detail = { ...detail, items: detail.items.filter((i) => i.problemId !== body.problemId) };
+      return Response.json(detail);
+    }
     throw new Error(`unexpected ${path}`);
   };
+  let gate = null;
   const boot = {
     person: { id: 'u1' },
     problems: [
@@ -504,6 +513,25 @@ test('my lists: the owner previews a paste, adds it in bulk and reorders by butt
     assert.deepEqual(posts.at(-1), [`oj/lists/${detail.id}/reorder`, { problemIds: ['lc-1', 'oa-amazon-1', 'lc-3'] }]);
     assert.deepEqual(order(), ['lc-1', 'oa-amazon-1', 'lc-3']);
     assert.equal(rows()[0].dataset.drop, undefined);
+
+    // A remove right after a move waits for the move to save; moves wait for the remove.
+    let release;
+    gate = new Promise((r) => (release = r));
+    const before = posts.length;
+    await act(async () => document.querySelector('button[aria-label="Move Two Sum down"]').click());
+    await act(async () => document.querySelector('button[aria-label="Remove Longest Substring from the list"]').click());
+    await wait();
+    assert.deepEqual(posts.slice(before).map(([path]) => path), [`oj/lists/${detail.id}/reorder`], 'the remove waits');
+    assert.ok(document.querySelector('button[aria-label="Move Warehouse down"]').disabled, 'no moves while a write is on its way');
+    assert.equal(rows()[0].getAttribute('draggable'), 'false');
+    await act(async () => release());
+    await wait();
+    assert.deepEqual(posts.slice(before), [
+      [`oj/lists/${detail.id}/reorder`, { problemIds: ['oa-amazon-1', 'lc-1', 'lc-3'] }],
+      [`oj/lists/${detail.id}/items`, { problemId: 'lc-3', on: false }],
+    ]);
+    assert.deepEqual(order(), ['oa-amazon-1', 'lc-1'], 'the move survives the remove');
+    assert.equal(document.querySelector('button[aria-label="Move Warehouse down"]').disabled, false);
     await act(async () => root.unmount());
 
     // Someone else's list: no paste box, no order controls, nothing draggable.

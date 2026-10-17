@@ -286,20 +286,31 @@ function ListDetail({
     refocus.current = '';
   });
   // Button moves in quick succession save once, after a pause; leaving the list saves at once.
+  // Saves queue one behind another, so the server gets them in the order they were made.
   // ponytail: a tab closed inside the pause loses that last move.
   const unsaved = useRef<{ list: string; order: string[] } | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const saving = useRef<Promise<void>>(Promise.resolve());
   function saveOrder() {
     clearTimeout(saveTimer.current);
     const order = unsaved.current;
     unsaved.current = null;
-    if (!order) return;
-    api(`oj/lists/${order.list}/reorder`, { problemIds: order.order }).catch((e: Error) => {
-      setError(e.message);
-      void api<Detail>(`oj/lists/${order.list}`).then(setList, () => {});
-    });
+    if (order)
+      saving.current = saving.current.then(() =>
+        api(`oj/lists/${order.list}/reorder`, { problemIds: order.order }).then(
+          () => {},
+          (e: Error) => {
+            // Moves made since build on the refused order: drop them and show the server's.
+            clearTimeout(saveTimer.current);
+            unsaved.current = null;
+            setError(e.message);
+            return api<Detail>(`oj/lists/${order.list}`).then(setList, () => {});
+          },
+        ),
+      );
+    return saving.current;
   }
-  useEffect(() => saveOrder, []);
+  useEffect(() => () => void saveOrder(), []);
   useEffect(() => {
     let live = true;
     api<Detail>(`oj/lists/${encodeURIComponent(id)}`).then(
@@ -315,14 +326,15 @@ function ListDetail({
       live = false;
     };
   }, [id]);
-  async function run<R>(task: () => Promise<R>) {
-    saveOrder(); // A pending move goes first, or the reply would undo it.
+  /** One list write at a time; moves wait too, since the reply replaces the list. */
+  async function run<R>(task: () => Promise<R>, onError: (message: string) => void = setError): Promise<R | null> {
     setBusy(true);
     setError('');
     try {
+      await saveOrder(); // A pending move reaches the server first, or the reply would undo it.
       return await task();
     } catch (e) {
-      setError((e as Error).message);
+      onError((e as Error).message);
       return null;
     } finally {
       setBusy(false);
@@ -351,7 +363,7 @@ function ListDetail({
   };
   /** Moves a row and saves the whole order; the screen shows it at once and reloads if the save fails. */
   function reorder(from: number, to: number, button?: 'up' | 'down') {
-    if (!list || from === to || to < 0 || to >= list.items.length) return;
+    if (!list || busy || from === to || to < 0 || to >= list.items.length) return;
     const items = [...list.items];
     const [item] = items.splice(from, 1);
     items.splice(to, 0, item);
@@ -530,7 +542,7 @@ function ListDetail({
         </p>
       )}
       {list.mine && (
-        <BulkAdd id={list.id} empty={!ids.length} beforeAdd={saveOrder} onAdded={setList} t={t} />
+        <BulkAdd id={list.id} empty={!ids.length} busy={busy} run={run} onAdded={setList} t={t} />
       )}
       {list.mine && ids.length > 1 && (
         <p className="cloud-order-hint">
@@ -556,9 +568,9 @@ function ListDetail({
                 data-edit={list.mine || undefined}
                 data-dragging={drag === index || undefined}
                 data-drop={drag !== null && over === index && drag !== index ? (drag < index ? 'after' : 'before') : undefined}
-                draggable={list.mine}
+                draggable={list.mine && !busy}
                 onDragStart={(e) => {
-                  if (!list.mine) return;
+                  if (!list.mine || busy) return;
                   setDrag(index);
                   e.dataTransfer.effectAllowed = 'move';
                   e.dataTransfer.setData('text/plain', pid);
@@ -618,7 +630,7 @@ function ListDetail({
                     <button
                       type="button"
                       id={`list-move-up-${pid}`}
-                      disabled={index === 0}
+                      disabled={busy || index === 0}
                       aria-label={t(`上移 ${name}`, `Move ${name} up`)}
                       onClick={() => reorder(index, index - 1, 'up')}
                     >
@@ -627,7 +639,7 @@ function ListDetail({
                     <button
                       type="button"
                       id={`list-move-down-${pid}`}
-                      disabled={index === ids.length - 1}
+                      disabled={busy || index === ids.length - 1}
                       aria-label={t(`下移 ${name}`, `Move ${name} down`)}
                       onClick={() => reorder(index, index + 1, 'down')}
                     >
@@ -704,20 +716,23 @@ type BulkResult = { added: number; duplicate: number; unknown: string[]; overflo
 function BulkAdd({
   id,
   empty,
-  beforeAdd,
+  busy,
+  run,
   onAdded,
   t,
 }: {
   id: string;
   empty: boolean;
-  beforeAdd: () => void;
+  /** Another list write is on its way: one at a time. */
+  busy: boolean;
+  run: <R>(task: () => Promise<R>, onError: (message: string) => void) => Promise<R | null>;
   onAdded: (list: Detail) => void;
   t: T;
 }) {
   // Open for an empty list; kept as first rendered so adding problems does not fold it away.
   const [open] = useState(empty);
   const [text, setText] = useState('');
-  const [busy, setBusy] = useState(false);
+  const [adding, setAdding] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<BulkResult | null>(null);
   const parsed = parseListImport(text, LIST_ITEMS + 1);
@@ -725,21 +740,19 @@ function BulkAdd({
   const count = (kind: ImportKind) => lines.filter((l) => l.kind === kind).length;
   const unknown = lines.filter((l) => l.kind === 'unknown');
   async function submit() {
-    beforeAdd();
-    setBusy(true);
+    setAdding(true);
     setError('');
     setResult(null);
-    try {
-      const r = await api<BulkResult & { list: Detail }>(`oj/lists/${id}/bulk`, { lines: lines.map((l) => l.raw) });
-      onAdded(r.list);
-      setResult(r);
-      // What was not found goes back in the box to fix and add again.
-      setText(r.unknown.join('\n'));
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setBusy(false);
-    }
+    const r = await run(
+      () => api<BulkResult & { list: Detail }>(`oj/lists/${id}/bulk`, { lines: lines.map((l) => l.raw) }),
+      setError,
+    );
+    setAdding(false);
+    if (!r) return;
+    onAdded(r.list);
+    setResult(r);
+    // What was not found goes back in the box to fix and add again.
+    setText(r.unknown.join('\n'));
   }
   return (
     <details className="cloud-import" open={open || undefined}>
@@ -783,7 +796,7 @@ function BulkAdd({
           </ul>
         )}
         <button type="submit" disabled={busy || lines.length === unknown.length}>
-          {busy ? t('正在添加…', 'Adding…') : t('添加到题单', 'Add to the list')}
+          {adding ? t('正在添加…', 'Adding…') : t('添加到题单', 'Add to the list')}
         </button>
       </form>
       {error && (
