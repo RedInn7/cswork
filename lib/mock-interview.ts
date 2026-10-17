@@ -103,6 +103,11 @@ export const ROUNDS: Record<string, Text> = {
  * the minutes (drawSet expands them). `parts`: a coding question with interview follow-ups.
  */
 export type Slot = { kind: KindId; minutes: number; name?: Text; optional?: boolean; category?: string; rapid?: number; parts?: boolean };
+/**
+ * The rapid-fire questions' category: the MCQ bank's CS questions (lib/server/mock-interview.ts
+ * rapidPool), short enough for 90 seconds. The library's own fundamentals are long-form.
+ */
+export const RAPID_CATEGORY = 'Rapid-fire Fundamentals';
 export type Template = {
   id: string;
   name: Text;
@@ -175,13 +180,13 @@ export const TEMPLATES: Template[] = [
     id: 'screen-rapid',
     name: ['快问快答 + 多段编程电面', 'Rapid-fire + multi-part coding screen'],
     blurb: [
-      '先答 8 道基础题，每题 90 秒，计时到了自动换下一题；再做一道分几部分的编程题，做完一部分才看到下一部分。约 47 分钟。',
-      'Eight fundamentals questions at 90 seconds each, moving on when the clock runs out; then one coding question in parts, each part shown once the last is done. About 47 minutes.',
+      '先答 8 道 CS 基础快问快答（操作系统、网络、数据库、并发等），每题 90 秒，选出答案并说出理由，计时到了自动换下一题；再做一道分几部分的编程题，做完一部分才看到下一部分。约 47 分钟。',
+      'Eight quick CS fundamentals questions (operating systems, networking, databases, concurrency and more) at 90 seconds each: pick the answer and say why, moving on when the clock runs out. Then one coding question in parts, each part shown once the last is done. About 47 minutes.',
     ],
     role: 'swe',
     round: 'Technical Screen',
     slots: [
-      { kind: 'design', category: 'Software Engineering Fundamentals', minutes: 12, rapid: 8, name: ['快问快答', 'Rapid-fire fundamentals'] },
+      { kind: 'design', category: RAPID_CATEGORY, minutes: 12, rapid: 8, name: ['快问快答', 'Rapid-fire fundamentals'] },
       { kind: 'coding', minutes: 35, parts: true, name: ['多段编程题', 'Multi-part coding'] },
     ],
   },
@@ -413,6 +418,8 @@ function scaled(steps: GuideStep[], minutes: number) {
  * the slot's minutes; null when none fits.
  * ponytail: sorted by title keywords; tag the content once misfires pile up.
  */
+/** "…without A/B testing", "不做实验": an observational question, not an experiment design. */
+const NO_EXPERIMENT = /\b(without|no|not|cannot|can't)\b[^.]{0,25}(\bA\/?B\b|experiment)|(不做|不用|不能|无法|没法|没有)[^。]{0,6}(A\/?B|实验)/i;
 export function frameworkFor(
   slot: { kind: KindId; minutes: number },
   item: { title: string; category?: string | null; parts?: { q: Text }[] } | null | undefined,
@@ -423,9 +430,9 @@ export function frameworkFor(
     slot.kind === 'design' && item.category === 'System Design'
       ? GUIDED_STEPS.design
       : slot.kind === 'analytics'
-        ? /\bA\/?B\b|experiment|split test|实验/i.test(title)
+        ? /\bA\/?B\b|experiment|split test|实验/i.test(title) && !NO_EXPERIMENT.test(title)
           ? FRAMEWORKS.ab
-          : /\b(drop|declin|spike|dip|fell|fall|plummet|surg)|下降|下跌|骤降|暴涨|激增/i.test(title)
+          : /\b(drop|declin|decreas|increased|spike|dip|fell|fall|plummet|surg|anomal)|下降|下跌|骤降|减少|上升|暴涨|激增|异常/i.test(title)
             ? FRAMEWORKS.metric
             : null
         : slot.kind === 'ml' && /\b(design|build|recommend|rank)/i.test(title)
@@ -543,13 +550,14 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
     }
     return q;
   };
-  // A rapid slot is n quick questions, each with its share of the minutes.
+  // A rapid slot is n quick questions, each with its share of the minutes: fewer when the bank
+  // has fewer, never an empty one.
   const slots = template.slots
-    .flatMap((s): Slot[] =>
-      s.rapid
-        ? Array.from({ length: s.rapid }, (_, k): Slot => ({ ...s, minutes: s.minutes / s.rapid!, name: [`快问快答 ${k + 1}/${s.rapid}`, `Rapid-fire ${k + 1}/${s.rapid}`] }))
-        : [s],
-    )
+    .flatMap((s): Slot[] => {
+      if (!s.rapid) return [s];
+      const n = Math.min(s.rapid, queue(s).length);
+      return Array.from({ length: n }, (_, k): Slot => ({ ...s, minutes: s.minutes / s.rapid!, name: [`快问快答 ${k + 1}/${n}`, `Rapid-fire ${k + 1}/${n}`] }));
+    })
     .filter((s) => !s.optional || queue(s).length);
   const cursor = new Map<T[], number>();
   const picks: (T | null)[] = slots.map(() => null);

@@ -1,6 +1,8 @@
 import type Database from 'better-sqlite3';
+import mcqBank from '@/lib/content/oa-mcq.json';
 import {
   KINDS,
+  RAPID_CATEGORY,
   ROUNDS,
   companyCounts,
   companyGroup,
@@ -12,6 +14,7 @@ import {
   splitBody,
   type PoolItem,
 } from '@/lib/mock-interview';
+import type { McqQuestion } from '@/lib/mock-oa';
 import { lcIdBySource } from '@/lib/company-tags';
 import type { Person } from './auth';
 import { runningContestProblems } from './contests';
@@ -101,6 +104,36 @@ const lldPool = (): PoolRow[] =>
       : [];
   });
 
+/**
+ * The rapid-fire questions: the MCQ bank's CS questions without code, on a technical screen's usual
+ * topics, asked as "pick one and say why". The bank and its answers are public (/oa/mcq), so no
+ * contest gate.
+ */
+const RAPID_TOPICS = ['os', 'concurrency', 'network', 'dbms', 'oop', 'security', 'arch'];
+const RAPID = (mcqBank.questions as McqQuestion[]).filter((q) => q.section === 'cs' && !q.code && RAPID_TOPICS.includes(q.topic));
+const rapidPool = (): PoolRow[] =>
+  RAPID.map((q) => ({
+    id: q.id, type: 'mcq', slug: q.id, title: q.en.q, company: null, companyName: null, role: null, category: RAPID_CATEGORY,
+    round: null, difficulty: null, listed: false, problem: null,
+  }));
+/** A rapid-fire question by id, in both languages and with its answer; null for any other id. */
+function rapidQuestion(id: string) {
+  const q = RAPID.find((x) => x.id === id);
+  if (!q) return null;
+  const letter = (i: number) => String.fromCharCode(65 + i);
+  const ask = (x: McqQuestion['en'], pick: string) => `${x.choices.map((c, i) => `- ${letter(i)}. ${c}`).join('\n')}\n\n${pick}`;
+  // Two points to tick off: the right choice(s), then why.
+  const answer = (x: McqQuestion['en'], label: string) =>
+    `- ${label}${q.answer.map((i) => `${letter(i)}. ${x.choices[i]}`).join('; ')}\n- ${x.explain}`;
+  return {
+    titleZh: q.zh.q,
+    question: ask(q.en, 'Pick your answer and say why in a sentence or two.'),
+    questionZh: ask(q.zh, '选出答案，用一两句话说明理由。'),
+    solution: answer(q.en, 'Answer: '),
+    solutionZh: answer(q.zh, '答案：'),
+  };
+}
+
 const roleplayPool = (): PoolRow[] =>
   SCENARIOS.map((s) => ({
     id: `rp-${s.id}`, type: 'roleplay', slug: s.id, title: roleplayQuestion(`rp-${s.id}`)!.title, company: null,
@@ -127,8 +160,9 @@ export function mockSet(db: Database.Database, params: URLSearchParams, p: Perso
   // AI-only questions join the pool only for their own templates.
   const lld = template.slots.some((s) => s.kind === 'lld');
   const roleplay = template.slots.some((s) => isRoleplay(s.kind));
+  const rapid = template.slots.some((s) => s.rapid);
   const extras = [...new Set(template.slots.map((s) => s.kind))].flatMap(extraPool);
-  const drawn = drawSet([...mockPool(db), ...(lld ? lldPool() : []), ...(roleplay ? roleplayPool() : []), ...extras], template, {
+  const drawn = drawSet([...mockPool(db), ...(lld ? lldPool() : []), ...(roleplay ? roleplayPool() : []), ...(rapid ? rapidPool() : []), ...extras], template, {
     seed,
     company,
     role: params.get('role'),
@@ -164,8 +198,10 @@ export function mockSet(db: Database.Database, params: URLSearchParams, p: Perso
       // (lib/server/ai-interviewer.ts reads them).
       const course = item.type === 'course_chapter';
       const play = item.type === 'roleplay' ? roleplayQuestion(item.id) : item.type === 'extra' ? extraQuestion(item.id) : null;
+      const mcq = item.type === 'mcq' ? rapidQuestion(item.id) : null;
       if (course) parts.question = lldQuestion(item.id)?.question ?? '';
       if (play) parts.question = play.question;
+      if (mcq) Object.assign(parts, { question: mcq.question, solution: mcq.solution });
       if (questionOnly || course || play) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
       const followUps = slot.parts ? partsOf(item.problem) : undefined;
       return {
@@ -184,6 +220,7 @@ export function mockSet(db: Database.Database, params: URLSearchParams, p: Perso
           problem: item.problem,
           math: !!(JSON.parse(row?.extra || '{}') as { math?: boolean }).math,
           ...(play ? { titleZh: play.titleZh, questionZh: play.questionZh } : {}),
+          ...(mcq ? { titleZh: mcq.titleZh, questionZh: mcq.questionZh, ...(questionOnly ? {} : { solutionZh: mcq.solutionZh }) } : {}),
           principles:
             item.company && amazon.includes(item.company) ? leadershipPrinciples(`${item.title}\n${parts.question}`).slice(0, 3) : [],
           ...parts,
