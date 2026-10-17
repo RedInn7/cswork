@@ -597,3 +597,156 @@ void test('grades: only a review AC of your own, graded again in place, never he
   assert.equal(items.find((i) => i.problemId === 'lc-1')!.grades, undefined);
   assert.equal((await ok<{ items: History[] }>(other, 'GET', 'history')).items.find((i) => i.problemId === 'lc-11')!.grades, undefined);
 });
+
+const writer: Person = { ...me, id: 'export-me', email: 'export@example.test' };
+const note = (user: string, target: string, body: string, at = t0) =>
+  sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)').run(user, target, body, at);
+const coded = (user: string, problem: string, state: string, at: number, code: string, mode = 'judge') =>
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,mode,created_at,updated_at)
+      VALUES(?,?,?,'python',?,?,1,?,?,?)`,
+    )
+    .run(`x${++n}`, user, problem, code, state, mode, at, at);
+const exam = (user: string, run: () => Promise<void>) => async () => {
+  const now = Date.now();
+  sqlite()
+    .prepare("INSERT INTO skill_attempts(id,user_id,test,ids_json,started_at,deadline,created_at) VALUES('export-exam',?,'oa','[\"lc-2\"]',?,?,?)")
+    .run(user, now - 1000, now + 3_600_000, now - 1000);
+  try {
+    await run();
+  } finally {
+    sqlite().prepare("DELETE FROM skill_attempts WHERE id='export-exam'").run();
+  }
+};
+
+void test('notes export: whitelisted notes by target in 2 MB pages, own latest AC code only with code=1', async () => {
+  sqlite().prepare('DELETE FROM limits').run();
+  type Page = import('../lib/notes-export').ExportPage;
+  const big = 'x'.repeat(20_000);
+  for (let i = 0; i < 120; i++) note(writer.id, `problem:lc-${1000 + i}`, `${big}${i}`);
+  for (const [target, body] of [
+    ['pref:review', '{"dailyCap":5}'],
+    ['recall:queue', '{}'],
+    ['mcq:answers', '{}'],
+    ['sd:intro', '{"q1":1}'],
+    ['sd:intro/draft', 'my design'],
+    ['topic:two-pointers-windows', 'pattern'],
+    ['card:abcdefabcdef', '{"v":1,"front":"f","back":"b","tags":[]}'],
+    ['clip:lesson/c1/l1', '> quote'],
+    ['story:9', '{"title":"t"}'],
+    ['checklist:guide', '{}'],
+  ])
+    note(writer.id, target, body);
+  coded(writer.id, 'lc-1000', 'accepted', t0, 'mine-old');
+  coded(writer.id, 'lc-1000', 'accepted', t0 + 1, 'mine-new');
+  coded(writer.id, 'lc-1000', 'wrong_answer', t0 + 2, 'bad');
+  coded(writer.id, 'lc-1000', 'accepted', t0 + 3, 'a run', 'run');
+  coded(other.id, 'lc-1000', 'accepted', t0 + 5, 'their code');
+  coded(other.id, 'lc-1001', 'accepted', t0 + 5, 'their code');
+  coded(writer.id, 'lc-1002', 'wrong_answer', t0, 'not accepted');
+  const sub = `x${n}`;
+  note(writer.id, `sub:${sub}`, 'why it failed');
+  note(other.id, 'problem:lc-1000', 'their note');
+  note(other.id, 'problem:lc-9999', 'their note');
+
+  assert.equal(await status(null, 'GET', 'notes/export'), 401);
+  assert.equal(await status(writer, 'POST', 'notes/export', {}), 404);
+  assert.equal(await status(writer, 'GET', 'notes/export?prefix=pref'), 400);
+  const first = await ok<Page>(writer, 'GET', 'notes/export');
+  const bytes = first.items.reduce((sum, i) => sum + Buffer.byteLength(i.body), 0);
+  assert.ok(bytes <= 2_000_000 && bytes > 1_900_000, `about 2 MB a page (${bytes})`);
+  assert.equal(first.nextCursor, first.items.at(-1)!.target);
+  const rest = await ok<Page>(writer, 'GET', `notes/export?cursor=${encodeURIComponent(first.nextCursor!)}`);
+  assert.equal(rest.nextCursor, null);
+  const all = [...first.items, ...rest.items];
+  const targets = all.map((i) => i.target);
+  assert.deepEqual(targets, [...targets].sort(), 'by target');
+  assert.equal(new Set(targets).size, 120 + 6);
+  for (const gone of ['pref:review', 'recall:queue', 'mcq:answers', 'sd:intro', 'checklist:guide', 'problem:lc-9999'])
+    assert.ok(!targets.includes(gone), gone);
+  for (const kept of ['sd:intro/draft', 'topic:two-pointers-windows', 'card:abcdefabcdef', 'clip:lesson/c1/l1', 'story:9', `sub:${sub}`])
+    assert.ok(targets.includes(kept), kept);
+  assert.ok(all.every((i) => !i.body.includes('their') && !i.code), 'no one else’s notes, no code without code=1');
+  const byTarget = new Map(all.map((i) => [i.target, i]));
+  assert.equal(byTarget.get('problem:lc-1000')!.lastAc, t0 + 1, 'the latest judge AC, not a run');
+  assert.equal(byTarget.get('problem:lc-1001')!.lastAc, null, 'someone else’s AC is not mine');
+  assert.equal(byTarget.get(`sub:${sub}`)!.problemId, 'lc-1002');
+
+  const withCode = await ok<Page>(writer, 'GET', 'notes/export?prefix=problem&code=1');
+  assert.ok(withCode.items.every((i) => i.target.startsWith('problem:')));
+  const coded1000 = withCode.items.find((i) => i.target === 'problem:lc-1000')!;
+  assert.deepEqual(coded1000.code, { language: 'python', code: 'mine-new' });
+  assert.deepEqual(
+    withCode.items.filter((i) => i.code).map((i) => i.target),
+    ['problem:lc-1000'],
+    'only my own accepted code',
+  );
+  const sd = await ok<Page>(writer, 'GET', 'notes/export?prefix=sd');
+  assert.deepEqual(sd.items.map((i) => i.target), ['sd:intro/draft'], 'drafts, not quiz answers');
+
+  await exam(writer.id, async () => {
+    assert.equal(await status(writer, 'GET', 'notes/export'), 403);
+    assert.equal(await status(writer, 'GET', 'cheatsheet?stops=two-pointers-windows'), 403);
+  })();
+  assert.equal(await status(other, 'GET', 'notes/export'), 200, 'someone else’s exam closes nothing of mine');
+  sqlite().prepare('DELETE FROM user_notes WHERE user_id IN (?,?)').run(writer.id, other.id);
+});
+
+void test('review sheet: a stop’s noted, marked, wrong and leech problems, leeches first', async () => {
+  sqlite().prepare('DELETE FROM limits').run();
+  type Sheet = import('../lib/server/note-export').ReviewSheet;
+  // Line 500's two-pointers-windows stop runs 125, 167, 11, 42, 15, 16, 18, …
+  note(writer.id, 'problem:lc-125', 'Palindrome by two ends');
+  note(writer.id, 'problem:lc-42', '## 关键观察\n每格的水由两侧最高决定\n```\n# code\n```\n## 复杂度\nO(n)\n\n把握度: 2\n#双指针');
+  note(writer.id, 'problem:lc-1', 'out of scope');
+  note(other.id, 'problem:lc-680', 'their note');
+  const { PROBLEM_TEMPLATE } = await import('../lib/note-meta');
+  note(writer.id, 'problem:lc-167', PROBLEM_TEMPLATE.en);
+  note(writer.id, 'problem:lc-18', PROBLEM_TEMPLATE.zh);
+  const markIt = (id: string, m: string) =>
+    sqlite().prepare('INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,1)').run(writer.id, `problem:${id}`, m);
+  markIt('lc-167', 'star');
+  markIt('lc-11', 'redo');
+  markIt('lc-11', 'done');
+  coded(writer.id, 'lc-16', 'wrong_answer', t0, '');
+  // lc-15: AC on three days, Again on the last two: a leech.
+  for (const [i, grade] of [[0, 0], [3, 1], [6, 1]]) {
+    coded(writer.id, 'lc-15', 'accepted', t0 + i * DAY, '');
+    if (grade)
+      sqlite()
+        .prepare("INSERT INTO practice_aids(user_id,problem_id,kind,value,created_at) VALUES(?,'lc-15',?,1,?)")
+        .run(writer.id, `grade:x${n}`, t0 + i * DAY);
+  }
+  note(writer.id, 'topic:two-pointers-windows', '左右指针：有序或对称');
+  note(writer.id, 'topic:binary-search', 'not this stop');
+  note(writer.id, 'card:aaaaaaaaaaaa', JSON.stringify({ v: 1, front: 'Stop card', back: 'b', tags: ['Two-Pointers-Windows'] }));
+  note(writer.id, 'card:bbbbbbbbbbbb', JSON.stringify({ v: 1, front: 'From 42', back: 'b', tags: [], src: { href: '/?view=problem&problem=lc-42', title: 'x' } }));
+  note(writer.id, 'card:cccccccccccc', JSON.stringify({ v: 1, front: 'Other', back: 'b', tags: ['dp'] }));
+
+  const sheet = await ok<Sheet>(writer, 'GET', 'cheatsheet?stops=two-pointers-windows');
+  assert.deepEqual(
+    sheet.rows.map((r) => r.id),
+    ['lc-15', 'lc-42', 'lc-11', 'lc-167', 'lc-125', 'lc-16'],
+    'leech, confidence ≤ 2, redo, starred, then route order; lc-18, an unfilled template alone, drops out',
+  );
+  const [lc15, lc42, lc11] = sheet.rows;
+  assert.deepEqual([lc15.leech, lc15.gist, !!lc15.hint], [true, null, true], 'no note: the curated hint');
+  assert.deepEqual([lc42.gist, lc42.confidence, lc42.tags], ['每格的水由两侧最高决定 · O(n)', 2, ['双指针']]);
+  assert.deepEqual(lc11.marks, ['redo']);
+  const lc167 = sheet.rows[3];
+  assert.deepEqual([lc167.id, lc167.gist, !!lc167.hint], ['lc-167', null, true], 'an unfilled template: still the hint');
+  assert.equal(sheet.rows.at(-1)!.wrong, true);
+  assert.equal(sheet.total, 6);
+  assert.deepEqual(sheet.topics, [{ stop: 'two-pointers-windows', text: '左右指针：有序或对称' }]);
+  assert.deepEqual(sheet.cards.map((c) => c.front), ['Stop card', 'From 42']);
+  assert.deepEqual((await ok<Sheet>(other, 'GET', 'cheatsheet?stops=two-pointers-windows')).rows.map((r) => r.id), ['lc-680']);
+
+  const list = await ok<Sheet>(writer, 'GET', 'cheatsheet?list=leetcode-hot-100');
+  assert.ok(list.rows.some((r) => r.id === 'lc-42') && !list.rows.some((r) => r.id === 'lc-1000'));
+  for (const bad of ['', '?stops=nowhere', '?stops=array-foundations,hash-counting,string-processing,two-pointers-windows,prefix-intervals,binary-search,stacks-heaps,greedy-scheduling,linked-list', '?stops=a&list=b', '?list=Bad'])
+    assert.equal(await status(writer, 'GET', `cheatsheet${bad}`), 400, bad);
+  assert.equal(await status(writer, 'GET', 'cheatsheet?list=no-such-list'), 404);
+  assert.equal(await status(null, 'GET', 'cheatsheet?stops=two-pointers-windows'), 401);
+  sqlite().prepare('DELETE FROM user_notes WHERE user_id IN (?,?)').run(writer.id, other.id);
+});
