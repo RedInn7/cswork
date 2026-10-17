@@ -493,7 +493,10 @@
   cursor: pointer;
   padding: 0;
 }
-.algorithm-demo button.algorithm-demo-cell:hover {
+.algorithm-demo button.algorithm-demo-cell[aria-disabled='true'] {
+  cursor: default;
+}
+.algorithm-demo button.algorithm-demo-cell:not([aria-disabled='true']):hover {
   border-color: #2459be;
   box-shadow: 0 0 0 2px #2459be33;
 }
@@ -501,7 +504,10 @@
   cursor: pointer;
   outline: none;
 }
-.algorithm-demo .algorithm-demo-node[role='button']:hover circle,
+.algorithm-demo .algorithm-demo-node[role='button'][aria-disabled='true'] {
+  cursor: default;
+}
+.algorithm-demo .algorithm-demo-node[role='button']:not([aria-disabled='true']):hover circle,
 .algorithm-demo .algorithm-demo-node[role='button']:focus-visible circle {
   stroke: #6c9deb;
   stroke-width: 1.4;
@@ -748,14 +754,14 @@
   .dark .algorithm-demo button.algorithm-demo-cell {
     color: inherit;
   }
-  .dark .algorithm-demo button.algorithm-demo-cell:hover {
+  .dark .algorithm-demo button.algorithm-demo-cell:not([aria-disabled='true']):hover {
     border-color: #2459be;
     box-shadow: 0 0 0 2px #2459be33;
   }
   .dark .algorithm-demo .algorithm-demo-node[role='button'] {
     outline: none;
   }
-  .dark .algorithm-demo .algorithm-demo-node[role='button']:hover circle,
+  .dark .algorithm-demo .algorithm-demo-node[role='button']:not([aria-disabled='true']):hover circle,
   .dark .algorithm-demo .algorithm-demo-node[role='button']:focus-visible circle {
     stroke: #6c9deb;
   }

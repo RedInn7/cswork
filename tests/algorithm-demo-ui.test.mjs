@@ -108,10 +108,16 @@ test('your own input reruns the demo, and predict mode scores clicks on cells an
     assert.match(guessText(), /✗ Not this time It was 1: 3;/);
     assert.match(guessText(), /This round: 0 \/ 1 right/);
     assert.equal(document.querySelector('.algorithm-demo-caption').textContent, 'Check index 1: compare 3 with the target 7.');
-    // Moving left past mid turns nothing new current: no question, Next just plays it.
-    assert.equal(document.querySelectorAll('button.algorithm-demo-cell').length, 0);
+    // Moving left past mid turns nothing new current: no question, Next just plays it. The
+    // cells stay (disabled) buttons, so the focus is not lost.
+    const cells = document.querySelectorAll('button.algorithm-demo-cell');
+    assert.equal(cells.length, 4);
+    assert.ok([...cells].every((cell) => cell.getAttribute('aria-disabled') === 'true'));
+    await act(async () => cells[3].click());
+    assert.match(guessText(), /0 \/ 1 right/);
     assert.match(guessText(), /Nothing new turns current next/);
     await act(async () => button('Next').click());
+    assert.equal(document.querySelectorAll('button.algorithm-demo-cell')[2].getAttribute('aria-disabled'), null);
     await act(async () => document.querySelectorAll('button.algorithm-demo-cell')[2].click());
     assert.match(guessText(), /✓ Right/);
     assert.match(guessText(), /1 \/ 2 right/);
@@ -137,6 +143,11 @@ test('your own input reruns the demo, and predict mode scores clicks on cells an
     assert.equal(nodes[0].getAttribute('tabindex'), '0');
     await act(async () => nodes[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     assert.match(guessText(), /✓ Right It was A;/);
+    // Between questions the nodes stay focusable but ignore picks.
+    const idle = svg.querySelector('.algorithm-demo-node[role="button"]');
+    assert.equal(idle.getAttribute('aria-disabled'), 'true');
+    await act(async () => idle.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    assert.match(guessText(), /1 \/ 1 right/);
   } finally {
     await act(async () => root.unmount());
   }

@@ -159,7 +159,7 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
           </form>
         </details>
       )}
-      {frame.graph && <DemoGraphView graph={frame.graph} onPick={asking ? guess : undefined} />}
+      {frame.graph && <DemoGraphView graph={frame.graph} onPick={guessing ? guess : undefined} idle={!asking} />}
       {frame.cells.length > 0 && (
       <div
         className={`algorithm-demo-cells ${trace.columns ? 'algorithm-demo-grid' : ''} ${(trace.columns ?? 0) >= 6 ? 'is-dense' : ''} ${(trace.columns ?? 0) > 8 ? 'is-wide' : ''}`}
@@ -180,9 +180,17 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
               <small>{cell.label}</small>
             </>
           );
-          // Predict mode: every cell is a button, so the answer isn't given away.
-          return asking ? (
-            <button key={i} type="button" className={className} aria-label={cellName(cell)} onClick={() => guess(`c${i}`)}>
+          // Predict mode: every cell is a button, so the answer isn't given away. They stay
+          // buttons (aria-disabled) between questions, so keyboard focus stays put.
+          return guessing ? (
+            <button
+              key={i}
+              type="button"
+              className={className}
+              aria-label={cellName(cell)}
+              aria-disabled={asking ? undefined : true}
+              onClick={() => asking && guess(`c${i}`)}
+            >
               {body}
             </button>
           ) : (
@@ -353,7 +361,16 @@ const R = 4.2;
  * A frame's graph or tree in SVG. Arrowheads are drawn per edge (no shared marker), so they
  * take the edge's state colour; the caption below narrates each step for screen readers.
  */
-export function DemoGraphView({ graph, onPick }: { graph: DemoGraph; onPick?: (key: string) => void }) {
+export function DemoGraphView({
+  graph,
+  onPick,
+  idle = false,
+}: {
+  graph: DemoGraph;
+  /** Predict mode: nodes become buttons that report `n<id>`; `idle` while there is no question. */
+  onPick?: (key: string) => void;
+  idle?: boolean;
+}) {
   const t = useT();
   const at = new Map(graph.nodes.map((n) => [n.id, n]));
   const stateWord = (state?: string) =>
@@ -409,11 +426,12 @@ export function DemoGraphView({ graph, onPick }: { graph: DemoGraph; onPick?: (k
             role: 'button',
             tabIndex: 0,
             'aria-label': name(n),
-            onClick: () => onPick(`n${n.id}`),
+            'aria-disabled': idle || undefined,
+            onClick: () => !idle && onPick(`n${n.id}`),
             onKeyDown: (event: KeyboardEvent) => {
               if (event.key !== 'Enter' && event.key !== ' ') return;
               event.preventDefault();
-              onPick(`n${n.id}`);
+              if (!idle) onPick(`n${n.id}`);
             },
           } : {})}
         >
