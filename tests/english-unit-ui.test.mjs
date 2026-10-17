@@ -19,8 +19,10 @@ let marks;
 let posted = [];
 globalThis.fetch = async (url, init = {}) => {
   const path = String(url);
-  if (path === '/api/oj/marks?mark=done')
+  if (path === '/api/oj/marks?mark=done') {
+    if (marks === 'down') return Response.json({ error: 'Service unavailable' }, { status: 503 });
     return marks ? Response.json({ items: marks }) : Response.json({ error: 'Please sign in' }, { status: 401 });
+  }
   if (path === '/api/oj/marks' && init.method === 'POST') {
     posted.push(JSON.parse(init.body));
     return Response.json({ ok: true });
@@ -104,6 +106,9 @@ test('listen, play line by line, the English-only switch', async () => {
   });
   // English readers start with English only; the switch brings the Chinese back.
   assert.equal($$('.eng-phrase .eng-zh').length, 0);
+  // The drills keep their Chinese prompts: for some they are the only hint.
+  assert.equal($$('.eng-drills .eng-zh').length, unit.drills.cloze.length + unit.drills.order.length);
+  assert.equal($('.eng-blank').getAttribute('aria-describedby'), 'c0-zh');
   await click($('.eng-switch input'));
   assert.equal($$('.eng-phrase .eng-zh').length, unit.phrases.length);
   await click(button('Listen', $('.eng-phrase')));
@@ -120,7 +125,13 @@ test('listen, play line by line, the English-only switch', async () => {
   await act(async () => old.onend());
   assert.equal(spoken.at(-1).text, unit.dialogue[3].en);
   assert.equal($('.eng-script li[aria-current]'), null);
+  // Leaving the page mid-run: the cancelled line's late end reads nothing more.
+  await click(button('Play line by line'));
+  const playingLine = spoken.at(-1);
+  const said = spoken.length;
   await act(async () => root.unmount());
+  playingLine.onend();
+  assert.equal(spoken.length, said);
 });
 
 test('shadowing scores the attempt; nothing heard says so', async () => {
@@ -188,11 +199,19 @@ test('drills check as you answer; a guest finishing the unit keeps the tick in t
     scramble(drill.parts).map((at) => drill.parts[at]),
   );
   for (const part of [...drill.parts].reverse()) await click(button(part, pool()));
-  assert.match($$('.eng-pool')[0].closest('li').textContent, /Not in the right order/);
-  await click(button('Start over', $$('.eng-pool')[0].closest('li')));
+  const li = pool().closest('li');
+  assert.match(li.textContent, /Not in the right order/);
+  // Wrong: focus stays on the last piece placed, which can still be taken back.
+  assert.equal(document.activeElement, [...li.querySelectorAll('.eng-line button')].at(-1));
+  await click(button('Show answer', li));
+  assert.ok(li.textContent.includes(`Answer: ${drill.parts.join(' ')}`));
+  assert.equal(button('Show answer', li), undefined);
+  await click(button('Start over', li));
   assert.equal(pool().querySelectorAll('button').length, drill.parts.length);
   assert.equal(localStorage.getItem('cswork:english:done'), null);
   await solveAll();
+  // Right: the pieces lock, so focus moves to the drill itself.
+  assert.equal(document.activeElement, $$('.eng-pool').at(-1).closest('li'));
   assert.match($('.eng-finish').textContent, /Every drill is right/);
   assert.equal($('.eng-finish input').checked, true);
   assert.deepEqual(JSON.parse(localStorage.getItem('cswork:english:done')), ['self-intro']);
@@ -237,5 +256,44 @@ test("signed in: this browser's ticks move to the account; finishing posts the d
   assert.equal($('.eng-finish input').checked, true);
   assert.doesNotMatch($('.eng-finish').textContent, /stays in this browser/);
   assert.match($('.eng-count').textContent, /^3 of 4 units done$/);
+  await act(async () => root.unmount());
+});
+
+test('another natural order is right too', async () => {
+  installSpeech();
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => {
+    root.render(createElement(EnglishUnit, { unit }));
+    await settle();
+  });
+  const at = unit.drills.order.findIndex((drill) => drill.also);
+  const drill = unit.drills.order[at];
+  const li = $$('.eng-pool')[at].closest('li');
+  // "I'm mostly interested in distributed systems and developer tooling. These days"
+  for (const part of [...drill.parts.slice(1), drill.parts[0]]) await click(button(part, li.querySelector('.eng-pool')));
+  assert.equal(li.dataset.state, 'right');
+  await act(async () => root.unmount());
+});
+
+test('marks that fail to load: the error shows, and nothing is ticked, stored or sent', async () => {
+  installSpeech();
+  localStorage.clear();
+  marks = 'down';
+  posted = [];
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => {
+    root.render(createElement('div', null, createElement(EnglishDoneCount, { slugs: ['self-intro'] }), createElement(EnglishUnit, { unit })));
+    await settle();
+  });
+  await until(() => $('.eng-finish [role=alert]'));
+  assert.match($('.eng-finish [role=alert]').textContent, /Service unavailable/);
+  assert.equal($('.eng-finish input').disabled, true);
+  assert.doesNotMatch(document.body.textContent, /stays in this browser/);
+  assert.equal($('.eng-count'), null);
+  await solveAll();
+  assert.match($('.eng-finish').textContent, /Every drill is right/);
+  assert.equal($('.eng-finish input').checked, false);
+  assert.equal(localStorage.getItem('cswork:english:done'), null);
+  assert.deepEqual(posted, []);
   await act(async () => root.unmount());
 });

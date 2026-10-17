@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Check, Mic, Play, RotateCcw, Square, Volume2 } from 'lucide-react';
 import { useLocale, useT } from '@/lib/i18n';
-import { api } from '@/lib/types';
+import { ApiError, api } from '@/lib/types';
 import {
   BLANK, checkCloze, checkOrder, scramble, shadowScore, type EnglishUnit as Unit, type ShadowScore,
 } from '@/lib/english-drill';
@@ -36,9 +36,9 @@ function writeLocal(slugs: Iterable<string>) {
 }
 
 // The units marked done, fetched once per page: user_marks (content:english/<unit>, done) for a
-// signed-in learner; otherwise ('local': a guest, or marks that did not load) this browser's list,
-// which moves into the account on the next signed-in visit.
-type Done = { state: 'loading' | 'local' | 'account'; slugs: ReadonlySet<string>; error: string };
+// signed-in learner; for a guest ('local') this browser's list, which moves into the account on the
+// next signed-in visit. Marks that did not load ('failed') show the error and take no ticks.
+type Done = { state: 'loading' | 'local' | 'account' | 'failed'; slugs: ReadonlySet<string>; error: string };
 const LOADING: Done = { state: 'loading', slugs: new Set(), error: '' };
 let done = LOADING;
 let requested = false;
@@ -63,7 +63,12 @@ function subscribe(listener: () => void) {
           );
         publish({ state: 'account', slugs: new Set([...slugs, ...local]), error: '' });
       },
-      () => publish({ state: 'local', slugs: new Set(readLocal()), error: '' }),
+      (reason: unknown) =>
+        publish(
+          reason instanceof ApiError && reason.status === 401
+            ? { state: 'local', slugs: new Set(readLocal()), error: '' }
+            : { state: 'failed', slugs: new Set(), error: (reason as Error).message },
+        ),
     );
   }
   return () => {
@@ -106,7 +111,7 @@ export function EnglishDoneCheck({ slug }: { slug: string }) {
 export function EnglishDoneCount({ slugs }: { slugs: string[] }) {
   const t = useT();
   const { state, slugs: marked } = useDone();
-  if (state === 'loading') return null;
+  if (state === 'loading' || state === 'failed') return null;
   const n = slugs.filter((slug) => marked.has(slug)).length;
   return (
     <div className="eng-count">
@@ -177,6 +182,13 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
   // Playback: one line, or the dialogue line by line; a newer request makes older callbacks stale.
   const [playing, setPlaying] = useState<number | null>(null);
   const run = useRef(0);
+  // Leaving the page stops the run: a line cancelled on the way out may still report its end.
+  useEffect(
+    () => () => {
+      run.current++;
+    },
+    [],
+  );
   const stopPlaying = () => {
     run.current++;
     setPlaying(null);
@@ -216,10 +228,12 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
   const [picked, setPicked] = useState<number[][]>(() => unit.drills.order.map(() => []));
   const editPicked = (i: number, change: (chosen: number[]) => number[]) =>
     setPicked((all) => all.map((chosen, j) => (j === i ? change(chosen) : chosen)));
+  const [revealed, setRevealed] = useState<boolean[]>(() => unit.drills.order.map(() => false));
   const ordered = unit.drills.order.map((drill, i) =>
     checkOrder(
       picked[i].map((at) => drill.parts[at]),
       drill.parts,
+      drill.also,
     ),
   );
   const right = blanks.filter((blank) => blank.state === 'right').length + ordered.filter(Boolean).length;
@@ -230,7 +244,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
   const autoMarked = useRef(false);
   useEffect(() => {
     // Every drill right marks the unit done, once per visit; unticking it afterwards sticks.
-    if (right < total || autoMarked.current || state === 'loading') return;
+    if (right < total || autoMarked.current || state === 'loading' || state === 'failed') return;
     autoMarked.current = true;
     if (!marked) void setDone(unit.slug, true);
   }, [right, total, state, marked, unit.slug]);
@@ -369,7 +383,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                     value={blank.value}
                     size={Math.max(8, ...drill.answers.map((answer) => answer.length + 2))}
                     aria-label={t(`第 ${i + 1} 题的空`, `Blank ${i + 1}`)}
-                    aria-describedby={englishOnly ? undefined : `c${i}-zh`}
+                    aria-describedby={`c${i}-zh`}
                     aria-invalid={blank.state === 'wrong' || undefined}
                     readOnly={blank.state === 'right'}
                     autoComplete="off"
@@ -383,11 +397,9 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                   />
                   {after}
                 </p>
-                {!englishOnly && (
-                  <p className="eng-zh" lang="zh-CN" id={`c${i}-zh`}>
-                    {drill.zh}
-                  </p>
-                )}
+                <p className="eng-zh" lang="zh-CN" id={`c${i}-zh`}>
+                  {drill.zh}
+                </p>
                 <output className="eng-verdict">
                   {blank.state === 'right' ? (
                     <>
@@ -419,20 +431,23 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
             const chosen = picked[i];
             const complete = chosen.length === drill.parts.length;
             const take = (at: number, event: React.MouseEvent<HTMLButtonElement>) => {
-              // The tapped piece leaves the pool: focus moves to the next one (or the sentence when none is left).
+              // The tapped piece leaves the pool: focus moves to the next one, else the sentence's last
+              // piece, else (right, so the pieces are locked) the drill itself.
               const pool = event.currentTarget.parentElement;
               editPicked(i, (list) => [...list, at]);
               requestAnimationFrame(() =>
-                (pool?.querySelector('button') ?? pool?.previousElementSibling?.querySelector<HTMLElement>('button:last-of-type'))?.focus(),
+                (
+                  pool?.querySelector('button') ??
+                  pool?.previousElementSibling?.querySelector<HTMLElement>('button:last-of-type:enabled') ??
+                  pool?.closest('li')
+                )?.focus(),
               );
             };
             return (
-              <li key={drill.parts.join(' ')} data-state={complete ? (ordered[i] ? 'right' : 'wrong') : undefined}>
-                {!englishOnly && (
-                  <p className="eng-zh" lang="zh-CN">
-                    {drill.zh}
-                  </p>
-                )}
+              <li key={drill.parts.join(' ')} tabIndex={-1} data-state={complete ? (ordered[i] ? 'right' : 'wrong') : undefined}>
+                <p className="eng-zh" lang="zh-CN">
+                  {drill.zh}
+                </p>
                 <fieldset className="eng-line" aria-label={t('你的句子', 'Your sentence')}>
                   {chosen.length ? (
                     chosen.map((at) => (
@@ -453,7 +468,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                   )}
                 </fieldset>
                 <fieldset className="eng-pool" aria-label={t('可选短语', 'Pieces')}>
-                  {scramble(drill.parts)
+                  {scramble(drill.parts, drill.also)
                     .filter((at) => !chosen.includes(at))
                     .map((at) => (
                       <button key={at} type="button" className="eng-chip" lang="en" onClick={(event) => take(at, event)}>
@@ -470,10 +485,22 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                     ) : (
                       t('顺序不对', 'Not in the right order')
                     ))}
+                  {revealed[i] && (
+                    <span>
+                      {' '}
+                      {t('参考答案：', 'Answer: ')}
+                      <span lang="en">{drill.parts.join(' ')}</span>
+                    </span>
+                  )}
                 </output>
                 {complete && !ordered[i] && (
                   <button type="button" className="eng-link" onClick={() => editPicked(i, () => [])}>
                     <RotateCcw size={13} aria-hidden="true" /> {t('重来', 'Start over')}
+                  </button>
+                )}
+                {!ordered[i] && !revealed[i] && (
+                  <button type="button" className="eng-link" onClick={() => setRevealed((all) => all.map((on, j) => on || j === i))}>
+                    {t('看答案', 'Show answer')}
                   </button>
                 )}
               </li>
@@ -493,7 +520,7 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
           <input
             type="checkbox"
             checked={marked}
-            disabled={state === 'loading'}
+            disabled={state === 'loading' || state === 'failed'}
             onChange={(event) => void setDone(unit.slug, event.target.checked)}
           />
           {t('这个单元我练完了', "I've finished this unit")}
