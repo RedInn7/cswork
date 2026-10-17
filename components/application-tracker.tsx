@@ -257,7 +257,15 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     setForm(null);
   };
 
-  const put = (item: Application) => setItems((list) => [item, ...(list ?? []).filter((a) => a.id !== item.id)]);
+  const put = (item: Application) => {
+    setItems((list) => [item, ...(list ?? []).filter((a) => a.id !== item.id)]);
+    // The other cards' process lengths come only while an offer deadline is ahead
+    // (lib/server/applications.ts withLinks): a save that starts or ends one reads them all again.
+    const ahead = (list: readonly Application[]) => list.some((a) => offerOpen(a) && a.offerDeadline! > Date.now());
+    const list = items ?? [];
+    if (ahead(list) !== ahead([item, ...list.filter((a) => a.id !== item.id)]))
+      api<{ items: Application[] }>('oj/applications').then((r) => setItems(r.items), () => {});
+  };
   async function send(path: string, body: unknown) {
     setBusy(true);
     setError('');

@@ -333,3 +333,29 @@ test('an offer counts down with an extension link; the schedule panel lists clas
   assert.deepEqual([sent.stage, sent.offerDeadline], ['phone', deadline]);
   await act(async () => r.unmount());
 });
+
+test('a card moved back to Offer with its deadline reads the board again for the other cards’ process lengths', async () => {
+  items.splice(
+    0,
+    items.length,
+    card({ id: 'o', company: 'Offerco', stage: 'onsite', offerDeadline: now + 3 * DAY }),
+    card({ id: 'p', company: 'Slowco', stage: 'phone', appliedAt: now - DAY }),
+  );
+  const r = createRoot(document.getElementById('root'));
+  await act(async () => r.render(createElement(ApplicationTracker, { zh: false })));
+  assert.equal(document.querySelector('.tracker-expedite'), null);
+  // With an offer deadline ahead the server adds the phone card's process length (withLinks).
+  items[1] = { ...items[1], process: { weeks: 8 } };
+  const reads = calls.filter(([key]) => key === 'GET /api/oj/applications').length;
+  await setValue(document.querySelector('[data-id="o"] select'), 'offer', 'change');
+  await act(async () => new Promise((done) => setTimeout(done, 0)));
+  assert.equal(calls.filter(([key]) => key === 'GET /api/oj/applications').length, reads + 1);
+  const row = document.querySelector('.tracker-expedite tbody tr');
+  assert.equal(row.querySelector('th').textContent, 'Slowco');
+  assert.match(row.textContent, /after the deadline \(member write-ups\)/);
+  // A follow-up change that leaves the offer as it is reads nothing again.
+  await setValue(document.querySelector('[data-id="p"] select'), 'onsite', 'change');
+  await act(async () => new Promise((done) => setTimeout(done, 0)));
+  assert.equal(calls.filter(([key]) => key === 'GET /api/oj/applications').length, reads + 1);
+  await act(async () => r.unmount());
+});
