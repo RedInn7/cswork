@@ -1,7 +1,8 @@
 // New-grad and intern openings (lib/server/job-openings.ts): parsing the three ATS boards' JSON and
 // posted pay, the title filter, the 20-hour sync throttle, hiding stale openings and hidden
-// companies, hiring seasons (lib/server/job-seasons.ts), and the openings in the followed-company
-// and saved-search digest (lib/server/company-follows.ts).
+// companies, hiring seasons and pay samples (lib/server/job-seasons.ts), auth flags read from the
+// descriptions, and the openings in the followed-company and saved-search digest
+// (lib/server/company-follows.ts).
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -74,17 +75,17 @@ void test('the title filter keeps early-career roles and drops senior ones', () 
 
 void test('each board’s JSON parses to openings with https links and dates', () => {
   assert.deepEqual(boardOpenings('acme', { ats: 'greenhouse', board: 'acme' }, greenhouse), [
-    { id: 'greenhouse:acme:101', companySlug: 'acme', title: 'Software Engineer, New Grad', location: 'Seattle, WA', url: 'https://example.com/jobs?gh_jid=101', kind: 'new-grad', postedAt: Date.parse('2026-10-01T13:00:00Z'), pay: null },
+    { id: 'greenhouse:acme:101', companySlug: 'acme', title: 'Software Engineer, New Grad', location: 'Seattle, WA', url: 'https://example.com/jobs?gh_jid=101', kind: 'new-grad', postedAt: Date.parse('2026-10-01T13:00:00Z'), pay: null, authFlags: -1 },
     // 103 is http: left out. A date that does not parse is no date.
-    { id: 'greenhouse:acme:104', companySlug: 'acme', title: 'Data Science Intern', location: 'Austin, TX', url: 'https://example.com/jobs?gh_jid=104', kind: 'intern', postedAt: null, pay: null },
+    { id: 'greenhouse:acme:104', companySlug: 'acme', title: 'Data Science Intern', location: 'Austin, TX', url: 'https://example.com/jobs?gh_jid=104', kind: 'intern', postedAt: null, pay: null, authFlags: -1 },
   ]);
   // Credentials in the link: left out.
   assert.deepEqual(boardOpenings('acme', { ats: 'lever', board: 'acme' }, lever), [
-    { id: 'lever:acme:a1', companySlug: 'acme', title: 'Forward Deployed Engineer, Internship', location: 'London', url: 'https://jobs.lever.co/acme/a1', kind: 'intern', postedAt: 1790000000000, pay: null },
+    { id: 'lever:acme:a1', companySlug: 'acme', title: 'Forward Deployed Engineer, Internship', location: 'London', url: 'https://jobs.lever.co/acme/a1', kind: 'intern', postedAt: 1790000000000, pay: null, authFlags: -1 },
   ]);
   // Unlisted Ashby postings are left out; whitespace in titles is tidied.
   assert.deepEqual(boardOpenings('acme', { ats: 'ashby', board: 'acme' }, ashby), [
-    { id: 'ashby:acme:u1', companySlug: 'acme', title: 'Software Engineer, University Graduate', location: 'San Francisco', url: 'https://jobs.ashbyhq.com/acme/u1', kind: 'new-grad', postedAt: Date.parse('2026-10-10T00:00:00Z'), pay: null },
+    { id: 'ashby:acme:u1', companySlug: 'acme', title: 'Software Engineer, University Graduate', location: 'San Francisco', url: 'https://jobs.ashbyhq.com/acme/u1', kind: 'new-grad', postedAt: Date.parse('2026-10-10T00:00:00Z'), pay: null, authFlags: -1 },
   ]);
   // Junk is no opening, never an exception.
   for (const body of [null, 'oops', { jobs: 'x' }, [{ id: 1 }], { ok: false, error: 'Document not found' }])
@@ -137,6 +138,27 @@ void test('posted pay: Lever’s salary range and Ashby’s Salary component, pl
   assert.equal(boardOpenings('acme', { ats: 'greenhouse', board: 'acme' }, greenhouse)[0].pay, null);
 });
 
+void test('auth flags from the description: Lever’s text and lists, Ashby’s text; Greenhouse’s list has none', () => {
+  const posting = (id: string, extra: object) => ({ id, text: 'Software Engineer Intern', categories: {}, hostedUrl: `https://jobs.lever.co/acme/${id}`, ...extra });
+  const lever = boardOpenings('acme', { ats: 'lever', board: 'acme' }, [
+    posting('f1', {
+      descriptionPlain: 'Build things.\nWe sponsor visas.',
+      lists: [{ text: 'Requirements', content: '<li>Python &amp; SQL</li><li>Must be a <b>U.S. citizen</b></li>' }],
+      additionalPlain: 'This role does not require a security clearance.',
+    }),
+    posting('f2', { additionalPlain: 'We are unable to sponsor work visas.' }),
+    posting('f3', { descriptionPlain: 'Build things with us.' }),
+    posting('f4', { lists: [] }),
+  ]);
+  // No description at all is not yet judged.
+  assert.deepEqual(lever.map((o) => o.authFlags), [2, 1, 0, -1]);
+  const ashby = boardOpenings('acme', { ats: 'ashby', board: 'acme' }, {
+    jobs: [{ id: 'f5', title: 'Software Engineer, New Grad', jobUrl: 'https://jobs.ashbyhq.com/acme/f5', descriptionPlain: 'Must be able to obtain a security clearance.' }],
+  });
+  assert.equal(ashby[0].authFlags, 4);
+  assert.equal(boardOpenings('acme', { ats: 'greenhouse', board: 'acme' }, greenhouse)[0].authFlags, -1);
+});
+
 void test('every mapped board is a known ATS with a plain board name', () => {
   assert.ok(Object.keys(BOARDS).length >= 50);
   for (const [slug, { ats, board }] of Object.entries(BOARDS)) {
@@ -153,22 +175,39 @@ const boards = {
   downco: { ats: 'greenhouse', board: 'downco' },
 } as const;
 let replies: Record<string, unknown> = {};
+// URL endings that time out.
+let timeouts: string[] = [];
 const asked: string[] = [];
 globalThis.fetch = async (input: string | URL | Request) => {
   const url = String(input);
   asked.push(url);
   if (url.includes('/downco/')) throw new Error('network down');
-  const reply = Object.entries(replies).find(([part]) => url.includes(part));
+  if (timeouts.some((end) => url.endsWith(end))) throw new DOMException('The operation timed out.', 'TimeoutError');
+  // A board list's key never answers its Greenhouse detail URLs (…/jobs/<id>).
+  const reply = Object.entries(replies).find(([part]) => url.endsWith(part) || url.includes(`${part}?`));
   return reply ? Response.json(reply[1]) : Response.json({ ok: false }, { status: 404 });
 };
 
 void test('sync: at most every 20 hours, a failed board skipped, stale openings hidden', async () => {
   const t0 = Date.UTC(2026, 9, 12, 1);
   const paid = [{ ...lever[0], salaryRange: { min: 45, max: 55, currency: 'USD', interval: 'per-hour-wage' } }, ...lever.slice(1)];
-  replies = { 'greenhouse.io/v1/boards/acme/jobs': greenhouse, 'lever.co/v0/postings/leverco?mode=json': paid, 'ashbyhq.com/posting-api/job-board/ashco': ashby };
+  replies = {
+    'greenhouse.io/v1/boards/acme/jobs': greenhouse,
+    // Greenhouse's detail: HTML escaped as entities.
+    'greenhouse.io/v1/boards/acme/jobs/101': { id: 101, content: '&lt;p&gt;We are &lt;strong&gt;unable to sponsor&lt;/strong&gt; visas for this role.&lt;/p&gt;' },
+    'lever.co/v0/postings/leverco?mode=json': paid,
+    'ashbyhq.com/posting-api/job-board/ashco': ashby,
+  };
+  timeouts = ['/acme/jobs/104'];
   assert.equal(await syncJobOpenings(t0, boards), 4);
-  assert.equal(asked.length, 4);
+  // Four boards and Acme's two openings' details.
+  assert.equal(asked.length, 6);
   assert.ok(asked.includes('https://api.ashbyhq.com/posting-api/job-board/ashco?includeCompensation=true'));
+  assert.ok(asked.includes('https://boards-api.greenhouse.io/v1/boards/acme/jobs/101'));
+  // Read from the detail; a detail that timed out stays unknown.
+  const t1 = t0 + 21 * HOUR;
+  const flags = () => Object.fromEntries(freshOpenings(t1).map((o) => [o.id, o.authFlags]));
+  assert.deepEqual(flags(), { 'greenhouse:acme:101': 1, 'greenhouse:acme:104': -1, 'lever:leverco:a1': -1, 'ashby:ashco:u1': -1 });
   // Pay is stored and read back.
   assert.deepEqual(freshOpenings(t0, 'leverco')[0].pay, { min: 45, max: 55, currency: 'USD', unit: 'hour' });
   // Each board that answered gets its own row, listed nowhere.
@@ -181,14 +220,22 @@ void test('sync: at most every 20 hours, a failed board skipped, stale openings 
   assert.deepEqual(freshOpenings(t0, 'leverco').map((o) => o.id), ['lever:leverco:a1']);
   // Within 20 hours nothing is asked again, even after a failure.
   assert.equal(await syncJobOpenings(t0 + 19 * HOUR, boards), null);
-  assert.equal(asked.length, 4);
+  assert.equal(asked.length, 6);
   // Next day: Acme's new-grad posting is gone, the Lever board fails; both keep their old rows.
   // Ashby now publishes a salary for u1: an update writes it.
   const ashbyPaid = { jobs: [{ ...ashby.jobs[0], compensation: { summaryComponents: [{ compensationType: 'Salary', interval: '1 YEAR', currencyCode: 'USD', minValue: 130000, maxValue: 160000 }] } }, ...ashby.jobs.slice(1)] };
-  replies = { 'greenhouse.io/v1/boards/acme/jobs': { jobs: greenhouse.jobs.slice(1) }, 'ashbyhq.com/posting-api/job-board/ashco': ashbyPaid };
-  const t1 = t0 + 21 * HOUR;
+  // 104's detail answers this time.
+  replies = {
+    'greenhouse.io/v1/boards/acme/jobs': { jobs: greenhouse.jobs.slice(1) },
+    'greenhouse.io/v1/boards/acme/jobs/104': { id: 104, content: '&lt;p&gt;We sponsor visas.&lt;/p&gt;' },
+    'ashbyhq.com/posting-api/job-board/ashco': ashbyPaid,
+  };
+  timeouts = [];
   assert.equal(await syncJobOpenings(t1, boards), 2);
-  assert.equal(asked.length, 8);
+  // Four boards and 104's detail again.
+  assert.equal(asked.length, 11);
+  assert.equal(asked.filter((url) => url.endsWith('/acme/jobs/101')).length, 1);
+  assert.deepEqual(flags(), { 'greenhouse:acme:101': 1, 'greenhouse:acme:104': 0, 'lever:leverco:a1': -1, 'ashby:ashco:u1': -1 });
   const first = sqlite().prepare('SELECT first_seen_at AS f,last_seen_at AS l FROM job_openings WHERE id=?');
   assert.deepEqual(first.get('ashby:ashco:u1'), { f: t0, l: t1 });
   assert.deepEqual(first.get('greenhouse:acme:101'), { f: t0, l: t0 });
@@ -376,8 +423,8 @@ void test('the digest: a saved search’s new matches, merged with followed-comp
     '2 new openings match your saved search; 3 updates at companies you follow',
   );
   // What the page reads back.
-  assert.deepEqual(viewerJobSearch('js-amy'), { saved: { ...DEFAULT_SEARCH, kind: 'intern' }, targetRole: '' });
-  assert.deepEqual(viewerJobSearch('js-cat'), { saved: null, targetRole: '' });
+  assert.deepEqual(viewerJobSearch('js-amy'), { saved: { ...DEFAULT_SEARCH, kind: 'intern' }, targetRole: '', blocked: [] });
+  assert.deepEqual(viewerJobSearch('js-cat'), { saved: null, targetRole: '', blocked: [] });
   for (const body of ['', 'nope', '[]', JSON.stringify({ ...DEFAULT_SEARCH, q: 'x'.repeat(61) }), JSON.stringify({ ...DEFAULT_SEARCH, company: '../x' })])
     assert.equal(parseJobSearch(body), null, body);
 });
@@ -411,4 +458,56 @@ void test('the digest waits for a running sync round, so rows it stamps before 0
   assert.equal(await round, 2);
   assert.equal(await sendCompanyDigest(nine + 11 * 60000), 1);
   assert.deepEqual(db.prepare("SELECT body FROM notifications WHERE user_id='jw-amy'").pluck().all(), ['waitco 2']);
+});
+
+void test('a judged opening keeps its flags; a pay sample is kept once; Greenhouse details stay within the round’s budget', async () => {
+  const two = { judgeco: { ats: 'greenhouse', board: 'judgeco' }, paidco: { ats: 'lever', board: 'paidco' } } as const;
+  const gh = { jobs: [{ id: 7, title: 'Software Engineer Intern', location: { name: 'Remote' }, absolute_url: 'https://example.com/g/7' }] };
+  const lv = (descriptionPlain: string, min: number) => [
+    { id: 'p1', text: 'Data Science Intern, Summer 2029', categories: {}, hostedUrl: 'https://jobs.lever.co/paidco/p1', descriptionPlain, salaryRange: { min, max: min + 10, currency: 'USD', interval: 'per-hour-wage' } },
+  ];
+  const flags = () =>
+    Object.fromEntries(sqlite().prepare("SELECT id,auth_flags FROM job_openings WHERE company_slug IN ('judgeco','paidco') AND kind<>'board' ORDER BY id").raw().all() as [string, number][]);
+  const s0 = Date.UTC(2028, 3, 1, 2),
+    s1 = s0 + 21 * HOUR;
+  const from = asked.length;
+  replies = {
+    'greenhouse.io/v1/boards/judgeco/jobs': gh,
+    'greenhouse.io/v1/boards/judgeco/jobs/7': { id: 7, content: '&lt;ul&gt;&lt;li&gt;Must be a U.S. citizen&lt;/li&gt;&lt;li&gt;Python&lt;/li&gt;&lt;/ul&gt;' },
+    'lever.co/v0/postings/paidco?mode=json': lv('Requires an active Secret clearance.', 40),
+  };
+  assert.equal(await syncJobOpenings(s0, two), 2);
+  assert.deepEqual(flags(), { 'greenhouse:judgeco:7': 2, 'lever:paidco:p1': 4 });
+  // Next round: the judged Greenhouse opening is not asked again, and Lever's description is gone
+  // (unknown): neither unknown overwrites a judged value. The pay moved on.
+  replies = { 'greenhouse.io/v1/boards/judgeco/jobs': gh, 'lever.co/v0/postings/paidco?mode=json': lv('', 60) };
+  assert.equal(await syncJobOpenings(s1, two), 2);
+  assert.equal(asked.slice(from).filter((url) => url.endsWith('/judgeco/jobs/7')).length, 1);
+  assert.deepEqual(flags(), { 'greenhouse:judgeco:7': 2, 'lever:paidco:p1': 4 });
+  assert.deepEqual(freshOpenings(s1, 'paidco')[0].pay, { min: 60, max: 70, currency: 'USD', unit: 'hour' });
+  // The pay sample is the first range seen, with its role and cycle; an opening without pay has none.
+  assert.deepEqual(sqlite().prepare("SELECT * FROM job_pay_samples WHERE company_slug IN ('judgeco','paidco')").all(), [
+    { opening_id: 'lever:paidco:p1', company_slug: 'paidco', kind: 'intern', role: 'data', cycle: 2029, unit: 'hour', currency: 'USD', pay_min: 40, pay_max: 50, first_seen_at: s0 },
+  ]);
+  // A board of 205 new openings: 200 details this round, at most 4 at a time.
+  const big = { jobs: Array.from({ length: 205 }, (_, i) => ({ id: 1000 + i, title: 'Software Engineer Intern', location: { name: '' }, absolute_url: `https://example.com/b/${i}` })) };
+  replies = { 'greenhouse.io/v1/boards/bigco/jobs': big };
+  const answer = globalThis.fetch;
+  let open = 0,
+    most = 0;
+  globalThis.fetch = async (input: string | URL | Request) => {
+    open++;
+    most = Math.max(most, open);
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    open--;
+    return answer(input);
+  };
+  const before = asked.length;
+  try {
+    assert.equal(await syncJobOpenings(s1 + 21 * HOUR, { bigco: { ats: 'greenhouse', board: 'bigco' } }), 205);
+  } finally {
+    globalThis.fetch = answer;
+  }
+  assert.equal(asked.slice(before).filter((url) => /\/bigco\/jobs\/\d+$/.test(url)).length, 200);
+  assert.equal(most, 4);
 });
