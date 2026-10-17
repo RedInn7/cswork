@@ -615,8 +615,9 @@ export function PrivacyDocument() {
                 stress tests and complexity probes, multiple-choice answers,
                 system design chapters read, interview English units finished,
                 finished mock OAs, saved STAR stories and self-grades of open
-                questions, review cards and idea cards. The days you reached the goal, and past rest days
-                and review-break days, are kept on your account to bridge the
+                questions, review cards and idea cards. The days you reached
+                the goal, and past rest days and review-break days, are kept
+                on your account to bridge the
                 streak you see in the top bar, My progress and study reminders,
                 never badges, leaderboards or your public profile; records
                 older than 200 days are deleted the next time it is worked out.
