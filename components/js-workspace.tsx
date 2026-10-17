@@ -231,7 +231,7 @@ export function JsWorkspace({
             </p>
           ) : (
             <>
-              <p className={`fejs-summary ${passed === result.total && result.status === 'done' ? 'fejs-good' : 'fejs-bad'}`}>
+              <p className={`fejs-summary ${result.total > 0 && passed === result.total && result.status === 'done' ? 'fejs-good' : 'fejs-bad'}`}>
                 {scope === 'all' ? t('提交', 'Submit') : t('运行', 'Run')}: {t(`通过 ${passed} / ${result.total}`, `${passed} / ${result.total} passed`)}
                 {justPassed && <strong> · {t('全部通过，已标记完成', 'All passed: marked as solved')}</strong>}
               </p>

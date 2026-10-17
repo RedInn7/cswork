@@ -32,16 +32,25 @@ export type RunResult = {
 };
 
 // Replaces console in the worker: each call becomes one line for the page, MAX_LOG_LINES at most.
+// Array.from, not args.map: array-map's tests switch Array.prototype.map off.
 const CONSOLE = `(() => {
   let lines = 0;
   const line = (level) => (...args) => {
     lines += 1;
     if (lines > ${MAX_LOG_LINES + 1}) return;
-    const text = lines > ${MAX_LOG_LINES} ? '…' : args.map((a) => (typeof a === 'string' ? a : __jsHarness.format(a))).join(' ');
+    const text = lines > ${MAX_LOG_LINES} ? '…' : Array.from(args, (a) => (typeof a === 'string' ? a : __jsHarness.format(a))).join(' ');
     self.postMessage({ type: 'log', level, text });
   };
   self.console = { log: line('log'), info: line('info'), debug: line('debug'), warn: line('warn'), error: line('error'), dir: line('log'), table: line('log') };
 })();`;
+
+/**
+ * The tests run in their own scope with the harness's API as parameters, so their top-level names
+ * (const animal, function own…) can't clash with the learner's and the learner's globals can't
+ * replace test or expect. scripts/frontend-js/build.mjs wraps them the same way.
+ */
+const wrapTests = (tests: string) =>
+  `(({ test, it, describe, expect, fn, useFakeTimers, useRealTimers, advanceTimersByTime, advanceTimersByTimeAsync, runAllTimers, flushPromises }) => {\n${tests}\n})(__jsHarness.api);`;
 
 /** The worker's script and where the learner's code starts in it (1-based). */
 export function workerSource(harness: string, code: string, tests: string, scope: RunScope) {
@@ -51,7 +60,7 @@ __jsHarness
   .run({ only: ${JSON.stringify(scope)}, timeoutMs: ${CASE_TIMEOUT_MS}, report: (result) => self.postMessage({ type: 'case', result }) })
   .then(() => self.postMessage({ type: 'done' }));`;
   return {
-    source: `${prelude}${code}\n;\n${tests}\n;\n${run}\n`,
+    source: `${prelude}${code}\n;\n${wrapTests(tests)}\n${run}\n`,
     firstLine: prelude.split('\n').length,
     codeLines: code.split('\n').length,
   };

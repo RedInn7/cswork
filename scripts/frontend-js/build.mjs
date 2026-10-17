@@ -77,6 +77,10 @@ const read = (slug, file) => {
   return readFileSync(path, 'utf8');
 };
 
+/** As lib/js-runner.ts: the tests in their own scope, the harness's API as parameters. */
+const wrapTests = (tests) =>
+  `(({ test, it, describe, expect, fn, useFakeTimers, useRealTimers, advanceTimersByTime, advanceTimersByTimeAsync, runAllTimers, flushPromises }) => {\n${tests}\n})(__jsHarness.api);`;
+
 /**
  * Runs code and tests after the harness in a fresh vm context, as the browser's worker does:
  * resolves to the per-case results, or { error } when the script itself throws.
@@ -93,7 +97,7 @@ export async function runInVm(harness, code, tests, { only = 'all', timeoutMs = 
     console: { log: say, info: say, warn: say, error: say, debug: say },
   });
   try {
-    vm.runInContext(`${harness}\n${code}\n;\n${tests}\n`, context, { timeout: 2000 });
+    vm.runInContext(`${harness}\n${code}\n;\n${wrapTests(tests)}\n`, context, { timeout: 2000 });
   } catch (error) {
     return { error: String(error?.message ?? error), results: [], logs };
   }

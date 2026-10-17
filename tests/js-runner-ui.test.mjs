@@ -155,6 +155,28 @@ test("a syntax error stops the run and points at the learner's line", async () =
   assert.deepEqual(result.cases, []);
 });
 
+const problem = (slug) => manifest.problems.find((p) => p.slug === slug);
+const runAll = (slug, code) => runJs({ harness: manifest.harness, code, tests: problem(slug).tests, scope: 'all' }).done;
+const allPass = (result) => result.status === 'done' && result.total > 0 && result.cases.length === result.total && result.cases.every((c) => c.pass);
+
+test('console.log works while a test has switched the built-in it relies on off', async () => {
+  // array-map switches Array.prototype.map off, json-stringify JSON.stringify.
+  const map = problem('array-map').solution.replace('const source', "console.log('x', [1], { a: 'b' });\n    const source");
+  assert.ok(allPass(await runAll('array-map', map)));
+  const json = problem('json-stringify').solution.replace('function write(key, v) {', "function write(key, v) {\n    console.log('v', { key }, [key]);");
+  assert.ok(allPass(await runAll('json-stringify', json)));
+});
+
+test("the tests' own top-level names don't clash with the learner's, and the learner can't replace the harness", async () => {
+  // object-create's tests declare const animal; the statement's example does too.
+  assert.ok(allPass(await runAll('object-create', `${problem('object-create').solution}\nconst animal = {};`)));
+  assert.ok(allPass(await runAll('get', `${problem('get').solution}\nconst data = { a: 1 };`)));
+  assert.ok(allPass(await runAll('promise-all', `${problem('promise-all').solution}\nfunction later() {}`)));
+  const shadowed = await runAll('object-create', `${problem('object-create').solution}\nfunction test() {}\nconst fn = 1;\nlet expect;`);
+  assert.equal(shadowed.total, problem('object-create').cases.length);
+  assert.ok(allPass(shadowed));
+});
+
 test('console output is capped', async () => {
   const result = await run(`${debounce.solution}\nfor (let i = 0; i < 500; i++) console.log(i);`);
   assert.equal(result.logs.length, MAX_LOG_LINES + 1);
@@ -253,6 +275,14 @@ test('Submit with every case passing marks the problem done and opens the editor
   assert.deepEqual(JSON.parse(localStorage.getItem('cswork:fe-js:done')), ['debounce']);
   await until(() => localStorage.getItem('cswork:fe-js:debounce') === debounce.solution);
   assert.equal(host.querySelector('.fejs-next a').getAttribute('href'), '/frontend/js/throttle');
+});
+
+test('a run with no cases is not shown as passed', async () => {
+  localStorage.clear();
+  const host = await mount({ problem: { ...view(debounce), tests: '' } });
+  await act(async () => button(host, 'Run').click());
+  await until(() => host.querySelector('.fejs-summary')?.textContent.startsWith('Run: 0 / 0'));
+  assert.ok(host.querySelector('.fejs-summary').classList.contains('fejs-bad'));
 });
 
 test('a saved draft comes back, the editorial asks first, and guests send nothing', async () => {
