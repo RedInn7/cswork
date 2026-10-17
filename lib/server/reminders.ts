@@ -7,6 +7,7 @@ import { ENDED, OA_OPEN } from '@/lib/applications';
 import { englishMessage } from '@/lib/messages-en';
 import { parseReviewPrefs, scheduleReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
+import { coveredNoons } from '@/lib/study-goal';
 import type { Person } from './auth';
 import { origin, setting } from './env';
 import { body, HttpError, json, limit, requirePerson } from './http';
@@ -14,6 +15,7 @@ import { localDate, wall } from './local-day';
 import { mailReady, reminderLines, reminderMail, sendMail, type ReminderDigest } from './mail';
 import { notify } from './notify';
 import { aidsByProblem, gradesByProblem } from './practice-aids';
+import { studyDays } from './study-days';
 import { pushEndpoint, pushReady, pushTo } from './web-push';
 
 /**
@@ -119,8 +121,10 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         [],
         undefined,
         bought.map((t) => wall(t, r.tz)),
+        // A met study goal, a rest day or a review break keeps the streak too (lib/server/study-days.ts).
+        coveredNoons(studyDays(r.user_id, r.tz, now).covered),
       );
-      if (!stats.today && stats.streak >= 2)
+      if (!stats.today && !stats.cells[stats.todayIndex].covered && stats.streak >= 2)
         streak = { days: stats.streak, freezes: stats.freezesLeft, breaks: stats.rescue || !stats.freezesLeft };
     }
   }

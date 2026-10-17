@@ -25,7 +25,7 @@ export const beijingDate = (time: number) =>
   new Date(time + BEIJING).toISOString().slice(0, 10);
 
 /** FNV-1a, a stable 32-bit seed from text. */
-function hash(text: string) {
+export function hash(text: string) {
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
   return h >>> 0;

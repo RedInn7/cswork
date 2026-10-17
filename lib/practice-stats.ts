@@ -10,11 +10,15 @@ export type PracticeCell = {
   frozen?: boolean;
   /** The daily problem was solved on this day. */
   daily?: boolean;
+  /** No AC, but the XP goal was met ('goal') or it was a rest day or review break ('rest'). */
+  covered?: 'goal' | 'rest';
 };
+/** A day kept alive without an AC (lib/server/study-days.ts): its local noon, and why. */
+export type Covered = { time: number; rest: boolean };
 export type PracticeStats = {
   cells: PracticeCell[];
   months: { column: number; label: string }[];
-  /** Consecutive AC days ending today, or yesterday while today has none yet; freezes bridge gaps. */
+  /** Consecutive AC days ending today, or yesterday while today has none yet; freezes and covered days bridge gaps. */
   streak: number;
   /** Longest run of AC days inside the grid. */
   best: number;
@@ -53,6 +57,10 @@ const monthOf = (time: number) => {
  * `bought`: when freezes were bought with points; each covers one gap after the month's
  * free ones, from the day before it was bought to the end of that local month, so it never
  * goes to a gap that broke a streak before the purchase.
+ * `covered`: days the learner met their XP goal, rested or took a review break. Such a day keeps
+ * the streak alive like an AC day but adds no day to it, and needs no freeze.
+ * ponytail: two measures on purpose. The top bar, My progress, the bank's calendar and reminders
+ * pass `covered`; badges, the Accepted dialog and the leaderboard count AC days only.
  */
 export function practiceStats(
   activity: readonly Activity[],
@@ -61,6 +69,7 @@ export function practiceStats(
   daily: readonly number[] = [],
   weeks = WEEKS,
   bought: readonly number[] = [],
+  covered: readonly Covered[] = [],
 ): PracticeStats {
   const solvedByDay = new Map<string, Set<string>>();
   for (const { problem_id, created_at } of activity) {
@@ -70,6 +79,8 @@ export function practiceStats(
     solvedByDay.set(key, set);
   }
   const count = (time: number) => solvedByDay.get(dayKey(time))?.size ?? 0;
+  const coveredDays = new Map(covered.map((c) => [dayKey(c.time), c.rest ? ('rest' as const) : ('goal' as const)]));
+  const alive = (time: number) => count(time) > 0 || coveredDays.has(dayKey(time));
   // A daily problem belongs to its Beijing date (as dailyStreak counts it): star the local
   // cell with that date. ponytail: one that is still tomorrow here appears at local midnight.
   const dailyDays = new Set(daily.map((t) => dayKey(Date.parse(`${beijingDate(t)}T12:00`))));
@@ -103,7 +114,7 @@ export function practiceStats(
   // Today is not over, so the last day a freeze can cover is yesterday.
   for (let i = 1; i < todayIndex; i++) {
     const time = noon(i);
-    if (!count(time) && count(time - DAY) && count(time + DAY) && freeze(time, true)) frozen.add(dayKey(time));
+    if (!alive(time) && alive(time - DAY) && alive(time + DAY) && freeze(time, true)) frozen.add(dayKey(time));
   }
   let best = 0;
   let run = 0;
@@ -113,9 +124,10 @@ export function practiceStats(
     const cell: PracticeCell = { time, count: future ? 0 : count(time), future };
     if (frozen.has(dayKey(time))) cell.frozen = true;
     if (!future && dailyDays.has(dayKey(time))) cell.daily = true;
+    if (!future && !cell.count && coveredDays.has(dayKey(time))) cell.covered = coveredDays.get(dayKey(time));
     cells.push(cell);
     if (!future) {
-      run = cell.count ? run + 1 : cell.frozen ? run : 0;
+      run = cell.count ? run + 1 : cell.frozen || cell.covered ? run : 0;
       best = Math.max(best, run);
       for (const id of solvedByDay.get(dayKey(time)) ?? []) seen.add(id);
     }
@@ -133,11 +145,11 @@ export function practiceStats(
   // A streak survives until the end of today even if today has no AC yet.
   let streak = 0;
   let day = noon(todayIndex);
-  if (count(day) === 0) day -= DAY;
-  // An empty yesterday after an AC day: today's first AC will freeze it.
-  const rescue = !count(day) && day < noon(todayIndex) && count(day - DAY) > 0 && freeze(day, false);
+  if (!alive(day)) day -= DAY;
+  // An empty yesterday after an AC (or covered) day: today's first AC will freeze it.
+  const rescue = !alive(day) && day < noon(todayIndex) && alive(day - DAY) && freeze(day, false);
   if (rescue) day -= DAY;
-  while (count(day) > 0 || frozen.has(dayKey(day))) {
+  while (alive(day) || frozen.has(dayKey(day))) {
     if (count(day)) streak++;
     day -= DAY;
   }
@@ -154,6 +166,7 @@ export function practiceStats(
       FREEZES_PER_MONTH -
       (freeUsed.get(monthOf(noon(todayIndex))) ?? 0) +
       tokens.filter((t) => !t.used && t.month === monthOf(noon(todayIndex))).length,
-    rescue,
+    // Covered days alone make no streak worth a rescue.
+    rescue: rescue && streak > 0,
   };
 }

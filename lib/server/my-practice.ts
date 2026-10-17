@@ -36,6 +36,7 @@ const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mc
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
+// The server alone writes goal (goal:YYYY-MM-DD, a met study goal: lib/server/study-days.ts).
 const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read', 'curated', 'doing']);
 const UPVOTED = /^content:(?:experience|interview_question)\//;
 const VOTE = { up: 'down', down: 'up' } as const;
@@ -261,7 +262,7 @@ export async function handleMyPractice(
       items: db
         .prepare(
           `SELECT target,mark,created_at AS createdAt FROM user_marks
-          WHERE user_id=? AND (? IS NULL OR mark=?) AND (? IS NULL OR target=?)
+          WHERE user_id=? AND mark<>'goal' AND (? IS NULL OR mark=?) AND (? IS NULL OR target=?)
           ORDER BY created_at DESC`,
         )
         .all(p.id, only, only, of, of),
