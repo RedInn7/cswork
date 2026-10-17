@@ -14,6 +14,7 @@ import {
   localStamp,
   NOTES_MAX,
   oaOpen,
+  offerOpen,
   REFERRAL_STATUS,
   stageDays,
   stageSince,
@@ -27,7 +28,7 @@ import {
 } from '@/lib/applications';
 import { SOURCES } from '@/lib/experience';
 import { api } from '@/lib/types';
-import { TrackerStats } from './application-tracker-extras';
+import { SchedulePanel, TrackerStats } from './application-tracker-extras';
 
 const ADD = '.tracker [data-add]';
 const KEPT_ADD = 'cswork:tracker:add';
@@ -54,6 +55,7 @@ type Form = {
   applied: string;
   oa: string;
   interview: string;
+  offer: string;
   referral: string;
   link: string;
   notes: string;
@@ -73,6 +75,7 @@ const toForm = (a?: Application): Form => ({
   applied: localStamp(a?.appliedAt ?? null, false),
   oa: localStamp(a?.oaDeadline ?? null).replace(' ', 'T'),
   interview: localStamp(a?.interviewAt ?? null).replace(' ', 'T'),
+  offer: localStamp(a?.offerDeadline ?? null).replace(' ', 'T'),
   referral: a?.referral ?? '',
   link: a?.link ?? '',
   notes: a?.notes ?? '',
@@ -279,6 +282,8 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
       appliedAt: fromInput(form.applied),
       oaDeadline: fromInput(form.oa),
       interviewAt: fromInput(form.interview),
+      // Kept when the card leaves the Offer stage (the field hides, the date stays).
+      offerDeadline: fromInput(form.offer),
       referral: form.referral,
       link,
       notes: form.notes,
@@ -367,8 +372,8 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
         </button>
         <small>
           {t(
-            '包含 OA 截止（提前 1 天和 2 小时提醒）、面试（提前 1 小时）和跟进事项。',
-            'OA deadlines (reminded a day and two hours before), interviews (an hour before) and follow-ups.',
+            '包含 OA 截止（提前 1 天和 2 小时提醒）、面试（提前 1 小时）、跟进事项和 offer 截止（提前 3 天和 1 天）。',
+            'OA deadlines (reminded a day and two hours before), interviews (an hour before), follow-ups and offer deadlines (3 days and a day before).',
           )}
         </small>
       </div>
@@ -391,6 +396,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
           </ul>
         </section>
       )}
+      {items.length > 0 && <SchedulePanel items={items} now={now} zh={zh} />}
       {items.length > 0 && <TrackerStats items={items} now={now} zh={zh} />}
       {error && (
         <p className="resume-error" role="alert">
@@ -444,6 +450,12 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
               {t('面试时间', 'Interview')}
               <input type="datetime-local" value={form.interview} onChange={(e) => set({ interview: e.target.value })} />
             </label>
+            {form.stage === 'offer' && (
+              <label>
+                {t('Offer 截止', 'Offer deadline')}
+                <input type="datetime-local" value={form.offer} onChange={(e) => set({ offer: e.target.value })} />
+              </label>
+            )}
             <label>
               {t('渠道', 'Channel')}
               <select value={form.channel} onChange={(e) => set({ channel: e.target.value })}>
@@ -549,10 +561,14 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                   {list.map((a) => {
                     const open = oaOpen(a);
                     const left = open ? countdown(a.oaDeadline!, now, !zh) : null;
+                    // At the Offer stage, never with an open OA (lib/applications.ts OA_OPEN).
+                    const offer = offerOpen(a);
+                    const offerLeft = offer ? countdown(a.offerDeadline!, now, !zh) : null;
+                    const soon = (left && a.oaDeadline! - now < SOON) || (offerLeft && a.offerDeadline! - now < SOON);
                     const quiet = stale(a, now) ? Math.floor((now - stageSince(a)) / DAY) : 0;
                     const interviewed = a.interviewAt !== null && a.interviewAt < now;
                     return (
-                      <li key={a.id} className="tracker-card" data-id={a.id} data-due={open && left && a.oaDeadline! - now < SOON ? 'soon' : undefined}>
+                      <li key={a.id} className="tracker-card" data-id={a.id} data-due={soon ? 'soon' : undefined}>
                         <p className="tracker-company">{a.company}</p>
                         {a.role && <p className="tracker-role">{a.role}</p>}
                         {open && (
@@ -560,6 +576,22 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                             <time dateTime={new Date(a.oaDeadline!).toISOString()}>
                               {left ? t(`OA 还剩 ${left}`, `OA due in ${left}`) : t('OA 已截止', 'OA deadline passed')}
                             </time>
+                          </p>
+                        )}
+                        {offer && (
+                          <p className="tracker-due">
+                            <time dateTime={new Date(a.offerDeadline!).toISOString()}>
+                              {offerLeft ? t(`Offer 还剩 ${offerLeft}`, `Offer expires in ${offerLeft}`) : t('Offer 已截止', 'Offer deadline passed')}
+                            </time>
+                            {offerLeft && (
+                              <>
+                                {' '}
+                                <a href={`/career/templates?template=extension&application=${encodeURIComponent(a.id)}`}>
+                                  {t('申请延期', 'Ask for more time')}
+                                  <span className="sr-only"> {a.company}</span>
+                                </a>
+                              </>
+                            )}
                           </p>
                         )}
                         {a.interviewAt !== null && (
