@@ -208,7 +208,7 @@ function cleanPages(raw: unknown): PdfPage[] {
           .slice(0, 20_000)
           .map((v) => {
             const i = (v ?? {}) as Partial<Record<keyof PdfItem, unknown>>;
-            return { s: String(i.s ?? '').slice(0, 2000), x: num(i.x), y: num(i.y), w: num(i.w), h: num(i.h) || 10 };
+            return { s: typeof i.s === 'string' ? i.s.slice(0, 2000) : '', x: num(i.x), y: num(i.y), w: num(i.w), h: num(i.h) || 10 };
           }),
       };
     });

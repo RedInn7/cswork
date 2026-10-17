@@ -660,11 +660,11 @@ function AutofillBookmarklet({ resume, version, zh }: { resume: Resume; version:
     ref.current?.setAttribute('href', autofillHref(autofillData(resume), { origin: location.origin, zh }));
   }, [resume, zh]);
   return (
-    <details className="resume-autofill">
+    <details className="resume-autofill" id="resume-autofill">
       <summary>{t('网申填表书签（Greenhouse、Lever、Ashby）', 'Application autofill bookmarklet (Greenhouse, Lever, Ashby)')}</summary>
       <div className="tracker-bookmarklet">
         {/* Clicked here it would only run on this page: it is for dragging to the bookmarks bar. */}
-        <a ref={ref} href="/career/resume/builder" onClick={(e) => e.preventDefault()}>
+        <a ref={ref} href="#resume-autofill" onClick={(e) => e.preventDefault()}>
           {t('网申填表', 'Autofill application')}
           {version && ` · ${version}`}
         </a>

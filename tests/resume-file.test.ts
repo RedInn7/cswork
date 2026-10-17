@@ -11,13 +11,13 @@ const all = () => true;
 const text = (bytes: Uint8Array | undefined) => new TextDecoder().decode(bytes);
 const at = (bytes: Uint8Array, sig: number[]) => bytes.findIndex((_, i) => sig.every((b, k) => bytes[i + k] === b));
 
-test('crc32 is the IEEE check value', () => {
+void test('crc32 is the IEEE check value', () => {
   assert.equal(crc32(new TextEncoder().encode('123456789')), 0xcbf43926);
   assert.equal(crc32(new Uint8Array()), 0);
 });
 
 for (const deflate of [false, true])
-  test(`zip and unzip round-trip ${deflate ? 'deflated' : 'stored'} entries with UTF-8 names`, async () => {
+  void test(`zip and unzip round-trip ${deflate ? 'deflated' : 'stored'} entries with UTF-8 names`, async () => {
     const binary = Uint8Array.from({ length: 3000 }, (_, i) => (i * 7) % 256);
     const bytes = await zip([{ name: 'notes/算法.md', data: '# 二分\nlo, hi = 0, n' }, { name: 'b.bin', data: binary }], deflate);
     assert.equal(bytes[6] & 0x08, 0, 'no data descriptor');
@@ -31,7 +31,7 @@ for (const deflate of [false, true])
     assert.deepEqual([...picked!.keys()], ['notes/算法.md']);
   });
 
-test('an archive that inflates past the cap is null; a broken or encrypted one throws', async () => {
+void test('an archive that inflates past the cap is null; a broken or encrypted one throws', async () => {
   const zeros = new Uint8Array(1 << 20);
   const bomb = await zip([{ name: 'word/document.xml', data: zeros }], true);
   assert.ok(bomb.length < 5000, 'a megabyte of zeros packs small');
@@ -58,7 +58,7 @@ const p = (body: string, props = '') => `<w:p w:rsidR="00A1"><w:pPr>${props}<w:t
 const r = (t: string) => `<w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${t}</w:t></w:r>`;
 const list = '<w:numPr><w:ilvl w:val="0"/><w:numId w:val="3"/></w:numPr>';
 
-test('docxText: lists get a bullet, tabs and table cells a tab, a text box is read once, entities decode', () => {
+void test('docxText: lists get a bullet, tabs and table cells a tab, a text box is read once, entities decode', () => {
   const xml = `<w:document ${W}><w:body>
     ${p(r('Ada ') + r('Lovelace'))}
     ${p(r('Go &amp; Rust') + '<w:r><w:br/></w:r>' + r('&lt;b&gt; &quot;x&quot; &#x4E2D;&#25991;&apos;'))}
@@ -91,7 +91,7 @@ test('docxText: lists get a bullet, tabs and table cells a tab, a text box is re
 });
 
 const item = (s: string, x: number, y: number, w: number, h = 10): PdfItem => ({ s, x, y, w, h });
-test('pdfLines: runs on a baseline join left to right, a far gap keeps two spaces for the date split', () => {
+void test('pdfLines: runs on a baseline join left to right, a far gap keeps two spaces for the date split', () => {
   const page = {
     w: 612,
     items: [
@@ -112,7 +112,7 @@ test('pdfLines: runs on a baseline join left to right, a far gap keeps two space
   assert.equal(pdfLines([{ w: 612, items: [] }]), '', 'no text layer: nothing');
 });
 
-test('pdfLines: a two-column page under a full-width name reads the left column, then the right', () => {
+void test('pdfLines: a two-column page under a full-width name reads the left column, then the right', () => {
   const rows = (x: number, cells: (string | [string, string])[]) =>
     cells.flatMap((c, i) => (Array.isArray(c) ? [item(c[0], x, 700 - 12 * i, 55), item(c[1], 470, 700 - 12 * i, 92)] : [item(c, x, 700 - 12 * i, c.length * 5)]));
   const page = {
@@ -176,7 +176,7 @@ const docx = (body: string) =>
     true,
   );
 
-test('readResumeFile: a .docx made by Word comes out as entries parseResumeText fills the builder with', async () => {
+void test('readResumeFile: a .docx made by Word comes out as entries parseResumeText fills the builder with', async () => {
   const bytes = await docx(
     [
       p(r('Ada Lovelace'), '<w:pStyle w:val="Title"/>'),
@@ -208,7 +208,7 @@ test('readResumeFile: a .docx made by Word comes out as entries parseResumeText 
   assert.equal(long.length, 20_000, 'cut to what the paste box holds');
 });
 
-test('readResumeFile: refuses big files, other formats and a zip with no Word document', async () => {
+void test('readResumeFile: refuses big files, other formats and a zip with no Word document', async () => {
   const code = (blob: Blob) => readResumeFile(blob).then(() => 'read', (e: Error) => e.message);
   assert.equal(await code(new Blob([new Uint8Array(5 * 1024 * 1024 + 1)])), 'too-big');
   assert.equal(await code(new Blob(['{\\rtf1 Ada}'])), 'type');
@@ -219,7 +219,7 @@ test('readResumeFile: refuses big files, other formats and a zip with no Word do
   assert.equal(await code(new Blob([bomb as BlobPart])), 'docx', 'a bomb');
 });
 
-test('the PDF sandbox page: pinned pdf.js behind its own CSP, eval and font loading off, four pages', () => {
+void test('the PDF sandbox page: pinned pdf.js behind its own CSP, eval and font loading off, four pages', () => {
   const page = pdfSandboxSource();
   assert.equal(PDFJS_URL, 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/');
   assert.ok(page.startsWith(`<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${PDF_SANDBOX_CSP}">`));

@@ -4,6 +4,7 @@
 // questions left alone, nothing submitted, and no filling at all off those three hosts.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+// @ts-expect-error -- jsdom ships no types; the .mjs UI tests use it untyped too.
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { autofillData, autofillHref } from '../lib/autofill-bookmarklet';
 import { blankResume } from '../components/resume-builder';
@@ -19,7 +20,7 @@ const resume = {
   experience: [{ title: 'Acme Corp', subtitle: 'SWE Intern', dates: 'Summer 2025', bullets: '' }],
 };
 
-test('autofillData: the name splits at its last space, links sort into LinkedIn, GitHub and site', () => {
+void test('autofillData: the name splits at its last space, links sort into LinkedIn, GitHub and site', () => {
   assert.deepEqual(autofillData(resume), {
     first: 'Ada King',
     last: 'Lovelace',
@@ -53,8 +54,8 @@ function run(url: string, body: string, link = href) {
   w.alert = (m: string) => void seen.alerts.push(m);
   w.confirm = (m: string) => (seen.confirms.push(m), true);
   w.open = ((u: string, target?: string) => (seen.opened.push([u, target]), null)) as typeof w.open;
-  w.document.addEventListener('input', (e) => seen.input.push((e.target as HTMLInputElement).id || (e.target as HTMLInputElement).name));
-  w.document.addEventListener('change', (e) => seen.change.push((e.target as HTMLInputElement).id || (e.target as HTMLInputElement).name));
+  w.document.addEventListener('input', (e: Event) => seen.input.push((e.target as HTMLInputElement).id || (e.target as HTMLInputElement).name));
+  w.document.addEventListener('change', (e: Event) => seen.change.push((e.target as HTMLInputElement).id || (e.target as HTMLInputElement).name));
   w.document.addEventListener('submit', () => seen.submits++);
   assert.ok(link.startsWith('javascript:'));
   // A browser percent-decodes a javascript: URL once, then runs it.
@@ -83,7 +84,7 @@ const GREENHOUSE = `<form id="application-form" action="/apply" method="post">
   <button type="submit">Submit application</button>
 </form>`;
 
-test('Greenhouse: the matching empty text fields fill through input events; the rest stays as it was', () => {
+void test('Greenhouse: the matching empty text fields fill through input events; the rest stays as it was', () => {
   const { seen, value, overlay, w } = run('https://job-boards.greenhouse.io/acme/jobs/4012345', GREENHOUSE);
   assert.deepEqual(
     ['#first_name', '#last_name', '#preferred_name', '#email', '#phone', '#candidate-location', '#question_1', '#question_2', '#question_3', '#question_4', '#question_5', '#question_6', '#question_9'].map(value),
@@ -110,7 +111,7 @@ test('Greenhouse: the matching empty text fields fill through input events; the 
   assert.match(w.document.getElementById('cswork-autofill')!.textContent!, /^已填 0 项/, 'nothing empty is left to fill');
 });
 
-test('Lever: full name, current company and the URL fields, Twitter left alone', () => {
+void test('Lever: full name, current company and the URL fields, Twitter left alone', () => {
   const field = (label: string, name: string, type = 'text') =>
     `<li class="application-question"><label><div class="application-label">${label}<span class="required">✱</span></div><div class="application-field"><input type="${type}" name="${name}"></div></label></li>`;
   const { value, seen } = run(
@@ -135,7 +136,7 @@ test('Lever: full name, current company and the URL fields, Twitter left alone',
   assert.equal(seen.submits, 0);
 });
 
-test('Ashby: system fields, school and degree; pronouns, emergency contact and the file stay empty', () => {
+void test('Ashby: system fields, school and degree; pronouns, emergency contact and the file stay empty', () => {
   const field = (id: string, label: string, type = 'text') =>
     `<div class="ashby-application-form-field-entry"><label for="${id}" class="ashby-application-form-question-title">${label}</label><input id="${id}" name="${id}" type="${type}" placeholder="Type here..."></div>`;
   const { value } = run(
@@ -157,7 +158,7 @@ test('Ashby: system fields, school and degree; pronouns, emergency contact and t
   ]);
 });
 
-test('other hosts: nothing is filled; an embedded application form is offered instead', () => {
+void test('other hosts: nothing is filled; an embedded application form is offered instead', () => {
   const lookalike = run('https://careers.acme.example/jobs/42', GREENHOUSE);
   assert.equal(lookalike.value('#first_name'), '');
   assert.deepEqual(lookalike.seen.input, []);
@@ -175,7 +176,7 @@ test('other hosts: nothing is filled; an embedded application form is offered in
   assert.deepEqual(embedded.seen.alerts, []);
 });
 
-test('the English bookmarklet; an empty resume fills nothing', () => {
+void test('the English bookmarklet; an empty resume fills nothing', () => {
   const english = autofillHref(data, { origin: 'https://cswork.test', zh: false });
   assert.match(run('https://jobs.lever.co/acme/1/apply', '<input name="email" type="email">', english).overlay!.textContent!, /^Filled 1 field\. Check them, then submit it yourself\./);
   const empty = autofillHref(autofillData(blankResume()), { origin: 'https://cswork.test', zh: false });
