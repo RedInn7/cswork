@@ -323,3 +323,26 @@ test('versions: copy the resume under a name, edit it apart from the base, count
   await again.unmount();
   localStorage.clear();
 });
+
+test('a rewrite written back from a review page in another tab shows here, and the next edit keeps it', async () => {
+  localStorage.clear();
+  localStorage.setItem(KEY, JSON.stringify({ name: 'Ada Lovelace', skills: 'Python' }));
+  localStorage.setItem(VERSIONS, JSON.stringify({ Backend: { name: 'Ada Lovelace', skills: 'Go' } }));
+  const { host, unmount } = await mount({ zh: false, signedIn: false });
+  const written = (key, value) => {
+    localStorage.setItem(key, value);
+    return act(async () => window.dispatchEvent(new window.StorageEvent('storage', { key, newValue: value })));
+  };
+  await written(KEY, JSON.stringify({ name: 'Ada Lovelace', skills: 'Python, SQL' }));
+  assert.match(host.querySelector('.resume-sheet').textContent, /Python, SQL/);
+  await setValue(host.querySelector('#resume-name'), 'Ada King');
+  const saved = JSON.parse(localStorage.getItem(KEY));
+  assert.deepEqual([saved.name, saved.skills], ['Ada King', 'Python, SQL'], 'the edit did not write the old copy back');
+  await pick(host.querySelector('.resume-versions select'), 'Backend');
+  await written(VERSIONS, JSON.stringify({ Backend: { name: 'Ada Lovelace', skills: 'Go, Kafka' } }));
+  assert.equal(host.querySelector('#resume-skills').value, 'Go, Kafka');
+  await setValue(host.querySelector('#resume-name'), 'Ada K.');
+  assert.equal(JSON.parse(localStorage.getItem(VERSIONS)).Backend.skills, 'Go, Kafka');
+  await unmount();
+  localStorage.clear();
+});

@@ -218,6 +218,17 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
       // Blocked storage or a damaged entry: start blank.
     }
     setVersions(readVersions());
+    // A review page in another tab may write a rewrite back: pick it up so the next edit here keeps it.
+    const sync = (e: StorageEvent) => {
+      try {
+        if (e.key === RESUME_KEY && e.newValue) setBase(normalizeResume(JSON.parse(e.newValue)));
+        if (e.key === RESUME_VERSIONS_KEY) setVersions(readVersions());
+      } catch {
+        // A damaged entry: keep what is on screen.
+      }
+    };
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
   }, []);
   // The sheet is 7.5in wide (Letter less 0.5in margins): taller than 10in runs onto a second page.
   // Compared in its own units, so the preview's screen zoom doesn't matter.

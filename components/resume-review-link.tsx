@@ -252,7 +252,7 @@ export function ResumeReviewPage({ token }: { token: string }) {
     try {
       if (version) localStorage.setItem(RESUME_VERSIONS_KEY, JSON.stringify({ ...versions, [version]: next }));
       else localStorage.setItem(RESUME_KEY, JSON.stringify(next));
-      setStatus(t('已写回简历生成器。如果生成器开在别的标签页，先刷新它再继续改。', 'Written back to the resume builder. If the builder is open in another tab, reload it before editing.'));
+      setStatus(t('已写回简历生成器，开着的生成器标签页会自动更新。', 'Written back to the resume builder; a builder tab left open picks it up.'));
     } catch {
       setStatus(t('这台浏览器不让写入本地存储：请复制建议，手动改。', 'This browser blocks local storage: copy the rewrite and edit it by hand.'));
     }
