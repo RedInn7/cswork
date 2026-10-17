@@ -335,7 +335,8 @@ const IN_PROCESS: readonly Stage[] = ['oa', 'phone', 'onsite'];
  * OA, phone or onsite with when an offer would likely come (eta), and whether that is after the
  * deadline. The estimate is the company's median process length from member write-ups counted
  * from the application (process.weeks), else this board's own median from that stage to an
- * offer counted from the move there, else unknown (null). Null with no offer deadline ahead.
+ * offer counted from the move there, else unknown (null). An eta already past says nothing about
+ * the deadline: such a process is overdue (and counted late). Null with no offer deadline ahead.
  */
 export function expeditePlan(items: readonly Application[], now: number) {
   const offer = items.filter((a) => offerOpen(a) && a.offerDeadline! > now).sort((x, y) => x.offerDeadline! - y.offerDeadline!)[0];
@@ -348,7 +349,8 @@ export function expeditePlan(items: readonly Application[], now: number) {
       const median = weeks === undefined ? medianDays(items, a.stage, 'offer') : null;
       const eta =
         weeks !== undefined ? (appliedOn(a) ?? a.createdAt) + weeks * 7 * DAY : median !== null ? stageSince(a) + median * DAY : null;
-      return { a, eta, late: eta !== null && eta > deadline };
+      const overdue = eta !== null && eta <= now;
+      return { a, eta, overdue, late: overdue || (eta !== null && eta > deadline) };
     });
   return { offer, deadline, rows };
 }

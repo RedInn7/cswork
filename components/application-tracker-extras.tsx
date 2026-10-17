@@ -225,14 +225,16 @@ export function SchedulePanel({ items, now, zh }: { items: readonly Application[
               </tr>
             </thead>
             <tbody>
-              {plan.rows.map(({ a, eta, late }) => (
+              {plan.rows.map(({ a, eta, late, overdue }) => (
                 <tr key={a.id} data-late={late ? '' : undefined}>
                   <th scope="row">{a.company}</th>
                   <td>{STAGE_NAMES[a.stage][i]}</td>
                   <td>
                     {eta === null
                       ? t('未知，建议问 recruiter 时间线', 'Unknown: ask the recruiter for a timeline')
-                      : `${localStamp(eta, false)} · ${late ? t('晚于截止', 'after the deadline') : t('赶得上', 'in time')}`}
+                      : overdue
+                        ? t('已超过通常时长，建议问 recruiter', 'Past the usual timeline: ask the recruiter')
+                        : `${localStamp(eta, false)} · ${late ? t('晚于截止', 'after the deadline') : t('赶得上', 'in time')}`}
                     {eta !== null && <small> ({a.process ? t('面经中位数', 'member write-ups') : t('你看板上的中位数', 'your board’s median')})</small>}
                   </td>
                   <td>

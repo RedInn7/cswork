@@ -411,12 +411,13 @@ void test('the expedite plan: member write-ups first, then the board median, els
   const plan = expeditePlan(items, now)!;
   assert.deepEqual([plan.offer.id, plan.deadline], ['offer', now + 10 * DAY]);
   assert.deepEqual(
-    plan.rows.map((r) => [r.a.id, r.eta, r.late]),
+    plan.rows.map((r) => [r.a.id, r.eta, r.late, r.overdue]),
     [
-      ['w', now + 14 * DAY, true],
-      ['w2', now - 6 * DAY, false],
-      ['m', now + 5 * DAY, false],
-      ['u', null, false],
+      ['w', now + 14 * DAY, true, false],
+      // Its usual timeline ran out six days ago: not "in time", ask the recruiter.
+      ['w2', now - 6 * DAY, true, true],
+      ['m', now + 5 * DAY, false, false],
+      ['u', null, false, false],
     ],
   );
 });
