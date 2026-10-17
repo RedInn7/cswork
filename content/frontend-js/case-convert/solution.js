@@ -6,5 +6,5 @@ function camelToSnake(text) {
 }
 
 function snakeToCamel(text) {
-  return text.replace(/([^_])_+([a-z\d])/g, (_, before, letter) => before + letter.toUpperCase());
+  return text.replace(/(?<=[^_])_+([a-z\d])/g, (_, letter) => letter.toUpperCase());
 }

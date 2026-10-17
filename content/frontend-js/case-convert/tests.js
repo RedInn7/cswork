@@ -30,6 +30,11 @@ test('snakeToCamel: repeated underscores between words', () => {
   expect(snakeToCamel('a__b')).toBe('aB');
 });
 
+test('snakeToCamel: one-letter words', () => {
+  expect(snakeToCamel('is_a_test')).toBe('isATest');
+  expect(snakeToCamel('a_b_c')).toBe('aBC');
+});
+
 test('snakeToCamel: leading and trailing underscores stay', () => {
   expect(snakeToCamel('__private_value')).toBe('__privateValue');
   expect(snakeToCamel('_id')).toBe('_id');

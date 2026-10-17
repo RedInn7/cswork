@@ -61,3 +61,17 @@ test('a wrong answer fails: the cases are not trivially satisfied', async () => 
     'starts the next task as soon as one finishes',
   ]);
 });
+
+test('the build runs the tests in their own scope too, and catches the one-letter-word snakeToCamel bug', async () => {
+  const problem = (slug: string) => manifest.problems.find((p) => p.slug === slug)!;
+  const create = problem('object-create');
+  // object-create's tests declare const animal, as its statement's example does.
+  const clash = await runInVm(manifest.harness, `${create.solution}\nconst animal = {};`, create.tests);
+  assert.equal(clash.error, undefined);
+  assert.ok(clash.results.length > 0 && clash.results.every((r: { pass: boolean }) => r.pass));
+  const cases = problem('case-convert');
+  const greedy = cases.solution.replace(/return text\.replace\(\/\(\?<=\[\^_\]\).*\n/, "return text.replace(/([^_])_+([a-z\\d])/g, (_, b, l) => b + l.toUpperCase());\n");
+  assert.notEqual(greedy, cases.solution);
+  const { results } = await runInVm(manifest.harness, greedy, cases.tests);
+  assert.deepEqual(Array.from(results.filter((r: { pass: boolean }) => !r.pass), (r: { name: string }) => r.name), ['snakeToCamel: one-letter words']);
+});
