@@ -601,7 +601,8 @@ function IdeaReview({ t, english, titleOf }: { t: T; english: boolean; titleOf: 
 
 /** A saved excerpt's page: the citation its first quote ends with (components/command-palette.tsx clipQuote). */
 export function clipSource(body: string) {
-  const cite = /— \[([^\]]*)\]\((\/[^)\s]*)\)/.exec(body);
+  // A path on this site only: `//host` would leave it.
+  const cite = /— \[([^\]]*)\]\((\/(?![/\\])[^)\s]*)\)/.exec(body);
   return cite ? { title: cite[1], href: cite[2] } : null;
 }
 

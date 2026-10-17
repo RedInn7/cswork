@@ -194,4 +194,5 @@ test('cards & excerpts: a new card is checked and saved as its own note; excerpt
 test('a saved excerpt links back to the page its quote cites', () => {
   assert.deepEqual(clipSource('> a\n> — [Two Pointers](/library/concept/two-pointers)\n'), { title: 'Two Pointers', href: '/library/concept/two-pointers' });
   assert.equal(clipSource('> — [x](https://evil.test)'), null);
+  assert.equal(clipSource('> — [x](//evil.test/a)'), null);
 });
