@@ -9,7 +9,7 @@ import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 import { lingEditorial } from './ling-editorials';
 import { oaJudgeRegistry } from './oa-judge';
-import { aidsByProblem } from './practice-aids';
+import { aidsByProblem, gradesByProblem } from './practice-aids';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
@@ -43,7 +43,7 @@ const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','outp
 
 type HistoryRow = Omit<
   PracticeHistoryItem,
-  'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds' | 'whiteboard' | 'brute'
+  'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds' | 'whiteboard' | 'brute' | 'grades'
 > & {
   languages: string;
   acAt: string | null;
@@ -69,8 +69,10 @@ export function practiceHistory(userId: string): PracticeHistoryItem[] {
     )
     .all(userId) as HistoryRow[];
   const aids = aidsByProblem(userId);
+  const grades = gradesByProblem(userId);
   return rows.map((row) => ({
     ...row,
+    ...(grades.has(row.problemId) && { grades: grades.get(row.problemId) }),
     help: aids.get(row.problemId)?.help ?? 'none',
     solveSeconds: aids.get(row.problemId)?.solveSeconds ?? null,
     whiteboard: aids.get(row.problemId)?.whiteboard ?? null,

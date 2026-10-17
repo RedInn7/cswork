@@ -462,3 +462,28 @@ void test("the digest counts tracker cards and contacts to follow up by the end 
     ['1 job-search follow-up is due', '/career/contacts'],
   ]);
 });
+
+void test("the digest's reviews follow the learner's daily cap and break (pref:review)", async () => {
+  const gil = person('r-gil'); // Two reviews due, at most one a day.
+  const una = person('r-una'); // The same two, on a break.
+  for (const p of [gil, una]) {
+    addUser(p);
+    await call(p, 'POST', 'oj/notify', prefs({ hour: 12, streak: false }));
+    // Solved Oct 10 (UTC): due on the 13th, overdue on the 15th.
+    accept(p.id, 'lc-1', Date.UTC(2026, 9, 10, 9));
+    accept(p.id, 'lc-2', Date.UTC(2026, 9, 10, 10));
+  }
+  const pref = (p: Person, body: unknown) =>
+    sqlite()
+      .prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,'pref:review',?,0)")
+      .run(p.id, JSON.stringify(body));
+  pref(gil, { dailyCap: 1 });
+  pref(una, { dailyCap: 1, pausedFrom: '2026-10-14', pausedDays: 3 });
+  await sendLearnerReminders(NOW);
+  assert.equal(notice(`rem:2026-10-15:${gil.id}`)!.body, '1 problem is due for review');
+  assert.equal(notice(`rem:2026-10-15:${una.id}`), undefined, 'nothing due on a break');
+  // A malformed note reads as no settings: both reviews, the day after.
+  sqlite().prepare("UPDATE user_notes SET body='{oops' WHERE user_id=? AND target='pref:review'").run(gil.id);
+  await sendLearnerReminders(NOW + DAY);
+  assert.equal(notice(`rem:2026-10-16:${gil.id}`)!.body, '2 problems are due for review');
+});

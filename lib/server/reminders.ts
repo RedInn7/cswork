@@ -5,7 +5,7 @@ import { sqlite } from '@/db/sqlite';
 import { roomWeek, weeklyTitle } from '@/lib/contest';
 import { ENDED, OA_OPEN } from '@/lib/applications';
 import { englishMessage } from '@/lib/messages-en';
-import { dueReviews, type PracticeHistoryItem } from '@/lib/practice-review';
+import { parseReviewPrefs, scheduleReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
 import type { Person } from './auth';
 import { origin, setting } from './env';
@@ -13,7 +13,7 @@ import { body, HttpError, json, limit, requirePerson } from './http';
 import { localDate, wall } from './local-day';
 import { mailReady, reminderLines, reminderMail, sendMail, type ReminderDigest } from './mail';
 import { notify } from './notify';
-import { aidsByProblem } from './practice-aids';
+import { aidsByProblem, gradesByProblem } from './practice-aids';
 import { pushEndpoint, pushReady, pushTo } from './web-push';
 
 /**
@@ -86,12 +86,23 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         if (times) times.push(wall(a.created_at, r.tz));
         else byProblem.set(a.problem_id, [wall(a.created_at, r.tz)]);
       }
-      // dueReviews reads only acAt and help (a solve with help climbs a longer ladder).
+      // scheduleReviews reads only acAt, help (a solve with help climbs a longer ladder) and
+      // grades; the daily cap and a break come from the learner's pref:review note.
       const aids = aidsByProblem(r.user_id);
-      reviews = dueReviews(
-        [...byProblem].map(([id, acAt]) => ({ acAt, help: aids.get(id)?.help ?? 'none' }) as PracticeHistoryItem),
+      const grades = gradesByProblem(r.user_id);
+      const note = db.prepare("SELECT body FROM user_notes WHERE user_id=? AND target='pref:review'").pluck().get(r.user_id);
+      reviews = scheduleReviews(
+        [...byProblem].map(
+          ([id, acAt]) =>
+            ({
+              acAt,
+              help: aids.get(id)?.help ?? 'none',
+              grades: grades.get(id)?.map(([at, grade]) => [wall(at, r.tz), grade]),
+            }) as PracticeHistoryItem,
+        ),
         local,
-      ).length;
+        parseReviewPrefs(note),
+      ).today.length;
     }
     if (r.streak) {
       const bought = db
