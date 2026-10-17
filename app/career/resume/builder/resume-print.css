@@ -60,6 +60,123 @@
   top: 16px;
   display: grid;
   gap: 12px;
+  /* The check and the paste import sit above the sheet: past the screen's height, scroll inside. */
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+/* Version switcher across both columns. */
+.resume-versions {
+  grid-column: 1 / -1;
+  align-items: end;
+  padding: 12px 16px;
+  border: 1px solid #e1e6eb;
+  border-radius: 14px;
+  background: #ffffff;
+}
+.resume-versions label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1d252d;
+}
+.resume-versions :is(select, input) {
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+  font-weight: 400;
+}
+.resume-versions :is(select, input):focus-visible,
+.resume-check button:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 2px;
+}
+/* The rule check beside the preview (lib/resume-check.ts). */
+.resume-check {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid #e1e6eb;
+  border-left: 4px solid #0d7a63;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+}
+.resume-check h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.resume-check h2 span {
+  margin-left: 6px;
+  color: #0b5c47;
+  font-size: 22px;
+}
+.resume-check h2 small {
+  color: #5d6b78;
+  font-size: 13px;
+}
+.resume-check p {
+  margin: 0;
+}
+.resume-check ol {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 22px;
+}
+.resume-check li button {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: #0b5c8a;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.resume-check summary {
+  color: #0b5c8a;
+  font-weight: 700;
+  cursor: pointer;
+}
+.resume-check details ol {
+  margin-top: 4px;
+}
+.resume-check > small {
+  color: #5d6b78;
+  font-size: 12px;
+}
+/* Paste-to-import and its preview. */
+.resume-paste textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+.resume-paste-preview {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f6f7f9;
+  font-size: 13px;
+}
+.resume-paste-preview dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.resume-paste-preview dt {
+  font-weight: 700;
+  color: #1d252d;
+}
+.resume-paste-preview dd {
+  margin: 0;
+  color: #3a4652;
+  overflow-wrap: anywhere;
 }
 .resume-import {
   position: relative;
@@ -169,6 +286,8 @@
   }
   .resume-builder-preview {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
   .resume-paper {
     zoom: 0.8;
@@ -196,6 +315,9 @@
   body:has(.resume-sheet) :is(.mock-public-crumbs, .mock-public-hero, .resume-privacy),
   .resume-builder-form,
   .resume-builder-tools,
+  .resume-versions,
+  .resume-check,
+  .resume-paste,
   .resume-builder-status,
   .resume-page-warning {
     display: none;
@@ -209,6 +331,7 @@
     min-height: 0;
     margin: 0;
     padding: 0;
+    max-height: none;
     zoom: 1;
     overflow: visible;
     border-radius: 0;
@@ -247,6 +370,54 @@
   .dark .resume-add:focus-visible,
   .dark .resume-import:focus-within {
     outline: 2px solid #87d2bb;
+  }
+  .dark .resume-versions {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .resume-versions label {
+    color: #d6dfe8;
+  }
+  .dark .resume-versions :is(select, input) {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .resume-versions :is(select, input):focus-visible,
+  .dark .resume-check button:focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .resume-check {
+    border: 1px solid #2b2f33;
+    border-left: 4px solid #0d7a63;
+    background: #191919;
+  }
+  .dark .resume-check h2 span {
+    color: #9fdac4;
+  }
+  .dark .resume-check h2 small {
+    color: #b5c2ce;
+  }
+  .dark .resume-check li button {
+    border: 0;
+    background: none;
+    color: #94cffc;
+    text-decoration: underline;
+  }
+  .dark .resume-check summary {
+    color: #94cffc;
+  }
+  .dark .resume-check > small {
+    color: #b5c2ce;
+  }
+  .dark .resume-paste-preview {
+    background: #151516;
+  }
+  .dark .resume-paste-preview dt {
+    color: #d6dfe8;
+  }
+  .dark .resume-paste-preview dd {
+    color: #c4d1dd;
   }
   .dark .resume-import {
     border: 1px solid #31383f;

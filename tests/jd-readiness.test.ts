@@ -219,8 +219,9 @@ void test('limits: a long posting is cut, not refused; too short is 400; three a
   assert.equal(await status(learner, { job }), 429);
   assert.equal(used(learner.id), 3);
   assert.equal(await status(learner, null, 'GET'), 404);
+  // AI off: the keyword mode takes skill ids only (tests/jd-keywords.test.ts), never the posting.
   delete process.env.ANTHROPIC_API_KEY;
-  assert.equal(await status(me, { job }), 404);
+  assert.equal(await status(me, { job }), 400);
 });
 
 void test('an unusable reply is a failed call that still counts', async () => {

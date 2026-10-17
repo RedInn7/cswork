@@ -689,9 +689,52 @@
   font-weight: 700;
   text-decoration: none;
 }
-:is(.jd-rounds a, .jd-skill a, .jd-plan-link):focus-visible {
+:is(.jd-rounds a, .jd-skill a, .jd-plan-link, .jd-mode a, .jd-match a, .jd-match select):focus-visible {
   outline: 2px solid #0d7a63;
   outline-offset: 2px;
+}
+/* Keyword mode's note, and the resume match (components/jd-resume-match.tsx). */
+.jd-mode {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #eef1f4;
+  color: #3a4652;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.jd-mode a,
+.jd-match a {
+  color: #0d6b57;
+  font-weight: 700;
+}
+.jd-match-pick {
+  display: grid;
+  gap: 4px;
+  justify-self: start;
+  font-size: 14px;
+  font-weight: 700;
+}
+.jd-match-pick select {
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+  font-weight: 400;
+}
+.resume-result .jd-match-found {
+  display: grid;
+  gap: 4px;
+  padding-left: 0;
+  list-style: none;
+}
+.jd-match-found small,
+.jd-match > small {
+  color: #5d6b78;
+  font-size: 13px;
 }
 
 /* ── the visa timeline ── */
@@ -1301,8 +1344,25 @@
     color: #ffffff;
     text-decoration: none;
   }
-  .dark :is(.jd-rounds a, .jd-skill a, .jd-plan-link):focus-visible {
+  .dark :is(.jd-rounds a, .jd-skill a, .jd-plan-link, .jd-mode a, .jd-match a, .jd-match select):focus-visible {
     outline: 2px solid #87d2bb;
+  }
+  .dark .jd-mode {
+    background: #101213;
+    color: #c4d1dd;
+  }
+  .dark .jd-mode a,
+  .dark .jd-match a {
+    color: #93d6c1;
+  }
+  .dark .jd-match-pick select {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .jd-match-found small,
+  .dark .jd-match > small {
+    color: #b5c2ce;
   }
   .dark .visa-form fieldset {
     border: 1px solid #2b2f33;
