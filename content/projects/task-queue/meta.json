@@ -1,0 +1,27 @@
+{
+  "slug": "task-queue",
+  "titleZh": "带重试和可见性超时的任务队列",
+  "titleEn": "Task queue with retries and visibility timeouts",
+  "summaryZh": "类 SQS 的至少一次投递：可见性超时、receipt、nack 退避、死信，多消费者不重复领取。",
+  "summaryEn": "SQS-style at-least-once delivery: visibility timeouts, receipts, nack with backoff, dead letters, and no double claims across consumers.",
+  "level": "intermediate",
+  "roles": ["backend", "infra"],
+  "hours": 14,
+  "run": "http",
+  "milestones": [
+    { "zh": "入队、receive、ack，先进先出，单元测试覆盖", "en": "Enqueue, receive and ack in FIFO order, with unit tests" },
+    { "zh": "可见性超时、receipt 失效、nack 和延迟消息", "en": "Visibility timeouts, receipts that expire, nack and delayed messages" },
+    { "zh": "最大次数和死信，多消费者并发，跑通验收脚本", "en": "Max attempts and the dead-letter list, concurrent consumers, and the acceptance script" },
+    { "zh": "持久化或长轮询二选一，README 写清投递语义", "en": "Durability or long polling, and a README that states the delivery guarantees" }
+  ],
+  "bulletZh": "用 {语言} 实现至少一次投递的任务队列，支持可见性超时、带退避的重试和死信队列；{N} 个消费者并发下零重复领取，{可选：重启不丢消息}。",
+  "bulletEn": "Built an at-least-once task queue in {language} with visibility timeouts, retries with backoff and a dead-letter queue; zero double claims across {N} concurrent consumers{, durable across restarts}.",
+  "deepDive": [
+    { "zh": "你的队列是至少一次还是恰好一次？消费者要怎么配合才能做到效果上只处理一次？", "en": "Is your queue at-least-once or exactly-once? What must consumers do to get effectively-once processing?" },
+    { "zh": "为什么 ack 要用 receipt 而不是消息 ID？", "en": "Why does ack take a receipt rather than the message ID?" },
+    { "zh": "可见性超时设多长合适？任务比超时还慢会怎样，怎么解决？", "en": "How long should the visibility timeout be? What happens when a job outlasts it, and how do you fix that?" },
+    { "zh": "怎么高效找出已经超时的在途消息？用了什么数据结构？", "en": "How do you find timed-out in-flight messages efficiently? Which data structure?" },
+    { "zh": "严格先进先出和多消费者并行有什么矛盾？SQS 的 FIFO 队列怎么取舍？", "en": "How does strict FIFO conflict with parallel consumers, and what does an SQS FIFO queue trade off?" },
+    { "zh": "进了死信的消息之后该怎么处理？要报警吗？", "en": "What should happen to dead-lettered messages afterwards? Should they page someone?" }
+  ]
+}
