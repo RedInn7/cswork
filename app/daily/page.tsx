@@ -8,6 +8,7 @@ import { oaStatementMarkdown } from '@/lib/oa-verified-statement';
 import { seoMetadata } from '@/lib/seo';
 import { HttpError } from '@/lib/server/http';
 import { dailyProblem } from '@/lib/server/daily-problem';
+import { withFeed } from '@/lib/server/feeds';
 import { requestLocale } from '@/lib/server/locale';
 import { oaEnglishStatement } from '@/lib/server/oa-judge';
 import { getPublicOaProblem } from '@/lib/server/oj-problems';
@@ -16,13 +17,14 @@ import { DailyView } from './view';
 
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
+  const metadata = seoMetadata({
     title: zh ? '每日一题 · cswork' : 'Daily problem · cswork',
     description: zh
       ? '每天一道题，所有人同一道：单号日练 500 路算法题，双号日练热门公司的 OA 真题。'
       : 'One problem a day, the same for everyone: Line 500 on odd dates, a hot company’s OA on even dates.',
     path: '/daily',
   });
+  return withFeed(metadata, '/feeds/daily.xml', zh);
 }
 
 export default async function DailyPage() {
