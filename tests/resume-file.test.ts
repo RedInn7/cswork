@@ -58,7 +58,7 @@ const p = (body: string, props = '') => `<w:p w:rsidR="00A1"><w:pPr>${props}<w:t
 const r = (t: string) => `<w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${t}</w:t></w:r>`;
 const list = '<w:numPr><w:ilvl w:val="0"/><w:numId w:val="3"/></w:numPr>';
 
-void test('docxText: lists get a bullet, tabs and table cells a tab, a text box is read once, entities decode', () => {
+void test('docxText: lists get a bullet, tabs and one-paragraph cells a tab, a text box is read once, entities decode', () => {
   const xml = `<w:document ${W}><w:body>
     ${p(r('Ada ') + r('Lovelace'))}
     ${p(r('Go &amp; Rust') + '<w:r><w:br/></w:r>' + r('&lt;b&gt; &quot;x&quot; &#x4E2D;&#25991;&apos;'))}
@@ -81,7 +81,8 @@ void test('docxText: lists get a bullet, tabs and table cells a tab, a text box 
       '• Wrote docs',
       '• Both!',
       'Acme',
-      'Intern\tJun 2025 – Sep 2025',
+      'Intern',
+      'Jun 2025 – Sep 2025',
       '\tRemote',
       'Beta Labs\t2024\tNYC',
       'In a box',
@@ -222,6 +223,28 @@ void test('readResumeFile: a .docx made by Word comes out as entries parseResume
 
   const long = await readResumeFile(new Blob([(await docx(p(r('x'.repeat(30_000))))) as BlobPart]));
   assert.equal(long.length, 20_000, 'cut to what the paste box holds');
+});
+
+void test('readResumeFile: a layout table keeps each cell\'s lines; a header in cells or behind tabs still splits', async () => {
+  const tc = (...paras: string[]) => `<w:tc><w:tcPr><w:tcW w:w="4000" w:type="dxa"/></w:tcPr>${paras.map((t) => p(r(t))).join('')}</w:tc>`;
+  const bytes = await docx(
+    [
+      `<w:tbl><w:tr>${tc('Ada Lovelace')}${tc('ada@example.com', '(555) 123-4567')}</w:tr></w:tbl>`,
+      p(r('Seattle, WA') + '<w:r><w:tab/></w:r>' + r('github.com/ada')),
+      `<w:tbl><w:tr>${tc('SKILLS', 'Go, Python')}${tc('EXPERIENCE', 'Acme Corp', 'Jun 2025 – Sep 2025')}</w:tr></w:tbl>`,
+    ].join(''),
+  );
+  const read = await readResumeFile(new Blob([bytes as BlobPart]));
+  assert.equal(read, 'Ada Lovelace\tada@example.com\n(555) 123-4567\nSeattle, WA\tgithub.com/ada\nSKILLS\nGo, Python\nEXPERIENCE\nAcme Corp\nJun 2025 – Sep 2025');
+  const resume = parseResumeText(read);
+  assert.deepEqual(
+    [resume.name, resume.email, resume.phone, resume.location, resume.links, resume.skills],
+    ['Ada Lovelace', 'ada@example.com', '(555) 123-4567', 'Seattle, WA', 'github.com/ada', 'Go, Python'],
+  );
+  assert.deepEqual(resume.experience, [{ title: 'Acme Corp', subtitle: '', dates: 'Jun 2025 – Sep 2025', bullets: '' }]);
+  // Contact details set apart by tab stops.
+  const tabbed = parseResumeText('Ada Lovelace\nSeattle, WA\t(555) 123-4567\tada@example.com\nEXPERIENCE\nAcme Corp');
+  assert.deepEqual([tabbed.name, tabbed.email, tabbed.phone, tabbed.location], ['Ada Lovelace', 'ada@example.com', '(555) 123-4567', 'Seattle, WA']);
 });
 
 void test('readResumeFile: refuses big files, other formats and a zip with no Word document', async () => {

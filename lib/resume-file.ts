@@ -39,15 +39,17 @@ const decode = (s: string) =>
   );
 // A text box is written twice (DrawingML and a VML fallback); moved text sits at both ends of the move.
 const SKIP = /<(mc:Fallback|w:moveFrom)\b[^>]*>[\s\S]*?<\/\1>/g;
-const TOKEN = /<w:p\b[^>]*?(\/)?>|<\/w:p>|<w:(?:br|cr)\b[^>]*\/>|<w:tab\/>|<w:ptab\b[^>]*\/>|<\/w:t[cr]>|<w:numPr>|<w:pStyle w:val="List[^"]*"|<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g;
+const TOKEN = /<w:p\b[^>]*?(\/)?>|<\/w:p>|<w:(?:br|cr)\b[^>]*\/>|<w:tab\/>|<w:ptab\b[^>]*\/>|<w:tc\b[^>]*>|<\/w:t[cr]>|<w:numPr>|<w:pStyle w:val="List[^"]*"|<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g;
 /**
  * A .docx's word/document.xml as lines of text. A paragraph or break ends a line; a tab and a
- * table cell end in a tab, so a date laid out in a table or behind a tab stop splits off in
- * parseResumeText; a Word list paragraph gets the "• " its numbering would draw.
+ * one-paragraph table cell end in a tab, so a date laid out in a table or behind a tab stop splits
+ * off in parseResumeText, while a cell of several paragraphs (a two-column layout table) keeps its
+ * lines; a Word list paragraph gets the "• " its numbering would draw.
  */
 export function docxText(xml: string) {
   const out: string[] = [];
   let bulleted = false;
+  let paragraphs = 0;
   // The end of a cell or row replaces the line break of the paragraph it closes.
   const end = (sep: string) => {
     if (out.length && /^[\n\t]$/.test(out[out.length - 1])) out[out.length - 1] = sep;
@@ -55,11 +57,12 @@ export function docxText(xml: string) {
   };
   for (const [tag, empty, text] of xml.replace(SKIP, '').matchAll(TOKEN)) {
     if (text !== undefined) out.push(decode(text));
-    else if (tag === '</w:p>') out.push('\n');
-    else if (/^<w:p[\s/>]/.test(tag)) {
-      bulleted = false;
-      if (empty) out.push('\n');
-    } else if (tag === '</w:tc>') end('\t');
+    else if (tag === '</w:p>' || empty) {
+      out.push('\n');
+      paragraphs++;
+    } else if (/^<w:p[\s/>]/.test(tag)) bulleted = false;
+    else if (tag.startsWith('<w:tc')) paragraphs = 0;
+    else if (tag === '</w:tc>') end(paragraphs > 1 ? '\n' : '\t');
     else if (tag === '</w:tr>') end('\n');
     else if (tag === '<w:numPr>' || tag.startsWith('<w:pStyle')) {
       if (!bulleted) out.push('• ');
