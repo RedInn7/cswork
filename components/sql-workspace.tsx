@@ -236,6 +236,7 @@ export function SqlInspect({ problemId, code, stdin }: { problemId: string; code
   async function run(cte: string | null) {
     const query = cte === null ? explainQuery(code) : ctePreview(code, cte);
     if (!query) return;
+    // ponytail: the last peek is dropped, not cancelled on the server; a SQL run takes milliseconds.
     running.current?.abort();
     const controller = new AbortController();
     running.current = controller;

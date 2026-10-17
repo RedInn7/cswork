@@ -18,7 +18,7 @@ const TOKEN =
 function tokens(sql: string) {
   const out: Token[] = [];
   TOKEN.lastIndex = 0;
-  for (let m; TOKEN.lastIndex < sql.length && (m = TOKEN.exec(sql)); )
+  for (let m: RegExpExecArray | null; TOKEN.lastIndex < sql.length && (m = TOKEN.exec(sql)); )
     if (!/^(?:\s|--|\/\*)/.test(m[0])) out.push({ text: m[0], start: m.index, end: TOKEN.lastIndex });
   return out;
 }
@@ -100,7 +100,7 @@ export function parsePlan(table: SqlTable | null): PlanNode[] | null {
   const roots: PlanNode[] = [];
   const nodes = new Map<number, PlanNode>();
   for (const { id, parent, detail } of rows) {
-    const node = { id, detail, children: [] };
+    const node: PlanNode = { id, detail, children: [] };
     const siblings = parent === 0 ? roots : nodes.get(parent)?.children;
     if (!siblings) return null;
     siblings.push(node);
