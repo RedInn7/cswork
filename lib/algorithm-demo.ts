@@ -1522,19 +1522,19 @@ class InputError extends Error {
     super(pair[1]);
   }
 }
-function fail(zh: string, en: string): never {
+export function fail(zh: string, en: string): never {
   throw new InputError([zh, en]);
 }
 /** "a; b" → ['a', 'b']: the parts a kind's input is split into. */
-function parts(text: string, count: number, optional = 0): string[] {
+export function parts(text: string, count: number, optional = 0): string[] {
   const found = text.split(/[;；|]/).map((p) => p.trim());
   if (found.length < count - optional || found.length > count)
     fail(`格式是 ${count} 段，用分号隔开`, `Use ${count} parts separated by semicolons`);
   return found;
 }
-const tokens = (text: string) => text.split(/[\s,，、]+/).filter(Boolean);
+export const tokens = (text: string) => text.split(/[\s,，、]+/).filter(Boolean);
 /** Whole numbers with |v| ≤ limit, between 1 and `max` of them. */
-function numbers(text: string, max: number, limit = 99): number[] {
+export function numbers(text: string, max: number, limit = 99): number[] {
   const list = tokens(text);
   if (!list.length) fail('至少要填一个数', 'Enter at least one number');
   if (list.length > max) fail(`最多 ${max} 个数`, `At most ${max} numbers`);
@@ -1545,7 +1545,7 @@ function numbers(text: string, max: number, limit = 99): number[] {
     return value;
   });
 }
-function one(text: string) {
+export function one(text: string) {
   if (tokens(text).length !== 1) fail('这里只填一个整数', 'Enter exactly one whole number here');
   return numbers(text, 1)[0];
 }
@@ -1562,7 +1562,7 @@ const words = (text: string, max: number, size: number, what: Pair) => {
       fail(`「${w}」：每个词只能是 1 到 ${size} 个英文字母`, `"${w}": each word is 1 to ${size} letters a–z`);
   return list;
 };
-const input = (label: Pair, placeholder: string, read: (text: string) => unknown[]): DemoInput => ({
+export const input = (label: Pair, placeholder: string, read: (text: string) => unknown[]): DemoInput => ({
   label,
   placeholder,
   parse: (text) => {
