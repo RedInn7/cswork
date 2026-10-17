@@ -2,10 +2,10 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { sqlite } from '@/db/sqlite';
 import lcMapFile from '@/lib/content/company-lc-map.json';
-import { JOB_SEARCH_NOTE, matchesSearch, searchQuery, type JobSearch } from '@/lib/job-tags';
+import { JOB_BLOCKED_NOTE, JOB_SEARCH_NOTE, matchesSearch, searchQuery, type JobSearch } from '@/lib/job-tags';
 import { canonicalCompany, companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { hiddenCompanies } from './env';
-import { jobSyncRunning, parseJobSearch } from './job-openings';
+import { jobSyncRunning, parseBlocked, parseJobSearch } from './job-openings';
 import { notify } from './notify';
 import { oaReadyProblems } from './oa-judge';
 import { pushTo } from './web-push';
@@ -17,7 +17,8 @@ import { pushTo } from './web-push';
  * since its last digest (or since the follow), so nothing is lost while the worker is down; every
  * due follow then moves on, notice or not. A learner's saved /career/jobs search (note
  * career:jobs-search) adds the openings first seen in the 24 hours before 09:00 that match it, in
- * the same one notice, pushed when push is on.
+ * the same one notice, pushed when push is on; companies the learner blocked (career:jobs-blocked)
+ * are left out of those matches, not out of the followed companies' news.
  */
 const HOUR = 3600000;
 const DAY = 24 * HOUR;
@@ -25,7 +26,7 @@ const DAY = 24 * HOUR;
 // What a board's first sync found (its own row keeps that time) is no news. MAX: a remapped board's old row lingers.
 export const NOT_FIRST_SYNC = `first_seen_at>(SELECT MAX(first_seen_at) FROM job_openings WHERE company_slug=j.company_slug AND kind='board')`;
 
-/** Each saved search's matches among the openings first seen in [cutoff - 24 h, cutoff): userId → the search and the matches' companies. */
+/** Each saved search's matches among the openings first seen in [cutoff - 24 h, cutoff), blocked companies left out: userId → the search and the matches' companies. */
 function searchMatches(cutoff: number) {
   const db = sqlite();
   const saved = db.prepare('SELECT user_id AS userId,body FROM user_notes WHERE target=?').all(JOB_SEARCH_NOTE) as { userId: string; body: string }[];
@@ -35,15 +36,22 @@ function searchMatches(cutoff: number) {
   const fresh = (
     db
       .prepare(
-        `SELECT company_slug AS companySlug,title,location,kind,pay_unit AS unit FROM job_openings j
+        `SELECT company_slug AS companySlug,title,location,kind,pay_unit AS unit,auth_flags AS authFlags FROM job_openings j
         WHERE first_seen_at>=? AND first_seen_at<? AND kind<>'board' AND ${NOT_FIRST_SYNC}`,
       )
-      .all(cutoff - DAY, cutoff) as { companySlug: string; title: string; location: string; kind: string; unit: string }[]
+      .all(cutoff - DAY, cutoff) as { companySlug: string; title: string; location: string; kind: string; unit: string; authFlags: number }[]
   ).flatMap((o) => (hidden.has(o.companySlug) ? [] : [{ ...o, pay: o.unit || null }]));
   if (!fresh.length) return matches;
+  const blocked = new Map(
+    (db.prepare('SELECT user_id,body FROM user_notes WHERE target=?').raw().all(JOB_BLOCKED_NOTE) as [string, string][]).map(([userId, body]) => [
+      userId,
+      new Set(parseBlocked(body)),
+    ]),
+  );
   for (const { userId, body } of saved) {
     const search = parseJobSearch(body);
-    const slugs = search ? fresh.filter((o) => matchesSearch(o, search)).map((o) => o.companySlug) : [];
+    const mine = blocked.get(userId);
+    const slugs = search ? fresh.filter((o) => !mine?.has(o.companySlug) && matchesSearch(o, search)).map((o) => o.companySlug) : [];
     if (search && slugs.length) matches.set(userId, { search, slugs });
   }
   return matches;

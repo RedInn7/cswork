@@ -2,7 +2,8 @@
 // rel noopener noreferrer nofollow, the add link carries company, role and link, and the tracker
 // (components/application-tracker.tsx) opens a filled-in Saved card from them, saved only on
 // confirm, with the address cleaned and a non-https link dropped. Role, term and pay tags; hiding
-// an opening in this browser; the mark on openings already on the tracker; saving the search.
+// an opening in this browser; the mark on openings already on the tracker; saving the search;
+// sponsorship badges and blocking a company (components/job-blocked.tsx).
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { JSDOM, VirtualConsole } from 'jsdom';
@@ -16,6 +17,7 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { JobList, payLabel, trackerAddPath } = await import('../components/job-list.tsx');
 const { JobSearchSave } = await import('../components/job-search-save.tsx');
+const { BlockToggle, BlockedList } = await import('../components/job-blocked.tsx');
 const { DEFAULT_SEARCH } = await import('../lib/job-tags.ts');
 const { ApplicationTracker, KeepTrackerAdd } = await import('../components/application-tracker.tsx');
 
@@ -28,6 +30,7 @@ const opening = {
   kind: 'new-grad',
   postedAt: Date.UTC(2026, 9, 1, 12),
   pay: null,
+  authFlags: -1,
 };
 
 test('an opening links out to the posting and to a filled-in tracker card', () => {
@@ -76,12 +79,35 @@ test('pay labels', () => {
   assert.equal(payLabel({ min: 8000, max: 9500, currency: 'USD', unit: 'month' }, false), '$8,000–9,500 / month');
 });
 
+test('sponsorship badges: what the description says, none when unknown or clear', () => {
+  const render = (zh, flags) =>
+    [...new JSDOM(renderToStaticMarkup(createElement(JobList, { items: [{ ...opening, authFlags: flags }], names: { stripe: 'Stripe' }, zh }))).window.document.querySelectorAll('.job-openings-auth')].map(
+      (b) => b.textContent,
+    );
+  assert.deepEqual(render(false, 7), ['No visa sponsorship', 'US citizen / green card', 'Security clearance']);
+  assert.deepEqual(render(true, 5), ['写明不担保', '需安全许可']);
+  assert.deepEqual(render(false, 2), ['US citizen / green card']);
+  assert.deepEqual(render(false, 0), []);
+  assert.deepEqual(render(false, -1), []);
+});
+
 const posted = [];
 const notes = [];
+// The server's career:jobs-blocked note, and each body saved to it.
+let blockedNote = '';
+const blocks = [];
+let blockFails = false;
 let tracked = [];
 globalThis.fetch = async (url, init = {}) => {
   const key = `${init.method ?? 'GET'} ${String(url)}`;
   if (key === 'GET /api/oj/applications') return Response.json({ items: tracked, max: 300 });
+  if (key === 'GET /api/oj/notes?target=career%3Ajobs-blocked') return Response.json({ target: 'career:jobs-blocked', body: blockedNote, updatedAt: null });
+  if (key === 'PUT /api/oj/notes?target=career%3Ajobs-blocked') {
+    if (blockFails) return Response.json({ error: 'busy' }, { status: 429 });
+    blockedNote = JSON.parse(init.body).body;
+    blocks.push(blockedNote);
+    return Response.json({ ok: true });
+  }
   if (key === 'PUT /api/oj/notes?target=career%3Ajobs-search') {
     notes.push(JSON.parse(init.body).body);
     return Response.json({ ok: true });
@@ -276,4 +302,110 @@ test('saving the search: one note, replaced or deleted, focus kept', async () =>
   assert.equal(document.activeElement.textContent, 'Save this search and tell me about new matches');
   assert.equal(host.querySelector('.job-search-forget'), null);
   await act(async () => root.unmount());
+});
+
+const two = [
+  ...rows,
+  { ...opening, id: 'lever:ramp:1', companySlug: 'ramp', title: 'Backend Engineer Intern', url: 'https://jobs.lever.co/ramp/1', kind: 'intern' },
+];
+test('blocking from the list: every row of the company goes, with an undo; focus kept; failures said', async () => {
+  localStorage.clear();
+  blocks.length = 0;
+  blockedNote = '["figma"]';
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  const render = (props) => act(async () => root.render(createElement(JobList, { items: two, names: { stripe: 'Stripe', ramp: 'Ramp' }, zh: false, withCompany: true, signedIn: true, ...props })));
+  const titles = () => [...host.querySelectorAll('.job-openings-title')].map((a) => a.textContent);
+  // Without the blocked list (signed out, or one company's page): no block buttons.
+  await render({ signedIn: false });
+  assert.equal(host.querySelector('.job-openings-block'), null);
+  await act(async () => root.unmount());
+  const view = createRoot(host);
+  await act(async () => view.render(createElement(JobList, { items: two, names: { stripe: 'Stripe', ramp: 'Ramp' }, zh: false, withCompany: true, signedIn: true, blocked: ['figma'] })));
+  await act(async () => {});
+  const buttons = [...host.querySelectorAll('.job-openings-block')];
+  assert.equal(buttons.length, 4);
+  assert.equal(buttons[0].textContent, 'Block company: Stripe');
+  await act(async () => buttons[0].click());
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['figma', 'stripe']);
+  assert.deepEqual(titles(), ['Backend Engineer Intern']);
+  assert.equal(host.querySelector('.job-hidden-bar output').textContent, 'Blocked Stripe: its roles are no longer shown.');
+  assert.equal(document.activeElement.textContent, 'Undo: block Stripe');
+  await act(async () => document.activeElement.click());
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['figma']);
+  assert.equal(titles().length, 4);
+  assert.equal(host.querySelector('.job-hidden-bar'), null);
+  assert.equal(document.activeElement.textContent, 'Block company: Stripe', 'focus goes back to the company’s first row');
+  // Not saved: nothing goes, and it says so.
+  blockFails = true;
+  await act(async () => host.querySelector('.job-openings-block').click());
+  blockFails = false;
+  assert.equal(titles().length, 4);
+  assert.equal(host.querySelector('[role="alert"]').textContent, 'Not saved. Please try again.');
+  await act(async () => view.unmount());
+  // Undoing the only block removes the note.
+  blockedNote = '';
+  const last = createRoot(host);
+  await act(async () => last.render(createElement(JobList, { items: two, names: { ramp: 'Ramp' }, zh: true, withCompany: true, signedIn: true, blocked: [] })));
+  await act(async () => [...host.querySelectorAll('.job-openings-block')].at(-1).click());
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['ramp']);
+  await act(async () => document.activeElement.click());
+  assert.equal(blocks.at(-1), '', 'an empty list removes the note');
+  await act(async () => last.unmount());
+  host.remove();
+});
+
+test('blocking: at most 100 companies, nothing sent past that', async () => {
+  blocks.length = 0;
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  const full = Array.from({ length: 100 }, (_, i) => `co-${i}`);
+  blockedNote = JSON.stringify(full);
+  await act(async () => root.render(createElement(JobList, { items: two, names: {}, zh: true, withCompany: true, signedIn: true, blocked: full })));
+  await act(async () => host.querySelector('.job-openings-block').click());
+  assert.equal(blocks.length, 0);
+  assert.equal(host.querySelector('[role="alert"]').textContent, '最多屏蔽 100 家公司，请先取消几家。');
+  await act(async () => root.unmount());
+  host.remove();
+});
+
+test('the company page toggle and the blocked list', async () => {
+  blocks.length = 0;
+  const signedOut = new JSDOM(renderToStaticMarkup(createElement(BlockToggle, { zh: true, slug: 'stripe', name: 'Stripe', blocked: null }))).window.document;
+  const link = signedOut.querySelector('a');
+  assert.equal(link.textContent, '登录后可屏蔽公司');
+  assert.equal(link.getAttribute('href'), '/?view=account');
+  assert.equal(signedOut.querySelector('button'), null);
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  blockedNote = '["ramp"]';
+  await act(async () => root.render(createElement(BlockToggle, { zh: false, slug: 'stripe', name: 'Stripe', blocked: ['ramp'] })));
+  const button = host.querySelector('button');
+  assert.equal(button.textContent, 'Block this company: Stripe');
+  assert.equal(host.querySelector('.job-block output').textContent, '');
+  button.focus();
+  await act(async () => button.click());
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['ramp', 'stripe']);
+  assert.equal(button.textContent, 'Unblock: Stripe');
+  assert.equal(document.activeElement, button, 'the same button keeps focus');
+  assert.match(host.querySelector('.job-block output').textContent, /news from companies you follow still arrives/);
+  await act(async () => button.click());
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['ramp']);
+  assert.equal(button.textContent, 'Block this company: Stripe');
+  await act(async () => root.render(createElement(BlockedList, { zh: false, blocked: ['ramp', 'stripe'], names: { ramp: 'Ramp', stripe: 'Stripe' } })));
+  assert.equal(host.querySelector('summary').textContent, '2 blocked companies · Manage');
+  const unblock = [...host.querySelectorAll('.job-blocked button')];
+  assert.deepEqual(unblock.map((b) => b.textContent), ['Unblock: Ramp', 'Unblock: Stripe']);
+  // Saved, then the page reloads (jsdom does not navigate). The list is read fresh: one blocked
+  // since the page loaded (another tab, a row's button) stays blocked.
+  blockedNote = '["ramp","stripe","figma"]';
+  await act(async () => unblock[0].click());
+  assert.deepEqual(JSON.parse(blocks.at(-1)), ['stripe', 'figma']);
+  await act(async () => root.render(createElement(BlockedList, { zh: true, blocked: [], names: {} })));
+  assert.equal(host.querySelector('.job-blocked'), null, 'nothing blocked: no list');
+  await act(async () => root.unmount());
+  host.remove();
 });

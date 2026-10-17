@@ -1,9 +1,10 @@
 import { headers } from 'next/headers';
+import { BlockToggle } from '@/components/job-blocked';
 import { JobList } from '@/components/job-list';
 import { hiringCycle } from '@/lib/job-tags';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
-import { freshOpenings, type Opening } from '@/lib/server/job-openings';
+import { freshOpenings, viewerJobSearch, type Opening } from '@/lib/server/job-openings';
 import { jobSeasons, type JobSeason } from '@/lib/server/job-seasons';
 
 // Styles: app/company/jobs.css, imported by the pages that show these.
@@ -14,9 +15,10 @@ const SHORT = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric',
 /** "8 月 4 日" / "Aug 4" (UTC, as the sync records it). */
 export const seasonDay = (at: number, zh: boolean) => (zh ? `${new Date(at).getUTCMonth() + 1} 月 ${new Date(at).getUTCDate()} 日` : SHORT.format(at));
 
-/** Whether the viewer is signed in, for the "on your tracker" marks. */
-export async function signedIn() {
-  return !!(await person(new Request(origin(), { headers: await headers() })).catch(() => null));
+/** The signed-in viewer's blocked companies, or null signed out (also no "on your tracker" marks). */
+async function viewerBlocked() {
+  const viewer = await person(new Request(origin(), { headers: await headers() })).catch(() => null);
+  return viewer ? viewerJobSearch(viewer.id).blocked : null;
 }
 
 /** Where the list comes from, that pay is only what some boards publish, and that the posting itself is what counts. */
@@ -24,8 +26,8 @@ export function OpeningsSource({ zh }: { zh: boolean }) {
   return (
     <p className="job-openings-note">
       {zh
-        ? '来自公司在 Greenhouse、Lever、Ashby 上的公开招聘页，每天同步一次，只列标题里写明实习、新毕业生或入门级的岗位。薪资只来自 Lever 和 Ashby 招聘页上公司自己公开的范围，Greenhouse 的列表没有薪资；方向和学期按标题判断。投递前请以公司页面上的岗位要求为准。'
-        : 'From the companies’ public job boards on Greenhouse, Lever and Ashby, synced daily; only roles whose titles say intern, new grad or entry level are listed. Pay is the range a company chose to publish on its Lever or Ashby board; Greenhouse lists carry none. Role and term are read from the title. Check the posting on the company’s page before you apply.'}
+        ? '来自公司在 Greenhouse、Lever、Ashby 上的公开招聘页，每天同步一次，只列标题里写明实习、新毕业生或入门级的岗位。薪资只来自 Lever 和 Ashby 招聘页上公司自己公开的范围，Greenhouse 的列表没有薪资；方向和学期按标题判断。身份要求（不担保签证、需公民或绿卡、需安全许可）由规则从岗位描述里识别，可能漏判，以原帖为准；公司担保过 H-1B 不代表这个岗位担保。投递前请以公司页面上的岗位要求为准。'
+        : 'From the companies’ public job boards on Greenhouse, Lever and Ashby, synced daily; only roles whose titles say intern, new grad or entry level are listed. Pay is the range a company chose to publish on its Lever or Ashby board; Greenhouse lists carry none. Role and term are read from the title. Work authorization marks (no visa sponsorship, US citizen or green card, security clearance) are read from the description by rules and can miss some; the posting is what counts. A company that has sponsored H-1B visas may still not sponsor this role. Check the posting on the company’s page before you apply.'}
     </p>
   );
 }
@@ -72,6 +74,7 @@ export async function JobOpenings({ slug, name, zh, now = Date.now() }: { slug: 
   const items = freshOpenings(now, slug);
   const seasons = seasonLines(jobSeasons(hiringCycle(now) - 1, slug), items, now, zh);
   if (!items.length && !seasons.length) return null;
+  const blocked = await viewerBlocked();
   return (
     <section className="company-hub-section" aria-labelledby="jobs">
       <div className="company-hub-section-head">
@@ -83,6 +86,7 @@ export async function JobOpenings({ slug, name, zh, now = Date.now() }: { slug: 
           <span aria-hidden="true">→</span>
         </a>
       </div>
+      <BlockToggle zh={zh} slug={slug} name={name} blocked={blocked} />
       {seasons.length > 0 && (
         <ul className="job-seasons">
           {seasons.map((s) => (
@@ -95,7 +99,7 @@ export async function JobOpenings({ slug, name, zh, now = Date.now() }: { slug: 
       )}
       {items.length > 0 && (
         <>
-          <JobList items={items.slice(0, SHOWN)} names={{ [slug]: name }} zh={zh} signedIn={await signedIn()} />
+          <JobList items={items.slice(0, SHOWN)} names={{ [slug]: name }} zh={zh} signedIn={blocked !== null} />
           <OpeningsSource zh={zh} />
         </>
       )}

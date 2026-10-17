@@ -1,6 +1,7 @@
 // Seasons on the pages (lib/server/job-seasons.ts): the company panel's season lines
 // (app/company/jobs.tsx), the hiring calendar (app/career/jobs/calendar/page.tsx), and /career/jobs
-// opening with a saved search, a profile's target role or ?all=1.
+// opening with a saved search, a profile's target role or ?all=1; the sponsorship filter and
+// blocked companies on these pages.
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { register } from 'node:module';
@@ -150,4 +151,51 @@ test('/career/jobs: tech roles by default, a saved search or the profile role wh
   assert.equal((await titles({ all: '1' })).length, 3);
   assert.match(doc(await Jobs({ searchParams: Promise.resolve({ all: '1' }) })).querySelector('.job-search-save button').textContent, /Replace my saved search/);
   globalThis.__viewer = null;
+});
+
+test('the sponsorship filter, and blocked companies out of /career/jobs and the calendar but not their own page', async () => {
+  globalThis.__zh = false;
+  const db = sqlite();
+  db.prepare("UPDATE job_openings SET auth_flags=1 WHERE id='greenhouse:stripe:3'").run();
+  const jobs = async (query) => doc(await Jobs({ searchParams: Promise.resolve(query) }));
+  const titles = (d) => [...d.querySelectorAll('.job-openings-title')].map((a) => a.textContent);
+  globalThis.__viewer = null;
+  const all = await jobs({ role: 'tech' });
+  assert.deepEqual(titles(all), ['Machine Learning Engineer, New Grad', SWE]);
+  assert.equal(all.querySelector('.job-openings-auth').textContent, 'No visa sponsorship');
+  assert.equal(all.querySelector('input[name="sponsor"]').checked, false);
+  // Signed out: no block buttons, a sign-in line that says it.
+  assert.equal(all.querySelector('.job-openings-block'), null);
+  assert.match(all.querySelector('.job-search-applied a').textContent, /block companies/);
+  const sponsorOk = await jobs({ role: 'tech', sponsor: '1' });
+  assert.deepEqual(titles(sponsorOk), [SWE], 'not yet judged (-1) stays');
+  assert.equal(sponsorOk.querySelector('input[name="sponsor"]').checked, true);
+  assert.equal(doc(await JobOpenings({ slug: 'stripe', name: 'Stripe', zh: false })).querySelector('.job-block-signin').textContent, 'Sign in to block companies');
+  // Signed in with Stripe blocked.
+  db.prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES('u2','career:jobs-blocked','[\"stripe\"]',1)").run();
+  globalThis.__viewer = { id: 'u2' };
+  try {
+    const blocked = await jobs({ role: 'all' });
+    assert.deepEqual(titles(blocked), []);
+    assert.equal(blocked.querySelector('.job-blocked summary').textContent, '1 blocked company · Manage');
+    assert.equal(blocked.querySelector('.job-blocked button').textContent, 'Unblock: Stripe');
+    assert.equal(blocked.querySelector('select[name="company"] option[value="stripe"]'), null);
+    const calendar = doc(await Calendar()).querySelector('.job-calendar').textContent;
+    assert.doesNotMatch(calendar, /Stripe/);
+    assert.match(calendar, /Jane Street/);
+    // Its own page still lists it, with the toggle on.
+    const page = doc(await JobOpenings({ slug: 'stripe', name: 'Stripe', zh: false }));
+    assert.equal(page.querySelectorAll('.job-openings > li').length, 3);
+    assert.equal(page.querySelector('.job-block button').textContent, 'Unblock: Stripe');
+    // Someone with nothing blocked gets a block button per row.
+    globalThis.__viewer = { id: 'u3' };
+    const open = await jobs({ role: 'all' });
+    assert.equal(titles(open).length, 3);
+    assert.equal(open.querySelector('.job-openings-block').textContent, 'Block company: Stripe');
+    assert.equal(open.querySelector('.job-blocked'), null);
+    assert.match(doc(await Calendar()).querySelector('.job-calendar').textContent, /Stripe/);
+  } finally {
+    globalThis.__viewer = null;
+    db.prepare("UPDATE job_openings SET auth_flags=-1 WHERE id='greenhouse:stripe:3'").run();
+  }
 });
