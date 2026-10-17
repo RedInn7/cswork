@@ -267,9 +267,9 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
                 <strong data-level={level(s.similarity)}>
                   {t('相似度', 'Match')} {Math.round(s.similarity * 100)}% ·{' '}
                   {{ good: t('很接近', 'very close'), close: t('还差一点', 'almost'), low: t('再听一遍试试', 'listen again and retry') }[level(s.similarity)]}
-                </strong>
-                {s.perMinute !== null && <span>{t(`语速约 ${s.perMinute} 词/分钟`, `About ${s.perMinute} words/min`)}</span>}
-                <span>{t(`口头禅 ${s.fillers} 个`, `${s.fillers} filler${s.fillers === 1 ? '' : 's'}`)}</span>
+                </strong>{' '}
+                {s.perMinute !== null && <span>{t(`语速约 ${s.perMinute} 词/分钟`, `About ${s.perMinute} words/min`)} </span>}
+                <span>{t(`口头禅 ${s.fillers} 个`, `${s.fillers} filler${s.fillers === 1 ? '' : 's'}`)} </span>
                 <span className="eng-heard">
                   {t('听到：', 'Heard: ')}
                   <q lang="en">{s.said}</q>
