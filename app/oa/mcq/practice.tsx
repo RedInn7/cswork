@@ -17,6 +17,7 @@ import {
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
 import { McqItem, MCQ_SECTION_NAMES, MCQ_TOPIC_NAMES, type McqText } from '@/components/oa-mcq';
 import { ReportIssue } from '@/components/report-issue';
+import { MCQ_SIMS } from '@/lib/cs-sims';
 import type { McqStat } from '@/lib/server/mcq-stats';
 
 /** A question in the page's language only. */
@@ -385,6 +386,12 @@ export function McqPractice({
                   {revealed && stats[q.id] && (
                     <small className="oa-mcq-due">
                       {statLine(stats[q.id], entry.slice(2), !mcqRight(q.answer, entry.slice(2)), zh)}
+                    </small>
+                  )}
+                  {/* Not in McqItem itself: the mock OA's exam section uses it too. */}
+                  {revealed && MCQ_SIMS[q.id] && (
+                    <small className="oa-mcq-due">
+                      <a href={`/oa/sims#${MCQ_SIMS[q.id]}`}>{t('用模拟器核对', 'Check it in the simulator')}</a>
                     </small>
                   )}
                   {revealed && (
