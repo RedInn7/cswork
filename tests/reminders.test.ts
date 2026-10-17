@@ -556,6 +556,10 @@ void test('no streak line once today is covered: the study goal met, or a rest d
     .prepare("INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,'sd:intro','read',?)")
     .run(ida.id, Date.UTC(2026, 9, 15, 10));
   pref(jon, { restWeekdays: [4] }); // 2026-10-15 is a Thursday.
+  // A review card day far in the future (the browser writes recall:queue) changes nothing.
+  sqlite()
+    .prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,'recall:queue',?,0)")
+    .run(kim.id, JSON.stringify({ v: 1, items: { x: [0, 1e20, 't'] } }));
   await sendLearnerReminders(NOW);
   assert.equal(notice(`rem:2026-10-15:${ida.id}`), undefined);
   assert.equal(notice(`rem:2026-10-15:${jon.id}`), undefined);

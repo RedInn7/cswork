@@ -226,10 +226,49 @@ void test('rest weekdays and the review break are covered as rest', async () => 
   assert.equal(data.week[2].covered, 'rest');
   assert.equal(data.week[3].covered, 'rest');
   assert.equal(data.week[4].covered, null);
-  // A rest weekday comes back every week inside the calendar.
-  assert(data.covered.some((c: { date: string; rest: boolean }) => c.date === localDate(now - 8 * DAY, tz) && c.rest));
-  // Rest days are not stored.
-  assert.equal(sqlite().prepare("SELECT COUNT(*) FROM user_marks WHERE user_id=? AND mark='goal'").pluck().get(p.id), 0);
+  // Only the 7 days before today are filled in: last week's rest weekday stays a gap.
+  assert(!data.covered.some((c: { date: string }) => c.date === localDate(now - 8 * DAY, tz)));
+  // Past ones are stored, and stay: a new break replacing the old one and no rest weekdays keep
+  // them. Today follows the settings until it is over.
+  const rest = "SELECT COUNT(*) FROM user_marks WHERE user_id=? AND mark='goal' AND target LIKE 'rest:%'";
+  assert.equal(sqlite().prepare(rest).pluck().get(p.id), 3);
+  note(p.id, 'pref:study', JSON.stringify({ restWeekdays: [] }));
+  note(p.id, 'pref:review', JSON.stringify({ pausedFrom: localDate(now, tz), pausedDays: 1 }));
+  const covered = async () => (await goal(p, tz)).data.week.map((d: { covered: string | null }) => d.covered);
+  assert.deepEqual(await covered(), [null, null, 'rest', 'rest', null, 'rest', 'rest']);
+  note(p.id, 'pref:review', '{}');
+  assert.deepEqual(await covered(), [null, null, 'rest', 'rest', null, 'rest', null]);
+  // Never listed with the learner's marks, and gone after 200 days like a met goal.
+  mark(p.id, 'rest:2020-01-01', 'goal', 0);
+  await goal(p, tz);
+  assert.equal(sqlite().prepare(rest).pluck().get(p.id), 3);
+  assert(!(await call(p, 'GET', 'oj/marks')).data.items.some((m: { mark: string }) => m.mark === 'goal'));
+});
+
+void test('a mock finish or a review card day from the future counts nothing and breaks nothing', async () => {
+  const p = addUser('g-future');
+  const now = Date.now();
+  note(p.id, 'recall:queue', JSON.stringify({ v: 1, items: { far: [0, 1e20, 't'], max: [0, 1e306, 't'], ok: [0, Math.floor(now / DAY), 't'] } }), now);
+  sqlite()
+    .prepare(
+      `INSERT INTO mock_sessions(id,user_id,preset,scoring,source,set_hash,ids_json,slots_json,minutes,skew,created_at,started_at,finished_at,reason,updated_at)
+      VALUES('m-future',?,2,'icpc','local','h','[]','[]',60,0,0,0,?,'submit',0)`,
+    )
+    .run(p.id, Number.MAX_SAFE_INTEGER);
+  const { status, data } = await goal(p, 0);
+  assert.equal(status, 200);
+  assert.equal(data.todayXp, 1, 'the one card graded today');
+});
+
+void test("goal and rest marks take none of the learner's 5000 marks", async () => {
+  const p = addUser('g-quota');
+  const insert = sqlite().prepare('INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,0)');
+  sqlite().transaction(() => {
+    for (let i = 0; i < 4999; i++) insert.run(p.id, `problem:lc-${i}`, 'star');
+    for (let i = 0; i < 9; i++) insert.run(p.id, `goal:2026-01-0${i + 1}`, 'goal');
+  })();
+  assert.equal((await call(p, 'POST', 'oj/marks', { targets: ['problem:lc-9000'], mark: 'done' })).status, 200);
+  assert.equal((await call(p, 'POST', 'oj/marks', { target: 'problem:lc-9001', mark: 'star', on: true })).status, 409);
 });
 
 void test('an unverified account never draws the MCQ quest', async () => {

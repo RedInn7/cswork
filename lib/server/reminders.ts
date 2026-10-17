@@ -7,7 +7,7 @@ import { ENDED, OA_OPEN } from '@/lib/applications';
 import { englishMessage } from '@/lib/messages-en';
 import { parseReviewPrefs, scheduleReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
-import { coveredNoons } from '@/lib/study-goal';
+import { coveredNoons, type CoveredDay } from '@/lib/study-goal';
 import type { Person } from './auth';
 import { origin, setting } from './env';
 import { body, HttpError, json, limit, requirePerson } from './http';
@@ -113,6 +113,14 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         .prepare("SELECT created_at FROM point_ledger WHERE user_id=? AND reason='freeze' AND created_at>=?")
         .pluck()
         .all(r.user_id, now - 400 * DAY) as number[];
+      // A met study goal, a rest day or a review break keeps the streak too (lib/server/study-days.ts).
+      // It reads notes the learner writes: a failure there costs this learner the covered days only.
+      let covered: CoveredDay[] = [];
+      try {
+        covered = studyDays(r.user_id, r.tz, now).covered;
+      } catch (error) {
+        console.error('reminder study days', error instanceof Error ? error.message : 'unknown');
+      }
       // The calendar's 183 days (lib/server/api.ts bootstrap activity).
       const stats = practiceStats(
         acs.filter((a) => a.created_at > now - 183 * DAY).map((a) => ({ ...a, created_at: wall(a.created_at, r.tz) })),
@@ -121,8 +129,7 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         [],
         undefined,
         bought.map((t) => wall(t, r.tz)),
-        // A met study goal, a rest day or a review break keeps the streak too (lib/server/study-days.ts).
-        coveredNoons(studyDays(r.user_id, r.tz, now).covered),
+        coveredNoons(covered),
       );
       if (!stats.today && !stats.cells[stats.todayIndex].covered && stats.streak >= 2)
         streak = { days: stats.streak, freezes: stats.freezesLeft, breaks: stats.rescue || !stats.freezesLeft };
