@@ -423,6 +423,12 @@ test('pictures: a reversed linked list shows prev and cur on different nodes, wi
   assert.deepEqual(graph.edges.map((e) => [e.from, e.to, e.directed]), [['1', '2', true]]);
   // Two rows: the reversed part and the part still ahead.
   assert.notEqual(holding('prev')?.y, holding('cur')?.y);
+  // One loop later the reversed part reads 2 -> 1 in a row of its own.
+  const later = result.steps.map((s, i) => [s, i] as const).filter(([s]) => s.line === 4)[2][1];
+  const reversed = nodeGraph(view(result, later, '#nodes') as NodesShape);
+  const [two, one] = ['2', '1'].map((label) => reversed.nodes.find((n) => n.label === label)!);
+  assert.equal(two.y, one.y);
+  assert.ok(two.x < one.x);
 });
 
 test('pictures: a cyclic list ends and draws its edge back; a tree is drawn whole from inside a recursive call', () => {
