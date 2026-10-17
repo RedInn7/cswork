@@ -112,7 +112,7 @@ function indexStatement(problem: SqlProblem, index: NonNullable<SqlProblem['inde
     output: zh
       ? '每条目标查询按编号输出一行：\n\n- `query k: ok`：结果和建索引之前完全相同；EXPLAIN QUERY PLAN 里没有扫描整张表的 `SCAN 表名`（`SCAN … USING INDEX` 不算）、没有 `USE TEMP B-TREE`、没有 SQLite 临时建的 `AUTOMATIC` 索引，并且用上了题目要求的查找方式。\n- `query k: result changed`：结果变了。\n- 否则是这条查询的执行计划，各步骤用 ` | ` 连成一行，方便你看到 SQLite 实际怎么执行。\n\n建的索引超过上限，或者脚本里有 CREATE INDEX 以外的语句，判为运行错误。'
       : 'One line per target query, in order:\n\n- `query k: ok`: the result is the same as before your indexes, and its EXPLAIN QUERY PLAN has no `SCAN table` reading a whole table (`SCAN … USING INDEX` is fine), no `USE TEMP B-TREE`, no `AUTOMATIC` index SQLite builds on the fly, and uses the lookup the task asks for.\n- `query k: result changed`: the result changed.\n- Otherwise the query’s plan, its steps joined by ` | ` on one line, so you see what SQLite actually does.\n\nMore indexes than the limit, or any statement other than CREATE INDEX, is a runtime error.',
-    explanation: problem.explanation[zh ? 'zh' : 'en'],
+    explanation: problem.explanation[zh ? 'zh' : 'en'].replaceAll('`', ''),
     hints: problem.hints[zh ? 'zh' : 'en'].map((hint) => hint.replaceAll('`', '')),
   };
 }
@@ -134,7 +134,8 @@ function statement(problem: SqlProblem, locale: 'zh' | 'en') {
     output: zh
       ? `按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n${columns}\n\n${order}\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。`
       : `Return these columns in this order (names are not compared, their order is):\n\n${columns}\n\n${order}\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).`,
-    explanation: problem.explanation[locale],
+    // The explanation renders as plain text, like the hints.
+    explanation: problem.explanation[locale].replaceAll('`', ''),
     // Hints render as plain text; only the description and output are Markdown.
     hints: problem.hints[locale].map((hint) => hint.replaceAll('`', '')),
   };
@@ -348,7 +349,7 @@ function pandasStatement(
     output: zh
       ? `返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\n判题器把返回的 DataFrame 整理成${native ? '统一的' : '和 SQL 版相同的'}格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。`
       : `Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\nThe judge formats the returned DataFrame ${native ? 'into one canonical form' : "like the SQL version's result"} before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).`,
-    explanation: text.explanation,
+    explanation: text.explanation.replaceAll('`', ''),
     hints: text.hints.map((hint) => hint.replaceAll('`', '')),
   };
 }
