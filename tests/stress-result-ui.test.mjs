@@ -140,3 +140,49 @@ test('an OA reference output says the input went in unchecked', async () => {
     await act(async () => root.unmount());
   }
 });
+
+test('the complexity probe sends only the code, tables CPU time by size and reads the growth', async () => {
+  const { createRoot } = await import('react-dom/client');
+  const { ComplexityProbe } = await import('../components/stress-result.tsx');
+  const lc53 = {
+    id: 'lc-53',
+    leetcodeParams: [{ name: 'nums', type: 'integer[]' }],
+    leetcodeConstraints: { nums: { len: [1, 100000], val: [-10000, 10000] } },
+    targetComplexity: { time: 'O(n)', space: 'O(1)' },
+  };
+  const sizes = [1, 1, 4096, 4096, 8192, 8192, 16384, 16384];
+  // Quadratic past a 30 ms start-up; the faster run of each size counts.
+  const ms = (n) => 30 + n * n * 1e-5;
+  const cases = sizes.map((n, ordinal) => ({ ordinal, status: 'finished', hidden: false, runtimeMs: ms(n) + (ordinal % 2) * 5 }));
+  const sent = [];
+  globalThis.fetch = async (url, init) => {
+    sent.push([String(url), init?.body && JSON.parse(init.body)]);
+    if (String(url).endsWith('/complexity')) return respond({ id: 'probe', sizes }, 201);
+    return respond({ id: 'probe', status: 'finished', mode: 'run', cases });
+  };
+  const root = createRoot(document.getElementById('root'));
+  const show = (problem) => act(async () => root.render(createElement(ComplexityProbe, { problem, code: 'class Solution: pass', language: 'python' })));
+  try {
+    // Nothing to scale (lc-70 takes one integer) or not whitelisted: no button, as the server would refuse.
+    await show({ id: 'lc-70', leetcodeParams: [{ name: 'n', type: 'integer' }], leetcodeConstraints: { n: { val: [1, 45] } } });
+    assert.equal(document.querySelector('.cs-ai-cases'), null);
+    await show({ ...lc53, id: 'lc-1' });
+    assert.equal(document.querySelector('.cs-ai-cases'), null);
+    await show(lc53);
+    const button = [...document.querySelectorAll('button')].find((b) => b.textContent === 'Probe complexity');
+    await act(async () => button.click());
+    assert.match(document.body.textContent, /Probing/);
+    await settle(1200);
+    const [path, body] = sent[0];
+    assert.equal(path, '/api/oj/problems/lc-53/complexity');
+    assert.deepEqual(Object.keys(body).sort(), ['code', 'language']);
+    const rows = [...document.querySelectorAll('.cs-probe-table tbody tr')].map((tr) => [...tr.cells].map((td) => td.textContent));
+    assert.deepEqual(rows.map((r) => r[0]), ['1', '4,096', '8,192', '16,384'], 'one row a size');
+    assert.equal(rows[3][1], `${Math.round(ms(16384))} ms`, 'the faster run');
+    assert.match(document.body.textContent, /Grows about O\(n²\) \(slope 2\.00\)\./);
+    assert.match(document.body.textContent, /Editorial target: O\(n\)\./);
+    assert.match(document.body.textContent, /measures CPU time, interpreter start-up included/);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});

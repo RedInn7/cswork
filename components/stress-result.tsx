@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { Check, LoaderCircle, Plus, Shuffle } from 'lucide-react';
+import { Check, Gauge, LoaderCircle, Plus, Shuffle } from 'lucide-react';
 import safe from '@/lib/content/stress-safe.json';
 import { useT } from '@/lib/i18n';
-import { activeStatuses, ojRequest, type OJCase, type OJSubmission } from '@/lib/oj-client';
-import { firstMismatch, STRESS_CASES } from '@/lib/stress-gen';
+import { activeStatuses, ojRequest, verdict, type OJCase, type OJProblem, type OJSubmission } from '@/lib/oj-client';
+import { complexitySizes, firstMismatch, fitComplexity, STRESS_CASES, type ComplexityFit, type StressRule } from '@/lib/stress-gen';
 import { diffLines } from '@/lib/testcase-fields';
 import { CopyBlock, Verdict } from './oj-results';
 import '@/app/stress-steps.css';
@@ -176,6 +176,146 @@ export function StressTest({
               {added ? t('已加入', 'Added') : t('加入自定义用例', 'Add to my cases')}
             </button>
           </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+type Probe = {
+  running: boolean;
+  /** One row a size: the faster run's CPU time, and how that size went. */
+  rows: { n: number; ms?: number; status: string }[];
+  fit?: ComplexityFit;
+  error?: string;
+};
+const GRADES: [string, string][] = [
+  ['约 O(n) 或 O(n log n)', 'about O(n) or O(n log n)'],
+  ['介于 O(n log n) 和 O(n²) 之间', 'between O(n log n) and O(n²)'],
+  ['约 O(n²)', 'about O(n²)'],
+  ['O(n³) 或更高', 'O(n³) or worse'],
+];
+
+/**
+ * "Probe complexity" under the stress test: the learner's code on growing random inputs
+ * (POST problems/:id/complexity; the server draws them, lib/stress-gen.ts complexityCases), a
+ * small table of CPU time by size, and the growth fitComplexity reads off it, beside the
+ * editorial's target. Only where the server would accept it: a whitelisted problem with a length to scale.
+ */
+export function ComplexityProbe({
+  problem,
+  code,
+  language,
+}: {
+  problem: Pick<OJProblem, 'id' | 'leetcodeParams' | 'leetcodeConstraints' | 'targetComplexity'>;
+  code: string;
+  language: string;
+}) {
+  const t = useT();
+  const [probe, setProbe] = useState<Probe | null>(null);
+  const controller = useRef<AbortController | null>(null);
+  useEffect(() => () => controller.current?.abort(), []);
+  const rules = (safe as Record<string, Record<string, StressRule>>)[problem.id];
+  if (!rules || !problem.leetcodeParams || !complexitySizes(problem.leetcodeParams, problem.leetcodeConstraints ?? null, rules))
+    return null;
+  async function run() {
+    controller.current?.abort();
+    const current = new AbortController();
+    controller.current = current;
+    setProbe({ running: true, rows: [] });
+    try {
+      const { id, sizes } = await ojRequest<{ id: string; sizes: number[] }>(
+        `problems/${encodeURIComponent(problem.id)}/complexity`,
+        { language, code },
+        current.signal,
+      );
+      let latest: OJSubmission;
+      do {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        latest = await ojRequest<OJSubmission>(`submissions/${id}`, undefined, current.signal);
+        if (current.signal.aborted) return;
+        const points = sizes.map((n, i) => ({ n, ms: latest.cases?.[i]?.runtimeMs ?? 0, status: latest.cases?.[i]?.status ?? 'pending' }));
+        const rows = [...new Set(sizes)].map((n) => {
+          const runs = points.filter((p) => p.n === n);
+          const done = runs.filter((p) => p.status === 'finished');
+          return done.length
+            ? { n, ms: Math.min(...done.map((p) => p.ms)), status: 'finished' }
+            : { n, status: (runs.find((p) => p.status !== 'skipped') ?? runs[0]).status };
+        });
+        const running = activeStatuses.has(latest.status);
+        const error =
+          latest.status === 'compile_error'
+            ? t('你的代码没有通过编译，先点“运行”看看报错。', "Your code didn't compile. Run it first to see the error.")
+            : ['cancelled', 'system_error'].includes(latest.status)
+              ? t('这次测量没有跑完，请再测一次。', "This probe didn't finish. Please try again.")
+              : undefined;
+        setProbe({ running, rows, error, fit: running || error ? undefined : fitComplexity(points) });
+      } while (activeStatuses.has(latest.status));
+    } catch (e) {
+      if (!current.signal.aborted) setProbe({ running: false, rows: [], error: (e as Error).message });
+    }
+  }
+  const fit = probe?.fit;
+  const slope = (b?: number) => (b === undefined ? '' : t(`（斜率 ${b.toFixed(2)}）`, ` (slope ${b.toFixed(2)})`));
+  const top = Math.max(1, ...(probe?.rows.map((r) => r.ms ?? 0) ?? []));
+  return (
+    <section className="cs-ai-cases" aria-label={t('测复杂度', 'Probe complexity')}>
+      <button type="button" className="cs-ai-cases-ask" disabled={probe?.running || !code.trim()} onClick={() => void run()}>
+        {probe?.running ? <LoaderCircle size={14} className="cs-spin" aria-hidden="true" /> : <Gauge size={14} aria-hidden="true" />}
+        {probe?.running ? t('正在测量…', 'Probing…') : t('测复杂度', 'Probe complexity')}
+      </button>
+      <p className="cs-console-note">
+        {t(
+          '在越来越大的随机输入上计时（n 是数组或字符串长度，网格按格子数），拟合用时的增长。测的是 CPU 时间，包含解释器启动；大输入随机生成，没有逐题核对题目的隐含条件，也不检查答案对错，建议先通过再测。主要用来揪出 O(n²)。',
+          'Times your code on growing random inputs (n is the array or string length; a grid counts cells) and fits how the time grows. It measures CPU time, interpreter start-up included. The large inputs are random, not checked against each problem’s implicit conditions, and answers aren’t checked, so get Accepted first. Best at catching an O(n²).',
+        )}
+      </p>
+      {!!probe?.rows.length && (
+        <table className="cs-probe-table">
+          <caption className="sr-only">{t('各规模的 CPU 用时', 'CPU time by input size')}</caption>
+          <thead>
+            <tr>
+              <th scope="col">n</th>
+              <th scope="col">{t('用时', 'Time')}</th>
+              <th scope="col">{t('状态', 'Status')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {probe.rows.map((r) => (
+              <tr key={r.n}>
+                <td>{r.n.toLocaleString()}</td>
+                <td>
+                  {r.ms === undefined ? '—' : `${Math.round(r.ms)} ms`}
+                  {r.ms !== undefined && <i aria-hidden="true" style={{ width: `${(r.ms / top) * 100}%` }} />}
+                </td>
+                <td>{t(...verdict(r.status))}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <div aria-live="polite">
+        {probe?.error && (
+          <p className="cs-console-note" role="alert">
+            {probe.error}
+          </p>
+        )}
+        {fit && (
+          <p className="cs-console-note">
+            <strong>
+              {fit.kind === 'fit'
+                ? t(`增长${GRADES[fit.grade][0]}`, `Grows ${GRADES[fit.grade][1]}`) + slope(fit.slope)
+                : fit.kind === 'fast'
+                  ? t('太快，测不出增长', 'Too fast to tell')
+                  : fit.kind === 'timeout'
+                    ? t(`在 n=${fit.n} 超时`, `Timed out at n=${fit.n}`) + slope(fit.slope)
+                    : t(`这组大输入让程序出错（n=${fit.n}，${verdict(fit.status)[0]}）`, `These large inputs made it fail (n=${fit.n}, ${verdict(fit.status)[1]})`)}
+              {t('。', '.')}
+            </strong>
+            {fit.kind === 'fit' && fit.few && t('只有两个点，仅供参考。', ' Two points only: a rough read.')}
+            {fit.kind === 'fast' && fit.large && t('到 n ≥ 4096 仍很快，至多约 O(n log n)。', ' Still quick at n ≥ 4096, so at most about O(n log n).')}
+            {problem.targetComplexity && t(`题解目标：${problem.targetComplexity.time}。`, ` Editorial target: ${problem.targetComplexity.time}.`)}
+          </p>
         )}
       </div>
     </section>

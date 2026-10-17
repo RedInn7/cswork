@@ -72,7 +72,7 @@ import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
 import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
-import { StressTest, stressReady } from './stress-result';
+import { ComplexityProbe, StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import { ClarifyPanel } from './clarify-panel';
@@ -3016,6 +3016,9 @@ function Workspace({
                           onAdd={(input) => addCase(input)}
                           solved={solvedThisRound}
                         />
+                      )}
+                      {boot.person && !examMode && codingMode === 'leetcode' && stressReady(problem.id) && (
+                        <ComplexityProbe problem={problem} code={code} language={language} />
                       )}
                     </>
                   )}
