@@ -204,10 +204,11 @@ test('the release publisher publishes once, then skips unchanged packages; Core 
     });
   const first = publish();
   assert.equal(first.status, 0, first.stderr);
-  assert.equal(first.stdout.match(/"published"/g)?.length, packages.length);
+  // The same run publishes the ML Coding track (tests/ml-coding.test.ts).
+  assert.equal(first.stdout.match(/"id":"core-[a-z0-9-]+","status":"published"/g)?.length, packages.length);
   const again = publish();
   assert.equal(again.status, 0, again.stderr);
-  assert.equal(again.stdout.match(/"unchanged"/g)?.length, packages.length);
+  assert.equal(again.stdout.match(/"id":"core-[a-z0-9-]+","status":"unchanged"/g)?.length, packages.length);
   // Like the SQL track: listed for everyone, judged for any verified account.
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('core-'));
   assert.equal(listed.length, packages.length);

@@ -29,6 +29,9 @@ export const MCQ_TOPIC_NAMES: Record<string, [string, string]> = {
   security: ['Web 安全', 'Web security'],
   patterns: ['设计模式', 'Design patterns'],
   web: ['Web 前端', 'Web frontend'],
+  stats: ['统计', 'Statistics'],
+  ml: ['机器学习', 'Machine learning'],
+  numpy: ['NumPy 读代码', 'NumPy code reading'],
 };
 
 let bank: Promise<McqQuestion[]> | null = null;

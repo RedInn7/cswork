@@ -25,8 +25,10 @@ import { ROUTE_SLUGS } from '../lib/route-stops';
 
 const bank = bankFile.questions as McqQuestion[];
 const OLD_TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'dsa', 'python', 'java', 'js', 'complexity', 'probability', 'logic'];
-// mcq-v2 subjects and their sizes.
-const NEW_TOPICS: Record<string, number> = { cpp: 30, linux: 20, git: 15, sql: 20, arch: 20, security: 20, patterns: 15, web: 30 };
+// mcq-v2 subjects and their sizes, then the ML Coding track's statistics, ML and NumPy subjects.
+const NEW_TOPICS: Record<string, number> = {
+  cpp: 30, linux: 20, git: 15, sql: 20, arch: 20, security: 20, patterns: 15, web: 30, stats: 25, ml: 30, numpy: 20,
+};
 const TOPICS = [...OLD_TOPICS, ...Object.keys(NEW_TOPICS)];
 
 void test('the bank is well formed: unique ids, known sections and topics, answers in range, both languages', () => {
@@ -234,7 +236,7 @@ void test('mcq-v2 subjects: sized as planned, a reason per choice, C++ undefined
     assert.deepEqual(q.answer.map((a) => [q.zh.choices[a], q.en.choices[a]]), [['未定义行为', 'Undefined behavior']], q.id);
   }
   const added = bank.filter((q) => q.topic in NEW_TOPICS || (q.topic === 'js' && +q.id.slice('mcq-js-'.length) > 15));
-  assert.equal(added.length, 195);
+  assert.equal(added.length, 270);
   assert(added.every((q) => q.en.whys), 'new questions explain every choice');
   assert(bank.filter((q) => q.ub).length >= 3);
   // Code questions say how they run: the C++ standard, SQLite's dialect (NULL order and integer division differ).
@@ -246,6 +248,22 @@ void test('presets keep drawing from the subjects they had before mcq-v2', () =>
   for (const p of shownMockPresets().filter((p) => p.mcq))
     for (const seed of [1, 2, 3])
       for (const id of drawMcq(bank, p.mcq!, seed)) assert(OLD_TOPICS.includes(byIdAll.get(id)!.topic), `${p.slug} drew ${id}`);
+  // Coinbase's quant section names its topics, so the statistics subject stays out of its draw.
+  const coinbase = shownMockPresets().find((p) => p.slug === 'coinbase')!.mcq!;
+  assert.deepEqual(coinbase.topics, ['probability', 'logic']);
+  const drawn = new Set([1, 2, 3, 4, 5].flatMap((seed) => drawMcq(bank, coinbase, seed)).map((id) => byIdAll.get(id)!.topic));
+  assert.deepEqual([...drawn].sort(), ['logic', 'probability']);
+});
+
+void test('ML Coding subjects: statistics in quant, ML in CS with leakage hunts, NumPy as Python code to read', () => {
+  const of = (topic: string) => bank.filter((q) => q.topic === topic);
+  assert(of('stats').every((q) => q.section === 'quant' && !q.code));
+  assert(of('ml').every((q) => q.section === 'cs' && !q.code));
+  // At least six select-all questions ask which features or steps leak.
+  assert(of('ml').filter((q) => q.answer.length > 1 && /泄漏/.test(q.zh.q) && /leak/i.test(q.en.q)).length >= 6);
+  // scripts/mcq/verify-output.mjs runs them; numpy scalars in containers print differently in 1.x and 2.x, so nothing prints one.
+  assert(of('numpy').every((q) => q.section === 'code-output' && q.lang === 'python' && q.answer.length === 1 && q.code!.startsWith('import numpy as np\n')));
+  assert(of('numpy').every((q) => !/np\.(int|float)\d+\(/.test(q.zh.choices.join(' '))));
 });
 const byIdAll = new Map(bank.map((q) => [q.id, q]));
 

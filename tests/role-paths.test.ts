@@ -34,7 +34,7 @@ test('every role resolves in both languages, with AI on and off', () => {
   assert.ok(isRole('backend') && !isRole('manager') && !isRole(undefined));
 });
 
-test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ topics, projects, courses, JS groups, mocks', () => {
+test('every ref exists: stops, SD parts, SQL/pandas groups, core and ML groups, MCQ topics, projects, courses, JS groups, mocks', () => {
   const sd = new Set(sdChapters.map((chapter) => chapter.slug));
   const topics = new Set(mcqBank.questions.map((q) => q.topic));
   for (const role of ROLE_KEYS)
@@ -78,6 +78,15 @@ test('every ref exists: stops, SD parts, SQL/pandas groups, core groups, MCQ top
   assert.ok(ood.keys.includes('problem:core-parking-lot') && ood.keys.length >= 8);
   for (const role of ['generalist', 'backend'] as const)
     assert.ok(ROLES[role].steps.some((s) => s.kind === 'core-group' && s.ref === 'ood' && !s.optional), role);
+  // ML Coding groups open the bank's ML section at the group; the ML path requires the classic models.
+  const models = resolveStep({ kind: 'ml-group', ref: 'models' }, false, true);
+  assert.equal(models.title, 'ML Coding: Classic models');
+  assert.equal(models.href, '/?view=problems&library=ml#ml-group-models');
+  assert.ok(models.keys.includes('problem:ml-kmeans') && models.keys.every((k) => /^problem:ml-[a-z0-9-]+$/.test(k)));
+  assert.throws(() => resolveStep({ kind: 'ml-group', ref: 'kmeans' }, true, true), /no ml-group/, 'a group, not a problem');
+  assert.ok(ROLES.ml.steps.some((s) => s.kind === 'ml-group' && s.ref === 'models' && !s.optional));
+  for (const topic of ['ml', 'stats']) assert.ok(ROLES.ml.steps.some((s) => s.kind === 'mcq-topic' && s.ref === topic), topic);
+  assert.ok(ROLES.data.steps.some((s) => s.kind === 'mcq-topic' && s.ref === 'stats'));
 });
 
 test('each role is a real path: no repeats, a project, mostly counted steps', () => {

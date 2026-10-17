@@ -18179,6 +18179,3058 @@
    "answer": [
     3
    ]
+  },
+  {
+   "id": "mcq-stats-1",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "中心极限定理说的是什么？",
+    "choices": [
+     "样本量足够大时，样本里的数据本身服从正态分布",
+     "独立同分布且方差有限时，样本均值的分布随 n 增大趋近正态",
+     "任何统计量在大样本下都近似服从正态分布",
+     "总体必须服从正态分布，样本均值才近似正态"
+    ],
+    "explain": "中心极限定理：独立同分布、方差有限的随机变量，其均值的分布在 n 足够大时近似 N(μ, σ²/n)，与总体形状无关。这也是 t 检验和置信区间在非正态数据上仍大致可用的原因。",
+    "whys": [
+     "样本数据的分布接近总体分布，偏态总体抽再多也还是偏态。",
+     "正确：说的是均值（和）的抽样分布，不是数据本身。",
+     "并非所有统计量都如此，例如样本最大值；定理说的是和与均值。",
+     "正好相反：定理的价值就在于总体不必是正态。"
+    ]
+   },
+   "en": {
+    "q": "What does the central limit theorem say?",
+    "choices": [
+     "With a large enough sample, the data in the sample are normally distributed",
+     "For i.i.d. draws with finite variance, the distribution of the sample mean approaches a normal as n grows",
+     "Every statistic is approximately normal in large samples",
+     "The population must be normal for the sample mean to be approximately normal"
+    ],
+    "explain": "The central limit theorem: the mean of i.i.d. variables with finite variance is approximately N(μ, σ²/n) for large n, whatever the population looks like. It is why t-tests and confidence intervals roughly work on non-normal data.",
+    "whys": [
+     "The sample looks like the population: a skewed population stays skewed however much you draw.",
+     "Right: it is about the sampling distribution of the mean (or sum), not the data.",
+     "Not every statistic: the maximum, for one, is not; the theorem covers sums and means.",
+     "The opposite: the point of the theorem is that the population need not be normal."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-2",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "总体标准差 σ = 20，随机抽取 n = 100 个样本。样本均值的标准误是多少？",
+    "choices": [
+     "20",
+     "0.2",
+     "4",
+     "2"
+    ],
+    "explain": "均值的标准误 SE = σ / √n。样本量翻 4 倍，标准误才减半。",
+    "whys": [
+     "这是单个观测的标准差，均值的波动要小得多。",
+     "除的是 n 而不是 √n。",
+     "这是 σ² / n = 400 / 100，是方差的量级。",
+     "正确：σ / √n = 20 / 10 = 2。"
+    ]
+   },
+   "en": {
+    "q": "A population has standard deviation σ = 20 and you draw n = 100 samples. What is the standard error of the sample mean?",
+    "choices": [
+     "20",
+     "0.2",
+     "4",
+     "2"
+    ],
+    "explain": "The standard error of the mean is σ / √n. Quadrupling the sample only halves it.",
+    "whys": [
+     "That is one observation's spread; the mean varies far less.",
+     "That divides by n instead of √n.",
+     "That is σ² / n = 400 / 100, a variance.",
+     "Right: σ / √n = 20 / 10 = 2."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-3",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "一次检验得到 p = 0.03。下面哪种解读是对的？",
+    "choices": [
+     "原假设为真的概率是 3%",
+     "备择假设为真的概率是 97%",
+     "如果原假设为真，得到至少这么极端的结果的概率是 3%",
+     "这个效应在实际业务上是重要的"
+    ],
+    "explain": "p 值是 P(数据至少这么极端 | 原假设为真)，不是 P(原假设为真 | 数据)。它也不衡量效应大小，要和置信区间、效应量一起看。",
+    "whys": [
+     "p 值是在假设原假设成立的前提下算的，不是原假设本身的概率。",
+     "同样把条件概率弄反了，频率学派的检验给不出这个数。",
+     "正确：这正是 p 值的定义。",
+     "显著不等于重要：样本很大时，微小的效应也会显著。"
+    ]
+   },
+   "en": {
+    "q": "A test gives p = 0.03. Which reading is correct?",
+    "choices": [
+     "There is a 3% chance the null hypothesis is true",
+     "There is a 97% chance the alternative is true",
+     "If the null hypothesis were true, a result at least this extreme would occur 3% of the time",
+     "The effect matters in practice"
+    ],
+    "explain": "A p-value is P(data at least this extreme | null true), not P(null true | data). Nor does it measure effect size: read it with a confidence interval and the effect itself.",
+    "whys": [
+     "The p-value assumes the null is true; it is not the probability that the null is true.",
+     "The same reversal of the conditional; a frequentist test cannot give this number.",
+     "Right: that is exactly the definition.",
+     "Significant is not important: with enough data, tiny effects are significant."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-stats-4",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "某均值的 95% 置信区间是 [2.1, 3.4]。下面哪种说法是对的？",
+    "choices": [
+     "用同样的方法反复抽样、构造区间，大约 95% 的区间会覆盖真实均值",
+     "真实均值有 95% 的概率落在 [2.1, 3.4] 里",
+     "95% 的样本数据落在 [2.1, 3.4] 里",
+     "再抽一次样，新的样本均值有 95% 的概率落在这个区间里"
+    ],
+    "explain": "置信水平是方法的长期覆盖率。把它说成「参数有 95% 概率在区间内」是贝叶斯可信区间的说法，面试里要分清。",
+    "whys": [
+     "正确：95% 说的是构造区间这个方法的覆盖率。",
+     "在频率学派里真实均值是固定的数，这个具体区间要么包含它要么不包含。",
+     "置信区间描述均值的不确定性，比数据的分布范围窄得多。",
+     "新样本均值还有自己的波动，落入概率通常低于 95%。"
+    ]
+   },
+   "en": {
+    "q": "A 95% confidence interval for a mean is [2.1, 3.4]. Which statement is correct?",
+    "choices": [
+     "If you repeated the sampling and built the interval the same way, about 95% of the intervals would cover the true mean",
+     "The true mean lies in [2.1, 3.4] with probability 95%",
+     "95% of the sample's data fall in [2.1, 3.4]",
+     "A new sample's mean would land in this interval with probability 95%"
+    ],
+    "explain": "The confidence level is the method's long-run coverage. \"The parameter is in the interval with 95% probability\" describes a Bayesian credible interval; keep them apart in an interview.",
+    "whys": [
+     "Right: the 95% is the coverage of the method.",
+     "For a frequentist the true mean is fixed: this particular interval either contains it or not.",
+     "The interval is about the mean's uncertainty and is much narrower than the data's spread.",
+     "A new sample mean varies on its own; the chance is generally below 95%."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-stats-5",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "一个实验其实没有任何效果，你却同时检验了 20 个互相独立的指标，每个都用 α = 0.05。至少有一个指标「显著」的概率大约是？",
+    "choices": [
+     "5%",
+     "36%",
+     "64%",
+     "100%"
+    ],
+    "explain": "多重比较：做 m 个独立检验，至少一个误报的概率是 1 - (1 - α)^m。要么事先定好主指标，要么用 Bonferroni、Benjamini-Hochberg 等方法校正。",
+    "whys": [
+     "这是单个检验的误报率，检验越多，总误报率越高。",
+     "这是 0.95²⁰，即一个都不显著的概率。",
+     "正确：1 - 0.95²⁰ ≈ 0.64。",
+     "很可能但不是必然。"
+    ]
+   },
+   "en": {
+    "q": "An experiment has no real effect, but you test 20 independent metrics, each at α = 0.05. Roughly how likely is at least one \"significant\" result?",
+    "choices": [
+     "5%",
+     "36%",
+     "64%",
+     "100%"
+    ],
+    "explain": "Multiple comparisons: with m independent tests, the chance of at least one false positive is 1 - (1 - α)^m. Pick a primary metric up front, or correct with Bonferroni, Benjamini-Hochberg and the like.",
+    "whys": [
+     "That is one test's false-positive rate; more tests, more chances.",
+     "That is 0.95²⁰, the chance that none is significant.",
+     "Right: 1 - 0.95²⁰ ≈ 0.64.",
+     "Likely, but not certain."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-stats-6",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "要做 10 个检验，并把「至少一个误报」的总概率控制在 0.05 以内。按 Bonferroni 校正，每个检验的显著性阈值是？",
+    "choices": [
+     "0.005",
+     "0.05",
+     "0.0005",
+     "0.5"
+    ],
+    "explain": "Bonferroni 把每个检验的阈值设为 α / m，保证总误报率不超过 α。它简单但保守，检验很多时功效会掉得厉害。",
+    "whys": [
+     "正确：α / m = 0.05 / 10。",
+     "不校正时，10 个独立检验的总误报率约 40%。",
+     "多除了一个 10，过于保守。",
+     "阈值要变严，不是变松。"
+    ]
+   },
+   "en": {
+    "q": "You run 10 tests and want the chance of any false positive at most 0.05. With a Bonferroni correction, what threshold does each test use?",
+    "choices": [
+     "0.005",
+     "0.05",
+     "0.0005",
+     "0.5"
+    ],
+    "explain": "Bonferroni sets each threshold to α / m, which keeps the family-wise error rate at most α. It is simple but conservative: with many tests, power drops sharply.",
+    "whys": [
+     "Right: α / m = 0.05 / 10.",
+     "Uncorrected, 10 independent tests have about a 40% family-wise error rate.",
+     "That divides by 10 once too often: needlessly strict.",
+     "The threshold gets stricter, not looser."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-stats-7",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "按病情轻重分层后，A 疗法在轻症和重症里的治愈率都比 B 高；可把所有病人合在一起算，B 的治愈率反而更高。最可能的原因是？",
+    "choices": [
+     "数据录入有错",
+     "两种疗法收治的病人病情构成不同，病情是混杂变量，合并时权重不同",
+     "样本量太小，结果是随机波动",
+     "治愈率本来就不能分组比较"
+    ],
+    "explain": "辛普森悖论：分组内的趋势在合并后反转，因为各组在两种处理里占的比例不同。结论通常应以分层（或调整了混杂变量）的结果为准。",
+    "whys": [
+     "这个现象完全可以在数据正确时出现。",
+     "正确：这就是辛普森悖论，A 多收了重症病人。",
+     "大样本里同样会出现，原因是权重而不是噪声。",
+     "分层比较恰恰是去除混杂的正确做法。"
+    ]
+   },
+   "en": {
+    "q": "Within each severity group (mild and severe), treatment A cures a higher share than B; pooled over all patients, B looks better. What is the most likely reason?",
+    "choices": [
+     "A data entry error",
+     "The two treatments saw different mixes of mild and severe cases: severity confounds the pooled comparison",
+     "The samples are small, so it is noise",
+     "Cure rates cannot be compared by group"
+    ],
+    "explain": "Simpson's paradox: a trend within every group reverses when pooled, because the groups make up different shares of each treatment. Trust the stratified (confounder-adjusted) comparison.",
+    "whys": [
+     "This happens with perfectly correct data.",
+     "Right: Simpson's paradox: A treated more severe cases.",
+     "It happens with large samples too; the cause is weighting, not noise.",
+     "Stratifying is exactly the right way to remove the confounder."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-8",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "假设检验的功效（power）指的是？",
+    "choices": [
+     "原假设为真时拒绝它的概率",
+     "原假设为真时不拒绝它的概率",
+     "结果显著时效应确实存在的概率",
+     "原假设为假时正确拒绝它的概率，即 1 - β"
+    ],
+    "explain": "功效 = 1 - β，随样本量、效应大小和 α 增大而增大。实验前常按 80% 功效估算样本量。",
+    "whys": [
+     "这是第一类错误率 α。",
+     "这是 1 - α。",
+     "这是阳性预测值，还取决于效应本来存在的先验比例。",
+     "正确：β 是第二类错误率。"
+    ]
+   },
+   "en": {
+    "q": "What is the power of a hypothesis test?",
+    "choices": [
+     "The probability of rejecting the null when it is true",
+     "The probability of not rejecting the null when it is true",
+     "The probability that a significant result reflects a real effect",
+     "The probability of rejecting the null when it is false, 1 - β"
+    ],
+    "explain": "Power = 1 - β, and it grows with the sample size, the effect size and α. Experiments are commonly sized for 80% power.",
+    "whys": [
+     "That is the type I error rate α.",
+     "That is 1 - α.",
+     "That is the positive predictive value, which also depends on how often effects exist.",
+     "Right: β is the type II error rate."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-9",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "其他条件不变，想把均值置信区间的宽度缩小一半，样本量要变成原来的几倍？",
+    "choices": [
+     "2 倍",
+     "4 倍",
+     "√2 倍",
+     "8 倍"
+    ],
+    "explain": "区间半宽 ≈ z·σ/√n，所以精度每提高一倍，样本量要乘 4。这也是 A/B 测试想检测更小的效应时样本量涨得很快的原因。",
+    "whys": [
+     "宽度和 1/√n 成正比，翻倍只缩小到约 71%。",
+     "正确：√4 = 2，宽度减半。",
+     "把平方根用反了。",
+     "比需要的多，宽度会缩到约 35%。"
+    ]
+   },
+   "en": {
+    "q": "All else equal, how many times larger must the sample be to halve the width of a confidence interval for a mean?",
+    "choices": [
+     "2 times",
+     "4 times",
+     "√2 times",
+     "8 times"
+    ],
+    "explain": "The half-width is about z·σ/√n, so each doubling of precision costs four times the sample. It is why A/B tests for smaller effects need so much more traffic.",
+    "whys": [
+     "Width scales as 1/√n; doubling n shrinks it to about 71%.",
+     "Right: √4 = 2, so the width halves.",
+     "That applies the square root the wrong way round.",
+     "More than needed: the width would shrink to about 35%."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-10",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "数据显示冰淇淋销量和溺水人数高度正相关。最合理的解释是？",
+    "choices": [
+     "吃冰淇淋导致溺水",
+     "溺水事件让人更想吃冰淇淋",
+     "相关系数算错了",
+     "天气炎热同时推高了两者，气温是混杂变量"
+    ],
+    "explain": "两个变量相关，可能是因果、反向因果、共同原因（混杂）或纯属巧合。要说明因果，需要随机实验，或在观察数据里控制混杂变量。",
+    "whys": [
+     "相关不等于因果，没有机制支持。",
+     "反向因果同样没有依据。",
+     "数据和计算都可能是对的。",
+     "正确：控制气温后，两者的相关会大幅减弱。"
+    ]
+   },
+   "en": {
+    "q": "Ice cream sales and drownings are strongly correlated. What is the most reasonable explanation?",
+    "choices": [
+     "Eating ice cream causes drowning",
+     "Drownings make people want ice cream",
+     "The correlation was computed wrongly",
+     "Hot weather drives both: temperature is a confounder"
+    ],
+    "explain": "Two correlated variables may reflect causation, reverse causation, a common cause (a confounder) or chance. Claiming causation takes a randomized experiment, or controlling for confounders in observational data.",
+    "whys": [
+     "Correlation is not causation, and there is no mechanism.",
+     "Reverse causation has no basis either.",
+     "The data and the arithmetic can be fine.",
+     "Right: control for temperature and the correlation largely disappears."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-11",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "收入分布通常是右偏的（少数人收入很高）。均值和中位数的关系通常是？",
+    "choices": [
+     "均值小于中位数",
+     "均值大于中位数",
+     "两者相等",
+     "无法判断，取决于样本量"
+    ],
+    "explain": "均值对极端值敏感，中位数稳健。报告收入、房价、延迟这类右偏数据时，中位数（或分位数）通常更有代表性。",
+    "whys": [
+     "这是左偏分布的情形。",
+     "正确：长长的右尾把均值往上拉，中位数不受影响。",
+     "只有对称分布才大致相等。",
+     "关系由分布形状决定，与样本量无关。"
+    ]
+   },
+   "en": {
+    "q": "Income is usually right-skewed (a few people earn a lot). How do the mean and median usually compare?",
+    "choices": [
+     "The mean is below the median",
+     "The mean is above the median",
+     "They are equal",
+     "It depends on the sample size"
+    ],
+    "explain": "The mean is sensitive to extremes; the median is robust. For right-skewed data such as income, house prices or latency, the median (or percentiles) usually says more.",
+    "whys": [
+     "That is the left-skewed case.",
+     "Right: the long right tail pulls the mean up and leaves the median alone.",
+     "Only for a symmetric distribution, roughly.",
+     "The shape decides it, not the sample size."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-12",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "X 和 Y 相互独立，Var(X) = 4，Var(Y) = 9。Var(X - Y) 是多少？",
+    "choices": [
+     "13",
+     "5",
+     "-5",
+     "36"
+    ],
+    "explain": "Var(aX + bY) = a²Var(X) + b²Var(Y) + 2ab·Cov(X, Y)。独立时协方差为 0，差的方差等于方差之和。A/B 测试里两组均值之差的方差就是这么算的。",
+    "whys": [
+     "正确：独立时 Var(X - Y) = Var(X) + Var(Y)。",
+     "方差不会相减，(-1)² = 1。",
+     "方差不可能是负数。",
+     "这是两者的乘积，没有这条规则。"
+    ]
+   },
+   "en": {
+    "q": "X and Y are independent with Var(X) = 4 and Var(Y) = 9. What is Var(X - Y)?",
+    "choices": [
+     "13",
+     "5",
+     "-5",
+     "36"
+    ],
+    "explain": "Var(aX + bY) = a²Var(X) + b²Var(Y) + 2ab·Cov(X, Y). Independence zeroes the covariance, so a difference has the sum of the variances. This is how the variance of a difference in A/B group means is computed.",
+    "whys": [
+     "Right: for independent variables Var(X - Y) = Var(X) + Var(Y).",
+     "Variances do not subtract: (-1)² = 1.",
+     "A variance is never negative.",
+     "That multiplies them; no such rule."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-stats-13",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "X ~ N(100, 15²)。P(X > 130) 大约是多少？",
+    "choices": [
+     "16%",
+     "2.3%",
+     "5%",
+     "0.3%"
+    ],
+    "explain": "先标准化 z = (x - μ) / σ，再查标准正态。记住 68-95-99.7：±1、±2、±3 个标准差内分别约有 68%、95%、99.7% 的数据，所以单侧超过 2σ 约 2.3%。",
+    "whys": [
+     "这是超过 1 个标准差（z = 1）的概率。",
+     "正确：z = (130 - 100) / 15 = 2，1 - Φ(2) ≈ 0.023。",
+     "这是双侧 |z| > 1.96 的概率。",
+     "这大约是双侧 |z| > 3 的概率。"
+    ]
+   },
+   "en": {
+    "q": "X ~ N(100, 15²). Roughly what is P(X > 130)?",
+    "choices": [
+     "16%",
+     "2.3%",
+     "5%",
+     "0.3%"
+    ],
+    "explain": "Standardize with z = (x - μ) / σ, then use the standard normal. By the 68-95-99.7 rule, about 95% lies within ±2σ, so one tail beyond 2σ holds about 2.3%.",
+    "whys": [
+     "That is the chance of exceeding one standard deviation (z = 1).",
+     "Right: z = (130 - 100) / 15 = 2 and 1 - Φ(2) ≈ 0.023.",
+     "That is the two-sided chance of |z| > 1.96.",
+     "That is roughly the two-sided chance of |z| > 3."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-14",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "正态分布中，约 95% 的数据落在均值左右多少个标准差以内？",
+    "choices": [
+     "1",
+     "1.645",
+     "3",
+     "1.96"
+    ],
+    "explain": "常用的临界值：1.645（双侧 90%）、1.96（双侧 95%）、2.576（双侧 99%）。粗算时也常把 1.96 近似成 2。",
+    "whys": [
+     "±1σ 只覆盖约 68%。",
+     "这对应双侧 90%（或单侧 95%）。",
+     "±3σ 覆盖约 99.7%。",
+     "正确：95% 置信区间里的 1.96 就是它。"
+    ]
+   },
+   "en": {
+    "q": "For a normal distribution, about 95% of the data lie within how many standard deviations of the mean?",
+    "choices": [
+     "1",
+     "1.645",
+     "3",
+     "1.96"
+    ],
+    "explain": "Common critical values: 1.645 (two-sided 90%), 1.96 (95%) and 2.576 (99%). In rough work 1.96 is often rounded to 2.",
+    "whys": [
+     "±1σ covers only about 68%.",
+     "That is two-sided 90% (or one-sided 95%).",
+     "±3σ covers about 99.7%.",
+     "Right: the 1.96 in a 95% confidence interval."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-15",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "大数定律保证的是什么？",
+    "choices": [
+     "前面正面出现得多，后面反面会变多来「补偿」",
+     "样本量大时，样本服从正态分布",
+     "正反面次数之差会趋近 0",
+     "随 n 增大，样本均值收敛到期望值"
+    ],
+    "explain": "大数定律：独立同分布时样本均值收敛到期望。它不让过去「补偿」未来，比例变稳只是因为新数据稀释了早期的偏差。",
+    "whys": [
+     "这是赌徒谬误，独立的每次投掷概率不变。",
+     "这既不是大数定律，也不是中心极限定理的内容。",
+     "次数之差的波动反而会随 n 增大，收敛的是比例。",
+     "正确：收敛的是平均值（频率），不是绝对次数。"
+    ]
+   },
+   "en": {
+    "q": "What does the law of large numbers guarantee?",
+    "choices": [
+     "After many heads, tails become more likely to even things out",
+     "With a large sample, the sample is normally distributed",
+     "The difference between head and tail counts goes to 0",
+     "As n grows, the sample mean converges to the expected value"
+    ],
+    "explain": "The law of large numbers: for i.i.d. draws the sample mean converges to the expectation. The past is never \"made up\"; the proportion settles because new data dilute early deviations.",
+    "whys": [
+     "That is the gambler's fallacy: independent tosses do not remember.",
+     "Neither this law nor the central limit theorem says that.",
+     "The count difference actually grows in spread; it is the proportion that converges.",
+     "Right: the average (the frequency) converges, not the raw counts."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-16",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "A/B 测试每天看一次 p 值，一旦小于 0.05 就停止实验并宣布胜出。这会带来什么问题？",
+    "choices": [
+     "实际的第一类错误率远高于 5%",
+     "第二类错误率升高，第一类错误率不变",
+     "没有影响，只要最后的 p 值小于 0.05",
+     "只会降低检验功效"
+    ],
+    "explain": "「偷看」（peeking）让检验变成序贯检验却按固定样本量的方法解读。要么事先定好样本量并只在结束时看，要么使用序贯检验或 alpha 花费函数。",
+    "whys": [
+     "正确：多次查看等于做了多次检验，误报机会叠加。",
+     "受影响最大的恰恰是第一类错误。",
+     "停止规则本身改变了 p 值的含义。",
+     "提前停止看似提高了「发现率」，代价是误报。"
+    ]
+   },
+   "en": {
+    "q": "An A/B test checks its p-value daily and stops as soon as it drops below 0.05, declaring a winner. What goes wrong?",
+    "choices": [
+     "The real type I error rate is well above 5%",
+     "The type II error rate rises while the type I rate stays put",
+     "No harm, as long as the final p-value is below 0.05",
+     "It only lowers power"
+    ],
+    "explain": "Peeking turns a fixed-sample test into a sequential one while still reading it as fixed. Either fix the sample size up front and look once, or use a sequential test or an alpha-spending plan.",
+    "whys": [
+     "Right: each look is another test, and the false-positive chances add up.",
+     "It is the type I rate that suffers most.",
+     "The stopping rule itself changes what the p-value means.",
+     "Stopping early seems to find more, at the cost of false positives."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-stats-17",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "事先就预测新版本会提高转化率。双侧检验的 p 值是 0.08，观测到的效应方向和预测一致。对应的单侧 p 值是？",
+    "choices": [
+     "0.16",
+     "0.96",
+     "0.04",
+     "0.08"
+    ],
+    "explain": "单侧检验只有在实验前就确定方向时才合理；看到结果再改用单侧，是变相把 α 放宽一倍。",
+    "whys": [
+     "应该减半而不是翻倍。",
+     "这是检验相反方向（1 - 0.04）时的单侧 p 值。",
+     "正确：对称分布下单侧 p = 双侧 p / 2。",
+     "单侧只看一个尾巴，概率更小。"
+    ]
+   },
+   "en": {
+    "q": "You predicted beforehand that the new version raises conversion. The two-sided p-value is 0.08 and the effect goes the predicted way. What is the one-sided p-value?",
+    "choices": [
+     "0.16",
+     "0.96",
+     "0.04",
+     "0.08"
+    ],
+    "explain": "A one-sided test is only legitimate when the direction was fixed before the data; switching after seeing the result quietly doubles α.",
+    "whys": [
+     "It halves, it does not double.",
+     "That is the one-sided p-value for the opposite direction (1 - 0.04).",
+     "Right: for a symmetric statistic, one-sided p = two-sided p / 2.",
+     "One side looks at one tail, which holds less probability."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-stats-18",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "想检验两个分类变量是否独立，例如「设备类型」（手机、平板、电脑）和「是否下单」。该用什么检验？",
+    "choices": [
+     "配对 t 检验",
+     "皮尔逊相关系数的显著性检验",
+     "单样本 z 检验",
+     "卡方独立性检验"
+    ],
+    "explain": "卡方检验用 Σ(观测 - 期望)² / 期望 衡量列联表偏离独立的程度。期望频数太小（常见标准是小于 5）时改用 Fisher 精确检验。",
+    "whys": [
+     "配对 t 检验比较同一批对象的两次数值测量。",
+     "皮尔逊相关衡量两个连续变量的线性关系。",
+     "它把一个均值和已知值比较。",
+     "正确：比较列联表里的观测频数和独立时的期望频数。"
+    ]
+   },
+   "en": {
+    "q": "You want to test whether two categorical variables are independent, say device type (phone, tablet, desktop) and whether an order was placed. Which test fits?",
+    "choices": [
+     "A paired t-test",
+     "A significance test of Pearson's correlation",
+     "A one-sample z-test",
+     "A chi-square test of independence"
+    ],
+    "explain": "The chi-square test measures a contingency table's departure from independence with Σ(observed - expected)² / expected. With small expected counts (below 5 is the usual rule), use Fisher's exact test.",
+    "whys": [
+     "It compares two numeric measurements on the same subjects.",
+     "Pearson's r measures a linear relation between two numeric variables.",
+     "It compares one mean with a known value.",
+     "Right: it compares a contingency table's counts with those expected under independence."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-19",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "同一批 30 名用户在改版前后各测了一次任务完成时间。比较两次的均值，最合适的检验是？",
+    "choices": [
+     "独立双样本 t 检验",
+     "配对 t 检验",
+     "卡方检验",
+     "方差分析（ANOVA）"
+    ],
+    "explain": "配对设计把每个人和自己比，个体差异抵消，功效通常比把两次测量当独立样本高得多。",
+    "whys": [
+     "两组数据来自同一批人，不独立。",
+     "正确：对每个人的差值做单样本 t 检验，消除了人与人之间的差异。",
+     "完成时间是连续变量，不是频数。",
+     "独立组间的 ANOVA 也忽略了配对结构。"
+    ]
+   },
+   "en": {
+    "q": "The same 30 users timed a task before and after a redesign. Which test best compares the two means?",
+    "choices": [
+     "An independent two-sample t-test",
+     "A paired t-test",
+     "A chi-square test",
+     "An analysis of variance (ANOVA)"
+    ],
+    "explain": "A paired design compares each person with themselves, so individual differences cancel and power is usually much higher than treating the two sets as independent.",
+    "whys": [
+     "The two sets come from the same people, so they are not independent.",
+     "Right: it runs a one-sample t-test on each person's difference, removing the between-person variation.",
+     "Task time is continuous, not counts.",
+     "A between-groups ANOVA ignores the pairing too."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-20",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "只分析「目前还在使用产品」的用户，发现用过功能 X 的人平均使用时长更长，于是认为功能 X 提升了留存。这个结论的主要问题是？",
+    "choices": [
+     "样本量不够",
+     "应该用中位数而不是均值",
+     "幸存者偏差和反向因果：流失的用户被排除了，而且用得久的人本来就更可能用到功能 X",
+     "功能 X 的使用数据可能有缺失"
+    ],
+    "explain": "只看「幸存者」会系统性地丢掉失败样本；而「用得久 → 用过更多功能」又是反向因果。可靠的做法是随机放量功能 X 做实验。",
+    "whys": [
+     "问题出在谁被纳入样本，不在多少。",
+     "换统计量解决不了选择偏差。",
+     "正确：需要按注册时间对齐的队列，或者直接做实验。",
+     "即使数据完整，结论也站不住。"
+    ]
+   },
+   "en": {
+    "q": "Looking only at users who still use the product, those who used feature X have longer tenure, so feature X must drive retention. What is the main flaw?",
+    "choices": [
+     "The sample is too small",
+     "It should use the median, not the mean",
+     "Survivorship bias and reverse causation: churned users are excluded, and long-time users are simply more likely to have found feature X",
+     "Feature X's usage data may be incomplete"
+    ],
+    "explain": "Looking only at survivors drops the failures systematically, and \"used longer, so touched more features\" is reverse causation. The reliable route is a randomized rollout of feature X.",
+    "whys": [
+     "The problem is who is in the sample, not how many.",
+     "A different statistic does not fix selection.",
+     "Right: you need cohorts aligned by signup date, or an experiment.",
+     "Even with complete data the conclusion fails."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-stats-21",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "第一次考试成绩最差的 10% 学生参加了补课，第二次考试平均分明显上升。能否据此认为补课有效？",
+    "choices": [
+     "能，进步很明显",
+     "能，只要第二次考试难度相同",
+     "不能单凭这一点：按极端值挑出的组下次测量本来就会向平均回归，需要对照组",
+     "不能，因为样本只有 10%"
+    ],
+    "explain": "均值回归：成绩里有随机成分，被选为「最差」的人往往当时运气也差，下次自然回升。评估干预要和同样挑选、但没有干预的对照组比较。",
+    "whys": [
+     "进步可能完全来自统计规律。",
+     "同样难度下也会向均值回归。",
+     "正确：没补课的低分学生通常也会进步。",
+     "比例大小不是问题的关键。"
+    ]
+   },
+   "en": {
+    "q": "The bottom 10% of students on a first exam took extra classes and scored clearly higher on the second. Does this show the classes work?",
+    "choices": [
+     "Yes, the improvement is clear",
+     "Yes, if the second exam was as hard",
+     "Not on its own: a group picked for extreme scores drifts back toward the average on retest anyway, so a control group is needed",
+     "No, because it is only 10% of students"
+    ],
+    "explain": "Regression to the mean: scores include luck, and the \"worst\" were often unlucky that day, so they rebound anyway. Judge an intervention against a control group selected the same way.",
+    "whys": [
+     "The gain may be pure statistics.",
+     "Regression to the mean happens at equal difficulty too.",
+     "Right: low scorers without classes usually improve too.",
+     "The share is not the issue."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-stats-22",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "样本量不断增大时，下面哪个量会明显变小？",
+    "choices": [
+     "样本标准差",
+     "总体标准差",
+     "四分位距",
+     "样本均值的标准误"
+    ],
+    "explain": "标准差描述数据本身的离散，标准误描述估计量（如均值）的不确定性。数据越多，估计越准，但数据本身不会变得更集中。",
+    "whys": [
+     "它估计的是总体的离散程度，会稳定在 σ 附近。",
+     "总体参数不随抽样改变。",
+     "它也是描述数据离散程度的，会趋于稳定。",
+     "正确：SE = s / √n，随 n 增大而缩小。"
+    ]
+   },
+   "en": {
+    "q": "As the sample size grows, which of these clearly shrinks?",
+    "choices": [
+     "The sample standard deviation",
+     "The population standard deviation",
+     "The interquartile range",
+     "The standard error of the sample mean"
+    ],
+    "explain": "The standard deviation describes the data; the standard error describes an estimate's uncertainty. More data make the estimate sharper, not the data more concentrated.",
+    "whys": [
+     "It estimates the population's spread and settles near σ.",
+     "A population parameter does not depend on sampling.",
+     "It also describes the data's spread and stabilizes.",
+     "Right: SE = s / √n shrinks as n grows."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-stats-23",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "某病患病率 1%。检测的灵敏度 90%（患者 90% 测出阳性），健康人有 9% 会误测为阳性。一个人检测阳性，他真正患病的概率约是？",
+    "choices": [
+     "90%",
+     "约 9%",
+     "约 50%",
+     "1%"
+    ],
+    "explain": "贝叶斯公式：P(患病 | 阳性) = 0.9 × 0.01 / (0.9 × 0.01 + 0.09 × 0.99)。基础比率很低时，即使检测不错，阳性里也大多是误报。",
+    "whys": [
+     "把灵敏度 P(阳性 | 患病) 当成了 P(患病 | 阳性)。",
+     "正确：0.009 / (0.009 + 0.0891) ≈ 9.2%。",
+     "误报的健康人远多于真患者。",
+     "阳性结果提高了概率，不会停留在先验。"
+    ]
+   },
+   "en": {
+    "q": "A disease has 1% prevalence. A test catches 90% of cases, and 9% of healthy people test positive. Given a positive test, roughly how likely is the disease?",
+    "choices": [
+     "90%",
+     "About 9%",
+     "About 50%",
+     "1%"
+    ],
+    "explain": "Bayes: P(disease | positive) = 0.9 × 0.01 / (0.9 × 0.01 + 0.09 × 0.99). With a low base rate, most positives are false even for a decent test.",
+    "whys": [
+     "That mistakes the sensitivity P(positive | disease) for P(disease | positive).",
+     "Right: 0.009 / (0.009 + 0.0891) ≈ 9.2%.",
+     "False positives among the healthy far outnumber true cases.",
+     "A positive result does raise the probability above the prior."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-stats-24",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "样本方差的公式除以 n - 1 而不是 n，原因是？",
+    "choices": [
+     "为了让结果更大，显得更保守",
+     "n - 1 是计算机浮点运算的要求",
+     "偏差是用样本均值而不是总体均值算的，除以 n 会系统性低估方差；除以 n - 1 使估计无偏",
+     "只有小样本才需要除以 n - 1"
+    ],
+    "explain": "这叫贝塞尔校正：估计均值用掉了一个自由度。numpy 的 np.var、np.std 默认 ddof = 0（除以 n），pandas 的 var、std 默认 ddof = 1，混用时要注意。",
+    "whys": [
+     "「更大」是结果，不是理由。",
+     "与数值计算无关。",
+     "正确：样本均值是离样本最近的点，平方偏差之和偏小。",
+     "公式对任意 n 都成立，只是大样本时差别很小。"
+    ]
+   },
+   "en": {
+    "q": "Why does the sample variance divide by n - 1 rather than n?",
+    "choices": [
+     "To make the result bigger and more conservative",
+     "Floating-point arithmetic requires n - 1",
+     "Deviations are taken from the sample mean, not the population mean, so dividing by n underestimates on average; n - 1 makes it unbiased",
+     "Only small samples need n - 1"
+    ],
+    "explain": "This is Bessel's correction: estimating the mean uses up one degree of freedom. numpy's np.var and np.std default to ddof = 0 (divide by n) while pandas' var and std default to ddof = 1; watch out when mixing them.",
+    "whys": [
+     "Bigger is the effect, not the reason.",
+     "It has nothing to do with arithmetic.",
+     "Right: the sample mean is the point closest to the sample, so the squared deviations run small.",
+     "It holds for any n; the difference just becomes negligible."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-stats-25",
+   "section": "quant",
+   "topic": "stats",
+   "zh": {
+    "q": "下面哪些做法能降低 A/B 测试得出假阳性结论的风险？（多选）",
+    "choices": [
+     "实验前确定主指标、样本量和实验时长",
+     "同时看多个指标时，用 Bonferroni 或 FDR 等方法校正",
+     "每天看结果，一显著就停止实验",
+     "主指标不显著时，换一个显著的指标作为结论"
+    ],
+    "explain": "假阳性多来自研究者的自由度：多看几次、多试几个指标、多切几个分组。事先登记方案并校正多重比较，是最直接的防线。",
+    "whys": [
+     "正确：事先确定，避免事后挑选和偷看。",
+     "正确：控制多重比较带来的误报。",
+     "偷看会抬高第一类错误率。",
+     "这是 p-hacking，几乎一定能「找到」显著结果。"
+    ]
+   },
+   "en": {
+    "q": "Which practices lower the risk of a false-positive conclusion from an A/B test? (Select all that apply)",
+    "choices": [
+     "Fixing the primary metric, sample size and duration before the test starts",
+     "Correcting with Bonferroni, FDR or the like when judging several metrics",
+     "Checking daily and stopping as soon as it is significant",
+     "Reporting another metric that happens to be significant when the primary one is not"
+    ],
+    "explain": "False positives mostly come from researcher degrees of freedom: more looks, more metrics, more segments. Pre-registering the plan and correcting for multiple comparisons are the most direct defenses.",
+    "whys": [
+     "Right: deciding up front rules out cherry-picking and peeking.",
+     "Right: it controls the false positives from multiple comparisons.",
+     "Peeking inflates the type I error rate.",
+     "That is p-hacking: something will almost always come out significant."
+    ]
+   },
+   "answer": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-1",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "要预测「订单会不会在 30 天内被退货」，模型在下单那一刻打分。下面哪些特征会造成数据泄漏？（多选）",
+    "choices": [
+     "该用户截至下单前 12 个月的退货率",
+     "该订单是否已经生成退货运单号",
+     "商品类目",
+     "发货后 7 天内该订单的客服工单数"
+    ],
+    "explain": "判断泄漏的关键是「预测时点」：任何在打分那一刻还拿不到的信息（包括由标签派生出的字段）都不能当特征。离线评估会很漂亮，上线就失效。",
+    "whys": [
+     "只用下单前的历史，打分时就能算出来。",
+     "正确：运单号是退货发生后才有的，几乎就是标签本身。",
+     "下单时已知。",
+     "正确：这是下单之后才产生的信息。"
+    ]
+   },
+   "en": {
+    "q": "A model predicts whether an order will be returned within 30 days, scoring it at the moment the order is placed. Which features leak? (Select all that apply)",
+    "choices": [
+     "The customer's return rate over the 12 months before the order",
+     "Whether the order already has a return shipping label",
+     "The product category",
+     "Support tickets about the order in the 7 days after shipping"
+    ],
+    "explain": "The test for leakage is the prediction time: anything not available at the moment of scoring, including fields derived from the label, cannot be a feature. Offline metrics look great and production fails.",
+    "whys": [
+     "It uses only history before the order, available at scoring time.",
+     "Right: the label exists only once a return happens; it nearly is the target.",
+     "Known when the order is placed.",
+     "Right: this information appears only after the order."
+    ]
+   },
+   "answer": [
+    1,
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-2",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "要预测「贷款申请人未来 12 个月会不会违约」，在审批时打分。下面哪些特征会泄漏？（多选）",
+    "choices": [
+     "申请表里填写的年收入",
+     "贷后催收次数",
+     "账户是否已被转入坏账",
+     "申请前的征信评分"
+    ],
+    "explain": "「催收」「坏账」这类贷后字段常和申请字段放在同一张宽表里，建模时容易一起拿进来。按字段的产生时间逐个核对是最可靠的办法。",
+    "whys": [
+     "申请时就有。",
+     "正确：只有放款之后、通常是逾期之后才会有。",
+     "正确：这基本就是违约标签。",
+     "审批时可以查到。"
+    ]
+   },
+   "en": {
+    "q": "A model predicts whether a loan applicant will default within 12 months, scoring at approval time. Which features leak? (Select all that apply)",
+    "choices": [
+     "Annual income stated on the application",
+     "Number of collection calls after the loan",
+     "Whether the account was moved to bad debt",
+     "Credit score before the application"
+    ],
+    "explain": "Post-loan fields such as collections and bad debt often sit in the same wide table as application fields and slip into the model. Checking each field's creation time is the reliable defense.",
+    "whys": [
+     "Available at application.",
+     "Right: it exists only after the loan, usually after a missed payment.",
+     "Right: that is essentially the default label.",
+     "Available at approval."
+    ]
+   },
+   "answer": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-3",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "医院想在入院分诊时预测病人是否患有肺炎。下面哪些特征会泄漏？（多选）",
+    "choices": [
+     "是否开了抗生素处方",
+     "分诊时测的体温",
+     "年龄",
+     "出院诊断编码"
+    ],
+    "explain": "医疗数据里治疗、用药和检查申请都会泄漏医生的判断：模型学到的是「医生怀疑肺炎」，而不是病人本身的信号。",
+    "whys": [
+     "正确：处方是医生诊断之后的处置，透露了诊断结果。",
+     "分诊时就有。",
+     "入院时已知。",
+     "正确：出院时才有，而且就是答案。"
+    ]
+   },
+   "en": {
+    "q": "A hospital wants to predict pneumonia at triage on admission. Which features leak? (Select all that apply)",
+    "choices": [
+     "Whether antibiotics were prescribed",
+     "Temperature measured at triage",
+     "Age",
+     "Discharge diagnosis code"
+    ],
+    "explain": "In medical data, treatments, prescriptions and test orders leak the clinician's judgment: the model learns \"the doctor suspected pneumonia\", not the patient's own signals.",
+    "whys": [
+     "Right: a prescription follows the diagnosis and gives it away.",
+     "Available at triage.",
+     "Known on admission.",
+     "Right: it exists only at discharge, and it is the answer."
+    ]
+   },
+   "answer": [
+    0,
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-4",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "订阅产品要预测用户下个月会不会流失，每月 1 日用之前的数据打分。下面哪些特征会泄漏？（多选）",
+    "choices": [
+     "上个月的登录天数",
+     "「账户关闭日期」字段是否为空",
+     "本月访问「取消订阅」页面的次数",
+     "注册时长"
+    ],
+    "explain": "构造训练集时要为每个样本固定一个「截止时间」，所有特征都只用截止时间之前的数据，标签只看截止时间之后的窗口。",
+    "whys": [
+     "打分时已经发生。",
+     "正确：训练数据里这个字段只在流失后才被填上。",
+     "正确：本月还没发生，训练时用到的是未来的行为。",
+     "打分时已知。"
+    ]
+   },
+   "en": {
+    "q": "A subscription product predicts whether a user churns next month, scoring on the 1st with earlier data. Which features leak? (Select all that apply)",
+    "choices": [
+     "Days logged in last month",
+     "Whether the account-closed date is empty",
+     "Visits to the cancel page this month",
+     "Account age"
+    ],
+    "explain": "Give every training example a cutoff time: features use only data before it, and the label looks only at the window after it.",
+    "whys": [
+     "Already happened at scoring time.",
+     "Right: in the training data it is filled only after a churn.",
+     "Right: this month has not happened yet; training would use future behavior.",
+     "Known at scoring time."
+    ]
+   },
+   "answer": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-5",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "要预测「信用卡交易是不是盗刷」，在交易发生的瞬间实时打分。下面哪些特征会泄漏？（多选）",
+    "choices": [
+     "该卡过去 24 小时的交易笔数",
+     "持卡人事后是否发起了拒付（chargeback）",
+     "交易金额与该卡历史平均金额之比",
+     "风控团队人工复核的结论"
+    ],
+    "explain": "欺诈标签本身往往来自拒付和人工复核，这类字段在训练表里出现时一定要剔除。还要注意「过去 24 小时」这类窗口特征在离线回放时要按交易时间截断。",
+    "whys": [
+     "实时可算。",
+     "正确：拒付发生在交易几天甚至几周之后。",
+     "只用历史数据，实时可算。",
+     "正确：复核在交易之后，而且通常就是标签来源。"
+    ]
+   },
+   "en": {
+    "q": "A model flags fraudulent card transactions, scoring in real time as the transaction happens. Which features leak? (Select all that apply)",
+    "choices": [
+     "The card's number of transactions in the past 24 hours",
+     "Whether the cardholder later filed a chargeback",
+     "The amount relative to the card's historical average",
+     "The fraud team's manual review verdict"
+    ],
+    "explain": "Fraud labels often come from chargebacks and manual review, so such fields must go. Window features like \"past 24 hours\" must also be cut at the transaction time when replayed offline.",
+    "whys": [
+     "Computable in real time.",
+     "Right: chargebacks come days or weeks after the transaction.",
+     "Uses history only, computable in real time.",
+     "Right: review happens afterwards and is often where the label comes from."
+    ]
+   },
+   "answer": [
+    1,
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-6",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "要预测「候选人会不会接受 offer」，在发 offer 当天打分。下面哪些特征会泄漏？（多选）",
+    "choices": [
+     "入职体检是否已经预约",
+     "面试轮数",
+     "员工系统里是否已经生成工号",
+     "offer 薪资和市场中位数之比"
+    ],
+    "explain": "下游流程（体检、工号、入职材料）都是结果的后果。泄漏特征往往「预测力惊人」，看到单个特征 AUC 接近 1 时先怀疑泄漏。",
+    "whys": [
+     "正确：只有接受 offer 后才会预约。",
+     "发 offer 时已知。",
+     "正确：工号在接受 offer 之后才生成。",
+     "发 offer 时已知。"
+    ]
+   },
+   "en": {
+    "q": "A model predicts whether a candidate accepts an offer, scoring on the day the offer goes out. Which features leak? (Select all that apply)",
+    "choices": [
+     "Whether the pre-employment medical check is booked",
+     "Number of interview rounds",
+     "Whether an employee ID already exists in the HR system",
+     "The offer's pay relative to the market median"
+    ],
+    "explain": "Downstream steps (medical checks, IDs, onboarding paperwork) are consequences of the outcome. Leaky features look stunningly predictive: when one feature alone scores an AUC near 1, suspect leakage first.",
+    "whys": [
+     "Right: it is booked only after acceptance.",
+     "Known when the offer goes out.",
+     "Right: IDs are issued after acceptance.",
+     "Known when the offer goes out."
+    ]
+   },
+   "answer": [
+    0,
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-7",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "下面哪些做法会把测试集的信息泄漏进训练过程？（多选）",
+    "choices": [
+     "先用全部数据的均值和方差做标准化，再划分训练集和测试集",
+     "只在训练集上拟合标准化参数，再用它变换测试集",
+     "在全部数据上挑出和标签最相关的特征，再做交叉验证",
+     "交叉验证时，在每一折的训练部分内拟合缺失值填充"
+    ],
+    "explain": "任何「从数据中学参数」的预处理（标准化、填充、特征选择、降维、目标编码）都属于模型的一部分，必须只在训练部分拟合。sklearn 的 Pipeline 配合交叉验证能自动做到这一点。",
+    "whys": [
+     "正确：测试集参与了均值和方差的计算。",
+     "这是正确做法。",
+     "正确：特征选择看过了验证折的标签，交叉验证分数会偏高。",
+     "这是正确做法。"
+    ]
+   },
+   "en": {
+    "q": "Which practices leak test-set information into training? (Select all that apply)",
+    "choices": [
+     "Standardizing with the whole dataset's mean and variance, then splitting into train and test",
+     "Fitting the scaler on the training set only, then applying it to the test set",
+     "Selecting the features most correlated with the label on all the data, then cross-validating",
+     "Fitting missing-value imputation within each fold's training part during cross-validation"
+    ],
+    "explain": "Any preprocessing that learns from data (scaling, imputation, feature selection, dimensionality reduction, target encoding) is part of the model and must be fit on the training part only. An sklearn Pipeline inside cross-validation does this automatically.",
+    "whys": [
+     "Right: the test set shaped the mean and variance.",
+     "This is the right way.",
+     "Right: the selection saw the validation folds' labels, so the scores run high.",
+     "This is the right way."
+    ]
+   },
+   "answer": [
+    0,
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-8",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "要预测明天的门店销量。下面哪些评估或特征构造方式存在泄漏？（多选）",
+    "choices": [
+     "把所有日期随机打乱，做 5 折交叉验证",
+     "按时间切分：用之前的数据训练，之后的数据验证",
+     "特征里用了以当天为中心的 7 天滑动平均",
+     "特征里用了截至昨天的 7 天滑动平均"
+    ],
+    "explain": "时间序列要按时间切分（滚动或扩展窗口验证），所有窗口特征都必须是「截至预测时点之前」的。pandas 的 rolling 默认是向后看的窗口，但 center=True 或先 shift(-k) 就会引入未来。",
+    "whys": [
+     "正确：训练集里有验证日之后的数据，等于用未来预测过去。",
+     "这是时间序列的正确做法。",
+     "正确：居中窗口包含了未来 3 天。",
+     "只用过去的数据。"
+    ]
+   },
+   "en": {
+    "q": "You forecast a store's sales for tomorrow. Which evaluation or feature choices leak? (Select all that apply)",
+    "choices": [
+     "Shuffling all days and running 5-fold cross-validation",
+     "A time-based split: train on earlier data, validate on later data",
+     "A 7-day moving average centered on the day",
+     "A 7-day moving average ending yesterday"
+    ],
+    "explain": "Split time series by time (rolling or expanding windows), and make every window feature end before the prediction time. pandas' rolling looks backward by default, but center=True or a shift(-k) brings in the future.",
+    "whys": [
+     "Right: training then includes days after the validation days: the future predicts the past.",
+     "The right way for time series.",
+     "Right: a centered window includes the next 3 days.",
+     "Uses only the past."
+    ]
+   },
+   "answer": [
+    0,
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-9",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "数据集里同一个病人有多张 X 光片，你按图片随机划分训练集和测试集，测试准确率很高。问题出在哪？",
+    "choices": [
+     "图片数量太少",
+     "同一病人的图片同时出现在训练集和测试集，模型可能记住了病人而不是病灶，应按病人分组划分",
+     "应该先做数据增强再划分",
+     "测试集应该比训练集大"
+    ],
+    "explain": "样本之间不独立时（同一用户、病人、设备、会话），随机划分会让测试集「见过」训练里的个体。划分单位要和上线时遇到新数据的单位一致。",
+    "whys": [
+     "和数量无关，是划分方式的问题。",
+     "正确：用 GroupKFold 之类按病人分组。",
+     "先增强再划分会让同一张图的变体跨集合，泄漏更严重。",
+     "比例不是问题所在。"
+    ]
+   },
+   "en": {
+    "q": "Each patient has several X-rays, and you split train and test at random by image. Test accuracy is very high. What is wrong?",
+    "choices": [
+     "There are too few images",
+     "Images of the same patient land in both sets, so the model can recognize patients instead of disease; split by patient",
+     "Augmentation should come before the split",
+     "The test set should be larger than the training set"
+    ],
+    "explain": "When samples are not independent (same user, patient, device or session), a random split lets the test set contain individuals seen in training. Split by the unit that will be new in production.",
+    "whys": [
+     "Not about volume: the split is the problem.",
+     "Right: group by patient, e.g. with GroupKFold.",
+     "Augmenting first spreads variants of one image across both sets: worse leakage.",
+     "The ratio is not the issue."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-10",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "模型训练误差 2%，验证误差 25%。最可能的诊断和对策是？",
+    "choices": [
+     "偏差高（欠拟合），应换更复杂的模型",
+     "方差高（过拟合），可以加强正则、增加数据或简化模型",
+     "学习率太小，应该调大",
+     "数据没有问题，换一个随机种子再训练"
+    ],
+    "explain": "偏差-方差分析：训练误差高 → 欠拟合；训练误差低但验证误差高 → 过拟合。也要排查训练集和验证集分布是否一致、验证集是否有泄漏或标注问题。",
+    "whys": [
+     "训练误差已经很低，不是欠拟合。",
+     "正确：训练和验证差距大是过拟合的典型信号。",
+     "训练误差低说明优化本身没问题。",
+     "23 个百分点的差距不是随机波动。"
+    ]
+   },
+   "en": {
+    "q": "A model has 2% training error and 25% validation error. What is the likely diagnosis and remedy?",
+    "choices": [
+     "High bias (underfitting): use a more complex model",
+     "High variance (overfitting): regularize more, add data or simplify the model",
+     "The learning rate is too small; raise it",
+     "Nothing is wrong; retrain with another seed"
+    ],
+    "explain": "Bias-variance: high training error means underfitting; low training error with high validation error means overfitting. Also check that train and validation share a distribution and that labels are sound.",
+    "whys": [
+     "Training error is already low: not underfitting.",
+     "Right: a large train/validation gap is the classic sign.",
+     "Low training error shows the optimization works.",
+     "A 23-point gap is not noise."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-11",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "L1 正则（Lasso）和 L2 正则（Ridge）最主要的区别是？",
+    "choices": [
+     "L2 会把很多权重压到恰好为 0，L1 不会",
+     "L1 只能用于线性回归，L2 只能用于逻辑回归",
+     "L1 倾向于产生稀疏解（很多权重恰好为 0），可用于特征选择；L2 让权重整体变小但很少恰好为 0",
+     "L2 正则不需要调参"
+    ],
+    "explain": "L1 惩罚 Σ|w|，L2 惩罚 Σw²。相关特征很多时 L1 往往只留其中一个，L2 会把权重分摊；Elastic Net 把两者结合。",
+    "whys": [
+     "说反了。",
+     "两者都可以加在各种损失上。",
+     "正确：L1 惩罚在 0 处不可导，最优解常落在坐标轴上。",
+     "两者都要调正则强度。"
+    ]
+   },
+   "en": {
+    "q": "What is the main difference between L1 (Lasso) and L2 (Ridge) regularization?",
+    "choices": [
+     "L2 drives many weights to exactly 0 and L1 does not",
+     "L1 works only for linear regression and L2 only for logistic regression",
+     "L1 tends to give sparse solutions (many weights exactly 0), useful for feature selection; L2 shrinks all weights but rarely to exactly 0",
+     "L2 needs no tuning"
+    ],
+    "explain": "L1 penalizes Σ|w| and L2 Σw². With correlated features L1 tends to keep one while L2 spreads the weight; Elastic Net combines both.",
+    "whys": [
+     "Reversed.",
+     "Both can be added to many losses.",
+     "Right: the L1 penalty has a corner at 0, so optima often sit on the axes.",
+     "Both need their strength tuned."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-12",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "信用卡欺诈检测里，漏掉一笔欺诈的代价远高于误拦一笔正常交易。调阈值时应该更看重哪个指标？",
+    "choices": [
+     "召回率（recall）",
+     "精确率（precision）",
+     "准确率（accuracy）",
+     "训练集上的损失"
+    ],
+    "explain": "阈值决定精确率和召回率的取舍。更系统的做法是给两类错误定成本，选期望成本最低的阈值，或者在保证召回率的前提下最大化精确率。",
+    "whys": [
+     "正确：召回率衡量真实欺诈被抓到的比例，漏判代价高时要优先保证。",
+     "精确率关心误报，这里误报的代价较低。",
+     "欺诈极少，准确率几乎全由正常交易决定。",
+     "它不反映阈值下的业务取舍。"
+    ]
+   },
+   "en": {
+    "q": "In card fraud detection, missing a fraud costs far more than blocking a good transaction. Which metric should threshold tuning favor?",
+    "choices": [
+     "Recall",
+     "Precision",
+     "Accuracy",
+     "Training loss"
+    ],
+    "explain": "The threshold trades precision for recall. More systematically, price both errors and pick the threshold with the lowest expected cost, or maximize precision subject to a recall floor.",
+    "whys": [
+     "Right: recall is the share of real fraud caught, which matters most when misses are costly.",
+     "Precision is about false alarms, the cheaper error here.",
+     "Fraud is rare, so accuracy is dominated by normal transactions.",
+     "It says nothing about the trade-off at a threshold."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-ml-13",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "数据里 99% 是负样本。为什么只看准确率不合适？",
+    "choices": [
+     "准确率计算太慢",
+     "准确率只能用于多分类",
+     "准确率对概率校准太敏感",
+     "全部预测为负就有 99% 准确率，却一个正样本都没找到；应看精确率、召回率、F1 或 PR 曲线"
+    ],
+    "explain": "类别极不平衡时，ROC-AUC 也可能显得过于乐观，PR-AUC（平均精确率）对少数类更敏感。",
+    "whys": [
+     "和计算量无关。",
+     "二分类同样能算。",
+     "准确率只看阈值后的结果，不看概率。",
+     "正确：不平衡时要看少数类上的表现。"
+    ]
+   },
+   "en": {
+    "q": "99% of the examples are negative. Why is accuracy alone a poor metric?",
+    "choices": [
+     "Accuracy is slow to compute",
+     "Accuracy only works for multiclass problems",
+     "Accuracy is too sensitive to calibration",
+     "Predicting all negatives scores 99% while finding no positives; use precision, recall, F1 or the PR curve"
+    ],
+    "explain": "With heavy imbalance even ROC-AUC can look optimistic; PR-AUC (average precision) is more sensitive to the minority class.",
+    "whys": [
+     "Nothing to do with cost.",
+     "It works for binary problems too.",
+     "Accuracy looks at thresholded labels, not probabilities.",
+     "Right: with imbalance, judge performance on the minority class."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-14",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "ROC-AUC = 0.8 的含义是？",
+    "choices": [
+     "模型有 80% 的预测是对的",
+     "在阈值 0.8 时召回率为 80%",
+     "随机抽一个正样本和一个负样本，模型给正样本打分更高的概率是 80%",
+     "80% 的正样本得分高于 0.5"
+    ],
+    "explain": "AUC 只看排序，不看分数的绝对值，所以对单调变换不变，也不反映概率是否校准。0.5 相当于随机排序。",
+    "whys": [
+     "那是准确率，而且依赖阈值。",
+     "AUC 与某个具体阈值无关。",
+     "正确：这正是 AUC 的排序含义（并列算一半）。",
+     "同样绑定了一个阈值。"
+    ]
+   },
+   "en": {
+    "q": "What does a ROC-AUC of 0.8 mean?",
+    "choices": [
+     "80% of the predictions are correct",
+     "Recall is 80% at a threshold of 0.8",
+     "A random positive outscores a random negative 80% of the time",
+     "80% of positives score above 0.5"
+    ],
+    "explain": "AUC only looks at the ranking, not the score values: it is unchanged by monotone transforms and says nothing about calibration. 0.5 is a random ranking.",
+    "whys": [
+     "That is accuracy, and it depends on a threshold.",
+     "AUC is not tied to any one threshold.",
+     "Right: that is AUC's ranking meaning (ties count half).",
+     "Again tied to a threshold."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-15",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "梯度下降时学习率设得太大，最典型的现象是？",
+    "choices": [
+     "损失下降得非常慢",
+     "损失来回震荡甚至发散到 inf 或 NaN",
+     "模型一定会过拟合",
+     "训练集准确率会达到 100%"
+    ],
+    "explain": "常见做法：从较小的学习率开始，配合学习率预热和衰减；用 Adam 之类自适应方法也仍然需要调学习率。特征尺度差异很大时也会加剧震荡，先做标准化。",
+    "whys": [
+     "这是学习率太小的表现。",
+     "正确：步子跨过了最低点，越跳越远。",
+     "过拟合和学习率没有必然联系。",
+     "震荡或发散时通常训练都训不好。"
+    ]
+   },
+   "en": {
+    "q": "What typically happens when gradient descent uses too large a learning rate?",
+    "choices": [
+     "The loss falls very slowly",
+     "The loss oscillates or diverges to inf or NaN",
+     "The model is sure to overfit",
+     "Training accuracy reaches 100%"
+    ],
+    "explain": "Common practice: start smaller, with warm-up and decay; adaptive methods like Adam still need a tuned rate. Badly scaled features worsen the oscillation, so standardize first.",
+    "whys": [
+     "That is a learning rate that is too small.",
+     "Right: each step overshoots the minimum, further and further.",
+     "Overfitting is not a necessary consequence.",
+     "With oscillation or divergence, training usually fails."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-16",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "下面哪些模型对特征的尺度（单位）敏感，通常需要先标准化？（多选）",
+    "choices": [
+     "K 近邻（KNN）",
+     "带 L2 正则的逻辑回归",
+     "决策树",
+     "随机森林"
+    ],
+    "explain": "基于距离、内积或梯度下降并带正则的模型（KNN、SVM、线性模型、神经网络、k-means、PCA）都要标准化；基于树的模型一般不需要。",
+    "whys": [
+     "正确：距离会被数值范围大的特征主导。",
+     "正确：正则对所有权重一视同仁，尺度不同惩罚就不公平。",
+     "树按阈值切分，对单调缩放不敏感。",
+     "由决策树组成，同样不敏感。"
+    ]
+   },
+   "en": {
+    "q": "Which models are sensitive to feature scale and usually need standardization first? (Select all that apply)",
+    "choices": [
+     "K-nearest neighbors (KNN)",
+     "Logistic regression with L2 regularization",
+     "A decision tree",
+     "A random forest"
+    ],
+    "explain": "Models built on distances, dot products or regularized gradient descent (KNN, SVMs, linear models, neural nets, k-means, PCA) need scaling; tree-based models generally do not.",
+    "whys": [
+     "Right: distances are dominated by the widest-ranging features.",
+     "Right: the penalty treats all weights alike, which is unfair across scales.",
+     "Trees split on thresholds and ignore monotone rescaling.",
+     "Made of trees, so equally indifferent."
+    ]
+   },
+   "answer": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-17",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "k-means 优化的目标函数是？",
+    "choices": [
+     "簇的个数",
+     "不同簇中心之间距离的倒数",
+     "每个点到所属簇中心的平方距离之和（簇内平方和）",
+     "所有点两两之间的距离之和"
+    ],
+    "explain": "Lloyd 算法只保证收敛到局部最优，结果依赖初始中心，常用 k-means++ 初始化并多次重启。它偏好大小相近、凸的球形簇。",
+    "whys": [
+     "k 是事先给定的超参数。",
+     "这不是 k-means 的目标。",
+     "正确：Lloyd 算法的分配和更新两步都让它不增。",
+     "这个量与聚类方式无关。"
+    ]
+   },
+   "en": {
+    "q": "What objective does k-means minimize?",
+    "choices": [
+     "The number of clusters",
+     "The inverse distance between cluster centers",
+     "The sum of squared distances from each point to its cluster center (within-cluster sum of squares)",
+     "The sum of all pairwise distances"
+    ],
+    "explain": "Lloyd's algorithm only reaches a local optimum that depends on the initial centers, hence k-means++ seeding and several restarts. It favors convex, similarly sized, roughly spherical clusters.",
+    "whys": [
+     "k is a fixed hyperparameter.",
+     "Not k-means' objective.",
+     "Right: both steps of Lloyd's algorithm never increase it.",
+     "That does not depend on the clustering."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-18",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "随机森林相比单棵决策树，主要降低的是什么？",
+    "choices": [
+     "偏差",
+     "方差",
+     "训练时间",
+     "对特征尺度的敏感性"
+    ],
+    "explain": "Bagging 降方差，Boosting（如梯度提升）主要通过逐步拟合残差来降偏差。随机森林的每棵树通常长得很深，单独看过拟合，平均后才稳定。",
+    "whys": [
+     "平均许多深树，偏差大致不变。",
+     "正确：自助采样加随机选特征让树之间相关性低，平均后方差下降。",
+     "要训练很多棵树，通常更慢。",
+     "单棵树本来就不敏感。"
+    ]
+   },
+   "en": {
+    "q": "Compared with a single decision tree, what does a random forest mainly reduce?",
+    "choices": [
+     "Bias",
+     "Variance",
+     "Training time",
+     "Sensitivity to feature scale"
+    ],
+    "explain": "Bagging cuts variance; boosting (such as gradient boosting) mainly cuts bias by fitting residuals step by step. Each tree in a forest is typically deep and overfit alone; averaging stabilizes them.",
+    "whys": [
+     "Averaging many deep trees leaves bias about the same.",
+     "Right: bootstrap samples and random feature subsets decorrelate the trees, and averaging cuts variance.",
+     "Training many trees is usually slower.",
+     "A single tree is already insensitive."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-19",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "用平方损失做梯度提升（gradient boosting）时，每一棵新树拟合的是什么？",
+    "choices": [
+     "原始标签 y",
+     "当前模型预测值的平方",
+     "上一棵树的预测值",
+     "当前集成模型的残差 y - ŷ（即损失的负梯度）"
+    ],
+    "explain": "对一般的损失，新树拟合负梯度（伪残差），再乘以学习率加入模型。学习率越小，需要的树越多，泛化通常越好。",
+    "whys": [
+     "那样每棵树都在重复同一件事。",
+     "没有这样的目标。",
+     "新树要修正的是整体的误差。",
+     "正确：每一步沿负梯度方向前进一小步（乘以学习率）。"
+    ]
+   },
+   "en": {
+    "q": "In gradient boosting with squared loss, what does each new tree fit?",
+    "choices": [
+     "The original labels y",
+     "The square of the current predictions",
+     "The previous tree's predictions",
+     "The current ensemble's residuals y - ŷ (the loss's negative gradient)"
+    ],
+    "explain": "For a general loss, each tree fits the negative gradient (pseudo-residuals) and joins the model scaled by the learning rate. A smaller rate needs more trees and usually generalizes better.",
+    "whys": [
+     "Every tree would redo the same job.",
+     "No such target.",
+     "The new tree corrects the whole ensemble's error.",
+     "Right: each step moves a little (times the learning rate) along the negative gradient."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-20",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "softmax 输出 p，配合交叉熵损失，真实类别的 one-hot 向量是 y。损失对 logits z 的梯度是？",
+    "choices": [
+     "p - y",
+     "y - p",
+     "p(1 - p)",
+     "-log p"
+    ],
+    "explain": "这个简洁的梯度也是框架提供 softmax_cross_entropy（或 CrossEntropyLoss 直接吃 logits）的原因：合在一起计算既简单又数值稳定。逻辑回归的梯度 Xᵀ(p - y)/n 是它的二分类特例。",
+    "whys": [
+     "正确：softmax 和交叉熵的导数合在一起正好化简成这个形式。",
+     "符号反了，那是负梯度。",
+     "这是 sigmoid 的导数，不是这里的梯度。",
+     "这是损失本身，不是梯度。"
+    ]
+   },
+   "en": {
+    "q": "With softmax outputs p, cross-entropy loss and a one-hot true label y, what is the gradient of the loss with respect to the logits z?",
+    "choices": [
+     "p - y",
+     "y - p",
+     "p(1 - p)",
+     "-log p"
+    ],
+    "explain": "This clean gradient is why frameworks offer a fused softmax cross-entropy (CrossEntropyLoss takes logits): computing them together is simpler and numerically stable. Logistic regression's gradient Xᵀ(p - y)/n is the binary case.",
+    "whys": [
+     "Right: the softmax and cross-entropy derivatives combine into exactly this.",
+     "Wrong sign: that is the negative gradient.",
+     "That is the sigmoid's derivative, not this gradient.",
+     "That is the loss itself."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-ml-21",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "很深的网络全用 sigmoid 激活，前几层几乎学不动。最主要的原因是？",
+    "choices": [
+     "sigmoid 的输出不是概率",
+     "sigmoid 计算太慢",
+     "sigmoid 的导数最大只有 0.25，反向传播逐层相乘后梯度消失",
+     "sigmoid 会让参数变成负数"
+    ],
+    "explain": "常见对策：ReLU 一类的激活函数、合适的初始化（Xavier、He）、批归一化 / 层归一化，以及残差连接。",
+    "whys": [
+     "与能否训练无关。",
+     "速度不是瓶颈。",
+     "正确：饱和区导数更接近 0，问题更严重。",
+     "没有这回事。"
+    ]
+   },
+   "en": {
+    "q": "A very deep network using sigmoid activations everywhere barely trains its early layers. What is the main reason?",
+    "choices": [
+     "Sigmoid outputs are not probabilities",
+     "Sigmoid is slow to compute",
+     "Its derivative is at most 0.25, so gradients shrink layer after layer in backpropagation and vanish",
+     "Sigmoid makes parameters negative"
+    ],
+    "explain": "The usual remedies: ReLU-family activations, sensible initialization (Xavier, He), batch or layer normalization, and residual connections.",
+    "whys": [
+     "Irrelevant to training.",
+     "Speed is not the bottleneck.",
+     "Right: in the saturated regions the derivative is even closer to 0.",
+     "No such effect."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-22",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "关于 Dropout，下面哪种说法正确？",
+    "choices": [
+     "推理（预测）时也要随机丢弃神经元",
+     "训练时随机丢弃，推理时关闭；常用的「倒置 dropout」在训练时把保留的激活除以保留概率",
+     "Dropout 用来加快训练",
+     "Dropout 只能用在输入层"
+    ],
+    "explain": "Dropout 相当于训练很多共享参数的子网络再平均，起正则作用。框架里要记得切换 train / eval 模式（PyTorch 的 model.eval()）。",
+    "whys": [
+     "推理时要关掉，否则预测是随机的。",
+     "正确：这样推理时什么都不用改，期望保持一致。",
+     "它是正则手段，通常会让收敛变慢。",
+     "常用在隐藏层。"
+    ]
+   },
+   "en": {
+    "q": "Which statement about dropout is correct?",
+    "choices": [
+     "Neurons are also dropped at random at inference time",
+     "Neurons are dropped during training and not at inference; the common \"inverted dropout\" divides kept activations by the keep probability during training",
+     "Dropout speeds up training",
+     "Dropout only works on the input layer"
+    ],
+    "explain": "Dropout is like training many weight-sharing subnetworks and averaging them, a regularizer. Remember to switch between train and eval modes (model.eval() in PyTorch).",
+    "whys": [
+     "It is switched off at inference, or predictions would be random.",
+     "Right: so inference needs no change and the expectations match.",
+     "It is a regularizer and usually slows convergence.",
+     "It is common in hidden layers."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-23",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "批归一化（Batch Normalization）在推理时用什么做归一化？",
+    "choices": [
+     "当前这个批次的均值和方差",
+     "不做归一化",
+     "训练时累计的均值和方差的滑动平均",
+     "测试集整体的均值和方差"
+    ],
+    "explain": "训练时用批内统计量并更新滑动平均，推理时用滑动平均。忘记切换到 eval 模式是线上效果和离线不一致的常见原因。",
+    "whys": [
+     "那样同一个样本的预测会受同批其他样本影响，批大小为 1 时还会出问题。",
+     "跳过会让分布和训练时不一致。",
+     "正确：推理时用固定的统计量，每个样本的输出确定。",
+     "这会用到测试集的信息，线上也拿不到。"
+    ]
+   },
+   "en": {
+    "q": "At inference time, what does batch normalization normalize with?",
+    "choices": [
+     "The current batch's mean and variance",
+     "Nothing: it is skipped",
+     "Running averages of the mean and variance accumulated during training",
+     "The whole test set's mean and variance"
+    ],
+    "explain": "Training uses batch statistics and updates the running averages; inference uses the running averages. Forgetting eval mode is a common cause of online/offline mismatch.",
+    "whys": [
+     "Then a prediction would depend on its batchmates, and a batch of 1 breaks.",
+     "Skipping it changes the distribution the next layer saw in training.",
+     "Right: fixed statistics make each sample's output deterministic.",
+     "That uses test-set information and is unavailable online."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-ml-24",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "缩放点积注意力为什么要把 QKᵀ 除以 √d_k？",
+    "choices": [
+     "为了让注意力权重之和等于 1",
+     "为了减少计算量",
+     "为了实现因果掩码",
+     "维度越高点积的方差越大，不缩放 softmax 会进入饱和区、梯度很小"
+    ],
+    "explain": "softmax 输入过大时几乎变成 one-hot，除最大项外梯度接近 0。缩放让训练初期的注意力分布更平滑。",
+    "whys": [
+     "这由 softmax 保证，与缩放无关。",
+     "除法反而多了一步。",
+     "掩码是另外加的。",
+     "正确：分量独立、方差为 1 时点积方差是 d_k，除以 √d_k 把它拉回 1。"
+    ]
+   },
+   "en": {
+    "q": "Why does scaled dot-product attention divide QKᵀ by √d_k?",
+    "choices": [
+     "To make the attention weights sum to 1",
+     "To save computation",
+     "To implement the causal mask",
+     "Dot products grow in variance with dimension, and unscaled scores push softmax into saturation with tiny gradients"
+    ],
+    "explain": "Large softmax inputs make it nearly one-hot, with gradients near 0 except at the maximum. Scaling keeps early attention smoother.",
+    "whys": [
+     "Softmax does that, with or without scaling.",
+     "It adds a step, if anything.",
+     "The mask is separate.",
+     "Right: with unit-variance independent components the dot product has variance d_k; dividing by √d_k brings it back to 1."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-25",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "逻辑回归里某个特征的权重是 0.7。其他特征不变时，这个特征增加 1，会怎样？",
+    "choices": [
+     "预测概率增加 0.7",
+     "几率（odds）乘以 e^0.7 ≈ 2.01",
+     "预测概率乘以 0.7",
+     "几率增加 0.7"
+    ],
+    "explain": "逻辑回归：log(p / (1 - p)) = w·x + b。权重是对数几率的变化，e^w 是几率比（odds ratio）。概率的变化量取决于当前所处的位置。",
+    "whys": [
+     "概率不是线性的，也可能超过 1。",
+     "正确：对数几率增加 0.7。",
+     "方向和形式都不对。",
+     "对数几率是线性的，几率是乘性的。"
+    ]
+   },
+   "en": {
+    "q": "In logistic regression a feature has weight 0.7. Holding the others fixed, what happens when it rises by 1?",
+    "choices": [
+     "The predicted probability rises by 0.7",
+     "The odds multiply by e^0.7 ≈ 2.01",
+     "The probability multiplies by 0.7",
+     "The odds rise by 0.7"
+    ],
+    "explain": "Logistic regression models log(p / (1 - p)) = w·x + b. A weight is a change in log-odds and e^w an odds ratio; the change in probability depends on where you start.",
+    "whys": [
+     "Probability is not linear in the features and could pass 1.",
+     "Right: the log-odds rise by 0.7.",
+     "Wrong in direction and form.",
+     "The log-odds are linear; the odds are multiplicative."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-26",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "一个分类器在测试集上 TP = 40、FP = 10、FN = 20。精确率和召回率分别是？",
+    "choices": [
+     "0.8 和 0.67",
+     "0.67 和 0.8",
+     "0.8 和 0.8",
+     "0.57 和 0.67"
+    ],
+    "explain": "精确率 = TP / (TP + FP)：预测为正的里面有多少是真的；召回率 = TP / (TP + FN)：真的正样本找回了多少。F1 是两者的调和平均，这里约 0.727。",
+    "whys": [
+     "正确：精确率 = 40/50，召回率 = 40/60。",
+     "两个公式用反了。",
+     "召回率的分母是 TP + FN = 60。",
+     "精确率的分母只有 TP + FP。"
+    ]
+   },
+   "en": {
+    "q": "A classifier has TP = 40, FP = 10 and FN = 20 on a test set. What are its precision and recall?",
+    "choices": [
+     "0.8 and 0.67",
+     "0.67 and 0.8",
+     "0.8 and 0.8",
+     "0.57 and 0.67"
+    ],
+    "explain": "Precision = TP / (TP + FP): how many predicted positives are real; recall = TP / (TP + FN): how many real positives were found. F1, their harmonic mean, is about 0.727 here.",
+    "whys": [
+     "Right: precision = 40/50 and recall = 40/60.",
+     "The two formulas are swapped.",
+     "Recall divides by TP + FN = 60.",
+     "Precision divides by TP + FP only."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-ml-27",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "把二分类的判定阈值从 0.5 提高到 0.8，通常会怎样？",
+    "choices": [
+     "精确率和召回率都上升",
+     "精确率下降、召回率上升",
+     "AUC 上升",
+     "精确率通常上升、召回率下降"
+    ],
+    "explain": "召回率随阈值升高单调不增；精确率通常上升，但不保证单调。阈值应该按业务代价在验证集上选，而不是默认 0.5。",
+    "whys": [
+     "两者一般此消彼长。",
+     "这是降低阈值的效果。",
+     "AUC 与阈值无关。",
+     "正确：只有更有把握的才判正，误报少了，漏掉的多了。"
+    ]
+   },
+   "en": {
+    "q": "Raising a binary classifier's threshold from 0.5 to 0.8 usually does what?",
+    "choices": [
+     "Both precision and recall rise",
+     "Precision falls and recall rises",
+     "AUC rises",
+     "Precision usually rises and recall falls"
+    ],
+    "explain": "Recall never rises as the threshold goes up; precision usually rises but not always monotonically. Pick the threshold on validation data by business cost, not by default at 0.5.",
+    "whys": [
+     "They usually trade off.",
+     "That is lowering the threshold.",
+     "AUC does not depend on the threshold.",
+     "Right: only confident cases are called positive: fewer false alarms, more misses."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-ml-28",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "正样本只占 1%。下面哪些处理类别不平衡的做法是正确的？（多选）",
+    "choices": [
+     "在损失函数里给少数类更大的权重",
+     "划分之后，只在训练集里对少数类过采样",
+     "先对全部数据过采样（如 SMOTE），再划分训练集和测试集",
+     "在重新平衡过的测试集上报告精确率"
+    ],
+    "explain": "重采样只能发生在训练数据（交叉验证时在每折的训练部分内）。评估要用真实分布，且优先看 PR 曲线、召回率等对少数类敏感的指标。",
+    "whys": [
+     "正确：不改数据，直接改变错误的代价。",
+     "正确：测试集保持真实分布。",
+     "合成样本由测试样本插值而来，会泄漏到训练集，测试分数虚高。",
+     "精确率依赖正负比例，平衡后的数字和线上相差很大。"
+    ]
+   },
+   "en": {
+    "q": "Positives are only 1% of the data. Which ways of handling the imbalance are sound? (Select all that apply)",
+    "choices": [
+     "Weighting the minority class more in the loss",
+     "Oversampling the minority class in the training set only, after the split",
+     "Oversampling all the data (say with SMOTE), then splitting into train and test",
+     "Reporting precision on a rebalanced test set"
+    ],
+    "explain": "Resampling belongs to the training data only (inside each fold's training part in cross-validation). Evaluate on the real distribution, with minority-sensitive metrics such as the PR curve and recall.",
+    "whys": [
+     "Right: it changes the cost of errors without touching the data.",
+     "Right: the test set keeps the real distribution.",
+     "Synthetic samples interpolated from test points leak into training and inflate the scores.",
+     "Precision depends on the class ratio, so the rebalanced number misleads about production."
+    ]
+   },
+   "answer": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-29",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "对邮编这类高基数类别特征做目标编码（用该类别的平均标签替代类别）。下面哪些做法正确？（多选）",
+    "choices": [
+     "只用训练集（交叉验证时用折外数据）计算每个类别的平均标签",
+     "对样本很少的类别，把平均值向全局均值平滑",
+     "用全部数据（包括测试集）计算平均标签",
+     "计算某个样本的编码时把它自己的标签也算进去"
+    ],
+    "explain": "目标编码是常见的泄漏源：它直接用了标签。正确做法是折外（out-of-fold）计算加平滑，sklearn 1.3 起的 TargetEncoder 默认就是这样做的。",
+    "whys": [
+     "正确：避免测试集和样本自身的标签进入特征。",
+     "正确：样本少时平均值噪声大，平滑能减少过拟合。",
+     "测试集的标签被编码进了特征。",
+     "每个类别只有一两个样本时，编码几乎就是标签本身。"
+    ]
+   },
+   "en": {
+    "q": "You target-encode a high-cardinality category such as a ZIP code (replacing it with the category's mean label). Which practices are sound? (Select all that apply)",
+    "choices": [
+     "Computing each category's mean label on the training set only (out-of-fold during cross-validation)",
+     "Smoothing rare categories' means toward the global mean",
+     "Computing the means on all the data, test set included",
+     "Including a sample's own label when computing its encoding"
+    ],
+    "explain": "Target encoding is a classic leak because it uses the label directly. The right way is out-of-fold computation with smoothing, which sklearn's TargetEncoder (since 1.3) does by default.",
+    "whys": [
+     "Right: it keeps test labels and each sample's own label out of its feature.",
+     "Right: small-sample means are noisy, and smoothing curbs overfitting.",
+     "The test labels end up inside a feature.",
+     "For categories with one or two samples, the encoding nearly is the label."
+    ]
+   },
+   "answer": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "mcq-ml-30",
+   "section": "cs",
+   "topic": "ml",
+   "zh": {
+    "q": "模型上线几个月后效果下降，排查发现线上某些特征的分布和训练时明显不同，而特征与标签的关系没变。这种情况叫什么？",
+    "choices": [
+     "过拟合",
+     "协变量偏移（covariate shift），一种数据漂移",
+     "标签泄漏",
+     "梯度消失"
+    ],
+    "explain": "要监控特征和预测的分布（如 PSI、KS 检验），并定期用新数据重训。如果 P(y | x) 也变了，就是概念漂移（concept drift），影响更大。",
+    "whys": [
+     "过拟合在上线前的验证集上就能看出来。",
+     "正确：输入分布 P(x) 变了，P(y | x) 没变。",
+     "泄漏是训练时用了未来信息，不是上线后的分布变化。",
+     "这是训练深层网络时的优化问题。"
+    ]
+   },
+   "en": {
+    "q": "A few months after launch a model degrades. Some features are now distributed differently from training, while the feature-label relationship is unchanged. What is this called?",
+    "choices": [
+     "Overfitting",
+     "Covariate shift, a kind of data drift",
+     "Label leakage",
+     "Vanishing gradients"
+    ],
+    "explain": "Monitor feature and prediction distributions (PSI, KS tests, for example) and retrain on fresh data periodically. If P(y | x) changes too, that is concept drift, which hurts more.",
+    "whys": [
+     "Overfitting shows up on validation before launch.",
+     "Right: the input distribution P(x) changed while P(y | x) did not.",
+     "Leakage is about using future information in training, not later drift.",
+     "That is an optimization problem in deep networks."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-1",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.ones((3, 1))\nb = np.ones(4)\nprint((a + b).shape)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "(3, 1)",
+     "(3, 4)",
+     "(4, 3)",
+     "ValueError"
+    ],
+    "explain": "广播规则：从最右边的维度开始比，两个维度相等或其中一个为 1 才兼容；维数少的一方在左边补 1。",
+    "whys": [
+     "广播会把长度为 1 的维度扩展开。",
+     "正确：(3, 1) 和 (4,) 先右对齐成 (3, 1) 与 (1, 4)，再各自扩展。",
+     "维度顺序按右对齐的结果，不会交换。",
+     "尾部维度 1 和 4 兼容（其中一个是 1），不会报错。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "(3, 1)",
+     "(3, 4)",
+     "(4, 3)",
+     "ValueError"
+    ],
+    "explain": "Broadcasting compares shapes from the rightmost axis: sizes must match or one must be 1, and the shorter shape is padded with 1s on the left.",
+    "whys": [
+     "Broadcasting stretches the length-1 axis.",
+     "Right: (3, 1) and (4,) align on the right as (3, 1) and (1, 4), then both stretch.",
+     "Axes follow the right-aligned shapes; nothing swaps.",
+     "Trailing sizes 1 and 4 are compatible (one is 1): no error."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-2",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.arange(5)\nb = a[1:3]\nb[0] = 99\nprint(a.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[0, 1, 2, 3, 4]",
+     "[99, 1, 2, 3, 4]",
+     "[0, 99, 2, 3, 4]",
+     "[99, 99, 2, 3, 4]"
+    ],
+    "explain": "NumPy 的基本切片（a[1:3]、a[::2]）返回视图；需要独立的数据时用 .copy()。这和 Python 列表切片会复制正好相反。",
+    "whys": [
+     "基本切片返回视图，不是副本。",
+     "b[0] 对应的是 a[1]。",
+     "正确：b 和 a 共享内存，改 b 就改了 a。",
+     "只改了一个元素。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[0, 1, 2, 3, 4]",
+     "[99, 1, 2, 3, 4]",
+     "[0, 99, 2, 3, 4]",
+     "[99, 99, 2, 3, 4]"
+    ],
+    "explain": "Basic slices (a[1:3], a[::2]) are views in NumPy; call .copy() for independent data. Python list slices, by contrast, copy.",
+    "whys": [
+     "A basic slice is a view, not a copy.",
+     "b[0] is a[1].",
+     "Right: b shares a's memory, so writing b writes a.",
+     "Only one element changes."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-numpy-3",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.arange(5)\nb = a[[1, 2]]\nb[0] = 99\nprint(a.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[0, 1, 2, 3, 4]",
+     "[0, 99, 2, 3, 4]",
+     "[99, 1, 2, 3, 4]",
+     "IndexError"
+    ],
+    "explain": "花式索引（整数数组或布尔数组做下标）读取时返回副本；但出现在赋值左边时（a[[1, 2]] = 0）会直接写回原数组。",
+    "whys": [
+     "正确：用列表做下标（花式索引）总是返回副本。",
+     "这是切片视图的行为，花式索引不同。",
+     "a 根本没有被改动。",
+     "下标 1 和 2 都合法。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[0, 1, 2, 3, 4]",
+     "[0, 99, 2, 3, 4]",
+     "[99, 1, 2, 3, 4]",
+     "IndexError"
+    ],
+    "explain": "Fancy indexing (integer or boolean arrays) returns a copy when reading; on the left of an assignment (a[[1, 2]] = 0) it writes into the original.",
+    "whys": [
+     "Right: indexing with a list (fancy indexing) always copies.",
+     "That is a slice view; fancy indexing differs.",
+     "a is never touched.",
+     "Indices 1 and 2 are both valid."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-numpy-4",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([3, -1, 4, -5])\na[a < 0] = 0\nprint(a.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[3, 4]",
+     "[0, -1, 0, -5]",
+     "[3, -1, 4, -5]",
+     "[3, 0, 4, 0]"
+    ],
+    "explain": "a[mask] = value 是向量化的条件赋值，等价于 np.where(mask, value, a) 但原地修改。读取 a[mask] 则得到只含满足条件元素的新数组。",
+    "whys": [
+     "布尔索引赋值不会删除元素，长度不变。",
+     "条件是 a < 0，改的是负数。",
+     "布尔掩码出现在赋值左边时会写回原数组。",
+     "正确：负数位置被置为 0。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[3, 4]",
+     "[0, -1, 0, -5]",
+     "[3, -1, 4, -5]",
+     "[3, 0, 4, 0]"
+    ],
+    "explain": "a[mask] = value is a vectorized conditional assignment, like np.where(mask, value, a) but in place. Reading a[mask] gives a new array of just the matching elements.",
+    "whys": [
+     "Assigning through a mask keeps the length.",
+     "The condition is a < 0, so the negatives change.",
+     "A mask on the left of an assignment writes in place.",
+     "Right: the negative positions become 0."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-numpy-5",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([1, 2, 3])\na[0] = 2.9\nprint(a.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[2.9, 2, 3]",
+     "[3, 2, 3]",
+     "[2, 2, 3]",
+     "TypeError"
+    ],
+    "explain": "NumPy 数组的 dtype 在创建时就定了。np.array([1, 2, 3]) 是整数数组，往里写浮点会被截断。需要浮点时创建时就写 dtype=float 或用 1.0。",
+    "whys": [
+     "数组的 dtype 是整数，不会因为一次赋值变成浮点。",
+     "转换是向 0 截断，不是四舍五入。",
+     "正确：2.9 存进 int64 数组被截断成 2。",
+     "单个元素赋值会静默转换，不报错。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[2.9, 2, 3]",
+     "[3, 2, 3]",
+     "[2, 2, 3]",
+     "TypeError"
+    ],
+    "explain": "A NumPy array's dtype is fixed at creation. np.array([1, 2, 3]) is an integer array, so floats written into it are truncated. Ask for dtype=float (or write 1.0) up front.",
+    "whys": [
+     "The array's dtype is integer and does not change on assignment.",
+     "The conversion truncates toward 0; it does not round.",
+     "Right: 2.9 stored into an int64 array truncates to 2.",
+     "Assigning one element converts silently."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-numpy-6",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.arange(6).reshape(2, 3)\nprint(a.sum(axis=0).tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[3, 12]",
+     "[3, 5, 7]",
+     "15",
+     "[[3, 5, 7]]"
+    ],
+    "explain": "a 是 [[0, 1, 2], [3, 4, 5]]。axis=k 表示「沿第 k 个维度求和，把它消掉」：形状 (2, 3) 沿 axis=0 求和得到 (3,)。",
+    "whys": [
+     "这是 axis=1（每行求和）的结果。",
+     "正确：axis=0 沿着行的方向压缩，得到每一列的和。",
+     "不指定 axis 才是全部求和。",
+     "没有 keepdims=True，结果是一维的。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[3, 12]",
+     "[3, 5, 7]",
+     "15",
+     "[[3, 5, 7]]"
+    ],
+    "explain": "a is [[0, 1, 2], [3, 4, 5]]. axis=k means \"reduce along axis k, removing it\": summing shape (2, 3) along axis=0 gives shape (3,).",
+    "whys": [
+     "That is axis=1, the row sums.",
+     "Right: axis=0 collapses the rows, giving each column's sum.",
+     "Only no axis sums everything.",
+     "Without keepdims=True the result is 1-D."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-7",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.arange(6).reshape(2, 3)\nprint((a - a.mean(axis=1, keepdims=True)).tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[[-1.0, 0.0, 1.0], [-1.0, 0.0, 1.0]]",
+     "[[-2.5, -1.5, -0.5], [0.5, 1.5, 2.5]]",
+     "[[-1.5, -1.5, -1.5], [1.5, 1.5, 1.5]]",
+     "ValueError"
+    ],
+    "explain": "不加 keepdims 时 a.mean(axis=1) 的形状是 (2,)，和 (2, 3) 右对齐后与 3 不兼容会报错。按行做标准化、softmax 时常用 keepdims=True。",
+    "whys": [
+     "正确：每行减去自己的均值 1 和 4。",
+     "这是减去全体均值 2.5 的结果。",
+     "这是按列均值的方向理解反了。",
+     "keepdims=True 让形状是 (2, 1)，可以和 (2, 3) 广播。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[[-1.0, 0.0, 1.0], [-1.0, 0.0, 1.0]]",
+     "[[-2.5, -1.5, -0.5], [0.5, 1.5, 2.5]]",
+     "[[-1.5, -1.5, -1.5], [1.5, 1.5, 1.5]]",
+     "ValueError"
+    ],
+    "explain": "Without keepdims, a.mean(axis=1) has shape (2,), which right-aligns against 3 and fails to broadcast. Row-wise normalization and softmax rely on keepdims=True.",
+    "whys": [
+     "Right: each row minus its own mean, 1 and 4.",
+     "That subtracts the overall mean, 2.5.",
+     "That centers by column means, the wrong axis.",
+     "keepdims=True gives shape (2, 1), which broadcasts against (2, 3)."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-numpy-8",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nprint(int(np.argmax([1, 3, 3, 2])))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "2",
+     "3",
+     "[1, 2]",
+     "1"
+    ],
+    "explain": "np.argmax / np.argmin 在并列时返回最小的下标，这个行为有文档保证，可以用来实现「平局取编号小的」规则。",
+    "whys": [
+     "argmax 遇到并列返回第一个。",
+     "3 是最大值，不是下标。",
+     "argmax 只返回一个下标。",
+     "正确：最大值 3 第一次出现在下标 1。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "2",
+     "3",
+     "[1, 2]",
+     "1"
+    ],
+    "explain": "np.argmax and np.argmin return the lowest index on ties, a documented guarantee you can use for \"smallest index wins\" rules.",
+    "whys": [
+     "argmax returns the first of tied maxima.",
+     "That is the maximum value, not its index.",
+     "argmax returns a single index.",
+     "Right: the maximum 3 first occurs at index 1."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-numpy-9",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nprint(np.arange(6).reshape(3, 2).T.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[[0, 1], [2, 3], [4, 5]]",
+     "[[0, 1, 2], [3, 4, 5]]",
+     "[[0, 2, 4], [1, 3, 5]]",
+     "[[5, 4, 3], [2, 1, 0]]"
+    ],
+    "explain": "reshape 默认按行优先（C 顺序）填充；转置和 reshape 不同：reshape(2, 3) 保持元素的线性顺序，.T 交换坐标轴。",
+    "whys": [
+     "这是转置之前的样子。",
+     "这是 reshape(2, 3)，不是转置。",
+     "正确：先按行填成 [[0, 1], [2, 3], [4, 5]]，转置后列变行。",
+     "转置不会反转元素顺序。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[[0, 1], [2, 3], [4, 5]]",
+     "[[0, 1, 2], [3, 4, 5]]",
+     "[[0, 2, 4], [1, 3, 5]]",
+     "[[5, 4, 3], [2, 1, 0]]"
+    ],
+    "explain": "reshape fills in row-major (C) order by default. A transpose differs from a reshape: reshape(2, 3) keeps the elements' linear order, while .T swaps the axes.",
+    "whys": [
+     "That is before the transpose.",
+     "That is reshape(2, 3), not a transpose.",
+     "Right: filled row by row as [[0, 1], [2, 3], [4, 5]], the transpose turns columns into rows.",
+     "A transpose does not reverse anything."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-numpy-10",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([[1, 2], [3, 4]])\nprint((a * a).tolist(), (a @ a).tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[[7, 10], [15, 22]] [[1, 4], [9, 16]]",
+     "[[1, 4], [9, 16]] [[1, 4], [9, 16]]",
+     "[[7, 10], [15, 22]] [[7, 10], [15, 22]]",
+     "[[1, 4], [9, 16]] [[7, 10], [15, 22]]"
+    ],
+    "explain": "ndarray 上 * 永远是逐元素运算，矩阵乘法用 @ 或 np.matmul / np.dot。旧的 np.matrix 类型里 * 才是矩阵乘法，现在已不推荐使用。",
+    "whys": [
+     "两个结果的顺序反了。",
+     "@ 是矩阵乘法，不是逐元素相乘。",
+     "对 ndarray 来说 * 是逐元素相乘。",
+     "正确：* 逐元素，@ 是矩阵乘法。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[[7, 10], [15, 22]] [[1, 4], [9, 16]]",
+     "[[1, 4], [9, 16]] [[1, 4], [9, 16]]",
+     "[[7, 10], [15, 22]] [[7, 10], [15, 22]]",
+     "[[1, 4], [9, 16]] [[7, 10], [15, 22]]"
+    ],
+    "explain": "On an ndarray, * is always elementwise; matrix products use @ or np.matmul / np.dot. Only the old np.matrix type made * a matrix product, and it is discouraged now.",
+    "whys": [
+     "The two results are swapped.",
+     "@ is matrix multiplication, not elementwise.",
+     "For an ndarray, * is elementwise.",
+     "Right: * is elementwise and @ is the matrix product."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-numpy-11",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nv = np.array([1, 2, 3])\nprint(int(v @ v), (v[:, None] @ v[None, :]).shape)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "14 (3, 3)",
+     "14 (1, 1)",
+     "[1, 4, 9] (3, 3)",
+     "6 (3,)"
+    ],
+    "explain": "用 None（即 np.newaxis）加维度：v[:, None] 是 (3, 1) 的列向量，v[None, :] 是 (1, 3) 的行向量。np.outer(v, v) 也能得到外积。",
+    "whys": [
+     "正确：一维向量的 @ 是内积；列向量乘行向量是外积。",
+     "(3, 1) @ (1, 3) 得到 (3, 3)。",
+     "逐元素平方要用 *。",
+     "内积是 1 + 4 + 9，不是元素之和。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "14 (3, 3)",
+     "14 (1, 1)",
+     "[1, 4, 9] (3, 3)",
+     "6 (3,)"
+    ],
+    "explain": "None (np.newaxis) adds an axis: v[:, None] is a (3, 1) column and v[None, :] a (1, 3) row. np.outer(v, v) gives the outer product too.",
+    "whys": [
+     "Right: @ on two 1-D vectors is the inner product; a column times a row is the outer product.",
+     "(3, 1) @ (1, 3) gives (3, 3).",
+     "Elementwise squares need *.",
+     "The inner product is 1 + 4 + 9, not the sum of the elements."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-numpy-12",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([200], dtype=np.uint8)\nprint((a + a).tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[400]",
+     "[144]",
+     "[255]",
+     "OverflowError"
+    ],
+    "explain": "固定宽度整数数组溢出时会静默回绕，常见于图像（uint8）和计数器。先 astype(np.int64) 或 astype(float) 再运算。",
+    "whys": [
+     "uint8 只能表示 0～255，结果不会自动变宽。",
+     "正确：400 对 256 取模是 144，整数数组溢出会回绕。",
+     "NumPy 的整数运算不做饱和截断。",
+     "数组之间的运算溢出时静默回绕，不报错。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[400]",
+     "[144]",
+     "[255]",
+     "OverflowError"
+    ],
+    "explain": "Fixed-width integer arrays wrap silently on overflow, a classic trap with images (uint8) and counters. Convert with astype(np.int64) or astype(float) first.",
+    "whys": [
+     "uint8 holds 0 to 255 and does not widen on its own.",
+     "Right: 400 mod 256 is 144: integer arrays wrap around.",
+     "NumPy integer arithmetic does not saturate.",
+     "Array arithmetic wraps silently; no error."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-13",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([1.0, np.nan, 3.0])\nprint(float(np.sum(a)), float(np.nansum(a)))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "4.0 4.0",
+     "nan nan",
+     "nan 4.0",
+     "ValueError"
+    ],
+    "explain": "NaN 会在运算里传播。np.nansum、np.nanmean、np.nanmax 等会忽略 NaN；判断用 np.isnan，不能用 == np.nan（NaN 不等于任何值，包括它自己）。",
+    "whys": [
+     "np.sum 不会跳过 NaN。",
+     "np.nansum 把 NaN 当作 0。",
+     "正确：任何数加 NaN 都是 NaN，nansum 跳过 NaN。",
+     "含 NaN 的数组照常运算，不会报错。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "4.0 4.0",
+     "nan nan",
+     "nan 4.0",
+     "ValueError"
+    ],
+    "explain": "NaN propagates through arithmetic. np.nansum, np.nanmean, np.nanmax and friends ignore it; test with np.isnan, never == np.nan (NaN equals nothing, itself included).",
+    "whys": [
+     "np.sum does not skip NaN.",
+     "np.nansum treats NaN as 0.",
+     "Right: anything plus NaN is NaN; nansum skips it.",
+     "Arrays with NaN compute normally."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-numpy-14",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.zeros(4)\nb = a.reshape(2, 2)\nb[0, 0] = 1\nprint(a.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[0.0, 0.0, 0.0, 0.0]",
+     "[1.0, 0.0, 0.0, 0.0]",
+     "[[1.0, 0.0], [0.0, 0.0]]",
+     "[1, 0, 0, 0]"
+    ],
+    "explain": "reshape 能不复制就不复制（数据连续时返回视图）；ravel 也一样，flatten 则总是复制。判断是否共享内存可以用 np.shares_memory(a, b)。",
+    "whys": [
+     "连续数组的 reshape 返回视图。",
+     "正确：b 是 a 的视图，b[0, 0] 就是 a[0]。",
+     "打印的是 a，它仍是一维的。",
+     "np.zeros 默认是 float64，tolist 得到浮点数。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[0.0, 0.0, 0.0, 0.0]",
+     "[1.0, 0.0, 0.0, 0.0]",
+     "[[1.0, 0.0], [0.0, 0.0]]",
+     "[1, 0, 0, 0]"
+    ],
+    "explain": "reshape avoids copying when it can (contiguous data gives a view), and so does ravel; flatten always copies. np.shares_memory(a, b) tells you whether two arrays share data.",
+    "whys": [
+     "Reshaping a contiguous array returns a view.",
+     "Right: b is a view of a, and b[0, 0] is a[0].",
+     "It prints a, which is still 1-D.",
+     "np.zeros defaults to float64, so tolist gives floats."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-15",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nvalues, counts = np.unique([3, 1, 3, 2, 3], return_counts=True)\nprint(values.tolist(), counts.tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[3, 1, 2] [3, 1, 1]",
+     "[1, 2, 3] [1, 1, 3]",
+     "[1, 2, 3] [3, 1, 1]",
+     "[3, 1, 3, 2, 3] [5]"
+    ],
+    "explain": "np.unique 返回排序后的不同值，还可以用 return_counts、return_index、return_inverse 拿到计数、首次出现位置和每个元素对应的编号。非负整数的计数也可以用 np.bincount。",
+    "whys": [
+     "np.unique 的结果是排好序的，不按出现顺序。",
+     "正确：去重后升序，counts 一一对应。",
+     "counts 和 values 是对应的，3 出现了 3 次。",
+     "unique 会去重。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[3, 1, 2] [3, 1, 1]",
+     "[1, 2, 3] [1, 1, 3]",
+     "[1, 2, 3] [3, 1, 1]",
+     "[3, 1, 3, 2, 3] [5]"
+    ],
+    "explain": "np.unique returns the sorted distinct values, and return_counts, return_index and return_inverse add the counts, first positions and each element's code. For non-negative integers, np.bincount counts too.",
+    "whys": [
+     "np.unique sorts its result instead of keeping first-seen order.",
+     "Right: sorted distinct values, with counts to match.",
+     "counts line up with values: 3 occurs three times.",
+     "unique removes duplicates."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-16",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nprint((np.arange(3)[:, None] * np.arange(3)).tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[0, 1, 4]",
+     "[[0, 1, 4]]",
+     "5",
+     "[[0, 0, 0], [0, 1, 2], [0, 2, 4]]"
+    ],
+    "explain": "用 [:, None] 把一维数组变成列向量，再和一维数组广播，是不写循环算两两组合（距离矩阵、外积）的基本技巧。",
+    "whys": [
+     "(3, 1) 和 (3,) 广播成 (3, 3)，不是逐元素。",
+     "形状是 (3, 3)，不是 (1, 3)。",
+     "没有求和这一步。",
+     "正确：列向量乘行向量，得到乘法表。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[0, 1, 4]",
+     "[[0, 1, 4]]",
+     "5",
+     "[[0, 0, 0], [0, 1, 2], [0, 2, 4]]"
+    ],
+    "explain": "Turning a 1-D array into a column with [:, None] and broadcasting it against a 1-D array is the basic loop-free way to compute all pairs (distance matrices, outer products).",
+    "whys": [
+     "(3, 1) and (3,) broadcast to (3, 3), not elementwise.",
+     "The shape is (3, 3), not (1, 3).",
+     "Nothing is summed.",
+     "Right: a column times a row gives the multiplication table."
+    ]
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-numpy-17",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nprint(np.argsort([30, 10, 20]).tolist())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[1, 2, 0]",
+     "[2, 0, 1]",
+     "[10, 20, 30]",
+     "[0, 2, 1]"
+    ],
+    "explain": "argsort 返回「排序后第 i 个元素原来的下标」。要得到每个元素的排名，再做一次 argsort：np.argsort(np.argsort(x))。",
+    "whys": [
+     "正确：最小的 10 在下标 1，其次 20 在下标 2，最大 30 在下标 0。",
+     "这是每个元素的排名（秩），不是 argsort。",
+     "这是 np.sort 的结果。",
+     "这是按从大到小排序的下标。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[1, 2, 0]",
+     "[2, 0, 1]",
+     "[10, 20, 30]",
+     "[0, 2, 1]"
+    ],
+    "explain": "argsort returns, for each sorted position, the original index. For each element's rank, argsort twice: np.argsort(np.argsort(x)).",
+    "whys": [
+     "Right: the smallest, 10, is at index 1, then 20 at index 2, then 30 at index 0.",
+     "Those are the elements' ranks, not argsort.",
+     "That is np.sort.",
+     "That is the descending order of indices."
+    ]
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-numpy-18",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([1, 2, 3])\nprint(bool((a > 1).any()), bool((a > 1).all()))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "True True",
+     "True False",
+     "False False",
+     "ValueError"
+    ],
+    "explain": "直接写 if a > 1: 会报 \"The truth value of an array ... is ambiguous\"，因为数组的真假不明确。要用 .any() 或 .all() 说清楚。",
+    "whys": [
+     "1 > 1 不成立，所以不是全部。",
+     "正确：有元素大于 1，但不是全部。",
+     "2 和 3 都大于 1。",
+     "用了 any() / all() 就不会有歧义错误。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "True True",
+     "True False",
+     "False False",
+     "ValueError"
+    ],
+    "explain": "Writing if a > 1: raises \"The truth value of an array ... is ambiguous\". Say what you mean with .any() or .all().",
+    "whys": [
+     "1 > 1 is false, so not all.",
+     "Right: some elements exceed 1, not all.",
+     "2 and 3 both exceed 1.",
+     "any() and all() avoid the ambiguity error."
+    ]
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-numpy-19",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\nprint(0.1 + 0.2 == 0.3, bool(np.isclose(0.1 + 0.2, 0.3)))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "True True",
+     "False False",
+     "False True",
+     "True False"
+    ],
+    "explain": "浮点数比较要用容差：np.isclose / np.allclose 默认 rtol = 1e-5、atol = 1e-8。判题和测试里比较数值结果也是同样的道理。",
+    "whys": [
+     "0.1 + 0.2 在二进制浮点里是 0.30000000000000004。",
+     "np.isclose 按容差比较，认为两者相等。",
+     "正确：精确比较失败，容差比较成功。",
+     "两个结果都弄反了。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "True True",
+     "False False",
+     "False True",
+     "True False"
+    ],
+    "explain": "Compare floats with a tolerance: np.isclose / np.allclose default to rtol = 1e-5 and atol = 1e-8. Judging and testing numeric results works the same way.",
+    "whys": [
+     "0.1 + 0.2 is 0.30000000000000004 in binary floating point.",
+     "np.isclose compares within a tolerance and calls them equal.",
+     "Right: the exact comparison fails and the tolerant one succeeds.",
+     "Both are reversed."
+    ]
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-numpy-20",
+   "section": "code-output",
+   "topic": "numpy",
+   "code": "import numpy as np\n\na = np.array([1, 2, 3])\ntry:\n    a += 0.5\n    print(a.tolist())\nexcept TypeError:\n    print(\"TypeError\")",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 NumPy 代码输出什么？",
+    "choices": [
+     "[1.5, 2.5, 3.5]",
+     "[1, 2, 3]",
+     "TypeError",
+     "[2, 3, 4]"
+    ],
+    "explain": "a += 0.5 是原地运算，结果必须写回整数数组，NumPy 拒绝这种有损转换（抛出 UFuncTypeError，它是 TypeError 的子类）。写成 a = a + 0.5 会得到新的浮点数组。",
+    "whys": [
+     "原地运算不能改变数组的 dtype。",
+     "不是静默截断，而是直接报错。",
+     "正确：float64 结果不能按 same_kind 规则写回 int64 数组。",
+     "没有四舍五入这一步。"
+    ]
+   },
+   "en": {
+    "q": "What does this NumPy code print?",
+    "choices": [
+     "[1.5, 2.5, 3.5]",
+     "[1, 2, 3]",
+     "TypeError",
+     "[2, 3, 4]"
+    ],
+    "explain": "a += 0.5 works in place, so the result must go back into the integer array, and NumPy refuses the lossy cast (raising UFuncTypeError, a TypeError subclass). a = a + 0.5 makes a new float array instead.",
+    "whys": [
+     "An in-place operation cannot change the dtype.",
+     "It does not truncate silently; it raises.",
+     "Right: a float64 result cannot be cast back into the int64 array under the same_kind rule.",
+     "Nothing rounds."
+    ]
+   },
+   "answer": [
+    2
+   ]
   }
  ]
 }

@@ -82,7 +82,7 @@ function highlight(text: string, words: string[]) {
   // split() with one capture group puts the matches at the odd indices.
   return text.split(pattern).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
 }
-const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
+const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk', 'ml'] as const;
 // pd- problems are the SQL track's pandas versions, so they count as 'sql'.
 const source = (id: string): (typeof SOURCES)[number] | 'course' =>
   trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
@@ -387,7 +387,7 @@ export function MyProgress({
         : [];
   const mins = (seconds: number) => Math.max(1, Math.round(seconds / 60));
   const sourceName = (id: string) =>
-    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), course: t('课程练习', 'Course') })[
+    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), ml: 'ML Coding', course: t('课程练习', 'Course') })[
       source(id)
     ];
 

@@ -67,7 +67,16 @@ const sourceNames: Record<CodeLanguage, string> = {
   java: 'Main.java',
   go: 'main.go',
 };
-const baseEnv = ['PATH=/usr/bin:/bin', 'HOME=/w', 'LANG=C.UTF-8', 'TZ=UTC'];
+// One BLAS / OpenMP thread: numpy (pandas, and ml- problems' plain Python) would otherwise
+// start a pool per core and run into procLimit.
+const baseEnv = [
+  'PATH=/usr/bin:/bin',
+  'HOME=/w',
+  'LANG=C.UTF-8',
+  'TZ=UTC',
+  'OPENBLAS_NUM_THREADS=1',
+  'OMP_NUM_THREADS=1',
+];
 function endpoint(path: string) {
   const url = new URL(process.env.GO_JUDGE_URL || 'http://127.0.0.1:5050');
   if (
@@ -417,8 +426,6 @@ export async function run(
     return execute(
       {
         ...command,
-        // One BLAS / OpenMP thread: numpy's default pool would eat the process limit.
-        env: [...command.env, 'OPENBLAS_NUM_THREADS=1', 'OMP_NUM_THREADS=1'],
         // No -S: pandas lives in the image's dist-packages.
         args: ['/usr/bin/python3', '-I', 'judge.py'],
         copyIn: {

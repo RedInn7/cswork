@@ -389,8 +389,8 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
-  // SQL track (and its pandas versions), Core Skills and REST API statements are Markdown: schema blocks, operation lists.
-  const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest)-/.test(problem.id);
+  // SQL track (and its pandas versions), Core Skills, REST API and ML Coding statements are Markdown: schema blocks, operation lists.
+  const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest|ml)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';
@@ -3946,10 +3946,10 @@ function AcceptedDialog({
   const beats = standing?.beats ?? null;
   const languageName =
     languages.find((item) => item.id === language)?.name ?? language;
-  const staticTrack = library === 'sql' || library === 'core';
+  const staticTrack = library === 'sql' || library === 'core' || library === 'ml';
   const [next, setNext] = useState<NextStop | 'loading'>(() => {
     if (!staticTrack) return 'loading';
-    // The SQL and Core Skills tracks are static lists with no server collection:
+    // The SQL, Core Skills and ML Coding tracks are static lists with no server collection:
     // the next unsolved problem, in the order the track's page remembered.
     const solved = new Set(activity?.map((item) => item.problem_id));
     const id = nextUnsolved(problemSequence(), problemId, solved);

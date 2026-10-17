@@ -1047,8 +1047,8 @@ function QuestionCard({ slot, problemIds, showSource, parts }: { slot: DrawnSlot
     );
   const judge = item.problem && problemIds.includes(item.problem) ? item.problem : null;
   const design = slot.kind === 'design' && !slot.rapid;
-  // A rapid-fire question comes from the MCQ bank, not the library.
-  const source = showSource && item.type !== 'mcq';
+  // A rapid-fire question comes from the MCQ bank and an extra (ML coding, AI-only kinds) from its own bank: neither has a library page.
+  const source = showSource && item.type !== 'mcq' && item.type !== 'extra';
   return (
     <article className="rd-card mi-question">
       <SlotBadges slot={slot} />
@@ -1167,7 +1167,14 @@ function Guide({ item }: { item: Item }) {
         </section>
       ) : (
         !item.rubric &&
-        !item.followUps && <p className="mi-muted">{t('这道题没有参考答案，可以在题库里看讨论。', "This question has no reference answer; open it in the library for more.")}</p>
+        !item.followUps && (
+          <p className="mi-muted">
+            {/* An extra question has no library page to send the learner to. */}
+            {item.type === 'extra'
+              ? t('这道题没有参考答案。', 'This question has no reference answer.')
+              : t('这道题没有参考答案，可以在题库里看讨论。', "This question has no reference answer; open it in the library for more.")}
+          </p>
+        )
       )}
     </div>
   );
@@ -1297,7 +1304,7 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
     if (due) setRun((r) => (r.index === index ? { ...commit(r), index: index + 1, expired: [...(r.expired ?? []), index] } : r));
   }, [due, index, setRun]);
   if (!slot) return null;
-  const code = slot.kind === 'coding' || slot.kind === 'sql';
+  const code = writesCode(slot.kind);
   // The answer steps (lib/mock-interview.ts frameworkFor): next and skip, kept in run.guide like the AI's.
   const steps = frameworkFor(slot, item);
   const guide = run.guide?.[run.index] ?? { from: 0, at: 0, done: [] };

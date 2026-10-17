@@ -2,6 +2,7 @@ import courseFile from '@/lib/content/beginner-courses.json';
 import coreSkills from '@/lib/content/core-skills.json';
 import frontendJs from '@/lib/content/frontend-js.json';
 import mcqBank from '@/lib/content/oa-mcq.json';
+import mlCoding from '@/lib/content/ml-coding.json';
 import projectFile from '@/lib/content/resume-projects.json';
 import { ROLES, stepTitle, stopsName, type ResolvedStep, type RoleKey, type RoleStep } from '@/lib/content/role-paths';
 import sqlTrack from '@/lib/content/sql-track.json';
@@ -66,6 +67,17 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         ...step,
         title: title(pick(group.zh, group.en)),
         href: `/core-skills#core-group-${group.key}`,
+        keys: problemKeys(group.ids),
+      };
+    }
+    case 'ml-group': {
+      const group = mlCoding.groups.find((g) => g.key === step.ref);
+      if (!group) throw missing();
+      return {
+        ...step,
+        title: title(pick(group.zh, group.en)),
+        // The track's group heading (components/sql-track.tsx ProblemTrack, library "ml").
+        href: `/?view=problems&library=ml#ml-group-${group.key}`,
         keys: problemKeys(group.ids),
       };
     }

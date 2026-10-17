@@ -217,11 +217,16 @@ jobs:
       - run: npm ci
       # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
       - run: node --import tsx scripts/learn/check-snippets.mjs
+      # numpy (with pandas) for the NumPy MCQs and the ML Coding track.
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
       # Runs every "what does this print" MCQ (C++, JavaScript, Python, Java, SQL) and checks its answer.
       - run: node scripts/mcq/verify-output.mjs
       # Starts every resume project's Python reference and runs its acceptance script against it.
       - run: node scripts/projects/verify.mjs
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # Reruns every ML Coding solution on the system numpy (1.x here, 2.x on the judge: compared with the judge's tolerance).
+      - run: node --import tsx --test tests/ml-coding.test.ts
+      - run: node --import tsx --test tests/ml-coding-ui.test.mjs
       # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
       - run: node --import tsx scripts/core-skills/stress.ts
       # Runs every Line 500 edge case and checklist case through the verified Python editorial.
