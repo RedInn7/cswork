@@ -142,17 +142,21 @@ function LocalNote() {
 
 type Blank = { value: string; state: 'right' | 'wrong' | null; shown: boolean };
 const level = (similarity: number) => (similarity >= 0.85 ? 'good' : similarity >= 0.6 ? 'close' : 'low');
+const noop = () => () => {};
 
 /**
  * One unit: phrases to hear and shadow, the dialogue read line by line, and the cloze and order
  * drills, checked as the learner answers. Getting every drill right marks the unit done.
- * Listening and shadowing use the browser's own speech and are hidden where it has none.
+ * Listening and shadowing use the browser's own speech; where it has none they are hidden and the
+ * toolbar says which browsers have it.
  */
 export function EnglishUnit({ unit }: { unit: Unit }) {
   const t = useT();
   const locale = useLocale();
   const [englishOnly, setEnglishOnly] = useState(locale === 'en');
   const them = unit.them ? t(unit.them.zh, unit.them.en) : t('面试官', 'Interviewer');
+  // The server reports no speech, so the "not supported" lines wait for hydration.
+  const hydrated = useSyncExternalStore(noop, () => true, () => false);
 
   // Shadowing: one phrase (or candidate line) at a time; its words add up until listening stops.
   const [shadowing, setShadowing] = useState<string | null>(null);
@@ -307,6 +311,16 @@ export function EnglishUnit({ unit }: { unit: Unit }) {
               '跟读使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在你的浏览器里计算，不上传。',
               "Shadowing uses your browser's own speech recognition; some browsers (Chrome, for example) send the recording to the browser maker's servers to transcribe it, without passing through this site. Match, pace and filler counts are worked out in your browser and never uploaded.",
             )}
+          </p>
+        )}
+        {hydrated && !speech.canSpeak && (
+          <p className="eng-muted">
+            {t('这个浏览器不支持朗读，听和逐句播放请用 Chrome、Edge 或 Safari。', 'This browser cannot read aloud; Listen and line-by-line playback work in Chrome, Edge or Safari.')}
+          </p>
+        )}
+        {hydrated && !speech.canListen && (
+          <p className="eng-muted">
+            {t('这个浏览器不支持语音识别，跟读打分请用 Chrome、Edge 或 Safari。', 'This browser has no speech recognition; shadowing scores work in Chrome, Edge or Safari.')}
           </p>
         )}
       </div>

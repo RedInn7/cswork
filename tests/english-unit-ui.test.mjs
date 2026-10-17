@@ -119,6 +119,11 @@ test('listen, play line by line, the English-only switch', async () => {
   await act(async () => spoken.at(-1).onend());
   assert.equal(spoken.at(-1).text, unit.dialogue[1].en);
   assert.equal($('.eng-script li[aria-current]'), $$('.eng-script li')[1]);
+  // A line that fails to speak moves on instead of stalling; a cancelled one does not.
+  await act(async () => spoken.at(-1).onerror({ error: 'interrupted' }));
+  assert.equal(spoken.at(-1).text, unit.dialogue[1].en);
+  await act(async () => spoken.at(-1).onerror({ error: 'synthesis-failed' }));
+  assert.equal(spoken.at(-1).text, unit.dialogue[2].en);
   // A single line interrupts the run: the old line's end no longer advances it.
   const old = spoken.at(-1);
   await click(button('Listen', $$('.eng-script li')[3]));
@@ -296,4 +301,26 @@ test('marks that fail to load: the error shows, and nothing is ticked, stored or
   assert.equal(localStorage.getItem('cswork:english:done'), null);
   assert.deepEqual(posted, []);
   await act(async () => root.unmount());
+});
+
+test('a browser without speech recognition says where shadowing works', async () => {
+  installSpeech();
+  delete dom.window.webkitSpeechRecognition;
+  const container = document.getElementById('root');
+  // Nothing on the server render: it cannot know the browser.
+  container.innerHTML = renderToString(createElement(EnglishUnit, { unit }));
+  assert.doesNotMatch(container.textContent, /no speech recognition/);
+  const errors = [];
+  let root;
+  await act(async () => {
+    root = hydrateRoot(container, createElement(EnglishUnit, { unit }), { onRecoverableError: (e) => errors.push(e) });
+    await settle();
+  });
+  assert.deepEqual(errors, []);
+  assert.equal(button('Shadow'), undefined);
+  assert.ok(button('Listen'));
+  assert.ok($$('.eng-toolbar .eng-muted').some((p) => /no speech recognition; shadowing scores work in Chrome, Edge or Safari/.test(p.textContent)));
+  assert.ok(!$$('.eng-toolbar .eng-muted').some((p) => /cannot read aloud/.test(p.textContent)));
+  await act(async () => root.unmount());
+  installSpeech();
 });

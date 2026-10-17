@@ -73,7 +73,13 @@ export function useSpeech(
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
       if (rate) utterance.rate = rate;
-      if (onEnd) utterance.onend = onEnd;
+      if (onEnd) {
+        utterance.onend = onEnd;
+        // A line that fails (no voice, synthesis-failed) fires error instead of end; a cancelled one was stopped on purpose.
+        utterance.onerror = (e) => {
+          if (e.error !== 'interrupted' && e.error !== 'canceled') onEnd();
+        };
+      }
       speechSynthesis.speak(utterance);
     },
     hush: () => {
