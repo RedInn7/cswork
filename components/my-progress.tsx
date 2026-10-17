@@ -16,6 +16,7 @@ import {
   type PracticeHistoryItem,
 } from '@/lib/practice-review';
 import { SolveQuality } from './solve-quality';
+import { RecallQueue, useRecallQueue } from './recall-queue';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
@@ -305,6 +306,8 @@ export function MyProgress({
     });
   const starredIds = new Set(marked('star').map((m) => m.id));
   const due = data ? dueReviews(data.history, data.now) : [];
+  // Open questions graded by hand (components/recall-rate.tsx) share the review tab.
+  const recall = useRecallQueue(!!boot.person);
   const mistakes = data ? wrongBook(data.history) : [];
   const personId = boot.person?.id;
   const badges = useMemo(
@@ -337,7 +340,7 @@ export function MyProgress({
   const counts: Record<Tab, number> = {
     history: data?.history.length ?? 0,
     mistakes: mistakes.length,
-    review: due.length,
+    review: due.length + recall.due,
     starred: starredIds.size,
     redo: marked('redo').length,
     notes: data?.notes.total ?? 0,
@@ -579,24 +582,30 @@ export function MyProgress({
       );
     }
     if (tab === 'review')
-      return list(
-        due.map(({ item, level, steps, dueAt }) => {
-          const late = Math.floor((data.now - dueAt) / DAY);
-          return {
-            id: item.problemId,
-            detail: [
-              t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`),
-              ...helped(item),
-              late > 0
-                ? t(`逾期 ${late} 天`, `${late} day${late > 1 ? 's' : ''} overdue`)
-                : t('今天到期', 'Due today'),
-            ],
-          };
-        }),
-        [
-          '今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你；借助提示通过的题会先在 1 天后多复习一次。',
-          'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first.',
-        ],
+      return (
+        <>
+          {(due.length > 0 || !recall.due) &&
+            list(
+              due.map(({ item, level, steps, dueAt }) => {
+                const late = Math.floor((data.now - dueAt) / DAY);
+                return {
+                  id: item.problemId,
+                  detail: [
+                    t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`),
+                    ...helped(item),
+                    late > 0
+                      ? t(`逾期 ${late} 天`, `${late} day${late > 1 ? 's' : ''} overdue`)
+                      : t('今天到期', 'Due today'),
+                  ],
+                };
+              }),
+              [
+                '今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你；借助提示通过的题会先在 1 天后多复习一次。',
+                'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first.',
+              ],
+            )}
+          <RecallQueue recall={recall} signedIn={!!boot.person} navigate={navigate} english={english} />
+        </>
       );
     if (tab === 'notes') return notesPanel();
     return list(
