@@ -9,9 +9,9 @@ import '@/app/review-load.css';
 
 const GRADES: [Grade, string, string][] = [
   [1, '重来', 'Again'],
-  [2, '吃力', 'Hard'],
+  [2, '困难', 'Hard'],
   [3, '良好', 'Good'],
-  [4, '轻松', 'Easy'],
+  [4, '简单', 'Easy'],
 ];
 
 /**
@@ -90,9 +90,9 @@ export function ReviewGrade({
                 `已记为「${GRADES[saved - 1][1]}」，可以改。`,
                 `Saved as ${GRADES[saved - 1][2]}. You can change it.`,
               )
-            : (suggested === 2 ? t('今天这题失败过，建议选「吃力」。', 'It failed earlier today: Hard fits. ') : '') +
+            : (suggested === 2 ? t('今天这题失败过，建议选「困难」。', 'It failed earlier today: Hard fits. ') : '') +
               t(
-                '重来：明天再做；吃力：间隔不变；良好：进入下一档；轻松：跳一档。不评就按良好。',
+                '重来：明天再做；困难：间隔不变；良好：进入下一档；简单：跳一档。不评就按良好。',
                 'Again: back tomorrow. Hard: same wait. Good: next step. Easy: skip a step. No grade counts as Good.',
               ))}
       </p>

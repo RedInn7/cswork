@@ -628,7 +628,7 @@ export function MyProgress({
                 };
               }),
               [
-                '今天没有到期的复习。通过的题按 3、7、21、60 天的间隔回来，借助提示通过的题先在 1 天后多复习一次。复习通过后自评：重来明天再做，吃力间隔不变，良好进入下一档，轻松跳一档，不评按良好算。',
+                '今天没有到期的复习。通过的题按 3、7、21、60 天的间隔回来，借助提示通过的题先在 1 天后多复习一次。复习通过后自评：「重来」明天再做，「困难」间隔不变，「良好」进入下一档，「简单」跳一档，不评按「良好」算。',
                 'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first. Grade each review AC: Again brings it back tomorrow, Hard keeps the wait, Good moves a step, Easy skips one, and no grade counts as Good.',
               ],
             )}
