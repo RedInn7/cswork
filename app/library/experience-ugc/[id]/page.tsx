@@ -6,13 +6,13 @@ import '../../../experience-submissions.css';
 import '../../../discuss.css';
 import { PublicLibraryMarkdown } from '../../markdown';
 import { PostsPreview } from '../../../discuss/parts';
-import { ReportExperience } from '@/components/experience-report';
-import { EMPLOYMENT, oaLine, RESULTS, ROUND_LABELS, seasonLabel, SENTIMENTS, SOURCES } from '@/lib/experience';
+import { MemberQuestions, ReportExperience } from '@/components/experience-report';
+import { EMPLOYMENT, oaLine, prepLine, RESULTS, ROUND_LABELS, seasonLabel, SENTIMENTS, SOURCES } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
-import { memberExperiencePath, readMember } from '@/lib/server/experience-submissions';
+import { memberExperiencePath, readMember, titleQuestions } from '@/lib/server/experience-submissions';
 import { requestLocale } from '@/lib/server/locale';
 
 type Props = { params: Promise<{ id: string }> };
@@ -30,7 +30,7 @@ const load = cache(async (id: string) => {
     item = viewer ? readMember(id, viewer) : null;
   }
   if (!item) notFound();
-  return { item, zh: (await requestLocale()) === 'zh' };
+  return { item: { ...item, questions: await titleQuestions(item.questions) }, zh: (await requestLocale()) === 'zh' };
 });
 
 export async function generateMetadata({ params }: Props) {
@@ -64,6 +64,7 @@ export default async function MemberExperiencePage({ params }: Props) {
     label(SENTIMENTS, d.sentiment),
     d.durationWeeks !== null && (zh ? `流程 ${d.durationWeeks} 周` : `${d.durationWeeks}-week process`),
     oaLine(member.oa, zh),
+    prepLine(d, zh),
   ].filter((x): x is string => !!x);
   return (
     <article className="public-library-article" lang={zh ? 'zh-CN' : 'en'}>
@@ -126,16 +127,7 @@ export default async function MemberExperiencePage({ params }: Props) {
       <div className="public-library-prose">
         <PublicLibraryMarkdown body={item.body} math={false} ugc />
       </div>
-      {!!item.questions.length && (
-        <section className="public-library-next xs-questions" aria-labelledby="xs-questions-h">
-          <h2 id="xs-questions-h">{zh ? '被问到的题目' : 'Questions asked'}</h2>
-          <ol>
-            {item.questions.map((q, i) => (
-              <li key={i}>{q}</li>
-            ))}
-          </ol>
-        </section>
-      )}
+      <MemberQuestions id={member.id} questions={item.questions} zh={zh} live={member.public} className="public-library-next" />
       {member.public && (
         <PostsPreview
           target={`exp:member.${member.id}`}

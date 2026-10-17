@@ -131,3 +131,22 @@ export function leetcodeShape(row: {
     leetcodeInput: row.coding_mode === 'leetcode' && row.mode !== 'judge' && row.custom_input !== null,
   };
 }
+
+/** Verdicts that each burn a case's whole time, memory or output budget. */
+export const RESOURCE_FAILURES = ['time_limit', 'memory_limit', 'output_limit'];
+/**
+ * After a judged case, whether to stop the submission's remaining cases. `heavy` counts its
+ * RESOURCE_FAILURES so far, this case included. A formal submission stops at its first failure;
+ * one judged on every case (all_cases, a mock OA's partial credit) runs on through wrong answers
+ * and runtime errors; a run stops on a runtime error or a resource failure.
+ * ponytail: the cap of 3 bounds judge cost, since every timed-out case runs its full timeLimit
+ * and caseConcurrency of them run at once; raise it only with runner capacity to spare.
+ */
+export function stopJudging(
+  status: string,
+  { formal, runAll, heavy }: { formal: boolean; runAll: boolean; heavy: number },
+) {
+  if (status === 'accepted') return false;
+  if (formal && runAll) return heavy >= 3;
+  return formal || status === 'runtime_error' || RESOURCE_FAILURES.includes(status);
+}

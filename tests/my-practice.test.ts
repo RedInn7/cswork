@@ -205,6 +205,87 @@ void test('the notes hub searches written notes by every word, with snippets and
   sqlite().prepare("DELETE FROM user_notes WHERE user_id=? AND target<>'story:1'").run(me.id);
 });
 
+void test('note #tags and confidence filter the hub; backlinks and Line 500 stop notes stay private', async () => {
+  type Hits = { items: { target: string; tags: string[]; confidence: number | null }[]; total: number };
+  const put = (p: Person, target: string, body: string) =>
+    ok(p, 'PUT', `notes?target=${encodeURIComponent(target)}`, { body });
+  await put(me, 'problem:lc-1', '#哈希表 #Off-by-one\n把握度: 2\n见 [[lc-15]]');
+  await put(me, 'problem:lc-15', '#双指针 #off-by-one\nConfidence：4\n[[lc-15]] links itself');
+  await put(me, 'problem:lc-11', '```\n#fake [[lc-15]]\n把握度: 1\n```\nwide #双指针 `[[lc-15]]`');
+  // A Line 500 stop's pattern note is a topic: note.
+  await put(me, 'topic:two-pointers-windows', '套路：#双指针，相关 [[lc-15]]');
+  await put(other, 'problem:lc-2', '#off-by-one [[lc-15]] 把握度: 1');
+  const search = (query: string) => ok<Hits>(me, 'GET', `notes${query}`);
+  const all = await search('');
+  assert.equal(all.total, 4, 'topic: notes are in the hub');
+  const lc1 = all.items.find((i) => i.target === 'problem:lc-1')!;
+  assert.deepEqual([lc1.tags, lc1.confidence], [['哈希表', 'off-by-one'], 2]);
+  const byTag = await search('?tag=OFF-BY-ONE');
+  assert.deepEqual(byTag.items.map((i) => i.target).sort(), ['problem:lc-1', 'problem:lc-15']);
+  // #fake is only inside a code block: SQL finds it, the parser drops it.
+  const fake = await search('?tag=fake');
+  assert.deepEqual([fake.total, fake.items.length], [1, 0]);
+  const shaky = await search('?conf=2');
+  assert.deepEqual(shaky.items.map((i) => i.target), ['problem:lc-1'], 'the 把握度: 1 in code does not count');
+  assert.deepEqual((await search(`?conf=4&tag=${encodeURIComponent('双指针')}`)).items.map((i) => i.target), ['problem:lc-15']);
+  assert.deepEqual((await search('?prefix=topic')).items.map((i) => i.target), ['topic:two-pointers-windows']);
+  assert.equal(await status(me, 'GET', 'notes?conf=6'), 400);
+  assert.equal(await status(me, 'GET', 'notes?tag=12'), 400);
+
+  type Tags = { tags: { tag: string; count: number }[]; confidence: Record<string, number> };
+  const tags = await ok<Tags>(me, 'GET', 'notes/tags');
+  assert.deepEqual(tags.tags, [
+    { tag: '双指针', count: 3 },
+    { tag: 'off-by-one', count: 2 },
+    { tag: '哈希表', count: 1 },
+  ]);
+  assert.deepEqual(tags.confidence, { 1: 0, 2: 1, 3: 0, 4: 1, 5: 0 });
+  // Each note's tags are kept with its updated_at: let the clock move first.
+  await new Promise((r) => setTimeout(r, 2));
+  await put(me, 'problem:lc-1', '#哈希表\n把握度: 5');
+  const again = await ok<Tags>(me, 'GET', 'notes/tags');
+  assert.deepEqual([again.tags.at(-1), again.confidence[5]], [{ tag: '哈希表', count: 1 }, 1], 'an edit refreshes the counts');
+  assert.deepEqual((await ok<Tags>(other, 'GET', 'notes/tags')).tags, [{ tag: 'off-by-one', count: 1 }]);
+  await put(me, 'problem:lc-1', '#哈希表 #Off-by-one\n把握度: 2\n见 [[lc-15]]');
+
+  type Links = { items: { target: string; snippet: string; updatedAt: number }[] };
+  const links = await ok<Links>(me, 'GET', 'notes/backlinks?problem=lc-15');
+  assert.deepEqual(
+    links.items.map((i) => i.target).sort(),
+    ['problem:lc-1', 'topic:two-pointers-windows'],
+    'not its own note, not a link in code, never another learner’s note',
+  );
+  assert.ok(links.items.every((i) => i.snippet.toLowerCase().includes('[[lc-15]]')));
+  assert.deepEqual((await ok<Links>(other, 'GET', 'notes/backlinks?problem=lc-15')).items.map((i) => i.target), ['problem:lc-2']);
+  assert.equal(await status(me, 'GET', 'notes/backlinks?problem=lc-15%25'), 400);
+  assert.equal(await status(me, 'GET', 'notes/backlinks'), 400);
+  assert.equal(await status(null, 'GET', 'notes/backlinks?problem=lc-15'), 401);
+  assert.equal(await status(me, 'POST', 'notes/backlinks?problem=lc-15', {}), 404);
+
+  type Stop = { me: string; items: { problemId: string; snippet: string; confidence: number | null; tags: string[] }[] };
+  const stop = await ok<Stop>(me, 'GET', 'notes/stop?slug=two-pointers-windows');
+  assert.equal(stop.me, me.id);
+  assert.deepEqual(stop.items.map((i) => i.problemId), ['lc-11', 'lc-15'], 'route order, this stop only');
+  assert.deepEqual([stop.items[1].confidence, stop.items[1].tags], [4, ['双指针', 'off-by-one']]);
+  assert.equal(await status(me, 'GET', 'notes/stop?slug=nowhere'), 400);
+  assert.equal(await status(null, 'GET', 'notes/stop?slug=two-pointers-windows'), 401);
+  assert.equal(await status(me, 'GET', 'notes/nope'), 404);
+
+  // A certification exam holding lc-15 is a running contest: its backlinks close, its note leaves the stop.
+  const now = Date.now();
+  sqlite()
+    .prepare("INSERT INTO skill_attempts(id,user_id,test,ids_json,started_at,deadline,created_at) VALUES('notes-exam',?,'oa',?,?,?,?)")
+    .run(me.id, JSON.stringify(['lc-15']), now - 1000, now + 3_600_000, now - 1000);
+  assert.equal(await status(me, 'GET', 'notes/backlinks?problem=lc-15'), 403);
+  assert.deepEqual((await ok<Stop>(me, 'GET', 'notes/stop?slug=two-pointers-windows')).items.map((i) => i.problemId), ['lc-11']);
+  // Nor does lc-15's own note show up as a backlink of another problem meanwhile.
+  await put(me, 'problem:lc-11', 'see [[lc-1]]');
+  await put(me, 'problem:lc-15', 'see [[lc-1]]');
+  assert.deepEqual((await ok<Links>(me, 'GET', 'notes/backlinks?problem=lc-1')).items.map((i) => i.target), ['problem:lc-11']);
+  sqlite().prepare("DELETE FROM skill_attempts WHERE id='notes-exam'").run();
+  sqlite().prepare("DELETE FROM user_notes WHERE target<>'story:1'").run();
+});
+
 void test('marks toggle per learner and drive the Line 500 starred/redo filters', async () => {
   const mark = (p: Person, m: string, on: boolean) =>
     ok(p, 'POST', 'marks', { target: 'problem:lc-1', mark: m, on });
@@ -437,4 +518,52 @@ void test('aids: hints and first-AC time from the client, help derived against t
   assert.equal(recordAid(me.id, 'oa-acme-1', 'editorial'), true);
   assert.equal((await find('oa-acme-1')).help, 'solution');
   assert.equal((await ok<Items>(other, 'GET', 'history')).items[0].help, 'none');
+});
+
+void test('grades: only a review AC of your own, graded again in place, never help, in the history', async () => {
+  const { randomUUID } = await import('node:crypto');
+  // The aids test above spent most of this minute's practice-aids-write budget.
+  sqlite().prepare('DELETE FROM limits').run();
+  const graded = (user: string, problem: string, state: string, at: number) => {
+    const id = randomUUID();
+    sqlite()
+      .prepare(
+        `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,mode,created_at,updated_at)
+        VALUES(?,?,?,'python','',?,1,'judge',?,?)`,
+      )
+      .run(id, user, problem, state, at, at);
+    return id;
+  };
+  const first = graded(me.id, 'lc-11', 'accepted', t0);
+  const failed = graded(me.id, 'lc-11', 'wrong_answer', t0 + 3 * DAY);
+  const review = graded(me.id, 'lc-11', 'accepted', t0 + 3 * DAY + 1);
+  graded(other.id, 'lc-11', 'accepted', t0);
+  const theirs = graded(other.id, 'lc-11', 'accepted', t0 + 3 * DAY);
+  const grade = (submissionId: string, value: unknown = 2, id = 'lc-11') =>
+    status(me, 'POST', `problems/${id}/aids`, { kind: 'grade', grade: value, submissionId });
+  assert.equal(await status(null, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 3, submissionId: review }), 401);
+  assert.equal(await grade(theirs), 404, "someone else's submission");
+  assert.equal(await grade(failed), 404, 'not accepted');
+  assert.equal(await grade(first), 404, 'the first AC is no review');
+  assert.equal(await grade(review, 2, 'lc-1'), 404, 'another problem');
+  assert.equal(await grade(randomUUID()), 404);
+  for (const value of [0, 5, 2.5, '3']) assert.equal(await grade(review, value), 400, String(value));
+  assert.equal(await status(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 3, submissionId: 's1' }), 400);
+  assert.equal(
+    await status(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 3, submissionId: review, extra: 1 }),
+    400,
+  );
+  assert.deepEqual(await ok(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 1, submissionId: review }), { recorded: true });
+  assert.deepEqual(await ok(me, 'POST', 'problems/lc-11/aids', { kind: 'grade', grade: 4, submissionId: review }), { recorded: true });
+  assert.deepEqual(
+    sqlite().prepare("SELECT kind,value FROM practice_aids WHERE user_id=? AND problem_id='lc-11'").all(me.id),
+    [{ kind: `grade:${review}`, value: 4 }],
+    'graded again in place',
+  );
+  const items = (await ok<{ items: History[] }>(me, 'GET', 'history')).items;
+  const lc11 = items.find((i) => i.problemId === 'lc-11')!;
+  assert.deepEqual(lc11.grades, [[t0 + 3 * DAY + 1, 4]]);
+  assert.equal(lc11.help, 'none', 'a grade is no help');
+  assert.equal(items.find((i) => i.problemId === 'lc-1')!.grades, undefined);
+  assert.equal((await ok<{ items: History[] }>(other, 'GET', 'history')).items.find((i) => i.problemId === 'lc-11')!.grades, undefined);
 });

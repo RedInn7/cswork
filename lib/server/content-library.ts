@@ -9,7 +9,7 @@ import { companyPractice } from './company-hub';
 import { memberExperiences, memberFacets, memberIdOf, memberItem, mergePage, type MemberSummary } from './experience-submissions';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
-import { recentSince, VERIFIED } from './learner-cloud';
+import { ASKED, recentSince, VERIFIED } from './learner-cloud';
 import { mockCompanies, mockPool, mockSet } from './mock-interview';
 import { acceptedPeople } from './problem-stats';
 
@@ -132,7 +132,7 @@ let engaged: { at: number; items: Map<string, Engagement>; reports: Reports } | 
  * Per item (`<type>/<slug>`): stars and upvotes (user_marks on content:<type>/<slug>) by verified
  * accounts only, like list stars, so throwaway accounts cannot lift an item up the popular order, and
  * visible answers or comments (solution_posts on q:<slug>, exp:<slug>); per reported id (q:<slug>, lc-<n>):
- * distinct learners who said they were asked it in the recent months, and the latest month.
+ * distinct learners who said they were asked it (a report or an approved post) in the recent months, and the latest month.
  */
 function engagement(now = Date.now()) {
   if (engaged && now - engaged.at < 10 * 60_000) return engaged;
@@ -164,7 +164,7 @@ function engagement(now = Date.now()) {
     (
       db
         .prepare(
-          `SELECT problem_id AS id,COUNT(DISTINCT user_id) AS n,MAX(asked_month) AS last FROM problem_reports
+          `SELECT problem_id AS id,COUNT(DISTINCT user_id) AS n,MAX(asked_month) AS last FROM ${ASKED()}
            WHERE asked_month>=? AND ((problem_id>='q:' AND problem_id<'q;') OR problem_id LIKE 'lc-%') GROUP BY problem_id`,
         )
         .all(recentSince(now)) as { id: string; n: number; last: string }[]
@@ -463,7 +463,7 @@ export async function handleContent(request: Request, p: Person | null, path: st
   }
   if (action === 'stats') return json(stats(db));
   // Mock interviews: a drawn set, and the companies to draw from.
-  if (action === 'mock') return json(mockSet(db, params));
+  if (action === 'mock') return json(mockSet(db, params, p));
   if (action === 'mock-companies') return json({ companies: mockCompanies(db), total: mockPool(db).length });
   throw new HttpError(404, '接口不存在');
 }

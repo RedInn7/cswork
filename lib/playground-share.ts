@@ -1,4 +1,5 @@
 import type { CodeLanguage } from './problems';
+import { pipeBytes } from './zip';
 
 /**
  * /playground share links: {language, code, stdin} as deflate-raw JSON in base64url,
@@ -22,33 +23,6 @@ function fromBase64Url(text: string) {
   const binary = atob(text.replace(/-/g, '+').replace(/_/g, '/'));
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
-/** Bytes through a (de)compression stream, or null past `max` output bytes. */
-async function transform(
-  bytes: Uint8Array,
-  stream: CompressionStream | DecompressionStream,
-  max: number,
-) {
-  const reader = new Blob([bytes as BlobPart]).stream().pipeThrough(stream).getReader();
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    size += value.byteLength;
-    if (size > max) {
-      await reader.cancel();
-      return null;
-    }
-    chunks.push(value);
-  }
-  const out = new Uint8Array(size);
-  let offset = 0;
-  for (const chunk of chunks) {
-    out.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return out;
-}
 const bytesOf = (text: string) => new TextEncoder().encode(text).byteLength;
 const valid = (value: unknown): value is { l: CodeLanguage; c: string; s: string } => {
   const v = value as { l?: unknown; c?: unknown; s?: unknown } | null;
@@ -67,7 +41,7 @@ export async function encodeShare(state: PlaygroundState): Promise<string | null
   const json = new TextEncoder().encode(
     JSON.stringify({ v: 1, l: state.language, c: state.code, s: state.stdin }),
   );
-  const packed = await transform(json, new CompressionStream('deflate-raw'), Infinity);
+  const packed = await pipeBytes(json, new CompressionStream('deflate-raw'), Infinity);
   const value = packed && toBase64Url(packed);
   return value && value.length <= SHARE_MAX_CHARS ? value : null;
 }
@@ -77,7 +51,7 @@ export async function decodeShare(hash: string): Promise<PlaygroundState | null>
   const value = /^#(?:.*&)?c=([A-Za-z0-9_-]+)/.exec(hash)?.[1];
   if (!value || value.length > SHARE_MAX_CHARS) return null;
   try {
-    const json = await transform(
+    const json = await pipeBytes(
       fromBase64Url(value),
       new DecompressionStream('deflate-raw'),
       JSON_MAX_BYTES,

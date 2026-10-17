@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { curatedByNumber } from '@/lib/ling-curated';
+import { CONFIDENCE_WORDS, parseNoteMeta } from '@/lib/note-meta';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import { parseProjectNote } from '@/lib/resume-projects';
 import type { Person } from './auth';
@@ -9,7 +10,7 @@ import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 import { lingEditorial } from './ling-editorials';
 import { oaJudgeRegistry } from './oa-judge';
-import { aidsByProblem } from './practice-aids';
+import { aidsByProblem, gradesByProblem } from './practice-aids';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
@@ -24,8 +25,14 @@ const MAX_BATCH = 500;
 // post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
 // mcq:answers holds the concept-drill multiple-choice review state as JSON (app/oa/mcq/practice.tsx).
 // recall:, wb:, checklist:, project: and career: (e.g. checklist:<guide slug>, career:goal) are
-// JSON notes of the wave-8 features.
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career):[\w./-]{1,200}$/);
+// JSON notes of the wave-8 features. Wave 9:
+// - card:<id> is one self-made review card as JSON (recall-custom-cards).
+// - topic:<Line 500 stop slug> is the learner's pattern notes for that stop (notes-structure).
+// - pref:<review|study|note-template> is a learner-written JSON preference; whatever reads it on
+//   the server must zod safeParse it (as parseJobSearch does) and fall back to defaults on failure.
+// - clip:<type>/<slug> and clip:lesson/<course>/<lesson> hold excerpts saved from a selection;
+//   never content:, which is the TryFirst answer.
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career|card|topic|pref|clip):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
@@ -37,7 +44,7 @@ const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','outp
 
 type HistoryRow = Omit<
   PracticeHistoryItem,
-  'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds' | 'whiteboard' | 'brute'
+  'languages' | 'acAt' | 'stop' | 'help' | 'solveSeconds' | 'whiteboard' | 'brute' | 'grades'
 > & {
   languages: string;
   acAt: string | null;
@@ -63,8 +70,10 @@ export function practiceHistory(userId: string): PracticeHistoryItem[] {
     )
     .all(userId) as HistoryRow[];
   const aids = aidsByProblem(userId);
+  const grades = gradesByProblem(userId);
   return rows.map((row) => ({
     ...row,
+    ...(grades.has(row.problemId) && { grades: grades.get(row.problemId) }),
     help: aids.get(row.problemId)?.help ?? 'none',
     solveSeconds: aids.get(row.problemId)?.solveSeconds ?? null,
     whiteboard: aids.get(row.problemId)?.whiteboard ?? null,
@@ -118,16 +127,31 @@ function full(table: 'user_notes' | 'user_marks', userId: string) {
 }
 
 // The notes hub searches written notes only: quiz answers (sd:), stories and drafts stay out.
-const NOTE_KINDS = ['problem', 'content', 'sub'] as const;
+export const NOTE_KINDS = ['problem', 'content', 'sub', 'topic'] as const;
 const NOTES_PAGE = 50;
 const SNIPPET = 160;
 const noteCursor = z.object({ at: z.number().int(), target: z.string().max(210) });
-/** Notes whose body holds every word of q (up to 6), newest first, 50 a page, each with a snippet. */
+const escapeLike = (text: string) => text.replace(/[\\%_]/g, '\\$&');
+/** One line of the body around the first of words (the start without words), SNIPPET characters long. */
+export function noteSnippet(body: string, words: string[] = []) {
+  const text = body.replace(/\s+/g, ' ').trim();
+  const lower = text.toLowerCase();
+  const hits = words.map((w) => lower.indexOf(w.toLowerCase())).filter((i) => i >= 0);
+  const start = hits.length ? Math.max(0, Math.min(...hits) - 40) : 0;
+  const end = Math.min(text.length, start + SNIPPET);
+  return `${start ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`;
+}
+/**
+ * Notes whose body holds every word of q (up to 6), newest first, 50 a page, each with a snippet,
+ * its #tags and confidence. ?tag= keeps notes with that tag, ?conf=N those with confidence ≤ N.
+ */
 function searchNotes(userId: string, params: URLSearchParams) {
   // ?prefix= takes a kind with or without its colon, like the story bank's prefix=story:.
   const kind = params.get('prefix')?.replace(/:$/, '');
   const kinds = kind ? [z.enum(NOTE_KINDS).parse(kind)] : NOTE_KINDS;
   const words = (params.get('q') ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 6);
+  const tag = params.has('tag') ? z.string().regex(/^\p{L}[\p{L}\p{N}_-]{1,31}$/u).parse(params.get('tag')).toLowerCase() : null;
+  const conf = params.has('conf') ? z.coerce.number().int().min(1).max(5).parse(params.get('conf')) : null;
   let after: z.infer<typeof noteCursor> | null = null;
   if (params.get('cursor')) {
     try {
@@ -136,15 +160,22 @@ function searchNotes(userId: string, params: URLSearchParams) {
       throw new HttpError(400, '分页游标无效');
     }
   }
+  // ponytail: SQL LIKE pre-filters ?tag= and ?conf=, parseNoteMeta confirms below. The cursor still
+  // walks raw rows, so a filtered page can come up short, and total counts the pre-filter (LIKE
+  // folds ASCII case only: #Ärger misses ?tag=ärger). Fine for one learner's notes.
   const where = [
     'n.user_id=?',
     `(${kinds.map(() => 'n.target LIKE ?').join(' OR ')})`,
     ...words.map(() => "n.body LIKE ? ESCAPE '\\'"),
+    ...(tag ? ["n.body LIKE ? ESCAPE '\\'"] : []),
+    ...(conf ? [`(${CONFIDENCE_WORDS.map(() => 'n.body LIKE ?').join(' OR ')})`] : []),
   ];
   const args: (string | number)[] = [
     userId,
     ...kinds.map((k) => `${k}:%`),
-    ...words.map((w) => `%${w.replace(/[\\%_]/g, '\\$&')}%`),
+    ...words.map((w) => `%${escapeLike(w)}%`),
+    ...(tag ? [`%#${escapeLike(tag)}%`] : []),
+    ...(conf ? CONFIDENCE_WORDS.map((w) => `%${w}%`) : []),
   ];
   const total = (
     sqlite().prepare(`SELECT COUNT(*) AS n FROM user_notes n WHERE ${where.join(' AND ')}`).get(...args) as { n: number }
@@ -162,14 +193,11 @@ function searchNotes(userId: string, params: URLSearchParams) {
     )
     .all(...args) as { target: string; body: string; updatedAt: number; problemId: string | null }[];
   const db = library();
-  const items = rows.slice(0, NOTES_PAGE).map(({ body, ...row }) => {
-    // Around the first hit (the start without q), on one line.
-    const text = body.replace(/\s+/g, ' ').trim();
-    const lower = text.toLowerCase();
-    const hits = words.map((w) => lower.indexOf(w.toLowerCase())).filter((i) => i >= 0);
-    const start = hits.length ? Math.max(0, Math.min(...hits) - 40) : 0;
-    const end = Math.min(text.length, start + SNIPPET);
-    const snippet = `${start ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`;
+  const page = rows.slice(0, NOTES_PAGE);
+  const items = page.flatMap(({ body, ...row }) => {
+    const { tags, confidence } = parseNoteMeta(body);
+    if ((tag && !tags.includes(tag)) || (conf && !(confidence && confidence <= conf))) return [];
+    const snippet = noteSnippet(body, words);
     // A written answer shows its question's title (null when the library isn't published).
     const content = /^content:(\w+)\/(.+)$/.exec(row.target);
     const title = content
@@ -177,9 +205,9 @@ function searchNotes(userId: string, params: URLSearchParams) {
           ?.prepare('SELECT title,title_zh AS titleZh FROM items WHERE type=? AND slug=?')
           .get(content[1], content[2]) as { title: string; titleZh: string | null } | undefined) ?? null)
       : null;
-    return { ...row, snippet, title };
+    return [{ ...row, snippet, title, tags, confidence }];
   });
-  const last = items.at(-1);
+  const last = page.at(-1);
   return {
     items,
     total,

@@ -1,10 +1,13 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Eye, PenLine } from 'lucide-react';
+import { Eye, ListOrdered, PenLine } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { AnswerGrade, GRADE_MIN, GRADEABLE } from './answer-grade';
 import { useNote } from './problem-notes';
 import '@/app/interview-prep.css';
+
+/** Something written: the step headings alone ("Outline by steps") are not an answer yet. */
+const wrote = (text: string) => text.split('\n').some((line) => line.trim() && !/^##\s/.test(line.trim()));
 
 /**
  * "Write your answer first": the learner's answer to a question, saved as their note on it
@@ -22,6 +25,7 @@ export function TryFirst({
   local,
   code,
   gradeable = true,
+  scaffold,
 }: {
   userId: string | null;
   target: string;
@@ -34,12 +38,15 @@ export function TryFirst({
   code?: boolean;
   /** False when the question has no reference answer for AI feedback to grade against. */
   gradeable?: boolean;
+  /** Section headings an empty answer can start from (the question's answer steps). */
+  scaffold?: string;
 }) {
   const t = useT();
   const id = useId();
   const note = useNote(userId, target, 800, local?.value);
   const guest = !userId;
   const text = guest && local ? local.value : note.text;
+  const tried = wrote(text);
   // A guest's answer also goes to the note, which saves it to the account on sign-in.
   const edit = (value: string) => {
     if (guest) local?.onChange(value);
@@ -51,11 +58,12 @@ export function TryFirst({
   useEffect(() => {
     if (asking) tryButton.current?.focus();
   }, [asking]);
+  const locked = !guest && (note.state === 'loading' || note.conflict !== null);
   const checked = useRef(false);
   useEffect(() => {
     if (checked.current || note.state === 'loading') return;
     checked.current = true;
-    if (revealOnLoad && !revealed && note.text.trim()) onReveal(false);
+    if (revealOnLoad && !revealed && wrote(note.text)) onReveal(false);
   }, [note.state, note.text, revealOnLoad, revealed, onReveal]);
 
   const status =
@@ -106,6 +114,19 @@ export function TryFirst({
               </button>
             </div>
           )}
+          {scaffold && !text.trim() && (
+            <button
+              type="button"
+              className="rd-button is-quiet ip-try-scaffold"
+              disabled={locked}
+              onClick={() => {
+                edit(scaffold);
+                box.current?.focus();
+              }}
+            >
+              <ListOrdered size={14} aria-hidden="true" /> {t('按步骤分段', 'Outline by steps')}
+            </button>
+          )}
           <textarea
             ref={box}
             className="ip-try-input"
@@ -113,7 +134,7 @@ export function TryFirst({
             data-code={code || undefined}
             rows={code ? 9 : 6}
             spellCheck={!code}
-            readOnly={!guest && (note.state === 'loading' || note.conflict !== null)}
+            readOnly={locked}
             value={text}
             onChange={(event) => edit(event.target.value)}
             placeholder={
@@ -139,12 +160,12 @@ export function TryFirst({
           </p>
           {/* Above the reference answer, which it leaves closed. */}
           {!guest && gradeable && GRADEABLE.test(target) && (
-            <AnswerGrade ready={text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
+            <AnswerGrade ready={tried && text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
           )}
         </>
       )}
       {!revealed &&
-        (text.trim() ? (
+        (tried ? (
           <button type="button" className="rd-button ip-try-go" onClick={() => onReveal(true)}>
             <Eye size={14} aria-hidden="true" /> {t('对照参考答案', 'Compare with the reference answer')}
           </button>

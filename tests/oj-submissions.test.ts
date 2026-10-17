@@ -323,6 +323,91 @@ test("a hidden case's counterexample stays home while the problem is in the owne
   sqlite().prepare('DELETE FROM oj_outbox WHERE submission_id=?').run(saved.id);
   sqlite().prepare('DELETE FROM submissions WHERE id=?').run(saved.id);
 });
+test('partial credit runs every case only outside a running exam or contest, and its groups never carry hidden data', async () => {
+  const stored = (id: string) =>
+    sqlite().prepare('SELECT all_cases,problem_version_id FROM submissions WHERE id=?').get(id) as {
+      all_cases: number;
+      problem_version_id: string;
+    };
+  const drop = (id: string) => {
+    for (const table of ['oj_results', 'oj_outbox']) sqlite().prepare(`DELETE FROM ${table} WHERE submission_id=?`).run(id);
+    sqlite().prepare('DELETE FROM submissions WHERE id=?').run(id);
+  };
+  sqlite().prepare('DELETE FROM limits').run();
+  const now = Date.now();
+  sqlite()
+    .prepare(
+      "INSERT INTO skill_attempts(id,user_id,test,ids_json,language,started_at,deadline,created_at) VALUES('exam-all',?,'python',?,NULL,?,?,0)",
+    )
+    .run(student.id, JSON.stringify(['watch-intervals']), now - 60000, now + 3600000);
+  const sealed = await createSubmission(student, request({ allCases: true }));
+  assert.equal(stored(sealed.id).all_cases, 0);
+  assert.equal((await submissionDetail(student, sealed.id)).allCases, false);
+  drop(sealed.id);
+  sqlite().prepare("DELETE FROM skill_attempts WHERE id='exam-all'").run();
+  sqlite()
+    .prepare(
+      "INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,created_at) VALUES('room-all',NULL,'r','mashup',?,?,60,'private',0)",
+    )
+    .run(JSON.stringify(['watch-intervals']), now - 60000);
+  sqlite()
+    .prepare("INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('room-all',?,'s',0)")
+    .run(student.id);
+  const room = await createSubmission(student, request({ allCases: true }));
+  assert.equal(stored(room.id).all_cases, 0);
+  drop(room.id);
+  sqlite().prepare("DELETE FROM contest_entries WHERE room_id='room-all'").run();
+  // A run never runs hidden cases, so the flag is ignored there too.
+  const run = await createSubmission(student, request({ mode: 'run', allCases: true }));
+  assert.equal(stored(run.id).all_cases, 0);
+  drop(run.id);
+  const input = request({ allCases: true });
+  const saved = await createSubmission(student, input);
+  const { all_cases, problem_version_id: version } = stored(saved.id);
+  assert.equal(all_cases, 1);
+  // The flag is part of the request: the same key without it is another request.
+  await assert.rejects(createSubmission(student, { ...input, allCases: undefined }), status(409));
+  const insert = sqlite().prepare(
+    'INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,?,?,1,1,NULL,NULL,?)',
+  );
+  sqlite().exec('SAVEPOINT grouped_sizes');
+  try {
+    // Test fixture only; rollback below restores the triggers and the version's cases.
+    sqlite().exec('DROP TRIGGER oj_case_immutable_update; DROP TRIGGER oj_case_sealed_insert');
+    const listed = () =>
+      sqlite()
+        .prepare('SELECT ordinal,hidden FROM oj_test_cases WHERE version_id=? ORDER BY ordinal')
+        .all(version) as { ordinal: number; hidden: number }[];
+    // Pad the fixture to six hidden cases with secret inputs and names, then make the last one large.
+    for (let k = listed().filter((c) => c.hidden).length; k < 6; k++)
+      sqlite()
+        .prepare("INSERT INTO oj_test_cases(id,version_id,ordinal,input,expected_output,hidden,name,weight) VALUES(?,?,?,?,'1',1,?,1)")
+        .run(randomUUID(), version, listed().at(-1)!.ordinal + 1, `SECRET_INPUT_${k}`, `SECRET_NAME_${k}`);
+    const cases = listed();
+    const large = cases.at(-1)!;
+    sqlite()
+      .prepare('UPDATE oj_test_cases SET input=? WHERE version_id=? AND ordinal=?')
+      .run('9'.repeat(1 << 20), version, large.ordinal);
+    for (const c of cases)
+      insert.run(saved.id, c.ordinal, c.ordinal === large.ordinal ? 'time_limit' : 'accepted', c.hidden);
+    sqlite().prepare("UPDATE submissions SET status='running' WHERE id=?").run(saved.id);
+    assert.equal((await submissionDetail(student, saved.id)).groups, undefined);
+    sqlite().prepare("UPDATE submissions SET status='time_limit' WHERE id=?").run(saved.id);
+    const detail = await submissionDetail(student, saved.id);
+    assert.equal(detail.allCases, true);
+    assert.equal(detail.groups?.correctness, 100);
+    assert.ok(detail.groups!.performance < 100);
+    assert.equal(detail.cases.find((c) => c.ordinal === large.ordinal)?.group, 'performance');
+    assert.ok(detail.cases.every((c) => c.group === 'correctness' || c.group === 'performance'));
+    for (const c of detail.cases.filter((c) => c.hidden))
+      for (const key of ['stdin', 'expected', 'stdout', 'stderr', 'name']) assert.equal(key in c, false);
+    const text = JSON.stringify(detail);
+    for (const secret of ['SECRET_INPUT', 'SECRET_NAME', '9'.repeat(64)]) assert.equal(text.includes(secret), false);
+  } finally {
+    sqlite().exec('ROLLBACK TO grouped_sizes; RELEASE grouped_sizes');
+    drop(saved.id);
+  }
+});
 test('custom runs preserve empty stdin and do not use hidden cases', async () => {
   const saved = await createSubmission(
     teacher,

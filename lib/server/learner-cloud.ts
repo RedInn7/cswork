@@ -15,6 +15,7 @@ import { myCertificates } from './certificates';
 import { duelRecord, ratingHistory } from './contest-ratings';
 import { library } from './content-library';
 import { hiddenCompanies, shownOaSql } from './env';
+import { MEMBER_ASKED } from './experience-submissions';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
@@ -1194,6 +1195,11 @@ export function reportCompanies() {
   return companiesCache.value;
 }
 
+/**
+ * Learners' reports and public member experiences' linked questions, in problem_reports' columns.
+ * A function: experience-submissions.ts imports this module back, so MEMBER_ASKED is unset while it loads.
+ */
+export const ASKED = () => `(SELECT user_id,problem_id,company,asked_month,round FROM problem_reports UNION ALL ${MEMBER_ASKED})`;
 /** Distinct reporters over the recent months, the latest month and the companies named. */
 export function problemReportSummary(problem: string, userId: string | null, now = Date.now()) {
   const db = sqlite(),
@@ -1201,14 +1207,14 @@ export function problemReportSummary(problem: string, userId: string | null, now
     hidden = hiddenCompanies();
   const { total, last } = db
     .prepare(
-      'SELECT COUNT(DISTINCT user_id) AS total,MAX(asked_month) AS last FROM problem_reports WHERE problem_id=? AND asked_month>=?',
+      `SELECT COUNT(DISTINCT user_id) AS total,MAX(asked_month) AS last FROM ${ASKED()} WHERE problem_id=? AND asked_month>=?`,
     )
     .get(problem, since) as { total: number; last: string | null };
   const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
   const companies = (
     db
       .prepare(
-        `SELECT company AS slug,COUNT(DISTINCT user_id) AS n FROM problem_reports
+        `SELECT company AS slug,COUNT(DISTINCT user_id) AS n FROM ${ASKED()}
         WHERE problem_id=? AND asked_month>=? AND company<>'' GROUP BY company ORDER BY n DESC,company LIMIT 20`,
       )
       .all(problem, since) as { slug: string; n: number }[]
@@ -1233,7 +1239,7 @@ export function companyReports(company: string, now = Date.now(), max = 50) {
     sqlite()
       .prepare(
         `SELECT problem_id AS problemId,COUNT(DISTINCT user_id) AS n,MAX(asked_month) AS last
-        FROM problem_reports WHERE company=? AND asked_month>=? AND problem_id NOT LIKE 'q:%' GROUP BY problem_id
+        FROM ${ASKED()} WHERE company=? AND asked_month>=? AND problem_id NOT LIKE 'q:%' GROUP BY problem_id
         ORDER BY n DESC,last DESC,problem_id LIMIT ?`,
       )
       .all(company, recentSince(now), max) as { problemId: string; n: number; last: string }[]

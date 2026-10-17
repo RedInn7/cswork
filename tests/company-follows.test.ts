@@ -195,3 +195,41 @@ void test('the OA digest: from Beijing 09:00, new problems since each follow’s
   );
   assert.equal(notices(ann.id).length, 1);
 });
+
+void test('the saved-search digest leaves out blocked companies, and hides flagged openings when the search says so', async () => {
+  const HOUR = 3600000;
+  // Beijing 2026-11-02 09:00.
+  const nine = Date.UTC(2026, 10, 2, 1);
+  const db = sqlite();
+  const row = (id: string, company: string, firstSeen: number, kind = 'intern', flags = -1) =>
+    db
+      .prepare("INSERT INTO job_openings(id,company_slug,title,location,url,kind,first_seen_at,last_seen_at,auth_flags) VALUES(?,?,'Software Engineer Intern','','https://example.com/j',?,?,?,?)")
+      .run(id, company, kind, firstSeen, nine - HOUR, flags);
+  for (const slug of ['stripe', 'databricks']) row(`greenhouse:${slug}:`, slug, nine - 90 * 24 * HOUR, 'board');
+  row('greenhouse:stripe:1', 'stripe', nine - 5 * HOUR); // not yet judged
+  row('greenhouse:stripe:2', 'stripe', nine - 4 * HOUR, 'intern', 1); // says no sponsorship
+  row('greenhouse:databricks:1', 'databricks', nine - 3 * HOUR, 'intern', 0);
+  row('greenhouse:databricks:2', 'databricks', nine - 2 * HOUR, 'intern', 6);
+  const note = (user: string, target: string, body: unknown) =>
+    db.prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)').run(user, target, JSON.stringify(body), nine - 10 * 24 * HOUR);
+  const search = { kind: '', role: 'tech', term: '', q: '', company: '', paid: false };
+  note('cb-amy', 'career:jobs-search', search); // saved before sponsorOk: read as off
+  note('cb-ben', 'career:jobs-search', { ...search, sponsorOk: true });
+  note('cb-cat', 'career:jobs-search', search);
+  note('cb-cat', 'career:jobs-blocked', ['databricks']);
+  note('cb-dan', 'career:jobs-search', search);
+  note('cb-dan', 'career:jobs-blocked', ['stripe', 'databricks']);
+  note('cb-eve', 'career:jobs-search', search);
+  note('cb-eve', 'career:jobs-blocked', { stripe: true }); // off-shape: nothing blocked
+  // Following a blocked company still brings its news.
+  db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at,last_digest_at) VALUES(?,?,?,?)').run('cb-dan', 'stripe', nine - 60 * 24 * HOUR, nine - 24 * HOUR);
+  assert.equal(await sendCompanyDigest(nine), 5);
+  const body = (user: string) => notices(user).map((n) => [n.title, n.body]);
+  assert.deepEqual(body('cb-amy'), [['保存的筛选有 4 个新岗位', 'Stripe 2 · Databricks 2']]);
+  // Unknown (-1) and clear (0) stay; flagged ones go.
+  assert.deepEqual(body('cb-ben'), [['保存的筛选有 2 个新岗位', 'Stripe 1 · Databricks 1']]);
+  assert.deepEqual(body('cb-cat'), [['保存的筛选有 2 个新岗位', 'Stripe 2']]);
+  assert.deepEqual(body('cb-dan'), [['关注的公司有 2 条新动态', 'Stripe 2']]);
+  assert.deepEqual(body('cb-eve'), [['保存的筛选有 4 个新岗位', 'Stripe 2 · Databricks 2']]);
+  assert.equal(notices('cb-ben')[0].href, '/career/jobs?role=tech&sponsor=1');
+});

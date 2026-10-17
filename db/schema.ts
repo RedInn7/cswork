@@ -300,6 +300,9 @@ export const submissions = sqliteTable(
     score: integer('score').notNull().default(0),
     attempt: integer('attempt').notNull().default(0),
     cancelRequested: integer('cancel_requested').notNull().default(0),
+    // 1: a formal submission judged on every case instead of stopping at the first failure
+    // (oa-partial-credit), so it carries a partial score and case groups.
+    allCases: integer('all_cases').notNull().default(0),
     startedAt: integer('started_at'),
     finishedAt: integer('finished_at'),
     createdAt: integer('created_at').notNull(),

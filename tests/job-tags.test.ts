@@ -3,6 +3,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  AUTH_FLAGS,
+  authFlags,
   hiringCycle,
   jobLinkKey,
   matchesSearch,
@@ -116,11 +118,14 @@ void test('the filter: from the query, back to the query, and matching', () => {
     q: 'New York',
     company: 'stripe',
     paid: true,
+    sponsorOk: false,
   });
+  assert.equal(searchFromQuery(get('sponsor=1')).sponsorOk, true);
+  assert.equal(String(searchQuery({ ...DEFAULT_SEARCH, sponsorOk: true })), 'role=tech&sponsor=1');
   assert.deepEqual(searchFromQuery(get('kind=boss&role=x&term=<b>&company=A%20B&paid=yes')), DEFAULT_SEARCH);
   assert.equal(String(searchQuery(DEFAULT_SEARCH)), 'role=tech');
   assert.equal(String(searchQuery({ ...DEFAULT_SEARCH, kind: 'intern', paid: true })), 'role=tech&kind=intern&paid=1');
-  const o = { title: 'Software Engineer Intern, Summer 2027', location: 'New York, NY', kind: 'intern', companySlug: 'stripe', pay: null };
+  const o = { title: 'Software Engineer Intern, Summer 2027', location: 'New York, NY', kind: 'intern', companySlug: 'stripe', pay: null, authFlags: -1 };
   assert.ok(matchesSearch(o, DEFAULT_SEARCH));
   assert.ok(matchesSearch(o, { ...DEFAULT_SEARCH, kind: 'intern', role: 'swe', term: 'summer-2027', q: 'new york', company: 'stripe' }));
   assert.ok(!matchesSearch(o, { ...DEFAULT_SEARCH, paid: true }));
@@ -129,4 +134,102 @@ void test('the filter: from the query, back to the query, and matching', () => {
   assert.ok(!matchesSearch({ ...o, title: 'Marketing Intern' }, DEFAULT_SEARCH));
   assert.ok(matchesSearch({ ...o, title: 'Marketing Intern' }, { ...DEFAULT_SEARCH, role: 'all' }));
   assert.ok(!matchesSearch({ ...o, title: 'Associate Product Manager' }, DEFAULT_SEARCH));
+  // "Hide no-sponsorship roles" hides judged openings with a flag; not yet judged (-1) and clear (0) ones stay.
+  const sponsorOk = { ...DEFAULT_SEARCH, sponsorOk: true };
+  assert.ok(matchesSearch(o, sponsorOk));
+  assert.ok(matchesSearch({ ...o, authFlags: 0 }, sponsorOk));
+  for (const flags of [1, 2, 4, 7]) {
+    assert.ok(!matchesSearch({ ...o, authFlags: flags }, sponsorOk), String(flags));
+    assert.ok(matchesSearch({ ...o, authFlags: flags }, DEFAULT_SEARCH), String(flags));
+  }
+});
+
+const { noSponsor, citizenOrGc, clearance } = AUTH_FLAGS;
+void test('auth flags: what a description says about sponsorship, citizenship and clearance', () => {
+  for (const [text, flags] of [
+    ['Unfortunately, we are unable to sponsor visas for this position.', noSponsor],
+    ['This position is not eligible for visa sponsorship.', noSponsor],
+    ['This role is not eligible for immigration sponsorship', noSponsor],
+    ['We will not sponsor an employment visa for this role.', noSponsor],
+    ['The company does not offer immigration sponsorship.', noSponsor],
+    ['We are not able to provide sponsorship at this time.', noSponsor],
+    ['We are not currently able to sponsor work visas.', noSponsor],
+    ['Candidates must be authorized to work in the U.S. without the need for visa sponsorship now or in the future.', noSponsor],
+    ['Applicants must not now or in the future require sponsorship for employment visa status.', noSponsor],
+    ['Please do not apply if you will need visa sponsorship.', noSponsor],
+    ['Visa sponsorship is not available.', noSponsor],
+    ['Visa sponsorship: not available', noSponsor],
+    ['No visa sponsorship.', noSponsor],
+    ['We can’t sponsor H-1B visas.', noSponsor],
+    ['No visa sponsorship is available for this position.', noSponsor],
+    ['No sponsorship available.', noSponsor],
+    ['No sponsorship will be provided for this role.', noSponsor],
+    ['No immigration sponsorship is offered.', noSponsor],
+    ['We won’t be able to sponsor visas.', noSponsor],
+    ["We aren't able to provide sponsorship.", noSponsor],
+    ["This role isn't eligible for sponsorship.", noSponsor],
+    ['Applicants must be authorized to work in the U.S. without employer sponsorship.', noSponsor],
+    ['You must be able to work without the need for employer sponsorship now or in the future.', noSponsor],
+    ['Must be authorized to work without company sponsorship.', noSponsor],
+    ['Candidates requiring sponsorship will not be considered.', noSponsor],
+    ['We are unable to offer relocation or visa sponsorship.', noSponsor],
+    ['Must be a U.S. citizen or green card holder.', citizenOrGc],
+    ['U.S. citizenship is required due to government contract requirements.', citizenOrGc],
+    ['This program is only open to U.S. citizens.', citizenOrGc],
+    ['Open only to United States citizens and permanent residents', citizenOrGc],
+    ['This role requires US citizenship.', citizenOrGc],
+    ['Must be able to obtain and maintain a security clearance.', clearance],
+    ['Active TS/SCI clearance is required.', clearance],
+    ['This position requires an active Secret clearance', clearance],
+    ['TS/SCI with polygraph required', clearance],
+    ['Applicants must be U.S. citizens and able to obtain a security clearance.', citizenOrGc | clearance],
+    ['Due to ITAR, you must be a U.S. citizen and must hold an active Secret clearance. We cannot sponsor visas.', noSponsor | citizenOrGc | clearance],
+    ['Requirements\nMust be a US citizen\nSponsorship: not available', noSponsor | citizenOrGc],
+    ['You must be a U.S. citizen and will not require sponsorship.', noSponsor | citizenOrGc],
+    ['Must be a U.S. citizen or permanent resident of the U.S.', citizenOrGc],
+    ['We do not sponsor visas.', noSponsor],
+  ] as const)
+    assert.equal(authFlags(text), flags, text);
+});
+
+void test('auth flags: notices, offers to sponsor and lines without must, required or only are none', () => {
+  for (const text of [
+    // An EEO statement and the E-Verify / right-to-work notices.
+    'We are an equal opportunity employer and consider qualified applicants without regard to race, religion, sex, national origin, citizenship status, disability or veteran status.',
+    'Employers may not discriminate against U.S. citizens, permanent residents, refugees, asylees or other work-authorized individuals.',
+    'To meet export control rules, applicants must be U.S. persons: U.S. citizens, permanent residents, refugees or asylees.',
+    'Applicants must be U.S. citizens, permanent residents, refugees, asylees, or otherwise authorized to work.',
+    'To conform to U.S. Government export regulations, applicant must be a U.S. citizen, lawful permanent resident, protected individual as defined by 8 U.S.C. 1324b(a)(3), or eligible to obtain the required authorizations from the U.S. Department of State.',
+    'Applicants must be a U.S. citizen or national, lawful permanent resident, or be eligible to obtain the required authorizations from the U.S. Department of State.',
+    'Candidates must be U.S. citizens or eligible to work in the U.S.',
+    'This company participates in E-Verify and will confirm the employment eligibility of each new hire.',
+    'We will sponsor H-1B visas for qualified candidates.',
+    'Visa sponsorship available.',
+    'Sponsorship is available for this role.',
+    'We are happy to provide visa sponsorship.',
+    'We sponsor employment visas, including H-1B and STEM OPT extensions.',
+    // A hedge and an affirmation in one sentence; any work authorization accepted; another country's residency.
+    "While we can't sponsor for every role, we do sponsor H-1B visas for this position.",
+    'We are not able to sponsor for all teams, but this role does offer visa sponsorship.',
+    'Must be a U.S. citizen, green card holder, or hold a valid work visa (H-1B, OPT, etc.).',
+    'Candidates must be US citizens or green card holders, or have a valid EAD.',
+    'Must be a permanent resident of Canada or a Canadian citizen.',
+    'Canadian citizenship or permanent residency required.',
+    'No security clearance required.',
+    'This role does not require a security clearance.',
+    'Security clearance is not required for this internship.',
+    'U.S. citizenship is not required.',
+    'You do not need to be a U.S. citizen to apply.',
+    'Green card holders and permanent residents are welcome to apply.',
+    'Candidates who need sponsorship are encouraged to apply.',
+    'Export control: this role may involve technology covered by export regulations.',
+    'Our work involves government clients; a clearance is a plus.',
+    'Some roles may require a security clearance or U.S. citizenship.',
+    'Active security clearance preferred.',
+    'Must obtain medical clearance before start date.',
+    'This role requires current medical clearance.',
+    'Must be authorized to work in the United States.',
+    '',
+  ])
+    assert.equal(authFlags(text), 0, text);
 });

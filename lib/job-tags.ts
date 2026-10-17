@@ -103,6 +103,95 @@ export function hiringCycle(firstSeenAt: number, title = '') {
   return day.getUTCMonth() >= 6 ? year + 1 : year;
 }
 
+/**
+ * job_openings.auth_flags bits: the description says no visa sponsorship, U.S. citizenship or a
+ * green card, or a security clearance. AUTH_UNKNOWN (-1, not yet judged) has every bit set, so a
+ * filter must be `auth_flags>0 AND auth_flags&?`; an upsert never overwrites a judged (>=0) value with -1.
+ */
+export const AUTH_FLAGS = { noSponsor: 1, citizenOrGc: 2, clearance: 4 } as const;
+export const AUTH_UNKNOWN = -1;
+
+// Read sentence by sentence, lower-cased, "U.S." as "us". Each kind first skips a sentence that
+// says the opposite ("we will sponsor", "no clearance required"), then tries its own phrases.
+const VISA = '(?:(?:visa|immigration|employment|employer|company|work|h-?1b|any|current|now|or|future)\\s+)*';
+const NO_SPONSOR = new RegExp(
+  [
+    // "unable to sponsor", "will not be sponsoring", "does not offer relocation or visa sponsorship", "isn't eligible for sponsorship"
+    `\\b(?:unable to|not able to|cannot|can ?not|can't|will not|won't|do not|does not|don't|doesn't|not eligible for|ineligible for|is not|are not|isn't|aren't)\\s+(?:(?:currently|presently|now|be|able to|in a position to)\\s+)*(?:(?:provide|offer|support|accommodate|consider|qualify for|eligible for)\\s+)?(?:(?:\\S+\\s+){1,2}(?:or|and)\\s+)?${VISA}sponsor`,
+    `\\bno\\s+${VISA}sponsorship`,
+    `\\bsponsorship\\s*(?::\\s*|is\\s+|will\\s+)?not\\s+(?:be\\s+)?(?:available|offered|provided|possible)`,
+    // "must not now or in the future require sponsorship", "do not apply if you will need sponsorship"
+    `\\b(?:must not|will not|do not|does not|should not|cannot|won't|don't|doesn't)\\s+(?:\\S+\\s+){0,6}?(?:require|need)s?\\s+(?:\\S+\\s+){0,3}?sponsorship`,
+    `\\bwithout\\s+(?:the\\s+)?(?:(?:need|requirement)\\s+(?:for|of)\\s+|requiring\\s+|needing\\s+)?${VISA}sponsorship`,
+    // "candidates requiring sponsorship will not be considered"
+    `\\b(?:requir|need)\\w*\\s+(?:\\S+\\s+){0,3}?sponsorship\\b(?:\\s+\\S+){0,4}?\\s+(?:(?:will not|won't|cannot|can't)\\s+be|are not|aren't|is not|isn't)\\s+(?:considered|eligible)`,
+  ].join('|'),
+);
+const SPONSORS =
+  /(?<!(?:\bnot|\bnever|n't)\s+(?:\S+\s+){0,3})\b(?:we|will|can|do|does|happy to|glad to|able to)\s+(?:(?:also|gladly|do|does|still)\s+)?(?:sponsor\b|(?:offer|provide|support)\s+(?:(?:visa|immigration|h-?1b)\s+)*sponsorship)|(?<!\bno\s+(?:\S+\s+){0,3})\bsponsorship\s+(?:is\s+|may be\s+|will be\s+)?(?:available|offered|provided)\b/;
+// A negation near "required" and the word: "does not require a clearance", "citizenship is not required", "no clearance required".
+const notRequired = (word: string) =>
+  `(?:\\bno\\b|\\bnot\\b|n't\\b|\\bnever\\b)(?:\\s+\\S+){0,3}?\\s+(?:require[ds]?|requirement|necessary|needed)\\b(?:\\s+\\S+){0,3}?\\s+${word}` +
+  `|${word}(?:\\s+\\S+){0,3}?\\s+(?:is\\s+|are\\s+)?(?:not|n't)\\s+(?:\\S+\\s+)?(?:required|necessary|needed)` +
+  `|\\bno\\b(?:\\s+\\S+){0,2}?\\s+${word}(?:\\s+\\S+){0,2}?\\s+(?:required|necessary|needed|requirements?)`;
+const CIT = '(?:(?:us|usa|united states|american)\\s+citizen(?:ship|s)?|(?:us\\s+)?green\\s+card(?:\\s+holders?)?|(?:us\\s+)?(?:lawful\\s+)?permanent\\s+residen(?:ts?|cy|ce))';
+const CITIZEN = new RegExp(
+  [
+    `\\bmust\\s+(?:be|hold|have|possess|maintain)\\s+(?:an?\\s+)?(?:active\\s+|current\\s+)?${CIT}`,
+    `\\b${CIT}(?:\\s*(?:,|or|and|\\/)\\s*${CIT})*\\s+(?:status\\s+)?(?:is\\s+|are\\s+)?(?:required|mandatory)`,
+    `\\brequir(?:es?|ed|ing)\\s+(?:(?:applicants|candidates)\\s+to\\s+(?:be|hold|have)\\s+|to\\s+(?:be|hold|have)\\s+)?(?:an?\\s+)?${CIT}`,
+    `\\bonly\\s+(?:(?:open|available)\\s+to\\s+)?${CIT}`,
+    `\\b(?:(?:open|available)\\s+only|limited|restricted)\\s+to\\s+${CIT}`,
+  ].join('|'),
+);
+// "May require", "preferred": no requirement.
+const MAYBE = String.raw`|\b(?:may|might|could|some)\s+(?:\S+\s+)?(?:require|be required|need)|\b(?:preferred|a plus|nice to have|bonus)\b`;
+// Work-authorization notices list citizens with refugees and asylees (EEO, E-Verify, export control's
+// "U.S. person", "protected individual", "or eligible to obtain the required authorizations"), or accept
+// any work authorization ("or hold a valid work visa"). Another country's citizenship or residency is no US one.
+const NOT_CITIZEN = new RegExp(
+  `\\b(?:refugees?|asylees?|asylum|otherwise authorized|us persons?|protected individuals?|required authorizations?|department of state|regard(?:less)? (?:of|to)|discriminat\\w*|e-?verify)\\b` +
+    `|\\bor\\s+(?:be\\s+|those\\s+|persons\\s+|individuals\\s+)?(?:otherwise\\s+)?(?:lawfully\\s+)?(?:eligible|authori[sz]ed)\\b` +
+    `|\\bor\\s+(?:have|hold|possess)\\s+(?:an?\\s+)?(?:valid\\s+)?(?:(?:work|employment)\\s+(?:authori[sz]ation|visa|permit)|ead)\\b` +
+    `|\\b(?:permanent residen\\S*|citizen\\S*)\\s+of\\s+(?!(?:the\\s+)?(?:us|usa|united states|america)\\b)\\w` +
+    `|\\b(?:canadian|australian|british|uk|eu|european|japanese|indian|singaporean|mexican)\\s+(?:citizen|permanent\\s+residen)|${notRequired('(?:citizen\\S*|green card|permanent residen\\S*)')}${MAYBE}`,
+);
+const KIND = '(?:ts\\/sci|top secret|secret|security|dod|government|federal|active|current)';
+const CLEARANCE = new RegExp(
+  [
+    `\\bmust\\s+(?:also\\s+)?(?:be\\s+able\\s+to\\s+|be\\s+)?(?:obtain|hold|have|possess|maintain|get|receive|granted|eligible\\s+(?:for|to\\s+obtain))\\s+(?:\\S+\\s+){0,4}?clearances?\\b`,
+    `\\bmust\\b(?:\\s+\\S+){0,8}?\\s+(?:able|eligible)\\s+to\\s+(?:obtain|get|hold|receive)\\s+(?:\\S+\\s+){0,4}?clearances?\\b`,
+    `\\b${KIND}\\s+(?:\\S+\\s+){0,2}?clearance\\s+(?:is\\s+)?(?:required|needed|mandatory)`,
+    `\\brequir(?:es?|ed|ing)\\s+(?:(?:an?|the)\\s+)?(?:ability\\s+to\\s+(?:obtain|get)\\s+(?:and\\s+maintain\\s+)?(?:an?\\s+)?|to\\s+(?:obtain|hold|have|maintain)\\s+(?:and\\s+maintain\\s+)?(?:an?\\s+)?)?${KIND}\\s+(?:\\S+\\s+){0,2}?clearance`,
+    `\\b(?:ts\\/sci|top secret)\\b(?:\\s+\\S+){0,3}?\\s+(?:is\\s+)?required`,
+  ].join('|'),
+);
+// A medical, customs or tax "clearance" is no security clearance.
+const NOT_CLEARANCE = new RegExp(notRequired('clearances?') + MAYBE + String.raw`|\b(?:medical|health|customs|tax|credit|drug|background)\s+clearances?\b`);
+
+/**
+ * The AUTH_FLAGS bits a job description states. Citizenship and clearance count only with a must,
+ * required or only: a bare "permanent resident", "U.S. person" or export-control line is none.
+ * ponytail: phrase rules, so unusual wording is missed (the pages say so); a model pass over the
+ * descriptions if misses turn out to matter.
+ */
+export function authFlags(text: string) {
+  let flags = 0;
+  const sentences = text
+    .replace(/[’‘]/g, "'")
+    .replace(/\bU\.\s?S\b\.?(?:A\b\.?)?/gi, 'US')
+    .toLowerCase()
+    .split(/[.!?;]+(?:\s+|$)|[\n\r•]+/);
+  for (const raw of sentences) {
+    const s = raw.replace(/\s+/g, ' ').trim();
+    if (!s) continue;
+    if (!SPONSORS.test(s) && NO_SPONSOR.test(s)) flags |= AUTH_FLAGS.noSponsor;
+    if (!NOT_CITIZEN.test(s) && CITIZEN.test(s)) flags |= AUTH_FLAGS.citizenOrGc;
+    if (!NOT_CLEARANCE.test(s) && CLEARANCE.test(s)) flags |= AUTH_FLAGS.clearance;
+  }
+  return flags;
+}
+
 /** A posting link for comparing: no hash, no tracking parameters, no trailing slash; '' when it is no URL. */
 export function jobLinkKey(link: string) {
   try {
@@ -119,6 +208,9 @@ export function jobLinkKey(link: string) {
 
 /** The note holding a learner's one saved search (JSON JobSearch; lib/server/my-practice.ts). */
 export const JOB_SEARCH_NOTE = 'career:jobs-search';
+/** The note holding the companies a learner blocked: a JSON array of up to JOB_BLOCKED_MAX company slugs. */
+export const JOB_BLOCKED_NOTE = 'career:jobs-blocked';
+export const JOB_BLOCKED_MAX = 100;
 /** The /career/jobs filter, also a learner's saved search. H-1B is page-only: the worker never loads that data. */
 export type JobSearch = {
   kind: '' | 'intern' | 'new-grad';
@@ -127,8 +219,10 @@ export type JobSearch = {
   q: string;
   company: string;
   paid: boolean;
+  /** Leave out openings whose description rules out sponsorship or needs citizenship or a clearance. */
+  sponsorOk: boolean;
 };
-export const DEFAULT_SEARCH: JobSearch = { kind: '', role: 'tech', term: '', q: '', company: '', paid: false };
+export const DEFAULT_SEARCH: JobSearch = { kind: '', role: 'tech', term: '', q: '', company: '', paid: false, sponsorOk: false };
 export const ROLE_FILTERS = ['tech', 'all', ...ROLE_CATEGORIES] as const;
 
 /** A filter from query parameters; anything unknown is the default. */
@@ -143,6 +237,7 @@ export function searchFromQuery(get: (name: string) => string): JobSearch {
     q: get('q').slice(0, 60),
     company: /^[a-z0-9-]{1,80}$/.test(company) ? company : '',
     paid: get('paid') === '1',
+    sponsorOk: get('sponsor') === '1',
   };
 }
 /** The filter as /career/jobs query parameters; role is always there, so the saved search is not applied over it. */
@@ -150,10 +245,11 @@ export function searchQuery(s: JobSearch) {
   const params = new URLSearchParams({ role: s.role });
   for (const name of ['kind', 'term', 'q', 'company'] as const) if (s[name]) params.set(name, s[name]);
   if (s.paid) params.set('paid', '1');
+  if (s.sponsorOk) params.set('sponsor', '1');
   return params;
 }
 
-type Listed = { title: string; location: string; kind: string; companySlug: string; pay: unknown };
+type Listed = { title: string; location: string; kind: string; companySlug: string; pay: unknown; authFlags: number };
 export function matchesSearch(o: Listed, s: JobSearch) {
   const category = roleCategory(o.title);
   return (
@@ -162,6 +258,8 @@ export function matchesSearch(o: Listed, s: JobSearch) {
     (!s.q || o.location.toLowerCase().includes(s.q.toLowerCase())) &&
     (s.role === 'all' || (s.role === 'tech' ? isTech(category) : category === s.role)) &&
     (!s.term || termKey(termOf(o.title)) === s.term) &&
-    (!s.paid || o.pay !== null)
+    (!s.paid || o.pay !== null) &&
+    // Not yet judged (AUTH_UNKNOWN) stays listed.
+    (!s.sponsorOk || !(o.authFlags > 0))
   );
 }

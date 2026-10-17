@@ -17,7 +17,7 @@ import { companyHubPath, oaCompanyPath } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory } from './company-hub';
 import { library } from './content-library';
-import { companyMemberExperiences } from './experience-submissions';
+import { companyMemberExperiences, memberExperienceStats } from './experience-submissions';
 import { HttpError, json, limit, requirePerson } from './http';
 import { reportCompanies } from './learner-cloud';
 import { mockPresetFor } from './mock-oa-presets';
@@ -42,6 +42,8 @@ const patch = z
     appliedAt: at,
     oaDeadline: at,
     interviewAt: at,
+    // Kept at any stage (a partial update may not send the stage); only the Offer stage uses it.
+    offerDeadline: at,
     referral: text(120),
     link: text(500).refine((v) => v === '' || httpsLink(v)),
     notes: z.string().max(NOTES_MAX),
@@ -60,6 +62,7 @@ const BLANK: Omit<ApplicationFields, 'company'> & { jdText: string } = {
   appliedAt: null,
   oaDeadline: null,
   interviewAt: null,
+  offerDeadline: null,
   referral: '',
   link: '',
   notes: '',
@@ -71,10 +74,10 @@ const BLANK: Omit<ApplicationFields, 'company'> & { jdText: string } = {
   jdText: '',
 };
 const COLUMNS = `id,company_slug AS companySlug,company_name AS company,role,stage,applied_at AS appliedAt,
-  oa_deadline AS oaDeadline,interview_at AS interviewAt,referral,link,notes,channel,referral_status AS referralStatus,
-  next_action AS nextAction,next_at AS nextAt,resume_version AS resumeVersion,stage_log AS stageLog,jd_text<>'' AS hasJd,
+  oa_deadline AS oaDeadline,interview_at AS interviewAt,offer_deadline AS offerDeadline,referral,link,notes,channel,
+  referral_status AS referralStatus,next_action AS nextAction,next_at AS nextAt,resume_version AS resumeVersion,stage_log AS stageLog,jd_text<>'' AS hasJd,
   created_at AS createdAt,updated_at AS updatedAt`;
-type Row = Omit<Application, 'links' | 'stageLog' | 'hasJd' | 'closedAt' | 'prep'> & { stageLog: string; hasJd: number };
+type Row = Omit<Application, 'links' | 'stageLog' | 'hasJd' | 'closedAt' | 'prep' | 'process'> & { stageLog: string; hasJd: number };
 /** Moves kept per card, the newest. */
 const LOG_MAX = 40;
 
@@ -126,9 +129,10 @@ function closedPostings(rows: Row[]) {
 const PREP: readonly string[] = ['oa', 'phone', 'onsite'];
 /**
  * Adds the company's OA problems and mock OA links where it has them, whether the posting has
- * closed, and at OA, phone or onsite the interview prep links.
+ * closed, and at OA, phone or onsite the interview prep links. While the learner has an offer
+ * deadline ahead, those cards also get the company's median process length (expeditePlan).
  */
-function withLinks(rows: Row[]): Application[] {
+function withLinks(rows: Row[], userId: string): Application[] {
   const oa = rows.some((r) => r.companySlug) ? new Set(oaLibrary().companies().map((c) => c.slug)) : new Set();
   const closed = closedPostings(rows);
   const directory = rows.some((r) => r.companySlug && PREP.includes(r.stage)) ? companyDirectory(library()) : null;
@@ -137,6 +141,16 @@ function withLinks(rows: Row[]): Application[] {
   const experiences = (slug: string) => {
     if (!counts.has(slug)) counts.set(slug, (directory?.get(slug)?.experiences ?? 0) + companyMemberExperiences(slug, 0).total);
     return counts.get(slug)!;
+  };
+  const offerAhead =
+    rows.some((r) => r.companySlug && PREP.includes(r.stage)) &&
+    !!sqlite()
+      .prepare("SELECT 1 FROM job_applications WHERE user_id=? AND stage='offer' AND offer_deadline>?")
+      .get(userId, Date.now());
+  const medians = new Map<string, number | null>();
+  const processWeeks = (slug: string) => {
+    if (!medians.has(slug)) medians.set(slug, memberExperienceStats(slug)?.weeks?.median ?? null);
+    return medians.get(slug)!;
   };
   return rows.map(({ stageLog, hasJd, ...r }) => {
     const posting = r.link ? closed.get(postingKey(r.link)) : undefined;
@@ -147,10 +161,12 @@ function withLinks(rows: Row[]): Application[] {
       closedAt: posting && !posting.open ? posting.last : null,
       links: null,
       prep: null,
+      process: null,
     };
     if (!r.companySlug) return base;
     const mock = mockPresetFor(r.companySlug)?.slug;
     const n = PREP.includes(r.stage) ? experiences(r.companySlug) : 0;
+    const weeks = offerAhead && PREP.includes(r.stage) ? processWeeks(r.companySlug) : null;
     return {
       ...base,
       links: { oa: oa.has(r.companySlug) ? oaCompanyPath(r.companySlug) : null, mock: mock ? `/mock-oa/${mock}` : null },
@@ -161,6 +177,7 @@ function withLinks(rows: Row[]): Application[] {
             stories: '/?view=stories',
           }
         : null,
+      process: weeks === null ? null : { weeks },
     };
   });
 }
@@ -185,7 +202,7 @@ export async function handleApplications(request: Request, p: Person | null, pat
     const rows = db
       .prepare(`SELECT ${COLUMNS} FROM job_applications WHERE user_id=? ORDER BY updated_at DESC LIMIT ${APPLICATIONS_MAX}`)
       .all(p.id) as Row[];
-    return json({ items: withLinks(rows), max: APPLICATIONS_MAX });
+    return json({ items: withLinks(rows, p.id), max: APPLICATIONS_MAX });
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'applications-write', 60);
@@ -200,15 +217,15 @@ export async function handleApplications(request: Request, p: Person | null, pat
       const { n } = db.prepare('SELECT COUNT(*) AS n FROM job_applications WHERE user_id=?').get(p.id) as { n: number };
       if (n >= APPLICATIONS_MAX) throw new HttpError(409, '投递记录已达上限');
       db.prepare(
-        `INSERT INTO job_applications(id,user_id,company_slug,company_name,role,stage,applied_at,oa_deadline,interview_at,
+        `INSERT INTO job_applications(id,user_id,company_slug,company_name,role,stage,applied_at,oa_deadline,interview_at,offer_deadline,
           referral,link,notes,channel,referral_status,next_action,next_at,resume_version,jd_text,stage_log,created_at,updated_at)
-          VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       ).run(
-        newId, p.id, companySlug(d.company), d.company, d.role, d.stage, d.appliedAt, d.oaDeadline, d.interviewAt, d.referral, d.link, d.notes,
+        newId, p.id, companySlug(d.company), d.company, d.role, d.stage, d.appliedAt, d.oaDeadline, d.interviewAt, d.offerDeadline, d.referral, d.link, d.notes,
         d.channel, d.referralStatus, d.nextAction, d.nextAt, d.resumeVersion, d.jdText, JSON.stringify([[d.stage, now]]), now, now,
       );
     }).immediate();
-    return json({ item: withLinks([own(p.id, newId)!])[0] });
+    return json({ item: withLinks([own(p.id, newId)!], p.id)[0] });
   }
   // Someone else's id answers like a missing one.
   if (!own(p.id, id)) throw new HttpError(404, '投递记录不存在');
@@ -230,6 +247,7 @@ export async function handleApplications(request: Request, p: Person | null, pat
     applied_at: d.appliedAt,
     oa_deadline: d.oaDeadline,
     interview_at: d.interviewAt,
+    offer_deadline: d.offerDeadline,
     referral: d.referral,
     link: d.link,
     notes: d.notes,
@@ -247,5 +265,5 @@ export async function handleApplications(request: Request, p: Person | null, pat
     `UPDATE job_applications SET ${changed.map(([k]) => `${k}=@${k}`).join(',')}${changed.length ? ',' : ''}updated_at=@now
     WHERE id=@id AND user_id=@user`,
   ).run({ ...Object.fromEntries(changed), now, id, user: p.id });
-  return json({ item: withLinks([own(p.id, id)!])[0] });
+  return json({ item: withLinks([own(p.id, id)!], p.id)[0] });
 }

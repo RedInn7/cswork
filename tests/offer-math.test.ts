@@ -105,8 +105,8 @@ test('saved offers are cleaned up: junk dropped, fields typed, at most four', ()
 test('the tracker import fills empty cards, then new ones up to four, and skips names already there', () => {
   const start = [offer({ id: 'x', company: 'Acme', role: 'SWE' }), offer({ id: 'y' })];
   const { offers, added, skipped } = importOffers(start, [
-    { company: ' acme ', role: 'swe' },
-    { company: 'Beta', role: 'New grad' },
+    { company: ' acme ', role: 'swe', deadline: '2099-02-01' },
+    { company: 'Beta', role: 'New grad', deadline: '2099-01-05' },
     { company: 'Gamma', role: '' },
     { company: 'Delta', role: 'SDE' },
     { company: 'Eps', role: 'SDE' },
@@ -116,6 +116,11 @@ test('the tracker import fills empty cards, then new ones up to four, and skips 
     ['Acme', 'Beta', 'Gamma', 'Delta'],
   );
   assert.equal(offers[1].id, 'y');
+  // A deadline goes only into a card the import fills, never over one already there.
+  assert.deepEqual(
+    offers.map((o) => o.deadline),
+    ['', '2099-01-05', '', ''],
+  );
   assert.deepEqual([added, skipped], [3, 1]);
   assert.equal(start[1].company, '');
 });

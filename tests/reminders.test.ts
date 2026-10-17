@@ -436,6 +436,55 @@ void test('tracker reminders: an open OA a day and two hours ahead, an interview
   assert.ok(notice(`app-interview:${interview}:${NOW + 50 * 60000}`));
 });
 
+void test('offer deadlines: reminded 3 days and a day before, once each, at the Offer stage only', async () => {
+  const nia = person('r-nia'); // Tracker reminders on.
+  const oz = person('r-oz'); // Tracker reminders off.
+  for (const p of [nia, oz]) addUser(p);
+  const quiet = { review: false, streak: false, contest: false, hour: 3 };
+  await call(nia, 'POST', 'oj/notify', prefs(quiet));
+  await call(oz, 'POST', 'oj/notify', prefs({ ...quiet, applications: false }));
+  const card = async (p: Person, body: Record<string, unknown>) => (await call(p, 'POST', 'oj/applications', body)).data.item.id as string;
+  // Clear of the other tests' cards: 2026-11-14 12:00 UTC, the deadline 2.5 days later.
+  const T = NOW + 30 * DAY,
+    due = T + 2.5 * DAY;
+  const offer = await card(nia, { company: 'Acme', role: 'SWE', stage: 'offer', offerDeadline: due });
+  // Under a day when first seen: the 24-hour one only.
+  const soon = await card(nia, { company: 'Soon', stage: 'offer', offerDeadline: T + 12 * HOUR });
+  const turned = await card(nia, { company: 'Beta', stage: 'offer', offerDeadline: due });
+  await call(nia, 'POST', `oj/applications/${turned}`, { stage: 'rejected' });
+  await card(nia, { company: 'Kept', stage: 'phone', offerDeadline: due });
+  await card(nia, { company: 'Far', stage: 'offer', offerDeadline: T + 6 * DAY });
+  await card(oz, { company: 'Acme', stage: 'offer', offerDeadline: due });
+  const mine = (p: Person) =>
+    sqlite().prepare("SELECT id,title,body FROM notifications WHERE user_id=? AND kind='application' ORDER BY id").all(p.id) as {
+      id: string;
+      title: string;
+      body: string;
+    }[];
+
+  await sendLearnerReminders(T);
+  assert.deepEqual(mine(nia), [
+    { id: `app-offer1:${soon}:${T + 12 * HOUR}`, title: 'Offer 将在 24 小时内截止', body: 'Soon · 11-15 00:00' },
+    { id: `app-offer3:${offer}:${due}`, title: 'Offer 将在 3 天内截止', body: 'Acme · SWE · 11-17 00:00' },
+  ]);
+  // 1.5 days left: nothing new; under a day: the 24-hour one; then nothing more.
+  await sendLearnerReminders(T + DAY);
+  assert.equal(mine(nia).length, 2);
+  await sendLearnerReminders(T + 1.6 * DAY);
+  assert.equal(mine(nia).find((n) => n.id === `app-offer1:${offer}:${due}`)?.title, 'Offer 将在 24 小时内截止');
+  await sendLearnerReminders(T + 2 * DAY);
+  assert.equal(mine(nia).length, 3);
+  assert.deepEqual(mine(oz), [], 'tracker reminders off');
+  assert.equal(englishMessage('Offer 将在 3 天内截止'), 'An offer deadline is within 3 days');
+  assert.equal(englishMessage('Offer 将在 24 小时内截止'), 'An offer deadline is within 24 hours');
+  // Deleting the card deletes its notices.
+  await call(nia, 'POST', `oj/applications/${offer}/delete`, {});
+  assert.deepEqual(
+    mine(nia).map((n) => n.id),
+    [`app-offer1:${soon}:${T + 12 * HOUR}`],
+  );
+});
+
 void test("the digest counts tracker cards and contacts to follow up by the end of the learner's day", async () => {
   const kai = person('r-kai');
   const lee = person('r-lee');
@@ -461,4 +510,29 @@ void test("the digest counts tracker cards and contacts to follow up by the end 
   assert.deepEqual(reminderLines(false, { reviews: 0, streak: null, daily: false, contests: [], followUps: { applications: 0, contacts: 1 } }), [
     ['1 job-search follow-up is due', '/career/contacts'],
   ]);
+});
+
+void test("the digest's reviews follow the learner's daily cap and break (pref:review)", async () => {
+  const gil = person('r-gil'); // Two reviews due, at most one a day.
+  const una = person('r-una'); // The same two, on a break.
+  for (const p of [gil, una]) {
+    addUser(p);
+    await call(p, 'POST', 'oj/notify', prefs({ hour: 12, streak: false }));
+    // Solved Oct 10 (UTC): due on the 13th, overdue on the 15th.
+    accept(p.id, 'lc-1', Date.UTC(2026, 9, 10, 9));
+    accept(p.id, 'lc-2', Date.UTC(2026, 9, 10, 10));
+  }
+  const pref = (p: Person, body: unknown) =>
+    sqlite()
+      .prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,'pref:review',?,0)")
+      .run(p.id, JSON.stringify(body));
+  pref(gil, { dailyCap: 1 });
+  pref(una, { dailyCap: 1, pausedFrom: '2026-10-14', pausedDays: 3 });
+  await sendLearnerReminders(NOW);
+  assert.equal(notice(`rem:2026-10-15:${gil.id}`)!.body, '1 problem is due for review');
+  assert.equal(notice(`rem:2026-10-15:${una.id}`), undefined, 'nothing due on a break');
+  // A malformed note reads as no settings: both reviews, the day after.
+  sqlite().prepare("UPDATE user_notes SET body='{oops' WHERE user_id=? AND target='pref:review'").run(gil.id);
+  await sendLearnerReminders(NOW + DAY);
+  assert.equal(notice(`rem:2026-10-16:${gil.id}`)!.body, '2 problems are due for review');
 });

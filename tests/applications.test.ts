@@ -1,7 +1,8 @@
 // The application tracker: every row is its owner's alone, a learner keeps at most 300, links
 // are https only, and the browser-built exports defuse spreadsheet formulas and remind twice.
 // Stage moves are logged (capped), the job description stays out of the list, a posting its
-// board stopped listing reads as closed, and the stats and stale checks read the log.
+// board stopped listing reads as closed, and the stats and stale checks read the log. Offer
+// deadlines (Offer stage only) feed the calendar, schedule clashes and the expedite plan.
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -16,7 +17,7 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-applications-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleApplications } = await import('../lib/server/applications');
-const { APPLICATIONS_MAX, applicationsCsv, applicationsIcs, csvCell, DAY, funnel, countdown, medianDays, stageDays, stale, followUpDue, trackerStats, weekStart, writeUpHref } =
+const { APPLICATIONS_MAX, applicationsCsv, applicationsIcs, calendarItems, csvCell, DAY, expeditePlan, funnel, countdown, medianDays, scheduleIssues, stageDays, stale, followUpDue, trackerStats, weekStart, writeUpHref } =
   await import('../lib/applications');
 
 const person = (id: string): Person => ({ id, name: id, email: `${id}@example.test`, role: 'student', verified: true });
@@ -101,7 +102,7 @@ void test(`a learner keeps at most ${APPLICATIONS_MAX} applications`, async () =
 
 const row = (patch: Partial<Application>): Application => ({
   id: 'a1', companySlug: '', company: 'Acme', role: '', stage: 'applied', appliedAt: null, oaDeadline: null,
-  interviewAt: null, referral: '', link: '', notes: '', channel: '', referralStatus: '', nextAction: '', nextAt: null,
+  interviewAt: null, offerDeadline: null, process: null, referral: '', link: '', notes: '', channel: '', referralStatus: '', nextAction: '', nextAt: null,
   resumeVersion: '', stageLog: [], hasJd: false, createdAt: 0, updatedAt: 0, links: null, closedAt: null, prep: null, ...patch,
 });
 
@@ -329,4 +330,115 @@ void test('the CSV has the new columns', () => {
   assert.match(csv, /"Channel","Referral status","Referrer","Link","Resume version","Next step","Follow up on","Stage history","Notes","Updated"\r\n/);
   assert.match(csv, /"Referral","Asked","Lee",""/);
   assert.match(csv, /"Applied 2026-01-02"/);
+});
+
+void test('the offer deadline is saved and read back at any stage, and cleared with null', async () => {
+  const due = Date.UTC(2099, 0, 3, 17);
+  const made = await call(ada, [], { company: 'Offerco', stage: 'offer', offerDeadline: due });
+  assert.equal(made.status, 200);
+  const { id } = made.data!.item;
+  assert.equal(made.data!.item.offerDeadline, due);
+  // A partial update without it keeps it; leaving the Offer stage keeps the date too.
+  assert.equal((await call(ada, [id], { stage: 'rejected' })).data!.item.offerDeadline, due);
+  assert.equal((await call(ada, [])).data!.items.find((a) => a.id === id)!.offerDeadline, due);
+  assert.equal((await call(ada, [id], { offerDeadline: null })).data!.item.offerDeadline, null);
+  assert.equal((await call(ada, [], { company: 'Plain' })).data!.item.offerDeadline, null);
+  for (const offerDeadline of [-1, 1.5, '2099-01-03', 4102444800001])
+    assert.equal((await call(ada, [], { company: 'Bad', offerDeadline })).status, 400, String(offerDeadline));
+});
+
+void test('offer deadlines ahead go in the calendar at the Offer stage only, reminded 3 days and a day before', () => {
+  const now = Date.UTC(2098, 0, 1);
+  const offer = row({ id: 'o', company: 'Acme', role: 'SWE', stage: 'offer', offerDeadline: Date.UTC(2099, 0, 2, 17) });
+  const items = [
+    offer,
+    row({ id: 'p', stage: 'phone', offerDeadline: Date.UTC(2099, 0, 2) }),
+    row({ id: 'q', stage: 'offer', offerDeadline: Date.UTC(2097, 0, 2) }),
+  ];
+  const ics = applicationsIcs(items, 'https://cswork.test', true, now);
+  assert.equal(ics.match(/BEGIN:VEVENT/g)?.length, 1);
+  assert.deepEqual(calendarItems(items, now), [offer]);
+  assert.match(ics, /UID:cswork-application-o-offer@cswork\r\nDTSTAMP:\d+T\d+Z\r\nDTSTART:20990102T170000Z\r\nSUMMARY:Offer deadline: Acme · SWE\r\n/);
+  assert.match(ics, /TRIGGER:-P3D\r\nEND:VALARM\r\nBEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Offer deadline: Acme · SWE\r\nTRIGGER:-P1D\r\nEND:VALARM\r\nEND:VEVENT/);
+  assert.match(applicationsIcs([offer], 'https://cswork.test', false, now), /SUMMARY:Offer 截止：Acme · SWE\r\n/);
+});
+
+void test('schedule clashes in the next two weeks: close interviews, piled-up OAs, an offer deadline on a busy day', () => {
+  const at = (day: number, h: number, m = 0) => new Date(2099, 0, day, h, m).getTime();
+  const now = at(1, 8);
+  const issues = scheduleIssues(
+    [
+      row({ id: 'i1', stage: 'phone', interviewAt: at(3, 10) }),
+      row({ id: 'i2', stage: 'onsite', interviewAt: at(3, 11, 29) }),
+      // 90 minutes after i2: an hour plus the half-hour buffer fits.
+      row({ id: 'i3', stage: 'onsite', interviewAt: at(3, 12, 59) }),
+      row({ id: 'o1', stage: 'oa', oaDeadline: at(5, 9) }),
+      row({ id: 'o2', stage: 'applied', oaDeadline: at(5, 18) }),
+      row({ id: 'o3', stage: 'saved', oaDeadline: at(5, 23, 59) }),
+      row({ id: 'o4', stage: 'oa', oaDeadline: at(6, 0, 1) }),
+      row({ id: 'off', stage: 'offer', offerDeadline: at(8, 17), interviewAt: at(8, 9) }),
+      row({ id: 'x', stage: 'oa', oaDeadline: at(8, 12) }),
+      // Ignored: an ended card, anything past 14 days, an offer date kept at another stage.
+      row({ id: 'gone', stage: 'rejected', interviewAt: at(3, 10, 30) }),
+      row({ id: 'far1', stage: 'phone', interviewAt: at(16, 10) }),
+      row({ id: 'far2', stage: 'phone', interviewAt: at(16, 10, 30) }),
+      row({ id: 'kept', stage: 'phone', offerDeadline: at(6, 12) }),
+    ],
+    now,
+  );
+  assert.deepEqual(issues, [
+    { kind: 'overlap', day: '2099-01-03', ids: ['i1', 'i2'] },
+    { kind: 'oa-pile', day: '2099-01-05', ids: ['o1', 'o2', 'o3'] },
+    { kind: 'offer-clash', day: '2099-01-08', ids: ['off', 'x'] },
+  ]);
+  assert.deepEqual(scheduleIssues([row({ id: 'gone', stage: 'withdrawn', oaDeadline: at(5, 9) })], now), []);
+});
+
+void test('the expedite plan: member write-ups first, then the board median, else unknown', () => {
+  const now = 100 * DAY;
+  assert.equal(expeditePlan([row({ stage: 'offer', offerDeadline: now - 1 }), row({ stage: 'phone' })], now), null, 'passed');
+  assert.equal(expeditePlan([row({ stage: 'phone', offerDeadline: now + DAY })], now), null, 'the Offer stage only');
+  const items = [
+    row({ id: 'later', stage: 'offer', offerDeadline: now + 20 * DAY }),
+    // Phone to offer took this board 30 days.
+    row({ id: 'offer', stage: 'offer', offerDeadline: now + 10 * DAY, stageLog: [['phone', 0], ['offer', 30 * DAY]] }),
+    row({ id: 'w', stage: 'oa', appliedAt: now - 7 * DAY, process: { weeks: 3 } }),
+    row({ id: 'w2', stage: 'onsite', createdAt: now - 20 * DAY, process: { weeks: 2 } }),
+    row({ id: 'm', stage: 'phone', stageLog: [['phone', now - 25 * DAY]] }),
+    row({ id: 'u', stage: 'onsite', stageLog: [['onsite', now]] }),
+    row({ id: 's', stage: 'applied' }),
+  ];
+  const plan = expeditePlan(items, now)!;
+  assert.deepEqual([plan.offer.id, plan.deadline], ['offer', now + 10 * DAY]);
+  assert.deepEqual(
+    plan.rows.map((r) => [r.a.id, r.eta, r.late, r.overdue]),
+    [
+      ['w', now + 14 * DAY, true, false],
+      // Its usual timeline ran out six days ago: not "in time", ask the recruiter.
+      ['w2', now - 6 * DAY, true, true],
+      ['m', now + 5 * DAY, false, false],
+      ['u', null, false, false],
+    ],
+  );
+});
+
+void test('process weeks are looked up only while the learner has an offer deadline ahead', async () => {
+  const cy = person('app-cy');
+  const add = sqlite().prepare(
+    `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,interview_month,body,status,created_at,duration_weeks)
+    VALUES(?,'someone','amazon','Loop','SDE','2026-09',?,'approved',1,?)`,
+  );
+  [2, 4, 6, 8, 10].forEach((weeks, i) => add.run(`xp-w${i}`, 'x'.repeat(100), weeks));
+  const phone = (await call(cy, [], { company: 'Amazon', stage: 'phone' })).data!.item;
+  assert.equal(phone.process, null);
+  const offer = (await call(cy, [], { company: 'Rival', stage: 'offer', offerDeadline: Date.now() + 5 * DAY })).data!.item;
+  assert.equal(offer.process, null, 'only cards still in process');
+  const listed = () => call(cy, []).then((r) => r.data!.items.find((a) => a.id === phone.id)!);
+  assert.deepEqual((await listed()).process, { weeks: 6 });
+  assert.deepEqual((await call(cy, [phone.id], { notes: 'n' })).data!.item.process, { weeks: 6 }, 'one card saved sees the offer too');
+  // A deadline kept after leaving the Offer stage, or one passed, looks nothing up.
+  await call(cy, [offer.id], { stage: 'withdrawn' });
+  assert.equal((await listed()).process, null);
+  await call(cy, [offer.id], { stage: 'offer', offerDeadline: Date.now() - DAY });
+  assert.equal((await listed()).process, null);
 });

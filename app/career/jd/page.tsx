@@ -54,7 +54,7 @@ export default async function JdReadinessPage() {
       <nav className="mock-public-crumbs" aria-label={zh ? '导航路径' : 'Breadcrumb'}>
         <a href="/guide">{zh ? '求职指南' : 'Career guide'}</a>
         <span aria-hidden="true">/</span>
-        <span aria-current="page">{zh ? 'JD 准备度检查' : 'JD readiness check'}</span>
+        <span aria-current="page">{zh ? 'JD 检查' : 'JD check'}</span>
       </nav>
       <section className="mock-public-hero guide-hero">
         <p className="mock-public-kicker">{ai ? c.kicker : c.offKicker}</p>

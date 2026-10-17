@@ -5,14 +5,15 @@ import { sqlite } from '@/db/sqlite';
 import { roomWeek, weeklyTitle } from '@/lib/contest';
 import { ENDED, OA_OPEN } from '@/lib/applications';
 import { englishMessage } from '@/lib/messages-en';
-import { dueReviews, type PracticeHistoryItem } from '@/lib/practice-review';
+import { parseReviewPrefs, scheduleReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
 import type { Person } from './auth';
 import { origin, setting } from './env';
 import { body, HttpError, json, limit, requirePerson } from './http';
+import { localDate, wall } from './local-day';
 import { mailReady, reminderLines, reminderMail, sendMail, type ReminderDigest } from './mail';
 import { notify } from './notify';
-import { aidsByProblem } from './practice-aids';
+import { aidsByProblem, gradesByProblem } from './practice-aids';
 import { pushEndpoint, pushReady, pushTo } from './web-push';
 
 /**
@@ -21,7 +22,7 @@ import { pushEndpoint, pushReady, pushTo } from './web-push';
  * weeklies or starters they entered that start within a day, and job-search follow-ups due. It is
  * an in-app notice, a push to each device they turned push on for, and with email on a mail to the
  * verified address. Entrants of a weekly or starter also get a notice and push an hour before it
- * starts; tracker cards one before an OA deadline and an interview. Each notice has a
+ * starts; tracker cards one before an OA deadline, an interview and an offer deadline. Each notice has a
  * deterministic id: writing it is the claim, so no tick, restart or second worker sends twice.
  * The judge worker runs this every 10 minutes (lib/server/oj-worker.ts), in any TZ.
  * ponytail: tz is the offset when last saved (the card re-saves it when opened elsewhere); a
@@ -49,24 +50,6 @@ type Prefs = {
   token: string;
 };
 
-/** The local date (YYYY-MM-DD) at `at` for a Date#getTimezoneOffset of `tz` minutes. */
-const localDate = (at: number, tz: number) => new Date(at - tz * MINUTE).toISOString().slice(0, 10);
-/**
- * `at` re-anchored so this process's local time reads the learner's wall clock at `at`: dueReviews
- * and practiceStats count local days, and this makes them the learner's whatever the process TZ.
- */
-function wall(at: number, tz: number) {
-  const d = new Date(at - tz * MINUTE);
-  return new Date(
-    d.getUTCFullYear(),
-    d.getUTCMonth(),
-    d.getUTCDate(),
-    d.getUTCHours(),
-    d.getUTCMinutes(),
-    d.getUTCSeconds(),
-    d.getUTCMilliseconds(),
-  ).getTime();
-}
 /** A weekly's or starter's name in the learner's language (contest_rooms keeps the English one). */
 const contestTitle = (c: { id: string; title: string; kind: string }, zh: boolean) => {
   const week = roomWeek(c.id);
@@ -81,6 +64,8 @@ const APPLICATION_TITLES = {
   'app-oa24': 'OA 将在 24 小时内截止',
   'app-oa2': 'OA 将在 2 小时内截止',
   'app-interview': '面试将在 1 小时内开始',
+  'app-offer3': 'Offer 将在 3 天内截止',
+  'app-offer1': 'Offer 将在 24 小时内截止',
 };
 
 /**
@@ -103,12 +88,23 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         if (times) times.push(wall(a.created_at, r.tz));
         else byProblem.set(a.problem_id, [wall(a.created_at, r.tz)]);
       }
-      // dueReviews reads only acAt and help (a solve with help climbs a longer ladder).
+      // scheduleReviews reads only acAt, help (a solve with help climbs a longer ladder) and
+      // grades; the daily cap and a break come from the learner's pref:review note.
       const aids = aidsByProblem(r.user_id);
-      reviews = dueReviews(
-        [...byProblem].map(([id, acAt]) => ({ acAt, help: aids.get(id)?.help ?? 'none' }) as PracticeHistoryItem),
+      const grades = gradesByProblem(r.user_id);
+      const note = db.prepare("SELECT body FROM user_notes WHERE user_id=? AND target='pref:review'").pluck().get(r.user_id);
+      reviews = scheduleReviews(
+        [...byProblem].map(
+          ([id, acAt]) =>
+            ({
+              acAt,
+              help: aids.get(id)?.help ?? 'none',
+              grades: grades.get(id)?.map(([at, grade]) => [wall(at, r.tz), grade]),
+            }) as PracticeHistoryItem,
+        ),
         local,
-      ).length;
+        parseReviewPrefs(note),
+      ).today.length;
     }
     if (r.streak) {
       const bought = db
@@ -185,7 +181,8 @@ export async function sendLearnerReminders(now = Date.now()) {
     await pushTo(c.user_id, now);
   }
   // Tracker cards: an open OA due within 24 hours and again within 2 (only the nearer one when a
-  // tick finds both), an interview within the hour. The time is in the id: a moved one is new.
+  // tick finds both), an interview within the hour, an offer deadline within 3 days and again
+  // within 1. The time is in the id: a moved one is new.
   // ponytail: scans the cards in each window per tick; index oa_deadline/interview_at if it grows.
   const cards = (stages: string, column: string, until: number) =>
     db
@@ -200,6 +197,7 @@ export async function sendLearnerReminders(now = Date.now()) {
       (a) => [a.at <= now + 2 * HOUR ? 'app-oa2' : 'app-oa24', a] as const,
     ),
     ...cards(`NOT IN ${CLOSED}`, 'interview_at', now + HOUR).map((a) => ['app-interview', a] as const),
+    ...cards("='offer'", 'offer_deadline', now + 3 * DAY).map((a) => [a.at <= now + DAY ? 'app-offer1' : 'app-offer3', a] as const),
   ];
   for (const [kind, a] of soon) {
     const id = `${kind}:${a.id}:${a.at}`;

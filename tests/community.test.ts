@@ -234,7 +234,7 @@ void test('experience fields: validated, shown, filtered (member posts only) and
   const first = await ok(me, 'GET', `content/item?type=experience&slug=member.${ids[0]}`);
   assert.deepEqual(first.details, {
     difficulty: 1, sentiment: 'pos', channel: 'referral', employment: 'intern', season: '2026-summer',
-    location: 'Seattle', durationWeeks: 2, verified: true,
+    location: 'Seattle', durationWeeks: 2, prepWeeks: null, prepSources: [], verified: true,
   });
   assert.equal(memberExperienceStats('amazon'), null, 'nothing public yet');
   for (const id of ids.slice(0, STATS_MIN - 1)) await ok(teacher, 'POST', `oj/experiences/${id}/review`, { status: 'approved' });

@@ -11,10 +11,14 @@ import { STOP_NAMES } from '@/lib/route-stops';
 import { RUBRIC, type RubricId } from '@/lib/mock-interview-feedback';
 import {
   assisted,
-  dueReviews,
+  parseReviewPrefs,
+  reviewState,
+  scheduleReviews,
   wrongBook,
   type PracticeHistoryItem,
+  type ReviewPrefs,
 } from '@/lib/practice-review';
+import { ReviewForecast } from './review-forecast';
 import { SolveQuality } from './solve-quality';
 import { RecallQueue, useRecallQueue } from './recall-queue';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
@@ -22,6 +26,7 @@ import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
+import { NoteTagChips } from './notes-filters';
 import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
@@ -37,6 +42,7 @@ type Note = {
   snippet: string;
   problemId: string | null;
   title: { title: string; titleZh: string | null } | null;
+  confidence?: number | null;
 };
 type NotePage = { items: Note[]; total: number; nextCursor: string | null };
 type Data = {
@@ -51,6 +57,8 @@ type Data = {
   now: number;
   /** Daily problems solved on their day, for the month badges; absent when the ledger failed. */
   dailyDays?: string[];
+  /** The review load settings (the note pref:review); none when it failed or is unset. */
+  prefs: ReviewPrefs;
 };
 type Profile = { handle: string; visible: boolean; indexable: boolean; showContest: boolean; bio: string; featuredBadge: string | null };
 type Tab = 'history' | 'mistakes' | 'review' | 'starred' | 'redo' | 'notes' | 'badges';
@@ -197,7 +205,7 @@ export function MyProgress({
   const [origin, setOrigin] = useState('');
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
-  // The Mistakes tab's filter: '' the wrong book, 'assisted' solves made with help.
+  // The Mistakes tab's filter: '' the wrong book, 'assisted' solves made with help, 'leech' leeches.
   const [mistakeView, setMistakeView] = useState('');
   // The public profile, when there is one: earned badges can be featured on it.
   const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string>; recapYears: number[] } | null>(null);
@@ -229,8 +237,9 @@ export function MyProgress({
       api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
       api<{ days: string[] }>('oj/points/daily').catch(() => null),
       api<{ profile: Profile | null; badges: { id: string }[]; recapYears?: number[] }>('oj/profile').catch(() => null),
+      api<{ body: string }>('oj/notes?target=pref:review').catch(() => null),
     ])
-      .then(([history, marks, notes, line, oa, daily, mine]) => {
+      .then(([history, marks, notes, line, oa, daily, mine, reviewPrefs]) => {
         if (!current) return;
         setData({
           history: history.items,
@@ -240,6 +249,7 @@ export function MyProgress({
           companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
           now: Date.now(),
           dailyDays: daily?.days,
+          prefs: parseReviewPrefs(reviewPrefs?.body),
         });
         setProfile(
           mine?.profile
@@ -258,17 +268,25 @@ export function MyProgress({
   const [noteQuery, setNoteQuery] = useState('');
   const [noteHits, setNoteHits] = useState<NotePage | null>(null);
   const [noteError, setNoteError] = useState('');
+  // A #tag or "confidence ≤ 2" chip (components/notes-filters.tsx) narrows the search too.
+  const [noteTag, setNoteTag] = useState<string | null>(null);
+  const [noteConf, setNoteConf] = useState<number | null>(null);
   const words = noteQuery.trim().split(/\s+/).filter(Boolean).slice(0, 6);
+  const noteFilters = (): Record<string, string> => ({
+    ...(noteQuery.trim() ? { q: noteQuery.trim() } : {}),
+    ...(noteTag ? { tag: noteTag } : {}),
+    ...(noteConf ? { conf: String(noteConf) } : {}),
+  });
   useEffect(() => {
-    const q = noteQuery.trim();
+    const filters = noteFilters();
     setNoteError('');
-    if (!q) {
+    if (!Object.keys(filters).length) {
       setNoteHits(null);
       return;
     }
     let current = true;
     const timer = setTimeout(() => {
-      api<NotePage>(`oj/notes?${new URLSearchParams({ q })}`)
+      api<NotePage>(`oj/notes?${new URLSearchParams(filters)}`)
         .then((page) => {
           if (current) setNoteHits(page);
         })
@@ -280,17 +298,18 @@ export function MyProgress({
       current = false;
       clearTimeout(timer);
     };
-  }, [noteQuery]);
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- noteFilters reads these three.
+  }, [noteQuery, noteTag, noteConf]);
   const notePage = noteHits ?? data?.notes;
   async function moreNotes() {
     if (!notePage?.nextCursor) return;
-    const q = noteQuery.trim();
+    const filters = noteFilters();
     try {
       const page = await api<NotePage>(
-        `oj/notes?${new URLSearchParams({ ...(q ? { q } : {}), cursor: notePage.nextCursor })}`,
+        `oj/notes?${new URLSearchParams({ ...filters, cursor: notePage.nextCursor })}`,
       );
       const merged = { ...page, items: [...notePage.items, ...page.items] };
-      if (q) setNoteHits(merged);
+      if (Object.keys(filters).length) setNoteHits(merged);
       else setData((d) => d && { ...d, notes: merged });
     } catch (reason) {
       setNoteError((reason as Error).message);
@@ -305,7 +324,9 @@ export function MyProgress({
       return id ? [{ id, at: m.createdAt }] : [];
     });
   const starredIds = new Set(marked('star').map((m) => m.id));
-  const due = data ? dueReviews(data.history, data.now) : [];
+  // Today's reviews under the learner's daily cap and break, and the 30-day forecast.
+  const schedule = data ? scheduleReviews(data.history, data.now, data.prefs) : null;
+  const due = schedule?.today ?? [];
   // Open questions graded by hand (components/recall-rate.tsx) share the review tab.
   const recall = useRecallQueue(!!boot.person);
   const mistakes = data ? wrongBook(data.history) : [];
@@ -544,9 +565,12 @@ export function MyProgress({
       );
     }
     if (tab === 'mistakes') {
-      const shown = mistakeView
-        ? data.history.filter((item) => item.firstAcAt && assisted(item))
-        : mistakes;
+      const shown =
+        mistakeView === 'leech'
+          ? data.history.filter((item) => item.acAt.length && reviewState(item).leech)
+          : mistakeView
+            ? data.history.filter((item) => item.firstAcAt && assisted(item))
+            : mistakes;
       return (
         <>
           <fieldset className="study-filters progress-filters">
@@ -556,6 +580,7 @@ export function MyProgress({
               <select value={mistakeView} onChange={(e) => setMistakeView(e.target.value)}>
                 <option value="">{t('错题本', 'Mistakes')}</option>
                 <option value="assisted">{t('借助提示通过', 'Solved with help')}</option>
+                <option value="leech">{t('顽固题', 'Leeches')}</option>
               </select>
             </label>
             <output className="progress-filter-count">
@@ -567,16 +592,20 @@ export function MyProgress({
               id: item.problemId,
               detail: item.firstAcAt
                 ? [
-                    ...(mistakeView
-                      ? helped(item)
-                      : [t(`通过前失败 ${item.failuresBeforeAc} 次`, `${item.failuresBeforeAc} failures before AC`)]),
+                    ...(mistakeView === 'leech'
+                      ? [t('复习时多次自评「重来」', 'Graded Again on reviews')]
+                      : mistakeView
+                        ? helped(item)
+                        : [t(`通过前失败 ${item.failuresBeforeAc} 次`, `${item.failuresBeforeAc} failures before AC`)]),
                     t(`${date(item.firstAcAt)} 通过`, `Solved ${date(item.firstAcAt)}`),
                   ]
                 : [t(`最近：${verdict(item.lastStatus)}`, `Last: ${verdict(item.lastStatus)}`), tried(item)],
             })),
-            mistakeView
-              ? ['还没有借助提示通过的题：通过前看过第 2 条起的提示、打开过题解或用过 AI 助教的题会列在这里。', 'No solves with help: problems solved after hint 2 or later, the Editorial tab or the AI tutor land here.']
-              : ['错题本是空的：没有未通过的题，也没有失败两次以上才过的题。', 'No mistakes to revisit: nothing unsolved, nothing that took two or more failures.'],
+            mistakeView === 'leech'
+              ? ['没有顽固题：复习时连续两次、或累计三次自评「重来」的题会列在这里。', 'No leeches: problems graded Again on two reviews in a row, or on three in all, land here.']
+              : mistakeView
+                ? ['还没有借助提示通过的题：通过前看过第 2 条起的提示、打开过题解或用过 AI 助教的题会列在这里。', 'No solves with help: problems solved after hint 2 or later, the Editorial tab or the AI tutor land here.']
+                : ['错题本是空的：没有未通过的题，也没有失败两次以上才过的题。', 'No mistakes to revisit: nothing unsolved, nothing that took two or more failures.'],
           )}
         </>
       );
@@ -584,14 +613,24 @@ export function MyProgress({
     if (tab === 'review')
       return (
         <>
+          {schedule && (
+            <ReviewForecast
+              schedule={schedule}
+              prefs={data.prefs}
+              now={data.now}
+              english={english}
+              onChange={(prefs) => setData((d) => d && { ...d, prefs })}
+            />
+          )}
           {(due.length > 0 || !recall.due) &&
             list(
-              due.map(({ item, level, steps, dueAt }) => {
+              due.map(({ item, level, steps, dueAt, leech }) => {
                 const late = Math.floor((data.now - dueAt) / DAY);
                 return {
                   id: item.problemId,
                   detail: [
-                    t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`),
+                    level ? t(`第 ${level}/${steps} 次复习`, `Review ${level} of ${steps}`) : t('重学', 'Relearn'),
+                    ...(leech ? [t('顽固题', 'Leech')] : []),
                     ...helped(item),
                     late > 0
                       ? t(`逾期 ${late} 天`, `${late} day${late > 1 ? 's' : ''} overdue`)
@@ -600,8 +639,8 @@ export function MyProgress({
                 };
               }),
               [
-                '今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你；借助提示通过的题会先在 1 天后多复习一次。',
-                'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first.',
+                '今天没有到期的复习。通过的题按 3、7、21、60 天的间隔回来，借助提示通过的题先在 1 天后多复习一次。复习通过后自评：「重来」明天再做，「困难」间隔不变，「良好」进入下一档，「简单」跳一档，不评按「良好」算。',
+                'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days; ones solved with help come back after a day first. Grade each review AC: Again brings it back tomorrow, Hard keeps the wait, Good moves a step, Easy skips one, and no grade counts as Good.',
               ],
             )}
           <RecallQueue recall={recall} signedIn={!!boot.person} navigate={navigate} english={english} />
@@ -629,7 +668,11 @@ export function MyProgress({
   function notesPanel() {
     const page = notePage!;
     const ids = page.items.flatMap((n) => problemOf(n.target) ?? n.problemId ?? []);
-    const updated = (n: Note) => t(`笔记 ${date(n.updatedAt)} 更新`, `Note updated ${date(n.updatedAt)}`);
+    const updated = (n: Note) =>
+      [
+        t(`笔记 ${date(n.updatedAt)} 更新`, `Note updated ${date(n.updatedAt)}`),
+        ...(n.confidence ? [t(`把握度 ${n.confidence}`, `Confidence ${n.confidence}`)] : []),
+      ].join(' · ');
     const rows = page.items.map((n) => {
       const snippet = highlight(n.snippet, words);
       const id = problemOf(n.target) ?? n.problemId;
@@ -644,21 +687,33 @@ export function MyProgress({
           { snippet, key: n.target, ...(n.problemId ? { tab: 'history' } : {}) },
         );
       }
-      // A written answer (content:<type>/<slug>), or a note whose submission is gone.
+      // A written answer (content:<type>/<slug>), a stop's pattern notes (topic:<slug>), or a note
+      // whose submission is gone.
       const content = /^content:(\w+)\/(.+)$/.exec(n.target);
-      const name = n.title ? (english ? n.title.title : (n.title.titleZh ?? n.title.title)) : content?.[2] ?? t('提交笔记', 'Submission note');
+      const topic = n.target.startsWith('topic:') ? n.target.slice(6) : null;
+      const name = n.title
+        ? (english ? n.title.title : (n.title.titleZh ?? n.title.title))
+        : content?.[2] ?? (topic ? (STOP_NAMES[topic] ? t(...STOP_NAMES[topic]) : topic) : t('提交笔记', 'Submission note'));
       const main = (
         <span className="study-row-main">
           <strong>{name}</strong>
           <span className="study-row-secondary progress-detail">
-            {[content ? t('题库作答', 'Written answer') : t('提交已删除', 'Submission removed'), updated(n)].join(' · ')}
+            {[
+              content ? t('题库作答', 'Written answer') : topic ? t('套路笔记', 'Pattern notes') : t('提交已删除', 'Submission removed'),
+              updated(n),
+            ].join(' · ')}
           </span>
           <span className="progress-snippet">{snippet}</span>
         </span>
       );
       return (
         <li key={n.target}>
-          {content ? (
+          {topic ? (
+            // ponytail: topicPath by hand; its module carries 160 KB of templates.
+            <a className="study-row progress-row" href={`/topics/${topic}`}>
+              {main}
+            </a>
+          ) : content ? (
             <a
               className="study-row progress-row"
               href={`/?${new URLSearchParams({ view: 'content', type: content[1], slug: content[2] })}`}
@@ -688,6 +743,7 @@ export function MyProgress({
               placeholder={t('笔记里的词，空格分隔', 'Words in your notes')}
             />
           </label>
+          <NoteTagChips english={english} tag={noteTag} conf={noteConf} onTag={setNoteTag} onConf={setNoteConf} />
           <output className="progress-filter-count">
             {t(`${page.total} 条笔记`, `${page.total} note${page.total === 1 ? '' : 's'}`)}
           </output>
@@ -704,7 +760,9 @@ export function MyProgress({
             [],
             words.length
               ? ['没有笔记同时包含这些词。', 'No note has all of these words.']
-              : ['在题目页的「笔记」标签写下思路，题目会出现在这里。', 'Write in a problem’s Notes tab and it shows up here.'],
+              : noteTag || noteConf
+                ? ['这一页没有符合筛选的笔记。', 'No note on this page matches the filter.']
+                : ['在题目页的「笔记」标签写下思路，题目会出现在这里。', 'Write in a problem’s Notes tab and it shows up here.'],
           )
         )}
         {page.nextCursor && (
@@ -818,7 +876,7 @@ export function MyProgress({
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
       {boot.person && <InterviewCalibration english={english} />}
       {boot.person && <FollowBoard english={english} />}
-      {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
+      {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} problems={boot.problems} />}
     </section>
   );
 }
