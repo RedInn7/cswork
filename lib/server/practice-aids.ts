@@ -96,10 +96,10 @@ const FAILED = ['wrong_answer', 'compile_error', 'time_limit', 'memory_limit', '
 /** Both sides of one stress test finished and every case agreed, as components/stress-result.tsx shows it. */
 function stressAgreed(userId: string, problemId: string, mineId: string, referenceId: string) {
   const db = sqlite();
-  type Row = Pick<SubmissionRow, 'mode' | 'status' | 'custom_input' | 'problem_version_id'>;
+  type Row = Pick<SubmissionRow, 'mode' | 'status' | 'custom_input' | 'problem_version_id' | 'problem_id'>;
   const row = (sid: string) =>
     db
-      .prepare('SELECT mode,status,custom_input,problem_version_id FROM submissions WHERE id=? AND user_id=? AND problem_id=?')
+      .prepare('SELECT mode,status,custom_input,problem_version_id,problem_id FROM submissions WHERE id=? AND user_id=? AND problem_id=?')
       .get(sid, userId, problemId) as Row | undefined;
   const mine = row(mineId);
   const reference = row(referenceId);
