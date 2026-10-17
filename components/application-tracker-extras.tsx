@@ -413,6 +413,9 @@ export function RetroPanel({
     themes: [],
   });
   const [draft, setDraft] = useState(fresh);
+  const isLp = (id: string) => COMPETENCIES.find((c) => c.id === id)?.lp;
+  // Its own state: tied to the picked themes it would snap shut (and hide the focused box) on unchecking the last one.
+  const [lpOpen, setLpOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ text: string; review: boolean } | null>(null);
   const [error, setError] = useState('');
@@ -424,6 +427,7 @@ export function RetroPanel({
     set({ questions: draft.questions.map((q, j) => (j === k ? { ...q, ...patch } : q)) });
   const edit = (next: Draft) => {
     setDraft(next);
+    if (next.themes.some(isLp)) setLpOpen(true);
     setNote(null);
     setError('');
     formRef.current?.querySelector('select')?.focus();
@@ -597,7 +601,7 @@ export function RetroPanel({
             <small>{t('最多 8 个；还没有故事的，故事库会提醒你补上', 'up to 8; the story bank lists the ones you have no story for')}</small>
           </legend>
           <div>{COMPETENCIES.filter((c) => !c.lp).map(theme)}</div>
-          <details open={draft.themes.some((id) => COMPETENCIES.find((c) => c.id === id)?.lp)}>
+          <details open={lpOpen} onToggle={(e) => setLpOpen(e.currentTarget.open)}>
             <summary>Amazon Leadership Principles</summary>
             <div>{COMPETENCIES.filter((c) => c.lp).map(theme)}</div>
           </details>

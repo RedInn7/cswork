@@ -343,13 +343,15 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   };
   async function move(a: Application, stage: Stage) {
     const item = await update(a, { stage });
-    // Moved on from a phone screen or onsite: that round's retro, unless one was written since the
-    // card got there (a retro's note id is its creation time in base 36).
+    // Moved on from a phone screen or onsite (not withdrawn: a booked round may never have happened):
+    // that round's retro, unless one was written since the card got there (a retro's note id is its
+    // creation time in base 36).
     const from = a.stage;
     if (
       item &&
       (from === 'phone' || from === 'onsite') &&
       STAGES.indexOf(stage) > STAGES.indexOf(from) &&
+      stage !== 'withdrawn' &&
       !retros.some((r) => r.card === a.id && parseInt(r.target.slice(r.target.indexOf('/') + 1), 36) >= stageSince(a))
     )
       openRetro(a.id, from);
@@ -643,8 +645,10 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                     const quiet = stale(a, now) ? Math.floor((now - stageSince(a)) / DAY) : 0;
                     const interviewed = a.interviewAt !== null && a.interviewAt < now;
                     const rounds = retros.filter((r) => r.card === a.id);
-                    // A retro's time is to the minute (datetime-local), the interview's may not be.
-                    const retroDue = interviewed && a.stage !== 'withdrawn' && !rounds.some((r) => r.at + 60000 > a.interviewAt!);
+                    // Only while it is fresh (older ones keep the Retros button). A retro's time is to the
+                    // minute (datetime-local), the interview's may not be.
+                    const retroDue =
+                      interviewed && now - a.interviewAt! < 14 * DAY && a.stage !== 'withdrawn' && !rounds.some((r) => r.at + 60000 > a.interviewAt!);
                     const retroable = rounds.length > 0 || INTERVIEWED.includes(a.stage) || a.stageLog.some(([s]) => INTERVIEWED.includes(s));
                     return (
                       <li key={a.id} className="tracker-card" data-id={a.id} data-due={soon ? 'soon' : undefined}>

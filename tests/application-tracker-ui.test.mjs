@@ -376,6 +376,8 @@ test('wave 10: tiers order the Saved column, warm-up hints, and private intervie
     card({ id: 's4', company: 'Targetco', tier: 'target', stage: 'saved' }),
     card({ id: CARD, company: 'Acme', stage: 'onsite', interviewAt: met, stageLog: [['phone', now - 30 * DAY], ['onsite', now - 10 * DAY]] }),
     card({ id: 'ph', company: 'Phoneco', stage: 'phone', stageLog: [['phone', now - DAY]] }),
+    card({ id: 'wd', company: 'Dropco', stage: 'phone', stageLog: [['phone', now - DAY]] }),
+    card({ id: 'old', company: 'Oldco', stage: 'rejected', interviewAt: now - 30 * DAY, stageLog: [['onsite', now - 40 * DAY], ['rejected', now - 25 * DAY]] }),
   );
   const earlier = { company: 'Acme', stage: 'phone', at: now - 20 * DAY, score: 2, questions: [{ text: 'LRU', problem: 'lc-146', similar: false }], stuck: 'eviction', themes: [] };
   const notes = [{ target: `retro:${CARD}/k1`, body: JSON.stringify(earlier), updatedAt: 1 }, { target: 'retro:junk', body: '{}', updatedAt: 1 }];
@@ -411,6 +413,9 @@ test('wave 10: tiers order the Saved column, warm-up hints, and private intervie
   assert.equal(acme().querySelector('[data-retro]').textContent, '复盘 (1) Acme');
   assert.equal(document.querySelector('[data-id="dream"] [data-retro]'), null);
   assert.match(acme().querySelector('.tracker-hint').textContent, /^面试已经结束/);
+  // A month-old interview keeps its Retros button but gets no nudge.
+  assert.equal(document.querySelector('[data-id="old"] .tracker-hint'), null);
+  assert.ok(document.querySelector('[data-id="old"] [data-retro]'));
   await act(async () => acme().querySelector('.tracker-hint button').click());
   const panel = document.querySelector('form.tracker-retro');
   assert.equal(document.activeElement, panel.querySelector('select'));
@@ -424,6 +429,15 @@ test('wave 10: tiers order the Saved column, warm-up hints, and private intervie
   await setValue(text, 'Design a rate limiter');
   await setValue(problem, 'lc-1');
   await act(async () => panel.querySelector('.tracker-retro-qs li input[type="checkbox"]').click());
+  // The Leadership Principles section stays open when its last box is unchecked.
+  const lp = panel.querySelector('.tracker-retro-themes details');
+  assert.equal(lp.open, false);
+  lp.open = true;
+  await act(async () => lp.dispatchEvent(new Event('toggle')));
+  const lpBox = lp.querySelector('input');
+  await act(async () => lpBox.click());
+  await act(async () => lpBox.click());
+  assert.equal(lp.open, true);
   const theme = [...panel.querySelectorAll('.tracker-retro-themes label')].find((l) => l.textContent === '失败与犯错');
   await act(async () => theme.querySelector('input').click());
   await setValue(panel.querySelector('textarea'), ' ran out of time ');
@@ -453,9 +467,11 @@ test('wave 10: tiers order the Saved column, warm-up hints, and private intervie
   assert.match(opened.querySelector('legend').textContent, /Phoneco$/);
   assert.equal(opened.querySelector('select').value, 'phone');
   assert.equal(document.activeElement, opened.querySelector('select'));
-  // Moving back to an earlier stage opens nothing.
+  // Moving back to an earlier stage opens nothing, nor does withdrawing.
   await act(async () => [...opened.querySelectorAll('.resume-actions button')].find((b) => b.textContent === '关闭').click());
   await setValue(document.querySelector('[data-id="ph"] select'), 'oa', 'change');
+  assert.equal(document.querySelector('form.tracker-retro'), null);
+  await setValue(document.querySelector('[data-id="wd"] select'), 'withdrawn', 'change');
   assert.equal(document.querySelector('form.tracker-retro'), null);
 
   // A round is deleted by emptying its note.
