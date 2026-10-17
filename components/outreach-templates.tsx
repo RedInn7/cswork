@@ -126,6 +126,8 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
             <a href="/career/offers">
               {t('先在 offer 对比里算清几份 offer 的四年总额 →', 'Compare your offers’ four-year totals first →')}
             </a>
+            {' '}
+            <a href="/career/negotiation">{t('发之前先对练一遍 →', 'Rehearse the conversation first →')}</a>
           </>
         )}
       </p>
