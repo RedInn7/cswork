@@ -102,6 +102,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { useWhiteboard, WhiteboardPad, WhiteboardResult, WhiteboardToggle } from './whiteboard-mode';
 import { DebugButton } from './python-debugger-button';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
@@ -651,7 +652,10 @@ function Workspace({
   const [solutionsLanguage, setSolutionsLanguage] = useState('');
   const prose = useRef<HTMLDivElement>(null);
   // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
-  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language);
+  // Whiteboard mode: no run, completion, help or AI, one submission (components/whiteboard-mode.tsx).
+  const wb = useWhiteboard(problem.id, !!boot.person, submission, !examMode && drillN === null && !isTrackLanguage(language));
+  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language) && !wb.on;
+  const editorStatus = wb.on ? t('白板模式：纯文本，没有补全和报错提示', 'Whiteboard: plain text, no completion or error marks') : intelligenceText;
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
   // A running mock OA or contest run records this question for the report's or the room's code
   // replay (this browser only).
@@ -1449,7 +1453,8 @@ function Workspace({
     }
   }
   async function submit(mode: 'run' | 'judge') {
-    if (disabled || busyRef.current) return;
+    // Whiteboard mode never runs, Ctrl / ⌘ + Enter included.
+    if (disabled || busyRef.current || (mode === 'run' && wb.on)) return;
     if (
       mode === 'run' &&
       inputMode === 'custom' &&
@@ -1527,6 +1532,7 @@ function Workspace({
         (result) => {
           if (!alive.current || controller.signal.aborted) return;
           idempotency.current = null;
+          wb.submitted(result.id);
           feedbackTiming.current?.bind(result.id);
           track('judge_submit', {
             mode: judgeMode(mode),
@@ -1730,7 +1736,7 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {(problem.id.startsWith('oa-') || problem.lingEditorialVerified != null) && !examMode && (
+        {(problem.id.startsWith('oa-') || problem.lingEditorialVerified != null) && !examMode && !wb.on && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1741,7 +1747,7 @@ function Workspace({
             {uiEnglish ? 'Editorial' : '官方题解'}
           </button>
         )}
-        {boot.person && communityProblem(problem.id) && !examMode && (
+        {boot.person && communityProblem(problem.id) && !examMode && !wb.on && (
           <SolutionsTab active={leftTab === 'solutions'} onSelect={() => setLeftTab('solutions')} english={uiEnglish} />
         )}
       </div>
@@ -1854,7 +1860,7 @@ function Workspace({
                   {uiEnglish ? 'Topics' : '主题'}
                 </button>
               )}
-              {!examMode && !sourceBody && !problem.oaHints && statement.hints.length > 0 && (
+              {!examMode && !wb.on && !sourceBody && !problem.oaHints && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
                   aria-expanded={hintsOpen}
@@ -1981,7 +1987,7 @@ function Workspace({
                 </>
               )}
             </div>
-            {!examMode && !sourceBody && !problem.oaHints && hintsOpen && statement.hints.length > 0 && (
+            {!examMode && !wb.on && !sourceBody && !problem.oaHints && hintsOpen && statement.hints.length > 0 && (
               <div className="cs-hints" id="problem-hints">
                 <div>
                   <Lightbulb size={17} />
@@ -2012,7 +2018,7 @@ function Workspace({
                 </button>
               </div>
             )}
-            {problem.curatedHint && !examMode && (
+            {problem.curatedHint && !examMode && !wb.on && (
               <section
                 className="cs-route-hint"
                 data-lit={routeHint === 'locked' ? undefined : ''}
@@ -2077,7 +2083,7 @@ function Workspace({
                 </div>
               </section>
             )}
-            {problem.lingHints && !examMode && (
+            {problem.lingHints && !examMode && !wb.on && (
               <HintLadder
                 problemId={problem.id}
                 userId={userId}
@@ -2088,7 +2094,7 @@ function Workspace({
               />
             )}
             {/* An OA guide's ladder; the server dropped the package's own hints for it. */}
-            {problem.oaHints && !examMode && (
+            {problem.oaHints && !examMode && !wb.on && (
               <HintLadder
                 problemId={problem.id}
                 userId={userId}
@@ -2246,6 +2252,7 @@ function Workspace({
           <Button
             ref={runButton}
             variant="ghost"
+            hidden={wb.on}
             disabled={
               disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
             }
@@ -2286,7 +2293,7 @@ function Workspace({
             <select
               aria-label={t('提交模式', 'Submission mode')}
               value={codingMode}
-              disabled={!ready}
+              disabled={!ready || wb.on}
               onChange={(event) =>
                 switchLanguage(
                   language,
@@ -2304,6 +2311,8 @@ function Workspace({
           <select
             aria-label={t('编程语言', 'Programming language')}
             value={language}
+            // Whiteboard mode keeps its language: another one's draft would come in unwritten.
+            disabled={wb.on}
             onChange={(event) => switchLanguage(event.target.value as Language)}
           >
             {languageUnavailable && (
@@ -2412,6 +2421,7 @@ function Workspace({
               'Autocomplete is on by default; click to trigger it (Ctrl + Space)',
             )}
             className="cs-suggest-trigger"
+            hidden={wb.on}
             onClick={() => suggest.current?.()}
           >
             {t('触发补全', 'Autocomplete')}
@@ -2423,6 +2433,7 @@ function Workspace({
                 'Format the code with the language service (Shift + Alt + F)',
               )}
               className="cs-suggest-trigger"
+              hidden={wb.on}
               disabled={!ready || intelligence.state === 'unavailable'}
               onClick={() => format.current?.()}
             >
@@ -2472,6 +2483,17 @@ function Workspace({
           )}
         </output>
       )}
+      <WhiteboardResult
+        wb={wb}
+        onRestore={(previous) =>
+          setReplaceRequest({
+            language,
+            codingMode,
+            code: previous,
+            title: t('恢复进入白板模式前的代码？', 'Restore the code from before whiteboard mode?'),
+          })
+        }
+      />
       {restored && (
         <output className="cs-draft-restored">
           <span>
@@ -2502,7 +2524,9 @@ function Workspace({
             <div className="cs-code-area">
               {ready ? (
                 <CodeEditor
-                  key={`${codingMode}:${language}`}
+                  // A new editor and model (path) for whiteboard mode: plain text, no old markers.
+                  key={`${codingMode}:${language}:${wb.on}`}
+                  bare={wb.on}
                   value={code}
                   language={language}
                   problemId={problem.id}
@@ -2514,7 +2538,7 @@ function Workspace({
                     format.current = action;
                   }}
                   onChange={updateCode}
-                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}
+                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}${wb.on ? '/wb' : ''}`}
                   settings={settings}
                   onRun={() => submit('run')}
                   onSubmit={() => submit('judge')}
@@ -2530,10 +2554,10 @@ function Workspace({
             <div className="cs-editor-status">
               <span
                 role="status"
-                title={intelligenceText}
+                title={editorStatus}
                 className={`cs-intelligence-status ${intelligence.state === 'unavailable' ? 'cs-unsaved' : ''}`}
               >
-                {intelligenceText}
+                {editorStatus}
               </span>
               <span className={saveError ? 'cs-unsaved' : ''}>
                 <i />
@@ -2632,7 +2656,9 @@ function Workspace({
               {maxButton('console')}
             </div>
             <div className="cs-console-scroll" hidden={consoleCollapsed}>
-              {bottomTab === 'input' ? (
+              {wb.on ? (
+                <WhiteboardPad userId={boot.person ? userId : null} problemId={problem.id} />
+              ) : bottomTab === 'input' ? (
                 <>
                   <div className="cs-input-toolbar">
                     <div className="cs-segmented">
@@ -2943,6 +2969,7 @@ function Workspace({
                           language={language}
                           checker={problem.checker}
                           onAdd={(input) => addCase(input)}
+                          solved={solvedThisRound}
                         />
                       )}
                     </>
@@ -3129,6 +3156,18 @@ function Workspace({
               {shuffling ? <LoaderCircle size={15} className="cs-spin" /> : <Shuffle size={15} />}
               <span>{t('随机一题', 'Random')}</span>
             </button>
+          )}
+          {wb.available && (
+            <WhiteboardToggle
+              wb={wb}
+              onEnter={() => {
+                // From the template: a draft already run or accepted is no whiteboard attempt.
+                const template = templateFor(language, codingMode);
+                wb.enter(code === template ? null : code);
+                updateCode(template);
+                setLeftTab((tab) => (tab === 'editorial' || tab === 'solutions' ? 'statement' : tab));
+              }}
+            />
           )}
           <button
             className="cs-top-button"

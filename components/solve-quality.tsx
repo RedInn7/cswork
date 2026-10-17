@@ -33,6 +33,17 @@ export function SolveQuality({
           {t(' · 一次通过率 ', ' · First-try AC ')}
           <b>{pct(q.firstTry)}</b>
         </p>
+        {(q.wbTried > 0 || q.brute > 0) && (
+          <p>
+            {q.wbTried > 0 &&
+              t(
+                `白板一次通过率 ${Math.round((q.wbPassed / q.wbTried) * 100)}%（${q.wbPassed}/${q.wbTried}）`,
+                `Whiteboard first-try pass rate ${Math.round((q.wbPassed / q.wbTried) * 100)}% (${q.wbPassed} of ${q.wbTried})`,
+              )}
+            {q.wbTried > 0 && q.brute > 0 && ' · '}
+            {q.brute > 0 && t(`AC 前先过对拍：${q.brute} 题`, `Stress-tested before AC: ${q.brute}`)}
+          </p>
+        )}
         {q.medians.length > 0 && (
           <p>
             {t('首次通过用时中位数（面试预算）：', 'Median first-solve time (interview budget): ')}

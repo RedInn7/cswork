@@ -314,4 +314,13 @@ test('solve quality flags over budget on the minutes it shows', async () => {
   // A median of 1501s shows as 25 min against 25: not over. 1531s shows as 26: over.
   assert.match(text([solved('a', 1000), solved('b', 2002)]), /Medium 25 min \(25\)(?!, over budget)/);
   assert.match(text([solved('a', 1531)]), /Medium 26 min \(25\), over budget/);
+  // Whiteboard and stress lines only once there is something to count.
+  assert.doesNotMatch(text([solved('a', 600)]), /Whiteboard|Stress-tested/);
+  const modes = [
+    { ...solved('a', 600), whiteboard: 1, brute: true },
+    { ...solved('b', 600), whiteboard: 0 },
+    { ...solved('c', 600), brute: true },
+  ];
+  assert.match(text(modes), /Whiteboard first-try pass rate 50% \(1 of 2\) · Stress-tested before AC: 2/);
+  assert.match(text([{ ...solved('a', 600), whiteboard: 1 }]), /Whiteboard first-try pass rate 100% \(1 of 1\)(?! ·)/);
 });
