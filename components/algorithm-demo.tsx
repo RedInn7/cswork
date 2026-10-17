@@ -8,9 +8,11 @@ import {
   isDemoKind,
   type DemoCell,
   type DemoGraph,
-  type DemoKind,
+  type DemoInput,
+  type DemoTrace,
   type Pair,
 } from '@/lib/algorithm-demo';
+import { createSimTrace, isSimKind, simInputs } from '@/lib/cs-sims';
 import { useLocale, useT } from '@/lib/i18n';
 
 // No CSS import here, so pure node tests can render pages that embed a demo:
@@ -18,23 +20,32 @@ import { useLocale, useT } from '@/lib/i18n';
 
 export function AlgorithmDemo({ kind }: { kind: string }) {
   const t = useT();
-  if (!isDemoKind(kind))
-    return (
-      <p>
-        {t(
-          '该动画暂不可用，请参考本节的图示与例题。',
-          'This animation is unavailable. See the diagrams and examples in this lesson.',
-        )}
-      </p>
-    );
-  return <DemoPlayer key={kind} kind={kind} />;
+  // Algorithm demos and the OS / network simulators (lib/cs-sims.ts) share one player.
+  if (isDemoKind(kind))
+    return <DemoPlayer key={kind} create={(english, args) => createDemoTrace(kind, english, args)} custom={demoInputs[kind]} />;
+  if (isSimKind(kind))
+    return <DemoPlayer key={kind} create={(english, args) => createSimTrace(kind, english, args)} custom={simInputs[kind]} />;
+  return (
+    <p>
+      {t(
+        '该动画暂不可用，请参考本节的图示与例题。',
+        'This animation is unavailable. See the diagrams and examples in this lesson.',
+      )}
+    </p>
+  );
 }
-function DemoPlayer({ kind }: { kind: DemoKind }) {
+function DemoPlayer({
+  create,
+  custom,
+}: {
+  create: (english: boolean, args?: readonly unknown[]) => DemoTrace;
+  custom?: DemoInput;
+}) {
   const t = useT(),
     english = useLocale() === 'en';
-  const custom = demoInputs[kind];
   const [args, setArgs] = useState<unknown[] | null>(null);
-  const trace = useMemo(() => createDemoTrace(kind, english, args ?? undefined), [kind, english, args]);
+  // ponytail: `create` is a new closure on each parent render, so the trace is rebuilt then too; it is cheap.
+  const trace = useMemo(() => create(english, args ?? undefined), [create, english, args]);
   const [step, setStep] = useState(0),
     [playing, setPlaying] = useState(false),
     [speed, setSpeed] = useState(1200);
@@ -381,15 +392,17 @@ export function DemoGraphView({
         : state === 'visited'
           ? t('，已处理', ', done')
           : '';
+  // A bare dot (no label, no note: a cwnd point, a lifeline step) is left out of what a screen reader hears.
+  const named = (n: DemoGraph['nodes'][number]) => Boolean(n.label || n.note);
   const name = (n: DemoGraph['nodes'][number]) =>
-    `${n.label || n.note || n.id}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`;
+    `${n.label || n.note}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`;
   return (
     <svg
       className="algorithm-demo-graph"
       viewBox={`0 0 ${graph.width} ${graph.height}`}
       // Predict mode: the nodes become buttons, which an img role would hide.
       role={onPick ? 'group' : 'img'}
-      aria-label={onPick ? t('图：点出下一步的节点', 'Graph: click the next node') : t('图：', 'Graph: ') + graph.nodes.map(name).join(t('；', '; '))}
+      aria-label={onPick ? t('图：点出下一步的节点', 'Graph: click the next node') : t('图：', 'Graph: ') + graph.nodes.filter(named).map(name).join(t('；', '; '))}
     >
       {graph.edges.map((e) => {
         const a = at.get(e.from)!,
@@ -422,7 +435,7 @@ export function DemoGraphView({
         <g
           key={n.id}
           className={`algorithm-demo-node ${n.state ? `is-${n.state}` : ''}`}
-          {...(onPick ? {
+          {...(onPick && named(n) ? {
             role: 'button',
             tabIndex: 0,
             'aria-label': name(n),

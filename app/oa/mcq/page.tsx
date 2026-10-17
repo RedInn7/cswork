@@ -60,7 +60,15 @@ export default async function OaMcqPage({ searchParams }: Props) {
           {zh ? 'OA 选择题 · 即时判分' : 'OA MULTIPLE CHOICE · INSTANT FEEDBACK'}
         </p>
         <h1>{zh ? 'OA 里的选择题，先在这里练。' : 'Practise the multiple-choice part of the OA.'}</h1>
-        <p>{lead}</p>
+        <p>
+          {lead}
+          {zh ? '' : ' '}
+          {zh ? 'CPU 调度、页面置换、TCP 和拥塞控制的计算题，可以用' : 'For scheduling, page replacement, TCP and congestion arithmetic, step through it in the '}
+          <Link href="/oa/sims" prefetch={false}>
+            {zh ? '操作系统与网络模拟器' : 'OS and networking simulators'}
+          </Link>
+          {zh ? '逐步核对。' : '.'}
+        </p>
       </div>
       <McqPractice items={items} zh={zh} sd={sd} initial={initial} />
     </>

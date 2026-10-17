@@ -135,6 +135,8 @@ jobs:
       # Frontend JS track: every solution passes and every starter fails in the browser's harness, then the sandbox runner.
       - run: node --import tsx --test tests/js-harness.test.ts tests/frontend-js-content.test.ts tests/js-runner-ui.test.mjs
       - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs tests/estimation-drill.test.mjs
+      # OS and networking simulators (/oa/sims): textbook answers, brute-force cross-checks, RFC 793 transitions.
+      - run: node --import tsx --test tests/cs-sims.test.ts
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/job-openings.test.ts tests/job-openings-ui.test.mjs tests/applications.test.ts tests/application-tracker-ui.test.mjs tests/job-tags.test.ts tests/job-calendar-ui.test.mjs
       - run: node --import tsx --test tests/jd-readiness.test.ts tests/jd-readiness-ui.test.mjs tests/jd-keywords.test.ts tests/resume-check.test.ts tests/resume-parse.test.ts
       - run: node --import tsx --test tests/offer-math.test.ts tests/offer-compare-ui.test.mjs

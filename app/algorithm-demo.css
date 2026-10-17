@@ -409,6 +409,15 @@
 .algorithm-demo .algorithm-demo-node.is-blocked text {
   fill: #9b2c2c;
 }
+/* Simulators (lib/cs-sims.ts): a lost TCP segment. */
+.algorithm-demo .algorithm-demo-edge.is-blocked line {
+  stroke: #c24b4b;
+  stroke-width: 0.9;
+  stroke-dasharray: 1.6 1;
+}
+.algorithm-demo .algorithm-demo-edge.is-blocked polygon {
+  fill: #c24b4b;
+}
 @media (prefers-reduced-motion: reduce) {
   .algorithm-demo :is(.algorithm-demo-edge line, .algorithm-demo-edge polygon, .algorithm-demo-node circle) {
     transition: none;
@@ -723,6 +732,12 @@
   .dark .algorithm-demo .algorithm-demo-node.is-blocked circle {
     fill: #180f0f;
     stroke: #c24b4b;
+  }
+  .dark .algorithm-demo .algorithm-demo-edge.is-blocked line {
+    stroke: #c24b4b;
+  }
+  .dark .algorithm-demo .algorithm-demo-edge.is-blocked polygon {
+    fill: #c24b4b;
   }
   .dark .algorithm-demo .algorithm-demo-input summary {
     color: #a5c4fd;
