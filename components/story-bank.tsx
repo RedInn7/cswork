@@ -3,8 +3,9 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { BookUser, Download, ExternalLink, Plus, Trash2, X } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale, useT } from '@/lib/i18n';
+import { retroList } from '@/lib/applications';
 import {
-  COMPETENCIES, STAR, STAR_NAMES, assignStory, blankStory, competenciesFor, competencyName, keepLinks, parseStory,
+  COMPETENCIES, STAR, STAR_NAMES, assignStory, blankStory, competenciesFor, competencyName, keepLinks, missingThemes, parseStory,
   rankStories, speakingSeconds, storiesMarkdown, storyBody, storyTarget, wordCount,
   type Story, type StoryQuestion,
 } from '@/lib/story-bank';
@@ -195,7 +196,20 @@ export function StoryBank({ userId }: { userId: string }) {
   const unsaved = useRef(false);
   const discard = () =>
     !unsaved.current || confirm(t('有没保存的修改，确定放弃吗？', 'You have unsaved changes. Discard them?'));
+  // The application tracker's interview retros: themes asked there that no story covers yet.
+  const [retros, setRetros] = useState<ReturnType<typeof retroList>>([]);
+  useEffect(() => {
+    let live = true;
+    api<{ items?: unknown }>('oj/notes?prefix=retro%3A').then(
+      (r) => live && setRetros(retroList(r.items)),
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, []);
   const stories = bank.stories;
+  const missing = stories ? missingThemes(retros, stories) : [];
   const covered = new Set(stories?.flatMap((s) => s.competencies));
   const lps = COMPETENCIES.filter((c) => c.lp);
   function exportMarkdown() {
@@ -250,6 +264,30 @@ export function StoryBank({ userId }: { userId: string }) {
                 <li key={c.id} data-on={covered.has(c.id) || undefined}>
                   {c.name[english ? 1 : 0]}
                   <span className="sr-only">{covered.has(c.id) ? t('（已覆盖）', ' (covered)') : t('（未覆盖）', ' (not covered)')}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {missing.length > 0 && (
+          <section className="ip-missing rd-reveal" style={{ '--i': 1 } as React.CSSProperties} aria-labelledby="ip-missing-h">
+            <h2 id="ip-missing-h">{t('面试里被问到、还没有故事', 'Asked in interviews, no story yet')}</h2>
+            <p className="ip-muted">
+              {t(
+                '来自投递看板里的面试复盘。给故事标上这个能力项，它就会从这里消失。',
+                'From the interview retros on your application tracker. Tag a story with the theme and it leaves this list.',
+              )}
+            </p>
+            <ul>
+              {missing.map((m) => (
+                <li key={m.id}>
+                  <span className="rd-badge">{competencyName(m.id, english)}</span>
+                  {m.companies.length > 0 && <span className="ip-muted">{m.companies.join(english ? ', ' : '、')}</span>}
+                  <button type="button" className="rd-button is-quiet" onClick={() => open({ ...blankStory(), competencies: [m.id] })}>
+                    {t('写一个', 'Write one')}
+                    <span className="sr-only"> {competencyName(m.id, english)}</span>
+                  </button>
                 </li>
               ))}
             </ul>

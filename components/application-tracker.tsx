@@ -16,19 +16,22 @@ import {
   oaOpen,
   offerOpen,
   REFERRAL_STATUS,
+  retroList,
   stageDays,
   stageSince,
   stale,
   STAGE_NAMES,
   STAGES,
+  TIERS,
   tomorrowMorning,
   writeUpHref,
   type Application,
+  type RetroEntry,
   type Stage,
 } from '@/lib/applications';
 import { SOURCES } from '@/lib/experience';
 import { api } from '@/lib/types';
-import { SchedulePanel, TrackerStats } from './application-tracker-extras';
+import { RetroPanel, SchedulePanel, TrackerStats, WarmupHints } from './application-tracker-extras';
 
 const ADD = '.tracker [data-add]';
 const KEPT_ADD = 'cswork:tracker:add';
@@ -64,6 +67,7 @@ type Form = {
   nextAction: string;
   next: string;
   resume: string;
+  tier: string;
   /** null while a saved job description loads (it is not in the list). */
   jd: string | null;
 };
@@ -84,11 +88,15 @@ const toForm = (a?: Application): Form => ({
   nextAction: a?.nextAction ?? '',
   next: localStamp(a?.nextAt ?? null).replace(' ', 'T'),
   resume: a?.resumeVersion ?? '',
+  tier: a?.tier ?? '',
   jd: a?.hasJd ? null : '',
 });
 // Input values are local times; a bare date would parse as UTC, so it gets a local midnight.
 const fromInput = (value: string) => (value ? new Date(value.includes('T') ? value : `${value}T00:00`).getTime() : null);
 const SOON = 48 * 3600000;
+/** The Saved column puts practice companies first and dream ones last: interview where it matters least first. */
+const TIER_ORDER: Record<string, number> = { practice: 0, target: 1, '': 2, dream: 3 };
+const INTERVIEWED: readonly Stage[] = ['phone', 'onsite'];
 
 function download(name: string, type: string, text: string) {
   try {
@@ -175,6 +183,9 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const [now, setNow] = useState(() => Date.now());
   // A selector to focus once the board has re-rendered: the moved card's select, or a closed form's opener.
   const [refocus, setRefocus] = useState<string | null>(null);
+  // Interview retros (user notes retro:<card id>/<time>), and the card whose retro panel is open.
+  const [retros, setRetros] = useState<RetroEntry[]>([]);
+  const [retroFor, setRetroFor] = useState<{ id: string; stage?: 'phone' | 'onsite' } | null>(null);
   // The browser's saved resume versions, for the form's suggestions (the board only renders client-side).
   const [versions] = useState<string[]>(() => {
     try {
@@ -216,6 +227,10 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     api<{ items: Application[] }>('oj/applications').then(
       (r) => live && setItems(r.items),
       (e: unknown) => live && (setItems([]), setError(e instanceof Error ? e.message : String(e))),
+    );
+    api<{ items?: unknown }>('oj/notes?prefix=retro%3A').then(
+      (r) => live && setRetros(retroList(r.items)),
+      () => {},
     );
     // Name suggestions: the companies with a company page.
     api<{ items: { slug: string; name: string }[] }>('oj/reports/companies').then(
@@ -300,6 +315,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
       nextAction: form.nextAction,
       nextAt: fromInput(form.next),
       resumeVersion: form.resume,
+      tier: form.tier,
       // Still loading: leave the saved description as it is.
       ...(form.jd !== null && { jdText: form.jd }),
     });
@@ -313,14 +329,31 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     // The select stays enabled (disabling it would drop focus); one change at a time.
     if (busy) return;
     const item = (await send(`oj/applications/${a.id}`, body))?.item;
-    if (!item) return;
+    if (!item) return null;
     put(item);
     // An open edit form for this card would otherwise save the old values back.
     setForm((f) => (f && f.id === item.id ? { ...f, stage: item.stage, nextAction: item.nextAction, next: toForm(item).next } : f));
     // A moved card is rendered in another column, a used hint button is gone: the card's stage select takes the focus.
     setRefocus(`[data-id="${item.id}"] select`);
+    return item;
   }
-  const move = (a: Application, stage: Stage) => update(a, { stage });
+  const openRetro = (id: string, stage?: 'phone' | 'onsite') => {
+    setRetroFor({ id, stage });
+    setRefocus('.tracker-retro select');
+  };
+  async function move(a: Application, stage: Stage) {
+    const item = await update(a, { stage });
+    // Moved on from a phone screen or onsite: that round's retro, unless one was written since the
+    // card got there (a retro's note id is its creation time in base 36).
+    const from = a.stage;
+    if (
+      item &&
+      (from === 'phone' || from === 'onsite') &&
+      STAGES.indexOf(stage) > STAGES.indexOf(from) &&
+      !retros.some((r) => r.card === a.id && parseInt(r.target.slice(r.target.indexOf('/') + 1), 36) >= stageSince(a))
+    )
+      openRetro(a.id, from);
+  }
   async function remove(id: string) {
     if (!window.confirm(t('删除这条投递记录？', 'Delete this application?'))) return;
     if (await send(`oj/applications/${id}/delete`, {})) {
@@ -338,6 +371,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const day = new Date(now),
     tonight = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).getTime();
   const today = items.filter((a) => followUpOpen(a) && a.nextAt! < tonight).sort((x, y) => x.nextAt! - y.nextAt!);
+  const retroCard = retroFor && items.find((a) => a.id === retroFor.id);
   return (
     <div className="tracker">
       <dl className="tracker-summary">
@@ -404,6 +438,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
           </ul>
         </section>
       )}
+      {items.length > 0 && <WarmupHints items={items} now={now} zh={zh} />}
       {items.length > 0 && <SchedulePanel items={items} now={now} zh={zh} />}
       {items.length > 0 && <TrackerStats items={items} now={now} zh={zh} />}
       {error && (
@@ -442,6 +477,17 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                 {STAGES.map((s) => (
                   <option key={s} value={s}>
                     {STAGE_NAMES[s][zh ? 0 : 1]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {t('档位', 'Tier')} <small>{t('先面练手，再面梦想', 'practice first, dream last')}</small>
+              <select value={form.tier} onChange={(e) => set({ tier: e.target.value })}>
+                <option value="">{t('未分档', 'Not set')}</option>
+                {Object.entries(TIERS).map(([k, v]) => (
+                  <option key={k} value={k}>
+                    {v[zh ? 0 : 1]}
                   </option>
                 ))}
               </select>
@@ -550,10 +596,31 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
         </form>
       )}
 
+      {retroCard && (
+        <RetroPanel
+          key={`${retroCard.id}:${retroFor?.stage ?? ''}`}
+          a={retroCard}
+          rounds={retros.filter((r) => r.card === retroCard.id)}
+          stage={retroFor?.stage}
+          now={now}
+          zh={zh}
+          onChange={(entry, removed) =>
+            setRetros((list) => [...(removed ? [] : [entry]), ...list.filter((r) => r.target !== entry.target)])
+          }
+          onClose={() => {
+            // Back to the card's Retros button, or its Edit button when it has none.
+            const card = `[data-id="${retroCard.id}"]`;
+            setRetroFor(null);
+            setRefocus(document.querySelector(`${card} [data-retro]`) ? `${card} [data-retro]` : `${card} .tracker-card-actions button`);
+          }}
+        />
+      )}
+
       {items.length ? (
         <div className="tracker-board">
           {STAGES.map((stage) => {
             const list = items.filter((a) => a.stage === stage);
+            if (stage === 'saved') list.sort((x, y) => (TIER_ORDER[x.tier] ?? 2) - (TIER_ORDER[y.tier] ?? 2));
             return (
               <section
                 key={stage}
@@ -575,9 +642,22 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                     const soon = (left && a.oaDeadline! - now < SOON) || (offerLeft && a.offerDeadline! - now < SOON);
                     const quiet = stale(a, now) ? Math.floor((now - stageSince(a)) / DAY) : 0;
                     const interviewed = a.interviewAt !== null && a.interviewAt < now;
+                    const rounds = retros.filter((r) => r.card === a.id);
+                    const retroDue = interviewed && a.stage !== 'withdrawn' && !rounds.some((r) => r.at >= a.interviewAt!);
+                    const retroable = rounds.length > 0 || INTERVIEWED.includes(a.stage) || a.stageLog.some(([s]) => INTERVIEWED.includes(s));
                     return (
                       <li key={a.id} className="tracker-card" data-id={a.id} data-due={soon ? 'soon' : undefined}>
-                        <p className="tracker-company">{a.company}</p>
+                        <p className="tracker-company">
+                          {a.company}
+                          {TIERS[a.tier] && (
+                            <>
+                              {' '}
+                              <span className="tracker-tier" data-tier={a.tier}>
+                                {TIERS[a.tier][zh ? 0 : 1]}
+                              </span>
+                            </>
+                          )}
+                        </p>
                         {a.role && <p className="tracker-role">{a.role}</p>}
                         {open && (
                           <p className="tracker-due">
@@ -636,6 +716,15 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                             </button>
                           </p>
                         )}
+                        {retroDue && (
+                          <p className="tracker-hint">
+                            {t('面试已经结束，趁记得清楚写个复盘', 'The interview is over: write a retro while it is fresh')}{' '}
+                            <button type="button" onClick={() => openRetro(a.id)}>
+                              {t('写复盘', 'Write a retro')}
+                              <span className="sr-only"> {a.company}</span>
+                            </button>
+                          </p>
+                        )}
                         {(a.links?.oa || a.links?.mock || a.link || a.prep || interviewed) && (
                           <p className="tracker-links">
                             {a.links?.oa && <a href={a.links.oa}>{t('这家的 OA 真题', 'Its OA problems')}</a>}
@@ -672,6 +761,12 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                             {t('编辑', 'Edit')}
                             <span className="sr-only"> {a.company}</span>
                           </button>
+                          {retroable && (
+                            <button type="button" data-retro onClick={() => openRetro(a.id)}>
+                              {t(`复盘 (${rounds.length})`, `Retros (${rounds.length})`)}
+                              <span className="sr-only"> {a.company}</span>
+                            </button>
+                          )}
                         </div>
                       </li>
                     );

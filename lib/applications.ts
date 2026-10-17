@@ -491,3 +491,11 @@ export function parseRetro(body: string): Retro | null {
   const known = themes.filter((t): t is string => typeof t === 'string' && THEMES.has(t));
   return { company, stage, at: at as number, score: score as number, questions: rows, stuck, themes: [...new Set(known)] };
 }
+export type RetroEntry = Retro & { target: string; card: string };
+/** The notes API's ?prefix=retro: items as retros with their note and card ids; anything else is skipped. */
+export const retroList = (items: unknown): RetroEntry[] =>
+  (Array.isArray(items) ? (items as { target?: unknown; body?: unknown }[]) : []).flatMap((n) => {
+    const card = typeof n?.target === 'string' ? RETRO_TARGET.exec(n.target)?.[1] : undefined;
+    const retro = card && typeof n.body === 'string' ? parseRetro(n.body) : null;
+    return retro ? [{ ...retro, target: n.target as string, card: card! }] : [];
+  });

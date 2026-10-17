@@ -5,14 +5,22 @@ import {
   expeditePlan,
   localStamp,
   medianDays,
+  parseRetro,
+  RETRO_QUESTIONS,
+  RETRO_SCORES,
   scheduleIssues,
   STAGE_NAMES,
   trackerStats,
+  warmupIssues,
   type AgendaEvent,
   type Application,
+  type RetroEntry,
+  type RetroQuestion,
 } from '@/lib/applications';
 import { trackerOpenJs } from '@/lib/autofill-bookmarklet';
 import { SOURCES } from '@/lib/experience';
+import { readLocale } from '@/lib/i18n';
+import { COMPETENCIES } from '@/lib/story-bank';
 import { api } from '@/lib/types';
 
 // The weekly goal, a JSON note ({ weekly }) like the other wave-8 career notes (lib/server/my-practice.ts).
@@ -318,5 +326,351 @@ export function TrackerBookmarklet({ zh }: { zh: boolean }) {
           : 'Drag this button to your bookmarks bar. On a job page, click it (select the job description first if you like): this page opens with the company, role, link and selected text filled in, saved when you confirm. The text travels after the # in the address, which never reaches a server, and is stored in your account only when you save.'}
       </p>
     </div>
+  );
+}
+
+/** Above the schedule: interview order hints (lib/applications.ts warmupIssues); nothing when there are none. */
+export function WarmupHints({ items, now, zh }: { items: readonly Application[]; now: number; zh: boolean }) {
+  const t = (cn: string, en: string) => (zh ? cn : en);
+  const issues = warmupIssues(items, now);
+  if (!issues.length) return null;
+  const names = new Map(items.map((a) => [a.id, a.company]));
+  return (
+    <section className="tracker-warmup" aria-labelledby="tracker-warmup">
+      <h2 id="tracker-warmup">{t('面试顺序', 'Interview order')}</h2>
+      <ul>
+        {issues.map(({ kind, ids: [id, ...rest] }) => (
+          <li key={`${kind}:${id}`}>
+            {kind === 'dream-first'
+              ? t(
+                  `梦想公司 ${names.get(id)} 的面试是你第一场真面，建议先约一两家练手公司热身。`,
+                  `Your interview at ${names.get(id)}, a dream company, would be your first real one: try to fit in one or two practice companies first.`,
+                )
+              : t(
+                  `梦想公司 ${names.get(id)} 已经投了，练手公司 ${rest.map((x) => names.get(x)).join('、')} 还在“想投”：尽快投出去，它们的面试才能排在前面。`,
+                  `You have applied to ${names.get(id)}, a dream company, while practice companies (${rest.map((x) => names.get(x)).join(', ')}) are still at Saved: send those soon so their interviews come first.`,
+                )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+const ROUNDS = ['phone', 'onsite'] as const;
+type Round = (typeof ROUNDS)[number];
+/** The card's latest interview stage: its own, else the last one logged, else phone. */
+const lastRound = (a: Application): Round =>
+  [a.stage, ...a.stageLog.map(([s]) => s).reverse()].find((s): s is Round => s === 'phone' || s === 'onsite') ?? 'phone';
+type Draft = { target: string | null; stage: Round; at: string; score: string; questions: RetroQuestion[]; stuck: string; themes: string[] };
+const blankQuestion = (): RetroQuestion => ({ text: '', problem: '', similar: false });
+const inputTime = (at: number) => localStamp(at).replace(' ', 'T');
+
+async function putRetro(target: string, body: string) {
+  const r = await fetch(`/api/oj/notes?target=${encodeURIComponent(target)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Locale': readLocale() },
+    body: JSON.stringify({ body }),
+  });
+  const result: unknown = await r.json().catch(() => null);
+  if (!r.ok) throw new Error(result && typeof result === 'object' && 'error' in result ? String(result.error) : `HTTP ${r.status}`);
+}
+
+/**
+ * A card's private interview retros (user notes retro:<card id>/<base36 time>): the form for a new
+ * or chosen round and the earlier rounds. Saving marks the linked site problems to redo, so they
+ * come up first in the review session; the themes feed the story bank's "no story yet" list.
+ */
+export function RetroPanel({
+  a,
+  rounds,
+  stage,
+  now,
+  zh,
+  onChange,
+  onClose,
+}: {
+  a: Application;
+  /** This card's retros. */
+  rounds: readonly RetroEntry[];
+  /** The round a stage move just finished. */
+  stage?: Round;
+  now: number;
+  zh: boolean;
+  onChange: (entry: RetroEntry, removed?: boolean) => void;
+  onClose: () => void;
+}) {
+  const t = (cn: string, en: string) => (zh ? cn : en);
+  const i = zh ? 0 : 1;
+  const formRef = useRef<HTMLFormElement>(null);
+  const fresh = (): Draft => ({
+    target: null,
+    stage: stage ?? lastRound(a),
+    at: inputTime(a.interviewAt !== null && a.interviewAt <= now ? a.interviewAt : now),
+    score: '',
+    questions: [blankQuestion()],
+    stuck: '',
+    themes: [],
+  });
+  const [draft, setDraft] = useState(fresh);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<{ text: string; review: boolean } | null>(null);
+  const [error, setError] = useState('');
+  const set = (patch: Partial<Draft>) => {
+    setDraft((d) => ({ ...d, ...patch }));
+    setNote(null);
+  };
+  const setQuestion = (k: number, patch: Partial<RetroQuestion>) =>
+    set({ questions: draft.questions.map((q, j) => (j === k ? { ...q, ...patch } : q)) });
+  const edit = (next: Draft) => {
+    setDraft(next);
+    setNote(null);
+    setError('');
+    formRef.current?.querySelector('select')?.focus();
+  };
+
+  async function save(event: { preventDefault(): void }) {
+    event.preventDefault();
+    // The server checks with the same function (lib/server/my-practice.ts).
+    const retro = parseRetro(
+      JSON.stringify({
+        company: a.company,
+        stage: draft.stage,
+        at: new Date(draft.at).getTime(),
+        score: Number(draft.score),
+        questions: draft.questions
+          .map((q) => ({ text: q.text.trim(), problem: q.problem.trim().toLowerCase(), similar: q.similar }))
+          .filter((q) => q.text || q.problem),
+        stuck: draft.stuck.trim(),
+        themes: draft.themes,
+      }),
+    );
+    if (!retro) return setError(t('请选好时间和自评，题号写成 lc-146 或 oa-… 这样的格式。', 'Pick the time and a rating, and write problem ids like lc-146 or oa-….'));
+    const target = draft.target ?? `retro:${a.id}/${Date.now().toString(36)}`;
+    setBusy(true);
+    setError('');
+    try {
+      await putRetro(target, JSON.stringify(retro));
+      onChange({ ...retro, target, card: a.id });
+      setDraft((d) => ({ ...d, target }));
+      const problems = [...new Set(retro.questions.flatMap((q) => (q.problem ? [`problem:${q.problem}`] : [])))];
+      const marked =
+        !problems.length ||
+        (await api('oj/marks', { targets: problems, mark: 'redo' }).then(
+          () => true,
+          () => false,
+        ));
+      setNote({
+        text: !problems.length
+          ? t('已保存', 'Saved')
+          : marked
+            ? t(`已保存，${problems.length} 道关联题已标记重做，复习时排在前面。`, `Saved. ${problems.length} linked ${problems.length === 1 ? 'problem is' : 'problems are'} marked to redo and come first in review.`)
+            : t('已保存，但关联题没能标记重做，稍后再保存一次。', 'Saved, but the linked problems could not be marked to redo; save again later.'),
+        review: problems.length > 0 && marked,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function remove(r: RetroEntry) {
+    if (!window.confirm(t('删除这条复盘？', 'Delete this retro?'))) return;
+    try {
+      await putRetro(r.target, '');
+      onChange(r, true);
+      if (draft.target === r.target) edit(fresh());
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  const theme = (c: (typeof COMPETENCIES)[number]) => {
+    const on = draft.themes.includes(c.id);
+    return (
+      <label key={c.id} className="visa-check">
+        <input
+          type="checkbox"
+          checked={on}
+          disabled={!on && draft.themes.length >= 8}
+          onChange={() => set({ themes: on ? draft.themes.filter((x) => x !== c.id) : [...draft.themes, c.id] })}
+        />
+        {c.name[i]}
+      </label>
+    );
+  };
+  return (
+    <form ref={formRef} className="resume-form visa-form tracker-retro" onSubmit={save} aria-labelledby="tracker-retro-h">
+      <fieldset>
+        <legend id="tracker-retro-h">
+          {draft.target ? t('编辑复盘', 'Edit retro') : t('面试复盘', 'Interview retro')} · {a.company}
+        </legend>
+        <p className="tracker-notes tracker-retro-help">
+          {t(
+            '只有你能看到。趁记得清楚，记下被问到的题、自评和卡住的地方。',
+            'Only you see this. While it is fresh, note the questions, how it went and where you got stuck.',
+          )}
+        </p>
+        <label>
+          {t('轮次', 'Round')}
+          <select value={draft.stage} onChange={(e) => set({ stage: e.target.value as Round })}>
+            {ROUNDS.map((s) => (
+              <option key={s} value={s}>
+                {STAGE_NAMES[s][i]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          {t('面试时间', 'When')}
+          <input type="datetime-local" required value={draft.at} onChange={(e) => set({ at: e.target.value })} />
+        </label>
+        <label>
+          {t('自评', 'How it went')}
+          <select required value={draft.score} onChange={(e) => set({ score: e.target.value })}>
+            <option value="">{t('选一个', 'Pick one')}</option>
+            {RETRO_SCORES.map((s, k) => (
+              <option key={k} value={k + 1}>
+                {k + 1} · {s[i]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <fieldset className="tracker-notes tracker-retro-qs">
+          <legend>
+            {t('被问到的题', 'Questions asked')}{' '}
+            <small>{t('能对上站内题就填题号（如 lc-146），保存后加入“标记重做”', 'add a site problem id (e.g. lc-146) when one matches; saving marks it to redo')}</small>
+          </legend>
+          <ol>
+            {draft.questions.map((q, k) => (
+              <li key={k}>
+                <input
+                  maxLength={200}
+                  value={q.text}
+                  onChange={(e) => setQuestion(k, { text: e.target.value })}
+                  aria-label={t(`第 ${k + 1} 题`, `Question ${k + 1}`)}
+                  placeholder={k ? '' : t('例如：合并区间，追问了原地做法', 'e.g. Merge intervals, then in place')}
+                />
+                <input
+                  maxLength={200}
+                  pattern="lc-\d{1,6}|oa-[a-z0-9\-]{1,180}"
+                  value={q.problem}
+                  onChange={(e) => setQuestion(k, { problem: e.target.value, ...(!e.target.value.trim() && { similar: false }) })}
+                  aria-label={t(`第 ${k + 1} 题对应的站内题（题号，如 lc-146）`, `Site problem for question ${k + 1} (id, e.g. lc-146)`)}
+                  placeholder="lc-146"
+                />
+                <label className="visa-check">
+                  <input
+                    type="checkbox"
+                    checked={q.similar}
+                    disabled={!q.problem.trim()}
+                    onChange={(e) => setQuestion(k, { similar: e.target.checked })}
+                  />
+                  {t('类似', 'Similar')}
+                  <span className="sr-only">{t(`：第 ${k + 1} 题只是和这道题类似`, `: question ${k + 1} only resembled it`)}</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => set({ questions: draft.questions.filter((_, j) => j !== k) })}
+                  aria-label={t(`去掉第 ${k + 1} 题`, `Remove question ${k + 1}`)}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ol>
+          <button
+            type="button"
+            disabled={draft.questions.length >= RETRO_QUESTIONS}
+            onClick={() => set({ questions: [...draft.questions, blankQuestion()] })}
+          >
+            {t('再加一题', 'Add a question')}
+          </button>
+        </fieldset>
+        <label className="tracker-notes">
+          {t('卡在哪里', 'Where you got stuck')} <small>{draft.stuck.length}/600</small>
+          <textarea rows={3} maxLength={600} value={draft.stuck} onChange={(e) => set({ stuck: e.target.value })} />
+        </label>
+        <fieldset className="tracker-notes tracker-retro-themes">
+          <legend>
+            {t('行为面问到的主题', 'Behavioral themes asked')}{' '}
+            <small>{t('最多 8 个；还没有故事的，故事库会提醒你补上', 'up to 8; the story bank lists the ones you have no story for')}</small>
+          </legend>
+          <div>{COMPETENCIES.filter((c) => !c.lp).map(theme)}</div>
+          <details open={draft.themes.some((id) => COMPETENCIES.find((c) => c.id === id)?.lp)}>
+            <summary>Amazon Leadership Principles</summary>
+            <div>{COMPETENCIES.filter((c) => c.lp).map(theme)}</div>
+          </details>
+        </fieldset>
+      </fieldset>
+      <div className="resume-actions">
+        <button type="submit" disabled={busy}>
+          {t('保存复盘', 'Save retro')}
+        </button>
+        {draft.target && (
+          <button type="button" className="is-quiet" onClick={() => edit(fresh())}>
+            {t('再记一轮', 'Add another round')}
+          </button>
+        )}
+        <button type="button" className="is-quiet" onClick={onClose}>
+          {t('关闭', 'Close')}
+        </button>
+        <small aria-live="polite">
+          {note?.text}
+          {note?.review && (
+            <>
+              {' '}
+              <a href="/?view=review-session">{t('去复习', 'Review now')}</a>
+            </>
+          )}
+        </small>
+      </div>
+      {error && (
+        <p className="resume-error" role="alert">
+          {error}
+        </p>
+      )}
+      {rounds.length > 0 && (
+        <section className="tracker-retro-list" aria-labelledby="tracker-retro-list">
+          <h3 id="tracker-retro-list">{t('已写的复盘', 'Retros so far')}</h3>
+          <ul>
+            {[...rounds]
+              .sort((x, y) => y.at - x.at)
+              .map((r) => (
+                <li key={r.target} aria-current={draft.target === r.target || undefined}>
+                  <span>
+                    <time dateTime={new Date(r.at).toISOString()}>{localStamp(r.at)}</time> · {STAGE_NAMES[r.stage][i]} · {RETRO_SCORES[r.score - 1][i]} ·{' '}
+                    {t(`${r.questions.length} 题`, `${r.questions.length} ${r.questions.length === 1 ? 'question' : 'questions'}`)}
+                  </span>
+                  {r.stuck && <small>{r.stuck}</small>}
+                  <span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        edit({
+                          target: r.target,
+                          stage: r.stage,
+                          at: inputTime(r.at),
+                          score: String(r.score),
+                          questions: r.questions.length ? r.questions : [blankQuestion()],
+                          stuck: r.stuck,
+                          themes: r.themes,
+                        })
+                      }
+                    >
+                      {t('编辑', 'Edit')}
+                      <span className="sr-only"> {localStamp(r.at)}</span>
+                    </button>
+                    <button type="button" onClick={() => void remove(r)}>
+                      {t('删除', 'Delete')}
+                      <span className="sr-only"> {localStamp(r.at)}</span>
+                    </button>
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </section>
+      )}
+    </form>
   );
 }
