@@ -413,6 +413,9 @@ void test('the rapid-fire screen: eight different fundamentals at 90 seconds eac
     assert.ok(set.slots.every((s) => s.item), seed);
     assert.deepEqual(set.slots.slice(0, 5).map((s) => [s.minutes, s.name![1]]), Array.from({ length: 5 }, (_, k) => [1.5, `Rapid-fire ${k + 1}/5`]));
   }
+  // The quick questions belong to no company: never marked as another company's.
+  const atAcme = drawSet([...bank, { ...q('c-acme', 'acme', CODING), parts: true }], template, { seed: 'a', company: 'acme' });
+  assert.deepEqual(atAcme.slots.map((s) => s.similar), Array(9).fill(false));
   const none = drawSet(bank.filter((i) => i.category !== FUNDAMENTALS), template, { seed: 'a' });
   assert.deepEqual(none.slots.map((s) => s.kind), ['coding']);
 });

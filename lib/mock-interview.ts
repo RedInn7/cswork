@@ -591,7 +591,8 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
       (s, index): DrawnSlot<T> => ({
         ...s,
         item: picks[index],
-        similar: !!companies && !!picks[index] && !atCompany(picks[index]!),
+        // Another company's question; a generic one (no company) is not.
+        similar: !!companies && !!picks[index]?.company && !atCompany(picks[index]!),
         pool: queue(s).length,
       }),
     ),
