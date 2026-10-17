@@ -76,13 +76,40 @@ const newest = (entries: FeedEntry[], max: number, now: number) => {
   return { entries: sorted, updated: sorted[0]?.updated ?? now };
 };
 
+// ponytail: one snapshot per language for the Cache-Control age; readIssue re-checks every stored
+// thread, so an uncached poll costs up to 100 thread reads. A takedown leaves the feed within 15 minutes.
+const NEWSLETTER_FOR = 900000;
+const newsletterMemo: Partial<Record<'zh' | 'en', { at: number; xml: Promise<string> }>> = {};
+
 /** The latest 20 newsletter issues. */
-export async function newsletterFeed(lang: 'zh' | 'en', now = Date.now()) {
+export function newsletterFeed(lang: 'zh' | 'en', now = Date.now()) {
+  const memo = newsletterMemo[lang];
+  if (memo && now - memo.at <= NEWSLETTER_FOR) return memo.xml;
+  const xml = buildNewsletterFeed(lang, now);
+  newsletterMemo[lang] = { at: now, xml };
+  xml.catch(() => {
+    if (newsletterMemo[lang]?.xml === xml) delete newsletterMemo[lang];
+  });
+  return xml;
+}
+
+async function buildNewsletterFeed(lang: 'zh' | 'en', now: number) {
   const zh = lang === 'zh';
+  const count = (k: number, noun: string) => `${k} ${noun}${k === 1 ? '' : 's'}`;
   const issues = await Promise.all(issueList().slice(0, 20).map((i) => readIssue(i.id)));
   const entries = issues.flatMap((issue): FeedEntry[] => {
     if (!issue) return [];
     const titles = [...issue.problems, ...issue.experiences].map((i) => i.title).join(zh ? '；' : '; ');
+    const parts = zh
+      ? [`${issue.problems.length} 道新 OA 题`, `${issue.experiences.length} 篇学员面经`, `${issue.discussions.length} 个热门讨论`]
+      : [
+          count(issue.problems.length, 'new OA problem'),
+          count(issue.experiences.length, 'member interview report'),
+          count(issue.discussions.length, 'top discussion'),
+        ];
+    // The daily results only when the issue (still) has any.
+    if (issue.daily.length) parts.push(zh ? '每日一题战报' : 'the daily problem results');
+    const last = parts.pop();
     return [
       {
         id: tag(`newsletter/${issue.id}`),
@@ -90,11 +117,7 @@ export async function newsletterFeed(lang: 'zh' | 'en', now = Date.now()) {
         link: `/newsletter/${issue.id}`,
         // Composed once the week is over; a week still running is as new as now.
         updated: Math.min(issue.startsAt + 7 * DAY, now),
-        summary:
-          (zh
-            ? `${issue.problems.length} 道新 OA 题、${issue.experiences.length} 篇学员面经、${issue.discussions.length} 个热门讨论和每日一题战报。`
-            : `${issue.problems.length} new OA problems, ${issue.experiences.length} member interview reports, ${issue.discussions.length} top discussions and the daily problem results.`) +
-          (titles ? ` ${titles}` : ''),
+        summary: `${parts.join(zh ? '、' : ', ')}${zh ? '和' : ' and '}${last}${zh ? '。' : '.'}` + (titles ? ` ${titles}` : ''),
       },
     ];
   });

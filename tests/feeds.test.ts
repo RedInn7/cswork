@@ -177,17 +177,17 @@ void test('the daily feed: the last 14 Beijing days, today first', async () => {
 });
 
 void test('the newsletter feed: the archived issues, newest first, linking to their pages', async () => {
-  const issue = (id: string, startsAt: number, title: string) =>
+  const issue = (id: string, startsAt: number, titles: string[], daily: boolean) =>
     saveIssue({
       id,
       startsAt,
-      problems: [{ id: 'oa-amazon-114', title, company: 'amazon', companyName: 'Amazon', href: '/oa/amazon/oa-amazon-114' }],
+      problems: titles.map((title, i) => ({ id: `oa-amazon-11${i}`, title, company: 'amazon', companyName: 'Amazon', href: `/oa/amazon/oa-amazon-11${i}` })),
       experiences: [],
       discussions: [],
-      daily: [],
+      daily: daily ? [{ date: '2026-10-05', title: 't', titleEn: null, company: null, href: '/x', solvers: 1 }] : [],
     });
-  issue('2026-W40', Date.UTC(2026, 8, 28), 'Older & <wiser>');
-  issue('2026-W41', Date.UTC(2026, 9, 5), '新题 & more');
+  issue('2026-W40', Date.UTC(2026, 8, 28), ['Older & <wiser>', 'Two'], false);
+  issue('2026-W41', Date.UTC(2026, 9, 5), ['新题 & more'], true);
   const response = await newsletterRoute.GET(new Request('https://cswork.test/feeds/newsletter.xml?lang=zh'));
   const xml = await response.text();
   const list = entries(xml);
@@ -199,8 +199,16 @@ void test('the newsletter feed: the archived issues, newest first, linking to th
     ],
   );
   assert.match(xml, /<summary>1 道新 OA 题、0 篇学员面经、0 个热门讨论和每日一题战报。 新题 &amp; more<\/summary>/);
-  assert.match(xml, /Older &amp; &lt;wiser&gt;/);
+  assert.match(xml, /<summary>2 道新 OA 题、0 篇学员面经和0 个热门讨论。 Older &amp; &lt;wiser&gt;；Two<\/summary>/);
   assert.equal(list[0].updated, Date.UTC(2026, 9, 12));
+  // English counts agree with their number; no daily results line for an issue without any.
+  const en = await feeds.newsletterFeed('en');
+  assert.match(en, /<summary>1 new OA problem, 0 member interview reports, 0 top discussions and the daily problem results\. /);
+  assert.match(en, /<summary>2 new OA problems, 0 member interview reports and 0 top discussions\. /);
+  // One snapshot per language for 15 minutes: a new issue shows up after that.
+  issue('2026-W42', Date.UTC(2026, 9, 12), ['Newest'], false);
+  assert.equal(entries(await feeds.newsletterFeed('zh')).length, 2);
+  assert.equal(entries(await feeds.newsletterFeed('zh', Date.now() + 900001)).length, 3);
 });
 
 void test('pages announce their feed in the reader’s language', () => {
