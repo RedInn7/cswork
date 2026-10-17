@@ -25,8 +25,10 @@ const VIEWS: [View, string, string][] = [
 const GRADES = [1, 2, 3, 4, 5];
 
 const h1bOf = (h1b: H1bRecords, company: string) => {
+  // Own keys only: a company typed "Constructor" or "__proto__" must not reach Object's prototype.
+  const own = (k: string) => (Object.hasOwn(h1b, k) ? h1b[k] : undefined);
   const name = company.trim().toLowerCase();
-  return name ? (h1b[name] ?? h1b[name.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')]) : undefined;
+  return name ? (own(name) ?? own(name.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))) : undefined;
 };
 
 /**

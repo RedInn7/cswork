@@ -370,7 +370,8 @@ test('the decision matrix: scores saved per offer, money from the figures, H-1B 
     JSON.stringify([
       { id: 'a', company: 'Jane Street', schedule: 'even', base: 200000 },
       { id: 'b', company: 'Nowhere', schedule: 'even', base: 100000 },
-      { id: 'c', company: 'Third', schedule: 'even', base: 150000 },
+      // A real employer whose lower-case name is a key on Object.prototype.
+      { id: 'c', company: 'Constructor', schedule: 'even', base: 150000 },
     ]),
   );
   const { host, unmount } = await mount({ h1b: { 'jane street': [2025, 120, 3], 'jane-street': [2025, 120, 3] } });
