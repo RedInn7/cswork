@@ -176,7 +176,7 @@ export function schedulingTrace(procs = DEFAULT_PROCS, algo: SchedAlgo = 'rr', q
       ),
       cells: [],
       queue: [],
-      stats: procs.map((p) => [
+      stats: procs.map((p): [string, string] => [
         p.id,
         t(
           `到达 ${p.arrive} · 运行 ${p.burst}${usesPrio ? ` · 优先级 ${p.prio}` : ''}`,
@@ -191,7 +191,8 @@ export function schedulingTrace(procs = DEFAULT_PROCS, algo: SchedAlgo = 'rr', q
     let caption: string;
     if (!s.id) caption = t(`t=${s.start}–${s.end}：还没有进程到达，CPU 空闲。`, `t=${s.start}–${s.end}: no process has arrived yet, so the CPU idles.`);
     else {
-      const p = proc.get(s.id)!;
+      const p = proc.get(s.id)!,
+        joining = procs.filter((o) => o.arrive === s.end).map((o) => o.id);
       const why =
         algo === 'rr'
           ? t(`${s.id} 在就绪队列队首`, `${s.id} is at the front of the ready queue`)
@@ -209,8 +210,8 @@ export function schedulingTrace(procs = DEFAULT_PROCS, algo: SchedAlgo = 'rr', q
           ? t(`运行到 t=${s.end} 结束`, `it runs until it finishes at t=${s.end}`)
           : algo === 'rr'
             ? t(
-                `运行到 t=${s.end} 用完时间片，回到队尾（同一时刻新到达的排在它前面）`,
-                `it runs until its quantum ends at t=${s.end} and rejoins the back of the queue, behind anything arriving at that moment`,
+                `运行到 t=${s.end} 用完时间片，回到队尾${joining.length ? `，排在同一时刻到达的 ${joining.join('、')} 后面` : ''}`,
+                `it runs until its quantum ends at t=${s.end} and rejoins the back of the queue${joining.length ? `, behind ${joining.join(', ')}, which arrived at that moment` : ''}`,
               )
             : t(`运行到 t=${s.end}，被 ${slices[k + 1].id} 抢占`, `it runs until ${slices[k + 1].id} preempts it at t=${s.end}`);
       caption = t(`t=${s.start}：${why}，${end}。`, `t=${s.start}: ${why}; ${end}.`);
@@ -485,12 +486,12 @@ export function banker(avail: number[], alloc: number[][], max: number[][], req?
   let work = [...available];
   const finished = alloc.map(() => false);
   for (;;) {
-    const skipped: number[] = [];
-    const p = finished.findIndex((f, i) => !f && (fits(need[i], work) || (skipped.push(i), false)));
-    if (p < 0) break;
+    const waiting = range(0, alloc.length).filter((i) => !finished[i]);
+    const p = waiting.find((i) => fits(need[i], work));
+    if (p === undefined) break;
     finished[p] = true;
     work = work.map((w, r) => w + allocation[p][r]);
-    steps.push({ p, skipped, work });
+    steps.push({ p, skipped: waiting.filter((i) => i < p), work });
   }
   const safe = finished.every(Boolean) ? steps.map((s) => s.p) : null;
   return { need, available, allocation, steps, safe, request: req ? (safe ? ('granted' as const) : ('unsafe' as const)) : undefined };
