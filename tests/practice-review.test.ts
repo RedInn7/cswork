@@ -101,6 +101,14 @@ void test('the daily cap takes the most overdue first and the forecast carries t
   assert.equal(capped.deferred, 3);
   assert.deepEqual(capped.forecast.slice(0, 4), [2, 2, 1, 0]);
   assert.equal(capped.forecast.length, 30);
+  // A review finished earlier today uses one of the 2; a first solve today is not a review.
+  const reviewedToday = [...history, item('r', [day(0), day(10, 9)], [[day(10, 9), 1]]), item('new', [day(10, 8)])];
+  const rest = scheduleReviews(reviewedToday, now, { dailyCap: 2 });
+  assert.deepEqual(rest.today.map((r) => r.item.problemId), ['p0']);
+  assert.equal(rest.deferred, 4);
+  assert.deepEqual(rest.forecast.slice(0, 3), [1, 2, 2], 'the Again review comes back tomorrow with p1');
+  assert.equal(scheduleReviews(reviewedToday, now, { dailyCap: 1 }).today.length, 0);
+  assert.equal(scheduleReviews(reviewedToday, now).today.length, 5, 'no cap, no change');
   // Due later: day i counts its own, plus what the days before could not take.
   const later = [...history, item('n1', [day(9)]), item('n2', [day(9)]), item('n3', [day(9)])];
   // n1..n3 fall due on Oct 13 (index 2): 1 carried + 3 new, capped at 2, the rest on the next day.

@@ -156,8 +156,8 @@ export function ReviewForecast({
         {state === 'failed'
           ? t('没能保存设置，请重试。', "Couldn't save the settings. Try again.")
           : t(
-              '超过上限的题按到期先后顺延到下一天。休假期间不安排复习，原本落在休假里及之后的复习整体往后推；只记一段休假，新开一段会替换上一段。',
-              'Past the cap, the most overdue go first and the rest move to the next day. A break schedules nothing and pushes later reviews back by its length; only one break is kept, and a new one replaces it.',
+              '今天已做完的复习也算在上限里，超过上限的题按到期先后顺延到下一天。休假期间不安排复习，原本落在休假里及之后的复习整体往后推；只记一段休假，新开一段会替换上一段。',
+              'Reviews already done today count toward the cap. Past it, the most overdue go first and the rest move to the next day. A break schedules nothing and pushes later reviews back by its length; only one break is kept, and a new one replaces it.',
             )}
       </p>
     </section>

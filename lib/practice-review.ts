@@ -171,8 +171,8 @@ export function reviewPause(prefs: ReviewPrefs) {
  * Today's reviews under the learner's load settings, and the next 30 days. A break pushes back
  * every review falling due from its first day by its length, for problems last solved before it,
  * and shows nothing while it lasts. Past dailyCap, the most overdue go first and the rest wait
- * for the next day with room (deferred today). forecast[i] is day i's reviews (0 is today,
- * overdue included); retention, the review days of the last 30 with a grade, and those graded
+ * for the next day with room (deferred today); reviews already done today count against the
+ * cap. forecast[i] is day i's reviews still to do (0 is today, overdue included); retention, the review days of the last 30 with a grade, and those graded
  * Good or Easy.
  * ponytail: one break is kept; a new one replaces it, and the old one's push-back goes with it.
  */
@@ -185,13 +185,17 @@ export function scheduleReviews(history: PracticeHistoryItem[], now: number, pre
   const since = addDays(today, -29);
   const retention = { passed: 0, total: 0 };
   const states: DueReview[] = [];
+  let done = 0;
   for (const item of history) {
     if (!item.acAt.length) continue;
-    for (const [day, grade] of acDays(item).slice(1))
+    const days = acDays(item);
+    for (const [day, grade] of days.slice(1))
       if (grade && day >= since) {
         retention.total++;
         retention.passed += +(grade >= 3);
       }
+    // A review finished today moves its problem out of `due`; it still uses today's room.
+    if (days.length > 1 && days.at(-1)![0] === today) done++;
     const state = reviewState(item);
     if (state.mastered) continue;
     if (midnight(Math.max(...item.acAt)) < from && state.dueAt >= from)
@@ -200,7 +204,7 @@ export function scheduleReviews(history: PracticeHistoryItem[], now: number, pre
   }
   states.sort((a, b) => a.dueAt - b.dueAt);
   const cap = prefs.dailyCap ?? Infinity;
-  const room = (day: number) => (day >= from && day < until ? 0 : cap);
+  const room = (day: number) => (day >= from && day < until ? 0 : day === today ? Math.max(0, cap - done) : cap);
   const due = states.filter((s) => s.dueAt <= now);
   const shown = due.slice(0, room(today));
   const fresh = new Map<number, number>();
