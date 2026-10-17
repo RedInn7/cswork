@@ -1,6 +1,7 @@
 /**
  * Offline teacher publication of the Core Skills track: content/core-skills/packages.json,
- * which CI rebuilds and reruns in every language (tests/core-skills.test.ts).
+ * which CI rebuilds and reruns in every language (tests/core-skills.test.ts), and of the
+ * ML Coding track: content/ml-coding/packages.json (tests/ml-coding.test.ts).
  * Unchanged packages are skipped, so release.sh runs this on every release.
  *   node --env-file=.env --import tsx scripts/publish-core-skills.ts TEACHER_EMAIL
  */
@@ -38,14 +39,24 @@ const teacher: Person = {
   verified: true,
   role: 'teacher',
 };
+const read = (file: string) => JSON.parse(readFileSync(file, 'utf8')) as unknown[];
 // Validate everything before publishing anything.
-const prepared = (JSON.parse(readFileSync('content/core-skills/packages.json', 'utf8')) as unknown[]).map((raw) => {
-  const payload = validateProblemPackage(raw);
-  assert.match(payload.problem.id, /^core-[a-z0-9-]+$/);
-  assert.deepEqual(payload.problem.languages, ['python', 'go', 'java', 'cpp']);
-  assert.deepEqual(Object.keys(payload.problem.starters ?? {}).sort(), ['cpp', 'go', 'java', 'python']);
-  return payload;
-});
+const prepared = [
+  ...read('content/core-skills/packages.json').map((raw) => {
+    const payload = validateProblemPackage(raw);
+    assert.match(payload.problem.id, /^core-[a-z0-9-]+$/);
+    assert.deepEqual(payload.problem.languages, ['python', 'go', 'java', 'cpp']);
+    assert.deepEqual(Object.keys(payload.problem.starters ?? {}).sort(), ['cpp', 'go', 'java', 'python']);
+    return payload;
+  }),
+  // ML Coding (scripts/ml-coding/build.ts): Python on the judge's numpy, listed once it reports pandas.
+  ...read('content/ml-coding/packages.json').map((raw) => {
+    const payload = validateProblemPackage(raw);
+    assert.match(payload.problem.id, /^ml-[a-z0-9-]+$/);
+    assert.deepEqual(payload.problem.languages, ['python']);
+    return payload;
+  }),
+];
 assert.equal(new Set(prepared.map((p) => p.problem.id)).size, prepared.length);
 for (const payload of prepared) {
   const current = db

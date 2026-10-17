@@ -1,6 +1,6 @@
 // First-party practice tracks: judged free for any verified account and public on the judge feed,
 // like the OA library. A new track adds its problem id prefix here.
-export const FREE_TRACKS = ['oa-', 'sql-', 'core-', 'bk-', 'pd-', 'rest-'] as const;
+export const FREE_TRACKS = ['oa-', 'sql-', 'core-', 'bk-', 'pd-', 'rest-', 'ml-'] as const;
 
 export const isFreeTrack = (id: string) => FREE_TRACKS.some((prefix) => id.startsWith(prefix));
 
