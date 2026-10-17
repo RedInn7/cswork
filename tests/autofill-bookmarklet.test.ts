@@ -158,6 +158,20 @@ void test('Ashby: system fields, school and degree; pronouns, emergency contact 
   ]);
 });
 
+void test('placeholders: an example address never decides a field; a placeholder alone still names one', () => {
+  const { value } = run(
+    'https://jobs.ashbyhq.com/acme/3f9a/application',
+    [
+      '<label for="a">Email address</label><input id="a" type="email" placeholder="name@example.com">',
+      '<input id="b" type="email" placeholder="you@company.com">',
+      '<label for="c">Website</label><input id="c" type="url" placeholder="https://yoursite.org">',
+      '<label for="d">Contact number</label><input id="d" type="tel" placeholder="Name of a contact">',
+      '<input id="e" placeholder="First name">',
+    ].join(''),
+  );
+  assert.deepEqual(['#a', '#b', '#c', '#d', '#e'].map(value), ['ada@example.com', 'ada@example.com', 'https://ada.dev/100%', '+1 206 555 0100', 'Ada King']);
+});
+
 void test('other hosts: nothing is filled; an embedded application form is offered instead', () => {
   const lookalike = run('https://careers.acme.example/jobs/42', GREENHOUSE);
   assert.equal(lookalike.value('#first_name'), '');

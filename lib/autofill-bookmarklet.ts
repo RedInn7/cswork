@@ -61,9 +61,10 @@ export const trackerOpenJs = (open: string) =>
  * The bookmarklet's script, written out by hand in ES2017 (not a function's toString, which a
  * bundler would rewrite): (data, zh, saveToTracker). Off the three hosts it offers to open an
  * embedded application iframe instead, since a cross-origin frame is out of a bookmarklet's reach.
- * A field's key is its name, id, autocomplete, aria-label, placeholder and label text; the first
- * rule that matches decides it. Values go through the native setter plus input and change events,
- * so React forms see them.
+ * A field's key is its name, id, autocomplete, aria-label and label text; the first rule that
+ * matches decides it, and its placeholder is read only when none does, since an example such as
+ * "name@example.com" would match the name rule. An email or tel input takes only the email or the
+ * phone. Values go through the native setter plus input and change events, so React forms see them.
  */
 export const AUTOFILL_JS = String.raw`function (D, Z, S) {
   var t = function (zh, en) { return Z ? zh : en; };
@@ -93,32 +94,33 @@ export const AUTOFILL_JS = String.raw`function (D, Z, S) {
   ];
   var SKIP = /refer|emergency|recruiter|hear|pronoun|preferred|twitter/;
   var setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+  var clean = function (s) { return s.toLowerCase().replace(/[-_\[\].]+/g, " "); };
   var keyOf = function (el) {
-    var parts = [el.name, el.id, el.getAttribute("autocomplete"), el.getAttribute("aria-label"), el.placeholder];
+    var parts = [el.name, el.id, el.getAttribute("autocomplete"), el.getAttribute("aria-label")];
     [].forEach.call(el.labels || [], function (l) { parts.push(l.textContent); });
     (el.getAttribute("aria-labelledby") || "").split(/\s+/).forEach(function (id) {
       var label = id && document.getElementById(id);
       if (label) parts.push(label.textContent);
     });
-    return parts.join(" ").toLowerCase().replace(/[-_\[\].]+/g, " ");
+    return clean(parts.join(" "));
+  };
+  var ruleOf = function (key) {
+    for (var i = 0; i < RULES.length; i++) if (RULES[i][1].test(key)) return RULES[i][0];
+    return "";
   };
   var n = 0;
   [].forEach.call(document.querySelectorAll("input"), function (el) {
     if (["text", "email", "tel", "url"].indexOf(el.type) < 0 || el.disabled || el.readOnly || el.value) return;
     if (el.getAttribute("role") === "combobox" || el.hasAttribute("aria-autocomplete")) return;
     var key = keyOf(el);
-    if (SKIP.test(key)) return;
-    for (var i = 0; i < RULES.length; i++) {
-      if (!RULES[i][1].test(key)) continue;
-      var value = D[RULES[i][0]];
-      if (value) {
-        setValue.call(el, value);
-        el.dispatchEvent(new Event("input", { bubbles: true }));
-        el.dispatchEvent(new Event("change", { bubbles: true }));
-        n++;
-      }
-      return;
-    }
+    var hint = clean(el.placeholder || "");
+    if (SKIP.test(key + " " + hint)) return;
+    var value = D[el.type === "email" ? "email" : el.type === "tel" ? "phone" : ruleOf(key) || ruleOf(hint)];
+    if (!value) return;
+    setValue.call(el, value);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    n++;
   });
   var old = document.getElementById("cswork-autofill");
   if (old) old.remove();
