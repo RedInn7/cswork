@@ -223,7 +223,7 @@ export type ResolvedStep = RoleStep & {
   minutes: number;
 };
 /** Step titles: a kind's label, then the name of what it points at. */
-const STEP_LABELS: Record<StepKind, [string, string] | null> = {
+export const STEP_LABELS: Record<StepKind, [string, string] | null> = {
   'line-stops': ['Line 500', 'Line 500'],
   'sd-part': ['系统设计', 'System design'],
   'sql-track': ['SQL', 'SQL'],
