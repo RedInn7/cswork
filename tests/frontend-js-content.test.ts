@@ -8,7 +8,7 @@ import { test } from 'node:test';
 import manifest from '../lib/content/frontend-js.json';
 import { CONTENT_DIR, GROUPS, HARNESS_FILE, PROBLEMS, runInVm } from '../scripts/frontend-js/build.mjs';
 
-const CJK = /[一-鿿]/;
+const CJK = /[\u4e00-\u9fff]/;
 
 test('the manifest lists every content folder once, grouped, with the current harness', () => {
   const folders = readdirSync(CONTENT_DIR).sort();
@@ -28,7 +28,7 @@ test('every problem is bilingual and has public and hidden cases', () => {
     assert.ok(CJK.test(p.statement.zh) && CJK.test(p.editorial.zh), `${p.slug}: Chinese text`);
     // English text may quote a CJK sample value, but not whole sentences.
     for (const text of [p.statement.en, p.editorial.en])
-      assert.ok((text.match(/[一-鿿]/g) ?? []).length <= 4, `${p.slug}: English text`);
+      assert.ok((text.match(/[\u4e00-\u9fff]/g) ?? []).length <= 4, `${p.slug}: English text`);
     assert.ok(p.cases.some((c) => c.public), `${p.slug}: a public case`);
     assert.ok(p.cases.length >= 5, `${p.slug}: at least five cases`);
     assert.equal(new Set(p.cases.map((c) => c.name)).size, p.cases.length, `${p.slug}: case names are unique`);
