@@ -58,6 +58,10 @@
 .mock-public-header .daily-goal {
   margin-inline-start: auto;
 }
+/* The guide shell's .mock-public makes --muted a text grey. */
+.mock-public .daily-goal:hover {
+  background: var(--rule);
+}
 @media (max-width: 600px) {
   .daily-goal-ring {
     display: none;
@@ -293,6 +297,9 @@
   }
   .dark .daily-goal[data-met] .daily-goal-ring circle + circle {
     stroke: var(--goal-met);
+  }
+  .dark .mock-public .daily-goal:hover {
+    background: var(--rule);
   }
   .dark .daily-goal-xp {
     color: var(--muted-foreground);
