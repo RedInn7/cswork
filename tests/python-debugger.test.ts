@@ -7,6 +7,7 @@ import {
   entryMethod,
   moveTo,
   parseTrace,
+  previousInFrame,
   PYODIDE_URL,
   SANDBOX_CSP,
   sandboxSource,
@@ -15,7 +16,10 @@ import {
   TRACER_SOURCE,
   workerSource,
   type DebugRequest,
+  type Trace,
 } from '../lib/python-debugger';
+import { nodeGraph, parseShape, pointers, shapeAt, stepViews, type NodesShape, type Shape } from '../lib/debug-shapes';
+import { MAX_GRID } from '../components/structure-view';
 
 /** The tracer on this machine's CPython: what Pyodide runs, minus the browser. */
 function trace(request: Partial<DebugRequest>) {
@@ -355,4 +359,187 @@ test('the sandbox page owns the worker, relays only its parent, and its CSP reac
     failed.toParent.map((m) => m.type),
     ['noworker'],
   );
+});
+
+/** The named picture at a step, or undefined. */
+const view = (trace: Trace, index: number, name: string): Shape | undefined =>
+  stepViews(trace, index).find((v) => v.name === name)?.shape;
+
+test('pictures: a flat list gets cells with i/j pointing at them; a deque is drawn too', () => {
+  const code = [
+    'nums = [1, 3, 4, 6, 9]',
+    'i, j = 0, len(nums) - 1',
+    'while i < j:',
+    '    s = nums[i] + nums[j]',
+    '    if s == 10:',
+    '        break',
+    '    if s < 10:',
+    '        i += 1',
+    '    else:',
+    '        j -= 1',
+    'q = deque([1, 2, 3])',
+    'q.popleft()',
+  ].join('\n');
+  const result = trace({ code: 'from collections import deque\n' + code });
+  const at = result.steps.findIndex((s) => s.line === 4);
+  assert.deepEqual(view(result, at, 'nums'), { k: 'seq', v: ['1', '3', '4', '6', '9'], n: 5 });
+  assert.deepEqual([...pointers(result.steps[at].vars, 5)], [[0, ['i']], [4, ['j']]]);
+  // A half-open end (len) still points; past it, or a non-pointer name, doesn't.
+  assert.deepEqual([...pointers([['hi', '5'], ['r', '6'], ['n', '2'], ['lo', '-1']], 5)], [[5, ['hi']]]);
+  const last = result.steps.length - 1;
+  assert.deepEqual(view(result, last, 'q'), { k: 'seq', v: ['2', '3'], n: 2 });
+  // Strings are drawn as their characters; dicts as entries; one-character strings not at all.
+  const misc = trace({ code: 'w = "abc"\nc = {"a": 1, 2: [3]}\nz = "x"\nend = 0\n' });
+  const end = misc.steps.length - 1;
+  assert.deepEqual(view(misc, end, 'w'), { k: 'seq', v: ['a', 'b', 'c'], n: 3 });
+  assert.deepEqual(view(misc, end, 'c'), { k: 'dict', v: [["'a'", '1'], ['2', '[3]']], n: 2 });
+  assert.equal(view(misc, end, 'z'), undefined);
+});
+
+test('pictures: a reversed linked list shows prev and cur on different nodes, with the cut edge gone', () => {
+  const result = trace({
+    mode: 'leetcode',
+    entry: 'reverseList',
+    stdin: '[1,2,3]',
+    code: [
+      'class Solution:',
+      '    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:',
+      '        prev, cur = None, head',
+      '        while cur:',
+      '            nxt = cur.next',
+      '            cur.next = prev',
+      '            prev, cur = cur, nxt',
+      '        return prev',
+    ].join('\n'),
+  });
+  assert.equal(result.result, '[3,2,1]');
+  // Second time at "while cur": 1 is reversed off (prev), 2 -> 3 still ahead (cur).
+  const at = result.steps.map((s, i) => [s, i] as const).filter(([s]) => s.line === 4)[1][1];
+  const graph = nodeGraph(view(result, at, '#nodes') as NodesShape);
+  const holding = (name: string) => graph.nodes.find((n) => n.note?.split(',').includes(name));
+  assert.equal(holding('prev')?.label, '1');
+  assert.equal(holding('cur')?.label, '2');
+  assert.equal(holding('prev')?.state, 'active');
+  assert.deepEqual(graph.edges.map((e) => [e.from, e.to, e.directed]), [['1', '2', true]]);
+  // Two rows: the reversed part and the part still ahead.
+  assert.notEqual(holding('prev')?.y, holding('cur')?.y);
+});
+
+test('pictures: a cyclic list ends and draws its edge back; a tree is drawn whole from inside a recursive call', () => {
+  const cycle = trace({
+    code: [
+      'class ListNode:',
+      '    def __init__(self, val, next=None):',
+      '        self.val = val',
+      '        self.next = next',
+      'a, b, c = ListNode(1), ListNode(2), ListNode(3)',
+      'a.next, b.next, c.next = b, c, b',
+      'slow = fast = a',
+      'while fast and fast.next:',
+      '    slow, fast = slow.next, fast.next.next',
+      '    if slow is fast:',
+      '        break',
+    ].join('\n'),
+  });
+  assert.equal(cycle.error, null);
+  assert.equal(cycle.stopped, null);
+  const graph = nodeGraph(view(cycle, cycle.steps.length - 1, '#nodes') as NodesShape);
+  const node = (label: string) => graph.nodes.find((n) => n.label === label)!;
+  assert.equal(graph.nodes.length, 3);
+  assert.ok(graph.edges.some((e) => e.from === node('3').id && e.to === node('2').id));
+  assert.ok(node('3').x > node('2').x);
+  assert.equal(node('3').note, 'c,slow,fast');
+
+  const tree = trace({
+    mode: 'leetcode',
+    entry: 'maxDepth',
+    stdin: '[3,9,20,null,null,15,7]',
+    code: [
+      'class Solution:',
+      '    def maxDepth(self, root: Optional[TreeNode]) -> int:',
+      '        if not root:',
+      '            return 0',
+      '        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))',
+    ].join('\n'),
+  });
+  const deep = tree.steps.findIndex((s) => s.depth === 2 && s.vars.some(([n, v]) => n === 'root' && v.startsWith('TreeNode(val=15')));
+  const drawn = nodeGraph(view(tree, deep, '#nodes') as NodesShape);
+  assert.equal(drawn.nodes.length, 5);
+  assert.equal(drawn.edges.length, 4);
+  assert.deepEqual(drawn.nodes.filter((n) => n.state === 'active').map((n) => [n.label, n.note]), [['15', 'root']]);
+  // In-order left to right: 9 3 15 20 7.
+  assert.deepEqual([...drawn.nodes].sort((p, q) => p.x - q.x).map((n) => n.label), ['9', '3', '15', '20', '7']);
+});
+
+test('pictures: a 2-D dp table highlights exactly the cell the last line wrote; over 40 columns is not drawn', () => {
+  const code = ['n = 3', 'dp = [[0] * n for _ in range(n)]', 'for i in range(n):', '    for j in range(n):', '        dp[i][j] = i * n + j + 1', 'end = 0'].join('\n');
+  const result = trace({ code });
+  let checked = 0;
+  result.steps.forEach((step, k) => {
+    const before = result.steps[previousInFrame(result.steps, k)];
+    if (before?.line !== 5) return;
+    const vars = new Map(before.vars);
+    const dp = stepViews(result, k).find((v) => v.name === 'dp')!;
+    assert.deepEqual([...dp.changed], [`${vars.get('i')},${vars.get('j')}`]);
+    checked++;
+  });
+  assert.equal(checked, 9);
+  assert.deepEqual(view(result, result.steps.length - 1, 'dp'), {
+    k: 'grid',
+    v: [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']],
+  });
+  const wide = trace({ code: `t = [[0] * ${MAX_GRID + 1} for _ in range(2)]\nok = [[0] * ${MAX_GRID}] * 2\nend = 0\n` });
+  const end = wide.steps.length - 1;
+  assert.equal(view(wide, end, 't'), undefined);
+  assert.equal(view(wide, end, 'ok')?.k, 'grid');
+});
+
+test('pictures: snapshots are stored once, and stop for good past their size or time cap', () => {
+  const same = trace({ code: 'xs = [1, 2]\nfor _ in range(5):\n    pass\n' });
+  assert.equal(same.shapes.length, 1);
+  assert.equal(Object.values(same.views).filter((pairs) => pairs[0][1] === 0).length > 5, true);
+  assert.equal(same.shapesCut, null);
+
+  // Every write makes a new ~3.6 KB table: past 1.5 MB the rest of the steps go without.
+  const big = trace({
+    code: 'g = [[100000] * 40 for _ in range(10)]\nfor k in range(3000):\n    g[k % 10][k % 40] = 100000 + k\n',
+    maxMs: 60000,
+  });
+  const cut = big.shapesCut!;
+  assert.equal(Number.isInteger(cut), true);
+  assert.equal(big.shapes.join('').length <= 1_500_000, true);
+  assert.equal(new Set(big.shapes).size, big.shapes.length);
+  assert.ok(big.views[cut - 1]);
+  assert.equal(Object.keys(big.views).every((key) => Number(key) < cut), true);
+  assert.equal(big.steps.length > cut, true);
+
+  // Pictures that eat 30% of the time limit stop too, and the text trace goes on.
+  const slow = trace({ code: 'g = [[k] * 40 for k in range(40)]\nk = 0\nwhile True:\n    k += 1\n    g[k % 40][0] = k\n', maxMs: 300, maxSteps: 10 ** 9 });
+  assert.equal(slow.stopped, 'time');
+  assert.equal(slow.shapesCut !== null && slow.shapesCut < slow.steps.length, true);
+});
+
+test('parseShape and parseTrace refuse snapshots that point outside themselves', () => {
+  assert.deepEqual(parseShape('{"k":"nodes","n":[["1",-1,-1,-1]],"p":[["a",0]]}'), { k: 'nodes', n: [['1', -1, -1, -1]], p: [['a', 0]] });
+  assert.equal(parseShape('{"k":"nodes","n":[["1",1,-1,-1]],"p":[]}'), null);
+  assert.equal(parseShape('{"k":"nodes","n":[["1",-1,-1,-1]],"p":[["a",-1]]}'), null);
+  assert.equal(parseShape('{"k":"seq","v":["1",2],"n":2}'), null);
+  assert.equal(parseShape('{"k":"seq","v":["1","2"],"n":1}'), null);
+  assert.equal(parseShape('{"k":"grid","v":[]}'), null);
+  assert.equal(parseShape('{"k":"other"}'), null);
+  assert.equal(parseShape('not json'), null);
+  const parsed = parseTrace(
+    JSON.stringify({
+      steps: ['junk', [1, 0, 1, 'f', 0, 0, []], [2, 0, 1, 'f', 0, 0, []]],
+      shapes: ['{"k":"seq","v":["1"],"n":1}', 7],
+      // Raw step 1 is kept step 0; index 5 is no shape; raw step 0 was dropped.
+      views: { '0': [['a', 0]], '1': [['a', 0], ['b', 5], ['c', 1]], '2': [[3, 0]], x: [['a', 0]] },
+      shapesCut: 'soon',
+    }),
+  );
+  assert.deepEqual(parsed.views, { 0: [['a', 0], ['c', 1]] });
+  assert.equal(parsed.shapesCut, null);
+  assert.equal(shapeAt(parsed.shapes, 1), null);
+  assert.deepEqual(shapeAt(parsed.shapes, 0), { k: 'seq', v: ['1'], n: 1 });
+  assert.equal(shapeAt(parsed.shapes, 9), null);
 });

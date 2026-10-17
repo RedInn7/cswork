@@ -329,6 +329,11 @@ _ROWS = {list, tuple}
 _LINKS = ('next', 'left', 'right')
 
 
+def _brief(value):
+    # Plain repr for scalars: reprlib is several times slower, and this runs every step.
+    return _cut(repr(value) if type(value) in _SCALARS else _show(value), 24)
+
+
 def _shape(value):
     """A picture of one value as JSON (cells are reprs), or None: a flat sequence (a string as
     its characters), a 2-D table up to 40 x 40, or a dict's first 30 entries."""
@@ -349,8 +354,7 @@ def _shape(value):
                     return None
                 data = {'k': 'seq', 'v': list(map(repr, head)), 'n': len(value)}
         elif isinstance(value, dict):
-            data = {'k': 'dict', 'v': [[_cut(_show(k), 24), _cut(_show(v), 24)] for k, v in _islice(value.items(), 30)],
-                    'n': len(value)}
+            data = {'k': 'dict', 'v': [[_brief(k), _brief(v)] for k, v in _islice(value.items(), 30)], 'n': len(value)}
         else:
             return None
         text = _json.dumps(data, ensure_ascii=False, separators=(',', ':'))
