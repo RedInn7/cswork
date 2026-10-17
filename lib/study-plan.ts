@@ -502,6 +502,7 @@ export function buildPlan({
   const marked = new Map<string, Pick<PlanDay, 'problems' | 'sprintFor' | 'event' | 'mock'>>();
   const used = new Set<string>();
   for (const s of sprints.flatMap((group) => group.events)) {
+    // ponytail: two dates on one day mark the day with the first; the sprints still split for both.
     if (!marked.has(s.date)) marked.set(s.date, { problems: [], event: s });
     const days = [...s.days];
     if (s.preset && days.length >= 3 && days.at(-1) === addDays(s.date, -1))
