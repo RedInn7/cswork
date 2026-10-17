@@ -25,6 +25,13 @@ export function H1bSource({ zh, data = H1B, className }: { zh: boolean; data?: t
 export function H1bPanel({ slug, zh, data = H1B }: { slug: string; zh: boolean; data?: typeof H1B }) {
   const c = h1bCompany(slug, data);
   if (!c) return null;
+  // The build lists the most approved names only.
+  const shown =
+    c.employerCount > c.employers.length
+      ? zh
+        ? `前 ${c.employers.length} / 共 ${c.employerCount}`
+        : `top ${c.employers.length} of ${c.employerCount}`
+      : c.employerCount;
   return (
     <section className="company-hub-section" aria-labelledby="h1b">
       <div className="company-hub-section-head">
@@ -64,7 +71,7 @@ export function H1bPanel({ slug, zh, data = H1B }: { slug: string; zh: boolean; 
       <H1bSource zh={zh} data={data} className="company-h1b-note" />
       {!!c.employers.length && (
         <details className="company-hub-sources company-h1b-employers">
-          <summary>{zh ? `计入的雇主名称（${c.employers.length}）` : `Employer names counted (${c.employers.length})`}</summary>
+          <summary>{zh ? `计入的雇主名称（${shown}）` : `Employer names counted (${shown})`}</summary>
           <ul>
             {c.employers.map((name) => (
               <li key={name}>{name}</li>

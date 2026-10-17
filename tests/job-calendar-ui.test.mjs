@@ -19,6 +19,11 @@ const mocks = {
   'next/headers': `export const cookies = async () => ({ get: (k) => (k === 'cswork_locale' && globalThis.__zh ? { value: 'zh' } : undefined) }); export const headers = async () => new Headers();`,
   '@/lib/server/learner-cloud': `export const reportCompanies = () => [{ slug: 'jane', name: 'Jane Street' }, { slug: 'ramp', name: 'Ramp' }, { slug: 'stripe', name: 'Stripe' }];`,
   '@/lib/server/auth': `export const person = async () => globalThis.__viewer ?? null;`,
+  // H-1B data the test switches on and off (globalThis.__h1b), whatever the committed file holds.
+  '@/lib/server/h1b': `globalThis.__h1b ??= { updated: null, source: '', sourceUrl: '', fiscalYears: [], companies: {} };
+export const H1B = globalThis.__h1b;
+export const h1bCompany = (slug) => (Object.hasOwn(H1B.companies, slug) ? H1B.companies[slug] : null);
+export const h1bPaths = () => (H1B.fiscalYears.length ? [{ path: '/career/h1b', updatedAt: H1B.updated }] : []);`,
 };
 // On Node >= 22.22.3, tsx resolves the @/ aliases in-thread (module.registerHooks) before this hook
 // runs, so it sees the file URL instead: an @/ mock also matches what its specifier resolves to.
@@ -131,6 +136,16 @@ test('/career/jobs: tech roles by default, a saved search or the profile role wh
   const page = doc(await Jobs({ searchParams: Promise.resolve({ h1b: '1' }) }));
   assert.equal(page.querySelector('input[name="h1b"]'), null);
   assert.equal(page.querySelectorAll('.job-openings-title').length, 2);
+  // With data: the filter shows, ?h1b=1 keeps sponsors' roles only, and each carries the badge.
+  const year = (newApproved) => ({ years: [{ fy: 2025, newApproved, newDenied: 0, contApproved: 0, contDenied: 0 }], employers: [] });
+  Object.assign(globalThis.__h1b, { updated: '2026-10-17', fiscalYears: [2025], companies: { stripe: year(1200) } });
+  const sponsored = doc(await Jobs({ searchParams: Promise.resolve({ h1b: '1' }) }));
+  assert.ok(sponsored.querySelector('input[name="h1b"][checked]'));
+  assert.deepEqual([...sponsored.querySelectorAll('.job-openings-title')].map((a) => a.textContent), ['Machine Learning Engineer, New Grad', SWE]);
+  assert.match(sponsored.querySelector('.job-openings-facts').textContent, /H-1B: 1,200 new approvals in FY2025/);
+  globalThis.__h1b.companies = { ramp: year(50) };
+  assert.deepEqual(await titles({ h1b: '1' }), []);
+  Object.assign(globalThis.__h1b, { updated: null, fiscalYears: [], companies: {} });
   // Signed in with a target role: it picks the role filter, and says so.
   const db = sqlite();
   db.prepare("INSERT INTO user_profiles(user_id,handle,target_role,created_at,updated_at) VALUES('u1','u-one','ML engineer',1,1)").run();
