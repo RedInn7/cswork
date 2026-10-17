@@ -266,6 +266,14 @@ export function SubmissionResult({
     ['accepted', 'finished'].includes(item.status),
   ).length;
   const skippedCases = cases.filter((item) => item.status === 'skipped').length;
+  // Correct but too slow: every correctness case passed and the performance cases failed only on time.
+  const groups = !running ? submission.groups : undefined;
+  const tooSlow =
+    groups?.correctness === 100 &&
+    groups.performance < 100 &&
+    cases
+      .filter((item) => item.group === 'performance' && !['accepted', 'skipped'].includes(item.status))
+      .every((item) => item.status === 'time_limit');
   const runtime =
     submission.runtimeMs ??
     (typeof submission.runtime === 'number' ? submission.runtime * 1000 : null);
@@ -293,6 +301,22 @@ export function SubmissionResult({
                   <>
                     {' '}
                     · {t(`${skippedCases} 个未运行`, `${skippedCases} skipped`)}
+                  </>
+                )}
+                {submission.allCases && submission.score != null && (
+                  <>
+                    {' '}
+                    · {t(`得分 ${submission.score}/100（按权重）`, `Score ${submission.score}/100 (weighted)`)}
+                  </>
+                )}
+                {groups && (
+                  <>
+                    {' '}
+                    ·{' '}
+                    {t(
+                      `正确性 ${groups.correctness}% · 性能 ${groups.performance}%`,
+                      `Correctness ${groups.correctness}% · Performance ${groups.performance}%`,
+                    )}
                   </>
                 )}
               </>
@@ -359,9 +383,22 @@ export function SubmissionResult({
       )}
       {(submission.mode === 'judge' || submission.mode === 'drill') && firstFailure >= 0 && skippedCases > 0 && (
         <p className="cs-result-message">
+          {submission.allCases
+            ? t(
+                '超时或超限的用例满 3 个，剩下的没有运行。',
+                'Three test cases hit a time, memory or output limit, so the rest were not run.',
+              )
+            : t(
+                '发现未通过的测试点，已停止后续评测。下方可查看失败原因。',
+                'A test case failed, so judging stopped early. See why below.',
+              )}
+        </p>
+      )}
+      {tooSlow && (
+        <p className="cs-result-message">
           {t(
-            '发现未通过的测试点，已停止后续评测。下方可查看失败原因。',
-            'A test case failed, so judging stopped early. See why below.',
+            '正确但太慢：正确性测试点全部通过，较大的性能测试点超时了。试试时间复杂度更低的做法。',
+            'Correct but too slow: every correctness case passed, but the larger performance cases timed out. Try an approach with lower time complexity.',
           )}
         </p>
       )}
@@ -384,7 +421,12 @@ export function SubmissionResult({
                     '提交已收到，正在等待评测资源。你可以继续编辑。',
                     'Submission received, waiting for a judge. You can keep editing.',
                   )
-                : submission.mode === 'judge'
+                : submission.mode === 'judge' && submission.allCases
+                  ? t(
+                      '正在逐项检查；会跑完全部测试点并按权重计分。',
+                      'Checking test cases one by one. Every case runs and the score is weighted.',
+                    )
+                  : submission.mode === 'judge'
                   ? t(
                       '正在逐项检查；全部通过才会显示通过，遇到错误立即停止并显示结果。',
                       'Checking test cases one by one. Accepted shows only if all pass; judging stops at the first failure.',
@@ -409,8 +451,8 @@ export function SubmissionResult({
                 role="tab"
                 aria-selected={selected === index}
                 aria-label={t(
-                  `测试点 ${test.ordinal + 1}：${verdict(test.status, submission.mode)[0]}`,
-                  `Test case ${test.ordinal + 1}: ${verdict(test.status, submission.mode)[1]}`,
+                  `${test.group === 'performance' ? '性能 ' : ''}测试点 ${test.ordinal + 1}：${verdict(test.status, submission.mode)[0]}`,
+                  `${test.group === 'performance' ? 'Performance ' : ''}test case ${test.ordinal + 1}: ${verdict(test.status, submission.mode)[1]}`,
                 )}
                 aria-controls={`case-result-${submission.id}`}
                 id={`case-${submission.id}-${index}`}
@@ -420,6 +462,7 @@ export function SubmissionResult({
               >
                 <span className="cs-case-dot" />
                 {test.hidden ? <LockKeyhole size={12} /> : null}
+                {test.group === 'performance' && <strong>{t('性能', 'Perf')}</strong>}
                 {t('测试点', 'Case')} {test.ordinal + 1}
                 {' · '}
                 {t(...verdict(test.status, submission.mode))}
