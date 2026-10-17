@@ -316,9 +316,12 @@ export function ProblemNotes({
     const at = area.current?.selectionStart ?? text.length;
     const end = area.current?.selectionEnd ?? at;
     const before = text.slice(0, at);
-    // Its ## headings need a line of their own.
+    // Its ## headings need a line of their own, and what follows must not join its last line (a closing
+    // `#` would turn "## Pattern" into "### Pattern" and "Two pointers" into the tag #two).
     const gap = before && !before.endsWith('\n') ? '\n\n' : '';
-    note.edit(before + gap + template + text.slice(end));
+    const rest = text.slice(end);
+    const tail = rest && !rest.startsWith('\n') ? '\n\n' : '';
+    note.edit(before + gap + template + tail + rest);
     setPreview(false);
     setSaid('');
     requestAnimationFrame(() => {

@@ -156,7 +156,7 @@ test('the template goes in at the cursor and [[lc-42]] previews as a link, with 
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { useProblemNote, ProblemNotes } = await import('../components/problem-notes.tsx');
-  const { PROBLEM_TEMPLATE } = await import('../lib/note-meta.ts');
+  const { PROBLEM_TEMPLATE, parseNoteMeta } = await import('../lib/note-meta.ts');
   const notes = { 'problem:lc-1': 'first line\nsecond', 'pref:note-template': '' };
   const requests = [];
   const originalFetch = globalThis.fetch;
@@ -191,13 +191,15 @@ test('the template goes in at the cursor and [[lc-42]] previews as a link, with 
     area().setSelectionRange(0, 0);
     await click('Insert template');
     await wait(5);
-    assert.ok(area().value.startsWith('## Minefirst line'));
+    assert.ok(area().value.startsWith('## Mine\n\nfirst line'), 'the line after it stays its own');
+    assert.equal(area().selectionStart, '## Mine'.length);
     // A broken saved template falls back to the built-in one.
     notes['pref:note-template'] = '{"problem":7}';
     area().setSelectionRange(0, 0);
     await click('Insert template');
     await wait(5);
-    assert.ok(area().value.startsWith(PROBLEM_TEMPLATE.en));
+    assert.ok(area().value.startsWith(`${PROBLEM_TEMPLATE.en}\n\n## Mine\n`), 'its closing # leaves the heading after it alone');
+    assert.deepEqual(parseNoteMeta(area().value).tags, [], 'and makes no tag of it');
     await click('Set as my template');
     assert.equal(JSON.parse(notes['pref:note-template']).problem, area().value);
     assert.match(document.querySelector('.cs-notes-tools [role="status"]').textContent, /Saved as your template/);
