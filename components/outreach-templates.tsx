@@ -37,6 +37,7 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
   const [id, setId] = useState(OUTREACH_TEMPLATES[0].id);
   // The message's language, which may differ from the site's.
   const [lang, setLang] = useState<'zh' | 'en'>(zh ? 'zh' : 'en');
+  const msgLang = lang === 'zh' ? 'zh-CN' : 'en';
   const [values, setValues] = useState<Values>({});
   const [applications, setApplications] = useState<Application[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -173,13 +174,13 @@ export function OutreachTemplates({ zh, signedIn }: { zh: boolean; signedIn: boo
         </fieldset>
       </form>
 
-      <section className="outreach-preview" aria-labelledby="outreach-preview-title" lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+      <section className="outreach-preview" aria-labelledby="outreach-preview-title">
         <h2 id="outreach-preview-title">{t('预览', 'Preview')}</h2>
         <p className="outreach-subject">
           <strong>{t('主题：', 'Subject: ')}</strong>
-          {marked(subject)}
+          <span lang={msgLang}>{marked(subject)}</span>
         </p>
-        <div className="outreach-body">{marked(body)}</div>
+        <div className="outreach-body" lang={msgLang}>{marked(body)}</div>
         <small>
           {t('高亮的部分还要你自己填写或改写。', 'Highlighted parts are still yours to fill in or rewrite.')}
         </small>

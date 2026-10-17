@@ -132,6 +132,9 @@ test('templates: filled from the contact in the address and its card, copied and
   assert.equal(field('Interview date').value, '2099-03-04');
   await setValue(field('Message language'), 'zh', 'change');
   const body = document.querySelector('.outreach-body').textContent;
+  // Only the message takes its language; the preview's own labels keep the site's.
+  assert.equal(document.querySelector('.outreach-body').lang, 'zh-CN');
+  assert.equal(document.querySelector('.outreach-preview').getAttribute('lang'), null);
   assert.ok(body.startsWith('Sam，您好：') && body.includes('感谢您 2099-03-04 抽时间') && body.trimEnd().endsWith('Ada'), body);
   await act(async () => button('Copy body').click());
   await settle();
@@ -168,8 +171,16 @@ test('checklist: ticks stay in the browser signed out and move to the note on th
   const render = () => act(async () => root.render(createElement(GuideChecklist, { slug: 'resume', items, zh: false })));
   const box = (i) => document.querySelectorAll('.guide-checklist input[type="checkbox"]')[i];
   signedIn = false;
+  // Held until we know where ticks go, so the load can't overwrite one made meanwhile.
+  const realFetch = globalThis.fetch;
+  let release;
+  globalThis.fetch = (...args) => new Promise((done) => (release = () => done(realFetch(...args))));
   await render();
+  assert.equal(box(0).disabled, true, 'no ticks while the account is loading');
+  globalThis.fetch = realFetch;
+  release();
   await settle();
+  assert.equal(box(0).disabled, false);
   assert.equal(document.querySelector('.guide-checklist output').textContent, `0% done (0/${items.length})`);
   await act(async () => box(1).click());
   await act(async () => box(0).click());
