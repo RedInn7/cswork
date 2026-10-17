@@ -1,6 +1,6 @@
 // Practicing without the AI: answer steps with their own clocks, "Outline by steps", rapid-fire
-// questions that move on at 90 seconds, a coding question's follow-ups one part at a time, and the
-// key points ticked off against the answer, counted on the summary.
+// questions that move on at 90 seconds (once), a coding question's follow-ups one part at a time and
+// kept once answered, and the key points ticked off against the answer, counted on the summary.
 import assert from 'node:assert/strict';
 import { test, beforeEach } from 'node:test';
 import { register } from 'node:module';
@@ -28,19 +28,25 @@ Date.now = () => realNow() + skew;
 const { createRoot } = await import('react-dom/client');
 const { MockInterview } = await import('../components/mock-interview.tsx');
 
-const FUNDAMENTALS = 'Software Engineering Fundamentals';
+const FUNDAMENTALS = 'Rapid-fire Fundamentals';
 const item = (id, title, category, extra = {}) => ({
   id, type: 'interview_question', slug: id, title, company: null, role: null, round: null, category, difficulty: null, problem: null,
   math: false, principles: [], question: `${title}?`, hints: '', followUps: '', rubric: '', solution: '', ...extra,
 });
+// A rapid-fire question is one of the MCQ bank's, in both languages (lib/server/mock-interview.ts rapidQuestion).
+const mcq = (id, title, answer) =>
+  item(id, title, FUNDAMENTALS, {
+    type: 'mcq', titleZh: `${title}（中）`, question: '- A. one\n- B. two\n\nPick your answer and say why in a sentence or two.',
+    questionZh: '- A. 一\n- B. 二\n\n选出答案，用一两句话说明理由。', solution: `- Answer: ${answer}\n- Because.`, solutionZh: `- 答案：${answer}\n- 因为。`,
+  });
 const rapid = (k, it) => ({ kind: 'design', category: FUNDAMENTALS, minutes: 1.5, rapid: 2, name: [`快问快答 ${k}/2`, `Rapid-fire ${k}/2`], similar: false, pool: 40, item: it });
 const set = {
   seed: 'r4p1d000',
   rerolls: [],
   template: { id: 'screen-rapid', name: ['快问快答 + 多段编程电面', 'Rapid-fire + multi-part coding screen'] },
   slots: [
-    rapid(1, item('iq-tcp', 'TCP vs UDP', FUNDAMENTALS, { hints: 'Think of streams.', rubric: '- Reliable delivery\n- Ordering\n- Connection setup cost' })),
-    rapid(2, item('iq-dns', 'How does DNS resolve a name', FUNDAMENTALS)),
+    rapid(1, mcq('mcq-network-1', 'Which protocol is connectionless?', 'B. UDP')),
+    rapid(2, mcq('mcq-os-1', 'What do threads share?', 'A. The heap')),
     { kind: 'analytics', minutes: 15, similar: false, pool: 40, item: item('iq-ab', 'Design an A/B test for a new checkout button', 'Analytics & Experimentation') },
     {
       kind: 'coding', minutes: 35, parts: true, name: ['多段编程题', 'Multi-part coding'], similar: false, pool: 40,
@@ -81,6 +87,11 @@ const mount = async (params) => {
 };
 const states = () => [...document.querySelectorAll('.mi-guide-steps li')].map((li) => li.dataset.state);
 const rail = (n) => click(document.querySelectorAll('.mi-rail button')[n - 1]);
+const type = (el, value) =>
+  act2(() => {
+    Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set.call(el, value);
+    el.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  });
 const saved = (mode = 'solo') => JSON.parse(localStorage.getItem('cswork:mock-interview:runs'))[`${mode}:template=screen-rapid&set=${set.seed}`];
 
 beforeEach(() => {
@@ -117,6 +128,11 @@ test('answer steps advance on next and skip, each on its own clock; outline by s
       '## 1. Hypothesis (2′)\n\n## 2. Metrics and guardrails (3′)\n\n## 3. Randomization unit (2′)\n\n## 4. Sample size (3′)\n\n## 5. Duration (2′)\n\n## 6. Risks (3′)\n',
     );
     assert.equal(button('Outline by steps'), undefined);
+    // The headings alone are not an answer: the reference stays behind "try first".
+    assert.ok(button('Show the answer'));
+    assert.equal(button('Compare with the reference answer'), undefined);
+    await type($('.ip-try-input'), `${$('.ip-try-input').value}Checkout conversion should rise.`);
+    assert.ok(button('Compare with the reference answer'));
 
     // The multi-part coding question shows its follow-ups only as their part comes up.
     await rail(4);
@@ -126,9 +142,12 @@ test('answer steps advance on next and skip, each on its own clock; outline by s
     await click(button('Next step'));
     assert.match(text('.mi-guide-now'), /Step 2: Part 2.*\/ 9′What if the array is sorted\?/);
     assert.doesNotMatch(document.body.textContent, /And three numbers/);
+    // An answered part stays under the question.
     await click(button('Next step'));
+    assert.match(text('.mi-question'), /Part 2\s*What if the array is sorted\?$/);
     await click(button('Next step'));
     assert.match(text('#mi-guide-title'), /All 3 steps done/);
+    assert.match(text('.mi-question'), /Part 2\s*What if the array is sorted\?\s*Part 3\s*And three numbers\?$/);
   } finally {
     await act(async () => root.unmount());
   }
@@ -153,6 +172,11 @@ test('a rapid-fire question moves on at 90 seconds while the clock runs, without
     await click(button('Start the clock'));
     assert.match(text('.mi-stage-kicker'), /^Question 1 of 4 · 1\.5 min suggested/);
     assert.equal(button('Show a hint'), undefined);
+    // Notes on this device, no answer until the interview is over, no library link.
+    assert.ok($('.mi-notes textarea'));
+    assert.equal($('.ip-try-input'), null);
+    assert.equal(button('Compare with the reference answer'), undefined);
+    assert.equal($('.mi-question-foot'), null);
     await later(60);
     assert.match(text('.mi-stage-kicker'), /^Question 1 of 4/);
     await later(31);
@@ -173,6 +197,14 @@ test('a rapid-fire question moves on at 90 seconds while the clock runs, without
     assert.match(text('.mi-stage-up'), /Time's up/);
     const elapsed = saved().elapsed;
     assert.ok(elapsed[0] >= 90 && elapsed[0] < 95, String(elapsed[0]));
+    // Going back to a question whose time ran out stays there: it moved on once already.
+    await click(button('Previous'));
+    await later(1);
+    assert.match(text('.mi-stage-kicker'), /^Question 2 of 4/);
+    await rail(1);
+    await later(1);
+    assert.match(text('.mi-stage-kicker'), /^Question 1 of 4/);
+    assert.deepEqual(saved().expired, [0, 1]);
   } finally {
     await act(async () => root.unmount());
   }
@@ -184,26 +216,26 @@ test('key points ticked after the answer opens show on the summary; the intervie
     await click(button('Start the clock'));
     await rail(4);
     await click(button('Finish'));
-    // Reviewed after the interview, a rapid-fire question is untimed and has its hint back.
+    // Reviewed after the interview, a rapid-fire question is untimed and opens its answer.
     await click(button('Review questions & answers'));
     assert.match(text('.mi-stage-kicker'), /^Question 1 of 4/);
-    assert.ok(button('Show a hint'));
     assert.equal($('.recall-points'), null);
-    await click(button('Show the answer'));
-    await click(button('Show it anyway'));
-    assert.equal(text('.mi-reveal .recall-points legend'), 'Key points you covered (0 of 3)');
+    await click(button('Compare with the reference answer'));
+    assert.match(text('.mi-solution'), /Answer: B\. UDP/);
+    assert.equal(text('.mi-reveal .recall-points legend'), 'Key points you covered (0 of 2)');
     const boxes = document.querySelectorAll('.mi-reveal .recall-points input');
-    await click(boxes[2]);
-    await click(boxes[0]);
-    assert.equal(text('.mi-reveal .recall-points legend'), 'Key points you covered (2 of 3)');
-    assert.deepEqual(saved().checked, { 0: [0, 2] });
+    await click(boxes[1]);
+    assert.equal(text('.mi-reveal .recall-points legend'), 'Key points you covered (1 of 2)');
+    assert.deepEqual(saved().checked, { 0: [1] });
+    // The review shows every part of the multi-part question.
     await rail(4);
+    assert.match(text('.mi-question'), /Part 2\s*What if the array is sorted\?\s*Part 3\s*And three numbers\?$/);
     await click(button('Finish'));
     const head = [...document.querySelectorAll('.mi-table th')].map((th) => th.textContent);
     assert.equal(head.at(-1), 'Key points');
     const cells = [...document.querySelectorAll('.mi-table tbody tr')].map((tr) => tr.lastElementChild.textContent);
     // No rubric on the A/B question: its six steps are the points.
-    assert.deepEqual(cells, ['2/3', '—', '0/6', '0/3']);
+    assert.deepEqual(cells, ['1/2', '0/2', '0/6', '0/3']);
   } finally {
     await act(async () => root.unmount());
   }
@@ -215,7 +247,8 @@ test('key points ticked after the answer opens show on the summary; the intervie
     assert.match(steps[1].textContent, /Part 1 · 17′ .*Part 2 · 9′ What if the array is sorted\?Part 3 · 9′ And three numbers\?/);
     const legends = [...document.querySelectorAll('.mi-sheet-slot .recall-points legend')].map((l) => l.textContent);
     assert.deepEqual(legends, [
-      'Key points the candidate covered (0 of 3)',
+      'Key points the candidate covered (0 of 2)',
+      'Key points the candidate covered (0 of 2)',
       'Key points the candidate covered (0 of 6)',
       'Key points the candidate covered (0 of 3)',
     ]);

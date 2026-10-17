@@ -61,6 +61,8 @@ type Item = {
   followUps: string;
   rubric: string;
   solution: string;
+  /** A rapid-fire question's answer in Chinese (it has both languages). */
+  solutionZh?: string;
   /** A multi-part coding question's follow-ups, asked as its later parts (questions only). */
   parts?: { q: Text }[];
 };
@@ -99,6 +101,8 @@ type Run = {
   speech?: Record<number, Segment[]>;
   /** Solo and interviewer: the key points ticked off per question (pointsOf indices). */
   checked?: Record<number, number[]>;
+  /** Rapid-fire questions that moved on when their time ran out: going back to one stays there. */
+  expired?: number[];
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
 type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
@@ -1031,7 +1035,8 @@ function Clock({ seconds, minutes, running, onToggle, onReset }: { seconds: numb
   );
 }
 
-function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; problemIds: string[]; showSource: boolean }) {
+/** `parts`: a multi-part question's follow-ups already answered, kept under the question. */
+function QuestionCard({ slot, problemIds, showSource, parts }: { slot: DrawnSlot; problemIds: string[]; showSource: boolean; parts?: Text[] }) {
   const t = useT();
   const item = slot.item;
   if (!item)
@@ -1041,13 +1046,18 @@ function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; probl
       </div>
     );
   const judge = item.problem && problemIds.includes(item.problem) ? item.problem : null;
-  const design = slot.kind === 'design';
+  const design = slot.kind === 'design' && !slot.rapid;
+  // A rapid-fire question comes from the MCQ bank, not the library.
+  const source = showSource && item.type !== 'mcq';
   return (
     <article className="rd-card mi-question">
       <SlotBadges slot={slot} />
       <h2>{t(item.titleZh ?? item.title, item.title)}</h2>
       <OaMarkdown body={t(item.questionZh ?? item.question, item.question)} math={item.math} />
-      {(judge || showSource || design) && (
+      {!!parts?.length && (
+        <OaMarkdown body={parts.map((q, i) => t(`### 第 ${i + 2} 部分\n\n${q[0]}`, `### Part ${i + 2}\n\n${q[1]}`)).join('\n\n')} math={item.math} />
+      )}
+      {(judge || source || design) && (
         <div className="mi-question-foot mi-noprint">
           {design && (
             <a className="rd-button is-quiet" href="/system-design/framework" target="_blank" rel="noopener">
@@ -1060,7 +1070,7 @@ function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; probl
               <Code2 size={14} aria-hidden="true" /> {t('在线写代码', 'Write & run code here')} <ExternalLink size={12} aria-hidden="true" />
             </a>
           )}
-          {showSource && (
+          {source && (
             <a
               className="rd-button is-quiet"
               href={`/?view=content&type=${encodeURIComponent(item.type)}&slug=${encodeURIComponent(item.slug)}`}
@@ -1122,7 +1132,7 @@ const scaffoldOf = (steps: GuideStep[] | null, t: T) =>
     : undefined;
 /** What to tick off against an answer: the rubric's or the reference answer's key points, else the answer steps'. */
 const pointsOf = (item: Item, steps: GuideStep[] | null, t: T) => {
-  const points = keyPoints(item.rubric, item.solution);
+  const points = keyPoints(item.rubric, t(item.solutionZh ?? item.solution, item.solution));
   return points.length ? points : (steps ?? []).map((s) => t(...s.points));
 };
 
@@ -1147,7 +1157,7 @@ function Guide({ item }: { item: Item }) {
         <section className="mi-solution" data-open={full || undefined}>
           <h3>{t('参考答案', 'Reference answer')}</h3>
           <div className="mi-solution-body">
-            <OaMarkdown body={item.solution} math={item.math} />
+            <OaMarkdown body={t(item.solutionZh ?? item.solution, item.solution)} math={item.math} />
           </div>
           {!full && (
             <button type="button" className="rd-button is-quiet mi-noprint" onClick={() => setFull(true)}>
@@ -1280,10 +1290,11 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
   // A rapid-fire question moves on by itself when its time is up, while the clock runs; after the
   // interview its review is untimed.
   const rapid = !!slot?.rapid && !run.finished;
-  const due = rapid && run.since !== null && !last && seconds >= (slot?.minutes ?? Infinity) * 60;
+  // Once per question: one gone back to after its time ran out stays.
+  const due = rapid && run.since !== null && !last && !run.expired?.includes(run.index) && seconds >= (slot?.minutes ?? Infinity) * 60;
   const index = run.index;
   useEffect(() => {
-    if (due) setRun((r) => (r.index === index ? { ...commit(r), index: index + 1 } : r));
+    if (due) setRun((r) => (r.index === index ? { ...commit(r), index: index + 1, expired: [...(r.expired ?? []), index] } : r));
   }, [due, index, setRun]);
   if (!slot) return null;
   const code = slot.kind === 'coding' || slot.kind === 'sql';
@@ -1300,6 +1311,8 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
     });
   const scaffold = scaffoldOf(steps, t);
   const checked = run.checked?.[run.index] ?? [];
+  // A multi-part question's finished follow-ups stay under it; all of them in the review.
+  const parts = item?.parts?.slice(0, run.finished ? undefined : Math.max(0, guide.done.length - 1)).map((p) => p.q);
   return (
     <>
       <SetHead data={data} query={query} mode={mode} />
@@ -1343,7 +1356,7 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
       )}
       <div className="mi-work">
         <div className="mi-work-main">
-          <QuestionCard slot={slot} problemIds={problemIds} showSource={solo && !!shown.answer} />
+          <QuestionCard slot={slot} problemIds={problemIds} showSource={solo && !!shown.answer} parts={parts} />
           {solo && item && shown.answer && (
             <section className="rd-card mi-reveal" id="mi-reveal">
               <Guide item={item} />
@@ -1365,7 +1378,7 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
                 text={`${item.title}\n${item.question}`}
               />
             )}
-            {solo ? (
+            {solo && item.type !== 'mcq' ? (
               // Solo: the answer is written before the reference opens; saved per question when signed in.
               <TryFirst
                 key={`${item.type}/${item.slug}`}
@@ -1386,6 +1399,14 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
                 onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } }))}
                 scaffold={scaffold}
               />
+            )}
+            {/* A rapid-fire question has no library page to save an answer to: notes, and its answer after the interview. */}
+            {solo && item.type === 'mcq' && !rapid && !shown.answer && (
+              <div className="mi-reveals">
+                <button type="button" className="rd-button" onClick={() => show('answer')}>
+                  <Eye size={14} aria-hidden="true" /> {t('对照参考答案', 'Compare with the reference answer')}
+                </button>
+              </div>
             )}
             {solo && item.hints && !shown.hint && !rapid && (
               <div className="mi-reveals">

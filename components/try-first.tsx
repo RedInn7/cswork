@@ -6,6 +6,9 @@ import { AnswerGrade, GRADE_MIN, GRADEABLE } from './answer-grade';
 import { useNote } from './problem-notes';
 import '@/app/interview-prep.css';
 
+/** Something written: the step headings alone ("Outline by steps") are not an answer yet. */
+const wrote = (text: string) => text.split('\n').some((line) => line.trim() && !/^##\s/.test(line.trim()));
+
 /**
  * "Write your answer first": the learner's answer to a question, saved as their note on it
  * (`content:<type>/<slug>`), above a reference answer that stays closed until they compare.
@@ -43,6 +46,7 @@ export function TryFirst({
   const note = useNote(userId, target, 800, local?.value);
   const guest = !userId;
   const text = guest && local ? local.value : note.text;
+  const tried = wrote(text);
   // A guest's answer also goes to the note, which saves it to the account on sign-in.
   const edit = (value: string) => {
     if (guest) local?.onChange(value);
@@ -59,7 +63,7 @@ export function TryFirst({
   useEffect(() => {
     if (checked.current || note.state === 'loading') return;
     checked.current = true;
-    if (revealOnLoad && !revealed && note.text.trim()) onReveal(false);
+    if (revealOnLoad && !revealed && wrote(note.text)) onReveal(false);
   }, [note.state, note.text, revealOnLoad, revealed, onReveal]);
 
   const status =
@@ -156,12 +160,12 @@ export function TryFirst({
           </p>
           {/* Above the reference answer, which it leaves closed. */}
           {!guest && gradeable && GRADEABLE.test(target) && (
-            <AnswerGrade ready={text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
+            <AnswerGrade ready={tried && text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
           )}
         </>
       )}
       {!revealed &&
-        (text.trim() ? (
+        (tried ? (
           <button type="button" className="rd-button ip-try-go" onClick={() => onReveal(true)}>
             <Eye size={14} aria-hidden="true" /> {t('对照参考答案', 'Compare with the reference answer')}
           </button>
