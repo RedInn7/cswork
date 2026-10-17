@@ -79,7 +79,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
         ))}
       </nav>
       <p className="public-library-count">
-        {zh ? `${shown.length} 个项目` : `${shown.length} projects`}
+        {zh ? `${shown.length} 个项目` : `${shown.length} ${shown.length === 1 ? 'project' : 'projects'}`}
         {role && (zh ? ` · 适合${roleName(role)}` : ` for ${roleName(role)}`)}
       </p>
       {PROJECT_LEVELS.map((level) => {

@@ -44,6 +44,8 @@ test('the index groups projects by level and filters by role', async () => {
   const slugs = [...data.querySelectorAll('.projects-card h3 a')].map((a) => a.getAttribute('href'));
   assert.deepEqual(slugs.sort(), ['/projects/idempotent-etl', '/projects/log-search', '/projects/polite-crawler']);
   assert.equal(data.querySelector('.public-library-filters [aria-current]').getAttribute('href'), '/projects?role=data');
+  const front = page(renderToStaticMarkup(await ProjectsPage({ searchParams: Promise.resolve({ role: 'frontend' }) })));
+  assert.match(front.querySelector('.public-library-count').textContent, /^1 project for /);
   const bogus = page(renderToStaticMarkup(await ProjectsPage({ searchParams: Promise.resolve({ role: 'astronaut' }) })));
   assert.equal(bogus.querySelectorAll('.projects-card').length, 10, 'an unknown role shows everything');
 });
@@ -123,6 +125,42 @@ test('progress buttons: guests sign in; members start, finish and keep a checked
     assert.equal(calls.at(-1).url, '/api/oj/notes?target=project%3Akv-wal');
     assert.deepEqual(JSON.parse(JSON.parse(calls.at(-1).body).body), { repo: 'https://github.com/me/kv' });
     assert.equal(document.querySelector('.project-progress-repo a').getAttribute('href'), 'https://github.com/me/kv');
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});
+
+test('index badges share one request per mount and refetch on the next, so a change on a project page shows', async () => {
+  const dom = mount('https://cswork.test/projects');
+  const { createRoot } = await import('react-dom/client');
+  const { ProjectState } = await import('../components/project-progress.tsx');
+  let items = [{ target: 'content:project/kv-wal', mark: 'doing' }];
+  let fetches = 0;
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => {
+    fetches += 1;
+    return Response.json({ items });
+  };
+  const root = createRoot(document.getElementById('root'));
+  const cards = (key) =>
+    act(async () =>
+      root.render(
+        createElement('div', { key }, ['kv-wal', 'lru-ttl-cache'].map((slug) => createElement(ProjectState, { key: slug, slug, zh: false }))),
+      ),
+    );
+  const badges = () => [...document.querySelectorAll('.projects-state')].map((s) => s.textContent);
+  try {
+    await cards('first');
+    await settle();
+    assert.equal(fetches, 1, 'cards mounted together share one request');
+    assert.deepEqual(badges(), ['In progress']);
+    items = [{ target: 'content:project/kv-wal', mark: 'done' }]; // marked done on the project page
+    await cards('back');
+    await settle();
+    assert.equal(fetches, 2);
+    assert.deepEqual(badges(), ['Done']);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = original;

@@ -17,15 +17,16 @@ const stateFrom = (marks: Marks['items'], slug: string): State => {
 };
 
 let shared: Promise<Marks['items']> | null = null;
-/** The learner's project marks, fetched once for every card on /projects; signed out it rejects. */
+/**
+ * The learner's project marks, one request for the cards that mount together on /projects; signed out it
+ * rejects. Cleared once settled, so coming back after Start / Mark done on a project page fetches again.
+ */
 const projectMarks = () =>
-  (shared ??= ojRequest<Marks>('marks').then(
-    (r) => r.items.filter((m) => m.target.startsWith(PREFIX)),
-    (error: unknown) => {
+  (shared ??= ojRequest<Marks>('marks')
+    .then((r) => r.items.filter((m) => m.target.startsWith(PREFIX)))
+    .finally(() => {
       shared = null;
-      throw error;
-    },
-  ));
+    }));
 
 /** "In progress" / "Done" on a /projects card; nothing for guests or untouched projects. */
 export function ProjectState({ slug, zh }: { slug: string; zh: boolean }) {
