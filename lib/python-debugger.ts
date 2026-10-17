@@ -4,7 +4,8 @@
  * the pure functions that replay its trace. The tracer records one step per executed line
  * (and per return) of the learner's code: line, frame depth, locals (repr cut to 200 chars)
  * and how much stdout there was; call stacks are rebuilt from depths here instead of being
- * shipped per step.
+ * shipped per step. Locals that can be drawn (arrays, tables, dicts, linked lists and trees)
+ * also get capped JSON snapshots, read by lib/debug-shapes.ts.
  */
 import type { CodingMode } from './coding-mode';
 
@@ -55,6 +56,12 @@ export type Trace = {
   params: Record<number, string[]>;
   /** The calling frame per call (keyed by `frame`); outermost calls are left out. */
   parents: Record<number, number>;
+  /** Distinct picture snapshots as JSON (lib/debug-shapes.ts parses them). */
+  shapes: string[];
+  /** Per step index (sparse): the variables drawn at that step, as [name, index into shapes]; '#nodes' is the node graph. */
+  views: Record<number, [string, number][]>;
+  /** The first step recorded without pictures (they hit their size or time cap), or null. */
+  shapesCut: number | null;
 };
 
 const text = (value: unknown, fallback = '') => (typeof value === 'string' ? value : fallback);
@@ -64,8 +71,11 @@ const whole = (value: unknown) => (Number.isInteger(value) ? (value as number) :
 export function parseTrace(json: string): Trace {
   const raw = JSON.parse(json) as Record<string, unknown>;
   const steps: TraceStep[] = [];
-  for (const item of Array.isArray(raw.steps) ? raw.steps : []) {
+  // Raw step index -> kept step index, for the views table.
+  const kept = new Map<number, number>();
+  for (const [at, item] of (Array.isArray(raw.steps) ? raw.steps : []).entries()) {
     if (!Array.isArray(item) || !Number.isInteger(item[0])) continue;
+    kept.set(at, steps.length);
     const vars = (Array.isArray(item[6]) ? item[6] : [])
       .filter((pair: unknown) => Array.isArray(pair) && typeof pair[0] === 'string')
       .map((pair: unknown[]) => [pair[0], text(pair[1])] as [string, string]);
@@ -92,6 +102,16 @@ export function parseTrace(json: string): Trace {
   for (const [key, parent] of Object.entries(raw.parents && typeof raw.parents === 'object' ? raw.parents : {}))
     if (Number.isInteger(Number(key)) && Number.isInteger(parent) && parent > 0 && parent < Number(key))
       parents[Number(key)] = parent;
+  const shapes = (Array.isArray(raw.shapes) ? raw.shapes : []).map((json: unknown) => text(json));
+  const views: Record<number, [string, number][]> = {};
+  for (const [key, list] of Object.entries(raw.views && typeof raw.views === 'object' ? raw.views : {})) {
+    const at = kept.get(Number(key));
+    const pairs = (Array.isArray(list) ? list : []).filter(
+      (pair: unknown): pair is [string, number] =>
+        Array.isArray(pair) && typeof pair[0] === 'string' && Number.isInteger(pair[1]) && pair[1] >= 0 && pair[1] < shapes.length,
+    );
+    if (at !== undefined && pairs.length) views[at] = pairs;
+  }
   return {
     steps,
     stdout: text(raw.stdout),
@@ -112,6 +132,9 @@ export function parseTrace(json: string): Trace {
         : null,
     params,
     parents,
+    shapes,
+    views,
+    shapesCut: Number.isInteger(raw.shapesCut) ? (raw.shapesCut as number) : null,
   };
 }
 
@@ -156,14 +179,19 @@ export function moveTo(
   return last;
 }
 
+/** The index of the latest earlier step in the same call, or -1. */
+export function previousInFrame(steps: readonly TraceStep[], index: number): number {
+  const step = steps[index];
+  if (step) for (let j = index - 1; j >= 0; j--) if (steps[j].frame === step.frame) return j;
+  return -1;
+}
+
 /** Names that are new or hold a different value than at this frame's previous step. */
 export function changedNames(steps: readonly TraceStep[], index: number): Set<string> {
   const step = steps[index];
   const changed = new Set<string>();
-  if (!step) return changed;
-  let before: TraceStep | undefined;
-  for (let j = index - 1; j >= 0 && !before; j--) if (steps[j].frame === step.frame) before = steps[j];
-  if (!before) return changed;
+  const before = steps[previousInFrame(steps, index)];
+  if (!step || !before) return changed;
   const old = new Map(before.vars);
   for (const [name, value] of step.vars) if (old.get(name) !== value) changed.add(name);
   return changed;
@@ -186,6 +214,8 @@ export function entryMethod(template: string): string {
  */
 export const TRACER_SOURCE = String.raw`
 import builtins as _b, inspect as _inspect, io as _io, json as _json, reprlib as _reprlib, sys as _sys, time as _time, types as _types
+from collections import deque as _deque
+from itertools import chain as _chain, islice as _islice
 
 _FILE = '<solution>'
 _RESUMABLE = _inspect.CO_GENERATOR | _inspect.CO_COROUTINE | _inspect.CO_ASYNC_GENERATOR
@@ -278,18 +308,90 @@ def _show(value):
 
 
 def _vars(frame, baseline):
+    """The step's [name, repr] pairs, and the same locals' values for the pictures."""
     names = frame.f_locals
     module = names is frame.f_globals
-    found = []
+    found, kept = [], []
     for name, value in list(names.items()):
         if name.startswith('__') or isinstance(value, _SKIP):
             continue
         if module and baseline.get(name, _MISSING) is value:
             continue
         found.append([name, _show(value)])
+        kept.append((name, value))
         if len(found) >= 40:
             break
-    return found
+    return found, kept
+
+
+_SCALARS = {int, float, str, bool, type(None)}
+_ROWS = {list, tuple}
+_LINKS = ('next', 'left', 'right')
+
+
+def _shape(value):
+    """A picture of one value as JSON (cells are reprs), or None: a flat sequence (a string as
+    its characters), a 2-D table up to 40 x 40, or a dict's first 30 entries."""
+    try:
+        if type(value) is str:
+            if not 2 <= len(value) <= 64:
+                return None
+            data = {'k': 'seq', 'v': list(value), 'n': len(value)}
+        elif isinstance(value, (list, tuple, _deque)):
+            # A deque can't be sliced: islice. Every check below is C-speed map/set work.
+            if value and len(value) <= 40 and set(map(type, value)) <= _ROWS:
+                if not 0 < max(map(len, value)) <= 40 or not set(map(type, _chain.from_iterable(value))) <= _SCALARS:
+                    return None
+                data = {'k': 'grid', 'v': [list(map(repr, row)) for row in value]}
+            else:
+                head = list(_islice(value, 64))
+                if not set(map(type, head)) <= _SCALARS:
+                    return None
+                data = {'k': 'seq', 'v': list(map(repr, head)), 'n': len(value)}
+        elif isinstance(value, dict):
+            data = {'k': 'dict', 'v': [[_cut(_show(k), 24), _cut(_show(v), 24)] for k, v in _islice(value.items(), 30)],
+                    'n': len(value)}
+        else:
+            return None
+        text = _json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+    except BaseException:
+        return None
+    # ponytail: 8000, not 4000: a 40 x 40 table of one-digit reprs is already ~6400 characters.
+    return text if len(text) <= 8000 else None
+
+
+def _node(value):
+    """A linked-list or tree node: an object whose next/left/right is None or another object."""
+    fields = getattr(value, '__dict__', None)
+    return type(fields) is dict and any(
+        name in fields and (fields[name] is None or type(getattr(fields[name], '__dict__', None)) is dict)
+        for name in _LINKS)
+
+
+def _graph(kept, roots):
+    """The nodes the frame's variables (and the harness's input roots) reach, breadth first, at
+    most 255, as JSON: [val, next, left, right] per node and [variable, node] per pointer, by
+    index (-1 for none). A cycle is just an edge back. None when no variable holds a node.
+    ponytail: a doubly linked list's prev is not drawn."""
+    named = [(name, value) for name, value in kept if _node(value)]
+    if not named:
+        return None
+    seen, order, queue, head = {}, [], [value for _, value in named] + roots, 0
+    while head < len(queue) and len(order) < 255:
+        item = queue[head]
+        head += 1
+        if id(item) in seen or not _node(item):
+            continue
+        seen[id(item)] = len(order)
+        order.append(item)
+        queue += [item.__dict__.get(name) for name in _LINKS]
+    at = lambda item: seen.get(id(item), -1)
+    rows = []
+    for item in order:
+        fields = item.__dict__
+        rows.append([_cut(_show(fields['val']), 12) if 'val' in fields else ''] + [at(fields.get(name)) for name in _LINKS])
+    return _json.dumps({'k': 'nodes', 'n': rows, 'p': [[name, at(value)] for name, value in named if id(value) in seen]},
+                       ensure_ascii=False, separators=(',', ':'))
 
 
 class _Out(_io.StringIO):
@@ -335,14 +437,23 @@ def _linked(values, Node):
     return head
 
 
+# The trees and lists the harness built this run: the pictures keep drawing them whole while a
+# frame only holds a subtree (or the head has been reversed away).
+_ROOTS = []
+
+
 def _convert(hint, value, ns):
     text = (hint if isinstance(hint, str) else str(hint)).replace(' ', '')
     if ('List[' in text or 'list[' in text) and isinstance(value, list) and ('TreeNode' in text or 'ListNode' in text):
         return [_convert(text[text.index('[') + 1:], item, ns) for item in value]
     if 'TreeNode' in text and isinstance(ns.get('TreeNode'), type):
-        return _tree(value, ns['TreeNode'])
-    if 'ListNode' in text and isinstance(ns.get('ListNode'), type):
-        return _linked(value, ns['ListNode'])
+        value = _tree(value, ns['TreeNode'])
+    elif 'ListNode' in text and isinstance(ns.get('ListNode'), type):
+        value = _linked(value, ns['ListNode'])
+    else:
+        return value
+    if value is not None:
+        _ROOTS.append(value)
     return value
 
 
@@ -419,7 +530,7 @@ def _cswork_debug(request):
     deadline = _time.perf_counter() + float(req.get('maxMs') or 3000) / 1000
     leetcode = req.get('mode') == 'leetcode'
     stdin = req.get('stdin') or ''
-    steps, frames, state = [], {}, {'stopped': None, 'serial': 0}
+    steps, frames, state = [], {}, {'stopped': None, 'serial': 0, 'size': 0, 'spent': 0.0}
     # Generators get a 'call' event on every resume: they keep their first serial. Keyed by
     # the frame itself, so a finished generator's serial is never handed to a new frame.
     # ponytail: holds those frames until the run ends; fine at 5000 steps.
@@ -430,12 +541,45 @@ def _cswork_debug(request):
     # generator closed early sees GeneratorExit.
     # ponytail: so a StopIteration that does escape a plain function shows as returning None.
     raising = set()
-    trace = {'steps': steps, 'result': None, 'error': None, 'note': None, 'params': params, 'parents': parents}
+    # Pictures: each distinct JSON once in shapes; views maps a step's index to its [name,
+    # shape] pairs. They stop for good (shapesCut: the first step without them) past 1.5 MB or
+    # once they have cost 30% of the time limit, so the text trace keeps most of its steps.
+    shapes, known, views, budget = [], {}, {}, float(req.get('maxMs') or 3000) * 0.3 / 1000
+    trace = {'steps': steps, 'result': None, 'error': None, 'note': None, 'params': params, 'parents': parents,
+             'shapes': shapes, 'views': views, 'shapesCut': None}
+    _ROOTS.clear()
     out = _Out()
     ns = {'__name__': '__main__', '__builtins__': _b}
     if leetcode:
         exec(compile(_PRELUDE, '<prelude>', 'exec'), ns)
     baseline = dict(ns)
+
+    def snapshot(kept):
+        began = _time.perf_counter()
+        graph = _graph(kept, _ROOTS)
+        texts = [('#nodes', graph)] if graph else []
+        for name, value in kept:
+            if len(texts) >= 6:
+                break
+            text = _shape(value)
+            if text:
+                texts.append((name, text))
+        found = []
+        for name, text in texts:
+            index = known.get(text)
+            if index is None:
+                state['size'] += len(text)
+                if state['size'] > 1500000:
+                    trace['shapesCut'] = len(steps)
+                    return
+                index = known[text] = len(shapes)
+                shapes.append(text)
+            found.append([name, index])
+        if found:
+            views[len(steps)] = found
+        state['spent'] += _time.perf_counter() - began
+        if state['spent'] > budget:
+            trace['shapesCut'] = len(steps) + 1
 
     def local(frame, event, arg):
         if event == 'exception' and not issubclass(arg[0], (StopIteration, StopAsyncIteration, GeneratorExit)):
@@ -450,13 +594,16 @@ def _cswork_debug(request):
             raise _Stop
         code = frame.f_code
         serial, depth = frames.get(id(frame), (0, 0))
+        shown, kept = _vars(frame, baseline)
         step = [frame.f_lineno, depth, serial, getattr(code, 'co_qualname', code.co_name),
-                1 if event == 'return' else 0, out.units, _vars(frame, baseline)]
+                1 if event == 'return' else 0, out.units, shown]
         raised = id(frame) in raising
         raising.discard(id(frame))
         if event == 'return':
             frames.pop(id(frame), None)
             step += [_show(arg), 1] if raised else [_show(arg)]
+        if trace['shapesCut'] is None:
+            snapshot(kept)
         steps.append(step)
         return local
 
