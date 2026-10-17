@@ -408,6 +408,126 @@
   outline: 2px solid #327b76;
   outline-offset: 2px;
 }
+/* The owner's order controls: up and down beside the remove button, and drag-and-drop rows. */
+.cloud-item[data-edit] .study-row {
+  padding-right: 92px;
+}
+.cloud-move {
+  position: absolute;
+  top: 50%;
+  right: 46px;
+  display: grid;
+  transform: translateY(-50%);
+}
+.cloud-move button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 24px;
+  border-radius: 6px;
+  color: #5f6b75;
+}
+.cloud-move button:hover:not(:disabled) {
+  background: #e7f3ef;
+  color: #0d7a63;
+}
+.cloud-move button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.cloud-move button:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 1px;
+}
+.cloud-item[data-dragging] {
+  opacity: 0.45;
+}
+.cloud-item[data-drop='before'] {
+  box-shadow: inset 0 3px 0 #0d7a63;
+}
+.cloud-item[data-drop='after'] {
+  box-shadow: inset 0 -3px 0 #0d7a63;
+}
+.cloud-order-hint {
+  margin: 0 0 8px;
+  color: #66717c;
+  font-size: 13px;
+}
+/* Bulk add: a paste box under the board, folded unless the list is empty. */
+.cloud-import {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid #dfe5ea;
+  border-radius: 12px;
+  background: #fff;
+}
+.cloud-import summary {
+  color: #1d2b36;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cloud-import summary:focus-visible,
+.cloud-import :is(textarea, button):focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
+.cloud-import form {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.cloud-import label {
+  display: grid;
+  gap: 6px;
+  color: #4f5b66;
+  font-size: 13px;
+}
+.cloud-import textarea {
+  min-height: 120px;
+  padding: 8px 10px;
+  border: 1px solid #c3ccd4;
+  border-radius: 9px;
+  background: #fbfcfd;
+  color: #1d2b36;
+  font: 13px/1.5 var(--font-mono, monospace);
+  resize: vertical;
+}
+.cloud-import textarea::placeholder {
+  color: #66717c;
+}
+.cloud-import-note,
+.cloud-import-done {
+  margin: 0;
+  color: #4f5b66;
+  font-size: 13px;
+}
+.cloud-import-lines {
+  margin: 0;
+  padding: 6px 10px 6px 26px;
+  border-radius: 8px;
+  background: #fbf1f0;
+  color: #8a3b35;
+  font: 12px/1.6 var(--font-mono, monospace);
+  overflow-wrap: anywhere;
+}
+.cloud-import button {
+  justify-self: start;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 9px;
+  background: #0d7a63;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+}
+.cloud-import button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.cloud-import-done:not(:empty) {
+  display: block;
+  margin: 10px 0 6px;
+}
 
 /* ---------- My progress: synced mock results ---------- */
 .cloud-mocks {
@@ -874,6 +994,59 @@
   }
   .dark .cloud-remove:focus-visible {
     outline: 2px solid #90ccc7;
+  }
+  .dark .cloud-move button {
+    color: #b7c2cb;
+  }
+  .dark .cloud-move button:hover:not(:disabled) {
+    background: #0c1311;
+    color: #87d2bb;
+  }
+  .dark .cloud-move button:focus-visible {
+    outline: 2px solid #90ccc7;
+  }
+  .dark .cloud-item[data-drop='before'] {
+    box-shadow: inset 0 3px 0 #0d7a63;
+  }
+  .dark .cloud-item[data-drop='after'] {
+    box-shadow: inset 0 -3px 0 #0d7a63;
+  }
+  .dark .cloud-order-hint {
+    color: #b5bfc9;
+  }
+  .dark .cloud-import {
+    border: 1px solid #2b3034;
+    background: #191919;
+  }
+  .dark .cloud-import summary {
+    color: #cedeea;
+  }
+  .dark .cloud-import summary:focus-visible,
+  .dark .cloud-import :is(textarea, button):focus-visible {
+    outline: 2px solid #90ccc7;
+  }
+  .dark .cloud-import label {
+    color: #bcc8d3;
+  }
+  .dark .cloud-import textarea {
+    border: 1px solid #333a41;
+    background: #171818;
+    color: #cedeea;
+  }
+  .dark .cloud-import textarea::placeholder {
+    color: #b5bfc9;
+  }
+  .dark .cloud-import-note,
+  .dark .cloud-import-done {
+    color: #bcc8d3;
+  }
+  .dark .cloud-import-lines {
+    background: #171211;
+    color: #feb0a7;
+  }
+  .dark .cloud-import button {
+    background: #0d7a63;
+    color: #fff;
   }
   .dark .cloud-head p {
     color: #b5bfc9;

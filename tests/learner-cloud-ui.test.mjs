@@ -406,3 +406,111 @@ test('the profile card features one earned badge, and a contest one only with th
     globalThis.fetch = original;
   }
 });
+
+test('my lists: the owner previews a paste, adds it in bulk and reorders by button and by drag', async () => {
+  const posts = [];
+  let detail = {
+    id: 'AbCdEfGhIjKl',
+    title: 'Warm-up',
+    description: '',
+    visibility: 'private',
+    forkedFrom: null,
+    count: 2,
+    updatedAt: Date.now(),
+    items: [
+      { problemId: 'lc-1', addedAt: 1 },
+      { problemId: 'oa-amazon-1', addedAt: 2 },
+    ],
+    mine: true,
+    owner: null,
+  };
+  const original = globalThis.fetch;
+  globalThis.fetch = async (url, init = {}) => {
+    const path = String(url).replace('/api/', '');
+    const body = init.body ? JSON.parse(init.body) : undefined;
+    if (body) posts.push([path, body]);
+    if (path === `oj/lists/${detail.id}`) return Response.json(detail);
+    if (path === 'oj/history') return Response.json({ items: [] });
+    if (path === `oj/lists/${detail.id}/bulk`) {
+      detail = { ...detail, items: [...detail.items, { problemId: 'lc-3', addedAt: 3 }] };
+      return Response.json({ added: 1, duplicate: 1, unknown: ['what?'], overflow: 0, list: detail });
+    }
+    if (path === `oj/lists/${detail.id}/reorder`) return Response.json(detail);
+    throw new Error(`unexpected ${path}`);
+  };
+  const boot = {
+    person: { id: 'u1' },
+    problems: [
+      { id: 'lc-1', title: '两数之和', titleEn: 'Two Sum', difficulty: '简单', tags: [] },
+      { id: 'lc-3', title: '无重复字符的最长子串', titleEn: 'Longest Substring', difficulty: '中等', tags: [] },
+      { id: 'oa-amazon-1', title: '仓库', titleEn: 'Warehouse', difficulty: '中等', tags: [] },
+    ],
+  };
+  const order = () => [...document.querySelectorAll('.cloud-item a')].map((a) => new URL(a.href).searchParams.get('problem'));
+  try {
+    const root = await mount(createElement(MyLists, { boot, navigate: () => {}, list: detail.id }));
+    const box = document.querySelector('.cloud-import');
+    assert.equal(box.open, false, 'folded when the list already has problems');
+    assert.ok(button('Add to the list').disabled, 'nothing to add yet');
+    await act(async () =>
+      type(box.querySelector('textarea'), 'https://leetcode.cn/problems/p-3/\n\n1\nwhat?\n'),
+    );
+    assert.equal(
+      box.querySelector('.cloud-import-note').textContent,
+      '3 lines: numbers 1 · LeetCode links or slugs 1 · site problems 0 · not recognized 1',
+    );
+    assert.deepEqual([...box.querySelectorAll('.cloud-import-lines li')].map((li) => li.textContent), ['what?']);
+    await act(async () => button('Add to the list').click());
+    await wait();
+    assert.deepEqual(posts.at(-1), [
+      `oj/lists/${detail.id}/bulk`,
+      { lines: ['https://leetcode.cn/problems/p-3/', '1', 'what?'] },
+    ]);
+    assert.equal(
+      box.querySelector('output').textContent,
+      'Added 1 problem; 1 already in the list or repeated; 1 line found no problem a list can hold (lists take OA and LeetCode problems) and went back in the box.',
+    );
+    assert.deepEqual([...box.querySelectorAll(':scope > ul li')].map((li) => li.textContent), ['what?']);
+    assert.equal(box.querySelector('textarea').value, 'what?', 'left to fix and add again');
+    assert.deepEqual(order(), ['lc-1', 'oa-amazon-1', 'lc-3']);
+
+    assert.ok(document.querySelector('button[aria-label="Move Two Sum up"]').disabled);
+    await act(async () => document.querySelector('button[aria-label="Move Two Sum down"]').click());
+    await wait();
+    assert.deepEqual(posts.at(-1), [`oj/lists/${detail.id}/reorder`, { problemIds: ['oa-amazon-1', 'lc-1', 'lc-3'] }]);
+    assert.deepEqual(order(), ['oa-amazon-1', 'lc-1', 'lc-3']);
+    assert.equal(document.activeElement.id, 'list-move-down-lc-1', 'focus stays on the moved row');
+    assert.equal(document.querySelector('[aria-live="polite"]').textContent, 'Two Sum moved to position 2');
+    // Moved to the bottom, its down button turns off and focus goes to up.
+    await act(async () => document.activeElement.click());
+    await wait();
+    assert.equal(document.activeElement.id, 'list-move-up-lc-1');
+
+    const drag = (type, target) => {
+      const event = new dom.window.Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(event, 'dataTransfer', { value: { setData() {}, effectAllowed: '', dropEffect: '' } });
+      target.dispatchEvent(event);
+    };
+    const rows = () => [...document.querySelectorAll('.cloud-item')];
+    assert.equal(rows()[0].getAttribute('draggable'), 'true');
+    await act(async () => drag('dragstart', rows()[2]));
+    await act(async () => drag('dragover', rows()[0]));
+    assert.equal(rows()[0].dataset.drop, 'before');
+    await act(async () => drag('drop', rows()[0]));
+    await wait();
+    assert.deepEqual(posts.at(-1), [`oj/lists/${detail.id}/reorder`, { problemIds: ['lc-1', 'oa-amazon-1', 'lc-3'] }]);
+    assert.deepEqual(order(), ['lc-1', 'oa-amazon-1', 'lc-3']);
+    assert.equal(rows()[0].dataset.drop, undefined);
+    await act(async () => root.unmount());
+
+    // Someone else's list: no paste box, no order controls, nothing draggable.
+    detail = { ...detail, mine: false, visibility: 'public' };
+    const theirs = await mount(createElement(MyLists, { boot, navigate: () => {}, list: detail.id }));
+    assert.equal(document.querySelector('.cloud-import'), null);
+    assert.equal(document.querySelectorAll('.cloud-move').length, 0);
+    assert.equal(rows()[0].getAttribute('draggable'), 'false');
+    await act(async () => theirs.unmount());
+  } finally {
+    globalThis.fetch = original;
+  }
+});
