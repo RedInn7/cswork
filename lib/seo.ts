@@ -156,6 +156,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/library' },
   { path: '/acm-io' },
   { path: '/judge-environment' },
+  { path: '/interview-platforms' },
   { path: '/flowchart' },
   { path: '/placement' },
   { path: '/daily' },

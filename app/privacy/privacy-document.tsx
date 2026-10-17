@@ -53,7 +53,7 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，给面经和面试题的点赞，以及对官方题解「有帮助 / 没帮助」的评价也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告、点赞和题解评价只以人数汇总展示，不公开报告人、点赞人和评价人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
+                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，给面经和面试题的点赞，以及对官方题解「有帮助 / 没帮助」的评价也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告、点赞和题解评价只以人数汇总展示，不公开报告人、点赞人和评价人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示；单次提交制的模拟 OA 只和同样规则的成绩比较。
               </p>
               <p>
                 你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
@@ -89,7 +89,10 @@ export function PrivacyDocument() {
                 联系人（/career/contacts）是你记录的他人信息：姓名、公司、职位、怎么认识的、链接、上次联系和下次跟进的日期、备注，以及可选关联的一张投递卡，每个账号最多 200 位。它们只保存在你自己的账号里，其他人都看不到，可以随时删除；关联的投递卡删除后，联系人保留，只是不再关联。请只记录求职需要的内容。求职指南各章清单的勾选状态，登录时存成你账号里的私人笔记（checklist:&lt;章节&gt;），未登录时只存在当前浏览器，登录后打开这一章会并入账号并从浏览器删除。外联模板页（/career/templates）登录后在浏览器里读取你的投递卡和联系人来填空；你填的「你的名字」只存在当前浏览器。复制和「在邮件应用中打开」都在你的设备上完成，平台不替你发送任何消息。
               </p>
               <p id="privacy-practice-aids">
-                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA、保存的 STAR 故事和开放题复习自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
+              </p>
+              <p id="privacy-notes-export">
+                「我的进度」笔记页的导出，把你写的题目、提交和资料笔记、专题套路笔记、STAR 故事、复习卡片、摘录和系统设计草稿打包成一个 .zip（Obsidian 库）或一个 .md 文件，可以选择附上每道题最近一次通过的代码；服务器只返回你自己的记录，文件在你的浏览器里生成，平台不另存。复习单和复习册（/review-sheet）只读取你自己的笔记、收藏和重做标记、提交记录、复习自评和卡片，不新增任何存储，打印和存 PDF 都在浏览器里完成。比赛或技能认证考试进行中，导出和复习单都不可用。
               </p>
               <p id="privacy-practice-tracks">
                 简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。前端 JS 手写题（/frontend）的代码只在你浏览器里的隔离沙箱中运行，不会上传；代码草稿和已通过的题目记在当前浏览器，登录后一道题全部用例通过时，这道题的「已完成」也记在你的账号里。面试英语（/english）各单元的完成情况，登录后记在你的账号里；未登录时只存在当前浏览器，登录后打开页面会并入账号并从浏览器删除。跟读使用浏览器自带的语音识别，和模拟面试的语音输入一样，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在浏览器里计算，不上传。朗读使用浏览器自带的语音合成。
@@ -114,7 +117,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。「对拍」（随机生成小用例，拿你的代码和参考解比对）的代码和生成的输入同样保存在你的运行记录里，不出现在提交列表、统计和学习进度中；SQL 题的「执行计划」和 CTE 逐段预览（代码和所用的样例输入）也一样。通过后弹窗里的代码提示和提交前的「追问」检查都在浏览器里完成，不上传、不保存。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。「对拍」（随机生成小用例，拿你的代码和参考解比对）的代码和生成的输入同样保存在你的运行记录里，不出现在提交列表、统计和学习进度中；SQL 题的「执行计划」和 CTE 逐段预览（代码和所用的样例输入）也一样。「测复杂度」（用逐级变大的输入给你的代码计时）的代码同样保存在运行记录里，但只保存生成输入用的随机种子，不保存大输入和每组的输出，只有没通过的那一组会保存错误输出（stderr）。对拍和测复杂度不进提交列表和统计，只计入每日经验。通过后弹窗里的代码提示和提交前的「追问」检查都在浏览器里完成，不上传、不保存。
               </p>
             </section>
 
@@ -152,7 +155,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司、岗位和 offer 截止日。模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。看过参考答案后给开放题打的自评（会了 / 部分会 / 不会，用来安排下次复习）、评分日期和题目标题也按同样的方式保存，账号里的私密笔记是 recall:queue。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司、岗位和 offer 截止日；决策矩阵的因素、权重和打分也只存在当前浏览器。「复制只读链接」把对比内容（金额取整，不含截止日和回收条款，可选隐去公司名）放在网址 # 后面，浏览器不会把它发给服务器，平台也不保存；打开这样的链接只做只读显示，点「导入到我的对比」才存进你的浏览器。题目自定义用例里填的期望输出也只存在当前浏览器，运行后的对比结果不保存。模拟 OA 选择题环节的作答和「待查」标记也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。看过参考答案后给开放题打的自评（会了 / 部分会 / 不会，用来安排下次复习）、评分日期和题目标题也按同样的方式保存，账号里的私密笔记是 recall:queue。登录后自建的复习卡片（card:）和划词存下的摘录（clip:，存选中的文字和所在页面的标题与链接）也是你账号里的私密笔记，只有你自己能看到；卡片和题目思路卡的复习安排分别存在私密笔记 recall:cards 和 recall:ideas 里，思路卡只读取你自己的通过记录和题目笔记。导出的 Anki 和 CSV 文件在你的浏览器里生成，不上传。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -330,7 +333,8 @@ export function PrivacyDocument() {
                 as counts of people; reporters and voters are never named. Mock OA scores and
                 AI interview scores also count, anonymously, toward the
                 percentiles other learners see, which only appear once a
-                scenario has 20 people (30 for AI interviews).
+                scenario has 20 people (30 for AI interviews); a single-submit
+                mock OA is compared only with scores under the same rules.
               </p>
               <p>
                 Solutions, threads, answers and comments you post in the
@@ -605,12 +609,36 @@ export function PrivacyDocument() {
                 review (again, hard, good or easy): the grade is kept with that
                 submission on your account to schedule the next review and spot
                 problems you keep missing, and your daily review cap and
-                vacation are a private note (pref:review). The problem-note
+                vacation are a private note (pref:review). Your daily XP goal
+                and weekly rest days are a private note (pref:study); the server
+                works out each day&apos;s XP from your accepted submissions,
+                stress tests and complexity probes, multiple-choice answers,
+                system design chapters read, interview English units finished,
+                finished mock OAs, saved STAR stories and open-question
+                self-grades. The days you reached the goal, and past rest days
+                and review-break days, are kept on your account to bridge the
+                streak you see in the top bar, My progress and study reminders,
+                never badges, leaderboards or your public profile; records
+                older than 200 days are deleted the next time it is worked out.
+                The problem-note
                 template you set (pref:note-template) and the &ldquo;My pattern
                 notes&rdquo; on each topic page (/topics, topic:&lt;topic&gt;)
                 are private notes too; the #tags, confidence and [[problem
                 id]] links in your notes are counted and traced back only across
                 your own notes. Only you can see these too.
+              </p>
+              <p id="privacy-notes-export">
+                The export on My progress&apos;s notes tab packs the problem,
+                submission and library notes, topic pattern notes, STAR stories,
+                review cards, excerpts and system design drafts you wrote into a
+                .zip (an Obsidian vault) or one .md file, optionally with each
+                problem&apos;s latest accepted code; the server returns only your
+                own records, and the file is made in your browser and not kept
+                by the platform. The review sheet and review book
+                (/review-sheet) read only your own notes, stars and redo marks,
+                submissions, review grades and cards, store nothing new, and
+                print or save as PDF in your browser. Neither is available while
+                a contest or skill test is running for you.
               </p>
               <p id="privacy-practice-tracks">
                 Resume projects (/projects): whether you started or finished a
@@ -741,6 +769,13 @@ export function PrivacyDocument() {
                 list, statistics and
                 progress, and so do a SQL problem&apos;s query plan and
                 step-by-step CTE previews (the code and the sample input used).
+                A complexity probe (your code timed on growing inputs) keeps its
+                code in your run records too, but only the random seed the
+                inputs are drawn from: neither the large inputs nor any
+                case&apos;s output is stored, and only the case that failed keeps
+                its error output (stderr). Stress tests and complexity probes
+                stay out of your submission list and statistics and count only
+                toward your daily XP.
                 The code notes after an accepted
                 submission and the follow-up check before submitting run in your
                 browser; nothing is uploaded or stored.
@@ -820,8 +855,17 @@ export function PrivacyDocument() {
                 the figures in the offer comparison (/career/offers), kept in
                 local storage (&ldquo;Import from my tracker&rdquo; reads only the
                 company, role and offer deadline of your own tracker cards at
-                the Offer stage), and your
-                answers in a mock OA&apos;s multiple-choice section: they are not
+                the Offer stage; the decision matrix&apos;s factors, weights and
+                scores stay in this browser too, and &ldquo;Copy a read-only
+                link&rdquo; puts the comparison, amounts rounded, without
+                deadlines or clawback terms and company names optionally left
+                out, after the # in the address, which browsers never send to a
+                server and the platform does not store; opening such a link only
+                shows it, and nothing is saved to your browser until you choose
+                &ldquo;Import into my comparison&rdquo;), the expected outputs
+                you type for a problem&apos;s custom cases (whether a run matched
+                is not kept), and your
+                answers and review flags in a mock OA&apos;s multiple-choice section: they are not
                 uploaded and do not sync to your account with mock OA results.
                 Answers and the review schedule on the OA multiple-choice practice
                 page (/oa/mcq) and the topic pages&apos; quick quizzes stay in this
@@ -831,7 +875,14 @@ export function PrivacyDocument() {
                 open questions after you reveal the reference answer (knew it,
                 partly or didn&apos;t, which set the next review), the day you
                 graded and the question titles are kept the same way, in the
-                private note recall:queue. Signed in with a
+                private note recall:queue. Signed in, the review cards you make
+                (card:) and the excerpts you save from a selection (clip:, the
+                selected text with its page&apos;s title and link) are private
+                notes on your account too, seen only by you; the review schedule
+                of your cards and of problem idea cards is kept in the private
+                notes recall:cards and recall:ideas, and idea cards read only
+                your own accepted submissions and problem notes. Anki and CSV
+                exports are made in your browser and never uploaded. Signed in with a
                 verified email, the first time you submit a question on /oa/mcq
                 or in a topic page&apos;s quick quiz the server also records that answer on its own (question,
                 choices picked, whether right, and when), used only for the

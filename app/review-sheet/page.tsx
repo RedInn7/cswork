@@ -77,7 +77,7 @@ export default async function ReviewSheetPage({ searchParams }: Props) {
       <div className="resume-privacy" role="note">
         <strong>{c.privacyTitle}</strong>
         <p>
-          {c.privacy} <a href="/privacy#privacy-learning">{c.more}</a>
+          {c.privacy} <a href="/privacy#privacy-notes-export">{c.more}</a>
         </p>
       </div>
       {!book && (
