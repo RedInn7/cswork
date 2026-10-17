@@ -6,6 +6,7 @@ import { checkResume, type ResumeIssue } from '@/lib/resume-check';
 import { readResumeFile, type ResumeFileError } from '@/lib/resume-file';
 import { parseResumeText } from '@/lib/resume-parse';
 import { blankItem, blankResume, ITEMS, lines, MAX, normalizeResume, type ListKey, type Resume, type ResumeItem } from '@/lib/resume-shape';
+import { ResumeReviewLink } from './resume-review-link';
 
 /**
  * /career/resume/builder: a one-page, single-column resume (standard headings, no tables, images or
@@ -217,6 +218,17 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
       // Blocked storage or a damaged entry: start blank.
     }
     setVersions(readVersions());
+    // A review page in another tab may write a rewrite back: pick it up so the next edit here keeps it.
+    const sync = (e: StorageEvent) => {
+      try {
+        if (e.key === RESUME_KEY && e.newValue) setBase(normalizeResume(JSON.parse(e.newValue)));
+        if (e.key === RESUME_VERSIONS_KEY) setVersions(readVersions());
+      } catch {
+        // A damaged entry: keep what is on screen.
+      }
+    };
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
   }, []);
   // The sheet is 7.5in wide (Letter less 0.5in margins): taller than 10in runs onto a second page.
   // Compared in its own units, so the preview's screen zoom doesn't matter.
@@ -468,6 +480,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
             {t('粘贴文本导入', 'Paste text to import')}
           </button>
         </div>
+        {signedIn && <ResumeReviewLink resume={resume} version={version} />}
         {pasted !== null && (
           <div className="resume-form resume-paste">
             <label>
