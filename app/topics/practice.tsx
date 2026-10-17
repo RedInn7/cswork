@@ -82,8 +82,7 @@ export function TopicHeader({ practice, zh }: { practice: TopicPractice; zh: boo
                 {asked.top.map((c, i) => (
                   <span key={c.slug}>
                     {i > 0 && t('、', ', ')}
-                    {/* ponytail: linked without checking the hub exists, as the H-1B table does; top reporters have one. */}
-                    <a href={companyHubPath(c.slug)}>{c.name}</a> <small>{c.count}</small>
+                    {c.hub ? <a href={companyHubPath(c.slug)}>{c.name}</a> : c.name} <small>{c.count}</small>
                   </span>
                 ))}
               </span>
@@ -162,17 +161,17 @@ export function TopicWhy({ stop, zh, signedIn }: { stop: TopicStop; zh: boolean;
         )}
       </p>
       <div className="topics-say">
-        <figure lang="zh-CN">
+        <figure>
           <figcaption>
-            中文 <TopicSay text={why.say.zh} lang="zh" label={t('朗读', 'Listen')} />
+            中文 <TopicSay text={why.say.zh} lang="zh" label={t('朗读中文稿', 'Listen to the Chinese script')} />
           </figcaption>
-          <blockquote>{why.say.zh}</blockquote>
+          <blockquote lang="zh-CN">{why.say.zh}</blockquote>
         </figure>
-        <figure lang="en">
+        <figure>
           <figcaption>
-            English <TopicSay text={why.say.en} lang="en" label={t('朗读', 'Listen')} />
+            English <TopicSay text={why.say.en} lang="en" label={t('朗读英文稿', 'Listen to the English script')} />
           </figcaption>
-          <blockquote>{why.say.en}</blockquote>
+          <blockquote lang="en">{why.say.en}</blockquote>
         </figure>
       </div>
       <div className="rd">

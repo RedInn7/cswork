@@ -48,15 +48,16 @@ test('topic frequency counts each company once, leaves hidden ones out and ranks
   };
   const names = { acme: 'Acme', beta: 'Beta', gone: 'Gone', c1: 'C1', c2: 'C2', c3: 'C3', elsewhere: 'Elsewhere' };
   const tags = companyTagIndex(new Set(['gone']), map, [], names);
-  const asked = stopAsked(['lc-1', 'lc-2'], tags);
+  // Only Acme has a company page; the rest are named without a link.
+  const asked = stopAsked(['lc-1', 'lc-2'], tags, new Set(['acme', 'elsewhere']));
   assert.equal(asked.companies, 5);
   assert.equal(asked.reports, 4 + 2 + 1 + 1 + 1);
   assert.deepEqual(asked.top, [
-    { slug: 'acme', name: 'Acme', count: 4 },
-    { slug: 'beta', name: 'Beta', count: 2 },
-    { slug: 'c1', name: 'C1', count: 1 },
-    { slug: 'c2', name: 'C2', count: 1 },
-    { slug: 'c3', name: 'C3', count: 1 },
+    { slug: 'acme', name: 'Acme', count: 4, hub: true },
+    { slug: 'beta', name: 'Beta', count: 2, hub: false },
+    { slug: 'c1', name: 'C1', count: 1, hub: false },
+    { slug: 'c2', name: 'C2', count: 1, hub: false },
+    { slug: 'c3', name: 'C3', count: 1, hub: false },
   ]);
   assert.deepEqual(stopAsked(['lc-404'], tags), { companies: 0, reports: 0, top: [] });
 });
@@ -111,6 +112,7 @@ test('a guest gets the stop in three stages with approaches and no statuses', as
   assert.equal(p.core[0].href, '/?view=problem&problem=core-binary-search');
   // No OA problem is published in this database.
   assert.deepEqual(p.oa, { items: [], total: 0 });
+  assert.ok(p.asked.top.every((c) => typeof c.hub === 'boolean'), 'each top company says whether it has a page');
 });
 
 test('a member sees their statuses; a running exam seals its problem and moves the warm-up', async () => {

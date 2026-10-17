@@ -138,7 +138,7 @@ const practiceFor = (signedIn) => {
       { slug: 'binary-search-tree', total: 15, ...(signedIn && { solved: 1 }) },
       { slug: 'dp-scheduling', total: 6, ...(signedIn && { solved: 0 }) },
     ],
-    asked: { companies: 7, reports: 30, top: [{ slug: 'acme', name: 'Acme', count: 12 }, { slug: 'beta', name: 'Beta', count: 5 }] },
+    asked: { companies: 7, reports: 30, top: [{ slug: 'acme', name: 'Acme', count: 12, hub: true }, { slug: 'beta', name: 'Beta', count: 5, hub: false }] },
     oa: {
       items: [{ id: 'oa-acme-1', title: 'Find the Slot', companySlug: 'acme', companyName: 'Acme', href: '/?view=problem&problem=oa-acme-1', status: s('solved') }],
       total: 14,
@@ -161,7 +161,9 @@ test('with practice: header chips, a warm-up, why it works, three stage tables, 
     assert.deepEqual([...next.querySelectorAll('a')].map((a) => a.getAttribute('href')), ['/topics/binary-search-tree', '/topics/dp-scheduling']);
     assert.ok(![...next.querySelectorAll('a')].some((a) => a.hasAttribute('data-met')));
     assert.ok(header.textContent.includes(zh ? '7 家公司考过' : 'asked by 7 companies'));
-    assert.equal(header.querySelector('.topics-asked-top a').getAttribute('href'), '/company/acme');
+    // Only a company with a page is linked; Beta is named without one.
+    assert.deepEqual([...header.querySelectorAll('.topics-asked-top a')].map((a) => a.getAttribute('href')), ['/company/acme']);
+    assert.ok(header.querySelector('.topics-asked-top').textContent.includes('Beta'));
     assert.ok(header.querySelector('.topics-progress').textContent.includes('1/2'), 'Foundation 1/2 solved');
 
     const focus = doc.querySelector('section.topics-focus');
@@ -174,7 +176,9 @@ test('with practice: header chips, a warm-up, why it works, three stage tables, 
     const why = doc.querySelector('section.topics-why');
     assert.ok(why.compareDocumentPosition(doc.querySelector('details.topics-code')) & 2, 'after the template');
     assert.ok(why.querySelectorAll('.topics-why-points li').length >= 2);
-    assert.deepEqual([...why.querySelectorAll('.topics-say figure')].map((f) => f.getAttribute('lang')), ['zh-CN', 'en']);
+    // The script carries its language; the caption and its button stay in the UI's.
+    assert.deepEqual([...why.querySelectorAll('.topics-say blockquote')].map((q) => q.getAttribute('lang')), ['zh-CN', 'en']);
+    assert.ok(![...why.querySelectorAll('.topics-say figure, .topics-say figcaption')].some((el) => el.hasAttribute('lang')));
     assert.equal(why.querySelector('.topics-say-play'), null, 'no listen button without speechSynthesis');
     assert.ok(why.querySelector('.rd .recall'), 'a self-graded recall card');
 

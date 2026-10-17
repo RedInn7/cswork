@@ -13,6 +13,7 @@ import { hiddenCompanies } from './env';
 import { oaReadyProblems } from './oa-judge';
 import { oaLibrary } from './oa-library';
 import { ensurePracticeRound } from './practice-rounds';
+import { reportCompanies } from './learner-cloud';
 import { judgeProgress, studyProgress } from './practice-progress';
 import { selectionOf, studyLibrarySummaries } from './study-library';
 
@@ -74,10 +75,14 @@ export function pickFocus<T extends { id: string; stage: string; judgeProblemId:
   return basic.find((row) => row.judgeProblemId) ?? open.find((row) => row.judgeProblemId) ?? open[0] ?? null;
 }
 
-/** Companies whose reports map onto these problems (the tags leave hidden ones out), their reports and the top five. */
+/**
+ * Companies whose reports map onto these problems (the tags leave hidden ones out), their reports
+ * and the top five; `hub` when /company/<slug> exists (`hubs`), the rest are named without a link.
+ */
 export function stopAsked(
   ids: readonly string[],
   tags: ReadonlyMap<string, readonly Pick<CompanyTag, 'slug' | 'name' | 'count'>[]>,
+  hubs: ReadonlySet<string> = new Set(),
 ) {
   const by = new Map<string, { slug: string; name: string; count: number }>();
   for (const id of ids)
@@ -87,7 +92,8 @@ export function stopAsked(
       by.set(slug, company);
     }
   const all = [...by.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'en'));
-  return { companies: all.length, reports: all.reduce((sum, c) => sum + c.count, 0), top: all.slice(0, 5) };
+  const top = all.slice(0, 5).map((c) => ({ ...c, hub: hubs.has(c.slug) }));
+  return { companies: all.length, reports: all.reduce((sum, c) => sum + c.count, 0), top };
 }
 
 /** Heat 0–3 per stop for the /topics index, as on the route line. */
@@ -167,7 +173,11 @@ export async function topicPractice(slug: string, userId: string | null): Promis
     focus: pickFocus(rows, running),
     prereqs: stopPrereqs(slug).map(count),
     leadsTo: stopLeadsTo(slug).map(count),
-    asked: stopAsked(idsOf(slug), companyTagIndex(hiddenCompanies())),
+    asked: stopAsked(
+      idsOf(slug),
+      companyTagIndex(hiddenCompanies()),
+      new Set(reportCompanies().map((c) => c.slug)),
+    ),
     oa: {
       items: oaPage.items.slice(0, 10).map((item) => ({
         id: item.id,

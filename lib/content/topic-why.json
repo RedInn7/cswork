@@ -184,8 +184,8 @@
       { "zh": "任何有向无环图都至少有一个入度为 0 的点（否则沿入边一直往回走，终会重复某个点、形成环），所以只要无环，队列就不会提前变空。", "en": "Every DAG has at least one node with in-degree 0 (otherwise walking backwards along incoming edges would eventually repeat a node and form a cycle), so without a cycle the queue never runs dry early." }
     ],
     "say": {
-      "zh": "拓扑排序我用 Kahn 算法：先统计入度，把入度为 0 的点入队；每取出一个点就放进结果，并把它指向的点入度减一，减到 0 就入队。入度为 0 意味着前驱都已完成，所以放在这里不会违反依赖。如果最后输出的点少于 n，剩下的点都在环上，课程表这类题就是靠这个判断。时间 O(V + E)。",
-      "en": "For topological order I use Kahn's algorithm: count in-degrees and enqueue every node with none. Each node I dequeue goes into the result, and every node it points to loses one in-degree and is enqueued when it reaches zero. In-degree zero means all its prerequisites are done, so placing it violates nothing. If fewer than n nodes come out, the rest lie on a cycle, which answers course schedule problems, all in O(V + E)."
+      "zh": "拓扑排序我用 Kahn 算法：先统计入度，把入度为 0 的点入队；每取出一个点就放进结果，并把它指向的点入度减一，减到 0 就入队。入度为 0 意味着前驱都已完成，所以放在这里不会违反依赖。如果最后输出的点少于 n，说明图中有环（剩下的点要么在环上，要么在环的下游），课程表这类题就是靠这个判断。时间 O(V + E)。",
+      "en": "For topological order I use Kahn's algorithm: count in-degrees and enqueue every node with none. Each node I dequeue goes into the result, and every node it points to loses one in-degree and is enqueued when it reaches zero. In-degree zero means all its prerequisites are done, so placing it violates nothing. If fewer than n nodes come out, the graph has a cycle (every leftover node is on one or downstream of one), which answers course schedule problems, all in O(V + E)."
     },
     "core": ["core-topological-sort"]
   },
