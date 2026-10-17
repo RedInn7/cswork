@@ -553,7 +553,7 @@ export function bankersTrace(
     [],
   );
   if (req) {
-    const at = (i: number) => (i === req.p ? 'active' : undefined);
+    const at = (i: number): DemoCell['state'] => (i === req.p ? 'active' : undefined);
     if (result.request === 'exceeds-need' || result.request === 'wait') {
       frame(
         result.request === 'exceeds-need'
@@ -817,7 +817,7 @@ export function tcpTrace(kind: TcpScenario = 'normal', x = 100, y = 300, t: Tr =
     s = step.server.at(-1) ?? s;
     return { c, s };
   });
-  const frames: DemoFrame[] = steps.map((step, k) => {
+  const frames = steps.map((step, k): DemoFrame => {
     const graph: DemoGraph = { width: 100, height, nodes: [], edges: [] };
     for (let i = 0; i <= k; i++) {
       const now = i === k,

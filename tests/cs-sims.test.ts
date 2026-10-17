@@ -67,7 +67,13 @@ test('every schedule runs each process exactly its burst, never early, and wait 
   const cases = [DEFAULT_PROCS, procs([[0, 24], [0, 3], [0, 3]])];
   for (let n = 0; n < 40; n++)
     cases.push(
-      procs(Array.from({ length: 1 + Math.floor(random() * 6) }, () => [Math.floor(random() * 8), 1 + Math.floor(random() * 6), Math.floor(random() * 4)])),
+      procs(
+        Array.from({ length: 1 + Math.floor(random() * 6) }, (): [number, number, number] => [
+          Math.floor(random() * 8),
+          1 + Math.floor(random() * 6),
+          Math.floor(random() * 4),
+        ]),
+      ),
     );
   for (const list of cases)
     for (const algo of ['fcfs', 'sjf', 'srtf', 'rr', 'prio', 'prio-p'] as const) {
@@ -118,7 +124,10 @@ test('page replacement counts textbook faults, shows Belady, and agrees with bru
     for (const page of refs) {
       const at = list.indexOf(page);
       if (at >= 0) list.splice(at, 1);
-      else if ((faults++, list.length === size)) list.shift();
+      else {
+        faults++;
+        if (list.length === size) list.shift();
+      }
       list.push(page);
     }
     return faults;
@@ -300,7 +309,7 @@ test('every simulator builds in both languages: one final done frame, a consiste
     trace.queueLabel ?? '',
     ...trace.frames.flatMap((f) => [f.caption, ...f.stats.flat(), ...(f.queue ?? []), ...f.cells.map((c) => `${c.label}${c.value}`), ...(f.graph?.nodes ?? []).map((n) => `${n.label}${n.note ?? ''}`)]),
   ];
-  const traces: [string, DemoTrace, DemoTrace][] = simKinds.map((kind) => [kind, createSimTrace(kind), createSimTrace(kind, true)]);
+  const traces = simKinds.map((kind): [string, DemoTrace, DemoTrace] => [kind, createSimTrace(kind), createSimTrace(kind, true)]);
   for (const [kind, inputs] of VARIANTS)
     for (const text of inputs) {
       const parsed = simInputs[kind].parse(text);
@@ -370,7 +379,7 @@ test('an answered OS question links to its simulator; others do not', async () =
     Object.defineProperty(globalThis, name, { configurable: true, value: window[name as keyof typeof window] });
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   const realFetch = globalThis.fetch;
-  globalThis.fetch = async () => new Response('{}', { status: 401 });
+  globalThis.fetch = (async () => new Response('{}', { status: 401 })) as typeof fetch;
   const { McqPractice } = await import('../app/oa/mcq/practice');
   const { createRoot } = await import('react-dom/client');
   const items = ['mcq-os-9', 'mcq-os-1'].map((id) => {
