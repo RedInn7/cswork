@@ -44,18 +44,36 @@ test('a submission judged on every case shows its weighted score, groups and the
     assert.equal(tabs[2].getAttribute('aria-label'), 'Performance test case 3: Time Limit Exceeded');
     assert.match(tabs[2].textContent, /^Perf/);
     assert.doesNotMatch(tabs[1].textContent, /Perf/);
-    // A wrong answer in the performance group is not "too slow"; three limits stop the rest.
+    // Three limits stop the rest.
     await render({
       ...base,
       status: 'time_limit',
+      passed: 0,
+      total: 4,
+      score: 0,
+      groups: { correctness: 0, performance: 0 },
+      cases: [
+        { ...cases[0], status: 'time_limit' },
+        { ...cases[1], status: 'time_limit' },
+        cases[2],
+        { ...cases[3], status: 'skipped' },
+      ],
+    });
+    assert.doesNotMatch(text(), /Correct but too slow/);
+    assert.match(text(), /Three test cases hit a time, memory or output limit, so the rest were not run/);
+    // Cancelled after a wrong answer: no limit note, and no score or groups for a run never fully judged.
+    await render({
+      ...base,
+      status: 'cancelled',
       passed: 1,
       total: 4,
       score: 25,
       groups: { correctness: 50, performance: 0 },
-      cases: [cases[0], { ...cases[1], status: 'time_limit' }, cases[2], { ...cases[3], status: 'skipped' }],
+      cases: [cases[0], { ...cases[1], status: 'wrong_answer' }, { ...cases[2], status: 'skipped' }, { ...cases[3], status: 'skipped' }],
     });
-    assert.doesNotMatch(text(), /Correct but too slow/);
-    assert.match(text(), /Three test cases hit a time, memory or output limit, so the rest were not run/);
+    assert.match(text(), /1 \/ 4 test cases passed · 2 skipped/);
+    assert.doesNotMatch(text(), /were not run|judging stopped early|weighted|Correctness|too slow/);
+    // A wrong answer in the performance group is not "too slow".
     await render({
       ...base,
       status: 'time_limit',

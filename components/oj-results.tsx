@@ -266,8 +266,13 @@ export function SubmissionResult({
     ['accepted', 'finished'].includes(item.status),
   ).length;
   const skippedCases = cases.filter((item) => item.status === 'skipped').length;
+  // A cancelled or interrupted run was never fully judged: no weighted score or groups for it.
+  const judged = !running && !['cancelled', 'system_error'].includes(submission.status);
   // Correct but too slow: every correctness case passed and the performance cases failed only on time.
-  const groups = !running ? submission.groups : undefined;
+  const groups = judged ? submission.groups : undefined;
+  // all_cases stops early only at its third time, memory or output limit (oj-worker-policy stopJudging).
+  const limited =
+    cases.filter((item) => ['time_limit', 'memory_limit', 'output_limit'].includes(item.status)).length >= 3;
   const tooSlow =
     groups?.correctness === 100 &&
     groups.performance < 100 &&
@@ -303,7 +308,7 @@ export function SubmissionResult({
                     · {t(`${skippedCases} 个未运行`, `${skippedCases} skipped`)}
                   </>
                 )}
-                {submission.allCases && submission.score != null && (
+                {submission.allCases && judged && submission.score != null && (
                   <>
                     {' '}
                     · {t(`得分 ${submission.score}/100（按权重）`, `Score ${submission.score}/100 (weighted)`)}
@@ -381,7 +386,10 @@ export function SubmissionResult({
             : submission.message}
         </p>
       )}
-      {(submission.mode === 'judge' || submission.mode === 'drill') && firstFailure >= 0 && skippedCases > 0 && (
+      {(submission.mode === 'judge' || submission.mode === 'drill') &&
+        firstFailure >= 0 &&
+        skippedCases > 0 &&
+        (!submission.allCases || limited) && (
         <p className="cs-result-message">
           {submission.allCases
             ? t(
