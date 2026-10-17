@@ -1,6 +1,8 @@
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import coreSkills from '@/lib/content/core-skills.json';
+import { problemAppHref } from '@/lib/classic-lists';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
@@ -23,6 +25,9 @@ import { SdQuiz } from '../quiz';
 import { SdMarkRead, SdReadCheck, SdReportIssue, SdTryFirst } from '../reader';
 
 type Props = { params: Promise<{ slug: string }> };
+type CoreProblem = { id: string; titleZh: string; titleEn: string; sdChapter?: string };
+/** LLD chapters with a judged Core Skills problem (scripts/core-skills/build.ts sets sdChapter). */
+const judged = new Map((coreSkills.problems as CoreProblem[]).filter((p) => p.sdChapter).map((p) => [p.sdChapter!, p]));
 
 /** The signed-in reader: their "design it first" draft is a private note; they may join the discussion. */
 async function viewerId() {
@@ -54,6 +59,7 @@ export default async function SystemDesignChapter({ params }: Props) {
   const body = zh ? chapter.bodyZh : chapter.bodyEn;
   const toc = markdownToc(body);
   const userId = await viewerId();
+  const practice = judged.get(chapter.slug);
   const tocList = (
     <ol>
       {toc.map((section) => (
@@ -111,11 +117,20 @@ export default async function SystemDesignChapter({ params }: Props) {
           </details>
         )}
         {sdCases.has(chapter.slug) ? (
-          <SdTryFirst slug={chapter.slug} userId={userId}>
+          <SdTryFirst slug={chapter.slug} title={title(chapter)} userId={userId}>
             {prose}
           </SdTryFirst>
         ) : (
           prose
+        )}
+        {practice && (
+          <p className="sd-practice">
+            <a href={problemAppHref(practice.id)}>
+              {t('动手实现（可判题）：', 'Build it yourself (judged): ')}
+              {zh ? practice.titleZh : practice.titleEn}{' '}
+              <span aria-hidden="true">→</span>
+            </a>
+          </p>
         )}
         {chapter.quiz.length > 0 && <SdQuiz slug={chapter.slug} quiz={chapter.quiz} zh={zh} />}
         {/* The framework's estimation section, practised (also at /system-design/estimation). */}

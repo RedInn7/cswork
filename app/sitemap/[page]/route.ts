@@ -1,5 +1,4 @@
 import {
-  SITEMAP_STATIC_ENTRIES,
   sitemapChunks,
   sitemapLibraryRange,
   sitemapPageCount,
@@ -16,10 +15,7 @@ import {
   publicLibraryEntries,
   publicLibraryPath,
 } from '@/lib/server/public-library';
-import { mockOaPaths } from '@/lib/server/mock-oa-presets';
-import { systemDesignPaths } from '@/lib/server/system-design-course';
-import { learnPaths } from '@/lib/server/beginner-courses';
-import { h1bPaths } from '@/lib/server/h1b';
+import { sitemapStatics } from '@/lib/server/sitemap';
 
 export async function GET(
   _request: Request,
@@ -41,7 +37,7 @@ export async function GET(
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);
-  const statics = [...SITEMAP_STATIC_ENTRIES, ...mockOaPaths(), ...systemDesignPaths(), ...learnPaths(), ...h1bPaths()];
+  const statics = sitemapStatics();
   if (page > sitemapPageCount(publicLibraryCount(), statics.length))
     return new Response('Not found', { status: 404 });
   const { offset, limit } = sitemapLibraryRange(page, statics.length);

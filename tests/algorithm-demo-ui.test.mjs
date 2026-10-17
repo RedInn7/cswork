@@ -62,6 +62,97 @@ test('a graph demo renders an SVG, steps forward and back, and reduced motion st
   }
 });
 
+test('your own input reruns the demo, and predict mode scores clicks on cells and graph nodes', async () => {
+  const dom = new JSDOM('<div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { AlgorithmDemo } = await import('../components/algorithm-demo.tsx');
+  const root = createRoot(document.getElementById('root'));
+  const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent === text);
+  const question = () => document.querySelector('.algorithm-demo-header p').textContent;
+  const guessText = () => document.querySelector('.algorithm-demo-guess').textContent;
+  const type = async (value) => {
+    const input = document.querySelector('.algorithm-demo-input input');
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, value);
+      input.dispatchEvent(new window.Event('input', { bubbles: true }));
+    });
+    await act(async () => button('Apply').click());
+    return input;
+  };
+  try {
+    await act(async () => root.render(createElement(AlgorithmDemo, { kind: 'binary-search' })));
+    assert.equal(document.querySelector('.algorithm-demo-input summary').textContent, 'Try your own input');
+    assert.equal(document.querySelector('.algorithm-demo-input label').textContent, 'Sorted array; target');
+    // A bad input is explained in place and leaves the demo alone.
+    const input = await type('3 1; 2');
+    assert.equal(document.querySelector('.algorithm-demo-error[role="alert"]').textContent, 'The array must be sorted from small to large');
+    assert.equal(input.getAttribute('aria-invalid'), 'true');
+    assert.equal(input.getAttribute('aria-describedby'), document.querySelector('.algorithm-demo-error').id);
+    assert.equal(question(), 'Find 23 in a sorted array');
+    await type('1 3 5 7; 7');
+    assert.equal(document.querySelector('.algorithm-demo-error'), null);
+    assert.equal(question(), 'Find 7 in a sorted array');
+    assert.equal(document.querySelectorAll('.algorithm-demo-cell').length, 4);
+
+    await act(async () => button('Predict the next step').click());
+    assert.equal(button('Predict the next step').getAttribute('aria-pressed'), 'true');
+    assert.equal(button('Play').disabled, true);
+    // Every cell is a button, so the next mid (index 1) is not given away.
+    assert.equal(document.querySelectorAll('button.algorithm-demo-cell').length, 4);
+    assert.equal(button('Next'), undefined);
+    await act(async () => document.querySelectorAll('button.algorithm-demo-cell')[0].click());
+    assert.match(guessText(), /✗ Not this time It was 1: 3;/);
+    assert.match(guessText(), /This round: 0 \/ 1 right/);
+    assert.equal(document.querySelector('.algorithm-demo-caption').textContent, 'Check index 1: compare 3 with the target 7.');
+    // Moving left past mid turns nothing new current: no question, Next just plays it. The
+    // cells stay (disabled) buttons, so the focus is not lost.
+    const cells = document.querySelectorAll('button.algorithm-demo-cell');
+    assert.equal(cells.length, 4);
+    assert.ok([...cells].every((cell) => cell.getAttribute('aria-disabled') === 'true'));
+    await act(async () => cells[3].click());
+    assert.match(guessText(), /0 \/ 1 right/);
+    assert.match(guessText(), /Nothing new turns current next/);
+    await act(async () => button('Next').click());
+    assert.equal(document.querySelectorAll('button.algorithm-demo-cell')[2].getAttribute('aria-disabled'), null);
+    await act(async () => document.querySelectorAll('button.algorithm-demo-cell')[2].click());
+    assert.match(guessText(), /✓ Right/);
+    assert.match(guessText(), /1 \/ 2 right/);
+    await act(async () => button('Next').click());
+    await act(async () => button('Show me').click());
+    assert.match(guessText(), /✗ Not this time It was 3: 7;/);
+    assert.match(guessText(), /1 \/ 3 right/);
+    assert.equal(document.querySelectorAll('.algorithm-demo-cell.is-active').length, 1);
+
+    // Restore default: the original question, a fresh round.
+    await act(async () => button('Restore default').click());
+    assert.equal(question(), 'Find 23 in a sorted array');
+    assert.match(guessText(), /0 \/ 0 right/);
+
+    // Graph kinds: nodes are focusable buttons answered with Enter.
+    await act(async () => root.render(createElement(AlgorithmDemo, { kind: 'dijkstra' })));
+    assert.equal(document.querySelector('.algorithm-demo-input'), null);
+    await act(async () => button('Predict the next step').click());
+    const svg = document.querySelector('svg.algorithm-demo-graph');
+    assert.equal(svg.getAttribute('role'), 'group');
+    const nodes = [...svg.querySelectorAll('.algorithm-demo-node[role="button"]')];
+    assert.equal(nodes.length, 6);
+    assert.equal(nodes[0].getAttribute('tabindex'), '0');
+    await act(async () => nodes[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    assert.match(guessText(), /✓ Right It was A;/);
+    // Between questions the nodes stay focusable but ignore picks.
+    const idle = svg.querySelector('.algorithm-demo-node[role="button"]');
+    assert.equal(idle.getAttribute('aria-disabled'), 'true');
+    await act(async () => idle.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    assert.match(guessText(), /1 \/ 1 right/);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
 test('topic pages embed their stop demos under an anchor; stops without one have no section', async () => {
   const { TopicView } = await import('../app/topics/views.tsx');
   const { topicStop } = await import('../app/topics/stops.ts');

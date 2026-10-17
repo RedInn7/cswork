@@ -32,6 +32,7 @@ import { ResumeBox } from './mock-resume';
 import { OaMarkdown } from './oa-library';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
+import { useSpeech } from './use-speech';
 import '@/app/redesign.css';
 import '@/app/mock-interview.css';
 
@@ -287,6 +288,7 @@ function Setup({ params, navigate, ai }: { params: Record<string, string>; navig
             'Pick a company, role and round, and draw a full set from real interview questions. Practice on the clock, or run it with a partner.',
           )}
         </p>
+        <p><a className="rd-button is-quiet" href="/english">{t('练面试英语：12 个场景的表达和跟读', 'Practice interview English')}</a></p>
       </header>
       <div className="rd-stats rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
         <div>
@@ -1282,97 +1284,6 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
 }
 
 /* ------------------------------------------------------- AI interviewer */
-
-type Recognition = {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  onresult: ((e: { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
-  onend: (() => void) | null;
-  start: () => void;
-  stop: () => void;
-};
-const SPEAK = 'cswork:mock-interview:speak';
-/**
- * The browser's own speech: reading the interviewer aloud (speechSynthesis) and dictation
- * (SpeechRecognition, prefixed in Chrome and Safari). Each is hidden where the browser has none.
- */
-function useSpeech(locale: 'zh' | 'en', onText: (text: string, ms: number, gap: number) => void) {
-  const lang = locale === 'zh' ? 'zh-CN' : 'en-US';
-  const [canSpeak] = useState(() => typeof speechSynthesis !== 'undefined');
-  const [Engine] = useState(() => {
-    const w = window as unknown as Record<string, (new () => Recognition) | undefined>;
-    return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
-  });
-  const [speak, setSpeak] = useState(() => read(SPEAK, false));
-  const [listening, setListening] = useState(false);
-  const recognition = useRef<Recognition | null>(null);
-  const heard = useRef(onText);
-  heard.current = onText;
-  useEffect(
-    () => () => {
-      recognition.current?.stop();
-      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
-    },
-    [],
-  );
-  return {
-    canSpeak,
-    speak,
-    toggleSpeak: () => {
-      const next = !speak;
-      setSpeak(next);
-      write(SPEAK, next);
-      if (!next) speechSynthesis.cancel();
-    },
-    say: (text: string) => {
-      if (!canSpeak || !speak) return;
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      speechSynthesis.speak(utterance);
-    },
-    canListen: !!Engine,
-    listening,
-    toggleListen: () => {
-      if (recognition.current) return recognition.current.stop();
-      if (!Engine) return;
-      const r = new Engine();
-      r.lang = lang;
-      r.continuous = true;
-      // Interim results only time when each utterance began; the text is the final one's. Timed per
-      // utterance, not per result index: Chrome splits one utterance's interim text over several
-      // results and merges them into one final, so an index can outlive its utterance.
-      r.interimResults = true;
-      let began: number | null = null;
-      let lastEnd = 0;
-      r.onresult = (e) => {
-        const now = Date.now();
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          if (!e.results[i].isFinal) {
-            began ??= now;
-            continue;
-          }
-          const from = began ?? now;
-          began = null;
-          heard.current(e.results[i][0].transcript.trim(), now - from, lastEnd ? Math.max(0, from - lastEnd) : 0);
-          lastEnd = now;
-        }
-      };
-      r.onend = () => {
-        recognition.current = null;
-        setListening(false);
-      };
-      recognition.current = r;
-      setListening(true);
-      try {
-        r.start();
-      } catch {
-        r.onend?.();
-      }
-    },
-  };
-}
 
 /**
  * The interview with the AI: the question and a code box on the left, the conversation beside

@@ -14,6 +14,7 @@ import {
   SEO_HOME,
 } from '../lib/seo';
 import { GET as robots } from '../app/robots.txt/route';
+import { sitemapStatics } from '../lib/server/sitemap';
 
 test('page metadata uses one production canonical and matching social previews', () => {
   const metadata = seoMetadata({
@@ -89,6 +90,16 @@ test('database sitemap batches account for static pages without gaps or overlaps
   assert.deepEqual(first, { offset: 0, limit: SITEMAP_URL_LIMIT - fixed });
   assert.equal(second.offset, first.offset + first.limit);
   assert.equal(third.offset, second.offset + second.limit);
+});
+
+test('sitemap page 1 adds the content-built pages once, and no downloads, feeds or private pages', () => {
+  const paths = sitemapStatics().map((entry) => entry.path);
+  assert.equal(new Set(paths).size, paths.length, 'no page twice');
+  for (const path of ['/projects', '/projects/rate-limiter', '/english', '/english/self-intro', '/frontend', '/frontend/js/debounce', '/system-design'])
+    assert.ok(paths.includes(path), path);
+  assert.equal(paths.filter((p) => p.startsWith('/english/')).length, 12);
+  assert.equal(paths.filter((p) => p.startsWith('/frontend/js/')).length, 40);
+  assert.ok(!paths.some((p) => /\/accept$|^\/feeds\/|^\/career\/(contacts|tracker)/.test(p)));
 });
 
 test('robots permits reading page noindex directives and names the sitemap', async () => {

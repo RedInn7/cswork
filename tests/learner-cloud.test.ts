@@ -294,3 +294,65 @@ void test('asked reports: verified learners, one per problem and month, counted 
     .run(me.id, thisMonth, now);
   assert.equal(await status(me, 'POST', 'reports', { problemId: 'lc-3', month: thisMonth }), 429);
 });
+
+void test('lists: bulk add resolves pasted lines on the server, reorder needs the exact items, both owner only', async () => {
+  type List = { id: string; updatedAt: number; items: { problemId: string }[] };
+  type Bulk = { added: number; duplicate: number; unknown: string[]; overflow: number; list: List };
+  const made = await ok<List>(me, 'POST', 'lists', { title: 'Bulk', problemIds: ['oa-amazon-1'] });
+  const path = `lists/${made.id}`;
+  assert.equal(await status(null, 'POST', `${path}/bulk`, { lines: ['1'] }), 401);
+  const bulk = await ok<Bulk>(me, 'POST', `${path}/bulk`, {
+    lines: [
+      'https://leetcode.cn/problems/p-3/description/',
+      '1',
+      'p-1', // The same problem as "1".
+      '#1',
+      'https://cswork.test/?view=problem&problem=oa-amazon-1', // Already in the list.
+      'oa-hiddenco-1',
+      'course-x',
+      'sql-anything',
+      '404',
+      'what is this?',
+      '',
+    ],
+  });
+  assert.equal(bulk.added, 2);
+  assert.equal(bulk.duplicate, 3);
+  assert.deepEqual(bulk.unknown, ['oa-hiddenco-1', 'course-x', 'sql-anything', '404', 'what is this?']);
+  assert.equal(bulk.overflow, 0);
+  assert.deepEqual(bulk.list.items.map((i) => i.problemId), ['oa-amazon-1', 'lc-3', 'lc-1'], 'paste order');
+  assert.equal(await status(me, 'POST', `${path}/bulk`, { lines: [] }), 400);
+  assert.equal(await status(me, 'POST', `${path}/bulk`, { lines: ['x'.repeat(301)] }), 400);
+  assert.equal(await status(me, 'POST', `${path}/bulk`, { lines: ['1'], kinds: ['id'] }), 400);
+
+  await ok(me, 'POST', path, { visibility: 'public' });
+  const before = (await ok<List>(me, 'GET', path)).updatedAt;
+  const order = ['lc-1', 'oa-amazon-1', 'lc-3'];
+  const moved = await ok<List>(me, 'POST', `${path}/reorder`, { problemIds: order });
+  assert.deepEqual(moved.items.map((i) => i.problemId), order);
+  assert.ok(moved.updatedAt >= before);
+  for (const problemIds of [['lc-1', 'oa-amazon-1'], [...order, 'lc-4'], ['lc-1', 'lc-1', 'lc-3']])
+    assert.equal(await status(me, 'POST', `${path}/reorder`, { problemIds }), 409, problemIds.join());
+  // A public list reads for others, but only its owner writes to it.
+  assert.equal(await status(other, 'POST', `${path}/reorder`, { problemIds: order }), 404);
+  assert.equal(await status(other, 'POST', `${path}/bulk`, { lines: ['3'] }), 404);
+  assert.deepEqual((await ok<List>(other, 'GET', path)).items.map((i) => i.problemId), order);
+  // A company hidden after the fact keeps its row, after the order the owner can see.
+  sqlite()
+    .prepare(`INSERT INTO user_list_items(list_id,problem_id,position,added_at) VALUES(?,'oa-hiddenco-1',0,1)`)
+    .run(made.id);
+  await ok(me, 'POST', `${path}/reorder`, { problemIds: ['lc-3', 'lc-1', 'oa-amazon-1'] });
+  assert.deepEqual(
+    sqlite().prepare('SELECT problem_id FROM user_list_items WHERE list_id=? ORDER BY position').pluck().all(made.id),
+    ['lc-3', 'lc-1', 'oa-amazon-1', 'oa-hiddenco-1'],
+  );
+
+  // Near the cap: what fits goes in, the rest is counted instead of failing the paste.
+  const full = await ok<List>(me, 'POST', 'lists', { title: 'Nearly full' });
+  const insert = sqlite().prepare('INSERT INTO user_list_items(list_id,problem_id,position,added_at) VALUES(?,?,?,1)');
+  for (let i = 0; i < 499; i++) insert.run(full.id, `lc-${10000 + i}`, i + 1);
+  const cut = await ok<Bulk>(me, 'POST', `lists/${full.id}/bulk`, { lines: ['3', '1', 'oa-amazon-1', 'lc-10000'] });
+  assert.deepEqual([cut.added, cut.overflow, cut.duplicate], [1, 2, 1]);
+  assert.equal(cut.list.items.length, 500);
+  assert.equal(cut.list.items.at(-1)!.problemId, 'lc-3');
+});

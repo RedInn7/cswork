@@ -6,6 +6,7 @@ import { classicListProgress } from '@/lib/classic-lists';
 import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, SLOTS, type MockSession, type Slot } from '@/lib/mock-oa';
+import { LINE_MAX, parseListImport } from '@/lib/list-import';
 import { LANGUAGE_IDS } from '@/lib/problems';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
@@ -546,6 +547,73 @@ async function handleLists(request: Request, p: Person | null, id?: string, acti
       })();
     else if (await publicProblem(p, d.problemId)) addItems(list.id, [d.problemId]);
     else throw new HttpError(404, '题目不存在或尚未发布');
+    return json(readList(list.id, p.id));
+  }
+  if (action === 'bulk') {
+    await limit(p, 'list-bulk-write', 20);
+    const { lines } = z
+      .object({ lines: z.array(z.string().max(LINE_MAX)).min(1).max(ITEM_MAX) })
+      .strict()
+      .parse(await readJson(request, 200000));
+    // Parsed again here: the editor's preview is only a preview.
+    const parsed = parseListImport(lines.join('\n'));
+    const byNumber = new Map<string, string>(),
+      bySlug = new Map<string, string>();
+    const rows = db
+      .prepare(
+        `SELECT number,slug,judge_problem_id AS id FROM study_library WHERE judge_problem_id IS NOT NULL
+        AND (number IN (SELECT value FROM json_each(?)) OR slug IN (SELECT value FROM json_each(?)))`,
+      )
+      .all(
+        JSON.stringify(parsed.flatMap((l) => (l.kind === 'number' ? [Number(l.value)] : []))),
+        JSON.stringify(parsed.flatMap((l) => (l.kind === 'slug' ? [l.value] : []))),
+      ) as { number: number; slug: string; id: string }[];
+    for (const r of rows) {
+      if (!byNumber.has(String(r.number))) byNumber.set(String(r.number), r.id);
+      bySlug.set(r.slug, r.id);
+    }
+    const seen = new Set(db.prepare('SELECT problem_id FROM user_list_items WHERE list_id=?').pluck().all(list.id) as string[]);
+    const room = ITEM_MAX - seen.size;
+    const keep: string[] = [],
+      unknown: string[] = [];
+    let duplicate = 0,
+      overflow = 0;
+    for (const l of parsed) {
+      const problem =
+        l.kind === 'id' ? l.value : l.kind === 'number' ? byNumber.get(l.value) : l.kind === 'slug' ? bySlug.get(l.value) : '';
+      if (!problem) unknown.push(l.raw);
+      // Already in the list, or pasted earlier: each problem is looked up once.
+      else if (seen.has(problem)) duplicate++;
+      else {
+        seen.add(problem);
+        // Cut before addItems, which refuses the whole batch once the list is full.
+        if (keep.length >= room) overflow++;
+        else if (await publicProblem(p, problem)) keep.push(problem);
+        else unknown.push(l.raw);
+      }
+    }
+    if (keep.length) addItems(list.id, keep);
+    return json({ added: keep.length, duplicate, unknown, overflow, list: readList(list.id, p.id) });
+  }
+  if (action === 'reorder') {
+    const { problemIds } = z
+      .object({ problemIds: z.array(problemId).max(ITEM_MAX) })
+      .strict()
+      .parse(await readJson(request, 100000));
+    db.transaction(() => {
+      // The order covers exactly what the list shows; problems of companies hidden since go last.
+      const shown = listItems(list.id).map((i) => i.problemId);
+      const order = new Set(problemIds);
+      if (order.size !== problemIds.length || shown.length !== order.size || shown.some((i) => !order.has(i)))
+        throw new HttpError(409, '题单内容已变化，请刷新后再排序');
+      const all = db
+        .prepare('SELECT problem_id FROM user_list_items WHERE list_id=? ORDER BY position,added_at')
+        .pluck()
+        .all(list.id) as string[];
+      const set = db.prepare('UPDATE user_list_items SET position=? WHERE list_id=? AND problem_id=?');
+      [...problemIds, ...all.filter((i) => !order.has(i))].forEach((i, at) => set.run(at + 1, list.id, i));
+      db.prepare('UPDATE user_lists SET updated_at=? WHERE id=?').run(Date.now(), list.id);
+    })();
     return json(readList(list.id, p.id));
   }
   if (action) throw new HttpError(404, '题单接口不存在');

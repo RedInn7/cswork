@@ -164,7 +164,8 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
   // The SQL exam certificate makes SQL ready without a single SQL AC, and the count stays real.
   assert.deepEqual(by.sql, ['ready', 0, 30]);
   assert.deepEqual(reply.skills.filter((s) => s.certified).map((s) => s.skill), ['sql']);
-  assert.deepEqual(by.lld, ['partial', 2, chapters(['ood-interview-approach', 'lld-case-atm'])]);
+  // Two chapters read out of its two parts, plus the 8 Core Skills OOD problems.
+  assert.deepEqual(by.lld, ['partial', 2, chapters(['ood-interview-approach', 'lld-case-atm']) + 8]);
   // 3 chapters + 7 concurrency problems; core-dynamic-array is not one of them.
   assert.deepEqual(by.concurrency, ['partial', 3, chapters(['concurrency-primitives']) + 7]);
   assert.deepEqual(by.oa, ['partial', 5, 30]);

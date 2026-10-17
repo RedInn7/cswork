@@ -5,6 +5,7 @@ import { useT } from '@/lib/i18n';
 import { ApiError, api } from '@/lib/types';
 import { stashNoteDraft } from '@/components/problem-notes';
 import { TryFirst } from '@/components/try-first';
+import { RecallRate } from '@/components/recall-rate';
 import { ReportIssue } from '@/components/report-issue';
 import '@/app/redesign.css';
 
@@ -161,9 +162,20 @@ const draftKey = (slug: string) => `cswork:sd-draft:${slug}`;
  * the private note `sd:<slug>/draft`). It stays in the page, faded and inert, until the learner
  * writes something or skips; a chapter drafted, read or opened before opens straight away, and so
  * does a link to one of its sections. A guest's draft is kept on this device and goes to their note
- * once they sign in (the page reloads, so TryFirst cannot carry it over itself).
+ * once they sign in (the page reloads, so TryFirst cannot carry it over itself). Once open, the
+ * learner grades their design against it for spaced review (components/recall-rate.tsx).
  */
-export function SdTryFirst({ slug, userId, children }: { slug: string; userId: string | null; children: ReactNode }) {
+export function SdTryFirst({
+  slug,
+  title,
+  userId,
+  children,
+}: {
+  slug: string;
+  title: string;
+  userId: string | null;
+  children: ReactNode;
+}) {
   const t = useT();
   const marked = useRead().slugs.has(slug);
   const [open, setOpen] = useState(false);
@@ -243,6 +255,11 @@ export function SdTryFirst({ slug, userId, children }: { slug: string; userId: s
       >
         {children}
       </div>
+      {shown && (
+        <div className="rd">
+          <RecallRate key={slug} target={`sd:${slug}`} title={title} signedIn={!!userId} />
+        </div>
+      )}
     </>
   );
 }

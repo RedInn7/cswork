@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { NewsletterToggle } from '@/components/newsletter-toggle';
 import { seoMetadata } from '@/lib/seo';
+import { feedPath, withFeed } from '@/lib/server/feeds';
 import { requestLocale } from '@/lib/server/locale';
 import { issueList } from '@/lib/server/newsletter';
 import { weekRange } from './parts';
@@ -9,14 +10,15 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 
 export async function generateMetadata({ searchParams }: Props) {
   const zh = (await requestLocale()) === 'zh';
+  const metadata = seoMetadata({
+    title: zh ? 'CSWork 周报 · 往期归档' : 'The CSWork weekly · Archive',
+    description: zh
+      ? '每周一封：新上线的 OA 题、学员面经、热门讨论和每日一题战报。往期全部公开。'
+      : 'One email a week: new OA problems, member interview reports, top discussions and daily problem results. Every issue is public.',
+    path: '/newsletter',
+  });
   return {
-    ...seoMetadata({
-      title: zh ? 'CSWork 周报 · 往期归档' : 'The CSWork weekly · Archive',
-      description: zh
-        ? '每周一封：新上线的 OA 题、学员面经、热门讨论和每日一题战报。往期全部公开。'
-        : 'One email a week: new OA problems, member interview reports, top discussions and daily problem results. Every issue is public.',
-      path: '/newsletter',
-    }),
+    ...withFeed(metadata, '/feeds/newsletter.xml', zh),
     // Confirmation and unsubscribe landings repeat the archive.
     ...(Object.keys(await searchParams).length ? { robots: { index: false, follow: true } } : {}),
   };
@@ -56,6 +58,12 @@ export default async function NewsletterPage({ searchParams }: Props) {
         <h2 id="newsletter-archive" className="newsletter-h2">
           {t('往期', 'Past issues')}
         </h2>
+        <p className="newsletter-feed">
+          {t('不想用邮件？用 RSS 阅读器订阅：', 'Rather not use email? Follow in a feed reader: ')}
+          <a href={feedPath('/feeds/newsletter.xml', zh)} type="application/atom+xml">
+            {t('RSS（Atom）', 'RSS (Atom)')}
+          </a>
+        </p>
         {issues.length ? (
           <ol className="newsletter-issues">
             {issues.map((issue) => (

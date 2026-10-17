@@ -6,6 +6,8 @@ import 'monaco-editor/languages/definitions/go/register.js';
 import 'monaco-editor/languages/definitions/java/register.js';
 import 'monaco-editor/languages/definitions/cpp/register.js';
 import 'monaco-editor/languages/definitions/sql/register.js';
+// Highlighting only (no TypeScript worker): components/js-editor.tsx for /frontend/js.
+import 'monaco-editor/languages/definitions/javascript/register.js';
 import 'monaco-editor/editor/browser/coreCommands.js';
 import 'monaco-editor/editor/contrib/bracketMatching/browser/bracketMatching.js';
 import 'monaco-editor/editor/contrib/clipboard/browser/clipboard.js';

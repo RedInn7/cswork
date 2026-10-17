@@ -221,16 +221,32 @@ test('entryMethod reads the Solution method from a template', () => {
 test('parseTrace drops malformed steps instead of trusting them', () => {
   const parsed = parseTrace(
     JSON.stringify({
-      steps: [[2, 0, 1, 'f', 0, 0, [['a', '1'], [3, 'x']]], 'junk', [null], [3, 1, 2, 'g', 1, 4, [], '7']],
+      steps: [
+        [2, 0, 1, 'f', 0, 0, [['a', '1'], [3, 'x']], 'x', 1],
+        'junk',
+        [null],
+        [3, 1, 2, 'g', 1, 4, [], '7'],
+        [4, 1, 3, 'h', 1, 4, [], 'None', 1],
+      ],
       stdout: 'hi',
       error: { type: 'ValueError', message: 'm', line: 'x' },
       stopped: 'nope',
       note: { code: 'other' },
+      params: { '2': ['n', 'k'], x: ['a'], '3': [1], '4': 'n' },
+      // Only a caller older than its call: no self-parent, no loop, no junk.
+      parents: { '3': 1, '4': 4, '5': 9, '6': 'x', '7': 0 },
     }),
   );
-  assert.equal(parsed.steps.length, 2);
+  assert.deepEqual(parsed.params, { 2: ['n', 'k'] });
+  assert.deepEqual(parsed.parents, { 3: 1 });
+  assert.deepEqual(parseTrace('{}').params, {});
+  assert.deepEqual(parseTrace('{}').parents, {});
+  assert.equal(parsed.steps.length, 3);
   assert.deepEqual(parsed.steps[0].vars, [['a', '1']]);
+  assert.equal(parsed.steps[0].raised, undefined);
   assert.equal(parsed.steps[1].ret, '7');
+  assert.equal(parsed.steps[1].raised, undefined);
+  assert.equal(parsed.steps[2].raised, true);
   assert.deepEqual(parsed.error, { type: 'ValueError', message: 'm', line: null });
   assert.equal(parsed.stopped, null);
   assert.equal(parsed.note, null);

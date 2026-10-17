@@ -94,6 +94,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     hint: 'object-oriented or low-level design, design patterns, SOLID',
     href: '/system-design/ood-interview-approach',
     parts: ['ood-interview-approach', 'lld-case-atm'],
+    core: 'ood',
   },
   concurrency: {
     zh: '并发编程',

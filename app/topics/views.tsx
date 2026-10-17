@@ -76,8 +76,8 @@ export function TopicsIndexView({ zh }: { zh: boolean }) {
         <strong>{zh ? 'Core Skills：手写数据结构与算法' : 'Core Skills: data structures by hand'}</strong>
         <span>
           {zh
-            ? '28 道题，不调库亲手实现哈希表、堆、LRU、排序、最短路、并查集、线段树等，还有多线程并发题，四种语言都能判题。'
-            : '28 problems: build hash maps, heaps, an LRU cache, sorts, shortest paths, union-find, segment trees and more without libraries, plus multithreaded concurrency problems, judged in four languages.'}
+            ? '36 道题，不调库亲手实现哈希表、堆、LRU、排序、最短路、并查集、线段树等，还有多线程并发题和面向对象设计（LLD）题，四种语言都能判题。'
+            : '36 problems: build hash maps, heaps, an LRU cache, sorts, shortest paths, union-find, segment trees and more without libraries, plus multithreaded concurrency and object-oriented design (LLD) problems, judged in four languages.'}
         </span>
       </a>
       <div className="topics-map">

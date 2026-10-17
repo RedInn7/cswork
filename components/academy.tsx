@@ -36,6 +36,9 @@ import {
   Network,
   GraduationCap,
   Award,
+  Braces,
+  FolderGit2,
+  MicVocal,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -156,6 +159,9 @@ const nav: [LucideIcon, string, string, string][] = [
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
   [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
+  [Braces, '前端手写题', 'Frontend JS', '/frontend'],
+  [FolderGit2, '简历项目', 'Resume Projects', '/projects'],
+  [MicVocal, '面试英语', 'Interview English', '/english'],
   [Award, '技能认证', 'Certification', '/certify'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],

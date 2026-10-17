@@ -32,6 +32,8 @@ export type DemoNode = {
   y: number;
   state?: DemoState;
   note?: string;
+  /** Extra drop for the note, so crowded neighbours' notes alternate rows. */
+  noteDy?: number;
 };
 export type DemoEdge = {
   from: string;
@@ -960,10 +962,15 @@ export function topoSortTrace(edges: [string, string][] = TOPO_EDGES, t: Tr = zh
       queue: [...queue],
     });
   frame(
-    t(
-      `箭头 X → Y 表示先修 X 才能修 Y。入度为 0 的 ${queue.join('、')} 没有先修要求，先入队。`,
-      `An arrow X → Y means X must come before Y. ${queue.join(', ')} have in-degree 0, so they join the queue first.`,
-    ),
+    queue.length
+      ? t(
+          `箭头 X → Y 表示先修 X 才能修 Y。入度为 0 的 ${queue.join('、')} 没有先修要求，先入队。`,
+          `An arrow X → Y means X must come before Y. ${queue.join(', ')} have in-degree 0, so they join the queue first.`,
+        )
+      : t(
+          '箭头 X → Y 表示先修 X 才能修 Y。没有入度为 0 的节点：每门课都有先修，图里有环，不存在拓扑序。',
+          'An arrow X → Y means X must come before Y. No node has in-degree 0: every course has a prerequisite, so the graph has a cycle and no topological order exists.',
+        ),
   );
   while (queue.length) {
     const u = queue.shift()!;
@@ -1286,13 +1293,20 @@ export function dpTableTrace(a = 'ACBD', b = 'ABCD', t: Tr = zhText): DemoTrace 
 
 /** Subsets by take/skip decisions: the recursion tree grows as the search walks it. */
 export function backtrackingTrace(nums = [1, 2, 3], t: Tr = zhText): DemoTrace {
-  const width = 120;
+  // Four numbers make 16 leaves: a wider box, and every other leaf note one row lower.
+  const crowded = nums.length > 3,
+    width = crowded ? 160 : 120;
   // A node's id is its decision string ('y' took nums[depth], 'n' skipped it); the root is 'r'.
   const key = (id: string) => id || 'r';
-  const { pos, height } = layoutForest(['r'], (id) => {
+  const layout = layoutForest(['r'], (id) => {
     const path = id === 'r' ? '' : id;
     return path.length < nums.length ? [`${path}y`, `${path}n`] : [];
   }, width, 15, 7);
+  const { pos } = layout,
+    height = layout.height + (crowded ? 3.6 : 0);
+  // Leaves run left to right in binary: y = 0, n = 1.
+  const noteDy = (id: string) =>
+    crowded && id.length === nums.length && id.endsWith('n') ? 3.6 : undefined;
   const subset = (id: string) => `{${[...id].flatMap((c, i) => (c === 'y' ? [nums[i]] : [])).join(',')}}`;
   const seen: string[] = [],
     results: string[] = [],
@@ -1310,6 +1324,7 @@ export function backtrackingTrace(nums = [1, 2, 3], t: Tr = zhText): DemoTrace {
           label: '',
           ...pos.get(key(id))!,
           note: subset(id),
+          noteDy: noteDy(id),
           state:
             current !== null && id === current
               ? 'active'
@@ -1497,36 +1512,189 @@ export function trieTrace(
   };
 }
 
-export function createDemoTrace(kind: DemoKind, english = false): DemoTrace {
+/** [中文, English]: input labels and parse errors are shown in the page's language. */
+export type Pair = [string, string];
+export type DemoParse = { args: unknown[] } | { error: Pair };
+export type DemoInput = { label: Pair; placeholder: string; parse: (text: string) => DemoParse };
+
+class InputError extends Error {
+  constructor(readonly pair: Pair) {
+    super(pair[1]);
+  }
+}
+function fail(zh: string, en: string): never {
+  throw new InputError([zh, en]);
+}
+/** "a; b" → ['a', 'b']: the parts a kind's input is split into. */
+function parts(text: string, count: number, optional = 0): string[] {
+  const found = text.split(/[;；|]/).map((p) => p.trim());
+  if (found.length < count - optional || found.length > count)
+    fail(`格式是 ${count} 段，用分号隔开`, `Use ${count} parts separated by semicolons`);
+  return found;
+}
+const tokens = (text: string) => text.split(/[\s,，、]+/).filter(Boolean);
+/** Whole numbers with |v| ≤ limit, between 1 and `max` of them. */
+function numbers(text: string, max: number, limit = 99): number[] {
+  const list = tokens(text);
+  if (!list.length) fail('至少要填一个数', 'Enter at least one number');
+  if (list.length > max) fail(`最多 ${max} 个数`, `At most ${max} numbers`);
+  return list.map((token) => {
+    if (!/^[+-]?\d+$/.test(token)) fail(`「${token}」不是整数`, `"${token}" is not a whole number`);
+    const value = Number(token);
+    if (Math.abs(value) > limit) fail(`每个数要在 −${limit} 到 ${limit} 之间`, `Each number must be between −${limit} and ${limit}`);
+    return value;
+  });
+}
+function one(text: string) {
+  if (tokens(text).length !== 1) fail('这里只填一个整数', 'Enter exactly one whole number here');
+  return numbers(text, 1)[0];
+}
+function sorted(values: number[]) {
+  if (values.some((v, i) => i && v < values[i - 1]))
+    fail('数组要先按从小到大排好序', 'The array must be sorted from small to large');
+  return values;
+}
+const words = (text: string, max: number, size: number, what: Pair) => {
+  const list = tokens(text.toLowerCase());
+  if (list.length > max) fail(`${what[0]}最多 ${max} 个`, `At most ${max} ${what[1]}`);
+  for (const w of list)
+    if (!/^[a-z]+$/.test(w) || w.length > size)
+      fail(`「${w}」：每个词只能是 1 到 ${size} 个英文字母`, `"${w}": each word is 1 to ${size} letters a–z`);
+  return list;
+};
+const input = (label: Pair, placeholder: string, read: (text: string) => unknown[]): DemoInput => ({
+  label,
+  placeholder,
+  parse: (text) => {
+    if (!text.trim()) return { error: ['先填一个输入', 'Type an input first'] };
+    try {
+      return { args: read(text.trim()) };
+    } catch (error) {
+      if (error instanceof InputError) return { error: error.pair };
+      throw error;
+    }
+  },
+});
+const sortedAndTarget = (text: string) => {
+  const [values, target] = parts(text, 2);
+  return [sorted(numbers(values, 12)), one(target)];
+};
+
+/**
+ * "Try your own input": a parser per kind, with sizes that keep the frames readable. bfs,
+ * dijkstra and union-find keep their fixed graphs. Each parse returns the trace function's
+ * leading arguments, in order.
+ */
+export const demoInputs: Partial<Record<DemoKind, DemoInput>> = {
+  'binary-search': input(['有序数组; 目标', 'Sorted array; target'], '2 5 8 12 16 23 38 56; 23', sortedAndTarget),
+  'two-pointers': input(['有序数组; 目标和', 'Sorted array; target sum'], '1 3 4 6 8 11 15; 14', sortedAndTarget),
+  'sliding-window': input(['字符串（最多 16 个字符）', 'String (up to 16 characters)'], 'abcabcbb', (text) => {
+    if (Array.from(text).length > 16) fail('最多 16 个字符', 'At most 16 characters');
+    return [text];
+  }),
+  dp: input(['金额; 硬币面值', 'Amount; coin values'], '6; 1 3 4', (text) => {
+    const [amount, coins] = parts(text, 2);
+    const total = one(amount);
+    if (total < 0 || total > 15) fail('金额要在 0 到 15 之间', 'The amount must be between 0 and 15');
+    const list = numbers(coins, 4);
+    if (list.some((c) => c < 1)) fail('硬币面值要是正整数', 'Coin values must be positive');
+    return [total, list];
+  }),
+  dfs: input(['网格：每行一串 0 和 1，行之间用空格隔开', 'Grid: one string of 0s and 1s per row, rows separated by spaces'], '110010 100110 001000 101101', (text) => {
+    const rows = tokens(text);
+    if (rows.length > 6) fail('最多 6 行', 'At most 6 rows');
+    if (rows.some((r) => !/^[01]+$/.test(r))) fail('每行只能有 0 和 1', 'Rows hold only 0s and 1s');
+    if (rows.some((r) => r.length !== rows[0].length)) fail('每行长度要相同', 'Every row must be the same length');
+    if (rows[0].length > 8) fail('每行最多 8 格', 'At most 8 cells per row');
+    return [rows];
+  }),
+  heap: input(['数据流; k', 'Stream; k'], '5 2 9 1 7 8 3; 3', (text) => {
+    const [stream, k] = parts(text, 2);
+    const list = numbers(stream, 12),
+      size = one(k);
+    if (size < 1 || size > list.length) fail(`k 要在 1 到 ${list.length} 之间`, `k must be between 1 and ${list.length}`);
+    return [list, size];
+  }),
+  'monotonic-stack': input(['数组（最多 12 个数）', 'Array (up to 12 numbers)'], '3 1 4 1 5 9 2 6', (text) => [numbers(text, 12)]),
+  // ponytail: 10, not 16, so the (n + 2)-column table still fits a phone.
+  'dp-table': input(['两个字符串（字母或数字，各最多 10 个）', 'Two strings (letters or digits, up to 10 each)'], 'ACBD ABCD', (text) => {
+    const list = tokens(text.replace(/[;；|]/g, ' '));
+    if (list.length !== 2) fail('填两个字符串，用空格隔开', 'Enter two strings separated by a space');
+    for (const w of list)
+      if (!/^[A-Za-z0-9]{1,10}$/.test(w)) fail(`「${w}」：只能是 1 到 10 个字母或数字`, `"${w}": 1 to 10 letters or digits only`);
+    return list;
+  }),
+  // ponytail: one digit per number, so the 16 leaf notes of a 4-number tree do not overlap.
+  backtracking: input(['数组（最多 4 个，每个 −9 到 9）', 'Numbers (up to 4, each −9 to 9)'], '1 2 3', (text) => [numbers(text, 4, 9)]),
+  trie: input(['要插入的单词; 要查找的词', 'Words to insert; words to search'], 'cat car cart dog do; car cap do', (text) => {
+    const [insert, search = ''] = parts(text, 2, 1);
+    const list = words(insert, 6, 8, ['单词', 'words']);
+    if (!list.length) fail('至少插入一个单词', 'Insert at least one word');
+    return [list, words(search, 6, 8, ['查找的词', 'searches'])];
+  }),
+  'topo-sort': input(['边：A–F 之间，写成 A>C', 'Edges between A–F, written A>C'], 'A>C B>C B>D C>E D>E D>F E>F', (text) => {
+    const compact = text.toUpperCase().replace(/[\s,，、;；]+/g, '').replace(/->|→/g, '>');
+    if (!/^([A-F]>[A-F])+$/.test(compact))
+      fail('每条边写成 A>C，只能用 A 到 F', 'Write each edge as A>C, using only A to F');
+    const edges = compact.match(/[A-F]>[A-F]/g)!.map((e) => [e[0], e[2]] as [string, string]);
+    if (edges.length > 10) fail('最多 10 条边', 'At most 10 edges');
+    if (edges.some(([a, b]) => a === b)) fail('边不能指向自己', 'An edge cannot point to its own node');
+    if (new Set(edges.map((e) => e.join(''))).size < edges.length) fail('有重复的边', 'An edge is listed twice');
+    return [edges];
+  }),
+};
+
+/** Cells (`c3`) and graph nodes (`nB`) that a frame marks as current. */
+export function activeKeys(frame: DemoFrame): Set<string> {
+  return new Set([
+    ...frame.cells.flatMap((c, i) => (c.state === 'active' ? [`c${i}`] : [])),
+    ...(frame.graph?.nodes ?? []).flatMap((n) => (n.state === 'active' ? [`n${n.id}`] : [])),
+  ]);
+}
+/**
+ * Predict mode's question for the step from `now` to `next`: what turns current that is not
+ * current yet, among what `now` already draws (a node the next step creates can't be clicked).
+ * Empty: nothing to guess, the step just plays.
+ */
+export function guessTargets(now: DemoFrame, next: DemoFrame): Set<string> {
+  const before = activeKeys(now);
+  const drawn = new Set([...now.cells.map((_, i) => `c${i}`), ...(now.graph?.nodes ?? []).map((n) => `n${n.id}`)]);
+  return new Set([...activeKeys(next)].filter((key) => !before.has(key) && drawn.has(key)));
+}
+
+export function createDemoTrace(kind: DemoKind, english = false, input?: readonly unknown[]): DemoTrace {
   const t = english ? enText : zhText;
+  // ponytail: positional args from demoInputs[kind].parse, unchecked here (its tests cover each
+  // kind); a missing one is undefined, which picks the trace function's default.
+  const [a, b] = (input ?? []) as [never?, never?];
   switch (kind) {
     case 'binary-search':
-      return binarySearchTrace(undefined, undefined, t);
+      return binarySearchTrace(a, b, t);
     case 'sliding-window':
-      return slidingWindowTrace(undefined, t);
+      return slidingWindowTrace(a, t);
     case 'bfs':
       return bfsTrace(t);
     case 'dp':
-      return dpTrace(undefined, undefined, t);
+      return dpTrace(a, b, t);
     case 'two-pointers':
-      return twoPointersTrace(undefined, undefined, t);
+      return twoPointersTrace(a, b, t);
     case 'dfs':
-      return dfsTrace(undefined, t);
+      return dfsTrace(a, t);
     case 'dijkstra':
       return dijkstraTrace(t);
     case 'union-find':
       return unionFindTrace(undefined, undefined, t);
     case 'topo-sort':
-      return topoSortTrace(undefined, t);
+      return topoSortTrace(a, t);
     case 'heap':
-      return heapTrace(undefined, undefined, t);
+      return heapTrace(a, b, t);
     case 'monotonic-stack':
-      return monotonicStackTrace(undefined, t);
+      return monotonicStackTrace(a, t);
     case 'dp-table':
-      return dpTableTrace(undefined, undefined, t);
+      return dpTableTrace(a, b, t);
     case 'backtracking':
-      return backtrackingTrace(undefined, t);
+      return backtrackingTrace(a, t);
     case 'trie':
-      return trieTrace(undefined, undefined, t);
+      return trieTrace(a, b, t);
   }
 }
