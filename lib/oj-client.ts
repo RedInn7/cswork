@@ -62,6 +62,8 @@ export type OJProblem = Problem & {
   targetComplexity?: { time: string; space: string } | null;
   /** The problem's Line 500 stop slug, null off the line. */
   stop?: string | null;
+  /** Line 500 edge cases to add as custom cases (components/clarify-panel.tsx); null without any or in a contest. */
+  lingEdges?: LingEdge[] | null;
   similar?: SimilarProblem[];
 };
 /**
@@ -82,6 +84,14 @@ export type LingEditorial = {
     go: string;
   }[];
   verified: boolean;
+} & Partial<LingFollowUps>;
+/** One Line 500 edge case: what it tests, and its LeetCode-mode stdin (one JSON value per line). */
+export type LingEdge = { zh: string; en: string; input: string };
+/** What an interviewer may ask next, and a takeaway that carries to other problems; `problem` links one to practise. */
+export type LingFollowUps = {
+  takeawayZh: string;
+  takeawayEn: string;
+  followUps: { qZh: string; qEn: string; aZh: string; aEn: string; problem?: string }[];
 };
 export type SimilarProblem = {
   id: string;

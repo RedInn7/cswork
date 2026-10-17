@@ -70,7 +70,7 @@ import {
 import { lcRating } from './lc-ratings';
 import { oaRating } from './oa-rating';
 import { icaView } from './ica';
-import { lingEditorial } from './ling-editorials';
+import { lingEdges, lingEditorial, lingFollowUps } from './ling-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
@@ -222,6 +222,8 @@ export async function handleOj(
       targetComplexity: best ? { time: best.time, space: best.space } : null,
       // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
       stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
+      // Checked edge cases to add as custom cases (inputs only); not in a running contest.
+      lingEdges: live ? null : lingEdges(id),
       // A nicety under the statement: it never fails the problem itself.
       similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,
@@ -241,7 +243,8 @@ export async function handleOj(
     await getPublishedProblem(p, id);
     // Read before the first AC, the solve counts as assisted (lib/server/practice-aids.ts).
     recordAid(p.id, id, 'editorial');
-    return json(editorial);
+    // The takeaway and interview follow-ups ride along, behind the same gates.
+    return json({ ...editorial, ...lingFollowUps(id) });
   }
   if (
     request.method === 'GET' &&

@@ -186,6 +186,9 @@ void test('the problem payload carries no editorial, only whether one exists and
   assert.equal(problem.targetComplexity, null);
   assert.deepEqual(outside.targetComplexity, { time: 'O(n)', space: 'O(n)' });
   assert.equal(none.targetComplexity, null);
+  // The checked edge cases (inputs only) too.
+  assert.equal(problem.lingEdges, null);
+  assert.ok(Array.isArray(outside.lingEdges) && outside.lingEdges.length >= 3);
 });
 
 void test("the package's own hints, in every language, stay home in the window; a sql- exam takes its pd- twin", async () => {
@@ -216,8 +219,14 @@ void test('the editorial endpoint: signed in, 403 in a running contest, open els
   assert.notEqual(englishMessage(LOCKED), LOCKED, 'the refusal has an English message');
   assert.equal(await status(cat, 'GET', 'problems/lc-1/editorial'), 403);
   // Not in the room, or a problem outside it.
-  const open = (await (await call(bob, 'GET', 'problems/lc-1/editorial')).json()) as { approaches: unknown[] };
+  const open = (await (await call(bob, 'GET', 'problems/lc-1/editorial')).json()) as {
+    approaches: unknown[];
+    followUps?: unknown[];
+    takeawayEn?: string;
+  };
   assert.ok(open.approaches.length > 0);
+  // The interview follow-ups ride on the editorial, behind its gates.
+  assert.ok(open.followUps!.length >= 2 && open.takeawayEn);
   assert.equal(await status(amy, 'GET', 'problems/lc-20/editorial'), 200);
   assert.equal(await status(dan, 'GET', 'problems/lc-1/editorial'), 200);
   // An OA editorial is closed the same way.
