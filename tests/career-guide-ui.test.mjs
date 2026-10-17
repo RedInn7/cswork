@@ -73,7 +73,7 @@ test('the index lists every chapter, the season and the resume review, in both l
     assert.ok(links.every((a, i) => a.getAttribute('href') === `/guide/${GUIDE_CHAPTERS[i].slug}`));
     assert.ok(links.every((a) => a.querySelector('.guide-no').getAttribute('aria-hidden') === 'true'));
     assert.equal(doc.querySelectorAll('.guide-season li').length, SEASON.length);
-    assert.ok(doc.querySelector('.guide-review-cta a').getAttribute('href') === '/career/resume');
+    assert.ok(doc.querySelector('.guide-review-cta a').getAttribute('href') === '/career/resume/builder#resume-check');
     assert.ok(doc.querySelector('.guide-review-cta a[href="/career/visa-timeline"]') !== null);
     assert.ok(doc.querySelector('.guide-review-cta a[href="/ai-assisted"]') !== null);
     // Complementary landmarks, each named in the page's language.
@@ -81,8 +81,8 @@ test('the index lists every chapter, the season and the resume review, in both l
     assert.deepEqual(
       asides,
       zh
-        ? ['试试简历 AI 点评', '身份时间线计算器', 'AI 辅助编程轮练习']
-        : ['Try the AI resume review', 'Visa timeline calculator', 'AI-assisted round practice'],
+        ? ['试试简历检查', '身份时间线计算器', 'AI 辅助编程轮练习']
+        : ['Try the resume check', 'Visa timeline calculator', 'AI-assisted round practice'],
     );
     const [crumbs, list] = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent));
     assert.equal(crumbs['@type'], 'BreadcrumbList');
@@ -111,12 +111,12 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
   const pre = resume.querySelector('.guide-body pre');
   assert.ok(pre !== null && pre.getAttribute('tabindex') === '0' && pre.textContent.includes('EDUCATION'));
   const last = render(createElement(GuideChapterView, { chapter: guideChapter('visa'), zh: true }));
-  assert.ok(last.querySelector('.guide-adjacent a:last-child').getAttribute('href') === '/career/resume');
+  assert.ok(last.querySelector('.guide-adjacent a:last-child').getAttribute('href') === '/career/resume/builder#resume-check');
 });
 
 test('the sitemap lists the guide and the resume review', () => {
   const paths = new Set(SITEMAP_STATIC_ENTRIES.map((e) => e.path));
-  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
+  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', '/career/offers', '/career/templates', '/career/jobs/calendar', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
 });
 
 test('no nav or timeline link points at the H-1B ranking while its data is unbuilt', async () => {
@@ -126,6 +126,7 @@ test('no nav or timeline link points at the H-1B ranking while its data is unbui
   const shell = renderToStaticMarkup(createElement(GuideShell, { zh: false, children: null }));
   const visa = renderToStaticMarkup(await VisaTimelinePage());
   assert.match(shell, /href="\/career\/tracker"/);
+  for (const href of ['/career/offers', '/career/jobs/calendar', '/career/resume/builder#resume-check']) assert.ok(shell.includes(`href="${href}"`), href);
   for (const html of [shell, visa]) assert.equal(html.includes('href="/career/h1b"'), H1B.fiscalYears.length > 0);
 });
 
