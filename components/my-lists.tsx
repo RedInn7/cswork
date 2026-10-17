@@ -285,6 +285,21 @@ function ListDetail({
     if (refocus.current) document.getElementById(refocus.current)?.focus();
     refocus.current = '';
   });
+  // Button moves in quick succession save once, after a pause; leaving the list saves at once.
+  // ponytail: a tab closed inside the pause loses that last move.
+  const unsaved = useRef<{ list: string; order: string[] } | null>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  function saveOrder() {
+    clearTimeout(saveTimer.current);
+    const order = unsaved.current;
+    unsaved.current = null;
+    if (!order) return;
+    api(`oj/lists/${order.list}/reorder`, { problemIds: order.order }).catch((e: Error) => {
+      setError(e.message);
+      void api<Detail>(`oj/lists/${order.list}`).then(setList, () => {});
+    });
+  }
+  useEffect(() => saveOrder, []);
   useEffect(() => {
     let live = true;
     api<Detail>(`oj/lists/${encodeURIComponent(id)}`).then(
@@ -301,6 +316,7 @@ function ListDetail({
     };
   }, [id]);
   async function run<R>(task: () => Promise<R>) {
+    saveOrder(); // A pending move goes first, or the reply would undo it.
     setBusy(true);
     setError('');
     try {
@@ -343,10 +359,9 @@ function ListDetail({
     setList({ ...list, items });
     setError('');
     setMoved(t(`${nameOf(item.problemId)} 移到第 ${to + 1} 位`, `${nameOf(item.problemId)} moved to position ${to + 1}`));
-    api(`oj/lists/${list.id}/reorder`, { problemIds: items.map((i) => i.problemId) }).catch((e: Error) => {
-      setError(e.message);
-      void api<Detail>(`oj/lists/${list.id}`).then(setList, () => {});
-    });
+    unsaved.current = { list: list.id, order: items.map((i) => i.problemId) };
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(saveOrder, button ? 600 : 0);
   }
   return (
     <>
@@ -515,7 +530,7 @@ function ListDetail({
         </p>
       )}
       {list.mine && (
-        <BulkAdd id={list.id} empty={!ids.length} onAdded={setList} t={t} />
+        <BulkAdd id={list.id} empty={!ids.length} beforeAdd={saveOrder} onAdded={setList} t={t} />
       )}
       {list.mine && ids.length > 1 && (
         <p className="cloud-order-hint">
@@ -686,7 +701,19 @@ function ListDetail({
 type BulkResult = { added: number; duplicate: number; unknown: string[]; overflow: number };
 
 /** The owner's paste box: one problem per line, read here as a preview, resolved by the server. */
-function BulkAdd({ id, empty, onAdded, t }: { id: string; empty: boolean; onAdded: (list: Detail) => void; t: T }) {
+function BulkAdd({
+  id,
+  empty,
+  beforeAdd,
+  onAdded,
+  t,
+}: {
+  id: string;
+  empty: boolean;
+  beforeAdd: () => void;
+  onAdded: (list: Detail) => void;
+  t: T;
+}) {
   // Open for an empty list; kept as first rendered so adding problems does not fold it away.
   const [open] = useState(empty);
   const [text, setText] = useState('');
@@ -698,6 +725,7 @@ function BulkAdd({ id, empty, onAdded, t }: { id: string; empty: boolean; onAdde
   const count = (kind: ImportKind) => lines.filter((l) => l.kind === kind).length;
   const unknown = lines.filter((l) => l.kind === 'unknown');
   async function submit() {
+    beforeAdd();
     setBusy(true);
     setError('');
     setResult(null);

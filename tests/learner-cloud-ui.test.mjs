@@ -475,9 +475,9 @@ test('my lists: the owner previews a paste, adds it in bulk and reorders by butt
     assert.deepEqual(order(), ['lc-1', 'oa-amazon-1', 'lc-3']);
 
     assert.ok(document.querySelector('button[aria-label="Move Two Sum up"]').disabled);
+    const sent = posts.length;
     await act(async () => document.querySelector('button[aria-label="Move Two Sum down"]').click());
     await wait();
-    assert.deepEqual(posts.at(-1), [`oj/lists/${detail.id}/reorder`, { problemIds: ['oa-amazon-1', 'lc-1', 'lc-3'] }]);
     assert.deepEqual(order(), ['oa-amazon-1', 'lc-1', 'lc-3']);
     assert.equal(document.activeElement.id, 'list-move-down-lc-1', 'focus stays on the moved row');
     assert.equal(document.querySelector('[aria-live="polite"]').textContent, 'Two Sum moved to position 2');
@@ -485,6 +485,9 @@ test('my lists: the owner previews a paste, adds it in bulk and reorders by butt
     await act(async () => document.activeElement.click());
     await wait();
     assert.equal(document.activeElement.id, 'list-move-up-lc-1');
+    assert.equal(posts.length, sent, 'quick button moves wait for a pause');
+    await wait(650);
+    assert.deepEqual(posts.slice(sent), [[`oj/lists/${detail.id}/reorder`, { problemIds: ['oa-amazon-1', 'lc-3', 'lc-1'] }]]);
 
     const drag = (type, target) => {
       const event = new dom.window.Event(type, { bubbles: true, cancelable: true });
