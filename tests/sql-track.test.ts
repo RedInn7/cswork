@@ -23,6 +23,7 @@ const { PROBLEMS } = await import('../scripts/sql-track/problems');
 const { compile, run, engineVerdict, matchesOutput } = await import('../lib/server/oj-engine');
 const { getJudgeProblem, listPublishedProblems } = await import('../lib/server/oj-problems');
 const { createSubmission } = await import('../lib/server/oj-submissions');
+const { SQL_NAMES } = await import('../lib/server/sql-judge');
 
 const packages = JSON.parse(readFileSync(PACKAGES_FILE, 'utf8')) as OjProblemPackage[];
 const student: Person = {
@@ -94,6 +95,17 @@ test('the ordered marker makes row order count', () => {
   const desc = runner.run('SELECT name FROM t ORDER BY name DESC', data);
   assert.equal(asc.stdout, 'columns: 1\n["a"]\n["b"]\n');
   assert.equal(desc.stdout, 'columns: 1\n["b"]\n["a"]\n');
+});
+
+test('the names marker adds the column names on stderr and leaves stdout alone', () => {
+  const data = table("('b', 2), ('a', 1)");
+  const query = 'SELECT name AS "名字", x, x + 1 FROM t';
+  const plain = runner.run(query, data);
+  const named = runner.run(`${SQL_NAMES}\n${query}`, data);
+  assert.equal(named.ok, true, named.stderr);
+  assert.equal(named.stdout, plain.stdout);
+  assert.equal(plain.stderr, '');
+  assert.equal(named.stderr, '["名字", "x", "x + 1"]\n');
 });
 
 test('the harness rejects anything but one read-only query', () => {
@@ -263,6 +275,11 @@ test('the worker engine runs SQL through the harness and the exact checker', asy
     const failed = await run(broken, pkg.cases[0].input, pkg.problem, signal);
     assert.equal(engineVerdict(failed), 'runtime_error');
     assert.match(failed.files?.stderr || '', /no such column/);
+    // The workspace's plan view: EXPLAIN QUERY PLAN passes the read-only harness.
+    const explain = (await compile('sql', `EXPLAIN QUERY PLAN ${PROBLEMS[3].reference}`, signal)).program;
+    const plan = await run(explain, pkg.cases[0].input, pkg.problem, signal);
+    assert.equal(engineVerdict(plan), 'accepted');
+    assert.match(plan.files?.stdout || '', /^columns: 4\n(\[\d+, \d+, \d+, "[A-Z][^\n]*"\]\n)+$/);
   } finally {
     server.close();
     delete process.env.GO_JUDGE_URL;

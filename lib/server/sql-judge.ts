@@ -10,9 +10,14 @@
  *     printed as an integer when integral (3.0 == 3), text stays text; a BLOB
  *     is {"blob": hex} and +-inf {"float": "inf"}, so neither equals text;
  *   - rows sorted unless the dataset's first line is `-- cswork:ordered`.
+ * A query starting with SQL_NAMES (the workspace's previews, lib/sql-cte.ts)
+ * also writes its column names to stderr as one JSON line; stdout is the same.
  * A learner SQL error goes to stderr (one zh / en line) with exit 1 (a
  * runtime error).
  */
+import { SQL_NAMES } from '@/lib/sql-cte';
+
+export { SQL_NAMES };
 export const SQL_ORDERED = '-- cswork:ordered';
 export const SQL_MAX_ROWS = 100000;
 export const SQL_HARNESS = `
@@ -61,6 +66,9 @@ if not dataset.startswith('${SQL_ORDERED}'):
     rows.sort()
 sys.stdout.write('columns: %d\\n' % len(cursor.description))
 sys.stdout.write(''.join(r + '\\n' for r in rows))
+if query.startswith('${SQL_NAMES}'):
+    names = json.dumps([column[0] for column in cursor.description], ensure_ascii=False)
+    sys.stderr.buffer.write((names + '\\n').encode('utf-8'))
 `;
 /**
  * The Pandas track's runner (pd- problems): the SQL track's datasets and
