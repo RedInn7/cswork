@@ -423,10 +423,10 @@ test('a plan from a classic list, for some weeks, difficulties and topics, and r
   }
 });
 
-// A bank page with a 40-problem line (`stored` already in this browser); `routes` answers the plan's
+// A bank page at `path` with a 40-problem line (`stored` already in this browser); `routes` answers the plan's
 // own requests, the rest get the page.
-async function bank(routes, props, stored = {}) {
-  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+async function bank(routes, props, stored = {}, path = '/') {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: `https://cswork.test${path}` });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   for (const [key, value] of Object.entries(stored)) localStorage.setItem(key, value);
@@ -535,6 +535,54 @@ test('the plan follows the account across devices and sprints to the tracker’s
     assert.ok(![...document.querySelectorAll('.route-plan-weeks .route-plan-tag')].some((node) => node.textContent === 'Sprint Acme'));
   } finally {
     await ui.close();
+  }
+});
+
+test('a failed account read changes nothing, and a handoff form takes the account copy that lands late', async () => {
+  const { addDays, localDay } = await import('../lib/study-plan.ts');
+  const today = localDay();
+  // A 500 (or a 429) is not an empty account: this browser's older plan must not go over the account's.
+  const local = JSON.stringify({ status: 'planned', oaDate: addDays(today, 20), weeklyHours: 14, updatedAt: 50 });
+  const failed = await bank(
+    { 'notes?target=pref%3Aplan': () => new Response(null, { status: 500 }), 'oj/applications': () => Response.json({ items: [] }) },
+    { signedIn: true, userId: 'u1' },
+    { 'cswork:plan:v1:u1': local },
+  );
+  try {
+    assert.ok(failed.requests.some(([method, url]) => method === 'GET' && url.includes('pref%3Aplan')));
+    assert.ok(!failed.requests.some(([method]) => method === 'PUT'), 'no upload after a failed read');
+    assert.match(document.getElementById('route-plan-title').textContent, /^20 days to your OA/);
+  } finally {
+    await failed.close();
+  }
+  // A new device opened from /career/jd's gaps: the form is open before the account's plan arrives.
+  const remote = { status: 'planned', oaDate: addDays(today, 50), weeklyHours: 14, updatedAt: 100 };
+  let release;
+  const arrived = new Promise((resolve) => (release = resolve));
+  const late = await bank(
+    {
+      'notes?target=pref%3Aplan': (init) =>
+        init.method === 'PUT'
+          ? Response.json({})
+          : arrived.then(() => Response.json({ target: 'pref:plan', body: JSON.stringify(remote) })),
+      'oj/applications': () => Response.json({ items: [] }),
+    },
+    { signedIn: true, userId: 'u1' },
+    {},
+    '/?view=problems&planTopics=array-foundations',
+  );
+  try {
+    assert.notEqual(late.field('OA date').value, remote.oaDate, 'the form opens on this browser’s default goal');
+    release();
+    await late.settle();
+    assert.equal(late.field('OA date').value, remote.oaDate, 'and starts over from the account’s');
+    await act(async () => late.button('Save plan').click());
+    await late.settle();
+    const sent = JSON.parse(JSON.parse(late.requests.find(([method]) => method === 'PUT')[2]).body);
+    assert.equal(sent.oaDate, remote.oaDate);
+    assert.deepEqual(sent.topics, ['array-foundations'], 'the handed topics stay');
+  } finally {
+    await late.close();
   }
 });
 

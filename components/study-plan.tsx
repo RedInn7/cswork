@@ -165,8 +165,12 @@ export function useStudyPlan(
     if (!userId) return;
     const controller = new AbortController();
     // Not ojRequest: it cannot PUT, and its 401 opens the sign-in dialog (as in daily-goal.tsx).
+    // A failed read (429, 5xx) is not "no plan": merge only after a 200 (an empty body is the empty account).
     fetch(PLAN_NOTE, { signal: controller.signal })
-      .then((r) => (r.ok ? (r.json() as Promise<{ body?: unknown }>) : null))
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json() as Promise<{ body?: unknown }>;
+      })
       .then((note) => {
         let remote: PlanGoal | null = null;
         try {
@@ -449,6 +453,8 @@ export function StudyPlan({
   if (editing)
     return (
       <PlanForm
+        // The account's copy can land after the form opened (a ?planTopics= handoff): start over from it.
+        key={goal.updatedAt}
         goal={
           handed
             ? { ...goal, topics: handed, startStop: Math.min(goal.startStop, ...handed.map((slug) => ROUTE_SLUGS.indexOf(slug))) }
