@@ -7,7 +7,7 @@ import { requestLocale } from '@/lib/server/locale';
 import { sdSummary } from '@/lib/server/system-design-course';
 import { PublicLibraryMarkdown, markdownToc } from '../../../library/markdown';
 import { SdQuiz } from '../../../system-design/quiz';
-import { SdMarkRead, SdReadCheck } from '../../../system-design/reader';
+import { SdMarkRead, SdReadCheck, SdReportIssue } from '../../../system-design/reader';
 
 type Props = { params: Promise<{ course: string; slug: string }> };
 
@@ -136,6 +136,7 @@ export default async function LearnChapter({ params }: Props) {
             </a>
           )}
         </nav>
+        <SdReportIssue refId={`learn:${course.slug}/${chapter.slug}`} />
       </article>
       <aside className="sd-aside" aria-label={t('课程导航', 'Course navigation')}>
         {toc.length > 1 && (

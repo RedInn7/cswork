@@ -515,7 +515,8 @@ export function mockExamFor(
 
 export type McqSection = 'cs' | 'code-output' | 'quant';
 export const MCQ_SECTIONS: readonly McqSection[] = ['cs', 'code-output', 'quant'];
-type McqText = { q: string; choices: string[]; explain: string };
+/** `whys`: one line per choice on why it is right or wrong (newer questions). */
+type McqText = { q: string; choices: string[]; explain: string; whys?: string[] };
 /** One question of lib/content/oa-mcq.json. */
 export type McqQuestion = {
   id: string;
@@ -524,6 +525,8 @@ export type McqQuestion = {
   /** The snippet a code-output question asks about, the same in both languages. */
   code?: string;
   lang?: string;
+  /** C++ undefined behaviour: the answer is that choice, and scripts/mcq/verify-output.mjs does not run it. */
+  ub?: boolean;
   zh: McqText;
   en: McqText;
   /** Right choices; more than one means "select all that apply". */
@@ -533,6 +536,18 @@ export type McqQuestion = {
   /** The Line 500 stop (lib/route-stops.ts) whose topic page quizzes on it. */
   stop?: string;
 };
+/**
+ * /oa/mcq's ?section= and ?topic=: that part of the bank, filtered on the server so a link to one
+ * subject does not ship the whole bank. Unknown values are ignored; a pair matching nothing gives
+ * the whole bank.
+ */
+export function mcqScope(bank: McqQuestion[], query: Record<string, string | string[] | undefined>) {
+  const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) ?? '';
+  const section = MCQ_SECTIONS.find((s) => s === first(query.section));
+  const topic = bank.some((q) => q.topic === first(query.topic)) ? first(query.topic) : undefined;
+  const items = bank.filter((q) => (!section || q.section === section) && (!topic || q.topic === topic));
+  return items.length && (section || topic) ? { items, initial: { section, topic } } : { items: bank, initial: undefined };
+}
 /** A preset's MCQ section: how many questions, how long, and where they come from. */
 export type McqConfig = {
   count: number;

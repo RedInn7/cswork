@@ -21,6 +21,14 @@ export const MCQ_TOPIC_NAMES: Record<string, [string, string]> = {
   logic: ['逻辑推理', 'Logic'],
   dsa: ['数据结构与算法', 'Data structures & algorithms'],
   complexity: ['复杂度', 'Complexity'],
+  cpp: ['C++', 'C++'],
+  sql: ['SQL', 'SQL'],
+  linux: ['Linux 命令行', 'Linux command line'],
+  git: ['Git', 'Git'],
+  arch: ['计算机体系结构', 'Computer architecture'],
+  security: ['Web 安全', 'Web security'],
+  patterns: ['设计模式', 'Design patterns'],
+  web: ['Web 前端', 'Web frontend'],
 };
 
 let bank: Promise<McqQuestion[]> | null = null;
@@ -37,7 +45,8 @@ export const loadMcqBank = () =>
 export type McqText = McqQuestion['en'];
 /**
  * One question: radios, or checkboxes when more than one choice is right. `reveal` locks it
- * and marks the answer with its explanation; `children` go under it (a submit button, say).
+ * and marks the answer with its explanation, after why each wrong pick is wrong when the
+ * question has `whys`; `children` go under it (a submit button, say).
  */
 export function McqItem({
   q,
@@ -62,6 +71,8 @@ export function McqItem({
   const multi = q.answer.length > 1;
   const right = mcqRight(q.answer, picks);
   const letters = q.answer.map((a) => LETTERS[a]).join(zh ? '、' : ', ');
+  // Missed: why each wrong pick is wrong comes before the explanation.
+  const wrongPicks = reveal && text.whys ? picks.filter((j) => !q.answer.includes(j)) : [];
   return (
     <fieldset className="oa-mcq-item" aria-describedby={q.code ? `mcq-code-${q.id}` : undefined}>
       <legend>
@@ -113,6 +124,12 @@ export function McqItem({
                 ? t('答对了。', 'Correct.')
                 : t(`答案是 ${letters}。`, `The answer is ${letters}.`)}
             </strong>{' '}
+            {wrongPicks.map((j) => (
+              <span key={j} className="oa-mcq-pick-why">
+                {t(`你选的 ${LETTERS[j]}：`, `Your pick ${LETTERS[j]}: `)}
+                {text.whys![j]}
+              </span>
+            ))}
             {text.explain}
           </p>
         )}
