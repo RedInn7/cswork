@@ -45,6 +45,11 @@ test('a hand-made chain', () => {
 test('a bad right-hand side throws TypeError', () => {
   expect(() => myInstanceof({}, {})).toThrow(TypeError);
   expect(() => myInstanceof({}, () => {})).toThrow(TypeError);
+  expect(() => myInstanceof(1, {})).toThrow(TypeError);
+});
+
+test('a primitive is false before the prototype is checked', () => {
+  expect(myInstanceof(1, () => {})).toBe(1 instanceof (() => {}));
 });
 
 test('agrees with instanceof after the prototype is swapped', () => {

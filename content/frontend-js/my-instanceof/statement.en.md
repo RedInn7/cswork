@@ -2,7 +2,7 @@ Without `instanceof` or `isPrototypeOf`, implement `myInstanceof(value, Construc
 
 - walk up `value`'s prototype chain; return `true` on reaching `Constructor.prototype`, and `false` at the end of the chain (`null`);
 - a primitive `value` (number, string, `null`, ...) gives `false`;
-- throw a `TypeError` if `Constructor` isn't a function, or its `prototype` isn't an object (an arrow function has no `prototype`).
+- throw a `TypeError` if `Constructor` isn't a function, or if `value` is an object and `Constructor.prototype` isn't one (an arrow function has no `prototype`).
 
 `Symbol.hasInstance` needs no handling.
 
