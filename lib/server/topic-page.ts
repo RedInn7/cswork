@@ -151,7 +151,7 @@ export async function topicPractice(slug: string, userId: string | null): Promis
     return {
       slug: stop,
       total: ids.length,
-      ...(userId && { solved: ids.filter((id) => progress.get(id)?.solved).length }),
+      ...(userId !== null && { solved: ids.filter((id) => progress.get(id)?.solved).length }),
     };
   };
   const solvedOf = (map: ReadonlyMap<string, 'solved' | 'attempted'>, id: string): Status | undefined =>

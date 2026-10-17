@@ -683,10 +683,12 @@
   text-decoration: none;
 }
 /* A small roundel; filled once 60% of the stop is solved. */
+/* Border-box (Tailwind preflight): 12px leaves a 6px hole inside the 3px ring. */
 .topics-chips a::before {
   content: '';
-  width: 6px;
-  height: 6px;
+  flex: none;
+  width: 12px;
+  height: 12px;
   border: 3px solid var(--route-line);
   border-radius: 50%;
   background: #fff;
