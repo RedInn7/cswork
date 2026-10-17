@@ -388,3 +388,62 @@ test('runs without recursion keep the plain call stack heading', async () => {
     await act(async () => root.unmount());
   }
 });
+
+test('the pictures panel draws the linked list, and the node cur holds moves with the replay', async () => {
+  open();
+  gate.release();
+  const code = [
+    'class Solution:',
+    '    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:',
+    '        prev, cur = None, head',
+    '        while cur:',
+    '            nxt = cur.next',
+    '            cur.next = prev',
+    '            prev, cur = cur, nxt',
+    '        return prev',
+  ].join('\n');
+  const template = 'class Solution:\n    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        pass';
+  const root = await mount({ language: 'python', code, stdin: '[1,2,3]', mode: 'leetcode', template });
+  const holding = (name) =>
+    [...document.querySelectorAll('.pydbg-shapes .algorithm-demo-node.is-active')].find((n) =>
+      n.querySelector('.algorithm-demo-note')?.textContent.split(',').includes(name),
+    );
+  try {
+    await click('Debug');
+    await settle(400);
+    // The first steps are the class body: no locals to draw, no panel.
+    assert.equal(document.querySelector('#pydbg-shapes'), null);
+    while (!where().includes('line 4 · Solution.reverseList')) await click('Step into');
+    assert.equal(document.querySelector('#pydbg-shapes').textContent, 'Pictures');
+    assert.equal(holding('cur').querySelector('text').textContent, '1');
+    assert.match(document.querySelector('.pydbg-shapes svg').getAttribute('aria-label'), /1 \(head,cur\), current/);
+    // One loop later cur has moved on to 2 and prev holds 1.
+    await click('Step into');
+    while (!where().includes('line 4 ·')) await click('Step into');
+    assert.equal(holding('cur').querySelector('text').textContent, '2');
+    assert.equal(holding('prev').querySelector('text').textContent, '1');
+    // The text variables stay for screen readers.
+    assert.ok([...document.querySelectorAll('#pydbg-vars + table th')].some((th) => th.firstChild.textContent === 'cur'));
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('a dp table marks the cell the last line wrote, and i/j point into a list', async () => {
+  open();
+  gate.release();
+  const code = ['xs = [5, 6, 7]', 'dp = [[0] * 2 for _ in range(2)]', 'i, j = 1, 0', 'dp[i][j] = xs[i]', 'end = 0'].join('\n');
+  const root = await mount({ language: 'python', code, stdin: '', mode: 'acm' });
+  try {
+    await click('Debug');
+    await settle(400);
+    while (!where().includes('line 5')) await click('Step into');
+    const active = [...document.querySelectorAll('.pydbg-grid td.is-active')];
+    assert.deepEqual(active.map((td) => td.textContent), ['6']);
+    assert.equal(active[0].parentElement.querySelector('th').textContent, '1');
+    const slots = [...document.querySelectorAll('.pydbg-seq .pydbg-slot')].map((slot) => slot.querySelector('em').textContent);
+    assert.deepEqual(slots, ['j↓', 'i↓', '']);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});

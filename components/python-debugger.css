@@ -421,6 +421,97 @@
   }
 }
 
+/* Pictures panel: algorithm-demo cells and graph marks, shrunk to the side column. */
+.algorithm-demo.pydbg-shapes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+  font-size: 12px;
+}
+.pydbg-shapes figure {
+  margin: 0;
+  min-width: 0;
+}
+.pydbg-shapes figcaption {
+  margin-bottom: 3px;
+  font: 600 12px/1.4 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  color: #26344a;
+}
+.pydbg-seq {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px;
+}
+.pydbg-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pydbg-slot em {
+  min-height: 15px;
+  font: 600 10.5px/15px 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-style: normal;
+  color: #8a4b00;
+  white-space: nowrap;
+}
+.algorithm-demo.pydbg-shapes .algorithm-demo-cell {
+  flex: none;
+  min-width: 30px;
+  max-width: 96px;
+  min-height: 36px;
+  padding: 1px 4px;
+  border-radius: 6px;
+}
+.algorithm-demo.pydbg-shapes .algorithm-demo-cell > span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.pydbg-grid {
+  width: auto !important;
+}
+.pydbg-panel .pydbg-grid th,
+.pydbg-panel .pydbg-grid td {
+  width: auto;
+  min-width: 24px;
+  padding: 1px 5px;
+  border: 1px solid #e3e8f0;
+  text-align: center;
+  white-space: nowrap;
+}
+.pydbg-panel .pydbg-grid th,
+.pydbg-panel .pydbg-grid thead td {
+  border-color: transparent;
+  font-weight: 500;
+  color: #66748a;
+}
+.pydbg-panel .pydbg-grid td.is-active {
+  background: #2459be;
+  border-color: #2459be;
+  color: #fff;
+}
+.pydbg-shapes figure:has(.pydbg-dict),
+.pydbg-shapes figure:has(.pydbg-grid),
+.pydbg-graph {
+  max-height: 320px;
+  overflow: auto;
+}
+.algorithm-demo.pydbg-shapes .algorithm-demo-graph {
+  max-width: none;
+  max-height: none;
+  margin: 0;
+}
+
 /* Hand-tuned for dark: the mapped fills vanish on the dark editor, so these stay translucent. */
 .dark .pydbg .pydbg-line-current,
 .dark .pydbg .pydbg-panel tr.changed th,
@@ -626,6 +717,31 @@
       border-right: 0;
       border-bottom: 1px solid #292d32;
     }
+  }
+  .dark .algorithm-demo.pydbg-shapes {
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .dark .pydbg-shapes figcaption {
+    color: #c8d8f0;
+  }
+  .dark .pydbg-slot em {
+    color: #f3b685;
+  }
+  .dark .pydbg-panel .pydbg-grid th,
+  .dark .pydbg-panel .pydbg-grid td {
+    border: 1px solid #2a2e34;
+  }
+  .dark .pydbg-panel .pydbg-grid th,
+  .dark .pydbg-panel .pydbg-grid thead td {
+    border-color: transparent;
+    color: #b0bdd2;
+  }
+  .dark .pydbg-panel .pydbg-grid td.is-active {
+    background: #2459be;
+    border-color: #2459be;
+    color: #fff;
   }
 }
 /* ── end dark theme ── */

@@ -13,9 +13,12 @@ import {
 } from 'lucide-react';
 import { CodeEditor, type CodeEditorProps } from './editor';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog';
+import { DemoGraphView } from './algorithm-demo';
+import { SCALE } from './structure-view';
 import { useT } from '@/lib/i18n';
 import type { CodingMode } from '@/lib/coding-mode';
 import { buildCallTree, MAX_CALL_NODES, type CallNode, type CallTree } from '@/lib/call-tree';
+import { nodeGraph, pointers, stepViews, type StepView } from '@/lib/debug-shapes';
 import {
   changedNames,
   entryMethod,
@@ -266,6 +269,8 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
     go(move);
   };
   const changed = useMemo(() => changedNames(steps, index), [steps, index]);
+  const views = useMemo(() => (trace ? stepViews(trace, index) : []), [trace, index]);
+  const shapesCut = trace?.shapesCut ?? null;
   const stack = useMemo(() => stackAt(steps, index), [steps, index]);
   const tree = useMemo(() => buildCallTree(steps, trace?.params, trace?.parents), [steps, trace]);
   const [calls, setCalls] = useState<'stack' | 'tree'>('stack');
@@ -394,6 +399,26 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
                   : t('还没有可回放的步骤', 'Nothing to replay yet')}
               </p>
             </div>
+            {step && (views.length > 0 || (shapesCut !== null && index >= shapesCut)) && (
+              <section className="pydbg-panel" aria-labelledby="pydbg-shapes">
+                <h3 id="pydbg-shapes">{t('图形', 'Pictures')}</h3>
+                {views.length > 0 && (
+                  <div className="algorithm-demo pydbg-shapes">
+                    {views.map((view) => (
+                      <Picture key={view.name} view={view} vars={step.vars} />
+                    ))}
+                  </div>
+                )}
+                {shapesCut !== null && index >= shapesCut && (
+                  <p className="pydbg-empty">
+                    {t(
+                      `从第 ${shapesCut + 1} 步起不再画图（快照超出上限，或读取某个对象时出错），之后只有下面的文本变量。`,
+                      `No pictures from step ${shapesCut + 1} on (snapshot limit reached, or an object failed to read): later steps show only the variables below.`,
+                    )}
+                  </p>
+                )}
+              </section>
+            )}
             <section className="pydbg-panel" aria-labelledby="pydbg-vars">
               <h3 id="pydbg-vars">{t('变量', 'Variables')}</h3>
               {step && (step.vars.length || step.kind === 'return') ? (
@@ -507,6 +532,111 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
         </p>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/**
+ * One variable drawn: a sequence as cells with index-like variables (i, lo, slow...) pointing at
+ * them, a 2-D table, a dict, or the node graph. Cells the line just run wrote are highlighted.
+ * The variables table below stays the screen-reader view.
+ */
+function Picture({ view: { name, shape, changed }, vars }: { view: StepView; vars: [string, string][] }) {
+  const t = useT();
+  let body: ReactNode;
+  if (shape.k === 'seq') {
+    const at = pointers(vars, shape.v.length);
+    // One past the end (a half-open hi) gets an empty slot, when the list isn't cut short.
+    const cells: (string | null)[] = shape.n === shape.v.length && at.has(shape.v.length) ? [...shape.v, null] : shape.v;
+    body = (
+      <>
+        <div className="pydbg-seq">
+          {cells.map((cell, i) => (
+            <div key={i} className="pydbg-slot">
+              {at.size > 0 && (
+                <em>
+                  {at.get(i)?.join(' ')}
+                  {at.has(i) && <span aria-hidden="true">↓</span>}
+                </em>
+              )}
+              <div className={`algorithm-demo-cell ${cell === null ? 'is-muted' : changed.has(`${i}`) ? 'is-active' : ''}`}>
+                <span>{cell}</span>
+                <small>{i}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+        {shape.n > shape.v.length && <p className="pydbg-empty">{t(`只画了前 ${shape.v.length} 项，共 ${shape.n} 项`, `First ${shape.v.length} of ${shape.n} items`)}</p>}
+      </>
+    );
+  } else if (shape.k === 'grid') {
+    const columns = Math.max(...shape.v.map((row) => row.length));
+    body = (
+      <table className="pydbg-grid">
+        <thead>
+          <tr>
+            <td aria-hidden="true" />
+            {Array.from({ length: columns }, (_, c) => (
+              <th key={c} scope="col">
+                {c}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {shape.v.map((row, r) => (
+            <tr key={r}>
+              <th scope="row">{r}</th>
+              {row.map((cell, c) => (
+                <td key={c} className={changed.has(`${r},${c}`) ? 'is-active' : undefined}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  } else if (shape.k === 'dict') {
+    body = (
+      <>
+        <table className="pydbg-dict">
+          <tbody>
+            {shape.v.map(([key, value], i) => (
+              <tr key={i} className={changed.has(key) ? 'changed' : undefined}>
+                <th scope="row">{key}</th>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {shape.n > shape.v.length && <p className="pydbg-empty">{t(`只列了前 ${shape.v.length} 项，共 ${shape.n} 项`, `First ${shape.v.length} of ${shape.n} entries`)}</p>}
+      </>
+    );
+  } else {
+    const graph = nodeGraph(shape);
+    body = (
+      <>
+        <div className="pydbg-graph">
+          <div style={{ width: graph.width * SCALE }}>
+            <DemoGraphView graph={graph} />
+          </div>
+        </div>
+        {shape.more && (
+          <p className="pydbg-empty">
+            {t(
+              `只画了前 ${shape.n.length} 个节点，指向其余节点的链接没有画出（看起来像 None）`,
+              `First ${shape.n.length} nodes only: links to the rest are not drawn (they look like None)`,
+            )}
+          </p>
+        )}
+      </>
+    );
+  }
+  return (
+    <figure>
+      <figcaption>{name === '#nodes' ? t('链表 / 树', 'Lists / trees') : name}</figcaption>
+      {body}
+    </figure>
   );
 }
 
