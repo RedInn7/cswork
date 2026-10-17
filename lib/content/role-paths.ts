@@ -8,6 +8,7 @@
  * - sd-part: a system design course part, named by its first chapter (sdParts `from`);
  * - sql-track / pandas: a SQL track group key (lib/content/sql-track.json; pandas is its pd- twin);
  * - core-group: a Core Skills group key (lib/content/core-skills.json);
+ * - ml-group: an ML Coding group key (lib/content/ml-coding.json);
  * - mcq-topic: an OA multiple-choice topic (lib/content/oa-mcq.json);
  * - project: a resume project slug (lib/content/resume-projects.json);
  * - course: a beginner crash course slug (lib/content/beginner-courses.json);
@@ -21,6 +22,7 @@ export type StepKind =
   | 'sql-track'
   | 'pandas'
   | 'core-group'
+  | 'ml-group'
   | 'mcq-topic'
   | 'project'
   | 'course'
@@ -128,6 +130,9 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'pandas', ref: 'grouping' },
       { kind: 'pandas', ref: 'windows', optional: true },
       { kind: 'mcq-topic', ref: 'probability' },
+      { kind: 'mcq-topic', ref: 'stats' },
+      { kind: 'mcq-topic', ref: 'numpy', optional: true },
+      { kind: 'ml-group', ref: 'metrics', optional: true },
       { kind: 'line-stops', ref: 'array-foundations,hash-counting,string-processing,two-pointers-windows' },
       { kind: 'mcq-topic', ref: 'dbms', optional: true },
       { kind: 'project', ref: 'idempotent-etl' },
@@ -138,15 +143,19 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
   ml: {
     zh: '机器学习工程师',
     en: 'Machine learning engineer',
-    blurbZh: '编码轮和通用软件工程师相近，另有 ML 系统设计和概率统计；简历项目要能体现数据处理。',
-    blurbEn: 'Coding rounds like a generalist’s, plus ML system design and probability; a resume project should show real data work.',
+    blurbZh: '编码轮和通用软件工程师相近，另有用 numpy 手写模型、ML 系统设计和概率统计；简历项目要能体现数据处理。',
+    blurbEn: 'Coding rounds like a generalist’s, plus models written from scratch in numpy, ML system design and probability; a resume project should show real data work.',
     steps: [
       { kind: 'course', ref: 'python', optional: true },
       { kind: 'line-stops', ref: LINEAR },
       { kind: 'line-stops', ref: `${TREES},${DP_CORE}` },
       { kind: 'mcq-topic', ref: 'probability' },
+      { kind: 'mcq-topic', ref: 'stats' },
       { kind: 'pandas', ref: 'grouping' },
       { kind: 'pandas', ref: 'joins' },
+      { kind: 'ml-group', ref: 'models' },
+      { kind: 'mcq-topic', ref: 'ml' },
+      { kind: 'ml-group', ref: 'deep', optional: true },
       { kind: 'sd-part', ref: 'framework' },
       { kind: 'sd-part', ref: 'ml-design-framework' },
       { kind: 'mcq-topic', ref: 'python', optional: true },
@@ -204,6 +213,7 @@ const STEP_LABELS: Record<StepKind, [string, string] | null> = {
   'sql-track': ['SQL', 'SQL'],
   pandas: ['Pandas', 'Pandas'],
   'core-group': ['Core Skills', 'Core Skills'],
+  'ml-group': ['ML Coding', 'ML Coding'],
   'mcq-topic': ['选择题', 'Multiple choice'],
   project: ['简历项目', 'Resume project'],
   course: null,
