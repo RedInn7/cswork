@@ -304,7 +304,7 @@ function Workspace({
   const contest = useContestRoom(room, initialProblem.id);
   const examMode = !!exam?.running || !!contest?.running;
   // Single-submit rules: one formal submission per question, its verdict sealed until the hand-in.
-  const sealVerdict = !!exam?.running && exam.session.scoring === 'codility';
+  const sealVerdict = !!exam && exam.running && exam.session.scoring === 'codility';
   // A mock or contest question starts from the template, not this browser's earlier draft of it.
   const [draftId] = useState(() =>
     exam

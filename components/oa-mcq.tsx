@@ -139,11 +139,11 @@ export function McqItem({
   );
 }
 
-const PALETTE_STATES = {
+const PALETTE_STATES: Record<'answered' | 'unanswered' | 'flagged', [string, string]> = {
   answered: ['已答', 'answered'],
   unanswered: ['未答', 'unanswered'],
   flagged: ['待查', 'marked for review'],
-} as const;
+};
 /**
  * An exam MCQ section's question palette: one cell per question, answered, unanswered or marked
  * for review (data-state, a shape and the cell's label, not colour alone). A click scrolls to that
@@ -159,7 +159,9 @@ export function McqPalette({
   zh: boolean;
 }) {
   const t = (a: string, b: string) => (zh ? a : b);
-  const states = picks.map((p, i) => (flags.includes(i) ? 'flagged' : p.length ? 'answered' : 'unanswered'));
+  const states = picks.map(
+    (p, i): keyof typeof PALETTE_STATES => (flags.includes(i) ? 'flagged' : p.length ? 'answered' : 'unanswered'),
+  );
   const count = (state: keyof typeof PALETTE_STATES) => states.filter((s) => s === state).length;
   return (
     <nav className="oa-mcq-palette" aria-label={t('题号面板', 'Question palette')}>

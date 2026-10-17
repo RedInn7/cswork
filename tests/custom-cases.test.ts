@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { customVerdict, MAX_CASES, parseCases } from '../lib/custom-cases';
 
-test('stored cases: the old string list still reads, expected outputs line up, bad data reads as one blank case', () => {
+void test('stored cases: the old string list still reads, expected outputs line up, bad data reads as one blank case', () => {
   // Before expected outputs: only the cases key.
   assert.deepEqual(parseCases('["1 2\\n","3 4\\n"]', null), { cases: ['1 2\n', '3 4\n'], expect: ['', ''] });
   assert.deepEqual(parseCases('["1 2\\n","3 4\\n"]', '["3"]'), { cases: ['1 2\n', '3 4\n'], expect: ['3', ''] });
@@ -16,7 +16,7 @@ test('stored cases: the old string list still reads, expected outputs line up, b
   assert.equal(parseCases(many, many).expect.length, MAX_CASES);
 });
 
-test('a run against the expected output the learner typed', () => {
+void test('a run against the expected output the learner typed', () => {
   const run = (stdout: string, status = 'finished') => ({ status, stdout });
   // No expected output (blank counts as none): no verdict.
   assert.equal(customVerdict(run('3\n'), ''), null);

@@ -355,6 +355,7 @@ test('single-submit mock OA: one confirmed submission per question, its verdict 
     await act(async () => button('Submit').click());
     await act(async () => button('Submit final answer').click());
     await settle();
+    assert.equal(document.querySelector('[role="alertdialog"]'), null, 'the dialog closes');
     assert.equal(posts.length, 1);
     assert.equal(posts[0].mode, 'judge');
     const result = document.querySelector('.cs-result-content').textContent;

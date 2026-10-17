@@ -247,7 +247,14 @@ export function FinalSubmitDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{t('再检查一下', 'Keep checking')}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>{t('最终提交', 'Submit final answer')}</AlertDialogAction>
+          <AlertDialogAction
+            onClick={() => {
+              onOpenChange(false);
+              onConfirm();
+            }}
+          >
+            {t('最终提交', 'Submit final answer')}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

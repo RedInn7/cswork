@@ -53,8 +53,6 @@ export function Verdict({
 }) {
   const t = useT();
   const active = activeStatuses.has(submission.status);
-  const success =
-    !sealed && ['accepted', 'completed', 'executed', 'finished'].includes(submission.status);
   if (sealed)
     return (
       <span className="cs-verdict pending">
@@ -62,6 +60,9 @@ export function Verdict({
         {t('已提交', 'Submitted')}
       </span>
     );
+  const success = ['accepted', 'completed', 'executed', 'finished'].includes(
+    submission.status,
+  );
   return (
     <span
       className={`cs-verdict ${active ? 'pending' : success ? 'success' : 'failed'}`}
