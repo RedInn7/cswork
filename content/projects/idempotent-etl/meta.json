@@ -1,0 +1,27 @@
+{
+  "slug": "idempotent-etl",
+  "titleZh": "幂等的 ETL 管道（命令行）",
+  "titleEn": "Idempotent ETL pipeline (CLI)",
+  "summaryZh": "CSV 导入 SQLite：逐字段校验、拒绝记录、按更新时间去重、每日汇总，重跑不变、被杀不留半截。",
+  "summaryEn": "CSV into SQLite: field validation, a rejects table, newest-wins upserts and daily totals, unchanged on rerun and never half-written after a kill.",
+  "level": "intermediate",
+  "roles": ["backend", "data", "ml"],
+  "hours": 10,
+  "run": "cmd",
+  "milestones": [
+    { "zh": "读 CSV、逐字段校验，不合法的行写进 rejects", "en": "Read the CSVs, check every field, and put invalid rows in rejects" },
+    { "zh": "按 updated_at 去重的 upsert 和每日汇总，重跑结果不变", "en": "Newest-wins upserts and daily totals that do not change on a rerun" },
+    { "zh": "整次运行放进一个事务，跑通 kill -9 的检查", "en": "Wrap the whole run in one transaction and pass the kill -9 check" },
+    { "zh": "15 万行的性能和 README：幂等和原子性是怎么保证的", "en": "Performance on 150,000 lines, and a README on how idempotency and atomicity are guaranteed" }
+  ],
+  "bulletZh": "用 {语言} 实现幂等的 ETL 管道：逐字段校验并记录拒绝行，按更新时间做 upsert，整次运行单事务提交，重跑零差异、进程被杀后零半截数据；{N} 万行 {秒} 秒处理完。",
+  "bulletEn": "Built an idempotent ETL pipeline in {language} with per-field validation and a rejects table, newest-wins upserts and single-transaction runs: zero diff on rerun and no partial writes after a crash; {N}k rows in {s} s.",
+  "deepDive": [
+    { "zh": "你怎么定义这个管道的幂等？哪些操作天然幂等，哪些不是？", "en": "How do you define idempotency for this pipeline? Which operations are naturally idempotent and which are not?" },
+    { "zh": "为什么按 updated_at 比较而不是后到的覆盖先到的？时间戳相等时怎么办？", "en": "Why compare updated_at instead of letting the later file win? What about equal timestamps?" },
+    { "zh": "整次运行一个事务，数据量大到一个事务装不下时怎么办？", "en": "One transaction per run: what do you do when the data is too big for one transaction?" },
+    { "zh": "每日汇总是增量更新还是全量重算？各自在什么情况下会出错？", "en": "Do you update the daily totals incrementally or recompute them? When does each go wrong?" },
+    { "zh": "上游给了一个错误的文件，已经导进去了，怎么回滚或修复？", "en": "Upstream sent a bad file and it is already loaded. How do you roll back or repair?" },
+    { "zh": "如果用文件哈希跳过处理过的文件，迟到的旧文件还会被正确处理吗？", "en": "If you skip files by their hash, is a stale file that arrives late still handled correctly?" }
+  ]
+}

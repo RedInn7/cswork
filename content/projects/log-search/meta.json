@@ -1,0 +1,27 @@
+{
+  "slug": "log-search",
+  "titleZh": "日志检索服务（倒排索引）",
+  "titleEn": "Log search with an inverted index",
+  "summaryZh": "自己写分词和倒排索引：多词求交、短语、级别和时间过滤、按时间倒序的游标分页。",
+  "summaryEn": "Your own tokenizer and inverted index: intersected terms, phrases, level and time filters, and newest-first cursor paging.",
+  "level": "intermediate",
+  "roles": ["backend", "data", "infra"],
+  "hours": 16,
+  "run": "http",
+  "milestones": [
+    { "zh": "NDJSON 批量写入和校验，整批原子", "en": "NDJSON batch ingest with validation, all or nothing" },
+    { "zh": "分词和倒排索引，多词求交集（从最短列表开始）", "en": "The tokenizer and inverted index, intersecting terms from the shortest list" },
+    { "zh": "短语、过滤条件和游标分页，跑通验收脚本", "en": "Phrases, filters and cursor paging, passing the acceptance script" },
+    { "zh": "灌入大量数据做压测，README 写索引结构、内存和延迟", "en": "Load a large data set and write the README: index layout, memory and latency" }
+  ],
+  "bulletZh": "用 {语言} 从零实现日志检索服务：自研分词和倒排索引，支持多词交集、短语、级别和时间过滤及游标分页；{N} 万行日志下检索 p99 {毫秒} ms。",
+  "bulletEn": "Built a log search service from scratch in {language}: a custom tokenizer and inverted index with term intersection, phrase queries, level and time filters and cursor paging; {ms} ms p99 search over {N}M lines.",
+  "deepDive": [
+    { "zh": "多个词求交集时为什么从最短的倒排列表开始？最坏情况是什么？", "en": "Why intersect from the shortest posting list first, and what is the worst case?" },
+    { "zh": "短语检索是怎么实现的？要支持得更快，索引里还要存什么？", "en": "How do you answer phrase queries, and what else would the index store to make them faster?" },
+    { "zh": "为什么用游标分页而不是 offset？游标里放了什么？", "en": "Why a cursor rather than an offset, and what is inside your cursor?" },
+    { "zh": "日志一直在写，索引怎么做到边写边查？Lucene 的段合并解决了什么问题？", "en": "Logs never stop arriving. How do you search while indexing, and what problem does Lucene's segment merging solve?" },
+    { "zh": "数据量大到一台机器放不下时，按什么分片？查询怎么合并？", "en": "When the data outgrows one machine, how do you shard it and merge query results?" },
+    { "zh": "倒排列表怎么压缩？差值编码为什么有效？", "en": "How would you compress posting lists, and why does delta encoding work?" }
+  ]
+}
