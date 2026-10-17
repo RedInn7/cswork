@@ -37,6 +37,7 @@ const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { handleContent } = await import('../lib/server/content-library');
 const { companyReports } = await import('../lib/server/learner-cloud');
+const { topProblems } = await import('../lib/server/company-insights');
 const { mockPresetFor } = await import('../lib/server/mock-oa-presets');
 const { loadStudyLibrary } = await import('../scripts/load-study-library.mjs');
 
@@ -192,6 +193,7 @@ void test('approved linked questions count as asked: by person, never "similar",
   assert.deepEqual([lc1.total, lc1.last, lc1.companies.map((c: { slug: string; n: number }) => [c.slug, c.n])], [1, month, [['amazon', 1]]]);
   assert.deepEqual(lc1.mine, [], "the author's own list holds manual reports only");
   assert.equal((await asked('lc-42')).total, 0, 'similar is not the question itself');
+  assert.equal(topProblems(1000).find((p) => p.id === 'lc-1')?.learnerReports, 1, '/company/top counts the post too');
   // The same author reporting it by hand is still one person.
   assert.equal((await call(me, 'POST', 'oj/reports', { problemId: 'lc-1', company: 'amazon', round: 'oa', month })).status, 200);
   lc1 = await asked('lc-1', me);

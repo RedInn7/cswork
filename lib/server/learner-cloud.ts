@@ -1199,7 +1199,7 @@ export function reportCompanies() {
  * Learners' reports and public member experiences' linked questions, in problem_reports' columns.
  * A function: experience-submissions.ts imports this module back, so MEMBER_ASKED is unset while it loads.
  */
-const ASKED = () => `(SELECT user_id,problem_id,company,asked_month,round FROM problem_reports UNION ALL ${MEMBER_ASKED})`;
+export const ASKED = () => `(SELECT user_id,problem_id,company,asked_month,round FROM problem_reports UNION ALL ${MEMBER_ASKED})`;
 /** Distinct reporters over the recent months, the latest month and the companies named. */
 export function problemReportSummary(problem: string, userId: string | null, now = Date.now()) {
   const db = sqlite(),
