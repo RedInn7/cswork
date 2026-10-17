@@ -22,7 +22,7 @@ Rules:
 
 ## Constraints
 
-- GET, PUT and DELETE in O(1) amortized: a hash map plus a doubly linked list.
+- GET and DELETE in O(1), PUT in O(log n) or better: a hash map plus a doubly linked list keeps the LRU order, and a min-heap (or a timing wheel) on expiry time finds the expired entries to drop without scanning every key.
 - Many clients reading and writing at once must not break it.
 
 ## Extras

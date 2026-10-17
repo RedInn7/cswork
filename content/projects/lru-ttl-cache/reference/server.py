@@ -25,6 +25,7 @@ def live(key, now):
 
 
 def purge(now):
+    # ponytail: O(n) scan, fine for verification; the brief asks learners for a min-heap on expiry.
     for key in [k for k, (_, at) in entries.items() if at is not None and at <= now]:
         del entries[key]
 
