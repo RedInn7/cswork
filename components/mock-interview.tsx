@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowRight, BookOpen, Bot, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
-  History as HistoryIcon, Lightbulb, Link2, LoaderCircle, MessageSquareText, Mic, Minus, Pause, Play, Plus, Printer,
+  History as HistoryIcon, Lightbulb, Link2, ListOrdered, LoaderCircle, MessageSquareText, Mic, Minus, Pause, Play, Plus, Printer,
   RotateCcw, Save, Send, ShieldAlert, Shuffle, Users, Volume2,
 } from 'lucide-react';
 import { api } from '@/lib/types';
@@ -13,9 +13,10 @@ import { ojRequest } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
 import { companyLogos } from '@/lib/oa-company-brands';
 import {
-  AI_TEMPLATES, CUSTOM_NAME, KINDS, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, guideFor, isRoleplay, newSeed, resolveTemplate,
-  type KindId, type Text,
+  AI_TEMPLATES, CUSTOM_NAME, KINDS, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, frameworkFor, guideFor, isRoleplay, newSeed, resolveTemplate,
+  type GuideStep, type KindId, type Text,
 } from '@/lib/mock-interview';
+import { keyPoints } from '@/lib/recall';
 import {
   ROLEPLAY_VERDICTS, RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, rubricFor, type Feedback,
   type RubricId,
@@ -30,6 +31,7 @@ import { DeliveryReport, DeliveryStats } from './mock-delivery';
 import { ModeTabs } from './mock-modes';
 import { ResumeBox } from './mock-resume';
 import { OaMarkdown } from './oa-library';
+import { PointsChecklist } from './recall-rate';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
 import { useSpeech } from './use-speech';
@@ -59,8 +61,11 @@ type Item = {
   followUps: string;
   rubric: string;
   solution: string;
+  /** A multi-part coding question's follow-ups, asked as its later parts (questions only). */
+  parts?: { q: Text }[];
 };
-type DrawnSlot = { kind: KindId; minutes: number; name?: Text; similar: boolean; pool: number; item: Item | null };
+/** `rapid`: one of that many quick questions, moving on when its time is up. */
+type DrawnSlot = { kind: KindId; minutes: number; name?: Text; similar: boolean; pool: number; item: Item | null; rapid?: number; parts?: boolean };
 type MockSet = { seed: string; rerolls: number[]; template: { id: string; name: Text }; slots: DrawnSlot[] };
 type Mode = 'solo' | 'candidate' | 'interviewer' | 'ai';
 /** One sitting, per viewer and mode. Slot-indexed; `since` is when the running clock last started. */
@@ -92,6 +97,8 @@ type Run = {
   self?: Partial<Record<RubricId, number>>;
   /** AI interviewer: each question's dictated utterances, for the delivery metrics. Never sent. */
   speech?: Record<number, Segment[]>;
+  /** Solo and interviewer: the key points ticked off per question (pointsOf indices). */
+  checked?: Record<number, number[]>;
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
 type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
@@ -914,7 +921,8 @@ function Plan({
           </div>
         )}
         {!aiOnly && <PairLinks query={query} />}
-        {ai && (
+        {/* Rapid-fire questions run on a 90-second clock, too short for a conversation (and the AI's limits). */}
+        {ai && !data.slots.some((s) => s.rapid) && (
           <div className="mi-ai-start">
             <div>
               <p className="mi-ticket-kicker">
@@ -1068,14 +1076,55 @@ function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; probl
   );
 }
 
-function Notes({ value, onChange, label, code }: { value: string; onChange: (v: string) => void; label: string; code?: boolean }) {
+function Notes({
+  value,
+  onChange,
+  label,
+  code,
+  scaffold,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  label: string;
+  code?: boolean;
+  /** Section headings an empty box can start from (scaffoldOf). */
+  scaffold?: string;
+}) {
+  const t = useT();
+  const box = useRef<HTMLTextAreaElement>(null);
   return (
-    <label className="mi-notes">
-      <span>{label}</span>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={code ? 9 : 5} spellCheck={!code} data-code={code || undefined} />
-    </label>
+    <>
+      <label className="mi-notes">
+        <span>{label}</span>
+        <textarea ref={box} value={value} onChange={(e) => onChange(e.target.value)} rows={code ? 9 : 5} spellCheck={!code} data-code={code || undefined} />
+      </label>
+      {scaffold && !value.trim() && (
+        <button
+          type="button"
+          className="rd-button is-quiet mi-scaffold mi-noprint"
+          onClick={() => {
+            onChange(scaffold);
+            box.current?.focus();
+          }}
+        >
+          <ListOrdered size={14} aria-hidden="true" /> {t('按步骤分段', 'Outline by steps')}
+        </button>
+      )}
+    </>
   );
 }
+
+type T = (zh: string, en: string) => string;
+/** "## 1. Clarify the metric (2′)": a heading per answer step, to write under. */
+const scaffoldOf = (steps: GuideStep[] | null, t: T) =>
+  steps
+    ? steps.map((s, i) => t(`## ${i + 1}. ${s.name[0]}（${s.minutes}′）`, `## ${i + 1}. ${s.name[1]} (${s.minutes}′)`)).join('\n\n') + '\n'
+    : undefined;
+/** What to tick off against an answer: the rubric's or the reference answer's key points, else the answer steps'. */
+const pointsOf = (item: Item, steps: GuideStep[] | null, t: T) => {
+  const points = keyPoints(item.rubric, item.solution);
+  return points.length ? points : (steps ?? []).map((s) => t(...s.points));
+};
 
 function Guide({ item }: { item: Item }) {
   const t = useT();
@@ -1160,6 +1209,60 @@ function Pips({ n, label }: { n: number; label: string }) {
   );
 }
 
+/**
+ * A question's answer steps: the line of stops, then the step under way with its own clock against
+ * its minutes and the caller's buttons (the AI interviewer's feedback calls; next and skip
+ * otherwise). `seconds`: time on the current step.
+ */
+function GuideBar({
+  steps,
+  done,
+  seconds,
+  actions,
+  children,
+}: {
+  steps: GuideStep[];
+  done: number;
+  seconds: number;
+  actions: React.ReactNode;
+  children?: React.ReactNode;
+}) {
+  const t = useT();
+  const current = steps[done] ?? null;
+  return (
+    <section className="rd-card mi-guide" aria-labelledby="mi-guide-title">
+      <ol className="mi-guide-steps">
+        {steps.map((s, i) => (
+          <li key={s.id} data-state={i < done ? 'done' : i === done ? 'now' : 'todo'} aria-current={i === done ? 'step' : undefined}>
+            <span aria-hidden="true">{i < done ? <Check size={12} /> : i + 1}</span>
+            {t(...s.name)}
+          </li>
+        ))}
+      </ol>
+      {current ? (
+        <div className="mi-guide-now">
+          <p id="mi-guide-title">
+            <strong>{t(`第 ${done + 1} 步：${current.name[0]}`, `Step ${done + 1}: ${current.name[1]}`)}</strong>
+            <span className="mi-guide-clock" data-over={seconds > current.minutes * 60 || undefined}>
+              {clock(seconds)} / {current.minutes}′
+            </span>
+            <span className="mi-bar" aria-hidden="true">
+              <i style={{ width: `${Math.min(100, (seconds / (current.minutes * 60)) * 100)}%` }} />
+            </span>
+          </p>
+          <p>{t(...current.points)}</p>
+          <div className="mi-guide-actions">{actions}</div>
+        </div>
+      ) : (
+        <p id="mi-guide-title" className="mi-guide-now">
+          {t(`${steps.length} 步都走完了。还有时间就接着讲，或者进入下一题。`, `All ${steps.length} steps done. Keep going if there is time, or move on.`)}
+        </p>
+      )}
+      {children}
+    </section>
+  );
+}
+
 function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userId }: SessionProps) {
   const t = useT();
   const slot = data.slots[run.index];
@@ -1174,8 +1277,29 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
   };
   const seconds = spent(run, run.index, now);
   const last = run.index === data.slots.length - 1;
+  // A rapid-fire question moves on by itself when its time is up, while the clock runs; after the
+  // interview its review is untimed.
+  const rapid = !!slot?.rapid && !run.finished;
+  const due = rapid && run.since !== null && !last && seconds >= (slot?.minutes ?? Infinity) * 60;
+  const index = run.index;
+  useEffect(() => {
+    if (due) setRun((r) => (r.index === index ? { ...commit(r), index: index + 1 } : r));
+  }, [due, index, setRun]);
   if (!slot) return null;
   const code = slot.kind === 'coding' || slot.kind === 'sql';
+  // The answer steps (lib/mock-interview.ts frameworkFor): next and skip, kept in run.guide like the AI's.
+  const steps = frameworkFor(slot, item);
+  const guide = run.guide?.[run.index] ?? { from: 0, at: 0, done: [] };
+  const step = (skipped: boolean) =>
+    setRun((r) => {
+      const g = r.guide?.[r.index] ?? { from: 0, at: 0, done: [] };
+      const current = steps?.[g.done.length];
+      if (!current) return r;
+      const done = [...g.done, { step: current.id, ...(skipped ? { skipped } : {}) }];
+      return { ...r, guide: { ...r.guide, [r.index]: { from: 0, at: spent(r, r.index, Date.now()), done } } };
+    });
+  const scaffold = scaffoldOf(steps, t);
+  const checked = run.checked?.[run.index] ?? [];
   return (
     <>
       <SetHead data={data} query={query} mode={mode} />
@@ -1194,18 +1318,40 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
           running={run.since !== null}
           onToggle={() => setRun((r) => (r.since === null ? { ...r, since: Date.now() } : { ...commit(r), since: null }))}
         />
-        {seconds >= slot.minutes * 60 && solo && !shown.answer && item && (
+        {seconds >= slot.minutes * 60 && solo && !shown.answer && item && !rapid && (
           <p className="mi-stage-up">
             <Flag size={14} aria-hidden="true" /> {t('时间到。可以看看参考要点了。', "Time's up. Have a look at what interviewers expect.")}
           </p>
         )}
       </section>
+      {steps && (
+        <GuideBar
+          steps={steps}
+          done={guide.done.length}
+          seconds={Math.max(0, seconds - guide.at)}
+          actions={
+            <>
+              <button type="button" className="mi-cta" onClick={() => step(false)}>
+                <Check size={15} aria-hidden="true" /> {t('下一步', 'Next step')}
+              </button>
+              <button type="button" className="rd-button is-quiet" onClick={() => step(true)}>
+                {t('跳过', 'Skip')}
+              </button>
+            </>
+          }
+        />
+      )}
       <div className="mi-work">
         <div className="mi-work-main">
           <QuestionCard slot={slot} problemIds={problemIds} showSource={solo && !!shown.answer} />
           {solo && item && shown.answer && (
             <section className="rd-card mi-reveal" id="mi-reveal">
               <Guide item={item} />
+              <PointsChecklist
+                points={pointsOf(item, steps, t)}
+                checked={checked}
+                onChange={(next) => setRun((r) => ({ ...r, checked: { ...r.checked, [r.index]: next } }))}
+              />
             </section>
           )}
         </div>
@@ -1230,6 +1376,7 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
                 code={code}
                 gradeable={!!(item.rubric || item.solution)}
                 local={{ value: run.notes[run.index] ?? '', onChange: (v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } })) }}
+                scaffold={scaffold}
               />
             ) : (
               <Notes
@@ -1237,9 +1384,10 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
                 code={code}
                 value={run.notes[run.index] ?? ''}
                 onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } }))}
+                scaffold={scaffold}
               />
             )}
-            {solo && item.hints && !shown.hint && (
+            {solo && item.hints && !shown.hint && !rapid && (
               <div className="mi-reveals">
                 <button type="button" className="rd-button is-quiet" onClick={() => show('hint')}>
                   <Lightbulb size={14} aria-hidden="true" /> {t('给个提示', 'Show a hint')}
@@ -1481,52 +1629,29 @@ function AiRunner({
         />
       </section>
       {steps && (
-        <section className="rd-card mi-guide" aria-labelledby="mi-guide-title">
-          <ol className="mi-guide-steps">
-            {steps.map((s, i) => (
-              <li
-                key={s.id}
-                data-state={i < guide.done.length ? 'done' : i === guide.done.length ? 'now' : 'todo'}
-                aria-current={i === guide.done.length ? 'step' : undefined}
-              >
-                <span aria-hidden="true">{i < guide.done.length ? <Check size={12} /> : i + 1}</span>
-                {t(...s.name)}
-              </li>
-            ))}
-          </ol>
-          {current ? (
-            <div className="mi-guide-now">
-              <p id="mi-guide-title">
-                <strong>{t(`第 ${guide.done.length + 1} 步：${current.name[0]}`, `Step ${guide.done.length + 1}: ${current.name[1]}`)}</strong>
-                <span className="mi-guide-clock">
-                  {clock(Math.max(0, spent(run, run.index, now) - guide.at))} / {current.minutes}′
-                </span>
-              </p>
-              <p>{t(...current.points)}</p>
-              <div className="mi-guide-actions">
-                <button type="button" className="mi-cta" disabled={!!busy || !answered} onClick={() => void finishStep(false)}>
-                  {busy === 'step' ? <LoaderCircle size={15} className="mi-spin" aria-hidden="true" /> : <Check size={15} aria-hidden="true" />}
-                  {busy === 'step' ? t('正在看这一步…', 'Reviewing this step…') : t('完成这一步', 'Finish this step')}
-                </button>
-                <button type="button" className="rd-button is-quiet" disabled={!!busy} onClick={() => void finishStep(true)}>
-                  {t('跳过', 'Skip')}
-                </button>
-                {stepsUsed >= AI_STEPS && (
-                  <span className="mi-muted">{t('这场的分步反馈用完了，之后的步骤不再打分。', 'This interview is out of step feedback; later steps go unscored.')}</span>
-                )}
-              </div>
-            </div>
-          ) : (
-            <p id="mi-guide-title" className="mi-guide-now">
-              {t('五步都走完了。有时间可以继续聊，或者进入下一题。', 'All five steps done. Keep talking if there is time, or move on.')}
-            </p>
-          )}
+        <GuideBar
+          steps={steps}
+          done={guide.done.length}
+          seconds={Math.max(0, spent(run, run.index, now) - guide.at)}
+          actions={
+            <>
+              <button type="button" className="mi-cta" disabled={!!busy || !answered} onClick={() => void finishStep(false)}>
+                {busy === 'step' ? <LoaderCircle size={15} className="mi-spin" aria-hidden="true" /> : <Check size={15} aria-hidden="true" />}
+                {busy === 'step' ? t('正在看这一步…', 'Reviewing this step…') : t('完成这一步', 'Finish this step')}
+              </button>
+              <button type="button" className="rd-button is-quiet" disabled={!!busy} onClick={() => void finishStep(true)}>
+                {t('跳过', 'Skip')}
+              </button>
+              {stepsUsed >= AI_STEPS && (
+                <span className="mi-muted">{t('这场的分步反馈用完了，之后的步骤不再打分。', 'This interview is out of step feedback; later steps go unscored.')}</span>
+              )}
+            </>
+          }
+        >
           <div className="mi-guide-feedback" aria-live="polite">
-            {guide.done.at(-1)?.keep !== undefined && (
-              <StepCard n={guide.done.length} done={guide.done.at(-1)!} />
-            )}
+            {guide.done.at(-1)?.keep !== undefined && <StepCard n={guide.done.length} done={guide.done.at(-1)!} />}
           </div>
-        </section>
+        </GuideBar>
       )}
       <div className="mi-work">
         <div className="mi-work-main">
@@ -1808,11 +1933,13 @@ function Summary({
               <th scope="col">{t('题目', 'Question')}</th>
               <th scope="col">{t('用时 / 建议', 'Time / suggested')}</th>
               {mode === 'solo' && <th scope="col">{t('自评', 'Rating')}</th>}
+              {mode === 'solo' && <th scope="col">{t('要点', 'Key points')}</th>}
             </tr>
           </thead>
           <tbody>
             {data.slots.map((slot, i) => {
               const seconds = run.elapsed[i] ?? 0;
+              const points = mode === 'solo' && slot.item ? pointsOf(slot.item, frameworkFor(slot, slot.item), t) : [];
               return (
                 <tr key={i}>
                   <td>{i + 1}</td>
@@ -1831,6 +1958,7 @@ function Summary({
                       {run.ratings[i] ? <Pips n={run.ratings[i]} label={t(...RATINGS[run.ratings[i] - 1])} /> : '—'}
                     </td>
                   )}
+                  {mode === 'solo' && <td>{points.length ? `${(run.checked?.[i] ?? []).length}/${points.length}` : '—'}</td>}
                 </tr>
               );
             })}
@@ -1910,50 +2038,71 @@ function InterviewerSheet({ data, query, run, setRun, now, problemIds, finish }:
           <Printer size={14} aria-hidden="true" /> {t('打印评分表', 'Print the sheet')}
         </button>
       </div>
-      {data.slots.map((slot, i) => (
-        <section key={i} className="rd-card mi-sheet-slot">
-          <header className="mi-sheet-head">
-            <span className="mi-plan-no">{String(i + 1).padStart(2, '0')}</span>
-            <span className="mi-sheet-time">
-              {t(`建议 ${slot.minutes} 分钟`, `${slot.minutes} min`)}
-              <Clock
-                seconds={spent(run, i, now)}
-                minutes={slot.minutes}
-                running={run.since !== null && run.index === i}
-                onToggle={() => toggle(i)}
-                onReset={() => setRun((r) => ({ ...r, elapsed: Object.assign([...r.elapsed], { [i]: 0 }), since: r.index === i && r.since !== null ? Date.now() : r.since }))}
-              />
-            </span>
-          </header>
-          <QuestionCard slot={slot} problemIds={problemIds} showSource />
-          {slot.item && (
-            <>
-              {slot.item.hints && (
-                <section className="mi-hints">
-                  <h3>
-                    <Lightbulb size={15} aria-hidden="true" /> {t('卡住时可以给的提示', 'Hints to give if they’re stuck')}
-                  </h3>
-                  <OaMarkdown body={slot.item.hints} math={slot.item.math} />
-                </section>
-              )}
-              <Guide item={slot.item} />
-              <div className="mi-score">
-                <Rating
-                  name={t(`第 ${i + 1} 题评分`, `Score for question ${i + 1}`)}
-                  labels={SCORES}
-                  value={run.ratings[i]}
-                  onChange={(n) => setRun((r) => ({ ...r, ratings: { ...r.ratings, [i]: n } }))}
+      {data.slots.map((slot, i) => {
+        const steps = frameworkFor(slot, slot.item);
+        return (
+          <section key={i} className="rd-card mi-sheet-slot">
+            <header className="mi-sheet-head">
+              <span className="mi-plan-no">{String(i + 1).padStart(2, '0')}</span>
+              <span className="mi-sheet-time">
+                {t(`建议 ${slot.minutes} 分钟`, `${slot.minutes} min`)}
+                <Clock
+                  seconds={spent(run, i, now)}
+                  minutes={slot.minutes}
+                  running={run.since !== null && run.index === i}
+                  onToggle={() => toggle(i)}
+                  onReset={() => setRun((r) => ({ ...r, elapsed: Object.assign([...r.elapsed], { [i]: 0 }), since: r.index === i && r.since !== null ? Date.now() : r.since }))}
                 />
-                <Notes
-                  label={t('面试记录', 'Interview notes')}
-                  value={run.notes[i] ?? ''}
-                  onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [i]: v } }))}
+              </span>
+            </header>
+            <QuestionCard slot={slot} problemIds={problemIds} showSource />
+            {slot.item && (
+              <>
+                {slot.item.hints && (
+                  <section className="mi-hints">
+                    <h3>
+                      <Lightbulb size={15} aria-hidden="true" /> {t('卡住时可以给的提示', 'Hints to give if they’re stuck')}
+                    </h3>
+                    <OaMarkdown body={slot.item.hints} math={slot.item.math} />
+                  </section>
+                )}
+                {steps && (
+                  <section className="mi-hints mi-sheet-steps">
+                    <h3>{t('答题步骤', 'Answer steps')}</h3>
+                    <ol>
+                      {steps.map((s) => (
+                        <li key={s.id}>
+                          <strong>{t(...s.name)}</strong> · {s.minutes}′ <span>{t(...s.points)}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                )}
+                <Guide item={slot.item} />
+                <PointsChecklist
+                  candidate
+                  points={pointsOf(slot.item, steps, t)}
+                  checked={run.checked?.[i] ?? []}
+                  onChange={(next) => setRun((r) => ({ ...r, checked: { ...r.checked, [i]: next } }))}
                 />
-              </div>
-            </>
-          )}
-        </section>
-      ))}
+                <div className="mi-score">
+                  <Rating
+                    name={t(`第 ${i + 1} 题评分`, `Score for question ${i + 1}`)}
+                    labels={SCORES}
+                    value={run.ratings[i]}
+                    onChange={(n) => setRun((r) => ({ ...r, ratings: { ...r.ratings, [i]: n } }))}
+                  />
+                  <Notes
+                    label={t('面试记录', 'Interview notes')}
+                    value={run.notes[i] ?? ''}
+                    onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [i]: v } }))}
+                  />
+                </div>
+              </>
+            )}
+          </section>
+        );
+      })}
       <section className="rd-card mi-verdict">
         <h2>{t('总体评价', 'Overall')}</h2>
         <div className="mi-rubric">

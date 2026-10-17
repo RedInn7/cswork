@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Eye, PenLine } from 'lucide-react';
+import { Eye, ListOrdered, PenLine } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { AnswerGrade, GRADE_MIN, GRADEABLE } from './answer-grade';
 import { useNote } from './problem-notes';
@@ -22,6 +22,7 @@ export function TryFirst({
   local,
   code,
   gradeable = true,
+  scaffold,
 }: {
   userId: string | null;
   target: string;
@@ -34,6 +35,8 @@ export function TryFirst({
   code?: boolean;
   /** False when the question has no reference answer for AI feedback to grade against. */
   gradeable?: boolean;
+  /** Section headings an empty answer can start from (the question's answer steps). */
+  scaffold?: string;
 }) {
   const t = useT();
   const id = useId();
@@ -51,6 +54,7 @@ export function TryFirst({
   useEffect(() => {
     if (asking) tryButton.current?.focus();
   }, [asking]);
+  const locked = !guest && (note.state === 'loading' || note.conflict !== null);
   const checked = useRef(false);
   useEffect(() => {
     if (checked.current || note.state === 'loading') return;
@@ -106,6 +110,19 @@ export function TryFirst({
               </button>
             </div>
           )}
+          {scaffold && !text.trim() && (
+            <button
+              type="button"
+              className="rd-button is-quiet ip-try-scaffold"
+              disabled={locked}
+              onClick={() => {
+                edit(scaffold);
+                box.current?.focus();
+              }}
+            >
+              <ListOrdered size={14} aria-hidden="true" /> {t('按步骤分段', 'Outline by steps')}
+            </button>
+          )}
           <textarea
             ref={box}
             className="ip-try-input"
@@ -113,7 +130,7 @@ export function TryFirst({
             data-code={code || undefined}
             rows={code ? 9 : 6}
             spellCheck={!code}
-            readOnly={!guest && (note.state === 'loading' || note.conflict !== null)}
+            readOnly={locked}
             value={text}
             onChange={(event) => edit(event.target.value)}
             placeholder={
