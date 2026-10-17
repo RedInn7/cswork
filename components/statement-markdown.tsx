@@ -114,11 +114,18 @@ const components: Components = {
   pre: ({ children }) => {
     const code = Children.toArray(children)[0];
     if (
-      !isValidElement<{ children?: unknown }>(code) ||
+      !isValidElement<{ children?: unknown; className?: string }>(code) ||
       typeof code.props.children !== 'string'
     ) {
       return <pre>{children}</pre>;
     }
+    // Authored statements (the Core Skills OOD problems' class diagrams) draw ```mermaid as the course does.
+    if (/(?:^|\s)language-mermaid(?:\s|$)/.test(code.props.className ?? ''))
+      return (
+        <Suspense fallback={<pre>{children}</pre>}>
+          <CourseDiagram source={code.props.children} />
+        </Suspense>
+      );
     const text = code.props.children
       .replace(/^\s*\n/, '')
       .replace(/\n\s*$/, '');
