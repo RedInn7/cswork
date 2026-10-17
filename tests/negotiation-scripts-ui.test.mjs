@@ -42,11 +42,12 @@ test('a run: no score until the end, then each step scored, explained and compar
   assert.equal(log.getAttribute('aria-live'), 'polite');
   assert.match(log.textContent, /about twenty minutes/);
   assert.equal($$('.negotiation-choices > li > button').length, 4);
-  assert.equal(document.activeElement, $('#negotiation-reply'));
+  assert.equal(document.activeElement, $('#negotiation-title'), 'step 1 starts at the title, before the setting');
 
   for (let step = 0; step < 5; step++) {
     assert.equal($('.negotiation-score'), null, 'no score mid-run');
     await click($('.negotiation-choices button'));
+    if (step === 0) assert.equal(document.activeElement, $('#negotiation-reply'), 'later steps focus the step heading');
   }
   assert.equal($('.negotiation-choices'), null);
   assert.equal(document.activeElement, $('#negotiation-score'));
@@ -63,6 +64,7 @@ test('a run: no score until the end, then each step scored, explained and compar
 
   await click(button('Start over'));
   assert.equal($$('.negotiation-choices button').length, 4);
+  assert.equal(document.activeElement, $('#negotiation-title'));
   for (let step = 0; step < 5; step++) await click($$('.negotiation-choices button')[1]);
   assert.equal($('.negotiation-total').textContent, '0 / 10');
   assert.match($('.negotiation-verdict').textContent, /^Several/);
@@ -83,7 +85,7 @@ test('?s= opens a negotiation with its written offer, and no floor anywhere on t
     $$('.negotiation-offer td').map((td) => td.textContent),
     ['$150,000', '$0', '$160,000', '$30,000'],
   );
-  assert.notEqual(document.activeElement, $('#negotiation-reply'), 'no focus jump on load');
+  assert.equal(document.activeElement, document.body, 'no focus jump on load');
   const hidden = SCENARIOS.find((x) => x.id === 'neg-cloud-newgrad');
   for (const text of [...hidden.notes, ...hidden.concessions.flat()]) assert.ok(!document.body.textContent.includes(text), text);
   assert.doesNotMatch(document.body.textContent, /(?<![\d,])(220|60),000|22 万|(?<![\d.])6 万/, 'the floor’s stock and sign-on');

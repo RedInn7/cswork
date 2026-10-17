@@ -81,7 +81,10 @@ export function NegotiationScripts({ zh, settings }: { zh: boolean; settings: Re
     <div className="negotiation">
       <section className="negotiation-setting" aria-labelledby="negotiation-title">
         <p className="negotiation-kind">{KINDS[script.kind].name[i]}</p>
-        <h2 id="negotiation-title">{script.title[i]}</h2>
+        {/* Step 1 focuses the title, so a screen reader starts from the setting and the recruiter's opening line. */}
+        <h2 id="negotiation-title" ref={steps.length ? undefined : heading} tabIndex={-1}>
+          {script.title[i]}
+        </h2>
         {setting && (
           <>
             <dl>
@@ -131,7 +134,7 @@ export function NegotiationScripts({ zh, settings }: { zh: boolean; settings: Re
 
       {!ended ? (
         <section aria-labelledby="negotiation-reply">
-          <h3 id="negotiation-reply" ref={heading} tabIndex={-1}>
+          <h3 id="negotiation-reply" ref={steps.length ? heading : undefined} tabIndex={-1}>
             {t(`第 ${steps.length + 1} 步：你怎么回应？`, `Step ${steps.length + 1}: how do you reply?`)}
           </h3>
           <ol className="negotiation-choices">
