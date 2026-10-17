@@ -61,6 +61,24 @@ test('every system design course diagram parses and fits the length limit', asyn
   assert.ok(total >= 48, 'the converted architecture diagrams stay covered');
 });
 
+test('every Core Skills statement diagram parses and fits the length limit', async () => {
+  // components/statement-markdown.tsx draws them through the same CourseDiagram.
+  const directory = new URL('../content/core-skills/', import.meta.url);
+  let total = 0;
+  for (const slug of readdirSync(directory).filter((name) => !name.includes('.')))
+    for (const file of ['statement.zh.md', 'statement.en.md'])
+      for (const match of readFileSync(new URL(`${slug}/${file}`, directory), 'utf8').matchAll(
+        /^```mermaid\n([\s\S]*?)^```/gm,
+      )) {
+        total += 1;
+        const where = `${slug}/${file}, diagram ${total}`;
+        assert.ok(match[1].length <= DIAGRAM_MAX_LENGTH, where);
+        assert.ok((await mermaid.parse(prepareCourseDiagram(match[1]))).diagramType, where);
+        assert.match(match[1], /^\s*accTitle: /m, `${where} has an accessible title`);
+      }
+  assert.ok(total >= 16, 'the eight OOD class diagrams, in both languages');
+});
+
 test('every beginner crash course diagram parses', async () => {
   const { courses } = JSON.parse(
     readFileSync(new URL('../lib/content/beginner-courses.json', import.meta.url), 'utf8'),
