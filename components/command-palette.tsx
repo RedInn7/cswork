@@ -630,6 +630,7 @@ export function SelectionAsk({ children, className, clip }: { children: ReactNod
               {said.done && (
                 <>
                   {' '}
+                  {/* oxlint-disable-next-line next/no-html-link-for-pages -- an SPA view of the home page. */}
                   <a href="/?view=review-session&tab=cards" onMouseDown={keep}>
                     {t('查看', 'View')}
                   </a>

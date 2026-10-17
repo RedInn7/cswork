@@ -20,7 +20,7 @@ import {
 } from '@/lib/practice-review';
 import { ReviewForecast } from './review-forecast';
 import { SolveQuality } from './solve-quality';
-import { RecallQueue, useRecallQueue } from './recall-queue';
+import { RecallQueue, ReviewSessionLink, useRecallQueue } from './recall-queue';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
@@ -645,18 +645,7 @@ export function MyProgress({
             )}
           <RecallQueue recall={recall} signedIn={!!boot.person} navigate={navigate} english={english} />
           {/* Cards, ideas, multiple-choice and coding reviews in one queue (components/review-session.tsx). */}
-          <p className="recall-none">
-            <a
-              href="/?view=review-session"
-              onClick={(event) => {
-                if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-                event.preventDefault();
-                navigate('review-session');
-              }}
-            >
-              {t('开始今日复习：卡片、选择题和编程题放在一个队列里 →', 'Start the review session: cards, multiple-choice and coding in one queue →')}
-            </a>
-          </p>
+          <ReviewSessionLink signedIn={!!boot.person} navigate={navigate} english={english} />
         </>
       );
     if (tab === 'notes') return notesPanel();
