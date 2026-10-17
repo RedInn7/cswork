@@ -11,7 +11,8 @@ import '@/app/analyzer-notes.css';
  */
 export function ComplexityBudget({ bounds, language, english }: { bounds: Bounds | null; language: string; english: boolean }) {
   const [open, setOpen] = useState(false);
-  const message = bounds && budgetMessage(bounds, language);
+  if (!bounds) return null;
+  const message = budgetMessage(bounds, language);
   if (!message) return null;
   return (
     <>
