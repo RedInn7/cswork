@@ -407,6 +407,7 @@ test('an answered OS question links to its simulator; others do not', async () =
     `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};return n(u,c);}")}`,
     import.meta.url,
   );
+  // @ts-expect-error -- jsdom ships no types; the .mjs UI tests use it untyped too.
   const { JSDOM } = await import('jsdom');
   const { act } = await import('react');
   const { mcqDay } = await import('../lib/mock-oa');
