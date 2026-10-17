@@ -108,6 +108,9 @@ export type Slot = { kind: KindId; minutes: number; name?: Text; optional?: bool
  * rapidPool), short enough for 90 seconds. The library's own fundamentals are long-form.
  */
 export const RAPID_CATEGORY = 'Rapid-fire Fundamentals';
+/** A rapid-fire question's prompt and answer labels: question content, so they live outside lib/server's messages. */
+export const RAPID_PICK: Text = ['选出答案，用一两句话说明理由。', 'Pick your answer and say why in a sentence or two.'];
+export const RAPID_ANSWER: Text = ['答案：', 'Answer: '];
 export type Template = {
   id: string;
   name: Text;

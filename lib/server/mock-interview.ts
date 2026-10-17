@@ -2,7 +2,9 @@ import type Database from 'better-sqlite3';
 import mcqBank from '@/lib/content/oa-mcq.json';
 import {
   KINDS,
+  RAPID_ANSWER,
   RAPID_CATEGORY,
+  RAPID_PICK,
   ROUNDS,
   companyCounts,
   companyGroup,
@@ -127,10 +129,10 @@ function rapidQuestion(id: string) {
     `- ${label}${q.answer.map((i) => `${letter(i)}. ${x.choices[i]}`).join('; ')}\n- ${x.explain}`;
   return {
     titleZh: q.zh.q,
-    question: ask(q.en, 'Pick your answer and say why in a sentence or two.'),
-    questionZh: ask(q.zh, '选出答案，用一两句话说明理由。'),
-    solution: answer(q.en, 'Answer: '),
-    solutionZh: answer(q.zh, '答案：'),
+    question: ask(q.en, RAPID_PICK[1]),
+    questionZh: ask(q.zh, RAPID_PICK[0]),
+    solution: answer(q.en, RAPID_ANSWER[1]),
+    solutionZh: answer(q.zh, RAPID_ANSWER[0]),
   };
 }
 
