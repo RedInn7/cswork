@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { curatedByNumber, curatedSections } from '@/lib/ling-curated';
+import { curatedByNumber, curatedEntries, curatedSections } from '@/lib/ling-curated';
 import { parseNoteMeta } from '@/lib/note-meta';
 import type { Person } from './auth';
 import { refuseInContest, runningContestProblems } from './contests';
@@ -9,7 +9,7 @@ import { NOTE_KINDS, noteSnippet } from './my-practice';
 
 // Written notes only (the notes hub's kinds); quiz answers, stories, cards and prefs stay out.
 const KINDS = `(${NOTE_KINDS.map((k) => `target LIKE '${k}:%'`).join(' OR ')})`;
-// ponytail: tags and stop read bodies cut to 8000 characters, at most 5000 rows (the per-learner
+// ponytail: tags reads bodies cut to 8000 characters, at most 5000 rows (the per-learner
 // cap, MAX_ROWS): 5000 full 20 KB bodies would be 100 MB in one request. A tag past that is missed.
 const SCAN = 5000;
 const HEAD = 8000;
@@ -52,10 +52,12 @@ function tags(userId: string) {
 /** The learner's other notes that link [[problem]] outside code, newest first, 50 at most. */
 function backlinks(userId: string, problem: string) {
   const running = runningContestProblems(userId);
+  // ponytail: only the newest 200 notes holding the text are parsed, so links written in code cannot
+  // make one request read all 5000 bodies; an older real link past those is missed.
   const rows = sqlite()
     .prepare(
       `SELECT target,body,updated_at AS updatedAt FROM user_notes
-      WHERE user_id=? AND ${KINDS} AND target<>? AND body LIKE ? ORDER BY updated_at DESC,target`,
+      WHERE user_id=? AND ${KINDS} AND target<>? AND body LIKE ? ORDER BY updated_at DESC,target LIMIT 200`,
     )
     .iterate(userId, `problem:${problem}`, `%[[${problem}]]%`) as Iterable<{
     target: string;
@@ -73,17 +75,18 @@ function backlinks(userId: string, problem: string) {
   return items;
 }
 
-/** The learner's notes on a Line 500 stop's problems, in route order. */
+/** The learner's notes on a Line 500 stop's problems (38 at most), in route order. */
 function stopNotes(userId: string, slug: string) {
   const running = runningContestProblems(userId);
+  const targets = curatedEntries.filter((e) => e.sectionSlug === slug).map((e) => `problem:lc-${e.number}`);
   const rows = sqlite()
     .prepare(
-      `SELECT substr(target,9) AS problemId,substr(body,1,${HEAD}) AS body FROM user_notes
-      WHERE user_id=? AND target LIKE 'problem:lc-%' LIMIT ${SCAN}`,
+      `SELECT substr(target,9) AS problemId,body FROM user_notes
+      WHERE user_id=? AND target IN (${targets.map(() => '?').join(',')})`,
     )
-    .all(userId) as { problemId: string; body: string }[];
+    .all(userId, ...targets) as { problemId: string; body: string }[];
   return rows
-    .filter((row) => curated(row.problemId)?.sectionSlug === slug && !running.has(row.problemId))
+    .filter((row) => !running.has(row.problemId))
     .sort((a, b) => curated(a.problemId)!.order - curated(b.problemId)!.order)
     .map(({ problemId, body }) => {
       const { tags, confidence } = parseNoteMeta(body);
