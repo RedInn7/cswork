@@ -202,7 +202,7 @@ export function RouteEditor({
     Object.entries(catalog).flatMap(([id, step]) =>
       step.kind !== kind || step.ref.includes(',')
         ? []
-        : [[id, step.stops?.length ? `${step.stops[0].name} (${step.keys.length})` : titleOf(step)] as const],
+        : [[id, step.kind === 'line-stops' ? `${step.stops?.[0].name} (${step.keys.length})` : titleOf(step)] as const],
     );
   const addSite = () => {
     const step = catalog[pick];

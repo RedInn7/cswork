@@ -163,6 +163,7 @@ test('the route catalog holds every built-in step and every single ref, all 35 s
     if (id.startsWith('pandas:'))
       assert.ok(entry.keys.length && entry.keys.every((k) => pandasIds.has(k.slice('problem:'.length))), id);
   assert.equal(catalog['mock-kind:frontend'].unavailable, true, 'AI off');
+  assert.equal(catalog['line-stops:binary-search'].title, 'Line 500: Binary Search', 'one stop goes by its name');
 });
 
 test('parseRoute keeps a valid route and refuses long titles, too many steps and unreal dates', () => {

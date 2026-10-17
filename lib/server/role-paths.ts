@@ -45,7 +45,8 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
       return {
         ...step,
         minutes: entries.reduce((n, e) => n + STAGE_MINUTES[e.stage], 0),
-        title: title(stopsName(slugs.length, ids.length, zh)),
+        // One stop (a learner's route) goes by its name.
+        title: title(slugs.length > 1 ? stopsName(slugs.length, ids.length, zh) : STOP_NAMES[slugs[0]][zh ? 0 : 1]),
         href: stopHref(slugs[0])!,
         keys: problemKeys(ids),
         stops: slugs.map((slug) => ({ slug, name: STOP_NAMES[slug][zh ? 0 : 1], href: stopHref(slug)! })),

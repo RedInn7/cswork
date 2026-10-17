@@ -457,7 +457,7 @@ export function RolePath({
                   )}
                   {member && (
                     <div className="role-path-marks">
-                      {!r.missing && (
+                      {!r.missing && !s?.unavailable && (
                         <>
                           <button type="button" aria-pressed={marked === 'doing'} onClick={() => mark(r.id, 'doing')}>
                             {t('进行中', 'In progress')}
