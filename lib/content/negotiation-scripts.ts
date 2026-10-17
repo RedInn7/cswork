@@ -1454,7 +1454,10 @@ const BASE_TO_SIGNON: Script = {
         {
           say: ["base 更高，17 万，你们是 16.5 万。", "The base is higher: $170k versus your $165k."],
           score: 1,
-          why: ["是真话，但只说了一项，而且是最难动的那一项。股票和签字费的差距更大。", "True, but only one line, and the hardest one to move. The stock and sign-on gaps are bigger."],
+          why: [
+            "是真话，但只说了一项，而且是最难动的那一项。签字费差 3 万，差距最大；算上 10% 奖金，这边的现金其实已经比那边的 base 高。",
+            "True, but only one line, and the hardest to move. The sign-on gap ($30k) is the biggest, and with the 10% bonus this offer's cash pay is already ahead of their base.",
+          ],
           next: 'cap-firm',
         },
       ],
@@ -1772,13 +1775,13 @@ const RETURN_PLUS_EXTERNAL: Script = {
       choices: [
         {
           say: [
-            "是另一家大厂的新毕业生 offer：base 15 万，四年股票 15 万，签字费 4 万。每一项都比这边高，但我更想回来。",
-            "It's a new grad offer from another big tech company: $150k base, $150k in stock over four years and a $40k sign-on. It's ahead on every line, but I'd prefer to come back.",
+            "是另一家大厂的新毕业生 offer：base 15 万，四年股票 15 万，签字费 4 万。base、股票和签字费都比这边高，但我更想回来。",
+            "It's a new grad offer from another big tech company: $150k base, $150k in stock over four years and a $40k sign-on. It's ahead on base, stock and sign-on, but I'd prefer to come back.",
           ],
           score: 2,
           why: [
-            "如实给出构成，再说清你更想回来。每一项都领先时，最简单的要求就是逐项对齐。",
-            "Give the real breakdown and say you'd prefer to come back. When it's ahead on every line, the simplest ask is to match line by line.",
+            "如实给出构成，再说清你更想回来。这边有 10% 的奖金，四年约 5.8 万，算上它两边四年总额只差约 7000 美元，所以别说差距很大，最简单的要求是把 base、股票和签字费逐项对齐。",
+            "Give the real breakdown and say you'd prefer to come back. This offer's 10% bonus (about $58k over four years) brings the four-year totals within about $7k, so don't claim a big gap: the simplest ask is to match base, stock and sign-on line by line.",
           ],
           next: 'ask',
         },
@@ -1812,7 +1815,7 @@ const RETURN_PLUS_EXTERNAL: Script = {
         {
           say: ["没有了，都很好！", "No, all good!"],
           score: 0,
-          why: ["另一份 offer 每一项都更高，你一句都没提。", "Your other offer is higher on every line, and you didn't mention it."],
+          why: ["另一份 offer 的 base、股票和签字费都更高，你一句都没提。", "Your other offer is higher on base, stock and sign-on, and you didn't mention it."],
           next: 'signing',
         },
         {
@@ -1932,7 +1935,7 @@ const RETURN_PLUS_EXTERNAL: Script = {
         {
           say: ["好的，我会告诉他们。", "Sure, I'll tell them."],
           score: 0,
-          why: ["另一份 offer 每一项都更高，你却一句没提就放弃了。", "Your other offer is higher on every line, and you let it go without a word."],
+          why: ["另一份 offer 的 base、股票和签字费都更高，你却一句没提就放弃了。", "Your other offer is higher on base, stock and sign-on, and you let it go without a word."],
           next: 'wrap',
         },
         {
@@ -2022,7 +2025,7 @@ const RETURN_PLUS_EXTERNAL: Script = {
         {
           say: ["好吧，那我按原样签。", "Fine, I'll sign it as is."],
           score: 0,
-          why: ["每一项都比另一份低，你却什么也没争取。", "It's lower on every line than your other offer, and you didn't try for anything."],
+          why: ["base、股票和签字费都比另一份低，你却什么也没争取。", "It's lower on base, stock and sign-on than your other offer, and you didn't try for anything."],
           next: 'end-asis',
         },
         {
