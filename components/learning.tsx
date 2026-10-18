@@ -1,5 +1,5 @@
 'use client';
-import { lazy, Suspense, useEffect, useState, useRef } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -8,7 +8,6 @@ import {
   Code2,
   Lock,
   Bookmark,
-  MessageSquare,
   FileText,
   Video,
   GitPullRequest,
@@ -55,13 +54,11 @@ export function CourseList({
   boot,
   navigate,
   login,
-  ask,
   knowledge = false,
 }: {
   boot: Boot;
   navigate: Navigate;
   login: () => void;
-  ask: (context: Record<string, string>) => void;
   knowledge?: boolean;
 }) {
   const t = useT(),
@@ -246,51 +243,36 @@ export function CourseList({
                     </>
                   ) : (
                     <>
-                      <Button
-                        disabled={busy}
-                        onClick={async () => {
-                          if (!boot.person) {
-                            login();
-                            return;
-                          }
-                          if (
-                            !(c.purchase_available ?? boot.services.checkout)
-                          ) {
-                            ask({
-                              courseId: c.id,
-                              title: t(
-                                `申请开通：${c.title}`,
-                                `Access request: ${c.title}`,
-                              ),
-                              body: t(
-                                `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
-                                `I'd like access to "${c.title}".\nPurchase record or details for the teacher to verify:\n`,
-                              ),
-                            });
-                            return;
-                          }
-                          setBusy(true);
-                          setError('');
-                          try {
-                            const { url } = await api<{ url: string }>(
-                              'checkout',
-                              {
-                                courseId: c.id,
-                              },
-                            );
-                            location.assign(url);
-                          } catch (e) {
-                            setError((e as Error).message);
-                          } finally {
-                            setBusy(false);
-                          }
-                        }}
-                      >
-                        {(c.purchase_available ?? boot.services.checkout)
-                          ? `${t('购买课程', 'Buy course')}${c.price ? ' · ' + money(c.price.amount, c.price.currency, locale) : ''}`
-                          : t('申请开通', 'Request access')}
-                        <ArrowRight size={15} />
-                      </Button>
+                      {/* No checkout: access comes from a teacher's grant, nothing to click. */}
+                      {(c.purchase_available ?? boot.services.checkout) && (
+                        <Button
+                          disabled={busy}
+                          onClick={async () => {
+                            if (!boot.person) {
+                              login();
+                              return;
+                            }
+                            setBusy(true);
+                            setError('');
+                            try {
+                              const { url } = await api<{ url: string }>(
+                                'checkout',
+                                {
+                                  courseId: c.id,
+                                },
+                              );
+                              location.assign(url);
+                            } catch (e) {
+                              setError((e as Error).message);
+                            } finally {
+                              setBusy(false);
+                            }
+                          }}
+                        >
+                          {`${t('购买课程', 'Buy course')}${c.price ? ' · ' + money(c.price.amount, c.price.currency, locale) : ''}`}
+                          <ArrowRight size={15} />
+                        </Button>
+                      )}
                       <small>
                         {t(
                           '现有学员使用购买时的邮箱登录',
@@ -361,22 +343,12 @@ export function CourseList({
                             <button
                               className="lesson-row"
                               key={l.id}
+                              // Locked for a signed-in learner: only a teacher's grant opens it.
+                              disabled={!open && !!boot.person}
                               onClick={() =>
                                 open
                                   ? navigate('lesson', { lesson: l.id })
-                                  : boot.person
-                                    ? ask({
-                                        courseId: c.id,
-                                        title: t(
-                                          `申请开通：${c.title}`,
-                                          `Access request: ${c.title}`,
-                                        ),
-                                        body: t(
-                                          `希望学习「${c.title}」，请老师核实并开通课程。`,
-                                          `I'd like to take "${c.title}". Please verify and unlock the course for me.`,
-                                        ),
-                                      })
-                                    : login()
+                                  : login()
                               }
                             >
                               <span
@@ -451,8 +423,8 @@ export function CourseList({
                             'Each article ends with practice problems, hints and your status in the current round. Reading marks and practice progress are saved separately; once a submission is accepted, the problem gets a green check.',
                           )
                         : t(
-                            '先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过 GitHub 仓库或 PR 交给老师评审。遇到问题时，直接从当前章节发起私密工单。',
-                            'Read the handout to learn the business rules, then follow the companion code to finish the engineering exercises. Algorithm problems run in an isolated judge; project work goes to a teacher for review as a GitHub repo or PR. When you get stuck, open a private ticket right from the current lesson.',
+                            '先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过 GitHub 仓库或 PR 交给老师评审。',
+                            'Read the handout to learn the business rules, then follow the companion code to finish the engineering exercises. Algorithm problems run in an isolated judge; project work goes to a teacher for review as a GitHub repo or PR.',
                           )}
                     </p>
                     <h3>
@@ -552,13 +524,11 @@ export function LessonReader({
   id,
   boot,
   navigate,
-  ask,
   refresh,
 }: {
   id: string;
   boot: Boot;
   navigate: Navigate;
-  ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
 }) {
   const t = useT();
@@ -577,14 +547,12 @@ export function LessonReader({
     [historyVersion, setHistoryVersion] = useState(''),
     [historyBody, setHistoryBody] = useState<string | null>(null),
     [historyError, setHistoryError] = useState('');
-  const pos = useRef(0);
   useEffect(() => {
     let active = true;
     api<Lesson>('lessons/' + id)
       .then((l) => {
         if (active) {
           setLesson(l);
-          pos.current = l.progress?.position || 0;
         }
       })
       .catch((e) => active && setError(e.message));
@@ -793,7 +761,6 @@ export function LessonReader({
                     position={lesson.progress?.position || 0}
                     assetId={lesson.progress?.video_asset_id}
                     onProgress={(n, assetId) => {
-                      pos.current = n;
                       setLesson((current) =>
                         current
                           ? {
@@ -990,42 +957,6 @@ export function LessonReader({
               })}
             </div>
           </div>
-          {!locked && (
-            <div className="help-card">
-              <MessageSquare size={22} />
-              <h3>
-                {interviewChapter
-                  ? t('问题与反馈', 'Questions and feedback')
-                  : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
-              </h3>
-              <p>
-                {interviewChapter
-                  ? t(
-                      '问题仅你和老师可见，会附上当前知识点。',
-                      'Only you and the teacher can see your question. The current concept is attached.',
-                    )
-                  : t(
-                      '问题仅你和老师可见，会附上当前章节与播放位置。',
-                      'Only you and the teacher can see your question. The current lesson and video position are attached.',
-                    )}
-              </p>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  ask({
-                    lessonId: id,
-                    videoPosition: String(Math.floor(pos.current)),
-                    ...(lesson.progress?.video_asset_id
-                      ? { videoAssetId: lesson.progress.video_asset_id }
-                      : {}),
-                  })
-                }
-              >
-                {t('向老师提问', 'Ask the teacher')}
-                <ArrowRight size={15} />
-              </Button>
-            </div>
-          )}
           {!locked && (
             <div className="side-card">
               <h3>{t('课件版本', 'Handout versions')}</h3>

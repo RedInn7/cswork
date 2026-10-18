@@ -747,34 +747,6 @@ button:focus-visible {
 .quick-problems svg {
   color: #a4adbd;
 }
-.help-card {
-  background: #eef2fc;
-  border: 1px solid #e2e8f7;
-  border-radius: 15px;
-  padding: 24px;
-}
-.help-card > svg {
-  color: #6885c7;
-  margin-bottom: 13px;
-}
-.help-card h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #4b6090;
-}
-.help-card p {
-  color: #909ebb;
-  font-size: 13px;
-  line-height: 1.9;
-  margin: 8px 0 20px;
-}
-.help-card button {
-  font-size: 12px;
-  color: #5172b3;
-  border-color: #d7e0f2;
-  background: #ffffff99;
-  padding: 0 14px;
-}
 .course-detail {
   background: #fff;
   border: 1px solid #e4e9f1;
@@ -937,7 +909,6 @@ button:focus-visible {
 .side-card,
 .problem-description,
 .editor-panel,
-.thread-card,
 .form-card,
 .review-card {
   border: 1px solid #e4e9f1;
@@ -1467,115 +1438,12 @@ textarea::placeholder {
 .stack-form > button {
   height: 40px;
 }
-.context-label {
-  font-size: 12px;
-  color: #7890b1;
-  background: #f1f5fc;
-  border-radius: 7px;
-  padding: 10px;
-}
-.ticket-list {
-  margin-top: 24px;
-  background: #fff;
-  border: 1px solid #e5eaf2;
-  border-radius: 15px;
-  overflow: hidden;
-}
-.ticket-list > button {
-  display: flex;
-  gap: 18px;
-  padding: 23px;
-  width: 100%;
-  align-items: center;
-  text-align: left;
-}
-.ticket-list > button + button {
-  border-top: 1px solid #edf1f6;
-}
-.ticket-list > button > div {
-  flex: 1;
-  min-width: 0;
-}
-.ticket-list strong {
-  font-size: 15px;
-  font-weight: 550;
-  color: #4f6381;
-}
-.ticket-list p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  color: #a1aabd;
-  margin: 5px 0;
-}
-.ticket-list small {
-  color: #a9b4c5;
-  font-size: 11px;
-}
-.ticket-icon {
-  height: 40px;
-  width: 40px;
-  background: #e6f2ee;
-  color: #829dcd;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  flex-shrink: 0;
-}
-.ticket-icon.resolved {
-  color: #82b29d;
-  background: #eff7f3;
-}
-.thread-message {
-  padding: 27px 30px;
-  border-bottom: 1px solid #eaf0f6;
-}
-.thread-message > p {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  color: #62738d;
-  font-size: 15px;
-  line-height: 1.9;
-  margin-top: 15px;
-}
-.message-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #a3afc0;
-}
-.message-meta strong {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: #637c9d;
-  font-weight: 600;
-}
-.teacher-message {
-  background: #f8faff;
-}
-.reply-form {
-  padding: 27px 30px;
-}
-.reply-form > label {
-  display: block;
-  font-size: 14px;
-  color: #7f90aa;
-  margin-bottom: 12px;
-}
-.reply-form textarea {
-  width: 100%;
-}
 .form-actions {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-top: 18px;
   flex-wrap: wrap;
-}
-.reply-form .form-actions {
-  justify-content: flex-end;
 }
 .review-layout {
   display: grid;
@@ -1683,7 +1551,7 @@ textarea::placeholder {
 }
 .teacher-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 30px;
 }
@@ -2022,9 +1890,6 @@ textarea::placeholder {
   .course-access [data-slot='progress'] {
     max-width: 170px;
   }
-  .teacher-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .release-card {
     grid-template-columns: 65px 1fr;
     gap: 18px;
@@ -2121,21 +1986,6 @@ textarea::placeholder {
   .form-card {
     padding: 22px 18px;
   }
-  .ticket-list > button {
-    padding: 18px 14px;
-    gap: 10px;
-  }
-  .ticket-list > button > .tag {
-    font-size: 10px;
-    padding: 4px 7px;
-  }
-  .ticket-list > button > svg {
-    display: none;
-  }
-  .thread-message,
-  .reply-form {
-    padding: 22px 18px;
-  }
   .release-card {
     grid-template-columns: 1fr;
   }
@@ -2188,39 +2038,6 @@ textarea::placeholder {
   .search-results p {
     font-size: 13px;
   }
-}
-.attachment-section {
-  padding: 20px 30px;
-  border-bottom: 1px solid #eaf0f6;
-}
-.attachment-section h3 {
-  font-size: 13px;
-  color: #7f92ae;
-  margin-bottom: 12px;
-}
-.attachment-section > a {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-  font-size: 13px;
-  color: #5d82bb;
-  padding: 8px 0;
-}
-.attachment-section small {
-  color: #a8b4c6;
-  font-size: 11px;
-  margin-left: auto;
-}
-.attachment-upload {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 12px;
-  color: #a1adc0;
-  margin-top: 10px;
-}
-.attachment-upload input {
-  font-size: 12px;
 }
 
 .page-loading {
@@ -2491,24 +2308,6 @@ textarea::placeholder {
   .dark .quick-problems svg {
     color: #aab1bf;
   }
-  .dark .help-card {
-    background: #101218;
-    border: 1px solid #292d39;
-  }
-  .dark .help-card > svg {
-    color: #96b0eb;
-  }
-  .dark .help-card h3 {
-    color: #aec3f1;
-  }
-  .dark .help-card p {
-    color: #a5b1ca;
-  }
-  .dark .help-card button {
-    color: #9dbcf8;
-    border-color: #2a313f;
-    background: #19191999;
-  }
   .dark .course-detail {
     background: #191919;
     border: 1px solid #2a2e34;
@@ -2573,7 +2372,6 @@ textarea::placeholder {
   .dark .side-card,
   .dark .problem-description,
   .dark .editor-panel,
-  .dark .thread-card,
   .dark .form-card,
   .dark .review-card {
     border: 1px solid #2a2e34;
@@ -2781,52 +2579,6 @@ textarea::placeholder {
   .dark textarea::placeholder {
     color: #a8b2c0;
   }
-  .dark .context-label {
-    color: #9eb3d0;
-    background: #121418;
-  }
-  .dark .ticket-list {
-    background: #191919;
-    border: 1px solid #2a2d33;
-  }
-  .dark .ticket-list > button + button {
-    border-top: 1px solid #282b2e;
-  }
-  .dark .ticket-list strong {
-    color: #b1c4e1;
-  }
-  .dark .ticket-list p {
-    color: #a9b1c1;
-  }
-  .dark .ticket-list small {
-    color: #abb4c2;
-  }
-  .dark .ticket-icon {
-    background: #0c1210;
-    color: #9ab2dc;
-  }
-  .dark .ticket-icon.resolved {
-    color: #93bcaa;
-    background: #111513;
-  }
-  .dark .thread-message {
-    border-bottom: 1px solid #272c30;
-  }
-  .dark .thread-message > p {
-    color: #aebed6;
-  }
-  .dark .message-meta {
-    color: #a8b2c0;
-  }
-  .dark .message-meta strong {
-    color: #a5bcda;
-  }
-  .dark .teacher-message {
-    background: #161719;
-  }
-  .dark .reply-form > label {
-    color: #a3b2c9;
-  }
   .dark .form-card h2,
   .dark .small-heading {
     color: #b0c4e2;
@@ -2955,21 +2707,6 @@ textarea::placeholder {
     .dark .release-date {
       border: 0;
     }
-  }
-  .dark .attachment-section {
-    border-bottom: 1px solid #272c30;
-  }
-  .dark .attachment-section h3 {
-    color: #a2b2cb;
-  }
-  .dark .attachment-section > a {
-    color: #91b3e6;
-  }
-  .dark .attachment-section small {
-    color: #aab4c3;
-  }
-  .dark .attachment-upload {
-    color: #a8b2c2;
   }
   .dark .page-loading {
     color: var(--muted-foreground);
