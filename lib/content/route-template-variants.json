@@ -2100,5 +2100,245 @@
     ]
    ]
   }
+ },
+ "dp-subsequence": {
+  "variants": [
+   {
+    "id": "lis-count",
+    "pattern": {
+     "zh": "O(n²) LIS：同时记长度和条数",
+     "en": "O(n²) LIS that tracks length and count"
+    },
+    "when": {
+     "zh": "不只要 LIS 的长度，还要条数、或者要还原出一条具体的序列时，tails 数组不够用，退回 O(n²)：length[i] 是以 i 结尾的最长长度，count[i] 是这样的条数，遇到更长的就接管计数，一样长就累加。LC 673 最长递增子序列的个数；LC 368、LC 1048、LC 646 是同一个双重循环。",
+     "en": "When the count of longest increasing subsequences, or an actual sequence, is needed, the tails array is not enough, so fall back to O(n²): length[i] is the longest ending at i and count[i] how many there are; a longer one takes over the count, an equally long one adds to it. LC 673 (Number of Longest Increasing Subsequence); LC 368, LC 1048 and LC 646 use the same double loop."
+    },
+    "complexity": {
+     "zh": "时间 O(n²) · 空间 O(n)",
+     "en": "O(n²) time · O(n) space"
+    },
+    "code": {
+     "python": "def count_lis(nums: list[int]) -> int:\n    \"\"\"Number of longest strictly increasing subsequences (LC 673).\"\"\"\n    n = len(nums)\n    length = [1] * n  # length[i]: longest increasing subsequence ending at i\n    count = [1] * n  # count[i]: how many of that length end at i\n    for i in range(n):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                if length[j] + 1 > length[i]:  # longer: take over j's count\n                    length[i], count[i] = length[j] + 1, count[j]\n                elif length[j] + 1 == length[i]:  # as long: add j's count\n                    count[i] += count[j]\n    best = max(length)\n    return sum(c for l, c in zip(length, count) if l == best)",
+     "cpp": "// Number of longest strictly increasing subsequences (LC 673).\nlong long countLis(const vector<int>& nums) {\n    int n = nums.size();\n    vector<int> length(n, 1);  // length[i]: longest increasing subsequence ending at i\n    vector<long long> count(n, 1);  // count[i]: how many of that length end at i\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < i; j++) {\n            if (nums[j] >= nums[i]) continue;\n            if (length[j] + 1 > length[i]) {  // longer: take over j's count\n                length[i] = length[j] + 1;\n                count[i] = count[j];\n            } else if (length[j] + 1 == length[i]) {  // as long: add j's count\n                count[i] += count[j];\n            }\n        }\n    int best = *max_element(length.begin(), length.end());\n    long long total = 0;\n    for (int i = 0; i < n; i++)\n        if (length[i] == best) total += count[i];\n    return total;\n}",
+     "java": "class Solution {\n    // Number of longest strictly increasing subsequences (LC 673).\n    long countLis(int[] nums) {\n        int n = nums.length, best = 0;\n        int[] length = new int[n]; // length[i]: longest increasing subsequence ending at i\n        long[] count = new long[n]; // count[i]: how many of that length end at i\n        for (int i = 0; i < n; i++) {\n            length[i] = 1;\n            count[i] = 1;\n            for (int j = 0; j < i; j++) {\n                if (nums[j] >= nums[i]) continue;\n                if (length[j] + 1 > length[i]) { // longer: take over j's count\n                    length[i] = length[j] + 1;\n                    count[i] = count[j];\n                } else if (length[j] + 1 == length[i]) { // as long: add j's count\n                    count[i] += count[j];\n                }\n            }\n            best = Math.max(best, length[i]);\n        }\n        long total = 0;\n        for (int i = 0; i < n; i++)\n            if (length[i] == best) total += count[i];\n        return total;\n    }\n}",
+     "go": "// countLis returns the number of longest strictly increasing subsequences (LC 673).\nfunc countLis(nums []int) int {\n\tn := len(nums)\n\tlength, count := make([]int, n), make([]int, n) // longest ending at i, and how many of that length\n\tbest := 0\n\tfor i := range nums {\n\t\tlength[i], count[i] = 1, 1\n\t\tfor j := 0; j < i; j++ {\n\t\t\tif nums[j] >= nums[i] {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tif length[j]+1 > length[i] { // longer: take over j's count\n\t\t\t\tlength[i], count[i] = length[j]+1, count[j]\n\t\t\t} else if length[j]+1 == length[i] { // as long: add j's count\n\t\t\t\tcount[i] += count[j]\n\t\t\t}\n\t\t}\n\t\tbest = max(best, length[i])\n\t}\n\ttotal := 0\n\tfor i := range nums {\n\t\tif length[i] == best {\n\t\t\ttotal += count[i]\n\t\t}\n\t}\n\treturn total\n}"
+    },
+    "driver": {
+     "python": "for nums in ([1, 3, 5, 4, 7], [2, 2, 2, 2, 2], [1, 2, 4, 3, 5, 4, 7, 2], [5]):\n    print(count_lis(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{1, 3, 5, 4, 7}, {2, 2, 2, 2, 2}, {1, 2, 4, 3, 5, 4, 7, 2}, {5}}) cout << countLis(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, 3, 5, 4, 7}, {2, 2, 2, 2, 2}, {1, 2, 4, 3, 5, 4, 7, 2}, {5}}) show(s.countLis(nums));",
+     "go": "for _, nums := range [][]int{{1, 3, 5, 4, 7}, {2, 2, 2, 2, 2}, {1, 2, 4, 3, 5, 4, 7, 2}, {5}} {\n    fmt.Println(countLis(nums))\n}",
+     "expected": "2\n5\n3\n1"
+    }
+   },
+   {
+    "id": "value-keyed-dp",
+    "pattern": {
+     "zh": "按值索引的 DP：哈希表代替下标",
+     "en": "DP keyed by value: a hash map instead of indexes"
+    },
+    "when": {
+     "zh": "子序列的相邻关系由「值」决定（公差固定的等差子序列、斐波那契式子序列）时，状态按值存进哈希表：以 x 结尾的最长长度等于以 x - d 结尾的加一，一遍 O(n)。LC 1218 最长定差子序列；LC 1027、LC 873 把公差或前两项也放进键里。",
+     "en": "When neighbours in a subsequence are tied by value (a fixed common difference, Fibonacci-like steps), store states in a hash map keyed by value: the longest ending in x is one more than the longest ending in x - d, one pass, O(n). LC 1218 (Longest Arithmetic Subsequence of Given Difference); LC 1027 and LC 873 put the difference or the previous term into the key as well."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "def longest_arith_subseq(arr: list[int], difference: int) -> int:\n    \"\"\"Longest subsequence whose neighbours differ by exactly difference (LC 1218).\"\"\"\n    best_end: dict[int, int] = {}  # value -> longest such subsequence ending with that value\n    best = 0\n    for x in arr:\n        best_end[x] = best_end.get(x - difference, 0) + 1  # extend the one ending at x - difference\n        best = max(best, best_end[x])\n    return best",
+     "cpp": "// Longest subsequence whose neighbours differ by exactly difference (LC 1218).\nint longestArithSubseq(const vector<int>& arr, int difference) {\n    unordered_map<int, int> bestEnd;  // value -> longest such subsequence ending with that value\n    int best = 0;\n    for (int x : arr) {\n        auto it = bestEnd.find(x - difference);\n        int len = (it == bestEnd.end() ? 0 : it->second) + 1;  // extend the one ending at x - difference\n        bestEnd[x] = len;\n        best = max(best, len);\n    }\n    return best;\n}",
+     "java": "class Solution {\n    // Longest subsequence whose neighbours differ by exactly difference (LC 1218).\n    int longestArithSubseq(int[] arr, int difference) {\n        Map<Integer, Integer> bestEnd = new HashMap<>(); // value -> longest such subsequence ending with that value\n        int best = 0;\n        for (int x : arr) {\n            int len = bestEnd.getOrDefault(x - difference, 0) + 1; // extend the one ending at x - difference\n            bestEnd.put(x, len);\n            best = Math.max(best, len);\n        }\n        return best;\n    }\n}",
+     "go": "// longestArithSubseq returns the longest subsequence whose neighbours differ by exactly difference.\nfunc longestArithSubseq(arr []int, difference int) int {\n\tbestEnd := map[int]int{} // value -> longest such subsequence ending with that value\n\tbest := 0\n\tfor _, x := range arr {\n\t\tbestEnd[x] = bestEnd[x-difference] + 1 // extend the one ending at x - difference\n\t\tbest = max(best, bestEnd[x])\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "for arr, d in (([1, 2, 3, 4], 1), ([1, 3, 5, 7], 1), ([1, 5, 7, 8, 5, 3, 4, 2, 1], -2), ([3, 0, -3, 4, -4, 7, 6], 3)):\n    print(longest_arith_subseq(arr, d))",
+     "cpp": "vector<pair<vector<int>, int>> cases{{{1, 2, 3, 4}, 1}, {{1, 3, 5, 7}, 1}, {{1, 5, 7, 8, 5, 3, 4, 2, 1}, -2}, {{3, 0, -3, 4, -4, 7, 6}, 3}};\nfor (auto& [arr, d] : cases) cout << longestArithSubseq(arr, d) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][] arrs = {{1, 2, 3, 4}, {1, 3, 5, 7}, {1, 5, 7, 8, 5, 3, 4, 2, 1}, {3, 0, -3, 4, -4, 7, 6}};\nint[] ds = {1, 1, -2, 3};\nfor (int i = 0; i < arrs.length; i++) show(s.longestArithSubseq(arrs[i], ds[i]));",
+     "go": "arrs := [][]int{{1, 2, 3, 4}, {1, 3, 5, 7}, {1, 5, 7, 8, 5, 3, 4, 2, 1}, {3, 0, -3, 4, -4, 7, 6}}\nds := []int{1, 1, -2, 3}\nfor i := range arrs {\n    fmt.Println(longestArithSubseq(arrs[i], ds[i]))\n}",
+     "expected": "4\n1\n4\n2"
+    }
+   }
+  ]
+ },
+ "dp-string": {
+  "variants": [
+   {
+    "id": "word-break",
+    "pattern": {
+     "zh": "单串切分：最后一个词是 s[j:i]",
+     "en": "Splitting one string: the last word is s[j:i]"
+    },
+    "when": {
+     "zh": "一个字符串能不能切成字典里的词、有几种切法：ok[i] 表示前缀 s[:i] 能切，枚举最后一个词的起点 j；只需看最长单词那么远，词典放进哈希集合。LC 139 单词拆分；LC 2707 字符串中的额外字符把 true/false 换成最少剩余字符。",
+     "en": "Whether a string splits into dictionary words, or in how many ways: ok[i] says the prefix s[:i] splits, trying every start j of the last word, but only as far back as the longest word, with the dictionary in a hash set. LC 139 (Word Break); LC 2707 (Extra Characters in a String) swaps true/false for the fewest leftover characters."
+    },
+    "complexity": {
+     "zh": "时间 O(n × L × L)，L 为最长单词 · 空间 O(n)",
+     "en": "O(n × L × L) time, L the longest word · O(n) space"
+    },
+    "code": {
+     "python": "def word_break(s: str, words: list[str]) -> bool:\n    \"\"\"Can s be cut into dictionary words, each usable any number of times? (LC 139)\"\"\"\n    vocab = set(words)\n    longest = max(map(len, words), default=0)\n    ok = [True] + [False] * len(s)  # ok[i]: the prefix s[:i] can be cut\n    for i in range(1, len(s) + 1):\n        for j in range(max(0, i - longest), i):  # the last word is s[j:i]\n            if ok[j] and s[j:i] in vocab:\n                ok[i] = True\n                break\n    return ok[len(s)]",
+     "cpp": "// Can s be cut into dictionary words, each usable any number of times? (LC 139)\nbool wordBreak(const string& s, const vector<string>& words) {\n    unordered_set<string> vocab(words.begin(), words.end());\n    size_t longest = 0;\n    for (auto& w : words) longest = max(longest, w.size());\n    int n = s.size();\n    vector<bool> ok(n + 1, false);  // ok[i]: the prefix s[0, i) can be cut\n    ok[0] = true;\n    for (int i = 1; i <= n; i++)\n        for (int j = max(0, i - (int)longest); j < i && !ok[i]; j++)  // the last word is s[j, i)\n            ok[i] = ok[j] && vocab.count(s.substr(j, i - j));\n    return ok[n];\n}",
+     "java": "class Solution {\n    // Can s be cut into dictionary words, each usable any number of times? (LC 139)\n    boolean wordBreak(String s, List<String> words) {\n        Set<String> vocab = new HashSet<>(words);\n        int longest = 0;\n        for (String w : words) longest = Math.max(longest, w.length());\n        int n = s.length();\n        boolean[] ok = new boolean[n + 1]; // ok[i]: the prefix s[0, i) can be cut\n        ok[0] = true;\n        for (int i = 1; i <= n; i++)\n            for (int j = Math.max(0, i - longest); j < i && !ok[i]; j++) // the last word is s[j, i)\n                ok[i] = ok[j] && vocab.contains(s.substring(j, i));\n        return ok[n];\n    }\n}",
+     "go": "// wordBreak reports whether s can be cut into dictionary words, each usable any number of times.\nfunc wordBreak(s string, words []string) bool {\n\tvocab := map[string]bool{}\n\tlongest := 0\n\tfor _, w := range words {\n\t\tvocab[w] = true\n\t\tlongest = max(longest, len(w))\n\t}\n\tok := make([]bool, len(s)+1) // ok[i]: the prefix s[:i] can be cut\n\tok[0] = true\n\tfor i := 1; i <= len(s); i++ {\n\t\tfor j := max(0, i-longest); j < i && !ok[i]; j++ { // the last word is s[j:i]\n\t\t\tok[i] = ok[j] && vocab[s[j:i]]\n\t\t}\n\t}\n\treturn ok[len(s)]\n}"
+    },
+    "driver": {
+     "python": "cases = [(\"leetcode\", [\"leet\", \"code\"]), (\"applepenapple\", [\"apple\", \"pen\"]), (\"catsandog\", [\"cats\", \"dog\", \"sand\", \"and\", \"cat\"]), (\"aaaaaaa\", [\"aaaa\", \"aaa\"])]\nfor s, words in cases:\n    print(str(word_break(s, words)).lower())",
+     "cpp": "vector<pair<string, vector<string>>> cases{{\"leetcode\", {\"leet\", \"code\"}}, {\"applepenapple\", {\"apple\", \"pen\"}}, {\"catsandog\", {\"cats\", \"dog\", \"sand\", \"and\", \"cat\"}}, {\"aaaaaaa\", {\"aaaa\", \"aaa\"}}};\nfor (auto& [s, words] : cases) cout << boolalpha << wordBreak(s, words) << \"\\n\";",
+     "java": "Solution sol = new Solution();\nshow(sol.wordBreak(\"leetcode\", List.of(\"leet\", \"code\")));\nshow(sol.wordBreak(\"applepenapple\", List.of(\"apple\", \"pen\")));\nshow(sol.wordBreak(\"catsandog\", List.of(\"cats\", \"dog\", \"sand\", \"and\", \"cat\")));\nshow(sol.wordBreak(\"aaaaaaa\", List.of(\"aaaa\", \"aaa\")));",
+     "go": "fmt.Println(wordBreak(\"leetcode\", []string{\"leet\", \"code\"}))\nfmt.Println(wordBreak(\"applepenapple\", []string{\"apple\", \"pen\"}))\nfmt.Println(wordBreak(\"catsandog\", []string{\"cats\", \"dog\", \"sand\", \"and\", \"cat\"}))\nfmt.Println(wordBreak(\"aaaaaaa\", []string{\"aaaa\", \"aaa\"}))",
+     "expected": "true\ntrue\nfalse\ntrue"
+    }
+   },
+   {
+    "id": "subsequence-count",
+    "pattern": {
+     "zh": "数子序列出现次数：倒序滚动一维",
+     "en": "Counting subsequence matches: one row, rolled backwards"
+    },
+    "when": {
+     "zh": "问 t 作为子序列在 s 里出现几次：dp[j] 是用目前读过的 s 凑出 t[:j] 的方法数，读到字符 c 时，所有 t[j-1] == c 的位置加上 dp[j-1]。j 要倒着走，否则同一个 c 会被用两次，和 0/1 背包倒序是一个道理。LC 115 不同的子序列。",
+     "en": "To count how often t occurs in s as a subsequence: dp[j] is the number of ways the part of s read so far forms t[:j], and reading a character c adds dp[j-1] wherever t[j-1] == c. Run j backwards, or one c would be used twice; it is the same reason the 0/1 knapsack runs backwards. LC 115 (Distinct Subsequences)."
+    },
+    "complexity": {
+     "zh": "时间 O(|s| × |t|) · 空间 O(|t|)",
+     "en": "O(|s| × |t|) time · O(|t|) space"
+    },
+    "code": {
+     "python": "def num_distinct(s: str, t: str) -> int:\n    \"\"\"How many times t occurs in s as a subsequence (LC 115).\"\"\"\n    dp = [1] + [0] * len(t)  # dp[j]: ways the part of s read so far forms t[:j]\n    for c in s:\n        for j in range(len(t), 0, -1):  # backwards: this c is used at most once per match\n            if t[j - 1] == c:\n                dp[j] += dp[j - 1]\n    return dp[len(t)]",
+     "cpp": "// How many times t occurs in s as a subsequence (LC 115).\nunsigned long long numDistinct(const string& s, const string& t) {\n    vector<unsigned long long> dp(t.size() + 1, 0);  // dp[j]: ways the part of s read so far forms t[0, j)\n    dp[0] = 1;\n    for (char c : s)\n        for (size_t j = t.size(); j >= 1; j--)  // backwards: this c is used at most once per match\n            if (t[j - 1] == c) dp[j] += dp[j - 1];\n    return dp[t.size()];\n}",
+     "java": "class Solution {\n    // How many times t occurs in s as a subsequence (LC 115).\n    long numDistinct(String s, String t) {\n        long[] dp = new long[t.length() + 1]; // dp[j]: ways the part of s read so far forms t[0, j)\n        dp[0] = 1;\n        for (char c : s.toCharArray())\n            for (int j = t.length(); j >= 1; j--) // backwards: this c is used at most once per match\n                if (t.charAt(j - 1) == c) dp[j] += dp[j - 1];\n        return dp[t.length()];\n    }\n}",
+     "go": "// numDistinct returns how many times t occurs in s as a subsequence (LC 115).\nfunc numDistinct(s, t string) int {\n\tdp := make([]int, len(t)+1) // dp[j]: ways the part of s read so far forms t[:j]\n\tdp[0] = 1\n\tfor i := 0; i < len(s); i++ {\n\t\tfor j := len(t); j >= 1; j-- { // backwards: this character is used at most once per match\n\t\t\tif t[j-1] == s[i] {\n\t\t\t\tdp[j] += dp[j-1]\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[len(t)]\n}"
+    },
+    "driver": {
+     "python": "for s, t in ((\"rabbbit\", \"rabbit\"), (\"babgbag\", \"bag\"), (\"abc\", \"\"), (\"a\", \"b\")):\n    print(num_distinct(s, t))",
+     "cpp": "for (auto& [s, t] : vector<pair<string, string>>{{\"rabbbit\", \"rabbit\"}, {\"babgbag\", \"bag\"}, {\"abc\", \"\"}, {\"a\", \"b\"}}) cout << numDistinct(s, t) << \"\\n\";",
+     "java": "Solution sol = new Solution();\nString[][] cases = {{\"rabbbit\", \"rabbit\"}, {\"babgbag\", \"bag\"}, {\"abc\", \"\"}, {\"a\", \"b\"}};\nfor (String[] c : cases) show(sol.numDistinct(c[0], c[1]));",
+     "go": "for _, c := range [][2]string{{\"rabbbit\", \"rabbit\"}, {\"babgbag\", \"bag\"}, {\"abc\", \"\"}, {\"a\", \"b\"}} {\n    fmt.Println(numDistinct(c[0], c[1]))\n}",
+     "expected": "3\n5\n1\n0"
+    }
+   }
+  ]
+ },
+ "dp-palindrome": {
+  "variants": [
+   {
+    "id": "expand-around-center",
+    "pattern": {
+     "zh": "中心扩展：2n − 1 个中心",
+     "en": "Expand around centres: 2n − 1 of them"
+    },
+    "when": {
+     "zh": "只关心回文「子串」（连续的）时，不必开 n² 的表：每个字母和每个字母之间的空隙都当一次中心，向两边扩到不相等为止，O(n²) 时间、O(1) 空间。LC 5 最长回文子串、LC 647 回文子串计数都这样写；子序列（不连续）才需要区间 DP。",
+     "en": "When only palindromic substrings (contiguous) matter, no n² table is needed: treat every letter and every gap between letters as a centre and expand while both sides match, O(n²) time and O(1) space. LC 5 (Longest Palindromic Substring) and LC 647 (Palindromic Substrings) are written this way; subsequences (non-contiguous) are what need interval DP."
+    },
+    "complexity": {
+     "zh": "时间 O(n²) · 空间 O(1)",
+     "en": "O(n²) time · O(1) space"
+    },
+    "code": {
+     "python": "def longest_palindrome(s: str) -> str:\n    \"\"\"Longest palindromic substring, expanding around all 2n - 1 centres (LC 5).\"\"\"\n    start = end = 0  # the best so far is s[start:end]\n    for center in range(2 * len(s) - 1):\n        lo, hi = center // 2, (center + 1) // 2  # even centre: a letter; odd: the gap after it\n        while lo >= 0 and hi < len(s) and s[lo] == s[hi]:\n            lo, hi = lo - 1, hi + 1\n        if hi - lo - 1 > end - start:  # the palindrome found is s[lo+1:hi]\n            start, end = lo + 1, hi\n    return s[start:end]",
+     "cpp": "// Longest palindromic substring, expanding around all 2n - 1 centres (LC 5).\nstring longestPalindrome(const string& s) {\n    int n = s.size(), start = 0, end = 0;  // the best so far is s[start, end)\n    for (int center = 0; center < 2 * n - 1; center++) {\n        int lo = center / 2, hi = (center + 1) / 2;  // even centre: a letter; odd: the gap after it\n        while (lo >= 0 && hi < n && s[lo] == s[hi]) lo--, hi++;\n        if (hi - lo - 1 > end - start) start = lo + 1, end = hi;  // the palindrome found is s[lo+1, hi)\n    }\n    return s.substr(start, end - start);\n}",
+     "java": "class Solution {\n    // Longest palindromic substring, expanding around all 2n - 1 centres (LC 5).\n    String longestPalindrome(String s) {\n        int n = s.length(), start = 0, end = 0; // the best so far is s[start, end)\n        for (int center = 0; center < 2 * n - 1; center++) {\n            int lo = center / 2, hi = (center + 1) / 2; // even centre: a letter; odd: the gap after it\n            while (lo >= 0 && hi < n && s.charAt(lo) == s.charAt(hi)) {\n                lo--;\n                hi++;\n            }\n            if (hi - lo - 1 > end - start) { // the palindrome found is s[lo+1, hi)\n                start = lo + 1;\n                end = hi;\n            }\n        }\n        return s.substring(start, end);\n    }\n}",
+     "go": "// longestPalindrome returns the longest palindromic substring, expanding around all 2n - 1 centres (LC 5).\nfunc longestPalindrome(s string) string {\n\tn, start, end := len(s), 0, 0 // the best so far is s[start:end]\n\tfor center := 0; center < 2*n-1; center++ {\n\t\tlo, hi := center/2, (center+1)/2 // even centre: a letter; odd: the gap after it\n\t\tfor lo >= 0 && hi < n && s[lo] == s[hi] {\n\t\t\tlo, hi = lo-1, hi+1\n\t\t}\n\t\tif hi-lo-1 > end-start { // the palindrome found is s[lo+1:hi]\n\t\t\tstart, end = lo+1, hi\n\t\t}\n\t}\n\treturn s[start:end]\n}"
+    },
+    "driver": {
+     "python": "for s in (\"babad\", \"cbbd\", \"a\", \"forgeeksskeegfor\"):\n    print(longest_palindrome(s))",
+     "cpp": "for (string s : {\"babad\", \"cbbd\", \"a\", \"forgeeksskeegfor\"}) cout << longestPalindrome(s) << \"\\n\";",
+     "java": "Solution sol = new Solution();\nfor (String s : new String[] {\"babad\", \"cbbd\", \"a\", \"forgeeksskeegfor\"}) show(sol.longestPalindrome(s));",
+     "go": "for _, s := range []string{\"babad\", \"cbbd\", \"a\", \"forgeeksskeegfor\"} {\n    fmt.Println(longestPalindrome(s))\n}",
+     "expected": "bab\nbb\na\ngeeksskeeg"
+    }
+   },
+   {
+    "id": "last-in-interval",
+    "pattern": {
+     "zh": "区间 DP：枚举区间里最后一个处理的元素",
+     "en": "Interval DP: choose the last element handled in the range"
+    },
+    "when": {
+     "zh": "操作会改变邻居（戳气球后两边并拢、合并石子）时，枚举「第一个」做不下去，要枚举「最后一个」：k 最后被戳时，它的邻居正好是区间两端 i 和 j，左右两段互不影响。i 倒着走、j 正着走，保证子区间先算好。LC 312 戳气球、LC 1039 多边形三角剖分的最低得分。",
+     "en": "When an operation changes the neighbours (bursting a balloon closes the gap, merging stones), enumerating the first move gets stuck; enumerate the last one instead. When k goes last, its neighbours are exactly the range ends i and j, and the two sides no longer interact. Run i backwards and j forwards so smaller ranges are ready. LC 312 (Burst Balloons), LC 1039 (Minimum Score Triangulation of Polygon)."
+    },
+    "complexity": {
+     "zh": "时间 O(n³) · 空间 O(n²)",
+     "en": "O(n³) time · O(n²) space"
+    },
+    "code": {
+     "python": "def max_coins(nums: list[int]) -> int:\n    \"\"\"Most coins from bursting all balloons (LC 312): pick the last one burst in each range.\"\"\"\n    vals = [1] + nums + [1]\n    n = len(vals)\n    dp = [[0] * n for _ in range(n)]  # dp[i][j]: best for the balloons strictly between i and j\n    for i in range(n - 1, -1, -1):  # i backwards so dp[k][j] with k > i is ready\n        for j in range(i + 2, n):\n            for k in range(i + 1, j):  # k goes last: its neighbours are then i and j\n                dp[i][j] = max(dp[i][j], dp[i][k] + dp[k][j] + vals[i] * vals[k] * vals[j])\n    return dp[0][n - 1]",
+     "cpp": "// Most coins from bursting all balloons (LC 312): pick the last one burst in each range.\nint maxCoins(const vector<int>& nums) {\n    vector<int> vals{1};\n    vals.insert(vals.end(), nums.begin(), nums.end());\n    vals.push_back(1);\n    int n = vals.size();\n    vector<vector<int>> dp(n, vector<int>(n, 0));  // dp[i][j]: best for the balloons strictly between i and j\n    for (int i = n - 1; i >= 0; i--)  // i backwards so dp[k][j] with k > i is ready\n        for (int j = i + 2; j < n; j++)\n            for (int k = i + 1; k < j; k++)  // k goes last: its neighbours are then i and j\n                dp[i][j] = max(dp[i][j], dp[i][k] + dp[k][j] + vals[i] * vals[k] * vals[j]);\n    return dp[0][n - 1];\n}",
+     "java": "class Solution {\n    // Most coins from bursting all balloons (LC 312): pick the last one burst in each range.\n    int maxCoins(int[] nums) {\n        int n = nums.length + 2;\n        int[] vals = new int[n];\n        vals[0] = vals[n - 1] = 1;\n        System.arraycopy(nums, 0, vals, 1, nums.length);\n        int[][] dp = new int[n][n]; // dp[i][j]: best for the balloons strictly between i and j\n        for (int i = n - 1; i >= 0; i--) // i backwards so dp[k][j] with k > i is ready\n            for (int j = i + 2; j < n; j++)\n                for (int k = i + 1; k < j; k++) // k goes last: its neighbours are then i and j\n                    dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[k][j] + vals[i] * vals[k] * vals[j]);\n        return dp[0][n - 1];\n    }\n}",
+     "go": "// maxCoins returns the most coins from bursting all balloons (LC 312).\nfunc maxCoins(nums []int) int {\n\tvals := append(append([]int{1}, nums...), 1)\n\tn := len(vals)\n\tdp := make([][]int, n) // dp[i][j]: best for the balloons strictly between i and j\n\tfor i := range dp {\n\t\tdp[i] = make([]int, n)\n\t}\n\tfor i := n - 1; i >= 0; i-- { // i backwards so dp[k][j] with k > i is ready\n\t\tfor j := i + 2; j < n; j++ {\n\t\t\tfor k := i + 1; k < j; k++ { // k goes last: its neighbours are then i and j\n\t\t\t\tdp[i][j] = max(dp[i][j], dp[i][k]+dp[k][j]+vals[i]*vals[k]*vals[j])\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[0][n-1]\n}"
+    },
+    "driver": {
+     "python": "for nums in ([3, 1, 5, 8], [1, 5], [7], []):\n    print(max_coins(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{3, 1, 5, 8}, {1, 5}, {7}, {}}) cout << maxCoins(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{3, 1, 5, 8}, {1, 5}, {7}, {}}) show(s.maxCoins(nums));",
+     "go": "for _, nums := range [][]int{{3, 1, 5, 8}, {1, 5}, {7}, {}} {\n    fmt.Println(maxCoins(nums))\n}",
+     "expected": "167\n10\n7\n0"
+    }
+   }
+  ]
+ },
+ "dp-state-machine": {
+  "variants": [
+   {
+    "id": "circular-kadane",
+    "pattern": {
+     "zh": "环形子数组：总和减去最小子数组",
+     "en": "Circular subarray: total minus the smallest subarray"
+    },
+    "when": {
+     "zh": "数组首尾相连时，最大子数组要么不跨界（普通 Kadane），要么跨界：跨界的那段等于「总和减去中间一段」，中间那段取最小子数组和。全为负数时「总和 − 最小」对应空数组，要退回普通 Kadane 的结果。LC 918 环形子数组的最大和。",
+     "en": "When the array wraps around, the best subarray either stays inside (plain Kadane) or wraps; a wrapping one is the total minus a middle part, so take the smallest subarray sum for that part. With all numbers negative, total minus smallest is the empty array, so fall back to plain Kadane. LC 918 (Maximum Sum Circular Subarray)."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def max_circular_subarray(nums: list[int]) -> int:\n    \"\"\"Largest sum of a non-empty subarray when the array wraps around (LC 918).\"\"\"\n    best_max = cur_max = best_min = cur_min = total = nums[0]\n    for x in nums[1:]:\n        cur_max = max(x, cur_max + x)  # Kadane for the largest subarray...\n        best_max = max(best_max, cur_max)\n        cur_min = min(x, cur_min + x)  # ...and for the smallest\n        best_min = min(best_min, cur_min)\n        total += x\n    # Wrapping = everything but a middle part. All negative: that would be empty, so don't.\n    return max(best_max, total - best_min) if best_max > 0 else best_max",
+     "cpp": "// Largest sum of a non-empty subarray when the array wraps around (LC 918).\nint maxCircularSubarray(const vector<int>& nums) {\n    int bestMax = nums[0], curMax = nums[0], bestMin = nums[0], curMin = nums[0], total = nums[0];\n    for (size_t i = 1; i < nums.size(); i++) {\n        int x = nums[i];\n        curMax = max(x, curMax + x);  // Kadane for the largest subarray...\n        bestMax = max(bestMax, curMax);\n        curMin = min(x, curMin + x);  // ...and for the smallest\n        bestMin = min(bestMin, curMin);\n        total += x;\n    }\n    // Wrapping = everything but a middle part. All negative: that would be empty, so don't.\n    return bestMax > 0 ? max(bestMax, total - bestMin) : bestMax;\n}",
+     "java": "class Solution {\n    // Largest sum of a non-empty subarray when the array wraps around (LC 918).\n    int maxCircularSubarray(int[] nums) {\n        int bestMax = nums[0], curMax = nums[0], bestMin = nums[0], curMin = nums[0], total = nums[0];\n        for (int i = 1; i < nums.length; i++) {\n            int x = nums[i];\n            curMax = Math.max(x, curMax + x); // Kadane for the largest subarray...\n            bestMax = Math.max(bestMax, curMax);\n            curMin = Math.min(x, curMin + x); // ...and for the smallest\n            bestMin = Math.min(bestMin, curMin);\n            total += x;\n        }\n        // Wrapping = everything but a middle part. All negative: that would be empty, so don't.\n        return bestMax > 0 ? Math.max(bestMax, total - bestMin) : bestMax;\n    }\n}",
+     "go": "// maxCircularSubarray returns the largest sum of a non-empty subarray when the array wraps (LC 918).\nfunc maxCircularSubarray(nums []int) int {\n\tbestMax, curMax, bestMin, curMin, total := nums[0], nums[0], nums[0], nums[0], nums[0]\n\tfor _, x := range nums[1:] {\n\t\tcurMax = max(x, curMax+x) // Kadane for the largest subarray...\n\t\tbestMax = max(bestMax, curMax)\n\t\tcurMin = min(x, curMin+x) // ...and for the smallest\n\t\tbestMin = min(bestMin, curMin)\n\t\ttotal += x\n\t}\n\t// Wrapping = everything but a middle part. All negative: that would be empty, so don't.\n\tif bestMax > 0 {\n\t\treturn max(bestMax, total-bestMin)\n\t}\n\treturn bestMax\n}"
+    },
+    "driver": {
+     "python": "for nums in ([1, -2, 3, -2], [5, -3, 5], [-3, -2, -3], [3, -1, 2, -1], [3, -2, 2, -3]):\n    print(max_circular_subarray(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{1, -2, 3, -2}, {5, -3, 5}, {-3, -2, -3}, {3, -1, 2, -1}, {3, -2, 2, -3}}) cout << maxCircularSubarray(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, -2, 3, -2}, {5, -3, 5}, {-3, -2, -3}, {3, -1, 2, -1}, {3, -2, 2, -3}}) show(s.maxCircularSubarray(nums));",
+     "go": "for _, nums := range [][]int{{1, -2, 3, -2}, {5, -3, 5}, {-3, -2, -3}, {3, -1, 2, -1}, {3, -2, 2, -3}} {\n    fmt.Println(maxCircularSubarray(nums))\n}",
+     "expected": "3\n10\n-2\n4\n3"
+    }
+   },
+   {
+    "id": "one-deletion-states",
+    "pattern": {
+     "zh": "两个状态：还没删 / 已经删了一个",
+     "en": "Two states: nothing deleted yet / one deleted"
+    },
+    "when": {
+     "zh": "允许「最多删一个 / 翻转一次 / 跳过一次」的子数组问题，给以 i 结尾的状态加一维：keep 是还没用掉机会，dropped 是已经用掉。dropped 要么是删掉 x 本身（接上旧的 keep），要么是早删过、现在接上 x。LC 1186 删除一次得到子数组最大和；LC 1911、LC 926 也是这类两三个状态互相转移。",
+     "en": "For subarray problems that allow one deletion, flip or skip, add a dimension to the state ending at i: keep has the chance unused, dropped has used it. dropped either deletes x itself (taking the old keep) or deleted earlier and now extends with x. LC 1186 (Maximum Subarray Sum with One Deletion); LC 1911 and LC 926 also pass between two or three states."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def max_sum_one_deletion(arr: list[int]) -> int:\n    \"\"\"Largest sum of a non-empty subarray with at most one element deleted (LC 1186).\"\"\"\n    keep = best = arr[0]  # keep: best sum ending here with nothing deleted\n    dropped = float(\"-inf\")  # best sum ending here with one element deleted\n    for x in arr[1:]:\n        dropped = max(keep, dropped + x)  # delete x (old keep), or extend an earlier deletion\n        keep = max(x, keep + x)\n        best = max(best, keep, dropped)\n    return best",
+     "cpp": "// Largest sum of a non-empty subarray with at most one element deleted (LC 1186).\nlong long maxSumOneDeletion(const vector<int>& arr) {\n    long long keep = arr[0], best = arr[0];  // keep: best sum ending here with nothing deleted\n    long long dropped = LLONG_MIN / 2;  // best sum ending here with one element deleted\n    for (size_t i = 1; i < arr.size(); i++) {\n        long long x = arr[i];\n        dropped = max(keep, dropped + x);  // delete x (old keep), or extend an earlier deletion\n        keep = max(x, keep + x);\n        best = max({best, keep, dropped});\n    }\n    return best;\n}",
+     "java": "class Solution {\n    // Largest sum of a non-empty subarray with at most one element deleted (LC 1186).\n    long maxSumOneDeletion(int[] arr) {\n        long keep = arr[0], best = arr[0]; // keep: best sum ending here with nothing deleted\n        long dropped = Long.MIN_VALUE / 2; // best sum ending here with one element deleted\n        for (int i = 1; i < arr.length; i++) {\n            long x = arr[i];\n            dropped = Math.max(keep, dropped + x); // delete x (old keep), or extend an earlier deletion\n            keep = Math.max(x, keep + x);\n            best = Math.max(best, Math.max(keep, dropped));\n        }\n        return best;\n    }\n}",
+     "go": "// maxSumOneDeletion returns the largest subarray sum with at most one element deleted (LC 1186).\nfunc maxSumOneDeletion(arr []int) int {\n\tkeep, best := arr[0], arr[0] // keep: best sum ending here with nothing deleted\n\tdropped := -1 << 60 // best sum ending here with one element deleted\n\tfor _, x := range arr[1:] {\n\t\tdropped = max(keep, dropped+x) // delete x (old keep), or extend an earlier deletion\n\t\tkeep = max(x, keep+x)\n\t\tbest = max(best, keep, dropped)\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "for arr in ([1, -2, 0, 3], [1, -2, -2, 3], [-1, -1, -1, -1], [2, 1, -2, -5, -2], [8, -1, 6, -7, -4, 5, -4, 7, -6]):\n    print(max_sum_one_deletion(arr))",
+     "cpp": "for (auto& arr : vector<vector<int>>{{1, -2, 0, 3}, {1, -2, -2, 3}, {-1, -1, -1, -1}, {2, 1, -2, -5, -2}, {8, -1, 6, -7, -4, 5, -4, 7, -6}})\n    cout << maxSumOneDeletion(arr) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] arr : new int[][] {{1, -2, 0, 3}, {1, -2, -2, 3}, {-1, -1, -1, -1}, {2, 1, -2, -5, -2}, {8, -1, 6, -7, -4, 5, -4, 7, -6}})\n    show(s.maxSumOneDeletion(arr));",
+     "go": "for _, arr := range [][]int{{1, -2, 0, 3}, {1, -2, -2, 3}, {-1, -1, -1, -1}, {2, 1, -2, -5, -2}, {8, -1, 6, -7, -4, 5, -4, 7, -6}} {\n    fmt.Println(maxSumOneDeletion(arr))\n}",
+     "expected": "4\n3\n-1\n3\n17"
+    }
+   }
+  ]
  }
 }
