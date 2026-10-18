@@ -960,8 +960,8 @@
      "en": "When moving through a grid also spends something (walls you may still break, keys in hand), the state becomes (r, c, resource), and level-by-level BFS still gives the fewest steps. Revisit a cell only when you arrive with more of the resource left than before; that pruning keeps the state count down. LC 1293 (Shortest Path in a Grid with Obstacles Elimination)."
     },
     "complexity": {
-     "zh": "时间 O(rows × cols × k) · 空间 O(rows × cols)",
-     "en": "O(rows × cols × k) time · O(rows × cols) space"
+     "zh": "时间 O(rows × cols × k) · 空间 O(rows × cols × k)",
+     "en": "O(rows × cols × k) time · O(rows × cols × k) space"
     },
     "code": {
      "python": "from collections import deque\n\n\ndef shortest_with_breaks(grid: list[list[int]], k: int) -> int:\n    \"\"\"Fewest steps from top-left to bottom-right, breaking at most k walls (LC 1293).\"\"\"\n    rows, cols = len(grid), len(grid[0])\n    best = [[-1] * cols for _ in range(rows)]  # most breaks still in hand on reaching a cell\n    best[0][0] = k\n    q = deque([(0, 0, k)])  # a state is (r, c, breaks left)\n    steps = 0\n    while q:\n        for _ in range(len(q)):  # one BFS level per step\n            r, c, left = q.popleft()\n            if r == rows - 1 and c == cols - 1:\n                return steps\n            for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):\n                if 0 <= nr < rows and 0 <= nc < cols:\n                    rest = left - grid[nr][nc]\n                    if rest > best[nr][nc]:  # more breaks left than any earlier visit: worth it\n                        best[nr][nc] = rest\n                        q.append((nr, nc, rest))\n        steps += 1\n    return -1",
