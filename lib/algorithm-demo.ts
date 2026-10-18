@@ -2351,7 +2351,9 @@ export function intervalDpTrace(s = 'agbdba', t: Tr = zhText): DemoTrace {
       if (s[i] === s[j]) {
         dp[i][j] = (length === 2 ? 0 : dp[i + 1][j - 1]!) + 2;
         frame(
-          t(`s[${i}] = s[${j}] = ${s[i]}：两端都能用，dp[${i}][${j}] = dp[${i + 1}][${j - 1}] + 2 = ${dp[i][j]}。`, `s[${i}] = s[${j}] = ${s[i]}: both ends join, dp[${i}][${j}] = dp[${i + 1}][${j - 1}] + 2 = ${dp[i][j]}.`),
+          length === 2
+            ? t(`s[${i}] = s[${j}] = ${s[i]}：两个相同字符，中间为空，dp[${i}][${j}] = 2。`, `s[${i}] = s[${j}] = ${s[i]}: two equal characters with nothing between, dp[${i}][${j}] = 2.`)
+            : t(`s[${i}] = s[${j}] = ${s[i]}：两端都能用，dp[${i}][${j}] = dp[${i + 1}][${j - 1}] + 2 = ${dp[i][j]}。`, `s[${i}] = s[${j}] = ${s[i]}: both ends join, dp[${i}][${j}] = dp[${i + 1}][${j - 1}] + 2 = ${dp[i][j]}.`),
           [[i, j]],
           length === 2 ? [] : [[i + 1, j - 1]],
         );

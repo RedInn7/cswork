@@ -359,6 +359,10 @@ test('interval DP, stock DP, prefix sums, bits and interval greedy agree with br
       String(Math.max(...subsequences(s).filter((x) => x === [...x].reverse().join('')).map((x) => x.length))),
       s,
     );
+  // Equal ends two apart have nothing between: the caption cites no blank lower-triangle cell.
+  const captions = intervalDpTrace('cbbd').frames.map((f) => f.caption);
+  assert.ok(captions.some((c) => c.includes('中间为空，dp[1][2] = 2')));
+  assert.ok(!captions.some((c) => c.includes('dp[2][1]')));
   // Stock with a cooldown: try every buy / sell / wait choice.
   const profit = (prices: number[], day = 0, holding = false, cooling = false): number => {
     if (day === prices.length) return 0;
