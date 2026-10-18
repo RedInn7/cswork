@@ -919,6 +919,334 @@
    }
   ]
  },
+ "grid-traversal": {
+  "variants": [
+   {
+    "id": "dfs-flood-fill",
+    "pattern": {
+     "zh": "显式栈 DFS 洪水填充",
+     "en": "Flood fill with an explicit-stack DFS"
+    },
+    "when": {
+     "zh": "数连通块、算面积、给一块区域换颜色：从一个没访问过的格子出发，把四个方向上同类的格子都标掉。用显式栈代替递归，大岛屿不会爆栈；入栈时就标记，同一格不会进栈两次。LC 200 岛屿数量、LC 695 岛屿的最大面积、LC 733 图像渲染。",
+     "en": "To count regions, measure their area or recolour one: start from an unvisited cell and mark every same-kind cell reachable in four directions. An explicit stack instead of recursion survives huge islands, and marking on push keeps any cell from being pushed twice. LC 200 (Number of Islands), LC 695 (Max Area of Island), LC 733 (Flood Fill)."
+    },
+    "complexity": {
+     "zh": "时间 O(rows × cols) · 空间 O(rows × cols)",
+     "en": "O(rows × cols) time · O(rows × cols) space"
+    },
+    "code": {
+     "python": "def island_stats(grid: list[list[int]]) -> tuple[int, int]:\n    \"\"\"(number of islands, largest island area) in a 0/1 grid (LC 200, LC 695).\"\"\"\n    rows, cols = len(grid), len(grid[0])\n    seen = [[False] * cols for _ in range(rows)]\n    count = best = 0\n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] != 1 or seen[r][c]:\n                continue\n            count += 1\n            area, stack = 0, [(r, c)]\n            seen[r][c] = True\n            while stack:  # an explicit stack: no recursion limit on big islands\n                i, j = stack.pop()\n                area += 1\n                for ni, nj in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):\n                    if 0 <= ni < rows and 0 <= nj < cols and grid[ni][nj] == 1 and not seen[ni][nj]:\n                        seen[ni][nj] = True  # mark on push: no cell goes in twice\n                        stack.append((ni, nj))\n            best = max(best, area)\n    return count, best",
+     "cpp": "// {number of islands, largest island area} in a 0/1 grid (LC 200, LC 695).\npair<int, int> islandStats(const vector<vector<int>>& grid) {\n    int rows = grid.size(), cols = grid[0].size(), count = 0, best = 0;\n    vector<vector<bool>> seen(rows, vector<bool>(cols, false));\n    int dr[] = {1, -1, 0, 0}, dc[] = {0, 0, 1, -1};\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++) {\n            if (grid[r][c] != 1 || seen[r][c]) continue;\n            count++;\n            int area = 0;\n            vector<pair<int, int>> stack{{r, c}};\n            seen[r][c] = true;\n            while (!stack.empty()) {  // an explicit stack: no recursion limit on big islands\n                auto [i, j] = stack.back();\n                stack.pop_back();\n                area++;\n                for (int d = 0; d < 4; d++) {\n                    int ni = i + dr[d], nj = j + dc[d];\n                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && grid[ni][nj] == 1 && !seen[ni][nj]) {\n                        seen[ni][nj] = true;  // mark on push: no cell goes in twice\n                        stack.push_back({ni, nj});\n                    }\n                }\n            }\n            best = max(best, area);\n        }\n    return {count, best};\n}",
+     "java": "class Solution {\n    // {number of islands, largest island area} in a 0/1 grid (LC 200, LC 695).\n    int[] islandStats(int[][] grid) {\n        int rows = grid.length, cols = grid[0].length, count = 0, best = 0;\n        boolean[][] seen = new boolean[rows][cols];\n        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] != 1 || seen[r][c]) continue;\n                count++;\n                int area = 0;\n                Deque<int[]> stack = new ArrayDeque<>();\n                stack.push(new int[] {r, c});\n                seen[r][c] = true;\n                while (!stack.isEmpty()) { // an explicit stack: no recursion limit on big islands\n                    int[] cell = stack.pop();\n                    area++;\n                    for (int[] d : dirs) {\n                        int ni = cell[0] + d[0], nj = cell[1] + d[1];\n                        if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && grid[ni][nj] == 1 && !seen[ni][nj]) {\n                            seen[ni][nj] = true; // mark on push: no cell goes in twice\n                            stack.push(new int[] {ni, nj});\n                        }\n                    }\n                }\n                best = Math.max(best, area);\n            }\n        return new int[] {count, best};\n    }\n}",
+     "go": "// islandStats returns the number of islands and the largest island area in a 0/1 grid.\nfunc islandStats(grid [][]int) (int, int) {\n\trows, cols := len(grid), len(grid[0])\n\tseen := make([][]bool, rows)\n\tfor r := range seen {\n\t\tseen[r] = make([]bool, cols)\n\t}\n\tcount, best := 0, 0\n\tdirs := [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}\n\tfor r := 0; r < rows; r++ {\n\t\tfor c := 0; c < cols; c++ {\n\t\t\tif grid[r][c] != 1 || seen[r][c] {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tcount++\n\t\t\tarea := 0\n\t\t\tstack := [][2]int{{r, c}}\n\t\t\tseen[r][c] = true\n\t\t\tfor len(stack) > 0 { // an explicit stack: no recursion limit on big islands\n\t\t\t\tcell := stack[len(stack)-1]\n\t\t\t\tstack = stack[:len(stack)-1]\n\t\t\t\tarea++\n\t\t\t\tfor _, d := range dirs {\n\t\t\t\t\tni, nj := cell[0]+d[0], cell[1]+d[1]\n\t\t\t\t\tif ni >= 0 && ni < rows && nj >= 0 && nj < cols && grid[ni][nj] == 1 && !seen[ni][nj] {\n\t\t\t\t\t\tseen[ni][nj] = true // mark on push: no cell goes in twice\n\t\t\t\t\t\tstack = append(stack, [2]int{ni, nj})\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tbest = max(best, area)\n\t\t}\n\t}\n\treturn count, best\n}"
+    },
+    "driver": {
+     "python": "for grid in ([[1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 1]], [[0, 0], [0, 0]], [[1, 0, 1], [0, 1, 0], [1, 0, 1]], [[1, 1, 1], [1, 0, 1], [1, 1, 1]]):\n    print(*island_stats(grid))",
+     "cpp": "for (auto& grid : vector<vector<vector<int>>>{{{1, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 1}}, {{0, 0}, {0, 0}}, {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}}, {{1, 1, 1}, {1, 0, 1}, {1, 1, 1}}}) {\n    auto [count, best] = islandStats(grid);\n    cout << count << \" \" << best << \"\\n\";\n}",
+     "java": "Solution s = new Solution();\nint[][][] grids = {{{1, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 1}}, {{0, 0}, {0, 0}}, {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}}, {{1, 1, 1}, {1, 0, 1}, {1, 1, 1}}};\nfor (int[][] grid : grids) show(s.islandStats(grid));",
+     "go": "for _, grid := range [][][]int{{{1, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 1}}, {{0, 0}, {0, 0}}, {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}}, {{1, 1, 1}, {1, 0, 1}, {1, 1, 1}}} {\n    fmt.Println(islandStats(grid))\n}",
+     "expected": "3 4\n0 0\n5 1\n1 8"
+    }
+   },
+   {
+    "id": "state-bfs",
+    "pattern": {
+     "zh": "带状态的网格 BFS：(行, 列, 剩余次数)",
+     "en": "Grid BFS with state: (row, col, uses left)"
+    },
+    "when": {
+     "zh": "走格子时还带着别的资源（还能打穿几堵墙、手里有哪些钥匙）：状态变成 (r, c, 资源)，按层 BFS 仍然给出最少步数。同一格只在「剩余资源比以前多」时才值得再进队，这一条剪枝让状态数降下来。LC 1293 网格中的最短路径。",
+     "en": "When moving through a grid also spends something (walls you may still break, keys in hand), the state becomes (r, c, resource), and level-by-level BFS still gives the fewest steps. Revisit a cell only when you arrive with more of the resource left than before; that pruning keeps the state count down. LC 1293 (Shortest Path in a Grid with Obstacles Elimination)."
+    },
+    "complexity": {
+     "zh": "时间 O(rows × cols × k) · 空间 O(rows × cols)",
+     "en": "O(rows × cols × k) time · O(rows × cols) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef shortest_with_breaks(grid: list[list[int]], k: int) -> int:\n    \"\"\"Fewest steps from top-left to bottom-right, breaking at most k walls (LC 1293).\"\"\"\n    rows, cols = len(grid), len(grid[0])\n    best = [[-1] * cols for _ in range(rows)]  # most breaks still in hand on reaching a cell\n    best[0][0] = k\n    q = deque([(0, 0, k)])  # a state is (r, c, breaks left)\n    steps = 0\n    while q:\n        for _ in range(len(q)):  # one BFS level per step\n            r, c, left = q.popleft()\n            if r == rows - 1 and c == cols - 1:\n                return steps\n            for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):\n                if 0 <= nr < rows and 0 <= nc < cols:\n                    rest = left - grid[nr][nc]\n                    if rest > best[nr][nc]:  # more breaks left than any earlier visit: worth it\n                        best[nr][nc] = rest\n                        q.append((nr, nc, rest))\n        steps += 1\n    return -1",
+     "cpp": "// Fewest steps from top-left to bottom-right, breaking at most k walls (LC 1293).\nint shortestWithBreaks(const vector<vector<int>>& grid, int k) {\n    int rows = grid.size(), cols = grid[0].size();\n    vector<vector<int>> best(rows, vector<int>(cols, -1));  // most breaks still in hand on reaching a cell\n    best[0][0] = k;\n    queue<array<int, 3>> q;  // a state is {r, c, breaks left}\n    q.push({0, 0, k});\n    int dr[] = {1, -1, 0, 0}, dc[] = {0, 0, 1, -1};\n    for (int steps = 0; !q.empty(); steps++)\n        for (int n = q.size(); n > 0; n--) {  // one BFS level per step\n            auto [r, c, left] = q.front();\n            q.pop();\n            if (r == rows - 1 && c == cols - 1) return steps;\n            for (int d = 0; d < 4; d++) {\n                int nr = r + dr[d], nc = c + dc[d];\n                if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;\n                int rest = left - grid[nr][nc];\n                if (rest > best[nr][nc]) {  // more breaks left than any earlier visit: worth it\n                    best[nr][nc] = rest;\n                    q.push({nr, nc, rest});\n                }\n            }\n        }\n    return -1;\n}",
+     "java": "class Solution {\n    // Fewest steps from top-left to bottom-right, breaking at most k walls (LC 1293).\n    int shortestWithBreaks(int[][] grid, int k) {\n        int rows = grid.length, cols = grid[0].length;\n        int[][] best = new int[rows][cols]; // most breaks still in hand on reaching a cell\n        for (int[] row : best) Arrays.fill(row, -1);\n        best[0][0] = k;\n        Deque<int[]> q = new ArrayDeque<>(); // a state is {r, c, breaks left}\n        q.offer(new int[] {0, 0, k});\n        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};\n        for (int steps = 0; !q.isEmpty(); steps++)\n            for (int n = q.size(); n > 0; n--) { // one BFS level per step\n                int[] s = q.poll();\n                if (s[0] == rows - 1 && s[1] == cols - 1) return steps;\n                for (int[] d : dirs) {\n                    int nr = s[0] + d[0], nc = s[1] + d[1];\n                    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;\n                    int rest = s[2] - grid[nr][nc];\n                    if (rest > best[nr][nc]) { // more breaks left than any earlier visit: worth it\n                        best[nr][nc] = rest;\n                        q.offer(new int[] {nr, nc, rest});\n                    }\n                }\n            }\n        return -1;\n    }\n}",
+     "go": "// shortestWithBreaks returns the fewest steps from top-left to bottom-right, breaking at most k walls.\nfunc shortestWithBreaks(grid [][]int, k int) int {\n\trows, cols := len(grid), len(grid[0])\n\tbest := make([][]int, rows) // most breaks still in hand on reaching a cell\n\tfor r := range best {\n\t\tbest[r] = make([]int, cols)\n\t\tfor c := range best[r] {\n\t\t\tbest[r][c] = -1\n\t\t}\n\t}\n\tbest[0][0] = k\n\tq := [][3]int{{0, 0, k}} // a state is {r, c, breaks left}\n\tdirs := [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}\n\tfor steps := 0; len(q) > 0; steps++ {\n\t\tvar next [][3]int // the following BFS level\n\t\tfor _, s := range q {\n\t\t\tif s[0] == rows-1 && s[1] == cols-1 {\n\t\t\t\treturn steps\n\t\t\t}\n\t\t\tfor _, d := range dirs {\n\t\t\t\tnr, nc := s[0]+d[0], s[1]+d[1]\n\t\t\t\tif nr < 0 || nr >= rows || nc < 0 || nc >= cols {\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tif rest := s[2] - grid[nr][nc]; rest > best[nr][nc] { // more breaks left than before: worth it\n\t\t\t\t\tbest[nr][nc] = rest\n\t\t\t\t\tnext = append(next, [3]int{nr, nc, rest})\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tq = next\n\t}\n\treturn -1\n}"
+    },
+    "driver": {
+     "python": "print(shortest_with_breaks([[0, 0, 0], [1, 1, 0], [0, 0, 0], [0, 1, 1], [0, 0, 0]], 1))\nprint(shortest_with_breaks([[0, 1, 1], [1, 1, 1], [1, 0, 0]], 1))\nprint(shortest_with_breaks([[0]], 0))\nprint(shortest_with_breaks([[0, 1], [1, 0]], 1))",
+     "cpp": "cout << shortestWithBreaks({{0, 0, 0}, {1, 1, 0}, {0, 0, 0}, {0, 1, 1}, {0, 0, 0}}, 1) << \"\\n\";\ncout << shortestWithBreaks({{0, 1, 1}, {1, 1, 1}, {1, 0, 0}}, 1) << \"\\n\";\ncout << shortestWithBreaks({{0}}, 0) << \"\\n\";\ncout << shortestWithBreaks({{0, 1}, {1, 0}}, 1) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.shortestWithBreaks(new int[][] {{0, 0, 0}, {1, 1, 0}, {0, 0, 0}, {0, 1, 1}, {0, 0, 0}}, 1));\nshow(s.shortestWithBreaks(new int[][] {{0, 1, 1}, {1, 1, 1}, {1, 0, 0}}, 1));\nshow(s.shortestWithBreaks(new int[][] {{0}}, 0));\nshow(s.shortestWithBreaks(new int[][] {{0, 1}, {1, 0}}, 1));",
+     "go": "fmt.Println(shortestWithBreaks([][]int{{0, 0, 0}, {1, 1, 0}, {0, 0, 0}, {0, 1, 1}, {0, 0, 0}}, 1))\nfmt.Println(shortestWithBreaks([][]int{{0, 1, 1}, {1, 1, 1}, {1, 0, 0}}, 1))\nfmt.Println(shortestWithBreaks([][]int{{0}}, 0))\nfmt.Println(shortestWithBreaks([][]int{{0, 1}, {1, 0}}, 1))",
+     "expected": "6\n-1\n0\n2"
+    }
+   }
+  ]
+ },
+ "graph-connectivity": {
+  "variants": [
+   {
+    "id": "two-coloring",
+    "pattern": {
+     "zh": "BFS 二染色判二分图",
+     "en": "Two-colouring by BFS for bipartiteness"
+    },
+    "when": {
+     "zh": "要把点分成两组、每条边都跨组（二分图、「不喜欢」的人分开）：BFS 给相邻点涂相反的颜色，遇到同色的邻居就是奇环，答案为否。图可能不连通，每个没染色的点都要当一次起点。LC 785 判断二分图、LC 886 可能的二分法。",
+     "en": "When nodes must split into two groups with every edge crossing between them (bipartite graphs, keeping people who dislike each other apart): BFS paints neighbours opposite colours, and a neighbour with the same colour means an odd cycle, so the answer is no. The graph may be disconnected, so every uncoloured node starts its own search. LC 785 (Is Graph Bipartite?), LC 886 (Possible Bipartition)."
+    },
+    "complexity": {
+     "zh": "时间 O(V + E) · 空间 O(V)",
+     "en": "O(V + E) time · O(V) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef is_bipartite(graph: list[list[int]]) -> bool:\n    \"\"\"Can the nodes be 2-coloured so every edge joins different colours? (LC 785)\"\"\"\n    color = [-1] * len(graph)\n    for s in range(len(graph)):  # every component, not only the one holding node 0\n        if color[s] != -1:\n            continue\n        color[s] = 0\n        q = deque([s])\n        while q:\n            u = q.popleft()\n            for v in graph[u]:\n                if color[v] == -1:\n                    color[v] = color[u] ^ 1  # the other colour\n                    q.append(v)\n                elif color[v] == color[u]:\n                    return False  # an odd cycle\n    return True",
+     "cpp": "// Can the nodes be 2-coloured so every edge joins different colours? (LC 785)\nbool isBipartite(const vector<vector<int>>& graph) {\n    vector<int> color(graph.size(), -1);\n    for (int s = 0; s < (int)graph.size(); s++) {  // every component, not only the one holding node 0\n        if (color[s] != -1) continue;\n        color[s] = 0;\n        queue<int> q;\n        q.push(s);\n        while (!q.empty()) {\n            int u = q.front();\n            q.pop();\n            for (int v : graph[u]) {\n                if (color[v] == -1) {\n                    color[v] = color[u] ^ 1;  // the other colour\n                    q.push(v);\n                } else if (color[v] == color[u]) {\n                    return false;  // an odd cycle\n                }\n            }\n        }\n    }\n    return true;\n}",
+     "java": "class Solution {\n    // Can the nodes be 2-coloured so every edge joins different colours? (LC 785)\n    boolean isBipartite(int[][] graph) {\n        int[] color = new int[graph.length];\n        Arrays.fill(color, -1);\n        for (int s = 0; s < graph.length; s++) { // every component, not only the one holding node 0\n            if (color[s] != -1) continue;\n            color[s] = 0;\n            Deque<Integer> q = new ArrayDeque<>(List.of(s));\n            while (!q.isEmpty()) {\n                int u = q.poll();\n                for (int v : graph[u]) {\n                    if (color[v] == -1) {\n                        color[v] = color[u] ^ 1; // the other colour\n                        q.offer(v);\n                    } else if (color[v] == color[u]) {\n                        return false; // an odd cycle\n                    }\n                }\n            }\n        }\n        return true;\n    }\n}",
+     "go": "// isBipartite reports whether the nodes can be 2-coloured so every edge joins different colours.\nfunc isBipartite(graph [][]int) bool {\n\tcolor := make([]int, len(graph))\n\tfor i := range color {\n\t\tcolor[i] = -1\n\t}\n\tfor s := range graph { // every component, not only the one holding node 0\n\t\tif color[s] != -1 {\n\t\t\tcontinue\n\t\t}\n\t\tcolor[s] = 0\n\t\tq := []int{s}\n\t\tfor len(q) > 0 {\n\t\t\tu := q[0]\n\t\t\tq = q[1:]\n\t\t\tfor _, v := range graph[u] {\n\t\t\t\tif color[v] == -1 {\n\t\t\t\t\tcolor[v] = color[u] ^ 1 // the other colour\n\t\t\t\t\tq = append(q, v)\n\t\t\t\t} else if color[v] == color[u] {\n\t\t\t\t\treturn false // an odd cycle\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\treturn true\n}"
+    },
+    "driver": {
+     "python": "for g in ([[1, 2, 3], [0, 2], [0, 1, 3], [0, 2]], [[1, 3], [0, 2], [1, 3], [0, 2]], [[], [2], [1]], [[1], [0], [3, 4], [2, 4], [2, 3]]):\n    print(str(is_bipartite(g)).lower())",
+     "cpp": "for (auto& g : vector<vector<vector<int>>>{{{1, 2, 3}, {0, 2}, {0, 1, 3}, {0, 2}}, {{1, 3}, {0, 2}, {1, 3}, {0, 2}}, {{}, {2}, {1}}, {{1}, {0}, {3, 4}, {2, 4}, {2, 3}}})\n    cout << boolalpha << isBipartite(g) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][][] graphs = {{{1, 2, 3}, {0, 2}, {0, 1, 3}, {0, 2}}, {{1, 3}, {0, 2}, {1, 3}, {0, 2}}, {{}, {2}, {1}}, {{1}, {0}, {3, 4}, {2, 4}, {2, 3}}};\nfor (int[][] g : graphs) show(s.isBipartite(g));",
+     "go": "for _, g := range [][][]int{{{1, 2, 3}, {0, 2}, {0, 1, 3}, {0, 2}}, {{1, 3}, {0, 2}, {1, 3}, {0, 2}}, {{}, {2}, {1}}, {{1}, {0}, {3, 4}, {2, 4}, {2, 3}}} {\n    fmt.Println(isBipartite(g))\n}",
+     "expected": "false\ntrue\ntrue\nfalse"
+    }
+   },
+   {
+    "id": "tarjan-bridges",
+    "pattern": {
+     "zh": "Tarjan 求桥：low 值越不过父结点",
+     "en": "Tarjan bridges: low cannot climb past the parent"
+    },
+    "when": {
+     "zh": "找「删掉就断开」的边或点（关键连接、割点）：DFS 记每个点的发现时间 disc，low 是子树经一条回边能到的最早发现时间；子结点 v 的 low[v] > disc[u] 时，边 u-v 就是桥。LC 1192 查找集群内的关键连接。递归很深时 Python 要调大递归上限。",
+     "en": "To find edges (or nodes) whose removal disconnects the graph, such as critical connections or articulation points: DFS records each node's discovery time disc, and low is the earliest discovery time its subtree reaches through one back edge. When a child v has low[v] > disc[u], the edge u-v is a bridge. LC 1192 (Critical Connections in a Network). Deep graphs need a higher recursion limit in Python."
+    },
+    "complexity": {
+     "zh": "时间 O(V + E) · 空间 O(V + E)",
+     "en": "O(V + E) time · O(V + E) space"
+    },
+    "code": {
+     "python": "def critical_connections(n: int, connections: list[list[int]]) -> list[list[int]]:\n    \"\"\"Every bridge, an edge whose removal disconnects the graph (LC 1192).\"\"\"\n    graph = [[] for _ in range(n)]\n    for u, v in connections:\n        graph[u].append(v)\n        graph[v].append(u)\n    disc = [0] * n  # discovery time; 0 = not visited yet\n    low = [0] * n  # earliest discovery time the subtree reaches with one back edge\n    timer = 1\n    res = []\n\n    def dfs(u: int, parent: int) -> None:\n        nonlocal timer\n        disc[u] = low[u] = timer\n        timer += 1\n        for v in graph[u]:\n            if v == parent:\n                continue  # assumes no parallel edges\n            if disc[v]:\n                low[u] = min(low[u], disc[v])  # a back edge\n            else:\n                dfs(v, u)\n                low[u] = min(low[u], low[v])\n                if low[v] > disc[u]:  # v's subtree cannot climb above u without this edge\n                    res.append([u, v])\n\n    for s in range(n):\n        if not disc[s]:\n            dfs(s, -1)\n    return res",
+     "cpp": "// Every bridge, an edge whose removal disconnects the graph (LC 1192).\nvector<pair<int, int>> criticalConnections(int n, const vector<pair<int, int>>& connections) {\n    vector<vector<int>> graph(n);\n    for (auto [u, v] : connections) {\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    vector<int> disc(n, 0), low(n, 0);  // disc 0 = not visited; low: earliest time reached with one back edge\n    int timer = 1;\n    vector<pair<int, int>> res;\n    function<void(int, int)> dfs = [&](int u, int parent) {\n        disc[u] = low[u] = timer++;\n        for (int v : graph[u]) {\n            if (v == parent) continue;  // assumes no parallel edges\n            if (disc[v]) {\n                low[u] = min(low[u], disc[v]);  // a back edge\n            } else {\n                dfs(v, u);\n                low[u] = min(low[u], low[v]);\n                if (low[v] > disc[u]) res.push_back({u, v});  // v's subtree cannot climb above u without this edge\n            }\n        }\n    };\n    for (int s = 0; s < n; s++)\n        if (!disc[s]) dfs(s, -1);\n    return res;\n}",
+     "java": "class Solution {\n    private List<List<Integer>> graph;\n    private int[] disc, low; // disc 0 = not visited; low: earliest time reached with one back edge\n    private int timer;\n    private List<int[]> res;\n\n    // Every bridge, an edge whose removal disconnects the graph (LC 1192).\n    List<int[]> criticalConnections(int n, int[][] connections) {\n        graph = new ArrayList<>();\n        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());\n        for (int[] e : connections) {\n            graph.get(e[0]).add(e[1]);\n            graph.get(e[1]).add(e[0]);\n        }\n        disc = new int[n];\n        low = new int[n];\n        timer = 1;\n        res = new ArrayList<>();\n        for (int s = 0; s < n; s++)\n            if (disc[s] == 0) dfs(s, -1);\n        return res;\n    }\n\n    private void dfs(int u, int parent) {\n        disc[u] = low[u] = timer++;\n        for (int v : graph.get(u)) {\n            if (v == parent) continue; // assumes no parallel edges\n            if (disc[v] != 0) {\n                low[u] = Math.min(low[u], disc[v]); // a back edge\n            } else {\n                dfs(v, u);\n                low[u] = Math.min(low[u], low[v]);\n                if (low[v] > disc[u]) res.add(new int[] {u, v}); // v's subtree cannot climb above u without this edge\n            }\n        }\n    }\n}",
+     "go": "// criticalConnections returns every bridge, an edge whose removal disconnects the graph (LC 1192).\nfunc criticalConnections(n int, connections [][2]int) [][2]int {\n\tgraph := make([][]int, n)\n\tfor _, e := range connections {\n\t\tgraph[e[0]] = append(graph[e[0]], e[1])\n\t\tgraph[e[1]] = append(graph[e[1]], e[0])\n\t}\n\tdisc, low := make([]int, n), make([]int, n) // disc 0 = not visited; low: earliest time reached with one back edge\n\ttimer := 1\n\tvar res [][2]int\n\tvar dfs func(u, parent int)\n\tdfs = func(u, parent int) {\n\t\tdisc[u], low[u] = timer, timer\n\t\ttimer++\n\t\tfor _, v := range graph[u] {\n\t\t\tif v == parent {\n\t\t\t\tcontinue // assumes no parallel edges\n\t\t\t}\n\t\t\tif disc[v] != 0 {\n\t\t\t\tlow[u] = min(low[u], disc[v]) // a back edge\n\t\t\t} else {\n\t\t\t\tdfs(v, u)\n\t\t\t\tlow[u] = min(low[u], low[v])\n\t\t\t\tif low[v] > disc[u] { // v's subtree cannot climb above u without this edge\n\t\t\t\t\tres = append(res, [2]int{u, v})\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\tfor s := 0; s < n; s++ {\n\t\tif disc[s] == 0 {\n\t\t\tdfs(s, -1)\n\t\t}\n\t}\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "cases = [\n    (4, [[0, 1], [1, 2], [2, 0], [1, 3]]),\n    (2, [[0, 1]]),\n    (6, [[0, 1], [1, 2], [2, 0], [1, 3], [3, 4], [4, 5], [5, 3]]),\n    (5, [[0, 1], [1, 2], [2, 3], [3, 4]]),\n]\nfor n, edges in cases:\n    print(*(f\"{u}-{v}\" for u, v in critical_connections(n, edges)))",
+     "cpp": "vector<pair<int, vector<pair<int, int>>>> cases{\n    {4, {{0, 1}, {1, 2}, {2, 0}, {1, 3}}},\n    {2, {{0, 1}}},\n    {6, {{0, 1}, {1, 2}, {2, 0}, {1, 3}, {3, 4}, {4, 5}, {5, 3}}},\n    {5, {{0, 1}, {1, 2}, {2, 3}, {3, 4}}},\n};\nfor (auto& [n, edges] : cases) {\n    vector<string> out;\n    for (auto [u, v] : criticalConnections(n, edges)) out.push_back(to_string(u) + \"-\" + to_string(v));\n    show(out);\n}",
+     "java": "Solution s = new Solution();\nint[] ns = {4, 2, 6, 5};\nint[][][] edges = {{{0, 1}, {1, 2}, {2, 0}, {1, 3}}, {{0, 1}}, {{0, 1}, {1, 2}, {2, 0}, {1, 3}, {3, 4}, {4, 5}, {5, 3}}, {{0, 1}, {1, 2}, {2, 3}, {3, 4}}};\nfor (int i = 0; i < ns.length; i++)\n    show(s.criticalConnections(ns[i], edges[i]).stream().map(e -> e[0] + \"-\" + e[1]).collect(Collectors.toList()));",
+     "go": "ns := []int{4, 2, 6, 5}\nedges := [][][2]int{{{0, 1}, {1, 2}, {2, 0}, {1, 3}}, {{0, 1}}, {{0, 1}, {1, 2}, {2, 0}, {1, 3}, {3, 4}, {4, 5}, {5, 3}}, {{0, 1}, {1, 2}, {2, 3}, {3, 4}}}\nfor i := range ns {\n    var out []string\n    for _, e := range criticalConnections(ns[i], edges[i]) {\n        out = append(out, fmt.Sprint(e[0], \"-\", e[1]))\n    }\n    show(out)\n}",
+     "expected": "1-3\n0-1\n1-3\n3-4 2-3 1-2 0-1"
+    }
+   }
+  ]
+ },
+ "graph-topological": {
+  "variants": [
+   {
+    "id": "dfs-three-colors",
+    "pattern": {
+     "zh": "DFS 三色标记：灰色是当前路径",
+     "en": "Three-colour DFS: grey is the current path"
+    },
+    "when": {
+     "zh": "用 DFS 判环或找「走不到环」的点：白色没访问，灰色在当前递归路径上，黑色已经确认安全；DFS 时碰到灰色就是回到了路径上，也就是有环。LC 802 找到最终的安全状态、LC 207 课程表的 DFS 写法。",
+     "en": "To detect cycles, or find nodes that can never reach one, with DFS: white is unvisited, grey is on the current recursion path, black is finished and known safe. Meeting a grey node means returning to the path, which is a cycle. LC 802 (Find Eventual Safe States) and the DFS take on LC 207 (Course Schedule)."
+    },
+    "complexity": {
+     "zh": "时间 O(V + E) · 空间 O(V)",
+     "en": "O(V + E) time · O(V) space"
+    },
+    "code": {
+     "python": "def eventual_safe_nodes(graph: list[list[int]]) -> list[int]:\n    \"\"\"Nodes every path from which ends at a terminal node: no cycle is reachable (LC 802).\"\"\"\n    WHITE, GRAY, BLACK = 0, 1, 2  # unvisited / on the current DFS path / finished and safe\n    color = [WHITE] * len(graph)\n\n    def safe(u: int) -> bool:\n        if color[u] != WHITE:\n            return color[u] == BLACK  # GRAY: back on the current path, so a cycle\n        color[u] = GRAY\n        if not all(safe(v) for v in graph[u]):\n            return False  # stays GRAY: on a cycle or leading to one\n        color[u] = BLACK\n        return True\n\n    return [u for u in range(len(graph)) if safe(u)]",
+     "cpp": "// Nodes every path from which ends at a terminal node: no cycle is reachable (LC 802).\nvector<int> eventualSafeNodes(const vector<vector<int>>& graph) {\n    enum { WHITE, GRAY, BLACK };  // unvisited / on the current DFS path / finished and safe\n    vector<int> color(graph.size(), WHITE);\n    function<bool(int)> safe = [&](int u) {\n        if (color[u] != WHITE) return color[u] == BLACK;  // GRAY: back on the current path, so a cycle\n        color[u] = GRAY;\n        for (int v : graph[u])\n            if (!safe(v)) return false;  // stays GRAY: on a cycle or leading to one\n        color[u] = BLACK;\n        return true;\n    };\n    vector<int> res;\n    for (int u = 0; u < (int)graph.size(); u++)\n        if (safe(u)) res.push_back(u);\n    return res;\n}",
+     "java": "class Solution {\n    private static final int WHITE = 0, GRAY = 1, BLACK = 2; // unvisited / on the current DFS path / finished and safe\n    private int[][] graph;\n    private int[] color;\n\n    // Nodes every path from which ends at a terminal node: no cycle is reachable (LC 802).\n    List<Integer> eventualSafeNodes(int[][] graph) {\n        this.graph = graph;\n        color = new int[graph.length];\n        List<Integer> res = new ArrayList<>();\n        for (int u = 0; u < graph.length; u++)\n            if (safe(u)) res.add(u);\n        return res;\n    }\n\n    private boolean safe(int u) {\n        if (color[u] != WHITE) return color[u] == BLACK; // GRAY: back on the current path, so a cycle\n        color[u] = GRAY;\n        for (int v : graph[u])\n            if (!safe(v)) return false; // stays GRAY: on a cycle or leading to one\n        color[u] = BLACK;\n        return true;\n    }\n}",
+     "go": "// eventualSafeNodes returns the nodes every path from which ends at a terminal node (LC 802).\nfunc eventualSafeNodes(graph [][]int) []int {\n\tconst (\n\t\twhite = iota // unvisited\n\t\tgray         // on the current DFS path\n\t\tblack        // finished and safe\n\t)\n\tcolor := make([]int, len(graph))\n\tvar safe func(u int) bool\n\tsafe = func(u int) bool {\n\t\tif color[u] != white {\n\t\t\treturn color[u] == black // gray: back on the current path, so a cycle\n\t\t}\n\t\tcolor[u] = gray\n\t\tfor _, v := range graph[u] {\n\t\t\tif !safe(v) {\n\t\t\t\treturn false // stays gray: on a cycle or leading to one\n\t\t\t}\n\t\t}\n\t\tcolor[u] = black\n\t\treturn true\n\t}\n\tres := []int{}\n\tfor u := range graph {\n\t\tif safe(u) {\n\t\t\tres = append(res, u)\n\t\t}\n\t}\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "for g in ([[1, 2], [2, 3], [5], [0], [5], [], []], [[1, 2, 3, 4], [1, 2], [3, 4], [0, 4], []], [[]], [[0]]):\n    print(*eventual_safe_nodes(g)) if eventual_safe_nodes(g) else print(\"-\")",
+     "cpp": "for (auto& g : vector<vector<vector<int>>>{{{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}}, {{1, 2, 3, 4}, {1, 2}, {3, 4}, {0, 4}, {}}, {{}}, {{0}}}) {\n    auto res = eventualSafeNodes(g);\n    if (res.empty()) cout << \"-\\n\";\n    else show(res);\n}",
+     "java": "Solution s = new Solution();\nint[][][] graphs = {{{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}}, {{1, 2, 3, 4}, {1, 2}, {3, 4}, {0, 4}, {}}, {{}}, {{0}}};\nfor (int[][] g : graphs) {\n    List<Integer> res = s.eventualSafeNodes(g);\n    if (res.isEmpty()) show(\"-\");\n    else show(res);\n}",
+     "go": "for _, g := range [][][]int{{{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}}, {{1, 2, 3, 4}, {1, 2}, {3, 4}, {0, 4}, {}}, {{}}, {{0}}} {\n    if res := eventualSafeNodes(g); len(res) == 0 {\n        fmt.Println(\"-\")\n    } else {\n        show(res)\n    }\n}",
+     "expected": "2 4 5 6\n4\n0\n-"
+    }
+   },
+   {
+    "id": "topo-order-dp",
+    "pattern": {
+     "zh": "拓扑序上做 DP：最长路径 / 最少学期",
+     "en": "DP along a topological order: longest path, fewest terms"
+    },
+    "when": {
+     "zh": "依赖关系构成 DAG、要算「最早什么时候能做完」「最长链有多长」：按 Kahn 的出队顺序推进，每处理一条边 u→v 就用 term[u] + 1（或加上 u 的耗时）更新 term[v]。LC 1136 并行课程；LC 2050 并行课程 III 把 +1 换成课程时长。",
+     "en": "When dependencies form a DAG and the question is the earliest finishing time or the longest chain: follow Kahn's dequeue order and, for each edge u→v, update term[v] from term[u] + 1 (or plus u's duration). LC 1136 (Parallel Courses); LC 2050 (Parallel Courses III) swaps the +1 for course durations."
+    },
+    "complexity": {
+     "zh": "时间 O(V + E) · 空间 O(V + E)",
+     "en": "O(V + E) time · O(V + E) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef min_semesters(n: int, relations: list[tuple[int, int]]) -> int:\n    \"\"\"Courses 1..n, (a, b): a before b, any number per term. Fewest terms, or -1 on a cycle (LC 1136).\"\"\"\n    graph = [[] for _ in range(n + 1)]\n    indeg = [0] * (n + 1)\n    for a, b in relations:\n        graph[a].append(b)\n        indeg[b] += 1\n    term = [1] * (n + 1)  # term[v]: the earliest term v can be taken\n    q = deque(v for v in range(1, n + 1) if indeg[v] == 0)\n    done = 0\n    while q:\n        u = q.popleft()\n        done += 1\n        for v in graph[u]:\n            term[v] = max(term[v], term[u] + 1)  # DP in topological order: u is final when it leaves\n            indeg[v] -= 1\n            if indeg[v] == 0:\n                q.append(v)\n    return max(term[1:]) if done == n else -1",
+     "cpp": "// Courses 1..n, {a, b}: a before b, any number per term. Fewest terms, or -1 on a cycle (LC 1136).\nint minSemesters(int n, const vector<pair<int, int>>& relations) {\n    vector<vector<int>> graph(n + 1);\n    vector<int> indeg(n + 1, 0), term(n + 1, 1);  // term[v]: the earliest term v can be taken\n    for (auto [a, b] : relations) {\n        graph[a].push_back(b);\n        indeg[b]++;\n    }\n    queue<int> q;\n    for (int v = 1; v <= n; v++)\n        if (indeg[v] == 0) q.push(v);\n    int done = 0;\n    while (!q.empty()) {\n        int u = q.front();\n        q.pop();\n        done++;\n        for (int v : graph[u]) {\n            term[v] = max(term[v], term[u] + 1);  // DP in topological order: u is final when it leaves\n            if (--indeg[v] == 0) q.push(v);\n        }\n    }\n    return done == n ? *max_element(term.begin() + 1, term.end()) : -1;\n}",
+     "java": "class Solution {\n    // Courses 1..n, {a, b}: a before b, any number per term. Fewest terms, or -1 on a cycle (LC 1136).\n    int minSemesters(int n, int[][] relations) {\n        List<List<Integer>> graph = new ArrayList<>();\n        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());\n        int[] indeg = new int[n + 1], term = new int[n + 1]; // term[v]: the earliest term v can be taken\n        Arrays.fill(term, 1);\n        for (int[] r : relations) {\n            graph.get(r[0]).add(r[1]);\n            indeg[r[1]]++;\n        }\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int v = 1; v <= n; v++)\n            if (indeg[v] == 0) q.offer(v);\n        int done = 0, best = 0;\n        while (!q.isEmpty()) {\n            int u = q.poll();\n            done++;\n            best = Math.max(best, term[u]);\n            for (int v : graph.get(u)) {\n                term[v] = Math.max(term[v], term[u] + 1); // DP in topological order: u is final when it leaves\n                if (--indeg[v] == 0) q.offer(v);\n            }\n        }\n        return done == n ? best : -1;\n    }\n}",
+     "go": "// minSemesters returns the fewest terms for courses 1..n ({a, b}: a before b), or -1 on a cycle.\nfunc minSemesters(n int, relations [][2]int) int {\n\tgraph := make([][]int, n+1)\n\tindeg, term := make([]int, n+1), make([]int, n+1) // term[v]: the earliest term v can be taken\n\tfor _, r := range relations {\n\t\tgraph[r[0]] = append(graph[r[0]], r[1])\n\t\tindeg[r[1]]++\n\t}\n\tvar q []int\n\tfor v := 1; v <= n; v++ {\n\t\tterm[v] = 1\n\t\tif indeg[v] == 0 {\n\t\t\tq = append(q, v)\n\t\t}\n\t}\n\tdone, best := 0, 0\n\tfor len(q) > 0 {\n\t\tu := q[0]\n\t\tq = q[1:]\n\t\tdone++\n\t\tbest = max(best, term[u])\n\t\tfor _, v := range graph[u] {\n\t\t\tterm[v] = max(term[v], term[u]+1) // DP in topological order: u is final when it leaves\n\t\t\tindeg[v]--\n\t\t\tif indeg[v] == 0 {\n\t\t\t\tq = append(q, v)\n\t\t\t}\n\t\t}\n\t}\n\tif done != n {\n\t\treturn -1\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "print(min_semesters(3, [(1, 3), (2, 3)]))\nprint(min_semesters(3, [(1, 2), (2, 3), (3, 1)]))\nprint(min_semesters(4, []))\nprint(min_semesters(5, [(1, 2), (2, 3), (1, 4), (4, 5), (3, 5)]))",
+     "cpp": "cout << minSemesters(3, {{1, 3}, {2, 3}}) << \"\\n\" << minSemesters(3, {{1, 2}, {2, 3}, {3, 1}}) << \"\\n\";\ncout << minSemesters(4, {}) << \"\\n\" << minSemesters(5, {{1, 2}, {2, 3}, {1, 4}, {4, 5}, {3, 5}}) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.minSemesters(3, new int[][] {{1, 3}, {2, 3}}));\nshow(s.minSemesters(3, new int[][] {{1, 2}, {2, 3}, {3, 1}}));\nshow(s.minSemesters(4, new int[][] {}));\nshow(s.minSemesters(5, new int[][] {{1, 2}, {2, 3}, {1, 4}, {4, 5}, {3, 5}}));",
+     "go": "fmt.Println(minSemesters(3, [][2]int{{1, 3}, {2, 3}}))\nfmt.Println(minSemesters(3, [][2]int{{1, 2}, {2, 3}, {3, 1}}))\nfmt.Println(minSemesters(4, nil))\nfmt.Println(minSemesters(5, [][2]int{{1, 2}, {2, 3}, {1, 4}, {4, 5}, {3, 5}}))",
+     "expected": "2\n-1\n1\n4"
+    }
+   }
+  ]
+ },
+ "graph-shortest-path": {
+  "variants": [
+   {
+    "id": "implicit-bfs",
+    "pattern": {
+     "zh": "隐式图 BFS：状态即结点",
+     "en": "BFS on an implicit graph: states are nodes"
+    },
+    "when": {
+     "zh": "边权都是 1 时不用 Dijkstra：状态（密码锁的四位数、单词、棋盘）就是结点，「一步能到的状态」现场生成，BFS 第一次到达就是最短。用一个 dist 表同时记「见过」和距离。LC 752 打开转盘锁、LC 127 单词接龙、LC 773 滑动谜题。",
+     "en": "With every edge costing 1, Dijkstra is unnecessary: each state (a lock's four digits, a word, a board) is a node, the states one move away are generated on the spot, and BFS reaches each one first by a shortest path. One dist map records both \"seen\" and the distance. LC 752 (Open the Lock), LC 127 (Word Ladder), LC 773 (Sliding Puzzle)."
+    },
+    "complexity": {
+     "zh": "时间 O(状态数 × 每个状态的邻居数) · 空间 O(状态数)",
+     "en": "O(states × moves per state) time · O(states) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef open_lock(deadends: list[str], target: str) -> int:\n    \"\"\"Fewest wheel turns from \"0000\" to target, never resting on a deadend (LC 752).\"\"\"\n    dead = set(deadends)\n    if \"0000\" in dead:\n        return -1\n    dist = {\"0000\": 0}  # every state seen so far, with its distance\n    q = deque([\"0000\"])\n    while q:\n        s = q.popleft()\n        if s == target:\n            return dist[s]\n        for i in range(4):\n            for step in (1, -1):  # turn wheel i up or down\n                t = s[:i] + str((int(s[i]) + step) % 10) + s[i + 1 :]\n                if t not in dead and t not in dist:\n                    dist[t] = dist[s] + 1\n                    q.append(t)\n    return -1",
+     "cpp": "// Fewest wheel turns from \"0000\" to target, never resting on a deadend (LC 752).\nint openLock(const vector<string>& deadends, const string& target) {\n    unordered_set<string> dead(deadends.begin(), deadends.end());\n    if (dead.count(\"0000\")) return -1;\n    unordered_map<string, int> dist{{\"0000\", 0}};  // every state seen so far, with its distance\n    queue<string> q;\n    q.push(\"0000\");\n    while (!q.empty()) {\n        string s = q.front();\n        q.pop();\n        if (s == target) return dist[s];\n        for (int i = 0; i < 4; i++)\n            for (int step : {1, 9}) {  // turn wheel i up, or down (+9 is -1 mod 10)\n                string t = s;\n                t[i] = '0' + (s[i] - '0' + step) % 10;\n                if (!dead.count(t) && !dist.count(t)) {\n                    dist[t] = dist[s] + 1;\n                    q.push(t);\n                }\n            }\n    }\n    return -1;\n}",
+     "java": "class Solution {\n    // Fewest wheel turns from \"0000\" to target, never resting on a deadend (LC 752).\n    int openLock(String[] deadends, String target) {\n        Set<String> dead = new HashSet<>(Arrays.asList(deadends));\n        if (dead.contains(\"0000\")) return -1;\n        Map<String, Integer> dist = new HashMap<>(Map.of(\"0000\", 0)); // every state seen so far, with its distance\n        Deque<String> q = new ArrayDeque<>(List.of(\"0000\"));\n        while (!q.isEmpty()) {\n            String s = q.poll();\n            if (s.equals(target)) return dist.get(s);\n            for (int i = 0; i < 4; i++)\n                for (int step : new int[] {1, 9}) { // turn wheel i up, or down (+9 is -1 mod 10)\n                    char[] t = s.toCharArray();\n                    t[i] = (char) ('0' + (t[i] - '0' + step) % 10);\n                    String next = new String(t);\n                    if (!dead.contains(next) && !dist.containsKey(next)) {\n                        dist.put(next, dist.get(s) + 1);\n                        q.offer(next);\n                    }\n                }\n        }\n        return -1;\n    }\n}",
+     "go": "// openLock returns the fewest wheel turns from \"0000\" to target, never resting on a deadend (LC 752).\nfunc openLock(deadends []string, target string) int {\n\tdead := map[string]bool{}\n\tfor _, d := range deadends {\n\t\tdead[d] = true\n\t}\n\tif dead[\"0000\"] {\n\t\treturn -1\n\t}\n\tdist := map[string]int{\"0000\": 0} // every state seen so far, with its distance\n\tq := []string{\"0000\"}\n\tfor len(q) > 0 {\n\t\ts := q[0]\n\t\tq = q[1:]\n\t\tif s == target {\n\t\t\treturn dist[s]\n\t\t}\n\t\tfor i := 0; i < 4; i++ {\n\t\t\tfor _, step := range []byte{1, 9} { // turn wheel i up, or down (+9 is -1 mod 10)\n\t\t\t\tt := []byte(s)\n\t\t\t\tt[i] = '0' + (t[i]-'0'+step)%10\n\t\t\t\tnext := string(t)\n\t\t\t\tif _, seen := dist[next]; !seen && !dead[next] {\n\t\t\t\t\tdist[next] = dist[s] + 1\n\t\t\t\t\tq = append(q, next)\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\treturn -1\n}"
+    },
+    "driver": {
+     "python": "print(open_lock([\"0201\", \"0101\", \"0102\", \"1212\", \"2002\"], \"0202\"))\nprint(open_lock([\"8888\"], \"0009\"))\nprint(open_lock([\"8887\", \"8889\", \"8878\", \"8898\", \"8788\", \"8988\", \"7888\", \"9888\"], \"8888\"))\nprint(open_lock([\"0000\"], \"8888\"))",
+     "cpp": "cout << openLock({\"0201\", \"0101\", \"0102\", \"1212\", \"2002\"}, \"0202\") << \"\\n\" << openLock({\"8888\"}, \"0009\") << \"\\n\";\ncout << openLock({\"8887\", \"8889\", \"8878\", \"8898\", \"8788\", \"8988\", \"7888\", \"9888\"}, \"8888\") << \"\\n\" << openLock({\"0000\"}, \"8888\") << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.openLock(new String[] {\"0201\", \"0101\", \"0102\", \"1212\", \"2002\"}, \"0202\"));\nshow(s.openLock(new String[] {\"8888\"}, \"0009\"));\nshow(s.openLock(new String[] {\"8887\", \"8889\", \"8878\", \"8898\", \"8788\", \"8988\", \"7888\", \"9888\"}, \"8888\"));\nshow(s.openLock(new String[] {\"0000\"}, \"8888\"));",
+     "go": "fmt.Println(openLock([]string{\"0201\", \"0101\", \"0102\", \"1212\", \"2002\"}, \"0202\"))\nfmt.Println(openLock([]string{\"8888\"}, \"0009\"))\nfmt.Println(openLock([]string{\"8887\", \"8889\", \"8878\", \"8898\", \"8788\", \"8988\", \"7888\", \"9888\"}, \"8888\"))\nfmt.Println(openLock([]string{\"0000\"}, \"8888\"))",
+     "expected": "6\n1\n-1\n-1"
+    }
+   },
+   {
+    "id": "bellman-ford-k",
+    "pattern": {
+     "zh": "限制边数的 Bellman-Ford",
+     "en": "Bellman-Ford with a limit on edges"
+    },
+    "when": {
+     "zh": "最短路限定「最多经过 k 站」（或图里有负权边）时，Dijkstra 不再适用：做 k + 1 轮松弛，每轮只从上一轮的结果出发，这样第 i 轮恰好代表最多 i 条边。LC 787 K 站中转内最便宜的航班。不限轮数、跑满 V - 1 轮就是普通 Bellman-Ford，还能再跑一轮检测负环。",
+     "en": "When a shortest path may use at most k stops (or edges can be negative), Dijkstra no longer fits: run k + 1 rounds of relaxation, each starting from the previous round's prices, so round i means at most i edges. LC 787 (Cheapest Flights Within K Stops). Without the limit, V - 1 rounds is plain Bellman-Ford, and one more round detects a negative cycle."
+    },
+    "complexity": {
+     "zh": "时间 O(k × E) · 空间 O(V)",
+     "en": "O(k × E) time · O(V) space"
+    },
+    "code": {
+     "python": "def cheapest_within(n: int, flights: list[tuple[int, int, int]], src: int, dst: int, k: int) -> int:\n    \"\"\"Cheapest price from src to dst with at most k stops, i.e. k + 1 flights (LC 787).\"\"\"\n    INF = float(\"inf\")\n    dist = [INF] * n\n    dist[src] = 0\n    for _ in range(k + 1):  # after round i: best prices using at most i flights\n        prev = dist[:]  # relax from last round only, so each round adds at most one flight\n        for u, v, w in flights:\n            if prev[u] + w < dist[v]:\n                dist[v] = prev[u] + w\n    return -1 if dist[dst] == INF else dist[dst]",
+     "cpp": "// Cheapest price from src to dst with at most k stops, i.e. k + 1 flights (LC 787).\nlong long cheapestWithin(int n, const vector<array<int, 3>>& flights, int src, int dst, int k) {\n    const long long INF = LLONG_MAX / 4;\n    vector<long long> dist(n, INF);\n    dist[src] = 0;\n    for (int round = 0; round <= k; round++) {  // after round i: best prices using at most i flights\n        vector<long long> prev = dist;  // relax from last round only, so each round adds at most one flight\n        for (auto [u, v, w] : flights)\n            if (prev[u] + w < dist[v]) dist[v] = prev[u] + w;\n    }\n    return dist[dst] == INF ? -1 : dist[dst];\n}",
+     "java": "class Solution {\n    // Cheapest price from src to dst with at most k stops, i.e. k + 1 flights (LC 787).\n    long cheapestWithin(int n, int[][] flights, int src, int dst, int k) {\n        final long INF = Long.MAX_VALUE / 4;\n        long[] dist = new long[n];\n        Arrays.fill(dist, INF);\n        dist[src] = 0;\n        for (int round = 0; round <= k; round++) { // after round i: best prices using at most i flights\n            long[] prev = dist.clone(); // relax from last round only, so each round adds at most one flight\n            for (int[] f : flights)\n                if (prev[f[0]] + f[2] < dist[f[1]]) dist[f[1]] = prev[f[0]] + f[2];\n        }\n        return dist[dst] == INF ? -1 : dist[dst];\n    }\n}",
+     "go": "// cheapestWithin returns the cheapest price from src to dst with at most k stops (LC 787).\nfunc cheapestWithin(n int, flights [][3]int, src, dst, k int) int {\n\tconst inf = 1 << 60\n\tdist := make([]int, n)\n\tfor i := range dist {\n\t\tdist[i] = inf\n\t}\n\tdist[src] = 0\n\tfor round := 0; round <= k; round++ { // after round i: best prices using at most i flights\n\t\tprev := append([]int(nil), dist...) // relax from last round only, so each round adds at most one flight\n\t\tfor _, f := range flights {\n\t\t\tif prev[f[0]]+f[2] < dist[f[1]] {\n\t\t\t\tdist[f[1]] = prev[f[0]] + f[2]\n\t\t\t}\n\t\t}\n\t}\n\tif dist[dst] == inf {\n\t\treturn -1\n\t}\n\treturn dist[dst]\n}"
+    },
+    "driver": {
+     "python": "flights = [(0, 1, 100), (1, 2, 100), (2, 0, 100), (1, 3, 600), (2, 3, 200)]\nprint(cheapest_within(4, flights, 0, 3, 1))\nprint(cheapest_within(3, [(0, 1, 100), (1, 2, 100), (0, 2, 500)], 0, 2, 1))\nprint(cheapest_within(3, [(0, 1, 100), (1, 2, 100), (0, 2, 500)], 0, 2, 0))\nprint(cheapest_within(3, [(0, 1, 1)], 0, 2, 5))",
+     "cpp": "cout << cheapestWithin(4, {{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}}, 0, 3, 1) << \"\\n\";\ncout << cheapestWithin(3, {{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}, 0, 2, 1) << \"\\n\";\ncout << cheapestWithin(3, {{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}, 0, 2, 0) << \"\\n\";\ncout << cheapestWithin(3, {{0, 1, 1}}, 0, 2, 5) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.cheapestWithin(4, new int[][] {{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}}, 0, 3, 1));\nshow(s.cheapestWithin(3, new int[][] {{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}, 0, 2, 1));\nshow(s.cheapestWithin(3, new int[][] {{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}, 0, 2, 0));\nshow(s.cheapestWithin(3, new int[][] {{0, 1, 1}}, 0, 2, 5));",
+     "go": "fmt.Println(cheapestWithin(4, [][3]int{{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}}, 0, 3, 1))\nfmt.Println(cheapestWithin(3, [][3]int{{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}, 0, 2, 1))\nfmt.Println(cheapestWithin(3, [][3]int{{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}, 0, 2, 0))\nfmt.Println(cheapestWithin(3, [][3]int{{0, 1, 1}}, 0, 2, 5))",
+     "expected": "700\n200\n500\n-1"
+    }
+   },
+   {
+    "id": "bitmask-bfs",
+    "pattern": {
+     "zh": "状态压缩 BFS：(结点, 已访问集合)",
+     "en": "Bitmask BFS: (node, visited set)"
+    },
+    "when": {
+     "zh": "要求「走遍所有点」的最短路，而点数很少（n ≤ 12 左右）：状态是 (当前结点, 已访问集合的位掩码)，所有起点一起入队做多源 BFS，第一次出现全 1 掩码时的步数就是答案。LC 847 访问所有节点的最短路径。",
+     "en": "For the shortest walk that visits every node when there are only a few (n up to about 12): the state is (current node, bitmask of visited nodes), every start goes into the queue at once for a multi-source BFS, and the first time a full mask appears gives the answer. LC 847 (Shortest Path Visiting All Nodes)."
+    },
+    "complexity": {
+     "zh": "时间 O(2^n × n²) · 空间 O(2^n × n)",
+     "en": "O(2^n × n²) time · O(2^n × n) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef shortest_path_all_nodes(graph: list[list[int]]) -> int:\n    \"\"\"Length of the shortest walk that visits every node; edges may repeat (LC 847).\"\"\"\n    n = len(graph)\n    full = (1 << n) - 1\n    seen = [[False] * (1 << n) for _ in range(n)]  # state (node, mask of visited nodes)\n    q = deque()\n    for i in range(n):  # every node is a start, at distance 0\n        seen[i][1 << i] = True\n        q.append((i, 1 << i))\n    steps = 0\n    while q:\n        for _ in range(len(q)):\n            u, mask = q.popleft()\n            if mask == full:\n                return steps\n            for v in graph[u]:\n                nxt = mask | 1 << v\n                if not seen[v][nxt]:\n                    seen[v][nxt] = True\n                    q.append((v, nxt))\n        steps += 1\n    return -1",
+     "cpp": "// Length of the shortest walk that visits every node; edges may repeat (LC 847).\nint shortestPathAllNodes(const vector<vector<int>>& graph) {\n    int n = graph.size(), full = (1 << n) - 1;\n    vector<vector<bool>> seen(n, vector<bool>(1 << n, false));  // state (node, mask of visited nodes)\n    queue<pair<int, int>> q;\n    for (int i = 0; i < n; i++) {  // every node is a start, at distance 0\n        seen[i][1 << i] = true;\n        q.push({i, 1 << i});\n    }\n    for (int steps = 0; !q.empty(); steps++)\n        for (int k = q.size(); k > 0; k--) {\n            auto [u, mask] = q.front();\n            q.pop();\n            if (mask == full) return steps;\n            for (int v : graph[u]) {\n                int next = mask | 1 << v;\n                if (!seen[v][next]) {\n                    seen[v][next] = true;\n                    q.push({v, next});\n                }\n            }\n        }\n    return -1;\n}",
+     "java": "class Solution {\n    // Length of the shortest walk that visits every node; edges may repeat (LC 847).\n    int shortestPathAllNodes(int[][] graph) {\n        int n = graph.length, full = (1 << n) - 1;\n        boolean[][] seen = new boolean[n][1 << n]; // state (node, mask of visited nodes)\n        Deque<int[]> q = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) { // every node is a start, at distance 0\n            seen[i][1 << i] = true;\n            q.offer(new int[] {i, 1 << i});\n        }\n        for (int steps = 0; !q.isEmpty(); steps++)\n            for (int k = q.size(); k > 0; k--) {\n                int[] state = q.poll();\n                if (state[1] == full) return steps;\n                for (int v : graph[state[0]]) {\n                    int next = state[1] | 1 << v;\n                    if (!seen[v][next]) {\n                        seen[v][next] = true;\n                        q.offer(new int[] {v, next});\n                    }\n                }\n            }\n        return -1;\n    }\n}",
+     "go": "// shortestPathAllNodes returns the length of the shortest walk that visits every node (LC 847).\nfunc shortestPathAllNodes(graph [][]int) int {\n\tn := len(graph)\n\tfull := 1<<n - 1\n\tseen := make([][]bool, n) // state (node, mask of visited nodes)\n\tvar q [][2]int\n\tfor i := range seen { // every node is a start, at distance 0\n\t\tseen[i] = make([]bool, 1<<n)\n\t\tseen[i][1<<i] = true\n\t\tq = append(q, [2]int{i, 1 << i})\n\t}\n\tfor steps := 0; len(q) > 0; steps++ {\n\t\tvar next [][2]int // the following BFS level\n\t\tfor _, s := range q {\n\t\t\tif s[1] == full {\n\t\t\t\treturn steps\n\t\t\t}\n\t\t\tfor _, v := range graph[s[0]] {\n\t\t\t\tif mask := s[1] | 1<<v; !seen[v][mask] {\n\t\t\t\t\tseen[v][mask] = true\n\t\t\t\t\tnext = append(next, [2]int{v, mask})\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tq = next\n\t}\n\treturn -1\n}"
+    },
+    "driver": {
+     "python": "for g in ([[1, 2, 3], [0], [0], [0]], [[1], [0, 2, 4], [1, 3, 4], [2], [1, 2]], [[]], [[1], [0]]):\n    print(shortest_path_all_nodes(g))",
+     "cpp": "for (auto& g : vector<vector<vector<int>>>{{{1, 2, 3}, {0}, {0}, {0}}, {{1}, {0, 2, 4}, {1, 3, 4}, {2}, {1, 2}}, {{}}, {{1}, {0}}})\n    cout << shortestPathAllNodes(g) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][][] graphs = {{{1, 2, 3}, {0}, {0}, {0}}, {{1}, {0, 2, 4}, {1, 3, 4}, {2}, {1, 2}}, {{}}, {{1}, {0}}};\nfor (int[][] g : graphs) show(s.shortestPathAllNodes(g));",
+     "go": "for _, g := range [][][]int{{{1, 2, 3}, {0}, {0}, {0}}, {{1}, {0, 2, 4}, {1, 3, 4}, {2}, {1, 2}}, {{}}, {{1}, {0}}} {\n    fmt.Println(shortestPathAllNodes(g))\n}",
+     "expected": "4\n4\n0\n1"
+    }
+   }
+  ]
+ },
+ "graph-spanning-tree": {
+  "variants": [
+   {
+    "id": "dense-prim",
+    "pattern": {
+     "zh": "稠密图 Prim：O(n²) 不用堆",
+     "en": "Prim on a dense graph: O(n²), no heap"
+    },
+    "when": {
+     "zh": "完全图或边数接近 n² 时（LC 1584 连接所有点的最小费用），先列出所有边再给 Kruskal 排序要 O(n² log n)；Prim 每次从树外挑距离最近的点加入、再用它更新其他点的距离，用数组扫一遍就是 O(n²)，也不用把边存下来。",
+     "en": "On a complete graph, or one with close to n² edges (LC 1584, Min Cost to Connect All Points), listing every edge and sorting it for Kruskal costs O(n² log n). Prim adds the nearest outside node each round and updates the others' distances from it; with a plain array scan that is O(n²) and stores no edges."
+    },
+    "complexity": {
+     "zh": "时间 O(n²) · 空间 O(n)",
+     "en": "O(n²) time · O(n) space"
+    },
+    "code": {
+     "python": "def min_cost_connect(points: list[list[int]]) -> int:\n    \"\"\"Minimum spanning tree weight of all points under Manhattan distance (LC 1584).\"\"\"\n    n = len(points)\n    dist = [float(\"inf\")] * n  # dist[v]: cheapest edge from the tree to v so far\n    dist[0] = 0\n    in_tree = [False] * n\n    total = 0\n    for _ in range(n):\n        u = min((v for v in range(n) if not in_tree[v]), key=lambda v: dist[v])  # nearest outside node\n        in_tree[u] = True\n        total += dist[u]\n        for v in range(n):\n            if not in_tree[v]:\n                d = abs(points[u][0] - points[v][0]) + abs(points[u][1] - points[v][1])\n                dist[v] = min(dist[v], d)\n    return total",
+     "cpp": "// Minimum spanning tree weight of all points under Manhattan distance (LC 1584).\nlong long minCostConnect(const vector<pair<int, int>>& points) {\n    int n = points.size();\n    vector<long long> dist(n, LLONG_MAX);  // dist[v]: cheapest edge from the tree to v so far\n    dist[0] = 0;\n    vector<bool> inTree(n, false);\n    long long total = 0;\n    for (int round = 0; round < n; round++) {\n        int u = -1;\n        for (int v = 0; v < n; v++)  // nearest outside node\n            if (!inTree[v] && (u < 0 || dist[v] < dist[u])) u = v;\n        inTree[u] = true;\n        total += dist[u];\n        for (int v = 0; v < n; v++)\n            if (!inTree[v]) {\n                long long d = abs(points[u].first - points[v].first) + abs(points[u].second - points[v].second);\n                dist[v] = min(dist[v], d);\n            }\n    }\n    return total;\n}",
+     "java": "class Solution {\n    // Minimum spanning tree weight of all points under Manhattan distance (LC 1584).\n    long minCostConnect(int[][] points) {\n        int n = points.length;\n        long[] dist = new long[n]; // dist[v]: cheapest edge from the tree to v so far\n        Arrays.fill(dist, Long.MAX_VALUE);\n        dist[0] = 0;\n        boolean[] inTree = new boolean[n];\n        long total = 0;\n        for (int round = 0; round < n; round++) {\n            int u = -1;\n            for (int v = 0; v < n; v++) // nearest outside node\n                if (!inTree[v] && (u < 0 || dist[v] < dist[u])) u = v;\n            inTree[u] = true;\n            total += dist[u];\n            for (int v = 0; v < n; v++)\n                if (!inTree[v]) {\n                    long d = Math.abs(points[u][0] - points[v][0]) + Math.abs(points[u][1] - points[v][1]);\n                    dist[v] = Math.min(dist[v], d);\n                }\n        }\n        return total;\n    }\n}",
+     "go": "// minCostConnect returns the minimum spanning tree weight of all points under Manhattan distance.\nfunc minCostConnect(points [][2]int) int {\n\tn := len(points)\n\tabs := func(x int) int {\n\t\tif x < 0 {\n\t\t\treturn -x\n\t\t}\n\t\treturn x\n\t}\n\tdist := make([]int, n) // dist[v]: cheapest edge from the tree to v so far\n\tfor v := 1; v < n; v++ {\n\t\tdist[v] = 1 << 62\n\t}\n\tinTree := make([]bool, n)\n\ttotal := 0\n\tfor round := 0; round < n; round++ {\n\t\tu := -1\n\t\tfor v := 0; v < n; v++ { // nearest outside node\n\t\t\tif !inTree[v] && (u < 0 || dist[v] < dist[u]) {\n\t\t\t\tu = v\n\t\t\t}\n\t\t}\n\t\tinTree[u] = true\n\t\ttotal += dist[u]\n\t\tfor v := 0; v < n; v++ {\n\t\t\tif !inTree[v] {\n\t\t\t\td := abs(points[u][0]-points[v][0]) + abs(points[u][1]-points[v][1])\n\t\t\t\tdist[v] = min(dist[v], d)\n\t\t\t}\n\t\t}\n\t}\n\treturn total\n}"
+    },
+    "driver": {
+     "python": "print(min_cost_connect([[0, 0], [2, 2], [3, 10], [5, 2], [7, 0]]))\nprint(min_cost_connect([[3, 12], [-2, 5], [-4, 1]]))\nprint(min_cost_connect([[0, 0]]))",
+     "cpp": "cout << minCostConnect({{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}}) << \"\\n\";\ncout << minCostConnect({{3, 12}, {-2, 5}, {-4, 1}}) << \"\\n\" << minCostConnect({{0, 0}}) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.minCostConnect(new int[][] {{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}}));\nshow(s.minCostConnect(new int[][] {{3, 12}, {-2, 5}, {-4, 1}}));\nshow(s.minCostConnect(new int[][] {{0, 0}}));",
+     "go": "fmt.Println(minCostConnect([][2]int{{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}}))\nfmt.Println(minCostConnect([][2]int{{3, 12}, {-2, 5}, {-4, 1}}))\nfmt.Println(minCostConnect([][2]int{{0, 0}}))",
+     "expected": "20\n18\n0"
+    }
+   },
+   {
+    "id": "leaf-peeling",
+    "pattern": {
+     "zh": "一层层剥叶子找树的中心",
+     "en": "Peel leaves layer by layer to find the centre"
+    },
+    "when": {
+     "zh": "问以哪个点为根树最矮（LC 310 最小高度树）：把度为 1 的叶子一圈圈剥掉，像拓扑排序一样，剩下的最后 1 到 2 个点就是中心。每个点进出队列一次，O(n)；不用从每个点都 BFS 一遍。",
+     "en": "To find the roots that make a tree shortest (LC 310, Minimum Height Trees): peel the degree-1 leaves off layer by layer, much like a topological sort, and the last one or two nodes left are the centres. Each node enters and leaves once, O(n), instead of a BFS from every node."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "def min_height_roots(n: int, edges: list[list[int]]) -> list[int]:\n    \"\"\"Roots giving the tree its minimum height (LC 310): the 1 or 2 nodes left after peeling leaves.\"\"\"\n    if n <= 2:\n        return list(range(n))\n    graph = [[] for _ in range(n)]\n    deg = [0] * n\n    for u, v in edges:\n        graph[u].append(v)\n        graph[v].append(u)\n        deg[u] += 1\n        deg[v] += 1\n    leaves = [u for u in range(n) if deg[u] == 1]\n    left = n\n    while left > 2:  # peel one whole layer of leaves at a time\n        left -= len(leaves)\n        nxt = []\n        for leaf in leaves:\n            for nb in graph[leaf]:\n                deg[nb] -= 1\n                if deg[nb] == 1:  # nb just became a leaf of the smaller tree\n                    nxt.append(nb)\n        leaves = nxt\n    return sorted(leaves)",
+     "cpp": "// Roots giving the tree its minimum height (LC 310): the 1 or 2 nodes left after peeling leaves.\nvector<int> minHeightRoots(int n, const vector<pair<int, int>>& edges) {\n    if (n <= 2) {\n        vector<int> all(n);\n        iota(all.begin(), all.end(), 0);\n        return all;\n    }\n    vector<vector<int>> graph(n);\n    vector<int> deg(n, 0), leaves;\n    for (auto [u, v] : edges) {\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n        deg[u]++;\n        deg[v]++;\n    }\n    for (int u = 0; u < n; u++)\n        if (deg[u] == 1) leaves.push_back(u);\n    for (int left = n; left > 2;) {  // peel one whole layer of leaves at a time\n        left -= leaves.size();\n        vector<int> next;\n        for (int leaf : leaves)\n            for (int nb : graph[leaf])\n                if (--deg[nb] == 1) next.push_back(nb);  // nb just became a leaf of the smaller tree\n        leaves = next;\n    }\n    sort(leaves.begin(), leaves.end());\n    return leaves;\n}",
+     "java": "class Solution {\n    // Roots giving the tree its minimum height (LC 310): the 1 or 2 nodes left after peeling leaves.\n    List<Integer> minHeightRoots(int n, int[][] edges) {\n        List<Integer> leaves = new ArrayList<>();\n        if (n <= 2) {\n            for (int u = 0; u < n; u++) leaves.add(u);\n            return leaves;\n        }\n        List<List<Integer>> graph = new ArrayList<>();\n        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());\n        int[] deg = new int[n];\n        for (int[] e : edges) {\n            graph.get(e[0]).add(e[1]);\n            graph.get(e[1]).add(e[0]);\n            deg[e[0]]++;\n            deg[e[1]]++;\n        }\n        for (int u = 0; u < n; u++)\n            if (deg[u] == 1) leaves.add(u);\n        for (int left = n; left > 2;) { // peel one whole layer of leaves at a time\n            left -= leaves.size();\n            List<Integer> next = new ArrayList<>();\n            for (int leaf : leaves)\n                for (int nb : graph.get(leaf))\n                    if (--deg[nb] == 1) next.add(nb); // nb just became a leaf of the smaller tree\n            leaves = next;\n        }\n        Collections.sort(leaves);\n        return leaves;\n    }\n}",
+     "go": "import \"sort\"\n\n// minHeightRoots returns the roots giving the tree its minimum height (LC 310).\nfunc minHeightRoots(n int, edges [][2]int) []int {\n\tif n <= 2 {\n\t\tall := make([]int, n)\n\t\tfor i := range all {\n\t\t\tall[i] = i\n\t\t}\n\t\treturn all\n\t}\n\tgraph := make([][]int, n)\n\tdeg := make([]int, n)\n\tfor _, e := range edges {\n\t\tgraph[e[0]] = append(graph[e[0]], e[1])\n\t\tgraph[e[1]] = append(graph[e[1]], e[0])\n\t\tdeg[e[0]]++\n\t\tdeg[e[1]]++\n\t}\n\tvar leaves []int\n\tfor u := 0; u < n; u++ {\n\t\tif deg[u] == 1 {\n\t\t\tleaves = append(leaves, u)\n\t\t}\n\t}\n\tfor left := n; left > 2; { // peel one whole layer of leaves at a time\n\t\tleft -= len(leaves)\n\t\tvar next []int\n\t\tfor _, leaf := range leaves {\n\t\t\tfor _, nb := range graph[leaf] {\n\t\t\t\tdeg[nb]--\n\t\t\t\tif deg[nb] == 1 { // nb just became a leaf of the smaller tree\n\t\t\t\t\tnext = append(next, nb)\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tleaves = next\n\t}\n\tsort.Ints(leaves)\n\treturn leaves\n}"
+    },
+    "driver": {
+     "python": "print(*min_height_roots(4, [[1, 0], [1, 2], [1, 3]]))\nprint(*min_height_roots(6, [[3, 0], [3, 1], [3, 2], [3, 4], [5, 4]]))\nprint(*min_height_roots(1, []))\nprint(*min_height_roots(2, [[0, 1]]))\nprint(*min_height_roots(4, [[0, 1], [1, 2], [2, 3]]))",
+     "cpp": "show(minHeightRoots(4, {{1, 0}, {1, 2}, {1, 3}}));\nshow(minHeightRoots(6, {{3, 0}, {3, 1}, {3, 2}, {3, 4}, {5, 4}}));\nshow(minHeightRoots(1, {}));\nshow(minHeightRoots(2, {{0, 1}}));\nshow(minHeightRoots(4, {{0, 1}, {1, 2}, {2, 3}}));",
+     "java": "Solution s = new Solution();\nshow(s.minHeightRoots(4, new int[][] {{1, 0}, {1, 2}, {1, 3}}));\nshow(s.minHeightRoots(6, new int[][] {{3, 0}, {3, 1}, {3, 2}, {3, 4}, {5, 4}}));\nshow(s.minHeightRoots(1, new int[][] {}));\nshow(s.minHeightRoots(2, new int[][] {{0, 1}}));\nshow(s.minHeightRoots(4, new int[][] {{0, 1}, {1, 2}, {2, 3}}));",
+     "go": "show(minHeightRoots(4, [][2]int{{1, 0}, {1, 2}, {1, 3}}))\nshow(minHeightRoots(6, [][2]int{{3, 0}, {3, 1}, {3, 2}, {3, 4}, {5, 4}}))\nshow(minHeightRoots(1, nil))\nshow(minHeightRoots(2, [][2]int{{0, 1}}))\nshow(minHeightRoots(4, [][2]int{{0, 1}, {1, 2}, {2, 3}}))",
+     "expected": "1\n3 4\n0\n0 1\n1 2"
+    }
+   }
+  ]
+ },
  "backtracking-enumeration": {
   "variants": [
    {
