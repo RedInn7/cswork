@@ -20,9 +20,6 @@ export default async function NewsletterLayout({ children }: { children: React.R
         {children}
       </main>
       <footer className="lists-public-footer">
-        <Link href="/discuss" prefetch={false}>
-          {zh ? '讨论区' : 'Discussion board'}
-        </Link>
         <Link href="/daily" prefetch={false}>
           {zh ? '每日一题' : 'Daily problem'}
         </Link>

@@ -42,10 +42,6 @@ export function issueText(issue: Issue, zh: boolean, token: string) {
   section(t('本周新题', 'New problems'), issue.problems.map((p) => `- ${p.title} (${p.companyName}): ${site}${p.href}`));
   section(t('学员面经', 'Member interview reports'), issue.experiences.map((e) => `- ${e.title} (${e.companyName}): ${site}${e.href}`));
   section(
-    t('热门讨论', 'Top discussions'),
-    issue.discussions.map((d) => `- ${d.title} (${t(`${d.votes} 赞`, `${d.votes} upvotes`)}): ${site}${d.href}`),
-  );
-  section(
     t('每日一题战报', 'Daily problem results'),
     issue.daily.map(
       (d) => `- ${d.date.slice(5)} ${(zh ? d.title : d.titleEn) || d.title}: ${t(`${d.solvers} 人通过`, `${d.solvers} solved`)} ${site}${d.href}`,
@@ -70,7 +66,7 @@ async function main() {
     const issue = await composeIssue(start);
     saveIssue(issue);
     console.log(
-      `${id}: ${issue.problems.length} problems, ${issue.experiences.length} reports, ${issue.discussions.length} discussions, ${issue.daily.length} daily problems`,
+      `${id}: ${issue.problems.length} problems, ${issue.experiences.length} reports, ${issue.daily.length} daily problems`,
     );
     return;
   }
