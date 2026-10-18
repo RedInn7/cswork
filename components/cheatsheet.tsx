@@ -149,7 +149,12 @@ export function ProgressExport({
       const files = portfolioFiles(items, { english, origin: location.origin, oa, notes });
       const count = files.filter((f) => f.name.endsWith('/README.md')).length;
       if (!count) {
-        setStatus({ text: t('还没有可以导出的通过代码。', 'No accepted code to export yet.') });
+        setStatus({
+          text:
+            !oa && items.some((item) => item.problemId.startsWith('oa-'))
+              ? t('目前通过的都是 OA 题：勾选「包括 OA 题」后再导出。', 'Only OA problems are accepted so far: tick Include OA problems to export them.')
+              : t('还没有可以导出的通过代码。', 'No accepted code to export yet.'),
+        });
         return;
       }
       save((await zip(files, true)) as BlobPart, 'application/zip', `cswork-solutions-${stamp()}.zip`);

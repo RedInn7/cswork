@@ -204,6 +204,12 @@ test('the history export pages accepted code into a portfolio zip, OA only when 
   );
   assert.match(new TextDecoder().decode(files.get('problems/lc-1-two-sum/README.md')), /## Notes\n\none pass\n$/);
   assert.equal(document.querySelector('.notes-export-status').textContent, 'Exported code for 2 problems');
+  // Only OA code accepted and the box unticked: say so, not "nothing to export".
+  globalThis.fetch = async () => Response.json({ items: [{ problemId: 'oa-acme-1', firstAc: 1, solutions: [{ language: 'python', code: 'oa', at: 1, runtime: null }] }], nextCursor: null });
+  await act(async () => button('accepted code').click());
+  await settle();
+  assert.match(document.querySelector('.notes-export-status').textContent, /Only OA problems are accepted so far/);
+  assert.equal(saved.length, 1, 'nothing saved');
   // A 403 (contest or exam running) shows the server's message.
   globalThis.fetch = async () => Response.json({ error: 'Exports and the review sheet are closed while your contest or exam runs' }, { status: 403 });
   await act(async () => button('accepted code').click());
