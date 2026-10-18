@@ -184,6 +184,22 @@ void test('portfolio: a folder per accepted problem, an index by stop in route o
     files.map((f) => [f.name, f.data]),
     'the deflated zip unpacks to the same files',
   );
+
+  // Local days, as the progress export: 20:00 UTC is already the next day in Shanghai.
+  const tz = process.env.TZ;
+  process.env.TZ = 'Asia/Shanghai';
+  try {
+    const late = Date.UTC(2026, 9, 2, 20);
+    const [readme, lc1] = portfolioFiles([{ problemId: 'lc-1', firstAc: late, solutions: [{ language: 'go', code: '', at: late, runtime: null }] }], {
+      english: true,
+      origin: '',
+    });
+    assert.match(readme.data, /\| go \| 2026-10-03 \|/);
+    assert.match(lc1.data, /- First accepted: 2026-10-03\n[\s\S]*\| 2026-10-03 \| – \|/);
+  } finally {
+    if (tz === undefined) delete process.env.TZ;
+    else process.env.TZ = tz;
+  }
 });
 
 void test('progress CSV: BOM, CRLF, formulas defused, lists, marks and no due day once mastered', () => {

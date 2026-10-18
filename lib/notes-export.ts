@@ -116,6 +116,13 @@ const fenced = (code: string, language: string) => {
   return `${fence}${language}\n${code.replace(/\n$/, '')}\n${fence}`;
 };
 const day = (at: number | null | undefined) => (at ? new Date(at).toISOString().slice(0, 10) : null);
+const pad = (n: number) => String(n).padStart(2, '0');
+/** YYYY-MM-DD in this browser's zone, as review due dates are local midnights; the portfolio and progress exports agree. */
+const localDay = (at: number | null) => {
+  if (!at) return null;
+  const d = new Date(at);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
 
 /** A problem's title in the reader's language, else its id. */
 export const metaTitle = (id: string, meta: ProblemMeta | undefined, english: boolean) =>
@@ -278,13 +285,13 @@ export function portfolioFiles(
       difficulty ? `- ${t('难度', 'Difficulty')}: ${difficulty}` : null,
       m?.topics?.length ? `- ${t('知识点', 'Topics')}: ${m.topics.map((s) => topicName(s, !english)).join(', ')}` : null,
       stop ? `- ${t('Line 500 站', 'Line 500 stop')}: [${t(...STOP_NAMES[stop])}](${origin}/topics/${stop})` : null,
-      `- ${t('首次通过', 'First accepted')}: ${day(item.firstAc)}`,
+      `- ${t('首次通过', 'First accepted')}: ${localDay(item.firstAc)}`,
       '',
       `| ${t('语言', 'Language')} | ${t('代码', 'Code')} | ${t('最近通过', 'Last accepted')} | ${t('用时', 'Runtime')} |`,
       '| --- | --- | --- | --- |',
       ...solutions.map(
         (s) =>
-          `| ${cell(s.language)} | [solution.${extension(s.language)}](solution.${extension(s.language)}) | ${day(s.at)} | ${s.runtime == null ? '–' : `${Math.round(s.runtime * 1000)} ms`} |`,
+          `| ${cell(s.language)} | [solution.${extension(s.language)}](solution.${extension(s.language)}) | ${localDay(s.at)} | ${s.runtime == null ? '–' : `${Math.round(s.runtime * 1000)} ms`} |`,
       ),
       notes && item.note?.trim() ? `\n## ${t('笔记', 'Notes')}\n\n${item.note.trim()}` : null,
     ];
@@ -323,7 +330,7 @@ export function portfolioFiles(
           .map(([item, dir]) => {
             const level = item.meta?.difficulty ? levelOf(item.meta.difficulty) : undefined;
             const languages = [...new Set(item.solutions.map((s) => s.language))].sort().join(', ');
-            return `| [${cell(metaTitle(item.problemId, item.meta, english))}](${encodeURI(`${dir}/`)}) | ${cell(level ? level[english ? 2 : 1] : (item.meta?.difficulty ?? ''))} | ${cell(languages)} | ${day(item.firstAc)} |`;
+            return `| [${cell(metaTitle(item.problemId, item.meta, english))}](${encodeURI(`${dir}/`)}) | ${cell(level ? level[english ? 2 : 1] : (item.meta?.difficulty ?? ''))} | ${cell(languages)} | ${localDay(item.firstAc)} |`;
           }),
       ]),
   ];
@@ -338,13 +345,6 @@ export const PROGRESS_COLUMNS = [
 ] as const;
 export type ProgressRow = Record<(typeof PROGRESS_COLUMNS)[number], string | number | boolean | null>;
 const GRADES = ['Again', 'Hard', 'Good', 'Easy'] as const;
-const pad = (n: number) => String(n).padStart(2, '0');
-/** YYYY-MM-DD in this browser's zone, as review due dates are local midnights. */
-const localDay = (at: number | null) => {
-  if (!at) return null;
-  const d = new Date(at);
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-};
 
 /**
  * One row per problem tried (GET oj/history): attempts, help, solve time, review state, the
