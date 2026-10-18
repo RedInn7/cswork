@@ -51,6 +51,8 @@ export function visibleCourseSql(p: Person | null, column: string) {
 
 /** SQL clause hiding notifications about courses this person may not see. */
 export function courseNotificationFilter(p: Person | null) {
-  if (!coursesOwnerOnly() || isCourseOwner(p)) return '';
+  // Release notes of the removed course would open a release that no longer shows.
+  if (!coursesOwnerOnly() || isCourseOwner(p))
+    return ` AND NOT EXISTS(SELECT 1 FROM releases r WHERE href='/?view=releases&release='||r.id AND r.course_id='${REMOVED_COURSE}')`;
   return ` AND href NOT LIKE '/?view=courses%' AND NOT EXISTS(SELECT 1 FROM releases r WHERE href='/?view=releases&release='||r.id)`;
 }

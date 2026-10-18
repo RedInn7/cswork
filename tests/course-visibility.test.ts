@@ -15,7 +15,7 @@ process.env.ADMIN_EMAILS = 'owner@cswork.test,admin@cswork.test';
 execFileSync(process.execPath, ['scripts/migrate.mjs'], { env: process.env });
 const { sqlite } = await import('../db/sqlite');
 // api.ts pulls in Vite-only seeding; bootstrap filters courses with canSeeCourse.
-const { canSeeCourse } = await import('../lib/server/course-visibility');
+const { canSeeCourse, courseNotificationFilter } = await import('../lib/server/course-visibility');
 const { liveLesson, courseAccess } = await import('../lib/server/lms-common');
 const { handleMedia } = await import('../lib/server/media');
 const { handleLms } = await import('../lib/server/lms');
@@ -158,6 +158,27 @@ test('the removed Algorithm Concepts course is hidden in both modes, owner inclu
     assert.deepEqual(found, ['00-overview'], `owner search ${on}`);
     // A certificate issued before the removal still verifies.
     assert.equal(certificateById('kcert-0000000001')?.course, 'Knowledge', `certificate ${on}`);
+  }
+  ownerOnly(false);
+  // ...even after the owner unpublishes the course in the CMS.
+  db.prepare("UPDATE courses SET published=0 WHERE id='sde-interview-foundations'").run();
+  assert.equal(certificateById('kcert-0000000001')?.course, 'Knowledge', 'certificate unpublished');
+  db.prepare("UPDATE courses SET published=1 WHERE id='sde-interview-foundations'").run();
+  // Its old release notes drop out of the inbox and unread count; other courses' stay.
+  db.prepare(
+    "INSERT INTO releases(id,course_id,version,title,body,created_at) VALUES('rk','sde-interview-foundations','1.0.0','Knowledge update','body',1)",
+  ).run();
+  for (const r of ['r1', 'rk'])
+    db.prepare(
+      "INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,'member','t','b',?,1)",
+    ).run(`n-${r}`, `/?view=releases&release=${r}`);
+  for (const p of [member, owner]) {
+    ownerOnly(p === owner);
+    const seen = db
+      .prepare(`SELECT id FROM notifications WHERE user_id='member'${courseNotificationFilter(p)} ORDER BY id`)
+      .all()
+      .map((r) => (r as { id: string }).id);
+    assert.deepEqual(seen, ['n-r1'], `notifications ${p.id}`);
   }
   ownerOnly(false);
 });

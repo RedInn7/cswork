@@ -45,12 +45,15 @@ const EXTERNAL = new Map<string, { zh: string; en: string; lessons: number; skil
 function shown<T extends { courseId: string; course: string | null }>(row: T, zh: boolean) {
   const external = EXTERNAL.get(row.courseId);
   if (external) return { ...row, course: zh ? external.zh : external.en, skill: external.skill };
-  // A course row: published (the LEFT JOIN found it) and not hidden from the public (owner-only mode).
+  // A course row: published (COURSE_JOIN found it) and not hidden from the public (owner-only mode).
   // Certificates already issued for the removed Algorithm Concepts course stay verifiable.
   return row.course !== null && (canSeeCourse(null, row.courseId) || row.courseId === REMOVED_COURSE)
     ? { ...row, course: row.course, skill: false }
     : null;
 }
+
+/** The certificate's course row when published; the removed course's row even if later unpublished. */
+const COURSE_JOIN = `LEFT JOIN courses co ON co.id=c.course_id AND (co.published=1 OR co.id='${REMOVED_COURSE}')`;
 
 const mine = (userId: string) =>
   sqlite()
@@ -132,7 +135,7 @@ export function certificateById(id: string, zh = true) {
       `SELECT c.id,c.course_id AS courseId,c.issued_at AS issuedAt,co.title AS course,u.name,
         (SELECT handle FROM user_profiles up WHERE up.user_id=c.user_id AND up.visible=1 AND c.on_profile=1) AS handle,
         (SELECT COUNT(*) FROM lessons l WHERE l.course_id=c.course_id AND l.published=1) AS lessons
-      FROM certificates c LEFT JOIN courses co ON co.id=c.course_id AND co.published=1 JOIN user u ON u.id=c.user_id WHERE c.id=?`,
+      FROM certificates c ${COURSE_JOIN} JOIN user u ON u.id=c.user_id WHERE c.id=?`,
     )
     .get(id) as
     | { id: string; courseId: string; issuedAt: number; course: string | null; name: string; handle: string | null; lessons: number }
@@ -151,7 +154,7 @@ export function myCertificates(userId: string, zh = true) {
     sqlite()
       .prepare(
         `SELECT c.id,c.course_id AS courseId,c.issued_at AS issuedAt,co.title AS course FROM certificates c
-        LEFT JOIN courses co ON co.id=c.course_id AND co.published=1 WHERE c.user_id=? ORDER BY c.issued_at DESC,c.id`,
+        ${COURSE_JOIN} WHERE c.user_id=? ORDER BY c.issued_at DESC,c.id`,
       )
       .all(userId) as (Omit<Certificate, 'onProfile'> & { course: string | null })[]
   ).flatMap((row) => shown(row, zh) ?? []);
@@ -163,7 +166,7 @@ export function profileCertificates(handle: string, zh = true) {
     sqlite()
       .prepare(
         `SELECT c.id,c.course_id AS courseId,c.issued_at AS issuedAt,co.title AS course FROM certificates c
-        JOIN user_profiles up ON up.user_id=c.user_id AND up.visible=1 LEFT JOIN courses co ON co.id=c.course_id AND co.published=1
+        JOIN user_profiles up ON up.user_id=c.user_id AND up.visible=1 ${COURSE_JOIN}
         WHERE up.handle=? AND c.on_profile=1 ORDER BY c.issued_at DESC,c.id`,
       )
       .all(handle) as (Omit<Certificate, 'onProfile'> & { course: string | null })[]
