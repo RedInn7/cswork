@@ -136,7 +136,7 @@ void test('the checklist: off-list skills dropped, the posting sent as data, pro
   assert.ok(!JSON.stringify(request.body).includes(me.email));
 });
 
-void test('progress: certificates, chapters, Core Skills, tracks, stories and the study plan stops', async () => {
+void test('progress: certificates, chapters, Core Skills, tracks and the study plan stops', async () => {
   const learner: Person = { ...me, id: 'jd-progress', email: 'jd-progress@example.test' };
   const db = sqlite();
   db.prepare("INSERT INTO certificates(id,user_id,course_id,issued_at) VALUES('jdcert0000000001',?,'skill:sql',1)").run(learner.id);
@@ -148,8 +148,6 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
   ac(learner.id, 'core-read-write-lock', 'java');
   ac(learner.id, 'core-dynamic-array', 'java');
   for (let i = 1; i <= 5; i++) ac(learner.id, `oa-acme-${i}`, 'cpp');
-  for (let i = 1; i <= 7; i++)
-    db.prepare("INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,'{}',1)").run(learner.id, `story:s${i}`);
   ac(learner.id, stopProblems(ROUTE_SLUGS[0])[0], 'go');
   replyText = JSON.stringify({
     skills: ['sql', 'lld', 'concurrency', 'oa', 'behavioral', 'go', 'frontend', 'dsa', 'ml'].map((skill) => ({ skill, evidence: skill, importance: 'must' })),
@@ -169,11 +167,10 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
   // 3 chapters + 7 concurrency problems; core-dynamic-array is not one of them.
   assert.deepEqual(by.concurrency, ['partial', 3, chapters(['concurrency-primitives']) + 7]);
   assert.deepEqual(by.oa, ['partial', 5, 30]);
-  // Seven stories toward six: capped, ready.
-  assert.deepEqual(by.behavioral, ['ready', 6, 6]);
   assert.deepEqual(by.go, ['partial', 1, 30]);
-  // Nothing on the site measures front end: no verdict, not a gap.
+  // Nothing on the site measures front end or behavioral: no verdict, not a gap.
   assert.deepEqual(by.frontend, ['unmeasured', 0, 0]);
+  assert.deepEqual(by.behavioral, ['unmeasured', 0, 0]);
   assert.deepEqual(by.dsa, ['gap', 0, 35]);
   assert.deepEqual(by.ml, ['gap', 0, chapters(['ml-design-framework'])]);
   // dsa and oa are not ready: every stop goes to the study plan (one AC covers none).
@@ -181,7 +178,7 @@ void test('progress: certificates, chapters, Core Skills, tracks, stories and th
 });
 
 void test('the pure measures: thresholds, certificates, empty learners and replies that are not one', () => {
-  const empty = { solved: new Map(), read: new Set<string>(), certs: new Set<string>(), stories: 0 };
+  const empty = { solved: new Map(), read: new Set<string>(), certs: new Set<string>() };
   assert.deepEqual(weakStops(empty), ROUTE_SLUGS);
   assert.deepEqual(skillProgress('python', empty), { status: 'gap', done: 0, total: 30, certified: false });
   const solved = new Map(Array.from({ length: 24 }, (_, i) => [`lc-x${i}`, new Set(['java'])] as const));

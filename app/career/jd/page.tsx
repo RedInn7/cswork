@@ -11,7 +11,7 @@ const copy = {
       'Paste a job description and see which skills it asks for, how far your CSWork practice covers each one, the interview rounds to expect, and a study plan built around the gaps. Nothing is stored.',
     kicker: `JD READINESS CHECK · ${AI_DAILY_LIMITS.jd} A DAY`,
     h1: 'Paste a job description. See where you stand.',
-    lead: 'The posting’s skills, each set against your own practice here: Line 500, the SQL track, chapters you have read, certificates and your STAR stories. Gaps on Line 500 go straight into your sprint plan.',
+    lead: 'The posting’s skills, each set against your own practice here: Line 500, the SQL track, chapters you have read and certificates. Gaps on Line 500 go straight into your sprint plan.',
     privacyTitle: 'Before you paste',
     privacy:
       'The job description you paste is sent to Anthropic to pick out the skills it asks for. CSWork does not store the text or the checklist; only the daily number of checks is counted. Your progress is read from your own account and is not sent.',
@@ -28,7 +28,7 @@ const copy = {
     description: '粘贴职位描述，看它要求哪些技能、你在 CSWork 上的练习各覆盖了多少、可能有哪些面试环节，并按缺口生成学习计划。不保存任何内容。',
     kicker: `JD 准备度检查 · 每天 ${AI_DAILY_LIMITS.jd} 次`,
     h1: '把职位描述贴进来，看看自己准备到哪了。',
-    lead: '逐项列出职位要求的技能，并对照你在本站的练习：500 路、SQL 题、读过的章节、证书和 STAR 故事。500 路上的缺口可以直接排进冲刺计划。',
+    lead: '逐项列出职位要求的技能，并对照你在本站的练习：500 路、SQL 题、读过的章节和证书。500 路上的缺口可以直接排进冲刺计划。',
     privacyTitle: '粘贴之前',
     privacy:
       '你粘贴的职位描述会发送给 Anthropic，用于找出其中要求的技能。CSWork 不保存职位描述和清单结果，只统计每天的分析次数。你的练习进度从你自己的账户读取，不会发送出去。',

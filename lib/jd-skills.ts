@@ -38,7 +38,6 @@ export type JdReport = { skills: JdItem[]; likelyRounds: JdRound[]; planStops: s
  * - prefix / language: problems solved (id prefix, or accepted in that language), toward `goal`;
  * - parts: system design course parts (sdParts, named by their first chapter) whose chapters are
  *   marked read, plus `core`, a Core Skills group (lib/content/core-skills.json) whose problems are solved;
- * - stories: STAR stories in the story bank, toward `goal`;
  * - certs: judged certificates (skill exams) that make the skill ready on their own; a reading
  *   course's certificate is only chapters marked read, so it never stands in for solved problems.
  * None of them: nothing on the site tracks the skill.
@@ -49,7 +48,6 @@ type Measure = {
   language?: CodeLanguage;
   parts?: string[];
   core?: string;
-  stories?: true;
   goal?: number;
   certs?: string[];
 };
@@ -115,9 +113,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '行为面试',
     en: 'Behavioral',
     hint: 'communication, teamwork, ownership, leadership, working with others',
-    href: '/?view=stories',
-    stories: true,
-    goal: 6,
+    href: '/?view=mock-interview&template=behavioral',
   },
   ml: {
     zh: '机器学习',

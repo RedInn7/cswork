@@ -743,7 +743,6 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                               </a>
                             )}
                             {a.prep && <a href={a.prep.problems}>{t('这家的高频题', 'Its most reported problems')}</a>}
-                            {a.prep && <a href={a.prep.stories}>{t('故事库', 'Story bank')}</a>}
                             {interviewed && <a href={writeUpHref(a)}>{t('写这场面经', 'Write up this interview')}</a>}
                             {/* oxlint-disable-next-line next/no-html-link-for-pages -- the SPA's bank view, where the plan lives. */}
                             {sprint && <a href="/?view=problems">{t('冲刺计划', 'Sprint plan')}</a>}
