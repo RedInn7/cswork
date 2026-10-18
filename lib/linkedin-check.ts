@@ -70,7 +70,7 @@ export function checkLinkedIn(p: LinkedIn, resumeText: string | null): { score: 
   const missing = terms.filter((term) => !mentions(term, `${p.skills}\n${p.headline}`));
   if (missing.length) {
     const list = missing.slice(0, 5).join(', ');
-    add('skills', (12 * missing.length) / terms.length, `简历里写了、LinkedIn 技能和标题里没有：${list}${missing.length > 5 ? ` 等 ${missing.length} 项` : ''}。`, `On your resume but not in your LinkedIn skills or headline: ${list}${missing.length > 5 ? ` and ${missing.length - 5} more` : ''}.`);
+    add('skills', (12 * missing.length) / terms.length, `简历里写了、LinkedIn 技能和标题里没有：${missing.slice(0, 5).join('、')}${missing.length > 5 ? ` 等 ${missing.length} 项` : ''}。`, `On your resume but not in your LinkedIn skills or headline: ${list}${missing.length > 5 ? ` and ${missing.length - 5} more` : ''}.`);
   }
 
   const url = p.url.trim();
