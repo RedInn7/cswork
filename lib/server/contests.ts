@@ -42,7 +42,7 @@ import { listProblemSummaries } from './oj-problems';
 import { ratedJudgeable } from './study-library';
 import { duelRating } from './contest-ratings';
 export { ratingHistory } from './contest-ratings';
-import { code as inviteCode, newCode, plain } from './study-groups';
+import { plain } from './plain-text';
 
 /**
  * Contest rooms (db/contests-schema.ts): the site contests (the weekly and the easier starter),
@@ -65,6 +65,14 @@ export const BOARD_ROWS = 200;
 const problemId = z.string().regex(/^(?:oa-[a-z0-9-]{1,180}|lc-\d{1,6})$/);
 export const displayName = plain(24);
 const roomId = /^[A-Za-z0-9_-]{1,24}$/;
+// Private room invite codes. No 0/O/1/I: codes get read aloud and typed from screenshots.
+const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const newCode = () => [...randomBytes(8)].map((b) => ALPHABET[b & 31]).join('');
+const inviteCode = z
+  .string()
+  .max(40)
+  .transform((s) => s.replace(/[\s-]/g, '').toUpperCase())
+  .pipe(z.string().regex(/^[A-HJ-NP-Z2-9]{8}$/));
 
 type RoomRow = {
   id: string;

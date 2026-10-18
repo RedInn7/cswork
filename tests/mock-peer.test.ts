@@ -100,6 +100,12 @@ void test('requests need an account, a verified email and future slots in the ne
   assert.equal(await status(person('p-many'), 'POST', 'peer', ask('X', Array.from({ length: 25 }, (_, i) => hour + 3 + i))), 400);
   // A name that renders blank is not a name.
   assert.equal(await status(person('p-blank'), 'POST', 'peer', ask('ㅤ', [hour + 5])), 400);
+  // plain() is shared with contest display names: RTL overrides, Hangul fillers, the braille blank
+  // and a lone combining mark all fail.
+  const { plain } = await import('../lib/server/plain-text');
+  for (const blank of ['ab\u202Ecd', '\u3164', '\u115F', '\u2800', '\u3164\u3164', 'a\uFFA0', '\u0301'])
+    assert.equal(plain(24).safeParse(blank).success, false, escape(blank));
+  assert.equal(plain(24).safeParse('Amy 李').success, true);
 });
 
 void test('the oldest overlapping request becomes the partner, at the earliest shared hour', async () => {

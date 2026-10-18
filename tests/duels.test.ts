@@ -100,9 +100,14 @@ void test('the queue matches two learners into a ranked duel on problems neither
   sqlite()
     .prepare("INSERT INTO duel_queue(user_id,display_name,rating,created_at,seen_at) VALUES('d-gone','Gone',1500,?,?)")
     .run(Date.now() - 11 * MIN, Date.now() - 11 * MIN);
+  // The same cleanup still sweeps chat left by the removed study groups past 180 days (privacy page).
+  const chat = sqlite().prepare("INSERT INTO study_group_messages(id,group_id,user_id,body,hidden,created_at) VALUES(?,'g','u','x',0,?)");
+  chat.run('old', Date.now() - 181 * 1440 * MIN);
+  chat.run('new', Date.now() - 1440 * MIN);
   assert.equal(await status(person('d-new', { verified: false }), 'POST', 'contests/duel/queue', { displayName: 'N' }), 403);
   assert.equal(await status(null, 'GET', 'contests/duel/queue'), 401);
   assert.equal(sqlite().prepare('SELECT COUNT(*) FROM duel_queue').pluck().get(), 0);
+  assert.deepEqual(sqlite().prepare('SELECT id FROM study_group_messages').pluck().all(), ['new']);
   submit(amy.id, 'lc-12', 'accepted', Date.now() - 86400000);
   assert.deepEqual(await poll(amy), { state: 'idle' });
   const waiting = await queue(amy, 'Amy');

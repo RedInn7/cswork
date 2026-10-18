@@ -55,8 +55,7 @@ export function followPeople(h: string, which: 'followers' | 'following') {
 
 /**
  * Distinct LeetCode and OA problems accepted since this local Monday by the reader and the
- * visible profiles they follow. `tz` is Date#getTimezoneOffset minutes, rounded to whole hours
- * like the study groups' week.
+ * visible profiles they follow. `tz` is Date#getTimezoneOffset minutes, rounded to whole hours.
  */
 export function followBoard(p: Person, tz = 0, now = Date.now()) {
   const db = sqlite();

@@ -398,7 +398,9 @@ void test('private rooms: picked, drawn or replayed problems, invite codes, duel
   assert.equal(await status(stranger, 'POST', `contests/${picked.id}/join`, { displayName: 'S' }), 404);
   const preview = await ok<{ title: string; full: boolean }>(stranger, 'GET', `contests/preview?code=${picked.inviteCode}`);
   assert.equal(preview.title, 'Friday mashup');
-  const joined = await ok(stranger, 'POST', 'contests/join', { code: picked.inviteCode!.toLowerCase(), displayName: 'Stan' });
+  // Codes forgive case, spaces and dashes.
+  const typed = `${picked.inviteCode!.slice(0, 4).toLowerCase()}- ${picked.inviteCode!.slice(4)}`;
+  const joined = await ok(stranger, 'POST', 'contests/join', { code: typed, displayName: 'Stan' });
   assert.equal(joined.me?.name, 'Stan');
   assert.equal(joined.me?.virtual, false, 'before the start: live');
   assert.equal(joined.entrants, 2);

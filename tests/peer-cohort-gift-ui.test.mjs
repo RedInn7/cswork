@@ -45,7 +45,6 @@ globalThis.ResizeObserver ??= class {
 };
 const { createRoot } = await import('react-dom/client');
 const { MockPeer, slotGrid, icsFor, roundHref } = await import('../components/mock-peer.tsx');
-const { CampPanel, cardFacts, drawCard } = await import('../components/group-camp.tsx');
 const { GiftBlock, RedeemGift } = await import('../components/course-gift.tsx');
 const { NewsletterToggle } = await import('../components/newsletter-toggle.tsx');
 const { LEAD_HOURS, WINDOW_HOURS } = await import('../lib/mock-peer.ts');
@@ -192,95 +191,6 @@ test('peer page: pick hours and ask; a session shows its own two roles and check
   } finally {
     api.restore();
   }
-});
-
-const camp = {
-  plan: 'blind-75',
-  planName: ['Blind 75', 'Blind 75'],
-  perDay: 2,
-  startDate: '2026-10-13',
-  day: 2,
-  days: 38,
-  total: 75,
-  tasks: [
-    { id: 'lc-1', number: 1, titleZh: '两数之和', titleEn: 'Two Sum', difficulty: '简单' },
-    { id: 'lc-121', number: 121, titleZh: '买卖股票', titleEn: 'Best Time to Buy and Sell Stock', difficulty: '简单' },
-  ],
-};
-const members = [
-  { key: 'k1', name: 'Cap', me: true, streak: 5, today: 2, camp: { today: 1, done: 3, mine: [true, false] } },
-  { key: 'k2', name: 'Amy', me: false, streak: 1, today: 0, camp: { today: 2, done: 4 } },
-];
-
-test('check-in card: the facts, drawn on a 2D canvas or reported unsupported', () => {
-  const facts = cardFacts({ group: 'Sprint', camp, streak: 5, today: 2, done: 3, date: '2026-10-14' }, true);
-  assert.equal(facts.big, 'DAY 2');
-  assert.deepEqual(facts.stats, [
-    ['2', 'solved today'],
-    ['5', 'day streak'],
-    ['3/75', 'Blind 75'],
-  ]);
-  assert.equal(cardFacts({ group: 'S', camp: { ...camp, day: 0 }, streak: 0, today: 0, done: 0, date: '2026-10-14' }, false).big, '2026-10-14');
-  assert.equal(drawCard({ getContext: () => null }, facts), false);
-  const texts = [];
-  const ctx = new Proxy(
-    { fillText: (s) => texts.push(s), measureText: (s) => ({ width: s.length * 10 }) },
-    { get: (target, key) => target[key] ?? (() => {}), set: () => true },
-  );
-  const canvas = { getContext: () => ctx };
-  assert.equal(drawCard(canvas, facts), true);
-  assert.equal(canvas.width, 1080);
-  assert.ok(texts.includes('Sprint') && texts.includes('DAY 2') && texts.includes('3/75'));
-});
-
-test('cohort panel: day N, today’s done grid, and the owner’s settings', async () => {
-  const saved = [];
-  const root = await mount(
-    createElement(CampPanel, {
-      camp,
-      members,
-      group: 'Sprint',
-      manage: true,
-      member: true,
-      busy: false,
-      save: async (body) => (saved.push(body), true),
-      t: (zh, en) => en,
-      english: true,
-    }),
-  );
-  assert.ok(document.querySelector('.group-camp-led').textContent === 'Day 2');
-  assert.ok(document.querySelector('.group-camp-day small').textContent === 'of 38');
-  const heads = [...document.querySelectorAll('.group-camp-grid thead a')];
-  assert.ok(heads[0].getAttribute('href') === '/?view=problem&problem=lc-1' && heads[0].textContent === '1. Two Sum');
-  const rows = [...document.querySelectorAll('.group-camp-grid tbody tr')];
-  assert.equal(rows.length, 2);
-  assert.deepEqual(
-    [...rows[0].querySelectorAll('.group-led')].map((led) => led.getAttribute('data-level')),
-    ['4', '0'],
-  );
-  assert.ok(rows[0].querySelector('.group-num').textContent === '3/75');
-  // Another member's row: a count of today's tasks, never which ones.
-  assert.equal(rows[1].querySelectorAll('.group-led').length, 0);
-  assert.ok(rows[1].querySelector('td[colspan="2"]').textContent.startsWith('2/2'));
-  await act(async () => button('Edit cohort').click());
-  const date = document.querySelector('.group-camp-form input[type="date"]');
-  assert.ok(date.value === '2026-10-13');
-  await act(async () => button('Save cohort').click());
-  await wait();
-  assert.deepEqual(saved.at(-1), { plan: 'blind-75', perDay: 2, startDate: '2026-10-13' });
-  await act(async () => button('End cohort').click());
-  assert.deepEqual(saved.at(-1), { plan: '' });
-  // No canvas in jsdom: the card says so instead of failing.
-  const original = dom.window.HTMLCanvasElement.prototype.getContext;
-  dom.window.HTMLCanvasElement.prototype.getContext = () => null;
-  try {
-    await act(async () => button('check-in card').click());
-    await wait();
-    assert.ok(document.querySelector('.group-card [role="status"]').textContent.includes('can’t draw'));
-  } finally {
-    dom.window.HTMLCanvasElement.prototype.getContext = original;
-  }
-  await act(async () => root.unmount());
 });
 
 test('gift order: the buyer copies the code or link and can swap it', async () => {
