@@ -121,7 +121,6 @@ test('workspace extras: meta line, votes, share, maximize, shuffle, AI thread an
           problem: { id: 'lc-1', title: 'A+B', titleEn: 'A+B', difficulty: '简单', tags: [], lessonId: 'lesson', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'teacher', verified: true }, courses: [], services: { ai: true, judge: true } },
           navigate: (view, extra) => navigations.push([view, extra]),
-          ask() {},
           refresh: async () => {},
         }),
       ),

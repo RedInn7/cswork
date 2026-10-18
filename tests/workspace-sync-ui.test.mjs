@@ -86,7 +86,6 @@ test('a newer draft from another device, Format, and Open in Playground', async 
           problem: { id: 'acm-1', title: 'A+B', titleEn: 'A+B', difficulty: '简单', tags: problem.tags, lessonId: 'lesson', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),

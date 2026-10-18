@@ -122,7 +122,6 @@ test('a problem with its own starters opens, switches and resets to them', async
           problem: { id: pkg.problem.id, title: pkg.problem.title, difficulty: '简单', tags: [], courseId: 'gomall' },
           boot: { person: { id: 'learner', role: 'student' }, courses: [] },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),

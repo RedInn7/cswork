@@ -101,7 +101,6 @@ test('the workspace opens a pandas problem with its starter and the result-set d
           problem: { id: 'pd-01', title: statement.title, titleEn: statement.title, difficulty: '简单', tags: [], lessonId: '00-overview', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'student', verified: true }, courses: [], services: { ai: true, judge: true } },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),
