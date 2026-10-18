@@ -20,9 +20,9 @@ const DAY = 86400000;
 const PAGE = 100;
 export const NEW_THREADS_PER_DAY = 20;
 export const MESSAGES_PER_DAY = 200;
-/** New conversations one learner may receive a day, so a referral thread cannot flood its author. */
+/** New conversations one learner may receive a day. */
 export const INBOUND_PER_DAY = 10;
-/** Who may start a conversation with you: mutual follows and referral requests, mutual follows, nobody. */
+/** Who may start a conversation with you; 'all' and 'follows' both mean mutual follows since referral threads left. */
 const OPEN = ['all', 'follows', 'none'] as const;
 
 const threadOf = (a: string, b: string) => [a, b].sort().join('|');
@@ -37,7 +37,7 @@ const openTo = (userId: string) =>
   ((sqlite().prepare('SELECT open FROM dm_settings WHERE user_id=?').pluck().get(userId) as string | undefined) ??
     'all') as (typeof OPEN)[number];
 
-/** Who a new conversation goes to, and the referral post it is opened from ('' between mutual follows). */
+/** Who a new conversation goes to; `post` is '' (old rows opened from a referral thread hold its id). */
 function recipient(p: Person, d: { to?: string; post?: string }) {
   const db = sqlite();
   // The board's referral threads are gone, so a conversation opens only between mutual follows.
@@ -88,7 +88,7 @@ function send(p: Person, thread: string, to: string, body: string, post: string 
       notify({
         userId: to,
         kind: 'dm',
-        title: post ? '你收到一条内推请求' : '你收到一条新私信',
+        title: '你收到一条新私信',
         body: nameOf(p.id),
         href: `/?view=messages&thread=${threadKey(thread)}`,
         now,

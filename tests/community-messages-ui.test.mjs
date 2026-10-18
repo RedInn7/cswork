@@ -256,13 +256,13 @@ test('messages: the inbox and who may write, a conversation with block and repor
     assert.ok(button('Unblock'));
     await act(async () => root.unmount());
 
-    // A referral request: the first message opens the conversation and goes there.
-    root = await mount(createElement(Messages, { navigate, params: { post: 'p1' } }));
-    assert.equal(document.querySelector('#dm-first').textContent, 'Request a referral');
+    // Between mutual follows the first message opens the conversation and goes there.
+    root = await mount(createElement(Messages, { navigate, params: { to: 'amy-g' } }));
+    assert.equal(document.querySelector('#dm-first').textContent, 'Message @amy-g');
     await act(async () => type(document.querySelector('textarea'), 'Hi, I am Bob'));
     await act(async () => button('Send').click());
     await wait();
-    assert.deepEqual(api.posts.at(-1), ['oj/dm', { post: 'p1', body: 'Hi, I am Bob' }]);
+    assert.deepEqual(api.posts.at(-1), ['oj/dm', { to: 'amy-g', body: 'Hi, I am Bob' }]);
     assert.deepEqual(navigations.at(-1), ['messages', { thread: 'k9' }]);
     await act(async () => root.unmount());
   } finally {
