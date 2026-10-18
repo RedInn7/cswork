@@ -167,7 +167,8 @@ test('a picked code language is remembered, and every tab set on the page follow
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
-  const { CodeTabs, CODE_LANG_KEY } = await import('../components/code-tabs.tsx');
+  const { CodeTabs } = await import('../components/code-tabs.tsx');
+  const { CODE_LANG_KEY } = await import('../components/template-lang-memory.tsx');
   const group = (key) =>
     React.createElement(CodeTabs, { key, langs: ['python', 'cpp', 'java', 'go'], panels: ['p', 'c', 'j', 'g'].map((x) => React.createElement('pre', { key: x }, x)) });
   const selected = () => [...document.querySelectorAll('[role="tablist"]')].map((list) => [...list.children].findIndex((tab) => tab.getAttribute('aria-selected') === 'true'));

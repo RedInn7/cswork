@@ -3,21 +3,8 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { useT } from '@/lib/i18n';
 import { languages } from '@/lib/problems';
-
-/** The learner's code language, shared by every tab set on the site (lesson code, templates). */
-export const CODE_LANG_KEY = 'cswork:code-tabs:lang';
-/** Fired on window with the language id as `detail` when a tab is picked: other tab sets on the page follow. */
-export const CODE_LANG_EVENT = 'cswork:code-lang';
-
-/** Remembers a picked language and tells the page's other tab sets. */
-export function pickCodeLang(lang: string) {
-  try {
-    localStorage.setItem(CODE_LANG_KEY, lang);
-  } catch {
-    // Storage blocked: this page still switches.
-  }
-  window.dispatchEvent(new window.CustomEvent(CODE_LANG_EVENT, { detail: lang }));
-}
+// The language protocol (storage key, window event) lives in one place, shared with the topic templates.
+import { CODE_LANG_EVENT, eventLang, readCodeLang, saveCodeLang } from './template-lang-memory';
 
 /**
  * Consecutive blocks in different languages (lib/remark-code-tabs.ts) as one tab set. The caller
@@ -36,18 +23,14 @@ export function CodeTabs({ langs, panels }: { langs: string[]; panels: ReactNode
       const i = key.split(' ').indexOf(String(lang));
       if (i >= 0) setAt(i);
     };
-    try {
-      follow(localStorage.getItem(CODE_LANG_KEY));
-    } catch {
-      // Storage blocked: keep the first tab.
-    }
-    const onPick = (e: Event) => follow((e as CustomEvent<unknown>).detail);
+    follow(readCodeLang());
+    const onPick = (e: Event) => follow(eventLang(e));
     window.addEventListener(CODE_LANG_EVENT, onPick);
     return () => window.removeEventListener(CODE_LANG_EVENT, onPick);
   }, [key]);
   const choose = (i: number) => {
     setAt(i);
-    pickCodeLang(langs[i]);
+    saveCodeLang(langs[i]);
   };
   const move = (e: KeyboardEvent) => {
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
