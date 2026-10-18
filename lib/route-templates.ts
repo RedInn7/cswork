@@ -1,10 +1,9 @@
 // Code templates for the 35 Line 500 stops: three key points, three pitfalls and the same
-// pattern in four languages. The JSON is ~150 KB, so client components should load this
-// module lazily (`await import('@/lib/route-templates')`) rather than import it eagerly.
+// pattern in four languages, plus each stop's 2–6 variants (another code shape for the same
+// stop, with its own driver). The two JSON files are ~600 KB: import this module on the server
+// only and pass client components what they need (app/topics/template-section.tsx).
 // Each stop's drivers (the code that calls a template, and its expected stdout) are in
 // lib/route-template-drivers.ts; tests/route-templates.test.ts compiles and runs every template with them.
-// Each stop's 2–6 variants (another code shape for the same stop, with its own driver) are in
-// route-template-variants.json: server-side only, the topic page passes what a drill needs.
 import data from './content/route-templates.json';
 import variantData from './content/route-template-variants.json';
 
