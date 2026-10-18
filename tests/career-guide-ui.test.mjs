@@ -31,9 +31,9 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print']);
+const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print', '/career/intern', '/career/negotiation?s=return-plus-external']);
 // The chapters in reading order; a new chapter only changes this list.
-const SLUGS = ['timeline', 'resume', 'referrals', 'practice', 'online-assessment', 'phone-screen', 'onsite', 'offer', 'visa'];
+const SLUGS = ['timeline', 'resume', 'referrals', 'practice', 'online-assessment', 'phone-screen', 'onsite', 'offer', 'internship', 'visa'];
 
 test('every chapter has a body in both languages, with matching sections and live site links', () => {
   assert.deepEqual(GUIDE_CHAPTERS.map((c) => c.slug), SLUGS);
@@ -52,6 +52,11 @@ test('every chapter has a body in both languages, with matching sections and liv
           SITE_LINKS.has(link) || (link.startsWith('/guide/') && guideChapter(link.slice(7))),
           `${slug}: ${link}`,
         );
+  }
+  // The internship chapter ends on its tool and points a return offer at the negotiation script.
+  for (const body of Object.values(GUIDE_BODIES.internship)) {
+    assert.match(body.slice(body.lastIndexOf('\n## ')), /\]\(\/career\/intern\)/);
+    assert.ok(body.includes('](/career/negotiation?s=return-plus-external)'));
   }
 });
 

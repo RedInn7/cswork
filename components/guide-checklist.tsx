@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import type { ChecklistItem } from '@/lib/content/career-checklists';
+import { weekLabel } from '@/lib/intern-log';
 import '@/app/career-outreach.css';
 
 const localKey = (slug: string) => `cswork:checklist:${slug}`;
@@ -106,7 +107,10 @@ export function GuideChecklist({ slug, items, zh }: { slug: string; items: Check
                 disabled={where === 'loading'}
                 onChange={(e) => toggle(item.id, e.target.checked)}
               />
-              <span>{item.text[zh ? 0 : 1]}</span>
+              <span>
+                {item.week !== undefined && <small className="guide-week">{weekLabel(item.week, zh)}</small>}
+                {item.text[zh ? 0 : 1]}
+              </span>
             </label>
             <details>
               <summary>{t('说明', 'Why')}</summary>

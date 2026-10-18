@@ -1,0 +1,337 @@
+/* /career/intern (components/intern-log.tsx, components/team-match.tsx): the internship log and
+   team-matching cards. Inputs and buttons reuse the guide's .resume-form and .resume-actions. */
+.intern {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  color: #1d252d;
+}
+.intern-section {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.intern-section h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.intern-section h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.intern-note {
+  margin: 0;
+  color: #4a5662;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.intern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 12px 16px;
+  align-items: end;
+}
+.intern-grid .resume-actions {
+  grid-column: 1 / -1;
+}
+.intern-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid #e1e6eb;
+  border-left: 4px solid #0d7a63;
+  border-radius: 12px;
+  background: #ffffff;
+}
+.intern-card > legend {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.intern-card summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+.intern-card ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+}
+.intern-card p {
+  margin: 0;
+  line-height: 1.6;
+}
+.intern-wins {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.intern-wins legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.intern-preview {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f4f6f8;
+  color: #1d252d;
+  font-size: 14px;
+}
+.intern-preview small {
+  color: #8a4b00;
+  font-size: 13px;
+  font-weight: 600;
+}
+.intern-due {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.intern-due li {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid #e1e6eb;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.intern-due span {
+  color: #4a5662;
+}
+.intern-export {
+  display: grid;
+  gap: 12px;
+}
+.intern-export textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: vertical;
+}
+.intern-bullets {
+  display: grid;
+  gap: 12px;
+}
+.intern-bullets ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.intern-bullets li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+  padding: 8px 12px;
+  border: 1px solid #e1e6eb;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.intern-bullets li span {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.intern-add {
+  min-height: 32px;
+  padding: 4px 14px;
+  border: 1px solid #0d7a63;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0a5c4a;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.intern-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  min-width: 0;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #e1e6eb;
+  border-radius: 10px;
+}
+.intern-weights legend {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.intern-weights label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.intern-weights select {
+  min-height: 32px;
+  padding: 2px 6px;
+  border: 1px solid #c9d1da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+}
+.intern-teams {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.intern-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.intern-card-head output {
+  color: #0a5c4a;
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.intern-questions {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.intern-questions label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.intern-questions input {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  accent-color: #0d7a63;
+}
+.intern-ranking {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+  background: #f4f6f8;
+}
+.intern-ranking ol {
+  margin: 0;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+.intern-status {
+  min-height: 1.5em;
+  margin: 0;
+  color: #0a5c4a;
+  font-size: 14px;
+  font-weight: 600;
+}
+.intern :is(summary, select, .intern-add, .intern-questions input):focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 2px;
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .intern {
+    color: #d6dfe8;
+  }
+  .dark .intern-note {
+    color: #becad6;
+  }
+  .dark .intern-card {
+    border: 1px solid #2b2f33;
+    border-left: 4px solid #0d7a63;
+    background: #191919;
+  }
+  .dark .intern-wins {
+    border: 0;
+  }
+  .dark .intern-preview {
+    background: #131416;
+    color: #d6dfe8;
+  }
+  .dark .intern-preview small {
+    color: #f3b685;
+  }
+  .dark .intern-due li {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .intern-due span {
+    color: #becad6;
+  }
+  .dark .intern-export textarea {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .intern-bullets li {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .intern-add {
+    border: 1px solid #0d7a63;
+    background: #191919;
+    color: #9edac7;
+  }
+  .dark .intern-weights {
+    border: 1px solid #2b2f33;
+  }
+  .dark .intern-weights select {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .intern-card-head output {
+    color: #9edac7;
+  }
+  .dark .intern-questions input {
+    accent-color: #0d7a63;
+  }
+  .dark .intern-ranking {
+    border: 1px solid #2b2f33;
+    background: #131416;
+  }
+  .dark .intern-status {
+    color: #9edac7;
+  }
+  .dark .intern :is(summary, select, .intern-add, .intern-questions input):focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+}
+/* ── end dark theme ── */

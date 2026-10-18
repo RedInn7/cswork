@@ -48,10 +48,10 @@ void test('filling replaces what was given and keeps the rest visible', () => {
   assert.equal(fillTemplate('{toString} {constructor}', {}), '{toString} {constructor}');
 });
 
-void test('guide checklists: six chapters, 8–15 bilingual items each with a stable unique id', async () => {
+void test('guide checklists: seven chapters, 8–15 bilingual items each with a stable unique id', async () => {
   const { CAREER_CHECKLISTS } = await import('../lib/content/career-checklists');
   const { guideChapter } = await import('../lib/career-guide');
-  assert.deepEqual(Object.keys(CAREER_CHECKLISTS), ['resume', 'referrals', 'online-assessment', 'phone-screen', 'onsite', 'offer']);
+  assert.deepEqual(Object.keys(CAREER_CHECKLISTS), ['resume', 'referrals', 'online-assessment', 'phone-screen', 'onsite', 'offer', 'internship']);
   for (const [slug, items] of Object.entries(CAREER_CHECKLISTS)) {
     assert.ok(guideChapter(slug), slug);
     assert.ok(items.length >= 8 && items.length <= 15, `${slug}: ${items.length}`);
