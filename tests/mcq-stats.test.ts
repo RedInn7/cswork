@@ -97,6 +97,20 @@ void test('questions: one language with the answer, known ids only, at most 50 a
   assert.equal((await call(null, ['questions'], undefined, `?ids=${many}`)).status, 400);
 });
 
+void test('questions: aptitude ids come generated, with their figure; unknown kinds are dropped; answers stay bank-only', async () => {
+  const { aptitudeById } = await import('../lib/aptitude');
+  const r = await call(null, ['questions'], undefined, '?ids=apt-matrix-7,apt-percent-3,apt-nope-1,apt-chart-12&lang=zh');
+  assert.equal(r.status, 200);
+  const items = r.data!.items as { id: string; fig?: { kind: string } }[];
+  assert.deepEqual(items.map((i) => i.id), ['apt-matrix-7', 'apt-percent-3', 'apt-chart-12']);
+  const matrix = aptitudeById('apt-matrix-7')!;
+  assert.deepEqual(items[0], { id: matrix.id, section: 'quant', topic: 'apt-fig', answer: matrix.answer, text: matrix.zh, fig: matrix.fig });
+  assert.equal(items[1].fig, undefined);
+  assert.equal(items[2].fig?.kind, 'bars');
+  // Site-wide shares are for the bank only.
+  assert.equal((await call(person('apt'), ['answers'], { id: 'apt-percent-3', picks: [0] })).status, 404);
+});
+
 void test('a correction is a ticket tagged [ref]; teachers can list corrections apart from questions, after them on the dashboard', async () => {
   const { TICKET_REF, ticketPage } = await import('../lib/server/lms-support');
   for (const ok of ['mcq:mcq-os-1', 'sd:cache', 'learn:cpp/pointers', 'course:intro_1.2']) assert.match(ok, TICKET_REF);
