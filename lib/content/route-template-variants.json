@@ -2682,8 +2682,8 @@
      "en": "When a lookup is not exact but allows wildcards or exactly one changed letter (LC 676, Implement Magic Dictionary; LC 211 with \".\"): DFS over the trie, following the child for the current letter, and step into a different child only while the one change is unused. At the end of the word, require exactly one change to have been made."
     },
     "complexity": {
-     "zh": "建树 O(总长度) · 查询最坏 O(26 × L)",
-     "en": "O(total length) build · O(26 × L) worst-case query"
+     "zh": "建树 O(总长度) · 查询最坏 O(26 × L²)（LC 211 的 . 通配符可能走遍整棵树）",
+     "en": "O(total length) build · O(26 × L²) worst-case query (with LC 211 \".\" wildcards a query can visit every node)"
     },
     "code": {
      "python": "class MagicDictionary:\n    \"\"\"Does a word differ from some dictionary word in exactly one letter? (LC 676)\"\"\"\n\n    def __init__(self, words: list[str]):\n        self.root: dict = {}  # a trie of nested dicts; \"$\" marks the end of a word\n        for w in words:\n            node = self.root\n            for ch in w:\n                node = node.setdefault(ch, {})\n            node[\"$\"] = True\n\n    def search(self, word: str) -> bool:\n        def dfs(node: dict, i: int, changed: bool) -> bool:\n            if i == len(word):\n                return changed and \"$\" in node  # exactly one change, ending on a word\n            for ch, child in node.items():\n                if ch == \"$\":\n                    continue\n                if ch == word[i]:\n                    if dfs(child, i + 1, changed):\n                        return True\n                elif not changed and dfs(child, i + 1, True):  # spend the one change here\n                    return True\n            return False\n\n        return dfs(self.root, 0, False)",
