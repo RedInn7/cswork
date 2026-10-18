@@ -83,6 +83,15 @@ test('scale: load words or a database/system design term; a head count is no mea
   assert.equal(figure('Ran it on 2 EC2 hosts'), undefined, 'EC2 is no number');
 });
 
+test('why asks about a pick (a store, a framework, an architecture), not a topic', () => {
+  const why = (bullet: string) => resumeDrills({ ...blankResume(), projects: [{ title: 'P', subtitle: '', dates: '', bullets: bullet }] }).find((d) => d.kind === 'why')?.q[1];
+  assert.equal(why('Split the monolith into microservices'), 'Why Microservices? What else did you consider?');
+  assert.equal(why('Built a Spring Boot API'), 'Why Spring Boot? What else did you consider?');
+  assert.equal(why('Answered questions with RAG over the docs'), 'Why RAG? What else did you consider?');
+  for (const bullet of ['Designed a distributed system for logs', 'Added load balancing and debugging tools', 'Fixed concurrency bugs over HTTP', 'Improved communication across teams'])
+    assert.equal(why(bullet), undefined, bullet);
+});
+
 test('at most 2 per bullet and 24 in all; ids are stable card ids and unique', () => {
   const bullets = Array.from({ length: 20 }, (_, i) => `Led the team that cut Redis p99 latency by ${i + 10}% for 2M users`).join('\n');
   const r = { ...blankResume(), experience: [{ title: 'Big', subtitle: '', dates: '', bullets }] };

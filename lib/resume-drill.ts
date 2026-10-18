@@ -36,9 +36,10 @@ const FIGURE = new RegExp(
   `(?<![A-Za-z\\d])[$¥€£]?\\d+(?:[.,]\\d+)*\\+?\\s?(?:${UNIT})|[$¥€£]\\d+(?:[.,]\\d+)*|\\bp\\d{2,3}(?:\\s[A-Za-z]+)?|[一二两三四五六七八九十几数]+[倍万亿]|\\b(?:doubled|tripled|quadrupled|halved|half)\\b`,
   'i',
 );
-// Table terms that are practices or topics rather than something one picks over an alternative.
-const NOT_A_CHOICE = new Set(['Debugging', 'Agile', 'Code review', 'Statistics', 'Data analysis', 'Data visualization', 'Performance optimization', 'Unit testing', 'Scalability', 'Security', 'AI', 'Front end']);
-const CHOICES = JD_TERMS.filter((t) => !['dsa', 'behavioral', 'oa'].includes(t.skill ?? '') && !NOT_A_CHOICE.has(t.term));
+// Something one picks over an alternative (a language, a framework, a store, a service), not a topic:
+// a term with a lowercase word after the first ("Distributed systems", "Load balancing") or one of these.
+const TOPICS = new Set(['Concurrency', 'Multithreading', 'Scalability', 'Debugging', 'Security', 'Cryptography', 'Statistics', 'Networking', 'Observability', 'Compilers', 'Agile', 'AI', 'SOLID', 'SRE', 'HTTP', 'JSON', 'Git']);
+const CHOICES = JD_TERMS.filter((t) => !['dsa', 'behavioral', 'oa'].includes(t.skill ?? '') && !TOPICS.has(t.term) && !/\s[a-z]{3,}/.test(t.term));
 
 const LISTEN: Record<DrillKind, [string, string][]> = {
   measure: [
