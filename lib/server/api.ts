@@ -201,7 +201,6 @@ export async function handle(request: Request) {
       if (resource === 'bootstrap')
         return json(await bootstrap(p, url.searchParams.get('lite') === '1'));
       requirePerson(p);
-      }
       if (resource === 'lessons' && resourceId) {
         // The free preview lesson opens without the course (and so does its Stream video).
         const l = await lessonFor(p, resourceId, true);
