@@ -11,7 +11,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
 // The work email badge.
-const dir = mkdtempSync(resolve(tmpdir(), 'cswork-community-messages-'));
+const dir = mkdtempSync(resolve(tmpdir(), 'cswork-work-badge-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 process.env.CONTENT_DATABASE_PATH = resolve(dir, 'content.sqlite');
 // One experience to comment on (its comments must never carry the badge).

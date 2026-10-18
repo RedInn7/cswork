@@ -7,7 +7,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
-const dir = mkdtempSync(resolve(tmpdir(), 'cswork-discuss-v2-'));
+const dir = mkdtempSync(resolve(tmpdir(), 'cswork-post-replies-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 delete process.env.CONTENT_DATABASE_PATH;
 delete process.env.COURSE_ACCESS;
