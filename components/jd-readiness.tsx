@@ -250,8 +250,8 @@ export function JdReadiness({ zh, ai = true }: { zh: boolean; ai?: boolean }) {
                         'These gaps are not on Line 500: use each skill’s practice link.',
                       )
                     : unmeasured
-                      ? t('本站能度量的各项都已就绪，可以开始模拟面试了。', 'Every skill CSWork can measure is ready. Time for a mock interview.')
-                      : t('职位要求的各项都已就绪，可以开始模拟面试了。', 'Every skill this posting asks for is ready. Time for a mock interview.')}
+                      ? t('本站能度量的各项都已就绪，可以开始投递和面试了。', 'Every skill CSWork can measure is ready. Time to apply and interview.')
+                      : t('职位要求的各项都已就绪，可以开始投递和面试了。', 'Every skill this posting asks for is ready. Time to apply and interview.')}
                 </p>
               )}
             </div>

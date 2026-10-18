@@ -94,38 +94,6 @@ test('question page: the rubric stays closed until the learner writes or insists
   await act(async () => again.unmount());
 });
 
-test('solo mock interview: the answer box comes before the reveal', async () => {
-  const { MockInterview } = await import('../components/mock-interview.tsx');
-  const item = {
-    id: 'iq-1', type: 'interview_question', slug: 'disagree-1', title: 'Disagreeing with a teammate', company: null, role: null,
-    round: null, difficulty: null, problem: null, math: false, principles: [], question: 'Tell me about a conflict.',
-    hints: '', followUps: '', rubric: 'SECRET-RUBRIC', solution: '',
-  };
-  const set = { seed: 'k3x9', rerolls: [], template: { id: 'behavioral', name: ['行为面', 'BQ'] }, slots: [{ kind: 'behavioral', minutes: 8, similar: false, pool: 80, item }] };
-  const query = { template: 'behavioral', set: 'k3x9' };
-  // A sitting already past the plan, so the runner shows.
-  localStorage.setItem(
-    'cswork:mock-interview:runs',
-    JSON.stringify({ [`solo:${new URLSearchParams(query)}`]: { phase: 'run', index: 0, since: null, elapsed: [], notes: {}, ratings: {}, shown: {}, started: true, at: Date.now() } }),
-  );
-  globalThis.fetch = async (url) => {
-    const u = String(url);
-    if (u.includes('/api/content/mock')) return Response.json(set);
-    if (u.includes('target=content')) return Response.json({ body: '', updatedAt: null });
-    throw new Error(`unexpected ${u}`);
-  };
-  const root = createRoot(document.getElementById('root'));
-  await act(async () => root.render(createElement(MockInterview, { params: query, navigate() {}, problemIds: [], userId: 'u1' })));
-  await settle();
-  // The story bank is gone: no "which story would you tell?" picker beside a behavioral slot.
-  assert.equal(document.querySelector('.ip-pick'), null);
-  assert.equal(document.body.textContent.includes('SECRET-RUBRIC'), false);
-  await click('Show the answer');
-  await click('Show it anyway');
-  assert.equal(document.body.textContent.includes('SECRET-RUBRIC'), true);
-  await act(async () => root.unmount());
-});
-
 test('a guest answer is saved to the account on sign-in, or offered against the saved one', async () => {
   const { TryFirst } = await import('../components/try-first.tsx');
   const puts = [];
@@ -151,7 +119,7 @@ test('a guest answer is saved to the account on sign-in, or offered against the 
   assert.deepEqual(puts, ['guest outline']);
   await act(async () => root.unmount());
 
-  // Solo mock interview (kept in the run as a guest), with a different answer already saved: the learner picks.
+  // A draft kept on this device as a guest (the system design reader's), with a different answer already saved: the learner picks.
   saved = 'answer from last week';
   puts.length = 0;
   let run = 'run notes';

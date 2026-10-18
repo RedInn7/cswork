@@ -302,8 +302,7 @@ export function dailyBudget(name: string, fallback: number) {
 }
 /**
  * The ai_usage rows one site budget counts (`calls`, a fixed SQL condition on kind), the budget,
- * and what a learner sees once it is spent. The AI interviewer (lib/server/ai-interviewer.ts)
- * keeps its rows, all 'iv-…', under a pool of its own, so neither feature spends the other's.
+ * and what a learner sees once it is spent. Rows of the removed AI interviewer ('iv-…') count in none.
  */
 export type Pool = {
   calls: string;

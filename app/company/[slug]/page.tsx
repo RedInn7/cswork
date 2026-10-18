@@ -98,7 +98,7 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
 
 export default async function CompanyPage({ params, searchParams }: Props) {
   const period = reportWindow((await searchParams).window);
-  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, memberStats, oaSite, facets, ready, locale, lead } = await load(
+  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, stats, memberStats, oaSite, facets, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
@@ -142,11 +142,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
         {mockOa && (
           <a className="oa-public-cta" href={`/mock-oa/${mockOa}`}>
             {zh ? `模拟 ${company.name} OA` : `Mock ${company.name} OA`}
-          </a>
-        )}
-        {mockInterview && (
-          <a className="oa-public-cta is-quiet" href={`/mock-interview/${mockInterview}`}>
-            {zh ? '模拟面试抽题' : 'Mock interview'}
           </a>
         )}
         <CompanyFollowButton slug={company.slug} name={company.name} zh={zh} />

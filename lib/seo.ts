@@ -161,7 +161,6 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/placement' },
   { path: '/daily' },
   { path: '/mcp' },
-  { path: '/mock-interview' },
   { path: '/privacy' },
   { path: '/lists' },
   { path: '/company/top' },

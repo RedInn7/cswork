@@ -18,7 +18,7 @@ void test('the glossary has enough unique, well-formed terms in both languages',
     assert.ok(t.stop === undefined || Object.hasOwn(STOP_NAMES, t.stop), `${t.id} stop ${t.stop}`);
     assert.ok(groups.has(t.group), `${t.id} group`);
   }
-  // Every group has terms; interview phrases live in /english, not here.
+  // Every group has terms.
   for (const g of groups) assert.ok(GLOSSARY.some((t) => t.group === g), g);
 });
 

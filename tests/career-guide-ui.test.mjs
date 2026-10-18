@@ -31,7 +31,7 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print', '/career/intern', '/career/negotiation?s=return-plus-external']);
+const SITE_LINKS = new Set(['/?view=mock', '/acm-io', '/flowchart', '/topics', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print', '/career/intern', '/career/negotiation?s=return-plus-external']);
 // The chapters in reading order; a new chapter only changes this list.
 const SLUGS = ['timeline', 'resume', 'referrals', 'practice', 'online-assessment', 'phone-screen', 'onsite', 'offer', 'internship', 'visa'];
 
@@ -145,7 +145,7 @@ test('no nav or timeline link points at the H-1B ranking while its data is unbui
   const shell = renderToStaticMarkup(createElement(GuideShell, { zh: false, children: null }));
   const visa = renderToStaticMarkup(await VisaTimelinePage());
   assert.match(shell, /href="\/career\/tracker"/);
-  for (const href of ['/career/offers', '/career/jobs/calendar', '/career/resume/builder#resume-check', '/projects', '/english', '/interview-platforms']) assert.ok(shell.includes(`href="${href}"`), href);
+  for (const href of ['/career/offers', '/career/jobs/calendar', '/career/resume/builder#resume-check', '/projects', '/interview-platforms']) assert.ok(shell.includes(`href="${href}"`), href);
   for (const html of [shell, visa]) assert.equal(html.includes('href="/career/h1b"'), H1B.fiscalYears.length > 0);
 });
 

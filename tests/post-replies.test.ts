@@ -192,10 +192,12 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   assert.equal(notices(ada.id).length, before);
   sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
 
-  // ?kind= picks one tab; a removed feature's kind (direct messages) is never listed.
+  // ?kind= picks one tab; a removed feature's kind (direct messages, peer mock interviews) is never listed.
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
   sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('dm1',?,'dm','x','y','/',1)").run(ada.id);
-  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('mp1',?,'mock-peer','x','y','/',1)").run(ada.id);
+  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('cg1',?,'course-gift','x','y','/',1)").run(ada.id);
+  // Nor is a notice of the removed peer mock interviews.
+  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('mp1',?,'mock-peer','x','y','/?view=mock-peer&pair=p1',1)").run(ada.id);
   const replies = notices(ada.id, 'reply').length;
   // A notice left by the removed discussion board lists nowhere.
   sqlite()

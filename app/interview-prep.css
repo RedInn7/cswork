@@ -1,5 +1,5 @@
 /*
- * Interview prep: "write your answer first" (question pages, solo mock interviews) and its AI
+ * Interview prep: "write your answer first" (question pages, system design drafts) and its AI
  * feedback. Built on the redesign layer (.rd tokens). Amber marks the learner's own turn;
  * emerald the reference and anything already covered.
  */
@@ -87,8 +87,7 @@
   font-size: 12px;
 }
 .ip-try-go,
-.ip-try-skip,
-.ip-try-scaffold {
+.ip-try-skip {
   justify-self: start;
 }
 .ip-try-ask {
@@ -111,17 +110,6 @@
   font-size: 13px;
   line-height: 1.55;
 }
-/* In the mock interview's side panel the panel is the card. */
-.mi-work-side .ip-try {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-.mi-work-side .ip-try-input {
-  min-height: 240px;
-}
-
 /* ------------------------------------------------------------ question page */
 .ct-hints {
   margin-top: 18px;
@@ -256,7 +244,6 @@
   .ip-try-ask,
   .ip-try-skip,
   .ip-try-go,
-  .ip-try-scaffold,
   .ip-grade-go {
     display: none;
   }
@@ -315,10 +302,6 @@
   }
   .dark .ip-try-ask p {
     color: var(--rd-ink-2);
-  }
-  .dark .mi-work-side .ip-try {
-    border: 0;
-    background: none;
   }
   .dark .ct-hints {
     border-top: 1px dashed var(--rd-line);

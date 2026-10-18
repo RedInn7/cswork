@@ -1,7 +1,6 @@
 'use client';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { SCRIPTS, walk, type Setting } from '@/lib/content/negotiation-scripts';
-import { KINDS } from '@/lib/mock-interview';
 import '@/app/career-negotiation.css';
 
 const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
@@ -11,6 +10,7 @@ const OFFER_ROWS = [
   ['equity', '四年股票', 'Stock over 4 years'],
   ['signOn', '签字费', 'Sign-on bonus'],
 ] as const;
+const KIND_NAMES = { recruiter: ['招聘方初筛', 'Recruiter screen'], negotiation: ['Offer 谈判', 'Offer negotiation'] } as const;
 
 /**
  * /career/negotiation: branching recruiter-screen and offer scripts, no AI. Scores stay hidden
@@ -50,7 +50,7 @@ export function NegotiationScripts({ zh, settings }: { zh: boolean; settings: Re
         {(['recruiter', 'negotiation'] as const).map((kind, k) => (
           <section key={kind} className="negotiation-group" aria-labelledby={`negotiation-${kind}`}>
             <h2 id={`negotiation-${kind}`} ref={k ? undefined : heading} tabIndex={-1}>
-              {KINDS[kind].name[i]}
+              {KIND_NAMES[kind][i]}
             </h2>
             <ul className="negotiation-list">
               {SCRIPTS.filter((s) => s.kind === kind).map((s) => {
@@ -80,7 +80,7 @@ export function NegotiationScripts({ zh, settings }: { zh: boolean; settings: Re
   return (
     <div className="negotiation">
       <section className="negotiation-setting" aria-labelledby="negotiation-title">
-        <p className="negotiation-kind">{KINDS[script.kind].name[i]}</p>
+        <p className="negotiation-kind">{KIND_NAMES[script.kind][i]}</p>
         {/* Step 1 focuses the title, so a screen reader starts from the setting and the recruiter's opening line. */}
         <h2 id="negotiation-title" ref={steps.length ? undefined : heading} tabIndex={-1}>
           {script.title[i]}
@@ -192,11 +192,6 @@ export function NegotiationScripts({ zh, settings }: { zh: boolean; settings: Re
               );
             })}
           </ol>
-          <p>
-            <a href="/english/recruiter">
-              {t('练习和招聘方谈时间线与 offer 的英文表达 →', 'Practice the English for timelines and offers with recruiters →')}
-            </a>
-          </p>
           <div className="resume-actions">
             <button type="button" onClick={() => open(script.id)}>
               {t('重来', 'Start over')}
