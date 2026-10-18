@@ -3,7 +3,6 @@ export const ANALYTICS_NAVIGATION_EVENT = 'cswork:analytics-navigation';
 const pages: Record<string, string> = {
   home: 'Home',
   courses: 'Courses',
-  knowledge: 'Knowledge',
   problems: 'Problem library',
   mock: 'Mock OA',
   problem: 'Practice',
