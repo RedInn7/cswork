@@ -1532,6 +1532,246 @@
    ]
   }
  },
+ "backtracking-strings": {
+  "variants": [
+   {
+    "id": "balanced-parens",
+    "pattern": {
+     "zh": "按计数约束生成括号",
+     "en": "Generate brackets under count constraints"
+    },
+    "when": {
+     "zh": "每一步只有少数几种字符可选、靠计数就能剪枝（括号、IP 段数、字母大小写）：左括号还有剩就能放，右括号只在比左括号少时才能放，这样走到长度 2n 的都是合法串，不用最后再检查。LC 22 括号生成，LC 301 删除无效的括号用同样的计数。",
+     "en": "When each step picks from a few characters and counts alone can prune (brackets, IP segments, letter case): an opening bracket fits while some are left, a closing one only while fewer have closed than opened, so everything reaching length 2n is valid with no final check. LC 22 (Generate Parentheses); LC 301 (Remove Invalid Parentheses) uses the same counts."
+    },
+    "complexity": {
+     "zh": "时间 O(4^n / √n)（卡特兰数个结果）· 递归深度 O(n)",
+     "en": "O(4^n / √n) time (a Catalan number of results) · O(n) recursion depth"
+    },
+    "code": {
+     "python": "def generate_parentheses(n: int) -> list[str]:\n    \"\"\"Every balanced string of n pairs of parentheses (LC 22).\"\"\"\n    res, path = [], []\n\n    def dfs(opened: int, closed: int) -> None:\n        if len(path) == 2 * n:\n            res.append(\"\".join(path))\n            return\n        if opened < n:  # an opening bracket fits while some are left\n            path.append(\"(\")\n            dfs(opened + 1, closed)\n            path.pop()\n        if closed < opened:  # a closing bracket needs an unmatched opening one\n            path.append(\")\")\n            dfs(opened, closed + 1)\n            path.pop()\n\n    dfs(0, 0)\n    return res",
+     "cpp": "// Every balanced string of n pairs of parentheses (LC 22).\nvector<string> generateParentheses(int n) {\n    vector<string> res;\n    string path;\n    function<void(int, int)> dfs = [&](int opened, int closed) {\n        if ((int)path.size() == 2 * n) {\n            res.push_back(path);\n            return;\n        }\n        if (opened < n) {  // an opening bracket fits while some are left\n            path.push_back('(');\n            dfs(opened + 1, closed);\n            path.pop_back();\n        }\n        if (closed < opened) {  // a closing bracket needs an unmatched opening one\n            path.push_back(')');\n            dfs(opened, closed + 1);\n            path.pop_back();\n        }\n    };\n    dfs(0, 0);\n    return res;\n}",
+     "java": "class Solution {\n    private final List<String> res = new ArrayList<>();\n    private final StringBuilder path = new StringBuilder();\n    private int n;\n\n    // Every balanced string of n pairs of parentheses (LC 22).\n    List<String> generateParentheses(int n) {\n        this.n = n;\n        res.clear();\n        dfs(0, 0);\n        return new ArrayList<>(res);\n    }\n\n    private void dfs(int opened, int closed) {\n        if (path.length() == 2 * n) {\n            res.add(path.toString());\n            return;\n        }\n        if (opened < n) { // an opening bracket fits while some are left\n            path.append('(');\n            dfs(opened + 1, closed);\n            path.deleteCharAt(path.length() - 1);\n        }\n        if (closed < opened) { // a closing bracket needs an unmatched opening one\n            path.append(')');\n            dfs(opened, closed + 1);\n            path.deleteCharAt(path.length() - 1);\n        }\n    }\n}",
+     "go": "// generateParentheses returns every balanced string of n pairs of parentheses (LC 22).\nfunc generateParentheses(n int) []string {\n\tvar res []string\n\tpath := make([]byte, 0, 2*n)\n\tvar dfs func(opened, closed int)\n\tdfs = func(opened, closed int) {\n\t\tif len(path) == 2*n {\n\t\t\tres = append(res, string(path))\n\t\t\treturn\n\t\t}\n\t\tif opened < n { // an opening bracket fits while some are left\n\t\t\tpath = append(path, '(')\n\t\t\tdfs(opened+1, closed)\n\t\t\tpath = path[:len(path)-1]\n\t\t}\n\t\tif closed < opened { // a closing bracket needs an unmatched opening one\n\t\t\tpath = append(path, ')')\n\t\t\tdfs(opened, closed+1)\n\t\t\tpath = path[:len(path)-1]\n\t\t}\n\t}\n\tdfs(0, 0)\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "for n in (3, 1, 2):\n    print(*generate_parentheses(n))",
+     "cpp": "for (int n : {3, 1, 2}) show(generateParentheses(n));",
+     "java": "Solution s = new Solution();\nfor (int n : new int[] {3, 1, 2}) show(s.generateParentheses(n));",
+     "go": "for _, n := range []int{3, 1, 2} {\n    show(generateParentheses(n))\n}",
+     "expected": "((())) (()()) (())() ()(()) ()()()\n()\n(()) ()()"
+    }
+   },
+   {
+    "id": "expression-operators",
+    "pattern": {
+     "zh": "切分数字串并插入运算符",
+     "en": "Cut a digit string and insert operators"
+    },
+    "when": {
+     "zh": "在数字之间放 + - *、问哪些式子等于目标值：每层选下一个数的终点（不能有前导零），三种运算各递归一次。乘法优先级更高，所以要带着「最后一项」last，乘法时先减掉它再加上 last × x。LC 282 给表达式添加运算符。",
+     "en": "To place + - * between digits and find the expressions that hit a target: each level chooses where the next number ends (no leading zeros) and recurses once per operator. Multiplication binds tighter, so carry the last term: a * subtracts it and adds last × x instead. LC 282 (Expression Add Operators)."
+    },
+    "complexity": {
+     "zh": "时间 O(n · 4^n) · 递归深度 O(n)",
+     "en": "O(n · 4^n) time · O(n) recursion depth"
+    },
+    "code": {
+     "python": "def add_operators(num: str, target: int) -> list[str]:\n    \"\"\"Every way to put + - * between the digits of num so it equals target (LC 282).\"\"\"\n    res = []\n\n    def dfs(i: int, expr: str, value: int, last: int) -> None:\n        # value: the expression so far; last: its final term, which a * must take back\n        if i == len(num):\n            if value == target:\n                res.append(expr)\n            return\n        for j in range(i, len(num)):\n            if j > i and num[i] == \"0\":\n                break  # no numbers with a leading zero\n            s = num[i : j + 1]\n            x = int(s)\n            if i == 0:\n                dfs(j + 1, s, x, x)\n            else:\n                dfs(j + 1, expr + \"+\" + s, value + x, x)\n                dfs(j + 1, expr + \"-\" + s, value - x, -x)\n                dfs(j + 1, expr + \"*\" + s, value - last + last * x, last * x)  # * binds tighter\n\n    dfs(0, \"\", 0, 0)\n    return res",
+     "cpp": "// Every way to put + - * between the digits of num so it equals target (LC 282).\nvector<string> addOperators(const string& num, long long target) {\n    vector<string> res;\n    // value: the expression so far; last: its final term, which a * must take back\n    function<void(size_t, const string&, long long, long long)> dfs = [&](size_t i, const string& expr, long long value, long long last) {\n        if (i == num.size()) {\n            if (value == target) res.push_back(expr);\n            return;\n        }\n        for (size_t j = i; j < num.size(); j++) {\n            if (j > i && num[i] == '0') break;  // no numbers with a leading zero\n            string s = num.substr(i, j - i + 1);\n            long long x = stoll(s);\n            if (i == 0) {\n                dfs(j + 1, s, x, x);\n            } else {\n                dfs(j + 1, expr + \"+\" + s, value + x, x);\n                dfs(j + 1, expr + \"-\" + s, value - x, -x);\n                dfs(j + 1, expr + \"*\" + s, value - last + last * x, last * x);  // * binds tighter\n            }\n        }\n    };\n    dfs(0, \"\", 0, 0);\n    return res;\n}",
+     "java": "class Solution {\n    private final List<String> res = new ArrayList<>();\n    private String num;\n    private long target;\n\n    // Every way to put + - * between the digits of num so it equals target (LC 282).\n    List<String> addOperators(String num, long target) {\n        this.num = num;\n        this.target = target;\n        res.clear();\n        dfs(0, \"\", 0, 0);\n        return new ArrayList<>(res);\n    }\n\n    // value: the expression so far; last: its final term, which a * must take back.\n    private void dfs(int i, String expr, long value, long last) {\n        if (i == num.length()) {\n            if (value == target) res.add(expr);\n            return;\n        }\n        for (int j = i; j < num.length(); j++) {\n            if (j > i && num.charAt(i) == '0') break; // no numbers with a leading zero\n            String s = num.substring(i, j + 1);\n            long x = Long.parseLong(s);\n            if (i == 0) {\n                dfs(j + 1, s, x, x);\n            } else {\n                dfs(j + 1, expr + \"+\" + s, value + x, x);\n                dfs(j + 1, expr + \"-\" + s, value - x, -x);\n                dfs(j + 1, expr + \"*\" + s, value - last + last * x, last * x); // * binds tighter\n            }\n        }\n    }\n}",
+     "go": "import \"strconv\"\n\n// addOperators returns every way to put + - * between the digits of num so it equals target (LC 282).\nfunc addOperators(num string, target int) []string {\n\tres := []string{}\n\t// value: the expression so far; last: its final term, which a * must take back\n\tvar dfs func(i int, expr string, value, last int)\n\tdfs = func(i int, expr string, value, last int) {\n\t\tif i == len(num) {\n\t\t\tif value == target {\n\t\t\t\tres = append(res, expr)\n\t\t\t}\n\t\t\treturn\n\t\t}\n\t\tfor j := i; j < len(num); j++ {\n\t\t\tif j > i && num[i] == '0' {\n\t\t\t\tbreak // no numbers with a leading zero\n\t\t\t}\n\t\t\ts := num[i : j+1]\n\t\t\tx, _ := strconv.Atoi(s)\n\t\t\tif i == 0 {\n\t\t\t\tdfs(j+1, s, x, x)\n\t\t\t} else {\n\t\t\t\tdfs(j+1, expr+\"+\"+s, value+x, x)\n\t\t\t\tdfs(j+1, expr+\"-\"+s, value-x, -x)\n\t\t\t\tdfs(j+1, expr+\"*\"+s, value-last+last*x, last*x) // * binds tighter\n\t\t\t}\n\t\t}\n\t}\n\tdfs(0, \"\", 0, 0)\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "for num, target in ((\"123\", 6), (\"232\", 8), (\"105\", 5), (\"00\", 0), (\"3456237490\", 9191)):\n    print(*add_operators(num, target)) if add_operators(num, target) else print(\"-\")",
+     "cpp": "for (auto& [num, target] : vector<pair<string, long long>>{{\"123\", 6}, {\"232\", 8}, {\"105\", 5}, {\"00\", 0}, {\"3456237490\", 9191}}) {\n    auto res = addOperators(num, target);\n    if (res.empty()) cout << \"-\\n\";\n    else show(res);\n}",
+     "java": "Solution s = new Solution();\nString[] nums = {\"123\", \"232\", \"105\", \"00\", \"3456237490\"};\nlong[] targets = {6, 8, 5, 0, 9191};\nfor (int i = 0; i < nums.length; i++) {\n    List<String> res = s.addOperators(nums[i], targets[i]);\n    if (res.isEmpty()) show(\"-\");\n    else show(res);\n}",
+     "go": "nums := []string{\"123\", \"232\", \"105\", \"00\", \"3456237490\"}\ntargets := []int{6, 8, 5, 0, 9191}\nfor i := range nums {\n    if res := addOperators(nums[i], targets[i]); len(res) == 0 {\n        fmt.Println(\"-\")\n    } else {\n        show(res)\n    }\n}",
+     "expected": "1+2+3 1*2*3\n2+3*2 2*3+2\n1*0+5 10-5\n0+0 0-0 0*0\n-"
+    }
+   }
+  ]
+ },
+ "backtracking-constraints": {
+  "variants": [
+   {
+    "id": "grid-word-search",
+    "pattern": {
+     "zh": "网格回溯：原地标记，回来再还原",
+     "en": "Grid backtracking: mark in place, restore on return"
+    },
+    "when": {
+     "zh": "在网格里找一条路径拼出单词、每格最多用一次：从每个格子出发 DFS，当前格先改成占位符表示「这条路已用」，四个方向试完再改回来，不必另开 visited 数组。LC 79 单词搜索；LC 212 单词搜索 II 把单词换成字典树一起找。",
+     "en": "To spell a word along a path of grid cells, each used at most once: DFS from every cell, overwrite the current cell with a marker meaning \"used on this path\", and restore it after trying all four directions, with no separate visited array. LC 79 (Word Search); LC 212 (Word Search II) searches a whole trie of words at once."
+    },
+    "complexity": {
+     "zh": "时间 O(rows × cols × 3^L) · 递归深度 O(L)",
+     "en": "O(rows × cols × 3^L) time · O(L) recursion depth"
+    },
+    "code": {
+     "python": "def exist(board: list[list[str]], word: str) -> bool:\n    \"\"\"Is word spelled by a path of side-adjacent cells, each used at most once? (LC 79)\"\"\"\n    rows, cols = len(board), len(board[0])\n\n    def dfs(r: int, c: int, k: int) -> bool:  # does board[r][c] start word[k:]?\n        if board[r][c] != word[k]:\n            return False\n        if k == len(word) - 1:\n            return True\n        board[r][c] = \"#\"  # used on this path\n        found = any(\n            0 <= nr < rows and 0 <= nc < cols and dfs(nr, nc, k + 1)\n            for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1))\n        )\n        board[r][c] = word[k]  # restore on the way back\n        return found\n\n    return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))",
+     "cpp": "// Is word spelled by a path of side-adjacent cells, each used at most once? (LC 79)\nbool exist(vector<string> board, const string& word) {\n    int rows = board.size(), cols = board[0].size();\n    function<bool(int, int, int)> dfs = [&](int r, int c, int k) {  // does board[r][c] start word[k..]?\n        if (r < 0 || r >= rows || c < 0 || c >= cols || board[r][c] != word[k]) return false;\n        if (k == (int)word.size() - 1) return true;\n        board[r][c] = '#';  // used on this path\n        bool found = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n        board[r][c] = word[k];  // restore on the way back\n        return found;\n    };\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            if (dfs(r, c, 0)) return true;\n    return false;\n}",
+     "java": "class Solution {\n    private char[][] board;\n    private String word;\n\n    // Is word spelled by a path of side-adjacent cells, each used at most once? (LC 79)\n    boolean exist(char[][] board, String word) {\n        this.board = board;\n        this.word = word;\n        for (int r = 0; r < board.length; r++)\n            for (int c = 0; c < board[0].length; c++)\n                if (dfs(r, c, 0)) return true;\n        return false;\n    }\n\n    // Does board[r][c] start word[k..]?\n    private boolean dfs(int r, int c, int k) {\n        if (r < 0 || r >= board.length || c < 0 || c >= board[0].length || board[r][c] != word.charAt(k)) return false;\n        if (k == word.length() - 1) return true;\n        board[r][c] = '#'; // used on this path\n        boolean found = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n        board[r][c] = word.charAt(k); // restore on the way back\n        return found;\n    }\n}",
+     "go": "// exist reports whether word is spelled by a path of side-adjacent cells, each used at most once (LC 79).\nfunc exist(board [][]byte, word string) bool {\n\trows, cols := len(board), len(board[0])\n\tvar dfs func(r, c, k int) bool // does board[r][c] start word[k:]?\n\tdfs = func(r, c, k int) bool {\n\t\tif r < 0 || r >= rows || c < 0 || c >= cols || board[r][c] != word[k] {\n\t\t\treturn false\n\t\t}\n\t\tif k == len(word)-1 {\n\t\t\treturn true\n\t\t}\n\t\tboard[r][c] = '#' // used on this path\n\t\tfound := dfs(r+1, c, k+1) || dfs(r-1, c, k+1) || dfs(r, c+1, k+1) || dfs(r, c-1, k+1)\n\t\tboard[r][c] = word[k] // restore on the way back\n\t\treturn found\n\t}\n\tfor r := 0; r < rows; r++ {\n\t\tfor c := 0; c < cols; c++ {\n\t\t\tif dfs(r, c, 0) {\n\t\t\t\treturn true\n\t\t\t}\n\t\t}\n\t}\n\treturn false\n}"
+    },
+    "driver": {
+     "python": "grid = [\"ABCE\", \"SFCS\", \"ADEE\"]\nfor word in (\"ABCCED\", \"SEE\", \"ABCB\", \"SFDA\"):\n    print(str(exist([list(row) for row in grid], word)).lower())\nprint(str(exist([[\"a\"]], \"a\")).lower())",
+     "cpp": "vector<string> grid{\"ABCE\", \"SFCS\", \"ADEE\"};\nfor (string word : {\"ABCCED\", \"SEE\", \"ABCB\", \"SFDA\"}) cout << boolalpha << exist(grid, word) << \"\\n\";\ncout << boolalpha << exist({\"a\"}, \"a\") << \"\\n\";",
+     "java": "Solution s = new Solution();\nString[] grid = {\"ABCE\", \"SFCS\", \"ADEE\"};\nfor (String word : new String[] {\"ABCCED\", \"SEE\", \"ABCB\", \"SFDA\"})\n    show(s.exist(Arrays.stream(grid).map(String::toCharArray).toArray(char[][]::new), word));\nshow(s.exist(new char[][] {{'a'}}, \"a\"));",
+     "go": "grid := []string{\"ABCE\", \"SFCS\", \"ADEE\"}\nfor _, word := range []string{\"ABCCED\", \"SEE\", \"ABCB\", \"SFDA\"} {\n    board := make([][]byte, len(grid))\n    for i, row := range grid {\n        board[i] = []byte(row)\n    }\n    fmt.Println(exist(board, word))\n}\nfmt.Println(exist([][]byte{{'a'}}, \"a\"))",
+     "expected": "true\ntrue\nfalse\ntrue\ntrue"
+    }
+   },
+   {
+    "id": "sudoku-bitmasks",
+    "pattern": {
+     "zh": "数独：行、列、宫各用一个位掩码",
+     "en": "Sudoku: one bitmask per row, column and box"
+    },
+    "when": {
+     "zh": "约束满足类的填格子题（数独、八数码、24 点的变形）：把每行、每列、每宫已用的数字记成位掩码，判断「能不能放 d」只要一次与运算；按空格顺序回溯，放下时置位，退回时清位。LC 37 解数独、LC 36 有效的数独用的是同一组掩码。",
+     "en": "For constraint-filling puzzles (Sudoku and its relatives): keep the digits used in each row, column and box as bitmasks so \"can d go here\" is a single AND, and backtrack over the empty cells, setting bits on the way down and clearing them on the way back. LC 37 (Sudoku Solver); LC 36 (Valid Sudoku) uses the same masks."
+    },
+    "complexity": {
+     "zh": "最坏指数级；常见题面很快 · 空间 O(81)",
+     "en": "Exponential in the worst case, fast on typical puzzles · O(81) space"
+    },
+    "code": {
+     "python": "def solve_sudoku(board: list[list[str]]) -> bool:\n    \"\"\"Fill the '.' cells in place so each row, column and 3x3 box holds 1-9 once (LC 37).\"\"\"\n    rows, cols, boxes = [0] * 9, [0] * 9, [0] * 9  # bit d set: digit d is used there\n    empty = []\n    for r in range(9):\n        for c in range(9):\n            if board[r][c] == \".\":\n                empty.append((r, c))\n            else:\n                bit = 1 << int(board[r][c])\n                rows[r] |= bit\n                cols[c] |= bit\n                boxes[r // 3 * 3 + c // 3] |= bit\n\n    def fill(k: int) -> bool:\n        if k == len(empty):\n            return True\n        r, c = empty[k]\n        b = r // 3 * 3 + c // 3\n        for d in range(1, 10):\n            bit = 1 << d\n            if (rows[r] | cols[c] | boxes[b]) & bit:\n                continue  # d is already in this row, column or box\n            rows[r] |= bit\n            cols[c] |= bit\n            boxes[b] |= bit\n            board[r][c] = str(d)\n            if fill(k + 1):\n                return True\n            rows[r] ^= bit  # undo\n            cols[c] ^= bit\n            boxes[b] ^= bit\n        board[r][c] = \".\"\n        return False\n\n    return fill(0)",
+     "cpp": "// Fill the '.' cells in place so each row, column and 3x3 box holds 1-9 once (LC 37).\nbool solveSudoku(vector<string>& board) {\n    int rows[9] = {}, cols[9] = {}, boxes[9] = {};  // bit d set: digit d is used there\n    vector<pair<int, int>> empty;\n    for (int r = 0; r < 9; r++)\n        for (int c = 0; c < 9; c++) {\n            if (board[r][c] == '.') {\n                empty.push_back({r, c});\n                continue;\n            }\n            int bit = 1 << (board[r][c] - '0');\n            rows[r] |= bit;\n            cols[c] |= bit;\n            boxes[r / 3 * 3 + c / 3] |= bit;\n        }\n    function<bool(size_t)> fill = [&](size_t k) {\n        if (k == empty.size()) return true;\n        auto [r, c] = empty[k];\n        int b = r / 3 * 3 + c / 3;\n        for (int d = 1; d <= 9; d++) {\n            int bit = 1 << d;\n            if ((rows[r] | cols[c] | boxes[b]) & bit) continue;  // d is already in this row, column or box\n            rows[r] |= bit;\n            cols[c] |= bit;\n            boxes[b] |= bit;\n            board[r][c] = char('0' + d);\n            if (fill(k + 1)) return true;\n            rows[r] ^= bit;  // undo\n            cols[c] ^= bit;\n            boxes[b] ^= bit;\n        }\n        board[r][c] = '.';\n        return false;\n    };\n    return fill(0);\n}",
+     "java": "class Solution {\n    private final int[] rows = new int[9], cols = new int[9], boxes = new int[9]; // bit d set: digit d is used there\n    private final List<int[]> empty = new ArrayList<>();\n    private char[][] board;\n\n    // Fill the '.' cells in place so each row, column and 3x3 box holds 1-9 once (LC 37).\n    boolean solveSudoku(char[][] board) {\n        this.board = board;\n        for (int r = 0; r < 9; r++)\n            for (int c = 0; c < 9; c++) {\n                if (board[r][c] == '.') {\n                    empty.add(new int[] {r, c});\n                    continue;\n                }\n                int bit = 1 << (board[r][c] - '0');\n                rows[r] |= bit;\n                cols[c] |= bit;\n                boxes[r / 3 * 3 + c / 3] |= bit;\n            }\n        return fill(0);\n    }\n\n    private boolean fill(int k) {\n        if (k == empty.size()) return true;\n        int r = empty.get(k)[0], c = empty.get(k)[1], b = r / 3 * 3 + c / 3;\n        for (int d = 1; d <= 9; d++) {\n            int bit = 1 << d;\n            if (((rows[r] | cols[c] | boxes[b]) & bit) != 0) continue; // d is already in this row, column or box\n            rows[r] |= bit;\n            cols[c] |= bit;\n            boxes[b] |= bit;\n            board[r][c] = (char) ('0' + d);\n            if (fill(k + 1)) return true;\n            rows[r] ^= bit; // undo\n            cols[c] ^= bit;\n            boxes[b] ^= bit;\n        }\n        board[r][c] = '.';\n        return false;\n    }\n}",
+     "go": "// solveSudoku fills the '.' cells in place so each row, column and 3x3 box holds 1-9 once (LC 37).\nfunc solveSudoku(board [][]byte) bool {\n\tvar rows, cols, boxes [9]int // bit d set: digit d is used there\n\tvar empty [][2]int\n\tfor r := 0; r < 9; r++ {\n\t\tfor c := 0; c < 9; c++ {\n\t\t\tif board[r][c] == '.' {\n\t\t\t\tempty = append(empty, [2]int{r, c})\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tbit := 1 << (board[r][c] - '0')\n\t\t\trows[r] |= bit\n\t\t\tcols[c] |= bit\n\t\t\tboxes[r/3*3+c/3] |= bit\n\t\t}\n\t}\n\tvar fill func(k int) bool\n\tfill = func(k int) bool {\n\t\tif k == len(empty) {\n\t\t\treturn true\n\t\t}\n\t\tr, c := empty[k][0], empty[k][1]\n\t\tb := r/3*3 + c/3\n\t\tfor d := 1; d <= 9; d++ {\n\t\t\tbit := 1 << d\n\t\t\tif (rows[r]|cols[c]|boxes[b])&bit != 0 {\n\t\t\t\tcontinue // d is already in this row, column or box\n\t\t\t}\n\t\t\trows[r] |= bit\n\t\t\tcols[c] |= bit\n\t\t\tboxes[b] |= bit\n\t\t\tboard[r][c] = byte('0' + d)\n\t\t\tif fill(k + 1) {\n\t\t\t\treturn true\n\t\t\t}\n\t\t\trows[r] ^= bit // undo\n\t\t\tcols[c] ^= bit\n\t\t\tboxes[b] ^= bit\n\t\t}\n\t\tboard[r][c] = '.'\n\t\treturn false\n\t}\n\treturn fill(0)\n}"
+    },
+    "driver": {
+     "python": "rows = [\"53..7....\", \"6..195...\", \".98....6.\", \"8...6...3\", \"4..8.3..1\", \"7...2...6\", \".6....28.\", \"...419..5\", \"....8..79\"]\nboard = [list(row) for row in rows]\nprint(str(solve_sudoku(board)).lower())\nfor row in board:\n    print(\"\".join(row))",
+     "cpp": "vector<string> board{\"53..7....\", \"6..195...\", \".98....6.\", \"8...6...3\", \"4..8.3..1\", \"7...2...6\", \".6....28.\", \"...419..5\", \"....8..79\"};\ncout << boolalpha << solveSudoku(board) << \"\\n\";\nfor (auto& row : board) cout << row << \"\\n\";",
+     "java": "String[] rows = {\"53..7....\", \"6..195...\", \".98....6.\", \"8...6...3\", \"4..8.3..1\", \"7...2...6\", \".6....28.\", \"...419..5\", \"....8..79\"};\nchar[][] board = Arrays.stream(rows).map(String::toCharArray).toArray(char[][]::new);\nshow(new Solution().solveSudoku(board));\nfor (char[] row : board) show(new String(row));",
+     "go": "rows := []string{\"53..7....\", \"6..195...\", \".98....6.\", \"8...6...3\", \"4..8.3..1\", \"7...2...6\", \".6....28.\", \"...419..5\", \"....8..79\"}\nboard := make([][]byte, 9)\nfor i, row := range rows {\n    board[i] = []byte(row)\n}\nfmt.Println(solveSudoku(board))\nfor _, row := range board {\n    fmt.Println(string(row))\n}",
+     "expected": "true\n534678912\n672195348\n198342567\n859761423\n426853791\n713924856\n961537284\n287419635\n345286179"
+    }
+   }
+  ]
+ },
+ "dp-foundations": {
+  "variants": [
+   {
+    "id": "top-down-memo",
+    "pattern": {
+     "zh": "自顶向下记忆化递归",
+     "en": "Top-down recursion with a memo"
+    },
+    "when": {
+     "zh": "先写出「从 i 开始还有几种 / 最少要多少」的递归，再加一张备忘表，就是 DP 的另一种写法：转移不好排顺序、或者只有一部分状态会被用到时更顺手。LC 91 解码方法、LC 70 爬楼梯、LC 343 整数拆分都能这样写；Python 用 functools.cache。",
+     "en": "Write the recursion for \"how many ways, or how few, from position i on\", then add a memo table, and you have the other way to write a DP. It is handier when the order of transitions is awkward or only some states are ever reached. LC 91 (Decode Ways), LC 70 (Climbing Stairs) and LC 343 (Integer Break) all work; in Python use functools.cache."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)（备忘表 + 递归栈）",
+     "en": "O(n) time · O(n) space (memo plus recursion stack)"
+    },
+    "code": {
+     "python": "from functools import cache\n\n\ndef num_decodings(s: str) -> int:\n    \"\"\"Ways to read a digit string as letters, 1 = A ... 26 = Z (LC 91).\"\"\"\n\n    @cache\n    def ways(i: int) -> int:  # ways to decode s[i:]\n        if i == len(s):\n            return 1\n        if s[i] == \"0\":\n            return 0  # no letter's code starts with 0\n        total = ways(i + 1)  # read one digit\n        if i + 1 < len(s) and int(s[i : i + 2]) <= 26:\n            total += ways(i + 2)  # or two\n        return total\n\n    return ways(0)",
+     "cpp": "// Ways to read a digit string as letters, 1 = A ... 26 = Z (LC 91).\nlong long numDecodings(const string& s) {\n    int n = s.size();\n    vector<long long> memo(n + 1, -1);  // memo[i]: ways to decode s[i..], -1 = not computed yet\n    function<long long(int)> ways = [&](int i) -> long long {\n        if (i == n) return 1;\n        if (memo[i] >= 0) return memo[i];\n        if (s[i] == '0') return memo[i] = 0;  // no letter's code starts with 0\n        long long total = ways(i + 1);  // read one digit\n        if (i + 1 < n && stoi(s.substr(i, 2)) <= 26) total += ways(i + 2);  // or two\n        return memo[i] = total;\n    };\n    return ways(0);\n}",
+     "java": "class Solution {\n    private Long[] memo; // memo[i]: ways to decode s[i..], null = not computed yet\n    private String s;\n\n    // Ways to read a digit string as letters, 1 = A ... 26 = Z (LC 91).\n    long numDecodings(String s) {\n        this.s = s;\n        memo = new Long[s.length() + 1];\n        return ways(0);\n    }\n\n    private long ways(int i) {\n        if (i == s.length()) return 1;\n        if (memo[i] != null) return memo[i];\n        long total = 0;\n        if (s.charAt(i) != '0') { // no letter's code starts with 0\n            total = ways(i + 1); // read one digit\n            if (i + 1 < s.length() && Integer.parseInt(s.substring(i, i + 2)) <= 26) total += ways(i + 2); // or two\n        }\n        return memo[i] = total;\n    }\n}",
+     "go": "// numDecodings returns the ways to read a digit string as letters, 1 = A ... 26 = Z (LC 91).\nfunc numDecodings(s string) int {\n\tn := len(s)\n\tmemo := make([]int, n+1) // memo[i]: ways to decode s[i:], -1 = not computed yet\n\tfor i := range memo {\n\t\tmemo[i] = -1\n\t}\n\tvar ways func(i int) int\n\tways = func(i int) int {\n\t\tif i == n {\n\t\t\treturn 1\n\t\t}\n\t\tif memo[i] >= 0 {\n\t\t\treturn memo[i]\n\t\t}\n\t\ttotal := 0\n\t\tif s[i] != '0' { // no letter's code starts with 0\n\t\t\ttotal = ways(i + 1) // read one digit\n\t\t\tif i+1 < n && (s[i]-'0')*10+(s[i+1]-'0') <= 26 {\n\t\t\t\ttotal += ways(i + 2) // or two\n\t\t\t}\n\t\t}\n\t\tmemo[i] = total\n\t\treturn total\n\t}\n\treturn ways(0)\n}"
+    },
+    "driver": {
+     "python": "for s in (\"12\", \"226\", \"06\", \"11106\", \"10\", \"111111111111111111111111111111\"):\n    print(num_decodings(s))",
+     "cpp": "for (string s : {\"12\", \"226\", \"06\", \"11106\", \"10\", \"111111111111111111111111111111\"}) cout << numDecodings(s) << \"\\n\";",
+     "java": "Solution sol = new Solution();\nfor (String s : new String[] {\"12\", \"226\", \"06\", \"11106\", \"10\", \"111111111111111111111111111111\"}) show(sol.numDecodings(s));",
+     "go": "for _, s := range []string{\"12\", \"226\", \"06\", \"11106\", \"10\", \"111111111111111111111111111111\"} {\n    fmt.Println(numDecodings(s))\n}",
+     "expected": "2\n3\n0\n2\n1\n1346269"
+    }
+   },
+   {
+    "id": "circular-split",
+    "pattern": {
+     "zh": "环形拆成两条链",
+     "en": "Split a circle into two lines"
+    },
+    "when": {
+     "zh": "数组首尾相连、首尾不能同时选（环形打家劫舍）：拆成「不要最后一个」和「不要第一个」两条普通链，各跑一遍线性 DP，取较大者。LC 213 打家劫舍 II；环形子数组最大和是另一种处理方式，见状态机 DP 那一站。",
+     "en": "When the array wraps around and the first and last cannot both be chosen (House Robber in a circle): split it into two plain lines, one without the last element and one without the first, run the linear DP on each and keep the better. LC 213 (House Robber II); the circular maximum subarray is handled differently, at the state-machine DP stop."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def rob_circle(nums: list[int]) -> int:\n    \"\"\"House robber with the houses in a circle: the first and last are neighbours (LC 213).\"\"\"\n\n    def rob_line(lo: int, hi: int) -> int:  # the plain robber on nums[lo:hi]\n        prev2 = prev1 = 0\n        for x in nums[lo:hi]:\n            prev2, prev1 = prev1, max(prev1, prev2 + x)\n        return prev1\n\n    if len(nums) == 1:\n        return nums[0]\n    return max(rob_line(0, len(nums) - 1), rob_line(1, len(nums)))  # without the last, or without the first",
+     "cpp": "// House robber with the houses in a circle: the first and last are neighbours (LC 213).\nint robCircle(const vector<int>& nums) {\n    auto robLine = [&](int lo, int hi) {  // the plain robber on nums[lo, hi)\n        int prev2 = 0, prev1 = 0;\n        for (int i = lo; i < hi; i++) {\n            int cur = max(prev1, prev2 + nums[i]);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    };\n    int n = nums.size();\n    if (n == 1) return nums[0];\n    return max(robLine(0, n - 1), robLine(1, n));  // without the last, or without the first\n}",
+     "java": "class Solution {\n    // House robber with the houses in a circle: the first and last are neighbours (LC 213).\n    int robCircle(int[] nums) {\n        int n = nums.length;\n        if (n == 1) return nums[0];\n        return Math.max(robLine(nums, 0, n - 1), robLine(nums, 1, n)); // without the last, or without the first\n    }\n\n    // The plain robber on nums[lo, hi).\n    private int robLine(int[] nums, int lo, int hi) {\n        int prev2 = 0, prev1 = 0;\n        for (int i = lo; i < hi; i++) {\n            int cur = Math.max(prev1, prev2 + nums[i]);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+     "go": "// robCircle is the house robber with the houses in a circle: the first and last are neighbours (LC 213).\nfunc robCircle(nums []int) int {\n\trobLine := func(line []int) int { // the plain robber on a line of houses\n\t\tprev2, prev1 := 0, 0\n\t\tfor _, x := range line {\n\t\t\tprev2, prev1 = prev1, max(prev1, prev2+x)\n\t\t}\n\t\treturn prev1\n\t}\n\tn := len(nums)\n\tif n == 1 {\n\t\treturn nums[0]\n\t}\n\treturn max(robLine(nums[:n-1]), robLine(nums[1:])) // without the last, or without the first\n}"
+    },
+    "driver": {
+     "python": "for nums in ([2, 3, 2], [1, 2, 3, 1], [1, 2, 3], [5], [200, 3, 140, 20, 10]):\n    print(rob_circle(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{2, 3, 2}, {1, 2, 3, 1}, {1, 2, 3}, {5}, {200, 3, 140, 20, 10}}) cout << robCircle(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{2, 3, 2}, {1, 2, 3, 1}, {1, 2, 3}, {5}, {200, 3, 140, 20, 10}}) show(s.robCircle(nums));",
+     "go": "for _, nums := range [][]int{{2, 3, 2}, {1, 2, 3, 1}, {1, 2, 3}, {5}, {200, 3, 140, 20, 10}} {\n    fmt.Println(robCircle(nums))\n}",
+     "expected": "3\n4\n3\n5\n340"
+    }
+   }
+  ]
+ },
+ "dp-grid": {
+  "variants": [
+   {
+    "id": "max-square",
+    "pattern": {
+     "zh": "最大正方形：取上、左、左上三者最小再加一",
+     "en": "Maximal square: one more than the min of up, left and up-left"
+    },
+    "when": {
+     "zh": "求全 1 的最大正方形（或统计正方形个数）：dp 是「以 (r, c) 为右下角的最大边长」，它被上、左、左上三个方向里最短的那个限制住，所以是三者最小值加一。压成一行时用一个变量保存左上角的旧值。LC 221 最大正方形、LC 1277 统计全为 1 的正方形子矩阵。",
+     "en": "For the largest all-1 square (or the number of squares): dp is the side of the largest square whose bottom-right corner is (r, c), limited by the shortest of up, left and up-left, so it is their minimum plus one. With one row, a variable keeps the old up-left value. LC 221 (Maximal Square), LC 1277 (Count Square Submatrices with All Ones)."
+    },
+    "complexity": {
+     "zh": "时间 O(rows × cols) · 空间 O(cols)",
+     "en": "O(rows × cols) time · O(cols) space"
+    },
+    "code": {
+     "python": "def maximal_square(matrix: list[str]) -> int:\n    \"\"\"Area of the largest all-'1' square; each row is a string such as \"10111\" (LC 221).\"\"\"\n    cols = len(matrix[0])\n    dp = [0] * (cols + 1)  # dp[c + 1]: side of the largest square ending at (r, c); dp[0] stays 0\n    best = 0\n    for row in matrix:\n        diag = 0  # the up-left neighbour: dp[c] before this row overwrote it\n        for c in range(cols):\n            up = dp[c + 1]\n            dp[c + 1] = min(up, dp[c], diag) + 1 if row[c] == \"1\" else 0  # limited by up, left, up-left\n            best = max(best, dp[c + 1])\n            diag = up\n    return best * best",
+     "cpp": "// Area of the largest all-'1' square; each row is a string such as \"10111\" (LC 221).\nint maximalSquare(const vector<string>& matrix) {\n    int cols = matrix[0].size(), best = 0;\n    vector<int> dp(cols + 1, 0);  // dp[c + 1]: side of the largest square ending at (r, c); dp[0] stays 0\n    for (const string& row : matrix) {\n        int diag = 0;  // the up-left neighbour: dp[c] before this row overwrote it\n        for (int c = 0; c < cols; c++) {\n            int up = dp[c + 1];\n            dp[c + 1] = row[c] == '1' ? min({up, dp[c], diag}) + 1 : 0;  // limited by up, left, up-left\n            best = max(best, dp[c + 1]);\n            diag = up;\n        }\n    }\n    return best * best;\n}",
+     "java": "class Solution {\n    // Area of the largest all-'1' square; each row is a string such as \"10111\" (LC 221).\n    int maximalSquare(String[] matrix) {\n        int cols = matrix[0].length(), best = 0;\n        int[] dp = new int[cols + 1]; // dp[c + 1]: side of the largest square ending at (r, c); dp[0] stays 0\n        for (String row : matrix) {\n            int diag = 0; // the up-left neighbour: dp[c] before this row overwrote it\n            for (int c = 0; c < cols; c++) {\n                int up = dp[c + 1];\n                dp[c + 1] = row.charAt(c) == '1' ? Math.min(Math.min(up, dp[c]), diag) + 1 : 0; // limited by up, left, up-left\n                best = Math.max(best, dp[c + 1]);\n                diag = up;\n            }\n        }\n        return best * best;\n    }\n}",
+     "go": "// maximalSquare returns the area of the largest all-'1' square; each row is a string (LC 221).\nfunc maximalSquare(matrix []string) int {\n\tcols, best := len(matrix[0]), 0\n\tdp := make([]int, cols+1) // dp[c + 1]: side of the largest square ending at (r, c); dp[0] stays 0\n\tfor _, row := range matrix {\n\t\tdiag := 0 // the up-left neighbour: dp[c] before this row overwrote it\n\t\tfor c := 0; c < cols; c++ {\n\t\t\tup := dp[c+1]\n\t\t\tif row[c] == '1' {\n\t\t\t\tdp[c+1] = min(up, dp[c], diag) + 1 // limited by up, left, up-left\n\t\t\t} else {\n\t\t\t\tdp[c+1] = 0\n\t\t\t}\n\t\t\tbest = max(best, dp[c+1])\n\t\t\tdiag = up\n\t\t}\n\t}\n\treturn best * best\n}"
+    },
+    "driver": {
+     "python": "for m in ([\"10100\", \"10111\", \"11111\", \"10010\"], [\"01\", \"10\"], [\"0\"], [\"111\", \"111\", \"111\"], [\"1111\", \"1101\", \"1111\"]):\n    print(maximal_square(m))",
+     "cpp": "for (auto& m : vector<vector<string>>{{\"10100\", \"10111\", \"11111\", \"10010\"}, {\"01\", \"10\"}, {\"0\"}, {\"111\", \"111\", \"111\"}, {\"1111\", \"1101\", \"1111\"}})\n    cout << maximalSquare(m) << \"\\n\";",
+     "java": "Solution s = new Solution();\nString[][] cases = {{\"10100\", \"10111\", \"11111\", \"10010\"}, {\"01\", \"10\"}, {\"0\"}, {\"111\", \"111\", \"111\"}, {\"1111\", \"1101\", \"1111\"}};\nfor (String[] m : cases) show(s.maximalSquare(m));",
+     "go": "for _, m := range [][]string{{\"10100\", \"10111\", \"11111\", \"10010\"}, {\"01\", \"10\"}, {\"0\"}, {\"111\", \"111\", \"111\"}, {\"1111\", \"1101\", \"1111\"}} {\n    fmt.Println(maximalSquare(m))\n}",
+     "expected": "4\n1\n0\n9\n4"
+    }
+   },
+   {
+    "id": "backward-grid",
+    "pattern": {
+     "zh": "从终点倒着推的网格 DP",
+     "en": "Grid DP filled backwards from the goal"
+    },
+    "when": {
+     "zh": "起点的需求取决于后面会发生什么（地下城游戏要「全程血量 ≥ 1」）时，正着推缺信息：从右下角倒推「进入这一格时至少要多少」，取右边和下边较小的需求，减去本格的增减，再和 1 取大。LC 174 地下城游戏；LC 120 三角形最小路径和自底向上也是倒推。",
+     "en": "When what the start needs depends on what comes later (the dungeon game requires health of at least 1 throughout), going forwards lacks information. Fill backwards from the bottom-right: the least health on entering a cell is the smaller need of right and down, minus this cell's change, but never below 1. LC 174 (Dungeon Game); LC 120 (Triangle) bottom-up also runs backwards."
+    },
+    "complexity": {
+     "zh": "时间 O(rows × cols) · 空间 O(cols)",
+     "en": "O(rows × cols) time · O(cols) space"
+    },
+    "code": {
+     "python": "def min_initial_health(dungeon: list[list[int]]) -> int:\n    \"\"\"Least starting health to reach the bottom-right keeping health >= 1 throughout (LC 174).\"\"\"\n    rows, cols = len(dungeon), len(dungeon[0])\n    need = [float(\"inf\")] * (cols + 1)  # need[c]: least health on entering (r, c)\n    need[cols - 1] = 1  # a virtual cell below the goal: arrive there with at least 1\n    for r in range(rows - 1, -1, -1):\n        for c in range(cols - 1, -1, -1):\n            nxt = min(need[c], need[c + 1])  # down (row r + 1's value) or right (already row r)\n            need[c] = max(1, nxt - dungeon[r][c])\n    return need[0]",
+     "cpp": "// Least starting health to reach the bottom-right keeping health >= 1 throughout (LC 174).\nint minInitialHealth(const vector<vector<int>>& dungeon) {\n    int rows = dungeon.size(), cols = dungeon[0].size();\n    vector<int> need(cols + 1, INT_MAX);  // need[c]: least health on entering (r, c)\n    need[cols - 1] = 1;  // a virtual cell below the goal: arrive there with at least 1\n    for (int r = rows - 1; r >= 0; r--)\n        for (int c = cols - 1; c >= 0; c--) {\n            int next = min(need[c], need[c + 1]);  // down (row r + 1's value) or right (already row r)\n            need[c] = max(1, next - dungeon[r][c]);\n        }\n    return need[0];\n}",
+     "java": "class Solution {\n    // Least starting health to reach the bottom-right keeping health >= 1 throughout (LC 174).\n    int minInitialHealth(int[][] dungeon) {\n        int rows = dungeon.length, cols = dungeon[0].length;\n        int[] need = new int[cols + 1]; // need[c]: least health on entering (r, c)\n        Arrays.fill(need, Integer.MAX_VALUE);\n        need[cols - 1] = 1; // a virtual cell below the goal: arrive there with at least 1\n        for (int r = rows - 1; r >= 0; r--)\n            for (int c = cols - 1; c >= 0; c--) {\n                int next = Math.min(need[c], need[c + 1]); // down (row r + 1's value) or right (already row r)\n                need[c] = Math.max(1, next - dungeon[r][c]);\n            }\n        return need[0];\n    }\n}",
+     "go": "// minInitialHealth returns the least starting health that keeps health >= 1 to the bottom-right (LC 174).\nfunc minInitialHealth(dungeon [][]int) int {\n\trows, cols := len(dungeon), len(dungeon[0])\n\tneed := make([]int, cols+1) // need[c]: least health on entering (r, c)\n\tfor c := range need {\n\t\tneed[c] = 1 << 60\n\t}\n\tneed[cols-1] = 1 // a virtual cell below the goal: arrive there with at least 1\n\tfor r := rows - 1; r >= 0; r-- {\n\t\tfor c := cols - 1; c >= 0; c-- {\n\t\t\tnext := min(need[c], need[c+1]) // down (row r + 1's value) or right (already row r)\n\t\t\tneed[c] = max(1, next-dungeon[r][c])\n\t\t}\n\t}\n\treturn need[0]\n}"
+    },
+    "driver": {
+     "python": "for d in ([[-2, -3, 3], [-5, -10, 1], [10, 30, -5]], [[0]], [[100]], [[-3, 5]], [[1, -3, 3], [0, -2, 0], [-3, -3, -3]]):\n    print(min_initial_health(d))",
+     "cpp": "for (auto& d : vector<vector<vector<int>>>{{{-2, -3, 3}, {-5, -10, 1}, {10, 30, -5}}, {{0}}, {{100}}, {{-3, 5}}, {{1, -3, 3}, {0, -2, 0}, {-3, -3, -3}}})\n    cout << minInitialHealth(d) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][][] cases = {{{-2, -3, 3}, {-5, -10, 1}, {10, 30, -5}}, {{0}}, {{100}}, {{-3, 5}}, {{1, -3, 3}, {0, -2, 0}, {-3, -3, -3}}};\nfor (int[][] d : cases) show(s.minInitialHealth(d));",
+     "go": "for _, d := range [][][]int{{{-2, -3, 3}, {-5, -10, 1}, {10, 30, -5}}, {{0}}, {{100}}, {{-3, 5}}, {{1, -3, 3}, {0, -2, 0}, {-3, -3, -3}}} {\n    fmt.Println(minInitialHealth(d))\n}",
+     "expected": "7\n1\n1\n4\n3"
+    }
+   }
+  ]
+ },
  "dp-knapsack": {
   "variants": [
    {
