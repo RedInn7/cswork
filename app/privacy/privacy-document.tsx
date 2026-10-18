@@ -50,16 +50,16 @@ export function PrivacyDocument() {
             <section aria-labelledby="privacy-learning">
               <h2 id="privacy-learning">学习记录与私密反馈</h2>
               <p>
-                为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
+                为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新也会产生站内通知及已读记录。
               </p>
               <p>
                 登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，给面经和面试题的点赞，以及对官方题解「有帮助 / 没帮助」的评价也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告、点赞和题解评价只以人数汇总展示，不公开报告人、点赞人和评价人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示；单次提交制的模拟 OA 只和同样规则的成绩比较。
               </p>
               <p>
-                你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
+                你在社区发布的题解、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。
               </p>
               <p>
-                在面经讨论、求职、上岸故事频道，以及面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。面经里有 OA 轮次时，可以选填 OA 成绩（做出几题、共几题、通过用例的比例、用时，以及是否进了下一轮），随面经一起公开；公司页上的 OA 统计只显示汇总的人数，同一组不足 8 篇公开面经时不显示。面经还可以选填准备了几周、用过哪些练习方式，以及每道题属于哪一轮、对应站内哪道题（或标为「类似」），这些都随面经一起公开；公司页只显示拿到 offer 的公开面经的准备周数中位数，不足 5 篇时不显示。面经审核通过后，其中对应到站内题目、且没有标为「类似」的题，会计入这道题「被问到过」的统计，和手动报告一样只按人数汇总、同一个人只算一次；面经撤回或下架后不再计入。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，也不会出现在你的公开主页上；你在自己匿名帖下的回复同样显示为匿名。匿名面经通过审核后，你在它评论区里发的帖子和评论（包括回复别人的评论）一律匿名发出，评论标为「楼主」。平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名）时，你会收到站内通知，内容是对方的主页名或打码后的昵称和一行摘要。有人赞了你的帖子时，通知只写当天点赞的人数和帖子标题，不显示是谁点的赞；同一帖子一天内的点赞合并成一条。你屏蔽的人回复或提到你，不会通知你。匿名作者（包括在自己匿名面经下发言的投稿人）的通知不显示名字，它 @ 别人不发通知，它回复你时不论屏蔽与否都会通知你，这样有没有通知都推断不出作者是谁。题目在你正在进行的比赛或认证考试里时，关于它题解讨论的回复和 @ 通知不带摘要。这些通知不发邮件。
+                在面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。面经里有 OA 轮次时，可以选填 OA 成绩（做出几题、共几题、通过用例的比例、用时，以及是否进了下一轮），随面经一起公开；公司页上的 OA 统计只显示汇总的人数，同一组不足 8 篇公开面经时不显示。面经还可以选填准备了几周、用过哪些练习方式，以及每道题属于哪一轮、对应站内哪道题（或标为「类似」），这些都随面经一起公开；公司页只显示拿到 offer 的公开面经的准备周数中位数，不足 5 篇时不显示。面经审核通过后，其中对应到站内题目、且没有标为「类似」的题，会计入这道题「被问到过」的统计，和手动报告一样只按人数汇总、同一个人只算一次；面经撤回或下架后不再计入。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，也不会出现在你的公开主页上；你在自己匿名帖下的回复同样显示为匿名。匿名面经通过审核后，你在它评论区里发的帖子和评论（包括回复别人的评论）一律匿名发出，评论标为「楼主」。平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名）时，你会收到站内通知，内容是对方的主页名或打码后的昵称和一行摘要。有人赞了你的帖子时，通知只写当天点赞的人数和帖子标题，不显示是谁点的赞；同一帖子一天内的点赞合并成一条。私信下线前你屏蔽过的人回复或提到你，仍不会通知你。匿名作者（包括在自己匿名面经下发言的投稿人）的通知不显示名字，它 @ 别人不发通知，它回复你时不论屏蔽与否都会通知你，这样有没有通知都推断不出作者是谁。题目在你正在进行的比赛或认证考试里时，关于它题解讨论的回复和 @ 通知不带摘要。这些通知不发邮件。
               </p>
               <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
@@ -80,7 +80,7 @@ export function PrivacyDocument() {
                 学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛、投递提醒）、每天的提醒时间、时区偏移和语言，每天最多汇总成一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。投递提醒在打开学习提醒时默认勾选，可以单独关掉：服务器读取你投递追踪卡片上的 OA 截止、面试时间和 offer 截止时间，在 OA 截止前 24 小时和 2 小时、面试前 1 小时、处于 Offer 阶段的卡片 offer 截止前 3 天和 1 天各写一条站内消息，内容是公司、岗位和时间；投递卡和联系人的跟进日期到了，只在每日汇总里写到期的数量。删除一张投递卡时，它的投递提醒消息一并删除。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），只含每日汇总，每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核、上线新的 OA 题或有新的实习/新毕业生岗位时，你会收到站内消息，不发邮件；只有当这条消息里同时有你保存的岗位筛选的新结果时才会推送（见下方「在招岗位」一段）。
               </p>
               <p id="privacy-tracker">
-                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、offer 截止时间、内推信息和内推进度、投递渠道、下一步和跟进日期、所用简历版本的名字、职位链接和备注，以及阶段变更记录（每张卡片最近 40 次）和可选的职位描述快照（最多 1 万字），每个账号最多 300 条。职位描述快照只在打开这张卡片时读取，不随列表返回。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。每周投递目标存在你账号里的私人笔记（career:goal）中；可选的简历版本名从简历生成器存在这个浏览器里的版本读取。「岗位已下线」提示只是在服务器上拿卡片链接比对本站已同步的公开岗位，不会因此向外部网站发请求。「存到投递看板」书签只在你点它时读取当前招聘页的标题、站点名（或主机名）、网址和你选中的文字，打开投递追踪页并预填表单：选中的文字放在网址 # 后面，浏览器不会把它发给服务器；未登录时，预填内容临时存在当前标签页的会话存储里，登录后读取一次就删除；只有你点保存才会写进账号。导出的 CSV 和日历文件（OA 截止、面试、offer 截止和跟进事项）在你的浏览器里生成；平台自己发出的投递提醒见上一段。每张卡片可以选一个档位（梦想、目标、练手），它是投递记录里的一列，和卡片其他内容一样只有你自己能看到，导出的 CSV 里也有这一列。面试复盘存成你账号里的私人笔记（retro:&lt;投递卡&gt;/&lt;时间&gt;），内容是公司、轮次、面试时间、1–4 分的自评、最多 10 道题（可以关联站内题号）、卡在哪里和被问到的行为面主题，每个账号最多 200 条；只有你自己能看到，不进笔记搜索和笔记导出，删除这张投递卡时一起删除。保存复盘时，关联的站内题会被标记为「重做」；故事库会读取复盘里的主题，列出还没有故事覆盖的主题。
+                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、offer 截止时间、内推信息和内推进度、投递渠道、下一步和跟进日期、所用简历版本的名字、职位链接和备注，以及阶段变更记录（每张卡片最近 40 次）和可选的职位描述快照（最多 1 万字），每个账号最多 300 条。职位描述快照只在打开这张卡片时读取，不随列表返回。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。每周投递目标存在你账号里的私人笔记（career:goal）中；可选的简历版本名从简历生成器存在这个浏览器里的版本读取。「岗位已下线」提示只是在服务器上拿卡片链接比对本站已同步的公开岗位，不会因此向外部网站发请求。「存到投递看板」书签只在你点它时读取当前招聘页的标题、站点名（或主机名）、网址和你选中的文字，打开投递追踪页并预填表单：选中的文字放在网址 # 后面，浏览器不会把它发给服务器；未登录时，预填内容临时存在当前标签页的会话存储里，登录后读取一次就删除；只有你点保存才会写进账号。导出的 CSV 和日历文件（OA 截止、面试、offer 截止和跟进事项）在你的浏览器里生成；平台自己发出的投递提醒见上一段。每张卡片可以选一个档位（梦想、目标、练手），它是投递记录里的一列，和卡片其他内容一样只有你自己能看到，导出的 CSV 里也有这一列。面试复盘存成你账号里的私人笔记（retro:&lt;投递卡&gt;/&lt;时间&gt;），内容是公司、轮次、面试时间、1–4 分的自评、最多 10 道题（可以关联站内题号）、卡在哪里，每个账号最多 200 条（早先保存的复盘里可能还带着已不再显示的行为面主题，编辑或删除这条复盘时一并清掉）；只有你自己能看到，不进笔记搜索和笔记导出，删除这张投递卡时一起删除。保存复盘时，关联的站内题会被标记为「重做」。
               </p>
               <p id="privacy-jobs">
                 「在招岗位」（/career/jobs 和公司页）列出的是各公司在 Greenhouse、Lever、Ashby 上公开发布的招聘信息，由服务器定时抓取，抓取时不发送任何用户数据。同步时服务器会读取这些公开岗位的岗位描述，只用来按规则判断是否写明不提供签证担保、要求美国公民或绿卡、要求安全许可这三类身份要求；只保存判断出的标记，不保存岗位描述正文（投递卡上你自己存的职位描述快照见上一段）。点岗位标题会打开第三方的招聘页面。点「加入投递追踪」只是预填表单，你点保存后才写进自己的投递记录；未登录时，这个岗位的公司、职位和链接会临时存在当前标签页的会话存储里，登录后打开投递追踪读取一次就删除。登录后可以保存一个岗位筛选，存成你账号里的私人笔记（career:jobs-search）：不带参数打开 /career/jobs 时会套用它；每天北京时间 9 点后，之前 24 小时内新出现、符合这个筛选的岗位会合成一条站内消息（和关注公司的动态合在一起），开启推送的设备也会收到推送，推送本身不带内容。保存的筛选随时可以删除。登录后，页面还会读取你投递记录里的职位链接，标出已经在投递看板上的岗位；没有保存筛选时，会按你资料里填的目标岗位预选方向。点「隐藏」的岗位只记在当前浏览器的本地存储里（最多 500 个），不会上传。登录后屏蔽的公司（最多 100 家）存成你账号里的私人笔记（career:jobs-blocked），只有你自己能看到，用来从在招岗位列表、招聘日历和每日新岗位消息里隐去这些公司的岗位；关注公司的动态不受屏蔽影响。
@@ -89,31 +89,31 @@ export function PrivacyDocument() {
                 联系人（/career/contacts）是你记录的他人信息：姓名、公司、职位、怎么认识的、链接、上次联系和下次跟进的日期、备注，以及可选关联的一张投递卡，每个账号最多 200 位。它们只保存在你自己的账号里，其他人都看不到，可以随时删除；关联的投递卡删除后，联系人保留，只是不再关联。请只记录求职需要的内容。求职指南各章清单的勾选状态，登录时存成你账号里的私人笔记（checklist:&lt;章节&gt;），未登录时只存在当前浏览器，登录后打开这一章会并入账号并从浏览器删除。外联模板页（/career/templates）登录后在浏览器里读取你的投递卡和联系人来填空；你填的「你的名字」只存在当前浏览器。复制和「在邮件应用中打开」都在你的设备上完成，平台不替你发送任何消息。
               </p>
               <p id="privacy-intern">
-                实习日志（/career/intern）登录后才能用，内容存成你账号里的私人笔记：实习设置（公司、职位、开始日期和周数）存在 brag:meta；每周的成果（做成了什么、怎么衡量、怎么做到的、属于哪个项目）、收到的反馈、学到的和下周打算存在 brag:&lt;那一周周一的日期&gt;；选组电话的记录、各项权重和打分存在 brag:teams。每个账号最多 200 条，只有你自己能看到，不进笔记搜索和笔记导出。中期、期末自评草稿和 XYZ 简历要点在你的浏览器里生成，平台不另存；「写入简历」只改这个浏览器里简历生成器的那份；「存为 STAR 故事」会在故事库里新建一条私人笔记。
+                实习日志（/career/intern）登录后才能用，内容存成你账号里的私人笔记：实习设置（公司、职位、开始日期和周数）存在 brag:meta；每周的成果（做成了什么、怎么衡量、怎么做到的、属于哪个项目）、收到的反馈、学到的和下周打算存在 brag:&lt;那一周周一的日期&gt;；选组电话的记录、各项权重和打分存在 brag:teams。每个账号最多 200 条，只有你自己能看到，不进笔记搜索和笔记导出。中期、期末自评草稿和 XYZ 简历要点在你的浏览器里生成，平台不另存；「写入简历」只改这个浏览器里简历生成器的那份。
               </p>
               <p id="privacy-practice-aids">
-                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA、保存的 STAR 故事，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。冲刺计划（OA 日期、目标公司、每周时长、题池、难度和专题筛选、是否接上投递看板等设置）登录后存成私人笔记（pref:plan），同步到你的账户，当前浏览器保留一份缓存；未登录时只存在当前浏览器。勾选「接上投递看板」时，页面只在你的浏览器里读取你自己投递卡上的 OA 截止和面试日期来安排冲刺，这些日期不会另存到别处；计划的日历文件也在浏览器里生成。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。冲刺计划（OA 日期、目标公司、每周时长、题池、难度和专题筛选、是否接上投递看板等设置）登录后存成私人笔记（pref:plan），同步到你的账户，当前浏览器保留一份缓存；未登录时只存在当前浏览器。勾选「接上投递看板」时，页面只在你的浏览器里读取你自己投递卡上的 OA 截止和面试日期来安排冲刺，这些日期不会另存到别处；计划的日历文件也在浏览器里生成。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
               </p>
               <p id="privacy-notes-export">
-                「我的进度」笔记页的导出，把你写的题目、提交和资料笔记、专题套路笔记、STAR 故事、复习卡片、摘录和系统设计草稿打包成一个 .zip（Obsidian 库）或一个 .md 文件，可以选择附上每道题最近一次通过的代码；服务器只返回你自己的记录，文件在你的浏览器里生成，平台不另存。复习单和复习册（/review-sheet）只读取你自己的笔记、收藏和重做标记、提交记录、复习自评和卡片，不新增任何存储，打印和存 PDF 都在浏览器里完成。练习历史页的导出把你每道通过的题、每种语言最近一次通过的代码（可以选择附上题目笔记；OA 题默认不包含）打包成一个 .zip 题解仓库；服务器只返回你自己的提交，文件在你的浏览器里生成，平台不另存。进度 CSV / JSON 用页面已读取的练习历史和收藏、重做标记在浏览器里生成，不新增请求和存储。比赛或技能认证考试进行中，笔记导出、AC 代码打包和复习单都不可用。
+                「我的进度」笔记页的导出，把你写的题目、提交和资料笔记、专题套路笔记、复习卡片、摘录和系统设计草稿打包成一个 .zip（Obsidian 库）或一个 .md 文件，可以选择附上每道题最近一次通过的代码；服务器只返回你自己的记录，文件在你的浏览器里生成，平台不另存。故事库下线前保存的 STAR 故事仍作为私人笔记（story:&lt;id&gt;）留在你的账号里，不再显示或导出，可按下文方式申请删除。复习单和复习册（/review-sheet）只读取你自己的笔记、收藏和重做标记、提交记录、复习自评和卡片，不新增任何存储，打印和存 PDF 都在浏览器里完成。练习历史页的导出把你每道通过的题、每种语言最近一次通过的代码（可以选择附上题目笔记；OA 题默认不包含）打包成一个 .zip 题解仓库；服务器只返回你自己的提交，文件在你的浏览器里生成，平台不另存。进度 CSV / JSON 用页面已读取的练习历史和收藏、重做标记在浏览器里生成，不新增请求和存储。比赛或技能认证考试进行中，笔记导出、AC 代码打包和复习单都不可用。
               </p>
               <p id="privacy-practice-tracks">
-                简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。前端 JS 手写题（/frontend）的代码只在你浏览器里的隔离沙箱中运行，不会上传；代码草稿和已通过的题目记在当前浏览器，登录后一道题全部用例通过时，这道题的「已完成」也记在你的账号里。面试英语（/english）各单元的完成情况，登录后记在你的账号里；未登录时只存在当前浏览器，登录后打开页面会并入账号并从浏览器删除。跟读使用浏览器自带的语音识别，和模拟面试的语音输入一样，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在浏览器里计算，不上传。朗读使用浏览器自带的语音合成。学习路线（/roadmap）登录后存成你账号里的私人笔记：内置岗位路线的目标日期、每周时长、标为「进行中」或「已掌握，跳过」的步骤，以及「保存排期」时记下的各步完成日期存在 route:role-&lt;岗位&gt;；你自己建的路线存在 route:r-&lt;编号&gt;，包括名称、步骤和你加的外部条目（只存标题、单元数、已完成数和每单元时长，不存链接）。路线笔记每个账号最多 30 条，只有你自己能看到，不进笔记搜索和笔记导出。未登录时，排期只存在当前浏览器的本地存储里。导出的 .ics 日历文件在浏览器里生成，不上传。
+                简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。面试英语（/english）各单元的完成情况，登录后记在你的账号里；未登录时只存在当前浏览器，登录后打开页面会并入账号并从浏览器删除。跟读使用浏览器自带的语音识别，和模拟面试的语音输入一样，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在浏览器里计算，不上传。朗读使用浏览器自带的语音合成。学习路线（/roadmap）登录后存成你账号里的私人笔记：内置岗位路线的目标日期、每周时长、标为「进行中」或「已掌握，跳过」的步骤，以及「保存排期」时记下的各步完成日期存在 route:role-&lt;岗位&gt;；你自己建的路线存在 route:r-&lt;编号&gt;，包括名称、步骤和你加的外部条目（只存标题、单元数、已完成数和每单元时长，不存链接）。路线笔记每个账号最多 30 条，只有你自己能看到，不进笔记搜索和笔记导出。未登录时，排期只存在当前浏览器的本地存储里。导出的 .ics 日历文件在浏览器里生成，不上传。
               </p>
               <p id="privacy-code-review">
                 在提交详情里生成「代码评审链接」后，拿到链接并登录的人都能看到这次提交的代码、你的留言和全部评论；页面只显示公开主页名，没有主页名时显示「作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。你可以随时关闭链接：关闭后链接失效，评论不再对任何人显示，但仍保留在数据库里。有新评论时只发站内通知。每个账号最多同时开 20 条链接，每天最多新建 50 条。
               </p>
               <p>
-                学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
+                学习小组和私信功能都已下线：之前留下的小组聊天消息和私信不再向任何人显示，小组聊天消息发送满 180 天、私信发送满 365 天后自动删除。
               </p>
               <p>
-                验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页、讨论帖和题解、内推帖三处展示，换成另一家公司的邮箱验证后三处都会重新关闭；讨论帖只限算法、内推和站务频道，面经讨论、求职、上岸故事频道、公司 OA 题的题解和面经评论里永远不显示。公开主页显示徽章时，主页的帖子列表不列出面经讨论、求职、上岸故事帖和公司 OA 题的题解，但这些帖子本身仍署你的主页名。账号设置里随时可以删除验证记录。
+                验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页和题解两处展示，换成另一家公司的邮箱验证后两处都会重新关闭；公司 OA 题的题解和面经评论里永远不显示。公开主页显示徽章时，主页的帖子列表不列出公司 OA 题的题解，但这些帖子本身仍署你的主页名。账号设置里随时可以删除验证记录。
               </p>
               <p>
-                工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。在选择题、系统设计章节和学习页点「纠错」时，你选的原因和写的说明作为一张工单提交，标题带上对应内容的标记（例如 [mcq:…]），同样只有你和负责的老师能看到。
+                作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容；老师会用这些资料评审作业、管理授权和跟进学习问题。工单功能已下线，不再收集新的问题和附件，此前提交的工单、回复和附件仍按原权限保存，不对其他学员公开。
               </p>
               <p>
-                算法判题会把提交的代码与测试输入交给平台的隔离执行环境运行。你在工单或作业中主动提供的外部链接，则仍由对应网站按其自身设置控制访问。
+                算法判题会把提交的代码与测试输入交给平台的隔离执行环境运行。你在作业中主动提供的外部链接，则仍由对应网站按其自身设置控制访问。
               </p>
               <p>
                 为缩短运行和提交的等待时间，登录后编辑 C++、Java 或 Go
@@ -158,7 +158,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司、岗位和 offer 截止日；决策矩阵的因素、权重和打分也只存在当前浏览器。「复制只读链接」把对比内容（金额取整，不含截止日和回收条款，可选隐去公司名）放在网址 # 后面，浏览器不会把它发给服务器，平台也不保存；打开这样的链接只做只读显示，点「导入到我的对比」才存进你的浏览器。题目自定义用例里填的期望输出也只存在当前浏览器，运行后的对比结果不保存。模拟 OA 选择题环节的作答和「待查」标记也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。看过参考答案后给开放题打的自评（包括专题页「为什么对」和 /learn 课程每节要点的自评；会了 / 部分会 / 不会，用来安排下次复习）、评分日期和题目标题也按同样的方式保存，账号里的私密笔记是 recall:queue。登录后自建的复习卡片（card:）和划词存下的摘录（clip:，存选中的文字和所在页面的标题与链接）也是你账号里的私密笔记，只有你自己能看到；卡片和题目思路卡的复习安排分别存在私密笔记 recall:cards 和 recall:ideas 里，思路卡只读取你自己的通过记录和题目笔记。导出的 Anki 和 CSV 文件在你的浏览器里生成，不上传。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。能力测评练习（/oa/aptitude）进行中或已交卷的速度测验（题目种子、设置、开始时间、当前题号、每题选项和用时、是否已写入复习）只存在当前浏览器，点「再测一次」时清除；答错的题（和已在复习里的题）按上面选择题练习的方式写进复习，登录时存进账号笔记 mcq:answers，未登录时存在当前浏览器，登录后打开 /oa/mcq 时并入账号；能力测评的作答不计入全站答对率。专题页模板默写每次写对的用时和最好成绩只存在当前浏览器；完成一次默写后，这个模板才作为一张卡片进入上面的 recall:queue（未登录时存在当前浏览器）。登录后点「运行并检查」时，你默写的代码加上这一站的测试程序会交给隔离环境运行，保存方式和上文代码沙盒的运行相同。代码块选择的语言只存在当前浏览器。术语表（/topics/glossary）里「做成卡片」存下的卡片和其他复习卡片一样是 card: 笔记；术语朗读使用浏览器自带的语音合成。
+                浏览器本地存储用于恢复代码或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司、岗位和 offer 截止日；决策矩阵的因素、权重和打分也只存在当前浏览器。「复制只读链接」把对比内容（金额取整，不含截止日和回收条款，可选隐去公司名）放在网址 # 后面，浏览器不会把它发给服务器，平台也不保存；打开这样的链接只做只读显示，点「导入到我的对比」才存进你的浏览器。题目自定义用例里填的期望输出也只存在当前浏览器，运行后的对比结果不保存。模拟 OA 选择题环节的作答和「待查」标记也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。看过参考答案后给开放题打的自评（包括专题页「为什么对」和 /learn 课程每节要点的自评；会了 / 部分会 / 不会，用来安排下次复习）、评分日期和题目标题也按同样的方式保存，账号里的私密笔记是 recall:queue。登录后自建的复习卡片（card:）和划词存下的摘录（clip:，存选中的文字和所在页面的标题与链接）也是你账号里的私密笔记，只有你自己能看到；卡片和题目思路卡的复习安排分别存在私密笔记 recall:cards 和 recall:ideas 里，思路卡只读取你自己的通过记录和题目笔记。导出的 Anki 和 CSV 文件在你的浏览器里生成，不上传。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。能力测评练习（/oa/aptitude）进行中或已交卷的速度测验（题目种子、设置、开始时间、当前题号、每题选项和用时、是否已写入复习）只存在当前浏览器，点「再测一次」时清除；答错的题（和已在复习里的题）按上面选择题练习的方式写进复习，登录时存进账号笔记 mcq:answers，未登录时存在当前浏览器，登录后打开 /oa/mcq 时并入账号；能力测评的作答不计入全站答对率。专题页模板默写每次写对的用时和最好成绩只存在当前浏览器；完成一次默写后，这个模板才作为一张卡片进入上面的 recall:queue（未登录时存在当前浏览器）。登录后点「运行并检查」时，你默写的代码加上这一站的测试程序会交给隔离环境运行，保存方式和上文代码沙盒的运行相同。代码块选择的语言只存在当前浏览器。术语表（/topics/glossary）里「做成卡片」存下的卡片和其他复习卡片一样是 card: 笔记；术语朗读使用浏览器自带的语音合成。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -176,7 +176,7 @@ export function PrivacyDocument() {
                 会接收浏览器统计请求，并可能生成大致地区等汇总数据。拒绝不影响网站功能。
               </p>
               <p>
-                我们仅发送预先限定的页面类别，不发送邮箱、昵称、用户标识、代码、搜索词、工单内容、邀请令牌或原始网址参数；不启用广告个性化或
+                我们仅发送预先限定的页面类别，不发送邮箱、昵称、用户标识、代码、搜索词、邀请令牌或原始网址参数；不启用广告个性化或
                 Google
                 signals。来源统计只保留白名单内搜索引擎和社交网站的域名，不含路径或搜索内容。统计
                 Cookie 有效期为 90 天。
@@ -214,7 +214,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
               <p id="privacy-answer-feedback">
-                在面试题、系统设计案例的设计草稿或模拟面试里点「AI 点评我的答案」、或在故事库里点评一个 STAR 故事时，服务器会把你写的答案（或故事各部分和你选的行为面试题）、这道题的题面和参考答案（如有；系统设计案例的参考是这一章的正文）发送给
+                在面试题、系统设计案例的设计草稿或模拟面试里点「AI 点评我的答案」时，服务器会把你写的答案、这道题的题面和参考答案（如有；系统设计案例的参考是这一章的正文）发送给
                 Anthropic，用于生成点评；不发送邮箱、姓名或账户标识。平台不保存答案和点评，只记录每天的调用次数和用量。不点就不会发送。
               </p>
               <p id="privacy-jd">
@@ -307,7 +307,7 @@ export function PrivacyDocument() {
                 platform stores your course access, video playback positions,
                 completion progress, notes and bookmarks, as well as the code
                 you submit, judge results, assignment links, and review records.
-                Course updates and ticket replies also create on-site
+                Course updates also create on-site
                 notifications and records of whether they have been read.
               </p>
               <p>
@@ -343,18 +343,14 @@ export function PrivacyDocument() {
                 mock OA is compared only with scores under the same rules.
               </p>
               <p>
-                Solutions, threads, answers and comments you post in the
+                Solutions, answers and comments you post in the
                 community (including a system design chapter’s discussion)
                 show under your public handle or a masked display name. Only you
                 can see which posts you saved; a post shows only how many people
-                saved it. When you vote in a thread’s poll, the platform
-                records which options your account chose, so each account votes
-                once; results show only each option’s count and the number of
-                voters, never who voted for what.
+                saved it.
               </p>
               <p>
-                You may post anonymously in the Interviews, Careers and Offers
-                channels, under interview experiences and questions and in a
+                You may post anonymously under interview experiences and questions and in a
                 system design chapter’s discussion, and you may submit an
                 interview experience anonymously. An experience with an OA round
                 may give its score (problems solved of how many, share of tests
@@ -388,8 +384,8 @@ export function PrivacyDocument() {
                 their handle or masked name and a one-line excerpt. When people
                 upvote your post, the notification gives only how many did so
                 that day and the post’s title, never who; a day’s upvotes on one
-                post merge into one. Replies and mentions from someone you
-                blocked don’t notify you. An anonymous author’s notifications
+                post merge into one. Replies and mentions from someone you blocked
+                before direct messages were retired still don’t notify you. An anonymous author’s notifications
                 (an anonymous report’s author’s in its comments included) carry
                 no name, its @mentions notify no one, and its replies to you
                 notify you even if you blocked them, so whether a notification
@@ -548,12 +544,12 @@ export function PrivacyDocument() {
                 includes it. Interview retros are private notes on your account
                 (retro:&lt;card&gt;/&lt;time&gt;): the company, the round, when
                 it was, a 1–4 self-rating, up to 10 questions (optionally linked
-                to a site problem), where you got stuck and the behavioral themes
-                you were asked about, up to 200 per account. Only you can see
+                to a site problem), and where you got stuck, up to 200 per account (retros saved
+                earlier may still carry behavioral themes that are no longer
+                shown; editing or deleting the retro clears them). Only you can see
                 them; they stay out of note search and the notes export, and are
                 deleted with their card. Saving a retro marks its linked site
-                problems to redo, and the story bank reads the retros&apos;
-                themes to list the ones no story covers yet.
+                problems to redo.
               </p>
               <p id="privacy-jobs">
                 Open roles (/career/jobs and company pages) are the postings
@@ -620,8 +616,7 @@ export function PrivacyDocument() {
                 self-review drafts and XYZ resume bullets are made in your
                 browser and not kept by the platform; &ldquo;Add to
                 resume&rdquo; only changes the resume builder&apos;s copy in
-                this browser; &ldquo;Save as a STAR story&rdquo; adds a private
-                note to your story bank.
+                this browser.
               </p>
               <p id="privacy-practice-aids">
                 While you solve a problem, your account records when you first
@@ -647,7 +642,7 @@ export function PrivacyDocument() {
                 works out each day&apos;s XP from your accepted submissions,
                 stress tests and complexity probes, multiple-choice answers,
                 system design chapters read, interview English units finished,
-                finished mock OAs, saved STAR stories and self-grades of open
+                finished mock OAs and self-grades of open
                 questions, review cards and idea cards. The days you reached
                 the goal, and past rest days and review-break days, are kept
                 on your account to bridge the
@@ -673,12 +668,15 @@ export function PrivacyDocument() {
               </p>
               <p id="privacy-notes-export">
                 The export on My progress&apos;s notes tab packs the problem,
-                submission and library notes, topic pattern notes, STAR stories,
+                submission and library notes, topic pattern notes,
                 review cards, excerpts and system design drafts you wrote into a
                 .zip (an Obsidian vault) or one .md file, optionally with each
                 problem&apos;s latest accepted code; the server returns only your
                 own records, and the file is made in your browser and not kept
-                by the platform. The review sheet and review book
+                by the platform. STAR stories saved before the story bank was
+                retired stay on your account as private notes (story:&lt;id&gt;);
+                they are no longer shown or exported, and you can ask for them
+                to be deleted as described below. The review sheet and review book
                 (/review-sheet) read only your own notes, stars and redo marks,
                 submissions, review grades and cards, store nothing new, and
                 print or save as PDF in your browser. The export on My
@@ -699,11 +697,7 @@ export function PrivacyDocument() {
                 on GitHub, GitLab or Codeberg only), are kept on your account
                 where only you can see them, never on your public profile. The
                 acceptance script runs on your own computer after you download
-                it; the platform never gets its results. Frontend JS problems
-                (/frontend) run only in an isolated sandbox in your browser and
-                your code is never uploaded; drafts and the problems you have
-                passed are kept in this browser, and signed in, passing every
-                case of a problem also marks it done on your account. Which
+                it; the platform never gets its results. Which
                 interview English (/english) units you have finished is kept on
                 your account when you are signed in, or only in this browser
                 when you are signed out, moving into your account (and out of
@@ -741,20 +735,10 @@ export function PrivacyDocument() {
                 20 open links at a time and create 50 a day.
               </p>
               <p>
-                Study group chat messages are seen only by that group&apos;s
-                members, under the name you use in the group; they are deleted
-                after 180 days, and with the group when it is disbanded.
-                Moderating teachers can read a group&apos;s chat only while a
-                message in it is reported and not yet handled. Direct
-                messages are seen only by the two people in the conversation,
-                which can start only between people who follow each other or
-                from a referral thread&apos;s request button; you choose who may
-                start a conversation with you, and you can block anyone. Direct
-                messages are deleted after 365 days. A new one only creates an
-                on-site notification naming the sender by public handle or a
-                masked name, never its text, and no email. A reported chat or
-                direct message (only that one message) is shown to the teachers
-                who moderate the community.
+                Study groups and direct messages have been retired: chat
+                messages and direct messages already sent are shown to no one,
+                and are deleted 180 days (chat) or 365 days (direct messages)
+                after they were sent.
               </p>
               <p>
                 When you verify where you work, the work email you enter is used
@@ -763,37 +747,29 @@ export function PrivacyDocument() {
                 secret (so one work email verifies one account), its domain and
                 the company, valid for a year. &ldquo;Verified &middot; company
                 employee&rdquo; shows nowhere by default; you can turn it on
-                separately for your public profile, threads and solutions, and
-                referral threads, and all three turn off again when you verify
-                a work email at another company. Threads means the Algorithms,
-                Referrals and Site feedback channels: it never shows in the
-                Interviews, Careers or Offers channels, on solutions to a
-                company&rsquo;s OA problems or on experience comments. While
-                your public profile shows the badge, its post list leaves out
-                Interviews, Careers and Offers threads and OA solutions, though
+                separately for your public profile and your solutions, and both
+                turn off again when you verify a work email at another company.
+                It never shows on solutions to a company&rsquo;s OA problems or
+                on experience comments. While your public profile shows the
+                badge, its post list leaves out OA solutions, though
                 those posts still carry your handle. You can remove the
                 verification in account settings at any time.
               </p>
               <p>
-                Tickets store the questions you write, replies, and attachments,
-                along with any lessons, video positions, or submissions you
-                choose to link. Tickets, assignments, and personal submission
-                records are visible to you and to the teachers responsible for
-                teaching and course management, according to account
-                permissions; they are not public discussion content for other
-                students. Teachers use this information to answer questions,
-                review assignments, manage access, and follow up on learning
-                issues. &ldquo;Report an issue&rdquo; on a multiple-choice
-                question, a system design chapter or a lesson files the reason
-                and note you give as a ticket, its title tagged with that
-                content (such as [mcq:…]), seen likewise only by you and the
-                teachers responsible.
+                Assignments and personal submission records are visible to you
+                and to the teachers responsible for teaching and course
+                management, according to account permissions; they are not public
+                discussion content for other students. Teachers use this
+                information to review assignments, manage access, and follow up
+                on learning issues. Support tickets have been retired: no new
+                questions or attachments are collected, and earlier tickets,
+                replies and attachments stay stored under the same permissions,
+                never shown to other students.
               </p>
               <p>
                 For algorithm judging, submitted code and test inputs are sent
                 to the platform’s isolated execution environment to run. Access
-                to external links that you choose to provide in tickets or
-                assignments remains controlled by the corresponding websites
+                to external links that you choose to provide in assignments remains controlled by the corresponding websites
                 according to their own settings.
               </p>
               <p>
@@ -907,7 +883,7 @@ export function PrivacyDocument() {
               </p>
               <p>
                 Browser local storage is used for things like restoring drafts
-                of code, tickets, or course materials you are editing, and
+                of code or course materials you are editing, and
                 remembering editor settings. Some drafts are saved only in the
                 current browser. Problems you tick as done on a classic list
                 while signed out also stay in this browser until you open that
@@ -1015,7 +991,7 @@ export function PrivacyDocument() {
               <p>
                 We send predefined page categories and allowlisted search/social
                 source domains without paths or queries, not email, names, user
-                IDs, code, search terms, ticket content, invitation tokens or
+                IDs, code, search terms, invitation tokens or
                 raw URL parameters. Advertising personalization and Google
                 signals are disabled. Analytics cookies expire after 90 days.
               </p>
@@ -1127,9 +1103,7 @@ export function PrivacyDocument() {
               <p id="privacy-answer-feedback">
                 When you choose AI feedback on your answer to an interview
                 question, on your draft for a system design case or in a mock
-                interview, or on a STAR story in the story bank, the server
-                sends what you wrote (or the story&apos;s parts and the
-                behavioral question you picked), the question and its reference
+                interview, the server sends what you wrote, the question and its reference
                 answer (if any; for a system design case, that chapter&apos;s
                 text) to Anthropic to write the feedback.
                 Your email, name and account identifier are not sent. The
