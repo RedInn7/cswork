@@ -31,6 +31,8 @@ test('local matches: topics in both languages, companies by prefix, a capped and
   const merged = mergeHits({ content: [hit('content', 1)], problems: Array.from({ length: 8 }, (_, i) => hit('problems', i)) });
   assert.equal(merged.length, 6, 'five per group');
   assert.equal(merged[0].group === 'problems' && merged.at(-1).group === 'content', true);
+  const order = mergeHits({ companies: [hit('companies', 1)], terms: [hit('terms', 1)], topics: [hit('topics', 1)] });
+  assert.deepEqual(order.map((h) => h.group), ['topics', 'terms', 'companies'], 'glossary terms right after the topics');
 });
 
 test('the workspace search button and the lecture page use the palette', () => {
@@ -106,6 +108,10 @@ test('⌘K: merged results, keyboard selection, same-tab workspace navigation, A
   assert.equal(titles.some((x) => x.includes('Two Towers')), true);
   assert.equal(titles.some((x) => x.includes('Two Pointers') && x.includes('Template')), true, 'a Line 500 topic');
   assert.equal(titles.some((x) => x.includes('Two Sigma')), true, 'a company page');
+  const groups = [...document.querySelectorAll('.cmdk-group')].map((g) => g.dataset.group);
+  assert.equal(groups.indexOf('terms'), groups.indexOf('topics') + 1, 'glossary terms follow the topics');
+  const term = rows.find((o) => o.getAttribute('href') === '/topics/glossary#term-two-pointers');
+  assert.ok(term && term.textContent.includes('two pointers') && term.textContent.includes('双指针'), 'a term shows both languages');
   assert.equal(rows.at(-1).classList.contains('cmdk-ask'), true, 'Ask AI is the last row');
   assert.equal(document.querySelector('.cmdk-ask-note').textContent.includes('Anthropic'), true);
   const hrefs = rows.map((o) => o.getAttribute('href'));

@@ -1032,6 +1032,7 @@ function PlanForm({
               {t('不确定哪些已经掌握？先做定位测验', 'Not sure what you already know? Take the placement quiz')}
             </a>
           )}
+          <a className="route-plan-link" href="/guide/practice">{t('怎么练：计时、提示和复习怎么配合', 'How to practise: the timer, hints and reviews')}</a>
           <fieldset>
             <legend className="sr-only">{t('排进计划的知识点', 'Topics to plan')}</legend>
             <button

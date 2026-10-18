@@ -26,6 +26,9 @@ export default async function TopicsLayout({ children }: { children: React.React
         <Link href="/topics" prefetch={false}>
           {zh ? '全部模板' : 'All templates'}
         </Link>
+        <Link href="/topics/print" prefetch={false}>
+          {zh ? '打印版手册' : 'Printable handbook'}
+        </Link>
         <Link href="/oa" prefetch={false}>
           {zh ? '公司 OA' : 'Company OAs'}
         </Link>

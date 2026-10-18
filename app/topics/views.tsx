@@ -85,6 +85,14 @@ export function TopicsIndexView({ zh, heat }: { zh: boolean; heat?: Record<strin
             : '36 problems: build hash maps, heaps, an LRU cache, sorts, shortest paths, union-find, segment trees and more without libraries, plus multithreaded concurrency and object-oriented design (LLD) problems, judged in four languages.'}
         </span>
       </a>
+      <a className="topics-roadmap" href="/topics/glossary">
+        <strong>{zh ? '算法术语中英对照' : 'Chinese–English algorithm glossary'}</strong>
+        <span>
+          {zh
+            ? '差分、状压、换根的英文怎么说：每个术语配一句面试例句，可以朗读，也能做成复习卡。'
+            : 'Algorithm terms in both languages, each with an interview sentence to listen to or turn into a review card.'}
+        </span>
+      </a>
       {heat && (
         <p className="topics-heat-key">
           <span className="topics-heat" data-heat="3" aria-hidden="true">

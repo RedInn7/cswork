@@ -196,6 +196,133 @@ Requests to complete strangers work far less often. A short, specific message be
 - Tell your referrer when you hear back. Many companies pay a referral bonus, but people mostly refer because they want good colleagues, so respect their time.`,
   },
 
+  practice: {
+    zh: `练习的效果主要看怎么练，而不只是做了多少道。下面这套节奏用的都是 CSWork 里现成的工具：题目计时器、三条提示、复习队列和模拟 OA。
+
+## 一道题的节奏
+1. 读完题面和数据范围，用自己的话把要求复述一遍。
+2. 打开题目计时器。它默认正计时；切成倒计时，会按难度预设时长：简单题 15 分钟、中等 25 分钟、困难 40 分钟。
+3. 先独立想 25–40 分钟。这段时间只看题面，不看提示，也不搜题解。想不到最优解，就先写一个正确的暴力解。
+4. 写完先用样例和自己构造的边界数据测一遍，再正式提交。
+5. 通过后用一两句话写下关键思路，复习时最先看到的就是它。
+
+面试时要边写边讲。说不出某个术语的英文，可以查 [算法术语中英对照](/topics/glossary)，每条都配了一句能照着说的例句。
+
+## 提示一次只升一级
+500 路的每道题都有三条提示，由浅到深：
+- 第 1 条随时能看，一般只指个方向，看它不影响复习安排；
+- 第 2 条在一次正式提交没通过、或者在这道题上花满 10 分钟后解锁；
+- 第 3 条在两次正式提交没通过后解锁，通常已经很接近完整思路。
+
+每看一条，先回去自己再想几分钟，确实还卡着再看下一条。三条一口气看完，和直接看题解没什么区别。
+
+## 什么时候看题解，怎么补题
+三条提示都看过、也认真想过，还是没有思路，就去看题解，不用硬耗。看题解有三步：
+1. 看懂思路后关掉题解，从空白的编辑器重新写，直到通过。
+2. 想清楚自己卡在哪一步：没认出题型、想到了写不对，还是漏了边界情况。
+3. 把这一站的模板默写一遍。各站模板可以在线看，也可以 [打印成手册](/topics/print)。
+
+比赛或模拟结束后，把没做出来的题按这三步补完，这就是补题（upsolve）。补一道题，常常比多做一道新题学到的更多。
+
+## 独立做出和借助提示的区别
+系统会记下每道题是怎么通过的：通过之前看过第 2 条或第 3 条提示、打开过题解，或者问过 AI 辅导（只让它讲解题意不算），就算「借助提示」通过；第 1 条提示只指方向，不算借助。
+- 独立通过的题按 3、7、21、60 天的间隔回来复习；
+- 借助提示通过的题，第一次复习提前到 1 天后，之后再走同样的间隔，所以要多复习一次才算掌握。
+
+这不是惩罚。需要提示才做出来，说明这道题还没真正掌握，早一点再做一遍记得更牢。所以既不用为了「独立通过」硬撑，也别看完题解就当自己会了。
+
+## 复习自评
+到期的题会出现在 [今日复习](/?view=review-session) 里，和你的记忆卡、选择题在同一个队列。复习时不看旧代码，重新写一遍并通过，然后给自己打分：
+- 「重来」：明天再做；
+- 「困难」：间隔不变；
+- 「良好」：进入下一档；
+- 「简单」：跳过一档。
+
+不打分按「良好」算。连续两次、或累计三次评「重来」的题会被列为顽固题，最好回到对应的专题页，把模板和要点重新过一遍。记忆卡另有一套间隔：1、3、7、21 天。
+
+## 每天新题和复习的配比
+- 先做到期的复习，再做新题。复习花时间少、收益高，拖着不做只会越积越多。
+- 时间紧的日子，做完复习再做一道 [每日一题](/daily) 就够了。
+- 新题按 [500 路题单](/?view=problems) 的专题顺序往下做，同一时间只集中练一两个专题。不知道从哪开始，先做一次 [题型识别测验](/placement)，已经掌握的专题可以跳过。
+- 到期的复习一天做不完时，停一两天新题，先把积压清掉。
+
+## 每周一场模拟 OA
+每周找一段固定的整块时间，做一场限时模拟：
+- 在 [模拟 OA](/?view=mock) 开一场限时模拟；想按某家公司的题量和时长来练，就从 [公司模拟 OA](/mock-oa) 里挑一套。
+- 按考试的规矩来：中途不查资料、不看提示，时间到就停笔。
+- 结束后先看丢分的是哪几题、为什么丢，再按上面的步骤补题。
+
+每周一场足够熟悉时间压力，又不会挤掉平时的练习；离真实 OA 近了，可以加到每周两场。考试当天要注意什么，见 [在线笔试 OA](/guide/online-assessment)。
+
+## 卡住了、倦怠了怎么办
+- 同一个专题连着几天都做不出来，就往回退一站，把前置专题的模板练熟再回来。
+- 换一种方式学同一个知识点：看专题页的动画和要点，做做模板练习，比一道接一道硬做新题有效。
+- 状态差的日子把量降到最低，只做复习或每日一题。保持连续，比偶尔猛刷一天更重要。
+- 累了就歇一两天。复习队列会等你，回来先清复习，节奏很快就能找回来。`,
+    en: `How you practise matters more than how many problems you get through. The routine below uses tools that are already in CSWork: the problem timer, three hints per problem, the review queue and mock OAs.
+
+## The rhythm of one problem
+1. Read the statement and the input limits, then restate the task in your own words.
+2. Start the problem timer. It runs as a stopwatch by default; switch it to a countdown and it presets 15 minutes for Easy, 25 for Medium and 40 for Hard.
+3. Think on your own for 25–40 minutes. Look only at the statement: no hints and no searching for solutions. If the optimal idea doesn't come, write a correct brute force first.
+4. Test with the samples and edge cases you make up yourself, then submit.
+5. Once it passes, write the key idea in a sentence or two. It is the first thing you will see when the problem comes back for review.
+
+In an interview you explain while you code. When you can't find the English word for a technique, look it up in the [Chinese–English glossary](/topics/glossary); every term comes with a sentence you can say as it is.
+
+## Climb the hints one step at a time
+Every Line 500 problem has three hints, from light to strong:
+- hint 1 is open at any time, usually just points a direction and doesn't change your review schedule;
+- hint 2 unlocks after one failed submission or after 10 minutes on the problem;
+- hint 3 unlocks after two failed submissions and is usually close to the full idea.
+
+After each hint, go back and think for a few more minutes. Open the next one only if you are still stuck. Reading all three in a row is no different from reading the editorial.
+
+## When to read the editorial, and how to upsolve
+If you have read all three hints and thought hard and still have no idea, read the editorial instead of grinding on. Then:
+1. Once you understand the idea, close the editorial and write the solution from an empty editor until it passes.
+2. Name where you got stuck: you didn't recognise the pattern, you had the idea but couldn't code it, or you missed an edge case.
+3. Write the stop's template from memory. The templates are online, or [printed as one handbook](/topics/print).
+
+After a contest or a mock, finish the problems you missed the same way. That is upsolving, and one upsolved problem often teaches more than one more new problem.
+
+## Solved alone or with help
+CSWork records how each problem was solved: if you opened hint 2 or 3, read the editorial or asked the AI tutor before solving it (having it explain the statement doesn't count), it counts as solved with help; hint 1 only points a direction and does not count.
+- Problems solved alone come back for review after 3, 7, 21 and 60 days.
+- Problems solved with help come back after one day first and then follow the same steps, so mastering them takes one review more.
+
+This is not a penalty. Needing help means the problem isn't yours yet, and seeing it again sooner makes it stick. So don't hold out just to keep a clean record, and don't treat a read editorial as a solved problem.
+
+## Grading your reviews
+Due problems show up in the [review session](/?view=review-session), in the same queue as your cards and multiple-choice questions. Review without looking at your old code: write it again until it passes, then grade yourself:
+- Again: it comes back tomorrow;
+- Hard: the wait stays the same;
+- Good: it moves one step on;
+- Easy: it skips a step.
+
+No grade counts as Good. A problem graded Again on two reviews in a row, or on three in all, is marked as a leech; go back to its topic page and run through the template and key points again. Review cards follow their own steps: 1, 3, 7 and 21 days.
+
+## Mixing new problems and reviews each day
+- Do the due reviews first, then new problems. Reviews are quick and pay off well; put them off and they pile up.
+- On a busy day, the reviews plus the [daily problem](/daily) are enough.
+- Take new problems from the [Line 500 list](/?view=problems) in topic order, and focus on one or two topics at a time. Not sure where to start? Take the [placement quiz](/placement) first and skip the topics you already know.
+- When there are more due reviews than you can finish in a day, pause new problems for a day or two and clear the backlog.
+
+## One mock OA a week
+Pick a fixed block of time each week for one timed mock:
+- Start a timed set in [mock OA](/?view=mock); to match one company's question count and time limit, pick a set from the [company mock OAs](/mock-oa).
+- Follow test rules: no looking things up, no hints, and stop when time runs out.
+- Afterwards, see which problems lost points and why, then upsolve them as above.
+
+One a week is enough to get used to the clock without crowding out regular practice; close to a real OA you can do two. For the day of the test itself, see [online assessments](/guide/online-assessment).
+
+## When you are stuck or worn out
+- If one topic beats you several days running, step back one stop and drill the prerequisite's template before you return.
+- Learn the same idea another way: watch the topic page's animation, reread its key points and do its template drills. That works better than forcing one new problem after another.
+- On a bad day, cut the load to the minimum: only reviews, or only the daily problem. A steady streak beats the occasional marathon.
+- When you are tired, take a day or two off. The review queue will wait; clear it first when you come back and the rhythm returns quickly.`,
+  },
+
   'online-assessment': {
     zh: `在线笔试（OA）是投递后发来的限时编程测试，对学生和应届生来说，常常是第一道筛选。
 
