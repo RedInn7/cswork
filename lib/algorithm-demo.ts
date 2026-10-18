@@ -1587,7 +1587,7 @@ export function arrayOpsTrace(values = [1, 2, 2, 4, 4, 4, 6], x = 3, del = 0, t:
   frame(
     t(
       `把 ${x} 写进位置 ${j + 1}。这次插入搬了 ${length - 2 - j} 个元素，最坏要搬 n 个：O(n)。`,
-      `Write ${x} into position ${j + 1}. This insert shifted ${length - 2 - j} elements; the worst case shifts all n: O(n).`,
+      `Write ${x} into position ${j + 1}. Elements shifted by this insert: ${length - 2 - j}; the worst case shifts all n: O(n).`,
     ),
     [j + 1],
   );
@@ -1624,7 +1624,7 @@ export function arrayOpsTrace(values = [1, 2, 2, 4, 4, 4, 6], x = 3, del = 0, t:
   frame(
     t(
       `扫描结束：前 ${w} 个是去重后的数组，后面的格子不再算数。两个指针各走一遍，O(n) 时间、O(1) 额外空间。`,
-      `Done: the first ${w} slots are the deduplicated array; the rest no longer count. Each pointer passes once: O(n) time, O(1) extra space.`,
+      `Done: everything left of w = ${w} is the deduplicated array; the rest no longer counts. Each pointer passes once: O(n) time, O(1) extra space.`,
     ),
     [],
     true,
@@ -1705,7 +1705,7 @@ export function hashTableTrace(keys = [12, 7, 4, 15, 9, 20, 3], t: Tr = zhText):
   frame(
     t(
       `插入完成：${size} 个键、${buckets.length} 个桶，负载因子 ${(size / buckets.length).toFixed(2)}。链表都很短，查找平均 O(1)；一次扩容是 O(n)，均摊到每次插入仍是 O(1)。`,
-      `All inserted: ${size} keys in ${buckets.length} buckets, load factor ${(size / buckets.length).toFixed(2)}. Chains stay short, so a lookup is O(1) on average; one resize costs O(n), still O(1) amortized per insert.`,
+      `All inserted. Keys: ${size}, buckets: ${buckets.length}, load factor ${(size / buckets.length).toFixed(2)}. Chains stay short, so a lookup is O(1) on average; one resize costs O(n), still O(1) amortized per insert.`,
     ),
     -1,
     true,
@@ -2285,7 +2285,7 @@ export function nQueensTrace(n = 4, t: Tr = zhText): DemoTrace {
   };
   frame(t(`在 ${n}×${n} 棋盘上一行放一个皇后。用三个集合记下占用的列和两条对角线，O(1) 判断能不能放。`, `Place one queen per row on a ${n}×${n} board. Three sets record the used columns and both diagonals, so each check is O(1).`));
   place(0);
-  frame(t(`搜索结束：${n} 皇后共有 ${solutions} 个解。`, `Search finished: ${n} queens have ${solutions} solutions.`), null, true);
+  frame(t(`搜索结束：${n} 皇后共有 ${solutions} 个解。`, `Search finished. Solutions for ${n} queens: ${solutions}.`), null, true);
   return {
     title: t('N 皇后 · 按列和对角线剪枝', 'N-queens · pruning by column and diagonal'),
     question: t(`${n} 皇后有多少种摆法？`, `How many ways can ${n} queens be placed?`),
@@ -2545,7 +2545,7 @@ export function lruTrace(
     if (map.size === capacity) {
       const old = order.pop()!;
       map.delete(old);
-      frame(t(`容量满了：淘汰尾部（最久没用）的 ${old}，哈希表里也删掉。`, `Full: evict ${old} at the tail (least recently used) and drop it from the map too.`));
+      frame(t(`put(${k}, ${v})：容量满了，先淘汰尾部（最久没用）的 ${old}，哈希表里也删掉。`, `put(${k}, ${v}): full, so first evict ${old} at the tail (least recently used) and drop it from the map too.`));
     }
     map.set(k, v!);
     order.unshift(k);
@@ -2637,7 +2637,7 @@ export function intervalGreedyTrace(
     }
   });
   frame(
-    t(`最多选出 ${kept} 个互不重叠的区间。排序 O(n log n)，扫描 O(n)。`, `At most ${kept} non-overlapping intervals. Sorting is O(n log n), the scan O(n).`),
+    t(`最多选出 ${kept} 个互不重叠的区间。排序 O(n log n)，扫描 O(n)。`, `Most non-overlapping intervals: ${kept}. Sorting is O(n log n), the scan O(n).`),
     -1,
     true,
   );
@@ -2692,12 +2692,12 @@ export function prefixSumTrace(nums = [1, 2, 1, -1, 2, 1], k = 3, t: Tr = zhText
     frame(
       t(
         `加上 ${nums[current]}，前缀和 = ${pre}。表里 ${pre - k} 出现过 ${hits} 次，就有 ${hits} 个以这里结尾、和为 ${k} 的子数组。再把 ${pre} 记进表。`,
-        `Add ${nums[current]}: the prefix sum is ${pre}. ${pre - k} appeared ${hits} times, so ${hits} subarrays ending here sum to ${k}. Then record ${pre}.`,
+        `Add ${nums[current]}: the prefix sum is ${pre}. Earlier prefixes equal to ${pre - k}: ${hits}, and each starts a subarray ending here that sums to ${k}. Then record ${pre}.`,
       ),
     );
   }
   current = -1;
-  frame(t(`共有 ${answer} 个和为 ${k} 的子数组。一遍扫描，O(n) 时间、O(n) 空间；有负数也成立。`, `${answer} subarrays sum to ${k}. One pass: O(n) time, O(n) space, negatives included.`), true);
+  frame(t(`共有 ${answer} 个和为 ${k} 的子数组。一遍扫描，O(n) 时间、O(n) 空间；有负数也成立。`, `Subarrays summing to ${k}: ${answer}. One pass: O(n) time, O(n) space, negatives included.`), true);
   return {
     title: t('前缀和 · 和为 k 的子数组', 'Prefix sums · subarrays summing to k'),
     question: t(`数组 ${nums.join(', ')} 中有多少个和为 ${k} 的连续子数组？`, `How many contiguous subarrays of ${nums.join(', ')} sum to ${k}?`),
@@ -2760,10 +2760,10 @@ export function bitsTrace(x = 44, t: Tr = zhText): DemoTrace {
     );
     v &= v - 1;
     count++;
-    frame(t(`x 变成 ${v}，数到 ${count} 个 1。`, `x becomes ${v}; ${count} ones counted.`), v, null, null);
+    frame(t(`x 变成 ${v}，数到 ${count} 个 1。`, `x becomes ${v}; ones counted so far: ${count}.`), v, null, null);
   }
   frame(
-    t(`x 变成 0，结束：${x} 有 ${count} 个 1。循环次数等于 1 的个数，不是总位数。`, `x is 0, done: ${x} has ${count} ones. The loop runs once per 1 bit, not once per bit.`),
+    t(`x 变成 0，结束：${x} 有 ${count} 个 1。循环次数等于 1 的个数，不是总位数。`, `x is 0, done. 1 bits in ${x}: ${count}. The loop runs once per 1 bit, not once per bit.`),
     0,
     null,
     null,

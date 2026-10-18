@@ -92,7 +92,7 @@ export function sortTrace(algo: SortAlgo, values: number[], t: Tr): DemoTrace {
         compares++;
         if (a[j].v < a[m].v) m = j;
         frame(
-          t(`在 ${i}..${n - 1} 里找最小：看过 ${j}，目前最小是 ${name(a[m])}。`, `Find the minimum of ${i}..${n - 1}: up to ${j}, the smallest is ${name(a[m])}.`),
+          t(`在 ${i}..${n - 1} 里找最小：看到下标 ${j}，目前最小是 ${name(a[m])}。`, `Find the minimum of ${i}..${n - 1}: up to index ${j}, the smallest is ${name(a[m])}.`),
           [j, m],
         );
       }
