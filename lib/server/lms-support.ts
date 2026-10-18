@@ -3,6 +3,7 @@ import {
   requireCourseVisible,
   visibleCourseSql,
 } from './course-visibility';
+import { REMOVED_KINDS } from './notify';
 import { z } from 'zod';
 import type {
   TicketRow,
@@ -454,11 +455,11 @@ export async function notificationPage(p: Person, url: URL) {
     args.push(cursor.time, cursor.time, cursor.id);
   }
   const found = await rows<NotificationRow>(
-    `SELECT * FROM notifications WHERE ${where.join(' AND ')}${courseNotificationFilter(p)} ORDER BY created_at DESC,id DESC LIMIT 31`,
+    `SELECT * FROM notifications WHERE ${where.join(' AND ')}${REMOVED_KINDS}${courseNotificationFilter(p)} ORDER BY created_at DESC,id DESC LIMIT 31`,
     ...args,
   );
   const counts = await one<{ total: number; unread: number }>(
-    `SELECT COUNT(*) AS total,COALESCE(SUM(read_at IS NULL),0) AS unread FROM notifications WHERE user_id=?${courseNotificationFilter(p)}`,
+    `SELECT COUNT(*) AS total,COALESCE(SUM(read_at IS NULL),0) AS unread FROM notifications WHERE user_id=?${REMOVED_KINDS}${courseNotificationFilter(p)}`,
     p.id,
   );
   const items = found.slice(0, 30),

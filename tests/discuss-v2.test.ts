@@ -179,9 +179,10 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   await ok(dee, 'POST', `posts/${post.id}/comments`, { body: many.map((h) => `@user-${h}`).join(' ') });
   assert.equal(many.filter((h) => notices(h).length).length, 5);
 
-  // ?kind= picks one tab.
+  // ?kind= picks one tab; a removed feature's kind (direct messages) is never listed.
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
   sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('dm1',?,'dm','x','y','/',1)").run(ada.id);
+  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('mp1',?,'mock-peer','x','y','/',1)").run(ada.id);
   const replies = notices(ada.id, 'reply').length;
   assert.ok(replies >= 2);
   assert.equal((await notificationPage(ada, url('reply'))).items.length, replies);

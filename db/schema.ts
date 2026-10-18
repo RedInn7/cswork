@@ -253,7 +253,7 @@ export const notifications = sqliteTable(
   {
     id: text('id').primaryKey(),
     userId: text('user_id').notNull(),
-    /** What raised it ('dm', 'mock-peer', …; '' for older rows); see lib/server/notify.ts. */
+    /** What raised it ('mock-peer', 'course-gift', …; '' for older rows); see lib/server/notify.ts. */
     kind: text('kind').notNull().default(''),
     title: text('title').notNull(),
     body: text('body').notNull(),
