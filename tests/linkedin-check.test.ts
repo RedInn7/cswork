@@ -80,6 +80,16 @@ test('headline, about, experience and Open to Work rules', () => {
     ['experience', 8.33],
     ['experience', 8.33],
   ]);
+  // Pasted straight from a profile: the date line, duration and "+3 skills" are no number.
+  for (const experience of [
+    'Software Engineer Intern\nAcme · Internship\nJun 2025 - Aug 2025 · 3 mos\nSeattle, Washington\nBuilt the search page',
+    'Acme\n1 yr 2 mos\nSoftware Engineer\nFull-time\nJan 2024 - Present · 1 yr 2 mos\nBuilt the search page\nPython, React and +3 skills',
+    'Acme\n2023 – 2024 · 1 yr\nBuilt the search page',
+    '软件工程师实习生\nAcme · 实习\n2025年6月 - 2025年8月 · 3个月\n开发搜索页',
+  ])
+    assert.deepEqual(issues({ experience }), [['experience', 25]], experience);
+  assert.deepEqual(issues({ experience: 'Software Engineer Intern\nAcme · Internship\nJun 2025 - Aug 2025 · 3 mos\nCut search latency 40%' }), []);
+  assert.deepEqual(issues({ experience: 'Acme\nJun 2025 - Aug 2025\nServed 2000 users' }), []);
   assert.deepEqual(issues({ openToWork: 'off' }), [['openToWork', 10]]);
   assert.deepEqual(issues({ openToWork: 'public' }), []);
 });

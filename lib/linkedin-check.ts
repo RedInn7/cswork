@@ -31,6 +31,10 @@ const GREETING = /^(?:hi\b|hello\b|hey\b|i am an?\b|i'm an?\b|大家好|你好|�
 const PROFILE_URL = /^(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/([A-Za-z0-9_%-]{3,100})\/?(?:[?#]\S*)?$/i;
 // LinkedIn's default URL ends in a random tail: hex with a digit in it, or a long run of digits.
 const RANDOM_TAIL = /-(?=[0-9a-f]*\d)[0-9a-f]{6,}$|\d{5,}$/i;
+// What LinkedIn prints in a pasted role is no result: a year next to a date range's dash or its "·"
+// ("Jun 2025 - Aug 2025 · 3 mos", "2023 – Present"), a duration ("1 yr 2 mos", "2025年6月", "3个月")
+// and the "+3 skills" tail. A year in a sentence ("the 2025 redesign") still counts, as on the resume.
+const LINKEDIN_DATES = /\b(?:19|20)\d{2}(?=\s?[-–—~·])|(?<=[-–—~]\s?(?:[A-Za-z]+\.?\s)?)(?:19|20)\d{2}\b|\b\d+\s?(?:yrs?|mos?|years?|months?)\b|\d+\s?(?:年|个?月)|\+\d+\s?skills?\b/gi;
 const TECH = JD_TERMS.filter((t) => t.skill !== 'behavioral' && t.skill !== 'oa');
 const techIn = (text: string) => TECH.some((t) => mentions(t.term, text));
 const snip = (s: string) => (s.length > 32 ? `${s.slice(0, 32)}…` : s);
@@ -61,7 +65,7 @@ export function checkLinkedIn(p: LinkedIn, resumeText: string | null): { score: 
   const roles = p.experience.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
   if (!roles.length) add('experience', 25, '经历（Experience）是空的：把简历上的经历搬过来，每段写一两条带数字的成果。', 'Experience is empty: bring over your resume entries, each with a result or two that has a number.');
   for (const role of roles)
-    if (!METRIC.test(role))
+    if (!METRIC.test(role.replace(LINKEDIN_DATES, '')))
       add('experience', 25 / roles.length, `经历「${snip(role.split('\n')[0])}」没有数字：补上规模、提升幅度或用户数。`, `The role “${snip(role.split('\n')[0])}” has no number: add the scale, the gain or the users.`);
 
   const skills = p.skills.split(/[\n,，;；·|•]+/).map((s) => s.trim()).filter(Boolean);
