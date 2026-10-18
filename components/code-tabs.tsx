@@ -16,7 +16,7 @@ export function pickCodeLang(lang: string) {
   } catch {
     // Storage blocked: this page still switches.
   }
-  window.dispatchEvent(new CustomEvent(CODE_LANG_EVENT, { detail: lang }));
+  window.dispatchEvent(new window.CustomEvent(CODE_LANG_EVENT, { detail: lang }));
 }
 
 /**
