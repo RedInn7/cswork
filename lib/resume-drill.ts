@@ -1,11 +1,11 @@
 import { JD_TERMS, mentions } from './jd-keywords';
 import type { Card } from './recall-cards';
-import { bulletsOf, METRIC } from './resume-check';
+import { bulletsOf } from './resume-check';
 import type { Resume } from './resume-shape';
 
 /**
  * "How will they dig into my projects", by rules, no AI (components/resume-extend.tsx): follow-up
- * questions an interviewer asks about one resume bullet. measure quotes the bullet's number, why
+ * questions an interviewer asks about one resume bullet. measure quotes a measured figure, why
  * names a technology it mentions (lib/jd-keywords.ts), mine asks for the learner's own part once per
  * entry, scale asks what breaks at 10×. Each can become a review card (`card:<id>`, lib/recall-cards.ts)
  * or a plain-text sheet a friend asks from. Pure and client-safe.
@@ -90,6 +90,7 @@ export function resumeDrills(r: Resume): Drill[] {
       const mineAt = mine >= 0 ? mine : key === 'experience' ? 0 : -1;
       const asked = new Set<string>();
       bullets.forEach((bullet, i) => {
+        if (out.length >= MAX_DRILLS) return;
         const add = (kind: DrillKind, q: [string, string]) => {
           const id = drillId(kind, bullet);
           if (seen.has(id)) return;
@@ -98,7 +99,7 @@ export function resumeDrills(r: Resume): Drill[] {
         };
         const picks: [DrillKind, [string, string]][] = [];
         if (i === mineAt) picks.push(['mine', ['这件事里，你个人具体做了哪部分？', 'Which part of this did you do yourself?']]);
-        const figure = METRIC.test(bullet) ? FIGURE.exec(bullet)?.[0].trim() : undefined;
+        const figure = FIGURE.exec(bullet)?.[0].trim();
         if (figure) picks.push(['measure', [`「${figure}」是怎么测出来的？基线是多少？`, `How did you measure “${figure}”? What was the baseline?`]]);
         const term = CHOICES.find((t) => !asked.has(t.term) && mentions(t.term, bullet)) ?? CHOICES.find((t) => !asked.has(t.term) && mentions(t.term, item.subtitle));
         if (term) picks.push(['why', [`为什么选 ${term.term}？当时还考虑过什么？`, `Why ${term.term}? What else did you consider?`]]);
