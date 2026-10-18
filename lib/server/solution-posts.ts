@@ -473,7 +473,7 @@ function moderate(p: Person, kind: Kind, targetId: string, action: string) {
     db.prepare(`UPDATE ${table} SET hidden=? WHERE id=? AND hidden=?`).run(to, targetId, from);
   }
   const row = db.prepare(`SELECT hidden FROM ${table} WHERE id=?`).get(targetId) as { hidden: number } | undefined;
-  if (!row) throw new HttpError(404, kind === 'post' ? '题解不存在' : kind === 'comment' ? '评论不存在' : '消息不存在');
+  if (!row) throw new HttpError(404, kind === 'post' ? '题解不存在' : '评论不存在');
   db.prepare('UPDATE post_reports SET reason=? WHERE target=?').run(REPORT_CLEARED, `${kind}:${targetId}`);
   auditStatement(p, `${kind}.${action}`, targetId).run();
   return json({ id: targetId, hidden: row.hidden });
