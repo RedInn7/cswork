@@ -276,7 +276,7 @@ test('signed out, a role path is scheduled in this browser, with no marks and no
     assert.equal(document.querySelector('.role-path-weeks .role-path-week').textContent, 'This week');
     // Every required step gets an estimate and a day; the optional crash course and OOP quiz do not.
     const scheduled = [...document.querySelectorAll('.role-path-steps > li')].filter((li) => li.querySelector('.role-path-eta'));
-    assert.equal(scheduled.length, props.steps.filter((s) => !s.optional && !s.unavailable).length);
+    assert.equal(scheduled.length, props.steps.filter((s) => !s.optional).length);
     assert.match(scheduled[0].querySelector('.role-path-eta').textContent, /^~[\d.]+ h · done by /);
     assert.equal(document.querySelector('.role-path-fork'), null);
     assert.equal(document.querySelectorAll('.role-path-marks').length, 0);
@@ -425,7 +425,7 @@ test('a learner-made route mixes site steps and own entries; a step the site no 
 test("a member's schedule waits for their progress: no false behind banner, no save of inflated days", async () => {
   const { props } = await findRolePath({ role: 'generalist' });
   const id = (s) => `${s.kind}:${s.ref}`;
-  const counted = props.steps.filter((s) => !s.optional && !s.unavailable && s.keys.length > 0);
+  const counted = props.steps.filter((s) => !s.optional && s.keys.length > 0);
   const solved = counted.find((s) => s.keys.every((k) => k.startsWith('problem:')));
   const other = counted.find((s) => s !== solved);
   const doc = { v: 1, targetDate: '', weeklyHours: 10, state: {}, planned: { [id(solved)]: '2000-01-03', [id(other)]: '2000-01-03' } };

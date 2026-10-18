@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { splitBody } from '@/lib/mock-interview';
+import { splitBody } from '@/lib/question-body';
 import type { Person } from './auth';
 import { lines, untagged } from './ai-resume';
 import { aiEnabled, runAi, SYSTEM, tidyReply } from './ai-tutor';

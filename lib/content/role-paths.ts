@@ -12,9 +12,7 @@
  * - ml-group: an ML Coding group key (lib/content/ml-coding.json);
  * - mcq-topic: an OA multiple-choice topic (lib/content/oa-mcq.json);
  * - project: a resume project slug (lib/content/resume-projects.json);
- * - course: a beginner crash course slug (lib/content/beginner-courses.json);
- * - mock-kind: a mock interview template id (lib/mock-interview.ts); never counted, and an AI-only
- *   template reads "unavailable" while AI is off.
+ * - course: a beginner crash course slug (lib/content/beginner-courses.json).
  *
  * Schedules and learner-made routes (role-paths-v2) are RouteDoc notes: route:role-<key> holds a
  * built-in role's target date, hours and step marks; route:r-<base36> a learner's own route.
@@ -32,7 +30,6 @@ export const STEP_KINDS = [
   'mcq-topic',
   'project',
   'course',
-  'mock-kind',
 ] as const;
 export type StepKind = (typeof STEP_KINDS)[number];
 /** optional: shown as "optional" and left out of the role's progress. */
@@ -68,8 +65,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'core-group', ref: 'ood' },
       { kind: 'mcq-topic', ref: 'oop', optional: true },
       { kind: 'project', ref: 'leaderboard' },
-      { kind: 'mock-kind', ref: 'phone' },
-      { kind: 'mock-kind', ref: 'behavioral' },
     ],
   },
   backend: {
@@ -97,8 +92,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'project', ref: 'rate-limiter' },
       { kind: 'project', ref: 'task-queue' },
       { kind: 'project', ref: 'kv-wal', optional: true },
-      { kind: 'mock-kind', ref: 'onsite' },
-      { kind: 'mock-kind', ref: 'api' },
     ],
   },
   frontend: {
@@ -115,8 +108,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'sd-part', ref: 'api-rest-vs-rpc-graphql' },
       { kind: 'mcq-topic', ref: 'network', optional: true },
       { kind: 'project', ref: 'feature-flags' },
-      { kind: 'mock-kind', ref: 'frontend' },
-      { kind: 'mock-kind', ref: 'behavioral' },
     ],
   },
   data: {
@@ -147,7 +138,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'mcq-topic', ref: 'dbms', optional: true },
       { kind: 'project', ref: 'idempotent-etl' },
       { kind: 'project', ref: 'log-search', optional: true },
-      { kind: 'mock-kind', ref: 'ds' },
     ],
   },
   ml: {
@@ -171,8 +161,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'mcq-topic', ref: 'python', optional: true },
       { kind: 'project', ref: 'polite-crawler' },
       { kind: 'project', ref: 'idempotent-etl', optional: true },
-      { kind: 'mock-kind', ref: 'mle' },
-      { kind: 'mock-kind', ref: 'behavioral' },
     ],
   },
   infra: {
@@ -197,7 +185,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'project', ref: 'lru-ttl-cache' },
       { kind: 'project', ref: 'kv-wal' },
       { kind: 'project', ref: 'mini-redis', optional: true },
-      { kind: 'mock-kind', ref: 'onsite' },
     ],
   },
 };
@@ -209,15 +196,13 @@ export type ResolvedStep = RoleStep & {
   href: string;
   /**
    * What counts it done: problem:<id> solved (or ticked done), sd:<key> read, mcq:<id> answered,
-   * content:project/<slug> marked done. Empty: never counted (a mock interview).
+   * content:project/<slug> marked done.
    */
   keys: string[];
   /** A line-stops step's stops, and its study plan link (PLAN_TOPICS_PARAM). */
   stops?: { slug: string; name: string; href: string }[];
   plan?: string;
-  /** An AI-only mock interview while AI is off: shown as unavailable, never counted. */
-  unavailable?: true;
-  /** Estimated minutes to work through it all (lib/server/role-paths.ts); 0 while unavailable. */
+  /** Estimated minutes to work through it all (lib/server/role-paths.ts). */
   minutes: number;
 };
 /** Step titles: a kind's label, then the name of what it points at. */
@@ -231,7 +216,6 @@ export const STEP_LABELS: Record<StepKind, [string, string] | null> = {
   'mcq-topic': ['选择题', 'Multiple choice'],
   project: ['简历项目', 'Resume project'],
   course: null,
-  'mock-kind': ['模拟面试', 'Mock interview'],
 };
 export function stepTitle(kind: StepKind, name: string, zh: boolean) {
   const label = STEP_LABELS[kind];
@@ -305,8 +289,8 @@ const routeSchema = z.strictObject({
   state: z.record(stepKey, z.enum(['doing', 'skip'])).check(z.refine(few)),
   planned: z.record(stepKey, day).check(z.refine(few)),
 });
-/** Kinds of removed features (fe-js: the frontend JS track) that saved routes may still hold: dropped on read. */
-const REMOVED_KINDS: unknown[] = ['fe-js'];
+/** Kinds of removed features (fe-js: the frontend JS track; mock-kind: mock interviews) that saved routes may still hold: dropped on read. */
+const REMOVED_KINDS: unknown[] = ['fe-js', 'mock-kind'];
 function dropRemoved(doc: unknown) {
   const steps = (doc as { steps?: unknown } | null)?.steps;
   if (!Array.isArray(steps)) return doc;
