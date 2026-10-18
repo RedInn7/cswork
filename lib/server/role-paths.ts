@@ -1,6 +1,5 @@
 import courseFile from '@/lib/content/beginner-courses.json';
 import coreSkills from '@/lib/content/core-skills.json';
-import frontendJs from '@/lib/content/frontend-js.json';
 import mcqBank from '@/lib/content/oa-mcq.json';
 import mlCoding from '@/lib/content/ml-coding.json';
 import projectFile from '@/lib/content/resume-projects.json';
@@ -129,19 +128,6 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         minutes: totalMinutes(course.chapters, zh),
       };
     }
-    case 'fe-js': {
-      const group = frontendJs.groups.find((g) => g.key === step.ref);
-      if (!group) throw missing();
-      const problems = frontendJs.problems.filter((p) => p.group === group.key);
-      return {
-        ...step,
-        title: title(pick(group.zh, group.en)),
-        href: `/frontend#fejs-group-${group.key}`,
-        // components/js-workspace.tsx marks a problem done after a full pass (lib/js-runner.ts markTarget).
-        keys: problems.map((p) => `content:fe-js/${p.slug}`),
-        minutes: problems.reduce((n, p) => n + minutesFor(p.difficulty), 0),
-      };
-    }
     case 'mock-kind': {
       const aiOnly = AI_TEMPLATES.find((t) => t.id === step.ref);
       const template = aiOnly ?? TEMPLATES.find((t) => t.id === step.ref);
@@ -173,7 +159,6 @@ const SINGLE_REFS: Record<StepKind, () => string[]> = {
   'mcq-topic': () => [...new Set(mcqBank.questions.map((q) => q.topic))],
   project: () => projectFile.projects.map((p) => p.slug),
   course: () => courseFile.courses.map((c) => c.slug),
-  'fe-js': () => frontendJs.groups.map((g) => g.key),
   'mock-kind': () => [...TEMPLATES, ...AI_TEMPLATES].map((t) => t.id),
 };
 /**
