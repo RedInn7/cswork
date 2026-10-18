@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'cswork',
     short_name: 'cswork',
-    description: 'Algorithm problems, company OAs, mock interviews and a job search guide.',
+    description: 'Algorithm problems, company OAs and a job search guide.',
     start_url: '/?source=pwa',
     scope: '/',
     display: 'standalone',
