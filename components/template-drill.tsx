@@ -40,7 +40,7 @@ function readTimes(): Times {
 function saveTime(key: string, ms: number) {
   const all = readTimes();
   const best = all[key]?.best;
-  all[key] = { last: ms, best: Number.isFinite(best) && best > 0 ? Math.min(best, ms) : ms };
+  all[key] = { last: ms, best: typeof best === 'number' && best > 0 ? Math.min(best, ms) : ms };
   try {
     localStorage.setItem(RECALL_TIMES_KEY, JSON.stringify(all));
   } catch {
@@ -103,7 +103,8 @@ export function TemplateDrill({
   const now = order ?? drill.start;
   const timeKey = `${slug}/${current.id}/${lang}`;
   // Recall mode only renders after a click or on mount, so this browser read never meets SSR.
-  const record = kind === 'recall' ? readTimes()[timeKey] : undefined;
+  const stored = kind === 'recall' ? readTimes()[timeKey] : undefined;
+  const record = stored && Number.isFinite(stored.last) && Number.isFinite(stored.best) ? stored : undefined;
   const restart = (next: { lang?: TemplateLang; kind?: Kind; seed?: number; pick?: string }) => {
     if (next.lang) setLang(next.lang);
     if (next.kind) setKind(next.kind);
