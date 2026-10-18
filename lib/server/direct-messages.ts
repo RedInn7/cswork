@@ -8,7 +8,6 @@ import { notify } from './notify';
 import { HANDLE, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { fileReport, nameOf, reportReason } from './solution-posts';
-import { chatText } from './study-groups';
 import { badgeName, badgeSql } from './work-verify';
 
 /**
@@ -21,6 +20,20 @@ import { badgeName, badgeSql } from './work-verify';
  */
 const DAY = 86400000;
 const PAGE = 100;
+/**
+ * A message: like plain() (lib/server/plain-text.ts), but it may run over several lines, indent
+ * pasted code with tabs, and join emoji (👩‍💻) or Persian and Indic letters with zero-width (non-)joiners.
+ */
+export const chatText = z
+  .string()
+  .trim()
+  .min(1)
+  .max(2000)
+  .refine(
+    (s) =>
+      !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s.replace(/[\n\t\u200C\u200D]/g, '')) &&
+      /[\p{L}\p{N}\p{S}\p{P}]/u.test(s),
+  );
 export const NEW_THREADS_PER_DAY = 20;
 export const MESSAGES_PER_DAY = 200;
 /** New conversations one learner may receive a day, so a referral thread cannot flood its author. */
