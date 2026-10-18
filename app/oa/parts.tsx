@@ -74,6 +74,7 @@ export const oaExamTag = (p: Pick<MockPreset, 'platform' | 'questions' | 'minute
 /** The real OA's format, as researched for the mock presets (lib/content/mock-oa-presets.json). */
 export function OaExamFormat({ preset: p, updated, zh }: { preset: MockPreset; updated: string; zh: boolean }) {
   const extra = extraSections(p, zh);
+  const aptitude = /aptitude/i.test(`${p.sections_en} ${p.style_en}`);
   const rows: [string, React.ReactNode][] = [
     [zh ? '平台' : 'Platform', p.platform],
     [zh ? '题量' : 'Questions', zh ? `${p.questions} 道编程题` : `${p.questions} coding`],
@@ -94,6 +95,9 @@ export function OaExamFormat({ preset: p, updated, zh }: { preset: MockPreset; u
         ? (zh ? '无' : 'None') + (extra.text ? (zh ? `（${extra.text}）` : ` (${extra.text})`) : '')
         : extra.text,
     ],
+    ...(aptitude
+      ? [[zh ? '能力测评练习' : 'Aptitude practice', <a key="apt" href="/oa/aptitude">{zh ? '数量、逻辑、图形推理和 15 分钟速度测验' : 'Numerical, logical and figure questions, plus a 15-minute speed test'}</a>] as [string, React.ReactNode]]
+      : []),
     [zh ? '适用岗位' : 'Roles', p.roles.join(zh ? '、' : ', ')],
     [zh ? '说明' : 'Notes', zh ? p.notes_zh : p.notes_en],
     [

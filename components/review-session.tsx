@@ -5,6 +5,7 @@ import { useLocale } from '@/lib/i18n';
 import { problemTitle } from '@/lib/problems';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { mcqDay, mcqDue, mcqRight, parseMcqReview, readMockState, reviewMcq } from '@/lib/mock-oa';
+import { figText } from '@/lib/aptitude-cell';
 import { parseReviewPrefs, scheduleReviews, type DueReview, type PracticeHistoryItem } from '@/lib/practice-review';
 import { RECALL_CARDS, RECALL_IDEAS, RECALL_NOTE, dueRecall, rateRecall, recallHref, recallNext, type RecallGrade, type RecallQueue } from '@/lib/recall';
 import { CARD_MAX, parseCard, toAnki, toCsv, type Card, type ExportRow } from '@/lib/recall-cards';
@@ -665,7 +666,8 @@ function CardsAndClips({ t, english, userId, titleOf }: { t: T; english: boolean
         if (mcqRight(q.answer, review[q.id].slice(2))) continue;
         const choices = q.text.choices.map((c, j) => `${'ABCDEF'[j]}. ${c}`).join('\n');
         rows.push({
-          front: [q.text.q, q.code, choices].filter(Boolean).join('\n\n'),
+          // An aptitude figure goes in as words (the choice texts already describe figure choices).
+          front: [q.text.q, q.fig && figText(q.fig, !english), q.code, choices].filter(Boolean).join('\n\n'),
           back: `${t('答案：', 'Answer: ')}${q.answer.map((a) => 'ABCDEF'[a]).join(', ')}\n\n${q.text.explain}`,
           tags: ['cswork-mcq', q.topic],
         });

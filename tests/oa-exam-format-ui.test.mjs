@@ -33,3 +33,10 @@ test('the company page lists platform, size, time, scoring, other sections, role
   assert.match(tests, /<dt>Roles<\/dt><dd>SDE intern, New grad \(SDE I\)<\/dd>/);
   assert.match(tests, /<a href="https:\/\/amazon\.jobs\/[^"]+" rel="nofollow noopener noreferrer" target="_blank">/);
 });
+
+test('a format that lists an aptitude test links to the aptitude practice; others do not', () => {
+  for (const slug of ['coinbase', 'jpmorgan-chase', 'the-d-e-shaw-group', 'oracle'])
+    assert.match(render(slug, false), /<dt>Aptitude practice<\/dt><dd><a href="\/oa\/aptitude">/, slug);
+  assert.doesNotMatch(render('tiktok', true), /\/oa\/aptitude/);
+  assert.doesNotMatch(render('amazon', false), /\/oa\/aptitude/);
+});
