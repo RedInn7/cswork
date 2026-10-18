@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 17 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 18 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -80,7 +80,7 @@ export function PrivacyDocument() {
                 学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛、投递提醒）、每天的提醒时间、时区偏移和语言，每天最多汇总成一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。投递提醒在打开学习提醒时默认勾选，可以单独关掉：服务器读取你投递追踪卡片上的 OA 截止、面试时间和 offer 截止时间，在 OA 截止前 24 小时和 2 小时、面试前 1 小时、处于 Offer 阶段的卡片 offer 截止前 3 天和 1 天各写一条站内消息，内容是公司、岗位和时间；投递卡和联系人的跟进日期到了，只在每日汇总里写到期的数量。删除一张投递卡时，它的投递提醒消息一并删除。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），只含每日汇总，每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核、上线新的 OA 题或有新的实习/新毕业生岗位时，你会收到站内消息，不发邮件；只有当这条消息里同时有你保存的岗位筛选的新结果时才会推送（见下方「在招岗位」一段）。
               </p>
               <p id="privacy-tracker">
-                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、offer 截止时间、内推信息和内推进度、投递渠道、下一步和跟进日期、所用简历版本的名字、职位链接和备注，以及阶段变更记录（每张卡片最近 40 次）和可选的职位描述快照（最多 1 万字），每个账号最多 300 条。职位描述快照只在打开这张卡片时读取，不随列表返回。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。每周投递目标存在你账号里的私人笔记（career:goal）中；可选的简历版本名从简历生成器存在这个浏览器里的版本读取。「岗位已下线」提示只是在服务器上拿卡片链接比对本站已同步的公开岗位，不会因此向外部网站发请求。「存到投递看板」书签只在你点它时读取当前招聘页的标题、站点名（或主机名）、网址和你选中的文字，打开投递追踪页并预填表单：选中的文字放在网址 # 后面，浏览器不会把它发给服务器；未登录时，预填内容临时存在当前标签页的会话存储里，登录后读取一次就删除；只有你点保存才会写进账号。导出的 CSV 和日历文件（OA 截止、面试、offer 截止和跟进事项）在你的浏览器里生成；平台自己发出的投递提醒见上一段。
+                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、offer 截止时间、内推信息和内推进度、投递渠道、下一步和跟进日期、所用简历版本的名字、职位链接和备注，以及阶段变更记录（每张卡片最近 40 次）和可选的职位描述快照（最多 1 万字），每个账号最多 300 条。职位描述快照只在打开这张卡片时读取，不随列表返回。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。每周投递目标存在你账号里的私人笔记（career:goal）中；可选的简历版本名从简历生成器存在这个浏览器里的版本读取。「岗位已下线」提示只是在服务器上拿卡片链接比对本站已同步的公开岗位，不会因此向外部网站发请求。「存到投递看板」书签只在你点它时读取当前招聘页的标题、站点名（或主机名）、网址和你选中的文字，打开投递追踪页并预填表单：选中的文字放在网址 # 后面，浏览器不会把它发给服务器；未登录时，预填内容临时存在当前标签页的会话存储里，登录后读取一次就删除；只有你点保存才会写进账号。导出的 CSV 和日历文件（OA 截止、面试、offer 截止和跟进事项）在你的浏览器里生成；平台自己发出的投递提醒见上一段。每张卡片可以选一个档位（梦想、目标、练手），它是投递记录里的一列，和卡片其他内容一样只有你自己能看到，导出的 CSV 里也有这一列。面试复盘存成你账号里的私人笔记（retro:&lt;投递卡&gt;/&lt;时间&gt;），内容是公司、轮次、面试时间、1–4 分的自评、最多 10 道题（可以关联站内题号）、卡在哪里和被问到的行为面主题，每个账号最多 200 条；只有你自己能看到，不进笔记搜索和笔记导出，删除这张投递卡时一起删除。保存复盘时，关联的站内题会被标记为「重做」；故事库会读取复盘里的主题，列出还没有故事覆盖的主题。
               </p>
               <p id="privacy-jobs">
                 「在招岗位」（/career/jobs 和公司页）列出的是各公司在 Greenhouse、Lever、Ashby 上公开发布的招聘信息，由服务器定时抓取，抓取时不发送任何用户数据。同步时服务器会读取这些公开岗位的岗位描述，只用来按规则判断是否写明不提供签证担保、要求美国公民或绿卡、要求安全许可这三类身份要求；只保存判断出的标记，不保存岗位描述正文（投递卡上你自己存的职位描述快照见上一段）。点岗位标题会打开第三方的招聘页面。点「加入投递追踪」只是预填表单，你点保存后才写进自己的投递记录；未登录时，这个岗位的公司、职位和链接会临时存在当前标签页的会话存储里，登录后打开投递追踪读取一次就删除。登录后可以保存一个岗位筛选，存成你账号里的私人笔记（career:jobs-search）：不带参数打开 /career/jobs 时会套用它；每天北京时间 9 点后，之前 24 小时内新出现、符合这个筛选的岗位会合成一条站内消息（和关注公司的动态合在一起），开启推送的设备也会收到推送，推送本身不带内容。保存的筛选随时可以删除。登录后，页面还会读取你投递记录里的职位链接，标出已经在投递看板上的岗位；没有保存筛选时，会按你资料里填的目标岗位预选方向。点「隐藏」的岗位只记在当前浏览器的本地存储里（最多 500 个），不会上传。登录后屏蔽的公司（最多 100 家）存成你账号里的私人笔记（career:jobs-blocked），只有你自己能看到，用来从在招岗位列表、招聘日历和每日新岗位消息里隐去这些公司的岗位；关注公司的动态不受屏蔽影响。
@@ -89,13 +89,13 @@ export function PrivacyDocument() {
                 联系人（/career/contacts）是你记录的他人信息：姓名、公司、职位、怎么认识的、链接、上次联系和下次跟进的日期、备注，以及可选关联的一张投递卡，每个账号最多 200 位。它们只保存在你自己的账号里，其他人都看不到，可以随时删除；关联的投递卡删除后，联系人保留，只是不再关联。请只记录求职需要的内容。求职指南各章清单的勾选状态，登录时存成你账号里的私人笔记（checklist:&lt;章节&gt;），未登录时只存在当前浏览器，登录后打开这一章会并入账号并从浏览器删除。外联模板页（/career/templates）登录后在浏览器里读取你的投递卡和联系人来填空；你填的「你的名字」只存在当前浏览器。复制和「在邮件应用中打开」都在你的设备上完成，平台不替你发送任何消息。
               </p>
               <p id="privacy-practice-aids">
-                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA、保存的 STAR 故事，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA、保存的 STAR 故事，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。冲刺计划（OA 日期、目标公司、每周时长、题池、难度和专题筛选、是否接上投递看板等设置）登录后存成私人笔记（pref:plan），同步到你的账户，当前浏览器保留一份缓存；未登录时只存在当前浏览器。勾选「接上投递看板」时，页面只在你的浏览器里读取你自己投递卡上的 OA 截止和面试日期来安排冲刺，这些日期不会另存到别处；计划的日历文件也在浏览器里生成。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
               </p>
               <p id="privacy-notes-export">
                 「我的进度」笔记页的导出，把你写的题目、提交和资料笔记、专题套路笔记、STAR 故事、复习卡片、摘录和系统设计草稿打包成一个 .zip（Obsidian 库）或一个 .md 文件，可以选择附上每道题最近一次通过的代码；服务器只返回你自己的记录，文件在你的浏览器里生成，平台不另存。复习单和复习册（/review-sheet）只读取你自己的笔记、收藏和重做标记、提交记录、复习自评和卡片，不新增任何存储，打印和存 PDF 都在浏览器里完成。比赛或技能认证考试进行中，导出和复习单都不可用。
               </p>
               <p id="privacy-practice-tracks">
-                简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。前端 JS 手写题（/frontend）的代码只在你浏览器里的隔离沙箱中运行，不会上传；代码草稿和已通过的题目记在当前浏览器，登录后一道题全部用例通过时，这道题的「已完成」也记在你的账号里。面试英语（/english）各单元的完成情况，登录后记在你的账号里；未登录时只存在当前浏览器，登录后打开页面会并入账号并从浏览器删除。跟读使用浏览器自带的语音识别，和模拟面试的语音输入一样，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在浏览器里计算，不上传。朗读使用浏览器自带的语音合成。
+                简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。前端 JS 手写题（/frontend）的代码只在你浏览器里的隔离沙箱中运行，不会上传；代码草稿和已通过的题目记在当前浏览器，登录后一道题全部用例通过时，这道题的「已完成」也记在你的账号里。面试英语（/english）各单元的完成情况，登录后记在你的账号里；未登录时只存在当前浏览器，登录后打开页面会并入账号并从浏览器删除。跟读使用浏览器自带的语音识别，和模拟面试的语音输入一样，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在浏览器里计算，不上传。朗读使用浏览器自带的语音合成。学习路线（/roadmap）登录后存成你账号里的私人笔记：内置岗位路线的目标日期、每周时长、标为「进行中」或「已掌握，跳过」的步骤，以及「保存排期」时记下的各步完成日期存在 route:role-&lt;岗位&gt;；你自己建的路线存在 route:r-&lt;编号&gt;，包括名称、步骤和你加的外部条目（只存标题、单元数、已完成数和每单元时长，不存链接）。路线笔记每个账号最多 30 条，只有你自己能看到，不进笔记搜索和笔记导出。未登录时，排期只存在当前浏览器的本地存储里。导出的 .ics 日历文件在浏览器里生成，不上传。
               </p>
               <p id="privacy-code-review">
                 在提交详情里生成「代码评审链接」后，拿到链接并登录的人都能看到这次提交的代码、你的留言和全部评论；页面只显示公开主页名，没有主页名时显示「作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。你可以随时关闭链接：关闭后链接失效，评论不再对任何人显示，但仍保留在数据库里。有新评论时只发站内通知。每个账号最多同时开 20 条链接，每天最多新建 50 条。
@@ -155,7 +155,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司、岗位和 offer 截止日；决策矩阵的因素、权重和打分也只存在当前浏览器。「复制只读链接」把对比内容（金额取整，不含截止日和回收条款，可选隐去公司名）放在网址 # 后面，浏览器不会把它发给服务器，平台也不保存；打开这样的链接只做只读显示，点「导入到我的对比」才存进你的浏览器。题目自定义用例里填的期望输出也只存在当前浏览器，运行后的对比结果不保存。模拟 OA 选择题环节的作答和「待查」标记也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。看过参考答案后给开放题打的自评（会了 / 部分会 / 不会，用来安排下次复习）、评分日期和题目标题也按同样的方式保存，账号里的私密笔记是 recall:queue。登录后自建的复习卡片（card:）和划词存下的摘录（clip:，存选中的文字和所在页面的标题与链接）也是你账号里的私密笔记，只有你自己能看到；卡片和题目思路卡的复习安排分别存在私密笔记 recall:cards 和 recall:ideas 里，思路卡只读取你自己的通过记录和题目笔记。导出的 Anki 和 CSV 文件在你的浏览器里生成，不上传。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传；Offer 对比（/career/offers）里填的数字也只存在当前浏览器的本地存储里，不会上传，「从投递看板导入」只读取你自己投递看板上处于 Offer 阶段的卡片的公司、岗位和 offer 截止日；决策矩阵的因素、权重和打分也只存在当前浏览器。「复制只读链接」把对比内容（金额取整，不含截止日和回收条款，可选隐去公司名）放在网址 # 后面，浏览器不会把它发给服务器，平台也不保存；打开这样的链接只做只读显示，点「导入到我的对比」才存进你的浏览器。题目自定义用例里填的期望输出也只存在当前浏览器，运行后的对比结果不保存。模拟 OA 选择题环节的作答和「待查」标记也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。看过参考答案后给开放题打的自评（包括专题页「为什么对」的自评；会了 / 部分会 / 不会，用来安排下次复习）、评分日期和题目标题也按同样的方式保存，账号里的私密笔记是 recall:queue。登录后自建的复习卡片（card:）和划词存下的摘录（clip:，存选中的文字和所在页面的标题与链接）也是你账号里的私密笔记，只有你自己能看到；卡片和题目思路卡的复习安排分别存在私密笔记 recall:cards 和 recall:ideas 里，思路卡只读取你自己的通过记录和题目笔记。导出的 Anki 和 CSV 文件在你的浏览器里生成，不上传。登录并验证过邮箱后，你在 /oa/mcq 或各题型页小测里第一次提交某道题时，服务器还会单独记下这次作答（题号、所选选项、是否答对和时间），只用来计算全站的答对率和各选项的选择人数；不到 20 人作答的题不显示，也不展示任何人的作答。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -219,7 +219,10 @@ export function PrivacyDocument() {
                 Anthropic，用于整理出这个岗位要的技能和面试轮次；不发送邮箱、姓名、账户标识或你的练习记录，你的练习进度在服务器上读取，只和结果一起显示给你。职位描述和检查结果都不保存，只记录每天的调用次数和用量。从简历 AI 点评页带过来的职位描述经当前标签页的会话存储传递，读取后立即删除。
               </p>
               <p id="privacy-resume-builder">
-                在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「复制为新版本」保存的各个版本也一样；「导出 JSON」的文件也在浏览器里生成。规则检查和「粘贴文本导入」都在浏览器里完成，粘贴的简历文字不会上传。「导入 PDF / DOCX」同样只在浏览器里解析文件，文件和解析出的文字都不会上传，解析结果先显示为预览，确认后才填进简历；选 PDF 时，浏览器会从 jsDelivr（cdn.jsdelivr.net）下载 pdf.js 来读取文件，文件本身不发给 jsDelivr。「填表书签」把简历里的姓名、邮箱、电话、城市、链接、学校、学位和最近一段经历写在书签本身里，会随浏览器的书签同步，请不要分享，简历改了要重新拖一次；它只在你点它时运行，只在 Greenhouse、Lever、Ashby 的申请页上（其他网站嵌着这三家的申请表时，确认后先打开那个申请表）把空着的文本框填好，不替你提交，也不碰文件上传和下拉框。填进去的内容只有你在对方网站提交后才会发给对方，填表本身不向本平台发送任何内容；浮层里的「存到投递看板」和上面投递追踪的书签一样。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。AI 模拟面试的简历项目深挖也会读取这里的内容（不含姓名和联系方式），只随你发出的消息和最后的评估发送，方式见上面 AI 面试官一段。
+                在简历生成器（/career/resume/builder）里填写的内容保存在当前浏览器的本地存储里，除非你生成评审链接（见下一段），否则不会上传；「复制为新版本」保存的各个版本也一样；「导出 JSON」的文件也在浏览器里生成。规则检查和「粘贴文本导入」都在浏览器里完成，粘贴的简历文字不会上传。「导入 PDF / DOCX」同样只在浏览器里解析文件，文件和解析出的文字都不会上传，解析结果先显示为预览，确认后才填进简历；选 PDF 时，浏览器会从 jsDelivr（cdn.jsdelivr.net）下载 pdf.js 来读取文件，文件本身不发给 jsDelivr。「填表书签」把简历里的姓名、邮箱、电话、城市、链接、学校、学位和最近一段经历写在书签本身里，会随浏览器的书签同步，请不要分享，简历改了要重新拖一次；它只在你点它时运行，只在 Greenhouse、Lever、Ashby 的申请页上（其他网站嵌着这三家的申请表时，确认后先打开那个申请表）把空着的文本框填好，不替你提交，也不碰文件上传和下拉框。填进去的内容只有你在对方网站提交后才会发给对方，填表本身不向本平台发送任何内容；浮层里的「存到投递看板」和上面投递追踪的书签一样。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。AI 模拟面试的简历项目深挖也会读取这里的内容（不含姓名和联系方式），只随你发出的消息和最后的评估发送，方式见上面 AI 面试官一段。
+              </p>
+              <p id="privacy-resume-review">
+                在简历生成器里点「请人看简历」时，正在编辑的这份简历会存一份快照到服务器上（教育、经历、项目、技能和奖项，以及你写给评审人的留言和所用简历版本的名字）；姓名、邮箱、电话、城市和链接在浏览器里就清空，服务器也会再清一遍。之后再改简历，快照不会跟着变。拿到链接并登录的人都能看到快照、留言和全部批注；页面只显示公开主页名，没有主页名时显示「简历作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。发批注需要验证过邮箱的账号，每条批注连同被批注那一行的原文一起保存。你接受的改写建议只写回这个浏览器里的简历，服务器只记下接受的时间。你可以随时关闭链接：关闭后链接失效，快照被清空，批注不再对任何人显示，但仍保留在数据库里。有新批注时只发站内通知，不发邮件。每个账号最多同时开 10 条链接，每天最多新建 20 条。
               </p>
               <p id="privacy-ai-round">
                 在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
@@ -259,7 +262,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 17, 2026</p>
+            <p className="privacy-updated">Updated October 18, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -536,7 +539,18 @@ export function PrivacyDocument() {
                 interviews, offer deadlines
                 and
                 follow-ups) are made in your browser; the reminders the platform
-                itself sends are described above.
+                itself sends are described above. Each card can carry a tier
+                (dream, target or practice); it is a column of the application
+                record, seen only by you like the rest of the card, and the CSV
+                includes it. Interview retros are private notes on your account
+                (retro:&lt;card&gt;/&lt;time&gt;): the company, the round, when
+                it was, a 1–4 self-rating, up to 10 questions (optionally linked
+                to a site problem), where you got stuck and the behavioral themes
+                you were asked about, up to 200 per account. Only you can see
+                them; they stay out of note search and the notes export, and are
+                deleted with their card. Saving a retro marks its linked site
+                problems to redo, and the story bank reads the retros&apos;
+                themes to list the ones no story covers yet.
               </p>
               <p id="privacy-jobs">
                 Open roles (/career/jobs and company pages) are the postings
@@ -621,6 +635,16 @@ export function PrivacyDocument() {
                 streak you see in the top bar, My progress and study reminders,
                 never badges, leaderboards or your public profile; records
                 older than 200 days are deleted the next time it is worked out.
+                Your sprint plan (OA date, target company, weekly hours, problem
+                pool, difficulty and topic filters, and whether it uses your
+                application tracker) is a private note (pref:plan) when you are
+                signed in, synced to your account with a cached copy kept in
+                this browser; signed out, it stays only in this browser. With
+                &ldquo;Use my application tracker&rdquo; on, the page reads the
+                OA deadlines and interview dates on your own tracker cards in
+                your browser only to lay out sprints; those dates are not stored
+                anywhere else. The plan&apos;s calendar file is made in your
+                browser too.
                 The problem-note
                 template you set (pref:note-template) and the &ldquo;My pattern
                 notes&rdquo; on each topic page (/topics, topic:&lt;topic&gt;)
@@ -662,7 +686,18 @@ export function PrivacyDocument() {
                 turn it into text, without going through this platform. The
                 similarity, pace and filler-word figures are worked out in your
                 browser and never uploaded. Reading aloud uses your
-                browser&apos;s own speech synthesis.
+                browser&apos;s own speech synthesis. Signed in, your study
+                routes (/roadmap) are private notes on your account: a built-in
+                role&apos;s target date, weekly hours, steps marked in progress or
+                skipped, and the finish dates recorded with &ldquo;Save
+                schedule&rdquo; are kept in route:role-&lt;role&gt;; a route you
+                build yourself is kept in route:r-&lt;id&gt; with its name, steps
+                and your own outside entries (only a title, unit count, units
+                done and minutes per unit, never a link). Each account keeps up
+                to 30 route notes, seen only by you and left out of note search
+                and the notes export. Signed out, the schedule stays only in
+                this browser&apos;s local storage. The .ics calendar file is made
+                in your browser and never uploaded.
               </p>
               <p id="privacy-code-review">
                 When you create a code review link from a submission&apos;s
@@ -874,7 +909,8 @@ export function PrivacyDocument() {
                 browser while you are signed out; signed in, they are kept in a
                 private note on your account (up to 20KB), and the browser copy
                 is deleted once the account has saved it. Your self-grades on
-                open questions after you reveal the reference answer (knew it,
+                open questions after you reveal the reference answer (the topic
+                pages&apos; &ldquo;why it works&rdquo; cards included; knew it,
                 partly or didn&apos;t, which set the next review), the day you
                 graded and the question titles are kept the same way, in the
                 private note recall:queue. Signed in, the review cards you make
@@ -1070,8 +1106,9 @@ export function PrivacyDocument() {
               </p>
               <p id="privacy-resume-builder">
                 What you enter in the resume builder (/career/resume/builder)
-                is kept only in this browser&apos;s local storage and is never
-                uploaded, and so are the versions saved with “Copy as new
+                is kept in this browser&apos;s local storage and is not uploaded
+                unless you make a review link (see the next paragraph), and so
+                are the versions saved with “Copy as new
                 version”; Export JSON makes its file in the browser too. The
                 rule check and “Paste text to import” run in the browser as well,
                 and pasted resume text is not uploaded.
@@ -1103,6 +1140,29 @@ export function PrivacyDocument() {
                 deep dive also reads this content, without your name and contact
                 details, and sends it only with the messages you send and the
                 final report, as described for the AI interviewer above.
+              </p>
+              <p id="privacy-resume-review">
+                &ldquo;Ask someone to review it&rdquo; in the resume builder
+                stores a snapshot of the resume you are editing on the server
+                (education, experience, projects, skills and awards, plus the
+                note you write for reviewers and the resume version&apos;s
+                name); your name, email, phone, city and
+                links are blanked in the browser and again on the server. Later
+                edits to the resume do not change the snapshot. Anyone signed in
+                who has the link can see the snapshot, the note and every
+                comment. The page shows public handles only, or
+                &ldquo;Owner&rdquo; and &ldquo;Reviewer N&rdquo; without one,
+                never nicknames or email, and it stays out of search. The server
+                stores only a hash of the link, which is shown in full once,
+                when it is made. Commenting needs an account with a verified
+                email, and each comment is stored with the text of the line it
+                is on. A rewrite you accept is written back only into the resume
+                in this browser; the server records only when it was accepted.
+                You can close a link at any time: it stops working, the snapshot
+                is emptied, and its comments are no longer shown to anyone,
+                though they stay in the database. New comments send on-site
+                notifications only, never email. Each account can have 10 open
+                links at a time and create 20 a day.
               </p>
               <p id="privacy-ai-round">
                 When you run the tests of an AI-assisted round project
