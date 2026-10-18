@@ -55,12 +55,13 @@ export function stashNoteDraft(userId: string, target: string, body: string) {
   return true;
 }
 const stamp = (value: unknown) => (typeof value === 'number' ? value : null);
-/** Saves the note and returns the server's new updatedAt. */
-export async function putNote(target: string, body: string) {
+/** Saves the note and returns the server's new updatedAt; `keepalive` lets a save sent as the page leaves finish. */
+export async function putNote(target: string, body: string, keepalive = false) {
   const response = await fetch(
     `/api/oj/notes?target=${encodeURIComponent(target)}`,
     {
       method: 'PUT',
+      keepalive,
       headers: { 'Content-Type': 'application/json', 'X-Locale': readLocale() },
       body: JSON.stringify({ body }),
     },

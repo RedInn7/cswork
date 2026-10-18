@@ -5,6 +5,7 @@ import { useLocale } from '@/lib/i18n';
 import { problemTitle } from '@/lib/problems';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { mcqDay, mcqDue, mcqRight, parseMcqReview, readMockState, reviewMcq } from '@/lib/mock-oa';
+import { figText } from '@/lib/aptitude-cell';
 import { parseReviewPrefs, scheduleReviews, type DueReview, type PracticeHistoryItem } from '@/lib/practice-review';
 import { RECALL_CARDS, RECALL_IDEAS, RECALL_NOTE, dueRecall, rateRecall, recallHref, recallNext, type RecallGrade, type RecallQueue } from '@/lib/recall';
 import { CARD_MAX, parseCard, toAnki, toCsv, type Card, type ExportRow } from '@/lib/recall-cards';
@@ -149,15 +150,21 @@ function faces(flip: Flip, t: T, titleOf: (id: string) => string): [ReactNode, R
     ];
   if (flip.kind === 'open') {
     const href = recallHref(flip.key);
+    // tpl:<stop>/<template>: a template written from memory, graded by the topic page's drill.
+    const tpl = flip.key.startsWith('tpl:');
     return [
       <Fragment key="front">
         <p className="rs-title">{flip.title || flip.key}</p>
-        <p className="rs-meta">{t('先在心里答一遍，再翻面对照参考答案。', 'Answer it in your head first, then flip and check the reference answer.')}</p>
+        <p className="rs-meta">
+          {tpl
+            ? t('在空白编辑器里把这个模板默写出来；跑通本站测试后会自动打分。', "Write this template from memory in an empty editor; passing the stop's tests grades it for you.")
+            : t('先在心里答一遍，再翻面对照参考答案。', 'Answer it in your head first, then flip and check the reference answer.')}
+        </p>
       </Fragment>,
       href ? (
         <p key="back">
           <a href={href} target="_blank" rel="noopener">
-            {t('在新标签页打开题目和参考答案', 'Open the question and its reference answer in a new tab')}
+            {tpl ? t('去默写（新标签页）', 'Write it from memory (new tab)') : t('在新标签页打开题目和参考答案', 'Open the question and its reference answer in a new tab')}
           </a>
         </p>
       ) : null,
@@ -659,7 +666,8 @@ function CardsAndClips({ t, english, userId, titleOf }: { t: T; english: boolean
         if (mcqRight(q.answer, review[q.id].slice(2))) continue;
         const choices = q.text.choices.map((c, j) => `${'ABCDEF'[j]}. ${c}`).join('\n');
         rows.push({
-          front: [q.text.q, q.code, choices].filter(Boolean).join('\n\n'),
+          // An aptitude figure goes in as words (the choice texts already describe figure choices).
+          front: [q.text.q, q.fig && figText(q.fig, !english), q.code, choices].filter(Boolean).join('\n\n'),
           back: `${t('答案：', 'Answer: ')}${q.answer.map((a) => 'ABCDEF'[a]).join(', ')}\n\n${q.text.explain}`,
           tags: ['cswork-mcq', q.topic],
         });

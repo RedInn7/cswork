@@ -34,6 +34,14 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     ],
   },
   {
+    slug: 'practice',
+    title: ['怎么练习：计时、提示、复习与模拟 OA', 'How to practise: timing, hints, reviews and mock OAs'],
+    summary: [
+      '一道题的节奏、提示怎么用、什么时候看题解和补题、复习自评、每天新题与复习的配比，以及每周一场模拟 OA。',
+      'The rhythm of one problem, using hints, when to read the editorial and upsolve, grading reviews, mixing new problems with reviews, and a weekly mock OA.',
+    ],
+  },
+  {
     slug: 'online-assessment',
     title: ['在线笔试 OA', 'Online assessments'],
     summary: [
@@ -63,6 +71,14 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     summary: [
       '读懂 offer 的各个部分、按四年总额比较、礼貌谈薪的流程和话术、截止日期怎么处理。只讲流程，不收录薪资数据。',
       'Reading every part of an offer, comparing four-year totals, polite negotiation steps and wording, and deadlines. Process only, no salary data.',
+    ],
+  },
+  {
+    slug: 'internship',
+    title: ['实习手册：从入职到转正', 'The internship: from day one to a return offer'],
+    summary: [
+      '入职前、头两周、第一个 PR、1:1 和周报模板、中期自评、交接文档、争取转正，以及选组电话怎么准备、怎么打分。',
+      'Before you start, the first two weeks, your first PR, 1:1 and weekly update templates, the midpoint review, the handoff doc, the return offer, and how to prepare for and score team-matching calls.',
     ],
   },
   {

@@ -93,6 +93,7 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
       { kind: 'sd-part', ref: 'concurrency-primitives' },
       { kind: 'core-group', ref: 'concurrency' },
       { kind: 'core-group', ref: 'ood' },
+      { kind: 'course', ref: 'network', optional: true },
       { kind: 'mcq-topic', ref: 'network' },
       { kind: 'sd-part', ref: 'tech-kafka', optional: true },
       { kind: 'project', ref: 'rate-limiter' },
@@ -187,8 +188,10 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
     steps: [
       { kind: 'line-stops', ref: LINEAR },
       { kind: 'line-stops', ref: `${GRAPHS},design-cache-index` },
+      { kind: 'course', ref: 'os' },
       { kind: 'mcq-topic', ref: 'os' },
       { kind: 'mcq-topic', ref: 'linux' },
+      { kind: 'course', ref: 'network' },
       { kind: 'mcq-topic', ref: 'network' },
       { kind: 'core-group', ref: 'concurrency' },
       { kind: 'sd-part', ref: 'concurrency-primitives' },

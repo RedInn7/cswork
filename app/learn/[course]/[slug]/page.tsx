@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { problemAppHref } from '@/lib/classic-lists';
+import { keyPoints } from '@/lib/recall';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { beginnerCourse, learnKey, learnPath } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { sdSummary } from '@/lib/server/system-design-course';
 import { PublicLibraryMarkdown, markdownToc } from '../../../library/markdown';
 import { SdQuiz } from '../../../system-design/quiz';
-import { SdMarkRead, SdReadCheck, SdReportIssue } from '../../../system-design/reader';
+import { SdMarkRead, SdReadCheck, SdRecall, SdReportIssue } from '../../../system-design/reader';
 
 type Props = { params: Promise<{ course: string; slug: string }> };
 
@@ -42,6 +43,8 @@ export default async function LearnChapter({ params }: Props) {
   const courseTitle = zh ? course.titleZh : course.titleEn;
   const body = zh ? chapter.bodyZh : chapter.bodyEn;
   const toc = markdownToc(body);
+  // A chapter that ends in "Key points" offers them as a review card.
+  const points = keyPoints(body.split(/^## (?:要点|Key points)$/m)[1]);
   const keys = course.chapters.map((c) => learnKey(course.slug, c.slug));
   const tocList = (
     <ol>
@@ -96,9 +99,12 @@ export default async function LearnChapter({ params }: Props) {
           </details>
         )}
         <div className="public-library-prose">
-          <PublicLibraryMarkdown body={body} math={false} sectionIds />
+          <PublicLibraryMarkdown body={body} math={false} sectionIds wholePrograms />
         </div>
         <SdQuiz slug={learnKey(course.slug, chapter.slug)} quiz={chapter.quiz} zh={zh} />
+        {points.length > 0 && (
+          <SdRecall target={`sd:${learnKey(course.slug, chapter.slug)}`} title={title(chapter)} points={points} />
+        )}
         {/* SQL lessons have no LeetCode homework: their text links to the SQL track instead. */}
         {chapter.homework.length > 0 && (
           <section className="learn-practice" aria-labelledby="learn-practice-title">

@@ -19,16 +19,20 @@ import { McqItem, MCQ_SECTION_NAMES, MCQ_TOPIC_NAMES, type McqText } from '@/com
 import { ReportIssue } from '@/components/report-issue';
 import { MCQ_SIMS } from '@/lib/cs-sims-links';
 import type { McqStat } from '@/lib/server/mcq-stats';
+import type { AptFig } from '@/lib/aptitude';
 
-/** A question in the page's language only. */
+/** A question in the page's language only; an aptitude one (from the review) has its figure. */
 export type PracticeItem = Pick<McqQuestion, 'id' | 'section' | 'topic' | 'code' | 'answer'> & {
   text: McqText;
+  fig?: AptFig;
 };
 /** A system design chapter's quiz, enough to find its wrong answers: the right choice of each question. */
 export type SdQuizKey = { slug: string; title: string; answers: number[] };
 type Answers = Record<string, number[]>;
 const OLD_KEY = 'cswork:oa-mcq:v1';
-const KEY = 'cswork:oa-mcq:v2';
+/** This browser's review; /oa/aptitude writes its misses here too when signed out. */
+export const MCQ_LOCAL_KEY = 'cswork:oa-mcq:v2';
+const KEY = MCQ_LOCAL_KEY;
 const NOTE = `/api/oj/notes?target=${encodeURIComponent('mcq:answers')}`;
 
 /** Submitted answers by question id, as stored in this browser; anything malformed reads as none. */

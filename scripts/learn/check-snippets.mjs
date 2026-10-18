@@ -9,6 +9,10 @@
  * per line, values joined by " | " and NULL as NULL. Both languages of every chapter are checked;
  * a language whose toolchain is missing is skipped with a note.
  *
+ * The Big-O course's plain ```cpp, ```java and ```go blocks (its Python snippets in other
+ * languages) are only compiled, wrapped by wholeProgram (lib/course-snippet.ts) exactly as the
+ * lesson's "Open in Playground" link wraps them.
+ *
  *   node --import tsx scripts/learn/check-snippets.mjs [course…]
  */
 import { spawnSync } from 'node:child_process';
@@ -17,6 +21,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import Database from 'better-sqlite3';
+import { wholeProgram } from '../../lib/course-snippet.ts';
 import { APP, COMPANY, SCHEMAS, SCHOOL, SHOP } from '../sql-track/datasets.ts';
 
 const BLOCK = /^```(cpp|java|go|sql) run\n([\s\S]*?)^```\n(?:[ \t]*\n)*(?:```text\n([\s\S]*?)^```$)?/gm;
@@ -31,6 +36,23 @@ export function snippets(courses) {
           const at = `${course.slug}/${chapter.slug} ${key}`;
           const id = JSON.stringify([language, code, expected ?? null]);
           if (!found.has(id)) found.set(id, { at, language, code, expected });
+        }
+  return [...found.values()];
+}
+
+const PLAIN = /^```(cpp|java|go)\n([\s\S]*?)^```$/gm;
+/** Courses whose plain code blocks must compile once wrapped. */
+const COMPILED = new Set(['big-o']);
+
+/** Every plain cpp / java / go block of those courses, wrapped into a program, once per distinct program. */
+export function lessonSnippets(courses) {
+  const found = new Map();
+  for (const course of courses.filter((c) => COMPILED.has(c.slug)))
+    for (const chapter of course.chapters)
+      for (const key of ['bodyZh', 'bodyEn'])
+        for (const [, language, code] of chapter[key].matchAll(PLAIN)) {
+          const program = wholeProgram(language, code);
+          if (!found.has(program)) found.set(program, { at: `${course.slug}/${chapter.slug} ${key}`, language, code: program });
         }
   return [...found.values()];
 }
@@ -53,13 +75,16 @@ const BUILD = {
 };
 const has = (command) => spawnSync(command, ['--version'], { encoding: 'utf8' }).error === undefined;
 
-function runProgram(language, code) {
-  const [file, build, run] = BUILD[language];
+function runProgram(language, code, compileOnly = false) {
+  const [file, fullBuild, run] = BUILD[language];
+  // Compile only: C++ skips code generation, the slow part of a bits/stdc++.h build.
+  const build = compileOnly && language === 'cpp' ? [CXX, '-std=c++20', '-fsyntax-only', file] : fullBuild;
   const dir = mkdtempSync(join(tmpdir(), 'cswork-learn-'));
   try {
     writeFileSync(join(dir, file), code);
     const built = exec(build[0], build.slice(1), dir);
     if (!built.ok) return { ok: false, out: `build failed\n${built.stderr}` };
+    if (compileOnly) return { ok: true, out: '' };
     const ran = exec(run[0], run.slice(1), dir);
     return ran.ok ? { ok: true, out: ran.stdout } : { ok: false, out: `run failed\n${ran.stderr}` };
   } finally {
@@ -118,6 +143,16 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     if (!result.ok || wrong)
       failures.push(`${snippet.at} (${snippet.language}): ${wrong ? `printed\n${result.out}expected\n${snippet.expected}` : result.out}`);
     counts[snippet.language] = (counts[snippet.language] ?? 0) + 1;
+  }
+  for (const snippet of lessonSnippets(chosen)) {
+    const label = `${snippet.language} compiled`;
+    if (!tools[snippet.language]) {
+      counts[`${label} skipped`] = (counts[`${label} skipped`] ?? 0) + 1;
+      continue;
+    }
+    const result = runProgram(snippet.language, snippet.code, true);
+    if (!result.ok) failures.push(`${snippet.at} (${snippet.language}, compile only): ${result.out}\n${snippet.code}`);
+    counts[label] = (counts[label] ?? 0) + 1;
   }
   console.log(Object.entries(counts).map(([language, n]) => `${language}: ${n}`).join(', ') || 'no run blocks');
   if (failures.length) {

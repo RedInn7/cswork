@@ -95,6 +95,12 @@ function DemoPlayer({
     setScore({ right: 0, total: 0 });
     move(0);
   };
+  const apply = (value: string) => {
+    const parsed = custom!.parse(value);
+    if ('error' in parsed) return setError(parsed.error);
+    setError(null);
+    restart(parsed.args);
+  };
   /** A guess (a clicked cell or node key), or null for "show me": either way the step plays. */
   const guess = (key: string | null) => {
     const right = key !== null && targets.has(key);
@@ -126,16 +132,31 @@ function DemoPlayer({
         <h3 id={titleId}>{trace.title}</h3>
         <p>{trace.question}</p>
       </header>
+      {custom?.presets && (
+        <div className="algorithm-demo-presets" role="group" aria-label={t('换一组输入', 'Pick an input')}>
+          {custom.presets.map(([label, value]) => (
+            <button
+              key={label[1]}
+              type="button"
+              onClick={() => {
+                // A function (the random preset) makes a fresh input on every click.
+                const next = typeof value === 'function' ? value() : value;
+                setText(next);
+                apply(next);
+              }}
+            >
+              {t(...label)}
+            </button>
+          ))}
+        </div>
+      )}
       {custom && (
         <details className="algorithm-demo-input">
           <summary>{t('换个输入', 'Try your own input')}</summary>
           <form
             onSubmit={(event) => {
               event.preventDefault();
-              const parsed = custom.parse(text);
-              if ('error' in parsed) return setError(parsed.error);
-              setError(null);
-              restart(parsed.args);
+              apply(text);
             }}
           >
             <label htmlFor={inputId}>{t(...custom.label)}</label>
@@ -184,7 +205,7 @@ function DemoPlayer({
         aria-label={t('算法当前状态', 'Current algorithm state')}
       >
         {frame.cells.map((cell, i) => {
-          const className = `algorithm-demo-cell ${cell.state ? `is-${cell.state}` : ''}`;
+          const className = `algorithm-demo-cell ${cell.state ? `is-${cell.state}` : ''}${String(cell.value).length > 4 ? ' is-long' : ''}`;
           const body = (
             <>
               <span>{cell.value}</span>
@@ -368,6 +389,8 @@ function DemoPlayer({
 }
 
 const R = 4.2;
+/** A labelled node's circle radius; a bare dot (a timeline end, a plot point) is smaller. */
+const radius = (n: DemoGraph['nodes'][number]) => (n.label ? R : R * 0.6);
 /**
  * A frame's graph or tree in SVG. Arrowheads are drawn per edge (no shared marker), so they
  * take the edge's state colour; the caption below narrates each step for screen readers.
@@ -410,11 +433,15 @@ export function DemoGraphView({
         const len = Math.hypot(b.x - a.x, b.y - a.y) || 1,
           ux = (b.x - a.x) / len,
           uy = (b.y - a.y) / len;
-        // The line runs border to border, so arrowheads land on the circle's edge.
-        const x1 = a.x + ux * R,
-          y1 = a.y + uy * R,
-          x2 = b.x - ux * (R + 0.4),
-          y2 = b.y - uy * (R + 0.4);
+        // The line runs border to border, so arrowheads land on the circle's edge. Two nodes too
+        // close to trim (a short interval's dots) get a centre-to-centre line rather than a flipped one.
+        const ra = radius(a),
+          rb = radius(b) + 0.4,
+          k = len > ra + rb ? 1 : 0;
+        const x1 = a.x + ux * ra * k,
+          y1 = a.y + uy * ra * k,
+          x2 = b.x - ux * rb * k,
+          y2 = b.y - uy * rb * k;
         return (
           <g key={`${e.from}>${e.to}`} className={`algorithm-demo-edge ${e.state ? `is-${e.state}` : ''}`}>
             <line x1={x1} y1={y1} x2={x2} y2={y2} />
@@ -448,7 +475,7 @@ export function DemoGraphView({
             },
           } : {})}
         >
-          <circle cx={n.x} cy={n.y} r={n.label ? R : R * 0.6} />
+          <circle cx={n.x} cy={n.y} r={radius(n)} />
           {n.label && (
             <text x={n.x} y={n.y} dominantBaseline="central" textAnchor="middle">
               {n.label}

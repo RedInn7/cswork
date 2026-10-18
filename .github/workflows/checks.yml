@@ -66,10 +66,14 @@ jobs:
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/wave9-foundation.test.ts
       - run: node --import tsx --test tests/wave10-foundation.test.ts
-      - run: node --import tsx --test tests/route-templates.test.ts tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
+      - run: node --import tsx --test tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
       - run: node --import tsx --test tests/topic-why.test.ts tests/topic-page.test.ts
+      # The Chinese–English glossary on /topics/glossary and its list (search, voice, cards).
+      - run: node --import tsx --test tests/glossary.test.ts tests/glossary-list-ui.test.mjs
       # Resume projects (content/projects) and the role paths on /roadmap.
       - run: node --import tsx --test tests/role-paths.test.ts tests/resume-projects.test.ts tests/projects-ui.test.mjs
+      # The CS fundamentals track on /roadmap (lib/cs-track.ts).
+      - run: node --import tsx --test tests/cs-track.test.ts
       - run: node --import tsx --test tests/route-schedule.test.ts
       - run: node --import tsx --test tests/oj-deep-recursion.test.ts tests/auth-route.test.ts tests/problem-sequence.test.ts tests/health.test.ts tests/metrics-funnel.test.ts tests/bootstrap-catalogue.test.ts
       - run: node --import tsx --test tests/lazy-load-failed-ui.test.mjs tests/owner-metrics-ui.test.mjs
@@ -79,6 +83,7 @@ jobs:
       - run: node --import tsx --test tests/english-drill.test.ts tests/interview-english-content.test.ts tests/english-unit-ui.test.mjs
       - run: node --import tsx --test tests/mock-oa-ui.test.mjs tests/mock-oa-plus-ui.test.mjs tests/oa-exam-format-ui.test.mjs tests/oa-mcq-ui.test.mjs
       - run: node --import tsx --test tests/mcq-stats.test.ts
+      - run: node --import tsx --test tests/aptitude.test.ts tests/aptitude-ui.test.mjs
       - run: node --import tsx --test tests/classic-lists.test.ts tests/classic-lists-ui.test.mjs
       - run: node --import tsx --test tests/speedrun.test.ts tests/speedrun-api.test.ts tests/speedrun-ui.test.mjs
       - run: node --import tsx --test tests/placement.test.ts tests/placement-api.test.ts tests/placement-ui.test.mjs tests/oa-rating.test.ts
@@ -140,13 +145,16 @@ jobs:
       # OS and networking simulators (/oa/sims): textbook answers, brute-force cross-checks, RFC 793 transitions.
       - run: node --import tsx --test tests/cs-sims.test.ts
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/job-openings.test.ts tests/job-openings-ui.test.mjs tests/applications.test.ts tests/application-tracker-ui.test.mjs tests/job-tags.test.ts tests/job-calendar-ui.test.mjs
+      - run: node --import tsx --test tests/algorithm-demo-sorts.test.ts
       - run: node --import tsx --test tests/jd-readiness.test.ts tests/jd-readiness-ui.test.mjs tests/jd-keywords.test.ts tests/resume-check.test.ts tests/resume-parse.test.ts
       - run: node --import tsx --test tests/offer-math.test.ts tests/offer-compare-ui.test.mjs
+      - run: node --import tsx --test tests/intern-log.test.ts tests/intern-log-ui.test.mjs
       - run: node --import tsx --test tests/clarify.test.ts tests/ling-extras.test.ts tests/clarify-panel-ui.test.mjs
       - run: node --import tsx --test tests/contests.test.ts tests/contests-ui.test.mjs tests/contest-fairness.test.ts tests/contest-tiers.test.ts tests/duels.test.ts
       - run: node --import tsx --test tests/share-cards.test.ts tests/resume-builder.test.ts tests/resume-builder-ui.test.mjs
       - run: node --import tsx --test tests/resume-reviews.test.ts tests/resume-review-link-ui.test.mjs
       - run: node --import tsx --test tests/resume-file.test.ts
+      - run: node --import tsx --test tests/resume-drill.test.ts tests/linkedin-check.test.ts tests/resume-extend-ui.test.mjs
       - run: node --import tsx --test tests/autofill-bookmarklet.test.ts
       - run: node --import tsx --test tests/skill-tests.test.ts tests/skill-test-ui.test.mjs tests/course-ratings.test.ts tests/beginner-courses.test.ts tests/learn-ui.test.mjs
       - run: node --test --test-concurrency=1 tests/oa-import.test.mjs
@@ -215,7 +223,7 @@ jobs:
   # Compiles and runs code in four languages, beside validate (which is close to its 20 minutes).
   toolchains:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -225,7 +233,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
+      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables;
+      # compiles (without running) the Big-O course's C++/Java/Go tabs, wrapped as lib/course-snippet.ts wraps them.
       - run: node --import tsx scripts/learn/check-snippets.mjs
       # numpy (with pandas) for the NumPy MCQs and the ML Coding track.
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
@@ -234,6 +243,8 @@ jobs:
       # Starts every resume project's Python reference and runs its acceptance script against it.
       - run: node scripts/projects/verify.mjs
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # Compiles and runs every Line 500 template and each of its variants with their drivers.
+      - run: node --import tsx --test tests/route-templates.test.ts
       # Reruns every ML Coding solution on the system numpy (1.x here, 2.x on the judge: compared with the judge's tolerance).
       - run: node --import tsx --test tests/ml-coding.test.ts
       - run: node --import tsx --test tests/ml-coding-ui.test.mjs

@@ -767,9 +767,75 @@ void test('notes export: whitelisted notes by target in 2 MB pages, own latest A
   await exam(writer.id, async () => {
     assert.equal(await status(writer, 'GET', 'notes/export'), 403);
     assert.equal(await status(writer, 'GET', 'cheatsheet?stops=two-pointers-windows'), 403);
+    assert.equal(await status(other, 'GET', 'notes/export'), 200, 'someone else’s exam closes nothing of mine');
   })();
-  assert.equal(await status(other, 'GET', 'notes/export'), 200, 'someone else’s exam closes nothing of mine');
   sqlite().prepare('DELETE FROM user_notes WHERE user_id IN (?,?)').run(writer.id, other.id);
+});
+
+void test('solutions export: every accepted problem, noted or not, each language’s latest AC, paged by problem', async () => {
+  sqlite().prepare('DELETE FROM limits').run();
+  type Page = import('../lib/notes-export').SolutionPage;
+  const porter: Person = { ...me, id: 'solutions-me', email: 'solutions@example.test' };
+  const sub = (user: string, problem: string, language: string, code: string, at: number, state = 'accepted', mode = 'judge', runtime: number | null = null) =>
+    sqlite()
+      .prepare(
+        `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,mode,runtime,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,1,?,?,?,?)`,
+      )
+      .run(`y${++n}`, user, problem, language, code, state, mode, runtime, at, at);
+  sub(porter.id, 'lc-2000', 'python', 'py-old', t0);
+  sub(porter.id, 'lc-2000', 'cpp', 'cpp-only', t0 + 1, 'accepted', 'judge', 0.004);
+  sub(porter.id, 'lc-2000', 'python', 'py-new', t0 + 2, 'accepted', 'judge', 0.05);
+  sub(porter.id, 'lc-2000', 'python', 'failed', t0 + 3, 'wrong_answer');
+  sub(porter.id, 'lc-2000', 'python', 'a run', t0 + 4, 'accepted', 'run');
+  sub(porter.id, 'lc-2002', 'go', 'no note here', t0 + 5);
+  sub(porter.id, 'lc-2003', 'java', 'never accepted', t0, 'compile_error');
+  sub(porter.id, 'lc-1', 'python', 'two sum', t0);
+  sub(other.id, 'lc-2000', 'python', 'their code', t0 + 9);
+  sub(other.id, 'lc-2001', 'python', 'their code', t0 + 9);
+  note(porter.id, 'problem:lc-2000', 'my note');
+  note(porter.id, 'problem:lc-2003', 'a note without an AC');
+  note(other.id, 'problem:lc-2002', 'their note');
+
+  assert.equal(await status(null, 'GET', 'solutions/export'), 401);
+  assert.equal(await status(porter, 'POST', 'solutions/export', {}), 404);
+  assert.equal(await status(porter, 'GET', 'solutions/export?notes=yes'), 400);
+  const page = await ok<Page>(porter, 'GET', 'solutions/export');
+  assert.equal(page.nextCursor, null);
+  assert.deepEqual(page.items.map((i) => i.problemId), ['lc-1', 'lc-2000', 'lc-2002'], 'every AC, noted or not; no AC, no entry');
+  const [lc1, lc2000, lc2002] = page.items;
+  assert.equal(lc1.meta?.titleEn, 'Two Sum');
+  assert.equal(lc2000.firstAc, t0);
+  assert.deepEqual(lc2000.solutions, [
+    { language: 'cpp', code: 'cpp-only', at: t0 + 1, runtime: 0.004 },
+    { language: 'python', code: 'py-new', at: t0 + 2, runtime: 0.05 },
+  ]);
+  assert.deepEqual(lc2002.solutions.map((s) => s.code), ['no note here']);
+  assert.ok(page.items.every((i) => i.note === undefined), 'notes only with notes=1');
+  assert.ok(!JSON.stringify(page).match(/their|failed|a run|py-old/), 'no one else’s code, no failed, run or older code');
+  const noted = await ok<Page>(porter, 'GET', 'solutions/export?notes=1');
+  assert.deepEqual(noted.items.map((i) => i.note ?? null), [null, 'my note', null]);
+
+  // 40 problems of 2 × 30 KB: past 2 MB, so two pages, each problem whole on one of them.
+  for (let i = 0; i < 40; i++) {
+    sub(porter.id, `lc-${3000 + i}`, 'python', 'y'.repeat(30_000), t0 + i);
+    sub(porter.id, `lc-${3000 + i}`, 'go', 'z'.repeat(30_000), t0 + i);
+  }
+  const first = await ok<Page>(porter, 'GET', 'solutions/export');
+  const size = first.items.flatMap((i) => i.solutions).reduce((sum, s) => sum + s.code.length, 0);
+  assert.ok(size <= 2_000_000 && size > 1_900_000, `about 2 MB a page (${size})`);
+  assert.equal(first.nextCursor, first.items.at(-1)!.problemId);
+  const rest = await ok<Page>(porter, 'GET', `solutions/export?cursor=${encodeURIComponent(first.nextCursor!)}`);
+  assert.equal(rest.nextCursor, null);
+  const all = [...first.items, ...rest.items];
+  assert.equal(new Set(all.map((i) => i.problemId)).size, 43);
+  assert.ok(all.filter((i) => i.problemId >= 'lc-3000').every((i) => i.solutions.length === 2), 'a problem never splits across pages');
+
+  await exam(porter.id, async () => {
+    assert.equal(await status(porter, 'GET', 'solutions/export'), 403);
+    assert.equal(await status(other, 'GET', 'solutions/export'), 200, 'someone else’s exam closes nothing of mine');
+  })();
+  sqlite().prepare('DELETE FROM user_notes WHERE user_id IN (?,?)').run(porter.id, other.id);
 });
 
 void test('review sheet: a stop’s noted, marked, wrong and leech problems, leeches first', async () => {

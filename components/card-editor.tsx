@@ -1,6 +1,7 @@
 'use client';
 import { useId, useState } from 'react';
-import { readLocale, useT } from '@/lib/i18n';
+import { useT } from '@/lib/i18n';
+import { putCard } from '@/lib/put-card';
 import { RECALL_CARDS } from '@/lib/recall';
 import { CARD_TEXT_MAX, newCardId, parseCard, splitTags, type Card } from '@/lib/recall-cards';
 import { updateRecall } from './recall-rate';
@@ -8,19 +9,6 @@ import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-
-/** Saves a card as its note `card:<id>`; an empty body removes it. The server's message on failure. */
-export async function putCard(id: string, card: Card | null, t: (zh: string, en: string) => string) {
-  const response = await fetch(`/api/oj/notes?target=card:${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'X-Locale': readLocale() },
-    body: JSON.stringify({ body: card ? JSON.stringify(card) : '' }),
-  }).catch(() => null);
-  if (response?.ok) return '';
-  if (response?.status === 401) return t('登录后才能保存卡片。', 'Sign in to save cards.');
-  const error = await response?.json().then((r: { error?: unknown }) => r?.error, () => null);
-  return typeof error === 'string' && error ? error : t('没能保存，请稍后再试。', "Couldn't save. Try again in a moment.");
-}
 
 /**
  * A self-made review card in a dialog: front, back and tags, saved to the account; `id` edits a

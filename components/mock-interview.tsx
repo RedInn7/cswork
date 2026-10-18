@@ -916,6 +916,12 @@ function Plan({
                 <a className="rd-button is-quiet" href="/career/negotiation">{t('先用剧本对练 →', 'Practice it as a script →')}</a>
               </>
             )}
+            {data.slots.some((s) => s.kind === 'project') && (
+              <>
+                {' '}
+                <a className="rd-button is-quiet" href="/career/resume/builder#resume-drill">{t('先按简历出追问题自己练 →', 'Drill the follow-ups on your resume →')}</a>
+              </>
+            )}
           </p>
         )}
         {!aiOnly && (

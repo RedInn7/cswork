@@ -4,30 +4,33 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { RolePath } from '@/components/role-path';
 import { GUIDE_CHAPTERS, guidePath } from '@/lib/career-guide';
+import mcqBank from '@/lib/content/oa-mcq.json';
+import { CS_NODES } from '@/lib/cs-track';
 import { ROLE_KEYS, ROLES, ROUTE_ID, isRole } from '@/lib/content/role-paths';
 import { curatedEntries } from '@/lib/ling-curated';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { aiEnabled } from '@/lib/server/ai-tutor';
+import { beginnerCourse, learnKey } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { resolveRolePath, routeCatalog } from '@/lib/server/role-paths';
 import { sdChapters, sdParts, sdPath } from '@/lib/server/system-design-course';
 import { LibraryPageView } from '../library/page-view';
-import { RoadmapTracks, type SdPart } from './tracks';
+import { RoadmapTracks, type CsTrackData, type SdPart } from './tracks';
 
 const COPY = {
   zh: {
-    title: `面试路线图：算法知识点依赖图、系统设计与行为面试 | ${SITE_NAME}`,
+    title: `面试路线图：算法知识点依赖图、系统设计、行为面试与 CS 基础 | ${SITE_NAME}`,
     description:
-      '三条轨道看清准备顺序：35 个算法知识点的先修关系图，系统设计从答题框架到案例、LLD、并发和 ML 系统设计的章节，以及行为面试的准备入口。登录后显示自己的进度。',
-    eyebrow: '路线图 · 编码 / 系统设计 / 行为面试',
+      '四条轨道看清准备顺序：35 个算法知识点的先修关系图，系统设计从答题框架到案例、LLD、并发和 ML 系统设计的章节，行为面试的准备入口，以及操作系统、计算机网络等 8 个 CS 基础科目。登录后显示自己的进度。',
+    eyebrow: '路线图 · 编码 / 系统设计 / 行为面试 / CS 基础',
     heading: '先学什么、再学什么，一张图看清。',
     crumb: '路线图',
   },
   en: {
-    title: `Interview Roadmap: Topic Prerequisites, System Design & Behavioral | ${SITE_NAME}`,
+    title: `Interview Roadmap: Topic Prerequisites, System Design, Behavioral & CS Fundamentals | ${SITE_NAME}`,
     description:
-      'Three tracks in study order: a prerequisite graph of 35 algorithm topics, the system design chapters from the framework to case studies, low-level design, concurrency and ML system design, and where to prepare behavioral rounds. Sign in to see your progress.',
-    eyebrow: 'ROADMAP · CODING / SYSTEM DESIGN / BEHAVIORAL',
+      'Four tracks in study order: a prerequisite graph of 35 algorithm topics, the system design chapters from the framework to case studies, low-level design, concurrency and ML system design, where to prepare behavioral rounds, and eight CS fundamentals subjects from operating systems to networking. Sign in to see your progress.',
+    eyebrow: 'ROADMAP · CODING / SYSTEM DESIGN / BEHAVIORAL / CS',
     heading: 'What to learn first, and what comes next.',
     crumb: 'Roadmap',
   },
@@ -72,6 +75,15 @@ export default async function RoadmapPage({ searchParams }: Props) {
   const totals: Record<string, { solved: number; total: number }> = {};
   for (const entry of curatedEntries)
     (totals[entry.sectionSlug] ??= { solved: 0, total: 0 }).total++;
+  // The CS track: each subject's question count and its crash course's chapters.
+  const mcqTotals: Record<string, number> = {};
+  for (const q of mcqBank.questions) if (CS_NODES.some((node) => node.id === q.topic)) mcqTotals[q.topic] = (mcqTotals[q.topic] ?? 0) + 1;
+  const csCourses: CsTrackData['courses'] = {};
+  for (const node of CS_NODES) {
+    const course = node.course ? beginnerCourse(node.course) : undefined;
+    if (course)
+      csCourses[course.slug] = { title: zh ? course.titleZh : course.titleEn, keys: course.chapters.map((c) => learnKey(course.slug, c.slug)) };
+  }
   return (
     <div className="public-library roadmap-public" lang={zh ? 'zh-CN' : 'en'}>
       <script
@@ -123,6 +135,7 @@ export default async function RoadmapPage({ searchParams }: Props) {
             summary: chapter.summary[zh ? 0 : 1],
             href: guidePath(chapter.slug),
           }))}
+          cs={{ totals: mcqTotals, courses: csCourses }}
         />
       </main>
       <footer className="public-library-footer">

@@ -30,13 +30,14 @@ const StatementMarkdown = lazy(() => import('./statement-markdown').then((m) => 
  * and the answer cites them. Pages open it with openCommandPalette(); selected text on lecture
  * and library pages opens it as context (SelectionAsk).
  */
-export type PaletteGroup = 'problems' | 'oa' | 'topics' | 'companies' | 'content' | 'lessons';
+export type PaletteGroup = 'problems' | 'oa' | 'topics' | 'terms' | 'companies' | 'content' | 'lessons';
 export type PaletteHit = { group: PaletteGroup; key: string; title: string; meta?: string; href: string };
-const GROUPS: PaletteGroup[] = ['problems', 'oa', 'topics', 'companies', 'content', 'lessons'];
+const GROUPS: PaletteGroup[] = ['problems', 'oa', 'topics', 'terms', 'companies', 'content', 'lessons'];
 const GROUP_NAMES: Record<PaletteGroup, [string, string]> = {
   problems: ['题目', 'Problems'],
   oa: ['OA 真题', 'OA problems'],
   topics: ['专题', 'Topics'],
+  terms: ['术语', 'Terms'],
   companies: ['公司', 'Companies'],
   content: ['内容库', 'Library'],
   lessons: ['课时', 'Lessons'],
@@ -148,8 +149,12 @@ async function searchSite(query: string, zh: boolean, signal: AbortSignal) {
     if (!value.length) companies = null;
     return value;
   });
-  const [p, o, c, l, all] = await Promise.all([problems, oa, content, lessons, companies]);
-  return { problems: p, oa: o, content: c, lessons: l, topics: topicHits(query, zh), companies: companyHits(query, all) };
+  // The glossary JSON loads with the first search, not with every page.
+  const terms = import('@/lib/glossary').then(({ glossaryHits, glossaryHref }) =>
+    glossaryHits(query).map((g) => ({ group: 'terms' as const, key: g.id, title: zh ? g.zh : g.en, meta: zh ? g.en : g.zh, href: glossaryHref(g.id) })),
+  ).catch(() => []);
+  const [p, o, c, l, all, g] = await Promise.all([problems, oa, content, lessons, companies, terms]);
+  return { problems: p, oa: o, content: c, lessons: l, topics: topicHits(query, zh), terms: g, companies: companyHits(query, all) };
 }
 
 /** Same-tab navigation: the workspace follows its own URLs without a reload. */

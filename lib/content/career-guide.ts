@@ -196,6 +196,133 @@ Requests to complete strangers work far less often. A short, specific message be
 - Tell your referrer when you hear back. Many companies pay a referral bonus, but people mostly refer because they want good colleagues, so respect their time.`,
   },
 
+  practice: {
+    zh: `练习的效果主要看怎么练，而不只是做了多少道。下面这套节奏用的都是 CSWork 里现成的工具：题目计时器、三条提示、复习队列和模拟 OA。
+
+## 一道题的节奏
+1. 读完题面和数据范围，用自己的话把要求复述一遍。
+2. 打开题目计时器。它默认正计时；切成倒计时，会按难度预设时长：简单题 15 分钟、中等 25 分钟、困难 40 分钟。
+3. 先独立想 25–40 分钟。这段时间只看题面，不看提示，也不搜题解。想不到最优解，就先写一个正确的暴力解。
+4. 写完先用样例和自己构造的边界数据测一遍，再正式提交。
+5. 通过后用一两句话写下关键思路，复习时最先看到的就是它。
+
+面试时要边写边讲。说不出某个术语的英文，可以查 [算法术语中英对照](/topics/glossary)，每条都配了一句能照着说的例句。
+
+## 提示一次只升一级
+500 路的每道题都有三条提示，由浅到深：
+- 第 1 条随时能看，一般只指个方向，看它不影响复习安排；
+- 第 2 条在一次正式提交没通过、或者在这道题上花满 10 分钟后解锁；
+- 第 3 条在两次正式提交没通过后解锁，通常已经很接近完整思路。
+
+每看一条，先回去自己再想几分钟，确实还卡着再看下一条。三条一口气看完，和直接看题解没什么区别。
+
+## 什么时候看题解，怎么补题
+三条提示都看过、也认真想过，还是没有思路，就去看题解，不用硬耗。看题解有三步：
+1. 看懂思路后关掉题解，从空白的编辑器重新写，直到通过。
+2. 想清楚自己卡在哪一步：没认出题型、想到了写不对，还是漏了边界情况。
+3. 把这一站的模板默写一遍。各站模板可以在线看，也可以 [打印成手册](/topics/print)。
+
+比赛或模拟结束后，把没做出来的题按这三步补完，这就是补题（upsolve）。补一道题，常常比多做一道新题学到的更多。
+
+## 独立做出和借助提示的区别
+系统会记下每道题是怎么通过的：通过之前看过第 2 条或第 3 条提示、打开过题解，或者问过 AI 辅导（只让它讲解题意不算），就算「借助提示」通过；第 1 条提示只指方向，不算借助。
+- 独立通过的题按 3、7、21、60 天的间隔回来复习；
+- 借助提示通过的题，第一次复习提前到 1 天后，之后再走同样的间隔，所以要多复习一次才算掌握。
+
+这不是惩罚。需要提示才做出来，说明这道题还没真正掌握，早一点再做一遍记得更牢。所以既不用为了「独立通过」硬撑，也别看完题解就当自己会了。
+
+## 复习自评
+到期的题会出现在 [今日复习](/?view=review-session) 里，和你的记忆卡、选择题在同一个队列。复习时不看旧代码，重新写一遍并通过，然后给自己打分：
+- 「重来」：明天再做；
+- 「困难」：间隔不变；
+- 「良好」：进入下一档；
+- 「简单」：跳过一档。
+
+不打分按「良好」算。连续两次、或累计三次评「重来」的题会被列为顽固题，最好回到对应的专题页，把模板和要点重新过一遍。记忆卡另有一套间隔：1、3、7、21 天。
+
+## 每天新题和复习的配比
+- 先做到期的复习，再做新题。复习花时间少、收益高，拖着不做只会越积越多。
+- 时间紧的日子，做完复习再做一道 [每日一题](/daily) 就够了。
+- 新题按 [500 路题单](/?view=problems) 的专题顺序往下做，同一时间只集中练一两个专题。不知道从哪开始，先做一次 [题型识别测验](/placement)，已经掌握的专题可以跳过。
+- 到期的复习一天做不完时，停一两天新题，先把积压清掉。
+
+## 每周一场模拟 OA
+每周找一段固定的整块时间，做一场限时模拟：
+- 在 [模拟 OA](/?view=mock) 开一场限时模拟；想按某家公司的题量和时长来练，就从 [公司模拟 OA](/mock-oa) 里挑一套。
+- 按考试的规矩来：中途不查资料、不看提示，时间到就停笔。
+- 结束后先看丢分的是哪几题、为什么丢，再按上面的步骤补题。
+
+每周一场足够熟悉时间压力，又不会挤掉平时的练习；离真实 OA 近了，可以加到每周两场。考试当天要注意什么，见 [在线笔试 OA](/guide/online-assessment)。
+
+## 卡住了、倦怠了怎么办
+- 同一个专题连着几天都做不出来，就往回退一站，把前置专题的模板练熟再回来。
+- 换一种方式学同一个知识点：看专题页的动画和要点，做做模板练习，比一道接一道硬做新题有效。
+- 状态差的日子把量降到最低，只做复习或每日一题。保持连续，比偶尔猛刷一天更重要。
+- 累了就歇一两天。复习队列会等你，回来先清复习，节奏很快就能找回来。`,
+    en: `How you practise matters more than how many problems you get through. The routine below uses tools that are already in CSWork: the problem timer, three hints per problem, the review queue and mock OAs.
+
+## The rhythm of one problem
+1. Read the statement and the input limits, then restate the task in your own words.
+2. Start the problem timer. It runs as a stopwatch by default; switch it to a countdown and it presets 15 minutes for Easy, 25 for Medium and 40 for Hard.
+3. Think on your own for 25–40 minutes. Look only at the statement: no hints and no searching for solutions. If the optimal idea doesn't come, write a correct brute force first.
+4. Test with the samples and edge cases you make up yourself, then submit.
+5. Once it passes, write the key idea in a sentence or two. It is the first thing you will see when the problem comes back for review.
+
+In an interview you explain while you code. When you can't find the English word for a technique, look it up in the [Chinese–English glossary](/topics/glossary); every term comes with a sentence you can say as it is.
+
+## Climb the hints one step at a time
+Every Line 500 problem has three hints, from light to strong:
+- hint 1 is open at any time, usually just points a direction and doesn't change your review schedule;
+- hint 2 unlocks after one failed submission or after 10 minutes on the problem;
+- hint 3 unlocks after two failed submissions and is usually close to the full idea.
+
+After each hint, go back and think for a few more minutes. Open the next one only if you are still stuck. Reading all three in a row is no different from reading the editorial.
+
+## When to read the editorial, and how to upsolve
+If you have read all three hints and thought hard and still have no idea, read the editorial instead of grinding on. Then:
+1. Once you understand the idea, close the editorial and write the solution from an empty editor until it passes.
+2. Name where you got stuck: you didn't recognise the pattern, you had the idea but couldn't code it, or you missed an edge case.
+3. Write the stop's template from memory. The templates are online, or [printed as one handbook](/topics/print).
+
+After a contest or a mock, finish the problems you missed the same way. That is upsolving, and one upsolved problem often teaches more than one more new problem.
+
+## Solved alone or with help
+CSWork records how each problem was solved: if you opened hint 2 or 3, read the editorial or asked the AI tutor before solving it (having it explain the statement doesn't count), it counts as solved with help; hint 1 only points a direction and does not count.
+- Problems solved alone come back for review after 3, 7, 21 and 60 days.
+- Problems solved with help come back after one day first and then follow the same steps, so mastering them takes one review more.
+
+This is not a penalty. Needing help means the problem isn't yours yet, and seeing it again sooner makes it stick. So don't hold out just to keep a clean record, and don't treat a read editorial as a solved problem.
+
+## Grading your reviews
+Due problems show up in the [review session](/?view=review-session), in the same queue as your cards and multiple-choice questions. Review without looking at your old code: write it again until it passes, then grade yourself:
+- Again: it comes back tomorrow;
+- Hard: the wait stays the same;
+- Good: it moves one step on;
+- Easy: it skips a step.
+
+No grade counts as Good. A problem graded Again on two reviews in a row, or on three in all, is marked as a leech; go back to its topic page and run through the template and key points again. Review cards follow their own steps: 1, 3, 7 and 21 days.
+
+## Mixing new problems and reviews each day
+- Do the due reviews first, then new problems. Reviews are quick and pay off well; put them off and they pile up.
+- On a busy day, the reviews plus the [daily problem](/daily) are enough.
+- Take new problems from the [Line 500 list](/?view=problems) in topic order, and focus on one or two topics at a time. Not sure where to start? Take the [placement quiz](/placement) first and skip the topics you already know.
+- When there are more due reviews than you can finish in a day, pause new problems for a day or two and clear the backlog.
+
+## One mock OA a week
+Pick a fixed block of time each week for one timed mock:
+- Start a timed set in [mock OA](/?view=mock); to match one company's question count and time limit, pick a set from the [company mock OAs](/mock-oa).
+- Follow test rules: no looking things up, no hints, and stop when time runs out.
+- Afterwards, see which problems lost points and why, then upsolve them as above.
+
+One a week is enough to get used to the clock without crowding out regular practice; close to a real OA you can do two. For the day of the test itself, see [online assessments](/guide/online-assessment).
+
+## When you are stuck or worn out
+- If one topic beats you several days running, step back one stop and drill the prerequisite's template before you return.
+- Learn the same idea another way: watch the topic page's animation, reread its key points and do its template drills. That works better than forcing one new problem after another.
+- On a bad day, cut the load to the minimum: only reviews, or only the daily problem. A steady streak beats the occasional marathon.
+- When you are tired, take a day or two off. The review queue will wait; clear it first when you come back and the rhythm returns quickly.`,
+  },
+
   'online-assessment': {
     zh: `在线笔试（OA）是投递后发来的限时编程测试，对学生和应届生来说，常常是第一道筛选。
 
@@ -388,6 +515,157 @@ New-grad offers often have less room on base salary than on the sign-on bonus or
 
 ## Deadlines
 Short “exploding” deadlines happen. Ask for an extension with a concrete date. Once you accept an offer, honour it and withdraw from other processes.`,
+  },
+
+  internship: {
+    zh: `实习通常只有 10–12 周。最后能不能拿到转正（return offer），很大程度上取决于 manager 和 mentor 能不能清楚地看到你做成了什么。本章按时间顺序讲每个阶段该做的事，只讲通用做法；各公司流程不同，以你所在团队的说法为准。
+
+## 入职前
+- **先把身份文件办好。** 需要 CPT 或 OPT 的同学，开工前一定要拿到批准（OPT 要等 EAD 卡到手、并且到了卡上的开始日期）。不确定就问学校的国际学生办公室，详见[签证须知](/guide/visa)。
+- **及时回复 HR 和招聘方的邮件**，按时交入职材料，完成背景调查，确认设备寄送地址。
+- **了解团队在做什么。** 读一读团队公开的博客、文档或开源代码，补一补他们用的语言和工具。不用提前学完，认得这些名词就够了。
+- **还没定组的话**，先看本章最后一节「选组电话」。
+
+## 头两周：搭环境、认识人、问清目标
+- **第一周的头号任务是把开发环境跑起来**：能拉代码、能在本地构建、能跑测试。卡住超过半天就去问，别一个人硬扛。顺手把踩过的坑补进新人文档，这本身就是一个小贡献。
+- **和 manager 约好每周固定的 1:1**，和 mentor 说好平时怎么提问（聊天工具，或者固定的时间段）。
+- **第一次 1:1 就问清楚“什么样算一次成功的实习”**：期末要交付什么，谁来评估，看哪些方面（代码质量、独立程度、沟通）。把答案记下来，之后每周拿它对照。
+- **和组里每个人各约 15–30 分钟**，听听他们在做什么，你的项目会和谁打交道。
+- **从第一周开始写成果日志**：每周五花十分钟，记下做成的事、收到的反馈和学到的东西。到了中期和期末写自评时，你会感谢现在的自己。[实习工具](/career/intern)可以帮你按周记。
+
+## 第一个 PR
+- **挑一个小的、边界清楚的任务**：修一个 bug、补一个测试、改一处文档。目的是把整个流程走通一遍（分支、提交、code review、CI、上线），不是证明能力。
+- **提交前自己先 review 一遍**：描述里写清改了什么、为什么改、怎么测的。改动越小越好。
+- **认真对待 review 意见**：逐条回复，改了就说明改了什么；不同意就讲理由，最后服从团队的约定。同一类意见别让人提第二次。
+- **之后尽快接手正式项目**，先写一页设计文档：目标、不做什么、方案、里程碑。和 mentor 对齐范围之后再动手。
+
+## 1:1 议程和周报模板
+1:1 是你的会。提前准备议程，别让它变成随便聊聊。
+\`\`\`text
+1:1 议程（第 N 周）
+1. 上周做完了什么（附链接）
+2. 这周打算做什么
+3. 卡在哪里 / 需要谁帮忙
+4. 想听反馈的地方：……
+5. 其他（职业发展、团队里的事）
+\`\`\`
+每周五给 manager 和 mentor 发一份简短的周报，三到五行就够：
+\`\`\`text
+本周：完成 X（链接），Y 完成约七成
+下周：做完 Y，开始 Z
+风险：Z 依赖另一个组的接口，已约周二讨论
+\`\`\`
+周报的内容直接从成果日志里摘，五分钟就能写完。
+
+## 中期自评
+很多团队会在实习中段做一次正式或非正式的反馈。没有安排也要主动要一次。
+- **先自己写一页**：做成了什么（尽量带数字），收到过哪些反馈，接下来要改进什么。
+- **在 1:1 上直接问**：“按现在的表现，我离转正还差什么？后半程最该加强哪一点？”
+- **把反馈变成行动**：项目范围太大，就现在和 mentor 商量缩小。期末交付一个能用的版本，远比交一个做了一半的大项目好。
+- [实习工具](/career/intern)可以把前半程的日志整理成中期自评草稿。
+
+## 交接文档
+你走之后，代码还要有人维护。一份好的交接文档，也是你留给团队最直接的印象。建议在倒数第二周写好，包括：
+- 项目背景和目标，最后做到了哪一步
+- 代码在哪里，怎么构建、运行和测试
+- 设计上的取舍和原因
+- 已知问题、没做完的事和建议的下一步
+- 相关文档、看板和联系人
+
+最后一周做一次简短的分享或 demo，讲清问题、方案和结果。
+
+## 争取转正
+- **转正看什么，第一周就可以问。** 照着这个标准持续交付，比最后几周突击有用得多。
+- **倒数第三周左右问清流程**：谁来决定，什么时候出结果，还需要你提供什么。
+- **期末自评把成果写清楚**，每一条都说明带来了什么影响。可以从日志导出的期末草稿开始改。
+- **离开前当面道谢**，和 manager、mentor 留下联系方式，之后偶尔更新一下近况。
+- **拿到转正 offer、手上又有外部 offer 时**，怎么比较、怎么回复见 [Offer 比较与谈薪](/guide/offer)；也可以先在[谈薪对练](/career/negotiation?s=return-plus-external)里把这段对话练一遍。
+- 没拿到转正也不等于失败：这段实习和你在其中做成的事，仍是下一轮求职时简历上最有分量的内容。
+
+## 选组电话
+有的公司先发 offer，再安排你和几个组的 manager 通电话选组。这种电话是双向的：manager 在看你合不合适，你也在挑团队。
+- **准备**：提前查一查每个组在做什么；准备一段一分钟的自我介绍，讲清背景和想做的方向；列好想问的问题。
+- **可以问的问题**：实习生一般做什么样的项目，能不能举一个往届的例子；mentor 是谁，多久见一次；用什么技术栈；节奏怎么样，要不要 on-call；怎么判断实习是否成功；往届实习生的转正情况（问个大概就行）。
+- **每通电话结束后五分钟内记下来**：manager 是谁，项目是什么，哪些回答让你在意。电话一多，记忆很快就会混在一起。
+- **用加权打分来比**：先给几个因素（做的事、manager、成长、技术栈、影响、节奏、转正可能性）定权重，再给每个组打 1–5 分，算加权平均。分数是帮你理清想法的工具，最后也要听听自己的直觉。
+- 排好顺序后，按公司要求及时提交意向，并向每位 manager 道谢。
+
+## 下一步
+打开[实习工具](/career/intern)：填好实习开始日期和周数，按周记成果，导出中期、期末自评草稿和 XYZ 格式的简历要点。选组电话的记录和加权打分也在那里。`,
+    en: `An internship usually lasts 10–12 weeks, and whether it ends with a return offer depends a great deal on whether your manager and mentor can clearly see what you got done. This chapter walks through each stage in order. It covers general practice only: every company runs its own process, so go by what your team tells you.
+
+## Before day one
+- **Sort out your work authorisation first.** If you need CPT or OPT, it must be approved before you start work (for OPT, your EAD card must be in hand and its start date reached). If unsure, ask your school’s international student office, and see the [visa notes](/guide/visa).
+- **Answer HR and your recruiter promptly**: send the onboarding forms on time, complete the background check and confirm where your equipment should go.
+- **Learn what the team works on.** Read anything public, such as the team’s blog posts, docs or open-source code, and warm up on their language and tools. You don’t need to master them; knowing the names is enough.
+- **If you have no team yet**, read the last section of this chapter, on team-matching calls.
+
+## The first two weeks: setup, people and a clear goal
+- **Your first job in week one is a working dev environment**: you can pull the code, build it locally and run the tests. If you are stuck for more than half a day, ask. Add the snags you hit to the onboarding doc; that is a small contribution in itself.
+- **Set up a weekly 1:1 with your manager**, and agree with your mentor how you will ask questions (chat, or a standing time slot).
+- **In your first 1:1, ask what a successful internship looks like**: what you should deliver by the end, who evaluates it, and what they look at (code quality, independence, communication). Write the answer down and measure each week against it.
+- **Book 15–30 minutes with each teammate** to hear what they work on and who your project will touch.
+- **Start a weekly log of your work in week one**: ten minutes every Friday for what you finished, the feedback you got and what you learned. Your midpoint and final self-reviews will thank you. The [internship tool](/career/intern) keeps it week by week.
+
+## Your first PR
+- **Pick a small, well-bounded task**: a bug fix, a missing test, a docs correction. The point is to walk the whole path once (branch, commit, code review, CI, deploy), not to prove yourself.
+- **Review your own change first**: say in the description what changed, why, and how you tested it. Keep the change small.
+- **Take review comments seriously**: reply to each one and say what you changed; if you disagree, give your reason, then follow the team’s convention. Don’t get the same comment twice.
+- **Then move to your real project quickly**, starting with a one-page design doc: the goal, what is out of scope, the approach and the milestones. Agree the scope with your mentor before you build.
+
+## A 1:1 agenda and a weekly update
+The 1:1 is your meeting. Bring an agenda so it doesn’t drift into small talk.
+\`\`\`text
+1:1 agenda (week N)
+1. Done last week (with links)
+2. Plan for this week
+3. Where I'm stuck / who I need help from
+4. Feedback I'd like on: ...
+5. Anything else (career, the team)
+\`\`\`
+Every Friday, send your manager and mentor a short update; three to five lines is enough:
+\`\`\`text
+This week: finished X (link); Y is about 70% done
+Next week: finish Y, start Z
+Risk: Z depends on another team's API; meeting booked for Tuesday
+\`\`\`
+The update comes straight from your log, so it takes five minutes.
+
+## The midpoint self-review
+Many teams hold a formal or informal check-in halfway through. If yours doesn’t, ask for one.
+- **Write one page first**: what you got done (with numbers where you can), the feedback you have had, and what you will improve.
+- **Ask directly in your 1:1**: “Based on how things are going, what stands between me and a return offer? What should I focus on in the second half?”
+- **Turn the feedback into action**: if the project is too big, agree a smaller scope with your mentor now. A working version at the end beats a large project left half done.
+- The [internship tool](/career/intern) turns the first half of your log into a midpoint draft.
+
+## The handoff doc
+Someone will maintain your code after you leave, and a good handoff doc is the clearest impression you leave behind. Write it in the second-to-last week:
+- The project’s background and goal, and how far it got
+- Where the code lives, and how to build, run and test it
+- The design choices and why
+- Known issues, unfinished work and suggested next steps
+- Related docs, boards and contacts
+
+In the last week, give a short presentation or demo: the problem, your approach and the result.
+
+## Working toward a return offer
+- **What the decision rests on is something you can ask in week one.** Delivering steadily against it beats a sprint in the final weeks.
+- **About three weeks before the end, ask how the decision is made**: who decides, when you will hear, and whether they need anything from you.
+- **Make your results clear in the final self-review**, each with the difference it made. The final draft exported from your log is a good place to start.
+- **Thank people in person before you leave**, swap contact details with your manager and mentor, and send an update now and then.
+- **If a return offer arrives while you hold an outside offer**, see [offers and negotiation](/guide/offer) for comparing and replying, and rehearse that conversation in the [negotiation practice](/career/negotiation?s=return-plus-external).
+- No return offer doesn’t mean failure: the internship and what you built in it are still the strongest lines on your resume for the next search.
+
+## Team-matching calls
+Some companies make the offer first and then set up calls with the managers of a few teams. These calls run both ways: the manager is checking the fit, and you are choosing a team.
+- **Prepare**: look up what each team works on; have a one-minute introduction covering your background and the work you want to do; list your questions.
+- **Questions worth asking**: what kind of project interns usually get, with a past example; who your mentor would be and how often you would meet; the tech stack; the pace, and whether there is on-call; how the internship’s success is judged; how past interns fared on return offers (a rough picture is enough).
+- **Write notes within five minutes of each call**: the manager, the project and any answer that stood out. After a few calls, memories blur.
+- **Compare with weighted scores**: weight a few factors (the work, the manager, growth, the tech stack, impact, pace, return-offer odds), score each team 1–5 and take the weighted mean. The numbers help you sort out your thinking; your instinct still gets a say.
+- Once you have a ranking, send your preferences when the company asks, and thank each manager.
+
+## Next
+Open the [internship tool](/career/intern): set your start date and length, log your work week by week, and export midpoint and final self-review drafts and XYZ resume bullets. Notes from team-matching calls and their weighted scores live there too.`,
   },
 
   visa: {

@@ -1,8 +1,10 @@
 'use client';
 
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { useT } from '@/lib/i18n';
 import { languages } from '@/lib/problems';
+// The language protocol (storage key, window event) lives in one place, shared with the topic templates.
+import { CODE_LANG_EVENT, eventLang, readCodeLang, saveCodeLang } from './template-lang-memory';
 
 /**
  * Consecutive blocks in different languages (lib/remark-code-tabs.ts) as one tab set. The caller
@@ -12,14 +14,30 @@ import { languages } from '@/lib/problems';
 export function CodeTabs({ langs, panels }: { langs: string[]; panels: ReactNode[] }) {
   const t = useT();
   const id = useId();
+  // The first block (Python in the lessons) until mounted, so the server and first client render agree.
   const [at, setAt] = useState(0);
   const list = useRef<HTMLDivElement>(null);
+  const key = langs.join(' ');
+  useEffect(() => {
+    const follow = (lang: unknown) => {
+      const i = key.split(' ').indexOf(String(lang));
+      if (i >= 0) setAt(i);
+    };
+    follow(readCodeLang());
+    const onPick = (e: Event) => follow(eventLang(e));
+    window.addEventListener(CODE_LANG_EVENT, onPick);
+    return () => window.removeEventListener(CODE_LANG_EVENT, onPick);
+  }, [key]);
+  const choose = (i: number) => {
+    setAt(i);
+    saveCodeLang(langs[i]);
+  };
   const move = (e: KeyboardEvent) => {
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
     if (!step) return;
     e.preventDefault();
     const next = (at + step + langs.length) % langs.length;
-    setAt(next);
+    choose(next);
     list.current?.querySelectorAll<HTMLElement>('[role="tab"]')[next]?.focus();
   };
   return (
@@ -34,7 +52,7 @@ export function CodeTabs({ langs, panels }: { langs: string[]; panels: ReactNode
             aria-selected={i === at}
             aria-controls={`${id}-panel-${i}`}
             tabIndex={i === at ? 0 : -1}
-            onClick={() => setAt(i)}
+            onClick={() => choose(i)}
             onKeyDown={move}
           >
             {languages.find((item) => item.id === lang)?.name ?? lang}

@@ -32,6 +32,9 @@ export default async function OaLayout({
         <Link href="/oa/sims" prefetch={false}>
           {zh ? '操作系统与网络模拟器' : 'OS and networking simulators'}
         </Link>
+        <Link href="/oa/aptitude" prefetch={false}>
+          {zh ? '能力测评练习' : 'Aptitude practice'}
+        </Link>
         <Link href="/library" prefetch={false}>
           {zh ? '面试资料库' : 'Library'}
         </Link>

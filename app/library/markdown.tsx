@@ -7,6 +7,7 @@ import { AlgorithmDemo } from '@/components/algorithm-demo';
 import { CodeTabs } from '@/components/code-tabs';
 import { CourseDiagram } from '@/components/course-diagram';
 import { RunInPlayground } from '@/components/run-in-playground';
+import { wholeProgram } from '@/lib/course-snippet';
 import { playgroundLanguage } from '@/lib/playground-share';
 import remarkCodeTabs from '@/lib/remark-code-tabs';
 import remarkMoney from '@/lib/remark-money';
@@ -69,6 +70,7 @@ export function PublicLibraryMarkdown({
   ugc = false,
   sectionIds = false,
   nested = false,
+  wholePrograms = false,
 }: {
   body: string;
   math: boolean;
@@ -78,6 +80,8 @@ export function PublicLibraryMarkdown({
   sectionIds?: boolean;
   /** Inside a spoiler: a ```spoiler there stays code, so folds cannot nest (each one parses its body again). */
   nested?: boolean;
+  /** Lessons: "Open in Playground" gets the snippet wrapped into a program that compiles (lib/course-snippet.ts). */
+  wholePrograms?: boolean;
 }) {
   const rehypePlugins: NonNullable<Options['rehypePlugins']> = [];
   if (math) rehypePlugins.push([rehypeKatex, { maxSize: 10, maxExpand: 200 }]);
@@ -112,7 +116,7 @@ export function PublicLibraryMarkdown({
           return (
             <>
               <pre>{children}</pre>
-              {language && <RunInPlayground code={source} language={language} />}
+              {language && <RunInPlayground code={wholePrograms ? wholeProgram(language, source) : source} language={language} />}
             </>
           );
         },
@@ -128,8 +132,8 @@ export function PublicLibraryMarkdown({
             <div className={className}>{children}</div>
           ),
         a: ({ node, href, children }) =>
-          // In-app views and the system design course's own chapters.
-          href?.startsWith('/?view=') || /^\/system-design(?:\/[a-z0-9-]+)?$/.test(href ?? '') ? (
+          // In-app views, the system design course's own chapters and a multiple-choice topic.
+          href?.startsWith('/?view=') || /^\/(?:system-design(?:\/[a-z0-9-]+)?|oa\/mcq\?topic=[a-z]+)$/.test(href ?? '') ? (
             <a href={href}>{children}</a>
           ) : safeLink(href) ? (
             <a href={safeLink(href)} rel={ugc ? 'ugc nofollow noopener noreferrer' : 'noopener noreferrer'}>

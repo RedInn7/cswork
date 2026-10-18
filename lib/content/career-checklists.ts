@@ -1,4 +1,4 @@
-// A checklist at the end of six career guide chapters (components/guide-checklist.tsx). Every item
+// A checklist at the end of seven career guide chapters (components/guide-checklist.tsx). Every item
 // restates advice from its chapter (lib/content/career-guide.ts) and adds no new claims. Item ids
 // are saved in the learner's note checklist:<chapter>, so keep them once shipped.
 
@@ -9,6 +9,8 @@ export type ChecklistItem = {
   detail: [string, string];
   /** A page on the site that helps with it. */
   href?: string;
+  /** Internship week it belongs to (lib/intern-log.ts resolveWeek): 0 before day one, -n the n-th last week, 'mid' the midpoint. */
+  week?: number | 'mid';
 };
 
 export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
@@ -427,6 +429,127 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
       text: ['接受后守约，撤回其他流程', 'Once you accept, honour it and withdraw elsewhere'],
       detail: ['尽早通知其他公司，让他们能安排别的候选人。', 'Tell the others early so they can move on.'],
       href: '/career/templates?template=decline-interview',
+    },
+  ],
+  internship: [
+    {
+      id: 'work-auth',
+      week: 0,
+      text: ['开工前拿到工作许可（CPT / OPT）', 'Have your work authorisation (CPT or OPT) before you start'],
+      detail: [
+        'CPT 要在开工前批下来；OPT 要等 EAD 卡到手、到了卡上的开始日期。不确定就问学校的国际学生办公室。',
+        'CPT must be approved before you start; for OPT, the EAD card must be in hand and its start date reached. Ask your international student office if unsure.',
+      ],
+      href: '/guide/visa',
+    },
+    {
+      id: 'team-calls',
+      week: 0,
+      text: ['选组电话前列好问题，每通电话后马上记下来', 'List questions before team-matching calls and take notes right after each'],
+      detail: [
+        '电话一多记忆就会混在一起；最后按自己定的权重给各组打分。',
+        'After a few calls memories blur; then score each team against weights you choose.',
+      ],
+      href: '/career/intern#team-match',
+    },
+    {
+      id: 'dev-env',
+      week: 1,
+      text: ['第一周把开发环境跑起来：能构建、能跑测试', 'Get the dev environment building and running tests in week one'],
+      detail: [
+        '卡住超过半天就去问；把踩过的坑补进新人文档。',
+        'Stuck for more than half a day? Ask. Add the snags you hit to the onboarding doc.',
+      ],
+    },
+    {
+      id: 'success-1on1',
+      week: 1,
+      text: ['约好每周 1:1，问清“什么样算成功的实习”', 'Set up a weekly 1:1 and ask what a successful internship looks like'],
+      detail: [
+        '期末交付什么、谁来评估、看哪些方面，记下来每周对照。',
+        'What to deliver, who evaluates it and what they look at; write it down and check against it weekly.',
+      ],
+    },
+    {
+      id: 'start-log',
+      week: 1,
+      text: ['开始写每周成果日志', 'Start a weekly log of your work'],
+      detail: [
+        '每周五花十分钟：做成的事、收到的反馈、学到的东西。自评和周报都从这里来。',
+        'Ten minutes every Friday: what you finished, the feedback, what you learned. Self-reviews and updates come from it.',
+      ],
+      href: '/career/intern',
+    },
+    {
+      id: 'meet-team',
+      week: 2,
+      text: ['和组里每个人各聊 15–30 分钟', 'Spend 15–30 minutes with each teammate'],
+      detail: ['听听他们在做什么，你的项目会和谁打交道。', 'Hear what they work on and who your project will touch.'],
+    },
+    {
+      id: 'first-pr',
+      week: 2,
+      text: ['合入第一个小 PR', 'Land a first small PR'],
+      detail: [
+        '挑边界清楚的小任务，把分支、review、CI、上线的流程走通一遍。',
+        'A small, well-bounded task that walks the whole path once: branch, review, CI, deploy.',
+      ],
+    },
+    {
+      id: 'weekly-update',
+      week: 2,
+      text: ['每周五发三到五行的周报', 'Send a three-to-five-line update every Friday'],
+      detail: ['本周、下周、风险，内容直接从成果日志里摘。', 'This week, next week, risks; lifted straight from your log.'],
+    },
+    {
+      id: 'design-doc',
+      week: 3,
+      text: ['写一页设计文档，和 mentor 对齐范围和里程碑', 'Write a one-page design doc and agree scope and milestones with your mentor'],
+      detail: ['目标、不做什么、方案、里程碑，对齐之后再动手。', 'Goal, out of scope, approach, milestones; agree them before you build.'],
+    },
+    {
+      id: 'mid-review',
+      week: 'mid',
+      text: ['写中期自评，主动要一次反馈', 'Write a midpoint self-review and ask for feedback'],
+      detail: [
+        '问清“我离转正还差什么、后半程最该加强哪一点”。',
+        'Ask what stands between you and a return offer, and what to focus on in the second half.',
+      ],
+      href: '/career/intern',
+    },
+    {
+      id: 'rescope',
+      week: 'mid',
+      text: ['范围太大就现在缩小，保证期末能交付', 'If the scope is too big, cut it now so you can deliver'],
+      detail: ['一个能用的版本远比做了一半的大项目好。', 'A working version beats a large project left half done.'],
+    },
+    {
+      id: 'return-process',
+      week: -3,
+      text: ['问清转正怎么决定、什么时候出结果', 'Ask how the return offer is decided and when you will hear'],
+      detail: ['也问一句还需要你提供什么。', 'And whether they need anything from you.'],
+    },
+    {
+      id: 'handoff',
+      week: -2,
+      text: ['写好交接文档', 'Write the handoff doc'],
+      detail: [
+        '背景和进度、怎么构建运行测试、设计取舍、已知问题和下一步、相关链接和联系人。',
+        'Background and progress, how to build, run and test, design choices, known issues and next steps, links and contacts.',
+      ],
+    },
+    {
+      id: 'final-review',
+      week: -1,
+      text: ['做 demo，写期末自评，把成果写进简历', 'Give your demo, write the final self-review and add your results to your resume'],
+      detail: ['每条成果都说明带来了什么影响。', 'Say what difference each result made.'],
+      href: '/career/intern',
+    },
+    {
+      id: 'keep-in-touch',
+      week: -1,
+      text: ['当面道谢，和 manager、mentor 留下联系方式', 'Thank people in person and keep in touch with your manager and mentor'],
+      detail: ['之后偶尔更新一下近况。', 'Send them an update now and then.'],
     },
   ],
 };

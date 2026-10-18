@@ -434,6 +434,35 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Long values (a hash chain, an interval) shrink and wrap inside their cell. */
+.algorithm-demo .algorithm-demo-cell.is-long > span {
+  max-width: 100%;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+/* One-click inputs: sorted, reversed, random, duplicate keys. */
+.algorithm-demo .algorithm-demo-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: -8px 0 12px;
+}
+.algorithm-demo .algorithm-demo-presets button {
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid #d8e1ed;
+  border-radius: 8px;
+  background: #fff;
+  color: #283e5b;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.algorithm-demo .algorithm-demo-presets button:hover {
+  border-color: #2459be;
+  color: #2459be;
+}
 /* "Try your own input". */
 .algorithm-demo .algorithm-demo-input {
   margin: -8px 0 16px;
@@ -738,6 +767,15 @@
   }
   .dark .algorithm-demo .algorithm-demo-edge.is-blocked polygon {
     fill: #c24b4b;
+  }
+  .dark .algorithm-demo .algorithm-demo-presets button {
+    border: 1px solid #2a313a;
+    background: #191919;
+    color: #bed4f3;
+  }
+  .dark .algorithm-demo .algorithm-demo-presets button:hover {
+    border-color: #2459be;
+    color: #a5c4fd;
   }
   .dark .algorithm-demo .algorithm-demo-input summary {
     color: #a5c4fd;

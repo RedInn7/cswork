@@ -76,10 +76,22 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     requests.push(url);
     if (url.includes('/marks'))
       return signedIn
-        ? Response.json({ items: [{ target: 'sd:framework', mark: 'read', createdAt: 1 }, { target: 'sd:tech-kafka', mark: 'read', createdAt: 2 }] })
+        ? Response.json({
+            items: [
+              { target: 'sd:framework', mark: 'read', createdAt: 1 },
+              { target: 'sd:tech-kafka', mark: 'read', createdAt: 2 },
+              { target: 'sd:os/processes-threads', mark: 'read', createdAt: 3 },
+            ],
+          })
         : Response.json({ error: '请先登录' }, { status: 401 });
+    // The CS track's notes: two git answers (done), one wrong os answer and an os review card.
+    if (url.endsWith('/notes?target=mcq%3Aanswers'))
+      return Response.json({ body: JSON.stringify({ 'mcq-git-1': [4, 9, 0], 'mcq-git-2': [1, 9, 2], 'mcq-os-1': [0, 9, 1] }) });
+    if (url.endsWith('/notes?target=recall%3Aqueue'))
+      return Response.json({ body: JSON.stringify({ v: 1, items: { 'sd:os/processes-threads': [1, 9, 'Processes'] } }) });
     return Response.json({ collection: { sections } });
   };
+  const lessons = (course, n) => Array.from({ length: n }, (_, i) => `${course}/lesson-${i}`);
   const props = {
     english: true,
     totals: Object.fromEntries(ROUTE_SLUGS.map((slug) => [slug, { solved: 0, total: 10 }])),
@@ -90,8 +102,16 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
       { slug: 'tech-kafka', title: 'Kafka', href: '/system-design/tech-kafka', part: 'tech' },
     ],
     guide: [{ title: 'Final rounds', summary: 'STAR stories', href: '/guide/onsite' }],
+    cs: {
+      totals: { arch: 20, linux: 20, git: 2, os: 20, concurrency: 22, network: 21, dbms: 22, security: 20 },
+      courses: {
+        os: { title: 'Operating Systems, Illustrated', keys: ['os/processes-threads', ...lessons('os', 7)] },
+        network: { title: 'Computer Networking, Illustrated', keys: lessons('network', 8) },
+      },
+    },
   };
   const root = createRoot(document.getElementById('root'));
+  const subject = (topic) => document.querySelector(`.roadmap-cs a[href="/oa/mcq?topic=${topic}"]`).closest('li');
   const render = () =>
     act(async () => {
       root.render(createElement(RoadmapTracks, { ...props, key: String(signedIn) }));
@@ -119,9 +139,26 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     );
     assert.ok(document.querySelector('.roadmap-cards a[href="/?view=stories"]'));
     assert.ok(document.querySelector('.roadmap-cards a[href="/guide/onsite"]'));
+    // The CS track: a member's answers, reading and cards per subject, from the notes they already keep.
+    assert.ok(requests.some((url) => url.endsWith('/api/oj/notes?target=mcq%3Aanswers')));
+    assert.ok(requests.some((url) => url.endsWith('/api/oj/notes?target=recall%3Aqueue')));
+    assert.equal(document.querySelectorAll('.roadmap-cs ol > li').length, 8);
+    assert.equal(subject('git').getAttribute('data-state'), 'done');
+    assert.equal(subject('os').getAttribute('data-state'), 'active');
+    assert.equal(subject('network').getAttribute('data-state'), 'todo');
+    assert.match(subject('os').textContent, /In progress · Answered 1\/20 · right 0 · mastered 0/);
+    assert.match(subject('os').textContent, /Read 1\/8 · review cards 1/);
+    assert.match(subject('git').textContent, /Answered 2\/2 · right 2 · mastered 1/);
+    assert.ok(subject('os').querySelector('a[href="/learn/os"]'));
+    assert.match(subject('network').textContent, /After: Operating systems/);
+    const asked = requests.length;
 
     signedIn = false;
     await render();
+    assert.ok(!requests.slice(asked).some((url) => url.includes('/notes')), 'guests never ask for notes');
+    assert.equal(document.querySelectorAll('.roadmap-cs ol > li').length, 8);
+    assert.equal(document.querySelectorAll('.roadmap-cs li[data-state]').length, 0);
+    assert.equal(document.querySelector('.roadmap-cs-stats'), null);
     assert.ok([...document.querySelectorAll('a.route-graph-node')].every((a) => !a.hasAttribute('data-state')));
     assert.ok(!document.querySelector('.roadmap-legend'));
     assert.match(document.querySelector('.roadmap-note').textContent, /Sign in/);
@@ -168,6 +205,16 @@ test('every system design chapter lands in its course part, the ML chapters in t
     ],
   );
   assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');
+  // The fourth track: 8 subjects in prerequisite rows, question counts from the bank, course and chapter links, no states for a guest.
+  const bank = JSON.parse(readFileSync(new URL('../lib/content/oa-mcq.json', import.meta.url), 'utf8')).questions;
+  assert.equal(tracks.props.cs.totals.os, bank.filter((q) => q.topic === 'os').length);
+  assert.equal(tracks.props.cs.courses.network.keys.length, 8);
+  const cards = [...doc.querySelectorAll('#roadmap-cs ~ .roadmap-cs ol > li')];
+  assert.equal(cards.length, 8);
+  assert.deepEqual([...doc.querySelectorAll('.roadmap-cs > li')].map((row) => row.querySelectorAll('ol > li').length), [3, 1, 2, 2]);
+  assert.ok(cards.every((li) => !li.hasAttribute('data-state')));
+  for (const href of ['/learn/os', '/learn/network', '/system-design/concurrency-primitives', '/system-design/building-blocks', '/oa/mcq?topic=security', '#roadmap-sd'])
+    assert.ok(doc.querySelector(`#roadmap-cs ~ * a[href="${href}"]`), href);
 });
 
 // Role paths v2 (components/role-path.tsx, components/route-editor.tsx): the schedule, marks and learner-made routes.
