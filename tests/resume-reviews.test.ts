@@ -106,6 +106,11 @@ void test('lineAt reads a line by its path; applyRewrite keeps the mark, follows
   assert.equal(applyRewrite(edited, 'experience.0.bullets.0', 'Built a parser', 'x'), null);
   assert.equal(applyRewrite(RESUME, 'projects.0.bullets.0', 'Built a parser', 'x'), null, 'another section is not searched');
   assert.equal(applyRewrite(RESUME, 'bogus', 'Built a parser', 'x'), null);
+
+  // A rewrite that would push the field past its cap is refused, not cut off on the next load.
+  const full = { ...RESUME, experience: [{ ...RESUME.experience[0], bullets: '- Built a parser\n' + 'x'.repeat(2950) + ' END' }] };
+  assert.equal(applyRewrite(full, 'experience.0.bullets.0', 'Built a parser', 'y'.repeat(400)), null);
+  assert.equal(applyRewrite({ ...RESUME, skills: 'Go\n' + 'x'.repeat(1990) }, 'skills.0', 'Go', 'y'.repeat(20)), null);
 });
 
 void test('the owner makes a link; the token is stored as its hash; the snapshot holds no name or contact', async () => {

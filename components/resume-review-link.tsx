@@ -312,7 +312,7 @@ export function ResumeReviewPage({ token }: { token: string }) {
               ))}
             {stale === c.id && (
               <p className="rr-stale" role="alert">
-                {t('原句已改过，或这台浏览器里没有这份简历。', 'The line was edited since, or this browser does not have this resume.')}{' '}
+                {t('原句已改过、改完会超出字数上限，或这台浏览器里没有这份简历。', 'The line was edited since, the rewrite would go over the length limit, or this browser does not have this resume.')}{' '}
                 <button type="button" onClick={() => void copy(c.suggestion)}>
                   {t('复制建议', 'Copy the rewrite')}
                 </button>

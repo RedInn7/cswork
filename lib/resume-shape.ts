@@ -105,7 +105,8 @@ function rewriteIn(value: string, original: string, rewrite: string, at?: number
 /**
  * The resume with a reviewer's rewrite in place of `original`: on the line at `path` if it still
  * reads so, else on the first identical line in that entry, else in the same section (entries and lines move); null
- * when the line was edited since or is gone.
+ * when the line was edited since or is gone, or the rewrite would push the field past its cap
+ * (normalizeResume would cut the end off).
  */
 export function applyRewrite(r: Resume, path: string, original: string, rewrite: string): Resume | null {
   const m = LINE_PATH.exec(path);
@@ -113,14 +114,15 @@ export function applyRewrite(r: Resume, path: string, original: string, rewrite:
   if (!m[1]) {
     const key = m[3] as 'skills' | 'awards';
     const value = rewriteIn(r[key], original, rewrite, +m[4]) ?? rewriteIn(r[key], original, rewrite);
-    return value === null ? null : { ...r, [key]: value };
+    return value === null || value.length > MAX[key] ? null : { ...r, [key]: value };
   }
   const key = m[1] as ListKey;
   // The anchor entry first (a line added above moves the index), then the whole section.
   const tries: [number, number?][] = [[+m[2], +m[4]], [+m[2]], ...r[key].map((_, i): [number] => [i])];
   for (const [i, at] of tries) {
     const bullets = r[key][i] && rewriteIn(r[key][i].bullets, original, rewrite, at);
-    if (bullets != null) return { ...r, [key]: r[key].map((item, k) => (k === i ? { ...item, bullets } : item)) };
+    if (bullets != null)
+      return bullets.length > MAX.bullets ? null : { ...r, [key]: r[key].map((item, k) => (k === i ? { ...item, bullets } : item)) };
   }
   return null;
 }

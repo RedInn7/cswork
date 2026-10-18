@@ -126,7 +126,7 @@ test('the owner accepts: the server first, then this browser’s copy; an edited
   const unmount = await render(createElement(ResumeReviewPage, { token: 'r1' }));
   assert.match(document.querySelector('header').textContent, /Only you can open this address/);
   await act(async () => button('Accept and write back').click());
-  assert.match(document.querySelector('.rr-stale').textContent, /edited since, or this browser does not have this resume/);
+  assert.match(document.querySelector('.rr-stale').textContent, /edited since, the rewrite would go over the length limit, or this browser does not have this resume/);
   await act(async () => button('Copy the rewrite').click());
   assert.equal(copied, 'Cut CI build time 40%');
   assert.ok(!asked.some((a) => a.startsWith('POST')));
