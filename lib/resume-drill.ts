@@ -26,14 +26,15 @@ export type Drill = {
 const PER_BULLET = 2;
 export const MAX_DRILLS = 24;
 const TEAM = /\b(?:we|team\w*|led|collaborat\w*|partner\w*)\b|团队|合作|带领/i;
-const SCALE = /\b(?:users?|requests?|qps|rps|latency|throughput|nodes?)\b|(?<![A-Za-z])[GTP]B\b|用户|请求|并发|数据量/i;
+const SCALE = /\b(?:users?|requests?|qps|rps|latency|throughput|nodes?(?![.\s]?js))\b|(?<![A-Za-z])[GTP]B\b|用户|请求|并发|数据量/i;
 // What a measure question quotes: a figure that was measured (a change, a rate, a size), not a head
-// count like "a team of 3": 40%, 3x, 420 ms, p99 latency, $2M, 10k users, 5 万, 三倍, doubled.
+// count like "a team of 3" or "3 次": 40%, 3x, 420 ms, p99 latency, $2M, 10k users, 5 万, 三倍, doubled.
+// A bare "p99" is a metric's name: "cut p99 by 40%" quotes the 40%.
 const UNIT =
   '%|×|x\\b|ms\\b|s\\b|secs?\\b|seconds?\\b|mins?\\b|minutes?\\b|hours?\\b|hrs?\\b|days?\\b|[kmb]\\b|[kmgtp]b\\b|' +
-  '(?:users?|requests?|qps|rps|tps|queries|transactions|events|records|rows|messages|downloads|visits|views)\\b|倍|万|亿|毫秒|秒|分钟|小时|天|用户|次';
+  '(?:users?|requests?|qps|rps|tps|queries|transactions|events|records|rows|messages|downloads|visits|views)\\b|倍|万|亿|毫秒|秒|分钟|小时|天|用户';
 const FIGURE = new RegExp(
-  `(?<![A-Za-z\\d])[$¥€£]?\\d+(?:[.,]\\d+)*\\+?\\s?(?:${UNIT})|[$¥€£]\\d+(?:[.,]\\d+)*|\\bp\\d{2,3}(?:\\s[A-Za-z]+)?|[一二两三四五六七八九十几数]+[倍万亿]|\\b(?:doubled|tripled|quadrupled|halved|half)\\b`,
+  `(?<![A-Za-z\\d])[$¥€£]?\\d+(?:[.,]\\d+)*\\+?\\s?(?:${UNIT})|[$¥€£]\\d+(?:[.,]\\d+)*|\\bp\\d{2,3}\\s(?:latency|response\\s+time|load\\s+time)|[一二两三四五六七八九十几数]+[倍万亿]|\\b(?:doubled|tripled|quadrupled|halved|half)\\b`,
   'i',
 );
 // Something one picks over an alternative (a language, a framework, a store, a service), not a topic:
@@ -70,7 +71,7 @@ function fnv(text: string, seed = 0x811c9dc5) {
   for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193) >>> 0;
   return h;
 }
-/** 12 a-z0-9 from the kind and the bullet: the same question is the same card, so adding it again overwrites. */
+/** 12 a-z0-9 from the kind and the bullet: the same question is the same card, so it is never added twice. */
 export function drillId(kind: DrillKind, bullet: string) {
   const a = fnv(`${kind}\n${bullet}`);
   const b = fnv(`${kind}\n${bullet}`, a ^ 0x9e3779b9);

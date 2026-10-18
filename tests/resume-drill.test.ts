@@ -73,7 +73,7 @@ test('scale: load words or a database/system design term; a head count is no mea
   ]);
   assert.equal(drills[3].q[1], 'How did you measure “3x”? What was the baseline?');
   // Counts carry no unit: no "how was it measured".
-  for (const bullet of ['Led a team of 3 to ship 14 cron jobs', 'Wrote 40 integration tests', '带领 5 人小组完成重构'])
+  for (const bullet of ['Led a team of 3 to ship 14 cron jobs', 'Wrote 40 integration tests', '带领 5 人小组完成重构', '完成 3 次版本发布'])
     assert.equal(resumeDrills({ ...blankResume(), projects: [{ title: 'P', subtitle: '', dates: '', bullets: bullet }] }).some((d) => d.kind === 'measure'), false, bullet);
   const figure = (bullet: string) => resumeDrills({ ...blankResume(), projects: [{ title: 'P', subtitle: '', dates: '', bullets: bullet }] }).find((d) => d.kind === 'measure')?.q[1];
   assert.equal(figure('Saved $50,000 a year in compute'), 'How did you measure “$50,000”? What was the baseline?');
@@ -81,6 +81,16 @@ test('scale: load words or a database/system design term; a head count is no mea
   assert.equal(figure('Handled 3,000 QPS at peak'), 'How did you measure “3,000 QPS”? What was the baseline?');
   assert.equal(figure('Cut cold start from 2.5 s to 800ms'), 'How did you measure “2.5 s”? What was the baseline?');
   assert.equal(figure('Ran it on 2 EC2 hosts'), undefined, 'EC2 is no number');
+  // A bare percentile is the metric's name: the number after it is the figure, never "p99 by".
+  assert.equal(figure('Reduced p99 by 40% with a Redis cache'), 'How did you measure “40%”? What was the baseline?');
+  assert.equal(figure('Cut p95 from 1.2s to 300ms'), 'How did you measure “1.2s”? What was the baseline?');
+  assert.equal(figure('Lowered p99 to 120 ms'), 'How did you measure “120 ms”? What was the baseline?');
+  assert.equal(figure('Kept p95 response time steady through launch'), 'How did you measure “p95 response time”? What was the baseline?');
+  // Node.js is a runtime, not cluster nodes: no scale question.
+  assert.deepEqual(
+    resumeDrills({ ...blankResume(), projects: [{ title: 'P', subtitle: '', dates: '', bullets: 'Built a Node.js API for the club site' }] }).map((d) => d.kind),
+    ['why'],
+  );
 });
 
 test('why asks about a pick (a store, a framework, an architecture), not a topic', () => {
