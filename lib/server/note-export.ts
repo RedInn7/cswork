@@ -18,7 +18,7 @@ import { studyLibrarySummaries } from './study-library';
 // runningContestProblems(p.id) is not empty (a running contest or skill test): no pulling one's
 // notes and accepted code in bulk during an exam, as the workspace closes notes in exam mode.
 function refuseInExam(p: Person) {
-  if (runningContestProblems(p.id).size) throw new HttpError(403, '比赛或考试进行中，笔记导出和复习单要等结束后再用');
+  if (runningContestProblems(p.id).size) throw new HttpError(403, '比赛或考试进行中，导出和复习单要等结束后再用');
 }
 
 const curated = (id: string) => curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]));
@@ -113,16 +113,19 @@ function exportSolutions(userId: string, params: URLSearchParams): SolutionPage 
         ).map((n) => [n.id, n.body])
       : [],
   );
-  // Streamed in problem order, so a page stops at PAGE_BYTES without reading every 64 KB solution first.
+  // The sorts carry ids and times only; each latest AC's code is read by id as the loop reaches it,
+  // so a page stops at PAGE_BYTES without reading (or sorting) every 64 KB solution first.
   const latest = db
     .prepare(
-      `SELECT problem_id AS problemId,language,code,created_at AS at,runtime FROM (
-        SELECT *,ROW_NUMBER() OVER (PARTITION BY problem_id,language ORDER BY created_at DESC,id DESC) AS recent
+      `SELECT id,problem_id AS problemId,language,created_at AS at,runtime FROM (
+        SELECT id,problem_id,language,created_at,runtime,
+        ROW_NUMBER() OVER (PARTITION BY problem_id,language ORDER BY created_at DESC,id DESC) AS recent
         FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'
         AND problem_id IN (SELECT value FROM json_each(?))
       ) WHERE recent=1 ORDER BY problem_id,language`,
     )
-    .iterate(userId, ids) as IterableIterator<SolutionItem['solutions'][number] & { problemId: string }>;
+    .all(userId, ids) as (Omit<SolutionItem['solutions'][number], 'code'> & { id: string; problemId: string })[];
+  const codeOf = db.prepare('SELECT code FROM submissions WHERE id=?').pluck();
   const items: SolutionItem[] = [];
   let bytes = 0;
   // A page takes at least one problem, then stops before the one that would push it past PAGE_BYTES.
@@ -135,7 +138,7 @@ function exportSolutions(userId: string, params: URLSearchParams): SolutionPage 
     return true;
   };
   let open: SolutionItem | undefined;
-  for (const { problemId, ...solution } of latest) {
+  for (const { id, problemId, ...solution } of latest) {
     if (open?.problemId !== problemId) {
       if (open && !fits(open)) {
         open = undefined;
@@ -143,7 +146,7 @@ function exportSolutions(userId: string, params: URLSearchParams): SolutionPage 
       }
       open = { problemId, firstAc: firstAc.get(problemId)!, solutions: [] };
     }
-    open.solutions.push(solution);
+    open.solutions.push({ ...solution, code: codeOf.get(id) as string });
   }
   if (open) fits(open);
   const meta = problemMeta(items.map((i) => i.problemId));

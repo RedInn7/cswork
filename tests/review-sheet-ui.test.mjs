@@ -72,7 +72,7 @@ test('the export reads every page, with code when ticked, and saves a vault zip'
   assert.match(new TextDecoder().decode(files.get('problems/hash-counting/lc-1.md')), /```python\npass\n```/);
   assert.equal(document.querySelector('.notes-export-status').textContent, 'Exported 3 notes');
   // A failed page shows the server's message.
-  globalThis.fetch = async () => Response.json({ error: 'The notes export and review sheet are closed while your contest or exam runs' }, { status: 403 });
+  globalThis.fetch = async () => Response.json({ error: 'Exports and the review sheet are closed while your contest or exam runs' }, { status: 403 });
   await act(async () => button('.md').click());
   await settle();
   assert.match(document.querySelector('.notes-export-status.is-error').textContent, /closed while your contest/);
@@ -205,7 +205,7 @@ test('the history export pages accepted code into a portfolio zip, OA only when 
   assert.match(new TextDecoder().decode(files.get('problems/lc-1-two-sum/README.md')), /## Notes\n\none pass\n$/);
   assert.equal(document.querySelector('.notes-export-status').textContent, 'Exported code for 2 problems');
   // A 403 (contest or exam running) shows the server's message.
-  globalThis.fetch = async () => Response.json({ error: 'The notes export and review sheet are closed while your contest or exam runs' }, { status: 403 });
+  globalThis.fetch = async () => Response.json({ error: 'Exports and the review sheet are closed while your contest or exam runs' }, { status: 403 });
   await act(async () => button('accepted code').click());
   await settle();
   assert.match(document.querySelector('.notes-export-status.is-error').textContent, /closed while your contest/);
