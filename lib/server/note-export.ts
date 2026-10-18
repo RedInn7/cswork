@@ -3,7 +3,7 @@ import { sqlite } from '@/db/sqlite';
 import { classicList, groupEntries } from '@/lib/classic-lists';
 import { curatedByNumber, curatedEntries, curatedHint, curatedSections } from '@/lib/ling-curated';
 import { parseNoteMeta } from '@/lib/note-meta';
-import { noteGist, readCard, type ExportItem, type ProblemMeta } from '@/lib/notes-export';
+import { noteGist, readCard, type ExportItem, type ProblemMeta, type SolutionItem, type SolutionPage } from '@/lib/notes-export';
 import { reviewState, wrongBook } from '@/lib/practice-review';
 import type { Person } from './auth';
 import { companyHub } from './company-hub';
@@ -13,12 +13,12 @@ import { HttpError, json, limit } from './http';
 import { practiceHistory, problemMarks } from './my-practice';
 import { studyLibrarySummaries } from './study-library';
 
-// oj-api routes every method of oj/notes/export and oj/cheatsheet here; anything but GET stays 404.
+// oj-api routes every method of oj/notes/export, oj/solutions/export and oj/cheatsheet here; anything but GET stays 404.
 // Neither is about one problem, so instead of refuseInContest both answer 403 while
 // runningContestProblems(p.id) is not empty (a running contest or skill test): no pulling one's
 // notes and accepted code in bulk during an exam, as the workspace closes notes in exam mode.
 function refuseInExam(p: Person) {
-  if (runningContestProblems(p.id).size) throw new HttpError(403, '比赛或考试进行中，笔记导出和复习单要等结束后再用');
+  if (runningContestProblems(p.id).size) throw new HttpError(403, '比赛或考试进行中，导出和复习单要等结束后再用');
 }
 
 const curated = (id: string) => curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]));
@@ -80,6 +80,82 @@ function exportNotes(userId: string, params: URLSearchParams) {
   const meta = problemMeta(items.flatMap((i) => (i.target.startsWith('problem:') ? [i.target.slice(8)] : [])));
   for (const item of items) if (item.target.startsWith('problem:') && meta.has(item.target.slice(8))) item.meta = meta.get(item.target.slice(8));
   return { items, nextCursor: items.length < rows.length ? items.at(-1)!.target : null };
+}
+
+const solutionsQuery = z.object({ cursor: z.string().max(210).default(''), notes: z.literal('1').optional() });
+
+/**
+ * Every problem the learner got accepted, notes or not, a page at a time by problem id: the first
+ * AC, each language's latest AC (code, time, runtime in seconds) and, with notes=1, the problem note.
+ */
+function exportSolutions(userId: string, params: URLSearchParams): SolutionPage {
+  const q = solutionsQuery.parse(Object.fromEntries(params));
+  const db = sqlite();
+  const solved = db
+    .prepare(
+      `SELECT problem_id AS problemId,MIN(created_at) AS firstAc FROM submissions
+      WHERE user_id=? AND mode='judge' AND status='accepted' AND problem_id>?
+      GROUP BY problem_id ORDER BY problem_id LIMIT ${PAGE_ROWS + 1}`,
+    )
+    .all(userId, q.cursor) as { problemId: string; firstAc: number }[];
+  const page = solved.slice(0, PAGE_ROWS);
+  const ids = JSON.stringify(page.map((r) => r.problemId));
+  const firstAc = new Map(page.map((r) => [r.problemId, r.firstAc]));
+  const notes = new Map(
+    q.notes
+      ? (
+          db
+            .prepare(
+              `SELECT substr(target,9) AS id,body FROM user_notes
+              WHERE user_id=? AND target IN (SELECT 'problem:'||value FROM json_each(?))`,
+            )
+            .all(userId, ids) as { id: string; body: string }[]
+        ).map((n) => [n.id, n.body])
+      : [],
+  );
+  // The sorts carry ids and times only; each latest AC's code is read by id as the loop reaches it,
+  // so a page stops at PAGE_BYTES without reading (or sorting) every 64 KB solution first.
+  const latest = db
+    .prepare(
+      `SELECT id,problem_id AS problemId,language,created_at AS at,runtime FROM (
+        SELECT id,problem_id,language,created_at,runtime,
+        ROW_NUMBER() OVER (PARTITION BY problem_id,language ORDER BY created_at DESC,id DESC) AS recent
+        FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'
+        AND problem_id IN (SELECT value FROM json_each(?))
+      ) WHERE recent=1 ORDER BY problem_id,language`,
+    )
+    .all(userId, ids) as (Omit<SolutionItem['solutions'][number], 'code'> & { id: string; problemId: string })[];
+  const codeOf = db.prepare('SELECT code FROM submissions WHERE id=?').pluck();
+  const items: SolutionItem[] = [];
+  let bytes = 0;
+  // A page takes at least one problem, then stops before the one that would push it past PAGE_BYTES.
+  const fits = (item: SolutionItem) => {
+    const size =
+      item.solutions.reduce((sum, s) => sum + Buffer.byteLength(s.code), 0) + Buffer.byteLength(notes.get(item.problemId) ?? '');
+    if (items.length && bytes + size > PAGE_BYTES) return false;
+    bytes += size;
+    items.push(item);
+    return true;
+  };
+  let open: SolutionItem | undefined;
+  for (const { id, problemId, ...solution } of latest) {
+    if (open?.problemId !== problemId) {
+      if (open && !fits(open)) {
+        open = undefined;
+        break;
+      }
+      open = { problemId, firstAc: firstAc.get(problemId)!, solutions: [] };
+    }
+    open.solutions.push({ ...solution, code: codeOf.get(id) as string });
+  }
+  if (open) fits(open);
+  const meta = problemMeta(items.map((i) => i.problemId));
+  for (const item of items) {
+    const note = notes.get(item.problemId);
+    if (note !== undefined) item.note = note;
+    if (meta.has(item.problemId)) item.meta = meta.get(item.problemId);
+  }
+  return { items, nextCursor: items.length < solved.length ? items.at(-1)!.problemId : null };
 }
 
 const ROWS = 80;
@@ -206,6 +282,14 @@ export async function handleNoteExport(request: Request, p: Person): Promise<Res
   await limit(p, 'notes-export', 60, 3600);
   refuseInExam(p);
   return json(exportNotes(p.id, new URL(request.url).searchParams));
+}
+
+/** GET oj/solutions/export?cursor=&notes=1, private to the learner: limit(p,'solutions-export',60,3600). */
+export async function handleSolutionsExport(request: Request, p: Person): Promise<Response> {
+  if (request.method !== 'GET') throw new HttpError(404, '判题接口不存在');
+  await limit(p, 'solutions-export', 60, 3600);
+  refuseInExam(p);
+  return json(exportSolutions(p.id, new URL(request.url).searchParams));
 }
 
 /** GET oj/cheatsheet?company=|stops=|list=, private to the learner: limit(p,'cheatsheet-read',30). */

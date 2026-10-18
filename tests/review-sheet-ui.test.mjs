@@ -1,5 +1,6 @@
 // The notes tab's export (components/cheatsheet.tsx) and /review-sheet (components/review-sheet.tsx):
-// paged export into a vault zip, the one-page sheet's rows, and the review book's chapters.
+// paged export into a vault zip, the one-page sheet's rows, and the review book's chapters; the
+// history tab's accepted-code zip and progress CSV/JSON (ProgressExport).
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { register } from 'node:module';
@@ -18,7 +19,7 @@ for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Eve
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
-const { NotesExport } = await import('../components/cheatsheet.tsx');
+const { NotesExport, ProgressExport } = await import('../components/cheatsheet.tsx');
 const { ReviewSheet } = await import('../components/review-sheet.tsx');
 const { unzip } = await import('../lib/zip.ts');
 
@@ -71,7 +72,7 @@ test('the export reads every page, with code when ticked, and saves a vault zip'
   assert.match(new TextDecoder().decode(files.get('problems/hash-counting/lc-1.md')), /```python\npass\n```/);
   assert.equal(document.querySelector('.notes-export-status').textContent, 'Exported 3 notes');
   // A failed page shows the server's message.
-  globalThis.fetch = async () => Response.json({ error: 'The notes export and review sheet are closed while your contest or exam runs' }, { status: 403 });
+  globalThis.fetch = async () => Response.json({ error: 'Exports and the review sheet are closed while your contest or exam runs' }, { status: 403 });
   await act(async () => button('.md').click());
   await settle();
   assert.match(document.querySelector('.notes-export-status.is-error').textContent, /closed while your contest/);
@@ -159,5 +160,67 @@ test('the review book reads every problem note into a chapter per stop, other pr
   assert.equal(location.search, '?view=book&by=list%3Aleetcode-hot-100');
   assert.equal(document.querySelector('.rs-ways a[aria-current="page"]'), hot);
   assert.deepEqual([...document.querySelectorAll('.rs-chapter > h2')].map((h) => h.textContent), ['Hashing', 'Two Pointers']);
+  await act(async () => root.unmount());
+});
+
+test('the history export pages accepted code into a portfolio zip, OA only when ticked, and saves progress CSV/JSON', async () => {
+  const urls = [];
+  globalThis.fetch = async (url) => {
+    urls.push(url);
+    return url.includes('cursor=')
+      ? Response.json({ items: [{ problemId: 'oa-acme-1', firstAc: 1, solutions: [{ language: 'python', code: 'oa', at: 1, runtime: null }] }], nextCursor: null })
+      : Response.json({
+          items: [
+            { problemId: 'lc-1', firstAc: 1, solutions: [{ language: 'python', code: 'pass', at: 1, runtime: 0.002 }], note: 'one pass', meta: { title: '两数之和', titleEn: 'Two Sum', stop: 'hash-counting' } },
+            { problemId: 'sql-7', firstAc: 1, solutions: [{ language: 'sql', code: 'SELECT 1;', at: 1, runtime: null }] },
+          ],
+          nextCursor: 'sql-7',
+        });
+  };
+  const saved = [];
+  URL.createObjectURL = (blob) => (saved.push(blob), 'blob:x');
+  URL.revokeObjectURL = () => {};
+  const names = [];
+  dom.window.HTMLAnchorElement.prototype.click = function () {
+    names.push(this.download);
+  };
+  const problems = [{ id: 'sql-7', title: '第二高薪水', titleEn: 'Second Salary', difficulty: '中等', tags: ['sql'] }];
+  const history = [
+    { problemId: 'lc-1', attempts: 2, firstAt: 1, lastAt: 2, firstAcAt: 2, failuresBeforeAc: 1, lastStatus: 'accepted', languages: ['python'], acAt: [2], stop: 'hash-counting', help: 'none', solveSeconds: 60, whiteboard: null, brute: false },
+  ];
+  const marks = [{ target: 'problem:lc-1', mark: 'star', createdAt: 1 }];
+  const root = await mount(createElement(ProgressExport, { english: true, problems, history, marks }));
+  const [notes] = document.querySelectorAll('.notes-export-code input');
+  await act(async () => notes.click());
+  await act(async () => button('accepted code').click());
+  await settle();
+  assert.deepEqual(urls, ['/api/oj/solutions/export?notes=1', '/api/oj/solutions/export?notes=1&cursor=sql-7']);
+  assert.match(names[0], /^cswork-solutions-\d{4}-\d{2}-\d{2}\.zip$/);
+  const files = await unzip(new Uint8Array(await saved[0].arrayBuffer()), () => true, 1 << 20);
+  assert.deepEqual(
+    [...files.keys()],
+    ['README.md', 'problems/lc-1-two-sum/README.md', 'problems/lc-1-two-sum/solution.py', 'problems/sql-7-second-salary/README.md', 'problems/sql-7-second-salary/solution.sql'],
+    'no OA unless ticked; titles the server lacks come from the bootstrap list',
+  );
+  assert.match(new TextDecoder().decode(files.get('problems/lc-1-two-sum/README.md')), /## Notes\n\none pass\n$/);
+  assert.equal(document.querySelector('.notes-export-status').textContent, 'Exported code for 2 problems');
+  // A 403 (contest or exam running) shows the server's message.
+  globalThis.fetch = async () => Response.json({ error: 'Exports and the review sheet are closed while your contest or exam runs' }, { status: 403 });
+  await act(async () => button('accepted code').click());
+  await settle();
+  assert.match(document.querySelector('.notes-export-status.is-error').textContent, /closed while your contest/);
+
+  await act(async () => button('Progress CSV').click());
+  assert.match(names.at(-1), /^cswork-progress-\d{4}-\d{2}-\d{2}\.csv$/);
+  const bytes = new Uint8Array(await saved.at(-1).arrayBuffer());
+  assert.deepEqual([...bytes.slice(0, 3)], [0xef, 0xbb, 0xbf], 'a UTF-8 BOM');
+  const csv = new TextDecoder().decode(bytes);
+  assert.ok(csv.startsWith('"problem_id","title"'), 'TextDecoder drops the BOM');
+  assert.match(csv, /\r\n"lc-1","","","hash-counting","leetcode-hot-100 \| [^"]*",/);
+  await act(async () => button('Progress JSON').click());
+  const json = JSON.parse(await saved.at(-1).text());
+  assert.deepEqual([json.items.length, json.items[0].starred, json.items[0].attempts], [1, true, 2]);
+  assert.match(json.exportedAt, /^\d{4}-\d{2}-\d{2}T/);
+  assert.equal(document.querySelector('.notes-export-status').textContent, 'Exported progress on 1 problem');
   await act(async () => root.unmount());
 });

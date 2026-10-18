@@ -28,7 +28,7 @@ import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
 import { NoteTagChips } from './notes-filters';
-import { NotesExport } from './cheatsheet';
+import { NotesExport, ProgressExport } from './cheatsheet';
 import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
@@ -563,6 +563,7 @@ export function MyProgress({
               ? ['没有符合筛选的记录。', 'Nothing matches these filters.']
               : ['还没有正式提交。去 Line 500 交出第一题吧。', 'No submissions yet. Submit your first Line 500 problem.'],
           )}
+          <ProgressExport english={english} problems={boot.problems} history={data.history} marks={data.marks} />
         </>
       );
     }

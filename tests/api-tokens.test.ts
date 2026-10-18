@@ -101,6 +101,7 @@ void test('a token acts as its learner (never a teacher) only on the scoped endp
     ['POST', 'oj/tokens/x/revoke'],
     ['GET', 'oj/notes'],
     ['GET', 'oj/history'],
+    ['GET', 'oj/solutions/export'],
     ['GET', 'oj/submissions'],
     ['POST', 'oj/submissions/x/cancel'],
     ['GET', 'oj/admin/problems'],

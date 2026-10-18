@@ -39,7 +39,7 @@ import { handleRoundReview } from './round-review';
 import { handleComplexity, handleStress } from './stress';
 // Wave 9 stubs: each branch fills in its own module, never these routes.
 import { handleNoteSub } from './note-links';
-import { handleCheatsheet, handleNoteExport } from './note-export';
+import { handleCheatsheet, handleNoteExport, handleSolutionsExport } from './note-export';
 import { handleStudyGoal } from './study-goal';
 import { handleRecallIdeas } from './recall-ideas';
 import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
@@ -297,6 +297,7 @@ export async function handleOj(
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
     return handleMyPractice(request, p, resource);
   if (resource === 'notes' && id === 'export' && !action) return handleNoteExport(request, p);
+  if (resource === 'solutions' && id === 'export' && !action) return handleSolutionsExport(request, p);
   if (resource === 'notes' && id && !action) return handleNoteSub(request, p, id);
   if (resource === 'cheatsheet' && !id) return handleCheatsheet(request, p);
   if (resource === 'study-goal' && !id) return handleStudyGoal(request, p);

@@ -237,9 +237,9 @@ const EN: Record<string, string> = {
   访问令牌不存在: 'Access token not found',
   '最多保留 10 个访问令牌，请先吊销不用的': 'You can keep at most 10 access tokens. Revoke one you no longer use first',
   笔记或标记已达上限: "You've reached the limit for notes or marks",
-  // The notes export and review sheet (lib/server/note-export.ts)
-  '比赛或考试进行中，笔记导出和复习单要等结束后再用':
-    'The notes export and review sheet are closed while your contest or exam runs; they reopen afterwards',
+  // The notes and code exports and the review sheet (lib/server/note-export.ts)
+  '比赛或考试进行中，导出和复习单要等结束后再用':
+    'Exports and the review sheet are closed while your contest or exam runs; they reopen afterwards',
   // Resume project repo links (lib/server/my-practice.ts, project:<slug> notes)
   '仓库链接只支持 GitHub、GitLab 或 Codeberg 的 https 地址': 'Repository links must be https addresses on GitHub, GitLab or Codeberg',
   // Points (lib/server/points.ts) and the bank's solved-date filter
