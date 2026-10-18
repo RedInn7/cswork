@@ -140,6 +140,7 @@ jobs:
       # OS and networking simulators (/oa/sims): textbook answers, brute-force cross-checks, RFC 793 transitions.
       - run: node --import tsx --test tests/cs-sims.test.ts
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/job-openings.test.ts tests/job-openings-ui.test.mjs tests/applications.test.ts tests/application-tracker-ui.test.mjs tests/job-tags.test.ts tests/job-calendar-ui.test.mjs
+      - run: node --import tsx --test tests/algorithm-demo-sorts.test.ts
       - run: node --import tsx --test tests/jd-readiness.test.ts tests/jd-readiness-ui.test.mjs tests/jd-keywords.test.ts tests/resume-check.test.ts tests/resume-parse.test.ts
       - run: node --import tsx --test tests/offer-math.test.ts tests/offer-compare-ui.test.mjs
       - run: node --import tsx --test tests/clarify.test.ts tests/ling-extras.test.ts tests/clarify-panel-ui.test.mjs
@@ -225,7 +226,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
+      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables;
+      # compiles (without running) the Big-O course's C++/Java/Go tabs, wrapped as lib/course-snippet.ts wraps them.
       - run: node --import tsx scripts/learn/check-snippets.mjs
       # numpy (with pandas) for the NumPy MCQs and the ML Coding track.
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas

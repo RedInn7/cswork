@@ -161,6 +161,39 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
     act(() => root.unmount());
   }
 });
+test('a picked code language is remembered, and every tab set on the page follows it', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'navigator', 'localStorage'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { CodeTabs, CODE_LANG_KEY } = await import('../components/code-tabs.tsx');
+  const group = (key) =>
+    React.createElement(CodeTabs, { key, langs: ['python', 'cpp', 'java', 'go'], panels: ['p', 'c', 'j', 'g'].map((x) => React.createElement('pre', { key: x }, x)) });
+  const selected = () => [...document.querySelectorAll('[role="tablist"]')].map((list) => [...list.children].findIndex((tab) => tab.getAttribute('aria-selected') === 'true'));
+  // The server and the first client render show the first tab (Python); nothing stored yet keeps it.
+  assert.equal(renderToStaticMarkup(group('a')).match(/aria-selected="true"/g).length, 1);
+  let root = createRoot(document.getElementById('root'));
+  await act(async () => root.render([group('a'), group('b')]));
+  assert.deepEqual(selected(), [0, 0]);
+  await act(async () => document.querySelectorAll('[role="tablist"]')[1].children[2].click());
+  assert.deepEqual(selected(), [2, 2], 'the other tab set follows');
+  assert.equal(localStorage.getItem(CODE_LANG_KEY), 'java');
+  await act(async () => root.unmount());
+  // A later page opens on the stored language.
+  root = createRoot(document.getElementById('root'));
+  await act(async () => root.render([group('c')]));
+  assert.deepEqual(selected(), [2]);
+  // Storage that throws: tabs still switch.
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, get() { throw new Error('blocked'); } });
+  try {
+    await act(async () => document.querySelector('[role="tablist"]').children[3].click());
+    assert.deepEqual(selected(), [3]);
+  } finally {
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: dom.window.localStorage });
+    await act(async () => root.unmount());
+  }
+});
 test('server-rendered library pages offer the playground and fold member spoilers', async () => {
   const { PublicLibraryMarkdown } = await import('../app/library/markdown.tsx');
   const page = (body, ugc) => new JSDOM(renderToStaticMarkup(React.createElement(PublicLibraryMarkdown, { body, math: false, ugc }))).window.document;

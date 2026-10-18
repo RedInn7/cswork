@@ -1,4 +1,5 @@
 import course from '@/lib/content/system-design-course.json';
+import { playgroundLanguage } from '@/lib/playground-share';
 
 export type SdQuestion = {
   qZh: string;
@@ -71,12 +72,19 @@ export const systemDesignPaths = () => [
 
 /**
  * Reading time in whole minutes: Chinese at 400 characters a minute, English at 200 words,
- * and fenced code or diagrams at 15 non-blank lines a minute.
+ * and fenced code or diagrams at 15 non-blank lines a minute. A tab group (the same code in
+ * several languages, lib/remark-code-tabs.ts) is read in one language: only its first block counts.
  */
 export function readMinutes(markdown: string) {
-  let lines = 0;
-  const prose = markdown.replace(/^```[^\n]*\n([\s\S]*?)^```/gm, (_, code: string) => {
-    lines += code.split('\n').filter((line) => line.trim()).length;
+  let lines = 0,
+    end = -1,
+    group: string[] = [];
+  const prose = markdown.replace(/^```([^\n]*)\n([\s\S]*?)^```/gm, (block: string, tag: string, code: string, at: number) => {
+    const lang = playgroundLanguage(tag.split(/\s/)[0]);
+    const tab = lang !== null && group.length > 0 && !group.includes(lang) && !markdown.slice(end, at).trim();
+    group = lang === null ? [] : tab ? [...group, lang] : [lang];
+    end = at + block.length;
+    if (!tab) lines += code.split('\n').filter((line) => line.trim()).length;
     return '';
   });
   const han = prose.match(/\p{Script=Han}/gu)?.length ?? 0;

@@ -148,12 +148,24 @@ test('your own input reruns the demo, and predict mode scores clicks on cells an
     assert.equal(idle.getAttribute('aria-disabled'), 'true');
     await act(async () => idle.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     assert.match(guessText(), /1 \/ 1 right/);
+
+    // Sorting demos: one-click inputs go through the same parser and restart the demo.
+    await act(async () => root.render(createElement(AlgorithmDemo, { kind: 'sort-insertion' })));
+    const presets = [...document.querySelectorAll('.algorithm-demo-presets button')];
+    assert.deepEqual(presets.map((b) => b.textContent), ['Sorted', 'Reversed', 'Random', 'Duplicate keys']);
+    assert.equal(document.querySelector('.algorithm-demo-presets').getAttribute('role'), 'group');
+    await act(async () => button('Reversed').click());
+    assert.equal(question(), 'Sort 8, 7, 6, 5, 4, 3, 2, 1 in ascending order');
+    assert.equal(document.querySelector('.algorithm-demo-input input').value, '8 7 6 5 4 3 2 1');
+    await act(async () => button('Random').click());
+    assert.equal(question().split(', ').length, 8);
+    assert.ok(document.querySelector('.algorithm-demo-cell small').textContent.startsWith('#'));
   } finally {
     await act(async () => root.unmount());
   }
 });
 
-test('topic pages embed their stop demos under an anchor; stops without one have no section', async () => {
+test('topic pages embed their stop demos under an anchor, now on every stop', async () => {
   const { TopicView } = await import('../app/topics/views.tsx');
   const { topicStop } = await import('../app/topics/stops.ts');
   const render = (slug) =>
@@ -164,7 +176,7 @@ test('topic pages embed their stop demos under an anchor; stops without one have
   assert.ok(section !== null);
   assert.equal(section.querySelectorAll('.algorithm-demo').length, 2);
   assert.ok(doc.getElementById(section.getAttribute('aria-labelledby')) !== null);
-  assert.ok(render('linked-list').getElementById('algorithm-demo') === null);
+  assert.equal(render('linked-list').getElementById('algorithm-demo').querySelectorAll('.algorithm-demo').length, 1);
 });
 
 test('dark mode: graph labels clear 4.5:1 on their node and arrowheads match their line', async () => {
