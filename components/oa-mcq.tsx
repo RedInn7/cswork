@@ -1,5 +1,7 @@
 'use client';
 import { mcqRight, type McqQuestion, type McqSection } from '@/lib/mock-oa';
+import type { AptFig } from '@/lib/aptitude';
+import { AptCellIcon, AptitudeFigure } from './aptitude-figure';
 import '@/app/oa-mcq.css';
 
 const LETTERS = 'ABCDEF';
@@ -49,7 +51,8 @@ export type McqText = McqQuestion['en'];
 /**
  * One question: radios, or checkboxes when more than one choice is right. `reveal` locks it
  * and marks the answer with its explanation, after why each wrong pick is wrong when the
- * question has `whys`; `children` go under it (a submit button, say).
+ * question has `whys`; `children` go under it (a submit button, say). An aptitude question's `fig`
+ * (lib/aptitude.ts) is drawn under the question, and figure choices as small pictures.
  */
 export function McqItem({
   q,
@@ -61,7 +64,7 @@ export function McqItem({
   reveal,
   children,
 }: {
-  q: Pick<McqQuestion, 'id' | 'section' | 'code' | 'answer'>;
+  q: Pick<McqQuestion, 'id' | 'section' | 'code' | 'answer'> & { fig?: AptFig };
   text: McqText;
   n: number;
   zh: boolean;
@@ -76,6 +79,7 @@ export function McqItem({
   const letters = q.answer.map((a) => LETTERS[a]).join(zh ? '、' : ', ');
   // Missed: why each wrong pick is wrong comes before the explanation.
   const wrongPicks = reveal && text.whys ? picks.filter((j) => !q.answer.includes(j)) : [];
+  const figs = q.fig && 'choices' in q.fig ? q.fig.choices : null;
   return (
     <fieldset className="oa-mcq-item" aria-describedby={q.code ? `mcq-code-${q.id}` : undefined}>
       <legend>
@@ -89,7 +93,8 @@ export function McqItem({
           <code>{q.code}</code>
         </pre>
       )}
-      <ul className="oa-mcq-choices" data-code={q.section === 'code-output' || undefined}>
+      {q.fig && <AptitudeFigure fig={q.fig} zh={zh} />}
+      <ul className="oa-mcq-choices" data-code={q.section === 'code-output' || undefined} data-fig={!!figs || undefined}>
         {text.choices.map((choice, j) => {
           const on = picks.includes(j);
           const state = !reveal ? undefined : q.answer.includes(j) ? 'right' : on ? 'wrong' : undefined;
@@ -108,7 +113,8 @@ export function McqItem({
                 <span className="oa-mcq-letter" aria-hidden="true">
                   {LETTERS[j]}
                 </span>
-                <span className="oa-mcq-choice">{choice}</span>
+                {figs?.[j] && <AptCellIcon cell={figs[j]} />}
+                <span className={figs ? 'sr-only' : 'oa-mcq-choice'}>{choice}</span>
                 {state && (
                   <span className="oa-mcq-mark">
                     {state === 'right' ? t('正确答案', 'Answer') : t('你的选择', 'Your pick')}

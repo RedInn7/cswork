@@ -9,7 +9,7 @@ import { mcqRight, reviewMcq, seededRandom, type McqQuestion, type McqReview } f
  */
 
 export type AptShape = 'tri' | 'arrow' | 'flag' | 'ell' | 'eff';
-/** n copies of a shape; fill 0 white, 1 grey, 2 black; rot clockwise degrees, after a left-right flip. */
+/** n copies of a shape; fill 0 outlined, 1 grey, 2 solid; rot clockwise degrees, after a left-right flip. */
 export type AptCell = { shape: AptShape; n: number; fill: number; rot: number; flip?: boolean };
 export type AptFig =
   | { kind: 'matrix'; cells: (AptCell | null)[]; choices: AptCell[] }
@@ -916,7 +916,8 @@ const SHAPE_NAMES: Record<AptShape, Tx> = {
   ell: ['L 形', 'L-shape'],
   eff: ['F 形', 'F-shape'],
 };
-const FILL_NAMES: Tx[] = [['白色', 'white'], ['灰色', 'grey'], ['黑色', 'black']];
+// Hollow and solid rather than white and black: they stay true in the dark theme too.
+const FILL_NAMES: Tx[] = [['空心', 'outlined'], ['灰色', 'grey'], ['实心', 'solid']];
 const norm = (deg: number) => ((deg % 360) + 360) % 360;
 /** A cell in words, for screen readers and the choice text: "2 grey flags, turned 90° clockwise". */
 export function cellText(cell: AptCell): Tx {
@@ -959,7 +960,9 @@ function matrix(r: R): Draft {
     return { ...answer, rot: norm(answer.rot + 90 * int(r, 1, 3)) };
   });
   const list = (a: 'shape' | 'n' | 'fill', zh: boolean) =>
-    values[a].map((v) => (a === 'shape' ? SHAPE_NAMES[v as AptShape][zh ? 0 : 1] : a === 'fill' ? FILL_NAMES[v as number][zh ? 0 : 1] : String(v))).join(zh ? '、' : ', ');
+    (values[a] as (AptShape | number)[])
+      .map((v) => (a === 'shape' ? SHAPE_NAMES[v as AptShape][zh ? 0 : 1] : a === 'fill' ? FILL_NAMES[v as number][zh ? 0 : 1] : String(v)))
+      .join(zh ? '、' : ', ');
   const ruleText = (a: (typeof attrs)[number]): Tx => {
     const [zhName, enName] = ATTR_NAMES[a];
     const rule = rules[a];
@@ -1062,8 +1065,8 @@ export function aptitudeById(id: string): AptQuestion | null {
     if (chosen.length < 4) continue;
     const order = shuffle(r, [0, 1, 2, 3]);
     const choices = order.map((i) => chosen[i]);
-    const fig: AptFig | undefined =
-      draft.fig?.kind === 'bars' || !draft.fig ? draft.fig : { ...draft.fig, choices: choices.map((c) => c.cell!) };
+    const drawn = draft.fig;
+    const fig: AptFig | undefined = !drawn || drawn.kind === 'bars' ? drawn : { ...drawn, choices: choices.map((c) => c.cell!) };
     return {
       id,
       section: 'quant',

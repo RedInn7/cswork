@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import bankFile from '@/lib/content/oa-mcq.json';
+import { aptitudeById } from '@/lib/aptitude';
 import { mcqRight, type McqQuestion } from '@/lib/mock-oa';
 import type { Person } from './auth';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
@@ -87,6 +88,7 @@ export function mcqStats(ids: readonly string[], now = Date.now()) {
  * /api/oj/mcq/answers (POST, signed in), /api/oj/mcq/stats?ids=a,b (GET, anyone) and
  * /api/oj/mcq/questions?ids=a,b&lang=zh (GET, anyone): bank questions in one language with their
  * answers, for a review that should not load the whole bank (components/review-session.tsx).
+ * Aptitude ids (`apt-<kind>-<seed>`, lib/aptitude.ts) are generated here with their figure.
  */
 export async function handleMcqStats(request: Request, p: Person | null, [what]: string[]) {
   if (request.method === 'GET' && what === 'questions') {
@@ -97,8 +99,8 @@ export async function handleMcqStats(request: Request, p: Person | null, [what]:
     const lang = params.get('lang') === 'zh' ? 'zh' : 'en';
     return json({
       items: [...new Set(ids)].flatMap((id) => {
-        const q = bank.get(id);
-        return q ? [{ id, section: q.section, topic: q.topic, code: q.code, answer: q.answer, text: q[lang] }] : [];
+        const q = bank.get(id) ?? aptitudeById(id);
+        return q ? [{ id, section: q.section, topic: q.topic, code: q.code, answer: q.answer, text: q[lang], fig: 'fig' in q ? q.fig : undefined }] : [];
       }),
     });
   }
