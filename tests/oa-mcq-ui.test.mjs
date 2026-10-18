@@ -294,7 +294,7 @@ test('mock OA check-in: a preset with an MCQ section offers it (on by default); 
   delete globalThis.fetch;
 });
 
-test("practice: ?topic= starts filtered, a missed pick says why, site-wide shares show, corrections file a ticket", async () => {
+test("practice: ?topic= starts filtered, a missed pick says why, site-wide shares show", async () => {
   const today = Math.floor(Date.now() / 86_400_000);
   const web = {
     id: 'mcq-web-x',
@@ -312,11 +312,10 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
   const calls = [];
   // This browser holds a signed-out answer and a pre-review one to another subject.
   const old = JSON.stringify({ 'mcq-python-1': byId.get('mcq-python-1').answer });
-  const win = dom({ 'cswork:oa-mcq:v1': old, 'cswork:oa-mcq:v2': JSON.stringify({ [single.id]: [1, today, ...single.answer] }) });
+  dom({ 'cswork:oa-mcq:v1': old, 'cswork:oa-mcq:v2': JSON.stringify({ [single.id]: [1, today, ...single.answer] }) });
   globalThis.fetch = async (url, init) => {
     calls.push([String(url), init?.method ?? 'GET', init?.body]);
     if (String(url).startsWith('/api/oj/mcq/stats')) return Response.json({ items: { [web.id]: { n: 40, right: 10, picks: [5, 10, 20, 5] } } });
-    if (String(url) === '/api/tickets') return Response.json({ id: 'ticket-1' }, { status: 201 });
     if (init?.method) return Response.json({});
     return Response.json({ target: 'mcq:answers', body: JSON.stringify(note), updatedAt: 1 });
   };
@@ -334,20 +333,6 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
   // Shares for the revealed question, asked for once.
   assert.deepEqual(calls.filter(([u]) => u.startsWith('/api/oj/mcq/stats')).map(([u]) => u), [`/api/oj/mcq/stats?ids=${web.id}`]);
   assert.match(document.body.textContent, /25% of 40 people got it right · 50% picked C/);
-
-  // Report an issue: a reason and a note, filed as a ticket with the question's ref.
-  const form = document.querySelector('.report-issue form');
-  await act(async () => {
-    form.querySelector('select').value = '1';
-    form.querySelector('select').dispatchEvent(new win.Event('change', { bubbles: true }));
-    Object.getOwnPropertyDescriptor(win.HTMLTextAreaElement.prototype, 'value').set.call(form.querySelector('textarea'), 'Two answers fit.');
-    form.querySelector('textarea').dispatchEvent(new win.Event('input', { bubbles: true }));
-  });
-  await act(async () => form.querySelector('button[type="submit"]').click());
-  await settle();
-  const ticket = calls.find(([u]) => u === '/api/tickets');
-  assert.deepEqual(JSON.parse(ticket[2]), { ref: `mcq:${web.id}`, title: 'Ambiguous question', body: 'Two answers fit.' });
-  assert.equal(document.querySelector('.report-issue-sent a').getAttribute('href'), '/?view=tickets&ticket=ticket-1');
 
   // A first answer signed in also counts toward the shares.
   const [seen, first] = document.querySelectorAll('.oa-mcq-list > li');
@@ -367,7 +352,7 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
   assert.equal(answers().length, 1);
   root.unmount();
 
-  // Signed out: corrections ask to sign in, and nothing is posted for the shares.
+  // Signed out: nothing is posted for the shares.
   dom({ 'cswork:oa-mcq:v2': JSON.stringify(note) });
   calls.length = 0;
   globalThis.fetch = async (url, init) => {
@@ -375,7 +360,6 @@ test("practice: ?topic= starts filtered, a missed pick says why, site-wide share
     return new Response('{}', { status: 401 });
   };
   const guest = await render(createElement(McqPractice, { items, zh: false }));
-  assert.equal(document.querySelector('.report-issue-link').getAttribute('href'), '/?view=account');
   assert.equal(calls.filter(([, method]) => method === 'POST').length, 0);
   guest.unmount();
   globalThis.fetch = realFetch;

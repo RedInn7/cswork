@@ -4,7 +4,6 @@ import type { Person } from './auth';
 import { database } from './env';
 import { sqlite } from '@/db/sqlite';
 import { rows, one, requireTeacher, HttpError, auditStatement } from './http';
-import { CONTENT_TICKET } from './lms-support';
 import {
   cursorFrom,
   nextCursor,
@@ -206,18 +205,13 @@ export async function dashboard(p: Person) {
   requireTeacher(p);
   const now = Date.now();
   const counts = await one(
-    "SELECT (SELECT COUNT(*) FROM tickets WHERE status='open') AS openTickets,(SELECT COUNT(*) FROM tickets WHERE status='waiting') AS waitingTickets,(SELECT COUNT(*) FROM reviews WHERE status='pending') AS pendingReviews,(SELECT COUNT(*) FROM user u LEFT JOIN profiles p ON p.id=u.id WHERE COALESCE(p.role,'student')!='teacher') AS students,(SELECT COUNT(*) FROM grants WHERE revoked_at IS NULL AND (expires_at IS NULL OR expires_at>?)) AS activeGrants",
+    "SELECT (SELECT COUNT(*) FROM reviews WHERE status='pending') AS pendingReviews,(SELECT COUNT(*) FROM user u LEFT JOIN profiles p ON p.id=u.id WHERE COALESCE(p.role,'student')!='teacher') AS students,(SELECT COUNT(*) FROM grants WHERE revoked_at IS NULL AND (expires_at IS NULL OR expires_at>?)) AS activeGrants",
     now,
   );
   return {
     counts,
-    // Learners' questions first, so content corrections never push them out of the queue.
-    tickets: await rows(
-      `SELECT t.*,p.name,p.email,c.title AS course_title FROM tickets t LEFT JOIN profiles p ON p.id=t.user_id LEFT JOIN courses c ON c.id=t.course_id WHERE status='open' ORDER BY ${CONTENT_TICKET},t.updated_at,t.id LIMIT 20`,
-    ),
     reviews: await rows(
       "SELECT r.*,p.name,l.title AS lesson_title FROM reviews r LEFT JOIN profiles p ON p.id=r.user_id LEFT JOIN lessons l ON l.id=r.lesson_id WHERE r.status='pending' ORDER BY r.updated_at,r.id LIMIT 20",
     ),
-    staff: await rows("SELECT id,name FROM profiles WHERE role='teacher'"),
   };
 }

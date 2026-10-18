@@ -98,7 +98,6 @@ const VIEW_NAMES: Record<string, [string, string]> = {
   courses: ['我的课程', 'My Courses'],
   knowledge: ['算法知识点', 'Algorithm Concepts'],
   lesson: ['课时', 'Lesson'],
-  tickets: ['我的工单', 'Support'],
   account: ['账户', 'Account'],
   library: ['公开资料库', 'Public library'],
 };

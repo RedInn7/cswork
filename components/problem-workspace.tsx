@@ -47,7 +47,6 @@ import {
   Lock,
   Maximize,
   Maximize2,
-  MessageSquare,
   Minimize,
   Minimize2,
   Play,
@@ -186,7 +185,6 @@ type WorkspaceProps = {
   problem: ProblemSummary;
   boot: Boot;
   navigate: (view: string, extra?: Record<string, string>) => void;
-  ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
   /** ?mock=<session id>: the problem is a question of a timed mock OA. */
   mock?: string;
@@ -291,7 +289,6 @@ function Workspace({
   problem: initialProblem,
   boot,
   navigate,
-  ask,
   refresh,
   mock,
   room,
@@ -3332,21 +3329,6 @@ function Workspace({
               }}
             />
           )}
-          <button
-            className="cs-top-button"
-            aria-label={t('报告题目问题 / 提问', 'Report a problem / Ask')}
-            title={t('报告题目问题 / 提问', 'Report a problem / Ask')}
-            onClick={() =>
-              // No lessonId: the problem's course may be hidden (owner-only mode).
-              ask({
-                problemId: problem.id,
-                ...(submission ? { submissionId: submission.id } : {}),
-              })
-            }
-          >
-            <MessageSquare size={15} />
-            <span>{t('报告题目问题 / 提问', 'Report a problem / Ask')}</span>
-          </button>
           {courseVisible && !examMode && (
             <button
               className="cs-top-button"

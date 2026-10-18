@@ -1,4 +1,4 @@
-import type { Lesson, Ticket, Review } from './types';
+import type { Lesson, Review } from './types';
 export type LmsPage<T> = {
   items: T[];
   nextCursor: string | null;
@@ -49,11 +49,6 @@ export type LmsLessonEditor = {
     createdAt: number;
     createdBy: string | null;
   }[];
-};
-export type LmsTicket = Ticket & {
-  revision: number;
-  course_id: string | null;
-  course_title?: string;
 };
 export type LmsReviewEvent = {
   revision: number;

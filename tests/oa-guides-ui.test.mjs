@@ -93,7 +93,6 @@ test('a guided OA problem shows the hint ladder, not the hint box, and an editor
           problem: { id: ID, title: 'Distinct digits', titleEn: 'Distinct digits', difficulty: '简单', tags: [], lessonId: 'lesson', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'student' }, courses: [] },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),

@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import type { Course, Lesson, Progress } from '@/lib/types';
-import type { TicketRow } from './lms-records';
 import { person, type Person } from './auth';
 import { database, setting } from './env';
 import {
@@ -18,7 +17,7 @@ import {
   limit,
 } from './http';
 import { seed } from './seed';
-import { canSeeProblem, ensureOjSeed, listProblemSummaries } from './oj-problems';
+import { ensureOjSeed, listProblemSummaries } from './oj-problems';
 import { handleContent } from './content-library';
 import { handleMetrics } from './metrics';
 import { health } from './health';
@@ -37,19 +36,13 @@ import {
   visibleCourseSql,
 } from './course-visibility';
 import { liveLesson, courseAccess } from './lms-common';
-import { REMOVED_KINDS } from './notify';
 import {
-  TICKET_REF,
-  ticketDetail,
-  replyTicket,
-  changeTicket,
   createReview,
   feedbackReview,
   releasePage,
 } from './lms-support';
 import { grantCourse, revokeGrant, dashboard } from './lms-roster';
 import { lessonEditor, saveLessonDraft, publishLesson } from './lms-courses';
-import { uploadAttachment, downloadAttachment } from './files';
 import { dailyProblem } from './daily-problem';
 import { purchasedFreezes } from './points';
 import { aiEnabled } from './ai-tutor';
@@ -61,12 +54,6 @@ const id = z.string().min(1).max(100),
   long = z.string().trim().min(1).max(12000);
 const lessonSelect =
   'id,course_id,title,summary,section,position,version,published,revision,(stream_uid IS NOT NULL OR json_array_length(video_asset_ids)>0) as has_video,updated_at';
-async function ticketFor(p: Person, id: string) {
-  const t = await one<TicketRow>('SELECT * FROM tickets WHERE id=?', id);
-  if (!t || (t.user_id !== p.id && p.role !== 'teacher'))
-    throw new HttpError(404, '工单不存在');
-  return t;
-}
 const lessonFor = liveLesson;
 function services() {
   const google = !!(
@@ -142,14 +129,14 @@ export async function bootstrap(p: Person | null, lite = false) {
     purchasedFreezes: p ? purchasedFreezes(p.id) : [],
     notifications: p
       ? await rows(
-          `SELECT * FROM notifications WHERE user_id=?${REMOVED_KINDS}${courseNotificationFilter(p)} ORDER BY created_at DESC LIMIT 50`,
+          `SELECT * FROM notifications WHERE user_id=?${courseNotificationFilter(p)} ORDER BY created_at DESC LIMIT 50`,
           p.id,
         )
       : [],
     unreadNotifications: p
       ? (
           await one<{ count: number }>(
-            `SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL${REMOVED_KINDS}${courseNotificationFilter(p)}`,
+            `SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL${courseNotificationFilter(p)}`,
             p.id,
           )
         )?.count || 0
@@ -214,15 +201,6 @@ export async function handle(request: Request) {
       if (resource === 'bootstrap')
         return json(await bootstrap(p, url.searchParams.get('lite') === '1'));
       requirePerson(p);
-      if (resource === 'attachments' && resourceId) {
-        const attachment = await one<{
-          id: string;
-          ticket_id: string;
-          name: string;
-        }>('SELECT * FROM attachments WHERE id=?', resourceId);
-        if (!attachment) throw new HttpError(404, '附件不存在');
-        await ticketFor(p, attachment.ticket_id);
-        return await downloadAttachment(attachment.id, attachment.name);
       }
       if (resource === 'lessons' && resourceId) {
         // The free preview lesson opens without the course (and so does its Stream video).
@@ -283,17 +261,6 @@ export async function handle(request: Request) {
           }
         return json(found);
       }
-      if (resource === 'tickets') {
-        if (resourceId) {
-          return json(await ticketDetail(p, resourceId));
-        }
-        return json(
-          await rows(
-            'SELECT * FROM tickets WHERE user_id=? ORDER BY updated_at DESC LIMIT 100',
-            p.id,
-          ),
-        );
-      }
       if (resource === 'releases')
         return json((await releasePage(p, url)).items);
       if (resource === 'submissions' && resourceId)
@@ -315,9 +282,6 @@ export async function handle(request: Request) {
       if (resource === 'teacher') {
         requireTeacher(p);
         return json({
-          tickets: await rows(
-            "SELECT t.*,p.name,p.email FROM tickets t JOIN profiles p ON p.id=t.user_id ORDER BY CASE WHEN t.status='open' THEN 0 WHEN t.status='waiting' THEN 1 ELSE 2 END,t.updated_at ASC LIMIT 100",
-          ),
           reviews: await rows(
             "SELECT r.*,p.name FROM reviews r JOIN profiles p ON p.id=r.user_id ORDER BY CASE WHEN r.status='pending' THEN 0 ELSE 1 END,r.created_at ASC LIMIT 100",
           ),
@@ -327,9 +291,6 @@ export async function handle(request: Request) {
           ),
           grants: await rows(
             'SELECT * FROM grants ORDER BY created_at DESC LIMIT 100',
-          ),
-          staff: await rows(
-            "SELECT id,name FROM profiles WHERE role='teacher'",
           ),
           students: await one(
             "SELECT COUNT(*) as count FROM profiles WHERE role='student'",
@@ -342,11 +303,6 @@ export async function handle(request: Request) {
     }
     requirePerson(p);
     await limit(p, 'write', 90);
-    if (resource === 'tickets' && resourceId && action === 'attachments') {
-      await ticketFor(p, resourceId);
-      await limit(p, 'upload', 20, 3600);
-      return await uploadAttachment(request, p, resourceId);
-    }
     const data = await body(request);
     if (resource === 'progress' && request.method === 'POST') {
       const d = z
@@ -382,84 +338,6 @@ export async function handle(request: Request) {
         .bind(p.id, d.lessonId, now, ...Object.values(fields))
         .run();
       return json({ saved: true });
-    }
-    if (resource === 'tickets' && request.method === 'POST') {
-      if (!resourceId) {
-        const d = z
-          .object({
-            title: short,
-            body: long,
-            lessonId: id.optional(),
-            courseId: id.optional(),
-            submissionId: id.optional(),
-            problemId: id.optional(),
-            // A correction on public content: an MCQ, an SD chapter, a course or a /learn lesson.
-            ref: z.string().regex(TICKET_REF).optional(),
-            videoPosition: z.number().min(0).max(86400).optional(),
-            videoAssetId: id.optional(),
-          })
-          .parse(data);
-        await limit(p, 'ticket', 10, 3600);
-        if (d.courseId) requireCourseVisible(p, d.courseId);
-        const ticketLesson = d.lessonId ? await lessonFor(p, d.lessonId) : null;
-        if (
-          d.videoAssetId &&
-          (!ticketLesson ||
-            !(JSON.parse(ticketLesson.video_asset_ids) as string[]).includes(
-              d.videoAssetId,
-            ))
-        )
-          throw new HttpError(400, '视频不属于此章节');
-        if (
-          d.courseId &&
-          !(await one(
-            `SELECT id FROM courses WHERE id=? ${p.role === 'teacher' ? '' : 'AND published=1'}`,
-            d.courseId,
-          ))
-        )
-          throw new HttpError(404, '课程不存在');
-        if (d.submissionId) {
-          const s = await one<{ user_id: string }>(
-            'SELECT user_id FROM submissions WHERE id=?',
-            d.submissionId,
-          );
-          if (!s || s.user_id !== p.id) throw new HttpError(404, '提交不存在');
-        }
-        if (d.problemId && !(await canSeeProblem(p, d.problemId)))
-          throw new HttpError(404, '题目不存在');
-        const tid = crypto.randomUUID();
-        db.prepare(
-          'INSERT INTO tickets(id,user_id,title,body,lesson_id,course_id,submission_id,video_position,video_asset_id,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
-        )
-          .bind(
-            tid,
-            p.id,
-            // ponytail: tickets has no problem_id column; the title tag serves
-            // lists, search and per-problem counts until one is worth a migration.
-            d.problemId || d.ref
-              ? `[${d.problemId || d.ref}] ${d.title}`.slice(0, 180)
-              : d.title,
-            d.body,
-            d.lessonId || null,
-            d.courseId || null,
-            d.submissionId || null,
-            d.videoPosition ?? null,
-            d.videoAssetId || null,
-            'open',
-            now,
-            now,
-          )
-          .run();
-        return json({ id: tid }, 201);
-      }
-      if (action === 'reply') {
-        await replyTicket(p, resourceId, data, true);
-        return json({ saved: true });
-      }
-      if (action === 'status') {
-        await changeTicket(p, resourceId, data, true);
-        return json({ saved: true });
-      }
     }
     if (resource === 'submissions' && request.method === 'POST') {
       const d = z

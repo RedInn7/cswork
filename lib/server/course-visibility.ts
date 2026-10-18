@@ -49,8 +49,11 @@ export function visibleCourseSql(p: Person | null, column: string) {
     : ' AND 0';
 }
 
-/** Notices left by removed features, whose links lead nowhere now: the discussion board's threads. */
-const REMOVED_NOTICES = ` AND href NOT LIKE '/?view=discuss%'`;
+/**
+ * Notices left by removed features, whose links lead nowhere now: the discussion board's threads,
+ * support ticket replies and direct messages.
+ */
+const REMOVED_NOTICES = ` AND href NOT LIKE '/?view=discuss%' AND href NOT LIKE '/?view=tickets%' AND kind<>'dm'`;
 
 /** SQL clause hiding notifications about courses this person may not see, and those of removed features. */
 export function courseNotificationFilter(p: Person | null) {

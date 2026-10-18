@@ -16,9 +16,6 @@ export type Notice = {
   now?: number;
 };
 
-/** Kinds left by features since removed (direct messages): their links 404, so inboxes leave them out. */
-export const REMOVED_KINDS = ` AND kind NOT IN ('dm')`;
-
 /** Writes an in-app notification; true when a new row was created (false: an `id` refreshed). */
 export function notify({ id, userId, kind, title, body, href, now = Date.now() }: Notice): boolean {
   const db = sqlite();
