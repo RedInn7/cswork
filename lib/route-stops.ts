@@ -138,20 +138,42 @@ export const STOP_NAMES: Record<string, [string, string]> = {
 };
 /** The step-by-step animations (lib/algorithm-demo.ts) shown on a stop's /topics page, in order. */
 export const STOP_DEMOS: Partial<Record<string, DemoKind[]>> = {
+  'array-foundations': ['array-ops', 'sort-quick'],
+  'hash-counting': ['hash-table'],
+  'string-processing': ['kmp'],
   'two-pointers-windows': ['two-pointers', 'sliding-window'],
+  'prefix-intervals': ['prefix-sum'],
   'binary-search': ['binary-search'],
   'stacks-heaps': ['monotonic-stack', 'heap'],
+  'greedy-scheduling': ['interval-greedy'],
+  'linked-list': ['linked-list'],
+  'binary-tree': ['tree-traversal'],
+  'binary-tree-paths': ['tree-traversal'],
+  'binary-tree-build': ['tree-traversal'],
+  'binary-search-tree': ['bst'],
   'grid-traversal': ['bfs', 'dfs'],
   'graph-connectivity': ['union-find'],
   'graph-topological': ['topo-sort'],
   'graph-shortest-path': ['dijkstra'],
+  'graph-spanning-tree': ['kruskal'],
   'backtracking-enumeration': ['backtracking'],
+  'backtracking-strings': ['backtracking'],
+  'backtracking-constraints': ['n-queens'],
   'dp-foundations': ['dp'],
   'dp-knapsack': ['dp'],
   'dp-grid': ['dp-table'],
   'dp-subsequence': ['dp-table'],
   'dp-string': ['dp-table'],
+  'dp-palindrome': ['interval-dp'],
+  'dp-state-machine': ['stock-dp'],
+  'dp-stock': ['stock-dp'],
+  // Weighted interval scheduling is not greedy: sort by end, binary-search the last compatible job, then DP.
+  'dp-scheduling': ['binary-search', 'dp-table'],
+  'dp-search-game': ['tree-traversal'],
+  'design-containers': ['tree-traversal'],
+  'design-cache-index': ['lru-cache'],
   'design-trie-serialization': ['trie'],
+  'bits-math': ['bits'],
 };
 /** A stop's animations, none for an unknown slug. */
 export const stopDemos = (slug: string) => (Object.hasOwn(STOP_DEMOS, slug) ? STOP_DEMOS[slug]! : []);
