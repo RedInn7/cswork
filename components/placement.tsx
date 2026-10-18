@@ -353,6 +353,9 @@ export function Placement({ zh }: { zh: boolean }) {
             'This quiz checks whether you can tell which technique a problem calls for. It does not test writing code and is not a measure of coding skill. The level is the hardest problem you answered right; problems without a contest rating count by difficulty (Easy 1200, Medium 1600, Hard 2000). Treat it as a rough guide.',
           )}
         </p>
+        <p className="pl-note">
+          <a href="/guide/practice">{t('接下来怎么练：计时、提示、复习和模拟 OA', 'What next: how to practise with the timer, hints, reviews and mock OAs')}</a>
+        </p>
       </div>
     </>,
   );

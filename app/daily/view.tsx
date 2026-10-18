@@ -137,6 +137,9 @@ export function DailyView({
         <a href="/topics">
           {zh ? '代码模板速查' : 'Code templates'}
         </a>
+        <a href="/guide/practice">
+          {zh ? '怎么练习' : 'How to practise'}
+        </a>
         <a href="/oa">
           {zh ? '公司 OA' : 'Company OAs'}
         </a>
