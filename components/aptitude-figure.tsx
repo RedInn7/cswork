@@ -11,13 +11,13 @@ export const APT_POINTS: Record<AptShape, string> = {
 
 /** A cell's shapes inside the 30×30 box at (x, y): flipped left-right first, then turned. */
 function Cell({ cell, x = 0, y = 0 }: { cell: AptCell; x?: number; y?: number }) {
-  const size = [20, 13, 9][cell.n - 1] ?? 9;
-  const width = cell.n * size + (cell.n - 1);
+  const size = [20, 12, 8][cell.n - 1] ?? 8;
+  const width = cell.n * size + (cell.n - 1) * 1.5;
   const orient = `rotate(${cell.rot} 5 5)${cell.flip ? ' translate(10 0) scale(-1 1)' : ''}`;
   return (
     <>
       {Array.from({ length: cell.n }, (_, i) => (
-        <g key={i} transform={`translate(${x + (30 - width) / 2 + i * (size + 1)} ${y + (30 - size) / 2}) scale(${size / 10})`}>
+        <g key={i} transform={`translate(${x + (30 - width) / 2 + i * (size + 1.5)} ${y + (30 - size) / 2}) scale(${size / 10})`}>
           <polygon points={APT_POINTS[cell.shape]} transform={orient} className={`apt-fill-${cell.fill}`} />
         </g>
       ))}
@@ -58,10 +58,10 @@ export function AptitudeFigure({ fig, zh }: { fig: AptFig; zh: boolean }) {
   if (fig.kind === 'transform') {
     const label = `${zh ? '图形：' : 'Figure: '}${say(fig.from)}${fig.axis ? (zh ? '。虚线是镜子' : '. The dashed line is the mirror') : ''}`;
     return (
-      <svg className="apt-fig apt-fig-transform" viewBox={fig.axis === 'v' ? '0 0 42 30' : fig.axis === 'h' ? '0 0 30 42' : '0 0 30 30'} role="img" aria-label={label}>
+      <svg className="apt-fig apt-fig-transform" viewBox={fig.axis === 'v' ? '0 0 36 30' : fig.axis === 'h' ? '0 0 30 36' : '0 0 30 30'} role="img" aria-label={label}>
         <Cell cell={fig.from} />
-        {fig.axis === 'v' && <line x1="37" y1="1" x2="37" y2="29" className="apt-mirror" />}
-        {fig.axis === 'h' && <line x1="1" y1="37" x2="29" y2="37" className="apt-mirror" />}
+        {fig.axis === 'v' && <line x1="32" y1="2" x2="32" y2="28" className="apt-mirror" />}
+        {fig.axis === 'h' && <line x1="2" y1="32" x2="28" y2="32" className="apt-mirror" />}
       </svg>
     );
   }
