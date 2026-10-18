@@ -46,10 +46,16 @@ export function TemplateLangMemory() {
       root.dataset.codeLang = lang;
       for (const d of all) d.open = d.dataset.lang === lang;
     };
-    const openTarget = () => {
-      const id = /^#(variant-[a-z0-9-]+)$/.exec(location.hash)?.[1];
+    const openTarget = (hash: string) => {
+      const id = /^#(variant-[a-z0-9-]+)$/.exec(hash)?.[1];
       const target = id && document.getElementById(id);
       if (target instanceof HTMLDetailsElement && root.contains(target)) target.open = true;
+    };
+    const onHash = () => openTarget(location.hash);
+    // A link to the variant the hash already names fires no hashchange: open it on the click.
+    const onClick = (event: Event) => {
+      const link = event.target instanceof Element && event.target.closest('a[href^="#variant-"]');
+      if (link) openTarget(link.getAttribute('href') ?? '');
     };
     // Opening a group's language picks it everywhere; apply()'s own opens match and stop there.
     const onToggle = (event: Event) => {
@@ -59,15 +65,17 @@ export function TemplateLangMemory() {
     };
     const onLang = (event: Event) => apply(eventLang(event));
     apply(readCodeLang());
-    openTarget();
+    onHash();
     // toggle does not bubble: listen in the capture phase.
     root.addEventListener('toggle', onToggle, true);
+    root.addEventListener('click', onClick);
     window.addEventListener(CODE_LANG_EVENT, onLang);
-    window.addEventListener('hashchange', openTarget);
+    window.addEventListener('hashchange', onHash);
     return () => {
       root.removeEventListener('toggle', onToggle, true);
+      root.removeEventListener('click', onClick);
       window.removeEventListener(CODE_LANG_EVENT, onLang);
-      window.removeEventListener('hashchange', openTarget);
+      window.removeEventListener('hashchange', onHash);
     };
   }, []);
   return <span ref={mark} hidden />;
