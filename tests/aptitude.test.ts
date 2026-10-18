@@ -34,7 +34,7 @@ const exact = (x: number) => Math.abs(x * 10 - Math.round(x * 10)) < 1e-9;
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
 const ratio = (a: number, b: number) => `${a / gcd(a, b)} : ${b / gcd(a, b)}`;
 
-test('every kind: same seed, same question; four distinct choices in both languages; one valid answer', () => {
+void test('every kind: same seed, same question; four distinct choices in both languages; one valid answer', () => {
   for (const kind of APT_KINDS) {
     for (let s = 0; s < SEEDS; s++) {
       const id = `apt-${kind}-${s * 7919 + 13}`;
@@ -58,7 +58,7 @@ test('every kind: same seed, same question; four distinct choices in both langua
   }
 });
 
-test('ids: only known kinds and canonical seeds', () => {
+void test('ids: only known kinds and canonical seeds', () => {
   for (const bad of ['apt-nope-1', 'apt-percent-01', 'apt-percent-4294967296', 'apt-percent-', 'apt-percent-1x', 'mcq-os-1', 'apt-Percent-1'])
     assert.equal(aptitudeById(bad), null, bad);
   assert.equal(aptKind('apt-seating-4294967295'), 'seating');
@@ -155,12 +155,12 @@ function solve(q: AptQuestion): string {
   throw new Error(`no solver for: ${s}`);
 }
 
-test('numerical kinds and directions: each answer recomputed from the question text', () => {
+void test('numerical kinds and directions: each answer recomputed from the question text', () => {
   for (const kind of ['percent', 'profit', 'ratio', 'work', 'speed', 'interest', 'direction'] as const)
     for (const q of all(kind)) assert.equal(right(q), solve(q), q.id);
 });
 
-test('bar charts: the answer recomputed from the plotted values', () => {
+void test('bar charts: the answer recomputed from the plotted values', () => {
   for (const q of all('chart')) {
     assert.ok(q.fig?.kind === 'bars');
     const { labels, series } = q.fig;
@@ -183,7 +183,7 @@ test('bar charts: the answer recomputed from the plotted values', () => {
   }
 });
 
-test('series: every rule that fits the terms predicts the answer, and none predicts a wrong choice', () => {
+void test('series: every rule that fits the terms predicts the answer, and none predicts a wrong choice', () => {
   for (const q of all('series')) {
     const t = /next\? (.+), \?$/.exec(q.en.q)![1].split(', ').map(Number);
     const n = t.length;
@@ -205,17 +205,17 @@ test('series: every rule that fits the terms predicts the answer, and none predi
         const c = t[0] - s ** p;
         if (t.every((x, i) => x === (s + i) ** p + c)) preds.push((s + n) ** p + c);
       }
-    assert.ok(preds.length, `${q.id}: no rule fits ${t}`);
-    for (const p of preds) assert.equal(String(p), right(q), `${q.id}: ${t} → ${preds}`);
+    assert.ok(preds.length, `${q.id}: no rule fits ${t.join(', ')}`);
+    for (const p of preds) assert.equal(String(p), right(q), `${q.id}: ${t.join(', ')} → ${preds.join(', ')}`);
   }
 });
 
-test('letter codes: the one rule that maps the example word gives the answer and no other choice', () => {
-  const shift = (w: string, k: (i: number) => number) => [...w].map((c, i) => String.fromCharCode(65 + ((((c.charCodeAt(0) - 65 + k(i)) % 26) + 26) % 26))).join('');
+void test('letter codes: the one rule that maps the example word gives the answer and no other choice', () => {
+  const shift = (w: string, k: (i: number) => number) => w.split('').map((c, i) => String.fromCharCode(65 + ((((c.charCodeAt(0) - 65 + k(i)) % 26) + 26) % 26))).join('');
   const rules: ((w: string) => string)[] = [];
   for (let k = 1; k < 26; k++) {
     rules.push((w) => shift(w, () => k));
-    rules.push((w) => shift([...w].reverse().join(''), () => k));
+    rules.push((w) => shift(w.split('').reverse().join(''), () => k));
     rules.push((w) => shift(w, (i) => k + i));
   }
   for (const q of all('coding')) {
@@ -226,7 +226,7 @@ test('letter codes: the one rule that maps the example word gives the answer and
   }
 });
 
-test('syllogisms: exactly the answer passes the classical rules (every group non-empty)', () => {
+void test('syllogisms: exactly the answer passes the classical rules (every group non-empty)', () => {
   const names = 'painters|singers|runners|writers|chess players|cooks|drivers|poets|dancers|doctors';
   const statement = new RegExp(`^(All|No|Some) (${names}) are (not )?(${names})$`);
   type S = { form: 'all' | 'no' | 'some' | 'not'; x: string; y: string };
@@ -257,7 +257,7 @@ test('syllogisms: exactly the answer passes the classical rules (every group non
   }
 });
 
-test('seating: brute force over all 120 seatings gives exactly the answer', () => {
+void test('seating: brute force over all 120 seatings gives exactly the answer', () => {
   const perms = (xs: number[]): number[][] => (xs.length < 2 ? [xs] : xs.flatMap((x, i) => perms(xs.filter((_, j) => j !== i)).map((p) => [x, ...p])));
   const seatings = perms([0, 1, 2, 3, 4]); // seatings[k][seat] = person
   for (const q of all('seating')) {
@@ -300,7 +300,7 @@ function corners(cell: Pick<AptCell, 'shape' | 'rot' | 'flip'>) {
 }
 const key = (pts: number[][]) => pts.map(([x, y]) => `${Math.round(x * 100) / 100 || 0},${Math.round(y * 100) / 100 || 0}`).sort().join(' ');
 
-test('rotation and mirror images: moving the actual corners matches the answer and only the answer', () => {
+void test('rotation and mirror images: moving the actual corners matches the answer and only the answer', () => {
   for (const kind of ['rotate', 'mirror'] as const)
     for (const q of all(kind)) {
       assert.ok(q.fig?.kind === 'transform', q.id);
@@ -318,7 +318,7 @@ test('rotation and mirror images: moving the actual corners matches the answer a
     }
 });
 
-test('figure matrix: the answer completes a rule for every attribute; each wrong choice changes one attribute and breaks it', () => {
+void test('figure matrix: the answer completes a rule for every attribute; each wrong choice changes one attribute and breaks it', () => {
   const attrs = ['shape', 'n', 'fill', 'rot'] as const;
   const rows = (g: AptCell[], a: (typeof attrs)[number]) => [0, 1, 2].map((r) => [0, 1, 2].map((c) => g[r * 3 + c][a]));
   const ok = (g: AptCell[], a: (typeof attrs)[number]) => {
@@ -327,7 +327,7 @@ test('figure matrix: the answer completes a rule for every attribute; each wrong
     const same = (xs: unknown[]) => xs.every((x) => x === xs[0]);
     const perm = (xs: unknown[]) => new Set(xs).size === 3;
     if (m.every(same) || cols.every(same)) return true;
-    if (a !== 'rot') return m.every(perm) && cols.every(perm) && m.every((r) => [...r].sort().join() === [...m[0]].sort().join());
+    if (a !== 'rot') return m.every(perm) && cols.every(perm) && m.every((r) => r.map(String).sort((x, y) => x.localeCompare(y)).join() === m[0].map(String).sort((x, y) => x.localeCompare(y)).join());
     const step = (xs: number[]) => xs.every((x, i) => i === 0 || (x - xs[i - 1] + 360) % 360 === 90);
     return m.every((r) => step(r as number[])) && (cols.every((c) => same(c)) || cols.every((c) => step(c as number[])));
   };
@@ -346,7 +346,7 @@ test('figure matrix: the answer completes a rule for every attribute; each wrong
   }
 });
 
-test('speed set: 50 distinct ids, 18 / 18 / 14 per section, in order when sectioned', () => {
+void test('speed set: 50 distinct ids, 18 / 18 / 14 per section, in order when sectioned', () => {
   for (const seed of [1, 42, 2 ** 31]) {
     const mixed = speedSet(seed);
     const split = speedSet(seed, true);
@@ -363,7 +363,7 @@ test('speed set: 50 distinct ids, 18 / 18 / 14 per section, in order when sectio
   assert.equal(SPEED.count * SPEED.perQ, SPEED.minutes * 60_000);
 });
 
-test('scoring: a third off per miss with negative marking, so guessing averages zero', () => {
+void test('scoring: a third off per miss with negative marking, so guessing averages zero', () => {
   const ids = speedSet(7);
   const answers = ids.map((id) => aptitudeById(id)!.answer[0]);
   const picks = answers.map((a, i) => (i < 30 ? a : i < 39 ? (a + 1) % 4 : null));
@@ -373,7 +373,7 @@ test('scoring: a third off per miss with negative marking, so guessing averages 
   assert.equal(1 - 3 * SPEED.penalty, 0);
 });
 
-test('pace report: slow kinds, slow misses, unreached questions and the advice', () => {
+void test('pace report: slow kinds, slow misses, unreached questions and the advice', () => {
   const ids = speedSet(11);
   const answers = ids.map((id) => aptitudeById(id)!.answer[0]);
   const slow = ids.map((id) => aptKind(id) === 'seating');
@@ -390,7 +390,7 @@ test('pace report: slow kinds, slow misses, unreached questions and the advice',
   assert.deepEqual(calm.sections.map((s) => s.avg), [15, 15, 15]);
 });
 
-test('review: a right answer to a new question writes nothing; a miss, or one already in review, does', () => {
+void test('review: a right answer to a new question writes nothing; a miss, or one already in review, does', () => {
   const review = { 'mcq-os-1': [1, 100, 2] };
   assert.equal(aptReview(review, 'apt-percent-5', [2], [2], 200), review);
   assert.deepEqual(aptReview(review, 'apt-percent-5', [2], [1], 200), { ...review, 'apt-percent-5': [0, 200, 1] });
@@ -398,7 +398,7 @@ test('review: a right answer to a new question writes nothing; a miss, or one al
   assert.deepEqual(aptReview(due, 'apt-percent-5', [2], [2], 200), { 'apt-percent-5': [1, 200, 2] });
 });
 
-test('speed clock: next, a section running out does not lend its time, and time up hands the test in', () => {
+void test('speed clock: next, a section running out does not lend its time, and time up hands the test in', () => {
   const t0 = 1_000_000;
   let s = newSpeed(3, true, true, t0);
   s = speedStep({ ...s, picks: [1, ...s.picks.slice(1)] }, t0 + 5_000);

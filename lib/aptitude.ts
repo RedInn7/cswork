@@ -657,8 +657,8 @@ function series(r: R): Draft {
 
 const WORDS = ['CAT', 'DOG', 'SUN', 'MAP', 'KEY', 'BOOK', 'CODE', 'DATA', 'LOOP', 'TREE', 'NODE', 'BYTE', 'LINK', 'PATH', 'GRAPH', 'STACK', 'QUEUE', 'ARRAY', 'MOUSE', 'PIXEL'];
 const shiftBy = (w: string, k: (i: number) => number) =>
-  [...w].map((ch, i) => String.fromCharCode(65 + ((((ch.charCodeAt(0) - 65 + k(i)) % 26) + 26) % 26))).join('');
-const rev = (w: string) => [...w].reverse().join('');
+  w.split('').map((ch, i) => String.fromCharCode(65 + ((((ch.charCodeAt(0) - 65 + k(i)) % 26) + 26) % 26))).join('');
+const rev = (w: string) => w.split('').reverse().join('');
 
 function coding(r: R): Draft {
   const [w1, w2] = shuffle(r, [...WORDS]).slice(0, 2);
@@ -680,7 +680,7 @@ function coding(r: R): Draft {
   const flip = type === 1 ? rev : (w: string) => w;
   const code = (w: string, by = k) => shiftBy(flip(w), () => by);
   const step: Tx = [`${k > 0 ? '后' : '前'}移 ${Math.abs(k)} 位`, `${Math.abs(k)} place${Math.abs(k) > 1 ? 's' : ''} ${k > 0 ? 'forward' : 'back'}`];
-  const sample = [...flip(w1)].slice(0, 3).map((ch) => `${ch}→${shiftBy(ch, () => k)}`).join(', ');
+  const sample = flip(w1).split('').slice(0, 3).map((ch) => `${ch}→${shiftBy(ch, () => k)}`).join(', ');
   return {
     q: [`在某种密码中，${w1} 写作 ${code(w1)}。按同样的规则，${w2} 写作什么？`, `In a certain code, ${w1} is written as ${code(w1)}. How is ${w2} written in that code?`],
     right: same(code(w2)),

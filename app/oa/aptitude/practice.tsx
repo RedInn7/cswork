@@ -151,7 +151,7 @@ function Drill({ t, zh, viewer }: { t: T; zh: boolean; viewer: string }) {
       <div className="oa-mcq-filters">
         {APT_GROUPS.map((g) => (
           <fieldset key={g.topic}>
-            <legend>{t(...g.name)}</legend>
+            <legend>{t(g.name[0], g.name[1])}</legend>
             {g.kinds.map((k) => (
               <button key={k} type="button" aria-pressed={kind === k} onClick={() => next(k)}>
                 {t(...APT_KIND_NAMES[k])}
@@ -215,7 +215,10 @@ function Speed({ t, zh, viewer, speed, keep }: { t: T; zh: boolean; viewer: stri
   const ids = useMemo(() => (seed === undefined ? [] : speedSet(seed, split)), [seed, split]);
   const questions = useMemo(() => ids.map((id) => aptitudeById(id)!), [ids]);
   const current = useRef(speed);
-  current.current = speed;
+  // The clock and key handlers live across renders; they read the latest test from here.
+  useEffect(() => {
+    current.current = speed;
+  }, [speed]);
   const running = !!speed && !speed.finishedAt;
 
   const choose = (pick: number) => {
