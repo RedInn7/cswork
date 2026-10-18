@@ -405,9 +405,7 @@ export function progressRows(
 }
 
 /** The rows as CSV: UTF-8 with BOM so spreadsheets read Chinese titles, CRLF lines, formulas defused. */
-export const progressCsv = (rows: readonly ProgressRow[]) =>
-  '﻿' +
-  [PROGRESS_COLUMNS, ...rows.map((row) => PROGRESS_COLUMNS.map((key) => row[key]))]
-    .map((row) => row.map((value) => csvCell(String(value ?? ''))).join(','))
-    .join('\r\n') +
-  '\r\n';
+export function progressCsv(rows: readonly ProgressRow[]) {
+  const line = (values: readonly unknown[]) => values.map((value) => csvCell(String(value ?? ''))).join(',');
+  return `\uFEFF${[line(PROGRESS_COLUMNS), ...rows.map((row) => line(PROGRESS_COLUMNS.map((key) => row[key])))].join('\r\n')}\r\n`;
+}

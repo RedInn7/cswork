@@ -230,7 +230,7 @@ void test('progress CSV: BOM, CRLF, formulas defused, lists, marks and no due da
   assert.deepEqual([lc2.mastered, lc2.next_review, lc2.last_grade], [true, null, 'Easy']);
   assert.deepEqual([oa.review_level, oa.mastered, oa.next_review, oa.first_ac, oa.redo, oa.lists], [null, false, null, null, true, null]);
   const csv = progressCsv(rows);
-  assert.ok(csv.startsWith('﻿"problem_id","title","difficulty","line500_stop","lists","first_attempt","first_ac"'));
+  assert.ok(csv.startsWith('\uFEFF"problem_id","title","difficulty","line500_stop","lists","first_attempt","first_ac"'));
   const lines = csv.slice(1).split('\r\n');
   assert.equal(lines.length, 5, 'header, three rows and the final CRLF');
   assert.equal(lines[0].split(',').length, 21);
