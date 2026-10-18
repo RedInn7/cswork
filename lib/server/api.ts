@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { getKnowledgeProgress } from './knowledge-progress';
 import type { Course, Lesson, Progress } from '@/lib/types';
 import type { TicketRow } from './lms-records';
 import { person, type Person } from './auth';
@@ -214,14 +213,6 @@ export async function handle(request: Request) {
       if (resource === 'bootstrap')
         return json(await bootstrap(p, url.searchParams.get('lite') === '1'));
       requirePerson(p);
-      if (resource === 'knowledge' && resourceId === 'progress') {
-        return json(
-          await getKnowledgeProgress(
-            p,
-            new URL(request.url).searchParams.get('lesson') || '',
-          ),
-        );
-      }
       if (resource === 'attachments' && resourceId) {
         const attachment = await one<{
           id: string;
