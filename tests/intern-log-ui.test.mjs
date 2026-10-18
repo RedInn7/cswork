@@ -1,7 +1,8 @@
 // /career/intern (components/intern-log.tsx, components/team-match.tsx): one request loads every
 // brag: note; this week's checklist items show; a week's log is saved on demand; drafts are made in
 // the browser; XYZ bullets go into the resume builder's copy in this browser and wins into the story
-// bank; team-matching cards save brag:teams and rank by weighted mean.
+// bank; team-matching cards save brag:teams and rank by weighted mean; the guide's internship
+// checklist (components/guide-checklist.tsx) labels every item with its week.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
@@ -164,4 +165,17 @@ test('team-matching cards save brag:teams after a pause and rank by weighted mea
   assert.ok(!(removed in after.scores));
   assert.equal($('.intern-ranking'), null);
   await act(async () => root.unmount());
+});
+
+test('the chapter checklist tags each internship item with its week', async () => {
+  const { GuideChecklist } = await import('../components/guide-checklist.tsx');
+  const { CAREER_CHECKLISTS } = await import('../lib/content/career-checklists.ts');
+  const again = createRoot(document.getElementById('root'));
+  await act(async () => again.render(createElement(GuideChecklist, { slug: 'internship', items: CAREER_CHECKLISTS.internship, zh: false })));
+  await settle();
+  const weeks = $$('.guide-checklist li .guide-week').map((s) => s.textContent);
+  assert.equal(weeks.length, CAREER_CHECKLISTS.internship.length);
+  assert.deepEqual([weeks[0], weeks.at(-1)], ['Before day one', 'Final week']);
+  assert.ok(weeks.includes('Midpoint') && weeks.includes('Week 2'));
+  await act(async () => again.unmount());
 });

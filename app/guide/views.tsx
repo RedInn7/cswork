@@ -8,8 +8,8 @@ export const GUIDE_COPY = {
   zh: {
     title: `北美软件工程求职指南：时间线、简历、内推、OA、面试与 offer | ${SITE_NAME}`,
     description:
-      '面向学生和应届生的北美软件工程求职指南：招聘时间线、简历 XYZ 写法与模板、内推、在线笔试、电话面、终面与职级、offer 比较与谈薪基础，以及国际学生签证须知。',
-    kicker: '求职指南 · 8 章',
+      '面向学生和应届生的北美软件工程求职指南：招聘时间线、简历 XYZ 写法与模板、内推、在线笔试、电话面、终面与职级、offer 比较与谈薪基础、实习到转正，以及国际学生签证须知。',
+    kicker: `求职指南 · ${GUIDE_CHAPTERS.length} 章`,
     heading: '从投简历到接 offer，一条线走完。',
     lead: '这份指南按招聘季的顺序排列：先看什么时候该做什么，再逐章准备简历、内推、笔试、面试和 offer。内容由 CSWork 编写，月份和规则都是常见情况，具体以各公司和官方为准。',
     season: '一个典型的招聘季',
@@ -26,8 +26,8 @@ export const GUIDE_COPY = {
   en: {
     title: `Software Engineering Job Search Guide: Timeline, Resume, Referrals, OAs, Interviews & Offers | ${SITE_NAME}`,
     description:
-      'A job search guide for students and new graduates in North America: the recruiting calendar, XYZ resume bullets and a template, referrals, online assessments, phone screens, final rounds and levels, offers and negotiation basics, and visa notes for international students.',
-    kicker: 'CAREER GUIDE · 8 CHAPTERS',
+      'A job search guide for students and new graduates in North America: the recruiting calendar, XYZ resume bullets and a template, referrals, online assessments, phone screens, final rounds and levels, offers and negotiation basics, the internship through to a return offer, and visa notes for international students.',
+    kicker: `CAREER GUIDE · ${GUIDE_CHAPTERS.length} CHAPTERS`,
     heading: 'From the first application to the signed offer.',
     lead: 'The chapters follow the recruiting season: first what to do when, then how to prepare your resume, referrals, assessments, interviews and offer. Written by CSWork; months and rules are typical, and each company and official source has the final word.',
     season: 'A typical recruiting season',
