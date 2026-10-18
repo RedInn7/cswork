@@ -469,7 +469,11 @@ function SpeedResult({ t, zh, speed, ids, saveFailed, onReset }: { t: T; zh: boo
         ))}
       </ul>
       <p className="oa-mcq-note">
-        {score.wrong ? t('答错的题已进入选择题复习。', 'Missed questions are now in your multiple-choice review.') : ''}
+        {!score.wrong || saveFailed
+          ? ''
+          : speed.saved
+            ? t('答错的题已进入选择题复习。', 'Missed questions are now in your multiple-choice review.')
+            : t('正在保存错题…', 'Saving missed questions…')}
         {saveFailed && <span role="alert"> {t('错题保存失败，刷新页面会再试一次。', 'Saving the misses failed; a reload tries again.')}</span>}
       </p>
       <details className="apt-review">

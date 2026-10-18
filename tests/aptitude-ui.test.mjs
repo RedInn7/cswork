@@ -162,10 +162,22 @@ test('speed test: time up hands it in, shows the result, and the misses go to th
   await settle();
   assert.deepEqual(Object.keys(JSON.parse(localStorage.getItem(MCQ_LOCAL_KEY))), [ids[2]]);
   assert.equal(JSON.parse(localStorage.getItem(SPEED_KEY)).saved, true);
+  const note = () => document.querySelector('.apt-speed > .oa-mcq-note').textContent;
+  assert.match(note(), /now in your multiple-choice review/);
   await act(async () => button('Take a new test').click());
   assert.equal(localStorage.getItem(SPEED_KEY), null);
   assert.ok(button('Start the test'));
   root.unmount();
+
+  // Signed in with the note unreachable: only the failure shows, never the success sentence.
+  dom({ [SPEED_KEY]: JSON.stringify(s) });
+  globalThis.fetch = async () => new Response('{}', { status: 500 });
+  const failed = await render('u1');
+  await settle();
+  assert.match(note(), /Saving the misses failed/);
+  assert.doesNotMatch(note(), /now in your multiple-choice review|Saving missed questions/);
+  failed.unmount();
+  globalThis.fetch = async () => new Response('{}', { status: 401 });
 
   // Running out while the page is open: the ticking clock hands it in.
   const close = newSpeed(5, false, false, Date.now() - 15 * 60_000 + 400);
