@@ -1,7 +1,7 @@
 import { cellText, type AptCell, type AptFig, type AptShape } from '@/lib/aptitude';
 
 /** Each shape in a 10×10 box, upright. flag, ell and eff have no symmetry at all. */
-const POINTS: Record<AptShape, string> = {
+export const APT_POINTS: Record<AptShape, string> = {
   tri: '5,1.5 9,8.5 1,8.5',
   arrow: '5,1 9,5 6.5,5 6.5,9 3.5,9 3.5,5 1,5',
   flag: '2.5,1 8.5,3.2 3.5,5.4 3.5,9.5 2.5,9.5',
@@ -18,7 +18,7 @@ function Cell({ cell, x = 0, y = 0 }: { cell: AptCell; x?: number; y?: number })
     <>
       {Array.from({ length: cell.n }, (_, i) => (
         <g key={i} transform={`translate(${x + (30 - width) / 2 + i * (size + 1)} ${y + (30 - size) / 2}) scale(${size / 10})`}>
-          <polygon points={POINTS[cell.shape]} transform={orient} className={`apt-fill-${cell.fill}`} />
+          <polygon points={APT_POINTS[cell.shape]} transform={orient} className={`apt-fill-${cell.fill}`} />
         </g>
       ))}
     </>
