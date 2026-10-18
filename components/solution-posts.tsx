@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Bookmark,
   EyeOff,
+  Flag,
   Lightbulb,
   Lock,
   MessageSquare,
@@ -18,7 +19,6 @@ import { useLocale } from '@/lib/i18n';
 import { anonymousAllowed, plainExcerpt, postHref, targetKind, type TargetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
-import { Report } from './chat-log';
 import { Button } from './ui/button';
 import {
   AlertDialog,
@@ -1046,7 +1046,7 @@ function PostEditor({
 }
 
 type QueueItem = {
-  kind: 'post' | 'comment' | 'dm';
+  kind: 'post' | 'comment';
   id: string;
   postId: string;
   problemId: string;
@@ -1069,7 +1069,6 @@ const REASONS: Record<string, [string, string]> = {
 const RESOURCES: Record<QueueItem['kind'], string> = {
   post: 'posts',
   comment: 'post-comments',
-  dm: 'direct-messages',
 };
 /** What a post is, by its target, [zh, en]. */
 const POST_KINDS: Record<TargetKind, [string, string]> = {
@@ -1117,13 +1116,11 @@ export function PostModeration() {
     <li key={`${item.kind}:${item.id}`} className="post-mod-item" data-hidden={item.hidden || undefined}>
       <p className="post-mod-meta">
         <span className="cs-post-lang">
-          {item.kind === 'dm'
-            ? t('私信', 'Direct message')
-            : item.kind === 'comment'
-              ? t('评论', 'Comment')
-              : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
+          {item.kind === 'comment'
+            ? t('评论', 'Comment')
+            : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
         </span>
-        {item.kind !== 'dm' && <a href={postHref(item.problemId)}>{item.problemId}</a>}
+        <a href={postHref(item.problemId)}>{item.problemId}</a>
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>
         {!!item.reports && (
@@ -1170,8 +1167,8 @@ export function PostModeration() {
       <div className="lms-toolbar">
         <p className="muted">
           {t(
-            '被举报的题解、回答、评论和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
-            'Reported solutions, answers, comments and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
+            '被举报的题解、回答和评论排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到，可以随时恢复。',
+            'Reported solutions, answers and comments come first; three reports hide one until you act. Hidden items stay visible to their author only, and can be restored.',
           )}
         </p>
         <Button variant="outline" onClick={() => setReload((n) => n + 1)}>
@@ -1205,5 +1202,56 @@ export function PostModeration() {
         </>
       )}
     </section>
+  );
+}
+
+/** Report with a reason; one per learner, read by instructors in the teacher view. */
+function Report({ path, english }: { path: string; english: boolean }) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState('spam');
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+  if (done)
+    return (
+      <span className="cs-post-reported" role="status">
+        {t('已举报，谢谢', 'Reported. Thanks')}
+      </span>
+    );
+  if (!open)
+    return (
+      <button type="button" className="cs-post-act" onClick={() => setOpen(true)}>
+        <Flag size={13} aria-hidden="true" />
+        {t('举报', 'Report')}
+      </button>
+    );
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setError('');
+    try {
+      await api(path, { reason });
+      setDone(true);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  return (
+    <form className="cs-post-report" onSubmit={(e) => void submit(e)}>
+      <select value={reason} onChange={(e) => setReason(e.target.value)} aria-label={t('举报理由', 'Reason')}>
+        <option value="spam">{t('广告或灌水', 'Spam')}</option>
+        <option value="offensive">{t('不友善或冒犯', 'Offensive')}</option>
+        <option value="wrong">{t('解法有误', 'Wrong solution')}</option>
+        <option value="other">{t('其他', 'Other')}</option>
+      </select>
+      <button type="submit">{t('提交', 'Send')}</button>
+      <button type="button" onClick={() => setOpen(false)}>
+        {t('取消', 'Cancel')}
+      </button>
+      {error && (
+        <span className="cs-posts-error" role="alert">
+          {error}
+        </span>
+      )}
+    </form>
   );
 }

@@ -40,7 +40,7 @@ export const REPORT_CLEARED = 'cleared';
  * expiring (lib/server/http.ts) as the privacy page promised.
  */
 export const CHAT_RETENTION_DAYS = 180;
-/** Days a direct message (lib/server/direct-messages.ts) is kept; the privacy page says so. */
+/** Days a direct message is kept (the feature is removed; old rows still age out, lib/server/http.ts). */
 export const DM_RETENTION_DAYS = 365;
 
 /**

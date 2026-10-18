@@ -153,7 +153,7 @@ const shape = ({ voted, starred, employer, pinned, ...r }: PostRow) => ({
   employer: !r.anonymous && badgeTarget(r.problemId) ? badgeName(employer) : null,
 });
 
-/** As posts, direct messages and notices name people: the public handle if the profile is visible, else a masked name. */
+/** As posts and notices name people: the public handle if the profile is visible, else a masked name. */
 export function nameOf(userId: string) {
   const r = sqlite()
     .prepare(
@@ -427,6 +427,7 @@ function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: str
   const anonymous = (!!post.anonymous && post.userId === p.id) || anonymousReporter(post.problemId) === p.id;
   const from = anonymous ? '' : `${nameOf(p.id)}: `;
   const problem = targetKind(post.problemId) === 'problem';
+  // ponytail: legacy DM blocks still mute replies/mentions; no UI to lift them since DMs were removed
   const blocks = sqlite().prepare('SELECT 1 FROM dm_blocks WHERE user_id=? AND blocked_id=?');
   const done = new Set([p.id]);
   const send = (userId: string, kind: string, title: string) => {
@@ -440,7 +441,7 @@ function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: str
   if (!anonymous) for (const userId of mentioned(text)) send(userId, 'mention', '有人在讨论中提到了你');
 }
 
-/** One report per learner and target: posts, comments and direct messages ('dm:'). */
+/** One report per learner and target: posts and comments. */
 export function fileReport(p: Person, target: string, authorId: string, reason: string) {
   if (authorId === p.id) throw new HttpError(400, '不能举报自己的内容');
   underCap('post_reports', p, REPORTS_PER_DAY, '今天的举报次数已达上限');
@@ -460,7 +461,6 @@ async function report(p: Person, target: string, authorId: string, request: Requ
 const TABLES = {
   post: 'solution_posts',
   comment: 'post_comments',
-  dm: 'direct_messages',
 } as const;
 type Kind = keyof typeof TABLES;
 function moderate(p: Person, kind: Kind, targetId: string, action: string) {
@@ -516,15 +516,6 @@ async function moderationQueue(p: Person) {
         JOIN solution_posts sp ON sp.id=c.post_id LEFT JOIN "user" u ON u.id=c.user_id WHERE r.target LIKE 'comment:%'`,
       )
       .all() as (QueueItem & { lastAt: number })[]),
-    // Reported direct messages: only what was reported, never the latest.
-    ...(db
-      .prepare(
-        `${REPORTS} SELECT 'dm' AS kind,d.id,'' AS postId,'' AS problemId,'' AS title,substr(d.body,1,600) AS excerpt,
-          COALESCE(u.name,'') AS author,d.hidden,d.created_at AS createdAt,r.reports,r.reasons,r.lastAt
-        FROM r JOIN direct_messages d ON d.id=substr(r.target,4) LEFT JOIN "user" u ON u.id=d.from_user
-        WHERE r.target LIKE 'dm:%'`,
-      )
-      .all() as (QueueItem & { lastAt: number })[]),
   ]
     .sort((a, b) => b.reports! - a.reports! || b.lastAt - a.lastAt)
     .slice(0, 100);
@@ -544,8 +535,6 @@ async function moderationQueue(p: Person) {
   const seen = new Map<string, boolean>();
   const running = runningContestProblems(p.id);
   const shown = async (item: QueueItem) => {
-    // Chat and direct messages hang off no problem or page.
-    if (!item.problemId) return true;
     if (!seen.has(item.problemId))
       seen.set(item.problemId, !running.has(item.problemId) && (await visibleTarget(p, item.problemId)));
     return seen.get(item.problemId)!;
@@ -561,7 +550,6 @@ async function moderationQueue(p: Person) {
 /**
  * /api/oj/posts/… and /api/oj/post-comments/<id>/<action>. Answers and comments read signed out;
  * solutions, the moderation queue and every write need an account.
- * /api/oj/direct-messages/<id>/<action> are the moderators' actions on reported direct messages.
  */
 export async function handleSolutionPosts(request: Request, p: Person | null, path: string[]) {
   const [resource, target, action, extra] = path;
@@ -756,6 +744,5 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     }
     return moderate(p, 'comment', target, action);
   }
-  if (resource === 'direct-messages') return moderate(p, 'dm', target, action);
   throw new HttpError(404, '题解接口不存在');
 }

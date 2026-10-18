@@ -38,6 +38,7 @@ import {
   visibleCourseSql,
 } from './course-visibility';
 import { liveLesson, courseAccess } from './lms-common';
+import { REMOVED_KINDS } from './notify';
 import {
   TICKET_REF,
   ticketDetail,
@@ -142,14 +143,14 @@ export async function bootstrap(p: Person | null, lite = false) {
     purchasedFreezes: p ? purchasedFreezes(p.id) : [],
     notifications: p
       ? await rows(
-          `SELECT * FROM notifications WHERE user_id=?${courseNotificationFilter(p)} ORDER BY created_at DESC LIMIT 50`,
+          `SELECT * FROM notifications WHERE user_id=?${REMOVED_KINDS}${courseNotificationFilter(p)} ORDER BY created_at DESC LIMIT 50`,
           p.id,
         )
       : [],
     unreadNotifications: p
       ? (
           await one<{ count: number }>(
-            `SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL${courseNotificationFilter(p)}`,
+            `SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL${REMOVED_KINDS}${courseNotificationFilter(p)}`,
             p.id,
           )
         )?.count || 0

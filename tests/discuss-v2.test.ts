@@ -181,7 +181,7 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   }
   await ok(dee, 'POST', `posts/${post.id}/comments`, { body: many.map((h) => `@user-${h}`).join(' ') });
   assert.equal(many.filter((h) => notices(h).length).length, 5);
-  // Someone blocking you hears nothing of your mentions.
+  // Someone blocking you (a block kept from the removed direct messages) hears nothing of your mentions.
   sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run('a1', bob.id);
   await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'cc @user-a1' });
   assert.equal(notices('a1').length, 1);
@@ -192,9 +192,10 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   assert.equal(notices(ada.id).length, before);
   sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
 
-  // ?kind= picks one tab.
+  // ?kind= picks one tab; a removed feature's kind (direct messages) is never listed.
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
   sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('dm1',?,'dm','x','y','/',1)").run(ada.id);
+  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('mp1',?,'mock-peer','x','y','/',1)").run(ada.id);
   const replies = notices(ada.id, 'reply').length;
   // A notice left by the removed discussion board lists nowhere.
   sqlite()

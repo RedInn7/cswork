@@ -8,13 +8,16 @@ export type Notice = {
    */
   id?: string;
   userId: string;
-  /** What raised it: 'dm', 'mock-peer', 'course-gift', … */
+  /** What raised it: 'mock-peer', 'course-gift', … */
   kind: string;
   title: string;
   body: string;
   href: string;
   now?: number;
 };
+
+/** Kinds left by features since removed (direct messages): their links 404, so inboxes leave them out. */
+export const REMOVED_KINDS = ` AND kind NOT IN ('dm')`;
 
 /** Writes an in-app notification; true when a new row was created (false: an `id` refreshed). */
 export function notify({ id, userId, kind, title, body, href, now = Date.now() }: Notice): boolean {

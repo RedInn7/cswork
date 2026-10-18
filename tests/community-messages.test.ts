@@ -10,7 +10,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
-// The work email badge and direct messages.
+// The work email badge.
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-community-messages-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 process.env.CONTENT_DATABASE_PATH = resolve(dir, 'content.sqlite');
@@ -26,10 +26,8 @@ const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { publicProfile } = await import('../lib/server/learner-cloud');
 const { employerOf, FREE_MAIL } = await import('../lib/server/work-verify');
-const { chatText } = await import('../lib/server/direct-messages');
 const domains = (await import('../lib/content/company-domains.json')).default.domains as Record<string, string[]>;
 
-const DAY = 86400000;
 const mail: { to: string[]; subject: string; text: string }[] = [];
 const server = createServer(async (req, res) => {
   let raw = '';
@@ -80,8 +78,6 @@ const profile = (user: string, handle: string) =>
   sqlite()
     .prepare(`INSERT INTO user_profiles(user_id,handle,visible,indexable,bio,created_at,updated_at) VALUES(?,?,1,0,'',1,1)`)
     .run(user, handle);
-const follow = (a: string, b: string) =>
-  sqlite().prepare('INSERT INTO user_follows(follower_id,followee_id,created_at) VALUES(?,?,1)').run(a, b);
 const codeIn = (text: string) => /(\d{6})/.exec(text)![1];
 
 before(() => {
@@ -169,7 +165,7 @@ void test('work email: codes by mail, an HMAC only, one address per account, rat
   assert.equal((await ok(owner, 'POST', 'work/remove', {})).verification, null);
 });
 
-void test('badge placements and direct messages between mutual follows', async () => {
+void test('badge placements on solutions and profiles', async () => {
   const catalogue = new Map([
     ['lc-1', { difficulty: '简单' }],
     ['oa-amazon-1', { difficulty: '中等' }],
@@ -187,86 +183,6 @@ void test('badge placements and direct messages between mutual follows', async (
   await ok(amy, 'POST', 'work/show', { profile: true });
   assert.equal(publicProfile('amy-g', catalogue)!.employer, 'Google');
 
-  // Bob and Amy follow each other: his message goes to Amy, her bell rings once, without the text.
-  follow(bob.id, amy.id);
-  follow(amy.id, bob.id);
-  assert.equal(await status(bob, 'POST', 'dm', { post: 'x', body: 'Hi', to: 'amy-g' }), 400, 'one way in');
-  assert.equal(await status(bob, 'POST', 'dm', { post: 'x', body: 'Hi' }), 404, 'referral threads left with the board');
-  assert.equal(await status(person('m-bob', { verified: false }), 'POST', 'dm', { to: 'amy-g', body: 'Hi' }), 403);
-  const opened = await ok(bob, 'POST', 'dm', { to: 'amy-g', body: 'Could you refer me? Secret details' });
-  assert.equal(opened.name, '@amy-g');
-  assert.equal(opened.post, null);
-  await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Second line' });
-  assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'x'.repeat(2001) }), 400);
-  assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'a‮b' }), 400);
-  // Joined emoji and tab-indented code are ordinary messages; joiners alone are not.
-  for (const body of ['👩‍💻 🤷‍♂️ ❤️‍🔥', 'for x in y:\n\tprint(x)', 'می‌خواهم']) assert.ok(chatText.safeParse(body).success, body);
-  assert.equal(chatText.safeParse('\u200d\u200c').success, false);
-  const notes = sqlite().prepare('SELECT title,body,href FROM notifications WHERE user_id=?').all(amy.id) as {
-    title: string;
-    body: string;
-    href: string;
-  }[];
-  assert.equal(notes.length, 1);
-  assert.equal(notes[0].title, '你收到一条新私信');
-  assert.ok(!notes[0].body.includes('Secret') && !notes[0].body.includes('Real'), notes[0].body);
-  assert.equal(notes[0].href, `/?view=messages&thread=${opened.key}`);
-  // Amy's inbox: masked name (Bob has no public profile yet), unread until she opens it.
-  const box = await ok(amy, 'GET', 'dm');
-  assert.equal(box.items[0].unread, 2);
-  assert.equal(box.items[0].name, 'Re***');
-  assert.ok(!JSON.stringify(box).includes('m-bob'), 'no account ids');
-  const convo = await ok(amy, 'GET', `dm/${opened.key}`);
-  assert.deepEqual(convo.items.map((m: { body: string; mine: boolean }) => [m.body, m.mine]), [
-    ['Could you refer me? Secret details', false],
-    ['Second line', false],
-  ]);
-  assert.equal((await ok(amy, 'GET', 'dm')).items[0].unread, 0);
-  assert.equal(await status(stranger, 'GET', `dm/${opened.key}`), 404);
-  await ok(amy, 'POST', `dm/${opened.key}`, { body: 'Sure, send your resume.' });
-
-  // A per-recipient daily cap on new conversations, even between mutual follows.
-  for (let i = 0; i < 9; i++) {
-    const asker = person(`m-asker-${i}`);
-    follow(asker.id, amy.id);
-    follow(amy.id, asker.id);
-    await ok(asker, 'POST', 'dm', { to: 'amy-g', body: `Request ${i}` });
-  }
-  follow(cat.id, amy.id);
-  follow(amy.id, cat.id);
-  assert.equal(await status(cat, 'POST', 'dm', { to: 'amy-g', body: 'Me too?' }), 429);
-  sqlite().prepare('UPDATE direct_messages SET created_at=created_at-? WHERE post_id IS NOT NULL').run(DAY);
-
-  // Blocking: neither side can write; the reporter's report reaches the moderators.
-  const reply = (await ok(amy, 'GET', `dm/${opened.key}`)).items.find((m: { mine: boolean }) => !m.mine);
-  await ok(amy, 'POST', `dm/${opened.key}/report`, { message: reply.id, reason: 'spam' });
-  assert.equal(await status(amy, 'POST', `dm/${opened.key}/report`, { message: (await ok(amy, 'GET', `dm/${opened.key}`)).items.find((m: { mine: boolean }) => m.mine).id, reason: 'spam' }), 400);
-  const blocked = await ok(amy, 'POST', `dm/${opened.key}/block`, { on: true });
-  assert.equal(blocked.canSend, false);
-  assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'Hello?' }), 403);
-  assert.equal(await status(amy, 'POST', `dm/${opened.key}`, { body: 'Hello?' }), 403);
-  const queue = await ok(teacher, 'GET', 'posts/moderation');
-  const reported = queue.reported.find((i: { kind: string }) => i.kind === 'dm');
-  assert.equal(reported.id, reply.id);
-  await ok(teacher, 'POST', `direct-messages/${reply.id}/hide`, {});
-  assert.ok(!(await ok(bob, 'GET', `dm/${opened.key}`)).items.some((m: { id: string }) => m.id === reply.id));
-  await ok(amy, 'POST', `dm/${opened.key}/block`, { on: false });
-  await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Back again' });
-
-  // Mutual follows may start a conversation; a one-way follow may not; nobody messages themselves.
-  profile(cat.id, 'cat-c');
-  profile(bob.id, 'bob-b');
-  follow(cat.id, bob.id);
-  assert.equal(await status(cat, 'POST', 'dm', { to: 'bob-b', body: 'Hi Bob' }), 403);
-  follow(bob.id, cat.id);
-  const pals = await ok(cat, 'POST', 'dm', { to: 'bob-b', body: 'Hi Bob' });
-  assert.equal(pals.name, '@bob-b');
-  assert.equal((await ok(person('m-x'), 'GET', `follows?handle=bob-b`)).mutual, false);
-  assert.equal((await ok(cat, 'GET', `follows?handle=bob-b`)).mutual, true);
-  await ok(bob, 'POST', 'dm/settings', { open: 'none' });
-  sqlite().prepare('DELETE FROM direct_messages WHERE thread=?').run([bob.id, cat.id].sort().join('|'));
-  assert.equal(await status(cat, 'POST', 'dm', { to: 'bob-b', body: 'Hi again' }), 403);
-  assert.equal(await status(cat, 'POST', 'dm', { to: 'cat-c', body: 'Me' }), 400);
 
   // Experience comments never carry the badge, though her solutions do.
   const comment = (await ok(amy, 'POST', 'posts', { problemId: 'exp:g-exp', body: 'Good luck!' })).post;
