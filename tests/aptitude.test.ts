@@ -235,7 +235,7 @@ test('syllogisms: exactly the answer passes the classical rules (every group non
     assert.ok(m, text);
     return { form: m[1] === 'All' ? 'all' : m[1] === 'No' ? 'no' : m[3] ? 'not' : 'some', x: m[2], y: m[4] };
   };
-  const distributed = (s: S) => ({ all: [s.x], no: [s.x, s.y], some: [], not: [s.y] })[s.form];
+  const distributed = (s: S): string[] => ({ all: [s.x], no: [s.x, s.y], some: [] as string[], not: [s.y] })[s.form];
   const negative = (s: S) => s.form === 'no' || s.form === 'not';
   // Aristotelian validity (existential import): middle distributed once; nothing distributed in the
   // conclusion that is not distributed in its premise; negative premises = negative conclusion, at most one.
@@ -304,14 +304,14 @@ test('rotation and mirror images: moving the actual corners matches the answer a
   for (const kind of ['rotate', 'mirror'] as const)
     for (const q of all(kind)) {
       assert.ok(q.fig?.kind === 'transform', q.id);
-      const { from, choices } = q.fig;
+      const { from, choices, axis } = q.fig;
       let want: number[][];
       const pts = corners(from);
       if (kind === 'rotate') {
         const deg = /90° clockwise/.test(q.en.q) ? 90 : /anticlockwise/.test(q.en.q) ? -90 : 180;
         const a = (deg * Math.PI) / 180;
         want = pts.map(([x, y]) => [5 + (x - 5) * Math.cos(a) - (y - 5) * Math.sin(a), 5 + (x - 5) * Math.sin(a) + (y - 5) * Math.cos(a)]);
-      } else want = pts.map(([x, y]) => (q.fig!.kind === 'transform' && q.fig.axis === 'v' ? [10 - x, y] : [x, 10 - y]));
+      } else want = pts.map(([x, y]) => (axis === 'v' ? [10 - x, y] : [x, 10 - y]));
       const keys = choices.map((c) => key(corners(c)));
       assert.equal(new Set(keys).size, 4, `${q.id}: two choices look the same`);
       assert.deepEqual(keys.flatMap((k, i) => (k === key(want) ? [i] : [])), q.answer, q.id);

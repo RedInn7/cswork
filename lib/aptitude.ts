@@ -717,7 +717,7 @@ const MODELS = range(128).filter((m) => [1, 2, 4].every((g) => range(7).some((i)
 const A = 1, B = 2, C = 4;
 const CONCLUSIONS: Statement[] = [['all', A, C], ['all', C, A], ['no', A, C], ['some', A, C], ['not', A, C], ['not', C, A]];
 /** Whether a conclusion follows: true in every model where both premises hold. */
-export function syllogismFollows(premises: Statement[], conclusion: Statement) {
+function syllogismFollows(premises: Statement[], conclusion: Statement) {
   const models = MODELS.filter((m) => premises.every((p) => holds(p, m)));
   return models.length > 0 && models.every((m) => holds(conclusion, m));
 }
@@ -794,7 +794,7 @@ const PEOPLE: Tx[] = [['小安', 'Ava'], ['小白', 'Ben'], ['小陈', 'Cal'], [
 /** Who answers the question for one seating: the person in `seat`, or right of `of` (−1 when none). */
 const asked = (q: { seat?: number; of?: number }, pos: number[]) =>
   q.seat !== undefined ? pos.indexOf(q.seat) : pos.indexOf(pos[q.of!] + 1);
-export function seatingAnswers(clues: Clue[], q: { seat?: number; of?: number }) {
+function seatingAnswers(clues: Clue[], q: { seat?: number; of?: number }) {
   return new Set(SEATINGS.filter((pos) => clues.every((c) => clueHolds(c, pos))).map((pos) => asked(q, pos)));
 }
 
