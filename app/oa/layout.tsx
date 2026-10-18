@@ -29,6 +29,9 @@ export default async function OaLayout({
         <Link href="/oa" prefetch={false}>
           {zh ? '全部公司 OA' : 'All company OAs'}
         </Link>
+        <Link href="/oa/sims" prefetch={false}>
+          {zh ? '操作系统与网络模拟器' : 'OS and networking simulators'}
+        </Link>
         <Link href="/library" prefetch={false}>
           {zh ? '面试资料库' : 'Library'}
         </Link>

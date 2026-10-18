@@ -156,7 +156,7 @@ export default async function JudgeEnvironmentPage() {
               <li>{L('运行时没有网络。', 'There is no network access while your code runs.')}</li>
             </ul>
 
-            <h2>{L('时间和内存', 'Time and memory')}</h2>
+            <h2 id="limits">{L('时间和内存', 'Time and memory')}</h2>
             <ul>
               <li>
                 {L(
@@ -184,7 +184,7 @@ export default async function JudgeEnvironmentPage() {
               </li>
             </ul>
 
-            <h2>{L('递归深度和栈', 'Recursion depth and stack')}</h2>
+            <h2 id="recursion">{L('递归深度和栈', 'Recursion depth and stack')}</h2>
             <ul>
               <li>
                 {L(
@@ -212,7 +212,7 @@ export default async function JudgeEnvironmentPage() {
               </li>
             </ul>
 
-            <h2>{L('两种模式的输入输出', 'Input and output in each mode')}</h2>
+            <h2 id="io">{L('两种模式的输入输出', 'Input and output in each mode')}</h2>
             <h3>{L('ACM 模式', 'ACM mode')}</h3>
             <ul>
               <li>
@@ -232,6 +232,12 @@ export default async function JudgeEnvironmentPage() {
                 )}
               </li>
               <li>{L('写到标准错误的内容不参与判题。', 'Whatever goes to stderr is not judged.')}</li>
+              <li>
+                {L(
+                  "输入超过约 10⁵ 行或 10⁵ 个数时，读写方式可能决定会不会超时：Python 用 sys.stdin.readline，或一次 sys.stdin.read().split() 读完；C++ 先写 ios::sync_with_stdio(false); cin.tie(nullptr);，换行输出 '\\n' 而不是 endl；Java 用 BufferedReader 代替 Scanner；Go 用 bufio 包装标准输入和输出。",
+                  "Past about 10⁵ lines or numbers of input, how you read and write can decide a time limit: in Python use sys.stdin.readline or read it all with sys.stdin.read().split(); in C++ start with ios::sync_with_stdio(false); cin.tie(nullptr); and print '\\n' rather than endl; in Java use BufferedReader instead of Scanner; in Go wrap stdin and stdout in bufio.",
+                )}
+              </li>
             </ul>
             <h3>{L('LeetCode 模式', 'LeetCode mode')}</h3>
             <ul>

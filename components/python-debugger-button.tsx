@@ -1,5 +1,7 @@
 'use client';
 import './python-debugger.css';
+// The pictures panel draws with the algorithm demos' cells and graph marks; the playground doesn't load them.
+import '@/app/algorithm-demo.css';
 import { lazy, Suspense, useState } from 'react';
 import { Bug } from 'lucide-react';
 import { Button } from './ui/button';

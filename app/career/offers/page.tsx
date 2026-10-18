@@ -30,6 +30,7 @@ const copy = {
       'Refreshers and share-price growth are assumptions, not promises. Set both to 0 to see the part written in the offer letter.',
     ],
     chapter: 'Reading and negotiating an offer: the career guide',
+    practice: 'Rehearse the negotiation: branching scripts, no AI',
     rpp: `Cost of living uses the Bureau of Economic Analysis’s ${rpp.year} regional price parities for metropolitan areas (US average = 100). They compare prices only, rent above all, not taxes or pay levels.`,
     rppSource: 'BEA release, table 4',
   },
@@ -50,6 +51,7 @@ const copy = {
       'Refresher 和股价增长都是假设，不是承诺。两项都填 0，看到的就是 offer 信里写明的部分。',
     ],
     chapter: '求职指南：读懂和谈 offer',
+    practice: '谈薪对练：不用 AI 的分支剧本',
     rpp: `城市折算用的是美国经济分析局（BEA）${rpp.year} 年各都会区的地区价格平价（RPP，全美平均 = 100）。它只比物价（房租占大头），不含税，也不反映当地工资水平。`,
     rppSource: 'BEA 发布稿表 4',
   },
@@ -104,6 +106,9 @@ export default async function OffersPage() {
         </p>
         <p>
           <a href={guidePath('offer')}>{c.chapter} →</a>
+        </p>
+        <p>
+          <a href="/career/negotiation">{c.practice} →</a>
         </p>
       </section>
     </>

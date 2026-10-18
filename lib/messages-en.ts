@@ -84,6 +84,12 @@ const EN: Record<string, string> = {
   这条评审链接的评论已达上限: 'This review link has reached its comment limit',
   '今天生成的评审链接已达上限，请明天再试': "You've made today's maximum of review links. Try again tomorrow",
   你的代码收到了新的评审意见: 'Your code got new review comments',
+  // Private resume review links (lib/server/resume-reviews.ts); the notice title too
+  简历里还没有可以批注的要点: 'Your resume has no lines to comment on yet',
+  这条要点不在简历快照里: 'That line is not in the resume snapshot',
+  批注不存在: 'Comment not found',
+  这条批注没有改写建议: 'This comment has no suggested rewrite',
+  你的简历收到了新的批注: 'Your resume got new review comments',
   更新不存在: 'Update not found',
   '此章节已有未发布草稿，请在课程管理中继续编辑':
     'This lesson already has an unpublished draft. Continue editing it in course management',
@@ -317,6 +323,12 @@ const EN: Record<string, string> = {
   这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
   现在不能报告爽约: "You can't report a no-show right now",
   故事已达上限: "You've reached the limit for stories",
+  实习日志已达上限: "You've reached the limit for internship log entries",
+  复盘已达上限: "You've reached the limit for interview retros",
+  复盘记录无效: 'Invalid interview retro',
+  '路线已达上限（30 条）': "You've reached the limit of 30 routes",
+  '路线无效：最多 80 步，外部条目标题最多 80 字，日期要是真实的日子':
+    'That route is not valid: at most 80 steps, entry titles up to 80 characters, and real calendar dates',
   // Self-made review cards (lib/server/my-practice.ts) and the idea review (lib/server/recall-ideas.ts)
   '卡片无效：正反面各最多 2000 字，最多 8 个标签，来源只能是站内链接':
     'Invalid card: front and back up to 2,000 characters each, at most 8 tags, and the source must be a page on this site',

@@ -8,10 +8,10 @@ import { DemoGraphView } from './algorithm-demo';
 // No CSS import here, so node tests can render oj-results: the workspace imports
 // app/algorithm-demo.css (graph marks) and app/workbench-tools.css (.cs-structure).
 
-const MAX_NODES = 255;
-const MAX_GRID = 40;
+export const MAX_NODES = 255;
+export const MAX_GRID = 40;
 /** Pixels per SVG unit: algorithm-demo.css sizes nodes (r 4.2) and labels (3.6) in units. */
-const SCALE = 3.2;
+export const SCALE = 3.2;
 
 /** Trees, linked lists and 2-D arrays have a picture. */
 export const drawable = (type: string) =>
@@ -21,17 +21,30 @@ export const drawable = (type: string) =>
 export function treeGraph(value: unknown): DemoGraph | null {
   const nodes = Array.isArray(value) ? levelOrderTree(value) : null;
   if (!Array.isArray(nodes) || nodes.length > MAX_NODES) return null;
+  return layoutTree(nodes, [0]);
+}
+
+/**
+ * Trees (a forest: the roots side by side) by in-order rank and depth; children are indexes,
+ * -1 for none. A node reached twice keeps its first place, and nodes no root reaches (a
+ * cycle) start trees of their own, so any pointer graph lays out.
+ */
+export function layoutTree(
+  nodes: readonly { val: string | number; left: number; right: number }[],
+  roots: readonly number[],
+): DemoGraph {
   const at: { rank: number; depth: number }[] = [];
   let rank = 0,
     deepest = 0;
   const walk = (i: number, depth: number) => {
-    if (i < 0) return;
+    if (i < 0 || i >= nodes.length || at[i]) return;
+    at[i] = { rank: -1, depth };
     walk(nodes[i].left, depth + 1);
-    at[i] = { rank: rank++, depth };
+    at[i].rank = rank++;
     deepest = Math.max(deepest, depth);
     walk(nodes[i].right, depth + 1);
   };
-  if (nodes.length) walk(0, 0);
+  for (const root of [...roots, ...nodes.keys()]) walk(root, 0);
   return {
     width: 12 + 10 * Math.max(0, nodes.length - 1),
     height: 12 + 13 * deepest,

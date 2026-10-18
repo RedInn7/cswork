@@ -787,6 +787,31 @@ export function analyze(code: string, language: string): AnalyzerNote[] {
   return ANALYZERS[language](tokenize(code, language)).sort((a, b) => a.line - b.line);
 }
 
+/**
+ * Every loop as 1-based lines (its header through its body's last line) and its header's tokens:
+ * `for i in range(n)`, `for (int i = 0; i < n; i++)`, `for i := range nums`, or just `while`/`do`.
+ */
+export function loopLines(code: string, language: string): { from: number; to: number; head: string[] }[] {
+  if (!isAnalyzerLanguage(language) || code.length > MAX_CODE) return [];
+  const t = tokenize(code, language);
+  if (language === 'python') {
+    const lines = pyLines(t);
+    return lines.flatMap((L, li) => {
+      const head = t[L.s].v === 'async' ? L.s + 1 : L.s;
+      const colon = t[head]?.v === 'for' || t[head]?.v === 'while' ? topLevel(t, head, L.e, ':') : -1;
+      if (colon < 0) return [];
+      return [{ from: t[head].line, to: t[blockEnd(lines, li) - 1].line, head: t.slice(head, colon).map((x) => x.v) }];
+    });
+  }
+  const pair = pairs(t);
+  return braceLoops(t, pair, language === 'go').map((r) => ({
+    from: t[r.head].line,
+    to: t[r.e - 1].line,
+    // A while's range starts at its condition; every other header ends where its body starts.
+    head: t.slice(r.head, t[r.head].v === 'while' ? pair[r.head + 1] + 1 : r.s).map((x) => x.v),
+  }));
+}
+
 // ------------------------------------------------------------------ follow-up mode
 
 const RULES = followUps as Record<string, FollowUpRule>;

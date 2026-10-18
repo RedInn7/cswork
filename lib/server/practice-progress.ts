@@ -76,3 +76,13 @@ export function practiceRoundTotals(userId: string) {
     ) as { round_id: string; solved: number }[];
   return new Map(rows.map((row) => [row.round_id, row.solved]));
 }
+
+/** The user's judge verdicts on problems whose id is LIKE `pattern` ('oa-%', 'core-%'): any AC is solved. */
+export function judgeProgress(userId: string, pattern: string) {
+  const rows = sqlite()
+    .prepare(
+      `SELECT problem_id,MAX(status='accepted') AS solved FROM submissions WHERE user_id=? AND mode='judge' AND problem_id LIKE ? GROUP BY problem_id`,
+    )
+    .all(userId, pattern) as { problem_id: string; solved: number }[];
+  return new Map(rows.map((r) => [r.problem_id, r.solved ? ('solved' as const) : ('attempted' as const)]));
+}

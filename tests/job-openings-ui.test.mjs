@@ -152,7 +152,7 @@ test('the tracker opens the add form filled in, at Saved, and saves only on conf
   assert.deepEqual(posted[0], {
     company: 'Stripe', role: opening.title, stage: 'saved', appliedAt: null, oaDeadline: null, interviewAt: null, offerDeadline: null, referral: '', link: opening.url, notes: '',
     // The wave 8 card fields, left at their defaults.
-    channel: '', referralStatus: '', nextAction: '', nextAt: null, resumeVersion: '', jdText: '',
+    channel: '', referralStatus: '', nextAction: '', nextAt: null, resumeVersion: '', tier: '', jdText: '',
   });
   assert.equal(host.querySelector('form.resume-form'), null);
   await act(async () => root.unmount());

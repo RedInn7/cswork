@@ -12,6 +12,8 @@ import { McqPractice } from '@/app/oa/mcq/practice';
 import { TemplateDrill } from '@/components/template-drill';
 import { TopicNotebook } from '@/components/topic-notebook';
 import { SelectionAsk } from '@/components/command-palette';
+import type { TopicPractice } from '@/lib/server/topic-page';
+import { TopicFocus, TopicHeader, TopicPracticeTables, TopicWhy } from './practice';
 
 export const INDEX_COPY = {
   zh: {
@@ -34,7 +36,8 @@ export const INDEX_COPY = {
 
 const ldJson = (data: unknown) => ({ __html: JSON.stringify(data).replace(/</g, '\\u003c') });
 
-export function TopicsIndexView({ zh }: { zh: boolean }) {
+/** `heat`: 0–3 per stop (lib/server/topic-page.ts topicHeat), from interview reports. */
+export function TopicsIndexView({ zh, heat }: { zh: boolean; heat?: Record<string, number> }) {
   const c = INDEX_COPY[zh ? 'zh' : 'en'];
   return (
     <>
@@ -82,6 +85,14 @@ export function TopicsIndexView({ zh }: { zh: boolean }) {
             : '36 problems: build hash maps, heaps, an LRU cache, sorts, shortest paths, union-find, segment trees and more without libraries, plus multithreaded concurrency and object-oriented design (LLD) problems, judged in four languages.'}
         </span>
       </a>
+      {heat && (
+        <p className="topics-heat-key">
+          <span className="topics-heat" data-heat="3" aria-hidden="true">
+            •••
+          </span>
+          {zh ? '点越多，这一站对应的面经越多。' : 'More dots: more interview reports map onto the stop.'}
+        </p>
+      )}
       <div className="topics-map">
         {TOPIC_GROUPS.map((group, g) => (
           <section className="topics-group" key={group.en} aria-labelledby={`topics-group-${g}`}>
@@ -101,6 +112,14 @@ export function TopicsIndexView({ zh }: { zh: boolean }) {
                     <span className="topics-stop-name">
                       <span className="sr-only">{zh ? `第 ${stop.no} 站：` : `Stop ${stop.no}: `}</span>
                       {zh ? stop.short[0] : stop.short[1]}
+                      {!!heat?.[stop.slug] && (
+                        <span className="topics-heat" data-heat={heat[stop.slug]}>
+                          <span aria-hidden="true">{'•'.repeat(heat[stop.slug])}</span>
+                          <span className="sr-only">
+                            {zh ? `，面经热度 ${heat[stop.slug]}/3` : `, interview heat ${heat[stop.slug]} of 3`}
+                          </span>
+                        </span>
+                      )}
                     </span>
                     <span className="topics-stop-pattern">{zh ? stop.pattern.zh : stop.pattern.en}</span>
                   </a>
@@ -140,7 +159,8 @@ function Adjacent({ stop, rel, zh }: { stop?: TopicStop; rel: 'prev' | 'next'; z
   );
 }
 
-export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
+/** `practice` (lib/server/topic-page.ts) adds the header facts, warm-up and practice tables. */
+export function TopicView({ stop, zh, practice }: { stop: TopicStop; zh: boolean; practice?: TopicPractice }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const { title, description } = topicCopy(stop, zh);
   return (
@@ -213,6 +233,8 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           <span aria-hidden="true">→</span>
         </a>
       </header>
+      {practice && <TopicHeader practice={practice} zh={zh} />}
+      {practice && <TopicFocus practice={practice} zh={zh} />}
       <SelectionAsk className="topics-notes" clip={{ target: `clip:topic/${stop.slug}`, title, href: topicPath(stop.slug) }}>
         <section className="topics-points" aria-labelledby="topic-points">
           <h2 id="topic-points">{t('要点', 'Key points')}</h2>
@@ -253,6 +275,11 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
             '选一种语言展开。四种写法实现的是同一个模板，每一份都编译运行过，并用测试数据核对了输出。',
             'Open one language. All four implement the same template, and each one is compiled, run and checked against test data.',
           )}
+          {practice?.focus &&
+            t(
+              `看完用它重写热身题 LC ${practice.focus.number}。`,
+              ` Then rewrite the warm-up, LC ${practice.focus.number}, with it.`,
+            )}
         </p>
         {TEMPLATE_LANGS.map(([lang, label], i) => (
           <details className="topics-code" name="topic-code" open={i === 0} key={lang}>
@@ -261,7 +288,9 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           </details>
         ))}
       </section>
+      <TopicWhy stop={stop} zh={zh} signedIn={!!practice?.signedIn} />
       <StopDrills stop={stop} zh={zh} />
+      {practice && <TopicPracticeTables stop={stop} practice={practice} zh={zh} />}
       <nav className="topics-adjacent" aria-label={t('相邻站点', 'Adjacent stops')}>
         <Adjacent stop={TOPIC_STOPS[stop.index - 1]} rel="prev" zh={zh} />
         <Adjacent stop={TOPIC_STOPS[stop.index + 1]} rel="next" zh={zh} />

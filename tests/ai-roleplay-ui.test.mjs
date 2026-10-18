@@ -124,3 +124,28 @@ test('a negotiation role-play: rate yourself before the report, then see your sc
   assert.match($('.mi-table tbody').textContent, /后端软件工程师 · 新毕业生/);
   await act(async () => root.unmount());
 });
+
+test('without the AI interviewer, a role-play set points to the practice scripts', async () => {
+  const fresh = createRoot(document.getElementById('root'));
+  const { as: _, ...solo } = params;
+  await act(async () => {
+    fresh.render(createElement(MockInterview, { params: solo, navigate: () => {}, problemIds: [], ai: false }));
+    await settle();
+  });
+  assert.ok($('.mi-start a[href="/career/negotiation"]'));
+  await act(async () => fresh.unmount());
+
+  // An AI-only set that is not a role-play (LLD) keeps the notice but has no script to point to.
+  const lld = { ...set, template: { id: 'lld', name: ['LLD 面向对象设计', 'LLD / object-oriented design'] }, slots: [{ ...set.slots[0], kind: 'lld' }] };
+  const real = globalThis.fetch;
+  globalThis.fetch = async (url, init) => (String(url).startsWith('/api/content/mock?') ? Response.json(lld) : real(url, init));
+  const other = createRoot(document.getElementById('root'));
+  await act(async () => {
+    other.render(createElement(MockInterview, { params: { ...solo, template: 'lld' }, navigate: () => {}, problemIds: [], ai: false }));
+    await settle();
+  });
+  globalThis.fetch = real;
+  assert.match($('.mi-start').textContent, /只能和 AI 面试官一起练/);
+  assert.equal($('.mi-start a[href="/career/negotiation"]'), null);
+  await act(async () => other.unmount());
+});

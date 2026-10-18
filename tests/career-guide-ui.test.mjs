@@ -116,7 +116,7 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
 
 test('the sitemap lists the guide and the resume review', () => {
   const paths = new Set(SITEMAP_STATIC_ENTRIES.map((e) => e.path));
-  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', '/career/offers', '/career/templates', '/career/jobs/calendar', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
+  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', '/career/offers', '/career/templates', '/career/negotiation', '/career/jobs/calendar', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
 });
 
 test('no nav or timeline link points at the H-1B ranking while its data is unbuilt', async () => {

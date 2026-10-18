@@ -179,6 +179,10 @@ export function stopFromUrl() {
   return Object.hasOwn(STOP_NAMES, slug) ? slug : '';
 }
 
+/** Heat 0–3 for a stop's company count: thirds of the most asked stop's (the route dots, /topics). */
+export const stopHeat = (companies: number | undefined, hottest: number) =>
+  companies ? Math.ceil((3 * companies) / Math.max(1, hottest)) : 0;
+
 /** A stop's topic frequency, or '' without reports. Report counts, never a probability. */
 export function askedText(stop: { companies?: number; reports?: number }, zh: boolean) {
   const { companies = 0, reports = 0 } = stop;

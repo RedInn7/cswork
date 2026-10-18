@@ -3,9 +3,12 @@ import ReactMarkdown, { type Options } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { AlgorithmDemo } from '@/components/algorithm-demo';
+import { CodeTabs } from '@/components/code-tabs';
 import { CourseDiagram } from '@/components/course-diagram';
 import { RunInPlayground } from '@/components/run-in-playground';
 import { playgroundLanguage } from '@/lib/playground-share';
+import remarkCodeTabs from '@/lib/remark-code-tabs';
 import remarkMoney from '@/lib/remark-money';
 
 function safeLink(value: string | undefined) {
@@ -55,7 +58,11 @@ const rehypeHeadingIds = () => (tree: Hast) => {
     if (node.tagName === 'h1' || node.tagName === 'h2') node.properties = { ...node.properties, id: id(textOf(node)) };
 };
 
-/** Matches the workspace's notation/link policy while rendering entirely on the server. */
+/**
+ * Matches the workspace's notation/link policy while rendering entirely on the server. No CSS
+ * import here, so tests can render it: pages that embed ```algorithm-demo import
+ * app/algorithm-demo.css themselves (app/learn/layout.tsx).
+ */
 export function PublicLibraryMarkdown({
   body,
   math,
@@ -77,7 +84,7 @@ export function PublicLibraryMarkdown({
   if (sectionIds) rehypePlugins.push(rehypeHeadingIds);
   return (
     <ReactMarkdown
-      remarkPlugins={math ? [remarkGfm, remarkMath, ...(ugc ? [remarkMoney] : [])] : [remarkGfm]}
+      remarkPlugins={math ? [remarkGfm, remarkMath, remarkCodeTabs, ...(ugc ? [remarkMoney] : [])] : [remarkGfm, remarkCodeTabs]}
       rehypePlugins={rehypePlugins}
       components={{
         h1: ({ children, id }) => <h2 id={id}>{children}</h2>,
@@ -89,6 +96,8 @@ export function PublicLibraryMarkdown({
           const tag = /(?:^|\s)language-(\S+)/.exec(code.props.className ?? '')?.[1];
           // Our own mermaid blocks draw in the browser; the server page carries their source.
           if (!ugc && tag === 'mermaid') return <CourseDiagram source={source} />;
+          // Our own ```algorithm-demo blocks name a demo (lib/algorithm-demo.ts) by its kind.
+          if (!ugc && tag === 'algorithm-demo') return <AlgorithmDemo kind={source.trim()} />;
           // A member's ```spoiler Title stays folded here too (the app's post view does the same).
           if (ugc && !nested && tag === 'spoiler') {
             const title = (node?.children[0] as { data?: { meta?: string | null } } | undefined)?.data?.meta?.trim();
@@ -107,6 +116,17 @@ export function PublicLibraryMarkdown({
             </>
           );
         },
+        // No raw HTML gets through, so the only div is remarkCodeTabs'. Panels are counted here, on
+        // the server: the client would see each pre override's Fragment flattened.
+        div: ({ node, className, children }) =>
+          className === 'cs-code-tabs' ? (
+            <CodeTabs
+              langs={String(node?.properties.dataLangs ?? '').split(' ')}
+              panels={Children.toArray(children).filter(isValidElement)}
+            />
+          ) : (
+            <div className={className}>{children}</div>
+          ),
         a: ({ node, href, children }) =>
           // In-app views and the system design course's own chapters.
           href?.startsWith('/?view=') || /^\/system-design(?:\/[a-z0-9-]+)?$/.test(href ?? '') ? (

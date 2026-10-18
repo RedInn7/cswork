@@ -16,19 +16,27 @@
  * - fe-js: a frontend JS problem group key (lib/content/frontend-js.json), judged on /frontend;
  * - mock-kind: a mock interview template id (lib/mock-interview.ts); never counted, and an AI-only
  *   template reads "unavailable" while AI is off.
+ *
+ * Schedules and learner-made routes (role-paths-v2) are RouteDoc notes: route:role-<key> holds a
+ * built-in role's target date, hours and step marks; route:r-<base36> a learner's own route.
  */
-export type StepKind =
-  | 'line-stops'
-  | 'sd-part'
-  | 'sql-track'
-  | 'pandas'
-  | 'core-group'
-  | 'ml-group'
-  | 'mcq-topic'
-  | 'project'
-  | 'course'
-  | 'fe-js'
-  | 'mock-kind';
+import * as z from 'zod/mini';
+import { isDay } from '../study-plan';
+
+export const STEP_KINDS = [
+  'line-stops',
+  'sd-part',
+  'sql-track',
+  'pandas',
+  'core-group',
+  'ml-group',
+  'mcq-topic',
+  'project',
+  'course',
+  'fe-js',
+  'mock-kind',
+] as const;
+export type StepKind = (typeof STEP_KINDS)[number];
 /** optional: shown as "optional" and left out of the role's progress. */
 export type RoleStep = { kind: StepKind; ref: string; optional?: true };
 
@@ -211,9 +219,11 @@ export type ResolvedStep = RoleStep & {
   plan?: string;
   /** An AI-only mock interview while AI is off: shown as unavailable, never counted. */
   unavailable?: true;
+  /** Estimated minutes to work through it all (lib/server/role-paths.ts); 0 while unavailable. */
+  minutes: number;
 };
 /** Step titles: a kind's label, then the name of what it points at. */
-const STEP_LABELS: Record<StepKind, [string, string] | null> = {
+export const STEP_LABELS: Record<StepKind, [string, string] | null> = {
   'line-stops': ['Line 500', 'Line 500'],
   'sd-part': ['系统设计', 'System design'],
   'sql-track': ['SQL', 'SQL'],
@@ -235,3 +245,80 @@ export const stopsName = (stops: number, problems: number, zh: boolean) =>
   zh ? `${stops} 站，${problems} 题` : `${stops} stops, ${problems} problems`;
 /** A counted step is done at this share of its keys, as a Line 500 stop is "done" at 80% solved. */
 export const STEP_DONE = 0.8;
+
+/** A learner's own entry on a route (say "CS61B lectures 1–12"): a title and units, never a link. */
+export type ExtStep = { kind: 'ext'; id: string; title: string; units: number; done: number; unitMinutes: number };
+export type RouteStep = RoleStep | ExtStep;
+/** A route note's body. A built-in role's (from absent, steps absent) keeps only the schedule and marks. */
+export type RouteDoc = {
+  v: 1;
+  name?: string;
+  from?: RoleKey;
+  steps?: RouteStep[];
+  targetDate: string;
+  weeklyHours: number;
+  /** Step id -> marked in progress, or known already and skipped. */
+  state: Record<string, 'doing' | 'skip'>;
+  /** Step id -> the finish day saved with "Save schedule", to tell when the learner falls behind. */
+  planned: Record<string, string>;
+};
+export const ROUTE_ID = /^r-[a-z0-9]{1,20}$/;
+export const ROUTE_MAX_STEPS = 80;
+export const ROUTE_DEFAULT: RouteDoc = { v: 1, targetDate: '', weeklyHours: 10, state: {}, planned: {} };
+/** A site step is `kind:ref` (unique on a route), an entry of the learner's `ext-<6>`. */
+export const stepId = (step: RouteStep) => (step.kind === 'ext' ? step.id : `${step.kind}:${step.ref}`);
+
+// zod/mini: this module ships to the browser (components/role-path.tsx) and the full zod is heavy there.
+const day = z.string().check(z.refine(isDay));
+const count = (min: number, max: number) => z.int().check(z.minimum(min), z.maximum(max));
+const stepKey = z.string().check(z.maxLength(420));
+const few = (o: object) => Object.keys(o).length <= 200;
+const routeSchema = z.strictObject({
+  v: z.literal(1),
+  name: z.optional(z.string().check(z.trim(), z.minLength(1), z.maxLength(60))),
+  from: z.optional(z.enum(ROLE_KEYS)),
+  steps: z.optional(
+    z
+      .array(
+        z.union([
+          z.strictObject({
+            kind: z.enum(STEP_KINDS),
+            ref: z.string().check(z.regex(/^[\w,-]{1,400}$/)),
+            optional: z.optional(z.literal(true)),
+          }),
+          z
+            .strictObject({
+              kind: z.literal('ext'),
+              id: z.string().check(z.regex(/^ext-[a-z0-9]{6}$/)),
+              title: z.string().check(z.trim(), z.minLength(1), z.maxLength(80)),
+              units: count(1, 500),
+              done: count(0, 500),
+              unitMinutes: z._default(count(5, 600), 60),
+            })
+            .check(z.refine((step) => step.done <= step.units)),
+        ]),
+      )
+      .check(
+        z.maxLength(ROUTE_MAX_STEPS),
+        z.refine((steps) => new Set(steps.map(stepId)).size === steps.length),
+      ),
+  ),
+  targetDate: z.union([z.literal(''), day]),
+  weeklyHours: count(1, 40),
+  state: z.record(stepKey, z.enum(['doing', 'skip'])).check(z.refine(few)),
+  planned: z.record(stepKey, day).check(z.refine(few)),
+});
+/** A route note's body (JSON text, or already parsed), or null when it is not a valid route. */
+export function parseRoute(body: unknown): RouteDoc | null {
+  try {
+    const parsed = routeSchema.safeParse(typeof body === 'string' ? JSON.parse(body) : body);
+    return parsed.success ? parsed.data : null;
+  } catch {
+    return null;
+  }
+}
+/** route:role-<key> holds a built-in role's settings (no steps), route:r-<id> a learner's route (steps). */
+export function routeFits(target: string, doc: RouteDoc) {
+  const m = /^route:(?:role-(.+)|(r-.+))$/.exec(target);
+  return !!m && (m[1] ? isRole(m[1]) && !doc.steps : ROUTE_ID.test(m[2]) && !!doc.steps);
+}

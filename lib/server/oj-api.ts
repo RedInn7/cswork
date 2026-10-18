@@ -32,6 +32,7 @@ import { handleAiPair } from './ai-rounds';
 import { handleAiGrade } from './ai-answer';
 import { handleAiJd } from './ai-jd';
 import { handleCodeReviews } from './code-reviews';
+import { handleResumeReviews } from './resume-reviews';
 import { handlePlacement } from './placement';
 import { handlePracticeAids, recordAid } from './practice-aids';
 import { handleRoundReview } from './round-review';
@@ -322,6 +323,8 @@ export async function handleOj(
   if (resource === 'ai' && id === 'jd' && !action) return handleAiJd(request, p);
   // Private code review links, every method (lib/server/code-reviews.ts).
   if (resource === 'reviews') return handleCodeReviews(request, p, path.slice(1));
+  // Private resume review links (lib/server/resume-reviews.ts).
+  if (resource === 'resume-reviews') return handleResumeReviews(request, p, path.slice(1));
   // The placement quiz beside the speedrun, signed in (lib/server/placement.ts).
   if (resource === 'speedrun' && id === 'placement' && !action) return handlePlacement(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);

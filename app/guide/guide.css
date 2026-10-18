@@ -1299,6 +1299,144 @@
   }
 }
 
+/* Wave 10: company tiers, the interview order hints and interview retros. */
+.tracker-tier {
+  display: inline-block;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #eef1f4;
+  color: #3d4a57;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.tracker-tier[data-tier='dream'] {
+  background: #fdf0d5;
+  color: #6b4500;
+}
+.tracker-tier[data-tier='practice'] {
+  background: #e3f4ee;
+  color: #0b5c4a;
+}
+.tracker-card-actions {
+  flex-wrap: wrap;
+}
+.tracker-warmup {
+  padding: 12px 16px;
+  border-left: 4px solid #8a5a00;
+  border-radius: 12px;
+  background: #fff8ea;
+  color: #4a3a12;
+}
+.tracker-warmup h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.tracker-warmup ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+}
+.tracker-retro fieldset fieldset {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.tracker-retro-help,
+.tracker-retro-list small {
+  margin: 0;
+  color: #5d6b78;
+  font-size: 13px;
+  font-weight: 400;
+}
+.tracker-retro-qs ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+.tracker-retro-qs li {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+}
+.tracker-retro-qs button,
+.tracker-retro-list button {
+  justify-self: start;
+  min-height: 28px;
+  padding: 2px 10px;
+  border: 1px solid #c9d1da;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0e1a2b;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tracker-retro-qs button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.tracker-retro-themes div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+.tracker-retro-themes summary {
+  margin: 4px 0;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tracker-retro-list h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.tracker-retro-list ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.tracker-retro-list li {
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px;
+  border-left: 4px solid transparent;
+  border-radius: 8px;
+  background: #f4f6f8;
+  overflow-wrap: anywhere;
+}
+.tracker-retro-list li[aria-current] {
+  border-left-color: #0d7a63;
+}
+.tracker-retro-list li > span:last-child {
+  display: flex;
+  gap: 8px;
+}
+:is(.tracker-retro-qs, .tracker-retro-list) button:focus-visible,
+.tracker-retro-themes summary:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 1px;
+}
+@media (max-width: 640px) {
+  .tracker-retro-qs li {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+  .tracker-retro-qs li > input:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 860px) {
   .guide-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -1855,6 +1993,48 @@
   .dark .tracker-week summary:focus-visible,
   .dark .tracker-goal input:focus-visible,
   .dark .tracker-bookmarklet a:focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .tracker-tier {
+    background: #101213;
+    color: #c2cfdc;
+  }
+  .dark .tracker-tier[data-tier='dream'] {
+    background: #181103;
+    color: #eac494;
+  }
+  .dark .tracker-tier[data-tier='practice'] {
+    background: #0a1310;
+    color: #9edac6;
+  }
+  .dark .tracker-warmup {
+    border-left: 4px solid #8a5a00;
+    background: #19150e;
+    color: #e1d1ad;
+  }
+  .dark .tracker-retro fieldset fieldset {
+    border: 0;
+    background: none;
+  }
+  .dark .tracker-retro-help,
+  .dark .tracker-retro-list small {
+    color: #b5c2ce;
+  }
+  .dark .tracker-retro-qs button,
+  .dark .tracker-retro-list button {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6e4f9;
+  }
+  .dark .tracker-retro-list li {
+    border-left: 4px solid transparent;
+    background: #131416;
+  }
+  .dark .tracker-retro-list li[aria-current] {
+    border-left-color: #0d7a63;
+  }
+  .dark :is(.tracker-retro-qs, .tracker-retro-list) button:focus-visible,
+  .dark .tracker-retro-themes summary:focus-visible {
     outline: 2px solid #87d2bb;
   }
 }

@@ -5,7 +5,8 @@ export type RecallGrade = 'know' | 'partial' | 'no';
 /** One card: [box 0–4, the UTC day number that set it (mcqDay), the question's title]. */
 export type RecallCard = [number, number, string];
 /**
- * The learner's cards by target: `content:<type>/<slug>` or `sd:<chapter>`; in their own notes,
+ * The learner's cards by target: `content:<type>/<slug>`, `sd:<chapter>`, `sd:<course>/<chapter>`
+ * (a /learn chapter) or `tpl:<stop>/<variant>` (a template written from memory); in their own notes,
  * `card:<id>` (RECALL_CARDS, lib/recall-cards.ts) and `idea:<problem id>` (RECALL_IDEAS), whose
  * titles are left empty. Boxes 0–3 come back after MCQ_REVIEW_DAYS (1/3/7/21 days); box 4 is
  * mastered and does not come back.
@@ -21,7 +22,7 @@ export const RECALL_KEY = 'cswork:recall:v1';
 export const RECALL_CARDS = 'recall:cards';
 export const RECALL_IDEAS = 'recall:ideas';
 export const RECALL_MAX = 300;
-const TARGET = /^(?:(?:content:[a-z_]+\/|sd:)[\w./-]{1,200}|card:[a-z0-9]{12}|idea:[\w.-]{1,120})$/;
+const TARGET = /^(?:(?:content:[a-z_]+\/|sd:)[\w./-]{1,200}|card:[a-z0-9]{12}|idea:[\w.-]{1,120}|tpl:[a-z0-9-]{1,60}\/[a-z0-9-]{1,40})$/;
 const TITLE_MAX = 80;
 
 export const emptyRecall = (): RecallQueue => ({ v: 1, items: {} });
@@ -163,10 +164,18 @@ export const dropMastered = (queue: RecallQueue): RecallQueue => ({
   items: Object.fromEntries(Object.entries(queue.items).filter(([, c]) => c[0] < MCQ_MASTERED)),
 });
 
-/** Where a card's question lives: the content library item, the system design chapter or the problem. */
+/** Where a card's question lives: the content library item, the course chapter, the topic page or the problem. */
 export function recallHref(target: string) {
   const content = /^content:([a-z_]+)\/(.+)$/.exec(target);
+  // content:topic/<stop>: a Line 500 stop's correctness points (topic-page-v2).
+  if (content?.[1] === 'topic') return `/topics/${encodeURIComponent(content[2])}`;
   if (content) return `/?view=content&type=${encodeURIComponent(content[1])}&slug=${encodeURIComponent(content[2])}`;
+  // tpl:<stop>/<variant>: the topic page opens that template's recall drill (templates-v2).
+  const tpl = /^tpl:([a-z0-9-]+)\/([a-z0-9-]+)$/.exec(target);
+  if (tpl) return `/topics/${tpl[1]}?drill=recall&v=${tpl[2]}#topic-drill`;
   if (target.startsWith('idea:')) return `/?view=problem&problem=${encodeURIComponent(target.slice(5))}`;
+  // sd:<course>/<chapter> is a /learn chapter (lib/server/beginner-courses.ts learnKey).
+  const learn = /^sd:([^/]+)\/([^/]+)$/.exec(target);
+  if (learn) return `/learn/${encodeURIComponent(learn[1])}/${encodeURIComponent(learn[2])}`;
   return target.startsWith('sd:') ? `/system-design/${encodeURIComponent(target.slice(3))}` : null;
 }

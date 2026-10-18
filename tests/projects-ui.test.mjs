@@ -232,7 +232,8 @@ test('the roadmap role picker renders a path; members see each step filled in', 
     assert.equal(state('Multiple choice: Databases').getAttribute('data-state'), 'done');
     assert.equal(state('Mock interview: Onsite loop')?.hasAttribute('data-state') ?? false, false, 'mocks never count');
     assert.match(document.querySelector('.role-path-progress').textContent, /^3 of \d+ required steps done\.$/);
-    assert.equal(requests.filter((u) => u.includes('/api/oj/')).length, 3);
+    // Marks, history, the MCQ note and the route notes (the schedule's, lib/content/role-paths.ts RouteDoc).
+    assert.equal(requests.filter((u) => u.includes('/api/oj/')).length, 4);
 
     signedIn = false;
     await act(async () => root.render(createElement(RolePath, { ...backend.props, key: 'out' })));

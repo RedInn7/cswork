@@ -316,6 +316,85 @@ void test('self-made cards are checked, capped at 200 and listed whole; excerpts
   sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'card:%' OR target LIKE 'clip:%'").run();
 });
 
+// An interview retro on a card (tracker-tiers-retro): a valid body for lib/applications.ts parseRetro.
+const CARD = '0b5f8c1e-1f2a-4c3d-9e8f-123456789abc';
+const RETRO = { company: 'Acme', stage: 'phone', at: t0, score: 3, questions: [{ text: 'Two sum', problem: 'lc-1', similar: false }], stuck: '', themes: [] };
+const card = (p: Person, id = CARD) =>
+  sqlite()
+    .prepare("INSERT OR IGNORE INTO job_applications(id,user_id,company_name,stage,created_at,updated_at) VALUES(?,?,'Acme','phone',1,1)")
+    .run(id, p.id);
+
+void test('wave-10 notes (brag:, retro:, route:) list whole per learner and cap per prefix', async () => {
+  type Listed = { items: { target: string; body: string }[] };
+  await ok(me, 'PUT', 'notes?target=brag:2026-10-12', { body: '{"wins":[]}' });
+  card(me);
+  await ok(me, 'PUT', `notes?target=retro:${CARD}/mf3k2a`, { body: JSON.stringify(RETRO) });
+  await ok(other, 'PUT', 'notes?target=brag:meta', { body: '{"weeks":12}' });
+  assert.deepEqual((await ok<Listed>(me, 'GET', 'notes?prefix=brag%3A')).items.map((i) => [i.target, i.body]), [['brag:2026-10-12', '{"wins":[]}']]);
+  assert.equal((await ok<Listed>(me, 'GET', 'notes?prefix=retro%3A')).items.length, 1);
+  const insert = sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)');
+  for (let i = 0; i < 29; i++) insert.run(me.id, `route:r-${i}`, '{}', i);
+  // Route bodies are RouteDocs (lib/content/role-paths.ts parseRoute): a role's without steps, a learner's with them.
+  const route = (more: object = {}) => ({ body: JSON.stringify({ v: 1, targetDate: '', weeklyHours: 6, state: {}, planned: {}, ...more }) });
+  await ok(me, 'PUT', 'notes?target=route:role-backend', route());
+  for (const [key, body] of [
+    ['route:role-backend', { body: '{"v":1}' }],
+    ['route:role-backend', route({ steps: [] })],
+    ['route:role-manager', route()],
+    ['route:r-zz', route()],
+    ['route:custom/1', route({ steps: [] })],
+    ['route:r-zz', route({ steps: [{ kind: 'ext', id: 'ext-abc123', title: 'x'.repeat(81), units: 1, done: 0 }] })],
+  ] as const)
+    assert.equal(await status(me, 'PUT', `notes?target=${key}`, body), 400, `${key} ${body.body}`);
+  assert.equal(await status(me, 'PUT', 'notes?target=route:r-zz', route({ steps: [] })), 409);
+  await ok(me, 'PUT', 'notes?target=route:role-backend', route({ weeklyHours: 8 }));
+  assert.equal((await ok<Listed>(me, 'GET', 'notes?prefix=route%3A')).items.length, 30);
+  sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'brag:%' OR target LIKE 'retro:%' OR target LIKE 'route:%'").run();
+});
+
+void test("a retro goes on the learner's own card only, in the right shape, and its problems batch-mark as redo", async () => {
+  type Listed = { items: { target: string; body: string }[] };
+  card(me);
+  const theirs = 'f0e1d2c3-b4a5-4697-8879-6a5b4c3d2e1f';
+  card(other, theirs);
+  const put = (p: Person, key: string, body: unknown) =>
+    status(p, 'PUT', `notes?target=${encodeURIComponent(key)}`, { body: typeof body === 'string' ? body : JSON.stringify(body) });
+  assert.equal(await put(me, `retro:${theirs}/k1`, RETRO), 404, "another learner's card");
+  assert.equal(await put(me, 'retro:9d2b4c6e-0000-4000-8000-00000000abcd/k1', RETRO), 404, 'no such card');
+  for (const key of [`retro:${CARD}`, `retro:${CARD}/K1`, `retro:${CARD}/${'a'.repeat(13)}`, 'retro:not-a-card/k1', `retro:${CARD}/k1/x`])
+    assert.equal(await put(me, key, RETRO), 400, key);
+  for (const body of [
+    'not json',
+    { ...RETRO, stage: 'oa' },
+    { ...RETRO, score: 5 },
+    { ...RETRO, at: 'today' },
+    { ...RETRO, company: 'x'.repeat(101) },
+    { ...RETRO, stuck: 'x'.repeat(601) },
+    { ...RETRO, questions: [{ text: 'q', problem: 'leetcode 1', similar: false }] },
+    { ...RETRO, questions: Array.from({ length: 11 }, () => ({ text: 'q', problem: '', similar: false })) },
+    { ...RETRO, themes: Array.from({ length: 9 }, () => 'conflict') },
+  ])
+    assert.equal(await put(me, `retro:${CARD}/k1`, body), 400, JSON.stringify(body).slice(0, 60));
+  assert.equal(await put(me, `retro:${CARD}/k1`, { ...RETRO, themes: ['conflict', 'not-a-theme'] }), 200);
+  assert.equal(await put(other, `retro:${theirs}/k1`, RETRO), 200);
+  const mine = await ok<Listed>(me, 'GET', 'notes?prefix=retro%3A');
+  assert.deepEqual(mine.items.map((i) => i.target), [`retro:${CARD}/k1`]);
+  // Not in the notes search.
+  assert.equal(await status(me, 'GET', 'notes?prefix=retro'), 400);
+  // Emptied, it is removed.
+  assert.equal(await put(me, `retro:${CARD}/k1`, ''), 200);
+  assert.deepEqual((await ok<Listed>(me, 'GET', 'notes?prefix=retro%3A')).items, []);
+
+  // Saving a retro marks its linked problems to redo in one batch (problem: targets only).
+  const added = await ok<{ mark: string; added: number }>(me, 'POST', 'marks', { targets: ['problem:lc-21', 'problem:oa-acme-2'], mark: 'redo' });
+  assert.deepEqual(added, { mark: 'redo', added: 2 });
+  const redo = (await ok<{ items: { target: string }[] }>(me, 'GET', 'marks?mark=redo')).items.map((i) => i.target);
+  assert.ok(redo.includes('problem:lc-21') && redo.includes('problem:oa-acme-2'));
+  assert.equal(await status(me, 'POST', 'marks', { targets: ['content:x/y'], mark: 'redo' }), 400);
+  sqlite().prepare("DELETE FROM user_marks WHERE target IN ('problem:lc-21','problem:oa-acme-2')").run();
+  sqlite().prepare("DELETE FROM user_notes WHERE target LIKE 'retro:%'").run();
+});
+
 void test('marks toggle per learner and drive the Line 500 starred/redo filters', async () => {
   const mark = (p: Person, m: string, on: boolean) =>
     ok(p, 'POST', 'marks', { target: 'problem:lc-1', mark: m, on });

@@ -65,9 +65,12 @@ jobs:
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts tests/practice-stats.test.ts tests/messages-en.test.ts tests/company-tags.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/wave9-foundation.test.ts
+      - run: node --import tsx --test tests/wave10-foundation.test.ts
       - run: node --import tsx --test tests/route-templates.test.ts tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
+      - run: node --import tsx --test tests/topic-why.test.ts tests/topic-page.test.ts
       # Resume projects (content/projects) and the role paths on /roadmap.
       - run: node --import tsx --test tests/role-paths.test.ts tests/resume-projects.test.ts tests/projects-ui.test.mjs
+      - run: node --import tsx --test tests/route-schedule.test.ts
       - run: node --import tsx --test tests/oj-deep-recursion.test.ts tests/auth-route.test.ts tests/problem-sequence.test.ts tests/health.test.ts tests/metrics-funnel.test.ts tests/bootstrap-catalogue.test.ts
       - run: node --import tsx --test tests/lazy-load-failed-ui.test.mjs tests/owner-metrics-ui.test.mjs
       - run: node --test tests/monitor-watch.test.mjs
@@ -115,6 +118,7 @@ jobs:
       - run: node --import tsx --test tests/reminders.test.ts tests/company-follows.test.ts tests/feeds.test.ts tests/reminders-ui.test.mjs
       - run: node --import tsx --test tests/study-goal.test.ts tests/daily-goal-ui.test.mjs
       - run: node --import tsx --test tests/contacts.test.ts tests/outreach-templates.test.ts tests/career-outreach-ui.test.mjs
+      - run: node --import tsx --test tests/negotiation-scripts.test.ts tests/negotiation-scripts-ui.test.mjs
       - run: node --import tsx --test tests/study-groups.test.ts tests/study-groups-ui.test.mjs
       - run: node --import tsx --test tests/mock-peer.test.ts tests/peer-mock-plus-ui.test.mjs tests/group-camp.test.ts tests/newsletter.test.ts tests/course-gift.test.ts tests/peer-cohort-gift-ui.test.mjs
       - run: node --import tsx --test tests/community.test.ts tests/community-ui.test.mjs
@@ -133,12 +137,15 @@ jobs:
       # Frontend JS track: every solution passes and every starter fails in the browser's harness, then the sandbox runner.
       - run: node --import tsx --test tests/js-harness.test.ts tests/frontend-js-content.test.ts tests/js-runner-ui.test.mjs
       - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs tests/estimation-drill.test.mjs
+      # OS and networking simulators (/oa/sims): textbook answers, brute-force cross-checks, RFC 793 transitions.
+      - run: node --import tsx --test tests/cs-sims.test.ts
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/job-openings.test.ts tests/job-openings-ui.test.mjs tests/applications.test.ts tests/application-tracker-ui.test.mjs tests/job-tags.test.ts tests/job-calendar-ui.test.mjs
       - run: node --import tsx --test tests/jd-readiness.test.ts tests/jd-readiness-ui.test.mjs tests/jd-keywords.test.ts tests/resume-check.test.ts tests/resume-parse.test.ts
       - run: node --import tsx --test tests/offer-math.test.ts tests/offer-compare-ui.test.mjs
       - run: node --import tsx --test tests/clarify.test.ts tests/ling-extras.test.ts tests/clarify-panel-ui.test.mjs
       - run: node --import tsx --test tests/contests.test.ts tests/contests-ui.test.mjs tests/contest-fairness.test.ts tests/contest-tiers.test.ts tests/duels.test.ts
       - run: node --import tsx --test tests/share-cards.test.ts tests/resume-builder.test.ts tests/resume-builder-ui.test.mjs
+      - run: node --import tsx --test tests/resume-reviews.test.ts tests/resume-review-link-ui.test.mjs
       - run: node --import tsx --test tests/resume-file.test.ts
       - run: node --import tsx --test tests/autofill-bookmarklet.test.ts
       - run: node --import tsx --test tests/skill-tests.test.ts tests/skill-test-ui.test.mjs tests/course-ratings.test.ts tests/beginner-courses.test.ts tests/learn-ui.test.mjs
@@ -188,6 +195,7 @@ jobs:
       - run: node --import tsx --test tests/judge-environment-ui.test.mjs
       - run: node --import tsx --test tests/interview-platforms-ui.test.mjs
       - run: node --import tsx --test tests/code-analyzer.test.ts tests/analyzer-notes-ui.test.mjs
+      - run: node --import tsx --test tests/constraint-hints.test.ts tests/constraint-hints-ui.test.mjs
       - run: npx tsx --test tests/leetcode-public-samples.test.ts
       - run: python3 scripts/leetcode-mode/test_runtime.py
       - run: python3 tests/cpp-json-runtime.test.py

@@ -169,3 +169,251 @@ test('every system design chapter lands in its course part, the ML chapters in t
   );
   assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');
 });
+
+// Role paths v2 (components/role-path.tsx, components/route-editor.tsx): the schedule, marks and learner-made routes.
+const findRolePath = async (params) => {
+  const { default: RoadmapPage } = await import('../app/roadmap/page.tsx');
+  const { RolePath } = await import('../components/role-path.tsx');
+  const find = (node) =>
+    node && typeof node === 'object'
+      ? node.type === RolePath
+        ? node
+        : [node.props?.children].flat(Infinity).map(find).find(Boolean)
+      : undefined;
+  return { RolePath, props: find(await RoadmapPage({ searchParams: Promise.resolve(params) })).props };
+};
+async function mountRolePath(url, props, fetchStub) {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url });
+  for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'MouseEvent', 'SubmitEvent', 'FormData', 'localStorage', 'navigator'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = fetchStub;
+  const { createRoot } = await import('react-dom/client');
+  const { RolePath } = await import('../components/role-path.tsx');
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => {
+    root.render(createElement(RolePath, props));
+    await new Promise((r) => setTimeout(r, 20));
+  });
+  return {
+    async close() {
+      await act(async () => root.unmount());
+      globalThis.fetch = originalFetch;
+      dom.window.close();
+    },
+  };
+}
+const wait = (ms = 20) => act(async () => new Promise((r) => setTimeout(r, ms)));
+const typeInto = (input, value) => {
+  Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(input, value);
+  input.dispatchEvent(new window.Event('input', { bubbles: true }));
+};
+const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent === text || b.getAttribute('aria-label') === text);
+
+test('signed out, a role path is scheduled in this browser, with no marks and no copy button', async () => {
+  const { props } = await findRolePath({ role: 'generalist' });
+  assert.equal(props.catalog, undefined, 'the public page carries no catalog');
+  assert.ok(props.steps.every((s) => typeof s.minutes === 'number'));
+  const writes = [];
+  const page = await mountRolePath('https://cswork.test/roadmap?role=generalist', props, async (input, init) => {
+    if (init?.method === 'PUT') writes.push(String(input));
+    return Response.json({ error: '请先登录' }, { status: 401 });
+  });
+  try {
+    const hours = document.querySelector('.role-path-schedule input[type="number"]');
+    assert.equal(hours.value, '10');
+    assert.ok(document.querySelector('.role-path-schedule input[type="date"]'));
+    assert.match(document.querySelector('.role-path-pace').textContent, /^At 10 h a week you finish on /);
+    const weeks = document.querySelectorAll('.role-path-weeks > li').length;
+    assert.ok(weeks > 4, `${weeks} weeks`);
+    assert.equal(document.querySelector('.role-path-weeks .role-path-week').textContent, 'This week');
+    // Every required step gets an estimate and a day; the optional crash course and OOP quiz do not.
+    const scheduled = [...document.querySelectorAll('.role-path-steps > li')].filter((li) => li.querySelector('.role-path-eta'));
+    assert.equal(scheduled.length, props.steps.filter((s) => !s.optional && !s.unavailable).length);
+    assert.match(scheduled[0].querySelector('.role-path-eta').textContent, /^~[\d.]+ h · done by /);
+    assert.equal(document.querySelector('.role-path-fork'), null);
+    assert.equal(document.querySelectorAll('.role-path-marks').length, 0);
+    assert.equal(document.querySelector('.role-path-mine'), null);
+    assert.match(document.body.textContent, /Sign in to mark steps in progress or skipped/);
+
+    typeInto(hours, '20');
+    await wait();
+    assert.match(document.querySelector('.role-path-pace').textContent, /^At 20 h a week/);
+    assert.ok(document.querySelectorAll('.role-path-weeks > li').length < weeks);
+    button('Save schedule').click();
+    await wait();
+    const saved = JSON.parse(localStorage.getItem('cswork:route:v1:guest')).generalist;
+    assert.equal(saved.weeklyHours, 20);
+    assert.equal(Object.keys(saved.planned).length, scheduled.length);
+    assert.match(document.body.textContent, /Schedule saved in this browser\./);
+    assert.deepEqual(writes, [], 'a guest writes no notes');
+
+    // The hours can be cleared and retyped; leaving the field puts back the last valid value.
+    const pace = () => document.querySelector('.role-path-pace').textContent;
+    typeInto(hours, '');
+    await wait();
+    assert.equal(hours.value, '', 'not snapped back while typing');
+    assert.match(pace(), /^At 20 h a week/);
+    typeInto(hours, '15');
+    await wait();
+    assert.match(pace(), /^At 15 h a week/);
+    typeInto(hours, '');
+    hours.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true }));
+    await wait();
+    assert.equal(hours.value, '15');
+  } finally {
+    await page.close();
+  }
+});
+
+test('a learner-made route mixes site steps and own entries; a step the site no longer has reads retired', async () => {
+  const bad = await findRolePath({ route: '../etc', role: 'backend' });
+  assert.equal(bad.props.route, null);
+  assert.equal(bad.props.catalog, undefined);
+  const { props } = await findRolePath({ route: 'r-fall26', role: 'backend' });
+  assert.equal(props.role, null, '?route= wins');
+  assert.equal(props.route, 'r-fall26');
+  assert.ok(props.catalog['line-stops:array-foundations'] && props.catalog['sql-track:joins']);
+  const doc = {
+    v: 1,
+    name: 'Fall plan',
+    from: 'backend',
+    steps: [
+      { kind: 'sql-track', ref: 'joins' },
+      { kind: 'line-stops', ref: 'array-foundations,retired-stop' },
+      { kind: 'ext', id: 'ext-abc123', title: 'CS61B lectures 1–12', units: 12, done: 3, unitMinutes: 60 },
+    ],
+    targetDate: '',
+    weeklyHours: 10,
+    state: { 'sql-track:joins': 'doing' },
+    planned: {},
+  };
+  const puts = [];
+  const page = await mountRolePath('https://cswork.test/roadmap?route=r-fall26', props, async (input, init) => {
+    const url = String(input);
+    if (init?.method === 'PUT') {
+      puts.push({ url, body: JSON.parse(JSON.parse(init.body).body), keepalive: init.keepalive });
+      return Response.json({ updatedAt: 1 });
+    }
+    if (url.includes('prefix=route'))
+      return Response.json({
+        items: [
+          { target: 'route:r-fall26', body: JSON.stringify(doc), updatedAt: 2 },
+          { target: 'route:role-backend', body: JSON.stringify({ v: 1, targetDate: '', weeklyHours: 6, state: {}, planned: {} }), updatedAt: 1 },
+        ],
+      });
+    if (url.endsWith('/api/oj/marks')) return Response.json({ items: [] });
+    if (url.endsWith('/api/oj/history')) return Response.json({ items: [] });
+    throw new Error(url);
+  });
+  try {
+    await wait();
+    const rows = () => [...document.querySelectorAll('.role-path-steps > li')];
+    assert.equal(rows().length, 3);
+    assert.match(document.querySelector('.role-path-blurb').textContent, /^Fall plan · Copied from Backend engineer$/);
+    assert.match(rows()[0].textContent, /SQL: .*In progress/);
+    assert.equal(rows()[0].querySelector('button[aria-pressed="true"]').textContent, 'In progress');
+    const retired = rows()[1];
+    assert.match(retired.textContent, /Content retired/);
+    assert.ok(retired.hasAttribute('data-off'));
+    assert.equal(retired.querySelector('.role-path-eta'), null, 'left out of the schedule');
+    assert.match(rows()[2].textContent, /CS61B lectures 1–12Your entry3\/12/);
+    assert.match(rows()[2].querySelector('.role-path-eta').textContent, /^~9 h · done by /);
+    assert.deepEqual([...document.querySelectorAll('.role-path-mine a')].map((a) => [a.textContent, a.getAttribute('aria-current')]), [['Fall plan', 'page']]);
+    assert.ok(button('New blank route'));
+    // The picker groups the site's content by kind; a step already on the route is disabled.
+    const select = document.querySelector('.role-path-editor select');
+    assert.ok(select.querySelector('optgroup[label="Line 500"] option[value="line-stops:array-foundations"]'));
+    assert.ok(!select.querySelector('option[value^="line-stops:array-foundations,"]'), 'multi-stop steps come only with a copy');
+    assert.equal(select.querySelector('option[value="sql-track:joins"]').disabled, true);
+    assert.ok(select.querySelector('optgroup[label="Crash courses"] option[value="course:big-o"]'));
+
+    // "+1" and "−1" name themselves by their visible text first (WCAG 2.5.3).
+    button('+1: CS61B lectures 1–12').click();
+    await wait();
+    assert.match(rows()[2].textContent, /4\/12/);
+    button('−1: CS61B lectures 1–12').click();
+    await wait();
+    assert.match(rows()[2].textContent, /3\/12/);
+    button('+1: CS61B lectures 1–12').click();
+    await wait();
+    assert.match(rows()[2].textContent, /4\/12/);
+    button('Remove: Content retired').click();
+    await wait();
+    assert.equal(rows().length, 2);
+    const form = document.querySelectorAll('.role-path-editor form')[0];
+    typeInto(form.querySelector('input[name="title"]'), 'DDIA chapters 1–6');
+    typeInto(form.querySelector('input[name="units"]'), '6');
+    form.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+    await wait();
+    assert.equal(rows().length, 3);
+    assert.match(rows()[2].textContent, /DDIA chapters 1–6Your entry0\/6/);
+    assert.equal(button('−1: DDIA chapters 1–6'), undefined, 'nothing to take back at 0');
+    assert.equal(puts.length, 0, 'saves wait for the edits to settle');
+    await wait(900);
+    assert.equal(puts.length, 1);
+    assert.equal(puts[0].url, '/api/oj/notes?target=route%3Ar-fall26');
+    const saved = puts[0].body;
+    assert.deepEqual(saved.steps.map((s) => s.ref ?? s.title), ['joins', 'CS61B lectures 1–12', 'DDIA chapters 1–6']);
+    assert.equal(saved.steps[1].done, 4);
+    assert.match(saved.steps[2].id, /^ext-[a-z0-9]{6}$/);
+    assert.equal(saved.steps[2].unitMinutes, 60);
+    assert.equal(puts[0].keepalive, true);
+
+    // Following a link never unmounts the page: the pending save goes out on pagehide, once.
+    button('−1: CS61B lectures 1–12').click();
+    await wait();
+    assert.equal(puts.length, 1);
+    window.dispatchEvent(new window.Event('pagehide'));
+    await wait();
+    assert.equal(puts.length, 2);
+    assert.equal(puts[1].body.steps[1].done, 3);
+    await wait(900);
+    assert.equal(puts.length, 2, 'the timer does not save it again');
+  } finally {
+    await page.close();
+  }
+});
+
+test("a member's schedule waits for their progress: no false behind banner, no save of inflated days", async () => {
+  const { props } = await findRolePath({ role: 'generalist' });
+  const id = (s) => `${s.kind}:${s.ref}`;
+  const counted = props.steps.filter((s) => !s.optional && !s.unavailable && s.keys.length > 0);
+  const solved = counted.find((s) => s.keys.every((k) => k.startsWith('problem:')));
+  const other = counted.find((s) => s !== solved);
+  const doc = { v: 1, targetDate: '', weeklyHours: 10, state: {}, planned: { [id(solved)]: '2000-01-03', [id(other)]: '2000-01-03' } };
+  const mount = (marksFail) =>
+    mountRolePath('https://cswork.test/roadmap?role=generalist', props, async (input) => {
+      const url = String(input);
+      if (url.includes('prefix=route')) return Response.json({ items: [{ target: 'route:role-generalist', body: JSON.stringify(doc), updatedAt: 1 }] });
+      if (url.endsWith('/api/oj/marks')) return marksFail ? Response.json({ error: 'Too many requests' }, { status: 429 }) : Response.json({ items: [] });
+      if (url.endsWith('/api/oj/history'))
+        return Response.json({ items: solved.keys.map((k) => ({ problemId: k.slice('problem:'.length), firstAcAt: 1 })) });
+      if (url.includes('mcq%3Aanswers')) return Response.json({ target: 'mcq:answers', body: '' });
+      throw new Error(url);
+    });
+
+  let page = await mount(true);
+  try {
+    await wait();
+    assert.equal(document.querySelector('.role-path-error').textContent, 'Too many requests');
+    assert.equal(document.querySelector('.role-path-behind'), null);
+    assert.equal(document.querySelector('.role-path-eta'), null);
+    assert.equal(button('Save schedule'), undefined);
+    assert.equal(document.querySelector('.role-path-pace').textContent, '');
+  } finally {
+    await page.close();
+  }
+
+  page = await mount(false);
+  try {
+    await wait();
+    assert.equal(document.querySelector('.role-path-error'), null);
+    // The solved step is off the schedule; only the other one is behind.
+    assert.match(document.querySelector('.role-path-behind').textContent, /^1 step behind/);
+    assert.ok(button('Save schedule'));
+  } finally {
+    await page.close();
+  }
+});
