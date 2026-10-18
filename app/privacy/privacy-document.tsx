@@ -53,7 +53,7 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，给面经和面试题的点赞，以及对官方题解「有帮助 / 没帮助」的评价也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告、点赞和题解评价只以人数汇总展示，不公开报告人、点赞人和评价人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示；单次提交制的模拟 OA 只和同样规则的成绩比较。
+                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，给面经和面试题的点赞，以及对官方题解「有帮助 / 没帮助」的评价也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告、点赞和题解评价只以人数汇总展示，不公开报告人、点赞人和评价人。模拟 OA 成绩还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人时不显示；单次提交制的模拟 OA 只和同样规则的成绩比较。
               </p>
               <p>
                 你在社区发布的题解、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。
@@ -74,7 +74,7 @@ export function PrivacyDocument() {
                 公开主页、证书、OA 公司页和周赛、入门赛的链接被分享到社交网站或聊天软件时，链接预览里的图片由本站服务器生成：公开主页的图片只有主页名、按难度的通过题数、最长连续通过天数，以及打开「展示比赛记录」时的最新 rating；证书的图片和证书页一样，显示课程名称、账号名称、日期和验证编号；比赛的图片只有场次名称、日期和参赛人数，私人房间和 1v1 排位只用网站的通用图片。图片用本站自带的字体绘制，不把任何文字发给字体服务或其他第三方；账号名称里有这套字体画不出的字时，改为显示公开主页名，没有公开主页名就不显示名字。证书页的「分享到 LinkedIn」「分享到 X」和只有证书持有人能看到的「添加到 LinkedIn 资料」都只是链接：点击后，浏览器才会把证书链接（添加到资料时还有课程名称、签发年月和验证编号）带到对方网站。
               </p>
               <p>
-                预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
+                同伴互面和 AI 模拟面试已下线：之前保存的预约信息（昵称、面试类型、级别、可用时段、时区、语言、目标公司和话题、会议链接）和 AI 面试每场的 1–4 分、结论和自评仍存在服务器上，不再向任何人显示或使用，相关的站内通知也不再显示，可按下文方式申请删除。
               </p>
               <p id="privacy-reminders">
                 学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛、投递提醒）、每天的提醒时间、时区偏移和语言，每天最多汇总成一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。投递提醒在打开学习提醒时默认勾选，可以单独关掉：服务器读取你投递追踪卡片上的 OA 截止、面试时间和 offer 截止时间，在 OA 截止前 24 小时和 2 小时、面试前 1 小时、处于 Offer 阶段的卡片 offer 截止前 3 天和 1 天各写一条站内消息，内容是公司、岗位和时间；投递卡和联系人的跟进日期到了，只在每日汇总里写到期的数量。删除一张投递卡时，它的投递提醒消息一并删除。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），只含每日汇总，每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核、上线新的 OA 题或有新的实习/新毕业生岗位时，你会收到站内消息，不发邮件；只有当这条消息里同时有你保存的岗位筛选的新结果时才会推送（见下方「在招岗位」一段）。
@@ -92,13 +92,13 @@ export function PrivacyDocument() {
                 实习日志（/career/intern）登录后才能用，内容存成你账号里的私人笔记：实习设置（公司、职位、开始日期和周数）存在 brag:meta；每周的成果（做成了什么、怎么衡量、怎么做到的、属于哪个项目）、收到的反馈、学到的和下周打算存在 brag:&lt;那一周周一的日期&gt;；选组电话的记录、各项权重和打分存在 brag:teams。每个账号最多 200 条，只有你自己能看到，不进笔记搜索和笔记导出。中期、期末自评草稿和 XYZ 简历要点在你的浏览器里生成，平台不另存；「写入简历」只改这个浏览器里简历生成器的那份。
               </p>
               <p id="privacy-practice-aids">
-                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、学完的面试英语单元、交卷的模拟 OA，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。冲刺计划（OA 日期、目标公司、每周时长、题池、难度和专题筛选、是否接上投递看板等设置）登录后存成私人笔记（pref:plan），同步到你的账户，当前浏览器保留一份缓存；未登录时只存在当前浏览器。勾选「接上投递看板」时，页面只在你的浏览器里读取你自己投递卡上的 OA 截止和面试日期来安排冲刺，这些日期不会另存到别处；计划的日历文件也在浏览器里生成。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
+                做题时，平台会在你的账号里记下你在一道题上第一次查看第 2 级及以后的提示、打开题解、使用 AI 助教（解释题面除外）的时间，以及第一次通过时题目计时器的读数，用来在「我的进度」里区分独立通过和借助提示通过、统计用时，并安排复习间隔。这些记录只有你自己能看到，不公开，也不计入积分和排行榜；未登录时不记录。平台还会记下你在一道题上第一次白板模式提交是否通过，以及第一次通过前是否有一次对拍结果和参考解完全一致，同样只在「我的进度」里给你自己看；未登录时不记录。白板模式的手动推演草稿作为私人笔记（wb:&lt;题号&gt;）存在你的账号里，未登录时只存在当前浏览器。复习一道之前通过过的题、再次通过时，可以给这次复习自评（重来 / 困难 / 良好 / 简单）：自评和这次提交一起记在你的账号里，用来安排下次复习、标出顽固题；每日复习上限和休假设置存成私人笔记（pref:review）。每日经验目标和每周的休息日存成私人笔记（pref:study）；服务器按你的通过记录、对拍和测复杂度、选择题作答、读完的系统设计章节、交卷的模拟 OA，以及开放题、复习卡片和思路卡的自评算出每天的经验，达到目标的日子，以及已过去的休息日和休假日，记在你的账号里，用来接上你自己在顶栏、「我的进度」和学习提醒里看到的连续打卡天数，不影响徽章、排行榜和公开主页；超过 200 天的记录在下次计算时删除。冲刺计划（OA 日期、目标公司、每周时长、题池、难度和专题筛选、是否接上投递看板等设置）登录后存成私人笔记（pref:plan），同步到你的账户，当前浏览器保留一份缓存；未登录时只存在当前浏览器。勾选「接上投递看板」时，页面只在你的浏览器里读取你自己投递卡上的 OA 截止和面试日期来安排冲刺，这些日期不会另存到别处；计划的日历文件也在浏览器里生成。你设的题目笔记模板（pref:note-template）和每个专题页（/topics）上的「我的套路笔记」（topic:&lt;专题&gt;）也是私人笔记；笔记里的 #标签、把握度和 [[题号]] 链接只在你自己的笔记之间统计和反查。这些同样只有你自己能看到。
               </p>
               <p id="privacy-notes-export">
                 「我的进度」笔记页的导出，把你写的题目、提交和资料笔记、专题套路笔记、复习卡片、摘录和系统设计草稿打包成一个 .zip（Obsidian 库）或一个 .md 文件，可以选择附上每道题最近一次通过的代码；服务器只返回你自己的记录，文件在你的浏览器里生成，平台不另存。故事库下线前保存的 STAR 故事仍作为私人笔记（story:&lt;id&gt;）留在你的账号里，不再显示或导出，可按下文方式申请删除。复习单和复习册（/review-sheet）只读取你自己的笔记、收藏和重做标记、提交记录、复习自评和卡片，不新增任何存储，打印和存 PDF 都在浏览器里完成。练习历史页的导出把你每道通过的题、每种语言最近一次通过的代码（可以选择附上题目笔记；OA 题默认不包含）打包成一个 .zip 题解仓库；服务器只返回你自己的提交，文件在你的浏览器里生成，平台不另存。进度 CSV / JSON 用页面已读取的练习历史和收藏、重做标记在浏览器里生成，不新增请求和存储。比赛或技能认证考试进行中，笔记导出、AC 代码打包和复习单都不可用。
               </p>
               <p id="privacy-practice-tracks">
-                简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。面试英语（/english）各单元的完成情况，登录后记在你的账号里；未登录时只存在当前浏览器，登录后打开页面会并入账号并从浏览器删除。跟读使用浏览器自带的语音识别，和模拟面试的语音输入一样，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；相似度、语速和口头禅只在浏览器里计算，不上传。朗读使用浏览器自带的语音合成。学习路线（/roadmap）登录后存成你账号里的私人笔记：内置岗位路线的目标日期、每周时长、标为「进行中」或「已掌握，跳过」的步骤，以及「保存排期」时记下的各步完成日期存在 route:role-&lt;岗位&gt;；你自己建的路线存在 route:r-&lt;编号&gt;，包括名称、步骤和你加的外部条目（只存标题、单元数、已完成数和每单元时长，不存链接）。路线笔记每个账号最多 30 条，只有你自己能看到，不进笔记搜索和笔记导出。未登录时，排期只存在当前浏览器的本地存储里。导出的 .ics 日历文件在浏览器里生成，不上传。
+                简历项目（/projects）的「开始 / 完成」状态和你选填的仓库链接（只接受 GitHub、GitLab、Codeberg 上的 https 地址）存在你自己的账号里，只有你能看到，不出现在公开主页上；验收脚本下载后在你自己的电脑上运行，平台收不到运行结果。面试英语（/english）已下线：之前登录时记下的各单元完成情况仍留在你的账号里，不再显示，也不计入经验，可按下文方式申请删除；未登录时只存在浏览器里的记录不会上传。学习路线（/roadmap）登录后存成你账号里的私人笔记：内置岗位路线的目标日期、每周时长、标为「进行中」或「已掌握，跳过」的步骤，以及「保存排期」时记下的各步完成日期存在 route:role-&lt;岗位&gt;；你自己建的路线存在 route:r-&lt;编号&gt;，包括名称、步骤和你加的外部条目（只存标题、单元数、已完成数和每单元时长，不存链接）。路线笔记每个账号最多 30 条，只有你自己能看到，不进笔记搜索和笔记导出。未登录时，排期只存在当前浏览器的本地存储里。导出的 .ics 日历文件在浏览器里生成，不上传。
               </p>
               <p id="privacy-code-review">
                 在提交详情里生成「代码评审链接」后，拿到链接并登录的人都能看到这次提交的代码、你的留言和全部评论；页面只显示公开主页名，没有主页名时显示「作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。你可以随时关闭链接：关闭后链接失效，评论不再对任何人显示，但仍保留在数据库里。有新评论时只发站内通知。每个账号最多同时开 20 条链接，每天最多新建 50 条。
@@ -203,7 +203,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
-                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。简历项目深挖还会随每条消息和最后的评估发送简历文字：你粘贴的内容，或从简历生成器自动填入的内容（自动填入时默认去掉姓名和联系方式，粘贴的简历按原样发送）；服务器不保存简历，它只存在你浏览器本地存储里这场面试的进度中。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较，并在「我的进度」里给你自己看各维度的走势；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。AI 模拟面试里的表达指标（语速、口头禅、说话时长和停顿）只在浏览器里计算并存在本机，不上传。模拟 OA 和比赛的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考；比赛回放只给录制它的参赛者本人看。比赛日历的订阅链接是公开的固定赛程，不含账号信息，单场比赛的日历文件在你的浏览器里生成。
+                模拟 OA 和比赛的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考；比赛回放只给录制它的参赛者本人看。比赛日历的订阅链接是公开的固定赛程，不含账号信息，单场比赛的日历文件在你的浏览器里生成。
               </p>
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
@@ -214,7 +214,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
               <p id="privacy-answer-feedback">
-                在面试题、系统设计案例的设计草稿或模拟面试里点「AI 点评我的答案」时，服务器会把你写的答案、这道题的题面和参考答案（如有；系统设计案例的参考是这一章的正文）发送给
+                在面试题或系统设计案例的设计草稿里点「AI 点评我的答案」时，服务器会把你写的答案、这道题的题面和参考答案（如有；系统设计案例的参考是这一章的正文）发送给
                 Anthropic，用于生成点评；不发送邮箱、姓名或账户标识。平台不保存答案和点评，只记录每天的调用次数和用量。不点就不会发送。
               </p>
               <p id="privacy-jd">
@@ -222,7 +222,7 @@ export function PrivacyDocument() {
                 Anthropic，用于整理出这个岗位要的技能和面试轮次；不发送邮箱、姓名、账户标识或你的练习记录，你的练习进度在服务器上读取，只和结果一起显示给你。职位描述和检查结果都不保存，只记录每天的调用次数和用量。从简历 AI 点评页带过来的职位描述经当前标签页的会话存储传递，读取后立即删除。
               </p>
               <p id="privacy-resume-builder">
-                在简历生成器（/career/resume/builder）里填写的内容保存在当前浏览器的本地存储里，除非你生成评审链接（见下一段），否则不会上传；「复制为新版本」保存的各个版本也一样；「导出 JSON」的文件也在浏览器里生成。规则检查和「粘贴文本导入」都在浏览器里完成，粘贴的简历文字不会上传。「导入 PDF / DOCX」同样只在浏览器里解析文件，文件和解析出的文字都不会上传，解析结果先显示为预览，确认后才填进简历；选 PDF 时，浏览器会从 jsDelivr（cdn.jsdelivr.net）下载 pdf.js 来读取文件，文件本身不发给 jsDelivr。「填表书签」把简历里的姓名、邮箱、电话、城市、链接、学校、学位和最近一段经历写在书签本身里，会随浏览器的书签同步，请不要分享，简历改了要重新拖一次；它只在你点它时运行，只在 Greenhouse、Lever、Ashby 的申请页上（其他网站嵌着这三家的申请表时，确认后先打开那个申请表）把空着的文本框填好，不替你提交，也不碰文件上传和下拉框。填进去的内容只有你在对方网站提交后才会发给对方，填表本身不向本平台发送任何内容；浮层里的「存到投递看板」和上面投递追踪的书签一样。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。AI 模拟面试的简历项目深挖也会读取这里的内容（不含姓名和联系方式），只随你发出的消息和最后的评估发送，方式见上面 AI 面试官一段。简历追问题按规则从你的经历和项目要点在浏览器里生成；登录后只有点「加入复习」时，勾选的追问题和对应要点才会存成你账号里的复习卡片（card:&lt;编号&gt;），只有你能看到，和其他卡片一样可以删除，已经在卡片里的题保持原样。LinkedIn 主页检查只在浏览器里计算：你贴进来的标题、简介、经历、技能、主页地址和 Open to Work 设置存在这个浏览器的本地存储里，对照简历技能时不读取姓名和联系方式；不抓取 LinkedIn，也不上传。
+                在简历生成器（/career/resume/builder）里填写的内容保存在当前浏览器的本地存储里，除非你生成评审链接（见下一段），否则不会上传；「复制为新版本」保存的各个版本也一样；「导出 JSON」的文件也在浏览器里生成。规则检查和「粘贴文本导入」都在浏览器里完成，粘贴的简历文字不会上传。「导入 PDF / DOCX」同样只在浏览器里解析文件，文件和解析出的文字都不会上传，解析结果先显示为预览，确认后才填进简历；选 PDF 时，浏览器会从 jsDelivr（cdn.jsdelivr.net）下载 pdf.js 来读取文件，文件本身不发给 jsDelivr。「填表书签」把简历里的姓名、邮箱、电话、城市、链接、学校、学位和最近一段经历写在书签本身里，会随浏览器的书签同步，请不要分享，简历改了要重新拖一次；它只在你点它时运行，只在 Greenhouse、Lever、Ashby 的申请页上（其他网站嵌着这三家的申请表时，确认后先打开那个申请表）把空着的文本框填好，不替你提交，也不碰文件上传和下拉框。填进去的内容只有你在对方网站提交后才会发给对方，填表本身不向本平台发送任何内容；浮层里的「存到投递看板」和上面投递追踪的书签一样。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。简历追问题按规则从你的经历和项目要点在浏览器里生成；登录后只有点「加入复习」时，勾选的追问题和对应要点才会存成你账号里的复习卡片（card:&lt;编号&gt;），只有你能看到，和其他卡片一样可以删除，已经在卡片里的题保持原样。LinkedIn 主页检查只在浏览器里计算：你贴进来的标题、简介、经历、技能、主页地址和 Open to Work 设置存在这个浏览器的本地存储里，对照简历技能时不读取姓名和联系方式；不抓取 LinkedIn，也不上传。
               </p>
               <p id="privacy-resume-review">
                 在简历生成器里点「请人看简历」时，正在编辑的这份简历会存一份快照到服务器上（教育、经历、项目、技能和奖项，以及你写给评审人的留言和所用简历版本的名字）；姓名、邮箱、电话、城市和链接在浏览器里就清空，服务器也会再清一遍。之后再改简历，快照不会跟着变。拿到链接并登录的人都能看到快照、留言和全部批注；页面只显示公开主页名，没有主页名时显示「简历作者」或「评审者 N」，不显示昵称和邮箱，也不被搜索引擎收录。服务器只保存链接的哈希，完整链接只在生成时显示一次。发批注需要验证过邮箱的账号，每条批注连同被批注那一行的原文一起保存。你接受的改写建议只写回这个浏览器里的简历，服务器只记下接受的时间。你可以随时关闭链接：关闭后链接失效，快照被清空，批注不再对任何人显示，但仍保留在数据库里。有新批注时只发站内通知，不发邮件。每个账号最多同时开 10 条链接，每天最多新建 20 条。
@@ -336,10 +336,9 @@ export function PrivacyDocument() {
                 problems all of them solved appears only to one of the people
                 compared who follows each of the others and is followed back.
                 Interview reports, upvotes and editorial ratings are shown only
-                as counts of people; reporters and voters are never named. Mock OA scores and
-                AI interview scores also count, anonymously, toward the
-                percentiles other learners see, which only appear once a
-                scenario has 20 people (30 for AI interviews); a single-submit
+                as counts of people; reporters and voters are never named. Mock OA scores also
+                count, anonymously, toward the percentiles other learners see,
+                which only appear once a scenario has 20 people; a single-submit
                 mock OA is compared only with scores under the same rules.
               </p>
               <p>
@@ -463,15 +462,13 @@ export function PrivacyDocument() {
                 name, issue month and verification ID) to that site.
               </p>
               <p>
-                When you book a peer mock interview, the server keeps the name
-                you enter, the interview type, level, the hours you offer, your
-                time zone and language, and any target companies and topics you
-                add. Partners see only that name; the match notice lists the
-                companies and topics you share. With email reminders on, your
-                verified account email gets a reminder a day and an hour before
-                the session (sent through Resend) with the type, time, your
-                partner&apos;s name and the call link; untick it when booking to
-                get none.
+                Peer mock interviews and the AI mock interviewer have been
+                retired: booking details saved before then (name, interview
+                type, level, hours, time zone, language, target companies and
+                topics, call link) and each AI interview&apos;s 1–4 scores,
+                verdict and self-ratings stay on the server, are shown to no
+                one and no longer used, their notices no longer show, and you
+                can ask for them to be deleted as described below.
               </p>
               <p id="privacy-reminders">
                 Reminders are off by default. Turn them on in your account and
@@ -641,7 +638,7 @@ export function PrivacyDocument() {
                 and weekly rest days are a private note (pref:study); the server
                 works out each day&apos;s XP from your accepted submissions,
                 stress tests and complexity probes, multiple-choice answers,
-                system design chapters read, interview English units finished,
+                system design chapters read,
                 finished mock OAs and self-grades of open
                 questions, review cards and idea cards. The days you reached
                 the goal, and past rest days and review-break days, are kept
@@ -697,18 +694,12 @@ export function PrivacyDocument() {
                 on GitHub, GitLab or Codeberg only), are kept on your account
                 where only you can see them, never on your public profile. The
                 acceptance script runs on your own computer after you download
-                it; the platform never gets its results. Which
-                interview English (/english) units you have finished is kept on
-                your account when you are signed in, or only in this browser
-                when you are signed out, moving into your account (and out of
-                the browser) the next time you open the page signed in.
-                Shadowing uses your browser&apos;s own speech recognition: as
-                with dictation in mock interviews, some browsers (Chrome, for
-                example) send the audio to the browser maker&apos;s servers to
-                turn it into text, without going through this platform. The
-                similarity, pace and filler-word figures are worked out in your
-                browser and never uploaded. Reading aloud uses your
-                browser&apos;s own speech synthesis. Signed in, your study
+                it; the platform never gets its results. Interview
+                English (/english) has been retired: the units you finished
+                while signed in stay on your account, are no longer shown or
+                counted toward XP, and you can ask for them to be deleted as
+                described below; records kept only in a browser while signed
+                out are never uploaded. Signed in, your study
                 routes (/roadmap) are private notes on your account: a built-in
                 role&apos;s target date, weekly hours, steps marked in progress or
                 skipped, and the finish dates recorded with &ldquo;Save
@@ -1042,38 +1033,7 @@ export function PrivacyDocument() {
                 Nothing is sent unless you use the tutor.
               </p>
               <p>
-                When you use the AI interviewer in a mock interview, the server
-                sends the question, its interviewer notes, your conversation on
-                that question, the clock and the code in the code box to
-                Anthropic to write the interviewer&apos;s replies and the final
-                report; when you finish a step of a system design or low-level
-                design question, it also sends that step&apos;s conversation to
-                score it and suggest one fix. A resume project deep dive also
-                sends the resume text with each message and with the final
-                report: what you paste, or what is filled in from the resume
-                builder (without your name and contact details by default; a
-                pasted resume is sent as written). The server does not store
-                it; it stays only in this sitting&apos;s progress in your
-                browser&apos;s local storage. Your email, name and account
-                identifiers are not sent. The recruiter-screen and
-                offer-negotiation role-plays send the practice scenario (a
-                fictional company type, role and offer figures) and your
-                conversation; the recruiter&apos;s limits in the scenario stay
-                on the server. The platform keeps neither the conversation nor
-                the report text (they live in your browser), only each
-                report&apos;s 1–4 scores and verdict, to compare with similar
-                interviews and to show you each dimension&apos;s trend under My
-                progress, and the 1–4 scores you give yourself before a
-                report (if you do), kept with it only for your own
-                self-assessment calibration under My progress and never shown
-                to anyone else. Dictation uses your browser&apos;s own
-                speech recognition; some browsers (Chrome, for example) send the
-                audio to the browser maker&apos;s servers to turn it into text,
-                without going through this platform, and nothing is recorded
-                unless you press dictate. The delivery stats in an AI mock
-                interview (pace, filler words, talk time and pauses) are worked
-                out in your browser and kept on this device; they are never
-                uploaded. Mock OA and contest code replays and
+                Mock OA and contest code replays and
                 the focus self-check (time away from the page, pastes over 40
                 characters) stay in your browser, are never uploaded and are
                 not proctoring; a contest replay shows only to the entrant it
@@ -1102,8 +1062,7 @@ export function PrivacyDocument() {
               </p>
               <p id="privacy-answer-feedback">
                 When you choose AI feedback on your answer to an interview
-                question, on your draft for a system design case or in a mock
-                interview, the server sends what you wrote, the question and its reference
+                question or on your draft for a system design case, the server sends what you wrote, the question and its reference
                 answer (if any; for a system design case, that chapter&apos;s
                 text) to Anthropic to write the feedback.
                 Your email, name and account identifier are not sent. The
@@ -1160,10 +1119,7 @@ export function PrivacyDocument() {
                 AI review” keeps the resume&apos;s plain text in this tab&apos;s
                 session storage until the AI resume review page reads it, then
                 deletes it; the text goes to Anthropic, as described above, only
-                if you submit there. The AI mock interview&apos;s resume project
-                deep dive also reads this content, without your name and contact
-                details, and sends it only with the messages you send and the
-                final report, as described for the AI interviewer above. Resume
+                if you submit there. Resume
                 follow-up questions are made by rules from your experience and
                 project bullets in the browser; signed in, only when you press
                 &ldquo;Add to review&rdquo; are the ticked questions and their
