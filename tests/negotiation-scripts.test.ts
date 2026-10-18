@@ -10,7 +10,7 @@ import { SCENARIOS, scenarioSetting } from '../lib/server/roleplay-scenarios';
 const CJK = /[㐀-鿿]/;
 const byId = (s: Script) => new Map(s.nodes.map((n) => [n.id, n]));
 
-void test('five scripts over the planned scenarios, two kinds', () => {
+void test('five scripts over their own scenarios, two kinds', () => {
   assert.deepEqual(
     SCRIPTS.map((s) => [s.id, s.scenario]),
     [
@@ -22,6 +22,13 @@ void test('five scripts over the planned scenarios, two kinds', () => {
     ],
   );
   for (const s of SCRIPTS) assert.equal(s.kind, SCENARIOS.find((x) => x.id === s.scenario)!.kind, s.id);
+  // Each scenario belongs to one script, and the setting it shows is in both languages.
+  assert.deepEqual(SCENARIOS.map((x) => x.id).sort(), SCRIPTS.map((s) => s.scenario).sort());
+  for (const x of SCENARIOS)
+    for (const [zh, en] of [x.company, x.role, x.level, x.location, x.brief]) {
+      assert.ok(CJK.test(zh), `${x.id}: ${zh}`);
+      assert.ok(en.trim() && !CJK.test(en), `${x.id}: ${en}`);
+    }
 });
 
 void test('every next exists; from the start no cycle, every node reachable, every run ends in 4–6 steps', () => {

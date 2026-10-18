@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Eye, ListOrdered, PenLine } from 'lucide-react';
+import { Eye, PenLine } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { AnswerGrade, GRADE_MIN, GRADEABLE } from './answer-grade';
 import { useNote } from './problem-notes';
 import '@/app/interview-prep.css';
 
-/** Something written: the step headings alone ("Outline by steps") are not an answer yet. */
+/** Something written: `## ` headings alone are not an answer yet. */
 const wrote = (text: string) => text.split('\n').some((line) => line.trim() && !/^##\s/.test(line.trim()));
 
 /**
@@ -24,8 +24,6 @@ export function TryFirst({
   revealOnLoad,
   local,
   code,
-  gradeable = true,
-  scaffold,
 }: {
   userId: string | null;
   target: string;
@@ -36,10 +34,6 @@ export function TryFirst({
   revealOnLoad?: boolean;
   local?: { value: string; onChange: (value: string) => void };
   code?: boolean;
-  /** False when the question has no reference answer for AI feedback to grade against. */
-  gradeable?: boolean;
-  /** Section headings an empty answer can start from (the question's answer steps). */
-  scaffold?: string;
 }) {
   const t = useT();
   const id = useId();
@@ -114,19 +108,6 @@ export function TryFirst({
               </button>
             </div>
           )}
-          {scaffold && !text.trim() && (
-            <button
-              type="button"
-              className="rd-button is-quiet ip-try-scaffold"
-              disabled={locked}
-              onClick={() => {
-                edit(scaffold);
-                box.current?.focus();
-              }}
-            >
-              <ListOrdered size={14} aria-hidden="true" /> {t('按步骤分段', 'Outline by steps')}
-            </button>
-          )}
           <textarea
             ref={box}
             className="ip-try-input"
@@ -159,7 +140,7 @@ export function TryFirst({
             )}
           </p>
           {/* Above the reference answer, which it leaves closed. */}
-          {!guest && gradeable && GRADEABLE.test(target) && (
+          {!guest && GRADEABLE.test(target) && (
             <AnswerGrade ready={tried && text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
           )}
         </>

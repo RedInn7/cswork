@@ -16,8 +16,7 @@ const { sqlite } = await import('../db/sqlite');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { handleOj } = await import('../lib/server/oj-api');
 const { parseJd, skillProgress, weakStops } = await import('../lib/server/ai-jd');
-const { JD_CHARS, JD_ROUND_INFO } = await import('../lib/jd-skills');
-const { resolveTemplate } = await import('../lib/mock-interview');
+const { JD_CHARS } = await import('../lib/jd-skills');
 const { AI_DAILY_LIMITS } = await import('../lib/server/ai-tutor');
 const { curatedEntries } = await import('../lib/ling-curated');
 const { ROUTE_SLUGS } = await import('../lib/route-stops');
@@ -195,10 +194,6 @@ void test('the pure measures: thresholds, certificates, empty learners and repli
   });
   assert.equal(skillProgress('python', { ...empty, certs: new Set(['sd:python']) }).status, 'gap');
   assert.equal(skillProgress('frontend', empty).status, 'unmeasured');
-  // The system design round opens one design slot, not the whole onsite.
-  const design = new URL(JD_ROUND_INFO['system-design'].href, 'https://cswork.test').searchParams;
-  const slots = resolveTemplate(design.get('template'), design.get('mix'), design.get('min'))?.slots;
-  assert.deepEqual(slots?.map((s) => [s.kind, s.minutes]), [['design', 45]]);
   assert.deepEqual(parseJd('[]', job), null);
   assert.deepEqual(parseJd('{"skills":[],"likelyRounds":"oa"}', job), { skills: [], likelyRounds: [] });
   assert.equal(parseJd('not json', job), null);

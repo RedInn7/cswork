@@ -195,7 +195,7 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   // ?kind= picks one tab; a removed feature's kind (direct messages) is never listed.
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
   sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('dm1',?,'dm','x','y','/',1)").run(ada.id);
-  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('mp1',?,'mock-peer','x','y','/',1)").run(ada.id);
+  sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('cg1',?,'course-gift','x','y','/',1)").run(ada.id);
   const replies = notices(ada.id, 'reply').length;
   // A notice left by the removed discussion board lists nowhere.
   sqlite()

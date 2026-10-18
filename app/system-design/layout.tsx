@@ -17,9 +17,6 @@ export default async function SystemDesignLayout({ children }: { children: React
           cswork<span> / {zh ? '系统设计' : 'system design'}</span>
         </Link>
         <DailyGoal />
-        <Link href="/mock-interview" prefetch={false}>
-          {zh ? '来一场模拟面试' : 'Run a mock interview'} <span aria-hidden="true">↗</span>
-        </Link>
       </header>
       <main className="public-library-main" id="main-content">
         {children}
@@ -30,9 +27,6 @@ export default async function SystemDesignLayout({ children }: { children: React
         </Link>
         <Link href="/categories/system-design" prefetch={false}>
           {zh ? '系统设计面试题' : 'System design questions'}
-        </Link>
-        <Link href="/mock-interview" prefetch={false}>
-          {zh ? '模拟面试' : 'Mock interview'}
         </Link>
         <Link href="/privacy" prefetch={false}>
           {zh ? '隐私' : 'Privacy'}

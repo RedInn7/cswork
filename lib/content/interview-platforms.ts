@@ -321,9 +321,9 @@ export const PLATFORMS: Platform[] = [
     },
     practice: [
       {
-        href: '/?view=mock-interview&template=screen-rapid',
-        zh: '模拟面试：「快问快答 + 多段编程电面」模板，先答基础题再写代码',
-        en: 'Mock interview: the “Rapid-fire + multi-part coding screen” template, questions first, then code',
+        href: '/oa/mcq',
+        zh: 'OA 选择题练习：操作系统、网络、数据库等快问快答常考的基础题',
+        en: 'OA multiple-choice practice: the OS, networking and database fundamentals rapid-fire questions cover',
       },
     ],
   },

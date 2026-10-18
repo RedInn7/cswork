@@ -11,13 +11,12 @@ import {
 import { hiddenCompanies } from './env';
 import { catalogue, mockPool } from './mock-oa';
 import { mockPresetFor } from './mock-oa-presets';
-import { landingCompanies } from './mock-interview';
 import { oaLibrary } from './oa-library';
 import { studyLibrarySummaries } from './study-library';
 
 /**
  * Company pages (/company/<employer>): an employer's OA problems, most reported LeetCode problems,
- * latest experiences and interview questions, and its mock entries. OA catalog, content library
+ * latest experiences and interview questions, and its mock OA. OA catalog, content library
  * and LeetCode map slugs meet under one employer slug (lib/oa-company-brands.ts).
  */
 const QUESTION_TYPES = ['interview_question', 'coding_question'] as const;
@@ -173,7 +172,6 @@ export function companyHub(db: Database.Database | null, slug: string, ready: Re
     experiences: latest(db, company.library, ['experience']),
     questions: latest(db, company.library, QUESTION_TYPES),
     mockOa: mockPresetFor(slug)?.slug ?? null,
-    mockInterview: (db && landingCompanies(db).find((c) => employerSlug(c.slug) === slug)?.slug) || null,
   };
 }
 

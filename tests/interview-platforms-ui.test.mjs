@@ -24,7 +24,6 @@ export async function load(u,c,n){
 );
 
 const { PLATFORMS, ROWS } = await import('../lib/content/interview-platforms.ts');
-const { TEMPLATES } = await import('../lib/mock-interview.ts');
 const { default: InterviewPlatformsPage } = await import('../app/interview-platforms/page.tsx');
 
 const CJK = /[一-鿿]/;
@@ -59,17 +58,14 @@ test('every platform fills every rule; facts and employer settings cite the plat
   }
 });
 
-test('practice links point at real modes; the interview template exists', () => {
-  const ids = new Set(TEMPLATES.map((t) => t.id));
+test('practice links point at real modes', () => {
   for (const p of PLATFORMS) {
     assert.ok(p.practice.length > 0, p.id);
     for (const { href, zh, en } of p.practice) {
-      const template = href.match(/^\/\?view=mock-interview&template=([\w-]+)$/)?.[1];
-      assert.ok(PRACTICE.has(href) || ids.has(template), `${p.id}: ${href}`);
+      assert.ok(PRACTICE.has(href), `${p.id}: ${href}`);
       assert.ok(CJK.test(zh) && !CJK.test(en), href);
     }
   }
-  assert.ok(PLATFORMS.find((p) => p.id === 'karat').practice.some((x) => x.href.includes('template=')));
 });
 
 test('the page names no employer, in both languages', async () => {

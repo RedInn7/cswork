@@ -111,16 +111,6 @@
     border-left: 2px dashed #2e3339;
   }
 
-  /*
-   * Checked verdict chips sit on --rd-red / --rd-brand-ink, which turn light here; the
-   * label would otherwise keep the rating scale's light text (1.6–2.6:1).
-   */
-  .dark .mi-verdicts label[data-verdict^='strong-no']:has(input:checked),
-  .dark .mi-verdicts label[data-verdict='no']:has(input:checked),
-  .dark .mi-verdicts label[data-verdict$='yes']:has(input:checked) {
-    color: #0b1411;
-  }
-
   /* Google's own dark sign-in button (fill, stroke and label from its brand guidelines). */
   .dark .login-providers .google-signin {
     background: #131314;
@@ -142,12 +132,6 @@
     --cs-ai: #5cc8b8;
     --cs-ai-ink: #10151d;
     --cs-ai-error: #fbbf24;
-  }
-
-  /* The mock interview's company picker opens a native list: system colours, not the navy board's. */
-  .dark .mi-board select option {
-    background: var(--popover);
-    color: var(--popover-foreground);
   }
 
   /* Hued initials tiles: the hue rides in a var, so the generator cannot re-step them. */
@@ -174,7 +158,7 @@
   [data-theme='dark'] img[src^='/company-logos/']:not(:is(.oa-company-logo, .mock-logo, .mock-public-logo) > img) {
     background: #eef2f0;
   }
-  /* The plate's box at zero specificity: a logo that sizes its own (.mi-logo, .cs-company-chip img) keeps it. */
+  /* The plate's box at zero specificity: a logo that sizes its own (.cs-company-chip img) keeps it. */
   :where([data-theme='dark'] img[src^='/company-logos/']:not(:is(.oa-company-logo, .mock-logo, .mock-public-logo) > img)) {
     padding: 1px;
     border-radius: 3px;

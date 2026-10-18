@@ -65,7 +65,7 @@ test('the checklist: a handed-over posting, statuses, progress, practice links a
   assert.equal(document.activeElement, result, 'the checklist takes focus');
   // Front end is not measured here: neither counted as a gap nor left out of the total.
   assert.equal(result.querySelector('.resume-summary').textContent, 'This posting asks for 3 skills: 1 ready, 1 in progress, 0 gaps, 1 not measured here.');
-  assert.deepEqual([...result.querySelectorAll('.jd-rounds a')].map((a) => a.getAttribute('href')), ['/mock-oa', '/?view=mock-interview&template=behavioral']);
+  assert.deepEqual([...result.querySelectorAll('.jd-rounds a')].map((a) => a.getAttribute('href')), ['/mock-oa', '/categories/behavioral-leadership']);
   const rows = [...result.querySelectorAll('.jd-skill')];
   assert.deepEqual(rows.map((r) => [r.dataset.status, r.querySelector('.jd-status').textContent]), [
     ['partial', 'In progress'],
@@ -78,9 +78,9 @@ test('the checklist: a handed-over posting, statuses, progress, practice links a
   assert.equal(rows[0].querySelector('a').getAttribute('href'), '/?view=problems');
   // The certificate makes SQL ready; the count shown is still the real one.
   assert.match(rows[1].textContent, /4 \/ 30 problems solved \(certificate earned\)/);
-  // Nothing measures front end here, so no bar; the AI mock interview's front-end round is its practice.
+  // Nothing measures front end here and nothing practises it, so no bar and no link.
   assert.equal(rows[2].querySelector('.jd-bar'), null);
-  assert.equal(rows[2].querySelector('a').getAttribute('href'), '/?view=mock-interview&template=frontend');
+  assert.equal(rows[2].querySelector('a'), null);
   assert.equal(result.querySelectorAll('h3')[1].textContent, 'Required');
   const plan = result.querySelector('.jd-plan-link');
   assert.equal(new URL(plan.href).searchParams.get('planTopics'), 'binary-search,dp-grid');

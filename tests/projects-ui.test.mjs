@@ -185,8 +185,7 @@ test('the roadmap role picker renders a path; members see each step filled in', 
   assert.equal(doc.querySelectorAll('.role-path-roles a').length, 6);
   assert.equal(doc.querySelector('.role-path-roles [aria-current]').getAttribute('href'), '/roadmap?role=frontend#role-path');
   assert.match(doc.querySelector('.role-path-progress').textContent, /Sign in/);
-  const off = doc.querySelector('.role-path-steps li[data-off]');
-  assert.match(off.textContent, /Mock interview: Frontend interview.*Unavailable/, 'the AI-only round while AI is off');
+  assert.equal(doc.querySelector('.role-path-steps li[data-off]'), null);
   assert.ok([...doc.querySelectorAll('.role-path-head a')].some((a) => a.textContent === 'Multiple choice: JavaScript'));
   assert.ok(doc.querySelector('a.role-path-plan').getAttribute('href').includes('planTopics=array-foundations'));
 
@@ -230,7 +229,6 @@ test('the roadmap role picker renders a path; members see each step filled in', 
     assert.equal(state(sql.title).getAttribute('data-state'), 'active');
     assert.equal(state(sql.title).querySelector('.role-path-count').textContent, `2/${sql.keys.length}`);
     assert.equal(state('Multiple choice: Databases').getAttribute('data-state'), 'done');
-    assert.equal(state('Mock interview: Onsite loop')?.hasAttribute('data-state') ?? false, false, 'mocks never count');
     assert.match(document.querySelector('.role-path-progress').textContent, /^3 of \d+ required steps done\.$/);
     // Marks, history, the MCQ note and the route notes (the schedule's, lib/content/role-paths.ts RouteDoc).
     assert.equal(requests.filter((u) => u.includes('/api/oj/')).length, 4);

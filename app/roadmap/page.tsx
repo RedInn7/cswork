@@ -9,7 +9,6 @@ import { CS_NODES } from '@/lib/cs-track';
 import { ROLE_KEYS, ROLES, ROUTE_ID, isRole } from '@/lib/content/role-paths';
 import { curatedEntries } from '@/lib/ling-curated';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
-import { aiEnabled } from '@/lib/server/ai-tutor';
 import { beginnerCourse, learnKey } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { resolveRolePath, routeCatalog } from '@/lib/server/role-paths';
@@ -117,9 +116,9 @@ export default async function RoadmapPage({ searchParams }: Props) {
             name: zh ? ROLES[key].zh : ROLES[key].en,
             blurb: zh ? ROLES[key].blurbZh : ROLES[key].blurbEn,
           }))}
-          steps={role ? resolveRolePath(role, zh, aiEnabled()) : []}
+          steps={role ? resolveRolePath(role, zh) : []}
           route={route}
-          catalog={route ? routeCatalog(zh, aiEnabled()) : undefined}
+          catalog={route ? routeCatalog(zh) : undefined}
         />
         <RoadmapTracks
           english={!zh}

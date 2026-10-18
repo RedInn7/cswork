@@ -113,7 +113,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '行为面试',
     en: 'Behavioral',
     hint: 'communication, teamwork, ownership, leadership, working with others',
-    href: '/?view=mock-interview&template=behavioral',
+    href: '/categories/behavioral-leadership',
   },
   ml: {
     zh: '机器学习',
@@ -126,8 +126,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '前端开发',
     en: 'Front end',
     hint: 'web front end: JavaScript, TypeScript, React, HTML, CSS',
-    // The AI mock interview's front-end round; it keeps no count, so the skill stays unmeasured.
-    href: '/?view=mock-interview&template=frontend',
+    href: null,
   },
   python: {
     zh: 'Python',
@@ -160,14 +159,9 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
 };
 export const JD_ROUND_INFO: Record<JdRound, { zh: string; en: string; href: string }> = {
   oa: { zh: '在线笔试（OA）', en: 'Online assessment', href: '/mock-oa' },
-  'phone-coding': { zh: '电话编程面', en: 'Phone coding screen', href: '/?view=mock-interview&template=phone' },
-  // One design slot alone (the onsite template is two hours of coding and behavioral around it).
-  'system-design': {
-    zh: '系统设计面',
-    en: 'System design round',
-    href: '/?view=mock-interview&template=custom&mix=design.1&min=45',
-  },
-  behavioral: { zh: '行为面', en: 'Behavioral round', href: '/?view=mock-interview&template=behavioral' },
+  'phone-coding': { zh: '电话编程面', en: 'Phone coding screen', href: '/?view=problems' },
+  'system-design': { zh: '系统设计面', en: 'System design round', href: '/system-design' },
+  behavioral: { zh: '行为面', en: 'Behavioral round', href: '/categories/behavioral-leadership' },
   'take-home': { zh: '带回家作业', en: 'Take-home project', href: '/take-home' },
 };
 /** The study plan's URL parameter: Line 500 stops (comma-separated slugs) to preselect as its topics. */

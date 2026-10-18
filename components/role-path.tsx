@@ -61,14 +61,14 @@ async function achievedKeys(problems: boolean, mcq: boolean, signal: AbortSignal
 }
 
 const noUpdates = () => () => {};
-const counted = (step: ResolvedStep) => step.keys.length > 0 && !step.unavailable;
+const counted = (step: ResolvedStep) => step.keys.length > 0;
 const stateOf = ({ done, total }: Count) => (done >= total * STEP_DONE ? 'done' : done > 0 ? 'active' : 'todo');
 
 /**
  * /roadmap's role picker (?role=), the chosen role's steps as stations on one line, and its schedule.
  * Signed in, each counted step shows how much of it is done from the APIs the site already has: read
  * marks (system design and course chapters), the practice history (problems), done marks (projects)
- * and the MCQ review note. Mock interviews never count; an AI-only one reads unavailable while AI is off.
+ * and the MCQ review note.
  *
  * The schedule lays the steps left into weeks at the learner's hours (lib/route-schedule.ts) and is a
  * route:role-<key> note (a guest's lives in localStorage). Signed in, steps can be marked in progress or
@@ -249,7 +249,7 @@ export function RolePath({
     doc && today && progressKnown
       ? scheduleRoute({
           steps: rows.map(
-            (r) => r.ext ?? { id: r.id, minutes: r.step?.minutes ?? 0, optional: r.step?.optional, unavailable: !r.step || r.step.unavailable },
+            (r) => r.ext ?? { id: r.id, minutes: r.step?.minutes ?? 0, optional: r.step?.optional, unavailable: !r.step },
           ),
           doneShare: Object.fromEntries(rows.map((r, i) => [r.id, share(r, counts[i])])),
           state: doc.state,
@@ -410,17 +410,12 @@ export function RolePath({
                   key={r.id}
                   data-state={state}
                   data-optional={s?.optional || undefined}
-                  data-off={s?.unavailable || r.missing ? true : undefined}
+                  data-off={r.missing ? true : undefined}
                   data-mark={marked}
                 >
                   <div className="role-path-head">
                     {s ? <a href={s.href}>{title(s)}</a> : <span className="role-path-own">{rowTitle(r)}</span>}
                     {s?.optional && <span className="role-path-tag">{t('选做', 'Optional')}</span>}
-                    {s?.unavailable && (
-                      <span className="role-path-tag" data-off>
-                        {t('暂不可用', 'Unavailable')}
-                      </span>
-                    )}
                     {r.ext && <span className="role-path-tag">{t('外部条目', 'Your entry')}</span>}
                     {marked && (
                       <span className="role-path-tag" data-mark={marked}>
@@ -449,14 +444,6 @@ export function RolePath({
                       )}
                     </p>
                   )}
-                  {s?.unavailable && (
-                    <p className="role-path-note">
-                      {t(
-                        'AI 面试官目前没有开放，这一步不计入进度。可以先用其他模拟面，或找同伴互相面试。',
-                        'The AI interviewer is not available right now, so this step does not count. Try another mock interview, or practise with a peer.',
-                      )}
-                    </p>
-                  )}
                   {s?.stops && (
                     <ul className="role-path-stops" aria-label={t('站点', 'Stops')}>
                       {s.stops.map((stop) => (
@@ -473,7 +460,7 @@ export function RolePath({
                   )}
                   {member && (
                     <div className="role-path-marks">
-                      {!r.missing && !s?.unavailable && (
+                      {!r.missing && (
                         <>
                           <button type="button" aria-pressed={marked === 'doing'} onClick={() => mark(r.id, 'doing')}>
                             {t('进行中', 'In progress')}
@@ -550,8 +537,8 @@ export function RolePath({
           )}
           <p className="roadmap-note">
             {t(
-              `完成一步的标准：读完、做对或答过其中 ${STEP_DONE * 100}% 的内容；项目以标记「完成」为准。选做和模拟面不计入进度。`,
-              `A step is done at ${STEP_DONE * 100}% of it read, solved or answered; a project when you mark it done. Optional steps and mock interviews do not count.`,
+              `完成一步的标准：读完、做对或答过其中 ${STEP_DONE * 100}% 的内容；项目以标记「完成」为准。选做不计入进度。`,
+              `A step is done at ${STEP_DONE * 100}% of it read, solved or answered; a project when you mark it done. Optional steps do not count.`,
             )}
           </p>
         </>

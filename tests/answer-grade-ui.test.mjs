@@ -84,8 +84,6 @@ test('try first: no button without AI, for guests or for targets the server cann
     [{ userId: 'u1', target: 'content:interview_question/cache' }, false],
     [{ userId: null, target: 'content:interview_question/cache', local: { value: long, onChange() {} } }, true],
     [{ userId: 'u1', target: 'content:course_chapter/lld' }, true],
-    // A drawn mock interview question with no reference answer.
-    [{ userId: 'u1', target: 'content:interview_question/bare', gradeable: false }, true],
   ]) {
     server({ ai });
     const root = createRoot(document.getElementById('root'));

@@ -16,7 +16,6 @@ import {
 import sqlTrack from '@/lib/content/sql-track.json';
 import { PLAN_TOPICS_PARAM } from '@/lib/jd-skills';
 import { curatedEntries } from '@/lib/ling-curated';
-import { AI_TEMPLATES, TEMPLATES } from '@/lib/mock-interview';
 import { ROUTE_SLUGS, STOP_NAMES, stopHref } from '@/lib/route-stops';
 import { MINUTES, minutesFor } from '@/lib/study-plan';
 import { learnKey, learnPath } from './beginner-courses';
@@ -31,7 +30,7 @@ const coreDifficulty = new Map(coreSkills.problems.map((p) => [p.id, p.difficult
 const sqlGroup = (key: string) => [...sqlTrack.groups, ...sqlTrack.pandasGroups].find((group) => group.key === key);
 
 /** One step with its title, link and keys; throws on a ref that does not exist (tests/role-paths.test.ts). */
-export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedStep {
+export function resolveStep(step: RoleStep, zh: boolean): ResolvedStep {
   const pick = (cn: string, en: string) => (zh ? cn : en);
   const title = (name: string) => stepTitle(step.kind, name, zh);
   const missing = () => new Error(`role path: no ${step.kind} "${step.ref}"`);
@@ -128,27 +127,14 @@ export function resolveStep(step: RoleStep, zh: boolean, ai: boolean): ResolvedS
         minutes: totalMinutes(course.chapters, zh),
       };
     }
-    case 'mock-kind': {
-      const aiOnly = AI_TEMPLATES.find((t) => t.id === step.ref);
-      const template = aiOnly ?? TEMPLATES.find((t) => t.id === step.ref);
-      if (!template) throw missing();
-      return {
-        ...step,
-        title: title(template.name[zh ? 0 : 1]),
-        href: `/?view=mock-interview&template=${template.id}`,
-        keys: [],
-        ...(aiOnly && !ai ? { unavailable: true as const, minutes: 0 } : { minutes: template.slots.reduce((n, s) => n + s.minutes, 0) }),
-      };
-    }
   }
 }
 
-export const resolveRolePath = (role: RoleKey, zh: boolean, ai: boolean) =>
-  ROLES[role].steps.map((step) => resolveStep(step, zh, ai));
+export const resolveRolePath = (role: RoleKey, zh: boolean) => ROLES[role].steps.map((step) => resolveStep(step, zh));
 
 // The SQL groups with a pandas twin for every problem (content/sql-track/pandas-packages.json; tests/role-paths.test.ts).
 const PANDAS_TWINS = ['basics', 'joins', 'grouping', 'subqueries', 'windows', 'strings', 'dates'];
-/** Every ref a learner can put on a route, by kind: each Line 500 stop on its own, and every group, part and template. */
+/** Every ref a learner can put on a route, by kind: each Line 500 stop on its own, and every group and part. */
 const SINGLE_REFS: Record<StepKind, () => string[]> = {
   'line-stops': () => ROUTE_SLUGS,
   'sd-part': () => sdParts.map((p) => p.from),
@@ -159,15 +145,14 @@ const SINGLE_REFS: Record<StepKind, () => string[]> = {
   'mcq-topic': () => [...new Set(mcqBank.questions.map((q) => q.topic))],
   project: () => projectFile.projects.map((p) => p.slug),
   course: () => courseFile.courses.map((c) => c.slug),
-  'mock-kind': () => [...TEMPLATES, ...AI_TEMPLATES].map((t) => t.id),
 };
 /**
  * `kind:ref` -> the resolved step, for learner-made routes (/roadmap?route=): the six roles' steps
  * (their multi-stop Line 500 steps included) and every single ref. Never optional: a route says so itself.
  */
-export function routeCatalog(zh: boolean, ai: boolean) {
+export function routeCatalog(zh: boolean) {
   const catalog: Record<string, ResolvedStep> = {};
-  const add = ({ kind, ref }: RoleStep) => (catalog[`${kind}:${ref}`] = resolveStep({ kind, ref }, zh, ai));
+  const add = ({ kind, ref }: RoleStep) => (catalog[`${kind}:${ref}`] = resolveStep({ kind, ref }, zh));
   for (const role of ROLE_KEYS) ROLES[role].steps.forEach(add);
   for (const [kind, refs] of Object.entries(SINGLE_REFS)) for (const ref of refs()) add({ kind: kind as StepKind, ref });
   return catalog;

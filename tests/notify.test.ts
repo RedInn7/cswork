@@ -16,7 +16,7 @@ void test('notify: a fresh row each time without an id; with one, an upsert that
     sqlite().prepare("SELECT id,kind,title,body,href,read_at,created_at FROM notifications WHERE user_id='u1' ORDER BY created_at,rowid").all() as {
       id: string; kind: string; title: string; body: string; href: string; read_at: number | null; created_at: number;
     }[];
-  const base = { userId: 'u1', kind: 'mock-peer', title: 'a', body: 'b', href: '/x' };
+  const base = { userId: 'u1', kind: 'course-gift', title: 'a', body: 'b', href: '/x' };
   assert.equal(notify({ ...base, now: 1 }), true);
   assert.equal(notify({ ...base, now: 2 }), true);
   assert.equal(rows().length, 2);

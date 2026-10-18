@@ -22,7 +22,7 @@ import {
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
-import { splitBody, type BodyParts } from '@/lib/mock-interview';
+import { splitBody, type BodyParts } from '@/lib/question-body';
 import { keyPoints } from '@/lib/recall';
 import { TryFirst } from './try-first';
 import { RecallRate } from './recall-rate';
@@ -808,7 +808,7 @@ function PracticeCard({
   );
 }
 
-/** The reference parts of a question, closed until the learner has tried (lib/mock-interview.ts splitBody). */
+/** The reference parts of a question, closed until the learner has tried (lib/question-body.ts splitBody). */
 const ANSWER_PARTS: [keyof BodyParts, string, string][] = [
   ['followUps', '可能的追问', 'Likely follow-ups'],
   ['rubric', '面试官想听到什么', 'What interviewers look for'],

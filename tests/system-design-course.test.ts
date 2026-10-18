@@ -27,7 +27,6 @@ const {
   systemDesignPaths,
   totalMinutes,
 } = await import('../lib/server/system-design-course');
-const { LLD_CHAPTERS, LLD_REFERENCE_CHARS, lldQuestion } = await import('../lib/server/mock-interview');
 const { DIAGRAM_MAX_LENGTH } = await import('../lib/course-diagram');
 
 const CHAPTER = ['bodyEn', 'bodyZh', 'quiz', 'slug', 'titleEn', 'titleZh'];
@@ -82,7 +81,6 @@ void test('the course file has unique slugs and complete bilingual chapters and 
 });
 
 void test('the loader finds chapters by slug and lists the course pages and the estimation drill for the sitemap', () => {
-  // The mock interview's design rounds link to /system-design/framework.
   assert.equal(sdChapter('framework')?.slug, 'framework');
   assert.equal(sdChapter('nope'), undefined);
   assert.equal(sdChapter('__proto__'), undefined);
@@ -250,25 +248,6 @@ void test('every LLD case has a class diagram, its patterns and core code, every
     const code = (body: string) => [...body.matchAll(/^```(?!mermaid)\w+\n([\s\S]*?)^```/gm)].map((m) => m[1]);
     assert.deepEqual(code(chapter.bodyZh), code(chapter.bodyEn), chapter.slug);
   }
-});
-
-void test('the AI interviewer asks every LLD case, with the title taken from the chapter', () => {
-  const cases = sdChapters.map((chapter) => chapter.slug).filter((slug) => slug.startsWith('lld-case-'));
-  assert.equal(cases.length, 10);
-  assert.deepEqual(LLD_CHAPTERS.slice(0, 5), ['lld-parking-lot', 'lld-lru-cache-ttl', 'lld-elevator', 'bounded-blocking-queue', 'rate-limited-executor']);
-  assert.deepEqual(LLD_CHAPTERS.slice(5), cases);
-  const atm = lldQuestion('sd-lld-case-atm')!;
-  assert.equal(atm.title, 'ATM');
-  assert.match(atm.question, /^\*\*ATM\*\*（ATM 取款机）\n\nDesign ATM /);
-  assert.ok(sdChapter('lld-case-atm')!.bodyEn.startsWith(atm.solution.slice(0, 200)));
-  assert.match(atm.solution, /## Extensions/);
-  // The interviewer and the grader read the whole reference: no diagram source, nothing cut off.
-  for (const slug of LLD_CHAPTERS) {
-    const { solution } = lldQuestion(`sd-${slug}`)!;
-    assert.doesNotMatch(solution, /```mermaid/, slug);
-    assert.ok(solution.length <= LLD_REFERENCE_CHARS, `${slug}: ${solution.length}`);
-  }
-  assert.equal(lldQuestion('sd-api-auth-ratelimit'), null);
 });
 
 void test('reading time: 400 Chinese characters, 200 English words or 15 lines of code a minute, at least one', () => {

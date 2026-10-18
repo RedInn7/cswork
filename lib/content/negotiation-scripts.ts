@@ -1,10 +1,10 @@
 // Branching practice scripts for a recruiter screen and offer negotiation, no AI needed
 // (/career/negotiation, components/negotiation-scripts.tsx). Written for CSWork in both languages.
-// Each script's setting is one of the AI role-play scenarios, resolved on the server by
+// Each script's setting is one of the practice scenarios, resolved on the server by
 // scenarioSetting (lib/server/) so the company's floor, concessions and notes never reach the
 // client: never import the scenario JSON here, and keep the floor's numbers out of these lines
 // (tests/negotiation-scripts.test.ts).
-import type { Text } from '../mock-interview';
+export type Text = [zh: string, en: string];
 
 export type Choice = { say: Text; score: 0 | 1 | 2; why: Text; next: string };
 /** A step; no choices means an ending, and `line` is the recruiter's last word. */
@@ -13,7 +13,7 @@ export type Script = {
   id: string;
   kind: 'recruiter' | 'negotiation';
   title: Text;
-  /** The AI role-play scenario's id. */
+  /** Its scenario's id (scenarioSetting). */
   scenario: string;
   start: string;
   nodes: Node[];

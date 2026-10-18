@@ -47,8 +47,8 @@ function Bars({ rows, of, name, zh }: { rows: Share[]; of: number; name: (v: str
 }
 
 /**
- * An employer's interview stats (lib/server/company-stats.ts) on its company and mock interview
- * pages. Outcomes are what posters reported, shown as shares of reports and never as a pass rate.
+ * An employer's interview stats (lib/server/company-stats.ts) on its company page. Outcomes are
+ * what posters reported, shown as shares of reports and never as a pass rate.
  */
 export function CompanyStatsCard({ stats, locale }: { stats: CompanyStats; locale: 'zh' | 'en' }) {
   const zh = locale === 'zh';
