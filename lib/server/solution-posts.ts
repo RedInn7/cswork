@@ -72,7 +72,7 @@ const postInput = z
   })
   .strict();
 const commentInput = z.object({ body: text(1000), parentId: id.optional() }).strict();
-export const reportReason = z.enum(['spam', 'offensive', 'wrong', 'other']);
+const reportReason = z.enum(['spam', 'offensive', 'wrong', 'other']);
 const reportInput = z.object({ reason: reportReason }).strict();
 
 /**
@@ -154,7 +154,7 @@ const shape = ({ voted, starred, employer, pinned, ...r }: PostRow) => ({
 });
 
 /** As posts and notices name people: the public handle if the profile is visible, else a masked name. */
-export function nameOf(userId: string) {
+function nameOf(userId: string) {
   const r = sqlite()
     .prepare(
       `SELECT u.name,pr.handle FROM "user" u LEFT JOIN user_profiles pr ON pr.user_id=u.id AND pr.visible=1 WHERE u.id=?`,
@@ -442,7 +442,7 @@ function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: str
 }
 
 /** One report per learner and target: posts and comments. */
-export function fileReport(p: Person, target: string, authorId: string, reason: string) {
+function fileReport(p: Person, target: string, authorId: string, reason: string) {
   if (authorId === p.id) throw new HttpError(400, '不能举报自己的内容');
   underCap('post_reports', p, REPORTS_PER_DAY, '今天的举报次数已达上限');
   sqlite()

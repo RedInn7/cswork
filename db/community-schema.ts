@@ -43,7 +43,7 @@ export const workVerifications = sqliteTable(
     verifiedAt: integer('verified_at'),
     showProfile: integer('show_profile').notNull().default(0),
     showPosts: integer('show_posts').notNull().default(0),
-    // The removed discussion board's referral threads: can no longer be switched on.
+    // The removed discussion board's referral threads: unused, kept so drizzle-kit does not drop it.
     showReferrals: integer('show_referrals').notNull().default(0),
     createdAt: integer('created_at').notNull(),
   },

@@ -26,8 +26,7 @@ const TRIES = 5;
 // Codes a day per learner, per address and site-wide: each one is a mail to someone's inbox.
 const CODES_PER_DAY = 3;
 const SITE_CODES_PER_DAY = 300;
-// work_verifications.show_referrals (the removed board's referral threads) can no longer be switched on;
-// a new company still switches it off with the others below.
+// work_verifications.show_referrals (the removed board's referral threads) is no longer read or written.
 export const PLACEMENTS = ['profile', 'posts'] as const;
 export type Placement = (typeof PLACEMENTS)[number];
 /** Anyone can open an address here, so it proves no employer. */
@@ -149,8 +148,7 @@ export async function handleWorkVerify(request: Request, p: Person | null, path:
         code_expires_at=excluded.code_expires_at,attempts=0,
         verified_at=CASE WHEN email_hash=excluded.email_hash THEN verified_at END,
         show_profile=CASE WHEN company_slug=excluded.company_slug THEN show_profile ELSE 0 END,
-        show_posts=CASE WHEN company_slug=excluded.company_slug THEN show_posts ELSE 0 END,
-        show_referrals=CASE WHEN company_slug=excluded.company_slug THEN show_referrals ELSE 0 END`,
+        show_posts=CASE WHEN company_slug=excluded.company_slug THEN show_posts ELSE 0 END`,
     ).run(p.id, company.slug, company.domain, hash, mac(`${p.id}:${code}`), now + CODE_MS, now);
     return json(workState(p.id, now));
   }
