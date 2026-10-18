@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { APT_POINTS } from '../components/aptitude-figure';
+import { cellText, figText } from '../lib/aptitude-cell';
 import {
   APT_KINDS,
   SPEED,
@@ -344,6 +345,24 @@ void test('figure matrix: the answer completes a rule for every attribute; each 
       assert.ok(attrs.some((a) => !ok(grid(c), a)), `${q.id}: choice ${i} also fits`);
     });
   }
+});
+
+void test('figures in words (the aria-label and the exported card): every cell, the gap, every bar', () => {
+  for (const kind of ['matrix', 'rotate', 'mirror', 'chart'] as const)
+    for (const q of all(kind).slice(0, 50)) {
+      const fig = q.fig!;
+      for (const zh of [true, false]) {
+        const text = figText(fig, zh);
+        const lang = zh ? 0 : 1;
+        if (fig.kind === 'matrix') {
+          for (const c of fig.cells) if (c) assert.ok(text.includes(cellText(c)[lang]), q.id);
+          assert.match(text, zh ? /第 3 行：.*空格$/ : /Row 3: .*empty$/, q.id);
+        } else if (fig.kind === 'transform') {
+          assert.ok(text.includes(cellText(fig.from)[lang]), q.id);
+          assert.equal(/dashed line|虚线/.test(text), kind === 'mirror', q.id);
+        } else fig.series.forEach((v, i) => assert.ok(text.includes(`${fig.labels[i]}${zh ? ' 年 ' : ': '}${v}`), q.id));
+      }
+    }
 });
 
 void test('speed set: 50 distinct ids, 18 / 18 / 14 per section, in order when sectioned', () => {

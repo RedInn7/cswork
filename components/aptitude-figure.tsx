@@ -1,4 +1,4 @@
-import { cellText, type AptCell, type AptFig, type AptShape } from '@/lib/aptitude';
+import { figText, type AptCell, type AptFig, type AptShape } from '@/lib/aptitude-cell';
 
 /** Each shape in a 10×10 box, upright. flag, ell and eff have no symmetry at all. */
 export const APT_POINTS: Record<AptShape, string> = {
@@ -36,11 +36,8 @@ export function AptCellIcon({ cell }: { cell: AptCell }) {
 
 /** The figure a question asks about: a 3×3 matrix, a shape to turn or mirror, or a bar chart. */
 export function AptitudeFigure({ fig, zh }: { fig: AptFig; zh: boolean }) {
-  const say = (cell: AptCell | null) => (cell ? cellText(cell)[zh ? 0 : 1] : zh ? '空格' : 'empty');
-  if (fig.kind === 'matrix') {
-    const label = [0, 1, 2]
-      .map((row) => `${zh ? `第 ${row + 1} 行：` : `Row ${row + 1}: `}${fig.cells.slice(row * 3, row * 3 + 3).map(say).join(zh ? '；' : '; ')}`)
-      .join(zh ? '。' : '. ');
+  const label = figText(fig, zh);
+  if (fig.kind === 'matrix')
     return (
       <svg className="apt-fig apt-fig-matrix" viewBox="0 0 98 98" role="img" aria-label={label}>
         {fig.cells.map((cell, i) => {
@@ -54,9 +51,7 @@ export function AptitudeFigure({ fig, zh }: { fig: AptFig; zh: boolean }) {
         })}
       </svg>
     );
-  }
-  if (fig.kind === 'transform') {
-    const label = `${zh ? '图形：' : 'Figure: '}${say(fig.from)}${fig.axis ? (zh ? '。虚线是镜子' : '. The dashed line is the mirror') : ''}`;
+  if (fig.kind === 'transform')
     return (
       <svg className="apt-fig apt-fig-transform" viewBox={fig.axis === 'v' ? '0 0 36 30' : fig.axis === 'h' ? '0 0 30 36' : '0 0 30 30'} role="img" aria-label={label}>
         <Cell cell={fig.from} />
@@ -64,10 +59,8 @@ export function AptitudeFigure({ fig, zh }: { fig: AptFig; zh: boolean }) {
         {fig.axis === 'h' && <line x1="2" y1="32" x2="28" y2="32" className="apt-mirror" />}
       </svg>
     );
-  }
   const top = Math.max(...fig.series) * 1.15;
   const slot = 280 / fig.labels.length;
-  const label = `${zh ? `柱状图（单位：${fig.unit}）：` : `Bar chart (${fig.unit}): `}${fig.labels.map((l, i) => `${l}${zh ? ' 年 ' : ': '}${fig.series[i]}`).join(zh ? '；' : '; ')}`;
   return (
     <svg className="apt-fig apt-fig-bars" viewBox="0 0 320 190" role="img" aria-label={label}>
       <text x="4" y="12" className="apt-axis">{fig.unit}</text>

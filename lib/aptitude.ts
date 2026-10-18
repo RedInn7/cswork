@@ -1,3 +1,4 @@
+import { FILL_NAMES, SHAPE_NAMES, cellText, type AptCell, type AptFig, type AptShape } from './aptitude-cell';
 import { mcqRight, reviewMcq, seededRandom, type McqQuestion, type McqReview } from './mock-oa';
 
 /**
@@ -8,13 +9,7 @@ import { mcqRight, reviewMcq, seededRandom, type McqQuestion, type McqReview } f
  * review session (through /api/oj/mcq/questions) and the tests.
  */
 
-export type AptShape = 'tri' | 'arrow' | 'flag' | 'ell' | 'eff';
-/** n copies of a shape; fill 0 outlined, 1 grey, 2 solid; rot clockwise degrees, after a left-right flip. */
-export type AptCell = { shape: AptShape; n: number; fill: number; rot: number; flip?: boolean };
-export type AptFig =
-  | { kind: 'matrix'; cells: (AptCell | null)[]; choices: AptCell[] }
-  | { kind: 'transform'; from: AptCell; axis?: 'v' | 'h'; choices: AptCell[] }
-  | { kind: 'bars'; labels: string[]; series: number[]; unit: string };
+export type { AptCell, AptFig, AptShape };
 export type AptQuestion = McqQuestion & { fig?: AptFig };
 
 export const APT_GROUPS = [
@@ -909,24 +904,7 @@ function direction(r: R): Draft {
 
 // ---------------------------------------------------------------- abstract
 
-const SHAPE_NAMES: Record<AptShape, Tx> = {
-  tri: ['三角形', 'triangle'],
-  arrow: ['箭头', 'arrow'],
-  flag: ['旗子', 'flag'],
-  ell: ['L 形', 'L-shape'],
-  eff: ['F 形', 'F-shape'],
-};
-// Hollow and solid rather than white and black: they stay true in the dark theme too.
-const FILL_NAMES: Tx[] = [['空心', 'outlined'], ['灰色', 'grey'], ['实心', 'solid']];
 const norm = (deg: number) => ((deg % 360) + 360) % 360;
-/** A cell in words, for screen readers and the choice text: "2 grey flags, turned 90° clockwise". */
-export function cellText(cell: AptCell): Tx {
-  const [zhShape, enShape] = SHAPE_NAMES[cell.shape];
-  const [zhFill, enFill] = FILL_NAMES[cell.fill];
-  const zhTail = `${cell.flip ? '，左右翻转' : ''}${cell.rot ? `，${cell.flip ? '再' : ''}顺时针转 ${cell.rot}°` : ''}`;
-  const enTail = `${cell.flip ? ', mirrored' : ''}${cell.rot ? `,${cell.flip ? ' then' : ''} turned ${cell.rot}° clockwise` : ''}`;
-  return [`${cell.n} 个${zhFill}${zhShape}${zhTail}`, `${cell.n} ${enFill} ${enShape}${cell.n > 1 ? 's' : ''}${enTail}`];
-}
 const cellChoice = (cell: AptCell): Choice => ({ t: cellText(cell), cell });
 
 type Rule = 'const' | 'row' | 'col' | 'latin' | 'latin2';
