@@ -7,7 +7,7 @@ import { refuseInContest, runningContestProblems } from './contests';
 import { HttpError, json, limit } from './http';
 import { NOTE_KINDS, noteSnippet } from './my-practice';
 
-// Written notes only (the notes hub's kinds); quiz answers, stories, cards and prefs stay out.
+// Written notes only (the notes hub's kinds); quiz answers, cards and prefs stay out.
 const KINDS = `(${NOTE_KINDS.map((k) => `target LIKE '${k}:%'`).join(' OR ')})`;
 // ponytail: tags reads bodies cut to 8000 characters, at most 5000 rows (the per-learner
 // cap, MAX_ROWS): 5000 full 20 KB bodies would be 100 MB in one request. A tag past that is missed.

@@ -149,9 +149,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
             {zh ? '模拟面试抽题' : 'Mock interview'}
           </a>
         )}
-        <a className="oa-public-cta is-quiet" href={`/discuss?${new URLSearchParams({ company: company.slug })}`}>
-          {zh ? `讨论 ${company.name}` : `Discuss ${company.name}`}
-        </a>
         <CompanyFollowButton slug={company.slug} name={company.name} zh={zh} />
         <a className="oa-public-cta is-quiet" href={`/review-sheet?${new URLSearchParams({ company: company.slug })}`} rel="nofollow">
           {zh ? '面试前一页纸' : 'One-page review sheet'}

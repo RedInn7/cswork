@@ -67,9 +67,8 @@ const stateOf = ({ done, total }: Count) => (done >= total * STEP_DONE ? 'done' 
 /**
  * /roadmap's role picker (?role=), the chosen role's steps as stations on one line, and its schedule.
  * Signed in, each counted step shows how much of it is done from the APIs the site already has: read
- * marks (system design and course chapters), the practice history (problems), done marks (projects and
- * frontend JS problems) and the MCQ review note. Mock interviews never count; an AI-only one reads
- * unavailable while AI is off.
+ * marks (system design and course chapters), the practice history (problems), done marks (projects)
+ * and the MCQ review note. Mock interviews never count; an AI-only one reads unavailable while AI is off.
  *
  * The schedule lays the steps left into weeks at the learner's hours (lib/route-schedule.ts) and is a
  * route:role-<key> note (a guest's lives in localStorage). Signed in, steps can be marked in progress or

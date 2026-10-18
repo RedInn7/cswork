@@ -158,7 +158,6 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
           problem: { id: 'acm-1', title: 'A+B', titleEn: 'A+B', difficulty: '简单', tags: problem.tags, lessonId: 'lesson', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),
@@ -339,7 +338,6 @@ test('single-submit mock OA: one confirmed submission per question, its verdict 
           boot: { person: { id: 'student', role: 'teacher' }, courses: [], problems: [], submissions },
           mock: 's1',
           navigate() {},
-          ask() {},
           refresh: async () => {
             refreshes++;
           },

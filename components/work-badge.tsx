@@ -8,7 +8,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import '@/app/learner-cloud.css';
 
-type Placement = 'profile' | 'posts' | 'referrals';
+type Placement = 'profile' | 'posts';
 type State = {
   mail: boolean;
   verification: {
@@ -26,22 +26,15 @@ const PLACEMENTS: [Placement, string, string, string, string][] = [
     'profile',
     '公开主页',
     'Public profile',
-    '显示在主页名下面。显示时，主页的帖子列表不列面经、求职、上岸故事帖和公司 OA 题的题解；这些帖子仍署你的主页名，读者能顺着名字找到你的主页。',
-    'Under your handle. While it shows, your profile’s post list leaves out interview, career and offer threads and solutions to company OA problems. Those posts still carry your handle, so readers can find your profile from them.',
+    '显示在主页名下面。显示时，主页的帖子列表不列公司 OA 题的题解；这些帖子仍署你的主页名，读者能顺着名字找到你的主页。',
+    'Under your handle. While it shows, your profile’s post list leaves out solutions to company OA problems. Those posts still carry your handle, so readers can find your profile from them.',
   ],
   [
     'posts',
-    '讨论帖和题解',
-    'Threads and solutions',
-    '只在题解和算法、内推、站务频道显示；公司 OA 题的题解、面经、求职、上岸故事和面经评论里永远不显示，以免透露「这家公司的员工在找工作」。',
-    'Only on solutions and the Algorithms, Referrals and Site feedback channels. Never on solutions to a company’s OA problems, in interview, career or offer talk or on experience comments, where it would say an employee there is interviewing.',
-  ],
-  [
-    'referrals',
-    '内推帖',
-    'Referral threads',
-    '你在「内推」频道标了这家公司的帖子会带「可内推」，读者可以私信请求内推。',
-    'Your referral threads tagged with this company show "Gives referrals", and readers can message you for one.',
+    '题解',
+    'Solutions',
+    '只在题解显示；公司 OA 题的题解和面经评论里永远不显示，以免透露「这家公司的员工在找工作」。',
+    'Only on solutions. Never on solutions to a company’s OA problems or on experience comments, where it would say an employee there is interviewing.',
   ],
 ];
 

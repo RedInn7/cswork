@@ -20,7 +20,6 @@ globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
 dom.window.HTMLElement.prototype.scrollIntoView = () => {};
 const { createRoot } = await import('react-dom/client');
 const { TryFirst } = await import('../components/try-first.tsx');
-const { StoryBank } = await import('../components/story-bank.tsx');
 
 const settle = (ms = 10) => act(async () => new Promise((r) => setTimeout(r, ms)));
 const button = (label) => [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === label);
@@ -46,10 +45,9 @@ function server({ ai = true, left = [5], busy = false } = {}) {
       const body = JSON.parse(init.body);
       graded.push(body);
       if (busy) return Response.json({ error: 'Too many requests. Try again shortly' }, { status: 429 });
-      return Response.json({ feedback: body.story ? { ...feedback, specificity: 'Concrete enough.', measurableResult: 'Has p99.', iVsWe: 'Clear.', fitsTwoMinutes: true } : feedback, remaining: 4, limit: 5, bonus: 0 });
+      return Response.json({ feedback, remaining: 4, limit: 5, bonus: 0 });
     }
     if (init.method === 'PUT') return Response.json({ updatedAt: 9 });
-    if (u.includes('prefix=story')) return Response.json({ items: [] });
     if (u.includes('target=')) return Response.json({ body: '', updatedAt: null });
     throw new Error(`unexpected ${u}`);
   };
@@ -98,39 +96,6 @@ test('try first: no button without AI, for guests or for targets the server cann
     assert.equal(!!button('AI feedback on my answer'), false, props.target);
     await act(async () => root.unmount());
   }
-});
-
-test('story bank: a story goes with the behavioral question typed beside it, and STAR notes come back', async () => {
-  const graded = server();
-  const root = createRoot(document.getElementById('root'));
-  await act(async () => root.render(createElement(StoryBank, { userId: 'u1' })));
-  await settle();
-  await act(async () => button('New story').click());
-  await type(document.querySelector('.ip-field input'), 'Checkout latency');
-  await type(document.querySelector('[data-field="situation"] textarea'), 'Checkout timed out under holiday load.');
-  await type(document.querySelector('[data-field="action"] textarea'), 'I profiled it and added a read-through cache with a short TTL.');
-  await type(document.querySelector('[data-field="result"] textarea'), 'p99 fell from 2s to 300ms.');
-  await settle();
-  const question = document.querySelector('.ip-grade input[list]');
-  await type(question, 'Tell me about a time you improved performance');
-  await act(async () => button('AI feedback on my answer').click());
-  await settle();
-  assert.deepEqual(graded[0], {
-    story: {
-      title: 'Checkout latency',
-      situation: 'Checkout timed out under holiday load.',
-      task: '',
-      action: 'I profiled it and added a read-through cache with a short TTL.',
-      result: 'p99 fell from 2s to 300ms.',
-    },
-    question: 'Tell me about a time you improved performance',
-    locale: 'en',
-  });
-  const notes = document.querySelector('.ip-grade-result .ip-star').textContent;
-  assert.equal(notes.includes('Has p99.') && notes.includes('Fits in two minutes?') && notes.includes('Yes, at about 140 words'), true);
-  // A story has no reference answer to defer to.
-  assert.equal(document.querySelector('.ip-grade-result').textContent.includes('reference answer'), false);
-  await act(async () => root.unmount());
 });
 
 test('a 429 asks what is left: the per-minute limit keeps the button, a spent day turns it off', async () => {

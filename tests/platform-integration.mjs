@@ -418,115 +418,6 @@ try {
       live.progress.video_asset_id === media[1].id,
     'Progress remembers second video and timestamp',
   );
-  const ticketCreated = await req('tickets', {
-    user: student,
-    data: {
-      title: `${prefix} question`,
-      body: 'Question about the lower segment',
-      courseId,
-      lessonId,
-      videoPosition: 123.5,
-      videoAssetId: media[1].id,
-    },
-    status: 201,
-  });
-  targets.add(ticketCreated.id);
-  const ticketPath = `lms/tickets/${ticketCreated.id}`;
-  let ticket = await req(ticketPath, { user: student });
-  check(
-    ticket.course_id === courseId &&
-      ticket.lesson_id === lessonId &&
-      ticket.video_position === 123.5 &&
-      ticket.video_asset_id === media[1].id,
-    'Private ticket retains course, lesson, segment and timestamp',
-  );
-  await req(ticketPath, { user: outsider, status: 404 });
-  await req(`${ticketPath}/reply`, {
-    user: outsider,
-    data: { body: 'forbidden', expectedRevision: ticket.revision },
-    status: 404,
-  });
-  check(
-    !(await req('lms/tickets', { user: outsider })).items.some(
-      (t) => t.id === ticket.id,
-    ),
-    'Private ticket is absent from other student list',
-  );
-  const attachmentBytes = Buffer.from('private stack trace\n' + prefix);
-  const attachment = await req(
-    `tickets/${ticket.id}/attachments?name=trace.txt`,
-    { user: student, raw: attachmentBytes, status: 201 },
-  );
-  targets.add(attachment.id);
-  const downloaded = await req(`attachments/${attachment.id}`, {
-    user: student,
-    binary: true,
-  });
-  check(
-    downloaded.bytes.equals(attachmentBytes) &&
-      downloaded.headers.get('content-disposition').startsWith('attachment;'),
-    'Private attachment downloads intact with attachment disposition',
-  );
-  await req(`attachments/${attachment.id}`, { user: outsider, status: 404 });
-  await req(`lms/attachments/${attachment.id}/delete`, {
-    user: outsider,
-    data: {},
-    status: 404,
-  });
-  ticket = await req(`${ticketPath}/reply`, {
-    user: teacher,
-    data: { expectedRevision: ticket.revision, body: 'Teacher answer' },
-  });
-  check(ticket.status === 'waiting', 'Teacher reply moves ticket to waiting');
-  const staleRevision = ticket.revision;
-  ticket = await req(`${ticketPath}/reply`, {
-    user: student,
-    data: { expectedRevision: ticket.revision, body: 'Student follow-up' },
-  });
-  check(
-    ticket.status === 'open' && ticket.replies.length === 2,
-    'Student follow-up reopens ticket and preserves conversation',
-  );
-  await req(`${ticketPath}/reply`, {
-    user: student,
-    data: { expectedRevision: staleRevision, body: 'Stale duplicate' },
-    status: 409,
-  });
-  await req(`${ticketPath}/status`, {
-    user: student,
-    data: {
-      expectedRevision: ticket.revision,
-      status: 'open',
-      assignedTo: teacher.uid,
-    },
-    status: 403,
-  });
-  ticket = await req(`${ticketPath}/status`, {
-    user: teacher,
-    data: {
-      expectedRevision: ticket.revision,
-      status: 'resolved',
-      assignedTo: teacher.uid,
-    },
-  });
-  check(
-    ticket.status === 'resolved' && ticket.assigned_to === teacher.uid,
-    'Teacher can assign and resolve',
-  );
-  ticket = await req(`${ticketPath}/status`, {
-    user: student,
-    data: { expectedRevision: ticket.revision, status: 'open' },
-  });
-  check(ticket.status === 'open', 'Owner can reopen a resolved ticket');
-  await req(`lms/attachments/${attachment.id}/delete`, {
-    user: student,
-    data: {},
-  });
-  await req(`attachments/${attachment.id}`, { user: student, status: 404 });
-  console.log(
-    'PASS private ticket lifecycle, attachment ownership and video context',
-  );
-
   const reviewCreated = await req('reviews', {
     user: student,
     data: {
@@ -667,8 +558,8 @@ try {
   );
   const dashboard = await req('lms/dashboard', { user: teacher });
   check(
-    dashboard.tickets.some((t) => t.id === ticket.id),
-    'Teacher workbench includes reopened private ticket',
+    typeof dashboard.counts.pendingReviews === 'number',
+    'Teacher workbench loads its counts',
   );
   const existingInvite = (
     await req('teacher/invitations', {
@@ -712,24 +603,7 @@ try {
     .prepare('SELECT id FROM user WHERE email=?')
     .get(studentEmail);
   if (claimed) users.add(claimed.id);
-  const ticketRows = db
-    .prepare('SELECT id FROM tickets WHERE course_id=?')
-    .all(courseId);
-  const attachmentRoot = resolve(
-    process.env.ATTACHMENTS_PATH || 'data/attachments',
-  );
   const mediaRoot = resolve(process.env.MEDIA_PATH || 'data/media');
-  for (const t of ticketRows) {
-    for (const a of db
-      .prepare('SELECT id FROM attachments WHERE ticket_id=?')
-      .all(t.id)) {
-      try {
-        unlinkSync(join(attachmentRoot, a.id));
-      } catch (e) {
-        if (e.code !== 'ENOENT') throw e;
-      }
-    }
-  }
   for (const id of mediaIds) {
     const a = db
       .prepare('SELECT storage_key FROM media_assets WHERE id=?')
@@ -742,11 +616,6 @@ try {
       }
   }
   db.transaction(() => {
-    for (const t of ticketRows) {
-      db.prepare('DELETE FROM attachments WHERE ticket_id=?').run(t.id);
-      db.prepare('DELETE FROM replies WHERE ticket_id=?').run(t.id);
-      db.prepare('DELETE FROM tickets WHERE id=?').run(t.id);
-    }
     db.prepare(
       'DELETE FROM lms_review_events WHERE review_id IN (SELECT id FROM reviews WHERE lesson_id=?)',
     ).run(lessonId);

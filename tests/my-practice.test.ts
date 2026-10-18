@@ -152,7 +152,8 @@ void test('the notes hub searches written notes by every word, with snippets and
   await put('sd:url-shortener', '{"q1":"hash"}'); // Quiz answers never show up.
   await put('sd:url-shortener/draft', 'my design'); // Nor design drafts, even in the quiz list below.
   await put('mcq:answers', '{"dsa-1":[1,0]}'); // Nor does the MCQ review state.
-  await put('story:1', 'hash story');
+  // The story bank is gone: story: notes are no longer a kind.
+  assert.equal(await status(me, 'PUT', 'notes?target=story:1', { body: 'hash story' }), 400);
   // A note on one of the learner's own submissions; someone else's is a 404.
   await put('sub:s1', '50% 的 WA 来自 a_b 下标');
   assert.equal(await status(me, 'PUT', 'notes?target=sub:s10', { body: 'x' }), 404);
@@ -180,10 +181,7 @@ void test('the notes hub searches written notes by every word, with snippets and
   assert.deepEqual((await search('?prefix=sub:')).items.map((i) => i.target), ['sub:s1']);
   assert.equal(await status(me, 'GET', 'notes?prefix=sd'), 400);
   assert.equal(await status(me, 'GET', 'notes?cursor=junk'), 400);
-  // The story bank keeps its own listing, bodies included.
-  const stories = await ok<{ items: { target: string; body: string }[] }>(me, 'GET', 'notes?prefix=story%3A');
-  assert.deepEqual(stories.items.map((i) => [i.target, i.body]), [['story:1', 'hash story']]);
-  // So do the system design quiz answers, for the MCQ page's review of the wrong ones.
+  // The system design quiz answers keep their own listing, bodies included, for the MCQ page's review of the wrong ones.
   const quizzes = await ok<{ items: { target: string; body: string }[] }>(me, 'GET', 'notes?prefix=sd%3A');
   assert.deepEqual(quizzes.items.map((i) => [i.target, i.body]), [['sd:url-shortener', '{"q1":"hash"}']]);
   assert.equal((await ok<{ items: unknown[] }>(other, 'GET', 'notes?prefix=sd%3A')).items.length, 0);
@@ -202,7 +200,7 @@ void test('the notes hub searches written notes by every word, with snippets and
   assert.equal(rest.items.length, 10);
   assert.equal(rest.nextCursor, null);
   assert.equal(new Set([...first.items, ...rest.items].map((i) => i.target)).size, 60);
-  sqlite().prepare("DELETE FROM user_notes WHERE user_id=? AND target<>'story:1'").run(me.id);
+  sqlite().prepare('DELETE FROM user_notes WHERE user_id=?').run(me.id);
 });
 
 void test('note #tags and confidence filter the hub; backlinks and Line 500 stop notes stay private', async () => {
@@ -283,7 +281,7 @@ void test('note #tags and confidence filter the hub; backlinks and Line 500 stop
   await put(me, 'problem:lc-15', 'see [[lc-1]]');
   assert.deepEqual((await ok<Links>(me, 'GET', 'notes/backlinks?problem=lc-1')).items.map((i) => i.target), ['problem:lc-11']);
   sqlite().prepare("DELETE FROM skill_attempts WHERE id='notes-exam'").run();
-  sqlite().prepare("DELETE FROM user_notes WHERE target<>'story:1'").run();
+  sqlite().prepare('DELETE FROM user_notes').run();
 });
 
 void test('self-made cards are checked, capped at 200 and listed whole; excerpts list across their paths', async () => {
@@ -318,7 +316,7 @@ void test('self-made cards are checked, capped at 200 and listed whole; excerpts
 
 // An interview retro on a card (tracker-tiers-retro): a valid body for lib/applications.ts parseRetro.
 const CARD = '0b5f8c1e-1f2a-4c3d-9e8f-123456789abc';
-const RETRO = { company: 'Acme', stage: 'phone', at: t0, score: 3, questions: [{ text: 'Two sum', problem: 'lc-1', similar: false }], stuck: '', themes: [] };
+const RETRO = { company: 'Acme', stage: 'phone', at: t0, score: 3, questions: [{ text: 'Two sum', problem: 'lc-1', similar: false }], stuck: '' };
 const card = (p: Person, id = CARD) =>
   sqlite()
     .prepare("INSERT OR IGNORE INTO job_applications(id,user_id,company_name,stage,created_at,updated_at) VALUES(?,?,'Acme','phone',1,1)")
@@ -372,9 +370,9 @@ void test("a retro goes on the learner's own card only, in the right shape, and 
     { ...RETRO, stuck: 'x'.repeat(601) },
     { ...RETRO, questions: [{ text: 'q', problem: 'leetcode 1', similar: false }] },
     { ...RETRO, questions: Array.from({ length: 11 }, () => ({ text: 'q', problem: '', similar: false })) },
-    { ...RETRO, themes: Array.from({ length: 9 }, () => 'conflict') },
   ])
     assert.equal(await put(me, `retro:${CARD}/k1`, body), 400, JSON.stringify(body).slice(0, 60));
+  // A retro saved before the story bank was removed still carries themes: accepted.
   assert.equal(await put(me, `retro:${CARD}/k1`, { ...RETRO, themes: ['conflict', 'not-a-theme'] }), 200);
   assert.equal(await put(other, `retro:${theirs}/k1`, RETRO), 200);
   const mine = await ok<Listed>(me, 'GET', 'notes?prefix=retro%3A');
@@ -713,7 +711,7 @@ void test('notes export: whitelisted notes by target in 2 MB pages, own latest A
     ['topic:two-pointers-windows', 'pattern'],
     ['card:abcdefabcdef', '{"v":1,"front":"f","back":"b","tags":[]}'],
     ['clip:lesson/c1/l1', '> quote'],
-    ['story:9', '{"title":"t"}'],
+    ['story:9', '{"title":"t"}'], // the removed story bank's rows stay out
     ['checklist:guide', '{}'],
   ])
     note(writer.id, target, body);
@@ -741,10 +739,10 @@ void test('notes export: whitelisted notes by target in 2 MB pages, own latest A
   const all = [...first.items, ...rest.items];
   const targets = all.map((i) => i.target);
   assert.deepEqual(targets, [...targets].sort(), 'by target');
-  assert.equal(new Set(targets).size, 120 + 6);
-  for (const gone of ['pref:review', 'recall:queue', 'mcq:answers', 'sd:intro', 'checklist:guide', 'problem:lc-9999'])
+  assert.equal(new Set(targets).size, 120 + 5);
+  for (const gone of ['pref:review', 'recall:queue', 'mcq:answers', 'sd:intro', 'checklist:guide', 'story:9', 'problem:lc-9999'])
     assert.ok(!targets.includes(gone), gone);
-  for (const kept of ['sd:intro/draft', 'topic:two-pointers-windows', 'card:abcdefabcdef', 'clip:lesson/c1/l1', 'story:9', `sub:${sub}`])
+  for (const kept of ['sd:intro/draft', 'topic:two-pointers-windows', 'card:abcdefabcdef', 'clip:lesson/c1/l1', `sub:${sub}`])
     assert.ok(targets.includes(kept), kept);
   assert.ok(all.every((i) => !i.body.includes('their') && !i.code), 'no one else’s notes, no code without code=1');
   const byTarget = new Map(all.map((i) => [i.target, i]));

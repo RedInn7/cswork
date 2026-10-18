@@ -8,7 +8,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
-// Discussion threads, answers and comments; structured experience fields; the list plaza;
+// Answers, comments and solutions; structured experience fields; the list plaza;
 // follows and the richer public profile.
 const dir = mkdtempSync(join(tmpdir(), 'cswork-community-'));
 process.env.DATABASE_PATH = join(dir, 'app.sqlite');
@@ -37,7 +37,7 @@ content.close();
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { handleContent } = await import('../lib/server/content-library');
-const { publicPosts, publicPost } = await import('../lib/server/solution-posts');
+const { publicPosts } = await import('../lib/server/solution-posts');
 const { communityLists, publicProfile } = await import('../lib/server/learner-cloud');
 const { followBoard, followPeople } = await import('../lib/server/follows');
 const { memberExperienceStats, STATS_MIN } = await import('../lib/server/experience-submissions');
@@ -116,7 +116,7 @@ after(() => {
 
 void test('targets and titles', () => {
   assert.equal(targetKind('lc-1'), 'problem');
-  assert.equal(targetKind('discuss:algo'), 'discuss');
+  assert.equal(targetKind('discuss:algo'), null, 'the removed board is no target');
   assert.equal(targetKind('exp:member.abc'), 'exp');
   assert.equal(targetKind('q:tell-me'), 'q');
   assert.equal(autoTitle('\n## **STAR** answer: the [conflict](x)\nmore'), 'STAR answer: the conflict');
@@ -125,44 +125,40 @@ void test('targets and titles', () => {
   assert.equal(autoTitle('[](https://x.test)'), '[](https://x.test)');
 });
 
-void test('threads: channels read signed out, writes need a verified account and a known company tag', async () => {
+void test('comments read signed out, writes need a verified account; board threads read as missing', async () => {
   assert.equal((await call(null, 'GET', 'oj/posts?problem=oa-amazon-1')).status, 401, 'solutions stay signed in');
-  assert.deepEqual(await ok(null, 'GET', 'oj/posts?problem=discuss:algo'), { solved: true, items: [], more: false });
-  assert.equal((await call(null, 'GET', 'oj/posts?problem=discuss:gossip')).status, 404);
-  const thread = { problemId: 'discuss:career', title: 'Amazon referral timeline?', body: 'How long did yours take?' };
-  assert.equal((await call(null, 'POST', 'oj/posts', thread)).status, 401);
-  assert.equal((await call(fresh, 'POST', 'oj/posts', thread)).status, 403);
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, problemId: 'discuss:gossip' })).status, 404);
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, title: ' ' })).status, 400, 'threads need a title');
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, tag: 'nope' })).status, 400);
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, tag: 'google' })).status, 400, 'hidden company');
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, tag: 'two-pointers-windows' })).status, 400);
-  const tagged = await ok(me, 'POST', 'oj/posts', { ...thread, tag: 'amazon' });
-  assert.equal(tagged.post.tag, 'amazon');
-  await ok(others[0], 'POST', 'oj/posts', { problemId: 'discuss:algo', title: 'Monotonic stack', body: 'Template?' });
-  // Back-to-back posts can share a millisecond (then the uuid decides); make the career one older.
-  sqlite().prepare('UPDATE solution_posts SET created_at=created_at-1000 WHERE id=?').run(tagged.post.id);
-  const career = await ok(null, 'GET', 'oj/posts?problem=discuss:career&tag=amazon');
-  assert.deepEqual(career.items.map((p: { title: string }) => p.title), ['Amazon referral timeline?']);
-  assert.equal(career.items[0].author, 'Ad***', 'masked for guests');
-  assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:career&tag=meta')).items.length, 0);
-  // Server pages: every channel at once, and one thread.
-  const all = await publicPosts('discuss:all', { sort: 'new' });
-  assert.deepEqual(all?.items.map((p) => p.problemId), ['discuss:algo', 'discuss:career']);
-  assert.equal((await publicPost(tagged.post.id))?.post.title, 'Amazon referral timeline?');
-  assert.equal(await publicPost('not-an-id'), null);
-  assert.equal(await publicPosts('discuss:gossip'), null);
+  assert.equal((await call(null, 'GET', 'oj/posts?problem=discuss:algo')).status, 404, 'no board channel');
+  assert.equal((await call(me, 'POST', 'oj/posts', { problemId: 'discuss:career', title: 't', body: 'b' })).status, 404);
+  const comment = { problemId: 'exp:amz-3', body: 'How long did yours take?' };
+  assert.equal((await call(null, 'POST', 'oj/posts', comment)).status, 401);
+  assert.equal((await call(fresh, 'POST', 'oj/posts', comment)).status, 403);
+  assert.equal((await call(me, 'POST', 'oj/posts', { ...comment, tag: 'amazon' })).status, 400, 'only solutions carry a tag');
+  const posted = await ok(me, 'POST', 'oj/posts', comment);
+  await ok(others[0], 'POST', 'oj/posts', { problemId: 'lc-1', title: 'Monotonic stack', body: 'Template?' });
+  const listed = await ok(null, 'GET', 'oj/posts?problem=exp:amz-3');
+  assert.deepEqual(listed.items.map((p: { title: string }) => p.title), ['How long did yours take?']);
+  assert.equal(listed.items[0].author, 'Ad***', 'masked for guests');
+  // A guest reads one post by id.
+  assert.equal((await ok(null, 'GET', `oj/posts/${posted.post.id}`)).post.title, 'How long did yours take?');
+  assert.equal((await call(null, 'GET', 'oj/posts/not-an-id')).status, 404);
+  assert.equal(await publicPosts('exp:no-such'), null);
+  // A thread left from the discussion board stays in the table but reads as missing.
+  const old = '00000000-0000-4000-8000-0000000000b0';
+  sqlite()
+    .prepare("INSERT INTO solution_posts(id,problem_id,user_id,title,body,created_at,updated_at) VALUES(?,'discuss:career',?,'Old thread','x',1,1)")
+    .run(old, me.id);
+  assert.equal((await call(me, 'GET', `oj/posts/${old}`)).status, 404);
   // Replies and votes work signed in like solutions.
-  await ok(others[1], 'POST', `oj/posts/${tagged.post.id}/comments`, { body: 'About two weeks' });
-  await ok(others[1], 'POST', `oj/posts/${tagged.post.id}/vote`, { on: true });
-  const read = await ok(null, 'GET', `oj/posts/${tagged.post.id}`);
+  await ok(others[1], 'POST', `oj/posts/${posted.post.id}/comments`, { body: 'About two weeks' });
+  await ok(others[1], 'POST', `oj/posts/${posted.post.id}/vote`, { on: true });
+  const read = await ok(null, 'GET', `oj/posts/${posted.post.id}`);
   assert.equal(read.post.votes, 1);
   assert.equal(read.comments.length, 1);
   assert.ok(!JSON.stringify(read).includes('example.test'));
 });
 
-void test('three reports take a thread down for everyone but its author until a moderator acts', async () => {
-  const { post } = await ok(me, 'POST', 'oj/posts', { problemId: 'discuss:site', title: 'Buy cheap pills', body: 'spam' });
+void test('three reports take a solution down for everyone but its author until a moderator acts', async () => {
+  const { post } = await ok(me, 'POST', 'oj/posts', { problemId: 'lc-1', title: 'Buy cheap pills', body: 'spam' });
   for (const p of others.slice(0, 3)) await ok(p, 'POST', `oj/posts/${post.id}/report`, { reason: 'spam' });
   assert.equal((await call(others[3], 'GET', `oj/posts/${post.id}`)).status, 404);
   // Nothing lands on a post that reads as missing: no comment saved, no vote counted.
@@ -171,25 +167,22 @@ void test('three reports take a thread down for everyone but its author until a 
   const landed = sqlite().prepare('SELECT (SELECT COUNT(*) FROM post_comments WHERE post_id=@id)+(SELECT COUNT(*) FROM post_votes WHERE post_id=@id)');
   assert.equal(landed.pluck().get({ id: post.id }), 0);
   assert.equal((await call(me, 'POST', `oj/posts/${post.id}/comments`, { body: 'context' })).status, 201, 'its author still can');
-  assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:site')).items.length, 0);
-  assert.equal((await ok(me, 'GET', 'oj/posts?problem=discuss:site')).items.length, 1, 'the author still sees it');
+  const mine = (p: Person) => ok(p, 'GET', 'oj/posts?problem=lc-1').then((r) => r.items.filter((i: { id: string }) => i.id === post.id).length);
+  assert.equal(await mine(others[3]), 0);
+  assert.equal(await mine(me), 1, 'the author still sees it');
   assert.equal((await call(teacher, 'GET', `oj/posts/${post.id}`)).status, 200);
   const queue = await ok(teacher, 'GET', 'oj/posts/moderation');
-  assert.ok(queue.reported.some((i: { id: string }) => i.id === post.id), 'threads reach the queue');
+  assert.ok(queue.reported.some((i: { id: string }) => i.id === post.id), 'reported posts reach the queue');
   await ok(teacher, 'POST', `oj/posts/${post.id}/dismiss`, {});
-  assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:site')).items.length, 1);
+  assert.equal(await mine(others[3]), 1);
   // The same three cannot take it down again; three new reports after the decision can.
   for (const p of others.slice(0, 3)) await ok(p, 'POST', `oj/posts/${post.id}/report`, { reason: 'spam' });
-  assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:site')).items.length, 1);
+  assert.equal(await mine(others[3]), 1);
   assert.equal((await ok(teacher, 'GET', 'oj/posts/moderation')).reported.some((i: { id: string }) => i.id === post.id), false);
   await ok(others[3], 'POST', `oj/posts/${post.id}/report`, { reason: 'spam' });
   assert.equal((await ok(teacher, 'GET', 'oj/posts/moderation')).reported.find((i: { id: string }) => i.id === post.id)?.reports, 1);
   await ok(teacher, 'POST', `oj/posts/${post.id}/dismiss`, {});
-  // Every channel at once reads through the problem_id index, not a scan of every solution.
-  const plan = sqlite()
-    .prepare(`EXPLAIN QUERY PLAN SELECT id FROM solution_posts sp WHERE sp.problem_id>='discuss:' AND sp.problem_id<'discuss;'`)
-    .all() as { detail: string }[];
-  assert.equal(plan.some((r) => /^SCAN sp$/.test(r.detail)), false, JSON.stringify(plan));
+  await ok(others[3], 'POST', `oj/posts/${post.id}/vote`, { on: true });
 });
 
 void test('answers to questions and comments on experiences take their first line as a title', async () => {
@@ -295,11 +288,10 @@ void test('follows: visible profiles only, counted and listed only when visible,
   assert.equal((await call(null, 'POST', 'oj/follows', { handle: 'grace', on: true })).status, 401);
   await ok(me, 'POST', 'oj/follows', { handle: 'grace', on: true });
   await ok(others[1], 'POST', 'oj/follows', { handle: 'grace', on: true });
-  // Following back answers mutual, so the button shows "Message" without a reload.
-  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: true })).mutual, true);
-  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: false })).mutual, false);
+  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: true })).following, true);
+  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: false })).following, false);
   const state = await ok(null, 'GET', 'oj/follows?handle=grace');
-  assert.deepEqual(state, { following: false, mutual: false, self: false, signedIn: false, followers: 1, followees: 0 }, 'the hidden follower is not counted');
+  assert.deepEqual(state, { following: false, self: false, signedIn: false, followers: 1, followees: 0 }, 'the hidden follower is not counted');
   assert.equal((await ok(me, 'GET', 'oj/follows?handle=grace')).following, true);
   assert.deepEqual(followPeople('grace', 'followers')?.items.map((f) => f.handle), ['ada']);
   assert.deepEqual(followPeople('ada', 'following')?.items.map((f) => f.handle), ['grace']);
@@ -335,12 +327,12 @@ void test('the public profile adds languages, earned badges, posts with their vo
   ]);
   assert.equal(page.followers, 1);
   assert.ok(Array.isArray(page.badges) && page.badges.every((b) => b.id && b.zh && b.en));
-  assert.equal(page.posts.total, 1, 'the algo thread');
-  assert.equal(page.posts.items[0].target, 'discuss:algo');
+  assert.equal(page.posts.total, 1, 'the lc-1 solution');
+  assert.equal(page.posts.items[0].target, 'lc-1');
   const ada = publicProfile('ada', catalogue)!;
-  // The answer to a question is not listed; the solution, two threads and the reported-down spam
-  // (now dismissed) are, with their upvotes.
-  assert.deepEqual(ada.posts.items.map((p) => p.target).sort(), ['discuss:career', 'discuss:site', 'oa-amazon-1']);
+  // Answers, comments and an old board thread are not listed; the solution and the reported-down
+  // spam (now dismissed) are, with their upvotes.
+  assert.deepEqual(ada.posts.items.map((p) => p.target).sort(), ['lc-1', 'oa-amazon-1']);
   assert.equal(ada.posts.votes, 1);
   assert.equal(ada.listStars, 0);
   assert.equal(publicProfile('grace', catalogue)!.listStars, 1);

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { achievements, longestStreak } from '@/lib/achievements';
 import { classicListProgress } from '@/lib/classic-lists';
-import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
+import { REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, SLOTS, type MockSession, type Slot } from '@/lib/mock-oa';
 import { LINE_MAX, parseListImport } from '@/lib/list-import';
@@ -952,27 +952,21 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     )
     .all(profile.user_id) as { id: string; language: string }[])
     if (shown(r.id)) byLanguage.set(r.language, (byLanguage.get(r.language) ?? 0) + 1);
-  const hidden = hiddenCompanies();
   // The verified employee badge, only if its owner switched it on for the profile.
   const employer = badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null);
-  // Posts anyone can open: solutions on public problems and threads; reported-down and anonymous
-  // ones stay out. Beside the badge only posts that could carry it, never interview, career or offer
-  // talk or OA solutions.
+  // Posts anyone can open: solutions on public problems; reported-down and anonymous ones stay
+  // out. Beside the badge only posts that could carry it, never OA solutions.
   const posts = (
     db
       .prepare(
-        `SELECT sp.id,sp.problem_id AS target,sp.title,sp.tag,sp.created_at AS createdAt,
+        `SELECT sp.id,sp.problem_id AS target,sp.title,sp.created_at AS createdAt,
           (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes
         FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0 AND sp.anonymous=0
           AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
         ORDER BY sp.created_at DESC LIMIT 500`,
       )
-      .all(profile.user_id) as { id: string; target: string; title: string; tag: string; createdAt: number; votes: number }[]
-  ).filter(
-    (post) =>
-      (post.target.startsWith('discuss:') ? isChannel(post.target.slice(8)) && !hidden.has(post.tag) : shown(post.target)) &&
-      (!employer || badgeTarget(post.target)),
-  );
+      .all(profile.user_id) as { id: string; target: string; title: string; createdAt: number; votes: number }[]
+  ).filter((post) => shown(post.target) && (!employer || badgeTarget(post.target)));
   const follows = db
     .prepare(
       `SELECT (SELECT COUNT(*) FROM user_follows f JOIN user_profiles p ON p.user_id=f.follower_id AND p.visible=1

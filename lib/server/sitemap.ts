@@ -1,4 +1,3 @@
-import frontendJs from '@/lib/content/frontend-js.json';
 import { englishUnits } from '@/lib/interview-english';
 import { SITEMAP_STATIC_ENTRIES, type SitemapEntry } from '@/lib/seo';
 import { learnPaths } from './beginner-courses';
@@ -22,6 +21,4 @@ export const sitemapStatics = (): SitemapEntry[] => [
   ...projectPaths(),
   { path: '/english' },
   ...englishUnits.map((unit) => ({ path: `/english/${unit.slug}` })),
-  { path: '/frontend' },
-  ...frontendJs.problems.map((problem) => ({ path: `/frontend/js/${problem.slug}` })),
 ];

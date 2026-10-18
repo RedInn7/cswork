@@ -34,9 +34,9 @@ function problemMeta(ids: readonly string[]) {
   return meta;
 }
 
-// Written notes, stories, cards, clips and system design drafts. JSON state stays out: pref:, recall:,
-// mcq:, wb:, checklist:, project:, career:, list:, q:, post: and the sd:<chapter> quiz answers.
-const KINDS = ['problem', 'sub', 'content', 'story', 'topic', 'card', 'clip', 'sd'] as const;
+// Written notes, cards, clips and system design drafts. JSON state stays out: pref:, recall:,
+// mcq:, wb:, checklist:, project:, career:, list:, q:, post:, story: and the sd:<chapter> quiz answers.
+const KINDS = ['problem', 'sub', 'content', 'topic', 'card', 'clip', 'sd'] as const;
 const kindSql = (kind: (typeof KINDS)[number]) =>
   kind === 'sd' ? "n.target LIKE 'sd:%/draft'" : `n.target LIKE '${kind}:%'`;
 // ponytail: a page stops past 2 MB of bodies and code, or at 200 notes (4 MB of 20 KB bodies read at

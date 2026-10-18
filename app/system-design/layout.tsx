@@ -1,7 +1,7 @@
 import '../library/library.css';
 import './system-design.css';
 // The chapter discussion's community posts (components/solution-posts.tsx) take the site's tokens.
-import '../discuss.css';
+import '../community-posts.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';

@@ -269,11 +269,9 @@ function SkillRow({ item, status, zh }: { item: JdItem; status: string; zh: bool
   const name = zh ? info.zh : info.en;
   const unit = info.line
     ? t('个专题练到 3 题', 'stops with 3 solved')
-    : info.stories
-      ? t('个 STAR 故事', 'STAR stories')
-      : info.parts
-        ? t('章已读或题已过', 'chapters read or problems solved')
-        : t('道题已通过', 'problems solved');
+    : info.parts
+      ? t('章已读或题已过', 'chapters read or problems solved')
+      : t('道题已通过', 'problems solved');
   return (
     <li className="jd-skill" data-status={item.status}>
       <div className="jd-skill-head">

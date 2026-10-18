@@ -26,10 +26,9 @@ for (const p of [alice, bob, owner])
   db.prepare(
     'INSERT INTO user(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,1,0,0)',
   ).run(p.id, `${p.id}-nick`, p.email);
-for (const course of ['gomall', 'sde-interview-foundations'])
-  db.prepare(
-    "INSERT INTO courses(id,title,summary,version,published) VALUES(?,?,'s','1',1)",
-  ).run(course, course);
+db.prepare(
+  "INSERT INTO courses(id,title,summary,version,published) VALUES('gomall','gomall','s','1',1)",
+).run();
 db.prepare(
   "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('00-overview','gomall','t','','s',0,'','1',0)",
 ).run();

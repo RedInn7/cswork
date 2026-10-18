@@ -9,7 +9,6 @@ export const XP = {
   mock: [15, 30],
   sd: [10, 30],
   english: [5, 15],
-  story: [5, 10],
   stress: [5, 10],
   mcq: [1, 20],
   recall: [1, 10],
@@ -56,7 +55,6 @@ export const QUESTS: Record<StudyKind, { need: number; zh: string; en: string; h
   stress: { need: 1, zh: '跑 1 次对拍或复杂度测试', en: 'Run 1 stress test or complexity probe', href: '/?view=problems' },
   mock: { need: 1, zh: '做完 1 场模拟 OA', en: 'Finish 1 mock OA', href: '/?view=mock' },
   recall: { need: 3, zh: '自评 3 张复习卡', en: 'Self-grade 3 review cards', href: '/?view=progress&tab=review' },
-  story: { need: 1, zh: '写或改 1 条 STAR 故事', en: 'Write or edit 1 STAR story', href: '/?view=stories' },
 };
 
 /**

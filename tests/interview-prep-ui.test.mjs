@@ -21,7 +21,6 @@ globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
 dom.window.HTMLElement.prototype.scrollIntoView = () => {};
 const { createRoot } = await import('react-dom/client');
 const { ContentDetail } = await import('../components/content-library.tsx');
-const { StoryBank } = await import('../components/story-bank.tsx');
 
 const settle = (ms = 10) => act(async () => new Promise((r) => setTimeout(r, ms)));
 const button = (label) => [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === label);
@@ -47,22 +46,13 @@ const question = {
   round: null, seniority: null, tags: [], publishedAt: null, partial: false,
   body, updatedAt: null, extra: {}, relations: [], dupOf: null, practice: null, companyPractice: null,
 };
-const storyNote = (id, story) => ({ target: `story:${id}`, body: JSON.stringify({ questions: [], ...story }), updatedAt: 5 });
 
-test('question page: the rubric stays closed until the learner writes or insists; picks a story', async () => {
+test('question page: the rubric stays closed until the learner writes or insists', async () => {
   const puts = [];
   let answer = '';
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
     if (u.includes('/api/content/item')) return Response.json(question);
-    if (u.includes('prefix=story')) {
-      return Response.json({
-        items: [
-          storyNote('s1', { title: 'Launch slip', competencies: ['failure'] }),
-          storyNote('s2', { title: 'Schema fight', competencies: ['conflict'], situation: 'Two teams, one schema.' }),
-        ],
-      });
-    }
     if (init.method === 'PUT') {
       puts.push([decodeURIComponent(u.split('target=')[1]), JSON.parse(init.body).body]);
       return Response.json({ updatedAt: 9 });
@@ -91,20 +81,6 @@ test('question page: the rubric stays closed until the learner writes or insists
   assert.equal(document.body.textContent.includes('SECRET-RUBRIC'), true);
   await settle(900);
   assert.deepEqual(puts.at(-1), ['content:interview_question/disagree-1', 'I would set up a design review']);
-
-  // The conflict story fits this question and comes first; picking it saves the question on it.
-  const select = document.querySelector('.ip-pick-select');
-  assert.equal(select.querySelector('optgroup').label, 'Fits this question');
-  assert.equal(select.querySelector('optgroup option').textContent.startsWith('Schema fight'), true);
-  await act(async () => {
-    select.value = 's2';
-    select.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
-  });
-  await settle();
-  const [target, saved] = puts.at(-1);
-  assert.equal(target, 'story:s2');
-  assert.deepEqual(JSON.parse(saved).questions, [{ key: 'interview_question/disagree-1', title: 'Disagreeing with a teammate', company: 'Amazon' }]);
-  assert.equal(document.body.textContent.includes('Review this story'), true);
   await act(async () => root.unmount());
 
   // An answer written on an earlier visit counts as trying: the rubric opens on load.
@@ -118,59 +94,7 @@ test('question page: the rubric stays closed until the learner writes or insists
   await act(async () => again.unmount());
 });
 
-test('story bank: writes a story with STAR parts and competencies, lists it, exports Markdown', async () => {
-  const puts = [];
-  const items = [];
-  globalThis.fetch = async (url, init = {}) => {
-    const u = String(url);
-    if (init.method === 'PUT') {
-      const target = decodeURIComponent(u.split('target=')[1]);
-      puts.push([target, init.body ? JSON.parse(init.body).body : '']);
-      return Response.json({ updatedAt: Date.UTC(2026, 9, 14) });
-    }
-    if (u.includes('prefix=story')) return Response.json({ items });
-    throw new Error(`unexpected ${u}`);
-  };
-  const root = createRoot(document.getElementById('root'));
-  await act(async () => root.render(createElement(StoryBank, { userId: 'u1' })));
-  await settle();
-  assert.equal(document.body.textContent.includes('No stories yet'), true);
-  assert.equal(button('Export Markdown').disabled, true);
-  await click('New story');
-  await type(document.querySelector('.ip-field input'), 'Schema fight');
-  const action = document.querySelector('[data-field="action"] textarea');
-  await type(action, 'I wrote both designs up and ran a review');
-  assert.equal(document.querySelector('[data-field="action"] .ip-count').textContent, '9 words');
-  const chip = [...document.querySelectorAll('.ip-chip')].find((l) => l.textContent === 'Conflict');
-  await act(async () => chip.querySelector('input').click());
-  await act(async () => document.querySelector('#ip-editor').requestSubmit());
-  await settle();
-  const [target, saved] = puts.at(-1);
-  assert.equal(target.startsWith('story:'), true);
-  assert.deepEqual(JSON.parse(saved).competencies, ['conflict']);
-  assert.equal(JSON.parse(saved).action, 'I wrote both designs up and ran a review');
-  const row = document.querySelector('.ip-table tbody tr');
-  assert.equal(row.textContent.includes('Schema fight'), true);
-  assert.equal(row.textContent.includes('Conflict'), true);
-  assert.equal(document.querySelector('.ip-editor-state').textContent, 'Saved');
-
-  // Export: one Markdown download with the story in it.
-  let blob = null;
-  let downloaded = '';
-  dom.window.URL.createObjectURL = (b) => ((blob = b), 'blob:x');
-  dom.window.URL.revokeObjectURL = () => {};
-  globalThis.URL.createObjectURL = dom.window.URL.createObjectURL;
-  globalThis.URL.revokeObjectURL = dom.window.URL.revokeObjectURL;
-  dom.window.HTMLAnchorElement.prototype.click = function () {
-    downloaded = this.download;
-  };
-  await click('Export Markdown');
-  assert.equal(downloaded, 'star-stories.md');
-  assert.equal((await blob.text()).includes('## Schema fight'), true);
-  await act(async () => root.unmount());
-});
-
-test('solo mock interview: the answer box comes before the reveal; behavioral slots offer a story', async () => {
+test('solo mock interview: the answer box comes before the reveal', async () => {
   const { MockInterview } = await import('../components/mock-interview.tsx');
   const item = {
     id: 'iq-1', type: 'interview_question', slug: 'disagree-1', title: 'Disagreeing with a teammate', company: null, role: null,
@@ -187,14 +111,14 @@ test('solo mock interview: the answer box comes before the reveal; behavioral sl
   globalThis.fetch = async (url) => {
     const u = String(url);
     if (u.includes('/api/content/mock')) return Response.json(set);
-    if (u.includes('prefix=story')) return Response.json({ items: [] });
     if (u.includes('target=content')) return Response.json({ body: '', updatedAt: null });
     throw new Error(`unexpected ${u}`);
   };
   const root = createRoot(document.getElementById('root'));
   await act(async () => root.render(createElement(MockInterview, { params: query, navigate() {}, problemIds: [], userId: 'u1' })));
   await settle();
-  assert.equal(!!document.querySelector('.ip-pick'), true, 'which story would you tell?');
+  // The story bank is gone: no "which story would you tell?" picker beside a behavioral slot.
+  assert.equal(document.querySelector('.ip-pick'), null);
   assert.equal(document.body.textContent.includes('SECRET-RUBRIC'), false);
   await click('Show the answer');
   await click('Show it anyway');
@@ -250,95 +174,4 @@ test('a guest answer is saved to the account on sign-in, or offered against the 
   await settle(900);
   assert.deepEqual(puts, ['run notes']);
   await act(async () => again.unmount());
-});
-
-test('story picks and editor saves build on the stories as stored now; switching asks first', async () => {
-  const puts = [];
-  // What the server holds; the test changes it behind the page's back, as another tab would.
-  const server = {
-    s1: { title: 'Launch slip', competencies: ['conflict'], situation: 'OLD' },
-    s2: { title: 'Schema fight', competencies: ['conflict'] },
-  };
-  globalThis.fetch = async (url, init = {}) => {
-    const u = String(url);
-    if (u.includes('/api/content/item')) return Response.json(question);
-    if (init.method === 'PUT') {
-      const id = decodeURIComponent(u.split('target=')[1]).slice('story:'.length);
-      const story = JSON.parse(JSON.parse(init.body).body);
-      puts.push([id, story]);
-      server[id] = story;
-      return Response.json({ updatedAt: 9 });
-    }
-    if (u.includes('prefix=story')) return Response.json({ items: Object.entries(server).map(([id, s]) => storyNote(id, s)) });
-    if (u.includes('target=content')) return Response.json({ body: '', updatedAt: null });
-    throw new Error(`unexpected ${u}`);
-  };
-  const root = createRoot(document.getElementById('root'));
-  await act(async () =>
-    root.render(createElement(ContentDetail, { params: { type: 'interview_question', slug: 'disagree-1' }, navigate() {}, problemIds: [], userId: 'u1' })),
-  );
-  await settle();
-  server.s1 = { ...server.s1, situation: 'EDITED IN THE BANK' };
-  const select = document.querySelector('.ip-pick-select');
-  await act(async () => {
-    select.value = 's1';
-    select.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
-  });
-  await settle();
-  assert.equal(puts.at(-1)[1].situation, 'EDITED IN THE BANK', 'the pick does not write back the stale copy');
-  await act(async () => root.unmount());
-
-  // The bank: open s2, type without saving, then click s1: asked first; saying no keeps the text.
-  let asked = 0;
-  globalThis.confirm = () => (asked++, false);
-  const bank = createRoot(document.getElementById('root'));
-  await act(async () => bank.render(createElement(StoryBank, { userId: 'u1' })));
-  await settle();
-  await click('Schema fight');
-  await type(document.querySelector('[data-field="action"] textarea'), 'unsaved action');
-  await click('Launch slip');
-  assert.equal(asked, 1);
-  assert.equal(document.querySelector('[data-field="action"] textarea').value === 'unsaved action', true);
-
-  // Meanwhile a question page picked s2 for another question; saving here keeps that link.
-  const link = { key: 'interview_question/other', title: 'Other', company: null };
-  server.s2 = { ...server.s2, questions: [link] };
-  await act(async () => document.querySelector('#ip-editor').requestSubmit());
-  await settle();
-  const [id, story] = puts.at(-1);
-  assert.equal(id, 's2');
-  assert.equal(story.action, 'unsaved action');
-  assert.deepEqual(story.questions, [link]);
-  // Saved now: switching no longer asks.
-  await click('Launch slip');
-  assert.equal(asked, 1);
-  assert.equal(document.querySelector('.ip-field input').value === 'Launch slip', true);
-  await act(async () => bank.unmount());
-});
-
-test('story bank: themes interviews asked about with no story yet, each one a click from a new story', async () => {
-  const retro = (company, themes) => ({
-    target: `retro:0b5f8c1e-1f2a-4c3d-9e8f-123456789abc/${company.toLowerCase()}`,
-    body: JSON.stringify({ company, stage: 'onsite', at: 1, score: 2, questions: [], stuck: '', themes }),
-    updatedAt: 1,
-  });
-  globalThis.fetch = async (url) => {
-    const u = String(url);
-    if (u.includes('prefix=story')) return Response.json({ items: [storyNote('s1', { title: 'Schema fight', competencies: ['conflict'] })] });
-    if (u.includes('prefix=retro')) return Response.json({ items: [retro('Acme', ['conflict', 'failure']), retro('Beta', ['failure', 'Dive Deep'])] });
-    throw new Error(`unexpected ${u}`);
-  };
-  const root = createRoot(document.getElementById('root'));
-  await act(async () => root.render(createElement(StoryBank, { userId: 'u1' })));
-  await settle();
-  const section = document.querySelector('.ip-missing');
-  assert.equal(section.querySelector('h2').textContent, 'Asked in interviews, no story yet');
-  assert.deepEqual(
-    [...section.querySelectorAll('li')].map((li) => [...li.children].map((c) => c.textContent)),
-    [['Failure', 'Acme, Beta', 'Write one Failure'], ['Dive Deep', 'Beta', 'Write one Dive Deep']],
-  );
-  await act(async () => section.querySelector('button').click());
-  const chip = [...document.querySelectorAll('#ip-editor .ip-chip')].find((l) => l.textContent === 'Failure');
-  assert.equal(chip.querySelector('input').checked, true);
-  await act(async () => root.unmount());
 });

@@ -36,7 +36,7 @@ export async function exportAll<T = ExportItem>(
   return items;
 }
 
-/** A download made in this browser, as the story bank's Markdown export. */
+/** A download made in this browser. */
 function save(data: BlobPart, type: string, name: string) {
   const url = URL.createObjectURL(new Blob([data], { type }));
   const a = Object.assign(document.createElement('a'), { href: url, download: name });

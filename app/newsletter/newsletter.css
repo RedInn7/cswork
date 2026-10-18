@@ -154,6 +154,10 @@ a.newsletter-button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
 }
+/* An odd section out (the daily results) takes the whole row. */
+.newsletter-columns > section:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
 .newsletter-columns > section {
   min-width: 0;
   padding: 22px 24px 20px;

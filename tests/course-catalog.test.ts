@@ -119,7 +119,7 @@ test('the first published lesson of a published course is a free preview, for re
   for (const p of [stranger, fresh]) {
     assert.equal((await liveLesson(p, 'l1', true)).body, 'preview body');
     await assert.rejects(liveLesson(p, 'l2', true), status(403));
-    // Strict callers (tickets, code reviews) still need the course.
+    // Strict callers (code reviews) still need the course.
     await assert.rejects(liveLesson(p, 'l1'), status(403));
   }
   await assert.rejects(liveLesson(stranger, 'l0', true), status(404));

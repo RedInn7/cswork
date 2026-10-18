@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
-import { readFileSync, unlinkSync } from 'node:fs';
-import { resolve, join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { hashPassword } from 'better-auth/crypto';
 import { createHmac, randomUUID } from 'node:crypto';
 const base = process.env.TEST_URL || 'http://localhost:4317';
@@ -145,87 +145,6 @@ try {
   assert.equal(p.progress[0].completed, 1);
   const bob = await req('bootstrap', { user: b });
   assert.equal(bob.progress.length, 0);
-  const ticket = await req('tickets', {
-    user: a,
-    data: {
-      title: 'integration private question',
-      body: 'Only Alice and the teacher should see this',
-      lessonId: '00-overview',
-      videoPosition: 12,
-    },
-    status: 201,
-  });
-  assert.deepEqual(await req('tickets', { user: b }), []);
-  await req('tickets/' + ticket.id, { user: b, status: 404 });
-  await req('tickets/' + ticket.id + '/reply', {
-    user: b,
-    data: { body: 'attack' },
-    status: 404,
-  });
-  await req('tickets/' + ticket.id + '/reply', {
-    user: teacher,
-    data: { body: 'teacher reply' },
-  });
-  const detail = await req('tickets/' + ticket.id, { user: a });
-  assert.equal(detail.status, 'waiting');
-  assert.equal(detail.replies.length, 1);
-  async function upload(user, name, bytes, status) {
-    const r = await fetch(
-      `${base}/api/tickets/${ticket.id}/attachments?name=${encodeURIComponent(name)}`,
-      {
-        method: 'POST',
-        headers: {
-          Cookie: user.cookie,
-          Origin: base,
-          'Content-Type': 'application/octet-stream',
-        },
-        body: bytes,
-      },
-    );
-    assert.equal(r.status, status, await r.clone().text());
-    checks++;
-    return r;
-  }
-  await upload(b, 'private.txt', 'attack', 404);
-  await upload(a, 'unsafe.html', '<script>alert(1)</script>', 400);
-  await upload(a, 'oversized.txt', new Uint8Array(2 * 1024 * 1024 + 1), 413);
-  const attachment = await (
-    await upload(a, 'private.txt', 'Private attachment contents', 201)
-  ).json();
-  await req('attachments/' + attachment.id, { user: b, status: 404 });
-  const download = await fetch(base + '/api/attachments/' + attachment.id, {
-    headers: { Cookie: a.cookie },
-  });
-  assert.equal(download.status, 200);
-  assert.match(download.headers.get('content-disposition'), /^attachment;/);
-  assert.equal(download.headers.get('x-content-type-options'), 'nosniff');
-  assert.equal(await download.text(), 'Private attachment contents');
-  checks++;
-  assert.equal(
-    (await req('tickets/' + ticket.id, { user: a })).attachments[0].id,
-    attachment.id,
-  );
-  const notification = (await req('bootstrap', { user: a })).notifications[0];
-  assert.ok(notification);
-  assert.equal((await req('bootstrap', { user: b })).notifications.length, 0);
-  await req('notifications', { user: b, data: { id: notification.id } });
-  assert.equal(
-    (await req('bootstrap', { user: a })).notifications[0].read_at,
-    null,
-  );
-  await req('tickets/' + ticket.id + '/status', {
-    user: a,
-    data: { status: 'resolved' },
-  });
-  assert.equal(
-    (await req('tickets/' + ticket.id, { user: a })).status,
-    'resolved',
-  );
-  await req('tickets/' + ticket.id + '/status', {
-    user: a,
-    data: { status: 'open', assignedTo: null },
-    status: 403,
-  });
   await req('progress', {
     user: a,
     data: { lessonId: '00-overview', completed: false },
@@ -253,6 +172,15 @@ try {
   assert.equal(
     (await req('reviews', { user: a }))[0].feedback,
     'Add a concurrency test',
+  );
+  // The review feedback notifies Alice only, and Bob cannot mark it read.
+  const notification = (await req('bootstrap', { user: a })).notifications[0];
+  assert.ok(notification);
+  assert.equal((await req('bootstrap', { user: b })).notifications.length, 0);
+  await req('notifications', { user: b, data: { id: notification.id } });
+  assert.equal(
+    (await req('bootstrap', { user: a })).notifications[0].read_at,
+    null,
   );
   await req('reviews', {
     user: a,
@@ -331,32 +259,10 @@ try {
   assert.equal(spoof.status, 401);
   checks++;
   console.log(
-    `PASS: ${checks} real HTTP checks covering authentication, ownership, grants, notes, tickets, reviews, CSRF, search, and unavailable integrations.`,
+    `PASS: ${checks} real HTTP checks covering authentication, ownership, grants, notes, reviews, CSRF, search, and unavailable integrations.`,
   );
 } finally {
   for (const uid of created) {
-    for (const file of db
-      .prepare(
-        'SELECT id FROM attachments WHERE ticket_id IN (SELECT id FROM tickets WHERE user_id=?)',
-      )
-      .all(uid)) {
-      try {
-        unlinkSync(
-          join(
-            resolve(process.env.TEST_ATTACHMENTS_PATH || 'data/attachments'),
-            file.id,
-          ),
-        );
-      } catch (e) {
-        if (e.code !== 'ENOENT') throw e;
-      }
-    }
-    db.prepare(
-      'DELETE FROM attachments WHERE ticket_id IN (SELECT id FROM tickets WHERE user_id=?)',
-    ).run(uid);
-    db.prepare(
-      'DELETE FROM replies WHERE ticket_id IN (SELECT id FROM tickets WHERE user_id=?) OR user_id=?',
-    ).run(uid, uid);
     for (const table of [
       'progress',
       'notifications',
@@ -364,7 +270,6 @@ try {
       'submissions',
       'reviews',
       'orders',
-      'tickets',
     ])
       db.prepare(`DELETE FROM ${table} WHERE user_id=?`).run(uid);
     db.prepare(

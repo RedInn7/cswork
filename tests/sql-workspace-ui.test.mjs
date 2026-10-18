@@ -94,7 +94,6 @@ test('the SQL workspace shows tables, inserts names and previews plans and CTEs'
           problem: { id: pkg.problem.id, title: statement.title, titleEn: statement.title, difficulty: '简单', tags: [], lessonId: '00-overview', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'student', verified: true }, courses: [], services: { ai: false, judge: true } },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),

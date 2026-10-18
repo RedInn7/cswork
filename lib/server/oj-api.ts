@@ -47,14 +47,12 @@ import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
-import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
 import { handleApplications } from './applications';
 import { handleContacts } from './contacts';
 import { handleNotify } from './reminders';
-import { handleDirectMessages } from './direct-messages';
 import { handleWorkVerify } from './work-verify';
 import { handleMcqStats } from './mcq-stats';
 import { sourceDates } from './company-insights';
@@ -150,14 +148,12 @@ export async function handleOj(
   if (resource === 'lists' || resource === 'profile' || resource === 'reports')
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
-  if (resource === 'groups') return handleStudyGroups(request, p, path);
   if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   if (resource === 'applications') return handleApplications(request, p, path.slice(1));
   if (resource === 'contacts') return handleContacts(request, p, path.slice(1));
   if (resource === 'notify') return handleNotify(request, p, path.slice(1));
-  if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
   if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
   // MCQ answer shares read signed out; the handler checks the write.
   if (resource === 'mcq') return handleMcqStats(request, p, path.slice(1));
@@ -285,8 +281,8 @@ export async function handleOj(
     if (!view) throw new HttpError(404, '练习任务不存在');
     return json(view);
   }
-  // Threads, answers and comments read signed out; the handler checks the rest.
-  if (['posts', 'post-comments', 'group-messages', 'direct-messages'].includes(resource))
+  // Answers, comments and chapter discussions read signed out; the handler checks the rest.
+  if (['posts', 'post-comments'].includes(resource))
     return handleSolutionPosts(request, p, path);
   requirePerson(p);
   if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
@@ -316,7 +312,7 @@ export async function handleOj(
   if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
   // The AI pair of the AI-assisted round (lib/server/ai-rounds.ts).
   if (resource === 'ai' && id === 'pair' && !action) return handleAiPair(request, p);
-  // Feedback on a written answer or STAR story (lib/server/ai-answer.ts).
+  // Feedback on a written answer (lib/server/ai-answer.ts).
   if (resource === 'ai' && id === 'grade' && !action) return handleAiGrade(request, p);
   // The review of an AI-assisted round or take-home (lib/server/round-review.ts).
   if (resource === 'ai' && id === 'round-review' && !action) return handleRoundReview(request, p);

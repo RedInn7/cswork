@@ -260,7 +260,7 @@ test('a course card shows its rating once: the live one beside the stars once a 
     services: {},
   };
   const doc = parse(
-    renderToStaticMarkup(createElement(CourseList, { boot, navigate() {}, login() {}, ask() {} })),
+    renderToStaticMarkup(createElement(CourseList, { boot, navigate() {}, login() {} })),
   );
   const cards = [...doc.querySelectorAll('.course-detail')];
   assert.equal(cards.length, 2);

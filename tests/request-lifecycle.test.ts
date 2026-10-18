@@ -6,7 +6,7 @@ function upload(
   options: { cancel?: () => void | Promise<void>; contentLength?: number } = {},
 ) {
   let cancelled = 0;
-  const request = new Request('http://localhost/api/tickets/test/attachments', {
+  const request = new Request('http://localhost/api/upload', {
     method: 'POST',
     headers: { 'Content-Length': String(options.contentLength ?? 2097153) },
     body: new ReadableStream<Uint8Array>({
@@ -31,10 +31,10 @@ test('Content-Length rejection releases the unread upload and preserves 413', as
   const input = upload();
   const response = await withRequestBodyCleanup((request) => {
     assert.ok(Number(request.headers.get('content-length')) > 2 * 1024 * 1024);
-    return Response.json({ error: '附件不能超过 2MB' }, { status: 413 });
+    return Response.json({ error: '上传内容过大' }, { status: 413 });
   })(input.request);
   assert.equal(response.status, 413);
-  assert.equal((await response.json()).error, '附件不能超过 2MB');
+  assert.equal((await response.json()).error, '上传内容过大');
   assert.equal(input.cancelled(), 1);
 });
 
@@ -83,7 +83,7 @@ test('thrown handlers retain their original exception and discard the body', asy
 });
 
 test('normal JSON consumption remains unchanged', async () => {
-  const request = new Request('http://localhost/api/tickets', {
+  const request = new Request('http://localhost/api/json', {
     method: 'POST',
     body: JSON.stringify({ title: 'example' }),
   });

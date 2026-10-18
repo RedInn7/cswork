@@ -5,7 +5,7 @@
 - SQLite/better-sqlite3 + Drizzle。业务原有 SQL 接口由小型封装承接，批操作同步事务保证支付授权、课程发布等原子性。Better Auth 的异步适配器继续使用 `transaction: false`，不把异步回调塞进同步 SQLite 事务。
 - Better Auth 1.7 账号包含必填 issuer，采用明确的 provider-id 策略；增量迁移保留原账号、密码、OAuth 令牌并回填来源。老师权限只从经过验证的邮箱与服务器 ADMIN_EMAILS 推导。
 - Google/GitHub/邮箱验证码保留独立接入；新增 CLI 初始化老师和密码登录，关闭公开密码注册；移除全部 Sites 身份头后备入口。
-- 私密附件按随机 UUID 存入 Web 根目录之外，每个最多 2MB、每个工单最多 10 个；下载必须通过账号与工单归属检查。
+- 工单（含私密附件上传、下载）已整体下线；tickets、replies、attachments 表和 `ATTACHMENTS_PATH` 里的旧文件保留不删，备份照常归档。
 - nginx 独立 vhost + systemd 独立用户，CPU 和内存设上限。SQLite 与附件不随版本目录切换；启动检查失败回退应用版本，数据库恢复需从备份明确执行。
 - 判题使用独立 go-judge、BullMQ 和 Redis；Stripe 与 Cloudflare Stream 是可选集成，缺少配置不伪造结果。服务器已有其他产品的服务不作为 cswork 的隐式依赖。
 - 课程草稿与发布分离，用 revision/CAS 阻止相互覆盖；发布、历史快照和站内通知在同一事务里完成。作业复提写入不可变事件，既有反馈可追溯。

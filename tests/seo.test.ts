@@ -95,10 +95,9 @@ test('database sitemap batches account for static pages without gaps or overlaps
 test('sitemap page 1 adds the content-built pages once, and no downloads, feeds or private pages', () => {
   const paths = sitemapStatics().map((entry) => entry.path);
   assert.equal(new Set(paths).size, paths.length, 'no page twice');
-  for (const path of ['/projects', '/projects/rate-limiter', '/english', '/english/self-intro', '/frontend', '/frontend/js/debounce', '/system-design', '/interview-platforms', '/oa/sims', '/career/negotiation', '/oa/aptitude', '/topics/glossary', '/topics/print', '/learn/os', '/learn/network'])
+  for (const path of ['/projects', '/projects/rate-limiter', '/english', '/english/self-intro', '/system-design', '/interview-platforms', '/oa/sims', '/career/negotiation', '/oa/aptitude', '/topics/glossary', '/topics/print', '/learn/os', '/learn/network'])
     assert.ok(paths.includes(path), path);
   assert.equal(paths.filter((p) => p.startsWith('/english/')).length, 12);
-  assert.equal(paths.filter((p) => p.startsWith('/frontend/js/')).length, 40);
   assert.ok(!paths.some((p) => /\/accept$|^\/feeds\/|^\/career\/(contacts|tracker|intern|resume\/review)|^\/review-sheet/.test(p)));
 });
 

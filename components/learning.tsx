@@ -1,5 +1,5 @@
 'use client';
-import { lazy, Suspense, useEffect, useState, useRef } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -8,7 +8,6 @@ import {
   Code2,
   Lock,
   Bookmark,
-  MessageSquare,
   FileText,
   Video,
   GitPullRequest,
@@ -22,14 +21,7 @@ import { money } from '@/lib/commerce-types';
 import { englishMessage } from '@/lib/messages-en';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
 import { AlgorithmLibrary } from './algorithm-library';
-import interviewCatalog from '@/content/interview-catalog.json';
-import {
-  INTERVIEW_COURSE_ID,
-  isKnowledgeLesson,
-} from '@/lib/interview-curriculum';
-import { KnowledgeExercises } from './knowledge-exercises';
 import { isFreeTrack } from '@/lib/free-tracks';
-import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
 import '@/app/daily-month.css';
 import '@/app/lc-rating.css';
@@ -55,18 +47,14 @@ export function CourseList({
   boot,
   navigate,
   login,
-  ask,
-  knowledge = false,
 }: {
   boot: Boot;
   navigate: Navigate;
   login: () => void;
-  ask: (context: Record<string, string>) => void;
-  knowledge?: boolean;
 }) {
   const t = useT(),
     locale = useLocale(),
-    // "3 篇" / "3 topics": English needs a plural, the Chinese text is unchanged.
+    // "3 课" / "3 lessons": English needs a plural, the Chinese text is unchanged.
     count = (n: number, zh: string, en: string) =>
       `${n} ${t(zh, n === 1 ? en : en + 's')}`;
   const [busy, setBusy] = useState(false),
@@ -74,62 +62,47 @@ export function CourseList({
     [filter, setFilter] = useState({ category: '', level: '' }),
     // Certificates listed on the public profile, after a change made on this page.
     [onProfile, setOnProfile] = useState<Record<string, boolean>>({});
-  const listed = boot.courses.filter((c) =>
-    knowledge ? c.id === INTERVIEW_COURSE_ID : c.id !== INTERVIEW_COURSE_ID,
-  );
   // Only the categories and levels some course has: no filter that always comes up empty.
   const facets = [
     ['category', t('分类', 'Category'), COURSE_CATEGORIES],
     ['level', t('级别', 'Level'), COURSE_LEVELS],
   ] as const;
-  const shown = filterCourses(listed, filter);
+  const shown = filterCourses(boot.courses, filter);
   return (
     <>
       <Heading
-        label={knowledge ? 'ALGORITHMS' : 'THE CURRICULUM'}
-        title={
-          knowledge
-            ? t('算法知识点', 'Algorithm Concepts')
-            : t('我的课程', 'My Courses')
-        }
-        description={
-          knowledge
-            ? t(
-                '原理、推导、代码与练习。按主题查阅，也可以从基础开始读。',
-                'Principles, derivations, code and practice. Browse by topic, or start from the basics.',
-              )
-            : t('课程讲义、视频与配套练习。', 'Course handouts, videos and exercises.')
-        }
+        label="THE CURRICULUM"
+        title={t('我的课程', 'My Courses')}
+        description={t('课程讲义、视频与配套练习。', 'Course handouts, videos and exercises.')}
       />
-      {!knowledge &&
-        listed.some((c) => c.category || c.level) && (
-          <div className="course-filters">
-            {facets.map(([key, label, options]) => {
-              const present = options.filter(([value]) => listed.some((c) => c[key] === value));
-              return (
-                present.length > 0 && (
-                  <div className="course-filter-group" role="group" aria-label={label} key={key}>
-                    <span aria-hidden="true">{label}</span>
-                    {[['', t('全部', 'All')] as const, ...present.map(([value, zh, en]) => [value, t(zh, en)] as const)].map(
-                      ([value, text]) => (
-                        <button
-                          type="button"
-                          key={value || 'all'}
-                          className="course-filter-chip"
-                          aria-pressed={filter[key] === value}
-                          onClick={() => setFilter((f) => ({ ...f, [key]: value }))}
-                        >
-                          {text}
-                        </button>
-                      ),
-                    )}
-                  </div>
-                )
-              );
-            })}
-          </div>
-        )}
-      {!knowledge && listed.length > 0 && !shown.length && (
+      {boot.courses.some((c) => c.category || c.level) && (
+        <div className="course-filters">
+          {facets.map(([key, label, options]) => {
+            const present = options.filter(([value]) => boot.courses.some((c) => c[key] === value));
+            return (
+              present.length > 0 && (
+                <div className="course-filter-group" role="group" aria-label={label} key={key}>
+                  <span aria-hidden="true">{label}</span>
+                  {[['', t('全部', 'All')] as const, ...present.map(([value, zh, en]) => [value, t(zh, en)] as const)].map(
+                    ([value, text]) => (
+                      <button
+                        type="button"
+                        key={value || 'all'}
+                        className="course-filter-chip"
+                        aria-pressed={filter[key] === value}
+                        onClick={() => setFilter((f) => ({ ...f, [key]: value }))}
+                      >
+                        {text}
+                      </button>
+                    ),
+                  )}
+                </div>
+              )
+            );
+          })}
+        </div>
+      )}
+      {boot.courses.length > 0 && !shown.length && (
         <div className="quiet-empty course-filter-empty">
           <p>{t('没有符合筛选条件的课程。', 'No course matches these filters.')}</p>
           <Button variant="outline" onClick={() => setFilter({ category: '', level: '' })}>
@@ -148,9 +121,7 @@ export function CourseList({
               <div className="course-detail-head">
                 <div>
                   <span className="tag">
-                    {knowledge
-                      ? t('SDE · 算法知识', 'SDE · Algorithms')
-                      : t('SDE · 系列课程', 'SDE · Course series')}
+                    {t('SDE · 系列课程', 'SDE · Course series')}
                   </span>
                   {[c.category, c.level].map(
                     (value) =>
@@ -164,16 +135,10 @@ export function CourseList({
                   <p>{c.summary}</p>
                   <div className="course-meta">
                     <span>
-                      {count(
-                        c.lessons.length,
-                        knowledge ? '个主题' : '个章节',
-                        knowledge ? 'topic' : 'lesson',
-                      )}
+                      {count(c.lessons.length, '个章节', 'lesson')}
                     </span>
                     <span>
-                      {knowledge
-                        ? t('交互图解与题目练习', 'Interactive diagrams and practice problems')
-                        : t('配套算法与工程实验', 'Algorithm and engineering labs')}
+                      {t('配套算法与工程实验', 'Algorithm and engineering labs')}
                     </span>
                     <span>v{c.version}</span>
                     {/* CourseRating below shows the live one, updated when the learner rates. */}
@@ -190,13 +155,8 @@ export function CourseList({
                         {t('已开通', 'Enrolled')}
                       </span>
                       <span className="muted">
-                        {knowledge ? t('已读', 'Read') : t('完成', 'Completed')}{' '}
-                        {done} /{' '}
-                        {count(
-                          c.lessons.length,
-                          knowledge ? '篇' : '课',
-                          knowledge ? 'topic' : 'lesson',
-                        )}
+                        {t('完成', 'Completed')} {done} /{' '}
+                        {count(c.lessons.length, '课', 'lesson')}
                       </span>
                       <ProgressBar
                         value={
@@ -246,51 +206,42 @@ export function CourseList({
                     </>
                   ) : (
                     <>
-                      <Button
-                        disabled={busy}
-                        onClick={async () => {
-                          if (!boot.person) {
-                            login();
-                            return;
-                          }
-                          if (
-                            !(c.purchase_available ?? boot.services.checkout)
-                          ) {
-                            ask({
-                              courseId: c.id,
-                              title: t(
-                                `申请开通：${c.title}`,
-                                `Access request: ${c.title}`,
-                              ),
-                              body: t(
-                                `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
-                                `I'd like access to "${c.title}".\nPurchase record or details for the teacher to verify:\n`,
-                              ),
-                            });
-                            return;
-                          }
-                          setBusy(true);
-                          setError('');
-                          try {
-                            const { url } = await api<{ url: string }>(
-                              'checkout',
-                              {
-                                courseId: c.id,
-                              },
-                            );
-                            location.assign(url);
-                          } catch (e) {
-                            setError((e as Error).message);
-                          } finally {
-                            setBusy(false);
-                          }
-                        }}
-                      >
-                        {(c.purchase_available ?? boot.services.checkout)
-                          ? `${t('购买课程', 'Buy course')}${c.price ? ' · ' + money(c.price.amount, c.price.currency, locale) : ''}`
-                          : t('申请开通', 'Request access')}
-                        <ArrowRight size={15} />
-                      </Button>
+                      {/* No checkout: access comes from a teacher's grant, nothing to click. */}
+                      {(c.purchase_available ?? boot.services.checkout) && (
+                        <Button
+                          disabled={busy}
+                          onClick={async () => {
+                            if (!boot.person) {
+                              login();
+                              return;
+                            }
+                            setBusy(true);
+                            setError('');
+                            try {
+                              const { url } = await api<{ url: string }>(
+                                'checkout',
+                                {
+                                  courseId: c.id,
+                                },
+                              );
+                              location.assign(url);
+                            } catch (e) {
+                              setError((e as Error).message);
+                            } finally {
+                              setBusy(false);
+                            }
+                          }}
+                        >
+                          {`${t('购买课程', 'Buy course')}${c.price ? ' · ' + money(c.price.amount, c.price.currency, locale) : ''}`}
+                          <ArrowRight size={15} />
+                        </Button>
+                      )}
+                      {!boot.person && !(c.purchase_available ?? boot.services.checkout) && (
+                        <Button onClick={login}>
+                          {t('登录', 'Sign in')}
+                          <ArrowRight size={15} />
+                        </Button>
+                      )}
                       <small>
                         {t(
                           '现有学员使用购买时的邮箱登录',
@@ -311,14 +262,10 @@ export function CourseList({
               <Tabs defaultValue="curriculum">
                 <TabsList variant="line">
                   <TabsTrigger value="curriculum">
-                    {knowledge
-                      ? t('主题目录', 'Topics')
-                      : t('课程目录', 'Curriculum')}
+                    {t('课程目录', 'Curriculum')}
                   </TabsTrigger>
                   <TabsTrigger value="about">
-                    {knowledge
-                      ? t('阅读说明', 'How to use')
-                      : t('课程介绍', 'About')}
+                    {t('课程介绍', 'About')}
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="curriculum">
@@ -340,8 +287,8 @@ export function CourseList({
                                 (l.section || t('课程内容', 'Course content')) ===
                                 section,
                             ).length,
-                            knowledge ? '篇' : '课',
-                            knowledge ? 'topic' : 'lesson',
+                            '课',
+                            'lesson',
                           )}
                         </small>
                       </div>
@@ -361,22 +308,12 @@ export function CourseList({
                             <button
                               className="lesson-row"
                               key={l.id}
+                              // Locked for a signed-in learner: only a teacher's grant opens it.
+                              disabled={!open && !!boot.person}
                               onClick={() =>
                                 open
                                   ? navigate('lesson', { lesson: l.id })
-                                  : boot.person
-                                    ? ask({
-                                        courseId: c.id,
-                                        title: t(
-                                          `申请开通：${c.title}`,
-                                          `Access request: ${c.title}`,
-                                        ),
-                                        body: t(
-                                          `希望学习「${c.title}」，请老师核实并开通课程。`,
-                                          `I'd like to take "${c.title}". Please verify and unlock the course for me.`,
-                                        ),
-                                      })
-                                    : login()
+                                  : login()
                               }
                             >
                               <span
@@ -410,10 +347,7 @@ export function CourseList({
                               {boot.problems.some(
                                 (p) =>
                                   // Free tracks (SQL, book problems) only borrow a lesson id.
-                                  (p.lessonId === l.id && !isFreeTrack(p.id)) ||
-                                  interviewCatalog
-                                    .find((chapter) => chapter.id === l.id)
-                                    ?.homeworkProblemIds.includes(p.id),
+                                  p.lessonId === l.id && !isFreeTrack(p.id),
                               ) && (
                                 <span className="resource-label">
                                   <Code2 size={13} />
@@ -433,43 +367,21 @@ export function CourseList({
                 </TabsContent>
                 <TabsContent value="about">
                   <div className="prose-content">
-                    <h3>
-                      {knowledge
-                        ? t('关于这些知识点', 'About these concepts')
-                        : t('关于本课程', 'About this course')}
-                    </h3>
+                    <h3>{t('关于本课程', 'About this course')}</h3>
                     <p>{c.summary}</p>
-                    <h3>
-                      {knowledge
-                        ? t('练习与进度', 'Practice and progress')
-                        : t('你会如何学习', "How you'll learn")}
-                    </h3>
+                    <h3>{t('你会如何学习', "How you'll learn")}</h3>
                     <p>
-                      {knowledge
-                        ? t(
-                            '每篇正文后有配套题目、提示和当前轮次的通过状态。阅读标记与做题进度分别保存；提交通过后，题目会显示绿色勾选。',
-                            'Each article ends with practice problems, hints and your status in the current round. Reading marks and practice progress are saved separately; once a submission is accepted, the problem gets a green check.',
-                          )
-                        : t(
-                            '先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过 GitHub 仓库或 PR 交给老师评审。遇到问题时，直接从当前章节发起私密工单。',
-                            'Read the handout to learn the business rules, then follow the companion code to finish the engineering exercises. Algorithm problems run in an isolated judge; project work goes to a teacher for review as a GitHub repo or PR. When you get stuck, open a private ticket right from the current lesson.',
-                          )}
+                      {t(
+                        '先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过 GitHub 仓库或 PR 交给老师评审。',
+                        'Read the handout to learn the business rules, then follow the companion code to finish the engineering exercises. Algorithm problems run in an isolated judge; project work goes to a teacher for review as a GitHub repo or PR.',
+                      )}
                     </p>
-                    <h3>
-                      {knowledge
-                        ? t('访问权限', 'Access')
-                        : t('课程权益', "What's included")}
-                    </h3>
+                    <h3>{t('课程权益', "What's included")}</h3>
                     <p>
-                      {knowledge
-                        ? t(
-                            '已开通的学员可以阅读讲义、保存笔记，并在原有算法题库权限内完成配套练习。',
-                            'Enrolled students can read the handouts, save notes, and do the practice problems within their existing Problem Bank access.',
-                          )
-                        : t(
-                            '现有付费学员由老师按原购买记录开通当前 SDE 课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。',
-                            'Teachers unlock the current SDE course for existing paid students based on their original purchase. Videos are released lesson by lesson; handout revisions are versioned and explained in course updates. New courses are licensed separately.',
-                          )}
+                      {t(
+                        '现有付费学员由老师按原购买记录开通当前 SDE 课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。',
+                        'Teachers unlock the current SDE course for existing paid students based on their original purchase. Videos are released lesson by lesson; handout revisions are versioned and explained in course updates. New courses are licensed separately.',
+                      )}
                     </p>
                   </div>
                 </TabsContent>
@@ -552,13 +464,11 @@ export function LessonReader({
   id,
   boot,
   navigate,
-  ask,
   refresh,
 }: {
   id: string;
   boot: Boot;
   navigate: Navigate;
-  ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
 }) {
   const t = useT();
@@ -567,24 +477,21 @@ export function LessonReader({
     [saving, setSaving] = useState(false),
     [loadRetry, setLoadRetry] = useState(0),
     [tab, setTab] = useState(
-      !isKnowledgeLesson(id) &&
-        new URLSearchParams(
-          typeof location === 'undefined' ? '' : location.search,
-        ).has('t')
+      new URLSearchParams(
+        typeof location === 'undefined' ? '' : location.search,
+      ).has('t')
         ? 'video'
         : 'handout',
     ),
     [historyVersion, setHistoryVersion] = useState(''),
     [historyBody, setHistoryBody] = useState<string | null>(null),
     [historyError, setHistoryError] = useState('');
-  const pos = useRef(0);
   useEffect(() => {
     let active = true;
     api<Lesson>('lessons/' + id)
       .then((l) => {
         if (active) {
           setLesson(l);
-          pos.current = l.progress?.position || 0;
         }
       })
       .catch((e) => active && setError(e.message));
@@ -657,15 +564,8 @@ export function LessonReader({
             >
               {t('重新加载', 'Reload')}
             </Button>
-            <Button
-              variant="outline"
-              onClick={() =>
-                navigate(isKnowledgeLesson(id) ? 'knowledge' : 'courses')
-              }
-            >
-              {isKnowledgeLesson(id)
-                ? t('返回知识点', 'Back to concepts')
-                : t('返回课程', 'Back to course')}
+            <Button variant="outline" onClick={() => navigate('courses')}>
+              {t('返回课程', 'Back to course')}
             </Button>
           </div>
         }
@@ -677,11 +577,8 @@ export function LessonReader({
     );
   const course = boot.courses.find((c) => c.id === lesson.course_id),
     all = course?.lessons || [],
-    interviewChapter = interviewCatalog.find((chapter) => chapter.id === id),
     related = boot.problems.filter(
-      (p) =>
-        (p.lessonId === id && !isFreeTrack(p.id)) ||
-        interviewChapter?.homeworkProblemIds.includes(p.id),
+      (p) => p.lessonId === id && !isFreeTrack(p.id),
     ),
     next = all[all.findIndex((l) => l.id === id) + 1],
     // Free preview reader: everything past this lesson (next, contents, questions, versions,
@@ -690,18 +587,13 @@ export function LessonReader({
   return (
     <>
       <div className="breadcrumb">
-        <button
-          onClick={() => navigate(interviewChapter ? 'knowledge' : 'courses')}
-        >
-          {interviewChapter
-            ? t('算法知识点', 'Algorithm Concepts')
-            : course?.title || t('我的课程', 'My Courses')}
+        <button onClick={() => navigate('courses')}>
+          {course?.title || t('我的课程', 'My Courses')}
         </button>
         <ChevronRight size={14} />
         <span>
-          {interviewChapter ? t('主题', 'Topic') : t('第', 'Lesson')}{' '}
-          {String(lesson.position).padStart(2, '0')}
-          {interviewChapter ? '' : t(' 课', '')}
+          {t('第', 'Lesson')} {String(lesson.position).padStart(2, '0')}
+          {t(' 课', '')}
         </span>
       </div>
       <div className="reader-heading">
@@ -737,7 +629,7 @@ export function LessonReader({
               `This is the free preview of "${course.title}". Unlock the course to take all ${all.length} lessons.`,
             )}
           </span>
-          <Button variant="outline" size="sm" onClick={() => navigate(interviewChapter ? 'knowledge' : 'courses')}>
+          <Button variant="outline" size="sm" onClick={() => navigate('courses')}>
             {t('查看课程', 'See the course')}
           </Button>
         </div>
@@ -748,40 +640,26 @@ export function LessonReader({
             <TabsList variant="line" className="reader-tabs">
               <TabsTrigger value="handout">
                 <FileText size={15} />
-                {interviewChapter
-                  ? t('知识讲解', 'Explanation')
-                  : t('课件', 'Handout')}
+                {t('课件', 'Handout')}
               </TabsTrigger>
-              {!interviewChapter && (
-                <TabsTrigger value="video">
-                  <Video size={15} />
-                  {t('课程视频', 'Video')}
-                </TabsTrigger>
-              )}
+              <TabsTrigger value="video">
+                <Video size={15} />
+                {t('课程视频', 'Video')}
+              </TabsTrigger>
               <TabsTrigger value="notes">
                 <Bookmark size={15} />
                 {t('我的笔记', 'My notes')}
               </TabsTrigger>
-              {!interviewChapter && (
-                <TabsTrigger value="practice">
-                  <Code2 size={15} />
-                  {t('课后练习', 'Practice')}
-                </TabsTrigger>
-              )}
+              <TabsTrigger value="practice">
+                <Code2 size={15} />
+                {t('课后练习', 'Practice')}
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="handout">
               {/* Selecting handout text offers "Ask AI", saving it to notes or a card (components/command-palette.tsx). */}
               <SelectionAsk clip={{ target: `clip:lesson/${id}`, title: lesson.title, href: `/?view=lesson&lesson=${encodeURIComponent(id)}` }}>
                 <LessonMarkdown body={lesson.body || ''} lecture />
               </SelectionAsk>
-              {/* Practice status needs the course: a preview reader gets the explanation only. */}
-              {interviewChapter && course?.has_access && (
-                <KnowledgeExercises
-                  lessonId={id}
-                  navigate={navigate}
-                  userId={boot.person?.id}
-                />
-              )}
             </TabsContent>
             <TabsContent value="video">
               {lesson.has_video ? (
@@ -793,7 +671,6 @@ export function LessonReader({
                     position={lesson.progress?.position || 0}
                     assetId={lesson.progress?.video_asset_id}
                     onProgress={(n, assetId) => {
-                      pos.current = n;
                       setLesson((current) =>
                         current
                           ? {
@@ -882,18 +759,13 @@ export function LessonReader({
                   ))
                 ) : (
                   <p className="muted">
-                    {interviewChapter
-                      ? t(
-                          '请先取得对应算法题库的课程权限，再完成讲义中的训练。',
-                          'Get access to the matching Problem Bank course first, then do the exercises in this lesson.',
-                        )
-                      : t(
-                          '本章先完成讲义中的工程练习，也可以进入算法题库巩固基础。',
-                          'Start with the engineering exercises in the handout, or strengthen the basics in the Problem Bank.',
-                        )}
+                    {t(
+                      '本章先完成讲义中的工程练习，也可以进入算法题库巩固基础。',
+                      'Start with the engineering exercises in the handout, or strengthen the basics in the Problem Bank.',
+                    )}
                   </p>
                 )}
-                {!interviewChapter && !locked && (
+                {!locked && (
                   <>
                     <h3>{t('提交工程作业', 'Submit your project')}</h3>
                     <p className="muted">
@@ -910,14 +782,6 @@ export function LessonReader({
                       {t('提交作业', 'Submit assignment')}
                     </Button>
                   </>
-                )}
-                {interviewChapter && (
-                  <p className="muted">
-                    {t(
-                      '按讲义中的训练目标完成作业，提交后查看判题结果。复盘时在「我的笔记」记录不变量、复杂度和一个容易遗漏的边界条件。',
-                      'Work toward the goals in the lesson and check the judge results after you submit. When you review, use "My notes" to record the invariant, the complexity and one easy-to-miss edge case.',
-                    )}
-                  </p>
                 )}
                 <Button variant="ghost" onClick={() => navigate('problems')}>
                   {t('浏览算法题库', 'Browse Problem Bank')}
@@ -938,22 +802,16 @@ export function LessonReader({
               onClick={() => save({ completed: !lesson.progress?.completed })}
             >
               <Check size={16} />
-              {interviewChapter
-                ? lesson.progress?.completed
-                  ? t('已读', 'Read')
-                  : t('标记已读', 'Mark as read')
-                : lesson.progress?.completed
-                  ? t('已完成本课', 'Lesson completed')
-                  : t('标记本课完成', 'Mark lesson complete')}
+              {lesson.progress?.completed
+                ? t('已完成本课', 'Lesson completed')
+                : t('标记本课完成', 'Mark lesson complete')}
             </Button>
             {next && !locked && (
               <Button
                 variant="ghost"
                 onClick={() => navigate('lesson', { lesson: next.id })}
               >
-                {interviewChapter
-                  ? t('下一知识点', 'Next concept')
-                  : t('下一课', 'Next lesson')}
+                {t('下一课', 'Next lesson')}
                 <ArrowRight size={16} />
               </Button>
             )}
@@ -971,7 +829,7 @@ export function LessonReader({
                     className={l.id === id ? 'current' : ''}
                     onClick={() =>
                       closed
-                        ? navigate(interviewChapter ? 'knowledge' : 'courses')
+                        ? navigate('courses')
                         : navigate('lesson', { lesson: l.id })
                     }
                   >
@@ -990,42 +848,6 @@ export function LessonReader({
               })}
             </div>
           </div>
-          {!locked && (
-            <div className="help-card">
-              <MessageSquare size={22} />
-              <h3>
-                {interviewChapter
-                  ? t('问题与反馈', 'Questions and feedback')
-                  : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
-              </h3>
-              <p>
-                {interviewChapter
-                  ? t(
-                      '问题仅你和老师可见，会附上当前知识点。',
-                      'Only you and the teacher can see your question. The current concept is attached.',
-                    )
-                  : t(
-                      '问题仅你和老师可见，会附上当前章节与播放位置。',
-                      'Only you and the teacher can see your question. The current lesson and video position are attached.',
-                    )}
-              </p>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  ask({
-                    lessonId: id,
-                    videoPosition: String(Math.floor(pos.current)),
-                    ...(lesson.progress?.video_asset_id
-                      ? { videoAssetId: lesson.progress.video_asset_id }
-                      : {}),
-                  })
-                }
-              >
-                {t('向老师提问', 'Ask the teacher')}
-                <ArrowRight size={15} />
-              </Button>
-            </div>
-          )}
           {!locked && (
             <div className="side-card">
               <h3>{t('课件版本', 'Handout versions')}</h3>

@@ -15,10 +15,6 @@ import {
   lessonVersion,
 } from './lms-courses';
 import {
-  ticketDetail,
-  ticketPage,
-  replyTicket,
-  changeTicket,
   reviewDetail,
   reviewPage,
   resubmitReview,
@@ -33,7 +29,6 @@ import {
   studentPage,
   dashboard,
 } from './lms-roster';
-import { deleteAttachment } from './files';
 import { requireCourseOwner } from './course-visibility';
 export async function handleLms(
   request: Request,
@@ -62,8 +57,6 @@ export async function handleLms(
           ? await lessonVersion(p, id, decodeURIComponent(version))
           : await lessonEditor(p, id),
       );
-    if (resource === 'tickets')
-      return json(id ? await ticketDetail(p, id) : await ticketPage(p, url));
     if (resource === 'reviews')
       return json(id ? await reviewDetail(p, id) : await reviewPage(p, url));
     if (resource === 'grants') return json(await grantPage(p, url));
@@ -97,10 +90,6 @@ export async function handleLms(
     if (action === 'visibility')
       return json(await lessonVisibility(p, id, data));
   }
-  if (resource === 'tickets' && id) {
-    if (action === 'reply') return json(await replyTicket(p, id, data));
-    if (action === 'status') return json(await changeTicket(p, id, data));
-  }
   if (resource === 'reviews' && id) {
     if (action === 'resubmit') return json(await resubmitReview(p, id, data));
     if (action === 'feedback') return json(await feedbackReview(p, id, data));
@@ -118,7 +107,5 @@ export async function handleLms(
       .run();
     return json({ saved: true });
   }
-  if (resource === 'attachments' && id && action === 'delete')
-    return json(await deleteAttachment(p, id));
   throw new HttpError(404, '接口不存在');
 }

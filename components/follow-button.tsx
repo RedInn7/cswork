@@ -4,8 +4,6 @@ import { api, ApiError } from '@/lib/types';
 
 type State = {
   following: boolean;
-  /** They follow you back: direct messages are open (lib/server/direct-messages.ts). */
-  mutual?: boolean;
   self: boolean;
   signedIn: boolean;
   followers: number;
@@ -89,11 +87,6 @@ export function FollowButton({
         >
           {state.following ? t('已关注', 'Following') : t('关注', 'Follow')}
         </button>
-        {state.mutual && (
-          <a className="learner-follow" href={`/?${new URLSearchParams({ view: 'messages', to: handle })}`}>
-            {t('私信', 'Message')}
-          </a>
-        )}
         {error && <span role="alert">{error}</span>}
       </span>
     </>

@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props) {
   return seoMetadata({
     title: zh ? `CSWork 周报 ${issue.id}（${range}）` : `The CSWork weekly ${issue.id} (${range})`,
     description: zh
-      ? `${range}：${issue.problems.length} 道新 OA 题、${issue.experiences.length} 篇学员面经、${issue.discussions.length} 个热门讨论和每日一题战报。`
-      : `${range}: ${issue.problems.length} new OA problems, ${issue.experiences.length} member interview reports, ${issue.discussions.length} top discussions and the daily problem results.`,
+      ? `${range}：${issue.problems.length} 道新 OA 题、${issue.experiences.length} 篇学员面经和每日一题战报。`
+      : `${range}: ${issue.problems.length} new OA problems, ${issue.experiences.length} member interview reports and the daily problem results.`,
     path: `/newsletter/${issue.id}`,
   });
 }
@@ -53,10 +53,6 @@ export default async function IssuePage({ params }: Props) {
           <div>
             <dt>{t('面经', 'Reports')}</dt>
             <dd>{issue.experiences.length}</dd>
-          </div>
-          <div>
-            <dt>{t('讨论', 'Discussions')}</dt>
-            <dd>{issue.discussions.length}</dd>
           </div>
           <div>
             <dt>{t('每日一题通过', 'Daily solves')}</dt>
@@ -99,27 +95,6 @@ export default async function IssuePage({ params }: Props) {
                 </li>
               ))}
             </ul>
-          ) : (
-            empty
-          )}
-        </section>
-        <section aria-labelledby="nl-discuss">
-          <h2 id="nl-discuss" className="newsletter-h2">
-            {t('热门讨论', 'Top discussions')}
-          </h2>
-          {issue.discussions.length ? (
-            <ol className="newsletter-list">
-              {issue.discussions.map((d) => (
-                <li key={d.href}>
-                  <Link href={d.href} prefetch={false}>
-                    {d.title}
-                  </Link>
-                  <span>
-                    {t(`${d.votes} 赞 · ${d.comments} 回复`, `${d.votes} upvote${d.votes === 1 ? '' : 's'} · ${d.comments} repl${d.comments === 1 ? 'y' : 'ies'}`)}
-                  </span>
-                </li>
-              ))}
-            </ol>
           ) : (
             empty
           )}

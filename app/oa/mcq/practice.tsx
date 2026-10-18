@@ -16,7 +16,6 @@ import {
 } from '@/lib/mock-oa';
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
 import { McqItem, MCQ_SECTION_NAMES, MCQ_TOPIC_NAMES, type McqText } from '@/components/oa-mcq';
-import { ReportIssue } from '@/components/report-issue';
 import { MCQ_SIMS } from '@/lib/cs-sims-links';
 import type { McqStat } from '@/lib/server/mcq-stats';
 import type { AptFig } from '@/lib/aptitude';
@@ -397,12 +396,6 @@ export function McqPractice({
                     <small className="oa-mcq-due">
                       <a href={`/oa/sims#${MCQ_SIMS[q.id]}`}>{t('用模拟器核对', 'Check it in the simulator')}</a>
                     </small>
-                  )}
-                  {revealed && (
-                    <ReportIssue
-                      refId={`mcq:${q.id}`}
-                      signedIn={where === 'account' ? true : where === 'device' ? false : undefined}
-                    />
                   )}
                 </div>
               </McqItem>

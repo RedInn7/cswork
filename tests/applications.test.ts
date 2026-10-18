@@ -19,7 +19,7 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-applications-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleApplications } = await import('../lib/server/applications');
-const { APPLICATIONS_MAX, applicationsCsv, applicationsIcs, calendarItems, csvCell, DAY, expeditePlan, funnel, countdown, medianDays, scheduleIssues, stageDays, stale, followUpDue, trackerStats, warmupIssues, weekStart, writeUpHref } =
+const { APPLICATIONS_MAX, applicationsCsv, applicationsIcs, calendarItems, csvCell, DAY, expeditePlan, funnel, countdown, medianDays, parseRetro, scheduleIssues, stageDays, stale, followUpDue, trackerStats, warmupIssues, weekStart, writeUpHref } =
   await import('../lib/applications');
 
 const person = (id: string): Person => ({ id, name: id, email: `${id}@example.test`, role: 'student', verified: true });
@@ -230,7 +230,6 @@ void test('cards at OA, phone or onsite get the interview prep links', async () 
     .run('x'.repeat(100));
   const { item } = (await call(ada, [], { company: 'Amazon', stage: 'phone' })).data!;
   assert.equal(item.prep?.problems, '/?view=problems&company=amazon&sort=frequency');
-  assert.equal(item.prep?.stories, '/?view=stories');
   assert.deepEqual(item.prep?.experiences, { href: '/company/amazon#experiences', n: before + 1 });
   assert.equal((await call(ada, [item.id], { stage: 'offer' })).data!.item.prep, null);
   assert.equal((await call(ada, [], { company: 'My Startup', stage: 'oa' })).data!.item.prep, null);
@@ -505,4 +504,39 @@ void test("deleting a card removes its interview retros, nobody else's notes", a
   assert.equal((await call(ada, [item.id, 'delete'], {})).status, 200);
   const left = sqlite().prepare("SELECT user_id||' '||target AS k FROM user_notes WHERE target LIKE 'retro:%' ORDER BY k").pluck().all();
   assert.deepEqual(left, [`${ada.id} retro:${keep.id}/a1`, `${ben.id} retro:${item.id}/a1`]);
+});
+
+void test('a retro body parses only in shape: a bad problem id or field refused, unknown fields ignored', () => {
+  const base = { company: 'Acme', stage: 'onsite', at: 1, score: 1, questions: [], stuck: '' };
+  const parse = (patch: object) => parseRetro(JSON.stringify({ ...base, ...patch }));
+  assert.deepEqual(parse({}), base);
+  // Retros saved before the story bank was removed carry themes: still valid, the field is dropped.
+  assert.deepEqual(parse({ themes: ['conflict'] }), base);
+  const full = parse({
+    score: 4,
+    stuck: '卡'.repeat(600),
+    questions: [
+      { text: 'Merge intervals', problem: 'lc-56', similar: true },
+      { text: 'x'.repeat(200), problem: 'oa-amazon-robot-1', similar: 'yes' },
+      { text: '', problem: '', similar: true },
+    ],
+  });
+  assert.deepEqual(full?.questions.map((q) => [q.problem, q.similar]), [['lc-56', true], ['oa-amazon-robot-1', false], ['', false]]);
+  for (const bad of [
+    { stage: 'phone ' },
+    { score: 0 },
+    { score: 2.5 },
+    { at: -1 },
+    { at: 4102444800001 },
+    { company: 3 },
+    { stuck: null },
+    { questions: {} },
+    { questions: [null] },
+    { questions: [{ text: 'a', problem: 'LC-1' }] },
+    { questions: [{ text: 'a', problem: 'lc-1234567' }] },
+    { questions: [{ text: 'a', problem: 'oa-' }] },
+    { questions: [{ text: 'a' }] },
+  ])
+    assert.equal(parse(bad), null, JSON.stringify(bad));
+  for (const junk of ['', 'null', '[]', '"retro"', '{']) assert.equal(parseRetro(junk), null, junk);
 });

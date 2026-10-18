@@ -11,7 +11,7 @@ import { HttpError, json, limit, requirePerson } from './http';
 import { reportCompanies } from './learner-cloud';
 import { readJson } from './my-practice';
 import { notify as notice } from './notify';
-import { plain } from './study-groups';
+import { plain } from './plain-text';
 
 /**
  * Peer mock interviews (db/mock-peer-schema.ts): a learner offers UTC hour slots for one

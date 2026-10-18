@@ -107,7 +107,6 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
           problem: { id: 'lc-1', title: 'A+B', titleEn: 'A+B', difficulty: '简单', tags: [], lessonId: 'lesson', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'teacher', verified: true }, courses: [], services: { ai: true, judge: true } },
           navigate() {},
-          ask() {},
           refresh: async () => {},
         }),
       ),

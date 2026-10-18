@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import {
   ArrowRight,
   GitPullRequest,
-  MessageSquare,
   Plus,
   RefreshCw,
   Users,
@@ -11,12 +10,7 @@ import {
 import { api, type Boot, type Course, date } from '@/lib/types';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import type {
-  LmsGrant,
-  LmsReview,
-  LmsStudent,
-  LmsTicket,
-} from '@/lib/lms-types';
+import type { LmsGrant, LmsReview, LmsStudent } from '@/lib/lms-types';
 import { Heading, Empty, type Navigate } from './learning';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -114,15 +108,11 @@ export function TeacherView({
 }
 type Dashboard = {
   counts: {
-    openTickets: number;
-    waitingTickets: number;
     pendingReviews: number;
     students: number;
     activeGrants: number;
   };
-  tickets: LmsTicket[];
   reviews: LmsReview[];
-  staff: { id: string; name: string }[];
 };
 type Struggle = {
   user_id: string;
@@ -135,7 +125,6 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
   const t = useT();
   const [data, setData] = useState<Dashboard | null>(null),
     [error, setError] = useState(''),
-    [busy, setBusy] = useState(''),
     [retry, setRetry] = useState(0),
     [review, setReview] = useState(''),
     [struggles, setStruggles] = useState<Struggle[]>([]),
@@ -197,22 +186,10 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
         {(
           [
             [
-              MessageSquare,
-              data.counts.openTickets,
-              '待老师回复',
-              'Awaiting teacher reply',
-            ],
-            [
               GitPullRequest,
               data.counts.pendingReviews,
               '待评审作业',
               'Pending reviews',
-            ],
-            [
-              MessageSquare,
-              data.counts.waitingTickets,
-              '待学员确认',
-              'Awaiting student confirmation',
             ],
             [Users, data.counts.students, '注册学员', 'Registered students'],
           ] as const
@@ -230,80 +207,6 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
         </p>
       )}
       <div className="teacher-queue">
-        <div className="section-title">
-          <h2>{t('待回复工单', 'Tickets awaiting reply')}</h2>
-          <Button
-            variant="link"
-            onClick={() => navigate('tickets', { status: 'open' })}
-          >
-            {t('全部工单', 'All tickets')}
-            <ArrowRight size={15} />
-          </Button>
-        </div>
-        {data.tickets
-          .filter((ticket) => ticket.status === 'open')
-          .map((ticket) => (
-            <div className="queue-row" key={ticket.id}>
-              <span className="avatar">
-                {(ticket.name || t('学员', 'Student')).slice(0, 1)}
-              </span>
-              <button
-                className="queue-main"
-                onClick={() => navigate('tickets', { ticket: ticket.id })}
-              >
-                <strong>{ticket.title}</strong>
-                <small>
-                  {ticket.name} · {date(ticket.updated_at)}
-                </small>
-              </button>
-              <NativeSelect
-                aria-label={t(
-                  `分配工单：${ticket.title}`,
-                  `Assign ticket: ${ticket.title}`,
-                )}
-                disabled={!!busy}
-                value={ticket.assigned_to || ''}
-                onChange={async (e) => {
-                  const staff = e.target.value;
-                  setBusy(ticket.id);
-                  setError('');
-                  try {
-                    await api(`lms/tickets/${ticket.id}/status`, {
-                      expectedRevision: ticket.revision,
-                      status: ticket.status,
-                      assignedTo: staff || null,
-                    });
-                    setRetry((n) => n + 1);
-                  } catch (e) {
-                    setError((e as Error).message);
-                    setRetry((n) => n + 1);
-                  } finally {
-                    setBusy('');
-                  }
-                }}
-              >
-                <NativeSelectOption value="">
-                  {t('未分配', 'Unassigned')}
-                </NativeSelectOption>
-                {data.staff.map((person) => (
-                  <NativeSelectOption key={person.id} value={person.id}>
-                    {person.name}
-                  </NativeSelectOption>
-                ))}
-              </NativeSelect>
-              <Button
-                variant="outline"
-                onClick={() => navigate('tickets', { ticket: ticket.id })}
-              >
-                {t('回复', 'Reply')}
-              </Button>
-            </div>
-          ))}
-        {!data.counts.openTickets && (
-          <Empty
-            title={t('没有等待回复的问题', 'No questions awaiting reply')}
-          />
-        )}
         <div className="section-title">
           <h2>{t('待评审作业', 'Pending reviews')}</h2>
           <Button

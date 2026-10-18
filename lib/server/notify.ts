@@ -8,7 +8,7 @@ export type Notice = {
    */
   id?: string;
   userId: string;
-  /** What raised it: 'dm', 'mock-peer', 'course-gift', … */
+  /** What raised it: 'mock-peer', 'course-gift', … */
   kind: string;
   title: string;
   body: string;

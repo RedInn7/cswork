@@ -93,8 +93,6 @@ const EN: Record<string, string> = {
   更新不存在: 'Update not found',
   '此章节已有未发布草稿，请在课程管理中继续编辑':
     'This lesson already has an unpublished draft. Continue editing it in course management',
-  知识点不存在: 'Concept not found',
-  题目暂不可用: 'Problem unavailable',
 
   // Invitations and access grants
   '邀请已过期或被撤销，请联系老师重新生成':
@@ -114,24 +112,8 @@ const EN: Record<string, string> = {
   此幂等请求已用于其他授权内容: 'This idempotency key was already used for a different grant',
   授权记录不存在: 'Access grant not found',
 
-  // Support tickets, attachments and reviews
-  工单不存在: 'Ticket not found',
-  附件不存在: 'Attachment not found',
-  '支持图片、PDF、文本或代码文件': 'Only images, PDFs, text, or code files are supported',
-  '每个工单最多 10 个附件': 'Each ticket can have up to 10 attachments',
-  '附件不能超过 2MB': 'Attachments must be 2 MB or smaller',
-  附件不能为空: 'Attachment cannot be empty',
-  '附件空间配置无效，请联系老师':
-    'Attachment storage is misconfigured. Please contact your instructor',
-  '磁盘可用空间不足，暂时不能上传附件':
-    'Not enough disk space. Attachments cannot be uploaded right now',
-  '站点附件空间已满，请联系老师清理后再试':
-    'Attachment storage is full. Ask your instructor to free up space, then try again',
-  '附件已被删除，请重新上传': 'The attachment was deleted. Please upload it again',
+  // Assignments and reviews
   '请提供 GitHub 仓库或 PR 链接': 'Provide a GitHub repository or pull request link',
-  请提供工单版本: 'Ticket version is required',
-  老师回复了你的问题: 'Your instructor replied to your question',
-  请选择老师: 'Choose an instructor',
   老师: 'Instructor',
   作业不存在: 'Assignment not found',
   只能重新提交自己的作业: 'You can only resubmit your own assignment',
@@ -273,19 +255,6 @@ const EN: Record<string, string> = {
   题目标的轮次不在所选轮次里: "A question's round isn't one of the rounds you picked",
   关联的题目不存在或不能关联: "That problem doesn't exist or can't be linked",
   'OA 做出的题数不能多于总题数': 'OA problems solved can’t exceed the total',
-  // Study groups (lib/server/study-groups.ts)
-  学习小组不存在: 'Study group not found',
-  学习小组接口不存在: 'Study group endpoint not found',
-  '每人最多创建 3 个学习小组': 'You can create at most 3 study groups',
-  '最多加入 10 个学习小组': 'You can be in at most 10 study groups',
-  '小组已满（最多 50 人）': 'This group is full (50 members max)',
-  邀请码无效: 'Invalid invite code',
-  这个昵称在小组里已被使用: 'Someone in this group already uses that name',
-  '组长不能退出，可以解散小组': "The owner can't leave. Disband the group instead",
-  只有组长可以管理小组: 'Only the group owner can manage the group',
-  成员不存在: 'Member not found',
-  消息不存在: 'Message not found',
-  只有处理举报时老师才能查看小组聊天: 'Teachers can read a group chat only while a message in it is reported',
   // Work email badge (lib/server/work-verify.ts)
   '个人邮箱不能验证员工身份，请用公司邮箱': "A personal email can't verify an employer. Use your work email",
   '暂不支持这个邮箱域名，目前只支持有公司页的公司': "This email domain isn't supported yet: only companies with a company page are",
@@ -295,18 +264,6 @@ const EN: Record<string, string> = {
   '验证码邮件未能发送，请稍后重试': "The code email couldn't be sent. Please try again later",
   这个工作邮箱已经验证过另一个账号: 'This work email already verified another account',
   还没有验证工作邮箱: "You haven't verified a work email yet",
-  // Direct messages (lib/server/direct-messages.ts); notification titles too
-  内推帖不存在或已失效: 'This referral post is gone or no longer offers referrals',
-  互相关注后才能发私信: 'You can message someone once you follow each other',
-  对方暂不接收你的私信: "This person isn't taking messages from you",
-  今天发送的私信已达上限: "You've sent today's maximum of messages",
-  今天新开的私信会话已达上限: "You've started today's maximum of new conversations",
-  '对方今天收到的新私信太多了，请明天再试': 'This person got too many new messages today. Please try tomorrow',
-  你收到一条内推请求: 'You have a new referral request',
-  你收到一条新私信: 'You have a new message',
-  会话不存在: 'Conversation not found',
-  不能给自己发私信: "You can't message yourself",
-  对方暂不接收新的私信: "This person isn't taking new conversations",
   // Peer mock interviews (lib/server/mock-peer.ts); notification titles too
   同伴模拟面试已匹配: 'Peer mock interview matched',
   同伴模拟面试已取消: 'Peer mock interview cancelled',
@@ -322,7 +279,6 @@ const EN: Record<string, string> = {
   这场模拟面试已结束或已取消: 'This mock interview is over or was cancelled',
   这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
   现在不能报告爽约: "You can't report a no-show right now",
-  故事已达上限: "You've reached the limit for stories",
   实习日志已达上限: "You've reached the limit for internship log entries",
   复盘已达上限: "You've reached the limit for interview retros",
   复盘记录无效: 'Invalid interview retro',
@@ -337,6 +293,7 @@ const EN: Record<string, string> = {
   // Contest rooms and the weekly contest (lib/server/contests.ts)
   比赛不存在: 'Contest not found',
   比赛接口不存在: 'Contest endpoint not found',
+  邀请码无效: 'Invalid invite code',
   '开赛时间最多提前 7 天': 'A contest can start at most 7 days from now',
   有题目不能用于比赛: "Some of these problems can't be used in a contest",
   '可判的题目不够，换个题源或减少题量': 'Not enough judgeable problems. Pick another source or fewer questions',
@@ -367,20 +324,12 @@ const EN: Record<string, string> = {
   今天发布的帖子已达上限: "You've reached today's limit for posts",
   请填写标题: 'Please add a title',
   标签无效: 'Unknown tag',
-  // Discussion v2: anonymous posts, replies, comment votes and their notices
+  // Anonymous posts, replies, comment votes and their notices (lib/server/solution-posts.ts)
   这里不能匿名发帖: "You can't post anonymously here",
   不能给自己的评论点赞: "You can't upvote your own comment",
   有人回复了你的帖子: 'New reply to your post',
   有人回复了你的评论: 'New reply to your comment',
   有人在讨论中提到了你: 'You were mentioned in a discussion',
-  // Thread polls (lib/server/solution-posts.ts)
-  只有讨论帖可以发起投票: 'Only discussion threads can have a poll',
-  投票截止时间要晚于现在: 'The poll must close in the future',
-  '已经有人投票，不能再修改投票': "People have voted already, so the poll can't change",
-  投票不存在: 'Poll not found',
-  投票已截止: 'This poll has closed',
-  投票选项无效: 'Invalid poll choice',
-  你已经投过票了: "You've already voted",
   // Saved lists and follows (lib/server/learner-cloud.ts, lib/server/follows.ts)
   不能收藏自己的题单: "You can't save your own list",
   请在题单页收藏: 'Save lists from their page',
@@ -457,7 +406,7 @@ const EN: Record<string, string> = {
   '比赛或考试进行中，AI 评估暂停，结束后开放': 'AI reviews are paused while your contest or exam runs; they reopen afterwards',
   '带回家作业没有 AI 结对可评估': 'Take-home assignments have no AI pair to review',
   '先和 AI 结对聊几轮再评估': 'Ask the AI pair a few questions before asking for a review',
-  // Answer and STAR story feedback (lib/server/ai-answer.ts)
+  // Answer feedback (lib/server/ai-answer.ts)
   '这道题没有参考答案，不能 AI 点评': "This question has no reference answer, so AI feedback isn't available",
   '至少写 80 个字符再请求 AI 点评': 'Write at least 80 characters before asking for AI feedback',
   '内容过长，AI 点评最多读取 6000 个字符': 'Too long: AI feedback reads at most 6,000 characters',

@@ -109,7 +109,6 @@ test('a fix drill opens on the buggy program with its own local draft, counts ed
           problem: { id: 'oa-x-1', title: 'Minus one', titleEn: 'Minus one', difficulty: '简单', tags: [], lessonId: 'lesson', courseId: 'gomall' },
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate() {},
-          ask() {},
           refresh: async () => {},
           drill: '3',
         }),

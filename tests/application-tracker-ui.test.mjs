@@ -39,7 +39,7 @@ const items = [
   card({
     id: 'due', companySlug: 'acme', company: 'Dueco', role: 'SWE Intern', stage: 'phone', stageLog: [['applied', now - 9 * DAY], ['phone', now - 3 * DAY]],
     updatedAt: now, nextAt: now - HOUR, nextAction: 'Send a thank-you note', interviewAt: new Date(2026, 9, 3).getTime(), hasJd: true, channel: 'referral',
-    links: { oa: null, mock: null }, prep: { experiences: { href: '/company/acme#experiences', n: 4 }, problems: '/?view=problems&company=acme&sort=frequency', stories: '/?view=stories' },
+    links: { oa: null, mock: null }, prep: { experiences: { href: '/company/acme#experiences', n: 4 }, problems: '/?view=problems&company=acme&sort=frequency' },
   }),
 ];
 const calls = [];
@@ -192,7 +192,6 @@ test("today's follow-ups sit on top; prep, write-up and details show on the card
     [
       ['面经 4 篇', '/company/acme#experiences'],
       ['这家的高频题', '/?view=problems&company=acme&sort=frequency'],
-      ['故事库', '/?view=stories'],
       ['写这场面经', '/?view=progress&tab=share&company=acme&role=SWE+Intern&employment=intern&season=2026-fall'],
     ],
   );
@@ -429,24 +428,13 @@ test('wave 10: tiers order the Saved column, warm-up hints, and private intervie
   await setValue(text, 'Design a rate limiter');
   await setValue(problem, 'lc-1');
   await act(async () => panel.querySelector('.tracker-retro-qs li input[type="checkbox"]').click());
-  // The Leadership Principles section stays open when its last box is unchecked.
-  const lp = panel.querySelector('.tracker-retro-themes details');
-  assert.equal(lp.open, false);
-  lp.open = true;
-  await act(async () => lp.dispatchEvent(new Event('toggle')));
-  const lpBox = lp.querySelector('input');
-  await act(async () => lpBox.click());
-  await act(async () => lpBox.click());
-  assert.equal(lp.open, true);
-  const theme = [...panel.querySelectorAll('.tracker-retro-themes label')].find((l) => l.textContent === '失败与犯错');
-  await act(async () => theme.querySelector('input').click());
   await setValue(panel.querySelector('textarea'), ' ran out of time ');
   await act(async () => panel.querySelector('button[type="submit"]').click());
   const [[putKey, put], marks] = calls.slice(-2);
   assert.match(putKey, new RegExp(`^PUT /api/oj/notes\\?target=retro%3A${CARD}%2F[a-z0-9]+$`));
   assert.deepEqual(JSON.parse(put.body), {
     company: 'Acme', stage: 'onsite', at: Math.floor(met / 60000) * 60000, score: 3,
-    questions: [{ text: 'Design a rate limiter', problem: 'lc-1', similar: true }], stuck: 'ran out of time', themes: ['failure'],
+    questions: [{ text: 'Design a rate limiter', problem: 'lc-1', similar: true }], stuck: 'ran out of time',
   });
   assert.deepEqual(marks, ['POST /api/oj/marks', { targets: ['problem:lc-1'], mark: 'redo' }]);
   assert.match(panel.querySelector('.resume-actions small').textContent, /1 道关联题已标记重做/);

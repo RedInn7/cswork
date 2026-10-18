@@ -1,7 +1,7 @@
 import { sqliteTable, text, integer, index, primaryKey } from 'drizzle-orm/sqlite-core';
 
-// Study groups with daily check-ins (lib/server/study-groups.ts). No foreign keys:
-// release.sh only applies additive SQL; leaving, removing and disbanding are runtime DELETEs.
+// Feature removed: study groups are gone from the product; these tables are unused and kept
+// only so drizzle-kit does not generate DROP statements (production rows stay as they are).
 
 /** goal_stop is a Line 500 stop slug or ''; goal_set_at is when the owner last set the goal. */
 export const studyGroups = sqliteTable(
