@@ -97,7 +97,7 @@ void test('quests: the same seed draws the same 3, leaning on neglected areas', 
     ac += +quests.includes('ac');
     assert(!dailyQuests(`v|${i}`, { mcq: Infinity }).includes('mcq'));
   }
-  // Unweighted, each kind would come up in 3 of 8 draws (about 112 of 300).
+  // Unweighted, each kind would come up in 3 of 7 draws (about 129 of 300).
   assert(neglected > 560, `recall and sd drawn ${neglected} times`);
   assert(ac < 90, `ac drawn ${ac} times`);
 });
@@ -135,7 +135,6 @@ void test('every kind of study counts, each up to its daily cap', async () => {
   for (let i = 0; i < 4; i++) mark(p.id, `sd:ch-${i}`, 'read', at);
   mark(p.id, 'sd:ch-9', 'star', at);
   for (let i = 0; i < 4; i++) mark(p.id, `content:english/u-${i}`, 'done', at);
-  for (let i = 0; i < 3; i++) note(p.id, `story:${i}`, '{}', at);
   for (let i = 0; i < 3; i++)
     sqlite()
       .prepare(
@@ -147,8 +146,8 @@ void test('every kind of study counts, each up to its daily cap', async () => {
   const items = Object.fromEntries(Array.from({ length: 15 }, (_, i) => [`sd:c${i}`, [1, day, `Card ${i}`]]));
   note(p.id, 'recall:queue', JSON.stringify({ v: 1, items: { ...items, 'sd:old': [2, day - 30, 'Old'] } }), at);
   const { data } = await goal(p);
-  // ac 60 (8 × 10, capped), stress 10, mcq 20, sd 30, english 15, story 10, mock 30, recall 10.
-  assert.equal(data.todayXp, 60 + 10 + 20 + 30 + 15 + 10 + 30 + 10);
+  // ac 60 (8 × 10, capped), stress 10, mcq 20, sd 30, english 15, mock 30, recall 10.
+  assert.equal(data.todayXp, 60 + 10 + 20 + 30 + 15 + 30 + 10);
   assert.equal(data.week[6].ac, 8);
   assert.equal(data.week[6].xp, data.todayXp);
   // Every quest is done today; `have` stops at `need`.

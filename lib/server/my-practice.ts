@@ -18,11 +18,10 @@ import { aidsByProblem, gradesByProblem } from './practice-aids';
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
 // A ?prefix= list returns every body (up to NOTE_MAX_BYTES each), so each listed kind is capped:
-// MAX_STORIES rows per list, and PREFIX_CAP new notes per kind (409 with that message past it).
-const MAX_STORIES = 200;
-const LISTED = new Set(['story:', 'sd:', 'card:', 'clip:', 'brag:', 'retro:', 'route:']);
+// MAX_LISTED rows per list, and PREFIX_CAP new notes per kind (409 with that message past it).
+const MAX_LISTED = 200;
+const LISTED = new Set(['sd:', 'card:', 'clip:', 'brag:', 'retro:', 'route:']);
 const PREFIX_CAP: Record<string, [number, string]> = {
-  story: [MAX_STORIES, '故事已达上限'],
   card: [CARD_MAX, '卡片已达上限（200 张）'],
   brag: [200, '实习日志已达上限'],
   retro: [200, '复盘已达上限'],
@@ -30,8 +29,9 @@ const PREFIX_CAP: Record<string, [number, string]> = {
 };
 // One batch of marks: a list's worth of ticks (the longest classic list has 150).
 const MAX_BATCH = 500;
-// story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
-// saved public list, written through /api/oj/lists/<id>/star (which checks the list) only.
+// story:<id> held a STAR story (the story bank, removed: old rows stay, the API no longer reads or
+// writes them). list:<id> starred is a saved public list, written through /api/oj/lists/<id>/star
+// (which checks the list) only.
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
 // sub:<submission id> is a note on one submission; q:<slug> is a content library question;
 // post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
@@ -50,7 +50,7 @@ const MAX_BATCH = 500;
 // - retro:<application id>/<base36 time> is one interview round's retro (tracker-tiers-retro).
 // - route:role-<key> is a built-in role path's schedule and step state; route:r-<base36> is a
 //   learner-made route (role-paths-v2).
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career|card|topic|pref|clip|brag|retro|route):[\w./-]{1,200}$/);
+const target = z.string().regex(/^(?:problem|content|list|sd|sub|q|post|mcq|recall|wb|checklist|project|career|card|topic|pref|clip|brag|retro|route):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item; doing: started, not done.
@@ -146,7 +146,7 @@ function full(table: 'user_notes' | 'user_marks', userId: string) {
   if (n >= MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
 }
 
-// The notes hub searches written notes only: quiz answers (sd:), stories and drafts stay out.
+// The notes hub searches written notes only: quiz answers (sd:) and drafts stay out.
 export const NOTE_KINDS = ['problem', 'content', 'sub', 'topic'] as const;
 const NOTES_PAGE = 50;
 const SNIPPET = 160;
@@ -166,7 +166,7 @@ export function noteSnippet(body: string, words: string[] = []) {
  * its #tags and confidence. ?tag= keeps notes with that tag, ?conf=N those with confidence ≤ N.
  */
 function searchNotes(userId: string, params: URLSearchParams) {
-  // ?prefix= takes a kind with or without its colon, like the story bank's prefix=story:.
+  // ?prefix= takes a kind with or without its colon, like the listed kinds' prefix=card:.
   const kind = params.get('prefix')?.replace(/:$/, '');
   const kinds = kind ? [z.enum(NOTE_KINDS).parse(kind)] : NOTE_KINDS;
   const words = (params.get('q') ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 6);
@@ -251,7 +251,7 @@ export async function handleMyPractice(
     if (resource === 'history') return json({ items: practiceHistory(p.id) });
     if (resource === 'notes') {
       if (!params.has('target')) {
-        // ?prefix=story: lists the story bank with its bodies in one request (MAX_STORIES); ?prefix=sd:
+        // A listed ?prefix= returns its bodies in one request (MAX_LISTED); ?prefix=sd:
         // the system design quiz answers (app/oa/mcq/practice.tsx reviews the wrong ones): `sd:<chapter>`
         // only, not the `sd:<chapter>/draft` design drafts, capped well above the chapter count.
         // ?prefix=card: the self-made cards (CARD_MAX fits the cap), ?prefix=clip: the saved excerpts;
@@ -265,7 +265,7 @@ export async function handleMyPractice(
                 WHERE user_id=? AND target LIKE ? AND (?<>'sd:' OR instr(target,'/')=0)
                 ORDER BY updated_at DESC LIMIT ?`,
               )
-              .all(p.id, `${listed}%`, listed, MAX_STORIES),
+              .all(p.id, `${listed}%`, listed, MAX_LISTED),
           });
         return json(searchNotes(p.id, params));
       }
