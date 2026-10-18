@@ -96,7 +96,7 @@ export default async function LearnChapter({ params }: Props) {
           </details>
         )}
         <div className="public-library-prose">
-          <PublicLibraryMarkdown body={body} math={false} sectionIds />
+          <PublicLibraryMarkdown body={body} math={false} sectionIds wholePrograms />
         </div>
         <SdQuiz slug={learnKey(course.slug, chapter.slug)} quiz={chapter.quiz} zh={zh} />
         {/* SQL lessons have no LeetCode homework: their text links to the SQL track instead. */}
