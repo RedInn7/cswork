@@ -273,6 +273,12 @@ export function CourseList({
                           <ArrowRight size={15} />
                         </Button>
                       )}
+                      {!boot.person && !(c.purchase_available ?? boot.services.checkout) && (
+                        <Button onClick={login}>
+                          {t('登录', 'Sign in')}
+                          <ArrowRight size={15} />
+                        </Button>
+                      )}
                       <small>
                         {t(
                           '现有学员使用购买时的邮箱登录',
