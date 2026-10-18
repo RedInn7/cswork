@@ -1,9 +1,11 @@
 // Code templates for the 35 Line 500 stops: three key points, three pitfalls and the same
-// pattern in four languages. The JSON is ~150 KB, so client components should load this
-// module lazily (`await import('@/lib/route-templates')`) rather than import it eagerly.
+// pattern in four languages, plus each stop's 2–6 variants (another code shape for the same
+// stop, with its own driver). The two JSON files are ~600 KB: import this module on the server
+// only and pass client components what they need (app/topics/template-section.tsx).
 // Each stop's drivers (the code that calls a template, and its expected stdout) are in
 // lib/route-template-drivers.ts; tests/route-templates.test.ts compiles and runs every template with them.
 import data from './content/route-templates.json';
+import variantData from './content/route-template-variants.json';
 
 export type Bilingual = { zh: string; en: string };
 export type TemplateLang = 'python' | 'cpp' | 'java' | 'go';
@@ -15,6 +17,22 @@ export type RouteTemplate = {
   pitfalls: Bilingual[];
   code: Record<TemplateLang, string>;
 };
+
+/** Another shape of a stop's template; `driver` is the same kind as DRIVERS' (route-template-drivers.ts). */
+export type TemplateVariant = {
+  /** Kebab case, unique within the stop, never 'main'. */
+  id: string;
+  pattern: Bilingual;
+  /** When to reach for it instead of the main template. */
+  when: Bilingual;
+  complexity: Bilingual;
+  code: Record<TemplateLang, string>;
+  driver: Record<TemplateLang, string> & { expected: string };
+};
+/** `variant` is 'main' or a variant id; each line of `key` appears verbatim in that code. */
+export type MatrixCell = { variant: string; key: Record<TemplateLang, string> } | { note: Bilingual };
+export type VariantMatrix = { rows: Bilingual[]; cols: Bilingual[]; cells: MatrixCell[][] };
+type StopVariants = { variants: TemplateVariant[]; matrix?: VariantMatrix };
 
 /** Display order and labels. */
 export const TEMPLATE_LANGS: [TemplateLang, string][] = [
@@ -31,6 +49,10 @@ const bySlug = new Map(routeTemplates.map((t) => [t.slug, t]));
 export function templateFor(slug: string): RouteTemplate | undefined {
   return bySlug.get(slug);
 }
+
+const variants = variantData as Record<string, StopVariants>;
+export const variantsFor = (slug: string): TemplateVariant[] => variants[slug]?.variants ?? [];
+export const matrixFor = (slug: string): VariantMatrix | undefined => variants[slug]?.matrix;
 
 // Client-safe (no JSON): lib/template-drills.ts owns it so the drills don't pull this file in.
 export { commentStart } from './template-drills';

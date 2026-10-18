@@ -196,3 +196,22 @@ test('a saved excerpt links back to the page its quote cites', () => {
   assert.equal(clipSource('> — [x](https://evil.test)'), null);
   assert.equal(clipSource('> — [x](//evil.test/a)'), null);
 });
+
+test('a template card (tpl:) asks to write it from memory and links to the topic page drill', async () => {
+  Object.assign(notes, {
+    'card:': [],
+    'recall:cards': '',
+    'mcq:answers': '',
+    'recall:queue': JSON.stringify({ v: 1, items: { 'tpl:binary-search/answer-search': [0, today - 1, 'Binary search · Binary search on the answer'] } }),
+  });
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(ReviewSession, { boot, navigate() {} })));
+  await settle();
+  assert.match(document.querySelector('.rs-front').textContent, /Binary search · Binary search on the answer/);
+  assert.match(document.querySelector('.rs-front').textContent, /Write this template from memory/);
+  await press(' ');
+  const link = document.querySelector('.rs-back a');
+  assert.equal(link.getAttribute('href'), '/topics/binary-search?drill=recall&v=answer-search#topic-drill');
+  assert.equal(link.textContent, 'Write it from memory (new tab)');
+  await act(async () => root.unmount());
+});
