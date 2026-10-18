@@ -222,7 +222,7 @@ export function RoadmapTracks({
                         </span>
                       )}
                       <a href={`/oa/mcq?topic=${node.id}`}>{t(`选择题 ${total} 道`, `${total} multiple-choice questions`)}</a>
-                      {course && node.course && <a href={`/learn/${node.course}`}>{course.title}</a>}
+                      {course && <a href={`/learn/${node.course}`}>{course.title}</a>}
                       {chapter && <a href={chapter.href}>{chapter.title}</a>}
                     </li>
                   );

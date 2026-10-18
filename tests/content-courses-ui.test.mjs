@@ -84,9 +84,22 @@ test('the course index and chapters render on the server with links, quiz and pa
   assert.ok(doc.querySelector('.sd-pager > :last-child').getAttribute('href') === '/system-design');
   await assert.rejects(Chapter(params('nope')), /NEXT_NOT_FOUND/);
   await assert.rejects(Chapter(params('__proto__')), /NEXT_NOT_FOUND/);
-  // Links between chapters survive the safe renderer as plain in-site links; other relative paths do not.
-  doc = parse(renderToStaticMarkup(createElement(PublicLibraryMarkdown, { body: `[next](/system-design/${second.slug}) [x](/admin)`, math: false })));
-  assert.deepEqual([...doc.querySelectorAll('a')].map((a) => [a.getAttribute('href'), a.getAttribute('rel')]), [[`/system-design/${second.slug}`, null]]);
+  // Links between chapters and to an MCQ topic survive the safe renderer as plain in-site links; other relative paths do not.
+  doc = parse(
+    renderToStaticMarkup(
+      createElement(PublicLibraryMarkdown, {
+        body: `[next](/system-design/${second.slug}) [x](/admin) [mcq](/oa/mcq?topic=os) [y](/oa/mcq?topic=os&next=x)`,
+        math: false,
+      }),
+    ),
+  );
+  assert.deepEqual(
+    [...doc.querySelectorAll('a')].map((a) => [a.getAttribute('href'), a.getAttribute('rel')]),
+    [
+      [`/system-design/${second.slug}`, null],
+      ['/oa/mcq?topic=os', null],
+    ],
+  );
 });
 
 test('course Markdown groups code blocks into tabs and embeds ```algorithm-demo; a post keeps them as code', async () => {

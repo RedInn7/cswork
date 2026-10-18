@@ -15,7 +15,7 @@ import { requestLocale } from '@/lib/server/locale';
 import { resolveRolePath, routeCatalog } from '@/lib/server/role-paths';
 import { sdChapters, sdParts, sdPath } from '@/lib/server/system-design-course';
 import { LibraryPageView } from '../library/page-view';
-import { RoadmapTracks, type SdPart } from './tracks';
+import { RoadmapTracks, type CsTrackData, type SdPart } from './tracks';
 
 const COPY = {
   zh: {
@@ -78,14 +78,12 @@ export default async function RoadmapPage({ searchParams }: Props) {
   // The CS track: each subject's question count and its crash course's chapters.
   const mcqTotals: Record<string, number> = {};
   for (const q of mcqBank.questions) if (CS_NODES.some((node) => node.id === q.topic)) mcqTotals[q.topic] = (mcqTotals[q.topic] ?? 0) + 1;
-  const csCourses = Object.fromEntries(
-    CS_NODES.flatMap((node) => {
-      const course = node.course ? beginnerCourse(node.course) : undefined;
-      return course
-        ? [[course.slug, { title: zh ? course.titleZh : course.titleEn, keys: course.chapters.map((c) => learnKey(course.slug, c.slug)) }]]
-        : [];
-    }),
-  );
+  const csCourses: CsTrackData['courses'] = {};
+  for (const node of CS_NODES) {
+    const course = node.course ? beginnerCourse(node.course) : undefined;
+    if (course)
+      csCourses[course.slug] = { title: zh ? course.titleZh : course.titleEn, keys: course.chapters.map((c) => learnKey(course.slug, c.slug)) };
+  }
   return (
     <div className="public-library roadmap-public" lang={zh ? 'zh-CN' : 'en'}>
       <script
