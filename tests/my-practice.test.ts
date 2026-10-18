@@ -767,8 +767,8 @@ void test('notes export: whitelisted notes by target in 2 MB pages, own latest A
   await exam(writer.id, async () => {
     assert.equal(await status(writer, 'GET', 'notes/export'), 403);
     assert.equal(await status(writer, 'GET', 'cheatsheet?stops=two-pointers-windows'), 403);
+    assert.equal(await status(other, 'GET', 'notes/export'), 200, 'someone else’s exam closes nothing of mine');
   })();
-  assert.equal(await status(other, 'GET', 'notes/export'), 200, 'someone else’s exam closes nothing of mine');
   sqlite().prepare('DELETE FROM user_notes WHERE user_id IN (?,?)').run(writer.id, other.id);
 });
 
@@ -833,8 +833,8 @@ void test('solutions export: every accepted problem, noted or not, each language
 
   await exam(porter.id, async () => {
     assert.equal(await status(porter, 'GET', 'solutions/export'), 403);
+    assert.equal(await status(other, 'GET', 'solutions/export'), 200, 'someone else’s exam closes nothing of mine');
   })();
-  assert.equal(await status(other, 'GET', 'solutions/export'), 200, 'someone else’s exam closes nothing of mine');
   sqlite().prepare('DELETE FROM user_notes WHERE user_id IN (?,?)').run(porter.id, other.id);
 });
 
