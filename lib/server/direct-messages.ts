@@ -1,19 +1,16 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
 import { notify } from './notify';
 import { HANDLE, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { fileReport, nameOf, reportReason } from './solution-posts';
-import { badgeName, badgeSql } from './work-verify';
 
 /**
  * Direct messages (db/community-schema.ts). A conversation starts only between learners who
- * follow each other, or from a referral thread's "request a referral" (the post must be by a
- * verified employee of the company it is tagged with). Either side may block the other, anyone
+ * follow each other (the board's referral threads were removed). Either side may block the other, anyone
  * may stop new conversations, and caps hold per sender and per recipient a day. Pages carry an
  * opaque thread key and the other side's public handle or masked name, never account ids. A new
  * message leaves an in-app notification naming the sender, never the text, and sends no mail.
@@ -36,9 +33,9 @@ export const chatText = z
   );
 export const NEW_THREADS_PER_DAY = 20;
 export const MESSAGES_PER_DAY = 200;
-/** New conversations one learner may receive a day, so a referral thread cannot flood its author. */
+/** New conversations one learner may receive a day. */
 export const INBOUND_PER_DAY = 10;
-/** Who may start a conversation with you: mutual follows and referral requests, mutual follows, nobody. */
+/** Who may start a conversation with you; 'all' and 'follows' both mean mutual follows since referral threads left. */
 const OPEN = ['all', 'follows', 'none'] as const;
 
 const threadOf = (a: string, b: string) => [a, b].sort().join('|');
@@ -53,20 +50,11 @@ const openTo = (userId: string) =>
   ((sqlite().prepare('SELECT open FROM dm_settings WHERE user_id=?').pluck().get(userId) as string | undefined) ??
     'all') as (typeof OPEN)[number];
 
-/** Who a new conversation goes to, and the referral post it is opened from ('' between mutual follows). */
+/** Who a new conversation goes to; `post` is '' (old rows opened from a referral thread hold its id). */
 function recipient(p: Person, d: { to?: string; post?: string }) {
   const db = sqlite();
-  if (d.post) {
-    const post = db
-      .prepare(
-        `SELECT sp.user_id AS author,sp.tag FROM solution_posts sp WHERE sp.id=? AND sp.problem_id='discuss:referral'
-          AND sp.hidden=0 AND sp.anonymous=0 AND sp.tag<>'' AND ${badgeSql('sp.user_id', 'referrals')}=sp.tag
-          AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}`,
-      )
-      .get(d.post) as { author: string; tag: string } | undefined;
-    if (!post || !badgeName(post.tag)) throw new HttpError(404, '内推帖不存在或已失效');
-    return { user: post.author, post: d.post };
-  }
+  // The board's referral threads are gone, so a conversation opens only between mutual follows.
+  if (d.post) throw new HttpError(404, '内推帖不存在或已失效');
   const user = HANDLE.test(d.to ?? '')
     ? (db.prepare('SELECT user_id FROM user_profiles WHERE handle=? AND visible=1').pluck().get(d.to) as
         | string
@@ -113,7 +101,7 @@ function send(p: Person, thread: string, to: string, body: string, post: string 
       notify({
         userId: to,
         kind: 'dm',
-        title: post ? '你收到一条内推请求' : '你收到一条新私信',
+        title: '你收到一条新私信',
         body: nameOf(p.id),
         href: `/?view=messages&thread=${threadKey(thread)}`,
         now,

@@ -2,7 +2,6 @@ import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { problemAppHref } from '@/lib/classic-lists';
-import { threadPath } from '@/lib/community';
 import { oaProblemPath } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { dailyProblem } from './daily-problem';
@@ -13,7 +12,6 @@ import { mailReady, newsletterConfirmation, sendMail } from './mail';
 import { readJson } from './my-practice';
 import { oaLibrary } from './oa-library';
 import { oaReadyProblems } from './oa-judge';
-import { publicPost, publicPosts } from './solution-posts';
 
 /**
  * The weekly newsletter (db/newsletter-schema.ts). Signed-in learners with a verified email
@@ -49,8 +47,6 @@ export type Issue = {
   problems: { id: string; title: string; company: string; companyName: string; href: string }[];
   /** Member interview experiences approved this week. */
   experiences: { id: string; title: string; company: string; companyName: string; href: string }[];
-  /** This week's discussion threads, most upvoted first. */
-  discussions: { id: string; title: string; href: string; votes: number; comments: number }[];
   /** The week's daily problems and how many learners solved each on its day. */
   daily: { date: string; title: string; titleEn: string | null; company: string | null; href: string; solvers: number }[];
 };
@@ -79,20 +75,6 @@ async function newProblems(start: number, end: number) {
     if (!items.length || (addedAt.get(items.at(-1)!.id) ?? 0) < start) break;
   }
   return found;
-}
-
-async function topDiscussions(start: number, end: number) {
-  const found: Issue['discussions'] = [];
-  // Newest first through the public board (its visibility rules), then by votes. As far back as
-  // listPosts pages (offset 5000), so recomposing an older week still reaches it.
-  for (let offset = 0; offset <= 5000; offset += 30) {
-    const page = await publicPosts('discuss:all', { sort: 'new', offset: String(offset) });
-    for (const post of page?.items ?? [])
-      if (post.createdAt >= start && post.createdAt < end)
-        found.push({ id: post.id, title: post.title, href: threadPath(post.id), votes: post.votes, comments: post.comments });
-    if (!page?.more || (page.items.at(-1)?.createdAt ?? 0) < start) break;
-  }
-  return found.sort((a, b) => b.votes - a.votes || b.comments - a.comments).slice(0, 5);
 }
 
 async function dailies(start: number) {
@@ -137,7 +119,6 @@ export async function composeIssue(start: number): Promise<Issue> {
     startsAt: start,
     problems: await newProblems(start, end),
     experiences,
-    discussions: await topDiscussions(start, end),
     daily: await dailies(start),
   };
 }
@@ -159,22 +140,21 @@ export function issueList() {
 }
 /**
  * An archived issue, less anything no longer public since it was composed: companies hidden
- * since, and posts or reports taken down by their author or a moderator.
+ * since, and reports taken down by their author or a moderator. Issues composed while the
+ * discussion board existed also hold `discussions`; the board is gone, so they are dropped.
  */
 export async function readIssue(id: string): Promise<Issue | null> {
   const row = sqlite().prepare('SELECT data_json FROM newsletter_issues WHERE id=?').get(id) as
     | { data_json: string }
     | undefined;
   if (!row) return null;
-  const issue = JSON.parse(row.data_json) as Issue;
+  const { discussions: _board, ...issue } = JSON.parse(row.data_json) as Issue & { discussions?: unknown };
   const hidden = hiddenCompanies();
   const shown = <T extends { company: string | null }>(items: T[]) => items.filter((i) => !i.company || !hidden.has(i.company));
-  const live = await Promise.all(issue.discussions.map((d) => publicPost(d.id)));
   return {
     ...issue,
     problems: shown(issue.problems),
     experiences: shown(issue.experiences).filter((e) => readMember(e.id, null)),
-    discussions: issue.discussions.filter((_, i) => live[i]),
     daily: shown(issue.daily),
   };
 }

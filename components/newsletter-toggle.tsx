@@ -78,8 +78,8 @@ export function NewsletterToggle() {
         <>
           <p>
             {t(
-              '每周一封：新上线的题、学员面经、热门讨论和每日一题战报。只发到已验证的邮箱，每封都能一键退订。',
-              'One email a week: new problems, member interview reports, top discussions and daily problem results. Sent only to a verified address, with one-click unsubscribe in every issue.',
+              '每周一封：新上线的题、学员面经和每日一题战报。只发到已验证的邮箱，每封都能一键退订。',
+              'One email a week: new problems, member interview reports and daily problem results. Sent only to a verified address, with one-click unsubscribe in every issue.',
             )}
           </p>
           <button type="button" className="newsletter-button" disabled={busy} onClick={() => void change(true)}>

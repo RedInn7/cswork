@@ -3,7 +3,7 @@ import '../lc-rating.css';
 import './contest.css';
 import Link from 'next/link';
 import { requestLocale } from '@/lib/server/locale';
-import { JoinCommunity } from '../discuss/community-link';
+import { JoinCommunity } from '../community-link';
 
 /** Contest pages (/contest, /contest/<id>, /contest/leaderboard): the departure board on the classic lists' shell. */
 export default async function ContestLayout({ children }: { children: React.ReactNode }) {
@@ -35,9 +35,6 @@ export default async function ContestLayout({ children }: { children: React.Reac
         </Link>
         <Link href="/daily" prefetch={false}>
           {zh ? '每日一题' : 'Daily problem'}
-        </Link>
-        <Link href="/discuss" prefetch={false}>
-          {zh ? '讨论区' : 'Discuss'}
         </Link>
         <JoinCommunity zh={zh} />
         <Link href="/privacy" prefetch={false}>

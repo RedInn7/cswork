@@ -101,12 +101,8 @@ async function buildNewsletterFeed(lang: 'zh' | 'en', now: number) {
     if (!issue) return [];
     const titles = [...issue.problems, ...issue.experiences].map((i) => i.title).join(zh ? '；' : '; ');
     const parts = zh
-      ? [`${issue.problems.length} 道新 OA 题`, `${issue.experiences.length} 篇学员面经`, `${issue.discussions.length} 个热门讨论`]
-      : [
-          count(issue.problems.length, 'new OA problem'),
-          count(issue.experiences.length, 'member interview report'),
-          count(issue.discussions.length, 'top discussion'),
-        ];
+      ? [`${issue.problems.length} 道新 OA 题`, `${issue.experiences.length} 篇学员面经`]
+      : [count(issue.problems.length, 'new OA problem'), count(issue.experiences.length, 'member interview report')];
     // The daily results only when the issue (still) has any.
     if (issue.daily.length) parts.push(zh ? '每日一题战报' : 'the daily problem results');
     const last = parts.pop();

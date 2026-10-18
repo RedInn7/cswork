@@ -119,11 +119,11 @@ export const newsletterConfirmation = (zh: boolean, link: string) =>
   zh
     ? {
         subject: '确认订阅 CSWork 周报',
-        text: `点下面的链接确认订阅 CSWork 周报（每周一封：新题、热门讨论、每日一题战报）：\n\n${link}\n\n不是你订阅的？忽略这封邮件就好，不会再收到。`,
+        text: `点下面的链接确认订阅 CSWork 周报（每周一封：新题、学员面经、每日一题战报）：\n\n${link}\n\n不是你订阅的？忽略这封邮件就好，不会再收到。`,
       }
     : {
         subject: 'Confirm your CSWork weekly subscription',
-        text: `Confirm your subscription to the CSWork weekly (one email a week: new problems, top discussions and daily problem results):\n\n${link}\n\nDidn't subscribe? Ignore this email and you won't hear from us.`,
+        text: `Confirm your subscription to the CSWork weekly (one email a week: new problems, member interview reports and daily problem results):\n\n${link}\n\nDidn't subscribe? Ignore this email and you won't hear from us.`,
       };
 
 /** A peer mock interview reminder (lib/server/peer-reminders.ts), a day or an hour ahead. */

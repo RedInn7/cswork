@@ -27,7 +27,7 @@ import { keyPoints } from '@/lib/recall';
 import { TryFirst } from './try-first';
 import { RecallRate } from './recall-rate';
 import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
-import { CommunityPosts } from './discuss-board';
+import { CommunityPosts } from './community-posts';
 import { AskedReport } from './problem-community';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
@@ -440,8 +440,6 @@ const EXPERIENCE_SORTS: [string, string, string][] = [
   ['new', '新发布', 'Newly shared'],
   ...SORTS.slice(1),
 ];
-/** The offer channel of the discussion board, next to "Offers only". */
-const OFFER_STORIES = '/?view=discuss&channel=offer';
 /** Labels for the member-only filters' values, [zh, en] per value or a function for seasons. */
 const MEMBER_FILTER_LABELS: Record<(typeof MEMBER_FACETS)[number], [string, string, Record<string, [string, string]> | null]> = {
   employment: ['全职 / 实习', 'Full-time / intern', EMPLOYMENT],
@@ -616,13 +614,6 @@ export function ContentList({
                 >
                   <Trophy size={13} aria-hidden="true" /> {t('只看拿到 Offer', 'Offers only')}
                 </button>
-                <a
-                  className="rd-chip ct-chip-link"
-                  href={OFFER_STORIES}
-                  onClick={spaClick(() => navigate('discuss', { channel: 'offer' }))}
-                >
-                  {t('上岸故事讨论', 'Offer stories')} <ArrowRight size={12} aria-hidden="true" />
-                </a>
               </>
             )}
             {type === 'experience' && (

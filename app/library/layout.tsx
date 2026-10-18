@@ -1,6 +1,6 @@
 import './library.css';
 import Link from 'next/link';
-import { JoinCommunity } from '../discuss/community-link';
+import { JoinCommunity } from '../community-link';
 import { PaletteButton } from '@/components/command-palette';
 import { Suspense } from 'react';
 import { LibraryPageView } from './page-view';
@@ -30,9 +30,6 @@ export default function LibraryLayout({
         </Link>
         <Link href="/topics" prefetch={false}>
           Code templates
-        </Link>
-        <Link href="/discuss" prefetch={false}>
-          Discuss
         </Link>
         <JoinCommunity zh={false} />
         <Link href="/privacy" prefetch={false}>

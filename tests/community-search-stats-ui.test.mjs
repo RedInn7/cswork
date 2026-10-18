@@ -24,19 +24,15 @@ test('the posts panel searches inside its target and sorts by hot', async () => 
   globalThis.fetch = async (url) => {
     const path = String(url);
     if (path.startsWith('/api/oj/posts?')) asked.push(new URL(path, 'https://cswork.test').searchParams);
-    return Response.json(path.includes('companies') ? { items: [] } : { solved: true, items: [], more: false });
+    return Response.json({ solved: true, items: [], more: false });
   };
   const root = createRoot(document.getElementById('root'));
   const $ = (selector) => document.querySelector(selector);
   const settle = () => act(async () => new Promise((r) => setTimeout(r, 5)));
   try {
-    await act(async () =>
-      root.render(createElement(SolutionPosts, { problemId: 'discuss:interview', english: true, initialQuery: ' two pointers ' })),
-    );
+    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'lc-1', english: true, unlocked: true })));
     await settle();
-    assert.equal(asked.at(-1).get('q'), 'two pointers', 'a board link starts the search');
-    assert.equal($('input[type="search"]').value, 'two pointers');
-    assert.equal($('.cs-posts-state').textContent, 'No posts match "two pointers".');
+    assert.equal(asked.at(-1).get('q'), null);
     const hot = [...document.querySelectorAll('.cs-posts-sort button')].find((b) => b.textContent === 'Hot');
     await act(async () => hot.click());
     await settle();
@@ -50,11 +46,12 @@ test('the posts panel searches inside its target and sorts by hot', async () => 
     await act(async () => $('form.cs-posts-search').requestSubmit());
     await settle();
     assert.equal(asked.at(-1).get('q'), 'heap');
-    assert.equal(asked.at(-1).get('problem'), 'discuss:interview', 'never a search across targets');
+    assert.equal(asked.at(-1).get('problem'), 'lc-1', 'never a search across targets');
     assert.equal(asked.at(-1).get('sort'), 'hot');
+    assert.equal($('.cs-posts-state').textContent, 'No posts match "heap".');
 
     // Answers under an interview question list inline: no search box there.
-    await act(async () => root.render(createElement(SolutionPosts, { key: 'q', problemId: 'q:two-sum', english: true, initialQuery: 'x' })));
+    await act(async () => root.render(createElement(SolutionPosts, { key: 'q', problemId: 'q:two-sum', english: true })));
     await settle();
     assert.equal($('form.cs-posts-search'), null);
     assert.equal(asked.at(-1).get('q'), null);

@@ -1,5 +1,4 @@
 import { levelOf, problemAppHref } from '@/lib/classic-lists';
-import { threadPath } from '@/lib/community';
 import { problemTitle, type ProblemSummary } from '@/lib/problems';
 import { STOP_NAMES, stopHref } from '@/lib/route-stops';
 import type { followPeople } from '@/lib/server/follows';
@@ -297,7 +296,7 @@ export function ProfileView({
       {!!profile.posts?.total && (
         <section aria-labelledby="learner-posts">
           <h2 id="learner-posts" className="lists-public-h2">
-            {t('题解与讨论', 'Solutions and threads')}
+            {t('题解', 'Solutions')}
             <small>
               {t(
                 `${profile.posts.total} 篇 · 共获 ${profile.posts.votes} 赞`,
@@ -306,21 +305,18 @@ export function ProfileView({
             </small>
           </h2>
           <ol className="lists-public-rows learner-rows learner-posts">
-            {profile.posts.items.map((post) => {
-              const thread = post.target.startsWith('discuss:');
-              return (
-                <li key={post.id}>
-                  <span className="lists-public-number">{thread ? t('讨论', 'Thread') : t('题解', 'Solution')}</span>
-                  <a href={thread ? threadPath(post.id) : problemAppHref(post.target)}>{post.title}</a>
-                  <LocalDay time={post.createdAt} className="lists-public-count" />
-                  <span className="lists-public-count">
-                    <span aria-hidden="true">▲ </span>
-                    {post.votes}
-                    <span className="sr-only">{t(' 赞', post.votes === 1 ? ' upvote' : ' upvotes')}</span>
-                  </span>
-                </li>
-              );
-            })}
+            {profile.posts.items.map((post) => (
+              <li key={post.id}>
+                <span className="lists-public-number">{t('题解', 'Solution')}</span>
+                <a href={problemAppHref(post.target)}>{post.title}</a>
+                <LocalDay time={post.createdAt} className="lists-public-count" />
+                <span className="lists-public-count">
+                  <span aria-hidden="true">▲ </span>
+                  {post.votes}
+                  <span className="sr-only">{t(' 赞', post.votes === 1 ? ' upvote' : ' upvotes')}</span>
+                </span>
+              </li>
+            ))}
           </ol>
         </section>
       )}

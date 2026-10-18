@@ -6,8 +6,7 @@ import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-// Threads, answers and comments in the posts component; the discussion board; the profile,
-// follower and list pages; the weekly board; members' company stats; experience fields and filters.
+// Answers and comments in the posts component; the profile, follower and list pages; the weekly board; members' company stats; experience fields and filters.
 const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
 const alert = `import React from ${JSON.stringify(react)};export const AlertDialog=({open,children})=>open?React.createElement('div',{role:'alertdialog'},children):null;export const AlertDialogContent=({children})=>React.createElement('div',null,children);export const AlertDialogDescription=AlertDialogContent;export const AlertDialogHeader=AlertDialogContent;export const AlertDialogFooter=AlertDialogContent;export const AlertDialogTitle=AlertDialogContent;export const AlertDialogAction=({children,onClick})=>React.createElement('button',{onClick},children);export const AlertDialogCancel=AlertDialogAction;`;
 register(
@@ -15,7 +14,7 @@ register(
   import.meta.url,
 );
 
-const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/?view=discuss' });
+const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/?view=content' });
 for (const name of [
   'window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'PointerEvent', 'KeyboardEvent',
   'FocusEvent', 'getComputedStyle', 'localStorage', 'sessionStorage', 'navigator', 'location',
@@ -26,7 +25,6 @@ globalThis.requestAnimationFrame ??= (cb) => setTimeout(cb, 0);
 dom.window.HTMLElement.prototype.scrollIntoView = () => {};
 const { createRoot } = await import('react-dom/client');
 const { SolutionPosts } = await import('../components/solution-posts.tsx');
-const { DiscussBoard } = await import('../components/discuss-board.tsx');
 const { FollowBoard } = await import('../components/follow-board.tsx');
 const { MemberStatsCard } = await import('../components/company-stats-card.tsx');
 const { MyExperienceSubmissions } = await import('../components/experience-submissions.tsx');
@@ -68,10 +66,10 @@ function stub(answer) {
 }
 const thread = {
   id: '11111111-1111-4111-8111-111111111111',
-  problemId: 'discuss:career',
+  problemId: 'sd:framework',
   title: 'Referral timelines',
   language: '',
-  tag: 'amazon',
+  tag: '',
   hidden: 0,
   createdAt: 1_700_000_000_000,
   updatedAt: 1_700_000_000_000,
@@ -84,43 +82,22 @@ const thread = {
 };
 const companies = { items: [{ slug: 'amazon', name: 'Amazon' }, { slug: 'uber', name: 'Uber' }] };
 
-test('threads: a channel lists without a lock, signed out writing asks to sign in, signed in it posts a company tag', async () => {
-  const { calls, restore } = stub((key) => {
+test('a chapter discussion lists without a lock; signed out, writing asks to sign in', async () => {
+  const { restore } = stub((key) => {
     if (key.startsWith('GET oj/posts?')) return { solved: true, items: [thread], more: false };
-    if (key === 'GET oj/reports/companies') return companies;
-    if (key === 'POST oj/posts') return { post: { ...thread, id: '22222222-2222-4222-8222-222222222222', mine: true, body: 'x' }, comments: [] };
-    if (key.startsWith('GET oj/posts/')) return { post: { ...thread, body: 'Body' }, comments: [] };
   });
   const asked = [];
   // Academy's listener, which handles the prompt itself.
   window.addEventListener('cswork:auth-required', (e) => (e.preventDefault(), asked.push(1)));
   try {
-    await mount(createElement(SolutionPosts, { problemId: 'discuss:career', english: true, signedIn: false }));
-    assert.equal($('.cs-posts-locked') === null, true, 'threads are never locked');
-    assert.equal($('.cs-post-row-title').textContent, 'Referral timelines');
-    assert.equal($('.cs-post-tag').textContent, 'Amazon', 'the company tag shows by name');
-    assert.equal($('.cs-posts-filter') === null, true, 'no technique filter on threads');
-    await act(async () => button('New thread').click());
+    await mount(createElement(SolutionPosts, { problemId: 'sd:framework', english: true, signedIn: false }));
+    assert.equal($('.cs-posts-locked') === null, true, 'only solutions are locked');
+    assert.equal($('.cs-post-row-excerpt').textContent, 'How long did yours take?');
+    assert.equal($('.cs-posts-filter') === null, true, 'no technique filter');
+    assert.equal($('.cs-posts-search') === null, true, 'search is for solutions');
+    await act(async () => button('Join the discussion').click());
     assert.equal(asked.length, 1, 'signed out, writing asks to sign in');
     assert.equal($('.cs-post-editor') === null, true);
-
-    await mount(createElement(SolutionPosts, { problemId: 'discuss:career', english: true, tag: 'uber', signedIn: true }));
-    assert.equal(calls.some((c) => c.key === 'GET oj/posts?problem=discuss%3Acareer&tag=uber&sort=votes'), true, 'filtered by company');
-    await act(async () => button('New thread').click());
-    const editor = $('.cs-post-editor');
-    assert.equal(editor.querySelector('input') !== null, true, 'threads have a title');
-    const selects = [...editor.querySelectorAll('select')];
-    assert.equal(selects.length, 1, 'a company menu, no language');
-    assert.equal(selects[0].value, 'uber', 'the board’s company is the default');
-    assert.equal(editor.querySelector('textarea').value, '', 'no solution outline');
-    await act(async () => {
-      set(editor.querySelector('input'), 'Uber team match?');
-      set(editor.querySelector('textarea'), 'How long did it take?');
-    });
-    await act(async () => editor.requestSubmit());
-    await wait();
-    const sent = calls.find((c) => c.key === 'POST oj/posts').body;
-    assert.deepEqual(sent, { title: 'Uber team match?', body: 'How long did it take?', language: '', tag: 'uber', problemId: 'discuss:career' });
   } finally {
     restore();
   }
@@ -159,32 +136,6 @@ test('answers and comments: no title of their own; solutions filter and tag by t
   }
 });
 
-test('the board switches channels and companies through the URL and opens a linked thread', async () => {
-  const { restore } = stub((key) => {
-    if (key.startsWith('GET oj/posts?')) return { solved: true, items: [thread], more: false };
-    if (key === 'GET oj/reports/companies') return companies;
-    if (key.startsWith('GET oj/posts/')) return { post: { ...thread, body: '**Hi**' }, comments: [{ id: 'c1', body: 'Two weeks', createdAt: 1, author: 'G***', mine: false }] };
-  });
-  const navigations = [];
-  try {
-    await mount(createElement(DiscussBoard, { params: { channel: 'career' }, navigate: (...a) => navigations.push(a), signedIn: true }));
-    const pressed = [...document.querySelectorAll('.discuss-channels button')].filter((b) => b.getAttribute('aria-pressed') === 'true');
-    assert.deepEqual(pressed.map((b) => b.querySelector('strong').textContent), ['Careers']);
-    await act(async () => button('Algorithms').click());
-    assert.deepEqual(navigations.at(-1), ['discuss', { channel: 'algo' }]);
-    await act(async () => set($('.discuss-filter select'), 'amazon'));
-    assert.deepEqual(navigations.at(-1), ['discuss', { channel: 'career', company: 'amazon' }]);
-    assert.equal($('a.discuss-board-public').getAttribute('href'), '/discuss?channel=career');
-
-    await mount(createElement(DiscussBoard, { params: { channel: 'career', post: thread.id }, navigate: () => {}, signedIn: true }));
-    assert.equal($('.cs-post-title').textContent, 'Referral timelines', 'the linked thread opens first');
-    assert.equal($('.cs-comment-body').textContent, 'Two weeks');
-    assert.equal($(`a[href="/discuss/${thread.id}"]`) !== null, true, 'with its public link');
-  } finally {
-    restore();
-  }
-});
-
 test('the profile shows languages, badges, posts, follows and list saves; follower pages list handles', () => {
   const catalogue = new Map([['lc-1', { id: 'lc-1', title: '两数之和', titleEn: 'Two Sum', difficulty: '简单', tags: [] }]]);
   const profile = {
@@ -199,7 +150,7 @@ test('the profile shows languages, badges, posts, follows and list saves; follow
     listStars: 2,
     languages: [{ language: 'python', n: 3 }, { language: 'cpp', n: 1 }],
     badges: [{ id: 'streak:7', group: 'streak', zh: '连续 7 天', en: '7-day streak' }],
-    posts: { items: [{ id: thread.id, target: 'discuss:algo', title: 'Monotonic stack', votes: 3, createdAt: 1 }, { id: 'p2', target: 'lc-1', title: 'Hash map', votes: 1, createdAt: 1 }], total: 2, votes: 4 },
+    posts: { items: [{ id: 'p2', target: 'lc-1', title: 'Hash map', votes: 4, createdAt: 1 }], total: 1, votes: 4 },
     followers: 5,
     following: 1,
   };
@@ -207,7 +158,6 @@ test('the profile shows languages, badges, posts, follows and list saves; follow
   assert.deepEqual([...doc.querySelectorAll('.learner-langs li span:first-child')].map((s) => s.textContent), ['Python', 'C++']);
   assert.equal(doc.querySelector('.learner-badges li').textContent, '7-day streak');
   assert.equal(doc.querySelector('a[href="/u/line-rider/followers"]').textContent, '5 followers');
-  assert.equal(doc.querySelector(`a[href="/discuss/${thread.id}"]`) !== null, true, 'threads link to their page');
   assert.equal(doc.querySelector('a[href="/?view=problem&problem=lc-1"]') !== null, true, 'solutions link to the problem');
   assert.equal(doc.querySelector('#learner-posts').textContent.includes('4 upvotes'), true);
   assert.equal(doc.querySelector('a[href="/u/lists/AbCdEfGhIjKl"]').textContent.includes('2 saves'), true);
@@ -357,7 +307,6 @@ test('the experience form sends the optional facts; the list offers member-only 
     assert.equal(seasons.querySelector('option[value="2026-fall"]').textContent.startsWith('2026 Fall'), true);
     await act(async () => set(menu, 'intern'));
     assert.deepEqual(navigations.at(-1), ['experiences', { type: 'experience', employment: 'intern' }]);
-    assert.equal($('a[href="/?view=discuss&channel=offer"]') !== null, true, 'offer stories beside "Offers only"');
     assert.equal($('.ct-member-note') === null, true);
     await mount(createElement(ContentList, { section: 'experiences', params: { employment: 'intern' }, navigate: () => {} }));
     assert.equal($('.ct-member-note') !== null, true, 'says only member posts show');

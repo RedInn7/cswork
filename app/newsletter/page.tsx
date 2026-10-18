@@ -13,8 +13,8 @@ export async function generateMetadata({ searchParams }: Props) {
   const metadata = seoMetadata({
     title: zh ? 'CSWork 周报 · 往期归档' : 'The CSWork weekly · Archive',
     description: zh
-      ? '每周一封：新上线的 OA 题、学员面经、热门讨论和每日一题战报。往期全部公开。'
-      : 'One email a week: new OA problems, member interview reports, top discussions and daily problem results. Every issue is public.',
+      ? '每周一封：新上线的 OA 题、学员面经和每日一题战报。往期全部公开。'
+      : 'One email a week: new OA problems, member interview reports and daily problem results. Every issue is public.',
     path: '/newsletter',
   });
   return {
@@ -43,8 +43,8 @@ export default async function NewsletterPage({ searchParams }: Props) {
         <h1>{t('每周一封，只讲本周发生了什么', 'One email a week, about this week')}</h1>
         <p>
           {t(
-            '新上线的 OA 真题、学员投稿的面经、讨论区最热的帖子，还有每天一道题有多少人做出来。全部来自站内数据，往期都在下面。',
-            'New OA problems, interview reports from members, the busiest discussion threads, and how many people solved each daily problem. All from the site itself; every past issue is below.',
+            '新上线的 OA 真题、学员投稿的面经，还有每天一道题有多少人做出来。全部来自站内数据，往期都在下面。',
+            'New OA problems, interview reports from members, and how many people solved each daily problem. All from the site itself; every past issue is below.',
           )}
         </p>
         {notice && (

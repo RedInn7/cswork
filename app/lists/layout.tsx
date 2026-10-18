@@ -1,6 +1,6 @@
 import './lists.css';
 import Link from 'next/link';
-import { JoinCommunity } from '../discuss/community-link';
+import { JoinCommunity } from '../community-link';
 import { requestLocale } from '@/lib/server/locale';
 
 /** Crawlable classic list mappings: which problems of each list are judgeable here. */

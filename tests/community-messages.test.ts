@@ -10,7 +10,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
-// The work email badge, the referral board and direct messages.
+// The work email badge and direct messages.
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-community-messages-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 process.env.CONTENT_DATABASE_PATH = resolve(dir, 'content.sqlite');
@@ -87,6 +87,11 @@ const codeIn = (text: string) => /(\d{6})/.exec(text)![1];
 before(() => {
   const db = sqlite();
   migrate(drizzle(db), { migrationsFolder: resolve('drizzle') });
+  // A solution may carry the badge; one to a company's OA problem never does.
+  for (const id of ['lc-1', 'oa-amazon-1'])
+    db.prepare(
+      `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES(?,'gomall','00-overview','v-'||?,1,1,1)`,
+    ).run(id, id);
   for (const p of [owner, amy, bob, cat, stranger, teacher])
     db.prepare('INSERT INTO "user"(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,1,1,1)').run(
       p.id,
@@ -144,7 +149,7 @@ void test('work email: codes by mail, an HMAC only, one address per account, rat
   const state = await ok(amy, 'POST', 'work/confirm', { code });
   assert.equal(state.verification.active, true);
   assert.equal(state.verification.company.slug, 'google');
-  assert.deepEqual(state.verification.show, { profile: false, posts: false, referrals: false }, 'every placement starts off');
+  assert.deepEqual(state.verification.show, { profile: false, posts: false }, 'every placement starts off');
   assert.equal(await status(amy, 'POST', 'work/confirm', { code }), 400, 'a code works once');
   // The same address cannot verify a second account; the attempt leaves no badge behind.
   const again = await verify(bob, 'amy+bob@google.com');
@@ -164,34 +169,33 @@ void test('work email: codes by mail, an HMAC only, one address per account, rat
   assert.equal((await ok(owner, 'POST', 'work/remove', {})).verification, null);
 });
 
-void test('badge placements, the referral board and direct messages', async () => {
-  // Amy (verified at Google above) posts a referral thread and an experience comment.
-  const thread = (await ok(amy, 'POST', 'posts', {
-    problemId: 'discuss:referral',
-    title: 'Google referrals',
-    body: 'Happy to refer for SWE roles.',
-    tag: 'google',
-  })).post;
-  assert.equal(thread.employer, null, 'off by default');
-  assert.equal(thread.referral, false, 'off by default');
-  const path = `posts/${thread.id}`;
+void test('badge placements and direct messages between mutual follows', async () => {
+  const catalogue = new Map([
+    ['lc-1', { difficulty: '简单' }],
+    ['oa-amazon-1', { difficulty: '中等' }],
+  ]);
+  // Amy (verified at Google above) posts a solution.
+  const solution = (await ok(amy, 'POST', 'posts', { problemId: 'lc-1', title: 'Two pointers', body: 'Sweep.' })).post;
+  assert.equal(solution.employer, null, 'off by default');
+  const path = `posts/${solution.id}`;
   await ok(amy, 'POST', 'work/show', { posts: true });
-  assert.equal((await ok(null, 'GET', path)).post.employer, 'Google');
-  assert.equal((await ok(null, 'GET', path)).post.referral, false);
-  await ok(amy, 'POST', 'work/show', { referrals: true });
-  assert.equal((await ok(null, 'GET', path)).post.referral, true);
+  assert.equal((await ok(bob, 'GET', path)).post.employer, 'Google');
+  assert.equal(await status(amy, 'POST', 'work/show', { referrals: true }), 400, 'referral threads left with the board');
   // The profile placement is separate, and off.
   profile(amy.id, 'amy-g');
-  assert.equal(publicProfile('amy-g', new Map())!.employer, null);
+  assert.equal(publicProfile('amy-g', catalogue)!.employer, null);
   await ok(amy, 'POST', 'work/show', { profile: true });
-  assert.equal(publicProfile('amy-g', new Map())!.employer, 'Google');
+  assert.equal(publicProfile('amy-g', catalogue)!.employer, 'Google');
 
-  // Request a referral from the post: the reply goes to Amy, her bell rings once, without the text.
-  assert.equal(await status(bob, 'POST', 'dm', { post: thread.id, body: 'Hi', to: 'amy-g' }), 400, 'one way in');
-  assert.equal(await status(person('m-bob', { verified: false }), 'POST', 'dm', { post: thread.id, body: 'Hi' }), 403);
-  const opened = await ok(bob, 'POST', 'dm', { post: thread.id, body: 'Could you refer me? Secret details' });
+  // Bob and Amy follow each other: his message goes to Amy, her bell rings once, without the text.
+  follow(bob.id, amy.id);
+  follow(amy.id, bob.id);
+  assert.equal(await status(bob, 'POST', 'dm', { post: 'x', body: 'Hi', to: 'amy-g' }), 400, 'one way in');
+  assert.equal(await status(bob, 'POST', 'dm', { post: 'x', body: 'Hi' }), 404, 'referral threads left with the board');
+  assert.equal(await status(person('m-bob', { verified: false }), 'POST', 'dm', { to: 'amy-g', body: 'Hi' }), 403);
+  const opened = await ok(bob, 'POST', 'dm', { to: 'amy-g', body: 'Could you refer me? Secret details' });
   assert.equal(opened.name, '@amy-g');
-  assert.equal(opened.post.title, 'Google referrals');
+  assert.equal(opened.post, null);
   await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Second line' });
   assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'x'.repeat(2001) }), 400);
   assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'a‮b' }), 400);
@@ -204,10 +208,10 @@ void test('badge placements, the referral board and direct messages', async () =
     href: string;
   }[];
   assert.equal(notes.length, 1);
-  assert.equal(notes[0].title, '你收到一条内推请求');
+  assert.equal(notes[0].title, '你收到一条新私信');
   assert.ok(!notes[0].body.includes('Secret') && !notes[0].body.includes('Real'), notes[0].body);
   assert.equal(notes[0].href, `/?view=messages&thread=${opened.key}`);
-  // Amy's inbox: masked name (Bob has no public profile), unread until she opens it.
+  // Amy's inbox: masked name (Bob has no public profile yet), unread until she opens it.
   const box = await ok(amy, 'GET', 'dm');
   assert.equal(box.items[0].unread, 2);
   assert.equal(box.items[0].name, 'Re***');
@@ -221,18 +225,17 @@ void test('badge placements, the referral board and direct messages', async () =
   assert.equal(await status(stranger, 'GET', `dm/${opened.key}`), 404);
   await ok(amy, 'POST', `dm/${opened.key}`, { body: 'Sure, send your resume.' });
 
-  // Turning requests off stops new ones (from cat) but not the open conversation.
-  await ok(amy, 'POST', 'dm/settings', { open: 'follows' });
-  assert.equal(await status(cat, 'POST', 'dm', { post: thread.id, body: 'Me too?' }), 403);
-  await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Thanks!' });
-  await ok(amy, 'POST', 'dm/settings', { open: 'all' });
-  // A per-recipient daily cap on new conversations.
+  // A per-recipient daily cap on new conversations, even between mutual follows.
   for (let i = 0; i < 9; i++) {
     const asker = person(`m-asker-${i}`);
-    await ok(asker, 'POST', 'dm', { post: thread.id, body: `Request ${i}` });
+    follow(asker.id, amy.id);
+    follow(amy.id, asker.id);
+    await ok(asker, 'POST', 'dm', { to: 'amy-g', body: `Request ${i}` });
   }
-  assert.equal(await status(cat, 'POST', 'dm', { post: thread.id, body: 'Me too?' }), 429);
-  sqlite().prepare("UPDATE direct_messages SET created_at=created_at-? WHERE post_id IS NOT NULL").run(DAY);
+  follow(cat.id, amy.id);
+  follow(amy.id, cat.id);
+  assert.equal(await status(cat, 'POST', 'dm', { to: 'amy-g', body: 'Me too?' }), 429);
+  sqlite().prepare('UPDATE direct_messages SET created_at=created_at-? WHERE post_id IS NOT NULL').run(DAY);
 
   // Blocking: neither side can write; the reporter's report reaches the moderators.
   const reply = (await ok(amy, 'GET', `dm/${opened.key}`)).items.find((m: { mine: boolean }) => !m.mine);
@@ -250,10 +253,6 @@ void test('badge placements, the referral board and direct messages', async () =
   await ok(amy, 'POST', `dm/${opened.key}/block`, { on: false });
   await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Back again' });
 
-  // Without the referral switch (or the badge), a referral thread takes no requests.
-  await ok(amy, 'POST', 'work/show', { referrals: false });
-  assert.equal(await status(cat, 'POST', 'dm', { post: thread.id, body: 'Hi' }), 404);
-
   // Mutual follows may start a conversation; a one-way follow may not; nobody messages themselves.
   profile(cat.id, 'cat-c');
   profile(bob.id, 'bob-b');
@@ -269,32 +268,30 @@ void test('badge placements, the referral board and direct messages', async () =
   assert.equal(await status(cat, 'POST', 'dm', { to: 'bob-b', body: 'Hi again' }), 403);
   assert.equal(await status(cat, 'POST', 'dm', { to: 'cat-c', body: 'Me' }), 400);
 
-  // Experience comments never carry the badge, though her other posts do.
+  // Experience comments never carry the badge, though her solutions do.
   const comment = (await ok(amy, 'POST', 'posts', { problemId: 'exp:g-exp', body: 'Good luck!' })).post;
   assert.equal(comment.employer, null);
-  assert.equal((await ok(null, 'GET', path)).post.employer, 'Google');
-  // Nor do threads where it would read as job hunting; the algorithm channel carries it.
-  for (const [channel, shown] of [['interview', null], ['offer', null], ['career', null], ['algo', 'Google']] as const) {
-    const post = (await ok(amy, 'POST', 'posts', { problemId: `discuss:${channel}`, title: 'Notes', body: 'Notes' })).post;
-    assert.equal(post.employer, shown, channel);
-  }
-  // Nor does her profile list those threads beside its badge; without the badge it lists them all.
-  const listed = () => publicProfile('amy-g', new Map())!.posts.items.map((p: { target: string }) => p.target).sort();
-  assert.deepEqual(listed(), ['discuss:algo', 'discuss:referral']);
+  assert.equal((await ok(bob, 'GET', path)).post.employer, 'Google');
+  // Nor does a solution to a company's OA problem, where it would read as job hunting.
+  const oa = (await ok(amy, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 'Window', body: 'Notes' })).post;
+  assert.equal(oa.employer, null);
+  // Nor does her profile list that solution beside its badge; without the badge it lists both.
+  const listed = () => publicProfile('amy-g', catalogue)!.posts.items.map((p: { target: string }) => p.target).sort();
+  assert.deepEqual(listed(), ['lc-1']);
   await ok(amy, 'POST', 'work/show', { profile: false });
-  assert.deepEqual(listed(), ['discuss:algo', 'discuss:career', 'discuss:interview', 'discuss:offer', 'discuss:referral']);
+  assert.deepEqual(listed(), ['lc-1', 'oa-amazon-1']);
   await ok(amy, 'POST', 'work/show', { profile: true });
 });
 
 void test('verifying at another company switches every placement off', async () => {
   // Renewing at the same company keeps Amy's choices (profile and posts on, from above).
   await verify(amy, 'amy@google.com');
-  assert.deepEqual((await ok(amy, 'GET', 'work')).verification.show, { profile: true, posts: true, referrals: false });
+  assert.deepEqual((await ok(amy, 'GET', 'work')).verification.show, { profile: true, posts: true });
   // Consent was for Google: Amazon starts from nothing, before and after the code.
   const code = await verify(amy, 'amy@amazon.com');
-  assert.deepEqual((await ok(amy, 'GET', 'work')).verification.show, { profile: false, posts: false, referrals: false });
+  assert.deepEqual((await ok(amy, 'GET', 'work')).verification.show, { profile: false, posts: false });
   const state = await ok(amy, 'POST', 'work/confirm', { code });
   assert.equal(state.verification.company.slug, 'amazon');
-  assert.deepEqual(state.verification.show, { profile: false, posts: false, referrals: false });
+  assert.deepEqual(state.verification.show, { profile: false, posts: false });
   assert.equal(publicProfile('amy-g', new Map())!.employer, null);
 });

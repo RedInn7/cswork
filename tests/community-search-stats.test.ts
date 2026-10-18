@@ -71,7 +71,7 @@ before(() => {
   post('oa-amazon-1', 'Hash map', 'O(n) with a lookup_table', 100, 10);
   post('oa-amazon-1', 'Pinned guide', 'read me first', 500, 0, 1);
   post('oa-amazon-1', 'Sort first', 'then two pointers meet', 3, 3);
-  post('discuss:interview', 'Pointers in C', 'two pointers and more', 1, 1);
+  post('sd:framework', 'Pointers in C', 'two pointers and more', 1, 1);
 });
 after(() => {
   sqlite().close();
@@ -90,7 +90,7 @@ void test('posts: hot sort cools votes with age, pinned stays first', async () =
 });
 
 void test('posts: q matches every word in the title or body, LIKE wildcards literal, one target only', async () => {
-  // Both words, title or body; case-insensitive; the discussion thread stays out.
+  // Both words, title or body; case-insensitive; the chapter discussion's post stays out.
   assert.deepEqual(await titles('problem=oa-amazon-1&q=two+POINTERS'), ['Sort first', 'Two pointers']);
   assert.deepEqual(await titles('problem=oa-amazon-1&q=two+pointers&sort=hot'), ['Two pointers', 'Sort first']);
   // % and _ match themselves, not anything.
@@ -105,8 +105,8 @@ void test('posts: q matches every word in the title or body, LIKE wildcards lite
     'Two pointers',
   ]);
   assert.deepEqual(await titles('problem=oa-amazon-1&q=nothing-like-this'), []);
-  // The board's all-channels list searches threads only, never problem solutions.
-  assert.deepEqual(await titles('problem=discuss:all&q=pointers'), ['Pointers in C']);
+  // The removed board's all-channels list is no target.
+  assert.equal((await call(me, 'GET', 'posts?problem=discuss:all&q=pointers')).status, 404);
 });
 
 void test('editorial votes: helpful / not helpful on lc- and oa- editorials only', async () => {

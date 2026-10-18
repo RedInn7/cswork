@@ -169,47 +169,33 @@ void test('with mail configured: one confirmation mail, a confirm link, one-clic
   }
 });
 
-void test('an issue gathers the week’s discussions; archives drop companies hidden since', async () => {
+void test('an issue has no board threads; archives drop companies hidden since and old threads', async () => {
   const start = isoWeek(Date.now()).start;
-  const db = sqlite();
-  const post = db.prepare(
-    `INSERT INTO solution_posts(id,problem_id,user_id,title,body,created_at,updated_at) VALUES(?,?,?,?,'Body text here',?,?)`,
-  );
-  post.run('00000000-0000-4000-8000-000000000001', 'discuss:interview', 'n-amy', 'Hot thread', start + 1000, start + 1000);
-  post.run('00000000-0000-4000-8000-000000000002', 'discuss:career', 'n-amy', 'Calm thread', start + 2000, start + 2000);
-  post.run('00000000-0000-4000-8000-000000000003', 'discuss:interview', 'n-amy', 'Last week', start - DAY, start - DAY);
-  post.run('00000000-0000-4000-8000-000000000004', 'lc-1', 'n-amy', 'A solution', start + 3000, start + 3000);
-  for (const user of ['v1', 'v2']) db.prepare('INSERT INTO post_votes(post_id,user_id,created_at) VALUES(?,?,?)').run('00000000-0000-4000-8000-000000000001', user, start);
+  sqlite()
+    .prepare(`INSERT INTO solution_posts(id,problem_id,user_id,title,body,created_at,updated_at) VALUES(?,?,?,?,'Body text here',?,?)`)
+    .run('00000000-0000-4000-8000-000000000001', 'discuss:interview', 'n-amy', 'Hot thread', start + 1000, start + 1000);
   const issue = await composeIssue(start);
   assert.equal(issue.id, isoWeek(start).id);
-  assert.deepEqual(
-    issue.discussions.map((d) => [d.title, d.votes, d.href]),
-    [
-      ['Hot thread', 2, '/discuss/00000000-0000-4000-8000-000000000001'],
-      ['Calm thread', 0, '/discuss/00000000-0000-4000-8000-000000000002'],
-    ],
-  );
+  assert.equal('discussions' in issue, false);
+  // An issue composed while the discussion board existed still holds its threads.
+  const archived = { ...issue, discussions: [{ id: 'old', title: 'Hot thread', href: '/discuss/old', votes: 2, comments: 0 }] };
   saveIssue({
-    ...issue,
+    ...archived,
     experiences: [
       { id: 'exp-shown', title: 'Shown', company: 'stripe', companyName: 'Stripe', href: '/library/experience-ugc/a' },
       { id: 'exp-hidden', title: 'Hidden', company: 'hiddenco', companyName: 'Hidden Co', href: '/library/experience-ugc/b' },
     ],
   });
   assert.deepEqual(issueList().map((i) => i.id), [issue.id]);
-  // Taken down since: a moderator hides the calm thread.
-  db.prepare('UPDATE solution_posts SET hidden=2 WHERE id=?').run('00000000-0000-4000-8000-000000000002');
   const read = (await readIssue(issue.id))!;
   assert.deepEqual(read.experiences.map((e) => e.title), [], 'neither report is public: one company hidden, one not approved');
-  assert.deepEqual(read.discussions.map((d) => d.title), ['Hot thread']);
+  assert.equal('discussions' in read, false, 'the board is gone, so are its threads');
   assert.equal(await readIssue('2000-W01'), null);
   const text = issueText(read, false, 'tok');
   assert.ok(text.startsWith(`CSWork weekly · ${issue.id}`));
-  assert.ok(text.includes('- Hot thread (2 upvotes): https://cswork.test/discuss/00000000-0000-4000-8000-000000000001'));
   assert.ok(text.includes(`Read it online: https://cswork.test/newsletter/${issue.id}`));
   assert.ok(text.includes('Unsubscribe: https://cswork.test/newsletter/unsubscribe?token=tok'));
-  assert.ok(!text.includes('Hidden') && !text.includes('Calm thread'));
-  assert.ok(issueText(read, true, 'tok').includes('热门讨论'));
+  assert.ok(!text.includes('Hidden') && !text.includes('Hot thread'));
 });
 
 void test('recomposing an older week finds its reports however many were approved since', async () => {

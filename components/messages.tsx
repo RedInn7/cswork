@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Ban, Mail } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import { DM_RETENTION_DAYS, threadPath } from '@/lib/community';
+import { DM_RETENTION_DAYS } from '@/lib/community';
 import type { Navigate } from './learning';
 import { ChatCompose, ChatLog, Report, useChat, type ChatItem } from './chat-log';
 import '@/app/learner-cloud.css';
@@ -35,7 +35,7 @@ function ErrorLine({ error, t }: { error: string; t: T }) {
 
 /**
  * ?view=messages: direct messages. The inbox, one conversation (&thread=<key>), or a first
- * message: &to=<handle> between mutual follows, &post=<id> to ask a referral thread's author.
+ * message: &to=<handle> between mutual follows.
  */
 export function Messages({ params, navigate }: { params: Record<string, string>; navigate: Navigate }) {
   const english = useLocale() === 'en';
@@ -61,15 +61,15 @@ export function Messages({ params, navigate }: { params: Record<string, string>;
         <h1>{t('私信', 'Messages')}</h1>
         <p>
           {t(
-            `互相关注的人之间，或者从内推帖请求内推时，才能开始对话。消息保留 ${DM_RETENTION_DAYS} 天；新消息只在站内提醒，提醒里不含正文。`,
-            `Conversations start between people who follow each other, or from a referral thread. Messages are kept ${DM_RETENTION_DAYS} days; new ones are flagged on the site only, never with their text.`,
+            `互相关注的人之间才能开始对话。消息保留 ${DM_RETENTION_DAYS} 天；新消息只在站内提醒，提醒里不含正文。`,
+            `Conversations start between people who follow each other. Messages are kept ${DM_RETENTION_DAYS} days; new ones are flagged on the site only, never with their text.`,
           )}
         </p>
       </header>
       {params.thread ? (
         <Thread key={params.thread} threadKey={params.thread} back={inbox} t={t} english={english} />
-      ) : params.to || params.post ? (
-        <FirstMessage to={params.to} post={params.post} back={inbox} navigate={navigate} t={t} english={english} />
+      ) : params.to ? (
+        <FirstMessage to={params.to} back={inbox} navigate={navigate} t={t} english={english} />
       ) : (
         <InboxList navigate={navigate} t={t} />
       )}
@@ -151,8 +151,8 @@ function InboxList({ navigate, t }: { navigate: Navigate; t: T }) {
       ) : (
         <p className="study-state">
           {t(
-            '还没有私信。在互相关注的人的主页上，或者讨论区的内推帖里，都可以发起对话。',
-            'No messages yet. Start one from the profile of someone you follow back, or from a referral thread on the discussion board.',
+            '还没有私信。在互相关注的人的主页上可以发起对话。',
+            'No messages yet. Start one from the profile of someone you follow back.',
           )}
         </p>
       )}
@@ -191,7 +191,7 @@ function Thread({ threadKey, back, t, english }: { threadKey: string; back: Reac
           {c.post && (
             <p className="dm-post">
               {t('来自内推帖：', 'From the referral thread: ')}
-              <a href={threadPath(c.post.id)}>{c.post.title}</a>
+              {c.post.title}
             </p>
           )}
           <ChatLog
@@ -222,14 +222,12 @@ function Thread({ threadKey, back, t, english }: { threadKey: string; back: Reac
 
 function FirstMessage({
   to,
-  post,
   back,
   navigate,
   t,
   english,
 }: {
-  to?: string;
-  post?: string;
+  to: string;
   back: React.ReactNode;
   navigate: Navigate;
   t: T;
@@ -240,23 +238,16 @@ function FirstMessage({
     <>
       {back}
       <section className="dm-panel" aria-labelledby="dm-first">
-        <h2 id="dm-first">{post ? t('请求内推', 'Request a referral') : t(`发私信给 @${to}`, `Message @${to}`)}</h2>
-        <p className="dm-note">
-          {post
-            ? t(
-                '对方是这家公司已验证的员工。说说你是谁、想投哪个岗位，附上简历链接；不要发密码、证件号这类信息。',
-                'They are a verified employee there. Say who you are and which role you want, with a link to your résumé; never send passwords or ID numbers.',
-              )
-            : t('你们互相关注，可以直接聊。', 'You follow each other, so you can talk directly.')}
-        </p>
+        <h2 id="dm-first">{t(`发私信给 @${to}`, `Message @${to}`)}</h2>
+        <p className="dm-note">{t('你们互相关注，可以直接聊。', 'You follow each other, so you can talk directly.')}</p>
         <ErrorLine error={error} t={t} />
         <ChatCompose
-          label={post ? t('内推请求', 'Referral request') : t('私信内容', 'Message')}
+          label={t('私信内容', 'Message')}
           english={english}
           send={async (body) => {
             setError('');
             try {
-              const c = await api<Conversation>('oj/dm', post ? { post, body } : { to, body });
+              const c = await api<Conversation>('oj/dm', { to, body });
               navigate('messages', { thread: c.key });
               return true;
             } catch (e) {

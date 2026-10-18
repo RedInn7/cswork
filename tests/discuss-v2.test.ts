@@ -64,8 +64,11 @@ const notices = (userId: string, kind = '') =>
   sqlite()
     .prepare(`SELECT kind,title,body,href,read_at AS readAt FROM notifications WHERE user_id=? AND (?='' OR kind=?) ORDER BY created_at,rowid`)
     .all(userId, kind, kind) as { kind: string; title: string; body: string; href: string; readAt: number | null }[];
+// Replies, comment votes, notices and anonymity, on a system design chapter's discussion.
 const thread = (p: Person, extra: Record<string, unknown> = {}) =>
-  ok<Detail>(p, 'POST', 'posts', { problemId: 'discuss:interview', title: 'Loop prep', body: 'How did it go?', ...extra });
+  ok<Detail>(p, 'POST', 'posts', { problemId: 'sd:framework', title: 'Loop prep', body: 'How did it go?', ...extra });
+// Bob's solution keeps his public profile's post list non-empty (it lists solutions only).
+const catalogue = new Map([['oa-amazon-1', { difficulty: '中等' }]]);
 
 before(() => {
   const db = sqlite();
@@ -151,7 +154,7 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   assert.deepEqual(notices(bob.id).map((n) => [n.kind, n.title]), [['mention', '有人在讨论中提到了你']]);
   assert.deepEqual(notices(cy.id), []);
   assert.deepEqual(notices(ada.id), []);
-  assert.equal(notices(bob.id)[0].href, `/?view=discuss&channel=interview&post=${post.id}`);
+  assert.equal(notices(bob.id)[0].href, '/system-design/framework');
   assert.equal(notices(bob.id)[0].body, '@ada: Loop prep');
 
   const comment = (await ok<Detail>(dee, 'POST', `posts/${post.id}/comments`, { body: 'Good luck' })).comments[0];
@@ -193,6 +196,10 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
   sqlite().prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('dm1',?,'dm','x','y','/',1)").run(ada.id);
   const replies = notices(ada.id, 'reply').length;
+  // A notice left by the removed discussion board lists nowhere.
+  sqlite()
+    .prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('board1',?,'reply','x','y','/?view=discuss&channel=interview&post=p',1)")
+    .run(ada.id);
   assert.ok(replies >= 2);
   assert.equal((await notificationPage(ada, url('reply'))).items.length, replies);
   assert.equal((await notificationPage(ada, url('mention'))).items.length, 0);
@@ -221,18 +228,14 @@ void test('upvotes merge into one notice per post and day', async () => {
   assert.equal(notices(ada.id, 'like')[0].title, '2 人赞了你的帖子');
 });
 
-void test('an anonymous post names no one, its author excepted, on the board, the profile or in notices', async () => {
-  // Never on a judge problem's solution or a channel that carries the employee badge.
+void test('an anonymous post names no one, its author excepted, in the list, the profile or in notices', async () => {
+  // Never on a judge problem's solution.
   assert.equal(
     await status(bob, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 't', body: 'b', anonymous: true }),
     400,
   );
-  assert.equal(
-    await status(bob, 'POST', 'posts', { problemId: 'discuss:referral', title: 't', body: 'b', anonymous: true }),
-    400,
-  );
   sqlite().prepare('DELETE FROM notifications').run();
-  const { post } = await thread(bob, { problemId: 'discuss:offer', title: 'Offer numbers', body: 'Comp details, cc @ada', anonymous: true });
+  const { post } = await thread(bob, { problemId: 'sd:building-blocks', title: 'Offer numbers', body: 'Comp details, cc @ada', anonymous: true });
   assert.equal(post.mine, true);
   assert.equal(post.anonymous, true);
   // An anonymous author mentions no one, blocked or not, so a missing notice names no one.
@@ -247,7 +250,7 @@ void test('an anonymous post names no one, its author excepted, on the board, th
   sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
   assert.deepEqual(notices(ada.id, 'reply').map((n) => n.body), ['Thank you']);
   for (const reader of [ada, null]) {
-    const listed = await ok<List>(reader, 'GET', 'posts?problem=discuss:offer&sort=new');
+    const listed = await ok<List>(reader, 'GET', 'posts?problem=sd:building-blocks&sort=new');
     const detail = await ok<Detail>(reader, 'GET', `posts/${post.id}`);
     const json = JSON.stringify([listed, detail]);
     for (const leak of ['bob-b', bob.id, 'Name dv-bob', 'Na***']) assert.ok(!json.includes(leak), leak);
@@ -259,13 +262,13 @@ void test('an anonymous post names no one, its author excepted, on the board, th
   assert.equal((await ok<Detail>(bob, 'GET', `posts/${post.id}`)).post.author, 'Name dv-bob');
 
   // Off the author's public profile, and out of its reputation: no upvote ties it to them.
-  const before = publicProfile('bob-b', new Map())!;
+  const named = (await ok<Detail>(bob, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 'Named one', body: 'b' })).post;
+  const before = publicProfile('bob-b', catalogue)!;
   assert.ok(!before.posts.items.some((p) => p.id === post.id));
   assert.ok(before.posts.total, 'named posts still list');
   assert.equal(before.reputation, 0);
-  const named = (await thread(bob, { title: 'Named one' })).post;
   await ok(ada, 'POST', `posts/${named.id}/vote`, { on: true });
-  const after = publicProfile('bob-b', new Map())!;
+  const after = publicProfile('bob-b', catalogue)!;
   assert.equal(after.reputation, 2);
   const anonPaid = sqlite()
     .prepare("SELECT SUM(delta) FROM point_ledger WHERE user_id=? AND reason='upvote' AND ref_id LIKE ?")
@@ -277,8 +280,8 @@ void test('an anonymous post names no one, its author excepted, on the board, th
 });
 
 void test('moderators feature posts first in either order', async () => {
-  const a = (await ok<Detail>(dee, 'POST', 'posts', { problemId: 'discuss:career', title: 'Older', body: 'x' })).post;
-  const b = (await ok<Detail>(dee, 'POST', 'posts', { problemId: 'discuss:career', title: 'Newer', body: 'y' })).post;
+  const a = (await ok<Detail>(dee, 'POST', 'posts', { problemId: 'sd:url-shortener', title: 'Older', body: 'x' })).post;
+  const b = (await ok<Detail>(dee, 'POST', 'posts', { problemId: 'sd:url-shortener', title: 'Newer', body: 'y' })).post;
   sqlite().prepare('UPDATE solution_posts SET created_at=created_at-1000 WHERE id=?').run(a.id);
   await ok(ada, 'POST', `posts/${b.id}/vote`, { on: true });
   assert.equal(await status(ada, 'POST', `posts/${a.id}/pin`, {}), 403);
@@ -286,7 +289,7 @@ void test('moderators feature posts first in either order', async () => {
   assert.equal((await ok<Detail>(teacher, 'GET', `posts/${a.id}`)).moderator, true);
   assert.deepEqual(await ok(teacher, 'POST', `posts/${a.id}/pin`, {}), { id: a.id, pinned: true });
   for (const sort of ['votes', 'new']) {
-    const items = (await ok<List>(ada, 'GET', `posts?problem=discuss:career&sort=${sort}`)).items;
+    const items = (await ok<List>(ada, 'GET', `posts?problem=sd:url-shortener&sort=${sort}`)).items;
     assert.deepEqual(
       items.map((p) => [p.id, p.pinned]),
       [
@@ -296,7 +299,7 @@ void test('moderators feature posts first in either order', async () => {
     );
   }
   await ok(teacher, 'POST', `posts/${a.id}/unpin`, {});
-  assert.equal((await ok<List>(ada, 'GET', 'posts?problem=discuss:career&sort=new')).items[0].id, b.id);
+  assert.equal((await ok<List>(ada, 'GET', 'posts?problem=sd:url-shortener&sort=new')).items[0].id, b.id);
 });
 
 void test("a judge problem's notices carry no excerpt into the recipient's running exam", async () => {
@@ -336,9 +339,9 @@ void test("an anonymous interview report's author writes anonymously, as its OP,
   // profile and its upvotes out of the reputation.
   const own = (await ok<Detail>(bob, 'POST', 'posts', { problemId, title: '', body: 'More details on round 2' })).post;
   assert.equal(own.anonymous, true);
-  const reputation = publicProfile('bob-b', new Map())!.reputation;
+  const reputation = publicProfile('bob-b', catalogue)!.reputation;
   await ok(ada, 'POST', `posts/${own.id}/vote`, { on: true });
-  const profile = publicProfile('bob-b', new Map())!;
+  const profile = publicProfile('bob-b', catalogue)!;
   assert.equal(profile.reputation, reputation);
   assert.ok(!profile.posts.items.some((p) => p.id === own.id));
   for (const reader of [ada, null]) {
