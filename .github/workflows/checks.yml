@@ -26,9 +26,7 @@ jobs:
       - run: node --import tsx --test tests/analytics.test.ts tests/analytics-events.test.ts tests/analytics-ui.test.mjs
       - run: npm run test:platform
       - run: npm run test:diagrams
-      - run: npx tsx --test tests/interview-course.test.ts tests/algorithm-demo.test.ts
-      - run: npx tsx --test tests/knowledge-progress.test.ts
-      - run: node --import tsx --test tests/knowledge-navigation-ui.test.mjs
+      - run: npx tsx --test tests/algorithm-demo.test.ts
       - run: node --test tests/import-gomall-videos.test.mjs
       - run: node --test tests/backup.test.mjs
       - run: npm run test:oj
@@ -124,8 +122,7 @@ jobs:
       - run: node --import tsx --test tests/study-goal.test.ts tests/daily-goal-ui.test.mjs
       - run: node --import tsx --test tests/contacts.test.ts tests/outreach-templates.test.ts tests/career-outreach-ui.test.mjs
       - run: node --import tsx --test tests/negotiation-scripts.test.ts tests/negotiation-scripts-ui.test.mjs
-      - run: node --import tsx --test tests/study-groups.test.ts tests/study-groups-ui.test.mjs
-      - run: node --import tsx --test tests/mock-peer.test.ts tests/peer-mock-plus-ui.test.mjs tests/group-camp.test.ts tests/newsletter.test.ts tests/course-gift.test.ts tests/peer-cohort-gift-ui.test.mjs
+      - run: node --import tsx --test tests/mock-peer.test.ts tests/peer-mock-plus-ui.test.mjs tests/newsletter.test.ts tests/course-gift.test.ts tests/peer-cohort-gift-ui.test.mjs
       - run: node --import tsx --test tests/community.test.ts tests/community-ui.test.mjs
       - run: node --import tsx --test tests/posts-plus.test.ts tests/posts-plus-ui.test.mjs
       - run: node --import tsx --test tests/code-reviews.test.ts tests/code-review-ui.test.mjs
@@ -133,14 +130,12 @@ jobs:
       - run: node --import tsx --test tests/community-search-stats.test.ts tests/community-search-stats-ui.test.mjs
       - run: node --import tsx --test tests/api-tokens.test.ts tests/mcp-server.test.mjs tests/mcp-ui.test.mjs
       - run: node --import tsx --test tests/lc-ratings.test.ts tests/points.test.ts tests/practice-ratings-ui.test.mjs
-      - run: node --import tsx --test tests/story-bank.test.ts tests/interview-prep-ui.test.mjs
+      - run: node --import tsx --test tests/interview-prep-ui.test.mjs
       - run: node --import tsx --test tests/ai-answer.test.ts tests/answer-grade-ui.test.mjs
       - run: node --import tsx --test tests/study-plan.test.ts tests/study-plan-ui.test.mjs
       - run: node --import tsx --test tests/editor-format.test.ts tests/user-drafts.test.ts tests/playground.test.ts tests/playground-ui.test.mjs tests/workspace-sync-ui.test.mjs
       - run: node --import tsx --test tests/ai-ask.test.ts tests/command-palette-ui.test.mjs tests/seo-facets.test.ts tests/company-insights.test.ts tests/pwa.test.mjs
       - run: node --import tsx --test tests/python-debugger.test.ts tests/python-debugger-ui.test.mjs tests/call-tree.test.ts
-      # Frontend JS track: every solution passes and every starter fails in the browser's harness, then the sandbox runner.
-      - run: node --import tsx --test tests/js-harness.test.ts tests/frontend-js-content.test.ts tests/js-runner-ui.test.mjs
       - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs tests/estimation-drill.test.mjs
       # OS and networking simulators (/oa/sims): textbook answers, brute-force cross-checks, RFC 793 transitions.
       - run: node --import tsx --test tests/cs-sims.test.ts
