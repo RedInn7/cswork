@@ -66,6 +66,14 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     ],
   },
   {
+    slug: 'internship',
+    title: ['实习手册：从入职到转正', 'The internship: from day one to a return offer'],
+    summary: [
+      '入职前、头两周、第一个 PR、1:1 和周报模板、中期自评、交接文档、争取转正，以及选组电话怎么准备、怎么打分。',
+      'Before you start, the first two weeks, your first PR, 1:1 and weekly update templates, the midpoint review, the handoff doc, the return offer, and how to prepare for and score team-matching calls.',
+    ],
+  },
+  {
     slug: 'visa',
     title: ['国际学生签证须知', 'Visa notes for international students'],
     summary: [

@@ -31,10 +31,10 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms']);
+const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/career/intern', '/career/negotiation?s=return-plus-external']);
 
 test('every chapter has a body in both languages, with matching sections and live site links', () => {
-  assert.equal(GUIDE_CHAPTERS.length, 8);
+  assert.equal(GUIDE_CHAPTERS.length, 9);
   assert.deepEqual(Object.keys(GUIDE_BODIES).sort(), GUIDE_CHAPTERS.map((c) => c.slug).sort());
   for (const { slug, title, summary } of GUIDE_CHAPTERS) {
     const { zh, en } = GUIDE_BODIES[slug];
@@ -50,6 +50,11 @@ test('every chapter has a body in both languages, with matching sections and liv
           SITE_LINKS.has(link) || (link.startsWith('/guide/') && guideChapter(link.slice(7))),
           `${slug}: ${link}`,
         );
+  }
+  // The internship chapter ends on its tool and points a return offer at the negotiation script.
+  for (const body of Object.values(GUIDE_BODIES.internship)) {
+    assert.match(body.slice(body.lastIndexOf('\n## ')), /\]\(\/career\/intern\)/);
+    assert.ok(body.includes('](/career/negotiation?s=return-plus-external)'));
   }
 });
 
@@ -86,8 +91,8 @@ test('the index lists every chapter, the season and the resume review, in both l
     );
     const [crumbs, list] = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent));
     assert.equal(crumbs['@type'], 'BreadcrumbList');
-    assert.equal(list.itemListElement.length, 8);
-    assert.ok(list.itemListElement[7].url === 'https://cswork.org/guide/visa');
+    assert.equal(list.itemListElement.length, 9);
+    assert.ok(list.itemListElement[8].url === 'https://cswork.org/guide/visa');
   }
 });
 
@@ -100,7 +105,7 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
     assert.ok(!!table.getAttribute('aria-label'));
     assert.equal(table.querySelectorAll('tbody tr').length, 6);
     assert.ok(doc.querySelector('.guide-body a[href="/guide/resume"]') !== null);
-    assert.equal(doc.querySelectorAll('.guide-toc a').length, 8);
+    assert.equal(doc.querySelectorAll('.guide-toc a').length, 9);
     assert.ok(doc.querySelector('.guide-toc a[aria-current="page"]').getAttribute('href') === '/guide/timeline');
     assert.ok(doc.querySelector('a[rel="prev"]') === null);
     assert.ok(doc.querySelector('a[rel="next"]').getAttribute('href') === '/guide/resume');

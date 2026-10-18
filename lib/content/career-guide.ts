@@ -390,6 +390,157 @@ New-grad offers often have less room on base salary than on the sign-on bonus or
 Short “exploding” deadlines happen. Ask for an extension with a concrete date. Once you accept an offer, honour it and withdraw from other processes.`,
   },
 
+  internship: {
+    zh: `实习通常只有 10–12 周。最后能不能拿到转正（return offer），很大程度上取决于 manager 和 mentor 能不能清楚地看到你做成了什么。本章按时间顺序讲每个阶段该做的事，只讲通用做法；各公司流程不同，以你所在团队的说法为准。
+
+## 入职前
+- **先把身份文件办好。** 需要 CPT 或 OPT 的同学，开工前一定要拿到批准（OPT 要等 EAD 卡到手、并且到了卡上的开始日期）。不确定就问学校的国际学生办公室，详见[签证须知](/guide/visa)。
+- **及时回复 HR 和招聘方的邮件**，按时交入职材料，完成背景调查，确认设备寄送地址。
+- **了解团队在做什么。** 读一读团队公开的博客、文档或开源代码，补一补他们用的语言和工具。不用提前学完，认得这些名词就够了。
+- **还没定组的话**，先看本章最后一节「选组电话」。
+
+## 头两周：搭环境、认识人、问清目标
+- **第一周的头号任务是把开发环境跑起来**：能拉代码、能在本地构建、能跑测试。卡住超过半天就去问，别一个人硬扛。顺手把踩过的坑补进新人文档，这本身就是一个小贡献。
+- **和 manager 约好每周固定的 1:1**，和 mentor 说好平时怎么提问（聊天工具，或者固定的时间段）。
+- **第一次 1:1 就问清楚“什么样算一次成功的实习”**：期末要交付什么，谁来评估，看哪些方面（代码质量、独立程度、沟通）。把答案记下来，之后每周拿它对照。
+- **和组里每个人各约 15–30 分钟**，听听他们在做什么，你的项目会和谁打交道。
+- **从第一周开始写成果日志**：每周五花十分钟，记下做成的事、收到的反馈和学到的东西。到了中期和期末写自评时，你会感谢现在的自己。[实习工具](/career/intern)可以帮你按周记。
+
+## 第一个 PR
+- **挑一个小的、边界清楚的任务**：修一个 bug、补一个测试、改一处文档。目的是把整个流程走通一遍（分支、提交、code review、CI、上线），不是证明能力。
+- **提交前自己先 review 一遍**：描述里写清改了什么、为什么改、怎么测的。改动越小越好。
+- **认真对待 review 意见**：逐条回复，改了就说明改了什么；不同意就讲理由，最后服从团队的约定。同一类意见别让人提第二次。
+- **之后尽快接手正式项目**，先写一页设计文档：目标、不做什么、方案、里程碑。和 mentor 对齐范围之后再动手。
+
+## 1:1 议程和周报模板
+1:1 是你的会。提前准备议程，别让它变成随便聊聊。
+\`\`\`text
+1:1 议程（第 N 周）
+1. 上周做完了什么（附链接）
+2. 这周打算做什么
+3. 卡在哪里 / 需要谁帮忙
+4. 想听反馈的地方：……
+5. 其他（职业发展、团队里的事）
+\`\`\`
+每周五给 manager 和 mentor 发一份简短的周报，三到五行就够：
+\`\`\`text
+本周：完成 X（链接），Y 完成约七成
+下周：做完 Y，开始 Z
+风险：Z 依赖另一个组的接口，已约周二讨论
+\`\`\`
+周报的内容直接从成果日志里摘，五分钟就能写完。
+
+## 中期自评
+很多团队会在实习中段做一次正式或非正式的反馈。没有安排也要主动要一次。
+- **先自己写一页**：做成了什么（尽量带数字），收到过哪些反馈，接下来要改进什么。
+- **在 1:1 上直接问**：“按现在的表现，我离转正还差什么？后半程最该加强哪一点？”
+- **把反馈变成行动**：项目范围太大，就现在和 mentor 商量缩小。期末交付一个能用的版本，远比交一个做了一半的大项目好。
+- [实习工具](/career/intern)可以把前半程的日志整理成中期自评草稿。
+
+## 交接文档
+你走之后，代码还要有人维护。一份好的交接文档，也是你留给团队最直接的印象。建议在倒数第二周写好，包括：
+- 项目背景和目标，最后做到了哪一步
+- 代码在哪里，怎么构建、运行和测试
+- 设计上的取舍和原因
+- 已知问题、没做完的事和建议的下一步
+- 相关文档、看板和联系人
+
+最后一周做一次简短的分享或 demo，讲清问题、方案和结果。
+
+## 争取转正
+- **转正看什么，第一周就可以问。** 照着这个标准持续交付，比最后几周突击有用得多。
+- **倒数第三周左右问清流程**：谁来决定，什么时候出结果，还需要你提供什么。
+- **期末自评把成果写清楚**，每一条都说明带来了什么影响。可以从日志导出的期末草稿开始改。
+- **离开前当面道谢**，和 manager、mentor 留下联系方式，之后偶尔更新一下近况。
+- **拿到转正 offer、手上又有外部 offer 时**，怎么比较、怎么回复见 [Offer 比较与谈薪](/guide/offer)；也可以先在[谈薪对练](/career/negotiation?s=return-plus-external)里把这段对话练一遍。
+- 没拿到转正也不等于失败：这段实习和你在其中做成的事，仍是下一轮求职时简历上最有分量的内容。
+
+## 选组电话
+有的公司先发 offer，再安排你和几个组的 manager 通电话选组。这种电话是双向的：manager 在看你合不合适，你也在挑团队。
+- **准备**：提前查一查每个组在做什么；准备一段一分钟的自我介绍，讲清背景和想做的方向；列好想问的问题。
+- **可以问的问题**：实习生一般做什么样的项目，能不能举一个往届的例子；mentor 是谁，多久见一次；用什么技术栈；节奏怎么样，要不要 on-call；怎么判断实习是否成功；往届实习生的转正情况（问个大概就行）。
+- **每通电话结束后五分钟内记下来**：manager 是谁，项目是什么，哪些回答让你在意。电话一多，记忆很快就会混在一起。
+- **用加权打分来比**：先给几个因素（做的事、manager、成长、技术栈、影响、节奏、转正可能性）定权重，再给每个组打 1–5 分，算加权平均。分数是帮你理清想法的工具，最后也要听听自己的直觉。
+- 排好顺序后，按公司要求及时提交意向，并向每位 manager 道谢。
+
+## 下一步
+打开[实习工具](/career/intern)：填好实习开始日期和周数，按周记成果，导出中期、期末自评草稿和 XYZ 格式的简历要点。选组电话的记录和加权打分也在那里。`,
+    en: `An internship usually lasts 10–12 weeks, and whether it ends with a return offer depends a great deal on whether your manager and mentor can clearly see what you got done. This chapter walks through each stage in order. It covers general practice only: every company runs its own process, so go by what your team tells you.
+
+## Before day one
+- **Sort out your work authorisation first.** If you need CPT or OPT, it must be approved before you start work (for OPT, your EAD card must be in hand and its start date reached). If unsure, ask your school’s international student office, and see the [visa notes](/guide/visa).
+- **Answer HR and your recruiter promptly**: send the onboarding forms on time, complete the background check and confirm where your equipment should go.
+- **Learn what the team works on.** Read anything public, such as the team’s blog posts, docs or open-source code, and warm up on their language and tools. You don’t need to master them; knowing the names is enough.
+- **If you have no team yet**, read the last section of this chapter, on team-matching calls.
+
+## The first two weeks: setup, people and a clear goal
+- **Your first job in week one is a working dev environment**: you can pull the code, build it locally and run the tests. If you are stuck for more than half a day, ask. Add the snags you hit to the onboarding doc; that is a small contribution in itself.
+- **Set up a weekly 1:1 with your manager**, and agree with your mentor how you will ask questions (chat, or a standing time slot).
+- **In your first 1:1, ask what a successful internship looks like**: what you should deliver by the end, who evaluates it, and what they look at (code quality, independence, communication). Write the answer down and measure each week against it.
+- **Book 15–30 minutes with each teammate** to hear what they work on and who your project will touch.
+- **Start a weekly log of your work in week one**: ten minutes every Friday for what you finished, the feedback you got and what you learned. Your midpoint and final self-reviews will thank you. The [internship tool](/career/intern) keeps it week by week.
+
+## Your first PR
+- **Pick a small, well-bounded task**: a bug fix, a missing test, a docs correction. The point is to walk the whole path once (branch, commit, code review, CI, deploy), not to prove yourself.
+- **Review your own change first**: say in the description what changed, why, and how you tested it. Keep the change small.
+- **Take review comments seriously**: reply to each one and say what you changed; if you disagree, give your reason, then follow the team’s convention. Don’t get the same comment twice.
+- **Then move to your real project quickly**, starting with a one-page design doc: the goal, what is out of scope, the approach and the milestones. Agree the scope with your mentor before you build.
+
+## A 1:1 agenda and a weekly update
+The 1:1 is your meeting. Bring an agenda so it doesn’t drift into small talk.
+\`\`\`text
+1:1 agenda (week N)
+1. Done last week (with links)
+2. Plan for this week
+3. Where I'm stuck / who I need help from
+4. Feedback I'd like on: ...
+5. Anything else (career, the team)
+\`\`\`
+Every Friday, send your manager and mentor a short update; three to five lines is enough:
+\`\`\`text
+This week: finished X (link); Y is about 70% done
+Next week: finish Y, start Z
+Risk: Z depends on another team's API; meeting booked for Tuesday
+\`\`\`
+The update comes straight from your log, so it takes five minutes.
+
+## The midpoint self-review
+Many teams hold a formal or informal check-in halfway through. If yours doesn’t, ask for one.
+- **Write one page first**: what you got done (with numbers where you can), the feedback you have had, and what you will improve.
+- **Ask directly in your 1:1**: “Based on how things are going, what stands between me and a return offer? What should I focus on in the second half?”
+- **Turn the feedback into action**: if the project is too big, agree a smaller scope with your mentor now. A working version at the end beats a large project left half done.
+- The [internship tool](/career/intern) turns the first half of your log into a midpoint draft.
+
+## The handoff doc
+Someone will maintain your code after you leave, and a good handoff doc is the clearest impression you leave behind. Write it in the second-to-last week:
+- The project’s background and goal, and how far it got
+- Where the code lives, and how to build, run and test it
+- The design choices and why
+- Known issues, unfinished work and suggested next steps
+- Related docs, boards and contacts
+
+In the last week, give a short presentation or demo: the problem, your approach and the result.
+
+## Working toward a return offer
+- **What the decision rests on is something you can ask in week one.** Delivering steadily against it beats a sprint in the final weeks.
+- **About three weeks before the end, ask how the decision is made**: who decides, when you will hear, and whether they need anything from you.
+- **Make your results clear in the final self-review**, each with the difference it made. The final draft exported from your log is a good place to start.
+- **Thank people in person before you leave**, swap contact details with your manager and mentor, and send an update now and then.
+- **If a return offer arrives while you hold an outside offer**, see [offers and negotiation](/guide/offer) for comparing and replying, and rehearse that conversation in the [negotiation practice](/career/negotiation?s=return-plus-external).
+- No return offer doesn’t mean failure: the internship and what you built in it are still the strongest lines on your resume for the next search.
+
+## Team-matching calls
+Some companies make the offer first and then set up calls with the managers of a few teams. These calls run both ways: the manager is checking the fit, and you are choosing a team.
+- **Prepare**: look up what each team works on; have a one-minute introduction covering your background and the work you want to do; list your questions.
+- **Questions worth asking**: what kind of project interns usually get, with a past example; who your mentor would be and how often you would meet; the tech stack; the pace, and whether there is on-call; how the internship’s success is judged; how past interns fared on return offers (a rough picture is enough).
+- **Write notes within five minutes of each call**: the manager, the project and any answer that stood out. After a few calls, memories blur.
+- **Compare with weighted scores**: weight a few factors (the work, the manager, growth, the tech stack, impact, pace, return-offer odds), score each team 1–5 and take the weighted mean. The numbers help you sort out your thinking; your instinct still gets a say.
+- Once you have a ranking, send your preferences when the company asks, and thank each manager.
+
+## Next
+Open the [internship tool](/career/intern): set your start date and length, log your work week by week, and export midpoint and final self-review drafts and XYZ resume bullets. Notes from team-matching calls and their weighted scores live there too.`,
+  },
+
   visa: {
     zh: `**以下是一般性信息，不是法律意见。移民规则和费用会变，有时变得很快。行动前请咨询学校的国际学生办公室（美国是 DSO）或移民律师，并以 USCIS（美国）、IRCC（加拿大）官网为准。**
 
