@@ -1,4 +1,388 @@
 {
+ "array-foundations": {
+  "variants": [
+   {
+    "id": "dutch-flag",
+    "pattern": {
+     "zh": "三指针荷兰国旗划分",
+     "en": "Three-pointer Dutch flag partition"
+    },
+    "when": {
+     "zh": "数组里只有三种值（0/1/2，或「小于 / 等于 / 大于 pivot」）要原地分成三段：lo 左边全是 0，hi 右边全是 2，i 扫中间；和 hi 交换后 i 不前进，因为换过来的值还没看过。LC 75 颜色分类就是它，快排的三路划分也是。",
+     "en": "When the array holds three kinds of values (0/1/2, or less / equal / greater than a pivot) to split into three runs in place: everything left of lo is 0, right of hi is 2, and i scans the middle. After swapping with hi, i stays put because the value it received is unchecked. LC 75 (Sort Colors) is this, and so is quicksort's three-way partition."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def sort_colors(nums: list[int]) -> None:\n    \"\"\"Sorts 0s, 1s and 2s in place in one pass.\"\"\"\n    lo, i, hi = 0, 0, len(nums) - 1  # nums[:lo] are 0, nums[lo:i] are 1, nums[hi+1:] are 2\n    while i <= hi:\n        if nums[i] == 0:\n            nums[lo], nums[i] = nums[i], nums[lo]\n            lo += 1\n            i += 1\n        elif nums[i] == 2:\n            nums[i], nums[hi] = nums[hi], nums[i]\n            hi -= 1  # i stays: the value swapped in is not checked yet\n        else:\n            i += 1",
+     "cpp": "// Sorts 0s, 1s and 2s in place in one pass.\nvoid sortColors(vector<int>& nums) {\n    int lo = 0, i = 0, hi = (int)nums.size() - 1;  // [0, lo) are 0, [lo, i) are 1, (hi, n) are 2\n    while (i <= hi) {\n        if (nums[i] == 0) swap(nums[lo++], nums[i++]);\n        else if (nums[i] == 2) swap(nums[i], nums[hi--]);  // i stays: the value swapped in is not checked yet\n        else i++;\n    }\n}",
+     "java": "class Solution {\n    // Sorts 0s, 1s and 2s in place in one pass.\n    void sortColors(int[] nums) {\n        int lo = 0, i = 0, hi = nums.length - 1; // [0, lo) are 0, [lo, i) are 1, (hi, n) are 2\n        while (i <= hi) {\n            if (nums[i] == 0) swap(nums, lo++, i++);\n            else if (nums[i] == 2) swap(nums, i, hi--); // i stays: the value swapped in is not checked yet\n            else i++;\n        }\n    }\n\n    private void swap(int[] a, int i, int j) {\n        int t = a[i];\n        a[i] = a[j];\n        a[j] = t;\n    }\n}",
+     "go": "// sortColors sorts 0s, 1s and 2s in place in one pass.\nfunc sortColors(nums []int) {\n\tlo, i, hi := 0, 0, len(nums)-1 // [0, lo) are 0, [lo, i) are 1, (hi, n) are 2\n\tfor i <= hi {\n\t\tswitch nums[i] {\n\t\tcase 0:\n\t\t\tnums[lo], nums[i] = nums[i], nums[lo]\n\t\t\tlo++\n\t\t\ti++\n\t\tcase 2:\n\t\t\tnums[i], nums[hi] = nums[hi], nums[i]\n\t\t\thi-- // i stays: the value swapped in is not checked yet\n\t\tdefault:\n\t\t\ti++\n\t\t}\n\t}\n}"
+    },
+    "driver": {
+     "python": "for nums in ([2, 0, 2, 1, 1, 0], [2, 0, 1], [1], [2, 2, 0, 0]):\n    sort_colors(nums)\n    print(*nums)",
+     "cpp": "for (auto nums : vector<vector<int>>{{2, 0, 2, 1, 1, 0}, {2, 0, 1}, {1}, {2, 2, 0, 0}}) {\n    sortColors(nums);\n    show(nums);\n}",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{2, 0, 2, 1, 1, 0}, {2, 0, 1}, {1}, {2, 2, 0, 0}}) {\n    s.sortColors(nums);\n    show(nums);\n}",
+     "go": "for _, nums := range [][]int{{2, 0, 2, 1, 1, 0}, {2, 0, 1}, {1}, {2, 2, 0, 0}} {\n    sortColors(nums)\n    show(nums)\n}",
+     "expected": "0 0 1 1 2 2\n0 1 2\n1\n0 0 2 2"
+    }
+   },
+   {
+    "id": "cyclic-sort",
+    "pattern": {
+     "zh": "原地哈希：把值 v 换到下标 v - 1",
+     "en": "In-place hashing: swap value v to index v - 1"
+    },
+    "when": {
+     "zh": "值落在 1..n 之间、要求 O(1) 额外空间找缺失或重复的数：把每个值反复换到它「该在」的位置，之后再扫一遍，第一个不在家的位置就是答案。LC 41 缺失的第一个正数、LC 448、LC 442、LC 645 都是这个形状。",
+     "en": "When values lie in 1..n and a missing or repeated number must be found with O(1) extra space: keep swapping each value into its home slot, then scan once; the first slot not holding its own value is the answer. LC 41 (First Missing Positive), LC 448, LC 442 and LC 645 share this shape."
+    },
+    "complexity": {
+     "zh": "时间 O(n)（每次交换让一个值归位）· 空间 O(1)",
+     "en": "O(n) time (each swap homes one value) · O(1) space"
+    },
+    "code": {
+     "python": "def first_missing_positive(nums: list[int]) -> int:\n    \"\"\"Smallest positive integer not in nums, in O(1) extra space.\"\"\"\n    n = len(nums)\n    for i in range(n):\n        # Swap nums[i] home to index v - 1 until it is out of range or already there.\n        while 1 <= nums[i] <= n and nums[nums[i] - 1] != nums[i]:\n            v = nums[i]\n            nums[i], nums[v - 1] = nums[v - 1], v\n    for i in range(n):\n        if nums[i] != i + 1:\n            return i + 1\n    return n + 1",
+     "cpp": "// Smallest positive integer not in nums, in O(1) extra space.\nint firstMissingPositive(vector<int>& nums) {\n    int n = nums.size();\n    for (int i = 0; i < n; i++)\n        // Swap nums[i] home to index v - 1 until it is out of range or already there.\n        while (nums[i] >= 1 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) swap(nums[i], nums[nums[i] - 1]);\n    for (int i = 0; i < n; i++)\n        if (nums[i] != i + 1) return i + 1;\n    return n + 1;\n}",
+     "java": "class Solution {\n    // Smallest positive integer not in nums, in O(1) extra space.\n    int firstMissingPositive(int[] nums) {\n        int n = nums.length;\n        for (int i = 0; i < n; i++)\n            // Swap nums[i] home to index v - 1 until it is out of range or already there.\n            while (nums[i] >= 1 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {\n                int v = nums[i];\n                nums[i] = nums[v - 1];\n                nums[v - 1] = v;\n            }\n        for (int i = 0; i < n; i++)\n            if (nums[i] != i + 1) return i + 1;\n        return n + 1;\n    }\n}",
+     "go": "// firstMissingPositive returns the smallest positive integer not in nums, in O(1) extra space.\nfunc firstMissingPositive(nums []int) int {\n\tn := len(nums)\n\tfor i := range nums {\n\t\t// Swap nums[i] home to index v - 1 until it is out of range or already there.\n\t\tfor nums[i] >= 1 && nums[i] <= n && nums[nums[i]-1] != nums[i] {\n\t\t\tv := nums[i]\n\t\t\tnums[i], nums[v-1] = nums[v-1], v\n\t\t}\n\t}\n\tfor i, v := range nums {\n\t\tif v != i+1 {\n\t\t\treturn i + 1\n\t\t}\n\t}\n\treturn n + 1\n}"
+    },
+    "driver": {
+     "python": "for nums in ([1, 2, 0], [3, 4, -1, 1], [7, 8, 9, 11, 12], [1, 1], [2, 1]):\n    print(first_missing_positive(nums))",
+     "cpp": "for (auto nums : vector<vector<int>>{{1, 2, 0}, {3, 4, -1, 1}, {7, 8, 9, 11, 12}, {1, 1}, {2, 1}})\n    cout << firstMissingPositive(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, 2, 0}, {3, 4, -1, 1}, {7, 8, 9, 11, 12}, {1, 1}, {2, 1}})\n    show(s.firstMissingPositive(nums));",
+     "go": "for _, nums := range [][]int{{1, 2, 0}, {3, 4, -1, 1}, {7, 8, 9, 11, 12}, {1, 1}, {2, 1}} {\n    fmt.Println(firstMissingPositive(nums))\n}",
+     "expected": "3\n2\n1\n2\n3"
+    }
+   },
+   {
+    "id": "kadane",
+    "pattern": {
+     "zh": "Kadane：以当前元素结尾的最大和",
+     "en": "Kadane: best sum ending at the current element"
+    },
+    "when": {
+     "zh": "求和最大的连续子数组（LC 53）：只记「以当前元素结尾」的最好和，它要么接上前面，要么从自己重新开始；全局答案取历史最大。全是负数时答案是最大的那个负数，所以初值用 nums[0] 而不是 0。",
+     "en": "For the largest-sum contiguous subarray (LC 53): keep only the best sum ending at the current element, which either extends the previous one or restarts at itself, and take the best seen. With all negatives the answer is the largest negative, so start from nums[0], not 0."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def max_subarray(nums: list[int]) -> int:\n    \"\"\"Largest sum of a non-empty contiguous subarray.\"\"\"\n    best = cur = nums[0]  # cur: best sum of a subarray ending at the current element\n    for x in nums[1:]:\n        cur = max(x, cur + x)  # extend, or start over at x\n        best = max(best, cur)\n    return best",
+     "cpp": "// Largest sum of a non-empty contiguous subarray.\nlong long maxSubarray(const vector<int>& nums) {\n    long long best = nums[0], cur = nums[0];  // cur: best sum of a subarray ending here\n    for (size_t i = 1; i < nums.size(); i++) {\n        cur = max<long long>(nums[i], cur + nums[i]);  // extend, or start over\n        best = max(best, cur);\n    }\n    return best;\n}",
+     "java": "class Solution {\n    // Largest sum of a non-empty contiguous subarray.\n    long maxSubarray(int[] nums) {\n        long best = nums[0], cur = nums[0]; // cur: best sum of a subarray ending here\n        for (int i = 1; i < nums.length; i++) {\n            cur = Math.max(nums[i], cur + nums[i]); // extend, or start over\n            best = Math.max(best, cur);\n        }\n        return best;\n    }\n}",
+     "go": "// maxSubarray returns the largest sum of a non-empty contiguous subarray.\nfunc maxSubarray(nums []int) int {\n\tbest, cur := nums[0], nums[0] // cur: best sum of a subarray ending here\n\tfor _, x := range nums[1:] {\n\t\tcur = max(x, cur+x) // extend, or start over at x\n\t\tbest = max(best, cur)\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "for nums in ([-2, 1, -3, 4, -1, 2, 1, -5, 4], [1], [5, 4, -1, 7, 8], [-3, -1, -2]):\n    print(max_subarray(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{-2, 1, -3, 4, -1, 2, 1, -5, 4}, {1}, {5, 4, -1, 7, 8}, {-3, -1, -2}})\n    cout << maxSubarray(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{-2, 1, -3, 4, -1, 2, 1, -5, 4}, {1}, {5, 4, -1, 7, 8}, {-3, -1, -2}})\n    show(s.maxSubarray(nums));",
+     "go": "for _, nums := range [][]int{{-2, 1, -3, 4, -1, 2, 1, -5, 4}, {1}, {5, 4, -1, 7, 8}, {-3, -1, -2}} {\n    fmt.Println(maxSubarray(nums))\n}",
+     "expected": "6\n1\n23\n-1"
+    }
+   }
+  ]
+ },
+ "hash-counting": {
+  "variants": [
+   {
+    "id": "group-by-key",
+    "pattern": {
+     "zh": "按规范键分组",
+     "en": "Group by a canonical key"
+    },
+    "when": {
+     "zh": "要把「本质相同」的元素归到一起（字母异位词、移位字符串、同构）：给每个元素算一个规范键，相同键进同一组。键可以是排序后的字母，也可以是 26 个计数拼成的字符串。LC 49 字母异位词分组、LC 249 移位字符串分组。",
+     "en": "When elements that are the same in some sense must be grouped (anagrams, shifted strings, isomorphic words): compute a canonical key per element and bucket by it. The key can be the sorted letters or the 26 letter counts joined. LC 49 (Group Anagrams) and LC 249 (Group Shifted Strings)."
+    },
+    "complexity": {
+     "zh": "时间 O(n · L log L) · 空间 O(n · L)",
+     "en": "O(n · L log L) time · O(n · L) space"
+    },
+    "code": {
+     "python": "def group_anagrams(words: list[str]) -> list[list[str]]:\n    \"\"\"Words grouped by anagram class, groups in order of first appearance.\"\"\"\n    index: dict[str, int] = {}  # canonical key -> position of its group\n    groups: list[list[str]] = []\n    for w in words:\n        key = \"\".join(sorted(w))  # anagrams share their sorted letters\n        if key not in index:\n            index[key] = len(groups)\n            groups.append([])\n        groups[index[key]].append(w)\n    return groups",
+     "cpp": "// Words grouped by anagram class, groups in order of first appearance.\nvector<vector<string>> groupAnagrams(const vector<string>& words) {\n    unordered_map<string, int> index;  // canonical key -> position of its group\n    vector<vector<string>> groups;\n    for (const string& w : words) {\n        string key = w;\n        sort(key.begin(), key.end());  // anagrams share their sorted letters\n        auto [it, fresh] = index.try_emplace(key, (int)groups.size());\n        if (fresh) groups.emplace_back();\n        groups[it->second].push_back(w);\n    }\n    return groups;\n}",
+     "java": "class Solution {\n    // Words grouped by anagram class, groups in order of first appearance.\n    List<List<String>> groupAnagrams(String[] words) {\n        Map<String, List<String>> groups = new LinkedHashMap<>(); // canonical key -> its words, in first-seen order\n        for (String w : words) {\n            char[] letters = w.toCharArray();\n            Arrays.sort(letters); // anagrams share their sorted letters\n            groups.computeIfAbsent(new String(letters), k -> new ArrayList<>()).add(w);\n        }\n        return new ArrayList<>(groups.values());\n    }\n}",
+     "go": "import \"sort\"\n\n// groupAnagrams returns the words grouped by anagram class, in order of first appearance.\nfunc groupAnagrams(words []string) [][]string {\n\tindex := map[string]int{} // canonical key -> position of its group\n\tvar groups [][]string\n\tfor _, w := range words {\n\t\tletters := []byte(w)\n\t\tsort.Slice(letters, func(i, j int) bool { return letters[i] < letters[j] })\n\t\tkey := string(letters) // anagrams share their sorted letters\n\t\tat, ok := index[key]\n\t\tif !ok {\n\t\t\tat = len(groups)\n\t\t\tindex[key] = at\n\t\t\tgroups = append(groups, nil)\n\t\t}\n\t\tgroups[at] = append(groups[at], w)\n\t}\n\treturn groups\n}"
+    },
+    "driver": {
+     "python": "for words in ([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"], [\"abc\", \"bca\", \"xyz\"]):\n    for g in group_anagrams(words):\n        print(*g)",
+     "cpp": "for (auto& words : vector<vector<string>>{{\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"}, {\"abc\", \"bca\", \"xyz\"}})\n    for (auto& g : groupAnagrams(words)) show(g);",
+     "java": "Solution s = new Solution();\nfor (String[] words : new String[][] {{\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"}, {\"abc\", \"bca\", \"xyz\"}})\n    for (List<String> g : s.groupAnagrams(words)) show(g);",
+     "go": "for _, words := range [][]string{{\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"}, {\"abc\", \"bca\", \"xyz\"}} {\n    for _, g := range groupAnagrams(words) {\n        show(g)\n    }\n}",
+     "expected": "eat tea ate\ntan nat\nbat\nabc bca\nxyz"
+    }
+   },
+   {
+    "id": "run-starts",
+    "pattern": {
+     "zh": "哈希集合：只从连续段的起点往后数",
+     "en": "Hash set: count runs only from their starts"
+    },
+    "when": {
+     "zh": "要在 O(n) 里找最长的连续整数段（LC 128），不能排序：把数放进集合，只有 x - 1 不在集合里时 x 才是段的起点，从起点往后数。每个数最多被数两次，所以是线性的。",
+     "en": "For the longest run of consecutive integers in O(n) (LC 128), without sorting: put the numbers in a set, and treat x as a run start only when x - 1 is absent, then count upwards from it. Each number is touched at most twice, so it stays linear."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "def longest_consecutive(nums: list[int]) -> int:\n    \"\"\"Length of the longest run of consecutive integers, in O(n).\"\"\"\n    have = set(nums)\n    best = 0\n    for x in have:\n        if x - 1 in have:\n            continue  # not a run start: the run is counted from its start\n        y = x\n        while y + 1 in have:\n            y += 1\n        best = max(best, y - x + 1)\n    return best",
+     "cpp": "// Length of the longest run of consecutive integers, in O(n).\nint longestConsecutive(const vector<int>& nums) {\n    unordered_set<int> have(nums.begin(), nums.end());\n    int best = 0;\n    for (int x : have) {\n        if (have.count(x - 1)) continue;  // not a run start: the run is counted from its start\n        int y = x;\n        while (have.count(y + 1)) y++;\n        best = max(best, y - x + 1);\n    }\n    return best;\n}",
+     "java": "class Solution {\n    // Length of the longest run of consecutive integers, in O(n).\n    int longestConsecutive(int[] nums) {\n        Set<Integer> have = new HashSet<>();\n        for (int x : nums) have.add(x);\n        int best = 0;\n        for (int x : have) {\n            if (have.contains(x - 1)) continue; // not a run start: the run is counted from its start\n            int y = x;\n            while (have.contains(y + 1)) y++;\n            best = Math.max(best, y - x + 1);\n        }\n        return best;\n    }\n}",
+     "go": "// longestConsecutive returns the length of the longest run of consecutive integers, in O(n).\nfunc longestConsecutive(nums []int) int {\n\thave := map[int]bool{}\n\tfor _, x := range nums {\n\t\thave[x] = true\n\t}\n\tbest := 0\n\tfor x := range have {\n\t\tif have[x-1] {\n\t\t\tcontinue // not a run start: the run is counted from its start\n\t\t}\n\t\ty := x\n\t\tfor have[y+1] {\n\t\t\ty++\n\t\t}\n\t\tbest = max(best, y-x+1)\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "for nums in ([100, 4, 200, 1, 3, 2], [0, 3, 7, 2, 5, 8, 4, 6, 0, 1], [], [1, 2, 0, 1]):\n    print(longest_consecutive(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{100, 4, 200, 1, 3, 2}, {0, 3, 7, 2, 5, 8, 4, 6, 0, 1}, {}, {1, 2, 0, 1}})\n    cout << longestConsecutive(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{100, 4, 200, 1, 3, 2}, {0, 3, 7, 2, 5, 8, 4, 6, 0, 1}, {}, {1, 2, 0, 1}})\n    show(s.longestConsecutive(nums));",
+     "go": "for _, nums := range [][]int{{100, 4, 200, 1, 3, 2}, {0, 3, 7, 2, 5, 8, 4, 6, 0, 1}, {}, {1, 2, 0, 1}} {\n    fmt.Println(longestConsecutive(nums))\n}",
+     "expected": "4\n9\n0\n3"
+    }
+   }
+  ]
+ },
+ "string-processing": {
+  "variants": [
+   {
+    "id": "rolling-hash",
+    "pattern": {
+     "zh": "Rabin-Karp 滚动哈希",
+     "en": "Rabin-Karp rolling hash"
+    },
+    "when": {
+     "zh": "要快速比较很多个等长子串（找重复子串、最长重复子串二分长度、回文前缀）时，用多项式哈希：窗口右移一位，减掉离开字符的贡献、乘基数、加上新字符，O(1) 更新。哈希相等还要逐字确认，防碰撞。LC 28、LC 1044、LC 214 都能用它。",
+     "en": "When many equal-length substrings must be compared quickly (repeated substrings, binary searching the length of the longest repeat, palindromic prefixes), use a polynomial hash: sliding the window drops the leaving character's share, multiplies by the base and adds the new one, all in O(1). Confirm a hash hit character by character, since collisions happen. LC 28, LC 1044 and LC 214 can use it."
+    },
+    "complexity": {
+     "zh": "期望时间 O(n + m) · 空间 O(1)",
+     "en": "Expected O(n + m) time · O(1) space"
+    },
+    "code": {
+     "python": "def rabin_karp(text: str, pat: str) -> list[int]:\n    \"\"\"Start of every occurrence of a non-empty pat, found with rolling hashes.\"\"\"\n    MOD, BASE = 1_000_000_007, 131\n    n, m = len(text), len(pat)\n    if m > n:\n        return []\n    top = pow(BASE, m - 1, MOD)  # weight of the character leaving the window\n    hp = hw = 0\n    for i in range(m):\n        hp = (hp * BASE + ord(pat[i])) % MOD\n        hw = (hw * BASE + ord(text[i])) % MOD\n    res = []\n    for i in range(n - m + 1):\n        if hw == hp and text[i : i + m] == pat:  # confirm a hit: hashes can collide\n            res.append(i)\n        if i + m < n:  # roll: drop text[i], add text[i + m]\n            hw = ((hw - ord(text[i]) * top) * BASE + ord(text[i + m])) % MOD\n    return res",
+     "cpp": "// Start of every occurrence of a non-empty pat, found with rolling hashes.\nvector<int> rabinKarp(const string& text, const string& pat) {\n    const long long MOD = 1000000007, BASE = 131;\n    int n = text.size(), m = pat.size();\n    if (m > n) return {};\n    long long top = 1, hp = 0, hw = 0;  // top: weight of the character leaving the window\n    for (int i = 1; i < m; i++) top = top * BASE % MOD;\n    for (int i = 0; i < m; i++) {\n        hp = (hp * BASE + pat[i]) % MOD;\n        hw = (hw * BASE + text[i]) % MOD;\n    }\n    vector<int> res;\n    for (int i = 0; i + m <= n; i++) {\n        if (hw == hp && text.compare(i, m, pat) == 0) res.push_back(i);  // confirm a hit: hashes can collide\n        if (i + m < n)  // roll: drop text[i], add text[i + m]\n            hw = ((hw - text[i] * top % MOD + MOD) % MOD * BASE + text[i + m]) % MOD;\n    }\n    return res;\n}",
+     "java": "class Solution {\n    // Start of every occurrence of a non-empty pat, found with rolling hashes.\n    List<Integer> rabinKarp(String text, String pat) {\n        final long MOD = 1_000_000_007L, BASE = 131;\n        int n = text.length(), m = pat.length();\n        List<Integer> res = new ArrayList<>();\n        if (m > n) return res;\n        long top = 1, hp = 0, hw = 0; // top: weight of the character leaving the window\n        for (int i = 1; i < m; i++) top = top * BASE % MOD;\n        for (int i = 0; i < m; i++) {\n            hp = (hp * BASE + pat.charAt(i)) % MOD;\n            hw = (hw * BASE + text.charAt(i)) % MOD;\n        }\n        for (int i = 0; i + m <= n; i++) {\n            if (hw == hp && text.startsWith(pat, i)) res.add(i); // confirm a hit: hashes can collide\n            if (i + m < n) // roll: drop text[i], add text[i + m]\n                hw = ((hw - text.charAt(i) * top % MOD + MOD) % MOD * BASE + text.charAt(i + m)) % MOD;\n        }\n        return res;\n    }\n}",
+     "go": "// rabinKarp returns the start of every occurrence of a non-empty pat, found with rolling hashes.\nfunc rabinKarp(text, pat string) []int {\n\tconst mod, base = 1_000_000_007, 131\n\tn, m := len(text), len(pat)\n\tres := []int{}\n\tif m > n {\n\t\treturn res\n\t}\n\ttop, hp, hw := 1, 0, 0 // top: weight of the character leaving the window\n\tfor i := 1; i < m; i++ {\n\t\ttop = top * base % mod\n\t}\n\tfor i := 0; i < m; i++ {\n\t\thp = (hp*base + int(pat[i])) % mod\n\t\thw = (hw*base + int(text[i])) % mod\n\t}\n\tfor i := 0; i+m <= n; i++ {\n\t\tif hw == hp && text[i:i+m] == pat { // confirm a hit: hashes can collide\n\t\t\tres = append(res, i)\n\t\t}\n\t\tif i+m < n { // roll: drop text[i], add text[i + m]\n\t\t\thw = ((hw-int(text[i])*top%mod+mod)%mod*base + int(text[i+m])) % mod\n\t\t}\n\t}\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "for text, pat in ((\"abababca\", \"abab\"), (\"aaaa\", \"aa\"), (\"abc\", \"d\"), (\"ab\", \"abc\")):\n    res = rabin_karp(text, pat)\n    print(len(res), *res)",
+     "cpp": "for (auto& [text, pat] : vector<pair<string, string>>{{\"abababca\", \"abab\"}, {\"aaaa\", \"aa\"}, {\"abc\", \"d\"}, {\"ab\", \"abc\"}}) {\n    auto res = rabinKarp(text, pat);\n    cout << res.size() << \" \";\n    show(res);\n}",
+     "java": "Solution s = new Solution();\nString[][] cases = {{\"abababca\", \"abab\"}, {\"aaaa\", \"aa\"}, {\"abc\", \"d\"}, {\"ab\", \"abc\"}};\nfor (String[] c : cases) {\n    List<Integer> res = s.rabinKarp(c[0], c[1]);\n    System.out.println(res.size() + \" \" + res.stream().map(String::valueOf).collect(Collectors.joining(\" \")));\n}",
+     "go": "for _, c := range [][2]string{{\"abababca\", \"abab\"}, {\"aaaa\", \"aa\"}, {\"abc\", \"d\"}, {\"ab\", \"abc\"}} {\n    res := rabinKarp(c[0], c[1])\n    fmt.Print(len(res), \" \")\n    show(res)\n}",
+     "expected": "2 0 2\n3 0 1 2\n0\n0"
+    }
+   },
+   {
+    "id": "reverse-words",
+    "pattern": {
+     "zh": "先整体反转，再逐词反转",
+     "en": "Reverse the whole, then each word"
+    },
+    "when": {
+     "zh": "要求原地（O(1) 额外空间）调整单词顺序：先用读写指针压掉多余空格，把每个词反转，最后整体反转一次，词序就倒过来、词内顺序又正回来。LC 151 反转字符串中的单词；LC 344、LC 345、LC 917 是其中的双指针反转。",
+     "en": "When word order must change in place (O(1) extra space): squeeze out extra spaces with read and write pointers, reverse each word, then reverse everything once, which flips the word order while turning each word the right way round again. LC 151 (Reverse Words in a String); LC 344, LC 345 and LC 917 are the two-pointer reversal inside it."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)（Python 字符串不可变，借一个字符列表）",
+     "en": "O(n) time · O(1) space (a char list in Python, whose strings are immutable)"
+    },
+    "code": {
+     "python": "def reverse_words(s: str) -> str:\n    \"\"\"Words in reverse order, single spaces between them, none at the ends.\"\"\"\n    chars = list(s)\n\n    def reverse(i: int, j: int) -> None:  # chars[i..j] in place\n        while i < j:\n            chars[i], chars[j] = chars[j], chars[i]\n            i, j = i + 1, j - 1\n\n    w = i = 0  # w writes, i reads; chars[:w] is the squeezed result so far\n    while i < len(chars):\n        if chars[i] == \" \":\n            i += 1\n            continue\n        if w:\n            chars[w] = \" \"  # one space before every word but the first\n            w += 1\n        start = w\n        while i < len(chars) and chars[i] != \" \":\n            chars[w] = chars[i]\n            w, i = w + 1, i + 1\n        reverse(start, w - 1)  # each word backwards now...\n    reverse(0, w - 1)  # ...so reversing it all leaves the words in reverse order, each readable\n    return \"\".join(chars[:w])",
+     "cpp": "// Words in reverse order, single spaces between them, none at the ends.\nstring reverseWords(string s) {\n    int w = 0;  // s[0, w) is the squeezed result so far\n    for (int i = 0; i < (int)s.size();) {\n        if (s[i] == ' ') {\n            i++;\n            continue;\n        }\n        if (w) s[w++] = ' ';  // one space before every word but the first\n        int start = w;\n        while (i < (int)s.size() && s[i] != ' ') s[w++] = s[i++];\n        reverse(s.begin() + start, s.begin() + w);  // each word backwards now...\n    }\n    s.resize(w);\n    reverse(s.begin(), s.end());  // ...so reversing it all leaves the words in reverse order, each readable\n    return s;\n}",
+     "java": "class Solution {\n    // Words in reverse order, single spaces between them, none at the ends.\n    String reverseWords(String text) {\n        char[] s = text.toCharArray();\n        int w = 0; // s[0, w) is the squeezed result so far\n        for (int i = 0; i < s.length;) {\n            if (s[i] == ' ') {\n                i++;\n                continue;\n            }\n            if (w > 0) s[w++] = ' '; // one space before every word but the first\n            int start = w;\n            while (i < s.length && s[i] != ' ') s[w++] = s[i++];\n            reverse(s, start, w - 1); // each word backwards now...\n        }\n        reverse(s, 0, w - 1); // ...so reversing it all leaves the words in reverse order, each readable\n        return new String(s, 0, w);\n    }\n\n    private void reverse(char[] s, int i, int j) {\n        for (; i < j; i++, j--) {\n            char t = s[i];\n            s[i] = s[j];\n            s[j] = t;\n        }\n    }\n}",
+     "go": "// reverseWords returns the words in reverse order, single spaces between them, none at the ends.\nfunc reverseWords(text string) string {\n\ts := []byte(text)\n\treverse := func(i, j int) { // s[i..j] in place\n\t\tfor ; i < j; i, j = i+1, j-1 {\n\t\t\ts[i], s[j] = s[j], s[i]\n\t\t}\n\t}\n\tw := 0 // s[:w] is the squeezed result so far\n\tfor i := 0; i < len(s); {\n\t\tif s[i] == ' ' {\n\t\t\ti++\n\t\t\tcontinue\n\t\t}\n\t\tif w > 0 {\n\t\t\ts[w] = ' ' // one space before every word but the first\n\t\t\tw++\n\t\t}\n\t\tstart := w\n\t\tfor i < len(s) && s[i] != ' ' {\n\t\t\ts[w] = s[i]\n\t\t\tw, i = w+1, i+1\n\t\t}\n\t\treverse(start, w-1) // each word backwards now...\n\t}\n\treverse(0, w-1) // ...so reversing it all leaves the words in reverse order, each readable\n\treturn string(s[:w])\n}"
+    },
+    "driver": {
+     "python": "for s in (\"the sky is blue\", \"  hello world  \", \"a good   example\", \"solo\"):\n    print(f\"[{reverse_words(s)}]\")",
+     "cpp": "for (string s : {\"the sky is blue\", \"  hello world  \", \"a good   example\", \"solo\"}) cout << \"[\" << reverseWords(s) << \"]\\n\";",
+     "java": "Solution s = new Solution();\nfor (String t : new String[] {\"the sky is blue\", \"  hello world  \", \"a good   example\", \"solo\"})\n    show(\"[\" + s.reverseWords(t) + \"]\");",
+     "go": "for _, s := range []string{\"the sky is blue\", \"  hello world  \", \"a good   example\", \"solo\"} {\n    fmt.Println(\"[\" + reverseWords(s) + \"]\")\n}",
+     "expected": "[blue is sky the]\n[world hello]\n[example good a]\n[solo]"
+    }
+   }
+  ]
+ },
+ "two-pointers-windows": {
+  "variants": [
+   {
+    "id": "fixed-window",
+    "pattern": {
+     "zh": "定长滑动窗口",
+     "en": "Fixed-size sliding window"
+    },
+    "when": {
+     "zh": "窗口长度 k 固定（长度为 k 的子串里元素最多、某个排列是否出现）：右端每进一个，左端 i - k 就出一个，窗口满 k 之后才开始记答案。LC 1456、LC 438 找到字符串中所有字母异位词、LC 567 字符串的排列都是这个形状。",
+     "en": "When the window length k is fixed (the most of something in a length-k substring, whether a permutation occurs): each element that enters on the right pushes out the one at i - k, and answers count only once the window holds k. LC 1456, LC 438 (Find All Anagrams in a String) and LC 567 (Permutation in String) have this shape."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def max_vowels(s: str, k: int) -> int:\n    \"\"\"Most vowels in any length-k substring (LC 1456).\"\"\"\n    vowels = set(\"aeiou\")\n    cur = best = 0\n    for i, c in enumerate(s):\n        cur += c in vowels  # c enters the window\n        if i >= k:\n            cur -= s[i - k] in vowels  # s[i - k] leaves: the window is s[i-k+1..i]\n        if i >= k - 1:  # only full windows count\n            best = max(best, cur)\n    return best",
+     "cpp": "// Most vowels in any length-k substring (LC 1456).\nint maxVowels(const string& s, int k) {\n    auto vowel = [](char c) { return string(\"aeiou\").find(c) != string::npos; };\n    int cur = 0, best = 0;\n    for (int i = 0; i < (int)s.size(); i++) {\n        cur += vowel(s[i]);  // s[i] enters the window\n        if (i >= k) cur -= vowel(s[i - k]);  // s[i - k] leaves: the window is s[i-k+1..i]\n        if (i >= k - 1) best = max(best, cur);  // only full windows count\n    }\n    return best;\n}",
+     "java": "class Solution {\n    // Most vowels in any length-k substring (LC 1456).\n    int maxVowels(String s, int k) {\n        int cur = 0, best = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (vowel(s.charAt(i))) cur++; // s[i] enters the window\n            if (i >= k && vowel(s.charAt(i - k))) cur--; // s[i - k] leaves: the window is s[i-k+1..i]\n            if (i >= k - 1) best = Math.max(best, cur); // only full windows count\n        }\n        return best;\n    }\n\n    private boolean vowel(char c) {\n        return \"aeiou\".indexOf(c) >= 0;\n    }\n}",
+     "go": "import \"strings\"\n\n// maxVowels returns the most vowels in any length-k substring (LC 1456).\nfunc maxVowels(s string, k int) int {\n\tvowel := func(c byte) int {\n\t\tif strings.IndexByte(\"aeiou\", c) >= 0 {\n\t\t\treturn 1\n\t\t}\n\t\treturn 0\n\t}\n\tcur, best := 0, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tcur += vowel(s[i]) // s[i] enters the window\n\t\tif i >= k {\n\t\t\tcur -= vowel(s[i-k]) // s[i - k] leaves: the window is s[i-k+1..i]\n\t\t}\n\t\tif i >= k-1 { // only full windows count\n\t\t\tbest = max(best, cur)\n\t\t}\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "for s, k in ((\"abciiidef\", 3), (\"aeiou\", 2), (\"leetcode\", 3), (\"rhythms\", 4)):\n    print(max_vowels(s, k))",
+     "cpp": "for (auto& [s, k] : vector<pair<string, int>>{{\"abciiidef\", 3}, {\"aeiou\", 2}, {\"leetcode\", 3}, {\"rhythms\", 4}})\n    cout << maxVowels(s, k) << \"\\n\";",
+     "java": "Solution s = new Solution();\nString[] words = {\"abciiidef\", \"aeiou\", \"leetcode\", \"rhythms\"};\nint[] ks = {3, 2, 3, 4};\nfor (int i = 0; i < words.length; i++) show(s.maxVowels(words[i], ks[i]));",
+     "go": "words := []string{\"abciiidef\", \"aeiou\", \"leetcode\", \"rhythms\"}\nks := []int{3, 2, 3, 4}\nfor i := range words {\n    fmt.Println(maxVowels(words[i], ks[i]))\n}",
+     "expected": "3\n2\n2\n0"
+    }
+   },
+   {
+    "id": "opposite-ends",
+    "pattern": {
+     "zh": "相向双指针：每次移动较短的一边",
+     "en": "Two pointers from both ends: move the shorter side"
+    },
+    "when": {
+     "zh": "答案由两端共同决定、而且可以证明「较差的那一端」不可能再参与更好的答案时，用两个指针从两头往中间收。LC 11 盛最多水的容器每次移动较矮的墙；LC 167、LC 15 三数之和在有序数组上按和的大小移动。",
+     "en": "When the answer depends on both ends and the worse end provably cannot take part in a better answer, close in from both ends. LC 11 (Container With Most Water) moves the shorter wall each time; LC 167 and LC 15 (3Sum) move by comparing the sum on a sorted array."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def max_area(height: list[int]) -> int:\n    \"\"\"Most water two walls can hold (LC 11).\"\"\"\n    lo, hi = 0, len(height) - 1\n    best = 0\n    while lo < hi:\n        best = max(best, (hi - lo) * min(height[lo], height[hi]))\n        if height[lo] < height[hi]:  # the shorter wall caps every narrower pair it is in\n            lo += 1\n        else:\n            hi -= 1\n    return best",
+     "cpp": "// Most water two walls can hold (LC 11).\nlong long maxArea(const vector<int>& height) {\n    int lo = 0, hi = (int)height.size() - 1;\n    long long best = 0;\n    while (lo < hi) {\n        best = max(best, (long long)(hi - lo) * min(height[lo], height[hi]));\n        if (height[lo] < height[hi]) lo++;  // the shorter wall caps every narrower pair it is in\n        else hi--;\n    }\n    return best;\n}",
+     "java": "class Solution {\n    // Most water two walls can hold (LC 11).\n    long maxArea(int[] height) {\n        int lo = 0, hi = height.length - 1;\n        long best = 0;\n        while (lo < hi) {\n            best = Math.max(best, (long) (hi - lo) * Math.min(height[lo], height[hi]));\n            if (height[lo] < height[hi]) lo++; // the shorter wall caps every narrower pair it is in\n            else hi--;\n        }\n        return best;\n    }\n}",
+     "go": "// maxArea returns the most water two walls can hold (LC 11).\nfunc maxArea(height []int) int {\n\tlo, hi := 0, len(height)-1\n\tbest := 0\n\tfor lo < hi {\n\t\tbest = max(best, (hi-lo)*min(height[lo], height[hi]))\n\t\tif height[lo] < height[hi] { // the shorter wall caps every narrower pair it is in\n\t\t\tlo++\n\t\t} else {\n\t\t\thi--\n\t\t}\n\t}\n\treturn best\n}"
+    },
+    "driver": {
+     "python": "for h in ([1, 8, 6, 2, 5, 4, 8, 3, 7], [1, 1], [4, 3, 2, 1, 4], [1, 2, 1]):\n    print(max_area(h))",
+     "cpp": "for (auto& h : vector<vector<int>>{{1, 8, 6, 2, 5, 4, 8, 3, 7}, {1, 1}, {4, 3, 2, 1, 4}, {1, 2, 1}}) cout << maxArea(h) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] h : new int[][] {{1, 8, 6, 2, 5, 4, 8, 3, 7}, {1, 1}, {4, 3, 2, 1, 4}, {1, 2, 1}}) show(s.maxArea(h));",
+     "go": "for _, h := range [][]int{{1, 8, 6, 2, 5, 4, 8, 3, 7}, {1, 1}, {4, 3, 2, 1, 4}, {1, 2, 1}} {\n    fmt.Println(maxArea(h))\n}",
+     "expected": "49\n1\n16\n2"
+    }
+   },
+   {
+    "id": "exactly-k",
+    "pattern": {
+     "zh": "恰好 K 个 = 至多 K 个 − 至多 K−1 个",
+     "en": "Exactly K = at most K − at most K−1"
+    },
+    "when": {
+     "zh": "要数「恰好 K 个不同值 / 恰好 K 个奇数 / 和恰好为 K」的子数组，窗口不满足单调收缩；但「至多 K 个」满足：右端每到一个位置，以它结尾的合法窗口有 right - left + 1 个。两次相减得到恰好 K。LC 992、LC 930、LC 1248 都这么做。",
+     "en": "Counting subarrays with exactly K distinct values (or exactly K odd numbers, or sum exactly K) does not shrink monotonically, but at most K does: at each right end, right - left + 1 valid windows end there. Subtract two such counts to get exactly K. LC 992, LC 930 and LC 1248 work this way."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "from collections import defaultdict\n\n\ndef subarrays_with_k_distinct(nums: list[int], k: int) -> int:\n    \"\"\"Subarrays with exactly k distinct values (LC 992).\"\"\"\n\n    def at_most(k: int) -> int:  # subarrays with at most k distinct values\n        cnt = defaultdict(int)\n        left = total = 0\n        for right, x in enumerate(nums):\n            cnt[x] += 1\n            if cnt[x] == 1:\n                k -= 1\n            while k < 0:  # one distinct value too many: shrink from the left\n                cnt[nums[left]] -= 1\n                if cnt[nums[left]] == 0:\n                    k += 1\n                left += 1\n            total += right - left + 1  # windows that end at right and start at or after left\n        return total\n\n    return at_most(k) - at_most(k - 1)",
+     "cpp": "// Subarrays with exactly k distinct values (LC 992).\nlong long subarraysWithKDistinct(const vector<int>& nums, int k) {\n    auto atMost = [&](int k) {  // subarrays with at most k distinct values\n        unordered_map<int, int> cnt;\n        long long total = 0;\n        for (int left = 0, right = 0; right < (int)nums.size(); right++) {\n            if (++cnt[nums[right]] == 1) k--;\n            while (k < 0)  // one distinct value too many: shrink from the left\n                if (--cnt[nums[left++]] == 0) k++;\n            total += right - left + 1;  // windows that end at right and start at or after left\n        }\n        return total;\n    };\n    return atMost(k) - atMost(k - 1);\n}",
+     "java": "class Solution {\n    // Subarrays with exactly k distinct values (LC 992).\n    long subarraysWithKDistinct(int[] nums, int k) {\n        return atMost(nums, k) - atMost(nums, k - 1);\n    }\n\n    // Subarrays with at most k distinct values.\n    private long atMost(int[] nums, int k) {\n        Map<Integer, Integer> cnt = new HashMap<>();\n        long total = 0;\n        for (int left = 0, right = 0; right < nums.length; right++) {\n            if (cnt.merge(nums[right], 1, Integer::sum) == 1) k--;\n            while (k < 0) // one distinct value too many: shrink from the left\n                if (cnt.merge(nums[left++], -1, Integer::sum) == 0) k++;\n            total += right - left + 1; // windows that end at right and start at or after left\n        }\n        return total;\n    }\n}",
+     "go": "// subarraysWithKDistinct counts the subarrays with exactly k distinct values (LC 992).\nfunc subarraysWithKDistinct(nums []int, k int) int {\n\tatMost := func(k int) int { // subarrays with at most k distinct values\n\t\tcnt := map[int]int{}\n\t\tleft, total := 0, 0\n\t\tfor right, x := range nums {\n\t\t\tcnt[x]++\n\t\t\tif cnt[x] == 1 {\n\t\t\t\tk--\n\t\t\t}\n\t\t\tfor k < 0 { // one distinct value too many: shrink from the left\n\t\t\t\tcnt[nums[left]]--\n\t\t\t\tif cnt[nums[left]] == 0 {\n\t\t\t\t\tk++\n\t\t\t\t}\n\t\t\t\tleft++\n\t\t\t}\n\t\t\ttotal += right - left + 1 // windows that end at right and start at or after left\n\t\t}\n\t\treturn total\n\t}\n\treturn atMost(k) - atMost(k-1)\n}"
+    },
+    "driver": {
+     "python": "for nums, k in (([1, 2, 1, 2, 3], 2), ([1, 2, 1, 3, 4], 3), ([1, 1, 1], 1), ([1, 2], 3)):\n    print(subarrays_with_k_distinct(nums, k))",
+     "cpp": "vector<pair<vector<int>, int>> cases{{{1, 2, 1, 2, 3}, 2}, {{1, 2, 1, 3, 4}, 3}, {{1, 1, 1}, 1}, {{1, 2}, 3}};\nfor (auto& [nums, k] : cases) cout << subarraysWithKDistinct(nums, k) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][] nums = {{1, 2, 1, 2, 3}, {1, 2, 1, 3, 4}, {1, 1, 1}, {1, 2}};\nint[] ks = {2, 3, 1, 3};\nfor (int i = 0; i < nums.length; i++) show(s.subarraysWithKDistinct(nums[i], ks[i]));",
+     "go": "nums := [][]int{{1, 2, 1, 2, 3}, {1, 2, 1, 3, 4}, {1, 1, 1}, {1, 2}}\nks := []int{2, 3, 1, 3}\nfor i := range nums {\n    fmt.Println(subarraysWithKDistinct(nums[i], ks[i]))\n}",
+     "expected": "7\n3\n6\n0"
+    }
+   }
+  ]
+ },
+ "prefix-intervals": {
+  "variants": [
+   {
+    "id": "diff-array",
+    "pattern": {
+     "zh": "差分数组：区间加，最后一次前缀和",
+     "en": "Difference array: range adds, one prefix sum at the end"
+    },
+    "when": {
+     "zh": "很多次「给区间 [l, r] 加 v」、最后才要结果：在 diff[l] 加 v、diff[r + 1] 减 v，每次 O(1)，最后求一遍前缀和还原数组。LC 1094 拼车、LC 1109 航班预订统计、LC 370 区间加法都是这样。",
+     "en": "Many updates of the form add v to [l, r] with the result needed only at the end: add v at diff[l] and subtract it at diff[r + 1], O(1) each, then one prefix sum rebuilds the array. LC 1094 (Car Pooling), LC 1109 (Corporate Flight Bookings) and LC 370 (Range Addition) work this way."
+    },
+    "complexity": {
+     "zh": "时间 O(n + q) · 空间 O(n)",
+     "en": "O(n + q) time · O(n) space"
+    },
+    "code": {
+     "python": "def range_add(n: int, updates: list[tuple[int, int, int]]) -> list[int]:\n    \"\"\"n zeros, then each (l, r, v) adds v to positions l..r (LC 370).\"\"\"\n    diff = [0] * (n + 1)  # diff[i] = a[i] - a[i - 1]; the extra slot takes r + 1 = n\n    for l, r, v in updates:\n        diff[l] += v\n        diff[r + 1] -= v  # the change stops after r\n    res, run = [], 0\n    for i in range(n):\n        run += diff[i]  # prefix sums of the differences rebuild the array\n        res.append(run)\n    return res",
+     "cpp": "// n zeros, then each {l, r, v} adds v to positions l..r (LC 370).\nvector<long long> rangeAdd(int n, const vector<array<int, 3>>& updates) {\n    vector<long long> diff(n + 1, 0);  // diff[i] = a[i] - a[i - 1]; the extra slot takes r + 1 = n\n    for (auto [l, r, v] : updates) {\n        diff[l] += v;\n        diff[r + 1] -= v;  // the change stops after r\n    }\n    vector<long long> res(n);\n    long long run = 0;\n    for (int i = 0; i < n; i++) res[i] = run += diff[i];  // prefix sums rebuild the array\n    return res;\n}",
+     "java": "class Solution {\n    // n zeros, then each {l, r, v} adds v to positions l..r (LC 370).\n    long[] rangeAdd(int n, int[][] updates) {\n        long[] diff = new long[n + 1]; // diff[i] = a[i] - a[i - 1]; the extra slot takes r + 1 = n\n        for (int[] u : updates) {\n            diff[u[0]] += u[2];\n            diff[u[1] + 1] -= u[2]; // the change stops after r\n        }\n        long[] res = new long[n];\n        long run = 0;\n        for (int i = 0; i < n; i++) res[i] = run += diff[i]; // prefix sums rebuild the array\n        return res;\n    }\n}",
+     "go": "// rangeAdd starts from n zeros; each {l, r, v} adds v to positions l..r (LC 370).\nfunc rangeAdd(n int, updates [][3]int) []int {\n\tdiff := make([]int, n+1) // diff[i] = a[i] - a[i-1]; the extra slot takes r + 1 = n\n\tfor _, u := range updates {\n\t\tdiff[u[0]] += u[2]\n\t\tdiff[u[1]+1] -= u[2] // the change stops after r\n\t}\n\tres := make([]int, n)\n\trun := 0\n\tfor i := 0; i < n; i++ {\n\t\trun += diff[i] // prefix sums of the differences rebuild the array\n\t\tres[i] = run\n\t}\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*range_add(5, [(1, 3, 2), (2, 4, 3), (0, 2, -2)]))\nprint(*range_add(3, [(0, 2, 1)]))\nprint(*range_add(4, []))",
+     "cpp": "show(rangeAdd(5, {{1, 3, 2}, {2, 4, 3}, {0, 2, -2}}));\nshow(rangeAdd(3, {{0, 2, 1}}));\nshow(rangeAdd(4, {}));",
+     "java": "Solution s = new Solution();\nshow(s.rangeAdd(5, new int[][] {{1, 3, 2}, {2, 4, 3}, {0, 2, -2}}));\nshow(s.rangeAdd(3, new int[][] {{0, 2, 1}}));\nshow(s.rangeAdd(4, new int[][] {}));",
+     "go": "show(rangeAdd(5, [][3]int{{1, 3, 2}, {2, 4, 3}, {0, 2, -2}}))\nshow(rangeAdd(3, [][3]int{{0, 2, 1}}))\nshow(rangeAdd(4, nil))",
+     "expected": "-2 0 3 5 3\n1 1 1\n0 0 0 0"
+    }
+   },
+   {
+    "id": "prefix-2d",
+    "pattern": {
+     "zh": "二维前缀和：容斥求子矩形和",
+     "en": "2-D prefix sums: rectangle sums by inclusion-exclusion"
+    },
+    "when": {
+     "zh": "矩阵不变、要反复问子矩形的和：pre[r][c] 存左上角 r × c 块的和，多开一行一列 0 免去边界判断；查询时用四个角容斥，O(1)。LC 304 二维区域和检索、LC 1314 矩阵区域和，LC 1074 在它上面再套一维哈希。",
+     "en": "When a fixed matrix gets many sub-rectangle sum queries: pre[r][c] holds the sum of the top-left r × c block, with an extra zero row and column so edges need no checks, and each query is four corners by inclusion-exclusion in O(1). LC 304 (Range Sum Query 2D), LC 1314 (Matrix Block Sum); LC 1074 adds a hash map on top."
+    },
+    "complexity": {
+     "zh": "预处理 O(rows × cols) · 查询 O(1)",
+     "en": "O(rows × cols) setup · O(1) per query"
+    },
+    "code": {
+     "python": "class Matrix2D:\n    \"\"\"Sum of any sub-rectangle in O(1) after O(rows × cols) setup (LC 304).\"\"\"\n\n    def __init__(self, grid: list[list[int]]):\n        rows, cols = len(grid), len(grid[0])\n        # pre[r][c]: sum of the top-left r × c block; row 0 and column 0 stay zero\n        self.pre = [[0] * (cols + 1) for _ in range(rows + 1)]\n        for r in range(rows):\n            for c in range(cols):\n                self.pre[r + 1][c + 1] = self.pre[r][c + 1] + self.pre[r + 1][c] - self.pre[r][c] + grid[r][c]\n\n    def sum(self, r1: int, c1: int, r2: int, c2: int) -> int:\n        \"\"\"Corners (r1, c1) and (r2, c2), both inclusive.\"\"\"\n        p = self.pre\n        return p[r2 + 1][c2 + 1] - p[r1][c2 + 1] - p[r2 + 1][c1] + p[r1][c1]",
+     "cpp": "// Sum of any sub-rectangle in O(1) after O(rows × cols) setup (LC 304).\nclass Matrix2D {\n    vector<vector<long long>> pre;  // pre[r][c]: sum of the top-left r × c block\n\npublic:\n    explicit Matrix2D(const vector<vector<int>>& grid) {\n        int rows = grid.size(), cols = grid[0].size();\n        pre.assign(rows + 1, vector<long long>(cols + 1, 0));  // row 0 and column 0 stay zero\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++) pre[r + 1][c + 1] = pre[r][c + 1] + pre[r + 1][c] - pre[r][c] + grid[r][c];\n    }\n\n    // Corners (r1, c1) and (r2, c2), both inclusive.\n    long long sum(int r1, int c1, int r2, int c2) const {\n        return pre[r2 + 1][c2 + 1] - pre[r1][c2 + 1] - pre[r2 + 1][c1] + pre[r1][c1];\n    }\n};",
+     "java": "// Sum of any sub-rectangle in O(1) after O(rows × cols) setup (LC 304).\nclass Matrix2D {\n    private final long[][] pre; // pre[r][c]: sum of the top-left r × c block\n\n    Matrix2D(int[][] grid) {\n        int rows = grid.length, cols = grid[0].length;\n        pre = new long[rows + 1][cols + 1]; // row 0 and column 0 stay zero\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++) pre[r + 1][c + 1] = pre[r][c + 1] + pre[r + 1][c] - pre[r][c] + grid[r][c];\n    }\n\n    // Corners (r1, c1) and (r2, c2), both inclusive.\n    long sum(int r1, int c1, int r2, int c2) {\n        return pre[r2 + 1][c2 + 1] - pre[r1][c2 + 1] - pre[r2 + 1][c1] + pre[r1][c1];\n    }\n}",
+     "go": "// Matrix2D answers the sum of any sub-rectangle in O(1) after O(rows × cols) setup (LC 304).\ntype Matrix2D struct {\n\tpre [][]int // pre[r][c]: sum of the top-left r × c block\n}\n\nfunc NewMatrix2D(grid [][]int) *Matrix2D {\n\trows, cols := len(grid), len(grid[0])\n\tpre := make([][]int, rows+1) // row 0 and column 0 stay zero\n\tfor r := range pre {\n\t\tpre[r] = make([]int, cols+1)\n\t}\n\tfor r := 0; r < rows; r++ {\n\t\tfor c := 0; c < cols; c++ {\n\t\t\tpre[r+1][c+1] = pre[r][c+1] + pre[r+1][c] - pre[r][c] + grid[r][c]\n\t\t}\n\t}\n\treturn &Matrix2D{pre}\n}\n\n// Sum takes corners (r1, c1) and (r2, c2), both inclusive.\nfunc (m *Matrix2D) Sum(r1, c1, r2, c2 int) int {\n\tp := m.pre\n\treturn p[r2+1][c2+1] - p[r1][c2+1] - p[r2+1][c1] + p[r1][c1]\n}"
+    },
+    "driver": {
+     "python": "m = Matrix2D([[3, 0, 1, 4, 2], [5, 6, 3, 2, 1], [1, 2, 0, 1, 5], [4, 1, 0, 1, 7], [1, 0, 3, 0, 5]])\nprint(m.sum(2, 1, 4, 3), m.sum(1, 1, 2, 2), m.sum(1, 2, 2, 4), m.sum(0, 0, 4, 4), m.sum(0, 0, 0, 0))",
+     "cpp": "Matrix2D m({{3, 0, 1, 4, 2}, {5, 6, 3, 2, 1}, {1, 2, 0, 1, 5}, {4, 1, 0, 1, 7}, {1, 0, 3, 0, 5}});\nshow(vector<long long>{m.sum(2, 1, 4, 3), m.sum(1, 1, 2, 2), m.sum(1, 2, 2, 4), m.sum(0, 0, 4, 4), m.sum(0, 0, 0, 0)});",
+     "java": "Matrix2D m = new Matrix2D(new int[][] {{3, 0, 1, 4, 2}, {5, 6, 3, 2, 1}, {1, 2, 0, 1, 5}, {4, 1, 0, 1, 7}, {1, 0, 3, 0, 5}});\nshow(new long[] {m.sum(2, 1, 4, 3), m.sum(1, 1, 2, 2), m.sum(1, 2, 2, 4), m.sum(0, 0, 4, 4), m.sum(0, 0, 0, 0)});",
+     "go": "m := NewMatrix2D([][]int{{3, 0, 1, 4, 2}, {5, 6, 3, 2, 1}, {1, 2, 0, 1, 5}, {4, 1, 0, 1, 7}, {1, 0, 3, 0, 5}})\nshow([]int{m.Sum(2, 1, 4, 3), m.Sum(1, 1, 2, 2), m.Sum(1, 2, 2, 4), m.Sum(0, 0, 4, 4), m.Sum(0, 0, 0, 0)})",
+     "expected": "8 11 12 58 3"
+    }
+   },
+   {
+    "id": "merge-intervals",
+    "pattern": {
+     "zh": "按起点排序，合并重叠区间",
+     "en": "Sort by start, merge overlaps"
+    },
+    "when": {
+     "zh": "要把区间并起来（合并、插入、求交、算总覆盖长度）：按起点排序后，新区间的起点不超过上一个结果的终点就合并、终点取较大者，否则另起一段。LC 56 合并区间、LC 57 插入区间、LC 986 区间列表的交集都从这里出发。",
+     "en": "For the union of intervals (merging, inserting, intersecting, total covered length): sort by start, and when a new interval starts no later than the last merged one ends, extend that one to the larger end; otherwise start a new run. LC 56 (Merge Intervals), LC 57 (Insert Interval) and LC 986 (Interval List Intersections) start here."
+    },
+    "complexity": {
+     "zh": "时间 O(n log n) · 空间 O(n)",
+     "en": "O(n log n) time · O(n) space"
+    },
+    "code": {
+     "python": "def merge(intervals: list[list[int]]) -> list[list[int]]:\n    \"\"\"Union of closed intervals, by start; touching ones such as [1, 2] and [2, 3] merge.\"\"\"\n    res: list[list[int]] = []\n    for start, end in sorted(intervals):\n        if res and start <= res[-1][1]:  # overlaps the last merged interval\n            res[-1][1] = max(res[-1][1], end)\n        else:\n            res.append([start, end])\n    return res",
+     "cpp": "// Union of closed intervals, by start; touching ones such as [1, 2] and [2, 3] merge.\nvector<pair<int, int>> mergeIntervals(vector<pair<int, int>> intervals) {\n    sort(intervals.begin(), intervals.end());\n    vector<pair<int, int>> res;\n    for (auto [start, end] : intervals) {\n        if (!res.empty() && start <= res.back().second)  // overlaps the last merged interval\n            res.back().second = max(res.back().second, end);\n        else\n            res.push_back({start, end});\n    }\n    return res;\n}",
+     "java": "class Solution {\n    // Union of closed intervals, by start; touching ones such as [1, 2] and [2, 3] merge.\n    List<int[]> merge(int[][] intervals) {\n        int[][] sorted = intervals.clone();\n        Arrays.sort(sorted, Comparator.comparingInt(iv -> iv[0]));\n        List<int[]> res = new ArrayList<>();\n        for (int[] iv : sorted) {\n            int[] last = res.isEmpty() ? null : res.get(res.size() - 1);\n            if (last != null && iv[0] <= last[1]) last[1] = Math.max(last[1], iv[1]); // overlaps the last merged interval\n            else res.add(new int[] {iv[0], iv[1]});\n        }\n        return res;\n    }\n}",
+     "go": "import \"sort\"\n\n// merge returns the union of closed intervals, by start; touching ones such as [1, 2] and [2, 3] merge.\nfunc merge(intervals [][2]int) [][2]int {\n\tsorted := append([][2]int(nil), intervals...)\n\tsort.Slice(sorted, func(i, j int) bool { return sorted[i][0] < sorted[j][0] })\n\tvar res [][2]int\n\tfor _, iv := range sorted {\n\t\tif n := len(res); n > 0 && iv[0] <= res[n-1][1] { // overlaps the last merged interval\n\t\t\tres[n-1][1] = max(res[n-1][1], iv[1])\n\t\t} else {\n\t\t\tres = append(res, iv)\n\t\t}\n\t}\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "for ivs in ([[1, 3], [2, 6], [8, 10], [15, 18]], [[1, 4], [4, 5]], [[1, 4], [0, 0]], [[1, 10], [2, 3], [4, 5]]):\n    print(*(f\"{a},{b}\" for a, b in merge(ivs)))",
+     "cpp": "for (auto& ivs : vector<vector<pair<int, int>>>{{{1, 3}, {2, 6}, {8, 10}, {15, 18}}, {{1, 4}, {4, 5}}, {{1, 4}, {0, 0}}, {{1, 10}, {2, 3}, {4, 5}}}) {\n    vector<string> out;\n    for (auto [a, b] : mergeIntervals(ivs)) out.push_back(to_string(a) + \",\" + to_string(b));\n    show(out);\n}",
+     "java": "Solution s = new Solution();\nint[][][] cases = {{{1, 3}, {2, 6}, {8, 10}, {15, 18}}, {{1, 4}, {4, 5}}, {{1, 4}, {0, 0}}, {{1, 10}, {2, 3}, {4, 5}}};\nfor (int[][] ivs : cases) show(s.merge(ivs).stream().map(iv -> iv[0] + \",\" + iv[1]).collect(Collectors.toList()));",
+     "go": "for _, ivs := range [][][2]int{{{1, 3}, {2, 6}, {8, 10}, {15, 18}}, {{1, 4}, {4, 5}}, {{1, 4}, {0, 0}}, {{1, 10}, {2, 3}, {4, 5}}} {\n    var out []string\n    for _, iv := range merge(ivs) {\n        out = append(out, fmt.Sprint(iv[0], \",\", iv[1]))\n    }\n    show(out)\n}",
+     "expected": "1,6 8,10 15,18\n1,5\n0,0 1,4\n1,10"
+    }
+   }
+  ]
+ },
  "binary-search": {
   "variants": [
    {
@@ -83,6 +467,214 @@
      "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, 2, 3, 1}, {1, 2, 1, 3, 5, 6, 4}, {0, 10, 5, 2}, {7}}) show(s.findPeak(nums));",
      "go": "for _, nums := range [][]int{{1, 2, 3, 1}, {1, 2, 1, 3, 5, 6, 4}, {0, 10, 5, 2}, {7}} {\n    fmt.Println(findPeak(nums))\n}",
      "expected": "2\n5\n1\n0"
+    }
+   }
+  ]
+ },
+ "stacks-heaps": {
+  "variants": [
+   {
+    "id": "monotonic-deque",
+    "pattern": {
+     "zh": "单调队列：滑动窗口最大值",
+     "en": "Monotonic deque: sliding window maximum"
+    },
+    "when": {
+     "zh": "窗口在滑、要随时拿到窗口里的最大（或最小）值：双端队列里存下标、对应值从头到尾递减；新元素从尾部挤掉比它小的，队头滑出窗口就弹掉，队头永远是最大值。LC 239 滑动窗口最大值；LC 862 在前缀和上用同一个队列。",
+     "en": "When a sliding window must always know its maximum (or minimum): a deque of indexes whose values decrease from front to back. A new element pushes smaller ones off the back, the front is dropped once it slides out, and the front is always the maximum. LC 239 (Sliding Window Maximum); LC 862 uses the same deque over prefix sums."
+    },
+    "complexity": {
+     "zh": "时间 O(n)（每个下标进出队列各一次）· 空间 O(k)",
+     "en": "O(n) time (each index enters and leaves once) · O(k) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef max_sliding_window(nums: list[int], k: int) -> list[int]:\n    \"\"\"Maximum of every length-k window (LC 239).\"\"\"\n    dq: deque[int] = deque()  # indexes in the window, values decreasing front to back\n    res = []\n    for i, x in enumerate(nums):\n        while dq and nums[dq[-1]] <= x:\n            dq.pop()  # smaller values before x can never be a maximum again\n        dq.append(i)\n        if dq[0] <= i - k:\n            dq.popleft()  # the front slid out of the window\n        if i >= k - 1:\n            res.append(nums[dq[0]])\n    return res",
+     "cpp": "// Maximum of every length-k window (LC 239).\nvector<int> maxSlidingWindow(const vector<int>& nums, int k) {\n    deque<int> dq;  // indexes in the window, values decreasing front to back\n    vector<int> res;\n    for (int i = 0; i < (int)nums.size(); i++) {\n        while (!dq.empty() && nums[dq.back()] <= nums[i]) dq.pop_back();  // they can never be a maximum again\n        dq.push_back(i);\n        if (dq.front() <= i - k) dq.pop_front();  // the front slid out of the window\n        if (i >= k - 1) res.push_back(nums[dq.front()]);\n    }\n    return res;\n}",
+     "java": "class Solution {\n    // Maximum of every length-k window (LC 239).\n    int[] maxSlidingWindow(int[] nums, int k) {\n        Deque<Integer> dq = new ArrayDeque<>(); // indexes in the window, values decreasing front to back\n        int[] res = new int[nums.length - k + 1];\n        for (int i = 0; i < nums.length; i++) {\n            while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast(); // they can never be a maximum again\n            dq.offerLast(i);\n            if (dq.peekFirst() <= i - k) dq.pollFirst(); // the front slid out of the window\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+     "go": "// maxSlidingWindow returns the maximum of every length-k window (LC 239).\nfunc maxSlidingWindow(nums []int, k int) []int {\n\tvar dq []int // indexes in the window, values decreasing front to back\n\tvar res []int\n\tfor i, x := range nums {\n\t\tfor len(dq) > 0 && nums[dq[len(dq)-1]] <= x {\n\t\t\tdq = dq[:len(dq)-1] // they can never be a maximum again\n\t\t}\n\t\tdq = append(dq, i)\n\t\tif dq[0] <= i-k {\n\t\t\tdq = dq[1:] // the front slid out of the window\n\t\t}\n\t\tif i >= k-1 {\n\t\t\tres = append(res, nums[dq[0]])\n\t\t}\n\t}\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*max_sliding_window([1, 3, -1, -3, 5, 3, 6, 7], 3))\nprint(*max_sliding_window([1], 1))\nprint(*max_sliding_window([9, 8, 7, 6], 2))\nprint(*max_sliding_window([4, 2, 12, 3, 8, 1], 4))",
+     "cpp": "show(maxSlidingWindow({1, 3, -1, -3, 5, 3, 6, 7}, 3));\nshow(maxSlidingWindow({1}, 1));\nshow(maxSlidingWindow({9, 8, 7, 6}, 2));\nshow(maxSlidingWindow({4, 2, 12, 3, 8, 1}, 4));",
+     "java": "Solution s = new Solution();\nshow(s.maxSlidingWindow(new int[] {1, 3, -1, -3, 5, 3, 6, 7}, 3));\nshow(s.maxSlidingWindow(new int[] {1}, 1));\nshow(s.maxSlidingWindow(new int[] {9, 8, 7, 6}, 2));\nshow(s.maxSlidingWindow(new int[] {4, 2, 12, 3, 8, 1}, 4));",
+     "go": "show(maxSlidingWindow([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))\nshow(maxSlidingWindow([]int{1}, 1))\nshow(maxSlidingWindow([]int{9, 8, 7, 6}, 2))\nshow(maxSlidingWindow([]int{4, 2, 12, 3, 8, 1}, 4))",
+     "expected": "3 3 5 5 6 7\n1\n9 8 7\n12 12 12"
+    }
+   },
+   {
+    "id": "top-k-heap",
+    "pattern": {
+     "zh": "大小为 k 的小顶堆求第 k 大",
+     "en": "Size-k min-heap for the k-th largest"
+    },
+    "when": {
+     "zh": "只关心最大的 k 个（第 k 大、前 k 个高频、数据流里的第 k 大）：维护一个大小为 k 的小顶堆，堆顶是这 k 个里最弱的；新值比堆顶大才替换。比整体排序省，O(n log k)。LC 215 数组中的第 K 个最大元素、LC 703、LC 373。",
+     "en": "When only the k largest matter (the k-th largest, the top k frequent, the k-th largest in a stream): keep a min-heap of size k whose top is the weakest of them, and replace it only when a new value beats it. Cheaper than sorting everything: O(n log k). LC 215 (Kth Largest Element in an Array), LC 703, LC 373."
+    },
+    "complexity": {
+     "zh": "时间 O(n log k) · 空间 O(k)",
+     "en": "O(n log k) time · O(k) space"
+    },
+    "code": {
+     "python": "import heapq\n\n\ndef kth_largest(nums: list[int], k: int) -> int:\n    \"\"\"The k-th largest value (LC 215), with a size-k min-heap.\"\"\"\n    heap: list[int] = []  # the k largest so far; heap[0] is the smallest of them\n    for x in nums:\n        if len(heap) < k:\n            heapq.heappush(heap, x)\n        elif x > heap[0]:\n            heapq.heapreplace(heap, x)  # x beats the weakest of the top k\n    return heap[0]",
+     "cpp": "// The k-th largest value (LC 215), with a size-k min-heap.\nint kthLargest(const vector<int>& nums, int k) {\n    priority_queue<int, vector<int>, greater<int>> heap;  // the k largest so far; top is the smallest\n    for (int x : nums) {\n        if ((int)heap.size() < k) heap.push(x);\n        else if (x > heap.top()) {\n            heap.pop();  // x beats the weakest of the top k\n            heap.push(x);\n        }\n    }\n    return heap.top();\n}",
+     "java": "class Solution {\n    // The k-th largest value (LC 215), with a size-k min-heap.\n    int kthLargest(int[] nums, int k) {\n        PriorityQueue<Integer> heap = new PriorityQueue<>(); // the k largest so far; peek() is the smallest\n        for (int x : nums) {\n            if (heap.size() < k) heap.offer(x);\n            else if (x > heap.peek()) {\n                heap.poll(); // x beats the weakest of the top k\n                heap.offer(x);\n            }\n        }\n        return heap.peek();\n    }\n}",
+     "go": "import \"container/heap\"\n\n// minHeap is a min-heap of ints for container/heap.\ntype minHeap []int\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(int)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\n// kthLargest returns the k-th largest value (LC 215), with a size-k min-heap.\nfunc kthLargest(nums []int, k int) int {\n\th := &minHeap{} // the k largest so far; (*h)[0] is the smallest\n\tfor _, x := range nums {\n\t\tif h.Len() < k {\n\t\t\theap.Push(h, x)\n\t\t} else if x > (*h)[0] {\n\t\t\t(*h)[0] = x // x beats the weakest of the top k\n\t\t\theap.Fix(h, 0)\n\t\t}\n\t}\n\treturn (*h)[0]\n}"
+    },
+    "driver": {
+     "python": "print(kth_largest([3, 2, 1, 5, 6, 4], 2))\nprint(kth_largest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4))\nprint(kth_largest([7], 1))\nprint(kth_largest([-1, -1, -2], 3))",
+     "cpp": "cout << kthLargest({3, 2, 1, 5, 6, 4}, 2) << \"\\n\" << kthLargest({3, 2, 3, 1, 2, 4, 5, 5, 6}, 4) << \"\\n\";\ncout << kthLargest({7}, 1) << \"\\n\" << kthLargest({-1, -1, -2}, 3) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.kthLargest(new int[] {3, 2, 1, 5, 6, 4}, 2));\nshow(s.kthLargest(new int[] {3, 2, 3, 1, 2, 4, 5, 5, 6}, 4));\nshow(s.kthLargest(new int[] {7}, 1));\nshow(s.kthLargest(new int[] {-1, -1, -2}, 3));",
+     "go": "fmt.Println(kthLargest([]int{3, 2, 1, 5, 6, 4}, 2))\nfmt.Println(kthLargest([]int{3, 2, 3, 1, 2, 4, 5, 5, 6}, 4))\nfmt.Println(kthLargest([]int{7}, 1))\nfmt.Println(kthLargest([]int{-1, -1, -2}, 3))",
+     "expected": "5\n4\n7\n-2"
+    }
+   },
+   {
+    "id": "calculator-stack",
+    "pattern": {
+     "zh": "表达式求值：乘除立刻结算，加减入栈",
+     "en": "Expression stack: fold * and / at once, push + and -"
+    },
+    "when": {
+     "zh": "计算只有 + - * / 的表达式（LC 227 基本计算器 II）：读完一个数时看它前面的运算符，加减把带符号的数压栈，乘除直接和栈顶算掉；最后把栈里的数加起来。有括号的 LC 224、LC 772 是遇到括号时递归或再压一层。",
+     "en": "To evaluate + - * / without parentheses (LC 227, Basic Calculator II): when a number ends, look at the operator before it; + and - push the signed number, * and / fold it into the top at once, and the answer is the sum of the stack. LC 224 and LC 772 add parentheses by recursing or pushing a level per bracket."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "def calculate(s: str) -> int:\n    \"\"\"+ - * / over non-negative integers, no parentheses (LC 227); / truncates toward zero.\"\"\"\n    stack: list[int] = []  # signed terms to add up; * and / fold into the last one\n    num, op = 0, \"+\"  # op: the operator before num\n    for i, c in enumerate(s):\n        if c.isdigit():\n            num = num * 10 + int(c)\n        if (not c.isdigit() and c != \" \") or i == len(s) - 1:  # an operator or the end closes num\n            if op == \"+\":\n                stack.append(num)\n            elif op == \"-\":\n                stack.append(-num)\n            elif op == \"*\":\n                stack.append(stack.pop() * num)\n            else:\n                top = stack.pop()\n                stack.append(abs(top) // num * (1 if top >= 0 else -1))  # truncate toward zero\n            op, num = c, 0\n    return sum(stack)",
+     "cpp": "// + - * / over non-negative integers, no parentheses (LC 227); / truncates toward zero.\nlong long calculate(const string& s) {\n    vector<long long> stack;  // signed terms to add up; * and / fold into the last one\n    long long num = 0;\n    char op = '+';  // the operator before num\n    for (size_t i = 0; i < s.size(); i++) {\n        char c = s[i];\n        if (isdigit(c)) num = num * 10 + (c - '0');\n        if ((!isdigit(c) && c != ' ') || i == s.size() - 1) {  // an operator or the end closes num\n            if (op == '+') stack.push_back(num);\n            else if (op == '-') stack.push_back(-num);\n            else if (op == '*') stack.back() *= num;\n            else stack.back() /= num;  // C++ division truncates toward zero\n            op = c;\n            num = 0;\n        }\n    }\n    return accumulate(stack.begin(), stack.end(), 0LL);\n}",
+     "java": "class Solution {\n    // + - * / over non-negative integers, no parentheses (LC 227); / truncates toward zero.\n    long calculate(String s) {\n        Deque<Long> stack = new ArrayDeque<>(); // signed terms to add up; * and / fold into the last one\n        long num = 0;\n        char op = '+'; // the operator before num\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (Character.isDigit(c)) num = num * 10 + (c - '0');\n            if ((!Character.isDigit(c) && c != ' ') || i == s.length() - 1) { // an operator or the end closes num\n                if (op == '+') stack.push(num);\n                else if (op == '-') stack.push(-num);\n                else if (op == '*') stack.push(stack.pop() * num);\n                else stack.push(stack.pop() / num); // Java division truncates toward zero\n                op = c;\n                num = 0;\n            }\n        }\n        long total = 0;\n        for (long term : stack) total += term;\n        return total;\n    }\n}",
+     "go": "// calculate evaluates + - * / over non-negative integers, no parentheses (LC 227).\nfunc calculate(s string) int {\n\tvar stack []int // signed terms to add up; * and / fold into the last one\n\tnum, op := 0, byte('+') // op: the operator before num\n\tfor i := 0; i < len(s); i++ {\n\t\tc := s[i]\n\t\tdigit := c >= '0' && c <= '9'\n\t\tif digit {\n\t\t\tnum = num*10 + int(c-'0')\n\t\t}\n\t\tif (!digit && c != ' ') || i == len(s)-1 { // an operator or the end closes num\n\t\t\tswitch op {\n\t\t\tcase '+':\n\t\t\t\tstack = append(stack, num)\n\t\t\tcase '-':\n\t\t\t\tstack = append(stack, -num)\n\t\t\tcase '*':\n\t\t\t\tstack[len(stack)-1] *= num\n\t\t\tdefault:\n\t\t\t\tstack[len(stack)-1] /= num // Go division truncates toward zero\n\t\t\t}\n\t\t\top, num = c, 0\n\t\t}\n\t}\n\ttotal := 0\n\tfor _, term := range stack {\n\t\ttotal += term\n\t}\n\treturn total\n}"
+    },
+    "driver": {
+     "python": "for s in (\"3+2*2\", \" 3/2 \", \" 3+5 / 2 \", \"14-3/2\", \"1-2*3\", \"0-7/2\"):\n    print(calculate(s))",
+     "cpp": "for (string s : {\"3+2*2\", \" 3/2 \", \" 3+5 / 2 \", \"14-3/2\", \"1-2*3\", \"0-7/2\"}) cout << calculate(s) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (String e : new String[] {\"3+2*2\", \" 3/2 \", \" 3+5 / 2 \", \"14-3/2\", \"1-2*3\", \"0-7/2\"}) show(s.calculate(e));",
+     "go": "for _, s := range []string{\"3+2*2\", \" 3/2 \", \" 3+5 / 2 \", \"14-3/2\", \"1-2*3\", \"0-7/2\"} {\n    fmt.Println(calculate(s))\n}",
+     "expected": "7\n1\n5\n13\n-5\n-3"
+    }
+   }
+  ]
+ },
+ "greedy-scheduling": {
+  "variants": [
+   {
+    "id": "reach-frontier",
+    "pattern": {
+     "zh": "最远可达边界：一层一层地跳",
+     "en": "Reach frontier: jump level by level"
+    },
+    "when": {
+     "zh": "每个位置给出能跳多远，问能不能到终点或最少跳几次：边走边更新「下一跳最远能到哪」，走到当前这一跳的边界时跳数加一、边界换成最远处。这其实是不建队列的 BFS。LC 45 跳跃游戏 II；LC 55 只要判断最远处是否一直不落后于 i。",
+     "en": "When each position says how far it can jump and the question is whether the end is reachable or how few jumps it takes: track how far the next jump could reach, and when i hits the current jump's boundary, count a jump and move the boundary there. It is BFS without a queue. LC 45 (Jump Game II); LC 55 only checks that the reach never falls behind i."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def min_jumps(nums: list[int]) -> int:\n    \"\"\"Fewest jumps from index 0 to the last; nums[i] is the longest jump from i (LC 45).\"\"\"\n    jumps = end = far = 0  # indexes up to end take `jumps` jumps; far: the next jump's reach\n    for i in range(len(nums) - 1):\n        far = max(far, i + nums[i])\n        if i == end:  # this jump's range is used up: take another\n            jumps += 1\n            end = far\n    return jumps",
+     "cpp": "// Fewest jumps from index 0 to the last; nums[i] is the longest jump from i (LC 45).\nint minJumps(const vector<int>& nums) {\n    int jumps = 0, end = 0, far = 0;  // indexes up to end take `jumps` jumps; far: the next jump's reach\n    for (int i = 0; i + 1 < (int)nums.size(); i++) {\n        far = max(far, i + nums[i]);\n        if (i == end) {  // this jump's range is used up: take another\n            jumps++;\n            end = far;\n        }\n    }\n    return jumps;\n}",
+     "java": "class Solution {\n    // Fewest jumps from index 0 to the last; nums[i] is the longest jump from i (LC 45).\n    int minJumps(int[] nums) {\n        int jumps = 0, end = 0, far = 0; // indexes up to end take `jumps` jumps; far: the next jump's reach\n        for (int i = 0; i + 1 < nums.length; i++) {\n            far = Math.max(far, i + nums[i]);\n            if (i == end) { // this jump's range is used up: take another\n                jumps++;\n                end = far;\n            }\n        }\n        return jumps;\n    }\n}",
+     "go": "// minJumps returns the fewest jumps from index 0 to the last; nums[i] is the longest jump from i.\nfunc minJumps(nums []int) int {\n\tjumps, end, far := 0, 0, 0 // indexes up to end take `jumps` jumps; far: the next jump's reach\n\tfor i := 0; i+1 < len(nums); i++ {\n\t\tfar = max(far, i+nums[i])\n\t\tif i == end { // this jump's range is used up: take another\n\t\t\tjumps++\n\t\t\tend = far\n\t\t}\n\t}\n\treturn jumps\n}"
+    },
+    "driver": {
+     "python": "for nums in ([2, 3, 1, 1, 4], [2, 3, 0, 1, 4], [0], [1, 1, 1, 1], [5, 1, 1]):\n    print(min_jumps(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{2, 3, 1, 1, 4}, {2, 3, 0, 1, 4}, {0}, {1, 1, 1, 1}, {5, 1, 1}}) cout << minJumps(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{2, 3, 1, 1, 4}, {2, 3, 0, 1, 4}, {0}, {1, 1, 1, 1}, {5, 1, 1}}) show(s.minJumps(nums));",
+     "go": "for _, nums := range [][]int{{2, 3, 1, 1, 4}, {2, 3, 0, 1, 4}, {0}, {1, 1, 1, 1}, {5, 1, 1}} {\n    fmt.Println(minJumps(nums))\n}",
+     "expected": "2\n2\n0\n3\n1"
+    }
+   },
+   {
+    "id": "regret-heap",
+    "pattern": {
+     "zh": "反悔堆：先选上，超了再踢掉最差的",
+     "en": "Regret heap: take it, then drop the worst when over"
+    },
+    "when": {
+     "zh": "按截止时间（或位置）扫描，每样东西先选上，一旦超出限制，就从已选的里踢掉代价最大的那个，用堆在 O(log n) 里找到它。LC 630 课程表 III、LC 1642 可以到达的最远建筑、LC 871 最低加油次数都是这种「可以反悔」的贪心。",
+     "en": "Scan by deadline (or position), take each item at first, and when a limit is broken, drop the costliest item taken so far, found in O(log n) with a heap. LC 630 (Course Schedule III), LC 1642 (Furthest Building You Can Reach) and LC 871 (Minimum Number of Refueling Stops) are this take-back greedy."
+    },
+    "complexity": {
+     "zh": "时间 O(n log n) · 空间 O(n)",
+     "en": "O(n log n) time · O(n) space"
+    },
+    "code": {
+     "python": "import heapq\n\n\ndef schedule_course(courses: list[list[int]]) -> int:\n    \"\"\"Most courses [duration, last day] you can finish one at a time (LC 630).\"\"\"\n    taken: list[int] = []  # chosen durations as a max-heap (negated)\n    day = 0\n    for duration, last in sorted(courses, key=lambda c: c[1]):  # earliest deadline first\n        heapq.heappush(taken, -duration)\n        day += duration\n        if day > last:  # past the deadline: drop the longest course taken so far\n            day += heapq.heappop(taken)\n    return len(taken)",
+     "cpp": "// Most courses {duration, last day} you can finish one at a time (LC 630).\nint scheduleCourse(vector<pair<int, int>> courses) {\n    sort(courses.begin(), courses.end(), [](auto& a, auto& b) { return a.second < b.second; });  // earliest deadline first\n    priority_queue<int> taken;  // chosen durations, longest on top\n    long long day = 0;\n    for (auto [duration, last] : courses) {\n        taken.push(duration);\n        day += duration;\n        if (day > last) {  // past the deadline: drop the longest course taken so far\n            day -= taken.top();\n            taken.pop();\n        }\n    }\n    return taken.size();\n}",
+     "java": "class Solution {\n    // Most courses {duration, last day} you can finish one at a time (LC 630).\n    int scheduleCourse(int[][] courses) {\n        int[][] sorted = courses.clone();\n        Arrays.sort(sorted, Comparator.comparingInt(c -> c[1])); // earliest deadline first\n        PriorityQueue<Integer> taken = new PriorityQueue<>(Comparator.reverseOrder()); // longest on top\n        long day = 0;\n        for (int[] c : sorted) {\n            taken.offer(c[0]);\n            day += c[0];\n            if (day > c[1]) day -= taken.poll(); // past the deadline: drop the longest course taken so far\n        }\n        return taken.size();\n    }\n}",
+     "go": "import (\n\t\"container/heap\"\n\t\"sort\"\n)\n\n// maxHeap is a max-heap of ints for container/heap.\ntype maxHeap []int\n\nfunc (h maxHeap) Len() int           { return len(h) }\nfunc (h maxHeap) Less(i, j int) bool { return h[i] > h[j] }\nfunc (h maxHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *maxHeap) Push(x any)        { *h = append(*h, x.(int)) }\nfunc (h *maxHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\n// scheduleCourse returns the most courses {duration, last day} you can finish one at a time (LC 630).\nfunc scheduleCourse(courses [][2]int) int {\n\tsorted := append([][2]int(nil), courses...)\n\tsort.Slice(sorted, func(i, j int) bool { return sorted[i][1] < sorted[j][1] }) // earliest deadline first\n\ttaken := &maxHeap{} // chosen durations, longest on top\n\tday := 0\n\tfor _, c := range sorted {\n\t\theap.Push(taken, c[0])\n\t\tday += c[0]\n\t\tif day > c[1] { // past the deadline: drop the longest course taken so far\n\t\t\tday -= heap.Pop(taken).(int)\n\t\t}\n\t}\n\treturn taken.Len()\n}"
+    },
+    "driver": {
+     "python": "for courses in ([[100, 200], [200, 1300], [1000, 1250], [2000, 3200]], [[1, 2]], [[3, 2], [4, 3]], [[5, 5], [4, 6], [2, 6]]):\n    print(schedule_course(courses))",
+     "cpp": "for (auto& courses : vector<vector<pair<int, int>>>{{{100, 200}, {200, 1300}, {1000, 1250}, {2000, 3200}}, {{1, 2}}, {{3, 2}, {4, 3}}, {{5, 5}, {4, 6}, {2, 6}}})\n    cout << scheduleCourse(courses) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][][] cases = {{{100, 200}, {200, 1300}, {1000, 1250}, {2000, 3200}}, {{1, 2}}, {{3, 2}, {4, 3}}, {{5, 5}, {4, 6}, {2, 6}}};\nfor (int[][] courses : cases) show(s.scheduleCourse(courses));",
+     "go": "for _, courses := range [][][2]int{{{100, 200}, {200, 1300}, {1000, 1250}, {2000, 3200}}, {{1, 2}}, {{3, 2}, {4, 3}}, {{5, 5}, {4, 6}, {2, 6}}} {\n    fmt.Println(scheduleCourse(courses))\n}",
+     "expected": "3\n1\n0\n2"
+    }
+   }
+  ]
+ },
+ "linked-list": {
+  "variants": [
+   {
+    "id": "dummy-merge",
+    "pattern": {
+     "zh": "哑结点 + 尾指针拼接新链表",
+     "en": "Dummy head and a tail pointer to splice a new list"
+    },
+    "when": {
+     "zh": "要边走边拼出一条新链表（合并、分区、两数相加、删除）：先放一个哑结点，尾指针 tail 只往后接，头结点就不用特判，最后返回 dummy.next。LC 21 合并两个有序链表、LC 2 两数相加、LC 86 分隔链表都是这个形状。",
+     "en": "When a new list is spliced together on the way (merging, partitioning, adding numbers, deleting): start from a dummy node and only ever append at a tail pointer, so the head needs no special case, then return dummy.next. LC 21 (Merge Two Sorted Lists), LC 2 (Add Two Numbers) and LC 86 (Partition List) have this shape."
+    },
+    "complexity": {
+     "zh": "时间 O(m + n) · 空间 O(1)",
+     "en": "O(m + n) time · O(1) space"
+    },
+    "code": {
+     "python": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val, self.next = val, next\n\n\ndef merge_two(a, b):\n    \"\"\"One sorted list from two, reusing their nodes.\"\"\"\n    dummy = tail = ListNode()  # a placeholder head: the first node needs no special case\n    while a and b:\n        if a.val <= b.val:\n            tail.next, a = a, a.next\n        else:\n            tail.next, b = b, b.next\n        tail = tail.next\n    tail.next = a or b  # whatever is left is sorted already\n    return dummy.next",
+     "cpp": "struct ListNode {\n    int val;\n    ListNode* next;\n    ListNode(int v, ListNode* n = nullptr) : val(v), next(n) {}\n};\n\n// One sorted list from two, reusing their nodes.\nListNode* mergeTwo(ListNode* a, ListNode* b) {\n    ListNode dummy(0);  // a placeholder head: the first node needs no special case\n    ListNode* tail = &dummy;\n    while (a && b) {\n        ListNode*& smaller = a->val <= b->val ? a : b;\n        tail->next = smaller;\n        smaller = smaller->next;\n        tail = tail->next;\n    }\n    tail->next = a ? a : b;  // whatever is left is sorted already\n    return dummy.next;\n}",
+     "java": "class ListNode {\n    int val;\n    ListNode next;\n\n    ListNode(int val, ListNode next) {\n        this.val = val;\n        this.next = next;\n    }\n}\n\nclass Solution {\n    // One sorted list from two, reusing their nodes.\n    ListNode mergeTwo(ListNode a, ListNode b) {\n        ListNode dummy = new ListNode(0, null), tail = dummy; // the first node needs no special case\n        while (a != null && b != null) {\n            if (a.val <= b.val) {\n                tail.next = a;\n                a = a.next;\n            } else {\n                tail.next = b;\n                b = b.next;\n            }\n            tail = tail.next;\n        }\n        tail.next = a != null ? a : b; // whatever is left is sorted already\n        return dummy.next;\n    }\n}",
+     "go": "type ListNode struct {\n\tVal  int\n\tNext *ListNode\n}\n\n// mergeTwo returns one sorted list from two, reusing their nodes.\nfunc mergeTwo(a, b *ListNode) *ListNode {\n\tdummy := &ListNode{} // a placeholder head: the first node needs no special case\n\ttail := dummy\n\tfor a != nil && b != nil {\n\t\tif a.Val <= b.Val {\n\t\t\ttail.Next, a = a, a.Next\n\t\t} else {\n\t\t\ttail.Next, b = b, b.Next\n\t\t}\n\t\ttail = tail.Next\n\t}\n\tif a != nil { // whatever is left is sorted already\n\t\ttail.Next = a\n\t} else {\n\t\ttail.Next = b\n\t}\n\treturn dummy.Next\n}"
+    },
+    "driver": {
+     "python": "def build(xs):\n    head = None\n    for v in reversed(xs):\n        head = ListNode(v, head)\n    return head\n\n\ndef dump(head):\n    out = []\n    while head:\n        out.append(head.val)\n        head = head.next\n    print(*out) if out else print(\"-\")\n\ndump(merge_two(build([1, 2, 4]), build([1, 3, 4])))\ndump(merge_two(build([]), build([0])))\ndump(merge_two(build([]), build([])))\ndump(merge_two(build([5]), build([1, 2, 3])))",
+     "cpp": "auto build = [](vector<int> xs) {\n    ListNode* head = nullptr;\n    for (int i = (int)xs.size() - 1; i >= 0; i--) head = new ListNode(xs[i], head);\n    return head;\n};\nauto dump = [](ListNode* head) {\n    vector<int> out;\n    for (; head; head = head->next) out.push_back(head->val);\n    if (out.empty()) cout << \"-\\n\";\n    else show(out);\n};\n\ndump(mergeTwo(build({1, 2, 4}), build({1, 3, 4})));\ndump(mergeTwo(build({}), build({0})));\ndump(mergeTwo(build({}), build({})));\ndump(mergeTwo(build({5}), build({1, 2, 3})));",
+     "java": "Solution s = new Solution();\nFunction<int[], ListNode> build = xs -> {\n    ListNode head = null;\n    for (int i = xs.length - 1; i >= 0; i--) head = new ListNode(xs[i], head);\n    return head;\n};\nConsumer<ListNode> dump = head -> {\n    List<Integer> out = new ArrayList<>();\n    for (; head != null; head = head.next) out.add(head.val);\n    if (out.isEmpty()) show(\"-\");\n    else show(out);\n};\n\ndump.accept(s.mergeTwo(build.apply(new int[] {1, 2, 4}), build.apply(new int[] {1, 3, 4})));\ndump.accept(s.mergeTwo(build.apply(new int[] {}), build.apply(new int[] {0})));\ndump.accept(s.mergeTwo(build.apply(new int[] {}), build.apply(new int[] {})));\ndump.accept(s.mergeTwo(build.apply(new int[] {5}), build.apply(new int[] {1, 2, 3})));",
+     "go": "build := func(xs ...int) *ListNode {\n    var head *ListNode\n    for i := len(xs) - 1; i >= 0; i-- {\n        head = &ListNode{xs[i], head}\n    }\n    return head\n}\ndump := func(head *ListNode) {\n    var out []int\n    for ; head != nil; head = head.Next {\n        out = append(out, head.Val)\n    }\n    if len(out) == 0 {\n        fmt.Println(\"-\")\n    } else {\n        show(out)\n    }\n}\n\ndump(mergeTwo(build(1, 2, 4), build(1, 3, 4)))\ndump(mergeTwo(build(), build(0)))\ndump(mergeTwo(build(), build()))\ndump(mergeTwo(build(5), build(1, 2, 3)))",
+     "expected": "1 1 2 3 4 4\n0\n-\n1 2 3 5"
+    }
+   },
+   {
+    "id": "reverse-k-group",
+    "pattern": {
+     "zh": "按 k 个一组反转",
+     "en": "Reverse in groups of k"
+    },
+    "when": {
+     "zh": "只反转链表的一段或一组一组地反转：prev 停在这一组前面，先数够 k 个（不够就保持原样），在组内原地反转，再把组头组尾接回去，prev 移到这组的新尾巴。LC 25 K 个一组翻转链表、LC 24 两两交换（k = 2）、LC 92 反转链表 II 都是这个骨架。",
+     "en": "To reverse one segment or the list group by group: prev waits before the group, count k nodes first (fewer stay as they are), reverse the group in place, reconnect both ends, and move prev to the group's new tail. LC 25 (Reverse Nodes in k-Group), LC 24 (Swap Nodes in Pairs, k = 2) and LC 92 (Reverse Linked List II) share this skeleton."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val, self.next = val, next\n\n\ndef reverse_k_group(head, k: int):\n    \"\"\"Reverses every full group of k nodes; a shorter tail stays as it is (LC 25).\"\"\"\n    dummy = ListNode(0, head)\n    prev = dummy  # the node before the group being reversed\n    while True:\n        tail = prev\n        for _ in range(k):  # is there a full group after prev?\n            tail = tail.next\n            if not tail:\n                return dummy.next\n        nxt, cur, p = tail.next, prev.next, tail.next\n        while cur is not nxt:  # reverse prev.next..tail, hanging it onto nxt\n            cur.next, p, cur = p, cur, cur.next\n        first = prev.next  # the group's old first node is now its last\n        prev.next = tail\n        prev = first",
+     "cpp": "struct ListNode {\n    int val;\n    ListNode* next;\n    ListNode(int v, ListNode* n = nullptr) : val(v), next(n) {}\n};\n\n// Reverses every full group of k nodes; a shorter tail stays as it is (LC 25).\nListNode* reverseKGroup(ListNode* head, int k) {\n    ListNode dummy(0, head);\n    ListNode* prev = &dummy;  // the node before the group being reversed\n    while (true) {\n        ListNode* tail = prev;\n        for (int i = 0; i < k; i++) {  // is there a full group after prev?\n            tail = tail->next;\n            if (!tail) return dummy.next;\n        }\n        ListNode *nxt = tail->next, *cur = prev->next, *p = nxt;\n        while (cur != nxt) {  // reverse prev->next..tail, hanging it onto nxt\n            ListNode* after = cur->next;\n            cur->next = p;\n            p = cur;\n            cur = after;\n        }\n        ListNode* first = prev->next;  // the group's old first node is now its last\n        prev->next = tail;\n        prev = first;\n    }\n}",
+     "java": "class ListNode {\n    int val;\n    ListNode next;\n\n    ListNode(int val, ListNode next) {\n        this.val = val;\n        this.next = next;\n    }\n}\n\nclass Solution {\n    // Reverses every full group of k nodes; a shorter tail stays as it is (LC 25).\n    ListNode reverseKGroup(ListNode head, int k) {\n        ListNode dummy = new ListNode(0, head);\n        ListNode prev = dummy; // the node before the group being reversed\n        while (true) {\n            ListNode tail = prev;\n            for (int i = 0; i < k; i++) { // is there a full group after prev?\n                tail = tail.next;\n                if (tail == null) return dummy.next;\n            }\n            ListNode nxt = tail.next, cur = prev.next, p = nxt;\n            while (cur != nxt) { // reverse prev.next..tail, hanging it onto nxt\n                ListNode after = cur.next;\n                cur.next = p;\n                p = cur;\n                cur = after;\n            }\n            ListNode first = prev.next; // the group's old first node is now its last\n            prev.next = tail;\n            prev = first;\n        }\n    }\n}",
+     "go": "type ListNode struct {\n\tVal  int\n\tNext *ListNode\n}\n\n// reverseKGroup reverses every full group of k nodes; a shorter tail stays as it is (LC 25).\nfunc reverseKGroup(head *ListNode, k int) *ListNode {\n\tdummy := &ListNode{0, head}\n\tprev := dummy // the node before the group being reversed\n\tfor {\n\t\ttail := prev\n\t\tfor i := 0; i < k; i++ { // is there a full group after prev?\n\t\t\ttail = tail.Next\n\t\t\tif tail == nil {\n\t\t\t\treturn dummy.Next\n\t\t\t}\n\t\t}\n\t\tnext, cur, p := tail.Next, prev.Next, tail.Next\n\t\tfor cur != next { // reverse prev.Next..tail, hanging it onto next\n\t\t\tcur.Next, p, cur = p, cur, cur.Next\n\t\t}\n\t\tfirst := prev.Next // the group's old first node is now its last\n\t\tprev.Next = tail\n\t\tprev = first\n\t}\n}"
+    },
+    "driver": {
+     "python": "def build(xs):\n    head = None\n    for v in reversed(xs):\n        head = ListNode(v, head)\n    return head\n\n\ndef dump(head):\n    out = []\n    while head:\n        out.append(head.val)\n        head = head.next\n    print(*out) if out else print(\"-\")\n\ndump(reverse_k_group(build([1, 2, 3, 4, 5]), 2))\ndump(reverse_k_group(build([1, 2, 3, 4, 5]), 3))\ndump(reverse_k_group(build([1]), 1))\ndump(reverse_k_group(build([1, 2]), 3))\ndump(reverse_k_group(build([1, 2, 3, 4, 5, 6]), 3))",
+     "cpp": "auto build = [](vector<int> xs) {\n    ListNode* head = nullptr;\n    for (int i = (int)xs.size() - 1; i >= 0; i--) head = new ListNode(xs[i], head);\n    return head;\n};\nauto dump = [](ListNode* head) {\n    vector<int> out;\n    for (; head; head = head->next) out.push_back(head->val);\n    if (out.empty()) cout << \"-\\n\";\n    else show(out);\n};\n\ndump(reverseKGroup(build({1, 2, 3, 4, 5}), 2));\ndump(reverseKGroup(build({1, 2, 3, 4, 5}), 3));\ndump(reverseKGroup(build({1}), 1));\ndump(reverseKGroup(build({1, 2}), 3));\ndump(reverseKGroup(build({1, 2, 3, 4, 5, 6}), 3));",
+     "java": "Solution s = new Solution();\nFunction<int[], ListNode> build = xs -> {\n    ListNode head = null;\n    for (int i = xs.length - 1; i >= 0; i--) head = new ListNode(xs[i], head);\n    return head;\n};\nConsumer<ListNode> dump = head -> {\n    List<Integer> out = new ArrayList<>();\n    for (; head != null; head = head.next) out.add(head.val);\n    if (out.isEmpty()) show(\"-\");\n    else show(out);\n};\n\ndump.accept(s.reverseKGroup(build.apply(new int[] {1, 2, 3, 4, 5}), 2));\ndump.accept(s.reverseKGroup(build.apply(new int[] {1, 2, 3, 4, 5}), 3));\ndump.accept(s.reverseKGroup(build.apply(new int[] {1}), 1));\ndump.accept(s.reverseKGroup(build.apply(new int[] {1, 2}), 3));\ndump.accept(s.reverseKGroup(build.apply(new int[] {1, 2, 3, 4, 5, 6}), 3));",
+     "go": "build := func(xs ...int) *ListNode {\n    var head *ListNode\n    for i := len(xs) - 1; i >= 0; i-- {\n        head = &ListNode{xs[i], head}\n    }\n    return head\n}\ndump := func(head *ListNode) {\n    var out []int\n    for ; head != nil; head = head.Next {\n        out = append(out, head.Val)\n    }\n    if len(out) == 0 {\n        fmt.Println(\"-\")\n    } else {\n        show(out)\n    }\n}\n\ndump(reverseKGroup(build(1, 2, 3, 4, 5), 2))\ndump(reverseKGroup(build(1, 2, 3, 4, 5), 3))\ndump(reverseKGroup(build(1), 1))\ndump(reverseKGroup(build(1, 2), 3))\ndump(reverseKGroup(build(1, 2, 3, 4, 5, 6), 3))",
+     "expected": "2 1 4 3 5\n3 2 1 4 5\n1\n1 2\n3 2 1 6 5 4"
     }
    }
   ]
