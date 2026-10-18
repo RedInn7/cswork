@@ -1,9 +1,10 @@
 // Under the builder's rule check (components/resume-extend.tsx): the follow-up questions copy for a
 // friend without the name or contact lines and send nothing when signed out; signed in, the ticked
-// ones become cards (already-added ones marked, a 409 stops with what got in); the LinkedIn check
+// ones become cards (already-added ones marked and never re-sent, a 409 stops with what got in); the LinkedIn check
 // keeps its fields in this browser, starts the URL from the resume and focuses the field an issue names.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { createElement, act } from 'react';
 
@@ -109,9 +110,9 @@ test('signed in: already-added questions are marked, the ticked ones become card
 
   await act(async () => button(drill, '加入复习（4）').click());
   await settle(30);
-  assert.equal(puts.length, 4);
-  // The card already in the account goes first (an overwrite, free under the cap).
-  assert.equal(puts[0].url, `/api/oj/notes?target=card:${drillId('measure', REDIS)}`);
+  // The card already in the account is not sent again: its back may hold the learner's own answer.
+  assert.equal(puts.length, 3);
+  assert.equal(puts.some((put) => put.url === `/api/oj/notes?target=card:${drillId('measure', REDIS)}`), false);
   for (const put of puts) {
     const card = parseCard(put.body);
     assert.ok(card, 'every body passes parseCard');
@@ -121,7 +122,7 @@ test('signed in: already-added questions are marked, the ticked ones become card
     assert.equal(put.body.includes('Lovelace'), false);
   }
   const status = drill.querySelector('.resume-extend-status');
-  assert.match(status.textContent, /^已加入 4 张，今天就会出现在「今日复习」里。/);
+  assert.match(status.textContent, /^已加入 3 张，今天就会出现在「今日复习」里。 1 题已在卡片里，保持原样。/);
   assert.equal(status.querySelector('a').getAttribute('href'), '/?view=review-session');
   assert.equal(drill.querySelectorAll('.resume-drill-saved').length, 4);
 
@@ -140,6 +141,7 @@ test('the LinkedIn check keeps its fields in this browser, starts from the resum
   const { host, unmount } = await mount({ zh: false, signedIn: false });
   const box = host.querySelector('details#resume-linkedin');
   for (const field of box.querySelectorAll('input, textarea')) assert.ok(field.closest('label'), 'every field has a label');
+  assert.equal(box.querySelector('[aria-live]'), null, 'the score is not re-read on every keystroke');
   assert.equal(box.querySelector('[role="radiogroup"]').getAttribute('aria-labelledby'), box.querySelector('[role="radiogroup"] > span').id);
   assert.equal(box.querySelector('#linkedin-url').value, 'linkedin.com/in/ada-lovelace-4b2a1c39');
   // Everything empty but the URL (its random tail costs 6 of 10): 100 - 20 - 15 - 25 - 20 - 6 - 5.
@@ -165,4 +167,17 @@ test('the LinkedIn check keeps its fields in this browser, starts from the resum
   assert.equal(again.host.querySelector('#linkedin-headline').value, 'Software Engineer Intern · Go · Python');
   assert.equal(again.host.querySelector('input[value="recruiters"]').checked, true);
   await again.unmount();
+});
+
+test('both blocks stay out of print, and the LinkedIn check never sees the name or contact lines', async () => {
+  const print = readFileSync(new URL('../app/career/resume/builder/resume-print.css', import.meta.url), 'utf8');
+  assert.match(/@media print \{[^]*?\{\s*display: none;/.exec(print)[0], /\.resume-extend,/);
+  // "Ruby" is a skill term: as a name it must not count as one missing from LinkedIn.
+  const stored = localStorage.getItem('cswork:resume:v1');
+  localStorage.setItem('cswork:resume:v1', JSON.stringify({ ...JSON.parse(stored), name: 'Ruby Chen', email: 'ruby@example.com' }));
+  const { host, unmount } = await mount({ zh: false, signedIn: false });
+  assert.equal(host.querySelector('#resume-linkedin').textContent.includes('Ruby'), false);
+  assert.match(host.querySelector('#resume-linkedin .resume-check > small').textContent, /compared against 4 technical terms/);
+  await unmount();
+  localStorage.setItem('cswork:resume:v1', stored);
 });

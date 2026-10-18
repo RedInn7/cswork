@@ -50,12 +50,12 @@ function ResumeDrill({ resume, zh, signedIn }: { resume: Resume; zh: boolean; si
     setStatus(null);
     try {
       const ids = new Set(await savedCards());
-      // Re-adding a question overwrites its card; only new ones count against the cap.
+      // A question already in the account is left alone: the learner may have rewritten its back.
       const fresh = chosen.filter((d) => !ids.has(d.id));
+      const have = chosen.length - fresh.length;
       const room = Math.max(0, CARD_MAX - ids.size);
-      const queue = [...chosen.filter((d) => ids.has(d.id)), ...fresh.slice(0, room)];
       let added = 0;
-      for (const d of queue) {
+      for (const d of fresh.slice(0, room)) {
         const error = await putCard(d.id, drillCard(d, zh), t);
         if (error) return setStatus({ error: true, text: `${t(`已加入 ${added} 张。`, `Added ${added}.`)} ${error}` });
         added++;
@@ -66,9 +66,13 @@ function ResumeDrill({ resume, zh, signedIn }: { resume: Resume; zh: boolean; si
       setStatus({
         error: left > 0,
         review: true,
-        text:
-          t(`已加入 ${added} 张，今天就会出现在「今日复习」里。`, `Added ${added}: they show up in today’s review session.`) +
-          (left ? t(` 卡片已满 ${CARD_MAX} 张，还有 ${left} 题没加：先删掉一些旧卡。`, ` Your ${CARD_MAX} cards are full and ${left} were left out: delete some old cards first.`) : ''),
+        text: [
+          added ? t(`已加入 ${added} 张，今天就会出现在「今日复习」里。`, `Added ${added}: they show up in today’s review session.`) : '',
+          have ? t(`${have} 题已在卡片里，保持原样。`, `${have} already in your cards, left as they are.`) : '',
+          left ? t(`卡片已满 ${CARD_MAX} 张，还有 ${left} 题没加：先删掉一些旧卡。`, `Your ${CARD_MAX} cards are full and ${left} were left out: delete some old cards first.`) : '',
+        ]
+          .filter(Boolean)
+          .join(' '),
       });
     } catch (e) {
       setStatus({ error: true, text: (e as Error).message });
@@ -238,7 +242,8 @@ function LinkedInCheck({ links, text, zh }: { links: string; text: string; zh: b
           ))}
         </div>
       </form>
-      <div className="resume-check" aria-live="polite">
+      {/* No live region: issue texts carry character counts and would be re-read on every keystroke. */}
+      <div className="resume-check">
         <p>
           <strong>
             {t('主页得分', 'Profile score')} <span className="resume-linkedin-score">{check.score}</span>

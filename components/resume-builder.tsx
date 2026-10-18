@@ -525,7 +525,8 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
           )}
           <small>{t('按规则检查，不是 AI：看动词、数字、长度、用词、日期和必备小节。', 'Rules, not AI: verbs, numbers, length, wording, dates and the sections every resume needs.')}</small>
         </section>
-        <ResumeExtend resume={resume} text={resumeText(resume)} zh={zh} signedIn={signedIn} />
+        {/* Without the name and contact lines: a name like Ruby is no skill. */}
+        <ResumeExtend resume={resume} text={resumeText({ ...resume, name: '', email: '', phone: '', location: '', links: '' })} zh={zh} signedIn={signedIn} />
         <AutofillBookmarklet resume={resume} version={version} zh={zh} />
         <p className="resume-builder-status" role="status">
           {status}
