@@ -23,7 +23,6 @@ import {
   Search,
   Settings,
   Inbox,
-  Dices,
   Timer,
   TrendingUp,
   ListChecks,
@@ -32,7 +31,6 @@ import {
   GraduationCap,
   Award,
   FolderGit2,
-  MicVocal,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -96,12 +94,6 @@ import '@/app/lms.css';
 const TeacherView = lazy(() =>
   import('./teacher').then((m) => ({ default: m.TeacherView }), loadFailed),
 );
-const MockInterview = lazy(() =>
-  import('./mock-interview').then((m) => ({ default: m.MockInterview }), loadFailed),
-);
-const MockPeer = lazy(() =>
-  import('./mock-peer').then((m) => ({ default: m.MockPeer }), loadFailed),
-);
 const GiftRedeemPage = lazy(() =>
   import('./course-gift').then((m) => ({ default: m.GiftRedeemPage }), loadFailed),
 );
@@ -133,12 +125,10 @@ const nav: [LucideIcon, string, string, string][] = [
   [TrendingUp, '我的进度', 'My progress', 'progress'],
   [ListChecks, '我的题单', 'My lists', 'lists'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
-  [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
   [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
   [FolderGit2, '简历项目', 'Resume Projects', '/projects'],
-  [MicVocal, '面试英语', 'Interview English', '/english'],
   [Award, '技能认证', 'Certification', '/certify'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
@@ -266,7 +256,7 @@ export function Academy() {
   );
   const selectedProblem = boot.problems.find((p) => p.id === params.problem),
     // An opened library item belongs to its list's menu entry.
-    navView = view === 'content' ? contentSection(params.type) : view === 'mock-peer' ? 'mock-interview' : view,
+    navView = view === 'content' ? contentSection(params.type) : view,
     current = nav.find((n) => n[3] === navView),
     unread =
       boot.unreadNotifications ??
@@ -318,7 +308,7 @@ export function Academy() {
       !boot.person &&
       ![
         'courses', 'problems', 'problem', 'status',
-        'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock', 'speedrun',
+        'questions', 'experiences', 'resources', 'content', 'mock', 'speedrun',
       ].includes(view)
     )
       return (
@@ -381,8 +371,6 @@ export function Academy() {
         return (
           <MockOa key={boot.person?.id || 'guest'} boot={boot} params={params} navigate={navigate} />
         );
-      case 'mock-peer':
-        return <MockPeer key={boot.person?.id} navigate={navigate} params={params} />;
       case 'speedrun':
         return <Speedrun key={boot.person?.id || 'guest'} boot={boot} navigate={navigate} />;
       case 'status':
@@ -404,16 +392,6 @@ export function Academy() {
       case 'experiences':
       case 'resources':
         return <ContentList key={view} section={view} params={params} navigate={navigate} />;
-      case 'mock-interview':
-        return (
-          <MockInterview
-            params={params}
-            navigate={navigate}
-            problemIds={boot.problems.map((p) => p.id)}
-            userId={boot.person?.id ?? null}
-            ai={!!boot.services?.ai && !!boot.person}
-          />
-        );
       case 'content':
         return (
           <ContentDetail

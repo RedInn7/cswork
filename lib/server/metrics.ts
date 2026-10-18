@@ -46,8 +46,6 @@ const EVENTS: Record<string, Record<string, Kind>> = {
   // A Line 500 hint opened, 1-3 (components/hint-ladder.tsx).
   hint_open: { problem_id: 'text', level: [1, 3] },
   language_switch: { locale: 'text' },
-  mock_interview_start: { company: 'tag', template: 'tag', mode: 'tag' },
-  mock_interview_finish: { company: 'tag', template: 'tag', mode: 'tag' },
   // Timed mock OA (components/mock-oa.tsx): company is a slug or 'custom'.
   mock_start: { company: 'tag', questions: [1, 4], minutes: [15, 180], source: 'text' },
   mock_finish: {

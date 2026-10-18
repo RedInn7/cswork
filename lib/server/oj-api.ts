@@ -24,7 +24,6 @@ import { oaEnglishStatement, oaGuide } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice, problemVote, readJson } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
-import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
 import { handleAiResume } from './ai-resume';
 import { handleAiPair } from './ai-rounds';
@@ -47,7 +46,6 @@ import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
-import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
 import { handleApplications } from './applications';
@@ -148,7 +146,6 @@ export async function handleOj(
   if (resource === 'lists' || resource === 'profile' || resource === 'reports')
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
-  if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   if (resource === 'applications') return handleApplications(request, p, path.slice(1));
@@ -300,12 +297,6 @@ export async function handleOj(
   if (resource === 'recall' && id === 'ideas' && !action) return handleRecallIdeas(request, p);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
-  if (
-    resource === 'ai' &&
-    (id === 'interview' || id === 'interview-step' || id === 'interview-report' || id === 'interview-calibration') &&
-    !action
-  )
-    return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
   // The resume review on /career/resume (lib/server/ai-resume.ts).
