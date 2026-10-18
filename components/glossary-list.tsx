@@ -7,7 +7,6 @@ import { STOP_NAMES } from '@/lib/route-stops';
 import { useSpeech } from './use-speech';
 
 const CardEditor = lazy(() => import('./card-editor').then((m) => ({ default: m.CardEditor })));
-const unheard = () => {};
 
 /**
  * The glossary on /topics/glossary: every term is server-rendered with its anchor (term-<id>);
@@ -20,7 +19,7 @@ export function GlossaryList({ zh }: { zh: boolean }) {
   const field = useId();
   const [query, setQuery] = useState('');
   const [card, setCard] = useState<GlossaryTerm | null>(null);
-  const { canSpeak, say } = useSpeech('en', unheard);
+  const { canSpeak, say } = useSpeech('en');
   const shown = query.trim() ? new Set(glossaryHits(query).map((term) => term.id)) : null;
   // A term or group the search hides (⌘K on this page, the group links) clears the search first.
   useEffect(() => {
@@ -41,7 +40,7 @@ export function GlossaryList({ zh }: { zh: boolean }) {
         className="glossary-listen"
         lang={zh ? 'zh-CN' : 'en'}
         aria-label={label}
-        onClick={() => say(text, { always: true, rate: 0.9 })}
+        onClick={() => say(text, { rate: 0.9 })}
       >
         <Volume2 size={15} aria-hidden="true" />
       </button>
