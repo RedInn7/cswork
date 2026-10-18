@@ -161,14 +161,21 @@ export const blankRight = (blank: Blank, typed: string) =>
 export type DiffLine = { op: 'same' | 'missing' | 'extra'; text: string };
 /** Leading tabs as four spaces each: an editor's Tab key and the reference may disagree. */
 const detab = (line: string) => line.replace(/^\t+/, (tabs) => '    '.repeat(tabs.length));
+/** A Python line that is a whole one-line docstring: documentation, counted like a comment. */
+// ponytail: one-line docstrings only (all the templates have); a multi-line one typed is extra lines.
+const DOCSTRING = /^\s*[rRbBuU]?("""|''').*\1\s*$/;
 /**
- * Line diff of a template written from memory against the reference: comments and blank lines
- * dropped on both sides, lines matched with sameLine by a longest common subsequence. `missing`
- * is a reference line the learner left out, `extra` one they wrote that the reference lacks.
+ * Line diff of a template written from memory against the reference: comments, Python docstrings
+ * and blank lines dropped on both sides, lines matched with sameLine by a longest common
+ * subsequence. `missing` is a reference line the learner left out, `extra` one they wrote that
+ * the reference lacks.
  */
 // ponytail: O(n·m) table, fine for templates of a few dozen lines.
 export function recallDiff(typed: string, ref: string, lang: TemplateLang): DiffLine[] {
-  const lines = (code: string) => stripComments(code.replace(/\r\n?/g, '\n'), lang).filter((l) => l.trim()).map(detab);
+  const lines = (code: string) =>
+    stripComments(code.replace(/\r\n?/g, '\n'), lang)
+      .filter((l) => l.trim() && !(lang === 'python' && DOCSTRING.test(l)))
+      .map(detab);
   const a = lines(ref);
   const b = lines(typed);
   // best[i][j]: LCS length of a[i..] and b[j..].

@@ -116,3 +116,17 @@ void test('recall diff: a missing line, an extra line, spacing and comments', ()
   assert.deepEqual(recallDiff('int x = 1; // one\n// note\nreturn x;', 'int x = 1;\nreturn x;', 'cpp').map((d) => d.op), ['same', 'same']);
   assert.deepEqual(recallDiff('', 'a\nb', 'go').map((d) => d.op), ['missing', 'missing']);
 });
+
+void test('recall diff: Python docstrings count like comments, so the code alone matches every template', () => {
+  let docstrings = 0;
+  for (const t of allCode) {
+    const ref = t.code.python;
+    const bare = ref.split('\n').filter((line) => !/^\s*("""|''').*\1$/.test(line));
+    docstrings += ref.split('\n').length - bare.length;
+    assert(recallDiff(bare.join('\n'), ref, 'python').every((d) => d.op === 'same'), t.slug);
+  }
+  assert(docstrings > 100, 'the templates do carry docstrings');
+  // A different docstring of one's own does not count either; a string elsewhere still does.
+  assert.deepEqual(recallDiff('def f():\n    r"""Mine."""\n    return 1', 'def f():\n    """Theirs."""\n    return 1', 'python').map((d) => d.op), ['same', 'same']);
+  assert.deepEqual(recallDiff('s = """x"""', '', 'python').map((d) => d.op), ['extra']);
+});
