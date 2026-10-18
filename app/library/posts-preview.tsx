@@ -1,8 +1,9 @@
 import 'katex/dist/katex.min.css';
-import { PublicLibraryMarkdown } from '../library/markdown';
+import '../community-posts.css';
+import { PublicLibraryMarkdown } from './markdown';
 import { publicPosts } from '@/lib/server/solution-posts';
 
-export const day = (time: number, zh: boolean) =>
+const day = (time: number, zh: boolean) =>
   new Date(time).toLocaleDateString(zh ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
 
 /**
@@ -23,8 +24,8 @@ export async function PostsPreview({
   const page = await publicPosts(target, { body: '1' });
   const posts = page?.items.slice(0, 5) ?? [];
   return (
-    <section className="public-library-next discuss-preview" aria-labelledby="discuss-preview-title">
-      <h2 id="discuss-preview-title">
+    <section className="public-library-next posts-preview" aria-labelledby="posts-preview-title">
+      <h2 id="posts-preview-title">
         {title}{' '}
         {!!page?.items.length && (
           <small>
@@ -34,15 +35,15 @@ export async function PostsPreview({
         )}
       </h2>
       {posts.length ? (
-        <ol className="discuss-preview-list">
+        <ol className="posts-preview-list">
           {posts.map((post) => (
             <li key={post.id}>
-              <p className="discuss-preview-meta">
+              <p className="posts-preview-meta">
                 <span>{post.anonymous ? (zh ? '匿名用户' : 'Anonymous') : post.author || (zh ? '学员' : 'Learner')}</span>
                 <span>{day(post.createdAt, zh)}</span>
                 <span>{zh ? `${post.votes} 赞` : `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`}</span>
               </p>
-              <div className="public-library-prose discuss-preview-body cs-untrusted">
+              <div className="public-library-prose posts-preview-body cs-untrusted">
                 <PublicLibraryMarkdown body={post.body ?? ''} math ugc />
               </div>
             </li>

@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Ban, Mail } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import { DM_RETENTION_DAYS, threadPath } from '@/lib/community';
+import { DM_RETENTION_DAYS } from '@/lib/community';
 import type { Navigate } from './learning';
 import { ChatCompose, ChatLog, Report, useChat, type ChatItem } from './chat-log';
 import '@/app/learner-cloud.css';
@@ -191,7 +191,7 @@ function Thread({ threadKey, back, t, english }: { threadKey: string; back: Reac
           {c.post && (
             <p className="dm-post">
               {t('来自内推帖：', 'From the referral thread: ')}
-              <a href={threadPath(c.post.id)}>{c.post.title}</a>
+              {c.post.title}
             </p>
           )}
           <ChatLog
