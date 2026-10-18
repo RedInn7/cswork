@@ -2484,9 +2484,9 @@ export function lruTrace(
     frames.push({
       caption,
       done,
-      cells: [...map.keys()]
-        .sort((a, b) => a - b)
-        .map((k): DemoCell => ({ value: map.get(k)!, label: t(`键 ${k}`, `key ${k}`), state: hot.includes(k) ? 'active' : undefined })),
+      // Insertion order, not sorted: a new key lands in a slot the previous frame didn't draw, so
+      // predict mode never asks about a cell whose key changes under it.
+      cells: [...map.keys()].map((k): DemoCell => ({ value: map.get(k)!, label: t(`键 ${k}`, `key ${k}`), state: hot.includes(k) ? 'active' : undefined })),
       graph: {
         width: 100,
         height: 30,

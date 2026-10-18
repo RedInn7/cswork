@@ -2,6 +2,9 @@
 // draws only nodes and edges it declares, and has the same frames in Chinese and English.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { DemoGraphView } from '../components/algorithm-demo';
 import courses from '../lib/content/beginner-courses.json';
 import {
   DIJKSTRA_EDGES,
@@ -29,6 +32,7 @@ import {
   dijkstraTrace,
   dpTableTrace,
   enText,
+  guessTargets,
   heapTrace,
   monotonicStackTrace,
   topoSortTrace,
@@ -386,6 +390,19 @@ test('interval DP, stock DP, prefix sums, bits and interval greedy agree with br
   }
 });
 
+test('a short interval is still a bar between its two dots, never flipped or gone', () => {
+  for (const intervals of [[[1, 2], [3, 11]], [[1, 3], [2, 50], [60, 99]]] as [number, number][][]) {
+    const graph = intervalGreedyTrace(intervals).frames[0].graph!;
+    const lines = [...renderToStaticMarkup(createElement(DemoGraphView, { graph })).matchAll(/<line x1="([^"]+)" y1="[^"]+" x2="([^"]+)"/g)];
+    assert.equal(lines.length, graph.edges.length);
+    graph.edges.forEach((e, i) => {
+      const [x1, x2] = [Number(lines[i][1]), Number(lines[i][2])];
+      const [from, to] = [e.from, e.to].map((id) => graph.nodes.find((n) => n.id === id)!.x);
+      assert.ok(from <= x1 && x1 < x2 && x2 <= to, `${JSON.stringify(intervals)} #${i}: ${x1}–${x2}`);
+    });
+  }
+});
+
 test('LRU cache returns what a Map-based cache returns', () => {
   const reference = (capacity: number, ops: LruOp[]) => {
     const map = new Map<number, number>(),
@@ -408,6 +425,11 @@ test('LRU cache returns what a Map-based cache returns', () => {
     }
     return out;
   };
+  // Every cell predict mode asks about shows the same key before and after the step.
+  const stableCells = (trace: DemoTrace) =>
+    trace.frames.slice(1).every((next, i) =>
+      [...guessTargets(trace.frames[i], next)].every((key) => key[0] !== 'c' || trace.frames[i].cells[+key.slice(1)].label === next.cells[+key.slice(1)].label),
+    );
   assert.deepEqual(last(lruTrace()).queue, ['1', '-1', '-1', '3', '4']);
   const pick = rng(13);
   for (let round = 0; round < 30; round++) {
@@ -416,7 +438,10 @@ test('LRU cache returns what a Map-based cache returns', () => {
     const trace = lruTrace(capacity, ops);
     assert.deepEqual(last(trace).queue, reference(capacity, ops), JSON.stringify(ops));
     assert.ok(trace.frames.every((f) => f.cells.length <= capacity));
+    assert.ok(stableCells(trace), JSON.stringify(ops));
   }
+  // A new smaller key used to shift sorted cells, so predict mode asked about a cell whose key changed.
+  assert.ok(stableCells(lruTrace(3, [[5, 5], [7, 7], [5], [6, 6]])));
 });
 
 test('KMP finds every occurrence and builds the brute-force prefix function', () => {
