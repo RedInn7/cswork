@@ -60,6 +60,14 @@ export function InternLog({ zh }: { zh: boolean }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
 
+  /** This week's Monday within the internship (week 1 before it starts, the last week after it ends). */
+  const clampWeek = (meta: InternMeta) => weekMonday(meta.start, Math.min(meta.weeks, Math.max(1, weekNo(meta.start, today))));
+  const pick = (weeks: Record<string, Brag>, day: string) => {
+    setMonday(day);
+    const saved = weeks[day];
+    setDraft(saved ? { ...saved, wins: saved.wins.length ? saved.wins : [blankWin()] } : blankBrag());
+  };
+
   useEffect(() => {
     let live = true;
     api<{ items?: { target: string; body: string }[] }>('oj/notes?prefix=brag%3A').then(
@@ -93,15 +101,6 @@ export function InternLog({ zh }: { zh: boolean }) {
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- loads once; pick and clampWeek only read their arguments.
   }, []);
 
-  /** This week's Monday within the internship (week 1 before it starts, the last week after it ends). */
-  function clampWeek(meta: InternMeta) {
-    return weekMonday(meta.start, Math.min(meta.weeks, Math.max(1, weekNo(meta.start, today))));
-  }
-  function pick(weeks: Record<string, Brag>, day: string) {
-    setMonday(day);
-    const saved = weeks[day];
-    setDraft(saved ? { ...saved, wins: saved.wins.length ? saved.wins : [blankWin()] } : blankBrag());
-  }
 
   if (error)
     return (
@@ -120,7 +119,7 @@ export function InternLog({ zh }: { zh: boolean }) {
     return meta && n >= 1 && n <= meta.weeks ? t(`第 ${n} 周（${day}）`, `Week ${n} (${day})`) : t(`${day} 那一周`, `Week of ${day}`);
   };
 
-  async function saveMeta(e: React.FormEvent) {
+  async function saveMeta(e: { preventDefault(): void }) {
     e.preventDefault();
     if (!isDay(setup.start)) return setStatus(t('请填写实习开始日期。', 'Enter the start date.'));
     const next = { ...setup, company: setup.company.trim(), role: setup.role.trim() };
@@ -136,7 +135,7 @@ export function InternLog({ zh }: { zh: boolean }) {
       setBusy(false);
     }
   }
-  async function saveWeek(e: React.FormEvent) {
+  async function saveWeek(e: { preventDefault(): void }) {
     e.preventDefault();
     const body = bragBody(draft);
     setBusy(true);
@@ -295,13 +294,16 @@ export function InternLog({ zh }: { zh: boolean }) {
               <legend>{t('这周做成的事（XYZ：做成了什么、用什么衡量、怎么做到的）', 'What you got done (XYZ: what, measured how, done how)')}</legend>
               <datalist id="intern-projects">
                 {projects.map((p) => (
-                  <option key={p} value={p} />
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
                 ))}
               </datalist>
               {draft.wins.map((win, i) => {
                 const bullet = win.x.trim() ? xyzBullet(win) : null;
                 return (
-                  <div key={i} className="intern-card" role="group" aria-label={t(`成果 ${i + 1}`, `Result ${i + 1}`)}>
+                  <fieldset key={i} className="intern-card">
+                    <legend>{t(`成果 ${i + 1}`, `Result ${i + 1}`)}</legend>
                     <div className="intern-grid">
                       <label>
                         {t('X 做成了什么', 'X: what you accomplished')}
@@ -340,7 +342,7 @@ export function InternLog({ zh }: { zh: boolean }) {
                         {t('删除这条', 'Remove')}
                       </button>
                     </div>
-                  </div>
+                  </fieldset>
                 );
               })}
               <div className="resume-actions">
