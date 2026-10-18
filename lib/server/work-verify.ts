@@ -1,7 +1,7 @@
 import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { BADGE_CHANNELS, targetKind } from '@/lib/community';
+import { targetKind } from '@/lib/community';
 import domainsFile from '@/lib/content/company-domains.json';
 import type { Person } from './auth';
 import { setting } from './env';
@@ -15,8 +15,8 @@ import { readJson } from './my-practice';
  * email is verified asks for a code at a work address on a listed company domain; the server
  * keeps only an HMAC of the address, keyed with a server secret (a plain hash of a guessable
  * address could be checked against a list of names), and one address verifies one account.
- * The badge lasts a year and shows only where its owner switched it on: the public profile,
- * community posts, referral threads. Never on experience comments. Verifying at another company
+ * The badge lasts a year and shows only where its owner switched it on: the public profile and
+ * solutions. Never on experience comments. Verifying at another company
  * switches every placement off again: consent was given for the old employer.
  */
 const DAY = 86400000;
@@ -26,7 +26,9 @@ const TRIES = 5;
 // Codes a day per learner, per address and site-wide: each one is a mail to someone's inbox.
 const CODES_PER_DAY = 3;
 const SITE_CODES_PER_DAY = 300;
-export const PLACEMENTS = ['profile', 'posts', 'referrals'] as const;
+// work_verifications.show_referrals (the removed board's referral threads) can no longer be switched on;
+// a new company still switches it off with the others below.
+export const PLACEMENTS = ['profile', 'posts'] as const;
 export type Placement = (typeof PLACEMENTS)[number];
 /** Anyone can open an address here, so it proves no employer. */
 export const FREE_MAIL = new Set([
@@ -58,11 +60,10 @@ export function employerOf(email: string) {
 export const badgeSql = (user: string, placement: Placement) =>
   `(SELECT company_slug FROM work_verifications WHERE user_id=${user} AND show_${placement}=1
     AND verified_at>strftime('%s','now')*1000-${BADGE_DAYS * DAY})`;
-// The posts badge shows on solutions and these channels only: in interview, offer or career talk,
-// on a company's OA problem, experience comments or answers it would read as "an employee of X is
-// interviewing". A profile that shows the badge lists only these posts too (learner-cloud publicProfile).
-export const badgeTarget = (target: string) =>
-  BADGE_CHANNELS.has(target) || (targetKind(target) === 'problem' && !target.startsWith('oa-'));
+// The posts badge shows on solutions only: on a company's OA problem, experience comments or answers
+// it would read as "an employee of X is interviewing". A profile that shows the badge lists only
+// these posts too (learner-cloud publicProfile).
+export const badgeTarget = (target: string) => targetKind(target) === 'problem' && !target.startsWith('oa-');
 /** A badge's company name while the company keeps its page: a hidden company's badge goes too. */
 export const badgeName = (slug: string | null | undefined) =>
   (slug && reportCompanies().find((c) => c.slug === slug)?.name) || null;
@@ -77,7 +78,6 @@ type Row = {
   verified_at: number | null;
   show_profile: number;
   show_posts: number;
-  show_referrals: number;
 };
 const row = (userId: string) =>
   sqlite().prepare('SELECT * FROM work_verifications WHERE user_id=?').get(userId) as Row | undefined;
@@ -95,7 +95,7 @@ export function workState(userId: string, now = Date.now()) {
           expiresAt,
           active: !!expiresAt && expiresAt > now,
           pending: !!r.code_hash && (r.code_expires_at ?? 0) > now && r.attempts < TRIES,
-          show: { profile: !!r.show_profile, posts: !!r.show_posts, referrals: !!r.show_referrals },
+          show: { profile: !!r.show_profile, posts: !!r.show_posts },
         }
       : null,
   };
@@ -103,7 +103,7 @@ export function workState(userId: string, now = Date.now()) {
 
 const bit = (on: boolean | undefined) => (on === undefined ? null : +on);
 
-/** /api/oj/work: GET the state; POST verify {email}, confirm {code}, show {profile?,posts?,referrals?}, remove. */
+/** /api/oj/work: GET the state; POST verify {email}, confirm {code}, show {profile?,posts?}, remove. */
 export async function handleWorkVerify(request: Request, p: Person | null, path: string[]) {
   requirePerson(p);
   const [action, extra] = path;
@@ -185,16 +185,15 @@ export async function handleWorkVerify(request: Request, p: Person | null, path:
   }
   if (action === 'show') {
     const d = z
-      .object({ profile: z.boolean(), posts: z.boolean(), referrals: z.boolean() })
+      .object({ profile: z.boolean(), posts: z.boolean() })
       .partial()
       .strict()
       .parse(await readJson(request, 500));
     const { changes } = db
       .prepare(
-        `UPDATE work_verifications SET show_profile=COALESCE(?,show_profile),show_posts=COALESCE(?,show_posts),
-        show_referrals=COALESCE(?,show_referrals) WHERE user_id=?`,
+        'UPDATE work_verifications SET show_profile=COALESCE(?,show_profile),show_posts=COALESCE(?,show_posts) WHERE user_id=?',
       )
-      .run(bit(d.profile), bit(d.posts), bit(d.referrals), p.id);
+      .run(bit(d.profile), bit(d.posts), p.id);
     if (!changes) throw new HttpError(404, '还没有验证工作邮箱');
     return json(workState(p.id, now));
   }

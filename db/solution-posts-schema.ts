@@ -7,8 +7,8 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 // Community posts (lib/server/solution-posts.ts). problem_id is the target: a judge problem id,
-// discuss:<channel>, exp:<experience slug>, q:<interview question slug> or sd:<system design
-// chapter slug>. No foreign keys:
+// exp:<experience slug>, q:<interview question slug> or sd:<system design chapter slug>; rows on
+// discuss:<channel> are threads of the removed discussion board, kept but read nowhere. No foreign keys:
 // release.sh only applies additive SQL. Removing is a runtime flag, never a DELETE of
 // the text: hidden 0 shown, 1 removed by its author, 2 hidden by a moderator.
 export const solutionPosts = sqliteTable(
@@ -20,10 +20,10 @@ export const solutionPosts = sqliteTable(
     title: text('title').notNull(),
     body: text('body').notNull(),
     language: text('language').notNull().default(''),
-    // A company slug on a discussion thread, a Line 500 stop slug (technique) on a solution.
+    // A Line 500 stop slug (technique) on a solution (a company slug on an old board thread).
     tag: text('tag').notNull().default(''),
     hidden: integer('hidden').notNull().default(0),
-    // 1: other readers see no handle, badge or reputation; only discussion targets that carry no badge.
+    // 1: other readers see no handle, badge or reputation; never on a judge problem's solution.
     anonymous: integer('anonymous').notNull().default(0),
     // 1: a moderator featured it; it lists first on its target.
     pinned: integer('pinned').notNull().default(0),

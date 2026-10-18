@@ -1,8 +1,8 @@
 import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
 
-// A poll on a discussion thread (lib/server/solution-posts.ts), one per post: 2–6 options of up
-// to 80 characters as a JSON array; closes_at null runs until the thread goes. Frozen once
-// anyone votes.
+// Removed with the discussion board: polls are no longer read or written; the tables stay (no
+// DROP) so existing rows are kept. Was: a poll on a discussion thread, one per post: 2–6 options
+// of up to 80 characters as a JSON array; closes_at null ran until the thread went.
 export const postPolls = sqliteTable('post_polls', {
   postId: text('post_id').primaryKey(),
   question: text('question').notNull(),
