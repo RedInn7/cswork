@@ -596,7 +596,7 @@ void test('library problems judge free for verified accounts; course exercises k
   try {
     const ids = (await listPublishedProblems(student)).map((p) => p.id);
     assert.ok(ids.includes(libraryId) && !ids.includes(courseId));
-    // Ticket references follow the same rule, so hidden ones cannot be probed.
+    // Problem references (notes, marks) follow the same rule, so hidden ones cannot be probed.
     assert.equal(await canSeeProblem(student, courseId), false);
     assert.equal(await canSeeProblem(student, libraryId), true);
     assert.equal(await canSeeProblem(student, 'missing-problem'), false);
