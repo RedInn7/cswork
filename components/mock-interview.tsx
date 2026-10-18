@@ -33,7 +33,6 @@ import { ResumeBox } from './mock-resume';
 import { OaMarkdown } from './oa-library';
 import { PointsChecklist } from './recall-rate';
 import { TryFirst } from './try-first';
-import { StoryPicker } from './story-bank';
 import { useSpeech } from './use-speech';
 import '@/app/redesign.css';
 import '@/app/mock-interview.css';
@@ -183,7 +182,7 @@ export function MockInterview({
   params: Record<string, string>;
   navigate: Navigate;
   problemIds: string[];
-  /** Signed in: solo answers and story picks are saved to the account. */
+  /** Signed in: solo answers are saved to the account. */
   userId?: string | null;
   /** The server has the AI interviewer on and the viewer is signed in. */
   ai?: boolean;
@@ -1396,13 +1395,6 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
         {item && (
           // Beside the question on wide screens, so the notes stay in view while reading.
           <aside className="mi-work-side" aria-label={t('草稿与自评', 'Notes and rating')}>
-            {slot.kind === 'behavioral' && (
-              <StoryPicker
-                userId={userId}
-                question={{ key: `${item.type}/${item.slug}`, title: item.title, company: item.company?.name ?? null }}
-                text={`${item.title}\n${item.question}`}
-              />
-            )}
             {solo && item.type !== 'mcq' ? (
               // Solo: the answer is written before the reference opens; saved per question when signed in.
               <TryFirst

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/types';
 import { CAREER_CHECKLISTS } from '@/lib/content/career-checklists';
 import { blankResume, normalizeResume, type Resume } from '@/lib/resume-shape';
-import { blankStory, storyBody, storyTarget } from '@/lib/story-bank';
 import {
   appendBullets, bragBody, internDates, isDay, META_TARGET, parseBrag, parseMeta, resolveWeek, selfReview, TEAMS_TARGET, weekMonday,
   weekNo, weekTarget, winLines, WEEKS_MAX, WEEKS_MIN, WIN_MAX, WINS_MAX, FIELD_MAX, xyzBullet,
@@ -47,7 +46,7 @@ function download(name: string, text: string) {
  * /career/intern: the signed-in learner's internship log. One request reads every brag: note; the
  * internship setup, this week's checklist items, the week's log (saved on demand), past weeks,
  * exports made in this browser (midpoint and final self-review drafts, XYZ bullets that can go into
- * the resume builder's copy in this browser or into the story bank) and the team-matching cards.
+ * the resume builder's copy in this browser) and the team-matching cards.
  */
 export function InternLog({ zh }: { zh: boolean }) {
   const t = (a: string, b: string) => (zh ? a : b);
@@ -162,15 +161,6 @@ export function InternLog({ zh }: { zh: boolean }) {
       setStatus('week', (err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
     } finally {
       setBusy(false);
-    }
-  }
-  async function saveStory(win: Win) {
-    const story = { ...blankStory(), title: win.x.trim(), action: win.z.trim(), result: win.y.trim(), competencies: ['impact'] };
-    try {
-      await putNote(storyTarget(story.id), storyBody(story));
-      setStatus('week', t(`已存进故事库：${story.title}`, `Added to the story bank: ${story.title}`));
-    } catch (err) {
-      setStatus('week', (err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
     }
   }
   function toResume(add: string[]) {
@@ -345,11 +335,6 @@ export function InternLog({ zh }: { zh: boolean }) {
                       </p>
                     )}
                     <div className="resume-actions">
-                      {bullet && (
-                        <button type="button" className="is-quiet" onClick={() => void saveStory(win)}>
-                          {t('存为 STAR 故事', 'Save as a STAR story')}
-                        </button>
-                      )}
                       <button
                         type="button"
                         className="is-quiet"
