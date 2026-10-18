@@ -71,6 +71,7 @@ export default async function TrackerPage() {
       <p className="guide-top-links">
         <a href="/career/contacts">{zh ? '联系人' : 'Contacts'}</a>
         <a href="/career/templates">{zh ? '消息模板' : 'Message templates'}</a>
+        <a href="/career/intern">{zh ? '实习日志' : 'Internship log'}</a>
         <a href="/?view=account#reminders">{zh ? '开启 OA 截止和面试提醒' : 'Remind me of OA deadlines and interviews'}</a>
       </p>
       {viewer ? (

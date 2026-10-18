@@ -132,6 +132,17 @@ export default async function OaSimsPage() {
             </Link>
             {zh ? '。' : '.'}
           </p>
+          <p>
+            {zh ? '想从头学：' : 'Learning it from the start? '}
+            <Link href="/learn/os" prefetch={false}>
+              {zh ? '操作系统图解课' : 'Operating Systems, Illustrated'}
+            </Link>
+            {zh ? '、' : ', '}
+            <Link href="/learn/network" prefetch={false}>
+              {zh ? '计算机网络图解课' : 'Computer Networking, Illustrated'}
+            </Link>
+            {zh ? '。' : '.'}
+          </p>
         </nav>
         {simKinds.map((kind) => {
           const [heading, body] = SECTIONS[kind][zh ? 'zh' : 'en'];
