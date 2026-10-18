@@ -11,7 +11,7 @@ type Recognition = {
   start: () => void;
   stop: () => void;
 };
-// The AI interviewer's "read aloud" switch, kept per browser.
+// The "read aloud" switch, kept per browser (the key keeps its old name so saved choices stay).
 const SPEAK = 'cswork:mock-interview:speak';
 const unchanging = () => () => {};
 const engine = () => {
@@ -22,8 +22,8 @@ const engine = () => {
 /**
  * The browser's own speech: reading aloud (speechSynthesis) and dictation (SpeechRecognition,
  * prefixed in Chrome and Safari). Each is reported missing where the browser has none, and on
- * the server, so a server-rendered page shows the buttons after hydration. Used by the AI mock
- * interview and the interview English units (components/english-unit.tsx).
+ * the server, so a server-rendered page shows the buttons after hydration. Used by the interview
+ * English units (components/english-unit.tsx) and the read-aloud buttons of the glossary and topics.
  * `continuous: false` stops listening after one utterance.
  */
 export function useSpeech(

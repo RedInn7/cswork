@@ -1,15 +1,8 @@
 /**
- * How a dictated answer in the AI interview was delivered: pace, filler words, time spoken
- * against the plan, and the longest pause. Worked out on the page from the browser's speech
- * recognition results (components/use-speech.ts); neither the audio nor these
- * numbers are uploaded. Pure, so tests cover it.
+ * Words and filler words in one dictated utterance, for the interview English drill
+ * (lib/english-drill.ts), from the browser's speech recognition (components/use-speech.ts);
+ * the audio is never uploaded. Pure, so tests cover it.
  */
-
-/**
- * One recognized utterance: ms spoken (0 when the browser gave no timing), words (characters in
- * Chinese), fillers, and ms of silence before it in the same dictation (0 for the first).
- */
-export type Segment = [ms: number, units: number, fillers: number, gap: number];
 
 const CJK = /[㐀-鿿豈-﫿]/g;
 // ponytail: "like" as a verb or comparison ("I like", "looks like") and "you know" in a question
@@ -24,22 +17,4 @@ const count = (text: string, pattern: RegExp) => text.match(pattern)?.length ?? 
 export function countSpeech(text: string, zh: boolean): [units: number, fillers: number] {
   const latin = count(text.replace(CJK, ' '), /[a-z0-9]+(?:'[a-z]+)?/gi);
   return [(zh ? count(text, CJK) : 0) + latin, count(text, FILLERS_EN) + count(text, FILLERS_ZH)];
-}
-
-/** Under this much timed speech, a pace is noise. */
-const PACE_MIN_MS = 10_000;
-
-/** The metrics over some utterances (one question's, or the whole interview's); null when none. */
-export function delivery(segments: readonly Segment[]) {
-  if (!segments.length) return null;
-  const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
-  // Pace only over the utterances the browser timed.
-  const timed = segments.filter(([ms]) => ms > 0);
-  const ms = sum(timed.map(([t]) => t));
-  return {
-    perMinute: ms >= PACE_MIN_MS ? Math.round(sum(timed.map(([, units]) => units)) / (ms / 60_000)) : null,
-    fillers: sum(segments.map(([, , fillers]) => fillers)),
-    spokenSec: Math.round(ms / 1000),
-    longestPauseSec: Math.round(Math.max(...segments.map(([, , , gap]) => gap)) / 1000),
-  };
 }
