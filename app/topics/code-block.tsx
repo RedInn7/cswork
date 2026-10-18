@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 import { RunInPlayground } from '@/components/run-in-playground';
 import { commentStart, type TemplateLang } from '@/lib/route-templates';
 
-/** Server-rendered code with trailing comments dimmed; focusable so keyboards can scroll it. */
-export function CodeBlock({ code, lang, label }: { code: string; lang: TemplateLang; label: string }) {
+/** Server-rendered code with trailing comments dimmed; focusable so keyboards can scroll it. `run: false` leaves out the playground link (the print handbook). */
+export function CodeBlock({ code, lang, label, run = true }: { code: string; lang: TemplateLang; label: string; run?: boolean }) {
   return (
     <>
       <pre className="topics-pre" role="region" tabIndex={0} aria-label={label}>
@@ -26,7 +26,7 @@ export function CodeBlock({ code, lang, label }: { code: string; lang: TemplateL
           })}
         </code>
       </pre>
-      <RunInPlayground code={code} language={lang} />
+      {run && <RunInPlayground code={code} language={lang} />}
     </>
   );
 }

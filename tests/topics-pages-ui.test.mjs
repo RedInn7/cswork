@@ -230,3 +230,56 @@ test('the index marks each stop with its interview heat when given', () => {
   const plain = render(createElement(TopicsIndexView, { zh: true }));
   assert.equal(plain.querySelector('.topics-heat'), null);
 });
+
+test('the printable handbook: every stop in the chosen language, no playground links, Python by default', async () => {
+  const { TopicsPrintView, printLang } = await import('../app/topics/print/view.tsx');
+  assert.equal(printLang('cpp'), 'cpp');
+  for (const bad of [undefined, 'rust', ['cpp'], '']) assert.equal(printLang(bad), 'python');
+  for (const zh of [true, false]) {
+    const doc = render(createElement(TopicsPrintView, { zh, lang: printLang('cpp') }));
+    assert.equal(doc.querySelectorAll('h1').length, 1);
+    const stops = [...doc.querySelectorAll('article.topics-print-stop')];
+    assert.equal(stops.length, 35);
+    assert.equal(doc.querySelectorAll('.cs-run-playground').length, 0);
+    assert.equal(doc.querySelectorAll('section.topics-print-group').length, 6);
+    const binary = doc.getElementById('stop-binary-search');
+    assert.equal(binary.querySelector('pre.topics-pre').textContent, topicStop('binary-search').code.cpp);
+    assert.equal(binary.querySelectorAll('.topics-print-notes li').length, 6);
+    // The table of contents links every section; the language bar marks the current one.
+    const toc = [...doc.querySelectorAll('.topics-print-toc a')].map((a) => a.getAttribute('href'));
+    assert.deepEqual(toc, TOPIC_STOPS.map((s) => `#stop-${s.slug}`));
+    assert.equal(doc.querySelector('.topics-print-bar [aria-current="page"]').getAttribute('href'), '/topics/print?lang=cpp');
+    assert.equal(doc.querySelectorAll('.topics-print-bar nav a').length, 4);
+    assert.equal(doc.querySelector('.topics-print-button').textContent, zh ? '打印 / 存为 PDF' : 'Print / save as PDF');
+  }
+  const python = render(createElement(TopicsPrintView, { zh: false, lang: printLang('nope') }));
+  assert.equal(python.querySelector('#stop-binary-search pre').textContent, topicStop('binary-search').code.python);
+});
+
+test('the glossary page: one heading, a DefinedTermSet of every term, anchors and stop links', async () => {
+  const { GlossaryView } = await import('../app/topics/glossary/view.tsx');
+  const { GLOSSARY } = await import('../lib/glossary.ts');
+  for (const zh of [true, false]) {
+    const doc = render(createElement(GlossaryView, { zh }));
+    assert.equal(doc.querySelectorAll('h1').length, 1);
+    const [crumbs, set] = ldJson(doc);
+    assert.equal(crumbs['@type'], 'BreadcrumbList');
+    assert.equal(set['@type'], 'DefinedTermSet');
+    assert.equal(set.hasDefinedTerm.length, GLOSSARY.length);
+    assert.equal(doc.querySelectorAll('.glossary-term').length, GLOSSARY.length);
+    const term = doc.getElementById('term-difference-array');
+    assert.ok(term.textContent.includes('差分') && term.textContent.includes('difference array'));
+    assert.equal(term.querySelector('a').getAttribute('href'), '/topics/prefix-intervals');
+    assert.equal(term.querySelector('.glossary-say').getAttribute('lang'), 'en');
+    // No speech on the server: the listen buttons appear only where the browser can speak.
+    assert.equal(doc.querySelector('.glossary-listen'), null);
+    assert.equal(doc.querySelectorAll('.glossary-actions button').length, GLOSSARY.length);
+    assert.ok(doc.querySelector('a[href="/english"]'), 'interview phrases live in /english');
+    const sections = [...doc.querySelectorAll('section.glossary-group')];
+    assert.equal(sections.length, 7);
+    assert.ok(sections.every((s) => doc.getElementById(s.getAttribute('aria-labelledby'))));
+    assert.ok(doc.querySelector('.glossary-tools label').getAttribute('for') === doc.querySelector('.glossary-tools input').id);
+  }
+  const index = render(createElement(TopicsIndexView, { zh: true }));
+  assert.ok(index.querySelector('a.topics-roadmap[href="/topics/glossary"]'));
+});
