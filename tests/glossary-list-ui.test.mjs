@@ -1,5 +1,6 @@
-// The glossary list: search hides what doesn't match, the browser's voice reads a term and its
-// sentence, and a term opens the card editor prefilled; saving signed out shows the editor's 401 text.
+// The glossary list: search hides what doesn't match (a hash pointing at a hidden term clears it),
+// the browser's voice reads a term and its sentence, and a term opens the card editor prefilled;
+// saving signed out shows the editor's 401 text.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { register } from 'node:module';
@@ -63,6 +64,21 @@ test('search, listen, and make a card from a term', async () => {
     ['difference array', 'en-US', 0.9],
     [GLOSSARY.find((t) => t.id === 'difference-array').say, 'en-US', 0.9],
   ]);
+  // Chinese labels inside the lang="en" term text carry their own language.
+  assert.equal(sayTerm.getAttribute('lang'), 'zh-CN');
+  for (const label of document.querySelectorAll('.glossary-alt .sr-only')) assert.equal(label.getAttribute('lang'), 'zh-CN');
+
+  // ⌘K on this page only changes the hash: a term the search hides clears the search and scrolls into view.
+  const hidden = document.querySelector('.glossary-term[hidden]');
+  const scrolled = [];
+  dom.window.Element.prototype.scrollIntoView = function () {
+    scrolled.push(this.id);
+  };
+  history.replaceState(null, '', `#${hidden.id}`);
+  await act(async () => window.dispatchEvent(new dom.window.Event('hashchange')));
+  assert.equal(input.value, '');
+  assert.equal(visible().length, GLOSSARY.length);
+  assert.deepEqual(scrolled, [hidden.id]);
 
   await act(async () => term.querySelector('.glossary-actions button').click());
   // The editor is loaded on first use.

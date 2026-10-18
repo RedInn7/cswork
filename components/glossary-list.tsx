@@ -1,5 +1,6 @@
 'use client';
-import { Suspense, lazy, useId, useState } from 'react';
+import { Suspense, lazy, useEffect, useId, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Volume2 } from 'lucide-react';
 import { GLOSSARY, GLOSSARY_GROUPS, glossaryHits, glossaryHref, type GlossaryTerm } from '@/lib/glossary';
 import { STOP_NAMES } from '@/lib/route-stops';
@@ -21,9 +22,27 @@ export function GlossaryList({ zh }: { zh: boolean }) {
   const [card, setCard] = useState<GlossaryTerm | null>(null);
   const { canSpeak, say } = useSpeech('en', unheard);
   const shown = query.trim() ? new Set(glossaryHits(query).map((term) => term.id)) : null;
+  // A term or group the search hides (⌘K on this page, the group links) clears the search first.
+  useEffect(() => {
+    const reveal = () => {
+      const target = document.getElementById(location.hash.slice(1));
+      if (!target?.closest('[hidden]')) return;
+      flushSync(() => setQuery(''));
+      target.scrollIntoView();
+    };
+    window.addEventListener('hashchange', reveal);
+    return () => window.removeEventListener('hashchange', reveal);
+  }, []);
+  // The button sits inside lang="en" text; its label is in the interface language.
   const listen = (text: string, label: string) =>
     canSpeak && (
-      <button type="button" className="glossary-listen" aria-label={label} onClick={() => say(text, { always: true, rate: 0.9 })}>
+      <button
+        type="button"
+        className="glossary-listen"
+        lang={zh ? 'zh-CN' : 'en'}
+        aria-label={label}
+        onClick={() => say(text, { always: true, rate: 0.9 })}
+      >
         <Volume2 size={15} aria-hidden="true" />
       </button>
     );
@@ -73,7 +92,9 @@ export function GlossaryList({ zh }: { zh: boolean }) {
                   </dt>
                   {term.alt && (
                     <dd className="glossary-alt" lang="en">
-                      <span className="sr-only">{t('又称：', 'Also: ')}</span>
+                      <span className="sr-only" lang={zh ? 'zh-CN' : 'en'}>
+                        {t('又称：', 'Also: ')}
+                      </span>
                       {term.alt.join(' · ')}
                     </dd>
                   )}
