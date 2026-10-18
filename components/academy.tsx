@@ -13,12 +13,9 @@ import {
   BarChart3,
   Library,
   MessagesSquare,
-  MessageCircle,
-  Mail,
   ScrollText,
   BookOpen,
   Code2,
-  LifeBuoy,
   Bell,
   Languages,
   ArrowRight,
@@ -27,16 +24,13 @@ import {
   Settings,
   Inbox,
   Dices,
-  BookUser,
   Timer,
   TrendingUp,
   ListChecks,
-  UsersRound,
   Zap,
   Network,
   GraduationCap,
   Award,
-  Braces,
   FolderGit2,
   MicVocal,
 } from 'lucide-react';
@@ -85,16 +79,10 @@ import { setLocale, useLocale, useT } from '@/lib/i18n';
 import { pageView as beaconPageView, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
-import { StoryBank } from './story-bank';
 import { WorkspaceIntro } from './workspace-intro';
 import { workspaceTitle } from '@/lib/seo';
 import { problemTitle } from '@/lib/problems';
-import {
-  TicketComposer,
-  TicketView,
-  ReviewsView,
-  ReleasesView,
-} from './support';
+import { ReviewsView, ReleasesView } from './support';
 import { LoginDialog, AccountView } from './account';
 import { registerAcademyTools } from '@/lib/webmcp';
 import Link from 'next/link';
@@ -104,10 +92,6 @@ import { NotificationsPane } from './lms-notifications';
 import { ThemeToggle } from './theme-toggle';
 import { DailyGoal } from './daily-goal';
 import '@/app/lms.css';
-import {
-  INTERVIEW_COURSE_ID,
-  isKnowledgeLesson,
-} from '@/lib/interview-curriculum';
 // Teacher-only screens load on first visit instead of shipping in the main chunk.
 const TeacherView = lazy(() =>
   import('./teacher').then((m) => ({ default: m.TeacherView }), loadFailed),
@@ -133,15 +117,6 @@ const ReviewSession = lazy(() =>
 const MyLists = lazy(() =>
   import('./my-lists').then((m) => ({ default: m.MyLists }), loadFailed),
 );
-const StudyGroups = lazy(() =>
-  import('./study-groups').then((m) => ({ default: m.StudyGroups }), loadFailed),
-);
-const Messages = lazy(() =>
-  import('./messages').then((m) => ({ default: m.Messages }), loadFailed),
-);
-const DiscussBoard = lazy(() =>
-  import('./discuss-board').then((m) => ({ default: m.DiscussBoard }), loadFailed),
-);
 const Speedrun = lazy(() =>
   import('./speedrun').then((m) => ({ default: m.Speedrun }), loadFailed),
 );
@@ -157,26 +132,19 @@ const nav: [LucideIcon, string, string, string][] = [
   [Activity, '评测状态', 'Status', 'status'],
   [TrendingUp, '我的进度', 'My progress', 'progress'],
   [ListChecks, '我的题单', 'My lists', 'lists'],
-  [UsersRound, '学习小组', 'Study groups', 'group'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
   [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
-  [Braces, '前端手写题', 'Frontend JS', '/frontend'],
   [FolderGit2, '简历项目', 'Resume Projects', '/projects'],
   [MicVocal, '面试英语', 'Interview English', '/english'],
   [Award, '技能认证', 'Certification', '/certify'],
-  [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
-  [MessageCircle, '讨论区', 'Discuss', 'discuss'],
-  [Mail, '私信', 'Messages', 'messages'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
-  [BookOpen, '算法知识点', 'Algorithm Concepts', 'knowledge'],
-  [LifeBuoy, '我的工单', 'Support', 'tickets'],
 ];
-/** Views that only show teaching courses (the knowledge module stays open). */
+/** Views that only show teaching courses. */
 const courseViews = ['courses'];
 const initial: Boot = {
   person: null,
@@ -210,9 +178,6 @@ export function Academy() {
     [view, setView] = useState('problems'),
     [params, setParams] = useState<Record<string, string>>({}),
     [login, setLogin] = useState(false),
-    [ticketContext, setTicketContext] = useState<Record<string, string> | null>(
-      null,
-    ),
     [notificationOpen, setNotificationOpen] = useState(false);
   const refresh = useCallback(async () => {
     const next = await api<Boot>('bootstrap');
@@ -299,13 +264,6 @@ export function Academy() {
     () => registerAcademyTools(() => bootRef.current, navigate),
     [navigate],
   );
-  function ask(context: Record<string, string> = {}) {
-    if (!boot.person) {
-      setLogin(true);
-      return;
-    }
-    setTicketContext(context);
-  }
   const selectedProblem = boot.problems.find((p) => p.id === params.problem),
     // An opened library item belongs to its list's menu entry.
     navView = view === 'content' ? contentSection(params.type) : view === 'mock-peer' ? 'mock-interview' : view,
@@ -314,15 +272,12 @@ export function Academy() {
       boot.unreadNotifications ??
       boot.notifications.filter((n) => !n.read_at).length;
   // The server omits teaching courses hidden from this account (owner-only mode).
-  const coursesHidden =
-    !loading && !boot.courses.some((c) => c.id !== INTERVIEW_COURSE_ID);
+  const coursesHidden = !loading && boot.courses.length === 0;
   const heading =
     (current && t(current[1], current[2])) ||
     (
       {
-        lesson: isKnowledgeLesson(params.lesson)
-          ? t('算法知识点', 'Algorithm Concepts')
-          : t('课程学习', 'Course'),
+        lesson: t('课程学习', 'Course'),
         problem: t('算法题库', 'Problem Bank'),
         'review-session': t('今日复习', 'Review session'),
         reviews: t('代码评审', 'Code reviews'),
@@ -362,9 +317,8 @@ export function Academy() {
     if (
       !boot.person &&
       ![
-        'courses', 'knowledge', 'problems', 'problem', 'status',
+        'courses', 'problems', 'problem', 'status',
         'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock', 'speedrun',
-        'discuss',
       ].includes(view)
     )
       return (
@@ -385,8 +339,7 @@ export function Academy() {
     // Course content is hidden for this account (owner-only mode): no dead course pages.
     if (
       coursesHidden &&
-      (courseViews.includes(view) ||
-        (view === 'lesson' && !isKnowledgeLesson(params.lesson)))
+      (courseViews.includes(view) || view === 'lesson')
     )
       return (
         <Empty
@@ -405,16 +358,7 @@ export function Academy() {
       );
     switch (view) {
       case 'courses':
-      case 'knowledge':
-        return (
-          <CourseList
-            boot={boot}
-            knowledge={view === 'knowledge'}
-            navigate={navigate}
-            login={() => setLogin(true)}
-            ask={ask}
-          />
-        );
+        return <CourseList boot={boot} navigate={navigate} login={() => setLogin(true)} />;
       case 'lesson':
         return (
           <LessonReader
@@ -422,7 +366,6 @@ export function Academy() {
             id={params.lesson || boot.courses[0]?.lessons[0]?.id || ''}
             boot={boot}
             navigate={navigate}
-            ask={ask}
             refresh={refresh}
           />
         );
@@ -457,12 +400,6 @@ export function Academy() {
         return <ReviewSession key={boot.person?.id} boot={boot} navigate={navigate} tab={params.tab} />;
       case 'lists':
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
-      case 'group':
-        return <StudyGroups key={boot.person?.id} navigate={navigate} params={params} />;
-      case 'messages':
-        return <Messages key={boot.person?.id || 'guest'} params={params} navigate={navigate} />;
-      case 'discuss':
-        return <DiscussBoard key={boot.person?.id || 'guest'} params={params} navigate={navigate} signedIn={!!boot.person} />;
       case 'questions':
       case 'experiences':
       case 'resources':
@@ -487,8 +424,6 @@ export function Academy() {
             teacher={boot.person?.role === 'teacher'}
           />
         );
-      case 'stories':
-        return <StoryBank key={boot.person!.id} userId={boot.person!.id} />;
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace
@@ -496,7 +431,6 @@ export function Academy() {
             problem={selectedProblem}
             boot={boot}
             navigate={navigate}
-            ask={ask}
             refresh={refreshLite}
             mock={params.mock}
             room={params.room}
@@ -511,16 +445,6 @@ export function Academy() {
                 {t('进入题库', 'Go to Problems')}
               </Button>
             }
-          />
-        );
-      case 'tickets':
-        return (
-          <TicketView
-            key={params.ticket || 'list'}
-            boot={boot}
-            selected={params.ticket}
-            navigate={navigate}
-            ask={() => ask()}
           />
         );
       case 'reviews':
@@ -593,11 +517,7 @@ export function Academy() {
                   <SidebarMenuButton
                     isActive={
                       navView === key ||
-                      (view === 'lesson' &&
-                        key ===
-                          (isKnowledgeLesson(params.lesson)
-                            ? 'knowledge'
-                            : 'courses')) ||
+                      (view === 'lesson' && key === 'courses') ||
                       (view === 'problem' &&
                         key === (params.mock ? 'mock' : 'problems'))
                     }
@@ -780,9 +700,6 @@ export function Academy() {
             {t('公开面试资料', 'Interview resources')}
           </Link>
           <Link prefetch={false} href="/mcp" className="underline underline-offset-4">{t('在 AI 编辑器里练题', 'Practice from your AI editor')}</Link>
-          <Link prefetch={false} href="/discuss" className="underline underline-offset-4">
-            {t('讨论区', 'Discussion board')}
-          </Link>
           <Link prefetch={false} href="/newsletter" className="underline underline-offset-4">
             {t('每周周报', 'Weekly newsletter')}
           </Link>
@@ -800,20 +717,14 @@ export function Academy() {
         boot={boot}
         onSuccess={refresh}
       />
-      <TicketComposer
-        context={ticketContext}
-        close={() => setTicketContext(null)}
-        onCreated={(id) => navigate('tickets', { ticket: id })}
-        boot={boot}
-      />
       <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
         <DialogContent className="wide-dialog">
           <DialogHeader>
             <DialogTitle>{t('你的消息', 'Notifications')}</DialogTitle>
             <DialogDescription>
               {t(
-                '老师的回复、作业评审和课程重要更新。',
-                'Teacher replies, assignment reviews and important course updates.',
+                '作业评审和课程重要更新。',
+                'Assignment reviews and important course updates.',
               )}
             </DialogDescription>
           </DialogHeader>
