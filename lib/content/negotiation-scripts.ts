@@ -1,6 +1,6 @@
 // Branching practice scripts for a recruiter screen and offer negotiation, no AI needed
 // (/career/negotiation, components/negotiation-scripts.tsx). Written for CSWork in both languages.
-// Each script's setting is a scenario of lib/content/roleplay-scenarios.json, resolved on the server by
+// Each script's setting is one of the practice scenarios, resolved on the server by
 // scenarioSetting (lib/server/) so the company's floor, concessions and notes never reach the
 // client: never import the scenario JSON here, and keep the floor's numbers out of these lines
 // (tests/negotiation-scripts.test.ts).
@@ -13,7 +13,7 @@ export type Script = {
   id: string;
   kind: 'recruiter' | 'negotiation';
   title: Text;
-  /** Its scenario's id (lib/content/roleplay-scenarios.json). */
+  /** Its scenario's id (scenarioSetting). */
   scenario: string;
   start: string;
   nodes: Node[];
