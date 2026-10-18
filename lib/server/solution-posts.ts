@@ -385,16 +385,6 @@ export async function publicPosts(target: string, params: Record<string, string>
     throw error;
   }
 }
-/** One post as a signed-out reader sees it, or null. */
-export async function publicPost(id: string) {
-  if (!idOk(id)) return null;
-  try {
-    return await readPost(null, id);
-  } catch (error) {
-    if (error instanceof HttpError && error.status === 404) return null;
-    throw error;
-  }
-}
 const idOk = (value: string) => id.safeParse(value).success;
 
 /**

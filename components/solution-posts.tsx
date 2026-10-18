@@ -1177,8 +1177,8 @@ export function PostModeration() {
       <div className="lms-toolbar">
         <p className="muted">
           {t(
-            '被举报的题解、讨论帖、回答、评论、小组聊天和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（聊天和私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
-            'Reported solutions, threads, answers, comments, group chat and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (chat and direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
+            '被举报的题解、回答、评论、小组聊天和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（聊天和私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
+            'Reported solutions, answers, comments, group chat and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (chat and direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
           )}
         </p>
         <Button variant="outline" onClick={() => setReload((n) => n + 1)}>

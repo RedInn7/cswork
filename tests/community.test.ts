@@ -37,7 +37,7 @@ content.close();
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { handleContent } = await import('../lib/server/content-library');
-const { publicPosts, publicPost } = await import('../lib/server/solution-posts');
+const { publicPosts } = await import('../lib/server/solution-posts');
 const { communityLists, publicProfile } = await import('../lib/server/learner-cloud');
 const { followBoard, followPeople } = await import('../lib/server/follows');
 const { memberExperienceStats, STATS_MIN } = await import('../lib/server/experience-submissions');
@@ -138,9 +138,9 @@ void test('comments read signed out, writes need a verified account; board threa
   const listed = await ok(null, 'GET', 'oj/posts?problem=exp:amz-3');
   assert.deepEqual(listed.items.map((p: { title: string }) => p.title), ['How long did yours take?']);
   assert.equal(listed.items[0].author, 'Ad***', 'masked for guests');
-  // Server pages read a post as a guest.
-  assert.equal((await publicPost(posted.post.id))?.post.title, 'How long did yours take?');
-  assert.equal(await publicPost('not-an-id'), null);
+  // A guest reads one post by id.
+  assert.equal((await ok(null, 'GET', `oj/posts/${posted.post.id}`)).post.title, 'How long did yours take?');
+  assert.equal((await call(null, 'GET', 'oj/posts/not-an-id')).status, 404);
   assert.equal(await publicPosts('exp:no-such'), null);
   // A thread left from the discussion board stays in the table but reads as missing.
   const old = '00000000-0000-4000-8000-0000000000b0';
@@ -148,7 +148,6 @@ void test('comments read signed out, writes need a verified account; board threa
     .prepare("INSERT INTO solution_posts(id,problem_id,user_id,title,body,created_at,updated_at) VALUES(?,'discuss:career',?,'Old thread','x',1,1)")
     .run(old, me.id);
   assert.equal((await call(me, 'GET', `oj/posts/${old}`)).status, 404);
-  assert.equal(await publicPost(old), null);
   // Replies and votes work signed in like solutions.
   await ok(others[1], 'POST', `oj/posts/${posted.post.id}/comments`, { body: 'About two weeks' });
   await ok(others[1], 'POST', `oj/posts/${posted.post.id}/vote`, { on: true });
