@@ -157,3 +157,34 @@ export const normalizeExpr = (s: string) =>
   s.trim().replace(/\s+/g, ' ').replace(/ ?([^\w\s]) ?/g, '$1');
 export const blankRight = (blank: Blank, typed: string) =>
   normalizeExpr(typed) === normalizeExpr(blank.answer);
+
+export type DiffLine = { op: 'same' | 'missing' | 'extra'; text: string };
+/** Leading tabs as four spaces each: an editor's Tab key and the reference may disagree. */
+const detab = (line: string) => line.replace(/^\t+/, (tabs) => '    '.repeat(tabs.length));
+/**
+ * Line diff of a template written from memory against the reference: comments and blank lines
+ * dropped on both sides, lines matched with sameLine by a longest common subsequence. `missing`
+ * is a reference line the learner left out, `extra` one they wrote that the reference lacks.
+ */
+// ponytail: O(n·m) table, fine for templates of a few dozen lines.
+export function recallDiff(typed: string, ref: string, lang: TemplateLang): DiffLine[] {
+  const lines = (code: string) => stripComments(code.replace(/\r\n?/g, '\n'), lang).filter((l) => l.trim()).map(detab);
+  const a = lines(ref);
+  const b = lines(typed);
+  // best[i][j]: LCS length of a[i..] and b[j..].
+  const best = Array.from({ length: a.length + 1 }, () => new Array<number>(b.length + 1).fill(0));
+  for (let i = a.length - 1; i >= 0; i--)
+    for (let j = b.length - 1; j >= 0; j--)
+      best[i][j] = sameLine(a[i], b[j]) ? best[i + 1][j + 1] + 1 : Math.max(best[i + 1][j], best[i][j + 1]);
+  const out: DiffLine[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < a.length || j < b.length) {
+    if (i < a.length && j < b.length && sameLine(a[i], b[j])) {
+      out.push({ op: 'same', text: a[i++] });
+      j++;
+    } else if (j === b.length || (i < a.length && best[i + 1][j] >= best[i][j + 1])) out.push({ op: 'missing', text: a[i++] });
+    else out.push({ op: 'extra', text: b[j++] });
+  }
+  return out;
+}

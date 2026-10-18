@@ -1,0 +1,616 @@
+{
+ "backtracking-enumeration": {
+  "variants": [
+   {
+    "id": "pick-or-skip",
+    "pattern": {
+     "zh": "选或不选：每个下标二选一",
+     "en": "Pick or skip: two branches per index"
+    },
+    "when": {
+     "zh": "元素互不相同、要列出所有子集时，最直接的写法是在每个下标上分两支：不选它、选它，走到末尾就是一个子集。LC 78 子集、LC 784 字母大小写全排列都是这个形状。",
+     "en": "With distinct elements and every subset wanted, the plainest shape branches twice at each index (skip it, take it), and reaching the end yields one subset. LC 78 (Subsets) and LC 784 (Letter Case Permutation) have this shape."
+    },
+    "complexity": {
+     "zh": "时间 O(n · 2^n) · 递归深度 O(n)",
+     "en": "O(n · 2^n) time · O(n) recursion depth"
+    },
+    "code": {
+     "python": "def subsets(nums: list[int]) -> list[list[int]]:\n    \"\"\"Every subset of distinct nums.\"\"\"\n    res, path = [], []\n\n    def dfs(i: int) -> None:\n        if i == len(nums):\n            res.append(path[:])  # one leaf per subset\n            return\n        dfs(i + 1)  # skip nums[i]\n        path.append(nums[i])\n        dfs(i + 1)  # take nums[i]\n        path.pop()\n\n    dfs(0)\n    return res",
+     "cpp": "// Every subset of distinct nums.\nvector<vector<int>> subsets(const vector<int>& nums) {\n    vector<vector<int>> res;\n    vector<int> path;\n    function<void(int)> dfs = [&](int i) {\n        if (i == (int)nums.size()) {\n            res.push_back(path);  // one leaf per subset\n            return;\n        }\n        dfs(i + 1);  // skip nums[i]\n        path.push_back(nums[i]);\n        dfs(i + 1);  // take nums[i]\n        path.pop_back();\n    };\n    dfs(0);\n    return res;\n}",
+     "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int[] nums;\n\n    // Every subset of distinct nums.\n    List<List<Integer>> subsets(int[] nums) {\n        this.nums = nums;\n        res.clear();\n        dfs(0);\n        return new ArrayList<>(res);\n    }\n\n    private void dfs(int i) {\n        if (i == nums.length) {\n            res.add(new ArrayList<>(path)); // one leaf per subset\n            return;\n        }\n        dfs(i + 1); // skip nums[i]\n        path.add(nums[i]);\n        dfs(i + 1); // take nums[i]\n        path.remove(path.size() - 1);\n    }\n}",
+     "go": "// subsets returns every subset of distinct nums.\nfunc subsets(nums []int) [][]int {\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(i int)\n\tdfs = func(i int) {\n\t\tif i == len(nums) {\n\t\t\tres = append(res, append([]int(nil), path...)) // one leaf per subset\n\t\t\treturn\n\t\t}\n\t\tdfs(i + 1) // skip nums[i]\n\t\tpath = append(path, nums[i])\n\t\tdfs(i + 1) // take nums[i]\n\t\tpath = path[:len(path)-1]\n\t}\n\tdfs(0)\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*(\"\".join(map(str, p)) or \"-\" for p in subsets([1, 2, 3])))\nprint(*(\"\".join(map(str, p)) or \"-\" for p in subsets([0])))",
+     "cpp": "auto line = [](const vector<vector<int>>& res) {\n    for (auto& p : res) {\n        string s;\n        for (int x : p) s += to_string(x);\n        cout << (s.empty() ? \"-\" : s) << \" \";\n    }\n    cout << \"\\n\";\n};\nline(subsets({1, 2, 3}));\nline(subsets({0}));",
+     "java": "Solution s = new Solution();\nshow(s.subsets(new int[] {1, 2, 3}).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));\nshow(s.subsets(new int[] {0}).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));",
+     "go": "line := func(res [][]int) {\n    var out []string\n    for _, p := range res {\n        t := \"\"\n        for _, x := range p {\n            t += fmt.Sprint(x)\n        }\n        if t == \"\" {\n            t = \"-\"\n        }\n        out = append(out, t)\n    }\n    show(out)\n}\nline(subsets([]int{1, 2, 3}))\nline(subsets([]int{0}))",
+     "expected": "- 3 2 23 1 13 12 123\n- 0"
+    }
+   },
+   {
+    "id": "combinations",
+    "pattern": {
+     "zh": "组合：从 start 往后选，剪掉凑不满的分支",
+     "en": "Combinations: choose from start on, prune short branches"
+    },
+    "when": {
+     "zh": "只要固定大小 k 的组合：每层从 start 往后选，选够 k 个就记录；剩下的数不够凑满 k 个时直接停。LC 77 组合、LC 216 组合总和 III 都用这个剪枝。",
+     "en": "For combinations of a fixed size k: each level picks from start onwards and records once k are chosen, and it stops as soon as too few numbers are left to finish. LC 77 (Combinations) and LC 216 (Combination Sum III) use this pruning."
+    },
+    "complexity": {
+     "zh": "时间 O(k · C(n, k)) · 递归深度 O(k)",
+     "en": "O(k · C(n, k)) time · O(k) recursion depth"
+    },
+    "code": {
+     "python": "def combine(n: int, k: int) -> list[list[int]]:\n    \"\"\"Every k-number combination of 1..n, each in increasing order.\"\"\"\n    res, path = [], []\n\n    def dfs(start: int) -> None:\n        if len(path) == k:\n            res.append(path[:])\n            return\n        for x in range(start, n - (k - len(path)) + 2):  # leave room for the rest\n            path.append(x)\n            dfs(x + 1)\n            path.pop()\n\n    dfs(1)\n    return res",
+     "cpp": "// Every k-number combination of 1..n, each in increasing order.\nvector<vector<int>> combine(int n, int k) {\n    vector<vector<int>> res;\n    vector<int> path;\n    function<void(int)> dfs = [&](int start) {\n        if ((int)path.size() == k) {\n            res.push_back(path);\n            return;\n        }\n        for (int x = start; x <= n - (k - (int)path.size()) + 1; x++) {  // leave room for the rest\n            path.push_back(x);\n            dfs(x + 1);\n            path.pop_back();\n        }\n    };\n    dfs(1);\n    return res;\n}",
+     "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int n, k;\n\n    // Every k-number combination of 1..n, each in increasing order.\n    List<List<Integer>> combine(int n, int k) {\n        this.n = n;\n        this.k = k;\n        res.clear();\n        dfs(1);\n        return new ArrayList<>(res);\n    }\n\n    private void dfs(int start) {\n        if (path.size() == k) {\n            res.add(new ArrayList<>(path));\n            return;\n        }\n        for (int x = start; x <= n - (k - path.size()) + 1; x++) { // leave room for the rest\n            path.add(x);\n            dfs(x + 1);\n            path.remove(path.size() - 1);\n        }\n    }\n}",
+     "go": "// combine returns every k-number combination of 1..n, each in increasing order.\nfunc combine(n, k int) [][]int {\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(start int)\n\tdfs = func(start int) {\n\t\tif len(path) == k {\n\t\t\tres = append(res, append([]int(nil), path...))\n\t\t\treturn\n\t\t}\n\t\tfor x := start; x <= n-(k-len(path))+1; x++ { // leave room for the rest\n\t\t\tpath = append(path, x)\n\t\t\tdfs(x + 1)\n\t\t\tpath = path[:len(path)-1]\n\t\t}\n\t}\n\tdfs(1)\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*(\"\".join(map(str, p)) or \"-\" for p in combine(4, 2)))\nprint(*(\"\".join(map(str, p)) or \"-\" for p in combine(3, 3)))",
+     "cpp": "auto line = [](const vector<vector<int>>& res) {\n    for (auto& p : res) {\n        string s;\n        for (int x : p) s += to_string(x);\n        cout << (s.empty() ? \"-\" : s) << \" \";\n    }\n    cout << \"\\n\";\n};\nline(combine(4, 2));\nline(combine(3, 3));",
+     "java": "Solution s = new Solution();\nshow(s.combine(4, 2).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));\nshow(s.combine(3, 3).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));",
+     "go": "line := func(res [][]int) {\n    var out []string\n    for _, p := range res {\n        t := \"\"\n        for _, x := range p {\n            t += fmt.Sprint(x)\n        }\n        if t == \"\" {\n            t = \"-\"\n        }\n        out = append(out, t)\n    }\n    show(out)\n}\nline(combine(4, 2))\nline(combine(3, 3))",
+     "expected": "12 13 14 23 24 34\n123"
+    }
+   },
+   {
+    "id": "combination-sum",
+    "pattern": {
+     "zh": "组合可复选：递归时下标不加一",
+     "en": "Combinations with reuse: recurse on the same index"
+    },
+    "when": {
+     "zh": "同一个数可以选多次：递归时传 i 而不是 i + 1。先排序，候选数一旦超过剩余目标就 break，后面更大的数也不用试。LC 39 组合总和就是这一格。",
+     "en": "When a number may be picked again: recurse with i instead of i + 1. Sort first so that once a candidate exceeds the remaining target the loop breaks, since every later one is larger. LC 39 (Combination Sum) is this cell."
+    },
+    "complexity": {
+     "zh": "时间指数级，取决于 target / min · 递归深度 O(target / min)",
+     "en": "Exponential, governed by target / min · O(target / min) recursion depth"
+    },
+    "code": {
+     "python": "def combination_sum(candidates: list[int], target: int) -> list[list[int]]:\n    \"\"\"Distinct positive candidates, each reusable: every multiset that sums to target.\"\"\"\n    nums = sorted(candidates)\n    res, path = [], []\n\n    def dfs(start: int, remain: int) -> None:\n        if remain == 0:\n            res.append(path[:])\n            return\n        for i in range(start, len(nums)):\n            if nums[i] > remain:\n                break  # sorted: every later candidate is too big as well\n            path.append(nums[i])\n            dfs(i, remain - nums[i])  # i, not i + 1: the same number may come again\n            path.pop()\n\n    dfs(0, target)\n    return res",
+     "cpp": "// Distinct positive candidates, each reusable: every multiset that sums to target.\nvector<vector<int>> combinationSum(vector<int> nums, int target) {\n    sort(nums.begin(), nums.end());\n    vector<vector<int>> res;\n    vector<int> path;\n    function<void(int, int)> dfs = [&](int start, int remain) {\n        if (remain == 0) {\n            res.push_back(path);\n            return;\n        }\n        for (int i = start; i < (int)nums.size(); i++) {\n            if (nums[i] > remain) break;  // sorted: every later candidate is too big as well\n            path.push_back(nums[i]);\n            dfs(i, remain - nums[i]);  // i, not i + 1: the same number may come again\n            path.pop_back();\n        }\n    };\n    dfs(0, target);\n    return res;\n}",
+     "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int[] nums;\n\n    // Distinct positive candidates, each reusable: every multiset that sums to target.\n    List<List<Integer>> combinationSum(int[] candidates, int target) {\n        nums = candidates.clone();\n        Arrays.sort(nums);\n        res.clear();\n        dfs(0, target);\n        return new ArrayList<>(res);\n    }\n\n    private void dfs(int start, int remain) {\n        if (remain == 0) {\n            res.add(new ArrayList<>(path));\n            return;\n        }\n        for (int i = start; i < nums.length; i++) {\n            if (nums[i] > remain) break; // sorted: every later candidate is too big as well\n            path.add(nums[i]);\n            dfs(i, remain - nums[i]); // i, not i + 1: the same number may come again\n            path.remove(path.size() - 1);\n        }\n    }\n}",
+     "go": "import \"sort\"\n\n// combinationSum returns every multiset of the distinct, reusable candidates that sums to target.\nfunc combinationSum(candidates []int, target int) [][]int {\n\tnums := append([]int(nil), candidates...)\n\tsort.Ints(nums)\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(start, remain int)\n\tdfs = func(start, remain int) {\n\t\tif remain == 0 {\n\t\t\tres = append(res, append([]int(nil), path...))\n\t\t\treturn\n\t\t}\n\t\tfor i := start; i < len(nums); i++ {\n\t\t\tif nums[i] > remain {\n\t\t\t\tbreak // sorted: every later candidate is too big as well\n\t\t\t}\n\t\t\tpath = append(path, nums[i])\n\t\t\tdfs(i, remain-nums[i]) // i, not i + 1: the same number may come again\n\t\t\tpath = path[:len(path)-1]\n\t\t}\n\t}\n\tdfs(0, target)\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*(\"\".join(map(str, p)) or \"-\" for p in combination_sum([2, 3, 6, 7], 7)))\nprint(*(\"\".join(map(str, p)) or \"-\" for p in combination_sum([5, 3, 2], 8)))",
+     "cpp": "auto line = [](const vector<vector<int>>& res) {\n    for (auto& p : res) {\n        string s;\n        for (int x : p) s += to_string(x);\n        cout << (s.empty() ? \"-\" : s) << \" \";\n    }\n    cout << \"\\n\";\n};\nline(combinationSum({2, 3, 6, 7}, 7));\nline(combinationSum({5, 3, 2}, 8));",
+     "java": "Solution s = new Solution();\nshow(s.combinationSum(new int[] {2, 3, 6, 7}, 7).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));\nshow(s.combinationSum(new int[] {5, 3, 2}, 8).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));",
+     "go": "line := func(res [][]int) {\n    var out []string\n    for _, p := range res {\n        t := \"\"\n        for _, x := range p {\n            t += fmt.Sprint(x)\n        }\n        if t == \"\" {\n            t = \"-\"\n        }\n        out = append(out, t)\n    }\n    show(out)\n}\nline(combinationSum([]int{2, 3, 6, 7}, 7))\nline(combinationSum([]int{5, 3, 2}, 8))",
+     "expected": "223 7\n2222 233 35"
+    }
+   },
+   {
+    "id": "combination-sum-dup",
+    "pattern": {
+     "zh": "组合有重复：同层跳过相同值",
+     "en": "Combinations with duplicates: skip equal values on a level"
+    },
+    "when": {
+     "zh": "输入里有重复数字、每个只能用一次、答案不能重复：排序后同一层遇到和前一个相同的值就跳过，递归传 i + 1。LC 40 组合总和 II 就是这一格。",
+     "en": "With repeated numbers, each used once and no duplicate answers: sort, skip a value equal to the previous one on the same level, and recurse with i + 1. LC 40 (Combination Sum II) is this cell."
+    },
+    "complexity": {
+     "zh": "时间 O(n · 2^n) · 递归深度 O(n)",
+     "en": "O(n · 2^n) time · O(n) recursion depth"
+    },
+    "code": {
+     "python": "def combination_sum2(candidates: list[int], target: int) -> list[list[int]]:\n    \"\"\"Each candidate used at most once; repeats in the input, no repeated answers.\"\"\"\n    nums = sorted(candidates)\n    res, path = [], []\n\n    def dfs(start: int, remain: int) -> None:\n        if remain == 0:\n            res.append(path[:])\n            return\n        for i in range(start, len(nums)):\n            if nums[i] > remain:\n                break\n            if i > start and nums[i] == nums[i - 1]:\n                continue  # this value was already tried at this level\n            path.append(nums[i])\n            dfs(i + 1, remain - nums[i])\n            path.pop()\n\n    dfs(0, target)\n    return res",
+     "cpp": "// Each candidate used at most once; repeats in the input, no repeated answers.\nvector<vector<int>> combinationSum2(vector<int> nums, int target) {\n    sort(nums.begin(), nums.end());\n    vector<vector<int>> res;\n    vector<int> path;\n    function<void(int, int)> dfs = [&](int start, int remain) {\n        if (remain == 0) {\n            res.push_back(path);\n            return;\n        }\n        for (int i = start; i < (int)nums.size(); i++) {\n            if (nums[i] > remain) break;\n            if (i > start && nums[i] == nums[i - 1]) continue;  // already tried at this level\n            path.push_back(nums[i]);\n            dfs(i + 1, remain - nums[i]);\n            path.pop_back();\n        }\n    };\n    dfs(0, target);\n    return res;\n}",
+     "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int[] nums;\n\n    // Each candidate used at most once; repeats in the input, no repeated answers.\n    List<List<Integer>> combinationSum2(int[] candidates, int target) {\n        nums = candidates.clone();\n        Arrays.sort(nums);\n        res.clear();\n        dfs(0, target);\n        return new ArrayList<>(res);\n    }\n\n    private void dfs(int start, int remain) {\n        if (remain == 0) {\n            res.add(new ArrayList<>(path));\n            return;\n        }\n        for (int i = start; i < nums.length; i++) {\n            if (nums[i] > remain) break;\n            if (i > start && nums[i] == nums[i - 1]) continue; // already tried at this level\n            path.add(nums[i]);\n            dfs(i + 1, remain - nums[i]);\n            path.remove(path.size() - 1);\n        }\n    }\n}",
+     "go": "import \"sort\"\n\n// combinationSum2 uses each candidate at most once and returns no repeated answers.\nfunc combinationSum2(candidates []int, target int) [][]int {\n\tnums := append([]int(nil), candidates...)\n\tsort.Ints(nums)\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(start, remain int)\n\tdfs = func(start, remain int) {\n\t\tif remain == 0 {\n\t\t\tres = append(res, append([]int(nil), path...))\n\t\t\treturn\n\t\t}\n\t\tfor i := start; i < len(nums); i++ {\n\t\t\tif nums[i] > remain {\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tif i > start && nums[i] == nums[i-1] {\n\t\t\t\tcontinue // this value was already tried at this level\n\t\t\t}\n\t\t\tpath = append(path, nums[i])\n\t\t\tdfs(i+1, remain-nums[i])\n\t\t\tpath = path[:len(path)-1]\n\t\t}\n\t}\n\tdfs(0, target)\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*(\"\".join(map(str, p)) or \"-\" for p in combination_sum2([10, 1, 2, 7, 6, 1, 5], 8)))\nprint(*(\"\".join(map(str, p)) or \"-\" for p in combination_sum2([2, 5, 2, 1, 2], 5)))",
+     "cpp": "auto line = [](const vector<vector<int>>& res) {\n    for (auto& p : res) {\n        string s;\n        for (int x : p) s += to_string(x);\n        cout << (s.empty() ? \"-\" : s) << \" \";\n    }\n    cout << \"\\n\";\n};\nline(combinationSum2({10, 1, 2, 7, 6, 1, 5}, 8));\nline(combinationSum2({2, 5, 2, 1, 2}, 5));",
+     "java": "Solution s = new Solution();\nshow(s.combinationSum2(new int[] {10, 1, 2, 7, 6, 1, 5}, 8).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));\nshow(s.combinationSum2(new int[] {2, 5, 2, 1, 2}, 5).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));",
+     "go": "line := func(res [][]int) {\n    var out []string\n    for _, p := range res {\n        t := \"\"\n        for _, x := range p {\n            t += fmt.Sprint(x)\n        }\n        if t == \"\" {\n            t = \"-\"\n        }\n        out = append(out, t)\n    }\n    show(out)\n}\nline(combinationSum2([]int{10, 1, 2, 7, 6, 1, 5}, 8))\nline(combinationSum2([]int{2, 5, 2, 1, 2}, 5))",
+     "expected": "116 125 17 26\n122 5"
+    }
+   },
+   {
+    "id": "permutations",
+    "pattern": {
+     "zh": "排列：used 数组标记已放的元素",
+     "en": "Permutations: a used array marks placed elements"
+    },
+    "when": {
+     "zh": "顺序不同算不同答案时，每层都从头扫一遍，跳过已经用过的位置。LC 46 全排列就是这一格；每层换一组候选（LC 17 电话号码的字母组合）也是同一个骨架。",
+     "en": "When order matters, every level scans from the start and skips positions already used. LC 46 (Permutations) is this cell; LC 17 (Letter Combinations of a Phone Number) is the same skeleton with a new set of choices per level."
+    },
+    "complexity": {
+     "zh": "时间 O(n · n!) · 空间 O(n)",
+     "en": "O(n · n!) time · O(n) space"
+    },
+    "code": {
+     "python": "def permute(nums: list[int]) -> list[list[int]]:\n    \"\"\"Every ordering of distinct nums.\"\"\"\n    res, path, used = [], [], [False] * len(nums)\n\n    def dfs() -> None:\n        if len(path) == len(nums):\n            res.append(path[:])\n            return\n        for i, x in enumerate(nums):\n            if used[i]:\n                continue  # each element appears once per ordering\n            used[i] = True\n            path.append(x)\n            dfs()\n            path.pop()\n            used[i] = False\n\n    dfs()\n    return res",
+     "cpp": "// Every ordering of distinct nums.\nvector<vector<int>> permute(const vector<int>& nums) {\n    vector<vector<int>> res;\n    vector<int> path;\n    vector<bool> used(nums.size(), false);\n    function<void()> dfs = [&]() {\n        if (path.size() == nums.size()) {\n            res.push_back(path);\n            return;\n        }\n        for (size_t i = 0; i < nums.size(); i++) {\n            if (used[i]) continue;  // each element appears once per ordering\n            used[i] = true;\n            path.push_back(nums[i]);\n            dfs();\n            path.pop_back();\n            used[i] = false;\n        }\n    };\n    dfs();\n    return res;\n}",
+     "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int[] nums;\n    private boolean[] used;\n\n    // Every ordering of distinct nums.\n    List<List<Integer>> permute(int[] nums) {\n        this.nums = nums;\n        used = new boolean[nums.length];\n        res.clear();\n        dfs();\n        return new ArrayList<>(res);\n    }\n\n    private void dfs() {\n        if (path.size() == nums.length) {\n            res.add(new ArrayList<>(path));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue; // each element appears once per ordering\n            used[i] = true;\n            path.add(nums[i]);\n            dfs();\n            path.remove(path.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+     "go": "// permute returns every ordering of distinct nums.\nfunc permute(nums []int) [][]int {\n\tvar res [][]int\n\tvar path []int\n\tused := make([]bool, len(nums))\n\tvar dfs func()\n\tdfs = func() {\n\t\tif len(path) == len(nums) {\n\t\t\tres = append(res, append([]int(nil), path...))\n\t\t\treturn\n\t\t}\n\t\tfor i, x := range nums {\n\t\t\tif used[i] {\n\t\t\t\tcontinue // each element appears once per ordering\n\t\t\t}\n\t\t\tused[i] = true\n\t\t\tpath = append(path, x)\n\t\t\tdfs()\n\t\t\tpath = path[:len(path)-1]\n\t\t\tused[i] = false\n\t\t}\n\t}\n\tdfs()\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*(\"\".join(map(str, p)) or \"-\" for p in permute([1, 2, 3])))\nprint(*(\"\".join(map(str, p)) or \"-\" for p in permute([0, 1])))",
+     "cpp": "auto line = [](const vector<vector<int>>& res) {\n    for (auto& p : res) {\n        string s;\n        for (int x : p) s += to_string(x);\n        cout << (s.empty() ? \"-\" : s) << \" \";\n    }\n    cout << \"\\n\";\n};\nline(permute({1, 2, 3}));\nline(permute({0, 1}));",
+     "java": "Solution s = new Solution();\nshow(s.permute(new int[] {1, 2, 3}).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));\nshow(s.permute(new int[] {0, 1}).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));",
+     "go": "line := func(res [][]int) {\n    var out []string\n    for _, p := range res {\n        t := \"\"\n        for _, x := range p {\n            t += fmt.Sprint(x)\n        }\n        if t == \"\" {\n            t = \"-\"\n        }\n        out = append(out, t)\n    }\n    show(out)\n}\nline(permute([]int{1, 2, 3}))\nline(permute([]int{0, 1}))",
+     "expected": "123 132 213 231 312 321\n01 10"
+    }
+   },
+   {
+    "id": "permutations-dup",
+    "pattern": {
+     "zh": "排列有重复：相同值按原顺序放",
+     "en": "Permutations with duplicates: equal values in input order"
+    },
+    "when": {
+     "zh": "输入有重复、排列不能重复：排序后规定相同的值只能按输入顺序放，前一个相同值还没用时跳过当前这个。LC 47 全排列 II、LC 1079 活字印刷都靠这一行去重。",
+     "en": "With repeats in the input and no repeated orderings: sort, and let equal values be placed only in input order, skipping one while the equal value before it is unused. LC 47 (Permutations II) and LC 1079 (Letter Tile Possibilities) rely on that one line."
+    },
+    "complexity": {
+     "zh": "时间 O(n · n!) · 空间 O(n)",
+     "en": "O(n · n!) time · O(n) space"
+    },
+    "code": {
+     "python": "def permute_unique(nums: list[int]) -> list[list[int]]:\n    \"\"\"Every distinct ordering when nums has repeats.\"\"\"\n    nums = sorted(nums)\n    res, path, used = [], [], [False] * len(nums)\n\n    def dfs() -> None:\n        if len(path) == len(nums):\n            res.append(path[:])\n            return\n        for i in range(len(nums)):\n            if used[i] or (i > 0 and nums[i] == nums[i - 1] and not used[i - 1]):\n                continue  # equal values are placed in input order only\n            used[i] = True\n            path.append(nums[i])\n            dfs()\n            path.pop()\n            used[i] = False\n\n    dfs()\n    return res",
+     "cpp": "// Every distinct ordering when nums has repeats.\nvector<vector<int>> permuteUnique(vector<int> nums) {\n    sort(nums.begin(), nums.end());\n    vector<vector<int>> res;\n    vector<int> path;\n    vector<bool> used(nums.size(), false);\n    function<void()> dfs = [&]() {\n        if (path.size() == nums.size()) {\n            res.push_back(path);\n            return;\n        }\n        for (size_t i = 0; i < nums.size(); i++) {\n            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]))\n                continue;  // equal values are placed in input order only\n            used[i] = true;\n            path.push_back(nums[i]);\n            dfs();\n            path.pop_back();\n            used[i] = false;\n        }\n    };\n    dfs();\n    return res;\n}",
+     "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int[] nums;\n    private boolean[] used;\n\n    // Every distinct ordering when nums has repeats.\n    List<List<Integer>> permuteUnique(int[] nums) {\n        this.nums = nums.clone();\n        Arrays.sort(this.nums);\n        used = new boolean[nums.length];\n        res.clear();\n        dfs();\n        return new ArrayList<>(res);\n    }\n\n    private void dfs() {\n        if (path.size() == nums.length) {\n            res.add(new ArrayList<>(path));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]))\n                continue; // equal values are placed in input order only\n            used[i] = true;\n            path.add(nums[i]);\n            dfs();\n            path.remove(path.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+     "go": "import \"sort\"\n\n// permuteUnique returns every distinct ordering when nums has repeats.\nfunc permuteUnique(input []int) [][]int {\n\tnums := append([]int(nil), input...)\n\tsort.Ints(nums)\n\tvar res [][]int\n\tvar path []int\n\tused := make([]bool, len(nums))\n\tvar dfs func()\n\tdfs = func() {\n\t\tif len(path) == len(nums) {\n\t\t\tres = append(res, append([]int(nil), path...))\n\t\t\treturn\n\t\t}\n\t\tfor i := range nums {\n\t\t\tif used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1]) {\n\t\t\t\tcontinue // equal values are placed in input order only\n\t\t\t}\n\t\t\tused[i] = true\n\t\t\tpath = append(path, nums[i])\n\t\t\tdfs()\n\t\t\tpath = path[:len(path)-1]\n\t\t\tused[i] = false\n\t\t}\n\t}\n\tdfs()\n\treturn res\n}"
+    },
+    "driver": {
+     "python": "print(*(\"\".join(map(str, p)) or \"-\" for p in permute_unique([1, 1, 2])))\nprint(*(\"\".join(map(str, p)) or \"-\" for p in permute_unique([3, 3, 0, 3])))",
+     "cpp": "auto line = [](const vector<vector<int>>& res) {\n    for (auto& p : res) {\n        string s;\n        for (int x : p) s += to_string(x);\n        cout << (s.empty() ? \"-\" : s) << \" \";\n    }\n    cout << \"\\n\";\n};\nline(permuteUnique({1, 1, 2}));\nline(permuteUnique({3, 3, 0, 3}));",
+     "java": "Solution s = new Solution();\nshow(s.permuteUnique(new int[] {1, 1, 2}).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));\nshow(s.permuteUnique(new int[] {3, 3, 0, 3}).stream().map(p -> p.isEmpty() ? \"-\" : p.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.toList()));",
+     "go": "line := func(res [][]int) {\n    var out []string\n    for _, p := range res {\n        t := \"\"\n        for _, x := range p {\n            t += fmt.Sprint(x)\n        }\n        if t == \"\" {\n            t = \"-\"\n        }\n        out = append(out, t)\n    }\n    show(out)\n}\nline(permuteUnique([]int{1, 1, 2}))\nline(permuteUnique([]int{3, 3, 0, 3}))",
+     "expected": "112 121 211\n0333 3033 3303 3330"
+    }
+   }
+  ],
+  "matrix": {
+   "rows": [
+    {
+     "zh": "子集",
+     "en": "Subsets"
+    },
+    {
+     "zh": "组合",
+     "en": "Combinations"
+    },
+    {
+     "zh": "排列",
+     "en": "Permutations"
+    }
+   ],
+   "cols": [
+    {
+     "zh": "无重复 · 不复选",
+     "en": "Distinct · once each"
+    },
+    {
+     "zh": "有重复 · 不复选",
+     "en": "Repeats · once each"
+    },
+    {
+     "zh": "无重复 · 可复选",
+     "en": "Distinct · reusable"
+    }
+   ],
+   "cells": [
+    [
+     {
+      "variant": "pick-or-skip",
+      "key": {
+       "python": "dfs(i + 1)  # skip nums[i]\ndfs(i + 1)  # take nums[i]",
+       "cpp": "dfs(i + 1);  // skip nums[i]\ndfs(i + 1);  // take nums[i]",
+       "java": "dfs(i + 1); // skip nums[i]\ndfs(i + 1); // take nums[i]",
+       "go": "dfs(i + 1) // skip nums[i]\ndfs(i + 1) // take nums[i]"
+      }
+     },
+     {
+      "variant": "main",
+      "key": {
+       "python": "if i > start and nums[i] == nums[i - 1]:",
+       "cpp": "if (i > start && nums[i] == nums[i - 1]) continue;",
+       "java": "if (i > start && nums[i] == nums[i - 1]) continue;",
+       "go": "if i > start && nums[i] == nums[i-1] {"
+      }
+     },
+     {
+      "note": {
+       "zh": "子集里一个数能无限次重复，答案就有无穷多个，这一格没有意义；加上和或长度的限制，它就成了「组合 · 可复选」。",
+       "en": "A subset that may repeat a number without limit has infinitely many answers, so this cell has no program; add a sum or size limit and it becomes Combinations · reusable."
+      }
+     }
+    ],
+    [
+     {
+      "variant": "combinations",
+      "key": {
+       "python": "for x in range(start, n - (k - len(path)) + 2):",
+       "cpp": "for (int x = start; x <= n - (k - (int)path.size()) + 1; x++) {",
+       "java": "for (int x = start; x <= n - (k - path.size()) + 1; x++) {",
+       "go": "for x := start; x <= n-(k-len(path))+1; x++ {"
+      }
+     },
+     {
+      "variant": "combination-sum-dup",
+      "key": {
+       "python": "if i > start and nums[i] == nums[i - 1]:\ndfs(i + 1, remain - nums[i])",
+       "cpp": "if (i > start && nums[i] == nums[i - 1]) continue;\ndfs(i + 1, remain - nums[i]);",
+       "java": "if (i > start && nums[i] == nums[i - 1]) continue;\ndfs(i + 1, remain - nums[i]);",
+       "go": "if i > start && nums[i] == nums[i-1] {\ndfs(i+1, remain-nums[i])"
+      }
+     },
+     {
+      "variant": "combination-sum",
+      "key": {
+       "python": "dfs(i, remain - nums[i])",
+       "cpp": "dfs(i, remain - nums[i]);",
+       "java": "dfs(i, remain - nums[i]);",
+       "go": "dfs(i, remain-nums[i])"
+      }
+     }
+    ],
+    [
+     {
+      "variant": "permutations",
+      "key": {
+       "python": "if used[i]:",
+       "cpp": "if (used[i]) continue;",
+       "java": "if (used[i]) continue;",
+       "go": "if used[i] {"
+      }
+     },
+     {
+      "variant": "permutations-dup",
+      "key": {
+       "python": "if used[i] or (i > 0 and nums[i] == nums[i - 1] and not used[i - 1]):",
+       "cpp": "if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]))",
+       "java": "if (used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]))",
+       "go": "if used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1]) {"
+      }
+     },
+     {
+      "note": {
+       "zh": "去掉 used 判断，每层都从全部元素里选，长度够 k 就记录，一共 n^k 个序列；LC 17 是每层换一组字母的同一形状。",
+       "en": "Drop the used check so every level chooses from all elements, and record at length k: n^k sequences in all. LC 17 is the same shape with a different set of letters per level."
+      }
+     }
+    ]
+   ]
+  }
+ },
+ "dp-knapsack": {
+  "variants": [
+   {
+    "id": "zero-one-value",
+    "pattern": {
+     "zh": "0/1 背包求最大价值",
+     "en": "0/1 knapsack for the best value"
+    },
+    "when": {
+     "zh": "每件物品只能选一次、容量有上限、要价值最大：倒序枚举容量，取 max。LC 1049 最后一块石头的重量 II 就是把石头重量同时当作重量和价值，求不超过总和一半的最大和。",
+     "en": "Each item at most once, a capacity limit, the largest total value: run the capacity backwards and take the max. LC 1049 (Last Stone Weight II) is this with each stone as both weight and value, capped at half the total."
+    },
+    "complexity": {
+     "zh": "时间 O(n × cap) · 空间 O(cap)",
+     "en": "O(n × cap) time · O(cap) space"
+    },
+    "code": {
+     "python": "def knapsack_01(weights: list[int], values: list[int], cap: int) -> int:\n    \"\"\"Best total value within capacity cap, each item at most once.\"\"\"\n    dp = [0] * (cap + 1)  # dp[c]: best value with capacity c\n    for w, v in zip(weights, values):\n        for c in range(cap, w - 1, -1):  # backwards: the item is used at most once\n            dp[c] = max(dp[c], dp[c - w] + v)\n    return dp[cap]",
+     "cpp": "// Best total value within capacity cap, each item at most once.\nint knapsack01(const vector<int>& weights, const vector<int>& values, int cap) {\n    vector<int> dp(cap + 1, 0);  // dp[c]: best value with capacity c\n    for (size_t i = 0; i < weights.size(); i++)\n        for (int c = cap; c >= weights[i]; c--)  // backwards: item i is used at most once\n            dp[c] = max(dp[c], dp[c - weights[i]] + values[i]);\n    return dp[cap];\n}",
+     "java": "class Solution {\n    // Best total value within capacity cap, each item at most once.\n    int knapsack01(int[] weights, int[] values, int cap) {\n        int[] dp = new int[cap + 1]; // dp[c]: best value with capacity c\n        for (int i = 0; i < weights.length; i++)\n            for (int c = cap; c >= weights[i]; c--) // backwards: item i is used at most once\n                dp[c] = Math.max(dp[c], dp[c - weights[i]] + values[i]);\n        return dp[cap];\n    }\n}",
+     "go": "// knapsack01 returns the best total value within capacity cap, each item at most once.\nfunc knapsack01(weights, values []int, capacity int) int {\n\tdp := make([]int, capacity+1) // dp[c]: best value with capacity c\n\tfor i, w := range weights {\n\t\tfor c := capacity; c >= w; c-- { // backwards: item i is used at most once\n\t\t\tdp[c] = max(dp[c], dp[c-w]+values[i])\n\t\t}\n\t}\n\treturn dp[capacity]\n}"
+    },
+    "driver": {
+     "python": "print(knapsack_01([1, 3, 4], [15, 20, 30], 4))\nstones = [2, 7, 4, 1, 8, 1]\nprint(knapsack_01(stones, stones, sum(stones) // 2))\nprint(knapsack_01([5], [10], 0))",
+     "cpp": "cout << knapsack01({1, 3, 4}, {15, 20, 30}, 4) << \"\\n\";\nvector<int> stones{2, 7, 4, 1, 8, 1};\ncout << knapsack01(stones, stones, 23 / 2) << \"\\n\";\ncout << knapsack01({5}, {10}, 0) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.knapsack01(new int[] {1, 3, 4}, new int[] {15, 20, 30}, 4));\nint[] stones = {2, 7, 4, 1, 8, 1};\nshow(s.knapsack01(stones, stones, 23 / 2));\nshow(s.knapsack01(new int[] {5}, new int[] {10}, 0));",
+     "go": "fmt.Println(knapsack01([]int{1, 3, 4}, []int{15, 20, 30}, 4))\nstones := []int{2, 7, 4, 1, 8, 1}\nfmt.Println(knapsack01(stones, stones, 23/2))\nfmt.Println(knapsack01([]int{5}, []int{10}, 0))",
+     "expected": "35\n11\n0"
+    }
+   },
+   {
+    "id": "zero-one-feasible",
+    "pattern": {
+     "zh": "0/1 背包判断能否凑出",
+     "en": "0/1 knapsack: can the sum be reached"
+    },
+    "when": {
+     "zh": "只问「能不能」、不问方案数或价值：状态换成布尔值，转移用 or。LC 416 分割等和子集先判断总和奇偶，再看能否凑出一半。",
+     "en": "When the question is only whether a sum is reachable: boolean states combined with or. LC 416 (Partition Equal Subset Sum) checks the parity of the total, then asks whether half of it is reachable."
+    },
+    "complexity": {
+     "zh": "时间 O(n × target) · 空间 O(target)",
+     "en": "O(n × target) time · O(target) space"
+    },
+    "code": {
+     "python": "def can_partition(nums: list[int]) -> bool:\n    \"\"\"Can nums be split into two groups with equal sums?\"\"\"\n    total = sum(nums)\n    if total % 2:\n        return False\n    target = total // 2\n    dp = [True] + [False] * target  # dp[s]: some subset sums to s\n    for x in nums:\n        for s in range(target, x - 1, -1):  # backwards: x is used at most once\n            dp[s] = dp[s] or dp[s - x]\n    return dp[target]",
+     "cpp": "// Can nums be split into two groups with equal sums?\nbool canPartition(const vector<int>& nums) {\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    if (total % 2) return false;\n    int target = total / 2;\n    vector<char> dp(target + 1, false);  // dp[s]: some subset sums to s\n    dp[0] = true;\n    for (int x : nums)\n        for (int s = target; s >= x; s--)  // backwards: x is used at most once\n            dp[s] = dp[s] || dp[s - x];\n    return dp[target];\n}",
+     "java": "class Solution {\n    // Can nums be split into two groups with equal sums?\n    boolean canPartition(int[] nums) {\n        int total = Arrays.stream(nums).sum();\n        if (total % 2 != 0) return false;\n        int target = total / 2;\n        boolean[] dp = new boolean[target + 1]; // dp[s]: some subset sums to s\n        dp[0] = true;\n        for (int x : nums)\n            for (int s = target; s >= x; s--) // backwards: x is used at most once\n                dp[s] = dp[s] || dp[s - x];\n        return dp[target];\n    }\n}",
+     "go": "// canPartition reports whether nums can be split into two groups with equal sums.\nfunc canPartition(nums []int) bool {\n\ttotal := 0\n\tfor _, x := range nums {\n\t\ttotal += x\n\t}\n\tif total%2 != 0 {\n\t\treturn false\n\t}\n\ttarget := total / 2\n\tdp := make([]bool, target+1) // dp[s]: some subset sums to s\n\tdp[0] = true\n\tfor _, x := range nums {\n\t\tfor s := target; s >= x; s-- { // backwards: x is used at most once\n\t\t\tdp[s] = dp[s] || dp[s-x]\n\t\t}\n\t}\n\treturn dp[target]\n}"
+    },
+    "driver": {
+     "python": "for nums in ([1, 5, 11, 5], [1, 2, 3, 5], [2, 2]):\n    print(str(can_partition(nums)).lower())",
+     "cpp": "for (auto& nums : vector<vector<int>>{{1, 5, 11, 5}, {1, 2, 3, 5}, {2, 2}})\n    cout << boolalpha << canPartition(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, 5, 11, 5}, {1, 2, 3, 5}, {2, 2}}) show(s.canPartition(nums));",
+     "go": "for _, nums := range [][]int{{1, 5, 11, 5}, {1, 2, 3, 5}, {2, 2}} {\n    fmt.Println(canPartition(nums))\n}",
+     "expected": "true\nfalse\ntrue"
+    }
+   },
+   {
+    "id": "unbounded-min",
+    "pattern": {
+     "zh": "完全背包求最少件数",
+     "en": "Unbounded knapsack for the fewest items"
+    },
+    "when": {
+     "zh": "物品可以无限取、要凑出的件数最少：正序枚举容量，dp 初值用「无穷大」，转移取 min(dp[s], dp[s - coin] + 1)。LC 322 零钱兑换和 LC 279 完全平方数都是这个形状。",
+     "en": "Unlimited copies and the fewest items to hit the sum exactly: capacity forwards, start every state at infinity except dp[0], and take min(dp[s], dp[s - coin] + 1). LC 322 (Coin Change) and LC 279 (Perfect Squares) have this shape."
+    },
+    "complexity": {
+     "zh": "时间 O(n × amount) · 空间 O(amount)",
+     "en": "O(n × amount) time · O(amount) space"
+    },
+    "code": {
+     "python": "def min_coins(coins: list[int], amount: int) -> int:\n    \"\"\"Fewest coins (each reusable) that sum to amount, or -1.\"\"\"\n    INF = amount + 1  # more coins than any answer can need\n    dp = [0] + [INF] * amount  # dp[s]: fewest coins for sum s\n    for coin in coins:\n        for s in range(coin, amount + 1):  # forwards: the coin may be reused\n            dp[s] = min(dp[s], dp[s - coin] + 1)\n    return dp[amount] if dp[amount] < INF else -1",
+     "cpp": "// Fewest coins (each reusable) that sum to amount, or -1.\nint minCoins(const vector<int>& coins, int amount) {\n    const int INF = amount + 1;  // more coins than any answer can need\n    vector<int> dp(amount + 1, INF);  // dp[s]: fewest coins for sum s\n    dp[0] = 0;\n    for (int coin : coins)\n        for (int s = coin; s <= amount; s++)  // forwards: the coin may be reused\n            dp[s] = min(dp[s], dp[s - coin] + 1);\n    return dp[amount] < INF ? dp[amount] : -1;\n}",
+     "java": "class Solution {\n    // Fewest coins (each reusable) that sum to amount, or -1.\n    int minCoins(int[] coins, int amount) {\n        final int INF = amount + 1; // more coins than any answer can need\n        int[] dp = new int[amount + 1]; // dp[s]: fewest coins for sum s\n        Arrays.fill(dp, INF);\n        dp[0] = 0;\n        for (int coin : coins)\n            for (int s = coin; s <= amount; s++) // forwards: the coin may be reused\n                dp[s] = Math.min(dp[s], dp[s - coin] + 1);\n        return dp[amount] < INF ? dp[amount] : -1;\n    }\n}",
+     "go": "// minCoins returns the fewest coins (each reusable) that sum to amount, or -1.\nfunc minCoins(coins []int, amount int) int {\n\tinf := amount + 1 // more coins than any answer can need\n\tdp := make([]int, amount+1) // dp[s]: fewest coins for sum s\n\tfor s := 1; s <= amount; s++ {\n\t\tdp[s] = inf\n\t}\n\tfor _, coin := range coins {\n\t\tfor s := coin; s <= amount; s++ { // forwards: the coin may be reused\n\t\t\tdp[s] = min(dp[s], dp[s-coin]+1)\n\t\t}\n\t}\n\tif dp[amount] < inf {\n\t\treturn dp[amount]\n\t}\n\treturn -1\n}"
+    },
+    "driver": {
+     "python": "print(min_coins([1, 2, 5], 11))\nprint(min_coins([2], 3))\nprint(min_coins([1], 0))\nprint(min_coins([1, 4, 9], 12))  # LC 279: squares up to 12",
+     "cpp": "cout << minCoins({1, 2, 5}, 11) << \"\\n\" << minCoins({2}, 3) << \"\\n\";\ncout << minCoins({1}, 0) << \"\\n\" << minCoins({1, 4, 9}, 12) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.minCoins(new int[] {1, 2, 5}, 11));\nshow(s.minCoins(new int[] {2}, 3));\nshow(s.minCoins(new int[] {1}, 0));\nshow(s.minCoins(new int[] {1, 4, 9}, 12));",
+     "go": "fmt.Println(minCoins([]int{1, 2, 5}, 11))\nfmt.Println(minCoins([]int{2}, 3))\nfmt.Println(minCoins([]int{1}, 0))\nfmt.Println(minCoins([]int{1, 4, 9}, 12))",
+     "expected": "3\n-1\n0\n3"
+    }
+   },
+   {
+    "id": "unbounded-permutations",
+    "pattern": {
+     "zh": "完全背包求排列数",
+     "en": "Unbounded knapsack counting orderings"
+    },
+    "when": {
+     "zh": "顺序不同算不同方案（1+2 和 2+1 是两种）：把「和」放在外层、物品放在内层，每个和都试一遍最后一步选谁。LC 377 组合总和 IV 名字叫组合，算的其实是排列数。",
+     "en": "When different orders count as different ways (1+2 and 2+1 are two): sums in the outer loop, items in the inner loop, so every sum tries each possible last pick. LC 377 (Combination Sum IV) says combinations but counts orderings."
+    },
+    "complexity": {
+     "zh": "时间 O(n × target) · 空间 O(target)",
+     "en": "O(n × target) time · O(target) space"
+    },
+    "code": {
+     "python": "def count_sequences(nums: list[int], target: int) -> int:\n    \"\"\"Ordered ways to reach target with unlimited reuse: (1, 2) and (2, 1) differ.\"\"\"\n    dp = [1] + [0] * target  # dp[s]: sequences that sum to s\n    for s in range(1, target + 1):  # sums outside: each sum tries every last pick\n        for x in nums:\n            if x <= s:\n                dp[s] += dp[s - x]\n    return dp[target]",
+     "cpp": "// Ordered ways to reach target with unlimited reuse: (1, 2) and (2, 1) differ.\nlong long countSequences(const vector<int>& nums, int target) {\n    vector<long long> dp(target + 1, 0);  // dp[s]: sequences that sum to s\n    dp[0] = 1;\n    for (int s = 1; s <= target; s++)  // sums outside: each sum tries every last pick\n        for (int x : nums)\n            if (x <= s) dp[s] += dp[s - x];\n    return dp[target];\n}",
+     "java": "class Solution {\n    // Ordered ways to reach target with unlimited reuse: (1, 2) and (2, 1) differ.\n    long countSequences(int[] nums, int target) {\n        long[] dp = new long[target + 1]; // dp[s]: sequences that sum to s\n        dp[0] = 1;\n        for (int s = 1; s <= target; s++) // sums outside: each sum tries every last pick\n            for (int x : nums)\n                if (x <= s) dp[s] += dp[s - x];\n        return dp[target];\n    }\n}",
+     "go": "// countSequences returns the ordered ways to reach target with unlimited reuse.\nfunc countSequences(nums []int, target int) int {\n\tdp := make([]int, target+1) // dp[s]: sequences that sum to s\n\tdp[0] = 1\n\tfor s := 1; s <= target; s++ { // sums outside: each sum tries every last pick\n\t\tfor _, x := range nums {\n\t\t\tif x <= s {\n\t\t\t\tdp[s] += dp[s-x]\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[target]\n}"
+    },
+    "driver": {
+     "python": "print(count_sequences([1, 2, 3], 4))\nprint(count_sequences([9], 3))\nprint(count_sequences([1, 2], 5))",
+     "cpp": "cout << countSequences({1, 2, 3}, 4) << \"\\n\" << countSequences({9}, 3) << \"\\n\" << countSequences({1, 2}, 5) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.countSequences(new int[] {1, 2, 3}, 4));\nshow(s.countSequences(new int[] {9}, 3));\nshow(s.countSequences(new int[] {1, 2}, 5));",
+     "go": "fmt.Println(countSequences([]int{1, 2, 3}, 4))\nfmt.Println(countSequences([]int{9}, 3))\nfmt.Println(countSequences([]int{1, 2}, 5))",
+     "expected": "7\n0\n8"
+    }
+   },
+   {
+    "id": "two-capacity",
+    "pattern": {
+     "zh": "二维费用 0/1 背包",
+     "en": "0/1 knapsack with two capacities"
+    },
+    "when": {
+     "zh": "每件物品同时消耗两种资源（比如 0 的个数和 1 的个数）：状态加一维，两个容量都倒序。LC 474 一和零是求最多件数；LC 879 盈利计划是同样的两维再加计数。",
+     "en": "When each item spends two resources at once (zeros and ones, say): add a dimension and run both capacities backwards. LC 474 (Ones and Zeroes) maximises the count; LC 879 (Profitable Schemes) counts with the same two dimensions."
+    },
+    "complexity": {
+     "zh": "时间 O(len × m × n) · 空间 O(m × n)",
+     "en": "O(len × m × n) time · O(m × n) space"
+    },
+    "code": {
+     "python": "def max_strings(strs: list[str], m: int, n: int) -> int:\n    \"\"\"Most strings you can pick with at most m zeros and n ones in total.\"\"\"\n    dp = [[0] * (n + 1) for _ in range(m + 1)]  # dp[i][j]: best with i zeros, j ones\n    for s in strs:\n        zeros, ones = s.count(\"0\"), s.count(\"1\")\n        for i in range(m, zeros - 1, -1):  # both capacities backwards: s is used once\n            for j in range(n, ones - 1, -1):\n                dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1)\n    return dp[m][n]",
+     "cpp": "// Most strings you can pick with at most m zeros and n ones in total.\nint maxStrings(const vector<string>& strs, int m, int n) {\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));  // dp[i][j]: best with i zeros, j ones\n    for (const string& s : strs) {\n        int zeros = count(s.begin(), s.end(), '0'), ones = (int)s.size() - zeros;\n        for (int i = m; i >= zeros; i--)  // both capacities backwards: s is used once\n            for (int j = n; j >= ones; j--)\n                dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1);\n    }\n    return dp[m][n];\n}",
+     "java": "class Solution {\n    // Most strings you can pick with at most m zeros and n ones in total.\n    int maxStrings(String[] strs, int m, int n) {\n        int[][] dp = new int[m + 1][n + 1]; // dp[i][j]: best with i zeros, j ones\n        for (String s : strs) {\n            int zeros = (int) s.chars().filter(c -> c == '0').count(), ones = s.length() - zeros;\n            for (int i = m; i >= zeros; i--) // both capacities backwards: s is used once\n                for (int j = n; j >= ones; j--)\n                    dp[i][j] = Math.max(dp[i][j], dp[i - zeros][j - ones] + 1);\n        }\n        return dp[m][n];\n    }\n}",
+     "go": "import \"strings\"\n\n// maxStrings returns the most strings you can pick with at most m zeros and n ones.\nfunc maxStrings(strs []string, m, n int) int {\n\tdp := make([][]int, m+1) // dp[i][j]: best with i zeros, j ones\n\tfor i := range dp {\n\t\tdp[i] = make([]int, n+1)\n\t}\n\tfor _, s := range strs {\n\t\tzeros := strings.Count(s, \"0\")\n\t\tones := len(s) - zeros\n\t\tfor i := m; i >= zeros; i-- { // both capacities backwards: s is used once\n\t\t\tfor j := n; j >= ones; j-- {\n\t\t\t\tdp[i][j] = max(dp[i][j], dp[i-zeros][j-ones]+1)\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[m][n]\n}"
+    },
+    "driver": {
+     "python": "print(max_strings([\"10\", \"0001\", \"111001\", \"1\", \"0\"], 5, 3))\nprint(max_strings([\"10\", \"0\", \"1\"], 1, 1))",
+     "cpp": "cout << maxStrings({\"10\", \"0001\", \"111001\", \"1\", \"0\"}, 5, 3) << \"\\n\" << maxStrings({\"10\", \"0\", \"1\"}, 1, 1) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.maxStrings(new String[] {\"10\", \"0001\", \"111001\", \"1\", \"0\"}, 5, 3));\nshow(s.maxStrings(new String[] {\"10\", \"0\", \"1\"}, 1, 1));",
+     "go": "fmt.Println(maxStrings([]string{\"10\", \"0001\", \"111001\", \"1\", \"0\"}, 5, 3))\nfmt.Println(maxStrings([]string{\"10\", \"0\", \"1\"}, 1, 1))",
+     "expected": "4\n2"
+    }
+   },
+   {
+    "id": "bounded-binary",
+    "pattern": {
+     "zh": "多重背包：二进制拆分成 0/1",
+     "en": "Bounded knapsack by binary splitting"
+    },
+    "when": {
+     "zh": "第 i 种物品最多 counts[i] 件：按 1、2、4…件打包，剩下的再成一包，每包当一件 0/1 物品，复杂度从 O(cap × Σcnt) 降到 O(cap × Σlog cnt)。只适合求最大价值或可行性；计数会把同一件数数两次（5 = 1 + 2 + 2）。站内题没有直接考它，周赛和 OA 偶尔出现。",
+     "en": "Item i has counts[i] copies: pack them in bundles of 1, 2, 4… plus the remainder and treat each bundle as one 0/1 item, cutting O(cap × Σcnt) to O(cap × Σlog cnt). It works for best value and feasibility; counting would count a quantity twice (5 = 1 + 2 + 2). No problem at this stop needs it directly; contests and OAs use it now and then."
+    },
+    "complexity": {
+     "zh": "时间 O(cap × Σ log cnt) · 空间 O(cap)",
+     "en": "O(cap × Σ log cnt) time · O(cap) space"
+    },
+    "code": {
+     "python": "def bounded_knapsack(weights: list[int], values: list[int], counts: list[int], cap: int) -> int:\n    \"\"\"Best value within cap when item i has counts[i] copies.\"\"\"\n    dp = [0] * (cap + 1)\n    for w, v, cnt in zip(weights, values, counts):\n        k = 1\n        while cnt > 0:  # bundles of 1, 2, 4, ... copies, then the rest\n            take = min(k, cnt)\n            cnt -= take\n            k *= 2\n            for c in range(cap, take * w - 1, -1):  # each bundle is one 0/1 item\n                dp[c] = max(dp[c], dp[c - take * w] + take * v)\n    return dp[cap]",
+     "cpp": "// Best value within cap when item i has counts[i] copies.\nint boundedKnapsack(const vector<int>& weights, const vector<int>& values, const vector<int>& counts, int cap) {\n    vector<int> dp(cap + 1, 0);\n    for (size_t i = 0; i < weights.size(); i++) {\n        int w = weights[i], v = values[i], cnt = counts[i];\n        for (int k = 1; cnt > 0; k *= 2) {  // bundles of 1, 2, 4, ... copies, then the rest\n            int take = min(k, cnt);\n            cnt -= take;\n            for (int c = cap; c >= take * w; c--)  // each bundle is one 0/1 item\n                dp[c] = max(dp[c], dp[c - take * w] + take * v);\n        }\n    }\n    return dp[cap];\n}",
+     "java": "class Solution {\n    // Best value within cap when item i has counts[i] copies.\n    int boundedKnapsack(int[] weights, int[] values, int[] counts, int cap) {\n        int[] dp = new int[cap + 1];\n        for (int i = 0; i < weights.length; i++) {\n            int w = weights[i], v = values[i], cnt = counts[i];\n            for (int k = 1; cnt > 0; k *= 2) { // bundles of 1, 2, 4, ... copies, then the rest\n                int take = Math.min(k, cnt);\n                cnt -= take;\n                for (int c = cap; c >= take * w; c--) // each bundle is one 0/1 item\n                    dp[c] = Math.max(dp[c], dp[c - take * w] + take * v);\n            }\n        }\n        return dp[cap];\n    }\n}",
+     "go": "// boundedKnapsack returns the best value within capacity when item i has counts[i] copies.\nfunc boundedKnapsack(weights, values, counts []int, capacity int) int {\n\tdp := make([]int, capacity+1)\n\tfor i, w := range weights {\n\t\tv, cnt := values[i], counts[i]\n\t\tfor k := 1; cnt > 0; k *= 2 { // bundles of 1, 2, 4, ... copies, then the rest\n\t\t\ttake := min(k, cnt)\n\t\t\tcnt -= take\n\t\t\tfor c := capacity; c >= take*w; c-- { // each bundle is one 0/1 item\n\t\t\t\tdp[c] = max(dp[c], dp[c-take*w]+take*v)\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[capacity]\n}"
+    },
+    "driver": {
+     "python": "print(bounded_knapsack([2, 3, 4], [3, 5, 7], [3, 2, 1], 10))\nprint(bounded_knapsack([1], [1], [13], 10))\nprint(bounded_knapsack([1], [1], [5], 10))\nprint(bounded_knapsack([3, 4, 5], [4, 5, 6], [5, 4, 3], 20))",
+     "cpp": "cout << boundedKnapsack({2, 3, 4}, {3, 5, 7}, {3, 2, 1}, 10) << \"\\n\";\ncout << boundedKnapsack({1}, {1}, {13}, 10) << \"\\n\" << boundedKnapsack({1}, {1}, {5}, 10) << \"\\n\";\ncout << boundedKnapsack({3, 4, 5}, {4, 5, 6}, {5, 4, 3}, 20) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.boundedKnapsack(new int[] {2, 3, 4}, new int[] {3, 5, 7}, new int[] {3, 2, 1}, 10));\nshow(s.boundedKnapsack(new int[] {1}, new int[] {1}, new int[] {13}, 10));\nshow(s.boundedKnapsack(new int[] {1}, new int[] {1}, new int[] {5}, 10));\nshow(s.boundedKnapsack(new int[] {3, 4, 5}, new int[] {4, 5, 6}, new int[] {5, 4, 3}, 20));",
+     "go": "fmt.Println(boundedKnapsack([]int{2, 3, 4}, []int{3, 5, 7}, []int{3, 2, 1}, 10))\nfmt.Println(boundedKnapsack([]int{1}, []int{1}, []int{13}, 10))\nfmt.Println(boundedKnapsack([]int{1}, []int{1}, []int{5}, 10))\nfmt.Println(boundedKnapsack([]int{3, 4, 5}, []int{4, 5, 6}, []int{5, 4, 3}, 20))",
+     "expected": "17\n10\n5\n26"
+    }
+   }
+  ],
+  "matrix": {
+   "rows": [
+    {
+     "zh": "0/1 背包（每件最多一次）",
+     "en": "0/1 (each item once)"
+    },
+    {
+     "zh": "完全背包（无限次）",
+     "en": "Unbounded (unlimited)"
+    },
+    {
+     "zh": "多重背包（二进制拆分）",
+     "en": "Bounded (binary splitting)"
+    }
+   ],
+   "cols": [
+    {
+     "zh": "最大价值",
+     "en": "Best value"
+    },
+    {
+     "zh": "组合数",
+     "en": "Combinations"
+    },
+    {
+     "zh": "排列数",
+     "en": "Orderings"
+    },
+    {
+     "zh": "能否凑出",
+     "en": "Reachable?"
+    },
+    {
+     "zh": "最少件数",
+     "en": "Fewest items"
+    }
+   ],
+   "cells": [
+    [
+     {
+      "variant": "zero-one-value",
+      "key": {
+       "python": "for c in range(cap, w - 1, -1):\ndp[c] = max(dp[c], dp[c - w] + v)",
+       "cpp": "for (int c = cap; c >= weights[i]; c--)\ndp[c] = max(dp[c], dp[c - weights[i]] + values[i]);",
+       "java": "for (int c = cap; c >= weights[i]; c--)\ndp[c] = Math.max(dp[c], dp[c - weights[i]] + values[i]);",
+       "go": "for c := capacity; c >= w; c-- {\ndp[c] = max(dp[c], dp[c-w]+values[i])"
+      }
+     },
+     {
+      "variant": "main",
+      "key": {
+       "python": "for s in range(target, x - 1, -1):\ndp[s] += dp[s - x]",
+       "cpp": "for (int s = target; s >= x; s--) dp[s] += dp[s - x];",
+       "java": "for (int s = target; s >= x; s--) dp[s] += dp[s - x];",
+       "go": "for s := target; s >= x; s-- {\ndp[s] += dp[s-x]"
+      }
+     },
+     {
+      "note": {
+       "zh": "每件只能用一次又讲顺序，就不是背包循环了：先数出凑成目标的子集，再按每个子集的大小乘上排列数，面试很少这样问。",
+       "en": "Each item once and order matters is not a knapsack loop any more: count the subsets that reach the target, then multiply by the orderings of each subset size. Interviews rarely ask it."
+      }
+     },
+     {
+      "variant": "zero-one-feasible",
+      "key": {
+       "python": "for s in range(target, x - 1, -1):\ndp[s] = dp[s] or dp[s - x]",
+       "cpp": "for (int s = target; s >= x; s--)\ndp[s] = dp[s] || dp[s - x];",
+       "java": "for (int s = target; s >= x; s--)\ndp[s] = dp[s] || dp[s - x];",
+       "go": "for s := target; s >= x; s-- {\ndp[s] = dp[s] || dp[s-x]"
+      }
+     },
+     {
+      "note": {
+       "zh": "沿用「能否凑出」的倒序循环，状态换成件数：dp[0] = 0，其余为无穷大，转移 dp[s] = min(dp[s], dp[s - x] + 1)。",
+       "en": "Keep the backwards loop of the reachability cell and store counts instead: dp[0] = 0, everything else infinity, and dp[s] = min(dp[s], dp[s - x] + 1)."
+      }
+     }
+    ],
+    [
+     {
+      "note": {
+       "zh": "和 0/1 最大价值是同一行转移，只把容量循环改成正序，同一件物品就能被反复选。",
+       "en": "The same line as 0/1 best value with the capacity loop run forwards, so an item can be chosen again."
+      }
+     },
+     {
+      "variant": "main",
+      "key": {
+       "python": "for s in range(coin, amount + 1):\ndp[s] += dp[s - coin]",
+       "cpp": "for (int s = coin; s <= amount; s++) dp[s] += dp[s - coin];",
+       "java": "for (int s = coin; s <= amount; s++) dp[s] += dp[s - coin];",
+       "go": "for s := coin; s <= amount; s++ {\ndp[s] += dp[s-coin]"
+      }
+     },
+     {
+      "variant": "unbounded-permutations",
+      "key": {
+       "python": "for s in range(1, target + 1):\nfor x in nums:",
+       "cpp": "for (int s = 1; s <= target; s++)\nfor (int x : nums)",
+       "java": "for (int s = 1; s <= target; s++)\nfor (int x : nums)",
+       "go": "for s := 1; s <= target; s++ {\nfor _, x := range nums {"
+      }
+     },
+     {
+      "note": {
+       "zh": "看组合数是否大于 0 即可；只要真假时把 += 换成 or。LC 139 单词拆分是带顺序的同类题：和放外层，单词放内层。",
+       "en": "Check whether the combination count is above 0, or swap += for or when only true or false is needed. LC 139 (Word Break) is the ordered version: positions outside, words inside."
+      }
+     },
+     {
+      "variant": "unbounded-min",
+      "key": {
+       "python": "for s in range(coin, amount + 1):\ndp[s] = min(dp[s], dp[s - coin] + 1)",
+       "cpp": "for (int s = coin; s <= amount; s++)\ndp[s] = min(dp[s], dp[s - coin] + 1);",
+       "java": "for (int s = coin; s <= amount; s++)\ndp[s] = Math.min(dp[s], dp[s - coin] + 1);",
+       "go": "for s := coin; s <= amount; s++ {\ndp[s] = min(dp[s], dp[s-coin]+1)"
+      }
+     }
+    ],
+    [
+     {
+      "variant": "bounded-binary",
+      "key": {
+       "python": "take = min(k, cnt)\ndp[c] = max(dp[c], dp[c - take * w] + take * v)",
+       "cpp": "int take = min(k, cnt);\ndp[c] = max(dp[c], dp[c - take * w] + take * v);",
+       "java": "int take = Math.min(k, cnt);\ndp[c] = Math.max(dp[c], dp[c - take * w] + take * v);",
+       "go": "take := min(k, cnt)\ndp[c] = max(dp[c], dp[c-take*w]+take*v)"
+      }
+     },
+     {
+      "note": {
+       "zh": "计数不能二进制拆分：拆出的包可能一样大（5 = 1 + 2 + 2），同一个件数会被数两次。改为对每种物品枚举取 0 到 cnt 件，或用前缀和把这层枚举优化掉。",
+       "en": "Counting cannot use binary splitting: two bundles can be the same size (5 = 1 + 2 + 2), so one quantity is counted twice. Enumerate 0 to cnt copies of each item instead, or remove that loop with prefix sums."
+      }
+     },
+     {
+      "note": {
+       "zh": "件数有限又讲顺序时，一维的背包状态记不住每种物品已经用了几件，要换成多重集排列计数，面试很少见。",
+       "en": "With limited copies and order mattering, a one-dimensional knapsack state cannot remember how many copies are used; it becomes multiset permutation counting, which interviews rarely ask."
+      }
+     },
+     {
+      "note": {
+       "zh": "可行性不怕重复计数：二进制拆分后，照 0/1「能否凑出」那一格的倒序 or 来做。",
+       "en": "Reachability does not mind double counting: split into bundles, then use the backwards or of the 0/1 reachability cell."
+      }
+     },
+     {
+      "note": {
+       "zh": "拆分后每包算 take 件：dp[c] = min(dp[c], dp[c - take * w] + take)。",
+       "en": "After splitting, a bundle counts as take items: dp[c] = min(dp[c], dp[c - take * w] + take)."
+      }
+     }
+    ]
+   ]
+  }
+ }
+}

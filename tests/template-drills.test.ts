@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { commentStart, routeTemplates, TEMPLATE_LANGS } from '../lib/route-templates';
+import { commentStart, routeTemplates, TEMPLATE_LANGS, variantsFor } from '../lib/route-templates';
 import {
   BLANK_MAX,
   ORDER_MAX,
@@ -10,13 +10,17 @@ import {
   normalizeExpr,
   orderDrill,
   orderRight,
+  recallDiff,
   sameLine,
   stripComments,
   type Blank,
 } from '../lib/template-drills';
 
+// The main templates and every variant (templates-v2): the drills run on each.
+const allCode = routeTemplates.flatMap((t) => [t, ...variantsFor(t.slug).map((v) => ({ slug: `${t.slug}/${v.id}`, code: v.code }))]);
+
 void test('every template in every language makes an ordering drill that puts back together', () => {
-  for (const t of routeTemplates)
+  for (const t of allCode)
     for (const [lang] of TEMPLATE_LANGS)
       for (const seed of [1, 2, 3]) {
         const at = `${t.slug}/${lang}/${seed}`;
@@ -33,7 +37,7 @@ void test('every template in every language makes an ordering drill that puts ba
 });
 
 void test('every template in every language makes a fill-in drill whose answers come from the code', () => {
-  for (const t of routeTemplates)
+  for (const t of allCode)
     for (const [lang] of TEMPLATE_LANGS) {
       const at = `${t.slug}/${lang}`;
       const lines = blankDrill(t.code[lang], lang, 7);
@@ -84,4 +88,31 @@ void test('spacing never decides a line or a blank; indentation does', () => {
   assert.equal(normalizeExpr('i in range( n )'), 'i in range(n)');
   // Two identical lines may trade places.
   assert(orderRight(['}', 'x', '}'], [2, 1, 0]));
+});
+
+void test('recall diff: a missing line, an extra line, spacing and comments', () => {
+  const ref = 'def f(n):\n    total = 0  # running sum\n    for i in range(n):\n        total += i\n    return total';
+  const ops = (typed: string) => recallDiff(typed, ref, 'python').map((d) => d.op);
+  // Comments, blank lines, inner spacing and tab indentation do not count.
+  assert.deepEqual(ops('def f(n):\n\ttotal  =  0\n\n    for i in range(n):  # loop\n        total += i\n    return total\n'), Array(5).fill('same'));
+  const left = recallDiff('def f(n):\n    total = 0\n    for i in range(n):\n    return total', ref, 'python');
+  assert.deepEqual(left, [
+    { op: 'same', text: 'def f(n):' },
+    { op: 'same', text: '    total = 0' },
+    { op: 'same', text: '    for i in range(n):' },
+    { op: 'missing', text: '        total += i' },
+    { op: 'same', text: '    return total' },
+  ]);
+  assert.deepEqual(ops('def f(n):\n    total = 0\n    print(n)\n    for i in range(n):\n        total += i\n    return total'), [
+    'same', 'same', 'extra', 'same', 'same', 'same',
+  ]);
+  // A changed line is the reference line missing, then the learner's line extra.
+  assert.deepEqual(recallDiff('def f(n):\n    total = 1\n    for i in range(n):\n        total += i\n    return total', ref, 'python').slice(1, 3), [
+    { op: 'missing', text: '    total = 0' },
+    { op: 'extra', text: '    total = 1' },
+  ]);
+  // Wrong indentation is a different line; C-family comments go too.
+  assert.deepEqual(ops('def f(n):\ntotal = 0\n    for i in range(n):\n        total += i\n    return total').slice(0, 3), ['same', 'missing', 'extra']);
+  assert.deepEqual(recallDiff('int x = 1; // one\n// note\nreturn x;', 'int x = 1;\nreturn x;', 'cpp').map((d) => d.op), ['same', 'same']);
+  assert.deepEqual(recallDiff('', 'a\nb', 'go').map((d) => d.op), ['missing', 'missing']);
 });
