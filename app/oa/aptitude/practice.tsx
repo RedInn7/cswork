@@ -81,7 +81,8 @@ export function AptitudePractice({ zh, viewer, children }: { zh: boolean; viewer
   const [tab, setTab] = useState<'drill' | 'speed'>('drill');
   const [speed, setSpeed] = useState<SpeedState | null>(null);
   useEffect(() => {
-    setMock(!!viewer && !!readMockState(viewer).active);
+    // The same key components/mock-oa.tsx writes: guests run mock OAs too.
+    setMock(!!readMockState(viewer || 'guest').active);
     const stored = readSpeed();
     if (!stored) return;
     const settled = speedSettle(stored, Date.now());
@@ -251,7 +252,9 @@ function Speed({ t, zh, viewer, speed, keep }: { t: T; zh: boolean; viewer: stri
       if (settled && settled !== s) keep(settled);
     }, 500);
     const onKey = (e: KeyboardEvent) => {
-      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      // Keys typed elsewhere (a link, the command palette) stay theirs; the question's radios do not.
+      const el = e.target as HTMLElement | null;
+      if (e.repeat || e.altKey || e.ctrlKey || e.metaKey || el?.closest?.('a, textarea, select, dialog, [role="dialog"], [contenteditable="true"], input:not([type="radio"])')) return;
       if (/^[1-4]$/.test(e.key)) {
         e.preventDefault();
         choose(Number(e.key) - 1);

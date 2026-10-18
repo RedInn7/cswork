@@ -103,6 +103,21 @@ test('speed test: no going back, keys pick and advance, a reload resumes, the fo
   assert.ok(!buttons().some((b) => /back|previous|上一题|返回/i.test(b.textContent)), 'no way back');
   assert.deepEqual(buttons().map((b) => b.textContent.trim()), ['Next', 'Skip']);
   assert.equal(document.querySelector('.oa-mcq-why'), null, 'no explanations during the test');
+  // Keys meant for a text box (the command palette, say) or a link, and held keys, are left alone.
+  const box = document.body.appendChild(document.createElement('input'));
+  const link = document.body.appendChild(Object.assign(document.createElement('a'), { href: '/oa' }));
+  const from = async (el, k, init = {}) => {
+    const e = new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...init });
+    await act(async () => el.dispatchEvent(e));
+    return e.defaultPrevented;
+  };
+  assert.equal(await from(box, '1'), false);
+  assert.equal(await from(link, 'Enter'), false);
+  assert.equal(await from(document.body, '3', { repeat: true }), false);
+  assert.ok(![...document.querySelectorAll('.oa-mcq-choices input')].some((n) => n.checked), 'no pick from those keys');
+  assert.match(document.body.textContent, /Question 1 of 50/);
+  box.remove();
+  link.remove();
   await key('2');
   assert.equal(document.querySelectorAll('.oa-mcq-choices input')[1].checked, true);
   await key('Enter');
@@ -163,16 +178,19 @@ test('speed test: time up hands it in, shows the result, and the misses go to th
   globalThis.fetch = realFetch;
 });
 
-test('a mock OA in progress: only a notice', async () => {
+test('a mock OA in progress: only a notice, signed in or as a guest', async () => {
   const { mockStorageKey } = await import('../lib/mock-oa.ts');
   const active = { id: 'm1', ids: ['lc-1'], slots: ['easy'], minutes: 60, createdAt: Date.now(), startedAt: Date.now() };
-  dom({ [mockStorageKey('u9')]: JSON.stringify({ active, history: [] }) });
   globalThis.fetch = async () => new Response('{}', { status: 401 });
-  const root = await render('u9');
-  assert.match(document.querySelector('[role="status"]').textContent, /mock OA is in progress/);
-  assert.equal(document.querySelector('.apt-formulas'), null);
-  assert.equal(document.querySelector('[role="tablist"]'), null);
-  assert.equal(document.querySelector('.oa-mcq-item'), null);
-  root.unmount();
+  // components/mock-oa.tsx keeps a guest's mock under 'guest'.
+  for (const [viewer, owner] of [['u9', 'u9'], ['', 'guest']]) {
+    dom({ [mockStorageKey(owner)]: JSON.stringify({ active, history: [] }) });
+    const root = await render(viewer);
+    assert.match(document.querySelector('[role="status"]').textContent, /mock OA is in progress/, owner);
+    assert.equal(document.querySelector('.apt-formulas'), null);
+    assert.equal(document.querySelector('[role="tablist"]'), null);
+    assert.equal(document.querySelector('.oa-mcq-item'), null);
+    root.unmount();
+  }
   globalThis.fetch = realFetch;
 });
