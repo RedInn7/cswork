@@ -282,12 +282,6 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
         'For example: a new engineer’s typical week, how code is reviewed and shipped, what a great first six months looks like.',
       ],
     },
-    {
-      id: 'mock',
-      text: ['带计时、带面试官练一次', 'Practise once with a timer and an interviewer'],
-      detail: ['模拟面试按真实节奏来。', 'Mock interviews follow the real pace.'],
-      href: '/mock-interview',
-    },
   ],
   onsite: [
     {

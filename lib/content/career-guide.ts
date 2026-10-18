@@ -396,7 +396,7 @@ Results usually arrive within one to three weeks. Don’t wait: keep applying an
 - 代码怎么评审、怎么上线？
 - 前六个月做到什么程度算是做得好？
 
-可以在 [模拟面试](/mock-interview) 里带计时、带面试官练习。共享编辑器能不能运行代码、有没有补全，见 [面试平台规则对照](/interview-platforms)。`,
+共享编辑器能不能运行代码、有没有补全，见 [面试平台规则对照](/interview-platforms)。`,
     en: `A phone screen (technical screen) is usually a 45–60 minute video call with one engineer, coding in a shared editor. Some companies start with a 20–30 minute recruiter call about your background, timing and work authorisation.
 
 ## Introduction templates
@@ -422,7 +422,7 @@ Interviewers grade how you communicate as much as the code. Silence is hard to g
 - How is code reviewed and shipped?
 - What would a great first six months look like?
 
-Practise with a timer and an interviewer in [mock interviews](/mock-interview). Whether the shared editor runs code or autocompletes is covered in the [interview platform rules](/interview-platforms).`,
+Whether the shared editor runs code or autocompletes is covered in the [interview platform rules](/interview-platforms).`,
   },
 
   onsite: {

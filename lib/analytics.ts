@@ -10,7 +10,6 @@ const pages: Record<string, string> = {
   questions: 'Questions',
   experiences: 'Experiences',
   resources: 'Resources',
-  'mock-interview': 'Mock interview',
   speedrun: 'Pattern speedrun',
   status: 'Service status',
 };
