@@ -31,7 +31,7 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print', '/career/intern', '/career/negotiation?s=return-plus-external']);
+const SITE_LINKS = new Set(['/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print', '/career/intern', '/career/negotiation?s=return-plus-external']);
 // The chapters in reading order; a new chapter only changes this list.
 const SLUGS = ['timeline', 'resume', 'referrals', 'practice', 'online-assessment', 'phone-screen', 'onsite', 'offer', 'internship', 'visa'];
 

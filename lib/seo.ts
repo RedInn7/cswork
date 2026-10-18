@@ -167,7 +167,6 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/company/top' },
   ...classicLists.map((list) => ({ path: `/lists/${list.slug}` })),
   { path: '/lists/community' },
-  { path: '/discuss' },
   { path: '/newsletter' },
   { path: '/contest' },
   { path: '/contest/leaderboard' },
