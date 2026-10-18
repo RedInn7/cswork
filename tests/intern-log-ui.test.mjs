@@ -66,6 +66,8 @@ async function type(field, value) {
   });
 }
 const click = (el) => act(async () => el.click());
+// Each section's own status line, beside the buttons that set it.
+const statusOf = (title) => $(`section[aria-labelledby="${title}"] .intern-status`).textContent;
 
 test('the resume key is the builder’s', () => {
   assert.ok(readFileSync(new URL('../components/resume-builder.tsx', import.meta.url), 'utf8').includes(`export const RESUME_KEY = '${RESUME_KEY}';`));
@@ -96,7 +98,8 @@ test('loads once, shows this week, saves the week, exports drafts and writes bul
   await click(button('Save this week'));
   await settle();
   assert.deepEqual(JSON.parse(notes.get(`brag:${week2}`)).wins, [{ x: 'Built search', y: 'for 2k users', z: 'a trie', project: 'Search' }]);
-  assert.match($('.intern > .intern-status').textContent, /Week 2 .* saved\./);
+  assert.match(statusOf('intern-week-title'), /Week 2 .* saved\./);
+  assert.equal(statusOf('intern-setup-title'), '');
   assert.equal($$('#intern-past-title ~ details').length, 2);
 
   // A win becomes a STAR story.
@@ -108,6 +111,16 @@ test('loads once, shows this week, saves the week, exports drafts and writes bul
     { title: 'Built search', action: 'a trie', result: 'for 2k users', competencies: ['impact'] },
   );
   assert.ok(storyKey.length > 8);
+
+  // A new length that keeps this week on screen leaves the unsaved draft alone.
+  await type(x, 'Built search v2');
+  await type($('#intern-setup-title').nextElementSibling.querySelector('select'), '8');
+  await click(button('Save'));
+  await settle();
+  assert.equal(JSON.parse(notes.get('brag:meta')).weeks, 8);
+  assert.equal(statusOf('intern-setup-title'), 'Internship saved.');
+  assert.equal($$('.intern-wins .intern-card input')[0].value, 'Built search v2');
+  await type($$('.intern-wins .intern-card input')[0], 'Built search');
 
   await click(button('Midpoint draft'));
   const preview = () => $('.intern-export textarea').value;
@@ -131,7 +144,15 @@ test('loads once, shows this week, saves the week, exports drafts and writes bul
   resume = JSON.parse(localStorage.getItem(RESUME_KEY));
   assert.equal(resume.experience.length, 2);
   assert.equal(resume.experience[0].bullets, 'Built search for 2k users, by a trie.\nSet up CI in 2 days, by reusing the template.');
-  assert.match($('.intern > .intern-status').textContent, /Added 1\. 1 already there\./);
+  assert.match(statusOf('intern-export-title'), /Added 1\. 1 already there\./);
+  // Opened again later, the bullets default to the entry made from this internship.
+  await act(async () => root.render(createElement(InternLog, { zh: false, key: 'reload' })));
+  await settle();
+  await click(button('XYZ resume bullets'));
+  assert.equal($('.intern-bullets select').value, '0');
+  await click(button('Add all to resume'));
+  assert.equal(JSON.parse(localStorage.getItem(RESUME_KEY)).experience.length, 2);
+  assert.match(statusOf('intern-export-title'), /^2 already there\.$/);
 });
 
 test('team-matching cards save brag:teams after a pause and rank by weighted mean', async () => {
@@ -164,7 +185,16 @@ test('team-matching cards save brag:teams after a pause and rank by weighted mea
   assert.deepEqual(after.teams.map((t) => t.name), ['Search']);
   assert.ok(!(removed in after.scores));
   assert.equal($('.intern-ranking'), null);
+  // Leaving the page, or the card going away, sends the edit still waiting out its pause.
+  const notesField = () => cards()[0].querySelector('textarea');
+  await type(notesField(), 'Kind mentor');
+  await act(async () => window.dispatchEvent(new window.Event('pagehide')));
+  await settle();
+  assert.equal(JSON.parse(notes.get('brag:teams')).teams[0].notes, 'Kind mentor');
+  await type(notesField(), 'Kind mentor, slow CI');
   await act(async () => root.unmount());
+  await settle();
+  assert.equal(JSON.parse(notes.get('brag:teams')).teams[0].notes, 'Kind mentor, slow CI');
 });
 
 test('the chapter checklist tags each internship item with its week', async () => {

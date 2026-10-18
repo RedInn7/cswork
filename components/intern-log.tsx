@@ -5,7 +5,7 @@ import { CAREER_CHECKLISTS } from '@/lib/content/career-checklists';
 import { blankResume, normalizeResume, type Resume } from '@/lib/resume-shape';
 import { blankStory, storyBody, storyTarget } from '@/lib/story-bank';
 import {
-  appendBullets, bragBody, isDay, META_TARGET, parseBrag, parseMeta, resolveWeek, selfReview, TEAMS_TARGET, weekMonday,
+  appendBullets, bragBody, internDates, isDay, META_TARGET, parseBrag, parseMeta, resolveWeek, selfReview, TEAMS_TARGET, weekMonday,
   weekNo, weekTarget, winLines, WEEKS_MAX, WEEKS_MIN, WIN_MAX, WINS_MAX, FIELD_MAX, xyzBullet,
   type Brag, type BragWeek, type InternMeta, type Win,
 } from '@/lib/intern-log';
@@ -22,6 +22,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 const localDay = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 type Loaded = { meta: InternMeta | null; weeks: Record<string, Brag>; teams: unknown };
 type Exported = { kind: 'mid' | 'final' | 'xyz'; text: string; lines: string[] };
+/** The section a status line belongs to, shown beside the button that set it. */
+type Area = 'setup' | 'week' | 'export';
 
 function readResume(): Resume {
   try {
@@ -57,7 +59,14 @@ export function InternLog({ zh }: { zh: boolean }) {
   const [draft, setDraft] = useState<Brag>(blankBrag);
   const [exported, setExported] = useState<Exported | null>(null);
   const [target, setTarget] = useState<number | 'new'>('new');
-  const [status, setStatus] = useState('');
+  const [status, setStatusAt] = useState<{ at: Area; text: string }>({ at: 'setup', text: '' });
+  const setStatus = (at: Area, text: string) => setStatusAt({ at, text });
+  // Always rendered, so screen readers announce what a section's buttons did.
+  const statusLine = (at: Area) => (
+    <p className="intern-status" role="status">
+      {status.at === at ? status.text : ''}
+    </p>
+  );
   const [busy, setBusy] = useState(false);
 
   /** This week's Monday within the internship (week 1 before it starts, the last week after it ends). */
@@ -120,16 +129,19 @@ export function InternLog({ zh }: { zh: boolean }) {
 
   async function saveMeta(e: { preventDefault(): void }) {
     e.preventDefault();
-    if (!isDay(setup.start)) return setStatus(t('请填写实习开始日期。', 'Enter the start date.'));
+    if (!isDay(setup.start)) return setStatus('setup', t('请填写实习开始日期。', 'Enter the start date.'));
     const next = { ...setup, company: setup.company.trim(), role: setup.role.trim() };
     setBusy(true);
     try {
       await putNote(META_TARGET, JSON.stringify(next));
       setData((d) => d && { ...d, meta: next });
-      if (!meta || meta.start !== next.start || meta.weeks !== next.weeks) pick(weeks, clampWeek(next));
-      setStatus(t('实习设置已保存。', 'Internship saved.'));
+      // A new start or length moves to its current week, through the unsaved-changes check.
+      const day = clampWeek(next);
+      if (!monday) pick(weeks, day);
+      else if ((meta?.start !== next.start || meta?.weeks !== next.weeks) && day !== monday) switchTo(day);
+      setStatus('setup', t('实习设置已保存。', 'Internship saved.'));
     } catch (err) {
-      setStatus((err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
+      setStatus('setup', (err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
     } finally {
       setBusy(false);
     }
@@ -145,9 +157,9 @@ export function InternLog({ zh }: { zh: boolean }) {
         const { [monday]: _old, ...rest } = d.weeks;
         return { ...d, weeks: body ? { ...rest, [monday]: parseBrag(body)! } : rest };
       });
-      setStatus(body ? t(`${weekName(monday)} 的日志已保存。`, `${weekName(monday)} saved.`) : t('这一周已清空。', 'This week is cleared.'));
+      setStatus('week', body ? t(`${weekName(monday)} 的日志已保存。`, `${weekName(monday)} saved.`) : t('这一周已清空。', 'This week is cleared.'));
     } catch (err) {
-      setStatus((err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
+      setStatus('week', (err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
     } finally {
       setBusy(false);
     }
@@ -156,9 +168,9 @@ export function InternLog({ zh }: { zh: boolean }) {
     const story = { ...blankStory(), title: win.x.trim(), action: win.z.trim(), result: win.y.trim(), competencies: ['impact'] };
     try {
       await putNote(storyTarget(story.id), storyBody(story));
-      setStatus(t(`已存进故事库：${story.title}`, `Added to the story bank: ${story.title}`));
+      setStatus('week', t(`已存进故事库：${story.title}`, `Added to the story bank: ${story.title}`));
     } catch (err) {
-      setStatus((err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
+      setStatus('week', (err instanceof Error && err.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.'));
     }
   }
   function toResume(add: string[]) {
@@ -166,20 +178,21 @@ export function InternLog({ zh }: { zh: boolean }) {
     const current = readResume();
     if (target !== 'new' && !current.experience[target]) {
       setTarget('new');
-      return setStatus(t('那段经历已经不在简历里了，请重新选择。', 'That entry is no longer in the resume; choose again.'));
+      return setStatus('export', t('那段经历已经不在简历里了，请重新选择。', 'That entry is no longer in the resume; choose again.'));
     }
     const { resume, added, dropped } = appendBullets(current, target, add, meta);
     if (added.length) {
       try {
         localStorage.setItem(RESUME_KEY, JSON.stringify(resume));
       } catch {
-        return setStatus(t('这个浏览器不能保存简历（隐私模式或存储已满）。', 'This browser can’t store the resume (private mode or full storage).'));
+        return setStatus('export', t('这个浏览器不能保存简历（隐私模式或存储已满）。', 'This browser can’t store the resume (private mode or full storage).'));
       }
       // The new entry is first: further bullets go to it, not to another new one.
       if (target === 'new') setTarget(0);
     }
     const skipped = add.length - added.length - dropped.length;
     setStatus(
+      'export',
       [
         added.length ? t(`已写入 ${added.length} 条。`, `Added ${added.length}.`) : '',
         skipped ? t(`${skipped} 条简历里已经有了。`, `${skipped} already there.`) : '',
@@ -196,7 +209,10 @@ export function InternLog({ zh }: { zh: boolean }) {
 
   const n = meta ? weekNo(meta.start, today) : 0;
   const due = meta && n <= meta.weeks ? CAREER_CHECKLISTS.internship.filter((i) => resolveWeek(i.week ?? 0, meta.weeks) === Math.max(0, n)) : [];
-  const options = meta ? [...new Set([...Array.from({ length: meta.weeks }, (_, i) => weekMonday(meta.start, i + 1)), ...logged.map((w) => w.monday)])].sort() : [];
+  // The week on screen stays listed even when a new start date leaves it outside the internship.
+  const options = meta
+    ? [...new Set([...Array.from({ length: meta.weeks }, (_, i) => weekMonday(meta.start, i + 1)), ...logged.map((w) => w.monday), monday].filter(Boolean))].sort()
+    : [];
   const experiences = exported?.kind === 'xyz' ? readResume().experience : [];
   // Unsaved edits are confirmed away before another week replaces them.
   const dirty = !!monday && bragBody(draft) !== (weeks[monday] ? bragBody(weeks[monday]) : '');
@@ -241,6 +257,7 @@ export function InternLog({ zh }: { zh: boolean }) {
             </button>
           </div>
         </form>
+        {statusLine('setup')}
       </section>
 
       {meta && (
@@ -368,6 +385,7 @@ export function InternLog({ zh }: { zh: boolean }) {
               </button>
               <small>{t('全部清空再保存会删除这一周。', 'Saving an empty week deletes it.')}</small>
             </div>
+            {statusLine('week')}
           </form>
         </section>
       ) : (
@@ -436,6 +454,9 @@ export function InternLog({ zh }: { zh: boolean }) {
               type="button"
               onClick={() => {
                 const lines = winLines(meta, logged);
+                // Bullets already written as a new entry go back to that entry, not to another new one.
+                const made = readResume().experience.findIndex((x) => x.title === meta.company.trim() && x.dates === internDates(meta));
+                setTarget(made >= 0 ? made : 'new');
                 setExported({ kind: 'xyz', text: lines.map((l) => `- ${l}`).join('\n') + '\n', lines });
               }}
             >
@@ -451,8 +472,8 @@ export function InternLog({ zh }: { zh: boolean }) {
                   className="is-quiet"
                   onClick={() =>
                     (navigator.clipboard ? navigator.clipboard.writeText(exported.text) : Promise.reject(new Error('no clipboard'))).then(
-                      () => setStatus(t('已复制。', 'Copied.')),
-                      () => setStatus(t('复制失败，请在预览框里手动复制。', 'Couldn’t copy; select the preview and copy it by hand.')),
+                      () => setStatus('export', t('已复制。', 'Copied.')),
+                      () => setStatus('export', t('复制失败，请在预览框里手动复制。', 'Couldn’t copy; select the preview and copy it by hand.')),
                     )
                   }
                 >
@@ -510,13 +531,11 @@ export function InternLog({ zh }: { zh: boolean }) {
                 ))}
             </div>
           )}
+          {statusLine('export')}
         </section>
       )}
 
       <TeamMatch zh={zh} initial={data.teams} />
-      <p className="intern-status" role="status">
-        {status}
-      </p>
     </div>
   );
 }

@@ -20,23 +20,42 @@ export function TeamMatch({ zh, initial }: { zh: boolean; initial: unknown }) {
   const [m, setM] = useState<Match>(() => readTeamMatch(initial));
   const [status, setStatus] = useState('');
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pending = useRef<string | null>(null);
   // Saves go out one at a time, so an older body never lands after a newer one.
   const queue = useRef(Promise.resolve());
-  useEffect(() => () => clearTimeout(timer.current), []);
-  // ponytail: a change made in the last 800 ms before the tab closes is lost; flush on pagehide if that bites.
+  /** Sends the waiting body; leaving, at once (a queued send may never start once the page is gone). */
+  const flush = (leaving = false) => {
+    clearTimeout(timer.current);
+    const body = pending.current;
+    if (body === null) return;
+    pending.current = null;
+    const save = () =>
+      putNote(TEAMS_TARGET, body, true).then(
+        () => setStatus(t('已保存到你的账号。', 'Saved to your account.')),
+        (e: unknown) => setStatus((e instanceof Error && e.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.')),
+      );
+    // ponytail: leaving skips the queue, so a save still in flight could land after it; rare, and better than losing the last edit.
+    queue.current = leaving ? save() : queue.current.then(save);
+  };
+  useEffect(() => {
+    // Links, reloads and closing the tab leave without unmounting: save on the way out (keepalive outlives the page).
+    const leave = () => flush(true);
+    const hidden = () => document.visibilityState === 'hidden' && leave();
+    window.addEventListener('pagehide', leave);
+    document.addEventListener('visibilitychange', hidden);
+    return () => {
+      window.removeEventListener('pagehide', leave);
+      document.removeEventListener('visibilitychange', hidden);
+      leave();
+    };
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- flush reads only refs.
+  }, []);
   const change = (next: Match) => {
     setM(next);
     setStatus('');
+    pending.current = teamMatchBody(next);
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      const body = teamMatchBody(next);
-      queue.current = queue.current.then(() =>
-        putNote(TEAMS_TARGET, body).then(
-          () => setStatus(t('已保存到你的账号。', 'Saved to your account.')),
-          (e: unknown) => setStatus((e instanceof Error && e.message) || t('保存失败，请稍后重试。', 'Couldn’t save. Try again shortly.')),
-        ),
-      );
-    }, 800);
+    timer.current = setTimeout(() => flush(), 800);
   };
   const putTeam = (id: string, patch: Partial<Team>) => change({ ...m, teams: m.teams.map((x) => (x.id === id ? { ...x, ...patch } : x)) });
   const label = (f: { id: string; name: string }) =>
