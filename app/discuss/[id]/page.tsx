@@ -103,14 +103,6 @@ export default async function ThreadPage({ params }: Props) {
             : t('在 CSWork 里回复或点赞', 'Reply or upvote on CSWork')}{' '}
           →
         </a>
-        {post.referral && (
-          <>
-            {' '}
-            <a className="lists-public-cta" href={`/?view=messages&post=${encodeURIComponent(post.id)}`}>
-              {t('请求内推', 'Request a referral')} →
-            </a>
-          </>
-        )}
       </p>
       <section aria-labelledby="discuss-replies">
         <h2 id="discuss-replies" className="lists-public-h2">

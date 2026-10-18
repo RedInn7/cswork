@@ -4,14 +4,14 @@ import { Flag, Send } from 'lucide-react';
 import { api, ApiError } from '@/lib/types';
 import '@/app/chat.css';
 
-/** One line of a study group chat or a direct message conversation. */
+/** One line of a study group chat. */
 export type ChatItem = { id: string; body: string; createdAt: number; mine: boolean; name?: string | null };
 /** How often an open chat asks for new lines. */
 export const POLL_MS = 10000;
 const MAX = 2000;
 
 /**
- * A chat from `path` (oj/groups/<id>/messages, oj/dm/<key>): loaded, then reloaded whole every
+ * A chat from `path` (oj/groups/<id>/messages): loaded, then reloaded whole every
  * 10 s while the tab is visible, so lines taken back or moderated leave open chats too. `fresh`
  * is how many lines from others the last answer brought (a poll's or a send's), for one polite
  * screen reader sentence instead of reading every line; `seq` makes the same count say it again.

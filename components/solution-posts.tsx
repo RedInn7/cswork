@@ -824,20 +824,6 @@ function PostView({
             {post.pinned ? t('取消精选', 'Unfeature') : t('设为精选', 'Feature')}
           </button>
         )}
-        {post.referral && !post.mine && (
-          <a
-            className="cs-post-act cs-post-refer"
-            href={`/?view=messages&post=${encodeURIComponent(post.id)}`}
-            onClick={(e) => {
-              if (signedIn) return;
-              e.preventDefault();
-              authRequired();
-            }}
-          >
-            <MessageSquare size={14} aria-hidden="true" />
-            {t('请求内推', 'Request a referral')}
-          </a>
-        )}
       </div>
       {error && (
         <p className="cs-posts-error" role="alert">
@@ -1188,8 +1174,8 @@ function PostEditor({
       {problemId === 'discuss:referral' && (
         <p className="cs-post-editor-note">
           {t(
-            '提供内推：标上你的公司。验证过这家公司的工作邮箱、并在账号设置里打开「内推帖」展示后，帖子会带「可内推」标记，读者可以私信请求内推。',
-            'Offering referrals: tag your company. Once you verify a work email there and turn on "Referral threads" in account settings, the thread shows "Gives referrals" and readers can message you for one.',
+            '提供内推：标上你的公司。验证过这家公司的工作邮箱、并在账号设置里打开「内推帖」展示后，帖子会带「可内推」标记。',
+            'Offering referrals: tag your company. Once you verify a work email there and turn on "Referral threads" in account settings, the thread shows "Gives referrals".',
           )}
         </p>
       )}
@@ -1385,7 +1371,7 @@ function PostEditor({
 }
 
 type QueueItem = {
-  kind: 'post' | 'comment' | 'gmsg' | 'dm';
+  kind: 'post' | 'comment' | 'gmsg';
   id: string;
   postId: string;
   problemId: string;
@@ -1409,7 +1395,6 @@ const RESOURCES: Record<QueueItem['kind'], string> = {
   post: 'posts',
   comment: 'post-comments',
   gmsg: 'group-messages',
-  dm: 'direct-messages',
 };
 /** What a post is, by its target, [zh, en]. */
 const POST_KINDS: Record<TargetKind, [string, string]> = {
@@ -1460,16 +1445,14 @@ export function PostModeration() {
         <span className="cs-post-lang">
           {item.kind === 'gmsg'
             ? t('小组聊天', 'Group chat')
-            : item.kind === 'dm'
-              ? t('私信', 'Direct message')
-              : item.kind === 'comment'
-                ? t('评论', 'Comment')
-                : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
+            : item.kind === 'comment'
+              ? t('评论', 'Comment')
+              : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
         </span>
         {item.kind === 'gmsg' ? (
           <a href={`/?view=group&id=${encodeURIComponent(item.postId)}`}>{item.title}</a>
         ) : (
-          item.kind !== 'dm' && <a href={postHref(item.problemId, item.postId)}>{item.problemId}</a>
+          <a href={postHref(item.problemId, item.postId)}>{item.problemId}</a>
         )}
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>
@@ -1517,8 +1500,8 @@ export function PostModeration() {
       <div className="lms-toolbar">
         <p className="muted">
           {t(
-            '被举报的题解、讨论帖、回答、评论、小组聊天和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（聊天和私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
-            'Reported solutions, threads, answers, comments, group chat and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (chat and direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
+            '被举报的题解、讨论帖、回答、评论和小组聊天排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（聊天对所有人隐藏），可以随时恢复。',
+            'Reported solutions, threads, answers, comments and group chat come first; three reports hide one until you act. Hidden items stay visible to their author only (chat to nobody), and can be restored.',
           )}
         </p>
         <Button variant="outline" onClick={() => setReload((n) => n + 1)}>

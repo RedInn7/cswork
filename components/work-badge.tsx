@@ -40,8 +40,8 @@ const PLACEMENTS: [Placement, string, string, string, string][] = [
     'referrals',
     '内推帖',
     'Referral threads',
-    '你在「内推」频道标了这家公司的帖子会带「可内推」，读者可以私信请求内推。',
-    'Your referral threads tagged with this company show "Gives referrals", and readers can message you for one.',
+    '你在「内推」频道标了这家公司的帖子会带「可内推」。',
+    'Your referral threads tagged with this company show "Gives referrals".',
   ],
 ];
 
