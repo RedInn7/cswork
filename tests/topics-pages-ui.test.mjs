@@ -245,6 +245,9 @@ test('the printable handbook: every stop in the chosen language, no playground l
     const binary = doc.getElementById('stop-binary-search');
     assert.equal(binary.querySelector('pre.topics-pre').textContent, topicStop('binary-search').code.cpp);
     assert.equal(binary.querySelectorAll('.topics-print-notes li').length, 6);
+    // 35 code regions on one page: each label names its stop.
+    const regions = [...doc.querySelectorAll('pre[role="region"]')].map((pre) => pre.getAttribute('aria-label'));
+    assert.equal(new Set(regions).size, 35);
     // The table of contents links every section; the language bar marks the current one.
     const toc = [...doc.querySelectorAll('.topics-print-toc a')].map((a) => a.getAttribute('href'));
     assert.deepEqual(toc, TOPIC_STOPS.map((s) => `#stop-${s.slug}`));

@@ -108,7 +108,12 @@ export function TopicsPrintView({ zh, lang }: { zh: boolean; lang: TemplateLang 
                   </ul>
                 </div>
               </div>
-              <CodeBlock code={stop.code[lang]} lang={lang} label={t(`${label} 模板代码`, `${label} template`)} run={false} />
+              <CodeBlock
+                code={stop.code[lang]}
+                lang={lang}
+                label={t(`${stop.no} ${stop.title} · ${label} 模板代码`, `${stop.no} ${stop.titleEn} · ${label} template`)}
+                run={false}
+              />
             </article>
           ))}
         </section>
