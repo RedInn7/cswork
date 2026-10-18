@@ -31,7 +31,7 @@ export async function previewLessonId(courseId: string) {
 /**
  * A published lesson this person may open. `preview`: reading paths (the lesson, its video,
  * reading progress) also let any signed-in account open the course's free preview lesson;
- * tickets and code reviews still need the course.
+ * code reviews still need the course.
  */
 export async function liveLesson(p: Person, id: string, preview = false) {
   const l = await one<LessonRow>('SELECT * FROM lessons WHERE id=?', id);

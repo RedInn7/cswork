@@ -188,6 +188,7 @@ export const progress = sqliteTable(
   },
   (t) => [uniqueIndex('progress_user_lesson').on(t.userId, t.lessonId)],
 );
+// Support tickets were removed; table kept unused so production data stays and drizzle-kit drops nothing.
 export const tickets = sqliteTable(
   'tickets',
   {
@@ -211,6 +212,7 @@ export const tickets = sqliteTable(
     index('ticket_status').on(t.status),
   ],
 );
+// Support tickets were removed; table kept unused so production data stays and drizzle-kit drops nothing.
 export const replies = sqliteTable(
   'replies',
   {
@@ -424,6 +426,7 @@ export const limits = sqliteTable('limits', {
   count: integer('count').notNull(),
   expiresAt: integer('expires_at').notNull(),
 });
+// Support tickets were removed; table kept (no app code writes it) so production data stays, drizzle-kit drops nothing and scripts/backup.mjs still archives the old files.
 export const attachments = sqliteTable(
   'attachments',
   {

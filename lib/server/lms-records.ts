@@ -34,25 +34,6 @@ export type VersionRow = {
   created_at: number;
   created_by: string | null;
 };
-export type TicketRow = {
-  id: string;
-  user_id: string;
-  title: string;
-  body: string;
-  lesson_id: string | null;
-  course_id: string | null;
-  submission_id: string | null;
-  video_position: number | null;
-  video_asset_id: string | null;
-  status: string;
-  assigned_to: string | null;
-  revision: number;
-  created_at: number;
-  updated_at: number;
-  course_title?: string;
-  name?: string;
-  email?: string;
-};
 export type ReviewRow = {
   id: string;
   user_id: string;

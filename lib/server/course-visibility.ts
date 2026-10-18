@@ -46,9 +46,11 @@ export function visibleCourseSql(p: Person | null, column: string) {
     : ` AND ${column} IN (${OPEN_COURSES.map((id) => `'${id}'`).join(',')})`;
 }
 
-/** SQL clause hiding notifications about courses this person may not see. */
+/** SQL clause hiding notifications this person should not see: hidden courses, removed features. */
 export function courseNotificationFilter(p: Person | null) {
-  if (!coursesOwnerOnly() || isCourseOwner(p)) return '';
+  // Support tickets were removed: their old reply notifications would link nowhere.
+  const removed = " AND href NOT LIKE '/?view=tickets%'";
+  if (!coursesOwnerOnly() || isCourseOwner(p)) return removed;
   const open = OPEN_COURSES.map((id) => `'${id}'`).join(',');
-  return ` AND href NOT LIKE '/?view=courses%' AND NOT EXISTS(SELECT 1 FROM releases r WHERE href='/?view=releases&release='||r.id AND r.course_id NOT IN (${open}))`;
+  return `${removed} AND href NOT LIKE '/?view=courses%' AND NOT EXISTS(SELECT 1 FROM releases r WHERE href='/?view=releases&release='||r.id AND r.course_id NOT IN (${open}))`;
 }

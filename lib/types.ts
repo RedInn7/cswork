@@ -97,37 +97,6 @@ export type Boot = {
   /** Course completion certificates (lib/server/certificates.ts); id is the public verification code. */
   certificates?: { id: string; courseId: string; issuedAt: number; onProfile?: number }[];
 };
-export type Ticket = {
-  attachments?: {
-    user_id?: string;
-    id: string;
-    name: string;
-    size: number;
-    created_at: number;
-  }[];
-  id: string;
-  user_id: string;
-  title: string;
-  body: string;
-  lesson_id: string | null;
-  course_id?: string | null;
-  submission_id: string | null;
-  video_position: number | null;
-  video_asset_id?: string | null;
-  status: string;
-  assigned_to: string | null;
-  created_at: number;
-  updated_at: number;
-  name?: string;
-  email?: string;
-  replies?: {
-    id: string;
-    body: string;
-    name: string;
-    role: string;
-    created_at: number;
-  }[];
-};
 export type Review = {
   id: string;
   user_id: string;
@@ -229,9 +198,6 @@ const STATUS_NAMES: Record<string, [string, string]> = {
   system_error: ['服务异常', 'System Error'],
   pending: ['等待处理', 'Pending'],
   submitting: ['提交中', 'Submitting'],
-  open: ['待老师回复', 'Awaiting teacher reply'],
-  waiting: ['待你确认', 'Awaiting your confirmation'],
-  resolved: ['已解决', 'Resolved'],
   approved: ['评审通过', 'Approved'],
   changes_requested: ['需要修改', 'Changes requested'],
   paid: ['已支付', 'Paid'],
