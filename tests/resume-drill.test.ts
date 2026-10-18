@@ -57,18 +57,30 @@ test('a job with no team bullet asks for your part on its first; numbers in word
   assert.match(drillCard(drills[0], true).front, /^工作经历 1：/);
 });
 
-test('scale: load words or a database/system design term', () => {
-  const r = { ...blankResume(), projects: [{ title: 'Feed', subtitle: '', dates: '', bullets: 'Moved the feed table to PostgreSQL across 4 nodes\nServed requests for the mobile app\nRewrote slow queries in MySQL' }] };
-  const kinds = resumeDrills(r).map((d) => [d.bullet.split(' ')[0], d.kind]);
-  // The first bullet's scale question is a third one: dropped.
-  assert.deepEqual(kinds, [
-    ['Moved', 'measure'],
+test('scale: load words or a database/system design term; a head count is no measurement', () => {
+  const r = {
+    ...blankResume(),
+    projects: [{ title: 'Feed', subtitle: '', dates: '', bullets: 'Moved the feed table to PostgreSQL across 4 nodes\nServed requests for the mobile app\nRewrote slow queries in MySQL, cutting load time 3x' }],
+  };
+  const drills = resumeDrills(r);
+  // The last bullet's scale question is a third one: dropped.
+  assert.deepEqual(drills.map((d) => [d.bullet.split(' ')[0], d.kind]), [
     ['Moved', 'why'],
+    ['Moved', 'scale'],
     ['Served', 'scale'],
+    ['Rewrote', 'measure'],
     ['Rewrote', 'why'],
-    ['Rewrote', 'scale'],
   ]);
-  assert.equal(resumeDrills(r)[0].q[1], 'How did you measure “4 nodes”? What was the baseline?');
+  assert.equal(drills[3].q[1], 'How did you measure “3x”? What was the baseline?');
+  // Counts carry no unit: no "how was it measured".
+  for (const bullet of ['Led a team of 3 to ship 14 cron jobs', 'Wrote 40 integration tests', '带领 5 人小组完成重构'])
+    assert.equal(resumeDrills({ ...blankResume(), projects: [{ title: 'P', subtitle: '', dates: '', bullets: bullet }] }).some((d) => d.kind === 'measure'), false, bullet);
+  const figure = (bullet: string) => resumeDrills({ ...blankResume(), projects: [{ title: 'P', subtitle: '', dates: '', bullets: bullet }] }).find((d) => d.kind === 'measure')?.q[1];
+  assert.equal(figure('Saved $50,000 a year in compute'), 'How did you measure “$50,000”? What was the baseline?');
+  assert.equal(figure('Grew to 10K+ daily users'), 'How did you measure “10K”? What was the baseline?');
+  assert.equal(figure('Handled 3,000 QPS at peak'), 'How did you measure “3,000 QPS”? What was the baseline?');
+  assert.equal(figure('Cut cold start from 2.5 s to 800ms'), 'How did you measure “2.5 s”? What was the baseline?');
+  assert.equal(figure('Ran it on 2 EC2 hosts'), undefined, 'EC2 is no number');
 });
 
 test('at most 2 per bullet and 24 in all; ids are stable card ids and unique', () => {

@@ -27,8 +27,15 @@ const PER_BULLET = 2;
 export const MAX_DRILLS = 24;
 const TEAM = /\b(?:we|team\w*|led|collaborat\w*|partner\w*)\b|团队|合作|带领/i;
 const SCALE = /\b(?:users?|requests?|qps|rps|latency|throughput|nodes?)\b|(?<![A-Za-z])[GTP]B\b|用户|请求|并发|数据量/i;
-// The number a measure question quotes: 420 ms, 40%, 2x, p99 latency, 5 万, 三倍.
-const FIGURE = /(?<![A-Za-z\d])[$¥€£]?\d+(?:[.,]\d+)*\+?\s?(?:%|×|倍|[万亿千百]|[A-Za-z]+)?|\bp\d{2,3}(?:\s[A-Za-z]+)?|[一二两三四五六七八九十几数]*[%×百千万亿倍半]+/i;
+// What a measure question quotes: a figure that was measured (a change, a rate, a size), not a head
+// count like "a team of 3": 40%, 3x, 420 ms, p99 latency, $2M, 10k users, 5 万, 三倍, doubled.
+const UNIT =
+  '%|×|x\\b|ms\\b|s\\b|secs?\\b|seconds?\\b|mins?\\b|minutes?\\b|hours?\\b|hrs?\\b|days?\\b|[kmb]\\b|[kmgtp]b\\b|' +
+  '(?:users?|requests?|qps|rps|tps|queries|transactions|events|records|rows|messages|downloads|visits|views)\\b|倍|万|亿|毫秒|秒|分钟|小时|天|用户|次';
+const FIGURE = new RegExp(
+  `(?<![A-Za-z\\d])[$¥€£]?\\d+(?:[.,]\\d+)*\\+?\\s?(?:${UNIT})|[$¥€£]\\d+(?:[.,]\\d+)*|\\bp\\d{2,3}(?:\\s[A-Za-z]+)?|[一二两三四五六七八九十几数]+[倍万亿]|\\b(?:doubled|tripled|quadrupled|halved|half)\\b`,
+  'i',
+);
 // Table terms that are practices or topics rather than something one picks over an alternative.
 const NOT_A_CHOICE = new Set(['Debugging', 'Agile', 'Code review', 'Statistics', 'Data analysis', 'Data visualization', 'Performance optimization', 'Unit testing', 'Scalability', 'Security', 'AI', 'Front end']);
 const CHOICES = JD_TERMS.filter((t) => !['dsa', 'behavioral', 'oa'].includes(t.skill ?? '') && !NOT_A_CHOICE.has(t.term));
@@ -91,10 +98,8 @@ export function resumeDrills(r: Resume): Drill[] {
         };
         const picks: [DrillKind, [string, string]][] = [];
         if (i === mineAt) picks.push(['mine', ['这件事里，你个人具体做了哪部分？', 'Which part of this did you do yourself?']]);
-        if (METRIC.test(bullet)) {
-          const figure = (FIGURE.exec(bullet) ?? METRIC.exec(bullet))![0].trim();
-          picks.push(['measure', [`「${figure}」是怎么测出来的？基线是多少？`, `How did you measure “${figure}”? What was the baseline?`]]);
-        }
+        const figure = METRIC.test(bullet) ? FIGURE.exec(bullet)?.[0].trim() : undefined;
+        if (figure) picks.push(['measure', [`「${figure}」是怎么测出来的？基线是多少？`, `How did you measure “${figure}”? What was the baseline?`]]);
         const term = CHOICES.find((t) => !asked.has(t.term) && mentions(t.term, bullet)) ?? CHOICES.find((t) => !asked.has(t.term) && mentions(t.term, item.subtitle));
         if (term) picks.push(['why', [`为什么选 ${term.term}？当时还考虑过什么？`, `Why ${term.term}? What else did you consider?`]]);
         if (SCALE.test(bullet) || JD_TERMS.some((t) => (t.skill === 'system-design' || t.skill === 'sql') && mentions(t.term, bullet)))
