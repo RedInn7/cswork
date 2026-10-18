@@ -1204,12 +1204,13 @@
   gap: 8px 40px;
   margin-bottom: 48px;
 }
+/* Outside the width query so print (narrower than 860px on paper) still spans the heading. */
+.topics-print-toc h2 {
+  grid-column: 1 / -1;
+}
 @media (min-width: 860px) {
   .topics-print-toc {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .topics-print-toc h2 {
-    grid-column: 1 / -1;
   }
 }
 .topics-print-toc h2,
