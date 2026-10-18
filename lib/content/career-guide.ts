@@ -73,7 +73,7 @@ Get your [resume](/guide/resume) in shape, then line up [referrals](/guide/refer
 没有精确数字时，写一个站得住的估计（“约 30%”“约 200 名同学使用”），但**不要编造**。面试官会追问数字。
 
 ## 项目和面试用 STAR
-写项目要点或回答行为面问题时，按**情境（Situation）、任务（Task）、行动（Action）、结果（Result）**组织，把大部分篇幅留给行动和结果。平时可以把故事攒在 [STAR 故事库](/?view=stories) 里。
+写项目要点或回答行为面问题时，按**情境（Situation）、任务（Task）、行动（Action）、结果（Result）**组织，把大部分篇幅留给行动和结果。
 
 ## 用有力的动词开头
 英文简历每条以动词开头，并且说出具体做了什么：built、designed、shipped、reduced、automated、migrated、profiled、led、mentored。少用 responsible for、helped with、worked on。中文简历同理，用“设计”“实现”“将……降低”“主导”代替“参与”“负责”。
@@ -120,7 +120,7 @@ Languages: Python, Go, Java, SQL · Tools: Git, Docker, Linux, AWS
 If you lack an exact number, use an estimate you can defend (“about 30%”, “used by ~200 students”), but **never invent one**. Interviewers ask about numbers.
 
 ## STAR for projects and interviews
-For a project bullet or a behavioural answer, use **Situation, Task, Action, Result**, and spend most of the words on Action and Result. Collect your stories in the [story bank](/?view=stories).
+For a project bullet or a behavioural answer, use **Situation, Task, Action, Result**, and spend most of the words on Action and Result.
 
 ## Start with a strong verb
 Open each bullet with a verb that names the work: built, designed, shipped, reduced, automated, migrated, profiled, led, mentored. Avoid “responsible for”, “helped with” and “worked on”.
@@ -430,7 +430,7 @@ Practise with a timer and an interviewer in [mock interviews](/mock-interview). 
 
 ## 各轮考什么
 - **编程**（两到三轮）：和电面类似，追问更难。
-- **行为面**（单独一轮，或穿插在每轮里）：用 STAR 讲过去的经历。准备 6–8 个故事，覆盖冲突、失败、领导力、需求不明确，以及你最自豪的项目。可以存在 [STAR 故事库](/?view=stories) 里反复打磨。
+- **行为面**（单独一轮，或穿插在每轮里）：用 STAR 讲过去的经历。准备 6–8 个故事，覆盖冲突、失败、领导力、需求不明确，以及你最自豪的项目。
 - **设计**：应届生多是面向对象设计或一个小系统（比如“设计短链接服务”）；有经验的工程师则是完整的系统设计。
 - 有的公司还会加项目深挖，或者移动端、前端、数据等方向的专项轮。
 
@@ -451,7 +451,7 @@ Practise with a timer and an interviewer in [mock interviews](/mock-interview). 
 
 ## What the rounds cover
 - **Coding** (two or three rounds): like the phone screen, with harder follow-ups.
-- **Behavioural** (its own round, or part of every round): past situations told with STAR. Prepare 6–8 stories that cover conflict, failure, leadership, ambiguity and a project you are proud of, and polish them in the [story bank](/?view=stories).
+- **Behavioural** (its own round, or part of every round): past situations told with STAR. Prepare 6–8 stories that cover conflict, failure, leadership, ambiguity and a project you are proud of.
 - **Design**: for new graduates usually object-oriented design or a small system (“design a URL shortener”); for experienced engineers, full system design.
 - Some companies add a project deep-dive or a specialist round (mobile, front end, data).
 

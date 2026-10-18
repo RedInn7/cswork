@@ -72,10 +72,9 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
       id: 'star',
       text: ['把项目故事按 STAR 整理好', 'Have your project stories in STAR form'],
       detail: [
-        '情境、任务、行动、结果，篇幅主要留给行动和结果。攒在故事库里，面试也用得上。',
-        'Situation, Task, Action, Result, with most words on Action and Result. Keep them in the story bank for interviews too.',
+        '情境、任务、行动、结果，篇幅主要留给行动和结果。面试也用得上。',
+        'Situation, Task, Action, Result, with most words on Action and Result. You will use them in interviews too.',
       ],
-      href: '/?view=stories',
     },
     {
       id: 'tailor',
@@ -311,7 +310,6 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
         '覆盖冲突、失败、领导力、需求不明确，以及你最自豪的项目。',
         'Cover conflict, failure, leadership, ambiguity and a project you are proud of.',
       ],
-      href: '/?view=stories',
     },
     {
       id: 'design',

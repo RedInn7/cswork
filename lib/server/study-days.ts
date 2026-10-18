@@ -44,7 +44,7 @@ export const studyPref = (userId: string) => prefSchema.parse(parsed(note(userId
 /**
  * What the learner did from `since` to `now`, one event per item: ACs, finished stress tests and
  * complexity probes, first answers to bank MCQs, system design chapters read, English units done,
- * finished mock OAs, STAR stories saved (the last save only) and self-graded review cards.
+ * finished mock OAs and self-graded review cards.
  * A mock's finish and a card's day come from the browser: one past `now` is dropped.
  */
 export function studyEvents(userId: string, since: number, now: number): StudyEvent[] {
@@ -58,9 +58,7 @@ export function studyEvents(userId: string, since: number, now: number): StudyEv
       UNION ALL SELECT CASE mark WHEN 'read' THEN 'sd' ELSE 'english' END,target,created_at FROM user_marks
         WHERE user_id=@user AND created_at>=@since
           AND ((mark='read' AND target>='sd:' AND target<'sd;') OR (mark='done' AND target>='content:english/' AND target<'content:english0'))
-      UNION ALL SELECT 'mock',id,finished_at FROM mock_sessions WHERE user_id=@user AND finished_at>=@since
-      UNION ALL SELECT 'story',target,updated_at FROM user_notes
-        WHERE user_id=@user AND target>='story:' AND target<'story;' AND updated_at>=@since`,
+      UNION ALL SELECT 'mock',id,finished_at FROM mock_sessions WHERE user_id=@user AND finished_at>=@since`,
     )
     .all({ user: userId, since }) as StudyEvent[];
   // The recall notes (lib/recall.ts: open questions, own cards, problem ideas; their keys never
@@ -83,7 +81,7 @@ export function studyEvents(userId: string, since: number, now: number): StudyEv
 /**
  * The last 8 local days (today and the 7 before), recorded: each day that met the goal becomes a
  * goal: mark, and each other past one that was a rest weekday or inside the review break
- * (pref:review) a rest: mark. So un-reading a chapter, deleting a story, changing the rest weekdays
+ * (pref:review) a rest: mark. So un-reading a chapter, changing the rest weekdays
  * or a new break replacing the old one never takes back a day already counted, and neither reaches
  * further back than the 7 days. Marks past KEEP_DAYS go. `covered`: the calendar's days kept alive
  * without an AC: the marks, and today when it is a rest day now; a met goal wins over a rest day.

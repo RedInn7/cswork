@@ -38,7 +38,7 @@ test('the export reads every page, with code when ticked, and saves a vault zip'
   globalThis.fetch = async (url) => {
     urls.push(url);
     return url.includes('cursor=')
-      ? Response.json({ items: [{ target: 'story:1', body: '{"title":"Outage","situation":"S"}', updatedAt: 1 }], nextCursor: null })
+      ? Response.json({ items: [{ target: 'topic:hash-counting', body: 'pattern note', updatedAt: 1 }], nextCursor: null })
       : Response.json({
           items: [
             { target: 'problem:lc-1', body: '#哈希表 one pass', updatedAt: 1, lastAc: 1, code: { language: 'python', code: 'pass' }, meta: { title: '两数之和', titleEn: 'Two Sum', stop: 'hash-counting' } },
@@ -66,7 +66,7 @@ test('the export reads every page, with code when ticked, and saves a vault zip'
   );
   assert.match(names[0], /^cswork-notes-\d{4}-\d{2}-\d{2}\.zip$/);
   const files = await unzip(new Uint8Array(await saved[0].arrayBuffer()), () => true, 1 << 20);
-  assert.deepEqual([...files.keys()], ['index.md', 'problems/hash-counting/lc-1.md', 'problems/oa/oa-acme-1.md', 'stories/star-stories.md']);
+  assert.deepEqual([...files.keys()], ['index.md', 'problems/hash-counting/lc-1.md', 'problems/oa/oa-acme-1.md', 'topics/hash-counting.md']);
   const oa = new TextDecoder().decode(files.get('problems/oa/oa-acme-1.md'));
   assert.match(oa, /^---\ntitle: "Acme OA"\n[\s\S]*difficulty: "Hard"\ntopics: \["图"\]/, 'titles the server lacks come from the bootstrap list');
   assert.match(new TextDecoder().decode(files.get('problems/hash-counting/lc-1.md')), /```python\npass\n```/);

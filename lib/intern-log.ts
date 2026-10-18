@@ -60,7 +60,7 @@ export function parseMeta(body: string): InternMeta | null {
   const weeks = Number.isInteger(d.weeks) ? Math.min(WEEKS_MAX, Math.max(WEEKS_MIN, d.weeks as number)) : 12;
   return { company: str(d.company, 100), role: str(d.role, 120), start: d.start, weeks };
 }
-/** A week's note back into its log, leniently like parseStory: unknown fields dropped, text capped; null for broken JSON. */
+/** A week's note back into its log, leniently: unknown fields dropped, text capped; null for broken JSON. */
 export function parseBrag(body: string): Brag | null {
   const d = object(body);
   if (!d) return null;

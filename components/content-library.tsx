@@ -22,11 +22,10 @@ import {
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
-import { kindOf, splitBody, type BodyParts } from '@/lib/mock-interview';
+import { splitBody, type BodyParts } from '@/lib/mock-interview';
 import { keyPoints } from '@/lib/recall';
 import { TryFirst } from './try-first';
 import { RecallRate } from './recall-rate';
-import { StoryPicker } from './story-bank';
 import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
 import { CommunityPosts } from './discuss-board';
 import { AskedReport } from './problem-community';
@@ -933,7 +932,7 @@ export function ContentDetail({
   navigate: Navigate;
   /** Judge problems this visitor can open. */
   problemIds: string[];
-  /** Signed-in learner: their written answers and stories are saved. */
+  /** Signed-in learner: their written answers are saved. */
   userId?: string | null;
   /** Teachers can mark items curated. */
   teacher?: boolean;
@@ -969,7 +968,6 @@ export function ContentDetail({
   const gated = split && (split.solution || split.rubric) ? split : null;
   const [revealed, setRevealed] = useState('');
   const open = revealed === key;
-  const behavioral = item?.type === 'interview_question' && kindOf(item.category) === 'behavioral';
   const section = contentSection(params.type);
   const back = () =>
     navigate(section, lastList[section] ?? (section === 'resources' ? { type: params.type } : {}));
@@ -1096,13 +1094,6 @@ export function ContentDetail({
             {((item.type === 'experience' && (!item.member || item.member.public)) ||
               (item.type === 'interview_question' && (!gated || open))) && (
               <CommunityPosts key={key} type={item.type} slug={item.slug} signedIn={!!userId} />
-            )}
-            {behavioral && (
-              <StoryPicker
-                userId={userId}
-                question={{ key: `${item.type}/${item.slug}`, title: item.title, company: item.company?.name ?? null }}
-                text={`${item.title}\n${gated?.question ?? item.body}`}
-              />
             )}
             {gated && (
               <TryFirst

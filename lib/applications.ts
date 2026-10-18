@@ -1,6 +1,5 @@
 import { SOURCES } from './experience';
 import { calendar, escapeText, utcStamp, vevent } from './ics';
-import { COMPETENCIES } from './story-bank';
 
 /** The tracker board's columns in order (stored as the id; lib/server/applications.ts). */
 export const STAGES = ['saved', 'applied', 'oa', 'phone', 'onsite', 'offer', 'ghosted', 'rejected', 'withdrawn'] as const;
@@ -80,7 +79,7 @@ export type Application = ApplicationFields & {
   /** The posting's last sighting when the company's job board no longer lists it, else null. */
   closedAt: number | null;
   /** Interview prep for a card at OA, phone or onsite with a company page, else null. */
-  prep: { experiences: { href: string; n: number } | null; problems: string; stories: string } | null;
+  prep: { experiences: { href: string; n: number } | null; problems: string } | null;
   /**
    * The company's median weeks from applying to an offer in member write-ups, for a card at OA,
    * phone or onsite while the learner has an offer deadline ahead (expeditePlan), else null.
@@ -449,16 +448,13 @@ export type Retro = {
   score: number;
   questions: RetroQuestion[];
   stuck: string;
-  /** Story bank competency ids the round asked about. */
-  themes: string[];
 };
 const PROBLEM_ID = /^(?:lc-\d{1,6}|oa-[a-z0-9-]{1,180})$/;
-const THEMES = new Set(COMPETENCIES.map((c) => c.id));
 const textOf = (v: unknown, max: number) => (typeof v === 'string' && v.length <= max ? v : null);
 const whole = (v: unknown, min: number, max: number) => Number.isInteger(v) && (v as number) >= min && (v as number) <= max;
 /**
  * A stored retro, or null for anything else; the board and my-practice's PUT both check with this.
- * Themes the story bank no longer knows are dropped, a malformed problem id is not.
+ * A malformed problem id is refused; fields it does not know (older retros' themes) are ignored.
  */
 export function parseRetro(body: string): Retro | null {
   let d: Record<string, unknown>;
@@ -470,7 +466,7 @@ export function parseRetro(body: string): Retro | null {
   if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
   const company = textOf(d.company, 100),
     stuck = textOf(d.stuck, 600);
-  const { stage, at, score, questions, themes } = d;
+  const { stage, at, score, questions } = d;
   if (
     company === null ||
     stuck === null ||
@@ -478,9 +474,7 @@ export function parseRetro(body: string): Retro | null {
     !whole(at, 0, 4102444800000) ||
     !whole(score, 1, 4) ||
     !Array.isArray(questions) ||
-    questions.length > RETRO_QUESTIONS ||
-    !Array.isArray(themes) ||
-    themes.length > 8
+    questions.length > RETRO_QUESTIONS
   )
     return null;
   const rows: RetroQuestion[] = [];
@@ -491,8 +485,7 @@ export function parseRetro(body: string): Retro | null {
     if (text === null || problem === null || (problem && !PROBLEM_ID.test(problem))) return null;
     rows.push({ text, problem, similar: !!problem && row.similar === true });
   }
-  const known = themes.filter((t): t is string => typeof t === 'string' && THEMES.has(t));
-  return { company, stage, at: at as number, score: score as number, questions: rows, stuck, themes: [...new Set(known)] };
+  return { company, stage, at: at as number, score: score as number, questions: rows, stuck };
 }
 export type RetroEntry = Retro & { target: string; card: string };
 /** The notes API's ?prefix=retro: items as retros with their note and card ids; anything else is skipped. */

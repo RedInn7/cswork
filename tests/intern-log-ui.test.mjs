@@ -1,8 +1,8 @@
 // /career/intern (components/intern-log.tsx, components/team-match.tsx): one request loads every
 // brag: note; this week's checklist items show; a week's log is saved on demand; drafts are made in
-// the browser; XYZ bullets go into the resume builder's copy in this browser and wins into the story
-// bank; team-matching cards save brag:teams and rank by weighted mean; the guide's internship
-// checklist (components/guide-checklist.tsx) labels every item with its week.
+// the browser; XYZ bullets go into the resume builder's copy in this browser; team-matching
+// cards save brag:teams and rank by weighted mean; the guide's internship checklist
+// (components/guide-checklist.tsx) labels every item with its week.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
@@ -35,7 +35,6 @@ const notes = new Map([
   ['brag:meta', JSON.stringify({ company: 'Acme', role: 'SWE Intern', start, weeks: 10 })],
   [`brag:${week1}`, JSON.stringify({ wins: [{ x: 'Set up CI', y: 'in 2 days', z: 'reusing the template', project: 'Infra' }], feedback: 'Ask earlier', learned: '', next: 'Search' })],
   ['brag:teams', '{broken'],
-  ['story:x', '{}'],
 ]);
 const calls = [];
 globalThis.fetch = async (url, init = {}) => {
@@ -101,16 +100,6 @@ test('loads once, shows this week, saves the week, exports drafts and writes bul
   assert.match(statusOf('intern-week-title'), /Week 2 .* saved\./);
   assert.equal(statusOf('intern-setup-title'), '');
   assert.equal($$('#intern-past-title ~ details').length, 2);
-
-  // A win becomes a STAR story.
-  await click(button('Save as a STAR story'));
-  await settle();
-  const [storyKey, storyBody] = [...notes].find(([k]) => k.startsWith('story:') && k !== 'story:x');
-  assert.deepEqual(
-    (({ title, action, result, competencies }) => ({ title, action, result, competencies }))(JSON.parse(storyBody)),
-    { title: 'Built search', action: 'a trie', result: 'for 2k users', competencies: ['impact'] },
-  );
-  assert.ok(storyKey.length > 8);
 
   // A new length that keeps this week on screen leaves the unsaved draft alone.
   await type(x, 'Built search v2');

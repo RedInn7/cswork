@@ -6,7 +6,6 @@ import { classicLists, groupEntries, levelOf } from './classic-lists';
 import { parseNoteMeta } from './note-meta';
 import { reviewState, type PracticeHistoryItem } from './practice-review';
 import { ROUTE_SLUGS, STOP_NAMES, topicName } from './route-stops';
-import { parseStory, storiesMarkdown, type Story } from './story-bank';
 
 /** What the server knows of a problem: study-library titles for LeetCode, the Line 500 stop and route order. */
 export type ProblemMeta = {
@@ -132,9 +131,8 @@ export type VaultFile = { name: string; data: string; title: string };
 
 /**
  * The export as an Obsidian vault: problems/<stop or source>/<id>.md (so [[lc-42]] resolves),
- * submissions/, library/, system-design/, topics/, cards/, clips/, the STAR stories in one
- * stories/star-stories.md, and index.md linking everything. LeetCode problems carry their number,
- * title and link only, never the statement.
+ * submissions/, library/, system-design/, topics/, cards/, clips/ and index.md linking everything.
+ * LeetCode problems carry their number, title and link only, never the statement.
  */
 export function vaultFiles(items: readonly ExportItem[], { english, origin }: { english: boolean; origin: string }) {
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -148,17 +146,13 @@ export function vaultFiles(items: readonly ExportItem[], { english, origin }: { 
     files.push({ name, title, data: `${frontMatter({ title, ...front })}# ${title}\n\n${body.trim()}\n` });
   };
   const problemUrl = (id: string) => `${origin}/?${new URLSearchParams({ view: 'problem', problem: id })}`;
-  const stories: Story[] = [];
   for (const item of items) {
     const colon = item.target.indexOf(':');
     const kind = item.target.slice(0, colon);
     const key = item.target.slice(colon + 1);
     const { tags, confidence } = parseNoteMeta(item.body);
     const updated = day(item.updatedAt);
-    if (kind === 'story') {
-      const story = parseStory(item.target, item.body, item.updatedAt);
-      if (story) stories.push(story);
-    } else if (kind === 'problem') {
+    if (kind === 'problem') {
       const m = item.meta;
       const title = metaTitle(key, m, english);
       const level = m?.difficulty ? levelOf(m.difficulty) : undefined;
@@ -216,10 +210,6 @@ export function vaultFiles(items: readonly ExportItem[], { english, origin }: { 
           : item.body,
       );
     } else add(`${kind === 'clip' ? 'clips' : kind}/${key}`, key, { tags, updated }, item.body);
-  }
-  if (stories.length) {
-    const title = t('我的 STAR 故事', 'My STAR stories');
-    add('stories/star-stories', title, {}, storiesMarkdown(stories, english).replace(/^# .*\n+/, ''));
   }
   const folders = new Map<string, VaultFile[]>();
   for (const file of files) {

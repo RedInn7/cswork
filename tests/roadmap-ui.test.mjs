@@ -137,7 +137,6 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
       ['Framework', 'Case studies', 'Low-level design', 'Key technologies (optional)'],
       'empty parts are left out',
     );
-    assert.ok(document.querySelector('.roadmap-cards a[href="/?view=stories"]'));
     assert.ok(document.querySelector('.roadmap-cards a[href="/guide/onsite"]'));
     // The CS track: a member's answers, reading and cards per subject, from the notes they already keep.
     assert.ok(requests.some((url) => url.endsWith('/api/oj/notes?target=mcq%3Aanswers')));

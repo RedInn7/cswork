@@ -61,7 +61,6 @@ void test('vault paths drop .. and reserved characters; files land in their fold
     { target: 'clip:../../evil', body: '> quote', updatedAt: 1 },
     { target: 'sub:s9', body: 'off by one', updatedAt: 1, problemId: 'lc-15' },
     { target: 'card:abcdefabcdef', body: JSON.stringify({ v: 1, front: 'Why sort?', back: 'To use two pointers', tags: ['Google'] }), updatedAt: 1 },
-    { target: 'story:1', body: JSON.stringify({ title: 'Outage', situation: 'S', task: 'T', action: 'A', result: 'R' }), updatedAt: 1 },
     { target: 'sd:url-shortener/draft', body: 'draft', updatedAt: 1 },
   ];
   const files = vaultFiles(items, { english: true, origin: 'https://cswork.test' });
@@ -75,7 +74,6 @@ void test('vault paths drop .. and reserved characters; files land in their fold
       'submissions/s9.md',
       'cards/abcdefabcdef.md',
       'system-design/url-shortener.md',
-      'stories/star-stories.md',
     ],
   );
   const lc = files[1].data;
@@ -85,7 +83,6 @@ void test('vault paths drop .. and reserved characters; files land in their fold
   assert.match(lc, /\n````python\nprint\("```"\)\n````\n$/, 'a fence longer than the code’s backticks');
   assert.match(files[4].data, /\n\[\[lc-15\]\]\n\noff by one\n$/);
   assert.match(files[5].data, /tags: \["google"\][\s\S]*## Front\n\nWhy sort\?\n\n## Back\n\nTo use two pointers/);
-  assert.match(files[7].data, /## Outage/);
   assert.match(files[0].data, /- \[\[problems\/two-pointers-windows\/lc-15\|3Sum\]\]/);
   const md = vaultMarkdown(files);
   assert.ok(!md.includes('\ntitle: '), 'one Markdown file, no front matter');

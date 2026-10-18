@@ -25,7 +25,7 @@ import { sdParts } from './system-design-course';
  * The JD readiness checklist on /career/jd (components/jd-readiness.tsx). The learner pastes a
  * job description; the model lists the skills it asks for, only from lib/jd-skills.ts, with a
  * quote and must/nice each, and the interview rounds it implies. The server then measures every
- * skill on the learner's own data (ACs, chapters marked read, certificates, STAR stories).
+ * skill on the learner's own data (ACs, chapters marked read, certificates).
  * Nothing of the posting or the reply is stored: ai_usage keeps the daily count (kind 'jd').
  * With AI off, lib/jd-keywords.ts reads the posting in the browser and only the skill ids it
  * found come here to be measured: the posting never reaches the server.
@@ -101,8 +101,8 @@ export function parseJd(raw: string, job: string): { skills: Asked[]; likelyRoun
   return { skills, likelyRounds: JD_ROUNDS.filter((round) => rounds.includes(round)) };
 }
 
-/** What measures the skills: problems solved (id → accepted languages), read marks, certificates, stories. */
-export type Learner = { solved: Map<string, Set<string>>; read: Set<string>; certs: Set<string>; stories: number };
+/** What measures the skills: problems solved (id → accepted languages), read marks, certificates. */
+export type Learner = { solved: Map<string, Set<string>>; read: Set<string>; certs: Set<string> };
 
 export function learnerData(userId: string): Learner {
   const db = sqlite();
@@ -127,7 +127,6 @@ export function learnerData(userId: string): Learner {
     solved,
     read,
     certs: new Set(db.prepare('SELECT course_id FROM certificates WHERE user_id=?').pluck().all(userId) as string[]),
-    stories: db.prepare("SELECT COUNT(*) FROM user_notes WHERE user_id=? AND target LIKE 'story:%'").pluck().get(userId) as number,
   };
 }
 
@@ -163,10 +162,7 @@ export function skillProgress(skill: JdSkill, learner: Learner, weak = weakStops
     total = chapters.length + problems.length;
     done = chapters.filter((c) => learner.read.has(c)).length + problems.filter((id) => learner.solved.has(id)).length;
   } else if (m.goal) {
-    const n = m.stories
-      ? learner.stories
-      : [...learner.solved].filter(([id, languages]) => (m.prefix ? id.startsWith(m.prefix) : languages.has(m.language!)))
-          .length;
+    const n = [...learner.solved].filter(([id, languages]) => (m.prefix ? id.startsWith(m.prefix) : languages.has(m.language!))).length;
     total = m.goal;
     done = Math.min(n, total);
   }

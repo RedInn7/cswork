@@ -177,7 +177,6 @@ function withLinks(rows: Row[], userId: string): Application[] {
         ? {
             experiences: n ? { href: `${companyHubPath(r.companySlug)}#experiences`, n } : null,
             problems: `/?${new URLSearchParams({ view: 'problems', company: r.companySlug, sort: 'frequency' })}`,
-            stories: '/?view=stories',
           }
         : null,
       process: weeks === null ? null : { weeks },

@@ -165,17 +165,6 @@ export function RoadmapTracks({
               </a>
             </li>
           ))}
-          <li>
-            <a href="/?view=stories">
-              <strong>{t('STAR 故事库', 'STAR story bank')}</strong>
-              <span>
-                {t(
-                  '把经历写成 STAR 故事，对照常见行为题逐一准备，需要登录。',
-                  'Write your experiences as STAR stories and match them to common behavioral questions. Requires sign-in.',
-                )}
-              </span>
-            </a>
-          </li>
         </ul>
       </section>
 
