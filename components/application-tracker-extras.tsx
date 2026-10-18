@@ -20,7 +20,6 @@ import {
 import { trackerOpenJs } from '@/lib/autofill-bookmarklet';
 import { SOURCES } from '@/lib/experience';
 import { readLocale } from '@/lib/i18n';
-import { COMPETENCIES } from '@/lib/story-bank';
 import { api } from '@/lib/types';
 
 // The weekly goal, a JSON note ({ weekly }) like the other wave-8 career notes (lib/server/my-practice.ts).
@@ -362,7 +361,7 @@ type Round = (typeof ROUNDS)[number];
 /** The card's latest interview stage: its own, else the last one logged, else phone. */
 const lastRound = (a: Application): Round =>
   [a.stage, ...a.stageLog.map(([s]) => s).reverse()].find((s): s is Round => s === 'phone' || s === 'onsite') ?? 'phone';
-type Draft = { target: string | null; stage: Round; at: string; score: string; questions: RetroQuestion[]; stuck: string; themes: string[] };
+type Draft = { target: string | null; stage: Round; at: string; score: string; questions: RetroQuestion[]; stuck: string };
 const blankQuestion = (): RetroQuestion => ({ text: '', problem: '', similar: false });
 const inputTime = (at: number) => localStamp(at).replace(' ', 'T');
 
@@ -379,7 +378,7 @@ async function putRetro(target: string, body: string) {
 /**
  * A card's private interview retros (user notes retro:<card id>/<base36 time>): the form for a new
  * or chosen round and the earlier rounds. Saving marks the linked site problems to redo, so they
- * come up first in the review session; the themes feed the story bank's "no story yet" list.
+ * come up first in the review session.
  */
 export function RetroPanel({
   a,
@@ -410,12 +409,8 @@ export function RetroPanel({
     score: '',
     questions: [blankQuestion()],
     stuck: '',
-    themes: [],
   });
   const [draft, setDraft] = useState(fresh);
-  const isLp = (id: string) => COMPETENCIES.find((c) => c.id === id)?.lp;
-  // Its own state: tied to the picked themes it would snap shut (and hide the focused box) on unchecking the last one.
-  const [lpOpen, setLpOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ text: string; review: boolean } | null>(null);
   const [error, setError] = useState('');
@@ -427,7 +422,6 @@ export function RetroPanel({
     set({ questions: draft.questions.map((q, j) => (j === k ? { ...q, ...patch } : q)) });
   const edit = (next: Draft) => {
     setDraft(next);
-    if (next.themes.some(isLp)) setLpOpen(true);
     setNote(null);
     setError('');
     formRef.current?.querySelector('select')?.focus();
@@ -446,7 +440,6 @@ export function RetroPanel({
           .map((q) => ({ text: q.text.trim(), problem: q.problem.trim().toLowerCase(), similar: q.similar }))
           .filter((q) => q.text || q.problem),
         stuck: draft.stuck.trim(),
-        themes: draft.themes,
       }),
     );
     if (!retro) return setError(t('请选好时间和自评，题号写成 lc-146 或 oa-… 这样的格式。', 'Pick the time and a rating, and write problem ids like lc-146 or oa-….'));
@@ -489,20 +482,6 @@ export function RetroPanel({
     }
   }
 
-  const theme = (c: (typeof COMPETENCIES)[number]) => {
-    const on = draft.themes.includes(c.id);
-    return (
-      <label key={c.id} className="visa-check">
-        <input
-          type="checkbox"
-          checked={on}
-          disabled={!on && draft.themes.length >= 8}
-          onChange={() => set({ themes: on ? draft.themes.filter((x) => x !== c.id) : [...draft.themes, c.id] })}
-        />
-        {c.name[i]}
-      </label>
-    );
-  };
   return (
     <form ref={formRef} className="resume-form visa-form tracker-retro" onSubmit={save} aria-labelledby="tracker-retro-h">
       <fieldset>
@@ -595,17 +574,6 @@ export function RetroPanel({
           {t('卡在哪里', 'Where you got stuck')} <small>{draft.stuck.length}/600</small>
           <textarea rows={3} maxLength={600} value={draft.stuck} onChange={(e) => set({ stuck: e.target.value })} />
         </label>
-        <fieldset className="tracker-notes tracker-retro-themes">
-          <legend>
-            {t('行为面问到的主题', 'Behavioral themes asked')}{' '}
-            <small>{t('最多 8 个；还没有故事的，故事库会提醒你补上', 'up to 8; the story bank lists the ones you have no story for')}</small>
-          </legend>
-          <div>{COMPETENCIES.filter((c) => !c.lp).map(theme)}</div>
-          <details open={lpOpen} onToggle={(e) => setLpOpen(e.currentTarget.open)}>
-            <summary>Amazon Leadership Principles</summary>
-            <div>{COMPETENCIES.filter((c) => c.lp).map(theme)}</div>
-          </details>
-        </fieldset>
       </fieldset>
       <div className="resume-actions">
         <button type="submit" disabled={busy}>
@@ -658,7 +626,6 @@ export function RetroPanel({
                           score: String(r.score),
                           questions: r.questions.length ? r.questions : [blankQuestion()],
                           stuck: r.stuck,
-                          themes: r.themes,
                         })
                       }
                     >
