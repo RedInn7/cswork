@@ -70,6 +70,8 @@ jobs:
       - run: node --import tsx --test tests/topic-why.test.ts tests/topic-page.test.ts
       # Resume projects (content/projects) and the role paths on /roadmap.
       - run: node --import tsx --test tests/role-paths.test.ts tests/resume-projects.test.ts tests/projects-ui.test.mjs
+      # The CS fundamentals track on /roadmap (lib/cs-track.ts).
+      - run: node --import tsx --test tests/cs-track.test.ts
       - run: node --import tsx --test tests/route-schedule.test.ts
       - run: node --import tsx --test tests/oj-deep-recursion.test.ts tests/auth-route.test.ts tests/problem-sequence.test.ts tests/health.test.ts tests/metrics-funnel.test.ts tests/bootstrap-catalogue.test.ts
       - run: node --import tsx --test tests/lazy-load-failed-ui.test.mjs tests/owner-metrics-ui.test.mjs
