@@ -117,7 +117,8 @@ void test('the owner makes a link; the token is stored as its hash; the snapshot
   assert.equal((await call(null, 'POST', 'resume-reviews', { resume: RESUME })).status, 401);
   assert.equal((await call(ada, 'POST', 'resume-reviews', { resume: blankResume() })).status, 400, 'nothing to comment on');
   assert.equal((await call(ada, 'POST', 'resume-reviews', { resume: RESUME, note: 'x'.repeat(501) })).status, 400);
-  const made = await call(ada, 'POST', 'resume-reviews', { resume: RESUME, version: 'Backend', note: 'Too long?' });
+  const cert = 'Algorithms, CSWork certificate, Sep 2026 (cswork.org/certificate/c-ada) (cswork.org/u/ada_l)';
+  const made = await call(ada, 'POST', 'resume-reviews', { resume: { ...RESUME, awards: cert }, version: 'Backend', note: 'Too long?' });
   assert.equal(made.status, 200);
   const { id, token } = made.data!;
   assert.match(token, /^[A-Za-z0-9_-]{32}$/);
@@ -125,7 +126,8 @@ void test('the owner makes a link; the token is stored as its hash; the snapshot
   assert.equal(row.token_hash, createHash('sha256').update(token).digest('hex'));
   assert.ok(!JSON.stringify(row).includes(token), 'the token itself is never stored');
   assert.equal(row.version, 'Backend');
-  for (const leak of ['Ada Lovelace', 'ada@example.test', '555 0100', 'London', 'github.com/ada']) assert.ok(!row.snapshot.includes(leak), leak);
+  for (const leak of ['Ada Lovelace', 'ada@example.test', '555 0100', 'London', 'github.com/ada', 'cswork.org/']) assert.ok(!row.snapshot.includes(leak), leak);
+  assert.ok(row.snapshot.includes('"awards":"Algorithms, CSWork certificate, Sep 2026"'), 'the award line stays, its name-revealing link goes');
   assert.ok(row.snapshot.includes('Built a parser'));
 
   const listed = (await call(ada, 'GET', 'resume-reviews')).data!.items;

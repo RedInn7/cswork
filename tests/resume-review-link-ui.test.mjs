@@ -193,7 +193,15 @@ test('the builder box sends a snapshot without contact lines, shows the link onc
       return Response.json({ items: made.length ? [{ id: 'r1', note: 'Backend roles', version: 'Backend', createdAt: Date.UTC(2026, 9, 15, 12), comments: 3, pending: 1 }] : [] });
     throw new Error(`unexpected ${u}`);
   };
-  const mine = { ...resume('- Built a parser'), name: 'Ada Lovelace', email: 'ada@example.test', phone: '555', location: 'London', links: 'github.com/ada' };
+  const mine = {
+    ...resume('- Built a parser'),
+    name: 'Ada Lovelace',
+    email: 'ada@example.test',
+    phone: '555',
+    location: 'London',
+    links: 'github.com/ada',
+    awards: 'Algorithms, CSWork certificate, Sep 2026 (cswork.org/certificate/c-ada)',
+  };
   const unmount = await render(createElement(ResumeReviewLink, { resume: mine, version: 'Backend' }));
   const details = document.querySelector('details');
   assert.equal(details.querySelector('summary').textContent, 'Ask someone to review it');
@@ -208,6 +216,7 @@ test('the builder box sends a snapshot without contact lines, shows the link onc
   assert.equal(made.length, 1);
   assert.deepEqual([made[0].version, made[0].note, made[0].resume.experience[0].bullets], ['Backend', 'Backend roles', '- Built a parser']);
   for (const key of ['name', 'email', 'phone', 'location', 'links']) assert.equal(made[0].resume[key], '', key);
+  assert.equal(made[0].resume.awards, 'Algorithms, CSWork certificate, Sep 2026', 'a certificate link would show the name');
   const link = `https://cswork.test/career/resume/review/${'T'.repeat(32)}`;
   assert.equal(details.querySelector('.cr-made input').value, link);
   assert.equal(copied, link);

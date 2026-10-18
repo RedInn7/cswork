@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { lineAt, lines, normalizeResume, type Resume } from '@/lib/resume-shape';
+import { lineAt, lines, normalizeResume, reviewSnapshot, type Resume } from '@/lib/resume-shape';
 import type { Person } from './auth';
 import { GONE, hashToken, ID, TOKEN } from './code-reviews';
 import { HttpError, json, limit, limitReader } from './http';
@@ -132,7 +132,7 @@ export async function handleResumeReviews(request: Request, p: Person, path: str
     await limit(p, 'resume-reviews-write', 20);
     const d = created.parse(await readJson(request, 40_000));
     // The snapshot keeps the resume's content, never who it is or how to reach them.
-    const snapshot = { ...normalizeResume(d.resume), name: '', email: '', phone: '', location: '', links: '' };
+    const snapshot = reviewSnapshot(normalizeResume(d.resume));
     if (!lineCount(snapshot)) throw new HttpError(400, '简历里还没有可以批注的要点');
     const id = randomUUID();
     const token = randomBytes(24).toString('base64url');

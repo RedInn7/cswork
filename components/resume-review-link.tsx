@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { Copy, MessageSquareText } from 'lucide-react';
 import { useLocale, useT } from '@/lib/i18n';
 import { ojRequest } from '@/lib/oj-client';
-import { applyRewrite, lineAt, lines, normalizeResume, type ListKey, type Resume } from '@/lib/resume-shape';
+import { applyRewrite, lineAt, lines, normalizeResume, reviewSnapshot, type ListKey, type Resume } from '@/lib/resume-shape';
 
 /**
  * Private resume review links (lib/server/resume-reviews.ts): ResumeReviewLink sits under the
@@ -76,7 +76,7 @@ export function ResumeReviewLink({ resume, version }: { resume: Resume; version:
     setStatus('');
     try {
       // The server drops these too; they never need to leave the browser.
-      const snapshot = { ...resume, name: '', email: '', phone: '', location: '', links: '' };
+      const snapshot = reviewSnapshot(resume);
       const { token } = await ojRequest<{ id: string; token: string }>('resume-reviews', { resume: snapshot, version, note });
       const link = `${location.origin}/career/resume/review/${token}`;
       setUrl(link);

@@ -73,6 +73,16 @@ export function normalizeResume(raw: unknown): Resume {
   };
 }
 
+/**
+ * What a resume review link stores (lib/server/resume-reviews.ts, components/resume-review-link.tsx):
+ * no name or contact lines, and no CSWork certificate or profile link (mergeFacts writes those into
+ * awards; the page they open shows the owner's name). Lines stay put, so comment paths line up.
+ */
+export const reviewSnapshot = (r: Resume): Resume => {
+  const strip = (value: string) => value.replace(/\s*\(cswork\.org\/(?:certificate|u)\/[^)\s]+\)/g, '');
+  return { ...r, name: '', email: '', phone: '', location: '', links: '', skills: strip(r.skills), awards: strip(r.awards) };
+};
+
 /** A text field's lines without their bullet marks; blank lines dropped. */
 export const lines = (value: string) =>
   value
