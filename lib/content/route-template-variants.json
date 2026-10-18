@@ -2340,5 +2340,185 @@
     }
    }
   ]
+ },
+ "dp-stock": {
+  "variants": [
+   {
+    "id": "k-transactions",
+    "pattern": {
+     "zh": "最多 k 笔交易：buy[j] / sell[j] 两组状态",
+     "en": "At most k trades: buy[j] and sell[j] states"
+    },
+    "when": {
+     "zh": "交易次数有上限（最多 2 笔、最多 k 笔）时，状态按「第几笔」展开：buy[j] 是第 j 笔买入后手上的最好余额，sell[j] 是做完 j 笔后的最好余额，每天按 j 从小到大更新一遍。LC 188 买卖股票的最佳时机 IV，LC 123 是 k = 2。",
+     "en": "When the number of trades is capped (at most 2, at most k), unfold the state by trade number: buy[j] is the best balance after buying in trade j and sell[j] after completing j trades, updated for each j every day. LC 188 (Best Time to Buy and Sell Stock IV); LC 123 is k = 2."
+    },
+    "complexity": {
+     "zh": "时间 O(n × k) · 空间 O(k)",
+     "en": "O(n × k) time · O(k) space"
+    },
+    "code": {
+     "python": "def max_profit_k(k: int, prices: list[int]) -> int:\n    \"\"\"Best profit with at most k buy-sell pairs, holding one share at a time (LC 188).\"\"\"\n    buy = [float(\"-inf\")] * (k + 1)  # buy[j]: best balance while holding in trade j\n    sell = [0] * (k + 1)  # sell[j]: best balance after completing j trades\n    for p in prices:\n        for j in range(1, k + 1):\n            buy[j] = max(buy[j], sell[j - 1] - p)  # buy today, opening trade j\n            sell[j] = max(sell[j], buy[j] + p)  # sell today, closing trade j\n    return sell[k]",
+     "cpp": "// Best profit with at most k buy-sell pairs, holding one share at a time (LC 188).\nint maxProfitK(int k, const vector<int>& prices) {\n    vector<int> buy(k + 1, INT_MIN / 2), sell(k + 1, 0);  // holding in trade j / after completing j trades\n    for (int p : prices)\n        for (int j = 1; j <= k; j++) {\n            buy[j] = max(buy[j], sell[j - 1] - p);  // buy today, opening trade j\n            sell[j] = max(sell[j], buy[j] + p);  // sell today, closing trade j\n        }\n    return sell[k];\n}",
+     "java": "class Solution {\n    // Best profit with at most k buy-sell pairs, holding one share at a time (LC 188).\n    int maxProfitK(int k, int[] prices) {\n        int[] buy = new int[k + 1], sell = new int[k + 1]; // holding in trade j / after completing j trades\n        Arrays.fill(buy, Integer.MIN_VALUE / 2);\n        for (int p : prices)\n            for (int j = 1; j <= k; j++) {\n                buy[j] = Math.max(buy[j], sell[j - 1] - p); // buy today, opening trade j\n                sell[j] = Math.max(sell[j], buy[j] + p); // sell today, closing trade j\n            }\n        return sell[k];\n    }\n}",
+     "go": "// maxProfitK returns the best profit with at most k buy-sell pairs, one share at a time (LC 188).\nfunc maxProfitK(k int, prices []int) int {\n\tbuy, sell := make([]int, k+1), make([]int, k+1) // holding in trade j / after completing j trades\n\tfor j := range buy {\n\t\tbuy[j] = -1 << 60\n\t}\n\tfor _, p := range prices {\n\t\tfor j := 1; j <= k; j++ {\n\t\t\tbuy[j] = max(buy[j], sell[j-1]-p) // buy today, opening trade j\n\t\t\tsell[j] = max(sell[j], buy[j]+p)  // sell today, closing trade j\n\t\t}\n\t}\n\treturn sell[k]\n}"
+    },
+    "driver": {
+     "python": "for k, prices in ((2, [2, 4, 1]), (2, [3, 2, 6, 5, 0, 3]), (1, [7, 1, 5, 3, 6, 4]), (0, [1, 3]), (2, [3, 3, 5, 0, 0, 3, 1, 4])):\n    print(max_profit_k(k, prices))",
+     "cpp": "vector<pair<int, vector<int>>> cases{{2, {2, 4, 1}}, {2, {3, 2, 6, 5, 0, 3}}, {1, {7, 1, 5, 3, 6, 4}}, {0, {1, 3}}, {2, {3, 3, 5, 0, 0, 3, 1, 4}}};\nfor (auto& [k, prices] : cases) cout << maxProfitK(k, prices) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[] ks = {2, 2, 1, 0, 2};\nint[][] prices = {{2, 4, 1}, {3, 2, 6, 5, 0, 3}, {7, 1, 5, 3, 6, 4}, {1, 3}, {3, 3, 5, 0, 0, 3, 1, 4}};\nfor (int i = 0; i < ks.length; i++) show(s.maxProfitK(ks[i], prices[i]));",
+     "go": "ks := []int{2, 2, 1, 0, 2}\nprices := [][]int{{2, 4, 1}, {3, 2, 6, 5, 0, 3}, {7, 1, 5, 3, 6, 4}, {1, 3}, {3, 3, 5, 0, 0, 3, 1, 4}}\nfor i := range ks {\n    fmt.Println(maxProfitK(ks[i], prices[i]))\n}",
+     "expected": "2\n7\n5\n0\n6"
+    }
+   },
+   {
+    "id": "fee-two-states",
+    "pattern": {
+     "zh": "手续费：持有 / 空仓两个状态",
+     "en": "Transaction fee: holding and empty states"
+    },
+    "when": {
+     "zh": "不限次数、只是每笔多一个手续费（或者每次卖出后什么限制都没有）时，两个状态就够：hold 是手上有股票的最好余额，free 是空仓的最好余额；卖出时扣掉手续费。LC 714 买卖股票的最佳时机含手续费；LC 122 是手续费为 0。",
+     "en": "With unlimited trades and only a fee per trade (or no restriction at all after selling), two states are enough: hold is the best balance with a share in hand, free with none, and selling pays the fee. LC 714 (Best Time to Buy and Sell Stock with Transaction Fee); LC 122 is a fee of 0."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def max_profit_fee(prices: list[int], fee: int) -> int:\n    \"\"\"Unlimited trades, each sale paying fee (LC 714).\"\"\"\n    hold, free = -prices[0], 0  # best balance holding a share / holding none\n    for p in prices[1:]:\n        hold, free = max(hold, free - p), max(free, hold + p - fee)  # both from yesterday's values\n    return free",
+     "cpp": "// Unlimited trades, each sale paying fee (LC 714).\nint maxProfitFee(const vector<int>& prices, int fee) {\n    int hold = -prices[0], free = 0;  // best balance holding a share / holding none\n    for (size_t i = 1; i < prices.size(); i++) {\n        int p = prices[i], held = hold;  // both updates read yesterday's values\n        hold = max(hold, free - p);\n        free = max(free, held + p - fee);\n    }\n    return free;\n}",
+     "java": "class Solution {\n    // Unlimited trades, each sale paying fee (LC 714).\n    int maxProfitFee(int[] prices, int fee) {\n        int hold = -prices[0], free = 0; // best balance holding a share / holding none\n        for (int i = 1; i < prices.length; i++) {\n            int p = prices[i], held = hold; // both updates read yesterday's values\n            hold = Math.max(hold, free - p);\n            free = Math.max(free, held + p - fee);\n        }\n        return free;\n    }\n}",
+     "go": "// maxProfitFee returns the best profit with unlimited trades, each sale paying fee (LC 714).\nfunc maxProfitFee(prices []int, fee int) int {\n\thold, free := -prices[0], 0 // best balance holding a share / holding none\n\tfor _, p := range prices[1:] {\n\t\thold, free = max(hold, free-p), max(free, hold+p-fee) // both from yesterday's values\n\t}\n\treturn free\n}"
+    },
+    "driver": {
+     "python": "for prices, fee in (([1, 3, 2, 8, 4, 9], 2), ([1, 3, 7, 5, 10, 3], 3), ([5], 1), ([1, 2, 3, 4, 5], 0)):\n    print(max_profit_fee(prices, fee))",
+     "cpp": "vector<pair<vector<int>, int>> cases{{{1, 3, 2, 8, 4, 9}, 2}, {{1, 3, 7, 5, 10, 3}, 3}, {{5}, 1}, {{1, 2, 3, 4, 5}, 0}};\nfor (auto& [prices, fee] : cases) cout << maxProfitFee(prices, fee) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][] prices = {{1, 3, 2, 8, 4, 9}, {1, 3, 7, 5, 10, 3}, {5}, {1, 2, 3, 4, 5}};\nint[] fees = {2, 3, 1, 0};\nfor (int i = 0; i < fees.length; i++) show(s.maxProfitFee(prices[i], fees[i]));",
+     "go": "prices := [][]int{{1, 3, 2, 8, 4, 9}, {1, 3, 7, 5, 10, 3}, {5}, {1, 2, 3, 4, 5}}\nfees := []int{2, 3, 1, 0}\nfor i := range fees {\n    fmt.Println(maxProfitFee(prices[i], fees[i]))\n}",
+     "expected": "8\n6\n0\n4"
+    }
+   }
+  ]
+ },
+ "dp-scheduling": {
+  "variants": [
+   {
+    "id": "calendar-dp",
+    "pattern": {
+     "zh": "按天 DP：通行证覆盖到今天",
+     "en": "Day-indexed DP: a pass covering up to today"
+    },
+    "when": {
+     "zh": "时间轴不长、按天决策（买 1/7/30 天的票、按天排课）时，dp[d] 就是「到第 d 天为止的最优」：今天不出门就沿用昨天；出门就枚举最后买的那张票覆盖到今天，从票生效前一天转移过来。LC 983 最低票价；天数很大时改成只在出行日之间跳，用二分找生效日。",
+     "en": "When the timeline is short and decisions are per day (1-, 7- or 30-day passes, day-by-day plans), dp[d] is the best up to day d: a day without travel copies yesterday, and a travel day tries each pass as the last one bought, covering today, coming from the day before it starts. LC 983 (Minimum Cost For Tickets); with a huge day range, jump between travel days and binary search the start."
+    },
+    "complexity": {
+     "zh": "时间 O(最后一天) · 空间 O(最后一天)",
+     "en": "O(last day) time · O(last day) space"
+    },
+    "code": {
+     "python": "def min_ticket_cost(days: list[int], costs: list[int]) -> int:\n    \"\"\"Cheapest 1-, 7- and 30-day passes (prices costs) covering every travel day (LC 983).\"\"\"\n    travel = set(days)\n    last = days[-1]\n    dp = [0] * (last + 1)  # dp[d]: cheapest cover of every travel day up to day d\n    for d in range(1, last + 1):\n        if d not in travel:\n            dp[d] = dp[d - 1]  # nothing to cover today\n            continue\n        dp[d] = min(\n            dp[d - 1] + costs[0],\n            dp[max(0, d - 7)] + costs[1],  # a 7-day pass ending today covers d-6..d\n            dp[max(0, d - 30)] + costs[2],\n        )\n    return dp[last]",
+     "cpp": "// Cheapest 1-, 7- and 30-day passes (prices costs) covering every travel day (LC 983).\nint minTicketCost(const vector<int>& days, const vector<int>& costs) {\n    int last = days.back();\n    vector<bool> travel(last + 1, false);\n    for (int d : days) travel[d] = true;\n    vector<int> dp(last + 1, 0);  // dp[d]: cheapest cover of every travel day up to day d\n    for (int d = 1; d <= last; d++) {\n        if (!travel[d]) {\n            dp[d] = dp[d - 1];  // nothing to cover today\n            continue;\n        }\n        dp[d] = min({dp[d - 1] + costs[0],\n                     dp[max(0, d - 7)] + costs[1],  // a 7-day pass ending today covers d-6..d\n                     dp[max(0, d - 30)] + costs[2]});\n    }\n    return dp[last];\n}",
+     "java": "class Solution {\n    // Cheapest 1-, 7- and 30-day passes (prices costs) covering every travel day (LC 983).\n    int minTicketCost(int[] days, int[] costs) {\n        int last = days[days.length - 1];\n        boolean[] travel = new boolean[last + 1];\n        for (int d : days) travel[d] = true;\n        int[] dp = new int[last + 1]; // dp[d]: cheapest cover of every travel day up to day d\n        for (int d = 1; d <= last; d++) {\n            if (!travel[d]) {\n                dp[d] = dp[d - 1]; // nothing to cover today\n                continue;\n            }\n            dp[d] = Math.min(dp[d - 1] + costs[0],\n                    Math.min(dp[Math.max(0, d - 7)] + costs[1], // a 7-day pass ending today covers d-6..d\n                            dp[Math.max(0, d - 30)] + costs[2]));\n        }\n        return dp[last];\n    }\n}",
+     "go": "// minTicketCost returns the cheapest 1-, 7- and 30-day passes covering every travel day (LC 983).\nfunc minTicketCost(days, costs []int) int {\n\tlast := days[len(days)-1]\n\ttravel := make([]bool, last+1)\n\tfor _, d := range days {\n\t\ttravel[d] = true\n\t}\n\tdp := make([]int, last+1) // dp[d]: cheapest cover of every travel day up to day d\n\tfor d := 1; d <= last; d++ {\n\t\tif !travel[d] {\n\t\t\tdp[d] = dp[d-1] // nothing to cover today\n\t\t\tcontinue\n\t\t}\n\t\tdp[d] = min(dp[d-1]+costs[0],\n\t\t\tdp[max(0, d-7)]+costs[1], // a 7-day pass ending today covers d-6..d\n\t\t\tdp[max(0, d-30)]+costs[2])\n\t}\n\treturn dp[last]\n}"
+    },
+    "driver": {
+     "python": "print(min_ticket_cost([1, 4, 6, 7, 8, 20], [2, 7, 15]))\nprint(min_ticket_cost([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31], [2, 7, 15]))\nprint(min_ticket_cost([5], [3, 1, 1]))",
+     "cpp": "cout << minTicketCost({1, 4, 6, 7, 8, 20}, {2, 7, 15}) << \"\\n\";\ncout << minTicketCost({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31}, {2, 7, 15}) << \"\\n\";\ncout << minTicketCost({5}, {3, 1, 1}) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.minTicketCost(new int[] {1, 4, 6, 7, 8, 20}, new int[] {2, 7, 15}));\nshow(s.minTicketCost(new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31}, new int[] {2, 7, 15}));\nshow(s.minTicketCost(new int[] {5}, new int[] {3, 1, 1}));",
+     "go": "fmt.Println(minTicketCost([]int{1, 4, 6, 7, 8, 20}, []int{2, 7, 15}))\nfmt.Println(minTicketCost([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31}, []int{2, 7, 15}))\nfmt.Println(minTicketCost([]int{5}, []int{3, 1, 1}))",
+     "expected": "11\n17\n1"
+    }
+   },
+   {
+    "id": "backward-skip",
+    "pattern": {
+     "zh": "从后往前：做这一题就跳过后面几题",
+     "en": "Backwards: solving one skips the next few"
+    },
+    "when": {
+     "zh": "选了第 i 项就要跳过后面若干项（做题耗脑力、任务有冷却）时，从后往前算 dp[i] =「从 i 开始的最好结果」：不选就是 dp[i + 1]，选就是收益加上跳过之后的 dp。倒着推让「跳到哪里」直接是下标。LC 2140 解决智力问题。",
+     "en": "When taking item i forces you to skip the next few (questions that drain brainpower, tasks with cooldowns), compute dp[i], the best from i onwards, back to front: skipping gives dp[i + 1], taking gives the gain plus dp after the skip. Going backwards makes \"where to land\" a plain index. LC 2140 (Solving Questions With Brainpower)."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "def most_points(questions: list[list[int]]) -> int:\n    \"\"\"questions[i] = [points, brainpower]; solving i skips the next brainpower ones (LC 2140).\"\"\"\n    n = len(questions)\n    dp = [0] * (n + 1)  # dp[i]: best from question i on, filled back to front\n    for i in range(n - 1, -1, -1):\n        points, skip = questions[i]\n        dp[i] = max(dp[i + 1], points + dp[min(n, i + skip + 1)])  # pass on i, or solve it and jump\n    return dp[0]",
+     "cpp": "// questions[i] = {points, brainpower}; solving i skips the next brainpower ones (LC 2140).\nlong long mostPoints(const vector<pair<int, int>>& questions) {\n    int n = questions.size();\n    vector<long long> dp(n + 1, 0);  // dp[i]: best from question i on, filled back to front\n    for (int i = n - 1; i >= 0; i--) {\n        auto [points, skip] = questions[i];\n        dp[i] = max(dp[i + 1], points + dp[min(n, i + skip + 1)]);  // pass on i, or solve it and jump\n    }\n    return dp[0];\n}",
+     "java": "class Solution {\n    // questions[i] = {points, brainpower}; solving i skips the next brainpower ones (LC 2140).\n    long mostPoints(int[][] questions) {\n        int n = questions.length;\n        long[] dp = new long[n + 1]; // dp[i]: best from question i on, filled back to front\n        for (int i = n - 1; i >= 0; i--)\n            dp[i] = Math.max(dp[i + 1], questions[i][0] + dp[Math.min(n, i + questions[i][1] + 1)]); // pass on i, or solve it and jump\n        return dp[0];\n    }\n}",
+     "go": "// mostPoints: questions[i] = {points, brainpower}; solving i skips the next brainpower ones (LC 2140).\nfunc mostPoints(questions [][2]int) int {\n\tn := len(questions)\n\tdp := make([]int, n+1) // dp[i]: best from question i on, filled back to front\n\tfor i := n - 1; i >= 0; i-- {\n\t\tpoints, skip := questions[i][0], questions[i][1]\n\t\tdp[i] = max(dp[i+1], points+dp[min(n, i+skip+1)]) // pass on i, or solve it and jump\n\t}\n\treturn dp[0]\n}"
+    },
+    "driver": {
+     "python": "print(most_points([[3, 2], [4, 3], [4, 4], [2, 5]]))\nprint(most_points([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]]))\nprint(most_points([[21, 5], [92, 3], [74, 2], [39, 4], [58, 2], [5, 5], [49, 4], [65, 3]]))",
+     "cpp": "cout << mostPoints({{3, 2}, {4, 3}, {4, 4}, {2, 5}}) << \"\\n\";\ncout << mostPoints({{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}}) << \"\\n\";\ncout << mostPoints({{21, 5}, {92, 3}, {74, 2}, {39, 4}, {58, 2}, {5, 5}, {49, 4}, {65, 3}}) << \"\\n\";",
+     "java": "Solution s = new Solution();\nshow(s.mostPoints(new int[][] {{3, 2}, {4, 3}, {4, 4}, {2, 5}}));\nshow(s.mostPoints(new int[][] {{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}}));\nshow(s.mostPoints(new int[][] {{21, 5}, {92, 3}, {74, 2}, {39, 4}, {58, 2}, {5, 5}, {49, 4}, {65, 3}}));",
+     "go": "fmt.Println(mostPoints([][2]int{{3, 2}, {4, 3}, {4, 4}, {2, 5}}))\nfmt.Println(mostPoints([][2]int{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}}))\nfmt.Println(mostPoints([][2]int{{21, 5}, {92, 3}, {74, 2}, {39, 4}, {58, 2}, {5, 5}, {49, 4}, {65, 3}}))",
+     "expected": "5\n7\n157"
+    }
+   }
+  ]
+ },
+ "dp-search-game": {
+  "variants": [
+   {
+    "id": "score-difference",
+    "pattern": {
+     "zh": "博弈区间 DP：存「先手比后手多几分」",
+     "en": "Game interval DP: store \"mover minus opponent\""
+    },
+    "when": {
+     "zh": "两人轮流从两端拿、都走最优（预测赢家、石子游戏）：dp[i][j] 存当前要走的人在 nums[i..j] 上能比对手多拿多少，拿走一端后对手面对剩下的区间，所以是 nums[i] − dp[i+1][j] 和 nums[j] − dp[i][j−1] 取大。只差一维，可以压成一行。LC 486 预测赢家、LC 877 石子游戏。",
+     "en": "For two players taking from either end in turn, both playing well (Predict the Winner, Stone Game): dp[i][j] stores how much more the player to move can get than the opponent on nums[i..j]. After taking an end, the opponent faces the rest, so it is the larger of nums[i] − dp[i+1][j] and nums[j] − dp[i][j−1], and one row is enough. LC 486 (Predict the Winner), LC 877 (Stone Game)."
+    },
+    "complexity": {
+     "zh": "时间 O(n²) · 空间 O(n)",
+     "en": "O(n²) time · O(n) space"
+    },
+    "code": {
+     "python": "def first_player_wins(nums: list[int]) -> bool:\n    \"\"\"Players take from either end in turn; does the first end with at least as much? (LC 486)\"\"\"\n    n = len(nums)\n    dp = nums[:]  # dp[j] for the current i: best (mover - opponent) on nums[i..j]; i == j: take it\n    for i in range(n - 2, -1, -1):\n        for j in range(i + 1, n):\n            dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1])  # take the left end, or the right\n    return dp[n - 1] >= 0",
+     "cpp": "// Players take from either end in turn; does the first end with at least as much? (LC 486)\nbool firstPlayerWins(const vector<int>& nums) {\n    int n = nums.size();\n    vector<int> dp = nums;  // dp[j] for the current i: best (mover - opponent) on nums[i..j]; i == j: take it\n    for (int i = n - 2; i >= 0; i--)\n        for (int j = i + 1; j < n; j++)\n            dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1]);  // take the left end, or the right\n    return dp[n - 1] >= 0;\n}",
+     "java": "class Solution {\n    // Players take from either end in turn; does the first end with at least as much? (LC 486)\n    boolean firstPlayerWins(int[] nums) {\n        int n = nums.length;\n        int[] dp = nums.clone(); // dp[j] for the current i: best (mover - opponent) on nums[i..j]; i == j: take it\n        for (int i = n - 2; i >= 0; i--)\n            for (int j = i + 1; j < n; j++)\n                dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]); // take the left end, or the right\n        return dp[n - 1] >= 0;\n    }\n}",
+     "go": "// firstPlayerWins: players take from either end in turn; does the first end with at least as much? (LC 486)\nfunc firstPlayerWins(nums []int) bool {\n\tn := len(nums)\n\tdp := append([]int(nil), nums...) // dp[j] for the current i: best (mover - opponent) on nums[i..j]\n\tfor i := n - 2; i >= 0; i-- {\n\t\tfor j := i + 1; j < n; j++ {\n\t\t\tdp[j] = max(nums[i]-dp[j], nums[j]-dp[j-1]) // take the left end, or the right\n\t\t}\n\t}\n\treturn dp[n-1] >= 0\n}"
+    },
+    "driver": {
+     "python": "for nums in ([1, 5, 2], [1, 5, 233, 7], [7], [2, 4, 55, 6, 8], [1, 1]):\n    print(str(first_player_wins(nums)).lower())",
+     "cpp": "for (auto& nums : vector<vector<int>>{{1, 5, 2}, {1, 5, 233, 7}, {7}, {2, 4, 55, 6, 8}, {1, 1}}) cout << boolalpha << firstPlayerWins(nums) << \"\\n\";",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, 5, 2}, {1, 5, 233, 7}, {7}, {2, 4, 55, 6, 8}, {1, 1}}) show(s.firstPlayerWins(nums));",
+     "go": "for _, nums := range [][]int{{1, 5, 2}, {1, 5, 233, 7}, {7}, {2, 4, 55, 6, 8}, {1, 1}} {\n    fmt.Println(firstPlayerWins(nums))\n}",
+     "expected": "false\ntrue\ntrue\nfalse\ntrue"
+    }
+   },
+   {
+    "id": "deque-optimized-dp",
+    "pattern": {
+     "zh": "单调队列优化 DP：窗口里的最大 dp",
+     "en": "Monotonic-deque DP: the best dp in a window"
+    },
+    "when": {
+     "zh": "转移是「从前面 k 个位置里挑 dp 最大的」（每次最多跳 k 步、带长度限制的子序列和）时，每步扫 k 个是 O(nk)；用单调队列维护窗口内的最大 dp，降到 O(n)。LC 1696 跳跃游戏 VI；LC 1425 带限制的子序列和、LC 862 是同一个队列。",
+     "en": "When each transition takes the best dp among the previous k positions (jumps of at most k steps, constrained subsequence sums), scanning k each time is O(nk); a monotonic deque holding the window's best dp brings it to O(n). LC 1696 (Jump Game VI); LC 1425 (Constrained Subsequence Sum) and LC 862 use the same deque."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "from collections import deque\n\n\ndef max_jump_score(nums: list[int], k: int) -> int:\n    \"\"\"From index 0 to n - 1 in jumps of 1..k steps: the best sum of the values landed on (LC 1696).\"\"\"\n    n = len(nums)\n    dp = [0] * n  # dp[i]: best score landing on i\n    dp[0] = nums[0]\n    dq = deque([0])  # indexes in the last k, dp decreasing: the front is the best place to jump from\n    for i in range(1, n):\n        if dq[0] < i - k:\n            dq.popleft()  # too far back to reach i\n        dp[i] = dp[dq[0]] + nums[i]\n        while dq and dp[dq[-1]] <= dp[i]:\n            dq.pop()  # i is closer and no worse: they will never be the best again\n        dq.append(i)\n    return dp[-1]",
+     "cpp": "// From index 0 to n - 1 in jumps of 1..k steps: the best sum of the values landed on (LC 1696).\nlong long maxJumpScore(const vector<int>& nums, int k) {\n    int n = nums.size();\n    vector<long long> dp(n);  // dp[i]: best score landing on i\n    dp[0] = nums[0];\n    deque<int> dq{0};  // indexes in the last k, dp decreasing: the front is the best place to jump from\n    for (int i = 1; i < n; i++) {\n        if (dq.front() < i - k) dq.pop_front();  // too far back to reach i\n        dp[i] = dp[dq.front()] + nums[i];\n        while (!dq.empty() && dp[dq.back()] <= dp[i]) dq.pop_back();  // i is closer and no worse\n        dq.push_back(i);\n    }\n    return dp[n - 1];\n}",
+     "java": "class Solution {\n    // From index 0 to n - 1 in jumps of 1..k steps: the best sum of the values landed on (LC 1696).\n    long maxJumpScore(int[] nums, int k) {\n        int n = nums.length;\n        long[] dp = new long[n]; // dp[i]: best score landing on i\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>(List.of(0)); // indexes in the last k, dp decreasing\n        for (int i = 1; i < n; i++) {\n            if (dq.peekFirst() < i - k) dq.pollFirst(); // too far back to reach i\n            dp[i] = dp[dq.peekFirst()] + nums[i];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast(); // i is closer and no worse\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+     "go": "// maxJumpScore: from index 0 to n - 1 in jumps of 1..k steps, the best sum of the values landed on (LC 1696).\nfunc maxJumpScore(nums []int, k int) int {\n\tn := len(nums)\n\tdp := make([]int, n) // dp[i]: best score landing on i\n\tdp[0] = nums[0]\n\tdq := []int{0} // indexes in the last k, dp decreasing: the front is the best place to jump from\n\tfor i := 1; i < n; i++ {\n\t\tif dq[0] < i-k {\n\t\t\tdq = dq[1:] // too far back to reach i\n\t\t}\n\t\tdp[i] = dp[dq[0]] + nums[i]\n\t\tfor len(dq) > 0 && dp[dq[len(dq)-1]] <= dp[i] {\n\t\t\tdq = dq[:len(dq)-1] // i is closer and no worse\n\t\t}\n\t\tdq = append(dq, i)\n\t}\n\treturn dp[n-1]\n}"
+    },
+    "driver": {
+     "python": "for nums, k in (([1, -1, -2, 4, -7, 3], 2), ([10, -5, -2, 4, 0, 3], 3), ([1, -5, -20, 4, -1, 3, -6, -3], 2), ([5], 1)):\n    print(max_jump_score(nums, k))",
+     "cpp": "vector<pair<vector<int>, int>> cases{{{1, -1, -2, 4, -7, 3}, 2}, {{10, -5, -2, 4, 0, 3}, 3}, {{1, -5, -20, 4, -1, 3, -6, -3}, 2}, {{5}, 1}};\nfor (auto& [nums, k] : cases) cout << maxJumpScore(nums, k) << \"\\n\";",
+     "java": "Solution s = new Solution();\nint[][] nums = {{1, -1, -2, 4, -7, 3}, {10, -5, -2, 4, 0, 3}, {1, -5, -20, 4, -1, 3, -6, -3}, {5}};\nint[] ks = {2, 3, 2, 1};\nfor (int i = 0; i < ks.length; i++) show(s.maxJumpScore(nums[i], ks[i]));",
+     "go": "nums := [][]int{{1, -1, -2, 4, -7, 3}, {10, -5, -2, 4, 0, 3}, {1, -5, -20, 4, -1, 3, -6, -3}, {5}}\nks := []int{2, 3, 2, 1}\nfor i := range ks {\n    fmt.Println(maxJumpScore(nums[i], ks[i]))\n}",
+     "expected": "7\n17\n0\n5"
+    }
+   }
+  ]
  }
 }
