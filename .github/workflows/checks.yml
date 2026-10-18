@@ -226,7 +226,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
+      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables;
+      # compiles (without running) the Big-O course's C++/Java/Go tabs, wrapped as lib/course-snippet.ts wraps them.
       - run: node --import tsx scripts/learn/check-snippets.mjs
       # numpy (with pandas) for the NumPy MCQs and the ML Coding track.
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
