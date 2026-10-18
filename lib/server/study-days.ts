@@ -43,8 +43,8 @@ export const studyPref = (userId: string) => prefSchema.parse(parsed(note(userId
 
 /**
  * What the learner did from `since` to `now`, one event per item: ACs, finished stress tests and
- * complexity probes, first answers to bank MCQs, system design chapters read, English units done,
- * finished mock OAs and self-graded review cards.
+ * complexity probes, first answers to bank MCQs, system design chapters read, finished mock OAs
+ * and self-graded review cards.
  * A mock's finish and a card's day come from the browser: one past `now` is dropped.
  */
 export function studyEvents(userId: string, since: number, now: number): StudyEvent[] {
@@ -55,9 +55,8 @@ export function studyEvents(userId: string, since: number, now: number): StudyEv
         FROM submissions WHERE user_id=@user AND created_at>=@since
           AND ((mode='judge' AND status='accepted') OR (mode IN ('stress','complexity') AND finished_at IS NOT NULL))
       UNION ALL SELECT 'mcq',question_id,created_at FROM mcq_answers WHERE user_id=@user AND created_at>=@since
-      UNION ALL SELECT CASE mark WHEN 'read' THEN 'sd' ELSE 'english' END,target,created_at FROM user_marks
-        WHERE user_id=@user AND created_at>=@since
-          AND ((mark='read' AND target>='sd:' AND target<'sd;') OR (mark='done' AND target>='content:english/' AND target<'content:english0'))
+      UNION ALL SELECT 'sd',target,created_at FROM user_marks
+        WHERE user_id=@user AND created_at>=@since AND mark='read' AND target>='sd:' AND target<'sd;'
       UNION ALL SELECT 'mock',id,finished_at FROM mock_sessions WHERE user_id=@user AND finished_at>=@since`,
     )
     .all({ user: userId, since }) as StudyEvent[];
