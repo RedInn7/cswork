@@ -66,7 +66,7 @@ jobs:
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/wave9-foundation.test.ts
       - run: node --import tsx --test tests/wave10-foundation.test.ts
-      - run: node --import tsx --test tests/route-templates.test.ts tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
+      - run: node --import tsx --test tests/template-drills.test.ts tests/template-drill-ui.test.mjs tests/topics-pages-ui.test.mjs tests/route-stops.test.ts tests/roadmap-ui.test.mjs
       - run: node --import tsx --test tests/topic-why.test.ts tests/topic-page.test.ts
       # Resume projects (content/projects) and the role paths on /roadmap.
       - run: node --import tsx --test tests/role-paths.test.ts tests/resume-projects.test.ts tests/projects-ui.test.mjs
@@ -215,7 +215,7 @@ jobs:
   # Compiles and runs code in four languages, beside validate (which is close to its 20 minutes).
   toolchains:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -234,6 +234,8 @@ jobs:
       # Starts every resume project's Python reference and runs its acceptance script against it.
       - run: node scripts/projects/verify.mjs
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # Compiles and runs every Line 500 template and each of its variants with their drivers.
+      - run: node --import tsx --test tests/route-templates.test.ts
       # Reruns every ML Coding solution on the system numpy (1.x here, 2.x on the judge: compared with the judge's tolerance).
       - run: node --import tsx --test tests/ml-coding.test.ts
       - run: node --import tsx --test tests/ml-coding-ui.test.mjs

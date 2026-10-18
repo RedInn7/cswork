@@ -983,6 +983,215 @@
   color: #087158;
 }
 
+/* Common variants and the variant matrix (app/topics/template-section.tsx) */
+.topics-variants {
+  margin-top: 28px;
+}
+.topics-variants h3 {
+  margin: 0 0 6px;
+  font: 700 18px/1.3 var(--font-route);
+  color: var(--topics-ink);
+}
+.topics-variant {
+  margin-bottom: 10px;
+  border: 1px solid var(--topics-rule);
+  border-left: 4px solid var(--route-line);
+  border-radius: 12px;
+  background: #fff;
+}
+.topics-variant > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font: 700 15px/1.4 var(--font-route);
+  color: var(--topics-ink);
+}
+.topics-variant > summary:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+.topics-variant[open] > summary {
+  border-bottom: 1px solid var(--topics-rule);
+}
+.topics-variant .topics-complexity {
+  border-color: var(--topics-rule);
+  color: var(--topics-muted);
+  white-space: normal;
+}
+.topics-variant-when {
+  padding: 12px 16px 2px;
+}
+.topics-variant-when p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--topics-text);
+}
+.topics-variant .topics-code {
+  margin: 10px 16px;
+}
+.topics-matrix-wrap {
+  margin: 0 0 18px;
+  overflow-x: auto;
+  border: 1px solid var(--topics-rule);
+  border-radius: 12px;
+  background: #fff;
+}
+.topics-matrix-wrap:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+.topics-matrix {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.topics-matrix caption {
+  padding: 10px 14px;
+  caption-side: top;
+  text-align: left;
+  font: 600 13px/1.5 var(--font-route);
+  color: var(--topics-muted);
+}
+.topics-matrix th,
+.topics-matrix td {
+  padding: 10px 12px;
+  border-top: 1px solid var(--topics-rule);
+  text-align: left;
+  vertical-align: top;
+}
+.topics-matrix thead th,
+.topics-matrix thead td {
+  background: #f1f4f2;
+  font: 700 13px/1.3 var(--font-route);
+  color: var(--topics-ink);
+}
+.topics-matrix tbody th {
+  width: 9rem;
+  font: 700 13.5px/1.4 var(--font-route);
+  color: var(--topics-ink);
+}
+.topics-matrix a {
+  font-weight: 650;
+  color: #087158;
+}
+/* One language at a time: Python until TemplateLangMemory marks the section. */
+.topics-matrix code {
+  display: none;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--route-navy);
+  color: var(--route-white);
+  font: 12px/1.55 var(--font-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.topics-template:not([data-code-lang]) .topics-matrix code[data-lang='python'],
+.topics-template[data-code-lang='python'] .topics-matrix code[data-lang='python'],
+.topics-template[data-code-lang='cpp'] .topics-matrix code[data-lang='cpp'],
+.topics-template[data-code-lang='java'] .topics-matrix code[data-lang='java'],
+.topics-template[data-code-lang='go'] .topics-matrix code[data-lang='go'] {
+  display: block;
+}
+.topics-matrix-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--topics-muted);
+}
+
+/* Writing a template from memory (components/template-drill.tsx): the page's code blurs. */
+body[data-template-recall] .topics-code pre,
+body[data-template-recall] .topics-matrix code {
+  filter: blur(6px);
+  user-select: none;
+}
+.topics-drill-templates {
+  flex-basis: 100%;
+}
+.topics-recall-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  min-height: 1.5em;
+  margin: 0;
+  font: 600 13px/1.5 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color: var(--topics-muted);
+}
+.topics-recall-editor {
+  height: 340px;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--topics-rule);
+  border-radius: 10px;
+}
+.topics-recall-result {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.topics-recall-error {
+  margin: 0;
+  font-size: 14px;
+  color: #b3261e;
+}
+.topics-recall-output {
+  display: grid;
+  gap: 4px;
+}
+.topics-recall-output p {
+  margin: 4px 0 0;
+  font: 600 13px/1.4 var(--font-route);
+  color: var(--topics-muted);
+}
+.topics-recall-diff {
+  margin: 0;
+  padding: 10px 0;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--route-navy);
+  color: var(--route-white);
+  font: 13px/1.6 var(--font-code);
+  list-style: none;
+}
+.topics-recall-diff li {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px;
+  white-space: pre;
+}
+.topics-recall-diff li[data-op='missing'] {
+  background: rgb(255 138 128 / 0.16);
+}
+.topics-recall-diff li[data-op='extra'] {
+  background: rgb(255 178 63 / 0.16);
+}
+.topics-recall-op {
+  flex: none;
+  width: 1.2ch;
+  font-weight: 700;
+}
+.topics-recall-diff li[data-op='same'] .topics-recall-op {
+  color: var(--route-line);
+}
+.topics-recall-diff li[data-op='missing'] .topics-recall-op {
+  color: #ff8a80;
+}
+.topics-recall-diff li[data-op='extra'] .topics-recall-op {
+  color: var(--route-amber);
+}
+.topics-drill-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
 @media screen {
   .dark .topics-public {
@@ -1379,6 +1588,93 @@
   }
   .dark .topics-more {
     color: #8ed5bc;
+  }
+  .dark .topics-variants h3 {
+    color: var(--topics-ink);
+  }
+  .dark .topics-variant {
+    border: 1px solid var(--topics-rule);
+    border-left: 4px solid var(--route-line);
+    background: #191919;
+  }
+  .dark .topics-variant > summary {
+    color: var(--topics-ink);
+  }
+  .dark .topics-variant > summary:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-variant[open] > summary {
+    border-bottom: 1px solid var(--topics-rule);
+  }
+  .dark .topics-variant .topics-complexity {
+    border-color: var(--topics-rule);
+    color: var(--topics-muted);
+  }
+  .dark .topics-variant-when p {
+    color: var(--topics-text);
+  }
+  .dark .topics-matrix-wrap {
+    border: 1px solid var(--topics-rule);
+    background: #191919;
+  }
+  .dark .topics-matrix-wrap:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .topics-matrix caption {
+    color: var(--topics-muted);
+  }
+  .dark .topics-matrix th,
+  .dark .topics-matrix td {
+    border-top: 1px solid var(--topics-rule);
+  }
+  .dark .topics-matrix thead th,
+  .dark .topics-matrix thead td {
+    background: #121312;
+    color: var(--topics-ink);
+  }
+  .dark .topics-matrix tbody th {
+    color: var(--topics-ink);
+  }
+  .dark .topics-matrix a {
+    color: #8ed5bc;
+  }
+  .dark .topics-matrix code {
+    background: var(--route-navy);
+    color: var(--route-white);
+  }
+  .dark .topics-matrix-note {
+    color: var(--topics-muted);
+  }
+  .dark .topics-recall-meta {
+    color: var(--topics-muted);
+  }
+  .dark .topics-recall-editor {
+    border: 1px solid var(--topics-rule);
+  }
+  .dark .topics-recall-error {
+    color: #fcaa9d;
+  }
+  .dark .topics-recall-output p {
+    color: var(--topics-muted);
+  }
+  .dark .topics-recall-diff {
+    background: var(--route-navy);
+    color: var(--route-white);
+  }
+  .dark .topics-recall-diff li[data-op='missing'] {
+    background: rgb(255 138 128 / 0.16);
+  }
+  .dark .topics-recall-diff li[data-op='extra'] {
+    background: rgb(255 178 63 / 0.16);
+  }
+  .dark .topics-recall-diff li[data-op='same'] .topics-recall-op {
+    color: var(--route-line);
+  }
+  .dark .topics-recall-diff li[data-op='missing'] .topics-recall-op {
+    color: #ff8a80;
+  }
+  .dark .topics-recall-diff li[data-op='extra'] .topics-recall-op {
+    color: var(--route-amber);
   }
 }
 /* ── end dark theme ── */

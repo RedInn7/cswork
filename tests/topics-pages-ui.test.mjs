@@ -15,6 +15,7 @@ register(
 
 const { TopicView, TopicsIndexView, topicCopy } = await import('../app/topics/views.tsx');
 const { TOPIC_STOPS, topicStop } = await import('../app/topics/stops.ts');
+const { variantsFor } = await import('../lib/route-templates.ts');
 
 const render = (element) =>
   new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
@@ -50,7 +51,7 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.equal(doc.querySelectorAll('.topics-points li').length, 3);
     assert.equal(doc.querySelectorAll('.topics-pitfalls li').length, 3);
     assert.ok(doc.querySelector('.topics-points li').textContent === (zh ? stop.points[0].zh : stop.points[0].en));
-    const details = [...doc.querySelectorAll('details.topics-code')];
+    const details = [...doc.querySelectorAll('details.topics-code[name="topic-code"]')];
     assert.equal(details.length, 4);
     assert.ok(details.every((d) => d.getAttribute('name') === 'topic-code'));
     assert.ok(details[0].hasAttribute('open') && !details.slice(1).some((d) => d.hasAttribute('open')));
@@ -65,7 +66,8 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.ok(pres[3].textContent === stop.code.go);
     assert.ok(doc.querySelectorAll('.topics-comment').length > 0);
     // Each template opens in the playground (a link once the browser has packed it).
-    assert.equal(doc.querySelectorAll('details.topics-code .cs-run-playground').length, 4);
+    assert.equal(doc.querySelectorAll('details.topics-code[name="topic-code"] .cs-run-playground').length, 4);
+    assert.ok(details.map((d) => d.dataset.lang).join() === 'python,cpp,java,go');
     const cta = doc.querySelector('a.topics-cta');
     assert.ok(cta.getAttribute('href') === '/?view=problems&section=binary-search');
     assert.ok(cta.textContent.includes(String(stop.problems)) && cta.textContent.includes(stop.no));
@@ -95,6 +97,48 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.ok(drill.querySelectorAll('.topics-drill-lines button').length >= 6);
     assert.equal(drill.querySelector('[role="group"] button[aria-pressed="true"]').textContent, zh ? '排序题' : 'Put in order');
   }
+});
+
+test('variants: one closed details each, four languages, a clip target; the matrix links its cells', () => {
+  for (const slug of ['binary-search', 'dp-knapsack']) {
+    const stop = topicStop(slug);
+    const variants = variantsFor(slug);
+    assert.ok(variants.length >= 2, slug);
+    for (const zh of [true, false]) {
+      const doc = render(createElement(TopicView, { stop, zh }));
+      const section = doc.querySelector('section.topics-variants');
+      assert.ok(doc.getElementById(section.getAttribute('aria-labelledby')));
+      const items = [...section.querySelectorAll('details.topics-variant')];
+      assert.deepEqual(items.map((d) => d.id), variants.map((v) => `variant-${v.id}`));
+      for (const [i, item] of items.entries()) {
+        const v = variants[i];
+        assert.ok(!item.hasAttribute('open'));
+        assert.ok(item.querySelector('summary').textContent.includes(zh ? v.pattern.zh : v.pattern.en));
+        assert.ok(item.textContent.includes(zh ? v.when.zh : v.when.en));
+        const langs = [...item.querySelectorAll('details.topics-code')];
+        assert.ok(langs.every((d) => d.getAttribute('name') === `topic-code-${v.id}`));
+        assert.ok(langs.map((d) => d.dataset.lang).join() === 'python,cpp,java,go');
+        assert.ok(langs[0].hasAttribute('open') && langs[3].querySelector('pre').textContent === v.code.go);
+        assert.equal(item.querySelectorAll('.cs-run-playground').length, 4);
+      }
+      // The drill offers the main template and every variant.
+      const pick = doc.querySelector('.topics-drill-templates');
+      assert.equal(pick.querySelectorAll('button').length, variants.length + 1);
+      assert.equal(pick.querySelector('[aria-pressed="true"]').textContent, zh ? '主模板' : 'Main template');
+    }
+  }
+  const doc = render(createElement(TopicView, { stop: topicStop('dp-knapsack'), zh: false }));
+  const table = doc.querySelector('.topics-matrix');
+  assert.ok(doc.getElementById(table.closest('[role="region"]').getAttribute('aria-labelledby')));
+  assert.equal(table.querySelectorAll('thead th[scope="col"]').length, 5);
+  assert.equal(table.querySelectorAll('tbody th[scope="row"]').length, 3);
+  const links = [...table.querySelectorAll('td a')];
+  assert.ok(links.length >= 6);
+  for (const a of links) assert.ok(doc.getElementById(a.getAttribute('href').slice(1)), a.getAttribute('href'));
+  for (const td of [...table.querySelectorAll('td')].filter((cell) => cell.querySelector('a')))
+    assert.equal(td.querySelectorAll('code[data-lang]').length, 4);
+  assert.ok(table.querySelectorAll('.topics-matrix-note').length >= 1);
+  assert.equal(render(createElement(TopicView, { stop: topicStop('binary-search'), zh: true })).querySelector('.topics-matrix'), null);
 });
 
 test('the first and last stops have only one neighbour; unknown slugs are not stops', () => {

@@ -1,7 +1,7 @@
 // Locale-free views for /topics and /topics/<stop>; the pages only resolve the locale.
 import { SITE_NAME, SITE_URL, breadcrumbJsonLd } from '@/lib/seo';
 import { TEMPLATE_LANGS, line500Path, topicPath } from '@/lib/route-templates';
-import { CodeBlock } from './code-block';
+import { TemplateSection, drillTemplates } from './template-section';
 import { RatingBadge } from '@/components/rating-badge';
 import { AlgorithmDemo } from '@/components/algorithm-demo';
 import { stopDemos } from '@/lib/route-stops';
@@ -268,28 +268,9 @@ export function TopicView({ stop, zh, practice }: { stop: TopicStop; zh: boolean
           ))}
         </section>
       )}
-      <section className="topics-template" aria-labelledby="topic-template">
-        <h2 id="topic-template">{t('模板', 'Template')}</h2>
-        <p className="topics-template-lead">
-          {t(
-            '选一种语言展开。四种写法实现的是同一个模板，每一份都编译运行过，并用测试数据核对了输出。',
-            'Open one language. All four implement the same template, and each one is compiled, run and checked against test data.',
-          )}
-          {practice?.focus &&
-            t(
-              `看完用它重写热身题 LC ${practice.focus.number}。`,
-              ` Then rewrite the warm-up, LC ${practice.focus.number}, with it.`,
-            )}
-        </p>
-        {TEMPLATE_LANGS.map(([lang, label], i) => (
-          <details className="topics-code" name="topic-code" open={i === 0} key={lang}>
-            <summary>{label}</summary>
-            <CodeBlock code={stop.code[lang]} lang={lang} label={t(`${label} 模板代码`, `${label} template`)} />
-          </details>
-        ))}
-      </section>
+      <TemplateSection stop={stop} zh={zh} practice={practice} />
       <TopicWhy stop={stop} zh={zh} signedIn={!!practice?.signedIn} />
-      <StopDrills stop={stop} zh={zh} />
+      <StopDrills stop={stop} zh={zh} signedIn={!!practice?.signedIn} />
       {practice && <TopicPracticeTables stop={stop} practice={practice} zh={zh} />}
       <nav className="topics-adjacent" aria-label={t('相邻站点', 'Adjacent stops')}>
         <Adjacent stop={TOPIC_STOPS[stop.index - 1]} rel="prev" zh={zh} />
@@ -300,7 +281,7 @@ export function TopicView({ stop, zh, practice }: { stop: TopicStop; zh: boolean
 }
 
 /** The stop's concept and complexity questions (oa-mcq.json `stop`), then drills on its template. */
-function StopDrills({ stop, zh }: { stop: TopicStop; zh: boolean }) {
+function StopDrills({ stop, zh, signedIn }: { stop: TopicStop; zh: boolean; signedIn: boolean }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const quiz = (bankFile.questions as McqQuestion[])
     .filter((q) => q.stop === stop.slug)
@@ -325,11 +306,18 @@ function StopDrills({ stop, zh }: { stop: TopicStop; zh: boolean }) {
         <h2 id="topic-drill">{t('模板练习', 'Template drills')}</h2>
         <p className="topics-template-lead">
           {t(
-            '用上面的模板出题：把打乱的行排回原序，或者把挖掉的边界条件填回去。每次「换一题」都会重新出题。',
-            'Drills cut from the template above: put shuffled lines back in order, or fill the blanked boundary conditions back in. Another one gives a new drill.',
+            '用上面的模板和变体出题：把打乱的行排回原序，把挖掉的边界条件填回去，或者在空白编辑器里整段默写，跑本站的测试并逐行对比。每次「换一题」都会重新出题。',
+            'Drills cut from the templates above: put shuffled lines back in order, fill the blanked boundary conditions back in, or write a whole template from memory in an empty editor, run against this stop\'s tests and compared line by line. Another one gives a new drill.',
           )}
         </p>
-        <TemplateDrill code={stop.code} langs={TEMPLATE_LANGS} zh={zh} />
+        <TemplateDrill
+          slug={stop.slug}
+          title={zh ? stop.title : stop.titleEn}
+          templates={drillTemplates(stop, zh)}
+          langs={TEMPLATE_LANGS}
+          zh={zh}
+          signedIn={signedIn}
+        />
       </section>
     </>
   );
