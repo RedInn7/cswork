@@ -1,4 +1,5 @@
 import './resume-print.css';
+import './resume-extend.css';
 import '@/app/code-review.css';
 import '@/app/resume-review-link.css';
 import { headers } from 'next/headers';

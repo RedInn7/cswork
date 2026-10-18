@@ -6,6 +6,7 @@ import { checkResume, type ResumeIssue } from '@/lib/resume-check';
 import { readResumeFile, type ResumeFileError } from '@/lib/resume-file';
 import { parseResumeText } from '@/lib/resume-parse';
 import { blankItem, blankResume, ITEMS, lines, MAX, normalizeResume, type ListKey, type Resume, type ResumeItem } from '@/lib/resume-shape';
+import { ResumeExtend } from './resume-extend';
 import { ResumeReviewLink } from './resume-review-link';
 
 /**
@@ -524,6 +525,7 @@ export function ResumeBuilder({ zh, signedIn, ai = false }: { zh: boolean; signe
           )}
           <small>{t('按规则检查，不是 AI：看动词、数字、长度、用词、日期和必备小节。', 'Rules, not AI: verbs, numbers, length, wording, dates and the sections every resume needs.')}</small>
         </section>
+        <ResumeExtend resume={resume} text={resumeText(resume)} zh={zh} signedIn={signedIn} />
         <AutofillBookmarklet resume={resume} version={version} zh={zh} />
         <p className="resume-builder-status" role="status">
           {status}
