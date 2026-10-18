@@ -59,6 +59,20 @@ export function SdReportIssue({ refId }: { refId: string }) {
   return <ReportIssue refId={refId} signedIn={state === 'guest' ? false : state === 'ready' || undefined} />;
 }
 
+/**
+ * A /learn chapter's key points as a review card (lib/recall.ts): graded against the chapter's
+ * "Key points" list. Waits for the read marks to tell a guest (this device) from a learner.
+ */
+export function SdRecall({ target, title, points }: { target: string; title: string; points: string[] }) {
+  const { state } = useRead();
+  if (state === 'loading') return null;
+  return (
+    <div className="rd">
+      <RecallRate key={target} target={target} title={title} points={points} signedIn={state !== 'guest'} lesson />
+    </div>
+  );
+}
+
 /** "Read 7/27" with a bar, once a signed-in learner's marks are in. */
 export function SdReadCount({ slugs }: { slugs: string[] }) {
   const t = useT();

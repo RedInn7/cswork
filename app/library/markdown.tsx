@@ -132,8 +132,8 @@ export function PublicLibraryMarkdown({
             <div className={className}>{children}</div>
           ),
         a: ({ node, href, children }) =>
-          // In-app views and the system design course's own chapters.
-          href?.startsWith('/?view=') || /^\/system-design(?:\/[a-z0-9-]+)?$/.test(href ?? '') ? (
+          // In-app views, the system design course's own chapters and a multiple-choice topic.
+          href?.startsWith('/?view=') || /^\/(?:system-design(?:\/[a-z0-9-]+)?|oa\/mcq\?topic=[a-z]+)$/.test(href ?? '') ? (
             <a href={href}>{children}</a>
           ) : safeLink(href) ? (
             <a href={safeLink(href)} rel={ugc ? 'ugc nofollow noopener noreferrer' : 'noopener noreferrer'}>

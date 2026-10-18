@@ -4855,6 +4855,1400 @@
           "solves": []
         }
       ]
+    },
+    {
+      "slug": "os",
+      "titleZh": "操作系统图解课",
+      "titleEn": "Operating Systems, Illustrated",
+      "summaryZh": "8 节图解课，讲后端面试和校招最常问的操作系统知识：进程与线程、CPU 调度、同步、死锁、内存与分页、页面置换、文件系统和 I/O 模型。调度、死锁和页面置换三节可以在页面上直接跑模拟器，每节末尾的要点可以加入复习。",
+      "summaryEn": "Eight illustrated lessons on the operating systems questions backend interviews ask most: processes and threads, CPU scheduling, synchronization, deadlock, memory and paging, page replacement, file systems and I/O models. The scheduling, deadlock and page replacement lessons run simulators in the page, and each lesson ends with key points you can add to your reviews.",
+      "chapters": [
+        {
+          "slug": "processes-threads",
+          "titleZh": "进程与线程",
+          "titleEn": "Processes and Threads",
+          "bodyZh": "程序是磁盘上的一份可执行文件，进程是它跑起来之后的样子：操作系统给它分配一块独立的地址空间、一组打开的文件和一份运行状态。线程是进程里真正在 CPU 上执行的那条控制流。这一节讲清进程和线程各自拥有什么、怎样切换，以及 fork 之后发生了什么。\n\n## 进程里有什么\n\n操作系统为每个进程维护一个**进程控制块**（PCB），里面记着：进程号 PID、当前状态、寄存器和程序计数器的快照、页表的位置、打开的文件描述符表、父进程是谁、调度优先级等。切换进程，本质上就是把当前 CPU 上的现场存进旧进程的 PCB，再从新进程的 PCB 里恢复出来。\n\n进程的地址空间从低到高大致是：代码段、已初始化的全局数据、未初始化的全局数据（BSS）、向上增长的堆、内存映射区、向下增长的栈。两个进程即使用了同一个虚拟地址，也映射到不同的物理内存，互相看不到对方的数据，这就是**隔离**。\n\n## 进程的五种状态\n\n```mermaid\nstateDiagram-v2\n  accTitle: 进程状态转换：新建、就绪、运行、阻塞、终止\n  state \"新建\" as New\n  state \"就绪\" as Ready\n  state \"运行\" as Running\n  state \"阻塞\" as Blocked\n  state \"终止\" as Done\n  [*] --> New\n  New --> Ready: 准备好资源\n  Ready --> Running: 被调度选中\n  Running --> Ready: 时间片用完或被抢占\n  Running --> Blocked: 等待 I/O 或锁\n  Blocked --> Ready: 等待的事件发生\n  Running --> Done: 执行结束\n  Done --> [*]\n```\n\n注意阻塞态的进程不能直接回到运行态：事件发生后它只是重新**有资格**运行，要先回到就绪队列排队，等调度器再次选中它。\n\n## 线程：共享地址空间的执行流\n\n一个进程可以有多个线程，它们共用同一个地址空间，所以线程之间传数据只要读写同一个变量，不需要任何拷贝。\n\n| | 同一进程的线程之间共享 | 每个线程各有一份 |\n|---|---|---|\n| 内存 | 代码、全局变量、堆 | 栈 |\n| 资源 | 打开的文件、信号处理方式、当前目录 | 寄存器、程序计数器、线程 ID |\n\n共享带来方便，也带来风险：一个线程踩坏了堆上的数据，其他线程都会受影响；一个线程触发了没处理的段错误，整个进程都会被内核终止。多进程架构（比如浏览器把不同网站放进不同的进程）就是用更高的开销换隔离。\n\n## 切换的代价\n\n切换线程和切换进程都要保存、恢复寄存器，都要进内核。区别在于地址空间：同一进程内的两个线程用的是同一张页表，切换后 TLB 里缓存的地址翻译仍然有效；换到另一个进程就要换页表，TLB 里的旧条目大多作废（支持 PCID/ASID 的 CPU 能保留一部分），缓存也要重新预热。所以进程切换通常更贵。\n\n## fork、exec 与 wait\n\nUnix 创建进程分两步：`fork()` 复制出一个几乎一样的子进程，`exec()` 再把子进程的程序替换掉。\n\n```python\nimport os\n\npid = os.fork()\nif pid == 0:\n    print(\"child, my parent is\", os.getppid(), flush=True)  # os._exit 不会刷新缓冲区\n    os._exit(0)\nelse:\n    _, status = os.waitpid(pid, 0)\n    print(\"parent, child\", pid, \"exited with\", os.waitstatus_to_exitcode(status))\n```\n\n- `fork()` 调用一次、返回两次：在子进程里返回 0，在父进程里返回子进程的 PID，失败时返回 -1（Python 里抛异常）。\n- 子进程拿到的是父进程地址空间的**副本**，但现代内核用写时复制，只有某一方真正写入时才复制那一页。\n- 子进程退出后，内核保留它的退出码，直到父进程调用 `wait`/`waitpid` 来取。还没被取走的子进程就是**僵尸进程**；父进程先退出的子进程叫**孤儿进程**，会被 init（或设置了 subreaper 的进程）收养。\n\n## 进程间通信\n\n进程之间默认看不到对方的内存，要通信得借助内核：管道（父子进程之间的字节流）、命名管道、消息队列、共享内存（最快，但要自己加同步）、信号（只传一个编号）、套接字（还能跨机器）。面试问到\"线程和进程怎么选\"，可以从隔离、通信成本、创建和切换开销三方面比较。\n\n## 要点\n\n- 进程是资源分配的单位，线程是 CPU 调度的单位。\n- 同一进程的线程共享代码、全局变量、堆和打开的文件；栈和寄存器各自独立。\n- 阻塞态的进程在事件发生后先回到就绪态，不会直接上 CPU。\n- 进程切换要换页表，TLB 和缓存失效更多，所以通常比线程切换贵。\n- `fork()` 在子进程返回 0、在父进程返回子进程 PID，内存靠写时复制按需拷贝。\n- 退出后没被 `wait` 回收的是僵尸进程；父进程先退出的子进程会被 init 收养。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "A program is an executable file on disk; a process is that program running, with an address space of its own, a set of open files and a record of where it is. A thread is the flow of control inside a process that actually runs on a CPU. This lesson covers what a process and a thread each own, how the system switches between them, and what happens after fork.\n\n## What a process holds\n\nThe kernel keeps a **process control block** (PCB) for every process: its PID, its state, a snapshot of the registers and program counter, where its page table lives, its table of open file descriptors, its parent and its scheduling priority. Switching processes means saving the CPU's state into the old process's PCB and restoring the new one's.\n\nFrom low addresses to high, an address space holds the code, initialised globals, zero-initialised globals (BSS), the heap growing upward, the memory-mapped region and the stack growing downward. Two processes can use the same virtual address and still reach different physical memory, so neither can see the other's data: that is **isolation**.\n\n## Five process states\n\n```mermaid\nstateDiagram-v2\n  accTitle: Process state transitions: new, ready, running, blocked, terminated\n  state \"New\" as New\n  state \"Ready\" as Ready\n  state \"Running\" as Running\n  state \"Blocked\" as Blocked\n  state \"Terminated\" as Done\n  [*] --> New\n  New --> Ready: resources set up\n  Ready --> Running: picked by the scheduler\n  Running --> Ready: quantum used up or preempted\n  Running --> Blocked: waits for I/O or a lock\n  Blocked --> Ready: the awaited event happens\n  Running --> Done: finishes\n  Done --> [*]\n```\n\nA blocked process never goes straight back to running. When its event arrives it only becomes **eligible** to run again: it rejoins the ready queue and waits for the scheduler to pick it.\n\n## Threads: flows of control that share an address space\n\nA process can have many threads sharing one address space, so threads pass data by reading and writing the same variable, with no copying at all.\n\n| | Shared by the threads of a process | One per thread |\n|---|---|---|\n| Memory | Code, globals, heap | Stack |\n| Resources | Open files, signal handlers, working directory | Registers, program counter, thread ID |\n\nSharing is convenient and risky: a thread that corrupts the heap hurts every other thread, and an unhandled segmentation fault in one thread makes the kernel kill the whole process. Multi-process designs, such as a browser putting different sites in different processes, pay more overhead to buy that isolation.\n\n## What a switch costs\n\nBoth kinds of switch save and restore registers and go through the kernel. The difference is the address space. Two threads of one process use the same page table, so the address translations cached in the TLB stay valid. Moving to another process swaps the page table, so most old TLB entries become useless (CPUs with PCID or ASIDs can keep some) and the caches have to warm up again. A process switch is usually the more expensive one.\n\n## fork, exec and wait\n\nUnix creates a process in two steps: `fork()` makes a near-identical child, and `exec()` replaces the child's program with another.\n\n```python\nimport os\n\npid = os.fork()\nif pid == 0:\n    print(\"child, my parent is\", os.getppid(), flush=True)  # os._exit skips flushing buffers\n    os._exit(0)\nelse:\n    _, status = os.waitpid(pid, 0)\n    print(\"parent, child\", pid, \"exited with\", os.waitstatus_to_exitcode(status))\n```\n\n- `fork()` is called once and returns twice: 0 in the child, the child's PID in the parent, and -1 on failure (Python raises an exception instead).\n- The child gets a **copy** of the parent's address space, but modern kernels use copy-on-write: a page is copied only when one side actually writes to it.\n- When a child exits, the kernel keeps its exit status until the parent collects it with `wait`/`waitpid`. A child not yet collected is a **zombie**; a child whose parent exits first is an **orphan** and is adopted by init (or by a process registered as a subreaper).\n\n## Talking between processes\n\nProcesses cannot see each other's memory by default, so they communicate through the kernel: pipes (a byte stream between related processes), named pipes, message queues, shared memory (the fastest, but you bring your own synchronisation), signals (just a number) and sockets (which also cross machines). When an interviewer asks whether to use threads or processes, compare isolation, the cost of communication, and the cost of creating and switching.\n\n## Key points\n\n- A process is the unit of resource ownership; a thread is the unit the CPU schedules.\n- Threads of one process share the code, globals, heap and open files; each has its own stack and registers.\n- A blocked process returns to the ready state when its event happens, never straight to the CPU.\n- A process switch changes the page table and invalidates more of the TLB and caches, so it usually costs more than a thread switch.\n- `fork()` returns 0 in the child and the child's PID in the parent; copy-on-write copies memory only when it is written.\n- An exited child nobody has waited for is a zombie; a child whose parent exits first is adopted by init.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "fork() 调用成功后，在子进程里它的返回值是？",
+              "qEn": "After a successful fork(), what does it return in the child?",
+              "choices": [
+                {
+                  "zh": "0",
+                  "en": "0"
+                },
+                {
+                  "zh": "子进程自己的 PID",
+                  "en": "The child's own PID"
+                },
+                {
+                  "zh": "父进程的 PID",
+                  "en": "The parent's PID"
+                },
+                {
+                  "zh": "-1",
+                  "en": "-1"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "fork 返回两次：子进程里是 0，父进程里是子进程的 PID，-1 表示失败。子进程想知道父进程是谁，要调用 getppid()。",
+              "whyEn": "fork returns twice: 0 in the child and the child's PID in the parent; -1 means it failed. A child that wants its parent's PID calls getppid()."
+            },
+            {
+              "qZh": "一个正在运行的进程发起磁盘读请求，要等数据回来才能继续。它会转入哪个状态？",
+              "qEn": "A running process issues a disk read and cannot continue until the data arrives. Which state does it move to?",
+              "choices": [
+                {
+                  "zh": "就绪态",
+                  "en": "Ready"
+                },
+                {
+                  "zh": "阻塞态",
+                  "en": "Blocked"
+                },
+                {
+                  "zh": "终止态",
+                  "en": "Terminated"
+                },
+                {
+                  "zh": "新建态",
+                  "en": "New"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "等待 I/O 的进程不占 CPU，进入阻塞（等待）态。数据到了以后它先回到就绪队列，等调度器再选中它，而不是直接回到运行态。",
+              "whyEn": "A process waiting for I/O gives up the CPU and becomes blocked (waiting). When the data arrives it rejoins the ready queue and waits to be scheduled; it does not jump straight back to running."
+            },
+            {
+              "qZh": "多线程程序里，一个线程解引用了空指针，程序没有处理 SIGSEGV。通常会怎样？",
+              "qEn": "In a multithreaded program, one thread dereferences a null pointer and the program does not handle SIGSEGV. What usually happens?",
+              "choices": [
+                {
+                  "zh": "只有这个线程退出，其他线程继续运行",
+                  "en": "Only that thread exits; the others keep running"
+                },
+                {
+                  "zh": "内核自动重新启动这个线程",
+                  "en": "The kernel restarts that thread automatically"
+                },
+                {
+                  "zh": "整个进程被终止",
+                  "en": "The whole process is killed"
+                },
+                {
+                  "zh": "这条指令被跳过，线程接着执行",
+                  "en": "The instruction is skipped and the thread carries on"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "SIGSEGV 的默认动作是终止进程。线程共享同一个地址空间和信号处理方式，一个线程的段错误会让整个进程退出，这也是多进程架构隔离更好的原因。",
+              "whyEn": "SIGSEGV's default action terminates the process. Threads share one address space and one set of signal dispositions, so one thread's segfault takes the whole process down; that is why multi-process designs isolate failures better."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "cpu-scheduling",
+          "titleZh": "CPU 调度",
+          "titleEn": "CPU Scheduling",
+          "bodyZh": "就绪队列里常常不止一个进程，CPU 却只有那么几个核。调度算法决定下一个上 CPU 的是谁、能跑多久。面试题通常给几个进程的到达时间和运行时间，让你画甘特图、算平均等待时间。这一节先把指标定义清楚，再逐个比较常见算法，最后用模拟器自己验证。\n\n## 调度发生在哪里\n\n```mermaid\nflowchart LR\n  accTitle: 进程在就绪队列、CPU 和等待队列之间流转\n  new[\"新进程\"] --> ready[\"就绪队列\"]\n  ready -->|\"调度器选中\"| cpu[\"CPU\"]\n  cpu -->|\"时间片用完 / 被抢占\"| ready\n  cpu -->|\"发起 I/O\"| wait[\"等待队列\"]\n  wait -->|\"I/O 完成\"| ready\n  cpu -->|\"运行结束\"| exit[\"退出\"]\n```\n\n只在进程主动让出 CPU（结束或阻塞）时才调度的叫**非抢占式**；时间片到了或来了更紧急的进程就能把当前进程换下来的叫**抢占式**。现代通用操作系统都是抢占式的。\n\n## 四个指标\n\n对每个进程：\n\n- **周转时间** = 完成时刻 − 到达时刻\n- **等待时间** = 周转时间 − 运行时间，也就是在就绪队列里排队的总时长\n- **响应时间** = 第一次上 CPU 的时刻 − 到达时刻\n- 系统整体还看**吞吐量**（单位时间完成几个）和 **CPU 利用率**\n\n批处理任务关心周转时间，交互式程序关心响应时间，两者经常此消彼长。\n\n## 常见算法\n\n| 算法 | 规则 | 优点 | 问题 |\n|---|---|---|---|\n| FCFS 先来先服务 | 按到达顺序，非抢占 | 简单、公平 | 短作业排在长作业后面干等（护航效应） |\n| SJF 短作业优先 | 选运行时间最短的，非抢占 | 所有作业同时到达时平均等待时间最小 | 要预知运行时间；长作业可能饥饿 |\n| SRTF 最短剩余时间优先 | SJF 的抢占版，新到的更短就抢占 | 平均等待通常最小 | 同样要预知时间，切换更多 |\n| 优先级调度 | 选优先级最高的 | 能区分轻重缓急 | 低优先级饥饿，用\"老化\"逐步提高等待者的优先级 |\n| RR 时间片轮转 | 每人跑一个时间片，没跑完回队尾 | 响应时间好 | 时间片太大退化成 FCFS，太小切换开销大 |\n\n实际系统往往组合使用。**多级反馈队列**把进程放进多个优先级队列：新进程先进高优先级、时间片短的队列，用完时间片还没结束就降级，这样短的交互任务很快结束，长的计算任务沉到下层。Linux 从 2.6.23 起默认用 CFS，按\"虚拟运行时间\"最少者优先，用红黑树挑选下一个任务；6.6 版本换成了 EEVDF，思路仍是按权重公平分配 CPU 时间。\n\n## 一个完整的例子\n\n四个进程（时间单位相同）：A 在 0 时刻到达、运行 5；B 在 1 到达、运行 3；C 在 2 到达、运行 1；D 在 3 到达、运行 2。约定同时到达时先到先排，RR 中同一时刻新到达的进程排在刚用完时间片的进程前面。\n\n| 算法 | 执行顺序 | 平均等待 | 平均响应 |\n|---|---|---|---|\n| FCFS | A B C D | 4 | 4 |\n| SJF（非抢占） | A C D B | 3.25 | 3.25 |\n| SRTF | A B C B D A | 2.25 | 0.5 |\n| RR，时间片 2 | A B C A D B A | 4.5 | 1.75 |\n\n以 SJF 为例：0 时刻只有 A，它一直跑到 5；这时 B、C、D 都到了，按运行时间 1、2、3 依次选 C、D、B。等待时间分别是 A 0、C 3、D 3、B 7，平均 13 / 4 = 3.25。\n\n可以看到 RR 的平均等待最长，但平均响应时间远好于 FCFS 和 SJF：每个进程到达后很快就能先跑一下。这正是交互式系统选它的原因。\n\n## 动手试试\n\n下面的模拟器默认演示 RR（时间片 2），每一步都写出就绪队列和剩余时间。可以把输入改成 `fcfs`、`sjf`、`srtf`、`prio`、`prio-p`，或者换成自己的进程，核对上表的每一行。\n\n```algorithm-demo\ncpu-scheduling\n```\n\n做题时的建议：先把时间轴上每个时刻\"谁到达、谁结束、谁被抢占\"列出来，再画甘特图，最后按定义逐个算，不要凭感觉跳步。\n\n## 要点\n\n- 周转 = 完成 − 到达，等待 = 周转 − 运行，响应 = 第一次上 CPU − 到达。\n- FCFS 简单但有护航效应，短作业被长作业拖住。\n- 所有作业同时到达时，SJF 的平均等待时间最小；SRTF 是它的抢占版。\n- SJF 和优先级调度都可能让进程饥饿，老化是常用的补救办法。\n- RR 的时间片太大退化成 FCFS，太小则上下文切换开销占比过高。\n- 多级反馈队列让短任务快速完成、长任务逐步降级；Linux 用的是按虚拟运行时间公平分配的调度器。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "The ready queue usually holds more processes than there are cores. A scheduling algorithm decides who runs next and for how long. Interview questions give a few processes with arrival and burst times and ask for the Gantt chart and the average waiting time. This lesson defines the measures, compares the usual algorithms and ends with a simulator to check your own answers.\n\n## Where scheduling happens\n\n```mermaid\nflowchart LR\n  accTitle: Processes move between the ready queue, the CPU and the wait queue\n  new[\"New process\"] --> ready[\"Ready queue\"]\n  ready -->|\"picked by the scheduler\"| cpu[\"CPU\"]\n  cpu -->|\"quantum over / preempted\"| ready\n  cpu -->|\"starts I/O\"| wait[\"Wait queue\"]\n  wait -->|\"I/O done\"| ready\n  cpu -->|\"finishes\"| exit[\"Exit\"]\n```\n\nA **non-preemptive** scheduler only switches when the running process gives up the CPU (it finishes or blocks). A **preemptive** one can take the CPU away when a quantum ends or a more urgent process arrives. Every modern general-purpose OS is preemptive.\n\n## Four measures\n\nFor each process:\n\n- **Turnaround time** = finish time − arrival time\n- **Waiting time** = turnaround − burst, the total time spent in the ready queue\n- **Response time** = first time on the CPU − arrival time\n- For the system as a whole: **throughput** (jobs finished per unit of time) and **CPU utilisation**\n\nBatch jobs care about turnaround, interactive programs about response, and improving one often hurts the other.\n\n## The usual algorithms\n\n| Algorithm | Rule | Strength | Weakness |\n|---|---|---|---|\n| FCFS, first come first served | Arrival order, non-preemptive | Simple and fair | Short jobs wait behind a long one (the convoy effect) |\n| SJF, shortest job first | Shortest burst next, non-preemptive | Lowest average wait when all jobs arrive together | Needs burst times in advance; long jobs can starve |\n| SRTF, shortest remaining time first | Preemptive SJF: a shorter arrival takes over | Usually the lowest average wait | Same foreknowledge, more switches |\n| Priority | Highest priority next | Separates urgent from routine work | Low priorities starve; \"aging\" slowly raises a waiting process's priority |\n| RR, round robin | Everyone runs one quantum, then goes to the back | Good response time | A huge quantum turns into FCFS; a tiny one wastes time switching |\n\nReal systems combine them. A **multilevel feedback queue** keeps several priority queues: a new process starts in a high-priority queue with a short quantum and drops a level each time it uses a whole quantum, so short interactive work finishes fast and long computations sink. Linux used CFS from 2.6.23, running the task with the least \"virtual runtime\" and picking it from a red-black tree; version 6.6 replaced it with EEVDF, which still shares CPU time fairly by weight.\n\n## A worked example\n\nFour processes in the same time units: A arrives at 0 and runs 5; B arrives at 1 and runs 3; C arrives at 2 and runs 1; D arrives at 3 and runs 2. Ties go to the earlier arrival, and in RR a process arriving at the moment a quantum ends queues ahead of the one just preempted.\n\n| Algorithm | Order on the CPU | Average wait | Average response |\n|---|---|---|---|\n| FCFS | A B C D | 4 | 4 |\n| SJF (non-preemptive) | A C D B | 3.25 | 3.25 |\n| SRTF | A B C B D A | 2.25 | 0.5 |\n| RR, quantum 2 | A B C A D B A | 4.5 | 1.75 |\n\nTake SJF: at time 0 only A is there, so it runs to 5. By then B, C and D have all arrived, and by burst (1, 2, 3) it picks C, D, then B. Their waits are A 0, C 3, D 3, B 7, an average of 13 / 4 = 3.25.\n\nRR has the longest average wait here, yet its average response is far better than FCFS or SJF: every process gets a first turn soon after it arrives. That is exactly why interactive systems use it.\n\n## Try it\n\nThe simulator below starts with RR (quantum 2) and shows the ready queue and remaining times at each step. Change the input to `fcfs`, `sjf`, `srtf`, `prio` or `prio-p`, or to your own processes, and check each row of the table above.\n\n```algorithm-demo\ncpu-scheduling\n```\n\nA tip for exam questions: list what happens at each moment (who arrives, who finishes, who is preempted) before drawing the Gantt chart, then compute every number from its definition instead of skipping steps.\n\n## Key points\n\n- Turnaround = finish − arrival, waiting = turnaround − burst, response = first run − arrival.\n- FCFS is simple but suffers the convoy effect: short jobs stuck behind long ones.\n- When all jobs arrive together, SJF gives the lowest average wait; SRTF is its preemptive form.\n- SJF and priority scheduling can starve processes; aging is the usual fix.\n- A round-robin quantum that is too large becomes FCFS; one too small spends too much time on context switches.\n- A multilevel feedback queue finishes short tasks quickly and demotes long ones; Linux uses a scheduler that shares CPU time fairly by virtual runtime.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "三个作业都在 0 时刻到达，运行时间依次为 6、2、4。用非抢占的 SJF，平均等待时间是多少？",
+              "qEn": "Three jobs all arrive at time 0 with bursts 6, 2 and 4, in that order. What is the average waiting time under non-preemptive SJF?",
+              "choices": [
+                {
+                  "zh": "约 4.67",
+                  "en": "About 4.67"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "2",
+                  "en": "2"
+                },
+                {
+                  "zh": "约 2.67",
+                  "en": "About 2.67"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "SJF 按 2、4、6 的顺序运行，等待时间分别是 0、2、6，平均 8 / 3 ≈ 2.67。按到达顺序的 FCFS 则是 0、6、8，平均约 4.67。",
+              "whyEn": "SJF runs them in the order 2, 4, 6, waiting 0, 2 and 6: an average of 8 / 3 ≈ 2.67. FCFS in arrival order waits 0, 6 and 8, about 4.67."
+            },
+            {
+              "qZh": "调度里的「响应时间」指的是？",
+              "qEn": "In scheduling, what is a process's response time?",
+              "choices": [
+                {
+                  "zh": "第一次获得 CPU 的时刻减去到达时刻",
+                  "en": "The time it first gets the CPU minus its arrival time"
+                },
+                {
+                  "zh": "完成时刻减去到达时刻，也就是它在系统里待的总时长",
+                  "en": "Its finish time minus its arrival time, that is, its whole stay in the system"
+                },
+                {
+                  "zh": "周转时间减去运行时间",
+                  "en": "Its turnaround time minus its burst time"
+                },
+                {
+                  "zh": "它占用 CPU 的总时长",
+                  "en": "The total time it spends on the CPU"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "完成减到达是周转时间，周转减运行是等待时间，占用 CPU 的总时长就是运行时间。响应时间只看第一次上 CPU 有多快，交互式程序最在意它。",
+              "whyEn": "Finish minus arrival is turnaround, turnaround minus burst is waiting time, and time on the CPU is the burst. Response time measures only how soon the first run comes, which is what interactive programs care about."
+            },
+            {
+              "qZh": "「护航效应」（convoy effect）描述的是哪种现象？",
+              "qEn": "What does the convoy effect describe?",
+              "choices": [
+                {
+                  "zh": "时间片设得太小，CPU 大部分时间都花在保存和恢复上下文上",
+                  "en": "A tiny quantum makes the CPU spend most of its time saving and restoring context"
+                },
+                {
+                  "zh": "FCFS 下一个长作业排在前面，后面的短作业都要等它",
+                  "en": "Under FCFS a long job at the front makes every short job behind it wait"
+                },
+                {
+                  "zh": "低优先级进程一直得不到 CPU",
+                  "en": "Low-priority processes never get the CPU"
+                },
+                {
+                  "zh": "多个进程同时争抢同一把锁",
+                  "en": "Several processes fight over the same lock"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "护航效应是 FCFS 的典型问题：长作业像慢车，后面的短作业只能跟着排队，平均等待时间被拉高。低优先级永远得不到 CPU 叫饥饿。",
+              "whyEn": "The convoy effect is FCFS's classic flaw: a long job acts like a slow truck and the short jobs queue behind it, inflating the average wait. Never getting the CPU at low priority is starvation."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "sync",
+          "titleZh": "同步与互斥",
+          "titleEn": "Synchronization",
+          "bodyZh": "多个线程同时读写同一份数据时，结果取决于它们执行的先后次序，这就是**竞态条件**。同步要做的是让这些操作按我们能预期的方式交错。这一节从一个丢失更新的例子讲起，依次介绍原子操作、自旋锁、互斥锁、信号量和条件变量，最后写一个能用的有界缓冲区。\n\n## 一次加一怎么会丢\n\n`count += 1` 看起来是一步，在机器上其实是三步：从内存读到寄存器、加一、写回内存。两个线程交错执行时可能这样：\n\n```mermaid\nsequenceDiagram\n  accTitle: 两个线程交错执行 count 加一，其中一次更新丢失\n  participant T1 as 线程 1\n  participant M as 内存 count\n  participant T2 as 线程 2\n  T1->>M: 读到 0\n  T2->>M: 读到 0\n  T1->>M: 写回 1\n  T2->>M: 写回 1\n  Note over M: 两次加一，结果只有 1\n```\n\n访问共享数据的那段代码叫**临界区**。一个正确的解决方案要满足三个条件：\n\n- **互斥**：同一时刻最多一个线程在临界区里。\n- **前进**：临界区空着时，想进去的线程不能被无限期推迟。\n- **有界等待**：一个线程提出请求后，别的线程抢先进入的次数有上限，它不会永远等下去。\n\n## 从硬件原子指令到锁\n\n所有锁最终都依赖 CPU 提供的原子指令，比如 test-and-set 和 compare-and-swap（CAS）：CAS 比较某个内存位置是否等于期望值，相等才写入新值，整个过程不可分割。\n\n- **自旋锁**：拿不到锁就在循环里反复尝试。不用睡眠和唤醒，适合多核上持有时间极短的临界区；持有时间一长就白白烧 CPU。\n- **互斥锁**（mutex）：拿不到锁的线程被挂起，进入等待队列，锁释放时再被唤醒。互斥锁有**所有者**，只能由加锁的线程解锁。\n- **读写锁**：允许多个读者同时进入，写者独占，适合读多写少的数据。\n\n## 信号量\n\n信号量是一个非负整数加两个原子操作：**P**（也叫 wait、down）在值大于 0 时减一并继续，等于 0 就阻塞；**V**（signal、up）把值加一，有线程在等就唤醒一个。初值为 1 的二值信号量可以当锁用，但它没有所有者，任何线程都可以执行 V，所以它也常用来在线程之间\"发通知\"。初值为 N 的计数信号量表示 N 份可用资源。\n\n经典的生产者-消费者问题用三个信号量：\n\n```text\nempty = N    # 空位数\nfull  = 0    # 有数据的格子数\nmutex = 1    # 保护缓冲区本身\n\n生产者：P(empty)  P(mutex)  放入  V(mutex)  V(full)\n消费者：P(full)   P(mutex)  取出  V(mutex)  V(empty)\n```\n\n两个 P 的顺序不能反过来。如果生产者先拿 mutex 再等 empty，缓冲区满时它会拿着 mutex 睡下去，消费者进不了缓冲区腾出空位，两边就永远僵住了。\n\n## 条件变量\n\n条件变量让线程在\"某个条件成立之前\"睡眠，它总是和一把锁配合使用：`wait()` 原子地释放锁并睡眠，被唤醒后重新拿锁再返回。被唤醒不代表条件已经成立（可能被别人抢先改掉，也可能是虚假唤醒），所以检查条件要用 `while` 而不是 `if`。下面是用 Python 写的有界缓冲区：\n\n```python\nimport threading\nfrom collections import deque\n\nclass BoundedBuffer:\n    def __init__(self, capacity):\n        self.items = deque()\n        self.capacity = capacity\n        lock = threading.Lock()\n        self.not_full = threading.Condition(lock)    # 两个条件共用一把锁\n        self.not_empty = threading.Condition(lock)\n\n    def put(self, item):\n        with self.not_full:                          # 拿锁\n            while len(self.items) == self.capacity:\n                self.not_full.wait()                 # 睡眠期间锁是释放的\n            self.items.append(item)\n            self.not_empty.notify()\n\n    def get(self):\n        with self.not_empty:\n            while not self.items:\n                self.not_empty.wait()\n            item = self.items.popleft()\n            self.not_full.notify()\n            return item\n```\n\nJava 的 `synchronized` 加 `wait()`/`notify()` 是同一个思路，语言把锁和条件绑成了一个\"管程\"（monitor）。\n\n## 要点\n\n- 竞态条件来自\"读-改-写\"不是原子的；访问共享数据的代码段叫临界区。\n- 正确的同步方案要满足互斥、前进和有界等待。\n- 自旋锁适合持有时间极短的场景，互斥锁让等待者睡眠，读写锁让读者并发。\n- 信号量的 P 减一、可能阻塞，V 加一、可能唤醒；它没有所有者，可以用来跨线程通知。\n- 生产者-消费者里先 P 资源信号量、再 P mutex，顺序反了会死锁。\n- 条件变量的 `wait()` 原子地释放锁并睡眠，醒来后要在 `while` 里重新检查条件。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "When several threads read and write the same data at once, the result can depend on the order they happen to run in: a **race condition**. Synchronisation makes those operations interleave only in ways we can predict. This lesson starts from a lost update, then covers atomic instructions, spinlocks, mutexes, semaphores and condition variables, and ends with a working bounded buffer.\n\n## How adding one goes missing\n\n`count += 1` looks like one step but runs as three: load from memory into a register, add one, store back. Two threads can interleave like this:\n\n```mermaid\nsequenceDiagram\n  accTitle: Two threads interleave count plus one and one update is lost\n  participant T1 as Thread 1\n  participant M as count in memory\n  participant T2 as Thread 2\n  T1->>M: reads 0\n  T2->>M: reads 0\n  T1->>M: writes 1\n  T2->>M: writes 1\n  Note over M: two increments, the result is 1\n```\n\nThe code that touches shared data is a **critical section**. A correct solution meets three conditions:\n\n- **Mutual exclusion**: at most one thread is inside at a time.\n- **Progress**: when the critical section is free, a thread that wants in cannot be put off forever.\n- **Bounded waiting**: once a thread asks to enter, there is a limit on how many times others can go first, so it never waits forever.\n\n## From atomic instructions to locks\n\nEvery lock rests on atomic CPU instructions such as test-and-set and compare-and-swap (CAS). CAS checks whether a memory location holds an expected value and writes a new one only if it does, all as one indivisible step.\n\n- **Spinlock**: a thread that misses the lock keeps retrying in a loop. No sleeping or waking, which suits very short critical sections on multicore machines; held for long, it burns CPU for nothing.\n- **Mutex**: a thread that misses the lock is suspended on a wait queue and woken when the lock is released. A mutex has an **owner**: only the thread that locked it may unlock it.\n- **Read-write lock**: many readers at once, writers alone; good for data that is read far more than written.\n\n## Semaphores\n\nA semaphore is a non-negative integer with two atomic operations. **P** (also wait or down) decrements it if it is above zero and otherwise blocks; **V** (signal or up) increments it and wakes a waiter if there is one. A binary semaphore starting at 1 can serve as a lock, but it has no owner: any thread may call V, which also makes it a way for one thread to notify another. A counting semaphore starting at N stands for N units of a resource.\n\nThe classic producer-consumer problem uses three:\n\n```text\nempty = N    # free slots\nfull  = 0    # slots holding data\nmutex = 1    # guards the buffer itself\n\nproducer:  P(empty)  P(mutex)  put   V(mutex)  V(full)\nconsumer:  P(full)   P(mutex)  take  V(mutex)  V(empty)\n```\n\nThe two P operations must stay in this order. If a producer took mutex first and then waited on empty, a full buffer would put it to sleep while holding mutex; no consumer could get in to free a slot, and both sides would wait forever.\n\n## Condition variables\n\nA condition variable lets a thread sleep until some condition holds, and it always works with a lock: `wait()` atomically releases the lock and sleeps, then takes the lock back before returning. Being woken does not mean the condition holds (another thread may have changed it first, or the wakeup was spurious), so check the condition in a `while`, not an `if`. Here is a bounded buffer in Python:\n\n```python\nimport threading\nfrom collections import deque\n\nclass BoundedBuffer:\n    def __init__(self, capacity):\n        self.items = deque()\n        self.capacity = capacity\n        lock = threading.Lock()\n        self.not_full = threading.Condition(lock)    # two conditions on one lock\n        self.not_empty = threading.Condition(lock)\n\n    def put(self, item):\n        with self.not_full:                          # takes the lock\n            while len(self.items) == self.capacity:\n                self.not_full.wait()                 # releases the lock while asleep\n            self.items.append(item)\n            self.not_empty.notify()\n\n    def get(self):\n        with self.not_empty:\n            while not self.items:\n                self.not_empty.wait()\n            item = self.items.popleft()\n            self.not_full.notify()\n            return item\n```\n\nJava's `synchronized` with `wait()`/`notify()` is the same idea, with the language binding the lock and the condition into a monitor.\n\n## Key points\n\n- Race conditions come from read-modify-write not being atomic; the code touching shared data is the critical section.\n- A correct solution provides mutual exclusion, progress and bounded waiting.\n- Spinlocks suit very short holds, mutexes put waiters to sleep, and read-write locks let readers run together.\n- A semaphore's P decrements or blocks and its V increments or wakes; it has no owner, so it can signal across threads.\n- In producer-consumer, P the resource semaphore before P(mutex); the other order deadlocks.\n- A condition variable's `wait()` atomically releases the lock and sleeps; recheck the condition in a `while` after waking.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "用信号量写生产者-消费者时，生产者先 P(mutex) 再 P(empty)。缓冲区满的时候会怎样？",
+              "qEn": "In a semaphore producer-consumer, the producer does P(mutex) before P(empty). What happens when the buffer is full?",
+              "choices": [
+                {
+                  "zh": "生产者多等一会儿，有空位后自动继续",
+                  "en": "The producer waits a little and continues once a slot frees up"
+                },
+                {
+                  "zh": "没有影响，两个 P 的顺序可以随意交换",
+                  "en": "Nothing: the two P operations can go in any order"
+                },
+                {
+                  "zh": "可能死锁：生产者拿着 mutex 睡在 empty 上，消费者进不来",
+                  "en": "It can deadlock: the producer sleeps on empty holding mutex, so no consumer gets in"
+                },
+                {
+                  "zh": "缓冲区溢出，旧数据被覆盖",
+                  "en": "The buffer overflows and old data is overwritten"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "缓冲区满时 empty 为 0，生产者在 P(empty) 上阻塞，但它已经拿着 mutex。消费者要先 P(mutex) 才能取数据腾出空位，于是双方互相等待。正确顺序是先 P(empty) 再 P(mutex)。",
+              "whyEn": "With the buffer full, empty is 0 and the producer blocks on P(empty) while holding mutex. A consumer needs P(mutex) before it can take an item and free a slot, so each waits for the other. The correct order is P(empty), then P(mutex)."
+            },
+            {
+              "qZh": "临界区问题的三个要求里，「有界等待」指的是？",
+              "qEn": "Of the three requirements for the critical-section problem, what does bounded waiting mean?",
+              "choices": [
+                {
+                  "zh": "同一时刻最多一个线程在临界区里",
+                  "en": "At most one thread is in the critical section at a time"
+                },
+                {
+                  "zh": "临界区空着时，想进入的线程不能被无限期推迟，必须在有限时间内选出一个进去",
+                  "en": "When the section is free, a thread that wants in cannot be put off forever; one must be chosen in finite time"
+                },
+                {
+                  "zh": "线程在临界区里停留的时间有上限",
+                  "en": "A thread may stay in the critical section only for a limited time"
+                },
+                {
+                  "zh": "线程提出请求后，其他线程抢先进入的次数有上限",
+                  "en": "After a thread asks to enter, others can go first only a limited number of times"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "第一项是互斥，第二项是前进。有界等待保证每个提出请求的线程迟早能进去，不会被别人一次次插队而饿死。它不限制线程在临界区里待多久。",
+              "whyEn": "The first is mutual exclusion and the second is progress. Bounded waiting guarantees every thread that asks eventually gets in instead of starving while others keep cutting ahead. It says nothing about how long a thread stays inside."
+            },
+            {
+              "qZh": "互斥锁和初值为 1 的二值信号量，一个关键区别是？",
+              "qEn": "What is a key difference between a mutex and a binary semaphore that starts at 1?",
+              "choices": [
+                {
+                  "zh": "互斥锁有所有者，只能由加锁的线程解锁；信号量的 V 任何线程都能做",
+                  "en": "A mutex has an owner and only the locking thread may unlock it; any thread may V a semaphore"
+                },
+                {
+                  "zh": "信号量只能在内核里用，互斥锁只能在用户态用",
+                  "en": "Semaphores work only in the kernel and mutexes only in user space"
+                },
+                {
+                  "zh": "二值信号量不会让线程睡眠，互斥锁会",
+                  "en": "A binary semaphore never puts a thread to sleep; a mutex does"
+                },
+                {
+                  "zh": "两者完全等价，只是叫法不同：互斥锁不过是初值为 1 的二值信号量的另一个名字",
+                  "en": "They are exactly the same thing under two names: a mutex is just another word for a binary semaphore starting at 1"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "互斥锁强调所有权：谁加锁谁解锁，很多实现还会检查这一点。信号量没有所有者，一个线程 P、另一个线程 V 是常见用法，所以它也能用来跨线程发通知。两者拿不到时都可以让线程睡眠。",
+              "whyEn": "A mutex is about ownership: whoever locks it unlocks it, and many implementations check this. A semaphore has no owner; one thread doing P and another doing V is a normal pattern, which is why it can carry notifications between threads. Both can put a waiting thread to sleep."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "deadlock",
+          "titleZh": "死锁",
+          "titleEn": "Deadlock",
+          "bodyZh": "死锁是一组进程（或线程）互相等待对方手里的资源，谁都无法继续。它不会自己消失，也很难复现，是后端和基础设施面试的必考题。这一节讲死锁的四个必要条件、四类应对办法，并用银行家算法走一遍\"安全状态\"的判断。\n\n## 四个必要条件\n\n死锁发生时，下面四个条件**同时**成立：\n\n1. **互斥**：资源一次只能被一个进程使用。\n2. **占有并等待**：进程拿着已有的资源不放，同时等待新的资源。\n3. **不可抢占**：资源只能由持有者主动释放，别人不能强行拿走。\n4. **循环等待**：存在一个进程链，每个都在等下一个手里的资源，最后一个等第一个。\n\n用资源分配图看最直观：进程指向资源表示\"在等它\"，资源指向进程表示\"被它占着\"。\n\n```mermaid\nflowchart LR\n  accTitle: 资源分配图中的环：P1 占着 R1 等 R2，P2 占着 R2 等 R1\n  R1[\"资源 R1\"] -->|\"被占有\"| P1((\"P1\"))\n  P1 -->|\"请求\"| R2[\"资源 R2\"]\n  R2 -->|\"被占有\"| P2((\"P2\"))\n  P2 -->|\"请求\"| R1\n```\n\n每类资源只有一个实例时，图里有环就意味着死锁；每类有多个实例时，有环只是可能死锁。\n\n## 四类应对办法\n\n| 办法 | 做法 | 代价 |\n|---|---|---|\n| 预防 | 设计上让某个必要条件不成立 | 资源利用率下降，或编程约束更多 |\n| 避免 | 每次分配前判断会不会进入不安全状态（银行家算法） | 要预先知道每个进程的最大需求 |\n| 检测与恢复 | 允许死锁发生，定期找环，再终止或回滚某个进程 | 检测有开销，回滚可能丢工作 |\n| 忽略 | 认为死锁很少见，出了问题重启 | 通用操作系统对用户程序基本这样做 |\n\n预防最常用的是破坏**循环等待**：给所有锁定一个全局顺序，任何线程都按顺序加锁。比如转账时总是先锁账号小的那个账户，就不会出现 A 等 B、B 等 A。破坏**占有并等待**的办法是一次性申请所有资源，拿不全就全部放下重来；`tryLock` 加超时则是一种有限的\"可抢占\"。\n\n数据库是\"检测与恢复\"的典型：InnoDB 发现事务之间的等待成环，就回滚其中代价较小的一个，应用收到死锁错误后重试即可。\n\n## 银行家算法\n\n银行家算法要求每个进程事先声明最多需要多少资源（Max）。系统记着每个进程已经分到的（Allocation），还需要的就是 Need = Max − Allocation。\n\n**安全状态**是指存在某个顺序，让每个进程依次都能拿到自己剩余的需求、运行完并归还资源。判断方法：令 Work = Available，反复找一个还没完成、Need ≤ Work 的进程，假设它运行完，把它的 Allocation 加回 Work；所有进程都能完成就是安全的。\n\n例子（三类资源 A、B、C，Available = (3, 3, 2)）：\n\n| 进程 | Allocation | Max | Need |\n|---|---|---|---|\n| P0 | 0 1 0 | 7 5 3 | 7 4 3 |\n| P1 | 2 0 0 | 3 2 2 | 1 2 2 |\n| P2 | 3 0 2 | 9 0 2 | 6 0 0 |\n| P3 | 2 1 1 | 2 2 2 | 0 1 1 |\n| P4 | 0 0 2 | 4 3 3 | 4 3 1 |\n\n每轮从 P0 开始找第一个满足条件的进程：P1 可以（Work 变成 5 3 2），然后 P3（7 4 3）、P0（7 5 3）、P2（10 5 5）、P4（10 5 7）。安全序列是 P1 P3 P0 P2 P4。安全序列往往不止一个，换一种扫描规则可能得到别的顺序，只要存在一个就是安全的。\n\n现在 P1 请求 (1, 0, 2)：它不超过 P1 的 Need (1, 2, 2)，也不超过 Available。先假装分给它，Available 变成 (2, 3, 0)，再做一次安全检查，仍然能找到 P1 P3 P0 P2 P4，所以批准。如果检查失败，P1 就要等待，而不是拿到资源。\n\n## 动手试试\n\n模拟器默认就是上面的例子，逐步展示 Work 怎么变化、为什么跳过某个进程。可以把输入最后一段的请求改成 `P0 0 2 0` 或 `P4 3 3 0`，看看哪个会被批准。\n\n```algorithm-demo\nbankers\n```\n\n注意\"不安全\"不等于\"已经死锁\"：不安全只是说系统没法再保证所有进程都能完成，进程可能提前释放资源，结局未必是死锁。银行家算法的做法是干脆不进入不安全状态。\n\n## 要点\n\n- 死锁的四个必要条件：互斥、占有并等待、不可抢占、循环等待，缺一个就不会死锁。\n- 资源单实例时，资源分配图有环就是死锁；多实例时有环只是可能。\n- 工程上最常用的预防是全局统一加锁顺序，破坏循环等待。\n- 银行家算法用 Need = Max − Allocation，分配前先做安全检查，不安全就让请求者等待。\n- 安全序列可能不止一个；不安全状态不一定死锁，但系统不能再做保证。\n- 数据库用检测与恢复：发现等待成环就回滚一个事务，应用负责重试。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "A deadlock is a set of processes (or threads) each waiting for a resource another one holds, so none can go on. It never clears up by itself and is hard to reproduce, which is why backend and infrastructure interviews always ask about it. This lesson covers the four necessary conditions, the four ways to deal with deadlock, and a walk through the banker's algorithm's safety check.\n\n## Four necessary conditions\n\nWhen a deadlock happens, all four of these hold **at once**:\n\n1. **Mutual exclusion**: a resource can be used by only one process at a time.\n2. **Hold and wait**: a process keeps what it has while waiting for more.\n3. **No preemption**: only the holder can release a resource; nobody can take it away.\n4. **Circular wait**: there is a chain of processes, each waiting for something the next one holds, with the last waiting on the first.\n\nA resource allocation graph makes it visible: an edge from a process to a resource means \"waiting for it\", an edge from a resource to a process means \"held by it\".\n\n```mermaid\nflowchart LR\n  accTitle: A cycle in a resource allocation graph, P1 holds R1 and wants R2 while P2 holds R2 and wants R1\n  R1[\"Resource R1\"] -->|\"held by\"| P1((\"P1\"))\n  P1 -->|\"requests\"| R2[\"Resource R2\"]\n  R2 -->|\"held by\"| P2((\"P2\"))\n  P2 -->|\"requests\"| R1\n```\n\nWith a single instance of each resource, a cycle means deadlock; with several instances, a cycle only makes deadlock possible.\n\n## Four ways to deal with it\n\n| Approach | How | Cost |\n|---|---|---|\n| Prevention | Design so one necessary condition can never hold | Lower utilisation or stricter coding rules |\n| Avoidance | Before each grant, check it cannot lead to an unsafe state (the banker's algorithm) | Needs each process's maximum demand up front |\n| Detection and recovery | Let deadlocks happen, look for cycles, then kill or roll back a process | Detection costs time; rollback can lose work |\n| Ignoring it | Assume deadlocks are rare and restart when one happens | What general-purpose OSes mostly do for user programs |\n\nThe most common prevention breaks **circular wait**: put all locks in one global order and have every thread take them in that order. A transfer that always locks the account with the smaller id first can never have A waiting on B while B waits on A. Breaking **hold and wait** means requesting everything at once and letting go of all of it if anything is missing; `tryLock` with a timeout is a limited form of preemption.\n\nDatabases are the textbook case of detection and recovery: when InnoDB finds a cycle of waiting transactions, it rolls back the cheaper one, and the application simply retries after the deadlock error.\n\n## The banker's algorithm\n\nThe banker's algorithm asks every process to declare its maximum demand (Max) in advance. The system tracks what each process holds (Allocation), and what it still needs is Need = Max − Allocation.\n\nA state is **safe** if some order exists in which every process can get its remaining need, finish and give everything back. To check: set Work = Available, then repeatedly find an unfinished process with Need ≤ Work, pretend it finishes, and add its Allocation to Work. If every process finishes, the state is safe.\n\nAn example with three resource types A, B and C, and Available = (3, 3, 2):\n\n| Process | Allocation | Max | Need |\n|---|---|---|---|\n| P0 | 0 1 0 | 7 5 3 | 7 4 3 |\n| P1 | 2 0 0 | 3 2 2 | 1 2 2 |\n| P2 | 3 0 2 | 9 0 2 | 6 0 0 |\n| P3 | 2 1 1 | 2 2 2 | 0 1 1 |\n| P4 | 0 0 2 | 4 3 3 | 4 3 1 |\n\nEach round scans from P0 for the first process that fits: P1 does (Work becomes 5 3 2), then P3 (7 4 3), P0 (7 5 3), P2 (10 5 5) and P4 (10 5 7). The safe sequence is P1 P3 P0 P2 P4. There is often more than one; a different scanning rule may find another order, and one is enough to call the state safe.\n\nNow P1 requests (1, 0, 2). That is within P1's Need (1, 2, 2) and within Available. Pretend to grant it: Available becomes (2, 3, 0). The safety check still finds P1 P3 P0 P2 P4, so the request is granted. Had the check failed, P1 would wait instead of getting the resources.\n\n## Try it\n\nThe simulator starts with exactly this example and shows step by step how Work changes and why a process is skipped. Change the request in the last part of the input to `P0 0 2 0` or `P4 3 3 0` and see which one is granted.\n\n```algorithm-demo\nbankers\n```\n\nNote that unsafe is not the same as deadlocked: unsafe only means the system can no longer guarantee that every process finishes. Processes may release resources early, and the outcome need not be a deadlock. The banker's algorithm simply never enters an unsafe state.\n\n## Key points\n\n- The four necessary conditions are mutual exclusion, hold and wait, no preemption and circular wait; remove any one and deadlock cannot happen.\n- With single-instance resources a cycle in the allocation graph is a deadlock; with several instances it is only a possibility.\n- In practice the usual prevention is one global lock order, which breaks circular wait.\n- The banker's algorithm uses Need = Max − Allocation and runs a safety check before every grant; if the result would be unsafe, the requester waits.\n- There can be several safe sequences; an unsafe state is not necessarily a deadlock, but the system can no longer promise anything.\n- Databases detect and recover: a cycle of waits rolls back one transaction, and the application retries.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "一个进程启动时一次性申请它需要的全部资源，拿不全就一个都不拿。这破坏了死锁的哪个必要条件？",
+              "qEn": "A process requests every resource it needs at startup and takes none unless it gets them all. Which necessary condition for deadlock does this break?",
+              "choices": [
+                {
+                  "zh": "互斥",
+                  "en": "Mutual exclusion"
+                },
+                {
+                  "zh": "占有并等待",
+                  "en": "Hold and wait"
+                },
+                {
+                  "zh": "不可抢占",
+                  "en": "No preemption"
+                },
+                {
+                  "zh": "循环等待",
+                  "en": "Circular wait"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "进程要么什么都不拿，要么一次拿全，就不会出现「拿着一部分再等另一部分」，占有并等待不成立。代价是资源被提前占着，利用率变低。按全局顺序加锁破坏的才是循环等待。",
+              "whyEn": "A process either holds nothing or holds everything, so it never sits on some resources while waiting for others: hold and wait cannot happen. The price is resources held long before they are used. A global lock order is what breaks circular wait."
+            },
+            {
+              "qZh": "系统有 3 个进程，每个进程最多同时需要 2 台同类打印机。至少要有几台打印机，才能保证不会死锁？",
+              "qEn": "Three processes each need at most 2 printers of the same kind at once. What is the smallest number of printers that guarantees no deadlock?",
+              "choices": [
+                {
+                  "zh": "3",
+                  "en": "3"
+                },
+                {
+                  "zh": "6",
+                  "en": "6"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "5",
+                  "en": "5"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "最坏情况是每个进程各拿到 1 台、都在等第 2 台：3 台时可能死锁。有 4 台时，总有一个进程能拿到 2 台，运行完归还后其他进程也能完成。一般公式是 n × (k − 1) + 1 = 3 × 1 + 1 = 4。",
+              "whyEn": "In the worst case each process holds 1 printer and waits for a second: with 3 printers that can deadlock. With 4, some process always gets its second printer, finishes and returns both, and the rest follow. In general n × (k − 1) + 1 = 3 × 1 + 1 = 4."
+            },
+            {
+              "qZh": "按银行家算法的说法，系统处于「不安全状态」意味着什么？",
+              "qEn": "In the banker's algorithm's terms, what does it mean for the system to be in an unsafe state?",
+              "choices": [
+                {
+                  "zh": "已经发生了死锁",
+                  "en": "A deadlock has already happened"
+                },
+                {
+                  "zh": "系统会立刻挑一个进程终止，释放它的资源来解除危险",
+                  "en": "The system immediately picks a process to kill and frees its resources to remove the danger"
+                },
+                {
+                  "zh": "所有进程都已经阻塞",
+                  "en": "Every process is already blocked"
+                },
+                {
+                  "zh": "不一定死锁，但系统无法保证所有进程都能完成",
+                  "en": "Not necessarily deadlocked, but the system cannot guarantee every process finishes"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "安全状态是指存在一个能让所有进程依次完成的顺序。不安全只是找不到这样的保证，进程如果提前释放资源，未必会死锁。死锁状态是不安全状态的一部分，反过来不成立。",
+              "whyEn": "A safe state has an order in which every process can finish. Unsafe only means no such guarantee exists; if processes release resources early, there may be no deadlock at all. Deadlocked states are a subset of unsafe ones, not the other way round."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "memory",
+          "titleZh": "内存管理与分页",
+          "titleEn": "Memory and Paging",
+          "bodyZh": "每个进程都以为自己独占一大片从 0 开始的连续内存，这是操作系统和 CPU 一起制造的假象，叫**虚拟内存**。它带来三个好处：进程之间互相隔离、程序不用关心自己被放在物理内存的哪里、地址空间可以比物理内存还大。这一节讲分页怎样把虚拟地址翻译成物理地址，以及页表、TLB 和缺页处理。\n\n## 分页：地址分成两段\n\n内存被切成固定大小的块：虚拟地址空间里的叫**页**，物理内存里的叫**页框**，常见大小是 4 KB。虚拟地址被拆成两段：高位是**页号**，低位是**页内偏移**。4 KB = 2¹² 字节，所以偏移占低 12 位。\n\n**页表**记录每个虚拟页映射到哪个页框，每一项（PTE）除了页框号，还有几个标志位：存在位（这一页现在在不在内存里）、读写执行权限、访问位、脏位（被写过没有）。\n\n例子：32 位地址、4 KB 页，虚拟地址 `0x00403A7C` 的页号是 `0x00403`，偏移是 `0xA7C`。如果页表说页 `0x403` 在页框 `0x1F2`，物理地址就是页框号接上原来的偏移：`0x1F2A7C`。偏移在翻译中保持不变。\n\n## 一次访存要经过哪些步骤\n\n```mermaid\nflowchart TD\n  accTitle: 虚拟地址翻译流程：先查 TLB，未命中查页表，页不在内存则缺页\n  va[\"虚拟地址\"] --> tlb{\"TLB 命中？\"}\n  tlb -->|\"命中\"| pa[\"物理地址，访问内存\"]\n  tlb -->|\"未命中\"| walk[\"查页表\"]\n  walk --> present{\"页在内存里？\"}\n  present -->|\"在\"| fill[\"写入 TLB\"] --> pa\n  present -->|\"不在\"| fault[\"缺页异常，内核从磁盘调入\"]\n  fault --> walk\n```\n\n**TLB** 是 MMU 里一小块专门缓存地址翻译的硬件。程序访问内存有局部性，所以 TLB 命中率通常很高。\n\n估算平均访存时间：假设查 TLB 要 10 ns，访问一次内存要 100 ns，页表只有一级，TLB 命中率 90%。命中时 10 + 100 = 110 ns；未命中要先访存读页表项，再访存读数据，10 + 100 + 100 = 210 ns。平均 0.9 × 110 + 0.1 × 210 = 120 ns。\n\n## 页表太大怎么办\n\n32 位地址、4 KB 页，一共 2²⁰ 个虚拟页，每项 4 字节，单级页表就要 4 MB，而且每个进程一份。可大多数进程只用了地址空间里很小的几块。\n\n**多级页表**把页号再拆开：第一级表的每一项指向一张第二级表，地址空间里没用到的区域，对应的第二级表根本不用分配。x86-64 常用 48 位虚拟地址，分成 4 级、每级 9 位，再加 12 位偏移；更新的 CPU 支持 5 级。代价是 TLB 未命中时要多次访存，所以 TLB 对多级页表更加重要。\n\n## 缺页时发生了什么\n\n访问一个存在位为 0 的页会触发**缺页异常**，CPU 转去执行内核的处理程序：\n\n1. 检查这个地址是否合法；不合法就是段错误，给进程发 SIGSEGV。\n2. 找一个空闲页框；没有就按置换算法选一页换出，脏页要先写回磁盘。\n3. 把需要的页从磁盘（或文件、交换区）读进页框，更新页表项。\n4. 回到用户态，重新执行刚才那条指令。\n\n需要读磁盘的叫**主缺页**，很慢；页已经在内存里、只是还没建立映射的（比如共享库已被别的进程加载，或者写时复制）叫**次缺页**，快得多。程序启动时并不会把整个可执行文件读进来，而是等第一次访问时才调入，这叫**按需调页**。\n\n## 碎片\n\n- **外部碎片**：空闲内存总量够，但被切成很多不连续的小块，放不下一个大的连续请求。按段或整块连续分配会有这个问题；分页的页框可以随意散落，所以没有外部碎片。\n- **内部碎片**：分出去的块比实际需要的大，多出来的部分浪费了。分页时一个进程最后一页通常用不满，最多浪费将近一页。\n\n## 要点\n\n- 虚拟地址 = 页号 + 页内偏移；4 KB 页的偏移占 12 位，翻译时偏移不变。\n- 页表项除了页框号，还有存在位、权限位、访问位和脏位。\n- TLB 缓存地址翻译；未命中时单级页表要多一次访存，多级页表要多好几次。\n- 多级页表只为用到的地址区域分配下级表，解决单级页表太大的问题。\n- 缺页由内核处理：找页框、必要时换出、从磁盘调入、更新页表、重新执行指令。\n- 分页没有外部碎片，但有不超过一页的内部碎片。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "Every process believes it owns a large, contiguous stretch of memory starting at 0. That illusion, built by the OS and the CPU together, is **virtual memory**. It buys three things: processes are isolated from each other, a program need not care where in physical memory it lands, and an address space can be larger than physical memory. This lesson shows how paging turns a virtual address into a physical one, and covers page tables, the TLB and page faults.\n\n## Paging: an address in two parts\n\nMemory is cut into fixed-size blocks: **pages** in the virtual address space and **frames** in physical memory, commonly 4 KB. A virtual address splits into a **page number** in the high bits and a **page offset** in the low bits. Since 4 KB = 2¹² bytes, the offset is the low 12 bits.\n\nThe **page table** records which frame each virtual page maps to. Besides the frame number, each entry (PTE) has flag bits: present (is the page in memory right now), read/write/execute permissions, accessed, and dirty (has it been written).\n\nAn example with 32-bit addresses and 4 KB pages: virtual address `0x00403A7C` has page number `0x00403` and offset `0xA7C`. If the page table puts page `0x403` in frame `0x1F2`, the physical address is the frame number followed by the same offset: `0x1F2A7C`. Translation never changes the offset.\n\n## The steps of one memory access\n\n```mermaid\nflowchart TD\n  accTitle: Address translation, the TLB first, then the page table, and a page fault if the page is not in memory\n  va[\"Virtual address\"] --> tlb{\"TLB hit?\"}\n  tlb -->|\"hit\"| pa[\"Physical address, access memory\"]\n  tlb -->|\"miss\"| walk[\"Walk the page table\"]\n  walk --> present{\"Page in memory?\"}\n  present -->|\"yes\"| fill[\"Fill the TLB\"] --> pa\n  present -->|\"no\"| fault[\"Page fault, the kernel loads it from disk\"]\n  fault --> walk\n```\n\nThe **TLB** is a small piece of hardware in the MMU that caches translations. Programs access memory with locality, so the TLB hit rate is usually very high.\n\nEstimating the average access time: say a TLB lookup takes 10 ns, a memory access 100 ns, the page table has one level, and the TLB hits 90% of the time. A hit costs 10 + 100 = 110 ns; a miss first reads the page table entry from memory and then the data, 10 + 100 + 100 = 210 ns. The average is 0.9 × 110 + 0.1 × 210 = 120 ns.\n\n## When the page table is too big\n\nWith 32-bit addresses and 4 KB pages there are 2²⁰ virtual pages; at 4 bytes an entry, a single-level table takes 4 MB, for every process. Yet most processes use only a few small regions of their address space.\n\nA **multi-level page table** splits the page number again: each entry of the first-level table points to a second-level table, and regions of the address space that are never used get no second-level table at all. x86-64 commonly uses 48-bit virtual addresses split into 4 levels of 9 bits plus a 12-bit offset; newer CPUs support 5 levels. The price is several memory reads on a TLB miss, so the TLB matters even more with multi-level tables.\n\n## What happens on a page fault\n\nTouching a page whose present bit is 0 raises a **page fault**, and the CPU jumps to the kernel's handler:\n\n1. Check that the address is legal; if not, it is a segmentation fault and the process gets SIGSEGV.\n2. Find a free frame; if there is none, pick a victim with the replacement algorithm, writing it back first if it is dirty.\n3. Read the needed page from disk (a file or swap) into the frame and update the page table entry.\n4. Return to user mode and re-run the instruction that faulted.\n\nA fault that has to read the disk is a **major fault** and slow. One where the page is already in memory and only lacks a mapping (a shared library another process already loaded, or copy-on-write) is a **minor fault** and much cheaper. A program's executable is not read in whole at startup; each page is loaded on first touch, which is **demand paging**.\n\n## Fragmentation\n\n- **External fragmentation**: there is enough free memory in total, but it is broken into scattered pieces too small for one large contiguous request. Segment or whole-block allocation suffers from it; paging can scatter frames anywhere, so it has none.\n- **Internal fragmentation**: a block handed out is larger than what was needed and the rest is wasted. With paging a process's last page is rarely full, wasting up to almost a page.\n\n## Key points\n\n- A virtual address is a page number plus an offset; with 4 KB pages the offset is 12 bits, and translation leaves it unchanged.\n- Besides the frame number, a page table entry holds present, permission, accessed and dirty bits.\n- The TLB caches translations; a miss costs one extra memory read with a single-level table and several with a multi-level one.\n- Multi-level page tables allocate lower-level tables only for regions in use, which fixes the size of single-level tables.\n- The kernel handles a page fault: find a frame, evict if needed, load from disk, update the table, re-run the instruction.\n- Paging has no external fragmentation but up to a page of internal fragmentation.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "查 TLB 要 20 ns，访问一次内存要 100 ns，页表只有一级，TLB 命中率 80%。平均每次访存要多久？",
+              "qEn": "A TLB lookup takes 20 ns, a memory access 100 ns, the page table has one level and the TLB hit rate is 80%. What is the average time per memory access?",
+              "choices": [
+                {
+                  "zh": "140 ns",
+                  "en": "140 ns"
+                },
+                {
+                  "zh": "120 ns",
+                  "en": "120 ns"
+                },
+                {
+                  "zh": "220 ns",
+                  "en": "220 ns"
+                },
+                {
+                  "zh": "100 ns",
+                  "en": "100 ns"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "命中：20 + 100 = 120 ns；未命中要先访存读页表项再读数据：20 + 100 + 100 = 220 ns。平均 0.8 × 120 + 0.2 × 220 = 96 + 44 = 140 ns。",
+              "whyEn": "A hit costs 20 + 100 = 120 ns; a miss reads the page table entry and then the data, 20 + 100 + 100 = 220 ns. The average is 0.8 × 120 + 0.2 × 220 = 96 + 44 = 140 ns."
+            },
+            {
+              "qZh": "进程 A 和进程 B 都访问虚拟地址 0x1000。下列说法正确的是？",
+              "qEn": "Processes A and B both access virtual address 0x1000. Which statement is right?",
+              "choices": [
+                {
+                  "zh": "它们一定访问同一块物理内存",
+                  "en": "They always reach the same physical memory"
+                },
+                {
+                  "zh": "通常映射到不同的物理页框，因为各有各的页表",
+                  "en": "They usually map to different frames, since each has its own page table"
+                },
+                {
+                  "zh": "后访问的进程一定会触发段错误",
+                  "en": "Whichever accesses it second always gets a segmentation fault"
+                },
+                {
+                  "zh": "操作系统会在加载时把其中一个进程的这个地址改掉，避免两者冲突",
+                  "en": "The OS rewrites that address in one of the processes at load time so the two do not clash"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "每个进程有自己的页表，同一个虚拟地址在两张表里可以指向不同的页框，这就是隔离。只有共享内存、共享库的代码页这类情况，才会故意让它们映射到同一个页框。",
+              "whyEn": "Each process has its own page table, so the same virtual address can point to different frames in each: that is isolation. Only cases like shared memory or a shared library's code pages deliberately map both to the same frame."
+            },
+            {
+              "qZh": "操作系统使用多级页表，主要是为了什么？",
+              "qEn": "What is the main reason operating systems use multi-level page tables?",
+              "choices": [
+                {
+                  "zh": "让每一次地址翻译都更快",
+                  "en": "To make every address translation faster"
+                },
+                {
+                  "zh": "消除内部碎片",
+                  "en": "To eliminate internal fragmentation"
+                },
+                {
+                  "zh": "地址空间大多空着时，只为用到的部分分配页表，节省内存",
+                  "en": "To save memory by allocating page tables only for the parts of a mostly empty address space in use"
+                },
+                {
+                  "zh": "让进程能使用比物理内存更大的地址空间",
+                  "en": "To let a process use an address space larger than physical memory"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "单级页表要为整个地址空间的每一页都留一项，很浪费。多级页表让没用到的区域不分配下级表。代价是 TLB 未命中时要多次访存，翻译反而更慢；地址空间比物理内存大是虚拟内存本身带来的。",
+              "whyEn": "A single-level table needs an entry for every page of the whole address space, which wastes memory. Multi-level tables skip lower-level tables for unused regions. The price is more memory reads on a TLB miss, so translation gets slower, not faster; a larger-than-physical address space comes from virtual memory itself."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "page-replacement",
+          "titleZh": "页面置换",
+          "titleEn": "Page Replacement",
+          "bodyZh": "缺页时如果没有空闲页框，内核就得挑一页换出去，给新页腾地方。挑错了，刚换出去的页马上又要用，缺页一次接一次。页面置换算法决定换出谁，考题最爱给一串访问序列让你数缺页次数。这一节比较 OPT、FIFO、LRU 和 Clock，并解释 Belady 异常和抖动。\n\n## 先把规则说清楚\n\n- 访问的页已经在某个页框里：**命中**，什么都不用做。\n- 不在：**缺页**。有空页框就直接放进去（开始时页框为空，前几次访问一定缺页）；没有就选一页换出。\n- 被换出的页如果是脏页（被写过），要先写回磁盘，所以换出干净页更便宜。\n\n## 四种算法\n\n| 算法 | 换出谁 | 特点 |\n|---|---|---|\n| OPT（最优） | 将来最久不会再被访问的页 | 缺页最少，但要预知未来，只能当评价标准 |\n| FIFO | 最早进入内存的页 | 实现最简单，会出现 Belady 异常 |\n| LRU | 最久没有被访问过的页 | 用\"过去\"预测\"将来\"，效果接近 OPT，精确实现成本高 |\n| Clock（二次机会） | 指针扫到的第一个引用位为 0 的页 | 用一个引用位近似 LRU，硬件开销小 |\n\n## 用 FIFO 数一遍\n\n访问序列 `1 2 3 4 1 2 5 1 2 3 4 5`，3 个页框，开始为空：\n\n| 访问 | 页框（按进入顺序） | 结果 |\n|---|---|---|\n| 1 | 1 | 缺页 |\n| 2 | 1 2 | 缺页 |\n| 3 | 1 2 3 | 缺页 |\n| 4 | 2 3 4 | 缺页，换出 1 |\n| 1 | 3 4 1 | 缺页，换出 2 |\n| 2 | 4 1 2 | 缺页，换出 3 |\n| 5 | 1 2 5 | 缺页，换出 4 |\n| 1 | 1 2 5 | 命中 |\n| 2 | 1 2 5 | 命中 |\n| 3 | 2 5 3 | 缺页，换出 1 |\n| 4 | 5 3 4 | 缺页，换出 2 |\n| 5 | 5 3 4 | 命中 |\n\n一共 9 次缺页。同一个序列用 OPT 只有 7 次。奇怪的是，把页框加到 4 个，FIFO 反而缺页 10 次：页框多了缺页却更多，这就是 **Belady 异常**。\n\nLRU 和 OPT 不会出现这种异常，因为它们有\"栈性质\"：k 个页框时留在内存里的页，总是 k + 1 个页框时那些页的子集，多一个页框只会让命中更多。\n\n## Clock：便宜的 LRU 近似\n\n精确的 LRU 要在每次访存时记录时间或调整链表，硬件扛不住。Clock 只用每页一个**引用位**：页被访问时硬件把它置 1。所有页框围成一个环，需要换出时：\n\n```mermaid\nflowchart TD\n  accTitle: Clock 置换：引用位为 1 就清零并给第二次机会，为 0 就换出\n  start[\"需要换出一页\"] --> look[\"看指针指向的页\"]\n  look --> bit{\"引用位是 1？\"}\n  bit -->|\"是\"| clear[\"清零，指针前进一格\"]\n  clear --> look\n  bit -->|\"否\"| evict[\"换出这一页，新页放进来，指针前进\"]\n```\n\n最近被访问过的页会被跳过一次，相当于多给了一次机会；如果所有页的引用位都是 1，指针转一圈把它们清零后就退化成 FIFO。改进版还会同时看脏位，优先换出\"没访问、也没写过\"的页。Linux 的页回收用活跃和不活跃两条链表，也是 LRU 的一种近似。\n\n在应用层，LRU 缓存常用\"哈希表 + 双向链表\"实现，查找、更新和淘汰都是 O(1)。\n\n## 动手试试\n\n模拟器默认演示上面的 FIFO 例子，最后一步还会列出页框数从 1 到 7 时各缺页几次，Belady 异常一眼可见。把算法改成 `lru`、`opt` 或 `clock`，先自己数一遍再对答案。\n\n```algorithm-demo\npage-replacement\n```\n\n## 抖动与工作集\n\n如果一个进程频繁使用的页（它的**工作集**）放不进分到的页框，它就会刚换出一页又马上要用回来，CPU 大部分时间在等磁盘，这叫**抖动**。这时增加更多进程只会让情况更糟。解决办法是减少同时运行的进程、给进程足够的页框，或者加内存。\n\n## 要点\n\n- 缺页且没有空闲页框时才需要置换；换出脏页要先写回磁盘。\n- OPT 换出将来最久不用的页，缺页最少，但需要预知未来，只能作为基准。\n- FIFO 最简单，但会出现 Belady 异常：页框变多，缺页反而增加。\n- LRU 换出最久没用过的页，和 OPT 一样具有栈性质，不会出现 Belady 异常。\n- Clock 用引用位近似 LRU：引用位为 1 就清零跳过，为 0 就换出。\n- 工作集放不进内存会导致抖动，此时应减少并发进程或增加内存。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "When a page fault finds no free frame, the kernel has to evict a page to make room. Pick badly and the page just thrown out is needed again at once, fault after fault. A page replacement algorithm chooses the victim, and exam questions love to hand you a reference string and ask for the number of faults. This lesson compares OPT, FIFO, LRU and Clock, and explains Belady's anomaly and thrashing.\n\n## The rules first\n\n- The page is already in a frame: a **hit**, nothing to do.\n- It is not: a **page fault**. If a frame is free, the page goes there (frames start empty, so the first few accesses always fault); otherwise a page is evicted.\n- A dirty victim (one that was written) must be written back to disk first, so evicting a clean page is cheaper.\n\n## Four algorithms\n\n| Algorithm | Evicts | Notes |\n|---|---|---|\n| OPT (optimal) | The page that will not be used for the longest time | Fewest faults, but needs the future; only a yardstick |\n| FIFO | The page that entered memory first | Simplest; suffers Belady's anomaly |\n| LRU | The page unused for the longest time | Uses the past to predict the future; close to OPT, costly to do exactly |\n| Clock (second chance) | The first page with reference bit 0 under the hand | Approximates LRU with one bit per page |\n\n## Counting with FIFO\n\nReference string `1 2 3 4 1 2 5 1 2 3 4 5`, 3 frames, starting empty:\n\n| Access | Frames (in order of arrival) | Result |\n|---|---|---|\n| 1 | 1 | fault |\n| 2 | 1 2 | fault |\n| 3 | 1 2 3 | fault |\n| 4 | 2 3 4 | fault, evicts 1 |\n| 1 | 3 4 1 | fault, evicts 2 |\n| 2 | 4 1 2 | fault, evicts 3 |\n| 5 | 1 2 5 | fault, evicts 4 |\n| 1 | 1 2 5 | hit |\n| 2 | 1 2 5 | hit |\n| 3 | 2 5 3 | fault, evicts 1 |\n| 4 | 5 3 4 | fault, evicts 2 |\n| 5 | 5 3 4 | hit |\n\nThat is 9 faults. OPT on the same string has only 7. Stranger still, with 4 frames FIFO faults 10 times: more frames, more faults. This is **Belady's anomaly**.\n\nLRU and OPT never show it because they are stack algorithms: the pages held with k frames are always a subset of those held with k + 1 frames, so an extra frame can only add hits.\n\n## Clock: a cheap approximation of LRU\n\nExact LRU would have to record a timestamp or reorder a list on every memory access, which hardware cannot afford. Clock uses one **reference bit** per page, set by the hardware whenever the page is touched. The frames form a ring, and when a victim is needed:\n\n```mermaid\nflowchart TD\n  accTitle: Clock replacement, a reference bit of 1 is cleared for a second chance and a bit of 0 is evicted\n  start[\"Need to evict a page\"] --> look[\"Look at the page under the hand\"]\n  look --> bit{\"Reference bit is 1?\"}\n  bit -->|\"yes\"| clear[\"Clear it, advance the hand\"]\n  clear --> look\n  bit -->|\"no\"| evict[\"Evict this page, load the new one, advance\"]\n```\n\nA recently used page is skipped once, which is its second chance; if every bit is 1, the hand clears them all in one sweep and Clock behaves like FIFO. An enhanced version also looks at the dirty bit and prefers pages neither used nor written. Linux reclaims pages with active and inactive lists, another approximation of LRU.\n\nIn application code an LRU cache is usually a hash map plus a doubly linked list, with O(1) lookup, update and eviction.\n\n## Try it\n\nThe simulator starts with the FIFO example above, and its last step lists the fault counts for 1 to 7 frames, so Belady's anomaly is easy to spot. Switch the algorithm to `lru`, `opt` or `clock`, count by hand first, then check.\n\n```algorithm-demo\npage-replacement\n```\n\n## Thrashing and the working set\n\nIf the pages a process uses heavily (its **working set**) do not fit in the frames it has, every page it evicts is needed again moments later, and the CPU spends most of its time waiting for the disk: **thrashing**. Starting more processes only makes it worse. The fix is fewer processes at once, enough frames per process, or more memory.\n\n## Key points\n\n- Replacement happens only on a fault with no free frame; a dirty victim is written back first.\n- OPT evicts the page unused for the longest time ahead and faults least, but needs the future, so it serves as a benchmark.\n- FIFO is the simplest but shows Belady's anomaly: more frames can mean more faults.\n- LRU evicts the page unused for the longest time; like OPT it is a stack algorithm and never shows the anomaly.\n- Clock approximates LRU with a reference bit: a 1 is cleared and skipped, a 0 is evicted.\n- A working set that does not fit causes thrashing; run fewer processes or add memory.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "3 个页框、初始为空，访问序列 7 0 1 2 0 3 0 4，用 FIFO 置换，一共缺页几次？",
+              "qEn": "With 3 empty frames and the reference string 7 0 1 2 0 3 0 4, how many page faults does FIFO cause?",
+              "choices": [
+                {
+                  "zh": "6",
+                  "en": "6"
+                },
+                {
+                  "zh": "8",
+                  "en": "8"
+                },
+                {
+                  "zh": "5",
+                  "en": "5"
+                },
+                {
+                  "zh": "7",
+                  "en": "7"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "7、0、1 填满页框；2 换出 7；0 命中；3 换出最早进来的 0；接着 0 又缺页，换出 1；4 换出 2。只有第二次访问 0 命中，8 次访问缺页 7 次。同一序列用 LRU 是 6 次。",
+              "whyEn": "7, 0 and 1 fill the frames; 2 evicts 7; 0 hits; 3 evicts 0, the oldest; then 0 faults again and evicts 1; 4 evicts 2. Only the second access to 0 hits, so 8 accesses give 7 faults. LRU on the same string gives 6."
+            },
+            {
+              "qZh": "LRU 为什么不会出现 Belady 异常？",
+              "qEn": "Why does LRU never show Belady's anomaly?",
+              "choices": [
+                {
+                  "zh": "k 个页框时内存里的页，总是 k+1 个页框时那些页的子集",
+                  "en": "The pages held with k frames are always a subset of those held with k+1 frames"
+                },
+                {
+                  "zh": "LRU 的缺页次数总是所有算法里最少的，所以多给页框只会更好",
+                  "en": "LRU always has the fewest faults of any algorithm, so extra frames can only ever help"
+                },
+                {
+                  "zh": "LRU 从不换出脏页",
+                  "en": "LRU never evicts dirty pages"
+                },
+                {
+                  "zh": "LRU 只在页框数为偶数时使用",
+                  "en": "LRU is used only with an even number of frames"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "这叫栈性质：多一个页框时，原来在内存里的页一个不少，只会多留一页，所以命中只增不减。缺页最少的是 OPT，不是 LRU；FIFO 没有栈性质，才会出现异常。",
+              "whyEn": "That is the stack property: with one more frame every page that was in memory is still there, plus one, so hits can only grow. The fewest faults belong to OPT, not LRU; FIFO lacks the stack property, which is why it shows the anomaly."
+            },
+            {
+              "qZh": "Clock（二次机会）算法里，指针扫到一个引用位为 1 的页时会怎样？",
+              "qEn": "In the Clock (second-chance) algorithm, what happens when the hand reaches a page whose reference bit is 1?",
+              "choices": [
+                {
+                  "zh": "立即换出这一页",
+                  "en": "That page is evicted right away"
+                },
+                {
+                  "zh": "把引用位清零，指针移到下一页",
+                  "en": "Its bit is cleared and the hand moves on"
+                },
+                {
+                  "zh": "把这一页标记为脏页",
+                  "en": "The page is marked dirty"
+                },
+                {
+                  "zh": "停下来，等这一页再被访问一次",
+                  "en": "The hand stops until the page is touched again"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "引用位为 1 说明最近用过，算法给它第二次机会：清零后跳过。指针继续前进，换出第一个引用位为 0 的页。如果一圈下来全被清零，就回到起点换出那一页。",
+              "whyEn": "A bit of 1 means the page was used recently, so it gets a second chance: the bit is cleared and the page skipped. The hand keeps going and evicts the first page with bit 0; if a full sweep clears every bit, the page where it started is evicted."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "file-system",
+          "titleZh": "文件系统",
+          "titleEn": "File Systems",
+          "bodyZh": "磁盘只认识编了号的数据块，而我们看到的是有名字、有目录、有权限的文件。文件系统负责中间这层翻译。这一节以 Unix 系文件系统为例，讲 inode、目录、硬链接和软链接、文件描述符，以及为什么删了文件磁盘空间却没回来。\n\n## 从路径到数据块\n\n文件系统里有三样东西：\n\n- **数据块**：存文件内容，常见大小 4 KB。\n- **inode**：每个文件一个，记录文件的元数据：类型、大小、所有者、权限、时间戳、链接数，以及内容放在哪些数据块里。**inode 里没有文件名。**\n- **目录**：本身也是一种文件，内容是一张\"名字 → inode 号\"的表。\n\n打开 `/home/a.txt` 的过程：\n\n```mermaid\nflowchart LR\n  accTitle: 路径查找：从根目录的 inode 逐级找到 a.txt 的数据块\n  root[\"根目录 inode\"] --> rdir[\"根目录内容：home → inode 12\"]\n  rdir --> home[\"inode 12（目录）\"]\n  home --> hdir[\"home 的内容：a.txt → inode 1234\"]\n  hdir --> file[\"inode 1234（普通文件）\"]\n  file --> blocks[\"数据块\"]\n```\n\n每一级都要读一次 inode 和目录内容，所以内核会缓存最近查过的路径（dentry 缓存）。\n\n## 数据块怎么记\n\n| 方式 | 做法 | 优缺点 |\n|---|---|---|\n| 连续分配 | 文件占一段连续的块 | 顺序读最快；文件难以增长，有外部碎片 |\n| 链式分配 | 每块记下一块在哪（FAT 把这些指针集中成一张表） | 不怕碎片；随机访问要一路往下找 |\n| 索引分配 | inode 里存块号列表 | 随机访问快；大文件需要多级索引 |\n\n经典的 Unix inode 用索引分配：12 个直接指针，再加一级、二级、三级间接指针。假设块大小 4 KB、块号 4 字节，一个间接块能放 4096 / 4 = 1024 个块号：\n\n- 直接指针：12 × 4 KB = 48 KB\n- 一级间接：1024 × 4 KB = 4 MB\n- 二级间接：1024² × 4 KB = 4 GB\n- 三级间接：1024³ × 4 KB = 4 TB\n\n小文件只用直接指针，读起来最快。ext4 改用 extent，一条记录描述\"从第几块开始连续多少块\"，大文件的元数据更少。\n\n## 硬链接和软链接\n\n| | 硬链接 | 软链接（符号链接） |\n|---|---|---|\n| 本质 | 另一个目录项，指向同一个 inode | 一个独立的小文件，内容是目标的路径 |\n| 链接数 | inode 的链接数加 1 | 不影响目标 |\n| 删除原文件后 | 仍能访问，数据还在 | 变成悬空链接 |\n| 跨文件系统 / 指向目录 | 都不行 | 都可以 |\n\n`rm` 删除的其实是目录项，叫 unlink。inode 的链接数减到 0、而且没有进程还打开着它，数据块才会被释放。所以删掉一个还在被写的大日志文件，`df` 显示的空间并不会减少，要等写它的进程关闭文件或退出。\n\n## 文件描述符\n\n进程调用 `open()` 得到一个小整数，即**文件描述符**。背后有三层表：\n\n1. 每个进程的**描述符表**：描述符 → 打开文件表项。\n2. 系统级的**打开文件表**：记录读写位置（偏移）和打开方式。\n3. **inode**：文件本身。\n\n`fork()` 后父子进程的描述符指向同一个打开文件表项，所以共享读写位置；`dup()` 也是这样。同一个文件 `open()` 两次，得到两个表项，各有各的偏移。0、1、2 默认是标准输入、标准输出和标准错误。\n\n## 写入什么时候算落盘\n\n`write()` 返回只说明数据进了内核的**页缓存**，内核稍后才把脏页写回磁盘，这期间断电就会丢。需要保证落盘时调用 `fsync()`，数据库提交事务时就是这么做的。\n\n一次写文件往往要改好几处：数据块、inode、空闲块位图。写到一半断电，文件系统可能不一致。**日志**（journaling）的做法是先把要做的修改写进日志并提交，再真正去改；崩溃后重放已提交的日志即可。ext4 默认只给元数据记日志，但保证数据块先于对应的元数据落盘。\n\n## 要点\n\n- inode 存文件的元数据和数据块位置，不存文件名；文件名在目录项里。\n- 目录是\"名字 → inode 号\"的表，路径查找逐级读目录和 inode。\n- 4 KB 块、4 字节块号时，一个间接块指向 1024 块，即 4 MB 数据。\n- 硬链接共享 inode，不能跨文件系统；软链接存路径，目标删了就悬空。\n- 链接数为 0 且没有进程打开时，数据才真正释放。\n- `write()` 只到页缓存，`fsync()` 才保证落盘；日志让文件系统在崩溃后保持一致。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "A disk only knows numbered blocks of data, yet we see files with names, directories and permissions. The file system translates between the two. Using Unix-style file systems as the example, this lesson covers inodes, directories, hard and symbolic links, file descriptors, and why deleting a file does not always give the disk space back.\n\n## From a path to data blocks\n\nA file system holds three kinds of thing:\n\n- **Data blocks** hold file contents, commonly 4 KB each.\n- An **inode**, one per file, holds the metadata: type, size, owner, permissions, timestamps, link count, and which data blocks hold the contents. **An inode has no file name.**\n- A **directory** is itself a file, whose contents are a table of \"name → inode number\".\n\nOpening `/home/a.txt` goes like this:\n\n```mermaid\nflowchart LR\n  accTitle: Path lookup from the root directory's inode down to the data blocks of a.txt\n  root[\"Root directory inode\"] --> rdir[\"Root contents: home → inode 12\"]\n  rdir --> home[\"inode 12 (directory)\"]\n  home --> hdir[\"home's contents: a.txt → inode 1234\"]\n  hdir --> file[\"inode 1234 (regular file)\"]\n  file --> blocks[\"Data blocks\"]\n```\n\nEach level reads an inode and a directory, so the kernel caches recently resolved paths (the dentry cache).\n\n## Recording the blocks\n\n| Method | How | Trade-offs |\n|---|---|---|\n| Contiguous | The file occupies one run of blocks | Fastest sequential reads; hard to grow, external fragmentation |\n| Linked | Each block names the next (FAT gathers these pointers into one table) | No fragmentation trouble; random access walks the chain |\n| Indexed | The inode stores a list of block numbers | Fast random access; large files need several levels |\n\nThe classic Unix inode is indexed: 12 direct pointers, then single, double and triple indirect pointers. With 4 KB blocks and 4-byte block numbers, an indirect block holds 4096 / 4 = 1024 block numbers:\n\n- Direct: 12 × 4 KB = 48 KB\n- Single indirect: 1024 × 4 KB = 4 MB\n- Double indirect: 1024² × 4 KB = 4 GB\n- Triple indirect: 1024³ × 4 KB = 4 TB\n\nSmall files use only direct pointers and read fastest. ext4 switched to extents, where one record says \"this many contiguous blocks starting here\", which keeps a large file's metadata small.\n\n## Hard links and symbolic links\n\n| | Hard link | Symbolic link |\n|---|---|---|\n| What it is | Another directory entry for the same inode | A small file of its own whose contents are the target's path |\n| Link count | Raises the inode's link count by 1 | Leaves the target's alone |\n| After the original is deleted | Still works; the data is still there | Dangles |\n| Across file systems / to a directory | Neither | Both |\n\nWhat `rm` removes is the directory entry; the call is unlink. The data blocks are freed only when the inode's link count reaches 0 and no process still has the file open. So deleting a large log file that a process is still writing does not shrink the usage `df` reports until that process closes the file or exits.\n\n## File descriptors\n\n`open()` gives a process a small integer, the **file descriptor**. Three tables sit behind it:\n\n1. The per-process **descriptor table**: descriptor → open file entry.\n2. The system-wide **open file table**: the current offset and the open mode.\n3. The **inode**: the file itself.\n\nAfter `fork()`, parent and child descriptors point at the same open file entry, so they share the offset; `dup()` does the same. Opening the same file twice gives two entries, each with its own offset. Descriptors 0, 1 and 2 are standard input, standard output and standard error.\n\n## When a write is on disk\n\nWhen `write()` returns, the data has only reached the kernel's **page cache**; the kernel writes dirty pages back later, and a power cut in between loses them. To be sure the data is on disk, call `fsync()`, which is what databases do when committing a transaction.\n\nOne file write often touches several places: data blocks, the inode, the free-block bitmap. A crash halfway can leave the file system inconsistent. **Journaling** first writes the intended changes to a journal and commits them, then applies them; after a crash, replaying the committed journal entries is enough. ext4 journals only metadata by default, but makes sure data blocks reach the disk before the metadata that points to them.\n\n## Key points\n\n- An inode holds a file's metadata and block locations, not its name; names live in directory entries.\n- A directory is a table of \"name → inode number\"; path lookup reads directories and inodes level by level.\n- With 4 KB blocks and 4-byte block numbers, one indirect block points to 1024 blocks, 4 MB of data.\n- Hard links share an inode and cannot cross file systems; symbolic links store a path and dangle when the target goes.\n- Data is freed only when the link count is 0 and no process has the file open.\n- `write()` reaches the page cache; `fsync()` makes it durable, and journaling keeps the file system consistent after a crash.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "块大小 4 KB、块号占 4 字节。inode 的一个一级间接指针最多能让文件多寻址多少数据？",
+              "qEn": "Blocks are 4 KB and block numbers take 4 bytes. How much data can one single-indirect pointer in an inode address?",
+              "choices": [
+                {
+                  "zh": "4 KB",
+                  "en": "4 KB"
+                },
+                {
+                  "zh": "1 MB",
+                  "en": "1 MB"
+                },
+                {
+                  "zh": "4 MB",
+                  "en": "4 MB"
+                },
+                {
+                  "zh": "4 GB",
+                  "en": "4 GB"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "间接块本身 4 KB，能放 4096 / 4 = 1024 个块号，每个块 4 KB，共 1024 × 4 KB = 4 MB。4 GB 是二级间接指针的容量。",
+              "whyEn": "The indirect block is 4 KB and holds 4096 / 4 = 1024 block numbers, each naming a 4 KB block: 1024 × 4 KB = 4 MB. 4 GB is what a double-indirect pointer reaches."
+            },
+            {
+              "qZh": "一个文件有两个硬链接 a 和 b。执行 rm a 之后，b 会怎样？",
+              "qEn": "A file has two hard links, a and b. After rm a, what happens to b?",
+              "choices": [
+                {
+                  "zh": "也随之失效",
+                  "en": "It stops working too"
+                },
+                {
+                  "zh": "数据被立即清除，b 变成空文件",
+                  "en": "The data is wiped at once and b becomes empty"
+                },
+                {
+                  "zh": "自动变成一个软链接",
+                  "en": "It turns into a symbolic link"
+                },
+                {
+                  "zh": "仍然可用，链接数减到 0 才释放数据",
+                  "en": "It still works; the data is freed only when the link count reaches 0"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "硬链接是指向同一个 inode 的两个目录项，地位完全相同。rm 只删掉 a 这个目录项，inode 的链接数从 2 变成 1，数据还在，b 照常访问。",
+              "whyEn": "Hard links are two directory entries for the same inode, with equal standing. rm removes only the entry a; the inode's link count drops from 2 to 1, the data stays and b works as before."
+            },
+            {
+              "qZh": "在 Unix 系文件系统里，文件名存在哪里？",
+              "qEn": "In a Unix-style file system, where is a file's name stored?",
+              "choices": [
+                {
+                  "zh": "在所在目录的目录项里，目录项把名字映射到 inode 号",
+                  "en": "In its directory's entries, which map names to inode numbers"
+                },
+                {
+                  "zh": "在文件自己的 inode 里，和大小、权限、时间戳这些元数据放在一起",
+                  "en": "In the file's own inode, alongside its size, permissions and timestamps"
+                },
+                {
+                  "zh": "在文件数据的第一个块里",
+                  "en": "In the first block of the file's data"
+                },
+                {
+                  "zh": "在超级块里",
+                  "en": "In the superblock"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "inode 只存元数据和数据块位置，不存名字。正因为名字在目录项里，一个 inode 才能有多个名字（硬链接），重命名同一目录下的文件也只需要改目录项。",
+              "whyEn": "An inode holds metadata and block locations, never a name. Because names live in directory entries, one inode can have several names (hard links), and renaming a file within a directory only edits a directory entry."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "io-models",
+          "titleZh": "I/O 模型",
+          "titleEn": "I/O Models",
+          "bodyZh": "一台服务器要同时伺候成千上万个连接，不可能每个连接开一个线程干等。I/O 模型讨论的就是\"等数据\"这件事怎么安排。这一节讲五种 I/O 模型、select/poll/epoll 的区别、水平触发和边缘触发，以及零拷贝。\n\n## 一次读操作的两个阶段\n\n从套接字读数据分两步：\n\n1. **等数据就绪**：数据从网络到达，进入内核的接收缓冲区。这一步可能要等很久。\n2. **拷贝数据**：内核把数据从自己的缓冲区复制到进程的缓冲区。这一步很快，但需要 CPU。\n\n五种模型的区别，就在于这两个阶段里进程是不是被卡住。\n\n| 模型 | 阶段 1 | 阶段 2 | 说明 |\n|---|---|---|---|\n| 阻塞 I/O | 阻塞 | 阻塞 | `read()` 一直等到数据拷贝完才返回 |\n| 非阻塞 I/O | 反复轮询 | 阻塞 | 没数据时立即返回 EAGAIN，进程得自己反复问 |\n| I/O 多路复用 | 阻塞在 select/epoll 上 | 阻塞 | 一个线程同时等很多描述符，哪个就绪就去读哪个 |\n| 信号驱动 I/O | 不阻塞 | 阻塞 | 数据就绪时内核发 SIGIO 通知，用得少 |\n| 异步 I/O | 不阻塞 | 不阻塞 | 内核把数据拷贝完再通知进程，如 Linux 的 io_uring |\n\n前四种在拷贝阶段都要进程自己调用 `read()` 并等它完成，所以都算**同步 I/O**；只有最后一种连拷贝都由内核代劳，才是真正的**异步 I/O**。\"非阻塞\"和\"异步\"不是一回事。\n\n## 多路复用：select、poll 与 epoll\n\n```mermaid\nsequenceDiagram\n  accTitle: epoll 的使用流程：注册一次，之后每次只拿回就绪的描述符\n  participant App as 应用线程\n  participant K as 内核\n  App->>K: epoll_create 创建实例\n  App->>K: epoll_ctl 注册套接字和关心的事件\n  App->>K: epoll_wait 等待\n  Note over K: 网卡收到数据，套接字变为可读\n  K-->>App: 返回就绪列表（只含就绪的描述符）\n  App->>K: read 读取数据\n```\n\n| | select | poll | epoll |\n|---|---|---|---|\n| 描述符数量 | 受 FD_SETSIZE 限制，通常 1024 | 无固定上限 | 无固定上限 |\n| 每次调用 | 把整个集合拷进内核，返回后再扫一遍 | 同样要传入并扫描整个数组 | 注册一次，`epoll_wait` 只返回就绪的 |\n| 复杂度 | O(监听的总数) | O(监听的总数) | O(就绪的数量) |\n\n连接多但同一时刻活跃的少，正是 epoll 的用武之地。macOS 和 BSD 上对应的机制是 kqueue。\n\n## 水平触发和边缘触发\n\n- **水平触发**（LT，epoll 默认）：只要缓冲区里还有没读完的数据，每次 `epoll_wait` 都会报告这个描述符。写起来不容易出错。\n- **边缘触发**（ET）：只在状态变化时（比如新数据到达）报告一次。必须把描述符设成非阻塞，并且循环读到返回 EAGAIN 为止，否则剩下的数据可能再也收不到通知。ET 减少了重复通知，但对代码要求更高。\n\n## Reactor：一个线程管所有连接\n\nRedis、Nginx、Node.js 的核心都是事件循环：一个线程阻塞在多路复用调用上，哪个描述符就绪就调用它注册的回调。Python 的 `selectors` 模块会自动选用平台上最好的机制：\n\n```python\nimport selectors, socket\n\nsel = selectors.DefaultSelector()     # Linux 上是 epoll，macOS 上是 kqueue\n\ndef accept(server):\n    conn, _ = server.accept()\n    conn.setblocking(False)\n    sel.register(conn, selectors.EVENT_READ, echo)\n\ndef echo(conn):\n    data = conn.recv(4096)\n    if data:\n        conn.sendall(data)   # 简化写法：真实代码还要处理发送缓冲区已满\n    else:                    # 收到空数据，说明对方关闭了连接\n        sel.unregister(conn)\n        conn.close()\n\nserver = socket.create_server((\"127.0.0.1\", 9000))\nserver.setblocking(False)\nsel.register(server, selectors.EVENT_READ, accept)\nwhile True:\n    for key, _ in sel.select():\n        key.data(key.fileobj)   # 调用注册时给的回调\n```\n\n回调里不能做耗时的计算或阻塞调用，否则整个循环都会停下来；这类活儿要交给线程池。\n\n## 零拷贝\n\n把文件发到网络，朴素的 `read()` + `write()` 要拷贝 4 次（磁盘到内核缓冲区、内核到用户、用户到套接字缓冲区、套接字缓冲区到网卡，其中两次由 DMA 完成）并切换 4 次用户态和内核态。`sendfile()` 让数据不经过用户空间，直接从页缓存送到套接字，网卡支持分散-聚集 DMA 时 CPU 一次都不用拷。Kafka 把日志段发给消费者就靠它。`mmap()` 则把文件映射进地址空间，省掉内核到用户的那次拷贝。\n\n## 要点\n\n- 读操作分\"等数据就绪\"和\"从内核拷贝到用户\"两个阶段。\n- 阻塞、非阻塞、多路复用、信号驱动都是同步 I/O，只有拷贝也由内核完成的才是异步 I/O。\n- select 有 1024 个描述符的常见上限，select 和 poll 每次都要扫描全部描述符。\n- epoll 注册一次，`epoll_wait` 只返回就绪的描述符，适合大量空闲连接。\n- 边缘触发只通知一次，必须用非阻塞描述符循环读到 EAGAIN。\n- `sendfile()` 让数据绕过用户空间，减少拷贝和上下文切换。\n\n做题巩固：[操作系统选择题](/oa/mcq?topic=os)。",
+          "bodyEn": "A server that handles tens of thousands of connections cannot give each one a thread that sits and waits. I/O models are about how that waiting gets organised. This lesson covers the five I/O models, how select, poll and epoll differ, level and edge triggering, and zero copy.\n\n## Two phases of a read\n\nReading from a socket takes two steps:\n\n1. **Wait for the data**: it arrives from the network and lands in the kernel's receive buffer. This can take a long time.\n2. **Copy the data**: the kernel copies it from its buffer into the process's. This is quick but uses the CPU.\n\nThe five models differ in whether the process is stuck during each phase.\n\n| Model | Phase 1 | Phase 2 | Notes |\n|---|---|---|---|\n| Blocking I/O | blocks | blocks | `read()` returns only once the data is copied |\n| Non-blocking I/O | polls repeatedly | blocks | With no data it returns EAGAIN at once, and the process keeps asking |\n| I/O multiplexing | blocks in select/epoll | blocks | One thread waits on many descriptors and reads whichever is ready |\n| Signal-driven I/O | does not block | blocks | The kernel sends SIGIO when data is ready; rarely used |\n| Asynchronous I/O | does not block | does not block | The kernel copies the data, then notifies the process, as with Linux io_uring |\n\nIn the first four the process itself calls `read()` and waits for the copy, so they are all **synchronous I/O**; only the last, where the kernel does the copy too, is truly **asynchronous I/O**. Non-blocking and asynchronous are not the same thing.\n\n## Multiplexing: select, poll and epoll\n\n```mermaid\nsequenceDiagram\n  accTitle: Using epoll, register once and each wait returns only the ready descriptors\n  participant App as Application thread\n  participant K as Kernel\n  App->>K: epoll_create makes an instance\n  App->>K: epoll_ctl registers a socket and its events\n  App->>K: epoll_wait waits\n  Note over K: the NIC receives data and the socket becomes readable\n  K-->>App: the ready list, with ready descriptors only\n  App->>K: read gets the data\n```\n\n| | select | poll | epoll |\n|---|---|---|---|\n| Descriptor limit | FD_SETSIZE, usually 1024 | None fixed | None fixed |\n| Each call | Copies the whole set into the kernel, then you scan it again | Also passes and scans the whole array | Register once; `epoll_wait` returns only ready ones |\n| Cost | O(all watched) | O(all watched) | O(ready) |\n\nMany connections with few active at any moment is exactly where epoll shines. macOS and the BSDs have kqueue for the same job.\n\n## Level-triggered and edge-triggered\n\n- **Level-triggered** (LT, epoll's default): as long as unread data remains, every `epoll_wait` reports the descriptor. Hard to get wrong.\n- **Edge-triggered** (ET): reports once, when the state changes (new data arrives). The descriptor must be non-blocking and you must read in a loop until EAGAIN, or the leftover data may never be reported again. ET avoids repeated notifications at the cost of stricter code.\n\n## The reactor: one thread for every connection\n\nRedis, Nginx and Node.js all centre on an event loop: one thread blocks in a multiplexing call and runs the registered callback of whichever descriptor becomes ready. Python's `selectors` module picks the best mechanism on each platform:\n\n```python\nimport selectors, socket\n\nsel = selectors.DefaultSelector()     # epoll on Linux, kqueue on macOS\n\ndef accept(server):\n    conn, _ = server.accept()\n    conn.setblocking(False)\n    sel.register(conn, selectors.EVENT_READ, echo)\n\ndef echo(conn):\n    data = conn.recv(4096)\n    if data:\n        conn.sendall(data)   # simplified: real code must also handle a full send buffer\n    else:                    # empty data: the peer closed the connection\n        sel.unregister(conn)\n        conn.close()\n\nserver = socket.create_server((\"127.0.0.1\", 9000))\nserver.setblocking(False)\nsel.register(server, selectors.EVENT_READ, accept)\nwhile True:\n    for key, _ in sel.select():\n        key.data(key.fileobj)   # call the callback given at registration\n```\n\nA callback must never compute for long or make a blocking call, or the whole loop stalls; that kind of work goes to a thread pool.\n\n## Zero copy\n\nSending a file over the network with a plain `read()` + `write()` copies the data 4 times (disk to kernel buffer, kernel to user, user to socket buffer, socket buffer to NIC, two of them by DMA) and switches between user and kernel mode 4 times. `sendfile()` keeps the data out of user space and moves it from the page cache straight to the socket; with a NIC that supports scatter-gather DMA, the CPU copies nothing at all. Kafka serves log segments to consumers this way. `mmap()` maps a file into the address space and saves the kernel-to-user copy.\n\n## Key points\n\n- A read has two phases: waiting for data and copying it from the kernel to the process.\n- Blocking, non-blocking, multiplexed and signal-driven I/O are all synchronous; only I/O where the kernel also does the copy is asynchronous.\n- select usually caps out at 1024 descriptors, and both select and poll scan every descriptor on each call.\n- epoll registers once and `epoll_wait` returns only ready descriptors, which suits many idle connections.\n- Edge-triggered mode reports once, so use non-blocking descriptors and read until EAGAIN.\n- `sendfile()` keeps data out of user space, saving copies and context switches.\n\nPractise: [operating systems multiple choice](/oa/mcq?topic=os).",
+          "quiz": [
+            {
+              "qZh": "用 epoll 的边缘触发（ET）模式监听套接字，收到可读通知后应该怎样读？",
+              "qEn": "A socket is watched with epoll in edge-triggered (ET) mode. How should you read after a readable notification?",
+              "choices": [
+                {
+                  "zh": "只读一次，剩下的等下一次通知",
+                  "en": "Read once and leave the rest for the next notification"
+                },
+                {
+                  "zh": "用非阻塞套接字循环读，直到返回 EAGAIN",
+                  "en": "Read in a loop on a non-blocking socket until it returns EAGAIN"
+                },
+                {
+                  "zh": "改用阻塞套接字，一次读完",
+                  "en": "Switch to a blocking socket and read it all in one call"
+                },
+                {
+                  "zh": "每次读之前先调用 select 确认",
+                  "en": "Call select before every read to make sure"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "ET 只在状态变化时通知一次。只读一次的话，缓冲区里剩下的数据不会再触发通知，连接就卡住了。用阻塞套接字循环读，读空时会阻塞整个事件循环，所以要非阻塞加读到 EAGAIN。",
+              "whyEn": "ET reports once per state change. Read only once and the data left in the buffer triggers nothing more, so the connection stalls. Looping on a blocking socket would block the whole event loop once the buffer is empty, hence non-blocking reads until EAGAIN."
+            },
+            {
+              "qZh": "和 epoll 相比，select 的主要局限是？",
+              "qEn": "Compared with epoll, what is select's main limitation?",
+              "choices": [
+                {
+                  "zh": "必须为每个描述符单独开一个线程",
+                  "en": "It needs a separate thread for every descriptor"
+                },
+                {
+                  "zh": "每次调用只能返回一个就绪的描述符",
+                  "en": "Each call can return only one ready descriptor"
+                },
+                {
+                  "zh": "描述符数受 FD_SETSIZE（通常 1024）限制，每次都要拷贝并扫描整个集合",
+                  "en": "It is capped by FD_SETSIZE (usually 1024) and copies and scans the whole set on every call"
+                },
+                {
+                  "zh": "它不能设置超时时间",
+                  "en": "It cannot take a timeout"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "select 用固定大小的位图表示描述符集合，每次调用都要把集合拷进内核、返回后再逐个检查，开销和监听总数成正比。epoll 注册一次，只返回就绪的描述符。select 一次可以返回多个就绪描述符，也支持超时。",
+              "whyEn": "select describes the set with a fixed-size bitmap, copies it into the kernel on every call and makes you check each descriptor afterwards, so the cost grows with everything watched. epoll registers once and returns only ready descriptors. select can return many ready descriptors at once and does take a timeout."
+            },
+            {
+              "qZh": "同步 I/O 和异步 I/O 的本质区别在于？",
+              "qEn": "What fundamentally separates synchronous from asynchronous I/O?",
+              "choices": [
+                {
+                  "zh": "是否使用了多线程：单线程的就是同步，多线程的就是异步",
+                  "en": "Whether threads are used: single-threaded code is synchronous and multithreaded code asynchronous"
+                },
+                {
+                  "zh": "套接字是否设成了非阻塞",
+                  "en": "Whether the socket is non-blocking"
+                },
+                {
+                  "zh": "能否一次监听多个描述符",
+                  "en": "Whether many descriptors can be watched at once"
+                },
+                {
+                  "zh": "数据从内核拷贝到用户空间时，进程是否要等待",
+                  "en": "Whether the process waits while data is copied from the kernel to user space"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "非阻塞 I/O 和多路复用在数据就绪后，仍要进程调用 read 并等拷贝完成，所以还是同步 I/O。异步 I/O（如 io_uring）由内核完成拷贝后再通知进程，进程全程不用等。",
+              "whyEn": "With non-blocking I/O or multiplexing, once data is ready the process still calls read and waits for the copy, so it is synchronous. Asynchronous I/O (such as io_uring) has the kernel finish the copy and then notify the process, which never waits."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        }
+      ]
+    },
+    {
+      "slug": "network",
+      "titleZh": "计算机网络图解课",
+      "titleEn": "Computer Networking, Illustrated",
+      "summaryZh": "8 节图解课，从分层模型讲到 HTTP、HTTPS 与 TLS、DNS 与 CDN、TCP 的连接管理、可靠传输和拥塞控制，最后是 IP 与路由。握手、滑动窗口和拥塞窗口三节可以在页面上直接跑模拟器，每节末尾的要点可以加入复习。",
+      "summaryEn": "Eight illustrated lessons from the layered model through HTTP, HTTPS and TLS, DNS and CDNs, and TCP connection management, reliable delivery and congestion control, ending with IP and routing. The handshake, sliding window and congestion window lessons run simulators in the page, and each lesson ends with key points you can add to your reviews.",
+      "chapters": [
+        {
+          "slug": "layers",
+          "titleZh": "分层模型",
+          "titleEn": "Network Layers",
+          "bodyZh": "从浏览器发出一个请求，到它穿过网线、路由器到达服务器，中间有很多事要做：找到对方、保证不丢、选择路径、把比特变成电信号。网络把这些事分给不同的**层**，每层只用下一层提供的服务，再向上一层提供自己的服务。这一节讲分层模型、封装过程、TCP 和 UDP 的区别，并把\"输入网址之后发生了什么\"串成整门课的地图。\n\n## 五层模型\n\n教科书常把 OSI 七层和 TCP/IP 四层合起来讲成五层：\n\n| 层 | 对应 OSI | 典型协议 | 数据单位 | 工作在这一层的设备 |\n|---|---|---|---|---|\n| 应用层 | 应用、表示、会话 | HTTP、DNS、SMTP、SSH | 报文 | — |\n| 传输层 | 传输 | TCP、UDP | 报文段 / 数据报 | 四层负载均衡 |\n| 网络层 | 网络 | IP、ICMP | 分组（IP 数据包） | 路由器 |\n| 链路层 | 数据链路 | 以太网、Wi-Fi | 帧 | 交换机 |\n| 物理层 | 物理 | 电、光、无线电信号 | 比特 | 集线器、中继器 |\n\n分层的好处是可以单独替换某一层：把 Wi-Fi 换成网线，上面的 TCP 和 HTTP 毫无感觉；HTTP/3 把传输层从 TCP 换成基于 UDP 的 QUIC，IP 也不用改。\n\n## 封装：每一层加一个头\n\n```mermaid\nflowchart LR\n  accTitle: 发送方逐层封装：应用数据依次加上 TCP 头、IP 头和以太网帧头尾\n  app[\"应用数据\"] --> seg[\"TCP 头 + 数据：报文段\"]\n  seg --> pkt[\"IP 头 + 报文段：分组\"]\n  pkt --> frame[\"帧头 + 分组 + 帧尾：帧\"]\n  frame --> bits[\"比特流，发上线路\"]\n```\n\n发送方从上往下逐层加头，接收方从下往上逐层拆头，每一层只看自己那一层的头。头里装的就是这一层要用的信息：TCP 头有端口号和序号，IP 头有源和目的 IP 地址，以太网帧头有源和目的 MAC 地址。\n\n这些头都占地方。以太网一帧最多装 1500 字节的上层数据，这叫 **MTU**；去掉 20 字节的 IPv4 头和 20 字节的 TCP 头（都不带选项），一个 TCP 报文段最多带 1460 字节应用数据，这叫 **MSS**。\n\n## 端口和连接\n\nIP 地址找到一台主机，**端口号**找到主机上的一个进程。一条 TCP 连接由四个值确定：源 IP、源端口、目的 IP、目的端口。所以服务器的 443 端口可以同时承载成千上万条连接，只要客户端的 IP 或端口不同，它们就是不同的连接。\n\n## TCP 和 UDP\n\n| | TCP | UDP |\n|---|---|---|\n| 连接 | 先握手建立连接 | 无连接，直接发 |\n| 可靠性 | 确认、重传、按序交付 | 不保证到达，也不保证顺序 |\n| 数据边界 | 字节流，没有消息边界 | 保留每个数据报的边界 |\n| 流量和拥塞控制 | 有 | 没有 |\n| 头部 | 至少 20 字节 | 8 字节 |\n| 常见用途 | 网页、文件传输、数据库连接 | DNS 查询、音视频通话、游戏、QUIC |\n\n\"TCP 是字节流\"有个实际后果：一次 `send` 发出的数据，对方可能分两次 `recv` 收到，也可能和下一次 `send` 粘在一起收到。应用层协议要自己定边界，比如 HTTP 用 Content-Length 头，很多 RPC 框架在每条消息前加长度字段。\n\n## 输入网址之后：整门课的地图\n\n在浏览器里打开 `https://example.com/` 大致经过这些步骤，后面几节逐一展开：\n\n1. **DNS**：把域名解析成 IP 地址（第 4 节）。\n2. **TCP 三次握手**：和服务器的 443 端口建立连接（第 5 节）。\n3. **TLS 握手**：协商密钥、验证证书（第 3 节）。\n4. **HTTP**：发送请求、接收响应（第 2 节）。\n5. 整个过程中，每个 IP 包都由路由器逐跳转发（第 8 节），TCP 负责不丢不乱（第 6 节）、不把网络挤爆（第 7 节）。\n\n## 要点\n\n- 每一层只使用下一层的服务，可以单独替换而不影响其他层。\n- 五层模型：应用、传输、网络、链路、物理；对应的数据单位是报文、报文段、分组、帧、比特。\n- 发送方逐层加头（封装），接收方逐层拆头。\n- 以太网 MTU 为 1500 字节，去掉 IPv4 和 TCP 各 20 字节的头，MSS 是 1460 字节。\n- 一条 TCP 连接由源 IP、源端口、目的 IP、目的端口共同确定。\n- TCP 提供可靠的字节流但没有消息边界；UDP 无连接、保留数据报边界、开销小。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "Between a browser sending a request and that request crossing cables and routers to reach a server, a lot has to happen: finding the other side, making sure nothing is lost, choosing a path, turning bits into signals. Networks split these jobs into **layers**; each layer uses only the service of the layer below and offers its own to the layer above. This lesson covers the layered model, encapsulation, TCP versus UDP, and what happens after you type a URL, which doubles as the map of this course.\n\n## The five-layer model\n\nTextbooks often merge the seven OSI layers and the four TCP/IP layers into five:\n\n| Layer | OSI equivalent | Typical protocols | Unit of data | Devices at this layer |\n|---|---|---|---|---|\n| Application | Application, presentation, session | HTTP, DNS, SMTP, SSH | Message | — |\n| Transport | Transport | TCP, UDP | Segment / datagram | Layer-4 load balancers |\n| Network | Network | IP, ICMP | Packet | Routers |\n| Link | Data link | Ethernet, Wi-Fi | Frame | Switches |\n| Physical | Physical | Electrical, optical and radio signals | Bit | Hubs, repeaters |\n\nLayering lets one layer be swapped on its own: replace Wi-Fi with a cable and TCP and HTTP never notice; HTTP/3 swaps the transport from TCP to QUIC over UDP, and IP stays the same.\n\n## Encapsulation: every layer adds a header\n\n```mermaid\nflowchart LR\n  accTitle: The sender encapsulates layer by layer, adding a TCP header, an IP header and an Ethernet header and trailer\n  app[\"Application data\"] --> seg[\"TCP header + data: segment\"]\n  seg --> pkt[\"IP header + segment: packet\"]\n  pkt --> frame[\"Frame header + packet + trailer: frame\"]\n  frame --> bits[\"Bits on the wire\"]\n```\n\nThe sender adds headers on the way down and the receiver strips them on the way up; each layer reads only its own header, which carries what that layer needs: the TCP header has ports and sequence numbers, the IP header the source and destination IP addresses, the Ethernet header the source and destination MAC addresses.\n\nHeaders take space. An Ethernet frame carries at most 1500 bytes from the layer above, the **MTU**. Take away a 20-byte IPv4 header and a 20-byte TCP header (no options) and one TCP segment carries at most 1460 bytes of application data, the **MSS**.\n\n## Ports and connections\n\nAn IP address finds a host; a **port number** finds a process on it. A TCP connection is identified by four values: source IP, source port, destination IP and destination port. That is how a server's port 443 carries thousands of connections at once: whenever the client's IP or port differs, it is a different connection.\n\n## TCP and UDP\n\n| | TCP | UDP |\n|---|---|---|\n| Connection | Handshake first | None; just send |\n| Reliability | Acknowledgements, retransmission, in-order delivery | No promise of arrival or order |\n| Message boundaries | A byte stream with none | Each datagram keeps its boundary |\n| Flow and congestion control | Yes | No |\n| Header | At least 20 bytes | 8 bytes |\n| Typical uses | Web pages, file transfer, database connections | DNS queries, voice and video calls, games, QUIC |\n\n\"TCP is a byte stream\" has a practical consequence: what one `send` sends may arrive in two `recv` calls, or glued to the next `send`. Application protocols draw their own boundaries: HTTP with a Content-Length header, many RPC frameworks with a length field in front of each message.\n\n## After you type a URL: the map of this course\n\nOpening `https://example.com/` in a browser goes roughly like this, and later lessons take each step in turn:\n\n1. **DNS** turns the domain name into an IP address (lesson 4).\n2. **The TCP three-way handshake** opens a connection to the server's port 443 (lesson 5).\n3. **The TLS handshake** agrees on keys and checks the certificate (lesson 3).\n4. **HTTP** sends the request and receives the response (lesson 2).\n5. All along, routers forward every IP packet hop by hop (lesson 8), while TCP makes sure nothing is lost or reordered (lesson 6) and that the network is not overwhelmed (lesson 7).\n\n## Key points\n\n- Each layer uses only the service below it, so layers can be replaced independently.\n- The five layers are application, transport, network, link and physical; their units are message, segment, packet, frame and bit.\n- The sender adds a header at each layer (encapsulation); the receiver strips them.\n- Ethernet's MTU is 1500 bytes; minus 20-byte IPv4 and TCP headers, the MSS is 1460 bytes.\n- A TCP connection is identified by source IP, source port, destination IP and destination port together.\n- TCP gives a reliable byte stream without message boundaries; UDP is connectionless, keeps datagram boundaries and costs little.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "以太网 MTU 为 1500 字节，IPv4 头和 TCP 头都不带选项。TCP 的 MSS 是多少？",
+              "qEn": "Ethernet's MTU is 1500 bytes and neither the IPv4 nor the TCP header has options. What is the TCP MSS?",
+              "choices": [
+                {
+                  "zh": "1460 字节",
+                  "en": "1460 bytes"
+                },
+                {
+                  "zh": "1500 字节",
+                  "en": "1500 bytes"
+                },
+                {
+                  "zh": "1480 字节",
+                  "en": "1480 bytes"
+                },
+                {
+                  "zh": "1440 字节",
+                  "en": "1440 bytes"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "MTU 是一帧能装的 IP 包大小。减去 20 字节 IPv4 头和 20 字节 TCP 头，剩 1460 字节给应用数据。1480 只减了 IP 头。",
+              "whyEn": "The MTU is the largest IP packet a frame carries. Subtract the 20-byte IPv4 header and the 20-byte TCP header and 1460 bytes remain for data. 1480 subtracts only the IP header."
+            },
+            {
+              "qZh": "数据链路层传输的数据单位通常叫什么？",
+              "qEn": "What is the unit of data at the data link layer usually called?",
+              "choices": [
+                {
+                  "zh": "报文段",
+                  "en": "Segment"
+                },
+                {
+                  "zh": "帧",
+                  "en": "Frame"
+                },
+                {
+                  "zh": "分组",
+                  "en": "Packet"
+                },
+                {
+                  "zh": "比特",
+                  "en": "Bit"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "传输层是报文段（UDP 叫数据报），网络层是分组，链路层是帧，物理层是比特。以太网帧头里装的是 MAC 地址。",
+              "whyEn": "The transport layer has segments (datagrams for UDP), the network layer packets, the link layer frames and the physical layer bits. An Ethernet frame header carries MAC addresses."
+            },
+            {
+              "qZh": "一台服务器的 443 端口能同时承载成千上万条 TCP 连接，是因为？",
+              "qEn": "Why can a server's port 443 carry thousands of TCP connections at once?",
+              "choices": [
+                {
+                  "zh": "服务器每接受一条连接，就悄悄给它换一个新的临时本地端口",
+                  "en": "Each accepted connection is quietly moved to a fresh temporary port on the server, freeing 443 again"
+                },
+                {
+                  "zh": "同一时刻只有一条连接在真正传数据",
+                  "en": "Only one connection really transfers data at any moment"
+                },
+                {
+                  "zh": "连接由源 IP、源端口、目的 IP、目的端口共同区分",
+                  "en": "Connections are told apart by source IP, source port, destination IP and destination port together"
+                },
+                {
+                  "zh": "操作系统把 443 端口复制成了多份",
+                  "en": "The OS makes copies of port 443"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "accept() 返回的新套接字仍然使用本地 443 端口，并没有换端口。只要客户端的 IP 或端口不同，四元组就不同，内核就能把收到的报文段分给正确的连接。",
+              "whyEn": "The socket accept() returns still uses local port 443; no port changes. As long as the client's IP or port differs, the four-tuple differs, and the kernel delivers each segment to the right connection."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "http",
+          "titleZh": "HTTP",
+          "titleEn": "HTTP",
+          "bodyZh": "HTTP 是网页和绝大多数 API 用的应用层协议：客户端发一个请求，服务器回一个响应。它本身很简单，面试却能从方法语义问到缓存、Cookie，再问到 HTTP/2 和 HTTP/3 解决了什么问题。这一节把这些串起来。\n\n## 请求和响应长什么样\n\nHTTP/1.1 是纯文本的。一个请求由请求行、若干头部、一个空行和可选的正文组成：\n\n```text\nGET /api/items?page=2 HTTP/1.1\nHost: shop.example.com\nAccept: application/json\nCookie: session=abc123\n\n```\n\n响应由状态行、头部、空行和正文组成：\n\n```text\nHTTP/1.1 200 OK\nContent-Type: application/json\nContent-Length: 21\nCache-Control: max-age=60\n\n{\"items\":[],\"page\":2}\n```\n\n`Content-Length` 告诉对方正文有多少字节，接收方据此知道这条消息在哪里结束；长度事先不知道时可以用分块传输（`Transfer-Encoding: chunked`）。\n\n## 方法的语义\n\n| 方法 | 用途 | 安全 | 幂等 |\n|---|---|---|---|\n| GET | 读取资源 | 是 | 是 |\n| HEAD | 只要响应头，不要正文 | 是 | 是 |\n| POST | 提交数据、创建资源、触发处理 | 否 | 否 |\n| PUT | 用请求体整体替换资源 | 否 | 是 |\n| PATCH | 部分修改资源 | 否 | 不保证 |\n| DELETE | 删除资源 | 否 | 是 |\n| OPTIONS | 询问支持哪些方法，CORS 预检用它 | 是 | 是 |\n\n**安全**指不改变服务器状态；**幂等**指执行一次和执行多次的效果相同。幂等决定了能不能放心重试：网络超时后重发一个 PUT 没问题，重发一个\"下单\"的 POST 可能重复扣款，所以支付接口通常要求客户端带一个幂等键。\n\n## 状态码\n\n| 类别 | 含义 | 常见的码 |\n|---|---|---|\n| 2xx | 成功 | 200 OK、201 Created、204 No Content |\n| 3xx | 重定向或用缓存 | 301 永久移动、302 临时移动、304 Not Modified、307/308（重定向时保留原方法） |\n| 4xx | 客户端的问题 | 400 请求格式错、401 未认证、403 无权限、404 不存在、409 冲突、429 请求太多 |\n| 5xx | 服务器的问题 | 500 内部错误、502 网关收到上游的坏响应、503 暂时不可用、504 网关等上游超时 |\n\n401 和 403 常被混用：401 是\"不知道你是谁\"（没登录或凭证无效），403 是\"知道你是谁，但你不能看\"。\n\n## 无状态与 Cookie\n\nHTTP 本身不记得上一个请求。服务器想认出同一个用户，就用 `Set-Cookie` 让浏览器存一个值，之后浏览器访问同一站点时自动在 `Cookie` 头里带上。常见做法是 Cookie 里只放一个随机的会话 ID，用户数据存在服务器端。会话 Cookie 应该加上 `HttpOnly`（脚本读不到）、`Secure`（只走 HTTPS）和合适的 `SameSite`。\n\n## 缓存\n\n```mermaid\nflowchart TD\n  accTitle: 浏览器缓存的判断流程：新鲜就直接用，过期就带条件请求去验证\n  req[\"要用某个资源\"] --> has{\"本地有缓存？\"}\n  has -->|\"没有\"| full[\"发普通请求，拿完整响应\"]\n  has -->|\"有\"| fresh{\"还在 max-age 内？\"}\n  fresh -->|\"是\"| use[\"直接用，不发请求\"]\n  fresh -->|\"否\"| cond[\"带 If-None-Match 发请求\"]\n  cond --> same{\"服务器：变了吗？\"}\n  same -->|\"没变\"| r304[\"304，继续用本地副本\"]\n  same -->|\"变了\"| r200[\"200，带新内容\"]\n```\n\n- `Cache-Control: max-age=60`：60 秒内直接用缓存，连请求都不发。\n- `no-cache`：可以缓存，但每次用之前必须先向服务器验证。\n- `no-store`：根本不许存，适合敏感数据。\n- `ETag` 是资源版本的标识，客户端用 `If-None-Match` 带回来；没变就回 304，不传正文，省下带宽。\n\n静态资源常见的做法是文件名带上内容哈希（`app.3f9a1c.js`），再配一个很长的 max-age：内容一变文件名就变，不会读到旧版本。\n\n## 从 HTTP/1.1 到 HTTP/3\n\n- **HTTP/1.1** 默认长连接，一条 TCP 连接可以发多个请求，但同一连接上的响应必须按请求顺序返回，前面一个慢了，后面的全得等（队头阻塞）。浏览器只好对每个域名开大约 6 条连接并行。\n- **HTTP/2** 改成二进制分帧，多个请求作为不同的**流**在一条连接上交错传输，头部用 HPACK 压缩。应用层的队头阻塞解决了，但底下还是一条 TCP 字节流：丢一个包，所有流都要等它重传。\n- **HTTP/3** 跑在 QUIC 上，QUIC 基于 UDP，在自己内部实现可靠传输，每个流单独重传，一个流丢包不耽误别的流；它内置 TLS 1.3，连接建立更快，用连接 ID 而不是四元组识别连接，手机从 Wi-Fi 切到蜂窝网络时连接不断。\n\n## 要点\n\n- 请求 = 请求行 + 头部 + 空行 + 正文；`Content-Length` 或分块传输标出正文在哪结束。\n- 安全方法不改变服务器状态，幂等方法重复执行效果相同；GET、PUT、DELETE 幂等，POST 不幂等。\n- 401 是未认证，403 是已认证但无权限；502、504 说明网关后面的上游出了问题。\n- HTTP 无状态，靠 Cookie 携带会话 ID 识别用户。\n- `no-cache` 是每次先验证，`no-store` 才是不许缓存；ETag 配合 304 省带宽。\n- HTTP/2 在一条连接上多路复用但仍受 TCP 队头阻塞影响；HTTP/3 基于 QUIC，按流独立重传。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "HTTP is the application protocol behind web pages and most APIs: the client sends a request and the server sends back a response. The protocol itself is simple, yet interviews go from method semantics to caching and cookies, and on to what HTTP/2 and HTTP/3 fixed. This lesson ties those together.\n\n## What requests and responses look like\n\nHTTP/1.1 is plain text. A request is a request line, some headers, a blank line and an optional body:\n\n```text\nGET /api/items?page=2 HTTP/1.1\nHost: shop.example.com\nAccept: application/json\nCookie: session=abc123\n\n```\n\nA response is a status line, headers, a blank line and the body:\n\n```text\nHTTP/1.1 200 OK\nContent-Type: application/json\nContent-Length: 21\nCache-Control: max-age=60\n\n{\"items\":[],\"page\":2}\n```\n\n`Content-Length` says how many bytes the body has, which is how the receiver knows where the message ends; when the length is unknown in advance, chunked transfer (`Transfer-Encoding: chunked`) does the job.\n\n## What the methods mean\n\n| Method | Used for | Safe | Idempotent |\n|---|---|---|---|\n| GET | Read a resource | Yes | Yes |\n| HEAD | Headers only, no body | Yes | Yes |\n| POST | Submit data, create a resource, trigger processing | No | No |\n| PUT | Replace a resource with the request body | No | Yes |\n| PATCH | Modify part of a resource | No | Not guaranteed |\n| DELETE | Remove a resource | No | Yes |\n| OPTIONS | Ask which methods are supported; CORS preflights use it | Yes | Yes |\n\n**Safe** means it does not change server state; **idempotent** means doing it once or many times has the same effect. Idempotence decides whether a retry is harmless: resending a PUT after a timeout is fine, resending a \"place order\" POST may charge twice, which is why payment APIs usually ask the client for an idempotency key.\n\n## Status codes\n\n| Class | Meaning | Common codes |\n|---|---|---|\n| 2xx | Success | 200 OK, 201 Created, 204 No Content |\n| 3xx | Redirect or use the cache | 301 moved permanently, 302 moved temporarily, 304 Not Modified, 307/308 (redirect keeping the method) |\n| 4xx | The client's problem | 400 malformed, 401 not authenticated, 403 forbidden, 404 not found, 409 conflict, 429 too many requests |\n| 5xx | The server's problem | 500 internal error, 502 the gateway got a bad upstream response, 503 temporarily unavailable, 504 the gateway timed out waiting upstream |\n\n401 and 403 get mixed up: 401 is \"I don't know who you are\" (not signed in, or bad credentials), 403 is \"I know who you are, and you can't see this\".\n\n## Statelessness and cookies\n\nHTTP by itself does not remember the previous request. A server that wants to recognise a user sends `Set-Cookie`, the browser stores the value and sends it back in the `Cookie` header on later requests to the same site. Usually the cookie holds only a random session ID, with the user's data kept on the server. A session cookie should be `HttpOnly` (unreadable by scripts), `Secure` (HTTPS only) and carry a suitable `SameSite`.\n\n## Caching\n\n```mermaid\nflowchart TD\n  accTitle: How a browser decides about its cache, use it while fresh and revalidate with a conditional request once stale\n  req[\"Need a resource\"] --> has{\"Cached locally?\"}\n  has -->|\"no\"| full[\"Normal request, full response\"]\n  has -->|\"yes\"| fresh{\"Within max-age?\"}\n  fresh -->|\"yes\"| use[\"Use it, send nothing\"]\n  fresh -->|\"no\"| cond[\"Request with If-None-Match\"]\n  cond --> same{\"Server: changed?\"}\n  same -->|\"no\"| r304[\"304, keep using the local copy\"]\n  same -->|\"yes\"| r200[\"200 with the new content\"]\n```\n\n- `Cache-Control: max-age=60`: use the cached copy for 60 seconds without sending a request at all.\n- `no-cache`: may be cached, but must be revalidated with the server before every use.\n- `no-store`: may not be stored at all; right for sensitive data.\n- `ETag` names a version of the resource; the client sends it back in `If-None-Match`, and an unchanged resource gets a bodiless 304, saving bandwidth.\n\nStatic assets often put a content hash in the file name (`app.3f9a1c.js`) and use a very long max-age: new content means a new name, so nobody gets a stale version.\n\n## From HTTP/1.1 to HTTP/3\n\n- **HTTP/1.1** keeps connections open by default, so one TCP connection carries many requests, but responses on a connection come back strictly in request order: one slow response holds up everything behind it (head-of-line blocking). Browsers work around it with about 6 connections per host.\n- **HTTP/2** switches to binary frames: many requests travel interleaved as separate **streams** on one connection, with headers compressed by HPACK. That removes head-of-line blocking at the HTTP level, but underneath is still one TCP byte stream: one lost packet makes every stream wait for its retransmission.\n- **HTTP/3** runs on QUIC, which sits on UDP and does reliable delivery itself, per stream, so a loss on one stream does not hold up the others. It builds in TLS 1.3 for faster setup and identifies a connection by a connection ID rather than the four-tuple, so a phone moving from Wi-Fi to cellular keeps its connection.\n\n## Key points\n\n- A request is a request line, headers, a blank line and a body; `Content-Length` or chunked transfer marks where the body ends.\n- Safe methods do not change server state; idempotent ones have the same effect when repeated. GET, PUT and DELETE are idempotent; POST is not.\n- 401 means not authenticated, 403 authenticated but forbidden; 502 and 504 point at the upstream behind a gateway.\n- HTTP is stateless; cookies carrying a session ID let a server recognise a user.\n- `no-cache` means revalidate every time and `no-store` means never cache; ETag with 304 saves bandwidth.\n- HTTP/2 multiplexes one connection but still suffers TCP head-of-line blocking; HTTP/3 on QUIC recovers losses per stream.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "响应头里写着 Cache-Control: no-cache，这表示？",
+              "qEn": "A response carries Cache-Control: no-cache. What does that mean?",
+              "choices": [
+                {
+                  "zh": "浏览器完全不能缓存这个响应",
+                  "en": "The browser may not cache the response at all"
+                },
+                {
+                  "zh": "只能缓存在 CDN，不能缓存在浏览器",
+                  "en": "Only a CDN may cache it, never the browser"
+                },
+                {
+                  "zh": "缓存一天后自动过期",
+                  "en": "The cached copy expires after a day"
+                },
+                {
+                  "zh": "可以缓存，但每次使用前都要先向服务器验证",
+                  "en": "It may be cached, but must be revalidated with the server before each use"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "名字有误导性：no-cache 允许存下来，只是用之前必须带上 ETag 或 Last-Modified 去问服务器，没变就收到 304。真正禁止缓存的是 no-store。",
+              "whyEn": "The name misleads: no-cache allows storing, but before use the client must ask the server with its ETag or Last-Modified and gets a 304 if nothing changed. The directive that forbids caching is no-store."
+            },
+            {
+              "qZh": "HTTP 状态码 401 和 403 的区别是？",
+              "qEn": "What is the difference between HTTP status codes 401 and 403?",
+              "choices": [
+                {
+                  "zh": "401 是未认证（没登录或凭证无效），403 是认证了但没有权限",
+                  "en": "401 is not authenticated (no or bad credentials); 403 is authenticated but not allowed"
+                },
+                {
+                  "zh": "401 是服务器出错，403 是客户端出错",
+                  "en": "401 is a server error and 403 a client error"
+                },
+                {
+                  "zh": "两者含义相同，可以随意互换",
+                  "en": "They mean the same and are interchangeable"
+                },
+                {
+                  "zh": "403 表示资源不存在",
+                  "en": "403 means the resource does not exist"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "两者都是 4xx 客户端错误。401 说明服务器不知道你是谁，重新登录可能解决；403 说明服务器知道你是谁但拒绝你，重新登录也没用。资源不存在是 404。",
+              "whyEn": "Both are 4xx client errors. 401 means the server does not know who you are, and signing in may fix it; 403 means it knows and refuses, and signing in again will not help. A missing resource is 404."
+            },
+            {
+              "qZh": "HTTP/2 在一条 TCP 连接上多路复用多个请求后，仍然存在哪种队头阻塞？",
+              "qEn": "With HTTP/2 multiplexing many requests on one TCP connection, which head-of-line blocking remains?",
+              "choices": [
+                {
+                  "zh": "请求必须按顺序一个个发送",
+                  "en": "Requests must still be sent one at a time, in order"
+                },
+                {
+                  "zh": "TCP 层丢一个包，同一连接上的所有流都要等它重传",
+                  "en": "One lost TCP packet makes every stream on the connection wait for its retransmission"
+                },
+                {
+                  "zh": "每个请求仍然要单独建立一条新的 TCP 连接，还要重新握手",
+                  "en": "Every request still needs its own new TCP connection, with a fresh handshake each time"
+                },
+                {
+                  "zh": "响应头不能压缩",
+                  "en": "Response headers cannot be compressed"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "HTTP/2 解决了应用层「前一个响应没回来后面的就得等」的问题，但所有流共用一条按序交付的 TCP 字节流，丢包时后面的数据即使到了也不能交给应用。HTTP/3 改用 QUIC，按流独立重传来解决。",
+              "whyEn": "HTTP/2 removed the application-level wait for the previous response, but every stream shares one in-order TCP byte stream: after a loss, later data that has arrived still cannot be handed to the application. HTTP/3 moves to QUIC, which retransmits per stream."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "https-tls",
+          "titleZh": "HTTPS 与 TLS",
+          "titleEn": "HTTPS and TLS",
+          "bodyZh": "明文的 HTTP 在路上经过的每一台设备都能读、都能改：公共 Wi-Fi、运营商、任何一个中间节点。HTTPS 就是把 HTTP 放在 TLS 上跑，TLS 负责加密、防篡改和确认对方身份。这一节讲 TLS 怎样组合对称加密和非对称加密、证书链怎样验证，以及 TLS 1.3 握手为什么只要一个往返。\n\n## 两种加密，各管一段\n\n| | 对称加密 | 非对称加密 |\n|---|---|---|\n| 密钥 | 双方用同一把密钥 | 公钥公开，私钥自己保管 |\n| 速度 | 快，有硬件加速 | 慢得多 |\n| 典型算法 | AES-GCM、ChaCha20-Poly1305 | RSA、ECDSA、Ed25519，密钥交换用 ECDHE |\n| 难点 | 密钥怎么安全地交给对方 | 公钥是不是真的属于对方 |\n\nTLS 把两者组合起来：握手阶段用非对称的方法**协商出**一把共享密钥，之后的数据全部用对称加密。加密算法还自带完整性校验（AEAD），数据被改动一个比特，接收方就能发现。\n\n## 密钥交换：ECDHE\n\nTLS 1.3 用 (EC)DHE 协商密钥：双方各自临时生成一对密钥，把公钥部分发给对方，再用自己的私钥和对方的公钥算出同一个共享秘密。窃听者看到了两个公钥，却算不出这个秘密。\n\n\"临时\"很关键。每次连接都用新生成的密钥对，用完就丢，所以即使服务器证书的长期私钥日后泄露，攻击者也解不开以前录下来的流量，这叫**前向保密**。老式的 RSA 密钥交换由客户端用服务器公钥加密密钥材料，私钥一旦泄露，录下的历史流量就全能解开，TLS 1.3 已经把它去掉了。\n\n## 证书：证明公钥是对方的\n\n密钥交换本身防不了中间人：攻击者可以分别和客户端、服务器各做一次交换。所以服务器要出示**证书**，证明\"这个公钥属于这个域名\"。证书里有：域名列表（SAN 字段）、服务器公钥、签发者、有效期，以及签发者的数字签名。\n\n浏览器验证时检查：\n\n1. 签名能一级级追溯到系统或浏览器内置的某个**根证书**：叶子证书由中间证书签发，中间证书由根签发。\n2. 当前时间在有效期内。\n3. 访问的域名出现在 SAN 里。通配符 `*.example.com` 只匹配一级子域：能匹配 `shop.example.com`，匹配不了 `example.com` 本身，也匹配不了 `a.b.example.com`。\n4. 证书没有被吊销。\n\n最后，服务器还要用证书对应的私钥对握手内容签名（CertificateVerify），证明自己真的持有私钥，而不是拿着别人的证书。\n\n## TLS 1.3 握手\n\n```mermaid\nsequenceDiagram\n  accTitle: TLS 1.3 完整握手，一个往返后客户端就能发送应用数据\n  participant C as 客户端\n  participant S as 服务器\n  C->>S: ClientHello：支持的算法、密钥交换公钥\n  S->>C: ServerHello：选定算法、密钥交换公钥\n  Note over C,S: 双方算出共享密钥，之后的握手消息都加密\n  S->>C: 证书、CertificateVerify、Finished\n  C->>S: Finished\n  C->>S: 加密的 HTTP 请求\n```\n\n客户端在第一条消息里就猜好算法并带上自己的密钥交换公钥，服务器一回复，双方就有了共享密钥，所以完整握手只要 **1 个往返**。TLS 1.2 要 2 个往返。算上 TCP 握手，一个全新的 HTTPS 连接要经过 2 个往返才能发出第一个请求；HTTP/3 的 QUIC 把传输层和 TLS 握手合在一起，只要 1 个往返。\n\n连过同一个服务器的客户端还能用 **0-RTT**：凭上次留下的会话票据，在第一条消息里直接带上请求数据。代价是这部分数据可能被攻击者录下来重放，所以只能用于幂等的请求。\n\n## 还有什么要防\n\n- **降级到 HTTP**：用户敲 `example.com`，第一次请求可能还是明文，被劫持后就到不了 HTTPS。网站可以发 `Strict-Transport-Security`（HSTS）头，让浏览器以后只用 HTTPS 访问它。\n- **用户点\"继续访问\"**：证书错误时的警告不能忽略，那正是中间人攻击的样子。\n- 内容分发网络和负载均衡常在边缘\"终止\"TLS，再用另一条连接（最好也是 TLS）访问后端。\n\n## 要点\n\n- TLS 用非对称方法协商共享密钥，再用对称加密传输数据；AEAD 同时保证机密性和完整性。\n- ECDHE 每次连接临时生成密钥，提供前向保密：长期私钥日后泄露，也解不开以前录下的会话。\n- 证书把公钥绑定到域名；浏览器检查签名链、有效期、SAN 域名和吊销状态。\n- `*.example.com` 只匹配一级子域，不匹配 `example.com` 本身。\n- TLS 1.3 完整握手 1 个往返（TLS 1.2 要 2 个）；0-RTT 数据可能被重放，只能用于幂等请求。\n- HSTS 让浏览器只用 HTTPS 访问网站，防止被降级到明文。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "Plain HTTP can be read and altered by every device along the way: public Wi-Fi, the ISP, any hop in between. HTTPS runs HTTP over TLS, which encrypts the traffic, detects tampering and confirms who is on the other end. This lesson shows how TLS combines symmetric and asymmetric cryptography, how a certificate chain is checked, and why the TLS 1.3 handshake takes a single round trip.\n\n## Two kinds of encryption, each with a job\n\n| | Symmetric | Asymmetric |\n|---|---|---|\n| Keys | Both sides share one key | A public key anyone can have, a private key kept secret |\n| Speed | Fast, with hardware support | Much slower |\n| Typical algorithms | AES-GCM, ChaCha20-Poly1305 | RSA, ECDSA, Ed25519; ECDHE for key exchange |\n| The hard part | Getting the key to the other side safely | Knowing the public key really belongs to them |\n\nTLS combines them: the handshake uses asymmetric methods to **agree on** a shared key, and all the data after that is encrypted symmetrically. The ciphers also check integrity (AEAD), so flipping a single bit in transit is detected by the receiver.\n\n## Key exchange: ECDHE\n\nTLS 1.3 agrees on keys with (EC)DHE: each side generates a temporary key pair, sends the public half, and combines its own private key with the other's public key to arrive at the same shared secret. An eavesdropper sees both public keys and still cannot compute that secret.\n\n\"Temporary\" matters. Every connection uses fresh key pairs and throws them away, so even if the server certificate's long-term private key leaks later, recorded traffic from before stays sealed: **forward secrecy**. The old RSA key exchange had the client encrypt key material with the server's public key, so a leaked private key unlocked every recorded session; TLS 1.3 removed it.\n\n## Certificates: proving the key is theirs\n\nKey exchange alone cannot stop a man in the middle, who could run one exchange with the client and another with the server. So the server presents a **certificate** that says \"this public key belongs to this domain\". It holds the domain names (the SAN field), the server's public key, the issuer, a validity period and the issuer's digital signature.\n\nThe browser checks that:\n\n1. The signatures chain up to a **root certificate** built into the OS or browser: the leaf is signed by an intermediate, the intermediate by the root.\n2. The current time is within the validity period.\n3. The domain being visited appears in the SAN. A wildcard `*.example.com` matches exactly one label: it covers `shop.example.com`, but not `example.com` itself and not `a.b.example.com`.\n4. The certificate has not been revoked.\n\nFinally the server signs the handshake with the certificate's private key (CertificateVerify), proving it holds that key rather than replaying someone else's certificate.\n\n## The TLS 1.3 handshake\n\n```mermaid\nsequenceDiagram\n  accTitle: The full TLS 1.3 handshake, after one round trip the client can send application data\n  participant C as Client\n  participant S as Server\n  C->>S: ClientHello with supported algorithms and a key share\n  S->>C: ServerHello with the chosen algorithms and a key share\n  Note over C,S: both compute the shared key, and the rest of the handshake is encrypted\n  S->>C: Certificate, CertificateVerify, Finished\n  C->>S: Finished\n  C->>S: Encrypted HTTP request\n```\n\nThe client guesses the algorithms in its first message and includes its key share, so as soon as the server replies both sides hold the shared key: a full handshake takes **one round trip**, where TLS 1.2 took two. Counting the TCP handshake, a brand-new HTTPS connection needs 2 round trips before the first request goes out; HTTP/3's QUIC merges the transport and TLS handshakes into one.\n\nA client that has talked to the server before can use **0-RTT**: with a session ticket from last time it puts request data in its very first message. The catch is that an attacker can record and replay that early data, so it is only for idempotent requests.\n\n## What else to guard against\n\n- **Downgrade to HTTP**: a user typing `example.com` may send the first request in plain text, and if that is hijacked they never reach HTTPS. A site can send `Strict-Transport-Security` (HSTS) so the browser uses only HTTPS for it from then on.\n- **Clicking through warnings**: a certificate error is exactly what a man-in-the-middle attack looks like.\n- CDNs and load balancers often terminate TLS at the edge and reach the backend over a second connection, ideally TLS as well.\n\n## Key points\n\n- TLS agrees on a shared key with asymmetric methods and encrypts the data symmetrically; AEAD gives confidentiality and integrity together.\n- ECDHE uses fresh keys per connection for forward secrecy: a long-term key leaked later cannot decrypt recorded sessions.\n- A certificate binds a public key to domain names; the browser checks the signature chain, validity, SAN and revocation.\n- `*.example.com` matches one label only, not `example.com` itself.\n- A full TLS 1.3 handshake takes 1 round trip (TLS 1.2 took 2); 0-RTT data can be replayed, so it suits only idempotent requests.\n- HSTS makes the browser use only HTTPS for a site, preventing a downgrade to plain text.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "不算 TCP 握手，TLS 1.3 的完整握手要经过几个往返（RTT），客户端才能发送应用数据？",
+              "qEn": "Leaving out the TCP handshake, how many round trips does a full TLS 1.3 handshake take before the client can send application data?",
+              "choices": [
+                {
+                  "zh": "0 个",
+                  "en": "0"
+                },
+                {
+                  "zh": "2 个",
+                  "en": "2"
+                },
+                {
+                  "zh": "1 个",
+                  "en": "1"
+                },
+                {
+                  "zh": "3 个",
+                  "en": "3"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "客户端在 ClientHello 里就带上密钥交换的公钥，服务器回复后双方即可算出共享密钥，客户端发完 Finished 就能发数据。TLS 1.2 需要 2 个往返；0 个往返是复用旧会话的 0-RTT，不是完整握手。",
+              "whyEn": "The client puts its key share in the ClientHello; once the server replies both can compute the shared key, and the client sends data right after its Finished. TLS 1.2 needed 2 round trips; zero round trips is 0-RTT resumption, not a full handshake."
+            },
+            {
+              "qZh": "TLS 里说的「前向保密」（forward secrecy）是指？",
+              "qEn": "In TLS, what does forward secrecy mean?",
+              "choices": [
+                {
+                  "zh": "证书过期以后，用它建立过的连接仍然可以继续安全使用",
+                  "en": "Connections set up with a certificate stay secure even after that certificate expires"
+                },
+                {
+                  "zh": "服务器不再需要证书",
+                  "en": "The server no longer needs a certificate"
+                },
+                {
+                  "zh": "每条消息都单独做一次签名",
+                  "en": "Every message gets its own signature"
+                },
+                {
+                  "zh": "服务器的长期私钥日后泄露，也解不开以前录下的会话",
+                  "en": "A server private key leaked later cannot decrypt sessions recorded earlier"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "ECDHE 每次连接临时生成密钥对，会话密钥和证书的长期私钥无关，用完即丢。所以攻击者即使现在录下流量、将来拿到私钥，也解不开。旧的 RSA 密钥交换做不到这一点。",
+              "whyEn": "ECDHE generates a fresh key pair per connection, so session keys do not depend on the certificate's long-term key and are discarded after use. Traffic recorded today stays sealed even if the private key is stolen later. The old RSA key exchange could not offer this."
+            },
+            {
+              "qZh": "访问 https://shop.example.com，服务器出示的证书只列了 example.com（没有通配符）。浏览器会怎样？",
+              "qEn": "You visit https://shop.example.com and the server's certificate lists only example.com, with no wildcard. What does the browser do?",
+              "choices": [
+                {
+                  "zh": "报证书错误，因为域名不匹配",
+                  "en": "It shows a certificate error because the name does not match"
+                },
+                {
+                  "zh": "正常访问，主域名相同就行",
+                  "en": "It connects normally, since the parent domain matches"
+                },
+                {
+                  "zh": "自动改为连接 example.com",
+                  "en": "It connects to example.com instead"
+                },
+                {
+                  "zh": "改用 HTTP 明文继续访问",
+                  "en": "It falls back to plain HTTP"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "浏览器要求访问的域名精确出现在证书的 SAN 里，或者被通配符覆盖。example.com 不覆盖子域 shop.example.com；就算是 *.example.com，也只覆盖一级子域，不覆盖 example.com 本身。",
+              "whyEn": "The browser requires the visited name to appear in the certificate's SAN exactly or under a wildcard. example.com does not cover the subdomain shop.example.com; even *.example.com covers just one label and not example.com itself."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "dns-cdn",
+          "titleZh": "DNS 与 CDN",
+          "titleEn": "DNS and CDNs",
+          "bodyZh": "人记得住 `example.com`，路由器只认 IP 地址。DNS 把域名翻译成地址，是一个全球分布、层层缓存的数据库；CDN 则借助 DNS 把用户引到离自己最近的服务器。这一节讲一次 DNS 查询的完整过程、常见记录类型，以及 CDN 怎样分流和缓存。\n\n## 域名的层级\n\n域名从右往左读：最右边是看不见的根（`.`），然后是顶级域（`com`、`org`、`cn`），再往下是 `example.com` 这样的二级域。每一级只负责告诉你\"下一级归谁管\"：\n\n- **根服务器**：知道每个顶级域由哪些服务器负责。名字只有 13 个（a 到 m.root-servers.net），但每个名字背后是遍布全球的大量任播节点。\n- **顶级域服务器**：知道 `example.com` 的权威服务器是谁。\n- **权威服务器**：域名所有者配置的，保存这个域名的真实记录。\n\n## 一次完整的查询\n\n```mermaid\nsequenceDiagram\n  accTitle: 递归解析器在缓存为空时依次询问根、顶级域和权威服务器\n  participant C as 客户端\n  participant R as 递归解析器\n  participant Root as 根服务器\n  participant TLD as .com 服务器\n  participant A as example.com 权威服务器\n  C->>R: www.example.com 的 A 记录？\n  R->>Root: www.example.com？\n  Root-->>R: 去问 .com 的服务器\n  R->>TLD: www.example.com？\n  TLD-->>R: 去问 example.com 的权威服务器\n  R->>A: www.example.com？\n  A-->>R: 192.0.2.10，TTL 3600\n  R-->>C: 192.0.2.10（并缓存一小时）\n```\n\n客户端对解析器发的是**递归查询**：\"你替我查到底\"；解析器对根、顶级域和权威服务器发的是**迭代查询**，每次只拿回一个\"下一步问谁\"的指引。\n\n解析器、操作系统和浏览器都会缓存结果，缓存多久由记录的 **TTL** 决定。所以上面这一整串只在缓存为空时才走一遍，大多数查询在解析器那里就命中了。\"查不到\"的结果也会被缓存一段时间（负缓存）。\n\nDNS 查询平时走 **UDP 53 端口**：一问一答、报文小，不值得先握手。响应太大被截断、或者在服务器之间同步整个区域数据时改用 TCP。DoH 和 DoT 把查询放进 HTTPS 或 TLS 里，防止被窃听和篡改。\n\n## 常见记录类型\n\n| 类型 | 作用 | 例子 |\n|---|---|---|\n| A | 域名 → IPv4 地址 | `www.example.com → 192.0.2.10` |\n| AAAA | 域名 → IPv6 地址 | `www.example.com → 2001:db8::10` |\n| CNAME | 别名，指向另一个域名 | `www.example.com → shop.cdn-provider.net` |\n| MX | 这个域名的邮件服务器 | `example.com → mail.example.com，优先级 10` |\n| NS | 这个域名由哪些权威服务器负责 | `example.com → ns1.example.net` |\n| TXT | 任意文本，常用于域名所有权验证和邮件防伪（SPF） | `\"v=spf1 …\"` |\n\n解析器拿到 CNAME 后，要继续解析它指向的那个名字，直到拿到 A 或 AAAA 记录。一个名字有了 CNAME 就不能再有别的记录，所以裸域名 `example.com`（它必须有 NS 等记录）不能设 CNAME，很多 DNS 服务商用\"CNAME 拉平\"或 ALIAS 记录来绕过。\n\n## CDN：把内容放到用户身边\n\n跨洋访问一次往返就要一两百毫秒。CDN 在世界各地部署**边缘节点**，把内容缓存在离用户近的地方：\n\n```mermaid\nflowchart LR\n  accTitle: CDN 的请求路径：边缘节点命中直接返回，未命中回源站取\n  user[\"用户\"] --> dns[\"DNS：CNAME 指向 CDN，返回最近的边缘节点\"]\n  dns --> edge{\"边缘节点有缓存？\"}\n  edge -->|\"命中\"| back[\"直接返回\"]\n  edge -->|\"未命中\"| origin[\"回源站取内容并缓存\"]\n  origin --> back\n```\n\n- **引流**：网站把 `www` 设成 CNAME 指向 CDN 的域名，CDN 的权威 DNS 根据解析器的位置返回附近节点的 IP；也有 CDN 用任播，让同一个 IP 由最近的节点响应。\n- **缓存**：边缘节点按源站的 `Cache-Control` 决定缓存多久。命中率越高，源站压力越小。\n- **更新**：缓存时间长，内容更新就慢。可以主动刷新（purge），更常用的是给静态文件名加上内容哈希，发布新版本时引用新文件名，旧缓存自然没人用。\n- **动态内容**也能受益：边缘节点就近终止 TLS 握手，再通过 CDN 优化过的骨干线路回源，比用户直连更快。\n\n## 要点\n\n- DNS 是分层的：根知道顶级域，顶级域知道权威服务器，权威服务器保存真实记录。\n- 客户端向解析器递归查询，解析器向各级服务器迭代查询；各级缓存按 TTL 保存结果。\n- DNS 平时用 UDP 53 端口，响应过大或区域传送时用 TCP。\n- A/AAAA 给出地址，CNAME 是别名，需要继续解析；裸域名不能设 CNAME。\n- CDN 通过 DNS 或任播把用户引到最近的边缘节点，未命中时回源。\n- 静态资源用\"内容哈希文件名 + 长缓存\"，发布新版本不用等缓存过期。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "People remember `example.com`; routers only understand IP addresses. DNS translates names into addresses as a globally distributed database with caches at every level, and CDNs use DNS to send each user to a nearby server. This lesson walks through a full DNS lookup, the common record types, and how a CDN routes and caches.\n\n## The hierarchy of names\n\nRead a domain name from right to left: the rightmost part is the invisible root (`.`), then the top-level domain (`com`, `org`, `cn`), then a second-level domain such as `example.com`. Each level only tells you who is in charge of the next one:\n\n- **Root servers** know which servers handle each top-level domain. There are only 13 names (a to m.root-servers.net), but each stands for many anycast instances around the world.\n- **TLD servers** know which servers are authoritative for `example.com`.\n- **Authoritative servers**, set up by the domain's owner, hold its actual records.\n\n## A full lookup\n\n```mermaid\nsequenceDiagram\n  accTitle: A recursive resolver with an empty cache asks the root, the TLD and the authoritative server in turn\n  participant C as Client\n  participant R as Recursive resolver\n  participant Root as Root server\n  participant TLD as .com server\n  participant A as example.com authoritative\n  C->>R: A record for www.example.com?\n  R->>Root: www.example.com?\n  Root-->>R: ask the .com servers\n  R->>TLD: www.example.com?\n  TLD-->>R: ask example.com's authoritative servers\n  R->>A: www.example.com?\n  A-->>R: 192.0.2.10, TTL 3600\n  R-->>C: 192.0.2.10 (cached for an hour)\n```\n\nThe client sends the resolver a **recursive query**, \"find the answer for me\"; the resolver sends the root, TLD and authoritative servers **iterative queries**, each returning only a pointer to whom to ask next.\n\nThe resolver, the OS and the browser all cache answers, for as long as the record's **TTL** says. So the whole chain above runs only when caches are empty; most lookups are answered from the resolver's cache. \"No such name\" answers are cached for a while too (negative caching).\n\nDNS normally uses **UDP port 53**: one small question, one small answer, not worth a handshake. It switches to TCP when a response is too large and gets truncated, or when servers copy a whole zone between them. DoH and DoT carry queries inside HTTPS or TLS to stop eavesdropping and tampering.\n\n## Common record types\n\n| Type | Purpose | Example |\n|---|---|---|\n| A | Name → IPv4 address | `www.example.com → 192.0.2.10` |\n| AAAA | Name → IPv6 address | `www.example.com → 2001:db8::10` |\n| CNAME | An alias pointing at another name | `www.example.com → shop.cdn-provider.net` |\n| MX | The domain's mail servers | `example.com → mail.example.com, priority 10` |\n| NS | The domain's authoritative servers | `example.com → ns1.example.net` |\n| TXT | Free text, often for proving domain ownership and email anti-spoofing (SPF) | `\"v=spf1 …\"` |\n\nA resolver that gets a CNAME keeps resolving the name it points to until it reaches an A or AAAA record. A name with a CNAME can have no other records, so the bare domain `example.com`, which must have NS records among others, cannot be a CNAME; many DNS providers work around this with CNAME flattening or ALIAS records.\n\n## CDNs: content next to the user\n\nOne round trip across an ocean takes 100 to 200 ms. A CDN places **edge nodes** around the world and caches content close to users:\n\n```mermaid\nflowchart LR\n  accTitle: A request through a CDN, a hit at the edge returns at once and a miss fetches from the origin\n  user[\"User\"] --> dns[\"DNS: a CNAME to the CDN returns the nearest edge\"]\n  dns --> edge{\"Cached at the edge?\"}\n  edge -->|\"hit\"| back[\"Return it\"]\n  edge -->|\"miss\"| origin[\"Fetch from the origin and cache it\"]\n  origin --> back\n```\n\n- **Routing**: the site makes `www` a CNAME to the CDN's domain, and the CDN's authoritative DNS answers with the IP of a node near the resolver; some CDNs use anycast instead, where the nearest node answers for a shared IP.\n- **Caching**: the edge keeps content as long as the origin's `Cache-Control` allows. The higher the hit rate, the less load on the origin.\n- **Updates**: long cache lifetimes make updates slow. You can purge explicitly, but the usual approach is a content hash in static file names: a release references new names and nobody asks for the old cached files again.\n- **Dynamic content** benefits too: the edge terminates TLS close to the user and reaches the origin over the CDN's tuned backbone, which beats a direct connection.\n\n## Key points\n\n- DNS is hierarchical: the root knows the TLDs, the TLDs know the authoritative servers, and those hold the records.\n- The client queries its resolver recursively and the resolver queries each level iteratively; every cache keeps answers for their TTL.\n- DNS normally uses UDP port 53, switching to TCP for large responses and zone transfers.\n- A/AAAA give addresses; a CNAME is an alias that must be resolved further, and a bare domain cannot have one.\n- A CDN sends users to the nearest edge through DNS or anycast, and fetches from the origin on a miss.\n- Hashed file names with long cache lifetimes let a release take effect without waiting for caches to expire.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "解析 www.example.com 时拿到一条 CNAME 记录，指向 shop.cdn-provider.net。解析器接下来做什么？",
+              "qEn": "Resolving www.example.com returns a CNAME pointing to shop.cdn-provider.net. What does the resolver do next?",
+              "choices": [
+                {
+                  "zh": "把 CNAME 的值直接当成 IP 地址返回",
+                  "en": "Return the CNAME's value as if it were an IP address"
+                },
+                {
+                  "zh": "继续解析 shop.cdn-provider.net，直到拿到 A 或 AAAA 记录",
+                  "en": "Resolve shop.cdn-provider.net in turn until it reaches an A or AAAA record"
+                },
+                {
+                  "zh": "报错，因为 www 不能设 CNAME",
+                  "en": "Fail, because www cannot have a CNAME"
+                },
+                {
+                  "zh": "改去查 example.com 的 MX 记录",
+                  "en": "Look up example.com's MX record instead"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "CNAME 只是别名，本身不含地址。解析器沿着别名链继续查，最后把 A/AAAA 记录连同整条 CNAME 链一起返回给客户端。不能设 CNAME 的是裸域名，不是 www。",
+              "whyEn": "A CNAME is only an alias with no address of its own. The resolver follows the chain and returns the final A/AAAA record along with the CNAMEs. It is the bare domain that cannot have a CNAME, not www."
+            },
+            {
+              "qZh": "递归解析器的缓存完全为空时解析 example.com，它首先向谁发查询？",
+              "qEn": "With a completely empty cache, whom does a recursive resolver ask first when resolving example.com?",
+              "choices": [
+                {
+                  "zh": "example.com 的权威服务器",
+                  "en": "example.com's authoritative server"
+                },
+                {
+                  "zh": ".com 顶级域服务器",
+                  "en": "A .com TLD server"
+                },
+                {
+                  "zh": "根域名服务器",
+                  "en": "A root server"
+                },
+                {
+                  "zh": "客户端的浏览器缓存",
+                  "en": "The client's browser cache"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "解析器一开始只知道根服务器的地址（内置在配置里）。根告诉它 .com 归谁管，.com 服务器再告诉它 example.com 的权威服务器。浏览器缓存在客户端一侧，解析器不会去问它。",
+              "whyEn": "A resolver starts knowing only the root servers' addresses, which ship with its configuration. The root points it to the .com servers, and they point it to example.com's authoritative servers. The browser cache sits on the client side; the resolver never asks it."
+            },
+            {
+              "qZh": "静态文件在 CDN 上缓存一年。想让用户在新版本发布后立刻拿到新文件，常用的做法是？",
+              "qEn": "Static files are cached on a CDN for a year. What is the usual way to make users get new files right after a release?",
+              "choices": [
+                {
+                  "zh": "把缓存时间改短，然后等已经缓存的旧文件自然过期",
+                  "en": "Shorten the cache lifetime and wait for the copies already cached to expire on their own"
+                },
+                {
+                  "zh": "让用户手动清理浏览器缓存",
+                  "en": "Ask users to clear their browser caches"
+                },
+                {
+                  "zh": "发布期间暂时关闭 CDN",
+                  "en": "Turn the CDN off during releases"
+                },
+                {
+                  "zh": "文件名带上内容哈希，新版本引用新文件名",
+                  "en": "Put a content hash in file names so a release references new names"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "内容一变哈希就变，新页面引用的是新的 URL，CDN 和浏览器都没有它的缓存，只能去取新文件；旧文件的缓存再久也没人请求了。改短缓存时间要等已有的缓存过期，起不到立刻生效的作用。",
+              "whyEn": "New content means a new hash, so the new page references URLs that no CDN or browser has cached and they must fetch the new files; the old cached files are simply never requested again. Shortening the lifetime still waits for existing copies to expire."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "tcp-connection",
+          "titleZh": "TCP 连接管理",
+          "titleEn": "TCP Connection Management",
+          "bodyZh": "TCP 在传数据之前要先建立连接，传完要正式关闭。三次握手和四次挥手几乎是网络面试的第一题，追问也很固定：为什么是三次、TIME_WAIT 是干什么的、服务器上一堆 CLOSE_WAIT 说明什么。这一节带着序号把整个过程走一遍。\n\n## TCP 头里和连接有关的字段\n\n| 字段 | 作用 |\n|---|---|\n| 源端口、目的端口 | 和两端 IP 一起确定一条连接 |\n| 序号 seq | 这个报文段第一个字节的编号 |\n| 确认号 ack | 期望收到的下一个字节的编号，表示之前的都收到了 |\n| 标志位 | SYN（建立连接）、ACK（确认号有效）、FIN（我发完了）、RST（立即重置） |\n| 窗口 | 接收方还能收多少字节，用于流量控制 |\n\n序号按字节计数，不按报文段。**SYN 和 FIN 虽然不带数据，也各占一个序号**，这是算 ack 时最容易错的地方。\n\n## 三次握手\n\n设客户端的初始序号 x = 100，服务器的 y = 300：\n\n```mermaid\nsequenceDiagram\n  accTitle: TCP 三次握手和四次挥手，标出序号、确认号和双方状态\n  participant C as 客户端\n  participant S as 服务器\n  Note over S: LISTEN\n  C->>S: SYN seq=100\n  Note over C: SYN_SENT\n  S->>C: SYN+ACK seq=300 ack=101\n  Note over S: SYN_RCVD\n  C->>S: ACK seq=101 ack=301\n  Note over C,S: ESTABLISHED，开始传数据\n  C->>S: FIN seq=101\n  Note over C: FIN_WAIT_1\n  S->>C: ACK ack=102\n  Note over S: CLOSE_WAIT，还可以继续发数据\n  S->>C: FIN seq=301\n  Note over S: LAST_ACK\n  C->>S: ACK ack=302\n  Note over C: TIME_WAIT，等 2MSL 后关闭\n```\n\n为什么不是两次？有两个理由：\n\n1. **双方都要确认对方收到了自己的初始序号**。客户端的 SYN 需要服务器确认，服务器的 SYN 也需要客户端确认。服务器的确认和它自己的 SYN 合在一个报文段里发，所以是三次。\n2. **防止旧的重复 SYN 建立错误的连接**。一个在网络里滞留很久的旧 SYN 到达服务器，如果两次就算建立，服务器会为它分配资源、白白等待。三次握手时，客户端收到一个对不上号的 SYN+ACK，会回 RST 把它拒掉。\n\n初始序号是随机选的，不从 0 开始：既让攻击者难以伪造报文段，也避免新连接收到同一个四元组上旧连接的残留报文。\n\n## 服务器的两个队列\n\n服务器收到 SYN 后，把这条半连接放进 **SYN 队列**；第三次握手完成后，连接移到**全连接队列**，等应用调用 `accept()` 取走。`listen()` 的 backlog 参数影响后者的长度。\n\n**SYN 洪泛攻击**用大量伪造源地址的 SYN 塞满 SYN 队列，正常用户就连不上了。**SYN cookie** 的对策是先不分配状态，把连接信息编码进自己的初始序号；客户端的 ACK 回来时校验这个序号，对得上才真正建立连接。\n\n## 四次挥手\n\nTCP 是全双工的，两个方向要分别关闭。主动关闭的一方发 FIN，表示\"我不再发数据了\"；对方先回 ACK，等自己的数据也发完，再发自己的 FIN。中间这段时间连接处于**半关闭**状态：一边已经不发了，另一边还能继续发。如果对方收到 FIN 时恰好也没数据要发，ACK 和 FIN 可以合成一个报文段，看起来就只有三次。\n\n## TIME_WAIT 和 CLOSE_WAIT\n\n主动关闭的一方发出最后一个 ACK 后进入 **TIME_WAIT**，等待 2MSL（MSL 是报文段在网络中的最长存活时间）才真正关闭。原因有两个：\n\n- 最后那个 ACK 可能丢失，对方会重发 FIN，这边得还在才能再回一次 ACK。\n- 让这条连接遗留在网络中的报文段全部过期，免得被之后用同一个四元组建立的新连接误收。\n\nLinux 的 TIME_WAIT 固定为 60 秒。一台机器频繁向同一个服务发起短连接，大量 TIME_WAIT 会占满本地端口；常见的解决办法是复用连接（HTTP keep-alive、连接池）。\n\n**CLOSE_WAIT** 是被动关闭的一方收到 FIN 之后、自己调用 `close()` 之前的状态。服务器上堆积大量 CLOSE_WAIT，几乎总是程序的问题：对方已经关了，代码却忘了关闭套接字，比如异常分支里漏掉了 close。\n\n**RST** 则是不走流程的强行关闭：向一个没有进程监听的端口发 SYN，会收到 RST；关闭套接字时接收缓冲区里还有没读的数据，或者把 SO_LINGER 设为 0 再关闭，也会直接发 RST。\n\n## 动手试试\n\n模拟器默认演示正常的握手和挥手，每一步标出报文段的 seq、ack 和双方状态。把场景改成 `syn-loss` 看 SYN 丢失后怎样超时重传，改成 `simul-close` 看双方同时关闭时都会经过 CLOSING 和 TIME_WAIT。\n\n```algorithm-demo\ntcp-handshake\n```\n\n## 要点\n\n- SYN 和 FIN 各占一个序号：客户端 ISN 为 x 时，服务器 SYN+ACK 的 ack 是 x + 1。\n- 三次握手让双方都确认对方收到了自己的初始序号，并能拒绝滞留的旧 SYN。\n- 半连接在 SYN 队列，完成握手的在全连接队列等 `accept()`；SYN cookie 用来抵御 SYN 洪泛。\n- 四次挥手是因为两个方向要分别关闭，中间可以半关闭。\n- 主动关闭方进入 TIME_WAIT 并等待 2MSL，以便重发最后的 ACK、让旧报文段过期。\n- 大量 CLOSE_WAIT 说明程序收到 FIN 后没有调用 `close()`。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "TCP sets up a connection before any data flows and closes it formally afterwards. The three-way handshake and the four-way close are close to the first question in any networking interview, and the follow-ups barely change: why three, what TIME_WAIT is for, and what a pile of CLOSE_WAIT on a server means. This lesson walks through the whole thing with sequence numbers.\n\n## The connection-related fields of the TCP header\n\n| Field | Role |\n|---|---|\n| Source and destination ports | With the two IPs, identify the connection |\n| Sequence number (seq) | The number of this segment's first byte |\n| Acknowledgement number (ack) | The next byte expected, meaning everything before it arrived |\n| Flags | SYN (open), ACK (the ack field is valid), FIN (I am done sending), RST (reset now) |\n| Window | How many more bytes the receiver can take, for flow control |\n\nSequence numbers count bytes, not segments. **SYN and FIN carry no data, yet each uses up one sequence number**, the most common slip when working out an ack.\n\n## The three-way handshake\n\nSay the client's initial sequence number is x = 100 and the server's is y = 300:\n\n```mermaid\nsequenceDiagram\n  accTitle: The TCP three-way handshake and four-way close with sequence numbers, acknowledgements and states\n  participant C as Client\n  participant S as Server\n  Note over S: LISTEN\n  C->>S: SYN seq=100\n  Note over C: SYN_SENT\n  S->>C: SYN+ACK seq=300 ack=101\n  Note over S: SYN_RCVD\n  C->>S: ACK seq=101 ack=301\n  Note over C,S: ESTABLISHED, data flows\n  C->>S: FIN seq=101\n  Note over C: FIN_WAIT_1\n  S->>C: ACK ack=102\n  Note over S: CLOSE_WAIT, may still send data\n  S->>C: FIN seq=301\n  Note over S: LAST_ACK\n  C->>S: ACK ack=302\n  Note over C: TIME_WAIT, closes after 2MSL\n```\n\nWhy not two? Two reasons:\n\n1. **Each side must know the other received its initial sequence number.** The client's SYN needs the server's acknowledgement and the server's SYN needs the client's. The server sends its acknowledgement and its own SYN in one segment, hence three.\n2. **A stale duplicate SYN must not open a connection.** An old SYN that lingered in the network finally reaches the server; with two steps the server would set up a connection and tie up resources waiting. With three, the client receives a SYN+ACK it does not recognise and answers with RST.\n\nInitial sequence numbers are random rather than starting at 0: that makes forged segments harder and keeps a new connection from accepting leftovers of an old one with the same four-tuple.\n\n## The server's two queues\n\nWhen a SYN arrives, the server puts the half-open connection in the **SYN queue**; when the third step completes, it moves to the **accept queue** until the application calls `accept()`. The backlog argument of `listen()` sizes the latter.\n\nA **SYN flood** fills the SYN queue with SYNs from forged addresses so that real users cannot connect. **SYN cookies** counter it by keeping no state at first and encoding the connection details in the server's own initial sequence number; the connection is created only when a returning ACK carries a number that checks out.\n\n## The four-way close\n\nTCP is full duplex, so each direction is closed separately. The side closing first sends FIN, meaning \"I will send no more\"; the other side acknowledges at once and sends its own FIN when it has finished sending. In between the connection is **half-closed**: one side has stopped, the other may keep sending. If the receiver of the FIN has nothing left to send, its ACK and FIN can share one segment, and the close looks like three steps.\n\n## TIME_WAIT and CLOSE_WAIT\n\nAfter sending the final ACK, the side that closed first enters **TIME_WAIT** and waits 2MSL (MSL being the longest a segment can live in the network) before really closing. Two reasons:\n\n- The final ACK may be lost; the peer will resend its FIN, and someone has to be there to acknowledge it again.\n- Stray segments from this connection must expire, so a later connection on the same four-tuple does not accept them.\n\nOn Linux TIME_WAIT is fixed at 60 seconds. A machine that opens many short connections to the same service can run out of local ports to TIME_WAIT; the usual cure is reusing connections (HTTP keep-alive, connection pools).\n\n**CLOSE_WAIT** is the state of the passive side after it receives the FIN and before it calls `close()`. A server piling up CLOSE_WAIT almost always has a bug: the peer has closed, and the code never closes its socket, often because an error path skips it.\n\n**RST** is the abrupt close that skips the ritual: a SYN to a port nobody listens on gets an RST, and closing a socket with unread data still in its receive buffer, or with SO_LINGER set to 0, sends one straight away.\n\n## Try it\n\nThe simulator starts with a normal handshake and close, labelling every segment's seq and ack and both sides' states. Set the scenario to `syn-loss` to watch a lost SYN time out and be resent, or to `simul-close` to see both sides pass through CLOSING and TIME_WAIT when they close at the same moment.\n\n```algorithm-demo\ntcp-handshake\n```\n\n## Key points\n\n- SYN and FIN each use one sequence number: if the client's ISN is x, the server's SYN+ACK carries ack x + 1.\n- The three-way handshake confirms each side's initial sequence number and lets the client reject stale SYNs.\n- Half-open connections sit in the SYN queue and completed ones in the accept queue until `accept()`; SYN cookies resist SYN floods.\n- The close takes four steps because each direction closes on its own, with a half-closed stretch in between.\n- The side that closes first enters TIME_WAIT for 2MSL, to resend the last ACK if needed and let old segments expire.\n- Many CLOSE_WAIT connections mean the program received a FIN and never called `close()`.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "客户端 SYN 的序号是 500。服务器回复的 SYN+ACK 里，确认号是多少？",
+              "qEn": "The client's SYN has sequence number 500. What acknowledgement number does the server's SYN+ACK carry?",
+              "choices": [
+                {
+                  "zh": "501",
+                  "en": "501"
+                },
+                {
+                  "zh": "500",
+                  "en": "500"
+                },
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "502",
+                  "en": "502"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "确认号是期望收到的下一个字节的序号。SYN 不带数据，但占一个序号，所以服务器期望的下一个是 500 + 1 = 501。",
+              "whyEn": "The acknowledgement number is the next byte the receiver expects. A SYN carries no data but uses one sequence number, so the server expects 500 + 1 = 501."
+            },
+            {
+              "qZh": "服务器上有大量连接长时间停在 CLOSE_WAIT 状态，最可能的原因是？",
+              "qEn": "A server has many connections stuck in CLOSE_WAIT for a long time. What is the most likely cause?",
+              "choices": [
+                {
+                  "zh": "网络拥塞，ACK 丢了",
+                  "en": "Congestion is dropping ACKs"
+                },
+                {
+                  "zh": "程序收到对方的 FIN 后没有调用 close",
+                  "en": "The program received the peer's FIN and never called close"
+                },
+                {
+                  "zh": "客户端开了太多连接",
+                  "en": "Clients open too many connections"
+                },
+                {
+                  "zh": "TIME_WAIT 的时间设得太长，连接迟迟不能释放",
+                  "en": "TIME_WAIT is configured too long, so connections are released too late"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "CLOSE_WAIT 是被动关闭方收到 FIN 后、自己 close 之前的状态，离开它只取决于应用什么时候关闭套接字，和网络无关。大量堆积通常是代码在某些分支里忘了关闭连接。TIME_WAIT 出现在主动关闭方。",
+              "whyEn": "CLOSE_WAIT lasts from receiving the FIN until the application closes its socket; leaving it depends only on the application, not the network. A pile-up usually means some code path forgets to close. TIME_WAIT belongs to the side that closes first."
+            },
+            {
+              "qZh": "假设 MSL（报文段最长存活时间）为 30 秒，主动关闭方在 TIME_WAIT 状态要等多久？",
+              "qEn": "If the MSL (maximum segment lifetime) is 30 seconds, how long does the side that closed first stay in TIME_WAIT?",
+              "choices": [
+                {
+                  "zh": "30 秒",
+                  "en": "30 seconds"
+                },
+                {
+                  "zh": "120 秒",
+                  "en": "120 seconds"
+                },
+                {
+                  "zh": "60 秒",
+                  "en": "60 seconds"
+                },
+                {
+                  "zh": "不等待，立即关闭",
+                  "en": "No time at all; it closes at once"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "TIME_WAIT 等 2MSL = 60 秒：一个 MSL 让可能丢失的最后一个 ACK 引出的重发 FIN 能到达，另一个让双向的旧报文段都过期。Linux 正是把它固定成 60 秒。",
+              "whyEn": "TIME_WAIT lasts 2MSL = 60 seconds: long enough for a FIN resent after a lost final ACK to arrive, and for old segments in both directions to expire. Linux fixes it at exactly 60 seconds."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "tcp-reliability",
+          "titleZh": "TCP 可靠传输",
+          "titleEn": "TCP Reliable Delivery",
+          "bodyZh": "IP 只负责\"尽力而为\"地送包：包可能丢、可能重复、可能乱序，也可能在路上被损坏。TCP 在这样的基础上交付一条不丢、不重、不乱的字节流。这一节讲它用到的几样工具：校验和、序号与确认、重传、滑动窗口，以及流量控制。\n\n## 可靠传输的工具箱\n\n| 问题 | 对策 |\n|---|---|\n| 数据被损坏 | 校验和，出错的报文段直接丢弃，当作丢失处理 |\n| 丢失 | 确认（ACK）加重传：超时没收到确认就重发 |\n| 重复 | 序号：接收方按序号识别并丢弃重复的数据 |\n| 乱序 | 序号：接收方按序号重新排好再交给应用 |\n| 发得太快 | 滑动窗口和流量控制 |\n\nTCP 的 ACK 是**累计确认**：ack = 501 表示\"500 及以前的字节都收到了，下一个要 501\"。一个 ACK 丢了没关系，后面的 ACK 会把它覆盖。\n\n## 从停等到滑动窗口\n\n最简单的办法是**停等**：发一个，等确认，再发下一个。可一个往返的大部分时间都在空等，链路几乎闲着。改进方法是允许同时有多个已发出、未确认的报文段，数量上限就是**窗口**。\n\n```mermaid\nflowchart LR\n  accTitle: 发送方的字节流被分成四段，中间两段构成发送窗口\n  a[\"已发送且已确认\"] --> b[\"已发送未确认\"]\n  b --> c[\"可以发送\"]\n  c --> d[\"暂时不能发送\"]\n```\n\n发送窗口 = \"已发送未确认\" + \"可以发送\"。收到新的确认，窗口左边沿右移，右边就有新的数据可以发，窗口像在字节流上\"滑动\"。\n\n## 丢了一个怎么办：GBN 和 SR\n\n| | 回退 N（GBN） | 选择重传（SR） |\n|---|---|---|\n| 接收方遇到乱序 | 丢弃，重复确认最后一个按序收到的 | 缓存起来，单独确认 |\n| 发送方重传 | 从丢失的那个开始，窗口里之后的全部重发 | 只重发丢失的那个 |\n| 序号位数为 k 时的最大窗口 | 2^k − 1 | 2^(k−1) |\n\nSR 的窗口不能超过序号空间的一半，否则接收方分不清收到的是新一轮的分组，还是上一轮重传的旧分组。\n\n## 动手试试\n\n模拟器默认演示 GBN：10 个分组、窗口 4、分组 3 第一次发送时丢失。第一轮发出 0 到 3，接收方确认了 0、1、2；第二轮发出 4、5、6，接收方因为缺 3 把它们全部丢弃，只能重复确认 2；超时后发送方把 3 到 6 全部重发。把协议改成 `sr`，第二轮的 4、5、6 会被缓存，超时后只重发 3。\n\n```algorithm-demo\nsliding-window-arq\n```\n\n## TCP 实际怎么做\n\nTCP 介于两者之间：ACK 是累计的（像 GBN），但接收方会缓存乱序到达的数据（像 SR）。再加上两项改进：\n\n- **快速重传**：接收方每收到一个乱序报文段，就重发一次相同的 ACK。发送方收到 3 个重复 ACK，就判断那个报文段丢了，立刻重传，不必等超时。\n- **SACK**（选择确认）：双方协商开启后，接收方在 ACK 里告诉发送方\"这几段我也收到了\"，发送方只补发缺的部分。\n\n**超时时间**（RTO）不能写死：网络往返时间（RTT）随时在变。TCP 持续测量 RTT，用平滑均值加上 4 倍的波动幅度作为 RTO；重传的报文段不参与测量，因为分不清 ACK 回应的是哪一次发送（Karn 算法）；每次超时后 RTO 加倍，避免在网络已经拥堵时继续猛发。\n\n## 流量控制\n\n接收方的缓冲区是有限的。TCP 头里的**窗口字段**告诉发送方\"我还能收这么多\"（接收窗口 rwnd），发送方在途的数据不能超过它。实际能发多少取 rwnd 和拥塞窗口 cwnd（下一节）中的较小值。\n\n如果应用读得太慢，缓冲区满了，接收方会通告零窗口，发送方就停下来，并定时发小的探测报文，问窗口打开了没有，防止窗口更新的报文丢了以后双方一直干等。窗口字段只有 16 位，最多 65535 字节，高带宽、长延迟的链路要靠\"窗口缩放\"选项把它放大。\n\n## 要点\n\n- TCP 用校验和、序号、累计确认和重传，把不可靠的 IP 变成可靠有序的字节流。\n- 滑动窗口允许多个报文段同时在途，窗口随确认右移。\n- GBN 丢一个就重发它之后的整个窗口；SR 只重发丢的那个，但窗口不能超过序号空间的一半。\n- 收到 3 个重复 ACK 就快速重传，不等超时；SACK 让发送方只补发缺的部分。\n- RTO 根据测得的 RTT 动态计算，重传的报文段不参与测量，超时后 RTO 加倍。\n- 流量控制靠接收方通告的窗口，发送量取接收窗口和拥塞窗口的较小值。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "IP only delivers packets on a best-effort basis: they can be lost, duplicated, reordered or corrupted on the way. On top of that, TCP delivers a byte stream with nothing lost, duplicated or out of order. This lesson covers its tools: checksums, sequence numbers and acknowledgements, retransmission, the sliding window and flow control.\n\n## The reliability toolkit\n\n| Problem | Remedy |\n|---|---|\n| Corruption | A checksum; a damaged segment is dropped and treated as lost |\n| Loss | Acknowledgements plus retransmission: resend when no ACK arrives in time |\n| Duplicates | Sequence numbers let the receiver spot and drop repeated data |\n| Reordering | Sequence numbers let the receiver put data back in order before handing it over |\n| Sending too fast | The sliding window and flow control |\n\nTCP acknowledgements are **cumulative**: ack = 501 means \"every byte up to 500 arrived; send 501 next\". A lost ACK does no harm, because the next one covers it.\n\n## From stop-and-wait to a sliding window\n\nThe simplest scheme is **stop-and-wait**: send one, wait for its ACK, send the next. Most of each round trip is spent waiting and the link sits idle. The fix is to allow several sent-but-unacknowledged segments at once, up to a limit: the **window**.\n\n```mermaid\nflowchart LR\n  accTitle: The sender's byte stream in four regions, the middle two form the send window\n  a[\"Sent and acknowledged\"] --> b[\"Sent, not yet acknowledged\"]\n  b --> c[\"May be sent\"]\n  c --> d[\"Not yet allowed\"]\n```\n\nSend window = \"sent, not yet acknowledged\" + \"may be sent\". Each new acknowledgement moves the left edge right, new data on the right becomes sendable, and the window slides along the stream.\n\n## When one is lost: GBN and SR\n\n| | Go-Back-N (GBN) | Selective Repeat (SR) |\n|---|---|---|\n| Receiver gets an out-of-order packet | Drops it and repeats the ACK for the last in-order one | Buffers it and acknowledges it individually |\n| Sender retransmits | The lost packet and everything after it in the window | Only the lost packet |\n| Largest window with k-bit sequence numbers | 2^k − 1 | 2^(k−1) |\n\nAn SR window may be at most half the sequence space; otherwise the receiver cannot tell a new packet from a retransmission of an old one with the same number.\n\n## Try it\n\nThe simulator starts with GBN: 10 packets, a window of 4, and packet 3 lost on its first send. Round one sends 0 to 3 and the receiver acknowledges 0, 1 and 2. Round two sends 4, 5 and 6, which the receiver drops because 3 is missing, repeating its ACK for 2. After the timeout the sender resends 3 to 6. Switch the protocol to `sr` and 4, 5 and 6 are buffered in round two, so only 3 is resent after the timeout.\n\n```algorithm-demo\nsliding-window-arq\n```\n\n## What TCP actually does\n\nTCP sits between the two: acknowledgements are cumulative (like GBN), but the receiver buffers segments that arrive out of order (like SR). Two refinements go on top:\n\n- **Fast retransmit**: for every out-of-order segment, the receiver repeats its last ACK. Three duplicate ACKs tell the sender that segment was lost, and it resends at once instead of waiting for the timeout.\n- **SACK** (selective acknowledgement): when both sides enable it, the receiver reports in its ACKs which further ranges arrived, and the sender fills in only the holes.\n\nThe **retransmission timeout** (RTO) cannot be a constant, because the round-trip time (RTT) keeps changing. TCP keeps measuring RTT and sets RTO to the smoothed average plus four times its variation. Retransmitted segments are left out of the measurement, since there is no telling which send an ACK answers (Karn's algorithm), and every timeout doubles RTO so a congested network is not hammered further.\n\n## Flow control\n\nThe receiver's buffer is finite. The **window field** in the TCP header tells the sender how much more it can take (the receive window, rwnd), and the sender keeps no more than that in flight. What it may actually send is the smaller of rwnd and the congestion window cwnd (next lesson).\n\nIf the application reads too slowly and the buffer fills, the receiver advertises a zero window and the sender stops, sending small probes now and then to ask whether the window has opened, so a lost window update cannot leave both sides waiting forever. The window field has only 16 bits, a maximum of 65535 bytes; fast, long-delay links rely on the window scale option to make it larger.\n\n## Key points\n\n- Checksums, sequence numbers, cumulative ACKs and retransmission turn unreliable IP into a reliable, ordered byte stream.\n- A sliding window keeps several segments in flight and moves right as acknowledgements arrive.\n- GBN resends the whole window after a loss; SR resends only the lost packet, but its window is at most half the sequence space.\n- Three duplicate ACKs trigger a fast retransmit without waiting for the timeout; SACK lets the sender fill only the holes.\n- RTO is computed from measured RTT, retransmissions are not measured, and each timeout doubles RTO.\n- Flow control follows the receiver's advertised window; the sender sends at most the smaller of the receive and congestion windows.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "选择重传（SR）协议的序号占 3 位（0 到 7），发送窗口最大能设成多少？",
+              "qEn": "A Selective Repeat protocol uses 3-bit sequence numbers (0 to 7). What is the largest send window it can use?",
+              "choices": [
+                {
+                  "zh": "7",
+                  "en": "7"
+                },
+                {
+                  "zh": "8",
+                  "en": "8"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "SR 的窗口不能超过序号空间的一半：2^(3−1) = 4。窗口再大，接收方就可能把重传的旧分组当成新一轮的分组收下。7（2^3 − 1）是 GBN 的上限。",
+              "whyEn": "An SR window may be at most half the sequence space: 2^(3−1) = 4. Any larger and the receiver could take a retransmitted old packet for a new one. 7 (2^3 − 1) is the Go-Back-N limit."
+            },
+            {
+              "qZh": "TCP 发送方连续收到 3 个重复的 ACK，会怎样？",
+              "qEn": "What does a TCP sender do when it receives three duplicate ACKs in a row?",
+              "choices": [
+                {
+                  "zh": "立即重传对方还在等的那个报文段，不等超时",
+                  "en": "Resend the segment the receiver is waiting for at once, without waiting for the timeout"
+                },
+                {
+                  "zh": "立即断开连接",
+                  "en": "Close the connection immediately"
+                },
+                {
+                  "zh": "把发送窗口扩大一倍",
+                  "en": "Double its send window"
+                },
+                {
+                  "zh": "什么也不做，重复 ACK 很常见，等重传计时器超时再说",
+                  "en": "Nothing yet: duplicate ACKs are common, so it simply waits for the retransmission timer to expire"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "重复 ACK 说明接收方在不断收到后面的数据，唯独缺某一段。3 个重复 ACK 足以判断那一段丢了而不只是乱序，于是快速重传，比等 RTO 超时快得多。",
+              "whyEn": "Duplicate ACKs mean later data keeps arriving while one segment is missing. Three of them are enough to call it lost rather than merely reordered, so the sender retransmits right away, far sooner than an RTO timeout."
+            },
+            {
+              "qZh": "回退 N（GBN）协议，窗口为 4，已发出分组 3、4、5、6，其中 3 丢失，其余都到了。超时后发送方重传哪些分组？",
+              "qEn": "Go-Back-N with a window of 4 has sent packets 3, 4, 5 and 6; 3 was lost and the rest arrived. Which packets does the sender resend after the timeout?",
+              "choices": [
+                {
+                  "zh": "只重传 3",
+                  "en": "Only 3"
+                },
+                {
+                  "zh": "3、4、5、6 全部重传",
+                  "en": "All of 3, 4, 5 and 6"
+                },
+                {
+                  "zh": "只重传 4、5、6",
+                  "en": "Only 4, 5 and 6"
+                },
+                {
+                  "zh": "不重传，等接收方来要",
+                  "en": "None; it waits for the receiver to ask"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "GBN 的接收方只接受按序到达的分组，4、5、6 因为缺 3 被丢弃了。所以发送方要从 3 开始，把窗口里之后的分组全部重发。只重传 3 是选择重传的做法。",
+              "whyEn": "A GBN receiver accepts only in-order packets, so it dropped 4, 5 and 6 while 3 was missing. The sender therefore goes back to 3 and resends everything after it in the window. Resending only 3 is what Selective Repeat does."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "tcp-congestion",
+          "titleZh": "TCP 拥塞控制",
+          "titleEn": "TCP Congestion Control",
+          "bodyZh": "流量控制保护的是接收方，拥塞控制保护的是网络本身。如果每个发送方都按对方的接收窗口全速发，路由器的队列会被塞满、开始丢包，丢包引起重传，重传又加剧拥塞。1986 年互联网就因此出现过吞吐量暴跌的\"拥塞崩溃\"。TCP 的拥塞控制让每条连接自己探测网络还能承受多少。这一节讲慢启动、拥塞避免、快速恢复，并用模拟器把拥塞窗口的变化画出来。\n\n## 两个变量\n\n- **拥塞窗口 cwnd**：发送方自己估计的、网络能容纳的在途数据量。\n- **慢启动阈值 ssthresh**：cwnd 增长方式的分界线。\n\n发送方实际能发的量取 cwnd 和接收窗口 rwnd 的较小值。下面以\"报文段个数\"为单位、以\"一个往返\"为一轮来描述 cwnd 的变化，这也是考题的通常设定。\n\n## 四个阶段\n\n```mermaid\nflowchart TD\n  accTitle: TCP Reno 拥塞控制的状态转换：慢启动、拥塞避免和快速恢复\n  ss[\"慢启动：每轮 cwnd 翻倍\"] -->|\"cwnd 达到 ssthresh\"| ca[\"拥塞避免：每轮 cwnd 加 1\"]\n  ss -->|\"超时\"| loss1[\"ssthresh = cwnd / 2，cwnd = 1\"]\n  ca -->|\"超时\"| loss1\n  loss1 --> ss\n  ca -->|\"3 个重复 ACK\"| fr[\"快速恢复：ssthresh = cwnd / 2\"]\n  ss -->|\"3 个重复 ACK\"| fr\n  fr -->|\"新数据被确认，cwnd 回到 ssthresh\"| ca\n```\n\n1. **慢启动**：cwnd 从很小的值开始（教科书里是 1，现在 Linux 的初始值是 10 个报文段），每收到一个 ACK 加 1，效果是每个往返翻一倍。名字里有\"慢\"，是相对于一开始就全速发而言的，实际增长是指数级。\n2. **拥塞避免**：cwnd 到达 ssthresh 后，每个往返只加 1，线性地小心试探。\n3. **超时**：说明网络可能堵得很厉害。ssthresh 设为当前 cwnd 的一半，cwnd 回到 1，重新慢启动。\n4. **收到 3 个重复 ACK**：说明后面的数据还能到达，网络只是轻度拥塞。Reno 把 ssthresh 设为 cwnd 的一半，快速重传丢失的报文段，进入**快速恢复**：按 RFC 5681，cwnd 先设为 ssthresh + 3（那 3 个重复 ACK 说明已有 3 个报文段离开了网络），新数据被确认后再降回 ssthresh，接着进入拥塞避免。教科书常把这一步简化成\"cwnd 直接等于 ssthresh\"，考题通常也按简化版算。\n\n更早的 Tahoe 版本不区分两种信号，3 个重复 ACK 也把 cwnd 降到 1。\n\n## 一个完整的例子\n\n初始 ssthresh = 8，cwnd 从 1 开始；第 9 轮超时，第 15 轮收到 3 个重复 ACK（Reno，按简化版）：\n\n| 轮次 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|---|\n| cwnd | 1 | 2 | 4 | 8 | 9 | 10 | 11 | 12 | 13 | 1 |\n| **轮次** | **11** | **12** | **13** | **14** | **15** | **16** | **17** | **18** | **19** | **20** |\n| cwnd | 2 | 4 | 6 | 7 | 8 | 4 | 5 | 6 | 7 | 8 |\n\n- 第 1 到 4 轮慢启动，翻倍到 8，正好碰到 ssthresh，之后线性增长。\n- 第 9 轮 cwnd = 13 时超时：ssthresh = ⌊13 / 2⌋ = 6，第 10 轮 cwnd 回到 1。\n- 第 12 轮 cwnd = 4，翻倍会变成 8，但不能越过 ssthresh，所以第 13 轮是 6，之后每轮加 1。\n- 第 15 轮 cwnd = 8 时收到 3 个重复 ACK：ssthresh = 4，第 16 轮 cwnd = 4，直接进入拥塞避免。\n\n## 动手试试\n\n模拟器默认就是上面这个例子，逐轮画出 cwnd 和 ssthresh 两条线。把 `reno` 改成 `tahoe`，看第 16 轮怎样回到 1 重新慢启动；也可以改初始 ssthresh、轮数和事件的位置。\n\n```algorithm-demo\ntcp-congestion\n```\n\n## 为什么是\"加性增、乘性减\"\n\n拥塞避免每轮加 1（加性增），出现拥塞就减半（乘性减），合称 **AIMD**。可以证明，多条连接共享一个瓶颈时，AIMD 会让它们的发送速率逐渐趋于相等，既充分利用带宽，又比较公平。\n\n## 现代算法\n\n- **CUBIC**：Linux 自 2.6.19 起的默认算法。窗口按\"距上次丢包的时间\"的三次函数增长：离上次出事时的窗口远就快速逼近，接近了就放慢。增长速度不依赖 RTT，在高带宽、长延迟的链路上比 Reno 更能用满带宽。\n- **BBR**：Google 提出，不把丢包当作主要的拥塞信号，而是持续估计瓶颈带宽和最小往返时间，按估计出的速率平稳地发。在有随机丢包的长距离链路上，比基于丢包的算法吞吐高得多。\n- **ECN**：路由器在队列快满时给包打上标记，而不是丢掉它，接收方把标记回传给发送方，发送方提前减速。\n\n## 要点\n\n- 拥塞控制保护网络，流量控制保护接收方；实际发送量取 cwnd 和 rwnd 的较小值。\n- 慢启动每个往返 cwnd 翻倍，到 ssthresh 后进入拥塞避免，每个往返加 1。\n- 超时：ssthresh = cwnd / 2，cwnd = 1，重新慢启动。\n- 3 个重复 ACK（Reno）：ssthresh = cwnd / 2，快速重传并快速恢复；RFC 5681 先设 cwnd = ssthresh + 3，教科书简化为 cwnd = ssthresh。\n- Tahoe 对两种丢包信号都把 cwnd 降到 1。\n- AIMD 让共享瓶颈的连接趋于公平；CUBIC 是 Linux 默认算法，BBR 按估计的带宽和 RTT 控速。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "Flow control protects the receiver; congestion control protects the network itself. If every sender went flat out up to its peer's receive window, router queues would fill and drop packets, drops would trigger retransmissions, and retransmissions would deepen the congestion. In 1986 the Internet suffered exactly this \"congestion collapse\", with throughput crashing. TCP congestion control has each connection probe how much the network can take. This lesson covers slow start, congestion avoidance and fast recovery, and plots the congestion window with a simulator.\n\n## Two variables\n\n- **Congestion window, cwnd**: the sender's own estimate of how much data the network can hold in flight.\n- **Slow start threshold, ssthresh**: the line between the two ways cwnd grows.\n\nThe sender may have in flight the smaller of cwnd and the receive window rwnd. Below, cwnd is counted in segments and changes once per round (one round trip), the usual setting for exam questions.\n\n## Four phases\n\n```mermaid\nflowchart TD\n  accTitle: TCP Reno congestion control states, slow start, congestion avoidance and fast recovery\n  ss[\"Slow start: cwnd doubles each round\"] -->|\"cwnd reaches ssthresh\"| ca[\"Congestion avoidance: cwnd + 1 each round\"]\n  ss -->|\"timeout\"| loss1[\"ssthresh = cwnd / 2, cwnd = 1\"]\n  ca -->|\"timeout\"| loss1\n  loss1 --> ss\n  ca -->|\"3 duplicate ACKs\"| fr[\"Fast recovery: ssthresh = cwnd / 2\"]\n  ss -->|\"3 duplicate ACKs\"| fr\n  fr -->|\"new data acknowledged, cwnd back to ssthresh\"| ca\n```\n\n1. **Slow start**: cwnd starts small (1 in textbooks; Linux now starts at 10 segments) and grows by 1 for every ACK, which doubles it every round trip. \"Slow\" is relative to sending at full speed from the start; the growth is exponential.\n2. **Congestion avoidance**: once cwnd reaches ssthresh, it grows by only 1 per round trip, probing carefully and linearly.\n3. **Timeout**: a sign the network may be badly congested. ssthresh becomes half the current cwnd, cwnd drops to 1, and slow start begins again.\n4. **Three duplicate ACKs**: later data is still getting through, so congestion is mild. Reno sets ssthresh to half of cwnd, fast-retransmits the lost segment and enters **fast recovery**: per RFC 5681, cwnd first becomes ssthresh + 3 (the three duplicate ACKs mean three segments have left the network) and deflates back to ssthresh once new data is acknowledged, then congestion avoidance continues. Textbooks often shorten this to \"cwnd becomes ssthresh\", and exam questions usually use the short version.\n\nThe older Tahoe treats both signals the same: three duplicate ACKs also drop cwnd to 1.\n\n## A worked example\n\nInitial ssthresh = 8 and cwnd starts at 1; round 9 times out and round 15 gets three duplicate ACKs (Reno, short version):\n\n| Round | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|---|\n| cwnd | 1 | 2 | 4 | 8 | 9 | 10 | 11 | 12 | 13 | 1 |\n| **Round** | **11** | **12** | **13** | **14** | **15** | **16** | **17** | **18** | **19** | **20** |\n| cwnd | 2 | 4 | 6 | 7 | 8 | 4 | 5 | 6 | 7 | 8 |\n\n- Rounds 1 to 4 are slow start, doubling to 8, which is exactly ssthresh; growth is linear after that.\n- Round 9 times out at cwnd = 13: ssthresh = ⌊13 / 2⌋ = 6, and round 10 starts again at cwnd = 1.\n- At round 12 cwnd = 4; doubling would give 8, but it cannot pass ssthresh, so round 13 is 6, and each round adds 1 from there.\n- Round 15 gets three duplicate ACKs at cwnd = 8: ssthresh = 4, and round 16 continues in congestion avoidance at cwnd = 4.\n\n## Try it\n\nThe simulator starts with exactly this example and plots cwnd and ssthresh round by round. Change `reno` to `tahoe` and watch round 16 fall back to 1 for a new slow start, or change the initial ssthresh, the number of rounds and where the events happen.\n\n```algorithm-demo\ntcp-congestion\n```\n\n## Why additive increase, multiplicative decrease\n\nAdding 1 per round in congestion avoidance (additive increase) and halving on congestion (multiplicative decrease) is called **AIMD**. When several connections share a bottleneck, AIMD provably drives their rates toward equal shares, using the bandwidth well while staying reasonably fair.\n\n## Modern algorithms\n\n- **CUBIC**, the Linux default since 2.6.19, grows the window as a cubic function of the time since the last loss: fast while far from the window where trouble last struck, slower as it gets close. Its growth does not depend on RTT, so it fills fast, long-delay links better than Reno.\n- **BBR**, from Google, does not treat loss as the main congestion signal. It keeps estimating the bottleneck bandwidth and the minimum round-trip time and sends steadily at the estimated rate. On long links with random loss it gets far more throughput than loss-based algorithms.\n- **ECN** lets a router mark packets when its queue is filling instead of dropping them; the receiver echoes the mark to the sender, which slows down early.\n\n## Key points\n\n- Congestion control protects the network, flow control the receiver; the sender uses the smaller of cwnd and rwnd.\n- Slow start doubles cwnd every round trip up to ssthresh, then congestion avoidance adds 1 per round trip.\n- Timeout: ssthresh = cwnd / 2, cwnd = 1, slow start again.\n- Three duplicate ACKs (Reno): ssthresh = cwnd / 2, fast retransmit and fast recovery; RFC 5681 sets cwnd = ssthresh + 3 first, textbooks shorten it to cwnd = ssthresh.\n- Tahoe drops cwnd to 1 on either loss signal.\n- AIMD pushes connections sharing a bottleneck toward fairness; CUBIC is the Linux default and BBR paces by estimated bandwidth and RTT.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "TCP 的 cwnd 为 16 个报文段时发生超时。之后 ssthresh 和 cwnd 分别变成多少？",
+              "qEn": "A TCP timeout happens while cwnd is 16 segments. What do ssthresh and cwnd become?",
+              "choices": [
+                {
+                  "zh": "ssthresh 16，cwnd 8",
+                  "en": "ssthresh 16, cwnd 8"
+                },
+                {
+                  "zh": "ssthresh 8，cwnd 8",
+                  "en": "ssthresh 8, cwnd 8"
+                },
+                {
+                  "zh": "ssthresh 8，cwnd 1",
+                  "en": "ssthresh 8, cwnd 1"
+                },
+                {
+                  "zh": "ssthresh 4，cwnd 1",
+                  "en": "ssthresh 4, cwnd 1"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "超时被看作严重拥塞：ssthresh 设为当前 cwnd 的一半，即 8；cwnd 回到 1，重新慢启动，翻倍到 8 后转入拥塞避免。「ssthresh 8，cwnd 8」是 Reno 收到 3 个重复 ACK 时的简化结果。",
+              "whyEn": "A timeout signals serious congestion: ssthresh becomes half of cwnd, 8, and cwnd falls to 1 for a fresh slow start, doubling up to 8 before congestion avoidance. \"ssthresh 8, cwnd 8\" is the textbook Reno result for three duplicate ACKs."
+            },
+            {
+              "qZh": "TCP Reno 在 cwnd = 20 时收到 3 个重复 ACK，ssthresh 会变成多少？",
+              "qEn": "TCP Reno receives three duplicate ACKs while cwnd = 20. What does ssthresh become?",
+              "choices": [
+                {
+                  "zh": "20",
+                  "en": "20"
+                },
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "40",
+                  "en": "40"
+                },
+                {
+                  "zh": "10",
+                  "en": "10"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "两种丢包信号都会把 ssthresh 设为 cwnd 的一半，即 10。区别在 cwnd：超时降到 1；3 个重复 ACK 进入快速恢复，教科书简化为 cwnd = 10，RFC 5681 先设为 13，新数据确认后再降回 10。",
+              "whyEn": "Either loss signal sets ssthresh to half of cwnd, 10. They differ in cwnd: a timeout drops it to 1, while three duplicate ACKs start fast recovery, which textbooks shorten to cwnd = 10 and RFC 5681 starts at 13 before deflating to 10 once new data is acknowledged."
+            },
+            {
+              "qZh": "BBR 和 Reno、CUBIC 这类拥塞控制算法最大的不同是？",
+              "qEn": "What most sets BBR apart from congestion control algorithms like Reno and CUBIC?",
+              "choices": [
+                {
+                  "zh": "按估计的瓶颈带宽和最小 RTT 控速，不以丢包为主要信号",
+                  "en": "It paces by estimated bottleneck bandwidth and minimum RTT, not by loss"
+                },
+                {
+                  "zh": "完全不做拥塞控制",
+                  "en": "It does no congestion control at all"
+                },
+                {
+                  "zh": "只能用于 UDP",
+                  "en": "It works only over UDP"
+                },
+                {
+                  "zh": "一遇到丢包就把窗口降到 1，比 Reno 更保守，更不容易挤占别人",
+                  "en": "It drops its window to 1 on any loss, which makes it more cautious than Reno and kinder to other flows"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "Reno 和 CUBIC 都以丢包为主要信号：丢了就减窗口。BBR 建立网络的模型，按估计出的瓶颈带宽平稳发送，在随机丢包较多的长距离链路上不会被误判的丢包拖慢。它是 TCP 的拥塞控制算法，QUIC 也可以用。",
+              "whyEn": "Reno and CUBIC treat loss as the main signal and shrink the window when it happens. BBR builds a model of the path and sends steadily at the estimated bottleneck rate, so random loss on long links does not slow it down for the wrong reason. It is a TCP congestion control algorithm that QUIC can use too."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        },
+        {
+          "slug": "ip-routing",
+          "titleZh": "IP 与路由",
+          "titleEn": "IP and Routing",
+          "bodyZh": "网络层只做一件事：把一个 IP 包从源主机送到目的主机，中间可能要经过十几台路由器。每台路由器只决定\"下一跳交给谁\"，并不知道完整路径。这一节讲 IP 地址和子网划分、路由器怎样用最长前缀匹配查表、包在每一跳上哪些字段会变，以及路由协议和 IPv6。\n\n## IP 地址与 CIDR\n\nIPv4 地址是 32 位，写成四个 0 到 255 的十进制数。**CIDR** 记法 `a.b.c.d/n` 表示前 n 位是网络部分，剩下的是主机部分。\n\n以 `192.168.1.130/27` 为例：\n\n- 掩码有 27 个 1，即 `255.255.255.224`；最后一个字节里主机部分占 5 位，一个子网有 2⁵ = 32 个地址。\n- 130 落在 128 到 159 这一块，所以网络地址是 `192.168.1.128`，广播地址是 `192.168.1.159`。\n- 去掉网络地址和广播地址，可分配给主机的是 `.129` 到 `.158`，共 30 个。\n\n快速算法：把前缀不在字节边界上的那个字节，按\"块大小 = 2^主机位数\"向下取整，就得到网络地址。\n\n`10.0.0.0/8`、`172.16.0.0/12`、`192.168.0.0/16` 是保留给内网的私有地址，不会出现在公网上；家庭和公司内网靠 NAT 把它们换成公网地址出去。\n\n## 路由器怎样转发\n\n路由器收到包后，拿目的 IP 去查**转发表**。表里的每一项是一个前缀加下一跳，一个地址可能同时匹配好几项，这时选**最长前缀匹配**，也就是最具体的那一项。\n\n| 前缀 | 下一跳 |\n|---|---|\n| 10.0.0.0/8 | A |\n| 10.1.0.0/16 | B |\n| 10.1.2.0/24 | C |\n| 0.0.0.0/0（默认路由） | D |\n\n- 目的地址 `10.1.2.5`：三项都匹配，/24 最长，交给 C。\n- 目的地址 `10.1.9.9`：匹配 /8 和 /16，交给 B。\n- 目的地址 `8.8.8.8`：只匹配默认路由，交给 D。\n\n## 一跳一跳地走\n\n```mermaid\nflowchart LR\n  accTitle: IP 包逐跳转发：IP 地址不变，MAC 地址每一跳重新填写\n  h[\"主机 A\"] -->|\"IP：A → S，MAC：A → R1\"| r1[\"路由器 R1\"]\n  r1 -->|\"IP：A → S，MAC：R1 → R2\"| r2[\"路由器 R2\"]\n  r2 -->|\"IP：A → S，MAC：R2 → S\"| s[\"服务器 S\"]\n```\n\n主机先判断目的地址在不在自己的子网里：在，就用 ARP 查出对方的 MAC 地址直接发；不在，就发给**默认网关**。每经过一台路由器：\n\n- 源和目的 **IP 地址不变**（中间没有 NAT 时）。\n- 链路层的 **MAC 地址重新填写**：源是这台路由器的出口，目的是下一跳。\n- **TTL 减 1**，IP 头校验和随之重新计算。TTL 减到 0 的包被丢弃，路由器回一个 ICMP\"超时\"消息，防止包在路由环路里永远转圈。\n\n`traceroute` 就利用了这一点：依次发 TTL 为 1、2、3……的包，每一跳的路由器都会在 TTL 耗尽时回一个 ICMP 消息，于是把路径上的路由器一个个找出来。\n\n## 转发表从哪来：路由协议\n\n| 范围 | 协议 | 思路 |\n|---|---|---|\n| 一个自治系统内部 | OSPF | 链路状态：每台路由器掌握全网拓扑，用 Dijkstra 算最短路径 |\n| 一个自治系统内部 | RIP | 距离向量：只和邻居交换\"到各网络的距离\"，以跳数计，最多 15 跳 |\n| 自治系统之间 | BGP | 路径向量：通告到达某个前缀要经过哪些自治系统，按商业策略选路 |\n\n**自治系统**（AS）是由一个组织统一管理的网络，比如一家运营商或大型云厂商。互联网就是成千上万个 AS 用 BGP 连在一起。\n\n## 分片与 IPv6\n\n一条链路的 MTU 比包小时，IPv4 路由器可以把包**分片**，到目的主机再重组。分片会降低性能，所以现在通常在包上设\"不分片\"（DF）标志，配合\"路径 MTU 发现\"：太大的包被丢弃并返回 ICMP 消息，发送方据此调小包的大小。\n\n**IPv6** 地址是 128 位，写成 8 组十六进制数，连续的 0 可以缩写，比如 `2001:db8::1`。地址足够多，不再需要 NAT；没有广播；用邻居发现协议（NDP）代替 ARP；路由器也不再分片，只有发送方可以分片。\n\n## 要点\n\n- CIDR 的 /n 表示前 n 位是网络部分；一个 /27 子网有 32 个地址，30 个可分配给主机。\n- 网络地址 = 地址按块大小向下取整；块内最后一个地址是广播地址。\n- 路由器按目的 IP 做最长前缀匹配，没有更具体的匹配时走默认路由。\n- 逐跳转发时 IP 地址不变（没有 NAT），MAC 地址每跳重写，TTL 每跳减 1。\n- TTL 到 0 时路由器回 ICMP 超时消息，traceroute 借此发现路径。\n- AS 内部用 OSPF 或 RIP，AS 之间用 BGP；IPv6 地址 128 位，没有广播，路由器不分片。\n\n做题巩固：[计算机网络选择题](/oa/mcq?topic=network)。",
+          "bodyEn": "The network layer has one job: get an IP packet from the source host to the destination host, often through a dozen or more routers. Each router only decides who gets the packet next; none knows the whole path. This lesson covers IP addresses and subnets, how routers look up the longest matching prefix, which fields change at each hop, and routing protocols and IPv6.\n\n## IP addresses and CIDR\n\nAn IPv4 address is 32 bits, written as four decimal numbers from 0 to 255. **CIDR** notation `a.b.c.d/n` means the first n bits are the network part and the rest the host part.\n\nTake `192.168.1.130/27`:\n\n- The mask has 27 ones, `255.255.255.224`; the host part is the last 5 bits of the final byte, so a subnet has 2⁵ = 32 addresses.\n- 130 falls in the block from 128 to 159, so the network address is `192.168.1.128` and the broadcast address `192.168.1.159`.\n- Leaving out the network and broadcast addresses, hosts can use `.129` to `.158`, 30 in all.\n\nA shortcut: in the byte where the prefix ends, round down to a multiple of the block size (2 to the number of host bits in that byte) to get the network address.\n\n`10.0.0.0/8`, `172.16.0.0/12` and `192.168.0.0/16` are private ranges reserved for internal networks and never appear on the public Internet; home and office networks reach out through NAT, which swaps them for public addresses.\n\n## How a router forwards\n\nA router looks up each packet's destination IP in its **forwarding table**. Each entry is a prefix and a next hop, and an address may match several entries; the router picks the **longest prefix match**, the most specific one.\n\n| Prefix | Next hop |\n|---|---|\n| 10.0.0.0/8 | A |\n| 10.1.0.0/16 | B |\n| 10.1.2.0/24 | C |\n| 0.0.0.0/0 (default route) | D |\n\n- Destination `10.1.2.5` matches all three prefixes; /24 is the longest, so it goes to C.\n- Destination `10.1.9.9` matches /8 and /16, so it goes to B.\n- Destination `8.8.8.8` matches only the default route and goes to D.\n\n## Hop by hop\n\n```mermaid\nflowchart LR\n  accTitle: An IP packet forwarded hop by hop, the IP addresses stay the same while the MAC addresses are rewritten at each hop\n  h[\"Host A\"] -->|\"IP: A → S, MAC: A → R1\"| r1[\"Router R1\"]\n  r1 -->|\"IP: A → S, MAC: R1 → R2\"| r2[\"Router R2\"]\n  r2 -->|\"IP: A → S, MAC: R2 → S\"| s[\"Server S\"]\n```\n\nA host first checks whether the destination is on its own subnet: if so, it finds the peer's MAC address with ARP and sends directly; if not, it sends to its **default gateway**. At every router:\n\n- The source and destination **IP addresses stay the same** (with no NAT on the way).\n- The link-layer **MAC addresses are rewritten**: the source is this router's outgoing interface, the destination the next hop.\n- **TTL drops by 1** and the IP header checksum is recomputed. A packet whose TTL reaches 0 is dropped and the router sends back an ICMP \"time exceeded\" message, so packets cannot circle a routing loop forever.\n\n`traceroute` builds on this: it sends packets with TTL 1, 2, 3 and so on, and each router on the path answers with an ICMP message when the TTL runs out, revealing the routers one by one.\n\n## Where forwarding tables come from: routing protocols\n\n| Scope | Protocol | Approach |\n|---|---|---|\n| Inside an autonomous system | OSPF | Link state: every router knows the whole topology and runs Dijkstra for shortest paths |\n| Inside an autonomous system | RIP | Distance vector: neighbours exchange \"distance to each network\" in hops, at most 15 |\n| Between autonomous systems | BGP | Path vector: routes list the autonomous systems on the way to a prefix, chosen by business policy |\n\nAn **autonomous system** (AS) is a network run by one organisation, such as an ISP or a large cloud provider. The Internet is tens of thousands of ASes tied together with BGP.\n\n## Fragmentation and IPv6\n\nWhen a packet is larger than a link's MTU, an IPv4 router may **fragment** it, and the destination host reassembles the pieces. Fragmentation hurts performance, so senders now usually set the \"don't fragment\" (DF) flag and use path MTU discovery: an oversized packet is dropped with an ICMP message back, and the sender shrinks its packets.\n\n**IPv6** addresses are 128 bits, written as 8 groups of hex digits, with a run of zeros shortened, as in `2001:db8::1`. There are enough addresses to make NAT unnecessary; there is no broadcast; the Neighbor Discovery Protocol (NDP) replaces ARP; and routers never fragment, only senders can.\n\n## Key points\n\n- In CIDR, /n means the first n bits are the network part; a /27 subnet has 32 addresses, 30 usable by hosts.\n- The network address is the address rounded down to the block size; the block's last address is the broadcast address.\n- Routers pick the longest prefix matching the destination IP and fall back to the default route.\n- Hop by hop, IP addresses stay the same (without NAT), MAC addresses are rewritten and TTL drops by 1.\n- When TTL reaches 0 the router sends an ICMP time exceeded message, which traceroute uses to map the path.\n- Inside an AS, OSPF or RIP; between ASes, BGP. IPv6 addresses are 128 bits, with no broadcast and no fragmentation by routers.\n\nPractise: [networking multiple choice](/oa/mcq?topic=network).",
+          "quiz": [
+            {
+              "qZh": "主机地址是 10.1.37.200/20，它所在子网的网络地址是？",
+              "qEn": "A host's address is 10.1.37.200/20. What is its subnet's network address?",
+              "choices": [
+                {
+                  "zh": "10.1.37.0",
+                  "en": "10.1.37.0"
+                },
+                {
+                  "zh": "10.1.32.0",
+                  "en": "10.1.32.0"
+                },
+                {
+                  "zh": "10.1.0.0",
+                  "en": "10.1.0.0"
+                },
+                {
+                  "zh": "10.1.36.0",
+                  "en": "10.1.36.0"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "/20 的前缀在第三个字节里还占 4 位，主机位 4 位，块大小 16。37 向下取整到 16 的倍数是 32，所以网络地址是 10.1.32.0，这个子网覆盖 10.1.32.0 到 10.1.47.255。",
+              "whyEn": "A /20 prefix takes 4 bits of the third byte, leaving 4 host bits there and a block size of 16. 37 rounded down to a multiple of 16 is 32, so the network address is 10.1.32.0, and the subnet spans 10.1.32.0 to 10.1.47.255."
+            },
+            {
+              "qZh": "转发表有四项：10.0.0.0/8 → A，10.1.0.0/16 → B，10.1.2.0/24 → C，默认路由 → D。目的地址为 10.1.200.1 的包交给谁？",
+              "qEn": "A forwarding table has four entries: 10.0.0.0/8 → A, 10.1.0.0/16 → B, 10.1.2.0/24 → C, default → D. Where does a packet for 10.1.200.1 go?",
+              "choices": [
+                {
+                  "zh": "A",
+                  "en": "A"
+                },
+                {
+                  "zh": "C",
+                  "en": "C"
+                },
+                {
+                  "zh": "B",
+                  "en": "B"
+                },
+                {
+                  "zh": "D",
+                  "en": "D"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "10.1.200.1 匹配 /8 和 /16，不匹配 10.1.2.0/24（第三个字节是 200 不是 2）。最长的匹配是 /16，所以交给 B。默认路由只在没有任何更具体的匹配时才用。",
+              "whyEn": "10.1.200.1 matches /8 and /16 but not 10.1.2.0/24, since its third byte is 200, not 2. The longest match is /16, so it goes to B. The default route is used only when nothing more specific matches."
+            },
+            {
+              "qZh": "一个 IP 包从主机经过 3 台路由器到达服务器，途中没有 NAT。下面哪一项全程保持不变？",
+              "qEn": "An IP packet crosses 3 routers from a host to a server, with no NAT on the way. Which of these stays the same the whole way?",
+              "choices": [
+                {
+                  "zh": "源和目的 MAC 地址",
+                  "en": "The source and destination MAC addresses"
+                },
+                {
+                  "zh": "TTL",
+                  "en": "The TTL"
+                },
+                {
+                  "zh": "IP 头校验和",
+                  "en": "The IP header checksum"
+                },
+                {
+                  "zh": "源和目的 IP 地址",
+                  "en": "The source and destination IP addresses"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "IP 地址标识端到端的两台主机，没有 NAT 时不变。MAC 地址只在一段链路内有效，每一跳都重写；TTL 每跳减 1，校验和也就跟着重新计算。",
+              "whyEn": "IP addresses name the two end hosts and stay the same without NAT. MAC addresses are valid only on one link and are rewritten at every hop; TTL drops by 1 per hop, so the checksum is recomputed too."
+            }
+          ],
+          "homework": [],
+          "solves": []
+        }
+      ]
     }
   ]
 }
