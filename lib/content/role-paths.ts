@@ -13,7 +13,6 @@
  * - mcq-topic: an OA multiple-choice topic (lib/content/oa-mcq.json);
  * - project: a resume project slug (lib/content/resume-projects.json);
  * - course: a beginner crash course slug (lib/content/beginner-courses.json);
- * - fe-js: a frontend JS problem group key (lib/content/frontend-js.json), judged on /frontend;
  * - mock-kind: a mock interview template id (lib/mock-interview.ts); never counted, and an AI-only
  *   template reads "unavailable" while AI is off.
  *
@@ -33,7 +32,6 @@ export const STEP_KINDS = [
   'mcq-topic',
   'project',
   'course',
-  'fe-js',
   'mock-kind',
 ] as const;
 export type StepKind = (typeof STEP_KINDS)[number];
@@ -111,9 +109,6 @@ export const ROLES: Record<RoleKey, { zh: string; en: string; blurbZh: string; b
     steps: [
       { kind: 'line-stops', ref: 'array-foundations,hash-counting,string-processing,two-pointers-windows,stacks-heaps' },
       { kind: 'mcq-topic', ref: 'js' },
-      { kind: 'fe-js', ref: 'timing' },
-      { kind: 'fe-js', ref: 'promise' },
-      { kind: 'fe-js', ref: 'internals' },
       { kind: 'mcq-topic', ref: 'web' },
       { kind: 'line-stops', ref: 'linked-list,binary-tree,grid-traversal' },
       { kind: 'mcq-topic', ref: 'security' },
@@ -214,7 +209,7 @@ export type ResolvedStep = RoleStep & {
   href: string;
   /**
    * What counts it done: problem:<id> solved (or ticked done), sd:<key> read, mcq:<id> answered,
-   * content:project/<slug> or content:fe-js/<slug> marked done. Empty: never counted (a mock interview).
+   * content:project/<slug> marked done. Empty: never counted (a mock interview).
    */
   keys: string[];
   /** A line-stops step's stops, and its study plan link (PLAN_TOPICS_PARAM). */
@@ -236,7 +231,6 @@ export const STEP_LABELS: Record<StepKind, [string, string] | null> = {
   'mcq-topic': ['选择题', 'Multiple choice'],
   project: ['简历项目', 'Resume project'],
   course: null,
-  'fe-js': ['前端手写题', 'Frontend JS'],
   'mock-kind': ['模拟面试', 'Mock interview'],
 };
 export function stepTitle(kind: StepKind, name: string, zh: boolean) {
@@ -311,10 +305,17 @@ const routeSchema = z.strictObject({
   state: z.record(stepKey, z.enum(['doing', 'skip'])).check(z.refine(few)),
   planned: z.record(stepKey, day).check(z.refine(few)),
 });
+/** Kinds of removed features (fe-js: the frontend JS track) that saved routes may still hold: dropped on read. */
+const REMOVED_KINDS: unknown[] = ['fe-js'];
+function dropRemoved(doc: unknown) {
+  const steps = (doc as { steps?: unknown } | null)?.steps;
+  if (!Array.isArray(steps)) return doc;
+  return { ...(doc as object), steps: steps.filter((s) => !REMOVED_KINDS.includes((s as { kind?: unknown } | null)?.kind)) };
+}
 /** A route note's body (JSON text, or already parsed), or null when it is not a valid route. */
 export function parseRoute(body: unknown): RouteDoc | null {
   try {
-    const parsed = routeSchema.safeParse(typeof body === 'string' ? JSON.parse(body) : body);
+    const parsed = routeSchema.safeParse(dropRemoved(typeof body === 'string' ? JSON.parse(body) : body));
     return parsed.success ? parsed.data : null;
   } catch {
     return null;
