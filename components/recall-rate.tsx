@@ -145,7 +145,7 @@ export function PointsChecklist({
 
 /**
  * Under a revealed reference answer: tick the key points the answer covered (this visit only),
- * then grade yourself. The card comes back after 1/3/7/21 days (lib/recall.ts) and shows up
+ * then grade yourself; `lesson`: under a /learn lesson, recalling its key points instead. The card comes back after 1/3/7/21 days (lib/recall.ts) and shows up
  * under My progress → Due for review. No AI: this works when AI grading is off.
  */
 export function RecallRate({
@@ -153,12 +153,14 @@ export function RecallRate({
   title,
   points = [],
   signedIn,
+  lesson,
 }: {
   /** `content:<type>/<slug>` or `sd:<chapter>`. */
   target: string;
   title: string;
   points?: string[];
   signedIn: boolean;
+  lesson?: boolean;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -202,7 +204,7 @@ export function RecallRate({
         : !card
           ? ''
           : back === null
-            ? t('已掌握：这道题不再安排复习。', 'Mastered: this one will not come back.')
+            ? t(lesson ? '已掌握：这一节不再安排复习。' : '已掌握：这道题不再安排复习。', 'Mastered: this one will not come back.')
             : state === 'held'
               ? t(`还没到复习时间（${when}），这次不升格。`, `Not due until ${when}, so it stays in its box.`)
               : state === 'saved'
@@ -214,15 +216,20 @@ export function RecallRate({
     <section className="rd-card recall" aria-labelledby={`${id}-h`}>
       <h2 id={`${id}-h`}>{t('自评一下', 'Grade yourself')}</h2>
       <p className="recall-note">
-        {t(
-          '对照上面的答案给自己打个分。没掌握的题会按 1、3、7、21 天的间隔回来，到期的题在「我的进度 · 到期复习」里。',
-          'Grade your answer against the one above. Questions you have not mastered come back after 1, 3, 7 and 21 days, listed under My progress → Due for review.',
-        )}{' '}
+        {lesson
+          ? t(
+              '回想本节要点，勾选你能讲清楚的，再给自己打分。没掌握的会按 1、3、7、21 天的间隔回到复习队列，到期的在「我的进度 · 到期复习」里。',
+              "Recall this lesson's key points, tick the ones you can explain, then grade yourself. Ones you have not mastered come back after 1, 3, 7 and 21 days, listed under My progress → Due for review.",
+            )
+          : t(
+              '对照上面的答案给自己打个分。没掌握的题会按 1、3、7、21 天的间隔回来，到期的题在「我的进度 · 到期复习」里。',
+              'Grade your answer against the one above. Questions you have not mastered come back after 1, 3, 7 and 21 days, listed under My progress → Due for review.',
+            )}{' '}
         {!signedIn && t('只存在这台设备上；登录后会合并到你的账号。', 'Kept on this device; sign in and it moves to your account.')}
       </p>
       <PointsChecklist points={points} checked={ticked} onChange={setTicked} />
       <fieldset className="recall-grades">
-        <legend className="sr-only">{t('这道题你会了吗？', 'How well did you know it?')}</legend>
+        <legend className="sr-only">{lesson ? t('这一节你掌握了吗？', 'How well do you know this lesson?') : t('这道题你会了吗？', 'How well did you know it?')}</legend>
         {GRADES.map(([grade, zh, en], i) => (
           <button
             key={grade}

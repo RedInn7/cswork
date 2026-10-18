@@ -68,7 +68,7 @@ export function SdRecall({ target, title, points }: { target: string; title: str
   if (state === 'loading') return null;
   return (
     <div className="rd">
-      <RecallRate key={target} target={target} title={title} points={points} signedIn={state !== 'guest'} />
+      <RecallRate key={target} target={target} title={title} points={points} signedIn={state !== 'guest'} lesson />
     </div>
   );
 }

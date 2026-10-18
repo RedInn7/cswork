@@ -110,6 +110,31 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
   assert.ok(doc.querySelector('.public-library-prose .algorithm-demo'), 'the banker simulator renders in the page');
   assert.deepEqual([...doc.querySelectorAll('.public-library-prose a')].map((a) => a.getAttribute('href')), ['/oa/mcq?topic=os']);
   assert.equal(doc.querySelector('.learn-practice'), null);
+
+  // SdRecall renders nothing on the server, so read the element tree: the lesson hands its own
+  // Key points list to the review card, in either language; a lesson without one gets no card.
+  const { SdRecall } = await import('../app/system-design/reader.tsx');
+  const find = (node) =>
+    node && typeof node === 'object'
+      ? node.type === SdRecall
+        ? node
+        : [node.props?.children].flat(Infinity).map(find).find(Boolean)
+      : undefined;
+  const deadlock = createRequire(import.meta.url)('../lib/content/beginner-courses.json')
+    .courses.find((c) => c.slug === 'os')
+    .chapters.find((c) => c.slug === 'deadlock');
+  const listed = (body, heading) => body.split(`\n${heading}\n`)[1].split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2));
+  let recall = find(await Chapter({ params: Promise.resolve({ course: 'os', slug: 'deadlock' }) }));
+  assert.equal(recall.props.target, 'sd:os/deadlock');
+  assert.equal(recall.props.title, 'Deadlock');
+  assert.deepEqual(recall.props.points, listed(deadlock.bodyEn, '## Key points'));
+  assert.equal(recall.props.points.length, 6);
+  globalThis.__locale = 'zh';
+  recall = find(await Chapter({ params: Promise.resolve({ course: 'os', slug: 'deadlock' }) }));
+  assert.deepEqual(recall.props.points, listed(deadlock.bodyZh, '## 要点'));
+  assert.equal(recall.props.points.length, 6);
+  globalThis.__locale = 'en';
+  assert.equal(find(await Chapter({ params: Promise.resolve({ course: 'big-o', slug: 'heaps' }) })), undefined);
 });
 
 test("a lesson's key points become a review card once the read marks tell a guest from a learner", async () => {
@@ -124,6 +149,9 @@ test("a lesson's key points become a review card once the read marks tell a gues
   await act(async () => root.render(createElement(SdRecall, { target: 'sd:os/deadlock', title: 'Deadlock', points })));
   await settle();
   assert.equal(document.querySelectorAll('.recall-points input[type="checkbox"]').length, 4);
+  // Lesson wording: recall the key points, not "the answer above" (the quiz sits right above it).
+  assert.match(document.querySelector('.recall-note').textContent, /^Recall this lesson's key points/);
+  assert.equal(document.querySelector('.recall-grades legend').textContent, 'How well do you know this lesson?');
   // A guest's grade stays in this browser, under the lesson's target.
   await act(async () => document.querySelector('.recall-grades button').click());
   await settle();
