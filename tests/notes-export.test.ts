@@ -1,6 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { frontMatter, noteGist, safePath, vaultFiles, vaultMarkdown, type ExportItem } from '../lib/notes-export';
+import {
+  frontMatter,
+  noteGist,
+  portfolioFiles,
+  progressCsv,
+  progressRows,
+  safePath,
+  vaultFiles,
+  vaultMarkdown,
+  type ExportItem,
+  type SolutionItem,
+} from '../lib/notes-export';
+import type { PracticeHistoryItem } from '../lib/practice-review';
 import { crc32, unzip, zip } from '../lib/zip';
 import { PROBLEM_TEMPLATE } from '../lib/note-meta';
 
@@ -100,4 +112,128 @@ void test('zip writes stored entries with CRC-32, UTF-8 names and an end record 
     [...back!].map(([name, data]) => [name, new TextDecoder().decode(data)]),
     files.map((f) => [f.name, f.data]),
   );
+});
+
+void test('portfolio: a folder per accepted problem, an index by stop in route order, OA and notes only when asked', async () => {
+  const at = Date.UTC(2026, 9, 2, 12);
+  const items: SolutionItem[] = [
+    {
+      problemId: 'lc-15',
+      firstAc: at,
+      solutions: [
+        { language: 'python', code: 'print(15)\n', at: at + 86400000, runtime: 0.012 },
+        { language: 'cpp', code: 'int main(){}\n', at, runtime: null },
+      ],
+      note: 'sort, then two pointers',
+      meta: { title: '三数之和', titleEn: '3Sum', difficulty: '中等', topics: ['two-pointers-windows'], stop: 'two-pointers-windows', order: 30 },
+    },
+    {
+      problemId: 'lc-1',
+      firstAc: at,
+      solutions: [{ language: 'go', code: 'package main\n', at, runtime: 0.001 }],
+      meta: { title: '两数之和', titleEn: 'Two Sum', difficulty: '简单', stop: 'hash-counting', order: 5 },
+    },
+    { problemId: 'sql-7', firstAc: at, solutions: [{ language: 'sql', code: 'SELECT 1;', at, runtime: 0.2 }], meta: { title: 'A | B [x]', topics: ['sql'] } },
+    { problemId: 'c-9', firstAc: at, solutions: [{ language: 'pandas', code: 'df', at, runtime: null }] },
+    { problemId: '../x:y', firstAc: at, solutions: [{ language: 'java', code: 'class A {}', at, runtime: null }], meta: { titleEn: 'Bad/../Name?' } },
+    { problemId: 'oa-acme-1', firstAc: at, solutions: [{ language: 'python', code: 'secret', at, runtime: null }], meta: { title: 'Acme OA' } },
+  ];
+  const files = portfolioFiles(items, { english: true, origin: 'https://cswork.test' });
+  assert.deepEqual(
+    files.map((f) => f.name),
+    [
+      'README.md',
+      'problems/lc-15-3sum/README.md',
+      'problems/lc-15-3sum/solution.cpp',
+      'problems/lc-15-3sum/solution.py',
+      'problems/lc-1-two-sum/README.md',
+      'problems/lc-1-two-sum/solution.go',
+      'problems/sql-7/README.md',
+      'problems/sql-7/solution.sql',
+      'problems/c-9/README.md',
+      'problems/c-9/solution.py',
+      'problems/x-y-bad-name/README.md',
+      'problems/x-y-bad-name/solution.java',
+    ],
+    'no OA by default; .. and reserved characters cleaned',
+  );
+  const byName = new Map(files.map((f) => [f.name, f.data]));
+  const lc15 = byName.get('problems/lc-15-3sum/README.md')!;
+  assert.match(lc15, /^# 3Sum\n\n- Problem: \[lc-15\]\(https:\/\/cswork\.test\/\?view=problem&problem=lc-15\)\n- Difficulty: Medium\n- Topics: Two Pointers\n/);
+  assert.match(lc15, /- Line 500 stop: \[Two Pointers\]\(https:\/\/cswork\.test\/topics\/two-pointers-windows\)\n- First accepted: 2026-10-02\n/);
+  assert.match(lc15, /\| cpp \| \[solution\.cpp\]\(solution\.cpp\) \| 2026-10-02 \| – \|\n\| python \| \[solution\.py\]\(solution\.py\) \| 2026-10-03 \| 12 ms \|\n$/);
+  assert.ok(!lc15.includes('two pointers') && !lc15.includes('## Notes'), 'notes only when asked');
+  assert.equal(byName.get('problems/lc-15-3sum/solution.py'), 'print(15)\n');
+  const index = files[0].data;
+  assert.ok(!index.includes('NDA') && !index.includes('Acme'));
+  assert.match(index, /^# My CSWork solutions\n\n5 accepted problems/);
+  const headings = [...index.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+  assert.deepEqual(headings, ['Hashing', 'Two Pointers', 'SQL', 'Other'], 'stops in route order, then topics, then Other');
+  assert.match(index, /\| \[Two Sum\]\(problems\/lc-1-two-sum\/\) \| Easy \| go \| 2026-10-02 \|/);
+  assert.match(index, /\| \[3Sum\]\(problems\/lc-15-3sum\/\) \| Medium \| cpp, python \| 2026-10-02 \|/);
+  assert.match(index, /\| \[A \\\| B \\\[x\\\]\]\(problems\/sql-7\/\) \| {2}\| sql \|/, 'pipes and brackets escaped');
+
+  const zh = portfolioFiles(items, { english: false, origin: 'https://cswork.test', oa: true, notes: true });
+  assert.ok(zh.some((f) => f.name === 'problems/oa-acme-1/solution.py'));
+  assert.match(zh[0].data, /^# 我的 CSWork 题解\n\n> OA 多有保密条款：这个仓库仅供私用，请勿公开。\n\n共 6 道通过的题/);
+  assert.match(zh.find((f) => f.name === 'problems/lc-15-3sum/README.md')!.data, /^# 三数之和\n[\s\S]*- 难度: 中等\n[\s\S]*\n## 笔记\n\nsort, then two pointers\n$/);
+
+  const back = await unzip(await zip(files, true), () => true, 1 << 20);
+  assert.deepEqual(
+    [...back!].map(([name, data]) => [name, new TextDecoder().decode(data)]),
+    files.map((f) => [f.name, f.data]),
+    'the deflated zip unpacks to the same files',
+  );
+});
+
+void test('progress CSV: BOM, CRLF, formulas defused, lists, marks and no due day once mastered', () => {
+  const day = 86400000;
+  const t0 = new Date(2026, 9, 1, 10).getTime();
+  const item = (id: string, over: Partial<PracticeHistoryItem>): PracticeHistoryItem => ({
+    problemId: id,
+    attempts: 1,
+    firstAt: t0,
+    lastAt: t0,
+    firstAcAt: null,
+    failuresBeforeAc: 0,
+    lastStatus: 'wrong_answer',
+    languages: ['python'],
+    acAt: [],
+    stop: null,
+    help: 'none',
+    solveSeconds: null,
+    whiteboard: null,
+    brute: false,
+    ...over,
+  });
+  const history = [
+    item('lc-1', { attempts: 3, failuresBeforeAc: 1, lastStatus: 'accepted', firstAcAt: t0, acAt: [t0], stop: 'hash-counting', help: 'hint', solveSeconds: 750, languages: ['python', 'cpp'] }),
+    // Good, Good, Hard, Easy after the first AC: level 5, past the four-step ladder.
+    item('lc-2', { lastStatus: 'accepted', firstAcAt: t0, acAt: [0, 3, 10, 31, 91].map((d) => t0 + d * day), grades: [[t0 + 91 * day, 4], [t0 + 31 * day, 2]] }),
+    item('oa-acme-1', {}),
+  ];
+  const rows = progressRows(history, {
+    marks: [
+      { target: 'problem:lc-1', mark: 'star' },
+      { target: 'problem:oa-acme-1', mark: 'redo' },
+      { target: 'content:x', mark: 'star' },
+    ],
+    titleOf: (id) => ({ 'lc-1': 'Two Sum', 'oa-acme-1': '=HYPERLINK("x")' })[id],
+    difficultyOf: (id) => (id === 'lc-1' ? '简单' : undefined),
+  });
+  const [lc1, lc2, oa] = rows;
+  assert.equal(lc1.difficulty, 'Easy');
+  assert.equal(lc1.first_ac, '2026-10-01');
+  assert.equal(lc1.next_review, '2026-10-02', 'a solve with a hint comes back the next day');
+  assert.ok(String(lc1.lists).split(' | ').includes('leetcode-hot-100'));
+  assert.deepEqual([lc1.help, lc1.solve_minutes, lc1.languages, lc1.starred, lc1.redo], ['hint', 12.5, 'python | cpp', true, false]);
+  assert.deepEqual([lc2.mastered, lc2.next_review, lc2.last_grade], [true, null, 'Easy']);
+  assert.deepEqual([oa.review_level, oa.mastered, oa.next_review, oa.first_ac, oa.redo, oa.lists], [null, false, null, null, true, null]);
+  const csv = progressCsv(rows);
+  assert.ok(csv.startsWith('﻿"problem_id","title","difficulty","line500_stop","lists","first_attempt","first_ac"'));
+  const lines = csv.slice(1).split('\r\n');
+  assert.equal(lines.length, 5, 'header, three rows and the final CRLF');
+  assert.equal(lines[0].split(',').length, 21);
+  assert.ok(lines[3].includes(`"'=HYPERLINK(""x"")"`), 'a formula is defused and quotes doubled');
+  assert.ok(lines[2].includes('"true","false","","Easy"'), 'mastered: next_review empty');
 });
