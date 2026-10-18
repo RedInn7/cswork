@@ -246,6 +246,67 @@ void test('badge placements and direct messages between mutual follows', async (
   await ok(amy, 'POST', 'work/show', { profile: true });
   assert.equal(publicProfile('amy-g', catalogue)!.employer, 'Google');
 
+  // Bob and Amy follow each other: his message goes to Amy, her bell rings once, without the text.
+  follow(bob.id, amy.id);
+  follow(amy.id, bob.id);
+  assert.equal(await status(bob, 'POST', 'dm', { post: 'x', body: 'Hi', to: 'amy-g' }), 400, 'one way in');
+  assert.equal(await status(bob, 'POST', 'dm', { post: 'x', body: 'Hi' }), 404, 'referral threads left with the board');
+  assert.equal(await status(person('m-bob', { verified: false }), 'POST', 'dm', { to: 'amy-g', body: 'Hi' }), 403);
+  const opened = await ok(bob, 'POST', 'dm', { to: 'amy-g', body: 'Could you refer me? Secret details' });
+  assert.equal(opened.name, '@amy-g');
+  assert.equal(opened.post, null);
+  await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Second line' });
+  const notes = sqlite().prepare('SELECT title,body,href FROM notifications WHERE user_id=?').all(amy.id) as {
+    title: string;
+    body: string;
+    href: string;
+  }[];
+  assert.equal(notes.length, 1);
+  assert.equal(notes[0].title, '你收到一条新私信');
+  assert.ok(!notes[0].body.includes('Secret') && !notes[0].body.includes('Real'), notes[0].body);
+  assert.equal(notes[0].href, `/?view=messages&thread=${opened.key}`);
+  // Amy's inbox: masked name (Bob has no public profile yet), unread until she opens it.
+  const box = await ok(amy, 'GET', 'dm');
+  assert.equal(box.items[0].unread, 2);
+  assert.equal(box.items[0].name, 'Re***');
+  assert.ok(!JSON.stringify(box).includes('m-bob'), 'no account ids');
+  const convo = await ok(amy, 'GET', `dm/${opened.key}`);
+  assert.deepEqual(convo.items.map((m: { body: string; mine: boolean }) => [m.body, m.mine]), [
+    ['Could you refer me? Secret details', false],
+    ['Second line', false],
+  ]);
+  assert.equal((await ok(amy, 'GET', 'dm')).items[0].unread, 0);
+  assert.equal(await status(stranger, 'GET', `dm/${opened.key}`), 404);
+  await ok(amy, 'POST', `dm/${opened.key}`, { body: 'Sure, send your resume.' });
+
+  // A per-recipient daily cap on new conversations, even between mutual follows.
+  for (let i = 0; i < 9; i++) {
+    const asker = person(`m-asker-${i}`);
+    follow(asker.id, amy.id);
+    follow(amy.id, asker.id);
+    await ok(asker, 'POST', 'dm', { to: 'amy-g', body: `Request ${i}` });
+  }
+  follow(cat.id, amy.id);
+  follow(amy.id, cat.id);
+  assert.equal(await status(cat, 'POST', 'dm', { to: 'amy-g', body: 'Me too?' }), 429);
+  sqlite().prepare('UPDATE direct_messages SET created_at=created_at-? WHERE post_id IS NOT NULL').run(DAY);
+
+  // Blocking: neither side can write; the reporter's report reaches the moderators.
+  const reply = (await ok(amy, 'GET', `dm/${opened.key}`)).items.find((m: { mine: boolean }) => !m.mine);
+  await ok(amy, 'POST', `dm/${opened.key}/report`, { message: reply.id, reason: 'spam' });
+  assert.equal(await status(amy, 'POST', `dm/${opened.key}/report`, { message: (await ok(amy, 'GET', `dm/${opened.key}`)).items.find((m: { mine: boolean }) => m.mine).id, reason: 'spam' }), 400);
+  const blocked = await ok(amy, 'POST', `dm/${opened.key}/block`, { on: true });
+  assert.equal(blocked.canSend, false);
+  assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'Hello?' }), 403);
+  assert.equal(await status(amy, 'POST', `dm/${opened.key}`, { body: 'Hello?' }), 403);
+  const queue = await ok(teacher, 'GET', 'posts/moderation');
+  const reported = queue.reported.find((i: { kind: string }) => i.kind === 'dm');
+  assert.equal(reported.id, reply.id);
+  await ok(teacher, 'POST', `direct-messages/${reply.id}/hide`, {});
+  assert.ok(!(await ok(bob, 'GET', `dm/${opened.key}`)).items.some((m: { id: string }) => m.id === reply.id));
+  await ok(amy, 'POST', `dm/${opened.key}/block`, { on: false });
+  await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Back again' });
+
   // Mutual follows may start a conversation; a one-way follow may not; nobody messages themselves.
   profile(cat.id, 'cat-c');
   profile(bob.id, 'bob-b');

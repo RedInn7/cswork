@@ -61,8 +61,8 @@ export function Messages({ params, navigate }: { params: Record<string, string>;
         <h1>{t('私信', 'Messages')}</h1>
         <p>
           {t(
-            `互相关注的人之间，或者从内推帖请求内推时，才能开始对话。消息保留 ${DM_RETENTION_DAYS} 天；新消息只在站内提醒，提醒里不含正文。`,
-            `Conversations start between people who follow each other, or from a referral thread. Messages are kept ${DM_RETENTION_DAYS} days; new ones are flagged on the site only, never with their text.`,
+            `互相关注的人之间才能开始对话。消息保留 ${DM_RETENTION_DAYS} 天；新消息只在站内提醒，提醒里不含正文。`,
+            `Conversations start between people who follow each other. Messages are kept ${DM_RETENTION_DAYS} days; new ones are flagged on the site only, never with their text.`,
           )}
         </p>
       </header>
@@ -151,8 +151,8 @@ function InboxList({ navigate, t }: { navigate: Navigate; t: T }) {
       ) : (
         <p className="study-state">
           {t(
-            '还没有私信。在互相关注的人的主页上，或者讨论区的内推帖里，都可以发起对话。',
-            'No messages yet. Start one from the profile of someone you follow back, or from a referral thread on the discussion board.',
+            '还没有私信。在互相关注的人的主页上可以发起对话。',
+            'No messages yet. Start one from the profile of someone you follow back.',
           )}
         </p>
       )}

@@ -1,7 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
 import { notify } from './notify';
@@ -9,12 +8,10 @@ import { HANDLE, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { fileReport, nameOf, reportReason } from './solution-posts';
 import { chatText } from './study-groups';
-import { badgeName, badgeSql } from './work-verify';
 
 /**
  * Direct messages (db/community-schema.ts). A conversation starts only between learners who
- * follow each other, or from a referral thread's "request a referral" (the post must be by a
- * verified employee of the company it is tagged with). Either side may block the other, anyone
+ * follow each other (the board's referral threads were removed). Either side may block the other, anyone
  * may stop new conversations, and caps hold per sender and per recipient a day. Pages carry an
  * opaque thread key and the other side's public handle or masked name, never account ids. A new
  * message leaves an in-app notification naming the sender, never the text, and sends no mail.
@@ -43,17 +40,8 @@ const openTo = (userId: string) =>
 /** Who a new conversation goes to, and the referral post it is opened from ('' between mutual follows). */
 function recipient(p: Person, d: { to?: string; post?: string }) {
   const db = sqlite();
-  if (d.post) {
-    const post = db
-      .prepare(
-        `SELECT sp.user_id AS author,sp.tag FROM solution_posts sp WHERE sp.id=? AND sp.problem_id='discuss:referral'
-          AND sp.hidden=0 AND sp.anonymous=0 AND sp.tag<>'' AND ${badgeSql('sp.user_id', 'referrals')}=sp.tag
-          AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}`,
-      )
-      .get(d.post) as { author: string; tag: string } | undefined;
-    if (!post || !badgeName(post.tag)) throw new HttpError(404, '内推帖不存在或已失效');
-    return { user: post.author, post: d.post };
-  }
+  // The board's referral threads are gone, so a conversation opens only between mutual follows.
+  if (d.post) throw new HttpError(404, '内推帖不存在或已失效');
   const user = HANDLE.test(d.to ?? '')
     ? (db.prepare('SELECT user_id FROM user_profiles WHERE handle=? AND visible=1').pluck().get(d.to) as
         | string
