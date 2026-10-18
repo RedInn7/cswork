@@ -4,10 +4,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { CAREER_CHECKLISTS } from '../lib/content/career-checklists';
+import { NOTE_MAX_BYTES } from '../lib/practice-review';
 import { blankResume, MAX } from '../lib/resume-shape';
 import {
   appendBullets,
   bragBody,
+  FIELD_MAX,
   isDay,
   mondayOf,
   parseBrag,
@@ -18,11 +20,16 @@ import {
   resolveWeek,
   selfReview,
   TEAM_FACTORS,
+  TEAM_NOTES_MAX,
   TEAM_QUESTIONS,
+  teamMatchBody,
+  TEAMS_MAX,
   weekLabel,
   weekMonday,
   weekNo,
+  WIN_MAX,
   winLines,
+  WINS_MAX,
   xyzBullet,
   type BragWeek,
   type InternMeta,
@@ -63,8 +70,8 @@ void test('parsing: broken notes are null, the rest is trimmed to its caps', () 
     JSON.stringify({ wins: [null, 'w', { x: long, y: 5, z: 'z' }, { x: ' ', y: '', z: '' }, ...Array(10).fill({ x: 'a' })], feedback: long.repeat(3), learned: 7, extra: true }),
   )!;
   assert.equal(parsed.wins.length, 8);
-  assert.deepEqual(parsed.wins[0], { x: 'x'.repeat(300), y: '', z: 'z', project: '' });
-  assert.equal(parsed.feedback.length, 1000);
+  assert.deepEqual(parsed.wins[0], { x: 'x'.repeat(WIN_MAX), y: '', z: 'z', project: '' });
+  assert.equal(parsed.feedback.length, FIELD_MAX);
   assert.equal(parsed.learned, '');
   assert.ok(!('extra' in parsed));
   assert.equal(bragBody({ wins: [{ x: ' ', y: '', z: '', project: 'p' }], feedback: ' ', learned: '', next: '' }), '');
@@ -77,6 +84,26 @@ void test('parsing: broken notes are null, the rest is trimmed to its caps', () 
   assert.equal(parseMeta('{"start":"2026-06-03","weeks":"10"}')!.weeks, 12);
 });
 
+void test('a week or the team cards filled to every cap in Chinese still fit one note', () => {
+  const full = (n: number) => '中'.repeat(n);
+  const bytes = (body: string) => new TextEncoder().encode(body).length;
+  const win = { x: full(WIN_MAX), y: full(WIN_MAX), z: full(WIN_MAX), project: full(WIN_MAX) };
+  const week = bragBody({ wins: Array(WINS_MAX).fill(win), feedback: full(FIELD_MAX), learned: full(FIELD_MAX), next: full(FIELD_MAX) });
+  assert.ok(bytes(week) <= NOTE_MAX_BYTES, `week: ${bytes(week)}`);
+  // Ids as long as readTeamMatch accepts, every question asked, every factor scored.
+  const teams = Array.from({ length: TEAMS_MAX }, (_, i) => ({
+    id: `${i}`.padEnd(40, 'x'),
+    name: full(60),
+    manager: full(60),
+    callAt: '2026-04-02T10:30',
+    asked: TEAM_QUESTIONS.map(([id]) => id),
+    notes: full(TEAM_NOTES_MAX),
+  }));
+  const scores = Object.fromEntries(teams.map((t) => [t.id, Object.fromEntries(TEAM_FACTORS.map(([id]) => [id, 5]))]));
+  const body = teamMatchBody(readTeamMatch({ teams, scores }));
+  assert.ok(bytes(body) <= NOTE_MAX_BYTES, `teams: ${bytes(body)}`);
+});
+
 void test('XYZ bullets: one "by", trailing stops dropped, and a nudge for a missing number', () => {
   assert.deepEqual(xyzBullet({ x: 'Cut search latency', y: 'from 800 ms to 300 ms.', z: 'caching hot queries', project: '' }), {
     line: 'Cut search latency from 800 ms to 300 ms, by caching hot queries.',
@@ -85,8 +112,10 @@ void test('XYZ bullets: one "by", trailing stops dropped, and a nudge for a miss
   assert.equal(xyzBullet({ x: 'Shipped the export page', y: '', z: 'By pairing with design.', project: '' }).line, 'Shipped the export page, by pairing with design.');
   assert.equal(xyzBullet({ x: 'Shipped the export page', y: 'used by every team', z: '', project: '' }).addNumber, true);
   assert.equal(xyzBullet({ x: 'Wrote the runbook', y: '', z: '', project: '' }).line, 'Wrote the runbook.');
-  assert.equal(xyzBullet({ x: '把接口延迟', y: '降低 60%', z: '缓存热点查询。', project: '' }).line, '把接口延迟，降低 60%，通过缓存热点查询。');
-  assert.equal(xyzBullet({ x: '上线导出功能', y: '', z: '通过和设计结对', project: '' }).line, '上线导出功能，通过和设计结对。');
+  // Chinese puts "by Z" first and runs X into Y: the page's own placeholders make one sentence.
+  assert.equal(xyzBullet({ x: '把搜索接口的延迟', y: '从 800 ms 降到 300 ms', z: '缓存热点查询。', project: '' }).line, '通过缓存热点查询，把搜索接口的延迟从 800 ms 降到 300 ms。');
+  assert.equal(xyzBullet({ x: '上线导出功能', y: '', z: '通过和设计结对', project: '' }).line, '通过和设计结对，上线导出功能。');
+  assert.equal(xyzBullet({ x: '写好值班手册', y: '', z: '', project: '' }).line, '写好值班手册。');
 });
 
 void test('self-review: the midpoint reads the first half only, measured results first and grouped by project', () => {
@@ -178,7 +207,7 @@ void test('team matching: default factors, scores dropped with their team, ranke
   assert.deepEqual(m.factors.map((f) => [f.id, f.weight]), [['work', 5], ['pace', 1]]);
   assert.deepEqual(m.teams.map((t) => t.id), ['a', 'b', 'c']);
   assert.deepEqual(m.teams[0].asked, ['mentor']);
-  assert.equal(m.teams[0].notes.length, 1500);
+  assert.equal(m.teams[0].notes.length, TEAM_NOTES_MAX);
   assert.equal(m.teams[1].callAt, '');
   assert.deepEqual(Object.keys(m.scores).sort(), ['a', 'b']);
   // b: (5·4 + 1·1) / 6 = 3.5; a: (5·2 + 1·5) / 6 = 2.5; c unscored last.
@@ -201,4 +230,9 @@ void test('the internship checklist: every item placed in a week, every phase co
   const weeks = new Set(items.map((i) => resolveWeek(i.week!, 12)));
   for (const w of [0, 1, 2, 6, 10, 11, 12]) assert.ok(weeks.has(w), String(w));
   assert.ok(items.some((i) => i.href === '/career/intern'));
+  // Listed in the order they come due, so the guide's week tags never run backwards.
+  for (const length of [8, 12, 16]) {
+    const due = items.map((i) => resolveWeek(i.week!, length));
+    assert.deepEqual(due, [...due].sort((a, b) => a - b), String(length));
+  }
 });

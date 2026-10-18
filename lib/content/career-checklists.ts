@@ -475,7 +475,7 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
       week: 1,
       text: ['开始写每周成果日志', 'Start a weekly log of your work'],
       detail: [
-        '每周五十分钟：做成的事、收到的反馈、学到的东西。自评和周报都从这里来。',
+        '每周五花十分钟：做成的事、收到的反馈、学到的东西。自评和周报都从这里来。',
         'Ten minutes every Friday: what you finished, the feedback, what you learned. Self-reviews and updates come from it.',
       ],
       href: '/career/intern',
@@ -496,16 +496,16 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
       ],
     },
     {
-      id: 'design-doc',
-      week: 3,
-      text: ['写一页设计文档，和 mentor 对齐范围和里程碑', 'Write a one-page design doc and agree scope and milestones with your mentor'],
-      detail: ['目标、不做什么、方案、里程碑，对齐之后再动手。', 'Goal, out of scope, approach, milestones; agree them before you build.'],
-    },
-    {
       id: 'weekly-update',
       week: 2,
       text: ['每周五发三到五行的周报', 'Send a three-to-five-line update every Friday'],
       detail: ['本周、下周、风险，内容直接从成果日志里摘。', 'This week, next week, risks; lifted straight from your log.'],
+    },
+    {
+      id: 'design-doc',
+      week: 3,
+      text: ['写一页设计文档，和 mentor 对齐范围和里程碑', 'Write a one-page design doc and agree scope and milestones with your mentor'],
+      detail: ['目标、不做什么、方案、里程碑，对齐之后再动手。', 'Goal, out of scope, approach, milestones; agree them before you build.'],
     },
     {
       id: 'mid-review',

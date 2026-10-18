@@ -17,8 +17,10 @@ export const weekTarget = (monday: string) => `brag:${monday}`;
 export const WEEKS_MIN = 8;
 export const WEEKS_MAX = 16;
 export const WINS_MAX = 8;
-export const WIN_MAX = 300;
-export const FIELD_MAX = 1000;
+// Sized so a week written to the brim in Chinese (3 UTF-8 bytes a character) stays under the
+// server's 20 KB note limit (NOTE_MAX_BYTES); tests/intern-log.test.ts checks it.
+export const WIN_MAX = 150;
+export const FIELD_MAX = 500;
 
 const DAY_MS = 86400000;
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.slice(0, max) : '');
@@ -77,12 +79,12 @@ export function bragBody(b: Brag) {
 
 const CJK = /[㐀-鿿]/;
 const clean = (s: string) => s.trim().replace(/[\s.。,，;；]+$/u, '');
-/** A win as one resume line, "X Y, by Z." (Chinese: "X，Y，通过 Z。"); `addNumber` when Y has no figure in it. */
+/** A win as one resume line, "X Y, by Z." (Chinese: "通过Z，XY。"); `addNumber` when Y has no figure in it. */
 export function xyzBullet(win: Win) {
   const [x, y, z] = [win.x, win.y, win.z].map(clean);
   const head = [x, y].filter(Boolean);
   const line = CJK.test(x + y + z)
-    ? `${[...head, z && (/^(通过|借助|靠)/.test(z) ? z : `通过${z}`)].filter(Boolean).join('，')}。`
+    ? `${z ? `${/^(通过|借助|靠)/.test(z) ? z : `通过${z}`}${head.length ? '，' : ''}` : ''}${x}${y}。`
     : `${head.join(' ')}${z ? `${head.length ? ', ' : ''}${/^by\b/i.test(z) ? z.replace(/^by/i, 'by') : `by ${z}`}` : ''}.`;
   return { line, addNumber: !/\d/.test(y) };
 }
@@ -236,7 +238,8 @@ export const TEAM_QUESTIONS: [id: string, zh: string, en: string][] = [
   ['return', '往届实习生的转正情况大概怎样？', 'Roughly how have past interns fared on return offers?'],
 ];
 export const TEAMS_MAX = 8;
-export const TEAM_NOTES_MAX = 1500;
+// Like WIN_MAX: eight full cards in Chinese still fit one 20 KB note.
+export const TEAM_NOTES_MAX = 500;
 export type Team = { id: string; name: string; manager: string; callAt: string; asked: string[]; notes: string };
 /** The decision matrix of /career/offers (scores keyed by team id) plus the call cards. */
 export type TeamMatch = Decision & { teams: Team[] };
