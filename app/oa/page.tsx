@@ -81,6 +81,9 @@ export default async function OaIndex() {
         <Link className="oa-public-cta is-quiet" href="/oa/drills" prefetch={false}>
           {zh ? '调试与代码评审练习（找出埋入的 bug）' : 'Debugging and code-review drills (find the planted bug)'}
         </Link>
+        <Link className="oa-public-cta is-quiet" href="/oa/aptitude" prefetch={false}>
+          {zh ? '能力测评练习（数量 · 逻辑 · 图形 · 15 分钟速度测验）' : 'Aptitude practice (numbers · logic · figures · 15-minute speed test)'}
+        </Link>
       </p>
       {!!fresh.length && (
         <details className="oa-public-fresh">
