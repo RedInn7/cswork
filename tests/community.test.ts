@@ -295,11 +295,10 @@ void test('follows: visible profiles only, counted and listed only when visible,
   assert.equal((await call(null, 'POST', 'oj/follows', { handle: 'grace', on: true })).status, 401);
   await ok(me, 'POST', 'oj/follows', { handle: 'grace', on: true });
   await ok(others[1], 'POST', 'oj/follows', { handle: 'grace', on: true });
-  // Following back answers mutual, so the button shows "Message" without a reload.
-  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: true })).mutual, true);
-  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: false })).mutual, false);
+  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: true })).following, true);
+  assert.equal((await ok(others[0], 'POST', 'oj/follows', { handle: 'ada', on: false })).following, false);
   const state = await ok(null, 'GET', 'oj/follows?handle=grace');
-  assert.deepEqual(state, { following: false, mutual: false, self: false, signedIn: false, followers: 1, followees: 0 }, 'the hidden follower is not counted');
+  assert.deepEqual(state, { following: false, self: false, signedIn: false, followers: 1, followees: 0 }, 'the hidden follower is not counted');
   assert.equal((await ok(me, 'GET', 'oj/follows?handle=grace')).following, true);
   assert.deepEqual(followPeople('grace', 'followers')?.items.map((f) => f.handle), ['ada']);
   assert.deepEqual(followPeople('ada', 'following')?.items.map((f) => f.handle), ['grace']);

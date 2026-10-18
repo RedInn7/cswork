@@ -178,7 +178,7 @@ const shape = ({ voted, starred, employer, referrer, pinned, ...r }: PostRow) =>
     !r.anonymous && r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
 });
 
-/** As posts, direct messages and notices name people: the public handle if the profile is visible, else a masked name. */
+/** As posts and notices name people: the public handle if the profile is visible, else a masked name. */
 export function nameOf(userId: string) {
   const r = sqlite()
     .prepare(
@@ -507,22 +507,19 @@ function mentioned(text: string) {
 }
 /**
  * Notices for a new post or comment: `to` (replies) first, then the @mentioned; one each, never to
- * the writer or anyone blocking them, none on a reported-down post. Anonymous writing (an anonymous
- * post's author on it, an anonymous report's author under it) names no one, mentions no one and skips the block check, so no notice's
- * presence or absence tells its author apart. A judge problem's notice carries no excerpt to a
- * recipient it is in a running contest for.
+ * the writer, none on a reported-down post. Anonymous writing (an anonymous post's author on it, an
+ * anonymous report's author under it) names no one and mentions no one. A judge problem's notice
+ * carries no excerpt to a recipient it is in a running contest for.
  */
 function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: string }[], text: string, now: number) {
   if (post.down) return;
   const anonymous = (!!post.anonymous && post.userId === p.id) || anonymousReporter(post.problemId) === p.id;
   const from = anonymous ? '' : `${nameOf(p.id)}: `;
   const problem = targetKind(post.problemId) === 'problem';
-  const blocks = sqlite().prepare('SELECT 1 FROM dm_blocks WHERE user_id=? AND blocked_id=?');
   const done = new Set([p.id]);
   const send = (userId: string, kind: string, title: string) => {
     if (done.has(userId)) return;
     done.add(userId);
-    if (!anonymous && blocks.get(userId, p.id)) return;
     const body = problem && inRunningContest(userId, post.problemId, now) ? '' : `${from}${autoTitle(text)}`;
     notify({ userId, kind, title, body, href: postHref(post.problemId, post.id), now });
   };
@@ -530,7 +527,7 @@ function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: str
   if (!anonymous) for (const userId of mentioned(text)) send(userId, 'mention', '有人在讨论中提到了你');
 }
 
-/** One report per learner and target: posts, comments, group chat ('gmsg:') and direct messages ('dm:'). */
+/** One report per learner and target: posts, comments and group chat ('gmsg:'). */
 export function fileReport(p: Person, target: string, authorId: string, reason: string) {
   if (authorId === p.id) throw new HttpError(400, '不能举报自己的内容');
   underCap('post_reports', p, REPORTS_PER_DAY, '今天的举报次数已达上限');
@@ -551,7 +548,6 @@ const TABLES = {
   post: 'solution_posts',
   comment: 'post_comments',
   gmsg: 'study_group_messages',
-  dm: 'direct_messages',
 } as const;
 type Kind = keyof typeof TABLES;
 function moderate(p: Person, kind: Kind, targetId: string, action: string) {
@@ -607,21 +603,13 @@ async function moderationQueue(p: Person) {
         JOIN solution_posts sp ON sp.id=c.post_id LEFT JOIN "user" u ON u.id=c.user_id WHERE r.target LIKE 'comment:%'`,
       )
       .all() as (QueueItem & { lastAt: number })[]),
-    // Reported chat and direct messages: only what was reported, never the latest of either.
+    // Reported chat: only what was reported, never the latest.
     ...(db
       .prepare(
         `${REPORTS} SELECT 'gmsg' AS kind,g.id,g.group_id AS postId,'' AS problemId,COALESCE(sg.name,'') AS title,
           substr(g.body,1,600) AS excerpt,COALESCE(u.name,'') AS author,g.hidden,g.created_at AS createdAt,
           r.reports,r.reasons,r.lastAt FROM r JOIN study_group_messages g ON g.id=substr(r.target,6)
         LEFT JOIN study_groups sg ON sg.id=g.group_id LEFT JOIN "user" u ON u.id=g.user_id WHERE r.target LIKE 'gmsg:%'`,
-      )
-      .all() as (QueueItem & { lastAt: number })[]),
-    ...(db
-      .prepare(
-        `${REPORTS} SELECT 'dm' AS kind,d.id,'' AS postId,'' AS problemId,'' AS title,substr(d.body,1,600) AS excerpt,
-          COALESCE(u.name,'') AS author,d.hidden,d.created_at AS createdAt,r.reports,r.reasons,r.lastAt
-        FROM r JOIN direct_messages d ON d.id=substr(r.target,4) LEFT JOIN "user" u ON u.id=d.from_user
-        WHERE r.target LIKE 'dm:%'`,
       )
       .all() as (QueueItem & { lastAt: number })[]),
   ]
@@ -643,7 +631,7 @@ async function moderationQueue(p: Person) {
   const seen = new Map<string, boolean>();
   const running = runningContestProblems(p.id);
   const shown = async (item: QueueItem) => {
-    // Chat and direct messages hang off no problem or page.
+    // Chat hangs off no problem or page.
     if (!item.problemId) return true;
     if (!seen.has(item.problemId))
       seen.set(item.problemId, !running.has(item.problemId) && (await visibleTarget(p, item.problemId)));
@@ -660,8 +648,7 @@ async function moderationQueue(p: Person) {
 /**
  * /api/oj/posts/… and /api/oj/post-comments/<id>/<action>. Threads, answers and comments read
  * signed out; solutions, the moderation queue and every write need an account.
- * /api/oj/group-messages/<id>/<action> and direct-messages/… are the moderators' actions on
- * reported chat and direct messages.
+ * /api/oj/group-messages/<id>/<action> are the moderators' actions on reported chat.
  */
 export async function handleSolutionPosts(request: Request, p: Person | null, path: string[]) {
   const [resource, target, action, extra] = path;
@@ -883,7 +870,6 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     }
     return moderate(p, 'comment', target, action);
   }
-  if (resource === 'group-messages' || resource === 'direct-messages')
-    return moderate(p, resource === 'group-messages' ? 'gmsg' : 'dm', target, action);
+  if (resource === 'group-messages') return moderate(p, 'gmsg', target, action);
   throw new HttpError(404, '题解接口不存在');
 }

@@ -2,8 +2,8 @@ import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer, index, primaryKey, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 // Study group chat, work email badges and direct messages (lib/server/study-groups.ts,
-// work-verify.ts, direct-messages.ts). No foreign keys: release.sh only applies additive SQL;
-// retention (lib/server/http.ts), unblocking and removing a badge are runtime DELETEs.
+// work-verify.ts). No foreign keys: release.sh only applies additive SQL; retention
+// (lib/server/http.ts) and removing a badge are runtime DELETEs.
 
 /** hidden: 0 shown, 1 removed by its author, 2 hidden by a moderator. Reports: post_reports 'gmsg:<id>'. */
 export const studyGroupMessages = sqliteTable(
@@ -46,6 +46,7 @@ export const workVerifications = sqliteTable(
   (t) => [uniqueIndex('work_verifications_email').on(t.emailHash).where(sql`${t.verifiedAt} IS NOT NULL`)],
 );
 
+// Direct messages were removed: the three dm tables below are unused (old rows age out, lib/server/http.ts).
 /**
  * thread: the two account ids, sorted, joined with "|". post_id is set only on a thread's first
  * message: the referral post it was opened from, or '' between mutual follows.

@@ -137,7 +137,8 @@ export async function limit(
     database().prepare('DELETE FROM limits WHERE expires_at<?').bind(now).run();
     // Duel queue rows 10 minutes unpolled (duels.ts QUEUE_DROP): the privacy page promises it.
     database().prepare('DELETE FROM duel_queue WHERE seen_at<?').bind(now - 600000).run();
-    // Group chat and direct messages past their retention: the privacy page promises it too.
+    // Group chat and direct messages past their retention: the privacy page promises it too. Direct
+    // messages are gone as a feature, but the rows already sent still age out on that promise.
     database().prepare('DELETE FROM study_group_messages WHERE created_at<?').bind(now - CHAT_RETENTION_DAYS * 86400000).run();
     database().prepare('DELETE FROM direct_messages WHERE created_at<?').bind(now - DM_RETENTION_DAYS * 86400000).run();
     nextLimitCleanup = now + 600000;

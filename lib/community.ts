@@ -59,7 +59,7 @@ export const REPORTS_HIDE = 3;
 export const REPORT_CLEARED = 'cleared';
 /** Days a study group chat message (lib/server/study-groups.ts) is kept; the privacy page says so. */
 export const CHAT_RETENTION_DAYS = 180;
-/** Days a direct message (lib/server/direct-messages.ts) is kept; the privacy page says so. */
+/** Days a direct message is kept (the feature is removed; old rows still age out, lib/server/http.ts). */
 export const DM_RETENTION_DAYS = 365;
 /** Up to this many votes a new thread stays out of search (spam rarely earns three). */
 export const INDEX_VOTES = 3;
