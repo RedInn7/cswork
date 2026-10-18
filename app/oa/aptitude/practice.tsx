@@ -398,7 +398,11 @@ function SpeedResult({ t, zh, speed, ids, saveFailed, onReset }: { t: T; zh: boo
         {pace.sections.map((s, i) => (
           <div key={i}>
             <dt>{t(...SPEED_SECTION_NAMES[i])}</dt>
-            <dd>{s.shown ? t(`平均 ${s.avg.toFixed(1)} 秒/题（做了 ${s.shown} 题）`, `${s.avg.toFixed(1)} s per question (${s.shown} seen)`) : t('没做到', 'Not reached')}</dd>
+            <dd>
+              {s.shown
+                ? t(`用时 ${formatClock(s.avg * s.shown * 1000)} · ${s.shown} 题 · 平均 ${s.avg.toFixed(1)} 秒`, `${formatClock(s.avg * s.shown * 1000)} · ${s.shown} seen · ${s.avg.toFixed(1)} s each`)
+                : t('没做到', 'Not reached')}
+            </dd>
           </div>
         ))}
       </dl>
