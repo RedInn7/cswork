@@ -2520,5 +2520,245 @@
     }
    }
   ]
+ },
+ "design-containers": {
+  "variants": [
+   {
+    "id": "two-stack-queue",
+    "pattern": {
+     "zh": "两个栈拼一个队列：出栈空了才倒",
+     "en": "A queue from two stacks: refill only when the out-stack is empty"
+    },
+    "when": {
+     "zh": "只给你栈（或要用栈模拟别的容器）：新元素压进 inbox，取元素从 outbox 拿，outbox 空了才把 inbox 整个倒过去，顺序正好反过来。每个元素最多被搬一次，均摊 O(1)。LC 232 用栈实现队列；反过来用队列实现栈见 LC 225。",
+     "en": "When only stacks are available (or a stack must stand in for another container): push new items onto inbox, take them from outbox, and pour all of inbox across only when outbox is empty, which reverses the order exactly. Each item moves at most once, so it is O(1) amortised. LC 232 (Implement Queue using Stacks); LC 225 goes the other way."
+    },
+    "complexity": {
+     "zh": "每次操作均摊 O(1) · 空间 O(n)",
+     "en": "O(1) amortised per operation · O(n) space"
+    },
+    "code": {
+     "python": "class MyQueue:\n    \"\"\"A FIFO queue built from two stacks (LC 232).\"\"\"\n\n    def __init__(self):\n        self.inbox: list[int] = []  # new items go on top here\n        self.outbox: list[int] = []  # items leave from here, oldest on top\n\n    def push(self, x: int) -> None:\n        self.inbox.append(x)\n\n    def _refill(self) -> None:\n        if not self.outbox:  # only when empty, or the order breaks\n            while self.inbox:\n                self.outbox.append(self.inbox.pop())\n\n    def pop(self) -> int:\n        self._refill()\n        return self.outbox.pop()\n\n    def peek(self) -> int:\n        self._refill()\n        return self.outbox[-1]\n\n    def empty(self) -> bool:\n        return not self.inbox and not self.outbox",
+     "cpp": "// A FIFO queue built from two stacks (LC 232).\nclass MyQueue {\n    stack<int> inbox, outbox;  // new items go on inbox; items leave from outbox, oldest on top\n\n    void refill() {\n        if (outbox.empty())  // only when empty, or the order breaks\n            for (; !inbox.empty(); inbox.pop()) outbox.push(inbox.top());\n    }\n\npublic:\n    void push(int x) { inbox.push(x); }\n    int pop() {\n        refill();\n        int x = outbox.top();\n        outbox.pop();\n        return x;\n    }\n    int peek() {\n        refill();\n        return outbox.top();\n    }\n    bool empty() const { return inbox.empty() && outbox.empty(); }\n};",
+     "java": "// A FIFO queue built from two stacks (LC 232).\nclass MyQueue {\n    private final Deque<Integer> inbox = new ArrayDeque<>(); // new items go on top here\n    private final Deque<Integer> outbox = new ArrayDeque<>(); // items leave from here, oldest on top\n\n    void push(int x) {\n        inbox.push(x);\n    }\n\n    int pop() {\n        refill();\n        return outbox.pop();\n    }\n\n    int peek() {\n        refill();\n        return outbox.peek();\n    }\n\n    boolean empty() {\n        return inbox.isEmpty() && outbox.isEmpty();\n    }\n\n    private void refill() {\n        if (outbox.isEmpty()) // only when empty, or the order breaks\n            while (!inbox.isEmpty()) outbox.push(inbox.pop());\n    }\n}",
+     "go": "// MyQueue is a FIFO queue built from two stacks (LC 232).\ntype MyQueue struct {\n\tinbox, outbox []int // new items go on inbox; items leave from outbox, oldest on top\n}\n\nfunc (q *MyQueue) Push(x int) { q.inbox = append(q.inbox, x) }\n\nfunc (q *MyQueue) refill() {\n\tif len(q.outbox) == 0 { // only when empty, or the order breaks\n\t\tfor len(q.inbox) > 0 {\n\t\t\tq.outbox = append(q.outbox, q.inbox[len(q.inbox)-1])\n\t\t\tq.inbox = q.inbox[:len(q.inbox)-1]\n\t\t}\n\t}\n}\n\nfunc (q *MyQueue) Pop() int {\n\tq.refill()\n\tx := q.outbox[len(q.outbox)-1]\n\tq.outbox = q.outbox[:len(q.outbox)-1]\n\treturn x\n}\n\nfunc (q *MyQueue) Peek() int {\n\tq.refill()\n\treturn q.outbox[len(q.outbox)-1]\n}\n\nfunc (q *MyQueue) Empty() bool { return len(q.inbox) == 0 && len(q.outbox) == 0 }"
+    },
+    "driver": {
+     "python": "q = MyQueue()\nq.push(1)\nq.push(2)\nprint(q.peek())\nprint(q.pop())\nq.push(3)\nprint(q.pop())\nprint(q.pop())\nprint(str(q.empty()).lower())",
+     "cpp": "MyQueue q;\nq.push(1);\nq.push(2);\ncout << q.peek() << \"\\n\";\ncout << q.pop() << \"\\n\";\nq.push(3);\ncout << q.pop() << \"\\n\";\ncout << q.pop() << \"\\n\";\ncout << boolalpha << q.empty() << \"\\n\";",
+     "java": "MyQueue q = new MyQueue();\nq.push(1);\nq.push(2);\nshow(q.peek());\nshow(q.pop());\nq.push(3);\nshow(q.pop());\nshow(q.pop());\nshow(q.empty());",
+     "go": "q := &MyQueue{}\nq.Push(1)\nq.Push(2)\nfmt.Println(q.Peek())\nfmt.Println(q.Pop())\nq.Push(3)\nfmt.Println(q.Pop())\nfmt.Println(q.Pop())\nfmt.Println(q.Empty())",
+     "expected": "1\n1\n2\n3\ntrue"
+    }
+   },
+   {
+    "id": "min-stack",
+    "pattern": {
+     "zh": "每个元素记住「到它为止的最小值」",
+     "en": "Each entry remembers the minimum up to it"
+    },
+    "when": {
+     "zh": "要在 O(1) 里随时拿到栈里的最小（或最大）值：入栈时把「这个元素和它下面所有元素的最小值」一起存进去，出栈时它跟着走，不用重新算。LC 155 最小栈；同样的想法也能给队列（两个这样的栈）加上 O(1) 最值。",
+     "en": "To read the stack's minimum (or maximum) in O(1) at any time: push each value together with the minimum of it and everything below it, so that minimum leaves with it and nothing is recomputed. LC 155 (Min Stack); two such stacks give a queue an O(1) minimum as well."
+    },
+    "complexity": {
+     "zh": "每次操作 O(1) · 空间 O(n)",
+     "en": "O(1) per operation · O(n) space"
+    },
+    "code": {
+     "python": "class MinStack:\n    \"\"\"A stack with O(1) get_min (LC 155).\"\"\"\n\n    def __init__(self):\n        self.items: list[tuple[int, int]] = []  # (value, minimum of it and everything below)\n\n    def push(self, x: int) -> None:\n        low = min(x, self.items[-1][1]) if self.items else x\n        self.items.append((x, low))\n\n    def pop(self) -> None:\n        self.items.pop()\n\n    def top(self) -> int:\n        return self.items[-1][0]\n\n    def get_min(self) -> int:\n        return self.items[-1][1]",
+     "cpp": "// A stack with O(1) getMin (LC 155).\nclass MinStack {\n    vector<pair<int, int>> items;  // {value, minimum of it and everything below}\n\npublic:\n    void push(int x) { items.push_back({x, items.empty() ? x : min(x, items.back().second)}); }\n    void pop() { items.pop_back(); }\n    int top() const { return items.back().first; }\n    int getMin() const { return items.back().second; }\n};",
+     "java": "// A stack with O(1) getMin (LC 155).\nclass MinStack {\n    private final Deque<int[]> items = new ArrayDeque<>(); // {value, minimum of it and everything below}\n\n    void push(int x) {\n        items.push(new int[] {x, items.isEmpty() ? x : Math.min(x, items.peek()[1])});\n    }\n\n    void pop() {\n        items.pop();\n    }\n\n    int top() {\n        return items.peek()[0];\n    }\n\n    int getMin() {\n        return items.peek()[1];\n    }\n}",
+     "go": "// MinStack is a stack with O(1) GetMin (LC 155).\ntype MinStack struct {\n\titems [][2]int // {value, minimum of it and everything below}\n}\n\nfunc (s *MinStack) Push(x int) {\n\tlow := x\n\tif n := len(s.items); n > 0 {\n\t\tlow = min(x, s.items[n-1][1])\n\t}\n\ts.items = append(s.items, [2]int{x, low})\n}\n\nfunc (s *MinStack) Pop()        { s.items = s.items[:len(s.items)-1] }\nfunc (s *MinStack) Top() int    { return s.items[len(s.items)-1][0] }\nfunc (s *MinStack) GetMin() int { return s.items[len(s.items)-1][1] }"
+    },
+    "driver": {
+     "python": "s = MinStack()\nfor x in (-2, 0, -3):\n    s.push(x)\nprint(s.get_min())\ns.pop()\nprint(s.top())\nprint(s.get_min())\ns.push(-5)\nprint(s.get_min())\ns.pop()\nprint(s.get_min())",
+     "cpp": "MinStack s;\nfor (int x : {-2, 0, -3}) s.push(x);\ncout << s.getMin() << \"\\n\";\ns.pop();\ncout << s.top() << \"\\n\" << s.getMin() << \"\\n\";\ns.push(-5);\ncout << s.getMin() << \"\\n\";\ns.pop();\ncout << s.getMin() << \"\\n\";",
+     "java": "MinStack s = new MinStack();\nfor (int x : new int[] {-2, 0, -3}) s.push(x);\nshow(s.getMin());\ns.pop();\nshow(s.top());\nshow(s.getMin());\ns.push(-5);\nshow(s.getMin());\ns.pop();\nshow(s.getMin());",
+     "go": "s := &MinStack{}\nfor _, x := range []int{-2, 0, -3} {\n    s.Push(x)\n}\nfmt.Println(s.GetMin())\ns.Pop()\nfmt.Println(s.Top())\nfmt.Println(s.GetMin())\ns.Push(-5)\nfmt.Println(s.GetMin())\ns.Pop()\nfmt.Println(s.GetMin())",
+     "expected": "-3\n0\n-2\n-5\n-2"
+    }
+   }
+  ]
+ },
+ "design-cache-index": {
+  "variants": [
+   {
+    "id": "two-heaps-median",
+    "pattern": {
+     "zh": "对顶堆：大顶堆存较小一半，小顶堆存较大一半",
+     "en": "Two heaps: a max-heap below, a min-heap above"
+    },
+    "when": {
+     "zh": "数据流里随时要中位数（或第 k 小、滑动窗口中位数）：较小的一半放大顶堆，较大的一半放小顶堆，每次插入先进大顶堆、再把它的堆顶挪到小顶堆，最后保证大顶堆不比小顶堆少。中位数就在两个堆顶。LC 295 数据流的中位数。",
+     "en": "For a running median of a stream (or the k-th smallest, or a sliding-window median): keep the smaller half in a max-heap and the larger half in a min-heap. Each insert goes into the max-heap, its top moves to the min-heap, and then the max-heap is topped up so it is never the smaller one. The median sits on the two tops. LC 295 (Find Median from Data Stream)."
+    },
+    "complexity": {
+     "zh": "插入 O(log n) · 取中位数 O(1)",
+     "en": "O(log n) insert · O(1) median"
+    },
+    "code": {
+     "python": "import heapq\n\n\nclass MedianFinder:\n    \"\"\"Running median of a stream of numbers (LC 295).\"\"\"\n\n    def __init__(self):\n        self.low: list[int] = []  # the smaller half, negated so heapq gives a max-heap\n        self.high: list[int] = []  # the larger half, a min-heap\n\n    def add(self, x: int) -> None:\n        heapq.heappush(self.low, -x)\n        heapq.heappush(self.high, -heapq.heappop(self.low))  # the largest of low moves up\n        if len(self.high) > len(self.low):  # low keeps the same size or one more\n            heapq.heappush(self.low, -heapq.heappop(self.high))\n\n    def median(self) -> float:\n        if len(self.low) > len(self.high):\n            return -self.low[0]\n        return (-self.low[0] + self.high[0]) / 2",
+     "cpp": "// Running median of a stream of numbers (LC 295).\nclass MedianFinder {\n    priority_queue<int> low;  // the smaller half, largest on top\n    priority_queue<int, vector<int>, greater<int>> high;  // the larger half, smallest on top\n\npublic:\n    void add(int x) {\n        low.push(x);\n        high.push(low.top());  // the largest of low moves up\n        low.pop();\n        if (high.size() > low.size()) {  // low keeps the same size or one more\n            low.push(high.top());\n            high.pop();\n        }\n    }\n    double median() const {\n        return low.size() > high.size() ? low.top() : ((double)low.top() + high.top()) / 2;\n    }\n};",
+     "java": "// Running median of a stream of numbers (LC 295).\nclass MedianFinder {\n    private final PriorityQueue<Integer> low = new PriorityQueue<>(Comparator.reverseOrder()); // the smaller half\n    private final PriorityQueue<Integer> high = new PriorityQueue<>(); // the larger half\n\n    void add(int x) {\n        low.offer(x);\n        high.offer(low.poll()); // the largest of low moves up\n        if (high.size() > low.size()) low.offer(high.poll()); // low keeps the same size or one more\n    }\n\n    double median() {\n        return low.size() > high.size() ? low.peek() : ((double) low.peek() + high.peek()) / 2;\n    }\n}",
+     "go": "import \"container/heap\"\n\n// intHeap is a container/heap of ints in the order less gives.\ntype intHeap struct {\n\txs   []int\n\tless func(a, b int) bool\n}\n\nfunc (h *intHeap) Len() int           { return len(h.xs) }\nfunc (h *intHeap) Less(i, j int) bool { return h.less(h.xs[i], h.xs[j]) }\nfunc (h *intHeap) Swap(i, j int)      { h.xs[i], h.xs[j] = h.xs[j], h.xs[i] }\nfunc (h *intHeap) Push(x any)         { h.xs = append(h.xs, x.(int)) }\nfunc (h *intHeap) Pop() any {\n\tx := h.xs[len(h.xs)-1]\n\th.xs = h.xs[:len(h.xs)-1]\n\treturn x\n}\n\n// MedianFinder keeps the running median of a stream of numbers (LC 295).\ntype MedianFinder struct {\n\tlow, high *intHeap\n}\n\nfunc NewMedianFinder() *MedianFinder {\n\treturn &MedianFinder{\n\t\tlow:  &intHeap{less: func(a, b int) bool { return a > b }}, // the smaller half, largest on top\n\t\thigh: &intHeap{less: func(a, b int) bool { return a < b }}, // the larger half, smallest on top\n\t}\n}\n\nfunc (m *MedianFinder) Add(x int) {\n\theap.Push(m.low, x)\n\theap.Push(m.high, heap.Pop(m.low)) // the largest of low moves up\n\tif m.high.Len() > m.low.Len() { // low keeps the same size or one more\n\t\theap.Push(m.low, heap.Pop(m.high))\n\t}\n}\n\nfunc (m *MedianFinder) Median() float64 {\n\tif m.low.Len() > m.high.Len() {\n\t\treturn float64(m.low.xs[0])\n\t}\n\treturn float64(m.low.xs[0]+m.high.xs[0]) / 2\n}"
+    },
+    "driver": {
+     "python": "m = MedianFinder()\nfor x in (1, 2, 3, -1, 10, 4):\n    m.add(x)\n    print(int(m.median() * 2))  # twice the median: always a whole number",
+     "cpp": "MedianFinder m;\nfor (int x : {1, 2, 3, -1, 10, 4}) {\n    m.add(x);\n    cout << (long long)(m.median() * 2) << \"\\n\";  // twice the median: always a whole number\n}",
+     "java": "MedianFinder m = new MedianFinder();\nfor (int x : new int[] {1, 2, 3, -1, 10, 4}) {\n    m.add(x);\n    show((long) (m.median() * 2)); // twice the median: always a whole number\n}",
+     "go": "m := NewMedianFinder()\nfor _, x := range []int{1, 2, 3, -1, 10, 4} {\n    m.Add(x)\n    fmt.Println(int(m.Median() * 2)) // twice the median: always a whole number\n}",
+     "expected": "2\n3\n4\n3\n4\n5"
+    }
+   },
+   {
+    "id": "swap-delete-set",
+    "pattern": {
+     "zh": "数组 + 下标表：删除时和末尾交换",
+     "en": "Array plus index map: delete by swapping with the last"
+    },
+    "when": {
+     "zh": "既要 O(1) 增删、又要 O(1) 随机取一个（或按位置访问）：值存在数组里，哈希表记每个值的下标；删除时把末尾元素搬到被删的位置、更新它的下标，再弹出末尾，数组始终没有空洞。LC 380 O(1) 时间插入、删除和获取随机元素，LC 381 允许重复。",
+     "en": "For O(1) insert and delete plus O(1) random pick (or access by position): keep the values in an array and each value's index in a hash map. To delete, move the last element into the freed slot, update its index and pop the end, so the array never has holes. LC 380 (Insert Delete GetRandom O(1)); LC 381 allows duplicates."
+    },
+    "complexity": {
+     "zh": "每次操作平均 O(1) · 空间 O(n)",
+     "en": "O(1) average per operation · O(n) space"
+    },
+    "code": {
+     "python": "import random\n\n\nclass RandomizedSet:\n    \"\"\"insert, remove and get_random in O(1) on average (LC 380).\"\"\"\n\n    def __init__(self):\n        self.items: list[int] = []  # the values, in no particular order\n        self.where: dict[int, int] = {}  # value -> its index in items\n\n    def insert(self, x: int) -> bool:\n        if x in self.where:\n            return False\n        self.where[x] = len(self.items)\n        self.items.append(x)\n        return True\n\n    def remove(self, x: int) -> bool:\n        if x not in self.where:\n            return False\n        i, last = self.where.pop(x), self.items.pop()\n        if i < len(self.items):  # x was not last: the last value fills its slot\n            self.items[i] = last\n            self.where[last] = i\n        return True\n\n    def get_random(self) -> int:\n        return random.choice(self.items)",
+     "cpp": "// insert, remove and getRandom in O(1) on average (LC 380).\nclass RandomizedSet {\n    vector<int> items;  // the values, in no particular order\n    unordered_map<int, int> where;  // value -> its index in items\n\npublic:\n    bool insert(int x) {\n        if (where.count(x)) return false;\n        where[x] = items.size();\n        items.push_back(x);\n        return true;\n    }\n    bool remove(int x) {\n        auto it = where.find(x);\n        if (it == where.end()) return false;\n        int i = it->second, last = items.back();\n        items[i] = last;  // the last value fills x's slot (x itself if it was last)\n        where[last] = i;\n        items.pop_back();\n        where.erase(x);\n        return true;\n    }\n    int getRandom() const { return items[rand() % items.size()]; }\n};",
+     "java": "// insert, remove and getRandom in O(1) on average (LC 380).\nclass RandomizedSet {\n    private final List<Integer> items = new ArrayList<>(); // the values, in no particular order\n    private final Map<Integer, Integer> where = new HashMap<>(); // value -> its index in items\n    private final Random random = new Random();\n\n    boolean insert(int x) {\n        if (where.containsKey(x)) return false;\n        where.put(x, items.size());\n        items.add(x);\n        return true;\n    }\n\n    boolean remove(int x) {\n        Integer i = where.get(x);\n        if (i == null) return false;\n        int last = items.get(items.size() - 1);\n        items.set(i, last); // the last value fills x's slot (x itself if it was last)\n        where.put(last, i);\n        items.remove(items.size() - 1);\n        where.remove(x);\n        return true;\n    }\n\n    int getRandom() {\n        return items.get(random.nextInt(items.size()));\n    }\n}",
+     "go": "import \"math/rand\"\n\n// RandomizedSet supports Insert, Remove and GetRandom in O(1) on average (LC 380).\ntype RandomizedSet struct {\n\titems []int       // the values, in no particular order\n\twhere map[int]int // value -> its index in items\n}\n\nfunc NewRandomizedSet() *RandomizedSet { return &RandomizedSet{where: map[int]int{}} }\n\nfunc (s *RandomizedSet) Insert(x int) bool {\n\tif _, ok := s.where[x]; ok {\n\t\treturn false\n\t}\n\ts.where[x] = len(s.items)\n\ts.items = append(s.items, x)\n\treturn true\n}\n\nfunc (s *RandomizedSet) Remove(x int) bool {\n\ti, ok := s.where[x]\n\tif !ok {\n\t\treturn false\n\t}\n\tlast := s.items[len(s.items)-1]\n\ts.items[i] = last // the last value fills x's slot (x itself if it was last)\n\ts.where[last] = i\n\ts.items = s.items[:len(s.items)-1]\n\tdelete(s.where, x)\n\treturn true\n}\n\nfunc (s *RandomizedSet) GetRandom() int { return s.items[rand.Intn(len(s.items))] }"
+    },
+    "driver": {
+     "python": "s = RandomizedSet()\nprint(str(s.insert(1)).lower(), str(s.remove(2)).lower(), str(s.insert(2)).lower())\nprint(\"ok\" if s.get_random() in (1, 2) else \"bad\")\nprint(str(s.remove(1)).lower(), str(s.insert(2)).lower())\nprint(s.get_random())\nprint(str(s.remove(2)).lower(), str(s.insert(7)).lower(), s.get_random())",
+     "cpp": "RandomizedSet s;\ncout << boolalpha << s.insert(1) << \" \" << s.remove(2) << \" \" << s.insert(2) << \"\\n\";\nint r = s.getRandom();\ncout << (r == 1 || r == 2 ? \"ok\" : \"bad\") << \"\\n\";\ncout << s.remove(1) << \" \" << s.insert(2) << \"\\n\";\ncout << s.getRandom() << \"\\n\";\ncout << s.remove(2) << \" \" << s.insert(7) << \" \" << s.getRandom() << \"\\n\";",
+     "java": "RandomizedSet s = new RandomizedSet();\nshow(s.insert(1) + \" \" + s.remove(2) + \" \" + s.insert(2));\nint r = s.getRandom();\nshow(r == 1 || r == 2 ? \"ok\" : \"bad\");\nshow(s.remove(1) + \" \" + s.insert(2));\nshow(s.getRandom());\nshow(s.remove(2) + \" \" + s.insert(7) + \" \" + s.getRandom());",
+     "go": "s := NewRandomizedSet()\nfmt.Println(s.Insert(1), s.Remove(2), s.Insert(2))\nif r := s.GetRandom(); r == 1 || r == 2 {\n    fmt.Println(\"ok\")\n} else {\n    fmt.Println(\"bad\")\n}\nfmt.Println(s.Remove(1), s.Insert(2))\nfmt.Println(s.GetRandom())\nfmt.Println(s.Remove(2), s.Insert(7), s.GetRandom())",
+     "expected": "true false true\nok\ntrue false\n2\ntrue true 7"
+    }
+   }
+  ]
+ },
+ "design-trie-serialization": {
+  "variants": [
+   {
+    "id": "preorder-codec",
+    "pattern": {
+     "zh": "前序 + 空结点标记的序列化",
+     "en": "Preorder with null markers for serialization"
+    },
+    "when": {
+     "zh": "把树存成字符串再还原（序列化、比较子树结构、去重子树）：前序遍历，空孩子写 #，逗号分隔；还原时按同样的前序顺序一个个读，读到 # 就返回空。只有前序加空标记就能唯一确定一棵树。LC 297 二叉树的序列化与反序列化；BST 可以省掉 #，见 LC 449。",
+     "en": "To store a tree as a string and rebuild it (serialization, comparing or de-duplicating subtree shapes): walk in preorder, write # for a missing child and separate with commas; rebuild by reading tokens back in the same preorder, returning null at each #. Preorder plus null markers pins the tree down uniquely. LC 297 (Serialize and Deserialize Binary Tree); a BST can drop the markers, as in LC 449."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(n)",
+     "en": "O(n) time · O(n) space"
+    },
+    "code": {
+     "python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\ndef serialize(root) -> str:\n    \"\"\"Preorder with '#' for each missing child, comma-separated (LC 297).\"\"\"\n    out = []\n\n    def walk(node) -> None:\n        if not node:\n            out.append(\"#\")\n            return\n        out.append(str(node.val))\n        walk(node.left)\n        walk(node.right)\n\n    walk(root)\n    return \",\".join(out)\n\n\ndef deserialize(data: str):\n    \"\"\"The tree serialize() wrote: the tokens are read back in the same preorder.\"\"\"\n    tokens = iter(data.split(\",\"))\n\n    def build():\n        t = next(tokens)\n        if t == \"#\":\n            return None\n        node = TreeNode(int(t))\n        node.left = build()  # left before right, as they were written\n        node.right = build()\n        return node\n\n    return build()",
+     "cpp": "struct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int v, TreeNode* l = nullptr, TreeNode* r = nullptr) : val(v), left(l), right(r) {}\n};\n\n// Preorder with '#' for each missing child, comma-separated (LC 297).\nstring serialize(TreeNode* root) {\n    if (!root) return \"#\";\n    return to_string(root->val) + \",\" + serialize(root->left) + \",\" + serialize(root->right);\n}\n\n// The tree serialize() wrote: the tokens are read back in the same preorder.\nTreeNode* deserialize(const string& data) {\n    size_t pos = 0;\n    function<TreeNode*()> build = [&]() -> TreeNode* {\n        size_t end = data.find(',', pos);\n        if (end == string::npos) end = data.size();\n        string t = data.substr(pos, end - pos);\n        pos = end + 1;\n        if (t == \"#\") return nullptr;\n        TreeNode* node = new TreeNode(stoi(t));\n        node->left = build();  // left before right, as they were written\n        node->right = build();\n        return node;\n    };\n    return build();\n}",
+     "java": "class TreeNode {\n    int val;\n    TreeNode left, right;\n\n    TreeNode(int val) {\n        this.val = val;\n    }\n\n    TreeNode(int val, TreeNode left, TreeNode right) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nclass Codec {\n    private String[] tokens;\n    private int next;\n\n    // Preorder with '#' for each missing child, comma-separated (LC 297).\n    String serialize(TreeNode root) {\n        if (root == null) return \"#\";\n        return root.val + \",\" + serialize(root.left) + \",\" + serialize(root.right);\n    }\n\n    // The tree serialize() wrote: the tokens are read back in the same preorder.\n    TreeNode deserialize(String data) {\n        tokens = data.split(\",\");\n        next = 0;\n        return build();\n    }\n\n    private TreeNode build() {\n        String t = tokens[next++];\n        if (t.equals(\"#\")) return null;\n        TreeNode node = new TreeNode(Integer.parseInt(t));\n        node.left = build(); // left before right, as they were written\n        node.right = build();\n        return node;\n    }\n}",
+     "go": "import (\n\t\"strconv\"\n\t\"strings\"\n)\n\ntype TreeNode struct {\n\tVal         int\n\tLeft, Right *TreeNode\n}\n\n// serialize writes the tree in preorder with \"#\" for each missing child, comma-separated (LC 297).\nfunc serialize(root *TreeNode) string {\n\tif root == nil {\n\t\treturn \"#\"\n\t}\n\treturn strconv.Itoa(root.Val) + \",\" + serialize(root.Left) + \",\" + serialize(root.Right)\n}\n\n// deserialize rebuilds the tree serialize wrote, reading the tokens back in the same preorder.\nfunc deserialize(data string) *TreeNode {\n\ttokens := strings.Split(data, \",\")\n\tnext := 0\n\tvar build func() *TreeNode\n\tbuild = func() *TreeNode {\n\t\tt := tokens[next]\n\t\tnext++\n\t\tif t == \"#\" {\n\t\t\treturn nil\n\t\t}\n\t\tv, _ := strconv.Atoi(t)\n\t\tnode := &TreeNode{Val: v}\n\t\tnode.Left = build() // left before right, as they were written\n\t\tnode.Right = build()\n\t\treturn node\n\t}\n\treturn build()\n}"
+    },
+    "driver": {
+     "python": "trees = [TreeNode(1, TreeNode(2), TreeNode(3, TreeNode(4), TreeNode(5))), None, TreeNode(-7, None, TreeNode(10))]\nfor t in trees:\n    s = serialize(t)\n    print(s, str(serialize(deserialize(s)) == s).lower())",
+     "cpp": "for (TreeNode* t : {new TreeNode(1, new TreeNode(2), new TreeNode(3, new TreeNode(4), new TreeNode(5))), (TreeNode*)nullptr, new TreeNode(-7, nullptr, new TreeNode(10))}) {\n    string s = serialize(t);\n    cout << s << \" \" << boolalpha << (serialize(deserialize(s)) == s) << \"\\n\";\n}",
+     "java": "Codec c = new Codec();\nTreeNode[] trees = {new TreeNode(1, new TreeNode(2), new TreeNode(3, new TreeNode(4), new TreeNode(5))), null, new TreeNode(-7, null, new TreeNode(10))};\nfor (TreeNode t : trees) {\n    String s = c.serialize(t);\n    show(s + \" \" + c.serialize(c.deserialize(s)).equals(s));\n}",
+     "go": "trees := []*TreeNode{{1, &TreeNode{Val: 2}, &TreeNode{3, &TreeNode{Val: 4}, &TreeNode{Val: 5}}}, nil, {-7, nil, &TreeNode{Val: 10}}}\nfor _, t := range trees {\n    s := serialize(t)\n    fmt.Println(s, serialize(deserialize(s)) == s)\n}",
+     "expected": "1,2,#,#,3,4,#,#,5,#,# true\n# true\n-7,#,10,#,# true"
+    }
+   },
+   {
+    "id": "trie-dfs-one-change",
+    "pattern": {
+     "zh": "字典树上 DFS，带着「还能改几个字母」",
+     "en": "DFS over a trie carrying the changes left"
+    },
+    "when": {
+     "zh": "查询不是精确匹配，而是允许通配符或恰好改一个字母（LC 676 实现一个魔法字典、LC 211 支持 . 的单词查找）：在字典树上 DFS，每层按当前字母走对应孩子；字母不同时，只有还没用掉修改机会才能走别的孩子。走到单词结尾时要求刚好改过一次。",
+     "en": "When a lookup is not exact but allows wildcards or exactly one changed letter (LC 676, Implement Magic Dictionary; LC 211 with \".\"): DFS over the trie, following the child for the current letter, and step into a different child only while the one change is unused. At the end of the word, require exactly one change to have been made."
+    },
+    "complexity": {
+     "zh": "建树 O(总长度) · 查询最坏 O(26 × L)",
+     "en": "O(total length) build · O(26 × L) worst-case query"
+    },
+    "code": {
+     "python": "class MagicDictionary:\n    \"\"\"Does a word differ from some dictionary word in exactly one letter? (LC 676)\"\"\"\n\n    def __init__(self, words: list[str]):\n        self.root: dict = {}  # a trie of nested dicts; \"$\" marks the end of a word\n        for w in words:\n            node = self.root\n            for ch in w:\n                node = node.setdefault(ch, {})\n            node[\"$\"] = True\n\n    def search(self, word: str) -> bool:\n        def dfs(node: dict, i: int, changed: bool) -> bool:\n            if i == len(word):\n                return changed and \"$\" in node  # exactly one change, ending on a word\n            for ch, child in node.items():\n                if ch == \"$\":\n                    continue\n                if ch == word[i]:\n                    if dfs(child, i + 1, changed):\n                        return True\n                elif not changed and dfs(child, i + 1, True):  # spend the one change here\n                    return True\n            return False\n\n        return dfs(self.root, 0, False)",
+     "cpp": "// Does a word differ from some dictionary word in exactly one letter? (LC 676)\nclass MagicDictionary {\n    struct Node {\n        Node* next[26] = {};\n        bool end = false;  // a dictionary word ends here\n    };\n    Node root;\n\n    bool dfs(const Node* node, const string& word, size_t i, bool changed) const {\n        if (i == word.size()) return changed && node->end;  // exactly one change, ending on a word\n        for (int c = 0; c < 26; c++) {\n            const Node* child = node->next[c];\n            if (!child) continue;\n            if (c == word[i] - 'a') {\n                if (dfs(child, word, i + 1, changed)) return true;\n            } else if (!changed && dfs(child, word, i + 1, true)) {  // spend the one change here\n                return true;\n            }\n        }\n        return false;\n    }\n\npublic:\n    explicit MagicDictionary(const vector<string>& words) {\n        for (const string& w : words) {\n            Node* node = &root;\n            for (char ch : w) {\n                if (!node->next[ch - 'a']) node->next[ch - 'a'] = new Node();\n                node = node->next[ch - 'a'];\n            }\n            node->end = true;\n        }\n    }\n    bool search(const string& word) const { return dfs(&root, word, 0, false); }\n};",
+     "java": "// Does a word differ from some dictionary word in exactly one letter? (LC 676)\nclass MagicDictionary {\n    private static class Node {\n        final Node[] next = new Node[26];\n        boolean end; // a dictionary word ends here\n    }\n\n    private final Node root = new Node();\n\n    MagicDictionary(String[] words) {\n        for (String w : words) {\n            Node node = root;\n            for (char ch : w.toCharArray()) {\n                if (node.next[ch - 'a'] == null) node.next[ch - 'a'] = new Node();\n                node = node.next[ch - 'a'];\n            }\n            node.end = true;\n        }\n    }\n\n    boolean search(String word) {\n        return dfs(root, word, 0, false);\n    }\n\n    private boolean dfs(Node node, String word, int i, boolean changed) {\n        if (i == word.length()) return changed && node.end; // exactly one change, ending on a word\n        for (int c = 0; c < 26; c++) {\n            Node child = node.next[c];\n            if (child == null) continue;\n            if (c == word.charAt(i) - 'a') {\n                if (dfs(child, word, i + 1, changed)) return true;\n            } else if (!changed && dfs(child, word, i + 1, true)) { // spend the one change here\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+     "go": "type trieNode struct {\n\tnext [26]*trieNode\n\tend  bool // a dictionary word ends here\n}\n\n// MagicDictionary answers whether a word differs from some dictionary word in exactly one letter (LC 676).\ntype MagicDictionary struct {\n\troot *trieNode\n}\n\nfunc NewMagicDictionary(words []string) *MagicDictionary {\n\troot := &trieNode{}\n\tfor _, w := range words {\n\t\tnode := root\n\t\tfor i := 0; i < len(w); i++ {\n\t\t\tc := w[i] - 'a'\n\t\t\tif node.next[c] == nil {\n\t\t\t\tnode.next[c] = &trieNode{}\n\t\t\t}\n\t\t\tnode = node.next[c]\n\t\t}\n\t\tnode.end = true\n\t}\n\treturn &MagicDictionary{root}\n}\n\nfunc (d *MagicDictionary) Search(word string) bool {\n\tvar dfs func(node *trieNode, i int, changed bool) bool\n\tdfs = func(node *trieNode, i int, changed bool) bool {\n\t\tif i == len(word) {\n\t\t\treturn changed && node.end // exactly one change, ending on a word\n\t\t}\n\t\tfor c, child := range node.next {\n\t\t\tif child == nil {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tif byte(c) == word[i]-'a' {\n\t\t\t\tif dfs(child, i+1, changed) {\n\t\t\t\t\treturn true\n\t\t\t\t}\n\t\t\t} else if !changed && dfs(child, i+1, true) { // spend the one change here\n\t\t\t\treturn true\n\t\t\t}\n\t\t}\n\t\treturn false\n\t}\n\treturn dfs(d.root, 0, false)\n}"
+    },
+    "driver": {
+     "python": "d = MagicDictionary([\"hello\", \"leetcode\"])\nprint(*(str(d.search(w)).lower() for w in (\"hello\", \"hhllo\", \"hell\", \"leetcoded\")))\nprint(str(MagicDictionary([\"hello\", \"hallo\"]).search(\"hello\")).lower())",
+     "cpp": "MagicDictionary d({\"hello\", \"leetcode\"});\nvector<string> out;\nfor (string w : {\"hello\", \"hhllo\", \"hell\", \"leetcoded\"}) out.push_back(d.search(w) ? \"true\" : \"false\");\nshow(out);\ncout << boolalpha << MagicDictionary({\"hello\", \"hallo\"}).search(\"hello\") << \"\\n\";",
+     "java": "MagicDictionary d = new MagicDictionary(new String[] {\"hello\", \"leetcode\"});\nList<String> out = new ArrayList<>();\nfor (String w : new String[] {\"hello\", \"hhllo\", \"hell\", \"leetcoded\"}) out.add(String.valueOf(d.search(w)));\nshow(out);\nshow(new MagicDictionary(new String[] {\"hello\", \"hallo\"}).search(\"hello\"));",
+     "go": "d := NewMagicDictionary([]string{\"hello\", \"leetcode\"})\nvar out []bool\nfor _, w := range []string{\"hello\", \"hhllo\", \"hell\", \"leetcoded\"} {\n    out = append(out, d.Search(w))\n}\nshow(out)\nfmt.Println(NewMagicDictionary([]string{\"hello\", \"hallo\"}).Search(\"hello\"))",
+     "expected": "false true false false\ntrue"
+    }
+   }
+  ]
+ },
+ "bits-math": {
+  "variants": [
+   {
+    "id": "sieve",
+    "pattern": {
+     "zh": "埃氏筛：从 i² 开始划掉倍数",
+     "en": "Sieve of Eratosthenes: cross out multiples from i²"
+    },
+    "when": {
+     "zh": "要 1..n 里所有质数（计数、预处理最小质因子、质因数分解很多次）：每找到一个质数 i，就把 i², i² + i, … 都划掉；更小的倍数早被更小的质数划过了，所以从 i² 开始，外层也只到 √n。LC 204 计数质数；把布尔数组换成「最小质因子」数组就能 O(log n) 分解质因数。",
+     "en": "For every prime up to n (counting them, precomputing smallest prime factors, factorising many numbers): for each prime i, cross out i², i² + i, …; smaller multiples were already crossed out by smaller primes, so start at i², and the outer loop stops at √n. LC 204 (Count Primes); storing the smallest prime factor instead of a boolean factorises any number in O(log n)."
+    },
+    "complexity": {
+     "zh": "时间 O(n log log n) · 空间 O(n)",
+     "en": "O(n log log n) time · O(n) space"
+    },
+    "code": {
+     "python": "def count_primes(n: int) -> int:\n    \"\"\"Number of primes below n (LC 204).\"\"\"\n    if n < 3:\n        return 0\n    is_prime = [True] * n\n    is_prime[0] = is_prime[1] = False\n    i = 2\n    while i * i < n:\n        if is_prime[i]:\n            for j in range(i * i, n, i):  # smaller multiples are already crossed out\n                is_prime[j] = False\n        i += 1\n    return sum(is_prime)",
+     "cpp": "// Number of primes below n (LC 204).\nint countPrimes(int n) {\n    if (n < 3) return 0;\n    vector<bool> isPrime(n, true);\n    isPrime[0] = isPrime[1] = false;\n    for (long long i = 2; i * i < n; i++)\n        if (isPrime[i])\n            for (long long j = i * i; j < n; j += i) isPrime[j] = false;  // smaller multiples are already crossed out\n    return count(isPrime.begin(), isPrime.end(), true);\n}",
+     "java": "class Solution {\n    // Number of primes below n (LC 204).\n    int countPrimes(int n) {\n        if (n < 3) return 0;\n        boolean[] composite = new boolean[n]; // composite[k]: k has a smaller prime factor\n        int count = 0;\n        for (long i = 2; i < n; i++) {\n            if (composite[(int) i]) continue;\n            count++;\n            for (long j = i * i; j < n; j += i) composite[(int) j] = true; // smaller multiples are already crossed out\n        }\n        return count;\n    }\n}",
+     "go": "// countPrimes returns the number of primes below n (LC 204).\nfunc countPrimes(n int) int {\n\tif n < 3 {\n\t\treturn 0\n\t}\n\tcomposite := make([]bool, n) // composite[k]: k has a smaller prime factor\n\tcount := 0\n\tfor i := 2; i < n; i++ {\n\t\tif composite[i] {\n\t\t\tcontinue\n\t\t}\n\t\tcount++\n\t\tfor j := i * i; j < n; j += i { // smaller multiples are already crossed out\n\t\t\tcomposite[j] = true\n\t\t}\n\t}\n\treturn count\n}"
+    },
+    "driver": {
+     "python": "print(*(count_primes(n) for n in (10, 0, 1, 2, 3, 100, 1000000)))",
+     "cpp": "vector<int> out;\nfor (int n : {10, 0, 1, 2, 3, 100, 1000000}) out.push_back(countPrimes(n));\nshow(out);",
+     "java": "Solution s = new Solution();\nshow(Arrays.stream(new int[] {10, 0, 1, 2, 3, 100, 1000000}).map(s::countPrimes).toArray());",
+     "go": "var out []int\nfor _, n := range []int{10, 0, 1, 2, 3, 100, 1000000} {\n    out = append(out, countPrimes(n))\n}\nshow(out)",
+     "expected": "4 0 0 0 1 25 78498"
+    }
+   },
+   {
+    "id": "xor-lowbit-split",
+    "pattern": {
+     "zh": "异或抵消，再按最低不同位分组",
+     "en": "XOR to cancel pairs, then split by the lowest differing bit"
+    },
+    "when": {
+     "zh": "成对出现的数里找出只出现一次的那两个（LC 260）：全部异或，成对的抵消，剩下 a ^ b；它的最低位 1（x & -x）就是 a、b 不同的一位，按这一位把所有数分成两组，各自异或就得到 a 和 b。LC 136 只有一个时直接异或；LC 137 出现三次时按位计数模 3。",
+     "en": "To find the two values that appear once among pairs (LC 260): XOR everything so pairs cancel, leaving a ^ b. Its lowest set bit (x & -x) is a bit where a and b differ, so split all numbers by that bit and XOR each group to get a and b. LC 136 with one single value is a plain XOR; LC 137, with triples, counts each bit mod 3."
+    },
+    "complexity": {
+     "zh": "时间 O(n) · 空间 O(1)",
+     "en": "O(n) time · O(1) space"
+    },
+    "code": {
+     "python": "def single_numbers(nums: list[int]) -> list[int]:\n    \"\"\"The two values that appear once when every other value appears twice (LC 260), smaller first.\"\"\"\n    xor = 0\n    for x in nums:\n        xor ^= x  # pairs cancel: xor == a ^ b, nonzero because a != b\n    low = xor & -xor  # the lowest bit where a and b differ\n    a = b = 0\n    for x in nums:\n        if x & low:  # that bit splits a and b into different groups; pairs stay together\n            a ^= x\n        else:\n            b ^= x\n    return sorted([a, b])",
+     "cpp": "// The two values that appear once when every other value appears twice (LC 260), smaller first.\nvector<int> singleNumbers(const vector<int>& nums) {\n    unsigned xr = 0;\n    for (int x : nums) xr ^= x;  // pairs cancel: xr == a ^ b, nonzero because a != b\n    unsigned low = xr & (0u - xr);  // the lowest bit where a and b differ (unsigned: no overflow)\n    int a = 0, b = 0;\n    for (int x : nums) {\n        if (x & low) a ^= x;  // that bit splits a and b into different groups; pairs stay together\n        else b ^= x;\n    }\n    return {min(a, b), max(a, b)};\n}",
+     "java": "class Solution {\n    // The two values that appear once when every other value appears twice (LC 260), smaller first.\n    int[] singleNumbers(int[] nums) {\n        int xor = 0;\n        for (int x : nums) xor ^= x; // pairs cancel: xor == a ^ b, nonzero because a != b\n        int low = xor & -xor; // the lowest bit where a and b differ\n        int a = 0, b = 0;\n        for (int x : nums) {\n            if ((x & low) != 0) a ^= x; // that bit splits a and b into different groups; pairs stay together\n            else b ^= x;\n        }\n        return new int[] {Math.min(a, b), Math.max(a, b)};\n    }\n}",
+     "go": "// singleNumbers returns the two values that appear once when every other value appears twice, smaller first.\nfunc singleNumbers(nums []int) []int {\n\txor := 0\n\tfor _, x := range nums {\n\t\txor ^= x // pairs cancel: xor == a ^ b, nonzero because a != b\n\t}\n\tlow := xor & -xor // the lowest bit where a and b differ\n\ta, b := 0, 0\n\tfor _, x := range nums {\n\t\tif x&low != 0 { // that bit splits a and b into different groups; pairs stay together\n\t\t\ta ^= x\n\t\t} else {\n\t\t\tb ^= x\n\t\t}\n\t}\n\treturn []int{min(a, b), max(a, b)}\n}"
+    },
+    "driver": {
+     "python": "for nums in ([1, 2, 1, 3, 2, 5], [-1, 0], [0, 1], [4, -8, 4, 6, 9, 9]):\n    print(*single_numbers(nums))",
+     "cpp": "for (auto& nums : vector<vector<int>>{{1, 2, 1, 3, 2, 5}, {-1, 0}, {0, 1}, {4, -8, 4, 6, 9, 9}}) show(singleNumbers(nums));",
+     "java": "Solution s = new Solution();\nfor (int[] nums : new int[][] {{1, 2, 1, 3, 2, 5}, {-1, 0}, {0, 1}, {4, -8, 4, 6, 9, 9}}) show(s.singleNumbers(nums));",
+     "go": "for _, nums := range [][]int{{1, 2, 1, 3, 2, 5}, {-1, 0}, {0, 1}, {4, -8, 4, 6, 9, 9}} {\n    show(singleNumbers(nums))\n}",
+     "expected": "3 5\n-1 0\n0 1\n-8 6"
+    }
+   }
+  ]
  }
 }
