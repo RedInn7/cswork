@@ -192,11 +192,6 @@ export function NegotiationScripts({ zh, settings }: { zh: boolean; settings: Re
               );
             })}
           </ol>
-          <p>
-            <a href="/english/recruiter">
-              {t('练习和招聘方谈时间线与 offer 的英文表达 →', 'Practice the English for timelines and offers with recruiters →')}
-            </a>
-          </p>
           <div className="resume-actions">
             <button type="button" onClick={() => open(script.id)}>
               {t('重来', 'Start over')}

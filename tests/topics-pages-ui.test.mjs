@@ -321,7 +321,7 @@ test('the glossary page: one heading, a DefinedTermSet of every term, anchors an
     // No speech on the server: the listen buttons appear only where the browser can speak.
     assert.equal(doc.querySelector('.glossary-listen'), null);
     assert.equal(doc.querySelectorAll('.glossary-actions button').length, GLOSSARY.length);
-    assert.ok(doc.querySelector('a[href="/english"]'), 'interview phrases live in /english');
+    assert.ok(doc.querySelector('.glossary-more a[href="/topics/print"]'));
     const sections = [...doc.querySelectorAll('section.glossary-group')];
     assert.equal(sections.length, 7);
     assert.ok(sections.every((s) => doc.getElementById(s.getAttribute('aria-labelledby'))));

@@ -1,4 +1,3 @@
-import { englishUnits } from '@/lib/interview-english';
 import { SITEMAP_STATIC_ENTRIES, type SitemapEntry } from '@/lib/seo';
 import { learnPaths } from './beginner-courses';
 import { h1bPaths } from './h1b';
@@ -19,6 +18,4 @@ export const sitemapStatics = (): SitemapEntry[] => [
   ...learnPaths(),
   ...h1bPaths(),
   ...projectPaths(),
-  { path: '/english' },
-  ...englishUnits.map((unit) => ({ path: `/english/${unit.slug}` })),
 ];
