@@ -11,4 +11,4 @@ export const plain = (max: number, min = 1) =>
     .trim()
     .min(min)
     .max(max)
-    .refine((s) => !/[\p{C}ᅟᅠㅤﾠ⠀]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
+    .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
