@@ -4,7 +4,6 @@ import { ProjectProgress } from '@/components/project-progress';
 import { ROLES, isRole } from '@/lib/content/role-paths';
 import { LEVEL_NAMES } from '@/lib/resume-projects';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
-import { aiEnabled } from '@/lib/server/ai-tutor';
 import { requestLocale } from '@/lib/server/locale';
 import { resumeProject, type ResumeProject } from '@/lib/server/resume-projects';
 import { GuideMarkdown } from '../../guide/markdown';
@@ -132,13 +131,6 @@ export default async function ProjectPage({ params }: Props) {
             <li key={q.en}>{zh ? q.zh : q.en}</li>
           ))}
         </ol>
-        {aiEnabled() && (
-          <p>
-            <a href="/?view=mock-interview&template=project">
-              {t('做完以后，让 AI 面试官按你的简历项目深挖一轮', 'Once it is built, let the AI interviewer dig into it in a resume project round')}
-            </a>
-          </p>
-        )}
       </div>
     </article>
   );
