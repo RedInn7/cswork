@@ -105,7 +105,7 @@ function percent(r: R): Draft {
       wrong: [a + b, -net, net + (net >= 0 ? 5 : -5), a - b, net - 10].map(change),
       explain: [
         `连续变化要相乘：${mul(a)} × ${mul(b)} = ${mul(net)}，即${change(net).t[0]}。也可以用 a + b + ab/100 = ${a} + (${b}) + (${f((a * b) / 100)}) = ${f(net)}。直接相加（${a + b}%）是常见错误：第二次变化的基数已经变了。`,
-        `Successive changes multiply: ${mul(a)} × ${mul(b)} = ${mul(net)}, a ${change(net).t[1].toLowerCase()}. The shortcut a + b + ab/100 gives ${a} + (${b}) + (${f((a * b) / 100)}) = ${f(net)}. Simply adding them (${a + b}%) is the usual mistake: the second change applies to a new base.`,
+        `Successive changes multiply: ${mul(a)} × ${mul(b)} = ${mul(net)} (${change(net).t[1].toLowerCase()}). The shortcut a + b + ab/100 gives ${a} + (${b}) + (${f((a * b) / 100)}) = ${f(net)}. Simply adding them (${a + b}%) is the usual mistake: the second change applies to a new base.`,
       ],
     };
   }
@@ -163,7 +163,7 @@ function profit(r: R): Draft {
       wrong: [m - d, -net, (m * (100 - d)) / 100, net + 5, net - 5].map((v) => profitLoss(like(v, net))),
       explain: [
         `售价 = 成本 × ${mul(m)} × ${mul(-d)} = 成本 × ${mul(net)}，所以${profitLoss(net).t[0]}。不能用 ${m}% − ${d}%：折扣是按标价算的，不是按成本。`,
-        `Selling price = cost × ${mul(m)} × ${mul(-d)} = cost × ${mul(net)}: a ${profitLoss(net).t[1].toLowerCase()}. ${m}% − ${d}% is wrong because the discount comes off the marked price, not the cost.`,
+        `Selling price = cost × ${mul(m)} × ${mul(-d)} = cost × ${mul(net)} (${profitLoss(net).t[1].toLowerCase()}). ${m}% − ${d}% is wrong because the discount comes off the marked price, not the cost.`,
       ],
     };
   }
@@ -363,11 +363,11 @@ function speed(r: R): Draft | null {
       q: pole
         ? [
             `一列长 ${len} 米的火车以每小时 ${v} 千米的速度行驶，经过一根电线杆要几秒？`,
-            `A ${len} m train runs at ${v} km/h. How many seconds does it take to pass a pole?`,
+            `A train ${len} m long runs at ${v} km/h. How many seconds does it take to pass a pole?`,
           ]
         : [
             `一列长 ${len} 米的火车以每小时 ${v} 千米的速度通过一座长 ${platform} 米的站台，从车头进站到车尾出站要几秒？`,
-            `A ${len} m train running at ${v} km/h passes a ${platform} m platform. How many seconds from its front entering to its back leaving?`,
+            `A train ${len} m long running at ${v} km/h passes a platform ${platform} m long. How many seconds from its front entering to its back leaving?`,
           ],
       right: secs(t),
       wrong: (pole ? [len / v, 2 * t, t + 3, t - 3] : [len / ms, total / v, platform / ms, t + 2, t - 2])

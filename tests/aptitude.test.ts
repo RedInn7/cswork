@@ -54,6 +54,8 @@ void test('every kind: same seed, same question; four distinct choices in both l
         // Answers (and the rest) are whole or one decimal.
         for (const c of q[lang].choices) assert.doesNotMatch(c, /\d\.\d\d/, `${id}: ${c}`);
       }
+      // No 'a' before a number read with a vowel sound (8, 11, 18, 80…) or before 'no change'.
+      assert.doesNotMatch(`${q.en.q} ${q.en.explain}`, /\b[Aa] (?:8|1[18](?!\d)|no\b)/, id);
       if (q.fig && q.fig.kind !== 'bars') assert.equal(q.fig.choices.length, 4, id);
     }
   }
@@ -119,8 +121,8 @@ function solve(q: AptQuestion): string {
   if ((m = /^Pipe A fills a tank in (\d+) hours; pipe B empties it in (\d+) hours/.exec(s))) return `${checked((+m[1] * +m[2]) / (+m[2] - +m[1]))} hours`;
   if ((m = /at (\d+) km\/h and comes back the same way at (\d+) km\/h/.exec(s))) return `${checked((2 * +m[1] * +m[2]) / (+m[1] + +m[2]))} km/h`;
   const ms = (kmh: number) => (kmh * 1000) / 3600;
-  if ((m = /^A (\d+) m train runs at (\d+) km\/h\. How many seconds does it take to pass a pole/.exec(s))) return `${checked(+m[1] / ms(+m[2]))} s`;
-  if ((m = /^A (\d+) m train running at (\d+) km\/h passes a (\d+) m platform/.exec(s))) return `${checked((+m[1] + +m[3]) / ms(+m[2]))} s`;
+  if ((m = /^A train (\d+) m long runs at (\d+) km\/h\. How many seconds does it take to pass a pole/.exec(s))) return `${checked(+m[1] / ms(+m[2]))} s`;
+  if ((m = /^A train (\d+) m long running at (\d+) km\/h passes a platform (\d+) m long/.exec(s))) return `${checked((+m[1] + +m[3]) / ms(+m[2]))} s`;
   if ((m = /^Two trains, (\d+) m and (\d+) m long, run towards each other at (\d+) km\/h and (\d+) km\/h/.exec(s)))
     return `${checked((+m[1] + +m[2]) / ms(+m[3] + +m[4]))} s`;
   if ((m = /one (\d+) m long at (\d+) km\/h, the other (\d+) m long at (\d+) km\/h/.exec(s)))
