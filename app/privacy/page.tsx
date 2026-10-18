@@ -9,13 +9,13 @@ export async function generateMetadata(): Promise<Metadata> {
     ? seoMetadata({
         title: '隐私说明 · cswork',
         description:
-          '了解 cswork 如何处理课程账户、学习记录、私密工单与支付信息，以及如何联系我们提出数据删除请求。',
+          '了解 cswork 如何处理课程账户、学习记录与支付信息，以及如何联系我们提出数据删除请求。',
         path: '/privacy',
       })
     : seoMetadata({
         title: 'Privacy notice · cswork',
         description:
-          'Learn how cswork handles course accounts, learning records, private tickets, and payment information, and how to contact us to request data deletion.',
+          'Learn how cswork handles course accounts, learning records, and payment information, and how to contact us to request data deletion.',
         path: '/privacy',
       });
 }
