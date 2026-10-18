@@ -66,6 +66,18 @@ test('the guide names no employer and quotes no salary figure', () => {
   assert.ok(GUIDE_BODIES.visa.en.startsWith('**This is general information, not legal advice'));
 });
 
+test('the practice chapter states the assisted-solve rule the code applies', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const src = (p) => readFile(new URL(`../${p}`, import.meta.url), 'utf8');
+  // Hint 1 is free; from hint 2, and with the editorial or the AI tutor, a solve is assisted.
+  assert.match(await src('components/hint-ladder.tsx'), /if \(next >= 2 && userId !== 'guest'\)/);
+  assert.match(await src('lib/server/practice-aids.ts'), /MAX\(a\.kind IN \('ai','editorial'\)\) AS solution/);
+  const { zh, en } = GUIDE_BODIES.practice;
+  for (const phrase of ['第 2 条或第 3 条提示', '题解', 'AI 辅导', '第 1 条提示只指方向，不算借助']) assert.ok(zh.includes(phrase), phrase);
+  for (const phrase of ['hint 2 or 3', 'editorial', 'AI tutor', 'hint 1 only points a direction and does not count'])
+    assert.ok(en.includes(phrase), phrase);
+});
+
 test('the index lists every chapter, the season and the resume review, in both languages', () => {
   for (const zh of [true, false]) {
     const doc = render(createElement(GuideIndexView, { zh }));

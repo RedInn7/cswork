@@ -210,7 +210,7 @@ Requests to complete strangers work far less often. A short, specific message be
 
 ## 提示一次只升一级
 500 路的每道题都有三条提示，由浅到深：
-- 第 1 条随时能看，一般只指个方向；
+- 第 1 条随时能看，一般只指个方向，看它不影响复习安排；
 - 第 2 条在一次正式提交没通过、或者在这道题上花满 10 分钟后解锁；
 - 第 3 条在两次正式提交没通过后解锁，通常已经很接近完整思路。
 
@@ -225,7 +225,7 @@ Requests to complete strangers work far less often. A short, specific message be
 比赛或模拟结束后，把没做出来的题按这三步补完，这就是补题（upsolve）。补一道题，常常比多做一道新题学到的更多。
 
 ## 独立做出和借助提示的区别
-系统会记下每道题是怎么通过的：只要用过提示或看过题解，就算「借助提示」通过。
+系统会记下每道题是怎么通过的：通过之前看过第 2 条或第 3 条提示、打开过题解，或者问过 AI 辅导（只让它讲解题意不算），就算「借助提示」通过；第 1 条提示只指方向，不算借助。
 - 独立通过的题按 3、7、21、60 天的间隔回来复习；
 - 借助提示通过的题，第一次复习提前到 1 天后，之后再走同样的间隔，所以要多复习一次才算掌握。
 
@@ -272,7 +272,7 @@ In an interview you explain while you code. When you can't find the English word
 
 ## Climb the hints one step at a time
 Every Line 500 problem has three hints, from light to strong:
-- hint 1 is open at any time and usually just points a direction;
+- hint 1 is open at any time, usually just points a direction and doesn't change your review schedule;
 - hint 2 unlocks after one failed submission or after 10 minutes on the problem;
 - hint 3 unlocks after two failed submissions and is usually close to the full idea.
 
@@ -287,7 +287,7 @@ If you have read all three hints and thought hard and still have no idea, read t
 After a contest or a mock, finish the problems you missed the same way. That is upsolving, and one upsolved problem often teaches more than one more new problem.
 
 ## Solved alone or with help
-CSWork records how each problem was solved: if you opened a hint or read the editorial, it counts as solved with help.
+CSWork records how each problem was solved: if you opened hint 2 or 3, read the editorial or asked the AI tutor before solving it (having it explain the statement doesn't count), it counts as solved with help; hint 1 only points a direction and does not count.
 - Problems solved alone come back for review after 3, 7, 21 and 60 days.
 - Problems solved with help come back after one day first and then follow the same steps, so mastering them takes one review more.
 
