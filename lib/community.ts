@@ -57,7 +57,10 @@ export const REPORTS_HIDE = 3;
  * readers cannot take the post down again. Only reports made after that decision count.
  */
 export const REPORT_CLEARED = 'cleared';
-/** Days a study group chat message (lib/server/study-groups.ts) is kept; the privacy page says so. */
+/**
+ * Days a study group chat message is kept. Study groups are gone, but rows already written keep
+ * expiring (lib/server/http.ts) as the privacy page promised.
+ */
 export const CHAT_RETENTION_DAYS = 180;
 /** Days a direct message (lib/server/direct-messages.ts) is kept; the privacy page says so. */
 export const DM_RETENTION_DAYS = 365;

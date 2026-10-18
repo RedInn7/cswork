@@ -1,11 +1,14 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer, index, primaryKey, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
-// Study group chat, work email badges and direct messages (lib/server/study-groups.ts,
-// work-verify.ts, direct-messages.ts). No foreign keys: release.sh only applies additive SQL;
-// retention (lib/server/http.ts), unblocking and removing a badge are runtime DELETEs.
+// Work email badges and direct messages (lib/server/work-verify.ts, direct-messages.ts). No
+// foreign keys: release.sh only applies additive SQL; retention (lib/server/http.ts), unblocking
+// and removing a badge are runtime DELETEs.
 
-/** hidden: 0 shown, 1 removed by its author, 2 hidden by a moderator. Reports: post_reports 'gmsg:<id>'. */
+/**
+ * Feature removed: study group chat. Unused but for the retention sweep in lib/server/http.ts,
+ * kept so drizzle-kit does not generate a DROP statement.
+ */
 export const studyGroupMessages = sqliteTable(
   'study_group_messages',
   {

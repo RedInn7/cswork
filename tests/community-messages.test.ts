@@ -10,7 +10,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
-// Study group chat, the work email badge, the referral board and direct messages.
+// The work email badge, the referral board and direct messages.
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-community-messages-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 process.env.CONTENT_DATABASE_PATH = resolve(dir, 'content.sqlite');
@@ -26,7 +26,7 @@ const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { publicProfile } = await import('../lib/server/learner-cloud');
 const { employerOf, FREE_MAIL } = await import('../lib/server/work-verify');
-const { chatText } = await import('../lib/server/study-groups');
+const { chatText } = await import('../lib/server/direct-messages');
 const domains = (await import('../lib/content/company-domains.json')).default.domains as Record<string, string[]>;
 
 const DAY = 86400000;
@@ -76,7 +76,6 @@ async function ok(p: Person | null, method: string, path: string, body?: unknown
 }
 const status = async (p: Person | null, method: string, path: string, body?: unknown) =>
   (await call(p, method, path, body)).status;
-const scalar = (sql: string, ...args: unknown[]) => sqlite().prepare(sql).pluck().get(...args);
 const profile = (user: string, handle: string) =>
   sqlite()
     .prepare(`INSERT INTO user_profiles(user_id,handle,visible,indexable,bio,created_at,updated_at) VALUES(?,?,1,0,'',1,1)`)
@@ -100,64 +99,6 @@ after(() => {
   server.close();
   sqlite().close();
   rmSync(dir, { recursive: true, force: true });
-});
-
-void test('group chat: members only, retention, unsay, reports take a message down', async () => {
-  // Past retention: the first rate-limited request of the process sweeps it.
-  sqlite()
-    .prepare(`INSERT INTO study_group_messages(id,group_id,user_id,body,hidden,created_at) VALUES('old','x','y','old',0,?)`)
-    .run(Date.now() - 181 * DAY);
-  const group = await ok(owner, 'POST', 'groups', { name: 'Chatty', displayName: 'Cap' });
-  assert.equal(scalar('SELECT COUNT(*) FROM study_group_messages'), 0, 'old chat swept');
-  for (const [p, name] of [[amy, 'Amy'], [bob, 'Bob'], [cat, 'Cat']] as const)
-    await ok(p, 'POST', 'groups/join', { code: group.inviteCode, displayName: name });
-  const path = `groups/${group.id}/messages`;
-  assert.equal(await status(stranger, 'GET', path), 404);
-  assert.equal(await status(stranger, 'POST', path, { body: 'hi' }), 404);
-  assert.equal(await status(person('m-amy', { verified: false }), 'POST', path, { body: 'hi' }), 403);
-  assert.equal(await status(amy, 'POST', path, { body: 'x'.repeat(2001) }), 400);
-  assert.equal(await status(amy, 'POST', path, { body: 'a‮b' }), 400);
-  // Joined emoji and tab-indented code are ordinary chat; joiners alone are not.
-  for (const body of ['👩‍💻 🤷‍♂️ ❤️‍🔥', 'for x in y:\n\tprint(x)', 'می‌خواهم']) assert.ok(chatText.safeParse(body).success, body);
-  assert.equal(chatText.safeParse('\u200d\u200c').success, false);
-  const first = await ok(amy, 'POST', path, { body: 'Line one\nline two' });
-  assert.deepEqual(
-    first.items.map((m: { name: string; body: string; mine: boolean }) => [m.name, m.body, m.mine]),
-    [['Amy', 'Line one\nline two', true]],
-  );
-  await new Promise((r) => setTimeout(r, 5));
-  const second = (await ok(bob, 'POST', path, { body: 'Hello Amy' })).items.at(-1);
-  // Members read the chat by display name only.
-  const read = await ok(owner, 'GET', path);
-  assert.equal(read.items.length, 2);
-  assert.ok(!JSON.stringify(read).includes('m-amy') && !JSON.stringify(read).includes('Real'));
-  // A teacher reads it only while a message in it is reported, and never writes.
-  assert.equal(await status(teacher, 'GET', path), 403);
-  assert.equal(await status(teacher, 'POST', path, { body: 'hi' }), 404);
-  // Only the author takes a message back.
-  assert.equal(await status(amy, 'POST', `groups/${group.id}/unsay`, { message: second.id }), 404);
-  const firstId = first.items[0].id;
-  await ok(amy, 'POST', `groups/${group.id}/unsay`, { message: firstId });
-  assert.deepEqual((await ok(owner, 'GET', path)).items.map((m: { id: string }) => m.id), [second.id]);
-  // Three members' reports take it down; the author cannot report their own.
-  assert.equal(await status(bob, 'POST', `groups/${group.id}/report`, { message: second.id, reason: 'spam' }), 400);
-  for (const p of [owner, amy]) await ok(p, 'POST', `groups/${group.id}/report`, { message: second.id, reason: 'offensive' });
-  assert.equal((await ok(bob, 'GET', path)).items.length, 1);
-  assert.equal((await ok(teacher, 'GET', path)).items.length, 1);
-  await ok(cat, 'POST', `groups/${group.id}/report`, { message: second.id, reason: 'offensive' });
-  assert.equal((await ok(bob, 'GET', path)).items.length, 0);
-  // The moderation queue lists it under its group; a teacher's restore clears the reports.
-  const queue = await ok(teacher, 'GET', 'posts/moderation');
-  const item = queue.reported.find((i: { kind: string }) => i.kind === 'gmsg');
-  assert.equal(item.title, 'Chatty');
-  assert.equal(item.excerpt, 'Hello Amy');
-  await ok(teacher, 'POST', `group-messages/${second.id}/dismiss`, {});
-  assert.equal((await ok(bob, 'GET', path)).items.length, 1);
-  assert.equal(await status(teacher, 'GET', path), 403, 'handled: closed to teachers again');
-  assert.equal(await status(amy, 'POST', `group-messages/${second.id}/hide`, {}), 403);
-  // Disbanding deletes the chat.
-  await ok(owner, 'POST', `groups/${group.id}/delete`, {});
-  assert.equal(scalar('SELECT COUNT(*) FROM study_group_messages WHERE group_id=?', group.id), 0);
 });
 
 void test('company domains: no free mail, only employers with a page', () => {
@@ -252,6 +193,11 @@ void test('badge placements, the referral board and direct messages', async () =
   assert.equal(opened.name, '@amy-g');
   assert.equal(opened.post.title, 'Google referrals');
   await ok(bob, 'POST', `dm/${opened.key}`, { body: 'Second line' });
+  assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'x'.repeat(2001) }), 400);
+  assert.equal(await status(bob, 'POST', `dm/${opened.key}`, { body: 'a‮b' }), 400);
+  // Joined emoji and tab-indented code are ordinary messages; joiners alone are not.
+  for (const body of ['👩‍💻 🤷‍♂️ ❤️‍🔥', 'for x in y:\n\tprint(x)', 'می‌خواهم']) assert.ok(chatText.safeParse(body).success, body);
+  assert.equal(chatText.safeParse('\u200d\u200c').success, false);
   const notes = sqlite().prepare('SELECT title,body,href FROM notifications WHERE user_id=?').all(amy.id) as {
     title: string;
     body: string;
