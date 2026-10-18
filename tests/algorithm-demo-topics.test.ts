@@ -257,7 +257,7 @@ test('hash table: every key lands in k mod buckets, and resizing keeps the load 
   const pick = rng(3);
   for (const keys of [[12, 7, 4, 15, 9, 20, 3], [1, 1, 1], [0, 4, 8, 12, 16, 20, 24, 28, 32, 36], Array.from({ length: 10 }, () => pick(100))]) {
     const trace = hashTableTrace(keys);
-    const buckets = last(trace).cells.map((c) => (c.value === '∅' ? [] : String(c.value).split('→').map(Number)));
+    const buckets = last(trace).cells.map((c): number[] => (c.value === '∅' ? [] : String(c.value).split('→').map(Number)));
     assert.deepEqual(buckets.flat().sort((a, b) => a - b), [...new Set(keys)].sort((a, b) => a - b));
     buckets.forEach((chain, i) => assert.ok(chain.every((k) => k % buckets.length === i), `${keys}: bucket ${i}`));
     assert.ok(new Set(keys).size / buckets.length <= 0.75);
@@ -309,10 +309,12 @@ test('BST: in-order stays sorted, and find / insert / all three delete cases mat
   const pick = rng(5);
   for (let round = 0; round < 30; round++) {
     const keys = Array.from({ length: 1 + pick(10) }, () => pick(30));
-    const ops: BstOp[] = Array.from({ length: 1 + pick(6) }, () => [(['find', 'insert', 'delete'] as const)[pick(3)], pick(30)]);
+    const ops = Array.from({ length: 1 + pick(6) }, (): BstOp => [(['find', 'insert', 'delete'] as const)[pick(3)], pick(30)]);
     const set = new Set(keys);
-    for (const [op, k] of ops) if (op === 'insert') set.add(k);
-      else if (op === 'delete') set.delete(k);
+    for (const [op, k] of ops) {
+      if (op === 'insert') set.add(k);
+      if (op === 'delete') set.delete(k);
+    }
     assert.equal(final(bstTrace(keys, ops))['中序'], [...set].sort((a, b) => a - b).join(' ') || '∅', `${keys}; ${ops}`);
   }
 });

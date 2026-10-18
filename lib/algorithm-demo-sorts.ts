@@ -299,13 +299,14 @@ export function sortTrace(algo: SortAlgo, values: number[], t: Tr): DemoTrace {
     [],
     true,
   );
-  const [zh, en, complexityZh, complexityEn] = NAMES[algo];
+  const [zh, en, complexityZh, complexityEn] = NAMES[algo],
+    queueLabel = QUEUES[algo];
   return {
     title: t(`${zh} · ${complexityZh}`, `${en} · ${complexityEn}`),
     question: t(`把 ${values.join(', ')} 从小到大排序`, `Sort ${values.join(', ')} in ascending order`),
     invariant: t(...INVARIANTS[algo]),
     columns: rows === 2 ? Math.max(1, n) : undefined,
-    queueLabel: QUEUES[algo] && t(...QUEUES[algo]),
+    queueLabel: queueLabel && t(...queueLabel),
     frames,
   };
 }
