@@ -31,10 +31,12 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms']);
+const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/jd', '/career/visa-timeline', '/career/offers', '/interview-platforms', '/?view=problems', '/?view=review-session', '/mock-oa', '/daily', '/placement', '/topics/glossary', '/topics/print']);
+// The chapters in reading order; a new chapter only changes this list.
+const SLUGS = ['timeline', 'resume', 'referrals', 'practice', 'online-assessment', 'phone-screen', 'onsite', 'offer', 'visa'];
 
 test('every chapter has a body in both languages, with matching sections and live site links', () => {
-  assert.equal(GUIDE_CHAPTERS.length, 8);
+  assert.deepEqual(GUIDE_CHAPTERS.map((c) => c.slug), SLUGS);
   assert.deepEqual(Object.keys(GUIDE_BODIES).sort(), GUIDE_CHAPTERS.map((c) => c.slug).sort());
   for (const { slug, title, summary } of GUIDE_CHAPTERS) {
     const { zh, en } = GUIDE_BODIES[slug];
@@ -86,8 +88,8 @@ test('the index lists every chapter, the season and the resume review, in both l
     );
     const [crumbs, list] = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent));
     assert.equal(crumbs['@type'], 'BreadcrumbList');
-    assert.equal(list.itemListElement.length, 8);
-    assert.ok(list.itemListElement[7].url === 'https://cswork.org/guide/visa');
+    assert.equal(list.itemListElement.length, SLUGS.length);
+    assert.ok(list.itemListElement.at(-1).url === 'https://cswork.org/guide/visa');
   }
 });
 
@@ -100,7 +102,7 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
     assert.ok(!!table.getAttribute('aria-label'));
     assert.equal(table.querySelectorAll('tbody tr').length, 6);
     assert.ok(doc.querySelector('.guide-body a[href="/guide/resume"]') !== null);
-    assert.equal(doc.querySelectorAll('.guide-toc a').length, 8);
+    assert.equal(doc.querySelectorAll('.guide-toc a').length, SLUGS.length);
     assert.ok(doc.querySelector('.guide-toc a[aria-current="page"]').getAttribute('href') === '/guide/timeline');
     assert.ok(doc.querySelector('a[rel="prev"]') === null);
     assert.ok(doc.querySelector('a[rel="next"]').getAttribute('href') === '/guide/resume');

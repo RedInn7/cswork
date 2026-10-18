@@ -34,6 +34,14 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     ],
   },
   {
+    slug: 'practice',
+    title: ['怎么练习：计时、提示、复习与模拟 OA', 'How to practise: timing, hints, reviews and mock OAs'],
+    summary: [
+      '一道题的节奏、提示怎么用、什么时候看题解和补题、复习自评、每天新题与复习的配比，以及每周一场模拟 OA。',
+      'The rhythm of one problem, using hints, when to read the editorial and upsolve, grading reviews, mixing new problems with reviews, and a weekly mock OA.',
+    ],
+  },
+  {
     slug: 'online-assessment',
     title: ['在线笔试 OA', 'Online assessments'],
     summary: [
