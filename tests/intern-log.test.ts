@@ -96,6 +96,8 @@ void test('self-review: the midpoint reads the first half only, measured results
     brag('2026-06-15', { wins: [{ x: 'Cut build time', y: 'by 40%', z: 'caching', project: 'Infra' }], next: 'n3' }),
     // Week 7 of 12: past the midpoint.
     brag('2026-07-13', { wins: [{ x: 'Late win', y: '3x', z: '', project: 'Search' }], feedback: 'late', next: 'n7' }),
+    // A log kept from last year's internship: outside this one's weeks.
+    brag('2025-07-14', { wins: [{ x: 'Old internship', y: '1', z: '', project: '' }], feedback: 'old', next: 'old' }),
   ];
   const mid = selfReview(meta, weeks, 'mid', false);
   assert.ok(mid.startsWith('# Midpoint self-review draft · SWE Intern at Acme\n'));
@@ -113,13 +115,14 @@ void test('self-review: the midpoint reads the first half only, measured results
   const final = selfReview(meta, weeks, 'final', true);
   assert.ok(final.startsWith('# 期末自评草稿 · SWE Intern，Acme\n'));
   assert.ok(final.includes('Late win') && final.includes('- **第 7 周**：n7') && final.includes('## 转正意向'));
+  assert.ok(!mid.includes('Old internship') && !final.includes('Old internship') && !final.includes('old'));
 
   const empty = selfReview({ ...meta, role: '', company: '' }, [], 'mid', false);
   assert.ok(empty.startsWith('# Midpoint self-review draft\n'));
   assert.equal(empty.match(/\(nothing logged yet\)/g)?.length, 4);
   // A single unnamed project needs no subheading.
   assert.ok(!selfReview(meta, [brag('2026-06-08', { wins: [{ x: 'Solo', y: '', z: '', project: '' }] })], 'mid', false).includes('###'));
-  assert.deepEqual(winLines(weeks), ['Built search serving 2k users, by a trie.', 'Cut build time by 40%, by caching.', 'Late win 3x.', 'Set up CI.']);
+  assert.deepEqual(winLines(meta, weeks), ['Built search serving 2k users, by a trie.', 'Cut build time by 40%, by caching.', 'Late win 3x.', 'Set up CI.']);
 });
 
 void test('resume bullets: duplicates skipped, the 3000-character cap honoured, a new entry made from the internship', () => {

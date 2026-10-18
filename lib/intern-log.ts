@@ -92,21 +92,26 @@ const ranked = (logged: readonly BragWeek[]) =>
     .sort((a, b) => a.monday.localeCompare(b.monday))
     .flatMap((w) => w.wins.filter((win) => win.x.trim()))
     .sort((a, b) => +!a.y.trim() - +!b.y.trim());
-/** The XYZ lines of every logged win, measured ones first, duplicates dropped. */
-export const winLines = (logged: readonly BragWeek[]) => [...new Set(ranked(logged).map((w) => xyzBullet(w).line))];
+/** The XYZ lines of every win logged in this internship's weeks, measured ones first, duplicates dropped. */
+export const winLines = (meta: InternMeta, logged: readonly BragWeek[]) => {
+  const own = logged.filter((w) => weekNo(meta.start, w.monday) >= 1 && weekNo(meta.start, w.monday) <= meta.weeks);
+  return [...new Set(ranked(own).map((w) => xyzBullet(w).line))];
+};
 
 const item = (text: string) => `- ${text.trim().replace(/\s*\n\s*/g, '\n  ')}`;
 /**
  * A self-review draft in Markdown: results (measured first, grouped by project), feedback, what was
  * learned, next steps (the two latest weeks' plans) and questions for the manager. The midpoint
- * draft reads only weeks up to ceil(weeks / 2); the final one adds a return-offer section to fill in.
+ * draft reads only weeks 1 to ceil(weeks / 2); the final one reads 1 to weeks and adds a
+ * return-offer section to fill in.
  */
 export function selfReview(meta: InternMeta, logged: readonly BragWeek[], kind: 'mid' | 'final', zh: boolean) {
   const t = (a: string, b: string) => (zh ? a : b);
   const half = Math.ceil(meta.weeks / 2);
+  // Weeks of this internship only: a log kept from an earlier one falls outside 1…weeks.
   const rows = [...logged]
     .map((w) => ({ ...w, no: weekNo(meta.start, w.monday) }))
-    .filter((w) => kind === 'final' || w.no <= half)
+    .filter((w) => w.no >= 1 && w.no <= (kind === 'mid' ? half : meta.weeks))
     .sort((a, b) => a.monday.localeCompare(b.monday));
   const none = t('（还没有记录）', '(nothing logged yet)');
   const where = [meta.role.trim(), meta.company.trim()].filter(Boolean).join(zh ? '，' : ' at ');
