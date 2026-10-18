@@ -50,6 +50,8 @@ async function until(done, what) {
   assert.ok(done(), `waited for ${what}`);
 }
 const editor = () => document.querySelector('[aria-label="test editor"]');
+/** The code as a learner writes it from memory: no comments, no docstrings. */
+const bare = (source) => source.replace(/  # .*$/gm, '').replace(/^ *""".*"""\n/gm, '');
 
 test('ordering: tap two lines to swap them until the template reads in order', async () => {
   const root = createRoot(document.getElementById('root'));
@@ -150,10 +152,11 @@ test('recall signed out: the page code blurs, the diff grades it, and a right an
   assert.equal(missing[0].querySelector('code').textContent.trim(), 'lo = mid + 1');
   assert.equal(missing[0].querySelector('.sr-only').textContent, 'Missing: ');
   assert.equal(localStorage.getItem(RECALL_KEY), null);
-  // Written out in full (comments aside): known, filed in this browser, timed.
+  // Written out in full (comments and docstrings aside): known, filed in this browser, timed.
   await act(async () => button('Start over').click());
   assert.equal(editor().value, '');
-  await act(async () => type(editor(), ref.replace(/  # .*$/gm, '')));
+  assert.notEqual(bare(ref), ref.replace(/  # .*$/gm, ''), 'the reference has docstrings to leave out');
+  await act(async () => type(editor(), bare(ref)));
   await act(() => new Promise((r) => setTimeout(r, 1100)));
   await act(async () => button('Compare lines').click());
   assert.match(said(), /Every line matches/);
@@ -173,6 +176,8 @@ test('recall signed in: ?drill=recall opens a variant, the judge runs its driver
   const variant = templates[1];
   window.history.replaceState(null, '', `/topics/${slug}?drill=recall&v=${variant.id}`);
   let stdout = variant.driver.expected;
+  let status = 'accepted';
+  let putFails = false;
   const runs = [];
   const puts = [];
   globalThis.fetch = async (url, init = {}) => {
@@ -181,9 +186,10 @@ test('recall signed in: ?drill=recall opens a variant, the judge runs its driver
       runs.push(JSON.parse(init.body));
       return reply({ id: 'run-1', status: 'queued' });
     }
-    if (url.startsWith('/api/oj/submissions/run-1?')) return reply({ id: 'run-1', status: 'accepted', mode: 'run', cases: [{ ordinal: 1, status: 'accepted', stdout: `${stdout}\n` }] });
+    if (url.startsWith('/api/oj/submissions/run-1?')) return reply({ id: 'run-1', status, mode: 'run', cases: [{ ordinal: 1, status: 'accepted', stdout: `${stdout}\n` }] });
     if (url.startsWith('/api/oj/notes?target=')) {
       if (init.method === 'PUT') {
+        if (putFails) return new Response('{}', { status: 500 });
         puts.push(JSON.parse(JSON.parse(init.body).body));
         return reply({ ok: true });
       }
@@ -196,24 +202,44 @@ test('recall signed in: ?drill=recall opens a variant, the judge runs its driver
   await until(editor, 'the editor');
   assert.equal(button('Write from memory').getAttribute('aria-pressed'), 'true');
   assert.equal(button(variant.label).getAttribute('aria-pressed'), 'true');
-  await act(async () => type(editor(), variant.code.python));
+  // Written without its comments and docstrings, it still matches the template line for line.
+  const written = bare(variant.code.python);
+  await act(async () => type(editor(), written));
   await act(async () => button('Run and check').click());
   await until(() => puts.length === 1, 'the account note');
   // The program sent is the variant plus its driver, as Python.
   assert.equal(runs[0].language, 'python');
-  assert.ok(runs[0].code.startsWith(variant.code.python) && runs[0].code.includes(variant.driver.python));
-  assert.match(said(), /Passed this stop's tests/);
+  assert.ok(runs[0].code.startsWith(written) && runs[0].code.includes(variant.driver.python));
+  assert.match(said(), /Passed this stop's tests\. Every line matches.*Saved as known/);
   assert.deepEqual(puts[0].items[`tpl:${slug}/${variant.id}`].slice(0, 1), [1]);
+  // The judge itself failed: not the learner's fault, so only the diff grades and the card keeps its box.
+  status = 'system_error';
+  await act(async () => button('Start over').click());
+  await act(async () => type(editor(), written));
+  await act(async () => button('Run and check').click());
+  await until(() => puts.length === 2, 'the diff-only grade');
+  assert.match(said(), /tests could not run, so only the line diff counts.*Saved as known/);
+  assert.equal(document.querySelector('.topics-recall-error').textContent, 'System Error');
+  assert.equal(document.querySelector('.topics-recall-output'), null);
+  assert.deepEqual(puts[1].items[`tpl:${slug}/${variant.id}`].slice(0, 1), [1]);
   // A wrong answer from the judge: shown against the expected output, back to box 0.
+  status = 'accepted';
   stdout = '0';
   await act(async () => button('Start over').click());
-  await act(async () => type(editor(), variant.code.python));
+  await act(async () => type(editor(), written));
   await act(async () => button('Run and check').click());
-  await until(() => puts.length === 2, 'the second grade');
+  await until(() => puts.length === 3, 'the third grade');
   assert.match(said(), /does not match/);
   assert.match(said(), /not known, back tomorrow/);
-  assert.deepEqual(puts[1].items[`tpl:${slug}/${variant.id}`].slice(0, 1), [0]);
+  assert.deepEqual(puts[2].items[`tpl:${slug}/${variant.id}`].slice(0, 1), [0]);
   assert.ok(document.querySelector('.topics-recall-output').textContent.includes(variant.driver.expected.split('\n')[0]));
+  // The account note cannot be written: says so instead of claiming it saved.
+  putFails = true;
+  await act(async () => button('Start over').click());
+  await act(async () => type(editor(), written));
+  await act(async () => button('Run and check').click());
+  await until(() => /Couldn't save/.test(said()), 'the failed save');
+  assert.doesNotMatch(said(), /saved as not known/);
   await act(async () => root.unmount());
   delete globalThis.fetch;
   window.history.replaceState(null, '', `/topics/${slug}`);
@@ -234,6 +260,7 @@ test('TemplateLangMemory opens the remembered language in every group and rememb
         createElement(TemplateLangMemory),
         ...group('topic-code'),
         createElement('details', { id: 'variant-two', key: 'v' }, createElement('summary', null, 'two'), ...group('topic-code-two')),
+        createElement('a', { href: '#variant-two', key: 'a' }, 'two'),
       ),
     ),
   );
@@ -249,11 +276,17 @@ test('TemplateLangMemory opens the remembered language in every group and rememb
   });
   assert.deepEqual(open(), ['java', 'java']);
   assert.equal(localStorage.getItem(CODE_LANG_KEY), 'java');
-  // A #variant- link opens that variant.
+  // A #variant- link opens that variant (jsdom fires hashchange a task later, as browsers do).
   await act(async () => {
+    const changed = new Promise((r) => window.addEventListener('hashchange', r, { once: true }));
     window.location.hash = '#variant-two';
-    window.dispatchEvent(new window.Event('hashchange'));
+    await changed;
   });
+  assert.ok(document.getElementById('variant-two').open);
+  // Closed again, then its link clicked once more: the hash does not change, the click opens it.
+  document.getElementById('variant-two').open = false;
+  await act(async () => section.querySelector('a[href="#variant-two"]').click());
+  assert.equal(window.location.hash, '#variant-two');
   assert.ok(document.getElementById('variant-two').open);
   await act(async () => root.unmount());
   localStorage.clear();

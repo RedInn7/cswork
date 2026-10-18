@@ -2,7 +2,7 @@
 import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react';
 import type { TemplateLang } from '@/lib/route-templates';
 import type { Driver } from '@/lib/route-template-drivers';
-import { activeStatuses, ojRequest, type OJSubmission } from '@/lib/oj-client';
+import { activeStatuses, ojRequest, verdict, type OJSubmission } from '@/lib/oj-client';
 import { mcqDay } from '@/lib/mock-oa';
 import { rateRecall, type RecallGrade } from '@/lib/recall';
 import {
@@ -48,6 +48,8 @@ function saveTime(key: string, ms: number) {
   }
   return all[key];
 }
+/** Runs that ended on the judge's side, not the code's: only the diff counts then. */
+const JUDGE_DOWN = new Set(['system_error', 'internal_error', 'cancelled', 'canceled', 'skipped']);
 const FILES: Record<TemplateLang, string> = { python: 'main.py', cpp: 'main.cpp', java: 'Main.java', go: 'main.go' };
 const clock = (ms: number) => {
   const s = Math.round(ms / 1000);
@@ -170,10 +172,11 @@ export function TemplateDrill({
     const exact = diff.every((line) => line.op === 'same');
     let judged: Judged | null = null;
     let error = '';
+    // Start over, another check or unmount aborts this one, while judging or saving.
+    const controller = new AbortController();
+    run.current?.abort();
+    run.current = controller;
     if (signedIn && written.trim()) {
-      const controller = new AbortController();
-      run.current?.abort();
-      run.current = controller;
       setRunning(true);
       setSaid(t('正在运行本站的测试…', "Running this stop's tests…"));
       try {
@@ -191,12 +194,14 @@ export function TemplateDrill({
           );
         const out = normalizeOutput(sub.cases?.[0]?.stdout ?? '');
         const compiled = sub.status !== 'compile_error';
-        judged = {
-          passed: compiled && out === current.driver.expected,
-          status: sub.status,
-          stdout: out,
-          detail: (compiled ? (sub.cases?.[0]?.stderr ?? '') : (sub.compileOutput ?? '')).slice(0, 2000),
-        };
+        if (JUDGE_DOWN.has(sub.status)) error = t(...verdict(sub.status));
+        else
+          judged = {
+            passed: compiled && out === current.driver.expected,
+            status: sub.status,
+            stdout: out,
+            detail: (compiled ? (sub.cases?.[0]?.stderr ?? '') : (sub.compileOutput ?? '')).slice(0, 2000),
+          };
       } catch (e) {
         if (controller.signal.aborted) return;
         // Not signed in after all, no verified email, no judge, offline: grade by the diff alone.
@@ -210,6 +215,10 @@ export function TemplateDrill({
     const times = right && ms > 0 ? saveTime(timeKey, ms) : null;
     setRecalled({ diff, judged, grade, ms, error });
     const missing = diff.filter((line) => line.op !== 'same').length;
+    const saved = grade
+      ? await updateRecall(signedIn, (queue) => rateRecall(queue, `tpl:${slug}/${current.id}`, `${title} · ${current.label}`, grade, mcqDay()))
+      : null;
+    if (controller.signal.aborted) return;
     setSaid(
       [
         judged
@@ -223,18 +232,19 @@ export function TemplateDrill({
             : t('登录并验证邮箱后可以跑测试；现在只按逐行对比判。', 'Sign in with a verified email to run the tests; for now only the line diff counts.'),
         exact ? t('和模板逐行一致。', 'Every line matches the template.') : t(`有 ${missing} 行和模板不同。`, `${missing} line${missing === 1 ? ' differs' : 's differ'} from the template.`),
         times ? t(`用时 ${clock(ms)}，最好 ${clock(times.best)}。`, `Time ${clock(ms)}, best ${clock(times.best)}.`) : '',
-        grade === 'know'
-          ? t('已记为「会了」，之后按间隔回来复习。', 'Saved as known; it comes back for spaced review.')
-          : grade === 'partial'
-            ? t('能跑通但写法和模板不同，记为「部分会」。', 'It works but differs from the template: saved as partly known.')
-            : grade === 'no'
-              ? t('没跑通，记为「不会」，明天再来默写。', 'It failed: saved as not known, back tomorrow.')
-              : t('没有记入复习。', 'Not added to your review queue.'),
+        grade && !saved
+          ? t('没能记入复习，请稍后再试。', "Couldn't save to your review queue; try again in a moment.")
+          : grade === 'know'
+            ? t('已记为「会了」，之后按间隔回来复习。', 'Saved as known; it comes back for spaced review.')
+            : grade === 'partial'
+              ? t('能跑通但写法和模板不同，记为「部分会」。', 'It works but differs from the template: saved as partly known.')
+              : grade === 'no'
+                ? t('没跑通，记为「不会」，明天再来默写。', 'It failed: saved as not known, back tomorrow.')
+                : t('没有记入复习。', 'Not added to your review queue.'),
       ]
         .filter(Boolean)
         .join(' '),
     );
-    if (grade) void updateRecall(signedIn, (queue) => rateRecall(queue, `tpl:${slug}/${current.id}`, `${title} · ${current.label}`, grade, mcqDay()));
   }
   const tap = (i: number) => {
     setChecked(false);
