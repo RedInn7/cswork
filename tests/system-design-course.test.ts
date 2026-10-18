@@ -275,6 +275,10 @@ void test('reading time: 400 Chinese characters, 200 English words or 15 lines o
   assert.equal(readMinutes('字'.repeat(2000)), 5);
   assert.equal(readMinutes(Array(1000).fill('word').join(' ')), 5);
   assert.equal(readMinutes(`Intro.\n\n\`\`\`python\n${'x = 1\n\n'.repeat(30)}\`\`\`\n`), 2);
+  // The same snippet in three more languages, as tabs: still read once.
+  const tabs = ['python', 'cpp', 'java', 'go'].map((lang) => `\`\`\`${lang}\n${'x = 1\n'.repeat(30)}\`\`\``).join('\n\n');
+  assert.equal(readMinutes(tabs), 2);
+  assert.equal(readMinutes(tabs.replace(/```cpp/, 'Text between.\n\n```cpp')), 4);
   assert.equal(readMinutes('## 标题\n\n很短。'), 1);
   // Mixed: Chinese prose with English identifiers counts both.
   assert.equal(readMinutes(`${'字'.repeat(800)} ${Array(200).fill('ParkingLot').join(' ')}`), 3);

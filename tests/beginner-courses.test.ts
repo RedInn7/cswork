@@ -12,6 +12,9 @@ import file from '../lib/content/beginner-courses.json';
 import contracts from '../lib/content/leetcode-contracts.json';
 import sqlTrack from '../lib/content/sql-track.json';
 import { curatedByNumber } from '../lib/ling-curated';
+import { isDemoKind } from '../lib/algorithm-demo';
+import { SORT_ALGOS } from '../lib/algorithm-demo-sorts';
+import { wholeProgram } from '../lib/course-snippet';
 import type { Person } from '../lib/server/auth';
 
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-beginner-'));
@@ -212,4 +215,43 @@ void test('reading every chapter of a course issues its certificate, titled and 
   assert.ok(id);
   const cert = certificateById(id, false)!;
   assert.deepEqual([cert.course, cert.lessons, cert.skill], ['Python for Coding Interviews', 8, false]);
+});
+
+void test('Big-O: every Python snippet has C++, Java and Go tabs, and every lesson animates its structure', () => {
+  const course = beginnerCourse('big-o')!;
+  const bad: string[] = [];
+  for (const chapter of course.chapters) {
+    const kinds: Record<string, string[]> = {};
+    for (const key of ['bodyZh', 'bodyEn'] as const) {
+      const body = chapter[key];
+      const at = `${chapter.slug}.${key}`;
+      // A python block, then cpp, java and go with only blank lines between: one tab group (lib/remark-code-tabs.ts).
+      const python = body.match(/^```python\n/gm)?.length ?? 0;
+      const grouped = body.match(/^```python\n[\s\S]*?^```\n\n```cpp\n[\s\S]*?^```\n\n```java\n[\s\S]*?^```\n\n```go\n[\s\S]*?^```$/gm)?.length ?? 0;
+      if (!python || grouped !== python) bad.push(`${at}: ${grouped} of ${python} python blocks have all three tabs`);
+      for (const language of ['cpp', 'java', 'go'])
+        if ((body.match(new RegExp(`^\`\`\`${language}\n`, 'gm'))?.length ?? 0) !== python) bad.push(`${at}: ${language} blocks`);
+      kinds[key] = [...body.matchAll(/^```algorithm-demo\n([^\n]*)\n```$/gm)].map((m) => m[1]);
+      if (!kinds[key].length) bad.push(`${at}: no demo`);
+      for (const kind of kinds[key]) if (!isDemoKind(kind)) bad.push(`${at}: unknown demo ${kind}`);
+    }
+    if (kinds.bodyZh.join() !== kinds.bodyEn.join()) bad.push(`${chapter.slug}: demos differ between languages`);
+    if (chapter.slug === 'sorting' && SORT_ALGOS.some((algo) => !kinds.bodyZh.includes(`sort-${algo}`))) bad.push('sorting: a sort is missing');
+    if (chapter.slug === 'complexity' && !kinds.bodyZh.includes('sort-insertion')) bad.push('complexity: no insertion sort');
+  }
+  assert.deepEqual(bad, []);
+});
+
+void test('wholeProgram wraps a snippet without a main and leaves whole programs and Python alone', () => {
+  assert.equal(wholeProgram('cpp', 'int f() { return 1; }\n'), '#include <bits/stdc++.h>\nusing namespace std;\n\nint f() { return 1; }\n\nint main() {}\n');
+  assert.equal(wholeProgram('cpp', 'int main() { return 0; }'), 'int main() { return 0; }');
+  assert.equal(
+    wholeProgram('java', 'import java.util.*;\n\nstatic int f(List<Integer> a) {\n    return a.size();\n}'),
+    'import java.util.*;\n\npublic class Main {\n    static int f(List<Integer> a) {\n        return a.size();\n    }\n\n    public static void main(String[] args) {}\n}\n',
+  );
+  const java = 'public class Main {\n    public static void main(String[] args) {}\n}';
+  assert.equal(wholeProgram('java', java), java);
+  assert.equal(wholeProgram('go', 'func f() int { return 1 }'), 'package main\n\nfunc f() int { return 1 }\n\nfunc main() {}\n');
+  assert.equal(wholeProgram('go', 'package main\n\nfunc main() {}'), 'package main\n\nfunc main() {}');
+  assert.equal(wholeProgram('python', 'def f(): pass'), 'def f(): pass');
 });
