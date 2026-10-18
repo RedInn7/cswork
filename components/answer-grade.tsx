@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useLocale, useT } from '@/lib/i18n';
 import { ojRequest } from '@/lib/oj-client';
@@ -23,10 +23,10 @@ const remaining = () =>
 /**
  * "AI feedback on my answer" (lib/server/ai-answer.ts) for a signed-in learner. Hidden until the
  * answer is long enough (`ready`) and the server says AI is on: `ai/usage` is asked once, then,
- * and answers 404 without a key. `request` builds the body at click time; `children` (extra
- * inputs) show beside the button. The feedback stays in this component, nothing is saved.
+ * and answers 404 without a key. `request` builds the body at click time. The feedback stays in
+ * this component, nothing is saved.
  */
-export function AnswerGrade({ ready, request, children }: { ready: boolean; request: () => object; children?: ReactNode }) {
+export function AnswerGrade({ ready, request }: { ready: boolean; request: () => object }) {
   const t = useT();
   const locale = useLocale();
   const id = useId();
@@ -62,10 +62,8 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
     }
   }
   if ((!ready && !feedback) || left === null || left === 'off') return null;
-  const star = feedback?.iVsWe !== undefined;
   return (
     <div className="ip-grade">
-      {children}
       <div className="ip-grade-go">
         <button type="button" className="rd-button is-quiet" disabled={busy || !ready || left === 0} onClick={() => void grade()}>
           <Sparkles size={14} aria-hidden="true" />{' '}
@@ -110,36 +108,6 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
               </ul>
             </div>
           )}
-          {star && (
-            <dl className="ip-star">
-              {(
-                [
-                  [feedback.specificity, '具体程度', 'Specificity'],
-                  [feedback.measurableResult, '可量化的结果', 'Measurable result'],
-                  [feedback.iVsWe, '“我”还是“我们”', '“I” or “we”'],
-                ] as const
-              ).map(
-                ([text, zh, en]) =>
-                  text && (
-                    <div key={en}>
-                      <dt>{t(zh, en)}</dt>
-                      <dd>{text}</dd>
-                    </div>
-                  ),
-              )}
-              <div>
-                <dt>{t('两分钟讲得完吗', 'Fits in two minutes?')}</dt>
-                <dd>
-                  {feedback.fitsTwoMinutes
-                    ? t('讲得完（按每分钟约 140 词估算）。', 'Yes, at about 140 words a minute.')
-                    : t(
-                        '超过两分钟：细节多的故事讲到三分钟内也可以，但先删背景，留住行动和结果。',
-                        'Over two minutes: up to three is fine for a detailed story, but trim the background first and keep the actions and the result.',
-                      )}
-                </dd>
-              </div>
-            </dl>
-          )}
           {feedback.tighter && (
             <div>
               <h4>{t('更紧凑的版本', 'A tighter version')}</h4>
@@ -147,15 +115,10 @@ export function AnswerGrade({ ready, request, children }: { ready: boolean; requ
             </div>
           )}
           <p className="ip-muted">
-            {star
-              ? t(
-                  'AI 点评可能有错；方括号里的 [X%] 是占位符，只填你能证实的数字。',
-                  'AI feedback can be wrong. Brackets such as [X%] are placeholders: fill in only numbers you can back up.',
-                )
-              : t(
-                  'AI 点评可能有错，以参考答案为准；方括号里的 [X%] 是占位符，只填你能证实的数字。',
-                  'AI feedback can be wrong; the reference answer has the last word. Brackets such as [X%] are placeholders: fill in only numbers you can back up.',
-                )}
+            {t(
+              'AI 点评可能有错，以参考答案为准；方括号里的 [X%] 是占位符，只填你能证实的数字。',
+              'AI feedback can be wrong; the reference answer has the last word. Brackets such as [X%] are placeholders: fill in only numbers you can back up.',
+            )}
           </p>
         </section>
       )}
