@@ -108,8 +108,10 @@ test('unknown demo identifiers are not allowed', () => {
 test('each custom-input placeholder parses back to the default demo, kind by kind', () => {
   const kinds = Object.keys(demoInputs) as DemoKind[];
   assert.deepEqual(kinds.sort(), [
-    'backtracking', 'binary-search', 'dfs', 'dp', 'dp-table', 'heap', 'monotonic-stack',
-    'sliding-window', 'topo-sort', 'trie', 'two-pointers',
+    'array-ops', 'backtracking', 'binary-search', 'bits', 'bst', 'dfs', 'dp', 'dp-table', 'hash-table', 'heap',
+    'interval-dp', 'interval-greedy', 'kmp', 'linked-list', 'lru-cache', 'monotonic-stack', 'n-queens', 'prefix-sum',
+    'sliding-window', 'sort-bubble', 'sort-counting', 'sort-heap', 'sort-insertion', 'sort-merge', 'sort-quick',
+    'sort-radix', 'sort-selection', 'stock-dp', 'topo-sort', 'tree-traversal', 'trie', 'two-pointers',
   ]);
   for (const kind of kinds) {
     const parsed = demoInputs[kind]!.parse(demoInputs[kind]!.placeholder);
@@ -117,7 +119,7 @@ test('each custom-input placeholder parses back to the default demo, kind by kin
     for (const english of [false, true])
       assert.deepEqual(createDemoTrace(kind, english, parsed.args), createDemoTrace(kind, english), kind);
   }
-  for (const kind of ['bfs', 'dijkstra', 'union-find'] as const) assert.equal(demoInputs[kind], undefined);
+  for (const kind of ['bfs', 'dijkstra', 'union-find', 'kruskal'] as const) assert.equal(demoInputs[kind], undefined);
 });
 
 test('custom inputs are size-limited and every rejection explains itself in both languages', () => {
@@ -174,6 +176,32 @@ test('custom inputs are size-limited and every rejection explains itself in both
     error('topo-sort', 'A>B A>C A>D A>E A>F B>C B>D B>E B>F C>D C>E'),
     'At most 10 edges',
   );
+  // The structure demos.
+  assert.equal(error('array-ops', '1 3 2; 4; 0'), 'The array must be sorted from small to large');
+  assert.equal(error('array-ops', '1 2; 4; 3'), 'The index to delete must be between 0 and 2');
+  assert.equal(error('hash-table', '1 -2'), 'Each number must be between 0 and 99');
+  assert.deepEqual(ok('linked-list', '5; 7 0; 1'), [[5], 7, 0, 1]);
+  assert.equal(error('linked-list', '1 2; 7; 0'), 'Insert takes two numbers: the value and the position');
+  assert.equal(error('linked-list', '1 2; 7 3; 0'), 'The insert position must be between 0 and 2');
+  assert.deepEqual(ok('tree-traversal', 'POST level'), [['post', 'level']]);
+  assert.equal(error('tree-traversal', 'pre pre'), 'Use pre, in, post or level, each at most once');
+  assert.deepEqual(ok('bst', '5 2; ?2 −5 +9'), [[5, 2], [['find', 2], ['delete', 5], ['insert', 9]]]);
+  assert.equal(error('bst', '5; *3'), '"*3": write ?6, +5 or -3');
+  assert.equal(error('n-queens', '7'), 'N must be between 1 and 6');
+  assert.equal(error('interval-dp', 'abcdefghi'), '1 to 8 letters or digits only');
+  assert.deepEqual(ok('lru-cache', '1; 3=4 3 5=-2'), [1, [[3, 4], [3], [5, -2]]]);
+  assert.equal(error('lru-cache', '5; 1'), 'The capacity must be between 1 and 4');
+  assert.equal(error('lru-cache', '2; 1:2'), '"1:2": write put as 1=5 and get as 1');
+  assert.deepEqual(ok('interval-greedy', '0-3 2-10'), [[[0, 3], [2, 10]]]);
+  assert.equal(error('interval-greedy', '4-4'), '"4-4": write 1-4 with start below end');
+  assert.deepEqual(ok('bits', '255'), [255]);
+  assert.equal(error('bits', '256'), 'Each number must be between 0 and 255');
+  assert.equal(error('kmp', 'ab; abc'), 'The pattern cannot be longer than the text');
+  assert.equal(error('kmp', 'abc; abcdefg'), 'The pattern is 1 to 6 letters a–z');
+  assert.equal(error('sort-counting', '1 10'), 'Each number must be between 0 and 9');
+  assert.equal(error('sort-counting', '1 -1'), 'Each number must be between 0 and 9');
+  assert.deepEqual(ok('sort-quick', '-99 0 99'), [[-99, 0, 99]]);
+  assert.equal(error('sort-radix', '100'), 'Each number must be between 0 and 99');
 });
 
 test('a custom input drives the trace from its first frame to its answer', () => {

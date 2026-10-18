@@ -1986,7 +1986,7 @@ export function bstTrace(
     ['insert', 5],
     ['delete', 1],
     ['delete', 14],
-    ['delete', 3],
+    ['delete', 8],
   ],
   t: Tr = zhText,
 ): DemoTrace {
@@ -2941,8 +2941,8 @@ const sortedAndTarget = (text: string) => {
 };
 /** Whole numbers from 0 to `limit`. */
 function naturals(text: string, max: number, limit = 99) {
-  const list = numbers(text, max, limit);
-  if (list.some((v) => v < 0)) fail(`每个数要在 0 到 ${limit} 之间`, `Each number must be between 0 and ${limit}`);
+  const list = numbers(text, max, Number.MAX_SAFE_INTEGER);
+  if (list.some((v) => v < 0 || v > limit)) fail(`每个数要在 0 到 ${limit} 之间`, `Each number must be between 0 and ${limit}`);
   return list;
 }
 function within(value: number, low: number, high: number, what: Pair) {
@@ -3048,7 +3048,7 @@ export const demoInputs: Partial<Record<DemoKind, DemoInput>> = {
       fail('只能写 pre、in、post、level，每种最多一次', 'Use pre, in, post or level, each at most once');
     return [list];
   }),
-  bst: input(['初始键; 操作（?查找 +插入 -删除）', 'Starting keys; operations (?find +insert -delete)'], '8 3 10 1 6 14 4 7 13; ?6 +5 -1 -14 -3', (text) => {
+  bst: input(['初始键; 操作（?查找 +插入 -删除）', 'Starting keys; operations (?find +insert -delete)'], '8 3 10 1 6 14 4 7 13; ?6 +5 -1 -14 -8', (text) => {
     const [keys, ops] = parts(text, 2);
     const list = naturals(keys, 10);
     const steps = tokens(ops.replace(/−/g, '-'));
