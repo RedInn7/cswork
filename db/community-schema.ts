@@ -1,14 +1,11 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer, index, primaryKey, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
-// Work email badges (lib/server/work-verify.ts), plus the tables of the removed study group chat and
-// direct messages, kept so drizzle-kit does not drop them. No foreign keys: release.sh only applies
-// additive SQL; retention (lib/server/http.ts) and removing a badge are runtime DELETEs.
+// Study group chat, work email badges and direct messages (lib/server/study-groups.ts,
+// work-verify.ts, direct-messages.ts). No foreign keys: release.sh only applies additive SQL;
+// retention (lib/server/http.ts), unblocking and removing a badge are runtime DELETEs.
 
-/**
- * Feature removed: study group chat. Unused but for the retention sweep in lib/server/http.ts,
- * kept so drizzle-kit does not generate a DROP statement.
- */
+/** hidden: 0 shown, 1 removed by its author, 2 hidden by a moderator. Reports: post_reports 'gmsg:<id>'. */
 export const studyGroupMessages = sqliteTable(
   'study_group_messages',
   {
@@ -43,15 +40,12 @@ export const workVerifications = sqliteTable(
     verifiedAt: integer('verified_at'),
     showProfile: integer('show_profile').notNull().default(0),
     showPosts: integer('show_posts').notNull().default(0),
-    // The removed discussion board's referral threads: unused, kept so drizzle-kit does not drop it.
     showReferrals: integer('show_referrals').notNull().default(0),
     createdAt: integer('created_at').notNull(),
   },
   (t) => [uniqueIndex('work_verifications_email').on(t.emailHash).where(sql`${t.verifiedAt} IS NOT NULL`)],
 );
 
-// Direct messages were removed: direct_messages and dm_settings are unused (old rows age out,
-// lib/server/http.ts); dm_blocks is only read, to keep muting reply and mention notices.
 /**
  * thread: the two account ids, sorted, joined with "|". post_id is set only on a thread's first
  * message: the referral post it was opened from, or '' between mutual follows.
@@ -78,7 +72,7 @@ export const directMessages = sqliteTable(
   ],
 );
 
-/** user_id gets no reply or mention notices from blocked_id (lib/server/solution-posts.ts); no UI adds or lifts one. */
+/** user_id no longer hears from blocked_id (either way: neither can write to the other). */
 export const dmBlocks = sqliteTable(
   'dm_blocks',
   {
