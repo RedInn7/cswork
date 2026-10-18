@@ -101,7 +101,6 @@ export function InternLog({ zh }: { zh: boolean }) {
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- loads once; pick and clampWeek only read their arguments.
   }, []);
 
-
   if (error)
     return (
       <p className="resume-error" role="alert">
