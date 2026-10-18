@@ -43,7 +43,7 @@ export function postHref(target: string, postId: string) {
 export const BADGE_CHANNELS: ReadonlySet<string> = new Set(['discuss:algo', 'discuss:referral', 'discuss:site']);
 /**
  * Where a post may go up anonymously: discussion that carries no employee badge (so no referral
- * thread, which opens a direct message to its author) and never a judge problem's solution.
+ * thread) and never a judge problem's solution.
  */
 export const anonymousAllowed = (target: string) => {
   const kind = targetKind(target);

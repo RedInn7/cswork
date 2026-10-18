@@ -178,6 +178,16 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   }
   await ok(dee, 'POST', `posts/${post.id}/comments`, { body: many.map((h) => `@user-${h}`).join(' ') });
   assert.equal(many.filter((h) => notices(h).length).length, 5);
+  // Someone blocking you (a block kept from the removed direct messages) hears nothing of your mentions.
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run('a1', bob.id);
+  await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'cc @user-a1' });
+  assert.equal(notices('a1').length, 1);
+  // Nor of your replies to their post or comment.
+  const before = notices(ada.id).length;
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run(ada.id, cy.id);
+  await ok(cy, 'POST', `posts/${post.id}/comments`, { body: 'Blocked one' });
+  assert.equal(notices(ada.id).length, before);
+  sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
 
   // ?kind= picks one tab; a removed feature's kind (direct messages) is never listed.
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
@@ -231,8 +241,11 @@ void test('an anonymous post names no one, its author excepted, on the board, th
 
   await ok(ada, 'POST', `posts/${post.id}/vote`, { on: true });
   const top = (await ok<Detail>(ada, 'POST', `posts/${post.id}/comments`, { body: 'Congrats' })).comments[0];
-  // The author answering under it stays anonymous, marked as the poster, in replies' notices too.
+  // The author answering under it stays anonymous, marked as the poster, in replies' notices too,
+  // which skip the block check so their arriving tells nothing.
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run(ada.id, bob.id);
   await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'Thank you', parentId: top.id });
+  sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
   assert.deepEqual(notices(ada.id, 'reply').map((n) => n.body), ['Thank you']);
   for (const reader of [ada, null]) {
     const listed = await ok<List>(reader, 'GET', 'posts?problem=discuss:offer&sort=new');
@@ -314,8 +327,10 @@ void test("an anonymous interview report's author writes anonymously, as its OP,
   sqlite().prepare('DELETE FROM notifications').run();
   const asked = (await ok<Detail>(ada, 'POST', 'posts', { problemId, title: '', body: 'Which team?' })).post;
   // Answering a reader's thread under it: no name or reputation, marked OP, and its notice names no
-  // one and mentions no one, as an anonymous post's author's would.
+  // one, mentions no one and skips the block check, as an anonymous post's author's would.
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run(ada.id, bob.id);
   await ok(bob, 'POST', `posts/${asked.id}/comments`, { body: 'Ads infra, cc @ada' });
+  sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
   assert.deepEqual(notices(ada.id, 'reply').map((n) => n.body), ['Ads infra, cc @ada']);
   assert.deepEqual(notices(ada.id, 'mention'), []);
   // Its own post there goes up anonymous though the box was left unticked, so it stays off the

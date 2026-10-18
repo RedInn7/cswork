@@ -99,7 +99,7 @@ export function followBoard(p: Person, tz = 0, now = Date.now()) {
 
 const edge = (from: string, to: string) =>
   !!sqlite().prepare('SELECT 1 FROM user_follows WHERE follower_id=? AND followee_id=?').get(from, to);
-/** Two accounts that follow each other (the bar for direct messages and the compare page's shared count). */
+/** Two accounts that follow each other (the compare page's shared count). */
 export const mutualFollow = (a: string, b: string) => edge(a, b) && edge(b, a);
 
 /** Companies a learner may follow (lib/server/company-follows.ts tells them what's new). */
@@ -180,6 +180,6 @@ export async function handleFollows(request: Request, p: Person | null, path: st
       'INSERT INTO user_follows(follower_id,followee_id,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING',
     ).run(p.id, userId, Date.now());
   } else db.prepare('DELETE FROM user_follows WHERE follower_id=? AND followee_id=?').run(p.id, userId);
-  // The button swaps in this answer: following back shows "Message" straight away.
+  // The button swaps in this answer.
   return json({ following: d.on, self: false, signedIn: true, ...counts(userId) });
 }

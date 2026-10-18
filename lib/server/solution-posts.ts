@@ -507,19 +507,23 @@ function mentioned(text: string) {
 }
 /**
  * Notices for a new post or comment: `to` (replies) first, then the @mentioned; one each, never to
- * the writer, none on a reported-down post. Anonymous writing (an anonymous post's author on it, an
- * anonymous report's author under it) names no one and mentions no one. A judge problem's notice
- * carries no excerpt to a recipient it is in a running contest for.
+ * the writer or anyone blocking them, none on a reported-down post. Anonymous writing (an anonymous
+ * post's author on it, an anonymous report's author under it) names no one, mentions no one and skips the block check, so no notice's
+ * presence or absence tells its author apart. A judge problem's notice carries no excerpt to a
+ * recipient it is in a running contest for.
  */
 function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: string }[], text: string, now: number) {
   if (post.down) return;
   const anonymous = (!!post.anonymous && post.userId === p.id) || anonymousReporter(post.problemId) === p.id;
   const from = anonymous ? '' : `${nameOf(p.id)}: `;
   const problem = targetKind(post.problemId) === 'problem';
+  // ponytail: legacy DM blocks still mute replies/mentions; no UI to lift them since DMs were removed
+  const blocks = sqlite().prepare('SELECT 1 FROM dm_blocks WHERE user_id=? AND blocked_id=?');
   const done = new Set([p.id]);
   const send = (userId: string, kind: string, title: string) => {
     if (done.has(userId)) return;
     done.add(userId);
+    if (!anonymous && blocks.get(userId, p.id)) return;
     const body = problem && inRunningContest(userId, post.problemId, now) ? '' : `${from}${autoTitle(text)}`;
     notify({ userId, kind, title, body, href: postHref(post.problemId, post.id), now });
   };

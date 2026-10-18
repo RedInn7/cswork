@@ -181,7 +181,7 @@ export function ChatCompose({
 
 /**
  * Report with a reason; one per learner, read by instructors in the teacher view. `body` names
- * what is reported where the path does not (a chat or direct message).
+ * what is reported where the path does not (a chat message).
  */
 export function Report({ path, english, body }: { path: string; english: boolean; body?: Record<string, string> }) {
   const t = (zh: string, en: string) => (english ? en : zh);

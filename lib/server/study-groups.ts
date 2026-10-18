@@ -41,7 +41,7 @@ export const plain = (max: number, min = 1) =>
     .max(max)
     .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
 /**
- * A chat or direct message: like plain(), but it may run over several lines, indent pasted code
+ * A chat message: like plain(), but it may run over several lines, indent pasted code
  * with tabs, and join emoji (👩‍💻) or Persian and Indic letters with zero-width (non-)joiners.
  */
 export const chatText = z
