@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { sqlite } from '@/db/sqlite';
 import { SKILL_TESTS } from '@/lib/skill-tests';
 import { beginnerCourses } from './beginner-courses';
-import { canSeeCourse } from './course-visibility';
+import { canSeeCourse, REMOVED_COURSE } from './course-visibility';
 import { sdRequired } from './system-design-course';
 
 /**
@@ -46,7 +46,10 @@ function shown<T extends { courseId: string; course: string | null }>(row: T, zh
   const external = EXTERNAL.get(row.courseId);
   if (external) return { ...row, course: zh ? external.zh : external.en, skill: external.skill };
   // A course row: published (the LEFT JOIN found it) and not hidden from the public (owner-only mode).
-  return row.course !== null && canSeeCourse(null, row.courseId) ? { ...row, course: row.course, skill: false } : null;
+  // Certificates already issued for the removed Algorithm Concepts course stay verifiable.
+  return row.course !== null && (canSeeCourse(null, row.courseId) || row.courseId === REMOVED_COURSE)
+    ? { ...row, course: row.course, skill: false }
+    : null;
 }
 
 const mine = (userId: string) =>

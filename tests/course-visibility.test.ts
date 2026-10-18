@@ -20,6 +20,7 @@ const { liveLesson, courseAccess } = await import('../lib/server/lms-common');
 const { handleMedia } = await import('../lib/server/media');
 const { handleLms } = await import('../lib/server/lms');
 const { allowed } = await import('../lib/server/http');
+const { certificateById } = await import('../lib/server/certificates');
 const db = sqlite();
 
 const person = (
@@ -39,7 +40,7 @@ db.prepare(
 db.prepare(
   "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,published,updated_at) VALUES('00-overview','gomall','Overview','summary','section',0,'secret body','1.0.0',1,1)",
 ).run();
-// The algorithm knowledge module is a course too; it must stay open.
+// Algorithm Concepts was removed; its course rows stay in the database, hidden from everyone.
 db.prepare(
   "INSERT INTO courses(id,title,summary,version,published) VALUES('sde-interview-foundations','Knowledge','summary','1.0.0',1)",
 ).run();
@@ -48,6 +49,12 @@ db.prepare(
 ).run();
 db.prepare(
   "INSERT INTO releases(id,course_id,version,title,body,created_at) VALUES('r1','gomall','1.0.0','GoMall update','body',1)",
+).run();
+db.prepare(
+  "INSERT INTO user(id,name,email,email_verified,created_at,updated_at) VALUES('member','member','member@cswork.test',1,0,0)",
+).run();
+db.prepare(
+  "INSERT INTO certificates(id,user_id,course_id,issued_at) VALUES('kcert-0000000001','member','sde-interview-foundations',1)",
 ).run();
 for (const course of ['gomall', 'sde-interview-foundations'])
   db.prepare(
@@ -89,7 +96,7 @@ test('owner-only mode hides teaching courses from everyone but the owner', async
     await assert.rejects(liveLesson(p, '00-overview'), status, `${name} lesson`);
     assert.match(
       courseAccess(p, 'l.course_id').sql,
-      /l\.course_id IN \('sde-interview-foundations'\)$/,
+      / AND 0$/,
       `${name} search`,
     );
     await assert.rejects(
@@ -115,7 +122,7 @@ test('owner-only mode hides teaching courses from everyone but the owner', async
       path.join('/'),
     );
 
-  assert.deepEqual(ids(owner), ['gomall', 'sde-interview-foundations']);
+  assert.deepEqual(ids(owner), ['gomall']);
   assert.equal((await liveLesson(owner, '00-overview')).body, 'secret body');
   assert.ok(await handleLms(request('lms/courses'), owner, ['lms', 'courses']));
   // Release notes are filtered per course rather than rejected.
@@ -136,11 +143,22 @@ test('an unverified owner session and a missing owner id both fail closed', asyn
   ownerOnly(false);
 });
 
-test('the algorithm knowledge module keeps its normal rules', async () => {
-  ownerOnly(true);
-  assert.ok(ids((member)).includes('sde-interview-foundations'));
-  assert.equal((await liveLesson(member, 'k-1')).body, 'knowledge body');
-  await assert.rejects(liveLesson(student, 'k-1'));
+test('the removed Algorithm Concepts course is hidden in both modes, owner included', async () => {
+  for (const on of [true, false]) {
+    ownerOnly(on);
+    for (const p of [member, owner]) {
+      assert.ok(!ids(p).includes('sde-interview-foundations'), `${p.id} ${on}`);
+      await assert.rejects(liveLesson(p, 'k-1'), status, `${p.id} ${on}`);
+    }
+    const search = courseAccess(owner, 'l.course_id').sql;
+    const found = db
+      .prepare(`SELECT l.id FROM lessons l WHERE ${search} ORDER BY l.id`)
+      .all()
+      .map((r) => (r as { id: string }).id);
+    assert.deepEqual(found, ['00-overview'], `owner search ${on}`);
+    // A certificate issued before the removal still verifies.
+    assert.equal(certificateById('kcert-0000000001')?.course, 'Knowledge', `certificate ${on}`);
+  }
   ownerOnly(false);
 });
 
