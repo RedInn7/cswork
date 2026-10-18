@@ -11,7 +11,10 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import file from '../lib/content/beginner-courses.json';
 import contracts from '../lib/content/leetcode-contracts.json';
 import sqlTrack from '../lib/content/sql-track.json';
+import mcqBank from '../lib/content/oa-mcq.json';
 import { curatedByNumber } from '../lib/ling-curated';
+import { keyPoints } from '../lib/recall';
+import { isSimKind } from '../lib/cs-sims';
 import type { Person } from '../lib/server/auth';
 
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-beginner-'));
@@ -37,6 +40,18 @@ const trackLink = (href: string) => {
   return !!m && (!m[1] || sqlTrack.patterns.some((p) => p.key === m[1])) && (!m[2] || sqlTrack.groups.some((g) => g.key === m[2]));
 };
 const text = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
+/** The illustrated CS courses: no homework, a diagram per lesson, Key points, and a link to their MCQ topic. */
+const CS = new Set(['os', 'network']);
+// The lessons that embed a cs-sims simulator, and which one.
+const SIMS: Record<string, string> = {
+  'os/cpu-scheduling': 'cpu-scheduling',
+  'os/deadlock': 'bankers',
+  'os/page-replacement': 'page-replacement',
+  'network/tcp-connection': 'tcp-handshake',
+  'network/tcp-reliability': 'sliding-window-arq',
+  'network/tcp-congestion': 'tcp-congestion',
+};
+const KEY_POINTS = /^## (?:要点|Key points)$/m;
 
 before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }));
 after(() => {
@@ -44,7 +59,7 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-void test('six courses of complete bilingual chapters, quizzes and practice', () => {
+void test('eight courses of complete bilingual chapters, quizzes and practice', () => {
   assert.deepEqual(Object.keys(file), ['courses']);
   assert.deepEqual(
     beginnerCourses.map((c) => [c.slug, c.chapters.length]),
@@ -55,6 +70,8 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
       ['java', 8],
       ['go', 7],
       ['sql', 6],
+      ['os', 8],
+      ['network', 8],
     ],
   );
   assert.equal(new Set(beginnerCourses.map((c) => c.slug)).size, beginnerCourses.length, 'course slugs repeat');
@@ -78,7 +95,8 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
           if (source.length > DIAGRAM_MAX_LENGTH || !/accTitle: /.test(source)) bad.push(`${at}.${key}: diagram`);
         // Pages link problems themselves; the renderer prints other relative links as text.
         for (const [, href] of body.matchAll(TRACK_LINK))
-          if (course.slug !== 'sql' || !trackLink(href)) bad.push(`${at}.${key}: relative link ${href}`);
+          if (course.slug === 'sql' ? !trackLink(href) : !CS.has(String(course.slug)) || href !== `/oa/mcq?topic=${course.slug}`)
+            bad.push(`${at}.${key}: relative link ${href}`);
         // Code the lesson runs is a whole program (or one query) and comes with what it prints.
         const runs = [...body.matchAll(/^```(\w+) run\n([\s\S]*?)^```/gm)];
         if (RUN[String(course.slug)] && !runs.length) bad.push(`${at}.${key}: no run block`);
@@ -106,7 +124,8 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
       }
       const homework = chapter.homework as { id: string; zh: string; en: string }[];
       // SQL lessons send learners to the SQL track instead: sql-* homework would shrink the SQL exam's pool.
-      if (homework.length !== (course.slug === 'sql' ? 0 : 3)) bad.push(`${at}: ${homework.length} problems`);
+      // The CS courses assign none either, so no draw pool changes.
+      if (homework.length !== (course.slug === 'sql' || CS.has(String(course.slug)) ? 0 : 3)) bad.push(`${at}: ${homework.length} problems`);
       if (course.slug === 'sql' && !/\]\(\/\?view=problems&library=sql/.test(String(chapter.bodyZh)))
         bad.push(`${at}: no SQL track link`);
       for (const problem of homework) {
@@ -118,13 +137,35 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
         if (!text(problem.zh) || !text(problem.en)) bad.push(`${at}: ${problem.id} title`);
       }
       for (const id of chapter.solves as string[]) if (!/^lc-\d+$/.test(id)) bad.push(`${at}: solves ${id}`);
-      // Every Big-O lesson explains with a diagram, in both languages.
-      if (course.slug === 'big-o')
+      // Every Big-O and CS lesson explains with a diagram, in both languages.
+      if (course.slug === 'big-o' || CS.has(String(course.slug)))
         for (const key of ['bodyZh', 'bodyEn'])
           if (!/^```mermaid\n/m.test(String(chapter[key]))) bad.push(`${at}.${key}: no diagram`);
     }
   }
   assert.deepEqual(bad, []);
+});
+
+void test('the CS courses: simulators, 4 to 8 key points, an MCQ link and quizzes of their own', () => {
+  const bank = new Set(mcqBank.questions.map((q) => q.zh.q));
+  const bad: string[] = [];
+  for (const course of beginnerCourses.filter((c) => CS.has(c.slug)))
+    for (const chapter of course.chapters) {
+      const at = `${course.slug}/${chapter.slug}`;
+      for (const body of [chapter.bodyZh, chapter.bodyEn]) {
+        const demos = [...body.matchAll(/^```algorithm-demo\n(.+)\n```/gm)].map((m) => m[1]);
+        if (demos.join() !== (SIMS[at] ?? '') || !demos.every(isSimKind)) bad.push(`${at}: simulators ${demos}`);
+        // The review card's checklist (keyPoints) is exactly the Key points section's list.
+        const sections = body.split(KEY_POINTS);
+        const listed = sections[1]?.match(/^- /gm)?.length ?? 0;
+        if (sections.length !== 2 || listed < 4 || listed > 8 || keyPoints(sections[1]).length !== listed)
+          bad.push(`${at}: ${listed} key points`);
+        if (!body.trimEnd().match(new RegExp(`\\(/oa/mcq\\?topic=${course.slug}\\)[。.]$`))) bad.push(`${at}: no closing MCQ link`);
+      }
+      for (const question of chapter.quiz) if (bank.has(question.qZh)) bad.push(`${at}: quiz copies the MCQ bank`);
+    }
+  assert.deepEqual(bad, []);
+  assert.deepEqual(Object.keys(SIMS).filter((at) => !beginnerCourses.some((c) => c.chapters.some((ch) => `${c.slug}/${ch.slug}` === at))), []);
 });
 
 void test('quiz answers sit in every position and are sometimes, not usually, the longest choice', () => {
