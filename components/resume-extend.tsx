@@ -137,6 +137,9 @@ function ResumeDrill({ resume, zh, signedIn }: { resume: Resume; zh: boolean; si
             <button type="button" className="is-quiet" disabled={!chosen.length} onClick={() => void copy()}>
               {t('复制给同伴', 'Copy for a friend')}
             </button>
+            {signedIn && saved && (
+              <small>{t(`账户里已有 ${saved.size} 张卡，还能加 ${Math.max(0, CARD_MAX - saved.size)} 张`, `${saved.size} of ${CARD_MAX} cards used`)}</small>
+            )}
             {!signedIn && <small>{t('登录后可以把勾选的题加入复习队列。', 'Sign in to add the ticked questions to your review queue.')}</small>}
           </div>
         </>

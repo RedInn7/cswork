@@ -105,6 +105,7 @@ test('signed in: already-added questions are marked, the ticked ones become card
   assert.ok(calls.includes('GET /api/oj/notes?prefix=card%3A'));
   const marked = [...drill.querySelectorAll('li')].filter((li) => li.querySelector('.resume-drill-saved'));
   assert.deepEqual(marked.map((li) => li.querySelector('label span').textContent), ['「p99 latency」是怎么测出来的？基线是多少？']);
+  assert.equal(drill.querySelector('.resume-actions small').textContent, '账户里已有 1 张卡，还能加 199 张');
 
   await act(async () => button(drill, '加入复习（4）').click());
   await settle(30);
@@ -153,9 +154,9 @@ test('the LinkedIn check keeps its fields in this browser, starts from the resum
   const issue = [...box.querySelectorAll('.resume-check li button')].find((b) => b.textContent.startsWith('The URL'));
   assert.match(issue.textContent, /ends in a random tail/);
   await act(async () => issue.click());
-  assert.equal(document.activeElement, box.querySelector('#linkedin-url'));
+  assert.ok(document.activeElement === box.querySelector('#linkedin-url'), 'focused');
   await act(async () => [...box.querySelectorAll('.resume-check li button')].find((b) => b.textContent.startsWith('Only 0 skills')).click());
-  assert.equal(document.activeElement, box.querySelector('#linkedin-skills'));
+  assert.ok(document.activeElement === box.querySelector('#linkedin-skills'), 'focused');
   assert.match(box.querySelector('.resume-check > small').textContent, /compared against 4 technical terms/);
   await unmount();
 
