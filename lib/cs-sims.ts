@@ -1168,7 +1168,12 @@ export function arqTrace(proto: ArqProto = 'gbn', n = 10, win = 4, lose: number 
           ? t(`分组 ${base} 超时，回退 N 步，从 base 起重传 ${join(again)}`, `packet ${base} times out, so go back N and resend ${join(again)} from base`)
           : t(`分组 ${join(again)} 超时，只重传它`, `packet ${join(again)} times out, and only it is resent`)
         : '',
-      fresh.length ? t(`发送新分组 ${join(fresh)}`, `send new packets ${join(fresh)}`) : t('窗口里没有新分组可发', 'no new packet fits in the window'),
+      fresh.length
+        ? t(`发送新分组 ${join(fresh)}`, `send new packets ${join(fresh)}`)
+        : next >= n
+          ? t('没有新分组可发了', 'nothing new is left to send')
+          : t('窗口已满，没有新分组可发', 'the window is full, so no new packet goes out'),
+      round.sent.length ? '' : t(`等分组 ${base} 的计时器超时`, `the sender waits for packet ${base}'s timer`),
     ].filter(Boolean);
     frame(
       t(
@@ -1178,10 +1183,12 @@ export function arqTrace(proto: ArqProto = 'gbn', n = 10, win = 4, lose: number 
       round.sent.map((s) => `${s.k}${s.lost ? '×' : ''}`),
       round.sent,
     );
+    const was = base;
     ({ base, expected, buffered, acked } = round);
     const unique = [...new Set(round.acks)];
-    const got =
-      proto === 'gbn'
+    const got = !round.sent.some((s) => !s.lost)
+      ? t('这一轮接收方什么也没收到', 'Nothing reaches the receiver this round')
+      : proto === 'gbn'
         ? t(
             `${round.discarded.length ? `接收方丢弃失序的 ${join(round.discarded)}` : '接收方按序收下'}，${round.acks.length ? `回 ACK ${join(unique)}${unique.length < round.acks.length ? '（有重复 ACK）' : ''}` : '没有能确认的分组'}`,
             `${round.discarded.length ? `The receiver discards out-of-order ${join(round.discarded)}` : 'The receiver takes them in order'} and ${round.acks.length ? `sends ACK ${join(unique)}${unique.length < round.acks.length ? ' (with duplicates)' : ''}` : 'has nothing to acknowledge'}`,
@@ -1193,8 +1200,8 @@ export function arqTrace(proto: ArqProto = 'gbn', n = 10, win = 4, lose: number 
     const finished = base >= n;
     frame(
       t(
-        `${got}。base 移到 ${base}${finished ? '，全部确认完毕' : `，窗口变为 ${base}–${Math.min(base + win, n) - 1}`}。`,
-        `${got}. base moves to ${base}${finished ? ': everything is acknowledged' : `; the window is now ${base}–${Math.min(base + win, n) - 1}`}.`,
+        `${got}。base ${base === was ? '仍是' : '移到'} ${base}${finished ? '，全部确认完毕' : `，窗口${base === was ? '还是' : '变为'} ${base}–${Math.min(base + win, n) - 1}`}。`,
+        `${got}. base ${base === was ? 'stays at' : 'moves to'} ${base}${finished ? ': everything is acknowledged' : `; the window ${base === was ? 'is still' : 'is now'} ${base}–${Math.min(base + win, n) - 1}`}.`,
       ),
       round.acks.map((a) => `ACK ${a}`),
       [],

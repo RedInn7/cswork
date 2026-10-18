@@ -249,6 +249,19 @@ test('sliding window: Go-Back-N resends the whole window, Selective Repeat only 
     }
   // The GBN receiver re-acknowledges the last in-order packet for each out-of-order arrival.
   assert.deepEqual(slide(10, 4, 3, 'gbn')[1].acks, [2, 2, 2]);
+  // Captions say what happened: an idle round names its cause, an unchanged base says so, no empty list.
+  const captions = (text: string, en: boolean) => {
+    const parsed = simInputs['sliding-window-arq'].parse(text);
+    assert.ok('args' in parsed, text);
+    return createSimTrace('sliding-window-arq', en, parsed.args).frames.map((f) => f.caption);
+  };
+  for (const text of ['gbn; 10; 4; 9', 'sr; 10; 4; 9', 'sr; 1; 1; 0', 'sr; 10; 4; 0', 'gbn; 10; 4; 3'])
+    for (const caption of [...captions(text, true), ...captions(text, false)]) assert.doesNotMatch(caption, /acknowledges +one|确认 ，|takes them in order and has nothing/, `${text}: ${caption}`);
+  const gbn9 = captions('gbn; 10; 4; 9', true);
+  assert.equal(gbn9[7], "Round 4: nothing new is left to send; the sender waits for packet 9's timer.");
+  assert.equal(gbn9[8], 'Nothing reaches the receiver this round. base stays at 9; the window is still 9–9.');
+  assert.match(captions('sr; 10; 4; 0', true)[3], /^Round 2: the window is full, so no new packet goes out; the sender waits for packet 0's timer\.$/);
+  assert.match(captions('gbn; 10; 4; 3', false)[4], /base 仍是 3，窗口还是 3–6/);
 });
 
 test('each placeholder parses back to the default trace; out-of-range input gets a bilingual error', () => {
