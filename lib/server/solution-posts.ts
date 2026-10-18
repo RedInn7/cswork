@@ -530,7 +530,7 @@ function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: str
   if (!anonymous) for (const userId of mentioned(text)) send(userId, 'mention', '有人在讨论中提到了你');
 }
 
-/** One report per learner and target: posts, comments, group chat ('gmsg:') and direct messages ('dm:'). */
+/** One report per learner and target: posts, comments and direct messages ('dm:'). */
 export function fileReport(p: Person, target: string, authorId: string, reason: string) {
   if (authorId === p.id) throw new HttpError(400, '不能举报自己的内容');
   underCap('post_reports', p, REPORTS_PER_DAY, '今天的举报次数已达上限');
@@ -550,7 +550,6 @@ async function report(p: Person, target: string, authorId: string, request: Requ
 const TABLES = {
   post: 'solution_posts',
   comment: 'post_comments',
-  gmsg: 'study_group_messages',
   dm: 'direct_messages',
 } as const;
 type Kind = keyof typeof TABLES;
@@ -607,15 +606,7 @@ async function moderationQueue(p: Person) {
         JOIN solution_posts sp ON sp.id=c.post_id LEFT JOIN "user" u ON u.id=c.user_id WHERE r.target LIKE 'comment:%'`,
       )
       .all() as (QueueItem & { lastAt: number })[]),
-    // Reported chat and direct messages: only what was reported, never the latest of either.
-    ...(db
-      .prepare(
-        `${REPORTS} SELECT 'gmsg' AS kind,g.id,g.group_id AS postId,'' AS problemId,COALESCE(sg.name,'') AS title,
-          substr(g.body,1,600) AS excerpt,COALESCE(u.name,'') AS author,g.hidden,g.created_at AS createdAt,
-          r.reports,r.reasons,r.lastAt FROM r JOIN study_group_messages g ON g.id=substr(r.target,6)
-        LEFT JOIN study_groups sg ON sg.id=g.group_id LEFT JOIN "user" u ON u.id=g.user_id WHERE r.target LIKE 'gmsg:%'`,
-      )
-      .all() as (QueueItem & { lastAt: number })[]),
+    // Reported direct messages: only what was reported, never the latest.
     ...(db
       .prepare(
         `${REPORTS} SELECT 'dm' AS kind,d.id,'' AS postId,'' AS problemId,'' AS title,substr(d.body,1,600) AS excerpt,
@@ -660,8 +651,7 @@ async function moderationQueue(p: Person) {
 /**
  * /api/oj/posts/… and /api/oj/post-comments/<id>/<action>. Threads, answers and comments read
  * signed out; solutions, the moderation queue and every write need an account.
- * /api/oj/group-messages/<id>/<action> and direct-messages/… are the moderators' actions on
- * reported chat and direct messages.
+ * /api/oj/direct-messages/<id>/<action> are the moderators' actions on reported direct messages.
  */
 export async function handleSolutionPosts(request: Request, p: Person | null, path: string[]) {
   const [resource, target, action, extra] = path;
@@ -883,7 +873,6 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     }
     return moderate(p, 'comment', target, action);
   }
-  if (resource === 'group-messages' || resource === 'direct-messages')
-    return moderate(p, resource === 'group-messages' ? 'gmsg' : 'dm', target, action);
+  if (resource === 'direct-messages') return moderate(p, 'dm', target, action);
   throw new HttpError(404, '题解接口不存在');
 }

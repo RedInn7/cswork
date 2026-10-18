@@ -1385,7 +1385,7 @@ function PostEditor({
 }
 
 type QueueItem = {
-  kind: 'post' | 'comment' | 'gmsg' | 'dm';
+  kind: 'post' | 'comment' | 'dm';
   id: string;
   postId: string;
   problemId: string;
@@ -1408,7 +1408,6 @@ const REASONS: Record<string, [string, string]> = {
 const RESOURCES: Record<QueueItem['kind'], string> = {
   post: 'posts',
   comment: 'post-comments',
-  gmsg: 'group-messages',
   dm: 'direct-messages',
 };
 /** What a post is, by its target, [zh, en]. */
@@ -1458,19 +1457,13 @@ export function PostModeration() {
     <li key={`${item.kind}:${item.id}`} className="post-mod-item" data-hidden={item.hidden || undefined}>
       <p className="post-mod-meta">
         <span className="cs-post-lang">
-          {item.kind === 'gmsg'
-            ? t('小组聊天', 'Group chat')
-            : item.kind === 'dm'
-              ? t('私信', 'Direct message')
-              : item.kind === 'comment'
-                ? t('评论', 'Comment')
-                : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
+          {item.kind === 'dm'
+            ? t('私信', 'Direct message')
+            : item.kind === 'comment'
+              ? t('评论', 'Comment')
+              : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
         </span>
-        {item.kind === 'gmsg' ? (
-          <a href={`/?view=group&id=${encodeURIComponent(item.postId)}`}>{item.title}</a>
-        ) : (
-          item.kind !== 'dm' && <a href={postHref(item.problemId, item.postId)}>{item.problemId}</a>
-        )}
+        {item.kind !== 'dm' && <a href={postHref(item.problemId, item.postId)}>{item.problemId}</a>}
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>
         {!!item.reports && (
@@ -1517,8 +1510,8 @@ export function PostModeration() {
       <div className="lms-toolbar">
         <p className="muted">
           {t(
-            '被举报的题解、讨论帖、回答、评论、小组聊天和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（聊天和私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
-            'Reported solutions, threads, answers, comments, group chat and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (chat and direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
+            '被举报的题解、讨论帖、回答、评论和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
+            'Reported solutions, threads, answers, comments and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
           )}
         </p>
         <Button variant="outline" onClick={() => setReload((n) => n + 1)}>
