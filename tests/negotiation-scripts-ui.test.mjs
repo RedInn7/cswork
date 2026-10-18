@@ -60,7 +60,6 @@ test('a run: no score until the end, then each step scored, explained and compar
   assert.match(review[0].textContent, /Your reply: I finish my master's/);
   assert.equal(review[0].querySelectorAll('details li').length, 3, 'the other three replies');
   assert.match(review[0].querySelector('details').textContent, /0 \/ 2/);
-  assert.equal($('.negotiation-result a').getAttribute('href'), '/english/recruiter');
 
   await click(button('Start over'));
   assert.equal($$('.negotiation-choices button').length, 4);

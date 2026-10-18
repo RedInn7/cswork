@@ -64,9 +64,7 @@ export function GlossaryView({ zh }: { zh: boolean }) {
         <p>{c.description}</p>
       </div>
       <p className="glossary-more">
-        {zh ? '自我介绍、澄清题意、边写边讲这类整句表达，在 ' : 'Whole phrases for introductions, clarifying questions and thinking aloud are in '}
-        <a href="/english">{zh ? '面试英语' : 'Interview English'}</a>
-        {zh ? '。想把各站模板打印出来，用 ' : '. To print every stop’s template, use the '}
+        {zh ? '想把各站模板打印出来，用 ' : 'To print every stop’s template, use the '}
         <a href="/topics/print">{zh ? '打印版模板手册' : 'printable handbook'}</a>
         {zh ? '。' : '.'}
       </p>
