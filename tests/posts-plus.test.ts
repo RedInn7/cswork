@@ -7,10 +7,9 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 
-// Posts plus: system design chapter discussions, saved posts and polls on threads.
+// Posts plus: system design chapter discussions and saved posts.
 const dir = mkdtempSync(join(tmpdir(), 'cswork-posts-plus-'));
 process.env.DATABASE_PATH = join(dir, 'app.sqlite');
-process.env.HIDDEN_COMPANIES = 'google';
 delete process.env.COURSE_ACCESS;
 
 const { sqlite } = await import('../db/sqlite');
@@ -82,15 +81,21 @@ void test('an unknown prefix is no target; sd:<chapter> is a discussion anyone r
   const { post } = await ok(me, 'POST', 'oj/posts', { problemId: 'sd:framework', body: '**Why** start with requirements?\nmore' });
   assert.equal(post.title, 'Why start with requirements?', 'untitled like a comment');
   assert.equal((await ok(null, 'GET', 'oj/posts?problem=sd:framework')).items.length, 1);
-  assert.equal((await ok(null, 'GET', `oj/posts/${post.id}`)).post.poll, null);
+  assert.equal('poll' in (await ok(null, 'GET', `oj/posts/${post.id}`)).post, false, 'polls left with the board');
+  assert.equal((await call(me, 'POST', 'oj/posts', { problemId: 'sd:framework', body: 'b', poll: { question: 'q', options: ['a', 'b'] } })).status, 400);
 });
 
 void test('saved posts: counted on the post, listed across targets, only while still visible', async () => {
-  const thread = (await ok(me, 'POST', 'oj/posts', { problemId: 'discuss:algo', title: 'Stacks', body: 'b' })).post;
+  const thread = (await ok(me, 'POST', 'oj/posts', { problemId: 'sd:building-blocks', title: 'Stacks', body: 'b' })).post;
   const solution = (await ok(me, 'POST', 'oj/posts', { problemId: 'lc-1', title: 'Hash map', body: 'b' })).post;
-  const tagged = (await ok(me, 'POST', 'oj/posts', { problemId: 'discuss:career', title: 'Amazon?', body: 'b', tag: 'amazon' })).post;
+  // A thread left from the removed discussion board, saved before it went.
+  const board = '00000000-0000-4000-8000-0000000000c0';
+  sqlite()
+    .prepare("INSERT INTO solution_posts(id,problem_id,user_id,title,body,created_at,updated_at) VALUES(?,'discuss:career',?,'Amazon?','b',1,1)")
+    .run(board, me.id);
+  sqlite().prepare("INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,'star',3)").run(ana.id, `post:${board}`);
   assert.equal((await call(null, 'GET', 'oj/posts?starred=1')).status, 401);
-  for (const id of [solution.id, thread.id, tagged.id]) await star(ana, id);
+  for (const id of [solution.id, thread.id]) await star(ana, id);
   await star(bo, thread.id);
   // An unverified account's save is kept for them but not counted.
   sqlite().prepare('UPDATE "user" SET email_verified=0 WHERE id=?').run(fresh.id);
@@ -99,19 +104,17 @@ void test('saved posts: counted on the post, listed across targets, only while s
   assert.deepEqual([read.post.stars, read.post.starred], [2, true]);
   assert.equal((await ok(fresh, 'GET', `oj/posts/${thread.id}`)).post.starred, true);
   assert.equal((await ok(me, 'GET', `oj/posts/${thread.id}`)).post.starred, false);
-  const listed = await ok(ana, 'GET', 'oj/posts?problem=discuss:algo');
+  const listed = await ok(ana, 'GET', 'oj/posts?problem=sd:building-blocks');
   assert.deepEqual([listed.items[0].stars, listed.items[0].starred], [2, true]);
-  // Last saved first.
+  // Last saved first; the board thread reads as missing, so it is left out.
   const saved = sqlite().prepare("UPDATE user_marks SET created_at=? WHERE user_id=? AND target=? AND mark='star'");
   saved.run(1, ana.id, `post:${solution.id}`);
   saved.run(2, ana.id, `post:${thread.id}`);
-  saved.run(3, ana.id, `post:${tagged.id}`);
   const mine = await ok(ana, 'GET', 'oj/posts?starred=1');
-  assert.deepEqual(mine.items.map((p: { id: string }) => p.id), [tagged.id, thread.id, solution.id]);
+  assert.deepEqual(mine.items.map((p: { id: string }) => p.id), [thread.id, solution.id]);
   assert.equal(mine.next, 3);
-  // An unpublished problem, a hidden company and an author's removal take a saved post out.
+  // An unpublished problem and an author's removal take a saved post out.
   sqlite().prepare("UPDATE oj_problems SET published=0 WHERE id='lc-1'").run();
-  sqlite().prepare("UPDATE solution_posts SET tag='google' WHERE id=?").run(tagged.id);
   assert.deepEqual((await ok(ana, 'GET', 'oj/posts?starred=1')).items.map((p: { id: string }) => p.id), [thread.id]);
   await ok(me, 'POST', `oj/posts/${thread.id}/delete`, {});
   assert.deepEqual((await ok(ana, 'GET', 'oj/posts?starred=1')).items, []);
@@ -135,53 +138,4 @@ void test('saved posts leave out a problem in the reader’s running contest', a
     .run(bo.id);
   assert.equal((await ok(bo, 'GET', 'oj/posts?starred=1')).items.some((p: { id: string }) => p.id === post.id), false);
   assert.equal((await call(bo, 'GET', `oj/posts/${post.id}`)).status, 403);
-});
-
-void test('polls: threads only, one vote per verified account, counts after voting or the close', async () => {
-  const poll = { question: 'Which language for OAs?', options: ['Python', 'C++', 'Java'] };
-  const fields = { title: 'OA language', body: 'Curious.' };
-  const thread = { problemId: 'discuss:career', ...fields };
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, poll: { ...poll, options: ['A'] } })).status, 400);
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, poll: { ...poll, options: ['A', 'A'] } })).status, 400);
-  assert.equal((await call(me, 'POST', 'oj/posts', { ...thread, poll: { ...poll, options: ['x'.repeat(81), 'y'] } })).status, 400);
-  assert.equal(
-    (await call(me, 'POST', 'oj/posts', { ...thread, poll: { ...poll, closesAt: Date.now() - 1000 } })).status,
-    400,
-    'closes in the past',
-  );
-  const before = (sqlite().prepare('SELECT COUNT(*) FROM solution_posts').pluck().get() as number);
-  assert.equal((await call(me, 'POST', 'oj/posts', { problemId: 'sd:framework', body: 'b', poll })).status, 400);
-  assert.equal(sqlite().prepare('SELECT COUNT(*) FROM solution_posts').pluck().get(), before, 'a refused poll saves no post');
-  const { post } = await ok(me, 'POST', 'oj/posts', { ...thread, poll });
-  assert.deepEqual(post.poll, {
-    question: poll.question, options: poll.options, multi: false, closesAt: null, closed: false, voters: 0, mine: [], counts: null,
-  });
-  const vote = (p: Person, choices: number[]) => call(p, 'POST', `oj/posts/${post.id}/poll`, { choices });
-  assert.equal((await vote(fresh, [0])).status, 403, 'a verified account');
-  assert.equal((await call(null, 'POST', `oj/posts/${post.id}/poll`, { choices: [0] })).status, 401);
-  assert.equal((await vote(ana, [0, 1])).status, 400, 'one choice');
-  assert.equal((await vote(ana, [3])).status, 400);
-  const voted = await vote(ana, [1]);
-  assert.equal(voted.status, 200);
-  assert.deepEqual([voted.data.poll.mine, voted.data.poll.counts, voted.data.poll.voters], [[1], [0, 1, 0], 1]);
-  assert.equal((await vote(ana, [0])).status, 409, 'never changed');
-  const other = (await ok(bo, 'GET', `oj/posts/${post.id}`)).post.poll;
-  assert.deepEqual([other.voters, other.counts], [1, null], 'no counts before your own vote');
-  assert.ok(!JSON.stringify(other).includes(ana.id));
-  // The author cannot change a poll once someone voted; an edit that leaves it out keeps it.
-  assert.equal((await call(me, 'POST', `oj/posts/${post.id}/edit`, { ...fields, poll: { ...poll, options: ['Go', 'Rust'] } })).status, 409);
-  assert.equal((await call(me, 'POST', `oj/posts/${post.id}/edit`, { ...fields, poll: null })).status, 409);
-  const edited = await ok(me, 'POST', `oj/posts/${post.id}/edit`, { title: 'OA language?', body: 'Curious!' });
-  assert.deepEqual([edited.post.title, edited.post.poll.options], ['OA language?', poll.options]);
-  // Closed: everyone sees the counts, nobody votes.
-  sqlite().prepare('UPDATE post_polls SET closes_at=? WHERE post_id=?').run(Date.now() - 1, post.id);
-  const closed = (await ok(null, 'GET', `oj/posts/${post.id}`)).post.poll;
-  assert.deepEqual([closed.closed, closed.counts], [true, [0, 1, 0]]);
-  assert.equal((await vote(bo, [0])).status, 409);
-  // A multiple-choice poll takes several options in its one vote; with no votes it can still change.
-  const multi = (await ok(me, 'POST', 'oj/posts', { ...thread, poll: { ...poll, multi: true, closesAt: Date.now() + 86400000 } })).post;
-  const changed = await ok(me, 'POST', `oj/posts/${multi.id}/edit`, { ...fields, poll: { ...poll, options: ['Go', 'Rust'], multi: true } });
-  assert.deepEqual(changed.post.poll.options, ['Go', 'Rust']);
-  const both = await ok(bo, 'POST', `oj/posts/${multi.id}/poll`, { choices: [1, 0, 1] });
-  assert.deepEqual([both.poll.mine, both.poll.counts, both.poll.voters], [[0, 1], [1, 1], 1]);
 });

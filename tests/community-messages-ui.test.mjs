@@ -4,7 +4,7 @@ import { register } from 'node:module';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 
-// Group chat, direct messages, the work badge card and the referral board's buttons.
+// Group chat, direct messages, the work badge card and the follow button's message link.
 register(
   `data:text/javascript,${encodeURIComponent(
     `export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`,
@@ -51,7 +51,6 @@ const { StudyGroups } = await import('../components/study-groups.tsx');
 const { Messages } = await import('../components/messages.tsx');
 const { WorkBadgeSettings } = await import('../components/work-badge.tsx');
 const { FollowButton } = await import('../components/follow-button.tsx');
-const { SolutionPosts } = await import('../components/solution-posts.tsx');
 
 const wait = (ms = 5) =>
   act(async () => {
@@ -241,7 +240,7 @@ test('messages: the inbox and who may write, a conversation with block and repor
 
     root = await mount(createElement(Messages, { navigate, params: { thread: 'k1' } }));
     assert.equal(document.querySelector('#dm-with').textContent, '@amy-g');
-    assert.ok(document.querySelector('.dm-post a[href="/discuss/p1"]'));
+    assert.ok(document.querySelector('.dm-post').textContent.includes('Google referrals'), 'named, with no link to the removed board');
     // Only the other side's lines can be reported.
     const lines = [...document.querySelectorAll('.chat-log li')];
     assert.equal(lines[0].querySelector('button'), null);
@@ -280,7 +279,7 @@ test('work badge: every placement starts off and switches one at a time; codes o
       expiresAt: Date.UTC(2027, 0, 1),
       active: true,
       pending: false,
-      show: { profile: false, posts: false, referrals: false },
+      show: { profile: false, posts: false },
     },
   };
   const api = serve((path, body) => {
@@ -293,11 +292,11 @@ test('work badge: every placement starts off and switches one at a time; codes o
     const root = await mount(createElement(WorkBadgeSettings));
     assert.ok(document.body.textContent.includes('Verified: Google employee (google.com)'));
     const boxes = () => [...document.querySelectorAll('fieldset input[type="checkbox"]')];
-    assert.deepEqual(boxes().map((b) => b.checked), [false, false, false]);
+    assert.deepEqual(boxes().map((b) => b.checked), [false, false]);
     await act(async () => boxes()[1].click());
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/work/show', { posts: true }]);
-    assert.deepEqual(boxes().map((b) => b.checked), [false, true, false]);
+    assert.deepEqual(boxes().map((b) => b.checked), [false, true]);
     await act(async () => type(document.querySelector('input[type="email"]'), 'me@google.com'));
     await act(async () => button('Send code').click());
     await wait();
@@ -314,31 +313,10 @@ test('work badge: every placement starts off and switches one at a time; codes o
   }
 });
 
-test('mutual follows get a message link; a verified referral thread a request button', async () => {
+test('mutual follows get a message link', async () => {
   let mutual = true;
-  const post = {
-    id: 'p1',
-    problemId: 'discuss:referral',
-    title: 'Google referrals',
-    language: '',
-    tag: 'google',
-    hidden: 0,
-    createdAt: 1,
-    updatedAt: 1,
-    author: '@amy-g',
-    mine: false,
-    votes: 0,
-    voted: false,
-    comments: 0,
-    employer: 'Google',
-    referral: true,
-    body: 'Happy to refer.',
-  };
   const api = serve((path) => {
     if (path.startsWith('oj/follows')) return Response.json({ following: true, mutual, self: false, signedIn: true, followers: 1, followees: 1 });
-    if (path === 'oj/posts/p1') return Response.json({ post, comments: [] });
-    if (path === 'oj/reports/companies') return Response.json({ items: [{ slug: 'google', name: 'Google' }] });
-    if (path.startsWith('oj/posts?')) return Response.json({ solved: true, items: [post], more: false });
   });
   try {
     let root = await mount(createElement(FollowButton, { handle: 'amy-g', zh: false, followers: 1 }));
@@ -347,11 +325,6 @@ test('mutual follows get a message link; a verified referral thread a request bu
     mutual = false;
     root = await mount(createElement(FollowButton, { handle: 'amy-g', zh: false, followers: 1 }));
     assert.equal(document.querySelector('a[href^="/?view=messages"]'), null);
-    await act(async () => root.unmount());
-
-    root = await mount(createElement(SolutionPosts, { problemId: 'discuss:referral', english: true, initialPost: 'p1' }));
-    assert.deepEqual([...document.querySelectorAll('.cs-post-badge')].map((b) => b.textContent), ['Verified · Google employee', 'Gives referrals']);
-    assert.ok(document.querySelector('a[href="/?view=messages&post=p1"]').textContent.includes('Request a referral'));
     await act(async () => root.unmount());
   } finally {
     api.restore();

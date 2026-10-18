@@ -43,7 +43,7 @@ globalThis.fetch = async (url, init = {}) => {
 const postId = '11111111-1111-4111-8111-111111111111';
 const post = {
   id: postId,
-  problemId: 'discuss:offer',
+  problemId: 'sd:framework',
   title: 'Offer numbers',
   language: '',
   hidden: 0,
@@ -64,15 +64,18 @@ const comments = [
   { id: 'c-reply', parentId: 'c-top', body: 'Thanks', createdAt: 2, author: '', mine: false, votes: 0, voted: false, op: true, anonymous: true, reputation: null },
 ];
 
-test('a thread: anonymous and featured, nested replies, comment votes and a moderator’s pin', async () => {
+test('a chapter discussion post: anonymous and featured, nested replies, comment votes and a moderator’s pin', async () => {
   const root = createRoot($('#root'));
   reply = (path) => {
+    if (path.includes('/api/oj/posts?')) return { solved: true, items: [post], more: false };
     if (path.endsWith('/vote')) return { votes: 2, voted: true };
     if (path.endsWith('/pin') || path.endsWith('/unpin')) return { id: postId, pinned: path.endsWith('/pin') };
     return { post, comments, moderator: true };
   };
   try {
-    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'discuss:offer', english: true, initialPost: postId })));
+    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'sd:framework', english: true })));
+    await settle();
+    await act(async () => $('.cs-post-row').click());
     await settle();
     assert.ok($('.cs-post-meta').textContent.includes('Anonymous'));
     assert.ok($('.cs-post-meta [data-pinned]'), 'featured badge');
@@ -109,11 +112,10 @@ test('a thread: anonymous and featured, nested replies, comment votes and a mode
 
 test('posting anonymously is offered only where it is allowed', async () => {
   for (const [problemId, offered] of [
-    ['discuss:referral', false],
     ['lc-1', false],
-    ['discuss:offer', true],
+    ['sd:framework', true],
   ]) {
-    reply = (path) => (path.includes('companies') ? { items: [] } : { solved: true, items: [], more: false });
+    reply = () => ({ solved: true, items: [], more: false });
     const root = createRoot($('#root'));
     try {
       await act(async () => root.render(createElement(SolutionPosts, { problemId, english: true, unlocked: true })));
@@ -122,7 +124,6 @@ test('posting anonymously is offered only where it is allowed', async () => {
       const box = $$('.cs-post-editor input[type="checkbox"]').find((c) => c.parentElement.textContent.includes('anonymously'));
       assert.equal(!!box, offered, problemId);
       if (!offered) continue;
-      await act(async () => type($('.cs-post-editor input'), 'Comp'));
       await act(async () => type($('textarea[aria-label="Body"]'), 'Numbers'));
       await act(async () => box.click());
       reply = () => ({ post: { ...post, mine: true }, comments: [] });

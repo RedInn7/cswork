@@ -183,7 +183,6 @@ void test('the newsletter feed: the archived issues, newest first, linking to th
       startsAt,
       problems: titles.map((title, i) => ({ id: `oa-amazon-11${i}`, title, company: 'amazon', companyName: 'Amazon', href: `/oa/amazon/oa-amazon-11${i}` })),
       experiences: [],
-      discussions: [],
       daily: daily ? [{ date: '2026-10-05', title: 't', titleEn: null, company: null, href: '/x', solvers: 1 }] : [],
     });
   issue('2026-W40', Date.UTC(2026, 8, 28), ['Older & <wiser>', 'Two'], false);
@@ -198,13 +197,13 @@ void test('the newsletter feed: the archived issues, newest first, linking to th
       ['CSWork 周报 2026-W40', 'https://cswork.org/newsletter/2026-W40'],
     ],
   );
-  assert.match(xml, /<summary>1 道新 OA 题、0 篇学员面经、0 个热门讨论和每日一题战报。 新题 &amp; more<\/summary>/);
-  assert.match(xml, /<summary>2 道新 OA 题、0 篇学员面经和0 个热门讨论。 Older &amp; &lt;wiser&gt;；Two<\/summary>/);
+  assert.match(xml, /<summary>1 道新 OA 题、0 篇学员面经和每日一题战报。 新题 &amp; more<\/summary>/);
+  assert.match(xml, /<summary>2 道新 OA 题和0 篇学员面经。 Older &amp; &lt;wiser&gt;；Two<\/summary>/);
   assert.equal(list[0].updated, Date.UTC(2026, 9, 12));
   // English counts agree with their number; no daily results line for an issue without any.
   const en = await feeds.newsletterFeed('en');
-  assert.match(en, /<summary>1 new OA problem, 0 member interview reports, 0 top discussions and the daily problem results\. /);
-  assert.match(en, /<summary>2 new OA problems, 0 member interview reports and 0 top discussions\. /);
+  assert.match(en, /<summary>1 new OA problem, 0 member interview reports and the daily problem results\. /);
+  assert.match(en, /<summary>2 new OA problems and 0 member interview reports\. /);
   // One snapshot per language for 15 minutes: a new issue shows up after that.
   issue('2026-W42', Date.UTC(2026, 9, 12), ['Newest'], false);
   assert.equal(entries(await feeds.newsletterFeed('zh')).length, 2);

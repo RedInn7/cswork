@@ -16,7 +16,7 @@ register(
 const id = '11111111-1111-4111-8111-111111111111';
 const thread = {
   id,
-  problemId: 'discuss:algo',
+  problemId: 'lc-1',
   title: 'Which language for OAs?',
   language: '',
   tag: '',
@@ -32,19 +32,9 @@ const thread = {
   starred: false,
   excerpt: 'Curious',
 };
-const poll = {
-  question: 'Pick one',
-  options: ['Python', 'C++'],
-  multi: false,
-  closesAt: null,
-  closed: false,
-  voters: 2,
-  mine: [],
-  counts: null,
-};
 const body = ['Curious.', '```mermaid', 'graph TD', '  A-->B', '```', '```python', 'x = 1', '```'].join('\n');
 
-test('a thread draws its mermaid, takes one poll vote, saves and lists saved posts, and attaches a poll', async () => {
+test('a solution draws its mermaid, saves and lists saved posts', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
@@ -60,29 +50,21 @@ test('a thread draws its mermaid, takes one poll vote, saves and lists saved pos
     if (init.method === 'POST') {
       const data = JSON.parse(init.body);
       sent.push([path, data]);
-      if (path.endsWith('/poll')) return Response.json({ poll: { ...poll, voters: 3, mine: [1], counts: [1, 2] } });
-      if (path === '/api/oj/marks') return Response.json(data);
-      return Response.json({ post: { ...thread, id: '22222222-2222-4222-8222-222222222222', mine: true, body: data.body, poll: null }, comments: [] }, { status: 201 });
+      return Response.json(data);
     }
     gets.push(path);
-    if (path === '/api/oj/reports/companies') return Response.json({ items: [] });
     if (path.startsWith('/api/oj/posts?starred=1'))
       return Response.json({ solved: true, items: [{ ...thread, problemId: 'q:tell-me', title: 'My STAR answer', starred: true }], more: false, next: 1 });
     if (path.startsWith('/api/oj/posts?')) return Response.json({ solved: true, items: [thread], more: false });
-    return Response.json({ post: { ...thread, body, poll }, comments: [] });
+    return Response.json({ post: { ...thread, body }, comments: [] });
   };
   const root = createRoot(document.getElementById('root'));
   const $ = (selector) => document.querySelector(selector);
   const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent.includes(text));
   const click = (text) => act(async () => button(text).click());
   const settle = () => act(async () => new Promise((r) => setTimeout(r, 5)));
-  const type = (input, value) =>
-    act(async () => {
-      Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value').set.call(input, value);
-      input.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
-    });
   try {
-    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'discuss:algo', english: true })));
+    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'lc-1', english: true })));
     await settle();
     await click('Which language for OAs?');
     await settle();
@@ -92,25 +74,6 @@ test('a thread draws its mermaid, takes one poll vote, saves and lists saved pos
     assert.equal(article.querySelector('pre code')?.textContent.includes('x = 1'), true);
     assert.equal(article.textContent.includes('A-->B') && !article.querySelector('pre code')?.textContent.includes('A-->B'), true);
 
-    // The poll: no results before voting, one choice, then bars of each option's share.
-    assert.equal($('.cs-poll h4').textContent, 'Pick one');
-    assert.equal($('.cs-poll-results'), null);
-    assert.equal($('.cs-poll-meta').textContent.includes('Results show once you vote'), true);
-    assert.equal(button('Vote').disabled, true);
-    const radios = [...document.querySelectorAll('.cs-poll input[type="radio"]')];
-    assert.equal(radios.length, 2);
-    await act(async () => radios[1].click());
-    await act(async () => $('.cs-poll-form').requestSubmit());
-    await settle();
-    assert.deepEqual(sent.at(-1), [`/api/oj/posts/${id}/poll`, { choices: [1] }]);
-    const bars = [...document.querySelectorAll('.cs-poll-bar > span')].map((s) => s.style.width);
-    assert.deepEqual(bars, ['33%', '67%']);
-    assert.equal($('.cs-poll-results li[data-mine]').textContent.includes('C++'), true);
-    // The Vote button left with the form: focus moves to the poll and its status line says so.
-    assert.equal(document.activeElement === $('.cs-poll'), true);
-    assert.equal($('.cs-poll-meta').getAttribute('role'), 'status');
-    assert.equal($('.cs-poll-meta').textContent.startsWith('Vote saved · 3 voters'), true);
-
     // Save: a star mark on post:<id>.
     const save = button('Save');
     assert.equal(save.getAttribute('aria-pressed'), 'false');
@@ -119,7 +82,7 @@ test('a thread draws its mermaid, takes one poll vote, saves and lists saved pos
     assert.equal(button('Saved').getAttribute('aria-pressed'), 'true');
 
     // Saved posts from every target, titled and labelled with their kind.
-    await click('All threads');
+    await click('All solutions');
     await settle();
     await click('Saved');
     await settle();
@@ -128,34 +91,18 @@ test('a thread draws its mermaid, takes one poll vote, saves and lists saved pos
     assert.equal($('.cs-post-row-meta').textContent.includes('Answer'), true);
     assert.equal($('.cs-posts-sort'), null, 'no sort among saved posts');
 
-    // A new thread with a poll.
+    // The editor says mermaid works.
     await click('Saved');
     await settle();
-    await click('New thread');
+    await click('Write a solution');
     assert.equal($('.cs-post-editor-note').textContent.includes('mermaid'), true);
-    await click('Add a poll');
-    const [title, question, first, second] = document.querySelectorAll('.cs-post-editor input:not([type])');
-    await type(title, 'Mock OA timing');
-    await type(question, 'Morning or night?');
-    await type(first, ' Morning ');
-    await type(second, 'Night');
-    const area = $('textarea[aria-label="Body"]');
-    await act(async () => {
-      Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set.call(area, 'When do you take them?');
-      area.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
-    });
-    await act(async () => $('.cs-post-editor').requestSubmit());
-    await settle();
-    const [path, data] = sent.at(-1);
-    assert.equal(path, '/api/oj/posts');
-    assert.deepEqual(data.poll, { question: 'Morning or night?', options: ['Morning', 'Night'], multi: false, closesAt: null });
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;
   }
 });
 
-test('editing a thread sends its poll only when it changed; a guest outside academy goes to sign in', async () => {
+test('a guest outside academy goes to sign in', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
@@ -164,51 +111,16 @@ test('editing a thread sends its poll only when it changed; a guest outside acad
   const { createRoot } = await import('react-dom/client');
   const { SolutionPosts } = await import('../components/solution-posts.tsx');
 
-  // The author's thread, its poll closed yesterday with no votes: a body edit must not resend it.
-  const mine = { ...thread, mine: true };
-  const stale = { ...poll, voters: 0, closesAt: Date.now() - 86_400_000, closed: true, counts: [0, 0] };
-  const sent = [];
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url, init = {}) => {
-    const path = String(url);
-    if (init.method === 'POST') {
-      sent.push([path, JSON.parse(init.body)]);
-      return Response.json({ post: { ...mine, body, poll: stale }, comments: [] });
-    }
-    if (path === '/api/oj/reports/companies') return Response.json({ items: [] });
-    if (path.startsWith('/api/oj/posts?')) return Response.json({ solved: true, items: [mine], more: false });
-    return Response.json({ post: { ...mine, body, poll: stale }, comments: [] });
-  };
+  globalThis.fetch = async () => Response.json({ solved: true, items: [], more: false });
   const root = createRoot(document.getElementById('root'));
-  const $ = (selector) => document.querySelector(selector);
   const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent.includes(text));
   const click = (text) => act(async () => button(text).click());
   const settle = () => act(async () => new Promise((r) => setTimeout(r, 5)));
-  const edit = async (change) => {
-    await click('Edit');
-    await change();
-    await act(async () => $('.cs-post-editor').requestSubmit());
-    await settle();
-    return sent.at(-1)[1];
-  };
   try {
-    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'discuss:algo', english: true, signedIn: true })));
-    await settle();
-    await click('Which language for OAs?');
-    await settle();
-    const area = () => $('textarea[aria-label="Body"]');
-    const setBody = () =>
-      act(async () => {
-        Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set.call(area(), 'Edited.');
-        area().dispatchEvent(new dom.window.Event('input', { bubbles: true }));
-      });
-    assert.equal('poll' in (await edit(setBody)), false, 'an untouched poll is not sent');
-    const removed = await edit(() => click('Remove the poll'));
-    assert.equal(removed.poll, null, 'a removed poll is sent as null');
-
     // A guest: academy cancels the event and signs them in itself; with nobody listening the
     // account page takes over.
-    await act(async () => root.render(createElement(SolutionPosts, { key: 'sd', problemId: 'sd:caching', english: true, signedIn: false })));
+    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'sd:caching', english: true, signedIn: false })));
     await settle();
     await click('Join the discussion');
     assert.deepEqual(assigned, ['/?view=account']);
