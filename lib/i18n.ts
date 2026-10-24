@@ -10,7 +10,8 @@ import {
 } from 'react';
 
 /**
- * Site language: English by default, Chinese on request. The choice lives in
+ * Site language: Chinese by default, English on request. Problem statements and titles stay
+ * English whatever the site language (see problem-workspace.tsx, lib/problems.ts). The choice lives in
  * localStorage; the API learns it from the X-Locale header (see lib/types.ts api()).
  * The cswork_locale cookie mirrors it so app/layout.tsx renders the first HTML in it.
  */
@@ -20,21 +21,21 @@ const listeners = new Set<() => void>();
 // The switch made on this page, so it works even when storage is blocked.
 let current: Locale | null = null;
 // The language the server rendered in: hydration starts from it.
-const ServerLocale = createContext<Locale>('en');
+const ServerLocale = createContext<Locale>('zh');
 
 export function readLocale(): Locale {
   if (current) return current;
   try {
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === 'zh' ? 'zh' : 'en';
+    return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === 'en' ? 'en' : 'zh';
   } catch {
-    return 'en';
+    return 'zh';
   }
 }
 function writeCookie(locale: Locale) {
   try {
     document.cookie = `cswork_locale=${locale}; Path=/; Max-Age=31536000; SameSite=Lax`;
   } catch {
-    // Sandboxed frames have no cookies; the server then renders English.
+    // Sandboxed frames have no cookies; the server then renders Chinese.
   }
 }
 export function setLocale(locale: Locale) {
@@ -42,8 +43,6 @@ export function setLocale(locale: Locale) {
   writeCookie(locale);
   try {
     localStorage.setItem(KEY, locale);
-    // Problem statements follow the new site language again (their own toggle is a per-problem pick).
-    localStorage.removeItem('cswork:problem:locale');
   } catch {
     // Private mode: the switch still applies to this page view.
   }
@@ -61,8 +60,8 @@ export function LocaleProvider({
   useEffect(() => {
     const chosen = readLocale();
     // Readers from before the cookie only have localStorage: their next load renders right.
-    // Chinese is rewritten every load because Safari expires script-set cookies after 7 days.
-    if (chosen !== locale || chosen === 'zh') writeCookie(chosen);
+    // English is rewritten every load because Safari expires script-set cookies after 7 days.
+    if (chosen !== locale || chosen === 'en') writeCookie(chosen);
   }, [locale]);
   return createElement(ServerLocale, { value: locale }, children);
 }

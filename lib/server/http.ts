@@ -20,10 +20,10 @@ export function json(data: unknown, status = 200) {
     },
   });
 }
-/** Errors speak the site language: English unless the client asked for zh. */
+/** Errors speak the site language: Chinese unless the client asked for en. */
 export function fail(error: unknown, request?: Request) {
   const say = (message: string) =>
-    request?.headers.get('x-locale') === 'zh' ? message : englishMessage(message);
+    request?.headers.get('x-locale') === 'en' ? englishMessage(message) : message;
   if (error instanceof HttpError)
     return json({ error: say(error.message) }, error.status);
   if (error instanceof ZodError)

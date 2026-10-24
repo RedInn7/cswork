@@ -133,7 +133,7 @@ export async function handleWorkVerify(request: Request, p: Person | null, path:
     const code = String(randomInt(0, 1000000)).padStart(6, '0');
     await sendMail({
       to: email,
-      ...workCodeMail(request.headers.get('x-locale') === 'zh', code, company.name),
+      ...workCodeMail(request.headers.get('x-locale') !== 'en', code, company.name),
       key: `cswork-work-${mac(`${email}\n${code}`)}`,
     }).catch((error: unknown) => {
       console.error('mail', error instanceof Error ? error.message : 'unknown');
