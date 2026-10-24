@@ -26,6 +26,8 @@ test('judge renders live stages, selects first failure once, preserves privacy a
       value: dom.window[name],
     });
   }
+  // The site defaults to Chinese; English unless a test opts into 'zh'.
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { SubmissionResult } = await import('../components/oj-results.tsx');
@@ -185,6 +187,8 @@ test('a failed ACM submission offers its first failing case as custom input', as
       value: dom.window[name],
     });
   }
+  // The site defaults to Chinese; English unless a test opts into 'zh'.
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { SubmissionResult } = await import('../components/oj-results.tsx');

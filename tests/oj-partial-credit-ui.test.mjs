@@ -10,6 +10,8 @@ test('a submission judged on every case shows its weighted score, groups and the
     descriptors.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   }
+  // The site defaults to Chinese; English unless a test opts into 'zh'.
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { SubmissionResult } = await import('../components/oj-results.tsx');

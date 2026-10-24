@@ -8,6 +8,7 @@ register(
   import.meta.url,
 );
 const { FeedTable, mergeFeed, relativeTime } = await import('../components/judge-status.tsx');
+const { LocaleProvider } = await import('../lib/i18n.ts');
 
 const item = (seq, extra = {}) => ({
   seq,
@@ -28,8 +29,9 @@ const item = (seq, extra = {}) => ({
 });
 
 test('the table shows verdicts, the viewer badge and OA companies without links for unknown problems', () => {
+  // The site defaults to Chinese; this test checks the English labels.
   const html = renderToStaticMarkup(
-    createElement(FeedTable, {
+    createElement(LocaleProvider, { locale: 'en' }, createElement(FeedTable, {
       items: [
         item(3, { status: 'running', passed: 12, mine: true }),
         item(2, {
@@ -49,7 +51,7 @@ test('the table shows verdicts, the viewer badge and OA companies without links 
       onProblem() {},
       onUser() {},
       now: 1_000_000 + 125_000,
-    }),
+    })),
   );
   assert.match(html, /Running<span class="js-progress">12\/28<\/span>/);
   assert.match(html, /js-abbr">WA<\/span>Wrong Answer<span class="js-progress">3\/28/);

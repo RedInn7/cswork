@@ -28,6 +28,8 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
       configurable: true,
       value: dom.window[name],
     });
+  // The site defaults to Chinese; this test checks the English labels.
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { LeetcodeSyncPanel } =
@@ -156,7 +158,8 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
     assert.ok(calls[1].at - calls[0].at >= 1450);
     assert.match(document.body.textContent, /Sync complete/);
     assert.match(document.body.textContent, /Scanned 40/);
-    assert.equal(localStorage.length, 0);
+    // Only the language choice is stored, never the secrets.
+    assert.deepEqual(Object.keys(localStorage), ['cswork:locale']);
     assert.equal(sessionStorage.length, 0);
     assert.ok(changed > 0);
     await fill();
