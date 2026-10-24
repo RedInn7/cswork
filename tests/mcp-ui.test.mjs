@@ -13,6 +13,7 @@ register(
 );
 
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/?view=account' });
+dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
 for (const name of [
   'window',
   'document',

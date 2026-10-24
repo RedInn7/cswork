@@ -16,7 +16,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 const dir = mkdtempSync(join(tmpdir(), 'cswork-job-calendar-'));
 process.env.DATABASE_PATH = join(dir, 'app.sqlite');
 const mocks = {
-  'next/headers': `export const cookies = async () => ({ get: (k) => (k === 'cswork_locale' && globalThis.__zh ? { value: 'zh' } : undefined) }); export const headers = async () => new Headers();`,
+  'next/headers': `export const cookies = async () => ({ get: (k) => (k === 'cswork_locale' ? { value: globalThis.__zh ? 'zh' : 'en' } : undefined) }); export const headers = async () => new Headers();`,
   '@/lib/server/learner-cloud': `export const reportCompanies = () => [{ slug: 'jane', name: 'Jane Street' }, { slug: 'ramp', name: 'Ramp' }, { slug: 'stripe', name: 'Stripe' }];`,
   '@/lib/server/auth': `export const person = async () => globalThis.__viewer ?? null;`,
   // H-1B data the test switches on and off (globalThis.__h1b), whatever the committed file holds.

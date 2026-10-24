@@ -5,6 +5,7 @@ import React, { act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { JSDOM } from 'jsdom';
 import { StatementMarkdown } from '../components/statement-markdown.tsx';
+import { LocaleProvider } from '../lib/i18n.ts';
 const render = body => new JSDOM(renderToStaticMarkup(React.createElement(StatementMarkdown, { body }))).window.document;
 test('Chinese and English constraints render numeric powers, negative exponents and index expressions', () => {
   const doc = render('提示：`-10^{9} <= nums[i] <= 10^9`\n\nConstraints: `10^{-5}`, `O(n^{2})`, `2^{h}`, `a_{i+1}`, `x_{start}`.\n\nThe **2^{nd}** item has 2^10 choices.');
@@ -78,7 +79,7 @@ register(
   `data:text/javascript,${encodeURIComponent(`export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`)}`,
   import.meta.url,
 );
-const post = body => new JSDOM(renderToStaticMarkup(React.createElement(StatementMarkdown, { body, untrusted: true, diagrams: true }))).window.document;
+const post = body => new JSDOM(renderToStaticMarkup(React.createElement(LocaleProvider, { locale: 'en' }, React.createElement(StatementMarkdown, { body, untrusted: true, diagrams: true })))).window.document;
 test('post code blocks offer the playground; statements and other languages do not', () => {
   const body = '```python\nprint(1)\n```\n\n```text\nplain\n```';
   assert.equal(render(body).querySelectorAll('.cs-run-playground').length, 0);

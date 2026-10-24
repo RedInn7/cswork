@@ -15,6 +15,7 @@ test('progress page lists history, mistakes, reviews due today and the learner m
   const dom = new JSDOM('<!doctype html><div id="root"></div>', {
     url: 'https://cswork.test/?view=progress',
   });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   for (const name of [
     'window',
     'document',
