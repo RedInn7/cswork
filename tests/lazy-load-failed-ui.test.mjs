@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import { createElement, lazy, Suspense } from 'react';
 import { prerender } from 'react-dom/static';
 import { register } from 'node:module';
+import { LocaleProvider } from '../lib/i18n.ts';
 register(
   `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};return n(u,c);}")}`,
   import.meta.url,
@@ -18,7 +19,7 @@ test('a split chunk that 404s after a deploy renders a reload prompt instead of 
     ),
   );
   const { prelude } = await prerender(
-    createElement(Suspense, { fallback: 'loading' }, createElement(View)),
+    createElement(LocaleProvider, { locale: 'en' }, createElement(Suspense, { fallback: 'loading' }, createElement(View))),
   );
   const html = await new Response(prelude).text();
   assert.match(html, /<h3>Failed to load this page<\/h3>/);

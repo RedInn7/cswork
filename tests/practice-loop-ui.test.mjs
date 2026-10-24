@@ -14,6 +14,7 @@ register(
 );
 
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;

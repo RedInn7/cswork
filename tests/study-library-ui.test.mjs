@@ -33,6 +33,7 @@ test('curated practice UI preserves language and round history, deduplicates cli
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { StudyLibrary } = await import('../components/study-library.tsx');
+  const { setLocale } = await import('../lib/i18n.ts');
   const rounds = [{ id: 'one', number: 1, createdAt: 1, solved: 12 }];
   let activeRoundId = 'one';
   let failCreate = true;
@@ -147,7 +148,45 @@ test('curated practice UI preserves language and round history, deduplicates cli
       ),
     );
     await settle();
+    // Chinese is the site default, but problem titles are English unless the reader picks Chinese.
+    assert.match(document.body.textContent, /灵神题单精选/);
+    assert.match(document.body.textContent, /全部难度/);
+    assert.doesNotMatch(document.body.textContent, /Ling’s Curated 500/);
+    assert.equal(
+      document.querySelectorAll('.study-row-main')[2].title,
+      `3. ${longTitleEn}`,
+    );
+    const problemLanguage = () => document.querySelector('.study-language select');
+    assert.equal(problemLanguage().getAttribute('aria-label'), '题单语言');
+    assert.equal(problemLanguage().value, 'en');
+    // The statement toggle switches only the problem content, never the UI.
+    await select(problemLanguage(), 'zh');
+    assert.equal(
+      document.querySelectorAll('.study-row-main')[2].title,
+      `3. ${longTitleZh}`,
+    );
+    assert.match(document.body.textContent, /灵神题单精选/);
+    assert.match(document.body.textContent, /全部难度/);
+    assert.equal(localStorage.getItem('cswork:problem:locale'), 'zh');
+    await select(problemLanguage(), 'en');
+    assert.equal(localStorage.getItem('cswork:problem:locale'), 'en');
+    assert.match(document.body.textContent, /全部难度/);
+    // Switching the site to English changes the UI and keeps the remembered problem language.
+    await act(async () => setLocale('en'));
+    await settle();
     assert.match(document.body.textContent, /Ling’s Curated 500/);
+    assert.match(document.body.textContent, /Arrays/);
+    assert.match(document.body.textContent, /All difficulties/);
+    assert.equal(problemLanguage().getAttribute('aria-label'), 'Collection language');
+    assert.equal(problemLanguage().value, 'en');
+    assert.equal(localStorage.getItem('cswork:problem:locale'), 'en');
+    const englishTitle = document.querySelectorAll('.study-row-main')[2];
+    assert.equal(englishTitle.textContent, `3. ${longTitleEn}`);
+    assert.equal(
+      englishTitle.title,
+      `3. ${longTitleEn}`,
+      'full long title remains available',
+    );
     assert.deepEqual(
       [...document.querySelectorAll('.study-progress')].map(
         (node) => node.textContent,
@@ -242,28 +281,6 @@ test('curated practice UI preserves language and round history, deduplicates cli
           new URL(url, 'https://cswork.test').searchParams.get('collection') ===
           'ling-selected-500',
       ),
-    );
-    // English is the site default; the page switch still flips to Chinese and back.
-    await select(
-      document.querySelector('[aria-label="Collection language"]'),
-      'zh',
-    );
-    assert.match(document.body.textContent, /灵神题单精选/);
-    assert.equal(
-      document.querySelectorAll('.study-row-main')[2].title,
-      `3. ${longTitleZh}`,
-    );
-    await select(document.querySelector('[aria-label="题单语言"]'), 'en');
-    assert.match(document.body.textContent, /Ling’s Curated 500/);
-    assert.match(document.body.textContent, /Arrays/);
-    assert.match(document.body.textContent, /All difficulties/);
-    assert.equal(localStorage.getItem('cswork:problem:locale'), 'en');
-    const englishTitle = document.querySelectorAll('.study-row-main')[2];
-    assert.equal(englishTitle.textContent, `3. ${longTitleEn}`);
-    assert.equal(
-      englishTitle.title,
-      `3. ${longTitleEn}`,
-      'full long title remains available',
     );
     const start = button('Start a new round');
     await act(async () => {

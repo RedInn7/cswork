@@ -35,6 +35,7 @@ const settle = (ms = 20) => act(async () => new Promise((r) => setTimeout(r, ms)
 
 function dom() {
   const window = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' }).window;
+  window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: window[name] });
   window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
