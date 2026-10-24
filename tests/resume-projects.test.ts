@@ -67,12 +67,9 @@ test('acceptance scripts use only the Python standard library', () => {
   }
 });
 
-test('GET /projects/<slug>/accept downloads the script; unknown slugs are 404', async () => {
+test('GET /projects/<slug>/accept is 404 while resume projects are taken down', async () => {
   const response = await GET(new Request('https://cswork.test/projects/kv-wal/accept'), { params: Promise.resolve({ slug: 'kv-wal' }) });
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get('content-type'), 'text/x-python; charset=utf-8');
-  assert.equal(response.headers.get('content-disposition'), 'attachment; filename="accept_test.py"');
-  assert.equal(await response.text(), readFileSync('content/projects/kv-wal/accept_test.py', 'utf8'));
+  assert.equal(response.status, 404);
   const missing = await GET(new Request('https://cswork.test/projects/nope/accept'), { params: Promise.resolve({ slug: 'nope' }) });
   assert.equal(missing.status, 404);
   assert.deepEqual(projectPaths().slice(0, 2), [{ path: '/projects' }, { path: `/projects/${resumeProjects[0].slug}` }]);

@@ -37,6 +37,7 @@ function useDom(url = 'https://cswork.test/system-design/url-shortener') {
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
   dom.window.HTMLElement.prototype.scrollIntoView = () => {};
   return dom;
@@ -316,6 +317,7 @@ test('the walkthrough opens after a draft or a skip, stays open next time, and o
     // A chapter the signed-in learner marked read is open, and stays open once unticked.
     location.hash = '';
     localStorage.clear();
+    localStorage.setItem('cswork:locale', 'en');
     await act(async () => root.render(createElement('div')));
     marksApi(new Set(['sd:news-feed']));
     await act(async () =>

@@ -38,6 +38,7 @@ test('the SQL workspace shows tables, inserts names and previews plans and CTEs'
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   globalThis.sqlEdits = [];
   globalThis.sqlFocus = 0;
   const { createRoot } = await import('react-dom/client');

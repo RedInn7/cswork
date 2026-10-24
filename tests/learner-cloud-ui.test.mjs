@@ -32,6 +32,7 @@ for (const name of [
 ])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] ?? dom.window.MouseEvent });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
 globalThis.requestAnimationFrame ??= (cb) => setTimeout(cb, 0);
 globalThis.cancelAnimationFrame ??= (id) => clearTimeout(id);
 globalThis.ResizeObserver ??= class {

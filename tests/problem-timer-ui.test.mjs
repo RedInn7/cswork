@@ -26,6 +26,7 @@ test('problem timer counts up, persists, counts down and alerts at zero', async 
     });
   }
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   t.mock.timers.enable({
     apis: ['Date', 'setInterval', 'setTimeout'],
     now: 1_700_000_000_000,

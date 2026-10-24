@@ -179,7 +179,7 @@ test('OTP recovery creates password, distinguishes mail purpose and revokes all 
   addToken('pat-reset');
   const sent = await request('email-otp/request-password-reset', { email });
   assert.equal(sent.status, 200);
-  assert.equal(mail.at(-1)?.subject, 'Reset your cswork password');
+  assert.equal(mail.at(-1)?.subject, '重设你的 cswork 密码');
   const reset = await request('email-otp/reset-password', {
     email,
     otp: lastCode(),
@@ -263,12 +263,12 @@ test('native profile, identity and session endpoints work for the signed-in user
 });
 test('email verification purpose and missing provider are explicit', async () => {
   await sendAuthOTP({ email, otp: '123456', type: 'email-verification' });
-  assert.equal(mail.at(-1)?.subject, 'Verify your cswork email');
+  assert.equal(mail.at(-1)?.subject, '验证你的 cswork 邮箱');
   await sendAuthOTP(
     { email, otp: '123456', type: 'email-verification' },
-    { getHeader: (key) => (key === 'x-locale' ? 'zh' : null) },
+    { getHeader: (key) => (key === 'x-locale' ? 'en' : null) },
   );
-  assert.equal(mail.at(-1)?.subject, '验证你的 cswork 邮箱');
+  assert.equal(mail.at(-1)?.subject, 'Verify your cswork email');
   const key = process.env.RESEND_API_KEY;
   delete process.env.RESEND_API_KEY;
   try {

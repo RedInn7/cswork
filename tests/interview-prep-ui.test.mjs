@@ -17,6 +17,7 @@ const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cs
 for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator', 'location', 'history'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
 globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
 dom.window.HTMLElement.prototype.scrollIntoView = () => {};
 const { createRoot } = await import('react-dom/client');

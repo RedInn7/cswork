@@ -107,6 +107,7 @@ test('the header toggle cycles system → light → dark and saves the pick', as
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: p.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  p.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   const { createElement, act } = await import('react');
   const { createRoot } = await import('react-dom/client');
   const { ThemeToggle } = await import('../components/theme-toggle.tsx');

@@ -15,6 +15,7 @@ const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cs
 for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
 
 /** IndexedDB in memory: one store, requests answered on the microtask queue. */
 const stored = new Map();
