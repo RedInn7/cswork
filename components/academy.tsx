@@ -73,7 +73,7 @@ import {
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
-import { setLocale, useLocale, useT } from '@/lib/i18n';
+import { asLanguage, htmlLang, LANGUAGES, setLocale, useLanguage, useLocale, useT } from '@/lib/i18n';
 import { pageView as beaconPageView, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
@@ -157,11 +157,12 @@ function pageView() {
   });
 }
 export function Academy() {
-  const locale = useLocale(),
+  const language = useLanguage(),
+    locale = useLocale(),
     t = useT();
   useEffect(() => {
-    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
-  }, [locale]);
+    document.documentElement.lang = htmlLang(language);
+  }, [language]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
@@ -575,19 +576,24 @@ export function Academy() {
               <span>{t('搜索全站', 'Search CSWork')}</span>
               <PaletteKey />
             </button>
-            <Button
-              variant="ghost"
-              className="locale-button"
-              aria-label={locale === 'zh' ? 'Switch to English' : '切换到中文'}
-              onClick={() => {
-                const next = locale === 'zh' ? 'en' : 'zh';
-                track('language_switch', { locale: next });
-                setLocale(next);
-              }}
-            >
-              <Languages size={16} />
-              {locale === 'zh' ? 'EN' : '中文'}
-            </Button>
+            <label className="locale-select" data-no-convert>
+              <Languages size={16} aria-hidden="true" />
+              <select
+                aria-label="语言 / Language"
+                value={language}
+                onChange={(event) => {
+                  const next = asLanguage(event.target.value);
+                  track('language_switch', { locale: next });
+                  setLocale(next);
+                }}
+              >
+                {LANGUAGES.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <ThemeToggle />
             <Button
               size="icon"
