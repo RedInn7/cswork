@@ -24,6 +24,7 @@ const settle = (ms = 30) => act(async () => new Promise((resolve) => setTimeout(
 
 async function mount(stored = {}) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/oa/ica/bank-ledger' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const [key, value] of Object.entries(stored)) dom.window.localStorage.setItem(key, value);
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });

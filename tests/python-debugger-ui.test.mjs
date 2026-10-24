@@ -127,6 +127,7 @@ const open = () => {
 
 async function mount(props) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/playground' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   new dom.window.MutationObserver((records) => {

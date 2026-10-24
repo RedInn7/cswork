@@ -56,6 +56,7 @@ function dom() {
 
 test('a guided OA problem shows the hint ladder, not the hint box, and an editorial with English text and code tabs', async () => {
   const window = dom();
+  localStorage.setItem('cswork:locale', 'en');
   const { createRoot } = await import('react-dom/client');
   const { ProblemWorkspace } = await import('../components/problem-workspace.tsx');
   // As the server sends it: the package's hints dropped for the guide's ladder.

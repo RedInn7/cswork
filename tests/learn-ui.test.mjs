@@ -31,6 +31,7 @@ function useDom() {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/learn/big-o' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 }
 
@@ -140,6 +141,7 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
 test("a lesson's key points become a review card once the read marks tell a guest from a learner", async () => {
   useDom();
   localStorage.clear();
+  localStorage.setItem('cswork:locale', 'en');
   globalThis.fetch = async () => Response.json({ error: 'sign in' }, { status: 401 });
   const { createRoot } = await import('react-dom/client');
   const { SdRecall } = await import('../app/system-design/reader.tsx');

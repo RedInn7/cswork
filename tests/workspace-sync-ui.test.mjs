@@ -36,6 +36,7 @@ test('a newer draft from another device, Format, and Open in Playground', async 
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+  localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { ProblemWorkspace } = await import('../components/problem-workspace.tsx');
