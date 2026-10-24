@@ -34,6 +34,7 @@ for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Eve
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
 const { createRoot } = await import('react-dom/client');
 const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
 const click = async (node) => {

@@ -6,6 +6,7 @@ import { test } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { AlgorithmDemo, DemoGraphView } from '../components/algorithm-demo';
+import { LocaleProvider } from '../lib/i18n';
 import { demoKinds, type DemoTrace } from '../lib/algorithm-demo';
 import {
   DEFAULT_ALLOC,
@@ -408,7 +409,7 @@ test('the demo player renders the simulators, whose kinds never collide with alg
   const page = readFileSync('app/oa/sims/page.tsx', 'utf8');
   assert.ok(page.includes('id={kind}') && page.includes("path: '/oa/sims'"));
   for (const kind of simKinds) {
-    const html = renderToStaticMarkup(createElement(AlgorithmDemo, { kind }));
+    const html = renderToStaticMarkup(createElement(LocaleProvider, { locale: 'en', children: createElement(AlgorithmDemo, { kind }) }));
     assert.ok(html.includes(createSimTrace(kind, true).title.replace(/'/g, '&#x27;')), kind);
     assert.equal(html.includes('algorithm-demo-graph'), kind === 'tcp-handshake' || kind === 'tcp-congestion', kind);
   }

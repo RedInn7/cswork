@@ -13,6 +13,7 @@ register(
 );
 
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/?view=progress&tab=share' });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 for (const name of [
   'window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'PointerEvent', 'KeyboardEvent',
   'FocusEvent', 'getComputedStyle', 'localStorage', 'sessionStorage', 'navigator', 'location',
@@ -26,6 +27,8 @@ const { MyExperienceSubmissions } = await import('../components/experience-submi
 const { ExperienceReview } = await import('../components/experience-review.tsx');
 const { MemberPost, ReportExperience } = await import('../components/experience-report.tsx');
 const { MemberStatsCard, OaOutcomesCard } = await import('../components/company-stats-card.tsx');
+const { LocaleProvider } = await import('../lib/i18n.ts');
+const en = (el) => createElement(LocaleProvider, { locale: 'en' }, el);
 
 const wait = (ms = 5) =>
   act(async () => {
@@ -197,7 +200,7 @@ test('a post the markdown renderer chokes on shows as plain text and can still b
 
 test('a member post shows its status to the author and a report control to other readers', async () => {
   const member = { id: 'CCCCCCCCCCCC', handle: null, status: 'approved', public: true, mine: false, note: '' };
-  const html = (props) => new JSDOM(renderToStaticMarkup(createElement(MemberPost, props))).window.document;
+  const html = (props) => new JSDOM(renderToStaticMarkup(en(createElement(MemberPost, props)))).window.document;
   let doc = html({ member, questions: [{ text: 'LRU cache', round: '', problem: '', similar: false }] });
   assert.ok(doc.querySelector('details.xs-report') !== null);
   assert.ok(doc.querySelector('a[href="/library/experience-ugc/CCCCCCCCCCCC"]') !== null);
@@ -317,7 +320,7 @@ test('a tracker link prefills the form and clears its params; OA fields post onl
 
 test('a post shows its OA line; company pages count OA outcomes, never as a rate', () => {
   const member = { id: 'CCCCCCCCCCCC', handle: null, status: 'approved', public: true, mine: false, note: '' };
-  const html = (el) => new JSDOM(renderToStaticMarkup(el)).window.document;
+  const html = (el) => new JSDOM(renderToStaticMarkup(en(el))).window.document;
   let doc = html(createElement(MemberPost, { member: { ...member, oa: { solved: 2, total: 3, testsPct: 85, minutes: 70, next: 'yes' } }, questions: [] }));
   assert.equal(doc.querySelector('.xs-oa').textContent, 'OA 2/3 solved · 85% of tests · 70 min · Moved on');
   doc = html(createElement(MemberPost, { member: { ...member, oa: null }, questions: [] }));
@@ -424,7 +427,7 @@ test('a post links its questions to practise and offers the loop as a mock; comp
     { text: 'LRU cache', round: 'Onsite', problem: 'lc-146', similar: true, title: 'LRU 缓存', titleEn: 'LRU Cache' },
     { text: 'Tell me about a conflict', round: '', problem: '', similar: false },
   ];
-  const html = (el) => new JSDOM(renderToStaticMarkup(el)).window.document;
+  const html = (el) => new JSDOM(renderToStaticMarkup(en(el))).window.document;
   let doc = html(createElement(MemberPost, { member, questions }));
   const items = doc.querySelectorAll('.xs-questions li');
   assert.equal(items[0].querySelector('.xs-q-round').textContent, 'Onsite');

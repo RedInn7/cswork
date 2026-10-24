@@ -87,9 +87,9 @@ void test('due cards, box counts, links and clearing mastered cards', () => {
   assert.equal(recallHref('content:coding_question/a.b'), '/?view=content&type=coding_question&slug=a.b');
   assert.equal(recallHref('sd:url-shortener'), '/system-design/url-shortener');
   assert.equal(recallHref('problem:lc-1'), null);
-  // Wave 10: topic points, /learn chapters and template drills.
+  // Wave 10: topic points and template drills; /learn chapters are taken down, so no link.
   assert.equal(recallHref('content:topic/binary-search'), '/topics/binary-search');
-  assert.equal(recallHref('sd:os/deadlock'), '/learn/os/deadlock');
+  assert.equal(recallHref('sd:os/deadlock'), null);
   assert.equal(recallHref('tpl:dp-knapsack/unbounded'), '/topics/dp-knapsack?drill=recall&v=unbounded#topic-drill');
   const tpl = parseRecall(JSON.stringify({ v: 1, items: { 'tpl:dp-knapsack/unbounded': [0, 9, ''], 'tpl:Bad/x': [0, 9, ''] } }));
   assert.deepEqual(Object.keys(tpl.items), ['tpl:dp-knapsack/unbounded']);

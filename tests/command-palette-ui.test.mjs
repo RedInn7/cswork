@@ -17,6 +17,7 @@ for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Eve
   Object.defineProperty(globalThis, name, { configurable: true, value: name === 'getSelection' ? dom.window.getSelection.bind(dom.window) : dom.window[name] });
 dom.window.scrollTo = () => {};
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
 const { createRoot } = await import('react-dom/client');
 const palette = await import('../components/command-palette.tsx');
 const { CommandPalette, SelectionAsk, openCommandPalette, topicHits, companyHits, mergeHits } = palette;

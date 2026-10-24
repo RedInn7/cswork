@@ -24,6 +24,7 @@ function useDom() {
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   globalThis.requestAnimationFrame = (f) => setTimeout(f, 0);
   dom.window.HTMLElement.prototype.scrollIntoView = () => {};
   return dom;

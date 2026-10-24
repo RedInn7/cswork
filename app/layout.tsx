@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { LocaleProvider } from '@/lib/i18n';
-import { requestLocale } from '@/lib/server/locale';
+import { htmlLang } from '@/lib/language';
+import { requestLanguage, requestLocale } from '@/lib/server/locale';
 import './globals.css';
 import './theme.css';
 import { THEME_SCRIPT } from '@/lib/theme-script';
@@ -23,12 +24,12 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   // The header switch mirrors the language into a cookie (lib/i18n.ts), so the
   // first HTML is already in the reader's language.
-  const locale = await requestLocale();
+  const locale = await requestLanguage();
   // The theme (.dark, data-theme, color-scheme) is THEME_SCRIPT's alone: it runs before
   // first paint, and if React rendered those attributes too, the next server render of
   // this layout would diff them away after a switch.
   return (
-    <html lang={locale === 'zh' ? 'zh-CN' : 'en'} suppressHydrationWarning>
+    <html lang={htmlLang(locale)} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>

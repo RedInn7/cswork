@@ -91,6 +91,7 @@ const empty = (days) => ({
 
 test('owner metrics render the summary, refetch per range and handle empty and error states', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;

@@ -14,6 +14,7 @@ register(
 // "Practise this loop" (/?view=mock&experience=<id>): one draw per visit, the replace prompt as
 // usual, never over a running skill exam; "draw again" keeps the same loop.
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/?view=mock' });
+dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
 for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator', 'location', 'history'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -65,6 +66,7 @@ async function visit(params) {
 
 test('?experience= draws that loop once and opens its check-in', async () => {
   localStorage.clear();
+  localStorage.setItem('cswork:locale', 'en');
   calls.length = 0;
   const { root, navigated } = await visit({ view: 'mock', experience: ID });
   assert.equal(draws().length, 1);

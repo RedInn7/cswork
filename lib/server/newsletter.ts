@@ -235,7 +235,7 @@ export async function handleNewsletter(request: Request, p: Person | null, path:
     return json(status(p.id));
   }
   if (!p.verified) throw new HttpError(403, '请先验证邮箱');
-  const locale = d.locale ?? (request.headers.get('x-locale') === 'zh' ? 'zh' : 'en');
+  const locale = d.locale ?? (request.headers.get('x-locale') === 'en' ? 'en' : 'zh');
   // A changed address has to confirm again.
   db.prepare(
     `INSERT INTO newsletter_subs(user_id,email,locale,token,subscribed_at) VALUES(?,?,?,?,?)

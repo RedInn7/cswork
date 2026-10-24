@@ -14,6 +14,7 @@ test('classic lists show groups and progress, link external problems out and swi
   const dom = new JSDOM('<!doctype html><div id="root"></div>', {
     url: 'https://cswork.test/',
   });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of [
     'window',
     'document',

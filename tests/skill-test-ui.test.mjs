@@ -25,6 +25,7 @@ function useDom(url = 'https://cswork.test/certify') {
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'StorageEvent'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   return navigations;
 }
 function api(routes) {

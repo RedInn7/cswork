@@ -31,6 +31,7 @@ for (const name of [
   'location',
 ])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] ?? dom.window.MouseEvent });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 globalThis.requestAnimationFrame ??= (cb) => setTimeout(cb, 0);
 globalThis.cancelAnimationFrame ??= (id) => clearTimeout(id);

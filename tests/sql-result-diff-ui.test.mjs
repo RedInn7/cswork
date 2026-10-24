@@ -12,6 +12,7 @@ register(
 // The judge result panel draws a SQL case's expected and actual result sets as one diffed table.
 test('a failed SQL case shows the result diff; other languages and error output do not', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'navigator', 'localStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;

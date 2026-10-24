@@ -85,9 +85,8 @@ export type ProblemSummary = Pick<Problem, 'id' | 'title' | 'difficulty' | 'tags
   courseId?: string;
   freeJudge?: boolean;
 };
-/** The title in the page language, from a full problem or a bootstrap summary. */
-export function problemTitle(problem: Problem | ProblemSummary, locale: ProblemLocale) {
-  if (locale !== 'en') return problem.title;
+/** The English title when there is one (titles stay English whatever the site language). */
+export function problemTitle(problem: Problem | ProblemSummary) {
   return (
     ('titleEn' in problem && problem.titleEn) ||
     ('translations' in problem && problem.translations?.en?.title) ||

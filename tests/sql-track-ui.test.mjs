@@ -14,6 +14,7 @@ test('the SQL track lists published problems by topic and opens them', async () 
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { AlgorithmLibrary } = await import('../components/algorithm-library.tsx');
@@ -98,6 +99,7 @@ test('the SQL track switches to the pandas versions once they are listed', async
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { SqlTrack } = await import('../components/sql-track.tsx');
@@ -173,6 +175,7 @@ test('the SQL track filters by interview pattern, from the URL and the chips', a
   };
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { SqlTrack } = await import('../components/sql-track.tsx');

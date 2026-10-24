@@ -54,6 +54,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
     'navigator',
     'location',
     'history',
+    'localStorage',
   ]) {
     saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
     Object.defineProperty(globalThis, name, {
@@ -63,6 +64,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
   }
   const originalFetch = globalThis.fetch;
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   const requests = [];
   globalThis.fetch = (url, options) =>
     new Promise((resolve) =>
@@ -544,12 +546,13 @@ test('OA list: new-this-week banner, progress and newest-first filters in the UR
     url: 'https://cswork.test/?view=problems&library=oa&status=todo',
   });
   const saved = new Map();
-  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'navigator', 'location', 'history', 'sessionStorage']) {
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'navigator', 'location', 'history', 'sessionStorage', 'localStorage']) {
     saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   }
   const originalFetch = globalThis.fetch;
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   const requests = [];
   globalThis.fetch = (url, options) =>
     new Promise((resolve) => requests.push({ url, signal: options.signal, resolve }));

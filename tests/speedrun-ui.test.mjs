@@ -29,6 +29,7 @@ const round = [
 
 test('the speedrun answers with 1-4, moves on with Enter, and records the best score', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.org/?view=speedrun' });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   for (const name of ['window', 'document', 'location', 'HTMLElement', 'Element', 'Node', 'Event', 'KeyboardEvent', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -115,6 +116,7 @@ test('the speedrun answers with 1-4, moves on with Enter, and records the best s
 test('a blocked localStorage never breaks the round', async () => {
   const { Speedrun } = await import('../components/speedrun.tsx');
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.org/?view=speedrun' });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   for (const name of ['window', 'document', 'location', 'HTMLElement', 'Element', 'Node', 'Event', 'KeyboardEvent', 'MouseEvent'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   Object.defineProperty(globalThis, 'localStorage', {

@@ -341,7 +341,7 @@ export function MyProgress({
               {source(id) === 'lc' && (
                 <span className="study-number">{id.slice(3)}.</span>
               )}{' '}
-              {summary ? problemTitle(summary, english ? 'en' : 'zh') : id}
+              {summary ? problemTitle(summary) : id}
               {starredIds.has(id) && (
                 <>
                   <Star className="study-star" size={14} aria-hidden="true" />

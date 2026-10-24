@@ -250,7 +250,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
           {ranked.length ? (
             <ol className="company-hub-lc">
               {ranked.map((p, index) => {
-                const title = zh ? p.titleZh || p.titleEn : p.titleEn || p.titleZh;
+                const title = p.titleEn || p.titleZh;
                 const body = (
                   <>
                     <span className="company-hub-rank" aria-hidden="true">

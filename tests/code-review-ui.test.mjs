@@ -26,6 +26,7 @@ export async function load(u,c,n){
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
 for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'history'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { CodeReview, ReviewLink } = await import('../components/code-review.tsx');
@@ -186,7 +187,7 @@ test('the workspace offers it on an accepted formal submission; the page is neve
   const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
   assert.match(workspace, /inspected\.mode === 'judge' && inspected\.status === 'accepted' && communityProblem\(inspected\.problem_id\) && \(\s*<ReviewLink/);
   const { generateMetadata } = await import('../app/review/[token]/page.tsx');
-  for (const [locale, title] of [['zh', '代码评审 · cswork'], [undefined, 'Code review · cswork']]) {
+  for (const [locale, title] of [['zh', '代码评审 · cswork'], [undefined, '代码评审 · cswork'], ['en', 'Code review · cswork']]) {
     globalThis.__locale = locale;
     const meta = await generateMetadata();
     assert.equal(meta.title, title);

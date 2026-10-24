@@ -8,9 +8,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { register } from 'node:module';
 import { readFileSync } from 'node:fs';
 
-// Stylesheets load as nothing; the page reads the locale cookie through a stubbed next/headers (English).
+// Stylesheets load as nothing; the page reads the locale cookie through a stubbed next/headers (set to English; the default is Chinese).
 const mocks = {
-  'next/headers': 'export const cookies = async () => ({ get: () => undefined }); export const headers = async () => new Headers();',
+  'next/headers': 'export const cookies = async () => ({ get: (name) => (name === "cswork_locale" ? { value: "en" } : undefined) }); export const headers = async () => new Headers();',
   'next/link': 'export default function Link() { return null; }',
   'next/navigation': 'export const usePathname = () => "/roadmap"; export const useSearchParams = () => new URLSearchParams();',
 };
@@ -57,6 +57,7 @@ test('states are hints: done at 80%, ready once prerequisites reach 60%', () => 
 
 test('signed in, the tracks show topic progress and read chapters; signed out they stay plain', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/roadmap' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -148,7 +149,9 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     assert.match(subject('os').textContent, /In progress · Answered 1\/20 · right 0 · mastered 0/);
     assert.match(subject('os').textContent, /Read 1\/8 · review cards 1/);
     assert.match(subject('git').textContent, /Answered 2\/2 · right 2 · mastered 1/);
-    assert.ok(subject('os').querySelector('a[href="/learn/os"]'));
+    // /learn is retired (app/learn/layout.tsx): the crash course is named, not linked.
+    assert.equal(subject('os').querySelector('a[href="/learn/os"]'), null);
+    assert.match(subject('os').textContent, /Operating Systems, Illustrated/);
     assert.match(subject('network').textContent, /After: Operating systems/);
     const asked = requests.length;
 
@@ -212,7 +215,7 @@ test('every system design chapter lands in its course part, the ML chapters in t
   assert.equal(cards.length, 8);
   assert.deepEqual([...doc.querySelectorAll('.roadmap-cs > li')].map((row) => row.querySelectorAll('ol > li').length), [3, 1, 2, 2]);
   assert.ok(cards.every((li) => !li.hasAttribute('data-state')));
-  for (const href of ['/learn/os', '/learn/network', '/system-design/concurrency-primitives', '/system-design/building-blocks', '/oa/mcq?topic=security', '#roadmap-sd'])
+  for (const href of ['/system-design/concurrency-primitives', '/system-design/building-blocks', '/oa/mcq?topic=security', '#roadmap-sd'])
     assert.ok(doc.querySelector(`#roadmap-cs ~ * a[href="${href}"]`), href);
 });
 
@@ -230,6 +233,7 @@ const findRolePath = async (params) => {
 };
 async function mountRolePath(url, props, fetchStub) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'MouseEvent', 'SubmitEvent', 'FormData', 'localStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;

@@ -359,7 +359,7 @@ function ListDetail({
     run(async () => setList(await api<Detail>(`oj/lists/${list.id}`, body)));
   const nameOf = (pid: string) => {
     const summary = summaries.get(pid);
-    return summary ? problemTitle(summary, english ? 'en' : 'zh') : pid;
+    return summary ? problemTitle(summary) : pid;
   };
   /** Moves a row and saves the whole order; the screen shows it at once and reloads if the save fails. */
   function reorder(from: number, to: number, button?: 'up' | 'down') {

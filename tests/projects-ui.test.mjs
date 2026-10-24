@@ -10,9 +10,9 @@ import { createElement, act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
-// English pages: the locale cookie is absent.
+// English pages: the locale cookie says en (the site defaults to Chinese).
 const mocks = {
-  'next/headers': 'export const cookies = async () => ({ get: () => undefined }); export const headers = async () => new Headers();',
+  'next/headers': 'export const cookies = async () => ({ get: (name) => (name === "cswork_locale" ? { value: "en" } : undefined) }); export const headers = async () => new Headers();',
   'next/link': `import React from ${JSON.stringify(react)};export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
   'next/navigation': 'export const usePathname = () => "/projects"; export const useSearchParams = () => new URLSearchParams(); export const notFound = () => { throw new Error("NEXT_NOT_FOUND"); };',
 };
@@ -28,6 +28,7 @@ const settle = () => act(async () => new Promise((r) => setTimeout(r, 20)));
 
 function mount(url) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'MouseEvent', 'SubmitEvent', 'localStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -224,12 +225,13 @@ test('the roadmap role picker renders a path; members see each step filled in', 
     const state = (title) =>
       [...document.querySelectorAll('.role-path-steps > li')].find((li) => li.querySelector('.role-path-head a').textContent === title);
     assert.equal(state(framework.title).getAttribute('data-state'), 'done');
-    assert.equal(state('Resume project: Token-Bucket Rate Limiter Service').getAttribute('data-state'), 'done');
-    assert.equal(state('Resume project: Task Queue with Retries and Visibility Timeouts').getAttribute('data-state'), 'todo', 'doing is not done');
+    // Projects and courses are taken down: their steps are filtered out of the path.
+    assert.ok(!backend.props.steps.some((s) => s.kind === 'project' || s.kind === 'course'));
+    assert.equal(state('Resume project: Token-Bucket Rate Limiter Service'), undefined);
     assert.equal(state(sql.title).getAttribute('data-state'), 'active');
     assert.equal(state(sql.title).querySelector('.role-path-count').textContent, `2/${sql.keys.length}`);
     assert.equal(state('Multiple choice: Databases').getAttribute('data-state'), 'done');
-    assert.match(document.querySelector('.role-path-progress').textContent, /^3 of \d+ required steps done\.$/);
+    assert.match(document.querySelector('.role-path-progress').textContent, /^2 of \d+ required steps done\.$/);
     // Marks, history, the MCQ note and the route notes (the schedule's, lib/content/role-paths.ts RouteDoc).
     assert.equal(requests.filter((u) => u.includes('/api/oj/')).length, 4);
 

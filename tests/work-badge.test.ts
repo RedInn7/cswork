@@ -134,7 +134,7 @@ void test('work email: codes by mail, an HMAC only, one address per account, rat
   assert.equal(await status(amy, 'POST', 'work/verify', { email: 'amy@unknown-corp.com' }), 400);
   const code = await verify(amy, 'Amy@Google.com');
   assert.deepEqual(mail[0].to, ['amy@google.com']);
-  assert.match(mail[0].subject, /work email/);
+  assert.match(mail[0].subject, /员工身份验证码/);
   const row = sqlite().prepare('SELECT * FROM work_verifications WHERE user_id=?').get(amy.id) as Record<string, unknown>;
   assert.ok(!JSON.stringify(row).includes('amy@'), 'the address is never stored');
   assert.notEqual(row.email_hash, createHash('sha256').update('amy@google.com').digest('base64url'));

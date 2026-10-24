@@ -118,7 +118,7 @@ export default async function IssuePage({ params }: Props) {
                     <td className="newsletter-week">{d.date.slice(5)}</td>
                     <td>
                       <Link href={d.href} prefetch={false}>
-                        {(zh ? d.title : d.titleEn) || d.title}
+                        {d.titleEn || d.title}
                       </Link>
                     </td>
                     <td>

@@ -38,7 +38,8 @@ export default async function DailyPage() {
           throw error;
         })
       : null;
-  const english = judged && locale === 'en' ? oaEnglishStatement(daily!.id) : undefined;
+  // Statements are English whatever the site language.
+  const english = judged ? oaEnglishStatement(daily!.id) : undefined;
   return (
     <>
       <DailyView

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticMarkup as renderMarkup } from 'react-dom/server';
 import { register } from 'node:module';
 register(
   `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};return n(u,c);}")}`,
@@ -9,6 +9,9 @@ register(
 );
 const { MockExamBar } = await import('../components/mock-exam-bar.tsx');
 const { MockOa, MockTopicBrief } = await import('../components/mock-oa.tsx');
+const { LocaleProvider } = await import('../lib/i18n.ts');
+// These assertions read the English copy; the site default is Chinese.
+const renderToStaticMarkup = (el) => renderMarkup(createElement(LocaleProvider, { locale: 'en' }, el));
 
 const session = (startedAt) => ({
   id: 's1',
@@ -154,6 +157,7 @@ test('?rules=codility preselects single-submit rules; the draw, the check-in and
   const { act } = await import('react');
   const { createRoot } = await import('react-dom/client');
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/?view=mock&rules=codility' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'StorageEvent'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;

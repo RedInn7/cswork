@@ -174,8 +174,7 @@ export function recallHref(target: string) {
   const tpl = /^tpl:([a-z0-9-]+)\/([a-z0-9-]+)$/.exec(target);
   if (tpl) return `/topics/${tpl[1]}?drill=recall&v=${tpl[2]}#topic-drill`;
   if (target.startsWith('idea:')) return `/?view=problem&problem=${encodeURIComponent(target.slice(5))}`;
-  // sd:<course>/<chapter> is a /learn chapter (lib/server/beginner-courses.ts learnKey).
-  const learn = /^sd:([^/]+)\/([^/]+)$/.exec(target);
-  if (learn) return `/learn/${encodeURIComponent(learn[1])}/${encodeURIComponent(learn[2])}`;
+  // sd:<course>/<chapter> is a /learn chapter (lib/server/beginner-courses.ts learnKey): taken down, no link.
+  if (/^sd:[^/]+\/[^/]+$/.test(target)) return null;
   return target.startsWith('sd:') ? `/system-design/${encodeURIComponent(target.slice(3))}` : null;
 }

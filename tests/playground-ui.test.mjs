@@ -30,6 +30,7 @@ async function mount(url, props, stored) {
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // English UI copy below; the site defaults to zh.
   const { createRoot } = await import('react-dom/client');
   const { PlaygroundView } = await import('../app/playground/view.tsx');
   const root = createRoot(document.getElementById('root'));

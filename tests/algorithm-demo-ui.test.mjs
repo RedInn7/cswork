@@ -16,6 +16,7 @@ register(
 
 test('a graph demo renders an SVG, steps forward and back, and reduced motion stops playback', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   const motion = { matches: false, listeners: [], addEventListener: (_t, fn) => motion.listeners.push(fn), removeEventListener() {} };
   dom.window.matchMedia = () => motion;
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage'])
@@ -64,6 +65,7 @@ test('a graph demo renders an SVG, steps forward and back, and reduced motion st
 
 test('your own input reruns the demo, and predict mode scores clicks on cells and graph nodes', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   dom.window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });

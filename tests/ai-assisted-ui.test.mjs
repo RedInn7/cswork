@@ -24,6 +24,7 @@ const settle = (ms = 30) => act(async () => new Promise((resolve) => setTimeout(
 
 async function mount(overrides = {}, stored) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/ai-assisted/inventory-oversell' });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   if (stored) dom.window.localStorage.setItem('cswork:ai-round:inventory-oversell:v1', stored);
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
@@ -206,6 +207,7 @@ test('a take-home has no AI pair, keeps its design note and offers the quality r
     return Response.json({ review: review(['structure', 'tests', 'errors', 'readme']), remaining: 1, limit: 2, bonus: 0 });
   };
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/take-home/url-shortener' });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   dom.window.localStorage.setItem('cswork:take-home:url-shortener:notes', 'Run with python -m unittest.');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });

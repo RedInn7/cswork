@@ -39,7 +39,8 @@ test('the budget stays folded until asked for, then gives its line', async () =>
   // Python at 10^6: the warning and the lesson on estimating complexity.
   await render(createElement(ComplexityBudget, { bounds: { n: 1000000, name: 'n' }, language: 'python', english: false }));
   assert.match(document.getElementById('complexity-budget').textContent, /Python 每秒大约只有 10\^7 次/);
-  assert.equal(document.querySelector('#complexity-budget a').getAttribute('href'), '/learn/big-o/complexity');
+  // The /learn complexity chapter is taken down: no link.
+  assert.equal(document.querySelector('#complexity-budget a'), null);
   await render(null);
 });
 

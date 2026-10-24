@@ -31,7 +31,7 @@ export async function CompanyAsked({ slug, zh }: { slug: string; zh: boolean }) 
                 </span>
                 <span className="company-hub-lc-title">
                   <span className="oa-public-number">{r.problemId.startsWith('lc-') ? `LC ${r.problemId.slice(3)}` : 'OA'}</span>{' '}
-                  {problemTitle(p, zh ? 'zh' : 'en')}
+                  {problemTitle(p)}
                 </span>
                 <span className="company-hub-freq">
                   {zh ? `最近被问 ${r.n} 次 · ${r.last}` : `Asked ${r.n}× · ${r.last}`}

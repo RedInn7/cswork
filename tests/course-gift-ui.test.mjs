@@ -15,6 +15,7 @@ register(
 globalThis.__link = (props) => createElement('a', props);
 
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
 for (const name of [
   'window',
   'document',

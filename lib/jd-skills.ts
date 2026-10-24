@@ -132,7 +132,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: 'Python',
     en: 'Python',
     hint: 'the Python language',
-    href: '/learn/python',
+    href: '/?view=problems',
     language: 'python',
     goal: 30,
     certs: ['skill:python'],

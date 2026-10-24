@@ -371,19 +371,18 @@ function Workspace({
   }, [problem.practiceRound, roundRefresh]);
   const locale = useLocale();
   const t = useT();
-  // The toggle's pick wins; otherwise an English site shows the English statement when there is one.
+  // The toggle's pick wins; otherwise the statement is English when there is one, whatever the site language.
   const [statementPick, setStatementPick] = useState<ProblemLocale | null>(
     null,
   );
   useEffect(() => {
-    // The statement toggle's last pick applies until the site language is switched: setLocale
-    // clears it, and re-reading on that switch lets an open problem follow the site language.
+    // The statement toggle's last pick is remembered per device.
     const stored = safeLayoutStorage.getItem('cswork:problem:locale');
     setStatementPick(stored === 'en' || stored === 'zh' ? stored : null);
   }, [locale]);
   const statementLocale: ProblemLocale =
     statementPick ??
-    (locale === 'en' && problem.translations?.en ? 'en' : 'zh');
+    (problem.translations?.en ? 'en' : 'zh');
   // Read by the draft loader, which runs once per problem load.
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
@@ -396,8 +395,8 @@ function Workspace({
   // SQL track (and its pandas versions), Core Skills, REST API and ML Coding statements are Markdown: schema blocks, operation lists.
   const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest|ml)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
-  // Labels that followed an English statement still do; otherwise the site language decides.
-  const uiEnglish = english || locale === 'en';
+  // Labels follow the site language; only the statement itself is English by default.
+  const uiEnglish = locale === 'en';
   const say = (message: string) =>
     locale === 'en' ? englishMessage(message) : message;
   const sourceBody = problem.sourceStatement

@@ -34,6 +34,7 @@ register(
 
 function setupDom() {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });

@@ -30,6 +30,7 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
       configurable: true,
       value: dom.window[name],
     });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   localStorage.setItem('cswork:practice:daily-target', '5');
   const { createRoot } = await import('react-dom/client');
@@ -250,6 +251,7 @@ test('skipping the card leaves a way back to it', async () => {
   });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { StudyLibrary } = await import('../components/study-library.tsx');
@@ -300,6 +302,7 @@ test('a plan from a classic list, for some weeks, difficulties and topics, and r
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { StudyLibrary } = await import('../components/study-library.tsx');
@@ -430,6 +433,7 @@ async function bank(routes, props, stored = {}, path = '/') {
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   for (const [key, value] of Object.entries(stored)) localStorage.setItem(key, value);
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { StudyLibrary } = await import('../components/study-library.tsx');

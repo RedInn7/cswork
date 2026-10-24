@@ -19,6 +19,7 @@ const button = (text) => [...document.querySelectorAll('button')].find((n) => n.
 
 function dom(stored = {}) {
   const window = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/oa/mcq' }).window;
+  window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   for (const [key, value] of Object.entries(stored)) window.localStorage.setItem(key, value);
   for (const name of ['window', 'document', 'HTMLElement', 'HTMLDetailsElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'history', 'StorageEvent'])
     Object.defineProperty(globalThis, name, { configurable: true, value: window[name] });

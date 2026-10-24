@@ -57,6 +57,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     addEventListener() {},
     removeEventListener() {},
   });
+  // The site defaults to Chinese; English unless a subtest opts into 'zh'.
+  dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { ProblemWorkspace } =
@@ -676,11 +678,13 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.equal(editor().value, englishStarters.python);
     await choose('题面语言', 'zh');
     assert.equal(editor().value, starters.python);
-    // The header switch; it also drops the per-problem statement pick.
+    // The header switch changes labels only: the remembered statement pick stays.
     const { setLocale } = await import('../lib/i18n.ts');
     await act(async () => setLocale('en'));
     await renderAcm('acm-en');
     await settle();
+    assert.equal(editor().value, starters.python);
+    await choose('Statement language', 'en');
     assert.equal(editor().value, englishStarters.python);
     // Templates are whole programs: an untouched starter is swapped, edits ask first.
     const { ACM_IO_TEMPLATES } = await import('../lib/acm-io-templates.ts');

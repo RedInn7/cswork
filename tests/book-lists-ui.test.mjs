@@ -14,6 +14,7 @@ register(
 // workspace once cswork's rewrite is judged here (the original stays a reference).
 test('book lists label rows by book number, show twins and coverage, link twinless problems to leetcode.cn or their rewrite', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  dom.window.localStorage.setItem('cswork:locale', 'en'); // UI copy below is the English site
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;

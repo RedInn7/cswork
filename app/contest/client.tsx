@@ -212,7 +212,7 @@ function ContestReplay({
   useEffect(() => void pruneTracks(), []);
   const title = (id: string) => {
     const p = problems.find((x) => x.id === id);
-    return p ? (zh ? p.title : p.titleEn || p.title) : id;
+    return p ? p.titleEn || p.title : id;
   };
   return (
     <div className="contest-replay">
@@ -551,7 +551,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
             {view.problems.map((p, i) => (
               <li key={p.id}>
                 <span className="contest-q">Q{i + 1}</span>
-                <a href={problemHref(p.id, mine ? id : null)}>{zh ? p.title : p.titleEn || p.title}</a>
+                <a href={problemHref(p.id, mine ? id : null)}>{p.titleEn || p.title}</a>
                 <RatingBadge rating={p.rating} english={!zh} />
                 <span className="contest-go">{mine ? t('去作答', 'Solve') : t('补题 · 题解', 'Upsolve · solutions')}</span>
               </li>
@@ -839,7 +839,7 @@ export function CreateRoom({
   }, [query]);
   if (!verified)
     return <p className="contest-hidden-note">{t('验证邮箱后可以开房间。', 'Verify your email to open a room.')}</p>;
-  const label = (h: Hit) => `${h.id.startsWith('lc-') ? `${h.id.slice(3)}. ` : ''}${zh ? h.title : h.titleEn || h.title}`;
+  const label = (h: Hit) => `${h.id.startsWith('lc-') ? `${h.id.slice(3)}. ` : ''}${h.titleEn || h.title}`;
   async function create(e: FormEvent) {
     e.preventDefault();
     setBusy(true);

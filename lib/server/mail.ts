@@ -36,7 +36,7 @@ export async function sendAuthOTP(
   // better-auth's request context; lib/auth-client.ts sends the site language.
   ctx?: { getHeader: (key: string) => string | null },
 ) {
-  const zh = ctx?.getHeader('x-locale') === 'zh';
+  const zh = ctx?.getHeader('x-locale') !== 'en';
   if (!mailReady())
     throw new Error('邮箱验证服务尚未开放，请使用已配置的登录方式或联系老师。');
   const key = createHash('sha256')

@@ -24,6 +24,7 @@ export async function load(u,c,n){
 );
 
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'history'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -123,6 +124,7 @@ test('the owner accepts: the server first, then this browser’s copy; an edited
 
   // Not in this browser: nothing is sent, the rewrite can be copied.
   localStorage.clear();
+  localStorage.setItem('cswork:locale', 'en');
   const unmount = await render(createElement(ResumeReviewPage, { token: 'r1' }));
   assert.match(document.querySelector('header').textContent, /Only you can open this address/);
   await act(async () => button('Accept and write back').click());
@@ -227,7 +229,7 @@ test('the builder box sends a snapshot without contact lines, shows the link onc
 
 test('the review page is never indexed', async () => {
   const { generateMetadata } = await import('../app/career/resume/review/[token]/page.tsx');
-  for (const [locale, title] of [['zh', '简历评审 · CSWork'], [undefined, 'Resume review · CSWork']]) {
+  for (const [locale, title] of [['zh', '简历评审 · CSWork'], [undefined, '简历评审 · CSWork'], ['en', 'Resume review · CSWork']]) {
     globalThis.__locale = locale;
     const meta = await generateMetadata();
     assert.equal(meta.title, title);

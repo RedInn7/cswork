@@ -58,7 +58,7 @@ export default async function TopProblemsPage() {
       {top.length ? (
         <ol className="company-hub-lc top-list">
           {top.map((p, index) => {
-            const name = zh ? p.titleZh || p.titleEn : p.titleEn || p.titleZh;
+            const name = p.titleEn || p.titleZh;
             const more = p.companies.length - SHOWN_COMPANIES;
             const body = (
               <>

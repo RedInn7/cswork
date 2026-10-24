@@ -22,7 +22,9 @@ test('every role resolves in both languages', () => {
   for (const role of ROLE_KEYS)
     for (const zh of [true, false]) {
       const steps = resolveRolePath(role, zh);
-      assert.equal(steps.length, ROLES[role].steps.length);
+      // Resume projects and beginner courses are taken down: their steps leave the resolved path.
+      assert.equal(steps.length, ROLES[role].steps.filter((s) => s.kind !== 'project' && s.kind !== 'course').length);
+      assert.ok(steps.every((s) => s.kind !== 'project' && s.kind !== 'course'));
       for (const step of steps) {
         assert.ok(step.href.startsWith('/'), `${role} ${step.kind} ${step.ref}`);
         assert.equal(step.title === '', step.kind === 'mcq-topic', 'only MCQ topics are named on the client');

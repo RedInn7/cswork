@@ -1,12 +1,17 @@
 import '../library/library.css';
 import './projects.css';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { requestLocale } from '@/lib/server/locale';
 import { LibraryPageView } from '../library/page-view';
 
+const RETIRED = true;
+
 /** The resume projects' public pages on the public library shell. */
 export default async function ProjectsLayout({ children }: { children: React.ReactNode }) {
+  // ponytail: taken down 2026-10, code kept; delete this line to reopen (and the sitemap/nav entries).
+  if (RETIRED) notFound();
   const zh = (await requestLocale()) === 'zh';
   return (
     <div className="public-library projects-public" lang={zh ? 'zh-CN' : 'en'}>

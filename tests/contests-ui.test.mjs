@@ -30,6 +30,7 @@ for (const name of [
   'location',
 ])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] ?? dom.window.MouseEvent });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { ContestCalendar, DuelQueue, RoomLive } = await import('../app/contest/client.tsx');

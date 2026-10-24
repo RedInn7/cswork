@@ -28,9 +28,6 @@ import {
   ListChecks,
   Zap,
   Network,
-  GraduationCap,
-  Award,
-  FolderGit2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -73,7 +70,7 @@ import {
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
-import { setLocale, useLocale, useT } from '@/lib/i18n';
+import { asLanguage, htmlLang, LANGUAGES, setLocale, useLanguage, useLocale, useT } from '@/lib/i18n';
 import { pageView as beaconPageView, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
@@ -127,9 +124,6 @@ const nav: [LucideIcon, string, string, string][] = [
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
-  [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
-  [FolderGit2, '简历项目', 'Resume Projects', '/projects'],
-  [Award, '技能认证', 'Certification', '/certify'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
@@ -157,11 +151,12 @@ function pageView() {
   });
 }
 export function Academy() {
-  const locale = useLocale(),
+  const language = useLanguage(),
+    locale = useLocale(),
     t = useT();
   useEffect(() => {
-    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
-  }, [locale]);
+    document.documentElement.lang = htmlLang(language);
+  }, [language]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
@@ -285,7 +280,7 @@ export function Academy() {
         selectedProblem &&
         // OA English statements only arrive with the detail fetch; don't title an English tab in Chinese.
         (locale === 'zh' || selectedProblem.titleEn)
-      ? problemTitle(selectedProblem, locale)
+      ? problemTitle(selectedProblem)
       : heading;
   useEffect(() => {
     document.title = workspaceTitle(locale, pageName);
@@ -575,19 +570,24 @@ export function Academy() {
               <span>{t('搜索全站', 'Search CSWork')}</span>
               <PaletteKey />
             </button>
-            <Button
-              variant="ghost"
-              className="locale-button"
-              aria-label={locale === 'zh' ? 'Switch to English' : '切换到中文'}
-              onClick={() => {
-                const next = locale === 'zh' ? 'en' : 'zh';
-                track('language_switch', { locale: next });
-                setLocale(next);
-              }}
-            >
-              <Languages size={16} />
-              {locale === 'zh' ? 'EN' : '中文'}
-            </Button>
+            <label className="locale-select" data-no-convert>
+              <Languages size={16} aria-hidden="true" />
+              <select
+                aria-label="语言 / Language"
+                value={language}
+                onChange={(event) => {
+                  const next = asLanguage(event.target.value);
+                  track('language_switch', { locale: next });
+                  setLocale(next);
+                }}
+              >
+                {LANGUAGES.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <ThemeToggle />
             <Button
               size="icon"

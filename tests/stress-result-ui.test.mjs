@@ -13,6 +13,8 @@ const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cs
 for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+// The site defaults to Chinese; English unless a test opts into 'zh'.
+dom.window.localStorage.setItem('cswork:locale', 'en');
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const settle = (ms = 10) => act(async () => new Promise((r) => setTimeout(r, ms)));
 const respond = (body, status = 200) => ({ ok: status < 300, status, json: async () => body });

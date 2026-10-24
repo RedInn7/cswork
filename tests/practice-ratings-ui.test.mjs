@@ -16,6 +16,7 @@ register(
 const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
 for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator', 'history', 'location'])
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+dom.window.localStorage.setItem('cswork:locale', 'en');
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 globalThis.requestAnimationFrame ??= (fn) => setTimeout(fn, 0);
 const { createRoot } = await import('react-dom/client');
