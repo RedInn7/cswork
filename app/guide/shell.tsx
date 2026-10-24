@@ -59,10 +59,6 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
         <Link href="/interview-platforms" prefetch={false}>
           {zh ? '面试平台规则' : 'Interview platforms'}
         </Link>
-        {/* The footer, not the top bar (wave 8 critique 5): the resume project library. */}
-        <Link href="/projects" prefetch={false}>
-          {zh ? '简历项目' : 'Resume projects'}
-        </Link>
         <Link href="/privacy" prefetch={false}>
           {zh ? '隐私说明' : 'Privacy'}
         </Link>

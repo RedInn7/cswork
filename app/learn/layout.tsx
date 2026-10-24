@@ -3,12 +3,17 @@ import '../library/library.css';
 import '../system-design/system-design.css';
 import './learn.css';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';
 import { requestLocale } from '@/lib/server/locale';
 
+const RETIRED = true;
+
 /** The beginner crash courses (/learn, /learn/<course>, /learn/<course>/<chapter>) on the system design course's sheets. */
 export default async function LearnLayout({ children }: { children: React.ReactNode }) {
+  // ponytail: taken down 2026-10, code kept; delete this line to reopen (and the sitemap/nav entries).
+  if (RETIRED) notFound();
   const zh = (await requestLocale()) === 'zh';
   return (
     <div className="public-library sd-public learn-public" lang={zh ? 'zh-CN' : 'en'}>

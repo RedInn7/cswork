@@ -28,9 +28,6 @@ import {
   ListChecks,
   Zap,
   Network,
-  GraduationCap,
-  Award,
-  FolderGit2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -127,9 +124,6 @@ const nav: [LucideIcon, string, string, string][] = [
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
-  [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
-  [FolderGit2, '简历项目', 'Resume Projects', '/projects'],
-  [Award, '技能认证', 'Certification', '/certify'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],

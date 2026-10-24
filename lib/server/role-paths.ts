@@ -130,7 +130,10 @@ export function resolveStep(step: RoleStep, zh: boolean): ResolvedStep {
   }
 }
 
-export const resolveRolePath = (role: RoleKey, zh: boolean) => ROLES[role].steps.map((step) => resolveStep(step, zh));
+// Resume projects and beginner courses are taken down (app/projects, app/learn): their steps leave the paths.
+const RETIRED_KINDS = new Set<StepKind>(['project', 'course']);
+export const resolveRolePath = (role: RoleKey, zh: boolean) =>
+  ROLES[role].steps.filter((step) => !RETIRED_KINDS.has(step.kind)).map((step) => resolveStep(step, zh));
 
 // The SQL groups with a pandas twin for every problem (content/sql-track/pandas-packages.json; tests/role-paths.test.ts).
 const PANDAS_TWINS = ['basics', 'joins', 'grouping', 'subqueries', 'windows', 'strings', 'dates'];

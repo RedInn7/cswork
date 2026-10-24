@@ -1,8 +1,6 @@
 import { SITEMAP_STATIC_ENTRIES, type SitemapEntry } from '@/lib/seo';
-import { learnPaths } from './beginner-courses';
 import { h1bPaths } from './h1b';
 import { mockOaPaths } from './mock-oa-presets';
-import { projectPaths } from './resume-projects';
 import { systemDesignPaths } from './system-design-course';
 
 /**
@@ -15,7 +13,5 @@ export const sitemapStatics = (): SitemapEntry[] => [
   ...SITEMAP_STATIC_ENTRIES,
   ...mockOaPaths(),
   ...systemDesignPaths(),
-  ...learnPaths(),
   ...h1bPaths(),
-  ...projectPaths(),
 ];

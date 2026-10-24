@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { Calculator } from 'lucide-react';
-import { budget, budgetMessage, failureChecks, type Bounds } from '@/lib/constraint-hints';
+import { budgetMessage, failureChecks, type Bounds } from '@/lib/constraint-hints';
 import '@/app/analyzer-notes.css';
 
 /**
@@ -23,12 +23,6 @@ export function ComplexityBudget({ bounds, language, english }: { bounds: Bounds
       {open && (
         <p className="cs-budget-line" id="complexity-budget">
           {english ? message[1] : message[0]}
-          {budget(bounds, language)?.pythonTight && (
-            <>
-              {' '}
-              <a href="/learn/big-o/complexity">{english ? 'Estimating complexity' : '怎么估算复杂度'}</a>
-            </>
-          )}
         </p>
       )}
     </>
