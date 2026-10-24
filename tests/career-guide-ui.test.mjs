@@ -145,7 +145,9 @@ test('no nav or timeline link points at the H-1B ranking while its data is unbui
   const shell = renderToStaticMarkup(createElement(GuideShell, { zh: false, children: null }));
   const visa = renderToStaticMarkup(await VisaTimelinePage());
   assert.match(shell, /href="\/career\/tracker"/);
-  for (const href of ['/career/offers', '/career/jobs/calendar', '/career/resume/builder#resume-check', '/projects', '/interview-platforms']) assert.ok(shell.includes(`href="${href}"`), href);
+  for (const href of ['/career/offers', '/career/jobs/calendar', '/career/resume/builder#resume-check', '/interview-platforms']) assert.ok(shell.includes(`href="${href}"`), href);
+  // Resume projects are taken down: no footer link.
+  assert.ok(!shell.includes('href="/projects"'));
   for (const html of [shell, visa]) assert.equal(html.includes('href="/career/h1b"'), H1B.fiscalYears.length > 0);
 });
 
