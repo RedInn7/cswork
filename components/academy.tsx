@@ -285,7 +285,7 @@ export function Academy() {
         selectedProblem &&
         // OA English statements only arrive with the detail fetch; don't title an English tab in Chinese.
         (locale === 'zh' || selectedProblem.titleEn)
-      ? problemTitle(selectedProblem, locale)
+      ? problemTitle(selectedProblem)
       : heading;
   useEffect(() => {
     document.title = workspaceTitle(locale, pageName);

@@ -92,7 +92,7 @@ export function ReviewSession({ boot, tab }: { boot: Boot; navigate: Navigate; t
   const userId = boot.person?.id ?? '';
   const [mock] = useState(() => !!userId && !!readMockState(userId).active);
   const [view, setView] = useState<Tab>(TABS.some(([key]) => key === tab) ? (tab as Tab) : 'today');
-  const titles = useMemo(() => new Map(boot.problems.map((p) => [p.id, problemTitle(p, english ? 'en' : 'zh')])), [boot.problems, english]);
+  const titles = useMemo(() => new Map(boot.problems.map((p) => [p.id, problemTitle(p)])), [boot.problems]);
   const titleOf = (id: string) => titles.get(id) ?? id;
   return (
     <section className="study-library algorithm-library my-progress review-session" lang={english ? 'en' : 'zh'}>

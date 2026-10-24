@@ -281,7 +281,7 @@ export function ProfileView({
               return (
                 <li key={r.id}>
                   <span className="lists-public-number">{r.id.startsWith('lc-') ? r.id.slice(3) : 'OA'}</span>
-                  <a href={problemAppHref(r.id)}>{problemTitle(p, zh ? 'zh' : 'en')}</a>
+                  <a href={problemAppHref(r.id)}>{problemTitle(p)}</a>
                   <LocalDay time={r.at} className="lists-public-count" />
                   <span className="lists-public-level" data-level={level?.[0]}>
                     {level ? (zh ? level[1] : level[2]) : ''}
@@ -577,7 +577,7 @@ export function PublicListView({
                 <span className="lists-public-number">{index + 1}</span>
                 <a href={problemAppHref(id)}>
                   {id.startsWith('lc-') ? `${id.slice(3)}. ` : ''}
-                  {problemTitle(problem, zh ? 'zh' : 'en')}
+                  {problemTitle(problem)}
                 </a>
                 <span className="lists-public-tags">
                   <span className="lists-public-judge">{id.startsWith('lc-') ? 'LeetCode' : 'OA'}</span>

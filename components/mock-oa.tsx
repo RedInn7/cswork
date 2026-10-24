@@ -1623,7 +1623,7 @@ function MockReport({
               <li key={id} data-state={state}>
                 <span className="mock-q">Q{index + 1}</span>
                 <span className="mock-result-title">
-                  <strong>{summary ? problemTitle(summary, locale) : id}</strong>
+                  <strong>{summary ? problemTitle(summary) : id}</strong>
                   <small>
                     <span title={estimated ? t('AI 估计的难度', 'AI-estimated difficulty') : undefined}>
                       {estimated && <span aria-hidden="true">≈</span>}
@@ -1739,7 +1739,7 @@ function MockReport({
         session={session}
         title={(id) => {
           const summary = titles.get(id);
-          return summary ? problemTitle(summary, locale) : id;
+          return summary ? problemTitle(summary) : id;
         }}
       />
     </>

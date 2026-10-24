@@ -98,12 +98,11 @@ export const levelOf = (value: string) =>
     level.some((name) => name.toLowerCase() === value.toLowerCase()),
   );
 
-/** A row title in the reader's language; numbers missing from the bank get a plain label. */
+/** A row title, English whatever the site language; numbers missing from the bank get a plain label. */
 export const problemTitle = (
   item: { number: number | null; titleZh: string; titleEn: string },
   english: boolean,
 ) =>
-  (english ? item.titleEn : item.titleZh) ||
   item.titleEn ||
   item.titleZh ||
   (item.number ? `LeetCode ${item.number}` : english ? 'On leetcode.cn' : '力扣中国站原题');

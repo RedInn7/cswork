@@ -170,7 +170,7 @@ export function ProgressExport({
       marks,
       titleOf: (id) => {
         const p = byId.get(id);
-        return p && problemTitle(p, english ? 'en' : 'zh');
+        return p && problemTitle(p);
       },
       difficultyOf: (id) => byId.get(id)?.difficulty,
     });

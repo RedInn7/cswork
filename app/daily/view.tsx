@@ -30,7 +30,7 @@ export function DailyView({
   statementLang?: string;
 }) {
   const level = daily ? LEVELS[daily.difficulty.toLowerCase()] : undefined;
-  const title = daily ? (zh ? daily.title : daily.titleEn || daily.title) : '';
+  const title = daily ? daily.titleEn || daily.title : '';
   const stop = daily?.stop;
   const practice = stop ? stopHref(stop) : null;
   return (

@@ -274,7 +274,10 @@ export function StudyLibrary({
   const [detailError, setDetailError] = useState('');
   const [detailRetry, setDetailRetry] = useState(0);
   const siteLocale = useLocale();
-  const [english, setEnglish] = useState(siteLocale === 'en');
+  // The interface follows the site language; problem titles and statements are English
+  // unless the reader picks Chinese with the statement toggle.
+  const english = siteLocale === 'en';
+  const [problemEnglish, setProblemEnglish] = useState(true);
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -377,13 +380,12 @@ export function StudyLibrary({
   }
 
   useEffect(() => {
-    // The page's language switch (shared with the problem page) wins until the site
-    // language is switched, which clears it.
+    // The statement toggle (shared with the problem page) is remembered per device.
     let stored: string | null = null;
     try {
       stored = localStorage.getItem('cswork:problem:locale');
     } catch {}
-    setEnglish(stored ? stored === 'en' : siteLocale === 'en');
+    setProblemEnglish(stored !== 'zh');
     setCopyMessage('');
   }, [siteLocale]);
   useEffect(() => {
@@ -500,7 +502,7 @@ export function StudyLibrary({
     if (detail) detailHeading.current?.focus();
   }, [detail]);
   function changeLanguage(value: string) {
-    setEnglish(value === 'en');
+    setProblemEnglish(value === 'en');
     setCopyMessage('');
     try {
       localStorage.setItem('cswork:problem:locale', value);
@@ -511,7 +513,7 @@ export function StudyLibrary({
       {t('题面语言', 'Language')}
       <select
         aria-label={t('题单语言', 'Collection language')}
-        value={english ? 'en' : 'zh'}
+        value={problemEnglish ? 'en' : 'zh'}
         onChange={(event) => changeLanguage(event.target.value)}
       >
         <option value="zh">中文</option>
@@ -527,10 +529,10 @@ export function StudyLibrary({
     const source =
       detail &&
       safeSource(
-        (english ? detail.sourceEnUrl : detail.sourceUrl) || detail.sourceUrl,
+        (problemEnglish ? detail.sourceEnUrl : detail.sourceUrl) || detail.sourceUrl,
       );
     const body =
-      detail && (english ? detail.descriptionEn : detail.descriptionZh);
+      detail && (problemEnglish ? detail.descriptionEn : detail.descriptionZh);
     const fallbackBody =
       detail && (detail.descriptionZh || detail.descriptionEn);
     return (
@@ -566,7 +568,7 @@ export function StudyLibrary({
             <header className="study-detail-heading">
               <div className="study-kicker">LEETCODE · {detail.number}</div>
               <h2 ref={detailHeading} tabIndex={-1}>
-                {title(detail, english)}
+                {title(detail, problemEnglish)}
               </h2>
               <div className="study-topic-list">
                 <span
@@ -692,7 +694,7 @@ export function StudyLibrary({
             )}
             <article
               className="study-statement"
-              lang={body ? (english ? 'en' : 'zh') : undefined}
+              lang={body ? (problemEnglish ? 'en' : 'zh') : undefined}
             >
               <StatementMarkdown
                 // The workspace's statement repairs (scripts in `10^{9}`, CJK bold), page styles.
@@ -900,7 +902,7 @@ export function StudyLibrary({
             {next && (
               <div className="route-ticket">
                 <span className="study-number">{next.number}</span>
-                <strong>{english ? next.titleEn || next.titleZh : next.titleZh || next.titleEn}</strong>
+                <strong>{problemEnglish ? next.titleEn || next.titleZh : next.titleZh || next.titleEn}</strong>
                 <span
                   className="route-level study-level"
                   data-level={next.difficulty.toLowerCase()}
@@ -919,7 +921,7 @@ export function StudyLibrary({
                   <Star size={14} aria-hidden="true" />
                   {t('今日一题', 'Daily problem')}
                 </span>
-                <strong>{english ? daily.titleEn || daily.title : daily.title}</strong>
+                <strong>{problemEnglish ? daily.titleEn || daily.title : daily.title}</strong>
                 <span
                   className="route-level study-level"
                   data-level={daily.difficulty.toLowerCase()}
@@ -1789,7 +1791,7 @@ export function StudyLibrary({
                     </span>
                     <span
                       className="study-row-main"
-                      title={`${item.number}. ${title(item, english)}`}
+                      title={`${item.number}. ${title(item, problemEnglish)}`}
                     >
                       <strong>
                         {isNext && (
@@ -1798,7 +1800,7 @@ export function StudyLibrary({
                           </span>
                         )}
                         <span className="study-number">{item.number}.</span>{' '}
-                        {title(item, english)}
+                        {title(item, problemEnglish)}
                         {item.starred && (
                           <>
                             <Star className="study-star" size={14} aria-hidden="true" />
