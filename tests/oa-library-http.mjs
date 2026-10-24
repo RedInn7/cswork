@@ -159,7 +159,8 @@ try {
   assert.doesNotMatch(index, /href="\/oa\/(?:barclay|sig|amazon-mern|ibm-frontend)"/);
   assert.match(await html(`/oa/${first.companySlug}`), new RegExp(`href="${problemPath}"`));
   const problem = await html(problemPath);
-  assert.match(problem, /<title>[^<]+ OA: [^<]+ \| CSWork<\/title>/);
+  // Chinese site by default (no locale cookie); the statement itself is English when translated.
+  assert.match(problem, /<title>[^<]+ OA 真题：[^<]+ \| CSWork<\/title>/);
   assert.match(
     problem,
     new RegExp(`rel="canonical"[^>]*href="https://cswork.org${problemPath}"`),

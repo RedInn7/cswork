@@ -113,11 +113,18 @@ try {
     await delay(200);
   }
   assert(ready, 'Preview did not start: ' + logs);
-  async function html(path, expected = 200, headers = {}) {
+  // The checks below read the English pages; the site itself defaults to Simplified Chinese.
+  async function html(path, expected = 200, headers = { cookie: 'cswork_locale=en' }) {
     const response = await fetch(base + path, { headers });
     assert.equal(response.status, expected, `${path}: ${logs}`);
     return response.text();
   }
+  const chineseHome = await html('/', 200, {});
+  assert.match(chineseHome, /<html lang="zh-CN"/);
+  assert.match(
+    chineseHome.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''),
+    /<h1[^>]*>算法、OA 与软件工程师面试准备<\/h1>/,
+  );
   const home = await html('/');
   const visibleHome = home.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
   assert.match(

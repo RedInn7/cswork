@@ -44,7 +44,8 @@ const load = cache(async (slug: string, id: string) => {
     throw error;
   });
   const locale = await requestLocale();
-  const english = judged && locale === 'en' ? oaEnglishStatement(id) : undefined;
+  // Statements are English whatever the site language.
+  const english = judged ? oaEnglishStatement(id) : undefined;
   const statement = judged
     ? oaStatementMarkdown(english || judged, judged.samples, locale)
     : item.statement;
