@@ -234,12 +234,12 @@ export function JdReadiness({ zh, ai = true }: { zh: boolean; ai?: boolean }) {
                 <>
                   <p>
                     {t(
-                      `打开 500 路冲刺计划，预先勾选 ${report.planStops.length} 个还没练到 3 题的专题。保存前可以再调整。`,
-                      `Opens the Line 500 sprint plan with the ${report.planStops.length} stops you have solved fewer than 3 problems on already ticked. Adjust before you save.`,
+                      `500 路上有 ${report.planStops.length} 个专题还没练到 3 题，去题库按专题补齐。`,
+                      `${report.planStops.length} Line 500 stops have fewer than 3 solved problems: practise them in the problem bank.`,
                     )}
                   </p>
-                  <a className="jd-plan-link" href={planHref(report.planStops)}>
-                    {t('按缺口生成学习计划', 'Plan around my gaps')} →
+                  <a className="jd-plan-link" href="/?view=problems">
+                    {t('去题库练习', 'Go to the problem bank')} →
                   </a>
                 </>
               ) : (

@@ -5,7 +5,7 @@ import { rememberLibraryQuery, rememberProblemSequence } from '@/lib/problem-seq
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { useCoveredDays } from './daily-goal';
 import { DailyMonth } from './daily-month';
-import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
+import { useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
 import {
   askedText,
@@ -1092,15 +1092,6 @@ export function StudyLibrary({
                 )}
               </p>
             ) : null}
-            <StudyPlan
-              goal={sprint.goal}
-              plan={sprint.plan}
-              today={sprint.today}
-              onSave={sprint.save}
-              stops={stops}
-              english={english}
-              signedIn={!!userId}
-            />
           </div>
           <div className="route-habit">
             <PracticeCalendar
