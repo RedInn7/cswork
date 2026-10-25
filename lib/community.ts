@@ -19,7 +19,8 @@ export function postHref(target: string) {
   const key = target.slice(target.indexOf(':') + 1);
   if (kind === 'q' || kind === 'exp')
     return `/?${new URLSearchParams({ view: 'content', type: kind === 'q' ? 'interview_question' : 'experience', slug: key })}`;
-  if (kind === 'sd') return `/system-design/${encodeURIComponent(key)}`;
+  // System design chapters are taken down: their posts open in the problem bank.
+  if (kind === 'sd') return '/?view=problems';
   return `/?view=problem&problem=${encodeURIComponent(target)}`;
 }
 /** Where a post may go up anonymously: answers and comments, never a judge problem's solution. */

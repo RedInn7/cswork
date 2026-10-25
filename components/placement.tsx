@@ -288,7 +288,7 @@ export function Placement({ zh }: { zh: boolean }) {
           <span className="sr-only">{t('组可以跳过', 'groups to skip')}</span>
         </h2>
         <p className="sr-best">
-          {t('组可以直接跳过，冲刺计划会把这些站标为已掌握', 'groups to skip: the sprint plan marks their stops as known')}
+          {t('组可以直接跳过', 'groups to skip')}
         </p>
         {/* The line, its known stops lit. */}
         <ol className="sr-pips" aria-hidden>
@@ -298,7 +298,7 @@ export function Placement({ zh }: { zh: boolean }) {
         </ol>
         <div className="sr-actions">
           <a className="sr-cta" href="/?view=problems">
-            {t('去排冲刺计划', 'Open the sprint plan')}
+            {t('去题库练习', 'Go to the problem bank')}
             <ArrowRight size={15} aria-hidden />
           </a>
           {canStart ? (

@@ -1,5 +1,5 @@
 // /career/jd: the checklist renders each skill's status, progress and practice link, and its
-// gaps reach the Line 500 sprint plan through the URL, which opens the form with them ticked.
+// gaps point at the problem bank. The (now unlinked) StudyPlan still reads planTopics from the URL.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { JSDOM } from 'jsdom';
@@ -40,7 +40,7 @@ const reply = {
   bonus: 0,
 };
 
-test('the checklist: a handed-over posting, statuses, progress, practice links and the plan link', async () => {
+test('the checklist: a handed-over posting, statuses, progress, practice links and the problem bank link', async () => {
   const sent = [];
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
@@ -82,8 +82,11 @@ test('the checklist: a handed-over posting, statuses, progress, practice links a
   assert.equal(rows[2].querySelector('.jd-bar'), null);
   assert.equal(rows[2].querySelector('a'), null);
   assert.equal(result.querySelectorAll('h3')[1].textContent, 'Required');
+  // The sprint plan is gone: the gaps now point at the problem bank.
   const plan = result.querySelector('.jd-plan-link');
-  assert.equal(new URL(plan.href).searchParams.get('planTopics'), 'binary-search,dp-grid');
+  assert.equal(plan.getAttribute('href'), '/?view=problems');
+  assert.match(plan.textContent, /^Go to the problem bank/);
+  assert.match(result.querySelector('.jd-plan').textContent, /2 Line 500 stops have fewer than 3 solved problems: practise them in the problem bank\./);
   assert.equal(document.querySelector('.resume-actions small').textContent, '2 checks left today');
   await act(async () => root.unmount());
 });
@@ -187,7 +190,7 @@ test('keyword mode, signed in: progress merged by skill; the resume match per ve
   assert.match(result.querySelector('.resume-summary').textContent, /^This posting asks for 5 skills: 1 ready/);
   const sql = [...result.querySelectorAll('.jd-skill')].find((r) => r.textContent.startsWith('SQL'));
   assert.deepEqual([sql.dataset.status, sql.querySelector('.jd-status').textContent], ['ready', 'Ready']);
-  assert.equal(new URL(result.querySelector('.jd-plan-link').href).searchParams.get('planTopics'), 'binary-search');
+  assert.equal(result.querySelector('.jd-plan-link').getAttribute('href'), '/?view=problems');
   // The base resume has Python, SQL and Postgres: 3 of the posting's 8 terms, all three required ones.
   const match = document.querySelector('.jd-match');
   assert.match(match.querySelector('.resume-summary').textContent, /^38% match: your resume has 3 of the posting’s 8 keywords \(3 of 6 required\)\./);

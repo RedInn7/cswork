@@ -3,12 +3,17 @@ import './system-design.css';
 // The chapter discussion's community posts (components/solution-posts.tsx) take the site's tokens.
 import '../community-posts.css';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';
 import { DailyGoal } from '@/components/daily-goal';
 import { requestLocale } from '@/lib/server/locale';
 
+// ponytail: taken down 2026-10, code kept; delete this line to reopen (and the sitemap/nav entries).
+const RETIRED = true;
+
 export default async function SystemDesignLayout({ children }: { children: React.ReactNode }) {
+  if (RETIRED) notFound();
   const zh = (await requestLocale()) === 'zh';
   return (
     <div className="public-library sd-public" lang={zh ? 'zh-CN' : 'en'}>

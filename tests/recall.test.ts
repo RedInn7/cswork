@@ -85,7 +85,7 @@ void test('due cards, box counts, links and clearing mastered cards', () => {
   assert.deepEqual(Object.keys(dropMastered(q).items).sort(), ['content:coding_question/two-sum', T, 'sd:url-shortener'].sort());
   assert.equal(recallHref(T), '/?view=content&type=interview_question&slug=lru');
   assert.equal(recallHref('content:coding_question/a.b'), '/?view=content&type=coding_question&slug=a.b');
-  assert.equal(recallHref('sd:url-shortener'), '/system-design/url-shortener');
+  assert.equal(recallHref('sd:url-shortener'), null); // the system design course is taken down
   assert.equal(recallHref('problem:lc-1'), null);
   // Wave 10: topic points and template drills; /learn chapters are taken down, so no link.
   assert.equal(recallHref('content:topic/binary-search'), '/topics/binary-search');

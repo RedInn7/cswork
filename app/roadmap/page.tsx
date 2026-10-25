@@ -12,9 +12,8 @@ import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { beginnerCourse, learnKey } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { resolveRolePath, routeCatalog } from '@/lib/server/role-paths';
-import { sdChapters, sdParts, sdPath } from '@/lib/server/system-design-course';
 import { LibraryPageView } from '../library/page-view';
-import { RoadmapTracks, type CsTrackData, type SdPart } from './tracks';
+import { RoadmapTracks, type CsTrackData } from './tracks';
 
 const COPY = {
   zh: {
@@ -35,24 +34,6 @@ const COPY = {
   },
 };
 
-// Framework → building blocks → case studies → LLD → concurrency → ML → key technologies → patterns → LLD cases → API. A chapter takes the course
-// part it reads in (sdParts), so a new chapter lands beside its neighbours; unknown parts read as cases.
-const PART_FROM: Record<string, SdPart> = {
-  'ood-interview-approach': 'lld',
-  'concurrency-primitives': 'concurrency',
-  'ml-design-framework': 'ml',
-  'tech-kafka': 'tech',
-  'pattern-real-time-updates': 'patterns',
-  'lld-case-atm': 'lld-cases',
-  'api-rest-vs-rpc-graphql': 'api',
-};
-const sdPartOf = (slug: string): SdPart =>
-  slug === 'framework'
-    ? 'framework'
-    : slug === 'building-blocks'
-      ? 'blocks'
-      : PART_FROM[sdParts.find((part) => part.chapters.some((chapter) => chapter.slug === slug))?.from ?? ''] ??
-        'cases';
 // The behavioral prep chapters of the career guide.
 const BEHAVIORAL = ['phone-screen', 'onsite'];
 
@@ -123,12 +104,8 @@ export default async function RoadmapPage({ searchParams }: Props) {
         <RoadmapTracks
           english={!zh}
           totals={totals}
-          sd={sdChapters.map((chapter) => ({
-            slug: chapter.slug,
-            title: zh ? chapter.titleZh : chapter.titleEn,
-            href: sdPath(chapter.slug),
-            part: sdPartOf(chapter.slug),
-          }))}
+          // The system design course is taken down (app/system-design/layout.tsx): no track, no chapter links.
+          sd={[]}
           guide={GUIDE_CHAPTERS.filter((chapter) => BEHAVIORAL.includes(chapter.slug)).map((chapter) => ({
             title: chapter.title[zh ? 0 : 1],
             summary: chapter.summary[zh ? 0 : 1],
@@ -140,9 +117,6 @@ export default async function RoadmapPage({ searchParams }: Props) {
       <footer className="public-library-footer">
         <Link href="/topics" prefetch={false}>
           {zh ? '模板速查' : 'Templates'}
-        </Link>
-        <Link href={sdPath()} prefetch={false}>
-          {zh ? '系统设计' : 'System design'}
         </Link>
         <Link href={guidePath()} prefetch={false}>
           {zh ? '求职指南' : 'Career guide'}

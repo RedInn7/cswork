@@ -9,8 +9,32 @@ register(
   import.meta.url,
 );
 
-// The real bank page with a planned sprint: first-visit card, the form, today's
-// target from the plan, the week view and the .ics download.
+// The sprint plan card is off the problem bank (components/study-library.tsx no longer renders it), but the card
+// and its hook remain: PlanHost wires them the way the bank did. A saved plan still drives the bank's daily trip.
+async function planHost() {
+  const { StudyPlan, useStudyPlan } = await import('../components/study-plan.tsx');
+  const { routeStops } = await import('../lib/route-stops.ts');
+  return function PlanHost({ page, userId }) {
+    const sprint = useStudyPlan(userId, page.planTodo, page.sequence, []);
+    return createElement(StudyPlan, {
+      goal: sprint.goal,
+      plan: sprint.plan,
+      today: sprint.today,
+      onSave: sprint.save,
+      stops: routeStops(page.collection.sections).stops,
+      english: true,
+      signedIn: !!userId,
+    });
+  };
+}
+// The bank shows none of the card: no first-visit question, no summary, no way back to it.
+const assertNoPlanCard = () => {
+  assert.equal(document.querySelector('.route-plan, .route-plan-entry, #route-plan-title'), null);
+  assert.doesNotMatch(document.body.textContent, /When is your OA\?|Plan my sprint|Plan a sprint to your OA|Sprint plan/);
+};
+
+// The card with a planned sprint: first-visit card, the form, today's target from the plan,
+// the week view and the .ics download; then the bank's trip follows the saved plan.
 test('the sprint plan card saves a goal that drives today’s trip', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', {
     url: 'https://cswork.test/',
@@ -35,6 +59,7 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
   localStorage.setItem('cswork:practice:daily-target', '5');
   const { createRoot } = await import('react-dom/client');
   const { StudyLibrary } = await import('../components/study-library.tsx');
+  const PlanHost = await planHost();
   const { addDays, localDay } = await import('../lib/study-plan.ts');
   const today = localDay();
   const requests = [];
@@ -101,7 +126,15 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
   dom.window.HTMLAnchorElement.prototype.click = function () {
     downloads.push(this.download);
   };
-  const root = createRoot(document.getElementById('root'));
+  let root = createRoot(document.getElementById('root'));
+  // Card and bank take turns in the same browser: each mounts fresh and reads the saved plan.
+  const mount = async (component, props) => {
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    await act(async () => root.render(createElement(component, props)));
+    await settle();
+  };
+  const bankProps = { navigate: (view, params) => opened.push(params?.problem), availableProblemIds: [], signedIn: true, userId: 'u1' };
   const settle = () =>
     act(async () => {
       await new Promise((r) => setTimeout(r, 10));
@@ -121,24 +154,17 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     ).control;
   const opened = [];
   try {
-    await act(async () =>
-      root.render(
-        createElement(StudyLibrary, {
-          navigate: (view, params) => opened.push(params?.problem),
-          availableProblemIds: [],
-          signedIn: true,
-          userId: 'u1',
-        }),
-      ),
-    );
-    await settle();
-    // First visit: the card, and the old "5 a day" still sets today's target.
-    assert.match(document.body.textContent, /When is your OA\?/);
+    // The bank: no card, and the old "5 a day" still sets today's target.
+    await mount(StudyLibrary, bankProps);
+    assertNoPlanCard();
     assert.equal(document.querySelector('.route-today-count').textContent, '0 / 5');
     assert.equal(document.querySelector('.route-target select').value, '5');
-    // The bank also reads the learner's own lists once, for its list filter; the plan reads the account's copy.
+    requests.length = 0;
+    // First visit to the card: it asks, and reads only the account's copy.
+    await mount(PlanHost, { page, userId: 'u1' });
+    assert.match(document.body.textContent, /When is your OA\?/);
     assert.ok(
-      requests.every((url) => url.includes('oj/library?') || url.endsWith('oj/lists') || url.endsWith('notes?target=pref%3Aplan')),
+      requests.every((url) => url.endsWith('notes?target=pref%3Aplan')),
       'no other plan requests yet',
     );
 
@@ -184,9 +210,6 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     assert.ok(document.activeElement === heading, 'focus lands on the summary');
     assert.match(heading.textContent, /^37 days to your OA · This week: \d+ planned$/);
     assert.match(document.querySelector('.route-plan-text').textContent, /2 a day · 14 h a week · Target: Amazon/);
-    assert.equal(document.querySelector('.route-today-count').textContent, '0 / 2');
-    assert.ok(!document.querySelector('.route-target'), 'the plan replaces the picker');
-    assert.ok(!document.querySelector('.route-pace'));
     assert.deepEqual(
       JSON.parse(localStorage.getItem('cswork:practice:today-target')),
       { date: today, n: 2 },
@@ -214,12 +237,21 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     await act(async () => button('Cancel').click());
     assert.ok(document.activeElement === document.getElementById('route-plan-title'));
 
-    // A later start stop: the trip starts there, not at the line's first problem.
+    // The bank follows the saved plan: today's count from it, no picker, no card.
+    await mount(StudyLibrary, bankProps);
+    assertNoPlanCard();
+    assert.equal(document.querySelector('.route-today-count').textContent, '0 / 2');
+    assert.ok(!document.querySelector('.route-target'), 'the plan replaces the picker');
+    assert.ok(!document.querySelector('.route-pace'));
     assert.ok(!!document.querySelector('.route-ticket'));
+
+    // A later start stop: the trip starts there, not at the line's first problem.
+    await mount(PlanHost, { page, userId: 'u1' });
     await act(async () => button('Edit plan').click());
     await type(field('Start at stop'), '1');
     await act(async () => button('Save plan').click());
     await settle();
+    await mount(StudyLibrary, bankProps);
     assert.equal(document.querySelector('.route-name').textContent, 'Hashing');
     assert.ok(!document.querySelector('.route-ticket'), 'the ticket only knows the line’s first');
     await act(async () => button('Start next problem').click());
@@ -227,11 +259,15 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     assert.equal(JSON.parse(sessionStorage.getItem('cswork:problem-sequence'))[0], 'lc-21');
 
     // OA day: no practice target, no punches, no celebration.
+    await mount(PlanHost, { page, userId: 'u1' });
     await act(async () => button('Edit plan').click());
     await type(field('OA date'), today);
     await act(async () => button('Save plan').click());
     await settle();
     assert.equal(document.getElementById('route-plan-title').textContent, 'Your OA is today. Good luck!');
+    assert.equal(JSON.parse(localStorage.getItem('cswork:practice:today-target')).n, 0);
+    await mount(StudyLibrary, bankProps);
+    assertNoPlanCard();
     assert.equal(document.querySelector('.route-today-rest').textContent, 'OA day, no practice planned');
     assert.equal(document.querySelectorAll('.route-punch').length, 0);
     assert.ok(!document.querySelector('[data-celebrate]'));
@@ -245,7 +281,7 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
   }
 });
 
-test('skipping the card leaves a way back to it', async () => {
+test('skipping the card leaves a way back to it; a guest’s bank shows neither the card nor the sign-in note', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', {
     url: 'https://cswork.test/',
   });
@@ -255,34 +291,39 @@ test('skipping the card leaves a way back to it', async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { StudyLibrary } = await import('../components/study-library.tsx');
+  const PlanHost = await planHost();
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () =>
-    Response.json({
-      rounds: [],
-      activeRoundId: null,
-      currentRound: null,
-      items: [],
-      total: 0,
-      page: 1,
-      pageSize: 30,
-      topics: [],
-      planTodo: [['lc-1', '简单', 0]],
-      collection: {
-        id: 'ling-selected-500',
-        total: 1,
-        ready: 1,
-        solved: 0,
-        sections: [{ slug: 'array-foundations', title: '数组', titleEn: 'Arrays', total: 1, solved: 0 }],
-      },
-    });
-  const root = createRoot(document.getElementById('root'));
+  const page = {
+    rounds: [],
+    activeRoundId: null,
+    currentRound: null,
+    items: [],
+    total: 0,
+    page: 1,
+    pageSize: 30,
+    topics: [],
+    planTodo: [['lc-1', '简单', 0]],
+    collection: {
+      id: 'ling-selected-500',
+      total: 1,
+      ready: 1,
+      solved: 0,
+      sections: [{ slug: 'array-foundations', title: '数组', titleEn: 'Arrays', total: 1, solved: 0 }],
+    },
+  };
+  globalThis.fetch = async () => Response.json(page);
+  let root = createRoot(document.getElementById('root'));
+  const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
   try {
-    await act(async () =>
-      root.render(createElement(StudyLibrary, { navigate: () => {}, availableProblemIds: [] })),
-    );
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 10));
-    });
+    await act(async () => root.render(createElement(StudyLibrary, { navigate: () => {}, availableProblemIds: [] })));
+    await settle();
+    assert.ok(document.querySelector('.route-line'), 'the bank rendered its line');
+    assertNoPlanCard();
+    assert.doesNotMatch(document.body.textContent, /Sign in to light up every stop/);
+    await act(async () => root.unmount());
+    root = createRoot(document.getElementById('root'));
+    await act(async () => root.render(createElement(PlanHost, { page })));
+    await settle();
     // Guests get the card too; their plan lives under the guest key.
     const skip = [...document.querySelectorAll('button')].find((b) => b.textContent === 'Skip for now');
     await act(async () => skip.click());
@@ -305,7 +346,7 @@ test('a plan from a classic list, for some weeks, difficulties and topics, and r
   dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
-  const { StudyLibrary } = await import('../components/study-library.tsx');
+  const PlanHost = await planHost();
   const item = (n, difficulty, stop, extra = {}) => ({
     number: n,
     judgeProblemId: `lc-${n}`,
@@ -332,30 +373,31 @@ test('a plan from a classic list, for some weeks, difficulties and topics, and r
   };
   const requests = [];
   const originalFetch = globalThis.fetch;
+  const page = {
+    rounds: [],
+    activeRoundId: null,
+    currentRound: null,
+    items: [],
+    total: 0,
+    page: 1,
+    pageSize: 30,
+    topics: [],
+    planTodo: [['lc-1', '简单', 1, 0, null]],
+    sequence: ['lc-1'],
+    collection: {
+      id: 'ling-selected-500',
+      total: 1,
+      ready: 1,
+      solved: 0,
+      sections: [{ slug: 'array-foundations', title: '数组', titleEn: 'Arrays', total: 1, solved: 0 }],
+    },
+  };
   globalThis.fetch = async (input) => {
     const url = typeof input === 'string' ? input : input.url;
     requests.push(url);
     if (url.includes('collection=blind-75')) return Response.json(pool);
     if (url.includes('mock-oa/presets')) return Response.json({ companies: [] });
-    return Response.json({
-      rounds: [],
-      activeRoundId: null,
-      currentRound: null,
-      items: [],
-      total: 0,
-      page: 1,
-      pageSize: 30,
-      topics: [],
-      planTodo: [['lc-1', '简单', 1, 0, null]],
-      sequence: ['lc-1'],
-      collection: {
-        id: 'ling-selected-500',
-        total: 1,
-        ready: 1,
-        solved: 0,
-        sections: [{ slug: 'array-foundations', title: '数组', titleEn: 'Arrays', total: 1, solved: 0 }],
-      },
-    });
+    return Response.json(page);
   };
   const root = createRoot(document.getElementById('root'));
   const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
@@ -371,11 +413,7 @@ test('a plan from a classic list, for some weeks, difficulties and topics, and r
   const click = (node) => act(async () => node.click());
   const saved = () => JSON.parse(localStorage.getItem('cswork:plan:v1:u1'));
   try {
-    await act(async () =>
-      root.render(
-        createElement(StudyLibrary, { navigate: () => {}, availableProblemIds: [], signedIn: true, userId: 'u1' }),
-      ),
-    );
+    await act(async () => root.render(createElement(PlanHost, { page, userId: 'u1' })));
     await settle();
     await click(button('Plan my sprint'));
     await settle();
@@ -426,7 +464,7 @@ test('a plan from a classic list, for some weeks, difficulties and topics, and r
   }
 });
 
-// A bank page at `path` with a 40-problem line (`stored` already in this browser); `routes` answers the plan's
+// The card at `path` over a 40-problem line (`stored` already in this browser); `routes` answers the plan's
 // own requests, the rest get the page.
 async function bank(routes, props, stored = {}, path = '/') {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: `https://cswork.test${path}` });
@@ -436,7 +474,7 @@ async function bank(routes, props, stored = {}, path = '/') {
   dom.window.localStorage.setItem('cswork:locale', 'en');
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
-  const { StudyLibrary } = await import('../components/study-library.tsx');
+  const PlanHost = await planHost();
   const page = {
     rounds: [],
     activeRoundId: null,
@@ -467,7 +505,7 @@ async function bank(routes, props, stored = {}, path = '/') {
   };
   const root = createRoot(document.getElementById('root'));
   const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
-  await act(async () => root.render(createElement(StudyLibrary, { navigate: () => {}, availableProblemIds: [], ...props })));
+  await act(async () => root.render(createElement(PlanHost, { page, userId: props.userId })));
   await settle();
   return {
     requests,

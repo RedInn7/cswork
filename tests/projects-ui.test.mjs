@@ -188,14 +188,14 @@ test('the roadmap role picker renders a path; members see each step filled in', 
   assert.match(doc.querySelector('.role-path-progress').textContent, /Sign in/);
   assert.equal(doc.querySelector('.role-path-steps li[data-off]'), null);
   assert.ok([...doc.querySelectorAll('.role-path-head a')].some((a) => a.textContent === 'Multiple choice: JavaScript'));
-  assert.ok(doc.querySelector('a.role-path-plan').getAttribute('href').includes('planTopics=array-foundations'));
+  // The sprint plan is gone: no 'make a study plan' link on a role path step.
+  assert.equal(doc.querySelector('a.role-path-plan'), null);
 
   // Signed in: progress from read marks, done marks, the practice history and the MCQ note.
   const dom = mount('https://cswork.test/roadmap?role=backend');
   const { createRoot } = await import('react-dom/client');
   const backend = find(await RoadmapPage({ searchParams: Promise.resolve({ role: 'backend' }) }));
   const sql = backend.props.steps.find((s) => s.kind === 'sql-track' && s.ref === 'joins');
-  const framework = backend.props.steps.find((s) => s.kind === 'sd-part');
   const dbms = backend.props.steps.find((s) => s.ref === 'dbms');
   let signedIn = true;
   const original = globalThis.fetch;
@@ -207,7 +207,6 @@ test('the roadmap role picker renders a path; members see each step filled in', 
     if (url.endsWith('/api/oj/marks'))
       return Response.json({
         items: [
-          ...framework.keys.map((target) => ({ target, mark: 'read' })),
           { target: 'content:project/rate-limiter', mark: 'done' },
           { target: 'content:project/task-queue', mark: 'doing' },
         ],
@@ -224,14 +223,13 @@ test('the roadmap role picker renders a path; members see each step filled in', 
     await settle();
     const state = (title) =>
       [...document.querySelectorAll('.role-path-steps > li')].find((li) => li.querySelector('.role-path-head a').textContent === title);
-    assert.equal(state(framework.title).getAttribute('data-state'), 'done');
-    // Projects and courses are taken down: their steps are filtered out of the path.
-    assert.ok(!backend.props.steps.some((s) => s.kind === 'project' || s.kind === 'course'));
+    // Projects, courses and the system design course are taken down: their steps are filtered out of the path.
+    assert.ok(!backend.props.steps.some((s) => s.kind === 'project' || s.kind === 'course' || s.kind === 'sd-part'));
     assert.equal(state('Resume project: Token-Bucket Rate Limiter Service'), undefined);
     assert.equal(state(sql.title).getAttribute('data-state'), 'active');
     assert.equal(state(sql.title).querySelector('.role-path-count').textContent, `2/${sql.keys.length}`);
     assert.equal(state('Multiple choice: Databases').getAttribute('data-state'), 'done');
-    assert.match(document.querySelector('.role-path-progress').textContent, /^2 of \d+ required steps done\.$/);
+    assert.match(document.querySelector('.role-path-progress').textContent, /^1 of \d+ required steps done\.$/);
     // Marks, history, the MCQ note and the route notes (the schedule's, lib/content/role-paths.ts RouteDoc).
     assert.equal(requests.filter((u) => u.includes('/api/oj/')).length, 4);
 

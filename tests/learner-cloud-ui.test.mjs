@@ -156,7 +156,7 @@ test('the profile and public list pages render without names, with links and a h
   assert.equal(doc.querySelector('h1').textContent, 'Warm-up');
   assert.ok(doc.querySelector('.lists-public-kicker').textContent === 'Learner list', 'no owner handle, no name');
   assert.equal(doc.querySelectorAll('.lists-public-rows li').length, 1);
-  assert.ok(doc.querySelector('.lists-public-cta').getAttribute('href').startsWith('/?view=lists&list=AbCdEfGhIjKl'));
+  assert.equal(doc.querySelector('.lists-public-cta'), null, 'no copy-to-my-lists CTA now that my lists is gone');
   const owned = new JSDOM(
     renderToStaticMarkup(createElement(PublicListView, { list: { ...list, owner: 'line-rider' }, items, zh: true })),
   ).window.document;

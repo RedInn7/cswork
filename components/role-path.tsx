@@ -453,11 +453,6 @@ export function RolePath({
                       ))}
                     </ul>
                   )}
-                  {s?.plan && (
-                    <a className="role-path-plan" href={s.plan}>
-                      {t('用这几站生成学习计划', 'Make a study plan from these stops')}
-                    </a>
-                  )}
                   {member && (
                     <div className="role-path-marks">
                       {!r.missing && (

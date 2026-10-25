@@ -6,7 +6,6 @@ import type { publicCompare, publicProfile, publicYear, readList } from '@/lib/s
 import type { Activity } from '@/components/practice-calendar';
 import type { profileCertificates } from '@/lib/server/certificates';
 import { FollowButton } from '@/components/follow-button';
-import { ListStar } from '@/components/list-star';
 import { LocalDay, ProfileHeatmap } from './heatmap';
 import { ClimbChart, EffortChart } from './practice-charts';
 import { BandChip, RatingCurve } from '@/components/contest-parts';
@@ -563,10 +562,6 @@ export function PublicListView({
             <strong>{items.length}</strong> {t('道题', items.length === 1 ? 'problem' : 'problems')}
           </span>
         </div>
-        <ListStar id={list.id} stars={list.stars ?? 0} forks={list.forks ?? 0} zh={zh} />
-        <a className="lists-public-cta" href={`/?view=lists&list=${encodeURIComponent(list.id)}&utm_source=list`}>
-          {t('复制到我的题单并开始练习', 'Copy it to my lists and practice')} →
-        </a>
       </section>
       {items.length ? (
         <ol className="lists-public-rows learner-rows">

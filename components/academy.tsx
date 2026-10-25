@@ -25,9 +25,7 @@ import {
   Inbox,
   Timer,
   TrendingUp,
-  ListChecks,
   Zap,
-  Network,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -103,9 +101,6 @@ const MyProgress = lazy(() =>
 const ReviewSession = lazy(() =>
   import('./review-session').then((m) => ({ default: m.ReviewSession }), loadFailed),
 );
-const MyLists = lazy(() =>
-  import('./my-lists').then((m) => ({ default: m.MyLists }), loadFailed),
-);
 const Speedrun = lazy(() =>
   import('./speedrun').then((m) => ({ default: m.Speedrun }), loadFailed),
 );
@@ -120,10 +115,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Timer, '模拟 OA', 'Mock OA', 'mock'],
   [Activity, '评测状态', 'Status', 'status'],
   [TrendingUp, '我的进度', 'My progress', 'progress'],
-  [ListChecks, '我的题单', 'My lists', 'lists'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
-  // A path, not a view: the public course page (app/system-design).
-  [Network, '系统设计课', 'System Design', '/system-design'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
@@ -381,8 +373,6 @@ export function Academy() {
         );
       case 'review-session':
         return <ReviewSession key={boot.person?.id} boot={boot} navigate={navigate} tab={params.tab} />;
-      case 'lists':
-        return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
       case 'questions':
       case 'experiences':
       case 'resources':

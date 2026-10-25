@@ -130,8 +130,9 @@ export function resolveStep(step: RoleStep, zh: boolean): ResolvedStep {
   }
 }
 
-// Resume projects and beginner courses are taken down (app/projects, app/learn): their steps leave the paths.
-const RETIRED_KINDS = new Set<StepKind>(['project', 'course']);
+// Resume projects, beginner courses and the system design course are taken down
+// (app/projects, app/learn, app/system-design): their steps leave the paths.
+const RETIRED_KINDS = new Set<StepKind>(['project', 'course', 'sd-part']);
 export const resolveRolePath = (role: RoleKey, zh: boolean) =>
   ROLES[role].steps.filter((step) => !RETIRED_KINDS.has(step.kind)).map((step) => resolveStep(step, zh));
 

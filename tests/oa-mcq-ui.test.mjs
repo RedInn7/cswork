@@ -103,7 +103,7 @@ test('practice: submit grades and explains, answers persist in this browser, fil
   globalThis.fetch = realFetch;
 });
 
-test('practice signed in: the review lives in the account note, due questions come back, chapter quiz misses link back', async () => {
+test('practice signed in: the review lives in the account note, due questions come back, chapter quiz misses are listed', async () => {
   const today = Math.floor(Date.now() / 86_400_000);
   dom({ 'cswork:oa-mcq:v2': JSON.stringify({ 'mcq-python-1': [1, today, 0] }) });
   const { McqPractice, sdMisses } = await import('../app/oa/mcq/practice.tsx');
@@ -133,8 +133,9 @@ test('practice signed in: the review lives in the account note, due questions co
   await act(async () => button('Due today').click());
   assert.equal(document.querySelectorAll('.oa-mcq-list > li').length, 1);
   assert.equal(document.querySelector('.oa-mcq-why'), null);
-  const link = document.querySelector('.oa-mcq-sd a');
-  assert.equal(link.getAttribute('href'), '/system-design/cache#sd-quiz-title');
+  // The system design course is down: the missed chapter is named, not linked.
+  assert.equal(document.querySelector('.oa-mcq-sd a'), null);
+  assert.equal(document.querySelector('.oa-mcq-sd li span').textContent, 'Caching');
   assert.match(document.querySelector('.oa-mcq-sd').textContent, /Q2/);
   // Answering it right moves it to box 1 in the account and keeps it on screen.
   const first = document.querySelector('.oa-mcq-list > li');

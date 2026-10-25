@@ -184,9 +184,10 @@ test('the profile shows languages, badges, posts, follows and list saves; follow
       }),
     ),
   ).window.document;
-  assert.equal(page.querySelector('.list-star').textContent.includes('2 saves'), true);
-  assert.equal(page.querySelector('.list-star').textContent.includes('1 copy'), true);
-  assert.equal(page.querySelector('.list-star button[aria-pressed="false"]') !== null, true);
+  assert.equal(page.querySelector('h1').textContent, 'Warm-up');
+  // My lists is gone: no save/copy controls on a public list.
+  assert.equal(page.querySelector('.list-star'), null);
+  assert.equal(page.querySelector('.lists-public-cta'), null);
 });
 
 test('following from a profile updates its follower count in place', async () => {

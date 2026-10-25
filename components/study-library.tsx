@@ -5,7 +5,7 @@ import { rememberLibraryQuery, rememberProblemSequence } from '@/lib/problem-seq
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { useCoveredDays } from './daily-goal';
 import { DailyMonth } from './daily-month';
-import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
+import { useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
 import {
   askedText,
@@ -1070,14 +1070,7 @@ export function StudyLibrary({
                 )}
               </p>
             )}
-            {!member ? (
-              <p className="route-note">
-                {t(
-                  '登录后，线路图会点亮你走过的每一站，并可在站内提交代码。',
-                  'Sign in to light up every stop you pass and submit code here.',
-                )}
-              </p>
-            ) : solvedAll && !next ? (
+            {!member ? null : solvedAll && !next ? (
               <p className="route-note">
                 {t(
                   `第 ${roundNumber} 轮的 ${data?.collection?.total} 道题已全部通过。`,
@@ -1092,15 +1085,6 @@ export function StudyLibrary({
                 )}
               </p>
             ) : null}
-            <StudyPlan
-              goal={sprint.goal}
-              plan={sprint.plan}
-              today={sprint.today}
-              onSave={sprint.save}
-              stops={stops}
-              english={english}
-              signedIn={!!userId}
-            />
           </div>
           <div className="route-habit">
             <PracticeCalendar

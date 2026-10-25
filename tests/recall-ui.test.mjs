@@ -177,7 +177,7 @@ test('the queue lists cards due today with links, counts its boxes and clears ma
       rows.map((a) => [a.querySelector('strong').textContent, a.getAttribute('href')]),
       [
         ['LRU cache', '/?view=content&type=interview_question&slug=lru'],
-        ['URL shortener', '/system-design/url-shortener'],
+        ['URL shortener', '/'], // the system design course is taken down: no chapter link
       ],
     );
     assert.equal(rows[0].querySelector('.progress-detail').textContent, 'Review 2 of 4 · 2 days overdue');
