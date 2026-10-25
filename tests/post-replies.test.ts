@@ -154,7 +154,7 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   assert.deepEqual(notices(bob.id).map((n) => [n.kind, n.title]), [['mention', '有人在讨论中提到了你']]);
   assert.deepEqual(notices(cy.id), []);
   assert.deepEqual(notices(ada.id), []);
-  assert.equal(notices(bob.id)[0].href, '/system-design/framework');
+  assert.equal(notices(bob.id)[0].href, '/?view=problems', 'the system design course is down, so an sd thread links to the problem bank');
   assert.equal(notices(bob.id)[0].body, '@ada: Loop prep');
 
   const comment = (await ok<Detail>(dee, 'POST', `posts/${post.id}/comments`, { body: 'Good luck' })).comments[0];

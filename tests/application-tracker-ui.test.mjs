@@ -85,7 +85,7 @@ test('the board shows the funnel, a column per stage, the countdown and the comp
   assert.match(amazon.querySelector('.tracker-due').textContent, /^OA 还剩 1 天 [56] 小时$/);
   assert.deepEqual(
     [...amazon.querySelectorAll('.tracker-links a')].map((a) => [a.textContent, a.getAttribute('href')]),
-    [['这家的 OA 真题', '/oa/amazon'], ['模拟 OA', '/mock-oa/amazon'], ['冲刺计划', '/?view=problems']],
+    [['这家的 OA 真题', '/oa/amazon'], ['模拟 OA', '/mock-oa/amazon']],
   );
   assert.equal(amazon.querySelector('select').getAttribute('aria-label'), 'Amazon 的阶段');
 });
