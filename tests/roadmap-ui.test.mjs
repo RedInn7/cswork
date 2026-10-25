@@ -55,7 +55,7 @@ test('states are hints: done at 80%, ready once prerequisites reach 60%', () => 
   assert.equal(graphState({}, 'array-foundations'), 'ready', 'the root is always open');
 });
 
-test('signed in, the tracks show topic progress and read chapters; signed out they stay plain', async () => {
+test('signed in, the tracks show topic progress and CS reading; signed out they stay plain', async () => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/roadmap' });
   dom.window.localStorage.setItem('cswork:locale', 'en');
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
@@ -96,12 +96,8 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
   const props = {
     english: true,
     totals: Object.fromEntries(ROUTE_SLUGS.map((slug) => [slug, { solved: 0, total: 10 }])),
-    sd: [
-      { slug: 'framework', title: 'Framework', href: '/system-design/framework', part: 'framework' },
-      { slug: 'url-shortener', title: 'URL Shortener', href: '/system-design/url-shortener', part: 'cases' },
-      { slug: 'lld-elevator', title: 'Elevator', href: '/system-design/lld-elevator', part: 'lld' },
-      { slug: 'tech-kafka', title: 'Kafka', href: '/system-design/tech-kafka', part: 'tech' },
-    ],
+    // The system design course is taken down: the page passes no chapters.
+    sd: [],
     guide: [{ title: 'Final rounds', summary: 'STAR stories', href: '/guide/onsite' }],
     cs: {
       totals: { arch: 20, linux: 20, git: 2, os: 20, concurrency: 22, network: 21, dbms: 22, security: 20 },
@@ -129,15 +125,11 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     assert.equal(state('binary-tree'), 'later');
     assert.equal(document.querySelectorAll('.route-graph-ring').length, 2);
     assert.equal(document.querySelectorAll('.roadmap-legend li').length, 4);
-    // An optional chapter shows as read but stays out of the required count.
-    assert.match(document.body.textContent, /1 of 3 required chapters read\./);
-    const read = [...document.querySelectorAll('.roadmap-parts li[data-read]')];
-    assert.deepEqual(read.map((li) => li.textContent), ['Framework (read)', 'Kafka (read)']);
-    assert.deepEqual(
-      [...document.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
-      ['Framework', 'Case studies', 'Low-level design', 'Key technologies (optional)'],
-      'empty parts are left out',
-    );
+    // No system design track, even with system design chapters marked read.
+    assert.equal(document.getElementById('roadmap-sd'), null);
+    assert.equal(document.querySelector('.roadmap-parts'), null);
+    assert.doesNotMatch(document.body.textContent, /required chapters read|System design/);
+    assert.deepEqual([...document.querySelectorAll('.roadmap-track-no')].map((n) => n.textContent), ['1', '2', '3']);
     assert.ok(document.querySelector('.roadmap-cards a[href="/guide/onsite"]'));
     // The CS track: a member's answers, reading and cards per subject, from the notes they already keep.
     assert.ok(requests.some((url) => url.endsWith('/api/oj/notes?target=mcq%3Aanswers')));
@@ -164,7 +156,7 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     assert.ok([...document.querySelectorAll('a.route-graph-node')].every((a) => !a.hasAttribute('data-state')));
     assert.ok(!document.querySelector('.roadmap-legend'));
     assert.match(document.querySelector('.roadmap-note').textContent, /Sign in/);
-    assert.equal(document.querySelectorAll('.roadmap-parts li[data-read]').length, 0);
+    assert.equal(document.querySelector('.roadmap-parts'), null);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;
@@ -172,42 +164,25 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
   }
 });
 
-test('every system design chapter lands in its course part, the ML chapters in their own', async () => {
+test('the system design course is taken down: no track, no chapter or footer links; the CS track stays', async () => {
   const { default: RoadmapPage } = await import('../app/roadmap/page.tsx');
   const { RoadmapTracks } = await import('../app/roadmap/tracks.tsx');
-  const find = (node) =>
-    node && typeof node === 'object'
-      ? node.type === RoadmapTracks
-        ? node
-        : [node.props?.children].flat(Infinity).map(find).find(Boolean)
-      : undefined;
-  const tracks = find(await RoadmapPage({ searchParams: Promise.resolve({}) }));
-  const course = JSON.parse(readFileSync(new URL('../lib/content/system-design-course.json', import.meta.url), 'utf8'));
-  const { sd } = tracks.props;
-  assert.deepEqual(sd.map((chapter) => chapter.slug), course.chapters.map((chapter) => chapter.slug));
-  const part = Object.fromEntries(sd.map((chapter) => [chapter.slug, chapter.part]));
-  for (const slug of ['ml-design-framework', 'recsys-ranking', 'search-ranking', 'ads-ctr', 'fraud-detection']) assert.equal(part[slug], 'ml', slug);
-  for (const slug of ['ood-interview-approach', 'solid-in-practice', 'lld-elevator']) assert.equal(part[slug], 'lld', slug);
-  for (const slug of ['concurrency-primitives', 'bounded-blocking-queue', 'rate-limited-executor']) assert.equal(part[slug], 'concurrency', slug);
-  assert.equal(part['url-shortener'], 'cases');
-  // The optional chapters are parts of their own, not case studies.
-  const OPTIONAL = { tech: 'tech', pattern: 'patterns', 'lld-case': 'lld-cases', api: 'api' };
-  for (const chapter of sd) {
-    const prefix = chapter.slug.match(/^(tech|pattern|lld-case|api)-/)?.[1];
-    if (prefix) assert.equal(part[chapter.slug], OPTIONAL[prefix], chapter.slug);
-  }
-  // The roadmap's required count matches the certificate's 27 chapters.
-  assert.equal(sd.filter((chapter) => !Object.values(OPTIONAL).includes(chapter.part)).length, 27);
+  const nodes = (node) =>
+    node && typeof node === 'object' ? [node, ...[node.props?.children].flat(Infinity).flatMap(nodes)] : [];
+  const page = await RoadmapPage({ searchParams: Promise.resolve({}) });
+  const tracks = nodes(page).find((node) => node.type === RoadmapTracks);
+  assert.deepEqual(tracks.props.sd, []);
+  assert.ok(!nodes(page).some((node) => String(node.props?.href ?? '').startsWith('/system-design')), 'no footer link');
   const doc = new JSDOM(renderToStaticMarkup(tracks)).window.document;
+  assert.equal(doc.getElementById('roadmap-sd'), null);
+  assert.equal(doc.querySelector('.roadmap-parts'), null);
+  assert.equal(doc.querySelector('a[href^="/system-design"], a[href="#roadmap-sd"]'), null);
+  // Tracks renumbered: Coding 1, Behavioral 2, CS fundamentals 3.
   assert.deepEqual(
-    [...doc.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
-    [
-      'Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design',
-      'Key technologies (optional)', 'Patterns (optional)', 'LLD case library (optional)', 'API design (optional)',
-    ],
+    [...doc.querySelectorAll('.roadmap-track > h2')].map((h) => [h.querySelector('.roadmap-track-no')?.textContent, h.id]),
+    [['1', 'roadmap-coding'], ['2', 'roadmap-behavioral'], ['3', 'roadmap-cs']],
   );
-  assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');
-  // The fourth track: 8 subjects in prerequisite rows, question counts from the bank, course and chapter links, no states for a guest.
+  // The CS track: 8 subjects in prerequisite rows, question counts from the bank, practice links, no states for a guest.
   const bank = JSON.parse(readFileSync(new URL('../lib/content/oa-mcq.json', import.meta.url), 'utf8')).questions;
   assert.equal(tracks.props.cs.totals.os, bank.filter((q) => q.topic === 'os').length);
   assert.equal(tracks.props.cs.courses.network.keys.length, 8);
@@ -215,8 +190,7 @@ test('every system design chapter lands in its course part, the ML chapters in t
   assert.equal(cards.length, 8);
   assert.deepEqual([...doc.querySelectorAll('.roadmap-cs > li')].map((row) => row.querySelectorAll('ol > li').length), [3, 1, 2, 2]);
   assert.ok(cards.every((li) => !li.hasAttribute('data-state')));
-  for (const href of ['/system-design/concurrency-primitives', '/system-design/building-blocks', '/oa/mcq?topic=security', '#roadmap-sd'])
-    assert.ok(doc.querySelector(`#roadmap-cs ~ * a[href="${href}"]`), href);
+  assert.ok(doc.querySelector('#roadmap-cs ~ * a[href="/oa/mcq?topic=security"]'));
 });
 
 // Role paths v2 (components/role-path.tsx, components/route-editor.tsx): the schedule, marks and learner-made routes.

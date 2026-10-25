@@ -10,7 +10,6 @@ import { emptyRecall, parseRecall, RECALL_NOTE, type RecallQueue } from '@/lib/r
 import type { RouteSectionInput } from '@/lib/route-stops';
 
 export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml' | 'tech' | 'patterns' | 'lld-cases' | 'api';
-// Outside the certificate (lib/server/system-design-course.ts sdRequired), so outside the read count.
 type Link = { title: string; href: string };
 /** The CS fundamentals track's server data: each subject's question count, each crash course's title and chapter keys (learnKey). */
 export type CsTrackData = { totals: Record<string, number>; courses: Record<string, { title: string; keys: string[] }> };

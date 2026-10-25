@@ -85,21 +85,24 @@ void test('XP: distinct items, each kind capped per local day', () => {
   assert.equal(xpOf(), 0);
 });
 
-void test('quests: the same seed draws the same 3, leaning on neglected areas', () => {
-  const busy = Object.fromEntries(STUDY_KINDS.map((kind) => [kind, kind === 'recall' || kind === 'sd' ? 0 : 30]));
+void test('quests: the same seed draws the same 3, leaning on neglected areas, never system design', () => {
+  const busy = Object.fromEntries(STUDY_KINDS.map((kind) => [kind, kind === 'recall' || kind === 'mock' || kind === 'sd' ? 0 : 30]));
   assert.deepEqual(dailyQuests('u|2026-10-15', busy), dailyQuests('u|2026-10-15', busy));
   let neglected = 0;
   let ac = 0;
   for (let i = 0; i < 300; i++) {
     const quests = dailyQuests(`u|${i}`, busy);
     assert.equal(new Set(quests).size, 3);
-    neglected += +quests.includes('recall') + +quests.includes('sd');
+    // The system design course is taken down: its quest never comes up, even when neglected.
+    assert(!quests.includes('sd'));
+    neglected += +quests.includes('recall') + +quests.includes('mock');
     ac += +quests.includes('ac');
     assert(!dailyQuests(`v|${i}`, { mcq: Infinity }).includes('mcq'));
   }
-  // Unweighted, each kind would come up in 3 of 6 draws (about 150 of 300).
-  assert(neglected > 560, `recall and sd drawn ${neglected} times`);
-  assert(ac < 90, `ac drawn ${ac} times`);
+  // Unweighted, each of the 5 drawable kinds would come up in 3 of 5 draws (about 180 of 300);
+  // with both neglected kinds picked, ac shares the last slot with 2 others (about 100).
+  assert(neglected > 560, `recall and mock drawn ${neglected} times`);
+  assert(ac < 130, `ac drawn ${ac} times`);
 });
 
 void test('GET oj/study-goal: tz decides the local day; GET only, tz checked', async () => {

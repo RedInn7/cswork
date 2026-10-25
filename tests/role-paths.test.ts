@@ -22,9 +22,10 @@ test('every role resolves in both languages', () => {
   for (const role of ROLE_KEYS)
     for (const zh of [true, false]) {
       const steps = resolveRolePath(role, zh);
-      // Resume projects and beginner courses are taken down: their steps leave the resolved path.
-      assert.equal(steps.length, ROLES[role].steps.filter((s) => s.kind !== 'project' && s.kind !== 'course').length);
-      assert.ok(steps.every((s) => s.kind !== 'project' && s.kind !== 'course'));
+      // Resume projects, beginner courses and the system design course are taken down: their steps leave the resolved path.
+      const retired = ['project', 'course', 'sd-part'];
+      assert.equal(steps.length, ROLES[role].steps.filter((s) => !retired.includes(s.kind)).length);
+      assert.ok(steps.every((s) => !retired.includes(s.kind)));
       for (const step of steps) {
         assert.ok(step.href.startsWith('/'), `${role} ${step.kind} ${step.ref}`);
         assert.equal(step.title === '', step.kind === 'mcq-topic', 'only MCQ topics are named on the client');
@@ -84,7 +85,8 @@ test('each role is a real path: no repeats, a project, mostly counted steps', ()
     assert.equal(new Set(ids).size, ids.length, `${role} repeats a step`);
     assert.ok(steps.some((s) => s.kind === 'project' && !s.optional), `${role} has no required project`);
     const counted = resolveRolePath(role, true).filter((s) => !s.optional && s.keys.length);
-    assert.ok(counted.length >= 6, `${role}: ${counted.length} counted steps`);
+    // With system design parts retired, the frontend path is the shortest at 5 counted steps.
+    assert.ok(counted.length >= 5, `${role}: ${counted.length} counted steps`);
   }
   // Every resume project is on some role's path, and its meta roles say where.
   for (const project of projectFile.projects) {
@@ -95,11 +97,9 @@ test('each role is a real path: no repeats, a project, mostly counted steps', ()
 });
 
 test('system design steps carry one label, and "optional" only as the step tag', () => {
-  // The course's part names already say "System design:" and "(optional)"; required parts must not read optional.
+  // The course is taken down, so no role path shows an SD part; the catalog entries still read cleanly.
   for (const role of ROLE_KEYS)
-    for (const zh of [true, false])
-      for (const step of resolveRolePath(role, zh).filter((s) => s.kind === 'sd-part'))
-        assert.doesNotMatch(step.title, /系统设计：系统设计|System design: System design|选读|optional/i, `${role} ${step.ref}`);
+    for (const zh of [true, false]) assert.ok(!resolveRolePath(role, zh).some((s) => s.kind === 'sd-part'), role);
   assert.equal(resolveStep({ kind: 'sd-part', ref: 'framework' }, false).title, 'System design: framework and cases');
   assert.equal(resolveStep({ kind: 'sd-part', ref: 'tech-kafka' }, true).title, '系统设计：关键技术');
 });
