@@ -56,9 +56,6 @@ export default async function CommunityLists({ searchParams }: Props) {
             'Every public learner list. Save one for later, or copy it and make it your own.',
           )}
         </p>
-        <a className="lists-public-cta" href="/?view=lists">
-          {t('做一份我的题单', 'Make a list of mine')} →
-        </a>
       </section>
       <section aria-labelledby="plaza-title">
         <h2 id="plaza-title" className="lists-public-h2">

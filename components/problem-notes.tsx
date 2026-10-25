@@ -7,7 +7,7 @@ import { NOTE_MAX_BYTES } from '@/lib/practice-review';
 import { PROBLEM_TEMPLATE, wikiLinks } from '@/lib/note-meta';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
-import { AskedReport, communityProblem, ListMenu } from './problem-community';
+import { AskedReport, communityProblem } from './problem-community';
 import '@/app/problem-notes.css';
 
 const CardEditor = lazy(() => import('./card-editor').then((m) => ({ default: m.CardEditor })));
@@ -598,10 +598,7 @@ export function ProblemMarks({
         </button>
       ))}
       {communityProblem(problemId) && (
-        <>
-          <ListMenu problemId={problemId} english={english} />
-          <AskedReport problemId={problemId} english={english} />
-        </>
+        <AskedReport problemId={problemId} english={english} />
       )}
       {error && (
         <span role="alert" className="sr-only">

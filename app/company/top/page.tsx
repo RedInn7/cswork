@@ -4,7 +4,6 @@ import { companyHubPath } from '@/lib/oa-company-brands';
 import { topProblems } from '@/lib/server/company-insights';
 import { requestLocale } from '@/lib/server/locale';
 import { OaDifficulty } from '../../oa/parts';
-import { SaveAsList } from '../save-list';
 
 /** /company/top: the 100 LeetCode problems reported most across every company (lib/server/company-insights.ts). */
 const PATH = '/company/top';
@@ -23,7 +22,6 @@ export async function generateMetadata() {
 export default async function TopProblemsPage() {
   const zh = (await requestLocale()) === 'zh';
   const top = topProblems(100);
-  const judgeable = top.flatMap((p) => (p.judgeProblemId ? [p.judgeProblemId] : []));
   return (
     <>
       <script
@@ -47,14 +45,6 @@ export default async function TopProblemsPage() {
         <h1>{title(zh)}</h1>
         <p className="public-library-summary">{lead(zh)}</p>
       </header>
-      {!!judgeable.length && (
-        <SaveAsList
-          ids={judgeable}
-          zh={zh}
-          title={zh ? '全站高频 Top 100' : 'CSWork Top 100'}
-          description={zh ? '各公司面试最常考的 LeetCode 题（来自 /company/top）' : 'The LeetCode problems companies ask most (from /company/top)'}
-        />
-      )}
       {top.length ? (
         <ol className="company-hub-lc top-list">
           {top.map((p, index) => {
