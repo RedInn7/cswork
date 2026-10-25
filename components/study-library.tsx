@@ -1070,14 +1070,7 @@ export function StudyLibrary({
                 )}
               </p>
             )}
-            {!member ? (
-              <p className="route-note">
-                {t(
-                  '登录后，线路图会点亮你走过的每一站，并可在站内提交代码。',
-                  'Sign in to light up every stop you pass and submit code here.',
-                )}
-              </p>
-            ) : solvedAll && !next ? (
+            {!member ? null : solvedAll && !next ? (
               <p className="route-note">
                 {t(
                   `第 ${roundNumber} 轮的 ${data?.collection?.total} 道题已全部通过。`,
