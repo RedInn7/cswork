@@ -63,7 +63,8 @@ export const QUESTS: Record<StudyKind, { need: number; zh: string; en: string; h
  */
 export function dailyQuests(seed: string, recent7: DayCounts): StudyKind[] {
   const random = seededRandom(hash(seed));
-  const pool = [...STUDY_KINDS];
+  // The system design course is taken down: its quest is never drawn.
+  const pool = STUDY_KINDS.filter((kind) => kind !== 'sd');
   const picked: StudyKind[] = [];
   while (picked.length < 3) {
     const weights = pool.map((kind) => 1 / (1 + (recent7[kind] ?? 0)));

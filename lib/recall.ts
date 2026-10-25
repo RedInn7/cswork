@@ -176,5 +176,6 @@ export function recallHref(target: string) {
   if (target.startsWith('idea:')) return `/?view=problem&problem=${encodeURIComponent(target.slice(5))}`;
   // sd:<course>/<chapter> is a /learn chapter (lib/server/beginner-courses.ts learnKey): taken down, no link.
   if (/^sd:[^/]+\/[^/]+$/.test(target)) return null;
-  return target.startsWith('sd:') ? `/system-design/${encodeURIComponent(target.slice(3))}` : null;
+  // sd:<chapter> was a system design chapter: taken down, no link.
+  return null;
 }

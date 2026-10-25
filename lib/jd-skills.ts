@@ -82,7 +82,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '系统设计',
     en: 'System design',
     hint: 'designing scalable, distributed systems and services',
-    href: '/system-design',
+    href: null,
     parts: ['framework'],
     certs: ['sd:system-design'],
   },
@@ -90,7 +90,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '面向对象设计（LLD）',
     en: 'Object-oriented design (LLD)',
     hint: 'object-oriented or low-level design, design patterns, SOLID',
-    href: '/system-design/ood-interview-approach',
+    href: null,
     parts: ['ood-interview-approach', 'lld-case-atm'],
     core: 'ood',
   },
@@ -98,7 +98,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '并发编程',
     en: 'Concurrency',
     hint: 'multithreading, locks, synchronization, asynchronous or parallel programming',
-    href: '/system-design/concurrency-primitives',
+    href: null,
     parts: ['concurrency-primitives'],
     core: 'concurrency',
   },
@@ -106,7 +106,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: 'API 设计',
     en: 'API design',
     hint: 'designing APIs and service contracts: REST, RPC, GraphQL, pagination, versioning, auth',
-    href: '/system-design/api-rest-vs-rpc-graphql',
+    href: null,
     parts: ['api-rest-vs-rpc-graphql'],
   },
   behavioral: {
@@ -119,7 +119,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
     zh: '机器学习',
     en: 'Machine learning',
     hint: 'machine learning, models, ML systems, applied data science',
-    href: '/system-design/ml-design-framework',
+    href: null,
     parts: ['ml-design-framework'],
   },
   frontend: {
@@ -160,7 +160,7 @@ export const JD_SKILL_INFO: Record<JdSkill, Measure & { zh: string; en: string; 
 export const JD_ROUND_INFO: Record<JdRound, { zh: string; en: string; href: string }> = {
   oa: { zh: '在线笔试（OA）', en: 'Online assessment', href: '/mock-oa' },
   'phone-coding': { zh: '电话编程面', en: 'Phone coding screen', href: '/?view=problems' },
-  'system-design': { zh: '系统设计面', en: 'System design round', href: '/system-design' },
+  'system-design': { zh: '系统设计面', en: 'System design round', href: '/?view=questions' },
   behavioral: { zh: '行为面', en: 'Behavioral round', href: '/categories/behavioral-leadership' },
   'take-home': { zh: '带回家作业', en: 'Take-home project', href: '/take-home' },
 };

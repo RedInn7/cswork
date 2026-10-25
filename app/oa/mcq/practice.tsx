@@ -321,7 +321,7 @@ export function McqPractice({
           <ul>
             {sdWrong.map((c) => (
               <li key={c.slug}>
-                <a href={`/system-design/${c.slug}#sd-quiz-title`}>{c.title}</a>{' '}
+                <span>{c.title}</span>{' '}
                 <small>{c.wrong.map((n) => `Q${n}`).join(zh ? '、' : ', ')}</small>
               </li>
             ))}

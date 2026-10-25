@@ -1,7 +1,6 @@
 import { SITEMAP_STATIC_ENTRIES, type SitemapEntry } from '@/lib/seo';
 import { h1bPaths } from './h1b';
 import { mockOaPaths } from './mock-oa-presets';
-import { systemDesignPaths } from './system-design-course';
 
 /**
  * Sitemap page 1's fixed pages: lib/seo.ts's list plus the pages built from server-side content,
@@ -12,6 +11,5 @@ import { systemDesignPaths } from './system-design-course';
 export const sitemapStatics = (): SitemapEntry[] => [
   ...SITEMAP_STATIC_ENTRIES,
   ...mockOaPaths(),
-  ...systemDesignPaths(),
   ...h1bPaths(),
 ];

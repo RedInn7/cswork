@@ -312,7 +312,6 @@ export const CAREER_CHECKLISTS: Record<string, ChecklistItem[]> = {
         '应届生多是面向对象设计或一个小系统（比如短链接服务）；有经验的工程师是完整的系统设计。',
         'New graduates usually get object-oriented design or a small system (a URL shortener); experienced engineers get full system design.',
       ],
-      href: '/system-design',
     },
     {
       id: 'level',
