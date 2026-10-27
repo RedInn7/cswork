@@ -20,6 +20,7 @@ import { getPublicOaProblem } from '@/lib/server/oj-problems';
 import { OA_KIND_NAMES, stopHref, topicName } from '@/lib/route-stops';
 import { publicLibraryDescription } from '@/lib/server/public-library';
 import { PublicLibraryMarkdown } from '../../../library/markdown';
+import { OaEditorial } from '@/components/oa-library';
 import { OaCompanyMark, OaDifficulty } from '../../parts';
 
 type Props = { params: Promise<{ company: string; id: string }> };
@@ -142,7 +143,7 @@ export default async function OaProblemPage({ params }: Props) {
             </span>
           ) : (
             <span className="oa-public-chip" data-level="reading">
-              {zh ? '评测数据准备中，可先阅读题面' : 'Statement only — judging is being prepared'}
+              {zh ? '评测数据准备中，可先阅读题面和题解' : 'Statement and editorial — judging is being prepared'}
             </span>
           )}
         </p>
@@ -216,6 +217,11 @@ export default async function OaProblemPage({ params }: Props) {
           {zh ? '原站未提供独立题面。' : 'The source has no standalone statement.'}
         </p>
       )}
+      {/* Every OA problem has an editorial (judged: the registry's; otherwise content/oa-master/editorials). */}
+      <section className="oa-public-editorial" aria-label={zh ? '题解' : 'Editorial'}>
+        <h2>{zh ? '题解' : 'Editorial'}</h2>
+        <OaEditorial problemId={item.id} english={!zh} />
+      </section>
       {(page.previous || page.next) && (
         <nav className="oa-public-pager" aria-label={zh ? `更多 ${name} OA 题` : `More ${name} OA problems`}>
           {page.previous ? (
