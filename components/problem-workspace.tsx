@@ -610,7 +610,6 @@ function Workspace({
         (!!practiceRound && item.practiceRoundId === practiceRound.id)),
   );
   // The Line 500 editorial opens once the problem is passed, or after a confirm kept until reload.
-  const [editorialAsked, setEditorialAsked] = useState(false);
   const [problemError, setProblemError] = useState('');
   const [problemRevision, setProblemRevision] = useState(0);
   useEffect(() => {
@@ -1836,8 +1835,6 @@ function Workspace({
             problemId={problem.id}
             verified={problem.lingEditorialVerified}
             english={uiEnglish}
-            unlocked={editorialAsked || solvedThisRound}
-            onUnlock={() => setEditorialAsked(true)}
             code={code}
             language={language}
             settings={settings}
@@ -1856,6 +1853,7 @@ function Workspace({
             code={code}
             language={language}
             only={solutionsLanguage}
+            unlocked
           />
         ) : leftTab === 'statement' ? (
           <>
