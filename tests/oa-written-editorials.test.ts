@@ -25,7 +25,9 @@ void test('every OA problem not judged here has a written editorial', () => {
     if (editorial.explanation.length < 150) bad.push(`${id}: explanation under 150 chars`);
     for (const { language } of editorial.solutions) if (!LANGS.has(language)) bad.push(`${id}: language ${language}`);
   }
-  // A judged problem's written editorial replaces only the text: its code is the registry's verified program.
+  // Every judged problem has the longer write-up too; it replaces only the text, its code is the
+  // registry's verified program.
+  for (const id of judged) if (!files.has(id)) bad.push(`${id}: judged, no written editorial`);
   for (const id of files)
     if (judged.has(id)) {
       const editorial = oaWrittenEditorial(id);
