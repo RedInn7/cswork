@@ -9,7 +9,7 @@ def solve(raw):
         v=1
         for t in range(k):v*=n-t
         return v
-      for length in range(1,min(L,10)): ans+=9*perm(9,length-1)
+      for length in range(1,min(L,11)): ans+=9*perm(9,length-1)
       used=set()
       for i,d in enumerate(ds):
         low=1 if i==0 else 0
