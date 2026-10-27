@@ -12,6 +12,7 @@ import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 import { lingEditorial } from './ling-editorials';
+import { oaWrittenEditorial } from './oa-written-editorials';
 import { trackEditorial } from './track-editorials';
 import { oaJudgeRegistry } from './oa-judge';
 import { aidsByProblem, gradesByProblem } from './practice-aids';
@@ -390,7 +391,7 @@ export async function handleMyPractice(
     // vote back always works.
     if (vote && editorial && d.on) {
       const id = d.target.slice('content:editorial/'.length);
-      if (!(id.startsWith('lc-') ? lingEditorial(id) : id.startsWith('oa-') ? oaJudgeRegistry().editorialSha256(id) : trackEditorial(id)))
+      if (!(id.startsWith('lc-') ? lingEditorial(id) : id.startsWith('oa-') ? oaJudgeRegistry().editorialSha256(id) || oaWrittenEditorial(id) : trackEditorial(id)))
         throw new HttpError(404, '题解不存在');
     }
     if (d.mark === 'curated' && (p.role !== 'teacher' || !d.target.startsWith('content:')))
