@@ -63,12 +63,11 @@ import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
-import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
+import { ProblemMarks, useProblemNote } from './problem-notes';
 import { SubmissionNote } from './submission-note';
 import { ReviewLink } from './code-review';
 import { ReviewGrade } from './review-grade';
 import { AskedReport, communityProblem } from './problem-community';
-import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
 import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
 import { ComplexityProbe, StressTest, stressReady } from './stress-result';
@@ -453,14 +452,8 @@ function Workspace({
   const suggest = useRef<(() => void) | null>(null);
   const format = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
-  const [leftTab, setLeftTab] = useState<
-    'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
-  >(
-    tab === 'solutions' && boot.person && communityProblem(initialProblem.id)
-      ? 'solutions'
-      : tab === 'history' && boot.person
-        ? 'history'
-        : 'statement',
+  const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
+    tab === 'history' && boot.person ? 'history' : 'statement',
   );
   // Private to an account, and closed during a mock exam like the editorial.
   const note = useProblemNote(
@@ -662,7 +655,6 @@ function Workspace({
   // AI hints and review: kept here so a tab switch does not drop the replies.
   const aiTutor = useAiTutor(initialProblem.id);
   // The solutions tab's language filter, set from the AC dialog's histogram.
-  const [solutionsLanguage, setSolutionsLanguage] = useState('');
   const prose = useRef<HTMLDivElement>(null);
   // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
   // Whiteboard mode: no run, completion, help or AI, one submission (components/whiteboard-mode.tsx).
@@ -1790,14 +1782,6 @@ function Workspace({
           <History size={15} />
           {uiEnglish ? 'Submissions' : '提交记录'}
         </button>
-        {note.enabled && (
-          <NotesTab
-            note={note}
-            active={leftTab === 'notes'}
-            onSelect={() => setLeftTab('notes')}
-            english={uiEnglish}
-          />
-        )}
         {(problem.id.startsWith('oa-') || problem.lingEditorialVerified != null) && !examMode && !wb.on && (
           <button
             role="tab"
@@ -1809,9 +1793,6 @@ function Workspace({
             {uiEnglish ? 'Editorial' : '官方题解'}
           </button>
         )}
-        {boot.person && communityProblem(problem.id) && !examMode && !wb.on && (
-          <SolutionsTab active={leftTab === 'solutions'} onSelect={() => setLeftTab('solutions')} english={uiEnglish} />
-        )}
       </div>
       {maxButton('statement')}
       <div className="cs-statement-scroll">
@@ -1822,14 +1803,7 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {leftTab === 'notes' && note.enabled ? (
-          <ProblemNotes
-            note={note}
-            english={uiEnglish}
-            problemId={initialProblem.id}
-            card={examMode ? undefined : { title: statement.title, href: `/?view=problem&problem=${encodeURIComponent(initialProblem.id)}` }}
-          />
-        ) : leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
+        {leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
           <LingEditorial
             key={problem.id}
             problemId={problem.id}
@@ -1838,23 +1812,12 @@ function Workspace({
             code={code}
             language={language}
             settings={settings}
-            discussion={!!boot.person && communityProblem(problem.id)}
             stop={problem.stop}
             followUpOn={followUpOn}
             onFollowUp={followUp ? setFollowUpOn : undefined}
           />
         ) : leftTab === 'editorial' && !examMode ? (
           <OaEditorial key={`editorial:${problem.id}`} problemId={problem.id} english={uiEnglish} language={language} />
-        ) : leftTab === 'solutions' && boot.person && !examMode ? (
-          <SolutionPosts
-            key={`${problem.id}:${solutionsLanguage}`}
-            problemId={problem.id}
-            english={uiEnglish}
-            code={code}
-            language={language}
-            only={solutionsLanguage}
-            unlocked
-          />
         ) : leftTab === 'statement' ? (
           <>
             <div className="cs-statement-heading">
@@ -3322,7 +3285,7 @@ function Workspace({
                 const template = templateFor(language, codingMode);
                 wb.enter(code === template ? null : code);
                 updateCode(template);
-                setLeftTab((tab) => (tab === 'editorial' || tab === 'solutions' ? 'statement' : tab));
+                setLeftTab((tab) => (tab === 'editorial' ? 'statement' : tab));
               }}
             />
           )}
@@ -3412,16 +3375,6 @@ function Workspace({
           english={uiEnglish}
           navigate={navigate}
           onClose={() => setSuccess(null)}
-          openSolutions={
-            boot.person && communityProblem(problem.id)
-              ? (only) => {
-                  setSuccess(null);
-                  setSolutionsLanguage(only);
-                  setLeftTab('solutions');
-                  setMobilePane('statement');
-                }
-              : undefined
-          }
           ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
           targetComplexity={problem.targetComplexity}
           grade={<ReviewGrade problemId={problem.id} submission={success} history={history} activity={boot.activity} english={uiEnglish} />}
