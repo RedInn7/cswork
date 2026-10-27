@@ -1,0 +1,19 @@
+{
+  "id": "oa-stripe-8",
+  "explanation": "## 思路\n\n第 1 部分只有一种情况：给出的区间互不重叠，空缺只出现在 BIN 范围的最前面和最后面。\n\n1. 每个 10 位的 `start`/`end` 前面拼上 6 位 BIN，得到 16 位卡号。\n2. 按 `start` 排序。所有后缀都是 10 位定长，字符串字典序和数值大小一致，不用转整数。\n3. 把第一个区间的 `start` 改成 `BIN + \"0000000000\"`，最后一个区间的 `end` 改成 `BIN + \"9999999999\"`，中间的区间不动。\n\n## 正确性\n\n区间不重叠且中间没有缺口（第 1 部分的前提），排序后它们首尾相接覆盖一段连续范围，只差两端。把最低区间向下延伸到下界、最高区间向上延伸到上界后，整段 `[BIN0…0, BIN9…9]` 都被覆盖，而且每个区间的品牌不变。只有一个区间时，它同时被向两端延伸，正是样例 1。\n\n## 复杂度\n\n排序 `O(N log N)`，其余线性；空间 `O(N)`。\n\n## 易错点\n\n- 题面样例 2 的输出把上界写成了 18 位的 `424242429999999999`，正确的上界是 16 位 `4242429999999999`，测试里按 16 位断言。\n- 输入顺序不一定有序（样例 2 里 VISA 排在后面），必须先排序再改端点。\n- 后缀如果不是定长（后面几部分可能变化），就要改成按整数比较。\n",
+  "explanationEn": "## Approach\n\nPart 1 has a single case: the given intervals do not overlap, and gaps appear only at the very start and end of the BIN range.\n\n1. Prefix each 10-digit `start`/`end` with the 6-digit BIN to get a 16-digit card number.\n2. Sort by `start`. All suffixes are exactly 10 digits, so string order matches numeric order and no integer conversion is needed.\n3. Set the first interval's `start` to `BIN + \"0000000000\"` and the last interval's `end` to `BIN + \"9999999999\"`; leave the middle ones alone.\n\n## Correctness\n\nUnder the part-1 guarantee the intervals do not overlap and leave no internal gaps, so after sorting they cover one contiguous stretch that is missing only its two ends. Extending the lowest interval down to the lower bound and the highest one up to the upper bound covers all of `[BIN0…0, BIN9…9]` while every interval keeps its brand. With a single interval, it is stretched both ways, which is sample 1.\n\n## Complexity\n\n`O(N log N)` for the sort, linear otherwise; `O(N)` space.\n\n## Pitfalls\n\n- Sample 2's expected output writes the upper bound as the 18-digit `424242429999999999`; the correct value is the 16-digit `4242429999999999`, and the test asserts that.\n- Input is not necessarily sorted (VISA comes second in sample 2), so sort before touching the endpoints.\n- If later parts allow variable-length suffixes, compare as integers instead.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef card_range_part1(BIN: str, info: List[List[str]]) -> List[List[str]]:\n    if not info:\n        return []\n    # 10 位后缀等长，按字符串排序就是按数值排序\n    ivs = sorted([BIN + s, BIN + e, b] for s, e, b in info)\n    ivs[0][0] = BIN + \"0\" * 10\n    ivs[-1][1] = BIN + \"9\" * 10\n    return ivs\n"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    public List<List<String>> cardRangePart1(String BIN, List<List<String>> info) {\n        String low = BIN + \"0000000000\", high = BIN + \"9999999999\";\n        info.sort((a, b) -> (BIN + a.get(0)).compareTo(BIN + b.get(0)));\n        List<List<String>> out = new ArrayList<>();\n        for (List<String> iv : info) out.add(new ArrayList<>(List.of(BIN + iv.get(0), BIN + iv.get(1), iv.get(2))));\n        if (out.isEmpty()) return out;\n        out.get(0).set(0, low);\n        out.get(out.size() - 1).set(1, high);\n        return out;\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<vector<string>> cardRangePart1(string BIN, vector<vector<string>>& info) {\n        string low = BIN + string(10, '0'), high = BIN + string(10, '9');\n        vector<vector<string>> ivs;\n        for (auto& iv : info) ivs.push_back({BIN + iv[0], BIN + iv[1], iv[2]});\n        sort(ivs.begin(), ivs.end());\n        if (ivs.empty()) return ivs;\n        ivs.front()[0] = low; ivs.back()[1] = high;\n        return ivs;\n    }\n};"
+    }
+  ]
+}

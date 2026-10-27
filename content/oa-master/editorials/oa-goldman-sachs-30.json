@@ -1,0 +1,11 @@
+{
+  "id": "oa-goldman-sachs-30",
+  "explanation": "## 思路\n\n每个日期字符串都是\"日 月 年\"三段，用空格切开后分别处理：\n\n1. **日**：形如 `1st`、`22nd`、`7th`，后缀固定是两个字母（st / nd / rd / th），去掉最后两个字符就是数字；\n2. **月**：三个字母的缩写。题面里同时出现了 `jan` 和 `Dec` 两种写法，所以先统一转小写，再查 `jan → 1 … dec → 12` 的映射表；\n3. **年**：4 位数字，原样保留；\n4. 用 `YYYY-MM-DD` 输出，月和日都补齐两位。\n\n样例 `\"22nd Jan 2013\"`：日 `22`，月 `01`，输出 `2013-01-22`；`\"7th Apr 1904\"` 的日只有一位，补零成 `07`。\n\n## 正确性\n\n题面保证每个字段都在给定范围内、格式固定，所以三段切分和后缀去除都是确定的，每个输入唯一对应一个输出。\n\n## 复杂度\n\n时间 O(n)（每个字符串长度是常数），空间 O(n) 存结果。\n\n## 易错点\n\n- 后缀永远是两个字母，直接切掉即可，不必按 `1st/2nd/3rd` 的规则去判断是哪种后缀。\n- 月份大小写不统一时直接查表会 KeyError，先 `lower()`。\n- 日和月都要补零，`1904-4-7` 是错的。",
+  "explanationEn": "## Approach\n\nEach input is \"Day Month Year\"; split on spaces and handle the three parts:\n\n1. **Day**: `1st`, `22nd`, `7th`… The suffix is always two letters (st / nd / rd / th), so dropping the last two characters leaves the number.\n2. **Month**: a three-letter abbreviation. The statement uses both `jan` and `Dec`, so lowercase it before looking it up in a `jan → 1 … dec → 12` table.\n3. **Year**: four digits, kept as is.\n4. Format as `YYYY-MM-DD`, zero-padding month and day to two digits.\n\nSample `\"22nd Jan 2013\"` → day `22`, month `01` → `2013-01-22`; `\"7th Apr 1904\"` has a one-digit day, padded to `07`.\n\n## Correctness\n\nThe format and ranges are guaranteed, so splitting and suffix stripping are deterministic and each input maps to exactly one output.\n\n## Complexity\n\nO(n) time (each string has constant length), O(n) space for the result.\n\n## Pitfalls\n\n- There's no need to reason about which suffix a number takes; it is always two letters.\n- Mixed-case month names break a direct lookup; lowercase first.\n- Pad both month and day; `1904-4-7` is wrong.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\nMONTHS = {m: i for i, m in enumerate(\n    [\"jan\", \"feb\", \"mar\", \"apr\", \"may\", \"jun\", \"jul\", \"aug\", \"sep\", \"oct\", \"nov\", \"dec\"], 1)}\n\ndef preprocessDate(dates: List[str]) -> List[str]:\n    res = []\n    for d in dates:\n        day, mon, year = d.split()\n        day_num = int(day[:-2])            # 去掉 st/nd/rd/th 两个字母\n        res.append(f\"{year}-{MONTHS[mon.lower()]:02d}-{day_num:02d}\")\n    return res\n"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "oa-upstart-2",
+  "explanation": "## 题面说明\n\n题面正文被截断，只剩「给定整数数组 `nums`」。从两个样例可以确定要做的事：**删去所有奇数，再把剩下的偶数倒序输出**。样例 1 `[1,2,3,4,6]` 去掉奇数得 `[2,4,6]`，倒序为 `[6,4,2]`；样例 2 全是奇数，结果为空数组。\n\n## 思路\n\n从后往前遍历 `nums`，遇到偶数就放进结果。这样一次遍历同时完成了「过滤」和「反转」，不需要先建中间数组再翻转。\n\n## 正确性\n\n结果里只包含偶数，且原数组中靠后的偶数先被放入结果，所以结果恰好是「偶数子序列」的逆序。奇数一个都不会被放入。\n\n## 复杂度\n\n- 时间 O(n)。\n- 空间 O(n)（结果数组），除结果外 O(1)。\n\n## 易错点\n\n- 负数的奇偶判断：Python 中 `-3 % 2 == 1`、`-2 % 2 == 0`，直接用 `x % 2 == 0` 没问题；在 Java/C++ 中 `-3 % 2 == -1`，判断奇数要写 `x % 2 != 0`，判断偶数写 `x % 2 == 0` 则两边都安全。\n- 0 是偶数，要保留。\n- 全是奇数时返回空数组，而不是 `null`。\n",
+  "explanationEn": "## About the statement\n\nThe statement is truncated to \"You are given an integer array `nums`\". The two examples fix the task: **remove all odd values and return the remaining even values in reverse order**. `[1,2,3,4,6]` → evens `[2,4,6]` → `[6,4,2]`; an all-odd array gives `[]`.\n\n## Approach\n\nWalk `nums` from the end and collect even values. One pass both filters and reverses.\n\n## Correctness\n\nOnly even values are collected, and later evens are collected first, so the output is exactly the even subsequence reversed.\n\n## Complexity\n\n- O(n) time, O(n) for the output and O(1) extra.\n\n## Pitfalls\n\n- Negative parity: in Java/C++ `-3 % 2 == -1`, so test oddness with `!= 0`; `x % 2 == 0` for evens is safe everywhere.\n- 0 is even and must be kept.\n- Return an empty array, not `null`, when everything is odd.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef filterOddsAndReverseEvens(nums: List[int]) -> List[int]:\n    return [x for x in reversed(nums) if x % 2 == 0]\n"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-superhuman-1",
+  "explanation": "## 思路\n\n把两句话按空格拆成单词数组 `s` 和 `r`。题目保证 `r` 是 `s` 在单词层面的子序列，于是可以用双指针：`j` 指向 `r` 里下一个待匹配的词，依次扫描 `s` 的每个词 `w`：\n\n- 若 `j < len(r)` 且 `w == r[j]`，说明这个词被收到了，`j` 前进一步；\n- 否则 `w` 丢失，加入答案。\n\n扫描结束后答案就是按原顺序排列的丢失单词。样例 1 中 `s = [I, am, a, programmer]`，`r = [I, programmer]`：`I` 匹配，`am`、`a` 都不等于 `programmer`，进入答案，最后 `programmer` 匹配。\n\n## 正确性\n\n当 `s` 中出现重复单词时，匹配到哪一个会影响输出。贪心地\"能匹配就立刻匹配\"得到的是 `r` 在 `s` 中最靠左的嵌入方式，这正是常见题解和参考实现采用的约定；由于 `r` 保证是子序列，贪心一定能把 `r` 全部匹配完，不会出现剩余未匹配的词。\n\n## 复杂度\n\n时间 `O(|sent| + |received|)`（拆词加一次扫描），空间 `O(|sent|)` 用于存放单词数组和答案。\n\n## 易错点\n\n- 比较的是整个单词，不能在字符层面找子序列，否则 `\"a\"` 会错误地匹配到 `\"am\"` 里的字符。\n- 单词区分大小写，`\"I\"` 和 `\"i\"` 不是同一个词。\n- 重复单词（如 `sent = \"a a b\"`，`received = \"a\"`）按贪心会保留第一个 `a`，输出 `[\"a\", \"b\"]`。\n",
+  "explanationEn": "## Approach\n\nSplit both strings into word arrays `s` and `r`. Since `r` is guaranteed to be a word-level subsequence of `s`, use two pointers: `j` points at the next word of `r` to match, and we scan each word `w` of `s`:\n\n- if `j < len(r)` and `w == r[j]`, the word was received, so advance `j`;\n- otherwise `w` was lost and goes into the answer.\n\nThe answer then lists the lost words in their original order. In example 1, `s = [I, am, a, programmer]` and `r = [I, programmer]`: `I` matches, `am` and `a` do not equal `programmer` and are collected, and `programmer` matches last.\n\n## Correctness\n\nWith repeated words, which occurrence gets matched changes the output. Matching greedily as soon as possible picks the leftmost embedding of `r` in `s`, which is the convention used by the reference solution. Because `r` is a subsequence, the greedy scan always consumes all of `r`.\n\n## Complexity\n\n`O(|sent| + |received|)` time for splitting plus one scan; `O(|sent|)` space for the word arrays and the result.\n\n## Pitfalls\n\n- Compare whole words, not characters; otherwise `\"a\"` could wrongly match inside `\"am\"`.\n- Words are case-sensitive: `\"I\"` and `\"i\"` differ.\n- With duplicates (e.g. `sent = \"a a b\"`, `received = \"a\"`), the greedy match keeps the first `a` and returns `[\"a\", \"b\"]`.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\n\ndef lost_fragments(sent: str, received: str) -> List[str]:\n    r = received.split()\n    out: List[str] = []\n    j = 0\n    for w in sent.split():\n        if j < len(r) and w == r[j]:\n            j += 1          # 贪心匹配 received 中下一个词\n        else:\n            out.append(w)\n    return out\n"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    public String[] lostFragments(String sent, String received) {\n        String[] s = sent.split(\"\\\\s+\"), r = received.split(\"\\\\s+\");\n        List<String> out = new ArrayList<>();\n        int j = 0;\n        for (String w : s) {\n            if (j < r.length && w.equals(r[j])) j++;\n            else out.add(w);\n        }\n        return out.toArray(new String[0]);\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<string> lostFragments(string sent, string received) {\n        auto split = [](const string& s) { vector<string> v; stringstream ss(s); string t; while (ss >> t) v.push_back(t); return v; };\n        auto s = split(sent), r = split(received);\n        vector<string> out;\n        size_t j = 0;\n        for (auto& w : s) {\n            if (j < r.size() && w == r[j]) j++;\n            else out.push_back(w);\n        }\n        return out;\n    }\n};"
+    }
+  ]
+}

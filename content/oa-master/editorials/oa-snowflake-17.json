@@ -1,0 +1,11 @@
+{
+  "id": "oa-snowflake-17",
+  "explanation": "## 题意澄清\n\n题面里两个条件都写成了 `|x - y|` 和 `|y - x|`，这两个数永远相等。按字面理解，第一个条件要求 `|x - y| ≤ min(|x|, |y|)`，第二个要求 `|x - y| > max(|x|, |y|)`，两者不可能同时成立，答案恒为 0。这显然是转述时把 `|x + y|` 写错了。下面按原题：\n\n- `min(|x - y|, |x + y|) ≤ min(|x|, |y|)`\n- `max(|x - y|, |x + y|) > max(|x|, |y|)`（注意这里是严格大于）\n\n题面没有样例，代码用 `[2, 5, -3] → 2` 这类数据和暴力对拍验证。\n\n## 思路\n\n令 `a = min(|x|, |y|)`、`b = max(|x|, |y|)`。无论 x、y 正负，`{|x - y|, |x + y|} = {b - a, a + b}`。\n\n- 第一个条件：`b - a ≤ a`，即 `b ≤ 2a`。\n- 第二个条件：`a + b > b`，即 `a > 0`。\n\n所以完美对就是“两个数都不为 0，且较大的绝对值不超过较小的两倍”。把非零元素的绝对值排序，对每个 i 用双指针找满足 `a[j] ≤ 2a[i]` 的最远 j，累加 `j - i - 1`。j 随 i 单调右移。\n\n## 正确性\n\n化简是等价变形；排序后对固定的 i，合法的 j 构成 `i+1 … j-1` 这一段连续区间，每对只在较小元素处数一次。0 和任何数都不满足 `a > 0`，提前去掉不影响结果。代码用直接检查原始两个条件的暴力在随机数据上对拍过。\n\n## 复杂度\n\n排序 O(n log n)，双指针 O(n)，空间 O(n)。\n\n## 易错点\n\n- 严格大于让含 0 的对全部不合法，包括 (0, 0)；Salesforce 那道同类题用的是 `≥`，结论不一样。\n- `2·a[i]` 最大 2×10⁹，超过 32 位 int 范围，Java/C++ 要用 long 比较。\n- 答案可达 n²/2 ≈ 2×10¹⁰，返回值也要用 long。",
+  "explanationEn": "## Clarifying the statement\n\nBoth conditions use `|x - y|` and `|y - x|`, which are equal, so read literally they contradict each other and the answer is always 0. The intended conditions are `min(|x-y|, |x+y|) ≤ min(|x|,|y|)` and `max(|x-y|, |x+y|) > max(|x|,|y|)` (strict).\n\n## Approach\n\nWith `a = min(|x|,|y|)` and `b = max(|x|,|y|)`, the two values are `b - a` and `a + b`. The first condition becomes `b ≤ 2a`, the second `a > 0`. Drop zeros, sort absolute values, and count pairs with `a[j] ≤ 2a[i]` using two pointers.\n\n## Correctness\n\nThe simplification is an equivalence and valid partners of each i form a contiguous range. Cross-checked against the raw conditions by brute force.\n\n## Complexity\n\nO(n log n) time, O(n) space.\n\n## Pitfalls\n\n- Strictness excludes every pair containing 0, including (0, 0).\n- `2·a[i]` can reach 2×10⁹; compare in 64 bits.\n- The count can reach ~2×10¹⁰.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def getPerfectPairsCount(arr):\n    # 令 a = min(|x|,|y|), b = max(|x|,|y|)：条件化简为 b <= 2a 且 a > 0\n    a = sorted(abs(x) for x in arr if x != 0)\n    n, ans, j = len(a), 0, 0\n    for i in range(n):\n        j = max(j, i + 1)\n        while j < n and a[j] <= 2 * a[i]:\n            j += 1\n        ans += j - i - 1\n    return ans\n"
+    }
+  ]
+}

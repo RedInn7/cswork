@@ -1,0 +1,6 @@
+{
+  "id": "oa-paycom-8",
+  "explanation": "**答案：REMOVE**\n\n## 分析\n\nHTTP 标准方法（RFC 9110 定义 8 个，RFC 5789 补充 PATCH）是：`GET`、`HEAD`、`POST`、`PUT`、`DELETE`、`CONNECT`、`OPTIONS`、`TRACE`、`PATCH`。删除资源用的是 `DELETE`，HTTP 里没有 `REMOVE` 这个方法，服务器收到不认识的方法一般返回 `501 Not Implemented` 或 `405 Method Not Allowed`。\n\n## 其他选项为什么错（它们都是合法的 HTTP 方法）\n\n- **GET**：获取资源表示，安全且幂等。\n- **POST**：提交数据给目标资源处理，常用来新建，不幂等。\n- **DELETE**：删除目标资源，幂等。\n- **PUT**：用请求体整体替换（或创建）目标资源，幂等。\n- **PATCH**：对资源做部分修改，由 RFC 5789 引入。\n",
+  "explanationEn": "**Answer: REMOVE**\n\n## Explanation\n\nThe standard HTTP methods are the eight in RFC 9110 plus PATCH from RFC 5789: `GET`, `HEAD`, `POST`, `PUT`, `DELETE`, `CONNECT`, `OPTIONS`, `TRACE`, `PATCH`. Deletion uses `DELETE`; there is no `REMOVE` method, and a server receiving one would typically answer `501 Not Implemented` or `405 Method Not Allowed`.\n\n## Why the other options are wrong (they are all real HTTP methods)\n\n- **GET**: retrieves a representation; safe and idempotent.\n- **POST**: sends data for the target resource to process, often to create something; not idempotent.\n- **DELETE**: removes the target resource; idempotent.\n- **PUT**: replaces (or creates) the target resource with the request body; idempotent.\n- **PATCH**: applies a partial modification, introduced by RFC 5789.\n",
+  "solutions": []
+}

@@ -1,0 +1,11 @@
+{
+  "id": "oa-goldman-sachs-13",
+  "explanation": "## 题意理解\n\n题面被截断，只剩\"n 个孩子、t 个玩具、一个随机数 d\"。结合样例（`N=5, T=2, D=1` 输出 2，说明是\"从 1 号开始，最后一个玩具给了 2 号\"），这是常见的 Goldman Sachs 题：N 个孩子围成一圈，从第 D 个孩子开始，每人发一个玩具依次往后发，问拿到最后一个（第 T 个）玩具的是几号。\n\n## 思路\n\n第 1 个玩具给 D 号，第 2 个给 D+1 号……第 T 个给 D + T − 1 号，超过 N 就绕回 1。把编号换成 0-based 做取模：\n\n`答案 = (D − 1 + T − 1) mod N + 1`\n\n样例：`(0 + 1) mod 5 + 1 = 2`。\n\n原有参考代码先把指针往前挪了 T 次再加 1，相当于多走了一步，样例会得到 3，这里改成了直接公式。\n\n## 正确性\n\n发玩具就是在环上从 D 出发连续走 T−1 步，环上走 s 步的位置就是对 N 取模，公式和逐个模拟等价。\n\n## 复杂度\n\n时间 O(1)，空间 O(1)。T 可能远大于 N，不要逐个模拟。\n\n## 易错点\n\n- 编号是 1-based，取模前要先减 1，算完再加 1，否则 N 号孩子会算成 0。\n- 起点 D 本人拿第一个玩具，所以只走 T−1 步。",
+  "explanationEn": "## Interpretation\n\nThe statement is cut off after \"n kids, t toys and a random number d\". With the sample (`N=5, T=2, D=1` → 2, \"we start from 1 and the kid getting the last toy is 2\") this is the familiar Goldman Sachs problem: N kids sit in a circle, toys are handed out one per kid starting from kid D, and we want the kid who receives the last (T-th) toy.\n\n## Approach\n\nToy 1 goes to kid D, toy 2 to D+1, …, toy T to D + T − 1, wrapping past N back to 1. In 0-based terms:\n\n`answer = (D − 1 + T − 1) mod N + 1`\n\nSample: `(0 + 1) mod 5 + 1 = 2`.\n\nThe old reference code advanced the pointer T times before adding 1, one step too many (it prints 3 on the sample); it is replaced by the formula.\n\n## Correctness\n\nHanding out toys is walking T−1 steps around a cycle of length N from D, and the position after s steps is given by reduction mod N, so the formula matches step-by-step simulation.\n\n## Complexity\n\nO(1) time and space. T can be much larger than N, so don't simulate.\n\n## Pitfalls\n\n- Labels are 1-based: subtract 1 before taking the modulus and add it back after, otherwise kid N comes out as 0.\n- Kid D gets the first toy, so only T−1 steps are taken.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def findLastKid(N: int, T: int, D: int) -> int:\n    # 从第 D 个孩子开始依次发，第 T 个玩具落在 D 之后第 T-1 个孩子身上（环形）\n    return (D - 1 + T - 1) % N + 1\n"
+    }
+  ]
+}

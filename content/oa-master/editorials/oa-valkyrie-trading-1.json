@@ -1,0 +1,19 @@
+{
+  "id": "oa-valkyrie-trading-1",
+  "explanation": "## 思路\n\n题面要求的子方阵锚定在左上角 `(0, 0)`，所以行列坐标固定是 `0 0`，只需要找最大的边长 `K`，使得左上角为 `(0,0)`、边长为 `K` 的方阵四条边全是 `B`（内部不管，样例中间是空格也算）。\n\n枚举 `K = 1..n`：\n\n1. 检查第 0 行和第 `K−1` 行的前 `K` 个字符都是 `B`；\n2. 检查第 0 列和第 `K−1` 列的前 `K` 个字符都是 `B`；\n3. 都满足就更新 `best = K`。\n\n注意不能遇到第一个不合格的 `K` 就停：`K` 合格不代表 `K−1` 合格，例如外框全黑而内部有空洞时，`K = n` 合格但中间某个 `K` 可能不合格。\n\n最后输出 `\"0 0 best\"`，没有合格的方阵时 `best = 0`。\n\n## 正确性\n\n每个候选 `K` 都直接检查了四条边上的全部格子，记录的是最后一个（最大的）合格边长。样例 `[\"BBB\",\"B B\",\"BBB\"]`：`K = 1` 只看 `(0,0)`；`K = 2` 时 `(1,1)` 是空格，不合格；`K = 3` 外框全是 `B`，合格，所以输出 `0 0 3`。\n\n## 复杂度\n\n每个 `K` 检查 `O(K)` 个格子，总时间 `O(n²)`，空间 `O(1)`。\n\n## 易错点\n\n- 枚举要做完全部 `K`，不能在第一次失败时 `break`。\n- 只检查边框，内部可以是任意字符（包括空格）。\n- 题面说“没有就输出边长 0”，左上角不是 `B` 时结果是 `0 0 0`。\n- 题面只说锚定左上角，没有要求枚举其他左上角；若原题实际要求全图搜索，需要换成“每个格子向右、向下连续 `B` 的长度”的 DP。\n",
+  "explanationEn": "## Approach\n\nThe square is anchored at the top-left corner, so the coordinates are always `0 0`; we only need the largest `K` such that the `K×K` square at `(0,0)` has all four borders black. The interior doesn't matter (the example has a space in the middle).\n\nFor every `K = 1..n`, check rows `0` and `K−1` and columns `0` and `K−1` over the first `K` cells; if all are `B`, set `best = K`. Don't stop at the first failure: `K` being valid doesn't make `K−1` valid (a black frame with a hole inside is valid for `K = n` but not for some middle `K`).\n\nReturn `\"0 0 best\"`, with `best = 0` if nothing qualifies.\n\n## Correctness\n\nEach candidate is checked cell by cell on its border and we keep the largest that passes. Example `[\"BBB\",\"B B\",\"BBB\"]`: `K = 2` fails at `(1,1)`, `K = 3` has an all-black frame, so `0 0 3`.\n\n## Complexity\n\n`O(K)` per candidate, `O(n²)` total, `O(1)` space.\n\n## Pitfalls\n\n- Try every `K`; no early `break`.\n- Only borders are checked.\n- If `(0,0)` isn't `B`, the answer is `0 0 0`.\n- The statement only asks for the top-left anchor; a full-grid search would need run-length DP instead.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def coding_challenge(strArr):\n    n = len(strArr)\n    best = 0\n    for K in range(1, n + 1):\n        top_bottom = all(strArr[0][j] == \"B\" and strArr[K - 1][j] == \"B\" for j in range(K))\n        left_right = all(strArr[i][0] == \"B\" and strArr[i][K - 1] == \"B\" for i in range(K))\n        if top_bottom and left_right:\n            best = K\n    return f\"0 0 {best}\"\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    static String codingChallenge(String[] strArr) {\n        int n = strArr.length, best = 0;\n        for (int K = 1; K <= n; K++) {\n            boolean ok = true;\n            for (int j = 0; j < K && ok; j++) {\n                if (strArr[0].charAt(j) != 'B') ok = false;\n                if (strArr[K - 1].charAt(j) != 'B') ok = false;\n            }\n            for (int i = 0; i < K && ok; i++) {\n                if (strArr[i].charAt(0) != 'B') ok = false;\n                if (strArr[i].charAt(K - 1) != 'B') ok = false;\n            }\n            if (ok) best = K;\n        }\n        return \"0 0 \" + best;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <string>\n#include <vector>\nusing namespace std;\n\nstring codingChallenge(vector<string>& strArr) {\n int n = strArr.size(), best = 0;\n for (int K = 1; K <= n; K++) {\n bool ok = true;\n for (int j = 0; j < K && ok; j++) {\n if (strArr[0][j] != 'B') ok = false;\n if (strArr[K - 1][j] != 'B') ok = false;\n }\n for (int i = 0; i < K && ok; i++) {\n if (strArr[i][0] != 'B') ok = false;\n if (strArr[i][K - 1] != 'B') ok = false;\n }\n if (ok) best = K;\n }\n return \"0 0 \" + to_string(best);\n}\n"
+    }
+  ]
+}

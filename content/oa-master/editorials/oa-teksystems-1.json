@@ -1,0 +1,19 @@
+{
+  "id": "oa-teksystems-1",
+  "explanation": "## 思路\n\n一道 Python 面向对象基础题，要求补全三个魔术方法：\n\n1. `__init__`：把 `message`、`sender`、`receiver` 原样存成实例属性。\n2. `__str__`：只返回消息文本，所以 `print(message1)` 输出 `Hello`。\n3. `__eq__`：只比较 `message` 属性，发件人和收件人不参与比较。对方不是 `Message` 时返回 `NotImplemented`，让 Python 走默认的比较流程（结果是 `False`）。\n\n另外补一个 `__hash__`，按 `message` 取哈希。Python 3 里只要类定义了 `__eq__` 而没定义 `__hash__`，实例就会变成不可哈希，放进 set 或当 dict 的键都会报 `TypeError`。\n\n## 正确性\n\n`message1` 和 `message3` 文本都是 `\"Hello\"`，sender/receiver 不同，按定义相等；`message1` 和 `message2` 文本不同，不相等。`__hash__` 与 `__eq__` 使用同一个字段，满足\"相等的对象哈希值相同\"。\n\n## 复杂度\n\n比较和哈希都是 `O(L)`，L 为消息长度；空间 `O(L)`。\n\n## 易错点\n\n- `__str__` 不要把 sender/receiver 拼进去。\n- 和非 `Message` 对象比较时不要访问 `o.message`，否则会抛 `AttributeError`。\n- 忘了 `__hash__` 时单测不一定报错，但一放进集合就会出问题。\n",
+  "explanationEn": "## Approach\n\nA basic Python OOP exercise: fill in three dunder methods.\n\n1. `__init__`: store `message`, `sender` and `receiver` as instance attributes.\n2. `__str__`: return only the message text, so `print(message1)` prints `Hello`.\n3. `__eq__`: compare only the `message` attribute; sender and receiver do not matter. If the other object is not a `Message`, return `NotImplemented` so Python falls back to its default handling (which yields `False`).\n\nAlso add `__hash__` based on `message`. In Python 3, a class that defines `__eq__` without `__hash__` becomes unhashable, so instances cannot go into a set or be dict keys.\n\n## Correctness\n\n`message1` and `message3` both have text `\"Hello\"` with different sender/receiver, so they are equal by definition; `message1` and `message2` have different text, so they are not. `__hash__` uses the same field as `__eq__`, so equal objects hash the same.\n\n## Complexity\n\nComparison and hashing are `O(L)` for message length L; `O(L)` space.\n\n## Pitfalls\n\n- Do not include sender/receiver in `__str__`.\n- Do not read `o.message` when `o` is not a `Message`; that raises `AttributeError`.\n- A missing `__hash__` may not break the given tests but fails as soon as instances go into a set.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "class Message(object):\n    def __init__(self, message: str, sender: int, receiver: int) -> None:\n        self.message = message\n        self.sender = sender\n        self.receiver = receiver\n\n    def __str__(self) -> str:\n        return self.message\n\n    def __eq__(self, o: object) -> bool:\n        if not isinstance(o, Message):\n            return NotImplemented\n        return self.message == o.message\n\n    def __hash__(self) -> int:\n        return hash(self.message)\n"
+    },
+    {
+      "language": "java",
+      "code": "class Message {\n    String message;\n    int sender, receiver;\n\n    Message(String m, int s, int r) {\n        this.message = m;\n        this.sender = s;\n        this.receiver = r;\n    }\n\n    @Override public String toString() { return message; }\n\n    @Override public boolean equals(Object o) {\n        if (!(o instanceof Message)) return false;\n        return message.equals(((Message) o).message);\n    }\n\n    @Override public int hashCode() { return message.hashCode(); }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "struct Message {\n string message;\n int sender, receiver;\n\n Message(string m, int s, int r) : message(move(m)), sender(s), receiver(r) {}\n\n string str() const { return message; }\n\n bool operator==(const Message& o) const {\n return message == o.message;\n }\n};\n\nstruct MessageHash {\n size_t operator()(const Message& m) const { return hash<string>()(m.message); }\n};"
+    }
+  ]
+}

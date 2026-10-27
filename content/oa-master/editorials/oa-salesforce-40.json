@@ -1,0 +1,11 @@
+{
+  "id": "oa-salesforce-40",
+  "explanation": "## 题意\n\n题面在 “compress it by sh” 处截断，从样例 `\"abaasass\" → \"a1b1a2s1a1s2\"` 可以确定规则：把字符串切成**连续相同字符的段**，每段写成“字符 + 段长”，按顺序拼接。注意它不会把不相邻的同种字符合并，所以 `a` 在结果里出现了多次；长度为 1 的段也要写上 1。\n\n## 思路\n\n双指针扫一遍：\n\n1. i 指向当前段的开头，j 从 i 往右走，直到遇到不同字符或走到末尾。\n2. 段长是 `j - i`，把 `s[i] + str(j - i)` 放进结果列表。\n3. 令 `i = j`，继续下一段。\n\n最后用 join 拼接，避免反复字符串相加。\n\n样例拆分为 `a | b | aa | s | a | ss`，对应 `a1 b1 a2 s1 a1 s2`。\n\n## 正确性\n\n每个字符恰好属于一个极长的连续段，扫描按顺序产生每一段且不重叠，所以输出正好是各段编码的顺序拼接。\n\n## 复杂度\n\n每个字符只被 j 经过一次，时间 O(n)，输出空间 O(n)。\n\n## 易错点\n\n- 段长可能是多位数，要整体转成字符串（`a12`），不要只取一位。\n- 空串返回空串。\n- 不要用 Counter 统计全局次数，那会把不相邻的段合并，和样例不符。",
+  "explanationEn": "## Problem\n\nThe statement is cut off; the sample `\"abaasass\" → \"a1b1a2s1a1s2\"` shows run-length encoding: each maximal run of equal characters becomes \"char + run length\", runs of length 1 included, and non-adjacent runs are not merged.\n\n## Approach\n\nScan with two pointers: advance j while `s[j] == s[i]`, append `s[i] + str(j - i)`, set `i = j`, and join at the end. The sample splits into `a | b | aa | s | a | ss`.\n\n## Correctness\n\nEvery character belongs to exactly one maximal run, and runs are emitted in order without overlap.\n\n## Complexity\n\nO(n) time and output space.\n\n## Pitfalls\n\n- Run lengths can have several digits (`a12`).\n- Empty input gives an empty string.\n- A global Counter would merge separate runs.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def stringCompression(s):\n    res, i, n = [], 0, len(s)\n    while i < n:\n        j = i\n        while j < n and s[j] == s[i]:\n            j += 1\n        res.append(s[i] + str(j - i))   # 一段连续相同字符写成“字符 + 长度”\n        i = j\n    return \"\".join(res)\n"
+    }
+  ]
+}

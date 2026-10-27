@@ -1,0 +1,19 @@
+{
+  "id": "oa-upstart-3",
+  "explanation": "## 思路\n\n整段标准输入作为一个字符串传入。按空白切分成 token：第 1 个是 n，第 2 个是 threshold，之后每两个 token 是一条记录 `name score`。\n\n扫一遍记录，只考虑 `score ≤ threshold` 的，维护当前最高分和对应名字；遇到严格更高的分数才更新。最后把名字放进单元素列表返回。\n\n## 正确性\n\n过滤条件和题面一致（保留 `score ≤ threshold`，丢掉更大的）。在保留下来的记录里，单次扫描维护的始终是已看过部分的最大值，扫描结束就是全局最大值。题面保证至少有一条记录满足条件，所以结果不会是 `None`。\n\n样例里 threshold 是 80：bob 的 90 被过滤，剩下 50、80、70，最大的是 cindy 的 80。\n\n## 复杂度\n\n时间 `O(n)`，空间 `O(n)`（切分出的 token）。\n\n## 易错点\n\n- 边界 `score == threshold` 要保留，样例的答案 cindy 正好是这种情况。\n- 分数可能为负，初始最高分不要设成 0，用 `None` 表示\"还没有候选\"。\n- 题面没说同分怎么办；这里用严格大于，保留先出现的那条。\n- 按空白切分比按行切分更稳，能容忍多余空格和末尾换行。\n",
+  "explanationEn": "## Approach\n\nThe whole stdin arrives as one string. Split it on whitespace: the first token is n, the second is threshold, and each following pair of tokens is a record `name score`.\n\nScan the records, consider only those with `score ≤ threshold`, and keep the best score and its name, updating only on a strictly higher score. Return the name in a one-element list.\n\n## Correctness\n\nThe filter matches the statement (keep `score ≤ threshold`, drop larger ones). Among kept records, a single pass always holds the maximum of what has been seen, so at the end it holds the overall maximum. At least one record qualifies by guarantee, so the result is never `None`.\n\nIn the sample the threshold is 80: bob's 90 is filtered out, leaving 50, 80 and 70, and the maximum is cindy with 80.\n\n## Complexity\n\n`O(n)` time, `O(n)` space for the tokens.\n\n## Pitfalls\n\n- `score == threshold` must be kept; the sample answer cindy is exactly that case.\n- Scores may be negative, so do not start the best score at 0; use `None` for \"no candidate yet\".\n- The statement does not cover ties; strict `>` keeps the earliest record.\n- Splitting on whitespace is more forgiving than splitting on lines: extra spaces and a trailing newline are fine.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef solveFilterThresholdMaxScore(input: str) -> List[str]:\n    tokens = input.split()\n    n, threshold = int(tokens[0]), int(tokens[1])\n    best_name, best_score = None, None\n    for i in range(n):\n        name, score = tokens[2 + 2 * i], int(tokens[3 + 2 * i])\n        # 严格大于：同分时保留先出现的记录\n        if score <= threshold and (best_score is None or score > best_score):\n            best_name, best_score = name, score\n    return [best_name]\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    String[] solveFilterThresholdMaxScore(String input) {\n        String[] lines = input.trim().split(\"\\n\");\n        int n = Integer.parseInt(lines[0].trim());\n        int threshold = Integer.parseInt(lines[1].trim());\n        String bestName = null;\n        int bestScore = Integer.MIN_VALUE;\n        for (int i = 0; i < n; i++) {\n            String[] parts = lines[2 + i].trim().split(\"\\\\s+\");\n            int sc = Integer.parseInt(parts[1]);\n            if (sc <= threshold && sc > bestScore) { bestScore = sc; bestName = parts[0]; }\n        }\n        return new String[]{bestName};\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    vector<string> solveFilterThresholdMaxScore(string input) {\n        stringstream ss(input);\n        int n, threshold; ss >> n >> threshold;\n        string bestName; int bestScore = INT_MIN;\n        for (int i = 0; i < n; i++) {\n            string name; int sc;\n            ss >> name >> sc;\n            if (sc <= threshold && sc > bestScore) { bestScore = sc; bestName = name; }\n        }\n        return {bestName};\n    }\n};"
+    }
+  ]
+}

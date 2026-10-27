@@ -1,0 +1,11 @@
+{
+  "id": "oa-snowflake-6",
+  "explanation": "## 思路\n\n关键是把调度问题变成背包问题。\n\n设放在付费服务器上的任务集合为 P。付费服务器总共忙 `Σ_{i∈P} time[i]` 个单位时间；免费服务器只能在付费服务器忙的时候工作，每个任务 1 个单位时间，所以它最多能完成 `Σ_{i∈P} time[i]` 个任务。全部任务都能完成，当且仅当\n\n`|P| + Σ_{i∈P} time[i] ≥ n`，即 `Σ_{i∈P} (time[i] + 1) ≥ n`。\n\n目标是让 `Σ_{i∈P} cost[i]` 最小。这就是一个 0/1 背包：每个任务的“体积”是 `time[i] + 1`，“价值”是 cost[i]，要求体积和至少为 n 时价值和最小。体积超过 n 的部分没有意义，统一截成 n。\n\nDP：`f[j]` 表示体积和为 j（截到 n）时的最小花费，`f[0] = 0`；每个任务倒序转移 `f[min(n, j + time[i] + 1)] = min(…, f[j] + cost[i])`，答案 `f[n]`。\n\n常见例子：`cost = [1, 1, 3, 4]`、`time = [3, 1, 2, 3]`，把任务 0 放付费服务器，它跑 3 个单位时间，免费服务器同时做完另外 3 个任务，花费 1。题面本身没有给样例。\n\n## 正确性\n\n必要性：免费服务器能做的任务数不超过付费服务器的忙碌时间，所以可行方案一定满足上面的不等式。充分性：满足不等式时，付费服务器依次跑 P 中的任务，免费服务器在这段时间里逐个处理其余任务，时间足够。所以“最小花费的可行调度”等价于“满足体积约束的最小价值子集”，DP 正好求后者。代码用子集枚举暴力在随机数据上对拍过。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)。\n\n## 易错点\n\n- 体积是 `time[i] + 1`，别忘了任务自身也算完成了一个。\n- 截断到 n 后，j 仍要倒序遍历，避免同一个任务用两次。\n- 花费总和可能很大，Java/C++ 用 long。",
+  "explanationEn": "## Approach\n\nIf P is the set of tasks on the paid server, the free server can finish at most `Σ_{P} time[i]` other tasks, so everything completes iff `Σ_{P} (time[i] + 1) ≥ n`. Minimising `Σ_{P} cost[i]` is then a 0/1 knapsack with weight `time[i] + 1`, capped at n: `f[min(n, j + time[i] + 1)] = min(f[...], f[j] + cost[i])`, iterating j downward, answer `f[n]`. Example (none is given in the statement): `cost = [1, 1, 3, 4]`, `time = [3, 1, 2, 3]` → 1.\n\n## Correctness\n\nThe inequality is necessary because the free server only works while the paid one is busy, and sufficient because the free server can process the remaining tasks one by one during that time. Cross-checked with subset enumeration.\n\n## Complexity\n\nO(n²) time, O(n) space.\n\n## Pitfalls\n\n- The weight includes the task itself (`+1`).\n- Iterate j downward.\n- Use 64-bit costs.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def getMinCost(cost, time):\n    n = len(cost)\n    INF = float('inf')\n    f = [INF] * (n + 1)          # f[j]：已经“处理掉” j 个任务的最小花费（超过 n 记为 n）\n    f[0] = 0\n    for c, t in zip(cost, time):\n        for j in range(n, -1, -1):\n            if f[j] < INF:\n                nj = min(n, j + t + 1)   # 付费跑这个任务的 t 时间里，免费服务器能顺带做 t 个\n                if f[j] + c < f[nj]:\n                    f[nj] = f[j] + c\n    return f[n]\n"
+    }
+  ]
+}

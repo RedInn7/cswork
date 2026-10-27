@@ -1,0 +1,11 @@
+{
+  "id": "oa-canva-1",
+  "explanation": "## 思路\n\n只关心终点，不关心路线。终点由两个净位移决定：水平方向 `R 的个数 - L 的个数`，竖直方向 `U 的个数 - D 的个数`。\n\n一条 `U` 和一条 `D` 互相抵消，同时删掉它们终点不变；`L` 和 `R` 同理。所以：\n\n1. 统计四种字符的个数 `U, D, L, R`。\n2. 竖直方向最多能配出 `min(U, D)` 对，水平方向最多 `min(L, R)` 对。\n3. 每对删 2 条，答案是 `2 * (min(U, D) + min(L, R))`。\n\n样例 `\"RRR\"` 没有 `L`，配不出任何一对，答案为 0。\n\n## 正确性\n\n删完之后剩下的指令必须保持同样的净位移。设竖直方向剩下 `u` 条 `U`、`d` 条 `D`，要求 `u - d = U - D`，且 `u ≤ U`、`d ≤ D`。保留数 `u + d = 2d + (U - D)` 在 `d` 最小时最小；当 `U ≥ D` 时 `d` 可以取 0，保留 `U - D` 条，删掉 `2D = 2 min(U, D)` 条，反过来同理。两个方向互不影响，分别取最优再相加即可。被删的指令不要求连续，所以任何一对都能删。\n\n## 复杂度\n\n- 时间：`O(n)`，扫一遍字符串计数。\n- 空间：`O(1)`。\n\n## 易错点\n\n- 答案要乘 2，一对是两条指令。\n- 不要用栈去“相邻抵消”，`UUDD` 这种不相邻的也能全删，答案是 4。\n",
+  "explanationEn": "## Approach\n\nOnly the destination matters. It is fixed by two net displacements: `#R - #L` horizontally and `#U - #D` vertically.\n\nOne `U` and one `D` cancel each other, so deleting both keeps the destination; the same holds for `L` and `R`. So:\n\n1. Count `U, D, L, R`.\n2. Vertically we can form at most `min(U, D)` pairs, horizontally `min(L, R)`.\n3. Each pair removes 2 instructions: the answer is `2 * (min(U, D) + min(L, R))`.\n\nFor `\"RRR\"` there is no `L`, so nothing pairs up and the answer is 0.\n\n## Correctness\n\nThe kept instructions must have the same net displacement. Vertically, if we keep `u` U's and `d` D's we need `u - d = U - D`, so the kept count `2d + (U - D)` is minimized by the smallest feasible `d`. With `U ≥ D` we can take `d = 0`, deleting exactly `2D = 2 min(U, D)`; symmetric otherwise. The two axes are independent, and deletions need not be contiguous, so every pair can be removed.\n\n## Complexity\n\n- Time: `O(n)` for counting.\n- Space: `O(1)`.\n\n## Pitfalls\n\n- Multiply by 2: a pair is two instructions.\n- Don't cancel only adjacent opposites with a stack; `UUDD` deletes all 4.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def characterReprogramming(s: str) -> int:\n    u, d = s.count('U'), s.count('D')\n    l, r = s.count('L'), s.count('R')\n    return 2 * (min(u, d) + min(l, r))\n"
+    }
+  ]
+}

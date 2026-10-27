@@ -1,0 +1,19 @@
+{
+  "id": "oa-plaid-2",
+  "explanation": "## 思路\n\n一次操作把顶部 `k` 张牌整体移到底部，相当于把数组循环左移 `k` 位。所以只有当牌组是 `1..n` 的某个循环移位时才可能排好序，并且需要移走的正是排在 `1` 前面的那些牌。\n\n1. 找到 `1` 的下标 `pos`。\n2. 检查从 `pos` 开始循环读 `n` 张牌是否依次为 `1, 2, …, n`。\n3. 是则返回 `pos`，否则返回 `-1`。\n\n## 正确性\n\n循环左移 `k` 位后，原下标 `k` 的牌到了顶部。要排好序，顶部必须是 `1`，所以 `k` 只能等于 `1` 的下标，不存在其他选择；剩下只需验证移位后整体有序。`k ∈ [0, n-1]` 覆盖了所有不同的移位，答案唯一，也就是最小值。\n\n## 复杂度\n\n时间 `O(n)`，空间 `O(1)`。\n\n## 易错点\n\n- 已经有序时 `pos = 0`，返回 `0` 而不是 `-1`。\n- 必须循环检查整圈，不能只看 `pos` 之后的部分，例如 `[3, 4, 5, 1, 2]` 中 `1,2` 后面还要接回 `3,4,5`。\n- 样例 `[1,4,2,3] → -1`、`[3,4,5,1,2] → 3` 已跑通。\n",
+  "explanationEn": "## Approach\n\nMoving the top `k` cards to the bottom is a left rotation by `k`. So the deck can only be sorted if it is a rotation of `1..n`, and the cards that must move are exactly those sitting before `1`.\n\n1. Find the index `pos` of card `1`.\n2. Read `n` cards cyclically starting at `pos` and check they are `1, 2, …, n`.\n3. Return `pos` if so, otherwise `-1`.\n\n## Correctness\n\nAfter rotating left by `k`, the card at index `k` ends up on top. A sorted deck must have `1` on top, so `k` is forced to be the index of `1`; we only need to verify the rotated deck is sorted. Since `k ∈ [0, n-1]` covers every distinct rotation, the answer is unique and therefore minimal.\n\n## Complexity\n\n`O(n)` time, `O(1)` extra space.\n\n## Pitfalls\n\n- An already sorted deck has `pos = 0`; return `0`, not `-1`.\n- Check the full cycle, not just the suffix after `pos`: in `[3, 4, 5, 1, 2]`, `1,2` must wrap around to `3,4,5`.\n- Samples `[1,4,2,3] → -1` and `[3,4,5,1,2] → 3` pass.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solution(deck: list[int]) -> int:\n    n = len(deck)\n    if 1 not in deck: return -1\n    pos = deck.index(1)\n    for i in range(n):\n        if deck[(pos + i) % n] != i + 1:\n            return -1\n    return pos\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    static int solution(int[] deck) {\n        int n = deck.length, pos = -1;\n        for (int i = 0; i < n; i++) if (deck[i] == 1) { pos = i; break; }\n        if (pos < 0) return -1;\n        for (int i = 0; i < n; i++)\n            if (deck[(pos + i) % n] != i + 1) return -1;\n        return pos;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#include <vector>\nusing namespace std;\n\nint solution(vector<int>& deck) {\n    int n = deck.size(), pos = -1;\n    for (int i = 0; i < n; i++)\n        if (deck[i] == 1) {\n            pos = i;\n            break;\n        }\n    if (pos < 0) return -1;\n    for (int i = 0; i < n; i++)\n        if (deck[(pos + i) % n] != i + 1) return -1;\n    return pos;\n}\n"
+    }
+  ]
+}

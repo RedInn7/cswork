@@ -1,0 +1,11 @@
+{
+  "id": "oa-salesforce-14",
+  "explanation": "## 题意\n\n题面在 “find the number of perfe” 处截断。结合样例解释里的“同时满足两个条件”，这是常见的 perfect pairs 题：一对 (x, y)（i < j）是完美对，当且仅当\n\n- `min(|x - y|, |x + y|) ≤ min(|x|, |y|)`，且\n- `max(|x - y|, |x + y|) ≥ max(|x|, |y|)`。\n\n下面按这两个条件讲，样例 `[2, 5, -3]` 的答案 2 与它一致。\n\n## 思路\n\n令 `a = min(|x|, |y|)`、`b = max(|x|, |y|)`。\n\n- 不论 x、y 符号如何，`{|x - y|, |x + y|} = {b - a, a + b}`。\n- 第二个条件是 `a + b ≥ b`，恒成立。\n- 第一个条件是 `b - a ≤ a`，即 **`b ≤ 2a`**。\n\n所以只要把所有数取绝对值并排序，数“`a[j] ≤ 2·a[i]`（j > i）”的下标对。i 增大时 `2·a[i]` 不减，满足条件的右边界 j 只会右移，用双指针即可。\n\n样例：绝对值排序为 `[2, 3, 5]`。2 能配 3（3 ≤ 4），3 能配 5（5 ≤ 6），2 和 5 不行，共 2 对。\n\n## 正确性\n\n化简是等价变形，每对数只看绝对值；排序后对每个 i，满足 `a[j] ≤ 2a[i]` 的 j 恰好是 `i+1 … j-1` 这一段连续区间，双指针统计的就是这些对，且每对只在较小者处计数一次。代码用直接检查两个条件的暴力在随机数据上对拍过。\n\n## 复杂度\n\n排序 O(n log n)，双指针 O(n)，空间 O(n)。\n\n## 易错点\n\n- 0 只能和 0 配对（`b ≤ 0`），双指针自然处理。\n- 结果可能超过 32 位，Java/C++ 用 long。\n- 指针 j 至少要从 i+1 开始，避免数到自身。",
+  "explanationEn": "## Problem\n\nThe statement is truncated; the sample matches the classic perfect-pairs task: (x, y) is perfect iff `min(|x-y|, |x+y|) ≤ min(|x|, |y|)` and `max(|x-y|, |x+y|) ≥ max(|x|, |y|)`.\n\n## Approach\n\nWith `a = min(|x|,|y|)` and `b = max(|x|,|y|)`, the two values are `b - a` and `a + b`. The second condition always holds and the first becomes `b ≤ 2a`. Sort absolute values and count pairs with `a[j] ≤ 2·a[i]` using two pointers. Sample `[2, 3, 5]` gives 2.\n\n## Correctness\n\nThe simplification is an equivalence; for each i the valid partners form a contiguous range after i, counted once. Cross-checked with a brute force.\n\n## Complexity\n\nO(n log n) time, O(n) space.\n\n## Pitfalls\n\n- Use 64-bit counts.\n- Start j at i+1.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def findNumberOfPerfectPairs(arr):\n    a = sorted(abs(x) for x in arr)\n    n, ans, j = len(a), 0, 0\n    for i in range(n):\n        j = max(j, i + 1)\n        while j < n and a[j] <= 2 * a[i]:\n            j += 1\n        ans += j - i - 1        # a[i+1 .. j-1] 都能和 a[i] 配成完美对\n    return ans\n"
+    }
+  ]
+}

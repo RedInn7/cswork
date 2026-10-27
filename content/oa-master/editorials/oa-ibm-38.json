@@ -1,0 +1,11 @@
+{
+  "id": "oa-ibm-38",
+  "explanation": "## 思路\n\n先排序，中位数下标 `m = (n - 1) / 2`（0 下标，`n` 为奇数）。\n\n- 若 `p[m] < k`：中位数要升到 `k`。不仅 `p[m]` 要变成 `k`，它右边所有小于 `k` 的数也必须升到 `k`，否则排序后它们会排到 `k` 前面，把中位数挤下去。左半边不用动。\n- 若 `p[m] > k`：对称地，`p[m]` 及其左边所有大于 `k` 的数都降到 `k`。\n- 相等则答案为 0。\n\n答案就是这些调整量的总和。\n\n## 正确性\n\n要让中位数等于 `k`，排序后至少要有 `m+1` 个数 `≤ k`，并且至少 `n-m` 个数 `≥ k`。以 `p[m] < k` 为例：已经有 `m+1` 个数 `≤ k`，缺的是“`≥ k` 的数”——下标 `m..n-1` 这 `n-m` 个最大的数是把它们变成 `≥ k` 代价最小的选择，每个数只需升到恰好 `k`。另一种情况同理。样例中 `[1,2,4,4,7]`、`k=3`，`p[2]=4 > 3`，只需把它降 1，答案 1。\n\n## 复杂度\n\n- 时间：`O(n log n)`（排序）。\n- 空间：`O(n)`（排序副本）。\n\n## 易错点\n\n- 只调整 `p[m]` 是不够的，`[1, 2, 2, 2, 9]`、`k = 5` 时，除了中位数那个 2，它右边的 2 也要升到 5，答案是 `3+3 = 6`。\n- 累计值可能超过 `int`，Java/C++ 用 `long`。\n- 题面的中位数定义只针对奇数长度，这里按奇数处理。\n",
+  "explanationEn": "## Approach\n\nSort first; the median index is `m = (n - 1) / 2` (0-based, `n` odd).\n\n- If `p[m] < k`: raise `p[m]` to `k`, and also raise every element to its right that is still below `k`; otherwise those would sort before `k` and push the median down. The left half stays as is.\n- If `p[m] > k`: symmetrically lower `p[m]` and every element to its left that is above `k`.\n- If equal, the answer is 0.\n\nThe answer is the total adjustment.\n\n## Correctness\n\nFor the median to be `k`, the sorted array needs at least `m+1` values `≤ k` and at least `n-m` values `≥ k`. Take `p[m] < k`: there are already `m+1` values `≤ k`; what is missing is values `≥ k`, and the `n-m` largest values (indices `m..n-1`) are the cheapest to lift, each only up to exactly `k`. The other case is symmetric. In the sample `[1,2,4,4,7]`, `k=3`: `p[2]=4 > 3` and lowering it by 1 suffices.\n\n## Complexity\n\n- Time: `O(n log n)` for sorting.\n- Space: `O(n)`.\n\n## Pitfalls\n\n- Fixing only `p[m]` is not enough: for `[1, 2, 2, 2, 9]`, `k = 5`, the 2 to the right of the median must also go to 5, answer `3+3 = 6`.\n- The total can overflow `int`; use `long` in Java/C++.\n- The median definition only covers odd lengths, which is what this assumes.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef getMinimumMoves(price: List[int], k: int) -> int:\n    p = sorted(price)\n    m = (len(p) - 1) // 2\n    if p[m] < k:\n        return sum(k - v for v in p[m:] if v < k)\n    return sum(v - k for v in p[:m + 1] if v > k)\n"
+    }
+  ]
+}

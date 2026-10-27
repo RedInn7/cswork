@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-62",
+  "explanation": "## 思路\n\n题面在“Given an integer array `nums` and an”处被截断。结合约束（`1 ≤ k ≤ nums.length`）和样例（`[3,2,1,5,6,4]`、`k = 2` 输出 `[5, 6]`，“任意顺序均可”），这里按“返回数组中最大的 `k` 个数”来做。\n\n维护一个大小不超过 `k` 的小顶堆：\n\n1. 堆未满时直接放入。\n2. 堆满后，新数比堆顶（当前第 `k` 大）大，就替换堆顶；否则丢弃。\n3. 遍历结束，堆里就是最大的 `k` 个数。题目接受任意顺序，这里排序后返回，方便比对。\n\n## 正确性\n\n不变式：处理完前 `i` 个数后，堆中是这 `i` 个数里最大的 `min(i, k)` 个。新来的 `x` 若不大于堆顶，它至少比 `k` 个已有数小，不可能进入前 `k`；若大于堆顶，堆顶会被挤出前 `k`，用 `x` 替换后不变式仍成立。\n\n## 复杂度\n\n时间 `O(n log k)`，空间 `O(k)`。也可以用快速选择做到平均 `O(n)`，但最坏 `O(n²)`。\n\n## 易错点\n\n- 有重复值时（如 `[5,5,5]`、`k = 2`）要返回 `[5,5]`，用 `>` 比较即可，堆里允许重复。\n- 数值可以为负，不能用 0 当哨兵。\n- 题面截断，如果原题要求“第 k 大的数”而不是“前 k 大”，返回 `heap[0]` 即可。\n",
+  "explanationEn": "## Approach\n\nThe statement is cut off after \"Given an integer array `nums` and an\". From the constraints (`1 ≤ k ≤ nums.length`) and the example (`[3,2,1,5,6,4]`, `k = 2` -> `[5, 6]`, any order), we treat it as \"return the `k` largest values\".\n\nKeep a min-heap of size at most `k`: push while it has fewer than `k` items; afterwards replace the top whenever `x` is larger. At the end the heap holds the `k` largest values (sorted here for easy comparison).\n\n## Correctness\n\nInvariant: after `i` elements the heap holds the largest `min(i, k)` of them. If `x <= top`, at least `k` seen values are `>= x`, so `x` can't be in the top `k`; otherwise the old top drops out and `x` takes its place.\n\n## Complexity\n\n`O(n log k)` time, `O(k)` space. Quickselect gives average `O(n)` but worst `O(n²)`.\n\n## Pitfalls\n\n- Duplicates are kept (`[5,5,5]`, `k = 2` -> `[5,5]`).\n- Values can be negative; don't use 0 as a sentinel.\n- If the truncated task actually asks for the k-th largest value, return `heap[0]`.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\n\n\ndef topK(nums, k):\n    heap = []                      # 小顶堆，始终保存目前最大的 k 个数\n    for x in nums:\n        if len(heap) < k:\n            heapq.heappush(heap, x)\n        elif x > heap[0]:\n            heapq.heapreplace(heap, x)\n    return sorted(heap)\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    int[] topK(int[] nums, int k) {\n        java.util.PriorityQueue<Integer> pq = new java.util.PriorityQueue<>();\n        for (int x : nums) {\n            if (pq.size() < k) pq.add(x);\n            else if (x > pq.peek()) { pq.poll(); pq.add(x); }\n        }\n        int[] res = new int[pq.size()];\n        int i = 0;\n        for (int x : pq) res[i++] = x;\n        return res;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    vector<int> topK(vector<int>& nums, int k) {\n        priority_queue<int, vector<int>, greater<>> pq;\n        for (int x : nums) {\n            if ((int)pq.size() < k) pq.push(x);\n            else if (x > pq.top()) { pq.pop(); pq.push(x); }\n        }\n        vector<int> res;\n        while (!pq.empty()) { res.push_back(pq.top()); pq.pop(); }\n        return res;\n    }\n};\n"
+    }
+  ]
+}

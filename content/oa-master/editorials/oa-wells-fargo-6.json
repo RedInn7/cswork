@@ -1,0 +1,19 @@
+{
+  "id": "oa-wells-fargo-6",
+  "explanation": "## 思路\n\n这是约瑟夫环。`N` 个系统编号 `0..N−1` 围成环，病毒从第 `K` 个系统（ID `K−1`）开始，之后每次跳过 `K−1` 个、感染第 `K` 个并把它移出环。要找的是最后一个被感染的系统，也就是标准约瑟夫问题里“最后剩下的人”。\n\n把“从 0 号开始数，数到第 `K` 个出局”记作 `J(n)`（`n` 个人时最后出局者的编号）：\n\n- `J(1) = 0`；\n- `n` 个人时第一个出局的是 `K−1`，之后从 `K` 号重新数，剩下 `n−1` 个人的问题编号整体平移了 `K`，因此 `J(n) = (J(n−1) + K) mod n`。\n\n从 2 迭代到 `N` 即可。\n\n现有代码在最后又加了 `K−1` 的偏移，相当于从系统 `K−1` 开始再数 `K` 个，第一个被感染的就变成了 `2K−2`，与“从第 K 个系统开始感染”不符。例如 `N = 2, K = 2`：先感染系统 1，最后是系统 0，原代码会输出 1。这里已去掉偏移。\n\n## 正确性\n\n递推式的每一步把 `n` 人问题归约到 `n−1` 人问题，编号映射是 `x → (x + K) mod n`，这是约瑟夫问题的标准证明。我们另外用直接模拟（列表逐个删除）对所有 `N, K ≤ 30` 做了对拍，结果一致。\n\n## 复杂度\n\n时间 `O(N)`，空间 `O(1)`。\n\n## 易错点\n\n- 第一个被感染的就是第 `K` 个系统（ID `K−1`），递推结果不需要再加偏移。\n- `N` 最大 `10^8`：Java/C++ 一个 `O(N)` 循环约零点几秒，Python 纯循环要几十秒。`K` 远小于 `N` 时可以用 `O(K log N)` 的分块递推加速，但 `K` 也可能到 `10^8`，没有普适更优的做法。\n- `j + K` 在 `K` 接近 `10^8` 时仍在 32 位范围内，但用 `long` 更稳妥。\n- `K = 1` 时依次感染 `0, 1, …`，最后是 `N−1`，递推自然给出这个结果。\n",
+  "explanationEn": "## Approach\n\nThis is the Josephus problem. Systems `0..N−1` form a ring; the virus first hits the `K`-th system (ID `K−1`), then repeatedly skips `K−1` systems and removes the `K`-th. The last affected system is the Josephus survivor.\n\nLet `J(n)` be the last one removed among `n` people when counting starts at 0:\n\n- `J(1) = 0`;\n- with `n` people, `K−1` goes first and counting restarts at `K`, so the `n−1` subproblem is shifted by `K`: `J(n) = (J(n−1) + K) mod n`.\n\nIterate from 2 to `N`.\n\nThe previous code added an extra `K−1` offset, which makes the first victim `2K−2` instead of `K−1`. For `N = 2, K = 2` system 1 goes first and 0 is last, but the old code printed 1. The offset is removed.\n\n## Correctness\n\nEach step maps the `n−1` subproblem back via `x -> (x + K) mod n`, the standard Josephus argument. We also cross-checked against a direct list simulation for all `N, K ≤ 30`.\n\n## Complexity\n\n`O(N)` time, `O(1)` space.\n\n## Pitfalls\n\n- The first victim is ID `K−1`; no extra offset.\n- `N` up to `10^8`: a fraction of a second in Java/C++, tens of seconds in pure Python. The `O(K log N)` block recurrence helps only when `K ≪ N`.\n- Use 64-bit for `j + K` to be safe.\n- `K = 1` removes `0, 1, …` in order and the recurrence yields `N−1`.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def findLastAffected(numSystem: int, count: int) -> int:\n    # Josephus：J(1) = 0, J(i) = (J(i-1) + K) % i\n    # 从系统 0 开始数，第 K 个（ID 为 K-1）最先被感染，正好是标准 Josephus 的计数方式\n    j = 0\n    for i in range(2, numSystem + 1):\n        j = (j + count) % i\n    return j\n\n\nif __name__ == \"__main__\":\n    n, k = map(int, input().split())\n    print(findLastAffected(n, k))\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    int findLastAffected(int numSystem, int count) {\n        long j = 0;\n        for (int i = 2; i <= numSystem; i++) j = (j + count) % i;\n        return (int) j;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    int findLastAffected(int numSystem, int count) {\n        long long j = 0;\n        for (long long i = 2; i <= numSystem; i++) j = (j + count) % i;\n        return (int) j;\n    }\n};\n"
+    }
+  ]
+}

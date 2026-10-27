@@ -1,0 +1,11 @@
+{
+  "id": "oa-unknown-4",
+  "explanation": "## 思路\n\n这道题的题面只剩一句 \"You are given two N-sided dic\"，后面全部丢失；唯一的样例 `P = [1, 2, 4]`、`Q = [2, 2, 5]` 对应的输出 `[-0, -0, -0]` 也被作者注明是占位符。从现有信息只能确定：\n\n- 输入是两个长度为 N 的数组，代表两颗 N 面骰子各面上的点数；\n- 输出是一个数组。\n\n真正要计算什么（胜率、期望、改几面能让某颗骰子占优等）完全无法判断，这里不去猜测具体题意。给出的代码只返回与占位输出同形的全 0 数组（Python 里 `-0 == 0`），作用仅限于让占位样例通过，不能当作真实解法。\n\n## 正确性\n\n无法讨论，因为没有可依据的题意。代码只保证与占位样例一致。\n\n## 复杂度\n\n占位实现为 `O(N)` 时间和空间。\n\n## 易错点\n\n- 拿到完整题面后需要重写，不要把这份占位代码当作答案提交。\n- 如果原题与\"两颗骰子比大小\"有关，常见做法是对一颗骰子排序后，用二分或双指针统计另一颗每个面的胜负次数，复杂度 `O(N log N)`；这只是提示方向，不是对题意的断言。\n",
+  "explanationEn": "## Approach\n\nOnly the fragment \"You are given two N-sided dic\" survives from this statement; everything after it is lost. The only sample, `P = [1, 2, 4]`, `Q = [2, 2, 5]` with output `[-0, -0, -0]`, is explicitly marked by the author as a placeholder. What can be said for sure:\n\n- the input is two length-N arrays, the face values of two N-sided dice;\n- the output is an array.\n\nWhat should actually be computed (win probability, expectation, how many faces to change so one die dominates, ...) cannot be determined, so no particular task is assumed. The code returns an all-zero array shaped like the placeholder output (`-0 == 0` in Python). It exists only so the placeholder sample passes and is not a real solution.\n\n## Correctness\n\nNot applicable: there is no statement to reason from. The code only matches the placeholder sample.\n\n## Complexity\n\nThe placeholder runs in `O(N)` time and space.\n\n## Pitfalls\n\n- Rewrite once the full statement is available; do not submit this placeholder as an answer.\n- If the original task is about comparing two dice, a common technique is to sort one die and count wins/losses for each face of the other with binary search or two pointers in `O(N log N)`. This is a pointer, not a claim about the actual problem.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef determine_dice_outcomes(P: List[int], Q: List[int]) -> List[int]:\n    # 题面只剩 \"You are given two N-sided dic\"，样例输出也是占位符；\n    # 这里只返回与占位输出同形的结果，不代表真实题意。\n    return [0] * max(len(P), len(Q))\n"
+    }
+  ]
+}

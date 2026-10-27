@@ -1,0 +1,19 @@
+{
+  "id": "oa-blackrock-4",
+  "explanation": "## 思路\n\n题目要求求两个集合的交集并排序输出，而且明确说不要用一行就搞定的框架函数（比如直接 `set1 & set2`），希望展示怎样高效地匹配两组数据。\n\n最直接的高效做法是哈希：\n\n1. 把第一组值逐个放进哈希集合，`O(n)`。\n2. 遍历第二组，每个值 `O(1)` 查一下是否在哈希集合里，命中就放进结果集合。结果也用集合，避免输入里有重复值时输出重复。\n3. 结果排序后用空格连接；为空输出 `NULL`。\n\n另一种思路是两组都排序后用双指针归并，`O(n log n + m log m)`，不需要额外哈希表，适合数据已经有序或内存紧张的场景。\n\n## 正确性\n\n一个值在输出里，当且仅当它在第一组中（所以在哈希集合里）且在第二组的遍历中被命中，这正是交集的定义。结果集合保证每个公共值只出现一次。\n\n样例：第一组 `{1,2,3,A,B,C}`，第二组里命中的是 `2`、`3`、`C`，排序后输出 `2 3 C`。\n\n## 复杂度\n\n- 时间：`O(n + m + k log k)`，`k` 为交集大小。\n- 空间：`O(n + k)`。\n\n## 易错点\n\n- “alpha-numerically” 这里按字符串字典序排序（数字字符排在大写字母前），所以 `\"11\"` 会排在 `\"2\"` 前面。题面没有说明数字要按数值排序，样例里也没有这种情况。\n- 交集为空时输出字符串 `NULL`，不是空串。\n- 值区分大小写，`a` 和 `A` 不算相同。",
+  "explanationEn": "## Approach\n\nWe need the intersection of two sets, sorted. The prompt explicitly asks us not to use a one-line framework call such as `set1 & set2`, but to show how we would match the data efficiently.\n\nHashing is the straightforward efficient approach:\n\n1. Insert every value of the first set into a hash set, `O(n)`.\n2. Scan the second set; each lookup is `O(1)`, and hits go into a result set (a set, so duplicates in the input don't produce duplicate output).\n3. Sort the result and join with spaces; if it's empty, print `NULL`.\n\nAn alternative is to sort both lists and merge with two pointers in `O(n log n + m log m)`, which needs no hash table and suits pre-sorted data or tight memory.\n\n## Correctness\n\nA value is output exactly when it is in the first set (hence in the hash set) and is hit while scanning the second, which is the definition of intersection. The result set keeps each common value once.\n\nExample: the first set is `{1,2,3,A,B,C}`; the hits from the second are `2`, `3`, `C`, printed as `2 3 C`.\n\n## Complexity\n\n- Time: `O(n + m + k log k)`, where `k` is the intersection size.\n- Space: `O(n + k)`.\n\n## Pitfalls\n\n- \"Alpha-numerically\" is taken as plain string order (digits before uppercase letters), so `\"11\"` sorts before `\"2\"`. The statement doesn't ask for numeric ordering of numbers and the example doesn't exercise it.\n- An empty intersection prints the string `NULL`, not an empty line.\n- Values are case-sensitive: `a` and `A` differ.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\n\ndef efficient_matching(set1: List[str], set2: List[str]) -> str:\n    seen = set()\n    for x in set1:\n        seen.add(x)\n    common = set()\n    for x in set2:\n        if x in seen:\n            common.add(x)\n    return \" \".join(sorted(common)) if common else \"NULL\"\n"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    String efficientMatching(String[] set1, String[] set2) {\n        Set<String> s = new HashSet<>(Arrays.asList(set1));\n        TreeSet<String> common = new TreeSet<>();\n        for (String x : set2) if (s.contains(x)) common.add(x);\n        if (common.isEmpty()) return \"NULL\";\n        return String.join(\" \", common);\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    string efficientMatching(vector<string>& set1, vector<string>& set2) {\n        unordered_set<string> s(set1.begin(), set1.end());\n        set<string> common;\n        for (auto& x : set2) if (s.count(x)) common.insert(x);\n        if (common.empty()) return \"NULL\";\n        string out;\n        for (auto& v : common) { if (!out.empty()) out += \" \"; out += v; }\n        return out;\n    }\n};"
+    }
+  ]
+}

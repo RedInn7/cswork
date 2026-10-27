@@ -1,0 +1,11 @@
+{
+  "id": "oa-snowflake-27",
+  "explanation": "## 思路\n\n`X = A·B·C`，A 是 1×2、B 是 2×2、C 是 2×1，结果是标量。矩阵乘法满足结合律，先算 `v = B·C`，它是一个 2×1 向量 `[p, q]`：\n\n- `p = B[0][0]·C[0] + B[0][1]·C[1]`\n- `q = B[1][0]·C[0] + B[1][1]·C[1]`\n\n设 `A = [a, 1 - a]`，则 `X = a·p + (1 - a)·q = (p - q)·a + q`，这是 a 的一元一次方程：\n\n`a = (X - q) / (p - q)`，`A = [a, 1 - a]`，按题意保留两位小数。\n\n样例：`B·C = [3·0.2 - 0.8, -2·0.2 + 3·0.8] = [-0.2, 2.0]`，`a = (0.35 - 2) / (-0.2 - 2) = 0.75`，所以 `A = [0.75, 0.25]`。\n\n题目说“用 SciPy”，本质上就是解这一个线性方程。用 numpy 写的话是 `v = B @ C`，再按上式求 a；也可以把约束写成两行的线性方程组 `[[p, q], [1, 1]] · A = [X, 1]`，交给 `scipy.linalg.solve`。结果相同，手写公式没有任何依赖。\n\n## 正确性\n\n结合律保证 `A·(B·C) = (A·B)·C`；代入 `A[1] = 1 - A[0]` 后方程对 a 是线性的，`p ≠ q` 时有唯一解，即上式。\n\n## 复杂度\n\n常数次乘加，时间和空间都是 O(1)。\n\n## 易错点\n\n- `p = q` 时方程退化：X 恰好等于 q 时 a 可以取任意值，否则无解。代码对这种情况显式报错，而不是除以 0。\n- C 可能以 `[0.2, 0.8]` 或 `[[0.2], [0.8]]` 的形式给出，要都能处理。\n- 先计算再四舍五入，不要对中间结果取整。",
+  "explanationEn": "## Approach\n\nBy associativity compute `B·C = [p, q]` first. With `A = [a, 1 - a]`, `X = a·p + (1 - a)·q`, so `a = (X - q) / (p - q)`; round to two decimals. Sample: `B·C = [-0.2, 2.0]`, `a = (0.35 - 2) / (-2.2) = 0.75`, giving `[0.75, 0.25]`. With SciPy/numpy this is `B @ C` followed by the same formula, or `scipy.linalg.solve([[p, q], [1, 1]], [X, 1])`; the closed form needs no dependency.\n\n## Correctness\n\nAfter substituting the constraint the equation is linear in a and has the unique solution above whenever `p ≠ q`.\n\n## Complexity\n\nO(1).\n\n## Pitfalls\n\n- If `p = q` there are no or infinitely many solutions; report it instead of dividing by zero.\n- Accept C as `[0.2, 0.8]` or `[[0.2], [0.8]]`.\n- Round only the final values.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def findA(X, B, C):\n    c = [row[0] if isinstance(row, (list, tuple)) else row for row in C]   # 兼容 [[0.2],[0.8]] 和 [0.2,0.8]\n    p = B[0][0] * c[0] + B[0][1] * c[1]      # (B·C) 的第一个分量\n    q = B[1][0] * c[0] + B[1][1] * c[1]      # 第二个分量\n    if p == q:\n        raise ValueError(\"A 不唯一或无解\")   # X = q 时任意 a 都行，否则无解\n    a = (X - q) / (p - q)                     # X = a*p + (1-a)*q\n    return [round(a, 2), round(1 - a, 2)]\n"
+    }
+  ]
+}
