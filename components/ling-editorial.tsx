@@ -16,7 +16,7 @@ import { EditorialVote } from './editorial-vote';
 import { EditorialFollowUps, EditorialSteps } from './ling-editorial-steps';
 import { SolutionPosts } from './solution-posts';
 import { StatementMarkdown } from './statement-markdown';
-import { ojRequest, type LingEditorial as Editorial } from '@/lib/oj-client';
+import { ojRequest, type LingFollowUps, type TrackEditorial } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
 import { languages, type Language } from '@/lib/problems';
 import type { EditorSettings } from '@/lib/editor-settings';
@@ -27,8 +27,12 @@ const LANGS = [
   ['cpp', 'C++'],
   ['java', 'Java'],
   ['go', 'Go'],
+  ['sql', 'SQL'],
+  ['pandas', 'Pandas'],
 ] as const;
 type EditorialLang = (typeof LANGS)[number][0];
+// A Line 500 editorial has all four languages; a track's only those its reference solution has.
+type Editorial = TrackEditorial & Partial<LingFollowUps>;
 const editorialLang = (language: Language): EditorialLang | null =>
   LANGS.find(([id]) => id === language)?.[0] ?? null;
 const langName = (lang: EditorialLang) => LANGS.find(([id]) => id === lang)![1];
@@ -75,9 +79,7 @@ export function LingEditorial({
   onFollowUp?: (on: boolean) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
-  const [lang, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
-  // Like for like: my Java code diffs against the Java editorial, whichever tab is shown.
-  const diffLang = editorialLang(language) ?? lang;
+  const [picked, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
   const [compare, setCompare] = useState<number | null>(null);
   const [confirm, setConfirm] = useState(false);
   // The confirm unmounts the locked panel and its button, so focus lands on the heading instead.
@@ -106,6 +108,12 @@ export function LingEditorial({
     }
   };
   const stepped = !!editorial && editorial.approaches.length >= 2;
+  const shownLangs = LANGS.filter(([id]) => editorial?.approaches.some((approach) => approach[id]));
+  const has = (id: EditorialLang | null) => !!id && shownLangs.some(([shown]) => shown === id);
+  const lang = has(picked) ? picked : (shownLangs[0]?.[0] ?? picked);
+  // Like for like: my Java code diffs against the Java editorial, whichever tab is shown.
+  const diffLang = has(editorialLang(language)) ? editorialLang(language)! : lang;
+  const lingProblem = problemId.startsWith('lc-');
   useEffect(() => {
     if (!unlocked || editorial) return;
     const controller = new AbortController();
@@ -137,7 +145,9 @@ export function LingEditorial({
         {verified ? (
           <span className="cs-ling-verified">
             <BadgeCheck size={14} aria-hidden="true" />
-            {t('Python 代码已通过本题全部测试，C++、Java、Go 已通过公开样例', 'Python passes every test; C++, Java and Go pass the public samples')}
+            {lingProblem
+              ? t('Python 代码已通过本题全部测试，C++、Java、Go 已通过公开样例', 'Python passes every test; C++, Java and Go pass the public samples')
+              : t('题解代码已通过本题全部测试', 'The code passes every test of this problem')}
           </span>
         ) : (
           <span className="cs-ling-unverified">
@@ -191,7 +201,7 @@ export function LingEditorial({
           {stepped && modeSwitch()}
           <fieldset className="cs-ling-langs">
             <legend className="sr-only">{t('代码语言', 'Code language')}</legend>
-            {LANGS.map(([id, name]) => (
+            {shownLangs.map(([id, name]) => (
               <button
                 key={id}
                 type="button"
@@ -252,7 +262,7 @@ export function LingEditorial({
                     </div>
                     <div className="cs-history-editor cs-ling-diff">
                       <CodeDiff
-                        original={approach[diffLang]}
+                        original={approach[diffLang] ?? approach[lang] ?? ''}
                         modified={code}
                         originalLanguage={diffLang}
                         language={language}

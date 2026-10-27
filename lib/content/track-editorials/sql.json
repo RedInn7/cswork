@@ -1,0 +1,1153 @@
+{
+  "sql-01": {
+    "approaches": [
+      {
+        "nameZh": "自连接 + 左连接找空",
+        "nameEn": "Self LEFT JOIN, keep the misses",
+        "ideaZh": "「找不到上级」其实是两种情况：`manager_id` 本身是 NULL，或者它指向一个不存在的 id。把 `employees` 当成两张表——员工 `e` 和上级 `m`——用 `LEFT JOIN employees m ON m.id = e.manager_id` 连起来，这两种情况的共同点是：右边一行都匹配不上，`m` 的所有列都是 NULL。\n\n所以只要保留 `m.id IS NULL` 的行即可。`m.id` 是主键，真正匹配上的行里它不可能是 NULL，用它判断不会误伤。\n\n**易错点**\n- 只写 `WHERE manager_id IS NULL` 会漏掉指向不存在员工的人（样例里的 Hugo）。\n- 写成 `manager_id NOT IN (SELECT id FROM employees)` 也不对：`NULL NOT IN (...)` 的结果是 NULL，manager_id 为 NULL 的员工会被丢掉。",
+        "ideaEn": "\"No valid manager\" covers two cases: `manager_id` is NULL, or it points at an id that does not exist. Treat `employees` as two tables, the employee `e` and the manager `m`, and join them with `LEFT JOIN employees m ON m.id = e.manager_id`. In both cases the right side finds no row, so every `m` column comes back NULL.\n\nKeep the rows where `m.id IS NULL`. `m.id` is the primary key, so it is never NULL on a row that actually matched.\n\n**Pitfalls**\n- `WHERE manager_id IS NULL` alone misses employees whose manager id is dangling (Hugo in the sample).\n- `manager_id NOT IN (SELECT id FROM employees)` is also wrong: `NULL NOT IN (...)` is NULL, so employees with a NULL manager_id disappear.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT e.id, e.name\nFROM employees e\nLEFT JOIN employees m ON m.id = e.manager_id\nWHERE m.id IS NULL;\n"
+      },
+      {
+        "nameZh": "NOT EXISTS 反连接",
+        "nameEn": "Anti-join with NOT EXISTS",
+        "ideaZh": "同样的意思可以直接写成「不存在一个 id 等于我 manager_id 的员工」。对每个员工，子查询 `SELECT 1 FROM employees m WHERE m.id = e.manager_id` 查找上级：\n\n- `manager_id` 为 NULL 时，`m.id = NULL` 永远不成立，子查询为空；\n- `manager_id` 指向不存在的 id 时，子查询也为空。\n\n两种情况下 `NOT EXISTS` 都为真，正好就是要找的人。和 `NOT IN` 不同，`NOT EXISTS` 只看有没有行，不会被 NULL 搅乱，这是写反连接最稳妥的方式。",
+        "ideaEn": "Say it literally: \"there is no employee whose id equals my manager_id\". For each employee the subquery `SELECT 1 FROM employees m WHERE m.id = e.manager_id` looks for the manager:\n\n- when `manager_id` is NULL, `m.id = NULL` is never true, so the subquery is empty;\n- when it points at a missing id, the subquery is empty too.\n\nEither way `NOT EXISTS` is true. Unlike `NOT IN`, `NOT EXISTS` only asks whether a row exists, so NULLs cannot break it. It is the safest way to write an anti-join.",
+        "time": "O(n log n)",
+        "space": "O(1)",
+        "sql": "SELECT id, name\nFROM employees e\nWHERE NOT EXISTS (\n  SELECT 1 FROM employees m WHERE m.id = e.manager_id\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-02": {
+    "approaches": [
+      {
+        "nameZh": "COALESCE 后分组计数",
+        "nameEn": "GROUP BY the COALESCEd city",
+        "ideaZh": "先把 NULL 城市换成 `'Unknown'`，再按换过的值分组：`GROUP BY COALESCE(city, 'Unknown')`，每组用 `COUNT(*)` 数行数。\n\n为什么用 `COUNT(*)` 而不是 `COUNT(city)`：`COUNT(city)` 会跳过 NULL，`Unknown` 那一组就成了 0。`COUNT(*)` 数的是行，不看列值。\n\n其实直接 `GROUP BY city` 也行——SQL 分组时把所有 NULL 放进同一组——只是输出时依然要用 `COALESCE` 把 NULL 改名。题目保证没有真的叫 Unknown 的城市，所以不用担心两组被合并。",
+        "ideaEn": "Replace a NULL city with `'Unknown'` and group by the replaced value: `GROUP BY COALESCE(city, 'Unknown')`, counting rows with `COUNT(*)`.\n\nUse `COUNT(*)`, not `COUNT(city)`: the latter skips NULLs, so the Unknown group would count 0. `COUNT(*)` counts rows regardless of values.\n\nPlain `GROUP BY city` also works, because grouping puts all NULLs into one group, but you still need `COALESCE` in the SELECT list to rename it. The task promises no real city is called Unknown, so no two groups can merge.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT COALESCE(city, 'Unknown') AS city, COUNT(*) AS customers\nFROM customers\nGROUP BY COALESCE(city, 'Unknown');\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-03": {
+    "approaches": [
+      {
+        "nameZh": "利用聚合函数跳过 NULL",
+        "nameEn": "Let the aggregates skip NULL",
+        "ideaZh": "这题考的是聚合函数怎么对待 NULL。按课程连接 `courses` 和 `enrollments` 后分组，每个结果列恰好对应一种 NULL 处理方式：\n\n- **选课人数** `COUNT(*)`：每条选课记录都算，缺考也算；\n- **参加考试人数** `COUNT(e.score)`：`COUNT(列)` 跳过 NULL，0 分会被计入；\n- **参加者平均分** `AVG(e.score)`：`AVG` 同样跳过 NULL，全组都缺考时结果就是 NULL，正好符合要求；\n- **缺考按 0 分** `AVG(COALESCE(e.score, 0))`：先把 NULL 换成 0，分母就变成全部选课人数。\n\n用内连接 `JOIN` 而不是 `LEFT JOIN`，因为题目只要至少有一人选课的课程。分组用 `GROUP BY c.id, c.title`，避免两门同名课程被合在一起。\n\n**易错点**：如果自己写 `SUM(score) / COUNT(score)`，SQLite 的整数除法会截断（165 / 2 = 82），要先乘 `1.0`。`AVG` 返回的已经是浮点数，没有这个问题。",
+        "ideaEn": "This one is about how aggregates treat NULL. Join `courses` to `enrollments`, group by course, and each output column is one NULL rule:\n\n- **enrolled** `COUNT(*)`: every enrollment row, absentees included;\n- **sat** `COUNT(e.score)`: `COUNT(column)` skips NULL, while a score of 0 still counts;\n- **avg_score** `AVG(e.score)`: `AVG` skips NULL too, and gives NULL when everyone was absent, which is what the task wants;\n- **avg_with_zero** `AVG(COALESCE(e.score, 0))`: turn NULL into 0 first, so the denominator becomes all enrollments.\n\nUse an inner `JOIN`, since only courses with at least one enrollment are wanted. Group by `c.id, c.title` so two courses with the same title stay apart.\n\n**Pitfall**: a hand-written `SUM(score) / COUNT(score)` is integer division in SQLite (165 / 2 = 82); multiply by `1.0` first. `AVG` already returns a float.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT c.title,\n       COUNT(*) AS enrolled,\n       COUNT(e.score) AS sat,\n       ROUND(AVG(e.score), 2) AS avg_score,\n       ROUND(AVG(COALESCE(e.score, 0)), 2) AS avg_with_zero\nFROM courses c\nJOIN enrollments e ON e.course_id = c.id\nGROUP BY c.id, c.title;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-04": {
+    "approaches": [
+      {
+        "nameZh": "NOT EXISTS 反连接",
+        "nameEn": "Anti-join with NOT EXISTS",
+        "ideaZh": "「从未下单」就是「不存在一笔属于他的订单」。对每位客户用相关子查询找他的订单，`NOT EXISTS` 为真的就是答案。题目说取消的订单也算下过单，所以子查询里不加任何状态条件。\n\n同样可以写成 `LEFT JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL`，效果一样。\n\n**易错点：NOT IN 遇上 NULL。** 游客订单的 `customer_id` 是 NULL。如果写 `id NOT IN (SELECT customer_id FROM orders)`，子查询结果里有 NULL，`x NOT IN (..., NULL)` 对每个 x 都是 NULL 而不是真，结果会是空集。要用 NOT IN 必须在子查询里加 `WHERE customer_id IS NOT NULL`。`NOT EXISTS` 天然没有这个坑。",
+        "ideaEn": "\"Never ordered\" means \"there is no order that belongs to them\". For each customer, a correlated subquery looks for their orders; the customers for whom `NOT EXISTS` holds are the answer. Cancelled orders count as orders, so the subquery has no status filter.\n\n`LEFT JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL` is equivalent.\n\n**Pitfall: NOT IN meets NULL.** Guest orders have a NULL `customer_id`. With `id NOT IN (SELECT customer_id FROM orders)`, the list contains NULL, so `x NOT IN (..., NULL)` is NULL for every x and the result is empty. NOT IN only works if the subquery adds `WHERE customer_id IS NOT NULL`. `NOT EXISTS` has no such trap.",
+        "time": "O((n + m) log m)",
+        "space": "O(1)",
+        "sql": "SELECT c.id, c.name\nFROM customers c\nWHERE NOT EXISTS (\n  SELECT 1 FROM orders o WHERE o.customer_id = c.id\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-05": {
+    "approaches": [
+      {
+        "nameZh": "自连接比较员工与上级",
+        "nameEn": "Self-join employee to manager",
+        "ideaZh": "员工和上级在同一张表里，所以把 `employees` 连接两次：别名 `e` 是员工，`m` 是上级，连接条件 `m.id = e.manager_id`。连上之后同一行里就同时有员工和上级的工资，直接 `WHERE e.salary > m.salary` 过滤。\n\n这里用内连接正合适：`manager_id` 为 NULL 或指向不存在员工的人匹配不到任何 `m` 行，自动被排除，这正是题目说的「不参与比较」。\n\n**易错点**：题目要的是严格大于，工资相等的不算；输出列的顺序是员工名、员工工资、上级名、上级工资，别把两边弄反。",
+        "ideaEn": "The employee and the manager live in the same table, so join `employees` twice: `e` is the employee, `m` the manager, on `m.id = e.manager_id`. Each joined row then carries both salaries, and `WHERE e.salary > m.salary` filters them.\n\nAn inner join is exactly right: employees whose `manager_id` is NULL or dangling match no `m` row and drop out, which is what \"do not take part\" means.\n\n**Pitfalls**: the comparison is strict, so equal salaries do not qualify; and keep the column order employee, salary, manager, manager salary.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT e.name AS employee, e.salary,\n       m.name AS manager, m.salary AS manager_salary\nFROM employees e\nJOIN employees m ON m.id = e.manager_id\nWHERE e.salary > m.salary;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-06": {
+    "approaches": [
+      {
+        "nameZh": "从部门表左连接员工",
+        "nameEn": "LEFT JOIN from departments",
+        "ideaZh": "要保留没有员工的部门，就得以 `departments` 为主表做 `LEFT JOIN employees`。空部门会留下一行，员工那一侧全是 NULL。\n\n接下来分组计数时要数 `COUNT(e.id)` 而不是 `COUNT(*)`：空部门那一行是真实存在的一行，`COUNT(*)` 会把它算成 1；`COUNT(e.id)` 跳过 NULL，空部门正好得 0。\n\n没有部门的员工 `department_id` 为 NULL，匹配不到任何部门，自然不会被计入。分组键用 `d.id, d.name`，防止两个同名部门被合并。\n\n另一种写法是在 SELECT 里放标量子查询 `(SELECT COUNT(*) FROM employees e WHERE e.department_id = d.id)`，对每个部门单独数一次，结果相同。",
+        "ideaEn": "To keep departments with no employees, make `departments` the driving table and `LEFT JOIN employees`. An empty department keeps one row whose employee columns are all NULL.\n\nThen count `COUNT(e.id)`, not `COUNT(*)`: that NULL row is a real row, so `COUNT(*)` would give 1, while `COUNT(e.id)` skips NULL and gives 0.\n\nEmployees with a NULL `department_id` match no department and are never counted. Group by `d.id, d.name` so two departments sharing a name stay apart.\n\nA scalar subquery `(SELECT COUNT(*) FROM employees e WHERE e.department_id = d.id)` in the SELECT list gives the same result, counting once per department.",
+        "time": "O((d + n) log n)",
+        "space": "O(d)",
+        "sql": "SELECT d.name AS department, COUNT(e.id) AS headcount\nFROM departments d\nLEFT JOIN employees e ON e.department_id = d.id\nGROUP BY d.id, d.name;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-07": {
+    "approaches": [
+      {
+        "nameZh": "内连接明细、左连接客户",
+        "nameEn": "Inner join items, left join customers",
+        "ideaZh": "三张表的连接方式各有讲究：\n\n1. `orders JOIN order_items`：用**内连接**。题目只要至少有一件商品的订单，没有明细的订单在这里自然被去掉。\n2. `LEFT JOIN customers`：用**左连接**。游客订单的 `customer_id` 是 NULL，内连接会把它们丢掉；左连接保留下来，客户名为 NULL，再用 `COALESCE(c.name, 'Guest')` 显示成 Guest。\n\n过滤 `o.status = 'paid'` 后按订单分组，金额是 `SUM(i.quantity * i.unit_price)`。注意用的是明细里的成交价 `unit_price`，不是 `products.price` 标价，所以根本不需要连接商品表。\n\n分组键写 `o.id, c.name`：同一个订单只对应一个客户，加上 `c.name` 只是为了让 SELECT 里的非聚合列都出现在分组里。",
+        "ideaEn": "Each of the three joins has a reason:\n\n1. `orders JOIN order_items` is an **inner** join: only orders with at least one item are wanted, and itemless orders drop out here.\n2. `LEFT JOIN customers` is a **left** join: guest orders have a NULL `customer_id`, which an inner join would discard. The left join keeps them with a NULL name, and `COALESCE(c.name, 'Guest')` prints Guest.\n\nFilter `o.status = 'paid'`, group by order, and the total is `SUM(i.quantity * i.unit_price)`. It uses the item's sale price `unit_price`, not the list price in `products`, so the products table is not needed at all.\n\nGrouping by `o.id, c.name` is safe because an order has exactly one customer; `c.name` is there so every non-aggregated column is in the GROUP BY.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT o.id AS order_id,\n       COALESCE(c.name, 'Guest') AS customer,\n       SUM(i.quantity * i.unit_price) AS total\nFROM orders o\nJOIN order_items i ON i.order_id = o.id\nLEFT JOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'paid'\nGROUP BY o.id, c.name;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-08": {
+    "approaches": [
+      {
+        "nameZh": "自连接 + 编号有序去重",
+        "nameEn": "Self-join with a.id < b.id",
+        "ideaZh": "把 `customers` 和自己连接，条件是城市相同。直接这样做会得到三类多余的行：(a, a) 自己和自己、以及 (a, b) 和 (b, a) 各出现一次。加上 `a.id < b.id` 一个条件就同时解决两个问题：自己和自己被排除，每对只剩编号小的在前那一种，正好满足 `first_id < second_id`。\n\n城市为 NULL 的客户不用特殊处理：`NULL = NULL` 的结果是 NULL，不是真，连接条件不成立，他们不会和任何人配对。\n\n输出量是每个城市人数的平方级别，对这类「列出所有配对」的题来说是不可避免的。",
+        "ideaEn": "Join `customers` to itself on equal city. Done naively this yields extra rows: (a, a), plus both (a, b) and (b, a). One condition `a.id < b.id` fixes both: self-pairs vanish and each pair survives only in the order with the smaller id first, which is exactly `first_id < second_id`.\n\nCustomers with a NULL city need no special case: `NULL = NULL` is NULL, not true, so the join condition fails and they pair with nobody.\n\nThe output is quadratic in each city's size, which is unavoidable when every pair must be listed.",
+        "time": "O(n log n + p)",
+        "space": "O(p)",
+        "sql": "SELECT a.city, a.id AS first_id, b.id AS second_id\nFROM customers a\nJOIN customers b ON a.city = b.city AND a.id < b.id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-09": {
+    "approaches": [
+      {
+        "nameZh": "WHERE 筛行，HAVING 筛组",
+        "nameEn": "WHERE on rows, HAVING on groups",
+        "ideaZh": "两个条件作用的层次不同：\n\n- 「只算已支付订单」是针对**单行**的条件，写在 `WHERE o.status = 'paid'`，在分组之前把取消的订单去掉；\n- 「不少于 3 笔」是针对**分组结果**的条件，写在 `HAVING COUNT(*) >= 3`。\n\n客户和订单用内连接即可：没下过单的客户本来就不可能有 3 笔订单，游客订单 `customer_id` 为 NULL 也连不上任何客户。按 `c.id, c.name` 分组，避免同名客户合在一起。\n\n**易错点**：如果把 status 条件放进 HAVING，或者先数全部订单再过滤，取消的订单会被算进去。",
+        "ideaEn": "The two conditions live at different levels:\n\n- \"paid orders only\" is about **individual rows**, so it goes in `WHERE o.status = 'paid'` and removes cancelled orders before grouping;\n- \"at least 3\" is about **groups**, so it goes in `HAVING COUNT(*) >= 3`.\n\nAn inner join between customers and orders is enough: a customer with no orders can never reach 3, and guest orders with a NULL `customer_id` join no customer. Group by `c.id, c.name` so customers with the same name stay apart.\n\n**Pitfall**: counting all orders first and filtering afterwards lets cancelled orders slip into the count.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT c.id, c.name, COUNT(*) AS paid_orders\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.name\nHAVING COUNT(*) >= 3;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-10": {
+    "approaches": [
+      {
+        "nameZh": "分组求和、HAVING 过滤、完整排序",
+        "nameEn": "Group, filter with HAVING, sort fully",
+        "ideaZh": "销售额来自明细表：明细连订单（为了过滤 `status = 'paid'`），再连商品（为了拿到类目）。按 `p.category` 分组求 `SUM(i.quantity * i.unit_price)`。\n\n「销售额不少于 300」是对聚合结果的条件，只能写在 `HAVING`，`WHERE` 阶段还没有销售额这个值。\n\n本题判题时比较行的顺序，所以 `ORDER BY revenue DESC, p.category` 两个键都要写：只按销售额排，销售额相同的类目顺序是不确定的，可能和答案对不上。",
+        "ideaEn": "Revenue comes from the item rows: join items to orders (to filter `status = 'paid'`) and to products (for the category). Group by `p.category` and sum `i.quantity * i.unit_price`.\n\n\"Revenue at least 300\" is a condition on the aggregate, so it must go in `HAVING`; at the `WHERE` stage there is no revenue yet.\n\nThis problem compares row order, so write both keys in `ORDER BY revenue DESC, p.category`. Sorting by revenue alone leaves ties in an undefined order that may not match the expected output.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT p.category, SUM(i.quantity * i.unit_price) AS revenue\nFROM order_items i\nJOIN orders o ON o.id = i.order_id\nJOIN products p ON p.id = i.product_id\nWHERE o.status = 'paid'\nGROUP BY p.category\nHAVING SUM(i.quantity * i.unit_price) >= 300\nORDER BY revenue DESC, p.category;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-11": {
+    "approaches": [
+      {
+        "nameZh": "按小写邮箱分组",
+        "nameEn": "Group by LOWER(email)",
+        "ideaZh": "邮箱不区分大小写，意思是 `Ann@X.com` 和 `ann@x.com` 是同一个邮箱。把它们归到一起的办法就是按规范化后的值分组：`GROUP BY LOWER(email)`，输出也用 `LOWER(email)`，然后 `HAVING COUNT(*) > 1` 留下被多人使用的。\n\n**易错点**：按原始 `email` 分组、只在输出时转小写是不行的——大小写不同的两条记录会落在两个组里，各自只有 1 个，都被 HAVING 过滤掉。分组键必须是转换后的值。",
+        "ideaEn": "Case-insensitive means `Ann@X.com` and `ann@x.com` are the same address. To bring them together, group by the normalized value: `GROUP BY LOWER(email)`, output `LOWER(email)` as well, and keep groups with `HAVING COUNT(*) > 1`.\n\n**Pitfall**: grouping by the raw `email` and lowercasing only in the SELECT does not work. Two spellings land in two groups of one each, and HAVING drops both. The grouping key itself must be the normalized value.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT LOWER(email) AS email, COUNT(*) AS accounts\nFROM customers\nGROUP BY LOWER(email)\nHAVING COUNT(*) > 1;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-12": {
+    "approaches": [
+      {
+        "nameZh": "DISTINCT + OFFSET 放进标量子查询",
+        "nameEn": "DISTINCT with OFFSET in a scalar subquery",
+        "ideaZh": "第二高的**不同**工资：先 `SELECT DISTINCT salary` 去重，按工资降序排，跳过第一个取第二个：`LIMIT 1 OFFSET 1`。\n\n麻烦在「不存在时返回 NULL」。如果直接把这条查询作为结果，所有人工资相同时它返回 0 行，而题目要恰好一行。把它包成**标量子查询** `SELECT (...) AS second_salary`：子查询没有行时值为 NULL，外层 SELECT 没有 FROM，总是返回一行。\n\n**易错点**：漏掉 `DISTINCT` 的话，最高工资有两个人并列时，OFFSET 1 取到的还是最高工资。",
+        "ideaEn": "Second highest **distinct** salary: deduplicate with `SELECT DISTINCT salary`, sort descending, skip one and take one: `LIMIT 1 OFFSET 1`.\n\nThe catch is \"NULL when it does not exist\". On its own that query returns zero rows when everyone earns the same, but exactly one row is required. Wrap it as a **scalar subquery**, `SELECT (...) AS second_salary`: an empty subquery evaluates to NULL, and the outer SELECT with no FROM always yields one row.\n\n**Pitfall**: without `DISTINCT`, two people tied at the top make OFFSET 1 return the top salary again.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT (\n  SELECT DISTINCT salary\n  FROM employees\n  ORDER BY salary DESC\n  LIMIT 1 OFFSET 1\n) AS second_salary;\n"
+      },
+      {
+        "nameZh": "小于最大值的最大值",
+        "nameEn": "Max below the max",
+        "ideaZh": "第二高的不同工资，就是「严格小于最高工资的那些工资里的最大值」。内层 `SELECT MAX(salary)` 求最高工资，外层在 `salary < 最高工资` 的行里再取 `MAX`。\n\n这个写法自带两点好处：严格小于自动跳过所有并列最高的人，不需要 DISTINCT；而聚合函数在没有任何行时返回 NULL 且仍输出一行，所以「不存在时返回 NULL」也不用额外处理。\n\n缺点是只能求第二名，要求第 N 高时还是 OFFSET 或窗口函数更通用。",
+        "ideaEn": "The second highest distinct salary is the largest salary strictly below the maximum. The inner `SELECT MAX(salary)` finds the top, and the outer query takes `MAX` over rows with `salary <` that value.\n\nTwo things come for free: the strict comparison skips everyone tied at the top, so no DISTINCT is needed; and an aggregate over zero rows still returns one row holding NULL, so the \"NULL if missing\" rule needs no extra work.\n\nIt only works for second place; for the Nth highest, OFFSET or a window function generalizes better.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT MAX(salary) AS second_salary\nFROM employees\nWHERE salary < (SELECT MAX(salary) FROM employees);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-13": {
+    "approaches": [
+      {
+        "nameZh": "相关子查询算本部门平均",
+        "nameEn": "Correlated subquery for the department average",
+        "ideaZh": "在 WHERE 里对当前员工现算他所在部门的平均工资：`(SELECT AVG(x.salary) FROM employees x WHERE x.department_id = e.department_id)`，再比较 `e.salary >` 这个值。\n\n员工和部门用内连接拿部门名，没有部门的员工连不上，直接被排除；即使不连部门表，他们的子查询里 `x.department_id = NULL` 也匹配不到任何行，平均值为 NULL，比较结果不为真，同样不会出现。\n\n相关子查询写起来最直观，但每个员工都要扫一遍本部门；有 `department_id` 上的索引时代价不大，没有时最坏是 O(n²)。",
+        "ideaEn": "In the WHERE clause, compute the average of the current employee's department on the spot, `(SELECT AVG(x.salary) FROM employees x WHERE x.department_id = e.department_id)`, and compare `e.salary >` it.\n\nThe inner join to departments supplies the name and drops employees with no department. Even without it they would vanish: `x.department_id = NULL` matches nothing, the average is NULL, and the comparison is not true.\n\nThe correlated subquery reads most naturally, but it rescans the department for every employee: cheap with an index on `department_id`, O(n²) in the worst case without one.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "sql": "SELECT d.name AS department, e.name AS employee, e.salary\nFROM employees e\nJOIN departments d ON d.id = e.department_id\nWHERE e.salary > (\n  SELECT AVG(x.salary)\n  FROM employees x\n  WHERE x.department_id = e.department_id\n);\n"
+      },
+      {
+        "nameZh": "先算各部门平均再连接",
+        "nameEn": "Precompute averages, then join",
+        "ideaZh": "把「每个部门的平均工资」先单独算好：CTE `a` 里 `GROUP BY department_id` 一次聚合，每个部门一行。然后员工表连接 `a`（按部门）和 `departments`（拿部门名），过滤 `e.salary > a.avg`。\n\n和相关子查询相比，平均值只算一遍，整体是一次分组加两次连接，数据量大时更稳定。CTE 里 `department_id` 为 NULL 的员工会单独成一组，但连接条件 `a.department_id = e.department_id` 对 NULL 不成立，这组不会影响结果。",
+        "ideaEn": "Compute each department's average once: the CTE `a` groups by `department_id`, one row per department. Join employees to `a` on department and to `departments` for the name, then keep `e.salary > a.avg`.\n\nCompared with the correlated subquery, each average is computed once, so the work is one grouping plus two joins, which scales better. Employees with a NULL `department_id` form their own group in the CTE, but `a.department_id = e.department_id` is never true for NULL, so that group has no effect.",
+        "time": "O(n log n)",
+        "space": "O(d)",
+        "sql": "WITH a AS (\n  SELECT department_id, AVG(salary) AS avg_salary\n  FROM employees\n  GROUP BY department_id\n)\nSELECT d.name AS department, e.name AS employee, e.salary\nFROM employees e\nJOIN a ON a.department_id = e.department_id\nJOIN departments d ON d.id = e.department_id\nWHERE e.salary > a.avg_salary;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-14": {
+    "approaches": [
+      {
+        "nameZh": "数不同类目，和总数比较",
+        "nameEn": "Count distinct categories and compare",
+        "ideaZh": "「买齐所有类目」可以转化成一个计数问题：客户买过的不同类目数 = 全部类目数。\n\n1. 客户 → 已支付订单 → 明细 → 商品，一路内连接，得到每位客户买过的每件商品及其类目。已支付的条件直接写进 `ON o.status = 'paid'`。\n2. 按客户分组，`COUNT(DISTINCT p.category)` 是他买过的类目数。\n3. `HAVING` 里和 `(SELECT COUNT(DISTINCT category) FROM products)` 比较，相等就是买齐了。\n\n为什么正确：客户买到的类目一定是 products 里类目的子集，子集大小等于全集大小，说明就是全集。\n\n**易错点**：必须用 `COUNT(DISTINCT ...)`，同一类目买多件不能重复计数。",
+        "ideaEn": "\"Bought every category\" turns into counting: the number of distinct categories a customer bought equals the total number of categories.\n\n1. Inner-join customers to paid orders to items to products, putting `o.status = 'paid'` straight into the `ON`. That gives every product each customer bought, with its category.\n2. Group by customer; `COUNT(DISTINCT p.category)` is how many categories they covered.\n3. In `HAVING`, compare it with `(SELECT COUNT(DISTINCT category) FROM products)`.\n\nWhy it works: the categories a customer bought are a subset of all categories, and a subset with the same size as the whole set is the whole set.\n\n**Pitfall**: use `COUNT(DISTINCT ...)`; several items in one category must count once.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT c.id, c.name\nFROM customers c\nJOIN orders o ON o.customer_id = c.id AND o.status = 'paid'\nJOIN order_items i ON i.order_id = o.id\nJOIN products p ON p.id = i.product_id\nGROUP BY c.id, c.name\nHAVING COUNT(DISTINCT p.category) = (\n  SELECT COUNT(DISTINCT category) FROM products\n);\n"
+      },
+      {
+        "nameZh": "双重 NOT EXISTS（关系除法）",
+        "nameEn": "Double NOT EXISTS (relational division)",
+        "ideaZh": "「每个类目都买过」等价于「不存在一个他没买过的类目」。这就是经典的关系除法写法：\n\n- 外层 `NOT EXISTS`：找一个类目 `p.category`……\n- 内层 `NOT EXISTS`：……使得这位客户在已支付订单里没有买过任何该类目的商品。\n\n只要找不到这样的类目，客户就买齐了。\n\n这种写法不依赖计数，逻辑上直接对应「对所有」的定义，在类目有重复、或者需要更复杂的匹配条件时也不容易出错；代价是嵌套较深，读起来需要绕一下。",
+        "ideaEn": "\"Bought every category\" is the same as \"there is no category they did not buy\". That is the classic relational-division pattern:\n\n- the outer `NOT EXISTS` looks for a category `p.category`...\n- ...for which the inner `NOT EXISTS` finds no paid purchase by this customer of any product in it.\n\nIf no such category exists, the customer has them all.\n\nThis form does not rely on counting and mirrors the \"for all\" definition directly, so it stays correct under more complex matching rules; the price is deeper nesting that takes a moment to read.",
+        "time": "O(c * k * n)",
+        "space": "O(1)",
+        "sql": "SELECT c.id, c.name\nFROM customers c\nWHERE NOT EXISTS (\n  SELECT 1 FROM products p\n  WHERE NOT EXISTS (\n    SELECT 1\n    FROM orders o\n    JOIN order_items i ON i.order_id = o.id\n    JOIN products q ON q.id = i.product_id\n    WHERE o.customer_id = c.id\n      AND o.status = 'paid'\n      AND q.category = p.category\n  )\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-15": {
+    "approaches": [
+      {
+        "nameZh": "ROW_NUMBER 取每组第一",
+        "nameEn": "ROW_NUMBER, keep rank 1",
+        "ideaZh": "分组取「最新一笔」是典型的组内 Top 1。用窗口函数给每位客户的订单排序：`ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC, id DESC)`，日期最晚的排第一，同一天里 id 大的排前面。外层只留 `rn = 1`。\n\n`WHERE customer_id IS NOT NULL` 去掉游客订单，否则所有游客订单会被当成同一个客户 NULL 分成一组。\n\n**易错点**：写 `SELECT customer_id, MAX(id), MAX(order_date) ... GROUP BY customer_id` 是错的——两个 MAX 各自取最大值，不一定来自同一行，id 最大的订单未必是日期最晚的。`ROW_NUMBER` 不会产生并列，排序键里的 `id DESC` 保证每组恰好一行。",
+        "ideaEn": "\"Latest order per customer\" is a top-1-per-group problem. Rank each customer's orders with `ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC, id DESC)`: latest date first, larger id first within a day. The outer query keeps `rn = 1`.\n\n`WHERE customer_id IS NOT NULL` drops guest orders, which would otherwise form one bogus customer NULL.\n\n**Pitfall**: `SELECT customer_id, MAX(id), MAX(order_date) ... GROUP BY customer_id` is wrong. Each MAX is taken separately, so they may come from different rows; the largest id need not have the latest date. `ROW_NUMBER` never ties, and the `id DESC` tiebreak guarantees one row per group.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT customer_id, id AS order_id, order_date\nFROM (\n  SELECT o.*,\n         ROW_NUMBER() OVER (\n           PARTITION BY customer_id\n           ORDER BY order_date DESC, id DESC\n         ) AS rn\n  FROM orders o\n  WHERE customer_id IS NOT NULL\n)\nWHERE rn = 1;\n"
+      },
+      {
+        "nameZh": "NOT EXISTS：没有比它更新的订单",
+        "nameEn": "NOT EXISTS a newer order",
+        "ideaZh": "不用窗口函数也能做：一笔订单是客户的最新订单，当且仅当同一客户不存在「比它更新」的订单。「更新」按题意展开就是：日期更晚，或者日期相同但 id 更大。\n\n把这个条件写进 `NOT EXISTS` 的子查询即可。因为 (order_date, id) 在客户内是全序且 id 唯一，每位客户恰好有一笔订单满足条件。\n\n这种写法在不支持窗口函数的老数据库上也能用；没有合适索引时，每行都要扫一遍同客户的订单。",
+        "ideaEn": "Without window functions: an order is a customer's latest exactly when the same customer has no \"newer\" order, where newer means a later date, or the same date with a larger id.\n\nPut that condition in a `NOT EXISTS` subquery. Since (order_date, id) is a total order within a customer and ids are unique, exactly one order per customer survives.\n\nThis works on databases without window functions; without a suitable index each row rescans that customer's orders.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "sql": "SELECT o.customer_id, o.id AS order_id, o.order_date\nFROM orders o\nWHERE o.customer_id IS NOT NULL\n  AND NOT EXISTS (\n    SELECT 1 FROM orders p\n    WHERE p.customer_id = o.customer_id\n      AND (p.order_date > o.order_date\n           OR (p.order_date = o.order_date AND p.id > o.id))\n  );\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-16": {
+    "approaches": [
+      {
+        "nameZh": "DENSE_RANK 取前三档",
+        "nameEn": "DENSE_RANK, keep levels 1-3",
+        "ideaZh": "「前三档不同工资」里的关键词是**不同的工资值**：两人并列最高时，下一个工资仍然是第二档。三个排名函数的区别正好在这里：\n\n- `ROW_NUMBER`：1, 2, 3, 4……并列也分先后，会漏掉同档的人；\n- `RANK`：1, 1, 3……并列后跳号，第二档会消失；\n- `DENSE_RANK`：1, 1, 2……并列不跳号，排名就是「第几档」。\n\n所以在部门内按工资降序算 `DENSE_RANK()`，外层保留 `level <= 3`。员工和部门用内连接，没有部门的员工自然不参与。",
+        "ideaEn": "The key words are **distinct salary values**: if two people tie for the top, the next salary is still the second level. That is exactly where the three ranking functions differ:\n\n- `ROW_NUMBER`: 1, 2, 3, 4... ties get separate numbers, so people sharing a level get cut;\n- `RANK`: 1, 1, 3... skips after a tie, so level 2 disappears;\n- `DENSE_RANK`: 1, 1, 2... no gaps, so the rank is the level.\n\nCompute `DENSE_RANK()` by salary descending within each department and keep `level <= 3`. The inner join to departments drops employees without one.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT department, employee, salary\nFROM (\n  SELECT d.name AS department, e.name AS employee, e.salary,\n         DENSE_RANK() OVER (\n           PARTITION BY e.department_id\n           ORDER BY e.salary DESC\n         ) AS level\n  FROM employees e\n  JOIN departments d ON d.id = e.department_id\n)\nWHERE level <= 3;\n"
+      },
+      {
+        "nameZh": "数比我高的不同工资",
+        "nameEn": "Count distinct higher salaries",
+        "ideaZh": "不用窗口函数的写法：一个员工的工资在部门前三档，等价于本部门里比他高的**不同**工资值少于 3 个（0 个是第一档，1 个是第二档，2 个是第三档）。\n\n相关子查询 `COUNT(DISTINCT x.salary) ... WHERE x.salary > e.salary` 就是这个数。`DISTINCT` 不能省，否则两个并列的高工资会被数成两档。\n\n它本质上是在手算 DENSE_RANK - 1，适合理解排名的定义，但每个员工都要扫一遍部门，规模大时不如窗口函数。",
+        "ideaEn": "Without window functions: an employee is in the top three levels exactly when fewer than 3 **distinct** salaries in the department are higher (0 means level 1, 1 means level 2, 2 means level 3).\n\nThe correlated subquery `COUNT(DISTINCT x.salary) ... WHERE x.salary > e.salary` is that number. Keep the `DISTINCT`, or two tied higher salaries count as two levels.\n\nThis is DENSE_RANK minus one computed by hand. It shows what the ranking means, but rescans the department for each employee, so the window version scales better.",
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "sql": "SELECT d.name AS department, e.name AS employee, e.salary\nFROM employees e\nJOIN departments d ON d.id = e.department_id\nWHERE (\n  SELECT COUNT(DISTINCT x.salary)\n  FROM employees x\n  WHERE x.department_id = e.department_id\n    AND x.salary > e.salary\n) < 3;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-17": {
+    "approaches": [
+      {
+        "nameZh": "先按天聚合，再窗口累加",
+        "nameEn": "Aggregate per day, then a running SUM",
+        "ideaZh": "分两步：\n\n1. 内层把已支付订单的明细按 `order_date` 聚合，每天一行，算出当天销售额。\n2. 外层在这一天一行的结果上做 `SUM(revenue) OVER (ORDER BY day)`。带 `ORDER BY` 的聚合窗口默认帧是「从第一行到当前行」，就是累计和。\n\n**为什么必须先聚合**：如果直接在明细行上开窗，同一天会有多行，窗口按 day 排序时同一天的行是「同级」的，默认帧（RANGE）会把它们一起算进去，结果虽然数值可能对，但每天会输出多行。先压成一天一行最清楚。\n\n本题比较顺序，最后要 `ORDER BY day`。",
+        "ideaEn": "Two steps:\n\n1. The inner query aggregates paid order items by `order_date`, one row per day with that day's revenue.\n2. The outer query applies `SUM(revenue) OVER (ORDER BY day)` to those daily rows. An aggregate window with `ORDER BY` defaults to the frame \"first row through the current row\", which is a running total.\n\n**Why aggregate first**: windowing over raw item rows leaves several rows per day; they are peers under `ORDER BY day`, and while the default RANGE frame might give the right numbers, each day would appear several times. Collapse to one row per day first.\n\nRow order is compared, so finish with `ORDER BY day`.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT day, revenue,\n       SUM(revenue) OVER (ORDER BY day) AS running_total\nFROM (\n  SELECT o.order_date AS day, SUM(i.quantity * i.unit_price) AS revenue\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY o.order_date\n)\nORDER BY day;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-18": {
+    "approaches": [
+      {
+        "nameZh": "按月聚合后用 LAG",
+        "nameEn": "Monthly totals, then LAG",
+        "ideaZh": "1. `strftime('%Y-%m', order_date)` 把日期截成年月，按它对已支付订单的明细求和，得到每个有销售的月份一行。\n2. 外层 `LAG(revenue) OVER (ORDER BY month)` 取上一行的销售额，相减就是变化量。第一行没有上一行，`LAG` 返回 NULL，`revenue - NULL` 也是 NULL，正好满足题意。\n\n注意题目说的是「与上一个**列出的**月份」比较：没有销售的月份不会出现在内层结果里，`LAG` 拿到的就是上一个有销售的月份，不需要补齐空月。\n\n`YYYY-MM` 格式的文本按字典序排序就是时间顺序，可以直接 `ORDER BY month`。",
+        "ideaEn": "1. `strftime('%Y-%m', order_date)` cuts a date to its year and month; sum paid item revenue by it to get one row per month with sales.\n2. In the outer query, `LAG(revenue) OVER (ORDER BY month)` fetches the previous row's revenue; subtract to get the change. The first row has no predecessor, so `LAG` gives NULL and `revenue - NULL` is NULL, as required.\n\nThe task compares with the previous **listed** month. Months without sales never appear in the inner result, so `LAG` lands on the previous month that had sales; there is no need to fill gaps.\n\n`YYYY-MM` text sorts lexicographically in time order, so `ORDER BY month` works directly.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT month, revenue,\n       revenue - LAG(revenue) OVER (ORDER BY month) AS change\nFROM (\n  SELECT strftime('%Y-%m', o.order_date) AS month,\n         SUM(i.quantity * i.unit_price) AS revenue\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY month\n)\nORDER BY month;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-19": {
+    "approaches": [
+      {
+        "nameZh": "日期减序号找连续段",
+        "nameEn": "Date minus row number (gaps and islands)",
+        "ideaZh": "经典的「连续区间」技巧：对一位用户去重后的登录日期按时间排序并编号 1, 2, 3……如果几天是连续的，日期每天加 1，序号也每加 1，两者的差保持不变；一旦中间断了一天，日期多跳了，差就变了。\n\n所以：\n\n1. `SELECT DISTINCT user_id, login_date` 去重，同一天多次登录只算一天；\n2. 计算 `julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date)`，同一段连续日期得到同一个值 `streak`；\n3. 按 `(user_id, streak)` 分组，组内天数就是这段连续的长度，`HAVING COUNT(*) >= 3`；\n4. 一个用户可能有多段满足条件，最后 `DISTINCT user_id`。\n\n用 `julianday` 把日期变成连续的天数，跨月、跨年都自然成立。\n\n**易错点**：不先去重的话，同一天两次登录会占两个序号，把连续段拆断。",
+        "ideaEn": "The classic gaps-and-islands trick: number a user's distinct login dates 1, 2, 3... in order. Over consecutive days the date and the number both grow by 1, so their difference stays constant; a missing day makes the date jump and the difference changes.\n\nSo:\n\n1. `SELECT DISTINCT user_id, login_date` so several logins on one day count once;\n2. compute `julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date)`, which is the same value `streak` across one run of consecutive days;\n3. group by `(user_id, streak)`; the group size is the run length, keep `HAVING COUNT(*) >= 3`;\n4. a user may have several such runs, so finish with `DISTINCT user_id`.\n\n`julianday` turns dates into a continuous day count, so month and year boundaries just work.\n\n**Pitfall**: skip the dedupe and two logins on one day take two numbers, breaking the run.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH days AS (\n  SELECT DISTINCT user_id, login_date FROM logins\n), streaks AS (\n  SELECT user_id,\n         julianday(login_date)\n           - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) AS streak\n  FROM days\n)\nSELECT DISTINCT user_id\nFROM streaks\nGROUP BY user_id, streak\nHAVING COUNT(*) >= 3;\n"
+      },
+      {
+        "nameZh": "三次自连接",
+        "nameEn": "Triple self-join",
+        "ideaZh": "题目只要求「至少 3 天」，那么只要找到某一天 d，使同一用户在 d、d+1、d+2 都有登录记录即可。把 `logins` 连接三次：`b` 是 `a` 的后一天 `date(a.login_date, '+1 day')`，`c` 是后两天。能连上的 `a.user_id` 就满足条件。\n\n`date(..., '+1 day')` 会正确处理月末和年末。同一天多次登录会让连接结果重复，所以最后用 `DISTINCT`。\n\n这个方法直观，但只适用于固定的小天数；要求连续 7 天就得连 7 次，此时还是方法一更通用。",
+        "ideaEn": "Since the task only asks for \"at least 3 days\", it is enough to find a day d where the same user logged in on d, d+1 and d+2. Join `logins` three times: `b` is the next day `date(a.login_date, '+1 day')` and `c` the day after. Any `a.user_id` that joins qualifies.\n\n`date(..., '+1 day')` handles month and year ends correctly. Repeated logins on one day duplicate join rows, hence the `DISTINCT`.\n\nIt is direct but only suits a small fixed length; seven days would need seven joins, where the first approach generalizes.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT DISTINCT a.user_id\nFROM logins a\nJOIN logins b ON b.user_id = a.user_id\n             AND b.login_date = date(a.login_date, '+1 day')\nJOIN logins c ON c.user_id = a.user_id\n             AND c.login_date = date(a.login_date, '+2 days');\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-20": {
+    "approaches": [
+      {
+        "nameZh": "首日 + EXISTS 求比例",
+        "nameEn": "First day, then EXISTS for the ratio",
+        "ideaZh": "1. CTE `firsts`：`GROUP BY user_id` 取 `MIN(login_date)`，得到每位用户的首日。日期是 `YYYY-MM-DD` 文本，按字符串取最小值就是最早的日期。\n2. 对每位用户，`EXISTS (SELECT 1 FROM logins ... WHERE login_date = date(first_day, '+1 day'))` 判断首日的下一天有没有登录。SQLite 里布尔值就是 0 / 1，`SUM(EXISTS ...)` 直接数出留存用户数。\n3. 除以 `COUNT(*)`（用户总数），乘 `1.0` 避免整数除法，最后 `ROUND(..., 2)`。\n\n`firsts` 每位用户恰好一行，所以分子分母都以用户为单位，不会被多次登录放大。\n\n**易错点**：如果直接把 `logins` 和自己连接再计数，用户在次日登录多次会被重复计算；用 EXISTS 只问有没有，就没有这个问题。",
+        "ideaEn": "1. CTE `firsts`: `GROUP BY user_id` with `MIN(login_date)` gives each user's first day. Dates are `YYYY-MM-DD` text, so the string minimum is the earliest date.\n2. For each user, `EXISTS (SELECT 1 FROM logins ... WHERE login_date = date(first_day, '+1 day'))` checks for a login the next day. Booleans are 0 / 1 in SQLite, so `SUM(EXISTS ...)` counts retained users.\n3. Divide by `COUNT(*)` (all users), multiply by `1.0` to avoid integer division, then `ROUND(..., 2)`.\n\n`firsts` holds exactly one row per user, so numerator and denominator both count users and repeated logins cannot inflate them.\n\n**Pitfall**: self-joining `logins` and counting rows double-counts users who logged in several times on day two; EXISTS only asks whether such a login exists.",
+        "time": "O(n log n)",
+        "space": "O(u)",
+        "sql": "WITH firsts AS (\n  SELECT user_id, MIN(login_date) AS first_day\n  FROM logins\n  GROUP BY user_id\n)\nSELECT ROUND(1.0 * SUM(EXISTS (\n         SELECT 1 FROM logins l\n         WHERE l.user_id = f.user_id\n           AND l.login_date = date(f.first_day, '+1 day')\n       )) / COUNT(*), 2) AS retention\nFROM firsts f;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-21": {
+    "approaches": [
+      {
+        "nameZh": "NULL 单独判断",
+        "nameEn": "Handle NULL explicitly",
+        "ideaZh": "两个条件用 AND 连起来：\n\n- 入职日期：日期是 `'YYYY-MM-DD'` 文本，字典序就是时间顺序，`hire_date >= '2021-01-01'` 包含当天；\n- 不在部门 1：要写成 `department_id IS NULL OR department_id <> 1`，并且整体加括号。\n\n**为什么要单独写 IS NULL**：`NULL <> 1` 的结果是 NULL，WHERE 只保留结果为真的行，所以只写 `department_id <> 1` 会把没有部门的员工漏掉，而题目明确说他们也算「不在部门 1」。\n\nSQLite 里还有更短的写法 `department_id IS NOT 1`：`IS NOT` 把 NULL 当成普通值比较，`NULL IS NOT 1` 为真。\n\n**易错点**：OR 不加括号的话，`A AND B OR C` 会被解析成 `(A AND B) OR C`，2021 年以前入职、没有部门的人也会混进来。",
+        "ideaEn": "Join two conditions with AND:\n\n- hire date: dates are `'YYYY-MM-DD'` text, so string order is time order and `hire_date >= '2021-01-01'` includes that day;\n- not in department 1: write `department_id IS NULL OR department_id <> 1`, wrapped in parentheses.\n\n**Why spell out IS NULL**: `NULL <> 1` is NULL, and WHERE keeps only true rows, so `department_id <> 1` alone drops employees with no department, whom the task explicitly counts as \"not in department 1\".\n\nSQLite also has the shorter `department_id IS NOT 1`: `IS NOT` compares NULL like an ordinary value, so `NULL IS NOT 1` is true.\n\n**Pitfall**: without parentheses, `A AND B OR C` parses as `(A AND B) OR C`, letting in employees with no department hired before 2021.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT id, name, hire_date\nFROM employees\nWHERE hire_date >= '2021-01-01'\n  AND (department_id IS NULL OR department_id <> 1);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-22": {
+    "approaches": [
+      {
+        "nameZh": "BETWEEN 过滤 + 两级排序",
+        "nameEn": "BETWEEN plus a two-key ORDER BY",
+        "ideaZh": "`price BETWEEN 25 AND 60` 等价于 `price >= 25 AND price <= 60`，两端都包含，正好对应「含 25 和 60」。\n\n排序要求价格降序、价格相同时按商品名升序，所以 `ORDER BY price DESC, name`。本题判题时比较行的顺序，第二个排序键不能省：只按价格排时，同价商品的先后是不确定的。",
+        "ideaEn": "`price BETWEEN 25 AND 60` means `price >= 25 AND price <= 60`, inclusive at both ends, matching \"25 and 60 included\".\n\nSort by price descending and then by name ascending: `ORDER BY price DESC, name`. Row order is compared here, so the second key matters; with price alone, products sharing a price come out in an undefined order.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT name, category, price\nFROM products\nWHERE price BETWEEN 25 AND 60\nORDER BY price DESC, name;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-23": {
+    "approaches": [
+      {
+        "nameZh": "CASE WHEN 从高到低判断",
+        "nameEn": "CASE WHEN from the top down",
+        "ideaZh": "`CASE` 从上到下依次判断，返回第一个成立分支的值。利用这一点，从最高档往下写：\n\n1. `salary >= 9000` → `'high'`；\n2. 走到第二个分支时已经确定 `salary < 9000`，所以只要写 `salary >= 5000` → `'mid'`，就表示 5000 到 8999；\n3. 其余全部 `ELSE 'low'`。\n\n边界值要对准题意：9000 是 high，5000 是 mid，4999 是 low。\n\n**易错点**：如果把 `salary >= 5000` 写在 `salary >= 9000` 前面，所有高工资都会先命中 mid 分支，high 永远不会出现。从低往高写也可以，但条件要换成 `< 5000`、`< 9000`。",
+        "ideaEn": "`CASE` checks branches top to bottom and returns the first one that holds. Use that by writing from the highest band down:\n\n1. `salary >= 9000` gives `'high'`;\n2. reaching the second branch already implies `salary < 9000`, so `salary >= 5000` gives `'mid'` and means 5000 to 8999;\n3. everything else is `ELSE 'low'`.\n\nCheck the boundaries: 9000 is high, 5000 is mid, 4999 is low.\n\n**Pitfall**: putting `salary >= 5000` before `salary >= 9000` makes every high salary hit mid first, so high never appears. Writing bottom-up also works if the tests become `< 5000` and `< 9000`.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT name, salary,\n       CASE WHEN salary >= 9000 THEN 'high'\n            WHEN salary >= 5000 THEN 'mid'\n            ELSE 'low'\n       END AS band\nFROM employees;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-24": {
+    "approaches": [
+      {
+        "nameZh": "四表连接 + DISTINCT",
+        "nameEn": "Four-table join with DISTINCT",
+        "ideaZh": "「客户买过图书」这件事分散在四张表里：客户 → 订单 → 明细 → 商品。沿着外键把它们连起来，再在 WHERE 里同时限定 `o.status = 'paid'` 和 `p.category = 'Books'`，剩下的每一行就是「某位客户在某笔已支付订单里买了一本书」。\n\n同一位客户可能买过好几本书、下过好几笔单，连接后会出现多行，所以 `SELECT DISTINCT c.id, c.name` 去重。\n\n**易错点**：订单状态和类目两个条件缺一不可；只看类目会把已取消订单里的图书也算进来。",
+        "ideaEn": "\"Bought a book\" is spread across four tables: customer → order → order item → product. Join along the foreign keys and filter with both `o.status = 'paid'` and `p.category = 'Books'`; every surviving row says \"this customer bought a book in a paid order\".\n\nA customer with several books or several orders produces several rows, so `SELECT DISTINCT c.id, c.name` collapses them.\n\n**Pitfall**: you need both filters. Checking only the category also counts books sitting in cancelled orders.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT DISTINCT c.id, c.name\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items i ON i.order_id = o.id\nJOIN products p ON p.id = i.product_id\nWHERE o.status = 'paid' AND p.category = 'Books';\n"
+      },
+      {
+        "nameZh": "EXISTS 半连接",
+        "nameEn": "EXISTS semi-join",
+        "ideaZh": "题目问的是「是否存在」，这正是 `EXISTS` 的语义。对每位客户，子查询去找一条满足条件的记录：属于他的、已支付的、商品类目为 Books 的明细。找到一条就够了，客户本身只出现一次，自然不需要 DISTINCT。\n\n和解法一相比，外层只扫描 customers，不会因为买得多而产生重复行，意图也更直接。",
+        "ideaEn": "The question is \"does such a purchase exist\", which is exactly what `EXISTS` expresses. For each customer the subquery looks for one matching row: an item in one of their paid orders whose product is in Books. One hit is enough, and since the outer query reads each customer once there are no duplicates to remove.\n\nCompared with the join, the outer query only walks customers, so heavy buyers cannot multiply rows, and the intent reads straight off the query.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT c.id, c.name\nFROM customers c\nWHERE EXISTS (\n  SELECT 1\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  JOIN products p ON p.id = i.product_id\n  WHERE o.customer_id = c.id AND o.status = 'paid' AND p.category = 'Books'\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-25": {
+    "approaches": [
+      {
+        "nameZh": "自连接 LEFT JOIN",
+        "nameEn": "Self LEFT JOIN",
+        "ideaZh": "员工和上级都在 employees 里，所以把这张表用两个别名连自己：`e` 是员工，`m` 是上级，连接条件是 `m.id = e.manager_id`（上级的 id 等于员工记录里的 manager_id）。\n\n必须用 `LEFT JOIN`：`manager_id` 为 NULL 或指向不存在的编号时，内连接会把这名员工丢掉，而 LEFT JOIN 会保留他，`m.name` 为 NULL，正好是题目要的输出。\n\n**易错点**：条件写成 `e.id = m.manager_id` 就把方向弄反了，得到的是「下属」而不是「上级」。",
+        "ideaEn": "Employees and managers live in the same table, so join employees to itself: `e` is the employee, `m` the manager, matched on `m.id = e.manager_id`.\n\nIt has to be a `LEFT JOIN`. When `manager_id` is NULL or points at a missing id, an inner join drops the employee; the left join keeps them with `m.name` as NULL, which is exactly the required output.\n\n**Pitfall**: `e.id = m.manager_id` flips the direction and gives you reports instead of managers.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "sql": "SELECT e.name AS employee, m.name AS manager\nFROM employees e\nLEFT JOIN employees m ON m.id = e.manager_id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-26": {
+    "approaches": [
+      {
+        "nameZh": "NOT EXISTS 反连接",
+        "nameEn": "NOT EXISTS anti-join",
+        "ideaZh": "「从未在已支付订单中卖出过」= 不存在一条「这件商品 + 已支付订单」的明细。直接翻译成 `NOT EXISTS`：子查询把 order_items 和 orders 连起来，限定 `i.product_id = p.id AND o.status = 'paid'`，找不到时这件商品就入选。\n\n只出现在已取消订单里的商品，子查询同样找不到行，会被正确地算作没卖出去；完全没有明细的商品也一样。",
+        "ideaEn": "\"Never sold in a paid order\" means there is no order item for this product inside a paid order. That translates directly into `NOT EXISTS`: the subquery joins order_items to orders and requires `i.product_id = p.id AND o.status = 'paid'`; when it finds nothing, the product qualifies.\n\nA product that only appears in cancelled orders finds no row either, so it is correctly treated as unsold, and so is a product with no order items at all.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT p.id, p.name\nFROM products p\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM order_items i\n  JOIN orders o ON o.id = i.order_id\n  WHERE i.product_id = p.id AND o.status = 'paid'\n);\n"
+      },
+      {
+        "nameZh": "LEFT JOIN 已售子集 + IS NULL",
+        "nameEn": "LEFT JOIN to the sold set + IS NULL",
+        "ideaZh": "先在子查询里算出「在已支付订单中出现过的商品编号」这个集合 s，再让 products 去 LEFT JOIN 它，`s.product_id IS NULL` 的就是没卖出去的。\n\n关键是把 `status = 'paid'` 放进子查询。如果直接 `products LEFT JOIN order_items LEFT JOIN orders` 然后在 WHERE 里写 `o.status = 'paid'`，没匹配上的行 status 是 NULL，会被 WHERE 筛掉，LEFT JOIN 就退化成了内连接。\n\n另外一件商品可能在多笔订单里卖过，s 里会有重复编号，但我们只取匹配失败的行，重复不影响结果。",
+        "ideaEn": "First build the set s of product ids that appear in paid orders, then LEFT JOIN products to it; rows with `s.product_id IS NULL` are the unsold products.\n\nThe point is to keep `status = 'paid'` inside the subquery. If you write `products LEFT JOIN order_items LEFT JOIN orders` and put `o.status = 'paid'` in WHERE, unmatched rows have a NULL status, WHERE throws them away, and the left join quietly becomes an inner join.\n\nA product sold in several orders appears several times in s, but we only keep rows that failed to match, so the duplicates never show up.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT p.id, p.name\nFROM products p\nLEFT JOIN (\n  SELECT i.product_id\n  FROM order_items i\n  JOIN orders o ON o.id = i.order_id\n  WHERE o.status = 'paid'\n) s ON s.product_id = p.id\nWHERE s.product_id IS NULL;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-27": {
+    "approaches": [
+      {
+        "nameZh": "CROSS JOIN 补全组合 + LEFT JOIN",
+        "nameEn": "CROSS JOIN every pair, then LEFT JOIN",
+        "ideaZh": "要输出的是「学生 × 课程」的完整矩阵，包括没选的课，所以行不能从 enrollments 出发，而要先造出所有组合：\n\n1. 学生集合取 `SELECT DISTINCT student_id FROM enrollments`（题目只要在 enrollments 里出现过的学生）。\n2. 和 courses 做 `CROSS JOIN`，得到每一对 (学生, 课程)。\n3. 再 `LEFT JOIN enrollments`，条件同时匹配学生和课程。\n\n状态用 CASE 区分三种情况：`e.student_id IS NULL` 说明连接失败，即没选这门课；连接成功但 `e.score IS NULL` 是缺考；其余为 sat。分数直接取 `e.score`，后两种情况自然是 NULL。\n\n**易错点**：CASE 的顺序不能反。只看 `e.score IS NULL` 无法区分「缺考」和「没选课」，两者分数都是 NULL。",
+        "ideaEn": "The output is the full student × course grid, including courses a student never took, so the rows cannot come from enrollments alone. Build every pair first:\n\n1. Students are `SELECT DISTINCT student_id FROM enrollments` (only students who appear there).\n2. `CROSS JOIN` them with courses to get every (student, course) pair.\n3. `LEFT JOIN enrollments` on both student and course.\n\nA CASE sorts out the three states: `e.student_id IS NULL` means the join found nothing, so not enrolled; a match with `e.score IS NULL` is absent; anything else is sat. The score is just `e.score`, NULL in the last two cases.\n\n**Pitfall**: test the join column first. `e.score IS NULL` alone cannot tell \"absent\" from \"not enrolled\", since both have a NULL score.",
+        "time": "O(s * c)",
+        "space": "O(s * c)",
+        "sql": "WITH students AS (\n  SELECT DISTINCT student_id FROM enrollments\n)\nSELECT s.student_id, c.title,\n       CASE WHEN e.student_id IS NULL THEN 'not enrolled'\n            WHEN e.score IS NULL THEN 'absent'\n            ELSE 'sat' END AS status,\n       e.score\nFROM students s\nCROSS JOIN courses c\nLEFT JOIN enrollments e ON e.student_id = s.student_id AND e.course_id = c.id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-28": {
+    "approaches": [
+      {
+        "nameZh": "先算订单金额，再按客户平均",
+        "nameEn": "Order totals first, then average per customer",
+        "ideaZh": "「平均订单金额」是订单级别的平均，而明细是比订单更细的粒度。如果直接 `AVG(quantity * unit_price)`，算出来的是平均每行明细的金额，不是平均每笔订单。所以分两层聚合：\n\n1. CTE `totals`：已支付、非游客的订单 JOIN 明细，按 `o.id` 分组求 `SUM(quantity * unit_price)`。内连接顺便去掉了没有明细的空订单。\n2. 外层按客户分组：`COUNT(*)` 是订单数，`ROUND(AVG(total), 2)` 是平均金额。\n\n**易错点**：第一层必须在 JOIN 明细之后统计订单，否则空订单会把订单数算多、把平均拉低。",
+        "ideaEn": "\"Average order value\" averages over orders, but order_items is a finer grain. `AVG(quantity * unit_price)` would average line items, not orders. So aggregate twice:\n\n1. CTE `totals`: paid, non-guest orders joined to their items, grouped by `o.id`, with `SUM(quantity * unit_price)`. The inner join also drops empty orders.\n2. Group by customer: `COUNT(*)` is the order count and `ROUND(AVG(total), 2)` the average.\n\n**Pitfall**: count orders after joining the items; otherwise empty orders inflate the count and drag the average down.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH totals AS (\n  SELECT o.id, o.customer_id, SUM(i.quantity * i.unit_price) AS total\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid' AND o.customer_id IS NOT NULL\n  GROUP BY o.id\n)\nSELECT c.id, c.name, COUNT(*) AS orders, ROUND(AVG(t.total), 2) AS avg_order_value\nFROM totals t\nJOIN customers c ON c.id = t.customer_id\nGROUP BY c.id, c.name;\n"
+      },
+      {
+        "nameZh": "总金额 ÷ 不同订单数",
+        "nameEn": "Total revenue divided by distinct orders",
+        "ideaZh": "平均订单金额 = 该客户所有已支付订单的总金额 ÷ 订单数。一层 GROUP BY 就能拿到这两个量：总金额是所有明细行 `quantity * unit_price` 的和；订单数要用 `COUNT(DISTINCT o.id)`，因为一笔订单有几行明细就会被连接出几行。\n\n两个整数相除在 SQLite 里是整数除法，所以先乘 `1.0` 再除。游客订单的 customer_id 为 NULL，和 customers 内连接时自动被排除。",
+        "ideaEn": "Average order value = total spent on paid orders ÷ number of paid orders, and one GROUP BY gives both. The total is the sum of `quantity * unit_price` over every item row; the count must be `COUNT(DISTINCT o.id)`, because an order with three items shows up three times after the join.\n\nInteger division truncates in SQLite, so multiply by `1.0` first. Guest orders have a NULL customer_id and fall out of the inner join with customers.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT c.id, c.name,\n       COUNT(DISTINCT o.id) AS orders,\n       ROUND(1.0 * SUM(i.quantity * i.unit_price) / COUNT(DISTINCT o.id), 2) AS avg_order_value\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items i ON i.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.name;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-29": {
+    "approaches": [
+      {
+        "nameZh": "GROUP BY + COUNT(DISTINCT) + HAVING",
+        "nameEn": "GROUP BY with COUNT(DISTINCT) and HAVING",
+        "ideaZh": "每笔订单一行，所以按订单分组。题目特别提醒：同一种商品可能在一笔订单里占多行明细，因此「商品种数」必须用 `COUNT(DISTINCT i.product_id)`，`COUNT(*)` 数的是明细行数，会把重复的商品算两次。\n\n总件数是 `SUM(i.quantity)`，重复行的件数本来就该加在一起。\n\n「至少 2 种」是对分组结果的条件，只能写在 `HAVING` 里；订单状态是对单行的条件，写在 WHERE 里提前过滤。",
+        "ideaEn": "One row per order, so group by order. The statement warns that one product can take several item rows in the same order, so the product count must be `COUNT(DISTINCT i.product_id)`; `COUNT(*)` counts rows and would count that product twice.\n\nUnits are `SUM(i.quantity)`, where repeated rows should indeed add up.\n\n\"At least 2 products\" is a condition on the group and belongs in `HAVING`; the order status is a per-row condition and goes in WHERE.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT o.id AS order_id,\n       COUNT(DISTINCT i.product_id) AS products,\n       SUM(i.quantity) AS units\nFROM orders o\nJOIN order_items i ON i.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY o.id\nHAVING COUNT(DISTINCT i.product_id) >= 2;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-30": {
+    "approaches": [
+      {
+        "nameZh": "一次 GROUP BY 多个聚合",
+        "nameEn": "Several aggregates in one GROUP BY",
+        "ideaZh": "按 `category` 分组后，同一个分组上可以同时算多个聚合：`COUNT(*)` 是商品数，`MIN(price)`、`MAX(price)` 是最低和最高标价，`AVG(price)` 是平均标价。\n\n平均值要求一位小数，用 `ROUND(AVG(price), 1)`。只写 `ROUND(x)` 默认保留 0 位，会变成整数。\n\n不需要连接其他表，价格就是 products 上的标价。",
+        "ideaEn": "After grouping by `category`, one pass computes every aggregate: `COUNT(*)` for the product count, `MIN(price)` and `MAX(price)` for the range, and `AVG(price)` for the mean.\n\nThe mean needs one decimal place: `ROUND(AVG(price), 1)`. Plain `ROUND(x)` rounds to zero places.\n\nNo joins are needed; the list price lives on products.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT category,\n       COUNT(*) AS products,\n       MIN(price) AS min_price,\n       MAX(price) AS max_price,\n       ROUND(AVG(price), 1) AS avg_price\nFROM products\nGROUP BY category;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-31": {
+    "approaches": [
+      {
+        "nameZh": "条件聚合：COUNT(score) 与 SUM(score >= 80)",
+        "nameEn": "Conditional aggregation: COUNT(score), SUM(score >= 80)",
+        "ideaZh": "按课程分组，三个数都能用聚合函数直接写出：\n\n- 参加考试人数：`COUNT(e.score)`。`COUNT(列)` 不计 NULL，缺考自动排除。\n- 优秀人数：`SUM(e.score >= 80)`。SQLite 里比较结果是 1 或 0，缺考时比较结果是 NULL，SUM 会跳过。\n- 优秀率：两者相除，先乘 `1.0` 避免整数除法，再 `ROUND(…, 2)`。\n\n最后用 `HAVING COUNT(e.score) > 0` 去掉所有人都缺考的课程，否则分母为 0（SQLite 会返回 NULL，但题目要求不输出这类课程）。",
+        "ideaEn": "Group by course and each number is a single aggregate:\n\n- Sat: `COUNT(e.score)`. `COUNT(column)` skips NULLs, so absentees drop out.\n- Top: `SUM(e.score >= 80)`. A comparison in SQLite is 1 or 0, and NULL for an absentee, which SUM ignores.\n- Rate: divide the two, multiplying by `1.0` to avoid integer division, then `ROUND(…, 2)`.\n\n`HAVING COUNT(e.score) > 0` removes courses where everyone was absent; they would divide by zero (SQLite gives NULL), and the task excludes them anyway.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT c.title,\n       COUNT(e.score) AS sat,\n       SUM(e.score >= 80) AS top,\n       ROUND(1.0 * SUM(e.score >= 80) / COUNT(e.score), 2) AS top_rate\nFROM courses c\nJOIN enrollments e ON e.course_id = c.id\nGROUP BY c.id, c.title\nHAVING COUNT(e.score) > 0;\n"
+      },
+      {
+        "nameZh": "先过滤缺考，再用 AVG 求比例",
+        "nameEn": "Filter absentees first, then AVG an indicator",
+        "ideaZh": "换个角度：先在 WHERE 里用 `e.score IS NOT NULL` 把缺考记录去掉，剩下的每一行都是一次考试。这样：\n\n- 参加人数就是 `COUNT(*)`；\n- 优秀率等于「是否优秀」这个 0/1 指标的平均值：`AVG(CASE WHEN e.score >= 80 THEN 1.0 ELSE 0 END)`。\n\n所有人都缺考的课程在 WHERE 之后没有任何行，分组根本不会出现，也就不用 HAVING。用 `1.0` 让 AVG 的结果是小数。",
+        "ideaEn": "Drop absentees up front with `e.score IS NOT NULL`, so every remaining row is one exam taken. Then:\n\n- the number who sat is `COUNT(*)`;\n- the top rate is the mean of a 0/1 indicator: `AVG(CASE WHEN e.score >= 80 THEN 1.0 ELSE 0 END)`.\n\nA course where everyone was absent has no rows left after WHERE, so its group never forms and no HAVING is needed.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT c.title,\n       COUNT(*) AS sat,\n       SUM(CASE WHEN e.score >= 80 THEN 1 ELSE 0 END) AS top,\n       ROUND(AVG(CASE WHEN e.score >= 80 THEN 1.0 ELSE 0 END), 2) AS top_rate\nFROM enrollments e\nJOIN courses c ON c.id = e.course_id\nWHERE e.score IS NOT NULL\nGROUP BY c.id, c.title;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-32": {
+    "approaches": [
+      {
+        "nameZh": "条件聚合行转列",
+        "nameEn": "Conditional aggregation as a pivot",
+        "ideaZh": "想要的是「每个城市一行，状态拆成两列」，这是典型的条件聚合：按城市分组后，对每个状态求和一个 0/1 表达式。\n\n- `SUM(o.status = 'paid')`：比较为真得 1，否则 0，求和就是已支付订单数；\n- `SUM(o.status = 'cancelled')` 同理。\n\n城市为 NULL 的客户要归到 `'Unknown'`，所以分组键和输出都用 `COALESCE(c.city, 'Unknown')`。orders 和 customers 内连接，游客订单（customer_id 为 NULL）自然被排除；没有订单的城市不会出现在连接结果里，也就不会输出。\n\n**易错点**：`COUNT(o.status = 'paid')` 不对，COUNT 数的是非 NULL 值，比较结果 0 也会被数进去。",
+        "ideaEn": "We want one row per city with statuses spread into columns: conditional aggregation. Group by city and sum a 0/1 expression per status:\n\n- `SUM(o.status = 'paid')` adds 1 for every paid order;\n- `SUM(o.status = 'cancelled')` likewise.\n\nCustomers with a NULL city go under `'Unknown'`, so both the group key and the output use `COALESCE(c.city, 'Unknown')`. The inner join with customers drops guest orders, and a city with no orders never appears in the join.\n\n**Pitfall**: `COUNT(o.status = 'paid')` is wrong. COUNT counts non-NULL values, and a false comparison is 0, not NULL.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT COALESCE(c.city, 'Unknown') AS city,\n       SUM(o.status = 'paid') AS paid,\n       SUM(o.status = 'cancelled') AS cancelled\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nGROUP BY COALESCE(c.city, 'Unknown');\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-33": {
+    "approaches": [
+      {
+        "nameZh": "标量子查询求平均",
+        "nameEn": "Scalar subquery for the average",
+        "ideaZh": "WHERE 是逐行判断的，不能直接写 `salary > AVG(salary)`：聚合需要先看完整张表。把平均值单独放进标量子查询 `(SELECT AVG(salary) FROM employees)`，它只返回一个值，可以像常量一样参与比较，也可以放进 SELECT 列表里输出。\n\n子查询不带任何过滤，所以平均值覆盖全部员工，包括没有部门的人。比较用原始平均值，输出时才 `ROUND(…, 2)`，避免四舍五入后的值影响「严格高于」的判断。",
+        "ideaEn": "WHERE is evaluated row by row, so `salary > AVG(salary)` is not allowed: the aggregate needs the whole table. Put the average in a scalar subquery, `(SELECT AVG(salary) FROM employees)`; it returns one value that can be compared like a constant and also shown in the SELECT list.\n\nThe subquery has no filter, so the average covers every employee, including those without a department. Compare against the raw average and round only for display, so rounding cannot change who is strictly above it.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT name, salary,\n       ROUND((SELECT AVG(salary) FROM employees), 2) AS company_avg\nFROM employees\nWHERE salary > (SELECT AVG(salary) FROM employees);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-34": {
+    "approaches": [
+      {
+        "nameZh": "相关子查询比较每门课的最高分",
+        "nameEn": "Correlated subquery against each course's max",
+        "ideaZh": "对 enrollments 的每一行，问一句「这门课的最高分是多少」：`(SELECT MAX(x.score) FROM enrollments x WHERE x.course_id = e.course_id)`。分数等于它的行就是最高分的学生，有几个人并列就留下几行。\n\n缺考的分数是 NULL，`NULL = 最高分` 不成立，会被自然过滤；全员缺考的课程最高分也是 NULL，同样不会输出，符合「有人参加考试」的要求。\n\n**易错点**：`GROUP BY course_id` 配 `MAX(score)` 只能得到分数，再从同组里拿 student_id 会随意挑一个，处理不了并列。",
+        "ideaEn": "For each enrollment row, ask \"what is this course's top score\": `(SELECT MAX(x.score) FROM enrollments x WHERE x.course_id = e.course_id)`. Rows whose score equals it are the top students, and ties all survive.\n\nAn absentee's score is NULL, and `NULL = max` is not true, so they drop out; a course where everyone was absent has a NULL max and produces nothing, as required.\n\n**Pitfall**: `GROUP BY course_id` with `MAX(score)` gives the score, but pulling student_id from the same group picks an arbitrary row and loses ties.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "sql": "SELECT c.title, e.student_id, e.score\nFROM enrollments e\nJOIN courses c ON c.id = e.course_id\nWHERE e.score = (\n  SELECT MAX(x.score) FROM enrollments x WHERE x.course_id = e.course_id\n);\n"
+      },
+      {
+        "nameZh": "RANK() 窗口函数取第 1 名",
+        "nameEn": "RANK() window, keep rank 1",
+        "ideaZh": "用窗口函数一次排好所有课程：`RANK() OVER (PARTITION BY e.course_id ORDER BY e.score DESC)`，每门课各自从高到低排名，并列的分数名次相同，所以所有最高分的学生名次都是 1。外层只保留 `r = 1`。\n\n`RANK` 在这里和 `DENSE_RANK` 等价（只取第 1 名），但不能用 `ROW_NUMBER`，它会给并列的人编不同的号。\n\n缺考的 NULL 在降序中的位置因数据库而异，所以先在内层 `WHERE e.score IS NOT NULL` 去掉，避免全员缺考的课程把 NULL 排成第 1。",
+        "ideaEn": "A window function ranks every course in one pass: `RANK() OVER (PARTITION BY e.course_id ORDER BY e.score DESC)`. Ties share a rank, so every top scorer gets rank 1, and the outer query keeps `r = 1`.\n\n`DENSE_RANK` would work equally well here, but `ROW_NUMBER` would not: it numbers tied rows differently.\n\nWhere NULLs sort under DESC varies by database, so filter `e.score IS NOT NULL` inside first; otherwise an all-absent course could rank a NULL first.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT title, student_id, score\nFROM (\n  SELECT c.title, e.student_id, e.score,\n         RANK() OVER (PARTITION BY e.course_id ORDER BY e.score DESC) AS r\n  FROM enrollments e\n  JOIN courses c ON c.id = e.course_id\n  WHERE e.score IS NOT NULL\n)\nWHERE r = 1;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-35": {
+    "approaches": [
+      {
+        "nameZh": "NOT EXISTS：不存在不低于我的 Sales 员工",
+        "nameEn": "NOT EXISTS: no Sales employee earns at least as much",
+        "ideaZh": "「比 Sales 的每一个人都高」可以改写成它的否定形式：**不存在**一位 Sales 员工，工资大于等于我。这句话直接对应 `NOT EXISTS`：子查询把员工和部门连起来，找 `d.name = 'Sales' AND s.salary >= e.salary` 的人。\n\n这个写法自动处理了边界：Sales 部门没人、或者根本没有这个部门时，子查询永远是空的，`NOT EXISTS` 为真，所有员工都输出，和「对空集的全称命题为真」一致。\n\n**易错点**：`salary > (SELECT MAX(salary) …)` 在 Sales 为空时比较的是 NULL，结果一个人都选不出来。",
+        "ideaEn": "\"Higher than every Sales employee\" is the same as: there is **no** Sales employee earning at least as much as me. That is a `NOT EXISTS` whose subquery joins employees to departments and looks for `d.name = 'Sales' AND s.salary >= e.salary`.\n\nThe edge cases come for free. With an empty Sales department, or no such department, the subquery is always empty, `NOT EXISTS` is true and everyone is returned, matching \"for all\" over an empty set.\n\n**Pitfall**: `salary > (SELECT MAX(salary) …)` compares against NULL when Sales is empty and selects nobody.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "sql": "SELECT e.name, e.salary\nFROM employees e\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM employees s\n  JOIN departments d ON d.id = s.department_id\n  WHERE d.name = 'Sales' AND s.salary >= e.salary\n);\n"
+      },
+      {
+        "nameZh": "与 Sales 最高工资比较，空集兜底",
+        "nameEn": "Compare with the Sales maximum, guarding the empty case",
+        "ideaZh": "高于每一个人，等价于高于其中的最大值。所以先求 Sales 部门的 `MAX(salary)`，再逐行比较。\n\n难点在空集：没有 Sales 员工时 MAX 返回 NULL，`salary > NULL` 结果是 NULL，所有人都会被过滤掉。用 `COALESCE(MAX(s.salary), -1)` 把它换成一个比任何工资都小的值，比较就恒为真。这里假设工资非负，-1 足够小。\n\n标量子查询只算一次，比解法一的逐行相关子查询更快。",
+        "ideaEn": "Being above everyone is being above the maximum, so compute Sales' `MAX(salary)` once and compare each row with it.\n\nThe catch is the empty set: with no Sales employees MAX is NULL, `salary > NULL` is NULL, and every row is filtered out. `COALESCE(MAX(s.salary), -1)` swaps in a value below any salary so the comparison is always true; salaries are non-negative, so -1 is low enough.\n\nThe scalar subquery runs once, which is cheaper than the per-row subquery in the first approach.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT e.name, e.salary\nFROM employees e\nWHERE e.salary > (\n  SELECT COALESCE(MAX(s.salary), -1)\n  FROM employees s\n  JOIN departments d ON d.id = s.department_id\n  WHERE d.name = 'Sales'\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-36": {
+    "approaches": [
+      {
+        "nameZh": "EXISTS 与 NOT EXISTS 组合",
+        "nameEn": "EXISTS combined with NOT EXISTS",
+        "ideaZh": "题目里其实有两个条件，分别对应两个子查询：\n\n- 下过订单：`EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id)`；\n- 没有任何一笔被取消：`NOT EXISTS (… AND o.status = 'cancelled')`。\n\n两者用 AND 连起来。每位客户只从 customers 里读一次，不会有重复行。\n\n**易错点**：只写 NOT EXISTS 会把从没下过单的客户也选进来，他们「没有取消订单」只是因为根本没有订单。",
+        "ideaEn": "The statement hides two conditions, one subquery each:\n\n- has ordered: `EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id)`;\n- never cancelled: `NOT EXISTS (… AND o.status = 'cancelled')`.\n\nAND them together. Each customer is read once from customers, so there are no duplicates.\n\n**Pitfall**: NOT EXISTS alone also returns customers who never ordered; they have no cancelled orders only because they have no orders.",
+        "time": "O(n log n)",
+        "space": "O(1)",
+        "sql": "SELECT c.id, c.name\nFROM customers c\nWHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id)\n  AND NOT EXISTS (\n    SELECT 1 FROM orders o\n    WHERE o.customer_id = c.id AND o.status = 'cancelled'\n  );\n"
+      },
+      {
+        "nameZh": "分组后用 HAVING 检查取消数",
+        "nameEn": "GROUP BY and check cancellations in HAVING",
+        "ideaZh": "customers 和 orders 内连接，只有下过单的客户会出现，第一个条件已经满足。按客户分组后，`SUM(o.status = 'cancelled')` 是这位客户被取消的订单数，`HAVING … = 0` 留下一笔都没取消过的。\n\n一次连接一次分组，适合还想顺便输出订单数之类统计的场景。",
+        "ideaEn": "Inner-joining customers to orders keeps only customers who ordered, which handles the first condition. Group by customer: `SUM(o.status = 'cancelled')` counts their cancelled orders, and `HAVING … = 0` keeps those with none.\n\nOne join and one grouping; handy if you also want per-customer counts.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT c.id, c.name\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nGROUP BY c.id, c.name\nHAVING SUM(o.status = 'cancelled') = 0;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-37": {
+    "approaches": [
+      {
+        "nameZh": "标量子查询找最高标价 + 连接去重",
+        "nameEn": "Scalar subquery for the top price, join, DISTINCT",
+        "ideaZh": "两步：\n\n1. 「最贵」按标价定义，`(SELECT MAX(price) FROM products)` 给出最高标价。用 `p.price = 最高标价` 而不是取一件商品，标价并列最高的几件都会被匹配到。\n2. 客户 → 已支付订单 → 明细 → 商品连起来，筛出商品标价等于最高标价的行。\n\n一位客户可能多次买过最贵商品，用 `DISTINCT` 去重。\n\n**易错点**：比较的是 `products.price`，不是明细里的 `unit_price`。打折成交的那一单成交价更低，用成交价就会漏掉这些客户。",
+        "ideaEn": "Two steps:\n\n1. \"Most expensive\" is by list price, and `(SELECT MAX(price) FROM products)` gives it. Matching `p.price = max` rather than picking one product catches every product tied at the top.\n2. Join customer → paid order → item → product and keep rows whose product has that price.\n\nA customer may have bought such a product more than once, so `DISTINCT`.\n\n**Pitfall**: compare `products.price`, not the item's `unit_price`. A discounted sale has a lower unit price, and using it would miss those customers.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT DISTINCT c.id, c.name\nFROM customers c\nJOIN orders o ON o.customer_id = c.id AND o.status = 'paid'\nJOIN order_items i ON i.order_id = o.id\nJOIN products p ON p.id = i.product_id\nWHERE p.price = (SELECT MAX(price) FROM products);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-38": {
+    "approaches": [
+      {
+        "nameZh": "RANK() 窗口函数",
+        "nameEn": "RANK() window function",
+        "ideaZh": "「工资相同名次相同，后面跳号（1、2、2、4）」正是 `RANK()` 的定义。`PARTITION BY e.department_id` 让每个部门单独排名，`ORDER BY e.salary DESC` 让工资最高的排第 1。\n\n和 departments 内连接一方面拿到部门名，另一方面去掉了没有部门的员工。\n\n三个排名函数的区别：`RANK` 并列后跳号；`DENSE_RANK` 并列后不跳（1、2、2、3）；`ROW_NUMBER` 不管并列，强行编 1、2、3、4。",
+        "ideaEn": "\"Equal salaries share a rank and the next rank skips (1, 2, 2, 4)\" is the definition of `RANK()`. `PARTITION BY e.department_id` ranks each department separately and `ORDER BY e.salary DESC` puts the top earner first.\n\nThe inner join with departments supplies the name and drops employees with no department.\n\nFor reference: `RANK` skips after ties, `DENSE_RANK` does not (1, 2, 2, 3), and `ROW_NUMBER` ignores ties (1, 2, 3, 4).",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT d.name AS department, e.name AS employee, e.salary,\n       RANK() OVER (PARTITION BY e.department_id ORDER BY e.salary DESC) AS pay_rank\nFROM employees e\nJOIN departments d ON d.id = e.department_id;\n"
+      },
+      {
+        "nameZh": "相关子查询计数：比我高的人数 + 1",
+        "nameEn": "Correlated count: people paid more, plus one",
+        "ideaZh": "不用窗口函数也能算 RANK：一个人的名次 = 同部门里工资**严格高于**他的人数 + 1。\n\n用相关子查询 `SELECT COUNT(*) FROM employees x WHERE x.department_id = e.department_id AND x.salary > e.salary` 数出这个人数。工资相同的人，比他们高的人数相同，名次就相同；下一档的人要把并列的几个人都算进去，所以名次自然跳号，和 RANK 完全一致。\n\n代价是每行都要扫一遍本部门，是 O(n²)；在不支持窗口函数的老版本数据库里这个写法很有用。",
+        "ideaEn": "RANK can be computed without window functions: a person's rank = number of colleagues in the same department paid **strictly more** + 1.\n\nThe correlated subquery `SELECT COUNT(*) FROM employees x WHERE x.department_id = e.department_id AND x.salary > e.salary` counts them. People with equal salaries have the same count and therefore the same rank; the next person down counts all of the tied ones, so ranks skip exactly like RANK.\n\nIt rescans the department for every row, O(n²), but works on databases without window functions.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "sql": "SELECT d.name AS department, e.name AS employee, e.salary,\n       1 + (\n         SELECT COUNT(*) FROM employees x\n         WHERE x.department_id = e.department_id AND x.salary > e.salary\n       ) AS pay_rank\nFROM employees e\nJOIN departments d ON d.id = e.department_id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-39": {
+    "approaches": [
+      {
+        "nameZh": "LAG() 取上一笔订单",
+        "nameEn": "LAG() for the previous order",
+        "ideaZh": "「上一笔」就是同一客户、按时间排序后的前一行，用 `LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date, id)` 一步拿到。第一笔没有前一行，LAG 返回 NULL，相减后 `gap_days` 也是 NULL，正好符合要求。\n\n日期是文本，`julianday(a) - julianday(b)` 得到相差的天数。\n\n**易错点**：\n\n- 先在 WHERE 里过滤 `status = 'paid'` 和非游客订单。WHERE 在窗口函数之前执行，所以「上一笔」只会在已支付订单里找；如果放到外层再过滤，上一笔可能是一笔取消的订单。\n- 同一天可能有两笔订单，排序要加上 `id` 作为第二关键字，否则顺序不确定。",
+        "ideaEn": "\"The previous order\" is the previous row for the same customer in time order, which is `LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date, id)`. The first order has no previous row, LAG returns NULL, and so does the difference.\n\nDates are text; `julianday(a) - julianday(b)` gives the gap in days.\n\n**Pitfalls**:\n\n- Filter `status = 'paid'` and guest orders in WHERE. WHERE runs before window functions, so LAG only sees paid orders; filtering afterwards could make a cancelled order the \"previous\" one.\n- Two orders can share a date, so break ties with `id`, otherwise the order is undefined.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT customer_id, id AS order_id, order_date,\n       julianday(order_date)\n         - julianday(LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date, id)) AS gap_days\nFROM orders\nWHERE status = 'paid' AND customer_id IS NOT NULL;\n"
+      },
+      {
+        "nameZh": "相关子查询找前一笔",
+        "nameEn": "Correlated subquery for the previous order",
+        "ideaZh": "没有窗口函数时，可以对每笔订单单独去找「排在它前面的最近一笔」：同一客户、已支付，并且 `(order_date, id)` 严格小于当前订单，即日期更早，或日期相同但 id 更小。按 `order_date DESC, id DESC` 排序取 `LIMIT 1` 就是最近的那一笔。\n\n找不到时子查询返回 NULL，差值也是 NULL，对应客户的第一笔订单。\n\n这个写法清楚地展示了 LAG 背后的含义，但每行都要再查一次，数据量大时比 LAG 慢。",
+        "ideaEn": "Without window functions, look up \"the latest order before this one\" for each row: same customer, paid, and `(order_date, id)` strictly smaller, meaning an earlier date or the same date with a smaller id. Sorting by `order_date DESC, id DESC` with `LIMIT 1` picks the closest one.\n\nWhen nothing is found the subquery is NULL and so is the gap, which covers the first order.\n\nThis spells out what LAG does, but it runs a lookup per row and is slower on large tables.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "sql": "SELECT o.customer_id, o.id AS order_id, o.order_date,\n       julianday(o.order_date) - julianday((\n         SELECT p.order_date\n         FROM orders p\n         WHERE p.customer_id = o.customer_id AND p.status = 'paid'\n           AND (p.order_date < o.order_date OR (p.order_date = o.order_date AND p.id < o.id))\n         ORDER BY p.order_date DESC, p.id DESC\n         LIMIT 1\n       )) AS gap_days\nFROM orders o\nWHERE o.status = 'paid' AND o.customer_id IS NOT NULL;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-40": {
+    "approaches": [
+      {
+        "nameZh": "先按商品聚合，再用窗口求类目合计",
+        "nameEn": "Aggregate per product, then a window for the category total",
+        "ideaZh": "要同时输出「商品的销售额」和「类目的销售额」，两者粒度不同。做法：\n\n1. 子查询里按商品分组，求每件商品在已支付订单中的 `SUM(quantity * unit_price)`。只有卖出过的商品才会出现。\n2. 外层用 `SUM(revenue) OVER (PARTITION BY category)` 求所在类目的合计。窗口函数不会合并行，每件商品仍是一行，只是多了一个类目总额。\n3. 两者相除得到比例，乘 `1.0` 避免整数除法，再 `ROUND(…, 2)`。\n\n**易错点**：按 `p.id` 分组而不只是按商品名，防止两件同名商品被合并。",
+        "ideaEn": "Product revenue and category revenue have different grains, so:\n\n1. In a subquery, group by product and compute `SUM(quantity * unit_price)` over paid orders. Only products that sold appear.\n2. Outside, `SUM(revenue) OVER (PARTITION BY category)` adds up the category. A window does not collapse rows, so each product keeps its row and gains the category total.\n3. Divide, multiplying by `1.0` to avoid integer division, and `ROUND(…, 2)`.\n\n**Pitfall**: group by `p.id`, not just the name, so two products with the same name stay separate.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT category, product, revenue,\n       ROUND(1.0 * revenue / SUM(revenue) OVER (PARTITION BY category), 2) AS share\nFROM (\n  SELECT p.category, p.name AS product, SUM(i.quantity * i.unit_price) AS revenue\n  FROM order_items i\n  JOIN orders o ON o.id = i.order_id\n  JOIN products p ON p.id = i.product_id\n  WHERE o.status = 'paid'\n  GROUP BY p.id, p.category, p.name\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-41": {
+    "approaches": [
+      {
+        "nameZh": "订单金额 CTE + ROWS 窗口帧",
+        "nameEn": "Order totals CTE with a ROWS frame",
+        "ideaZh": "分两步：\n\n1. CTE `totals`：已支付、非游客的订单 JOIN 明细，按订单求金额。内连接去掉了没有商品的订单。\n2. 对 totals 开窗：`AVG(total) OVER (PARTITION BY customer_id ORDER BY order_date, id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`。帧是「当前行和它前面最多两行」，客户的前两笔订单前面不足两行，帧自动缩短，平均的就是已有的一笔或两笔。\n\n**易错点**：\n\n- 不写 ROWS 子句，带 ORDER BY 的窗口默认是 `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`，算出来是从第一笔开始的累计平均。\n- 必须先聚合出订单金额再开窗；直接对明细开窗，「前两行」就是前两行明细而不是前两笔订单。",
+        "ideaEn": "Two steps:\n\n1. CTE `totals`: paid, non-guest orders joined to their items, with one total per order. The inner join drops orders with no items.\n2. Window over totals: `AVG(total) OVER (PARTITION BY customer_id ORDER BY order_date, id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`. The frame is the current row plus up to two before it; for a customer's first two orders the frame is simply shorter.\n\n**Pitfalls**:\n\n- Without ROWS, a window with ORDER BY defaults to `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, a running average from the first order.\n- Aggregate to orders before windowing; over raw items, \"two preceding rows\" would mean two line items, not two orders.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH totals AS (\n  SELECT o.id, o.customer_id, o.order_date, SUM(i.quantity * i.unit_price) AS total\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid' AND o.customer_id IS NOT NULL\n  GROUP BY o.id\n)\nSELECT customer_id, id AS order_id, total,\n       ROUND(AVG(total) OVER (\n         PARTITION BY customer_id ORDER BY order_date, id\n         ROWS BETWEEN 2 PRECEDING AND CURRENT ROW\n       ), 2) AS moving_avg\nFROM totals;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-42": {
+    "approaches": [
+      {
+        "nameZh": "ROW_NUMBER 定位中间位置再取平均",
+        "nameEn": "ROW_NUMBER to find the middle, then average",
+        "ideaZh": "SQLite 没有 MEDIAN 函数，但中位数只取决于排序后中间的一个或两个位置：\n\n1. 内层对每个部门按工资排序编号 `ROW_NUMBER() … AS rn`，同时用 `COUNT(*) OVER (PARTITION BY e.department_id)` 得到部门人数 n。\n2. 中间位置是 `(n + 1) / 2` 和 `(n + 2) / 2`（整数除法）。n = 5 时两者都是 3；n = 4 时分别是 2 和 3。\n3. 外层保留 `rn IN (…)` 的行，按部门 `AVG(salary)`：奇数时是唯一那一行的工资，偶数时是中间两个的平均。\n\n**易错点**：编号要用 `ROW_NUMBER` 而不是 `RANK`。工资并列时 RANK 会让多人同号、跳过某些号码，中间位置可能一个人都匹配不上。",
+        "ideaEn": "SQLite has no MEDIAN, but the median depends only on one or two middle positions after sorting:\n\n1. Number each department's salaries with `ROW_NUMBER() … AS rn` and get the size n with `COUNT(*) OVER (PARTITION BY e.department_id)`.\n2. The middle positions are `(n + 1) / 2` and `(n + 2) / 2` with integer division: both 3 when n = 5, 2 and 3 when n = 4.\n3. Keep rows with `rn IN (…)` and take `AVG(salary)` per department: one value for odd n, the mean of two for even n.\n\n**Pitfall**: use `ROW_NUMBER`, not `RANK`. With tied salaries RANK repeats and skips numbers, so a middle position might match nobody.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT department, AVG(salary) AS median_salary\nFROM (\n  SELECT d.name AS department, e.department_id, e.salary,\n         ROW_NUMBER() OVER (PARTITION BY e.department_id ORDER BY e.salary) AS rn,\n         COUNT(*) OVER (PARTITION BY e.department_id) AS n\n  FROM employees e\n  JOIN departments d ON d.id = e.department_id\n)\nWHERE rn IN ((n + 1) / 2, (n + 2) / 2)\nGROUP BY department_id, department;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-43": {
+    "approaches": [
+      {
+        "nameZh": "日期减序号分组（gaps and islands）",
+        "nameEn": "Date minus row number (gaps and islands)",
+        "ideaZh": "经典的「连续区间」问题。关键观察：把一位用户的登录日期从小到大编号 1、2、3……，在一段连续的日期里，日期每加 1 天，序号也加 1，所以 **日期 − 序号** 在这一段内保持不变；一旦中间断了一天，差值就会变大。这个差值就可以作为每一段的标识。\n\n步骤：\n\n1. `SELECT DISTINCT user_id, login_date` 去重，同一天多次登录只算一天；否则序号会多加，差值被打乱。\n2. 用 `julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date)` 算出 run。julianday 是连续的天数，跨月跨年都没问题。\n3. 按 `(user_id, run)` 分组，`COUNT(*)` 是每段长度；再按用户取 `MAX`。",
+        "ideaEn": "A classic gaps-and-islands problem. Number a user's login dates 1, 2, 3 … in order. Inside a run of consecutive days the date and the number both grow by one, so **date − number** stays constant; after a missed day it jumps. That difference labels each run.\n\nSteps:\n\n1. `SELECT DISTINCT user_id, login_date` first, so several logins on one day count once; otherwise the numbering advances too far and breaks the runs.\n2. `julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date)` gives the run label. julianday is a continuous day count, so month and year boundaries are no problem.\n3. Group by `(user_id, run)` and `COUNT(*)` for each run's length, then take the `MAX` per user.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH days AS (\n  SELECT DISTINCT user_id, login_date FROM logins\n), runs AS (\n  SELECT user_id,\n         julianday(login_date) - ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) AS run\n  FROM days\n)\nSELECT user_id, MAX(length) AS longest_streak\nFROM (\n  SELECT user_id, run, COUNT(*) AS length\n  FROM runs\n  GROUP BY user_id, run\n)\nGROUP BY user_id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-44": {
+    "approaches": [
+      {
+        "nameZh": "INSTR + SUBSTR 截取域名后分组",
+        "nameEn": "Cut the domain with INSTR + SUBSTR, then group",
+        "ideaZh": "域名是 `@` 之后的部分：`INSTR(email, '@')` 返回 @ 的位置（从 1 开始），`SUBSTR(email, 位置 + 1)` 不给长度时会一直取到末尾。\n\n题目说不区分大小写，所以套一层 `LOWER(…)`，`Mail.COM` 和 `mail.com` 会落到同一组。分组键必须是转小写之后的表达式，只在 SELECT 里转小写而按原值分组，会得到两行相同的域名。\n\n最后 `COUNT(*)` 数每个域名的客户。",
+        "ideaEn": "The domain is everything after `@`: `INSTR(email, '@')` gives the 1-based position of @, and `SUBSTR(email, pos + 1)` without a length runs to the end.\n\nCase does not matter, so wrap it in `LOWER(…)` and `Mail.COM` joins `mail.com`. Group by the lower-cased expression itself; lower-casing only in SELECT while grouping by the raw value yields duplicate domain rows.\n\n`COUNT(*)` then counts customers per domain.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT LOWER(SUBSTR(email, INSTR(email, '@') + 1)) AS domain,\n       COUNT(*) AS customers\nFROM customers\nGROUP BY LOWER(SUBSTR(email, INSTR(email, '@') + 1));\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-45": {
+    "approaches": [
+      {
+        "nameZh": "SUBSTR 拼接",
+        "nameEn": "Rebuild the string with SUBSTR and ||",
+        "ideaZh": "脱敏后的邮箱由三段拼成：\n\n1. 第一个字符：`SUBSTR(email, 1, 1)`；\n2. 固定的 `'***'`；\n3. 从 `@` 开始到结尾：`SUBSTR(email, INSTR(email, '@'))`，包含 @ 本身和域名。\n\nSQLite 用 `||` 拼接字符串。中间那段不管原来有多长都换成三个星号，所以不需要计算长度。大小写原样保留，不要加 LOWER。",
+        "ideaEn": "The masked address is three pieces glued together:\n\n1. the first character, `SUBSTR(email, 1, 1)`;\n2. the literal `'***'`;\n3. everything from `@` to the end, `SUBSTR(email, INSTR(email, '@'))`, which keeps the @ and the domain.\n\nSQLite concatenates with `||`. The middle is always exactly three stars whatever its length, so no length arithmetic is needed. Keep the original case; no LOWER.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "sql": "SELECT id,\n       SUBSTR(email, 1, 1) || '***' || SUBSTR(email, INSTR(email, '@')) AS masked\nFROM customers;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-46": {
+    "approaches": [
+      {
+        "nameZh": "逐条翻译合法规则再取反",
+        "nameEn": "Spell out every validity rule, then negate",
+        "ideaZh": "与其枚举各种不合法的样子，不如把「合法」的规则逐条写出来，再整体取 `NOT`：\n\n- 恰好一个 `@`：`LENGTH(email) - LENGTH(REPLACE(email, '@', '')) = 1`，删掉所有 @ 后长度减少了几，就有几个 @；\n- `@` 前至少一个字符：`INSTR(email, '@') > 1`；\n- 域名（@ 之后的部分，用 CTE 先算好）里有点：`domain LIKE '%.%'`；\n- 域名不以点开头、不以点结尾：`NOT LIKE '.%'` 和 `NOT LIKE '%.'`。\n\n为什么不直接用 `LIKE '%_@_%._%'`：`%` 可以匹配包括 @ 在内的任何字符，两个 @ 的邮箱也能匹配；它也放过了 `a@.b.com` 这种以点开头的域名。把规则拆开写，每一条都清清楚楚。",
+        "ideaEn": "Rather than listing every way an address can be bad, write down what makes it good and negate the whole thing with `NOT`:\n\n- exactly one `@`: `LENGTH(email) - LENGTH(REPLACE(email, '@', '')) = 1`, since removing every @ shortens the string by the number of @s;\n- at least one character before it: `INSTR(email, '@') > 1`;\n- the domain (computed once in a CTE) contains a dot: `domain LIKE '%.%'`;\n- the domain neither starts nor ends with a dot: `NOT LIKE '.%'` and `NOT LIKE '%.'`.\n\nWhy not `LIKE '%_@_%._%'`? `%` matches any characters, @ included, so an address with two @s still matches, and so does a domain starting with a dot like `a@.b.com`. Separate rules leave no such gaps.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "sql": "WITH parts AS (\n  SELECT id, email, SUBSTR(email, INSTR(email, '@') + 1) AS domain\n  FROM customers\n)\nSELECT id, email\nFROM parts\nWHERE NOT (\n  LENGTH(email) - LENGTH(REPLACE(email, '@', '')) = 1\n  AND INSTR(email, '@') > 1\n  AND domain LIKE '%.%'\n  AND domain NOT LIKE '.%'\n  AND domain NOT LIKE '%.'\n);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-47": {
+    "approaches": [
+      {
+        "nameZh": "按首字母表达式分组",
+        "nameEn": "Group by the uppercased initial",
+        "ideaZh": "**关键观察**：要统计的不是某一列，而是一个由 `name` 算出来的值——「大写后的首字母」。分组键可以是任意表达式，所以直接对它 GROUP BY 即可。\n\n**做法**\n\n1. `SUBSTR(name, 1, 1)` 取第一个字符（SQLite 的下标从 1 开始）。\n2. 外面套 `UPPER(...)`，让 `amy` 和 `Abe` 落到同一个键 `A`。\n3. 按这个表达式分组，`COUNT(*)` 数人数。\n\n**易错点**\n\n- 只写 `GROUP BY SUBSTR(name, 1, 1)` 再在 SELECT 里 UPPER：`a` 和 `A` 会被分成两组，输出两行 `A`。分组键里也必须带 UPPER。\n- SQLite 允许 `GROUP BY initial` 引用别名，写完整表达式在其它数据库里也通用。",
+        "ideaEn": "**Key observation**: the grouping key is not a column but a value derived from `name`: its first letter, uppercased. GROUP BY accepts any expression, so group by exactly that.\n\n**Steps**\n\n1. `SUBSTR(name, 1, 1)` takes the first character (SQLite indexes from 1).\n2. Wrap it in `UPPER(...)` so `amy` and `Abe` share the key `A`.\n3. Group by that expression and `COUNT(*)`.\n\n**Pitfalls**\n\n- Grouping by `SUBSTR(name, 1, 1)` and only uppercasing in SELECT splits `a` and `A` into two groups and prints `A` twice. The UPPER has to be in the grouping key.\n- SQLite lets you write `GROUP BY initial`; spelling out the expression is portable to other databases.",
+        "time": "O(n)",
+        "space": "O(k)",
+        "sql": "SELECT UPPER(SUBSTR(name, 1, 1)) AS initial, COUNT(*) AS customers\nFROM customers\nGROUP BY UPPER(SUBSTR(name, 1, 1));\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-48": {
+    "approaches": [
+      {
+        "nameZh": "strftime 取年份再分组",
+        "nameEn": "Extract the year with strftime",
+        "ideaZh": "**关键观察**：`hire_date` 是 `'YYYY-MM-DD'` 文本，年份就是它的前 4 个字符。题目要求年份以文本 `'YYYY'` 输出，而 `strftime('%Y', ...)` 返回的正好是文本。\n\n**做法**\n\n1. `strftime('%Y', hire_date)` 得到年份文本。\n2. 按年份分组，`COUNT(*)` 统计入职人数；没人入职的年份不会出现在分组里，正合题意。\n3. `ORDER BY year` 升序。四位年份的文本序和数值序一致，直接按文本排就行。\n\n**易错点**：不要 `CAST(... AS INTEGER)`。判题区分类型，整数 2018 不等于文本 `'2018'`。`substr(hire_date, 1, 4)` 也是文本，同样可以。",
+        "ideaEn": "**Key observation**: `hire_date` is `'YYYY-MM-DD'` text, so the year is its first four characters. The year must come out as text `'YYYY'`, and `strftime('%Y', ...)` returns text.\n\n**Steps**\n\n1. `strftime('%Y', hire_date)` gives the year as text.\n2. Group by it and `COUNT(*)`; years with no hires never form a group, which is what the task wants.\n3. `ORDER BY year`. Four-digit years sort the same as text and as numbers.\n\n**Pitfall**: do not `CAST(... AS INTEGER)`. The judge compares types, and the integer 2018 is not the text `'2018'`. `substr(hire_date, 1, 4)` is also text and works too.",
+        "time": "O(n log n)",
+        "space": "O(k)",
+        "sql": "SELECT strftime('%Y', hire_date) AS year, COUNT(*) AS hires\nFROM employees\nGROUP BY year\nORDER BY year;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-49": {
+    "approaches": [
+      {
+        "nameZh": "按星期几过滤并映射名称",
+        "nameEn": "Filter by weekday and map the name",
+        "ideaZh": "**关键观察**：`strftime('%w', d)` 返回星期几，`'0'` 是周日、`'6'` 是周六。周末订单就是这个值落在 `('0', '6')` 里的订单。\n\n**做法**\n\n1. `WHERE status = 'paid'` 只留已支付订单。\n2. `strftime('%w', order_date) IN ('0', '6')` 只留周末。\n3. 过滤后只剩两种取值，`CASE ... WHEN '0' THEN 'Sun' ELSE 'Sat' END` 就能标出名字。\n\n**易错点**\n\n- `%w` 返回的是**文本**。写成 `IN (0, 6)` 时文本和整数比较永远不相等，结果为空。要么和 `'0'`、`'6'` 比，要么先 `CAST` 成整数。\n- 别忘了状态条件，取消的周末订单不算。",
+        "ideaEn": "**Key observation**: `strftime('%w', d)` gives the weekday, `'0'` for Sunday and `'6'` for Saturday. A weekend order is one whose value is in `('0', '6')`.\n\n**Steps**\n\n1. `WHERE status = 'paid'` keeps paid orders.\n2. `strftime('%w', order_date) IN ('0', '6')` keeps weekends.\n3. Only two values survive the filter, so `CASE ... WHEN '0' THEN 'Sun' ELSE 'Sat' END` labels them.\n\n**Pitfalls**\n\n- `%w` returns **text**. `IN (0, 6)` compares text with integers, never matches, and returns nothing. Compare with `'0'` and `'6'`, or `CAST` first.\n- Keep the status filter: cancelled weekend orders do not count.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT id AS order_id, order_date,\n       CASE strftime('%w', order_date) WHEN '0' THEN 'Sun' ELSE 'Sat' END AS day\nFROM orders\nWHERE status = 'paid' AND strftime('%w', order_date) IN ('0', '6');\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-50": {
+    "approaches": [
+      {
+        "nameZh": "年份差减去未到的周年",
+        "nameEn": "Year difference minus an unreached anniversary",
+        "ideaZh": "**关键观察**：满几个整年 = 两个年份之差，再看今年的周年到没到。截止日是 01-01，只有入职月日恰好是 `01-01` 的人今年周年已到；其它人都还没到，要减 1。\n\n**做法**\n\n1. `2025 - CAST(strftime('%Y', hire_date) AS INTEGER)` 是年份差。\n2. `strftime('%m-%d', hire_date) > '01-01'` 是一个比较表达式，SQLite 里它的值就是 1 或 0，可以直接减掉。\n3. 输出姓名和结果。\n\n**为什么正确**：`'MM-DD'` 定长文本的字典序就是日期先后，比较月日即可判断周年是否已过。入职当天视为满，所以用严格大于。\n\n**易错点**：用 `julianday` 差值除以 365 会被闰年带偏，入职多年的人可能多算或少算一年。",
+        "ideaEn": "**Key observation**: full years = difference of the years, minus one if this year's anniversary has not arrived. The cutoff is 01-01, so only people hired on `01-01` have reached it; everyone else loses one.\n\n**Steps**\n\n1. `2025 - CAST(strftime('%Y', hire_date) AS INTEGER)` is the year difference.\n2. `strftime('%m-%d', hire_date) > '01-01'` is a comparison, which SQLite evaluates to 1 or 0, so subtract it directly.\n3. Return name and the result.\n\n**Why it works**: fixed-width `'MM-DD'` text sorts in calendar order, so comparing month-day tells whether the anniversary has passed. The anniversary day itself counts, hence the strict `>`.\n\n**Pitfall**: dividing a `julianday` difference by 365 drifts with leap years and can be off by one for long tenures.",
+        "time": "O(n)",
+        "space": "O(1)",
+        "sql": "SELECT name,\n       2025 - CAST(strftime('%Y', hire_date) AS INTEGER)\n         - (strftime('%m-%d', hire_date) > '01-01') AS years\nFROM employees;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-51": {
+    "approaches": [
+      {
+        "nameZh": "递归 CTE 自顶向下逐层展开",
+        "nameEn": "Recursive CTE, top-down by level",
+        "ideaZh": "**关键观察**：层号由「从顶层走下来几步」决定，这是典型的树遍历，用递归 CTE 做 BFS。题目里的坏数据（上级不存在、互为上级成环）正好不用特殊处理：从顶层出发往下走，永远走不到它们。\n\n**做法**\n\n1. 锚点：`manager_id IS NULL` 的员工，层号 1。\n2. 递归部分：把 `employees` 和已找到的 `tree` 连接，`e.manager_id = t.id` 的人是下一层，层号 `t.level + 1`。\n3. 递归在某一轮找不到新下属时停止。最后按 `level` 分组计数并排序。\n\n**为什么不会死循环**：环里的人谁都不是从顶层可达的，锚点里没有他们，递归也不会把他们连进来。合法的树没有环，每个人只会被到达一次。\n\n**易错点**：如果反过来从每个员工往上爬，遇到环就会无限递归，还得额外判断是否走到 NULL。自顶向下更简单。",
+        "ideaEn": "**Key observation**: a level is the number of steps down from the top, so this is a tree walk: a recursive CTE doing BFS. The broken rows (missing manager, cycles) need no special case: walking down from the top never reaches them.\n\n**Steps**\n\n1. Anchor: employees with `manager_id IS NULL`, level 1.\n2. Recursive step: join `employees` to the rows found so far; `e.manager_id = t.id` gives the next level, `t.level + 1`.\n3. The recursion stops when a round finds no new reports. Group by `level`, count, order.\n\n**Why it terminates**: nobody in a cycle is reachable from the top, so they are never in the anchor and never joined in. A valid tree has no cycles, so each person is reached once.\n\n**Pitfall**: climbing upward from each employee instead loops forever on a cycle and needs extra checks for reaching NULL. Top-down is simpler.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "sql": "WITH RECURSIVE tree(id, level) AS (\n  SELECT id, 1 FROM employees WHERE manager_id IS NULL\n  UNION ALL\n  SELECT e.id, t.level + 1\n  FROM employees e\n  JOIN tree t ON e.manager_id = t.id\n)\nSELECT level, COUNT(*) AS headcount\nFROM tree\nGROUP BY level\nORDER BY level;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-52": {
+    "approaches": [
+      {
+        "nameZh": "递归时携带路径字符串",
+        "nameEn": "Carry the path string down the recursion",
+        "ideaZh": "**关键观察**：和统计层数一样从顶层往下走，只是每一行带的不是层号，而是「到这里为止的姓名链」。往下走一步，就在链尾拼上下属的名字。\n\n**做法**\n\n1. 锚点：顶层员工，链就是自己的 `name`。\n2. 递归：`e.manager_id = c.id` 的下属，链为 `c.path || ' > ' || e.name`。\n3. 递归结束后 CTE 里每个可达员工恰好一行，直接输出。\n\n**为什么正确**：链是从上往下拼出来的，名字顺序天然就是「顶层 > … > 本人」。上级不存在或成环的员工从顶层不可达，自然不出现。\n\n**易错点**：分隔符是 `' > '`，两边各一个空格。如果从下往上拼，要在前面插入，顺序容易写反，而且成环时会无限递归。",
+        "ideaEn": "**Key observation**: walk down from the top as when counting levels, but carry the name chain so far instead of a level number. Each step down appends the report's name.\n\n**Steps**\n\n1. Anchor: top-level employees, chain = their own `name`.\n2. Recursive step: reports with `e.manager_id = c.id` get `c.path || ' > ' || e.name`.\n3. When the recursion ends every reachable employee has exactly one row; output it.\n\n**Why it works**: the chain is built top-down, so the names are already in order \"top > … > self\". Employees with a missing manager or in a cycle are unreachable from the top and never appear.\n\n**Pitfall**: the separator is `' > '` with one space on each side. Building bottom-up means prepending, which is easy to get backwards and loops forever on cycles.",
+        "time": "O(n * d)",
+        "space": "O(n * d)",
+        "sql": "WITH RECURSIVE chain(id, path) AS (\n  SELECT id, name FROM employees WHERE manager_id IS NULL\n  UNION ALL\n  SELECT e.id, c.path || ' > ' || e.name\n  FROM employees e\n  JOIN chain c ON e.manager_id = c.id\n)\nSELECT id, path AS chain FROM chain;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-53": {
+    "approaches": [
+      {
+        "nameZh": "按路径展开并相乘，最后按基础零件求和",
+        "nameEn": "Expand paths with multiplied counts, then sum leaves",
+        "ideaZh": "**关键观察**：把组装关系看成一张有向无环图。递归 CTE 的每一行代表「沿某一条路径，需要多少个这个零件」：往下展开一层就乘上这一层的 `quantity`。同一零件出现在多条路径上，就会有多行，最后把它们加起来。\n\n**做法**\n\n1. 锚点：产品 1 的直接零件，数量是 `quantity`。\n2. 递归：对 `need` 里的每个零件，找它的子零件 `p.product_id = n.part_id`，数量为 `n.units * p.quantity`。\n3. 只保留基础零件：`NOT EXISTS` 它在 `product_parts` 里作为 `product_id` 出现。\n4. 连 `products` 取名称，按零件 `SUM(units)`。\n\n**为什么正确**：每条从产品 1 到某个基础零件的路径都恰好对应递归结果里的一行，数量是路径上各条边的乘积，求和即总需求。图无环，递归一定结束。产品 1 本身是基础零件时锚点为空，结果自然为空。\n\n**易错点**：必须用 `UNION ALL`。两条路径若算出相同的（零件，数量），`UNION` 会把它们去重成一行，总数就少了。",
+        "ideaEn": "**Key observation**: treat the assembly relation as a DAG. Each row of the recursive CTE means \"along one path, this many of this part\": going one level down multiplies by that edge's `quantity`. A part reached by several paths gets several rows, which are summed at the end.\n\n**Steps**\n\n1. Anchor: the direct parts of product 1, with their `quantity`.\n2. Recursive step: for each part in `need`, find its sub-parts `p.product_id = n.part_id`, with `n.units * p.quantity`.\n3. Keep base parts only: `NOT EXISTS` a row where the part is a `product_id`.\n4. Join `products` for the name and `SUM(units)` per part.\n\n**Why it works**: every path from product 1 to a base part is exactly one row, whose count is the product along the path; summing gives the total. The graph is acyclic, so the recursion ends. If product 1 is itself a base part the anchor is empty and so is the result.\n\n**Pitfall**: use `UNION ALL`. If two paths yield the same (part, units), `UNION` merges them into one row and the total comes out short.",
+        "time": "O(P)",
+        "space": "O(P)",
+        "sql": "WITH RECURSIVE need(part_id, units) AS (\n  SELECT part_id, quantity FROM product_parts WHERE product_id = 1\n  UNION ALL\n  SELECT p.part_id, n.units * p.quantity\n  FROM need n\n  JOIN product_parts p ON p.product_id = n.part_id\n)\nSELECT n.part_id, pr.name, SUM(n.units) AS units\nFROM need n\nJOIN products pr ON pr.id = n.part_id\nWHERE NOT EXISTS (SELECT 1 FROM product_parts x WHERE x.product_id = n.part_id)\nGROUP BY n.part_id, pr.name;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-54": {
+    "approaches": [
+      {
+        "nameZh": "递归生成日历再左连接",
+        "nameEn": "Generate a calendar, then LEFT JOIN",
+        "ideaZh": "**关键观察**：没有订单的日子在 `orders` 里根本没有行，GROUP BY 变不出来。要先造一张完整的日期表，再把每日营收挂上去。\n\n**做法**\n\n1. 递归 CTE `days`：从 `MIN(order_date)` 开始，每轮 `date(day, '+1 day')`，直到等于 `MAX(order_date)`。注意范围按**所有**订单算，不论状态。\n2. CTE `revenue`：已支付订单连明细，按日期 `SUM(quantity * unit_price)`。\n3. `days LEFT JOIN revenue`，缺的用 `COALESCE(amount, 0)` 补 0，按日期排序。\n\n**为什么正确**：日期是 `'YYYY-MM-DD'` 文本，字典序与时间先后一致，`day < MAX(...)` 能正确控制终止；`date()` 会处理跨月、闰年。\n\n**易错点**\n\n- 范围的两端要用全部订单的日期；只用已支付订单会漏掉两头只有取消单的日子。\n- 先汇总再 LEFT JOIN；如果把 `status = 'paid'` 写在最外层 WHERE，会把补零的行也过滤掉。",
+        "ideaEn": "**Key observation**: a day with no orders has no row in `orders`, so GROUP BY cannot produce it. Build a full calendar first and attach daily revenue to it.\n\n**Steps**\n\n1. Recursive CTE `days`: start at `MIN(order_date)` and step `date(day, '+1 day')` until `MAX(order_date)`. The range uses **all** orders, whatever their status.\n2. CTE `revenue`: paid orders joined to their items, `SUM(quantity * unit_price)` per date.\n3. `days LEFT JOIN revenue`, fill gaps with `COALESCE(amount, 0)`, order by date.\n\n**Why it works**: `'YYYY-MM-DD'` text sorts chronologically, so `day < MAX(...)` stops at the right place, and `date()` handles month ends and leap years.\n\n**Pitfalls**\n\n- Take both ends from every order; using only paid ones drops edge days that only have cancelled orders.\n- Aggregate first, then LEFT JOIN. Putting `status = 'paid'` in the outer WHERE would filter out the zero-filled days.",
+        "time": "O(D + n)",
+        "space": "O(D)",
+        "sql": "WITH RECURSIVE days(day) AS (\n  SELECT MIN(order_date) FROM orders\n  UNION ALL\n  SELECT date(day, '+1 day') FROM days\n  WHERE day < (SELECT MAX(order_date) FROM orders)\n), revenue AS (\n  SELECT o.order_date AS day, SUM(i.quantity * i.unit_price) AS amount\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY o.order_date\n)\nSELECT d.day, COALESCE(r.amount, 0) AS revenue\nFROM days d\nLEFT JOIN revenue r ON r.day = d.day\nORDER BY d.day;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-55": {
+    "approaches": [
+      {
+        "nameZh": "json_extract 取字段后聚合",
+        "nameEn": "Aggregate over json_extract",
+        "ideaZh": "**关键观察**：`json_extract(payload, '$.ms')` 在字段不存在时返回 NULL，而 `AVG` 本来就跳过 NULL、`COUNT(*)` 数所有行。所以「没有 ms 不参与平均但计入事件数」不需要任何额外判断。\n\n**做法**\n\n1. 按 `json_extract(payload, '$.type')` 分组。\n2. `COUNT(*)` 得事件数。\n3. `ROUND(AVG(json_extract(payload, '$.ms')), 1)` 得平均耗时；某类型全部没有 ms 时 AVG 返回 NULL，ROUND(NULL) 仍是 NULL，符合要求。\n\n**易错点**\n\n- 不要用 `SUM(ms) / COUNT(*)`：分母把没有 ms 的事件也算进去了，平均值偏小；而且整数相除会截断。\n- 也不要用 `COALESCE(ms, 0)`，那会把缺失当成 0 参与平均。",
+        "ideaEn": "**Key observation**: `json_extract(payload, '$.ms')` is NULL when the key is missing, `AVG` skips NULLs, and `COUNT(*)` counts every row. So \"events without ms are left out of the average but still counted\" needs no extra logic.\n\n**Steps**\n\n1. Group by `json_extract(payload, '$.type')`.\n2. `COUNT(*)` for the event count.\n3. `ROUND(AVG(json_extract(payload, '$.ms')), 1)`; if a type has no ms at all, AVG is NULL and ROUND keeps it NULL, as required.\n\n**Pitfalls**\n\n- `SUM(ms) / COUNT(*)` divides by events without ms too, so the average is too low, and integer division truncates.\n- `COALESCE(ms, 0)` likewise turns a missing value into a 0 that drags the average down.",
+        "time": "O(n)",
+        "space": "O(k)",
+        "sql": "SELECT json_extract(payload, '$.type') AS type,\n       COUNT(*) AS events,\n       ROUND(AVG(json_extract(payload, '$.ms')), 1) AS avg_ms\nFROM events\nGROUP BY json_extract(payload, '$.type');\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-56": {
+    "approaches": [
+      {
+        "nameZh": "json_each 展开数组",
+        "nameEn": "Unnest the array with json_each",
+        "ideaZh": "**关键观察**：一个事件可能带多个标签，统计要按标签来，所以得先把数组「炸开」成一行一个标签。SQLite 的表值函数 `json_each(payload, '$.tags')` 正是干这个的，每个元素在 `value` 列里。\n\n**做法**\n\n1. `FROM events e, json_each(e.payload, '$.tags') t`：每个事件和它自己的标签做连接，得到（事件，标签）行。\n2. 按 `t.value` 分组，`COUNT(DISTINCT e.user_id)` 数不同用户。\n\n**为什么正确**：逗号连接是内连接，`tags` 不存在或是空数组时 `json_each` 不产生行，这些事件自动消失。同一数组里重复的标签、同一用户的多个事件都会被 `DISTINCT user_id` 合并，题目要的就是不同用户数。\n\n**易错点**：用 `COUNT(*)` 会把重复标签和同一用户的多个事件都算进去。",
+        "ideaEn": "**Key observation**: one event can carry several tags and the count is per tag, so first explode the array into one row per tag. SQLite's table-valued `json_each(payload, '$.tags')` does exactly that, with each element in its `value` column.\n\n**Steps**\n\n1. `FROM events e, json_each(e.payload, '$.tags') t` pairs each event with its own tags, giving (event, tag) rows.\n2. Group by `t.value` and `COUNT(DISTINCT e.user_id)`.\n\n**Why it works**: the comma join is an inner join. When `tags` is missing or empty, `json_each` yields no rows and the event drops out. Repeated tags in one array and several events from one user all collapse under `DISTINCT user_id`, which is the distinct-user count the task asks for.\n\n**Pitfall**: `COUNT(*)` would count repeated tags and repeat events from the same user.",
+        "time": "O(n * t)",
+        "space": "O(n * t)",
+        "sql": "SELECT t.value AS tag, COUNT(DISTINCT e.user_id) AS users\nFROM events e, json_each(e.payload, '$.tags') t\nGROUP BY t.value;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-57": {
+    "approaches": [
+      {
+        "nameZh": "用 json_type 区分缺失和 null",
+        "nameEn": "Tell missing from null with json_type",
+        "ideaZh": "**关键观察**：`json_extract` 对「字段不存在」和「值是 JSON null」都返回 SQL NULL，分不开。`json_type(payload, '$.page')` 能分开：字段不存在时返回 SQL NULL，值为 null 时返回文本 `'null'`，是字符串时返回 `'text'`。\n\n**做法**\n\n1. 按 `json_extract(payload, '$.type')` 分组。\n2. `missing`：`SUM(CASE WHEN json_type(...) IS NULL THEN 1 ELSE 0 END)`。\n3. `nulls`：`SUM(CASE WHEN json_type(...) = 'null' THEN 1 ELSE 0 END)`。\n\n**为什么正确**：每个事件只会落进三种情况之一，CASE 把每种情况变成 0/1，SUM 就是计数；某类型没有这种情况时 SUM 得 0 而不是 NULL，因为每行都贡献了 0。\n\n**易错点**：`page IS NULL` 式的判断（基于 json_extract）会把两种情况混在一起。",
+        "ideaEn": "**Key observation**: `json_extract` returns SQL NULL both for a missing key and for a JSON null, so it cannot tell them apart. `json_type(payload, '$.page')` can: SQL NULL when the key is missing, the text `'null'` for a null value, `'text'` for a string.\n\n**Steps**\n\n1. Group by `json_extract(payload, '$.type')`.\n2. `missing`: `SUM(CASE WHEN json_type(...) IS NULL THEN 1 ELSE 0 END)`.\n3. `nulls`: `SUM(CASE WHEN json_type(...) = 'null' THEN 1 ELSE 0 END)`.\n\n**Why it works**: each event falls into exactly one of the three cases. The CASE turns each into 0/1 and SUM counts them; a type with no such event sums to 0, not NULL, because every row contributed a 0.\n\n**Pitfall**: testing `json_extract(...) IS NULL` lumps both cases together.",
+        "time": "O(n)",
+        "space": "O(k)",
+        "sql": "SELECT json_extract(payload, '$.type') AS type,\n       SUM(CASE WHEN json_type(payload, '$.page') IS NULL THEN 1 ELSE 0 END) AS missing,\n       SUM(CASE WHEN json_type(payload, '$.page') = 'null' THEN 1 ELSE 0 END) AS nulls\nFROM events\nGROUP BY json_extract(payload, '$.type');\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-58": {
+    "approaches": [
+      {
+        "nameZh": "先汇总消费额，再 NTILE(4)",
+        "nameEn": "Sum spending, then NTILE(4)",
+        "ideaZh": "**关键观察**：分组之前要先有「每位客户一行、带消费额」的表；NTILE 是窗口函数，作用在这张汇总表上。\n\n**做法**\n\n1. CTE `spend`：已支付订单连明细，排除 `customer_id IS NULL` 的游客单，按客户 `SUM(quantity * unit_price)`。\n2. `NTILE(4) OVER (ORDER BY spending DESC, customer_id)`：按消费从高到低切 4 组，最高的为 1。\n3. 外层按组号、消费额降序、编号升序输出。\n\n**为什么正确**：NTILE 把 n 行尽量均分，前 `n % 4` 组各多一行，这正是题目约定的分法。窗口里写全了平局规则，每行的组号是确定的。\n\n**易错点**\n\n- 窗口的 ORDER BY 少了 `customer_id`，消费额相同的客户落在哪组不确定。\n- 游客订单要在汇总前排除，否则会多出一个 `customer_id` 为 NULL 的「客户」占位置。\n- 客户不足 4 人时只会出现前几组，这也是 NTILE 的正常行为。",
+        "ideaEn": "**Key observation**: before bucketing you need one row per customer with their spending; NTILE is a window function over that summary.\n\n**Steps**\n\n1. CTE `spend`: paid orders joined to items, guest orders (`customer_id IS NULL`) excluded, `SUM(quantity * unit_price)` per customer.\n2. `NTILE(4) OVER (ORDER BY spending DESC, customer_id)` cuts four buckets from highest to lowest, the top one being 1.\n3. Order the output by bucket, spending descending, id ascending.\n\n**Why it works**: NTILE splits n rows as evenly as possible, with the first `n % 4` buckets one row larger, which is the rule the task states. The full tie-break makes every row's bucket deterministic.\n\n**Pitfalls**\n\n- Without `customer_id` in the window's ORDER BY, customers with equal spending can land in either bucket.\n- Drop guest orders before summing, or a NULL \"customer\" takes a slot.\n- With fewer than 4 customers only the first buckets appear; that is normal NTILE behaviour.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH spend AS (\n  SELECT o.customer_id, SUM(i.quantity * i.unit_price) AS spending\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid' AND o.customer_id IS NOT NULL\n  GROUP BY o.customer_id\n)\nSELECT customer_id, spending,\n       NTILE(4) OVER (ORDER BY spending DESC, customer_id) AS quartile\nFROM spend\nORDER BY quartile, spending DESC, customer_id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-59": {
+    "approaches": [
+      {
+        "nameZh": "PERCENT_RANK 窗口函数",
+        "nameEn": "PERCENT_RANK window function",
+        "ideaZh": "**关键观察**：题目给的公式 `(名次 - 1) / (部门人数 - 1)`，名次按 RANK 规则，单人部门为 0——这正是 `PERCENT_RANK()` 的定义。\n\n**做法**\n\n1. `WHERE department_id IS NOT NULL` 先去掉没有部门的人。\n2. `PERCENT_RANK() OVER (PARTITION BY department_id ORDER BY salary)` 按部门分区、薪资升序。\n3. `ROUND(..., 2)`。\n\n**易错点**：不先过滤的话，NULL 部门的员工会自成一个分区，照样算出百分位并出现在结果里。窗口函数在 WHERE 之后计算，所以过滤放在 WHERE 里就行。",
+        "ideaEn": "**Key observation**: the formula `(rank - 1) / (department size - 1)`, with RANK-style ties and 0 for a one-person department, is exactly the definition of `PERCENT_RANK()`.\n\n**Steps**\n\n1. `WHERE department_id IS NOT NULL` removes people without a department.\n2. `PERCENT_RANK() OVER (PARTITION BY department_id ORDER BY salary)`.\n3. `ROUND(..., 2)`.\n\n**Pitfall**: without the filter, NULL-department employees form their own partition, get a value, and show up. Windows are computed after WHERE, so filtering there is enough.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT id, department_id,\n       ROUND(PERCENT_RANK() OVER (PARTITION BY department_id ORDER BY salary), 2) AS pct\nFROM employees\nWHERE department_id IS NOT NULL;\n"
+      },
+      {
+        "nameZh": "相关子查询数比自己低的人",
+        "nameEn": "Correlated count of lower salaries",
+        "ideaZh": "**思路**：不用窗口函数也能按公式直接算。RANK 名次减 1，就等于本部门里薪资**严格低于**自己的人数；分母是部门人数减 1。\n\n**做法**\n\n1. 子查询 `n` 统计每个部门的人数，内连接它，顺带去掉 NULL 部门（`NULL = NULL` 不成立）。\n2. 相关子查询数出同部门 `salary < e.salary` 的人数。\n3. 部门只有一人时分母为 0，用 CASE 直接给 0；否则乘 `1.0` 做浮点除法后 ROUND。\n\n**复杂度**：每个员工都要扫一遍同部门，最坏 O(n²)，数据大时不如窗口函数。\n\n**易错点**：忘了 `1.0 *` 会做整数除法，结果全是 0 或 1。",
+        "ideaEn": "**Idea**: the formula can be computed directly without a window. A RANK minus 1 equals the number of colleagues earning **strictly less**; the denominator is department size minus 1.\n\n**Steps**\n\n1. Subquery `n` counts each department; the inner join to it also drops NULL departments (`NULL = NULL` is not true).\n2. A correlated subquery counts colleagues with `salary < e.salary`.\n3. For a one-person department the denominator is 0, so CASE returns 0; otherwise multiply by `1.0` for float division and ROUND.\n\n**Cost**: each employee scans their department, O(n²) in the worst case; slower than the window version on big data.\n\n**Pitfall**: without `1.0 *` the division is integer division and yields only 0 or 1.",
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "sql": "SELECT e.id, e.department_id,\n       ROUND(CASE WHEN n.c = 1 THEN 0\n                  ELSE 1.0 * (SELECT COUNT(*) FROM employees x\n                              WHERE x.department_id = e.department_id AND x.salary < e.salary) / (n.c - 1)\n             END, 2) AS pct\nFROM employees e\nJOIN (SELECT department_id, COUNT(*) AS c FROM employees GROUP BY department_id) n\n  ON n.department_id = e.department_id;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-60": {
+    "approaches": [
+      {
+        "nameZh": "LAG 标记会话起点，再累计求和编号",
+        "nameEn": "Flag session starts with LAG, number them with a running sum",
+        "ideaZh": "**关键观察**：这是经典的「间隔切分」。一个事件是否开启新会话，只取决于它和同一用户上一个事件的时间差。把「是否开启」记成 0/1，按时间做累计求和，得到的就是会话编号。\n\n**做法**\n\n1. `gaps`：`LAG(ts) OVER (PARTITION BY user_id ORDER BY ts)` 取上一事件时间，用 `strftime('%s', ...)` 转成秒相减。差值 `<= 1800` 记 0，否则记 1。第一个事件没有上一行，差值为 NULL，比较结果不为真，落到 ELSE 记 1，正好是会话开始。\n2. `numbered`：`SUM(new_session) OVER (PARTITION BY user_id ORDER BY ts ROWS UNBOUNDED PRECEDING)` 得会话编号。\n3. 按 (user_id, session) 分组，`MIN(ts)` 为开始时间，`COUNT(*)` 为事件数。\n\n**为什么正确**：同一会话内的事件累计和不变，跨入新会话时加 1，因此编号相同的就是同一会话。\n\n**易错点**\n\n- 同一时刻有多个事件，它们差值为 0，属于同一会话，所以排序有并列也不影响结果。但累计和必须写 `ROWS` 帧：默认的 `RANGE` 帧会把同一时刻的行一起算进去，可能让并列行拿到不一致的中间值。\n- 正好 1800 秒仍属于同一会话，用 `<=`。\n- 秒数用整数相减，避免 `julianday` 浮点误差在边界上出错。",
+        "ideaEn": "**Key observation**: classic gap-based sessionization. Whether an event starts a session depends only on its gap from the same user's previous event. Mark starts as 0/1 and a running sum over time gives the session number.\n\n**Steps**\n\n1. `gaps`: `LAG(ts) OVER (PARTITION BY user_id ORDER BY ts)` gives the previous time; subtract as seconds via `strftime('%s', ...)`. A gap `<= 1800` is 0, otherwise 1. The first event has no previous row, the difference is NULL, the comparison is not true, and ELSE marks it 1, a session start.\n2. `numbered`: `SUM(new_session) OVER (PARTITION BY user_id ORDER BY ts ROWS UNBOUNDED PRECEDING)` is the session number.\n3. Group by (user_id, session): `MIN(ts)` is the start, `COUNT(*)` the size.\n\n**Why it works**: the running sum stays constant inside a session and rises by 1 at each start, so equal numbers mean the same session.\n\n**Pitfalls**\n\n- Events at the same instant have a gap of 0 and share a session, so ties in the order are harmless. Still use a `ROWS` frame: the default `RANGE` frame lumps tied rows together.\n- Exactly 1800 seconds is the same session, hence `<=`.\n- Subtract integer seconds; `julianday` floats can misjudge the boundary.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH gaps AS (\n  SELECT user_id, ts,\n         CASE WHEN strftime('%s', ts) - strftime('%s', LAG(ts) OVER (PARTITION BY user_id ORDER BY ts)) <= 1800\n              THEN 0 ELSE 1 END AS new_session\n  FROM events\n), numbered AS (\n  SELECT user_id, ts,\n         SUM(new_session) OVER (PARTITION BY user_id ORDER BY ts ROWS UNBOUNDED PRECEDING) AS session\n  FROM gaps\n)\nSELECT user_id, MIN(ts) AS started, COUNT(*) AS events\nFROM numbered\nGROUP BY user_id, session;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-61": {
+    "approaches": [
+      {
+        "nameZh": "ROWS 帧的移动平均",
+        "nameEn": "Moving average with a ROWS frame",
+        "ideaZh": "**关键观察**：「当前单和前面最多 6 单」是按**行数**数的窗口，对应 `ROWS BETWEEN 6 PRECEDING AND CURRENT ROW`。前几单不足 7 行时，帧自动只包含已有的行。\n\n**做法**\n\n1. CTE `totals`：已支付订单内连接明细（没有明细的订单自然被排除），按订单求金额。\n2. `AVG(total) OVER (ORDER BY order_date, id ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)`，再 `ROUND(..., 2)`。\n3. 按同样的 `order_date, id` 输出。\n\n**易错点**\n\n- 不写帧时默认是 `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`，得到的是累计平均。\n- 窗口排序必须带上 `id`：同一天有多单时，不加 `id` 的话哪 7 单算在一起是不确定的。",
+        "ideaEn": "**Key observation**: \"this order and up to 6 before it\" is a window counted in **rows**: `ROWS BETWEEN 6 PRECEDING AND CURRENT ROW`. For the first few orders the frame simply holds the rows that exist.\n\n**Steps**\n\n1. CTE `totals`: paid orders inner-joined to their items (orders with no items drop out), summed per order.\n2. `AVG(total) OVER (ORDER BY order_date, id ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)`, then `ROUND(..., 2)`.\n3. Output in the same `order_date, id` order.\n\n**Pitfalls**\n\n- With no frame clause the default is `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, a running average.\n- Order the window by `id` as well; with several orders on one day, which seven are grouped is otherwise undefined.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "WITH totals AS (\n  SELECT o.id, o.order_date, SUM(i.quantity * i.unit_price) AS total\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY o.id, o.order_date\n)\nSELECT id, order_date, total,\n       ROUND(AVG(total) OVER (ORDER BY order_date, id ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 2) AS moving_avg\nFROM totals\nORDER BY order_date, id;\n"
+      },
+      {
+        "nameZh": "行号 + 相关子查询",
+        "nameEn": "Row numbers plus a correlated subquery",
+        "ideaZh": "**思路**：如果不熟悉窗口帧，可以先给订单编上连续行号 `rn`，再对每一单用子查询求 `rn - 6` 到 `rn` 这段的平均值，含义完全一样。\n\n**做法**\n\n1. `t` 计算每单金额，`r` 用 `ROW_NUMBER() OVER (ORDER BY order_date, id)` 编号。\n2. 对每行 `a`，`SELECT AVG(b.total) FROM r b WHERE b.rn BETWEEN a.rn - 6 AND a.rn`。\n3. 按 `rn` 输出。\n\n**复杂度**：子查询每次扫一遍 `r`，O(n²)；它的价值是帮助理解帧到底包含哪些行，实际写法优先用第一种。",
+        "ideaEn": "**Idea**: without frames, number the orders with a consecutive `rn` and, for each order, average the rows `rn - 6` through `rn` in a subquery. Same meaning.\n\n**Steps**\n\n1. `t` computes per-order totals; `r` numbers them with `ROW_NUMBER() OVER (ORDER BY order_date, id)`.\n2. For each row `a`: `SELECT AVG(b.total) FROM r b WHERE b.rn BETWEEN a.rn - 6 AND a.rn`.\n3. Output by `rn`.\n\n**Cost**: each subquery scans `r`, O(n²). It shows exactly which rows a frame covers; prefer the first version in practice.",
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "sql": "WITH t AS (\n  SELECT o.id, o.order_date, SUM(i.quantity * i.unit_price) AS total\n  FROM orders o\n  JOIN order_items i ON i.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY o.id\n), r AS (\n  SELECT *, ROW_NUMBER() OVER (ORDER BY order_date, id) AS rn FROM t\n)\nSELECT a.id, a.order_date, a.total,\n       ROUND((SELECT AVG(b.total) FROM r b WHERE b.rn BETWEEN a.rn - 6 AND a.rn), 2) AS moving_avg\nFROM r a\nORDER BY a.rn;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-62": {
+    "approaches": [
+      {
+        "nameZh": "LAST_VALUE 配完整帧",
+        "nameEn": "LAST_VALUE with a full frame",
+        "ideaZh": "**关键观察**：按 `hire_date, id` 升序排好后，部门里最近入职的人就是分区的最后一行。`LAST_VALUE(name)` 能取到它——前提是帧覆盖整个分区。\n\n**做法**\n\n1. `WHERE department_id IS NOT NULL` 去掉无部门员工。\n2. `LAST_VALUE(name) OVER (PARTITION BY department_id ORDER BY hire_date, id ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)`。\n\n**易错点**：只写 ORDER BY 时默认帧只到当前行为止，`LAST_VALUE` 返回的是当前行自己的名字。这是这道题最常见的错误。同一天入职取编号大的，所以排序里要带 `id`。",
+        "ideaEn": "**Key observation**: sorted by `hire_date, id`, the latest hire is the last row of the partition, and `LAST_VALUE(name)` returns it, provided the frame spans the whole partition.\n\n**Steps**\n\n1. `WHERE department_id IS NOT NULL` drops employees without a department.\n2. `LAST_VALUE(name) OVER (PARTITION BY department_id ORDER BY hire_date, id ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)`.\n\n**Pitfall**: with only ORDER BY, the default frame ends at the current row, so `LAST_VALUE` returns the current row's own name. That is the usual mistake here. Same-day hires break ties by the larger id, so `id` belongs in the ordering.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT id, name,\n       LAST_VALUE(name) OVER (\n         PARTITION BY department_id\n         ORDER BY hire_date, id\n         ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n       ) AS latest_hire\nFROM employees\nWHERE department_id IS NOT NULL;\n"
+      },
+      {
+        "nameZh": "倒序排序用 FIRST_VALUE",
+        "nameEn": "Reverse the order and use FIRST_VALUE",
+        "ideaZh": "**思路**：把排序倒过来（`hire_date DESC, id DESC`），最近入职的人就成了分区第一行。默认帧总是从分区第一行开始，所以 `FIRST_VALUE` 不用改帧就能取到它。\n\n**做法**：`FIRST_VALUE(name) OVER (PARTITION BY department_id ORDER BY hire_date DESC, id DESC)`，同样先过滤掉无部门员工。\n\n**为什么更稳**：不依赖记住帧的默认值，写法更短，也不容易踩 LAST_VALUE 的坑。",
+        "ideaEn": "**Idea**: reverse the order (`hire_date DESC, id DESC`) so the latest hire is the first row. The default frame always starts at the partition's first row, so `FIRST_VALUE` gets it without a frame clause.\n\n**Steps**: `FIRST_VALUE(name) OVER (PARTITION BY department_id ORDER BY hire_date DESC, id DESC)`, again after filtering out employees with no department.\n\n**Why it is sturdier**: it does not rely on remembering the default frame, it is shorter, and it avoids the LAST_VALUE trap.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "sql": "SELECT id, name,\n       FIRST_VALUE(name) OVER (PARTITION BY department_id ORDER BY hire_date DESC, id DESC) AS latest_hire\nFROM employees\nWHERE department_id IS NOT NULL;\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-71": {
+    "approaches": [
+      {
+        "nameZh": "(customer_id, order_date) 复合索引",
+        "nameEn": "Composite index on (customer_id, order_date)",
+        "ideaZh": "**关键观察**：查询是 `customer_id = 3 AND order_date >= … AND order_date < …`，一个等值条件加一个范围条件。复合索引按列的顺序排序：先按第一列，第一列相同再按第二列。\n\n**做法**：建 `(customer_id, order_date)`。\n\n**为什么正确**：在这个索引里，`customer_id = 3` 的条目是连续的一段，且这段内部按 `order_date` 有序，于是「客户 3 的二月订单」是索引上一段连续区间，一次二分定位起点、顺序读到终点即可。计划里会出现 `customer_id=? AND order_date>? AND order_date<?`。\n\n**易错点**：反过来写 `(order_date, customer_id)` 不行。范围列放在前面后，日期范围内各个客户的条目交错在一起，`customer_id` 不再连续，只能在范围里逐条过滤。原则是：**等值列在前，范围列在后**；范围列之后的列对查找没有帮助。",
+        "ideaEn": "**Key observation**: the query has one equality (`customer_id = 3`) and one range on `order_date`. A composite index sorts by its first column, then by the second within ties.\n\n**Steps**: create `(customer_id, order_date)`.\n\n**Why it works**: in this index all `customer_id = 3` entries are contiguous and sorted by `order_date` inside, so \"customer 3's February orders\" is one contiguous slice: one seek to the start, then read to the end. The plan shows `customer_id=? AND order_date>? AND order_date<?`.\n\n**Pitfall**: `(order_date, customer_id)` does not work. With the range column first, customers interleave inside the date range and `customer_id` is no longer contiguous, so it can only be filtered row by row. Rule: **equality columns first, range column last**; columns after a range do not help the search.",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_orders_customer_date ON orders (customer_id, order_date);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-72": {
+    "approaches": [
+      {
+        "nameZh": "把查询的所有列放进索引",
+        "nameEn": "Put every column the query touches in the index",
+        "ideaZh": "**关键观察**：查询用到三列：`customer_id`（查找）、`order_date` 和 `status`（输出）。只给 `customer_id` 建索引的话，找到条目后还要按 rowid 回表读另外两列。如果三列全在索引里，SQLite 读索引就够了，计划显示 `USING COVERING INDEX`。\n\n**做法**：建 `(customer_id, order_date, status)`。\n\n**为什么正确**：查找列 `customer_id` 放第一位，`customer_id=?` 能直接定位；后两列跟在后面只是为了「带着走」，顺序无所谓，写成 `(customer_id, status, order_date)` 也覆盖。\n\n**易错点**\n\n- 把 `customer_id` 放到后面，索引就无法用于这个等值查找。\n- 少放任何一个输出列，就变回普通索引，需要回表。`id` 不用放：它是 rowid，本来就在每个索引条目里。",
+        "ideaEn": "**Key observation**: the query touches three columns: `customer_id` to search, `order_date` and `status` to return. An index on `customer_id` alone finds entries but must then look up the table by rowid for the other two. With all three in the index, SQLite reads only the index and the plan says `USING COVERING INDEX`.\n\n**Steps**: create `(customer_id, order_date, status)`.\n\n**Why it works**: the search column `customer_id` comes first, so `customer_id=?` seeks directly; the other two are carried along and their order does not matter, `(customer_id, status, order_date)` covers too.\n\n**Pitfalls**\n\n- With `customer_id` not first, the index cannot serve the equality lookup.\n- Leave out any returned column and it is an ordinary index again, with table lookups. `id` is not needed: it is the rowid, already stored in every index entry.",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_orders_history ON orders (customer_id, order_date, status);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-73": {
+    "approaches": [
+      {
+        "nameZh": "等值列 + ORDER BY 列",
+        "nameEn": "Equality column, then the ORDER BY column",
+        "ideaZh": "**关键观察**：查询 `WHERE status = 'paid' ORDER BY order_date`。在 `(status, order_date)` 索引里，`status = 'paid'` 的条目是连续一段，并且这段内部已经按 `order_date` 排好，顺着读出来就是要的顺序，SQLite 不必再建临时 B 树排序。\n\n**做法**：建 `(status, order_date)`。\n\n**为什么正确**：等值条件把第一列「固定」住后，剩下的条目按第二列有序，所以第二列放 ORDER BY 的列就能省掉排序。计划里是 `SEARCH orders USING INDEX … (status=?)`，没有 `USE TEMP B-TREE FOR ORDER BY`。\n\n**易错点**\n\n- 只建 `(status)`：查找快了，但结果还得另外排序。\n- 只建 `(order_date)`：可以按顺序读，但要读全部订单再过滤状态，是扫描不是查找。",
+        "ideaEn": "**Key observation**: the query is `WHERE status = 'paid' ORDER BY order_date`. In an index on `(status, order_date)` the `'paid'` entries form one contiguous slice already sorted by `order_date`, so reading it in order gives the requested order and SQLite needs no temporary B-tree.\n\n**Steps**: create `(status, order_date)`.\n\n**Why it works**: once an equality pins the first column, the remaining entries are sorted by the second, so putting the ORDER BY column there removes the sort. The plan is `SEARCH orders USING INDEX … (status=?)` with no `USE TEMP B-TREE FOR ORDER BY`.\n\n**Pitfalls**\n\n- `(status)` alone: fast lookup, but the result still has to be sorted.\n- `(order_date)` alone: ordered reading, but every order is read and filtered by status, a scan rather than a search.",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_orders_status_date ON orders (status, order_date);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-74": {
+    "approaches": [
+      {
+        "nameZh": "对 lower(email) 建表达式索引",
+        "nameEn": "Expression index on lower(email)",
+        "ideaZh": "**关键观察**：条件是 `lower(email) = '…'`。`email` 上的普通索引存的是原始值，按原始值排序，SQLite 无法用它查找 `lower(email)` 的结果，只能逐行计算。SQLite 支持**表达式索引**：直接把 `lower(email)` 的值存进索引并排序。\n\n**做法**：`CREATE INDEX … ON customers (lower(email))`。\n\n**为什么正确**：查询里的表达式和索引里的表达式写法完全一致时，优化器才会匹配上，计划显示 `(<expr>=?)`。`lower` 是确定性函数，允许用于索引。\n\n**易错点**\n\n- 写成 `(email COLLATE NOCASE)` 对 `=` 比较的 `lower(email)` 没用：查询里的表达式是 `lower(email)`，不是 `email`。\n- 表达式要和查询写得一样，例如不能换成 `upper(email)`。",
+        "ideaEn": "**Key observation**: the condition is `lower(email) = '…'`. A plain index on `email` stores and sorts raw values, so SQLite cannot use it to look up `lower(email)` and must compute it row by row. SQLite supports **expression indexes**: store `lower(email)` itself in the index, sorted.\n\n**Steps**: `CREATE INDEX … ON customers (lower(email))`.\n\n**Why it works**: the optimizer matches an expression index only when the query's expression is written the same way; the plan then shows `(<expr>=?)`. `lower` is deterministic, so it may be indexed.\n\n**Pitfalls**\n\n- `(email COLLATE NOCASE)` does not help: the query's expression is `lower(email)`, not `email`.\n- The expression must match the query; `upper(email)` would not.",
+        "time": "O(log n)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_customers_email_lower ON customers (lower(email));\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-75": {
+    "approaches": [
+      {
+        "nameZh": "NOCASE 排序规则的索引",
+        "nameEn": "Index with the NOCASE collation",
+        "ideaZh": "**关键观察**：SQLite 的 LIKE 默认不区分大小写。要把 `name LIKE 'Al%'` 改写成索引上的范围 `name >= 'AL' AND name < 'AM'` 一类的查找，索引的排序方式必须也不区分大小写，否则 `alice` 和 `Alice` 在索引里不挨着，范围就会漏掉一部分。\n\n**做法**：`CREATE INDEX … ON customers (name COLLATE NOCASE)`。\n\n**为什么正确**：SQLite 的 LIKE 优化要求：模式是常量、以非通配符开头，并且列的索引排序规则和 LIKE 的大小写语义一致（默认 LIKE 对应 NOCASE）。满足后计划变成 `name>? AND name<?`。\n\n**易错点**：普通的 `(name)` 索引用的是 BINARY 排序，和不区分大小写的 LIKE 不一致，优化器不会用它做前缀查找，只能扫描。",
+        "ideaEn": "**Key observation**: SQLite's LIKE is case-insensitive by default. To turn `name LIKE 'Al%'` into an index range, the index has to sort case-insensitively too; otherwise `alice` and `Alice` are not adjacent and a range would miss some.\n\n**Steps**: `CREATE INDEX … ON customers (name COLLATE NOCASE)`.\n\n**Why it works**: the LIKE optimization needs a constant pattern that does not start with a wildcard, and an index collation matching LIKE's case rule (NOCASE for the default LIKE). Then the plan becomes `name>? AND name<?`.\n\n**Pitfall**: a plain `(name)` index uses BINARY collation, which disagrees with case-insensitive LIKE, so the optimizer will not use it for the prefix and scans instead.",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_customers_name_nocase ON customers (name COLLATE NOCASE);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-76": {
+    "approaches": [
+      {
+        "nameZh": "OR 两边各建一个单列索引",
+        "nameEn": "One single-column index per OR branch",
+        "ideaZh": "**关键观察**：`customer_id = 2 OR order_date = '2024-03-01'` 的两边条件各自独立。单个复合索引 `(customer_id, order_date)` 只能服务以 `customer_id` 开头的条件，对右边的 `order_date = …` 无能为力，于是整体只能扫表。\n\n**做法**：建两个索引，`(customer_id)` 和 `(order_date)`。\n\n**为什么正确**：SQLite 的 OR 优化（MULTI-INDEX OR）会分别用两个索引查出两边的 rowid，再合并去重。每一边都能用索引查找，前提就是每个条件各自是某个索引的最左列。\n\n**易错点**：只建一个索引时，OR 的另一边无法查找，优化器宁可整体扫一遍。两个复合索引也可以，只要它们分别以 `customer_id` 和 `order_date` 开头。",
+        "ideaEn": "**Key observation**: the two sides of `customer_id = 2 OR order_date = '2024-03-01'` are independent. One composite `(customer_id, order_date)` serves only conditions starting with `customer_id`; it cannot help `order_date = …`, so the whole query falls back to a scan.\n\n**Steps**: create two indexes, `(customer_id)` and `(order_date)`.\n\n**Why it works**: SQLite's OR optimization (MULTI-INDEX OR) looks up each side's rowids with its own index and merges them without duplicates. It needs every OR term to be the leftmost column of some index.\n\n**Pitfall**: with only one index the other OR term cannot be searched and the optimizer scans everything. Two composites also work, as long as one starts with `customer_id` and the other with `order_date`.",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_orders_customer ON orders (customer_id);\nCREATE INDEX idx_orders_date ON orders (order_date);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-77": {
+    "approaches": [
+      {
+        "nameZh": "过滤列和外键各一个索引",
+        "nameEn": "Index the filter column and the foreign key",
+        "ideaZh": "**关键观察**：三表连接要做到「没有扫描」，每张表都需要一个查找入口：\n\n- `orders`：被 `order_date = ?` 过滤，是连接的起点，需要 `order_date` 上的索引；\n- `order_items`：按 `i.order_id = o.id` 从订单找明细，需要 `order_id` 上的索引；\n- `products`：按 `p.id = i.product_id` 查，`id` 是主键，已经能直接定位。\n\n**做法**：建 `orders (order_date)` 和 `order_items (order_id)`。\n\n**为什么正确**：执行顺序是先用日期索引找到当天订单，对每个订单用外键索引找到它的明细，再按主键取商品，每一步都是 `SEARCH`。\n\n**易错点**：外键在 SQLite 里不会自动建索引，主键那一侧有索引不代表外键那一侧也有。漏掉它，`order_items` 就会被整表扫描（或临时建自动索引，计划里出现 AUTOMATIC，同样不合格）。",
+        "ideaEn": "**Key observation**: for a three-table join with no scan, every table needs an entry point:\n\n- `orders` is filtered by `order_date = ?` and starts the join, so it needs an index on `order_date`;\n- `order_items` is reached by `i.order_id = o.id`, so it needs an index on `order_id`;\n- `products` is reached by `p.id = i.product_id`; `id` is the primary key and already searchable.\n\n**Steps**: create `orders (order_date)` and `order_items (order_id)`.\n\n**Why it works**: SQLite finds the day's orders through the date index, each order's items through the foreign-key index, and each product by primary key; every step is a `SEARCH`.\n\n**Pitfall**: SQLite does not index foreign keys automatically, and an index on the primary-key side says nothing about the referencing side. Without it `order_items` is scanned (or gets a temporary AUTOMATIC index, which also fails).",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_orders_date ON orders (order_date);\nCREATE INDEX idx_items_order ON order_items (order_id);\n"
+      }
+    ],
+    "verified": true
+  },
+  "sql-78": {
+    "approaches": [
+      {
+        "nameZh": "(customer_id, status, order_date) 一个顶三个",
+        "nameEn": "One (customer_id, status, order_date) index for all three",
+        "ideaZh": "**关键观察**：三条查询的条件分别是：\n\n1. `customer_id = ? AND status = ?`（计数）；\n2. `customer_id = ?`；\n3. `customer_id = ? AND status = ?`，再 `ORDER BY order_date`。\n\n复合索引的任何**最左前缀**都能单独使用，所以把它们按「公共的等值列 → 次一级的等值列 → 排序列」排成 `(customer_id, status, order_date)` 就能同时服务。\n\n**为什么正确**\n\n- 查询 1、3 用前两列做等值查找：`customer_id=? AND status=?`。\n- 查询 2 用最左前缀 `customer_id`。\n- 查询 3 中两个等值列固定后，剩余条目按 `order_date` 有序，不需要临时 B 树排序。\n\n**易错点**\n\n- `(customer_id, order_date, status)`：查询 3 可以省排序，但 `status` 被挡在范围之外，查找条件只有 `customer_id=?`，不满足「同时用上客户和状态」。\n- `(status, customer_id, …)`：查询 2 只有 `customer_id` 条件，用不上以 `status` 开头的索引。",
+        "ideaEn": "**Key observation**: the three queries filter on:\n\n1. `customer_id = ? AND status = ?` (a count);\n2. `customer_id = ?`;\n3. `customer_id = ? AND status = ?` plus `ORDER BY order_date`.\n\nAny **leftmost prefix** of a composite index is usable by itself, so ordering the columns as shared equality → second equality → sort column, `(customer_id, status, order_date)`, serves all three.\n\n**Why it works**\n\n- Queries 1 and 3 seek on the first two columns: `customer_id=? AND status=?`.\n- Query 2 uses the prefix `customer_id`.\n- In query 3, once both equalities are fixed the remaining entries are sorted by `order_date`, so no temp B-tree.\n\n**Pitfalls**\n\n- `(customer_id, order_date, status)`: query 3 avoids the sort, but the search uses only `customer_id=?`, not customer and status together.\n- `(status, customer_id, …)`: query 2 filters only on `customer_id` and cannot use an index that starts with `status`.",
+        "time": "O(log n + k)",
+        "space": "O(n)",
+        "sql": "CREATE INDEX idx_orders_customer_status_date ON orders (customer_id, status, order_date);\n"
+      }
+    ],
+    "verified": true
+  }
+}
