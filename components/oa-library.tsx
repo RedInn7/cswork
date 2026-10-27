@@ -1211,6 +1211,14 @@ export function OaEditorial({
       });
     return () => controller.abort();
   }, [problemId, attempt]);
+  // Signed out (the public OA page): a way in, not a retry that fails the same way.
+  if (error === '请登录后查看 OA 题目')
+    return (
+      <p className="oa-editorial-signin">
+        {t('登录后即可查看完整题解和参考代码。', 'Sign in to read the full editorial and reference code.')}{' '}
+        <a href="/?view=account">{t('登录 / 注册', 'Sign in / sign up')} →</a>
+      </p>
+    );
   if (error)
     return (
       <div role="alert">

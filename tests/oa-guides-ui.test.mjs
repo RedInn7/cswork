@@ -134,6 +134,26 @@ test('a guided OA problem shows the hint ladder, not the hint box, and an editor
   }
 });
 
+test('signed out, the OA editorial offers sign-in instead of a retry that fails the same way', async () => {
+  const window = dom();
+  const { createRoot } = await import('react-dom/client');
+  const { OaEditorial } = await import('../components/oa-library.tsx');
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => Response.json({ error: '请先登录' }, { status: 401 });
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(OaEditorial, { problemId: ID, english: false })));
+    await settle();
+    assert.equal(document.querySelector('.oa-editorial-signin a').getAttribute('href'), '/?view=account');
+    assert.doesNotMatch(document.body.textContent, /重试/);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+    window.close();
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
+});
+
 test('on a Chinese page the OA editorial keeps the Chinese text; the workspace never mounts it in an exam', async () => {
   const window = dom();
   const { createRoot } = await import('react-dom/client');
