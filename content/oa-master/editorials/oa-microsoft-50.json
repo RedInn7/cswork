@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-50",
+  "explanation": "> 题面只剩样例。按样例理解为：把字符串 `S` 切成若干个连续子串，每个子串内没有重复字符，求最少能切成几段（同 LeetCode 2405）。\n\n## 思路\n\n从左往右贪心：当前段能延长就一直延长，用一个集合记录当前段已经出现过的字符。读到字符 `c` 时：\n\n- `c` 不在集合里：加入集合，当前段继续。\n- `c` 已在集合里：当前段必须在 `c` 之前结束，段数加 1，新段从 `c` 开始，集合重置为 `{c}`。\n\n`\"cycle\"`：读 `c`、`y` 后再读到 `c` 重复，切出 `\"cy\"`；新段 `c`、`l`、`e` 都不重复，得到 `\"cle\"`，共 2 段。\n\n## 正确性\n\n设贪心第一段的结尾为 `p`，任何合法切分的第一段结尾都不可能超过 `p`（否则会包含重复字符）。所以贪心的每一段都“走得至少一样远”，归纳可知贪心的段数不多于任何合法切分。\n\n## 复杂度\n\n- 时间：`O(n)`。\n- 空间：`O(Σ)`，集合大小不超过字符集大小。\n\n## 易错点\n\n- 开新段时集合要重置成只含当前字符，而不是清空，否则 `\"dddd\"` 会被算成 2 段而不是 4 段。\n- 非空字符串初始段数为 1；如果原题允许空串，需要单独返回 0。",
+  "explanationEn": "> Only examples remain. We read it as: split `S` into contiguous substrings with no repeated character inside any piece, and minimize the number of pieces (same as LeetCode 2405).\n\n## Approach\n\nGreedy, left to right: extend the current piece as long as possible, tracking its characters in a set. For each character `c`:\n\n- `c` not in the set: add it, keep going.\n- `c` already in the set: the current piece must end right before `c`; increase the count, start a new piece at `c`, and reset the set to `{c}`.\n\nFor `\"cycle\"`: after `c`, `y`, the second `c` repeats, so we cut `\"cy\"`; the new piece `c`, `l`, `e` has no repeats, giving `\"cle\"` — 2 pieces.\n\n## Correctness\n\nIf the greedy first piece ends at `p`, no valid split's first piece can end after `p` (it would contain a repeat). So every greedy piece reaches at least as far as the corresponding piece of any valid split, and by induction greedy uses no more pieces.\n\n## Complexity\n\n- Time: `O(n)`.\n- Space: `O(Σ)`, bounded by the alphabet size.\n\n## Pitfalls\n\n- When starting a new piece, reset the set to contain the current character, not to empty — otherwise `\"dddd\"` comes out as 2 instead of 4.\n- A non-empty string starts with a count of 1; return 0 separately if empty input is allowed.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def minimumSubstringsWithoutRepeatingCharacters(s: str) -> int:\n    seg = 1\n    used = set()\n    for c in s:\n        if c in used:\n            seg += 1\n            used = {c}\n        else:\n            used.add(c)\n    return seg\n\nif __name__ == \"__main__\":\n    assert minimumSubstringsWithoutRepeatingCharacters(\"word\") == 1\n    assert minimumSubstringsWithoutRepeatingCharacters(\"dddd\") == 4\n    assert minimumSubstringsWithoutRepeatingCharacters(\"cycle\") == 2\n    print(\"ok\")\n"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    int minimumSubstringsWithoutRepeatingCharacters(String s) {\n        int seg = 1;\n        Set<Character> used = new HashSet<>();\n        for (char c : s.toCharArray()) {\n            if (used.contains(c)) { seg++; used.clear(); }\n            used.add(c);\n        }\n        return seg;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    int minimumSubstringsWithoutRepeatingCharacters(string s) {\n        int seg = 1;\n        set<char> used;\n        for (char c : s) {\n            if (used.count(c)) { seg++; used.clear(); }\n            used.insert(c);\n        }\n        return seg;\n    }\n};\n"
+    }
+  ]
+}

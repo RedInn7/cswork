@@ -352,8 +352,10 @@ test('OA library reveals solutions only on request, supports language/copy and c
     assert.match(document.body.textContent, /带时间戳/);
     assert.doesNotMatch(
       document.body.textContent,
-      /View solution|Start practicing|Judging isn't ready/,
+      /Start practicing|Judging isn't ready/,
     );
+    // Not judged, but every problem has an editorial (content/oa-master/editorials).
+    assert.match(document.body.textContent, /View solution/);
     await click('Practice all four stages');
     assert.deepEqual(relatedNavigation, [
       'problem',
@@ -407,7 +409,8 @@ test('OA library reveals solutions only on request, supports language/copy and c
       statement: 'Pending statement',
     });
     assert.match(document.body.textContent, /Judging isn't ready/);
-    assert.doesNotMatch(document.body.textContent, /Start practicing|View solution/);
+    assert.doesNotMatch(document.body.textContent, /Start practicing/);
+    assert.match(document.body.textContent, /View solution/);
     await click('Back to OA');
     navigation = undefined;
     // A modified click is the browser's (new tab), not an in-app navigation.

@@ -1,0 +1,11 @@
+{
+  "id": "oa-cisco-15",
+  "explanation": "## 思路\n\n从左到右扫一遍，用一个缓冲区 `buf` 收集还没处理的字母：\n\n1. 遇到字母：追加到 `buf`。\n2. 遇到数字 `d`：把 `buf` 重复 `d` 次追加到结果，然后清空 `buf`。`d = 1` 原样保留一次，`d = 0` 相当于丢掉这段字母。\n3. 扫完后，`buf` 里剩下的字母原样追加一次。\n\n样例 `\"cisco2india\"`：读到 `2` 时 `buf = \"cisco\"`，输出 `\"ciscocisco\"`；最后剩下 `\"india\"` 原样追加，结果 `\"ciscociscoindia\"`。\n\nPython 里 `buf * d` 正好覆盖 `d = 0`（得到空串）和 `d = 1` 的情况，不需要单独分支。\n\n## 正确性\n\n每个字母恰好属于一段：它后面第一个数字之前的那段，或者末尾没有数字的最后一段。数字只作用于它前面到上一个数字之间的那段字母，这正是 `buf` 在遇到数字时保存的内容；处理完立即清空，保证同一段不会被下一个数字重复使用。\n\n## 复杂度\n\n- 时间：`O(输出长度)`，即 `O(9 × |s|)` 以内。\n- 空间：`O(输出长度)`。用列表收集片段再 `join`，避免字符串反复拼接。\n\n## 易错点\n\n- 原参考代码在 `d = 0` 时仍然保留了一次 `buf`，和题面“`d == 0` discards it”不符，这里已改正。\n- 连续两个数字时，第二个数字面对的是空 `buf`，什么也不输出。\n- 每个数字只是一位（0-9），不要把相邻数字拼成多位数。\n",
+  "explanationEn": "## Approach\n\nScan left to right with a buffer `buf` of pending letters:\n\n1. Letter: append to `buf`.\n2. Digit `d`: append `buf` repeated `d` times to the result, then clear `buf`. `d = 1` keeps it once, `d = 0` drops it.\n3. At the end, append whatever is left in `buf` once.\n\nFor `\"cisco2india\"`: at `2`, `buf = \"cisco\"` gives `\"ciscocisco\"`; then `\"india\"` is appended, yielding `\"ciscociscoindia\"`. In Python `buf * d` already covers `d = 0` and `d = 1`.\n\n## Correctness\n\nEach letter belongs to exactly one segment: the run before the next digit, or the trailing run. A digit only applies to the letters since the previous digit, which is exactly what `buf` holds; clearing it right away prevents reuse by a later digit.\n\n## Complexity\n\n- Time: `O(output length)`, at most `9 × |s|`.\n- Space: `O(output length)`; collect pieces in a list and `join`.\n\n## Pitfalls\n\n- The original reference code still kept `buf` once when `d = 0`, contradicting \"`d == 0` discards it\"; fixed here.\n- Two digits in a row: the second sees an empty buffer and adds nothing.\n- Digits are single characters; don't merge them into multi-digit numbers.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def createNewVersion(s: str) -> str:\n    out = []\n    buf = []\n    for c in s:\n        if c.isdigit():\n            out.append(''.join(buf) * int(c))\n            buf = []\n        else:\n            buf.append(c)\n    out.append(''.join(buf))\n    return ''.join(out)\n"
+    }
+  ]
+}

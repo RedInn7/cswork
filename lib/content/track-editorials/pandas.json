@@ -1,0 +1,992 @@
+{
+  "pd-01": {
+    "approaches": [
+      {
+        "nameZh": "用 isin 做反向过滤",
+        "nameEn": "Anti-filter with isin",
+        "ideaZh": "「找不到上级」其实是两种情况：`manager_id` 是 NULL，或者它指向一个不存在的编号。这两种情况可以用同一个判断概括：**`manager_id` 不在 `id` 列里**。\n\n做法：\n\n1. `employees['manager_id'].isin(employees['id'])` 得到一个布尔 Series，表示这名员工的上级编号是否真实存在；\n2. 取反 `~valid`，再选出 `id`、`name` 两列。\n\n为什么能把 NULL 一起处理掉？`manager_id` 是可空整数 Int64，缺失值是 `pd.NA`。`isin` 对缺失值返回 `False`（缺失值不属于任何集合），取反后就是 `True`，正好被保留下来。所以不需要单独写 `isna()` 分支。\n\n易错点：如果用 `employees['manager_id'] == ...` 之类的比较，`pd.NA` 参与比较会得到 `<NA>` 而不是布尔值，用来做掩码会出错；`isin` 没有这个问题。",
+        "ideaEn": "\"No valid manager\" covers two cases: `manager_id` is NULL, or it points to an id that does not exist. One test covers both: **`manager_id` is not among the `id` values**.\n\nSteps:\n\n1. `employees['manager_id'].isin(employees['id'])` gives a boolean Series saying whether each employee's manager actually exists;\n2. negate it with `~valid` and select `id` and `name`.\n\nWhy does NULL fall out for free? `manager_id` is nullable Int64, so a missing value is `pd.NA`. `isin` returns `False` for it (a missing value belongs to no set), so after negation the row is kept. No separate `isna()` branch is needed.\n\nPitfall: comparing with `==` would propagate `pd.NA` into the mask instead of a boolean, which breaks indexing; `isin` always returns plain booleans.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees']\n    # pd.NA is in no set, so a NULL manager_id counts as \"not found\" too\n    valid = employees['manager_id'].isin(employees['id'])\n    return employees.loc[~valid, ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-02": {
+    "approaches": [
+      {
+        "nameZh": "先填 Unknown 再分组计数",
+        "nameEn": "Fill Unknown, then group and count",
+        "ideaZh": "关键在于 **`groupby` 默认会丢掉键为缺失值的行**（`dropna=True`）。如果直接按 `city` 分组，城市为 NULL 的客户会凭空消失，`Unknown` 这一组就出不来。\n\n做法：\n\n1. `customers['city'].fillna('Unknown')` 把缺失城市替换成 `Unknown`；\n2. 对这条 Series 按它自己分组，`size()` 数每组的行数；\n3. `reset_index(name='customers')` 把分组键变回一列，得到 `city, customers` 两列。\n\n题目保证不会有真叫 Unknown 的城市，所以填充值不会和真实数据混在一起。\n\n易错点：计数要用 `size()` 而不是 `count()`。这里分组后的值就是城市本身，`size()` 数行数，含义最直接。另外也可以用 `groupby('city', dropna=False)`，但那样分组键仍是 `None`，还得再改名，不如先 `fillna` 干净。",
+        "ideaEn": "The key fact: **`groupby` drops rows whose key is missing by default** (`dropna=True`). Grouping on `city` directly would silently lose the customers with a NULL city, and the `Unknown` group would never appear.\n\nSteps:\n\n1. `customers['city'].fillna('Unknown')` replaces missing cities with `Unknown`;\n2. group that Series by itself and call `size()` to count rows per group;\n3. `reset_index(name='customers')` turns the key back into a column, giving `city, customers`.\n\nThe statement guarantees no real city is called Unknown, so the placeholder never merges with real data.\n\nPitfall: use `size()`, which counts rows. `groupby('city', dropna=False)` also works, but the key is still `None` and needs renaming afterwards; filling first is cleaner.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    city = customers['city'].fillna('Unknown')  # groupby would drop missing keys\n    return city.groupby(city).size().reset_index(name='customers')\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-03": {
+    "approaches": [
+      {
+        "nameZh": "一次 groupby 聚合四个指标",
+        "nameEn": "Four metrics in one groupby",
+        "ideaZh": "四个指标的区别全在于「缺考行怎么算」：\n\n| 指标 | 缺考行 | pandas 写法 |\n|---|---|---|\n| 选课人数 | 计入 | `size` |\n| 参加人数 | 不计 | `count`（跳过缺失值） |\n| 参加者平均分 | 不计 | `mean`（跳过缺失值） |\n| 缺考按 0 平均 | 按 0 计 | 先 `fillna(0)` 再 `mean` |\n\n做法：\n\n1. `enrollments` 和 `courses` 内连接，拿到课程名。内连接自然去掉没人选的课（Drama），正好符合「至少有一人选课」；\n2. 新增一列 `score_or_zero = score.fillna(0)`；\n3. 按 `course_id, title` 分组，用具名聚合一次算出四列；\n4. 两个平均分 `.round(2)`。\n\n为什么全员缺考时平均分是 NULL：`mean` 跳过所有缺失值后没有数据，结果是缺失值，判题时写作 null，正是题目要求。\n\n易错点：分组键要带上 `course_id`，不能只按 `title`，否则两门同名课程会被合并。",
+        "ideaEn": "The four metrics differ only in how an absent row (NULL score) is treated:\n\n| metric | absent row | pandas |\n|---|---|---|\n| enrolled | counted | `size` |\n| sat | skipped | `count` (skips missing) |\n| avg_score | skipped | `mean` (skips missing) |\n| avg_with_zero | counts as 0 | `fillna(0)` then `mean` |\n\nSteps:\n\n1. inner-merge `enrollments` with `courses` for the title. The inner join drops courses nobody took (Drama), matching \"at least one enrollment\";\n2. add `score_or_zero = score.fillna(0)`;\n3. group by `course_id, title` and compute all four columns with named aggregation;\n4. round both averages with `.round(2)`.\n\nWhy is the average NULL when nobody sat the exam? After `mean` skips every missing value there is nothing left, so the result is missing and prints as null, as required.\n\nPitfall: keep `course_id` in the group key. Grouping by `title` alone would merge two courses that share a name.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    courses = tables['courses']\n    enrollments = tables['enrollments']\n    rows = enrollments.merge(courses, left_on='course_id', right_on='id')\n    rows['score_or_zero'] = rows['score'].fillna(0)\n    result = rows.groupby(['course_id', 'title'], as_index=False).agg(\n        enrolled=('student_id', 'size'),     # every enrollment\n        sat=('score', 'count'),              # count skips missing scores\n        avg_score=('score', 'mean'),         # mean skips them too\n        avg_with_zero=('score_or_zero', 'mean'),\n    )\n    result['avg_score'] = result['avg_score'].round(2)\n    result['avg_with_zero'] = result['avg_with_zero'].round(2)\n    return result[['title', 'enrolled', 'sat', 'avg_score', 'avg_with_zero']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-04": {
+    "approaches": [
+      {
+        "nameZh": "isin 取反",
+        "nameEn": "Negated isin",
+        "ideaZh": "「从未下单」就是客户的 `id` 不出现在 `orders.customer_id` 里。状态无关紧要，已取消的订单也算下过单，所以不用按 `status` 过滤。\n\n做法：`customers['id'].isin(orders['customer_id'].dropna())` 标出下过单的客户，取反后选出 `id, name`。\n\n游客订单的 `customer_id` 是 `pd.NA`。这里 `customers['id']` 本身没有缺失值，`isin` 里混一个 NA 其实不会让结果出错，但先 `dropna()` 能把意图写清楚：我们只关心真实的客户编号。\n\n对照 SQL：这道题在 SQL 里的经典坑是 `NOT IN (子查询)` 遇到 NULL 会让整个结果为空。pandas 的 `isin` 不是三值逻辑，没有这个问题，但养成先去掉缺失值的习惯是好的。",
+        "ideaEn": "\"Never ordered\" means the customer's `id` never appears in `orders.customer_id`. Status does not matter (a cancelled order still counts), so there is no `status` filter.\n\nSteps: `customers['id'].isin(orders['customer_id'].dropna())` marks the customers who ordered; negate it and select `id, name`.\n\nGuest orders have `customer_id = pd.NA`. Since `customers['id']` itself has no missing values, an NA inside `isin` would not change the answer, but `dropna()` states the intent: only real customer ids matter.\n\nCompared with SQL: the classic trap there is `NOT IN (subquery)` returning nothing once the subquery contains a NULL. pandas `isin` has no three-valued logic, so that trap does not exist, but dropping missing values first is still a good habit.",
+        "time": "O(n + m)",
+        "space": "O(m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    orders = tables['orders']\n    ordered = customers['id'].isin(orders['customer_id'].dropna())\n    return customers.loc[~ordered, ['id', 'name']]\n"
+      },
+      {
+        "nameZh": "左连接 + indicator",
+        "nameEn": "Left merge with indicator",
+        "ideaZh": "另一种写法是 SQL 里 `LEFT JOIN ... WHERE o.id IS NULL` 的直译：\n\n1. 先把订单里的客户编号去重（`drop_duplicates`），避免一个客户多笔订单把左连接结果撑大；\n2. `customers.merge(..., how='left', indicator=True)`，`_merge` 列为 `left_only` 的行就是右边找不到匹配的客户；\n3. 选出这些行的 `id, name`。\n\n`indicator=True` 比检查右侧某列是否为空更可靠：右侧列本身可能就有缺失值，而 `_merge` 只反映「有没有配上」。连接键 `id` 和 `customer_id` 都是 Int64，类型一致可以直接连；游客订单的 NA 键不会和任何客户配上。",
+        "ideaEn": "The other way is a literal translation of SQL's `LEFT JOIN ... WHERE o.id IS NULL`:\n\n1. deduplicate the customer ids in orders first (`drop_duplicates`) so a customer with many orders does not multiply rows;\n2. `customers.merge(..., how='left', indicator=True)`; rows whose `_merge` is `left_only` found no match on the right;\n3. select `id, name` from those rows.\n\n`indicator=True` is more reliable than testing a right-hand column for nulls, since that column could be missing for other reasons; `_merge` only says whether a match happened. Both keys are Int64, and the guests' NA keys match no customer.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    buyers = tables['orders'][['customer_id']].dropna().drop_duplicates()\n    joined = customers.merge(buyers, left_on='id', right_on='customer_id', how='left', indicator=True)\n    return joined.loc[joined['_merge'] == 'left_only', ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-05": {
+    "approaches": [
+      {
+        "nameZh": "自连接比较工资",
+        "nameEn": "Self-merge and compare",
+        "ideaZh": "每名员工要和「自己的上级」比，上级也在同一张表里，这就是自连接：左表的 `manager_id` 对上右表的 `id`。\n\n做法：\n\n1. `employees.merge(employees, left_on='manager_id', right_on='id', suffixes=('', '_manager'))`。左边保留原列名，右边（上级）的列加 `_manager` 后缀；\n2. 筛出 `salary > salary_manager` 的行；\n3. 输出 `name, salary, name_manager, salary_manager`。\n\n为什么上级为 NULL 或不存在的人自动被排除：默认是内连接，`manager_id` 为 NA 或指向不存在编号的行找不到匹配，直接被丢掉，正好符合「不参与比较」。\n\n易错点：`suffixes` 不写的话两边会变成 `name_x / name_y`，容易把员工和上级弄反。比较用严格大于，工资相等的不算。",
+        "ideaEn": "Each employee is compared with their own manager, who lives in the same table: a self-merge matching the left `manager_id` with the right `id`.\n\nSteps:\n\n1. `employees.merge(employees, left_on='manager_id', right_on='id', suffixes=('', '_manager'))`; the left side keeps its names and the manager's columns get `_manager`;\n2. keep rows with `salary > salary_manager`;\n3. output `name, salary, name_manager, salary_manager`.\n\nWhy are employees without a (valid) manager excluded? The default merge is inner: a NA `manager_id` or one pointing to a missing id finds no match and the row disappears, exactly as required.\n\nPitfall: without `suffixes` you get `name_x / name_y` and can easily swap employee and manager. The comparison is strict; equal salaries do not count.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees']\n    # right side = the manager; inner merge drops missing or unknown managers\n    pairs = employees.merge(employees, left_on='manager_id', right_on='id', suffixes=('', '_manager'))\n    pairs = pairs[pairs['salary'] > pairs['salary_manager']]\n    return pairs[['name', 'salary', 'name_manager', 'salary_manager']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-06": {
+    "approaches": [
+      {
+        "nameZh": "先计数再 map 回部门",
+        "nameEn": "Count, then map onto departments",
+        "ideaZh": "结果要以「部门」为主体，空部门也得出现，所以不能从员工表出发分组（空部门在员工表里没有行）。思路是反过来：先算出每个 `department_id` 的人数，再把这个计数「贴」到部门表上。\n\n做法：\n\n1. `employees.groupby('department_id').size()`，得到以部门编号为 index 的人数。`department_id` 为 NA 的员工被 groupby 自动丢掉，正好不计入；\n2. `departments['id'].map(counts)`：按编号查表，找不到的部门（没人）得到 NaN；\n3. `fillna(0).astype(int)` 补成 0。\n\n为什么要 `astype(int)`：`map` 后出现了 NaN，列会变成浮点，填完 0 转回整数更干净（判题时 3.0 和 3 其实相同，但整数更符合语义）。",
+        "ideaEn": "The result is per department and must include empty ones, so grouping the employees table cannot work on its own (an empty department has no employee rows). Turn it around: count per `department_id`, then attach the counts to the departments table.\n\nSteps:\n\n1. `employees.groupby('department_id').size()` gives headcounts indexed by department id. Employees with a NA `department_id` are dropped by groupby, which is exactly what we want;\n2. `departments['id'].map(counts)` looks each department up; departments without staff get NaN;\n3. `fillna(0).astype(int)` turns those into 0.\n\n`astype(int)` is cosmetic: after `map` the column becomes float because of NaN. The judge treats 3.0 and 3 alike, but an integer count reads better.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees']\n    counts = employees.groupby('department_id').size()   # NA department dropped\n    result = departments[['name']].copy()\n    result['headcount'] = departments['id'].map(counts).fillna(0).astype(int)\n    return result\n"
+      },
+      {
+        "nameZh": "左连接后用 count 计数",
+        "nameEn": "Left merge, then count",
+        "ideaZh": "这是 SQL `LEFT JOIN + COUNT(e.id)` 的写法：\n\n1. `departments.merge(employees, left_on='id', right_on='department_id', how='left')`，空部门也保留一行，员工列全是缺失值；\n2. 按部门分组，对员工编号用 `count` 聚合。`count` 不数缺失值，空部门那一行贡献 0。\n\n和 SQL 一样，关键是用 `count(员工列)` 而不是 `size`：`size` 会把空部门那一行算成 1。分组键要用部门 `id`（不只是名字），防止同名部门合并。",
+        "ideaEn": "This mirrors SQL's `LEFT JOIN + COUNT(e.id)`:\n\n1. `departments.merge(employees, left_on='id', right_on='department_id', how='left')` keeps one row for an empty department, with all employee columns missing;\n2. group by department and aggregate the employee id with `count`, which skips missing values, so the empty department scores 0.\n\nAs in SQL, the point is `count` on an employee column rather than `size`: `size` would count the empty department's placeholder row as 1. Group by the department id, not only its name, so departments sharing a name stay apart.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees']\n    joined = departments.merge(employees, left_on='id', right_on='department_id',\n                               how='left', suffixes=('', '_employee'))\n    # count skips the missing employee id of an empty department\n    result = joined.groupby(['id', 'name'], as_index=False).agg(headcount=('id_employee', 'count'))\n    return result[['name', 'headcount']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-07": {
+    "approaches": [
+      {
+        "nameZh": "先汇总明细，再补客户名",
+        "nameEn": "Sum the items, then attach the customer",
+        "ideaZh": "这道题有三处要留意：金额按 `unit_price`（成交价）算而不是商品标价；只算已支付订单；游客订单要显示 `Guest`。另外「至少包含一件商品」意味着没有明细的订单不输出。\n\n做法：\n\n1. 取出已支付订单的编号，筛出属于它们的明细，算 `amount = quantity * unit_price`；\n2. 按 `order_id` 求和。因为是从明细出发，没有明细的订单天然不会出现；\n3. 和 `orders` 内连接拿到 `customer_id`；\n4. 和客户表 **左连接**：游客订单的 `customer_id` 是 NA，内连接会把它丢掉，左连接则保留下来、客户名为缺失；\n5. `fillna('Guest')`。\n\n为什么先聚合再连接：先在明细层面把金额汇总成「每单一行」，后面的连接都是一对一，不会因为多条明细重复计算。\n\n易错点：`products.price` 是标价，题目明确要用成交价，`products` 表在这里完全用不到。",
+        "ideaEn": "Three details matter: the amount uses `unit_price` (what was charged), not the list price; only paid orders count; guest orders show `Guest`. Also, \"at least one item\" means orders without items are not listed.\n\nSteps:\n\n1. take the ids of paid orders, keep their items and compute `amount = quantity * unit_price`;\n2. sum by `order_id`. Starting from the items means orders with no items never appear;\n3. inner-merge with `orders` to get `customer_id`;\n4. **left**-merge with customers: a guest order has NA `customer_id`, which an inner merge would drop; the left merge keeps it with a missing name;\n5. `fillna('Guest')`.\n\nAggregating first makes every later merge one-to-one, so nothing is double counted.\n\nPitfall: `products.price` is the list price; the task wants the charged price, so `products` is not needed at all.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    orders = tables['orders']\n    items = tables['order_items']\n    customers = tables['customers'][['id', 'name']].rename(columns={'id': 'customer_id'})\n\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']   # charged price, not list price\n\n    totals = items.groupby('order_id', as_index=False)['amount'].sum()\n    result = totals.merge(orders[['id', 'customer_id']], left_on='order_id', right_on='id')\n    result = result.merge(customers, on='customer_id', how='left')  # keep guest orders\n    result['customer'] = result['name'].fillna('Guest')\n    return result[['order_id', 'customer', 'amount']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-08": {
+    "approaches": [
+      {
+        "nameZh": "按城市自连接，保留 id 较小在前",
+        "nameEn": "Self-merge on city, keep the smaller id first",
+        "ideaZh": "「同城的两位客户」就是按 `city` 做自连接：同一城市的客户两两配对。但自连接会产生三类多余的行：自己和自己配对、`(a, b)` 和 `(b, a)` 各出现一次。题目要求 `first_id < second_id`，这一个条件同时去掉了这两类。\n\n做法：\n\n1. `dropna(subset=['city'])` 去掉城市未知的客户；\n2. `customers.merge(customers, on='city')`，两侧的 `id` 自动变成 `id_x`、`id_y`；\n3. 保留 `id_x < id_y` 的行，输出 `city, id_x, id_y`。\n\n为什么第 1 步必不可少：pandas 的 `merge` **会把缺失键当作相等的键来配对**（和 SQL 里 `NULL = NULL` 不成立正好相反）。不去掉的话，两个城市为 None 的客户会被配成一对。\n\n复杂度：一个城市有 k 位客户就会产生 k² 行中间结果，输出本身是 k(k-1)/2 对，量级相同。",
+        "ideaEn": "Two customers in the same city is a self-merge on `city`, which pairs every customer with every other one there. The merge also yields self-pairs and both `(a, b)` and `(b, a)`; the required `first_id < second_id` removes both kinds at once.\n\nSteps:\n\n1. `dropna(subset=['city'])` removes customers with an unknown city;\n2. `customers.merge(customers, on='city')`; the two id columns become `id_x` and `id_y`;\n3. keep rows with `id_x < id_y` and return `city, id_x, id_y`.\n\nStep 1 is essential: pandas `merge` **matches missing keys with each other** (unlike SQL, where `NULL = NULL` is not true). Without it, two customers whose city is None would be paired.\n\nCost: a city with k customers produces k² intermediate rows; the output itself has k(k-1)/2 pairs, the same order.",
+        "time": "O(n + p)",
+        "space": "O(n + p)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    # merge pairs missing keys with each other, so drop unknown cities first\n    customers = tables['customers'].dropna(subset=['city'])\n    pairs = customers.merge(customers, on='city')\n    pairs = pairs[pairs['id_x'] < pairs['id_y']]   # no self-pairs, each pair once\n    return pairs[['city', 'id_x', 'id_y']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-09": {
+    "approaches": [
+      {
+        "nameZh": "筛已支付、分组计数、再过滤",
+        "nameEn": "Filter paid, count per customer, filter again",
+        "ideaZh": "条件有两层：先在「订单」层面只看已支付，再在「客户」层面要求数量 ≥ 3。对应 SQL 的 `WHERE` 和 `HAVING`，pandas 里就是分组前后各筛一次。\n\n做法：\n\n1. `orders[orders['status'] == 'paid']`；\n2. `groupby('customer_id').size()` 数每位客户的已支付订单，`reset_index(name='paid_orders')`。游客订单的 `customer_id` 是 NA，groupby 自动丢掉；\n3. 和 `customers` 内连接拿到姓名；\n4. 保留 `paid_orders >= 3`。\n\n易错点：顺序不能反。如果先数全部订单再筛 ≥ 3，像样例里的 Alice（4 笔里 1 笔已取消）就会被错误地按 4 笔计算。边界是「不少于 3」，用 `>=`。",
+        "ideaEn": "There are two levels of filtering: paid status per order, then at least 3 per customer, like SQL's `WHERE` and `HAVING`. In pandas that is one filter before grouping and one after.\n\nSteps:\n\n1. `orders[orders['status'] == 'paid']`;\n2. `groupby('customer_id').size()` counts paid orders per customer, then `reset_index(name='paid_orders')`. Guest orders have a NA `customer_id` and are dropped by groupby;\n3. inner-merge with `customers` for the name;\n4. keep `paid_orders >= 3`.\n\nPitfall: the order of filters matters. Counting all orders first would credit Alice in the sample with 4 orders even though one is cancelled. \"At least 3\" means `>=`.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    orders = tables['orders']\n    paid = orders[orders['status'] == 'paid']                       # WHERE\n    counts = paid.groupby('customer_id').size().reset_index(name='paid_orders')\n    result = customers.merge(counts, left_on='id', right_on='customer_id')\n    return result.loc[result['paid_orders'] >= 3, ['id', 'name', 'paid_orders']]  # HAVING\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-10": {
+    "approaches": [
+      {
+        "nameZh": "明细连类目，分组求和后排序",
+        "nameEn": "Join categories, sum, then sort",
+        "ideaZh": "销售额要从订单明细算起：已支付订单的明细 → 对上商品得到类目 → 按类目求和。\n\n做法：\n\n1. 和前几题一样，先取出已支付订单的明细，算 `amount = quantity * unit_price`；\n2. 用 `product_id` 连上 `products` 的 `category`；\n3. `groupby('category', as_index=False)['amount'].sum()`；\n4. 过滤 `amount >= 300`；\n5. `sort_values(['amount', 'category'], ascending=[False, True])`：销售额降序，相同时类目名升序。\n\n本题比较行的顺序，所以排序必须做对。`ascending` 传列表可以给每个排序键单独指定方向，一次排好两层。\n\n易错点：过滤是对汇总后的类目销售额做的，不能对单条明细筛 ≥ 300。",
+        "ideaEn": "Revenue comes from the item rows: paid items → their product's category → sum per category.\n\nSteps:\n\n1. as in earlier problems, keep the items of paid orders and compute `amount = quantity * unit_price`;\n2. merge on `product_id` to get the `category`;\n3. `groupby('category', as_index=False)['amount'].sum()`;\n4. keep `amount >= 300`;\n5. `sort_values(['amount', 'category'], ascending=[False, True])`: revenue descending, ties by category ascending.\n\nRow order is compared here, so the sort must be right. Passing a list to `ascending` gives each key its own direction in one call.\n\nPitfall: the 300 threshold applies to the category total, not to single item rows.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Item rows of paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\ndef solve(tables):\n    products = tables['products'][['id', 'category']].rename(columns={'id': 'product_id'})\n    items = paid_items(tables).merge(products, on='product_id')\n    result = items.groupby('category', as_index=False)['amount'].sum()\n    result = result[result['amount'] >= 300]\n    return result.sort_values(['amount', 'category'], ascending=[False, True])\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-101": {
+    "approaches": [
+      {
+        "nameZh": "melt 后去掉缺失值",
+        "nameEn": "melt, then drop missing",
+        "ideaZh": "宽表变长表正是 `melt` 的用途：`id_vars` 里的列原样保留，`value_vars` 里的每一列变成「列名 + 值」两列，每个原行展开成多行。\n\n1. `wide.melt(id_vars='store', value_vars=['q1', 'q2', 'q3', 'q4'], var_name='quarter', value_name='amount')`：季度名进 `quarter` 列，销售额进 `amount` 列。\n2. `dropna(subset=['amount'])` 去掉没上报（NULL）的季度。\n\n易错点：\n\n- `value_vars` 要显式写出四个季度。不写的话，`melt` 会把 `id_vars` 以外的所有列都拆开，`region` 也会变成一个「季度」。\n- 销售额为 0 是上报了的，要保留。`dropna` 只删缺失值，0 不受影响；不要用 `amount > 0` 之类的条件过滤。\n- `id_vars` 只放 `store`，结果正好是 `store, quarter, amount` 三列，顺序和要求一致。",
+        "ideaEn": "Wide to long is exactly what `melt` does: `id_vars` columns stay as they are, and each column in `value_vars` becomes a (column name, value) pair, so one row fans out into several.\n\n1. `wide.melt(id_vars='store', value_vars=['q1', 'q2', 'q3', 'q4'], var_name='quarter', value_name='amount')` puts the quarter name in `quarter` and the sales in `amount`.\n2. `dropna(subset=['amount'])` removes unreported (NULL) quarters.\n\nPitfalls:\n\n- List the four quarters in `value_vars`. Without it, `melt` unpivots every non-id column, and `region` turns into a \"quarter\".\n- A sales figure of 0 was reported and must stay. `dropna` removes only missing values; do not filter with `amount > 0`.\n- With only `store` in `id_vars`, the result is exactly `store, quarter, amount`, in the required order.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    wide = tables['sales_wide']\n    long = wide.melt(\n        id_vars='store',\n        value_vars=['q1', 'q2', 'q3', 'q4'],  # region is not a quarter\n        var_name='quarter',\n        value_name='amount',\n    )\n    return long.dropna(subset=['amount'])\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-102": {
+    "approaches": [
+      {
+        "nameZh": "pivot_table 加 reindex 补齐",
+        "nameEn": "pivot_table plus reindex",
+        "ideaZh": "「区域 × 月份」求和是标准的透视表，但有两个坑要补：\n\n1. **只要一季度的三个月。** 先用 `isin(MONTHS)` 筛出 2024-01 到 2024-03 的订单。\n2. **透视求和。** `pivot_table(index='region', columns='month', values='amount', aggfunc='sum', fill_value=0)`。`aggfunc` 默认是 `mean`，必须写成 `'sum'`；某区域某月没有订单的格子用 `fill_value=0` 补 0。\n3. **补齐行和列。** 筛选之后，只在其他月份有订单的区域（比如样例里只有四月订单的 West）就不在透视结果里了；如果整张表某个月都没订单，这一列也不存在。用 `reindex(index=所有出现过的区域, columns=MONTHS, fill_value=0)` 把缺的行和列都补成 0，同时把列按 1、2、3 月排好。\n4. `reset_index()` 把区域变回普通列，得到 `region, jan, feb, mar` 四列。\n\n易错点：区域列表要从**筛选前**的 `orders` 里取，否则 West 这种区域会漏掉。",
+        "ideaEn": "Region by month sums is a textbook pivot table, with two gaps to fill:\n\n1. **Only the three Q1 months.** Filter with `isin(MONTHS)` for 2024-01 through 2024-03.\n2. **Pivot and sum.** `pivot_table(index='region', columns='month', values='amount', aggfunc='sum', fill_value=0)`. The default `aggfunc` is `mean`, so say `'sum'`; empty cells become 0 via `fill_value`.\n3. **Fill in rows and columns.** After filtering, a region with orders only in other months (West in the sample, April only) is gone from the pivot, and a month with no orders at all has no column. `reindex(index=every region seen, columns=MONTHS, fill_value=0)` adds both back as zeros and puts the months in order.\n4. `reset_index()` turns the region back into a column: `region, jan, feb, mar`.\n\nPitfall: take the region list from `orders` **before** filtering, or regions like West disappear.",
+        "time": "O(n + r log r)",
+        "space": "O(n + r)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\nMONTHS = ['2024-01', '2024-02', '2024-03']\n\n\ndef solve(tables):\n    orders = tables['orders']\n    q1 = orders[orders['month'].isin(MONTHS)]\n    table = q1.pivot_table(index='region', columns='month', values='amount', aggfunc='sum', fill_value=0)\n    # regions with no Q1 orders and months with no orders at all are missing: add them as 0\n    table = table.reindex(index=sorted(orders['region'].unique()), columns=MONTHS, fill_value=0)\n    return table.reset_index()\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-103": {
+    "approaches": [
+      {
+        "nameZh": "unstack 把学期变成列",
+        "nameEn": "unstack the term into columns",
+        "ideaZh": "长表里每行是（学生，科目，学期，分数），要的是每个（学生，科目）一行、两个学期各一列，这是长表变宽表。\n\n1. `set_index(['student', 'subject', 'term'])['score']` 得到一个三层索引的 Series。\n2. `.unstack('term')` 把最内层的学期移到列上；缺一个学期的格子自动是缺失值。\n3. `reindex(columns=['fall', 'spring'])`：如果整张表没有某个学期，`unstack` 不会凭空造出这一列，`reindex` 把它补上（全为缺失值），顺便固定列的顺序。\n4. `change = spring - fall`：Int64 的减法遇到 `pd.NA` 结果就是 `pd.NA`，正好满足「缺一个就为 NULL」。\n5. `reset_index()` 后按 `student, subject, fall, spring, change` 取列。\n\n为什么能直接 `unstack`：题目保证每个学生、科目、学期只有一个分数，索引不重复。若有重复，`unstack` 会报错，那时要改用 `pivot_table` 并指定聚合方式。",
+        "ideaEn": "Each row is (student, subject, term, score); we want one row per (student, subject) with a column per term, a long-to-wide reshape.\n\n1. `set_index(['student', 'subject', 'term'])['score']` is a Series with a three-level index.\n2. `.unstack('term')` moves the innermost level to the columns; a missing term becomes a missing value.\n3. `reindex(columns=['fall', 'spring'])`: if no row has some term, `unstack` cannot invent that column, so `reindex` adds it (all missing) and fixes the order.\n4. `change = spring - fall`: Int64 subtraction with `pd.NA` gives `pd.NA`, exactly \"NULL when either is missing\".\n5. `reset_index()` and select `student, subject, fall, spring, change`.\n\nWhy `unstack` is safe: each student, subject and term has one score, so the index is unique. With duplicates `unstack` raises and you would switch to `pivot_table` with an aggregation.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    grades = tables['grades']\n    wide = grades.set_index(['student', 'subject', 'term'])['score'].unstack('term')\n    wide = wide.reindex(columns=['fall', 'spring'])  # a term absent from the table still gets a column\n    wide['change'] = wide['spring'] - wide['fall']\n    return wide.reset_index()[['student', 'subject', 'fall', 'spring', 'change']]\n"
+      },
+      {
+        "nameZh": "按学期左连接",
+        "nameEn": "Left-join one term at a time",
+        "ideaZh": "不想用多层索引的话，也可以用连接来「横向拼列」：\n\n1. 先取所有出现过的（学生，科目）组合 `drop_duplicates()`，作为结果的骨架。\n2. 对每个学期，筛出这个学期的行，把 `score` 改名成学期名，然后 `merge(..., how='left')` 接到骨架上。左连接保证骨架里的每个组合都留着，没有这个学期分数的就是缺失值。\n3. `change = spring - fall`。\n\n整张表没有某个学期时，筛出来是空表，左连接后这一列仍然存在、全为缺失值，所以不需要额外补列。这种写法更啰嗦一些，但每一步都对应 SQL 里的一次 LEFT JOIN，便于理解。",
+        "ideaEn": "Without a MultiIndex you can glue columns side by side with joins:\n\n1. Take every (student, subject) pair with `drop_duplicates()` as the skeleton.\n2. For each term, filter its rows, rename `score` to the term name and `merge(..., how='left')` onto the skeleton. The left join keeps every pair; pairs without that term get a missing value.\n3. `change = spring - fall`.\n\nIf a term never occurs, its filtered frame is empty but the left join still adds the column, all missing, so nothing extra is needed. It is wordier, but each step is one SQL LEFT JOIN.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    grades = tables['grades']\n    result = grades[['student', 'subject']].drop_duplicates()\n    for term in ['fall', 'spring']:\n        part = grades.loc[grades['term'] == term, ['student', 'subject', 'score']].rename(columns={'score': term})\n        result = result.merge(part, on=['student', 'subject'], how='left')\n    result['change'] = result['spring'] - result['fall']\n    return result\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-104": {
+    "approaches": [
+      {
+        "nameZh": "split + explode 拆行",
+        "nameEn": "split, then explode",
+        "ideaZh": "一个单元格里装了好几个值，先把它拆成列表，再让列表里的每个元素各占一行，这就是 `str.split` + `explode`。\n\n1. `posts['tags'].str.split(',')` 把文本变成列表；`tags` 为 NULL 的帖子得到缺失值。\n2. `explode('tag')` 把每个列表元素展开成单独一行，其他列（包括帖子 `id`）跟着复制。缺失值展开后仍是一行缺失值。\n3. `str.strip().str.lower()` 去空格、转小写，`' SQL '` 和 `'sql'` 变成同一个标签。\n4. 丢掉缺失值和空字符串：空字符串来自 `''` 这种标签文本或者 `'a,,b'` 里的连续逗号。\n5. 按（帖子，标签）`drop_duplicates`，同一帖子里重复的标签只算一次。\n6. 按标签 `size()` 计数，得到每个标签出现在几篇帖子里。\n\n易错点：去重必须在规范化**之后**——`'sql'`、`'SQL'`、`' Sql'` 规范化前是三个不同的值。去重也必须带上帖子 `id`，否则不同帖子的同一个标签会被合并成一条。",
+        "ideaEn": "Several values packed in one cell: split the text into a list, then give every list item its own row. That is `str.split` + `explode`.\n\n1. `posts['tags'].str.split(',')` makes lists; a NULL `tags` stays missing.\n2. `explode('tag')` turns each list item into a row and copies the other columns, including the post `id`. A missing value explodes into one missing row.\n3. `str.strip().str.lower()` makes `' SQL '` and `'sql'` the same tag.\n4. Drop missing values and empty strings, which come from an empty tag text or consecutive commas like `'a,,b'`.\n5. `drop_duplicates` on (post, tag) so a tag repeated inside one post counts once.\n6. Count per tag with `size()`: the number of posts carrying it.\n\nPitfalls: dedupe **after** normalizing, since `'sql'`, `'SQL'` and `' Sql'` differ before it; and dedupe with the post `id`, or the same tag on different posts collapses into one.",
+        "time": "O(n * L)",
+        "space": "O(n * L)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    posts = tables['posts']\n    rows = posts.assign(tag=posts['tags'].str.split(',')).explode('tag')\n    rows['tag'] = rows['tag'].str.strip().str.lower()\n    rows = rows[rows['tag'].notna() & (rows['tag'] != '')]\n    rows = rows.drop_duplicates(['id', 'tag'])  # a tag counts once per post\n    return rows.groupby('tag').size().reset_index(name='posts')\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-105": {
+    "approaches": [
+      {
+        "nameZh": "resample 按天汇总",
+        "nameEn": "resample by day",
+        "ideaZh": "`groupby(日期).sum()` 只会产生有收款的日子；题目还要求中间没有收款的日子也出现、写 0。按时间重采样 `resample('D')` 正好做这件事：它在第一天到最后一天之间每天开一个桶，空桶的 `sum()` 是 0。\n\n1. `pd.to_datetime(paid_at)` 解析出完整的时间戳，设为 index。\n2. 取 `amount` 列，`resample('D').sum()`：每个时间戳落到它所在的自然日，23:59:59 的退款也算在当天。\n3. `reset_index()` 得到（日期，金额）两列。日期是零点的 Timestamp，判题器会输出成 `'YYYY-MM-DD'`。\n\n结果按时间顺序排列，满足本题对行序的要求。\n\n易错点：参考写法先 `astype('int64')` 再重采样，避免可空整数在空桶上出现缺失值；数据保证没有 NULL 金额，这个转换是安全的。不要用 `rolling` 或者按行数补，要按日历日。",
+        "ideaEn": "`groupby(day).sum()` only yields days that have payments; the task also wants the empty days in between as 0. Resampling with `resample('D')` does exactly that: it opens one bucket per day from the first to the last, and an empty bucket sums to 0.\n\n1. Parse `paid_at` with `pd.to_datetime` and make it the index.\n2. Take `amount` and `resample('D').sum()`; each timestamp falls into its calendar day, so a 23:59:59 refund stays on that day.\n3. `reset_index()` gives (day, total). The day is a midnight Timestamp, which the judge prints as `'YYYY-MM-DD'`.\n\nThe result is in time order, as required.\n\nNote: casting to `int64` before resampling keeps empty buckets at 0 instead of a nullable missing value; amounts are never NULL here, so the cast is safe.",
+        "time": "O(n + D)",
+        "space": "O(n + D)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    payments = tables['payments']\n    amounts = payments.assign(at=pd.to_datetime(payments['paid_at'])).set_index('at')['amount'].astype('int64')\n    return amounts.resample('D').sum().reset_index()  # empty days become 0\n"
+      },
+      {
+        "nameZh": "date_range 生成完整日期再 reindex",
+        "nameEn": "Full date_range, then reindex",
+        "ideaZh": "把「补零」拆成两步写出来也很清楚：\n\n1. `dt.normalize()` 把每个时间戳截到当天零点，按它 `groupby` 求和，得到有收款日子的合计。\n2. `pd.date_range(最早日期, 最晚日期, freq='D')` 生成两端之间的每一天。\n3. 合计 `reindex(全部日期, fill_value=0)`，缺的日子补 0。\n\n这和 `resample` 的结果一样，只是把「生成完整日期轴」这一步显式写了出来；遇到需要自定义日期范围（比如固定从月初开始）时，这种写法更灵活。",
+        "ideaEn": "Spelling the zero-fill out in two steps is just as clear:\n\n1. `dt.normalize()` truncates each timestamp to midnight; `groupby` on it and sum to get totals for days with payments.\n2. `pd.date_range(first day, last day, freq='D')` lists every day in between.\n3. `reindex` the totals on that range with `fill_value=0`.\n\nSame result as `resample`, with the full date axis made explicit; handy when the range is custom (say, always from the first of the month).",
+        "time": "O(n + D)",
+        "space": "O(n + D)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    payments = tables['payments']\n    day = pd.to_datetime(payments['paid_at']).dt.normalize()\n    totals = payments['amount'].groupby(day).sum()\n    days = pd.date_range(day.min(), day.max(), freq='D')\n    return pd.DataFrame({'day': days, 'total': totals.reindex(days, fill_value=0).to_numpy()})\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-106": {
+    "approaches": [
+      {
+        "nameZh": "按时间窗口 rolling('7D')",
+        "nameEn": "Time-based rolling('7D')",
+        "ideaZh": "「这天和之前 6 天」是按日历算的窗口，而不是按行数。中间有没训练的日子时，`rolling(7)` 取最近 7 行会跨出 7 天，答案就错了。pandas 的时间窗口 `rolling('7D', on='day')` 以每行的时间为右端，包含 `(day - 7 天, day]` 内的所有行，正好是要求的范围。\n\n1. `to_datetime` 解析日期，按（用户，日期）`groupby` 求和，把同一天的多次训练合并成一行。\n2. 按（用户，日期）排序——时间窗口要求组内时间递增。\n3. `daily.groupby('user_id').rolling('7D', on='day')['minutes'].sum()`，每个用户各自滚动，不会把别人的分钟数算进来。\n4. 结果的顺序和排好序的 `daily` 一致，用 `.to_numpy()` 按位置写回，避免多层索引对不齐。\n\n为什么先合并同一天：不合并时同一天有两行，第一行的窗口不含第二行，会多出一条（用户，日期）且数值偏小。",
+        "ideaEn": "\"This day and the six before it\" is a calendar window, not a row count. With rest days in between, `rolling(7)` reaches back more than 7 days and gives wrong sums. A time window `rolling('7D', on='day')` ends at each row's time and covers `(day - 7 days, day]`, exactly the required span.\n\n1. Parse dates and sum per (user, day), merging several workouts on one day into one row.\n2. Sort by (user, day); a time window needs increasing times within each group.\n3. `daily.groupby('user_id').rolling('7D', on='day')['minutes'].sum()` rolls per user, so nobody else's minutes leak in.\n4. The result follows the sorted `daily`, so write it back by position with `.to_numpy()` instead of aligning a MultiIndex.\n\nWhy merge same-day rows first: otherwise the first of two rows on a day misses the second, producing an extra (user, day) row with a smaller total.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    workouts = tables['workouts']\n    workouts = workouts.assign(day=pd.to_datetime(workouts['day']))\n    daily = workouts.groupby(['user_id', 'day'], as_index=False)['minutes'].sum()\n    daily = daily.sort_values(['user_id', 'day'])\n    # '7D' is a time window (day - 7 days, day], not 7 rows\n    rolled = daily.groupby('user_id').rolling('7D', on='day')['minutes'].sum()\n    daily['minutes_7d'] = rolled.to_numpy()\n    return daily[['user_id', 'day', 'minutes_7d']]\n"
+      },
+      {
+        "nameZh": "自连接后按日期差筛选",
+        "nameEn": "Self-join and filter by date gap",
+        "ideaZh": "窗口和也可以按定义直接算：把每个用户的每日合计和它自己做连接，得到同一用户的所有（当天，另一天）组合，只保留另一天落在 `(当天 - 7 天, 当天]` 的组合，再按（用户，当天）求和。\n\n这就是 SQL 里用自连接写窗口的思路，好处是规则一眼能看懂；代价是每个用户内部会生成 k² 个组合（k 是该用户的训练天数），数据量大时比 `rolling` 慢得多。最后别忘了按（用户，日期）排序，本题比较行序。",
+        "ideaEn": "You can also compute the window sum by its definition: join each user's daily totals with themselves, keep pairs whose other day lies in `(day - 7 days, day]`, and sum per (user, day).\n\nIt is the SQL self-join way to write a window, easy to read; the cost is k² pairs per user (k = that user's active days), much slower than `rolling` on big data. Sort by (user, day) at the end, since row order is compared.",
+        "time": "O(n * k)",
+        "space": "O(n * k)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    workouts = tables['workouts']\n    workouts = workouts.assign(day=pd.to_datetime(workouts['day']))\n    daily = workouts.groupby(['user_id', 'day'], as_index=False)['minutes'].sum()\n    pairs = daily.merge(daily, on='user_id', suffixes=('', '_before'))\n    in_window = (pairs['day_before'] <= pairs['day']) & (pairs['day_before'] > pairs['day'] - pd.Timedelta(days=7))\n    out = pairs[in_window].groupby(['user_id', 'day'], as_index=False)['minutes_before'].sum()\n    return out.sort_values(['user_id', 'day'])\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-107": {
+    "approaches": [
+      {
+        "nameZh": "merge_asof 向后匹配",
+        "nameEn": "merge_asof, backward",
+        "ideaZh": "「每笔成交找时刻不晚于它的最近一条报价」是典型的 as-of 连接，普通的 `merge` 只能做等值匹配，做不了「最近的一条」。`pd.merge_asof` 专门干这个：\n\n1. 两张表的 `ts` 都用 `to_datetime` 解析，并且**都按 `ts` 排序**——这是 `merge_asof` 的硬性要求，不排序会报错。\n2. `pd.merge_asof(trades, quotes, on='ts', by='symbol')`：`by` 保证只在同一个 symbol 里找；默认 `direction='backward'`、`allow_exact_matches=True`，即找 `ts` 小于等于成交时刻的最后一条，同一时刻的报价也算。\n3. 找不到时 `price` 是 NaN，`value = qty * price` 也跟着是缺失值，判题时都是 NULL。\n\n易错点：忘了 `by='symbol'` 会拿别的股票的报价来配（样例里成交 5 就是这种陷阱）；`direction='nearest'` 会用到未来的报价，也不对。",
+        "ideaEn": "\"For each trade, the latest quote at or before its time\" is an as-of join; a plain `merge` only matches equal keys. `pd.merge_asof` is built for it:\n\n1. Parse `ts` in both tables and **sort both by `ts`**; `merge_asof` requires it and raises otherwise.\n2. `pd.merge_asof(trades, quotes, on='ts', by='symbol')`: `by` restricts the search to the same symbol; the defaults `direction='backward'` and `allow_exact_matches=True` pick the last quote with `ts` <= the trade time, a same-second quote included.\n3. With no match `price` is NaN, so `value = qty * price` is missing too; both print as NULL.\n\nPitfalls: without `by='symbol'` a trade picks up another symbol's quote (trade 5 in the sample is that trap); `direction='nearest'` can use a future quote.",
+        "time": "O((n + m) log(n + m))",
+        "space": "O(n + m)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    # merge_asof needs both sides sorted by the \"on\" column\n    trades = tables['trades'].assign(ts=lambda d: pd.to_datetime(d['ts'])).sort_values('ts')\n    quotes = tables['quotes'].assign(ts=lambda d: pd.to_datetime(d['ts'])).sort_values('ts')\n    matched = pd.merge_asof(trades, quotes, on='ts', by='symbol')  # last quote with ts <= trade ts\n    matched['value'] = matched['qty'] * matched['price']\n    return matched[['id', 'price', 'value']]\n"
+      },
+      {
+        "nameZh": "逐笔成交筛选报价",
+        "nameEn": "Scan quotes per trade",
+        "ideaZh": "按定义逐笔处理：对每笔成交，筛出同一 symbol、时间不晚于它的报价，按时间排序取最后一条的价格；一条都没有就记为缺失。\n\n时间是定长的 `'YYYY-MM-DD HH:MM:SS'` 文本，字符串比较就是时间先后，这里不解析也能比。这种写法每笔成交都要扫一遍报价表，适合理解题意或数据很小的时候，正式写法用 `merge_asof`。",
+        "ideaEn": "Do it by definition: for each trade, filter quotes of the same symbol with time at or before it, sort by time and take the last price, or None if there are none.\n\nTimes are fixed-width `'YYYY-MM-DD HH:MM:SS'` text, so string comparison is time order and no parsing is needed. Each trade scans the whole quote table, fine for understanding or tiny data; `merge_asof` is the real tool.",
+        "time": "O(n * m)",
+        "space": "O(n + m)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    trades = tables['trades']\n    quotes = tables['quotes']\n    rows = []\n    for trade in trades.itertuples(index=False):\n        earlier = quotes[(quotes['symbol'] == trade.symbol) & (quotes['ts'] <= trade.ts)]\n        price = earlier.sort_values('ts')['price'].iloc[-1] if len(earlier) else None\n        rows.append((trade.id, price, None if price is None else trade.qty * price))\n    return pd.DataFrame(rows, columns=['id', 'price', 'value'])\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-108": {
+    "approaches": [
+      {
+        "nameZh": "排序后分组 diff",
+        "nameEn": "Sort, then grouped diff",
+        "ideaZh": "「和上一条比」在 pandas 里就是 `diff()`（当前减上一行），只是有两个前提：行必须按时间排好，而且只能在同一个传感器内部相减。\n\n1. 解析出时间列 `at`，按（传感器，时间）排序。数据到达顺序是乱的，不排序就不是「上一条」。\n2. `groupby('sensor')['at'].diff()` 得到相邻两条的时间差（Timedelta），每组第一行是 NaT；`.dt.total_seconds() / 60` 换成分钟。\n3. `groupby('sensor')['value'].diff()` 得到读数变化。任何一边是 NaN，差也是 NaN，自然满足「这次或上次失败时为 NULL」。\n4. 输出原始的 `ts` 文本，而不是解析后的时间。\n\n易错点：直接 `readings['value'].diff()` 不分组，会把上一个传感器的最后一条和下一个传感器的第一条相减；注意上一条读数失败时，这次的间隔仍然照算，只有变化是 NULL。",
+        "ideaEn": "\"Compared with the previous one\" is `diff()` in pandas (this row minus the previous), on two conditions: rows must be in time order, and the subtraction must stay inside one sensor.\n\n1. Parse `ts` into `at` and sort by (sensor, at). Rows arrive shuffled, so without sorting \"previous\" means nothing.\n2. `groupby('sensor')['at'].diff()` gives the Timedelta to the previous reading (NaT on each sensor's first row); `.dt.total_seconds() / 60` converts to minutes.\n3. `groupby('sensor')['value'].diff()` gives the change. A NaN on either side yields NaN, which is exactly \"NULL when this or the previous reading failed\".\n4. Return the original `ts` text, not the parsed time.\n\nPitfalls: an ungrouped `diff()` subtracts across sensor boundaries; and a failed previous reading still has a time, so the gap is computed, only the change is NULL.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    readings = tables['readings']\n    readings = readings.assign(at=pd.to_datetime(readings['ts'])).sort_values(['sensor', 'at'])\n    by_sensor = readings.groupby('sensor')\n    readings['gap_minutes'] = by_sensor['at'].diff().dt.total_seconds() / 60\n    readings['change'] = by_sensor['value'].diff()  # NaN on either side gives NaN\n    return readings[['sensor', 'ts', 'gap_minutes', 'change']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-109": {
+    "approaches": [
+      {
+        "nameZh": "组内 interpolate 再 ffill",
+        "nameEn": "Per-group interpolate, then ffill",
+        "ideaZh": "三种缺口三种处理，正好对应 pandas 的两个方法：\n\n- 夹在两个已知值之间：线性插值。`interpolate(limit_area='inside')` 只填被已知值包住的缺口，开头和结尾的缺失不动。\n- 最后一个已知值之后：沿用最后的读数，`ffill()`。\n- 第一个已知值之前：保持 NULL。`interpolate` 的 inside 模式和 `ffill` 都不会往前填，所以什么都不用做。\n\n做法：\n\n1. 按（站点，日期）排序，保证每个站点内部按时间排列。\n2. `groupby('station')['temp'].transform(lambda s: s.interpolate(limit_area='inside').ffill())`，在每个站点内部做，站点之间互不影响；`transform` 返回和原表对齐的结果。\n3. 用补好的值替换 `temp` 输出。\n\n为什么「按天数」插值可以直接按行做：题目保证每个站点每天一行、不跳天，行号间隔就是天数间隔，默认的 `method='linear'` 就够了。\n\n易错点：必须在 `groupby` 里做。不分组的话，上一个站点末尾的读数会被插值或前向填充带进下一个站点的开头，违反「第一个读数之前保持 NULL」。",
+        "ideaEn": "Three kinds of gaps, two pandas methods:\n\n- Between two known values: linear interpolation. `interpolate(limit_area='inside')` fills only gaps enclosed by known values and leaves both ends alone.\n- After the last known value: carry it forward with `ffill()`.\n- Before the first known value: stay NULL. Neither inside interpolation nor `ffill` fills backwards, so nothing to do.\n\nSteps:\n\n1. Sort by (station, day) so each station is in time order.\n2. `groupby('station')['temp'].transform(lambda s: s.interpolate(limit_area='inside').ffill())` works inside each station so stations never mix; `transform` returns values aligned with the original rows.\n3. Replace `temp` with the filled values.\n\nWhy row-based interpolation equals day-based here: every station has one row per day with no day skipped, so row distance is day distance and the default `method='linear'` suffices.\n\nPitfall: without grouping, values leak from one station into the start of the next, breaking \"NULL before the first reading\".",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    temps = tables['temps'].sort_values(['station', 'day'])\n    # inside gaps: linear; after the last reading: carry it; before the first: stay missing\n    filled = temps.groupby('station')['temp'].transform(lambda s: s.interpolate(limit_area='inside').ffill())\n    return temps.assign(temp=filled)[['station', 'day', 'temp']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-11": {
+    "approaches": [
+      {
+        "nameZh": "统一小写后分组计数",
+        "nameEn": "Lowercase, then group and count",
+        "ideaZh": "「不区分大小写」意味着 `alice@mail.com` 和 `Alice@Mail.com` 应该落进同一组。只要分组之前把邮箱统一成小写，剩下的就是普通的「找重复值」。\n\n做法：\n\n1. `email = customers['email'].str.lower()`；\n2. 按它自己分组 `size()`，得到每个小写邮箱的客户数；\n3. 保留 `accounts > 1`。\n\n输出的邮箱要求是全小写形式，分组键本身就是小写后的值，直接输出即可。\n\n易错点：如果分组用原始邮箱、只在输出时转小写，大小写不同的邮箱仍会被分成两组，各自计数为 1，重复就找不出来了。",
+        "ideaEn": "Case-insensitive means `alice@mail.com` and `Alice@Mail.com` must land in the same group. Lowercase before grouping and the rest is an ordinary duplicate search.\n\nSteps:\n\n1. `email = customers['email'].str.lower()`;\n2. group it by itself and call `size()` to count customers per lowercased email;\n3. keep `accounts > 1`.\n\nThe output wants the lowercase form, which is exactly the group key.\n\nPitfall: grouping on the raw email and lowercasing only for display would still split differently cased spellings into groups of 1 each, so the duplicate is never found.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    email = tables['customers']['email'].str.lower()   # normalise before grouping\n    counts = email.groupby(email).size().reset_index(name='accounts')\n    return counts[counts['accounts'] > 1]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-110": {
+    "approaches": [
+      {
+        "nameZh": "to_datetime(errors='coerce')",
+        "nameEn": "to_datetime(errors='coerce')",
+        "ideaZh": "判断一个字符串是不是合法日期，最省事的办法是让 pandas 去解析，解析不了的就是不合法：\n\n1. `pd.to_datetime(signup_date, format='%Y-%m-%d', errors='coerce')`。指定 `format` 后，`'03/01/2024'`、`'soon'`、空字符串这类格式不对的文本解析失败；`'2023-02-29'`、`'2024-13-01'` 这类格式对但日期不存在的也会失败。`errors='coerce'` 让失败的值变成 NaT，而不是抛异常。\n2. 原值为 NULL 的行解析结果也是 NaT，但题目说没填不算不合法，所以条件是「解析结果是 NaT **且** 原值不是缺失值」。\n3. 输出 `id` 和原样的日期文本。\n\n易错点：不写 `format`，pandas 会尝试猜格式，可能把 `'03/01/2024'` 当成合法日期接受下来；另外别忘了排除 NULL，否则没填的行会被误报。",
+        "ideaEn": "The easiest validity test is to let pandas parse and treat failures as invalid:\n\n1. `pd.to_datetime(signup_date, format='%Y-%m-%d', errors='coerce')`. With an explicit `format`, wrong-format text (`'03/01/2024'`, `'soon'`, the empty string) fails, and so do well-formed but nonexistent dates (`'2023-02-29'`, `'2024-13-01'`). `errors='coerce'` turns failures into NaT instead of raising.\n2. NULL inputs also become NaT, but missing is not invalid here, so the condition is \"parsed is NaT **and** the original is not missing\".\n3. Return `id` and the original text.\n\nPitfalls: without `format`, pandas guesses and may accept `'03/01/2024'`; and forgetting to exclude NULLs reports unfilled rows as bad.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    signups = tables['signups']\n    parsed = pd.to_datetime(signups['signup_date'], format='%Y-%m-%d', errors='coerce')\n    bad = parsed.isna() & signups['signup_date'].notna()  # NULL means \"not given\", not bad\n    return signups.loc[bad, ['id', 'signup_date']]\n"
+      },
+      {
+        "nameZh": "正则检查格式 + fromisoformat",
+        "nameEn": "Regex shape check plus fromisoformat",
+        "ideaZh": "也可以把两类错误分开检查：\n\n1. `re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', text)` 检查形状，必须恰好是 4 位-2 位-2 位数字。\n2. 形状对了，再用 `datetime.date.fromisoformat` 构造日期，月份超过 12、2 月 29 日落在平年这类不存在的日期会抛 `ValueError`。\n\n对每个非 NULL 的值做这两步，任一失败就是不合法。这种写法不依赖 pandas 的解析细节，规则写得明明白白。",
+        "ideaEn": "You can also check the two kinds of error separately:\n\n1. `re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', text)` checks the shape: exactly 4-2-2 digits.\n2. If the shape is right, `datetime.date.fromisoformat` builds the date and raises `ValueError` for month 13, Feb 29 in a non-leap year and so on.\n\nRun both on every non-NULL value; failing either means invalid. This does not depend on pandas parsing details and states the rule plainly.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\nimport datetime\nimport re\n\n\ndef valid(text):\n    if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', text):\n        return False\n    try:\n        datetime.date.fromisoformat(text)\n        return True\n    except ValueError:\n        return False\n\n\ndef solve(tables):\n    signups = tables['signups']\n    keep = [text is not None and not valid(text) for text in signups['signup_date']]\n    return signups.loc[keep, ['id', 'signup_date']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-111": {
+    "approaches": [
+      {
+        "nameZh": "str.extract 取捕获组",
+        "nameEn": "str.extract the capture groups",
+        "ideaZh": "`str.extract(正则, expand=False)` 对每行找**第一处**匹配，返回第一个捕获组；没匹配到或原值是 NULL 时返回缺失值。这正好对上「第一处 `#` 紧跟数字」「第一处 `$` 紧跟数字」。\n\n1. 订单号：`r'#(\\d+)'`。\n2. 金额：`r'\\$(\\d+(?:\\.\\d{1,2})?)'`。`$` 在正则里是行尾，要转义成 `\\$`；小数部分用非捕获组 `(?:...)` 包起来并设为可选，这样 `expand=False` 时只有一个捕获组。\n3. 把 `id`、订单号、金额拼成 DataFrame，`dropna()` 只保留两样都有的工单。\n4. 提取结果是文本，`astype` 转成 `int64` 和 `float64`。\n\n易错点：不转类型的话，`'35.50'` 会作为文本输出，和期望的数字 35.5 不相等；标题为 NULL 的工单 `extract` 直接给缺失值，不会报错，`dropna` 会把它去掉。",
+        "ideaEn": "`str.extract(pattern, expand=False)` finds the **first** match in each row and returns its first capture group, or a missing value when nothing matches or the subject is NULL. That is exactly \"the first `#` followed by digits\" and \"the first `$` followed by digits\".\n\n1. Order number: `r'#(\\d+)'`.\n2. Amount: `r'\\$(\\d+(?:\\.\\d{1,2})?)'`. `$` means end of line in a regex, so escape it as `\\$`; wrap the optional decimals in a non-capturing group `(?:...)` so there is a single capture group.\n3. Put `id`, order number and amount in one DataFrame and `dropna()` to keep tickets with both.\n4. Extracted values are text; `astype` them to `int64` and `float64`.\n\nPitfalls: without the cast `'35.50'` is printed as text and does not equal 35.5; a NULL subject simply extracts as missing and `dropna` removes it.",
+        "time": "O(n * L)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    tickets = tables['tickets']\n    subject = tickets['subject']\n    out = pd.DataFrame({\n        'id': tickets['id'],\n        'order_no': subject.str.extract(r'#(\\d+)', expand=False),\n        'amount': subject.str.extract(r'\\$(\\d+(?:\\.\\d{1,2})?)', expand=False),\n    }).dropna()  # keep tickets that have both\n    return out.astype({'order_no': 'int64', 'amount': 'float64'})\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-112": {
+    "approaches": [
+      {
+        "nameZh": "规范化、排序、drop_duplicates",
+        "nameEn": "Normalize, sort, drop_duplicates",
+        "ideaZh": "「每组留一条，按某个顺序取第一条」在 pandas 里的惯用写法是：先按优先级排序，再 `drop_duplicates(键)`，它默认保留每组第一次出现的行。\n\n1. 去掉 `email` 为 NULL 的行。\n2. `str.strip().str.lower()` 规范化邮箱，作为去重的键。\n3. `sort_values(['created', 'id'])`：最早创建的排前面，同一天的编号小的排前面。`created` 是 `'YYYY-MM-DD'` 文本，字符串顺序就是日期顺序。\n4. `drop_duplicates('email')` 每个邮箱保留排在最前的那条。\n5. 输出 `id` 和规范化后的邮箱。\n\n易错点：一定要先规范化再去重，`' Ann@Mail.com'` 和 `'ann@mail.com'` 才会被视为同一人；排序键里少了 `id` 的话，同一天创建的两条谁先谁后取决于原始顺序，结果就不确定了。",
+        "ideaEn": "\"Keep one row per group, the first in some order\" is idiomatically: sort by priority, then `drop_duplicates(key)`, which keeps the first occurrence by default.\n\n1. Drop rows whose `email` is NULL.\n2. Normalize with `str.strip().str.lower()`; that is the dedupe key.\n3. `sort_values(['created', 'id'])`: earliest first, smaller id first on the same day. `created` is `'YYYY-MM-DD'` text, so text order is date order.\n4. `drop_duplicates('email')` keeps the top row per email.\n5. Return `id` and the normalized email.\n\nPitfalls: normalize before deduping, so `' Ann@Mail.com'` and `'ann@mail.com'` match; and without `id` in the sort key, same-day ties depend on input order.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    contacts = tables['contacts']\n    contacts = contacts[contacts['email'].notna()].assign(email=lambda d: d['email'].str.strip().str.lower())\n    contacts = contacts.sort_values(['created', 'id']).drop_duplicates('email')  # keeps the first per email\n    return contacts[['id', 'email']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-113": {
+    "approaches": [
+      {
+        "nameZh": "有序分类求组内最大",
+        "nameEn": "Ordered categorical, per-group max",
+        "ideaZh": "尺码是文本，直接比较用的是字母顺序：`'XS' > 'XL'`、`'S' > 'L'`，和尺码大小完全不一样。要让 pandas 按给定顺序比较，就把它变成有序分类：\n\n1. `pd.Categorical(size, categories=['XS', 'S', 'M', 'L', 'XL'], ordered=True)`，它的 `.codes` 是每个尺码在列表里的名次 0–4。\n2. 把名次存成一列 `rank`，`groupby('order_id')['rank'].transform('max')` 给每行附上所在订单的最大名次。\n3. 筛出 `rank` 等于最大名次的行，就是每个订单里最大尺码的那几件。\n4. 再按订单聚合：`largest` 取这些行的尺码（都一样，取 `first`），`count` 数行数。\n\n为什么用 `transform` 而不是 `max` 后再连接：`transform` 返回和原表等长、对齐的结果，可以直接用来做布尔筛选，省掉一次 merge。\n\n易错点：只取 `max()` 得到最大尺码还不够，还要数它有几件；对原始文本 `max()` 会得到字母序最大的 `'XS'` 或 `'S'`，是错的。",
+        "ideaEn": "Sizes are text, and text compares alphabetically: `'XS' > 'XL'` and `'S' > 'L'`, nothing like garment size. Make pandas use your order with an ordered categorical:\n\n1. `pd.Categorical(size, categories=['XS', 'S', 'M', 'L', 'XL'], ordered=True)`; its `.codes` are the ranks 0-4.\n2. Store the rank as a column and `groupby('order_id')['rank'].transform('max')` to attach each order's top rank to every row.\n3. Keep rows whose rank equals that top rank: the pieces of the largest size in each order.\n4. Aggregate per order: `largest` is their size (all equal, so `first`), `count` is the number of rows.\n\nWhy `transform` instead of `max` plus a join: it returns a result aligned with the original rows, ready for a boolean filter, with no merge.\n\nPitfalls: the largest size alone is not enough, you need its count; and `max()` on the raw text returns the alphabetically largest `'XS'` or `'S'`.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\nSIZES = ['XS', 'S', 'M', 'L', 'XL']\n\n\ndef solve(tables):\n    shirts = tables['shirts']\n    size = pd.Categorical(shirts['size'], categories=SIZES, ordered=True)\n    shirts = shirts.assign(rank=size.codes)  # 0 = XS ... 4 = XL\n    top = shirts[shirts['rank'] == shirts.groupby('order_id')['rank'].transform('max')]\n    return top.groupby('order_id').agg(largest=('size', 'first'), count=('id', 'size')).reset_index()\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-12": {
+    "approaches": [
+      {
+        "nameZh": "去重排序取第二个",
+        "nameEn": "Deduplicate, sort, take the second",
+        "ideaZh": "要的是第二高的 **不同** 值，所以先去重：样例里 Ben 和 Chloe 都是 9000，只算一个值。\n\n做法：\n\n1. `salary.drop_duplicates().sort_values(ascending=False)`；\n2. 长度大于 1 就取 `iloc[1]`，否则为 `None`；\n3. 包成一行一列的 DataFrame：`pd.DataFrame({'second_salary': [second]})`。\n\n为什么要手动处理「不存在」：直接写 `iloc[1]` 在只有一个不同工资时会抛 `IndexError`。题目要求此时返回 **一行** NULL，而不是空表，所以列表里放 `None`，判题输出为 `[null]`。\n\n易错点：不去重就取第二个，遇到并列最高工资会把最高值当成第二高。",
+        "ideaEn": "We want the second highest **distinct** value, so deduplicate first: Ben and Chloe both earn 9000 in the sample and count once.\n\nSteps:\n\n1. `salary.drop_duplicates().sort_values(ascending=False)`;\n2. if more than one value remains take `iloc[1]`, otherwise `None`;\n3. wrap it in a one-row, one-column frame: `pd.DataFrame({'second_salary': [second]})`.\n\nWhy handle the missing case by hand? `iloc[1]` raises `IndexError` when only one distinct salary exists, and the task wants **one row** of NULL rather than an empty table, so the list holds `None`, printed as `[null]`.\n\nPitfall: skipping the dedup makes a tie for the top salary come back as the \"second highest\".",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    salaries = tables['employees']['salary'].drop_duplicates().sort_values(ascending=False)\n    second = salaries.iloc[1] if len(salaries) > 1 else None\n    return pd.DataFrame({'second_salary': [second]})   # one row even when missing\n"
+      },
+      {
+        "nameZh": "去掉最大值后再取最大值",
+        "nameEn": "Max after removing the max",
+        "ideaZh": "不用排序也能做：第二高的不同工资，就是 **严格小于最高工资** 的那些工资里的最大值。\n\n1. `top = salary.max()`；\n2. `rest = salary[salary < top]`；\n3. `rest.max()`。如果 `rest` 为空（所有人工资相同），pandas 的 `max()` 对空 Series 返回 NaN，判题输出为 null，正好就是题目要的。\n\n两次线性扫描，不需要排序，也不需要显式去重：严格小于号已经把所有并列的最高值排除掉了。",
+        "ideaEn": "No sort needed: the second highest distinct salary is the maximum among salaries **strictly below the top one**.\n\n1. `top = salary.max()`;\n2. `rest = salary[salary < top]`;\n3. `rest.max()`. If `rest` is empty (everyone earns the same), `max()` on an empty Series returns NaN, which prints as null, exactly what is required.\n\nTwo linear passes, no sorting and no explicit dedup: the strict comparison already removes every tie for the top.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    salary = tables['employees']['salary']\n    rest = salary[salary < salary.max()]\n    return pd.DataFrame({'second_salary': [rest.max()]})   # empty -> NaN -> null\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-13": {
+    "approaches": [
+      {
+        "nameZh": "transform 把部门平均值贴回每一行",
+        "nameEn": "Broadcast the department mean with transform",
+        "ideaZh": "每名员工要和「自己部门的平均工资」比，也就是 SQL 里的窗口函数 `AVG(salary) OVER (PARTITION BY department_id)`。pandas 对应的是 `groupby(...).transform('mean')`：它按组计算，但返回和原表等长的 Series，每一行拿到自己所在组的值。\n\n做法：\n\n1. 去掉 `department_id` 为 NA 的员工；\n2. `employees['average'] = groupby('department_id')['salary'].transform('mean')`；\n3. 筛出 `salary > average`；\n4. 连上 `departments` 得到部门名，输出 `部门名, 员工名, 工资`。\n\n为什么用 `transform` 而不是 `agg`：`agg` 返回每组一行，还得再 merge 回去；`transform` 一步就把平均值对齐到每个员工上，比较可以直接按行做。\n\n易错点：严格大于；连接部门表时两边都有 `id`、`name`，用 `suffixes` 区分员工名和部门名。",
+        "ideaEn": "Each employee is compared with their own department's average, i.e. SQL's window `AVG(salary) OVER (PARTITION BY department_id)`. In pandas that is `groupby(...).transform('mean')`: computed per group, but returned with the original length so every row carries its group's value.\n\nSteps:\n\n1. drop employees with a NA `department_id`;\n2. `employees['average'] = groupby('department_id')['salary'].transform('mean')`;\n3. keep `salary > average`;\n4. merge with `departments` for the name and return department, employee, salary.\n\nWhy `transform` and not `agg`? `agg` gives one row per group that must be merged back; `transform` aligns the mean with each employee in one step, so the comparison is row-wise.\n\nPitfalls: the comparison is strict; both tables have `id` and `name`, so use `suffixes` to keep employee and department names apart.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees'].dropna(subset=['department_id']).copy()\n    # like AVG(salary) OVER (PARTITION BY department_id)\n    employees['average'] = employees.groupby('department_id')['salary'].transform('mean')\n    above = employees[employees['salary'] > employees['average']]\n    result = above.merge(departments, left_on='department_id', right_on='id', suffixes=('', '_department'))\n    return result[['name_department', 'name', 'salary']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-14": {
+    "approaches": [
+      {
+        "nameZh": "nunique 数类目，与总数比较",
+        "nameEn": "Count distinct categories and compare with the total",
+        "ideaZh": "这是关系除法：「买齐所有类目」等价于「这位客户买过的不同类目数 = 全部类目数」。前提是客户买过的类目一定是全部类目的子集，这里显然成立，所以只比较数量就够了。\n\n做法：\n\n1. 取出已支付订单的明细；\n2. 连上 `orders` 得到 `customer_id`，连上 `products` 得到 `category`；\n3. `groupby('customer_id')['category'].nunique()`；\n4. 和 `products['category'].nunique()` 比较，相等的客户编号就是答案；\n5. 用 `isin` 回到客户表取出 `id, name`。\n\n为什么用 `nunique`：同一类目可能在多笔订单、多件商品里出现，必须按 **不同** 类目计数。全部类目也要从 `products` 去重计数，而不是数商品个数。\n\n易错点：已取消订单里的购买不算；游客订单的 `customer_id` 是 NA，groupby 会自动丢掉。",
+        "ideaEn": "This is relational division: \"bought every category\" means \"the number of distinct categories the customer bought equals the number of categories\". A customer's categories are always a subset of all categories, so comparing counts is enough.\n\nSteps:\n\n1. keep the items of paid orders;\n2. merge with `orders` for `customer_id` and with `products` for `category`;\n3. `groupby('customer_id')['category'].nunique()`;\n4. compare with `products['category'].nunique()`; matching customer ids are the answer;\n5. use `isin` on the customers table to return `id, name`.\n\nWhy `nunique`? A category repeats across orders and products, so it must be counted once. The total also has to be distinct categories in `products`, not the number of products.\n\nPitfalls: purchases in cancelled orders do not count; guest orders have a NA `customer_id` and groupby drops them.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Item rows of paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\ndef solve(tables):\n    customers = tables['customers']\n    orders = tables['orders'][['id', 'customer_id']].rename(columns={'id': 'order_id'})\n    products = tables['products'][['id', 'category']].rename(columns={'id': 'product_id'})\n    items = paid_items(tables).merge(orders, on='order_id').merge(products, on='product_id')\n    covered = items.groupby('customer_id')['category'].nunique()\n    everything = covered[covered == products['category'].nunique()].index\n    return customers.loc[customers['id'].isin(everything), ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-15": {
+    "approaches": [
+      {
+        "nameZh": "排序后取每组最后一行",
+        "nameEn": "Sort, then take the last row per group",
+        "ideaZh": "「最新一笔」由两个键决定：`order_date` 最晚，同一天再看 `id` 最大。把这两个键连同 `customer_id` 一起升序排好，每位客户的最新订单就是他那一组的 **最后一行**。\n\n做法：\n\n1. `dropna(subset=['customer_id'])` 去掉游客订单；\n2. `sort_values(['customer_id', 'order_date', 'id'])`；\n3. `groupby('customer_id').tail(1)` 取每组最后一行；\n4. 输出 `customer_id, id, order_date`。\n\n日期是 `YYYY-MM-DD` 文本，字典序和时间顺序一致，可以直接排序，不必 `to_datetime`。\n\n为什么 `tail(1)` 而不是 `last()`：`last()` 是按列分别取「最后一个非缺失值」，不同列可能来自不同的行；`tail(1)` 保证整行来自同一笔订单。状态不用过滤，已取消的订单也算。",
+        "ideaEn": "\"Latest\" is decided by two keys: the latest `order_date`, then the largest `id` on that day. Sort ascending by `customer_id`, `order_date`, `id` and each customer's latest order is the **last row** of their group.\n\nSteps:\n\n1. `dropna(subset=['customer_id'])` removes guest orders;\n2. `sort_values(['customer_id', 'order_date', 'id'])`;\n3. `groupby('customer_id').tail(1)` keeps the last row of each group;\n4. return `customer_id, id, order_date`.\n\nDates are `YYYY-MM-DD` text, whose string order matches time order, so no `to_datetime` is needed.\n\nWhy `tail(1)` and not `last()`? `last()` takes the last non-missing value per column, so columns could come from different rows; `tail(1)` keeps a whole row. Status is not filtered: a cancelled order still counts.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    orders = tables['orders'].dropna(subset=['customer_id'])   # no guest orders\n    orders = orders.sort_values(['customer_id', 'order_date', 'id'])\n    latest = orders.groupby('customer_id').tail(1)   # whole last row of each customer\n    return latest[['customer_id', 'id', 'order_date']]\n"
+      },
+      {
+        "nameZh": "排序后 drop_duplicates 保留最后一条",
+        "nameEn": "Sort, then drop_duplicates keeping the last",
+        "ideaZh": "排好序之后，「每位客户只留最后一行」也可以写成 `drop_duplicates('customer_id', keep='last')`：按 `customer_id` 去重时保留每个值最后出现的那一行。排序方式和上一个解法完全相同，结果一样，只是换了一个 API，读起来更像「去重」。",
+        "ideaEn": "Once sorted, \"one row per customer, the last one\" can also be written `drop_duplicates('customer_id', keep='last')`, which keeps the last occurrence of each customer id. The sort is identical to the first approach; only the API differs.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    orders = tables['orders'].dropna(subset=['customer_id'])\n    orders = orders.sort_values(['order_date', 'id'])\n    latest = orders.drop_duplicates('customer_id', keep='last')\n    return latest[['customer_id', 'id', 'order_date']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-16": {
+    "approaches": [
+      {
+        "nameZh": "组内 dense rank",
+        "nameEn": "Dense rank within each department",
+        "ideaZh": "「前三档工资」不是前三个人：同档的人都要输出，档位之间也不跳号。这正是 `DENSE_RANK`：12000 是第 1 档，两个 9000 同为第 2 档，7000 是第 3 档。\n\npandas 里写作 `groupby('department_id')['salary'].rank(method='dense', ascending=False)`：\n\n- `ascending=False` 让最高工资排第 1；\n- `method='dense'` 让并列值得到同一个名次，下一个值名次只加 1。\n\n做法：\n\n1. 去掉没有部门的员工；\n2. 算出组内档位 `level`；\n3. 保留 `level <= 3`；\n4. 连上部门表，输出 `部门名, 员工名, 工资`。\n\n易错点：\n\n- `method` 默认是 `'average'`，并列会得到 2.5 这种名次；`'min'` 是 `RANK`，并列之后会跳号，两个 9000 并列第 2 后 7000 是第 4，就被漏掉了；\n- `nlargest(3)` 是取前三个人，不是前三档。",
+        "ideaEn": "\"Top three pay levels\" is not the top three people: everyone at a level is listed and levels do not skip. That is `DENSE_RANK`: 12000 is level 1, both 9000s are level 2, 7000 is level 3.\n\nIn pandas: `groupby('department_id')['salary'].rank(method='dense', ascending=False)`:\n\n- `ascending=False` gives the highest salary rank 1;\n- `method='dense'` gives ties the same rank and the next value only one more.\n\nSteps:\n\n1. drop employees without a department;\n2. compute the per-department `level`;\n3. keep `level <= 3`;\n4. merge with departments and return department, employee, salary.\n\nPitfalls:\n\n- the default `method='average'` gives ties ranks like 2.5; `'min'` is `RANK`, which skips after a tie, so after two 9000s at rank 2 the 7000 becomes rank 4 and is lost;\n- `nlargest(3)` picks three people, not three levels.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees'].dropna(subset=['department_id']).copy()\n    # DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)\n    employees['level'] = employees.groupby('department_id')['salary'].rank(method='dense', ascending=False)\n    top = employees[employees['level'] <= 3]\n    result = top.merge(departments, left_on='department_id', right_on='id', suffixes=('', '_department'))\n    return result[['name_department', 'name', 'salary']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-17": {
+    "approaches": [
+      {
+        "nameZh": "按日汇总后 cumsum",
+        "nameEn": "Daily totals, then cumsum",
+        "ideaZh": "累计值只依赖「按日期排好序的每日销售额」，所以分两步：先把明细压成每天一行，再做前缀和。\n\n做法：\n\n1. 取出已支付订单的明细并算 `amount`；\n2. 连上 `orders` 得到 `order_date`；\n3. `groupby('order_date', as_index=False)['amount'].sum()`，再按日期升序排序；\n4. `days['running_total'] = days['amount'].cumsum()`。\n\n为什么必须先汇总再累加：如果直接在明细上 `cumsum`，同一天的多条明细会得到不同的累计值，而题目要的是「截至当天」的总额，同一天只能有一个值。\n\n易错点：`cumsum` 按行的当前顺序累加，排序要在它之前完成；本题比较行顺序，返回结果也要保持日期升序。只列出有已支付销售的日期，没销售的日子不补零。",
+        "ideaEn": "The running total only depends on the daily revenue in date order, so work in two steps: collapse items to one row per day, then take a prefix sum.\n\nSteps:\n\n1. keep the paid orders' items and compute `amount`;\n2. merge with `orders` for `order_date`;\n3. `groupby('order_date', as_index=False)['amount'].sum()`, sorted by date ascending;\n4. `days['running_total'] = days['amount'].cumsum()`.\n\nWhy aggregate first? A `cumsum` over item rows would give several running values for the same day, while the task wants one total \"up to and including the day\".\n\nPitfalls: `cumsum` follows the current row order, so sort before it; row order is compared here, so return the rows in date order. Only days with paid sales are listed; no zero rows are filled in.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Item rows of paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\ndef solve(tables):\n    orders = tables['orders'][['id', 'order_date']].rename(columns={'id': 'order_id'})\n    items = paid_items(tables).merge(orders, on='order_id')\n    days = items.groupby('order_date', as_index=False)['amount'].sum().sort_values('order_date')\n    days['running_total'] = days['amount'].cumsum()   # one value per day\n    return days\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-18": {
+    "approaches": [
+      {
+        "nameZh": "按月汇总后 diff",
+        "nameEn": "Monthly totals, then diff",
+        "ideaZh": "和上一题同一个套路：先把明细压成「每月一行」，排好序，再和上一行比较。SQL 里是 `revenue - LAG(revenue)`，pandas 里就是 `diff()`。\n\n做法：\n\n1. 取出已支付订单的明细，连上 `order_date`；\n2. `order_date.str[:7]` 截出 `YYYY-MM`；\n3. 按月求和并升序排序；\n4. `months['change'] = months['amount'].diff()`。\n\n`diff()` 计算「本行减上一行」，第一行没有上一行，结果是 NaN，判题时输出 null，正好对应「第一个月份的变化量为 NULL」。\n\n易错点：「上一个列出的月份」不一定是日历上的上个月。中间有月份没销售时，它不会出现在结果里，`diff()` 就和前一个有销售的月份比，这正是题目的定义，不需要补齐空月份。",
+        "ideaEn": "Same pattern as the previous problem: collapse items to one row per month, sort, then compare with the previous row. SQL writes `revenue - LAG(revenue)`; pandas writes `diff()`.\n\nSteps:\n\n1. keep the paid orders' items and attach `order_date`;\n2. `order_date.str[:7]` extracts `YYYY-MM`;\n3. sum per month and sort ascending;\n4. `months['change'] = months['amount'].diff()`.\n\n`diff()` is \"this row minus the previous row\"; the first row has none, gives NaN and prints as null, matching \"the first month's change is NULL\".\n\nPitfall: \"the previous listed month\" need not be the previous calendar month. A month without sales is absent, so `diff()` compares with the last month that had sales, which is exactly the definition; do not fill empty months.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Item rows of paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\ndef solve(tables):\n    orders = tables['orders'][['id', 'order_date']].rename(columns={'id': 'order_id'})\n    items = paid_items(tables).merge(orders, on='order_id')\n    items['month'] = items['order_date'].str[:7]          # 'YYYY-MM'\n    months = items.groupby('month', as_index=False)['amount'].sum().sort_values('month')\n    months['change'] = months['amount'].diff()            # first month -> NaN -> null\n    return months\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-19": {
+    "approaches": [
+      {
+        "nameZh": "日期减组内序号（gaps and islands）",
+        "nameEn": "Date minus row number (gaps and islands)",
+        "ideaZh": "经典的「连续区间」技巧：把每位用户的登录日去重、排序后编号 0, 1, 2, …，再用 **日期减去编号（天）**。同一段连续登录里，日期每天加 1、编号也加 1，差值保持不变；一旦中间断了一天，差值就变了。于是差值相同的行就是同一段连续登录。\n\n做法：\n\n1. `drop_duplicates(['user_id', 'login_date'])`：一天多次登录只算一天；\n2. `pd.to_datetime` 转成日期，按 `user_id, day` 排序；\n3. `cumcount()` 得到组内编号，转成 `Timedelta` 天数，`run = day - step`；\n4. 按 `(user_id, run)` 数每段长度，保留 ≥ 3 的段，取出用户编号并去重。\n\n为什么必须转日期：跨月、跨年、闰年（样例里的 2 月 29 日）都要算连续，只有真正的日期运算能处理；对字符串做加减是做不到的。\n\n易错点：不去重的话，同一天两次登录会占两个编号，差值就错开了。一个用户可能有多段满足条件，输出前要去重。",
+        "ideaEn": "The classic islands trick: deduplicate and sort each user's login days, number them 0, 1, 2, …, and compute **date minus number (in days)**. Within a run of consecutive days both the date and the number go up by one, so the difference stays the same; a gap changes it. Rows sharing a difference form one run.\n\nSteps:\n\n1. `drop_duplicates(['user_id', 'login_date'])`: several logins in a day count once;\n2. `pd.to_datetime`, then sort by `user_id, day`;\n3. `cumcount()` numbers the rows per user; as a `Timedelta` in days, `run = day - step`;\n4. count rows per `(user_id, run)`, keep runs of at least 3 and return the distinct user ids.\n\nWhy real dates? Runs across months, years and leap days (Feb 29 in the sample) must count, which needs date arithmetic; strings cannot do it.\n\nPitfalls: without dedup, two logins on one day take two numbers and shift the difference. A user may have several qualifying runs, so deduplicate the output.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    days = tables['logins'].drop_duplicates(['user_id', 'login_date']).copy()\n    days['day'] = pd.to_datetime(days['login_date'])\n    days = days.sort_values(['user_id', 'day'])\n    step = pd.to_timedelta(days.groupby('user_id').cumcount(), unit='D')\n    days['run'] = days['day'] - step          # constant within a run of consecutive days\n    lengths = days.groupby(['user_id', 'run']).size()\n    users = lengths[lengths >= 3].reset_index()['user_id'].drop_duplicates()\n    return users.to_frame()\n"
+      },
+      {
+        "nameZh": "和往前第二个登录日比较",
+        "nameEn": "Compare with the login day two rows back",
+        "ideaZh": "只问「有没有连续 3 天」时还有更短的判断：把每位用户的不同登录日排好序，如果某一天和它 **往前数第二个** 登录日恰好相差 2 天，那么这三天中间不可能有空隙（中间那一天只能是正中间那天），也就是连续 3 天。\n\n做法：去重、转日期、排序后，`groupby('user_id')['day'].shift(2)` 取出组内往前第二行的日期，相减等于 2 天的行所属的用户就是答案。`shift` 在组内进行，不会跨用户取值；组内前两行得到 NaT，相减为 NaT，比较结果为 False，不会误判。\n\n这个做法只适合固定长度 3 的判断；要输出每段的长度时，还是第一种方法更通用。",
+        "ideaEn": "When the question is only \"is there a run of 3\", there is a shorter test: sort each user's distinct login days; if a day is exactly 2 days after the login day **two rows earlier**, the three days have no gap (the middle one must be the day in between), so they are 3 in a row.\n\nSteps: after dedup, conversion and sorting, `groupby('user_id')['day'].shift(2)` fetches the date two rows back within the user; users with a difference of exactly 2 days qualify. `shift` stays inside each group, and the first two rows get NaT, whose comparison is False.\n\nThis works for a fixed length of 3; to report run lengths the first approach is more general.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    days = tables['logins'].drop_duplicates(['user_id', 'login_date']).copy()\n    days['day'] = pd.to_datetime(days['login_date'])\n    days = days.sort_values(['user_id', 'day'])\n    two_back = days.groupby('user_id')['day'].shift(2)\n    hit = days['day'] - two_back == pd.Timedelta(days=2)\n    return days.loc[hit, ['user_id']].drop_duplicates()\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-20": {
+    "approaches": [
+      {
+        "nameZh": "首日 + 1 天，查是否登录过",
+        "nameEn": "First day plus one, then look it up",
+        "ideaZh": "分子是「首日的下一天也登录了的用户数」，分母是用户总数。每位用户只需要回答一个是非题：`(user_id, 首日 + 1)` 是否出现在登录记录里。\n\n做法：\n\n1. `first = groupby('user_id')['login_date'].min()`：日期是 `YYYY-MM-DD` 文本，字符串最小值就是最早的日期；\n2. 转成日期加 `pd.Timedelta(days=1)`，再 `strftime('%Y-%m-%d')` 格式化回文本，和原始记录同一格式；\n3. 把所有登录记录做成 `(user_id, login_date)` 的集合，逐个检查次日是否在集合里；\n4. `round(returned / len(first), 2)`，包成一行一列。\n\n为什么要真正做日期加法：2 月 28 日的次日在闰年是 29 日，月末的次日是下个月 1 日，字符串拼接处理不了这些情况。\n\n易错点：分母是用户数，不是登录记录数；同一天多次登录不影响结果，因为用的是集合。",
+        "ideaEn": "The numerator is the number of users who also logged in the day after their first day; the denominator is the number of users. Each user answers one yes/no question: does `(user_id, first day + 1)` appear among the logins?\n\nSteps:\n\n1. `first = groupby('user_id')['login_date'].min()`; dates are `YYYY-MM-DD` text, so the string minimum is the earliest date;\n2. convert, add `pd.Timedelta(days=1)` and format back with `strftime('%Y-%m-%d')` so it matches the stored text;\n3. build a set of `(user_id, login_date)` pairs and check each user's next day against it;\n4. `round(returned / len(first), 2)` in a one-row, one-column frame.\n\nWhy real date arithmetic? The day after Feb 28 is Feb 29 in a leap year, and the day after a month's end is the 1st of the next month; string manipulation cannot get this right.\n\nPitfalls: the denominator counts users, not login rows; repeated logins on a day do not matter because a set is used.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    logins = tables['logins']\n    first = logins.groupby('user_id')['login_date'].min()          # 'YYYY-MM-DD' sorts as text\n    next_day = (pd.to_datetime(first) + pd.Timedelta(days=1)).dt.strftime('%Y-%m-%d')\n    seen = set(zip(logins['user_id'], logins['login_date']))\n    returned = sum((user, day) in seen for user, day in next_day.items())\n    return pd.DataFrame({'retention': [round(returned / len(first), 2)]})\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-21": {
+    "approaches": [
+      {
+        "nameZh": "两个布尔条件相与",
+        "nameEn": "Two boolean masks combined",
+        "ideaZh": "两个条件分别做成布尔 Series，再用 `&` 合起来：\n\n1. `hire_date >= '2021-01-01'`：日期是 `YYYY-MM-DD` 文本，定长、高位在前，字符串比较和日期比较结果一致；\n2. `department_id.fillna(0) != 1`：不在部门 1。\n\n第 2 个条件的关键是 NULL。`department_id` 是可空整数，缺失值是 `pd.NA`，`pd.NA != 1` 的结果仍是 `<NA>`，不是 True，用来做掩码会出错或被当成不满足。先 `fillna(0)`（数据里没有 0 号部门），没有部门的人就变成「0 不等于 1」，满足条件，和题意「没有部门也算不在部门 1」一致。\n\n易错点：边界是「当天及以后」，用 `>=`；两个条件之间用 `&` 而不是 `and`，并注意各自加括号或先存成变量。",
+        "ideaEn": "Build each condition as a boolean Series and combine them with `&`:\n\n1. `hire_date >= '2021-01-01'`: dates are fixed-width `YYYY-MM-DD` text, most significant part first, so string comparison agrees with date comparison;\n2. `department_id.fillna(0) != 1`: not in department 1.\n\nThe catch in condition 2 is NULL. `department_id` is nullable Int64, so a missing value is `pd.NA`, and `pd.NA != 1` is `<NA>`, not True; as a mask it either errors or is treated as not matching. `fillna(0)` first (there is no department 0) turns a missing department into \"0 is not 1\", which satisfies the condition, as the task requires.\n\nPitfalls: \"on or after\" means `>=`; combine with `&`, not `and`, and parenthesise each side or keep them in variables.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees']\n    recent = employees['hire_date'] >= '2021-01-01'            # ISO text compares like dates\n    elsewhere = employees['department_id'].fillna(0) != 1      # NULL department counts as \"not 1\"\n    return employees.loc[recent & elsewhere, ['id', 'name', 'hire_date']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-22": {
+    "approaches": [
+      {
+        "nameZh": "布尔筛选 + 多键排序",
+        "nameEn": "Boolean filter and multi-key sort",
+        "ideaZh": "这题只有两步：先筛出价格在区间内的行，再按题目给的顺序排序。\n\n1. `products['price'].between(25, 60)` 得到一个布尔掩码，`between` 默认 `inclusive='both'`，两端都算，正好对应 SQL 的 `BETWEEN`。\n2. `sort_values(['price', 'name'], ascending=[False, True])`：第一键价格降序，价格相同再按名字升序。`ascending` 传列表时要和键一一对应。\n3. 取出 `name, category, price` 三列返回。\n\n**易错点**\n\n- 本题判题时比较行的顺序，忘了排序或者只按价格排都会错（价格相同的商品顺序不确定）。\n- 不要写成 `(price > 25) & (price < 60)`，边界上的 25 和 60 会被漏掉。\n- index 不参与比较，排序后不用 `reset_index`。",
+        "ideaEn": "Two steps: keep the rows in range, then sort them the way the statement asks.\n\n1. `products['price'].between(25, 60)` builds a boolean mask. `between` defaults to `inclusive='both'`, so both ends count, exactly like SQL's `BETWEEN`.\n2. `sort_values(['price', 'name'], ascending=[False, True])`: price descending first, then name ascending among equal prices. When `ascending` is a list it pairs up with the keys one by one.\n3. Return the columns `name, category, price`.\n\n**Pitfalls**\n\n- Row order is compared in this problem. Skipping the sort, or sorting by price alone, fails whenever two products share a price.\n- `(price > 25) & (price < 60)` drops the boundary values 25 and 60.\n- The index is ignored, so there is no need to `reset_index` after sorting.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    products = tables['products']\n    chosen = products[products['price'].between(25, 60)]\n    chosen = chosen.sort_values(['price', 'name'], ascending=[False, True])\n    return chosen[['name', 'category', 'price']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-23": {
+    "approaches": [
+      {
+        "nameZh": "逐行函数 map",
+        "nameEn": "Map a per-row function",
+        "ideaZh": "工资档是一个从上到下依次判断的条件：先看是否 ≥ 9000，再看是否 ≥ 5000，剩下的都是 low。把这个判断写成普通的 Python 函数，用 `Series.map` 作用到每个工资上即可。\n\n1. 取 `name, salary` 两列并 `.copy()`，之后新增列不会触发 `SettingWithCopyWarning`。\n2. `employees['salary'].map(band)` 对每个值调用一次 `band`，得到 `'high' / 'mid' / 'low'`。\n\n判断顺序很关键：因为先排除了 ≥ 9000 的情况，第二个分支只需要写 `>= 5000`，不用再写上界。边界 9000 落在 high、5000 落在 mid，和题意一致。`salary` 列没有缺失值，所以不用担心 `pd.NA` 进入比较。",
+        "ideaEn": "The band is a top-down chain of checks: at least 9000, else at least 5000, else low. Write it as a plain Python function and apply it to every salary with `Series.map`.\n\n1. Take `name, salary` and `.copy()` them so adding a column later does not raise `SettingWithCopyWarning`.\n2. `employees['salary'].map(band)` calls `band` once per value and yields `'high' / 'mid' / 'low'`.\n\nThe order of the checks matters: once 9000 and up has been handled, the second branch only needs `>= 5000` with no upper bound. 9000 lands in high and 5000 in mid, as required. `salary` is never NULL, so `pd.NA` never reaches a comparison.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef band(salary):\n    if salary >= 9000:\n        return 'high'\n    if salary >= 5000:\n        return 'mid'\n    return 'low'\n\n\ndef solve(tables):\n    employees = tables['employees'][['name', 'salary']].copy()\n    employees['band'] = employees['salary'].map(band)\n    return employees\n"
+      },
+      {
+        "nameZh": "pd.cut 按区间分档",
+        "nameEn": "Binning with pd.cut",
+        "ideaZh": "分档本质是把数轴切成三段：`[-∞, 5000)`、`[5000, 9000)`、`[9000, +∞)`。`pd.cut` 就是干这个的，而且是向量化的，不用逐行调用 Python 函数。\n\n- `bins=[-np.inf, 5000, 9000, np.inf]` 给出三段的边界；\n- `right=False` 让区间左闭右开，于是 5000 属于 mid、9000 属于 high；\n- `labels=['low', 'mid', 'high']` 给每段起名。\n\n`pd.cut` 返回的是 Categorical，最后 `.astype(str)` 转回普通字符串。最容易错的是 `right` 参数：默认 `right=True` 是左开右闭，那样 5000 会被分进 low、9000 会被分进 mid。",
+        "ideaEn": "Banding cuts the number line into `[-inf, 5000)`, `[5000, 9000)` and `[9000, +inf)`. That is exactly what `pd.cut` does, vectorised, without calling Python per row.\n\n- `bins=[-np.inf, 5000, 9000, np.inf]` sets the edges;\n- `right=False` makes each interval closed on the left, so 5000 is mid and 9000 is high;\n- `labels=['low', 'mid', 'high']` names the intervals.\n\n`pd.cut` returns a Categorical, so `.astype(str)` turns it back into plain strings. The usual mistake is `right`: the default `right=True` closes intervals on the right, which would put 5000 in low and 9000 in mid.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees'][['name', 'salary']].copy()\n    bands = pd.cut(\n        employees['salary'].astype(float),\n        bins=[-np.inf, 5000, 9000, np.inf],\n        right=False,  # [5000, 9000) is mid, so 9000 itself is high\n        labels=['low', 'mid', 'high'],\n    )\n    employees['band'] = bands.astype(str)\n    return employees\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-24": {
+    "approaches": [
+      {
+        "nameZh": "isin 逐层缩小",
+        "nameEn": "Narrow down with isin",
+        "ideaZh": "关系链是 商品 → 订单明细 → 订单 → 客户。只问「有没有买过」，不需要把四张表真的 merge 在一起，每一层用 `isin` 拿上一层的编号去过滤就行，天然不会产生重复行。\n\n1. `books`：类目为 `'Books'` 的商品 id。\n2. `with_books`：明细里 `product_id` 属于 `books` 的那些 `order_id`。\n3. `paid`：状态为 `'paid'` 且 id 在 `with_books` 里的订单。\n4. 最后在 `customers` 里保留 id 出现在 `paid['customer_id']` 中的客户。\n\n**为什么每位客户只出现一次**：最后一步是在 `customers` 表上做筛选，每个客户本来就只有一行，买了多少本书都不影响。如果用 merge 连起来，Cara 这种买过两次的人会出现多行，还得 `drop_duplicates`。\n\n**易错点**：游客订单的 `customer_id` 是 `pd.NA`，先 `dropna()` 再交给 `isin`，语义更清楚。另外必须先限定已支付，已取消订单里买的书不算。",
+        "ideaEn": "The chain is product → order item → order → customer. We only ask whether a customer ever bought a book, so there is no need to merge four tables: at each level, filter with `isin` on the ids from the level before. This never creates duplicate rows.\n\n1. `books`: ids of products in category `'Books'`.\n2. `with_books`: the `order_id`s of items whose `product_id` is in `books`.\n3. `paid`: orders with status `'paid'` whose id is in `with_books`.\n4. Keep the customers whose id appears in `paid['customer_id']`.\n\n**Why each customer appears once**: the last step filters `customers`, which has one row per customer no matter how many books they bought. A merge chain would give Cara several rows and need `drop_duplicates`.\n\n**Pitfalls**: guest orders have `customer_id` = `pd.NA`; `dropna()` before `isin` makes the intent explicit. And restrict to paid orders, since books in cancelled orders do not count.",
+        "time": "O(n + m + k + c)",
+        "space": "O(n + m + k)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    products = tables['products']\n    orders = tables['orders']\n    items = tables['order_items']\n    books = products.loc[products['category'] == 'Books', 'id']\n    with_books = items.loc[items['product_id'].isin(books), 'order_id']\n    paid = orders[(orders['status'] == 'paid') & orders['id'].isin(with_books)]\n    buyers = paid['customer_id'].dropna()\n    return customers.loc[customers['id'].isin(buyers), ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-25": {
+    "approaches": [
+      {
+        "nameZh": "自连接 left merge",
+        "nameEn": "Self merge with how='left'",
+        "ideaZh": "上级也是 `employees` 里的一行，所以这是一次**自连接**：把员工表和「改了名的员工表」按 `manager_id = id` 拼起来。\n\n1. 从员工表取 `id, name` 做「上级表」，改名为 `manager_id, manager`，这样连接键同名，结果里也不会出现两个 `name` 冲突。\n2. `employees.merge(managers, on='manager_id', how='left')`：`how='left'` 保证每位员工都留下来；`manager_id` 为空或者指向不存在的人时，`manager` 就是缺失值，判题时输出为 null。\n3. 取 `name, manager`。\n\n**易错点**\n\n- 用默认的 `how='inner'` 会把 Ava、Eve、Hugo 三行直接丢掉。\n- `id` 是主键，上级表里每个 `manager_id` 至多一行，所以 left merge 不会让员工行变多。",
+        "ideaEn": "A manager is just another row of `employees`, so this is a **self join**: merge the employees with a renamed copy of themselves on `manager_id = id`.\n\n1. Take `id, name` as the manager table and rename them to `manager_id, manager`, so the join key shares a name and the two `name` columns do not clash.\n2. `employees.merge(managers, on='manager_id', how='left')`: `how='left'` keeps every employee; when `manager_id` is missing or points nowhere, `manager` is missing and prints as null.\n3. Return `name, manager`.\n\n**Pitfalls**\n\n- The default `how='inner'` silently drops Ava, Eve and Hugo.\n- `id` is a primary key, so each `manager_id` matches at most one row and the left merge never multiplies employees.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees']\n    managers = employees[['id', 'name']].rename(columns={'id': 'manager_id', 'name': 'manager'})\n    result = employees.merge(managers, on='manager_id', how='left')\n    return result[['name', 'manager']]\n"
+      },
+      {
+        "nameZh": "按编号查表 map",
+        "nameEn": "Look up names with map",
+        "ideaZh": "只需要上级的名字一列，也可以不 merge：把员工表做成一个 `id → name` 的 Series，再对 `manager_id` 做 `map`。\n\n`employees.set_index('id')['name']` 就是这张查找表。`map` 对每个 `manager_id` 查表，查不到（`pd.NA` 或不存在的 42）就得到缺失值，和 left merge 的效果一样，而且结果天然和原表逐行对齐，不会多行也不会少行。\n\n前提是 `id` 唯一，否则 `map` 会报错 —— 这里 `id` 是主键，满足条件。",
+        "ideaEn": "We only need one extra column, the manager's name, so a merge is optional: turn the table into an `id → name` Series and `map` `manager_id` through it.\n\n`employees.set_index('id')['name']` is the lookup table. `map` looks up every `manager_id`; a miss (`pd.NA`, or a non-existent 42) gives a missing value, the same as the left merge, and the result stays aligned row for row with the original table.\n\nThis needs `id` to be unique, otherwise `map` raises. Here `id` is the primary key.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees']\n    name_by_id = employees.set_index('id')['name']\n    return pd.DataFrame({\n        'employee': employees['name'],\n        'manager': employees['manager_id'].map(name_by_id),\n    })\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-26": {
+    "approaches": [
+      {
+        "nameZh": "反向 isin",
+        "nameEn": "Negated isin",
+        "ideaZh": "「从未在已支付订单中卖出过」= 全部商品 − 在已支付订单里出现过的商品，是一个集合差，对应 SQL 的 `NOT IN` / `NOT EXISTS`。\n\n1. `paid`：已支付订单的 id。\n2. `sold`：明细里 `order_id` 属于 `paid` 的 `product_id`，也就是卖出过的商品。\n3. `products[~products['id'].isin(sold)]`：用 `~` 取反，留下没卖出过的。\n\n**为什么已取消订单不用特殊处理**：`sold` 只从已支付订单里收集，一件商品只出现在已取消订单里时不会进入 `sold`，自然会被输出；而像 Puzzle Box 这种两种订单都出现过的，会因为已支付那一笔被排除。\n\n**易错点**：不要先排除「出现在已取消订单里的商品」，那样会把也在已支付订单里卖出过的商品算错。`sold` 里没有缺失值，所以这里不会遇到 SQL `NOT IN` 碰到 NULL 全部失效的问题。",
+        "ideaEn": "\"Never sold in a paid order\" is all products minus the products that appear in paid orders: a set difference, like SQL's `NOT IN` / `NOT EXISTS`.\n\n1. `paid`: ids of paid orders.\n2. `sold`: the `product_id`s of items whose `order_id` is in `paid`, i.e. products that sold.\n3. `products[~products['id'].isin(sold)]`: `~` flips the mask and keeps the rest.\n\n**Why cancelled orders need no special case**: `sold` only collects from paid orders. A product seen only in cancelled orders never enters `sold` and is reported; one like Puzzle Box that also sold in a paid order is excluded by that paid sale.\n\n**Pitfalls**: do not exclude products that appear in cancelled orders; that is a different question. `sold` has no missing values, so the SQL trap where `NOT IN` meets a NULL does not arise here.",
+        "time": "O(n + m + k)",
+        "space": "O(m + k)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    products = tables['products']\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    sold = items.loc[items['order_id'].isin(paid), 'product_id']\n    return products.loc[~products['id'].isin(sold), ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-27": {
+    "approaches": [
+      {
+        "nameZh": "笛卡尔积 + indicator",
+        "nameEn": "Cross join with an indicator",
+        "ideaZh": "输出要覆盖「每位学生 × 每门课」，哪怕学生没选这门课，所以骨架是一个笛卡尔积；然后再把选课记录贴上去。\n\n1. `students`：在 `enrollments` 里出现过的学生，`drop_duplicates` 去重。\n2. `students.merge(courses, how='cross')` 得到所有 (学生, 课程) 组合。\n3. 再和 `enrollments` 按 `student_id, course_id` 做 `how='left'` 合并，`indicator=True` 会多出一列 `_merge`：`'both'` 表示有选课记录，`'left_only'` 表示没选。\n4. 用两层 `np.where` 决定状态：没匹配上 → `'not enrolled'`；匹配上但 `score` 缺失 → `'absent'`；否则 `'sat'`。\n\n**关键点**：`absent` 和 `not enrolled` 两种情况的 `score` 都是缺失值，只看 `score.isna()` 区分不开。必须靠「这一行有没有匹配到选课记录」来判断，这就是 `indicator` 的用处。\n\n**易错点**：学生列表要从 `enrollments` 取，不能从结果反推；课程要用完整的 `courses`，没人选的课（如 Drama）也要和每位学生配一行。",
+        "ideaEn": "Every student must be paired with every course, enrolled or not, so the skeleton is a cross product; the enrollment rows are attached to it afterwards.\n\n1. `students`: the distinct students in `enrollments`.\n2. `students.merge(courses, how='cross')` gives every (student, course) pair.\n3. Left-merge `enrollments` on `student_id, course_id` with `indicator=True`, which adds a `_merge` column: `'both'` means an enrollment exists, `'left_only'` means none.\n4. Two nested `np.where` pick the status: no match → `'not enrolled'`; match with missing `score` → `'absent'`; otherwise `'sat'`.\n\n**Key point**: both `absent` and `not enrolled` have a missing `score`, so `score.isna()` alone cannot tell them apart. Whether the row matched an enrollment is what decides, and `indicator` records exactly that.\n\n**Pitfalls**: take the students from `enrollments`, and use the full `courses` table, so a course nobody took (Drama) still gets one row per student.",
+        "time": "O(s * c)",
+        "space": "O(s * c)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    courses = tables['courses'].rename(columns={'id': 'course_id'})\n    enrollments = tables['enrollments']\n    students = enrollments[['student_id']].drop_duplicates()\n    grid = students.merge(courses, how='cross')\n    rows = grid.merge(enrollments, on=['student_id', 'course_id'], how='left', indicator=True)\n    rows['status'] = np.where(\n        rows['_merge'] == 'left_only',\n        'not enrolled',\n        np.where(rows['score'].isna(), 'absent', 'sat'),\n    )\n    return rows[['student_id', 'title', 'status', 'score']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-28": {
+    "approaches": [
+      {
+        "nameZh": "两级聚合",
+        "nameEn": "Aggregate twice",
+        "ideaZh": "「平均订单金额」的分母是订单数，不是明细行数，所以要聚合两次：先把明细汇总成订单金额，再按客户求平均。\n\n1. `paid_items`：已支付订单的明细，并算出每行 `amount = quantity * unit_price`。\n2. 按 `order_id` 求和，得到每笔订单的金额 `totals`。只有明细的订单才会出现在这里，正好满足「至少包含一件商品」。\n3. 把 `totals` 和订单表按 `order_id` 合并拿到 `customer_id`。默认的 inner merge 加上 groupby 默认丢弃缺失键，游客订单就被排除了。\n4. 按 `customer_id` 命名聚合：`orders=('order_id', 'size')`、`avg_order_value=('amount', 'mean')`，再合并客户姓名、`.round(2)`。\n\n**为什么不能一步到位**：直接对明细行求平均，一笔有 3 行明细的订单会被算 3 次，权重就错了。样例里 Alice 按订单平均是 125，按明细行平均会是别的数。\n\n**易错点**：`orders` 要数订单而不是明细，用的是汇总后的 `totals`，每笔订单一行，`size` 就是订单数。",
+        "ideaEn": "The average is per order, not per item row, so aggregate twice: roll item rows up into order totals, then average those per customer.\n\n1. `paid_items`: items of paid orders with `amount = quantity * unit_price` per row.\n2. Sum by `order_id` to get each order's total. Only orders with items appear, which is the \"at least one item\" rule.\n3. Merge with orders on `order_id` to get `customer_id`. Guest orders vanish because groupby drops missing keys.\n4. Named aggregation by `customer_id`: `orders=('order_id', 'size')`, `avg_order_value=('amount', 'mean')`; then attach names and `.round(2)`.\n\n**Why not one step**: averaging item rows counts an order with three items three times, weighting it wrongly. Alice's per-order average is 125; the per-row average is something else.\n\n**Pitfalls**: count orders, not items. `totals` has one row per order, so `size` there is the order count.",
+        "time": "O(n + m + c)",
+        "space": "O(n + m)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Rows of order_items that belong to paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\n\ndef solve(tables):\n    customers = tables['customers'][['id', 'name']].rename(columns={'id': 'customer_id'})\n    orders = tables['orders'][['id', 'customer_id']].rename(columns={'id': 'order_id'})\n    totals = paid_items(tables).groupby('order_id', as_index=False)['amount'].sum()\n    totals = totals.merge(orders, on='order_id')\n    result = totals.groupby('customer_id', as_index=False).agg(\n        orders=('order_id', 'size'),\n        avg_order_value=('amount', 'mean'),\n    )\n    result = result.merge(customers, on='customer_id')\n    result['avg_order_value'] = result['avg_order_value'].round(2)\n    return result[['customer_id', 'name', 'orders', 'avg_order_value']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-29": {
+    "approaches": [
+      {
+        "nameZh": "命名聚合 + 过滤",
+        "nameEn": "Named aggregation, then filter",
+        "ideaZh": "对每笔已支付订单要同时算两个量：不同商品的种数和总件数，然后只保留种数 ≥ 2 的订单（相当于 SQL 的 `HAVING`）。\n\n1. `paid_items` 只留下已支付订单的明细。\n2. `groupby('order_id').agg(products=('product_id', 'nunique'), units=('quantity', 'sum'))` 一次得到两列。\n3. 对聚合结果用 `products >= 2` 过滤。\n\n**易错点**\n\n- 种数要用 `nunique` 而不是 `size` / `count`：同一种商品可能在一笔订单里拆成多行明细，`size` 会把它数成两种。\n- 过滤必须在聚合之后做，聚合之前每行只有一个商品，没法判断。\n- 已取消的订单要在聚合前排除。",
+        "ideaEn": "For each paid order we need two numbers at once, distinct products and total units, then keep the orders with at least 2 products (SQL's `HAVING`).\n\n1. `paid_items` keeps only items of paid orders.\n2. `groupby('order_id').agg(products=('product_id', 'nunique'), units=('quantity', 'sum'))` builds both columns.\n3. Filter the aggregate with `products >= 2`.\n\n**Pitfalls**\n\n- Use `nunique`, not `size` / `count`: one product can be split across several item rows of the same order, and `size` would count it twice.\n- Filter after aggregating; before it, each row holds just one product.\n- Drop cancelled orders before aggregating.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Rows of order_items that belong to paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\n\ndef solve(tables):\n    result = paid_items(tables).groupby('order_id', as_index=False).agg(\n        products=('product_id', 'nunique'),\n        units=('quantity', 'sum'),\n    )\n    return result[result['products'] >= 2]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-30": {
+    "approaches": [
+      {
+        "nameZh": "groupby 命名聚合",
+        "nameEn": "groupby with named aggregation",
+        "ideaZh": "每个类目一行，四个统计量来自同一张表，正好是一次 `groupby` 加命名聚合。\n\n```python\ngroupby('category', as_index=False).agg(\n    products=('id', 'size'), min_price=('price', 'min'),\n    max_price=('price', 'max'), avg_price=('price', 'mean'))\n```\n\n命名聚合的写法是 `新列名=(源列, 函数)`，结果列名直接就是题目要的名字，不需要再处理 MultiIndex 列。`as_index=False` 让 `category` 留在普通列里。最后对 `avg_price` 做 `.round(1)`。\n\n**易错点**：平均值要先算再四舍五入，不要先对价格取整。`category` 没有缺失值，不会出现 groupby 丢掉 NaN 键的问题。",
+        "ideaEn": "One row per category, four statistics from the same table: one `groupby` with named aggregation.\n\n```python\ngroupby('category', as_index=False).agg(\n    products=('id', 'size'), min_price=('price', 'min'),\n    max_price=('price', 'max'), avg_price=('price', 'mean'))\n```\n\nNamed aggregation is `new_name=(column, function)`, so the result already carries the required names and no MultiIndex columns need flattening. `as_index=False` keeps `category` as a regular column. Finish with `.round(1)` on `avg_price`.\n\n**Pitfalls**: round the mean, not the prices. `category` is never missing, so groupby dropping NaN keys is not an issue here.",
+        "time": "O(n)",
+        "space": "O(g)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    result = tables['products'].groupby('category', as_index=False).agg(\n        products=('id', 'size'),\n        min_price=('price', 'min'),\n        max_price=('price', 'max'),\n        avg_price=('price', 'mean'),\n    )\n    result['avg_price'] = result['avg_price'].round(1)\n    return result\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-31": {
+    "approaches": [
+      {
+        "nameZh": "去掉缺考后分组计数",
+        "nameEn": "Drop absentees, then count per group",
+        "ideaZh": "「参加考试」= `score` 不缺失，所以先把缺考行去掉，剩下的每一行都是一次考试，计数就简单了。\n\n1. `dropna(subset=['score'])` 去掉缺考。\n2. 新增一列 `top = (score >= 80).astype(int)`，优秀为 1、否则为 0，求和就是优秀人数。\n3. 和 `courses` 合并拿课程名，按 `course_id, title` 分组：`sat=('score', 'size')`、`top=('top', 'sum')`。\n4. `top_rate = (top / sat).round(2)`。\n\n**为什么没人考试的课程会自动消失**：去掉缺考后，Chemistry 一行都没剩，分组里就没有它，符合「至少有一人参加考试」的要求，也就不会出现除以 0。\n\n**易错点**：如果不先 `dropna`，`size` 会把缺考也算进参加人数；分组键带上 `course_id` 是为了防止两门课同名时被合并成一行。",
+        "ideaEn": "\"Sat the exam\" means `score` is not missing, so drop absentees first; every remaining row is one exam taken and counting becomes easy.\n\n1. `dropna(subset=['score'])` removes absentees.\n2. Add `top = (score >= 80).astype(int)`: 1 for a top score, 0 otherwise, so its sum is the top count.\n3. Merge with `courses` for the title and group by `course_id, title`: `sat=('score', 'size')`, `top=('top', 'sum')`.\n4. `top_rate = (top / sat).round(2)`.\n\n**Why courses nobody sat disappear**: after the drop, Chemistry has no rows left and forms no group, matching \"at least one person sat it\" and avoiding a division by zero.\n\n**Pitfalls**: without `dropna`, `size` counts absentees as takers. Grouping by `course_id` too keeps two courses with the same title apart.",
+        "time": "O(n + c)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    courses = tables['courses']\n    enrollments = tables['enrollments'].dropna(subset=['score']).copy()\n    enrollments['top'] = (enrollments['score'] >= 80).astype(int)\n    rows = enrollments.merge(courses, left_on='course_id', right_on='id')\n    result = rows.groupby(['course_id', 'title'], as_index=False).agg(\n        sat=('score', 'size'),\n        top=('top', 'sum'),\n    )\n    result['top_rate'] = (result['top'] / result['sat']).round(2)\n    return result[['title', 'sat', 'top', 'top_rate']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-32": {
+    "approaches": [
+      {
+        "nameZh": "0/1 指示列求和",
+        "nameEn": "Sum 0/1 indicator columns",
+        "ideaZh": "把「按状态计数」变成「对 0/1 列求和」：每笔订单是否已支付、是否已取消各是一个 0/1 值，按城市加起来就是两个计数。这就是 SQL 里 `SUM(CASE WHEN ...)` 的写法。\n\n1. 订单和客户按 `customer_id` 做 inner merge。游客订单的 `customer_id` 是缺失值，匹配不到任何客户，在这一步就被去掉了。\n2. `city.fillna('Unknown')`：城市为空的客户归到 Unknown。一定要在 groupby **之前**做，因为 groupby 默认会丢掉缺失的键。\n3. `paid = (status == 'paid').astype(int)`，`cancelled` 同理。\n4. `groupby('city')[['paid', 'cancelled']].sum()`。\n\n**为什么没有订单的城市不会出现**：分组的对象是订单行，一个城市没有订单就没有行，自然不出现。样例里 Dev 城市未知但没下单，所以没有 Unknown 行。\n\n**另一种思路**：`pd.crosstab(city, status)` 也能直接出表，但某种状态在全部数据里都没出现时会少一列，还得 `reindex` 补齐，不如 0/1 列稳妥。",
+        "ideaEn": "Turn \"count by status\" into \"sum 0/1 columns\": each order is paid or not and cancelled or not, and summing those flags per city gives both counts. This is SQL's `SUM(CASE WHEN ...)`.\n\n1. Inner-merge orders with customers on `customer_id`. Guest orders have a missing `customer_id`, match no customer and drop out here.\n2. `city.fillna('Unknown')` before grouping: groupby drops missing keys by default.\n3. `paid = (status == 'paid').astype(int)`, and the same for `cancelled`.\n4. `groupby('city')[['paid', 'cancelled']].sum()`.\n\n**Why cities without orders do not appear**: the groups are built from order rows, so a city with no orders has no rows. Dev's city is unknown but he never ordered, so there is no Unknown row.\n\n**Alternative**: `pd.crosstab(city, status)` builds the table directly, but if a status never occurs it drops that column and needs a `reindex`. The 0/1 columns are safer.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers'][['id', 'city']].rename(columns={'id': 'customer_id'})\n    orders = tables['orders'].merge(customers, on='customer_id')\n    orders['city'] = orders['city'].fillna('Unknown')\n    orders['paid'] = (orders['status'] == 'paid').astype(int)\n    orders['cancelled'] = (orders['status'] == 'cancelled').astype(int)\n    return orders.groupby('city', as_index=False)[['paid', 'cancelled']].sum()\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-33": {
+    "approaches": [
+      {
+        "nameZh": "先算标量再筛选",
+        "nameEn": "Compute the scalar, then filter",
+        "ideaZh": "全公司平均工资是一个数，和分组无关：`employees['salary'].mean()` 先算出来，再用它筛选，并把它作为常数列放进结果。\n\n1. `average = employees['salary'].mean()`，对所有员工求平均，包括没有部门的人。\n2. `employees['salary'] > average` 严格大于。\n3. 筛出 `name, salary` 后 `.copy()`，再加一列 `company_avg = round(average, 2)`。给 DataFrame 赋一个标量，会广播到每一行。\n\n**易错点**\n\n- 比较时用原始的平均值，不要用四舍五入后的值，否则工资恰好落在两者之间时会判错。\n- 不要先按部门过滤或 merge 部门表，那样没有部门的员工就不在分母里了。",
+        "ideaEn": "The company average is a single number, independent of any grouping: compute `employees['salary'].mean()` once, filter with it, and add it as a constant column.\n\n1. `average = employees['salary'].mean()` over everyone, including people without a department.\n2. `employees['salary'] > average`, strictly greater.\n3. Take `name, salary`, `.copy()`, and set `company_avg = round(average, 2)`. Assigning a scalar broadcasts it to every row.\n\n**Pitfalls**\n\n- Compare against the unrounded mean; a salary between the rounded and true mean would otherwise be misjudged.\n- Do not filter by department or merge with departments first, or employees without a department leave the average.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees']\n    average = employees['salary'].mean()\n    result = employees.loc[employees['salary'] > average, ['name', 'salary']].copy()\n    result['company_avg'] = round(average, 2)\n    return result\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-34": {
+    "approaches": [
+      {
+        "nameZh": "transform 广播组内最大值",
+        "nameEn": "Broadcast the group max with transform",
+        "ideaZh": "要的是「拿到最高分的那些行」，并列都要，所以不能用 `idxmax`（它只返回一行）。做法是把每门课的最高分贴到每一行上，再挑出分数等于它的行。\n\n1. `groupby('course_id')['score'].transform('max')`：结果和原表等长，每行是自己所在课程的最高分。`max` 会跳过缺考的缺失值；一门课全员缺考时，最高分也是缺失值。\n2. 筛选 `score == best`。这里两边都可能是 `pd.NA`，比较结果也会是 `pd.NA`，所以要 `.fillna(False)` 再当掩码用。\n3. 合并 `courses` 拿课程名。\n\n**为什么没人考或没人选的课不会出现**：没人选的课在 `enrollments` 里没有行；全员缺考的课 `best` 是缺失值，比较结果被填成 False。\n\n**易错点**：用 `groupby(...).max()` 再 merge 回去也可以，但 `transform` 少一次合并；用 `sort_values` + `drop_duplicates` 只会保留一个并列者，是错的。",
+        "ideaEn": "We want every row that reaches the top score, ties included, so `idxmax` (one row per group) is out. Instead, put each course's maximum on every row and keep the rows that equal it.\n\n1. `groupby('course_id')['score'].transform('max')` returns a column as long as the table, holding each row's course maximum. `max` skips missing scores; if everyone was absent the maximum is missing too.\n2. Keep `score == best`. Either side can be `pd.NA`, which makes the comparison `pd.NA`, so `.fillna(False)` before using it as a mask.\n3. Merge `courses` for the title.\n\n**Why untaken or unsat courses vanish**: a course nobody took has no enrollment rows; for a course where everyone was absent, `best` is missing and the comparison becomes False.\n\n**Pitfalls**: `groupby(...).max()` plus a merge back also works, `transform` just saves the merge. `sort_values` + `drop_duplicates` keeps only one of the tied students and is wrong.",
+        "time": "O(n + c)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    courses = tables['courses']\n    enrollments = tables['enrollments'].copy()\n    enrollments['best'] = enrollments.groupby('course_id')['score'].transform('max')\n    # NA == NA is NA, not True: fill it so absent-only courses drop out\n    best = enrollments[(enrollments['score'] == enrollments['best']).fillna(False)]\n    result = best.merge(courses, left_on='course_id', right_on='id')\n    return result[['title', 'student_id', 'score']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-35": {
+    "approaches": [
+      {
+        "nameZh": "与最大值比较",
+        "nameEn": "Compare with the maximum",
+        "ideaZh": "「高于 Sales 部门的每一位」等价于「高于 Sales 部门的最高工资」，对应 SQL 的 `> ALL (...)`。难点在边界：Sales 没人时，`> ALL` 对空集恒为真，所有员工都要输出。\n\n1. `sales`：名字为 `'Sales'` 的部门 id（可能一个都没有）。\n2. `salaries`：`department_id` 属于 `sales` 的员工工资。\n3. 如果 `salaries` 非空，筛选 `salary > salaries.max()`；如果为空，不做筛选，原样返回所有员工。\n\n**为什么要单独判断空集**：空 Series 的 `max()` 是 NaN，`salary > NaN` 全部为 False，结果会变成空表 —— 和题意正好相反。\n\n**易错点**：比较对象不分部门，Sales 自己的人也在候选里（只是不可能比本部门最高的人还高）；没有部门的员工同样参与比较。",
+        "ideaEn": "\"Earns more than every Sales employee\" is \"earns more than the highest Sales salary\", SQL's `> ALL (...)`. The catch is the edge: with no Sales staff, `> ALL` over an empty set is true and everyone qualifies.\n\n1. `sales`: ids of departments named `'Sales'` (possibly none).\n2. `salaries`: salaries of employees whose `department_id` is in `sales`.\n3. If `salaries` is non-empty, keep `salary > salaries.max()`; otherwise return every employee unfiltered.\n\n**Why the empty case needs its own branch**: `max()` of an empty Series is NaN, `salary > NaN` is all False, and the result would be empty, the opposite of what is asked.\n\n**Pitfalls**: candidates come from every department, Sales included, and employees without a department take part too.",
+        "time": "O(n + d)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees']\n    sales = departments.loc[departments['name'] == 'Sales', 'id']\n    salaries = employees.loc[employees['department_id'].isin(sales), 'salary']\n    if len(salaries):  # no Sales staff: \"more than all of them\" holds for everyone\n        employees = employees[employees['salary'] > salaries.max()]\n    return employees[['name', 'salary']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-36": {
+    "approaches": [
+      {
+        "nameZh": "两个 isin 条件",
+        "nameEn": "Two isin conditions",
+        "ideaZh": "条件拆成两半：**下过订单**，并且**不在有取消订单的客户里**。两半都是对客户 id 的成员判断，用两个 `isin` 再按位与即可。\n\n1. `ordered = customers['id'].isin(orders['customer_id'].dropna())`：出现在任意订单里。\n2. `cancelled`：状态为 `'cancelled'` 的订单的 `customer_id`。\n3. `customers[ordered & ~customers['id'].isin(cancelled)]`。\n\n**为什么需要第一个条件**：只写 `~isin(cancelled)` 的话，Dev、Femi 这种从未下单的人也满足「没有被取消的订单」，会被错误输出。\n\n**易错点**：不要按订单行筛选「status != 'cancelled'」再取客户，那样 Alice 有已支付订单也有已取消订单，仍会被选上。条件是「所有订单都没被取消」，是对客户的整体判断。",
+        "ideaEn": "Split the condition in two: the customer **has ordered**, and is **not among customers with a cancelled order**. Both are membership tests on the customer id, so two `isin` masks joined with `&`.\n\n1. `ordered = customers['id'].isin(orders['customer_id'].dropna())`: appears in some order.\n2. `cancelled`: the `customer_id` of orders with status `'cancelled'`.\n3. `customers[ordered & ~customers['id'].isin(cancelled)]`.\n\n**Why the first condition is needed**: `~isin(cancelled)` alone also matches Dev and Femi, who never ordered and so trivially have no cancelled orders.\n\n**Pitfalls**: filtering order rows with `status != 'cancelled'` and taking their customers is wrong: Alice has a paid order as well as a cancelled one and would slip through. The rule is about all of a customer's orders.",
+        "time": "O(n + m)",
+        "space": "O(n + m)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    orders = tables['orders']\n    ordered = customers['id'].isin(orders['customer_id'].dropna())\n    cancelled = orders.loc[orders['status'] == 'cancelled', 'customer_id'].dropna()\n    return customers.loc[ordered & ~customers['id'].isin(cancelled), ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-37": {
+    "approaches": [
+      {
+        "nameZh": "最大值 + 逐层 isin",
+        "nameEn": "Max price, then isin step by step",
+        "ideaZh": "先确定「最贵的商品」是哪几件，再沿 明细 → 订单 → 客户 一层层筛下去。\n\n1. `products['price'] == products['price'].max()`：所有标价等于最高标价的商品。用 `==` 而不是 `idxmax`，是因为并列最贵的商品可能不止一件。\n2. `with_them`：明细里买了这些商品的订单 id。\n3. `paid`：其中状态为 `'paid'` 的订单。\n4. 在 `customers` 里保留 id 出现在 `paid['customer_id']` 中的客户，每人一行。\n\n**关键点**：「最贵」看的是 `products.price` 标价，跟明细里的成交价 `unit_price` 无关。Elle 以折扣价 75 买到标价 80 的 Chef Knife，仍然算买过。如果拿 `unit_price` 的最大值来判断，就会漏掉她。\n\n**易错点**：已取消订单（如订单 9）要排除；游客订单的缺失 `customer_id` 先 `dropna`。",
+        "ideaEn": "First find which products are the priciest, then filter item → order → customer level by level.\n\n1. `products['price'] == products['price'].max()`: every product at the top list price. Use `==`, not `idxmax`, because several products can tie.\n2. `with_them`: ids of orders containing those products.\n3. `paid`: the paid ones among them.\n4. Keep customers whose id appears in `paid['customer_id']`, one row each.\n\n**Key point**: \"priciest\" is about the list price `products.price`, not the charged `unit_price`. Elle bought the 80 Chef Knife at a discounted 75 and still counts; ranking by `unit_price` would miss her.\n\n**Pitfalls**: exclude cancelled orders such as order 9, and `dropna` the missing `customer_id` of guest orders.",
+        "time": "O(n + m + k + c)",
+        "space": "O(n + m + k)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    customers = tables['customers']\n    products = tables['products']\n    orders = tables['orders']\n    items = tables['order_items']\n    priciest = products.loc[products['price'] == products['price'].max(), 'id']\n    with_them = items.loc[items['product_id'].isin(priciest), 'order_id']\n    paid = orders[(orders['status'] == 'paid') & orders['id'].isin(with_them)]\n    return customers.loc[customers['id'].isin(paid['customer_id'].dropna()), ['id', 'name']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-38": {
+    "approaches": [
+      {
+        "nameZh": "组内 rank(method='min')",
+        "nameEn": "Group rank with method='min'",
+        "ideaZh": "名次规则「并列同名次，后面跳过」就是 SQL 的 `RANK()`，在 pandas 里是 `rank(method='min')`：并列的值都取它们中最小的那个名次。\n\n1. 先 `dropna(subset=['department_id'])`，没有部门的员工不参与排名。\n2. `groupby('department_id')['salary'].rank(method='min', ascending=False)`：在每个部门内部按工资降序排名。结果是浮点数，判题时 2.0 和 2 视为相同。\n3. 合并部门表拿部门名。两张表都有 `name` 列，用 `suffixes=('', '_department')` 让员工名保持 `name`、部门名变成 `name_department`。\n\n**几种 method 的区别**（以 9000、9000 并列第 2 为例）：`min` 得到 1、2、2、4；`dense` 得到 1、2、2、3；`first` 按出现顺序给 2、3。题目要求的是第一种。\n\n**易错点**：忘了 `ascending=False` 会把最低工资排成第 1；先 merge 再 rank 也可以，但要保证分组键是部门而不是全表。",
+        "ideaEn": "\"Ties share a rank and the next rank skips\" is SQL's `RANK()`, which in pandas is `rank(method='min')`: tied values all get the smallest of their positions.\n\n1. `dropna(subset=['department_id'])`: employees without a department are not ranked.\n2. `groupby('department_id')['salary'].rank(method='min', ascending=False)` ranks salaries high to low inside each department. The result is float; the judge treats 2.0 as 2.\n3. Merge departments for the name. Both tables have `name`, so `suffixes=('', '_department')` keeps the employee's `name` and calls the department's `name_department`.\n\n**How the methods differ** (two 9000s tied for second): `min` gives 1, 2, 2, 4; `dense` gives 1, 2, 2, 3; `first` gives 2 and 3 by order of appearance. The problem wants the first.\n\n**Pitfalls**: without `ascending=False` the lowest salary ranks first. Ranking after the merge is fine as long as the groups are departments, not the whole table.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees'].dropna(subset=['department_id']).copy()\n    employees['pay_rank'] = employees.groupby('department_id')['salary'].rank(method='min', ascending=False)\n    result = employees.merge(departments, left_on='department_id', right_on='id', suffixes=('', '_department'))\n    return result[['name_department', 'name', 'salary', 'pay_rank']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-39": {
+    "approaches": [
+      {
+        "nameZh": "排序后组内 shift",
+        "nameEn": "Sort, then shift within groups",
+        "ideaZh": "「上一笔」是组内前一行，对应 SQL 的 `LAG()`；在 pandas 里先把行排好序，再 `groupby(...).shift()`。\n\n1. 只留已支付且 `customer_id` 不缺失的订单。\n2. `pd.to_datetime(order_date)` 转成日期，才能相减。\n3. `sort_values(['customer_id', 'day', 'id'])`：先按客户，再按日期，同一天按 `id` 定先后。\n4. `groupby('customer_id')['day'].shift()` 取同一客户的上一笔日期，每位客户的第一笔得到 `NaT`。\n5. `(day - 上一笔).dt.days` 得到天数；`NaT` 相减还是 `NaT`，`.dt.days` 之后是缺失值，判题时输出 null。\n\n**为什么要先排序**：`shift` 只看行的物理顺序，不排序的话「上一行」不一定是时间上的上一笔。\n\n**易错点**：已取消订单要在 shift **之前**去掉，否则 Alice 3 月 9 日的取消单会占掉一个位置；同一天的两笔订单靠 `id` 决定先后，间隔为 0。",
+        "ideaEn": "\"The previous order\" is the previous row in the group, SQL's `LAG()`. In pandas: sort the rows, then `groupby(...).shift()`.\n\n1. Keep paid orders with a non-missing `customer_id`.\n2. `pd.to_datetime(order_date)` so dates can be subtracted.\n3. `sort_values(['customer_id', 'day', 'id'])`: by customer, then date, then `id` for orders on the same day.\n4. `groupby('customer_id')['day'].shift()` fetches the same customer's previous date; each first order gets `NaT`.\n5. `(day - previous).dt.days` gives the gap; `NaT` stays missing and prints as null.\n\n**Why sort first**: `shift` follows physical row order, so without sorting the previous row need not be the previous order in time.\n\n**Pitfalls**: drop cancelled orders **before** shifting, or Alice's cancelled 9 March order takes a slot. Two orders on the same day are ordered by `id` and have a gap of 0.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    orders = tables['orders']\n    paid = orders[(orders['status'] == 'paid') & orders['customer_id'].notna()].copy()\n    paid['day'] = pd.to_datetime(paid['order_date'])\n    paid = paid.sort_values(['customer_id', 'day', 'id'])\n    previous = paid.groupby('customer_id')['day'].shift()\n    paid['gap_days'] = (paid['day'] - previous).dt.days\n    return paid[['customer_id', 'id', 'order_date', 'gap_days']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-40": {
+    "approaches": [
+      {
+        "nameZh": "商品汇总 + 类目 transform",
+        "nameEn": "Per-product totals, category transform",
+        "ideaZh": "比例 = 商品销售额 ÷ 类目销售额。分子按商品聚合，分母按类目聚合，后者需要和每个商品行对齐，这正是 `transform` 的场景。\n\n1. `paid_items` 得到已支付明细及每行金额，合并 `products` 拿类目和商品名。\n2. 按 `product_id, category, product` 分组求和，得到每件商品的销售额。\n3. `result.groupby('category')['amount'].transform('sum')`：长度和 `result` 相同，每行是所在类目的总额。\n4. `share = (amount / 类目总额).round(2)`。\n\n**为什么分组键要带 `product_id`**：两件商品可能同名，只按名字分组会把它们合成一行。\n\n**易错点**\n\n- 分母必须基于已支付明细，不能用全部明细。\n- 用 `groupby('category').sum()` 得到的是每类一行的表，直接相除会按 index 对不齐，要么 merge 回去，要么用 `transform`。\n- 没卖出过的商品不会出现在明细里，自然不输出。",
+        "ideaEn": "Share = product revenue / category revenue. The numerator aggregates by product and the denominator by category, and the latter must line up with each product row: a job for `transform`.\n\n1. `paid_items` gives paid item rows with amounts; merge `products` for category and name.\n2. Group by `product_id, category, product` and sum to get each product's revenue.\n3. `result.groupby('category')['amount'].transform('sum')` has the same length as `result`, each row holding its category total.\n4. `share = (amount / category_total).round(2)`.\n\n**Why `product_id` is in the key**: two products may share a name, and grouping by name alone would merge them.\n\n**Pitfalls**\n\n- The denominator must also come from paid items only.\n- `groupby('category').sum()` has one row per category and will not align by index for the division; merge it back or use `transform`.\n- Products that never sold have no item rows and are not output.",
+        "time": "O(n + p)",
+        "space": "O(n + p)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Rows of order_items that belong to paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\n\ndef solve(tables):\n    products = tables['products'].rename(columns={'id': 'product_id', 'name': 'product'})\n    items = paid_items(tables).merge(products, on='product_id')\n    result = items.groupby(['product_id', 'category', 'product'], as_index=False)['amount'].sum()\n    category_total = result.groupby('category')['amount'].transform('sum')\n    result['share'] = (result['amount'] / category_total).round(2)\n    return result[['category', 'product', 'amount', 'share']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-41": {
+    "approaches": [
+      {
+        "nameZh": "订单汇总 + 组内 rolling",
+        "nameEn": "Order totals and a grouped rolling mean",
+        "ideaZh": "「本笔和之前最多两笔」是一个长度为 3 的滑动窗口，对应 SQL 的 `AVG() OVER (... ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`。pandas 里是组内的 `rolling(3, min_periods=1).mean()`。\n\n1. 和平均客单价一样，先把已支付明细按 `order_id` 汇总成订单金额，这样「一笔订单」才是一行。\n2. 合并订单表拿 `customer_id, order_date`，并去掉游客订单。\n3. 按 `customer_id, order_date, order_id` 排序，确定先后。\n4. 金额转成 float，按客户分组后 `transform(lambda s: s.rolling(3, min_periods=1).mean())`，再 `.round(2)`。\n\n**关键参数**：`min_periods=1` 让客户的前两笔订单也有值（窗口里只有 1 或 2 笔）；不加的话前两笔会是 NaN。\n\n**为什么用 transform**：`transform` 的结果按原 index 对齐回 `totals`，排序后的行和移动平均一一对应。转成 float 是因为在可空整数 Int64 上做 rolling 不够稳妥。\n\n**易错点**：必须先按订单汇总再开窗，直接对明细行开窗，窗口会是「最近三行明细」而不是「最近三笔订单」。",
+        "ideaEn": "\"This order and up to two before it\" is a size-3 sliding window, SQL's `AVG() OVER (... ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`. In pandas it is a grouped `rolling(3, min_periods=1).mean()`.\n\n1. As in the average order value problem, sum paid items by `order_id` so that one order is one row.\n2. Merge orders for `customer_id, order_date` and drop guest orders.\n3. Sort by `customer_id, order_date, order_id` to fix the sequence.\n4. Cast the amount to float, group by customer, `transform(lambda s: s.rolling(3, min_periods=1).mean())`, then `.round(2)`.\n\n**Key parameter**: `min_periods=1` gives the first two orders a value from a window of one or two; without it they would be NaN.\n\n**Why transform**: its result aligns back to `totals` by index, so each sorted row gets its own moving average. Casting to float avoids rolling over the nullable Int64 type.\n\n**Pitfalls**: aggregate per order before the window. A window over item rows averages the last three items, not the last three orders.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef paid_items(tables):\n    \"\"\"Rows of order_items that belong to paid orders, with amount = quantity * unit_price.\"\"\"\n    orders = tables['orders']\n    items = tables['order_items']\n    paid = orders.loc[orders['status'] == 'paid', 'id']\n    items = items[items['order_id'].isin(paid)].copy()\n    items['amount'] = items['quantity'] * items['unit_price']\n    return items\n\n\n\ndef solve(tables):\n    orders = tables['orders'][['id', 'customer_id', 'order_date']].rename(columns={'id': 'order_id'})\n    totals = paid_items(tables).groupby('order_id', as_index=False)['amount'].sum()\n    totals = totals.merge(orders.dropna(subset=['customer_id']), on='order_id')\n    totals = totals.sort_values(['customer_id', 'order_date', 'order_id'])\n    amount = totals['amount'].astype(float)\n    totals['moving_avg'] = amount.groupby(totals['customer_id']).transform(\n        lambda values: values.rolling(3, min_periods=1).mean()\n    ).round(2)\n    return totals[['customer_id', 'order_id', 'amount', 'moving_avg']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-42": {
+    "approaches": [
+      {
+        "nameZh": "groupby median",
+        "nameEn": "groupby median",
+        "ideaZh": "SQL 里求中位数要靠窗口函数排序、数人数、取中间位置，很绕；pandas 直接有 `median()`，偶数个值时取中间两个的平均，和题目定义一致。\n\n1. 员工和部门按 `department_id = id` 做 inner merge。没有部门的员工、没有员工的部门（如 Legal）都在这一步被排除。\n2. 按 `department_id, name_department` 分组，对 `salary` 求 `median()`。\n3. 输出部门名和中位数。\n\n**为什么分组键带上 `department_id`**：防止两个同名部门被并成一组。\n\n**易错点**：`suffixes=('', '_department')` 让两个 `name` 列不冲突；`median` 返回浮点数，像 5250.0 这样的值和 5250 在判题时等价，不用手动转整数。",
+        "ideaEn": "In SQL a median takes window functions, a count and picking the middle position. pandas has `median()`, which averages the two middle values for an even count, exactly the problem's definition.\n\n1. Inner-merge employees with departments on `department_id = id`. Employees without a department and departments without employees (Legal) both drop out here.\n2. Group by `department_id, name_department` and take the `median()` of `salary`.\n3. Return the department name and the median.\n\n**Why `department_id` is in the key**: two departments could share a name.\n\n**Pitfalls**: `suffixes=('', '_department')` keeps the two `name` columns apart. `median` returns floats; 5250.0 and 5250 compare equal in the judge, so no cast is needed.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    departments = tables['departments']\n    employees = tables['employees']\n    rows = employees.merge(departments, left_on='department_id', right_on='id', suffixes=('', '_department'))\n    result = rows.groupby(['department_id', 'name_department'], as_index=False)['salary'].median()\n    return result[['name_department', 'salary']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-43": {
+    "approaches": [
+      {
+        "nameZh": "日期减序号分段",
+        "nameEn": "Date minus rank as a run key",
+        "ideaZh": "连续的日期有个好用的性质：把每个用户的登录日期去重、升序排好，第 k 天（从 0 数）减去 k 天，同一段连续日期得到的结果完全相同，一旦中间断开一天，这个差值就会往后跳。所以这个差值可以当作「段编号」。\n\n做法：\n\n1. `drop_duplicates(['user_id', 'login_date'])`：同一天多次登录只留一行，否则同一天会被数两次，差值也会错位。\n2. `pd.to_datetime` 转成日期，按 `(user_id, day)` 排序。\n3. `groupby('user_id').cumcount()` 给出每个用户内部的序号 k，转成 `Timedelta` 后用 `day - k` 得到段键 `run`。\n4. 按 `(user_id, run)` 计 `size()` 得到每段长度，再按用户取 `max()`。\n\n为什么对：在一段连续日期里，日期每加 1 天序号也加 1，差值不变；遇到缺口时日期至少多加 2 天而序号只加 1，差值变大，不会和前面的段撞上。\n\n易错点：一定要用真正的日期相减，跨月（2 月 29 日到 3 月 1 日）、跨年都靠 `to_datetime` 处理；对字符串做加减是行不通的。",
+        "ideaEn": "Consecutive dates have a handy property: dedupe and sort one user's login dates, then subtract k days from the k-th date (counting from 0). Every date in one unbroken run lands on the same value, and the value jumps as soon as a day is skipped. That difference is a run id.\n\nSteps:\n\n1. `drop_duplicates(['user_id', 'login_date'])` so several logins on one day count once; otherwise the ranks drift and the run breaks.\n2. Parse with `pd.to_datetime` and sort by `(user_id, day)`.\n3. `groupby('user_id').cumcount()` is the rank k inside each user; turn it into a `Timedelta` and take `day - k` as the key `run`.\n4. `size()` per `(user_id, run)` gives each run's length; take the `max()` per user.\n\nWhy it works: inside a run the date and the rank both grow by one, so the difference stays put; across a gap the date grows by at least two while the rank grows by one, so the key moves forward and never collides with an earlier run.\n\nPitfall: do the arithmetic on real datetimes. Month and year boundaries (Feb 29 to Mar 1) only work because `to_datetime` handles the calendar.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    logins = tables['logins']\n    days = logins.drop_duplicates(['user_id', 'login_date']).copy()\n    days['day'] = pd.to_datetime(days['login_date'])\n    days = days.sort_values(['user_id', 'day'])\n    # the k-th day minus k days is the same for every day of one run\n    rank = pd.to_timedelta(days.groupby('user_id').cumcount(), unit='D')\n    days['run'] = days['day'] - rank\n    lengths = days.groupby(['user_id', 'run']).size().reset_index(name='length')\n    return lengths.groupby('user_id', as_index=False)['length'].max()\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-44": {
+    "approaches": [
+      {
+        "nameZh": "字符串方法取域名后分组",
+        "nameEn": "Extract the domain, then group",
+        "ideaZh": "域名就是 `@` 后面的部分，题目说不区分大小写，所以 `Shop.io` 和 `shop.io` 要归成一组。pandas 的 `.str` 方法可以对整列一次处理完：\n\n1. `email.str.split('@', n=1)` 在第一个 `@` 处切成两段，`.str[-1]` 取后一段。\n2. `.str.lower()` 统一小写，这一步必须在分组之前做。\n3. `domain.groupby(domain).size()` 数每个域名有几位客户，`reset_index(name='customers')` 变回两列的 DataFrame。\n\n易错点：如果先分组再转小写，大小写不同的域名会被当成两组；`size()` 返回的是 Series，判题要求返回 DataFrame，记得 `reset_index`。",
+        "ideaEn": "The domain is whatever follows `@`, and case does not matter, so `Shop.io` and `shop.io` belong together. The `.str` accessor handles the whole column at once:\n\n1. `email.str.split('@', n=1)` splits at the first `@`, and `.str[-1]` keeps the right part.\n2. `.str.lower()` normalizes case; it has to happen before grouping.\n3. `domain.groupby(domain).size()` counts customers per domain, and `reset_index(name='customers')` turns the Series back into a two-column DataFrame.\n\nPitfalls: lowercasing after grouping leaves two groups for the same domain, and returning the bare Series from `size()` is rejected, so call `reset_index`.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    email = tables['customers']['email']\n    domain = email.str.split('@', n=1).str[-1].str.lower()\n    return domain.groupby(domain).size().reset_index(name='customers')\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-45": {
+    "approaches": [
+      {
+        "nameZh": "逐个邮箱拼接",
+        "nameEn": "Rebuild each email with map",
+        "ideaZh": "脱敏后的邮箱由三部分拼成：原邮箱的第一个字符、固定的 `***`、从 `@` 开始到结尾的部分。大小写都不动。\n\n写一个处理单个字符串的小函数，再用 `Series.map` 作用到整列：\n\n- `at = email.find('@')` 找到 `@` 的位置；\n- 结果是 `email[:1] + '***' + email[at:]`。\n\n为什么不用 `str.replace` 的正则？也可以，但 `@` 前面只有一个字符的邮箱（如 `a@x.io`）也要变成 `a***@x.io`，用切片拼接最直观，不容易漏掉这种情况。\n\n最后只保留 `id` 和新列 `masked` 两列。参考写法里对找不到 `@` 的情况做了兜底（`find` 返回 -1 时直接拼回原串），题目数据里邮箱都有 `@`，这只是防御。",
+        "ideaEn": "A masked email is three pieces glued together: the first character, a literal `***`, and everything from `@` to the end, with case untouched.\n\nWrite a function for one string and apply it to the column with `Series.map`:\n\n- `at = email.find('@')` locates the `@`;\n- the result is `email[:1] + '***' + email[at:]`.\n\nA regex `str.replace` works too, but slicing makes the one-character local part (`a@x.io` becomes `a***@x.io`) obviously right.\n\nKeep only `id` and the new `masked` column. The fallback for a missing `@` (`find` returns -1) never triggers on this data; it is just a guard.",
+        "time": "O(n * L)",
+        "space": "O(n * L)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef mask(email):\n    at = email.find('@')\n    return email[:1] + '***' + (email[at:] if at >= 0 else email)\n\n\ndef solve(tables):\n    customers = tables['customers'][['id', 'email']].copy()\n    customers['masked'] = customers['email'].map(mask)\n    return customers[['id', 'masked']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-46": {
+    "approaches": [
+      {
+        "nameZh": "把规则写成判断函数",
+        "nameEn": "Encode the rules in a predicate",
+        "ideaZh": "四条规则逐条翻译成 Python 判断，比写一个大正则更不容易出错：\n\n- 恰好一个 `@`：`email.count('@') == 1`；\n- `@` 前至少一个字符：`email.find('@') > 0`（`find` 返回 0 表示 `@` 在开头，返回 -1 表示没有 `@`，两种都不合法）；\n- 域名里有 `.`：`'.' in domain`；\n- 域名不以 `.` 开头或结尾：`startswith` / `endswith`。\n\n`valid` 返回布尔值，`customers['email'].map(valid)` 得到一列 True/False，取反 `~` 后筛出不合法的行，输出 `id` 和 `email`。\n\n易错点：`.` 出现在 `@` 前面是允许的（`flo.ray@mail.co.uk` 合法），所以判断点的时候只看域名部分。没有 `@` 时 `find` 是 -1，`email[at + 1:]` 会变成整个字符串，但 `count('@') == 1` 已经让它不合法了，用 `and` 短路即可。",
+        "ideaEn": "Translating the four rules one by one into Python checks is less error-prone than one big regex:\n\n- exactly one `@`: `email.count('@') == 1`;\n- at least one character before it: `email.find('@') > 0` (0 means `@` comes first, -1 means there is none; both are invalid);\n- a dot in the domain: `'.' in domain`;\n- the domain neither starts nor ends with a dot: `startswith` / `endswith`.\n\n`valid` returns a bool, `customers['email'].map(valid)` gives a boolean column, and `~` selects the malformed rows; return `id` and `email`.\n\nPitfall: dots before the `@` are fine (`flo.ray@mail.co.uk` is valid), so check dots in the domain only. Without an `@`, `find` is -1 and the slice is the whole string, but the `count` check already fails and `and` short-circuits.",
+        "time": "O(n * L)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef valid(email):\n    at = email.find('@')\n    domain = email[at + 1:]\n    return (\n        email.count('@') == 1\n        and at > 0\n        and '.' in domain\n        and not domain.startswith('.')\n        and not domain.endswith('.')\n    )\n\n\ndef solve(tables):\n    customers = tables['customers']\n    return customers.loc[~customers['email'].map(valid), ['id', 'email']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-47": {
+    "approaches": [
+      {
+        "nameZh": "首字母大写后分组计数",
+        "nameEn": "Uppercase initial, then count",
+        "ideaZh": "`amy` 和 `Abe` 要算到同一个字母 A 下，所以先统一成大写再分组。\n\n1. `name.str[:1]` 取每个名字的第一个字符（用切片而不是 `str[0]`，空字符串也不会报错）。\n2. `.str.upper()` 转大写。\n3. `initial.groupby(initial).size()` 计数，`reset_index(name='customers')` 得到 `initial`、`customers` 两列。\n\n易错点：直接按 `name.str[0]` 分组会把 `a` 和 `A` 分成两组；`size()` 之后要 `reset_index`，返回 DataFrame 而不是 Series。",
+        "ideaEn": "`amy` and `Abe` both count under A, so normalize case before grouping.\n\n1. `name.str[:1]` takes the first character (a slice, so an empty name would not raise).\n2. `.str.upper()` uppercases it.\n3. `initial.groupby(initial).size()` counts, and `reset_index(name='customers')` yields the `initial` and `customers` columns.\n\nPitfalls: grouping by the raw first letter splits `a` from `A`; and `size()` returns a Series, so `reset_index` it into a DataFrame.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    initial = tables['customers']['name'].str[:1].str.upper()\n    return initial.groupby(initial).size().reset_index(name='customers')\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-48": {
+    "approaches": [
+      {
+        "nameZh": "截取年份后分组排序",
+        "nameEn": "Slice the year, group, sort",
+        "ideaZh": "`hire_date` 是 `'YYYY-MM-DD'` 文本，前 4 个字符就是年份文本，正好是题目要的输出格式，连 `to_datetime` 都不需要。\n\n1. `hire_date.str[:4]` 取年份。\n2. `year.groupby(year).size()` 数每年入职人数；只有出现过的年份才会成组，没人入职的年份自然不出现。\n3. 本题比较行的顺序，按年份升序 `sort_values`。年份都是 4 位数字，字符串顺序和数值顺序一致。\n\n易错点：分组后的 Series 名字沿用了原列名 `hire_date`，所以 `reset_index` 后年份列叫 `hire_date`，排序时要用这个名字（列名本身不参与比较）。groupby 的结果其实已经按键排好序，但显式排序更稳妥，也写清了意图。",
+        "ideaEn": "`hire_date` is `'YYYY-MM-DD'` text, so its first four characters are the year text the output wants; no `to_datetime` needed.\n\n1. `hire_date.str[:4]` takes the year.\n2. `year.groupby(year).size()` counts hires; only years that occur form groups, so empty years never show up.\n3. Row order is compared here, so sort by year ascending. Four-digit years sort the same as text and as numbers.\n\nPitfall: the grouped Series keeps the original name `hire_date`, so after `reset_index` the year column is called `hire_date`; sort by that name (column names are not compared). groupby already sorts its keys, but an explicit sort states the intent.",
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    year = tables['employees']['hire_date'].str[:4]\n    hires = year.groupby(year).size().reset_index(name='hires')\n    return hires.sort_values('hire_date')\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-49": {
+    "approaches": [
+      {
+        "nameZh": "dayofweek 判断周末",
+        "nameEn": "Weekend test with dayofweek",
+        "ideaZh": "把 `order_date` 转成日期后，`.dt.dayofweek` 给出星期几：周一是 0，周六是 5，周日是 6。所以「周末」就是 `weekday >= 5`。\n\n1. `weekday = pd.to_datetime(orders['order_date']).dt.dayofweek`。\n2. 同时满足 `status == 'paid'` 和 `weekday >= 5` 的行留下。\n3. 用 `{5: 'Sat', 6: 'Sun'}` 把星期数映射成文字。筛选后的行 index 没变，`weekday[chosen.index]` 能按 index 对齐取到它们各自的星期数。\n4. 输出 `id`、`order_date`、`day` 三列（列名不比较，`id` 就是订单编号）。\n\n易错点：已取消的周末订单不算；`dayofweek` 从周一开始编号，别和「周日是 0」的习惯混淆。日期原样输出文本即可，不必再格式化。",
+        "ideaEn": "After parsing `order_date`, `.dt.dayofweek` gives the weekday with Monday as 0, Saturday 5 and Sunday 6, so the weekend is `weekday >= 5`.\n\n1. `weekday = pd.to_datetime(orders['order_date']).dt.dayofweek`.\n2. Keep rows with `status == 'paid'` and `weekday >= 5`.\n3. Map 5/6 to `'Sat'`/`'Sun'`. Filtering keeps the index, so `weekday[chosen.index]` lines up with the kept rows.\n4. Return `id`, `order_date` and `day` (column names are not compared; `id` is the order id).\n\nPitfalls: cancelled weekend orders do not count, and `dayofweek` starts at Monday, not Sunday. The date goes out as the original text.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    orders = tables['orders']\n    weekday = pd.to_datetime(orders['order_date']).dt.dayofweek  # Monday = 0\n    chosen = orders[(orders['status'] == 'paid') & (weekday >= 5)].copy()\n    chosen['day'] = weekday[chosen.index].map({5: 'Sat', 6: 'Sun'})\n    return chosen[['id', 'order_date', 'day']]\n"
+      }
+    ],
+    "verified": true
+  },
+  "pd-50": {
+    "approaches": [
+      {
+        "nameZh": "年份差减去未到周年",
+        "nameEn": "Year difference minus an unreached anniversary",
+        "ideaZh": "截止日是 2025-01-01，满的整年数 = 年份差 `2025 - 入职年份`，如果今年的周年日还没到，再减 1。\n\n周年日没到的条件是：入职的「月-日」晚于截止日的「月-日」`'01-01'`。`'MM-DD'` 是定长文本，字符串比较就是日期先后的比较，所以：\n\n- `year = hire_date.str[:4].astype(int)`；\n- `later = (hire_date.str[5:] > '01-01').astype(int)`，晚了为 1，否则为 0；\n- `years = 2025 - year - later`。\n\n为什么对：周年当天算满，所以只有严格晚于 `'01-01'` 才减 1；1 月 1 日入职的人正好满整年。2 月 29 日入职的人「月-日」是 `'02-29'`，也晚于 `'01-01'`，和普通日期一样处理即可。\n\n易错点：用 `(截止日 - 入职日).days // 365` 会被闰年带偏，在周年附近算错一年。",
+        "ideaEn": "As of 2025-01-01, full years = `2025 - hire year`, minus one if this year's anniversary has not come yet.\n\nThe anniversary is still ahead when the hire's month-day is later than the cutoff's `'01-01'`. `'MM-DD'` is fixed-width text, so string comparison is date order:\n\n- `year = hire_date.str[:4].astype(int)`;\n- `later = (hire_date.str[5:] > '01-01').astype(int)`, 1 when later, else 0;\n- `years = 2025 - year - later`.\n\nWhy it works: the anniversary day itself counts as complete, so subtract only when strictly later; someone hired on Jan 1 has exactly whole years. A Feb 29 hire has month-day `'02-29'`, later than `'01-01'`, and needs no special case.\n\nPitfall: `(cutoff - hire).days // 365` drifts with leap years and is off by one near anniversaries.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "pandas": "import numpy as np\nimport pandas as pd\n\n\ndef solve(tables):\n    employees = tables['employees'][['name', 'hire_date']].copy()\n    year = employees['hire_date'].str[:4].astype(int)\n    # 1 if the anniversary (month-day) is still after the cutoff 01-01\n    later = (employees['hire_date'].str[5:] > '01-01').astype(int)\n    employees['years'] = 2025 - year - later\n    return employees[['name', 'years']]\n"
+      }
+    ],
+    "verified": true
+  }
+}

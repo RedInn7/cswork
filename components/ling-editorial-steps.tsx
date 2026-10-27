@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { StatementMarkdown } from './statement-markdown';
 import { followUpRule } from '@/lib/code-analyzer';
-import type { LingEditorial as Editorial, LingFollowUps } from '@/lib/oj-client';
+import type { LingFollowUps, TrackEditorial } from '@/lib/oj-client';
 import type { Language } from '@/lib/problems';
 import { ROUTE_SLUGS, STOP_NAMES } from '@/lib/route-stops';
 
-type Approach = Editorial['approaches'][number];
+// Only the text fields, so a Line 500 and a track editorial both step through.
+type Approach = TrackEditorial['approaches'][number];
 /** Distractors for "what is its time complexity?", slowest last. */
 const COMMON = ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)', 'O(n^3)', 'O(2^n)'];
 // n² and n^2, m·n and mn are one answer.

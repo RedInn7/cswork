@@ -1,0 +1,19 @@
+{
+  "id": "oa-bloomberg-4",
+  "explanation": "## 思路\n\n要把多副牌合在一起洗乱。题目里的 “mimics manual shuffling” 只是背景描述，没有规定具体手法，也没有给样例；面试里真正考察的是能不能写出**每种排列等概率**的洗牌，标准答案是 Fisher–Yates（Knuth）洗牌：\n\n1. `std::list` 不支持随机访问，先把所有牌拷进数组（`vector`）。\n2. 从最后一个位置 `i = n-1` 往前，每次在 `[0, i]` 里均匀随机选一个 `j`，交换 `arr[i]` 和 `arr[j]`。\n3. 处理完再转回 list 返回。\n\n如果面试官坚持要“像人手洗牌”，可以补充 riffle shuffle：把牌从中间附近切成两叠，再按两叠剩余张数的比例随机交错合并，重复若干次（对 52 张牌，大约 7 次 riffle 才算洗匀）。但它只是近似均匀，正式实现仍应该用 Fisher–Yates。\n\n## 正确性\n\n第一步把 `n` 张牌中的任意一张放到最后一个位置，概率都是 `1/n`；之后对剩下 `n-1` 个位置递归做同样的事。所以任意一种最终排列出现的概率都是 `1/n · 1/(n-1) · … · 1 = 1/n!`，完全均匀。多副牌里有重复的牌面也没关系，算法只交换位置，不依赖牌面是否唯一。\n\n## 复杂度\n\n- 时间：`O(n)`。\n- 空间：`O(n)`（数组副本；输入是 const 引用，不能原地改）。\n\n## 易错点\n\n- 常见错误写法是每次在 `[0, n-1]` 整个范围里选 `j`，会产生 `n^n` 种等概率路径，而 `n^n` 不能被 `n!` 整除，结果必然有偏。\n- C++ 里用 `rng() % (i+1)` 有取模偏差，应该用 `uniform_int_distribution`。\n- 随机数引擎只初始化一次，不要每次调用都用时间重新播种。",
+  "explanationEn": "## Approach\n\nWe need to shuffle several combined decks. \"Mimics manual shuffling\" is flavour text: no specific technique is required and there is no sample output. What the question really tests is producing **every permutation with equal probability**, and the standard answer is the Fisher–Yates (Knuth) shuffle:\n\n1. `std::list` has no random access, so copy the cards into a `vector`.\n2. For `i` from `n-1` down to 1, pick `j` uniformly in `[0, i]` and swap `arr[i]` with `arr[j]`.\n3. Copy back into a list and return it.\n\nIf the interviewer insists on something that looks like a human shuffle, mention the riffle shuffle: cut near the middle, then interleave the two halves, taking the next card from each half with probability proportional to its remaining size, and repeat (about 7 riffles mix a 52-card deck). It is only approximately uniform, so Fisher–Yates remains the real implementation.\n\n## Correctness\n\nThe first step puts any of the `n` cards in the last slot with probability `1/n`, then the same process runs on the remaining `n-1` slots. Every final ordering therefore has probability `1/n · 1/(n-1) · … · 1 = 1/n!`, which is exactly uniform. Duplicate faces across decks don't matter, since the algorithm only swaps positions.\n\n## Complexity\n\n- Time: `O(n)`.\n- Space: `O(n)` for the array copy (the input is a const reference and can't be modified in place).\n\n## Pitfalls\n\n- The classic bug is choosing `j` from the whole range `[0, n-1]` every time. That yields `n^n` equally likely paths, and since `n^n` isn't divisible by `n!`, the result is biased.\n- In C++, `rng() % (i+1)` has modulo bias; use `uniform_int_distribution`.\n- Seed the random engine once, not on every call.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import random\nfrom typing import List\n\ndef shuffle_all_decks(all_decks: list) -> list:\n    arr = list(all_decks)\n    for i in range(len(arr) - 1, 0, -1):\n        j = random.randint(0, i)\n        arr[i], arr[j] = arr[j], arr[i]\n    return arr"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    public List<Object> shuffleAllDecks(List<Object> allDecks) {\n        List<Object> arr = new ArrayList<>(allDecks);\n        Random rnd = new Random();\n        for (int i = arr.size() - 1; i > 0; i--) {\n            int j = rnd.nextInt(i + 1);\n            Collections.swap(arr, i, j);\n        }\n        return arr;\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Card { string suit, rank; };\n\nclass Solution {\npublic:\n    list<Card> shuffleAllDecks(const list<Card>& all_decks) {\n        static mt19937 rng(random_device{}());\n        vector<Card> arr(all_decks.begin(), all_decks.end());\n        for (int i = (int)arr.size() - 1; i > 0; --i) {\n            uniform_int_distribution<int> pick(0, i);\n            swap(arr[i], arr[pick(rng)]);\n        }\n        return list<Card>(arr.begin(), arr.end());\n    }\n};\n"
+    }
+  ]
+}

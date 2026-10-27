@@ -1,0 +1,11 @@
+{
+  "id": "oa-roblox-8",
+  "explanation": "## 题意\n\n题面在“find the numbers with t”处被截断。从样例解释看，要数的是**位数相同**的无序对：`[1, 9, 23, 30, 54, 103]` 中，一位数 {1, 9} 组成 1 对，两位数 {23, 30, 54} 组成 3 对，103 没有同伴，共 4 对。解释里只列了 3 对，漏掉了 {30, 54}，但总数 4 是对的。\n\n## 思路\n\n1. 对每个数求位数（`len(str(abs(x)))`，或不断除以 10）。\n2. 按位数计数，得到每种位数的个数 c。\n3. 同位数的数两两成对，答案 `Σ c·(c-1)/2`。\n\n## 正确性\n\n一对数合法当且仅当位数相同，即落在同一组；组内任意两个数恰好构成一对，不同组之间不构成对，所以求和既不漏也不重。\n\n## 复杂度\n\n时间 O(n·D)，D 为最大位数；空间 O(D)，最多十几个桶。\n\n## 易错点\n\n- 负数要取绝对值再数位数，否则负号会被算成一位。\n- 0 是一位数。\n- n 大时结果可能超过 32 位，Java/C++ 用 long。",
+  "explanationEn": "## Problem\n\nThe statement is cut off; the sample shows we count unordered pairs with the **same number of digits**. In `[1, 9, 23, 30, 54, 103]`, {1, 9} gives 1 pair and {23, 30, 54} gives 3, so the answer is 4 (the explanation forgets {30, 54} but the total is right).\n\n## Approach\n\nCount how many numbers have each digit length c, then sum `c·(c-1)/2`.\n\n## Correctness\n\nA pair is valid iff both numbers are in the same digit-length group, and each pair inside a group is counted once.\n\n## Complexity\n\nO(n·D) time, O(D) space.\n\n## Pitfalls\n\n- Take the absolute value so the minus sign is not counted.\n- 0 has one digit.\n- Use 64-bit counts for large n.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\nfrom typing import List\n\ndef findMaxNumberOfPairs(nums: List[int]) -> int:\n    cnt = Counter(len(str(abs(x))) for x in nums)\n    return sum(c * (c - 1) // 2 for c in cnt.values())\n"
+    }
+  ]
+}

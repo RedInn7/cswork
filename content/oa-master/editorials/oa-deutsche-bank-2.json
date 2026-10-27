@@ -1,0 +1,11 @@
+{
+  "id": "oa-deutsche-bank-2",
+  "explanation": "## 思路\n\n先说明对题意的理解。题面文字是「`A+x` 是 `B+y` 的倍数」，但两个样例都与这句话相反：\n\n- `A = 8, B = 16` 答案 0：8 不是 16 的倍数，而 16 是 8 的倍数；\n- `A = 7, B = 37` 答案 4：取 `x = 1, y = 3`，`B+y = 40` 是 `A+x = 8` 的倍数。（样例解释里的 `10` 和 `38` 并不成立倍数关系，是错的。）\n\n所以按样例实现：求非负整数 `x, y`，使 `(B + y) % (A + x) == 0`，最小化 `x + y`。\n\n固定 `x` 后，令 `d = A + x`，最小的 `y` 就是把 `B` 补到 `d` 的下一个倍数：`y = (-B) mod d`。于是答案是 `min over x ≥ 0 of x + ((-B) mod d)`。\n\n上界：取 `x = 0` 时代价 `(-B) mod A ≤ A - 1`，记为 `best`。任何 `x > best` 的方案代价都已经大于 `best`，所以只需枚举 `x = 0 .. best`，边枚举边收紧 `best`。\n\n## 正确性\n\n对固定的除数 `d`，`B + y` 必须是 `d` 的倍数且 `y ≥ 0`，满足条件的最小 `y` 就是 `(-B) mod d`，所以内层最优已经确定。外层枚举所有可能更优的 `x`：`x` 本身就是代价的一部分，超过当前最优的 `x` 不可能更好，剪掉不会漏解。\n\n## 复杂度\n\n最多枚举 `A` 个 `x`，时间 `O(A)`（实际因为 `best` 不断变小会更快），空间 `O(1)`。\n\n## 易错点\n\n- `d = A + x` 可能超过 `B`，这时 `y = d - B`，公式 `(-B) mod d` 同样成立。\n- `A = 1` 时任何数都是 1 的倍数，答案直接是 0。\n- 题面约束缺失；如果 `A` 达到 `10⁹` 量级，需要改成按 `B` 的因数附近枚举，这里假设规模较小。\n",
+  "explanationEn": "## Idea\n\nThe text says \"`A+x` is a multiple of `B+y`\", but both samples say the opposite:\n\n- `A = 8, B = 16` → 0: 16 is a multiple of 8, not the other way round;\n- `A = 7, B = 37` → 4: `x = 1, y = 3` makes `B+y = 40` a multiple of `A+x = 8` (the sample's `10`/`38` explanation is wrong).\n\nSo we find non-negative `x, y` with `(B + y) % (A + x) == 0`, minimizing `x + y`.\n\nFor fixed `x`, with `d = A + x`, the smallest `y` is `(-B) mod d`. The answer is `min over x of x + ((-B) mod d)`. With `x = 0` the cost is at most `A - 1`; call it `best`. Any `x > best` already costs more, so enumerate `x = 0..best`, tightening `best` as we go.\n\n## Correctness\n\nFor a fixed divisor the minimal non-negative `y` is forced, and every `x` that could still beat the current best is enumerated, so nothing is missed.\n\n## Complexity\n\n`O(A)` time at most, `O(1)` space.\n\n## Pitfalls\n\n- `d` may exceed `B`; the formula still gives `y = d - B`.\n- `A = 1` gives 0 immediately.\n- No constraints are given; for `A` near `10⁹` a divisor-based search would be needed.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def give_minimum_sum(A: int, B: int) -> int:\n    best = (-B) % A\n    x = 1\n    while x < best:\n        best = min(best, x + (-B) % (A + x))\n        x += 1\n    return best\n"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ import {
   oaReadyProblems,
   oaVerifiedStatement,
 } from './oa-judge';
+import { oaWrittenEditorial } from './oa-written-editorials';
 import { oaDifficulty, oaDifficultySlot, oaTopic, type OaTopic } from './oa-topics';
 
 const slug = z
@@ -386,7 +387,13 @@ export function oaLibrary() {
       throw new Error('OA catalog exceeds size budget');
     library = createOaLibrary(JSON.parse(readFileSync(file, 'utf8')), {
       solution: (id, sourceContentHash) => {
-        const solution = oaJudgeRegistry().solution(id, sourceContentHash);
+        const registry = oaJudgeRegistry();
+        // Not judged here: the written editorial instead of "being checked".
+        if (!registry.editorialSha256(id)) {
+          const own = oaWrittenEditorial(id);
+          if (own) return { explanation: own.explanation, ...(own.explanationEn ? { explanationEn: own.explanationEn } : {}), solutions: own.solutions };
+        }
+        const solution = registry.solution(id, sourceContentHash);
         // Beside the package, like translations: the guide's English editorial and the verified
         // programs in the languages the registry's one doesn't cover.
         const shown = new Set(solution.solutions.map((item) => item.language));

@@ -215,7 +215,7 @@ test('signed in, answers are the sd:<slug> note, sent in order, and guest answer
   }
 });
 
-test('the editorial stays locked until solved or confirmed, is fetched only then, switches language and diffs my code', async () => {
+test('the editorial opens without a lock, is fetched once, switches language and diffs my code', async () => {
   const dom = useDom();
   const { createRoot } = await import('react-dom/client');
   const { LingEditorial } = await import('../components/ling-editorial.tsx');
@@ -238,7 +238,6 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     fetched.push(String(url));
     return new Response(JSON.stringify(reply[1]), { status: reply[0], headers: { 'Content-Type': 'application/json' } });
   };
-  let unlocks = 0;
   const render = (props) =>
     act(async () =>
       root.render(
@@ -247,8 +246,6 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
           // Unverified first; the badge comes from this prop, the verified one is rendered below.
           verified: false,
           english: true,
-          unlocked: false,
-          onUnlock: () => unlocks++,
           code: 'my code',
           language: 'cpp',
           settings: {},
@@ -258,22 +255,14 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     );
   try {
     await render();
-    assert.ok(document.querySelector('.cs-route-hint-locked') !== null);
-    assert.equal(document.querySelectorAll('.cs-ling-code').length, 0, 'no code before unlocking');
-    await act(async () => buttons('Show anyway')[0].click());
-    assert.ok(document.querySelector('[role="alertdialog"]') !== null);
-    await act(async () => buttons('Show editorial')[0].click());
-    assert.equal(unlocks, 1);
-    assert.deepEqual(fetched, [], 'nothing is fetched while locked');
-
-    await render({ unlocked: true });
     await settle();
-    // The confirm unmounted the "Show anyway" button; focus goes to the heading, not <body>.
-    assert.ok(document.activeElement === document.getElementById('ling-editorial-title'), 'focus lands on the heading');
+    assert.equal(document.querySelector('.cs-route-hint-locked'), null, 'no lock, no confirm');
     assert.deepEqual(fetched, [`/api/oj/problems/${editorialId}/editorial`]);
-    // Two or more approaches open step by step (tests/clarify-panel-ui.test.mjs); "Show all" is remembered.
+    // Like LeetCode, every approach shows at once; step by step (tests/clarify-panel-ui.test.mjs) is a remembered choice.
+    assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
+    await act(async () => buttons('Step by step')[0].click());
+    assert.equal(localStorage.getItem('cswork:editorial-mode'), 'steps');
     assert.ok(document.querySelector('.cs-ling-steps') !== null);
-    assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, 0);
     await act(async () => buttons('Show all')[0].click());
     assert.equal(localStorage.getItem('cswork:editorial-mode'), 'all');
     assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
@@ -307,14 +296,14 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     await act(async () => buttons('Hide comparison')[0].click());
     assert.equal(document.querySelectorAll('pre[data-diff]').length, 0);
 
-    await render({ unlocked: true, english: false, verified: true });
+    await render({ english: false, verified: true });
     assert.ok(document.querySelector('.cs-ling-verified').textContent.includes('Python 代码已通过本题全部测试，C++、Java、Go 已通过公开样例'));
     assert.ok(document.querySelector('.cs-ling-approaches h3').textContent.includes(editorial.approaches[0].nameZh));
     assert.equal(fetched.length, 1, 'fetched once');
 
     // Refused during the learner's running contest: the server's reason and a retry.
     reply = [403, { error: '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放' }];
-    await render({ unlocked: true, key: 'refused' });
+    await render({ key: 'refused' });
     await settle();
     assert.ok(document.querySelector('[role="alert"]').textContent.includes("contest you're taking"));
     assert.equal(document.querySelectorAll('.cs-ling-code').length, 0);
@@ -326,7 +315,7 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
 
     // A Java editor opens on Java and diffs Java; an editor language the editorial lacks opens on
     // Python and diffs whichever tab is shown.
-    await render({ unlocked: true, language: 'java', key: 'java' });
+    await render({ language: 'java', key: 'java' });
     await settle();
     assert.ok(buttons('Java')[0].getAttribute('aria-pressed') === 'true');
     assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0].java);
@@ -334,7 +323,7 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     diff = document.querySelector('pre[data-diff]');
     assert.equal(diff.getAttribute('data-original'), editorial.approaches[0].java);
     assert.equal(diff.getAttribute('data-language'), 'java');
-    await render({ unlocked: true, language: 'sql', key: 'sql' });
+    await render({ language: 'sql', key: 'sql' });
     await settle();
     assert.ok(buttons('Python')[0].getAttribute('aria-pressed') === 'true');
     await act(async () => buttons('Go')[0].click());

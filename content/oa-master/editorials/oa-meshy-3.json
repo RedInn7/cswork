@@ -1,0 +1,6 @@
+{
+  "id": "oa-meshy-3",
+  "explanation": "**答案**：Tanh。\n\n## 为什么对\n\n“饱和”指输入绝对值很大时，输出趋于一个常数、导数趋于 0。`tanh(x) = (e^x - e^{-x}) / (e^x + e^{-x})`，当 `x → +∞` 时趋于 1，`x → -∞` 时趋于 -1，导数 `1 - tanh²(x)` 在两端都趋于 0，所以正负两侧都会饱和。这也是深层网络用 tanh/sigmoid 容易梯度消失的原因。\n\n## 其他选项为什么错\n\n- **ReLU**：`max(0, x)` 负半轴恒为 0（可以说负侧饱和），但正半轴是 `x`，无上界、导数恒为 1，不饱和。\n- **Swish (SiLU)**：`x · sigmoid(x)`，负方向趋于 0，正方向近似 `x` 线性增长，同样只在一侧趋于常数。\n- **Leaky ReLU**：负半轴是 `αx`，正半轴是 `x`，两侧都是线性的，两端都不饱和。",
+  "explanationEn": "**Answer**: Tanh.\n\n## Why it is right\n\nSaturation means that for large |x| the output approaches a constant and the derivative goes to 0. `tanh(x)` tends to 1 as `x → +∞` and to -1 as `x → -∞`, and its derivative `1 - tanh²(x)` vanishes at both ends, so it saturates on both sides. That is why deep tanh/sigmoid networks suffer from vanishing gradients.\n\n## Why the others are wrong\n\n- **ReLU**: `max(0, x)` is flat at 0 for negatives, but for positives it is `x`, unbounded with slope 1.\n- **Swish (SiLU)**: `x · sigmoid(x)` goes to 0 on the negative side but grows roughly like `x` on the positive side.\n- **Leaky ReLU**: linear on both sides (`αx` and `x`), so neither end saturates.",
+  "solutions": []
+}

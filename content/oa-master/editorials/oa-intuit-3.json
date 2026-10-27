@@ -1,0 +1,11 @@
+{
+  "id": "oa-intuit-3",
+  "explanation": "## 思路\n\n\"完整记录重复\"指 `NAME`、`PHONE`、`AGE` 三列全部相同的行出现了不止一次。只要按这三列一起 `GROUP BY`，再用 `HAVING COUNT(*) > 1` 留下出现次数超过一次的组即可，最后输出员工姓名。\n\n```sql\nSELECT NAME\nFROM EMPLOYEE\nGROUP BY NAME, PHONE, AGE\nHAVING COUNT(*) > 1\nORDER BY NAME;\n```\n\n## 正确性\n\n分组键覆盖了构成\"完整记录\"的全部三列，所以同一组内的行完全相同；`COUNT(*) > 1` 恰好筛出重复的记录。只按 `NAME` 分组是常见错误：同名但电话或年龄不同的两个人会被误判为重复。\n\n## 复杂度\n\n一次分组，通常为 `O(R log R)`（排序分组）或 `O(R)`（哈希分组），R 为表行数。\n\n## 易错点\n\n- 题面只给了三列，假设表中没有其他需要参与比较的列；如果有主键 `ID`，不能把它放进分组键，否则永远不会有重复。\n- 同一份记录重复三次也只输出一次姓名；如果要求按重复次数输出多行，需要改写。题面没有给出排序要求，这里按姓名排序只是为了结果稳定。\n",
+  "explanationEn": "## Approach\n\nA \"complete\" duplicate means a row whose `NAME`, `PHONE` and `AGE` all match appears more than once. Group by all three columns together, keep groups with `HAVING COUNT(*) > 1`, and output the name.\n\n```sql\nSELECT NAME\nFROM EMPLOYEE\nGROUP BY NAME, PHONE, AGE\nHAVING COUNT(*) > 1\nORDER BY NAME;\n```\n\n## Correctness\n\nThe grouping key covers every column that makes up a complete record, so rows in one group are identical, and `COUNT(*) > 1` selects exactly the duplicated records. Grouping by `NAME` alone is the classic mistake: two people with the same name but different phone or age would be flagged.\n\n## Complexity\n\nOne grouping pass: `O(R log R)` with sort-based grouping or `O(R)` with hashing.\n\n## Pitfalls\n\n- The statement lists only three columns; we assume no other column takes part in the comparison. If there is a primary key `ID`, keep it out of the grouping key or nothing will ever be a duplicate.\n- A record repeated three times still prints its name once. The statement gives no ordering; sorting by name is only for stable output.\n",
+  "solutions": [
+    {
+      "language": "sql",
+      "code": "SELECT NAME\nFROM EMPLOYEE\nGROUP BY NAME, PHONE, AGE\nHAVING COUNT(*) > 1\nORDER BY NAME;\n"
+    }
+  ]
+}

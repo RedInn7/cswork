@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-213",
+  "explanation": "## 思路\n\n题目允许**任选子集并任意重排**，所以原数组的顺序完全不重要，只和每个数值出现了几次有关。\n\n关键观察：结果数组被切成三段，每段严格单调，所以**同一个数值在每段里最多出现一次**，整体最多出现 3 次。反过来，这个上界总能达到：\n\n- 第一段：所有出现过的数值，升序排列；\n- 第二段：出现次数 ≥ 2 的数值，降序排列；\n- 第三段：出现次数 ≥ 3 的数值，升序排列。\n\n三段各自严格单调，拼起来就是“升-降-升”。所以答案是 `Σ min(freq[v], 3)`。\n\n样例中 9 个数互不相同，全部放进第一段即可，答案 9。\n\n## 正确性\n\n上界：任意合法数组中，值 `v` 若出现 4 次，按鸽巢原理至少有两次落在同一段，与严格单调矛盾，所以 `v` 至多贡献 3 个。构造：上面三段的构造恰好让每个 `v` 贡献 `min(freq[v], 3)` 个，达到上界。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 易错点\n\n- 不要去求“最长的升-降-升子序列”，题目允许重排，那样会得到更小的错误答案。\n- 段与段之间相邻的两个元素可以相等（例如第一段以最大值结尾、第二段以最大值开头），每段内部才要求严格。\n- 题目保证至少两个不同的值，所以不用处理空段的特殊情况。",
+  "explanationEn": "## Approach\n\nWe may **pick any subset and rearrange it freely**, so the original order is irrelevant; only how many times each value occurs matters.\n\nKey observation: the result splits into three strictly monotone segments, so **a value appears at most once per segment**, i.e. at most 3 times overall. And that bound is always achievable:\n\n- Segment 1: every distinct value, ascending.\n- Segment 2: values occurring at least twice, descending.\n- Segment 3: values occurring at least three times, ascending.\n\nEach segment is strictly monotone, and together they form increase-decrease-increase. So the answer is `Σ min(freq[v], 3)`.\n\nIn the sample all 9 values are distinct, so they all go in segment 1 and the answer is 9.\n\n## Correctness\n\nUpper bound: if a value occurred 4 times in a valid array, by pigeonhole two of them would share a segment, contradicting strict monotonicity, so each `v` contributes at most 3. Construction: the three segments above take exactly `min(freq[v], 3)` copies of each `v`, meeting the bound.\n\n## Complexity\n\nO(n) time, O(n) space.\n\n## Pitfalls\n\n- Don't compute the longest increase-decrease-increase subsequence; rearranging is allowed, and that gives a smaller, wrong answer.\n- Adjacent elements across a segment boundary may be equal (segment 1 can end with the maximum and segment 2 start with it); strictness applies inside each segment.\n- At least two distinct values are guaranteed, so empty segments need no special handling.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def getMaximumEvents(payload: list[int]) -> int:\n    from collections import Counter\n    cnt = Counter(payload)\n    return sum(min(v, 3) for v in cnt.values())"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\nclass Solution {\n    public int getMaximumEvents(int[] payload) {\n        Map<Integer, Integer> cnt = new HashMap<>();\n        for (int v : payload) cnt.merge(v, 1, Integer::sum);\n        int s = 0;\n        for (int v : cnt.values()) s += Math.min(v, 3);\n        return s;\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    int getMaximumEvents(vector<int>& payload) {\n        unordered_map<int, int> cnt;\n        for (int v : payload) cnt[v]++;\n        int s = 0;\n        for (auto& [k, v] : cnt) s += min(v, 3);\n        return s;\n    }\n};"
+    }
+  ]
+}

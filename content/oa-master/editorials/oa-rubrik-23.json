@@ -1,0 +1,11 @@
+{
+  "id": "oa-rubrik-23",
+  "explanation": "## 题面状况\n\n这道题的题面是残缺的转述：只说了“每次开枪摧毁一棵子树”“子树总 evilness < k 才允许保留”，但没有说明枪的能量 m 起什么作用，样例也没有解释。样例 `n = 6, m = 3, k = 100, e = [1, 100, 1, 1, 1, 1], p = [1, 1, 2, 3, 3]` 的答案是 4，这个数字无法从现有规则推出来。我们试过几种常见补全（每枪只能打总和 ≤ m 的子树、每枪只能打大小 ≤ m 的子树、每枪让 evilness 减 m 等），都得不到 4。下面只按题面字面规则分析，并在这里明确说明，不编造原题没有的约束。\n\n## 按字面规则分析\n\n- 树以 1 为根，节点 i（i ≥ 2）的父亲是 `p[i-2]`。样例中 1 的孩子是 2、3，2 的孩子是 4，3 的孩子是 5、6。\n- evilness 非负时，任何子树的总和都不超过整棵树的总和。所以只要整棵树总和 < k，所有子树自然合法，答案是 0。\n- 否则至少要开一枪；而一枪打在根上就摧毁了全部节点（题面允许“将所有节点摧毁”），所以答案是 1。\n\n样例总和是 105 ≥ 100，按字面规则答案是 1。\n\n## 正确性\n\n0 枪可行当且仅当全树总和 < k；总和 ≥ k 时 0 枪不可行，而摧毁根所在子树一枪就满足要求，所以 1 是最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。\n\n## 易错点\n\n- 如果拿到原题的完整描述（m 的具体含义），常见做法是后序遍历计算子树和，再按约束贪心决定在哪里开枪；本题解的代码只适用于字面规则。\n- evilness 可达 10¹⁸，总和要用 64 位或大整数。",
+  "explanationEn": "## Statement status\n\nThe statement is an incomplete paraphrase: a shot destroys a subtree and a subtree may stay only if its total evilness is below k, but the role of the gun power m is never explained and the sample (answer 4) has no explanation. None of the natural completions we tried (shots limited to subtree sum ≤ m, subtree size ≤ m, or reducing evilness by m) give 4. We therefore analyse only the literal rules and say so explicitly.\n\n## Literal analysis\n\nWith non-negative evilness every subtree sum is at most the whole-tree sum. If the total is below k nothing needs to be done (0). Otherwise one shot at the root destroys everything, which the statement allows (1). The sample total is 105 ≥ 100, so the literal answer is 1.\n\n## Correctness\n\nZero shots work iff the total is below k; otherwise one shot at the root suffices.\n\n## Complexity\n\nO(n) time, O(1) space.\n\n## Pitfalls\n\n- With the full original statement, the usual approach is a post-order pass over subtree sums plus a greedy choice of where to shoot; this code only covers the literal rules.\n- Sums can reach 10¹⁸; use 64-bit or big integers.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef saveTheUniverse(n: int, m: int, k: int, e: List[int], p: List[int]) -> int:\n    # 按题面字面规则：一枪可以摧毁任意一棵子树；\n    # 全树合法 <=> 根所在的整棵树总 evilness < k（evilness 非负时，子树和不超过整棵树）。\n    # 不满足时，一枪打根就能清空全部，所以答案只可能是 0 或 1。\n    # ponytail: 字面规则下 m 不起作用；原题若用 m 限制每枪能摧毁的范围，需要按原题重写\n    return 0 if sum(e) < k else 1\n"
+    }
+  ]
+}

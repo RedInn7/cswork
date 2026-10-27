@@ -1,0 +1,19 @@
+{
+  "id": "oa-plaid-1",
+  "explanation": "## 思路\n\n把 `n` 转成十进制字符串，从最高位开始数：下标为偶数的位取正号，下标为奇数的位取负号，逐位累加即可。\n\n以 `521314` 为例：`+5 -2 +1 -3 +1 -4 = -2`。\n\n## 正确性\n\n题目定义的符号只和“这一位是从左数第几位”有关，字符串下标正好就是这个序号，所以按下标奇偶决定符号与定义完全一致。不需要从低位往高位取模，否则位数奇偶不同时符号会整体反过来。\n\n## 复杂度\n\n时间 `O(d)`，`d` 为位数，即 `O(log n)`；空间 `O(d)` 用于字符串。\n\n## 易错点\n\n- 不要用 `n % 10` 从个位开始算，否则位数为偶数时结果符号相反（例如 `12134` 有 5 位不受影响，但 `521314` 有 6 位会算成 `+2`）。\n- 题目给的是非负整数；若出现负数，需要先去掉负号再处理。\n- 样例 `521314 → -2`、`12134 → 1`、`104956 → -5` 均已跑通。\n",
+  "explanationEn": "## Approach\n\nTurn `n` into its decimal string and walk from the most significant digit: even indices get a `+`, odd indices get a `-`, and sum as you go.\n\nExample `521314`: `+5 -2 +1 -3 +1 -4 = -2`.\n\n## Correctness\n\nThe sign depends only on the digit's position counted from the left, and the string index is exactly that position, so the parity rule matches the definition. Extracting digits with `% 10` from the right would flip every sign whenever the digit count is even.\n\n## Complexity\n\n`O(d)` time where `d` is the number of digits, i.e. `O(log n)`; `O(d)` space for the string.\n\n## Pitfalls\n\n- Don't start from the units digit with `n % 10`; for an even number of digits the answer comes out negated (`521314` has 6 digits and would give `+2`).\n- The input is a non-negative integer; strip a minus sign first if negatives can appear.\n- Samples `521314 → -2`, `12134 → 1`, `104956 → -5` all pass.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solution(n: int) -> int:\n    s = str(n)\n    return sum((1 if i % 2 == 0 else -1) * int(c) for i, c in enumerate(s))\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    static int solution(int n) {\n        String s = String.valueOf(n);\n        int sum = 0;\n        for (int i = 0; i < s.length(); i++)\n            sum += (i % 2 == 0 ? 1 : -1) * (s.charAt(i) - '0');\n        return sum;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#include <string>\nusing namespace std;\n\nint solution(int n) {\n    string s = to_string(n);\n    int sum = 0;\n    for (int i = 0; i < (int)s.size(); i++) sum += (i % 2 == 0 ? 1 : -1) * (s[i] - '0');\n    return sum;\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "oa-citadel-22",
+  "explanation": "## 思路\n\n题目就是对账：每件卖出的商品都有一个正确价格，统计录入价格和正确价格不一致的销售记录条数。\n\n1. 用 `products[i] → productPrices[i]` 建一个哈希表，查价 O(1)。\n2. 逐条遍历 `productSold` 和 `soldPrice`，查到正确价格后比较，不同就计数。\n\n价格是带两位小数的浮点数，直接用 `!=` 比较可能被 `0.1 + 0.2` 这类误差坑到，所以先乘 100 再 `round` 成整数分，比较整数。\n\n## 正确性\n\n每条销售记录独立判断，哈希表给出的就是该商品唯一的正确价格；按“分”比较等价于按两位小数比较，不会把相等的价格误判成错误，也不会漏掉相差 0.01 的错误。\n\n题面截断，没有说明卖出的商品不在价目表里该怎么算；按常规理解所有卖出的商品都在 `products` 中，代码对查不到的名字直接跳过，不计为错误。\n\n## 复杂度\n\n- 时间：O(n + m)，n 为商品数，m 为销售记录数。\n- 空间：O(n)。\n\n## 易错点\n\n- 同一商品会被卖多次，每次都要单独比较、单独计数。\n- 不要用 `abs(a - b) > 1e-9` 这类极小容差，0.01 级别的价格经过浮点运算后仍可能有微小偏差，换算成整数分最稳。",
+  "explanationEn": "## Approach\n\nThis is a reconciliation: every sold item has a correct price, and we count the sale records whose entered price differs from it.\n\n1. Map `products[i] → productPrices[i]` in a hash map for O(1) lookups.\n2. Walk `productSold` / `soldPrice` together and count mismatches.\n\nPrices have two decimal places, so comparing floats with `!=` is fragile. Convert both sides to integer cents with `round(p * 100)` and compare integers.\n\n## Correctness\n\nEach sale is judged independently against the single correct price for that product. Comparing in cents is the same as comparing to two decimals, so equal prices are never flagged and a one-cent difference is never missed.\n\nThe statement is cut off and does not say what to do with a sold item missing from the price list. The usual reading is that every sold item appears in `products`; the code simply skips unknown names.\n\n## Complexity\n\n- Time: O(n + m).\n- Space: O(n).\n\n## Pitfalls\n\n- The same product can be sold many times; each sale is counted on its own.\n- A tiny epsilon like `1e-9` is not a safe tolerance; integer cents are.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from typing import List\n\ndef priceCheck(products: List[str], productPrices: List[float],\n               productSold: List[str], soldPrice: List[float]) -> int:\n    # 价格保留两位小数，转成整数“分”再比较，避开浮点误差\n    correct = {name: round(p * 100) for name, p in zip(products, productPrices)}\n    return sum(1 for name, p in zip(productSold, soldPrice)\n               if name in correct and round(p * 100) != correct[name])\n"
+    }
+  ]
+}

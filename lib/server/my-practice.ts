@@ -12,6 +12,8 @@ import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 import { lingEditorial } from './ling-editorials';
+import { oaWrittenEditorial } from './oa-written-editorials';
+import { trackEditorial } from './track-editorials';
 import { oaJudgeRegistry } from './oa-judge';
 import { aidsByProblem, gradesByProblem } from './practice-aids';
 
@@ -381,15 +383,15 @@ export async function handleMyPractice(
     }
     const d = z.object({ target, mark, on: z.boolean() }).strict().parse(body);
     const vote = d.mark === 'up' || d.mark === 'down';
-    // An editorial (content:editorial/<problem id>, Line 500's or an OA's) takes "helpful" / "not helpful".
-    const editorial = /^content:editorial\/(?:lc|oa)-[a-z0-9-]+$/.test(d.target);
+    // An editorial (content:editorial/<problem id>, Line 500's, an OA's or a track's) takes "helpful" / "not helpful".
+    const editorial = /^content:editorial\/(?:lc|oa|bk|sql|pd|rest|core|ml)-[a-z0-9-]+$/.test(d.target);
     if (vote && !d.target.startsWith('problem:') && !editorial && !(d.mark === 'up' && UPVOTED.test(d.target)))
       throw new HttpError(400, '只能给题目和官方题解投票，或给面经和面试题点赞');
     // Only editorials that exist: made-up ids would crowd the owner's "not helpful" list. Taking a
     // vote back always works.
     if (vote && editorial && d.on) {
       const id = d.target.slice('content:editorial/'.length);
-      if (!(id.startsWith('lc-') ? lingEditorial(id) : oaJudgeRegistry().editorialSha256(id)))
+      if (!(id.startsWith('lc-') ? lingEditorial(id) : id.startsWith('oa-') ? oaJudgeRegistry().editorialSha256(id) || oaWrittenEditorial(id) : trackEditorial(id)))
         throw new HttpError(404, '题解不存在');
     }
     if (d.mark === 'curated' && (p.role !== 'teacher' || !d.target.startsWith('content:')))
