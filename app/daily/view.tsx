@@ -4,7 +4,6 @@ import { ROUTE_SECTIONS, stopHref, topicName } from '@/lib/route-stops';
 import { PublicLibraryMarkdown } from '../library/markdown';
 import { OaCompanyMark } from '../oa/parts';
 import { LevelPicks } from '@/components/level-picks';
-import { DailyMonth } from '@/components/daily-month';
 
 const LEVELS: Record<string, [level: string, zh: string, en: string]> = {
   简单: ['easy', '简单', 'Easy'],
@@ -131,7 +130,6 @@ export function DailyView({
         </article>
         {/* Signed in only: these panels ask the API and stay empty for guests. */}
         <LevelPicks english={!zh} />
-        <DailyMonth english={!zh} />
       </main>
       <footer className="public-library-footer">
         <a href="/topics">

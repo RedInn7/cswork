@@ -219,11 +219,8 @@ test('workspace extras: meta line, votes, share, maximize, shuffle, AI thread an
     assert.equal(bars()[0].querySelector('button').getAttribute('aria-label').startsWith('9.8 MB – 13.7 MB: 12 people'), true);
     await click(byText('Analyse complexity'));
     assert.equal($('.cs-ai-complexity').textContent.includes('O(1)'), true);
-    // A bar opens the solutions in this language, never anyone's code.
-    await click(bars()[0].querySelector('button'));
-    assert.equal($('[role="dialog"]') === null, true);
-    assert.equal(calls.some((c) => c.url.includes('/oj/posts?problem=lc-1&sort=votes&language=python')), true);
-    assert.equal(!!labelled('Clear filter: Python only'), true);
+    // The workspace has no community solutions tab: a bar never asks for posts.
+    assert.equal(calls.some((c) => c.url.includes('/oj/posts?')), false);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { HighlightedCode } from './highlighted-code';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { EditorialVote } from './editorial-vote';
@@ -657,9 +658,11 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                                     )
                                   : t('复制代码', 'Copy code')}
                               </button>
-                              <pre className="oa-code">
-                                <code>{block.code}</code>
-                              </pre>
+                              <HighlightedCode
+                                className="oa-code"
+                                code={block.code}
+                                language={block.language}
+                              />
                             </div>
                           ))}
                         </>
@@ -1256,9 +1259,12 @@ export function OaEditorial({
       {data.solutions
         .filter((solution) => solution.language === shown)
         .map((solution, index) => (
-          <pre className="cs-ling-code" key={shown + index}>
-            <code>{solution.code}</code>
-          </pre>
+          <HighlightedCode
+            className="cs-ling-code"
+            key={shown + index}
+            code={solution.code}
+            language={solution.language}
+          />
         ))}
       <EditorialVote problemId={problemId} english={en} />
     </section>

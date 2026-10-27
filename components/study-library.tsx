@@ -4,7 +4,6 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberLibraryQuery, rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { useCoveredDays } from './daily-goal';
-import { DailyMonth } from './daily-month';
 import { useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
 import {
@@ -1094,7 +1093,6 @@ export function StudyLibrary({
               t={t}
               lineTotal={data?.collection?.total}
             />
-            {member && <DailyMonth english={english} />}
           </div>
           <div className="route-line" id="route-line">
             <div className="route-line-head">

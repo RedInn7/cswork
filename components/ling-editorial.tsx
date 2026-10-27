@@ -4,7 +4,7 @@ import { BadgeCheck, GitCompare } from 'lucide-react';
 import { CodeDiff } from './editor';
 import { EditorialVote } from './editorial-vote';
 import { EditorialFollowUps, EditorialSteps } from './ling-editorial-steps';
-import { SolutionPosts } from './solution-posts';
+import { HighlightedCode } from './highlighted-code';
 import { StatementMarkdown } from './statement-markdown';
 import { ojRequest, type LingFollowUps, type TrackEditorial } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
@@ -33,9 +33,7 @@ const MODE_KEY = 'cswork:editorial-mode';
  * complexity and Python / C++ / Java / Go code, and a diff against the editor's code
  * in the editor's own language (the shown language when the editorial has none in it).
  * Like LeetCode, it opens straight away, no lock or confirm; the server refuses it during the
- * learner's running contest. `discussion`: below it, the problem's community solutions (the same
- * posts as the Solutions tab, so the contest gate holds), folded until asked for. With two or more
- * approaches it reads all at once or step by step (components/ling-editorial-steps.tsx; `stop` is
+ * learner's running contest. With two or more approaches it reads all at once or step by step (components/ling-editorial-steps.tsx; `stop` is
  * the problem's Line 500 stop), remembered in this browser; then the interview follow-ups
  * (`followUpOn` / `onFollowUp`: the workspace's follow-up mode switch).
  */
@@ -46,7 +44,6 @@ export function LingEditorial({
   code,
   language,
   settings,
-  discussion = false,
   stop,
   followUpOn,
   onFollowUp,
@@ -57,7 +54,6 @@ export function LingEditorial({
   code: string;
   language: Language;
   settings: EditorSettings;
-  discussion?: boolean;
   stop?: string | null;
   followUpOn?: boolean;
   onFollowUp?: (on: boolean) => void;
@@ -69,7 +65,6 @@ export function LingEditorial({
   const [editorial, setEditorial] = useState<Editorial | null>(null);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
-  const [discussing, setDiscussing] = useState(false);
   // Everything at once by default, like LeetCode; step by step is the learner's own choice.
   const [mode, setMode] = useState<'steps' | 'all'>('all');
   const [stepsDone, setStepsDone] = useState(false);
@@ -200,9 +195,7 @@ export function LingEditorial({
                   className="cs-statement-markdown cs-ling-idea"
                   untrusted
                 />
-                <pre className="cs-ling-code">
-                  <code>{approach[lang]}</code>
-                </pre>
+                <HighlightedCode className="cs-ling-code" code={approach[lang] ?? ''} language={lang} />
                 <button
                   type="button"
                   className="cs-ling-compare"
@@ -240,14 +233,6 @@ export function LingEditorial({
           </ol>
           <EditorialFollowUps problemId={problemId} extras={editorial} language={language} english={english} followUpOn={followUpOn} onFollowUp={onFollowUp} />
           <EditorialVote problemId={problemId} english={english} />
-          {discussion && (
-            <details className="cs-ling-discussion" onToggle={(e) => setDiscussing(e.currentTarget.open)}>
-              <summary>{t('社区题解与讨论', 'Community solutions and discussion')}</summary>
-              {discussing && (
-                <SolutionPosts problemId={problemId} english={english} code={code} language={language} unlocked />
-              )}
-            </details>
-          )}
         </>
       )}
     </section>

@@ -25,7 +25,16 @@ void test('every OA problem not judged here has a written editorial', () => {
     if (editorial.explanation.length < 150) bad.push(`${id}: explanation under 150 chars`);
     for (const { language } of editorial.solutions) if (!LANGS.has(language)) bad.push(`${id}: language ${language}`);
   }
-  for (const id of files) if (judged.has(id)) bad.push(`${id}: judged here, the registry's editorial is shown`);
+  // Every judged problem has the longer write-up too; it replaces only the text, its code is the
+  // registry's verified program.
+  for (const id of judged) if (!files.has(id)) bad.push(`${id}: judged, no written editorial`);
+  for (const id of files)
+    if (judged.has(id)) {
+      const editorial = oaWrittenEditorial(id);
+      if (!editorial) bad.push(`${id}: invalid file`);
+      else if (editorial.solutions.length) bad.push(`${id}: judged here, code must come from the registry`);
+      else if (editorial.explanation.length < 600) bad.push(`${id}: judged write-up under 600 chars`);
+    }
   assert.deepEqual(bad, []);
 });
 
