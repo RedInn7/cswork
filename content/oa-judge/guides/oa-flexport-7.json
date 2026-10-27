@@ -2,7 +2,7 @@
   "id": "oa-flexport-7",
   "packageChecksum": "10210a451b5eaddc0f65a1dfeb8fae25707d730088566578d306afb52e4b1ec9",
   "sourceContentHash": "519f52246fba0b694ef7b720d7f77f148bda9fbc1a1c58c44036e1d7e8cd3cd2",
-  "editorialSha256": "c1912efee54ffe047c5995b37a4331e3d78b80bc691c18ac39a46a5a2a410fd8",
+  "editorialSha256": "1817ad4c9ae899d9fdce9f99c9a51084d7ca6d9663d534f13b4a8fa0e8de09dd",
   "hints": {
     "zh": [
       "剩余能量 = 100 − 路径上格子数值之和，所以最大化剩余能量就是最小化路径和。路径每一步都走到下一行，并且列号最多变化 1。",
@@ -15,5 +15,5 @@
       "Initialize dp with the first row. For rows 2 to 4, set the new dp[c] = a[r][c] + min of the old dp[k] for k from max(0, c-1) to min(3, c+1). Print 100 - min(dp); the result may be negative."
     ]
   },
-  "explanationEn": "## Approach\n\nStart from any cell in the first row of the 4x4 matrix; at each step move to an adjacent column in the next row, and maximize the initial 100 energy minus the total of the values of the cells visited.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is handled by the definition, so nothing is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nRemaining energy is 100 minus the sum of the cells on the path, so maximizing what is left means finding the **minimum path sum** from the first row to the last.\n\nLet `dp[r][c]` be the smallest sum over paths that end at row `r`, column `c`. The first row is `dp[0][c] = mat[0][c]`. Every later cell can only be entered from columns `c-1`, `c` or `c+1` of the row above (skip the ones outside the grid):\n\n`dp[r][c] = mat[r][c] + min(dp[r-1][c-1], dp[r-1][c], dp[r-1][c+1])`\n\nThe answer is `100 - min(dp[3][*])`. The code keeps only the previous row's 4 values and rolls them forward.\n\n## Proof of correctness\n\nInduct on the row. Row 0 is trivially right. Assume `dp[r-1][k]` is the minimum sum to reach `(r-1, k)`. Any path into `(r, c)` comes from some `(r-1, k)` with `|k - c| <= 1`; its sum is its prefix sum plus `mat[r][c]`, and the prefix is at least `dp[r-1][k]`, so the path is at least the value of the recurrence. Conversely, extending the best prefix into `(r, c)` attains that value. So `dp[r][c]` is correct. The path may end in any column of the last row, so the minimum over that row is optimal, and 100 minus it is the maximum remaining energy. It can be negative; print it as is.\n\n## Complexity\n\nThe matrix is a fixed 4x4, so there are 4*4*3 comparisons: O(1) time and space. On a general R x C grid this is O(R*C) time and O(C) space.\n\n## Pitfalls\n\n- Columns 0 and 3 have only two possible predecessors; do not index out of range.\n- The result may be negative; do not clamp it to 0."
 }

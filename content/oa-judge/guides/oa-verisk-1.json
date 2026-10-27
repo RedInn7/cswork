@@ -2,7 +2,7 @@
   "id": "oa-verisk-1",
   "packageChecksum": "0c77d17860c689cfd279e0d5d21106241a3a58a94e9f913aef82d3a43b1b737b",
   "sourceContentHash": "07980836bbc221ec23941ff4b5430ff95c69375d7cde1870ac896c1f6b43f84a",
-  "editorialSha256": "4e43521ea22d168207e911d641ee3071f819e4e2de852333a86836b6c0ce89f3",
+  "editorialSha256": "ccafc4ba848386fcec8e8fac91405978ed43655aa1f255a928ec0c898d7db275",
   "hints": {
     "zh": [
       "冲突只发生在连续相同的字符之间。把单词切成若干段“连续相同字符”，不同段之间的分界处本来就不相同，可以各段分别处理。",
@@ -15,5 +15,5 @@
       "For each word, scan with two pointers: from i, move j to the first position whose character differs from s[i]; the run has length j - i, so add (j - i) / 2 rounded down to the answer, then set i = j. After the scan print that word's answer, one line per word."
     ]
   },
-  "explanationEn": "## Approach\n\nFor each word, find the minimum number of character replacements so that no two adjacent characters are the same.\n\n## Proof of Correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position or operation is handled according to the definition, so no solution is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nSplit the word into maximal runs of one letter. Characters on either side of a run boundary already differ, so runs can be handled independently: a run of length `L` needs at least `floor(L/2)` replacements, and that many always suffice. The answer is the sum of `floor(L/2)` over all runs.\n\nFor example, in `boook` the run `ooo` needs only its middle `o` changed: `floor(3/2) = 1`.\n\n## Proof of correctness\n\n- Lower bound: inside a run of length `L`, the adjacent pairs `(1,2), (3,4), ...` are `floor(L/2)` pairs that share no character. Each pair is equal and needs at least one of its characters changed, and one replacement changes one character, so it fixes at most one of these pairs. The run therefore needs at least `floor(L/2)` replacements. Pairs from different runs do not overlap either, so the bounds add up.\n- Achievability: in each run, change the 2nd, 4th, 6th, ... characters (`floor(L/2)` of them). The neighbours of a changed character are unchanged and show at most two distinct letters, while the alphabet has 26, so we can always pick a letter different from both. Afterwards adjacent characters inside the run differ, and the run's end characters are either untouched or chosen to differ from the outside neighbour, so boundaries stay distinct.\n\nThe bounds match, so the answer is correct.\n\n## Complexity\n\nO(|s|) time and O(1) extra space per word.\n\n## Pitfalls\n\n- Do not count equal adjacent pairs: `ooo` has 2 of them but needs only 1 change.\n- For an even-length run the last character is changed, and it must also differ from the character after the run; with 26 letters there is always a choice."
 }

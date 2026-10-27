@@ -2,7 +2,7 @@
   "id": "oa-safetykit-2",
   "packageChecksum": "754b5ea1f29151775ba13c9ed15ecc2c02056da8417aae4a1bebaabfeb0c3e17",
   "sourceContentHash": "068ecc8ffcc36c134fec58c33a07063aacf94663a6f483bb9ae111fa3cd9e744",
-  "editorialSha256": "4771d5db0ec95b15db32ed047d3d0be52bb69c07cdff406bfb6c3892cf29a148",
+  "editorialSha256": "e9dac325f3ff35409e02da3168c2c703b8fadef33da5dc82c15cd9bae6338197",
   "hints": {
     "zh": [
       "命令串会被无限次重复执行，所以只需要看执行一遍之后机器人的位置和朝向，就能推断整个轨迹的走势。",
@@ -15,5 +15,5 @@
       "Simulate one pass per string: encode the heading as 0..3, add 1 for L and subtract 1 for R (both modulo 4), and step forward along the current heading for G. At the end, print YES if the position is (0,0) or the heading differs from the initial one, otherwise print NO."
     ]
   },
-  "explanationEn": "## Approach\n\nA command string made of G (move forward), L, and R (turn in place) is executed repeatedly; determine whether the robot's path is bounded.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; each input position/operation is processed according to the definition, so no solution is missed and nothing is over-counted.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nRun the command string once and record the final position `(x, y)` and heading `d` (start facing north, `d = 0`).\n\n- Back at the origin after one pass: bounded.\n- Not facing north after one pass: also bounded.\n- Only \"facing north and away from the origin\" is unbounded.\n\nSo the test is `(x, y) == (0, 0)` or `d != 0`.\n\n## Proof of correctness\n\nTreat one pass as a transformation: rotate the displacement `v = (x, y)` by the current heading, then translate.\n\n- `d = 0` and `v != 0`: after each pass the robot still faces north and has moved by the same `v`, so after `k` passes it is `k*|v|` from the origin. Unbounded.\n- `d = 0` and `v = 0`: every pass ends at the origin, so the path never leaves the area covered by the first pass. Bounded.\n- `d` is a 90-degree turn: four consecutive passes move by `v` rotated by 0, 90, 180 and 270 degrees, which sum to 0. `d` is 180 degrees: two passes move by `v` and `-v`, which also sum to 0. Either way, after at most 4 passes the robot is back at the origin facing north and everything repeats, so the path stays inside the finite area of those passes. Bounded.\n\nThese cases match the test exactly.\n\n## Complexity\n\nO(|s|) time and O(1) extra space per string, O(sum of |s|) overall.\n\n## Pitfalls\n\n- Checking only the position misjudges strings like `GL` as unbounded.\n- The condition is an \"or\": either returning to the origin or ending with a different heading is enough.\n- Keep the direction table consistent with how L and R rotate, and mind negative values when taking the heading modulo 4 (Python's `%` already handles it)."
 }

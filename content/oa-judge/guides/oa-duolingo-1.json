@@ -2,7 +2,7 @@
   "id": "oa-duolingo-1",
   "packageChecksum": "1cae262158a193629eea96de7cf25341f73b11bf7a45fee77b002ecb5ee15d80",
   "sourceContentHash": "6421b5e81cbfa156157f058717ac36dbf29766d4da06d2edcf91ddd1095837ae",
-  "editorialSha256": "1a2aaf2b85acbb2d6749c11d6b5b34f5879dc3ba8af1be20390b92fe13c4fada",
+  "editorialSha256": "dc386232efec4e191a5a111d334ed9aad7b283182aca0bdb83745acd81a354d0",
   "hints": {
     "zh": [
       "新数组的顺序就是“左、右、左、右……”轮流从原数组两端取元素，取过的不再用，不需要任何排序或额外计算。",
@@ -15,5 +15,5 @@
       "Set l = 0 and r = n - 1. While l <= r: output a[l] and increment l; if l <= r still holds, output a[r] and decrement r. When n is odd the middle element is output only once. Print the values separated by spaces."
     ]
   },
-  "explanationEn": "## Approach\n\nTake, in order, the leftmost, the rightmost, the second from the left, the second from the right, and so on from the original array to form the new array.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is handled by the definition, so nothing is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nKeep two pointers `i` and `j` at the two ends of the array and alternate: emit `a[i]`, then `a[j]`, then move `i` right and `j` left until they meet. The code loops over the first `ceil(n/2)` left indices `i` and pairs each with its mirror `n-1-i`.\n\n## Proof of correctness\n\nRound `i` (0-based) fills positions `2i` and `2i+1` of the new array. By the statement these are the i-th element from the left and the i-th element from the right, namely `a[i]` and `a[n-1-i]`. When `i < n-1-i` they are different elements and both are emitted; when `n` is odd and `i = n-1-i`, it is the middle element and must be emitted once. As `i` runs over `0..ceil(n/2)-1`, every index in the left half and the right half is visited exactly once, so the output is a permutation of the input in exactly the order the statement defines.\n\n## Complexity\n\nO(n) time, O(n) space for the result.\n\n## Pitfalls\n\n- With odd length the middle element must not be printed twice; the `i < n-1-i` check handles that.\n- For `n = 1`, print that single number."
 }

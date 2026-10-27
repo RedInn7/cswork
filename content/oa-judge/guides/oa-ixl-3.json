@@ -2,7 +2,7 @@
   "id": "oa-ixl-3",
   "packageChecksum": "3ec2e20050369c2790f40d7cc73a32ff541ce1f41a3eb03af4c45514ade4a961",
   "sourceContentHash": "0db9adc4e3a9e02a87c6897f66e0b7a7ee7fb36f35e86334117f007bce2b334d",
-  "editorialSha256": "4e008fb0876bfdeb9a999f998cba76999d8e61678c34f955f02d7ad55be807b1",
+  "editorialSha256": "b43432cd18c1a0f677b076372e2d5bd4709978735b34c86d2d42e3158baf1bd1",
   "hints": {
     "zh": [
       "能否成为异位词只看两串中每个字母出现的次数，与顺序无关；两串长度不同时，无论怎么替换都不可能成为异位词。",
@@ -15,5 +15,5 @@
       "If the lengths differ, output −1; otherwise sum the absolute differences of the letter counts over all 26 letters and divide by 2. When reading, a line containing only - means an empty string."
     ]
   },
-  "explanationEn": "## Approach\n\nFor each pair of lowercase strings, find the minimum number of characters to replace on either side to make them anagrams; return −1 if the lengths differ.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position/operation is handled exactly as defined, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nIf the lengths differ, no amount of replacing (which keeps the length) can make them anagrams: print -1.\n\nWith equal lengths only the letter counts matter. Let `ca[ch]` and `cb[ch]` be how often `ch` occurs in each string. The answer is\n\n`sum |ca[ch] - cb[ch]| / 2`.\n\nIntuitively, every surplus letter of `a` (where `ca > cb`) has to be replaced by a letter `a` is short of. Since the strings have the same length, the total surplus equals the total shortage, and each is half the sum of differences.\n\n## Proof of correctness\n\nLet `D = sum |ca - cb|`.\n\n- Lower bound: one replacement turns some `x` into `y`, decreasing `ca[x]` by 1 and increasing `ca[y]` by 1, so `D` drops by at most 2. The goal is `D = 0`, hence at least `D/2` replacements.\n- Achievability: equal lengths give `sum (ca - cb) = 0`, so total surplus equals total shortage, both `D/2`. Replacing one surplus letter of `a` with a missing letter lowers `D` by exactly 2; after `D/2` such steps the counts match and the strings are anagrams.\n\nThe bounds meet, so the answer is `D/2`.\n\n## Complexity\n\nO(|a| + |b| + 26) time per query, O(26) extra space.\n\n## Pitfalls\n\n- An empty string is given as a line containing `-`; turn it back into the empty string. Two empty strings give 0.\n- Replacing on one side is enough; do not count the differences of both sides separately."
 }
