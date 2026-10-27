@@ -86,6 +86,12 @@ export type LingEditorial = {
   }[];
   verified: boolean;
 } & Partial<LingFollowUps>;
+/** A non-LeetCode track's editorial (bk-, sql-, pd-, rest-, core-, ml-): code only in the languages its reference has. */
+export type TrackEditorial = {
+  approaches: (Pick<LingEditorial['approaches'][number], 'nameZh' | 'nameEn' | 'ideaZh' | 'ideaEn' | 'time' | 'space'> &
+    Partial<Record<'python' | 'cpp' | 'java' | 'go' | 'sql' | 'pandas', string>>)[];
+  verified: boolean;
+};
 /** One Line 500 edge case: what it tests, and its LeetCode-mode stdin (one JSON value per line). */
 export type LingEdge = { zh: string; en: string; input: string };
 /** What an interviewer may ask next, and a takeaway that carries to other problems; `problem` links one to practise. */

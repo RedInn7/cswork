@@ -74,6 +74,7 @@ import { lcRating } from './lc-ratings';
 import { oaRating } from './oa-rating';
 import { icaView } from './ica';
 import { lingEdges, lingEditorial, lingFollowUps } from './ling-editorials';
+import { trackEditorial } from './track-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
@@ -220,7 +221,7 @@ export async function handleOj(
       oaHints: live ? null : (guide?.hints ?? null),
       // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
       // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
-      lingEditorialVerified: lingEditorial(id)?.verified ?? null,
+      lingEditorialVerified: (lingEditorial(id) ?? trackEditorial(id))?.verified ?? null,
       targetComplexity: best ? { time: best.time, space: best.space } : null,
       // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
       stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
@@ -238,7 +239,7 @@ export async function handleOj(
   if (request.method === 'GET' && resource === 'problems' && id && action === 'editorial' && !operation) {
     requirePerson(p);
     await limit(p, 'oj-read', 240);
-    const editorial = lingEditorial(id);
+    const editorial = lingEditorial(id) ?? trackEditorial(id);
     if (!editorial) throw new HttpError(404, '题解不存在');
     // Never while the problem is in this learner's running contest; then the statement's own gate.
     refuseInContest(p, id);
