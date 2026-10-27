@@ -2,7 +2,7 @@
   "id": "oa-paypay-3",
   "packageChecksum": "fd28e5ee0663b40aa6dbdb0962f1da5b26e868a8647606d441cc71a8f73fa60d",
   "sourceContentHash": "d96f74075aa3defa1d65c439603259ef07e6c4517d67a5a2a3d79e192140f204",
-  "editorialSha256": "48225a80c11da076a901be96313e296aa2a838ded5e24d5b1a4157aa87df6ea7",
+  "editorialSha256": "85db362cef5406883dbdc5b9b9c9711d9421c351b7d8ba47cab0ffadacd9a0b0",
   "hints": {
     "zh": [
       "长度为 2 的连续片段一共只有 |S|−1 个，每个都由相邻两个数字组成。",
@@ -15,5 +15,5 @@
       "For each i with 0 <= i < |S| - 1, the fragment value is (S[i] - '0') * 10 + (S[i+1] - '0'); a leading zero is handled naturally, so \"05\" is 5. Track the maximum and print it."
     ]
   },
-  "explanationEn": "## Approach\n\nAmong all contiguous fragments of length 2 in the digit string, find the maximum value when each is read as a decimal number.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position is processed according to the definition, so no solution is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nA digit string of length `n` has only `n - 1` contiguous fragments of length 2, `S[i..i+1]`. Parse each one as an integer and keep the maximum.\n\nYou can also skip the slicing: the fragment's value is `10*S[i] + S[i+1]`, still a single linear scan.\n\n## Proof of correctness\n\nThe answer is by definition the largest value among the `n - 1` fragments. The loop visits each fragment exactly once, with nothing missed and nothing extra, so its maximum is the answer.\n\n## Complexity\n\nO(n) time, O(1) extra space (the generator yields fragments one at a time instead of building a list).\n\n## Pitfalls\n\n- Fragments with a leading zero are parsed as integers: `05` is 5. An all-zero string gives 0, printed as `0`, not `00`.\n- Only adjacent pairs count; you cannot combine any two digits.\n- Strip the trailing newline from the input, or the last fragment will pick it up."
 }

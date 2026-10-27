@@ -2,7 +2,7 @@
   "id": "oa-ixl-4",
   "packageChecksum": "d2451d741f726ce7199da5c71601717fa70fc52f116157c75af5879777e8c3d6",
   "sourceContentHash": "c3384c06d8372df69895ecc588cfb59e8a14c6262f744a9cdec10fe1b54eeda3",
-  "editorialSha256": "7cf13f3d933033a7962be98dbc6934ecd77d9b00081fc930fbac5e9128467794",
+  "editorialSha256": "d34fa41c67a83bdfcce27687a1f2b644f13cebeb288ab6094a80e7381d3dea2d",
   "hints": {
     "zh": [
       "孔的高只取决于横栏，宽只取决于竖栏，两个方向可以分开处理；连续移除 k 根栏会把 k+1 个格子连成一片。",
@@ -15,5 +15,5 @@
       "Sort both index lists; while scanning, extend the current run when an index equals the previous one plus 1 and reset it to 1 otherwise, keeping the longest runs runH and runV; print (runH+1)×(runV+1) as a 64-bit integer."
     ]
   },
-  "explanationEn": "## Approach\n\nFind the longest consecutive run of removed horizontal bars and of removed vertical bars separately; the side length of the largest hole is the length of the consecutive run plus 1.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position/operation is handled exactly as defined, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nHorizontal and vertical bars do not interact, so handle them separately. Sort the removed horizontal bars and find the longest run of **consecutive indices**, of length `L`. Removing `L` adjacent bars merges the gaps on both sides of them into one, so that gap has height `L + 1`. Do the same for vertical bars to get width `W + 1`. The answer is `(L + 1) * (W + 1)`.\n\n## Proof of correctness\n\nA hole is bounded by a run of consecutively removed horizontal bars and a run of consecutively removed vertical bars. If `x` adjacent horizontal bars are removed, the hole is `x + 1` tall; any bar left standing in between splits it. So the achievable heights are exactly \"length of some run of removed bars + 1\" (removing nothing counts as a run of 0, height 1), whose maximum is `L + 1`. Widths work the same way, giving `W + 1`.\n\nHeight depends only on horizontal bars and width only on vertical ones, so any achievable height combines with any achievable width into a hole. The largest area is therefore the product of the two maxima.\n\n## Complexity\n\nDominated by sorting: O(|h| log |h| + |v| log |v|) time, O(|h| + |v|) space.\n\n## Pitfalls\n\n- The indices arrive unsorted; sort before looking for runs.\n- Remember the +1: removing `L` bars leaves a gap of `L + 1` cells.\n- Use 64-bit integers for the result. `n` and `m` only bound the indices and are not used otherwise."
 }

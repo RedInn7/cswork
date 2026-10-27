@@ -2,7 +2,7 @@
   "id": "oa-flexport-8",
   "packageChecksum": "a38b58de89d1920824cda86b25746e5627b891216846664870ea7ada21bf3f71",
   "sourceContentHash": "b00e5d6090e4514d6fdd8b8e404a732b2ae150d06c15a84aa5eb1d050f5d2a90",
-  "editorialSha256": "6cc50aaa876d189513fb4a39595bb8d4f8074d50b6ea13bdaa7891cd49ffbe60",
+  "editorialSha256": "5bc0f8c74299a615678a021e3c783f71d92562c072159590707b048bca8b9814",
   "hints": {
     "zh": [
       "每个人都把球传给固定的下一个人，所以从 1 号出发的持球序列一定在某一刻开始重复，之后就是一个循环。k 可达 10^12，不能一步步模拟。",
@@ -15,5 +15,5 @@
       "Store the visiting order in an array path. If k is less than the length of path, the answer is path[k]; otherwise it is path[start + (k - start) mod len]. Read k as a 64-bit integer."
     ]
   },
-  "explanationEn": "## Approach\n\nStarting with friend 1, each second the ball is passed to the friend specified by receiver; find who holds the ball after the given number of seconds.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is handled by the definition, so nothing is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\n`k` can be as large as 10^12, so simulating second by second is out. Each friend passes to exactly one person, so the holder sequence `1, receiver[1], receiver[receiver[1]], ...` is a walk in a functional graph with `n` nodes. Within `n` steps it must revisit someone, and from then on it cycles forever (a rho shape: a tail followed by a cycle).\n\nWalk from friend 1 and record in `seen[x]` the index where `x` first appears on the path. The first time we hit an `x` already in `seen`, `start = seen[x]` is where the cycle begins and `path[start:]` is the cycle, of length `L`.\n\n- If `k < len(path)`, the answer is `path[k]`.\n- Otherwise it is `path[start + (k - start) mod L]`.\n\n## Proof of correctness\n\nThe holders satisfy `p[t+1] = receiver[p[t]]`: the next term depends only on the current one. Let `p[i]` be the first repeated value, first seen at index `start`. Then `p[start..i-1]` are distinct and `p[i] = p[start]`, so by determinism the sequence repeats with period `L = i - start` from there on: `p[t] = p[start + (t - start) mod L]` for every `t >= start`. Every `t < len(path) = i` is stored directly in `path`, so the two cases cover all `k`.\n\n## Complexity\n\nA repeat appears within `n` steps: O(n) time, O(n) space.\n\n## Pitfalls\n\n- Friend 1 holds the ball at second 0, so second `k` is `path[k]`; watch the off-by-one.\n- The cycle does not have to contain friend 1, so the tail must stay out of the modulo.\n- Output is 1-based, and so is `receiver`."
 }

@@ -2,7 +2,7 @@
   "id": "oa-reevo-1",
   "packageChecksum": "c4508af0a731f0d355f6dd0487f4f5d2a515de4d593e3dc348a67fbd9ea029c6",
   "sourceContentHash": "084de1fc045bfbbfa206d67ba6328f20fc8ae9394f263391fef169fe920a7d9a",
-  "editorialSha256": "9e1c2009fca3e629cddee7f78e9db71d953a50ce03904660f6e5e305d5167228",
+  "editorialSha256": "7164b250db79e9b3747fae6efedd76a528a5820a5b1870b39460697755ef4521",
   "hints": {
     "zh": [
       "压缩结果只取决于字符串被切成的一个个“极长同字母段”，每一段独立地变成输出的一小块。",
@@ -15,5 +15,5 @@
       "Use two pointers: i is the start of a run and j moves right until the letter changes, so the length is L = j - i. For L = 1 output just the letter; for L > 1 output the letter followed by L in decimal (possibly several digits, such as a12). Concatenate the pieces and print once. Time O(n)."
     ]
   },
-  "explanationEn": "## Approach\n\nMerge adjacent runs of the same letter from left to right: a run of length 1 outputs only the letter, and a run longer than 1 outputs the letter followed by the run length.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is processed according to the definition, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+  "explanationEn": "## Approach\n\nScan left to right and cut the string into **maximal** runs of one letter: from position `i`, move `j` right until the first character different from `s[i]`. Then `s[i..j-1]` is a run of length `j - i`. Output just the letter if the length is 1, otherwise the letter followed by the length, and continue from `j`.\n\n## Proof of correctness\n\nThe statement merges runs of adjacent equal letters, so each run must be maximal: all its letters are equal and its neighbours (if any) differ from it. The inner loop stops at the first different character, so every run is uniform; the next run starts at `j` with `s[j] != s[j-1]`, so neighbouring runs differ and nothing is split or merged wrongly. The runs are contiguous, cover the whole string without overlap, and are emitted in order, which is exactly the compressed form the statement defines.\n\n## Complexity\n\n`i` and `j` only move right, so each character is touched a constant number of times: O(n) time. Pieces are collected in a list and joined once: O(n) space.\n\n## Pitfalls\n\n- A run of length 1 gets no count (`a`, not `a1`).\n- Counts can have several digits (e.g. `a12`); print the full decimal number.\n- A letter that reappears later, not adjacent, starts a new run, like the final `a` in `aabbccca`.\n- Strip the trailing newline from the input."
 }
