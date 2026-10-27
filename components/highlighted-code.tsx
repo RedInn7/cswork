@@ -19,7 +19,9 @@ export function HighlightedCode({ code, language, className }: { code: string; l
     if (!grammar) return;
     let live = true;
     import('./monaco-client')
-      .then(({ monaco }) => {
+      // colorize waits for the lazily registered grammar; tokenize alone sees plain text until then.
+      .then(({ monaco }) => monaco.editor.colorize('', grammar, {}).then(() => monaco))
+      .then((monaco) => {
         if (!live) return;
         const source = code.split('\n');
         const tokens = monaco.editor.tokenize(code, grammar);
