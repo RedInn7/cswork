@@ -1,0 +1,19 @@
+{
+  "id": "oa-trend-micro-2",
+  "explanation": "## 思路\n\n新规则下，一个数 `n` 不能报的条件是：存在一个含数字 7 的数 `m`，使得 `m` 整除 `n`（`m = n` 时就是 `n` 本身含 7；`m = 7` 时就是 7 的倍数）。\n\n所以只要判断 `n` 的所有因子里有没有含 7 的。枚举 `d` 从 1 到 `√n`，每找到一个因子 `d`，同时检查 `d` 和 `n / d` 是否含 7。\n\n主流程：\n\n1. 如果 `x` 本身不能报，输出 `-1`。\n2. 否则从 `x + 1` 往上找，第一个能报的数就是答案。\n\n## 正确性\n\n任何一对因子 `(d, n/d)` 中较小的一个不超过 `√n`，所以枚举到 `√n` 能覆盖全部因子。`d = 1` 时检查的是 `n` 本身，`n` 含 7 的情况也就包含在内。按题面例子核对：6 的下一个是 8（7 含 7）；33 之后 34 = 17×2、35 = 7×5 都不行，答案 36；69 之后 70~79 都含 7，答案 80。\n\n## 复杂度\n\n判断一个数 `O(√n · log n)`（`log n` 是检查数位）。能报的数分布很密，往上找通常只走很少几步，整体约 `O(√x log x)`；空间 `O(1)`。\n\n## 易错点\n\n- 只判断“含 7 或是 7 的倍数”是旧规则，会漏掉 34 = 17×2 这类情况。\n- 枚举因子时要同时检查 `n / d`，大因子（如 17）往往在这一侧。\n- `x` 本身不合法时直接输出 `-1`，不要继续往后找。\n- 题面没给数据范围，`x` 很大（如 10^12 以上）时逐个试除会变慢。\n",
+  "explanationEn": "## Approach\n\nUnder the new rule, `n` is forbidden if some number `m` containing the digit 7 divides `n` (`m = n` covers \"n contains 7\", `m = 7` covers multiples of 7).\n\nSo we check whether any divisor of `n` contains a 7: try `d` from 1 to `√n`, and for every divisor test both `d` and `n / d`.\n\n1. If `x` itself is forbidden, print `-1`.\n2. Otherwise scan upward from `x + 1` and return the first allowed number.\n\n## Correctness\n\nIn every divisor pair `(d, n/d)` the smaller one is at most `√n`, so the loop sees all divisors; `d = 1` tests `n` itself. Checking the statement's cases: after 6 comes 8; after 33, 34 = 17×2 and 35 = 7×5 are forbidden, so 36; after 69, 70..79 all contain 7, so 80.\n\n## Complexity\n\nOne check is `O(√n · log n)`. Allowed numbers are dense, so the upward scan is short; overall about `O(√x log x)` time, `O(1)` space.\n\n## Pitfalls\n\n- \"Contains 7 or divisible by 7\" is the old rule and misses 34 = 17×2.\n- Check `n / d` as well; large divisors such as 17 sit on that side.\n- If `x` is invalid, output `-1` immediately.\n- No constraints are given; trial division slows down for very large `x` (around 10^12 and above).\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def countingGame(x: int) -> int:\n    def has_seven(n: int) -> bool:\n        return \"7\" in str(n)\n\n    def bad(n: int) -> bool:\n        # n 含 7，或 n 是某个含 7 的数的倍数（7 本身含 7，所以 7 的倍数也在内）\n        if has_seven(n):\n            return True\n        d = 1\n        while d * d <= n:\n            if n % d == 0 and (has_seven(d) or has_seven(n // d)):\n                return True\n            d += 1\n        return False\n\n    if bad(x):\n        return -1\n    nxt = x + 1\n    while bad(nxt):\n        nxt += 1\n    return nxt\n\n\nif __name__ == \"__main__\":\n    print(countingGame(int(input())))\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    int countingGame(int x) {\n        if (bad(x)) return -1;\n        int n = x + 1;\n        while (bad(n)) n++;\n        return n;\n    }\n\n    private boolean hasSeven(int n) {\n        while (n > 0) { if (n % 10 == 7) return true; n /= 10; }\n        return false;\n    }\n\n    private boolean bad(int n) {\n        if (hasSeven(n) || n % 7 == 0) return true;\n        for (int d = 2; (long) d * d <= n; d++) {\n            if (n % d == 0 && (hasSeven(d) || hasSeven(n / d))) return true;\n        }\n        return false;\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "class Solution {\npublic:\n    int countingGame(int x) {\n        if (bad(x)) return -1;\n        int n = x + 1;\n        while (bad(n)) n++;\n        return n;\n    }\n\nprivate:\n    bool hasSeven(int n) {\n        while (n > 0) { if (n % 10 == 7) return true; n /= 10; }\n        return false;\n    }\n\n    bool bad(int n) {\n        if (hasSeven(n) || n % 7 == 0) return true;\n        for (int d = 2; (long long) d * d <= n; d++) {\n            if (n % d == 0 && (hasSeven(d) || hasSeven(n / d))) return true;\n        }\n        return false;\n    }\n};\n"
+    }
+  ]
+}

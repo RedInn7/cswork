@@ -1,16 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { BadgeCheck, GitCompare, Lock } from 'lucide-react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from './ui/alert-dialog';
+import { BadgeCheck, GitCompare } from 'lucide-react';
 import { CodeDiff } from './editor';
 import { EditorialVote } from './editorial-vote';
 import { EditorialFollowUps, EditorialSteps } from './ling-editorial-steps';
@@ -42,21 +32,17 @@ const MODE_KEY = 'cswork:editorial-mode';
  * The Line 500 editorial tab: approaches from brute force to best, each with its idea,
  * complexity and Python / C++ / Java / Go code, and a diff against the editor's code
  * in the editor's own language (the shown language when the editorial has none in it).
- * Locked until the learner has passed the problem, unless they confirm they want it now;
- * the workspace keeps that choice (`unlocked`) so switching tabs doesn't forget it. The editorial
- * is fetched only once unlocked; the server refuses it during the learner's running contest.
- * `discussion`: below it, the problem's community solutions (the same posts as the Solutions
- * tab, so the contest gate holds), folded until asked for. With two or more approaches it reads
- * step by step (components/ling-editorial-steps.tsx; `stop` is the problem's Line 500 stop) or all
- * at once, remembered in this browser; then the interview follow-ups (`followUpOn` / `onFollowUp`:
- * the workspace's follow-up mode switch).
+ * Like LeetCode, it opens straight away, no lock or confirm; the server refuses it during the
+ * learner's running contest. `discussion`: below it, the problem's community solutions (the same
+ * posts as the Solutions tab, so the contest gate holds), folded until asked for. With two or more
+ * approaches it reads all at once or step by step (components/ling-editorial-steps.tsx; `stop` is
+ * the problem's Line 500 stop), remembered in this browser; then the interview follow-ups
+ * (`followUpOn` / `onFollowUp`: the workspace's follow-up mode switch).
  */
 export function LingEditorial({
   problemId,
   verified,
   english,
-  unlocked,
-  onUnlock,
   code,
   language,
   settings,
@@ -68,8 +54,6 @@ export function LingEditorial({
   problemId: string;
   verified: boolean;
   english: boolean;
-  unlocked: boolean;
-  onUnlock: () => void;
   code: string;
   language: Language;
   settings: EditorSettings;
@@ -81,21 +65,19 @@ export function LingEditorial({
   const t = (zh: string, en: string) => (english ? en : zh);
   const [picked, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
   const [compare, setCompare] = useState<number | null>(null);
-  const [confirm, setConfirm] = useState(false);
-  // The confirm unmounts the locked panel and its button, so focus lands on the heading instead.
-  const confirmed = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const [editorial, setEditorial] = useState<Editorial | null>(null);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [discussing, setDiscussing] = useState(false);
-  const [mode, setMode] = useState<'steps' | 'all'>('steps');
+  // Everything at once by default, like LeetCode; step by step is the learner's own choice.
+  const [mode, setMode] = useState<'steps' | 'all'>('all');
   const [stepsDone, setStepsDone] = useState(false);
   useEffect(() => {
     try {
-      if (localStorage.getItem(MODE_KEY) === 'all') setMode('all');
+      if (localStorage.getItem(MODE_KEY) === 'steps') setMode('steps');
     } catch {
-      /* Steps by default. */
+      /* All at once by default. */
     }
   }, []);
   const pickMode = (next: 'steps' | 'all') => {
@@ -115,7 +97,7 @@ export function LingEditorial({
   const diffLang = has(editorialLang(language)) ? editorialLang(language)! : lang;
   const lingProblem = problemId.startsWith('lc-');
   useEffect(() => {
-    if (!unlocked || editorial) return;
+    if (editorial) return;
     const controller = new AbortController();
     setError('');
     ojRequest<Editorial>(`problems/${encodeURIComponent(problemId)}/editorial`, undefined, controller.signal)
@@ -126,7 +108,7 @@ export function LingEditorial({
         if (!controller.signal.aborted) setError(reason.message);
       });
     return () => controller.abort();
-  }, [unlocked, editorial, problemId, attempt]);
+  }, [editorial, problemId, attempt]);
   const modeSwitch = () => (
     <fieldset className="cs-ling-langs">
       <legend className="sr-only">{t('题解的看法', 'How to read the editorial')}</legend>
@@ -155,26 +137,7 @@ export function LingEditorial({
           </span>
         )}
       </div>
-      {!unlocked ? (
-        <div className="cs-route-hint-locked">
-          <Lock size={14} aria-hidden="true" />
-          <p>
-            {t(
-              '通过本题后自动解锁。先自己做出来，面试时才记得住。',
-              'Unlocks once you pass this problem. The approach you find yourself is the one you remember in an interview.',
-            )}
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              confirmed.current = false;
-              setConfirm(true);
-            }}
-          >
-            {t('仍要查看', 'Show anyway')}
-          </button>
-        </div>
-      ) : error ? (
+      {error ? (
         <div role="alert">
           {english ? englishMessage(error) : error}{' '}
           <button type="button" onClick={() => setAttempt((n) => n + 1)}>
@@ -287,31 +250,6 @@ export function LingEditorial({
           )}
         </>
       )}
-      <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent finalFocus={() => (confirmed.current && heading.current) || true}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('现在查看官方题解？', 'Show the editorial now?')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t(
-                '你还没有通过这道题。题解会直接给出完整解法和代码。',
-                "You haven't passed this problem yet. The editorial gives away complete solutions and code.",
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('再想想', 'Keep trying')}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                confirmed.current = true;
-                setConfirm(false);
-                onUnlock();
-              }}
-            >
-              {t('查看题解', 'Show editorial')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </section>
   );
 }

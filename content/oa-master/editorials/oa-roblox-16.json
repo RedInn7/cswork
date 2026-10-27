@@ -1,0 +1,11 @@
+{
+  "id": "oa-roblox-16",
+  "explanation": "## 思路\n\n条件是 `a[i] - b[j] == a[j] - b[i]`。把带 j 的项挪到一边、带 i 的挪到另一边：\n\n`a[i] + b[i] == a[j] + b[j]`\n\n所以只要令 `c[k] = a[k] + b[k]`，问题就变成“数组 c 里有多少对下标值相等”。用哈希表统计每个值出现的次数 cnt，答案是 `Σ cnt·(cnt-1)/2`。\n\n## 关于样例\n\n按题面的条件，样例 `a = [2, -2, 5, 3]`、`b = [1, 5, -1, 1]` 得到 `c = [3, 3, 4, 4]`，只有 (0,1) 和 (2,3) 两对。直接验证 (0,1)：`2 - 5 = -3`，`-2 - 1 = -3`，成立；(0,2)：`2 - (-1) = 3`，`5 - 1 = 4`，不成立。所以按题面条件答案是 2。给出的 6 等于全部 C(4,2) 对，应该是原题条件和这里的转述不一致，代码按题面条件实现。\n\n## 正确性\n\n等式变形是双向等价的，因此“满足条件的对”与“c 值相等的对”一一对应；值相同的 cnt 个下标两两组合恰好 C(cnt, 2) 对，不同值之间没有贡献。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 易错点\n\n- 不要写 O(n²) 双重循环，n 大时会超时。\n- 计数结果可能超过 32 位整数，Java/C++ 用 long。\n- 只数 i < j，不要把 (i, i) 或 (j, i) 算进去，C(cnt, 2) 已经处理好了。",
+  "explanationEn": "## Approach\n\nRearrange `a[i] - b[j] == a[j] - b[i]` into `a[i] + b[i] == a[j] + b[j]`. With `c[k] = a[k] + b[k]`, we only need the number of index pairs with equal c values: `Σ cnt·(cnt-1)/2` over a frequency map.\n\n## About the sample\n\nWith the stated condition, the sample gives `c = [3, 3, 4, 4]`, i.e. 2 pairs. For instance (0,2): `2 - (-1) = 3` but `5 - 1 = 4`. The expected 6 equals all C(4,2) pairs, so the original condition must differ from this paraphrase; the code follows the stated condition.\n\n## Correctness\n\nThe rearrangement is an equivalence, so valid pairs are exactly pairs with equal c; a value seen cnt times yields C(cnt, 2) pairs.\n\n## Complexity\n\nO(n) time and space.\n\n## Pitfalls\n\n- Avoid the O(n²) double loop.\n- Use 64-bit counts.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\nfrom typing import List\n\ndef countValidPairs(a: List[int], b: List[int]) -> int:\n    # a[i] - b[j] == a[j] - b[i]  <=>  a[i] + b[i] == a[j] + b[j]\n    cnt = Counter(x + y for x, y in zip(a, b))\n    return sum(c * (c - 1) // 2 for c in cnt.values())\n"
+    }
+  ]
+}

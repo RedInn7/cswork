@@ -1,0 +1,19 @@
+{
+  "id": "oa-two-sigma-4",
+  "explanation": "## 思路\n\n题面在 \"compute y /\" 处截断，结合样例 `10 / 2 → \"5.00\"` 和约束\"返回两位小数的字符串\"，这里按\"计算 `y / x` 的实数结果，保留两位小数后以字符串返回\"来写。\n\n做法是用 `Decimal(y) / Decimal(x)` 得到十进制结果，再 `quantize(Decimal(\"0.01\"), ROUND_HALF_UP)` 四舍五入到两位。样例：`10 / 2 = 5`，格式化为 `\"5.00\"`。\n\n## 正确性\n\n直接写 `f\"{y / x:.2f}\"` 在多数情况下也对，但 `y / x` 先变成二进制浮点数，像 `1 / 8 = 0.125` 这种恰好落在 5 上的值，Python 的格式化走\"四舍六入五成双\"，会输出 `0.12`，而按常规四舍五入应为 `0.13`。`Decimal` 的除法在默认 28 位精度下足以精确表示两位小数需要的信息，再显式指定 `ROUND_HALF_UP`，结果与手算一致。\n\n## 复杂度\n\n时间、空间都是 `O(1)`（整数位数有限）。\n\n## 易错点\n\n- 舍入方式题面没有说明，这里假设是常规四舍五入；若评测按 C 语言 `printf(\"%.2f\")` 的结果比对，换回浮点写法即可（Java / C++ 版本就是这种写法）。\n- 负数结果要保留负号，如 `-7 / 2 → \"-3.50\"`。\n- `x ≠ 0` 由约束保证，不必处理除零。\n- 不要用整数除法 `//`，否则 `1 / 3` 会得到 `0.00`。\n",
+  "explanationEn": "## Approach\n\nThe statement is cut off at \"compute y /\". From the example `10 / 2 -> \"5.00\"` and the constraint \"two digits after the decimal point\", we compute the real value of `y / x` and return it as a string with two decimals.\n\nUse `Decimal(y) / Decimal(x)` for a decimal quotient, then `quantize(Decimal(\"0.01\"), ROUND_HALF_UP)` to round to two places. Example: `10 / 2 = 5`, formatted as `\"5.00\"`.\n\n## Correctness\n\n`f\"{y / x:.2f}\"` is usually fine, but `y / x` is first turned into a binary float, and for exact halves such as `1 / 8 = 0.125` Python formatting rounds half to even and prints `0.12`, while ordinary rounding gives `0.13`. Decimal division at the default 28-digit precision carries enough digits for two-decimal rounding, and `ROUND_HALF_UP` makes the result match hand calculation.\n\n## Complexity\n\n`O(1)` time and space.\n\n## Pitfalls\n\n- The rounding mode is not specified; this assumes ordinary half-up rounding. If the judge compares against C-style `printf(\"%.2f\")`, use the float version (that is what the Java and C++ versions do).\n- Keep the sign for negative results: `-7 / 2 -> \"-3.50\"`.\n- `x != 0` is guaranteed, so no division-by-zero handling is needed.\n- Do not use integer division `//`; `1 / 3` would become `0.00`.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from decimal import Decimal, ROUND_HALF_UP\n\n\ndef calculate_y_over_x(y: int, x: int) -> str:\n    # 用 Decimal 做精确除法并四舍五入到两位，避开二进制浮点的舍入误差\n    q = Decimal(y) / Decimal(x)\n    return str(q.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP))\n"
+    },
+    {
+      "language": "java",
+      "code": "class Solution {\n    String calculateYOverX(int y, int x) {\n        return String.format(\"%.2f\", (double) y / x);\n    }\n}"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    string calculateYOverX(int y, int x) {\n        char buf[64];\n        snprintf(buf, sizeof(buf), \"%.2f\", (double) y / x);\n        return string(buf);\n    }\n};"
+    }
+  ]
+}

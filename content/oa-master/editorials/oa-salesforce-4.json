@@ -1,0 +1,11 @@
+{
+  "id": "oa-salesforce-4",
+  "explanation": "## 思路\n\n判断一条文本是否包含某个垃圾词，要满足两点：大小写不敏感、整词匹配。\n\n1. 把 spamWords 全部转小写放进哈希集合，查询 O(1)。\n2. 对每条文本先转小写，再按“非字母字符”切成单词（正则 `[a-z]+`），这样标点不会粘在单词上，`\"WIN!!!\"` 也能切出 `win`。\n3. 只要有一个单词在集合里，就标记 `\"spam\"`，否则 `\"not_spam\"`，按原顺序输出。\n\n样例：第一条里有 `free` 和 `millions`，是 spam；第二条里的 `carefree` 虽然包含子串 `free`，但它是一个完整的单词 `carefree`，不在集合中，所以不是 spam。这正是“整词匹配”要防的情况，直接用 `in` 做子串查找会误判。\n\n## 正确性\n\n切词后得到的正是文本中所有由字母组成的完整单词，集合查询判断它是否等于某个垃圾词（已统一小写），与题意“大小写不敏感、整词匹配”完全一致。\n\n## 复杂度\n\n设所有文本总长为 L、垃圾词总长为 W。建集合 O(W)，切词和查询 O(L)，总时间 O(L + W)，空间 O(W)。\n\n## 易错点\n\n- 不要用子串查找，`carefree` 会被误判为 spam。\n- 不要只按空格 split，`\"millions.\"` 这种带标点的词会匹配失败。\n- 有些版本的原题规定“出现至少两个垃圾词才算 spam”，本题面写的是“任意一个”，按题面实现；样例两种规则结果相同。",
+  "explanationEn": "## Approach\n\nLower-case the spam words into a hash set. For each text, lower-case it and extract words with `[a-z]+` so punctuation never sticks to a word, then mark it \"spam\" if any word is in the set. In the sample, `carefree` is one whole word and does not match `free`, which is exactly why substring search is wrong here.\n\n## Correctness\n\nTokenising yields every complete alphabetic word, and set membership tests case-insensitive equality with a spam word, which is the stated rule.\n\n## Complexity\n\nO(L + W) time for total text length L and spam word length W; O(W) space.\n\n## Pitfalls\n\n- Substring search misclassifies `carefree`.\n- Splitting only on spaces breaks on punctuation.\n- Some versions require at least two spam words; this statement says one, and the sample agrees with both.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import re\n\ndef classifyTexts(texts, spamWords):\n    spam = {w.lower() for w in spamWords}\n    res = []\n    for t in texts:\n        words = re.findall(r\"[a-z]+\", t.lower())    # 整词：按非字母切分\n        res.append(\"spam\" if any(w in spam for w in words) else \"not_spam\")\n    return res\n"
+    }
+  ]
+}

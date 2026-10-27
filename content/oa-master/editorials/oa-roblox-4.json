@@ -1,0 +1,11 @@
+{
+  "id": "oa-roblox-4",
+  "explanation": "## 思路\n\n每个段落是一串 chunk，每个 chunk 是 `[type, content]`。要做的事很直接：\n\n1. 建一张类型到标签的映射：`bold → b`、`italic → i`、`underline → u`，`p` 是纯文本，不加标签。\n2. 渲染一个 chunk：如果 content 是字符串，直接用；如果是列表（题面说“嵌套格式按应用顺序生成嵌套标签”），就递归渲染里面的每个 chunk 再拼起来。然后用本 chunk 的标签包住。\n3. 段内所有 chunk 拼接后，整体包一层 `<p>...</p>`，每个段落输出一个字符串。\n\n例：`[[[\"bold\", \"Hello\"]]]` → `[\"<p><b>Hello</b></p>\"]`。\n\n## 正确性\n\n外层 chunk 先开标签、最后关标签，内层在中间完成，所以标签一定正确嵌套，顺序与格式应用顺序一致。纯文本 chunk 原样输出，不会多出标签。\n\n## 复杂度\n\n设所有文本和标签的总长度为 L。每个字符只被拼接常数次（用 join 而不是反复字符串相加），时间 O(L)，递归栈深度等于嵌套层数。\n\n## 易错点\n\n- 题面只给了一个简单例子，没说明嵌套的具体输入格式；这里假设嵌套是“content 为 chunk 列表”。如果原题用别的方式表示嵌套，只需要改 render 的判断。\n- 未知 type 按纯文本处理，不要抛异常。\n- 空段落应输出 `<p></p>`。",
+  "explanationEn": "## Approach\n\nMap `bold → b`, `italic → i`, `underline → u`; `p` is plain text. To render a chunk, use its content directly if it is a string, or recursively render and join its child chunks if it is a list (our assumption for \"nested formatting\"), then wrap it in the chunk's tag. Join a paragraph's chunks and wrap the result in `<p>...</p>`.\n\n## Correctness\n\nAn outer tag opens before and closes after everything inside it, so tags always nest properly and follow the order formatting was applied.\n\n## Complexity\n\nO(L) time for total output length L when using join; recursion depth equals nesting depth.\n\n## Pitfalls\n\n- The statement only shows a flat example; the nested input shape is an assumption.\n- Treat unknown types as plain text.\n- An empty paragraph renders as `<p></p>`.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def formatParagraphs(paragraphs):\n    TAG = {'bold': 'b', 'italic': 'i', 'underline': 'u', 'p': None}\n\n    def render(chunk):\n        kind, content = chunk[0], chunk[1]\n        # content 可以是纯文本，也可以是嵌套的 chunk 列表\n        if isinstance(content, list):\n            inner = ''.join(render(c) for c in content)\n        else:\n            inner = content\n        tag = TAG.get(kind)\n        return f'<{tag}>{inner}</{tag}>' if tag else inner\n\n    return ['<p>' + ''.join(render(c) for c in para) + '</p>' for para in paragraphs]\n"
+    }
+  ]
+}

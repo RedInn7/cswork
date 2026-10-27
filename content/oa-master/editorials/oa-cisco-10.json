@@ -1,0 +1,11 @@
+{
+  "id": "oa-cisco-10",
+  "explanation": "## 思路\n\n字符串满足“字母序”，就是每个字符都不小于它前面那个字符（非递减）。从左往右比较相邻两个字符，第一次出现 `s[i] < s[i-1]` 的位置就是答案；扫完都没出现，说明整串有序，返回 0。\n\n1. 对 `i = 1 .. n-1`：若 `s[i] < s[i-1]`，返回 `i`。\n2. 循环结束返回 `0`。\n\n样例 `\"asd\"`：`s` ≥ `a`，`d` < `s`，所以在下标 2 处第一次被打破，输出 2。`\"abc\"` 一直递增，输出 0。\n\n## 正确性\n\n非递减等价于所有相邻对都满足 `s[i-1] ≤ s[i]`，所以第一个违反相邻条件的位置就是第一个“乱序”的位置。返回 0 不会和合法下标冲突，因为违反位置至少是 1（下标 0 前面没有字符，不可能乱序）。\n\n## 复杂度\n\n- 时间：`O(n)`，最坏扫完整串。\n- 空间：`O(1)`。\n\n## 易错点\n\n- 相等字符（如 `\"aab\"`）不算乱序，比较用严格小于。\n- 题面强调用 0-based 下标，返回的是后一个字符的下标 `i`，不是 `i-1`。\n- 长度为 1 的字符串直接返回 0。\n",
+  "explanationEn": "## Approach\n\nA string is \"in alphabetical order\" when every character is no smaller than the one before it (non-decreasing). Compare neighbours from left to right; the first `i` with `s[i] < s[i-1]` is the answer, and if none exists the whole string is ordered and we return 0.\n\nFor `\"asd\"`: `s ≥ a`, but `d < s`, so the order first breaks at index 2. `\"abc\"` gives 0.\n\n## Correctness\n\nNon-decreasing is equivalent to every adjacent pair satisfying `s[i-1] ≤ s[i]`, so the first violated pair marks the first out-of-order position. Returning 0 is unambiguous because a violation can only happen at index 1 or later.\n\n## Complexity\n\n- Time: `O(n)`.\n- Space: `O(1)`.\n\n## Pitfalls\n\n- Equal letters (`\"aab\"`) are fine; use strict `<`.\n- Return the 0-based index of the later character, `i`, not `i-1`.\n- A single character returns 0.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def checkAlphabeticalOrder(inputString: str) -> int:\n    for i in range(1, len(inputString)):\n        if inputString[i] < inputString[i - 1]:\n            return i\n    return 0\n"
+    }
+  ]
+}

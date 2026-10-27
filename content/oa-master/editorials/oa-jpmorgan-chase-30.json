@@ -1,0 +1,11 @@
+{
+  "id": "oa-jpmorgan-chase-30",
+  "explanation": "## 思路\n\n每个出价只针对一个项目，项目之间互不影响，所以每个项目单独挑最便宜的出价即可。\n\n1. 一次遍历 `(project[i], bid[i])`，用数组或哈希表维护每个项目当前见到的最低报价。\n2. 再遍历 `0..numProjects-1`：任何一个项目没有报价就返回 `-1`，否则把最低报价累加。\n\n样例 1：项目 0 只有 7，项目 1 只有 6，项目 2 在 8 和 9 中取 8，总计 21。样例 2：项目 0 取 `min(4,47)=4`，项目 1 取 `min(74,744,7)=7`，总计 11。\n\n## 正确性\n\n任何一个可行方案在每个项目上的花费都不小于该项目的最低报价，所以总花费不小于各项目最低报价之和；而各项目的最低报价可以同时选择，这个下界可以取到。没有报价的项目无法完成，只能返回 -1。\n\n## 复杂度\n\n时间 `O(n + numProjects)`，空间 `O(numProjects)`。\n\n## 易错点\n\n- 返回类型是 `long`：最多 5×10⁵ 个项目，单个报价稍大就会超出 32 位整数，Java/C++ 要用 64 位累加。\n- `project[i]` 可能超出 `numProjects-1`（约束只写了 `≥ 0`），这种出价对答案没有影响，不要越界写数组。\n",
+  "explanationEn": "## Approach\n\nEach bid targets exactly one project and projects don't interact, so pick the cheapest bid per project independently.\n\n1. One pass over `(project[i], bid[i])`, keeping the lowest bid seen per project.\n2. Loop over `0..numProjects-1`: if any project has no bid, return `-1`; otherwise sum the minima.\n\nSample 1: project 0 only has 7, project 1 only 6, project 2 takes 8 over 9: total 21. Sample 2: project 0 takes `min(4,47) = 4`, project 1 takes `min(74,744,7) = 7`: total 11.\n\n## Correctness\n\nAny valid plan pays at least each project's lowest bid, so the total is at least the sum of the minima; those minima can all be chosen at once, so the bound is achieved. A project with no bid can't be completed, hence -1.\n\n## Complexity\n\n`O(n + numProjects)` time, `O(numProjects)` space.\n\n## Pitfalls\n\n- The return type is `long`: with up to 5×10⁵ projects the sum can overflow 32 bits, so accumulate in 64 bits in Java/C++.\n- `project[i]` might exceed `numProjects-1` (constraints only say `≥ 0`); such bids don't matter, so don't write past the array.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def minCost(numProjects, project, bid):\n    best = {}\n    for p, b in zip(project, bid):\n        if p not in best or b < best[p]:\n            best[p] = b\n    total = 0\n    for p in range(numProjects):\n        if p not in best: return -1\n        total += best[p]\n    return total\n"
+    }
+  ]
+}

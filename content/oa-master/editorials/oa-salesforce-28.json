@@ -1,0 +1,11 @@
+{
+  "id": "oa-salesforce-28",
+  "explanation": "## 思路\n\n每个项目只需要雇一个人，而且不同项目之间的选择互不影响：给项目 p 选谁，不会改变其他项目的报价。所以总费用最小，就是**每个项目各自取最低报价，再求和**。\n\n做法：\n\n1. 开一个长度为 numProjects 的数组 best，初始为“无人报价”。\n2. 遍历所有报价 `(projectId[i], bid[i])`，用更小的报价更新 `best[projectId[i]]`。\n3. 只要有一个项目始终没人报价，返回 -1；否则返回 best 的总和。\n\n样例 1：项目 0 只有 7，项目 1 只有 6，项目 2 在 8 和 9 中取 8，总计 21。若有第 4 个项目但没人报价，答案就是 -1。\n\n## 正确性\n\n任意一种合法的雇佣方案，在项目 p 上的花费都不小于 p 的最低报价，所以总费用不小于各项目最低报价之和；而每个项目都选最低报价的那个人，本身就是一个合法方案，正好达到这个下界。\n\n## 复杂度\n\n时间 O(n + numProjects)，空间 O(numProjects)。\n\n## 易错点\n\n- 返回值是 long：最多 5×10⁵ 个项目，每个报价可能很大，总和会超过 32 位。\n- “无人报价”要用单独的标记（None 或很大的哨兵），不要用 0，因为 0 可能是合法报价。\n- 题面说项目编号是 0 到 numProjects-1，数组大小别多开或少开一格。",
+  "explanationEn": "## Approach\n\nEach project needs exactly one developer and choices for different projects are independent, so take the cheapest bid per project and add them up. Track the minimum bid per project in an array; if any project has no bid, return -1. Sample 1: 7 + 6 + 8 = 21.\n\n## Correctness\n\nAny valid hiring pays at least the minimum bid on every project, and choosing every minimum is itself valid, so the bound is tight.\n\n## Complexity\n\nO(n + numProjects) time, O(numProjects) space.\n\n## Pitfalls\n\n- Return a long; the sum can exceed 32 bits.\n- Mark \"no bid\" with a sentinel other than 0.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def minCost(numProjects, projectId, bid):\n    best = [None] * numProjects\n    for pid, b in zip(projectId, bid):\n        if best[pid] is None or b < best[pid]:\n            best[pid] = b\n    if any(v is None for v in best):\n        return -1\n    return sum(best)\n"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-4",
+  "explanation": "## 思路\n\n用哈希表（`Counter`）统计每个值出现的次数，然后把**恰好出现 2 次**的值按升序取出来。\n\n1. 一遍扫描 `values` 统计频次。\n2. 对所有不同的值排序。\n3. 频次等于 2 的值写进结果，用空格连接。\n\n## 正确性\n\n频次统计完成后，“恰好出现两次”就是 `cnt[v] == 2` 这一个判断，出现 1 次、3 次或更多的都会被排除；按键排序保证了输出升序。\n\n## 复杂度\n\n统计 `O(N)`，对 `k` 个不同值排序 `O(k log k)`，总体 `O(N log N)`；空间 `O(k)`。\n\n## 易错点\n\n- “恰好两次”不是“至少两次”，出现 3 次的值不能输出。\n- 输出格式有歧义：沿用原解法，每个值输出两遍（例如 `[3,1,3,2,2,2,5,1]` 输出 `1 1 3 3`）。如果平台要求每个值只输出一次，把 `f\"{v} {v}\"` 改成 `str(v)` 即可。\n- 没有符合条件的值时输出空串。\n- 题面没有给样例，代码只用自造数据验证过。\n",
+  "explanationEn": "## Approach\n\nCount occurrences with a hash map (`Counter`), then take the values that appear **exactly twice**, in ascending order.\n\n1. One pass over `values` to build the counts.\n2. Sort the distinct values.\n3. Emit each value whose count is 2, joined by spaces.\n\n## Correctness\n\nAfter counting, \"exactly twice\" is the single test `cnt[v] == 2`, which rules out values seen once, three times or more. Sorting the keys makes the output ascending.\n\n## Complexity\n\n`O(N)` to count, `O(k log k)` to sort the `k` distinct values, `O(N log N)` overall; `O(k)` space.\n\n## Pitfalls\n\n- \"Exactly twice\" is not \"at least twice\"; a value seen three times must be skipped.\n- The output format is ambiguous. Following the original solution, each value is printed twice (`[3,1,3,2,2,2,5,1]` gives `1 1 3 3`). If the platform wants each value once, change `f\"{v} {v}\"` to `str(v)`.\n- Print an empty string when nothing qualifies.\n- The statement has no sample; the code was only checked on hand-made data.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\n\ndef find_doubles(values):\n    cnt = Counter(values)\n    parts = []\n    for v in sorted(cnt):\n        if cnt[v] == 2:\n            parts.append(f\"{v} {v}\")\n    return ' '.join(parts)\n"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    static String findDoubles(int[] values) {\n        Map<Integer, Integer> cnt = new TreeMap<>();\n        for (int v : values) cnt.merge(v, 1, Integer::sum);\n        StringBuilder sb = new StringBuilder();\n        for (Map.Entry<Integer, Integer> e : cnt.entrySet())\n            if (e.getValue() == 2) {\n                if (sb.length() > 0) sb.append(' ');\n                sb.append(e.getKey()).append(' ').append(e.getKey());\n            }\n        return sb.toString();\n    }\n}\n"
+    },
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstring findDoubles(vector<int>& values) {\n    map<int, int> cnt;\n    for (int v : values) cnt[v]++;\n    string out;\n    for (auto& [v, c] : cnt) {\n        if (c == 2) {\n            if (!out.empty()) out += ' ';\n            out += to_string(v) + \" \" + to_string(v);\n        }\n    }\n    return out;\n}\n"
+    }
+  ]
+}

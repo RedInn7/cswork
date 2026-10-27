@@ -1,0 +1,11 @@
+{
+  "id": "oa-tradedesk-8",
+  "explanation": "## 思路\n\n题面文字说的是「同一个字母连续出现三次」，但样例与这个说法对不上：`Dooddle` 里 `d` 是 D-o-o-**d-d**，三个 `d` 并不相邻；`Pepper` 的三个 `p` 也不相邻；`unsuccessfully` 里 `u`、`s` 各出现三次，同样不连续。样例输出 3 只有在「某个字母在单词里（忽略大小写）**总共出现至少三次**」时才成立，`moodle` 每个字母最多出现两次所以不算。我们以样例为准。\n\n做法：\n\n1. 按空白切分句子得到单词；\n2. 每个单词转小写后统计字母频次；\n3. 最大频次 ≥ 3 就计数加一。\n\n## 正确性\n\n每个单词独立判断，判断条件恰好是「存在某字母出现次数 ≥ 3」，大小写统一后 `D` 和 `d` 计为同一个字母。样例四个单词分别是：Dooddle（d×3）计入、moodle 不计、Pepper（p×3）计入、unsuccessfully（u×3、s×3）计入，共 3。\n\n## 复杂度\n\n- 时间 O(L)，L 为句子长度，每个字符只被统计一次，优于题面要求的 O(L · 最长单词长度)。\n- 空间 O(1)，字母表只有 26 个字母（单词本身的切分需要 O(L)）。\n\n## 易错点\n\n- 原数据里的旧代码按「三个字母相邻」判断，样例上得到 0，已改为频次判断。\n- 空白不只是空格，可能有制表符、换行，`split()` 无参数会处理任意空白和连续空白。\n- 一个单词里有多个字母满足条件也只算一次。\n",
+  "explanationEn": "## Approach\n\nThe prose says \"the same letter appears at least three times consecutively\", but the example contradicts it: in `Dooddle` the three `d`s are D-o-o-d-d (not adjacent), the three `p`s in `Pepper` are not adjacent, and `u`/`s` in `unsuccessfully` are spread out. The expected output 3 only works if a word qualifies when some letter appears **at least three times in total** (case-insensitive); `moodle` has no letter more than twice. We follow the example.\n\n1. Split the sentence on whitespace.\n2. Lower-case each word and count letter frequencies.\n3. Count the word if its maximum frequency is ≥ 3.\n\n## Correctness\n\nEach word is tested independently with exactly that condition, and lower-casing merges `D` and `d`. On the example: Dooddle (d×3) yes, moodle no, Pepper (p×3) yes, unsuccessfully (u×3, s×3) yes → 3.\n\n## Complexity\n\n- O(L) time for sentence length L — better than the required O(L · longest word).\n- O(1) extra space for the 26 counters (plus O(L) for the split).\n\n## Pitfalls\n\n- The old code checked three *adjacent* equal letters and returns 0 on the example; replaced with a frequency check.\n- Whitespace can be tabs/newlines or runs of spaces; argument-less `split()` handles all of them.\n- A word with several qualifying letters still counts once.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\n\ndef narrativeWords(sentence: str) -> int:\n    count = 0\n    for w in sentence.split():                 # 任意空白分词\n        if max(Counter(w.lower()).values()) >= 3:\n            count += 1\n    return count\n"
+    }
+  ]
+}

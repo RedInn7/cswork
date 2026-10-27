@@ -485,8 +485,8 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                           ),
                         )
                       : t(
-                          '评测准备中，暂可阅读原题。',
-                          "Judging isn't ready yet. You can read the original problem for now.",
+                          '评测准备中，可以先读原题和题解。',
+                          "Judging isn't ready yet. You can read the problem and its solution for now.",
                         )}
                 </p>
                 {currentDetail.judgeStatus === 'ready' &&
@@ -541,136 +541,134 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                 )}
               </p>
             )}
-            {currentDetail.judgeStatus === 'ready' && (
-              <section
-                className="oa-solution"
-                aria-label={t('题解', 'Solution')}
+            <section
+              className="oa-solution"
+              aria-label={t('题解', 'Solution')}
+            >
+              <button
+                type="button"
+                aria-expanded={solutionOpen}
+                aria-controls="oa-solution-body"
+                onClick={() => setSolutionOpen((value) => !value)}
               >
-                <button
-                  type="button"
-                  aria-expanded={solutionOpen}
-                  aria-controls="oa-solution-body"
-                  onClick={() => setSolutionOpen((value) => !value)}
-                >
-                  {solutionOpen
-                    ? t('收起题解', 'Hide solution')
-                    : t('查看题解', 'View solution')}
-                </button>
-                {solutionOpen && (
-                  <div id="oa-solution-body">
-                    {solutionError ? (
-                      <div role="alert">
-                        {t(solutionError, readErrorEn(solutionError))}{' '}
-                        {retryButton}
-                      </div>
-                    ) : !solution ? (
-                      <p role="status">
-                        {t('正在加载题解…', 'Loading solution…')}
-                      </p>
-                    ) : (
-                      <>
-                        {solution.explanation.trim() ? (
-                          <OaMarkdown
-                            body={
-                              (locale === 'en' && solution.explanationEn) ||
-                              solution.explanation
-                            }
-                          />
-                        ) : (
-                          <p className="oa-source">
-                            {t(
-                              '题解正在准备中。',
-                              'The solution is being prepared.',
-                            )}
-                          </p>
-                        )}
-                        {solution.solutions.length === 0 && (
-                          <p className="oa-source">
-                            {t(
-                              '本题未提供参考代码。',
-                              'No reference code for this problem.',
-                            )}
-                          </p>
-                        )}
-                        {solution.solutions.length > 0 && (
-                          <>
-                            <div className="oa-code-toolbar">
-                              <label>
-                                {t('代码语言', 'Language')}{' '}
-                                <select
-                                  value={language}
-                                  onChange={(event) => {
-                                    setLanguage(event.target.value);
-                                    setCopyMessage('');
-                                    copyGeneration.current++;
-                                  }}
-                                >
-                                  {[
-                                    ...new Set(
-                                      solution.solutions.map(
-                                        (item) => item.language,
-                                      ),
+                {solutionOpen
+                  ? t('收起题解', 'Hide solution')
+                  : t('查看题解', 'View solution')}
+              </button>
+              {solutionOpen && (
+                <div id="oa-solution-body">
+                  {solutionError ? (
+                    <div role="alert">
+                      {t(solutionError, readErrorEn(solutionError))}{' '}
+                      {retryButton}
+                    </div>
+                  ) : !solution ? (
+                    <p role="status">
+                      {t('正在加载题解…', 'Loading solution…')}
+                    </p>
+                  ) : (
+                    <>
+                      {solution.explanation.trim() ? (
+                        <OaMarkdown
+                          body={
+                            (locale === 'en' && solution.explanationEn) ||
+                            solution.explanation
+                          }
+                        />
+                      ) : (
+                        <p className="oa-source">
+                          {t(
+                            '题解正在准备中。',
+                            'The solution is being prepared.',
+                          )}
+                        </p>
+                      )}
+                      {solution.solutions.length === 0 && (
+                        <p className="oa-source">
+                          {t(
+                            '本题未提供参考代码。',
+                            'No reference code for this problem.',
+                          )}
+                        </p>
+                      )}
+                      {solution.solutions.length > 0 && (
+                        <>
+                          <div className="oa-code-toolbar">
+                            <label>
+                              {t('代码语言', 'Language')}{' '}
+                              <select
+                                value={language}
+                                onChange={(event) => {
+                                  setLanguage(event.target.value);
+                                  setCopyMessage('');
+                                  copyGeneration.current++;
+                                }}
+                              >
+                                {[
+                                  ...new Set(
+                                    solution.solutions.map(
+                                      (item) => item.language,
                                     ),
-                                  ].map((value) => (
-                                    <option value={value} key={value}>
-                                      {languageNames[value] || value}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                              <span role="status">{copyMessage}</span>
-                            </div>
-                            {codeBlocks.map((block, index) => (
-                              <div key={`${language}-${index}`}>
-                                {codeBlocks.length > 1 && (
-                                  <h4>
-                                    {t(
-                                      `代码 ${index + 1}`,
-                                      `Code ${index + 1}`,
-                                    )}
-                                  </h4>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={async () => {
-                                    const generation = ++copyGeneration.current;
-                                    try {
-                                      await navigator.clipboard.writeText(
-                                        block.code,
+                                  ),
+                                ].map((value) => (
+                                  <option value={value} key={value}>
+                                    {languageNames[value] || value}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <span role="status">{copyMessage}</span>
+                          </div>
+                          {codeBlocks.map((block, index) => (
+                            <div key={`${language}-${index}`}>
+                              {codeBlocks.length > 1 && (
+                                <h4>
+                                  {t(
+                                    `代码 ${index + 1}`,
+                                    `Code ${index + 1}`,
+                                  )}
+                                </h4>
+                              )}
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  const generation = ++copyGeneration.current;
+                                  try {
+                                    await navigator.clipboard.writeText(
+                                      block.code,
+                                    );
+                                    if (generation === copyGeneration.current)
+                                      setCopyMessage(t('已复制', 'Copied'));
+                                  } catch {
+                                    if (generation === copyGeneration.current)
+                                      setCopyMessage(
+                                        t(
+                                          '复制失败，请手动选择代码复制',
+                                          'Copy failed. Select the code and copy it manually.',
+                                        ),
                                       );
-                                      if (generation === copyGeneration.current)
-                                        setCopyMessage(t('已复制', 'Copied'));
-                                    } catch {
-                                      if (generation === copyGeneration.current)
-                                        setCopyMessage(
-                                          t(
-                                            '复制失败，请手动选择代码复制',
-                                            'Copy failed. Select the code and copy it manually.',
-                                          ),
-                                        );
-                                    }
-                                  }}
-                                >
-                                  {codeBlocks.length > 1
-                                    ? t(
-                                        `复制代码 ${index + 1}`,
-                                        `Copy code ${index + 1}`,
-                                      )
-                                    : t('复制代码', 'Copy code')}
-                                </button>
-                                <pre className="oa-code">
-                                  <code>{block.code}</code>
-                                </pre>
-                              </div>
-                            ))}
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </section>
-            )}
+                                  }
+                                }}
+                              >
+                                {codeBlocks.length > 1
+                                  ? t(
+                                      `复制代码 ${index + 1}`,
+                                      `Copy code ${index + 1}`,
+                                    )
+                                  : t('复制代码', 'Copy code')}
+                              </button>
+                              <pre className="oa-code">
+                                <code>{block.code}</code>
+                              </pre>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </section>
           </>
         )}
       </section>

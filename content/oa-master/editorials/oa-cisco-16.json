@@ -1,0 +1,11 @@
+{
+  "id": "oa-cisco-16",
+  "explanation": "## 思路\n\n输入由若干对括号组成，形如 `(P1)(N1)(P2)(N2)...`：第奇数个括号里是模式串，紧跟着的括号里是重复次数。把每对 `(P)(N)` 展开成 `P` 重复 `N` 次，再按顺序拼起来。\n\n1. 用正则 `\\(([^)]*)\\)` 取出所有括号里的内容，得到列表 `tokens`。\n2. 每两个一组：`tokens[2k]` 是模式，`int(tokens[2k+1])` 是次数。\n3. 结果追加 `pattern * count`，最后 `join`。\n\n样例 `\"(ab)(3)(cd)(2)\"` 解析出 `[\"ab\", \"3\", \"cd\", \"2\"]`，展开为 `\"ababab\" + \"cdcd\" = \"abababcdcd\"`。\n\n题面信息有限，这里假设：括号不嵌套、模式串里不含 `)`、次数是非负整数（可能多位）。如果最后一个模式缺少次数，就忽略它。\n\n## 正确性\n\n在括号不嵌套的前提下，`[^)]*` 恰好匹配一对括号之间的全部内容，`findall` 按出现顺序返回，所以第 `2k` 和第 `2k+1` 个 token 正好是第 `k+1` 对的模式和次数，逐对展开即为题目定义的结果。\n\n## 复杂度\n\n- 时间：`O(|inputStr| + 输出长度)`。\n- 空间：`O(输出长度)`。\n\n## 易错点\n\n- 次数可能是多位数（如 `(a)(12)`），要整段转 `int`，不能只取一个字符。\n- 不要逐字符拼接字符串，先放进列表再 `join`。\n- 次数为 0 时该段为空串。\n",
+  "explanationEn": "## Approach\n\nThe input is a sequence of parenthesised groups `(P1)(N1)(P2)(N2)...`: a pattern followed by its repeat count. Expand each `(P)(N)` into `P` repeated `N` times and concatenate in order.\n\n1. Extract every group's content with the regex `\\(([^)]*)\\)`.\n2. Walk the tokens in pairs: `tokens[2k]` is the pattern, `int(tokens[2k+1])` the count.\n3. Append `pattern * count` and `join`.\n\n`\"(ab)(3)(cd)(2)\"` parses to `[\"ab\", \"3\", \"cd\", \"2\"]` and expands to `\"abababcdcd\"`.\n\nThe statement is sparse, so we assume no nesting, no `)` inside patterns, and non-negative (possibly multi-digit) counts; a trailing pattern without a count is ignored.\n\n## Correctness\n\nWithout nesting, `[^)]*` matches exactly the contents of one group and `findall` returns them in order, so tokens `2k` and `2k+1` are the pattern and count of the `(k+1)`-th pair.\n\n## Complexity\n\n- Time: `O(|inputStr| + output length)`.\n- Space: `O(output length)`.\n\n## Pitfalls\n\n- Counts can have several digits (`(a)(12)`); parse the whole token.\n- Build with a list and `join`, not repeated string concatenation.\n- A count of 0 yields an empty piece.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import re\n\n\ndef expandGivenString(inputStr: str) -> str:\n    tokens = re.findall(r'\\(([^)]*)\\)', inputStr)\n    out = []\n    for k in range(0, len(tokens) - 1, 2):\n        out.append(tokens[k] * int(tokens[k + 1]))\n    return ''.join(out)\n"
+    }
+  ]
+}

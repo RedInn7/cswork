@@ -1,0 +1,11 @@
+{
+  "id": "oa-jpmorgan-chase-36",
+  "explanation": "## 思路\n\n`keyTimes` 按时间升序给出，每个按键的耗时就是它的时间减去上一次按键的时间，第一个按键从 0 开始算。\n\n一次遍历：维护上一次的时间 `prev`，算 `dur = t - prev`，如果比当前最大值大就更新答案字母；最后把编码 `k` 转成字母 `chr(ord('a') + k)`。\n\n样例：四次按键耗时分别为 `2-0=2`、`5-2=3`、`9-5=4`、`15-9=6`，最大是 6，对应编码 2，即 `c`。\n\n## 并列的处理\n\n题面在描述处被截断，没有说明耗时相同怎么办。HackerRank 原题的规定是：只会有一个最慢按键；如果出现并列，常见版本取字母更大的那个。代码按\"并列取字母序更大者\"实现，与样例一致；如果原题另有规定，改一下比较条件即可。\n\n## 正确性\n\n每个按键的耗时只取决于它和前一次按键的时间差，一次遍历就把所有耗时都比较过了。\n\n## 复杂度\n\n时间 `O(n)`，空间 `O(1)`。\n\n## 易错点\n\n- 第一个按键的耗时是 `t - 0`，不要漏掉。\n- 同一个键可能按多次，比较的是每一次按键，而不是把同一个键的耗时加起来。\n",
+  "explanationEn": "## Approach\n\n`keyTimes` is in ascending time order, so each press takes its time minus the previous press's time; the first press counts from 0.\n\nOne pass: keep `prev`, compute `dur = t - prev`, update the answer letter when `dur` is a new maximum, and decode with `chr(ord('a') + k)`.\n\nSample: the four presses take `2-0 = 2`, `5-2 = 3`, `9-5 = 4`, `15-9 = 6`; the maximum 6 belongs to code 2, i.e. `c`.\n\n## Ties\n\nThe statement is cut off and doesn't say how ties are broken. The HackerRank original promises a unique slowest key, and common versions pick the larger letter on a tie; the code does that, which agrees with the sample. Change the comparison if the original says otherwise.\n\n## Correctness\n\nEach press's duration depends only on the gap to the previous press, so one pass compares all durations.\n\n## Complexity\n\n`O(n)` time, `O(1)` space.\n\n## Pitfalls\n\n- The first press lasts `t - 0`; don't skip it.\n- A key may be pressed several times; compare individual presses, don't add up a key's durations.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def slowestKey(keyTimes):\n    best_dur = -1\n    best_ch = ''\n    prev_t = 0\n    for k, t in keyTimes:\n        dur = t - prev_t\n        ch = chr(ord('a') + k)\n        if dur > best_dur or (dur == best_dur and ch > best_ch):\n            best_dur = dur\n            best_ch = ch\n        prev_t = t\n    return best_ch\n"
+    }
+  ]
+}

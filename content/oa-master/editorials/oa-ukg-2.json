@@ -1,0 +1,15 @@
+{
+  "id": "oa-ukg-2",
+  "explanation": "## 思路\n\n两个商品「重复」当且仅当名称、价格、重量三项都相同，所以把三元组 `(name[i], price[i], weight[i])` 当作哈希表的键计数即可。\n\n1. 遍历所有下标，统计每个三元组出现的次数 `c`；\n2. 同一个三元组出现 `c` 次时，保留 1 个，其余 `c − 1` 个都是重复；\n3. 对所有键求 `c − 1` 的和。\n\n例如 `name = [ball, bat, glove, glove, glove]`，`price = [2,3,1,2,1]`，`weight = [2,5,1,1,1]`：只有 `(glove,1,1)` 出现了 2 次，答案是 1；`(glove,2,1)` 价格不同，不算重复。\n\n## 正确性\n\n「至少与另一个商品完全相同」的商品按三元组分成若干组，每组 `c` 个商品里只需保留 1 个就没有重复，所以多出来的 `c − 1` 个就是该组的重复数，各组互不影响，求和即为答案。题目常见的期望输出就是「需要删掉多少个才能没有重复」，与此一致。\n\n## 复杂度\n\n- 时间 O(n)（名称长度不超过 10，哈希视为常数）。\n- 空间 O(n)。\n\n## 易错点\n\n- 不要把「出现过重复的组数」或「所有处在重复组里的商品数」当答案，比如 3 个完全一样的商品答案是 2，而不是 1 或 3。\n- Java 里拼字符串做键时要加分隔符，否则 `(\"a1\", 1)` 和 `(\"a\", 11)` 会拼成同一个键。\n- 题面没有给样例，上面的例子是自造的验证用例。\n",
+  "explanationEn": "## Approach\n\nTwo products are duplicates iff name, price and weight all match, so count the triples `(name[i], price[i], weight[i])` in a hash map.\n\n1. Count occurrences `c` of each triple.\n2. A triple seen `c` times keeps one copy; the other `c − 1` are duplicates.\n3. Sum `c − 1` over all keys.\n\nExample: names `[ball, bat, glove, glove, glove]`, prices `[2,3,1,2,1]`, weights `[2,5,1,1,1]` → only `(glove,1,1)` appears twice, answer 1.\n\n## Correctness\n\nProducts split into groups of identical triples; a group of size `c` needs `c − 1` removals to have no duplicates, and groups are independent, so the sum is the answer — the usual meaning of \"number of duplicates\" for this problem.\n\n## Complexity\n\n- O(n) time (names are ≤ 10 chars), O(n) space.\n\n## Pitfalls\n\n- Three identical products give 2, not 1 (groups) or 3 (items in groups).\n- When building a string key in Java, use a separator so `(\"a1\", 1)` and `(\"a\", 11)` don't collide.\n- The statement has no examples; the cases above are self-made.\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\nfrom typing import List\n\ndef numDuplicates(name: List[str], price: List[int], weight: List[int]) -> int:\n    cnt = Counter(zip(name, price, weight))\n    return sum(c - 1 for c in cnt.values())\n"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\nclass Solution {\n    int numDuplicates(List<String> name, List<Integer> price, List<Integer> weight) {\n        Map<String, Integer> cnt = new HashMap<>();\n        int dup = 0;\n        for (int i = 0; i < name.size(); i++) {\n            String key = name.get(i) + \"|\" + price.get(i) + \"|\" + weight.get(i);\n            int c = cnt.merge(key, 1, Integer::sum);\n            if (c > 1) dup++;          // 第二次及以后出现都算一个重复\n        }\n        return dup;\n    }\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "oa-roblox-6",
+  "explanation": "## 思路\n\n两个数“配对”的条件只依赖各自的数位和，所以按数位和分桶：\n\n1. 对每个 `a[i]` 算 `digitSum(a[i])`。`a[i] ≤ 1e9`，最多 10 位，数位和不超过 81。\n2. 用哈希表（或长度 82 的数组）统计每个数位和出现的次数 cnt。\n3. 同一个桶里任选两个都是合法对，答案 `Σ cnt·(cnt-1)/2`。\n\n## 关于样例\n\n样例 `[3, 5, 1, 7, 8, 10, 62, 13]` 的数位和是 `3, 5, 1, 7, 8, 1, 8, 4`，只有 {1, 10} 和 {8, 62} 两对，按题面定义答案是 2，而不是给出的 5。题面附带的解释也算出了这两对，并注明 5 来自缺失的原题说明。这里按题面定义实现，原题如果有别的配对条件，分桶思路通常仍然适用。\n\n## 正确性\n\n两数配对当且仅当数位和相等，即落在同一个桶；桶内任意两个下标组成且只组成一对 (i < j)，不同桶之间没有贡献。\n\n## 复杂度\n\n时间 O(n·D)，D ≤ 10 是位数；空间 O(1)（桶最多 82 个）。\n\n## 易错点\n\n- 用 `x % 10` 循环求数位和比转字符串更快，但两者都行。\n- n = 1e5 时答案可达约 5e9，Java/C++ 必须用 long。",
+  "explanationEn": "## Approach\n\nPairing depends only on digit sums, so bucket by digit sum. Each `a[i] ≤ 1e9` has a digit sum ≤ 81. Count each bucket and add `cnt·(cnt-1)/2`.\n\n## About the sample\n\nThe digit sums of the sample are `3, 5, 1, 7, 8, 1, 8, 4`, giving only {1, 10} and {8, 62}: 2 pairs under the stated definition, not 5. The statement's own note derives the same two pairs and says the 5 comes from the missing original text. The code follows the stated definition.\n\n## Correctness\n\nTwo numbers pair iff they share a bucket, and each pair of indices inside a bucket is counted once.\n\n## Complexity\n\nO(n·D) time with D ≤ 10 digits, O(1) extra space.\n\n## Pitfalls\n\n- The answer can reach ~5e9; use 64-bit integers.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\nfrom typing import List\n\ndef countPairs(a: List[int]) -> int:\n    def digit_sum(x: int) -> int:\n        s = 0\n        while x:\n            s += x % 10\n            x //= 10\n        return s\n    cnt = Counter(digit_sum(x) for x in a)\n    return sum(c * (c - 1) // 2 for c in cnt.values())\n"
+    }
+  ]
+}
