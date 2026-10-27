@@ -81,16 +81,20 @@ void test('failed formal submissions reach the ladder after a reload', async () 
   assert.deepEqual((await get(['problems', PLAIN], student)).failedSubmissionIds, []);
 });
 
-void test('the editorial adds the guide English and the verified languages; a running exam withholds both', async () => {
+void test('the editorial adds the written write-up and the verified languages; a running exam withholds both', async () => {
+  // The written editorial (content/oa-master/editorials) replaces the text; the code stays the registry's.
+  const written = (id: string) =>
+    JSON.parse(readFileSync(`content/oa-master/editorials/${id}.json`, 'utf8')) as { explanation: string; explanationEn: string };
   const solution = await get(['oa-library', GUIDED, 'solution'], student);
-  assert.equal(solution.explanationEn, guide.explanationEn);
+  assert.equal(solution.explanation, written(GUIDED).explanation);
+  assert.equal(solution.explanationEn, written(GUIDED).explanationEn);
   assert.match(solution.explanation, /思路/);
   assert.deepEqual(
     solution.solutions.map((item: { language: string }) => item.language),
     ['python', 'cpp', 'java', 'go'],
   );
   const plain = await get(['oa-library', PLAIN, 'solution'], student);
-  assert.equal(plain.explanationEn, undefined);
+  assert.equal(plain.explanationEn, written(PLAIN).explanationEn);
   assert.equal(plain.solutions.length, 1);
   // A certification exam holding the problem counts as a running contest.
   const now = Date.now();
