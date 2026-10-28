@@ -16,7 +16,7 @@
     {
       "id": "oa-akuna-capital-3",
       "sourceContentHash": "88ca2421d8659dabab35d3c32142875eefafec3e090b7cc339c39113c8093d4f",
-      "packageChecksum": "f0ccbba8bccfb0dbb3d79be8b6efec3385a0d034d3e42eb6e9402fa13f5ddec8",
+      "packageChecksum": "261aab357d06042ed898c3e98fd4ec186e135ee87e65081f43465af3691dc573",
       "editorial": "## 思路\n\n按计划日期排序，维护当前最早可用日。若备用日不早于当前日就选备用日，否则只能等到计划日。\n\n## 正确性\n\n固定计划顺序后，当前更新的最早合法发布日只可能是两个可选日期中不早于上一日的最早者。由于 alternateDate≤plannedDate，备用日若已过去，计划日仍不早于当前日：此前选择的日期不超过此前计划日期，而计划日期已排序。逐项选择最早合法日期不可能推迟任何后续可行日期，因此最终完成日最小。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
       "authoredSolutions": [
         {
