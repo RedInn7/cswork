@@ -76,7 +76,7 @@
     {
       "id": "oa-agoda-4",
       "sourceContentHash": "ad4afecb26c3a62396e8e4b999faf5b687be79b6f45cc5a926065788b53659ce",
-      "packageChecksum": "8a60e75d86f0b8809beacd7578a6f06da23df3129411145c3232d832cf13547c",
+      "packageChecksum": "bdc72bdc12afd1e47550eb589fd9fcb65aec3d3261e8a522bde18297d70cb87c",
       "editorial": "## 思路\n\n先统计位数更短的正整数，再逐位枚举小于当前上界数字的合法选择；剩余位数按未使用数字的排列数计数。最后用前缀函数作区间差。\n\n## 正确性证明\n\n每个有效数有唯一十进制位串。逐位分支恰好枚举所有在首个不同位上小于上界的数，排列数计入其余未用数字；若上界自身无重复再计入。F(b)−F(a−1) 因而准确对应闭区间。\n\n## 复杂度\n\nO(log b × 10) 时间，O(10) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/agoda#4-unique-digits-in-range；原题规则清楚；本站补充零的处理、上界和标准输入输出。",
       "authoredSolutions": [
         {

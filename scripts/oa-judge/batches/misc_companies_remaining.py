@@ -245,9 +245,28 @@ add('oa-weride-9','投资人会面安排','WeRide',['贪心','区间调度'],
     'O(n log n) 时间，O(n) 空间。','题意的闭区间及每日限制明确；原文缺约束，本站补充日期和数量上限。')
 
 # Agoda #4: digit-DP count on [a,b].
+def _distinct_digit_numbers():
+    # Every integer with pairwise distinct digits (8,877,691; the largest is 9876543210).
+    from itertools import permutations
+    out=[0]
+    for length in range(1,11):
+      for first in range(1,10):
+        for tail in permutations([d for d in range(10) if d!=first],length-1):
+          v=first
+          for d in tail: v=v*10+d
+          out.append(v)
+    return sorted(out)
+_DISTINCT=None
 def digit_count_oracle(v):
-    a,b=v; return sum(len(set(str(x)))==len(str(x)) for x in range(a,b+1))
+    # Independent of the digit DP: enumerate them all, count [a,b] by binary search.
+    global _DISTINCT
+    import bisect
+    if _DISTINCT is None: _DISTINCT=_distinct_digit_numbers()
+    a,b=v; return bisect.bisect_right(_DISTINCT,b)-bisect.bisect_left(_DISTINCT,a)
 def digit_random(r):
+    # A quarter reach past ten digits (b up to 10^18), where shorter lengths must count to 10.
+    if r.random()<.25:
+      a=r.randint(0,10**r.randint(1,12)); return a,r.randint(max(a,10**10),10**18)
     a=r.randint(0,10000); return a,r.randint(a,min(12000,a+400))
 def digit_code(raw):
     a,b=map(int,raw.split())
@@ -259,7 +278,7 @@ def digit_code(raw):
         v=1
         for t in range(k):v*=n-t
         return v
-      for length in range(1,min(L,10)): ans+=9*perm(9,length-1)
+      for length in range(1,min(L,11)): ans+=9*perm(9,length-1)
       used=set()
       for i,d in enumerate(ds):
         low=1 if i==0 else 0
