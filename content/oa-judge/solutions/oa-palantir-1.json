@@ -1,21 +1,21 @@
 {
   "id": "oa-palantir-1",
-  "packageChecksum": "8e80678cf0c6f688ddf78bc3adac0536ec9f078fcfea28b4cf4ab8d220befdb2",
+  "packageChecksum": "e065ffd4923bc236f0c6b5bfc05a2afc879a248424ea1fc5f1e81a71f726d402",
   "programs": [
     {
       "language": "cpp",
       "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Adjacent same-parity swaps can only reorder digits inside a maximal same-parity run.\n    for (size_t i = 0, j; i < s.size(); i = j) {\n        j = i + 1;\n        while (j < s.size() && (s[j] - '0') % 2 == (s[i] - '0') % 2) j++;\n        sort(s.begin() + i, s.begin() + j, greater<char>());\n    }\n    cout << s << \"\\n\";\n}\n",
-      "sha256": "cf7d4d9dae8459291c978d60e97a07470cf48d30ecaa07de4ada606f35f106bd"
+      "sha256": "2eadffddfe91d23f8f81b233438947afc5535de182efff726523a350a840194e"
     },
     {
       "language": "java",
       "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        char[] s = new String(System.in.readAllBytes()).trim().toCharArray();\n        // Adjacent same-parity swaps can only reorder digits inside a maximal same-parity run.\n        for (int i = 0, j; i < s.length; i = j) {\n            j = i + 1;\n            while (j < s.length && (s[j] - '0') % 2 == (s[i] - '0') % 2) j++;\n            Arrays.sort(s, i, j);\n            // Sorted ascending, so reverse the run for descending order.\n            for (int a = i, b = j - 1; a < b; a++, b--) {\n                char t = s[a];\n                s[a] = s[b];\n                s[b] = t;\n            }\n        }\n        System.out.print(new String(s) + \"\\n\");\n    }\n}\n",
-      "sha256": "f8a23e041dd99405728375ad2536c2644aa439daa70262c05d7b848ffb496037"
+      "sha256": "e3fd2573cde77ea8115a2820c2a61efbc5d2fae5428c6811ac0dc0f5630e5a02"
     },
     {
       "language": "go",
       "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nfunc main() {\n\tvar str string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &str)\n\ts := []byte(str)\n\t// Adjacent same-parity swaps can only reorder digits inside a maximal same-parity run.\n\tfor i := 0; i < len(s); {\n\t\tj := i + 1\n\t\tfor j < len(s) && (s[j]-'0')%2 == (s[i]-'0')%2 {\n\t\t\tj++\n\t\t}\n\t\trun := s[i:j]\n\t\tsort.Slice(run, func(a, b int) bool { return run[a] > run[b] })\n\t\ti = j\n\t}\n\tfmt.Println(string(s))\n}\n",
-      "sha256": "e959128a336bb206da9e7b18e8967909721b145209622919bbdc23ecdadc052a"
+      "sha256": "d2166214b26b73a2c71631370f80d82032cf831d983278ee84ace99f7e75343a"
     }
   ]
 }
