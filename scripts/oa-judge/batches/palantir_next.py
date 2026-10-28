@@ -1,6 +1,7 @@
 """Build offline-only, source-checked Palantir OA candidates."""
 from pathlib import Path
 import hashlib, itertools, json, random, subprocess, sys
+from collections import deque
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "content/oa-judge"
@@ -19,46 +20,42 @@ def largest_encode(s): return s + "\n"
 
 
 def largest_reference(s):
-    odds = sorted((c for c in s if int(c) % 2), reverse=True)
-    evens = sorted((c for c in s if not int(c) % 2), reverse=True)
-    oi = ei = 0; out = []
-    for c in s:
-        if int(c) % 2: out.append(odds[oi]); oi += 1
-        else: out.append(evens[ei]); ei += 1
+    # Adjacent same-parity swaps only reorder digits inside a maximal same-parity run.
+    out = []
+    for _, run in itertools.groupby(s, key=lambda c: int(c) % 2):
+        out.extend(sorted(run, reverse=True))
     return "".join(out)
 
 
 def largest_oracle(s):
-    groups = [[c for c in s if int(c) % 2 == p] for p in (0, 1)]
-    choices = []
-    for group in groups:
-        choices.append(sorted({"".join(p) for p in itertools.permutations(group)}, reverse=True))
-    best = ""
-    for a in choices[0]:
-        for b in choices[1]:
-            ia = ib = 0; cur = []
-            for c in s:
-                if int(c) % 2: cur.append(b[ib]); ib += 1
-                else: cur.append(a[ia]); ia += 1
-            best = max(best, "".join(cur))
-    return best
+    # Independent brute force: BFS over every adjacent same-parity swap.
+    seen = {s}; queue = deque([s])
+    while queue:
+        cur = queue.popleft()
+        for i in range(len(cur) - 1):
+            if int(cur[i]) % 2 == int(cur[i + 1]) % 2 and cur[i] != cur[i + 1]:
+                nxt = cur[:i] + cur[i + 1] + cur[i] + cur[i + 2:]
+                if nxt not in seen: seen.add(nxt); queue.append(nxt)
+    return max(seen)
 
 
-def largest_mutant(s):
-    out = list(s); i = 0
-    while i < len(out):
-        j = i + 1
-        while j < len(out) and int(out[j]) % 2 == int(out[i]) % 2: j += 1
-        out[i:j] = sorted(out[i:j], reverse=True); i = j
+def largest_runs_long(n=100000, seed=SEED + 1001):
+    # Alternating parity runs of length 1-20: separates the adjacent-swap rule from free rearrangement.
+    r = random.Random(seed); out = []; p = 0
+    while len(out) < n:
+        k = min(r.randint(1, 20), n - len(out))
+        out += [str(r.randrange(p, 10, 2)) for _ in range(k)]; p ^= 1
     return "".join(out)
 
 
-LARGEST_REF = '''import sys\ndef solve(s):\n s=s.strip(); odd=sorted((c for c in s if int(c)%2),reverse=True); even=sorted((c for c in s if not int(c)%2),reverse=True); i=j=0; out=[]\n for c in s:\n  if int(c)%2: out.append(odd[i]); i+=1\n  else: out.append(even[j]); j+=1\n return "".join(out)\nif __name__=="__main__": print(solve(sys.stdin.read()))\n'''
+LARGEST_REF = '''import sys\ndef solve(s):\n s=s.strip(); out=list(s); i=0\n while i<len(out):\n  j=i+1\n  while j<len(out) and int(out[j])%2==int(out[i])%2: j+=1\n  out[i:j]=sorted(out[i:j],reverse=True); i=j\n return "".join(out)\nif __name__=="__main__": print(solve(sys.stdin.read()))\n'''
 LARGEST_MUTANTS = [
-    ("只在连续同奇偶段内排序", LARGEST_REF.replace(
-        ' odd=sorted((c for c in s if int(c)%2),reverse=True); even=sorted((c for c in s if not int(c)%2),reverse=True); i=j=0; out=[]\n for c in s:\n  if int(c)%2: out.append(odd[i]); i+=1\n  else: out.append(even[j]); j+=1\n return "".join(out)',
-        ' out=list(s); i=0\n while i<len(out):\n  j=i+1\n  while j<len(out) and int(out[j])%2==int(out[i])%2: j+=1\n  out[i:j]=sorted(out[i:j],reverse=True); i=j\n return "".join(out)')),
-    ("将偶数按升序排列", LARGEST_REF.replace('even=sorted((c for c in s if not int(c)%2),reverse=True)', 'even=sorted(c for c in s if not int(c)%2)')),
+    ("允许跨奇偶边界", LARGEST_REF.replace(
+        ' s=s.strip(); out=list(s); i=0\n',
+        ' s=s.strip(); out=list(s); i=0; odd=sorted(c for c in s if int(c)%2); even=sorted(c for c in s if not int(c)%2)\n').replace(
+        '  out[i:j]=sorted(out[i:j],reverse=True); i=j',
+        '  out[i:j]=[(odd if int(out[i])%2 else even).pop() for _ in range(j-i)]; i=j')),
+    ("将偶数按升序排列", LARGEST_REF.replace('reverse=True); i=j', 'reverse=int(out[i])%2==1); i=j')),
 ]
 
 
@@ -107,11 +104,11 @@ def main():
              "candidate-batches","validation","reviews","source-evidence")
     for folder in folders: (OUT/folder).mkdir(parents=True,exist_ok=True)
     specs=[
-        {"id":"oa-palantir-1","title":"Swap Parity","description":"给定数字字符串。可任意次交换相邻且奇偶性相同的数字，求能得到的最大数字。每个奇偶位序列中的数字可以任意重排。",
+        {"id":"oa-palantir-1","title":"Swap Parity","description":"给定数字字符串。可任意次交换相邻且奇偶性相同的两个数字（都是奇数或都是偶数），求能得到的最大数字。只能交换相邻的两位，因此奇数无法越过偶数，偶数也无法越过奇数。",
          "input":"输入一行仅含数字 0–9 的字符串 num，1≤长度≤100000。","output":"输出可得到的最大数字字符串。",
          "encode":largest_encode,"oracle":largest_oracle,"reference":LARGEST_REF,"mutants":LARGEST_MUTANTS,
          "samples":["7596801","0082663","0"],"random":lambda r: ''.join(str(r.randrange(10)) for _ in range(r.randint(1,9))),
-         "long":("10"*50000,""),"tags":["字符串","排序"],"editorial":"## 思路\n\n一次相邻交换只会交换同奇偶的数字，因此每个位置的奇偶性固定；同一奇偶子序列内部则能通过相邻交换任意重排。分别将奇数和偶数降序排列，再按原字符串的奇偶位置填回即可。\n\n## 正确性\n\n奇偶不同的数字永远不能交换，所以每个位置最终只能接收与该位置同奇偶的数字。相同奇偶的数字能在其子序列内任意交换。为了使结果字典序最大，各奇偶子序列都应按降序放入对应位置，算法因此产生所有合法结果中的最大者。\n\n## 复杂度\n\n排序时间 O(n log n)，空间 O(n)。"},
+         "long":("10"*50000,""),"extra":["123", "13246857", "2019384756", "000111222333", "5937106284913527"],"extra_long":[largest_runs_long()],"tags":["字符串","排序"],"editorial":"## 思路\n\n只能交换相邻且奇偶性相同的两个数字，所以奇数永远无法越过偶数，偶数也无法越过奇数。把原串切成若干个极长的连续同奇偶段：每段内部可以像冒泡排序那样通过相邻交换排成任意顺序，但数字不能离开所在的段。因此把每段各自降序排列，再按原顺序拼接即可。\n\n## 正确性\n\n每次交换都发生在同一段内的两个相邻数字之间，不会改变各位置的奇偶性，也就不会改变段的边界和每段包含的数字，所以任何可达结果都是各段内部重排后的拼接。相邻交换能实现段内任意排列，所以“每段降序”是可达的；在段边界和每段数字都固定的情况下，各段降序拼接是字典序最大的结果，长度不变，因此也是数值最大的结果。\n\n## 复杂度\n\n排序时间 O(n log n)（数字只有 10 种，也可计数排序做到 O(n)），空间 O(n)。"},
         {"id":"oa-palantir-3","title":"No Pairs Allowed","description":"给定 n 个小写英文字母单词。对每个单词，可将任意字符替换为任意小写英文字母，求使最终字符串不存在相邻相同字符所需的最少替换次数。",
          "input":"第一行 n (1≤n≤100)，接下来 n 行各一个单词，2≤每个单词长度≤100000，字符均为 a–z。","output":"按输入顺序输出每个单词的最少替换次数，以空格分隔。",
          "encode":words_encode,"oracle":words_oracle,"reference":WORDS_REF,"mutants":WORDS_MUTANTS,
@@ -135,7 +132,7 @@ def main():
         pid=spec["id"]; src=SOURCE[pid]; code=spec["reference"].lstrip()
         (OUT/"references"/f"{pid}.py").write_text(code)
         seed=SEED+int(pid.rsplit("-",1)[1]); rng=random.Random(seed)
-        values=spec["samples"]+[spec["random"](rng) for _ in range(160)]
+        values=spec["samples"]+[spec["random"](rng) for _ in range(160)]+spec.get("extra",[])
         oracle=[]
         for value in values:
             expected=spec["oracle"](value); actual=run(OUT/"references"/f"{pid}.py",spec["encode"](value))
@@ -149,6 +146,13 @@ def main():
         long_case={"name":"最大长度边界","input":spec["encode"](long_value),"expectedOutput":long_expected+"\n","hidden":True,"weight":1}
         assert run(OUT/"references"/f"{pid}.py",long_case["input"])==long_expected
         cases.append(long_case)
+        for k,value in enumerate(spec.get("extra",[]),1):
+            cases.append({"name":f"相邻规则区分 {k}",**oracle[162+k],"hidden":True,"weight":1})
+        for value in spec.get("extra_long",[]):
+            expected=largest_reference(value)
+            extra_case={"name":"最大长度多段边界","input":spec["encode"](value),"expectedOutput":expected+"\n","hidden":True,"weight":1}
+            assert run(OUT/"references"/f"{pid}.py",extra_case["input"])==expected
+            cases.append(extra_case)
         mutants=[]; controls=[]
         for index,(name,code_variant) in enumerate(spec["mutants"],1):
             control=OUT/"negative-controls"/f"{pid}-{index}.py"; control.write_text(code_variant)
@@ -166,7 +170,7 @@ def main():
         checksum=hashlib.sha256(normalized.encode()).hexdigest()
         manifest.append({"id":pid,"sourceContentHash":src["contentHash"],"packageChecksum":checksum,"editorial":spec["editorial"],"authoredSolutions":[{"language":"python","code":code}]})
         reports.append({"id":pid,"oracleCases":len(oracle),"publicCases":3,"hiddenCases":len(cases)-3,"negativeControls":controls,"referenceSha256":hashlib.sha256(code.encode()).hexdigest()})
-        review_items.append({"id":pid,"status":"authored","reason":f"已核对 {COMMIT[:7]} 原始 fastprep 题源；本站输入协议已在题面明示。163 个独立 oracle 输入、最大长度边界与两个正常退出错误程序通过离线验证；未做 GoJudge 验证。","sourceUrls":[src["sourceUrl"]],"sourceContentHashes":[src["contentHash"]],"sourceCommit":COMMIT,"rawPath":source_evidence[pid][0],"rawGitBlob":source_evidence[pid][1],"catalogContentHash":src["contentHash"]})
+        review_items.append({"id":pid,"status":"authored","reason":f"已核对 {COMMIT[:7]} 原始 fastprep 题源；本站输入协议已在题面明示。{len(oracle)} 个独立 oracle 输入、最大长度边界与两个正常退出错误程序通过离线验证；未做 GoJudge 验证。","sourceUrls":[src["sourceUrl"]],"sourceContentHashes":[src["contentHash"]],"sourceCommit":COMMIT,"rawPath":source_evidence[pid][0],"rawGitBlob":source_evidence[pid][1],"catalogContentHash":src["contentHash"]})
         print(f"{pid}: {len(oracle)} oracle cases, {len(cases)} formal cases, {len(controls)} mutants rejected",flush=True)
     (OUT/"candidate-batches/palantir-next.json").write_text(json.dumps({"schemaVersion":1,"items":manifest},ensure_ascii=False,indent=2)+"\n")
     (OUT/"validation/palantir-next.json").write_text(json.dumps({"schemaVersion":1,"seed":SEED,"problems":reports,"note":"Offline authored-code/oracle/mutant validation only; not tested against GoJudge."},ensure_ascii=False,indent=2)+"\n")

@@ -10,7 +10,7 @@
       "OA",
       "Akuna Capital"
     ],
-    "description": "按 plannedDate 非递减顺序发布更新。每个更新可选 alternateDate 或 plannedDate；允许多项同日发布。最小化完成全部更新时的日历日。若 plannedDate 相同，任意固定顺序均可；本站按原数组下标打破平局。\n\n题目来源与规则依据见题面/审阅记录；本站输入范围中标明的限制属于本站补充。",
+    "description": "按 plannedDate 非递减顺序发布更新。每个更新可选 alternateDate 或 plannedDate；允许多项同日发布。最小化完成全部更新时的日历日。若 plannedDate 相同，这些更新之间的发布先后可以自由安排；最优做法是按 alternateDate 从小到大处理。\n\n题目来源与规则依据见题面/审阅记录；本站输入范围中标明的限制属于本站补充。",
     "input": "第一行 n；第二行 n 个 plannedDate；第三行 n 个 alternateDate。原题约束：1≤n≤200000，1≤两数组元素≤10^9，alternateDate[i]≤plannedDate[i]。",
     "output": "输出所有更新均发布后的最早完成日。",
     "explanation": "请按题目规则处理输入；完整思路、正确性说明和复杂度见配套讲义。",
@@ -250,6 +250,27 @@
       "name": "隐藏验证 29",
       "input": "5\n9 7 14 6 9\n7 1 2 2 7\n",
       "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 30",
+      "input": "2\n5 5\n4 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 31",
+      "input": "3\n7 7 7\n6 1 3\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 32",
+      "input": "6\n10 4 10 4 12 10\n8 3 6 1 9 5\n",
+      "expectedOutput": "9\n",
       "hidden": true,
       "weight": 1
     }

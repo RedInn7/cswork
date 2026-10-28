@@ -1,19 +1,19 @@
 {
   "id": "oa-palantir-1",
-  "packageChecksum": "8e80678cf0c6f688ddf78bc3adac0536ec9f078fcfea28b4cf4ab8d220befdb2",
+  "packageChecksum": "e065ffd4923bc236f0c6b5bfc05a2afc879a248424ea1fc5f1e81a71f726d402",
   "sourceContentHash": "13961744dc09a9297b155c683170449c85310d0d9e7404d7fed035c37db26b7d",
-  "editorialSha256": "4c9acd1e35dde44d16d852fe2ece491ffe84f35eb286e72390986f90dce7e712",
+  "editorialSha256": "89e7ca8c490caaa8b2ecedae15888f3c719e4b07037eb293093d6f2209353456",
   "hints": {
     "zh": [
-      "相邻交换只发生在奇偶性相同的两个数字之间，所以每个位置上数字的奇偶性永远不会改变。",
-      "在同一奇偶类内部，借助相邻交换可以把这些数字任意重排（中间隔着的另一类数字不影响它们的相对移动），因此奇数位置集合和偶数位置集合可以分别自由排列。",
-      "把所有奇数数字和所有偶数数字分别取出并降序排序，再从左到右扫描原串：原位置是奇数就填入下一个最大的奇数数字，是偶数就填入下一个最大的偶数数字，输出得到的字符串。"
+      "交换只发生在相邻的两个同奇偶数字之间，所以每个位置的奇偶性永远不变，奇数也没法越过偶数（反之亦然）。",
+      "把原串切成极长的连续同奇偶段：段内数字可以通过相邻交换排成任意顺序，但不能跑到别的段里去。例如 123 中 1 和 3 被 2 隔开，无法交换。",
+      "从左到右找出每个连续同奇偶段，把段内数字降序排列后放回原位置，输出得到的字符串。"
     ],
     "en": [
-      "An adjacent swap only exchanges two digits of the same parity, so the parity of the digit at each position never changes.",
-      "Within one parity class, adjacent swaps can rearrange those digits in any order (digits of the other class in between do not block their relative movement), so the odd positions and the even positions can each be permuted freely.",
-      "Take out all odd digits and all even digits, sort each group in descending order, then scan the original string from left to right: an odd position gets the next largest odd digit and an even position the next largest even digit. Print the resulting string."
+      "A swap only exchanges two adjacent digits of the same parity, so the parity at each position never changes, and an odd digit can never move past an even digit (and vice versa).",
+      "Split the string into maximal runs of consecutive same-parity digits: the digits inside a run can be put in any order by adjacent swaps, but they can never leave the run. For example, in 123 the 1 and the 3 are separated by the 2 and cannot be swapped.",
+      "Scan from left to right to find each same-parity run, sort the digits of the run in descending order, put them back in place, and print the resulting string."
     ]
   },
-  "explanationEn": "## Approach\n\nA single adjacent swap only exchanges digits of the same parity, so the parity at each position is fixed; within one parity subsequence, adjacent swaps can produce any rearrangement. Sort the odd digits and the even digits each in descending order, then fill them back in according to the parity of each position of the original string.\n\n## Correctness\n\nDigits of different parity can never be swapped, so each position can only end up with a digit of the same parity as that position. Digits of the same parity can be swapped arbitrarily within their subsequence. To make the result lexicographically largest, each parity subsequence should be placed into its positions in descending order, so the algorithm produces the largest of all valid results.\n\n## Complexity\n\nSorting takes O(n log n) time, and space is O(n)."
+  "explanationEn": "## Approach\n\nOnly two adjacent digits of the same parity can be swapped, so an odd digit can never move past an even digit, and vice versa. Split the string into maximal runs of consecutive same-parity digits: inside a run, adjacent swaps (as in bubble sort) can produce any order, but no digit can leave its run. Sort each run in descending order and concatenate the runs in their original order.\n\n## Correctness\n\nEvery swap happens between two adjacent digits inside one run. It does not change the parity of any position, so the run boundaries and the digits of each run never change, and every reachable result is a concatenation of rearranged runs. Adjacent swaps realize any permutation within a run, so sorting each run descending is reachable; with the boundaries and the digits of each run fixed, the concatenation of descending runs is lexicographically largest, and since the length is unchanged it is also numerically largest.\n\n## Complexity\n\nSorting takes O(n log n) time (O(n) with counting sort, since there are only 10 digits), and space is O(n)."
 }
