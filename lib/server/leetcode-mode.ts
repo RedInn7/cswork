@@ -36,14 +36,10 @@ export const LEETCODE_HARNESS_VERSION = createHash('sha256')
 
 /**
  * Startup only, never what a program computes or prints: no hsperfdata file in
- * /tmp, and the JDK classes typical programs load come from the image's CDS
- * archive (deploy/oj/build-java-cds.sh). A JVM given a missing archive starts
- * silently with its stock one, so images built before the archive still work.
+ * /tmp. (The JDK classes typical programs load come from the image's default
+ * CDS archive, which deploy/oj/build-java-cds.sh replaces; no flag needed.)
  */
-export const JAVA_STARTUP_FLAGS = [
-  '-XX:-UsePerfData',
-  '-XX:SharedArchiveFile=/usr/local/lib/cswork/java-cds-v1/run.jsa',
-];
+export const JAVA_STARTUP_FLAGS = ['-XX:-UsePerfData'];
 
 /**
  * The learner's JVM, for ACM runs and LeetCode bridges alike. -Xss64m (as on

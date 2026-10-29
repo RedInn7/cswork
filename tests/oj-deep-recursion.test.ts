@@ -33,7 +33,7 @@ void test('every learner JVM gets a 64 MiB thread stack', async () => {
   for (const command of [args, bridged]) {
     assert.ok(command.includes('-Xss64m'), command.join(' '));
     assert.ok(command.includes('-Xmx153m'));
-    // ACM runs and LeetCode bridges both start from the image's CDS archive.
+    // ACM runs and LeetCode bridges start the same JVM.
     assert.ok(JAVA_STARTUP_FLAGS.every((flag) => command.includes(flag)), command.join(' '));
   }
 });
