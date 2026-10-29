@@ -284,7 +284,8 @@ export function stdHeaderPch(source: string) {
     if (!include && !/^[ \t]*(#.*|\/\/.*)?$/.test(line)) break; // code begins
     // A macro or condition first, or a line continued onto the next one.
     if (!include && /^[ \t]*#/.test(line)) return undefined;
-    if (line.endsWith('\\')) return undefined;
+    // GCC also splices a backslash followed by trailing whitespace.
+    if (/\\\s*$/.test(line)) return undefined;
     if (include) names.add(include[1]);
   }
   return STD_HEADER_PCHS.find((set) =>

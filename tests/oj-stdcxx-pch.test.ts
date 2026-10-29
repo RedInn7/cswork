@@ -70,6 +70,8 @@ test('a header PCH set applies only within the leading standard includes', () =>
     '#include "iostream"\n',
     '// note \\\n', // continues onto the next include
     '#include <iostream> // \\\n',
+    '// note \\ \n', // GCC splices across the trailing space too
+    '#include <iostream> // \\\t\n',
   ])
     assert.equal(stdHeaderPch(lead + '#include <iostream>\n#include <vector>\n' + body), undefined, lead);
 });
