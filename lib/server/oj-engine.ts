@@ -323,9 +323,11 @@ export async function compile(
       '/bin/sh',
       '-c',
       // javac's own JVM: C1 only and serial GC start faster for one short
-      // compile. Class files and the learner's JVM flags are unchanged. The jar is
-      // zipped by Python ($1) instead of a second JVM (`jar cf main.jar *.class`).
-      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
+      // compile, and its compiler classes come from the image's CDS archive
+      // (ignored when absent, see JAVA_STARTUP_FLAGS). Class files and the
+      // learner's JVM flags are unchanged. The jar is zipped by Python ($1)
+      // instead of a second JVM (`jar cf main.jar *.class`).
+      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -J-XX:-UsePerfData -J-XX:SharedArchiveFile=/usr/local/lib/cswork/java-cds-v1/javac.jsa -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
       'javac',
       JAVA_JAR,
     ],
