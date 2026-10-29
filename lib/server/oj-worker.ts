@@ -23,6 +23,7 @@ import type { OjJudgeSnapshot, OjProblemSpec } from '@/lib/oj-types';
 import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
 import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
+import { monitorEventLoopDelay } from 'node:perf_hooks';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { sendLearnerReminders } from './reminders';
@@ -147,7 +148,7 @@ async function judge(job: Job<{ submissionId: string }>) {
   if (!row || !ACTIVE.includes(row.status)) return;
   const budget = db
     .prepare(
-      `SELECT COALESCE((SELECT SUM(length(CAST(input AS BLOB)) + length(CAST(expected_output AS BLOB)))
+      `SELECT COALESCE((SELECT SUM(octet_length(input) + octet_length(expected_output))
       FROM oj_test_cases WHERE version_id=v.id),0) AS bytes,
       json_extract(v.spec_json,'$.memoryLimit') AS memoryLimit,
       json_extract(v.spec_json,'$.outputLimit') AS outputLimit
@@ -599,7 +600,8 @@ worker.on('failed', (job) =>
     `OJ job ${job?.id ?? 'unknown'} failed; attempt ${job?.attemptsMade ?? 0}`,
   ),
 );
-queue.on('error', () => {
+queue.on('error', (error) => {
+  console.error(JSON.stringify({ event: 'oj_queue_error', error: error.message }));
   engineAvailable = false;
 });
 async function maintenance() {
@@ -649,7 +651,9 @@ async function maintenance() {
       ).run(Date.now(), id);
     }
     if (worker.isPaused()) await worker.resume();
-  } catch {
+  } catch (error) {
+    // Logged: a failed round pauses intake until the next one, 5s later (a queue-wait tail).
+    console.error(JSON.stringify({ event: 'oj_maintenance_failed', error: error instanceof Error ? error.message : 'unknown' }));
     engineAvailable = false;
     // Pause acquisition only; in-flight jobs own their timeout, retry and cancellation.
     if (!worker.isPaused()) await worker.pause(true);
@@ -686,11 +690,16 @@ void worker.run().catch(() => {
 });
 await maintenance();
 const timer = setInterval(() => void maintenance(), 5000);
-const outboxDispatcher = createOutboxDispatcher(db, (id) =>
-  queue.add('judge', { submissionId: id }, { jobId: id }),
-);
+const outboxDispatcher = createOutboxDispatcher(db, async (id) => {
+  const started = performance.now();
+  await queue.add('judge', { submissionId: id }, { jobId: id });
+  const ms = Math.round(performance.now() - started);
+  if (ms > 200) console.warn(JSON.stringify({ event: 'oj_enqueue_slow', submissionId: id, durationMs: ms }));
+});
+// Not gated on engineAvailable: enqueueing needs only Redis, and a paused worker leaves the job
+// waiting, so a failed health round no longer holds new submissions in the outbox for 5s.
 const dispatchTimer = setInterval(() => {
-  if (!stopping && engineAvailable)
+  if (!stopping)
     void outboxDispatcher.drain().catch(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
@@ -777,10 +786,20 @@ const precompileTimer = setInterval(() => {
   } catch {
     /* Optional acceleration never stops judging. */
   }
-}, OJ_DISPATCH_INTERVAL_MS);
+  // Drafts wait 1.5s of idle typing (hooks/use-idle-precompile.ts): no need for dispatch's 20ms.
+}, 100);
 // Learners' reminder digests and contest reminders (any process TZ); followed companies' new OA
 // problems. The worker is the one long-running process with the mail settings, so no separate timer
 // unit. One after another, and never two ticks at once, so mails stay under Resend's rate limit.
+// One core runs dispatch, BullMQ and every SQLite write: log any minute it stalled past 250ms.
+const loopDelay = monitorEventLoopDelay({ resolution: 20 });
+loopDelay.enable();
+const loopTimer = setInterval(() => {
+  const maxMs = Math.round(loopDelay.max / 1e6);
+  if (maxMs > 250) console.warn(JSON.stringify({ event: 'oj_event_loop_stall', maxMs, p99Ms: Math.round(loopDelay.percentile(99) / 1e6) }));
+  loopDelay.reset();
+}, 60_000);
+loopTimer.unref();
 let reminding = false;
 const reminderTimer = setInterval(() => {
   if (reminding) return;
