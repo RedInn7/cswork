@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { withStdcxxPch } from '../lib/server/oj-engine';
+import { readFileSync } from 'node:fs';
+import {
+  STD_HEADER_PCHS,
+  stdHeaderPch,
+  withStdcxxPch,
+} from '../lib/server/oj-engine';
 
 const WRAPPER = '#include <cswork/stdc++.hpp>';
 
@@ -46,4 +51,30 @@ test('lines GCC would not read as that include are left alone', () => {
   // A trailing comment ending in a backslash keeps continuing the next line.
   const tail = '#include <bits/stdc++.h> // all \\\nint unused;\nint main(){}\n';
   assert.equal(withStdcxxPch(tail), tail.replace('<bits/stdc++.h>', '<cswork/stdc++.hpp>'));
+});
+
+test('a header PCH set applies only within the leading standard includes', () => {
+  const body = 'using namespace std;\nint count;\nint main(){}\n';
+  assert.equal(
+    stdHeaderPch('// hi\r\n#include<algorithm>\r\n\r\n#include <vector> // v\r\n#include <iostream>\r\n' + body),
+    'iostream-vector-algorithm',
+  );
+  assert.equal(stdHeaderPch('#include <cstdio>\n#include <vector>\n#include <iostream>\n' + body), 'iostream-vector');
+  assert.equal(stdHeaderPch('#include <iostream>\n#include <algorithm>\n' + body), 'iostream');
+  // Headers included after code are not leading ones.
+  assert.equal(stdHeaderPch('#include <cstdio>\n' + body + '#include <iostream>\n'), undefined);
+  for (const lead of [
+    '#define _GLIBCXX_DEBUG\n', // a macro could change what the headers declare
+    '#pragma GCC optimize("O3")\n',
+    '#ifdef LOCAL\n#endif\n',
+    '#include "iostream"\n',
+    '// note \\\n', // continues onto the next include
+    '#include <iostream> // \\\n',
+  ])
+    assert.equal(stdHeaderPch(lead + '#include <iostream>\n#include <vector>\n' + body), undefined, lead);
+});
+
+test('every header PCH set is built into the runner image', () => {
+  const words = readFileSync('deploy/oj/build-cpp-pch.sh', 'utf8').split(/[\s;]/);
+  for (const set of STD_HEADER_PCHS) assert.ok(words.includes(set.join('-')), set.join('-'));
 });

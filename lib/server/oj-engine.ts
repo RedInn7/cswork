@@ -257,6 +257,40 @@ export function withStdcxxPch(source: string) {
   lines[at] = lines[at].replace('<bits/stdc++.h>', '<cswork/stdc++.hpp>');
   return lines.join('\n');
 }
+/**
+ * Precompiled header sets for sources that name their standard headers one by
+ * one (deploy/oj/build-cpp-pch.sh builds each as cswork/pch/<name>.hpp, largest
+ * first). The <bits/stdc++.h> PCH would be slower for them (loading it alone
+ * costs about 0.75s CPU, more than parsing <iostream>) and would declare names
+ * the learner never included. A set applies only when every header in it is
+ * among the source's own leading includes, so it declares nothing they would
+ * not; standard headers may be included in any order.
+ */
+export const STD_HEADER_PCHS = [
+  ['iostream', 'vector', 'algorithm'],
+  ['iostream', 'vector'],
+  ['vector', 'algorithm'],
+  ['iostream'],
+];
+/** The PCH set for a source whose leading lines are only standard includes. */
+export function stdHeaderPch(source: string) {
+  const names = new Set<string>();
+  for (const raw of source.split('\n')) {
+    const line = raw.replace(/\r$/, ''); // CRLF sources
+    const include =
+      /^[ \t]*#[ \t]*include[ \t]*<([a-z_]+(?:\.h)?)>[ \t]*(\/\/.*)?$/.exec(
+        line,
+      );
+    if (!include && !/^[ \t]*(#.*|\/\/.*)?$/.test(line)) break; // code begins
+    // A macro or condition first, or a line continued onto the next one.
+    if (!include && /^[ \t]*#/.test(line)) return undefined;
+    if (line.endsWith('\\')) return undefined;
+    if (include) names.add(include[1]);
+  }
+  return STD_HEADER_PCHS.find((set) =>
+    set.every((name) => names.has(name)),
+  )?.join('-');
+}
 /** `jar cf main.jar *.class`, including its failure when javac wrote no class. */
 const JAVA_JAR = `import glob, sys, zipfile
 names = sorted(glob.glob('*.class'))
@@ -290,6 +324,8 @@ export async function compile(
         ? 'main.jar'
         : 'main';
   const text = language === 'cpp' ? withStdcxxPch(source) : source;
+  const headers =
+    language === 'cpp' && text === source ? stdHeaderPch(source) : undefined;
   const commands: Record<CodeLanguage, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
       ? [
@@ -299,16 +335,26 @@ export async function compile(
           // Older runner images compile the complete inline fallback unchanged.
           'if test -r /usr/local/include/cswork/json-v1.hpp && test -r /usr/local/lib/cswork/libjson-v1.a; then exec /usr/bin/g++ -std=c++20 -O2 -pipe -DCSWORK_PRECOMPILED_JSON_V1 main.cpp /usr/local/lib/cswork/libjson-v1.a -o main; else exec /usr/bin/g++ -std=c++20 -O2 -pipe main.cpp -o main; fi',
         ]
-      : [
-          '/usr/bin/g++',
-          '-std=c++20',
-          '-O2',
-          '-pipe',
-          ...(text !== source ? ['-idirafter', '.'] : []),
-          'main.cpp',
-          '-o',
-          'main',
-        ],
+      : headers
+        ? [
+            '/bin/sh',
+            '-c',
+            // $1 is a fixed path from STD_HEADER_PCHS; the source is unchanged.
+            // Older runner images without it compile exactly as before.
+            'if test -r "$1"; then exec /usr/bin/g++ -std=c++20 -O2 -pipe -include "$1" main.cpp -o main; else exec /usr/bin/g++ -std=c++20 -O2 -pipe main.cpp -o main; fi',
+            'g++',
+            `/usr/local/include/cswork/pch/${headers}.hpp`,
+          ]
+        : [
+            '/usr/bin/g++',
+            '-std=c++20',
+            '-O2',
+            '-pipe',
+            ...(text !== source ? ['-idirafter', '.'] : []),
+            'main.cpp',
+            '-o',
+            'main',
+          ],
     go: [
       '/bin/sh',
       '-c',
