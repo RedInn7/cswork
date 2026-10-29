@@ -41,11 +41,19 @@ export function exclusiveSubmission(
   );
 }
 
-/** FIFO admission keeps large snapshots/checker parsing isolated and prevents starvation. */
+/**
+ * FIFO admission prevents starvation. A large submission (big snapshot or output limit) takes two
+ * slots, not all of them, and only one runs at a time: one 128 MiB snapshot plus its two in-flight
+ * case bodies (caseConcurrency) fit the worker's MemoryMax=4G beside two ordinary submissions,
+ * each at most 8 MiB of cases and four 8 MiB outputs. Holding all four left a burst of small
+ * submissions queued behind it (head-of-line blocking).
+ */
 export class SubmissionAdmission {
   private used = 0;
+  private exclusiveActive = false;
   private waiting: {
     slots: number;
+    exclusive: boolean;
     signal: AbortSignal;
     grant: (release: () => void) => void;
     reject: (reason: unknown) => void;
@@ -59,7 +67,8 @@ export class SubmissionAdmission {
     signal.throwIfAborted();
     return new Promise((grant, reject) => {
       const item = {
-        slots: exclusive ? this.capacity : 1,
+        slots: exclusive ? Math.min(2, this.capacity) : 1,
+        exclusive,
         signal,
         grant,
         reject,
@@ -80,16 +89,19 @@ export class SubmissionAdmission {
   private drain() {
     while (
       this.waiting.length &&
-      this.used + this.waiting[0].slots <= this.capacity
+      this.used + this.waiting[0].slots <= this.capacity &&
+      !(this.waiting[0].exclusive && this.exclusiveActive)
     ) {
       const item = this.waiting.shift()!;
       item.signal.removeEventListener('abort', item.abort);
       this.used += item.slots;
+      if (item.exclusive) this.exclusiveActive = true;
       let released = false;
       item.grant(() => {
         if (released) return;
         released = true;
         this.used -= item.slots;
+        if (item.exclusive) this.exclusiveActive = false;
         this.drain();
       });
     }

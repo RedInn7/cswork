@@ -21,7 +21,7 @@ ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/cswork
 
-# Large snapshots are admitted exclusively by the worker; ordinary jobs overlap.
+# One large snapshot at a time (two admission slots); ordinary jobs overlap it.
 # The runner gets three CPUs; retain this one-core cap for Node's coordinator.
 MemoryHigh=3G
 MemoryMax=4G
