@@ -122,8 +122,9 @@ import {
 async function withPoints<T extends { id: string; status: string; mode: string }>(detail: T) {
   if (detail.status === 'accepted' && detail.mode === 'judge') {
     const row = submissionRow(detail.id);
+    // Off the verdict's path: the points panel refreshes on its own request.
     if (row)
-      await awardAccepted(row).catch((error: unknown) =>
+      void awardAccepted(row).catch((error: unknown) =>
         console.error('points', error instanceof Error ? error.name : 'unknown'),
       );
   }

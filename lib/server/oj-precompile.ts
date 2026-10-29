@@ -36,11 +36,11 @@ export function precompileEnabled() {
 export function prunePrecompileDrafts(now = Date.now()) {
   sqlite().prepare('DELETE FROM oj_precompile WHERE expires_at<=?').run(now);
 }
+// Read-only: expired drafts are pruned by the worker's maintenance, not on every tick.
 export function nextPrecompileDraft(): PrecompileDraft | undefined {
-  prunePrecompileDrafts();
   return sqlite()
-    .prepare('SELECT * FROM oj_precompile ORDER BY created_at LIMIT 1')
-    .get() as PrecompileDraft | undefined;
+    .prepare('SELECT * FROM oj_precompile WHERE expires_at>? ORDER BY created_at LIMIT 1')
+    .get(Date.now()) as PrecompileDraft | undefined;
 }
 export function precompileDraftCurrent(draft: PrecompileDraft) {
   return Boolean(

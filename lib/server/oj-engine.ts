@@ -317,7 +317,7 @@ export async function compile(
       // symlink trusted objects from the read-only image instead of copying
       // ~164 MiB into every sandbox's bounded /tmp. Old images use an empty
       // private cache. Never point writable GOCACHE at the shared seed itself.
-      'if test -r /usr/local/lib/cswork/go-stdlib-cache-v1/cswork-toolchain-v1; then mkdir -p /tmp/go-cache && cp -rs --no-preserve=mode /usr/local/lib/cswork/go-stdlib-cache-v1/. /tmp/go-cache && rm -f /tmp/go-cache/trim.txt /tmp/go-cache/README || exit 1; fi; exec /usr/bin/go build -trimpath -o main main.go',
+      'if test -r /usr/local/lib/cswork/go-stdlib-cache-v1/cswork-toolchain-v1; then mkdir -p /tmp/go-cache && cp -rs --no-preserve=mode /usr/local/lib/cswork/go-stdlib-cache-v1/. /tmp/go-cache && rm -f /tmp/go-cache/trim.txt /tmp/go-cache/README || exit 1; fi; exec /usr/bin/go build -trimpath -ldflags=-s\\ -w -o main main.go',
     ],
     java: [
       '/bin/sh',

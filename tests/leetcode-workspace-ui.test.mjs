@@ -157,6 +157,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   let holdPost = false;
   let releasePost;
   let failWatch = false;
+  let limitWatch = 0;
   let watchReads = 0;
   let statusReads = 0;
   let failDetailOnce = false;
@@ -199,6 +200,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       if (url.includes('?wait=1')) {
         watchReads++;
         if (failWatch) throw new TypeError('watch unavailable');
+        if (limitWatch-- > 0) return Response.json({ error: 'slow down' }, { status: 429 });
       }
       if (pendingReads-- > 0) {
         // The server finishes immediately after this in-flight snapshot.
@@ -536,9 +538,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     pendingReads = 1;
     t.mock.timers.enable({ apis: ['setTimeout'] });
     try {
+      // The first fallback poll reads at once, not after 750ms.
       await act(async () => button('Submit').click());
-      assert.equal(document.querySelector('.cs-accepted-banner'), null);
-      await act(async () => t.mock.timers.tick(750));
       assert.ok(
         document.querySelector('.cs-accepted-banner'),
         'unavailable watch falls back to ordinary polling',
@@ -546,6 +547,24 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     } finally {
       t.mock.timers.reset();
       failWatch = false;
+    }
+    await click(
+      document.querySelector('[aria-label="Dismiss success message"]'),
+    );
+    // A rate-limited watch retries the watch after 200ms instead of falling back.
+    limitWatch = 1;
+    pendingReads = 1;
+    t.mock.timers.enable({ apis: ['setTimeout'] });
+    try {
+      await act(async () => button('Submit').click());
+      assert.equal(document.querySelector('.cs-accepted-banner'), null);
+      const watchesBefore = watchReads;
+      await act(async () => t.mock.timers.tick(200));
+      assert.equal(watchReads, watchesBefore + 1, 'retries the watch, not a plain poll');
+      assert.ok(document.querySelector('.cs-accepted-banner'));
+    } finally {
+      t.mock.timers.reset();
+      limitWatch = 0;
     }
     await click(
       document.querySelector('[aria-label="Dismiss success message"]'),

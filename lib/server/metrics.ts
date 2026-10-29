@@ -236,7 +236,7 @@ async function summarize(days: number) {
   const vids = new Set<string>(), server: [string, number][] = [];
   const bank = new Set<string>(), opened = new Set<string>();
   const ran = new Set<string>(), solved = new Set<string>(), d1 = new Set<string>(), d7 = new Set<string>();
-  const client: number[] = [], run: number[] = [], queue: number[] = [];
+  const client: number[] = [], run: number[] = [], queue: number[] = [], gap: number[] = [];
   let next = ((db.prepare('SELECT MAX(rowid) FROM submissions').pluck().get() as number | null) ?? 0) + 1;
   let judgeErrors = 0, timed = 0;
   for (let i = days - 1; i >= 0; i--) {
@@ -284,9 +284,13 @@ async function summarize(days: number) {
         bump(errors, [e.stage ?? null, e.status ?? null]);
       } else if (name === 'judge_result' && timed++ < SAMPLE) {
         const ms = e.duration_ms;
+        const judged = e.mode === 'submit' || e.mode === 'judge';
         if (typeof ms === 'number' && e.mode === 'run') run.push(ms);
-        else if (typeof ms === 'number' && (e.mode === 'submit' || e.mode === 'judge')) client.push(ms);
-        if (typeof e.queue_ms === 'number') queue.push(e.queue_ms);
+        else if (typeof ms === 'number' && judged) client.push(ms);
+        // Per-submission wait beyond the judge's own time; client.p50 - server.p50 mixes two samples.
+        if (typeof ms === 'number' && typeof e.server_ms === 'number' && judged) gap.push(ms - e.server_ms);
+        // Formal submissions only: sample runs queue differently and would skew it.
+        if (typeof e.queue_ms === 'number' && judged) queue.push(e.queue_ms);
       }
     }
     await pause();
@@ -309,7 +313,7 @@ async function summarize(days: number) {
 
   const sum = (key: 'pageViews' | 'signups' | 'submissions' | 'runs' | 'accepted') =>
     daily.reduce((total, d) => total + d[key], 0);
-  const c = spread(client), r = spread(run), q = spread(queue);
+  const c = spread(client), r = spread(run), q = spread(queue), g = spread(gap);
   return {
     range: { days, from: daily[0].day, to: daily[days - 1].day },
     generatedAt,
@@ -323,6 +327,7 @@ async function summarize(days: number) {
       client: { count: c.count, p50: c.p50, p90: c.p90, p99: c.p99 },
       run: { count: r.count, p50: r.p50, p90: r.p90 },
       queue: { count: q.count, p50: q.p50, p90: q.p90 },
+      gap: { count: g.count, p50: g.p50, p90: g.p90, p99: g.p99 },
       byLanguage: [...Map.groupBy(server, ([language]) => language)]
         .map(([language, rows]) => ({ language, count: rows.length, p50: spread(rows.map(([, ms]) => ms)).p50 }))
         .sort((a, b) => b.count - a.count),

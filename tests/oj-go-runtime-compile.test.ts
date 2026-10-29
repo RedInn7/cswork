@@ -37,7 +37,7 @@ void test('Go gives cache trimming private writable metadata while reusing immut
     assert.ok(!command!.args[2].includes('export GOCACHE='));
     assert.ok(
       command!.args[2].endsWith(
-        'exec /usr/bin/go build -trimpath -o main main.go',
+        'exec /usr/bin/go build -trimpath -ldflags=-s\\ -w -o main main.go',
       ),
     );
     assert.ok(
