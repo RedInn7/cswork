@@ -97,6 +97,8 @@ const queue = new Queue(QUEUE, {
 });
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
+// ponytail: one short key per published version judged since the last restart (every release).
+const verifiedVersions = new Set<string>();
 // LeetCode bridges hold no user code, so one bytecode copy serves every learner.
 // The default 5-minute lifetime stays below the runner's -file-timeout=10m
 // (deploy/oj/entrypoint.sh), which would otherwise delete a cached bridge.
@@ -301,7 +303,7 @@ async function judgeSubmission(
     const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
-        : await loadJudgeSnapshot(claimed.problem_version_id!);
+        : await loadJudgeSnapshot(claimed.problem_version_id!, verifiedVersions);
     // A per-language limit replaces timeLimit everywhere below: cases, codec runs, the deadline.
     const snapshot = {
       ...loaded,
