@@ -1,5 +1,4 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { LANGUAGE_IDS, type Language } from '@/lib/problems';
@@ -15,6 +14,7 @@ import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
 import { caseGroups, groupScores, type CaseGroup } from '@/lib/oj-case-groups';
 import { aiTask, icaTask } from './ai-tasks';
+import { pollMs, submissionWaiter, wakeSubmission } from './oj-verdict-bus';
 import { icaPassed, icaUnlocked } from './ica';
 import {
   ICA_LEVELS,
@@ -584,9 +584,14 @@ const waitingByUser = new Map<string, number>();
 // Bounded connection-independent history also coalesces tokens that became stale
 // while a response was in flight. It contains no submission content.
 const lastWatchReply = new Map<string, { status: string; at: number }>();
-/** Detail sent to the browser; its time paces the next non-final reply. */
-async function reply(p: Person, id: string) {
-  const detail = await submissionDetail(p, id);
+/**
+ * Detail sent to the browser; its time paces the next non-final reply. `light`: while still
+ * judging, only the state a progress display needs, not every case (the client keeps its last
+ * full detail, mergeWatch in lib/oj-client.ts); the verdict always comes in full.
+ */
+async function reply(p: Person, id: string, light = false) {
+  const s = light ? owned(p, id) : undefined;
+  const detail = s && ACTIVE.includes(s.status) ? progress(s) : await submissionDetail(p, id);
   const key = `${p.id}:${id}`;
   lastWatchReply.delete(key);
   lastWatchReply.set(key, { status: detail.status, at: performance.now() });
@@ -598,8 +603,6 @@ const stateQuery = () =>
   sqlite().prepare(
     'SELECT user_id,status,passed,total,attempt,cancel_requested,updated_at FROM submissions WHERE id=?',
   );
-// One primary-key read per tick; a verdict shows up at most a tick late.
-const TICK_MS = 10;
 /**
  * A fresh submit holds its response briefly so a fast verdict reaches the
  * browser in the POST reply: one network round trip instead of a POST plus
@@ -631,20 +634,30 @@ export async function settleSubmission(
   let adopting: boolean | undefined;
   const started = performance.now();
   const deadline = started + holdMs;
-  while (performance.now() < deadline) {
-    const current = query.get(id) as SubmissionRow | undefined;
-    if (!current || !ACTIVE.includes(current.status)) break;
-    if (
-      current.status === 'queued' &&
-      performance.now() - started >= QUEUED_HOLD_MS &&
-      !(adopting ??= precompiling(id))
-    )
-      break;
-    await delay(
-      Math.min(TICK_MS, Math.max(1, deadline - performance.now())),
-      undefined,
-      { signal },
-    );
+  // Woken by the worker's change notice (oj-verdict-bus); reads SQLite on each wake or poll.
+  const waiter = submissionWaiter(id);
+  try {
+    while (performance.now() < deadline) {
+      const current = query.get(id) as SubmissionRow | undefined;
+      if (!current || !ACTIVE.includes(current.status)) break;
+      if (
+        current.status === 'queued' &&
+        performance.now() - started >= QUEUED_HOLD_MS &&
+        !(adopting ??= precompiling(id))
+      )
+        break;
+      // Still queued: look again when the queued hold runs out, wake or not.
+      const until =
+        current.status === 'queued' && adopting === undefined
+          ? Math.min(deadline, started + QUEUED_HOLD_MS)
+          : deadline;
+      await waiter.wait(
+        Math.min(pollMs(), Math.max(1, until - performance.now())),
+        signal,
+      );
+    }
+  } finally {
+    waiter.close();
   }
   signal.throwIfAborted();
   return reply(p, id);
@@ -655,6 +668,7 @@ export async function waitForSubmission(
   after: string,
   signal: AbortSignal,
   timeoutMs = 3_000,
+  light = false,
 ) {
   signal.throwIfAborted();
   // Authorize before retaining a connection or reading any progress.
@@ -669,21 +683,23 @@ export async function waitForSubmission(
     (watchToken(initial) !== after &&
       (!previous || started >= progressAfter))
   )
-    return reply(p, id);
+    return reply(p, id, light);
   const waiting = waitingByUser.get(p.id) ?? 0;
   if (waiting >= 2) throw new HttpError(429, '等待中的请求过多，请稍后重试');
   waitingByUser.set(p.id, waiting + 1);
   // Vinext's current Node bridge does not propagate socket disconnects into
   // Request.signal. Keep a short hard bound even when abort is unavailable.
   const deadline = performance.now() + Math.min(3_000, Math.max(0, timeoutMs));
-  // Fetch only state on each tick; full cases are materialized once on return.
+  // Fetch only state on each wake or poll; full cases are materialized once on return.
   const query = stateQuery();
+  const waiter = submissionWaiter(id);
   try {
+    // A change paced behind the last reply is sent when its 500ms are up, wake or not.
+    let until = deadline;
     while (performance.now() < deadline) {
-      await delay(
-        Math.min(TICK_MS, Math.max(1, deadline - performance.now())),
-        undefined,
-        { signal },
+      await waiter.wait(
+        Math.min(pollMs(), Math.max(1, until - performance.now())),
+        signal,
       );
       const current = query.get(id) as SubmissionRow | undefined;
       if (!current || (current.user_id !== p.id && p.role !== 'teacher'))
@@ -693,10 +709,12 @@ export async function waitForSubmission(
         (watchToken(current) !== after && performance.now() >= progressAfter)
       )
         break;
+      if (watchToken(current) !== after) until = Math.min(deadline, progressAfter);
     }
     signal.throwIfAborted();
-    return reply(p, id);
+    return reply(p, id, light);
   } finally {
+    waiter.close();
     const remaining = (waitingByUser.get(p.id) ?? 1) - 1;
     if (remaining) waitingByUser.set(p.id, remaining);
     else waitingByUser.delete(p.id);
@@ -725,6 +743,26 @@ export function caseGroupScores(submissionId: string, versionId: string) {
       cases.map((c, i) => ({ group: groups[i], weight: c.weight, accepted: c.status === 'accepted' })),
     ),
     byOrdinal: new Map<number, CaseGroup>(cases.map((c, i) => [c.ordinal, groups[i]])),
+  };
+}
+function queuedPosition(s: SubmissionRow) {
+  return s.status === 'queued'
+    ? (
+        sqlite()
+          .prepare(
+            "SELECT COUNT(*) as n FROM submissions WHERE status='queued' AND (created_at<? OR (created_at=? AND id<=?))",
+          )
+          .get(s.created_at, s.created_at, s.id) as { n: number }
+      ).n
+    : undefined;
+}
+/** A judging submission's state without its cases, code or output (reply with `light`). */
+function progress(s: SubmissionRow) {
+  return {
+    ...summary(s),
+    watchToken: watchToken(s),
+    queuedPosition: queuedPosition(s),
+    cancelRequested: Boolean(s.cancel_requested),
   };
 }
 export async function submissionDetail(p: Person, id: string) {
@@ -852,16 +890,6 @@ export async function submissionDetail(p: Person, id: string) {
       };
     }
   }
-  const position =
-    s.status === 'queued'
-      ? (
-          sqlite()
-            .prepare(
-              "SELECT COUNT(*) as n FROM submissions WHERE status='queued' AND (created_at<? OR (created_at=? AND id<=?))",
-            )
-            .get(s.created_at, s.created_at, s.id) as { n: number }
-        ).n
-      : undefined;
   return {
     ...summary(s),
     watchToken: watchToken(s),
@@ -870,7 +898,7 @@ export async function submissionDetail(p: Person, id: string) {
     groups: grouped?.scores,
     firstFailure,
     compileOutput: referenceMode(s.mode) ? '' : (s.compile_output ?? ''),
-    queuedPosition: position,
+    queuedPosition: queuedPosition(s),
     cancelRequested: Boolean(s.cancel_requested),
     problemVersion: snapshot ? `v${snapshot.revision}` : undefined,
     // A project run has no cases: its one result row holds the suites' report.
@@ -950,6 +978,7 @@ export function cancelSubmission(p: Person, id: string) {
       "UPDATE submissions SET cancel_requested=1,status=CASE WHEN status='queued' THEN 'cancelled' ELSE status END,finished_at=CASE WHEN status='queued' THEN ? ELSE finished_at END,updated_at=? WHERE id=? AND status IN ('queued','compiling','running')",
     )
     .run(Date.now(), Date.now(), id);
+  wakeSubmission(id);
   return submissionDetail(p, id);
 }
 export function ojStatus() {

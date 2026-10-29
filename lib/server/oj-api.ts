@@ -357,7 +357,9 @@ export async function handleOj(
         await limit(p, 'oj-watch', 360);
         const after = url.searchParams.get('after') || '';
         if (after.length > 160) throw new HttpError(400, '无效的进度标记');
-        return json(await withPoints(await waitForSubmission(p, id, after, request.signal)));
+        // light=1: progress replies without cases (mergeWatch in lib/oj-client.ts); old pages omit it.
+        const light = url.searchParams.get('light') === '1';
+        return json(await withPoints(await waitForSubmission(p, id, after, request.signal, undefined, light)));
       }
       await limit(p, 'oj-read', 240);
       return json(
