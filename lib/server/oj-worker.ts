@@ -115,6 +115,7 @@ const caseSlots = createSlots(OJ_CASE_SLOTS);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
+let timer: ReturnType<typeof setTimeout> | undefined;
 class LostAttempt extends Error {}
 function current(id: string, attempt: number, signal: AbortSignal) {
   const row = submissionRow(id);
@@ -574,6 +575,13 @@ async function judgeSubmission(
         status: 'queued',
         message: '执行服务暂时中断，正在自动重试',
       });
+      // Check health now, not up to 5s later: a down runner must pause intake before this job's
+      // 1s/2s retries, or they burn its three attempts (system_error) before maintenance notices.
+      // An in-flight round reschedules itself; starting another would fork the timer chain.
+      if (!maintaining && !stopping && timer !== undefined) {
+        clearTimeout(timer);
+        scheduleMaintenance(0);
+      }
       throw new Error('Execution interrupted; retry scheduled');
     }
     update(id, attempt, {
@@ -696,13 +704,12 @@ void worker.run().catch(() => {
   process.exitCode = 1;
 });
 await maintenance();
-let timer: ReturnType<typeof setTimeout>;
-function scheduleMaintenance() {
+function scheduleMaintenance(delay = maintenanceDelayMs(engineAvailable)) {
   timer = setTimeout(() => {
     void maintenance().finally(() => {
       if (!stopping) scheduleMaintenance();
     });
-  }, maintenanceDelayMs(engineAvailable));
+  }, delay);
 }
 scheduleMaintenance();
 const outboxDispatcher = createOutboxDispatcher(db, async (id) => {
