@@ -21,7 +21,9 @@ import {
 import type { OjJudgeSnapshot, OjProblemSpec } from '@/lib/oj-types';
 import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
 import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
+import { VERDICT_CHANNEL } from './oj-verdict-bus';
 import { Queue, Worker, type Job } from 'bullmq';
+import Redis from 'ioredis';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
@@ -99,6 +101,9 @@ const queue = new Queue(QUEUE, {
     removeOnFail: { age: 7 * 86400, count: 1000 },
   },
 });
+// Fails fast while Redis is away: waiters then find the change on their backstop read.
+const publisher = new Redis({ ...connection, maxRetriesPerRequest: 1, enableOfflineQueue: false });
+publisher.on('error', () => {});
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
 // ponytail: one short key per published version judged since the last restart (every release).
@@ -126,6 +131,13 @@ function current(id: string, attempt: number, signal: AbortSignal) {
     throw new Error('Execution interrupted');
   return row;
 }
+/**
+ * Tells waiting web requests (oj-verdict-bus) the submission changed. Queued as a microtask:
+ * better-sqlite3 transactions are synchronous, so it runs once the caller's commit is done.
+ */
+function notify(id: string) {
+  queueMicrotask(() => void publisher.publish(VERDICT_CHANNEL, id).catch(() => {}));
+}
 function update(
   id: string,
   attempt: number,
@@ -145,13 +157,15 @@ function update(
   ]);
   if (Object.keys(fields).some((k) => !allowed.has(k)))
     throw new Error('Invalid update field');
-  return db
+  const result = db
     .prepare(
       `UPDATE submissions SET ${Object.keys(fields)
         .map((k) => `${k}=?`)
         .join(',')},updated_at=? WHERE id=? AND attempt=?`,
     )
     .run(...Object.values(fields), Date.now(), id, attempt);
+  if (result.changes) notify(id);
+  return result;
 }
 async function judge(job: Job<{ submissionId: string }>) {
   const row = submissionRow(job.data.submissionId);
@@ -235,6 +249,7 @@ async function judgeSubmission(
     return row;
   })();
   if (!claimed) return;
+  notify(id);
   const attempt = claimed.attempt,
     controller = new AbortController(),
     // A submission or an OA drill: every case, hidden ones too, stopping at the first failure,
@@ -537,6 +552,7 @@ async function judgeSubmission(
           score: Math.round((weight / totalWeight) * 100),
         },
       );
+      notify(id);
       if (terminal) terminalFailureCommitted = true;
       // Unexecuted cases after a stop read as skipped.
       if (stopJudging(status, { formal, runAll, heavy })) break;
@@ -681,6 +697,7 @@ async function maintenance() {
         db.prepare(
           "UPDATE submissions SET status='system_error',message='判题任务多次中断，请重新提交',finished_at=?,updated_at=? WHERE id=? AND status IN ('queued','compiling','running')",
         ).run(Date.now(), Date.now(), id);
+        notify(id);
       }
       db.prepare(
         'UPDATE oj_outbox SET dispatched_at=? WHERE submission_id=?',
@@ -880,6 +897,7 @@ async function stop() {
   await compiledPrograms.close();
   await bridgePrograms.close();
   await queue.close();
+  publisher.disconnect();
   db.prepare(
     "UPDATE oj_runtime SET healthy=0,heartbeat_at=? WHERE id='worker'",
   ).run(Date.now());

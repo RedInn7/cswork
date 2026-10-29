@@ -161,6 +161,7 @@ import {
   cancelOJ,
   hintUnlocked,
   leetcodeSolutionsUrl,
+  mergeWatch,
   ojRequest,
   submitOJ,
   type OJProblem,
@@ -1247,13 +1248,13 @@ function Workspace({
     const read = async () => {
       try {
         const item = await ojRequest<OJSubmission>(
-          `submissions/${submission.id}${watching ? `?wait=1&after=${encodeURIComponent(submission.watchToken!)}` : ''}`,
+          `submissions/${submission.id}${watching ? `?wait=1&light=1&after=${encodeURIComponent(submission.watchToken!)}` : ''}`,
           undefined,
           controller.signal,
         );
         if (controller.signal.aborted) return;
         setError('');
-        setSubmission(item);
+        setSubmission((prev) => mergeWatch(prev, item));
         if (!activeStatuses.has(item.status)) {
           setHistoryRevision((n) => n + 1);
           try {
