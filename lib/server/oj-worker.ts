@@ -66,6 +66,10 @@ const MAX_ATTEMPTS = 3;
 /** A complexity probe's CPU budget across its cases: checked between cases, so the last one may overrun it. */
 const PROBE_CPU_MS = 10_000;
 const db = sqlite();
+// This connection only (the web process keeps FULL): under WAL, NORMAL skips the fsync on every
+// commit, one per judged case. A power loss can drop the last few commits but never corrupts the
+// database; a submission left mid-judging is re-queued from the outbox and judged again.
+db.pragma('synchronous = NORMAL');
 const redisUrl = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6381');
 if (!['redis:', 'rediss:'].includes(redisUrl.protocol))
   throw new Error('Invalid Redis protocol');
