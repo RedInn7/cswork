@@ -3,7 +3,7 @@ import { builtinModules } from 'node:module';
 import { fileURLToPath } from 'node:url';
 export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('.', import.meta.url)) } },
-  ssr: { noExternal: true, external: ['better-sqlite3', 'bullmq'] },
+  ssr: { noExternal: true, external: ['better-sqlite3', 'bullmq', 'ioredis'] },
   build: {
     target: 'node22',
     ssr: 'lib/server/oj-worker.ts',
@@ -12,6 +12,7 @@ export default defineConfig({
       external: [
         'better-sqlite3',
         'bullmq',
+        'ioredis',
         ...builtinModules,
         ...builtinModules.map((m) => `node:${m}`),
       ],
