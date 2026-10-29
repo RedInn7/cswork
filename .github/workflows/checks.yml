@@ -56,7 +56,7 @@ jobs:
       - run: node --test tests/oj-capacity-config.test.mjs tests/oj-capacity-release.test.mjs tests/oj-runner-swap.test.mjs
       - run: node --check tests/oj-capacity-benchmark.mjs
       - run: node --check tests/oj-capacity-admission-integration.mjs
-      - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh deploy/oj-pandas-release.sh
+      - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh deploy/oj-pandas-release.sh deploy/oj-runner-upgrade.sh
       - run: node --check deploy/oj-queue-control.cjs
       - run: bash -n deploy/release.sh deploy/check-additive-migrations.sh
       - run: node --test tests/check-additive-migrations.test.mjs
