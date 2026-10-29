@@ -599,7 +599,7 @@ const stateQuery = () =>
     'SELECT user_id,status,passed,total,attempt,cancel_requested,updated_at FROM submissions WHERE id=?',
   );
 // One primary-key read per tick; a verdict shows up at most a tick late.
-const TICK_MS = 25;
+const TICK_MS = 10;
 /**
  * A fresh submit holds its response briefly so a fast verdict reaches the
  * browser in the POST reply: one network round trip instead of a POST plus
