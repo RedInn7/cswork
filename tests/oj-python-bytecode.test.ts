@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { PYTHON_BYTECODE, PYTHON_CHECK, PYTHON_FAST_CHECK } from '../lib/server/oj-engine';
+import { compile, PYTHON_BYTECODE, PYTHON_CHECK, PYTHON_FAST_CHECK } from '../lib/server/oj-engine';
 import { leetcodeSource } from '../lib/server/leetcode-mode';
 
 const python = (dir: string, args: string[], input = '') =>
@@ -188,4 +188,28 @@ test('the fast syntax check reports exactly what py_compile did', () => {
   assert.equal(before.status, 0, before.stderr);
   assert.ok(before.pyc);
   assert.deepEqual(after, before);
+});
+
+test('a plain Python source checked clean is not checked again', async (t) => {
+  let calls = 0,
+    stderr = '';
+  t.mock.method(globalThis, 'fetch', async () => {
+    calls++;
+    return Response.json([{ status: 'Accepted', files: { stdout: '', stderr } }]);
+  });
+  const signal = new AbortController().signal;
+  const source = `print(${Math.random()})\n`;
+  for (let i = 0; i < 2; i++) {
+    const { result, program } = await compile('python', source, signal);
+    assert.equal(result.status, 'Accepted');
+    assert.deepEqual(program.cache, {});
+  }
+  assert.equal(calls, 1);
+  // A warning is output to show again; LeetCode programs carry their own .pyc.
+  stderr = 'main.py:1: SyntaxWarning: ...';
+  await compile('python', `${source}#\n`, signal);
+  await compile('python', `${source}#\n`, signal);
+  await compile('python', lc1(twoSum), signal);
+  await compile('python', lc1(twoSum), signal);
+  assert.equal(calls, 5);
 });

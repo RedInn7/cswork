@@ -10,6 +10,7 @@ import { stringStructureCheckerId } from '@/lib/oj-string-contract';
 import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
+import { createHash } from 'node:crypto';
 import type { CodeLanguage, Language } from '@/lib/problems';
 import { HTTP_FIXTURE_BOOTSTRAP, HTTP_FIXTURES_FILE } from '../http-fixtures.mjs';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
@@ -224,6 +225,8 @@ except BaseException:
     os.execv(sys.executable, [sys.executable, '-I', '-c', *sys.argv[1:]])
 del sys.argv[1]
 `;
+/** Hashes of plain Python sources whose check passed silently, most recent last. */
+const cleanPython = new Set<string>();
 /** The trusted LeetCode bridge (support runtime + native launcher) as cached bytecode. */
 export async function compileBridge(source: string, signal: AbortSignal) {
   const result = await execute(
@@ -309,6 +312,16 @@ export async function compile(
       : language === 'java'
         ? 'main.jar'
         : 'main';
+  // A plain Python source already checked clean: the check depends on nothing else.
+  const digest =
+    language === 'python' && !bytecode
+      ? createHash('sha256').update(source).digest('hex')
+      : '';
+  if (digest && cleanPython.delete(digest)) {
+    cleanPython.add(digest);
+    const result: EngineResult = { status: 'Accepted' };
+    return { result, program: { language, source, cache: {} } as CompiledProgram };
+  }
   const text = language === 'cpp' ? withStdcxxPch(source) : source;
   const commands: Record<CodeLanguage, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
@@ -389,6 +402,17 @@ export async function compile(
     source,
     cache: result.fileIds ?? {},
   } satisfies CompiledProgram;
+  if (
+    digest &&
+    result.status === 'Accepted' &&
+    !result.files?.stdout &&
+    !result.files?.stderr
+  ) {
+    cleanPython.add(digest);
+    // ponytail: insertion-ordered Set as an LRU of 32-byte keys; the cap only bounds memory.
+    if (cleanPython.size > 4096)
+      cleanPython.delete(cleanPython.values().next().value!);
+  }
   if (result.status === 'Accepted' && artifact && !program.cache[artifact]) {
     await cleanup(program);
     throw new EngineFailure('Compiled artifact missing');
