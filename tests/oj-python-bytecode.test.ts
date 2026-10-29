@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { PYTHON_BYTECODE } from '../lib/server/oj-engine';
+import { PYTHON_BYTECODE, PYTHON_CHECK, PYTHON_FAST_CHECK } from '../lib/server/oj-engine';
 import { leetcodeSource } from '../lib/server/leetcode-mode';
 
 const python = (dir: string, args: string[], input = '') =>
@@ -139,4 +139,53 @@ test('learner statements hoisted with a __future__ line keep the .py path', () =
   }
   // A plain __future__ import still gets bytecode.
   assert.equal(buildOnly(lc1(`from __future__ import annotations\n${twoSum}`)).pyc, true);
+});
+
+/** The compile step's Python command before (PYTHON_CHECK) and now (PYTHON_FAST_CHECK first). */
+function checks(source: string | Buffer, bytecode: boolean) {
+  const tail = bytecode ? PYTHON_BYTECODE : '';
+  const extra = bytecode ? ['main.py'] : [];
+  return [
+    ['-c', PYTHON_CHECK + (bytecode ? '\n' + tail : ''), ...extra],
+    ['-S', '-c', PYTHON_FAST_CHECK + tail, PYTHON_CHECK + (bytecode ? '\n' + tail : ''), ...extra],
+  ].map((args) => {
+    const dir = mkdtempSync(join(tmpdir(), 'cswork-check-'));
+    try {
+      writeFileSync(join(dir, 'main.py'), source);
+      const { status, stdout, stderr } = python(dir, args);
+      // marshal's bytes vary with interning, so compare what the .pyc does instead.
+      const pyc = existsSync(join(dir, 'main.pyc')) && python(dir, ['main.pyc'], '4\n1 2 4 8\n9\n').stdout;
+      return { status, stdout, stderr, pyc };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+}
+
+test('the fast syntax check reports exactly what py_compile did', () => {
+  const sources: (string | Buffer)[] = [
+    'print(sum(map(int, input().split())))\n',
+    'def f(:\n    pass\n',
+    'if True:\n\tx = 1\n        y = 2\n',
+    "x = '\\d'\nprint(x)\n",
+    'x = 1 is 1\n',
+    'return 1\n',
+    'def f():\n    nonlocal x\n',
+    'x = 1\0\n',
+    Buffer.from([0x78, 0x20, 0x3d, 0x20, 0x27, 0xff, 0x27, 0x0a]),
+    '# -*- coding: nope -*-\nx = 1\n',
+    '\ufeffprint(1)\n',
+    `X = ${'('.repeat(300)}1${')'.repeat(300)}\n`,
+    '',
+  ];
+  for (const source of sources)
+    for (const bytecode of [false, true]) {
+      const [before, after] = checks(source, bytecode);
+      assert.deepEqual(after, before, `${JSON.stringify(String(source))} bytecode=${bytecode}`);
+    }
+  // LeetCode programs still get their .pyc.
+  const [before, after] = checks(lc1(twoSum), true);
+  assert.equal(before.status, 0, before.stderr);
+  assert.ok(before.pyc);
+  assert.deepEqual(after, before);
 });

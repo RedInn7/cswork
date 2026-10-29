@@ -204,6 +204,26 @@ if len(blob) > 16 * 1024 * 1024:  # the copy-out limit; the .py still runs
 with open(name[:-3] + '.pyc', 'wb') as f:
     f.write(blob)
 `;
+/** The Python syntax check as it always ran: `python3 -I -c PYTHON_CHECK`. */
+export const PYTHON_CHECK =
+  "import py_compile; py_compile.compile('main.py', doraise=True)";
+/**
+ * PYTHON_CHECK spends ~17ms importing py_compile and site. A clean source (no error, no
+ * warning) passes it silently, so compile() checks that first; anything else re-executes
+ * the original check, argv[1], unchanged (without -S) for its exact output.
+ * On success argv is left as PYTHON_CHECK's, for PYTHON_BYTECODE.
+ */
+export const PYTHON_FAST_CHECK = `
+import os, sys, warnings
+try:
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        with open('main.py', 'rb') as f:
+            compile(f.read(), 'main.py', 'exec', dont_inherit=True)
+except BaseException:
+    os.execv(sys.executable, [sys.executable, '-I', '-c', *sys.argv[1:]])
+del sys.argv[1]
+`;
 /** The trusted LeetCode bridge (support runtime + native launcher) as cached bytecode. */
 export async function compileBridge(source: string, signal: AbortSignal) {
   const result = await execute(
@@ -332,10 +352,12 @@ export async function compile(
     python: [
       '/usr/bin/python3',
       '-I',
+      // The fast check and PYTHON_BYTECODE need only the standard library.
+      '-S',
       '-c',
+      PYTHON_FAST_CHECK + (bytecode ? PYTHON_BYTECODE : ''),
       // Line 1 stays the syntax check, so compile errors read exactly as before.
-      "import py_compile; py_compile.compile('main.py', doraise=True)" +
-        (bytecode ? '\n' + PYTHON_BYTECODE : ''),
+      PYTHON_CHECK + (bytecode ? '\n' + PYTHON_BYTECODE : ''),
       ...(bytecode ? ['main.py'] : []),
     ],
   };
