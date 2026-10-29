@@ -164,6 +164,12 @@ export type OJSubmission = {
   practiceRoundId?: string | null;
   practiceRoundNumber?: number | null;
 };
+/**
+ * A light watch reply (wait=1&light=1) carries no cases, code or output while judging: keep
+ * the last full detail's and take the new state. A verdict comes in full and replaces it.
+ */
+export const mergeWatch = (prev: OJSubmission | null, next: OJSubmission) =>
+  next.cases || prev?.id !== next.id ? next : { ...prev, ...next };
 export type SubmissionPage = {
   items: OJSubmission[];
   nextCursor: string | null;
