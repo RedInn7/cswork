@@ -58,7 +58,9 @@ import {
   matchesOutput,
   projectVerdict,
   runProject,
+  syntaxCheckOnly,
   type CompiledProgram,
+  type EngineResult,
 } from './oj-engine';
 
 const QUEUE = process.env.OJ_QUEUE_NAME || 'cswork-judge-v1';
@@ -250,6 +252,9 @@ async function judgeSubmission(
   // as a failed fetch), never because one learner cancelled or ran out of time.
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
+  // Cases started beside the compile (see below), settled before anything is released.
+  let early: Promise<EngineResult>[] = [];
+  const caseController = new AbortController();
   try {
     if (claimed.mode === 'project') {
       // No problem version: the learner's files against the task's two suites (runProject).
@@ -346,6 +351,40 @@ async function judgeSubmission(
           snapshot.spec.memoryLimit,
         )
       : { source: claimed.code };
+    const cases = ownInput
+      ? own.map((input, ordinal) => ({ ordinal, input, expectedOutput: null, hidden: false, weight: 1 }))
+      : snapshot.cases.filter((c) => formal || !c.hidden);
+    const caseSignal = AbortSignal.any([
+      controller.signal,
+      caseController.signal,
+    ]);
+    const runCase = async (c: (typeof cases)[number]) => {
+      const release = await caseSlots.acquire(caseSignal);
+      try {
+        current(id, attempt, controller.signal);
+        // Codec decoding still runs in a fresh sandbox and never sees the tree.
+        return await (snapshot.spec.checker === 'design-lc-297' ||
+        snapshot.spec.checker === 'design-lc-449'
+          ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
+          : run(program!, c.input, snapshot.spec, caseSignal));
+      } finally {
+        release();
+      }
+    };
+    // ponytail: a complexity probe runs its cases one at a time, smallest first, and stops at its
+    // first failure or past PROBE_CPU_MS; not exclusive, so other submissions' cases and
+    // precompiles still run beside it and nudge its CPU times a little. One probe in flight
+    // site-wide and 6 an hour each (lib/server/stress.ts) bound what it costs everyone else.
+    const width = probe ? 1 : caseConcurrency(snapshot.spec.memoryLimit, exclusive);
+    // A syntax check builds nothing, so the program is known now: its first cases run beside
+    // the check, one runner slot short of the width so the check never queues behind them.
+    // Their results are read only after a clean compile; anything else aborts them.
+    if (syntaxCheckOnly(claimed.language, wrapped.source)) {
+      program = { language: 'python', source: wrapped.source, cache: {} };
+      const beside = (caseSlots.contended() ? Math.min(2, width) : width) - 1;
+      early = cases.slice(0, Math.max(1, beside)).map(runCase);
+      for (const p of early) p.catch(() => {});
+    }
     const compileStarted = performance.now();
     // Built beside the compile; without it the bridge simply runs from source.
     bridgeAcquisition = wrapped.bridgeSource
@@ -390,9 +429,6 @@ async function judgeSubmission(
       status: 'running',
       compile_output: (compiled.result.files?.stderr || '').slice(0, 65536),
     });
-    const cases = ownInput
-      ? own.map((input, ordinal) => ({ ordinal, input, expectedOutput: null, hidden: false, weight: 1 }))
-      : snapshot.cases.filter((c) => formal || !c.hidden);
     if (
       program.leetcodeInput &&
       ['lc-297', 'lc-449'].includes(snapshot.spec.id)
@@ -426,29 +462,9 @@ async function judgeSubmission(
       memory = 0,
       overall = 'accepted';
     const totalWeight = cases.reduce((sum, c) => sum + c.weight, 0);
-    const caseController = new AbortController();
-    const caseSignal = AbortSignal.any([
-      controller.signal,
-      caseController.signal,
-    ]);
-    const executeCase = async (c: (typeof cases)[number]) => {
-      const release = await caseSlots.acquire(caseSignal);
-      try {
-        current(id, attempt, controller.signal);
-        // Codec decoding still runs in a fresh sandbox and never sees the tree.
-        return await (snapshot.spec.checker === 'design-lc-297' ||
-        snapshot.spec.checker === 'design-lc-449'
-          ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
-          : run(program!, c.input, snapshot.spec, caseSignal));
-      } finally {
-        release();
-      }
-    };
-    // ponytail: a complexity probe runs its cases one at a time, smallest first, and stops at its
-    // first failure or past PROBE_CPU_MS; not exclusive, so other submissions' cases and
-    // precompiles still run beside it and nudge its CPU times a little. One probe in flight
-    // site-wide and 6 an hour each (lib/server/stress.ts) bound what it costs everyone else.
-    const width = probe ? 1 : caseConcurrency(snapshot.spec.memoryLimit, exclusive);
+    const started = new Map(cases.map((c, i) => [c, early[i]]));
+    const executeCase = (c: (typeof cases)[number]) =>
+      started.get(c) ?? runCase(c);
     let probeMs = 0;
     for await (const { item: c, result } of orderedCaseResults(
       cases,
@@ -576,6 +592,11 @@ async function judgeSubmission(
     });
     throw new Error('Execution failed after bounded retries');
   } finally {
+    // Unread early cases (a compile error or failure) stop here, before compilation.release.
+    if (early.length) {
+      caseController.abort();
+      await Promise.allSettled(early);
+    }
     clearTimeout(deadline);
     clearInterval(monitor);
     if (controllers.get(id) === controller) controllers.delete(id);

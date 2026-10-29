@@ -4,7 +4,13 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { compile, PYTHON_BYTECODE, PYTHON_CHECK, PYTHON_FAST_CHECK } from '../lib/server/oj-engine';
+import {
+  compile,
+  PYTHON_BYTECODE,
+  PYTHON_CHECK,
+  PYTHON_FAST_CHECK,
+  syntaxCheckOnly,
+} from '../lib/server/oj-engine';
 import { leetcodeSource } from '../lib/server/leetcode-mode';
 
 const python = (dir: string, args: string[], input = '') =>
@@ -212,4 +218,11 @@ test('a plain Python source checked clean is not checked again', async (t) => {
   await compile('python', lc1(twoSum), signal);
   await compile('python', lc1(twoSum), signal);
   assert.equal(calls, 5);
+});
+
+test('only ACM Python compiles to nothing, so its cases may start beside the check', () => {
+  assert.equal(syntaxCheckOnly('python', 'print(1)\n'), true);
+  assert.equal(syntaxCheckOnly('python', lc1(twoSum)), false);
+  assert.equal(syntaxCheckOnly('cpp', 'int main(){}'), false);
+  assert.equal(syntaxCheckOnly('pandas', 'import pandas'), false);
 });

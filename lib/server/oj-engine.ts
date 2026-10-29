@@ -292,6 +292,14 @@ with zipfile.ZipFile('main.jar', 'w', zipfile.ZIP_DEFLATED) as jar:
 const STDCXX_FALLBACK = {
   'cswork/stdc++.hpp': { content: '#include <bits/stdc++.h>\n' },
 };
+/**
+ * ACM Python: its compile only checks syntax and leaves nothing its cases need, so they run
+ * the same program whatever the check says. LeetCode-mode Python carries the support runtime
+ * and compiles it to a .pyc.
+ */
+export function syntaxCheckOnly(language: Language, source: string) {
+  return language === 'python' && !source.includes(LEETCODE_SUPPORT);
+}
 export async function compile(
   language: Language,
   source: string,
@@ -303,8 +311,8 @@ export async function compile(
     const program: CompiledProgram = { language, source, cache: {} };
     return { result, program };
   }
-  // LeetCode-mode Python carries the support runtime; ACM Python runs as plain source.
-  const bytecode = language === 'python' && source.includes(LEETCODE_SUPPORT);
+  const plain = syntaxCheckOnly(language, source);
+  const bytecode = language === 'python' && !plain;
   // Python's bytecode is optional (see PYTHON_BYTECODE); the others must exist.
   const artifact =
     language === 'python'
@@ -313,10 +321,7 @@ export async function compile(
         ? 'main.jar'
         : 'main';
   // A plain Python source already checked clean: the check depends on nothing else.
-  const digest =
-    language === 'python' && !bytecode
-      ? createHash('sha256').update(source).digest('hex')
-      : '';
+  const digest = plain ? createHash('sha256').update(source).digest('hex') : '';
   if (digest && cleanPython.delete(digest)) {
     cleanPython.add(digest);
     const result: EngineResult = { status: 'Accepted' };
