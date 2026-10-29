@@ -1,6 +1,8 @@
-/** One interruptible, best-effort background task sharing the foreground worker. */
+/**
+ * One interruptible, best-effort background task sharing the foreground worker. Foreground work
+ * no longer preempts it by itself: the worker cancels it only while the case slots are contended.
+ */
 export class PrecompileScheduler {
-  private foreground = 0;
   private closed = false;
   private active?: {
     id: string;
@@ -17,7 +19,7 @@ export class PrecompileScheduler {
     return this.active?.id === id && Boolean(this.active.adopted);
   }
   get canStart() {
-    return !this.closed && !this.foreground && !this.active;
+    return !this.closed && !this.active;
   }
   start(
     id: string,
@@ -50,21 +52,13 @@ export class PrecompileScheduler {
     active.controller.abort();
     await active.settled;
   }
-  /** `key` adopts a background compile of the same program instead of aborting it. */
-  async enterForeground(key?: string): Promise<() => void> {
-    // Runs before the first await, preventing a new task during cancellation.
-    this.foreground++;
+  /** `key` adopts a background compile of the same program and waits for it; any other runs on. */
+  async enterForeground(key?: string): Promise<void> {
     const active = this.active;
     if (active && key !== undefined && active.key === key) {
       active.adopted = true;
       await active.settled;
-    } else await this.cancelBackground();
-    let released = false;
-    return () => {
-      if (released) return;
-      released = true;
-      this.foreground--;
-    };
+    }
   }
   async close() {
     this.closed = true;

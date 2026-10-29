@@ -13,7 +13,6 @@ import {
   nextPrecompileDraft,
   precompileDraftCurrent,
   consumePrecompileDraft,
-  hasForegroundSubmissions,
   precompileKey,
   prunePrecompileDrafts,
   type PrecompileDraft,
@@ -163,7 +162,6 @@ async function judge(job: Job<{ submissionId: string }>) {
     if (stopping || !latest || latest.cancel_requested) waiting.abort();
   }, 400);
   let releaseAdmission: (() => void) | undefined;
-  let releaseForeground: (() => void) | undefined;
   // Playground and project runs have no version (so no budget row) and small fixed limits.
   const exclusive =
     row.mode !== 'playground' &&
@@ -173,7 +171,7 @@ async function judge(job: Job<{ submissionId: string }>) {
   try {
     releaseAdmission = await admission.acquire(exclusive, waiting.signal);
     // A precompile of this exact program finishes into the cache it then hits.
-    releaseForeground = await precompiles.enterForeground(precompileKey(row));
+    await precompiles.enterForeground(precompileKey(row));
     clearInterval(monitor);
     return await judgeSubmission(job, exclusive);
   } catch (error) {
@@ -189,7 +187,6 @@ async function judge(job: Job<{ submissionId: string }>) {
     throw new Error('Judge admission interrupted');
   } finally {
     clearInterval(monitor);
-    releaseForeground?.();
     releaseAdmission?.();
   }
 }
@@ -704,13 +701,15 @@ const dispatchTimer = setInterval(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
 }, OJ_DISPATCH_INTERVAL_MS);
-let activeDraft: PrecompileDraft | undefined;
+// Speculation yields only when the runner is busy: every case slot taken or someone waiting.
+// A submission in flight elsewhere no longer cancels it (a free slot is runner time to spare);
+// cancelBackground leaves an adopted compile, a submission's own, alone.
 function precompileTick() {
   if (
     stopping ||
     !engineAvailable ||
     !precompileEnabled() ||
-    hasForegroundSubmissions(activeDraft)
+    caseSlots.contended()
   ) {
     void precompiles.cancelBackground();
     return;
@@ -721,13 +720,12 @@ function precompileTick() {
   precompiles.start(
     draft.generation,
     async (signal) => {
-      activeDraft = draft;
       // Once a submission adopts this compile it is that submission's own
       // compile: no speculative timeout, and later edits do not cancel it.
       const adopted = () => precompiles.isAdopted(draft.generation);
       const outdated = setInterval(() => {
         if (adopted()) return;
-        if (!precompileDraftCurrent(draft) || hasForegroundSubmissions(draft))
+        if (!precompileDraftCurrent(draft))
           void precompiles.cancelBackground(draft.generation);
       }, OJ_DISPATCH_INTERVAL_MS);
       const timeout = new AbortController();
@@ -774,7 +772,6 @@ function precompileTick() {
         clearInterval(outdated);
         clearTimeout(timer);
         consumePrecompileDraft(draft);
-        if (activeDraft === draft) activeDraft = undefined;
       }
     },
     precompileKey(draft),
