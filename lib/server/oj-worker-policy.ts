@@ -22,6 +22,16 @@ export const OJ_WORKER_CONCURRENCY = workerConcurrency();
 /** Case sandboxes in flight across all submissions: the runner's OJ_RUNNER_PARALLELISM. */
 export const OJ_CASE_SLOTS = 4;
 
+/**
+ * Next maintenance round: every 5s while healthy, 1s after a failed one. A failed round pauses
+ * intake, so a runner or Redis blip that clears at once no longer holds every queued job for 5s.
+ */
+export function maintenanceDelayMs(healthy: boolean) {
+  return healthy ? 5000 : 1000;
+}
+/** Exponential BullMQ retry delay after an interrupted attempt: 1s, then 2s. */
+export const OJ_RETRY_BACKOFF_MS = 1000;
+
 /** Inspect byte counts in SQLite, before materializing potentially large strings. */
 export function exclusiveSubmission(
   snapshotBytes: number,

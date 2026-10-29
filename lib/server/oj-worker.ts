@@ -35,6 +35,8 @@ import {
   OJ_CASE_SLOTS,
   exclusiveSubmission,
   leetcodeShape,
+  maintenanceDelayMs,
+  OJ_RETRY_BACKOFF_MS,
   RESOURCE_FAILURES,
   stopJudging,
   SubmissionAdmission,
@@ -90,7 +92,7 @@ const queue = new Queue(QUEUE, {
   },
   defaultJobOptions: {
     attempts: MAX_ATTEMPTS,
-    backoff: { type: 'exponential', delay: 3000 },
+    backoff: { type: 'exponential', delay: OJ_RETRY_BACKOFF_MS },
     removeOnComplete: { age: 86400, count: 1000 },
     removeOnFail: { age: 7 * 86400, count: 1000 },
   },
@@ -655,7 +657,7 @@ async function maintenance() {
     }
     if (worker.isPaused()) await worker.resume();
   } catch (error) {
-    // Logged: a failed round pauses intake until the next one, 5s later (a queue-wait tail).
+    // Logged: a failed round pauses intake until the next one, 1s later (maintenanceDelayMs).
     console.error(JSON.stringify({ event: 'oj_maintenance_failed', error: error instanceof Error ? error.message : 'unknown' }));
     engineAvailable = false;
     // Pause acquisition only; in-flight jobs own their timeout, retry and cancellation.
@@ -692,7 +694,15 @@ void worker.run().catch(() => {
   process.exitCode = 1;
 });
 await maintenance();
-const timer = setInterval(() => void maintenance(), 5000);
+let timer: ReturnType<typeof setTimeout>;
+function scheduleMaintenance() {
+  timer = setTimeout(() => {
+    void maintenance().finally(() => {
+      if (!stopping) scheduleMaintenance();
+    });
+  }, maintenanceDelayMs(engineAvailable));
+}
+scheduleMaintenance();
 const outboxDispatcher = createOutboxDispatcher(db, async (id) => {
   const started = performance.now();
   await queue.add('judge', { submissionId: id }, { jobId: id });
@@ -821,7 +831,7 @@ const jobsTimer = setInterval(() => void syncJobOpenings().catch(() => console.e
 async function stop() {
   if (stopping) return;
   stopping = true;
-  clearInterval(timer);
+  clearTimeout(timer);
   clearInterval(reminderTimer);
   clearInterval(jobsTimer);
   clearInterval(dispatchTimer);

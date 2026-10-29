@@ -6,6 +6,8 @@ import {
   exclusiveSubmission,
   SubmissionAdmission,
   stopJudging,
+  maintenanceDelayMs,
+  OJ_RETRY_BACKOFF_MS,
 } from '../lib/server/oj-worker-policy';
 
 void test('worker defaults to four slots, accepts one to four and rejects unbounded overrides', () => {
@@ -171,4 +173,10 @@ void test('judging stops at the first formal failure, a run on resource failures
   assert.equal(stopJudging('time_limit', { ...all, heavy: 2 }), false);
   assert.equal(stopJudging('output_limit', { ...all, heavy: 3 }), true);
   assert.equal(stopJudging('accepted', { ...all, heavy: 3 }), false);
+});
+
+void test('a failed maintenance round retries after 1s, a healthy one waits 5s; job retries back off from 1s', () => {
+  assert.equal(maintenanceDelayMs(true), 5000);
+  assert.equal(maintenanceDelayMs(false), 1000);
+  assert.equal(OJ_RETRY_BACKOFF_MS, 1000);
 });
