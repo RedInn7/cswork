@@ -21,19 +21,26 @@ export function wakeSubmission(id: string) {
   for (const wake of waiters.get(id) ?? []) wake();
 }
 
+let retryAt = 0;
 function subscribe() {
   // The web process gets Redis like judgeReady; OJ_EVENTS_URL may name a subscribe-only user.
   const url = process.env.OJ_EVENTS_URL || process.env.REDIS_URL;
-  if (subscriber || !url) return;
-  subscriber = new Redis(url, { maxRetriesPerRequest: null, connectTimeout: 5000 });
-  subscriber.on('message', (_channel: string, id: string) => wakeSubmission(id));
-  // ioredis resubscribes on reconnect before 'ready'; until then waiters poll every tick.
-  subscriber.on('ready', () => (live = true));
-  subscriber.on('close', () => (live = false));
-  subscriber.on('error', () => (live = false));
-  subscriber.subscribe(VERDICT_CHANNEL).then(
+  if (subscriber || !url || Date.now() < retryAt) return;
+  // ponytail: no ioredis reconnect loop (its timers would hold a process open); the next waiter
+  // after a drop reconnects, at most every 5s, and polls every tick meanwhile.
+  const client = new Redis(url, { retryStrategy: () => null, connectTimeout: 5000 });
+  subscriber = client;
+  client.on('message', (_channel: string, id: string) => wakeSubmission(id));
+  client.on('connect', () => client.stream.unref());
+  client.on('error', () => {});
+  client.on('end', () => {
+    live = false;
+    subscriber = undefined;
+    retryAt = Date.now() + 5_000;
+  });
+  client.subscribe(VERDICT_CHANNEL).then(
     () => (live = true),
-    () => (live = false),
+    () => client.disconnect(),
   );
 }
 
