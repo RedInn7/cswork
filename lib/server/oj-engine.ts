@@ -210,17 +210,18 @@ export const PYTHON_CHECK =
   "import py_compile; py_compile.compile('main.py', doraise=True)";
 /**
  * PYTHON_CHECK spends ~17ms importing py_compile and site. A clean source (no error, no
- * warning) passes it silently, so compile() checks that first; anything else re-executes
+ * warning) passes it silently, so compile() checks that first, then marshal as py_compile
+ * does (~1000 nested lambdas compile but are too deep to marshal); anything else re-executes
  * the original check, argv[1], unchanged (without -S) for its exact output.
  * On success argv is left as PYTHON_CHECK's, for PYTHON_BYTECODE.
  */
 export const PYTHON_FAST_CHECK = `
-import os, sys, warnings
+import marshal, os, sys, warnings
 try:
     with warnings.catch_warnings():
         warnings.simplefilter('error')
         with open('main.py', 'rb') as f:
-            compile(f.read(), 'main.py', 'exec', dont_inherit=True)
+            marshal.dumps(compile(f.read(), 'main.py', 'exec', dont_inherit=True))
 except BaseException:
     os.execv(sys.executable, [sys.executable, '-I', '-c', *sys.argv[1:]])
 del sys.argv[1]

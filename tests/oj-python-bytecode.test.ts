@@ -182,6 +182,8 @@ test('the fast syntax check reports exactly what py_compile did', () => {
     '# -*- coding: nope -*-\nx = 1\n',
     '\ufeffprint(1)\n',
     `X = ${'('.repeat(300)}1${')'.repeat(300)}\n`,
+    // Compiles, but py_compile cannot marshal it.
+    `x = ${'lambda: '.repeat(1000)}1\n`,
     '',
   ];
   for (const source of sources)
