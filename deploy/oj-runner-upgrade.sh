@@ -110,7 +110,7 @@ new_id=$(docker image inspect -f '{{.Id}}' "$candidate")
 # The worker's own commands (lib/server/oj-engine.ts, leetcode-mode.ts) as the
 # sandbox user, offline; -Xshare:on and g++ -H prove the archives/PCHs are used.
 docker run --rm -i --network none --user 1536:1536 --memory 1g --pids-limit 64 \
-  --tmpfs /tmp:rw,nosuid,nodev,size=256m --entrypoint /bin/sh "$candidate" -s <<'SMOKE' || die "$candidate failed the offline smoke test"
+  --tmpfs /tmp:rw,exec,nosuid,nodev,size=256m --entrypoint /bin/sh "$candidate" -s <<'SMOKE' || die "$candidate failed the offline smoke test"
 set -eu
 fail() { echo "smoke: $*" >&2; exit 1; }
 mkdir /tmp/java /tmp/cpp /tmp/cpp/cswork && cd /tmp/java
