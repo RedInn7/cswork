@@ -13,7 +13,6 @@ import {
   nextPrecompileDraft,
   precompileDraftCurrent,
   consumePrecompileDraft,
-  hasForegroundSubmissions,
   precompileKey,
   prunePrecompileDrafts,
   type PrecompileDraft,
@@ -22,7 +21,9 @@ import {
 import type { OjJudgeSnapshot, OjProblemSpec } from '@/lib/oj-types';
 import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
 import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
+import { VERDICT_CHANNEL } from './oj-verdict-bus';
 import { Queue, Worker, type Job } from 'bullmq';
+import Redis from 'ioredis';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
@@ -36,6 +37,8 @@ import {
   OJ_CASE_SLOTS,
   exclusiveSubmission,
   leetcodeShape,
+  maintenanceDelayMs,
+  OJ_RETRY_BACKOFF_MS,
   RESOURCE_FAILURES,
   stopJudging,
   SubmissionAdmission,
@@ -58,7 +61,9 @@ import {
   matchesOutput,
   projectVerdict,
   runProject,
+  syntaxCheckOnly,
   type CompiledProgram,
+  type EngineResult,
 } from './oj-engine';
 
 const QUEUE = process.env.OJ_QUEUE_NAME || 'cswork-judge-v1';
@@ -67,6 +72,10 @@ const MAX_ATTEMPTS = 3;
 /** A complexity probe's CPU budget across its cases: checked between cases, so the last one may overrun it. */
 const PROBE_CPU_MS = 10_000;
 const db = sqlite();
+// This connection only (the web process keeps FULL): under WAL, NORMAL skips the fsync on every
+// commit, one per judged case. A power loss can drop the last few commits but never corrupts the
+// database; a submission left mid-judging is re-queued from the outbox and judged again.
+db.pragma('synchronous = NORMAL');
 const redisUrl = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6381');
 if (!['redis:', 'rediss:'].includes(redisUrl.protocol))
   throw new Error('Invalid Redis protocol');
@@ -87,13 +96,18 @@ const queue = new Queue(QUEUE, {
   },
   defaultJobOptions: {
     attempts: MAX_ATTEMPTS,
-    backoff: { type: 'exponential', delay: 3000 },
+    backoff: { type: 'exponential', delay: OJ_RETRY_BACKOFF_MS },
     removeOnComplete: { age: 86400, count: 1000 },
     removeOnFail: { age: 7 * 86400, count: 1000 },
   },
 });
+// Fails fast while Redis is away: waiters then find the change on their backstop read.
+const publisher = new Redis({ ...connection, maxRetriesPerRequest: 1, enableOfflineQueue: false });
+publisher.on('error', () => {});
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
+// ponytail: one short key per published version judged since the last restart (every release).
+const verifiedVersions = new Set<string>();
 // LeetCode bridges hold no user code, so one bytecode copy serves every learner.
 // The default 5-minute lifetime stays below the runner's -file-timeout=10m
 // (deploy/oj/entrypoint.sh), which would otherwise delete a cached bridge.
@@ -108,6 +122,7 @@ const caseSlots = createSlots(OJ_CASE_SLOTS);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
+let timer: ReturnType<typeof setTimeout> | undefined;
 class LostAttempt extends Error {}
 function current(id: string, attempt: number, signal: AbortSignal) {
   const row = submissionRow(id);
@@ -115,6 +130,13 @@ function current(id: string, attempt: number, signal: AbortSignal) {
   if (row.cancel_requested || stopping || signal.aborted)
     throw new Error('Execution interrupted');
   return row;
+}
+/**
+ * Tells waiting web requests (oj-verdict-bus) the submission changed. Queued as a microtask:
+ * better-sqlite3 transactions are synchronous, so it runs once the caller's commit is done.
+ */
+function notify(id: string) {
+  queueMicrotask(() => void publisher.publish(VERDICT_CHANNEL, id).catch(() => {}));
 }
 function update(
   id: string,
@@ -135,13 +157,15 @@ function update(
   ]);
   if (Object.keys(fields).some((k) => !allowed.has(k)))
     throw new Error('Invalid update field');
-  return db
+  const result = db
     .prepare(
       `UPDATE submissions SET ${Object.keys(fields)
         .map((k) => `${k}=?`)
         .join(',')},updated_at=? WHERE id=? AND attempt=?`,
     )
     .run(...Object.values(fields), Date.now(), id, attempt);
+  if (result.changes) notify(id);
+  return result;
 }
 async function judge(job: Job<{ submissionId: string }>) {
   const row = submissionRow(job.data.submissionId);
@@ -225,6 +249,7 @@ async function judgeSubmission(
     return row;
   })();
   if (!claimed) return;
+  notify(id);
   const attempt = claimed.attempt,
     controller = new AbortController(),
     // A submission or an OA drill: every case, hidden ones too, stopping at the first failure,
@@ -250,6 +275,9 @@ async function judgeSubmission(
   // as a failed fetch), never because one learner cancelled or ran out of time.
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
+  // Cases started beside the compile (see below), settled before anything is released.
+  let early: Promise<EngineResult>[] = [];
+  const caseController = new AbortController();
   try {
     if (claimed.mode === 'project') {
       // No problem version: the learner's files against the task's two suites (runProject).
@@ -300,7 +328,7 @@ async function judgeSubmission(
     const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
-        : await loadJudgeSnapshot(claimed.problem_version_id!);
+        : await loadJudgeSnapshot(claimed.problem_version_id!, verifiedVersions);
     // A per-language limit replaces timeLimit everywhere below: cases, codec runs, the deadline.
     const snapshot = {
       ...loaded,
@@ -346,6 +374,40 @@ async function judgeSubmission(
           snapshot.spec.memoryLimit,
         )
       : { source: claimed.code };
+    const cases = ownInput
+      ? own.map((input, ordinal) => ({ ordinal, input, expectedOutput: null, hidden: false, weight: 1 }))
+      : snapshot.cases.filter((c) => formal || !c.hidden);
+    const caseSignal = AbortSignal.any([
+      controller.signal,
+      caseController.signal,
+    ]);
+    const runCase = async (c: (typeof cases)[number]) => {
+      const release = await caseSlots.acquire(caseSignal);
+      try {
+        current(id, attempt, controller.signal);
+        // Codec decoding still runs in a fresh sandbox and never sees the tree.
+        return await (snapshot.spec.checker === 'design-lc-297' ||
+        snapshot.spec.checker === 'design-lc-449'
+          ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
+          : run(program!, c.input, snapshot.spec, caseSignal));
+      } finally {
+        release();
+      }
+    };
+    // ponytail: a complexity probe runs its cases one at a time, smallest first, and stops at its
+    // first failure or past PROBE_CPU_MS; not exclusive, so other submissions' cases and
+    // precompiles still run beside it and nudge its CPU times a little. One probe in flight
+    // site-wide and 6 an hour each (lib/server/stress.ts) bound what it costs everyone else.
+    const width = probe ? 1 : caseConcurrency(snapshot.spec.memoryLimit, exclusive);
+    // A syntax check builds nothing, so the program is known now: its first cases run beside
+    // the check, one runner slot short of the width so the check never queues behind them.
+    // Their results are read only after a clean compile; anything else aborts them.
+    if (syntaxCheckOnly(claimed.language, wrapped.source)) {
+      program = { language: 'python', source: wrapped.source, cache: {} };
+      const beside = (caseSlots.contended() ? Math.min(2, width) : width) - 1;
+      early = cases.slice(0, Math.max(1, beside)).map(runCase);
+      for (const p of early) p.catch(() => {});
+    }
     const compileStarted = performance.now();
     // Built beside the compile; without it the bridge simply runs from source.
     bridgeAcquisition = wrapped.bridgeSource
@@ -390,9 +452,6 @@ async function judgeSubmission(
       status: 'running',
       compile_output: (compiled.result.files?.stderr || '').slice(0, 65536),
     });
-    const cases = ownInput
-      ? own.map((input, ordinal) => ({ ordinal, input, expectedOutput: null, hidden: false, weight: 1 }))
-      : snapshot.cases.filter((c) => formal || !c.hidden);
     if (
       program.leetcodeInput &&
       ['lc-297', 'lc-449'].includes(snapshot.spec.id)
@@ -426,29 +485,9 @@ async function judgeSubmission(
       memory = 0,
       overall = 'accepted';
     const totalWeight = cases.reduce((sum, c) => sum + c.weight, 0);
-    const caseController = new AbortController();
-    const caseSignal = AbortSignal.any([
-      controller.signal,
-      caseController.signal,
-    ]);
-    const executeCase = async (c: (typeof cases)[number]) => {
-      const release = await caseSlots.acquire(caseSignal);
-      try {
-        current(id, attempt, controller.signal);
-        // Codec decoding still runs in a fresh sandbox and never sees the tree.
-        return await (snapshot.spec.checker === 'design-lc-297' ||
-        snapshot.spec.checker === 'design-lc-449'
-          ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
-          : run(program!, c.input, snapshot.spec, caseSignal));
-      } finally {
-        release();
-      }
-    };
-    // ponytail: a complexity probe runs its cases one at a time, smallest first, and stops at its
-    // first failure or past PROBE_CPU_MS; not exclusive, so other submissions' cases and
-    // precompiles still run beside it and nudge its CPU times a little. One probe in flight
-    // site-wide and 6 an hour each (lib/server/stress.ts) bound what it costs everyone else.
-    const width = probe ? 1 : caseConcurrency(snapshot.spec.memoryLimit, exclusive);
+    const started = new Map(cases.map((c, i) => [c, early[i]]));
+    const executeCase = (c: (typeof cases)[number]) =>
+      started.get(c) ?? runCase(c);
     let probeMs = 0;
     for await (const { item: c, result } of orderedCaseResults(
       cases,
@@ -513,6 +552,7 @@ async function judgeSubmission(
           score: Math.round((weight / totalWeight) * 100),
         },
       );
+      notify(id);
       if (terminal) terminalFailureCommitted = true;
       // Unexecuted cases after a stop read as skipped.
       if (stopJudging(status, { formal, runAll, heavy })) break;
@@ -567,6 +607,13 @@ async function judgeSubmission(
         status: 'queued',
         message: '执行服务暂时中断，正在自动重试',
       });
+      // Check health now, not up to 5s later: a down runner must pause intake before this job's
+      // 1s/2s retries, or they burn its three attempts (system_error) before maintenance notices.
+      // An in-flight round reschedules itself; starting another would fork the timer chain.
+      if (!maintaining && !stopping && timer !== undefined) {
+        clearTimeout(timer);
+        scheduleMaintenance(0);
+      }
       throw new Error('Execution interrupted; retry scheduled');
     }
     update(id, attempt, {
@@ -576,6 +623,11 @@ async function judgeSubmission(
     });
     throw new Error('Execution failed after bounded retries');
   } finally {
+    // Unread early cases (a compile error or failure) stop here, before compilation.release.
+    if (early.length) {
+      caseController.abort();
+      await Promise.allSettled(early);
+    }
     clearTimeout(deadline);
     clearInterval(monitor);
     if (controllers.get(id) === controller) controllers.delete(id);
@@ -645,6 +697,7 @@ async function maintenance() {
         db.prepare(
           "UPDATE submissions SET status='system_error',message='判题任务多次中断，请重新提交',finished_at=?,updated_at=? WHERE id=? AND status IN ('queued','compiling','running')",
         ).run(Date.now(), Date.now(), id);
+        notify(id);
       }
       db.prepare(
         'UPDATE oj_outbox SET dispatched_at=? WHERE submission_id=?',
@@ -652,7 +705,7 @@ async function maintenance() {
     }
     if (worker.isPaused()) await worker.resume();
   } catch (error) {
-    // Logged: a failed round pauses intake until the next one, 5s later (a queue-wait tail).
+    // Logged: a failed round pauses intake until the next one, 1s later (maintenanceDelayMs).
     console.error(JSON.stringify({ event: 'oj_maintenance_failed', error: error instanceof Error ? error.message : 'unknown' }));
     engineAvailable = false;
     // Pause acquisition only; in-flight jobs own their timeout, retry and cancellation.
@@ -689,7 +742,14 @@ void worker.run().catch(() => {
   process.exitCode = 1;
 });
 await maintenance();
-const timer = setInterval(() => void maintenance(), 5000);
+function scheduleMaintenance(delay = maintenanceDelayMs(engineAvailable)) {
+  timer = setTimeout(() => {
+    void maintenance().finally(() => {
+      if (!stopping) scheduleMaintenance();
+    });
+  }, delay);
+}
+scheduleMaintenance();
 const outboxDispatcher = createOutboxDispatcher(db, async (id) => {
   const started = performance.now();
   await queue.add('judge', { submissionId: id }, { jobId: id });
@@ -704,13 +764,15 @@ const dispatchTimer = setInterval(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
 }, OJ_DISPATCH_INTERVAL_MS);
-let activeDraft: PrecompileDraft | undefined;
+// Speculation yields only when the runner is busy: every case slot taken or someone waiting.
+// A submission in flight elsewhere no longer cancels it (a free slot is runner time to spare);
+// cancelBackground leaves an adopted compile, a submission's own, alone.
 function precompileTick() {
   if (
     stopping ||
     !engineAvailable ||
     !precompileEnabled() ||
-    hasForegroundSubmissions(activeDraft)
+    caseSlots.contended()
   ) {
     void precompiles.cancelBackground();
     return;
@@ -718,16 +780,20 @@ function precompileTick() {
   if (!precompiles.canStart) return;
   const draft = nextPrecompileDraft();
   if (!draft) return;
+  // Submitted while another draft held the scheduler: its own compile already covers this one.
+  if (precompiles.inForeground(precompileKey(draft))) {
+    consumePrecompileDraft(draft);
+    return;
+  }
   precompiles.start(
     draft.generation,
     async (signal) => {
-      activeDraft = draft;
       // Once a submission adopts this compile it is that submission's own
       // compile: no speculative timeout, and later edits do not cancel it.
       const adopted = () => precompiles.isAdopted(draft.generation);
       const outdated = setInterval(() => {
         if (adopted()) return;
-        if (!precompileDraftCurrent(draft) || hasForegroundSubmissions(draft))
+        if (!precompileDraftCurrent(draft))
           void precompiles.cancelBackground(draft.generation);
       }, OJ_DISPATCH_INTERVAL_MS);
       const timeout = new AbortController();
@@ -774,7 +840,6 @@ function precompileTick() {
         clearInterval(outdated);
         clearTimeout(timer);
         consumePrecompileDraft(draft);
-        if (activeDraft === draft) activeDraft = undefined;
       }
     },
     precompileKey(draft),
@@ -818,7 +883,7 @@ const jobsTimer = setInterval(() => void syncJobOpenings().catch(() => console.e
 async function stop() {
   if (stopping) return;
   stopping = true;
-  clearInterval(timer);
+  clearTimeout(timer);
   clearInterval(reminderTimer);
   clearInterval(jobsTimer);
   clearInterval(dispatchTimer);
@@ -832,6 +897,7 @@ async function stop() {
   await compiledPrograms.close();
   await bridgePrograms.close();
   await queue.close();
+  publisher.disconnect();
   db.prepare(
     "UPDATE oj_runtime SET healthy=0,heartbeat_at=? WHERE id='worker'",
   ).run(Date.now());

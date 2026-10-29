@@ -569,3 +569,24 @@ void test('SQLite prevents mutation of published versions and their cases', asyn
       .run('watch-intervals'),
   );
 });
+
+void test('a version whose checksum already matched skips re-hashing; without the set it is checked', async () => {
+  const db = sqlite();
+  const id = 'initial:watch-intervals:1';
+  const verified = new Set<string>();
+  const first = await loadJudgeSnapshot(id, verified);
+  assert.equal(verified.size, 1);
+  const original = first.cases[0].input;
+  // Tamper behind the immutability trigger to observe that the remembered version is not re-hashed.
+  const trigger = (db.prepare("SELECT sql FROM sqlite_master WHERE name='oj_case_immutable_update'").get() as { sql: string }).sql;
+  db.exec('DROP TRIGGER oj_case_immutable_update');
+  try {
+    db.prepare('UPDATE oj_test_cases SET input=? WHERE id=?').run(original + ' ', first.cases[0].id);
+    assert.equal((await loadJudgeSnapshot(id, verified)).cases[0].input, original + ' ');
+    await assert.rejects(loadJudgeSnapshot(id), /完整性/);
+    await assert.rejects(loadJudgeSnapshot(id, new Set()), /完整性/);
+  } finally {
+    db.prepare('UPDATE oj_test_cases SET input=? WHERE id=?').run(original, first.cases[0].id);
+    db.exec(trigger);
+  }
+});

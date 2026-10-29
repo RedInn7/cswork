@@ -8,8 +8,10 @@ const compose = read('../deploy/oj/compose.yaml');
 const scripts = {
   'oj-pandas-release.sh': read('../deploy/oj-pandas-release.sh'),
   'oj-capacity-release.sh': read('../deploy/oj-capacity-release.sh'),
+  'oj-runner-upgrade.sh': read('../deploy/oj-runner-upgrade.sh'),
 };
 const pandas = scripts['oj-pandas-release.sh'];
+const upgrade = scripts['oj-runner-upgrade.sh'];
 
 // compose.yaml's sandbox service, read with the few shapes it uses.
 const sandbox = compose.slice(compose.indexOf('\n  sandbox:'), compose.indexOf('\n  redis:'));
@@ -74,7 +76,7 @@ function sandboxRun(script) {
   return { image, health, flags: ` ${text.slice(0, h0)}${text.slice(h1 + 1)} ` };
 }
 
-test('both runner swap scripts start the sandbox exactly as compose.yaml declares', () => {
+test('all runner swap scripts start the sandbox exactly as compose.yaml declares', () => {
   const handled = ['build', 'image', 'container_name', 'restart', 'cgroup', 'cap_add', 'cap_drop', 'security_opt',
     'ports', 'environment', 'mem_limit', 'memswap_limit', 'cpus', 'cpu_shares', 'pids_limit', 'shm_size', 'tmpfs',
     'networks', 'healthcheck', 'logging'];
@@ -94,7 +96,9 @@ test('both runner swap scripts start the sandbox exactly as compose.yaml declare
     assert.equal(rest.trim(), '', `${name} has flags compose.yaml does not declare`);
     const health = run.health.replaceAll("'\\''", "'").slice(1, -1);
     assert.equal(health.replace(/\s/g, ''), `/usr/bin/python3-c'${healthCode}'`.replace(/\s/g, ''), name);
-    const image = run.image === '"$image"' ? script.match(/^image=(\S+)$/m)[1] : run.image;
+    // oj-runner-upgrade.sh runs its candidate tag and moves compose's tag onto it after success.
+    if (run.image === '"$candidate"') assert.match(script, /^docker tag "\$candidate" "\$image"$/m, name);
+    const image = ['"$image"', '"$candidate"'].includes(run.image) ? script.match(/^image=(\S+)$/m)[1] : run.image;
     assert.equal(image, value('image'), `${name} runs a different image than compose.yaml`);
     assert.match(script, /^export ES_AUTH_TOKEN="\$GO_JUDGE_TOKEN"$/m);
   }
@@ -106,25 +110,37 @@ test('both runner swap scripts start the sandbox exactly as compose.yaml declare
 });
 
 test('a rollback ignores hangups and the queue is rechecked right before pausing', () => {
-  for (const name of ['oj-pandas-release.sh', 'oj-capacity-release.sh']) {
+  for (const name of ['oj-pandas-release.sh', 'oj-capacity-release.sh', 'oj-runner-upgrade.sh']) {
     const finish = scripts[name].slice(scripts[name].indexOf('finish() {'));
     assert.match(finish, /^  trap - EXIT\n  #[^\n]*\n  trap '' HUP INT TERM$/m, name);
   }
   // After the build and smoke test, immediately before the handler and the pause.
-  const beforeHandler = pandas.slice(0, pandas.indexOf('\nrunner_stopped=false\nrenamed=false'));
-  assert.match(beforeHandler.split('\n').at(-1), /^queue status \|/);
-  assert.ok(beforeHandler.lastIndexOf('docker build') < beforeHandler.lastIndexOf('queue status'));
+  for (const script of [pandas, upgrade]) {
+    const beforeHandler = script.slice(0, script.indexOf('\nrunner_stopped=false\nrenamed=false'));
+    assert.match(beforeHandler.split('\n').at(-1), /^queue status \|/);
+    assert.ok(beforeHandler.lastIndexOf('docker build') < beforeHandler.lastIndexOf('queue status'));
+  }
 });
 
-test('pandas release never deletes a container or image', () => {
-  const commands = pandas.split('\n').filter((line) => !/^\s*(echo|#)/.test(line)).join('\n');
-  assert.doesNotMatch(commands, /docker\s+(rm|rmi|image\s+(rm|prune)|container\s+(rm|prune)|system\s+prune)\b/);
+test('pandas release and runner upgrade never delete a container or image', () => {
+  for (const script of [pandas, upgrade]) {
+    const commands = script.split('\n').filter((line) => !/^\s*(echo|#)/.test(line)).join('\n');
+    assert.doesNotMatch(commands, /docker\s+(rm|rmi|image\s+(rm|prune)|container\s+(rm|prune)|system\s+prune)\b/);
+  }
+});
+
+test('runner upgrade moves the compose tag only after the new judge is healthy', () => {
+  const at = (text) => upgrade.indexOf(text);
+  assert.ok(at('\ncomplete=true\n') > at('wait_for_judge "$started" 1 ||'));
+  assert.ok(at('docker tag "$base" "$previous_tag"') > at('\ncomplete=true\n'));
+  assert.ok(at('docker tag "$candidate" "$image"') > at('docker tag "$base" "$previous_tag"'));
+  assert.equal(upgrade.match(/^\s*docker tag /gm).length, 2);
 });
 
 // Run the script's real EXIT handler with every external command stubbed.
-function finish(state, waitStatus = 0) {
-  const begin = pandas.indexOf('finish() {');
-  const end = pandas.indexOf('\ntrap finish EXIT', begin);
+function finish(state, waitStatus = 0, script = pandas) {
+  const begin = script.indexOf('finish() {');
+  const end = script.indexOf('\ntrap finish EXIT', begin);
   assert(begin > 0 && end > begin);
   // Stubs write to fd 3 so the handler's own >/dev/null redirections cannot hide them.
   return spawnSync('/bin/bash', ['-c', `
@@ -137,44 +153,50 @@ function finish(state, waitStatus = 0) {
     cp() { echo "cp $*" >&3; }
     queue() { echo "queue $*" >&3; }
     wait_for_judge() { echo "wait_for_judge $2" >&3; return ${waitStatus}; }
-    ${pandas.slice(begin, end)}
+    ${script.slice(begin, end)}
     false
     finish
   `], { encoding: 'utf8' });
 }
 
 test('failed queue drain only resumes the queue', () => {
-  const result = finish('');
-  assert.equal(result.status, 1, result.stderr);
-  assert.equal(result.stdout.trim(), 'queue resume');
+  for (const script of [pandas, upgrade]) {
+    const result = finish('', 0, script);
+    assert.equal(result.status, 1, result.stderr);
+    assert.equal(result.stdout.trim(), 'queue resume');
+  }
 });
 
 test('failure after the swap restores runner, oj.env and compose before resuming', () => {
-  const result = finish('worker_touched=true; runner_stopped=true; renamed=true');
-  assert.equal(result.status, 1, result.stderr);
-  const steps = [
-    'systemctl stop cswork-oj-worker.service',
-    'docker stop -t 5 cswork-oj-sandbox',
-    'docker rename cswork-oj-sandbox FAILED',
-    'docker rename OLD cswork-oj-sandbox',
-    'docker start cswork-oj-sandbox',
-    'cp -a /backup/oj.env /etc/cswork/oj.env',
-    'cp -a /backup/compose.yaml /backup/verify-runtime.py /srv/cswork/oj/',
-    'systemctl start cswork-oj-worker.service',
-    'wait_for_judge 0',
-    'queue resume',
-  ];
-  let at = -1;
-  for (const step of steps) {
-    const next = result.stdout.indexOf(step, at + 1);
-    assert(next > at, `missing or out of order: ${step}\n${result.stdout}`);
-    at = next;
+  for (const script of [pandas, upgrade]) {
+    const result = finish('worker_touched=true; runner_stopped=true; renamed=true', 0, script);
+    assert.equal(result.status, 1, result.stderr);
+    const steps = [
+      'systemctl stop cswork-oj-worker.service',
+      'docker stop -t 5 cswork-oj-sandbox',
+      'docker rename cswork-oj-sandbox FAILED',
+      'docker rename OLD cswork-oj-sandbox',
+      'docker start cswork-oj-sandbox',
+      'cp -a /backup/oj.env /etc/cswork/oj.env',
+      'cp -a /backup/compose.yaml /backup/verify-runtime.py /srv/cswork/oj/',
+      'systemctl start cswork-oj-worker.service',
+      'wait_for_judge 0',
+      'queue resume',
+    ];
+    let at = -1;
+    for (const step of steps) {
+      const next = result.stdout.indexOf(step, at + 1);
+      assert(next > at, `missing or out of order: ${step}\n${result.stdout}`);
+      at = next;
+    }
   }
 });
 
 test('a rollback that never turns healthy keeps the queue paused', () => {
-  const result = finish('worker_touched=true; runner_stopped=true; renamed=true', 1);
-  assert.equal(result.status, 1);
-  assert.doesNotMatch(result.stdout, /queue resume/);
-  assert.match(result.stdout, /rollback needs attention/);
+  for (const script of [pandas, upgrade]) {
+    const result = finish('worker_touched=true; runner_stopped=true; renamed=true', 1, script);
+    assert.equal(result.status, 1);
+    assert.doesNotMatch(result.stdout, /queue resume/);
+    assert.match(result.stdout, /rollback needs attention/);
+  }
 });

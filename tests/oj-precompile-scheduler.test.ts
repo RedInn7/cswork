@@ -2,47 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PrecompileScheduler } from '../lib/server/oj-precompile-scheduler';
 const tick = () => new Promise((resolve) => setImmediate(resolve));
-void test('only one background task runs, foreground reserves immediately and awaits cleanup', async () => {
+void test('only one background task runs; another program in the foreground leaves it running', async () => {
   const scheduler = new PrecompileScheduler();
-  let cleanup!: () => void;
-  let stopped = false;
+  let aborted = false;
   assert.equal(
     scheduler.start('a', async (signal) => {
       await new Promise<void>((resolve) =>
-        signal.addEventListener(
-          'abort',
-          () => {
-            stopped = true;
-            cleanup = resolve;
-          },
-          { once: true },
-        ),
+        signal.addEventListener('abort', () => ((aborted = true), resolve()), { once: true }),
       );
-    }),
+    }, 'program-a'),
     true,
   );
   await tick();
-  assert.equal(
-    scheduler.start('b', async () => {}),
-    false,
-  );
-  let acquired = false;
-  const entering = scheduler.enterForeground().then((release) => {
-    acquired = true;
-    return release;
-  });
-  assert.equal(stopped, true);
-  assert.equal(
-    scheduler.start('b', async () => {}),
-    false,
-  );
-  await tick();
-  assert.equal(acquired, false);
-  cleanup();
-  const release = await entering;
-  assert.equal(scheduler.canStart, false);
-  release();
-  release();
+  assert.equal(scheduler.start('b', async () => {}), false);
+  await scheduler.enterForeground('program-b');
+  await scheduler.enterForeground();
+  assert.equal(aborted, false, 'the worker cancels it only on case-slot contention');
+  await scheduler.cancelBackground();
+  assert.equal(aborted, true);
   assert.equal(scheduler.canStart, true);
   await scheduler.close();
 });
@@ -76,17 +53,6 @@ void test('background failure is contained, cancellation is identity-scoped, clo
     false,
   );
 });
-void test('overlapping foreground reservations prevent background until all release', async () => {
-  const scheduler = new PrecompileScheduler();
-  const first = await scheduler.enterForeground(),
-    second = await scheduler.enterForeground();
-  first();
-  assert.equal(scheduler.canStart, false);
-  second();
-  assert.equal(scheduler.canStart, true);
-  await scheduler.close();
-});
-
 void test('foreground of the same program adopts the background compile instead of aborting it', async () => {
   const scheduler = new PrecompileScheduler();
   let finish!: () => void;
@@ -101,9 +67,8 @@ void test('foreground of the same program adopts the background compile instead 
   );
   await tick();
   let entered = false;
-  const entering = scheduler.enterForeground('program-a').then((release) => {
+  const entering = scheduler.enterForeground('program-a').then(() => {
     entered = true;
-    return release;
   });
   await tick();
   assert.equal(scheduler.isAdopted('same'), true);
@@ -111,19 +76,8 @@ void test('foreground of the same program adopts the background compile instead 
   assert.equal(entered, false, 'and the foreground waits for it');
   assert.equal(scheduler.canStart, false);
   finish();
-  (await entering)();
+  await entering;
   assert.equal(aborted, false);
-  // A different program still preempts speculation at once.
-  scheduler.start(
-    'other',
-    async (signal) =>
-      new Promise<void>((resolve) =>
-        signal.addEventListener('abort', () => resolve(), { once: true }),
-      ),
-    'program-b',
-  );
-  await tick();
-  (await scheduler.enterForeground('program-a'))();
   assert.equal(scheduler.canStart, true);
   await scheduler.close();
 });
@@ -147,11 +101,11 @@ void test('an adopted compile survives other foreground work and only close() st
   const adopting = scheduler.enterForeground('mine');
   await tick();
   // Another learner's submission and the background tick leave it alone.
-  (await scheduler.enterForeground('theirs'))();
+  await scheduler.enterForeground('theirs');
   await scheduler.cancelBackground();
   assert.equal(aborted, false);
   finish();
-  (await adopting)();
+  await adopting;
   scheduler.start(
     'adopted-2',
     async (signal) =>
@@ -165,4 +119,19 @@ void test('an adopted compile survives other foreground work and only close() st
   await tick();
   await scheduler.close();
   assert.equal(scheduler.canStart, false);
+});
+
+void test('a program a submission is compiling itself reads as in the foreground until released', async () => {
+  const scheduler = new PrecompileScheduler();
+  const first = await scheduler.enterForeground('program-a');
+  const second = await scheduler.enterForeground('program-a');
+  await scheduler.enterForeground();
+  assert.equal(scheduler.inForeground('program-a'), true);
+  assert.equal(scheduler.inForeground('program-b'), false);
+  first();
+  first();
+  assert.equal(scheduler.inForeground('program-a'), true, 'the other submission still compiles it');
+  second();
+  assert.equal(scheduler.inForeground('program-a'), false);
+  await scheduler.close();
 });

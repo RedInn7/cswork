@@ -5,7 +5,7 @@ import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { getCompileProblem } from './oj-problems';
 import { leetcodeContract } from './leetcode-mode';
-import { MAX_CODE_BYTES, ojStatus, REFERENCE_MODES_SQL } from './oj-submissions';
+import { MAX_CODE_BYTES, ojStatus } from './oj-submissions';
 
 export const PRECOMPILE_TTL_MS = 30_000;
 export const PRECOMPILE_QUEUE_LIMIT = 32;
@@ -71,26 +71,6 @@ export function precompileKey(x: {
     x.coding_mode || 'acm',
     x.code,
   ]);
-}
-/**
- * Foreground work preempts speculation, except a submission of exactly the
- * draft being compiled: finishing that compile is the submission's own compile.
- * A reference run (Python, nothing to compile) never preempts it.
- */
-export function hasForegroundSubmissions(except?: PrecompileDraft) {
-  return Boolean(
-    sqlite()
-      .prepare(
-        `SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 AND mode NOT IN ${REFERENCE_MODES_SQL} AND NOT (user_id IS ? AND problem_version_id IS ? AND language IS ? AND COALESCE(coding_mode,'acm') IS ? AND code IS ?) LIMIT 1`,
-      )
-      .get(
-        except?.user_id ?? null,
-        except?.problem_version_id ?? null,
-        except?.language ?? null,
-        except?.coding_mode ?? null,
-        except?.code ?? null,
-      ),
-  );
 }
 export async function requestPrecompile(person: Person, input: unknown) {
   const value = schema.parse(input);

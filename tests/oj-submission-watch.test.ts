@@ -148,7 +148,7 @@ test('concurrent waits are capped and aborted requests release capacity', async 
 });
 test('case progress bursts are coalesced, including stale tokens, but AC is immediate', async () => {
   insert('burst');
-  let detail = await submissionDetail(p, 'burst');
+  let detail: { watchToken: string; status: string } = await submissionDetail(p, 'burst');
   let count = 0;
   const updates = setInterval(
     () =>
@@ -352,4 +352,22 @@ test('a submit whose judge is adopting its precompile keeps holding', async () =
   } finally {
     db.prepare("DELETE FROM oj_precompile WHERE user_id='alice'").run();
   }
+});
+
+test('a light watch sends progress without code and the verdict in full', async () => {
+  insert('light');
+  const token = (await submissionDetail(p, 'light')).watchToken;
+  const progress = await waitForSubmission(p, 'light', 'old', new AbortController().signal, 3_000, true);
+  assert.equal(progress.status, 'running');
+  assert.ok(Array.isArray(progress.cases));
+  assert.equal(JSON.parse(JSON.stringify(progress)).code, undefined);
+  assert.equal(progress.watchToken, token);
+  db.prepare("UPDATE submissions SET status='accepted',passed=1 WHERE id='light'").run();
+  const verdict = await waitForSubmission(p, 'light', token, new AbortController().signal, 3_000, true);
+  assert.equal(verdict.status, 'accepted');
+  assert.ok(Array.isArray(verdict.cases) && typeof verdict.code === 'string');
+  await assert.rejects(
+    waitForSubmission({ ...p, id: 'bob' }, 'light', 'old', new AbortController().signal, 3_000, true),
+    /提交不存在/,
+  );
 });

@@ -164,6 +164,12 @@ export type OJSubmission = {
   practiceRoundId?: string | null;
   practiceRoundNumber?: number | null;
 };
+/**
+ * A light watch reply (wait=1&light=1) leaves out the code while judging: keep the one shown.
+ * Everything else, cases included, is the new state; a verdict comes in full.
+ */
+export const mergeWatch = (prev: OJSubmission | null, next: OJSubmission) =>
+  next.code === undefined && prev?.id === next.id ? { ...next, code: prev.code } : next;
 export type SubmissionPage = {
   items: OJSubmission[];
   nextCursor: string | null;

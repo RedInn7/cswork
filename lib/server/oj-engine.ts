@@ -10,6 +10,7 @@ import { stringStructureCheckerId } from '@/lib/oj-string-contract';
 import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
+import { createHash } from 'node:crypto';
 import type { CodeLanguage, Language } from '@/lib/problems';
 import { HTTP_FIXTURE_BOOTSTRAP, HTTP_FIXTURES_FILE } from '../http-fixtures.mjs';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
@@ -204,6 +205,29 @@ if len(blob) > 16 * 1024 * 1024:  # the copy-out limit; the .py still runs
 with open(name[:-3] + '.pyc', 'wb') as f:
     f.write(blob)
 `;
+/** The Python syntax check as it always ran: `python3 -I -c PYTHON_CHECK`. */
+export const PYTHON_CHECK =
+  "import py_compile; py_compile.compile('main.py', doraise=True)";
+/**
+ * PYTHON_CHECK spends ~17ms importing py_compile and site. A clean source (no error, no
+ * warning) passes it silently, so compile() checks that first, then marshal as py_compile
+ * does (~1000 nested lambdas compile but are too deep to marshal); anything else re-executes
+ * the original check, argv[1], unchanged (without -S) for its exact output.
+ * On success argv is left as PYTHON_CHECK's, for PYTHON_BYTECODE.
+ */
+export const PYTHON_FAST_CHECK = `
+import marshal, os, sys, warnings
+try:
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        with open('main.py', 'rb') as f:
+            marshal.dumps(compile(f.read(), 'main.py', 'exec', dont_inherit=True))
+except BaseException:
+    os.execv(sys.executable, [sys.executable, '-I', '-c', *sys.argv[1:]])
+del sys.argv[1]
+`;
+/** Hashes of plain Python sources whose check passed silently, most recent last. */
+const cleanPython = new Set<string>();
 /** The trusted LeetCode bridge (support runtime + native launcher) as cached bytecode. */
 export async function compileBridge(source: string, signal: AbortSignal) {
   const result = await execute(
@@ -257,6 +281,41 @@ export function withStdcxxPch(source: string) {
   lines[at] = lines[at].replace('<bits/stdc++.h>', '<cswork/stdc++.hpp>');
   return lines.join('\n');
 }
+/**
+ * Precompiled header sets for sources that name their standard headers one by
+ * one (deploy/oj/build-cpp-pch.sh builds each as cswork/pch/<name>.hpp, largest
+ * first). The <bits/stdc++.h> PCH would be slower for them (loading it alone
+ * costs about 0.75s CPU, more than parsing <iostream>) and would declare names
+ * the learner never included. A set applies only when every header in it is
+ * among the source's own leading includes, so it declares nothing they would
+ * not; standard headers may be included in any order.
+ */
+export const STD_HEADER_PCHS = [
+  ['iostream', 'vector', 'algorithm'],
+  ['iostream', 'vector'],
+  ['vector', 'algorithm'],
+  ['iostream'],
+];
+/** The PCH set for a source whose leading lines are only standard includes. */
+export function stdHeaderPch(source: string) {
+  const names = new Set<string>();
+  for (const raw of source.split('\n')) {
+    const line = raw.replace(/\r$/, ''); // CRLF sources
+    const include =
+      /^[ \t]*#[ \t]*include[ \t]*<([a-z_]+(?:\.h)?)>[ \t]*(\/\/.*)?$/.exec(
+        line,
+      );
+    if (!include && !/^[ \t]*(#.*|\/\/.*)?$/.test(line)) break; // code begins
+    // A macro or condition first, or a line continued onto the next one.
+    if (!include && /^[ \t]*#/.test(line)) return undefined;
+    // GCC also splices a backslash followed by trailing whitespace.
+    if (/\\\s*$/.test(line)) return undefined;
+    if (include) names.add(include[1]);
+  }
+  return STD_HEADER_PCHS.find((set) =>
+    set.every((name) => names.has(name)),
+  )?.join('-');
+}
 /** `jar cf main.jar *.class`, including its failure when javac wrote no class. */
 const JAVA_JAR = `import glob, sys, zipfile
 names = sorted(glob.glob('*.class'))
@@ -269,6 +328,14 @@ with zipfile.ZipFile('main.jar', 'w', zipfile.ZIP_DEFLATED) as jar:
 const STDCXX_FALLBACK = {
   'cswork/stdc++.hpp': { content: '#include <bits/stdc++.h>\n' },
 };
+/**
+ * ACM Python: its compile only checks syntax and leaves nothing its cases need, so they run
+ * the same program whatever the check says. LeetCode-mode Python carries the support runtime
+ * and compiles it to a .pyc.
+ */
+export function syntaxCheckOnly(language: Language, source: string) {
+  return language === 'python' && !source.includes(LEETCODE_SUPPORT);
+}
 export async function compile(
   language: Language,
   source: string,
@@ -280,8 +347,8 @@ export async function compile(
     const program: CompiledProgram = { language, source, cache: {} };
     return { result, program };
   }
-  // LeetCode-mode Python carries the support runtime; ACM Python runs as plain source.
-  const bytecode = language === 'python' && source.includes(LEETCODE_SUPPORT);
+  const plain = syntaxCheckOnly(language, source);
+  const bytecode = language === 'python' && !plain;
   // Python's bytecode is optional (see PYTHON_BYTECODE); the others must exist.
   const artifact =
     language === 'python'
@@ -289,7 +356,16 @@ export async function compile(
       : language === 'java'
         ? 'main.jar'
         : 'main';
+  // A plain Python source already checked clean: the check depends on nothing else.
+  const digest = plain ? createHash('sha256').update(source).digest('hex') : '';
+  if (digest && cleanPython.delete(digest)) {
+    cleanPython.add(digest);
+    const result: EngineResult = { status: 'Accepted' };
+    return { result, program: { language, source, cache: {} } as CompiledProgram };
+  }
   const text = language === 'cpp' ? withStdcxxPch(source) : source;
+  const headers =
+    language === 'cpp' && text === source ? stdHeaderPch(source) : undefined;
   const commands: Record<CodeLanguage, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
       ? [
@@ -299,16 +375,26 @@ export async function compile(
           // Older runner images compile the complete inline fallback unchanged.
           'if test -r /usr/local/include/cswork/json-v1.hpp && test -r /usr/local/lib/cswork/libjson-v1.a; then exec /usr/bin/g++ -std=c++20 -O2 -pipe -DCSWORK_PRECOMPILED_JSON_V1 main.cpp /usr/local/lib/cswork/libjson-v1.a -o main; else exec /usr/bin/g++ -std=c++20 -O2 -pipe main.cpp -o main; fi',
         ]
-      : [
-          '/usr/bin/g++',
-          '-std=c++20',
-          '-O2',
-          '-pipe',
-          ...(text !== source ? ['-idirafter', '.'] : []),
-          'main.cpp',
-          '-o',
-          'main',
-        ],
+      : headers
+        ? [
+            '/bin/sh',
+            '-c',
+            // $1 is a fixed path from STD_HEADER_PCHS; the source is unchanged.
+            // Older runner images without it compile exactly as before.
+            'if test -r "$1"; then exec /usr/bin/g++ -std=c++20 -O2 -pipe -include "$1" main.cpp -o main; else exec /usr/bin/g++ -std=c++20 -O2 -pipe main.cpp -o main; fi',
+            'g++',
+            `/usr/local/include/cswork/pch/${headers}.hpp`,
+          ]
+        : [
+            '/usr/bin/g++',
+            '-std=c++20',
+            '-O2',
+            '-pipe',
+            ...(text !== source ? ['-idirafter', '.'] : []),
+            'main.cpp',
+            '-o',
+            'main',
+          ],
     go: [
       '/bin/sh',
       '-c',
@@ -323,19 +409,27 @@ export async function compile(
       '/bin/sh',
       '-c',
       // javac's own JVM: C1 only and serial GC start faster for one short
-      // compile. Class files and the learner's JVM flags are unchanged. The jar is
-      // zipped by Python ($1) instead of a second JVM (`jar cf main.jar *.class`).
-      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
+      // compile, and its compiler classes come from the image's CDS archive
+      // (deploy/oj/build-java-cds.sh). Older images lack it, and a missing
+      // archive would disable sharing altogether, so it is named only if
+      // present. An archive the JVM rejects (say a JDK upgraded after it was
+      // built) falls back to loading classes normally but warns on stdout,
+      // which would land in compile errors; -Xlog:cds*=off silences that.
+      // Class files and the learner's JVM flags are unchanged. The jar
+      // is zipped by Python ($1) instead of a second JVM (`jar cf main.jar *.class`).
+      'cds=/usr/local/lib/cswork/java-cds-v1/javac.jsa; test -r $cds && cds=-J-XX:SharedArchiveFile=$cds || cds=; /usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -J-XX:-UsePerfData "-J-Xlog:cds*=off" $cds -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
       'javac',
       JAVA_JAR,
     ],
     python: [
       '/usr/bin/python3',
       '-I',
+      // The fast check and PYTHON_BYTECODE need only the standard library.
+      '-S',
       '-c',
+      PYTHON_FAST_CHECK + (bytecode ? PYTHON_BYTECODE : ''),
       // Line 1 stays the syntax check, so compile errors read exactly as before.
-      "import py_compile; py_compile.compile('main.py', doraise=True)" +
-        (bytecode ? '\n' + PYTHON_BYTECODE : ''),
+      PYTHON_CHECK + (bytecode ? '\n' + PYTHON_BYTECODE : ''),
       ...(bytecode ? ['main.py'] : []),
     ],
   };
@@ -367,6 +461,17 @@ export async function compile(
     source,
     cache: result.fileIds ?? {},
   } satisfies CompiledProgram;
+  if (
+    digest &&
+    result.status === 'Accepted' &&
+    !result.files?.stdout &&
+    !result.files?.stderr
+  ) {
+    cleanPython.add(digest);
+    // ponytail: insertion-ordered Set as an LRU of 32-byte keys; the cap only bounds memory.
+    if (cleanPython.size > 4096)
+      cleanPython.delete(cleanPython.values().next().value!);
+  }
   if (result.status === 'Accepted' && artifact && !program.cache[artifact]) {
     await cleanup(program);
     throw new EngineFailure('Compiled artifact missing');
