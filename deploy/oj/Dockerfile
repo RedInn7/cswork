@@ -25,6 +25,9 @@ COPY build-cpp-json.sh /tmp/build-cpp-json.sh
 RUN sh /tmp/build-cpp-json.sh /tmp/cpp-json-v1 && rm -r /tmp/cpp-json-v1 /tmp/build-cpp-json.sh
 COPY build-go-cache.sh /tmp/build-go-cache.sh
 RUN sh /tmp/build-go-cache.sh && rm /tmp/build-go-cache.sh
+COPY java-cds /tmp/java-cds
+COPY build-java-cds.sh /tmp/build-java-cds.sh
+RUN sh /tmp/build-java-cds.sh /tmp/java-cds && rm -r /tmp/java-cds /tmp/build-java-cds.sh
 COPY --from=builder /go-judge /opt/go-judge
 COPY --from=builder /src/LICENSE /opt/LICENSE.go-judge
 COPY mount.yaml seccomp.yaml entrypoint.sh /opt/

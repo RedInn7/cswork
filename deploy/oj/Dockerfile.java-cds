@@ -1,0 +1,12 @@
+# Incremental upgrade of an existing verified runner: Java CDS archives for
+# javac and the learner's JVM (build-java-cds.sh). Pass the installed image's
+# immutable sha256 ID as BASE_IMAGE; fresh installations get the same archives
+# from the main Dockerfile. The worker names the archives on every image: one
+# without them starts Java exactly as before, only slower, so the worker can
+# ship first and the image swap (as for Dockerfile.pandas) can follow or roll back
+# independently.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY java-cds /tmp/java-cds
+COPY build-java-cds.sh /tmp/build-java-cds.sh
+RUN sh /tmp/build-java-cds.sh /tmp/java-cds && rm -r /tmp/java-cds /tmp/build-java-cds.sh
