@@ -1,7 +1,11 @@
-/** One interruptible, best-effort background task sharing the foreground worker. */
+/**
+ * One interruptible, best-effort background task sharing the foreground worker. Foreground work
+ * no longer preempts it by itself: the worker cancels it only while the case slots are contended.
+ */
 export class PrecompileScheduler {
-  private foreground = 0;
   private closed = false;
+  /** Programs a submission is compiling itself (count per key). */
+  private foreground = new Map<string, number>();
   private active?: {
     id: string;
     key?: string;
@@ -17,7 +21,7 @@ export class PrecompileScheduler {
     return this.active?.id === id && Boolean(this.active.adopted);
   }
   get canStart() {
-    return !this.closed && !this.foreground && !this.active;
+    return !this.closed && !this.active;
   }
   start(
     id: string,
@@ -50,21 +54,30 @@ export class PrecompileScheduler {
     active.controller.abort();
     await active.settled;
   }
-  /** `key` adopts a background compile of the same program instead of aborting it. */
+  /**
+   * `key` adopts a background compile of the same program and waits for it; any other runs on.
+   * Until released, `inForeground(key)` tells the worker not to start that same compile again.
+   */
   async enterForeground(key?: string): Promise<() => void> {
-    // Runs before the first await, preventing a new task during cancellation.
-    this.foreground++;
+    if (key !== undefined) this.foreground.set(key, (this.foreground.get(key) ?? 0) + 1);
+    let released = false;
+    const release = () => {
+      if (released || key === undefined) return;
+      released = true;
+      const n = this.foreground.get(key)! - 1;
+      if (n) this.foreground.set(key, n);
+      else this.foreground.delete(key);
+    };
     const active = this.active;
     if (active && key !== undefined && active.key === key) {
       active.adopted = true;
       await active.settled;
-    } else await this.cancelBackground();
-    let released = false;
-    return () => {
-      if (released) return;
-      released = true;
-      this.foreground--;
-    };
+    }
+    return release;
+  }
+  /** A submission already compiles this program: a background copy would only duplicate it. */
+  inForeground(key: string) {
+    return this.foreground.has(key);
   }
   async close() {
     this.closed = true;

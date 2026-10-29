@@ -6,6 +6,8 @@ import {
   exclusiveSubmission,
   SubmissionAdmission,
   stopJudging,
+  maintenanceDelayMs,
+  OJ_RETRY_BACKOFF_MS,
 } from '../lib/server/oj-worker-policy';
 
 void test('worker defaults to four slots, accepts one to four and rejects unbounded overrides', () => {
@@ -15,19 +17,45 @@ void test('worker defaults to four slots, accepts one to four and rejects unboun
     assert.throws(() => workerConcurrency(value));
   for (const capacity of [0, 5, 2.5]) assert.throws(() => new SubmissionAdmission(capacity));
 });
-void test('four ordinary submissions overlap; a large one waits for all four', async () => {
+void test('a large submission takes two of four slots: two ordinary ones still run beside it', async () => {
   const gate = new SubmissionAdmission(4);
   const signal = new AbortController().signal;
   const releases = await Promise.all([1, 2, 3, 4].map(() => gate.acquire(false, signal)));
   let large = false;
   const exclusive = gate.acquire(true, signal).then((release) => ((large = true), release));
   await new Promise((r) => setTimeout(r, 5));
-  for (const release of releases.slice(0, 3)) release();
+  releases[0]();
   await new Promise((r) => setTimeout(r, 5));
-  assert.equal(large, false);
-  releases[3]();
-  (await exclusive)();
+  assert.equal(large, false, 'one free slot is not enough');
+  releases[1]();
+  const releaseLarge = await exclusive;
   assert.equal(large, true);
+  releases[2]();
+  releases[3]();
+  const beside = await Promise.all([gate.acquire(false, signal), gate.acquire(false, signal)]);
+  let third = false;
+  const blocked = gate.acquire(false, signal).then((release) => ((third = true), release));
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(third, false, 'the large one still holds two slots');
+  releaseLarge();
+  (await blocked)();
+  for (const release of beside) release();
+});
+void test('at most one large submission runs; the second waits in FIFO order', async () => {
+  const gate = new SubmissionAdmission(4);
+  const signal = new AbortController().signal;
+  const first = await gate.acquire(true, signal);
+  let second = false,
+    small = false;
+  const large = gate.acquire(true, signal).then((release) => ((second = true), release));
+  const next = gate.acquire(false, signal).then((release) => ((small = true), release));
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(second, false, 'two free slots, but one large is already running');
+  assert.equal(small, false, 'FIFO: no overtaking the waiting large one');
+  first();
+  (await large)();
+  (await next)();
+  assert.equal(second && small, true);
 });
 void test('large snapshots and high-memory problems require exclusive admission', () => {
   assert.equal(exclusiveSubmission(8 * 1024 * 1024, 512 * 1024, 8192), false);
@@ -145,4 +173,10 @@ void test('judging stops at the first formal failure, a run on resource failures
   assert.equal(stopJudging('time_limit', { ...all, heavy: 2 }), false);
   assert.equal(stopJudging('output_limit', { ...all, heavy: 3 }), true);
   assert.equal(stopJudging('accepted', { ...all, heavy: 3 }), false);
+});
+
+void test('a failed maintenance round retries after 1s, a healthy one waits 5s; job retries back off from 1s', () => {
+  assert.equal(maintenanceDelayMs(true), 5000);
+  assert.equal(maintenanceDelayMs(false), 1000);
+  assert.equal(OJ_RETRY_BACKOFF_MS, 1000);
 });

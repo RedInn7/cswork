@@ -13,7 +13,6 @@ import {
   nextPrecompileDraft,
   precompileDraftCurrent,
   consumePrecompileDraft,
-  hasForegroundSubmissions,
   precompileKey,
   prunePrecompileDrafts,
   type PrecompileDraft,
@@ -36,6 +35,8 @@ import {
   OJ_CASE_SLOTS,
   exclusiveSubmission,
   leetcodeShape,
+  maintenanceDelayMs,
+  OJ_RETRY_BACKOFF_MS,
   RESOURCE_FAILURES,
   stopJudging,
   SubmissionAdmission,
@@ -67,6 +68,10 @@ const MAX_ATTEMPTS = 3;
 /** A complexity probe's CPU budget across its cases: checked between cases, so the last one may overrun it. */
 const PROBE_CPU_MS = 10_000;
 const db = sqlite();
+// This connection only (the web process keeps FULL): under WAL, NORMAL skips the fsync on every
+// commit, one per judged case. A power loss can drop the last few commits but never corrupts the
+// database; a submission left mid-judging is re-queued from the outbox and judged again.
+db.pragma('synchronous = NORMAL');
 const redisUrl = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6381');
 if (!['redis:', 'rediss:'].includes(redisUrl.protocol))
   throw new Error('Invalid Redis protocol');
@@ -87,13 +92,15 @@ const queue = new Queue(QUEUE, {
   },
   defaultJobOptions: {
     attempts: MAX_ATTEMPTS,
-    backoff: { type: 'exponential', delay: 3000 },
+    backoff: { type: 'exponential', delay: OJ_RETRY_BACKOFF_MS },
     removeOnComplete: { age: 86400, count: 1000 },
     removeOnFail: { age: 7 * 86400, count: 1000 },
   },
 });
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
+// ponytail: one short key per published version judged since the last restart (every release).
+const verifiedVersions = new Set<string>();
 // LeetCode bridges hold no user code, so one bytecode copy serves every learner.
 // The default 5-minute lifetime stays below the runner's -file-timeout=10m
 // (deploy/oj/entrypoint.sh), which would otherwise delete a cached bridge.
@@ -108,6 +115,7 @@ const caseSlots = createSlots(OJ_CASE_SLOTS);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
+let timer: ReturnType<typeof setTimeout> | undefined;
 class LostAttempt extends Error {}
 function current(id: string, attempt: number, signal: AbortSignal) {
   const row = submissionRow(id);
@@ -300,7 +308,7 @@ async function judgeSubmission(
     const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
-        : await loadJudgeSnapshot(claimed.problem_version_id!);
+        : await loadJudgeSnapshot(claimed.problem_version_id!, verifiedVersions);
     // A per-language limit replaces timeLimit everywhere below: cases, codec runs, the deadline.
     const snapshot = {
       ...loaded,
@@ -567,6 +575,13 @@ async function judgeSubmission(
         status: 'queued',
         message: '执行服务暂时中断，正在自动重试',
       });
+      // Check health now, not up to 5s later: a down runner must pause intake before this job's
+      // 1s/2s retries, or they burn its three attempts (system_error) before maintenance notices.
+      // An in-flight round reschedules itself; starting another would fork the timer chain.
+      if (!maintaining && !stopping && timer !== undefined) {
+        clearTimeout(timer);
+        scheduleMaintenance(0);
+      }
       throw new Error('Execution interrupted; retry scheduled');
     }
     update(id, attempt, {
@@ -652,7 +667,7 @@ async function maintenance() {
     }
     if (worker.isPaused()) await worker.resume();
   } catch (error) {
-    // Logged: a failed round pauses intake until the next one, 5s later (a queue-wait tail).
+    // Logged: a failed round pauses intake until the next one, 1s later (maintenanceDelayMs).
     console.error(JSON.stringify({ event: 'oj_maintenance_failed', error: error instanceof Error ? error.message : 'unknown' }));
     engineAvailable = false;
     // Pause acquisition only; in-flight jobs own their timeout, retry and cancellation.
@@ -689,7 +704,14 @@ void worker.run().catch(() => {
   process.exitCode = 1;
 });
 await maintenance();
-const timer = setInterval(() => void maintenance(), 5000);
+function scheduleMaintenance(delay = maintenanceDelayMs(engineAvailable)) {
+  timer = setTimeout(() => {
+    void maintenance().finally(() => {
+      if (!stopping) scheduleMaintenance();
+    });
+  }, delay);
+}
+scheduleMaintenance();
 const outboxDispatcher = createOutboxDispatcher(db, async (id) => {
   const started = performance.now();
   await queue.add('judge', { submissionId: id }, { jobId: id });
@@ -704,13 +726,15 @@ const dispatchTimer = setInterval(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
 }, OJ_DISPATCH_INTERVAL_MS);
-let activeDraft: PrecompileDraft | undefined;
+// Speculation yields only when the runner is busy: every case slot taken or someone waiting.
+// A submission in flight elsewhere no longer cancels it (a free slot is runner time to spare);
+// cancelBackground leaves an adopted compile, a submission's own, alone.
 function precompileTick() {
   if (
     stopping ||
     !engineAvailable ||
     !precompileEnabled() ||
-    hasForegroundSubmissions(activeDraft)
+    caseSlots.contended()
   ) {
     void precompiles.cancelBackground();
     return;
@@ -718,16 +742,20 @@ function precompileTick() {
   if (!precompiles.canStart) return;
   const draft = nextPrecompileDraft();
   if (!draft) return;
+  // Submitted while another draft held the scheduler: its own compile already covers this one.
+  if (precompiles.inForeground(precompileKey(draft))) {
+    consumePrecompileDraft(draft);
+    return;
+  }
   precompiles.start(
     draft.generation,
     async (signal) => {
-      activeDraft = draft;
       // Once a submission adopts this compile it is that submission's own
       // compile: no speculative timeout, and later edits do not cancel it.
       const adopted = () => precompiles.isAdopted(draft.generation);
       const outdated = setInterval(() => {
         if (adopted()) return;
-        if (!precompileDraftCurrent(draft) || hasForegroundSubmissions(draft))
+        if (!precompileDraftCurrent(draft))
           void precompiles.cancelBackground(draft.generation);
       }, OJ_DISPATCH_INTERVAL_MS);
       const timeout = new AbortController();
@@ -774,7 +802,6 @@ function precompileTick() {
         clearInterval(outdated);
         clearTimeout(timer);
         consumePrecompileDraft(draft);
-        if (activeDraft === draft) activeDraft = undefined;
       }
     },
     precompileKey(draft),
@@ -818,7 +845,7 @@ const jobsTimer = setInterval(() => void syncJobOpenings().catch(() => console.e
 async function stop() {
   if (stopping) return;
   stopping = true;
-  clearInterval(timer);
+  clearTimeout(timer);
   clearInterval(reminderTimer);
   clearInterval(jobsTimer);
   clearInterval(dispatchTimer);

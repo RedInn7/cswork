@@ -108,8 +108,14 @@ async function validateLinks(payload: OjProblemPackage) {
 }
 
 /** Trusted judge worker only. Never send this return value to a student-facing response. */
+/**
+ * `verified` remembers versions whose checksum already matched (the worker's own set): versions
+ * and their cases are immutable (DB triggers), so re-hashing an up-to-128 MiB package on every
+ * judge only repeats the same answer.
+ */
 export async function loadJudgeSnapshot(
   versionId: string,
+  verified?: Set<string>,
 ): Promise<OjJudgeSnapshot> {
   const v = await one<VersionRow>(
     'SELECT * FROM oj_problem_versions WHERE id=?',
@@ -146,6 +152,8 @@ export async function loadJudgeSnapshot(
       weight: c.weight,
     })),
   };
+  const key = `${v.id}\0${v.checksum}`;
+  if (verified?.has(key)) return snapshot;
   const payload: OjProblemPackage = {
     schemaVersion: 1,
     problem: snapshot.spec,
@@ -161,6 +169,7 @@ export async function loadJudgeSnapshot(
   };
   if (problemChecksum(payload) !== snapshot.checksum)
     throw new HttpError(503, '题目数据完整性检查未通过，请联系老师');
+  verified?.add(key);
   return snapshot;
 }
 
