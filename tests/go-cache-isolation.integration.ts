@@ -83,7 +83,7 @@ try {
   globalThis.fetch = originalFetch;
 }
 assert.ok(
-  goCommand.endsWith('exec /usr/bin/go build -trimpath -o main main.go'),
+  goCommand.endsWith('exec /usr/bin/go build -trimpath -ldflags=-s\\ -w -o main main.go'),
 );
 const setup = goCommand.slice(0, goCommand.lastIndexOf('exec /usr/bin/go'));
 const validatePrivate = `import os,pathlib,json
