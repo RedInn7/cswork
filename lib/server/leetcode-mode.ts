@@ -35,6 +35,17 @@ export const LEETCODE_HARNESS_VERSION = createHash('sha256')
   .digest('hex');
 
 /**
+ * Startup only, never what a program computes or prints: no hsperfdata file in
+ * /tmp, and the JDK classes typical programs load come from the image's CDS
+ * archive (deploy/oj/build-java-cds.sh). A JVM given a missing archive starts
+ * silently with its stock one, so images built before the archive still work.
+ */
+export const JAVA_STARTUP_FLAGS = [
+  '-XX:-UsePerfData',
+  '-XX:SharedArchiveFile=/usr/local/lib/cswork/java-cds-v1/run.jsa',
+];
+
+/**
  * The learner's JVM, for ACM runs and LeetCode bridges alike. -Xss64m (as on
  * Codeforces) lets recursive DFS go 10^5+ deep where 256k overflowed near 2000.
  * go-judge enforces memoryLimit through cgroup memory.max (no RLIMIT_AS or
@@ -45,6 +56,7 @@ export function javaCommand(memoryKiB: number) {
   const heap = Math.max(8, Math.floor((memoryKiB / 1024) * 0.6));
   return [
     '/usr/bin/java',
+    ...JAVA_STARTUP_FLAGS,
     `-Xmx${heap}m`,
     '-Xss64m',
     '-XX:ReservedCodeCacheSize=32m',

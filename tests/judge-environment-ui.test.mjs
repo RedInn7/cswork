@@ -33,7 +33,7 @@ process.env.DATABASE_PATH = join(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite.ts');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { default: JudgeEnvironmentPage } = await import('../app/judge-environment/page.tsx');
-const { javaCommand } = await import('../lib/server/leetcode-mode.ts');
+const { javaCommand, JAVA_STARTUP_FLAGS } = await import('../lib/server/leetcode-mode.ts');
 after(() => {
   sqlite().close();
   rmSync(dir, { recursive: true, force: true });
@@ -55,8 +55,8 @@ test('versions come from the heartbeat, else the image; commands match the engin
     assert.equal(rows.length, 4);
     assert.match(rows[0], /g\+\+ \(Debian 14\.2\.0-19\) 14\.2\.0.*g\+\+ -std=c\+\+20 -O2/);
     assert.match(rows[1], /OpenJDK 21/, 'no live Java version: the image baseline');
-    // The JVM flags are javaCommand's, after -Xmx.
-    assert.ok(rows[1].includes(javaCommand(262144).slice(2).join(' ')), rows[1]);
+    // The JVM flags are javaCommand's, after -Xmx (startup-only flags, like javac's -J ones, are not listed).
+    assert.ok(rows[1].includes(javaCommand(262144).slice(2 + JAVA_STARTUP_FLAGS.length).join(' ')), rows[1]);
     // Every comparison row has a cell per platform.
     const compared = [...doc.querySelectorAll('table')[1].querySelectorAll('tr')];
     assert.ok(compared.every((tr) => tr.children.length === 5));

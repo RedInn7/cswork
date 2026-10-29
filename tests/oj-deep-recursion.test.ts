@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { run } from '../lib/server/oj-engine';
-import { leetcodeSource, leetcodeTemplates } from '../lib/server/leetcode-mode';
+import { JAVA_STARTUP_FLAGS, leetcodeSource, leetcodeTemplates } from '../lib/server/leetcode-mode';
 import type { OjProblemSpec } from '../lib/oj-types';
 
 // LeetCode-style recursive solutions must not overflow where LeetCode accepts them.
@@ -33,6 +33,8 @@ void test('every learner JVM gets a 64 MiB thread stack', async () => {
   for (const command of [args, bridged]) {
     assert.ok(command.includes('-Xss64m'), command.join(' '));
     assert.ok(command.includes('-Xmx153m'));
+    // ACM runs and LeetCode bridges both start from the image's CDS archive.
+    assert.ok(JAVA_STARTUP_FLAGS.every((flag) => command.includes(flag)), command.join(' '));
   }
 });
 
