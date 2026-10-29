@@ -49,6 +49,8 @@ type Judge = {
   client: Stat;
   run: Stat;
   queue: Stat;
+  /** Per-submission duration_ms - server_ms; absent from older summaries. */
+  gap?: Stat;
   byLanguage: { language: string; count: number; p50: number | null }[];
   verdicts: { verdict: string; count: number }[];
   queuedNow: number;
@@ -678,7 +680,8 @@ function Latency({ judge }: { judge: Judge }) {
   );
   const at = (v: number) => (Math.min(1, v / max) * 100).toFixed(2) + '%';
   const gap =
-    judge.client?.p50 != null && judge.server?.p50 != null ? judge.client.p50 - judge.server.p50 : null;
+    judge.gap?.p50 ??
+    (judge.client?.p50 != null && judge.server?.p50 != null ? judge.client.p50 - judge.server.p50 : null);
   return (
     <Card
       className="om-span-8"

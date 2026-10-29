@@ -164,9 +164,9 @@ void test('summary: every day in range, numbers from both databases', async () =
       { name: 'search', params: { q: 'two sum' } },
       { name: 'search', params: { q: 'LRU' } },
       { name: 'language_switch', params: { locale: 'zh' } },
-      { name: 'judge_result', params: { mode: 'submit', duration_ms: 100, queue_ms: 10 } },
+      { name: 'judge_result', params: { mode: 'submit', duration_ms: 100, server_ms: 70, queue_ms: 10 } },
       { name: 'judge_result', params: { mode: 'submit', duration_ms: 300 } },
-      { name: 'judge_result', params: { mode: 'run', duration_ms: 50 } },
+      { name: 'judge_result', params: { mode: 'run', duration_ms: 50, server_ms: 20, queue_ms: 5 } },
       { name: 'judge_error', params: { stage: 'poll', status: '503' } },
       { name: 'judge_error', params: { stage: 'poll', status: '503' } },
       { name: 'judge_error', params: { stage: 'submit', status: 'network' } },
@@ -192,6 +192,7 @@ void test('summary: every day in range, numbers from both databases', async () =
   assert.deepEqual(s.judge.client, { count: 2, p50: 100, p90: 300, p99: 300 });
   assert.deepEqual(s.judge.run, { count: 1, p50: 50, p90: 50 });
   assert.deepEqual(s.judge.queue, { count: 1, p50: 10, p90: 10 });
+  assert.deepEqual(s.judge.gap, { count: 1, p50: 30, p90: 30, p99: 30 });
   assert.deepEqual(s.judge.byLanguage[0], { language: 'python', count: 2, p50: 1000 });
   assert.deepEqual(
     s.judge.byLanguage.slice(1).sort((a: { language: string }, b: { language: string }) => a.language.localeCompare(b.language)),
