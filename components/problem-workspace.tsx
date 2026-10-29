@@ -752,6 +752,7 @@ function Workspace({
   const [error, setError] = useState('');
   const [pollPaused, setPollPaused] = useState(false);
   const [watchFallback, setWatchFallback] = useState(false);
+  const pollNow = useRef(false);
   const [pollRevision, setPollRevision] = useState(0);
   const [loadingSubmission, setLoadingSubmission] = useState<string | null>(
     null,
@@ -1241,6 +1242,8 @@ function Workspace({
       return;
     const controller = new AbortController();
     const watching = Boolean(submission.watchToken) && !watchFallback;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let limited = 0;
     const read = async () => {
       try {
         const item = await ojRequest<OJSubmission>(
@@ -1262,22 +1265,34 @@ function Workspace({
         }
       } catch (e) {
         if (!controller.signal.aborted) {
+          // Rate-limited watch: retry it shortly rather than drop to 750ms polls; ten tries (2s),
+          // then the ordinary fallback below.
+          if (watching && failureStatus(e) === '429' && limited < 10) {
+            if (!limited++)
+              track('judge_error', { mode: judgeMode(submission.mode), problem_id: problem.id, stage: 'watch', status: '429' });
+            timer = setTimeout(read, 200);
+            return;
+          }
           track('judge_error', {
             mode: judgeMode(submission.mode),
             problem_id: problem.id,
             stage: watching ? 'watch' : 'poll',
             status: failureStatus(e),
           });
-          if (watching) setWatchFallback(true);
-          else {
+          if (watching) {
+            pollNow.current = true;
+            setWatchFallback(true);
+          } else {
             setError((e as Error).message);
             setPollPaused(true);
           }
         }
       }
     };
-    const timer = watching ? undefined : setTimeout(read, 750);
-    if (watching) void read();
+    // The first poll after leaving the watch reads at once; later ones wait 750ms.
+    if (watching || pollNow.current) void read();
+    else timer = setTimeout(read, 750);
+    pollNow.current = false;
     return () => {
       clearTimeout(timer);
       controller.abort();
@@ -1532,7 +1547,8 @@ function Workspace({
     setCaseNote('');
     referenceController.current?.abort();
     setReference(null);
-    if (
+    // Sent once the learner's own run is queued (onReceipt below), so it never takes their judge slot.
+    const withReference =
       mode === 'run' &&
       inputMode === 'custom' &&
       // A Line 500 editorial's best approach, or an OA package's verified program (ACM only).
@@ -1540,9 +1556,7 @@ function Workspace({
         problem.id.startsWith('oa-')) &&
       !examMode &&
       // An expected output of their own needs no reference run.
-      !caseExpect[caseIndex]?.trim()
-    )
-      void runReference(stdin, codingMode);
+      !caseExpect[caseIndex]?.trim();
     showConsole('result');
     setMobilePane('editor');
     setError('');
@@ -1581,6 +1595,7 @@ function Workspace({
         (result) => {
           if (!alive.current || controller.signal.aborted) return;
           idempotency.current = null;
+          if (withReference) void runReference(stdin, codingMode);
           if (sent === 'judge' && sealVerdict) {
             setSealedHere(result.id);
             // The exam bar marks this question as submitted now, not when its verdict comes in.
