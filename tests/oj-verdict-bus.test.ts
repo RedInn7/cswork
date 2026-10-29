@@ -37,16 +37,16 @@ test('abort ends a wait; without Redis waiters poll every tick', async () => {
   waiter.close();
   wakeSubmission('c');
 });
-test('a light watch reply keeps the cases shown; a full one replaces them', () => {
-  const cases = [{ ordinal: 0, status: 'pending', hidden: true }];
+test('a light watch reply keeps the code shown and takes the new cases', () => {
   const base = { id: 's', problem_id: 'p', language: 'python', mode: 'judge', passed: 0, total: 1, created_at: 0 } as const;
-  const shown = { ...base, status: 'queued', cases, code: 'x' };
-  const merged = mergeWatch(shown, { ...base, status: 'running', passed: 1 });
+  const shown = { ...base, status: 'queued', cases: [{ ordinal: 0, status: 'pending', hidden: true }], code: 'x' };
+  const cases = [{ ordinal: 0, status: 'accepted', hidden: true }];
+  const merged = mergeWatch(shown, { ...base, status: 'running', passed: 1, cases });
   assert.equal(merged.status, 'running');
   assert.equal(merged.passed, 1);
   assert.equal(merged.cases, cases);
   assert.equal(merged.code, 'x');
-  const final = { ...base, status: 'accepted', cases: [{ ...cases[0], status: 'accepted' }] };
+  const final = { ...base, status: 'accepted', cases, code: 'x' };
   assert.equal(mergeWatch(shown, final), final);
   const other = { ...base, id: 't', status: 'running' };
   assert.equal(mergeWatch(shown, other), other);

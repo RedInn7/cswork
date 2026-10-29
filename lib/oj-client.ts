@@ -165,11 +165,11 @@ export type OJSubmission = {
   practiceRoundNumber?: number | null;
 };
 /**
- * A light watch reply (wait=1&light=1) carries no cases, code or output while judging: keep
- * the last full detail's and take the new state. A verdict comes in full and replaces it.
+ * A light watch reply (wait=1&light=1) leaves out the code while judging: keep the one shown.
+ * Everything else, cases included, is the new state; a verdict comes in full.
  */
 export const mergeWatch = (prev: OJSubmission | null, next: OJSubmission) =>
-  next.cases || prev?.id !== next.id ? next : { ...prev, ...next };
+  next.code === undefined && prev?.id === next.id ? { ...next, code: prev.code } : next;
 export type SubmissionPage = {
   items: OJSubmission[];
   nextCursor: string | null;

@@ -586,12 +586,12 @@ const waitingByUser = new Map<string, number>();
 const lastWatchReply = new Map<string, { status: string; at: number }>();
 /**
  * Detail sent to the browser; its time paces the next non-final reply. `light`: while still
- * judging, only the state a progress display needs, not every case (the client keeps its last
- * full detail, mergeWatch in lib/oj-client.ts); the verdict always comes in full.
+ * judging, leave out the code, which never changes (mergeWatch in lib/oj-client.ts keeps the
+ * one shown); cases stay, the page shows them turn by turn. The verdict always comes in full.
  */
 async function reply(p: Person, id: string, light = false) {
-  const s = light ? owned(p, id) : undefined;
-  const detail = s && ACTIVE.includes(s.status) ? progress(s) : await submissionDetail(p, id);
+  const full = await submissionDetail(p, id);
+  const detail = light && ACTIVE.includes(full.status) ? { ...full, code: undefined } : full;
   const key = `${p.id}:${id}`;
   lastWatchReply.delete(key);
   lastWatchReply.set(key, { status: detail.status, at: performance.now() });
@@ -755,15 +755,6 @@ function queuedPosition(s: SubmissionRow) {
           .get(s.created_at, s.created_at, s.id) as { n: number }
       ).n
     : undefined;
-}
-/** A judging submission's state without its cases, code or output (reply with `light`). */
-function progress(s: SubmissionRow) {
-  return {
-    ...summary(s),
-    watchToken: watchToken(s),
-    queuedPosition: queuedPosition(s),
-    cancelRequested: Boolean(s.cancel_requested),
-  };
 }
 export async function submissionDetail(p: Person, id: string) {
   const s = owned(p, id);

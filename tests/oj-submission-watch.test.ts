@@ -354,17 +354,18 @@ test('a submit whose judge is adopting its precompile keeps holding', async () =
   }
 });
 
-test('a light watch sends progress without cases and the verdict in full', async () => {
+test('a light watch sends progress without code and the verdict in full', async () => {
   insert('light');
   const token = (await submissionDetail(p, 'light')).watchToken;
   const progress = await waitForSubmission(p, 'light', 'old', new AbortController().signal, 3_000, true);
   assert.equal(progress.status, 'running');
-  assert.ok(!('cases' in progress) && !('code' in progress));
+  assert.ok(Array.isArray(progress.cases));
+  assert.equal(JSON.parse(JSON.stringify(progress)).code, undefined);
   assert.equal(progress.watchToken, token);
   db.prepare("UPDATE submissions SET status='accepted',passed=1 WHERE id='light'").run();
   const verdict = await waitForSubmission(p, 'light', token, new AbortController().signal, 3_000, true);
   assert.equal(verdict.status, 'accepted');
-  assert.ok('cases' in verdict && Array.isArray(verdict.cases));
+  assert.ok(Array.isArray(verdict.cases) && typeof verdict.code === 'string');
   await assert.rejects(
     waitForSubmission({ ...p, id: 'bob' }, 'light', 'old', new AbortController().signal, 3_000, true),
     /提交不存在/,
