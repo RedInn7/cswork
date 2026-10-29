@@ -10,6 +10,7 @@ import { stringStructureCheckerId } from '@/lib/oj-string-contract';
 import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
+import { createHash } from 'node:crypto';
 import type { CodeLanguage, Language } from '@/lib/problems';
 import { HTTP_FIXTURE_BOOTSTRAP, HTTP_FIXTURES_FILE } from '../http-fixtures.mjs';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
@@ -204,6 +205,29 @@ if len(blob) > 16 * 1024 * 1024:  # the copy-out limit; the .py still runs
 with open(name[:-3] + '.pyc', 'wb') as f:
     f.write(blob)
 `;
+/** The Python syntax check as it always ran: `python3 -I -c PYTHON_CHECK`. */
+export const PYTHON_CHECK =
+  "import py_compile; py_compile.compile('main.py', doraise=True)";
+/**
+ * PYTHON_CHECK spends ~17ms importing py_compile and site. A clean source (no error, no
+ * warning) passes it silently, so compile() checks that first, then marshal as py_compile
+ * does (~1000 nested lambdas compile but are too deep to marshal); anything else re-executes
+ * the original check, argv[1], unchanged (without -S) for its exact output.
+ * On success argv is left as PYTHON_CHECK's, for PYTHON_BYTECODE.
+ */
+export const PYTHON_FAST_CHECK = `
+import marshal, os, sys, warnings
+try:
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        with open('main.py', 'rb') as f:
+            marshal.dumps(compile(f.read(), 'main.py', 'exec', dont_inherit=True))
+except BaseException:
+    os.execv(sys.executable, [sys.executable, '-I', '-c', *sys.argv[1:]])
+del sys.argv[1]
+`;
+/** Hashes of plain Python sources whose check passed silently, most recent last. */
+const cleanPython = new Set<string>();
 /** The trusted LeetCode bridge (support runtime + native launcher) as cached bytecode. */
 export async function compileBridge(source: string, signal: AbortSignal) {
   const result = await execute(
@@ -269,6 +293,14 @@ with zipfile.ZipFile('main.jar', 'w', zipfile.ZIP_DEFLATED) as jar:
 const STDCXX_FALLBACK = {
   'cswork/stdc++.hpp': { content: '#include <bits/stdc++.h>\n' },
 };
+/**
+ * ACM Python: its compile only checks syntax and leaves nothing its cases need, so they run
+ * the same program whatever the check says. LeetCode-mode Python carries the support runtime
+ * and compiles it to a .pyc.
+ */
+export function syntaxCheckOnly(language: Language, source: string) {
+  return language === 'python' && !source.includes(LEETCODE_SUPPORT);
+}
 export async function compile(
   language: Language,
   source: string,
@@ -280,8 +312,8 @@ export async function compile(
     const program: CompiledProgram = { language, source, cache: {} };
     return { result, program };
   }
-  // LeetCode-mode Python carries the support runtime; ACM Python runs as plain source.
-  const bytecode = language === 'python' && source.includes(LEETCODE_SUPPORT);
+  const plain = syntaxCheckOnly(language, source);
+  const bytecode = language === 'python' && !plain;
   // Python's bytecode is optional (see PYTHON_BYTECODE); the others must exist.
   const artifact =
     language === 'python'
@@ -289,6 +321,13 @@ export async function compile(
       : language === 'java'
         ? 'main.jar'
         : 'main';
+  // A plain Python source already checked clean: the check depends on nothing else.
+  const digest = plain ? createHash('sha256').update(source).digest('hex') : '';
+  if (digest && cleanPython.delete(digest)) {
+    cleanPython.add(digest);
+    const result: EngineResult = { status: 'Accepted' };
+    return { result, program: { language, source, cache: {} } as CompiledProgram };
+  }
   const text = language === 'cpp' ? withStdcxxPch(source) : source;
   const commands: Record<CodeLanguage, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
@@ -332,10 +371,12 @@ export async function compile(
     python: [
       '/usr/bin/python3',
       '-I',
+      // The fast check and PYTHON_BYTECODE need only the standard library.
+      '-S',
       '-c',
+      PYTHON_FAST_CHECK + (bytecode ? PYTHON_BYTECODE : ''),
       // Line 1 stays the syntax check, so compile errors read exactly as before.
-      "import py_compile; py_compile.compile('main.py', doraise=True)" +
-        (bytecode ? '\n' + PYTHON_BYTECODE : ''),
+      PYTHON_CHECK + (bytecode ? '\n' + PYTHON_BYTECODE : ''),
       ...(bytecode ? ['main.py'] : []),
     ],
   };
@@ -367,6 +408,17 @@ export async function compile(
     source,
     cache: result.fileIds ?? {},
   } satisfies CompiledProgram;
+  if (
+    digest &&
+    result.status === 'Accepted' &&
+    !result.files?.stdout &&
+    !result.files?.stderr
+  ) {
+    cleanPython.add(digest);
+    // ponytail: insertion-ordered Set as an LRU of 32-byte keys; the cap only bounds memory.
+    if (cleanPython.size > 4096)
+      cleanPython.delete(cleanPython.values().next().value!);
+  }
   if (result.status === 'Accepted' && artifact && !program.cache[artifact]) {
     await cleanup(program);
     throw new EngineFailure('Compiled artifact missing');
