@@ -409,9 +409,15 @@ export async function compile(
       '/bin/sh',
       '-c',
       // javac's own JVM: C1 only and serial GC start faster for one short
-      // compile. Class files and the learner's JVM flags are unchanged. The jar is
-      // zipped by Python ($1) instead of a second JVM (`jar cf main.jar *.class`).
-      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
+      // compile, and its compiler classes come from the image's CDS archive
+      // (deploy/oj/build-java-cds.sh). Older images lack it, and a missing
+      // archive would disable sharing altogether, so it is named only if
+      // present. An archive the JVM rejects (say a JDK upgraded after it was
+      // built) falls back to loading classes normally but warns on stdout,
+      // which would land in compile errors; -Xlog:cds*=off silences that.
+      // Class files and the learner's JVM flags are unchanged. The jar
+      // is zipped by Python ($1) instead of a second JVM (`jar cf main.jar *.class`).
+      'cds=/usr/local/lib/cswork/java-cds-v1/javac.jsa; test -r $cds && cds=-J-XX:SharedArchiveFile=$cds || cds=; /usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -J-XX:-UsePerfData "-J-Xlog:cds*=off" $cds -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
       'javac',
       JAVA_JAR,
     ],
