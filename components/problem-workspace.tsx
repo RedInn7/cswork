@@ -1547,8 +1547,7 @@ function Workspace({
     setCaseNote('');
     referenceController.current?.abort();
     setReference(null);
-    // Sent once the learner's own run is queued (onReceipt below), so it never takes their judge slot.
-    const withReference =
+    if (
       mode === 'run' &&
       inputMode === 'custom' &&
       // A Line 500 editorial's best approach, or an OA package's verified program (ACM only).
@@ -1556,7 +1555,9 @@ function Workspace({
         problem.id.startsWith('oa-')) &&
       !examMode &&
       // An expected output of their own needs no reference run.
-      !caseExpect[caseIndex]?.trim();
+      !caseExpect[caseIndex]?.trim()
+    )
+      void runReference(stdin, codingMode);
     showConsole('result');
     setMobilePane('editor');
     setError('');
@@ -1595,7 +1596,6 @@ function Workspace({
         (result) => {
           if (!alive.current || controller.signal.aborted) return;
           idempotency.current = null;
-          if (withReference) void runReference(stdin, codingMode);
           if (sent === 'judge' && sealVerdict) {
             setSealedHere(result.id);
             // The exam bar marks this question as submitted now, not when its verdict comes in.
