@@ -4,6 +4,8 @@
  */
 export class PrecompileScheduler {
   private closed = false;
+  /** Programs a submission is compiling itself (count per key). */
+  private foreground = new Map<string, number>();
   private active?: {
     id: string;
     key?: string;
@@ -52,13 +54,30 @@ export class PrecompileScheduler {
     active.controller.abort();
     await active.settled;
   }
-  /** `key` adopts a background compile of the same program and waits for it; any other runs on. */
-  async enterForeground(key?: string): Promise<void> {
+  /**
+   * `key` adopts a background compile of the same program and waits for it; any other runs on.
+   * Until released, `inForeground(key)` tells the worker not to start that same compile again.
+   */
+  async enterForeground(key?: string): Promise<() => void> {
+    if (key !== undefined) this.foreground.set(key, (this.foreground.get(key) ?? 0) + 1);
+    let released = false;
+    const release = () => {
+      if (released || key === undefined) return;
+      released = true;
+      const n = this.foreground.get(key)! - 1;
+      if (n) this.foreground.set(key, n);
+      else this.foreground.delete(key);
+    };
     const active = this.active;
     if (active && key !== undefined && active.key === key) {
       active.adopted = true;
       await active.settled;
     }
+    return release;
+  }
+  /** A submission already compiles this program: a background copy would only duplicate it. */
+  inForeground(key: string) {
+    return this.foreground.has(key);
   }
   async close() {
     this.closed = true;

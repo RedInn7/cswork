@@ -120,3 +120,18 @@ void test('an adopted compile survives other foreground work and only close() st
   await scheduler.close();
   assert.equal(scheduler.canStart, false);
 });
+
+void test('a program a submission is compiling itself reads as in the foreground until released', async () => {
+  const scheduler = new PrecompileScheduler();
+  const first = await scheduler.enterForeground('program-a');
+  const second = await scheduler.enterForeground('program-a');
+  await scheduler.enterForeground();
+  assert.equal(scheduler.inForeground('program-a'), true);
+  assert.equal(scheduler.inForeground('program-b'), false);
+  first();
+  first();
+  assert.equal(scheduler.inForeground('program-a'), true, 'the other submission still compiles it');
+  second();
+  assert.equal(scheduler.inForeground('program-a'), false);
+  await scheduler.close();
+});

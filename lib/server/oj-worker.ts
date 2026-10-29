@@ -170,6 +170,7 @@ async function judge(job: Job<{ submissionId: string }>) {
     if (stopping || !latest || latest.cancel_requested) waiting.abort();
   }, 400);
   let releaseAdmission: (() => void) | undefined;
+  let releaseForeground: (() => void) | undefined;
   // Playground and project runs have no version (so no budget row) and small fixed limits.
   const exclusive =
     row.mode !== 'playground' &&
@@ -179,7 +180,7 @@ async function judge(job: Job<{ submissionId: string }>) {
   try {
     releaseAdmission = await admission.acquire(exclusive, waiting.signal);
     // A precompile of this exact program finishes into the cache it then hits.
-    await precompiles.enterForeground(precompileKey(row));
+    releaseForeground = await precompiles.enterForeground(precompileKey(row));
     clearInterval(monitor);
     return await judgeSubmission(job, exclusive);
   } catch (error) {
@@ -195,6 +196,7 @@ async function judge(job: Job<{ submissionId: string }>) {
     throw new Error('Judge admission interrupted');
   } finally {
     clearInterval(monitor);
+    releaseForeground?.();
     releaseAdmission?.();
   }
 }
@@ -733,6 +735,11 @@ function precompileTick() {
   if (!precompiles.canStart) return;
   const draft = nextPrecompileDraft();
   if (!draft) return;
+  // Submitted while another draft held the scheduler: its own compile already covers this one.
+  if (precompiles.inForeground(precompileKey(draft))) {
+    consumePrecompileDraft(draft);
+    return;
+  }
   precompiles.start(
     draft.generation,
     async (signal) => {
