@@ -25,6 +25,7 @@ import { VERDICT_CHANNEL } from './oj-verdict-bus';
 import { Queue, Worker, type Job } from 'bullmq';
 import Redis from 'ioredis';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
+import { startCheckpointer } from './oj-checkpointer';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { sendLearnerReminders } from './reminders';
@@ -76,6 +77,7 @@ const db = sqlite();
 // commit, one per judged case. A power loss can drop the last few commits but never corrupts the
 // database; a submission left mid-judging is re-queued from the outbox and judged again.
 db.pragma('synchronous = NORMAL');
+const checkpointer = startCheckpointer();
 const redisUrl = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6381');
 if (!['redis:', 'rediss:'].includes(redisUrl.protocol))
   throw new Error('Invalid Redis protocol');
@@ -883,6 +885,7 @@ const jobsTimer = setInterval(() => void syncJobOpenings().catch(() => console.e
 async function stop() {
   if (stopping) return;
   stopping = true;
+  void checkpointer.terminate();
   clearTimeout(timer);
   clearInterval(reminderTimer);
   clearInterval(jobsTimer);

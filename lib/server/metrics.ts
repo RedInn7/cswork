@@ -77,6 +77,8 @@ function metrics() {
     db.pragma('synchronous = NORMAL');
     // A stuck lock should drop beacons rather than stall the (synchronous) server.
     db.pragma('busy_timeout = 200');
+    // Checkpointed off the server's loop by the OJ worker (lib/server/oj-checkpointer.ts).
+    db.pragma('wal_autocheckpoint = 20000');
     db.exec(`CREATE TABLE IF NOT EXISTS events(
         id INTEGER PRIMARY KEY, at INTEGER NOT NULL, day TEXT NOT NULL, name TEXT NOT NULL,
         vid TEXT NOT NULL, user_id TEXT, params TEXT NOT NULL);
