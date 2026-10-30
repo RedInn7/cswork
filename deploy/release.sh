@@ -59,7 +59,8 @@ if [[ "$sha" != "$base" ]]; then
   # New tables and indexes migrate here, before the new app starts; the running app
   # ignores them. Anything else (drop, rename, rewrite) needs a full install.sh release.
   migrations=''
-  if ! git -C "$dir" diff --quiet "$base" "$sha" -- drizzle db; then
+  # Schema sources only: db/sqlite.ts (connection pragmas) is ordinary app code.
+  if ! git -C "$dir" diff --quiet "$base" "$sha" -- drizzle 'db/*schema*.ts' db/index.ts; then
     migrations=$(bash "$dir/deploy/check-additive-migrations.sh" "$dir" "$base" "$sha") ||
       die "schema change between $base and $sha: $migrations; use deploy/install.sh"
   fi
