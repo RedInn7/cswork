@@ -10,6 +10,10 @@ export function sqlite() {
     mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
     const connection = new Database(path);
     connection.pragma('journal_mode = WAL');
+    // SQLite's auto-checkpoint runs inside whichever commit crosses it, blocking that event loop for
+    // seconds on this 8GB database. The OJ worker checkpoints from its own thread
+    // (lib/server/oj-checkpointer.ts); this higher bound (80MB of WAL) is only the fallback.
+    connection.pragma('wal_autocheckpoint = 20000');
     connection.pragma('foreign_keys = ON');
     connection.pragma('busy_timeout = 5000');
     shared.__csworkSqlite = connection;
