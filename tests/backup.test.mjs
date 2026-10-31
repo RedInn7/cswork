@@ -13,7 +13,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
-import { spawnSync, execFileSync } from 'node:child_process';
+import { spawn, spawnSync, execFileSync } from 'node:child_process';
 import Database from 'better-sqlite3';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 function setup() {
@@ -202,6 +202,37 @@ void test('media failure removes this run partial artifacts and leaves older com
       before,
     );
     assert.deepEqual(readdirSync(join(f.backups, 'media-objects')), []);
+  } finally {
+    f.close();
+  }
+});
+
+test('backup finishes while another process keeps writing', () => {
+  const f = setup();
+  try {
+    const db = new Database(f.path);
+    db.pragma('journal_mode = WAL');
+    db.exec('CREATE TABLE churn(x BLOB)');
+    const insert = db.prepare('INSERT INTO churn VALUES (randomblob(4096))');
+    db.transaction(() => { for (let i = 0; i < 20000; i++) insert.run(); })();
+    db.close();
+    // Production writes never pause; the snapshot must still complete in one pass.
+    const writer = spawn(process.execPath, ['-e', `
+      const db = new (require('better-sqlite3'))(${JSON.stringify(f.path)});
+      const insert = db.prepare('INSERT INTO churn VALUES (randomblob(4096))');
+      setInterval(() => insert.run(), 2);`], { cwd: root, stdio: ['ignore', 'ignore', 'inherit'] });
+    // Wait for its first write, so the backup really runs against a writer.
+    const rows = () => { const r = new Database(f.path, { readonly: true }); const n = r.prepare('SELECT count(*) FROM churn').pluck().get(); r.close(); return n; };
+    const start = Date.now();
+    while (rows() === 20000 && Date.now() - start < 5000) execFileSync('sleep', ['0.05']);
+    assert.ok(rows() > 20000, 'writer is running');
+    try {
+      const result = f.run();
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(f.snapshots().length, 1);
+    } finally {
+      writer.kill();
+    }
   } finally {
     f.close();
   }
