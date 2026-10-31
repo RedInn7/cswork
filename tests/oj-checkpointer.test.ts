@@ -21,8 +21,10 @@ test('the checkpointer thread moves WAL pages into the database file', async () 
   assert.equal(statSync(path).size, before, 'nothing checkpointed yet');
   const thread = startCheckpointer(20);
   try {
-    for (let i = 0; i < 100 && statSync(path).size === before; i++) await new Promise((r) => setTimeout(r, 20));
-    assert.ok(statSync(path).size > before + 200 * 4096, 'pages reached the main file');
+    // A checkpoint grows the file page by page: wait for all of it, not just the first write.
+    const target = before + 200 * 4096;
+    for (let i = 0; i < 500 && statSync(path).size <= target; i++) await new Promise((r) => setTimeout(r, 20));
+    assert.ok(statSync(path).size > target, 'pages reached the main file');
   } finally {
     await thread.terminate();
     db.close();
