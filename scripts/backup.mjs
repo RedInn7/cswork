@@ -77,7 +77,10 @@ try {
   const snapshot = join(work, 'snapshot.sqlite');
   await requireSpace((await stat(databasePath)).size);
   db = new Database(databasePath, { readonly: true, fileMustExist: true });
-  await db.backup(snapshot);
+  // One read transaction, one pass. The online backup API restarts whenever another connection
+  // writes, so on this busy database it never finished: it rewrote the snapshot for days, keeping
+  // the disk saturated and stalling every synchronous SQLite write in the app and judge.
+  db.prepare('VACUUM INTO ?').run(snapshot);
   db.close();
   db = null;
   saved = new Database(snapshot, { readonly: true });
