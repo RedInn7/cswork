@@ -17,7 +17,7 @@ target="/srv/cswork/releases/$release"
 test -L /srv/cswork/current
 [[ "$previous" == "/srv/cswork/releases/$base" && $(cat "$previous/REVISION") == "$base" ]] || { echo 'Deployed base changed; aborting'; exit 1; }
 [[ ! -e "$target" && ! -L "$target" ]] || { echo 'Candidate release already exists'; exit 1; }
-for required in server.js package.json oj-worker/index.mjs content/oa-master/catalog.json content/oa-master/manifest.json; do
+for required in server.js package.json oj-worker/index.mjs content/oa-master/catalog.json content/oa-master/manifest.json content/oa-master/editorials/oa-ebay-3.json; do
   test -s "$artifact/$required"
 done
 test -d "$artifact/node_modules"

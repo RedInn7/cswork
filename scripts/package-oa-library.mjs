@@ -22,6 +22,13 @@ copyFileSync(
   'content/oa-master/manifest.json',
   resolve(target, 'manifest.json'),
 );
+// Written editorials (lib/server/oa-written-editorials.ts): without them the server falls back to
+// the registry's short editorial, or "being checked" for problems not judged here.
+const writtenSource = resolve('content/oa-master/editorials');
+mkdirSync(resolve(target, 'editorials'), { recursive: true });
+const written = readdirSync(writtenSource).filter((f) => f.endsWith('.json'));
+for (const file of written)
+  copyFileSync(resolve(writtenSource, file), resolve(target, 'editorials', file));
 const registrySource = resolve('content/oa-judge/registry.json');
 if (statSync(registrySource).size > 64 * 1024 * 1024)
   throw new Error('OA judge registry exceeds size budget');
@@ -74,5 +81,5 @@ for (const file of solutionReports('content/oa-judge'))
     resolve(registryTarget, 'reports', file),
   );
 console.log(
-  `Packaged ${catalog.items.length} OA reading problems, ${shipped.translations} English statements, ${shipped.guides} guides and ${shipped.solutions} extra solution sets as private server assets.`,
+  `Packaged ${catalog.items.length} OA reading problems, ${written.length} written editorials, ${shipped.translations} English statements, ${shipped.guides} guides and ${shipped.solutions} extra solution sets as private server assets.`,
 );
