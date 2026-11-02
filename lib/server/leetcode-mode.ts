@@ -99,7 +99,8 @@ export function leetcodeTemplates(id: string) {
   const c = leetcodeContract(id);
   if (!c) return null;
   return {
-    python: c.pythonTemplate,
+    // typing is imported by pythonWrapper when building, not shown to the user.
+    python: c.pythonTemplate.replace(/^from typing import \*\n+/, ''),
     cpp: getLeetCodeCppTemplate(c.number, c.templates.cpp),
     java: getLeetCodeJavaTemplate(c.number, c.templates.java),
     go: getLeetCodeGoTemplate(c.number, c.templates.go),
