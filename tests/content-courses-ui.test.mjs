@@ -282,18 +282,7 @@ test('the editorial opens without a lock, is fetched once, switches language and
       assert.ok(buttons(name)[0].getAttribute('aria-pressed') === 'true', name);
       assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0][key], name);
     }
-    const compare = buttons('Compare with my code')[1];
-    await act(async () => compare.click());
-    assert.equal(compare.getAttribute('aria-expanded'), 'true');
-    let diff = document.querySelector('pre[data-diff]');
-    // Python is shown, but my C++ diffs against the C++ editorial.
-    assert.equal(diff.getAttribute('data-original'), editorial.approaches[1].cpp);
-    assert.equal(diff.getAttribute('data-modified'), 'my code');
-    assert.equal(diff.getAttribute('data-language'), 'cpp');
-    assert.ok(document.querySelector('.cs-diff-labels').textContent.includes('Editorial · C++'), 'both labels use display names');
-    assert.ok(document.querySelector('.cs-diff-labels').textContent.includes('My code · C++'), 'both labels use display names');
-    assert.equal(diff.getAttribute('aria-label'), 'Differences between the editorial and my code');
-    await act(async () => buttons('Hide comparison')[0].click());
+    assert.equal(buttons('Compare with my code').length, 0, 'no diff against my code');
     assert.equal(document.querySelectorAll('pre[data-diff]').length, 0);
 
     await render({ english: false, verified: true });
@@ -313,25 +302,14 @@ test('the editorial opens without a lock, is fetched once, switches language and
     assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
     assert.equal(fetched.length, 3);
 
-    // A Java editor opens on Java and diffs Java; an editor language the editorial lacks opens on
-    // Python and diffs whichever tab is shown.
+    // A Java editor opens on Java; an editor language the editorial lacks opens on Python.
     await render({ language: 'java', key: 'java' });
     await settle();
     assert.ok(buttons('Java')[0].getAttribute('aria-pressed') === 'true');
     assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0].java);
-    await act(async () => buttons('Compare with my code')[0].click());
-    diff = document.querySelector('pre[data-diff]');
-    assert.equal(diff.getAttribute('data-original'), editorial.approaches[0].java);
-    assert.equal(diff.getAttribute('data-language'), 'java');
     await render({ language: 'sql', key: 'sql' });
     await settle();
     assert.ok(buttons('Python')[0].getAttribute('aria-pressed') === 'true');
-    await act(async () => buttons('Go')[0].click());
-    await act(async () => buttons('Compare with my code')[0].click());
-    diff = document.querySelector('pre[data-diff]');
-    assert.equal(diff.getAttribute('data-original'), editorial.approaches[0].go);
-    assert.equal(diff.getAttribute('data-language'), 'go');
-    assert.ok(document.querySelector('.cs-diff-labels').textContent.includes('Editorial · Go'));
   } finally {
     globalThis.fetch = original;
     await act(async () => root.unmount());
