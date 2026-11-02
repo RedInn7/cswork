@@ -34,7 +34,8 @@ export function getLeetCodeJavaTemplate(
   _problemId: number,
   snippet: string,
 ): string {
-  return `import java.util.*;\nimport java.math.*;\n\n${snippet.replace(/\bpublic\s+class\s+/g, 'class ')}\n\n${helpers(snippet, snippet)}\n`;
+  // java.util / java.math are added when building (buildLeetCodeJava), not shown to the user.
+  return `${snippet.replace(/\bpublic\s+class\s+/g, 'class ')}\n\n${helpers(snippet, snippet)}\n`;
 }
 export function buildLeetCodeJava(
   _problemId: number,

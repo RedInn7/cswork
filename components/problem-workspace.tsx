@@ -1825,9 +1825,7 @@ function Workspace({
             problemId={problem.id}
             verified={problem.lingEditorialVerified}
             english={uiEnglish}
-            code={code}
             language={language}
-            settings={settings}
             stop={problem.stop}
             followUpOn={followUpOn}
             onFollowUp={followUp ? setFollowUpOn : undefined}
@@ -2404,9 +2402,6 @@ function Workspace({
             {languageOptions.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
-                {problem.languageVersions?.[item.id]
-                  ? ` · ${problem.languageVersions[item.id]}`
-                  : ''}
               </option>
             ))}
           </select>

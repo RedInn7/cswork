@@ -1,15 +1,13 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { BadgeCheck, GitCompare } from 'lucide-react';
-import { CodeDiff } from './editor';
+import { BadgeCheck } from 'lucide-react';
 import { EditorialVote } from './editorial-vote';
 import { EditorialFollowUps, EditorialSteps } from './ling-editorial-steps';
 import { HighlightedCode } from './highlighted-code';
 import { StatementMarkdown } from './statement-markdown';
 import { ojRequest, type LingFollowUps, type TrackEditorial } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
-import { languages, type Language } from '@/lib/problems';
-import type { EditorSettings } from '@/lib/editor-settings';
+import type { Language } from '@/lib/problems';
 import '@/app/ling-editorial.css';
 
 const LANGS = [
@@ -25,13 +23,11 @@ type EditorialLang = (typeof LANGS)[number][0];
 type Editorial = TrackEditorial & Partial<LingFollowUps>;
 const editorialLang = (language: Language): EditorialLang | null =>
   LANGS.find(([id]) => id === language)?.[0] ?? null;
-const langName = (lang: EditorialLang) => LANGS.find(([id]) => id === lang)![1];
 const MODE_KEY = 'cswork:editorial-mode';
 
 /**
  * The Line 500 editorial tab: approaches from brute force to best, each with its idea,
- * complexity and Python / C++ / Java / Go code, and a diff against the editor's code
- * in the editor's own language (the shown language when the editorial has none in it).
+ * complexity and Python / C++ / Java / Go code, opening in the editor's own language.
  * Like LeetCode, it opens straight away, no lock or confirm; the server refuses it during the
  * learner's running contest. With two or more approaches it reads all at once or step by step (components/ling-editorial-steps.tsx; `stop` is
  * the problem's Line 500 stop), remembered in this browser; then the interview follow-ups
@@ -41,9 +37,7 @@ export function LingEditorial({
   problemId,
   verified,
   english,
-  code,
   language,
-  settings,
   stop,
   followUpOn,
   onFollowUp,
@@ -51,16 +45,13 @@ export function LingEditorial({
   problemId: string;
   verified: boolean;
   english: boolean;
-  code: string;
   language: Language;
-  settings: EditorSettings;
   stop?: string | null;
   followUpOn?: boolean;
   onFollowUp?: (on: boolean) => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [picked, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
-  const [compare, setCompare] = useState<number | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const [editorial, setEditorial] = useState<Editorial | null>(null);
   const [error, setError] = useState('');
@@ -88,8 +79,6 @@ export function LingEditorial({
   const shownLangs = LANGS.filter(([id]) => editorial?.approaches.some((approach) => approach[id]));
   const has = (id: EditorialLang | null) => !!id && shownLangs.some(([shown]) => shown === id);
   const lang = has(picked) ? picked : (shownLangs[0]?.[0] ?? picked);
-  // Like for like: my Java code diffs against the Java editorial, whichever tab is shown.
-  const diffLang = has(editorialLang(language)) ? editorialLang(language)! : lang;
   const lingProblem = problemId.startsWith('lc-');
   useEffect(() => {
     if (editorial) return;
@@ -196,38 +185,6 @@ export function LingEditorial({
                   untrusted
                 />
                 <HighlightedCode className="cs-ling-code" code={approach[lang] ?? ''} language={lang} />
-                <button
-                  type="button"
-                  className="cs-ling-compare"
-                  aria-expanded={compare === i}
-                  onClick={() => setCompare(compare === i ? null : i)}
-                >
-                  <GitCompare size={14} aria-hidden="true" />
-                  {compare === i ? t('收起对比', 'Hide comparison') : t('与我的代码对比', 'Compare with my code')}
-                </button>
-                {compare === i && (
-                  <>
-                    <div className="cs-diff-labels">
-                      <span>
-                        {t('官方题解', 'Editorial')} · {langName(diffLang)}
-                      </span>
-                      <span>
-                        {t('我的代码', 'My code')} ·{' '}
-                        {languages.find((item) => item.id === language)?.name ?? language}
-                      </span>
-                    </div>
-                    <div className="cs-history-editor cs-ling-diff">
-                      <CodeDiff
-                        original={approach[diffLang] ?? approach[lang] ?? ''}
-                        modified={code}
-                        originalLanguage={diffLang}
-                        language={language}
-                        settings={settings}
-                        ariaLabel={t('官方题解与我的代码的差异', 'Differences between the editorial and my code')}
-                      />
-                    </div>
-                  </>
-                )}
               </li>
             ))}
           </ol>
