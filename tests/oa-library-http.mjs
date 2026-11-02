@@ -143,7 +143,9 @@ try {
         ),
         `${first.id} ${extra.language} is served without a passing report`,
       );
-    assert.equal(solution.explanation, verified.editorial);
+    // The packaged written editorial is the longer write-up shown instead of the registry's.
+    const written = JSON.parse(readFileSync(`content/oa-master/editorials/${first.id}.json`, 'utf8'));
+    assert.equal(solution.explanation, written.explanation);
   } else await req(`/api/oj/oa-library/${first.id}/solution`, 409);
   await req('/api/oj/oa-library/oa-missing-1', 404);
   await req('/api/oj/oa-library?company=not-a-company', 400);
