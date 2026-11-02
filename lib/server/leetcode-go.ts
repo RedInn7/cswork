@@ -86,7 +86,8 @@ export function getLeetCodeGoTemplate(
   snippet: string,
 ): string {
   const code = official(problemId, snippet);
-  return `package main\n\n${code}\n\n${helpers(code)}\n`;
+  // package main is added when building (runtime.go), not shown to the user.
+  return `${code}\n\n${helpers(code)}\n`;
 }
 export function buildLeetCodeGo(
   problemId: number,
