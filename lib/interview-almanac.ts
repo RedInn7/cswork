@@ -1,4 +1,4 @@
-// The interview almanac (/career/almanac): the Chinese almanac's 宜 / 忌 of each day read in
+// The interview almanac (/almanac): the Chinese almanac's 宜 / 忌 of each day read in
 // interview terms. Folk custom for fun, not advice. Pure and client-safe: the lunar calendar library
 // is passed in, so the page can load it on demand and tests can call it directly.
 type LunarLib = Pick<typeof import('lunar-typescript'), 'Solar'>;

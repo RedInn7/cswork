@@ -48,7 +48,7 @@ function Seal({ grade }: { grade: Grade }) {
 }
 
 /**
- * /career/almanac: a month of the Chinese almanac read for interviews, and one tear-off sheet for the
+ * /almanac: a month of the Chinese almanac read for interviews, and one tear-off sheet for the
  * chosen day. The lunar calendar (about 440 KB) loads after the page; nothing is stored or sent.
  */
 export function InterviewAlmanac({ zh }: { zh: boolean }) {

@@ -121,7 +121,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
   // A page of its own, not a workspace view: a key starting with / renders as a link.
-  [CalendarDays, '面试黄历', 'Interview Almanac', '/career/almanac'],
+  [CalendarDays, '面试黄历', 'Interview Almanac', '/almanac'],
 ];
 /** Views that only show teaching courses. */
 const courseViews = ['courses'];
