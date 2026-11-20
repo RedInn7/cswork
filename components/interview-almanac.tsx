@@ -119,15 +119,15 @@ export function InterviewAlmanac({ zh }: { zh: boolean }) {
         (d.lunarDay === '初一' ? `${d.lunarMonth}月` : d.lunarDay)
       : `${d.lunarNum[0]}/${d.lunarNum[1]}`);
   const grade = (g: Grade) => GRADE_TEXT[g][zh ? 0 : 1];
-  // "Onsite 大吉 · 谈 Offer 吉": the kinds worth booking that day.
+  // The kinds worth booking that day, best first: "Onsite 最宜", "谈 Offer 宜".
   const goodFor = (r: DayRating) =>
     TRACKS.filter((track) => r.tracks[track.key].score >= 3)
       .sort((a, b) => r.tracks[b.key].score - r.tracks[a.key].score)
       .map(
         (track) =>
-          `${zh ? track.zh : track.en} · ${grade(r.tracks[track.key].grade)}`,
-      )
-      .join(zh ? '，' : ', ');
+          `${zh ? track.zh : track.en} ${grade(r.tracks[track.key].grade)}`,
+      );
+  const stamp = (p: Ymd) => p.y * 10000 + p.m * 100 + p.d;
   const pick = (p: Ymd) => {
     setPicked(p);
     setView({ y: p.y, m: p.m });
@@ -172,36 +172,12 @@ export function InterviewAlmanac({ zh }: { zh: boolean }) {
 
   return (
     <div className="almanac">
-      <div className="almanac-bar">
-        <p className="almanac-now">
-          {t(
-            `${zoneName} ${today.m}月${today.d}日 · ${lunarText(day(today))}`,
-            `${zoneName} time · ${dateText(today, day(today).week)} · ${lunarText(day(today))}`,
-          )}
-        </p>
-        <div className="almanac-nav">
-          <button
-            type="button"
-            onClick={() => shift(-1)}
-            aria-label={t('上个月', 'Previous month')}
-          >
-            ‹
-          </button>
-          <span className="almanac-month" aria-live="polite">
-            {monthLabel}
-          </span>
-          <button
-            type="button"
-            onClick={() => shift(1)}
-            aria-label={t('下个月', 'Next month')}
-          >
-            ›
-          </button>
-          <button type="button" className="almanac-today" onClick={goToday}>
-            {t('回到今天', 'Today')}
-          </button>
-        </div>
-      </div>
+      <p className="almanac-now">
+        {t(
+          `${zoneName} ${today.m}月${today.d}日 · ${lunarText(day(today))}`,
+          `${zoneName} time · ${dateText(today, day(today).week)} · ${lunarText(day(today))}`,
+        )}
+      </p>
 
       <section className="almanac-best" aria-labelledby="almanac-best-title">
         <h2 id="almanac-best-title">
@@ -214,7 +190,11 @@ export function InterviewAlmanac({ zh }: { zh: boolean }) {
                 <button type="button" onClick={() => pick(d)}>
                   <Seal grade={r.grade} />
                   <span className="almanac-when">{dateText(d, d.week)}</span>
-                  <span className="almanac-why">{goodFor(r)}</span>
+                  <span className="almanac-why">
+                    {goodFor(r).map((text) => (
+                      <span key={text}>{text}</span>
+                    ))}
+                  </span>
                 </button>
               </li>
             ))}
@@ -231,6 +211,28 @@ export function InterviewAlmanac({ zh }: { zh: boolean }) {
 
       <div className="almanac-main">
         <section aria-label={monthLabel}>
+          <div className="almanac-nav">
+            <button
+              type="button"
+              onClick={() => shift(-1)}
+              aria-label={t('上个月', 'Previous month')}
+            >
+              ‹
+            </button>
+            <span className="almanac-month" aria-live="polite">
+              {monthLabel}
+            </span>
+            <button
+              type="button"
+              onClick={() => shift(1)}
+              aria-label={t('下个月', 'Next month')}
+            >
+              ›
+            </button>
+            <button type="button" className="almanac-today" onClick={goToday}>
+              {t('今天', 'Today')}
+            </button>
+          </div>
           <div className="almanac-cal">
             {[1, 2, 3, 4, 5, 6, 0].map((w) => (
               <div className="almanac-dow" key={w} aria-hidden="true">
@@ -257,18 +259,19 @@ export function InterviewAlmanac({ zh }: { zh: boolean }) {
                   className="almanac-cell"
                   data-off={d.dayOff || undefined}
                   data-today={same(p, today) || undefined}
+                  data-past={stamp(p) < stamp(today) || undefined}
                   aria-pressed={same(p, picked)}
                   aria-label={`${dateText(p, d.week)}, ${lunarText(d)}, ${grade(r.grade)}`}
                   onClick={() => pick(p)}
                 >
                   <span className="almanac-num">{p.d}</span>
+                  <Seal grade={r.grade} />
                   <span
                     className="almanac-lunar"
                     data-mark={marked || undefined}
                   >
                     {cellNote(d)}
                   </span>
-                  <Seal grade={r.grade} />
                 </button>
               );
             })}
