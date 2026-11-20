@@ -184,6 +184,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   // noindex until the first sync has recorded a season (app/career/jobs/calendar/page.tsx).
   { path: '/career/jobs/calendar' },
   { path: '/career/visa-timeline' },
+  { path: '/career/almanac' },
   { path: '/career/offers' },
   { path: '/career/templates' },
   { path: '/career/negotiation' },

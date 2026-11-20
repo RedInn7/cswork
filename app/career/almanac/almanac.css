@@ -1,0 +1,572 @@
+/* /career/almanac (components/interview-almanac.tsx): a printed 黄历 on the career guide's shell:
+   yellow paper, cinnabar seals, a month grid beside one tear-off sheet for the chosen day. */
+.almanac,
+.almanac-status {
+  padding: 24px;
+  border: 1px solid #d9b85a;
+  border-radius: 14px;
+  background: #f1dc96;
+  color: #2a1d12;
+  font-family: 'Songti SC', 'Noto Serif SC', 'STSong', 'SimSun', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.almanac {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.almanac-status {
+  margin: 0;
+  color: #6b5232;
+}
+.almanac button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.almanac button:focus-visible {
+  outline: 2px solid #b5301b;
+  outline-offset: 2px;
+}
+
+/* Today's line and the month switch */
+.almanac-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 24px;
+  padding-bottom: 14px;
+  border-bottom: 3px double #c96a52;
+}
+.almanac-now {
+  margin: 0;
+  color: #6b5232;
+}
+.almanac-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.almanac-nav button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #c96a52;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+}
+.almanac-nav button:hover,
+.almanac-best li button:hover,
+.almanac-cell:hover {
+  background: #e6c96f;
+}
+.almanac-nav .almanac-today {
+  width: auto;
+  height: auto;
+  margin-left: 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.almanac-month {
+  min-width: 8.5em;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The days worth booking */
+.almanac-best h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #6b5232;
+}
+.almanac-best ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.almanac-best li button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 4px 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #c96a52;
+  border-radius: 4px;
+  background: #f8eab9;
+  text-align: left;
+}
+.almanac-when {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.almanac-why {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: #6b5232;
+}
+.almanac-empty {
+  margin: 0;
+  color: #6b5232;
+}
+
+/* Seal stamps: 大吉 filled, 吉 outlined, 平 grey, 慎 dashed */
+.almanac-seal {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #b5301b;
+  border-radius: 3px;
+  color: #b5301b;
+  font-family: 'STKaiti', 'KaiTi', 'Kaiti SC', serif;
+  font-size: 16px;
+  line-height: 1;
+}
+.almanac-seal[data-grade='大吉'] {
+  background: #b5301b;
+  color: #f8eab9;
+}
+.almanac-seal[data-grade='平'],
+.almanac-seal[data-grade='慎'] {
+  border-color: #6b5232;
+  color: #6b5232;
+}
+.almanac-seal[data-grade='慎'] {
+  border-style: dashed;
+}
+.almanac-best .almanac-seal {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+}
+
+/* Month grid beside the sheet */
+.almanac-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.almanac-cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-top: 1px solid #c96a52;
+  border-left: 1px solid #c96a52;
+}
+.almanac-dow,
+.almanac-pad,
+.almanac-cell {
+  border: 0;
+  border-right: 1px solid #c96a52;
+  border-bottom: 1px solid #c96a52;
+}
+.almanac-dow {
+  padding: 6px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #6b5232;
+}
+.almanac-cell {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 2px;
+  min-height: 84px;
+  padding: 6px 6px 8px;
+  background: transparent;
+  text-align: left;
+}
+.almanac-cell[data-off] {
+  background: #ecd384;
+}
+.almanac-cell[aria-pressed='true'] {
+  background: #f8eab9;
+  box-shadow: inset 0 0 0 2px #b5301b;
+}
+.almanac-num {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.almanac-cell[data-today] .almanac-num {
+  color: #b5301b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.almanac-lunar {
+  overflow: hidden;
+  font-size: 12px;
+  color: #6b5232;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.almanac-lunar[data-mark] {
+  color: #b5301b;
+}
+.almanac-cell .almanac-seal {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+}
+.almanac-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #6b5232;
+}
+.almanac-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.almanac-legend .almanac-seal {
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+}
+
+/* The tear-off sheet */
+.almanac-sheet {
+  display: grid;
+  gap: 14px;
+  padding: 20px 20px 18px;
+  border: 2px solid #b5301b;
+  outline: 1px solid #c96a52;
+  outline-offset: 4px;
+  background: #f8eab9;
+}
+.almanac-sheet header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 16px;
+  align-items: center;
+}
+.almanac-sheet header > div:last-child {
+  display: grid;
+  gap: 2px;
+}
+.almanac-sheet header em {
+  font-style: normal;
+  color: #b5301b;
+}
+.almanac-sheet header small {
+  font-size: 13px;
+  color: #6b5232;
+}
+.almanac-big {
+  font-size: clamp(64px, 14vw, 104px);
+  font-weight: 900;
+  line-height: 0.9;
+  color: #b5301b;
+  font-variant-numeric: tabular-nums;
+}
+.almanac-tracks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid #c96a52;
+  border-bottom: 1px solid #c96a52;
+  list-style: none;
+}
+.almanac-tracks li {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.almanac-tracks .almanac-seal {
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+}
+.almanac-tracks span:last-child {
+  font-size: 13px;
+  color: #6b5232;
+}
+.almanac-yiji {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.almanac-yiji > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.almanac-glyph {
+  font-family: 'STKaiti', 'KaiTi', 'Kaiti SC', serif;
+  font-size: 40px;
+  line-height: 1;
+}
+.almanac-yiji [data-side='yi'] .almanac-glyph {
+  color: #b5301b;
+}
+.almanac-yiji ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.almanac-yiji li:not([data-plain]) {
+  font-weight: 700;
+}
+.almanac-yiji [data-side='yi'] li:not([data-plain]) {
+  color: #b5301b;
+}
+.almanac-yiji [data-side='ji'] li:not([data-plain]) {
+  text-decoration: underline;
+  text-decoration-color: #b5301b;
+}
+.almanac-facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 14px;
+  margin: 0;
+  font-size: 14px;
+}
+.almanac-facts dt {
+  color: #6b5232;
+}
+.almanac-facts dd {
+  margin: 0;
+}
+.almanac-source {
+  font-size: 14px;
+}
+.almanac-source summary {
+  color: #6b5232;
+  cursor: pointer;
+}
+.almanac-source .almanac-facts {
+  margin-top: 8px;
+}
+.almanac-source table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.almanac-source td {
+  padding: 3px 0;
+  border-bottom: 1px dotted #c96a52;
+}
+.almanac-source td:last-child {
+  width: 4.5em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .almanac-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .almanac {
+    padding: 16px 12px;
+  }
+  .almanac-cell {
+    min-height: 64px;
+    padding: 4px 4px 6px;
+  }
+  .almanac-num {
+    font-size: 16px;
+  }
+  .almanac-lunar {
+    font-size: 10px;
+  }
+  .almanac-cell .almanac-seal {
+    right: 3px;
+    bottom: 3px;
+    width: 22px;
+    height: 22px;
+    border-width: 1.5px;
+    font-size: 12px;
+  }
+  .almanac-yiji {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .almanac-sheet {
+    animation: almanac-drop 220ms ease-out;
+  }
+  @keyframes almanac-drop {
+    from {
+      transform: translateY(-6px);
+      opacity: 0.6;
+    }
+  }
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .almanac,
+  .dark .almanac-status {
+    border: 1px solid #d9b85a;
+    background: #f1dc96;
+    color: #2a1d12;
+  }
+  .dark .almanac-status {
+    color: #6b5232;
+  }
+  .dark .almanac button {
+    color: inherit;
+  }
+  .dark .almanac button:focus-visible {
+    outline: 2px solid #fda896;
+  }
+  .dark .almanac-bar {
+    border-bottom: 3px double #c96a52;
+  }
+  .dark .almanac-now {
+    color: #dcc3a5;
+  }
+  .dark .almanac-nav button {
+    border: 1px solid #c96a52;
+    background: transparent;
+  }
+  .dark .almanac-nav button:hover,
+  .dark .almanac-best li button:hover,
+  .dark .almanac-cell:hover {
+    background: #e6c96f;
+  }
+  .dark .almanac-best h2 {
+    color: #dcc3a5;
+  }
+  .dark .almanac-best li button {
+    border: 1px solid #c96a52;
+    background: #181200;
+  }
+  .dark .almanac-why {
+    color: #dcc3a5;
+  }
+  .dark .almanac-empty {
+    color: #dcc3a5;
+  }
+  .dark .almanac-seal {
+    border: 2px solid #b5301b;
+    color: #fda896;
+  }
+  .dark .almanac-seal[data-grade='大吉'] {
+    background: #b5301b;
+    color: #f8eab9;
+  }
+  .dark .almanac-seal[data-grade='平'],
+  .dark .almanac-seal[data-grade='慎'] {
+    border-color: #6b5232;
+    color: #dcc3a5;
+  }
+  .dark .almanac-seal[data-grade='慎'] {
+    border-style: dashed;
+  }
+  .dark .almanac-cal {
+    border-top: 1px solid #c96a52;
+    border-left: 1px solid #c96a52;
+  }
+  .dark .almanac-dow,
+  .dark .almanac-pad,
+  .dark .almanac-cell {
+    border: 0;
+    border-right: 1px solid #c96a52;
+    border-bottom: 1px solid #c96a52;
+  }
+  .dark .almanac-dow {
+    color: #dcc3a5;
+  }
+  .dark .almanac-cell {
+    background: transparent;
+  }
+  .dark .almanac-cell[data-off] {
+    background: #ecd384;
+  }
+  .dark .almanac-cell[aria-pressed='true'] {
+    background: #181200;
+    box-shadow: inset 0 0 0 2px #b5301b;
+  }
+  .dark .almanac-cell[data-today] .almanac-num {
+    color: #fda896;
+    text-decoration: underline;
+  }
+  .dark .almanac-lunar {
+    color: #dcc3a5;
+  }
+  .dark .almanac-lunar[data-mark] {
+    color: #fda896;
+  }
+  .dark .almanac-legend {
+    color: #dcc3a5;
+  }
+  .dark .almanac-sheet {
+    border: 2px solid #b5301b;
+    outline: 1px solid #ed9882;
+    background: #181200;
+  }
+  .dark .almanac-sheet header em {
+    color: #fda896;
+  }
+  .dark .almanac-sheet header small {
+    color: #dcc3a5;
+  }
+  .dark .almanac-big {
+    color: #fda896;
+  }
+  .dark .almanac-tracks {
+    border-top: 1px solid #c96a52;
+    border-bottom: 1px solid #c96a52;
+  }
+  .dark .almanac-tracks span:last-child {
+    color: #dcc3a5;
+  }
+  .dark .almanac-yiji [data-side='yi'] .almanac-glyph {
+    color: #fda896;
+  }
+  .dark .almanac-yiji [data-side='yi'] li:not([data-plain]) {
+    color: #fda896;
+  }
+  .dark .almanac-yiji [data-side='ji'] li:not([data-plain]) {
+    text-decoration: underline;
+    text-decoration-color: #fda896;
+  }
+  .dark .almanac-facts dt {
+    color: #dcc3a5;
+  }
+  .dark .almanac-source summary {
+    color: #dcc3a5;
+  }
+  .dark .almanac-source td {
+    border-bottom: 1px dotted #c96a52;
+  }
+  @media (max-width: 520px) {
+    .dark .almanac-cell .almanac-seal {
+      border-width: 1.5px;
+    }
+  }
+}
+/* ── end dark theme ── */
