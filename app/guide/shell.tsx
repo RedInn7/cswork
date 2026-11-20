@@ -47,7 +47,7 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
           <Link href="/career/tracker" prefetch={false}>
             {zh ? '投递追踪' : 'Application tracker'}
           </Link>
-          <Link href="/career/almanac" prefetch={false}>
+          <Link href="/almanac" prefetch={false}>
             {zh ? '面试黄历' : 'Interview almanac'}
           </Link>
         </nav>

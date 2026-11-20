@@ -1,4 +1,4 @@
-// The interview almanac (/career/almanac): US holidays on their observed weekdays, the grade each
+// The interview almanac (/almanac): US holidays on their observed weekdays, the grade each
 // kind of interview gets from a day's almanac entry, and the days it offers to book.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
