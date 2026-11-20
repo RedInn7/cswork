@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import './almanac.css';
 import { InterviewAlmanac } from '@/components/interview-almanac';
 import { seoMetadata } from '@/lib/seo';
@@ -12,7 +13,8 @@ const copy = {
     h1: '面试黄历',
   },
   en: {
-    title: 'Interview Almanac: Lucky Days for Phone Screens, Onsites and Offers · CSWork',
+    title:
+      'Interview Almanac: Lucky Days for Phone Screens, Onsites and Offers · CSWork',
     description:
       'The Chinese almanac read for interviews: every day gets a grade for phone screens, onsites and offer talks, with the best working days in the next 30 and the lucky hours, on US time zones and holidays. Folk custom, for fun.',
     h1: 'Interview almanac',
@@ -21,15 +23,25 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/almanac' });
+  return seoMetadata({
+    title: c.title,
+    description: c.description,
+    path: '/almanac',
+  });
 }
 
-/** The almanac alone, edge to edge: no site header, hero or footer around it. */
+/** The almanac alone, edge to edge: its own masthead with the way back, no site header or footer. */
 export default async function AlmanacPage() {
   const zh = (await requestLocale()) === 'zh';
   return (
     <main className="almanac-page" id="main-content" lang={zh ? 'zh-CN' : 'en'}>
-      <h1 className="sr-only">{copy[zh ? 'zh' : 'en'].h1}</h1>
+      <header className="almanac-mast">
+        <Link className="almanac-back" href="/" prefetch={false}>
+          <span aria-hidden="true">←</span>{' '}
+          {zh ? '回到 CSWork' : 'Back to CSWork'}
+        </Link>
+        <h1>{copy[zh ? 'zh' : 'en'].h1}</h1>
+      </header>
       <InterviewAlmanac zh={zh} />
     </main>
   );
