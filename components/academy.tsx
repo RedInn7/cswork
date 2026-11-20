@@ -15,6 +15,7 @@ import {
   MessagesSquare,
   ScrollText,
   BookOpen,
+  CalendarDays,
   Code2,
   Bell,
   Languages,
@@ -108,7 +109,7 @@ const OwnerMetrics = lazy(() =>
   import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
 );
 // Practice is the product's centre: the problem bank leads and is the landing view.
-// [icon, zh label, en label, view]
+// [icon, zh label, en label, view or page path]
 const nav: [LucideIcon, string, string, string][] = [
   [Code2, '算法题库', 'Problem Bank', 'problems'],
   [Zap, '题型快练', 'Pattern Speedrun', 'speedrun'],
@@ -119,6 +120,8 @@ const nav: [LucideIcon, string, string, string][] = [
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
+  // A page of its own, not a workspace view: a key starting with / renders as a link.
+  [CalendarDays, '面试黄历', 'Interview Almanac', '/career/almanac'],
 ];
 /** Views that only show teaching courses. */
 const courseViews = ['courses'];
