@@ -135,7 +135,7 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
 
 test('the sitemap lists the guide and the resume review', () => {
   const paths = new Set(SITEMAP_STATIC_ENTRIES.map((e) => e.path));
-  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', '/career/offers', '/career/templates', '/career/negotiation', '/career/jobs/calendar', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
+  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', '/career/almanac', '/career/offers', '/career/templates', '/career/negotiation', '/career/jobs/calendar', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
 });
 
 test('no nav or timeline link points at the H-1B ranking while its data is unbuilt', async () => {
@@ -145,7 +145,7 @@ test('no nav or timeline link points at the H-1B ranking while its data is unbui
   const shell = renderToStaticMarkup(createElement(GuideShell, { zh: false, children: null }));
   const visa = renderToStaticMarkup(await VisaTimelinePage());
   assert.match(shell, /href="\/career\/tracker"/);
-  for (const href of ['/career/offers', '/career/jobs/calendar', '/career/resume/builder#resume-check', '/interview-platforms']) assert.ok(shell.includes(`href="${href}"`), href);
+  for (const href of ['/career/offers', '/career/almanac', '/career/jobs/calendar', '/career/resume/builder#resume-check', '/interview-platforms']) assert.ok(shell.includes(`href="${href}"`), href);
   // Resume projects are taken down: no footer link.
   assert.ok(!shell.includes('href="/projects"'));
   for (const html of [shell, visa]) assert.equal(html.includes('href="/career/h1b"'), H1B.fiscalYears.length > 0);
