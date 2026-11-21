@@ -253,6 +253,9 @@ export function Academy() {
       boot.notifications.filter((n) => !n.read_at).length;
   // The server omits teaching courses hidden from this account (owner-only mode).
   const coursesHidden = !loading && boot.courses.length === 0;
+  // The menu entry waits for a course to show: before the first load nothing says there is one,
+  // and showing it meanwhile made it flash on every refresh for the accounts that have none.
+  const coursesInNav = boot.courses.length > 0;
   const heading =
     (current && t(current[1], current[2])) ||
     (
@@ -476,7 +479,7 @@ export function Academy() {
             <SidebarMenu>
               {nav
                 .filter(
-                  ([, , , key]) => !coursesHidden || !courseViews.includes(key),
+                  ([, , , key]) => coursesInNav || !courseViews.includes(key),
                 )
                 .map(([Icon, zh, en, key]) => (
                 <SidebarMenuItem key={key}>
