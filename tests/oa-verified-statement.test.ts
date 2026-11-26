@@ -216,3 +216,12 @@ test('OA reader omits a sample note that only points at the notes or repeats a h
     }
   }
 });
+
+test('ja/ko/vi display copy drops the "written by CSWork" sentence', () => {
+  for (const [note, body] of [
+    ['標準入出力、例、判定は CSWork が作成したものです。', '配列の最大値を求めてください。'],
+    ['표준 입출력, 예제, 채점은 CSWork에서 작성했습니다.', '배열의 최댓값을 구하세요.'],
+    ['Định dạng đầu vào chuẩn, ví dụ và bộ test do CSWork biên soạn.', 'Hãy tìm giá trị lớn nhất của mảng.'],
+  ])
+    assert.equal(clean('description', `${body}\n\n${note}`), body);
+});
