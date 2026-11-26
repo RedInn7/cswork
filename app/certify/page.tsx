@@ -58,9 +58,6 @@ export default async function CertifyPage() {
         <Link href="/mock-oa" prefetch={false}>
           {zh ? '模拟 OA' : 'Mock OA'}
         </Link>
-        <Link href="/contest" prefetch={false}>
-          {zh ? '竞赛' : 'Contests'}
-        </Link>
         <Link href="/system-design" prefetch={false}>
           {zh ? '系统设计课' : 'System design course'}
         </Link>

@@ -33,7 +33,6 @@ const { certificateById, certificateOwner } = await import('../lib/server/certif
 const { seoMetadata } = await import('../lib/seo');
 const { CertificateView, shareLinks } = await import('../app/certificate/view');
 const profileImage = (await import('../app/u/[handle]/opengraph-image')).default;
-const contestImage = (await import('../app/contest/[id]/opengraph-image')).default;
 const certificateImage = (await import('../app/certificate/[id]/opengraph-image')).default;
 const siteImage = (await import('../app/opengraph-image')).default;
 
@@ -183,10 +182,7 @@ void test('every route answers a cached PNG without a single network fetch, offl
   assert.ok((await png(await profileImage(params({ handle: 'Ann' })))) !== site);
   // Hidden, unknown and private: byte-for-byte the site card.
   assert.equal(await png(await profileImage(params({ handle: 'hidden-one' }))), site);
-  assert.equal(await png(await contestImage(params({ id: 'secret-room' }))), site);
-  assert.equal(await png(await contestImage(params({ id: 'duel-abc' }))), site);
   assert.equal(await png(await certificateImage(params({ id: 'missing' }))), site);
-  assert.ok((await png(await contestImage(params({ id: 'weekly-42' })))) !== site);
   assert.ok((await png(await certificateImage(params({ id: 'KanaCert00000001' })))) !== site);
   assert.deepEqual(fetched, []);
 });

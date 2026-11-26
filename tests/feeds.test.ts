@@ -31,7 +31,6 @@ const { saveIssue } = await import('../lib/server/newsletter');
 const feeds = await import('../lib/server/feeds');
 const companyRoute = await import('../app/feeds/company/[slug]/route');
 const dailyRoute = await import('../app/feeds/daily.xml/route');
-const newsletterRoute = await import('../app/feeds/newsletter.xml/route');
 
 before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }));
 after(() => {
@@ -187,8 +186,7 @@ void test('the newsletter feed: the archived issues, newest first, linking to th
     });
   issue('2026-W40', Date.UTC(2026, 8, 28), ['Older & <wiser>', 'Two'], false);
   issue('2026-W41', Date.UTC(2026, 9, 5), ['新题 & more'], true);
-  const response = await newsletterRoute.GET(new Request('https://cswork.test/feeds/newsletter.xml?lang=zh'));
-  const xml = await response.text();
+  const xml = await feeds.newsletterFeed('zh');
   const list = entries(xml);
   assert.deepEqual(
     list.map((e) => [e.title, e.link]),

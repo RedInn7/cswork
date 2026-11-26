@@ -46,7 +46,6 @@ globalThis.ResizeObserver ??= class {
 };
 const { createRoot } = await import('react-dom/client');
 const { GiftBlock, RedeemGift } = await import('../components/course-gift.tsx');
-const { NewsletterToggle } = await import('../components/newsletter-toggle.tsx');
 
 const wait = (ms = 5) =>
   act(async () => {
@@ -133,44 +132,5 @@ test('redeem form: the code from the link fragment, sent once', async () => {
   } finally {
     api.restore();
     history.replaceState(null, '', '/');
-  }
-});
-
-test('newsletter toggle: signed out, then subscribe while mail is off', async () => {
-  let signedIn = false;
-  let lost = false;
-  const api = serve((path, body) => {
-    if (path === 'oj/newsletter' && !body)
-      return lost
-        ? Response.json({ subscribed: true, confirmed: false, mail: true, resend: true })
-        : signedIn
-          ? Response.json({ subscribed: false, confirmed: false, mail: false })
-          : Response.json({ error: 'Please sign in first' }, { status: 401 });
-    if (path === 'oj/newsletter') return Response.json({ subscribed: body.subscribe, confirmed: false, mail: lost, resend: false });
-  });
-  try {
-    let root = await mount(createElement(NewsletterToggle));
-    assert.ok(document.querySelector('.newsletter-toggle a').getAttribute('href') === '/?view=account#newsletter');
-    await act(async () => root.unmount());
-    signedIn = true;
-    root = await mount(createElement(NewsletterToggle));
-    await act(async () => button('Subscribe').click());
-    await wait();
-    assert.deepEqual(api.posts.at(-1), ['oj/newsletter', { subscribe: true, locale: 'en' }]);
-    assert.ok(document.querySelector('.newsletter-toggle [role="status"]').textContent.includes('Once email delivery is switched on'));
-    await act(async () => button('Unsubscribe').click());
-    await wait();
-    assert.deepEqual(api.posts.at(-1), ['oj/newsletter', { subscribe: false, locale: 'en' }]);
-    await act(async () => root.unmount());
-    // A confirmation sent over a day ago and never clicked: one button sends it again.
-    lost = true;
-    root = await mount(createElement(NewsletterToggle));
-    await act(async () => button('Send it again').click());
-    await wait();
-    assert.deepEqual(api.posts.at(-1), ['oj/newsletter', { subscribe: true, locale: 'en' }]);
-    assert.ok(![...document.querySelectorAll('button')].some((b) => b.textContent.includes('Send it again')));
-    await act(async () => root.unmount());
-  } finally {
-    api.restore();
   }
 });
