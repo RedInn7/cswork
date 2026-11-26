@@ -70,6 +70,11 @@ void test('English statement survives JSON import/export and preserves judge inp
   };
   assert.deepEqual(problemStatement(publicProblem, 'en'), english);
   assert.equal(problemStatement(publicProblem, 'zh'), publicProblem);
+  // Japanese when translated; otherwise English, then Chinese.
+  const japanese = { ...english, title: '視聴区間' };
+  assert.equal(problemStatement({ ...publicProblem, translations: { en: english, ja: japanese } }, 'ja'), japanese);
+  assert.deepEqual(problemStatement(publicProblem, 'ja'), english);
+  assert.equal(problemStatement(problems[0], 'ja'), problems[0]);
 });
 void test('partial translations and executable import fields are rejected', () => {
   const source = payload();

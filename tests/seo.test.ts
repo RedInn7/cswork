@@ -54,6 +54,11 @@ test('each language is its own canonical URL, linked to the others by hreflang',
   // Japanese has no copy of its own here: the English page is the canonical one.
   const ja = seoMetadata({ ...page, path: '/oa/amazon', language: 'ja' });
   assert.equal(ja.alternates?.canonical, 'https://cswork.org/en/oa/amazon');
+  // A page translated into Japanese only: /ja is its own page, /ko still reads the English one.
+  const some = { ...page, path: '/oa/amazon/oa-amazon-1', localized: ['ja'] as const };
+  assert.equal(seoMetadata({ ...some, language: 'ja' }).alternates?.canonical, 'https://cswork.org/ja/oa/amazon/oa-amazon-1');
+  assert.equal(seoMetadata({ ...some, language: 'ko' }).alternates?.canonical, 'https://cswork.org/en/oa/amazon/oa-amazon-1');
+  assert.deepEqual(Object.keys(seoMetadata(some).alternates?.languages || {}), ['zh-Hans', 'zh-Hant', 'en', 'ja', 'x-default']);
   const home = seoMetadata({ ...page, path: '/', language: 'ja', localized: true });
   assert.equal(home.alternates?.canonical, 'https://cswork.org/ja');
   assert.deepEqual(Object.keys(home.alternates?.languages || {}), [
