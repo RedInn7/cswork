@@ -11,48 +11,47 @@ export const SITE_NAME = 'CSWork';
 /**
  * The landing page in each language: tab title, search description, and the heading and
  * introduction readers see (components/workspace-intro.tsx). Traditional Chinese is the `zh`
- * entry converted. Each one leads with what people search for: OA questions and algorithm practice.
+ * entry converted. Each one leads with what people search for and what they get: LeetCode problems and OA questions, free.
  */
 export const SEO_HOME = {
   zh: {
-    title: 'CSWork · OA 真题、算法题在线刷题与北美 SWE 面试准备',
+    title: 'CSWork · 免费刷 LeetCode 算法题和 OA 真题',
     description:
-      '按公司刷 OA 真题，按专题刷算法题，在线判题支持 Python、Java、C++ 和 Go。还有北美公司面经、系统设计和后端项目，帮你准备实习和全职软件工程师面试。',
-    heading: '刷 OA 真题和算法题，准备北美 SWE 面试',
-    intro:
-      '按公司找 OA 真题，按专题练算法，写完直接在线判题。面经、系统设计和后端课程也都在这里。',
+      '免费刷 LeetCode 算法题和各公司 OA 真题，在线判题支持 Python、Java、C++ 和 Go。还有北美公司面经和系统设计，帮你准备实习和全职软件工程师面试。',
+    heading: '免费刷 LeetCode 题和 OA 真题',
+    intro: '算法题按专题练，OA 真题按公司找，写完直接在线判题，全部免费。面经、系统设计和后端课程也都在这里。',
   },
   en: {
-    title: 'CSWork · OA Practice, Algorithm Problems & Coding Interview Prep',
+    title: 'CSWork · Free LeetCode Problems & Real OA Questions',
     description:
-      'Practice real online assessment (OA) questions by company and algorithm problems by topic, judged online in Python, Java, C++ and Go. Plus interview experiences and system design notes for software engineering internships and jobs.',
-    heading: 'Practice real OA questions and algorithm problems',
+      'Practice LeetCode problems and real company online assessment (OA) questions for free, judged online in Python, Java, C++ and Go. Plus interview experiences and system design notes for software engineering internships and jobs.',
+    heading: 'Free LeetCode problems and real OA questions',
     intro:
-      'Find online assessment (OA) questions by company, work through algorithms by topic, and get your code judged as you go. Interview experiences, system design and backend courses are here too.',
+      'Work through LeetCode problems by topic and online assessment (OA) questions by company, and get your code judged as you go. All of it is free. Interview experiences, system design and backend courses are here too.',
   },
   ja: {
-    title: 'CSWork · コーディングテスト（OA）対策とアルゴリズム問題演習',
+    title: 'CSWork · 無料で解ける LeetCode 問題と OA（コーディングテスト）過去問',
     description:
-      '企業別のオンラインアセスメント（OA）過去問とアルゴリズム問題を、オンラインジャッジで実際に解いて練習できます。Python・Java・C++・Go に対応。米国テック企業のソフトウェアエンジニア面接対策に。',
-    heading: '企業別の OA 過去問とアルゴリズム問題を解いて練習',
+      'LeetCode の問題と企業別のオンラインアセスメント（OA）過去問を、オンラインジャッジで無料で解いて練習できます。Python・Java・C++・Go に対応。米国テック企業のソフトウェアエンジニア面接対策に。',
+    heading: 'LeetCode 問題と OA 過去問を無料で練習',
     intro:
-      '企業ごとのコーディングテスト（OA）過去問と、テーマ別のアルゴリズム問題をその場で採点。面接体験記やシステム設計の資料も読めます。問題文と画面は英語です。',
+      'テーマ別の LeetCode 問題と、企業ごとのコーディングテスト（OA）過去問をその場で採点。すべて無料です。面接体験記やシステム設計の資料も読めます。問題文と画面は英語です。',
   },
   ko: {
-    title: 'CSWork · 코딩테스트(OA) 기출과 알고리즘 문제 풀이',
+    title: 'CSWork · 무료 LeetCode 문제와 코딩테스트(OA) 기출',
     description:
-      '기업별 온라인 코딩테스트(OA) 기출 문제와 알고리즘 문제를 온라인 저지에서 바로 풀어 보세요. Python, Java, C++, Go를 지원합니다. 미국 테크 기업 소프트웨어 엔지니어 면접 준비에 필요한 자료를 한곳에 모았습니다.',
-    heading: '기업별 OA 기출과 알고리즘 문제를 직접 풀어 보세요',
+      'LeetCode 문제와 기업별 온라인 코딩테스트(OA) 기출 문제를 온라인 저지에서 무료로 풀어 보세요. Python, Java, C++, Go를 지원합니다. 미국 테크 기업 소프트웨어 엔지니어 면접 준비에 필요한 자료를 한곳에 모았습니다.',
+    heading: 'LeetCode 문제와 OA 기출을 무료로 풀어 보세요',
     intro:
-      '기업별 코딩테스트(OA) 기출과 주제별 알고리즘 문제를 풀고 바로 채점받을 수 있습니다. 면접 후기와 시스템 설계 자료도 함께 볼 수 있습니다. 문제와 화면은 영어로 제공됩니다.',
+      '주제별 LeetCode 문제와 기업별 코딩테스트(OA) 기출을 풀고 바로 채점받을 수 있습니다. 모두 무료입니다. 면접 후기와 시스템 설계 자료도 함께 볼 수 있습니다. 문제와 화면은 영어로 제공됩니다.',
   },
   vi: {
-    title: 'CSWork · Luyện đề OA và thuật toán cho phỏng vấn lập trình',
+    title: 'CSWork · Luyện LeetCode và đề OA miễn phí',
     description:
-      'Luyện đề online assessment (OA) thật theo từng công ty và các bài thuật toán theo chủ đề, chấm bài trực tuyến bằng Python, Java, C++ và Go. Tài liệu chuẩn bị phỏng vấn kỹ sư phần mềm tại các công ty công nghệ Mỹ.',
-    heading: 'Luyện đề OA theo công ty và bài thuật toán',
+      'Luyện miễn phí các bài LeetCode và đề online assessment (OA) thật theo từng công ty, chấm bài trực tuyến bằng Python, Java, C++ và Go. Tài liệu chuẩn bị phỏng vấn kỹ sư phần mềm tại các công ty công nghệ Mỹ.',
+    heading: 'Luyện bài LeetCode và đề OA thật, miễn phí',
     intro:
-      'Làm đề OA thật của từng công ty và bài thuật toán theo chủ đề, nộp bài là có kết quả chấm ngay. Có cả kinh nghiệm phỏng vấn và tài liệu thiết kế hệ thống. Đề bài và giao diện bằng tiếng Anh.',
+      'Làm bài LeetCode theo chủ đề và đề OA thật của từng công ty, nộp bài là có kết quả chấm ngay. Tất cả đều miễn phí. Có cả kinh nghiệm phỏng vấn và tài liệu thiết kế hệ thống. Đề bài và giao diện bằng tiếng Anh.',
   },
 };
 /** The landing copy for a site language. */
