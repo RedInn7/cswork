@@ -123,13 +123,13 @@ try {
   assert.match(chineseHome, /<html lang="zh-CN"/);
   assert.match(
     chineseHome.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''),
-    /<h1[^>]*>刷 OA 真题和算法题，准备北美 SWE 面试<\/h1>/,
+    /<h1[^>]*>免费刷 LeetCode 题和 OA 真题<\/h1>/,
   );
   const home = await html('/');
   const visibleHome = home.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
   assert.match(
     visibleHome,
-    /<h1[^>]*>Practice real OA questions and algorithm problems<\/h1>/,
+    /<h1[^>]*>Free LeetCode problems and real OA questions<\/h1>/,
   );
   assert.match(visibleHome, /href="\/library"/);
   assert.match(home, /name="description"[^>]*content="[^"]*online assessment/);

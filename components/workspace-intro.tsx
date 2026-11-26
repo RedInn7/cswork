@@ -24,10 +24,10 @@ export function WorkspaceIntro() {
         aria-label={t('公开学习资料', 'Public learning resources')}
       >
         <Link prefetch={false} className="underline underline-offset-4" href="/oa">
-          {t('公司 OA 真题', 'Company OA questions')}
+          {t('免费 OA 真题', 'Free OA questions')}
         </Link>
         <Link prefetch={false} className="underline underline-offset-4" href="/topics">
-          {t('算法题路线', 'Algorithm problems by topic')}
+          {t('免费算法题', 'Free algorithm problems')}
         </Link>
         <Link
           prefetch={false}
