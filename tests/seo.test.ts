@@ -13,6 +13,7 @@ import {
   workspaceTitle,
   SEO_HOME,
 } from '../lib/seo';
+import { languagePath, preferredLanguage, splitLanguagePath } from '../lib/language';
 import { GET as robots } from '../app/robots.txt/route';
 import { sitemapStatics } from '../lib/server/sitemap';
 
@@ -33,12 +34,62 @@ test('page metadata uses one production canonical and matching social previews',
     url: metadata.alternates?.canonical,
     siteName: 'CSWork',
     type: 'website',
+    locale: 'zh_CN',
   });
-  assert.equal(metadata.alternates?.languages, undefined);
   assert.throws(() =>
     seoMetadata({ title: 'x', description: 'x', path: '//other.example/' }),
   );
 });
+
+test('each language is its own canonical URL, linked to the others by hreflang', () => {
+  const page = { title: 'OA', description: 'OA questions.' };
+  const en = seoMetadata({ ...page, path: '/oa/amazon?page=2', language: 'en' });
+  assert.equal(en.alternates?.canonical, 'https://cswork.org/en/oa/amazon?page=2');
+  assert.deepEqual(en.alternates?.languages, {
+    'zh-Hans': 'https://cswork.org/oa/amazon?page=2',
+    'zh-Hant': 'https://cswork.org/zh-Hant/oa/amazon?page=2',
+    en: 'https://cswork.org/en/oa/amazon?page=2',
+    'x-default': 'https://cswork.org/en/oa/amazon?page=2',
+  });
+  // Japanese has no copy of its own here: the English page is the canonical one.
+  const ja = seoMetadata({ ...page, path: '/oa/amazon', language: 'ja' });
+  assert.equal(ja.alternates?.canonical, 'https://cswork.org/en/oa/amazon');
+  const home = seoMetadata({ ...page, path: '/', language: 'ja', localized: true });
+  assert.equal(home.alternates?.canonical, 'https://cswork.org/ja');
+  assert.deepEqual(Object.keys(home.alternates?.languages || {}), [
+    'zh-Hans', 'zh-Hant', 'en', 'ja', 'ko', 'vi', 'x-default',
+  ]);
+  assert.equal((home.alternates?.languages as Record<string, string>)['zh-Hans'], 'https://cswork.org/');
+});
+
+test('language URLs split and rebuild, and a first visit follows the browser', () => {
+  assert.deepEqual(splitLanguagePath('/en/oa/amazon'), { language: 'en', path: '/oa/amazon' });
+  assert.deepEqual(splitLanguagePath('/zh-Hant'), { language: 'zh-Hant', path: '/' });
+  assert.deepEqual(splitLanguagePath('/oa'), { language: null, path: '/oa' });
+  assert.deepEqual(splitLanguagePath('/enterprise'), { language: null, path: '/enterprise' });
+  assert.equal(languagePath('zh', '/oa'), '/oa');
+  assert.equal(languagePath('ko', '/'), '/ko');
+  assert.equal(languagePath('en', '/?view=problem'), '/en?view=problem');
+  assert.equal(preferredLanguage('en-US,en;q=0.9'), 'en');
+  // Chinese anywhere in the list wins: bilingual readers with an English browser.
+  assert.equal(preferredLanguage('en-US,en;q=0.9,zh-CN;q=0.8'), 'zh');
+  assert.equal(preferredLanguage('zh-TW,zh;q=0.9'), 'zh-Hant');
+  assert.equal(preferredLanguage('ko-KR,ko;q=0.9,en;q=0.8'), 'ko');
+  assert.equal(preferredLanguage('fr-FR'), 'en');
+  assert.equal(preferredLanguage(''), null);
+});
+
+test('the sitemap index lists every language, and a language shard carries its prefix', () => {
+  const index = sitemapIndexXml(1, ['oa']);
+  for (const loc of ['/sitemap/1', '/sitemap/oa', '/en/sitemap/1', '/en/sitemap/oa', '/zh-Hant/sitemap/oa', '/ja/sitemap/1', '/ko/sitemap/1', '/vi/sitemap/1'])
+    assert.ok(index.includes(`<loc>https://cswork.org${loc}</loc>`), loc);
+  assert.ok(!index.includes('/ja/sitemap/oa'));
+  assert.deepEqual(sitemapChunks([{ path: '/' }, { path: '/oa' }], 'en')[0], [
+    '<url><loc>https://cswork.org/en</loc></url>',
+    '<url><loc>https://cswork.org/en/oa</loc></url>',
+  ]);
+});
+
 
 test('workspace tab titles name the view and keep the home title on the landing page', () => {
   assert.equal(workspaceTitle('zh'), SEO_HOME.zh.title);

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { AI_DAILY_LIMITS } from '@/lib/server/ai-tutor';
 import { aiRoundCompanies } from '@/lib/server/ai-rounds';
 import { aiTasks } from '@/lib/server/ai-tasks';
@@ -87,7 +87,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/ai-assisted' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/ai-assisted' });
 }
 
 /** /ai-assisted: the round explained in general terms, the practice projects, and the reports that mention it. */

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import bankFile from '@/lib/content/oa-mcq.json';
 import { mcqScope, type McqQuestion } from '@/lib/mock-oa';
-import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { sdChapters } from '@/lib/server/system-design-course';
 import { McqPractice } from './practice';
@@ -23,7 +24,7 @@ function copy(zh: boolean) {
 
 export async function generateMetadata() {
   const { title, lead } = copy((await requestLocale()) === 'zh');
-  return seoMetadata({ title, description: lead, path: '/oa/mcq' });
+  return await pageMetadata({ title, description: lead, path: '/oa/mcq' });
 }
 
 export default async function OaMcqPage({ searchParams }: Props) {

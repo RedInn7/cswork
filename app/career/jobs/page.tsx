@@ -4,7 +4,7 @@ import { BlockedList } from '@/components/job-blocked';
 import { JobList } from '@/components/job-list';
 import { JobSearchSave } from '@/components/job-search-save';
 import { DEFAULT_SEARCH, matchesSearch, ROLE_CATEGORIES, ROLE_NAMES, roleCategory, searchFromQuery, searchQuery, sortTerms, termKey, termLabel, termOf } from '@/lib/job-tags';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { H1B, h1bCompany } from '@/lib/server/h1b';
@@ -48,7 +48,7 @@ function listed() {
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
   return {
-    ...seoMetadata({ title: c.title, description: c.description, path: '/career/jobs' }),
+    ...await pageMetadata({ title: c.title, description: c.description, path: '/career/jobs' }),
     // An empty list is no landing page.
     ...(listed().items.length ? {} : { robots: { index: false, follow: true } }),
   };

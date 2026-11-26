@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { publicCatalogue, publicCompare } from '@/lib/server/learner-cloud';
@@ -13,7 +13,7 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? '刷题对比 · CSWork' : 'Compare learners · CSWork',
       description: zh ? '并排比较公开主页的通过数和 500 路进度。' : 'Public profiles side by side: solved counts and Line 500 progress.',
       path: '/u/compare',

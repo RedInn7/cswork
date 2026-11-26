@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CodeReviewDrill } from '@/components/code-review-drill';
 import { oaProblemPath } from '@/lib/oa-company-brands';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { item } = await load((await params).id);
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? `代码评审练习：${item.title} · CSWork` : `Code review drill: ${item.title} · CSWork`,
       description: zh ? '只读代码，标出有 bug 的行。' : 'Read the code and flag the lines with the bug.',
       path: `/oa/drills/review/${encodeURIComponent(item.id)}`,

@@ -7,7 +7,7 @@ import { PublicLibraryMarkdown } from '../../markdown';
 import { PostsPreview } from '../../posts-preview';
 import { SelectionAsk } from '@/components/command-palette';
 import { AskedReport } from '@/components/problem-community';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { lcIdBySource } from '@/lib/company-tags';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
@@ -35,7 +35,7 @@ async function load(params: Props['params']) {
 export async function generateMetadata({ params }: Props) {
   const item = await load(params);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: item.title,
       description: publicLibraryDescription(item),
       path: publicLibraryPath(item.type, item.slug),

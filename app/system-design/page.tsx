@@ -1,4 +1,5 @@
-import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import {
   SD_ESTIMATION,
@@ -43,7 +44,7 @@ const COPY = {
 
 export async function generateMetadata() {
   const c = COPY[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: sdPath() });
+  return await pageMetadata({ title: c.title, description: c.description, path: sdPath() });
 }
 
 export default async function SystemDesignIndex() {

@@ -2,7 +2,8 @@ import '../mock-oa/mock-oa-public.css';
 import './flowchart.css';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { SITE_URL, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_URL, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { library } from '@/lib/server/content-library';
 import { tutorialSlugs } from '@/lib/pattern-flowchart';
@@ -29,7 +30,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/flowchart' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/flowchart' });
 }
 
 /** Titles of the leaves' tutorials that the content library publishes; none when it is missing. */

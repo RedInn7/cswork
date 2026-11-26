@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { scenarioSetting } from '@/lib/server/roleplay-scenarios';
 import { SCRIPTS } from '@/lib/content/negotiation-scripts';
@@ -26,7 +26,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/career/negotiation' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/career/negotiation' });
 }
 
 /** /career/negotiation: branching recruiter and offer scripts (components/negotiation-scripts.tsx). */

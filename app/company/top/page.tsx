@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { breadcrumbJsonLd, seoMetadata, SITE_NAME } from '@/lib/seo';
+import { breadcrumbJsonLd, SITE_NAME } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { topProblems } from '@/lib/server/company-insights';
 import { requestLocale } from '@/lib/server/locale';
@@ -16,7 +17,7 @@ const lead = (zh: boolean) =>
 
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({ title: `${title(zh)} | ${SITE_NAME}`, description: lead(zh), path: PATH });
+  return await pageMetadata({ title: `${title(zh)} | ${SITE_NAME}`, description: lead(zh), path: PATH });
 }
 
 export default async function TopProblemsPage() {

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { publicCatalogue, publicYear } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
 import { RecapView } from '../../../views';
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle, year } = await params;
   const { recap, zh } = await load(handle, year);
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? `@${recap.handle} 的 ${recap.year} 年度刷题回顾 · CSWork` : `@${recap.handle}’s ${recap.year} in review · CSWork`,
       description: zh
         ? `@${recap.handle} 在 ${recap.year} 年通过了 ${recap.solved.total} 道题。`

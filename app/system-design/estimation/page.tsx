@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { EstimationDrill } from '@/components/estimation-drill';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { SD_ESTIMATION, sdPath } from '@/lib/server/system-design-course';
 
@@ -27,7 +28,7 @@ const COPY = {
 
 export async function generateMetadata() {
   const c = COPY[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: sdPath(SD_ESTIMATION) });
+  return await pageMetadata({ title: c.title, description: c.description, path: sdPath(SD_ESTIMATION) });
 }
 
 export default async function EstimationPage() {

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { hiringCycle } from '@/lib/job-tags';
 import { companyHubPath } from '@/lib/oa-company-brands';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { viewerJobSearch } from '@/lib/server/job-openings';
@@ -66,7 +66,7 @@ function calendar(now: number, blocked: readonly string[] = []) {
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
   return {
-    ...seoMetadata({ title: c.title, description: c.description, path: '/career/jobs/calendar' }),
+    ...await pageMetadata({ title: c.title, description: c.description, path: '/career/jobs/calendar' }),
     // An empty calendar is no landing page.
     ...(calendar(Date.now()).any ? {} : { robots: { index: false, follow: true } }),
   };

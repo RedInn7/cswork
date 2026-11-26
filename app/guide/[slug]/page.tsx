@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { guideChapter, guidePath } from '@/lib/career-guide';
 import { CAREER_CHECKLISTS } from '@/lib/content/career-checklists';
 import { GuideChecklist } from '@/components/guide-checklist';
@@ -18,7 +18,7 @@ async function load(params: Props['params']) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { chapter, zh } = await load(params);
   const { pageTitle, description } = guideChapterCopy(chapter, zh);
-  return seoMetadata({ title: pageTitle, description, path: guidePath(chapter.slug) });
+  return await pageMetadata({ title: pageTitle, description, path: guidePath(chapter.slug) });
 }
 
 export default async function GuideChapterPage({ params }: Props) {

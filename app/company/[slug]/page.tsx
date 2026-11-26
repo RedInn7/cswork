@@ -6,7 +6,8 @@ import { REPORT_WINDOWS, reportWindow, WINDOW_NAMES } from '@/lib/report-windows
 import lcMapFile from '@/lib/content/company-lc-map.json';
 import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
-import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd, companyPageTitle } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { CompanyStatsCard, MemberStatsCard, OaOutcomesCard } from '@/components/company-stats-card';
 import { CompanyFollowButton } from '@/components/company-follow-button';
 import { companyHub } from '@/lib/server/company-hub';
@@ -74,7 +75,7 @@ const load = cache(async (slug: string) => {
 
 export async function generateMetadata({ params }: Props) {
   const { company, locale, lead } = await load((await params).slug);
-  const metadata = seoMetadata({
+  const metadata = await pageMetadata({
     title: companyPageTitle(locale, company.name),
     description: lead,
     path: companyHubPath(company.slug),

@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import track from '@/lib/content/core-skills.json';
 import { problemAppHref } from '@/lib/classic-lists';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { LibraryPageView } from '../library/page-view';
 
@@ -32,7 +33,7 @@ const COPY = {
 
 export async function generateMetadata() {
   const c = COPY[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/core-skills' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/core-skills' });
 }
 
 /** Public index of the Core Skills track; the problems themselves open in the app (components/core-skills.tsx). */

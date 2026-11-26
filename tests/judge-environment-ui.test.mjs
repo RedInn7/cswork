@@ -14,7 +14,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 
 const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
 const mocks = {
-  'next/headers': `export const cookies = async () => ({ get: () => (globalThis.__locale ? { value: globalThis.__locale } : undefined) });`,
+  'next/headers': `export const cookies = async () => ({ get: () => (globalThis.__locale ? { value: globalThis.__locale } : undefined) }); export const headers = async () => new Headers();`,
   'next/link': `import React from ${JSON.stringify(react)};export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
   'next/navigation': `export const usePathname = () => '/'; export const useSearchParams = () => new URLSearchParams();`,
 };

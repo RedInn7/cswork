@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { aiEnabled, AI_DAILY_LIMITS } from '@/lib/server/ai-tutor';
 import { requestLocale } from '@/lib/server/locale';
 import { JdReadiness } from '@/components/jd-readiness';
@@ -42,7 +42,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/career/jd' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/career/jd' });
 }
 
 export default async function JdReadinessPage() {

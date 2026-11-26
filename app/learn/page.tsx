@@ -1,4 +1,5 @@
-import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { beginnerCourses, learnPath } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { minutesLabel, totalMinutes } from '@/lib/server/system-design-course';
@@ -26,7 +27,7 @@ const COPY = {
 
 export async function generateMetadata() {
   const c = COPY[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: learnPath() });
+  return await pageMetadata({ title: c.title, description: c.description, path: learnPath() });
 }
 
 export default async function LearnIndex() {

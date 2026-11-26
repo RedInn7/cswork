@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { Placement } from '@/components/placement';
 import { PER_GROUP, RETAKE_DAYS } from '@/lib/placement';
 import { ROUTE_SECTIONS } from '@/lib/route-stops';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
 
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
+  return await pageMetadata({
     title: zh ? '题型识别定位测验：哪些算法专题可以跳过 · cswork' : 'Pattern placement quiz: which algorithm topics to skip · cswork',
     description: zh
       ? '按 500 路的六组专题出题，答对升一档、答错降一档，认出每道题该用的方法。结果给出每组的估计水平和可以跳过的站，并直接用到冲刺计划里。'

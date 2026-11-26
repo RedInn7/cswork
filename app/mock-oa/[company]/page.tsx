@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { SITE_URL, seoMetadata } from '@/lib/seo';
+import { SITE_URL } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { shownMockPresets, type MockPreset } from '@/lib/server/mock-oa-presets';
 import { mockPoolSizes } from '@/lib/server/mock-oa';
@@ -44,7 +45,7 @@ function text(p: MockPreset, zh: boolean) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const preset = await load(params);
   const { title, description } = text(preset, (await requestLocale()) === 'zh');
-  return seoMetadata({ title, description, path: `/mock-oa/${preset.slug}` });
+  return await pageMetadata({ title, description, path: `/mock-oa/${preset.slug}` });
 }
 
 export default async function MockOaCompany({ params }: Props) {

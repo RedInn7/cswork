@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import Link from 'next/link';
-import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -60,7 +61,7 @@ const FORMULAS: [string, string, string, string][] = [
 
 export async function generateMetadata() {
   const { title, lead } = copy((await requestLocale()) === 'zh');
-  return seoMetadata({ title, description: lead, path: '/oa/aptitude' });
+  return await pageMetadata({ title, description: lead, path: '/oa/aptitude' });
 }
 
 export default async function OaAptitudePage() {

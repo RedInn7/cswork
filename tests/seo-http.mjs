@@ -123,20 +123,43 @@ try {
   assert.match(chineseHome, /<html lang="zh-CN"/);
   assert.match(
     chineseHome.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''),
-    /<h1[^>]*>算法、OA 与软件工程师面试准备<\/h1>/,
+    /<h1[^>]*>刷 OA 真题和算法题，准备北美 SWE 面试<\/h1>/,
   );
   const home = await html('/');
   const visibleHome = home.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
   assert.match(
     visibleHome,
-    /<h1[^>]*>Coding practice and software engineering interview prep<\/h1>/,
+    /<h1[^>]*>Practice real OA questions and algorithm problems<\/h1>/,
   );
   assert.match(visibleHome, /href="\/library"/);
-  assert.match(home, /name="description"[^>]*content="[^"]*online assessments/);
+  assert.match(home, /name="description"[^>]*content="[^"]*online assessment/);
   assert.match(home, /rel="canonical"[^>]*href="https:\/\/cswork.org\/?"/);
   assert.match(home, /property="og:title"/);
   assert.match(home, /name="twitter:card"/);
   assert.match(home, /application\/ld\+json/);
+  // Language URLs: the same routes under a prefix, each its own canonical with hreflang to the others.
+  const english = await html('/en', 200, {});
+  assert.match(english, /<html lang="en"/);
+  assert.match(english, /rel="canonical"[^>]*href="https:\/\/cswork.org\/en"/);
+  assert.match(english, /hrefLang="zh-Hans"[^>]*href="https:\/\/cswork.org\/?"/i);
+  assert.match(english, /hrefLang="ja"[^>]*href="https:\/\/cswork.org\/ja"/i);
+  assert.match(english, /hrefLang="x-default"[^>]*href="https:\/\/cswork.org\/en"/i);
+  assert.match(await html('/ja', 200, {}), /<html lang="ja"[\s\S]*<title>[^<]*コーディングテスト/);
+  assert.match(await html('/zh-Hant', 200, {}), /<html lang="zh-Hant"[\s\S]*<title>[^<]*演算法/);
+  assert.match(
+    await html('/en/library/algorithm/algorithm-00', 200, {}),
+    /rel="canonical"[^>]*href="https:\/\/cswork.org\/en\/library\/algorithm\/algorithm-00"/,
+  );
+  await html('/en/library/article/missing', 404, {});
+  assert.match(await html('/en/sitemap/1'), /<loc>https:\/\/cswork.org\/en\/acm-io<\/loc>/);
+  // A first visit follows the browser's language; crawlers and returning readers stay put.
+  const visit = (headers) => fetch(base + '/library', { redirect: 'manual', headers: { accept: 'text/html', ...headers } });
+  const sent = await visit({ 'accept-language': 'en-US,en;q=0.9' });
+  assert.equal(sent.status, 307);
+  assert.equal(new URL(sent.headers.get('location'), base).pathname, '/en/library');
+  assert.equal((await visit({ 'accept-language': 'en-US,zh-CN;q=0.8' })).status, 200);
+  assert.equal((await visit({ 'accept-language': 'en', cookie: 'cswork_locale=zh' })).status, 200);
+  assert.equal((await visit({ 'accept-language': 'en', 'user-agent': 'Googlebot/2.1' })).status, 200);
   const workspace = await html('/?view=account');
   assert.match(workspace, /name="robots"[^>]*content="[^"]*noindex/);
   const catalog = await html('/library');

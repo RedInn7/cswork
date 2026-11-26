@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { DrillDone } from '@/components/code-review-drill';
 import { oaCompanyName, oaProblemPath } from '@/lib/oa-company-brands';
 import { topicName } from '@/lib/route-stops';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -19,7 +19,7 @@ const SHOWN = 60;
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? 'OA 调试与代码评审练习 · CSWork' : 'OA debugging and code-review drills · CSWork',
       description: zh
         ? '在真实 OA 题的代码里找出并修好埋入的 bug，或者只读代码、标出有问题的行。'

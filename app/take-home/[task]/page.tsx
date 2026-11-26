@@ -3,7 +3,8 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TakeHomeWorkspace } from '@/components/take-home-workspace';
-import { SITE_NAME, seoMetadata } from '@/lib/seo';
+import { SITE_NAME } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { aiEnabled } from '@/lib/server/ai-tutor';
 import { aiTask } from '@/lib/server/ai-tasks';
 import { person } from '@/lib/server/auth';
@@ -21,7 +22,7 @@ async function load(params: Props['params']) {
 
 export async function generateMetadata({ params }: Props) {
   const { task, zh } = await load(params);
-  return seoMetadata({
+  return await pageMetadata({
     title: `${task.title[zh ? 0 : 1]} · ${zh ? '带回家作业练习' : 'Take-home practice'} | ${SITE_NAME}`,
     description: task.summary[zh ? 0 : 1],
     path: `/take-home/${task.slug}`,

@@ -11,7 +11,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
 const mocks = {
-  'next/headers': `export const cookies = async () => ({ get: () => undefined });`,
+  'next/headers': `export const cookies = async () => ({ get: () => undefined }); export const headers = async () => new Headers();`,
   'next/link': `import React from ${JSON.stringify(react)};export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
 };
 register(

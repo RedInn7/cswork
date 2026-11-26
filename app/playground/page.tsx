@@ -4,7 +4,7 @@ import './playground.css';
 import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -14,7 +14,7 @@ import { PlaygroundView } from './view';
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
-    ...seoMetadata({
+    ...await pageMetadata({
       title: zh ? '代码沙盒 · cswork' : 'Code playground · cswork',
       description: zh
         ? '不挑题目，直接写 Python、C++、Java、Go，带自定义输入运行，链接一键分享。'

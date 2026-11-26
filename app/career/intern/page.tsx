@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
@@ -39,7 +39,7 @@ const copy = {
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
   return {
-    ...seoMetadata({ title: c.title, description: c.description, path: '/career/intern' }),
+    ...await pageMetadata({ title: c.title, description: c.description, path: '/career/intern' }),
     // A private log: not a landing page.
     robots: { index: false, follow: false },
   };

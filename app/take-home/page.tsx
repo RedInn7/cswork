@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { aiTasks } from '@/lib/server/ai-tasks';
 import { requestLocale } from '@/lib/server/locale';
 
@@ -73,7 +73,7 @@ const copy = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
-  return seoMetadata({ title: c.title, description: c.description, path: '/take-home' });
+  return await pageMetadata({ title: c.title, description: c.description, path: '/take-home' });
 }
 
 /** /take-home: what a take-home assignment is, what graders look for, and the assignments. */

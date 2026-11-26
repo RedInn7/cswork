@@ -1,32 +1,34 @@
 'use client';
 
-import { useT } from '@/lib/i18n';
+import { useLanguage, useT } from '@/lib/i18n';
+import { homeCopy } from '@/lib/seo';
 import Link from 'next/link';
 
 /** Visible to readers as well as crawlers, including before bootstrap completes. */
 export function WorkspaceIntro() {
   const t = useT();
+  const copy = homeCopy(useLanguage());
   return (
     <section className="mb-6" aria-labelledby="workspace-intro-title">
       <h1
         id="workspace-intro-title"
         className="text-xl font-semibold sm:text-2xl"
       >
-        {t(
-          '算法、OA 与软件工程师面试准备',
-          'Coding practice and software engineering interview prep',
-        )}
+        {copy.heading}
       </h1>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-        {t(
-          '按专题练习算法，按公司查找 OA 题目和面经，结合系统设计与后端课程补齐基础。在 CSWork，你可以阅读公开面试资料，也可以进入学习工作台写代码、查看判题结果和记录学习进度。',
-          'Practice algorithms by topic, explore company online assessments (OAs) and interview experiences, and study system design and backend engineering. Read public interview resources or use the workspace to write code, review judge results and track your learning.',
-        )}
+        {copy.intro}
       </p>
       <nav
         className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm font-medium"
         aria-label={t('公开学习资料', 'Public learning resources')}
       >
+        <Link prefetch={false} className="underline underline-offset-4" href="/oa">
+          {t('公司 OA 真题', 'Company OA questions')}
+        </Link>
+        <Link prefetch={false} className="underline underline-offset-4" href="/topics">
+          {t('算法题路线', 'Algorithm problems by topic')}
+        </Link>
         <Link
           prefetch={false}
           className="underline underline-offset-4"

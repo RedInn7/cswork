@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { seoMetadata } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { approvalRate, H1B, h1bRanking } from '@/lib/server/h1b';
 import { reportCompanies } from '@/lib/server/learner-cloud';
@@ -29,7 +29,7 @@ const copy = {
 export async function generateMetadata(): Promise<Metadata> {
   const c = copy[await requestLocale()];
   return {
-    ...seoMetadata({ title: c.title, description: c.description, path: '/career/h1b' }),
+    ...await pageMetadata({ title: c.title, description: c.description, path: '/career/h1b' }),
     // An empty table is no landing page.
     ...(H1B.fiscalYears.length ? {} : { robots: { index: false, follow: true } }),
   };

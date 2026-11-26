@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import { ProjectProgress } from '@/components/project-progress';
 import { ROLES, isRole } from '@/lib/content/role-paths';
 import { LEVEL_NAMES } from '@/lib/resume-projects';
-import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
+import { SITE_NAME, breadcrumbJsonLd } from '@/lib/seo';
+import { pageMetadata } from '@/lib/server/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { resumeProject, type ResumeProject } from '@/lib/server/resume-projects';
 import { GuideMarkdown } from '../../guide/markdown';
@@ -37,7 +38,7 @@ const RUN: Record<ResumeProject['run'], { command: string; zh: string; en: strin
 
 export async function generateMetadata({ params }: Props) {
   const { project, zh } = await load(params);
-  return seoMetadata({
+  return await pageMetadata({
     title: `${zh ? project.titleZh : project.titleEn} · ${zh ? '简历项目' : 'Resume project'} | ${SITE_NAME}`,
     description: zh ? project.summaryZh : project.summaryEn,
     path: `/projects/${project.slug}`,
