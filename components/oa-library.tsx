@@ -14,7 +14,8 @@ import {
   oaCompanyName,
   oaProblemPath,
 } from '@/lib/oa-company-brands';
-import { useLocale, useT } from '@/lib/i18n';
+import { readLanguage, useLocale, useT } from '@/lib/i18n';
+import type { ContentLanguage } from '@/lib/language';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { OA_KIND_NAMES, TOPIC_NAMES, topicName } from '@/lib/route-stops';
@@ -120,6 +121,8 @@ type Solution = {
   explanation: string;
   /** The guide's English editorial, when the problem has one. */
   explanationEn?: string;
+  /** The editorial in the reader's own ja/ko/vi, when translated. */
+  explanationLocal?: Partial<Record<ContentLanguage, string>>;
   solutions: { language: string; code: string }[];
 };
 const languageNames: Record<string, string> = {
@@ -133,7 +136,8 @@ const languageNames: Record<string, string> = {
 };
 
 async function read<T>(path: string, signal: AbortSignal): Promise<T> {
-  const response = await fetch('/api/oj/oa-library' + path, { signal });
+  // X-Language: a ja/ko/vi reader gets the editorial in their language where translated.
+  const response = await fetch('/api/oj/oa-library' + path, { signal, headers: { 'X-Language': readLanguage() } });
   if (!response.ok) {
     if (response.status === 401)
       window.dispatchEvent(new Event('cswork:auth-required'));
@@ -1185,11 +1189,14 @@ export function OaEditorial({
   problemId,
   english,
   language = '',
+  contentLanguage,
 }: {
   problemId: string;
   english?: boolean;
   /** The editor's language: its code tab opens first. */
   language?: string;
+  /** The statement's language when it is ja/ko/vi: the text follows it where translated. */
+  contentLanguage?: ContentLanguage | null;
 }) {
   const locale = useLocale();
   const en = english ?? locale === 'en';
@@ -1237,10 +1244,13 @@ export function OaEditorial({
     (a, b) => editorialRank(a) - editorialRank(b),
   );
   const shown = languages.includes(picked) ? picked : languages[0];
+  const local = contentLanguage && data.explanationLocal?.[contentLanguage];
   return (
     // Line 500's editorial layout and code block: themed by the workspace (app/ling-editorial.css).
     <section aria-label={t('题解', 'Solution')} className="oa-solution cs-ling-editorial">
-      <OaMarkdown body={(en && data.explanationEn) || data.explanation} />
+      <div lang={local ? contentLanguage! : undefined}>
+        <OaMarkdown body={local || (en && data.explanationEn) || data.explanation} />
+      </div>
       {languages.length > 0 && (
         <fieldset className="cs-ling-langs">
           <legend className="sr-only">{t('代码语言', 'Code language')}</legend>

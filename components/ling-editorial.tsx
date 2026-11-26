@@ -8,6 +8,7 @@ import { StatementMarkdown } from './statement-markdown';
 import { ojRequest, type LingFollowUps, type TrackEditorial } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
 import type { Language } from '@/lib/problems';
+import type { ContentLanguage } from '@/lib/language';
 import '@/app/ling-editorial.css';
 
 const LANGS = [
@@ -38,6 +39,7 @@ export function LingEditorial({
   verified,
   english,
   language,
+  contentLanguage,
   stop,
   followUpOn,
   onFollowUp,
@@ -46,6 +48,8 @@ export function LingEditorial({
   verified: boolean;
   english: boolean;
   language: Language;
+  /** The statement's language when it is ja/ko/vi: names and ideas follow it where translated. */
+  contentLanguage?: ContentLanguage | null;
   stop?: string | null;
   followUpOn?: boolean;
   onFollowUp?: (on: boolean) => void;
@@ -53,7 +57,14 @@ export function LingEditorial({
   const t = (zh: string, en: string) => (english ? en : zh);
   const [picked, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
   const heading = useRef<HTMLHeadingElement>(null);
-  const [editorial, setEditorial] = useState<Editorial | null>(null);
+  const [loaded, setEditorial] = useState<Editorial | null>(null);
+  // ja/ko/vi readers have the English interface, so their language's text stands in for the
+  // English name and idea; code is never translated.
+  const local = contentLanguage && loaded?.local?.language === contentLanguage ? loaded.local.approaches : null;
+  const editorial =
+    loaded && local
+      ? { ...loaded, approaches: loaded.approaches.map((approach, i) => ({ ...approach, nameEn: local[i].name, ideaEn: local[i].idea })) }
+      : loaded;
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
   // Everything at once by default, like LeetCode; step by step is the learner's own choice.
@@ -81,7 +92,7 @@ export function LingEditorial({
   const lang = has(picked) ? picked : (shownLangs[0]?.[0] ?? picked);
   const lingProblem = problemId.startsWith('lc-');
   useEffect(() => {
-    if (editorial) return;
+    if (loaded) return;
     const controller = new AbortController();
     setError('');
     ojRequest<Editorial>(`problems/${encodeURIComponent(problemId)}/editorial`, undefined, controller.signal)
@@ -92,7 +103,7 @@ export function LingEditorial({
         if (!controller.signal.aborted) setError(reason.message);
       });
     return () => controller.abort();
-  }, [editorial, problemId, attempt]);
+  }, [loaded, problemId, attempt]);
   const modeSwitch = () => (
     <fieldset className="cs-ling-langs">
       <legend className="sr-only">{t('题解的看法', 'How to read the editorial')}</legend>

@@ -17,8 +17,10 @@ import {
   hintUnlocked,
   hintsUnlocked,
   ojRequest,
+  type Hints,
   type OJSubmission,
 } from '@/lib/oj-client';
+import type { ContentLanguage } from '@/lib/language';
 import { track } from '@/lib/analytics';
 import { stopDemos } from '@/lib/route-stops';
 import '@/app/problem-aids.css';
@@ -74,20 +76,24 @@ export function HintLadder({
   hints,
   ladder: { shown, setShown, failed, openedAt },
   english,
+  contentLanguage,
   stop,
   levels = LEVELS,
 }: {
   problemId: string;
   userId: string;
-  hints: { zh: string[]; en: string[] };
+  hints: Hints;
   ladder: ReturnType<typeof useHintLadder>;
   english: boolean;
+  /** The statement's language when it is ja/ko/vi: the hints follow it where translated; labels stay English. */
+  contentLanguage?: ContentLanguage | null;
   /** The problem's Line 500 stop: its /topics page may animate the pattern. */
   stop?: string | null;
   /** Each hint's name, Chinese and English; Line 500's by default. */
   levels?: readonly (readonly [string, string])[];
 }) {
-  const list = hints[english ? 'en' : 'zh'];
+  const hintLang = contentLanguage && hints[contentLanguage] ? contentLanguage : english ? 'en' : 'zh';
+  const list = hints[hintLang]!;
   const [confirm, setConfirm] = useState(false);
   // Confirmed: focus goes to the hint it opened; cancelled: back to "Show anyway".
   const confirmed = useRef(false);
@@ -163,7 +169,7 @@ export function HintLadder({
                   ? `Hint ${i + 1} · ${levels[i][1]}`
                   : `提示 ${i + 1} · ${levels[i][0]}`}
               </strong>
-              <p lang={english ? 'en' : 'zh'}>{hint}</p>
+              <p lang={hintLang}>{hint}</p>
             </div>
           </li>
         ))}

@@ -171,7 +171,8 @@ import {
 import { FeedbackTiming } from '@/lib/oj-feedback-timing';
 import { changedLines, markDrill, type Drill } from '@/lib/oa-drills';
 import { track } from '@/lib/analytics';
-import { useLocale, useT } from '@/lib/i18n';
+import { useLanguage, useLocale, useT } from '@/lib/i18n';
+import { contentLanguage, LANGUAGES, localeOf } from '@/lib/language';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/algorithm-demo.css';
 import '@/app/editor.css';
@@ -371,18 +372,26 @@ function Workspace({
   }, [problem.practiceRound, roundRefresh]);
   const locale = useLocale();
   const t = useT();
-  // The toggle's pick wins; otherwise the statement is English when there is one, whatever the site language.
+  // A ja/ko/vi reader's own language, and whether this problem's statement is translated into it.
+  const own = contentLanguage(useLanguage());
+  const ownStatement = own && problem.translations?.[own] ? own : null;
+  // The toggle's pick wins; otherwise the statement is the reader's own language when translated,
+  // else English when there is one, whatever the site language.
   const [statementPick, setStatementPick] = useState<ProblemLocale | null>(
     null,
   );
   useEffect(() => {
     // The statement toggle's last pick is remembered per device.
     const stored = safeLayoutStorage.getItem('cswork:problem:locale');
-    setStatementPick(stored === 'en' || stored === 'zh' ? stored : null);
-  }, [locale]);
+    setStatementPick(stored === 'en' || stored === 'zh' || (own && stored === own) ? stored : null);
+  }, [locale, own]);
   const statementLocale: ProblemLocale =
-    statementPick ??
+    (statementPick === own ? ownStatement : statementPick) ??
+    ownStatement ??
     (problem.translations?.en ? 'en' : 'zh');
+  // Hints and editorials follow a ja/ko/vi reader's language where translated, also on problems
+  // whose statement is not (lc-), until they pick English or Chinese.
+  const textLanguage = statementPick === 'en' || statementPick === 'zh' ? null : own;
   // Read by the draft loader, which runs once per problem load.
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
@@ -952,7 +961,7 @@ function Workspace({
         : initialMode === 'leetcode'
         ? loadedProblem.leetcodeTemplates?.[lang] || ''
         : loadedProblem.starters?.[lang] ||
-          starterTemplates[statementLocaleRef.current][lang];
+          starterTemplates[localeOf(statementLocaleRef.current)][lang];
     try {
       const storedLanguage = localStorage.getItem(
         `cswork:editor:language:${userId}`,
@@ -1391,7 +1400,7 @@ function Workspace({
     if (drillItem && next === 'python' && mode === 'acm') return drillItem.code;
     return mode === 'leetcode'
       ? problem.leetcodeTemplates?.[next] || ''
-      : problem.starters?.[next] || starterTemplates[statementLocale][next];
+      : problem.starters?.[next] || starterTemplates[localeOf(statementLocale)][next];
   }
   function switchLanguage(
     next: Language,
@@ -1826,12 +1835,13 @@ function Workspace({
             verified={problem.lingEditorialVerified}
             english={uiEnglish}
             language={language}
+            contentLanguage={textLanguage}
             stop={problem.stop}
             followUpOn={followUpOn}
             onFollowUp={followUp ? setFollowUpOn : undefined}
           />
         ) : leftTab === 'editorial' && !examMode ? (
-          <OaEditorial key={`editorial:${problem.id}`} problemId={problem.id} english={uiEnglish} language={language} />
+          <OaEditorial key={`editorial:${problem.id}`} problemId={problem.id} english={uiEnglish} language={language} contentLanguage={textLanguage} />
         ) : leftTab === 'statement' ? (
           <>
             <div className="cs-statement-heading">
@@ -1936,7 +1946,7 @@ function Workspace({
                   )
                     updateCode(
                       problem.starters?.[language] ||
-                        starterTemplates[next][language],
+                        starterTemplates[localeOf(next)][language],
                     );
                   setHintCount(0);
                   setHintsOpen(false);
@@ -1944,6 +1954,9 @@ function Workspace({
               >
                 <option value="zh">中文</option>
                 <option value="en">English</option>
+                {ownStatement && (
+                  <option value={ownStatement}>{LANGUAGES.find((option) => option.value === ownStatement)!.label}</option>
+                )}
               </select>
               {/* Acceptance, votes and sharing: none of them during a mock OA; the time limit stays. */}
               <ProblemMeta
@@ -2143,6 +2156,7 @@ function Workspace({
                 hints={problem.lingHints}
                 ladder={hintLadder}
                 english={uiEnglish}
+                contentLanguage={textLanguage}
                 stop={problem.stop}
               />
             )}
@@ -2154,6 +2168,7 @@ function Workspace({
                 hints={problem.oaHints}
                 ladder={hintLadder}
                 english={uiEnglish}
+                contentLanguage={textLanguage}
                 levels={OA_LEVELS}
               />
             )}
