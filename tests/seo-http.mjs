@@ -156,7 +156,7 @@ try {
   const visit = (headers) => fetch(base + '/library', { redirect: 'manual', headers: { accept: 'text/html', ...headers } });
   const sent = await visit({ 'accept-language': 'en-US,en;q=0.9' });
   assert.equal(sent.status, 307);
-  assert.equal(new URL(sent.headers.get('location')).pathname, '/en/library');
+  assert.equal(new URL(sent.headers.get('location'), base).pathname, '/en/library');
   assert.equal((await visit({ 'accept-language': 'en-US,zh-CN;q=0.8' })).status, 200);
   assert.equal((await visit({ 'accept-language': 'en', cookie: 'cswork_locale=zh' })).status, 200);
   assert.equal((await visit({ 'accept-language': 'en', 'user-agent': 'Googlebot/2.1' })).status, 200);
