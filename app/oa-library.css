@@ -52,7 +52,8 @@
   color: var(--muted-foreground);
 }
 .oa-search {
-  flex: 1;
+  /* A basis, so the filters wrap to a second row before the search box collapses. */
+  flex: 1 1 240px;
   min-width: 0;
 }
 .oa-search input {
@@ -152,8 +153,12 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
+  overflow: hidden;
 }
 .oa-row .oa-title strong {
+  /* The title keeps its room; the topic chips shrink first. */
+  flex: 0 1 auto;
+  min-width: min(100%, 24ch);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -161,7 +166,11 @@
   font-weight: 500;
 }
 .oa-row .oa-title small {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   padding: 1px 6px;
   border-radius: 4px;
   background: var(--muted);

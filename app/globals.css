@@ -611,8 +611,19 @@ button:focus-visible {
 }
 .topbar-actions {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 16px;
+}
+/* The page name gives way to the actions: one line, cut with an ellipsis, never stacked. */
+.topbar > div:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.topbar > div:first-child > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .search-shortcut {
   display: flex;
@@ -1878,7 +1889,12 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
   .topbar-actions {
-    gap: 8px;
+    gap: 6px;
+  }
+  /* A phone has no room for the page name beside the actions; the sidebar marks the page. */
+  .topbar > div:first-child > span,
+  .locale-select > svg {
+    display: none;
   }
   .search-shortcut {
     border: 0;
