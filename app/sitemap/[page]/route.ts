@@ -1,5 +1,5 @@
+import { contentLanguage } from '@/lib/language';
 import {
-  hasEveryPage,
   LOCALIZED_ENTRIES,
   sitemapChunks,
   sitemapLibraryRange,
@@ -11,7 +11,7 @@ import { companyHubPaths } from '@/lib/server/company-hub';
 import { facetPaths } from '@/lib/server/seo-facets';
 import { library } from '@/lib/server/content-library';
 import { oaLibrary } from '@/lib/server/oa-library';
-import { oaReadyProblems } from '@/lib/server/oa-judge';
+import { oaReadyProblems, oaTranslations } from '@/lib/server/oa-judge';
 import {
   publicLibraryCount,
   publicLibraryEntries,
@@ -27,9 +27,22 @@ export async function GET(
   const { page: rawPage } = await context.params;
   // /en/sitemap/1 lists the English URLs of the same pages (proxy.ts).
   const language = (await urlLanguage()) ?? 'zh';
-  if (!hasEveryPage(language))
+  const own = contentLanguage(language);
+  // ja/ko/vi: the localized pages and the OA problems translated into the language, in one file
+  // (the whole OA library is about 1,700 URLs).
+  if (own)
     return rawPage === '1'
-      ? xmlResponse(sitemapXml(sitemapChunks(LOCALIZED_ENTRIES, language)[0]))
+      ? xmlResponse(
+          sitemapXml(
+            sitemapChunks(
+              [
+                ...LOCALIZED_ENTRIES,
+                ...oaLibrary().sitemapEntries(await oaReadyProblems(), (id) => !!oaTranslations(id)?.[own]),
+              ],
+              language,
+            )[0],
+          ),
+        )
       : new Response('Not found', { status: 404 });
   // OA pages: well under one shard (about 1,700 URLs), lastmod from the live judge versions.
   if (rawPage === 'oa')

@@ -150,12 +150,15 @@ export function oaStatementLang(text: string) {
 const headings = {
   zh: ['输入格式', '输出格式', '样例', '输入：', '输出：', '样例说明'],
   en: ['Input', 'Output', 'Example', 'Input:', 'Output:', 'Example notes'],
+  ja: ['入力', '出力', '例', '入力：', '出力：', '説明'],
+  ko: ['입력', '출력', '예시', '입력:', '출력:', '설명'],
+  vi: ['Đầu vào', 'Đầu ra', 'Ví dụ', 'Đầu vào:', 'Đầu ra:', 'Giải thích'],
 };
 /** One Markdown document for an already-cleaned statement and its public samples. */
 export function oaStatementMarkdown(
   spec: { description: string; input: string; output: string; explanation: string },
   samples: { input: string; expectedOutput: string }[],
-  locale: 'zh' | 'en' = 'zh',
+  locale: keyof typeof headings = 'zh',
 ) {
   const [input, output, example, sampleIn, sampleOut, notes] = headings[locale];
   const code = (value: string) => {
