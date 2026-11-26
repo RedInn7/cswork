@@ -11,5 +11,35 @@
     "hints": [
       "dp[c][r] stores the best profit over the processed prefix for a selection that ends with type c repeated r times in a row. For a transaction of type c with profit v, keep the states that skip it; the best profit ending in any other type, or the empty sequence, can be extended to r=1, and type c at r−1 can be extended to r. Update r in descending order so the current item is not reused in the same round."
     ]
+  },
+  "ja": {
+    "title": "取引のスキップが可能で同種の連続回数に上限があるときの最大利益",
+    "description": "取引の順序は固定で、各取引には種類 A..Z と整数の利益があり、どの取引もスキップできます。選んだ列の中で、同じ種類が k 回より多く連続してはいけません。利益を最大化してください。何も選ばないことも許され、その場合の利益は 0 です。利益が負の取引でも、区切りとして選ぶ価値がある場合があるので、単純に捨てることはできません。\n\n本サイトでは標準入出力、解説、テストを独自に作成しています。元の問題で欠けている制約やサンプルの誤りの訂正は、問題文中に明記しています。",
+    "input": "1行目に n k、2行目に n 個の取引の種類からなる文字列、3行目に n 個の利益が与えられます。n=0 のとき、後ろの2行は空です。出典には値の範囲の記載がなく、利益が正であるという保証もありません。本サイトでは 0≤n≤2000、−10^9≤profit≤10^9、0≤k≤10^9 とします。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "3つの公開サンプルの出力は 18、199、10 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "dp[c][r] には、処理済みの接頭辞から選んだ列のうち、種類 c が連続 r 回で終わるものの最大利益を持たせます。種類 c で利益 v の取引については、スキップする状態をそのまま残します。他の種類で終わる最良の利益、または空の列は r=1 に拡張でき、r−1 での種類 c は r に拡張できます。同じラウンドで現在の取引を二重に使わないよう、r は降順に更新します。"
+    ]
+  },
+  "ko": {
+    "title": "건너뛸 수 있는 거래와 같은 유형 연속 제한이 있는 최대 이익",
+    "description": "거래의 순서는 고정되어 있고, 각 거래는 유형 A..Z와 정수 이익을 가지며 어느 것이든 건너뛸 수 있습니다. 선택한 수열에서 같은 유형은 연속으로 k번을 넘게 나타날 수 없습니다. 이익을 최대화하십시오. 아무것도 선택하지 않아도 되며 그 경우 이익은 0입니다. 이익이 음수인 거래도 구분자로서 가치가 있을 수 있으므로 단순히 버려서는 안 됩니다.\n\n이 사이트에서 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 원문에 빠진 범위와 예제의 정정 사항은 문제에 명시했습니다.",
+    "input": "첫째 줄에 n과 k가 주어지고, 둘째 줄에 n개 거래의 유형으로 이루어진 문자열이, 셋째 줄에 n개의 이익이 주어집니다. n=0이면 마지막 두 줄은 비어 있습니다. 원문에는 값의 범위와 이익이 양수라는 보장이 없으며, 이 사이트에서는 0≤n≤2000, −10^9≤profit≤10^9, 0≤k≤10^9로 정합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 각각 18, 199, 10이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "dp[c][r]은 처리한 접두사에서 유형 c가 r번 연속으로 끝나는 선택의 최대 이익을 저장합니다. 유형 c, 이익 v인 거래에 대해, 건너뛰는 상태는 그대로 두고, 다른 유형으로 끝나는 최선의 이익이나 빈 수열은 r=1로 확장할 수 있으며, r−1인 유형 c는 r로 확장할 수 있습니다. 현재 항목이 같은 라운드에서 다시 쓰이지 않도록 r을 내림차순으로 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lợi nhuận tối đa khi được bỏ qua giao dịch và giới hạn chuỗi cùng loại",
+    "description": "Thứ tự các giao dịch là cố định; mỗi giao dịch có một loại A..Z và một lợi nhuận nguyên, và có thể bỏ qua bất kỳ giao dịch nào. Trong dãy được chọn, cùng một loại không được xuất hiện quá k lần liên tiếp. Hãy tối đa hóa lợi nhuận; không chọn gì cũng được và cho lợi nhuận 0. Một giao dịch có lợi nhuận âm vẫn có thể đáng lấy để làm vật ngăn cách, nên không thể đơn giản bỏ hết các giao dịch như vậy.\n\nTrang này tự viết lại phần đầu vào/đầu ra chuẩn, lời giải và bộ test; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa n k, dòng thứ hai là xâu gồm n loại giao dịch, dòng thứ ba chứa n lợi nhuận; khi n=0 hai dòng cuối để trống. Nguồn gốc không cho giới hạn giá trị và không đảm bảo lợi nhuận dương; trên trang này 0≤n≤2000, −10^9≤profit≤10^9, 0≤k≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là 18; 199; và 10, đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "dp[c][r] lưu lợi nhuận tốt nhất trên tiền tố đã xử lý cho một cách chọn kết thúc bằng loại c lặp lại r lần liên tiếp. Với giao dịch loại c có lợi nhuận v, giữ lại các trạng thái bỏ qua nó; lợi nhuận tốt nhất kết thúc ở bất kỳ loại nào khác, hoặc dãy rỗng, có thể mở rộng thành r=1, và loại c ở r−1 có thể mở rộng thành r. Cập nhật r theo thứ tự giảm dần để không dùng lại giao dịch hiện tại trong cùng một lượt."
+    ]
   }
 }

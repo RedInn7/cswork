@@ -11,5 +11,35 @@
     "hints": [
       "First repeatedly delete leaves that have no data, then delete the two outermost layers of leaves of the remaining tree at once. Each remaining edge is traversed twice."
     ]
+  },
+  "ja": {
+    "title": "木上で 2 ステップ以内のデータを収集する",
+    "description": "木の任意のノードから開始できます。ノードを訪れると、そこから高々 2 辺以内にあるすべてのデータを収集できます。すべてのデータを収集して開始ノードに戻るために必要な辺の通過回数の最小値を求めてください。元の例は n=11 ですが辺が 9 本しかなく、ノード 5 が孤立しているので、正しい木ではありません。本サイトでは正しい例に置き換えています。\n\n入出力形式は本サイトが整備したものです。",
+    "input": "1 行目に n が、2 行目に n 個のデータフラグ(各 0/1)が与えられ、続く n−1 行に辺 u v が与えられます。2≤n≤100000、0≤u,v<n で、入力は正しい無向木であることが保証されています。",
+    "output": "辺の通過回数の最小値を出力してください。データがない場合や移動が不要な場合は 0 を出力します。",
+    "explanation": "データが両端にある長さ 6 の鎖では、中心の辺を 2 回通れば十分なので答えは 2 です。スター型の木とデータのない木はどちらも 0 になります。",
+    "hints": [
+      "まず、データのない葉を繰り返し削除し、次に残った木の外側 2 層の葉を一度に削除します。残った各辺は 2 回通過されます。"
+    ]
+  },
+  "ko": {
+    "title": "트리에서 두 걸음 이내의 데이터 수집하기",
+    "description": "트리의 임의의 노드에서 시작할 수 있으며, 노드를 방문하면 그 노드에서 최대 2개의 간선 이내에 있는 모든 데이터를 수집합니다. 모든 데이터를 수집하고 시작 노드로 돌아오는 데 필요한 간선 이동 횟수의 최솟값을 구하세요. n=11인 원본 예제는 간선이 9개뿐이고 노드 5가 고립되어 있어 유효한 트리가 아니므로, 이 사이트에서는 유효한 예제로 교체했습니다.\n\n입출력 형식은 이 사이트에서 정리한 것입니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 두 번째 줄에 n개의 데이터 플래그(각각 0/1)가 주어지며, 이어서 n−1개의 줄에 간선 u v가 주어집니다. 2≤n≤100000, 0≤u,v<n이며, 입력은 유효한 무방향 트리임이 보장됩니다.",
+    "output": "간선 이동 횟수의 최솟값을 출력합니다. 데이터가 없거나 이동할 필요가 없으면 0을 출력합니다.",
+    "explanation": "양 끝에 데이터가 있는 길이 6의 체인에서는 핵심 간선을 두 번 지나면 충분하므로 답은 2이고, 스타 트리와 데이터가 없는 트리는 둘 다 0입니다.",
+    "hints": [
+      "먼저 데이터가 없는 리프를 반복해서 삭제하고, 남은 트리에서 가장 바깥쪽 두 층의 리프를 한꺼번에 삭제합니다. 남은 각 간선은 두 번씩 지나갑니다."
+    ]
+  },
+  "vi": {
+    "title": "Thu thập dữ liệu trong phạm vi hai bước trên cây",
+    "description": "Có thể bắt đầu từ bất kỳ nút nào của cây; ghé thăm một nút thu thập toàn bộ dữ liệu trong phạm vi tối đa 2 cạnh quanh nó. Hãy tìm số lần đi qua cạnh tối thiểu cần thiết để thu thập mọi dữ liệu và quay về nút xuất phát. Ví dụ nguồn với n=11 chỉ có 9 cạnh và một nút cô lập 5, nên không phải là cây hợp lệ; trang này thay nó bằng một ví dụ hợp lệ.\n\nĐịnh dạng đầu vào/đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa n, dòng thứ hai chứa n cờ dữ liệu, mỗi cờ là 0/1, tiếp theo là n−1 dòng cạnh u v. 2≤n≤100000, 0≤u,v<n, và đầu vào được đảm bảo là một cây vô hướng hợp lệ.",
+    "output": "In ra số lần đi qua cạnh tối thiểu; in 0 khi không có dữ liệu hoặc không cần di chuyển.",
+    "explanation": "Với một chuỗi độ dài 6 có dữ liệu ở cả hai đầu, đi qua cạnh lõi hai lần là đủ, nên đáp án là 2; một cây hình sao và một cây không có dữ liệu đều cho 0.",
+    "hints": [
+      "Trước hết liên tục xóa các lá không có dữ liệu, rồi xóa cùng lúc hai lớp lá ngoài cùng của cây còn lại. Mỗi cạnh còn lại được đi qua hai lần."
+    ]
   }
 }

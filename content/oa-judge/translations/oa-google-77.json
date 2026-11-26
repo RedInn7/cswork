@@ -11,5 +11,35 @@
     "hints": [
       "Store the board in an array. After a new piece is placed, check only the four directions through it, looking at most 2 cells on each side. Check for an existing winner and for a repeated cell first."
     ]
+  },
+  "ja": {
+    "title": "多人数三目並べの手ごとの状況",
+    "description": "入力に与えられた手を、そのとおりに処理してください。手番を自分で推測してはいけません。盤面は n×n ですが、勝利の長さは常に 3 です。横・縦・どちらかの斜めに 3 つ以上並べば勝ちです。勝者が決まった後は、どの操作も Game Over を返します。それ以前に、埋まっているマスに置こうとすると Invalid Move を返し、盤面は変わりません。成功した手は、順に、勝利判定、盤面が埋まった場合の Draw、それ以外は In Progress の順で判定します。\n\n標準入出力の形式は CSWork が整備したもので、「本サイト」と記した値の範囲は本サイトの判定上の取り決めです。",
+    "input": "1 行目に n k m、続く m 行に player row col が与えられます。行と列は 0 から番号付けされます。3≤n≤1000、1≤k≤10、1≤m≤min(n²+5,100000) で、座標は有効、プレイヤーは 1..k です。",
+    "output": "各操作について、対応する状況を 1 行ずつ出力します。大文字小文字や表記は問題文で定義されたとおりにしてください。",
+    "explanation": "例 1：最初の 4 手は In Progress で、5 手目で 1 行目に 3 つ並び、Player 1 won になります。例 2：最初の 6 手では誰も勝たず、7 手目で (0,0)、(1,1)、(2,2) が並んで勝ちます。盤面の幅が 4 でも、4 つ並べる必要はありません。例 3：2 手目は同じマスの繰り返しで Invalid Move、5 手目は Player 1 won、6 手目は Game Over、残りは In Progress です。",
+    "hints": [
+      "盤面を配列に保持します。新しい駒を置いたら、その駒を通る 4 方向だけを、各側で最大 2 マスまで調べます。既存の勝者の有無と、マスの重複を先に確認してください。"
+    ]
+  },
+  "ko": {
+    "title": "다인 틱택토의 단계별 상태",
+    "description": "입력으로 주어진 수를 그대로 처리하고, 차례를 스스로 추론하지 마세요. 판은 n×n이지만 승리 길이는 항상 3입니다. 가로, 세로 또는 두 대각선 방향으로 3개 이상 연속하면 승리합니다. 승자가 생기면 이후 모든 연산은 Game Over를 반환합니다. 그 전에 이미 놓인 칸에 두면 Invalid Move를 반환하고 판은 바뀌지 않습니다. 성공한 수는 순서대로 승리 여부, 판이 가득 찬 Draw 여부를 확인하고, 둘 다 아니면 In Progress입니다.\n\n표준 입출력 형식은 CSWork에서 정리한 것이며, \"이 사이트\"라고 표시된 값의 범위는 이 사이트의 채점 기준입니다.",
+    "input": "첫째 줄에 n k m이 주어지고, 다음 m개의 줄에 각각 player row col이 주어집니다. 행과 열은 0부터 번호가 매겨집니다. 3≤n≤1000, 1≤k≤10, 1≤m≤min(n²+5,100000)이며 좌표는 유효하고 플레이어는 1..k입니다.",
+    "output": "각 연산마다 해당하는 상태를 한 줄로 출력하며, 문제에서 정의한 대소문자와 표기를 그대로 사용합니다.",
+    "explanation": "예제 1: 처음 네 수는 In Progress이고, 다섯 번째 수가 첫 행에 3개 연속을 완성하여 Player 1 won입니다. 예제 2: 처음 여섯 수까지는 아무도 이기지 못하고, 일곱 번째 수가 (0,0), (1,1), (2,2)를 연속으로 만들어 승리합니다. 판의 너비가 4여도 4개 연속은 필요하지 않습니다. 예제 3: 두 번째 수는 같은 칸을 다시 두어 Invalid Move, 다섯 번째는 Player 1 won, 여섯 번째는 Game Over이고 나머지는 In Progress입니다.",
+    "hints": [
+      "판을 배열에 저장합니다. 새 말을 놓은 뒤에는 그 말을 지나는 네 방향만 확인하며 각 방향으로 최대 2칸까지만 봅니다. 이미 승자가 있는지와 중복 칸인지를 먼저 확인하세요."
+    ]
+  },
+  "vi": {
+    "title": "Trạng thái từng bước của cờ ca-rô nhiều người chơi",
+    "description": "Xử lý các nước đi đúng như trong đầu vào; đừng tự suy ra lượt chơi. Bàn cờ có kích thước n×n, nhưng độ dài thắng luôn là 3: có ít nhất ba quân liên tiếp theo hàng ngang, hàng dọc hoặc một trong hai đường chéo là thắng. Khi đã có người thắng, mọi thao tác đều trả về Game Over; trước đó, đặt vào ô đã có quân trả về Invalid Move và không thay đổi bàn cờ; một nước đi thành công được kiểm tra theo thứ tự: thắng, rồi hòa Draw khi bàn cờ đầy, nếu không thì In Progress.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do CSWork biên soạn; các khoảng giá trị được đánh dấu \"this site\" là quy ước chấm bài của trang này.",
+    "input": "Dòng đầu chứa n k m; mỗi dòng trong m dòng tiếp theo chứa player row col, với hàng và cột được đánh số từ 0. 3≤n≤1000, 1≤k≤10, 1≤m≤min(n²+5,100000); tọa độ hợp lệ và người chơi là 1..k.",
+    "output": "Với mỗi thao tác, in ra một dòng với trạng thái tương ứng, dùng đúng cách viết hoa và cách diễn đạt được định nghĩa trong đề bài.",
+    "explanation": "Ví dụ 1: bốn nước đi đầu cho In Progress, và nước thứ năm hoàn thành ba quân liên tiếp trên hàng đầu: Player 1 won. Ví dụ 2: không ai thắng trong sáu nước đầu; nước thứ bảy thắng với (0,0), (1,1), (2,2) thẳng hàng. Dù bàn cờ rộng 4, vẫn không cần bốn quân liên tiếp. Ví dụ 3: nước thứ hai lặp lại một ô và cho Invalid Move, nước thứ năm cho Player 1 won, nước thứ sáu cho Game Over, và các nước còn lại cho In Progress.",
+    "hints": [
+      "Lưu bàn cờ trong một mảng. Sau khi đặt một quân mới, chỉ kiểm tra bốn hướng đi qua nó, xem tối đa 2 ô ở mỗi phía. Trước tiên kiểm tra xem đã có người thắng chưa và ô có bị lặp lại không."
+    ]
   }
 }

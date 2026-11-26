@@ -11,5 +11,35 @@
     "hints": [
       "Reversing the string and swapping x/y lets you assume x≤y. Then some optimal solution sets the wildcards to 0 first and 1 afterward. Start with every ! set to 1, scan and change them to 0 one at a time, compute each change in the full cost from the counts of 0/1 on the left and right, take the minimum over all split points, and apply the modulus at the end."
     ]
+  },
+  "ja": {
+    "title": "感嘆符を置き換えた後の順序つきペアエラーの最小値",
+    "description": "各 ! を 0 または 1 に置き換えます。添字のすべてのペア i<j について、01 のペアは x、10 のペアは y のコストを生みます。隣り合う文字に限りません。まずエラーの総和全体を最小化し、最後に 1000000007 で割った余りを取ります。このページには文章しか残っていなかったため、当サイトは、同じスナップショットの amazon-get-min-errors.md にある同一問題・同一の例 101!1 から、部分列と法の正式なルールを復元し、2 つの元資料を証拠として紐づけています。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に errorString、2 行目に x y が与えられます。主たる元資料には値の範囲がなく、補足の元資料には長さ 1..100000、コスト 0..100000 と書かれています。当サイトはこの範囲を完全にカバーし、コストを 0≤x,y≤10^9 に拡張しています。文字列には 0、1、! のみが含まれます。補足の元資料で ! の代わりに文字 l と印字されている誤植は、本文とすべての例に基づいて ! に復元しています。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 9、0、0 です。2 つ目の例では 11 を選ぶべきで、先頭だけを見て最初の位置を貪欲に 0 にしてはいけません。3 つ目の例では 10 のコストが 0 なので有効です。",
+    "hints": [
+      "文字列を反転して x/y を入れ替えると、x≤y と仮定できます。このとき、ワイルドカードを先に 0、後に 1 にする最適解が存在します。まずすべての ! を 1 にし、走査しながら 1 つずつ 0 に変え、各変更による総コストの変化を左右の 0/1 の個数から計算します。すべての分割点で最小値を取り、最後に法を適用します。"
+    ]
+  },
+  "ko": {
+    "title": "느낌표를 치환한 뒤 순서쌍 오류의 최소 합",
+    "description": "각 !를 0 또는 1로 바꿉니다. 모든 인덱스 쌍 i<j에 대해 01 쌍은 x, 10 쌍은 y의 비용을 냅니다. 인접한 문자에 한정되지 않습니다. 먼저 전체 오류 합을 최소화한 뒤, 마지막에 1000000007로 나눈 나머지를 취합니다. 이 페이지에는 서술만 남아 있었으므로, 본 사이트는 같은 스냅샷의 amazon-get-min-errors.md에 있는 동일 문제와 동일 예제 101!1에서 정식 부분 수열 규칙과 법을 복원했으며, 두 원본 모두를 근거로 묶어 두었습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 errorString, 둘째 줄에 x y가 주어집니다. 주 원문에는 값의 범위가 없고, 보조 원문에는 길이 1..100000과 비용 0..100000이 명시되어 있습니다. 본 사이트는 이 범위를 모두 포함하면서 비용을 0≤x,y≤10^9로 확장합니다. 문자열은 0, 1, !만 포함합니다. 보조 원문에 !가 문자 l로 잘못 인쇄된 오타는 본문과 모든 예제에 따라 !로 복원했습니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 9, 0, 0입니다. 두 번째 예제에서는 11을 선택해야 하며, 접두사만 보고 첫 위치를 0으로 탐욕적으로 정해서는 안 됩니다. 세 번째 예제에서 10의 비용이 0이므로 유효합니다.",
+    "hints": [
+      "문자열을 뒤집고 x/y를 교환하면 x≤y라고 가정할 수 있습니다. 그러면 와일드카드를 앞쪽은 0, 뒤쪽은 1로 채우는 최적해가 존재합니다. 모든 !를 1로 둔 상태에서 시작해 스캔하며 하나씩 0으로 바꾸고, 왼쪽과 오른쪽의 0/1 개수로 전체 비용의 변화량을 계산한 뒤 모든 분할 지점에 대해 최솟값을 구하고, 마지막에 나머지 연산을 적용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lỗi cặp có thứ tự tối thiểu sau khi thay các dấu chấm than",
+    "description": "Thay mỗi ký tự ! bằng 0 hoặc 1. Với mọi cặp chỉ số i<j, một cặp 01 đóng góp x và một cặp 10 đóng góp y; không chỉ giới hạn ở các ký tự kề nhau. Trước hết tối thiểu hóa tổng lỗi đầy đủ, rồi mới lấy phần dư theo modulo 1000000007 ở cuối. Trang gốc chỉ giữ lại phần văn xuôi; trang này khôi phục quy tắc dãy con và modulo chính thức từ cùng bài toán với cùng ví dụ 101!1 trong amazon-get-min-errors.md của cùng snapshot, và gắn cả hai nguồn thô làm bằng chứng.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa errorString và dòng thứ hai chứa x y. Nguồn thô chính không cho cận giá trị nào; nguồn thô bổ sung quy định độ dài 1..100000 và chi phí 0..100000. Trang này bao phủ toàn bộ khoảng đó và mở rộng chi phí thành 0≤x,y≤10^9. Xâu chỉ chứa 0, 1 và !. Một lỗi đánh máy trong nguồn thô bổ sung in ký tự l được khôi phục thành ! dựa trên phần nội dung và mọi ví dụ.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 9, 0 và 0. Ở ví dụ thứ hai bạn nên chọn 11; không thể chỉ nhìn vào tiền tố rồi tham lam đặt vị trí đầu thành 0. Ở ví dụ thứ ba, chi phí của 10 là 0, điều này hợp lệ.",
+    "hints": [
+      "Đảo ngược xâu và hoán đổi x/y cho phép giả sử x≤y. Khi đó tồn tại một nghiệm tối ưu đặt các ký tự đại diện thành 0 trước rồi thành 1 sau. Bắt đầu với mọi ! đặt thành 1, quét và đổi chúng thành 0 từng cái một, tính độ thay đổi của tổng chi phí từ số lượng 0/1 bên trái và bên phải, lấy giá trị nhỏ nhất qua mọi điểm chia, và áp dụng modulo ở cuối."
+    ]
   }
 }

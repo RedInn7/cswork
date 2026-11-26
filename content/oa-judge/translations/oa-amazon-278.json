@@ -11,5 +11,35 @@
     "hints": [
       "Collect the positions p of each speed separately. Run two pointers over that position array, keeping p[r]−p[l]−(r−l)≤k, and update the same-speed count r−l+1."
     ]
+  },
+  "ja": {
+    "title": "参加者を最大 k 人除いたあとの、同じ速度が連続する最長グループ",
+    "description": "参加者を最大 k 人取り除きます。ほかの全員は元の相対的な順序を保ちます。残った列の中で、同じ速度の人が連続している区間の人数の最大値を求めてください。出力するのはその区間に残る人数であり、取り除かれた参加者は数えません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n と k、2 行目に speed が与えられます。元の問題文には値の範囲がありませんでしたが、本サイトでは 1≤n≤200000、0≤k≤n、1≤speed[i]≤10^9 とします。元の「0 から n」というインデックスの誤記は、n 個の要素に対して 0..n−1 に統一しています。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 2、2、1 です。1 つ目の例では、2 を 1 人だけ取り除いても、3 人の 1 をつなげるには足りません。",
+    "hints": [
+      "速度ごとに位置 p を別々に集めます。その位置配列に対して p[r]−p[l]−(r−l)≤k を保つようにしゃくとり法を行い、同じ速度の人数 r−l+1 で更新します。"
+    ]
+  },
+  "ko": {
+    "title": "최대 k명의 선수를 제거한 뒤 속도가 같은 가장 긴 연속 그룹",
+    "description": "최대 k명의 선수를 제거하며, 나머지는 원래의 상대적인 순서를 유지합니다. 남은 줄에서 속도가 같은 연속 구간에 속한 사람 수의 최댓값을 구하세요. 그 구간에 남는 사람의 수를 출력하며, 제거된 선수는 세지 않습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k가 주어지고, 둘째 줄에 speed가 주어집니다. 원문에는 값의 범위가 없으며, 본 사이트에서는 1≤n≤200000, 0≤k≤n, 1≤speed[i]≤10^9입니다. 원문의 인덱스 표기 오류 \"0 to n\"은 n개 항목에 대해 0..n−1로 통일했습니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 각각 2, 2, 1입니다. 첫 번째 예제에서는 2를 하나만 제거해서는 세 개의 1을 연결하기에 여전히 부족합니다.",
+    "hints": [
+      "속도별로 위치 p를 따로 모읍니다. 그 위치 배열에 투 포인터를 적용해 p[r]−p[l]−(r−l)≤k를 유지하면서 같은 속도의 수 r−l+1을 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Nhóm liên tiếp cùng tốc độ dài nhất sau khi loại tối đa k tay đua",
+    "description": "Loại tối đa k tay đua; những người còn lại giữ nguyên thứ tự tương đối ban đầu. Tìm số người nhiều nhất trong một đoạn liên tiếp cùng tốc độ của hàng còn lại. In ra số người ở lại trong đoạn đó, không tính các tay đua đã bị loại.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và k, dòng thứ hai chứa speed. Đề gốc không nêu giới hạn giá trị; trang này dùng 1≤n≤200000, 0≤k≤n, 1≤speed[i]≤10^9. Lỗi chỉ số trong đề gốc \"0 đến n\" được thống nhất thành 0..n−1 cho n phần tử.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, 2 và 1. Ở ví dụ thứ nhất, chỉ xóa một số 2 vẫn chưa đủ để nối ba số 1 lại.",
+    "hints": [
+      "Thu thập riêng các vị trí p của từng tốc độ. Chạy hai con trỏ trên mảng vị trí đó, giữ p[r]−p[l]−(r−l)≤k, và cập nhật số lượng cùng tốc độ r−l+1."
+    ]
   }
 }

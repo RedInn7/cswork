@@ -11,5 +11,35 @@
     "hints": [
       "Delete the edges whose frequency difference is 2 to get a forest; for each unvisited component, first traverse to the farthest endpoint, then traverse from that endpoint to get the component's diameter, and take the maximum."
     ]
+  },
+  "ja": {
+    "title": "互換性のある無線周波数の森における最長距離",
+    "description": "デバイスの接続は木を成し、各周波数は 1、2、3 のいずれかです。辺の両端の周波数の差の絶対値が ≤1 のとき、その辺は信号を伝えられます。経路上のすべての辺が互換でなければなりません。通信できる 2 台のデバイスの間の辺の本数の最大値を求めてください。使える辺がなければ 0 を返します。周波数が同じ隣接デバイスも有効です。\n\n入出力プロトコルは本サイトが整備したものです。元の文章で欠けていた数値範囲は、本サイトによる補足として明記しています。",
+    "input": "1 行目に n が、2 行目に n 個の周波数が与えられ、続く n−1 行に 1-based の無向辺が与えられます。元の生のテキストにはノード数の上限が書かれていません(カタログの 100,000 はコンパイル時に追加されたものです)。本サイトでは 1≤n≤100000 とし、入力は正しい木で、周波数は 1、2、3 です。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 2; 0; 2 です。例は、独立した全探索・状態探索・直接シミュレーションで確認済みです。",
+    "hints": [
+      "周波数の差が 2 の辺を削除して森を得ます。未訪問の各連結成分について、まず最も遠い端点まで探索し、次にその端点から探索して成分の直径を求め、最大値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "호환되는 무선 주파수로 이루어진 포레스트의 최장 거리",
+    "description": "장치 연결은 트리를 이루며, 각 주파수는 1, 2, 3 중 하나입니다. 간선의 양 끝점 주파수의 차이의 절댓값이 ≤1이면 그 간선으로 신호를 보낼 수 있으며, 경로상의 모든 간선이 호환되어야 합니다. 서로 통신할 수 있는 두 장치 사이의 간선 수의 최댓값을 구하세요. 사용할 수 있는 간선이 없으면 0을 반환합니다. 주파수가 같은 인접 장치도 유효합니다.\n\n입출력 규약은 이 사이트에서 정리한 것이며, 원문에 없는 수치 범위는 이 사이트가 추가한 것으로 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 두 번째 줄에 n개의 주파수가 주어지며, 이어서 n−1개의 줄에 1-기반 무방향 간선이 주어집니다. 원문에는 노드 수의 상한이 없으며(카탈로그의 100,000은 정리 과정에서 추가됨), 이 사이트는 1≤n≤100000을 지정합니다. 입력은 유효한 트리이며 주파수는 1, 2, 3입니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 2; 0; 2입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "주파수 차이가 2인 간선을 삭제하여 포레스트를 만든 뒤, 방문하지 않은 각 컴포넌트에서 먼저 가장 먼 끝점까지 순회하고, 그 끝점에서 다시 순회하여 컴포넌트의 지름을 구한 다음 최댓값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khoảng cách dài nhất trong rừng các tần số không dây tương thích",
+    "description": "Các kết nối thiết bị tạo thành một cây, và mỗi tần số là 1, 2 hoặc 3. Một cạnh truyền được tín hiệu nếu giá trị tuyệt đối hiệu hai tần số đầu mút của nó ≤1, và mọi cạnh dọc theo một đường đi đều phải tương thích. Hãy tìm số cạnh tối đa giữa hai thiết bị bất kỳ có thể liên lạc với nhau; trả về 0 nếu không có cạnh nào dùng được. Các thiết bị kề nhau có cùng tần số cũng hợp lệ.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các khoảng giá trị bị thiếu trong văn bản gốc được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu tiên chứa n, dòng thứ hai chứa n tần số, tiếp theo là n−1 dòng cạnh vô hướng đánh số từ 1. Văn bản gốc thô không cho cận trên số nút (con số 100,000 trong danh mục được thêm vào khi biên soạn); trang này quy định 1≤n≤100000, đầu vào là một cây hợp lệ, và các tần số là 1, 2 hoặc 3.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 2; 0; 2. Các ví dụ đã được kiểm tra bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Xóa các cạnh mà hiệu tần số bằng 2 để được một rừng; với mỗi thành phần chưa thăm, trước hết duyệt đến đầu mút xa nhất, rồi duyệt từ đầu mút đó để được đường kính của thành phần, và lấy giá trị lớn nhất."
+    ]
   }
 }

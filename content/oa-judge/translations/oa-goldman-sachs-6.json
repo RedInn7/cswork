@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate saleLength=1..max(length). For each rod, compute the number k of finished pieces it can yield. If there is scrap, each kept piece requires one cut, and when the profit is positive keep all k pieces. If it divides exactly, compare: keeping all k pieces needs only k−1 cuts; or keep at most k−1 pieces, cutting each one away from the remainder; or leave the whole rod uncut."
     ]
+  },
+  "ja": {
+    "title": "Cutting Metal Surplus",
+    "description": "複数の金属棒、1 回の切断にかかるコスト、単位長さあたりの販売価格が与えられます。正の整数 saleLength を 1 つ選び、棒を長さ saleLength の断片に切ることができます。余った端材は捨てられ、収入になりません。棒を加工せずそのままにしておくこともできます。販売収入の合計から切断コストを引いた値を最大化してください。\n\n本サイトの入力形式と明示された範囲は CSWork が作成したもので、元の OA プラットフォームの入出力を装うものではありません。",
+    "input": "1 行目に n, costPerCut, salePrice が与えられ、2 行目に n 本の棒の長さが与えられます。元の範囲は 1≤n≤50、1≤length[i]≤10000、1≤costPerCut,salePrice≤100 です。本サイトでは、各棒がそれぞれ独立に、完成した saleLength の断片を何個残すかを選べるものとします。棒が割り切れてすべてを使い切る場合、最後の断片は切り離すための切断が不要です。端材がある場合や一部の断片だけを残す場合は、完成した断片 1 個につき 1 回の切断が必要で、端材は収入になりません。",
+    "output": "達成可能な最大の総利益を出力します。",
+    "explanation": "解法、正当性の証明、計算量は付属の解説を参照してください。",
+    "hints": [
+      "saleLength=1..max(length) を列挙します。各棒について、得られる完成断片の個数 k を求めます。端材がある場合、残す断片 1 個ごとに 1 回の切断が必要で、利益が正なら k 個すべてを残します。割り切れる場合は比較します。k 個すべてを残すなら切断は k−1 回で済みます。あるいは最大 k−1 個の断片を残し、各断片を端から切り離します。または棒を切らずにそのままにします。"
+    ]
+  },
+  "ko": {
+    "title": "Cutting Metal Surplus",
+    "description": "여러 개의 금속 막대, 절단 한 번당 비용, 단위 길이당 판매 가격이 주어집니다. 양의 정수 saleLength를 하나 선택하면 막대를 길이 saleLength인 조각으로 자를 수 있으며, 남는 자투리는 수익 없이 버립니다. 막대를 가공하지 않고 그대로 둘 수도 있습니다. 총 판매 수익에서 절단 비용을 뺀 값을 최대화하는 것이 목표입니다.\n\n이 사이트의 입력 형식과 명시된 범위는 CSWork가 구성한 것이며 원래 OA 플랫폼의 입출력인 척하지 않습니다.",
+    "input": "첫 번째 줄에 n, costPerCut, salePrice가 주어지고, 두 번째 줄에 n개의 막대 길이 값이 주어집니다. 원본 범위는 1≤n≤50, 1≤length[i]≤10000, 1≤costPerCut,salePrice≤100입니다. 이 사이트에서는 각 막대가 완성된 saleLength 조각을 몇 개 보관할지 독립적으로 선택할 수 있도록 명시합니다. 막대가 정확히 나누어떨어지고 전부 사용되는 경우 마지막 조각은 분리하기 위한 절단이 필요 없습니다. 자투리가 있거나 일부 조각만 보관하는 경우에는 완성된 조각마다 절단이 한 번씩 필요하며, 자투리는 수익이 없습니다.",
+    "output": "얻을 수 있는 최대 총 이익을 출력합니다.",
+    "explanation": "접근 방식, 정당성 증명, 복잡도는 함께 제공되는 풀이를 참고하세요.",
+    "hints": [
+      "saleLength=1..max(length)를 모두 열거합니다. 각 막대에 대해 만들 수 있는 완성 조각의 개수 k를 계산합니다. 자투리가 있으면 보관하는 조각마다 절단이 한 번 필요하며, 이익이 양수이면 k개를 모두 보관합니다. 정확히 나누어떨어지면 비교합니다. k개를 모두 보관하면 절단은 k−1번만 필요합니다. 또는 최대 k−1개를 보관하며 각 조각을 나머지에서 잘라 냅니다. 또는 막대 전체를 자르지 않고 둡니다."
+    ]
+  },
+  "vi": {
+    "title": "Cutting Metal Surplus",
+    "description": "Cho một số thanh kim loại, chi phí của mỗi nhát cắt và giá bán trên mỗi đơn vị độ dài. Bạn được chọn một số nguyên dương saleLength; mỗi thanh có thể được cắt thành các đoạn có độ dài saleLength, và phần phế liệu còn lại bị bỏ đi, không có doanh thu. Bạn có thể không xử lý một thanh nào đó. Mục tiêu là tối đa hóa tổng doanh thu bán hàng trừ đi chi phí cắt.\n\nĐịnh dạng đầu vào và các khoảng giá trị được nêu rõ của trang này do CSWork biên soạn và không giả danh vào/ra của nền tảng OA gốc.",
+    "input": "Dòng đầu chứa n, costPerCut, salePrice; dòng thứ hai chứa n giá trị độ dài các thanh. Các khoảng giá trị gốc: 1≤n≤50, 1≤length[i]≤10000, 1≤costPerCut,salePrice≤100. Trang này cho phép mỗi thanh tự chọn độc lập số đoạn thành phẩm saleLength được giữ lại. Khi một thanh chia hết và được dùng toàn bộ, đoạn cuối cùng không cần cắt để tách ra; khi có phế liệu hoặc chỉ giữ một phần số đoạn, mỗi đoạn thành phẩm cần một nhát cắt, và phế liệu không mang lại gì.",
+    "output": "In ra tổng lợi nhuận tối đa có thể đạt được.",
+    "explanation": "Xem lời giải đi kèm để biết ý tưởng, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Duyệt saleLength=1..max(length). Với mỗi thanh, tính số đoạn thành phẩm k mà nó có thể cho. Nếu có phế liệu, mỗi đoạn giữ lại cần một nhát cắt, và khi lợi nhuận dương thì giữ cả k đoạn. Nếu chia hết, hãy so sánh: giữ cả k đoạn chỉ cần k−1 nhát cắt; hoặc giữ nhiều nhất k−1 đoạn, mỗi đoạn cắt rời khỏi phần còn lại; hoặc để nguyên cả thanh không cắt."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Process the logs in reverse order, maintaining the maximum global raise seen so far. When you reach the last point assignment of a service, its final value is determined; every other service combines its initial value with all the raises."
     ]
+  },
+  "ja": {
+    "title": "スケールアップと個別リセット後のポッド数",
+    "description": "ログ [1,p,x] は、1-based のサービス p の数を x に直接設定します（減ることもあります）。[2,−1,x] は、x 未満のすべての数を x に引き上げます。ログを順に適用し、最終的な配列を返してください。\n\n入出力の形式と、明示した補足の制約は本サイトで整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n m、2 行目に初期の数、続く m 行にログが与えられます。1≤n,m≤200000、初期値は 1..10⁹、設定される値は 0..10⁹、1≤p≤n です。",
+    "output": "まず n を出力し、続いて最終的な n 個の数を出力してください。",
+    "explanation": "3 つの公開例の答えは順に 4\n10 30 10 10、5\n8 8 20 8 10、1\n0 です。例は、独立した全探索、状態探索、または直接のシミュレーションで再確認しています。",
+    "hints": [
+      "ログを逆順に処理し、これまでに見た全体の引き上げの最大値を保持します。あるサービスの最後の個別設定に達した時点で、その最終値が決まります。それ以外のサービスは、初期値とすべての引き上げを合わせて決まります。"
+    ]
+  },
+  "ko": {
+    "title": "스케일 업과 개별 재설정 이후의 파드 수",
+    "description": "로그 [1,p,x]는 1부터 번호가 매겨진 서비스 p의 수를 x로 직접 설정하며 값이 줄어들 수도 있습니다. 로그 [2,−1,x]는 x보다 작은 모든 수를 x로 올립니다. 로그를 순서대로 적용하여 최종 배열을 반환하세요.\n\n입출력 규약과 명시적으로 표시된 보충 제약은 이 사이트에서 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n m이, 둘째 줄에 초기 수들이, 이어서 m줄의 로그가 주어집니다. 1≤n,m≤200000, 초깃값은 1..10⁹, 설정되는 값은 0..10⁹, 1≤p≤n.",
+    "output": "먼저 n을 출력한 다음, 최종 n개의 수를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 4\n10 30 10 10; 5\n8 8 20 8 10; 1\n0입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 확인했습니다.",
+    "hints": [
+      "로그를 역순으로 처리하면서 지금까지 본 전역 상향의 최댓값을 유지합니다. 어떤 서비스의 마지막 개별 설정에 도달하면 그 서비스의 최종 값이 정해지고, 나머지 서비스는 초깃값과 모든 상향을 결합합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lượng pod sau các lần mở rộng và đặt lại điểm",
+    "description": "Một bản ghi [1,p,x] đặt trực tiếp số lượng của dịch vụ p (đánh chỉ số từ 1) thành x, có thể làm nó giảm; [2,−1,x] nâng mọi số lượng nhỏ hơn x lên x. Áp dụng các bản ghi theo thứ tự và trả về mảng cuối cùng.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n m, dòng thứ hai chứa các số lượng ban đầu, tiếp theo là m dòng bản ghi. 1≤n,m≤200000, giá trị ban đầu là 1..10⁹, giá trị được gán là 0..10⁹, và 1≤p≤n.",
+    "output": "Trước hết in n, sau đó in n số lượng cuối cùng.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 4\n10 30 10 10; 5\n8 8 20 8 10; 1\n0. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Xử lý các bản ghi theo thứ tự ngược, duy trì mức nâng toàn cục lớn nhất đã thấy cho đến nay. Khi bạn gặp lần gán điểm cuối cùng của một dịch vụ, giá trị cuối cùng của nó đã được xác định; mọi dịch vụ khác kết hợp giá trị ban đầu với tất cả các mức nâng."
+    ]
   }
 }

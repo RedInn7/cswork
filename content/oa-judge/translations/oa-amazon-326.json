@@ -11,5 +11,35 @@
     "hints": [
       "Sort power and build packed unsigned 64-bit prefix sums. For each closed range, use lower_bound(min) and upper_bound(max) to get the indices [l,r); the count is r−l and the total is prefix[r]−prefix[l]. Release references to the power strings after reading, and do not keep multiple copies of nested results."
     ]
+  },
+  "ja": {
+    "title": "各プロセッサの範囲内にあるプロセス数と合計電力",
+    "description": "各プロセスには消費電力 power があり、各プロセッサは閉区間 [minPower,maxPower] にあるプロセスを処理できます。各プロセッサについて独立に、その範囲内にあるプロセスの数と、それらのプロセスの合計電力を出力してください。これは、プロセスを異なるプロセッサへ1回だけ割り当てる問題ではありません。電力値が同じプロセスは別のプロセスであり、別々に数えます。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n m、2行目に n 個の power の値、続く m 行に minPower maxPower が与えられます。元の制約は 1≤n≤12×10^5=1200000、1≤m≤200000、1≤power,minPower≤maxPower≤10^8(power 単独では 1..10^8)です。1,200,000 を 120,000 と読み違えないでください。",
+    "output": "プロセッサの入力順に m 行を出力してください。各行には個数と合計電力を書きます。",
+    "explanation": "出力は 4 31 / 2 13 / 3 21、3 33 / 0 0、1 2 / 3 6 です。元の2つ目の例の文章はプロセスが 2 個と誤って書いていますが、3要素の配列なので 3 とすべきです。",
+    "hints": [
+      "power をソートし、符号なし 64 ビット整数の累積和を作ります。各閉区間について lower_bound(min) と upper_bound(max) で添字 [l,r) を求め、個数は r−l、合計は prefix[r]−prefix[l] です。読み込んだ後は power の文字列への参照を解放し、入れ子の結果を複数コピーして保持しないでください。"
+    ]
+  },
+  "ko": {
+    "title": "각 프로세서 범위에 있는 프로세스의 수와 총 전력",
+    "description": "각 프로세스에는 전력 소비량 power가 있고, 각 프로세서는 닫힌 구간 [minPower,maxPower]에 있는 프로세스를 처리할 수 있습니다. 각 프로세서에 대해 독립적으로, 그 범위에 있는 프로세스의 수와 그 프로세스들의 총 전력을 출력하세요. 프로세스를 서로 다른 프로세서에 한 번만 배정하는 문제가 아닙니다. 전력 값이 같은 프로세스는 서로 다른 프로세스이며 각각 따로 셉니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n m이, 둘째 줄에 n개의 power 값이, 이어서 m줄에 minPower maxPower가 주어집니다. 원문의 범위는 1≤n≤12×10^5=1200000, 1≤m≤200000, 1≤power,minPower≤maxPower≤10^8입니다(power 자체는 1..10^8). 1,200,000을 120,000으로 잘못 읽어서는 안 됩니다.",
+    "output": "프로세서의 입력 순서대로 m줄을 출력하며, 각 줄에는 개수와 총 전력을 출력합니다.",
+    "explanation": "출력은 각각 4 31 / 2 13 / 3 21, 3 33 / 0 0, 1 2 / 3 6입니다. 원문 두 번째 예제의 설명 문장은 프로세스가 2개라고 잘못 적고 있으며, 원소가 세 개인 배열이므로 3이어야 합니다.",
+    "hints": [
+      "power를 정렬하고 부호 없는 64비트 접두 합을 만듭니다. 각 닫힌 구간에 대해 lower_bound(min)와 upper_bound(max)로 인덱스 [l,r)를 구하면 개수는 r−l이고 총합은 prefix[r]−prefix[l]입니다. 읽은 뒤에는 power 문자열에 대한 참조를 해제하고, 중첩된 결과의 사본을 여러 개 보관하지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số tiến trình và tổng công suất trong phạm vi của từng bộ xử lý",
+    "description": "Mỗi tiến trình có mức tiêu thụ điện năng power, và mỗi bộ xử lý có thể phục vụ các tiến trình trong đoạn đóng [minPower,maxPower]. Với từng bộ xử lý một cách độc lập, hãy in số tiến trình nằm trong phạm vi của nó và tổng công suất của các tiến trình đó; đây không phải là việc gán một lần các tiến trình cho các bộ xử lý khác nhau. Các giá trị công suất trùng nhau thuộc về các tiến trình khác nhau và được đếm riêng.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai chứa n giá trị power, tiếp theo là m dòng minPower maxPower. Cận gốc là 1≤n≤12×10^5=1200000, 1≤m≤200000, 1≤power,minPower≤maxPower≤10^8 (bản thân power nằm trong 1..10^8). 1,200,000 không bị hiểu nhầm thành 120,000.",
+    "output": "In ra m dòng theo thứ tự đầu vào của các bộ xử lý, mỗi dòng chứa số lượng và tổng công suất.",
+    "explanation": "Các đầu ra là 4 31 / 2 13 / 3 21; 3 33 / 0 0; và 1 2 / 3 6. Phần văn bản của ví dụ gốc thứ hai nói sai là có 2 tiến trình; với mảng ba phần tử của nó, đáng lẽ phải là 3.",
+    "hints": [
+      "Sắp xếp power và xây tổng tiền tố số nguyên không dấu 64 bit được đóng gói. Với mỗi đoạn đóng, dùng lower_bound(min) và upper_bound(max) để lấy các chỉ số [l,r); số lượng là r−l và tổng là prefix[r]−prefix[l]. Giải phóng các tham chiếu tới các chuỗi power sau khi đọc, và không giữ nhiều bản sao của các kết quả lồng nhau."
+    ]
   }
 }

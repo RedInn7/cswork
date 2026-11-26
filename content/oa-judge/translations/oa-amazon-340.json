@@ -13,5 +13,41 @@
       "You need to query the minimum of (assignment count, number) over a prefix range.",
       "A segment tree supports both prefix minimum queries and point updates."
     ]
+  },
+  "ja": {
+    "title": "Amazon OA #340: Assign Requests to Servers",
+    "description": "servers 台のサーバーがあり、番号は 0..servers−1 です。n 個のリクエストを順に処理します。リクエスト i は、番号が 0 から requests[i](含む)までのサーバーにしか割り当てられず、その中で最も空いているものに割り当てられます。同じくらい空いているものが複数あるときは、番号が最小のものを選びます。サーバーの忙しさは、すでに割り当てられたリクエストの数で、割り当て済みのリクエストが解放されることはありません。各リクエストが割り当てられたサーバーの番号を出力してください。",
+    "input": "1行目に2つの整数 servers と n、2行目に n 個の整数 requests[0..n−1] が与えられます。1≤servers≤100000、1≤n≤200000、0≤requests[i]<servers です。",
+    "output": "n 個の整数を空白区切りで1行に出力してください。i 番目は、リクエスト i に割り当てられたサーバーの番号です。",
+    "explanation": "例 1:servers=5、requests=[3,1,0,2,1]。リクエスト 0 では、0..3 のすべてのサーバーが空いているので 0 を選びます。リクエスト 1 では、0..1 のうちサーバー 1 の方が空いているので 1 を選びます。リクエスト 2 は 0 しか選べません。リクエスト 3 では、0..2 のうちサーバー 2 の割り当てが 0 なので 2 を選びます。リクエスト 4 では、0..1 のうちサーバー 0 が 2、サーバー 1 が 1 なので 1 を選びます。出力は 0 1 0 2 1 です。\n例 2:3 台すべてが使え、リクエストは順に 0、1、2 に割り当てられます。4 番目のリクエストでは 3 台とも 1 なので 0 を選びます。\n例 3:最初の2つのリクエストはサーバー 0 しか使えません。その後はサーバー 1 の割り当てが最も少ないので 1 を選び、次に 2 を選びます。",
+    "hints": [
+      "サーバーの忙しさは、単にそのサーバーに割り当てられたリクエストの数です。",
+      "接頭辞の範囲での (割り当て回数, 番号) の最小値を問い合わせる必要があります。",
+      "セグメント木なら、接頭辞の最小値のクエリと一点更新の両方に対応できます。"
+    ]
+  },
+  "ko": {
+    "title": "Amazon OA #340: 요청을 서버에 배정하기",
+    "description": "0..servers−1번의 서버 servers대가 있습니다. n개의 요청을 순서대로 처리합니다. 요청 i는 번호가 0부터 requests[i]까지(양 끝 포함)인 서버에만 배정될 수 있으며, 그중 가장 덜 바쁜 서버에 배정됩니다. 가장 덜 바쁜 서버가 여럿이면 번호가 가장 작은 것을 고릅니다. 서버의 바쁨 정도는 이미 배정된 요청의 수이며, 배정된 요청은 해제되지 않습니다. 각 요청이 배정된 서버 번호를 출력하세요.",
+    "input": "첫째 줄에 두 정수 servers와 n이, 둘째 줄에 n개의 정수 requests[0..n−1]이 주어집니다. 1≤servers≤100000, 1≤n≤200000, 0≤requests[i]<servers입니다.",
+    "output": "n개의 정수를 공백으로 구분하여 한 줄에 출력합니다. i번째 값은 요청 i에 배정된 서버 번호입니다.",
+    "explanation": "예제 1: servers=5, requests=[3,1,0,2,1]. 요청 0은 0..3의 모든 서버가 한가하므로 0을 고릅니다. 요청 1은 0..1에서 서버 1이 덜 바쁘므로 1을 고릅니다. 요청 2는 0만 고를 수 있습니다. 요청 3은 0..2에서 서버 2의 배정 수가 0이므로 2를 고릅니다. 요청 4는 0..1에서 서버 0이 2, 서버 1이 1이므로 1을 고릅니다. 출력은 0 1 0 2 1입니다.\n예제 2: 서버 3대가 모두 사용 가능하며 요청은 차례로 0, 1, 2에 배정됩니다. 네 번째 요청에서는 셋 모두 1이므로 0을 고릅니다.\n예제 3: 처음 두 요청은 서버 0만 사용할 수 있고, 그 뒤에는 서버 1의 배정 수가 가장 적으므로 1을, 그다음에는 2를 고릅니다.",
+    "hints": [
+      "서버의 바쁨 정도는 단순히 배정된 요청의 수입니다.",
+      "접두 구간에서 (배정 횟수, 번호)의 최솟값을 질의해야 합니다.",
+      "세그먼트 트리는 접두 구간 최솟값 질의와 점 갱신을 모두 지원합니다."
+    ]
+  },
+  "vi": {
+    "title": "Amazon OA #340: Gán yêu cầu cho máy chủ",
+    "description": "Có servers máy chủ, đánh số 0..servers−1. Xử lý n yêu cầu theo thứ tự: yêu cầu i chỉ có thể được gán cho một máy chủ có số từ 0 đến requests[i] (bao gồm cả hai đầu), và nó được gán cho máy ít bận nhất trong số đó; nếu nhiều máy bận ngang nhau, chọn máy có số nhỏ nhất. Độ bận của một máy chủ là số yêu cầu đã được gán cho nó, và các yêu cầu đã gán không bao giờ được giải phóng. In ra số máy chủ mà mỗi yêu cầu được gán.",
+    "input": "Dòng đầu chứa hai số nguyên servers và n; dòng thứ hai chứa n số nguyên requests[0..n−1]. 1≤servers≤100000, 1≤n≤200000, 0≤requests[i]<servers.",
+    "output": "In một dòng gồm n số nguyên cách nhau bởi dấu cách; số thứ i là số máy chủ được gán cho yêu cầu i.",
+    "explanation": "Ví dụ 1: servers=5, requests=[3,1,0,2,1]. Với yêu cầu 0, mọi máy chủ trong 0..3 đều rảnh nên chọn 0; với yêu cầu 1, máy chủ 1 ít bận hơn trong 0..1 nên chọn 1; yêu cầu 2 chỉ có thể chọn 0; với yêu cầu 3, máy chủ 2 có 0 lần gán trong 0..2 nên chọn 2; với yêu cầu 4, trong 0..1 máy chủ 0 có 2 và máy chủ 1 có 1 nên chọn 1. Đầu ra 0 1 0 2 1.\nVí dụ 2: cả ba máy chủ đều khả dụng, các yêu cầu lần lượt đi đến 0, 1 và 2; ở yêu cầu thứ tư mỗi máy có 1 nên chọn 0.\nVí dụ 3: hai yêu cầu đầu chỉ dùng được máy chủ 0; sau đó máy chủ 1 có ít lần gán nhất nên chọn 1, rồi 2.",
+    "hints": [
+      "Độ bận của máy chủ đơn giản là số yêu cầu đã gán cho nó.",
+      "Bạn cần truy vấn giá trị nhỏ nhất của (số lần gán, số máy) trên một đoạn tiền tố.",
+      "Cây phân đoạn hỗ trợ cả truy vấn nhỏ nhất theo tiền tố lẫn cập nhật điểm."
+    ]
   }
 }

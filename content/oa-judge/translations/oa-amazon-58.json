@@ -11,5 +11,35 @@
     "hints": [
       "Group the string into pairs by original position. 00 and 11 need no flip and must be kept under minimum flips; 01 and 10 must flip 1 bit and can become either 00/11. Ignore the free groups and count the character changes across the forced groups and add 1; if all groups are free, there is 1 run."
     ]
+  },
+  "ja": {
+    "title": "最小の反転回数のもとで偶数長のランが最も少ない場合",
+    "description": "偶数長の 2 進文字列のビットを反転して、同じ文字が連続する極大なラン（連続区間）の長さがすべて偶数になるようにします。まず反転回数を最小化し、次に反転回数が最小の方法のうちでランの数を最小化して、そのランの数を出力します。元の例にある 1 回の反転による説明は誤りです。答えは、この 2 段階の目的で独立に計算しています。\n\n標準入出力・例・判定は本サイトが独自に作成したものです。",
+    "input": "長さ 2..100000 の偶数長の 2 進文字列が 1 行で与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 4 つのペアは 11, 10, 01, 10 で、後ろの 3 つはそれぞれ 1 回の反転が必要で、すべて 11 にできます。したがって最小の 3 回の反転の後、ランは 1 つだけです。元の 2 ラン という答えは、二次的な目的に対して最適ではありません。例 2: 各ペアで 1 ビットを反転するとすべて 0 になり、ランは 1 つです。例 3: 3 つのペアは 00, 11, 00 に固定されるので、ランは 3 つ必要です。",
+    "hints": [
+      "文字列を元の位置で 2 文字ずつのペアに分けます。00 と 11 は反転が不要で、最小の反転回数のもとでは維持しなければなりません。01 と 10 は 1 ビット反転する必要があり、00 でも 11 でも構いません。自由なペアは無視し、固定されたペアの間で文字が変わる回数を数えて 1 を加えます。すべてのペアが自由なら、ランは 1 つです。"
+    ]
+  },
+  "ko": {
+    "title": "최소 뒤집기 횟수에서 짝수 길이 연속 구간의 최소 개수",
+    "description": "짝수 길이의 이진 문자열의 비트를 뒤집어, 같은 문자가 연속하는 모든 최대 구간의 길이가 짝수가 되게 합니다. 먼저 뒤집는 횟수를 최소화하고, 뒤집기 횟수가 최소인 모든 방법 중에서 최대 구간의 수를 최소화하여 그 구간의 수를 출력하세요. 원문 예제의 한 번 뒤집기 설명은 올바르지 않으며, 답은 이 두 단계 목표로 독자적으로 계산한 것입니다.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "짝수 길이 2..100000의 이진 문자열이 한 줄로 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 네 개의 쌍은 11, 10, 01, 10입니다. 뒤의 세 쌍은 각각 1번씩 뒤집어야 하고 모두 11이 될 수 있으므로, 최소 3번 뒤집은 뒤 구간은 1개뿐입니다. 원문의 2개는 두 번째 목표에 대해 최적이 아닙니다. 예제 2: 각 쌍에서 비트 하나씩을 뒤집으면 전부 0이 되어 구간은 1개입니다. 예제 3: 세 쌍이 00, 11, 00으로 고정되므로 구간이 3개 필요합니다.",
+    "hints": [
+      "문자열을 원래 위치 기준으로 쌍으로 묶습니다. 00과 11은 뒤집을 필요가 없으며 최소 뒤집기에서는 그대로 두어야 합니다. 01과 10은 비트 하나를 뒤집어야 하며 00 또는 11 어느 쪽으로든 바꿀 수 있습니다. 자유로운 쌍은 무시하고, 고정된 쌍들 사이에서 문자가 바뀌는 횟수를 세어 1을 더합니다. 모든 쌍이 자유로우면 구간은 1개입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số đoạn ít nhất có độ dài chẵn với số lần lật tối thiểu",
+    "description": "Lật các bit của một xâu nhị phân có độ dài chẵn sao cho mọi đoạn cực đại gồm các ký tự giống nhau đều có độ dài chẵn. Trước hết cực tiểu hóa số lần lật; sau đó, trong mọi phương án có số lần lật ít nhất, cực tiểu hóa số đoạn cực đại, và in ra số đoạn. Lời giải thích lật một bit trong ví dụ gốc là không đúng; đáp án được tính độc lập với mục tiêu hai tầng này.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn, các ví dụ và bộ chấm.",
+    "input": "Một dòng chứa xâu nhị phân có độ dài chẵn, 2..100000.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: bốn cặp là 11, 10, 01, 10; mỗi cặp trong ba cặp cuối cần 1 lần lật và tất cả đều có thể thành 11, nên sau tối thiểu 3 lần lật chỉ còn 1 đoạn; con số 2 đoạn của đề gốc không tối ưu đối với mục tiêu thứ hai. Ví dụ 2: lật 1 bit trong mỗi cặp làm mọi thứ thành 0, 1 đoạn. Ví dụ 3: ba cặp bị buộc là 00, 11, 00, nên cần 3 đoạn.",
+    "hints": [
+      "Nhóm xâu thành các cặp theo vị trí gốc. 00 và 11 không cần lật và phải được giữ nguyên khi lật tối thiểu; 01 và 10 phải lật 1 bit và có thể trở thành 00/11 tùy ý. Bỏ qua các nhóm tự do và đếm số lần đổi ký tự giữa các nhóm bị buộc rồi cộng 1; nếu mọi nhóm đều tự do, có 1 đoạn."
+    ]
   }
 }

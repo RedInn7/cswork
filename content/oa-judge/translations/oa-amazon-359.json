@@ -11,5 +11,35 @@
     "hints": [
       "Scan new with two pointers; if the current character or its one-step cyclic successor equals the next character of old, match it right away."
     ]
+  },
+  "ja": {
+    "title": "文字ごとに巡回的な次の文字へ高々1回進める条件でのパスワード部分列",
+    "description": "各リクエストでは、new の任意の位置をいくつか選び、それぞれを一度だけ巡回的な次の文字に変えるか、何も変えません。変更後の new の部分列として old が得られるかどうかを判定してください。同じ位置を2回以上変えることはできません。z の次の文字は a です。\n\n本サイトでは標準入出力と解説を独自にまとめています。出典で欠けている制約の補足やサンプルの訂正は、プロトコル中に明記しています。",
+    "input": "入力は JSON の二次元配列で、各要素は [new,old] です。元の制約は、リクエスト数 1..10、すべての new と old の長さの合計が 200000 以下、各項目で old の長さが new の長さ以下です。文字は小文字で、元の a..z の巡回の定義に従います。各文字列が空でないという条件はないので、空文字列も許されます。",
+    "output": "各リクエストについて、YES または NO を1行に1つずつ出力してください。",
+    "explanation": "公開サンプルの出力は YES/NO/YES、YES/NO、YES/YES です。元の問題文の2段落目は部分列の向きが逆になっていますが、本サイトでは、1段落目、各項目で old の長さが new の長さ以下であること、すべてのサンプルと整合する向きに直しています。",
+    "hints": [
+      "2つのポインタで new を走査します。現在の文字、またはその巡回的な1つ後の文字が old の次の文字と等しければ、すぐに対応づけます。"
+    ]
+  },
+  "ko": {
+    "title": "문자마다 순환 다음 글자로 최대 한 번 바꿀 수 있는 비밀번호 부분 수열",
+    "description": "각 요청마다 new의 임의의 위치들을 골라 각각을 순환상 다음 글자로 한 번씩 바꾸거나, 아무것도 바꾸지 않을 수 있습니다. old가 변경된 new의 부분 수열이 될 수 있는지 판정하십시오. 한 위치를 두 번 이상 바꿀 수는 없습니다. z의 다음 글자는 a입니다.\n\n이 사이트에서 표준 입출력과 해설을 독자적으로 정리했으며, 출처에 빠진 범위의 보완과 예제의 정정 사항은 프로토콜에 명시했습니다.",
+    "input": "입력은 JSON 2차원 배열이며 각 항목은 [new,old]입니다. 원문: 요청은 1..10개, 모든 new와 old 문자열의 총 길이≤200000, 각 항목에서 old의 길이≤new의 길이. 문자는 소문자이며 원문의 순환 a..z 정의를 따릅니다. 개별 문자열이 비어 있지 않아야 한다는 조건은 없으므로 빈 문자열도 허용됩니다.",
+    "output": "각 요청에 대해 YES 또는 NO를 한 줄에 하나씩 출력합니다.",
+    "explanation": "공개 출력은 YES/NO/YES, YES/NO, YES/YES입니다. 원문 설명의 두 번째 단락은 부분 수열의 방향이 반대로 쓰여 있으며, 이 사이트에서는 첫 번째 단락, old 길이≤new 길이, 모든 예제와 일치하는 방향으로 복원했습니다.",
+    "hints": [
+      "두 포인터로 new를 훑습니다. 현재 문자 또는 그 순환 다음 글자가 old의 다음 문자와 같으면 즉시 매칭합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy con của mật khẩu với tối đa một bước chuyển sang chữ cái kế tiếp theo vòng cho mỗi ký tự",
+    "description": "Với mỗi yêu cầu, chọn các vị trí tùy ý trong new và đổi mỗi vị trí đó một lần thành chữ cái kế tiếp theo vòng của nó, hoặc không chọn vị trí nào. Hãy xác định xem old có thể trở thành một dãy con của new sau khi sửa hay không; một vị trí không được đổi quá một lần. Chữ cái kế tiếp của z là a.\n\nTrang này tự biên soạn phần đầu vào/đầu ra chuẩn và lời giải; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Đầu vào là một mảng JSON hai chiều có các phần tử dạng [new,old]. Gốc: 1..10 yêu cầu, tổng độ dài của mọi xâu new và old ≤200000, và độ dài old≤độ dài new trong mỗi phần tử. Các ký tự là chữ cái thường, theo định nghĩa vòng a..z gốc; không có yêu cầu từng xâu phải khác rỗng, nên cho phép xâu rỗng.",
+    "output": "In YES hoặc NO trên một dòng riêng cho mỗi yêu cầu.",
+    "explanation": "Đầu ra công khai là YES/NO/YES, YES/NO và YES/YES. Đoạn thứ hai của đề gốc đảo ngược chiều của quan hệ dãy con; trang này khôi phục chiều thống nhất với đoạn đầu, với độ dài old≤độ dài new, và với mọi ví dụ.",
+    "hints": [
+      "Duyệt new bằng hai con trỏ; nếu ký tự hiện tại hoặc chữ cái kế tiếp theo vòng một bước của nó bằng ký tự kế tiếp của old, hãy khớp ngay."
+    ]
   }
 }

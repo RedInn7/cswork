@@ -11,5 +11,35 @@
     "hints": [
       "Sort the uploaded ranges and find the non-uploaded gaps between them one by one. A gap of length L can be split into at least popcount(L) chunks with power-of-two lengths, and the answer is the sum of popcount over all gaps."
     ]
+  },
+  "ja": {
+    "title": "Minimum Chunks Required",
+    "description": "あるファイルには 1 始まりで番号が付いた totalPackets 個のパケットがあります。アップロード済みの範囲は互いに重なりません。まだアップロードしていない連続した範囲は、任意の個数の連続したチャンクに分割でき、各チャンクの長さは 2 の非負整数乗でなければなりません。チャンクの開始位置が長さに揃っている必要はありません。これからアップロードするチャンクの最小個数を求めてください。\n\n問題の出典とルールの根拠については statement/review の記録を参照してください。入力範囲に記された制限は、本サイトが補足したものです。",
+    "input": "1 行目に totalPackets と m が与えられ、続く m 行にアップロード済みの閉区間 l r が 1 つずつ与えられます。元の制約は 1≤totalPackets<10^18、0≤m<10^5、1≤l≤r≤totalPackets で、区間は互いに重なりません。",
+    "output": "アップロードが必要なチャンクの最小個数を出力してください。",
+    "explanation": "問題のルールに従って入力を処理します。全体の方針、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "アップロード済みの区間をソートし、区間と区間の間にあるアップロード未了の隙間を順に求めます。長さ L の隙間は、長さが 2 の冪であるチャンクに最小でも popcount(L) 個に分割でき、答えはすべての隙間の popcount の合計です。"
+    ]
+  },
+  "ko": {
+    "title": "Minimum Chunks Required",
+    "description": "파일에는 1부터 번호가 매겨진 totalPackets개의 패킷이 있습니다. 이미 업로드된 구간들은 서로 겹치지 않으며, 아직 업로드되지 않은 각 연속 구간은 연속된 청크 여러 개로 자유롭게 나눌 수 있습니다. 각 청크의 길이는 2의 음이 아닌 정수 거듭제곱이어야 하고, 청크의 시작 위치가 길이에 맞게 정렬될 필요는 없습니다. 앞으로 업로드해야 하는 청크의 최소 개수를 구하세요.\n\n문제의 출처와 규칙의 근거는 statement/review 기록을 참고하세요. 입력 범위에 표기된 제한은 이 사이트에서 보충한 것입니다.",
+    "input": "첫 번째 줄에 totalPackets와 m이 주어지고, 이어지는 m개의 줄에 각각 업로드가 끝난 닫힌 구간 l r이 주어집니다. 원문 제한: 1≤totalPackets<10^18, 0≤m<10^5, 1≤l≤r≤totalPackets이며 구간끼리 겹치지 않습니다.",
+    "output": "업로드해야 하는 청크의 최소 개수를 출력합니다.",
+    "explanation": "문제의 규칙에 따라 입력을 처리하면 됩니다. 전체 접근법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "업로드된 구간을 정렬한 뒤, 구간 사이에 비어 있는 공백을 차례로 찾습니다. 길이가 L인 공백은 길이가 2의 거듭제곱인 청크로 최소 popcount(L)개로 나눌 수 있으며, 답은 모든 공백의 popcount 합입니다."
+    ]
+  },
+  "vi": {
+    "title": "Minimum Chunks Required",
+    "description": "Một tệp gồm totalPackets gói tin được đánh số từ 1. Các đoạn đã tải lên không giao nhau; mỗi đoạn liên tiếp chưa được tải lên có thể được chia thành một số tuỳ ý các chunk liên tiếp, trong đó độ dài mỗi chunk phải là một lũy thừa của 2 với số mũ nguyên không âm, và vị trí bắt đầu của chunk không cần căn chỉnh theo độ dài của nó. Hãy tìm số chunk tối thiểu còn phải tải lên.\n\nNguồn đề và cơ sở của các quy tắc xem trong bản ghi statement/review; các giới hạn được đánh dấu trong phần đoạn đầu vào là phần bổ sung của trang này.",
+    "input": "Dòng đầu tiên chứa totalPackets và m; mỗi dòng trong m dòng tiếp theo chứa một đoạn đóng đã tải lên l r. Giới hạn gốc: 1≤totalPackets<10^18, 0≤m<10^5, 1≤l≤r≤totalPackets, và các đoạn không giao nhau.",
+    "output": "In ra số chunk tối thiểu phải tải lên.",
+    "explanation": "Xử lý đầu vào theo quy tắc của đề; xem ghi chú đi kèm để biết cách tiếp cận đầy đủ, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Sắp xếp các đoạn đã tải lên và tìm lần lượt các khoảng trống chưa tải nằm giữa chúng. Một khoảng trống có độ dài L có thể được chia thành tối thiểu popcount(L) chunk có độ dài là lũy thừa của 2, và đáp án là tổng popcount trên tất cả các khoảng trống."
+    ]
   }
 }

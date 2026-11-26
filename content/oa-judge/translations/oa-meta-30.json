@@ -12,5 +12,38 @@
       "Write a formula for the number of non-overlapping pairs a value that appears c times can provide.",
       "For a fixed right endpoint, the qualifying left endpoints form a prefix range."
     ]
+  },
+  "ja": {
+    "title": "重ならない等しいペアが十分にある連続区間の数え上げ",
+    "description": "整数配列 bucket と正の整数 k が与えられます。等しい数のペアを少なくとも k 組含む、空でない連続部分配列の個数を数えてください。各ペアは、値が同じで添字が異なる 2 つの要素からなり、異なるペア同士が添字を共有してはいけません。したがって、ある値が c 回現れるとき、寄与するペアは最大で floor(c/2) 組です。\n\n本サイトの制約: 1≤N≤200000、1≤k≤200000、-10^9≤bucket[i]≤10^9。元のスナップショットでは制約が Unknown と記されており、数値の範囲は本サイトが対応する範囲です。\n\n元の問題の出典: https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections (固定されたスナップショットの内容フィンガープリント 459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13)。",
+    "input": "1 行目に N と k、2 行目に N 個の整数 bucket[i] が与えられます。",
+    "output": "条件を満たす連続部分配列の個数を出力してください。",
+    "explanation": "スライディングウィンドウ内で各値が現れる回数を管理し、pairs をすべての値にわたる floor(freq/2) の総和とします。値を追加した後、その回数が偶数になったら pairs が 1 増えます。窓が k 組に達したら、現在の左端に対して、さらに右にあるすべての終端位置も条件を満たすので、N-right 個の部分配列を一度に数えます。その後、現在の最も左の要素を取り除き、縮め続けます。",
+    "hints": [
+      "c 回現れる値が提供できる、重ならないペアの個数を式で表してください。",
+      "右端を固定すると、条件を満たす左端は接頭辞の範囲を成します。"
+    ]
+  },
+  "ko": {
+    "title": "겹치지 않는 같은 값 쌍을 충분히 가진 연속 구간 세기",
+    "description": "정수 배열 bucket과 양의 정수 k가 주어집니다. 같은 값의 쌍을 적어도 k개 포함하는 비어 있지 않은 연속 부분 배열의 개수를 세세요. 각 쌍은 값이 같고 인덱스가 서로 다른 두 원소로 이루어지며, 서로 다른 쌍은 인덱스를 공유할 수 없습니다. 따라서 c번 나타나는 값은 최대 floor(c/2)개의 쌍을 제공합니다.\n\n사이트 제약 조건: 1≤N≤200000, 1≤k≤200000, -10^9≤bucket[i]≤10^9. 원본 스냅샷은 제약 조건을 Unknown으로 표시하고 있으며, 수치 범위는 이 사이트가 지원하는 범위입니다.\n\n원 문제 출처: https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections (고정 스냅샷 콘텐츠 지문 459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13).",
+    "input": "첫 줄에 N과 k가 주어지고, 두 번째 줄에 N개의 정수 bucket[i]가 주어집니다.",
+    "output": "조건을 만족하는 연속 부분 배열의 개수를 출력합니다.",
+    "explanation": "슬라이딩 윈도 안에서 각 값이 나타난 횟수를 추적하고, pairs를 모든 값에 대한 floor(freq/2)의 합으로 둡니다. 값을 추가한 뒤 그 횟수가 짝수가 되면 pairs가 1 증가합니다. 윈도가 k개의 쌍에 도달하면 현재 왼쪽 끝에 대해 더 오른쪽의 모든 끝 위치도 조건을 만족하므로 N-right개의 부분 배열을 한 번에 센 뒤, 가장 왼쪽 원소를 제거하고 계속 줄여 나갑니다.",
+    "hints": [
+      "c번 나타나는 값이 제공할 수 있는 겹치지 않는 쌍의 수를 식으로 써 보세요.",
+      "오른쪽 끝을 고정하면 조건을 만족하는 왼쪽 끝은 접두 구간을 이룹니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm đoạn liên tiếp có đủ cặp bằng nhau không chồng lấn",
+    "description": "Cho một mảng số nguyên bucket và một số nguyên dương k, đếm các mảng con liên tiếp không rỗng chứa ít nhất k cặp số bằng nhau. Mỗi cặp gồm hai phần tử ở các chỉ số khác nhau có cùng giá trị; các cặp khác nhau không được dùng chung chỉ số. Vì vậy một giá trị xuất hiện c lần đóng góp tối đa floor(c/2) cặp.\n\nRàng buộc của trang này: 1≤N≤200000, 1≤k≤200000, -10^9≤bucket[i]≤10^9. Bản chụp gốc đánh dấu các ràng buộc là Unknown; các khoảng số là các khoảng mà trang này hỗ trợ.\n\nNguồn đề bài gốc: https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections (dấu vân nội dung của bản chụp cố định 459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13).",
+    "input": "Dòng đầu chứa N và k; dòng thứ hai chứa N số nguyên bucket[i].",
+    "output": "In ra số lượng mảng con liên tiếp thỏa mãn.",
+    "explanation": "Theo dõi số lần mỗi giá trị xuất hiện trong cửa sổ trượt, và đặt pairs là tổng của floor(freq/2) trên mọi giá trị. Sau khi thêm một giá trị, nếu số lần của nó trở thành chẵn thì pairs tăng một; khi cửa sổ đạt k cặp, mọi vị trí kết thúc xa hơn về bên phải ứng với đầu trái hiện tại cũng thỏa mãn, nên đếm luôn N-right mảng con một lúc, rồi loại phần tử ngoài cùng bên trái hiện tại và tiếp tục thu hẹp.",
+    "hints": [
+      "Viết công thức cho số cặp không chồng lấn mà một giá trị xuất hiện c lần có thể cung cấp.",
+      "Với đầu phải cố định, các đầu trái thỏa mãn tạo thành một đoạn tiền tố."
+    ]
   }
 }

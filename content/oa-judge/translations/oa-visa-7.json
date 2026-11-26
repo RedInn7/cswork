@@ -12,5 +12,38 @@
       "The numbers in each block should sum to 136.",
       "Position order and sub-block enumeration order are two different things."
     ]
+  },
+  "ja": {
+    "title": "欠けた行列の値を全体の行優先順で復元",
+    "description": "辺の長さが 4n の正方行列を、n² 個の 4×4 の部分ブロックに分割します。各部分ブロックには 1..16 のすべての整数が 1 つを除いて含まれ、欠けた位置は -1 で示されています。まず、各部分ブロックに存在する数の和を 136 から引いて、そのブロックの欠けた値を求めます。次に、すべての欠けた値を昇順にソートし、元の行列のすべての -1 の位置に順に埋めます。位置の順序は、部分ブロックの順ではなく、行列全体の行優先（先に行、次に列）です。このサイトでは 1≤n≤100 に制限しています。",
+    "input": "1 行目に整数 n（1..100）が与えられ、各辺に 4×4 の部分ブロックが n 個あることを表します。続く 4n 行に、それぞれ 4n 個の整数が与えられます。各部分ブロックにはちょうど 1 つの -1 があり、他の値は 1..16 から 1 つを除いた 15 個の相異なる整数です。",
+    "output": "復元した行列を、4n 行、各行 4n 個の整数で出力してください。",
+    "explanation": "例 2 では、部分ブロックの順に見た欠けた位置が、行列全体での行優先の位置と異なります。そのため、まず欠けた値を独立にソートし、次にすべての -1 の位置を全体の行優先順に並べて埋め戻す必要があります。",
+    "hints": [
+      "各ブロックの数の和は 136 になるはずです。",
+      "位置の順序と部分ブロックの列挙順は別のものです。"
+    ]
+  },
+  "ko": {
+    "title": "전역 행 순서로 행렬의 누락된 값 복원",
+    "description": "변의 길이가 4n인 정사각 행렬이 n²개의 4×4 하위 블록으로 나뉩니다. 각 하위 블록에는 1..16의 정수가 하나만 빼고 모두 들어 있으며, 누락된 위치는 -1로 표시됩니다. 먼저 각 하위 블록에 있는 수들의 합을 136에서 빼서 그 블록의 누락된 값을 구한 뒤, 모든 누락된 값을 오름차순으로 정렬해 원래 행렬의 모든 -1 위치에 차례로 채웁니다. 위치의 순서는 하위 블록 순서가 아니라 전체 행렬에서의 행 우선(먼저 행, 그다음 열) 순서입니다. 이 사이트는 1≤n≤100으로 제한합니다.",
+    "input": "첫 번째 줄에 정수 n (1..100)이 주어지며, 각 변에 4×4 하위 블록이 n개 있다는 뜻입니다. 이어서 4n개의 줄이 주어지고 각 줄에는 정수 4n개가 있습니다. 각 하위 블록에는 -1이 정확히 하나 있으며, 나머지 값은 1..16에서 한 값을 뺀 서로 다른 15개의 정수입니다.",
+    "output": "복원된 행렬을 4n개의 행으로, 각 행에 정수 4n개씩 출력합니다.",
+    "explanation": "예제 2에서는 하위 블록 순서로 본 누락 위치가 전체 행렬에서의 행 우선 위치와 다릅니다. 따라서 먼저 누락된 값들을 독립적으로 정렬한 다음, 모든 -1 위치의 전역 행 우선 순서에 맞춰 채워야 합니다.",
+    "hints": [
+      "각 블록의 수들의 합은 136이어야 합니다.",
+      "위치의 순서와 하위 블록의 열거 순서는 서로 다른 것입니다."
+    ]
+  },
+  "vi": {
+    "title": "Khôi phục các giá trị thiếu của ma trận theo thứ tự hàng toàn cục",
+    "description": "Một ma trận vuông cạnh 4n được chia thành n² khối con 4×4. Mỗi khối con chứa mọi số nguyên trong 1..16 trừ một số, và vị trí thiếu được đánh dấu -1. Trước hết lấy 136 trừ đi tổng các số có mặt trong mỗi khối con để được giá trị thiếu của khối đó; sau đó sắp xếp mọi giá trị thiếu tăng dần và lần lượt điền vào mọi vị trí -1 của ma trận gốc. Các vị trí được sắp theo thứ tự hàng trước, cột sau (row-major) trên toàn ma trận, không phải theo thứ tự khối con. Trang này giới hạn 1≤n≤100.",
+    "input": "Dòng đầu chứa một số nguyên n (1..100), nghĩa là mỗi cạnh có n khối con 4×4. Tiếp theo là 4n dòng, mỗi dòng có 4n số nguyên. Mỗi khối con có đúng một số -1, và các giá trị còn lại là 15 số nguyên phân biệt từ 1..16 trừ đi một giá trị.",
+    "output": "In ra ma trận đã khôi phục gồm 4n hàng, mỗi hàng có 4n số nguyên.",
+    "explanation": "Trong ví dụ 2, các vị trí thiếu khi xét theo thứ tự khối con khác với vị trí row-major của chúng trên toàn ma trận; vì vậy trước hết phải sắp xếp độc lập các giá trị thiếu, rồi điền lại theo thứ tự row-major toàn cục của mọi vị trí -1.",
+    "hints": [
+      "Tổng các số trong mỗi khối phải bằng 136.",
+      "Thứ tự vị trí và thứ tự duyệt khối con là hai thứ khác nhau."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Use ternary search with high-precision Decimal, narrowing the interval that contains the minimizer using only function evaluations, and finally round to six decimal places."
     ]
+  },
+  "ja": {
+    "title": "区間上の凸 2 次関数の最小点",
+    "description": "各クエリでは、凸な 2 次関数 f(x)=Ax²+Bx+C と閉区間 [left,right] が与えられます。関数値の最小値ではなく、関数値を最小にする x を求めてください。結果は小数第 6 位に丸めます。真の値が小数第 6 位の 2 つの数のちょうど中点にあるときは、どちらに丸めても受理されます。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、すべて本サイトのプロトコルとして明記しています。",
+    "input": "1 行目に q、続く q 行に A B C left right が与えられます。本サイトの整数プロトコルは次のとおりです。1≤q≤1000、1≤A≤10⁶、B/C/left/right は −10⁶..10⁶、left≤right です。",
+    "output": "各クエリについて、最小点 x を 1 行に出力します。小数第 6 位まで出力しなければなりません。",
+    "explanation": "例 1: 制約なしの 3 つの最小点は 2、−1、2 で、対応する区間に制限すると、出力は 2.000000、0.000000、3.000000 です。例 2: 最小点は −0.0000005 なので、−0.000001 も 0.000000 も有効です。例 3: 最小点は 1/3 なので、出力は 0.333333 です。",
+    "hints": [
+      "高精度の Decimal による三分探索を使い、関数値の評価だけで最小点を含む区間を狭めて、最後に小数第 6 位に丸めます。"
+    ]
+  },
+  "ko": {
+    "title": "구간 위 볼록 이차함수의 최소점",
+    "description": "각 질의는 볼록 이차함수 f(x)=Ax²+Bx+C와 닫힌 구간 [left,right]를 줍니다. 함수값이 최소가 되는 x를 구하세요(최솟값 자체가 아닙니다). 결과는 소수점 아래 여섯째 자리까지 반올림하며, 참값이 여섯 자리 소수 두 개의 정확히 중간에 있으면 어느 쪽으로 반올림해도 허용됩니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문에서 주어지지 않은 범위는 모두 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 q가 주어지고, 이어서 q줄에 A B C left right가 주어집니다. 이 사이트의 정수 규약: 1≤q≤1000, 1≤A≤10⁶, B/C/left/right는 −10⁶..10⁶이며 left≤right입니다.",
+    "output": "각 질의마다 최소점 x를 한 줄에 출력하며, 소수점 아래 여섯 자리를 반드시 출력해야 합니다.",
+    "explanation": "예제 1: 구간 제한이 없을 때의 세 최소점은 2, −1, 2이며, 해당 구간으로 제한하면 출력은 2.000000, 0.000000, 3.000000입니다. 예제 2: 최소점은 −0.0000005이므로 −0.000001과 0.000000 모두 유효합니다. 예제 3: 최소점이 1/3이므로 출력은 0.333333입니다.",
+    "hints": [
+      "고정밀 Decimal로 삼분 탐색을 하되, 함수값 비교만으로 최소점이 든 구간을 좁혀 가고 마지막에 소수점 아래 여섯째 자리로 반올림합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm cực tiểu của một tam thức bậc hai lồi trên một khoảng",
+    "description": "Mỗi truy vấn cho một hàm bậc hai lồi f(x)=Ax²+Bx+C và một khoảng đóng [left,right]; hãy tìm x làm cực tiểu giá trị hàm, chứ không phải bản thân giá trị cực tiểu. Làm tròn kết quả đến sáu chữ số thập phân; khi giá trị thực đúng nằm ở giữa hai số có sáu chữ số thập phân thì chấp nhận cả hai cách làm tròn.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà nguồn không cho đều được đánh dấu là giao thức của trang này.",
+    "input": "Dòng đầu chứa q, tiếp theo là q dòng A B C left right. Giao thức số nguyên của trang này: 1≤q≤1000, 1≤A≤10⁶, B/C/left/right nằm trong −10⁶..10⁶, và left≤right.",
+    "output": "Với mỗi truy vấn, in một dòng chứa điểm cực tiểu x, phải có sáu chữ số thập phân.",
+    "explanation": "Ví dụ 1: ba điểm cực tiểu không ràng buộc là 2, −1 và 2; sau khi giới hạn vào các khoảng tương ứng, đầu ra là 2.000000, 0.000000 và 3.000000. Ví dụ 2: điểm cực tiểu là −0.0000005, nên cả −0.000001 và 0.000000 đều hợp lệ. Ví dụ 3: điểm cực tiểu là 1/3, nên đầu ra là 0.333333.",
+    "hints": [
+      "Dùng tìm kiếm tam phân với Decimal độ chính xác cao, thu hẹp khoảng chứa điểm cực tiểu chỉ bằng các lần tính giá trị hàm, và cuối cùng làm tròn đến sáu chữ số thập phân."
+    ]
   }
 }

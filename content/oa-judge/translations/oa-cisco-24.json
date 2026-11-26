@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate whether each initial region belongs to target group 0/1/2 or is unused. All three target groups are non-empty, and a group costs (number of regions−1)c+|total machines−target|. The recursion only maintains the three sums and counts."
     ]
+  },
+  "ja": {
+    "title": "地域の追加・削除・丸ごとの移設で 3 つの地域を一致させる",
+    "description": "各地域には正の台数のマシンがあります。マシンを 1 台追加または削除するコストは 1 ですが、地域を 0 台にすることはできません。1 つの地域のすべてのマシンを別の地域に移すコストは c で、移設元の地域は消滅します。最終的には、3 つの地域のマシン台数が 3 つの目標値と 1 対 1 で一致していればよく、他の地域は残っていても構いません。最小コストを求めてください。元の例 2 の出力 2 は誤記で、その手順も完全な補足の出典も 5 を示しています。\n\n範囲の補足や元の問題の誤記の修正については、入力プロトコルを参照してください。",
+    "input": "入力は n、n 個の初期台数、3 個の目標台数、移設コスト c です。主な生データの完全な元の範囲を維持し、3≤n≤10、初期台数と目標台数は 1..10^6 です。元の問題には c の範囲がなかったため、本サイトでは 0≤c≤10^6 を追加しています。補助的な生データは例 5 の裏づけにのみ使い、そこでの n の異なる範囲は本問題に混ぜていません。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に 2、5、0 です。独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "各初期地域が目標グループ 0/1/2 のどれに属するか、または未使用かを列挙します。3 つの目標グループはすべて空でなく、グループのコストは (地域数−1)c+|マシンの合計−目標| です。再帰では 3 つの合計と個数だけを保持します。"
+    ]
+  },
+  "ko": {
+    "title": "지역 추가·제거·통째 이전으로 세 지역 맞추기",
+    "description": "각 지역에는 양의 개수의 머신이 있습니다. 머신 하나를 추가하거나 제거하는 비용은 1이지만 지역의 머신을 0개로 줄일 수는 없습니다. 한 지역의 모든 머신을 다른 지역으로 이전하는 비용은 c이고 원래 지역은 사라집니다. 최종적으로는 세 지역의 머신 수가 세 목표값과 일대일로 일치하기만 하면 되며, 다른 지역은 남아 있어도 됩니다. 최소 비용을 구하세요. 원문 예제 2의 출력 2는 오타이며, 그 단계와 완전한 보충 원문 모두 5를 줍니다.\n\n이 사이트가 누락된 범위를 보충한 내용과 원문의 오타를 바로잡은 방식은 입력 규약을 참고하세요.",
+    "input": "입력은 n, 초기 개수 n개, 목표 개수 3개, 이전 비용 c입니다. 주 원문의 완전한 범위를 유지합니다. 3≤n≤10, 초기 개수와 목표 개수는 1..10^6입니다. 원문에는 c의 범위가 없었으며, 이 사이트는 0≤c≤10^6으로 보충했습니다. 보조 원문은 예제 5만 뒷받침하며, n에 대한 서로 다른 범위는 이 문제에 섞지 않았습니다.",
+    "output": "정답 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 2; 5; 0 입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 초기 지역이 목표 그룹 0/1/2 중 어디에 속하는지, 또는 사용되지 않는지를 열거합니다. 세 목표 그룹은 모두 비어 있지 않아야 하며, 한 그룹의 비용은 (지역 수−1)c+|머신 총합−목표|입니다. 재귀는 세 개의 합과 개수만 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Ghép ba vùng bằng cách thêm, bớt và di chuyển nguyên cả vùng",
+    "description": "Mỗi vùng có một số máy dương. Thêm hoặc bớt một máy tốn 1, nhưng không thể giảm một vùng về 0; di chuyển toàn bộ máy của một vùng sang vùng khác tốn c, và vùng nguồn biến mất. Cuối cùng chỉ yêu cầu ba vùng có số máy khớp một-một với ba mục tiêu; các vùng khác có thể còn lại. Hãy tìm chi phí tối thiểu. Đầu ra 2 trong ví dụ 2 gốc là lỗi đánh máy; cả các bước của nó lẫn nguồn bổ sung đầy đủ đều cho 5.\n\nXem giao thức đầu vào để biết các bổ sung của trang này cho những khoảng giá trị còn thiếu và cách khôi phục lỗi đánh máy trong nguồn gốc.",
+    "input": "Đầu vào là n, n số máy ban đầu, 3 số máy mục tiêu, và chi phí di chuyển c. Giữ nguyên các giới hạn gốc đầy đủ từ bản thô chính: 3≤n≤10, số máy ban đầu và mục tiêu trong 1..10^6. Đề gốc không nêu khoảng của c; trang này bổ sung 0≤c≤10^6. Bản thô phụ chỉ củng cố ví dụ 5, và giới hạn khác của n trong đó không được trộn vào bài này.",
+    "output": "In một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; 5; 0. Đã kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Liệt kê xem mỗi vùng ban đầu thuộc nhóm mục tiêu 0/1/2 hay không được dùng. Cả ba nhóm mục tiêu đều không rỗng, và một nhóm tốn (số vùng−1)c+|tổng số máy−mục tiêu|. Đệ quy chỉ duy trì ba tổng và ba số đếm."
+    ]
   }
 }

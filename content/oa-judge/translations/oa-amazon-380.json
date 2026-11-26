@@ -11,5 +11,35 @@
     "hints": [
       "Keep the positions that hold data in a set; for each move, remove from and add to, then sort at the end."
     ]
+  },
+  "ja": {
+    "title": "順次移動後のデータの位置",
+    "description": "初期位置は互いに異なります。順に、位置 from にあるデータを位置 to へ移動します。原文では、各ステップで from にはデータがあり、to にはないことが保証されています。最後に、データがあるすべての位置を昇順に出力してください。\n\n本サイトは標準入出力と解法を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "1 行目に n m、2 行目に n 個の初期位置、続いて from to の m 行が与えられます。原文に値の範囲はなく、本サイトでは 0≤n,m≤200000、各位置 ID は −10^9..10^9 とします。入力は上記の原文の有効な移動の保証を満たすので、n=0 のとき m は 0 だけです。",
+    "output": "1 行目は位置の個数 n、2 行目は位置を昇順に並べたものです。n=0 のときは 2 行目は空です。",
+    "explanation": "1 つ目の例は 1 2 3 6 で終わります。原文の 2 つ目の例の説明は、誤って別の移動の組を使い回していました。本サイトでは実際の入力 1→4、4→7、5→1、7→3 で説明します。残りの例は、それぞれ位置 2 だけ、位置なしで終わります。",
+    "hints": [
+      "データがある位置を集合に入れておきます。各移動で from を削除して to を追加し、最後にソートします。"
+    ]
+  },
+  "ko": {
+    "title": "순차 이동 후 데이터의 위치",
+    "description": "초기 위치는 서로 다릅니다. 순서대로 위치 from에 있는 데이터를 위치 to로 옮깁니다. 원문은 매 단계에서 from에는 데이터가 있고 to에는 없음을 보장합니다. 마지막에 데이터가 있는 모든 위치를 오름차순으로 출력하세요.\n\n본 사이트에서 표준 입출력과 풀이를 독립적으로 마련했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n m, 두 번째 줄에 초기 위치 n개, 이어서 from to 형식의 줄이 m개 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 0≤n,m≤200000, 각 위치 ID는 −10^9..10^9로 추가합니다. 입력은 위의 원문의 유효한 이동 보장을 만족하므로 n=0이면 m은 0뿐입니다.",
+    "output": "첫 번째 줄에 위치의 개수 n, 두 번째 줄에 오름차순으로 위치를 출력합니다. n=0이면 두 번째 줄은 비어 있습니다.",
+    "explanation": "첫 번째 예제는 1 2 3 6으로 끝납니다. 원문의 두 번째 예제 설명은 실수로 다른 이동 집합을 재사용했으므로, 이 사이트에서는 실제 입력인 1→4, 4→7, 5→1, 7→3으로 설명합니다. 나머지 예제는 각각 위치 2만 남는 경우와 위치가 하나도 없는 경우로 끝납니다.",
+    "hints": [
+      "데이터가 있는 위치를 집합에 두고, 각 이동마다 from을 제거하고 to를 추가한 뒤 마지막에 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Vị trí dữ liệu sau chuỗi các lần di chuyển",
+    "description": "Các vị trí ban đầu đôi một khác nhau. Lần lượt chuyển dữ liệu ở vị trí from sang vị trí to; bản gốc đảm bảo ở mọi bước from đang chứa dữ liệu còn to thì không. Cuối cùng, in ra tất cả các vị trí đang chứa dữ liệu theo thứ tự tăng dần.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các giới hạn được bổ sung khi nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai chứa n vị trí ban đầu, tiếp theo là m dòng from to. Bản gốc không đưa ra giới hạn giá trị; trang này bổ sung 0≤n,m≤200000 và mỗi mã vị trí nằm trong −10^9..10^9. Dữ liệu vào thỏa mãn đảm bảo di chuyển hợp lệ ở trên của bản gốc, nên khi n=0 thì m chỉ có thể bằng 0.",
+    "output": "Dòng đầu là số lượng vị trí n, và dòng thứ hai là các vị trí theo thứ tự tăng dần; khi n=0 dòng thứ hai để trống.",
+    "explanation": "Ví dụ đầu tiên kết thúc với 1 2 3 6. Phần giải thích gốc của ví dụ thứ hai đã dùng nhầm một tập các lần di chuyển khác; trang này giải thích bằng đầu vào thực tế 1→4, 4→7, 5→1, 7→3. Các ví dụ còn lại lần lượt kết thúc chỉ với vị trí 2 và không còn vị trí nào.",
+    "hints": [
+      "Giữ các vị trí đang chứa dữ liệu trong một tập hợp; với mỗi lần di chuyển, xóa from và thêm to, rồi sắp xếp ở cuối."
+    ]
   }
 }

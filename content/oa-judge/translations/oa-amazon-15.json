@@ -11,5 +11,35 @@
     "hints": [
       "Use a difference array to compute how many times each position is covered. Sort by item value and accumulate coverage counts, then for each query binary search the first position not smaller than the query value."
     ]
+  },
+  "ja": {
+    "title": "注文範囲内の、より小さい商品の個数",
+    "description": "閉区間で指定される各注文は、その範囲内のすべての商品の値を多重集合に加えます。複数の注文に含まれる商品は、重複して数えられます。各クエリ値について、多重集合の要素のうち、それより厳密に小さいものの個数を数えてください。\n\n標準入力の形式、例、テストデータは CSWork が独自に作成したものです。",
+    "input": "1 行目に n m q（いずれも 1..100000）、2 行目に n 個の商品の値、続く m 行にそれぞれ l r (0≤l≤r<n)、最後の行に q 個のクエリ値が与えられます。商品の値とクエリ値はすべて 1..10⁹ です。",
+    "output": "クエリの順に q 個の整数を出力してください。",
+    "explanation": "例 1: 多重集合では 1 が 2 回、2 が 3 回、5 が 2 回現れるので、2 より小さい要素は 2 個、4 より小さい要素は 5 個です。例 2: 唯一の要素 1 は 1 より小さくありませんが、2 より小さいので、0 1 を出力します。例 3: 2 つの注文が合計で 5 を 3 個加えるので、5 より小さい要素は 0 個、6 より小さい要素は 3 個です。",
+    "hints": [
+      "差分配列で各位置が何回カバーされるかを計算します。商品の値でソートしてカバー回数を累積し、各クエリについて、クエリ値より小さくない最初の位置を二分探索で求めます。"
+    ]
+  },
+  "ko": {
+    "title": "주문 구간 내 더 작은 상품 개수",
+    "description": "닫힌 구간 주문 하나는 그 구간에 속한 모든 상품 값을 다중집합에 추가합니다. 여러 주문에 포함된 상품은 중복해서 셉니다. 각 질의 값에 대해 다중집합에서 그 값보다 엄격하게 작은 원소의 개수를 구하세요.\n\n표준 입력 형식, 예제, 테스트 데이터는 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n m q(각각 1..100000)가 주어집니다. 둘째 줄에는 n개의 상품 값이 주어지고, 이어지는 m개의 줄에는 각각 l r(0≤l≤r<n)이 주어지며, 마지막 줄에는 q개의 질의 값이 주어집니다. 상품 값과 질의 값은 모두 1..10⁹ 범위입니다.",
+    "output": "질의 순서대로 q개의 정수를 출력합니다.",
+    "explanation": "예제 1: 다중집합에서 1은 2번, 2는 3번, 5는 2번 나타나므로 2보다 작은 원소는 2개이고 4보다 작은 원소는 5개입니다. 예제 2: 유일한 원소 1은 1보다 작지 않지만 2보다는 작으므로 0 1을 출력합니다. 예제 3: 두 주문이 5를 합쳐서 세 번 기여하므로 5보다 작은 원소는 0개이고 6보다 작은 원소는 3개입니다.",
+    "hints": [
+      "차분 배열로 각 위치가 몇 번 덮이는지 계산합니다. 상품 값 기준으로 정렬하여 덮임 횟수를 누적하고, 각 질의마다 이분 탐색으로 질의 값보다 작지 않은 첫 위치를 찾습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số mặt hàng nhỏ hơn trong các khoảng đơn hàng",
+    "description": "Mỗi đơn hàng là một khoảng đóng đóng góp mọi giá trị mặt hàng trong khoảng đó vào một đa tập hợp; một mặt hàng được nhiều đơn hàng phủ sẽ được đếm lặp lại. Với mỗi giá trị truy vấn, hãy đếm số phần tử của đa tập hợp nhỏ hơn hẳn giá trị đó.\n\nĐịnh dạng đầu vào chuẩn, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn độc lập.",
+    "input": "Dòng đầu tiên chứa n m q (mỗi số 1..100000); dòng thứ hai chứa n giá trị mặt hàng; mỗi dòng trong m dòng tiếp theo chứa l r (0≤l≤r<n); dòng cuối cùng chứa q giá trị truy vấn. Giá trị mặt hàng và giá trị truy vấn đều nằm trong 1..10⁹.",
+    "output": "In ra q số nguyên theo thứ tự truy vấn.",
+    "explanation": "Ví dụ 1: trong đa tập hợp, 1 xuất hiện 2 lần, 2 xuất hiện 3 lần và 5 xuất hiện 2 lần, nên có 2 phần tử nhỏ hơn 2 và 5 phần tử nhỏ hơn 4. Ví dụ 2: phần tử duy nhất 1 không nhỏ hơn 1 nhưng nhỏ hơn 2, nên in 0 1. Ví dụ 3: hai đơn hàng đóng góp tổng cộng ba số 5, nên có 0 phần tử nhỏ hơn 5 và 3 phần tử nhỏ hơn 6.",
+    "hints": [
+      "Dùng mảng hiệu để tính mỗi vị trí được phủ bao nhiêu lần. Sắp xếp theo giá trị mặt hàng và cộng dồn số lần phủ, sau đó với mỗi truy vấn dùng tìm kiếm nhị phân để tìm vị trí đầu tiên không nhỏ hơn giá trị truy vấn."
+    ]
   }
 }

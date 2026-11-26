@@ -11,5 +11,35 @@
     "hints": [
       "Before order i finishes, it goes through T[i]−1 full rounds, contributing Σmin(T[j],T[i]−1), plus the number of unfinished orders ahead of i in the final round. Compute the first term with sorting and prefix sums, and the second with a Fenwick tree."
     ]
+  },
+  "ja": {
+    "title": "ラウンドロビン注文の待ち時間の合計",
+    "description": "店員は毎回、列の先頭の注文を 1 時間だけ作業し、完成すれば客に渡し、未完成なら列の最後尾に回します。開始から各客が注文を受け取るまでの待ち時間の合計を、10⁹ で割った余りで求めてください。\n\n標準入出力、例、解法、テストは本サイトが独自に作成しました。",
+    "input": "1 行目に N（1..100000）、2 行目に N 個の準備時間（1..10000）が与えられます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：完成時刻は 6, 2, 5 で、合計 13 です。\n\n例 2：完成時刻は 1, 5, 8, 10 で、合計 24 です。\n\n例 3：合計 18 時間の 6 周を終えた後、注文は 19, 20, 21 時間目に順に完成し、合計 60 です。",
+    "hints": [
+      "注文 i が完成するまでに T[i]−1 周の完全なラウンドがあり、Σmin(T[j],T[i]−1) を寄与します。それに最後のラウンドで i より前にある未完成の注文の個数を足します。前者はソートと累積和で、後者は Fenwick 木で求めます。"
+    ]
+  },
+  "ko": {
+    "title": "라운드 로빈 주문의 총 대기 시간",
+    "description": "직원은 매번 대기열 맨 앞의 주문을 1시간 동안 작업합니다. 주문이 완성되면 전달하고, 그렇지 않으면 대기열 맨 뒤로 보냅니다. 시작부터 각 고객이 주문을 받을 때까지의 대기 시간을 모두 더한 값을 10⁹로 나눈 나머지를 구하세요.\n\n이 사이트에서 표준 입출력, 예제, 풀이, 테스트를 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 N (1..100000)이 주어지고, 둘째 줄에 N개의 준비 시간 (1..10000)이 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 완료 시각은 6, 2, 5이며 합은 13입니다.\n\n예제 2: 완료 시각은 1, 5, 8, 10이며 합은 24입니다.\n\n예제 3: 총 18시간이 걸리는 6번의 전체 라운드가 지난 뒤 주문이 차례로 19, 20, 21시간째에 완료되며 합은 60입니다.",
+    "hints": [
+      "주문 i가 완료되기 전에 T[i]−1번의 전체 라운드를 거치며 Σmin(T[j],T[i]−1)만큼 기여하고, 마지막 라운드에서 i보다 앞에 있는 미완료 주문의 수가 더해집니다. 첫 번째 항은 정렬과 누적합으로, 두 번째 항은 Fenwick tree로 계산합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng thời gian chờ khi phục vụ đơn hàng vòng tròn",
+    "description": "Mỗi lần, nhân viên làm đơn hàng ở đầu hàng đợi trong 1 giờ; nếu đơn xong thì được giao, nếu chưa thì chuyển xuống cuối hàng đợi. Tính tổng thời gian chờ của mọi khách hàng từ lúc bắt đầu cho đến khi nhận được đơn, theo modulo 10⁹.\n\nTrang này tự viết độc lập đầu vào/đầu ra chuẩn, các ví dụ, lời giải và bộ test.",
+    "input": "Dòng đầu chứa N (1..100000), dòng thứ hai chứa N thời gian chuẩn bị (1..10000).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: các thời điểm hoàn thành là 6, 2, 5, tổng bằng 13.\n\nVí dụ 2: các thời điểm hoàn thành là 1, 5, 8, 10, tổng bằng 24.\n\nVí dụ 3: sau 6 vòng đầy đủ, tổng cộng 18 giờ, các đơn lần lượt xong vào giờ 19, 20 và 21, tổng bằng 60.",
+    "hints": [
+      "Trước khi đơn i hoàn thành, nó trải qua T[i]−1 vòng đầy đủ, đóng góp Σmin(T[j],T[i]−1), cộng thêm số đơn chưa xong đứng trước i ở vòng cuối. Tính số hạng thứ nhất bằng sắp xếp và tổng tiền tố, số hạng thứ hai bằng cây Fenwick."
+    ]
   }
 }

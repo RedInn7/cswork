@@ -12,5 +12,38 @@
       "Stock values never exceed one million, so a frequency array works.",
       "Each step only decreases a maximum stock, so the maximum can only go down."
     ]
+  },
+  "ja": {
+    "title": "VM 在庫のレンタル収益",
+    "description": "n 種類の仮想マシンがあり、初期在庫は vmStock[i] です。最大 m 人の顧客に順番に対応します。各顧客はまず、現在の最大在庫と現在の 0 でない最小在庫の和を支払い、その後、現在の在庫が最大である種類から 1 台をレンタルし、その在庫を 1 減らします。在庫が 0 のものは最小値から除外します。固定された元の Python、Java、C++ コードの一貫した挙動に基づき、本サイトでは次のように規定します。すべての在庫がなくなったら即座に停止し、それまでに積み上げた収益を出力します。最大値が複数あるときは、どれを選んでも結果に影響しません。標準入出力と以下の 3 つの例は、本サイトが追加したものです。",
+    "input": "1 行目に 2 つの整数 n m、2 行目に n 個の整数 vmStock[i] が与えられます。元の制約は完全な形で次のとおりです。1≤n≤10^6、1≤m≤10^6、1≤vmStock[i]≤10^6。本サイトでは、1 つのテスト入力のサイズ上限は 32 MiB です。",
+    "output": "累積した収益を出力します。2×10^12 を保持できる十分に大きい整数型を使ってください。在庫がなくなった後に来る顧客は、収益を生みません。",
+    "explanation": "例 1 では 5、4、3 の順に課金され、合計は 12 です。例 2 では最初の顧客にしか対応できず、収益は 2 です。例 3 では 6、4、2 の順に課金され、合計は 12 です。",
+    "hints": [
+      "在庫の値は 100 万を超えないので、頻度配列が使えます。",
+      "各ステップで減るのは最大在庫だけなので、最大値は下がる一方です。"
+    ]
+  },
+  "ko": {
+    "title": "VM 재고 대여 수익",
+    "description": "n종류의 가상 머신이 있고 초기 재고는 vmStock[i]입니다. 최대 m명의 고객을 순서대로 응대합니다. 각 고객은 먼저 현재 최대 재고와 현재 0이 아닌 최소 재고의 합을 지불하고, 그다음 현재 재고가 최대인 종류 중 하나에서 머신 하나를 대여하여 그 재고를 1 줄입니다. 재고 0은 최솟값 계산에서 제외합니다. 고정된 원문의 Python, Java, C++ 코드의 일관된 동작에 따라 이 사이트는 모든 재고가 소진되면 즉시 멈추고 그때까지 누적된 수익을 출력하는 것으로 규정합니다. 최댓값이 동률일 때 어느 것을 골라도 결과에 영향이 없습니다. 표준 입출력과 아래 세 예제는 이 사이트가 추가했습니다.",
+    "input": "첫째 줄에 두 정수 n m이 주어지고, 둘째 줄에 n개의 정수 vmStock[i]가 주어집니다. 원래 제약 조건 전체: 1≤n≤10^6, 1≤m≤10^6, 1≤vmStock[i]≤10^6입니다. 이 사이트에서 테스트 입력 하나의 크기 제한은 32 MiB입니다.",
+    "output": "누적 수익을 출력하며, 2×10^12를 담을 수 있는 충분히 큰 정수 자료형을 사용하세요. 재고가 소진된 뒤에 도착한 고객은 수익을 만들지 않습니다.",
+    "explanation": "예제 1은 5, 4, 3을 차례로 받아 모두 12이고, 예제 2는 첫 고객만 응대할 수 있어 수익이 2이며, 예제 3은 6, 4, 2를 차례로 받아 모두 12입니다.",
+    "hints": [
+      "재고 값은 100만을 넘지 않으므로 빈도 배열을 쓸 수 있습니다.",
+      "각 단계는 최대 재고 하나만 줄이므로 최댓값은 내려가기만 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Doanh thu cho thuê kho máy ảo",
+    "description": "Có n loại máy ảo, với tồn kho ban đầu vmStock[i]. Phục vụ tối đa m khách hàng theo thứ tự. Mỗi khách hàng trước tiên trả tổng của tồn kho lớn nhất hiện tại và tồn kho khác 0 nhỏ nhất hiện tại, rồi thuê một máy từ một loại hiện có tồn kho lớn nhất, giảm tồn kho của nó đi một. Tồn kho bằng 0 không được tính vào giá trị nhỏ nhất. Dựa trên hành vi nhất quán của mã Python, Java và C++ của nguồn cố định, trang này quy định: dừng ngay khi toàn bộ tồn kho đã hết và in doanh thu tích lũy đến lúc đó; khi giá trị lớn nhất bị đồng hạng, chọn loại nào cũng không ảnh hưởng đến kết quả. Vào/ra chuẩn và ba ví dụ dưới đây do trang này bổ sung.",
+    "input": "Dòng đầu chứa hai số nguyên n m, dòng thứ hai chứa n số nguyên vmStock[i]. Ràng buộc gốc đầy đủ: 1≤n≤10^6, 1≤m≤10^6, 1≤vmStock[i]≤10^6. Giới hạn kích thước của một test đầu vào trên trang này là 32 MiB.",
+    "output": "In ra doanh thu tích lũy, dùng kiểu số nguyên đủ lớn để chứa 2×10^12. Những khách hàng đến sau khi hết tồn kho không tạo ra doanh thu.",
+    "explanation": "Ví dụ 1 thu lần lượt 5, 4, 3, tổng cộng 12; ví dụ 2 chỉ phục vụ được khách đầu tiên, doanh thu 2; ví dụ 3 thu lần lượt 6, 4, 2, tổng cộng 12.",
+    "hints": [
+      "Giá trị tồn kho không vượt quá một triệu, nên có thể dùng mảng tần suất.",
+      "Mỗi bước chỉ giảm một tồn kho lớn nhất, nên giá trị lớn nhất chỉ có thể giảm xuống."
+    ]
   }
 }

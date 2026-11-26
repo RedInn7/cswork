@@ -11,5 +11,35 @@
     "hints": [
       "First count the flowers in each row and each column, then treat each flower as the unique corner, contributing (flowers in its row−1)×(flowers in its column−1)."
     ]
+  },
+  "ja": {
+    "title": "生成された花壇の直角の 3 つ組",
+    "description": "n 行 m 列のグリッドで、座標を 0 から始めたとき、セル (i,j) に花があるのは ((i+j×magic) mod mod) mod 2=1 のときに限ります。異なる 3 つの花のセルがなす L 字の個数を数えてください。1 つのセルが 2 つ目と同じ行を、3 つ目と同じ列を共有するもので、隣接している必要はありません。3 つのセルの組は 1 回だけ数えます。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、すべて本サイトのプロトコルとして明記しています。",
+    "input": "1 行に n m magic mod が与えられます。1≤n,m≤1000、1≤magic,mod≤10⁶ です。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1: 行 2 と 4 にはそれぞれ花が 3 つあります。6 つの角のセルそれぞれが、同じ行の他の 2 つの花と、同じ列の他の 1 つの花を選べるので、合計 12 組です。例 2: 花は 2 つしかなく、3 つ組を作れないので、出力は 0 です。例 3: 3 つの花は (0,1)、(1,0)、(2,2) にあり、各行と各列に花は 1 つずつしかないので、出力は 0 です。",
+    "hints": [
+      "まず各行と各列の花の数を数え、各花を唯一の角とみなして、（その行の花の数−1）×（その列の花の数−1）を加えます。"
+    ]
+  },
+  "ko": {
+    "title": "생성된 화단에서 만들어지는 직각 삼중쌍",
+    "description": "n행 m열 격자에서 칸 (i,j)에 꽃이 있을 필요충분조건은 ((i+j×magic) mod mod) mod 2=1이며, 좌표는 0부터 시작합니다. 서로 다른 세 꽃 칸이 이루는 L자 모양의 개수를 세세요. 한 칸이 두 번째 칸과 같은 행에 있고 세 번째 칸과 같은 열에 있으면 되며, 인접할 필요는 없습니다. 세 칸으로 이루어진 각 집합은 한 번만 셉니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문에서 주어지지 않은 범위는 모두 이 사이트의 규약으로 표시합니다.",
+    "input": "한 줄에 n m magic mod가 주어집니다. 1≤n,m≤1000, 1≤magic,mod≤10⁶입니다.",
+    "output": "정수 하나, answer를 출력합니다.",
+    "explanation": "예제 1: 2행과 4행에는 각각 꽃이 3개 있습니다. 6개의 모서리 칸 각각은 같은 행의 나머지 2개와 같은 열의 나머지 1개를 고를 수 있으므로 총 12개의 조합입니다. 예제 2: 꽃이 두 개뿐이어서 삼중쌍을 이룰 수 없으므로 0을 출력합니다. 예제 3: 세 꽃은 (0,1), (1,0), (2,2)에 있고 각 행과 열에 꽃이 하나씩뿐이므로 0을 출력합니다.",
+    "hints": [
+      "먼저 각 행과 각 열의 꽃 수를 세고, 각 꽃을 유일한 모서리로 보아 (그 행의 꽃 수−1)×(그 열의 꽃 수−1)만큼 기여하게 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Bộ ba góc vuông trong luống hoa được sinh ra",
+    "description": "Trong một lưới n hàng và m cột, ô (i,j) có hoa khi và chỉ khi ((i+j×magic) mod mod) mod 2=1, với tọa độ bắt đầu từ 0. Đếm các hình chữ L tạo bởi ba ô có hoa phân biệt: một ô cùng hàng với ô thứ hai và cùng cột với ô thứ ba, và chúng không cần kề nhau. Mỗi bộ ba ô chỉ được đếm một lần.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà nguồn không cho đều được đánh dấu là giao thức của trang này.",
+    "input": "Một dòng: n m magic mod; 1≤n,m≤1000, 1≤magic,mod≤10⁶.",
+    "output": "In ra một số nguyên answer.",
+    "explanation": "Ví dụ 1: các hàng 2 và 4 mỗi hàng có 3 bông hoa. Mỗi ô trong 6 ô góc có thể chọn 2 bông còn lại trong hàng của nó và 1 bông còn lại trong cột của nó, tổng cộng 12 nhóm. Ví dụ 2: chỉ có hai bông hoa, không thể tạo thành bộ ba, nên đầu ra là 0. Ví dụ 3: ba bông hoa ở (0,1), (1,0) và (2,2), mỗi hàng và mỗi cột chỉ có một bông hoa, nên đầu ra là 0.",
+    "hints": [
+      "Trước hết đếm số hoa trong mỗi hàng và mỗi cột, rồi coi mỗi bông hoa là góc duy nhất, đóng góp (số hoa trong hàng của nó−1)×(số hoa trong cột của nó−1)."
+    ]
   }
 }

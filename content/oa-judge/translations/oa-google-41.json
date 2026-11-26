@@ -13,5 +13,41 @@
       "Do dynamic programming from right to left.",
       "Positions with value 0 do not block any index."
     ]
+  },
+  "ja": {
+    "title": "Google OA #41：後続の添字がブロックされる場合の最大スコア",
+    "description": "配列 points が与えられ、各添字の値がその位置のスコアです。値が v の添字のスコアを取ると、その直後の v 個の添字は取れなくなります（影響を受けるのは後ろの添字だけです）。得られる合計スコアの最大値を求めてください。",
+    "input": "1行目に n、2行目に n 個の整数 points[0..n−1] が与えられます。1≤n≤200000、0≤points[i]≤10^9。",
+    "output": "整数を 1 つ、最大の合計スコアを出力します。",
+    "explanation": "例 1：[25,1,3,99,4] では、添字 1 の 1 を取り（添字 2 がブロックされる）、次に添字 3 の 99 を取ると、合計は 100 です。\n例 2：[0,4,0,5] では、値が 0 の位置を取ってもどの添字もブロックされません。5（と 2 つの 0）を取ると 5 になりますが、4 を取ると、その後ろの 0 と 5 がブロックされます。\n例 3：[2,1,1,1,6] では、添字 0 の 2 を取ると添字 1 と 2 がブロックされます。次に添字 4 の 6 を取ると、合計は 8 です。",
+    "hints": [
+      "添字 i を取った後に取れる次の添字は i+points[i]+1 です。",
+      "右から左へ動的計画法を行います。",
+      "値が 0 の位置はどの添字もブロックしません。"
+    ]
+  },
+  "ko": {
+    "title": "Google OA #41: 뒤따르는 인덱스가 막히는 최대 점수",
+    "description": "배열 points가 주어지며, 각 인덱스의 값이 그 위치의 점수입니다. 값이 v인 인덱스의 점수를 가져가면, 그 바로 뒤의 v개 인덱스는 더 이상 가져갈 수 없습니다(뒤쪽 인덱스만 영향을 받습니다). 얻을 수 있는 총점의 최댓값을 구하세요.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 n개의 정수 points[0..n−1]이 주어집니다. 1≤n≤200000, 0≤points[i]≤10^9.",
+    "output": "최대 총점을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: [25,1,3,99,4]에서 인덱스 1의 1을 가져가고(인덱스 2가 막힘) 인덱스 3의 99를 가져가면 합계 100입니다.\n예제 2: [0,4,0,5]에서 값이 0인 위치는 아무것도 막지 않으므로 5(와 두 개의 0)를 가져가면 5이고, 4를 가져가면 뒤의 0과 5가 막힙니다.\n예제 3: [2,1,1,1,6]에서 인덱스 0의 2를 가져가면 인덱스 1과 2가 막히고, 이어서 인덱스 4의 6을 가져가면 합계 8입니다.",
+    "hints": [
+      "인덱스 i를 가져간 뒤 다음으로 가져갈 수 있는 인덱스는 i+points[i]+1입니다.",
+      "오른쪽에서 왼쪽으로 동적 계획법을 수행합니다.",
+      "값이 0인 위치는 어떤 인덱스도 막지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Google OA #41: Điểm tối đa khi các chỉ số kế tiếp bị chặn",
+    "description": "Cho một mảng points, giá trị tại mỗi chỉ số là điểm của vị trí đó. Nếu bạn lấy điểm tại một chỉ số có giá trị v, thì v chỉ số ngay sau nó không thể lấy được nữa (chỉ các chỉ số phía sau bị ảnh hưởng). Tìm tổng điểm lớn nhất bạn có thể nhận.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n số nguyên points[0..n−1]. 1≤n≤200000, 0≤points[i]≤10^9.",
+    "output": "Xuất một số nguyên, tổng điểm lớn nhất.",
+    "explanation": "Ví dụ 1: trong [25,1,3,99,4], lấy số 1 tại chỉ số 1 (chặn chỉ số 2), rồi lấy 99 tại chỉ số 3, tổng cộng 100.\nVí dụ 2: trong [0,4,0,5], lấy một vị trí có giá trị 0 không chặn chỉ số nào; lấy 5 (cùng hai số 0) cho 5, còn lấy 4 sẽ chặn số 0 và số 5 phía sau.\nVí dụ 3: trong [2,1,1,1,6], lấy số 2 tại chỉ số 0 chặn các chỉ số 1 và 2; sau đó lấy 6 tại chỉ số 4, tổng cộng 8.",
+    "hints": [
+      "Sau khi lấy chỉ số i, chỉ số kế tiếp có thể lấy là i+points[i]+1.",
+      "Làm quy hoạch động từ phải sang trái.",
+      "Các vị trí có giá trị 0 không chặn chỉ số nào."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "First pin down how each operation affects the state, then choose between direct simulation and a data structure that supports range counting."
     ]
+  },
+  "ja": {
+    "title": "Chairs Requirement",
+    "description": "従業員の出入りを表すシミュレーションがいくつか与えられます。それぞれについて、購入しなければならない椅子の最小数を求めてください。最初は椅子が 1 つもなく、従業員はまず空いている椅子を使い、空きがないときだけ椅子を購入します。C は新しい従業員の入室、R は従業員が一時的に会議室へ行くこと、U は従業員が会議室から戻ること、L は従業員が完全に退出することを表します。本サイトの追加条件として、どのシミュレーションも正当なイベント列です。R/L を実行するときは部屋に少なくとも 1 人おり、U を実行するときは会議室に少なくとも 1 人います。従業員の個人は区別せず、上記の人数の状態を守るだけです。\n\n入力形式と「本サイトの追加」と明記された範囲は本サイトが整備したもので、元の問題の追加条件ではありません。",
+    "input": "1 行目に n が与えられ、続く n 行にそれぞれ C、R、U、L だけからなるシミュレーションの文字列が 1 つ与えられます。1≤n≤100、各文字列の長さは 1 以上 10000 以下。",
+    "output": "n 個の整数を入力順に空白区切りで出力してください。各値は、そのシミュレーションで購入しなければならない椅子の最小数です。",
+    "explanation": "解法、正しさの証明、計算量については、付属の解説を参照してください。",
+    "hints": [
+      "まず各操作が状態にどう影響するかを確定し、そのうえで、直接のシミュレーションと、範囲の個数を数えられるデータ構造のどちらを使うかを選びます。"
+    ]
+  },
+  "ko": {
+    "title": "Chairs Requirement",
+    "description": "직원들이 오가는 여러 시뮬레이션이 주어질 때, 각 시뮬레이션에서 반드시 구매해야 하는 의자의 최소 개수를 구하세요. 처음에는 의자가 없고, 직원은 항상 빈 의자를 먼저 사용하며 빈 의자가 없을 때만 의자를 새로 구매합니다. C는 새 직원이 들어옴, R은 직원이 잠시 회의실로 감, U는 직원이 회의실에서 돌아옴, L은 직원이 완전히 떠남을 뜻합니다. 이 사이트의 추가 조건: 모든 시뮬레이션은 유효한 이벤트 열이며, R/L이 실행될 때 방에 직원이 한 명 이상 있고, U가 실행될 때 회의실에 직원이 한 명 이상 있습니다. 직원의 신원은 구분하지 않고 위의 인원 상태만 지키면 됩니다.\n\n입력 규격과 \"이 사이트의 추가 조건\"으로 명시한 범위는 이 사이트에서 정리한 것이며, 원래 문제의 추가 조건이 아닙니다.",
+    "input": "첫 줄에 n이 주어지고, 이어지는 n개의 줄에 각각 C, R, U, L만으로 이루어진 시뮬레이션 문자열이 하나씩 주어집니다. 1≤n≤100, 1≤각 문자열의 길이≤10000.",
+    "output": "입력 순서대로 n개의 정수를 공백으로 구분하여 출력합니다. 각 정수는 해당 시뮬레이션에서 구매해야 하는 의자의 최소 개수입니다.",
+    "explanation": "풀이 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "먼저 각 연산이 상태에 어떤 영향을 주는지 정확히 파악한 다음, 직접 시뮬레이션과 구간 개수 질의를 지원하는 자료구조 중 무엇을 쓸지 선택하세요."
+    ]
+  },
+  "vi": {
+    "title": "Chairs Requirement",
+    "description": "Cho nhiều lần mô phỏng nhân viên ra vào, tìm số ghế tối thiểu phải mua cho mỗi lần mô phỏng. Ban đầu không có ghế; nhân viên luôn dùng ghế trống trước, và chỉ mua ghế khi không còn ghế trống. C nghĩa là một nhân viên mới vào, R nghĩa là một nhân viên tạm thời đi tới phòng họp, U nghĩa là một nhân viên trở về từ phòng họp, và L nghĩa là một nhân viên rời đi vĩnh viễn. Bổ sung của trang này: mọi lần mô phỏng đều là chuỗi sự kiện hợp lệ; khi thực hiện R/L thì có ít nhất một nhân viên trong phòng, và khi thực hiện U thì có ít nhất một nhân viên trong phòng họp. Không phân biệt danh tính nhân viên; chỉ cần tuân thủ các trạng thái số người nêu trên.\n\nGiao thức đầu vào và các khoảng giá trị được đánh dấu rõ là \"bổ sung của trang này\" do trang này biên soạn và không phải điều kiện thêm của đề gốc.",
+    "input": "Dòng đầu chứa n; mỗi dòng trong n dòng tiếp theo cho một xâu mô phỏng chỉ chứa C, R, U và L. 1≤n≤100, 1≤độ dài mỗi xâu≤10000.",
+    "output": "In ra n số nguyên cách nhau bởi dấu cách theo thứ tự đầu vào, mỗi số là số ghế tối thiểu phải mua cho lần mô phỏng đó.",
+    "explanation": "Xem phần lời giải đi kèm để biết cách tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước hết xác định rõ mỗi thao tác ảnh hưởng tới trạng thái thế nào, rồi chọn giữa mô phỏng trực tiếp và một cấu trúc dữ liệu hỗ trợ đếm theo đoạn."
+    ]
   }
 }

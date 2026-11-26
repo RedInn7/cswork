@@ -11,5 +11,35 @@
     "hints": [
       "For each segment tree node, maintain the count of 1s in each of the 20 bit positions, as well as the interval sum. When a whole segment is XORed at some bit, the count of 1s at that bit becomes the interval length minus the original count; combine lazy tags with XOR."
     ]
+  },
+  "ja": {
+    "title": "Salvage Humankind",
+    "description": "1 列に並んだ n 個の岩があり、質量は m[i] です。操作 1 は閉区間 [s,e] の質量の合計を求めて出力します。操作 2 は区間内のすべての岩の質量に z をビット単位の XOR（^）で適用し、その変更は以降の操作にも引き継がれます。区間の番号は 1 から始まります。\n\nこの問題は OAMaster Rubrik #22 に由来し、元の公開例 2 つをそのまま残しています。",
+    "input": "1 行目に n（1≤n≤100000）、2 行目に n 個の質量 m[i]（0≤m[i]≤1000000）、3 行目に ops（1≤ops≤50000）が与えられます。続く ops 行は、1 s e が質問、2 s e z が要素ごとの XOR 更新を表します（1≤s≤e≤n、1≤z≤1000000）。",
+    "output": "種類 1 の操作ごとに、区間の質量の合計を 1 行で出力します。合計は 32 ビット整数の範囲を超えることがあります。",
+    "explanation": "例 1：初期の合計は 12 です。2 番目から 3 番目の要素を 4 と XOR すると、配列は [1,1,6,4] となり、合計は変わらず 12 です。例 2：初期の合計は 28 です。先頭 3 個の要素を 8 と XOR すると、配列は [2,14,9,9,2] となり、2 番目から 4 番目の要素を質問すると 32 になります。",
+    "hints": [
+      "セグメント木の各ノードで、20 個のビット位置ごとの 1 の個数と区間の合計を保持します。区間全体をあるビットで XOR すると、そのビットの 1 の個数は「区間長 − 元の個数」になります。遅延タグは XOR で合成します。"
+    ]
+  },
+  "ko": {
+    "title": "Salvage Humankind",
+    "description": "일렬로 놓인 n개의 바위가 있고 각 질량은 m[i]입니다. 연산 1은 닫힌 구간 [s,e]의 질량 합을 조회하여 출력하고, 연산 2는 구간 안의 모든 바위의 질량에 z를 비트 XOR(^)한 값으로 바꾸며, 이 변경은 이후 연산에도 유지됩니다. 구간 번호는 1부터 시작합니다.\n\n이 문제는 OAMaster Rubrik #22에서 가져왔으며, 원문의 공개 예제 두 개를 그대로 유지했습니다.",
+    "input": "첫 번째 줄에 n(1≤n≤100000)이 주어지고, 두 번째 줄에 n개의 질량 m[i](0≤m[i]≤1000000)가 주어지며, 세 번째 줄에 ops(1≤ops≤50000)가 주어집니다. 이어서 ops개의 줄이 주어지며, 1 s e는 조회를, 2 s e z는 구간 원소별 XOR 갱신을 의미합니다(1≤s≤e≤n, 1≤z≤1000000).",
+    "output": "1번 연산마다 해당 구간의 질량 합을 한 줄에 출력합니다. 합은 32비트 정수 범위를 넘을 수 있습니다.",
+    "explanation": "예제 1: 처음 합은 12이고, 2번째부터 3번째 원소까지 4로 XOR한 뒤 배열은 [1,1,6,4]가 되며 합은 여전히 12입니다. 예제 2: 처음 합은 28이고, 앞의 3개 원소를 8로 XOR한 뒤 배열은 [2,14,9,9,2]가 되며, 2번째부터 4번째 원소까지 조회하면 32입니다.",
+    "hints": [
+      "세그먼트 트리의 각 노드에 20개 비트 위치별 1의 개수와 구간 합을 유지합니다. 구간 전체를 어떤 비트에 대해 XOR하면 그 비트의 1의 개수는 구간 길이에서 원래 개수를 뺀 값이 되며, lazy 태그는 XOR로 합칩니다."
+    ]
+  },
+  "vi": {
+    "title": "Salvage Humankind",
+    "description": "Có n tảng đá xếp thành hàng, khối lượng m[i]. Thao tác 1 truy vấn tổng khối lượng trên đoạn đóng [s,e] và in ra; thao tác 2 áp dụng phép XOR theo bit (^) với z lên khối lượng của mọi tảng đá trong đoạn, thay đổi này được giữ lại cho các thao tác sau. Chỉ số được đánh từ 1.\n\nBài này xuất phát từ OAMaster Rubrik #22, giữ nguyên hai ví dụ công khai ban đầu.",
+    "input": "Dòng đầu chứa n (1≤n≤100000); dòng thứ hai chứa n khối lượng m[i] (0≤m[i]≤1000000); dòng thứ ba chứa ops (1≤ops≤50000); sau đó là ops dòng: 1 s e biểu thị một truy vấn, và 2 s e z biểu thị một cập nhật XOR từng phần tử (1≤s≤e≤n, 1≤z≤1000000).",
+    "output": "Với mỗi thao tác loại 1, in ra một dòng là tổng khối lượng của đoạn. Tổng có thể vượt quá phạm vi số nguyên 32 bit.",
+    "explanation": "Ví dụ 1: tổng ban đầu là 12; sau khi XOR các phần tử từ 2 đến 3 với 4, mảng là [1,1,6,4] và tổng vẫn là 12. Ví dụ 2: tổng ban đầu là 28; sau khi XOR 3 phần tử đầu với 8, mảng là [2,14,9,9,2], và truy vấn các phần tử từ 2 đến 4 cho kết quả 32.",
+    "hints": [
+      "Với mỗi nút của segment tree, duy trì số lượng bit 1 tại từng vị trí trong 20 vị trí bit, cùng với tổng của đoạn. Khi XOR toàn bộ một đoạn tại một bit, số bit 1 tại bit đó trở thành độ dài đoạn trừ đi số lượng ban đầu; hợp nhất các lazy tag bằng XOR."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "After sorting, only n−k consecutive elements need to be considered; on the array of adjacent differences, maintain the maximum of each window of length n−k−1, then take the minimum."
     ]
+  },
+  "ja": {
+    "title": "k 個の数を削除した後の隣接する差の最大値の最小化",
+    "description": "元の要素のうち n−k 個を残し、残した要素をソートして、隣り合う要素の差の最大値を取ります。その値を最小化してください。残す要素が 1 個だけのとき、このサイトでは隣接する差の最大値は 0 とします。出典の文章は途切れています。この問題の目的は、その完全な例の説明から復元したもので、範囲全体の最大値と最小値の差を最小化するものではありません。\n\n標準入出力、例、解法はこのサイトが独自に作成したものです。このサイトのものと明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n k、2 行目に n 個の数が与えられます。元のスナップショットには値の範囲がありません。このサイトでは 1≤n≤200000、0≤k<n、値は −10^9..10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 3、4、5 を残すと、隣接する差の最大値は 1 です。例 2: 残すのは 1 つの要素だけなので、答えは 0 です。例 3: 削除できる数はなく、隣接する差は 3、4、1 なので、答えは 4 です。",
+    "hints": [
+      "ソートした後は、連続する n−k 個の要素だけを考えれば十分です。隣接する差の配列上で、長さ n−k−1 の各ウィンドウの最大値を保持し、その最小値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "k개의 수를 삭제한 뒤 인접한 차이의 최댓값의 최솟값",
+    "description": "원래 원소 중 n−k개를 남기고, 남긴 원소를 정렬한 뒤 인접한 차이의 최댓값을 구합니다. 이 값을 최소화하세요. 원소가 1개만 남을 때는 이 사이트의 규약에 따라 인접한 차이의 최댓값을 0으로 봅니다. 원 출처의 문장은 잘려 있어, 이 문제의 목표는 완전한 예제 설명으로부터 복원했으며 전체 범위의 최댓값에서 최솟값을 뺀 것을 최소화하는 것이 아닙니다.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n k, 두 번째 줄에 n개의 수가 주어집니다. 원본 스냅샷에는 값의 범위가 없으며, 이 사이트는 1≤n≤200000, 0≤k<n, 값은 −10^9..10^9로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 3, 4, 5를 남기면 인접한 차이의 최댓값은 1입니다. 예제 2: 원소를 하나만 남기므로 답은 0입니다. 예제 3: 삭제할 수 있는 수가 없고 인접한 차이는 3, 4, 1이므로 답은 4입니다.",
+    "hints": [
+      "정렬한 뒤에는 연속된 n−k개의 원소만 고려하면 됩니다. 인접한 차이의 배열에서 길이 n−k−1인 각 윈도우의 최댓값을 유지하고, 그 중 최솟값을 취하세요."
+    ]
+  },
+  "vi": {
+    "title": "Khoảng cách kề nhau lớn nhất nhỏ nhất sau khi xóa k số",
+    "description": "Giữ lại n−k phần tử của mảng ban đầu, sắp xếp các phần tử được giữ, và lấy hiệu kề nhau lớn nhất của chúng; hãy cực tiểu hóa giá trị đó. Khi chỉ giữ 1 phần tử, quy ước của trang này là hiệu kề nhau lớn nhất bằng 0. Văn bản nguồn bị cắt cụt; mục tiêu của bài này được khôi phục từ phần giải thích ví dụ đầy đủ của nó, và không phải là cực tiểu hóa giá trị lớn nhất trừ giá trị nhỏ nhất của cả khoảng.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và lời giải do trang này tự viết; các khoảng giá trị được đánh dấu là của trang này không phải là ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n k, dòng thứ hai chứa n số. Ảnh chụp gốc không cho giới hạn giá trị; trang này đặt 1≤n≤200000, 0≤k<n, và các giá trị trong khoảng −10^9..10^9.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: giữ 3, 4, 5, hiệu kề nhau lớn nhất là 1. Ví dụ 2: chỉ giữ một phần tử, nên đáp án là 0. Ví dụ 3: không xóa được số nào, các hiệu kề nhau là 3, 4, 1, nên đáp án là 4.",
+    "hints": [
+      "Sau khi sắp xếp, chỉ cần xét n−k phần tử liên tiếp; trên mảng các hiệu kề nhau, duy trì giá trị lớn nhất của mỗi cửa sổ độ dài n−k−1, rồi lấy giá trị nhỏ nhất."
+    ]
   }
 }

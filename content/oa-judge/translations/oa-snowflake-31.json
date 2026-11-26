@@ -11,5 +11,35 @@
     "hints": [
       "Apply a difference array over [start,end+1) on the minute axis for each event to get the number of busy people in each minute. Scan the run of consecutive minutes with zero occupancy; the first time it reaches k gives the earliest slot."
     ]
+  },
+  "ja": {
+    "title": "1 日のうち全員が参加できる最も早い会議",
+    "description": "各イベントは person action start end の形式で、使用中の開始分と終了分はどちらも含みます。00:00..23:59 の中で、イベントに登場する全員が空いている連続した k 分間のうち、最も早いものを求めてください。解がなければ −1 を返します。会議は翌日にまたがってはいけません。\n\n入出力の形式と、明示した補足の制約は本サイトで整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n k、続く n 行にイベントが与えられます。時刻は HH:MM 形式です。1≤n≤100000、1≤k≤1440、元のイベント文字列の長さはそれぞれ ≤40、人数は <5000 で、同じ人のイベントは重ならないものとします。",
+    "output": "最も早い時刻を HH:MM で出力してください。不可能なら −1 を出力します。",
+    "explanation": "3 つの公開例の答えは順に 14:00、-1、19:00 です。例は、独立した全探索、状態探索、または直接のシミュレーションで再確認しています。",
+    "hints": [
+      "各イベントについて、分の軸上で [start,end+1) に差分配列を適用し、各分の使用中の人数を求めます。占有数が 0 の分が連続する区間を走査し、その長さが初めて k に達した位置が最も早い枠です。"
+    ]
+  },
+  "ko": {
+    "title": "하루 중 모두가 참석할 수 있는 가장 이른 회의",
+    "description": "각 이벤트는 person action start end 형식이며, 점유 시작 분과 종료 분은 모두 포함됩니다. 00:00..23:59 안에서 이벤트에 등장하는 모든 사람이 한가한 가장 이른 연속 k분을 찾으세요. 해가 없으면 −1을 반환하며, 회의는 다음 날로 넘어가면 안 됩니다.\n\n입출력 규약과 명시적으로 표시된 보충 제약은 이 사이트에서 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n k가 주어지고, 이어서 n줄의 이벤트가 주어지며 시각은 HH:MM 형식입니다. 1≤n≤100000, 1≤k≤1440이고 원문의 각 이벤트 문자열 길이는 ≤40, 사람의 수는 5000 미만이며 같은 사람의 이벤트는 겹치지 않습니다.",
+    "output": "가장 이른 시각 HH:MM을 출력하고, 불가능하면 −1을 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 14:00; -1; 19:00입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 확인했습니다.",
+    "hints": [
+      "각 이벤트에 대해 분 축 위의 [start,end+1) 구간에 차분 배열을 적용하여 각 분의 바쁜 사람 수를 구합니다. 점유가 0인 분이 연속되는 구간을 훑으며, 처음으로 그 길이가 k에 도달하는 지점이 가장 이른 슬롯입니다."
+    ]
+  },
+  "vi": {
+    "title": "Cuộc họp sớm nhất mà mọi người đều dự được trong ngày",
+    "description": "Mỗi sự kiện có định dạng person action start end, và các phút bắt đầu và kết thúc bị chiếm đều là bao gồm cả hai đầu. Trong khoảng 00:00..23:59, tìm k phút liên tiếp sớm nhất mà mọi người xuất hiện trong các sự kiện đều rảnh. Trả về −1 nếu không có nghiệm; cuộc họp không được kéo sang ngày hôm sau.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n k, tiếp theo là n dòng sự kiện; thời gian dùng định dạng HH:MM. 1≤n≤100000, 1≤k≤1440, mỗi xâu sự kiện gốc có độ dài ≤40, số người <5000, và các sự kiện của cùng một người không chồng lên nhau.",
+    "output": "In thời điểm sớm nhất theo định dạng HH:MM, hoặc −1 nếu không thể.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 14:00; -1; 19:00. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Áp dụng mảng hiệu trên [start,end+1) trên trục phút cho mỗi sự kiện để có số người bận trong mỗi phút. Quét đoạn các phút liên tiếp có độ bận bằng không; lần đầu tiên nó đạt k cho ra khoảng trống sớm nhất."
+    ]
   }
 }

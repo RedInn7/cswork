@@ -11,5 +11,35 @@
     "hints": [
       "Keep a consonant counter; at every multiple of n, move the character forward to the next non-vowel English letter, continuing from a after passing z; finally restore the original case."
     ]
+  },
+  "ja": {
+    "title": "n 番目ごとの子音を置き換える",
+    "description": "英字のうち子音を左から数え、n 番目ごとの子音を、アルファベット順で次の子音に置き換えてください。大文字小文字は保持し、z/Z は b/B に循環します。子音の順序は bcdfghjklmnpqrstvwxyz です。母音、空白、数字、句読点は数えず、そのままにします。\n\n標準入力、本サイトの制約、サンプル、テストデータは CSWork が独自に作成・整理したものです。",
+    "input": "本サイトの入力: 1 行目に n (1..100000)、2 行目に長さ 0..100000 の印字可能 ASCII テキストが与えられます。テキストには先頭・末尾・連続する空白が含まれることがあります。",
+    "output": "置き換え後のテキスト全体を、すべての空白と大文字小文字を保ったまま出力し、末尾に改行を 1 つだけ付けてください。",
+    "explanation": "サンプル 1: 子音を順に並べると C, d, S, g, n, l です。3 番目の S は T に、6 番目の l は m に置き換わり、CodeTignam となります。\n\nサンプル 2: すべての子音が置き換えられます。z は b に、Z は B に循環するので、出力は b B! です。\n\nサンプル 3: 子音は b の 1 つだけで 2 番目には到達しないため、すべての空白を含む行全体がそのまま出力されます。",
+    "hints": [
+      "子音のカウンタを持ち、n の倍数になるたびに、その文字をアルファベットで次の非母音の英字へ進めます。z を過ぎたら a から続けます。最後に元の大文字小文字を戻します。"
+    ]
+  },
+  "ko": {
+    "title": "n번째 자음마다 바꾸기",
+    "description": "영문자 중 자음을 왼쪽에서 오른쪽으로 세면서, n번째 자음마다 알파벳 순서상 다음 자음으로 바꾸세요. 대소문자는 유지하며 z/Z는 b/B로 순환합니다. 자음 순서는 bcdfghjklmnpqrstvwxyz입니다. 모음, 공백, 숫자, 문장 부호는 세지 않고 그대로 둡니다.\n\n표준 입력, 이 사이트의 제약 조건, 예제, 테스트 데이터는 CSWork에서 독자적으로 정리하여 작성했습니다.",
+    "input": "이 사이트의 입력입니다. 첫 줄에 n (1..100000)이 주어지고, 두 번째 줄은 길이가 0..100000인 출력 가능한 ASCII 텍스트이며 앞뒤 공백과 연속된 공백이 있을 수 있습니다.",
+    "output": "바꾼 뒤의 전체 텍스트를 공백과 대소문자를 모두 유지한 채 출력하고, 마지막에 줄바꿈을 하나 붙입니다.",
+    "explanation": "예제 1: 자음을 순서대로 나열하면 C, d, S, g, n, l이며, 3번째인 S는 T가 되고 6번째인 l은 m이 되어 CodeTignam이 됩니다.\n\n예제 2: 모든 자음이 바뀝니다. z는 b로, Z는 B로 순환하므로 출력은 b B!입니다.\n\n예제 3: 자음이 b 하나뿐이어서 2번째 자음에는 도달하지 않으므로, 모든 공백을 포함한 전체 줄이 그대로 출력됩니다.",
+    "hints": [
+      "자음 카운터를 유지합니다. n의 배수가 될 때마다 해당 문자를 다음 비모음 영문자로 옮기고, z를 지나면 a부터 이어갑니다. 마지막으로 원래의 대소문자를 복원합니다."
+    ]
+  },
+  "vi": {
+    "title": "Thay thế mỗi phụ âm thứ n",
+    "description": "Đếm các phụ âm trong các chữ cái tiếng Anh từ trái sang phải, và thay mỗi phụ âm thứ n bằng phụ âm kế tiếp theo thứ tự bảng chữ cái, giữ nguyên kiểu chữ hoa/thường; z/Z quay vòng thành b/B. Thứ tự các phụ âm là bcdfghjklmnpqrstvwxyz. Nguyên âm, dấu cách, chữ số và dấu câu không được đếm và giữ nguyên.\n\nĐầu vào chuẩn, các ràng buộc của trang này, các ví dụ và dữ liệu kiểm thử do CSWork tự biên soạn.",
+    "input": "Đầu vào của trang này: dòng đầu chứa n (1..100000), và dòng thứ hai là văn bản ASCII in được có độ dài 0..100000, có thể chứa dấu cách ở đầu, ở cuối và nhiều dấu cách liên tiếp.",
+    "output": "In ra toàn bộ văn bản sau khi thay thế, giữ nguyên mọi dấu cách và kiểu chữ hoa/thường, và kết thúc bằng đúng một ký tự xuống dòng.",
+    "explanation": "Ví dụ 1: các phụ âm theo thứ tự là C, d, S, g, n, l; phụ âm thứ 3, S, trở thành T, và phụ âm thứ 6, l, trở thành m, cho kết quả CodeTignam.\n\nVí dụ 2: mọi phụ âm đều bị thay; z quay vòng thành b và Z quay vòng thành B, nên kết quả là b B!.\n\nVí dụ 3: chỉ có một phụ âm, b, nên phụ âm thứ 2 không bao giờ đạt tới, và cả dòng, kể cả mọi dấu cách, được in ra không đổi.",
+    "hints": [
+      "Giữ một biến đếm phụ âm; tại mỗi bội số của n, đẩy ký tự tới chữ cái tiếng Anh không phải nguyên âm kế tiếp, tiếp tục từ a sau khi qua z; cuối cùng khôi phục kiểu chữ hoa/thường ban đầu."
+    ]
   }
 }

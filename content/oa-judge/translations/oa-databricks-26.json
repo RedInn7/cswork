@@ -13,5 +13,41 @@
       "A ten-digit number needs at most 45 position pairs checked.",
       "Repeated digits may generate the same target, so deduplicate first."
     ]
+  },
+  "ja": {
+    "title": "数字を 1 回交換して到達できる添字のペア",
+    "description": "正の整数の配列が与えられます。添字のペア i<j が有効であるとは、fruits[j] の 10 進表記の 2 つの位置の数字を 0 回または 1 回交換した結果の整数が fruits[i] に等しいことです。有効な添字ペアの個数を数えてください。交換は 0 回でも構わないので、等しい値も数えます。交換後の数字列は通常の 10 進整数として解釈し、先頭のゼロは保持しません。",
+    "input": "1 行目に整数 n(1≤n≤10000)、2 行目に n 個の正の整数 fruits[i](1≤fruits[i]≤10^9)が与えられます。",
+    "output": "有効な添字ペアの個数を出力します。",
+    "explanation": "右端の値ごとに、0 回または 1 回の交換で到達できる整数を列挙し、それぞれがそれ以前に何回現れたかを調べます。同じ数字を持つすべての数が互いに到達可能だと見なしてはいけません。1 回の交換では 2 つの位置しか変えられないからです。",
+    "hints": [
+      "右側の添字を左から右へ走査します。",
+      "10 桁の数では、位置のペアは高々 45 通り確認すれば十分です。",
+      "重複する数字は同じ目標を生み出しうるので、先に重複を除きます。"
+    ]
+  },
+  "ko": {
+    "title": "한 번의 자릿수 교환으로 도달 가능한 인덱스 쌍",
+    "description": "양의 정수 배열이 주어집니다. 인덱스 쌍 i<j는 fruits[j]의 십진 표기에서 두 자리의 숫자를 0번 또는 1번 교환한 결과의 정수가 fruits[i]와 같으면 유효합니다. 유효한 인덱스 쌍의 수를 세세요. 교환을 0번 하는 것도 허용되므로 값이 같은 경우도 셉니다. 교환 후의 숫자열은 일반적인 십진 정수로 해석하며, 앞의 0은 유지되지 않습니다.",
+    "input": "첫 번째 줄에 정수 n (1≤n≤10000)이 주어지고, 두 번째 줄에 n개의 양의 정수 fruits[i] (1≤fruits[i]≤10^9)가 주어집니다.",
+    "output": "유효한 인덱스 쌍의 수를 출력합니다.",
+    "explanation": "오른쪽 끝 값마다 교환 0번 또는 1번으로 도달할 수 있는 정수를 열거하고, 각각이 앞에서 몇 번 나왔는지 조회합니다. 같은 숫자 구성을 가진 모든 수가 서로 도달 가능하다고 보면 안 됩니다. 한 번의 교환은 두 자리만 바꿀 수 있습니다.",
+    "hints": [
+      "오른쪽 인덱스를 왼쪽에서 오른쪽으로 훑습니다.",
+      "10자리 수는 최대 45개의 자리 쌍만 검사하면 됩니다.",
+      "반복되는 숫자가 같은 목표를 만들 수 있으므로 먼저 중복을 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các cặp chỉ số đạt được bằng một lần đổi chỗ chữ số",
+    "description": "Cho một mảng các số nguyên dương. Cặp chỉ số i<j là hợp lệ nếu, sau khi đổi chỗ các chữ số ở hai vị trí của biểu diễn thập phân của fruits[j] không lần hoặc một lần, số nguyên thu được bằng fruits[i]. Đếm các cặp chỉ số hợp lệ. Cho phép không đổi chỗ lần nào, nên các giá trị bằng nhau cũng được tính. Xâu chữ số sau khi đổi chỗ được hiểu là một số nguyên thập phân thông thường; số 0 đứng đầu không được giữ lại.",
+    "input": "Dòng đầu chứa một số nguyên n (1≤n≤10000); dòng thứ hai chứa n số nguyên dương fruits[i] (1≤fruits[i]≤10^9).",
+    "output": "In ra số cặp chỉ số hợp lệ.",
+    "explanation": "Với mỗi giá trị ở đầu mút phải, liệt kê các số nguyên đạt được bằng không hoặc một lần đổi chỗ, và tra xem mỗi số đã xuất hiện bao nhiêu lần trước đó. Đừng coi mọi số có cùng các chữ số là đạt được lẫn nhau; một lần đổi chỗ chỉ thay đổi được hai vị trí.",
+    "hints": [
+      "Hãy duyệt chỉ số phải từ trái sang phải.",
+      "Một số có mười chữ số chỉ cần kiểm tra tối đa 45 cặp vị trí.",
+      "Các chữ số lặp có thể sinh ra cùng một đích, nên hãy loại trùng trước."
+    ]
   }
 }

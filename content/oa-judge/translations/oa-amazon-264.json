@@ -11,5 +11,35 @@
     "hints": [
       "Find the minimum numbers of left brackets L and right brackets R needed. Sort the scores of each type in descending order, take the required L/R first, then keep adding left-right pairs whose remaining scores sum to a positive value."
     ]
+  },
+  "ja": {
+    "title": "キットの括弧を挿入して釣り合わせたときのスコアの最大値",
+    "description": "初期の括弧列 s は相対的な順序を保ちます。kit の各括弧は高々 1 回だけ使え、任意の位置に挿入できます。利益は使った括弧のスコアの合計です。最終的な文字列は釣り合っている（バランスが取れている）必要があり、解が存在することが保証されています。スコアは負になり得て、何も挿入しなくてもかまいません。利益の最大値を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に s、2 行目に kit、3 行目に kit の各文字のスコアが与えられます。元の問題文には数値の範囲がありませんでしたが、本サイトでは両方の文字列の長さを 1 以上 100000 以下、−10^9≤スコア≤10^9 とし、釣り合わせることが可能であることを保証します。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 6、−7、3 です。元の文字列を修復するために必要であれば、スコアが負の括弧でも使わなければなりません。3 つ目の例では、余分な 1 組を挿入して 3 を得られます。",
+    "hints": [
+      "必要な左括弧の最小個数 L と右括弧の最小個数 R を求めます。各種類のスコアを降順にソートし、まず必要な L/R 個を取り、その後、残りのスコアの和が正になる左右のペアを追加し続けます。"
+    ]
+  },
+  "ko": {
+    "title": "키트 괄호를 삽입해 균형을 맞출 때의 최대 점수",
+    "description": "초기 괄호 문자열 s는 상대적인 순서를 유지합니다. kit의 각 괄호는 최대 한 번 사용할 수 있고 어느 위치에든 삽입할 수 있으며, 이득은 사용한 괄호들의 점수 합입니다. 최종 문자열은 균형 잡힌 괄호열이어야 하고, 해가 존재함이 보장됩니다. 점수는 음수일 수 있고, 아무것도 삽입하지 않아도 됩니다. 이득의 최댓값을 구하세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 s, 둘째 줄에 kit, 셋째 줄에 kit의 각 문자에 대한 점수가 주어집니다. 원문에는 수치 범위가 없었으며, 본 사이트는 두 문자열의 길이 모두 1 이상 100000 이하, −10^9≤점수≤10^9을 사용하고, 균형을 맞추는 것이 항상 가능함이 보장됩니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 6, −7, 3입니다. 원래 문자열을 고치는 데 필요하다면 점수가 음수인 괄호도 반드시 사용해야 합니다. 세 번째 예제에서는 추가로 한 쌍을 삽입해 3을 더 얻을 수 있습니다.",
+    "hints": [
+      "필요한 왼쪽 괄호 수 L과 오른쪽 괄호 수 R의 최솟값을 구합니다. 종류별 점수를 내림차순으로 정렬해 필요한 L/R개를 먼저 취한 뒤, 남은 점수의 합이 양수인 왼쪽-오른쪽 쌍을 계속 추가합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm lớn nhất khi chèn ngoặc từ bộ kit để cân bằng chuỗi",
+    "description": "Chuỗi ngoặc ban đầu s giữ nguyên thứ tự tương đối. Mỗi ngoặc trong kit chỉ được dùng nhiều nhất một lần và có thể chèn vào vị trí bất kỳ, lợi nhuận là tổng điểm của các ngoặc đã dùng. Chuỗi cuối cùng phải cân bằng, và đảm bảo luôn tồn tại lời giải; điểm có thể âm, và không chèn gì cũng được phép. Tìm lợi nhuận lớn nhất.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa s, dòng thứ hai chứa kit, và dòng thứ ba chứa điểm của từng ký tự trong kit. Đề gốc không nêu giới hạn số; trang này dùng 1≤độ dài của cả hai chuỗi≤100000, −10^9≤điểm≤10^9, và đảm bảo luôn có thể cân bằng.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 6, −7 và 3. Ngoặc có điểm âm vẫn phải dùng nếu cần để sửa chuỗi gốc; ở ví dụ thứ ba có thể chèn thêm một cặp để được 3.",
+    "hints": [
+      "Tìm số ngoặc mở L và số ngoặc đóng R tối thiểu cần thiết. Sắp xếp điểm của từng loại giảm dần, lấy trước L/R phần tử bắt buộc, rồi tiếp tục thêm các cặp mở-đóng mà tổng điểm còn lại dương."
+    ]
   }
 }

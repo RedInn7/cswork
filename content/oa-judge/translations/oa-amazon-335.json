@@ -11,5 +11,35 @@
     "hints": [
       "Interval DP. Deleting the left character on its own gives 1+dp[l+1][r]; if s[k]=s[l], first clear the middle and then remove the left character together with k in the same deletion, giving the candidate dp[l+1][k−1]+dp[k][r]. An empty interval is 0; enumerate every k with the same character and take the minimum."
     ]
+  },
+  "ja": {
+    "title": "同じ文字の連続部分を削除して文字列を空にする最小回数",
+    "description": "毎回、現在の文字列から空でない連続部分文字列を選びます。削除できるのは、その部分文字列のすべての文字が同じ場合だけです。削除後は左右の部分がつながり、同じ文字の新しい連続部分ができることがあります。文字列を空にするための最小の削除回数を求めてください。タイトルにある頻度の順序は、操作に追加の条件を課すものではなく、削除を文字の頻度順に行う必要はありません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "入力は JSON 文字列です。元の問題文には長さと文字集合の範囲が示されていないため、本サイトでは 0≤長さ≤200 とし、文字は Unicode 文字として数え、空文字列も有効です。JSON 文字列内の空白や非 ASCII 文字はエスケープする必要があり、空白は \\u0020 と書きます。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 3、2、0 です。abaca では、まず b と c を削除し、次に aaa を一度に削除します。出典のように元の同じ文字の連続部分を数えると誤って 5 になるので、削除後のつながりを無視してはいけません。",
+    "hints": [
+      "区間 DP です。左端の文字を単独で削除すると 1+dp[l+1][r] になります。s[k]=s[l] なら、まず間を空にしてから、左端の文字を k と同じ削除で一緒に取り除くことができ、候補は dp[l+1][k−1]+dp[k][r] です。空の区間は 0 とし、同じ文字となるすべての k を列挙して最小を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "같은 문자 연속 구간을 삭제하여 문자열을 비우는 최소 삭제 횟수",
+    "description": "매번 현재 문자열의 비어 있지 않은 연속 부분 문자열을 하나 골라, 그 안의 모든 문자가 같을 때에만 삭제할 수 있습니다. 삭제 후에는 왼쪽과 오른쪽 부분이 이어 붙으며, 이때 같은 문자의 새로운 연속 구간이 생길 수 있습니다. 문자열을 비우는 데 필요한 최소 삭제 횟수를 구하세요. 제목에 언급된 빈도 순서는 연산에 추가 조건을 주지 않으며, 삭제는 문자 빈도 순으로 이루어지지 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "입력은 JSON 문자열입니다. 원문에는 길이와 문자 집합에 대한 제한이 없으며, 이 사이트에서 0≤길이≤200으로 정했고 문자는 유니코드 문자 단위로 셉니다. 빈 문자열도 유효합니다. JSON 문자열의 공백과 비ASCII 문자는 이스케이프해야 하며 공백은 \\u0020으로 씁니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 3, 2, 0입니다. abaca의 경우 b와 c를 먼저 삭제한 뒤 aaa를 한 번에 삭제합니다. 원문처럼 원래 문자열의 같은 문자 연속 구간을 세면 잘못된 5가 나오므로, 삭제 후 이어 붙는 효과를 무시할 수 없습니다.",
+    "hints": [
+      "구간 DP입니다. 왼쪽 문자를 혼자 삭제하면 1+dp[l+1][r]이고, s[k]=s[l]이면 먼저 가운데를 비운 뒤 왼쪽 문자를 k와 같은 삭제에 함께 지울 수 있어 후보 dp[l+1][k−1]+dp[k][r]이 생깁니다. 빈 구간은 0이며, 같은 문자인 모든 k를 열거하여 최솟값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần xóa tối thiểu các đoạn cùng ký tự để làm rỗng xâu",
+    "description": "Mỗi lần, chọn một xâu con liên tiếp khác rỗng của xâu hiện tại; chỉ được xóa nếu mọi ký tự của nó giống nhau. Sau khi xóa, phần bên trái và bên phải được nối lại, có thể tạo thành một đoạn mới gồm cùng một ký tự. Hãy tìm số lần xóa tối thiểu để làm rỗng xâu. Thứ tự tần suất nhắc đến trong tiêu đề không đặt thêm yêu cầu nào lên các thao tác; việc xóa không được sắp theo tần suất ký tự.\n\nĐề bài, định dạng vào/ra, ví dụ và lời giải do trang này tự viết; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Đầu vào là một xâu JSON. Đề gốc không giới hạn độ dài hay bộ ký tự; trên trang này 0≤độ dài≤200, ký tự được đếm theo ký tự Unicode, và xâu rỗng là hợp lệ. Khoảng trắng và ký tự không phải ASCII trong xâu JSON phải được thoát, dấu cách viết là \\u0020.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đáp án là 3, 2 và 0. Với abaca, xóa b và c trước, rồi xóa aaa một lần; đếm các đoạn cùng ký tự ban đầu như đề gốc sẽ cho 5 là sai, nên không thể bỏ qua việc nối lại sau khi xóa.",
+    "hints": [
+      "QHĐ theo đoạn. Xóa riêng ký tự bên trái cho 1+dp[l+1][r]; nếu s[k]=s[l], trước hết dọn phần ở giữa rồi xóa ký tự bên trái cùng với k trong cùng một lần, cho ứng viên dp[l+1][k−1]+dp[k][r]. Đoạn rỗng là 0; duyệt mọi k có cùng ký tự và lấy giá trị nhỏ nhất."
+    ]
   }
 }

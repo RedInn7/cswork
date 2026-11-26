@@ -13,5 +13,41 @@
       "The average is a real number; when comparing, you can multiply both sides of the inequality by k.",
       "Maintain the sum of the most recent k minutes with a sliding window."
     ]
+  },
+  "ja": {
+    "title": "Goldman Sachs OA #32: しきい値アラート",
+    "description": "コンプライアンスシステムが通話量を監視しています。直近数分間の通話量の平均がしきい値を超えるたびに、アラートを 1 回発します。precedingMinutes=k とします。時刻 T (1 から数える) では、k 個の時刻 T−(k−1), T−(k−2), …, T の通話量を取り、その平均を計算します。平均が alertThreshold より真に大きければアラートを 1 回発します。T<k のときはデータが足りないため、アラートは発しません。\n\n各分の通話量が与えられたとき、全期間で発せられるアラートの総数を求めてください。",
+    "input": "1 行目に precedingMinutes、2 行目に alertThreshold、3 行目に n が与えられます。続く n 行には、i+1 分目の通話量を表す整数 numCalls[i] が 1 行ずつ与えられます。1≤precedingMinutes≤n、1≤alertThreshold≤10^5、1≤n≤10^5、0≤numCalls[i]≤10^5 です。",
+    "output": "アラートの総数を表す整数を 1 つ出力してください。",
+    "explanation": "例 1: k=3、しきい値 4、numCalls=[2,2,2,2,5,5,5,8] です。T=3 の平均は (2+2+2)/3=2 で、T=4..8 の平均は順に 2,3,4,5,6 となります。最後の 2 つが 4 を超えるので、アラートは合計 2 回です (平均がちょうど 4 のときはアラートを発しません)。\n例 2: k=2、しきい値 3 です。平均は順に 3.5,3.5,3 となり、最初の 2 つが 3 を超えるので、アラートは合計 2 回です。\n例 3: k=1 のときは各分ごとの単純な比較になります。6 と 7 が 5 を超えるので、アラートは 2 回です。",
+    "hints": [
+      "ウィンドウが完成するのは T が k に達してからです。",
+      "平均は実数です。比較するときは、不等式の両辺に k を掛ければ整数のまま扱えます。",
+      "スライディングウィンドウで直近 k 分の合計を保持します。"
+    ]
+  },
+  "ko": {
+    "title": "Goldman Sachs OA #32: 임계값 경보",
+    "description": "컴플라이언스 시스템이 통화량을 모니터링합니다. 최근 몇 분 동안의 평균 통화량이 임계값을 초과할 때마다 경보를 발생시킵니다. precedingMinutes=k라고 합시다. 시각 T(1부터 셉니다)에서 T−(k−1), T−(k−2), …, T 시각의 통화량 k개를 가져와 평균을 구하고, 평균이 alertThreshold보다 엄격하게 크면 경보를 한 번 발생시킵니다. T<k이면 데이터가 부족하므로 경보를 발생시키지 않습니다.\n\n분 단위 통화량이 주어졌을 때, 전체 기간 동안 발생한 경보의 총 횟수를 구하세요.",
+    "input": "첫째 줄에 precedingMinutes, 둘째 줄에 alertThreshold, 셋째 줄에 n이 주어지고, 이어서 n개의 줄에 각각 정수 numCalls[i]가 주어집니다. 이는 i+1번째 분의 통화량입니다. 1≤precedingMinutes≤n, 1≤alertThreshold≤10^5, 1≤n≤10^5, 0≤numCalls[i]≤10^5.",
+    "output": "경보의 총 횟수를 정수 하나로 출력합니다.",
+    "explanation": "예제 1: k=3, 임계값 4, numCalls=[2,2,2,2,5,5,5,8]. T=3에서 평균은 (2+2+2)/3=2이고, T=4..8의 평균은 차례로 2,3,4,5,6입니다. 마지막 두 개가 4를 초과하므로 경보는 총 2번입니다 (평균이 4와 같으면 경보가 발생하지 않습니다).\n예제 2: k=2, 임계값 3. 평균은 차례로 3.5,3.5,3이며, 앞의 두 개가 3을 초과하므로 경보는 2번입니다.\n예제 3: k=1이면 분마다 단순 비교입니다. 6과 7이 5를 초과하므로 경보는 2번입니다.",
+    "hints": [
+      "T가 k에 도달해야 비로소 윈도우가 가득 찹니다.",
+      "평균은 실수이므로, 비교할 때는 부등식 양변에 k를 곱하면 됩니다.",
+      "슬라이딩 윈도우로 최근 k분의 합을 유지하세요."
+    ]
+  },
+  "vi": {
+    "title": "Goldman Sachs OA #32: Cảnh báo theo ngưỡng",
+    "description": "Một hệ thống tuân thủ theo dõi lượng cuộc gọi. Mỗi khi lượng cuộc gọi trung bình trong vài phút gần nhất vượt quá một ngưỡng, hệ thống phát ra một cảnh báo. Gọi precedingMinutes=k. Tại thời điểm T (đếm từ 1), lấy lượng cuộc gọi ở k thời điểm T−(k−1), T−(k−2), …, T và tính trung bình của chúng; phát một cảnh báo nếu giá trị trung bình lớn hơn hẳn alertThreshold. Khi T<k thì chưa đủ dữ liệu và không phát cảnh báo.\n\nCho lượng cuộc gọi của từng phút, hãy tìm tổng số cảnh báo được phát ra trong cả khoảng thời gian.",
+    "input": "Dòng đầu tiên chứa precedingMinutes; dòng thứ hai chứa alertThreshold; dòng thứ ba chứa n; sau đó là n dòng, mỗi dòng chứa một số nguyên numCalls[i], là lượng cuộc gọi ở phút i+1. 1≤precedingMinutes≤n, 1≤alertThreshold≤10^5, 1≤n≤10^5, 0≤numCalls[i]≤10^5.",
+    "output": "In ra một số nguyên, tổng số cảnh báo.",
+    "explanation": "Ví dụ 1: k=3, ngưỡng 4, numCalls=[2,2,2,2,5,5,5,8]. Tại T=3 trung bình là (2+2+2)/3=2; các giá trị trung bình với T=4..8 lần lượt là 2,3,4,5,6, và hai giá trị cuối vượt quá 4, tổng cộng 2 cảnh báo (trung bình bằng 4 thì không phát cảnh báo).\nVí dụ 2: k=2, ngưỡng 3; các giá trị trung bình lần lượt là 3.5,3.5,3, và hai giá trị đầu vượt quá 3, tổng cộng 2 cảnh báo.\nVí dụ 3: với k=1 chỉ là so sánh từng phút; 6 và 7 vượt quá 5, tổng cộng 2 cảnh báo.",
+    "hints": [
+      "Cửa sổ chỉ đầy đủ khi T đạt tới k.",
+      "Giá trị trung bình là số thực; khi so sánh, bạn có thể nhân cả hai vế của bất đẳng thức với k.",
+      "Duy trì tổng của k phút gần nhất bằng cửa sổ trượt."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Let dp[j] count the subsequences currently equal to exactly the first j characters of t, and let greater count the choices that are already strictly greater. A new character can extend a greater state, or become greater at the first point of difference; update match lengths from back to front to avoid reusing a position."
     ]
+  },
+  "ja": {
+    "title": "システムのパスワードより大きい部分列の個数",
+    "description": "顧客のパスワード s から、インデックスを選んで部分列を作ります。t より辞書順で真に大きくなる選び方の個数を、1000000007 で割った余りで求めてください。異なるインデックスの選び方から同じ文字列ができる場合も、それぞれ別に数えます。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "2 行で s と t が与えられます。1≤|s|≤100000、1≤|t|≤100 で、どちらも小文字です。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: b、ba、aba の 3 通りが真に大きいので、答えは 3 です。例 2: 位置の異なる 2 つの b と、ba、bb、bab の合計 5 通りです。例 3: aa より大きいのは aaa 全体だけなので、答えは 1 です。",
+    "hints": [
+      "dp[j] を、現在 t の先頭 j 文字とちょうど等しい部分列の個数、greater を、すでに真に大きくなっている選び方の個数とします。新しい文字は、大きい状態を延長するか、最初の相違点で大きくなります。同じ位置を二度使わないよう、一致長は後ろから前へ更新します。"
+    ]
+  },
+  "ko": {
+    "title": "시스템 비밀번호보다 큰 부분 수열의 수",
+    "description": "고객 비밀번호 s에서 인덱스를 기준으로 부분 수열을 고를 때, t보다 사전순으로 엄격하게 큰 경우의 수를 1000000007로 나눈 나머지로 구하세요. 서로 다른 인덱스 선택이 같은 문자열을 만들더라도 각각 따로 셉니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "두 줄로 s와 t가 주어집니다. 1≤|s|≤100000, 1≤|t|≤100이며 모두 소문자입니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: b, ba, aba 세 가지가 엄격하게 크므로 답은 3입니다. 예제 2: 서로 다른 위치의 두 b와 ba, bb, bab로 총 5개입니다. 예제 3: aa보다 큰 것은 전체 aaa뿐이므로 답은 1입니다.",
+    "hints": [
+      "dp[j]는 현재 t의 처음 j개 문자와 정확히 같은 부분 수열의 수이고, greater는 이미 엄격하게 커진 경우의 수입니다. 새 문자는 greater 상태를 확장하거나 처음으로 달라지는 지점에서 커질 수 있으며, 한 위치를 두 번 쓰지 않도록 일치 길이는 뒤에서 앞으로 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số dãy con lớn hơn mật khẩu hệ thống",
+    "description": "Chọn một dãy con của mật khẩu khách hàng s theo chỉ số, và đếm số cách chọn cho ra xâu lớn hơn nghiêm ngặt t theo thứ tự từ điển, theo modulo 1000000007. Khi cùng một xâu kết quả đến từ các cách chọn chỉ số khác nhau, mỗi cách được tính riêng.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Hai dòng, s và t; 1≤|s|≤100000, 1≤|t|≤100, đều là chữ cái thường.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: ba cách chọn b, ba và aba lớn hơn nghiêm ngặt, nên đáp án là 3. Ví dụ 2: hai chữ b ở các vị trí khác nhau cộng với ba, bb và bab, tổng cộng 5. Ví dụ 3: chỉ có aaa đầy đủ là lớn hơn aa, nên đáp án là 1.",
+    "hints": [
+      "Gọi dp[j] là số dãy con hiện đang bằng đúng j ký tự đầu của t, và greater là số cách chọn đã lớn hơn nghiêm ngặt. Một ký tự mới có thể mở rộng một trạng thái lớn hơn, hoặc trở nên lớn hơn tại điểm khác biệt đầu tiên; cập nhật các độ dài khớp từ sau ra trước để không dùng lại một vị trí."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "If target≤0, the answer is 0 right away. Otherwise discard non-positive powers, group the machines by price, sort each group's powers in descending order, and take prefix sums. Enumerate how many machines to take from the price-1 group, binary search for the fewest machines from the price-2 group that cover the remaining need, and take the minimum total price."
     ]
+  },
+  "ja": {
+    "title": "価格が 1 か 2 のときにサーバー性能を十分に買う最小コスト",
+    "description": "各マシンは最大1回しか購入できず、価格は 1 または 2、性能は整数です。性能の合計が target 以上になるようにマシンの集合を選び、価格の合計の最小値を求めてください。1台も選ばなくてもかまいません。条件を満たす集合が存在しない場合は −1 を返します。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n target、2行目に power、3行目に price が与えられます。元の問題文が制限しているのは price が 1 または 2 であることだけで、ほかの値の範囲は示されていません。本サイトでは 1≤n≤200000、−10^9≤power[i]≤10^9、−10^14≤target≤2×10^14 とします。性能が正であるとは限らず、性能が 0 以下のマシンも有効な入力です。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 2、−1、0 です。最後の例では、空集合の性能が 0 で、すでに −1 以上なので、マシンを買わされることはありません。",
+    "hints": [
+      "target≤0 なら答えはすぐに 0 です。そうでなければ性能が 0 以下のものを捨て、マシンを価格でグループ分けし、各グループの性能を降順にソートして累積和を取ります。価格 1 のグループから何台取るかを列挙し、残りの必要量を満たす価格 2 のグループの最少台数を二分探索で求め、価格合計の最小値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "가격이 1 또는 2뿐일 때 충분한 서버 성능을 사는 최소 비용",
+    "description": "각 기계는 최대 한 번만 살 수 있으며 가격은 1 또는 2이고 성능은 정수입니다. 성능의 합이 target 이상이 되도록 기계 집합을 골라 총 가격의 최솟값을 구하세요. 기계를 하나도 고르지 않아도 되며, 가능한 집합이 없으면 −1을 반환합니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n target이, 둘째 줄에 power가, 셋째 줄에 price가 주어집니다. 원문은 price가 1 또는 2라는 것 외에 값의 범위를 주지 않으며, 이 사이트에서 1≤n≤200000, −10^9≤power[i]≤10^9, −10^14≤target≤2×10^14로 정했습니다. 성능이 반드시 양수여야 하는 것은 아니며, 성능이 양수가 아닌 기계도 유효한 입력입니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 2, −1, 0입니다. 마지막 예제에서는 공집합의 성능 0이 이미 −1 이상이므로 기계를 억지로 살 필요가 없습니다.",
+    "hints": [
+      "target≤0이면 정답은 바로 0입니다. 그렇지 않으면 양수가 아닌 성능은 버리고, 기계를 가격별로 나눈 뒤 각 그룹의 성능을 내림차순으로 정렬하여 누적 합을 구합니다. 가격 1 그룹에서 몇 개를 살지 열거하고, 남은 필요량을 채우는 데 필요한 가격 2 그룹의 최소 개수를 이분 탐색으로 찾아 총 가격의 최솟값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí tối thiểu để mua đủ công suất máy chủ khi giá chỉ là 1 hoặc 2",
+    "description": "Mỗi máy chỉ được mua tối đa một lần; giá của nó là 1 hoặc 2 và công suất là một số nguyên. Hãy chọn một tập máy bất kỳ có tổng công suất ít nhất bằng target và tìm tổng giá nhỏ nhất. Có thể không chọn máy nào; nếu không tồn tại tập hợp lệ thì trả về −1.\n\nĐề bài, định dạng vào/ra, ví dụ và lời giải do trang này tự viết; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n target, dòng thứ hai chứa power, dòng thứ ba chứa price. Đề gốc chỉ ràng buộc price là 1 hoặc 2 và không nêu giới hạn giá trị nào khác; trên trang này 1≤n≤200000, −10^9≤power[i]≤10^9, −10^14≤target≤2×10^14. Công suất không nhất thiết phải dương; các máy có công suất không dương vẫn là đầu vào hợp lệ.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đáp án là 2, −1 và 0. Ở ví dụ cuối, tập rỗng có công suất 0, đã không nhỏ hơn −1, nên bạn không bị buộc phải mua máy nào.",
+    "hints": [
+      "Nếu target≤0 thì đáp án là 0 ngay. Ngược lại, bỏ các công suất không dương, nhóm các máy theo giá, sắp xếp công suất mỗi nhóm giảm dần và tính tổng tiền tố. Duyệt số máy lấy từ nhóm giá 1, dùng tìm kiếm nhị phân để tìm số máy ít nhất từ nhóm giá 2 đủ bù phần còn thiếu, rồi lấy tổng giá nhỏ nhất."
+    ]
   }
 }

@@ -13,5 +13,41 @@
       "Averages can be compared by cross-multiplying; the count requires big integers.",
       "There must be a strict rise first and then a strict fall; an empty slope is not allowed."
     ]
+  },
+  "ja": {
+    "title": "区間平均による狭義の増加後減少分割の数え上げ",
+    "description": "配列を元の順序のまま、少なくとも 3 個の空でない連続区間に分割し、全体をちょうど覆います。各区間は要素の平均で代表されます。代表の列が最初に狭義に増加し、その後に狭義に減少するような分割の個数を数えてください。ピークは内側の区間でなければならず、両側にそれぞれ少なくとも 1 回の狭義の変化が必要です。平均が等しい場合は無効で、単調なだけの列も無効です。切れ目の集合が異なれば別の分割として数えます。本サイトでは、剰余もオーバーフローもない正確な整数を出力することを明示します。元の問題文には剰余の規則がありません。スターターコードは int を返しますが、それでは数え上げの全範囲を扱えず、本サイトはそこから元のプラットフォームの int オーバーフローや剰余の挙動を推測できません。",
+    "input": "1 行目に n、2 行目に n 個の整数 arr[i]。元の制約の全体: 2≤n≤100、-10^9≤arr[i]≤10^9。標準入出力は本サイトによるラッパーです。",
+    "output": "有効な分割の総数を、正確な非負の 10 進整数で出力します。剰余を取ったり、32 ビットや 64 ビットのオーバーフローを適用したりしないでください。n<3 のときは 0 を出力します。",
+    "explanation": "元の最初の例の有効な分割は 1|3 2|1、1|3|2 1、1|3|2|1 で、合計 3 です。元の 2 番目の例は 49 になります。本サイトの 3 番目の例 [1,2,3] では、区間平均は増加するだけで減少しないので、答えは 0 です。",
+    "hints": [
+      "最後の区間の左端と右端、および現在が増加フェーズか減少フェーズかを状態として使います。",
+      "平均は交差乗算で比較できます。個数の数え上げには多倍長整数が必要です。",
+      "最初に狭義の増加、その後に狭義の減少が必要です。空の傾斜は許されません。"
+    ]
+  },
+  "ko": {
+    "title": "구간 평균 기준 엄격한 상승 후 하강 분할 개수 세기",
+    "description": "배열을 원래 순서를 유지한 채 정확히 전체를 덮는 3개 이상의 비어 있지 않은 연속 구간으로 나눕니다. 각 구간은 원소의 평균으로 대표됩니다. 대표 수열이 먼저 엄격하게 증가한 뒤 엄격하게 감소하는 분할의 개수를 세세요. 꼭짓점은 내부 구간이어야 하고 양쪽에 각각 엄격한 변화가 최소 한 번 있어야 하며, 평균이 같으면 유효하지 않고 순수하게 단조인 수열도 유효하지 않습니다. 자르는 위치의 집합이 다르면 다른 분할로 셉니다. 이 사이트는 모듈러나 오버플로 없이 정확한 정수를 출력하도록 명시합니다. 원문에는 모듈러 규칙이 없으며, 원래 starter가 int를 반환하더라도 전체 개수 범위를 담을 수 없으므로 이 사이트는 원래 플랫폼의 int 오버플로나 모듈러 동작을 추론할 수 없습니다.",
+    "input": "첫 줄에 n이 주어지고, 둘째 줄에 n개의 정수 arr[i]가 주어집니다. 원문의 전체 제약 조건: 2≤n≤100, -10^9≤arr[i]≤10^9. 표준 입출력은 이 사이트의 래퍼입니다.",
+    "output": "유효한 분할의 총 개수를 정확한 음이 아닌 십진 정수로 출력합니다. 모듈러를 취하거나 32비트 또는 64비트 오버플로를 적용하지 마세요. n<3이면 0을 출력합니다.",
+    "explanation": "원문의 첫 번째 예제에서 유효한 분할은 1|3 2|1, 1|3|2 1, 1|3|2|1로 모두 3개입니다. 원문의 두 번째 예제는 49입니다. 이 사이트의 세 번째 예제 [1,2,3]에서는 구간 평균이 증가만 할 뿐 감소할 수 없으므로 답은 0입니다.",
+    "hints": [
+      "마지막 구간의 왼쪽과 오른쪽 끝, 그리고 현재 상승 단계인지 하강 단계인지를 상태로 사용하세요.",
+      "평균은 교차 곱셈으로 비교할 수 있으며, 개수는 큰 정수가 필요합니다.",
+      "먼저 엄격한 상승이 있고 그다음 엄격한 하강이 있어야 하며, 빈 기울기는 허용되지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm các cách chia tăng chặt rồi giảm chặt theo trung bình đoạn",
+    "description": "Chia mảng, giữ nguyên thứ tự ban đầu, thành ít nhất 3 đoạn liên tiếp không rỗng phủ đúng toàn bộ mảng. Mỗi đoạn được đại diện bởi trung bình cộng các phần tử của nó. Đếm các cách chia mà dãy đại diện trước tiên tăng chặt rồi sau đó giảm chặt: đỉnh phải là một đoạn ở bên trong, và mỗi phía phải có ít nhất một lần thay đổi chặt; các trung bình bằng nhau là không hợp lệ, và một dãy đơn điệu thuần túy là không hợp lệ. Các tập điểm cắt khác nhau được tính là các cách chia khác nhau. Trang này nêu rõ in ra số nguyên chính xác, không lấy modulo và không tràn số. Đề gốc không nêu quy tắc modulo; mặc dù hàm khởi tạo của nó trả về int, điều đó không thể bao phủ toàn bộ phạm vi đếm, và trang này không thể suy ra từ đó bất kỳ hành vi tràn int hay modulo nào của nền tảng gốc.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n số nguyên arr[i]. Các ràng buộc gốc đầy đủ: 2≤n≤100, -10^9≤arr[i]≤10^9. Vào/ra chuẩn là lớp bao bọc của trang này.",
+    "output": "In ra tổng số cách chia hợp lệ dưới dạng số nguyên thập phân không âm chính xác. Không lấy modulo và không áp dụng tràn 32 bit hay 64 bit. In ra 0 khi n<3.",
+    "explanation": "Các cách chia hợp lệ của ví dụ gốc đầu tiên là 1|3 2|1, 1|3|2 1 và 1|3|2|1, tổng cộng 3. Ví dụ gốc thứ hai cho 49. Trong ví dụ thứ ba của trang này [1,2,3], các trung bình đoạn chỉ có thể tăng và không bao giờ giảm, nên đáp án là 0.",
+    "hints": [
+      "Dùng đầu trái và đầu phải của đoạn cuối cùng, cùng với việc hiện đang ở pha tăng hay pha giảm, làm trạng thái.",
+      "Có thể so sánh các trung bình bằng cách nhân chéo; việc đếm cần số nguyên lớn.",
+      "Phải có một lần tăng chặt trước rồi mới đến một lần giảm chặt; không cho phép sườn dốc rỗng."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "When scanning term by term, keep the sign inside the exponent separate from the sign of the term, and combine each factor by exponent; multiply term pairs, multiplying coefficients and adding exponents, and accumulate into the matching exponent. Finally, format in descending order and remove zero terms."
     ]
+  },
+  "ja": {
+    "title": "負の整数冪を含む 2 つの多項式の積の展開",
+    "description": "入力は、同じ変数についての 2 つの有限な多項式の積で、負の整数の指数も許されます (ローラン多項式)。同じ冪の項をまとめ、指数を厳密に降順に並べた展開形を、括弧も空白もなしで出力してください。負の冪を落としたり、浮動小数点の係数を使ったりしてはいけません。\n\n本サイトは標準入出力と解法を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "1 行 (P)(Q) で、括弧はちょうど 4 つです。変数はどちらも同じ ASCII 1 文字 (a..z または A..Z) です。原文に値の範囲はなく、本サイトでは各因数の項数を 1..200、元の各項の係数の絶対値を 10^9 以下、指数を −10^9..10^9 とします。同じ冪の繰り返し、係数 0、定数の因数も許されます。厳密な文法：項は + または - でつなぎ、先頭の項は符号を持てます。項は、非負の 10 進定数か変数のいずれかで、変数の場合は係数の絶対値が 1 なら係数を省略でき、続けて ^ と符号付きの 10 進整数の指数を付けられます。指数を省略した場合は 1 を意味し、変数を含まない項は定数項です。たとえば (-x^-2+3)(2x+1) で、x^+2 も受け付けます。行末記号以外の空白はなく、Unicode の上付き文字は使いません。整数は通常の 10 進表記で書かれます。",
+    "output": "一意な正規形の文字列を出力します。係数が 0 の項を取り除き、指数を大きい方から小さい方へ並べます。先頭の項の + は省略し、以降は正の項に + を、負の項に - を付けます。係数の絶対値が 1 で指数が 0 でないときは 1 を省略します。指数が 0 なら定数の係数だけを出力し、指数が 1 なら ^1 を省略し、それ以外の冪には ASCII の ^ に続けて 10 進の指数を出力します (正の指数に + は付けません)。零多項式は 0 を出力します。例：x+2x^-1、-3x^6-2x^3、0。空白、括弧、先頭の 0、余分な + を出力してはいけません。",
+    "explanation": "3 つの公開例の出力は順に x+2x^-1、-3x^6-2x^3、0 です。独立した全列挙または直接シミュレーションで確認済みです。",
+    "hints": [
+      "項を順に走査するときは、指数の中の符号と項の符号を区別して保持し、各因数を指数ごとにまとめます。項のペアごとに、係数を掛けて指数を足し、対応する指数に累積します。最後に降順で書式化し、係数 0 の項を取り除きます。"
+    ]
+  },
+  "ko": {
+    "title": "음의 정수 거듭제곱을 허용하는 두 다항식의 곱 전개",
+    "description": "입력은 같은 변수에 대한 유한한 두 다항식의 곱이며 음의 정수 지수가 허용됩니다 (로랑 다항식). 같은 차수의 항을 합쳐 지수를 엄격한 내림차순으로 전개해 출력하되, 괄호와 공백은 쓰지 않습니다. 음의 거듭제곱을 버리거나 부동소수점 계수를 사용하지 마세요.\n\n본 사이트에서 표준 입출력과 풀이를 독립적으로 마련했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "정확히 괄호가 네 개인 (P)(Q) 한 줄이 주어지며, 변수는 두 인수에서 같은 ASCII 영문자 a..z 또는 A..Z 하나입니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 인수당 항 1..200개, 각 원래 항의 계수의 절댓값 ≤10^9, 지수 −10^9..10^9를 추가합니다. 같은 거듭제곱의 반복, 계수 0, 상수 인수가 허용됩니다. 정확한 문법: 항은 + 또는 -로 이어지며 첫 항에는 부호가 올 수 있습니다. 항은 음이 아닌 십진 상수이거나, 변수이며 계수는 절댓값이 1일 때 생략할 수 있고, 그 뒤에 선택적으로 ^와 부호 있는 십진 정수 지수가 올 수 있습니다. 지수가 생략되면 1을 뜻하고, 변수가 없는 항은 상수항입니다. 예: (-x^-2+3)(2x+1), x^+2도 허용됩니다. 줄 끝 문자 외에는 공백이 없고 유니코드 위 첨자는 쓰지 않으며, 정수는 일반 십진 표기입니다.",
+    "output": "유일한 정규 문자열을 출력합니다. 0인 항을 제거하고 지수를 큰 것부터 작은 것 순으로 나열합니다. 첫 항의 플러스 부호는 생략하고 이후에는 양수 항에 +, 음수 항에 -를 씁니다. 계수의 절댓값이 1이고 지수가 0이 아니면 1을 생략합니다. 지수 0이면 상수 계수만 출력하고, 지수 1이면 ^1을 생략하며, 그 밖의 거듭제곱은 ASCII ^ 뒤에 십진 지수를 씁니다 (양의 지수에는 +를 붙이지 않음). 영 다항식이면 0을 출력합니다. 예: x+2x^-1, -3x^6-2x^3, 0. 공백, 괄호, 앞의 0, 불필요한 + 부호는 출력하지 않습니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 x+2x^-1; -3x^6-2x^3; 0입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "항을 하나씩 스캔할 때 지수 안의 부호와 항의 부호를 분리해 두고, 각 인수를 지수별로 합칩니다. 항 쌍을 곱해 계수는 곱하고 지수는 더하여 해당 지수에 누적합니다. 마지막으로 내림차순으로 형식을 맞추고 0인 항을 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khai triển tích của hai đa thức có lũy thừa nguyên âm",
+    "description": "Đầu vào là tích của hai đa thức hữu hạn theo cùng một biến, cho phép số mũ nguyên âm (đa thức Laurent). Gộp các lũy thừa giống nhau và in ra khai triển với số mũ giảm dần chặt, không có dấu ngoặc và không có khoảng trắng; không được bỏ lũy thừa âm hay dùng hệ số số thực.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các giới hạn được bổ sung khi nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Một dòng duy nhất (P)(Q) có đúng bốn dấu ngoặc; biến là cùng một chữ cái ASCII duy nhất a..z hoặc A..Z. Bản gốc không đưa ra giới hạn giá trị; trang này bổ sung 1..200 số hạng mỗi thừa số, giá trị tuyệt đối hệ số của mỗi số hạng gốc ≤10^9, và số mũ trong −10^9..10^9; cho phép lặp lũy thừa, hệ số bằng không và thừa số hằng. Văn phạm chính xác: các số hạng được nối bằng + hoặc -, và số hạng đầu có thể mang dấu; mỗi số hạng là một hằng số thập phân không âm hoặc biến, với hệ số có thể bỏ khi giá trị tuyệt đối của nó là 1, tùy chọn theo sau bởi ^ và một số mũ nguyên thập phân có dấu. Số mũ bị bỏ nghĩa là 1, và số hạng không có biến là số hạng hằng; ví dụ (-x^-2+3)(2x+1), và x^+2 cũng được chấp nhận. Không có khoảng trắng nào ngoài ký tự kết thúc dòng, và không dùng chỉ số trên Unicode; các số nguyên được viết theo ký hiệu thập phân thông thường.",
+    "output": "In ra chuỗi chính tắc duy nhất: loại bỏ các số hạng bằng không và sắp xếp số mũ từ lớn đến nhỏ; bỏ dấu cộng của số hạng đầu, sau đó dùng + cho số hạng dương và - cho số hạng âm; bỏ số 1 khi giá trị tuyệt đối của hệ số là 1 và số mũ khác 0; với số mũ 0 chỉ in hệ số hằng, với số mũ 1 bỏ ^1, và với các lũy thừa khác dùng ^ ASCII theo sau là số mũ thập phân (số mũ dương không có +); in 0 cho đa thức không. Ví dụ: x+2x^-1, -3x^6-2x^3, 0. Không in khoảng trắng, dấu ngoặc, số 0 đứng đầu hay dấu + thừa.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: x+2x^-1; -3x^6-2x^3; 0. Đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Khi quét từng số hạng, giữ riêng dấu bên trong số mũ và dấu của số hạng, và gộp mỗi thừa số theo số mũ; nhân từng cặp số hạng, nhân các hệ số và cộng các số mũ, rồi cộng dồn vào số mũ tương ứng. Cuối cùng, định dạng theo thứ tự giảm dần và loại bỏ các số hạng bằng không."
+    ]
   }
 }

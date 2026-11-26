@@ -11,5 +11,35 @@
     "hints": [
       "Sort by capacity, keeping the smallest index for each capacity, then binary search for the first capacity strictly greater than the weight."
     ]
+  },
+  "ja": {
+    "title": "各荷物に対して容量が厳密に大きいトラックを選ぶ",
+    "description": "各荷物は独立に、容量が自分の重さより厳密に大きいトラックを選びます。まず容量を最小にし、同じ容量のトラックの中では元の添字が最小のものを選びます。添字は 0 から始まり、使えるトラックがなければ −1 を出力します。積み込みでトラックの容量は減りません。\n\n本サイトは標準入出力と解法を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "1 行目に n m、2 行目に n 個の容量、3 行目に m 個の重さが与えられます。元の制約は 1≤n,m≤100000 で、容量と重さはすべて 1..10^9 です。",
+    "output": "荷物の順に、m 個のトラックの添字または −1 を出力してください。",
+    "explanation": "3 つの公開例の出力は順に 0 3 -1、1 0 -1、0 2 です。独立した全列挙または直接シミュレーションで確認済みです。",
+    "hints": [
+      "容量でソートし、各容量について最小の添字だけを残します。その後、重さより厳密に大きい最初の容量を二分探索で見つけます。"
+    ]
+  },
+  "ko": {
+    "title": "각 패키지에 용량이 엄격히 더 큰 트럭 고르기",
+    "description": "각 패키지는 독립적으로 용량이 자신의 무게보다 엄격히 큰 트럭을 고릅니다. 먼저 용량이 최소인 것을 고르고, 그 용량의 트럭이 여러 대이면 원래 인덱스가 가장 작은 것을 고릅니다. 인덱스는 0부터 시작하며, 사용 가능한 트럭이 없으면 −1을 출력합니다. 적재해도 트럭의 용량은 소모되지 않습니다.\n\n본 사이트에서 표준 입출력 형식과 풀이를 독립적으로 정리했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n m, 두 번째 줄에 용량 n개, 세 번째 줄에 무게 m개가 주어집니다. 원래 제약 조건: 1≤n,m≤100000, 용량과 무게는 모두 1..10^9.",
+    "output": "패키지 순서대로 트럭 인덱스 또는 −1을 m개 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 0 3 -1; 1 0 -1; 0 2입니다. 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "용량 기준으로 정렬하되 각 용량마다 가장 작은 인덱스만 남기고, 이분 탐색으로 무게보다 엄격히 큰 첫 번째 용량을 찾습니다."
+    ]
+  },
+  "vi": {
+    "title": "Chọn xe tải có sức chứa lớn hơn chặt cho từng gói hàng",
+    "description": "Mỗi gói hàng chọn độc lập một xe tải có sức chứa lớn hơn chặt khối lượng của nó: trước hết cực tiểu hóa sức chứa, sau đó chọn chỉ số gốc nhỏ nhất trong các xe có sức chứa đó. Chỉ số bắt đầu từ 0; in −1 nếu không có xe nào phù hợp. Việc xếp hàng không làm tiêu hao sức chứa của xe.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các giới hạn được bổ sung khi nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai chứa n sức chứa, và dòng thứ ba chứa m khối lượng. Giới hạn gốc: 1≤n,m≤100000; sức chứa và khối lượng đều trong khoảng 1..10^9.",
+    "output": "In ra m chỉ số xe hoặc −1, theo thứ tự các gói hàng.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 0 3 -1; 1 0 -1; 0 2. Đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Sắp xếp theo sức chứa, với mỗi sức chứa chỉ giữ chỉ số nhỏ nhất, rồi dùng tìm kiếm nhị phân để tìm sức chứa đầu tiên lớn hơn chặt khối lượng."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Binary search the capacity, and use a subset DP to decide whether everything fits into at most N bins. The state stores the minimum number of bins needed to pack the subset, and the minimum load of the last bin for that number of bins; enumerate which game is added last."
     ]
+  },
+  "ja": {
+    "title": "任意のゲーム配分に対するディスク容量の最小値",
+    "description": "すべてのゲームを N 人の子どもに分配します。ゲームは分割できず、どの子どもにも少なくとも 1 つ渡します。分け方は自由で、グループは元の配列で連続している必要はありません。すべてのディスクの容量は同じで、その分配が収まる最小の容量を求めてください。元の問題にはサイズの指定がありません。このサイトでは厳密に解ける小さなサイズを使い、任意の分配を連続分割で置き換えることはしません。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に m N、2 行目に m 個のゲームサイズが与えられます。このサイトでは 1≤N≤m≤15、1≤size≤10⁹ です。これらの上限は元の問題が与えた制約ではありません。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 6+7、12+1、10 に分けると最大は 13 です。容量 12 では、12 は単独でディスクを使い、10 は多くても 1 つしか組み合わせられず、6 と 7 は同じディスクに入らないので、少なくとも 4 枚のディスクが必要です。最適値は 13 です。例 2: ある子どもが必ず 8 を 2 つ受け取るので、容量は 16 です。例 3: 各子どもに 1 つずつ渡すので、容量は最大値の 9 です。",
+    "hints": [
+      "容量を二分探索し、部分集合 DP で、すべてが高々 N 個のビンに収まるかを判定します。状態には、その部分集合を詰めるのに必要な最小のビン数と、そのビン数のときの最後のビンの最小負荷を持ちます。最後に追加するゲームを列挙して遷移します。"
+    ]
+  },
+  "ko": {
+    "title": "임의 분배에서 필요한 최소 균일 디스크 용량",
+    "description": "모든 게임을 N명의 아이들에게 나눠 줍니다. 게임은 쪼갤 수 없고 모든 아이가 최소 하나는 받아야 합니다. 어떤 묶음 방식이든 허용되며, 묶음이 원래 배열에서 연속일 필요는 없습니다. 모든 디스크의 용량은 같고, 그 분배가 들어가는 최소 용량을 구하세요. 원 출처에는 크기가 주어져 있지 않으며, 이 사이트는 정확히 풀 수 있는 작은 크기를 사용합니다. 임의 분배를 연속 분할로 대체하지 않습니다.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 m N, 두 번째 줄에 m개의 게임 크기가 주어집니다. 이 사이트에서는 1≤N≤m≤15, 1≤size≤10⁹이며, 이 상한들은 원 출처가 제시한 제약 조건이 아닙니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 6+7, 12+1, 10으로 나누면 최댓값이 13입니다. 용량이 12이면 12는 디스크 하나를 단독으로 차지하고, 10은 최대 1과만 함께 둘 수 있으며, 6과 7은 한 디스크에 같이 들어갈 수 없으므로 디스크가 최소 4개 필요합니다. 최적은 13입니다. 예제 2: 어떤 아이는 8을 두 개 받아야 하므로 용량은 16입니다. 예제 3: 각 아이가 게임을 하나씩 받으므로 용량은 최댓값인 9입니다.",
+    "hints": [
+      "용량에 대해 이분 탐색을 하고, 부분 집합 DP로 모든 게임이 최대 N개의 통에 들어가는지 판정합니다. 상태에는 그 부분 집합을 담는 데 필요한 최소 통 개수와, 그 통 개수일 때 마지막 통의 최소 적재량을 저장합니다. 마지막에 추가한 게임이 무엇인지를 열거해 전이합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dung lượng đĩa đồng nhất tối thiểu cho cách chia trò chơi tùy ý",
+    "description": "Chia toàn bộ trò chơi cho N đứa trẻ; trò chơi không thể chia nhỏ, và mỗi đứa nhận ít nhất một trò. Cho phép nhóm tùy ý; các nhóm không cần liên tiếp trong mảng gốc. Mọi đĩa có cùng dung lượng; hãy tìm dung lượng tối thiểu để chứa được cách chia. Đề gốc không cho kích thước; trang này dùng kích thước nhỏ để giải chính xác, và không thay phân hoạch tùy ý bằng phân hoạch liên tiếp.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa m N, dòng thứ hai chứa m kích thước trò chơi. Trên trang này 1≤N≤m≤15 và 1≤size≤10⁹; các cận trên này không phải ràng buộc do đề gốc cung cấp.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: chia thành 6+7, 12+1 và 10, với giá trị lớn nhất là 13; với dung lượng 12, trò 12 chiếm riêng một đĩa, 10 chỉ ghép được nhiều nhất với 1, còn 6 và 7 không thể dùng chung đĩa, nên cần ít nhất 4 đĩa; tối ưu là 13. Ví dụ 2: có một đứa trẻ phải nhận hai trò 8, nên dung lượng là 16. Ví dụ 3: mỗi đứa trẻ nhận một trò, nên dung lượng là giá trị lớn nhất, 9.",
+    "hints": [
+      "Tìm kiếm nhị phân dung lượng, và dùng DP trên tập con để kiểm tra mọi thứ có xếp vừa vào tối đa N thùng hay không. Trạng thái lưu số thùng tối thiểu cần để xếp tập con, và tải tối thiểu của thùng cuối ứng với số thùng đó; duyệt xem trò nào được thêm vào sau cùng."
+    ]
   }
 }

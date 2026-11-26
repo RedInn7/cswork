@@ -11,5 +11,35 @@
     "hints": [
       "The distance moved down is determined by the shape's lowest cell. Each asterisk sweeps a range of rows in its own column; merge these ranges with column difference arrays, then count the covered obstacles."
     ]
+  },
+  "ja": {
+    "title": "剛体が落下するために取り除く障害物の数",
+    "description": "グリッドにおいて、* は空でない 4 連結の図形、# は障害物、- は空きマスを表します。図形は回転も変形もせず、全体として 1 マスずつ下へ移動し、少なくとも 1 つのマスが最下行に到達するまで続けます。取り除く必要がある異なる障害物の最小数を求めてください。元のサイトの例は連結性の制約を満たしていないため、本サイトで規則に沿った新しい例を作成しました。\n\n入出力形式、例、テストデータは CSWork が作成しました。",
+    "input": "1 行目に行数 R と列数 C（1..100）が与えられ、続く R 行は *、#、- のみからなる長さ C の文字列です。図形は空でなく 4 連結であることが保証されます。",
+    "output": "説明どおりに答えを出力してください。複数の結果はスペース区切りで順に出力し、空配列の場合は空行を出力してください。",
+    "explanation": "例 1：図形は 2 行下へ移動し、右上のアスタリスクは右側の障害物を通過する必要があります。その障害物を 1 つ取り除けば、2 つのアスタリスクとも最下行に到達できるので、答えは 1 です。",
+    "hints": [
+      "下へ移動する距離は図形の最下のマスで決まります。各アスタリスクは自分の列で一定の行範囲を掃引します。これらの範囲を列ごとの差分配列で統合し、覆われた障害物を数えます。"
+    ]
+  },
+  "ko": {
+    "title": "단단한 도형이 떨어지도록 제거해야 하는 장애물 수",
+    "description": "격자에서 *는 비어 있지 않은 4방향 연결 도형이고, #는 장애물, -는 빈 칸입니다. 도형은 회전하거나 변형되지 않고 한 칸씩 전체가 아래로만 이동하며, 도형의 칸 중 적어도 하나가 맨 아래 행에 닿을 때까지 이어집니다. 제거해야 하는 서로 다른 장애물의 최소 개수를 구하세요. 원문 사이트의 예제는 연결 조건을 만족하지 않아, 이 사이트에서 규칙에 맞는 새 예제를 작성했습니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하고 작성했습니다.",
+    "input": "첫째 줄에 행 수 R과 열 수 C(1..100)가 주어지고, 다음 R개의 줄은 *, #, -만 포함하는 길이 C의 문자열입니다. 도형은 비어 있지 않고 4방향으로 연결되어 있음이 보장됩니다.",
+    "output": "설명된 대로 답을 출력합니다. 결과가 여러 개이면 순서대로 공백으로 구분하여 출력하고, 빈 배열이면 빈 줄을 출력합니다.",
+    "explanation": "예제 1: 도형이 2행 아래로 이동하며 오른쪽 위의 별이 오른쪽의 장애물을 지나야 합니다. 그 장애물 하나를 제거하면 두 별 모두 맨 아래 행에 닿을 수 있으므로 답은 1입니다.",
+    "hints": [
+      "아래로 이동하는 거리는 도형의 가장 낮은 칸이 결정합니다. 각 별은 자신의 열에서 일정 범위의 행을 쓸고 지나가므로, 이 범위들을 열별 차이 배열로 합친 뒤 덮인 장애물을 세면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số chướng ngại vật cần gỡ để hình khối cứng rơi xuống",
+    "description": "Trong lưới, * tạo thành một hình liên thông 4 hướng không rỗng, # là chướng ngại vật và - là ô trống. Hình không xoay hay biến dạng; nó chỉ di chuyển xuống dưới như một khối, mỗi lần một ô, cho đến khi ít nhất một ô của nó chạm hàng dưới cùng. Tìm số chướng ngại vật phân biệt tối thiểu phải gỡ đi. Ví dụ của trang gốc không thỏa ràng buộc liên thông, nên trang này viết một ví dụ mới tuân theo các quy tắc.\n\nĐịnh dạng đầu vào, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Dòng đầu chứa số hàng R và số cột C (1..100); R dòng tiếp theo là các xâu độ dài C chỉ gồm *, # và -. Hình đảm bảo không rỗng và liên thông 4 hướng.",
+    "output": "In ra đáp án như mô tả; nhiều kết quả được phân tách bằng dấu cách theo thứ tự, và với mảng rỗng thì in một dòng trống.",
+    "explanation": "Ví dụ 1: hình di chuyển xuống hai hàng, và dấu sao phía trên bên phải phải đi qua chướng ngại vật bên phải; sau khi gỡ một chướng ngại vật đó, cả hai dấu sao đều có thể chạm hàng dưới cùng, nên đáp án là 1.",
+    "hints": [
+      "Khoảng cách di chuyển xuống được quyết định bởi ô thấp nhất của hình. Mỗi dấu sao quét qua một khoảng hàng trong cột của nó; gộp các khoảng này bằng mảng hiệu theo cột, rồi đếm các chướng ngại vật được phủ."
+    ]
   }
 }

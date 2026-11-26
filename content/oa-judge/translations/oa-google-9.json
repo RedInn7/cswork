@@ -11,5 +11,35 @@
     "hints": [
       "best[k] stores the largest value that can be formed by choosing exactly k digits from the processed prefix. When reading digit d, update best[k]=max(best[k],best[k−1]×10+d) in reverse order so that no digit is used more than once."
     ]
+  },
+  "ja": {
+    "title": "元の順序を保った最大の 3 桁の数",
+    "description": "n 個の 10 進数字が与えられます。そこから 1 個から 3 個を元の順序のまま選んで連結し、整数にします。作れる最大の整数を求めてください。選ぶ数字は連続していなくてもかまいませんが、相対的な順序は変えられません。先頭の 0 は許され、整数は先頭の 0 なしで出力します。\n\n本問題は CSWork が整理した標準入出力形式を採用しています。アルゴリズムの規則は元の問題に対応し、例とテストデータは CSWork が作成しました。",
+    "input": "1 行目に n (3 ≤ n ≤ 50)、2 行目に n 個の数字 (0 ≤ digits[i] ≤ 9) が与えられます。",
+    "output": "整数を 1 つ、答えとして出力してください。",
+    "explanation": "例 1 では添字 0, 4, 5 の 7, 4, 9 を選んで 749 が得られます。9 を 7 の前に動かすことはできません。",
+    "hints": [
+      "best[k] には、処理済みの接頭辞からちょうど k 個の数字を選んで作れる最大の値を保持します。数字 d を読んだら、best[k]=max(best[k],best[k−1]×10+d) を逆順に更新し、1 つの数字が 2 回使われないようにします。"
+    ]
+  },
+  "ko": {
+    "title": "원래 순서를 유지한 가장 큰 세 자리 수",
+    "description": "십진수 숫자 n개가 주어집니다. 이 중 1개에서 3개를 원래 순서대로 골라 이어 붙여 정수를 만들 때, 만들 수 있는 가장 큰 정수를 구하세요. 고른 숫자가 연속일 필요는 없고, 상대적인 순서는 바꿀 수 없습니다. 앞자리가 0이어도 되며, 정수는 앞자리 0 없이 출력합니다.\n\n이 문제는 CSWork가 정리한 표준 입출력 형식을 사용합니다. 알고리즘 규칙은 원문 문제를 따르며, 예제와 테스트 데이터는 CSWork가 작성했습니다.",
+    "input": "첫 번째 줄에 n (3 ≤ n ≤ 50)이 주어지고, 두 번째 줄에 n개의 숫자 (0 ≤ digits[i] ≤ 9)가 주어집니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "예제 1에서는 인덱스 0, 4, 5의 7, 4, 9를 골라 749를 만듭니다. 9를 7보다 앞으로 옮길 수는 없습니다.",
+    "hints": [
+      "best[k]에 지금까지 처리한 접두사에서 정확히 k개의 숫자를 골라 만들 수 있는 가장 큰 값을 저장합니다. 숫자 d를 읽을 때 역순으로 best[k]=max(best[k],best[k−1]×10+d)를 갱신하면 한 숫자가 두 번 쓰이지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số ba chữ số lớn nhất giữ nguyên thứ tự",
+    "description": "Cho n chữ số thập phân, hãy chọn từ 1 đến 3 chữ số trong đó theo đúng thứ tự ban đầu và ghép chúng thành một số nguyên; tìm số nguyên lớn nhất có thể tạo ra. Các chữ số được chọn không cần liên tiếp; thứ tự tương đối của chúng không được thay đổi; cho phép có chữ số 0 ở đầu, và số nguyên được in ra không có chữ số 0 ở đầu.\n\nBài này dùng định dạng nhập/xuất chuẩn do CSWork biên soạn; quy tắc thuật toán theo bài gốc, còn ví dụ và dữ liệu kiểm thử do CSWork viết.",
+    "input": "Dòng đầu chứa n (3 ≤ n ≤ 50); dòng thứ hai chứa n chữ số (0 ≤ digits[i] ≤ 9).",
+    "output": "In ra một số nguyên, là đáp án.",
+    "explanation": "Ví dụ 1 chọn 7, 4 và 9 ở các chỉ số 0, 4 và 5 để được 749; không thể chuyển 9 lên trước 7.",
+    "hints": [
+      "best[k] lưu giá trị lớn nhất có thể tạo ra khi chọn đúng k chữ số từ tiền tố đã xử lý. Khi đọc chữ số d, cập nhật best[k]=max(best[k],best[k−1]×10+d) theo thứ tự ngược để không chữ số nào bị dùng nhiều hơn một lần."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Generate key itself and all distinct strings obtainable from it with one adjacent swap, then look up every window of the same length in text in that set."
     ]
+  },
+  "ja": {
+    "title": "隣接交換が高々1回で似ている部分文字列",
+    "description": "2つの文字列が似ているとは、等しいか、どちらか一方の隣り合う2文字を1組交換すると等しくなることを指します。text の連続する部分文字列のうち、key と似ているものの個数を数えてください。重なりは許され、開始位置ごとに1回ずつ数えます。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "1行目に key、2行目に text が与えられます。どちらも英小文字からなり、1≤|key|≤|text|≤50 です。",
+    "output": "答えを表す整数を1つ出力します。",
+    "explanation": "例 1: mono（最後の2文字を交換）と omon（最初の2文字を交換）はどちらも moon になるので、開始位置は2個です。\n\n例 2: 長さ 3 の2つの窓はどちらも aaa と等しく交換は不要です。それぞれ1回ずつ数えるので、答えは 2 です。\n\n例 3: 開始位置 1 の xxy と、開始位置 2 と 4 の xyx はすべて似ているので、合計は 3 です。",
+    "hints": [
+      "key 自身と、隣接交換1回で得られる異なる文字列をすべて生成し、text の同じ長さの各窓がその集合にあるかを調べます。"
+    ]
+  },
+  "ko": {
+    "title": "인접 교환 최대 한 번으로 유사한 부분 문자열",
+    "description": "두 문자열이 같거나, 둘 중 하나에서 인접한 두 문자를 한 쌍 교환했을 때 같아지면 유사하다고 합니다. text의 연속 부분 문자열 중 key와 유사한 것의 개수를 세세요. 겹치는 것도 허용하며, 시작 위치마다 한 번씩 셉니다.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫 줄에 key, 둘째 줄에 text가 주어지며, 둘 다 영문 소문자로 이루어져 있고 1≤|key|≤|text|≤50입니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: mono(마지막 두 글자를 교환)와 omon(처음 두 글자를 교환)은 모두 moon이 되므로 시작 위치는 2개입니다.\n\n예제 2: 길이 3인 두 윈도우가 모두 aaa이고 교환이 필요 없습니다. 각각 한 번씩 세므로 정답은 2입니다.\n\n예제 3: 시작 위치 1의 xxy, 시작 위치 2와 4의 xyx가 모두 유사하여 총 3입니다.",
+    "hints": [
+      "key 자신과 key에서 인접 교환 한 번으로 얻을 수 있는 서로 다른 모든 문자열을 만든 뒤, text의 같은 길이 윈도우를 그 집합에서 조회합니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu con tương tự khi hoán đổi tối đa một cặp kề nhau",
+    "description": "Hai xâu là tương tự nếu chúng bằng nhau, hoặc trở nên bằng nhau sau khi hoán đổi một cặp ký tự kề nhau trong một trong hai xâu. Đếm các xâu con liên tiếp của text tương tự với key. Cho phép chồng lấn, và mỗi vị trí bắt đầu chỉ được đếm một lần.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Dòng đầu chứa key và dòng thứ hai chứa text, cả hai gồm chữ cái tiếng Anh viết thường, với 1≤|key|≤|text|≤50.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: mono (hoán đổi hai chữ cuối) và omon (hoán đổi hai chữ đầu) đều trở thành moon, cho 2 vị trí bắt đầu.\n\nVí dụ 2: cả hai cửa sổ độ dài 3 đều bằng aaa và không cần hoán đổi; mỗi cửa sổ được đếm một lần, nên đáp án là 2.\n\nVí dụ 3: xxy tại vị trí 1 và xyx tại các vị trí 2 và 4 đều tương tự, tổng cộng là 3.",
+    "hints": [
+      "Sinh ra chính key và mọi xâu phân biệt có thể thu được từ nó bằng một lần hoán đổi kề nhau, rồi tra mọi cửa sổ cùng độ dài trong text trong tập này."
+    ]
   }
 }

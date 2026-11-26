@@ -13,5 +13,41 @@
       "Starting from the longest prefix that can be kept, search leftward for a position that can be increased.",
       "After the increased position, fill the rest by alternating a and b."
     ]
+  },
+  "ja": {
+    "title": "Amazon OA #311: 次のパーフェクト文字列",
+    "description": "隣り合う2文字がどれも異なる文字列を「パーフェクト」と呼びます。英小文字からなる文字列 s(s 自身はパーフェクトでもそうでなくても構いません)が与えられます。s と同じ長さで、s より辞書順で真に大きい、最小のパーフェクト文字列を求めてください。存在しない場合は -1 を出力します。",
+    "input": "文字列 s が1行で与えられます。1≤s の長さ≤200000、英小文字のみです。",
+    "output": "答えの文字列を出力してください。存在しない場合は -1 を出力します。",
+    "explanation": "例 1: s=\"abzzzcd\"。接頭辞 abz の直後の z はそれと等しいので、文字列はインデックス 2 以下のどこかで大きくならなければなりません。インデックス 2 の z はこれ以上大きくできないため、インデックス 1 の b を c に変え、残りは最小の交互文字列 ababa で埋めて \"acababa\" になります。\n例 2: s=\"zzab\"。インデックス 0 の z は大きくできず、インデックス 1 を大きくするにも z を超える必要があるため、答えは存在せず -1 を出力します。\n例 3: s=\"abab\" はすでにパーフェクトで、これより真に大きい最小のパーフェクト文字列は \"abac\" です。",
+    "hints": [
+      "答えに残す接頭辞自体がパーフェクトでなければならないので、隣り合う2文字が初めて等しくなる位置より先には延ばせません。",
+      "残せる最長の接頭辞から始めて、大きくできる位置を左に向かって探します。",
+      "大きくした位置より後ろは、a と b を交互に並べて埋めます。"
+    ]
+  },
+  "ko": {
+    "title": "Amazon OA #311: 다음 완벽한 문자열",
+    "description": "인접한 두 문자가 같지 않은 문자열을 완벽한 문자열이라 합니다. 영어 소문자로 이루어진 문자열 s가 주어집니다(s 자체는 완벽할 수도, 아닐 수도 있습니다). s와 길이가 같으면서 사전순으로 s보다 엄격히 큰 가장 작은 완벽한 문자열을 구하세요. 없으면 -1을 출력합니다.",
+    "input": "한 줄에 문자열 s가 주어집니다. 1≤s의 길이≤200000이며 영어 소문자로만 이루어집니다.",
+    "output": "정답 문자열을 출력하고, 없으면 -1을 출력합니다.",
+    "explanation": "예제 1: s=\"abzzzcd\"입니다. 접두사 abz 바로 뒤의 z는 앞의 문자와 같으므로 인덱스 ≤2의 위치에서 문자가 커져야 합니다. 인덱스 2의 z는 더 키울 수 없으므로 인덱스 1의 b를 c로 바꾸고, 나머지를 가장 작은 교대 문자열 ababa로 채워 \"acababa\"가 됩니다.\n예제 2: s=\"zzab\"입니다. 인덱스 0의 z는 키울 수 없고 인덱스 1을 키우려면 마찬가지로 z를 넘어야 하므로 답이 없습니다. -1을 출력합니다.\n예제 3: s=\"abab\"는 이미 완벽하며, 이보다 엄격히 큰 가장 작은 완벽한 문자열은 \"abac\"입니다.",
+    "hints": [
+      "답에서 유지되는 접두사 자체가 완벽해야 하므로, 인접한 두 문자가 같은 첫 위치를 넘어서까지 확장할 수 없습니다.",
+      "유지할 수 있는 가장 긴 접두사부터 시작하여 왼쪽으로 키울 수 있는 위치를 찾습니다.",
+      "키운 위치 이후는 a와 b를 번갈아 채웁니다."
+    ]
+  },
+  "vi": {
+    "title": "Amazon OA #311: Xâu hoàn hảo kế tiếp",
+    "description": "Một xâu là hoàn hảo nếu không có hai ký tự kề nhau nào giống nhau. Cho xâu s gồm các chữ cái tiếng Anh viết thường (bản thân s có thể hoàn hảo hoặc không), hãy tìm xâu hoàn hảo nhỏ nhất có cùng độ dài với s và lớn hơn s hoàn toàn theo thứ tự từ điển. Nếu không tồn tại, in -1.",
+    "input": "Một dòng chứa xâu s. 1≤độ dài của s≤200000, chỉ gồm các chữ cái tiếng Anh viết thường.",
+    "output": "In ra xâu đáp án; nếu không tồn tại, in -1.",
+    "explanation": "Ví dụ 1: s=\"abzzzcd\". Ký tự z ngay sau tiền tố abz bằng nó, nên xâu phải tăng tại một chỉ số ≤2; ký tự z ở chỉ số 2 không thể tăng thêm nữa, nên đổi b ở chỉ số 1 thành c và điền phần còn lại bằng xâu xen kẽ nhỏ nhất ababa, được \"acababa\".\nVí dụ 2: s=\"zzab\". Ký tự z ở chỉ số 0 không thể tăng, và tăng chỉ số 1 cũng đòi hỏi vượt quá z, nên không có đáp án; in -1.\nVí dụ 3: s=\"abab\" đã hoàn hảo, và xâu hoàn hảo nhỏ nhất lớn hơn nó hoàn toàn là \"abac\".",
+    "hints": [
+      "Tiền tố được giữ lại trong đáp án tự nó phải hoàn hảo, nên nó không thể kéo dài quá vị trí đầu tiên có hai ký tự kề nhau bằng nhau.",
+      "Bắt đầu từ tiền tố dài nhất có thể giữ lại, tìm sang trái một vị trí có thể tăng.",
+      "Sau vị trí được tăng, điền phần còn lại bằng cách xen kẽ a và b."
+    ]
   }
 }

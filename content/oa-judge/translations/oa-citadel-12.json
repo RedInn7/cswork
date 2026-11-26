@@ -11,5 +11,35 @@
     "hints": [
       "Let the prefix P[i] be the sum of the first i items. Scan the right endpoint r, count each l≤r−2 under the key (a[l],P[l+1]+a[l]), and query (a[r],P[r])."
     ]
+  },
+  "ja": {
+    "title": "両端が内部の和に等しい安定区間",
+    "description": "長さが 3 以上の連続区間で、左端と右端の容量が等しく、かつ内部のすべての容量の和にも等しいとき、その区間は安定しています。そのような区間の個数を求めてください。元の capacity[i] は、直後の文と例に基づき、左端の容量 capacity[l] に修正しています。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "1 行目に n、続けて n 個の容量の値が与えられます。元の範囲は 1≤n≤100000、1≤capacity[i]≤100000 です。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に、2、2、0 です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "接頭辞和 P[i] を先頭 i 個の和とします。右端 r を走査しながら、l≤r−2 の各 l をキー (a[l],P[l+1]+a[l]) で数え、(a[r],P[r]) を照会します。"
+    ]
+  },
+  "ko": {
+    "title": "양 끝값이 내부 합과 같은 안정 구간",
+    "description": "길이가 3 이상인 연속 구간에서 왼쪽 끝과 오른쪽 끝의 용량이 같아야 하고, 그 값이 내부 용량들의 합과도 같아야 합니다. 이런 구간의 개수를 구하세요. 원문의 capacity[i]는 다음 문장과 예제에 근거해 왼쪽 끝 용량 capacity[l]로 바로잡았습니다.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어서 용량 n개가 주어집니다. 원문 전체 범위: 1≤n≤100000, 1≤capacity[i]≤100000.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 2; 2; 0입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "접두사 합 P[i]를 처음 i개 항의 합이라 합니다. 오른쪽 끝 r을 스캔하면서 l≤r−2인 각 l을 키 (a[l],P[l+1]+a[l])로 세고, (a[r],P[r])를 조회합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đoạn ổn định có hai đầu mút bằng tổng phần bên trong",
+    "description": "Trong một đoạn liên tiếp có độ dài ít nhất 3, sức chứa của đầu mút trái và phải phải bằng nhau và phải bằng tổng sức chứa của tất cả các phần tử bên trong. Hãy tìm số đoạn như vậy. capacity[i] gốc được khôi phục thành sức chứa đầu mút trái capacity[l] dựa trên câu tiếp theo và các ví dụ.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Dòng đầu tiên chứa n, tiếp theo là n giá trị sức chứa; cận gốc đầy đủ 1≤n≤100000, 1≤capacity[i]≤100000.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; 2; 0. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Gọi tiền tố P[i] là tổng của i phần tử đầu. Quét đầu mút phải r, đếm mỗi l≤r−2 theo khóa (a[l],P[l+1]+a[l]), và truy vấn (a[r],P[r])."
+    ]
   }
 }

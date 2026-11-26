@@ -11,5 +11,35 @@
     "hints": [
       "Record the deletion time of each position and binary search on the number of deletions. When checking a candidate, ignore positions whose deletion time is ≤ the candidate, and greedily match the target subsequence."
     ]
+  },
+  "ja": {
+    "title": "指定順に削除しつつ部分列を保つ",
+    "description": "source の文字を、元の 1-based インデックスの順列 order に従って 1 文字ずつ削除します。削除してもインデックスは振り直しません。target は最初 source の部分列であることが保証されています。target が部分列であり続けるように連続して実行できる、先頭からの削除回数の最大値を求めてください。\n\n入出力プロトコルと明示された補足制約は本サイトが整備したものであり、元の解法は実行していません。",
+    "input": "1 行目と 2 行目に source と target(空白を含まない単語)が与えられ、最後の行に source と同じ長さの 1-based インデックスの順列が与えられます。1≤|source|≤100000、1≤|target|≤|source| です。英字の大文字・小文字に特別な制限はなく、比較は大文字・小文字を区別します。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 3; 1; 1 です。例は、独立した全探索・状態探索・直接シミュレーションで再確認済みです。",
+    "hints": [
+      "各位置が削除される時刻を記録し、削除回数で二分探索します。候補を確認するときは、削除時刻が候補以下の位置を無視し、target を部分列として貪欲にマッチさせます。"
+    ]
+  },
+  "ko": {
+    "title": "주어진 순서로 삭제하면서 부분 수열 유지하기",
+    "description": "source의 문자를 순열 order에 따라 하나씩 삭제합니다. order는 원래 1-기반 인덱스의 순열이며, 삭제 후에도 원래 인덱스는 다시 매겨지지 않습니다. target은 처음에 source의 부분 수열임이 보장됩니다. target이 계속 부분 수열로 남도록 연속으로 수행할 수 있는 앞쪽 삭제의 최대 횟수를 구하세요.\n\n입출력 규약과 명시된 보충 제약 조건은 이 사이트에서 정리한 것이며, 원본 풀이는 실행하여 검증하지 않았습니다.",
+    "input": "처음 두 줄에 source와 target(공백 문자가 없는 단어)이 주어지고, 마지막 줄에 source의 길이와 같은 길이를 가진 1-기반 인덱스 순열이 주어집니다. 1≤|source|≤100000, 1≤|target|≤|source|입니다. 대소문자에 임의의 제한은 없으며, 비교는 대소문자를 구분합니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 3; 1; 1입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 검증했습니다.",
+    "hints": [
+      "각 위치의 삭제 시점을 기록하고 삭제 횟수에 대해 이분 탐색을 합니다. 후보 값을 검사할 때는 삭제 시점이 후보 값 이하인 위치를 무시하고, target 부분 수열을 그리디하게 매칭합니다."
+    ]
+  },
+  "vi": {
+    "title": "Xóa theo thứ tự cho trước mà vẫn giữ xâu con",
+    "description": "Xóa lần lượt từng ký tự của source theo order, là một hoán vị các chỉ số gốc tính từ 1; chỉ số gốc không bị đánh số lại sau khi xóa. target ban đầu chắc chắn là xâu con của source. Hãy tìm số lần xóa liên tiếp ở đầu dãy lớn nhất sao cho target vẫn còn là xâu con.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Hai dòng đầu chứa source và target (là các từ không có khoảng trắng), dòng cuối chứa một hoán vị các chỉ số tính từ 1 có độ dài bằng độ dài của source. 1≤|source|≤100000, 1≤|target|≤|source|. Chữ hoa chữ thường không bị giới hạn tùy ý, và phép so sánh phân biệt hoa thường.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 3; 1; 1. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Ghi lại thời điểm bị xóa của mỗi vị trí và tìm kiếm nhị phân trên số lần xóa. Khi kiểm tra một giá trị ứng viên, bỏ qua các vị trí có thời điểm xóa ≤ giá trị đó, rồi ghép tham lam xâu con target."
+    ]
   }
 }

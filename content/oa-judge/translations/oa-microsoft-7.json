@@ -11,5 +11,35 @@
     "hints": [
       "Maintain a monotonic stack from right to left; after popping the elements priced higher than the current item, the top of the stack is the first price to the right that is not higher than the current price."
     ]
+  },
+  "ja": {
+    "title": "右側の最初の「自分以下の価格」による割引",
+    "description": "各商品の価格から、その右側にある最初の「自分以下の価格」の商品の価格を差し引きます。そのような商品がなければ元の価格で売れます。販売価格の合計と、元の価格で売られた商品の0始まりの添字を昇順で出力してください。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "1行目に n (1..100000)、2行目に n 個の価格 (1..10⁸) が与えられます。",
+    "output": "1行目に販売価格の合計を出力します。2行目には、まず元の価格で売られた商品の個数を出力し、続けてその添字を昇順に出力します。",
+    "explanation": "例 1: 販売価格は 1, 2, 1, 0, 2, 2 で、合計は 8 です。添字 2 と 5 が元の価格で売られます。\n\n例 2: 1番目の商品は2番目で完全に相殺され、2番目だけが元の価格 5 で残ります（添字 1）。\n\n例 3: 右側の商品はすべて自分より高いので、3つとも元の価格で売られ、合計は 6、添字は 0, 1, 2 です。",
+    "hints": [
+      "右から左へ単調スタックを保持します。現在の商品より価格が高い要素をポップしたあと、スタックの先頭が右側にある最初の「現在の価格以下」の価格になります。"
+    ]
+  },
+  "ko": {
+    "title": "오른쪽에서 처음 만나는 같거나 낮은 가격만큼 할인",
+    "description": "각 상품의 가격은 자신보다 오른쪽에 있는 상품 중 가격이 자신보다 높지 않은 첫 번째 상품의 가격만큼 할인됩니다. 그런 상품이 없으면 원래 가격에 판매됩니다. 총 판매 가격과, 원래 가격에 판매된 상품의 0-based 인덱스를 오름차순으로 출력하세요.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫 줄에 n(1..100000)이 주어지고, 둘째 줄에 n개의 가격(1..10⁸)이 주어집니다.",
+    "output": "첫 줄에 총 판매 가격을 출력합니다. 둘째 줄에는 먼저 원래 가격에 판매된 상품의 개수를 출력한 뒤, 그 인덱스를 오름차순으로 출력합니다.",
+    "explanation": "예제 1: 판매 가격은 1, 2, 1, 0, 2, 2이고 합은 8이며, 인덱스 2와 5는 원래 가격에 판매됩니다.\n\n예제 2: 첫 번째 상품은 두 번째 상품으로 완전히 상쇄되어, 두 번째 상품만 원래 가격 5로 판매되며 인덱스는 1입니다.\n\n예제 3: 오른쪽의 모든 상품이 더 비싸므로 세 상품 모두 원래 가격에 판매되어 합은 6이고 인덱스는 0, 1, 2입니다.",
+    "hints": [
+      "오른쪽에서 왼쪽으로 단조 스택을 유지합니다. 현재 상품보다 가격이 높은 원소를 pop한 뒤의 스택 top이 현재 가격 이하인 오른쪽의 첫 번째 가격입니다."
+    ]
+  },
+  "vi": {
+    "title": "Giảm giá theo mức giá đầu tiên bên phải không cao hơn",
+    "description": "Giá của mỗi món hàng được giảm đi đúng bằng giá của món đầu tiên nằm bên phải nó có giá không cao hơn giá của nó; nếu không có món nào như vậy thì món đó bán với giá gốc. In ra tổng giá bán và các chỉ số (đánh số từ 0) của những món bán với giá gốc, theo thứ tự tăng dần.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Dòng đầu chứa n (1..100000), dòng thứ hai chứa n giá (1..10⁸).",
+    "output": "Dòng đầu in tổng giá bán. Dòng thứ hai in số món bán với giá gốc, rồi đến các chỉ số của chúng theo thứ tự tăng dần.",
+    "explanation": "Ví dụ 1: các giá bán là 1, 2, 1, 0, 2, 2, tổng bằng 8; các chỉ số 2 và 5 bán với giá gốc.\n\nVí dụ 2: món đầu tiên được món thứ hai khấu trừ hoàn toàn, chỉ còn món thứ hai bán với giá gốc 5, ở chỉ số 1.\n\nVí dụ 3: mọi món bên phải đều đắt hơn, nên cả ba món đều bán với giá gốc, tổng là 6, ở các chỉ số 0, 1, 2.",
+    "hints": [
+      "Duy trì một ngăn xếp đơn điệu từ phải sang trái; sau khi loại bỏ các phần tử có giá cao hơn món hiện tại, phần tử trên đỉnh ngăn xếp chính là mức giá đầu tiên bên phải không cao hơn giá hiện tại."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "If the AND of the whole array is non-zero, only 1 segment is possible. Otherwise, scanning from left to right, cut as soon as the current segment's AND becomes 0; merge a final tail that never reaches zero into the previous segment."
     ]
+  },
+  "ja": {
+    "title": "ビット AND のコストの合計を最小にしたときの連続分割の最大数",
+    "description": "非負整数の performance 配列全体を、空でない連続する区間に分割します。区間のコストはその区間のすべての数のビット AND で、総コストは各区間のコストの和です。まず総コストを最小化し、その条件の下で区間の数を最大化して、その区間数を出力してください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に performance が与えられます。元の問題文には数値の範囲がありませんでしたが、本サイトでは 1≤n≤200000、0≤performance[i]≤10^9 とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 1、1、3 です。1 つ目の例では、先頭 2 つの AND がすでに 0 なので、最後の 3 はその区間に併合しなければなりません。コストが正の新しい区間として独立させることはできません。",
+    "hints": [
+      "配列全体の AND が 0 以外なら、区間は 1 つしか取れません。そうでなければ左から走査し、現在の区間の AND が 0 になった時点で切ります。最後まで 0 に達しない末尾は、直前の区間に併合します。"
+    ]
+  },
+  "ko": {
+    "title": "비트 AND 총비용 최소 조건에서 연속 구간 분할 최대 개수",
+    "description": "음이 아닌 성능 배열 전체를 비어 있지 않은 연속 구간들로 나눕니다. 한 구간의 비용은 그 구간 모든 수의 비트 AND이고, 총비용은 구간 비용의 합입니다. 먼저 총비용을 최소화하고, 그 조건에서 구간의 개수를 최대화한 뒤 구간의 개수를 출력합니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 performance가 주어집니다. 원문에는 수치 범위가 없었으며, 본 사이트는 1≤n≤200000, 0≤performance[i]≤10^9을 사용합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 1, 1, 3입니다. 첫 번째 예제에서는 앞의 두 원소의 AND가 이미 0이므로 마지막 3은 그 구간에 합쳐야 하며, 양수 비용으로 새 구간을 시작할 수 없습니다.",
+    "hints": [
+      "전체 배열의 AND가 0이 아니면 구간은 1개만 가능합니다. 그렇지 않으면 왼쪽에서 오른쪽으로 훑으며 현재 구간의 AND가 0이 되는 즉시 자르고, 끝내 0에 도달하지 못한 마지막 꼬리 부분은 직전 구간에 합칩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số đoạn liên tiếp nhiều nhất khi tổng chi phí AND bit nhỏ nhất",
+    "description": "Cắt toàn bộ mảng hiệu năng không âm thành các đoạn liên tiếp khác rỗng. Chi phí của một đoạn là phép AND bit của mọi số trong đoạn, và tổng chi phí là tổng chi phí các đoạn. Trước hết cực tiểu hóa tổng chi phí, sau đó, với điều kiện đó, cực đại hóa số đoạn; in ra số đoạn.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa performance. Đề gốc không nêu giới hạn số; trang này dùng 1≤n≤200000, 0≤performance[i]≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 1, 1 và 3. Ở ví dụ thứ nhất, phép AND của hai phần tử đầu đã bằng 0, và số 3 cuối cùng phải được gộp vào đoạn đó; nó không thể bắt đầu một đoạn mới với chi phí dương.",
+    "hints": [
+      "Nếu AND của cả mảng khác không thì chỉ có thể có 1 đoạn. Ngược lại, quét từ trái sang phải, cắt ngay khi AND của đoạn hiện tại bằng 0; phần đuôi cuối cùng không bao giờ đạt 0 thì gộp vào đoạn trước."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Convert the review to lowercase. Enumerate the right end and check whether each banned word ends there; if one matches starting at p, move the left end of the window to at least p+1, then measure the length."
     ]
+  },
+  "ja": {
+    "title": "禁止フラグメントを含まない最長のレビューの長さ",
+    "description": "レビュー文のうち、禁止語を含まない最長の連続部分文字列を求めてください。照合は大文字と小文字を区別せず、禁止語は任意の位置に現れうるもので、単語全体への一致に限りません。空でない有効な部分文字列が存在しない場合、答えは 0 です。\n\n本サイトが標準入出力、解説、テストを独自に作成しました。元の範囲が欠けている点や、例の訂正は、問題文中に明記しています。",
+    "input": "1行目に review、2行目に禁止語の数、続く各行に禁止語が1つずつ与えられます。元の制約:review の長さは 1..100000 で、ASCII の英大文字と英小文字だけを含みます。禁止語は 1..10 個で、それぞれ 1..10 文字の英小文字からなります。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "元の最初の例では、正しい最長のフラグメントは長さ 15 の dProductButScra です。出典が別に挙げている dProductButScu は、元の文字列の部分文字列ではありません。ほかの公開例の答えは 0 と 20 です。",
+    "hints": [
+      "review を小文字に変換します。右端を列挙し、各禁止語がそこで終わっているかを確認します。位置 p から始まる一致があれば、ウィンドウの左端を少なくとも p+1 まで進め、その長さを測ります。"
+    ]
+  },
+  "ko": {
+    "title": "금지 조각이 없는 가장 긴 리뷰 길이",
+    "description": "리뷰에서 금지어를 하나도 포함하지 않는 가장 긴 연속 부분 문자열을 찾으세요. 매칭은 대소문자를 구분하지 않으며 금지어는 어느 위치에든 나타날 수 있고, 단어 단위로만 매칭하는 것이 아닙니다. 비어 있지 않은 유효한 부분 문자열이 없으면 답은 0입니다.\n\n이 사이트가 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 누락된 원문 범위와 예제의 정정 사항은 문제 설명에 명시했습니다.",
+    "input": "첫째 줄에 review가, 둘째 줄에 금지어의 개수가, 이어지는 각 줄에 금지어가 하나씩 주어집니다. 원문의 범위: review의 길이는 1..100000이며 ASCII 대소문자 알파벳으로만 이루어지고, 금지어는 1..10개이며 각각 소문자 1..10개로 이루어집니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "원문의 첫 번째 예제에서 올바른 가장 긴 조각은 길이 15인 dProductButScra이며, 원문이 따로 제시한 dProductButScu는 원래 문자열의 조각이 아닙니다. 나머지 공개 예제의 답은 0과 20입니다.",
+    "hints": [
+      "review를 소문자로 변환합니다. 오른쪽 끝을 열거하며 각 금지어가 그 위치에서 끝나는지 확인하고, p에서 시작하는 일치가 있으면 윈도우의 왼쪽 끝을 최소 p+1로 옮긴 뒤 길이를 측정합니다."
+    ]
+  },
+  "vi": {
+    "title": "Độ dài đánh giá dài nhất không chứa đoạn bị cấm",
+    "description": "Tìm xâu con liên tiếp dài nhất của bài đánh giá không chứa từ bị cấm nào. Việc so khớp không phân biệt hoa thường, và từ bị cấm có thể xuất hiện ở bất kỳ vị trí nào; không giới hạn ở từ nguyên vẹn. Nếu không có xâu con hợp lệ khác rỗng nào, đáp án là 0.\n\nTrang này tự viết đầu vào/ra chuẩn, lời giải và các bộ kiểm thử; các giới hạn gốc bị thiếu và các chỗ sửa ví dụ được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa review, dòng thứ hai chứa số từ bị cấm, và mỗi dòng tiếp theo chứa một từ bị cấm. Giới hạn gốc: review có độ dài 1..100000 và chỉ chứa chữ cái ASCII hoa và thường; có 1..10 từ, mỗi từ gồm 1..10 chữ cái thường.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Trong ví dụ gốc đầu tiên, đoạn dài nhất đúng là dProductButScra, độ dài 15; dProductButScu mà nguồn liệt kê riêng không phải đoạn của xâu gốc. Đáp án của các ví dụ công khai khác là 0 và 20.",
+    "hints": [
+      "Chuyển review sang chữ thường. Duyệt đầu mút phải và kiểm tra xem từ bị cấm nào kết thúc tại đó; nếu có từ khớp bắt đầu tại p, dịch đầu mút trái của cửa sổ đến ít nhất p+1, rồi đo độ dài."
+    ]
   }
 }

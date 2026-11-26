@@ -13,5 +13,41 @@
       "Traversing in reverse order gives a tree DP without recursion.",
       "Treat each node as the highest node of the path and combine its two branches that have positive gain; rebuild the path only once at the end."
     ]
+  },
+  "ja": {
+    "title": "パスの具体例付き二分木の最大パス和",
+    "description": "ノード 0 を根とする正しい二分木が与えられます。木のすべてのノードの値の合計と、任意の 2 つのノードの間の空でない単純パスの最大和を求め、その最大和を達成するパスのノードの値の列も 1 つ出力してください。パスは親子の辺をたどり、任意のノードから始めて任意のノードで終えられ、ノードを繰り返してはいけません。ノード 1 つだけのパスも許されます。ノードの値は負、0、重複のいずれもありえます。本サイトは元の問題の 3 つの結果を保ち、値が重複するときにパスの正しさを検証するために、0 始まりのノード ID のパスを 4 行目として追加しています。これは本サイトの判定プロトコルの拡張であり、元の問題の要件ではありません。最適なパスが複数あるときは、どれを出力してもよく、順方向でも逆方向でも構いません。",
+    "input": "1 行目に n、2 行目に n 個の整数 values[i] が与えられます。続く n 行のうち i 番目の行には、ノード i の左の子と右の子を表す 2 つの整数 left right が与えられ、-1 は子がないことを意味します。元の制約はすべて次のとおりです。1≤n≤200000、-10^9≤values[i]≤10^9。ノード 0 が根で、すべてのノードは根から到達可能で、正しい二分木をなします。番号がトポロジカル順であることは保証されません。本サイトでは、1 つのテスト入力を 32 MiB に制限します。",
+    "output": "ちょうど 4 行を出力します。1 行目は木のすべてのノードの値の合計、2 行目は空でないパスの最大和、3 行目はそのパスのノードの値を空白区切りで並べたもの、4 行目は 3 行目と 1 対 1 に対応する 0 始まりのノード ID を空白区切りで並べたものです。パスには少なくとも 1 つのノードが含まれ、ID は重複せず、隣り合う ID は親子の辺で結ばれていなければなりません。最適なパスであればどれでも受理され、参照出力と一致する必要はありません。4 行目は本サイトによる拡張です。",
+    "explanation": "元の例では、木の合計は 6 で、最大パス 2→1→3 の和は 6 です。本サイトでは ID のパス 1→0→2 を追加しています。すべて負の例では、最良は単一ノードの -2（ID1）で、空のパスを選んで 0 にすることはできません。すべて 0 の例では、任意の単一ノードや任意の有効なパスが最適です。",
+    "hints": [
+      "各ノードについて、下向きの最良のパス和と、1 つの子の向きを記録します。",
+      "逆順に走査すると、再帰なしで木 DP ができます。",
+      "各ノードをパスの最上位のノードとみなし、利得が正の 2 つの枝を組み合わせます。パスの復元は最後に 1 回だけ行います。"
+    ]
+  },
+  "ko": {
+    "title": "경로 증명이 있는 이진 트리 최대 경로 합",
+    "description": "0번 노드를 루트로 하는 유효한 이진 트리가 주어집니다. 트리의 모든 노드 값의 합과, 임의의 두 노드 사이의 비어 있지 않은 단순 경로 합의 최댓값을 구하고, 그 최대 합을 달성하는 경로 하나를 노드 값으로 출력하세요. 경로는 부모-자식 간선을 따라가며 어떤 노드에서든 시작하고 끝날 수 있고 노드를 반복할 수 없으며, 노드 하나로 된 경로도 허용됩니다. 노드 값은 음수, 0, 중복일 수 있습니다. 이 사이트는 원문 문제의 세 가지 결과를 유지하고, 값이 중복될 때 경로의 유효성을 검증할 수 있도록 0 기반 노드 ID 경로를 네 번째 줄로 추가합니다. 이는 이 사이트의 채점 프로토콜의 확장이며 원문의 요구 사항이 아닙니다. 최적의 경로가 여러 개이면 하나만 출력해도 되며, 정방향이든 역방향이든 상관없습니다.",
+    "input": "첫째 줄에 n이, 둘째 줄에 n개의 정수 values[i]가 주어집니다. 이어지는 n개의 줄 중 i번째 줄에는 노드 i의 왼쪽 자식과 오른쪽 자식을 나타내는 두 정수 left right가 주어지며, -1은 자식이 없음을 뜻합니다. 원문의 전체 제약 조건: 1≤n≤200000, -10^9≤values[i]≤10^9. 노드 0이 루트이며 모든 노드는 루트에서 도달 가능하고 유효한 이진 트리를 이룹니다. 번호가 위상 순서를 따른다는 보장은 없습니다. 이 사이트는 테스트 입력 하나를 32 MiB로 제한합니다.",
+    "output": "정확히 네 줄을 출력합니다. 첫째 줄은 트리의 모든 노드 값의 합, 둘째 줄은 비어 있지 않은 경로 합의 최댓값, 셋째 줄은 그 경로의 노드 값들을 공백으로 구분한 것, 넷째 줄은 셋째 줄과 일대일로 대응하는 0 기반 노드 ID를 공백으로 구분한 것입니다. 경로에는 노드가 적어도 하나 있어야 하고 ID는 반복될 수 없으며 인접한 ID는 부모-자식 간선으로 이어져야 합니다. 최적의 경로는 무엇이든 허용되며 참조 출력과 같을 필요는 없습니다. 넷째 줄은 이 사이트의 확장입니다.",
+    "explanation": "원문 예제에서 트리의 합은 6이고 최대 경로 2→1→3의 합은 6이며, 이 사이트는 ID 경로 1→0→2를 추가합니다. 모두 음수인 예제에서는 노드 하나 -2(ID 1)가 최선이며, 비어 있는 경로를 선택해 0을 얻을 수는 없습니다. 모두 0인 예제에서는 어떤 단일 노드나 유효한 경로든 최적입니다.",
+    "hints": [
+      "각 노드에 대해 아래로 내려가는 최선의 경로 합과 자식 방향 하나를 기록합니다.",
+      "역순으로 순회하면 재귀 없이 트리 DP를 할 수 있습니다.",
+      "각 노드를 경로의 최상위 노드로 보고, 이득이 양수인 두 가지(branch)를 결합합니다. 경로는 마지막에 한 번만 복원합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng đường đi lớn nhất trên cây nhị phân kèm đường đi minh chứng",
+    "description": "Cho một cây nhị phân hợp lệ có gốc là nút 0, hãy tính tổng giá trị mọi nút của cây và tổng đường đi đơn không rỗng lớn nhất giữa hai nút bất kỳ, đồng thời in ra một đường đi các giá trị nút đạt tổng lớn nhất đó. Đường đi đi theo các cạnh cha-con, có thể bắt đầu và kết thúc ở nút bất kỳ, và không được lặp lại nút; đường đi chỉ một nút được phép. Giá trị nút có thể âm, bằng 0 hoặc lặp lại. Trang này giữ ba kết quả của bài gốc và thêm dòng thứ tư là đường đi gồm các ID nút đánh số từ 0, để kiểm tra tính hợp lệ của đường đi khi các giá trị lặp lại; đây là phần mở rộng của giao thức chấm bài của trang này, không phải yêu cầu của bài gốc. Khi có nhiều đường đi tối ưu, có thể in một đường đi bất kỳ, theo chiều xuôi hoặc chiều ngược.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà bài gốc không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n số nguyên values[i]; trong n dòng tiếp theo, dòng i chứa hai số nguyên left right, là con trái và con phải của nút i, trong đó -1 nghĩa là không có. Ràng buộc gốc đầy đủ: 1≤n≤200000, -10^9≤values[i]≤10^9. Nút 0 là gốc, mọi nút đều đến được từ gốc, và chúng tạo thành một cây nhị phân hợp lệ; việc đánh số không đảm bảo theo thứ tự tô-pô. Trang này giới hạn một đầu vào kiểm thử đơn lẻ ở 32 MiB.",
+    "output": "In ra đúng bốn dòng: dòng đầu là tổng các giá trị của mọi nút trong cây; dòng thứ hai là tổng đường đi không rỗng lớn nhất; dòng thứ ba liệt kê các giá trị nút của đường đi đó, cách nhau bằng khoảng trắng; dòng thứ tư liệt kê các ID nút đánh số từ 0 tương ứng một-một với dòng thứ ba, cách nhau bằng khoảng trắng. Đường đi có ít nhất một nút, không ID nào được lặp, và các ID liền kề phải nối với nhau bằng một cạnh cha-con. Mọi đường đi tối ưu đều được chấp nhận; không cần trùng với đầu ra tham chiếu. Dòng thứ tư là phần mở rộng của trang này.",
+    "explanation": "Trong ví dụ gốc, tổng của cây là 6 và đường đi lớn nhất 2→1→3 có tổng 6; trang này bổ sung đường đi ID 1→0→2. Trong ví dụ toàn số âm, lựa chọn tốt nhất là một nút duy nhất -2 (ID1); không thể chọn đường đi rỗng để được 0. Trong ví dụ toàn số 0, mọi nút đơn lẻ hoặc mọi đường đi hợp lệ đều tối ưu.",
+    "hints": [
+      "Với mỗi nút, ghi lại tổng đường đi đi xuống tốt nhất và một hướng con.",
+      "Duyệt theo thứ tự ngược cho ta một quy hoạch động trên cây mà không cần đệ quy.",
+      "Coi mỗi nút là nút cao nhất của đường đi và kết hợp hai nhánh có lợi ích dương của nó; chỉ dựng lại đường đi một lần ở cuối."
+    ]
   }
 }

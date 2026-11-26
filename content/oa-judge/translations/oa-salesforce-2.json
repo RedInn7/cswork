@@ -11,5 +11,35 @@
     "hints": [
       "Sort the costs of 01, 10, and 11 separately. Pair the i-th cheapest 01 with the i-th cheapest 10 to form one dual-feature unit, merge these with all 11 costs in sorted order, and take prefix sums one by one."
     ]
+  },
+  "ja": {
+    "title": "2 つの特徴を持つモデルのレベルごとの最小購入コスト",
+    "description": "各モデルには正のコストと、2 ビットの特徴文字列 00/01/10/11 があります。各 k=1..n について、2 つの特徴がそれぞれ少なくとも k 個のモデルでサポートされるようにモデルの集合を選び、合計価格の最小値を求めてください。同じモデルを複数回買うことはできません。\n\n入出力形式は本サイトが整備したものです。",
+    "input": "1 行目に n が与えられ、続く n 行に cost feature が与えられます。1≤n≤1000、1≤cost≤10000 です。",
+    "output": "まず n を出力し、続いて n 個の答えを出力してください。不可能な k には −1 を出力します。",
+    "explanation": "結果はそれぞれ [2,6,15,26,−1,−1]、[−1,−1]、[5,15,−1] です。",
+    "hints": [
+      "01、10、11 のコストをそれぞれソートします。i 番目に安い 01 と i 番目に安い 10 を組にして 1 つの二重特徴ユニットとし、これらをすべての 11 のコストとソート順にマージして、先頭から順に累積和を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "두 가지 기능을 가진 모델의 수준별 최소 구매 비용",
+    "description": "각 모델은 양의 비용과 두 비트의 기능 문자열 00/01/10/11을 가집니다. k=1..n 각각에 대해, 두 기능이 각각 적어도 k개의 모델에 의해 지원되도록 모델 집합을 골라 최소 총 가격을 구하세요. 같은 모델을 두 번 이상 살 수 없습니다.\n\n입출력 형식은 이 사이트에서 정리한 것입니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어서 n개의 줄에 cost feature가 주어집니다. 1≤n≤1000, 1≤cost≤10000.",
+    "output": "먼저 n을 출력하고, 이어서 n개의 답을 출력합니다. 불가능한 k에 대해서는 −1을 출력합니다.",
+    "explanation": "결과는 각각 [2,6,15,26,−1,−1], [−1,−1], [5,15,−1]입니다.",
+    "hints": [
+      "01, 10, 11의 비용을 각각 정렬합니다. i번째로 저렴한 01과 i번째로 저렴한 10을 짝지어 이중 기능 단위 하나를 만들고, 이 단위들을 모든 11 비용과 함께 정렬된 순서로 합친 뒤 하나씩 누적 합을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí mua tối thiểu theo từng mức cho mô hình hai tính năng",
+    "description": "Mỗi mô hình có chi phí dương và một xâu tính năng hai bit 00/01/10/11. Với mỗi k=1..n, hãy chọn một tập các mô hình sao cho mỗi tính năng trong hai tính năng được ít nhất k mô hình hỗ trợ, và tìm tổng giá nhỏ nhất; không được mua cùng một mô hình quá một lần.\n\nĐịnh dạng đầu vào/đầu ra do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa n, tiếp theo là n dòng cost feature. 1≤n≤1000, 1≤cost≤10000.",
+    "output": "Trước hết in n, sau đó in n đáp án; in −1 với k không thể thực hiện.",
+    "explanation": "Các kết quả lần lượt là [2,6,15,26,−1,−1], [−1,−1] và [5,15,−1].",
+    "hints": [
+      "Sắp xếp riêng chi phí của 01, 10 và 11. Ghép 01 rẻ thứ i với 10 rẻ thứ i để tạo một đơn vị hai tính năng, hợp nhất chúng với mọi chi phí 11 theo thứ tự đã sắp xếp, và lấy tổng tiền tố từng bước."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the target T; each service needs at least max(0,ceil(T/a)−1) scale-ups, and summing the costs tells whether the budget is exceeded. The upper bound is the minimum over all services of the throughput each would reach by using the whole budget alone."
     ]
+  },
+  "ja": {
+    "title": "予算内でスケールアップする直列サービスの最大スループット",
+    "description": "n 個のサービスが直列に接続されており、全体のスループットは、サービスのスループットの最小値です。サービス i を 1 回スケールアップするコストは cost[i] で、x 回スケールアップした後のスループットは throughput[i]·(1+x) です。予算内での全体のスループットの最大値を求めてください。元の式 (i+x) は初期スループットの定義と矛盾しており、(1+x) だけが 2 つの元の例の答え 10 と 9 の両方を与えます。この根拠に基づいて、誤記を修正しています。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "1 行目に n budget、2 行目に throughput、3 行目に cost が与えられます。元の問題には数値の範囲がありませんでした。本サイトでは 1≤n≤100000、1≤throughput と 1 回のスケールアップあたりのコスト≤10^9、0≤budget≤10^12 とします。答えと途中の積は 64 ビットを超え得るので、正確な整数、または 128 ビット整数を使ってください。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に、10、9、3 です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "目標 T で二分探索します。各サービスには少なくとも max(0,ceil(T/a)−1) 回のスケールアップが必要で、コストを合計すれば予算を超えるかどうかが分かります。上限は、各サービスが予算のすべてを単独で使ったときに到達するスループットの、全サービスにわたる最小値です。"
+    ]
+  },
+  "ko": {
+    "title": "예산 내 확장으로 얻는 직렬 서비스의 최대 처리량",
+    "description": "n개의 서비스가 직렬로 연결되어 있으며, 전체 처리량은 서비스들의 처리량 중 최솟값입니다. 서비스 i를 한 번 확장하는 비용은 cost[i]이고, x번 확장하면 처리량은 throughput[i]·(1+x)가 됩니다. 예산 안에서 얻을 수 있는 전체 처리량의 최댓값을 구하세요. 원문의 공식 (i+x)는 초기 처리량의 정의와 충돌하며, 원문의 두 예제에서 각각 10과 9를 내는 것은 (1+x)뿐이므로 이 근거에 따라 오타를 바로잡았습니다.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "첫 번째 줄에 n budget, 두 번째 줄에 throughput, 세 번째 줄에 cost가 주어집니다. 원문에는 수치 범위가 없었으며, 이 사이트는 1≤n≤100000, 1≤throughput 및 확장당 비용≤10^9, 0≤budget≤10^12를 사용합니다. 답과 중간 곱은 64비트를 넘을 수 있으므로 정확한 정수 또는 128비트 정수를 사용하세요.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 10; 9; 3입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "목표 T에 대해 이분 탐색합니다. 각 서비스는 최소 max(0,ceil(T/a)−1)번 확장해야 하며, 비용을 합하면 예산 초과 여부를 알 수 있습니다. 상한은 각 서비스가 예산 전체를 혼자 쓸 때 도달하는 처리량 중 최솟값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Thông lượng tối đa của các dịch vụ nối tiếp được mở rộng trong ngân sách",
+    "description": "n dịch vụ được nối tiếp nhau, và thông lượng tổng là thông lượng nhỏ nhất trong các dịch vụ. Mỗi lần mở rộng dịch vụ i tốn cost[i], và sau x lần mở rộng thông lượng của nó là throughput[i]·(1+x). Hãy tìm thông lượng tổng tối đa trong ngân sách. Công thức gốc (i+x) mâu thuẫn với định nghĩa thông lượng ban đầu, và chỉ (1+x) cho cả 10 lẫn 9 ở hai ví dụ gốc, nên lỗi đánh máy được khôi phục dựa trên bằng chứng này.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Dòng đầu tiên chứa n budget, dòng thứ hai chứa throughput, và dòng thứ ba chứa cost. Đề gốc không đưa ra cận số; trang này dùng 1≤n≤100000, 1≤throughput và chi phí mỗi lần mở rộng≤10^9, và 0≤budget≤10^12. Đáp án và các tích trung gian có thể vượt quá 64 bit, nên hãy dùng số nguyên chính xác hoặc số nguyên 128 bit.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 10; 9; 3. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chặt nhị phân theo mục tiêu T; mỗi dịch vụ cần ít nhất max(0,ceil(T/a)−1) lần mở rộng, và cộng các chi phí cho biết có vượt ngân sách không. Cận trên là giá trị nhỏ nhất trên mọi dịch vụ của thông lượng mà mỗi dịch vụ đạt được nếu dùng toàn bộ ngân sách một mình."
+    ]
   }
 }

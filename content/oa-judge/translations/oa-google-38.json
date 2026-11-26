@@ -12,5 +12,38 @@
       "The window length is fixed at |A|, so each step only adds one character and removes one.",
       "Do not copy and compare every window one by one; there can be many valid windows, and they can be long."
     ]
+  },
+  "ja": {
+    "title": "辞書順で最大のアナグラム窓",
+    "description": "文字列 A と B が与えられます。B の、長さがちょうど |A| の連続する部分文字列を選びます。その部分文字列は A と同じ文字を同じ個数だけ含まなければなりません（つまり A の並べ替えです）。有効な部分文字列のうち辞書順で最大のものを返してください。存在しなければ -1 を返します。\n\n本サイトの採点範囲：A と B は英小文字からなり、1≤|A|≤20000、1≤|B|≤50000 です。この文字集合と長さの範囲は本サイトが追加したもので、元の資料には書かれていません。解がない場合、本サイトは `-1` を出力します。既存の OAMaster のコードは空文字列を返しますが、同名の問題の要約では `-1` となっているため、ここでは `-1` を本サイトの明示的な規則としています。\n\nOAMaster の元の問題ページ：https://oamaster.com/docs/companies/google#38-largest-lexicographical-substring。中核となる意味は、同名の Google の面接問題の要約に従っています：https://www.1point3acres.com/interview/problems/google-largest-lexicographical-substring。",
+    "input": "2行で、それぞれ文字列 A と B が与えられます。",
+    "output": "条件を満たす辞書順で最大の窓を出力します。存在しなければ -1 を出力します。",
+    "explanation": "スライディングウィンドウで A との頻度の差を保持し、有効な窓をすべて線形時間で印付けします。次に B の接尾辞配列を作ります。同じ長さの部分文字列の辞書順は、それらが始まる接尾辞の辞書順と一致するので、有効な窓のうち、接尾辞の順位が最大のものを選びます。",
+    "hints": [
+      "窓の長さは |A| で固定なので、各ステップでは文字を 1 つ追加し、1 つ削除するだけです。",
+      "窓を 1 つずつコピーして比較してはいけません。有効な窓は多数あり、しかも長い場合があります。"
+    ]
+  },
+  "ko": {
+    "title": "사전순으로 가장 큰 애너그램 윈도우",
+    "description": "문자열 A와 B가 주어집니다. B에서 길이가 정확히 |A|인 연속 부분 문자열을 고르되, 그 부분 문자열은 A와 문자와 개수가 정확히 같아야 합니다(즉 A의 순열). 유효한 모든 부분 문자열 중 사전순으로 가장 큰 것을 반환하고, 없으면 -1을 반환하세요.\n\n이 사이트의 채점 범위: A와 B는 영어 소문자로 이루어지며 1≤|A|≤20000, 1≤|B|≤50000입니다. 이 문자 집합과 길이 범위는 이 사이트가 추가한 것이며 원 출처에는 제시되어 있지 않습니다. 해가 없으면 이 사이트는 `-1`을 출력합니다. 기존 OAMaster 코드는 빈 문자열을 반환하고 같은 이름의 문제 요약은 `-1`이라고 하므로, 여기서는 `-1`을 이 사이트의 명시적 규칙으로 삼습니다.\n\nOAMaster 원문 문제 페이지: https://oamaster.com/docs/companies/google#38-largest-lexicographical-substring. 핵심 의미는 같은 이름의 Google 면접 문제 요약을 따릅니다: https://www.1point3acres.com/interview/problems/google-largest-lexicographical-substring.",
+    "input": "두 줄에 각각 문자열 A와 B가 주어집니다.",
+    "output": "조건을 만족하는 사전순 최대 윈도우를 출력하고, 없으면 -1을 출력합니다.",
+    "explanation": "슬라이딩 윈도우로 A와의 빈도 차이를 유지하며 모든 유효한 윈도우를 선형 시간에 표시합니다. 그다음 B의 접미사 배열을 만들고, 길이가 같은 부분 문자열의 사전순은 시작 접미사의 사전순과 일치하므로, 유효한 윈도우 중 접미사 순위가 가장 큰 것을 선택합니다.",
+    "hints": [
+      "윈도우 길이가 |A|로 고정되어 있으므로 매 단계에서 문자 하나를 추가하고 하나를 제거할 뿐입니다.",
+      "모든 윈도우를 하나씩 복사해 비교하지 마세요. 유효한 윈도우가 많고 길 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Cửa sổ đảo chữ có thứ tự từ điển lớn nhất",
+    "description": "Cho các xâu A và B. Chọn một xâu con liên tiếp của B có độ dài đúng bằng |A|; xâu con đó phải chứa đúng các ký tự giống A với cùng số lần (tức là một hoán vị của A). Trả về xâu có thứ tự từ điển lớn nhất trong mọi xâu con hợp lệ; nếu không có thì trả về -1.\n\nGiới hạn chấm bài của trang này: A và B gồm các chữ cái tiếng Anh thường, 1≤|A|≤20000, 1≤|B|≤50000. Bộ ký tự và các phạm vi độ dài này do trang này bổ sung; nguồn gốc không đưa ra. Khi không có lời giải, trang này xuất `-1`; mã hiện có của OAMaster trả về xâu rỗng, trong khi phần tóm tắt của bài cùng tên nói `-1`, nên ở đây `-1` được đặt thành quy tắc tường minh của trang này.\n\nTrang bài gốc của OAMaster: https://oamaster.com/docs/companies/google#38-largest-lexicographical-substring. Ngữ nghĩa cốt lõi theo phần tóm tắt của bài phỏng vấn Google cùng tên: https://www.1point3acres.com/interview/problems/google-largest-lexicographical-substring.",
+    "input": "Hai dòng, lần lượt chứa các xâu A và B.",
+    "output": "Xuất cửa sổ thỏa điều kiện có thứ tự từ điển lớn nhất; nếu không có thì xuất -1.",
+    "explanation": "Một cửa sổ trượt duy trì hiệu tần suất so với A và đánh dấu mọi cửa sổ hợp lệ trong thời gian tuyến tính. Sau đó xây mảng hậu tố của B; thứ tự từ điển của các xâu con cùng độ dài khớp với thứ tự của các hậu tố bắt đầu tại chúng, nên trong các cửa sổ hợp lệ, chọn cửa sổ có hậu tố với hạng lớn nhất.",
+    "hints": [
+      "Độ dài cửa sổ cố định bằng |A|, nên mỗi bước chỉ thêm một ký tự và bớt một ký tự.",
+      "Đừng sao chép và so sánh từng cửa sổ một; có thể có rất nhiều cửa sổ hợp lệ, và chúng có thể rất dài."
+    ]
   }
 }

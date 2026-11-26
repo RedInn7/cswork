@@ -11,5 +11,35 @@
     "hints": [
       "Use two monotonic queues to maintain the window maximum and minimum, and compute atMost(K), the number of windows whose range is ≤K, by adding the length of the valid suffix at each right end. The answer is atMost(k)−atMost(k−1), and a negative K returns 0."
     ]
+  },
+  "ja": {
+    "title": "最大値と最小値の差がちょうど k になる連続グループの数",
+    "description": "空でない連続する部分配列はそれぞれ1つのグループで、最大値から最小値を引いた値がちょうど k のグループは「好成績」です。開始位置または終了位置が異なるグループは、値が同じでも別のグループとして扱います。好成績のグループの総数を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n k、2行目に配列が与えられます。元の問題文には値の範囲が示されておらず、本サイトでは 1≤n≤200000、−10^9≤a[i]≤10^9、−2000000000≤k≤2000000000 とします。k が負の場合は有効なグループが自然に存在せず、除外していません。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 2、6、0 です。2つ目の例では空でない部分配列 6 個すべてが該当するので、右端ごとに 1 だけを加えるわけにはいきません。",
+    "hints": [
+      "2つの単調キューでウィンドウの最大値と最小値を保持し、値の幅が K 以下のウィンドウの個数 atMost(K) を、各右端で有効な接尾辞の長さを加えて求めます。答えは atMost(k)−atMost(k−1) で、K が負なら 0 を返します。"
+    ]
+  },
+  "ko": {
+    "title": "최댓값 − 최솟값이 정확히 k인 연속 그룹의 수",
+    "description": "비어 있지 않은 모든 연속 부분 배열은 하나의 그룹이며, 그룹의 최댓값 − 최솟값이 정확히 k이면 그 그룹은 성과가 좋은 그룹입니다. 시작 위치나 끝 위치가 다른 그룹은 값이 같더라도 서로 다른 그룹입니다. 성과가 좋은 그룹의 총수를 구하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k가, 둘째 줄에 배열이 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 1≤n≤200000, −10^9≤a[i]≤10^9, −2000000000≤k≤2000000000입니다. k가 음수이면 자연스럽게 유효한 그룹이 없으며 제외하지 않습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 2, 6, 0입니다. 두 번째 예제에서는 비어 있지 않은 부분 배열 6개가 모두 해당하므로 오른쪽 끝마다 1만 더해서는 안 됩니다.",
+    "hints": [
+      "두 개의 단조 큐로 윈도의 최댓값과 최솟값을 유지하고, 오른쪽 끝마다 유효한 접미사의 길이를 더해 범위가 ≤K인 윈도의 수 atMost(K)를 계산합니다. 답은 atMost(k)−atMost(k−1)이며, K가 음수이면 0을 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số nhóm liên tiếp có max trừ min đúng bằng k",
+    "description": "Mỗi mảng con liên tiếp không rỗng là một nhóm, và một nhóm hoạt động tốt nếu giá trị lớn nhất trừ giá trị nhỏ nhất của nó đúng bằng k. Các nhóm có vị trí bắt đầu hoặc kết thúc khác nhau là khác nhau, kể cả khi giá trị giống nhau. Hãy tìm tổng số nhóm hoạt động tốt.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n k và dòng thứ hai chứa mảng. Đề gốc không cho cận giá trị; trên trang này 1≤n≤200000, −10^9≤a[i]≤10^9, −2000000000≤k≤2000000000. k âm tự nhiên không có nhóm hợp lệ nào và không bị loại trừ.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, 6 và 0. Ở ví dụ thứ hai, cả 6 mảng con không rỗng đều được tính, nên không thể chỉ cộng 1 cho mỗi đầu phải.",
+    "hints": [
+      "Dùng hai hàng đợi đơn điệu để duy trì giá trị lớn nhất và nhỏ nhất của cửa sổ, và tính atMost(K), số cửa sổ có hiệu max−min ≤K, bằng cách cộng độ dài của hậu tố hợp lệ tại mỗi đầu phải. Đáp án là atMost(k)−atMost(k−1), và K âm trả về 0."
+    ]
   }
 }

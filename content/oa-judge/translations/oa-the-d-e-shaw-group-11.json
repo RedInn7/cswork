@@ -11,5 +11,35 @@
     "hints": [
       "Given the previous term b[i−1], the next term x=b[i] must be at least b[i−1]+max(0,arr[i]−arr[i−1]) and must also satisfy x≤arr[i]. Maintaining the number of ways for each ending value together with its prefix sums gives an O(n·max(arr)) transition."
     ]
+  },
+  "ja": {
+    "title": "配列を非減少列と非増加列に分ける場合の数",
+    "description": "正の整数配列 arr が与えられます。長さがともに n の非負整数配列の組 b と c のうち、b が非減少、c が非増加で、すべての i について b[i]+c[i]=arr[i] を満たすものの個数を数えてください。答えを 1000000007 で割った余りで出力します。\n\n標準入出力、本サイトで追加した範囲、および例は、この問題の説明に従っています。元の問題で範囲が欠けている箇所は、本サイトの追加であることを明示しています。",
+    "input": "1 行目に n(1≤n≤3000)、2 行目に n 個の整数(1≤arr[i]≤3000)が与えられます。範囲と法は元の問題の制約に従っています。",
+    "output": "条件を満たす配列の順序付きの組 (b,c) の個数を、1000000007 で割った余りで出力してください。",
+    "explanation": "直前の項 b[i−1] が分かっているとき、次の項 x=b[i] は b[i−1]+max(0,arr[i]−arr[i−1]) 以上で、かつ x≤arr[i] を満たす必要があります。終端の値ごとの場合の数とその累積和を保持すれば、O(n·max(arr)) の遷移になります。",
+    "hints": [
+      "直前の項 b[i−1] が分かっているとき、次の項 x=b[i] は b[i−1]+max(0,arr[i]−arr[i−1]) 以上で、かつ x≤arr[i] を満たす必要があります。終端の値ごとの場合の数とその累積和を保持すれば、O(n·max(arr)) の遷移になります。"
+    ]
+  },
+  "ko": {
+    "title": "비감소 배열과 비증가 배열로 나누는 방법의 수",
+    "description": "양의 정수 배열 arr이 주어집니다. 길이가 모두 n인 음이 아닌 정수 배열 b, c의 쌍 중에서 b는 비감소, c는 비증가이고 모든 i에 대해 b[i]+c[i]=arr[i]인 쌍의 수를 셉니다. 답을 1000000007로 나눈 나머지를 출력하세요.\n\n표준 입출력, 이 사이트가 추가한 범위, 예시는 이 문제의 설명을 따릅니다. 원문에 범위가 없는 부분은 이 사이트에서 추가한 것임을 명시합니다.",
+    "input": "첫째 줄에 n(1≤n≤3000)이 주어지고, 둘째 줄에 n개의 정수가 주어집니다(1≤arr[i]≤3000). 범위와 나머지 계산의 법은 원래 문제의 제약에서 가져왔습니다.",
+    "output": "조건을 만족하는 순서 있는 배열 쌍 (b,c)의 수를 1000000007로 나눈 나머지로 출력합니다.",
+    "explanation": "이전 항 b[i−1]이 주어지면 다음 항 x=b[i]는 b[i−1]+max(0,arr[i]−arr[i−1]) 이상이어야 하고 x≤arr[i]도 만족해야 합니다. 끝 값별 경우의 수와 그 접두합을 유지하면 O(n·max(arr))의 전이가 됩니다.",
+    "hints": [
+      "이전 항 b[i−1]이 주어지면 다음 항 x=b[i]는 b[i−1]+max(0,arr[i]−arr[i−1]) 이상이어야 하고 x≤arr[i]도 만족해야 합니다. 끝 값별 경우의 수와 그 접두합을 유지하면 O(n·max(arr))의 전이가 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số cách tách mảng thành mảng không giảm và mảng không tăng",
+    "description": "Cho một mảng số nguyên dương arr, hãy đếm số cặp mảng số nguyên không âm b và c, cùng có độ dài n, sao cho b không giảm, c không tăng, và b[i]+c[i]=arr[i] với mọi i. In đáp án theo modulo 1000000007.\n\nGiao thức đầu vào/đầu ra chuẩn, các giới hạn do trang này bổ sung và các ví dụ đều theo mô tả của đề này; chỗ nào đề gốc thiếu giới hạn thì được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu chứa n (1≤n≤3000); dòng thứ hai chứa n số nguyên (1≤arr[i]≤3000). Các giới hạn và modulo được lấy từ ràng buộc của đề gốc.",
+    "output": "In ra số cặp mảng có thứ tự (b,c) thỏa điều kiện, theo modulo 1000000007.",
+    "explanation": "Biết số hạng trước b[i−1], số hạng kế tiếp x=b[i] phải không nhỏ hơn b[i−1]+max(0,arr[i]−arr[i−1]) và đồng thời thỏa x≤arr[i]. Duy trì số cách cho từng giá trị kết thúc cùng với tổng tiền tố của chúng cho phép chuyển trạng thái trong O(n·max(arr)).",
+    "hints": [
+      "Biết số hạng trước b[i−1], số hạng kế tiếp x=b[i] phải không nhỏ hơn b[i−1]+max(0,arr[i]−arr[i−1]) và đồng thời thỏa x≤arr[i]. Duy trì số cách cho từng giá trị kết thúc cùng với tổng tiền tố của chúng cho phép chuyển trạng thái trong O(n·max(arr))."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Scan from left to right with a stack holding the strict record-height towers of the scanned prefix as seen looking right to left; first add the stack length to the current visible count, then pop the old records whose height is ≤ the current tower's and push the current tower. Repeat in reverse and accumulate."
     ]
+  },
+  "ja": {
+    "title": "目標の塔の高さで判定する、左右の可視塔の数",
+    "description": "塔が一列に並んでいます。塔 x が塔 y から見えるのは、両者の間にあるすべての塔が、目標の塔 x より真に低いときに限ります。観測する側 y 自身の高さは制限になりません。各塔について、自分自身を除いて、左右に見える塔の総数を出力してください。\n\n本サイトが欠けている範囲を補った点と、原文の誤記を訂正した点については、入力プロトコルに記載しています。",
+    "input": "入力は n と n 個の高さです。原文には数値の範囲がないため、本サイトでは 1≤n≤200000、0≤height[i]≤10^9 を補っています。高さの重複があり得ます。",
+    "output": "各塔について、見える塔の数を元の位置の順に n 個、空白または改行区切りで出力してください。",
+    "explanation": "3 つの公開サンプルの出力は順に 2 2 3 1; 2 2 1; 0 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "左から右へ走査し、スタックに、走査済みの接頭辞の中で(右から左を見たとき)高さが狭義の記録更新となる塔を保持します。まずスタックの長さを現在の可視数に加え、次に高さが現在の塔以下の古い記録を取り出し、現在の塔を積みます。これを逆方向にも繰り返して累積します。"
+    ]
+  },
+  "ko": {
+    "title": "대상 탑의 높이로 판정하는 양쪽 가시 탑 개수",
+    "description": "탑들이 일렬로 서 있습니다. 탑 x는 그 사이에 있는 모든 탑이 목표 탑 x보다 엄격하게 낮을 때에 한해, 탑 y에서 보입니다. 관찰자 y 자신의 높이는 제한이 되지 않습니다. 각 탑에 대해 왼쪽과 오른쪽에서 볼 수 있는 탑의 총 개수를 출력하세요(자기 자신 제외).\n\n이 사이트가 누락된 범위를 보완한 내용과 원문 오타를 복구한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력으로 n과 n개의 높이가 주어집니다. 원문에는 수치 범위가 없으며, 이 사이트가 1≤n≤200000, 0≤height[i]≤10^9를 추가했습니다. 높이가 같은 경우도 허용됩니다.",
+    "output": "n개의 가시 탑 개수를 원래 위치 순서대로 공백 또는 줄바꿈으로 구분하여 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 2 2 3 1; 2 2 1; 0입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "왼쪽에서 오른쪽으로 스캔하며, 스캔한 접두사에서 오른쪽에서 왼쪽으로 볼 때의 엄격한 기록 높이 탑을 스택에 담습니다. 먼저 스택 길이를 현재 가시 개수에 더하고, 높이가 현재 탑 이하인 기존 기록들을 팝한 뒤 현재 탑을 푸시합니다. 반대 방향에서도 반복하여 누적합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số tháp nhìn thấy ở hai phía, xét theo chiều cao tháp đích",
+    "description": "Các tháp đứng thành một hàng. Tháp x nhìn thấy được từ tháp y khi và chỉ khi mọi tháp nằm giữa chúng đều thấp hơn ngặt tháp đích x. Chiều cao của người quan sát y không gây hạn chế nào. Với mỗi tháp, hãy in ra tổng số tháp mà nó nhìn thấy ở bên trái và bên phải, không tính chính nó.\n\nCác khoảng giá trị mà trang này bổ sung cho những ràng buộc còn thiếu, cùng việc khôi phục lỗi đánh máy của đề gốc, được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào gồm n và n chiều cao. Đề gốc không có cận số; trang này bổ sung 1≤n≤200000, 0≤height[i]≤10^9. Cho phép các chiều cao trùng nhau.",
+    "output": "In n số tháp nhìn thấy theo thứ tự vị trí ban đầu, cách nhau bằng dấu cách hoặc xuống dòng.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2 2 3 1; 2 2 1; 0. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Quét từ trái sang phải với một ngăn xếp chứa các tháp có chiều cao kỷ lục ngặt của tiền tố đã quét khi nhìn từ phải sang trái; trước tiên cộng độ dài ngăn xếp vào số tháp nhìn thấy hiện tại, rồi bỏ các kỷ lục cũ có chiều cao ≤ tháp hiện tại và đẩy tháp hiện tại vào. Lặp lại theo chiều ngược và cộng dồn."
+    ]
   }
 }

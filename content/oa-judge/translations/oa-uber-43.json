@@ -11,5 +11,35 @@
     "hints": [
       "Maintain the character-parity bitmask from the root to each node, and find the lowest common ancestor LCA with binary lifting. The path mask is mask[u] xor mask[v] xor letter-bit[LCA], and it works if at most one bit is set."
     ]
+  },
+  "ja": {
+    "title": "木のパス上の文字を並べ替えて回文にできるか",
+    "description": "木の各ノードには英小文字が 1 つ付いています。各クエリは、2 つのノード間の一意なパス上のすべての文字(両端点を含む)を並べ替えて回文にできるかどうかを尋ねます。\n\n本サイトでは標準入出力を明示しており、原典に範囲の記載がないものはすべて本サイト独自の取り決めとして示しています。",
+    "input": "1 行目に n q、2 行目に n 個の英小文字が与えられます。続いて n−1 本の無向辺、その後に q 組のクエリのノードが 0 始まりで与えられます。1≤n,q≤100000。",
+    "output": "各クエリについて 1 または 0 を出力してください。",
+    "explanation": "例 1: パス aba は並べ替えられますが、ab は出現回数が奇数の文字が 2 つあるので、1、0 を出力します。例 2: aa の 2 つの a は対にできるので、1 を出力します。例 3: bac の 3 文字はすべて出現回数が奇数なので、0 を出力します。",
+    "hints": [
+      "根から各ノードまでの文字の偶奇のビットマスクを持ち、ダブリング(binary lifting)で最小共通祖先 LCA を求めます。パスのマスクは mask[u] xor mask[v] xor letter-bit[LCA] で、立っているビットが高々 1 つなら条件を満たします。"
+    ]
+  },
+  "ko": {
+    "title": "트리 경로의 문자를 재배열해 팰린드롬을 만들 수 있는지",
+    "description": "트리의 각 노드에는 영어 소문자가 하나씩 있습니다. 각 질의는 두 노드 사이의 유일한 경로(양 끝점 포함)에 있는 모든 문자를 재배열하여 팰린드롬으로 만들 수 있는지 묻습니다.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "첫 줄에 n q, 둘째 줄에 영어 소문자 n개, 이어서 n−1개의 무방향 간선, 그다음 q개의 질의 노드 쌍이 주어집니다. 노드 번호는 0부터 시작합니다. 1≤n,q≤100000.",
+    "output": "각 질의에 대해 1 또는 0을 출력합니다.",
+    "explanation": "예제 1: 경로 aba는 재배열할 수 있고, ab는 홀수 번 나타나는 문자가 두 개이므로 1, 0을 출력합니다. 예제 2: aa의 두 a는 짝을 이룰 수 있으므로 1을 출력합니다. 예제 3: bac의 세 문자는 모두 홀수 번 나타나므로 0을 출력합니다.",
+    "hints": [
+      "루트에서 각 노드까지의 문자 홀짝 비트마스크를 유지하고, 이진 리프팅(binary lifting)으로 최소 공통 조상 LCA를 찾습니다. 경로의 마스크는 mask[u] xor mask[v] xor letter-bit[LCA]이며, 켜진 비트가 최대 하나이면 가능합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các ký tự trên đường đi trong cây có thể sắp xếp thành palindrome hay không",
+    "description": "Mỗi nút của một cây mang một chữ cái thường. Mỗi truy vấn hỏi liệu tất cả các ký tự trên đường đi duy nhất giữa hai nút (kể cả hai đầu mút) có thể sắp xếp lại thành một palindrome hay không.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi giới hạn mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n q, và dòng thứ hai chứa n chữ cái thường; tiếp theo là n−1 cạnh vô hướng, rồi q cặp nút truy vấn, đánh chỉ số từ 0. 1≤n,q≤100000.",
+    "output": "Với mỗi truy vấn, in 1 hoặc 0.",
+    "explanation": "Ví dụ 1: đường đi aba có thể sắp xếp lại, còn ab có hai ký tự với tần suất lẻ, nên in 1, 0. Ví dụ 2: hai chữ a trong aa có thể ghép cặp, nên in 1. Ví dụ 3: cả ba ký tự trong bac đều có số lần xuất hiện lẻ, nên in 0.",
+    "hints": [
+      "Duy trì bitmask độ chẵn lẻ của các ký tự từ gốc đến mỗi nút, và tìm tổ tiên chung gần nhất LCA bằng binary lifting. Mask của đường đi là mask[u] xor mask[v] xor letter-bit[LCA], và đường đi thỏa mãn nếu có tối đa một bit được bật."
+    ]
   }
 }

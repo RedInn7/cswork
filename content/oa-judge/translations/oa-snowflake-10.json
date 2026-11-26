@@ -11,5 +11,35 @@
     "hints": [
       "Keep the candidates from both sides in one heap ordered by negative score and original index, and record which side each one came from; after popping, refill from the corresponding side with an element that has not been exposed yet."
     ]
+  },
+  "ja": {
+    "title": "両端の候補からチームを作る",
+    "description": "各ラウンドで、残りのリストの先頭 k 人と末尾 k 人の和集合から最もスコアの高い人を選びます。同点の場合は添字が最小の人を選び、その人を取り除きます。これを t 人選ぶまで続け、選ばれた人のスコアの合計を求めてください。元のタイトルにある「両端を交互に選ぶ」は本文と一致しないため、本文を優先します。\n\n入出力の形式は本サイトで独自に整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n t k、2 行目に n 個のスコアが与えられます。出題元には数値の範囲の記載がないため、本サイトでは 1≤t,k≤n≤100000、1≤score≤10⁹ とします。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 9、105、6 です。すべての例は、独立した小規模な全探索または状態探索で検証済みです。",
+    "hints": [
+      "両側の候補を、スコアの負値と元の添字の順で並べた 1 つのヒープに入れ、それぞれがどちら側のものかを記録します。取り出した後は、対応する側からまだ露出していない要素を補充します。"
+    ]
+  },
+  "ko": {
+    "title": "양 끝 후보에서 팀 구성하기",
+    "description": "매 라운드마다 남은 목록의 앞쪽 k명과 뒤쪽 k명의 합집합에서 점수가 가장 높은 사람을 뽑습니다. 점수가 같으면 인덱스가 가장 작은 사람을 뽑으며, 뽑힌 사람은 목록에서 제거합니다. 이를 t명을 뽑을 때까지 반복했을 때 뽑힌 사람들의 점수 합을 구하세요. 원문 제목은 양쪽 끝을 번갈아 가며 뽑는 것처럼 읽히지만 본문과 맞지 않으므로 본문을 기준으로 합니다.\n\n입출력 규약은 이 사이트에서 독자적으로 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n t k가, 둘째 줄에 n개의 점수가 주어집니다. 원문에는 수의 범위가 없어 이 사이트에서 1≤t,k≤n≤100000, 1≤score≤10⁹로 정했습니다.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 9; 105; 6입니다. 모든 예제는 독립적인 소규모 완전 탐색 또는 상태 탐색으로 검증했습니다.",
+    "hints": [
+      "양쪽 후보를 하나의 힙에 담되 음수 점수와 원래 인덱스 순으로 정렬하고, 각 후보가 어느 쪽 출신인지 기록합니다. 꺼낸 뒤에는 해당 쪽에서 아직 노출되지 않은 원소로 다시 채웁니다."
+    ]
+  },
+  "vi": {
+    "title": "Lập đội từ ứng viên ở hai đầu",
+    "description": "Ở mỗi vòng, chọn người có điểm cao nhất trong hợp của k người đầu và k người cuối của danh sách còn lại, nếu bằng nhau thì chọn chỉ số nhỏ nhất; loại người đó ra và tiếp tục cho đến khi đã chọn đủ t người. Tìm tổng điểm của họ. Tiêu đề gốc nói đến việc luân phiên giữa hai đầu, nhưng không khớp với phần thân đề; phần thân đề được ưu tiên.\n\nGiao thức đầu vào/đầu ra do trang này tự biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n t k, dòng thứ hai chứa n điểm số. Văn bản gốc không cho cận số; trang này quy định 1≤t,k≤n≤100000 và 1≤score≤10⁹.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 9; 105; 6. Tất cả ví dụ đã được kiểm chứng bằng liệt kê quy mô nhỏ độc lập hoặc tìm kiếm trạng thái.",
+    "hints": [
+      "Giữ các ứng viên của cả hai phía trong cùng một heap sắp theo điểm âm và chỉ số gốc, đồng thời ghi lại mỗi người đến từ phía nào; sau khi pop, bổ sung từ phía tương ứng một phần tử chưa được phơi ra."
+    ]
   }
 }

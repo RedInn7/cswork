@@ -11,5 +11,35 @@
     "hints": [
       "Use digit DP to count the valid numbers not exceeding a bound, then compute F(end)−F(start−1). The state is the position, the mask of used digits, whether the number has started, and whether it is tight against the bound; leading zeros do not use up a digit."
     ]
+  },
+  "ja": {
+    "title": "閉区間内で各桁がすべて異なる数の個数",
+    "description": "閉区間内の非負整数のうち、10 進表記の各桁がすべて異なるものの個数を数えてください。0 は 1 桁の 0 として書かれ、有効とみなします。元の問題文は途中で切れており、規則はタイトルと、10..13 には 10、12、13 が含まれるという元の説明から復元しています。非負の範囲と 0 の表記は本サイトが明示的に定めた取り決めです。\n\n入出力の形式は本サイトが作成したもので、元の問題にない数値の上限は本サイトによる追加であることを明記しています。",
+    "input": "1 行に start end が与えられます。元の問題には数値の上限がなく、本サイトでは 0≤start≤end≤10^18 とします。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に 3、11、2 です。これらの答えは、独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "桁 DP で上限以下の有効な数を数え、F(end)−F(start−1) を計算します。状態は、桁位置、使用済みの数字の集合、数が始まっているか、上限に張り付いているか、です。先頭の 0 は数字を消費しません。"
+    ]
+  },
+  "ko": {
+    "title": "닫힌 구간에서 각 자릿수가 서로 다른 수의 개수",
+    "description": "닫힌 구간 안의 음이 아닌 정수 중 십진 표기의 모든 자릿수가 서로 다른 것의 개수를 세세요. 0은 한 자리 숫자 0으로 쓰며 유효한 수로 칩니다. 원문은 잘려 있으므로, 제목과 \"10..13에는 10, 12, 13이 포함된다\"는 원문 설명으로 규칙을 복원했습니다. 음이 아닌 정수 범위와 0의 표기는 이 사이트가 명시한 규약입니다.\n\n이 사이트에서 입출력 규약을 정리했으며, 빠져 있던 수치 범위는 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "한 줄에 start end가 주어집니다. 원문에는 수치 범위가 없으며, 이 사이트에서는 0≤start≤end≤10^18로 합니다.",
+    "output": "정답 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 세 개의 출력은 차례로 3; 11; 2입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증되었습니다.",
+    "hints": [
+      "자릿수 DP로 상한 이하의 유효한 수의 개수 F를 구한 뒤 F(end)−F(start−1)을 계산합니다. 상태는 위치, 사용한 숫자의 마스크, 수가 시작되었는지 여부, 상한에 붙어 있는지(tight) 여부이며, 앞쪽의 0은 숫자를 소모하지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Các số có chữ số thập phân đôi một khác nhau trong một đoạn đóng",
+    "description": "Đếm các số nguyên không âm trong một đoạn đóng mà các chữ số thập phân đều khác nhau. Số 0 được viết bằng đúng một chữ số 0 và được tính là hợp lệ. Đề gốc bị cắt cụt; quy tắc được khôi phục từ tiêu đề và phần giải thích gốc rằng 10..13 gồm 10, 12 và 13. Miền không âm và cách biểu diễn số 0 là giao thức tường minh của trang này.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các cận số còn thiếu được ghi rõ là phần bổ sung của trang.",
+    "input": "Một dòng gồm start end. Đề gốc không có cận số; trang này dùng 0≤start≤end≤10^18.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 3; 11; 2. Các đáp án này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Dùng quy hoạch động theo chữ số để đếm các số hợp lệ không vượt quá một cận, rồi tính F(end)−F(start−1). Trạng thái gồm vị trí, mặt nạ các chữ số đã dùng, số đã bắt đầu hay chưa, và có còn sát cận hay không; các chữ số 0 đứng đầu không tiêu tốn chữ số."
+    ]
   }
 }

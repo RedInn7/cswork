@@ -11,5 +11,35 @@
     "hints": [
       "Maintain a carry. The parity of the current total v+carry decides whether one block stays, half of it carries to the next pile, and at the end keep processing the binary bits of carry."
     ]
+  },
+  "ja": {
+    "title": "右へ繰り上げたあとに1個だけ残る山の数",
+    "description": "山を左から右へ順に処理します。ブロック2個ごとに1個のブロックにまとめて右隣の山に加え、現在の山には高々1個のブロックが残ります。繰り上げは元の配列の末尾を越えても、これ以上まとめられなくなるまで続きます。最終的にブロックが1個だけ残っている山の数を求めてください。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "当サイトの入力: 1行目に n (1..100000)、2行目に n 個のブロック数 (0..10⁹) が与えられます。",
+    "output": "答えを表す整数を1つ出力します。",
+    "explanation": "例 1: 山ごとの合計は 5, 5, 3 で、それぞれ1個ずつ残ります。最後に carry=1 がさらに1個残るので、合計は 4 です。\n\n例 2: ブロックがないので、答えは 0 です。\n\n例 3: 2個のブロックが右で1個にまとまり、残る山は1つだけです。",
+    "hints": [
+      "carry を保持します。現在の合計 v+carry の偶奇によって1個残るかどうかが決まり、その半分が次の山へ繰り上がります。末尾では carry の2進数の桁を処理し続けます。"
+    ]
+  },
+  "ko": {
+    "title": "오른쪽으로 올림한 뒤 남는 블록 하나짜리 더미",
+    "description": "더미를 왼쪽에서 오른쪽으로 처리합니다. 블록 두 개마다 하나의 블록으로 합쳐져 오른쪽 더미에 더해지고, 현재 더미에는 최대 한 개의 블록만 남습니다. 올림은 원래 배열의 끝을 넘어서도 더 이상 합칠 수 없을 때까지 계속됩니다. 최종적으로 블록이 하나인 더미의 개수를 구하세요.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "이 사이트의 입력: 첫 줄에 n(1..100000)이 주어지고, 둘째 줄에 n개의 블록 수(0..10⁹)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 더미별 합은 5, 5, 3이며 각각 1개가 남습니다. 마지막에 carry=1이 1개를 더 남기므로 총 4입니다.\n\n예제 2: 블록이 없으므로 정답은 0입니다.\n\n예제 3: 블록 두 개가 오른쪽에서 하나로 합쳐져 더미 1개만 남습니다.",
+    "hints": [
+      "carry를 유지합니다. 현재 합 v+carry의 홀짝이 블록 하나가 남는지를 결정하고, 그 절반이 다음 더미로 올림되며, 마지막에는 carry의 이진 비트를 계속 처리합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số chồng còn lại đúng một khối sau khi dồn sang phải",
+    "description": "Xử lý các chồng từ trái sang phải: cứ hai khối gộp thành một khối và được cộng vào chồng bên phải, còn chồng hiện tại giữ lại nhiều nhất một khối. Việc dồn tiếp tục vượt ra ngoài cuối mảng ban đầu cho đến khi không thể gộp thêm. Tìm số chồng cuối cùng còn đúng một khối.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Đầu vào của trang này: dòng đầu chứa n (1..100000), dòng thứ hai chứa n số khối (0..10⁹).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: tổng của từng chồng lần lượt là 5, 5, 3, và mỗi chồng giữ lại 1; ở cuối, carry=1 giữ lại thêm 1, tổng cộng là 4.\n\nVí dụ 2: không có khối nào, nên đáp án là 0.\n\nVí dụ 3: hai khối gộp thành một khối ở bên phải, chỉ còn lại 1 chồng.",
+    "hints": [
+      "Duy trì một carry. Tính chẵn lẻ của tổng hiện tại v+carry quyết định có giữ lại một khối hay không, một nửa của nó được dồn sang chồng kế tiếp, và ở cuối tiếp tục xử lý các bit nhị phân của carry."
+    ]
   }
 }

@@ -12,5 +12,38 @@
       "Enumerate the number of binary digits of the target palindrome.",
       "Once the number of digits is fixed, the second half of a palindrome is uniquely determined by its first half."
     ]
+  },
+  "ja": {
+    "title": "2 進回文にするための最小操作回数",
+    "description": "非負整数 N が与えられます。1 回の操作で、現在の整数に 1 を加えるか 1 を引きます（結果は 0 未満にできません）。標準の 2 進表現が左から読んでも右から読んでも同じになる数を 2 進回文と呼びます。N を任意の 2 進回文にするために必要な最小の操作回数を求めてください。\n\nこのサイトの入力範囲: 0≤N≤2000000000。OAMaster のスナップショットには追加の制約はなく、この範囲はスナップショットに記載された制約に従って含めたものです。\n\n出典: https://oamaster.com/docs/companies/google#56-minimum-operations-to-make-binary-palindromic（スナップショットの内容フィンガープリント b44446404ff98e6bf74fd5f10b0b0a052137ca8517023ae77b14aa159093ea8d で固定）。",
+    "input": "整数 N が 1 つ与えられます。",
+    "output": "最小の操作回数を出力してください。",
+    "explanation": "31 ビット以下の 2 進回文を列挙し、N との絶対差の最小値を取ります。各ビット長について、対称性により回文を決める前半の候補だけを作ればよく、N に最も近い候補は、N の対応する上位部分とそれに隣接する上位部分から得られます。そのビット長の最小の回文と最大の回文も確認します。",
+    "hints": [
+      "目標となる回文の 2 進の桁数を列挙します。",
+      "桁数を固定すると、回文の後半は前半から一意に決まります。"
+    ]
+  },
+  "ko": {
+    "title": "이진 팰린드롬을 만드는 최소 연산 횟수",
+    "description": "음이 아닌 정수 N이 주어집니다. 한 번의 연산은 현재 정수에 1을 더하거나 빼는 것입니다(결과는 0보다 작을 수 없음). 표준 이진 표현을 왼쪽에서 오른쪽으로 읽은 것과 오른쪽에서 왼쪽으로 읽은 것이 같으면 그 수는 이진 팰린드롬입니다. N을 임의의 이진 팰린드롬으로 바꾸는 데 필요한 최소 연산 횟수를 구하세요.\n\n이 사이트의 입력 범위: 0≤N≤2000000000. OAMaster 스냅샷에는 추가 제약 조건이 없으며, 이 범위는 스냅샷에 나열된 제약 조건에 따라 포함한 것입니다.\n\n원본 출처: https://oamaster.com/docs/companies/google#56-minimum-operations-to-make-binary-palindromic (고정된 스냅샷 내용 지문 b44446404ff98e6bf74fd5f10b0b0a052137ca8517023ae77b14aa159093ea8d).",
+    "input": "정수 N이 한 줄로 주어집니다.",
+    "output": "최소 연산 횟수를 출력합니다.",
+    "explanation": "최대 31비트의 이진 팰린드롬을 열거하여 N과의 차이의 절댓값 중 최솟값을 취합니다. 각 비트 길이마다 대칭으로 팰린드롬을 결정하는 앞쪽 절반 후보만 만들면 됩니다. N에 가장 가까운 후보는 N의 해당 접두사와 그 인접 접두사에서 나오며, 그 비트 길이에서 가장 작은 팰린드롬과 가장 큰 팰린드롬도 함께 확인합니다.",
+    "hints": [
+      "목표 팰린드롬의 이진 자릿수를 열거합니다.",
+      "자릿수가 정해지면 팰린드롬의 뒤쪽 절반은 앞쪽 절반으로 유일하게 결정됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác tối thiểu để thành số nhị phân đối xứng",
+    "description": "Cho một số nguyên không âm N. Một thao tác cộng 1 hoặc trừ 1 vào số nguyên hiện tại (kết quả không được nhỏ hơn 0). Một số là số nhị phân đối xứng (palindrome) nếu biểu diễn nhị phân chuẩn của nó đọc từ trái sang phải giống như từ phải sang trái. Tìm số thao tác tối thiểu để biến N thành một số nhị phân đối xứng bất kỳ.\n\nPhạm vi đầu vào của trang này: 0≤N≤2000000000. Snapshot OAMaster không cho ràng buộc bổ sung nào; phạm vi này được đưa vào theo các ràng buộc ghi trong snapshot.\n\nNguồn gốc: https://oamaster.com/docs/companies/google#56-minimum-operations-to-make-binary-palindromic (dấu vân tay nội dung snapshot cố định b44446404ff98e6bf74fd5f10b0b0a052137ca8517023ae77b14aa159093ea8d).",
+    "input": "Một số nguyên N duy nhất.",
+    "output": "In ra số thao tác tối thiểu.",
+    "explanation": "Liệt kê các số nhị phân đối xứng có tối đa 31 bit và lấy hiệu tuyệt đối nhỏ nhất so với N. Với mỗi độ dài bit, chỉ cần dựng các ứng viên nửa đầu, vì tính đối xứng quyết định cả số đó; các ứng viên gần N nhất đến từ tiền tố tương ứng của N và các tiền tố kề nó, đồng thời kiểm tra cả số đối xứng nhỏ nhất và lớn nhất của độ dài bit đó.",
+    "hints": [
+      "Liệt kê số chữ số nhị phân của số đối xứng đích.",
+      "Khi số chữ số đã cố định, nửa sau của một số đối xứng được xác định duy nhất bởi nửa đầu của nó."
+    ]
   }
 }

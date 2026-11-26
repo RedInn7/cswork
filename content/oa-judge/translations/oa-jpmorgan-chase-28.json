@@ -11,5 +11,35 @@
     "hints": [
       "Sort the stock in descending order and lower the several highest stocks together to the next level; when there are not enough customers to sell off a full level, use division to compute the number of full levels lowered and the leftover sales, and accumulate with arithmetic-series sums."
     ]
+  },
+  "ja": {
+    "title": "残り在庫で価格が決まるときの最大売上",
+    "description": "各顧客は商品をちょうど1つ購入します。その販売での商品の価格は、販売前の残り在庫数に等しく、販売後に在庫は1減ります。m 人の顧客に対する最大の売上を求めてください。剰余は取りません。元の問題では在庫が十分にあることが保証されていないので、当サイトでは、在庫の合計が m 未満の場合は −1 を出力すると定めています。元の例 1 の説明は在庫を誤って述べており、入力 [10,10,8,9,1] と m=6 の答えは 55 になるはずです。\n\n入出力形式は当サイトが整理したもので、元の問題にない数値の制約は当サイトによる補足として明記しています。",
+    "input": "1行目に n m、続けて n 個の quantity が与えられます。元の制約の全体は 1≤n≤100000、1≤m≤1000000000、1≤quantity[i]≤1000000000 です。m≤在庫の合計であることは保証されません。",
+    "output": "整数を1つ出力します。",
+    "explanation": "3つの公開例の出力は順に次のとおりです: 55; 11; -1。これらの解答は、独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "在庫を降順にソートし、最も多い数個の在庫をまとめて次の水準まで下げます。1つの水準を売り切るだけの顧客がいない場合は、除算で下げられる完全な水準の数と余りの販売数を計算し、等差数列の和で累積します。"
+    ]
+  },
+  "ko": {
+    "title": "남은 재고로 가격이 정해질 때의 최대 판매 수익",
+    "description": "각 고객은 정확히 한 개의 상품을 구매합니다. 판매 시 가격은 판매 직전의 해당 상품의 남은 재고와 같고, 판매 후 재고는 1 줄어듭니다. 고객이 m명일 때 최대 수익을 구하세요. 나머지 연산은 하지 않습니다. 원문은 재고가 충분함을 보장하지 않으므로, 이 사이트에서는 총 재고가 m보다 작으면 −1을 출력하도록 정했습니다. 원문 예제 1의 설명은 재고를 잘못 서술했으며, 입력이 [10,10,8,9,1]이고 m=6이면 답은 55여야 합니다.\n\n이 사이트에서 입출력 형식을 정리했으며, 원문에 없던 수치 범위는 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "첫 줄에 n m이 주어지고, 이어서 n개의 quantity 값이 주어집니다. 원문의 전체 범위는 1≤n≤100000, 1≤m≤1000000000, 1≤quantity[i]≤1000000000입니다. m≤총 재고는 보장되지 않습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 55; 11; -1입니다. 이 답들은 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증되었습니다.",
+    "hints": [
+      "재고를 내림차순으로 정렬하고 가장 높은 여러 재고를 다음 수준까지 함께 낮춥니다. 한 층 전체를 팔 만큼 고객이 충분하지 않으면 나눗셈으로 낮춘 완전한 층의 수와 남은 판매 수를 계산하고, 등차수열의 합으로 누적합니다."
+    ]
+  },
+  "vi": {
+    "title": "Doanh thu bán hàng tối đa khi giá theo tồn kho còn lại",
+    "description": "Mỗi khách hàng mua đúng một món; giá của một sản phẩm trong lần bán đó bằng lượng tồn kho còn lại của nó trước khi bán, và tồn kho giảm một sau đó. Với m khách hàng, hãy tìm doanh thu tối đa, không lấy modulo. Bản gốc không đảm bảo đủ hàng, nên trang này quy định rằng đầu ra là −1 khi tổng tồn kho <m. Phần giải thích của ví dụ gốc 1 nêu sai tồn kho; với đầu vào [10,10,8,9,1] và m=6, đáp án phải là 55.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các giới hạn số còn thiếu được ghi rõ là phần trang bổ sung.",
+    "input": "Dòng đầu chứa n m, tiếp theo là n giá trị quantity; giới hạn gốc đầy đủ 1≤n≤100000, 1≤m≤1000000000, 1≤quantity[i]≤1000000000. Không yêu cầu m≤tổng tồn kho.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 55; 11; -1. Các đáp án này đã được kiểm tra bằng vét cạn độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Sắp xếp tồn kho giảm dần và hạ cùng lúc nhiều tồn kho cao nhất xuống mức kế tiếp; khi không đủ khách để bán hết một mức đầy, dùng phép chia để tính số mức đầy đã hạ và số lần bán còn lại, rồi cộng dồn bằng tổng cấp số cộng."
+    ]
   }
 }

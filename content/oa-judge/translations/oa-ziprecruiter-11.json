@@ -13,5 +13,41 @@
       "Coverage = number of lamps with left endpoint ≤p − number of lamps with right endpoint <p.",
       "Sort the left and right endpoints separately, then binary search."
     ]
+  },
+  "ja": {
+    "title": "ZipRecruiter OA #11：ランプと制御点",
+    "description": "数直線上に複数のランプがあり、それぞれが線分を照らします。ランプ i は lamps[i][0] から lamps[i][1] まで（両端を含む）を照らします。また制御点の配列 points が与えられます。各制御点 points[j] について、それを照らすランプの個数、すなわち points[j] が [lamps[i][0],lamps[i][1]] に含まれるランプの数を求めてください。答えは制御点の順に出力します。",
+    "input": "1行目に2つの整数 n と m が与えられます。続く n 行にランプを表す2つの整数 l と r が与えられ、最後の行に m 個の整数 points が与えられます。1≤n,m≤100000、−10^9≤l≤r≤10^9、−10^9≤points[j]≤10^9。",
+    "output": "m 個の整数を1行で出力します。j 番目は points[j] を照らすランプの個数です。",
+    "explanation": "例1：ランプは [1,7]、[5,11]、[7,9]。点 7 は3つのランプに、点 1 は1つに、点 5 は2つに、点 10 は1つに、点 9 は2つに照らされ、点 15 はどれにも照らされないので、出力は 3 1 2 1 2 0 です。\n例2：端点 2 と 4 はどちらも照らされ、1 と 5 は照らされません。\n例3：同一の2つのランプ [0,3] はどちらも数えます。",
+    "hints": [
+      "点 p が [l,r] に覆われることと l≤p≤r は同値です。",
+      "覆うランプの数 = 左端が ≤p のランプ数 − 右端が <p のランプ数。",
+      "左端と右端を別々にソートし、二分探索します。"
+    ]
+  },
+  "ko": {
+    "title": "ZipRecruiter OA #11: 전등과 관측 지점",
+    "description": "수직선 위에 전등 여러 개가 있고, 각 전등은 구간 하나를 비춥니다. 전등 i는 lamps[i][0]부터 lamps[i][1]까지(양 끝 포함)를 비춥니다. 관측 지점 배열 points도 주어집니다. 각 관측 지점 points[j]에 대해, 그 지점을 비추는 전등의 수, 즉 points[j]가 [lamps[i][0],lamps[i][1]] 안에 있는 전등의 수를 구하세요. 답은 관측 지점의 순서대로 출력합니다.",
+    "input": "첫째 줄에 두 정수 n과 m이 주어집니다. 이어서 n개의 줄에 전등을 나타내는 두 정수 l과 r이 주어지고, 마지막 줄에 m개의 정수 points가 주어집니다. 1≤n,m≤100000, −10^9≤l≤r≤10^9, −10^9≤points[j]≤10^9.",
+    "output": "m개의 정수를 한 줄에 출력합니다. j번째 정수는 points[j]를 비추는 전등의 수입니다.",
+    "explanation": "예제 1: 전등 [1,7], [5,11], [7,9]. 지점 7은 전등 3개가, 지점 1은 1개가, 지점 5는 2개가, 지점 10은 1개가, 지점 9는 2개가 비추고, 지점 15는 아무것도 비추지 않으므로 출력은 3 1 2 1 2 0입니다.\n예제 2: 끝점 2와 4는 모두 비춰지고, 1과 5는 비춰지지 않습니다.\n예제 3: 똑같은 전등 [0,3] 두 개가 모두 계산됩니다.",
+    "hints": [
+      "점 p가 [l,r]에 덮이는 것은 l≤p≤r일 때, 그리고 그때에만 해당합니다.",
+      "덮는 개수 = 왼쪽 끝이 ≤p인 전등 수 − 오른쪽 끝이 <p인 전등 수.",
+      "왼쪽 끝점과 오른쪽 끝점을 따로 정렬한 뒤 이분 탐색하세요."
+    ]
+  },
+  "vi": {
+    "title": "ZipRecruiter OA #11: Đèn và các điểm kiểm soát",
+    "description": "Trên trục số có một số bóng đèn, mỗi đèn chiếu sáng một đoạn: đèn i phủ đoạn từ lamps[i][0] đến lamps[i][1] (bao gồm cả hai đầu mút). Ngoài ra cho một mảng các điểm kiểm soát points. Với mỗi điểm kiểm soát points[j], hãy tìm có bao nhiêu đèn chiếu sáng nó, tức là số đèn mà points[j] nằm trong [lamps[i][0],lamps[i][1]]. In các đáp án theo thứ tự của các điểm kiểm soát.",
+    "input": "Dòng đầu chứa hai số nguyên n và m; tiếp theo là n dòng, mỗi dòng có hai số nguyên l và r mô tả một đèn; dòng cuối chứa m số nguyên points. 1≤n,m≤100000, −10^9≤l≤r≤10^9, −10^9≤points[j]≤10^9.",
+    "output": "In ra một dòng gồm m số nguyên; số thứ j là số đèn chiếu sáng points[j].",
+    "explanation": "Ví dụ 1: các đèn [1,7], [5,11], [7,9]. Điểm 7 được ba đèn chiếu sáng, điểm 1 được 1 đèn, điểm 5 được 2 đèn, điểm 10 được 1 đèn, điểm 9 được 2 đèn, và điểm 15 không có đèn nào, vì vậy đầu ra là 3 1 2 1 2 0.\nVí dụ 2: các đầu mút 2 và 4 đều được chiếu sáng, còn 1 và 5 thì không.\nVí dụ 3: cả hai đèn giống hệt nhau [0,3] đều được tính.",
+    "hints": [
+      "Điểm p được phủ bởi [l,r] khi và chỉ khi l≤p≤r.",
+      "Số đèn phủ = số đèn có đầu trái ≤p − số đèn có đầu phải <p.",
+      "Sắp xếp riêng các đầu trái và đầu phải, rồi dùng tìm kiếm nhị phân."
+    ]
   }
 }

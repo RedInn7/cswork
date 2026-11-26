@@ -11,5 +11,35 @@
     "hints": [
       "Use BFS to compute root path sums level by level; sort the paths on the same level by (parent path rank, own node value) to compress them into lexicographic ranks. On the first level that has a qualifying leaf, choose the one with the smallest rank and reconstruct it by following parent pointers."
     ]
+  },
+  "ja": {
+    "title": "目標の和になる根から葉への最短パス",
+    "description": "二分木の根から葉へのすべてのパスのうち、和が target に等しいものの中から、まずノード数が最も少ないものを選び、次にノードの値の列が辞書順で最小のものを選びます。解がない場合は、空の配列を出力してください。\n\n入出力の形式は本サイトが整理したものです。欠けていた数値の範囲と、原文の誤記の修正はすべて明示しています。",
+    "input": "1 行目にレベル順のトークン数 m と target、2 行目に m 個の整数または null が与えられます。各要素は、キューから取り出した非 null の親の左の子と右の子として順に解釈されます。末尾の null トークンは省略されることがあり、ヒープの添字は使いません。元の問題には数値の範囲がありませんでした。本サイトではノード数 0..100000、0≤m≤200001、ノードの値は ±10^9 以内、target は ±10^14 以内とします。有効なレベル順であることは保証され、空の木は m=0 または単一の null で与えられます。",
+    "output": "1 行目にパス上のノード数、2 行目にパス上の値を出力してください。解がない場合は、0 だけを出力します。",
+    "explanation": "3 つの公開例の出力は順に、4 / 5 4 11 2、0、3 / 0 1 -1 です。これらの答えは、独立した全列挙または直接のシミュレーションで検証済みです。",
+    "hints": [
+      "BFS でレベルごとに根からのパスの和を計算します。同じレベルのパスは (親のパスの順位, 自分のノードの値) でソートして、辞書順の順位に圧縮します。条件を満たす葉が初めて現れたレベルで、順位が最小のものを選び、親ポインタをたどって復元します。"
+    ]
+  },
+  "ko": {
+    "title": "합이 목표값인 루트에서 리프까지의 최단 경로",
+    "description": "이진 트리에서 합이 target과 같은 루트-리프 경로 중 노드 수가 가장 적은 것을 먼저 고르고, 그중 노드 값의 수열이 사전순으로 가장 작은 것을 고르세요. 해가 없으면 빈 배열을 출력합니다.\n\n입출력 프로토콜은 이 사이트에서 정리한 것이며, 빠져 있던 수치 범위와 원문 오타의 복원 내용은 모두 명시했습니다.",
+    "input": "첫 번째 줄에 레벨 순서 토큰의 개수 m과 target이 주어지고, 두 번째 줄에 정수 또는 null m개가 주어집니다. 토큰은 큐에서 꺼낸 null이 아닌 부모의 왼쪽·오른쪽 자식으로 순서대로 해석되며, 끝쪽의 null 토큰은 생략될 수 있고 완전한 힙 인덱스는 사용하지 않습니다. 원문에는 수치 범위가 없었으며, 이 사이트는 노드 0..100000개, 0≤m≤200001, 노드 값 ±10^9 이내, target ±10^14 이내를 사용합니다. 올바른 레벨 순서가 보장되며, 빈 트리는 m=0 또는 null 하나로 주어질 수 있습니다.",
+    "output": "첫 번째 줄에 경로의 노드 수를, 두 번째 줄에 경로의 값들을 출력합니다. 해가 없으면 0만 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 4 / 5 4 11 2; 0; 3 / 0 1 -1입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "BFS로 레벨별로 루트에서의 경로 합을 계산합니다. 같은 레벨의 경로들은 (부모 경로의 순위, 자신의 노드 값)으로 정렬하여 사전순 순위로 압축합니다. 조건을 만족하는 리프가 처음 나타나는 레벨에서 순위가 가장 작은 것을 고르고 부모 포인터를 따라 복원합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đường đi ngắn nhất từ gốc đến lá có tổng bằng mục tiêu",
+    "description": "Trong tất cả các đường đi từ gốc đến lá của cây nhị phân có tổng bằng target, trước hết chọn đường có ít nút nhất, rồi chọn đường có dãy giá trị nút nhỏ nhất theo thứ tự từ điển. Nếu không có nghiệm, xuất một mảng rỗng.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn; các cận số còn thiếu và việc khôi phục lỗi đánh máy của nguồn đều được nêu rõ.",
+    "input": "Dòng đầu tiên chứa m, số phần tử token theo thứ tự theo tầng, và target; dòng thứ hai chứa m số nguyên hoặc null. Các phần tử được diễn giải theo thứ tự là con trái và con phải của các nút cha khác null lấy từ một hàng đợi; các token null ở cuối có thể bị lược bỏ, và không dùng chỉ số heap đầy đủ. Đề gốc không đưa ra cận số; trang này dùng 0..100000 nút, 0≤m≤200001, giá trị nút trong khoảng ±10^9, và target trong khoảng ±10^14; đảm bảo thứ tự theo tầng hợp lệ, và một cây rỗng có thể được cho bằng m=0 hoặc một null duy nhất.",
+    "output": "Dòng đầu tiên chứa số nút trên đường đi, và dòng thứ hai chứa các giá trị trên đường đi; nếu không có nghiệm, chỉ xuất 0.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 4 / 5 4 11 2; 0; 3 / 0 1 -1. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Dùng BFS để tính tổng đường đi từ gốc theo từng tầng; sắp xếp các đường đi trên cùng một tầng theo (hạng của đường đi cha, giá trị nút của chính nó) để nén thành các hạng từ điển. Ở tầng đầu tiên có một lá thỏa điều kiện, chọn lá có hạng nhỏ nhất và dựng lại đường đi bằng cách đi theo các con trỏ cha."
+    ]
   }
 }

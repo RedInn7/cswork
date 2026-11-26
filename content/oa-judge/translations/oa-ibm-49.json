@@ -11,5 +11,35 @@
     "hints": [
       "Run a two-number digit DP from the high bit to the low bit, tracking whether each number is still tight against its lower and upper bounds, whether a is already less than b, and whether the XOR is still tight against k, and enumerate the current pair of bits."
     ]
+  },
+  "ja": {
+    "title": "範囲内で上限を超えない XOR の最大値",
+    "description": "lo≤a<b≤hi を満たす a、b を選び、a XOR b≤k を満たしつつ XOR の値を最大にして、その XOR の値を返してください。2 つの整数は異なっていなければなりません。条件を満たす組がない場合、本サイトでは -1 を出力します。\n\n標準的な入出力形式は本サイトが整備したものです。追加した数値の範囲や解なしの場合の表現は本サイト独自のものと明記しており、出典の元の制約ではありません。",
+    "input": "1 行に lo hi k が与えられます。出典の範囲の全体は 1≤lo<hi≤10000、1≤k≤10000 です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例の答えはそれぞれ 6、-1、7 です。",
+    "hints": [
+      "上位ビットから下位ビットへ、2 つの数についての桁 DP を行います。各数が下限と上限にまだ接しているか、a がすでに b より小さいか、XOR が k にまだ接しているかを状態として持ち、現在のビットの組を列挙します。"
+    ]
+  },
+  "ko": {
+    "title": "범위 안에서 k를 넘지 않는 최대 XOR",
+    "description": "lo≤a<b≤hi를 만족하면서 a XOR b≤k이고 XOR 값이 가능한 한 큰 두 수를 골라 그 XOR 값을 반환하세요. 두 정수는 서로 달라야 하며, 가능한 쌍이 없으면 이 사이트에서는 -1을 출력합니다.\n\n표준 입출력 형식은 이 사이트에서 정리한 것이며, 추가한 수치 범위와 해가 없는 경우의 표현은 이 사이트의 기준임을 명시한 것으로 원문의 제약 조건이 아닙니다.",
+    "input": "한 줄에 lo hi k가 주어집니다. 원문의 전체 범위: 1≤lo<hi≤10000, 1≤k≤10000.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "예제의 답은 각각 6, -1, 7입니다.",
+    "hints": [
+      "상위 비트부터 하위 비트까지 두 수에 대한 자릿수 DP를 수행합니다. 각 수가 아직 하한 및 상한에 밀착(tight)되어 있는지, a가 이미 b보다 작은지, XOR이 아직 k에 밀착되어 있는지를 추적하며 현재 비트 쌍을 전부 시도합니다."
+    ]
+  },
+  "vi": {
+    "title": "XOR lớn nhất không vượt quá giới hạn trong một đoạn",
+    "description": "Chọn lo≤a<b≤hi sao cho a XOR b≤k và giá trị XOR là lớn nhất có thể; trả về giá trị XOR. Hai số nguyên phải khác nhau; nếu không tồn tại cặp khả thi, trang này in -1.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do trang này biên soạn; các giới hạn số được bổ sung và cách mã hóa trường hợp vô nghiệm đều được đánh dấu rõ, không phải ràng buộc gốc của đề.",
+    "input": "Một dòng chứa lo hi k. Khoảng giá trị đầy đủ của đề gốc: 1≤lo<hi≤10000, 1≤k≤10000.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Các ví dụ lần lượt cho kết quả 6, -1 và 7.",
+    "hints": [
+      "Chạy quy hoạch động chữ số cho hai số từ bit cao xuống bit thấp, theo dõi mỗi số còn sát cận dưới và cận trên hay không, a đã nhỏ hơn b chưa, và XOR còn sát k hay không, rồi duyệt cặp bit hiện tại."
+    ]
   }
 }

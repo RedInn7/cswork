@@ -11,5 +11,35 @@
     "hints": [
       "For odd orders, use the Siamese construction (move up and to the right, and move down on a conflict); for orders that are multiples of 4, take complementary numbers according to a 4×4 position pattern; build the other even orders from four odd-order blocks plus specific column swaps. Order 2 has no solution."
     ]
+  },
+  "ja": {
+    "title": "有効な魔方陣を 1 つ構成する",
+    "description": "n 次の魔方陣を出力してください。1..n² をちょうど 1 回ずつ使い、すべての行、すべての列、2 本の主対角線の和が等しくなるようにします。存在しない場合は null を出力します。有効な構成であればどれでも受理され、例の配置と一致する必要はありません。\n\n標準入出力は CSWork が整理したもので、本サイト基準と記載した数値範囲は本サイトの判定上の取り決めです。",
+    "input": "整数 n (1..50) が 1 つ与えられます。",
+    "output": "n=2 のときは null を出力します。それ以外のときは、n 行に n 個の整数を、角括弧もカンマもなしで出力します。有効な魔方陣であればどれでも受理されます。",
+    "explanation": "例 1: 1 だけを出力すれば有効です。例 2: 2 次では、4 つの異なる数で行と列の和を等しくすることはできないので、出力は null です。例 3: たとえば 8 3 4 / 1 5 9 / 6 7 2 で、すべての行、列、対角線の和が 15 になります。回転したものや、ほかの有効な 3 次の魔方陣も受理されます。",
+    "hints": [
+      "奇数次ではシャム法 (右上へ進み、衝突したら下へ進む) を使います。4 の倍数の次数では、4×4 の位置パターンに従って補数を取ります。それ以外の偶数次数は、4 つの奇数次ブロックと特定の列の入れ替えで作ります。2 次には解がありません。"
+    ]
+  },
+  "ko": {
+    "title": "유효한 마방진 아무거나 만들기",
+    "description": "n차 마방진을 출력하세요. 1..n²을 각각 정확히 한 번씩 사용하며, 모든 행, 모든 열, 두 주 대각선의 합이 같아야 합니다. 존재하지 않으면 null을 출력합니다. 유효한 구성이면 무엇이든 인정되며, 예제의 배치와 같을 필요는 없습니다.\n\n표준 입출력은 CSWork가 정리했으며, 이 사이트의 것이라고 표시된 수치 범위는 이 사이트의 채점 규칙입니다.",
+    "input": "정수 n (1..50) 하나가 주어집니다.",
+    "output": "n=2이면 null을 출력하고, 그렇지 않으면 대괄호나 쉼표 없이 정수 n개씩 n줄을 출력합니다. 유효한 마방진이면 무엇이든 인정됩니다.",
+    "explanation": "예제 1: 1만 출력해도 유효합니다. 예제 2: 2차에서는 서로 다른 네 수로 행과 열의 합을 같게 할 수 없으므로 null을 출력합니다. 예제 3: 예를 들어 8 3 4 / 1 5 9 / 6 7 2이며, 모든 행, 열, 대각선의 합이 15입니다. 회전한 것이나 유효한 다른 3차 마방진도 인정됩니다.",
+    "hints": [
+      "홀수 차수에는 Siamese 방법(위쪽 오른쪽으로 이동하고, 충돌하면 아래로 이동)을 사용합니다. 4의 배수 차수에는 4×4 위치 패턴에 따라 보수가 되는 수를 취합니다. 나머지 짝수 차수는 홀수 차수 블록 네 개와 특정 열 교환으로 만듭니다. 2차에는 해가 없습니다."
+    ]
+  },
+  "vi": {
+    "title": "Dựng một ma phương hợp lệ bất kỳ",
+    "description": "Hãy in ra một ma phương cấp n: dùng mỗi số từ 1..n² đúng một lần, sao cho mọi hàng, mọi cột và cả hai đường chéo chính có cùng tổng. Nếu không tồn tại, in null. Mọi cách dựng hợp lệ đều được chấp nhận; không cần trùng với cách sắp xếp trong ví dụ.\n\nĐầu vào/đầu ra chuẩn do CSWork biên soạn; các khoảng giá trị được đánh dấu là của trang này là quy ước chấm bài của trang này.",
+    "input": "Một số nguyên n (1..50).",
+    "output": "Với n=2, in null; ngược lại in n dòng, mỗi dòng n số nguyên, không có dấu ngoặc vuông hay dấu phẩy. Mọi ma phương hợp lệ đều được chấp nhận.",
+    "explanation": "Ví dụ 1: chỉ in 1 là hợp lệ. Ví dụ 2: cấp 2 không thể dùng bốn số phân biệt với tổng các hàng và cột bằng nhau, nên kết quả là null. Ví dụ 3: chẳng hạn 8 3 4 / 1 5 9 / 6 7 2, trong đó mọi hàng, cột và đường chéo đều có tổng 15; các phép quay và những ma phương cấp 3 hợp lệ khác cũng được chấp nhận.",
+    "hints": [
+      "Với cấp lẻ, dùng cách dựng Siamese (đi lên và sang phải, và đi xuống khi bị đụng); với các cấp là bội của 4, lấy các số bù theo một mẫu vị trí 4×4; các cấp chẵn còn lại dựng từ bốn khối cấp lẻ cùng một số phép hoán đổi cột cụ thể. Cấp 2 không có nghiệm."
+    ]
   }
 }

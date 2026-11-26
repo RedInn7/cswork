@@ -12,5 +12,38 @@
       "The Euclidean distance must be exactly X.",
       "Treat cells as nodes and valid jumps as unweighted edges."
     ]
+  },
+  "ja": {
+    "title": "距離固定のジャンプの最小回数（Intuit OA）",
+    "description": "m×n のグリッドで、各ジャンプはちょうど X 単位（ユークリッド距離）を進まなければなりません。盤の外に出ずに、出発点から目的地までの最小ジャンプ回数を求めます。目的地に到達できない場合は -1 を返します。元の問題の固定された例の説明では目的地を (2,5) としていますが、その入力では誤って途中の点 (6,2) が与えられていたため、例の u,v を 2,5 に修正しています。",
+    "input": "7 個の整数 m n X p q u v が 1 行で与えられます。行数、列数、ジャンプ距離、出発点と目的地の座標です。範囲は元の問題の制約に従います。",
+    "output": "最小ジャンプ回数を出力します。目的地に到達できない場合は -1 を出力します。",
+    "explanation": "dr²+dc²=X² を満たす整数のオフセットを事前に計算し、盤のマス上で BFS を行います。",
+    "hints": [
+      "ユークリッド距離はちょうど X でなければなりません。",
+      "マスをノード、有効なジャンプを重みなしの辺として扱います。"
+    ]
+  },
+  "ko": {
+    "title": "고정 거리 점프의 최소 횟수 (Intuit OA)",
+    "description": "m×n 격자에서 모든 점프는 정확히 X단위(유클리드 거리)를 이동해야 합니다. 보드 밖으로 나가지 않고 출발점에서 목표점까지 가는 최소 점프 횟수를 구하세요. 목표에 도달할 수 없으면 -1을 반환합니다. 고정된 원문 예제의 설명은 목표를 (2,5)로 서술하지만 입력에는 중간 지점 (6,2)가 잘못 주어져 있어, 예제의 u,v를 2,5로 정정했습니다.",
+    "input": "정수 일곱 개 m n X p q u v가 한 줄로 주어집니다. 각각 행의 수, 열의 수, 점프 거리, 출발 좌표, 목표 좌표입니다. 범위는 원문의 제약 조건을 따릅니다.",
+    "output": "최소 점프 횟수를 출력하며, 목표에 도달할 수 없으면 -1을 출력합니다.",
+    "explanation": "dr²+dc²=X²를 만족하는 정수 오프셋을 미리 계산한 뒤, 보드의 칸에 대해 BFS를 수행합니다.",
+    "hints": [
+      "유클리드 거리가 정확히 X여야 합니다.",
+      "칸을 노드로, 유효한 점프를 가중치 없는 간선으로 취급합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần nhảy tối thiểu với khoảng cách cố định (Intuit OA)",
+    "description": "Trên một lưới m×n, mỗi lần nhảy phải đi đúng X đơn vị (khoảng cách Euclid). Tìm số lần nhảy tối thiểu từ điểm xuất phát đến đích mà không nhảy ra khỏi bàn; trả về -1 nếu không thể đến đích. Phần giải thích của ví dụ cố định trong nguồn gốc mô tả đích là (2,5), nhưng đầu vào của nó lại ghi nhầm điểm trung gian (6,2), nên u,v của ví dụ được sửa thành 2,5.",
+    "input": "Một dòng gồm bảy số nguyên m n X p q u v: số hàng, số cột, khoảng cách nhảy, và tọa độ điểm xuất phát và đích. Các phạm vi theo ràng buộc của nguồn gốc.",
+    "output": "In ra số lần nhảy tối thiểu; in -1 nếu không thể đến đích.",
+    "explanation": "Tính trước các độ dịch nguyên thỏa dr²+dc²=X², rồi chạy BFS trên các ô của bàn.",
+    "hints": [
+      "Khoảng cách Euclid phải đúng bằng X.",
+      "Coi các ô là đỉnh và các bước nhảy hợp lệ là các cạnh không trọng số."
+    ]
   }
 }

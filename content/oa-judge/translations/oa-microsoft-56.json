@@ -11,5 +11,35 @@
     "hints": [
       "If any value repeats, some factor has XOR 0 and the answer is immediately 0. Otherwise, apply the integer XOR Walsh transform to the value frequencies of length 4096, square each entry, transform again, and divide by 4096 to get the number of ordered pairs for each XOR value; the number of unordered pairs with a nonzero XOR is half of that, and the answer is the product of modular powers using these counts."
     ]
+  },
+  "ja": {
+    "title": "すべての添字ペアの XOR の積",
+    "description": "0≤i<j<N を満たすすべての組について A[i] XOR A[j] を計算し、それらをすべて掛け合わせた積を 1000000007 で割った余りを求めてください。各テストケースは独立しています。元のスナップショットには添字の条件と法が完全に書かれていましたが、古いインポーターが小なり記号を含む部分を誤って削除したため、本サイトで復元しました。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に T（1..10）が与えられます。各テストケースは、N（2..100000）の行と、N 個の整数（1..3000）の行からなります。",
+    "output": "各テストケースについて、積を 1000000007 で割った余りを 1 行で出力してください。",
+    "explanation": "例 1：6 個の因数 3、2、6、1、5、4 を掛けると 720 です。例 2：3 個の因数 7、3、4 を掛けると 84 です。例 3：最初のテストケースでは、等しい値同士の XOR が 0 になるので 0 を出力します。2 つ目では因数が 3 だけなので 3 を出力します。",
+    "hints": [
+      "値が重複していれば、XOR が 0 の因数があるので答えはただちに 0 です。そうでなければ、値の出現頻度の長さ 4096 の配列に整数の XOR Walsh 変換を適用し、各要素を二乗してからもう一度変換し、4096 で割って各 XOR 値に対する順序付きペアの数を求めます。XOR が 0 でない非順序ペアの数はその半分で、答えはこれらの個数を使った冪乗の剰余の積です。"
+    ]
+  },
+  "ko": {
+    "title": "모든 인덱스 쌍의 XOR 곱",
+    "description": "모든 0≤i<j<N에 대해 A[i] XOR A[j]를 계산하고, 이 결과를 모두 곱한 값을 1000000007로 나눈 나머지를 구하세요. 각 테스트 케이스는 독립적입니다. 원본 스냅샷에는 인덱스 조건과 법이 모두 주어져 있었으나, 예전 importer가 부등호가 들어 있던 텍스트를 잘못 지웠고, 이 사이트에서 이를 복원했습니다.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "첫째 줄에 T(1..10)가 주어집니다. 각 테스트 케이스는 N(2..100000)이 있는 한 줄과, N개의 정수(1..3000)가 있는 한 줄로 이루어집니다.",
+    "output": "각 테스트 케이스마다 곱을 1000000007로 나눈 나머지를 한 줄에 출력합니다.",
+    "explanation": "예제 1: 여섯 개의 인수 3, 2, 6, 1, 5, 4를 곱하면 720입니다. 예제 2: 세 개의 인수 7, 3, 4를 곱하면 84입니다. 예제 3: 첫 번째 테스트 케이스에서는 같은 값끼리의 XOR이 0이므로 0을 출력하고, 두 번째에서는 유일한 인수가 3이므로 3을 출력합니다.",
+    "hints": [
+      "값이 하나라도 중복되면 XOR이 0인 인수가 생겨 답은 즉시 0입니다. 그렇지 않다면 값의 빈도에 대해 길이 4096의 정수 XOR Walsh 변환을 적용하고, 각 항을 제곱한 뒤 다시 변환하여 4096으로 나누면 XOR 값별 순서쌍 수를 얻습니다. 0이 아닌 XOR을 가지는 비순서쌍의 수는 그 절반이며, 이 개수들로 모듈러 거듭제곱의 곱을 구하면 답입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tích các phép XOR trên mọi cặp chỉ số",
+    "description": "Với mọi 0≤i<j<N, tính A[i] XOR A[j], nhân tất cả các kết quả này với nhau rồi lấy tích modulo 1000000007. Mỗi bộ test là độc lập. Bản chụp gốc nêu đầy đủ điều kiện chỉ số và modulo; một trình nhập cũ đã xóa nhầm đoạn văn bản chứa dấu nhỏ hơn, và trang này đã khôi phục lại.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Dòng đầu tiên chứa T (1..10). Mỗi bộ test gồm một dòng chứa N (2..100000), theo sau là một dòng chứa N số nguyên (1..3000).",
+    "output": "Với mỗi bộ test, in ra một dòng chứa tích modulo 1000000007.",
+    "explanation": "Ví dụ 1: sáu thừa số 3, 2, 6, 1, 5, 4 nhân lại bằng 720. Ví dụ 2: ba thừa số 7, 3, 4 nhân lại bằng 84. Ví dụ 3: ở bộ test đầu tiên, các giá trị bằng nhau có XOR bằng 0, nên in 0; ở bộ test thứ hai, thừa số duy nhất là 3, nên in 3.",
+    "hints": [
+      "Nếu có giá trị lặp lại thì tồn tại một thừa số có XOR bằng 0 và đáp án ngay lập tức là 0. Nếu không, áp dụng biến đổi Walsh XOR trên số nguyên cho tần suất các giá trị với độ dài 4096, bình phương từng phần tử, biến đổi lần nữa, rồi chia cho 4096 để có số cặp có thứ tự cho mỗi giá trị XOR; số cặp không có thứ tự với XOR khác 0 bằng một nửa số đó, và đáp án là tích các lũy thừa modulo dùng các số đếm này."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "First sort and merge the existing intersecting intervals, then use two pointers to find the largest run of consecutive blocks that one segment can connect: the start of block r minus the end of block l is ≤k. Connecting w blocks reduces the total number of blocks by w−1."
     ]
+  },
+  "ja": {
+    "title": "区間を 1 つ追加した後の連結ブロックの最小数",
+    "description": "閉区間がいくつか与えられ、長さ b−a≤k の閉区間をちょうど 1 つ追加できます。併合した後の連結ブロックの最小数を求めてください。同じ端点で接する場合は連結とみなし、1 だけ離れた区間は自動的には連結とみなしません。\n\n入出力プロトコルと明示された補足制約は本サイトが整備したものであり、元の解法は実行していません。",
+    "input": "1 行目に n k が与えられ、続く n 行に a b が与えられます。1≤n≤200000、1≤a≤b≤10⁹、1≤k≤10⁹ です。追加する区間の長さは 0 でもかまいません。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 2; 1; 1 です。例は、独立した全探索・状態探索・直接シミュレーションで再確認済みです。",
+    "hints": [
+      "まず既存の交差する区間をソートして併合し、続いて 2 ポインタで、1 つの線分で連結できる連続したブロックの最長の連なりを求めます。つまり、ブロック r の始点からブロック l の終点を引いた値が ≤k となるものです。w 個のブロックを連結すると、ブロックの総数は w−1 減ります。"
+    ]
+  },
+  "ko": {
+    "title": "구간 하나를 추가한 뒤 최소 연결 블록 수",
+    "description": "닫힌 구간들이 주어지며, 길이 b−a≤k인 닫힌 구간을 정확히 하나 추가할 수 있습니다. 병합한 뒤 연결된 블록의 최소 개수를 구하세요. 같은 끝점에서 맞닿으면 연결된 것으로 보며, 1만큼 떨어진 구간은 자동으로 연결되지 않습니다.\n\n입출력 규약과 명시된 보충 제약 조건은 이 사이트에서 정리한 것이며, 원본 풀이는 실행하여 검증하지 않았습니다.",
+    "input": "첫 번째 줄에 n k가 주어지고, 이어서 n개의 줄에 a b가 주어집니다. 1≤n≤200000, 1≤a≤b≤10⁹, 1≤k≤10⁹입니다. 추가하는 구간의 길이는 0이어도 됩니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 2; 1; 1입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 검증했습니다.",
+    "hints": [
+      "먼저 기존의 서로 겹치는 구간들을 정렬하고 병합한 뒤, 투 포인터로 선분 하나가 연결할 수 있는 연속된 블록의 최대 구간을 찾습니다. 블록 r의 시작 − 블록 l의 끝이 ≤k이면 가능합니다. w개의 블록을 연결하면 전체 블록 수가 w−1만큼 줄어듭니다."
+    ]
+  },
+  "vi": {
+    "title": "Số khối liên thông ít nhất sau khi thêm một đoạn",
+    "description": "Cho các đoạn đóng và được thêm đúng một đoạn đóng phụ có độ dài b−a≤k. Hãy tìm số khối liên thông tối thiểu sau khi hợp nhất. Chạm nhau tại cùng một đầu mút được tính là liên thông; các đoạn chỉ chênh nhau 1 thì không tự động liên thông.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n k, tiếp theo là n dòng a b. 1≤n≤200000, 1≤a≤b≤10⁹, 1≤k≤10⁹. Đoạn được thêm có thể có độ dài 0.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 2; 1; 1. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Trước hết sắp xếp và hợp nhất các đoạn đã có giao nhau, rồi dùng hai con trỏ tìm dãy khối liên tiếp dài nhất mà một đoạn có thể nối lại: đầu của khối r trừ đi cuối của khối l phải ≤k. Nối w khối làm giảm tổng số khối đi w−1."
+    ]
   }
 }

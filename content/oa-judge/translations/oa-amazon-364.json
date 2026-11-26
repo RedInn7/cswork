@@ -11,5 +11,35 @@
     "hints": [
       "Only characters with an odd frequency need to keep one copy each. Scan the original string and use the remaining frequencies, the set of chosen characters and a monotonic stack to pick the smallest subsequence that contains each of these characters exactly once."
     ]
+  },
+  "ja": {
+    "title": "等しい文字のペアを削除した後の、最短かつ最小の文字列",
+    "description": "各ステップでは、隣り合っている必要のない、等しい2文字を任意に削除できます。残った文字は元の順序を保ちます。まず残りの長さを最小化し、その上で、残った文字列を Unicode コードポイントの辞書順で最小にしてください。\n\n本サイトでは標準入出力と解説を独自にまとめています。出典で欠けている制約の補足やサンプルの訂正は、プロトコル中に明記しています。",
+    "input": "入力は JSON 文字列です。元の問題文は長さの上限も文字の範囲も与えていません。本サイトでは 0≤コードポイント数≤200000 とし、空白、NUL、BMP 外の文字、U+0085/U+2028/U+2029 を含め、すべての Unicode スカラ値の文字を許します。",
+    "output": "正規化された ASCII の JSON 文字列を、改行付きで出力します。二重引用符とバックスラッシュはバックスラッシュでエスケープします。制御文字は JSON の短いエスケープ(バックスペース、タブ、改行、フォームフィード、復帰)か、小文字の4桁の \\u を使います。ASCII 以外の文字と DEL は小文字の4桁の \\u を使い、BMP 外の文字は UTF-16 のサロゲートエスケープのペアで表します。それ以外の印字可能な ASCII はそのまま出力します。これは Python の json.dumps(result, ensure_ascii=True) と同等です。空文字列は \"\" と出力します。比較は厳密一致で行うので、文字列内のスペースを無視することはできません。",
+    "explanation": "出力は \"BAX\"、\"XYZ\"、\"\" です。元の3つ目のサンプルは単一のスペースを示していますが、これは空文字列であるという明示的な説明と矛盾するため、本サイトでは空の JSON 文字列に訂正しています。",
+    "hints": [
+      "出現回数が奇数の文字だけが、1つずつコピーを残す必要があります。元の文字列を走査し、残りの出現回数、選ばれた文字の集合、単調スタックを使って、これらの文字をそれぞれちょうど1回含む最小の部分列を選びます。"
+    ]
+  },
+  "ko": {
+    "title": "같은 문자 쌍을 삭제한 뒤 가장 짧고 사전순으로 가장 작은 문자열",
+    "description": "각 단계에서 같은 문자 두 개를 임의로 삭제할 수 있으며, 두 문자가 인접할 필요는 없습니다. 남은 문자들은 원래 순서를 유지합니다. 먼저 남는 길이를 최소화하고, 그다음 남은 문자열을 유니코드 코드 포인트 기준으로 사전순 최소가 되게 하십시오.\n\n이 사이트에서 표준 입출력과 해설을 독자적으로 정리했으며, 출처에 빠진 범위의 보완과 예제의 정정 사항은 프로토콜에 명시했습니다.",
+    "input": "입력은 JSON 문자열입니다. 원문에는 길이의 상한과 문자 범위가 없으며, 이 사이트에서는 0≤코드 포인트 길이≤200000이고 공백, NUL, BMP 밖 문자, U+0085/U+2028/U+2029를 포함한 모든 유니코드 스칼라 문자를 허용합니다.",
+    "output": "정규 ASCII JSON 문자열을 출력하고 줄바꿈을 붙입니다. 큰따옴표와 역슬래시는 역슬래시로 이스케이프하고, 제어 문자는 JSON 짧은 이스케이프(백스페이스, 탭, 줄바꿈, 폼 피드, 캐리지 리턴) 또는 소문자 4자리 \\u를 사용하며, 비ASCII 문자와 DEL은 소문자 4자리 \\u를, BMP 밖 문자는 UTF-16 서로게이트 이스케이프 쌍을 사용하고, 그 외 출력 가능한 ASCII는 그대로 출력합니다. 이는 Python json.dumps(result, ensure_ascii=True)와 같습니다. 빈 문자열은 \"\"로 출력합니다. 정확한 비교 방식을 사용하므로 문자열 안의 공백을 무시할 수 없습니다.",
+    "explanation": "출력은 \"BAX\", \"XYZ\", \"\"입니다. 원문의 세 번째 예제는 공백 하나를 보여 주는데 빈 문자열이라는 명시적 설명과 충돌하므로, 이 사이트에서는 빈 JSON 문자열로 정정했습니다.",
+    "hints": [
+      "홀수 번 나타나는 문자만 각각 하나씩 남기면 됩니다. 원래 문자열을 훑으면서 남은 빈도, 선택된 문자 집합, 단조 스택을 사용해, 이 문자들을 각각 정확히 한 번씩 포함하는 가장 작은 부분 수열을 고릅니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu ngắn nhất rồi nhỏ nhất sau khi xóa các cặp ký tự giống nhau",
+    "description": "Mỗi bước bạn có thể xóa hai ký tự bất kỳ giống nhau, không nhất thiết liền kề; các ký tự còn lại giữ nguyên thứ tự ban đầu. Trước hết tối thiểu hóa độ dài còn lại, sau đó làm cho xâu còn lại nhỏ nhất theo thứ tự từ điển của code point Unicode.\n\nTrang này tự biên soạn phần đầu vào/đầu ra chuẩn và lời giải; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Đầu vào là một xâu JSON. Đề gốc không cho cận trên của độ dài hay miền ký tự; trên trang này 0≤độ dài tính theo code point≤200000, và cho phép mọi ký tự Unicode scalar, kể cả khoảng trắng, NUL, ký tự ngoài BMP và U+0085/U+2028/U+2029.",
+    "output": "In ra một xâu JSON ASCII chuẩn tắc theo sau là một ký tự xuống dòng: dấu nháy kép và dấu gạch chéo ngược được thoát bằng dấu gạch chéo ngược; các ký tự điều khiển dùng chuỗi thoát ngắn của JSON (backspace, tab, newline, form feed, carriage return) hoặc \\u bốn chữ số viết thường; các ký tự không phải ASCII và DEL dùng \\u bốn chữ số viết thường, và các ký tự ngoài BMP dùng một cặp chuỗi thoát surrogate UTF-16; mọi ký tự ASCII in được khác đều được in trực tiếp. Điều này tương đương với Python json.dumps(result, ensure_ascii=True). Xâu rỗng được in là \"\". Chế độ so sánh chính xác được sử dụng, nên không thể bỏ qua các khoảng trắng bên trong xâu.",
+    "explanation": "Các đầu ra là \"BAX\", \"XYZ\" và \"\". Ví dụ thứ ba gốc hiển thị một dấu cách, mâu thuẫn với lời giải thích tường minh của nó về xâu rỗng; trang này sửa thành một xâu JSON rỗng.",
+    "hints": [
+      "Chỉ những ký tự có tần suất lẻ mới cần giữ lại mỗi ký tự một bản sao. Duyệt xâu gốc và dùng các tần suất còn lại, tập các ký tự đã chọn và một ngăn xếp đơn điệu để chọn dãy con nhỏ nhất chứa mỗi ký tự trong số này đúng một lần."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "This is a 0/1 knapsack: the cost is the current price and the gain is the future price minus the current price. Iterate the capacity in reverse so that each stock is bought at most once, and skip non-positive gains."
     ]
+  },
+  "ja": {
+    "title": "会社ごとに最大 1 株までで得られる予測利益の最大値",
+    "description": "利用可能な資金で株を選び、会社ごとに最大 1 株まで購入します。購入価格の合計は saving を超えてはいけません。利益は、予測される将来の売却額から購入価格を引いたもので、1 株も買わないことも許されます。最大の利益を求めてください。売却額の最大ではありません。\n\n入出力プロトコルは本サイトが整備したものです。元の文章で欠けていた数値範囲は、本サイトによる補足として明記しています。",
+    "input": "1 行目に n saving が、2 行目に currentValue が、3 行目に futureValue が与えられます。元の文章には数値の制約がないため、本サイトでは 1≤n≤1000、0≤saving≤10000、0≤各価格≤10⁹ とし、現在または将来の価格が 0 になることもあります。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 55; 2; 5 です。例は、独立した全探索・状態探索・直接シミュレーションで確認済みです。",
+    "hints": [
+      "これは 0/1 ナップサック問題です。コストは現在の価格、利得は将来の価格から現在の価格を引いた値です。各株を最大 1 回だけ買えるよう容量を逆順に回し、利得が 0 以下のものはスキップします。"
+    ]
+  },
+  "ko": {
+    "title": "회사당 최대 한 주만 살 때 예상 수익의 최댓값",
+    "description": "가용 자금으로 주식을 고르며, 회사당 최대 한 주만 살 수 있고 총 구매 가격은 saving을 넘을 수 없습니다. 수익은 예상되는 미래 매도 대금에서 구매 가격을 뺀 값이며, 한 주도 사지 않는 것도 허용됩니다. 총 매출이 아니라 최대 수익을 구하세요.\n\n입출력 규약은 이 사이트에서 정리한 것이며, 원문에 없는 수치 범위는 이 사이트가 추가한 것으로 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n saving이 주어지고, 두 번째 줄에 currentValue가, 세 번째 줄에 futureValue가 주어집니다. 원문에는 수치 제약이 없으며, 이 사이트는 1≤n≤1000, 0≤saving≤10000, 0≤각 가격≤10⁹를 추가합니다. 현재 가격이나 미래 가격이 0일 수도 있습니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 55; 2; 5입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "이는 0/1 배낭 문제입니다. 비용은 현재 가격이고 이득은 미래 가격에서 현재 가격을 뺀 값입니다. 각 주식을 한 번만 사도록 용량을 역순으로 순회하고, 이득이 양수가 아닌 것은 건너뜁니다."
+    ]
+  },
+  "vi": {
+    "title": "Lợi nhuận dự đoán tối đa với nhiều nhất một cổ phiếu mỗi công ty",
+    "description": "Chọn cổ phiếu bằng số vốn hiện có, mua nhiều nhất một cổ phiếu mỗi công ty, với tổng giá mua không vượt quá saving. Lợi nhuận là số tiền bán dự đoán trong tương lai trừ đi giá mua, và việc không mua cổ phiếu nào cũng được phép. Hãy tìm lợi nhuận tối đa, không phải tổng doanh thu bán tối đa.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các khoảng giá trị bị thiếu trong văn bản gốc được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu tiên chứa n saving, dòng thứ hai chứa currentValue, và dòng thứ ba chứa futureValue. Văn bản gốc không có ràng buộc số; trang này bổ sung 1≤n≤1000, 0≤saving≤10000 và 0≤mỗi giá≤10⁹, và giá hiện tại hoặc giá tương lai có thể bằng 0.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 55; 2; 5. Các ví dụ đã được kiểm tra bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Đây là bài toán cái túi 0/1: chi phí là giá hiện tại và lợi ích là giá tương lai trừ giá hiện tại. Duyệt dung lượng theo thứ tự ngược để mỗi cổ phiếu được mua nhiều nhất một lần, và bỏ qua các lợi ích không dương."
+    ]
   }
 }

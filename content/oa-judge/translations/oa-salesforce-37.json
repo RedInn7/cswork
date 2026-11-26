@@ -11,5 +11,35 @@
     "hints": [
       "Treat the per-position costs as a non-negative array, and use two pointers to maintain the longest window whose total cost does not exceed K."
     ]
+  },
+  "ja": {
+    "title": "予算内で対応する文字列に変換できる最長の区間",
+    "description": "s と t は同じ長さで、小文字のみからなります。s[i] を t[i] に変えるコストは ASCII コードの差の絶対値です。位置ごとの変換コストの合計が ≤K となる連続区間を求め、その最大の長さを返してください。条件を満たす空でない区間がなければ 0 を返します。\n\n本サイトが欠けている範囲を補った点と、原文の誤記を訂正した点については、入力プロトコルに記載しています。",
+    "input": "入力は JSON 配列 [s,t,K] です。原文には数値の範囲がないため、本サイトでは 0≤|s|=|t|≤200000、0≤K≤10^9 を補っています。エンコードされた入力全体は ≤401000 バイトです。",
+    "output": "整数 1 つ(答え)を出力してください。",
+    "explanation": "3 つの公開サンプルの出力は順に 3; 0; 0 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "位置ごとのコストを非負の配列とみなし、しゃくとり法(two pointers)で、合計コストが K を超えない最長の窓を維持します。"
+    ]
+  },
+  "ko": {
+    "title": "예산 내에서 대응하는 문자열로 변환 가능한 가장 긴 구간",
+    "description": "s와 t는 길이가 같고 소문자만 포함합니다. s[i]를 t[i]로 바꾸는 비용은 두 문자의 ASCII 코드의 절댓값 차이입니다. 위치별 변환 비용의 합이 ≤K인 연속 구간을 찾아 그 구간의 최대 길이를 반환하세요. 조건을 만족하는 비어 있지 않은 구간이 없으면 0을 반환합니다.\n\n이 사이트가 누락된 범위를 보완한 내용과 원문 오타를 복구한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력은 JSON 배열 [s,t,K]입니다. 원문에는 수치 범위가 없으며, 이 사이트가 0≤|s|=|t|≤200000, 0≤K≤10^9를 추가했습니다. 인코딩된 전체 입력은 ≤401000바이트입니다.",
+    "output": "정수 하나를 정답으로 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 3; 0; 0입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "위치별 비용을 음이 아닌 배열로 보고, 투 포인터로 비용 합이 K를 넘지 않는 가장 긴 윈도를 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đoạn dài nhất có thể biến đổi thành xâu tương ứng trong ngân sách",
+    "description": "s và t có cùng độ dài và chỉ chứa các chữ cái thường. Chi phí đổi s[i] thành t[i] là hiệu tuyệt đối giữa mã ASCII của chúng. Hãy tìm một đoạn liên tiếp có tổng chi phí biến đổi từng vị trí ≤K và trả về độ dài lớn nhất của đoạn đó; trả về 0 nếu không có đoạn không rỗng nào thỏa mãn.\n\nCác khoảng giá trị mà trang này bổ sung cho những ràng buộc còn thiếu, cùng việc khôi phục lỗi đánh máy của đề gốc, được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào là một mảng JSON [s,t,K]. Đề gốc không có cận số; trang này bổ sung 0≤|s|=|t|≤200000, 0≤K≤10^9; tổng đầu vào đã mã hóa ≤401000 byte.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 3; 0; 0. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Coi chi phí từng vị trí là một mảng không âm, và dùng hai con trỏ để duy trì cửa sổ dài nhất có tổng chi phí không vượt quá K."
+    ]
   }
 }

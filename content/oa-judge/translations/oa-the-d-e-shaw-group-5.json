@@ -11,5 +11,35 @@
     "hints": [
       "Use the identity |x−y|+|x+y|=2·max(|x|,|y|). If sumVal is a non-negative even number, let r=sumVal/2; the answer is the number of element pairs whose absolute values are both at most r, minus the number of pairs whose absolute values are both less than r."
     ]
+  },
+  "ja": {
+    "title": "絶対値の条件を満たす順序なしペアの個数",
+    "description": "整数配列と sumVal が与えられます。異なる添字の順序なしペア (i,j) は、|arr[i]-arr[j]|+|arr[i]+arr[j]| が sumVal に等しいとき「興味深いペア」と呼ばれます。そのようなペアの個数を求めてください。\n\n標準入出力、本サイトで追加した範囲、および例は、この問題の説明に従っています。元の問題で範囲が欠けている箇所は、本サイトの追加であることを明示しています。",
+    "input": "1 行目に n と sumVal、2 行目に n 個の整数が与えられます。本サイトの追加: 1≤n≤100000、−10^9≤arr[i]≤10^9、−2×10^9≤sumVal≤2×10^9。結果は 64 ビット整数で扱います。元のスナップショットにはこれらの範囲は記載されていませんでした。",
+    "output": "条件を満たす添字の順序なしペアの個数を出力してください。",
+    "explanation": "|x−y|+|x+y|=2·max(|x|,|y|) という恒等式を使います。sumVal が 0 以上の偶数のとき、r=sumVal/2 とすると、答えは「絶対値がどちらも r 以下である要素のペア数」から「絶対値がどちらも r 未満であるペア数」を引いた値です。",
+    "hints": [
+      "|x−y|+|x+y|=2·max(|x|,|y|) という恒等式を使います。sumVal が 0 以上の偶数のとき、r=sumVal/2 とすると、答えは「絶対値がどちらも r 以下である要素のペア数」から「絶対値がどちらも r 未満であるペア数」を引いた値です。"
+    ]
+  },
+  "ko": {
+    "title": "절댓값 조건을 만족하는 순서 없는 쌍",
+    "description": "정수 배열과 sumVal이 주어집니다. 서로 다른 인덱스의 순서 없는 쌍 (i,j)에 대해 |arr[i]-arr[j]|+|arr[i]+arr[j]|가 sumVal과 같으면 이를 흥미로운 쌍이라고 합니다. 이러한 쌍의 개수를 구하세요.\n\n표준 입출력, 이 사이트가 추가한 범위, 예시는 이 문제의 설명을 따릅니다. 원문에 범위가 없는 부분은 이 사이트에서 추가한 것임을 명시합니다.",
+    "input": "첫째 줄에 n과 sumVal이 주어지고, 둘째 줄에 n개의 정수가 주어집니다. 이 사이트의 추가 제약: 1≤n≤100000, −10^9≤arr[i]≤10^9, −2×10^9≤sumVal≤2×10^9이며, 결과는 64비트 정수로 계산합니다. 원본 스냅샷에는 이 범위가 주어져 있지 않았습니다.",
+    "output": "조건을 만족하는 순서 없는 인덱스 쌍의 개수를 출력합니다.",
+    "explanation": "항등식 |x−y|+|x+y|=2·max(|x|,|y|)를 이용합니다. sumVal이 0 이상의 짝수이면 r=sumVal/2로 두었을 때, 절댓값이 모두 r 이하인 원소 쌍의 수에서 절댓값이 모두 r 미만인 원소 쌍의 수를 뺀 것이 답입니다.",
+    "hints": [
+      "항등식 |x−y|+|x+y|=2·max(|x|,|y|)를 이용합니다. sumVal이 0 이상의 짝수이면 r=sumVal/2로 두었을 때, 절댓값이 모두 r 이하인 원소 쌍의 수에서 절댓값이 모두 r 미만인 원소 쌍의 수를 뺀 것이 답입니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm cặp không có thứ tự thỏa điều kiện giá trị tuyệt đối",
+    "description": "Cho một mảng số nguyên và sumVal, một cặp không có thứ tự (i,j) gồm hai chỉ số khác nhau được gọi là cặp thú vị khi |arr[i]-arr[j]|+|arr[i]+arr[j]| bằng sumVal. Hãy đếm số cặp như vậy.\n\nGiao thức đầu vào/đầu ra chuẩn, các giới hạn do trang này bổ sung và các ví dụ đều theo mô tả của đề này; chỗ nào đề gốc thiếu giới hạn thì được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu chứa n và sumVal, dòng thứ hai chứa n số nguyên. Phần trang này bổ sung: 1≤n≤100000, −10^9≤arr[i]≤10^9, −2×10^9≤sumVal≤2×10^9; kết quả dùng số nguyên 64 bit. Bản chụp gốc không cung cấp các giới hạn này.",
+    "output": "In ra số cặp chỉ số không có thứ tự thỏa điều kiện.",
+    "explanation": "Dùng đẳng thức |x−y|+|x+y|=2·max(|x|,|y|). Nếu sumVal là số chẵn không âm, đặt r=sumVal/2; đáp án là số cặp phần tử mà cả hai giá trị tuyệt đối đều không vượt quá r, trừ đi số cặp mà cả hai giá trị tuyệt đối đều nhỏ hơn r.",
+    "hints": [
+      "Dùng đẳng thức |x−y|+|x+y|=2·max(|x|,|y|). Nếu sumVal là số chẵn không âm, đặt r=sumVal/2; đáp án là số cặp phần tử mà cả hai giá trị tuyệt đối đều không vượt quá r, trừ đi số cặp mà cả hai giá trị tuyệt đối đều nhỏ hơn r."
+    ]
   }
 }

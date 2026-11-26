@@ -13,5 +13,41 @@
       "Use a bitmap to represent existence; do not store an integer answer array over the two-hundred-million value range.",
       "The contribution of a duplicate value must be multiplied by its frequency, and the sum must use a 64-bit integer."
     ]
+  },
+  "ja": {
+    "title": "約数ベースのリソース置換後の最小総コスト",
+    "description": "正の整数の配列 cost が与えられます。1 回の操作で 2 つの位置 x と y を選び、現在の cost[x] が現在の cost[y] で割り切れるとき、cost[x]=cost[y] とできます。操作は 0 回を含め何回でも行え、最終的な要素の和の最小値を求めてください。値は既存の位置からコピーすることしかできず、gcd のような新しい値は作れません。重複する値は、それぞれの位置で和に数えられます。固定された MDX/catalog の完全な広い範囲を保持しており、FastPrep における同じ問題のより狭い範囲には縮小していません。公開されている MDX の入力 [3,6,2,6,25] に対して示されている答え 17 は誤りで、述べられている操作の下では 34 になるはずです。答えが 17 になるのは、FastPrep の完全な入力 [3,6,2,5,25] だけです。",
+    "input": "1 行目に n、2 行目に n 個の整数 cost[i] が与えられます。1≤n≤2000000、1≤cost[i]≤200000000 です。標準入出力は本サイトが用意し、MDX/catalog のより大きな範囲を保持しています。",
+    "output": "最小の和を 64 ビット整数で出力します。",
+    "explanation": "1 つ目の例では、2 つの 6 が 2 になり、25 は下げられないので、和は 34 です。2 つ目の例では、6 が 2 に、25 が 5 になるので、和は 17 です。3 つ目の例では、6、10、15 は互いに割り切れないので、和は 31 のままです。存在しない gcd=1 にすることはできません。",
+    "hints": [
+      "元の各値は、最初から存在する自身の約数のどれかにしかなれません。",
+      "存在の有無はビットマップで表します。2 億の値域にわたる整数の答え配列は保持しないでください。",
+      "重複する値の寄与には頻度を掛ける必要があり、和には 64 ビット整数を使います。"
+    ]
+  },
+  "ko": {
+    "title": "나누어떨어지는 값으로 자원을 교체한 뒤의 최소 총비용",
+    "description": "양의 정수 배열 cost가 주어집니다. 한 번의 연산에서 두 위치 x와 y를 고르며, 현재 cost[x]가 현재 cost[y]로 나누어떨어지면 cost[x]=cost[y]로 바꿀 수 있습니다. 연산은 0번을 포함해 몇 번이든 할 수 있으며, 최종 원소들의 합의 최솟값을 구하세요. 값은 기존 위치에서만 복사할 수 있고 gcd 같은 새 값은 만들 수 없으며, 중복된 값은 각 위치마다 합에 포함됩니다. 고정된 MDX/catalog의 넓은 범위를 그대로 유지하며, FastPrep의 같은 문제의 더 작은 범위로 줄이지 않았습니다. 공개 MDX 입력 [3,6,2,6,25]에 주어진 답 17은 틀렸으며, 서술된 연산에서는 34여야 합니다. 답이 17인 것은 FastPrep의 전체 입력 [3,6,2,5,25]뿐입니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 n개의 정수 cost[i]가 주어집니다. 1≤n≤2000000, 1≤cost[i]≤200000000입니다. 표준 입출력은 이 사이트가 준비했으며, MDX/catalog의 더 넓은 범위를 유지합니다.",
+    "output": "가능한 최소 합을 64비트 정수로 출력합니다.",
+    "explanation": "첫 번째 예제에서 두 개의 6은 2가 되고 25는 낮출 수 없으므로 합은 34입니다. 두 번째 예제에서 6은 2가 되고 25는 5가 되므로 합은 17입니다. 세 번째 예제에서 6, 10, 15는 서로를 나누지 않으므로 합은 31로 유지되며, 존재하지 않는 gcd=1로 바꿀 수는 없습니다.",
+    "hints": [
+      "각 원래 값은 처음부터 존재하는 자신의 약수 중 하나로만 바뀔 수 있습니다.",
+      "존재 여부는 비트맵으로 나타내세요. 2억 범위의 값에 대해 정수 답 배열을 저장하지 마세요.",
+      "중복된 값의 기여분에는 빈도를 곱해야 하며, 합은 64비트 정수를 사용해야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng chi phí tối thiểu sau khi thay thế tài nguyên theo tính chia hết",
+    "description": "Cho một mảng số nguyên dương cost. Mỗi thao tác chọn hai vị trí x và y; khi cost[x] hiện tại chia hết cho cost[y] hiện tại, bạn có thể đặt cost[x]=cost[y]. Có thể thực hiện số thao tác tùy ý, kể cả không thao tác nào; hãy tìm tổng nhỏ nhất có thể của các phần tử cuối cùng. Giá trị chỉ có thể được sao chép từ các vị trí đang có, và không thể tạo ra giá trị mới như gcd; các giá trị trùng lặp được tính vào tổng ở mỗi vị trí của chúng. Khoảng giá trị lớn đầy đủ của MDX/catalog cố định được giữ nguyên chứ không rút gọn về khoảng nhỏ hơn của cùng bài trên FastPrep. Đáp án 17 cho đầu vào MDX công khai [3,6,2,6,25] là sai; theo thao tác đã nêu thì phải là 34; chỉ có đầu vào FastPrep đầy đủ [3,6,2,5,25] mới có đáp án 17.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n số nguyên cost[i]. 1≤n≤2000000, 1≤cost[i]≤200000000. Vào/ra chuẩn do trang này chuẩn bị; khoảng giá trị lớn hơn của MDX/catalog được giữ nguyên.",
+    "output": "In ra tổng nhỏ nhất có thể dưới dạng số nguyên 64 bit.",
+    "explanation": "Ở ví dụ đầu tiên, hai số 6 trở thành 2 và 25 không thể hạ xuống, nên tổng là 34. Ở ví dụ thứ hai, 6 trở thành 2 và 25 trở thành 5, nên tổng là 17. Ở ví dụ thứ ba, 6, 10, 15 không chia hết cho nhau nên tổng giữ nguyên 31; chúng không thể biến thành gcd=1 vốn không tồn tại.",
+    "hints": [
+      "Mỗi giá trị ban đầu chỉ có thể trở thành một trong các ước của nó vốn đã tồn tại từ đầu.",
+      "Dùng bitmap để biểu diễn sự tồn tại; đừng lưu một mảng đáp án số nguyên trên miền giá trị hai trăm triệu.",
+      "Đóng góp của một giá trị trùng lặp phải nhân với tần suất của nó, và tổng phải dùng số nguyên 64 bit."
+    ]
   }
 }

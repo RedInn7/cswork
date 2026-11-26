@@ -11,5 +11,35 @@
     "hints": [
       "Give each append a unique increasing position. A shared next array links the positions of the same item, and a dictionary stores only the head and tail index of each item; on removal, advance the head index and mark the position. Finally, output the positions that were not removed, in order."
     ]
+  },
+  "ja": {
+    "title": "ショッピングカートへの追加と最初の出現の削除",
+    "description": "カートは最初、与えられた順に商品を持っています。正のクエリ x は x をカートの末尾に追加し、負のクエリ −x はカートの現在の中で最初に現れる x を 1 つ削除します。最終的なカートを出力してください。本サイトのテストケースでは、削除のたびにその商品が存在することが保証されており、原典で規定されていない、存在しない商品の削除の挙動は未定義とします。\n\n標準入出力、例、判定は CSWork が独自に作成しました。本サイトのものと明記した取り決めを、原典の元の制限として扱うことはしません。",
+    "input": "1 行目に n q（どちらも 1..200000）、2 行目に n 個の初期商品（1..10⁹）、3 行目に q 個の 0 でないクエリ（−10⁹..10⁹）が与えられます。削除クエリの商品は、その時点で必ず存在します。",
+    "output": "まず最終的な商品の個数を出力し、続いて商品を順に出力します。カートが空の場合は 0 だけを出力します。",
+    "explanation": "例 1：最初の 2 つの 1 を削除すると [2,2,1] が残ります。3 と 4 を追加し、3 を削除して、最終的に [2,2,1,4] となるので、まず個数 4 を出力します。例 2：唯一の商品を削除した後は、0 を出力します。例 3：最初の 2 を削除し、2 を追加して [1,2,2] となるので、3 1 2 2 を出力します。",
+    "hints": [
+      "追加ごとに一意で増加する位置を与えます。共有の next 配列で同じ商品の位置をつなぎ、辞書には各商品の先頭と末尾のインデックスだけを持たせます。削除では先頭のインデックスを進めて位置に印を付けます。最後に、削除されなかった位置を順に出力します。"
+    ]
+  },
+  "ko": {
+    "title": "장바구니 추가와 첫 번째 항목 제거",
+    "description": "장바구니는 주어진 순서의 상품으로 시작합니다. 양수 질의 x는 x를 맨 끝에 추가하고, 음수 질의 −x는 현재 장바구니에서 처음 나타나는 x를 제거합니다. 최종 장바구니를 출력하세요. 이 사이트의 테스트 케이스는 제거 시점마다 해당 상품이 반드시 존재함을 보장하며, 원문에 명시되지 않은 존재하지 않는 상품의 제거 동작은 정의하지 않습니다.\n\n표준 입출력, 예제, 채점은 CSWork가 독자적으로 작성했습니다. 이 사이트의 규약이라고 표시된 내용을 원문의 제한이라고 주장하지 않습니다.",
+    "input": "첫째 줄에 n q가 주어지고(둘 다 1..200000), 둘째 줄에 n개의 초기 상품이 주어지며(1..10⁹), 셋째 줄에 q개의 0이 아닌 질의가 주어집니다(−10⁹..10⁹). 모든 제거 질의의 상품은 그 시점에 반드시 존재합니다.",
+    "output": "먼저 최종 상품 개수를 출력하고, 이어서 상품을 순서대로 출력합니다. 장바구니가 비어 있으면 0만 출력합니다.",
+    "explanation": "예제 1: 1을 처음 두 번 제거하면 [2,2,1]이 남습니다. 3과 4를 추가한 뒤 3을 제거하여 [2,2,1,4]로 끝나므로 먼저 개수 4를 출력합니다. 예제 2: 유일한 상품을 제거한 뒤 0을 출력합니다. 예제 3: 첫 번째 2를 제거한 뒤 2를 추가하면 [1,2,2]가 되므로 3 1 2 2를 출력합니다.",
+    "hints": [
+      "추가할 때마다 증가하는 고유한 위치를 부여하세요. 공유 next 배열로 같은 상품의 위치들을 연결하고, 딕셔너리에는 각 상품의 head와 tail 인덱스만 저장합니다. 제거할 때는 head 인덱스를 앞으로 옮기고 해당 위치에 표시합니다. 마지막에 제거되지 않은 위치를 순서대로 출력하세요."
+    ]
+  },
+  "vi": {
+    "title": "Thêm vào giỏ hàng và xóa lần xuất hiện đầu tiên",
+    "description": "Giỏ hàng ban đầu có các mặt hàng theo thứ tự đã cho. Một truy vấn dương x thêm x vào cuối; một truy vấn âm −x xóa lần xuất hiện đầu tiên của x hiện có trong giỏ. Xuất giỏ hàng cuối cùng. Các bộ kiểm thử của trang này đảm bảo mặt hàng tồn tại ở mọi lần xóa, và hành vi khi xóa một mặt hàng không có, điều mà nguồn không quy định, được để không xác định.\n\nViệc vào/ra chuẩn, các ví dụ và chấm bài do CSWork tự biên soạn; các quy ước được đánh dấu là của trang này không tuyên bố là giới hạn gốc của nguồn.",
+    "input": "Dòng đầu chứa n q (đều từ 1..200000), dòng thứ hai chứa n mặt hàng ban đầu (1..10⁹), và dòng thứ ba chứa q truy vấn khác không (−10⁹..10⁹). Mặt hàng của mọi truy vấn xóa hiện đang có trong giỏ.",
+    "output": "Trước hết xuất số lượng mặt hàng cuối cùng, rồi các mặt hàng theo thứ tự; nếu giỏ trống, chỉ xuất 0.",
+    "explanation": "Ví dụ 1: sau khi xóa hai lần xuất hiện đầu tiên của 1, còn lại [2,2,1]; thêm 3 và 4, rồi xóa 3, kết quả là [2,2,1,4], nên xuất số lượng 4 trước. Ví dụ 2: sau khi xóa mặt hàng duy nhất, xuất 0. Ví dụ 3: xóa số 2 đầu tiên, rồi thêm 2, được [1,2,2], nên xuất 3 1 2 2.",
+    "hints": [
+      "Gán cho mỗi lần thêm một vị trí tăng dần duy nhất. Một mảng next dùng chung nối các vị trí của cùng một mặt hàng, và một từ điển chỉ lưu chỉ số đầu và cuối của mỗi mặt hàng; khi xóa, dịch chỉ số đầu và đánh dấu vị trí. Cuối cùng, xuất các vị trí chưa bị xóa theo thứ tự."
+    ]
   }
 }

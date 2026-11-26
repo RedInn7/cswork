@@ -11,5 +11,35 @@
     "hints": [
       "Precompute, for each position, the rightmost index A, B sharing the same coordinate, and use prefix sums to split the vehicles into [0,A), [A,B) and [B,n), which go to the two added stations and the last station respectively; the distance of each part is count×(station position)−(sum of positions in the range)."
     ]
+  },
+  "ja": {
+    "title": "毎回 2 つの給油所を追加したときの総前進距離",
+    "description": "車両の位置は非減少で、車両は右にしか進めません。各クエリは独立に、車両 a と b の位置に給油所を追加します。最後の車両の位置には常に給油所があり、各車両は自分の左側にない最も近い給油所で止まります。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n q が与えられ、2 行目に n 個の非減少の位置の値が与えられ、続く q 行にそれぞれ a b (1 始まり、a<b) が与えられます。元の問題には値の範囲がないので、本サイトでは 2≤n≤100000、1≤q≤100000、−10⁹≤position≤10⁹ としています。",
+    "output": "q 個の総距離を、クエリの順に出力してください。",
+    "explanation": "例 1: 5 台の車両の走行距離は 3, 0, 5, 0, 0 で、合計 8 です。例 2: 最初の 2 台にはすでに給油所があり、最後の車両にもあるので、合計は 0 です。例 3: どちらのクエリでも 1 台だけが 1 前進するので、総距離は 1 と 1 です。",
+    "hints": [
+      "各位置について、同じ座標を共有する最も右のインデックス A, B を事前に求め、累積和で車両を [0,A)、[A,B)、[B,n) に分けます。それぞれ、追加した 2 つの給油所と最後の給油所に向かいます。各部分の距離は、個数×(給油所の位置)−(その範囲の位置の和) です。"
+    ]
+  },
+  "ko": {
+    "title": "매번 주유소 두 곳을 추가했을 때의 총 전진 거리",
+    "description": "차량의 위치는 비내림차순이며 차량은 오른쪽으로만 이동할 수 있습니다. 각 질의는 독립적으로 차량 a와 b의 위치에 주유소를 추가하며, 마지막 차량의 위치에는 항상 주유소가 있습니다. 각 차량은 자신의 왼쪽이 아닌 가장 가까운 주유소에서 멈춥니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n q가 주어지고, 둘째 줄에 n개의 비내림차순 위치 값이 주어지며, 이어지는 q개의 줄에 각각 a b(1-기반, a<b)가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트는 2≤n≤100000, 1≤q≤100000, −10⁹≤position≤10⁹로 정합니다.",
+    "output": "질의 순서대로 q개의 총 이동 거리를 출력합니다.",
+    "explanation": "예제 1: 다섯 대의 차량이 각각 3, 0, 5, 0, 0만큼 이동하므로 합은 8입니다. 예제 2: 처음 두 차량에는 이미 주유소가 있고 마지막 차량에도 있으므로 합은 0입니다. 예제 3: 두 질의 모두 차량 한 대만 1만큼 전진하므로 총 거리는 각각 1과 1입니다.",
+    "hints": [
+      "각 위치에 대해 같은 좌표를 가진 가장 오른쪽 인덱스 A, B를 미리 구하고, 접두 합으로 차량을 [0,A), [A,B), [B,n)으로 나누어 각각 추가된 두 주유소와 마지막 주유소로 보냅니다. 각 부분의 거리는 개수×(주유소 위치)−(구간 위치의 합)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng quãng đường tiến lên sau mỗi lần thêm hai trạm xăng",
+    "description": "Vị trí các xe không giảm, và xe chỉ có thể di chuyển sang phải. Mỗi truy vấn độc lập thêm các trạm xăng tại vị trí của xe a và b, và vị trí của xe cuối cùng luôn có một trạm; mỗi xe dừng ở trạm gần nhất không nằm bên trái nó.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n q; dòng thứ hai chứa n giá trị vị trí không giảm; mỗi dòng trong q dòng tiếp theo chứa a b (đánh số từ 1, a<b). Đề gốc không đưa ra khoảng giá trị; trang này đặt 2≤n≤100000, 1≤q≤100000, −10⁹≤position≤10⁹.",
+    "output": "In ra q tổng quãng đường theo thứ tự các truy vấn.",
+    "explanation": "Ví dụ 1: năm xe đi 3, 0, 5, 0, 0, tổng cộng 8. Ví dụ 2: hai xe đầu đã có trạm và xe cuối cũng vậy, tổng cộng 0. Ví dụ 3: ở cả hai truy vấn chỉ một xe tiến lên 1, nên tổng quãng đường là 1 và 1.",
+    "hints": [
+      "Tiền xử lý, với mỗi vị trí, chỉ số ngoài cùng bên phải A, B có cùng tọa độ, và dùng tổng tiền tố để chia các xe thành [0,A), [A,B) và [B,n), lần lượt đi tới hai trạm được thêm và trạm cuối; quãng đường của mỗi phần là số xe×(vị trí trạm)−(tổng vị trí trong đoạn)."
+    ]
   }
 }

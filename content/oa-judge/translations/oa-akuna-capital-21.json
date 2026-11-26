@@ -13,5 +13,41 @@
       "When the current movie is skipped, the previous one must be chosen.",
       "Do not force both the first and the last movie to be chosen, and do not skip an all-negative array entirely."
     ]
+  },
+  "ja": {
+    "title": "連続して 2 本飛ばさない映画の評価の最大和",
+    "description": "映画の評価の配列を元の順序でたどり、選んだ評価の和が最大になる部分列を選びます。2 本以上の映画を連続して飛ばすことはできませんが、先頭と末尾でそれぞれ 1 本ずつ飛ばすことは許されます。少なくとも 1 本を選ぶという追加の条件はありません。n=1 のときはその 1 本を飛ばしてもよく、何も選ばない場合の評価の和は 0 です。n≥2 のときはすべてを飛ばすことはできません。",
+    "input": "1 行目に n、2 行目に n 個の整数 ratings[i] が与えられます。元の範囲の全体: 1≤n≤100000、−1000≤ratings[i]≤1000。",
+    "output": "制約を満たす評価の和の最大値を、剰余を取らず、正確な整数で出力してください。",
+    "explanation": "元の例 1 は [2,4,−2] を選んで 4 です。元の例 2 は [9,−1,4,5] を選んで 17 で、元の出力はそのまま保っています。元の説明は −1 を省き、9+4+5=17 で 2 本を連続して飛ばしているのに誤ってそう主張していたので、本サイトで明示的に訂正しました。元の [-1,−3,−2] では 2 番目だけを選ぶことができ、先頭と末尾でそれぞれ 1 回ずつ飛ばすことが有効であると示しています。元には空でないという条件はなく、3 つ目の公開例である 1 本の −1000→0 は本サイトが追加したものです。",
+    "hints": [
+      "最後の映画を選んだ場合と飛ばした場合の 2 つの状態を分けて考えます。",
+      "現在の映画を飛ばすときは、その前の映画を選んでいなければなりません。",
+      "最初と最後の映画の両方を必ず選ぶと強制してはいけません。また、すべて負の配列を丸ごと飛ばしてはいけません。"
+    ]
+  },
+  "ko": {
+    "title": "영화를 연속 두 편 건너뛰지 않는 최대 평점 합",
+    "description": "영화 평점 배열을 원래 순서대로 순회하며, 선택한 평점의 합이 최대가 되도록 부분 수열을 고르세요. 영화를 연속으로 두 편 이상 건너뛸 수는 없으며, 시작과 끝에서 영화 한 편씩 건너뛰는 것은 허용됩니다. 최소 한 편을 골라야 한다는 별도의 요구는 없습니다. n=1이면 유일한 영화를 건너뛸 수 있고, 빈 선택의 평점 합은 0입니다. n≥2이면 모두 건너뛸 수 없습니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 정수 ratings[i] n개가 주어집니다. 원본 전체 범위: 1≤n≤100000, −1000≤ratings[i]≤1000.",
+    "output": "제약을 만족하는 최대 평점 합을 모듈로 없이 정확한 정수로 출력합니다.",
+    "explanation": "원본 예제 1은 [2,4,−2]를 골라 4입니다. 원본 예제 2는 [9,−1,4,5]를 골라 17이며 원본 출력을 유지합니다. 원본 설명은 −1을 빠뜨리고 9+4+5=17이라고 잘못 주장했는데 이는 연속으로 두 편을 건너뛰는 것이므로, 이 사이트에서 명시적으로 정정했습니다. 원본의 [-1,−3,−2]는 두 번째 항목만 고르는 것을 허용하므로, 시작과 끝에서 한 번씩 건너뛰는 것이 유효함을 보여 줍니다. 원본에는 비어 있지 않아야 한다는 요구가 없으며, 세 번째 공개 예제인 단일 −1000→0은 이 사이트에서 추가했습니다.",
+    "hints": [
+      "두 상태를 따로 고려하세요. 마지막 영화를 선택한 경우와 건너뛴 경우입니다.",
+      "현재 영화를 건너뛰면 이전 영화는 반드시 선택되어 있어야 합니다.",
+      "첫 영화와 마지막 영화를 모두 선택하도록 강제하지 말고, 모든 값이 음수인 배열을 통째로 건너뛰지도 마세요."
+    ]
+  },
+  "vi": {
+    "title": "Tổng đánh giá lớn nhất khi không bỏ qua hai phim liên tiếp",
+    "description": "Duyệt mảng đánh giá phim theo thứ tự gốc và chọn một dãy con sao cho tổng các đánh giá được chọn lớn nhất. Bạn không được bỏ qua hai phim trở lên liên tiếp; được phép bỏ qua một phim đơn lẻ ở đầu và ở cuối. Không có yêu cầu bổ sung phải chọn ít nhất một phim: khi n=1 bạn có thể bỏ qua phim duy nhất, và một lựa chọn rỗng có tổng đánh giá bằng 0; khi n≥2 bạn không thể bỏ qua tất cả.",
+    "input": "Dòng đầu tiên chứa n, và dòng thứ hai chứa n số nguyên ratings[i]. Miền giá trị gốc đầy đủ: 1≤n≤100000, −1000≤ratings[i]≤1000.",
+    "output": "In ra tổng đánh giá lớn nhất thỏa ràng buộc, là một số nguyên chính xác, không lấy modulo.",
+    "explanation": "Ví dụ gốc 1 chọn [2,4,−2] cho 4. Ví dụ gốc 2 chọn [9,−1,4,5] cho 17, và đầu ra gốc được giữ nguyên; lời giải thích gốc bỏ sót −1 và khẳng định sai rằng 9+4+5=17 trong khi bỏ qua hai phim liên tiếp, điều mà trang này sửa lại rõ ràng. Ví dụ gốc [-1,−3,−2] cho phép chỉ chọn mục thứ hai, cho thấy một lần bỏ qua ở đầu và một lần ở cuối là hợp lệ; đề gốc không có yêu cầu không rỗng, và ví dụ công khai thứ ba, một phim đơn −1000→0, do trang này bổ sung.",
+    "hints": [
+      "Xét riêng hai trạng thái: phim cuối cùng được chọn hay bị bỏ qua.",
+      "Khi phim hiện tại bị bỏ qua, phim trước đó phải được chọn.",
+      "Đừng ép cả phim đầu tiên lẫn phim cuối cùng phải được chọn, và đừng bỏ qua toàn bộ một mảng toàn âm."
+    ]
   }
 }

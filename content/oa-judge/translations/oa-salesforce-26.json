@@ -13,5 +13,41 @@
       "Let a paired run on the right spread rightward first; a run further left can then rewrite all of it again afterward.",
       "Process the runs from right to left, using prefix counts to tally the characters of differing letters."
     ]
+  },
+  "ja": {
+    "title": "Salesforce OA #26: 操作の最大回数",
+    "description": "文字列 s が与えられます。1 回の操作では、連続する 3 文字 s[i], s[i+1], s[i+2] を選び、s[i]=s[i+1] かつ s[i+1]≠s[i+2] の場合に限り、s[i+2] を s[i] に置き換えます。操作は任意の順序で何回でも行えます。実行できる操作の最大回数を求めてください。",
+    "input": "文字列 s が 1 行で与えられます。1≤s の長さ≤200000 で、英小文字のみからなります。",
+    "output": "整数を 1 つ出力します。操作の最大回数です。",
+    "explanation": "例 1: \"accept\" では、cc が e, p, t を順に c に変え、合計 3 回です。\n例 2: \"aabaab\" では、まず後ろの aa で最後の b を a に変え、次に先頭の aa で 3 文字目の b を a に変え、合計 2 回です。\n例 3: \"aabba\" では、まず bb で最後の a を b に変えて \"aabbb\" とし、次に aa で 3 つの b を順に a に変え、合計 4 回です。",
+    "hints": [
+      "書き換えられた文字は、常に左にある対のランの文字になります。",
+      "右側の対のランに先に右へ広がらせると、さらに左にあるランが、その後でそれをすべて書き換え直せます。",
+      "ランを右から左へ処理し、接頭辞の個数を使って、異なる文字の数を集計します。"
+    ]
+  },
+  "ko": {
+    "title": "Salesforce OA #26: 최대 연산 횟수",
+    "description": "문자열 s가 주어집니다. 한 번의 연산에서 연속된 세 문자 s[i], s[i+1], s[i+2]를 고르고, s[i]=s[i+1]이면서 s[i+1]≠s[i+2]일 때에 한해 s[i+2]를 s[i]로 바꿉니다. 연산은 임의의 순서로 임의의 횟수만큼 수행할 수 있습니다. 수행할 수 있는 연산의 최대 횟수를 구하세요.",
+    "input": "한 줄에 문자열 s가 주어집니다. 1≤s의 길이≤200000이며 영어 소문자로만 이루어집니다.",
+    "output": "정수 하나, 최대 연산 횟수를 출력합니다.",
+    "explanation": "예시 1: \"accept\"에서 cc가 e, p, t를 차례로 c로 바꾸어 총 3번입니다.\n예시 2: \"aabaab\"에서 먼저 뒤쪽의 aa로 마지막 b를 a로 바꾸고, 그다음 앞쪽의 aa로 3번째 문자 b를 a로 바꾸어 총 2번입니다.\n예시 3: \"aabba\"에서 먼저 bb로 마지막 a를 b로 바꾸어 \"aabbb\"를 만들고, 그다음 aa로 세 개의 b를 차례로 a로 바꾸어 총 4번입니다.",
+    "hints": [
+      "바뀐 문자는 항상 그 왼쪽에 있는 쌍 구간의 글자가 됩니다.",
+      "오른쪽의 쌍 구간이 먼저 오른쪽으로 퍼지게 하면, 더 왼쪽의 구간이 그 뒤에 이를 다시 모두 바꿀 수 있습니다.",
+      "구간을 오른쪽에서 왼쪽으로 처리하며, 접두사 개수를 이용해 서로 다른 글자의 문자 수를 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Salesforce OA #26: Số thao tác tối đa",
+    "description": "Cho một xâu s. Trong một thao tác, chọn ba ký tự liên tiếp s[i], s[i+1], s[i+2]; khi và chỉ khi s[i]=s[i+1] và s[i+1]≠s[i+2], thay s[i+2] bằng s[i]. Các thao tác có thể thực hiện theo thứ tự bất kỳ và số lần bất kỳ; tìm số thao tác tối đa có thể thực hiện.",
+    "input": "Một dòng chứa xâu s. 1≤độ dài của s≤200000, chỉ gồm các chữ cái Latinh thường.",
+    "output": "In một số nguyên: số thao tác tối đa.",
+    "explanation": "Ví dụ 1: trong \"accept\", cc lần lượt đổi e, p và t thành c, tổng cộng 3 lần.\nVí dụ 2: trong \"aabaab\", trước tiên dùng aa phía sau để đổi b cuối cùng thành a, rồi dùng aa ở đầu để đổi ký tự thứ 3, b, thành a, tổng cộng 2 lần.\nVí dụ 3: trong \"aabba\", trước tiên dùng bb để đổi a cuối cùng thành b, được \"aabbb\", rồi dùng aa để lần lượt đổi ba chữ b thành a, tổng cộng 4 lần.",
+    "hints": [
+      "Một ký tự bị ghi đè luôn trở thành chữ cái của đoạn cặp bên trái nó.",
+      "Hãy để một đoạn cặp bên phải lan sang phải trước; một đoạn ở xa hơn bên trái sau đó có thể ghi đè lại toàn bộ phần đó.",
+      "Xử lý các đoạn từ phải sang trái, dùng số đếm tiền tố để thống kê các ký tự có chữ cái khác."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Package i can be picked no later than day min(i+1,n−i), so this is weighted selection of unit-time jobs with deadlines. Add packages to a min-heap in increasing order of deadline, and pop the smallest weight whenever the heap size exceeds the current number of days."
     ]
+  },
+  "ja": {
+    "title": "毎日の出荷前に 1 つ荷物を選ぶときの最大効率",
+    "description": "毎日、まず倉庫にあり、これまでに選ばれていない荷物を 1 つ選び、その重さを効率に加えます。その後、現在の最も左と最も右の荷物を出荷します（荷物が 1 つしか残っていなければ出荷も 1 つだけ）。倉庫が空になるまで繰り返します。効率の合計を最大化してください。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n (1..200000) が与えられ、2 行目に n 個の重さ (0..10⁹) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 3 日間で 4, 5, 8 の順に選び、合計は 17 です。例 2: 4 日間で 4, 6, 8, 5 を選べて、合計は 23 です。例 3: 1 日だけなので 9 を選び、合計は 9 です。",
+    "hints": [
+      "荷物 i は、遅くとも min(i+1,n−i) 日目までに選べるので、これは締め切り付き単位時間ジョブの重み付き選択問題です。締め切りの昇順に荷物を最小ヒープへ追加し、ヒープのサイズが現在の日数を超えたら最小の重さを取り出します。"
+    ]
+  },
+  "ko": {
+    "title": "매일 출하 전에 패키지 하나를 골라 얻는 최대 효율",
+    "description": "매일 먼저 창고에 아직 남아 있고 이전에 고른 적 없는 패키지 하나를 골라 그 무게를 효율에 더합니다. 그다음 현재 가장 왼쪽과 가장 오른쪽의 패키지를 출하합니다(패키지가 하나만 남았으면 출하도 한 번). 창고가 빌 때까지 반복합니다. 총 효율을 최대화하세요.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n(1..200000)이 주어지고, 둘째 줄에 n개의 무게(0..10⁹)가 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 사흘 동안 순서대로 4, 5, 8을 골라 합은 17입니다. 예제 2: 나흘 동안 4, 6, 8, 5를 골라 합은 23이 될 수 있습니다. 예제 3: 단 하루 동안 9를 골라 합은 9입니다.",
+    "hints": [
+      "패키지 i는 늦어도 min(i+1,n−i)일째까지 고를 수 있으므로, 마감 기한이 있는 단위 시간 작업의 가중치 선택 문제입니다. 마감 기한이 빠른 순으로 패키지를 최소 힙에 넣고, 힙 크기가 현재 일수를 넘으면 가장 작은 무게를 꺼냅니다."
+    ]
+  },
+  "vi": {
+    "title": "Hiệu suất tối đa khi chọn một kiện hàng trước mỗi lần xuất kho trong ngày",
+    "description": "Mỗi ngày, trước tiên chọn một kiện hàng vẫn còn trong kho và chưa từng được chọn, cộng khối lượng của nó vào hiệu suất; sau đó xuất kho các kiện ngoài cùng bên trái và ngoài cùng bên phải hiện tại (chỉ xuất một kiện khi chỉ còn một kiện), cho đến khi kho trống. Hãy cực đại hóa tổng hiệu suất.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n (1..200000), dòng thứ hai chứa n khối lượng (0..10⁹).",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: qua ba ngày chọn lần lượt 4, 5, 8, tổng cộng 17. Ví dụ 2: qua bốn ngày có thể chọn 4, 6, 8, 5, tổng cộng 23. Ví dụ 3: vào ngày duy nhất chọn 9, tổng cộng 9.",
+    "hints": [
+      "Kiện hàng i có thể được chọn chậm nhất vào ngày min(i+1,n−i), nên đây là bài toán chọn có trọng số các công việc đơn vị thời gian với hạn chót. Thêm các kiện vào min-heap theo thứ tự hạn chót tăng dần, và lấy ra khối lượng nhỏ nhất bất cứ khi nào kích thước heap vượt quá số ngày hiện tại."
+    ]
   }
 }

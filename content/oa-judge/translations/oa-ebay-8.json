@@ -11,5 +11,35 @@
     "hints": [
       "Track the left and right endpoints of each run; when inserting x, check whether x−1 and x+1 are endpoints of existing runs."
     ]
+  },
+  "ja": {
+    "title": "House Density (Longest Contiguous Segment)",
+    "description": "数直線上に、queries の順に家を1軒ずつ建てていきます。2軒の家が同じ位置になることはありません。建てるたびに、すべての家のうち連続する整数位置の最長の連なり（run）の長さを返してください。固定されたソースと3つの言語の実装の例には、新しい家が既存の家に隣接するケースが含まれているので、本サイトはこれらの実行可能な定義に従って判定します。挿入は左の run に隣接する場合、右の run に隣接する場合、両側に隣接する場合があり、ただちにそれらと併合されます。",
+    "input": "1行目に q（1≤q≤10000）、続く q 行にそれぞれ位置 x（−10^9≤x≤10^9）が与えられます。位置はすべて異なります。元の問題には数値の範囲が示されていません。q と x の範囲は本サイトが追加したものです。q≤10000 とすることで、各ステップごとの出力が問題バンクの 65536 バイトの制限に収まります。",
+    "output": "q 行を出力します。i 行目は、最初の i 軒を建てた後の、連続する家の最長の連なりの長さです。",
+    "explanation": "run は整数位置上で定義されます。新しい家は、隣接する左の run、隣接する右の run、またはその両方とだけ併合されます。各ステップでの答えは、すべての run の長さの最大値です。",
+    "hints": [
+      "各 run の左端と右端を保持します。x を挿入するとき、x−1 と x+1 が既存の run の端点かどうかを調べます。"
+    ]
+  },
+  "ko": {
+    "title": "House Density (Longest Contiguous Segment)",
+    "description": "수직선 위에 queries에 주어진 순서대로 집을 하나씩 짓고, 두 집이 같은 위치에 있는 경우는 없습니다. 집을 지을 때마다, 모든 집 가운데 연속된 정수 위치로 이어진 가장 긴 구간의 길이를 반환하세요. 고정된 원본과 세 언어 구현의 예제에는 새 집이 기존 집과 인접한 경우가 포함되어 있으므로, 이 사이트는 그 실행 가능한 정의를 기준으로 판정합니다. 삽입은 왼쪽 구간과 인접하거나, 오른쪽 구간과 인접하거나, 양쪽 모두와 인접할 수 있으며, 즉시 병합됩니다.",
+    "input": "첫째 줄에 q(1≤q≤10000)가 주어지고, 이어서 q개의 줄에 위치 x(−10^9≤x≤10^9)가 하나씩 주어집니다. 모든 위치는 서로 다릅니다. 원래 문제는 수치 범위를 주지 않으며, q와 x의 범위는 이 사이트가 추가한 것입니다. q≤10000이면 단계별 출력이 문제 은행의 65536바이트 제한 안에 들어갑니다.",
+    "output": "q개의 줄을 출력합니다. i번째 줄은 처음 i채를 지은 후 연속된 집들의 가장 긴 구간의 길이입니다.",
+    "explanation": "구간은 정수 위치에 대해 정의됩니다. 새 집은 바로 왼쪽 구간, 바로 오른쪽 구간, 또는 양쪽과만 병합됩니다. 각 단계의 답은 모든 구간의 길이 중 최댓값입니다.",
+    "hints": [
+      "각 구간의 왼쪽 끝과 오른쪽 끝을 추적합니다. x를 삽입할 때 x−1과 x+1이 기존 구간의 끝점인지 확인합니다."
+    ]
+  },
+  "vi": {
+    "title": "House Density (Longest Contiguous Segment)",
+    "description": "Các ngôi nhà được xây từng cái một trên trục số theo thứ tự trong queries, và không có hai ngôi nhà nào cùng vị trí. Sau mỗi lần xây, trả về độ dài của đoạn dài nhất gồm các vị trí nguyên liên tiếp trong số tất cả các ngôi nhà. Các ví dụ trong nguồn cố định và cả ba bản cài đặt ngôn ngữ đều có trường hợp một ngôi nhà mới nằm kề các ngôi nhà đã có, nên trang này xét theo các định nghĩa thực thi đó: một lần chèn có thể kề với đoạn bên trái, đoạn bên phải hoặc cả hai bên, và nó hợp nhất với chúng ngay lập tức.",
+    "input": "Dòng đầu chứa q (1≤q≤10000), tiếp theo là q dòng, mỗi dòng chứa một vị trí x (−10^9≤x≤10^9); mọi vị trí đều khác nhau. Bài gốc không cho giới hạn số; các khoảng của q và x do trang này thêm vào. q≤10000 giữ cho đầu ra từng bước nằm trong giới hạn 65536 byte của ngân hàng đề.",
+    "output": "In ra q dòng; dòng i là độ dài của đoạn nhà liên tiếp dài nhất sau i lần xây đầu tiên.",
+    "explanation": "Các đoạn được định nghĩa trên các vị trí nguyên; một ngôi nhà mới chỉ hợp nhất với đoạn kề bên trái, đoạn kề bên phải, hoặc cả hai. Đáp án ở mỗi bước là độ dài lớn nhất trong mọi đoạn.",
+    "hints": [
+      "Theo dõi đầu mút trái và phải của mỗi đoạn; khi chèn x, kiểm tra xem x−1 và x+1 có phải là đầu mút của các đoạn hiện có hay không."
+    ]
   }
 }

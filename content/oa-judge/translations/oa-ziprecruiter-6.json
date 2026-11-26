@@ -13,5 +13,41 @@
       "The same value appearing at two indices is still a valid pair.",
       "First layer by number of digits, or keep the digit count within the equivalence class."
     ]
+  },
+  "ja": {
+    "title": "巡回シフトで同値になるペアの数え上げ（ZipRecruiter OA）",
+    "description": "正の整数の配列が与えられます。i<j を満たすインデックスのペアのうち、2つの数の10進桁数が等しく、一方を任意回数の巡回シフト（0回を含む）でもう一方にできるものの個数を数えてください。同じ値が複数あっても、インデックスごとに別々に数えます。元の例の答えは 3 から 5 に訂正されています。訂正の根拠はノートにあります。",
+    "input": "1行目に n（本サイトの範囲は 1≤n≤100）、2行目に n 個の正の整数 a[i]（元の範囲は 1≤a[i]≤10000）が与えられます。",
+    "output": "条件を満たすインデックスのペアの個数を出力します。",
+    "explanation": "各数を、10進文字列のすべての巡回シフトのうち最小のものでグループ分けします。各グループは C(出現回数,2) 個のペアを生みます。公開例の出力は、元の解説に挙げられた5組のペアに基づいて 5 に訂正されています。",
+    "hints": [
+      "巡回シフトは文字の順序を保つだけで、任意の並べ替えではありません。",
+      "同じ値が2つの異なるインデックスにある場合も、有効なペアです。",
+      "まず桁数で層に分けるか、桁数を同値類の中に含めて管理します。"
+    ]
+  },
+  "ko": {
+    "title": "순환 이동으로 같아지는 쌍 세기 (ZipRecruiter OA)",
+    "description": "양의 정수 배열이 주어집니다. 두 수의 십진 자릿수가 같고, 한 수를 임의 횟수(0번 포함) 순환 이동하여 다른 수로 만들 수 있는 인덱스 쌍 i<j의 개수를 세세요. 값이 같은 원소도 인덱스별로 따로 셉니다. 원문 예제의 정답은 3에서 5로 정정했으며, 정정 근거는 노트에 있습니다.",
+    "input": "첫째 줄에 n(사이트 기준 1≤n≤100)이, 둘째 줄에 n개의 양의 정수 a[i](원문 기준 1≤a[i]≤10000)가 주어집니다.",
+    "output": "조건을 만족하는 인덱스 쌍의 개수를 출력합니다.",
+    "explanation": "각 수를 십진 문자열의 모든 순환 이동 중 사전순 최솟값으로 묶고, 각 그룹은 C(빈도,2)만큼 기여합니다. 공개 예제의 출력은 원문 설명에 나열된 5개의 일치 쌍에 근거해 5로 정정했습니다.",
+    "hints": [
+      "순환 이동은 문자의 순서만 유지할 뿐, 임의의 순열이 아닙니다.",
+      "같은 값이 서로 다른 인덱스에 있어도 유효한 쌍입니다.",
+      "먼저 자릿수별로 나누거나, 동치류 안에 자릿수 정보를 함께 유지하세요."
+    ]
+  },
+  "vi": {
+    "title": "Đếm cặp tương đương qua dịch vòng (ZipRecruiter OA)",
+    "description": "Cho một mảng các số nguyên dương, hãy đếm các cặp chỉ số i<j sao cho hai số có cùng số chữ số thập phân và số này có thể biến thành số kia bằng một số lần dịch vòng tùy ý (kể cả dịch 0 lần). Các giá trị lặp lại được tính riêng theo chỉ số. Đáp án của ví dụ gốc cố định được sửa từ 3 thành 5; căn cứ của việc đính chính nằm trong phần ghi chú.",
+    "input": "Dòng đầu chứa n (khoảng của trang 1≤n≤100), dòng thứ hai chứa n số nguyên dương a[i] (khoảng của nguồn 1≤a[i]≤10000).",
+    "output": "In ra số cặp chỉ số thỏa mãn.",
+    "explanation": "Nhóm các số theo giá trị nhỏ nhất trong mọi phép dịch vòng của xâu thập phân; mỗi nhóm đóng góp C(tần suất,2). Đầu ra của ví dụ công khai được sửa thành 5 dựa trên năm cặp khớp được liệt kê trong phần giải thích của nguồn.",
+    "hints": [
+      "Dịch vòng chỉ giữ nguyên thứ tự ký tự; nó không phải một hoán vị tùy ý.",
+      "Cùng một giá trị xuất hiện ở hai chỉ số khác nhau vẫn là một cặp hợp lệ.",
+      "Trước hết phân lớp theo số chữ số, hoặc giữ số chữ số trong chính lớp tương đương."
+    ]
   }
 }

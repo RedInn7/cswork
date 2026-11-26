@@ -11,5 +11,35 @@
     "hints": [
       "During traversal, maintain the root path sum D and the minimum root path sum M over strict ancestors. v is safe if and only if D[v]−M≤threshold[v]. If a node is unsafe or its parent is already determined to be deleted, its entire subtree must be deleted; traverse iteratively and count at the same time."
     ]
+  },
+  "ja": {
+    "title": "祖先の制限を満たすように葉を削除する",
+    "description": "サーバーは 1 を根とする木を成し、辺の重みは負になることがあります。根以外のサーバー v は、v からある真の祖先までの経路の重みの和が threshold[v] より大きいとき、安全でないとされます。1 回の操作で根以外の葉をちょうど 1 つ削除します。残りのすべてのノードが安全になるように削除するサーバーの最小数を求めてください。根には真の祖先がなく、削除できません。\n\n範囲の補足や元の問題の誤記の修正については、入力プロトコルを参照してください。",
+    "input": "入力は n、n 個の threshold の値、続いて n−1 行の u v weight です。元の完全な範囲は維持しています。3≤n≤200000、ノードは 1..n、辺の重みと threshold はどちらも −10^9..10^9 です。入力は木であることが保証されます。元の 2 つ目の例には閉路、欠けている辺の重み、孤立ノードが含まれるため、例としては使っていません。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に 2、0、2 です。独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "走査中に、根からの経路の和 D と、真の祖先にわたる根からの経路の和の最小値 M を保持します。v が安全であるのは D[v]−M≤threshold[v] のときに限ります。ノードが安全でない場合や、親がすでに削除と決まっている場合は、その部分木全体を削除しなければなりません。反復的に走査し、同時に数えます。"
+    ]
+  },
+  "ko": {
+    "title": "조상 한도를 만족하도록 리프를 삭제해 서버 정리하기",
+    "description": "서버들이 1을 루트로 하는 트리를 이루며 간선 가중치는 음수일 수 있습니다. 루트가 아닌 서버 v는, v에서 어떤 진조상까지의 경로 가중치 합이 threshold[v]보다 크면 안전하지 않습니다. 각 연산은 루트가 아닌 리프를 정확히 하나 삭제합니다. 남은 모든 노드가 안전해지도록 삭제해야 하는 서버 수의 최솟값을 구하세요. 루트에는 진조상이 없으며 삭제할 수 없습니다.\n\n이 사이트가 누락된 범위를 보충한 내용과 원문의 오타를 바로잡은 방식은 입력 규약을 참고하세요.",
+    "input": "입력은 n, threshold 값 n개, 그다음 u v weight 형식의 줄 n−1개입니다. 원문의 완전한 범위를 유지합니다. 3≤n≤200000, 노드는 1..n, 간선 가중치와 threshold는 모두 −10^9..10^9입니다. 입력은 트리임이 보장됩니다. 원문의 두 번째 예제에는 사이클, 누락된 간선 가중치, 고립된 노드가 있어 예제로 사용하지 않았습니다.",
+    "output": "정답 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 2; 0; 2 입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "순회하는 동안 루트 경로 합 D와 진조상들에 대한 루트 경로 합의 최솟값 M을 유지합니다. v가 안전한 것은 D[v]−M≤threshold[v]일 때와 동치입니다. 노드가 안전하지 않거나 부모가 이미 삭제 대상으로 정해졌다면 그 서브트리 전체를 삭제해야 합니다. 반복(비재귀) 방식으로 순회하면서 동시에 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Xóa các lá để mọi máy chủ còn lại thỏa giới hạn của tổ tiên",
+    "description": "Các máy chủ tạo thành một cây có gốc là 1, và trọng số cạnh có thể âm. Một máy chủ v không phải gốc là không an toàn nếu tổng trọng số trên đường đi từ v đến một tổ tiên thực sự nào đó lớn hơn threshold[v]. Mỗi thao tác xóa đúng một lá không phải gốc; hãy tìm số máy chủ tối thiểu phải xóa để mọi nút còn lại đều an toàn. Gốc không có tổ tiên thực sự và không thể bị xóa.\n\nXem giao thức đầu vào để biết các bổ sung của trang này cho những khoảng giá trị còn thiếu và cách khôi phục lỗi đánh máy trong nguồn gốc.",
+    "input": "Đầu vào là n, n giá trị ngưỡng, rồi n−1 dòng u v weight. Giữ nguyên các giới hạn gốc đầy đủ: 3≤n≤200000, các nút 1..n, và cả trọng số cạnh lẫn ngưỡng trong −10^9..10^9. Đầu vào đảm bảo là một cây. Ví dụ thứ hai trong nguồn chứa một chu trình, thiếu trọng số cạnh và có một nút cô lập, nên không được dùng làm ví dụ.",
+    "output": "In một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; 0; 2. Đã kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Trong lúc duyệt, duy trì tổng đường đi từ gốc D và tổng đường đi từ gốc nhỏ nhất M trên các tổ tiên thực sự. v an toàn khi và chỉ khi D[v]−M≤threshold[v]. Nếu một nút không an toàn hoặc cha của nó đã bị xác định là bị xóa, thì toàn bộ cây con của nó phải bị xóa; hãy duyệt lặp (không đệ quy) và đếm cùng lúc."
+    ]
   }
 }

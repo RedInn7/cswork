@@ -11,5 +11,35 @@
     "hints": [
       "Do DP from back to front. The current position can be deleted at cost 1+dp[i+1]; or it can be used as a group head that keeps the next a[i] elements, at cost dp[i+a[i]+1], which requires staying in bounds."
     ]
+  },
+  "ja": {
+    "title": "カウント付きグループを作るための最小削除数",
+    "description": "グループの先頭の数は、その後に続くグループの要素の個数をちょうど表します。数列がこのようなグループにいくつかの連続した区間として分割できるとき、その数列は有効です。空の数列も有効とします。1 回の操作で任意の要素を 1 つ削除できます。必要な削除回数の最小値を求めてください。\n\n本サイトでは標準入出力の形式を明確にしています。出題元に記載のない範囲は、本サイト独自の仕様として定めています。",
+    "input": "1 行目に n、2 行目に n 個の整数が与えられます。1≤n≤200000、1≤a[i]≤100000 です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1：[3,7,2,6] と [2,4,4] に分割できるので、削除は不要です。例 2：先頭の 3 を削除しても [2,1] で、まだ短すぎます。3 と 2 を削除すると [1] となり、これも短すぎるので、最善はすべての 3 つを削除することです。例 3：[1,8] と [4,5,2,6,1] に分割できるので、答えは 0 です。",
+    "hints": [
+      "後ろから前へ DP を行います。現在位置は、コスト 1+dp[i+1] で削除するか、後続の a[i] 個の要素を残すグループの先頭として使い、コスト dp[i+a[i]+1] で進むかのどちらかです。後者は範囲内に収まる場合に限ります。"
+    ]
+  },
+  "ko": {
+    "title": "개수 그룹을 만들기 위한 최소 삭제 횟수",
+    "description": "그룹의 첫 번째 수는 그 뒤에 따라오는 그룹 원소의 개수를 정확히 나타냅니다. 수열을 이런 그룹 여러 개로 연속하게 나눌 수 있으면 유효한 수열이며, 빈 수열도 유효합니다. 한 번의 연산으로 원소 하나를 삭제할 수 있습니다. 삭제 횟수의 최솟값을 구하세요.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "첫 줄에 n이 주어지고, 둘째 줄에 정수 n개가 주어집니다. 1≤n≤200000, 1≤a[i]≤100000입니다.",
+    "output": "답인 정수 하나를 출력합니다.",
+    "explanation": "예제 1: [3,7,2,6]과 [2,4,4]로 나눌 수 있으므로 삭제가 필요 없습니다. 예제 2: 맨 앞의 3을 삭제하면 [2,1]이 남는데 여전히 너무 짧습니다. 3과 2를 삭제하면 [1]이 남는데 이것도 너무 짧으므로 3개를 모두 삭제하는 것이 최선입니다. 예제 3: [1,8]과 [4,5,2,6,1]로 나누므로 답은 0입니다.",
+    "hints": [
+      "뒤에서 앞으로 DP를 합니다. 현재 위치는 비용 1+dp[i+1]로 삭제하거나, 그룹의 머리로 삼아 다음 a[i]개의 원소를 남길 수 있으며 이때 비용은 dp[i+a[i]+1]입니다. 이 경우 범위를 벗어나지 않아야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần xóa tối thiểu để tạo thành các nhóm theo số đếm",
+    "description": "Số đầu tiên của một nhóm cho biết chính xác có bao nhiêu phần tử của nhóm theo sau nó. Một dãy là hợp lệ nếu có thể tách liên tiếp thành nhiều nhóm như vậy; dãy rỗng cũng hợp lệ. Mỗi thao tác xóa một phần tử bất kỳ. Tìm số lần xóa tối thiểu.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi khoảng giá trị mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n, dòng thứ hai chứa n số nguyên; 1≤n≤200000, 1≤a[i]≤100000.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: có thể tách thành [3,7,2,6] và [2,4,4], nên không cần xóa. Ví dụ 2: xóa số 3 ở đầu còn [2,1], vẫn quá ngắn; xóa 3 và 2 còn [1], cũng quá ngắn, nên tốt nhất là xóa cả 3 phần tử. Ví dụ 3: tách thành [1,8] và [4,5,2,6,1], nên đáp án là 0.",
+    "hints": [
+      "Quy hoạch động từ sau ra trước. Vị trí hiện tại có thể bị xóa với chi phí 1+dp[i+1]; hoặc có thể dùng làm đầu nhóm giữ lại a[i] phần tử tiếp theo, với chi phí dp[i+a[i]+1], điều này đòi hỏi không vượt quá biên."
+    ]
   }
 }

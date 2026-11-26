@@ -11,5 +11,35 @@
     "hints": [
       "After sorting, put each of the largest channels−1 items in its own channel and everything else in the last channel. Sum all qualities multiplied by 2, then round up with (sum2+1)//2 at the end to avoid floating point."
     ]
+  },
+  "ja": {
+    "title": "全パケットをチャネルに分割したときの中央値品質の最大合計",
+    "description": "すべてのパケットを、空でないちょうど channels 個のチャネルのいずれかに割り当てなければなりません。グループ分けは任意で、グループが元の順序で連続している必要はありません。チャネルの品質は、そのパケットサイズの中央値です。個数が偶数の場合は、中央の 2 つの平均を取ります。合計の品質を最大化し、最後に 1 回だけ切り上げて整数にしてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n と channels、2 行目に packets が与えられます。1≤n≤500000、1≤packets[i]≤10^9、1≤channels≤n です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 8、7、151 です。1 つ目の例では 5 が単独になり、残りの 1,2,3,4 の中央値は 2.5 なので、合計 7.5 を切り上げて 8 になります。",
+    "hints": [
+      "ソート後、大きい方の channels−1 個を、それぞれ単独のチャネルに入れ、それ以外をすべて最後のチャネルに入れます。すべての品質を 2 倍にして合計し、浮動小数点を避けるために最後に (sum2+1)//2 で切り上げます。"
+    ]
+  },
+  "ko": {
+    "title": "모든 패킷을 채널로 나눈 뒤 중앙값 품질 합의 최댓값",
+    "description": "모든 패킷은 정확히 channels개의 비어 있지 않은 채널 중 하나에 배정해야 합니다. 임의로 묶을 수 있으며 그룹이 원래 순서에서 연속일 필요는 없습니다. 채널의 품질은 그 패킷 크기들의 중앙값이고, 개수가 짝수이면 가운데 두 값의 평균입니다. 품질의 총합을 최대화한 뒤, 마지막에 한 번만 올림해 정수로 만드세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n channels가 주어지고, 둘째 줄에 packets가 주어집니다. 1≤n≤500000, 1≤packets[i]≤10^9, 1≤channels≤n입니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 각각 8, 7, 151입니다. 첫 번째 예제에서는 5가 단독이고 나머지 1,2,3,4의 중앙값은 2.5이므로 합계 7.5를 올림해 8이 됩니다.",
+    "hints": [
+      "정렬한 뒤 가장 큰 channels−1개를 각각 단독 채널에 넣고 나머지는 모두 마지막 채널에 넣습니다. 모든 품질에 2를 곱해 합하고, 부동소수점을 피하도록 마지막에 (sum2+1)//2로 올림합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng chất lượng trung vị lớn nhất sau khi chia mọi gói tin vào các kênh",
+    "description": "Mọi gói tin phải được gán vào đúng channels kênh khác rỗng. Bạn có thể nhóm tùy ý; một nhóm không cần liên tiếp theo thứ tự ban đầu. Chất lượng của một kênh là trung vị của các kích thước gói tin trong kênh; khi số lượng chẵn, lấy trung bình của hai phần tử ở giữa. Cực đại hóa tổng chất lượng, rồi làm tròn lên thành số nguyên một lần duy nhất ở cuối.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và channels, dòng thứ hai chứa packets. 1≤n≤500000, 1≤packets[i]≤10^9, 1≤channels≤n.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 8, 7 và 151. Ở ví dụ thứ nhất, 5 đứng một mình, và 1,2,3,4 còn lại có trung vị 2.5, nên tổng 7.5 được làm tròn lên thành 8.",
+    "hints": [
+      "Sau khi sắp xếp, đặt mỗi phần tử trong channels−1 phần tử lớn nhất vào một kênh riêng và mọi thứ còn lại vào kênh cuối. Cộng mọi chất lượng nhân 2, rồi làm tròn lên bằng (sum2+1)//2 ở cuối để tránh số thực dấu phẩy động."
+    ]
   }
 }

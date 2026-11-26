@@ -13,5 +13,17 @@
       "When appending the current letter, subtract the set already produced the last time the same letter was appended.",
       "Keep the empty string, and exclude any move that leaves 0..n at any step."
     ]
+  },
+  "vi": {
+    "title": "Các dãy con di chuyển phân biệt trên trục số có biên",
+    "description": "Cho một xâu s chỉ gồm l/r, hãy chọn một dãy con của nó. Bắt đầu từ x, l giảm vị trí đi 1 và r tăng vị trí lên 1. Điểm xuất phát, vị trí sau mỗi bước và điểm kết thúc đều phải nằm trong trục số có biên 0..n, và đường đi phải kết thúc tại y. Đếm các dãy ký tự phân biệt: cùng một dãy ký tự nhận được từ các chỉ số khác nhau chỉ được tính một lần. Trả về số lượng đó theo modulo 1000000007. Không được phản xạ lại ở biên, đứng yên thay vì vượt biên, hoặc rời khỏi miền rồi quay lại.",
+    "input": "Dòng đầu tiên chứa s, dòng thứ hai chứa n x y. Các giới hạn gốc đầy đủ: 1≤|s|≤1000, s chỉ chứa l/r, 0≤n,x,y≤2500. Đề gốc không đảm bảo x,y≤n, và trang này giữ lại các đầu vào như vậy: nếu điểm xuất phát hoặc điểm kết thúc nằm ngoài 0..n thì không có đường đi hợp lệ và đáp án là 0.",
+    "output": "In ra một số nguyên trong khoảng 0..1000000006. Có thể xóa tất cả ký tự, nên khi x=y hợp lệ thì dãy con rỗng đóng góp 1; với n=0,x=y=0 đáp án là 1, và mọi điểm cuối nằm ngoài miền khác đều cho 0. Miền có biên lấy từ đề gốc của Flexport; dãy con rỗng theo định nghĩa thông thường của dãy con, được củng cố bởi định nghĩa xóa phần tử rõ ràng trong phiên bản Meesho của cùng bài toán, và không yêu cầu thêm điều kiện khác rỗng.",
+    "explanation": "Ví dụ đầu tiên giữ nguyên đầu vào gốc của Flexport là rrlrr,6,1,4 nhưng sửa đáp án gốc 3 thành 2: chỉ có rrr và rrlrr hợp lệ, được chứng minh bằng cách liệt kê cả 32 tập chỉ số; hình ảnh trên máy cục bộ không truy cập được nên không dùng làm bằng chứng. Hai ví dụ cuối do trang này suy ra: rr từ 0 đến 1 chỉ tính r một lần; rl từ 0 quay về 0 tính cả xâu rỗng và rl. Bản thân Flexport đã cho đầy đủ các ràng buộc số; các định nghĩa loại trùng ký tự và xóa phần tử từ phiên bản Meesho của cùng bài toán chỉ đóng vai trò giải thích bổ trợ và không được trình bày như ghi chú chi tiết trong đề của Flexport.",
+    "hints": [
+      "Cách chọn lấy/bỏ theo vị trí thông thường sẽ đếm cùng một xâu nhiều hơn một lần.",
+      "Khi thêm ký tự hiện tại vào, hãy trừ đi tập đã được tạo ra ở lần gần nhất thêm cùng ký tự đó.",
+      "Giữ lại xâu rỗng, và loại bỏ mọi bước đi làm rời khỏi 0..n ở bất kỳ bước nào."
+    ]
   }
 }

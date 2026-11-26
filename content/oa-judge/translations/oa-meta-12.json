@@ -11,5 +11,35 @@
     "hints": [
       "Read all placement coordinates in advance and compress them, then use a Fenwick tree to record how many have been placed. A range can be used when the count between the two binary-searched indices is zero."
     ]
+  },
+  "ja": {
+    "title": "数直線上の障害物と範囲の利用可否",
+    "description": "操作を順に実行します。1 x は空いている座標 x に障害物を置き、2 x size は半開区間 [x,x+size) に障害物がないかを調べ、なければ文字 1、あれば 0 を出力します。チェック操作は何も置きません。すべてのチェック結果を連結して 1 つの文字列にしてください。\n\n入出力形式、例、テストデータは CSWork が作成しました。",
+    "input": "本サイトの標準的な入力規模：1 行目に q（1..100000）、続く q 行は操作 1 x または 2 x size で、x は −10⁹..10⁹、size は 1..10⁹ です。障害物を置く座標は空いていることが保証され、チェックは少なくとも 1 回あります。",
+    "output": "説明どおりに答えを出力してください。複数の結果はスペース区切りで順に出力し、空配列の場合は空行を出力してください。",
+    "explanation": "例 1：障害物は 2 と 5 にあります。4 つのクエリ [3,5)、[3,6)、[1,2)、[1,3) は順に空き、塞がり、空き、塞がりとなり、1010 になります。",
+    "hints": [
+      "すべての設置座標を先読みして圧縮し、Fenwick 木で設置済みの個数を記録します。2 つの二分探索で得た添字の間の個数が 0 なら、その範囲は使えます。"
+    ]
+  },
+  "ko": {
+    "title": "수직선 위의 장애물과 구간 사용 가능 여부",
+    "description": "작업을 순서대로 수행합니다. 1 x는 빈 좌표 x에 장애물을 놓고, 2 x size는 반개구간 [x,x+size)에 장애물이 없는지 확인하여 없으면 문자 1을, 있으면 0을 출력합니다. 확인 작업은 아무것도 놓지 않습니다. 모든 확인 결과를 하나의 문자열로 이어 붙이세요.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하고 작성했습니다.",
+    "input": "이 사이트의 표준 입력 규모: 첫째 줄에 q(1..100000)가 주어지고, 다음 q개의 줄은 작업 1 x 또는 2 x size이며 x는 −10⁹..10⁹, size는 1..10⁹입니다. 장애물을 놓을 때 그 좌표는 비어 있음이 보장되며, 확인 작업은 적어도 하나 있습니다.",
+    "output": "설명된 대로 답을 출력합니다. 결과가 여러 개이면 순서대로 공백으로 구분하여 출력하고, 빈 배열이면 빈 줄을 출력합니다.",
+    "explanation": "예제 1: 장애물은 2와 5에 있고, 네 개의 쿼리 [3,5), [3,6), [1,2), [1,3)은 차례로 비어 있음, 막힘, 비어 있음, 막힘이므로 결과는 1010입니다.",
+    "hints": [
+      "모든 장애물 좌표를 미리 읽어 좌표 압축을 하고, 펜윅 트리로 지금까지 놓인 개수를 기록한다. 두 이분 탐색 인덱스 사이의 개수가 0이면 그 구간을 사용할 수 있다."
+    ]
+  },
+  "vi": {
+    "title": "Chướng ngại vật trên trục số và khả năng sử dụng đoạn",
+    "description": "Thực hiện các thao tác theo thứ tự: 1 x đặt một chướng ngại vật tại tọa độ trống x; 2 x size kiểm tra xem đoạn nửa mở [x,x+size) có không chứa chướng ngại vật nào không, in ký tự 1 nếu đúng và 0 nếu sai. Thao tác kiểm tra không đặt gì. Nối tất cả kết quả kiểm tra thành một xâu.\n\nĐịnh dạng đầu vào, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Quy mô đầu vào chuẩn của trang này: dòng đầu chứa q (1..100000); q dòng tiếp theo là các thao tác 1 x hoặc 2 x size, với x trong −10⁹..10⁹ và size trong 1..10⁹. Khi đặt chướng ngại vật, tọa độ được đảm bảo là trống, và có ít nhất một lần kiểm tra.",
+    "output": "In ra đáp án như mô tả; nhiều kết quả được phân tách bằng dấu cách theo thứ tự, và với mảng rỗng thì in một dòng trống.",
+    "explanation": "Ví dụ 1: các chướng ngại vật nằm ở 2 và 5; bốn truy vấn [3,5), [3,6), [1,2), [1,3) lần lượt là thông thoáng, bị chặn, thông thoáng, bị chặn, cho ra 1010.",
+    "hints": [
+      "Đọc trước tất cả tọa độ đặt và nén chúng, rồi dùng cây Fenwick ghi số lượng đã đặt. Một đoạn có thể dùng được khi số lượng giữa hai chỉ số tìm kiếm nhị phân bằng không."
+    ]
   }
 }

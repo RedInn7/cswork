@@ -11,5 +11,35 @@
     "hints": [
       "Go over every position i where a name matches, take the smaller of the straight index distance d and the wrap-around distance n−d, then take the minimum over all target positions."
     ]
+  },
+  "ja": {
+    "title": "円形の工具ラックで目的の工具までの最小移動回数",
+    "description": "工具の名前が円形に並んでおり、重複があり得ます。startIndex から出発し、1 回の移動で左右どちらかに 1 つ隣へ進みます。目的の名前を持ついずれかの位置に到達するための最小の歩数を求めてください。本サイトでの追加仕様として、目的の名前が見つからなければ −1 を出力します。名前は完全に一致する場合のみ一致とみなし、大文字小文字や空白は無視してはいけません。\n\n本サイトが欠けている範囲を補った点と、原文の誤記を訂正した点については、入力プロトコルに記載しています。",
+    "input": "入力は JSON 配列 [tools,startIndex,target] で、インデックスは 0 始まりです。原文には数値や文字の範囲がないため、本サイトでは 1≤n≤100000、各名前と target の長さは Unicode スカラー値で 0..16 とし、空の名前、空白、NUL、BMP 外の文字は許可しますが、孤立サロゲートは許可しません。0≤startIndex<n です。JSON エンコードされた入力全体は ≤20000000 バイトなので、ASCII エスケープ形式で名前の最悪ケースの全領域を表現できます。",
+    "output": "整数 1 つ(答え)を出力してください。",
+    "explanation": "3 つの公開サンプルの出力は順に 1; 1; -1 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "名前が一致するすべての位置 i を調べ、まっすぐ進む距離 d と、回り込む距離 n−d の小さいほうを取り、すべての目的位置にわたってその最小値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "원형 공구 거치대에서 목표 공구까지의 최소 이동 횟수",
+    "description": "공구 이름이 원형으로 배열되어 있고 중복이 허용됩니다. startIndex에서 시작하며, 한 번 이동할 때마다 왼쪽이나 오른쪽으로 한 칸씩 갑니다. 목표 이름이 있는 임의의 위치에 도달하는 데 필요한 최소 이동 횟수를 구하세요. 이 사이트에서 추가한 규칙: 목표를 찾을 수 없으면 −1을 출력합니다. 이름은 정확히 같을 때만 일치하며, 대소문자와 공백을 무시해서는 안 됩니다.\n\n이 사이트가 누락된 범위를 보완한 내용과 원문 오타를 복구한 내용은 입력 규약에 설명되어 있습니다.",
+    "input": "입력은 JSON 배열 [tools,startIndex,target]이며 인덱스는 0부터 시작합니다. 원문에는 수치와 문자 범위가 없으며, 이 사이트가 1≤n≤100000을 추가했습니다. 각 이름과 target의 길이는 유니코드 스칼라 값 0..16개이고, 빈 이름, 공백, NUL, BMP 밖의 문자는 허용되지만 단독 서로게이트는 허용되지 않습니다. 0≤startIndex<n입니다. JSON으로 인코딩된 전체 입력은 ≤20000000바이트이므로 ASCII 이스케이프 인코딩으로 최악의 이름 도메인 전체를 표현할 수 있습니다.",
+    "output": "정수 하나를 정답으로 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 1; 1; -1입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "이름이 일치하는 모든 위치 i를 살펴보고, 직선 인덱스 거리 d와 순환 거리 n−d 중 작은 값을 취한 뒤, 모든 목표 위치에 대해 최솟값을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số bước tối thiểu tới công cụ đích trên giá công cụ hình vòng",
+    "description": "Tên các công cụ được xếp theo thứ tự vòng tròn, và cho phép trùng tên. Bạn xuất phát tại startIndex, mỗi bước đi sang trái hoặc sang phải một vị trí; hãy tìm số bước tối thiểu để tới một vị trí bất kỳ chứa tên đích. Phần trang này bổ sung: in −1 nếu không tìm thấy đích. Tên chỉ khớp khi hoàn toàn bằng nhau; không được bỏ qua chữ hoa/thường và khoảng trắng.\n\nCác khoảng giá trị mà trang này bổ sung cho những ràng buộc còn thiếu, cùng việc khôi phục lỗi đánh máy của đề gốc, được mô tả trong giao thức đầu vào.",
+    "input": "Đầu vào là một mảng JSON [tools,startIndex,target], chỉ số tính từ 0. Đề gốc không có cận về số lẫn ký tự; trang này bổ sung 1≤n≤100000, mỗi tên và target có độ dài 0..16 giá trị vô hướng Unicode, cho phép tên rỗng, khoảng trắng, NUL và ký tự ngoài BMP, nhưng không cho phép surrogate đơn lẻ; 0≤startIndex<n. Toàn bộ đầu vào mã hóa JSON ≤20000000 byte, nên cách mã hóa thoát ASCII có thể bao phủ toàn bộ miền tên trong trường hợp xấu nhất.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 1; 1; -1. Các kết quả này đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Duyệt mọi vị trí i có tên khớp, lấy giá trị nhỏ hơn giữa khoảng cách thẳng d và khoảng cách vòng n−d, rồi lấy giá trị nhỏ nhất trên mọi vị trí đích."
+    ]
   }
 }

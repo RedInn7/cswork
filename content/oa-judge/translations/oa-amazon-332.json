@@ -13,5 +13,41 @@
       "The larger the sum of the deleted segment, the better.",
       "Use a sliding window to find the maximum sum over all windows of length m, and use 64-bit integers."
     ]
+  },
+  "ja": {
+    "title": "Amazon OA #332: Reduce Memory Usage",
+    "description": "データセンターには N 個のプロセスがあり、processes[i] はプロセス i が使うメモリです。リストから連続する位置にあるちょうど m 個のプロセスを削除し、残ったプロセスが使うメモリの合計をできるだけ小さくしてください。その最小の合計を出力してください。",
+    "input": "1行目に2つの整数 N と m が与えられます。2行目に N 個の整数 processes[0..N-1] が空白区切りで与えられます。2≤N≤3×10^6、2≤m≤99999、m≤N、2≤processes[i]≤999999999 です。",
+    "output": "整数を1つ出力してください。連続する m 個のプロセスを削除した後の残りのメモリの合計の最小値です。答えは 32 ビット整数の範囲を超えることがあります。",
+    "explanation": "例 1:13 と 20 を削除すると、10+4+8=22 が残ります。例 2:[5,9,2,7] から長さ 3 の連続区間を削除します。5,9,2 を削除すると 7 が、9,2,7 を削除すると 5 が残るので、答えは 5 です。例 3:N=m=2 のときはすべて削除するしかなく、残りは 0 です。",
+    "hints": [
+      "残りの合計は、全体の合計から削除した区間の和を引いたものに等しいです。",
+      "削除した区間の和が大きいほど良いです。",
+      "スライディングウィンドウで、長さ m のすべてのウィンドウの和の最大値を求め、64 ビット整数を使います。"
+    ]
+  },
+  "ko": {
+    "title": "Amazon OA #332: Reduce Memory Usage",
+    "description": "데이터 센터에 N개의 프로세스가 있으며 processes[i]는 프로세스 i가 사용하는 메모리입니다. 목록에서 연속된 위치의 프로세스를 정확히 m개 삭제하여 남은 프로세스의 총 메모리 사용량을 최대한 작게 만들어야 합니다. 이 최솟값을 출력하세요.",
+    "input": "첫째 줄에 두 정수 N과 m이 주어집니다. 둘째 줄에 N개의 정수 processes[0..N-1]이 공백으로 구분되어 주어집니다. 2≤N≤3×10^6, 2≤m≤99999, m≤N, 2≤processes[i]≤999999999입니다.",
+    "output": "정수 하나를 출력합니다. 연속된 m개의 프로세스를 삭제한 뒤 남은 총 메모리의 최솟값입니다. 답은 32비트 정수 범위를 넘을 수 있습니다.",
+    "explanation": "예제 1: 13과 20을 삭제하면 10+4+8=22가 남습니다. 예제 2: [5,9,2,7]에서 길이 3인 연속 구간을 삭제합니다. 5,9,2를 삭제하면 7이 남고 9,2,7을 삭제하면 5가 남으므로 정답은 5입니다. 예제 3: N=m=2이면 전부 삭제해야 하므로 0이 남습니다.",
+    "hints": [
+      "남은 총합은 전체 총합에서 삭제한 구간의 합을 뺀 것과 같습니다.",
+      "삭제한 구간의 합이 클수록 좋습니다.",
+      "슬라이딩 윈도우로 길이 m인 모든 윈도우의 합 중 최댓값을 구하고, 64비트 정수를 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Amazon OA #332: Reduce Memory Usage",
+    "description": "Một trung tâm dữ liệu có N tiến trình, processes[i] là bộ nhớ mà tiến trình i sử dụng. Bạn phải xóa đúng m tiến trình ở các vị trí liên tiếp khỏi danh sách sao cho tổng bộ nhớ của các tiến trình còn lại nhỏ nhất có thể. In ra tổng nhỏ nhất đó.",
+    "input": "Dòng đầu chứa hai số nguyên N và m. Dòng thứ hai chứa N số nguyên processes[0..N-1], cách nhau bởi khoảng trắng. 2≤N≤3×10^6, 2≤m≤99999 và m≤N, 2≤processes[i]≤999999999.",
+    "output": "In một số nguyên: tổng bộ nhớ còn lại nhỏ nhất sau khi xóa một đoạn liên tiếp gồm m tiến trình. Đáp án có thể vượt quá phạm vi số nguyên 32 bit.",
+    "explanation": "Ví dụ 1: xóa 13 và 20, còn lại 10+4+8=22. Ví dụ 2: xóa một đoạn liên tiếp có độ dài 3 khỏi [5,9,2,7]; xóa 5,9,2 còn lại 7 và xóa 9,2,7 còn lại 5, nên đáp án là 5. Ví dụ 3: khi N=m=2, phải xóa tất cả, còn lại 0.",
+    "hints": [
+      "Tổng còn lại bằng tổng toàn bộ trừ đi tổng của đoạn bị xóa.",
+      "Tổng của đoạn bị xóa càng lớn càng tốt.",
+      "Dùng cửa sổ trượt để tìm tổng lớn nhất trong mọi cửa sổ có độ dài m, và dùng số nguyên 64 bit."
+    ]
   }
 }

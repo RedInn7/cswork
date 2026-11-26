@@ -11,5 +11,35 @@
     "hints": [
       "Handle multiplication and division separately, using a three-state contiguous subarray DP for not yet in the modified range, currently modifying, and already left it. Take the maximum subarray sum that contains at least one modified position."
     ]
+  },
+  "ja": {
+    "title": "ちょうど 1 つの範囲を変更した後の連続品質スコアの最大値",
+    "description": "空でない範囲を 1 つ選び、その範囲全体に impactFactor を掛けるか、その係数で割る（0 方向へ丸める）かのどちらかを行う必要があります。操作後に、空でない連続部分配列の和として得られる最大値を求めてください。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n impactFactor (1≤n≤200000, 1≤impactFactor≤10000) が与えられ、2 行目に n 個の評価値 (−100000..100000) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 最後の 2 と 4 に 2 を掛けると 4 と 8 になり、最大の和は 12 です。例 2: 係数が 1 なら何も変わらないので、3 を選んで 3 です。例 3: −3 を 2 で割って 0 方向に丸めると −1 になり、これが得られる最大の品質スコアです。",
+    "hints": [
+      "掛け算と割り算を別々に扱い、変更範囲に入る前、変更中、変更範囲を出た後の 3 状態の連続部分配列 DP を使います。変更された位置を少なくとも 1 つ含む部分配列の和の最大値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "정확히 한 구간을 바꾼 뒤의 최대 연속 품질 점수",
+    "description": "비어 있지 않은 구간 하나를 골라 그 구간 전체에 impactFactor를 곱하거나, 전체를 그 값으로 나누어 0 방향으로 내림해야 합니다. 연산 후 비어 있지 않은 연속 부분 배열의 합의 최댓값을 구하세요.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n impactFactor(1≤n≤200000, 1≤impactFactor≤10000)가 주어지고, 둘째 줄에 n개의 ratings(−100000..100000)가 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 마지막의 2와 4에 2를 곱하면 4와 8이 되어 최대 합은 12입니다. 예제 2: 계수가 1이면 아무것도 바뀌지 않으므로 3을 선택하면 3입니다. 예제 3: −3을 2로 나누어 0 방향으로 내림하면 −1이 되며, 이것이 얻을 수 있는 최대 품질 점수입니다.",
+    "hints": [
+      "곱셈과 나눗셈을 따로 처리하며, 아직 수정 구간에 들어가지 않음, 수정 중, 이미 벗어남의 세 상태를 가진 연속 부분 배열 DP를 사용합니다. 수정된 위치를 하나 이상 포함하는 부분 배열의 최대 합을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm chất lượng liên tiếp lớn nhất sau khi thay đổi đúng một đoạn",
+    "description": "Bạn phải chọn một đoạn khác rỗng và hoặc nhân toàn bộ đoạn đó với impactFactor, hoặc chia toàn bộ đoạn cho hệ số đó với phép làm tròn về phía 0. Sau thao tác, hãy tìm tổng lớn nhất có thể của một mảng con liên tiếp khác rỗng.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n impactFactor (1≤n≤200000, 1≤impactFactor≤10000); dòng thứ hai chứa n đánh giá ratings (−100000..100000).",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: nhân 2 và 4 cuối cùng với 2 thì chúng thành 4 và 8, tổng lớn nhất là 12. Ví dụ 2: hệ số 1 không thay đổi gì, nên chọn 3 cho kết quả 3. Ví dụ 3: −3 chia cho 2 làm tròn về phía 0 là −1, đó là điểm chất lượng lớn nhất có thể đạt được.",
+    "hints": [
+      "Xử lý riêng phép nhân và phép chia, dùng DP mảng con liên tiếp ba trạng thái: chưa vào đoạn bị sửa, đang sửa, và đã rời khỏi nó. Lấy tổng mảng con lớn nhất chứa ít nhất một vị trí đã sửa."
+    ]
   }
 }

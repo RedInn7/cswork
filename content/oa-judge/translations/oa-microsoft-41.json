@@ -11,5 +11,35 @@
     "hints": [
       "After sorting, you only need to lower the maximum of the smallest N/3 numbers or raise the minimum of the largest N/3 numbers. On either side, the cost of increasing the gap by 1 equals the current size of the extreme group; since this cost grows monotonically as the group expands, merge the cost segments of both sides with a heap and buy the cheapest increments first."
     ]
+  },
+  "ja": {
+    "title": "高々 K 回の増減の後の三分位の差の最大値",
+    "description": "各操作では、任意の 1 つの要素に 1 を足すか 1 を引き、合計で高々 K 回行えます。N は 3 で割り切れます。N/3 番目に大きい要素から N/3 番目に小さい要素を引いた差を最大化してください。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に N K、2 行目に N 個の整数が与えられます。N は 3..150000 の 3 の倍数、K は 0..500000000、要素は −300000000..300000000 です。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：分位点を 1 動かすには 2 つの 6 をどちらも変える必要があるので、3 回の操作では差を 1 しか増やせません。例 2：元の差は 2 で、1 を −1 に下げると差は 4 になります。例 3：7 の 1 つを 8 に変えると、上側の分位点は 7 から 8 に動き、下側の分位点は 7 のままなので、差は 1 です。",
+    "hints": [
+      "ソートした後は、最小の N/3 個の数の最大値を下げるか、最大の N/3 個の数の最小値を上げるかだけを考えればよいです。どちら側でも、差を 1 増やすコストは極端な側のグループの現在の大きさに等しく、グループが広がるにつれてこのコストは単調に増えるので、両側のコストの区間をヒープでマージし、最も安い増分から順に買っていきます。"
+    ]
+  },
+  "ko": {
+    "title": "최대 K번의 증감 이후 삼분위 차이의 최댓값",
+    "description": "각 연산은 임의의 원소 하나에 1을 더하거나 빼며, 총 최대 K번 수행할 수 있습니다. N은 3의 배수입니다. N/3번째로 큰 원소에서 N/3번째로 작은 원소를 뺀 값을 최대화하세요.\n\n이 사이트는 표준 입출력 규약을 사용하며, 출처에 명시되지 않은 범위는 별도로 밝혀 두었습니다.",
+    "input": "첫째 줄에 N K, 둘째 줄에 N개의 정수가 주어집니다. N은 3..150000 범위의 3의 배수, K는 0..500000000 범위, 원소는 −300000000..300000000 범위입니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 분위수를 1 옮기려면 두 6을 모두 바꿔야 하므로 3번의 연산으로는 차이를 1만 늘릴 수 있습니다. 예제 2: 원래 차이는 2이고, 1을 −1로 낮추면 차이가 4가 됩니다. 예제 3: 7 하나를 8로 바꾸면 위쪽 분위수가 7에서 8이 되고 아래쪽 분위수는 7로 유지되어 차이는 1입니다.",
+    "hints": [
+      "정렬한 뒤에는 가장 작은 N/3개 중 최댓값을 낮추거나 가장 큰 N/3개 중 최솟값을 높이는 것만 필요합니다. 어느 쪽이든 차이를 1 늘리는 비용은 현재 극단 그룹의 크기와 같고, 그룹이 확장될수록 비용이 단조 증가하므로 양쪽의 비용 구간을 힙으로 병합해 가장 싼 증가분부터 사 갑니다."
+    ]
+  },
+  "vi": {
+    "title": "Khoảng cách tam phân vị lớn nhất sau tối đa K lần tăng hoặc giảm",
+    "description": "Mỗi thao tác cộng 1 vào hoặc trừ 1 khỏi một phần tử bất kỳ, tổng cộng tối đa K lần. N chia hết cho 3; hãy tối đa hóa hiệu giữa phần tử lớn thứ N/3 và phần tử nhỏ thứ N/3.\n\nTrang này dùng giao thức vào/ra chuẩn; các phạm vi mà nguồn không nêu đều được ghi rõ.",
+    "input": "Dòng đầu chứa N K; dòng thứ hai chứa N số nguyên. N là bội của 3 trong khoảng 3..150000, K nằm trong 0..500000000, và các phần tử nằm trong −300000000..300000000.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: cả hai số 6 đều phải thay đổi để dịch phân vị đi 1, nên 3 bước chỉ có thể tăng khoảng cách thêm 1. Ví dụ 2: khoảng cách ban đầu là 2; hạ 1 xuống −1 làm khoảng cách thành 4. Ví dụ 3: đổi một số 7 thành 8 dịch phân vị trên từ 7 lên 8 trong khi phân vị dưới vẫn là 7, được khoảng cách 1.",
+    "hints": [
+      "Sau khi sắp xếp, bạn chỉ cần hạ giá trị lớn nhất của N/3 số nhỏ nhất hoặc nâng giá trị nhỏ nhất của N/3 số lớn nhất. Ở mỗi phía, chi phí để tăng khoảng cách thêm 1 bằng kích thước hiện tại của nhóm cực trị; vì chi phí này tăng đơn điệu khi nhóm mở rộng, hãy gộp các đoạn chi phí của hai phía bằng một heap và mua các lần tăng rẻ nhất trước."
+    ]
   }
 }

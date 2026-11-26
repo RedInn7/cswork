@@ -11,5 +11,35 @@
     "hints": [
       "Sort capacities in descending order and group adjacent items in pairs, making the smaller one the primary; sum items 2, 4, …, and with an odd count leave the smallest item unused."
     ]
+  },
+  "ja": {
+    "title": "主サーバーとバックアップサーバーを 1 対 1 で組にしたときの主容量の最大値",
+    "description": "n 台のサーバーから偶数台を選び、その半分を主サーバー、残りの半分をバックアップとします。各サーバーは 1 回しか使えず、すべての主サーバーは、自分以上の容量を持つバックアップと組になります。貢献量はすべての主サーバーの容量の合計で、その最大値を求めてください。すべてのサーバーを使う必要はありません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に memory が与えられます。2≤n≤200000、1≤memory[i]≤10^9 です。元の制約では変数名が誤って size となっていましたが、元の補足は明らかに memory を指しているので、本サイトでは一貫してこの名前を使います。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 3、1、5 です。3 つ目の例では、4 と 3、2 と 2 を組にします。主容量は 3+2=5 で、1 は使いません。",
+    "hints": [
+      "容量を降順にソートして隣り合う 2 つずつを組にし、小さい方を主サーバーとします。2 番目、4 番目、…の要素を合計し、個数が奇数なら最小の要素は使いません。"
+    ]
+  },
+  "ko": {
+    "title": "주 서버/백업 서버를 일대일로 짝지을 때 주 서버 용량의 최댓값",
+    "description": "n대의 서버 중 짝수 대를 골라 절반은 주 서버, 절반은 백업 서버로 씁니다. 각 서버는 한 번만 사용하며, 모든 주 서버는 자신 이상의 용량을 가진 백업 서버와 짝을 이룹니다. 기여도는 모든 주 서버 용량의 합이며, 그 최댓값을 구하세요. 모든 서버를 사용할 필요는 없습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 memory가 주어집니다. 2≤n≤200000, 1≤memory[i]≤10^9입니다. 원래 제약에서는 변수 이름이 size로 잘못 적혀 있었지만, 원문의 부연 설명은 분명히 memory를 가리키므로 본 사이트는 전체에서 하나의 이름을 사용합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 각각 3, 1, 5입니다. 세 번째 예제에서는 4와 3, 2와 2를 짝지으면 주 서버 용량은 3+2=5이고 1은 사용하지 않습니다.",
+    "hints": [
+      "용량을 내림차순으로 정렬하고 인접한 두 개씩 묶어 작은 쪽을 주 서버로 삼습니다. 2번째, 4번째, … 원소를 더하며, 개수가 홀수이면 가장 작은 원소는 사용하지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Dung lượng máy chính lớn nhất khi ghép một-một server chính/dự phòng",
+    "description": "Chọn một số chẵn trong n server: một nửa là máy chính và một nửa là máy dự phòng. Mỗi server chỉ được dùng một lần, và mỗi máy chính được ghép với một máy dự phòng có dung lượng không nhỏ hơn dung lượng của nó. Đóng góp là tổng dung lượng của mọi máy chính; tìm giá trị lớn nhất của nó. Bạn không cần dùng hết các server.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và dòng thứ hai chứa memory. 2≤n≤200000, 1≤memory[i]≤10^9. Các ràng buộc gốc đặt nhầm tên biến là size, nhưng ghi chú bên lề gốc của chúng rõ ràng nói về memory; trang này dùng một tên thống nhất.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 3, 1 và 5. Ở ví dụ thứ ba, ghép 4 với 3 và 2 với 2; dung lượng máy chính là 3+2=5, và 1 không được dùng.",
+    "hints": [
+      "Sắp xếp dung lượng giảm dần và nhóm các phần tử liền kề thành từng cặp, lấy phần tử nhỏ hơn làm máy chính; cộng các phần tử thứ 2, 4, …, và nếu số lượng lẻ thì bỏ phần tử nhỏ nhất không dùng."
+    ]
   }
 }

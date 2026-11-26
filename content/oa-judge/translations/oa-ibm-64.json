@@ -11,5 +11,35 @@
     "hints": [
       "For each log, add one for each distinct participating user, then filter the IDs whose counts reach the threshold and sort them as integers."
     ]
+  },
+  "ja": {
+    "title": "関与したログの件数で送金ユーザーを絞り込む",
+    "description": "各ログの行には、送信ユーザー、受信ユーザー、金額が記録されています。少なくとも threshold 件のログに関与したユーザーの ID を、数値の昇順で返してください。自分自身への送金ログは、そのユーザーについて1回だけ数え、金額は件数に影響しません。\n\n入出力の形式は当サイトが整えたもので、不足していた数値の制約は当サイトが補ったものとして明示しています。",
+    "input": "1行目に n threshold、続く n 行に sender recipient amount が与えられます。1≤n≤100000、1≤threshold≤n です。3つのフィールドはいずれも先頭が 0 でない 1..9 桁の10進数で、答えは必ず空でないことが保証されています。",
+    "output": "1行目にユーザー数を出力し、続けて ID を数値の昇順に1行に1つずつ出力します。",
+    "explanation": "3つの公開例の出力は、順に 2 / 2 / 10、1 / 2、2 / 99 / 100 です。これらの答えは、独立した全探索または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "各ログについて、関与する異なるユーザーごとに 1 を加え、件数が threshold に達した ID を絞り込んで整数としてソートします。"
+    ]
+  },
+  "ko": {
+    "title": "관여한 로그 수로 송금 사용자 거르기",
+    "description": "각 로그 줄에는 보낸 사용자, 받은 사용자, 금액이 기록되어 있습니다. 적어도 threshold개의 로그에 관여한 사용자의 ID를 숫자 오름차순으로 반환하세요. 자기 자신에게 보낸 로그는 해당 사용자에게 한 번만 계산하며, 금액은 개수에 영향을 주지 않습니다.\n\n입출력 형식은 본 사이트에서 정리한 것이며, 원문에 없던 수치 제약은 본 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "첫째 줄에 n threshold가, 이어서 n줄에 sender recipient amount가 주어집니다. 1≤n≤100000, 1≤threshold≤n이며, 세 필드는 모두 첫 자리가 0이 아닌 1..9자리 십진수이고 답은 비어 있지 않음이 보장됩니다.",
+    "output": "첫째 줄에 사용자 수를 출력하고, 이어서 숫자 오름차순으로 한 줄에 ID 하나씩 출력합니다.",
+    "explanation": "공개된 세 예제의 출력은 순서대로 2 / 2 / 10; 1 / 2; 2 / 99 / 100입니다. 이 답들은 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 로그마다 서로 다른 관여 사용자 각각에 1을 더한 뒤, 횟수가 threshold 이상인 ID를 걸러 정수로 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lọc người dùng chuyển khoản theo số bản ghi liên quan",
+    "description": "Mỗi dòng nhật ký ghi người dùng gửi, người dùng nhận và số tiền. Trả về ID của những người dùng có liên quan đến ít nhất threshold bản ghi, theo thứ tự số tăng dần. Bản ghi tự chuyển khoản chỉ tính một lần cho người dùng đó, và số tiền không ảnh hưởng đến việc đếm.\n\nGiao thức nhập/xuất do trang này biên soạn; các ràng buộc số còn thiếu được đánh dấu rõ là phần trang này bổ sung.",
+    "input": "Dòng đầu chứa n threshold, tiếp theo là n dòng sender recipient amount. 1≤n≤100000, 1≤threshold≤n; cả ba trường đều là số thập phân có 1..9 chữ số và chữ số đầu khác 0, và đảm bảo đáp án không rỗng.",
+    "output": "Dòng đầu in số lượng người dùng, sau đó mỗi dòng một ID theo thứ tự số tăng dần.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2 / 2 / 10; 1 / 2; 2 / 99 / 100. Các đáp án này đã được kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Với mỗi bản ghi, cộng một cho mỗi người dùng khác nhau tham gia, rồi lọc các ID có số đếm đạt ngưỡng và sắp xếp chúng như số nguyên."
+    ]
   }
 }

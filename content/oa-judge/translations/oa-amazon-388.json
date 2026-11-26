@@ -11,5 +11,35 @@
     "hints": [
       "Sort by original size and assign integer size slots in order. Push every item that can already take the current slot into a heap ordered by unit cost descending and assign the slot to the most expensive one; when the heap is empty, jump to the next original size."
     ]
+  },
+  "ja": {
+    "title": "サイズを要素ごとのコストで引き上げ、すべて異なる値にする",
+    "description": "商品 i の初期サイズは size[i] で、1 増やすごとに cost[i] かかり、サイズを減らすことはできません。最終的なサイズをすべて互いに異なる値にするための最小の総コストを求めてください。\n\n本サイトは標準入出力と解法を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "1 行目に n、2 行目に n 個のサイズ、3 行目に n 個の単価が与えられます。OCR141/142/143 と同じ問題の補足文から、元の制約を完全に復元しています：1≤n≤200000、1≤size[i]≤10^9、1≤cost[i]≤10000。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "1 つ目の例の最小値は 7 です。コスト 5 の商品は 2 のまま、コスト 4 の商品は 3 のまま、コスト 2 の商品は 2 から 4 へ上げて 4、コスト 1 の商品は 2 から 5 へ上げて 3 になります。原文の補足にある「1+4=7」という説明には計算ミスがあり、本サイトでは正しい手順を使っています。他の 2 つの例の答えは 1 と 0 です。",
+    "hints": [
+      "元のサイズでソートし、整数のスロットを順に割り当てます。現在のスロットを取れる商品をすべて単価の降順のヒープに入れ、最も高い商品にそのスロットを割り当てます。ヒープが空なら、次の元のサイズへ飛びます。"
+    ]
+  },
+  "ko": {
+    "title": "개별 비용으로 크기를 올려 모두 서로 다르게 만들기",
+    "description": "항목 i의 초기 크기는 size[i]이며, 1 증가시킬 때마다 cost[i]의 비용이 들고 크기는 줄일 수 없습니다. 최종 크기가 모두 서로 다르도록 만들 때의 최소 총비용을 구하세요.\n\n본 사이트에서 표준 입출력과 풀이를 독립적으로 마련했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 크기 n개, 세 번째 줄에 단위 비용 n개가 주어집니다. OCR141/142/143과 같은 문제의 보충 텍스트에서 원래의 전체 제약 조건을 복원했습니다: 1≤n≤200000, 1≤size[i]≤10^9, 1≤cost[i]≤10000.",
+    "output": "정답인 정수 하나를 출력합니다.",
+    "explanation": "첫 번째 예제의 최솟값은 7입니다. 비용 5인 항목은 2에 머물고, 비용 4인 항목은 3에 머물며, 비용 2인 항목은 2에서 4로 올라 4를 쓰고, 비용 1인 항목은 2에서 5로 올라 3을 씁니다. 원문 보충 텍스트의 \"1+4=7\" 설명에는 산술 오류가 있으며, 이 사이트는 올바른 과정을 사용합니다. 나머지 두 예제의 답은 1과 0입니다.",
+    "hints": [
+      "원래 크기로 정렬하고 정수 크기 슬롯을 순서대로 배정합니다. 현재 슬롯을 이미 차지할 수 있는 항목을 모두 단위 비용 내림차순 힙에 넣고 가장 비싼 항목에 그 슬롯을 배정합니다. 힙이 비면 다음 원래 크기로 건너뜁니다."
+    ]
+  },
+  "vi": {
+    "title": "Tăng kích thước với chi phí riêng từng món cho đến khi tất cả khác nhau",
+    "description": "Món i có kích thước ban đầu size[i]; mỗi lần tăng thêm 1 tốn cost[i], và kích thước không thể giảm. Làm cho mọi kích thước cuối cùng đôi một khác nhau và tìm tổng chi phí nhỏ nhất.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các giới hạn được bổ sung khi nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n kích thước, và dòng thứ ba chứa n chi phí đơn vị. OCR141/142/143 và phần văn bản bổ sung của cùng bài toán khôi phục đầy đủ giới hạn gốc: 1≤n≤200000, 1≤size[i]≤10^9, 1≤cost[i]≤10000.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Giá trị nhỏ nhất của ví dụ đầu tiên là 7: món có chi phí 5 giữ nguyên ở 2, món có chi phí 4 giữ nguyên ở 3, món có chi phí 2 đi từ 2 lên 4 tốn 4, và món có chi phí 1 đi từ 2 lên 5 tốn 3. Phần giải thích \"1+4=7\" trong văn bản bổ sung gốc có lỗi số học; trang này dùng quy trình đúng. Đáp án của hai ví dụ còn lại là 1 và 0.",
+    "hints": [
+      "Sắp xếp theo kích thước ban đầu và gán các ô kích thước nguyên theo thứ tự. Đẩy mọi món đã có thể nhận ô hiện tại vào một heap sắp theo chi phí đơn vị giảm dần và gán ô đó cho món đắt nhất; khi heap rỗng, nhảy tới kích thước gốc kế tiếp."
+    ]
   }
 }

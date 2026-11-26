@@ -11,5 +11,35 @@
     "hints": [
       "Record whether each prefix is valid with respect to adjacent characters. Enumerate the first changed position from right to left, try the smallest valid character greater than the original one, then greedily fill the suffix with a or b."
     ]
+  },
+  "ja": {
+    "title": "隣接する同じ文字を含まない、辞書順で真に大きい最小の文字列",
+    "description": "小文字からなる文字列が与えられます。同じ長さで、辞書順で真に大きく、隣り合う 2 文字が等しくないような文字列のうち最小のものを求めてください。元の文字列自体に隣接する同じ文字が含まれていてもかまいません。そのような文字列が存在しない場合は -1 を出力します。\n\n標準入出力、例、解法はこのサイトが独自に作成したものです。このサイトのものと明記された範囲は、元の出典の制約ではありません。",
+    "input": "空でない小文字の文字列が 1 行で与えられます。元のスナップショットには長さの上限がありません。このサイトでは長さを 1..100000 とします。",
+    "output": "目的の文字列を出力してください。解がない場合は -1 を出力します。",
+    "explanation": "例 1: 接頭辞 ab を保ち、3 文字目の b を c に上げ、残りを ab で埋めて abcab となります。例 2: 2 文字目の z は上げられないので、1 文字目の a を b に上げ、残りを a で埋めて ba となります。例 3: zz は長さ 2 で最大の文字列なので解はなく、-1 です。",
+    "hints": [
+      "各接頭辞が隣接条件に関して有効かどうかを記録します。最初に変更する位置を右から左へ列挙し、元の文字より大きい有効な最小の文字を試し、残りの接尾辞は a か b で貪欲に埋めます。"
+    ]
+  },
+  "ko": {
+    "title": "인접한 문자가 같지 않은 가장 작은 더 큰 문자열",
+    "description": "소문자 문자열이 주어질 때, 길이가 같고 사전순으로 엄격하게 더 크며 인접한 두 문자가 같지 않은 문자열 중 가장 작은 것을 구하세요. 원래 문자열에 이미 인접한 반복이 있을 수도 있습니다. 그런 문자열이 없으면 -1을 출력합니다.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 비어 있지 않은 소문자 문자열이 주어집니다. 원본 스냅샷에는 길이 제한이 없으며, 이 사이트는 길이를 1..100000으로 정했습니다.",
+    "output": "목표 문자열을 출력하세요. 해가 없으면 -1을 출력합니다.",
+    "explanation": "예제 1: 접두사 ab는 유지하고, 세 번째 문자 b를 c로 올린 뒤 나머지를 ab로 채우면 abcab가 됩니다. 예제 2: 두 번째 문자 z는 올릴 수 없으므로 첫 번째 문자 a를 b로 올리고 a로 채워 ba가 됩니다. 예제 3: zz는 이미 길이 2에서 가장 큰 문자열이므로 해가 없어 -1입니다.",
+    "hints": [
+      "각 접두사가 인접 문자 조건에서 유효한지를 기록합니다. 처음으로 바뀌는 위치를 오른쪽에서 왼쪽으로 열거하면서, 원래 문자보다 크면서 유효한 가장 작은 문자를 시도하고, 나머지 접미사는 a 또는 b로 탐욕적으로 채웁니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu nhỏ nhất lớn hơn thực sự và không có hai ký tự kề nhau giống nhau",
+    "description": "Cho một xâu chữ cái thường, tìm xâu nhỏ nhất có cùng độ dài, lớn hơn thực sự theo thứ tự từ điển và không có hai ký tự kề nhau bằng nhau. Xâu ban đầu có thể đã chứa các ký tự kề nhau lặp lại. Nếu không tồn tại xâu như vậy, in ra -1.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và lời giải do trang này tự viết; các khoảng giá trị được đánh dấu là của trang này không phải là ràng buộc gốc của nguồn.",
+    "input": "Một dòng chứa xâu chữ cái thường không rỗng. Ảnh chụp gốc không cho giới hạn độ dài; trang này đặt độ dài từ 1 đến 100000.",
+    "output": "In ra xâu đích; nếu không có nghiệm, in ra -1.",
+    "explanation": "Ví dụ 1: giữ tiền tố ab, nâng ký tự thứ ba b lên c, rồi điền ab, được abcab. Ví dụ 2: ký tự thứ hai z không thể nâng, nên nâng ký tự đầu a lên b và điền a, được ba. Ví dụ 3: zz đã là xâu lớn nhất có độ dài 2, nên không có nghiệm: -1.",
+    "hints": [
+      "Ghi lại xem mỗi tiền tố có hợp lệ về các ký tự kề nhau hay không. Duyệt vị trí đổi đầu tiên từ phải sang trái, thử ký tự hợp lệ nhỏ nhất lớn hơn ký tự ban đầu, rồi điền phần hậu tố một cách tham lam bằng a hoặc b."
+    ]
   }
 }

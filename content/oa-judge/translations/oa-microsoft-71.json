@@ -11,5 +11,35 @@
     "hints": [
       "Backtrack over positions in the pattern and the text. If a mapping already exists, only verify that fixed string; otherwise enumerate every non-empty prefix at the current position, skip strings already taken by other characters, and recurse."
     ]
+  },
+  "ja": {
+    "title": "文字パターンと空でない部分文字列の全単射な対応づけ",
+    "description": "pattern に現れる異なる文字のそれぞれを空でない文字列に対応づけます。同じ文字は常に同じ文字列に対応し、異なる文字は同じ文字列に対応してはいけません。pattern に従って対応づけた文字列を連結した結果が、ちょうど s になりうるかを判定してください。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "2 行で pattern と s が与えられます。どちらも小文字のみからなり、長さはそれぞれ 1..20 です。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：a→red と b→blue で目標の文字列になるので、1 を出力します。例 2：a→asd を 4 回繰り返すとちょうど一致するので、1 を出力します。例 3：文字列を、a が 2 つ同じで b が 2 つ同じという形に分割できないので、0 を出力します。",
+    "hints": [
+      "pattern と文字列の位置についてバックトラックします。すでに対応が決まっていれば、その固定された文字列を検証するだけにします。そうでなければ、現在の位置から始まる空でないすべての接頭辞を試し、他の文字がすでに使っている文字列は飛ばして再帰します。"
+    ]
+  },
+  "ko": {
+    "title": "문자 패턴과 비어 있지 않은 부분 문자열의 일대일 매칭",
+    "description": "pattern의 서로 다른 각 문자를 비어 있지 않은 문자열에 매핑하세요. 같은 문자는 항상 같은 문자열로, 서로 다른 문자는 같은 문자열로 매핑될 수 없습니다. 패턴 순서대로 매핑된 문자열을 이어 붙인 결과가 정확히 s가 될 수 있는지 판단하세요.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "두 줄로 pattern과 s가 주어지며, 둘 다 소문자로만 이루어지고 길이는 각각 1..20입니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: a→red, b→blue로 대상 문자열이 만들어지므로 1을 출력합니다. 예제 2: a→asd를 4번 반복한 것과 정확히 일치하므로 1을 출력합니다. 예제 3: 문자열을 같은 a 두 개 다음에 같은 b 두 개로 나눌 수 없으므로 0을 출력합니다.",
+    "hints": [
+      "패턴과 텍스트의 위치에 대해 백트래킹합니다. 이미 매핑이 있으면 그 고정된 문자열만 확인하고, 없으면 현재 위치에서 비어 있지 않은 모든 접두사를 열거하되 다른 문자가 이미 쓴 문자열은 건너뛰고 재귀합니다."
+    ]
+  },
+  "vi": {
+    "title": "Khớp song ánh giữa mẫu ký tự và các xâu con khác rỗng",
+    "description": "Ánh xạ mỗi ký tự phân biệt của pattern tới một xâu khác rỗng, sao cho cùng một ký tự luôn ánh xạ tới cùng một xâu và các ký tự khác nhau không thể ánh xạ tới cùng một xâu. Nối các xâu đã ánh xạ theo pattern, và xác định xem kết quả có thể đúng bằng s hay không.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Hai dòng, pattern và s, đều chỉ chứa chữ cái thường, mỗi xâu có độ dài 1..20.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: a→red và b→blue tạo thành xâu đích, nên in 1. Ví dụ 2: a→asd lặp lại 4 lần khớp chính xác, nên in 1. Ví dụ 3: xâu không thể tách thành hai xâu a giống nhau rồi hai xâu b giống nhau, nên in 0.",
+    "hints": [
+      "Quay lui trên các vị trí trong pattern và trong văn bản. Nếu ánh xạ đã tồn tại, chỉ cần kiểm tra xâu cố định đó; nếu chưa, hãy duyệt mọi tiền tố khác rỗng tại vị trí hiện tại, bỏ qua các xâu đã bị ký tự khác chiếm, rồi đệ quy."
+    ]
   }
 }

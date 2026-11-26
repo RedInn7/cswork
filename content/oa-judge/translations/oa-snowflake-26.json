@@ -11,5 +11,35 @@
     "hints": [
       "Orient each adjacent edge from earlier to later (earlier→later); any orientation of a chain is acyclic and can be realized topologically. Run a two-state DP over edge directions, and collect each node's profit based on its number of incoming edges once it is complete."
     ]
+  },
+  "ja": {
+    "title": "隣接プロセッサの配備順に基づく利益",
+    "description": "プロセッサが鎖状に並んでおり、1 つずつ配備されます。プロセッサ i を配備するとき、すでに配備されている隣接プロセッサが 0 個、1 個、2 個であれば、それぞれ no[i]、one[i]、both[i] の利益を得ます。最初と最後のプロセッサは隣接が 1 つだけです。すべてのプロセッサの利益の合計を最大にしてください。\n\n入出力の形式と、明示した補足の制約は本サイトで整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n、続く 3 行に no、one、both が与えられます。1≤n≤100000 で、各利益は 1..10⁹ の範囲です。元の例 1 では both が 0 と書かれていて制約と矛盾するため、本サイトの例では有効な正の利益を使っています。アルゴリズムは正であることに依存しません。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 9、8、7 です。例は、独立した全探索、状態探索、または直接のシミュレーションで再確認しています。",
+    "hints": [
+      "隣り合う辺を、早いほうから遅いほうへ（earlier→later）向きづけます。鎖のどの向きづけも非巡回で、トポロジカル順として実現できます。辺の向きについての 2 状態 DP を行い、各ノードが確定したら、その入辺の数に応じて利益を加えます。"
+    ]
+  },
+  "ko": {
+    "title": "이웃의 배치 순서에 따른 이익",
+    "description": "프로세서들이 일렬로 놓여 있고 한 번에 하나씩 배치됩니다. 프로세서 i를 배치할 때 이웃 중 이미 배치된 것이 0개, 1개, 2개이면 각각 no[i], one[i], both[i]를 얻습니다. 첫 번째와 마지막 프로세서는 이웃이 하나뿐입니다. 모든 프로세서의 총 이익을 최대화하세요.\n\n입출력 규약과 명시적으로 표시된 보충 제약은 이 사이트에서 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n이 주어지고, 이어서 no, one, both의 3줄이 주어집니다. 1≤n≤100000이며 각 이익은 1..10⁹입니다. 원문의 예제 1은 both를 0으로 적어 제약과 충돌하므로, 이 사이트의 예제는 유효한 양의 이익을 사용하며 알고리즘은 양수라는 가정에 의존하지 않습니다.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 9; 8; 7입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 확인했습니다.",
+    "hints": [
+      "인접한 각 간선을 먼저 배치된 쪽에서 나중에 배치된 쪽으로(earlier→later) 향하게 합니다. 사슬의 어떤 방향 부여도 비순환이며 위상 순서로 실현할 수 있습니다. 간선 방향에 대한 두 상태 DP를 수행하고, 각 노드는 확정되는 시점에 들어오는 간선 수에 따라 이익을 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lợi nhuận phụ thuộc vào thứ tự triển khai của các hàng xóm",
+    "description": "Các bộ xử lý được xếp thành một chuỗi và được triển khai lần lượt từng cái. Khi bộ xử lý i được triển khai, nếu 0, 1 hoặc 2 hàng xóm của nó đã được triển khai thì nó thu được lần lượt no[i], one[i] hoặc both[i]. Bộ xử lý đầu và cuối chỉ có một hàng xóm. Cực đại hóa tổng lợi nhuận của mọi bộ xử lý.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n, tiếp theo là 3 dòng: no, one và both. 1≤n≤100000, và mỗi lợi nhuận nằm trong 1..10⁹. Ví dụ 1 gốc ghi both là 0, mâu thuẫn với ràng buộc; các ví dụ của trang này dùng lợi nhuận dương hợp lệ, và thuật toán không dựa vào tính dương.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 9; 8; 7. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Định hướng mỗi cạnh liền kề từ sớm hơn đến muộn hơn (sớm hơn→muộn hơn); mọi cách định hướng của một chuỗi đều không có chu trình và có thể thực hiện theo thứ tự tô-pô. Chạy DP hai trạng thái trên hướng của các cạnh, và thu lợi nhuận của mỗi nút theo số cạnh vào của nó khi nó đã hoàn tất."
+    ]
   }
 }

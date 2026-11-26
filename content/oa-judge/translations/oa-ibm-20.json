@@ -11,5 +11,35 @@
     "hints": [
       "Count by runs of the same subject: F(s,k) is the number of ways to split s into k positive integers in 1..N. Group all tests by N and, based on the estimated amount of computation, choose between the inclusion-exclusion formula and a shared sliding-window DP; all s with the same N share one DP pass instead of being recomputed per test. Finally combine the cases where the run counts of the two subjects are equal or differ by 1."
     ]
+  },
+  "ja": {
+    "title": "連続授業数に上限がある時間割の数",
+    "description": "物理の授業をちょうど P コマ、化学の授業をちょうど C コマ並べます。同じ科目が N コマを超えて連続しないようにするとき、異なる科目の並びが何通りあるかを 1000000007 で割った余りで求めてください。各行は独立したテストで、同じ科目の授業どうしは区別しません。\n\n標準的な入出力形式と例は本サイトで整理したものです。本サイトのものと明記されている範囲は、元の問題文の制約ではありません。",
+    "input": "1 行目に T、続く T 行に P C N が与えられます。元の問題の全範囲は 1≤T≤100、1≤P,C,N≤1000 です。",
+    "output": "入力順に T 個の整数を 1 行に 1 つずつ出力してください。各値は 1000000007 で割った余りです。",
+    "explanation": "例の出力はそれぞれ 2, 1、および 0 2 です。",
+    "hints": [
+      "同じ科目の連続(ラン)ごとに数えます。F(s,k) を、s を 1..N の正の整数 k 個に分ける方法の数とします。すべてのテストを N ごとにまとめ、見積もった計算量に応じて、包除原理の式か、共有するスライディングウィンドウ DP のどちらかを選びます。同じ N のすべての s は、テストごとに再計算せず 1 回の DP を共有します。最後に、2 科目のラン数が等しい場合と 1 だけ異なる場合を組み合わせます。"
+    ]
+  },
+  "ko": {
+    "title": "연속 수업 횟수가 제한된 수업 시간표의 수",
+    "description": "물리 수업 P개와 화학 수업 C개를 정확히 배치하되, 같은 과목이 연속으로 N번을 넘지 않도록 합니다. 서로 다른 과목 순열의 개수를 1000000007로 나눈 나머지로 구하세요. 각 줄은 독립된 테스트이며, 같은 과목의 수업끼리는 서로 구별되지 않습니다.\n\n표준 입출력 형식과 예제는 이 사이트에서 정리한 것이며, 이 사이트의 범위라고 명시된 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 T가 주어지고, 이어서 T개의 줄에 P C N이 주어집니다. 원문 전체 범위는 1≤T≤100, 1≤P,C,N≤1000입니다.",
+    "output": "입력 순서대로 T개의 정수를 한 줄에 하나씩 출력하며, 각각 1000000007로 나눈 나머지입니다.",
+    "explanation": "예제의 출력은 각각 2, 1, 그리고 0 2입니다.",
+    "hints": [
+      "같은 과목이 연속된 구간(run) 단위로 셉니다. F(s,k)는 s를 1..N 범위의 양의 정수 k개로 나누는 방법의 수입니다. 모든 테스트를 N별로 묶고 예상 계산량에 따라 포함-배제 공식과 공유 슬라이딩 윈도우 DP 중에서 선택합니다. N이 같은 모든 s는 테스트마다 다시 계산하지 않고 하나의 DP를 공유합니다. 마지막으로 두 과목의 run 개수가 같거나 1 차이 나는 경우를 합칩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lịch học với số tiết liên tiếp bị giới hạn",
+    "description": "Sắp đúng P tiết Vật lý và C tiết Hóa học sao cho cùng một môn không bao giờ xuất hiện quá N lần liên tiếp; tìm số dãy môn học khác nhau theo modulo 1000000007. Mỗi dòng là một test độc lập, và các tiết cùng môn không có danh tính riêng.\n\nĐịnh dạng đầu vào/đầu ra chuẩn và các ví dụ do trang này biên soạn; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa T, tiếp theo là T dòng P C N. Khoảng giá trị đầy đủ của đề gốc: 1≤T≤100, 1≤P,C,N≤1000.",
+    "output": "In ra T số nguyên theo thứ tự đầu vào, mỗi kết quả một dòng, mỗi số theo modulo 1000000007.",
+    "explanation": "Đầu ra của ví dụ lần lượt là 2, 1; và 0 2.",
+    "hints": [
+      "Đếm theo các đoạn liên tiếp của cùng một môn: F(s,k) là số cách chia s thành k số nguyên dương trong 1..N. Nhóm mọi test theo N và, dựa trên ước lượng khối lượng tính toán, chọn giữa công thức bao hàm - loại trừ và DP cửa sổ trượt dùng chung; mọi s có cùng N dùng chung một lượt DP thay vì tính lại cho từng test. Cuối cùng kết hợp các trường hợp số đoạn của hai môn bằng nhau hoặc chênh nhau 1."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "After sorting, use interval DP: dp[l,r]=a[r]−a[l]+min(dp[l+1,r],dp[l,r−1]), with cost 0 for a single element; keep only the layer whose length is one less in a rolling array."
     ]
+  },
+  "ja": {
+    "title": "すべての接頭辞の範囲の和の最小値",
+    "description": "配列を並べ替え、空でないすべての接頭辞について（最大値 − 最小値）を計算して合計します。その合計の最小値を求めてください。\n\n標準入出力・例・判定は本サイトが独自に作成したものです。",
+    "input": "1 行目に n (1..2000)、2 行目に n 個の値 (1..10⁹) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 順序 1, 2, 3 の接頭辞の範囲は 0, 1, 2 で、合計は 3 です。例 2: 値が 1 つしかないので、範囲は 0 です。例 3: 2 つの 1 を先に置いてから 5 を置くと、範囲は 0, 0, 4 で、合計は 4 です。",
+    "hints": [
+      "ソート後に区間 DP を使います。dp[l,r]=a[r]−a[l]+min(dp[l+1,r],dp[l,r−1]) で、要素が 1 つのときのコストは 0 です。長さが 1 つ短い層だけをローリング配列で保持します。"
+    ]
+  },
+  "ko": {
+    "title": "모든 접두사 범위의 합의 최솟값",
+    "description": "배열을 재배열한 뒤, 비어 있지 않은 모든 접두사의 (최댓값 − 최솟값)을 구하고 이 범위들을 모두 더합니다. 총합의 최솟값을 구하세요.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n(1..2000)이 주어지고, 둘째 줄에 n개의 값(1..10⁹)이 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 순서 1, 2, 3의 접두사 범위는 0, 1, 2이므로 합은 3입니다. 예제 2: 값이 하나뿐이므로 범위는 0입니다. 예제 3: 두 개의 1을 먼저 놓고 5를 놓으면 범위가 0, 0, 4가 되어 합은 4입니다.",
+    "hints": [
+      "정렬한 뒤 구간 DP를 씁니다. dp[l,r]=a[r]−a[l]+min(dp[l+1,r],dp[l,r−1])이고 원소가 하나이면 비용은 0입니다. 길이가 하나 짧은 층만 롤링 배열로 유지하세요."
+    ]
+  },
+  "vi": {
+    "title": "Tổng khoảng giá trị nhỏ nhất trên mọi tiền tố",
+    "description": "Sắp xếp lại mảng, tính hiệu giữa giá trị lớn nhất và nhỏ nhất của mọi tiền tố khác rỗng, rồi cộng các khoảng giá trị này lại. Hãy tìm tổng nhỏ nhất.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn, các ví dụ và bộ chấm.",
+    "input": "Dòng đầu tiên chứa n (1..2000), dòng thứ hai chứa n giá trị (1..10⁹).",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: thứ tự 1, 2, 3 có các khoảng giá trị của tiền tố là 0, 1, 2, tổng cộng 3. Ví dụ 2: chỉ có một giá trị, khoảng giá trị là 0. Ví dụ 3: đặt hai số 1 trước rồi đến 5, cho các khoảng giá trị 0, 0, 4, tổng cộng 4.",
+    "hints": [
+      "Sau khi sắp xếp, dùng quy hoạch động trên khoảng: dp[l,r]=a[r]−a[l]+min(dp[l+1,r],dp[l,r−1]), với chi phí 0 cho một phần tử; chỉ giữ lớp có độ dài ít hơn một trong mảng cuốn chiếu."
+    ]
   }
 }

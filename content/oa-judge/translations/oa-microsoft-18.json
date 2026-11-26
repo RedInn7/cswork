@@ -11,5 +11,35 @@
     "hints": [
       "Maintain all distinct ORs of subarrays ending at the current position, together with their counts. OR the new element into each OR from the previous round, merge identical states, and count how many results are in the global set of values."
     ]
+  },
+  "ja": {
+    "title": "ビット単位 OR が配列に現れる部分配列",
+    "description": "すべての要素のビット単位 OR が、元の配列のある要素に等しくなる空でない連続部分配列の個数を数えてください（その要素は、現在の部分配列の内側にある必要はありません）。元サイトは [1,6,7] の個数を少なく数えていましたが、定義どおりなら答えは 6 です。\n\n入力の形式、当サイトが追加した範囲、例、テストは、すべて CSWork が独自に作成したものです。",
+    "input": "当サイトの入力: 1行目に n (1..100000)、2行目に n 個の正の整数 (1..10⁹) が与えられます。",
+    "output": "答えを表す整数を1つ出力します。",
+    "explanation": "例 1: 長さ1の3つの区間、長さ2の2つの区間、配列全体の OR は、すべて {1,6,7} に含まれるので、区間は 6 個です。\n\n例 2: OR=6 になる [2,4] だけが元の配列にないので、ほかの 5 個の区間が有効です。\n\n例 3: 部分配列は1つだけで OR は 1 なので、答えは 1 です。",
+    "hints": [
+      "現在位置で終わるすべての部分配列の異なる OR を、その個数とともに保持します。新しい要素を前回の各 OR に OR し、同じ状態をまとめ、結果のうち全体の値の集合にあるものがいくつあるかを数えます。"
+    ]
+  },
+  "ko": {
+    "title": "비트 OR이 배열에 존재하는 부분 배열",
+    "description": "부분 배열의 모든 원소를 비트 OR한 값이 원래 배열의 어떤 원소와 같은 비어 있지 않은 연속 부분 배열의 개수를 세세요(그 원소가 현재 부분 배열 안에 있을 필요는 없습니다). 원본 사이트는 [1,6,7]의 개수를 적게 셌으며, 정의에 따르면 답은 6입니다.\n\n입력 형식, 이 사이트에서 추가한 범위, 예제, 테스트는 모두 CSWork가 독자적으로 작성했습니다.",
+    "input": "이 사이트의 입력: 첫 줄에 n(1..100000)이 주어지고, 둘째 줄에 n개의 양의 정수(1..10⁹)가 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 길이 1인 세 구간, 길이 2인 두 구간, 전체 배열의 OR이 모두 {1,6,7}에 속하므로 구간은 6개입니다.\n\n예제 2: [2,4]만 OR=6으로 원래 배열에 없고, 나머지 5개 구간은 유효합니다.\n\n예제 3: 유일한 부분 배열의 OR이 1이므로 정답은 1입니다.",
+    "hints": [
+      "현재 위치에서 끝나는 부분 배열들의 서로 다른 OR 값을 개수와 함께 유지합니다. 새 원소를 이전 라운드의 각 OR에 합치고 같은 상태는 병합하며, 결과 중 전체 값 집합에 있는 것의 개수를 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Mảng con có OR theo bit xuất hiện trong mảng",
+    "description": "Đếm các mảng con liên tiếp không rỗng mà phép OR theo bit của mọi phần tử bằng một phần tử nào đó của mảng ban đầu (phần tử đó không nhất thiết nằm trong mảng con hiện tại). Trang gốc đếm thiếu với [1,6,7]; theo định nghĩa, đáp án là 6.\n\nGiao thức đầu vào, các phạm vi do trang này bổ sung, các ví dụ và bộ test đều do CSWork tự viết độc lập.",
+    "input": "Đầu vào của trang này: dòng đầu chứa n (1..100000), dòng thứ hai chứa n số nguyên dương (1..10⁹).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: phép OR của ba đoạn một phần tử, hai đoạn độ dài 2 và cả mảng đều nằm trong {1,6,7}, nên có 6 đoạn.\n\nVí dụ 2: chỉ [2,4] có OR=6, không nằm trong mảng ban đầu; 5 đoạn còn lại đều hợp lệ.\n\nVí dụ 3: mảng con duy nhất có OR bằng 1, nên đáp án là 1.",
+    "hints": [
+      "Duy trì mọi giá trị OR phân biệt của các mảng con kết thúc tại vị trí hiện tại, cùng số lượng của chúng. OR phần tử mới vào từng giá trị OR của vòng trước, gộp các trạng thái giống nhau, và đếm xem có bao nhiêu kết quả nằm trong tập các giá trị toàn cục."
+    ]
   }
 }

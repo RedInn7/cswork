@@ -11,5 +11,35 @@
     "hints": [
       "Each side length is at least 1 greater than the previous one, so the sequence is already strictly increasing. Store it in a compact unsigned 32-bit array and move a right pointer leftward from the end; for each left side length, add the number of right side lengths whose area qualifies."
     ]
+  },
+  "ja": {
+    "title": "生成された辺の長さから屋根を無料で塗れる組み合わせを数える",
+    "description": "n 個の辺の長さを生成します: s[0]=seed、s[i]=s[i−1]+1+((k*s[i−1]+b) mod m)。縦と横の長さはどちらもこれらの辺の長さから選び、面積が area 以下の屋根は無料で塗れます。順序付きの (縦, 横) の組み合わせを数えてください。縦と横を入れ替えると別の選択肢として数え、正方形は 1 回だけ数えます。\n\n入出力プロトコルは本サイトが整備したものです。元の文章で欠けていた数値範囲は、本サイトによる補足として明記しています。",
+    "input": "1 行: seed n k b m area。1≤n≤6000000、1≤seed,k,b,m≤10⁹、1≤area≤10¹⁸ で、生成されるすべての s[i] も 1..10⁹ の範囲に収まることが保証されています。n の元の上限 6,000,000 は引き下げていません。整数の厳密な比較を使ってください。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 5; 1; 1 です。例は、独立した全探索・状態探索・直接シミュレーションで確認済みです。",
+    "hints": [
+      "各辺の長さは直前より少なくとも 1 大きいので、数列はすでに狭義単調増加です。コンパクトな符号なし 32 ビット配列に格納し、右ポインタを末尾から左へ動かします。各左側の辺の長さについて、面積が条件を満たす右側の辺の長さの個数を加算します。"
+    ]
+  },
+  "ko": {
+    "title": "생성된 변의 길이로 무료 지붕 도색 경우의 수 세기",
+    "description": "n개의 변의 길이를 생성합니다: s[0]=seed, s[i]=s[i−1]+1+((k*s[i−1]+b) mod m). 가로와 세로 길이는 모두 이 변의 길이들 중에서 선택하며, 넓이가 area 이하인 지붕은 무료로 도색할 수 있습니다. 순서가 있는 (가로, 세로) 조합의 개수를 세세요. 가로와 세로를 바꾸면 다른 경우이며, 정사각형은 한 번만 셉니다.\n\n입출력 규약은 이 사이트에서 정리한 것이며, 원문에 없는 수치 범위는 이 사이트가 추가한 것으로 명시되어 있습니다.",
+    "input": "한 줄: seed n k b m area. 1≤n≤6000000; 1≤seed,k,b,m≤10⁹, 1≤area≤10¹⁸; 생성되는 모든 s[i]도 1..10⁹ 범위임이 보장됩니다. 원문의 n 상한 6,000,000은 줄이지 않았으며, 정확한 정수 비교를 사용하세요.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 5; 1; 1입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 변의 길이는 이전보다 최소 1 크므로 수열은 이미 순증가합니다. 이를 압축된 부호 없는 32비트 배열에 저장하고, 오른쪽 포인터를 끝에서 왼쪽으로 이동시킵니다. 각 왼쪽 변의 길이마다 넓이가 조건을 만족하는 오른쪽 변의 길이의 개수를 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm cách sơn mái miễn phí từ các độ dài cạnh được sinh ra",
+    "description": "Sinh n độ dài cạnh: s[0]=seed, s[i]=s[i−1]+1+((k*s[i−1]+b) mod m). Cả chiều dài và chiều rộng đều được chọn từ các độ dài cạnh này, và mái nhà có diện tích≤area thì được sơn miễn phí. Hãy đếm các tổ hợp (chiều dài, chiều rộng) có thứ tự: đổi chỗ chiều dài và chiều rộng cho ra một phương án khác, và hình vuông chỉ được đếm một lần.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các khoảng giá trị bị thiếu trong văn bản gốc được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Một dòng: seed n k b m area. 1≤n≤6000000; 1≤seed,k,b,m≤10⁹, 1≤area≤10¹⁸; mọi s[i] được sinh ra cũng đảm bảo nằm trong khoảng 1..10⁹. Cận trên 6,000,000 của n trong bản gốc không bị giảm; hãy dùng phép so sánh số nguyên chính xác.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 5; 1; 1. Các ví dụ đã được kiểm tra bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Mỗi độ dài cạnh lớn hơn độ dài trước ít nhất 1, nên dãy đã tăng chặt. Lưu nó vào mảng số nguyên không dấu 32 bit gọn nhẹ và dịch một con trỏ phải sang trái từ cuối; với mỗi độ dài cạnh bên trái, cộng số độ dài cạnh bên phải cho diện tích thỏa mãn."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Let P be the total of the adjacent decreases and Q the total of the adjacent increases. Removing all interior differences needs at least P matching prefix decrements and Q matching suffix decrements, after which every temperature equals a[0]−P; the answer is P+Q+abs(a[0]−P)."
     ]
+  },
+  "ja": {
+    "title": "接頭辞の冷却、接尾辞の冷却、全体の加熱による最小操作回数",
+    "description": "各操作は次のいずれかちょうど1つです。空でない接頭辞のすべての要素を 1 減らす、空でない接尾辞のすべての要素を 1 減らす、配列全体を 1 増やす。すべての温度を 0 にするための最小の操作回数を求めてください。1回の操作で 1 より大きく減らすことはできず、内部の任意の区間だけを 1 減らすこともできません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n、2行目に temperature が与えられます。元の問題文には値の範囲が示されていないため、本サイトでは 1≤n≤200000、−10^9≤temperature[i]≤10^9 とします。接頭辞・接尾辞の操作の範囲は、整形後の HTML では抜け落ちていましたが、元の原文で完全に復元されています。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 4、12、0 です。元の例 2 には 10 と記されていますが、これは誤りです。その最初のステップで最後の温度が 1 から −2 になり、1回の操作で −1 までという制約にすでに反しています。本サイトでは、これを 12 に正して明記します。配列全体を 3 回 +1 して [5,1,0,4] とし、次に位置 0 で終わる接頭辞を 4 回、位置 1 で終わる接頭辞を 1 回、位置 3 から始まる接尾辞を 4 回、それぞれ 1 ずつ減らすと、合計 12 回の操作になります。単位操作に基づく独立したグラフでも、この最適性が確認されています。",
+    "hints": [
+      "隣り合う差の減少の合計を P、増加の合計を Q とします。内部のすべての差を消すには、少なくとも P 回の対応する接頭辞の減算と Q 回の対応する接尾辞の減算が必要で、その後はすべての温度が a[0]−P に等しくなります。答えは P+Q+abs(a[0]−P) です。"
+    ]
+  },
+  "ko": {
+    "title": "접두사 냉각, 접미사 냉각, 전체 가열로 이루어진 최소 연산 횟수",
+    "description": "각 연산은 다음 중 정확히 하나입니다. 비어 있지 않은 어떤 접두사의 모든 원소를 1 감소시키기, 비어 있지 않은 어떤 접미사의 모든 원소를 1 감소시키기, 또는 배열 전체를 1 증가시키기. 모든 온도를 0으로 만드는 데 필요한 최소 연산 횟수를 구하세요. 한 번의 연산으로 1단위보다 많이 감소시킬 수 없으며, 임의의 내부 구간을 1 감소시킬 수도 없습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이, 둘째 줄에 temperature가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서 1≤n≤200000, −10^9≤temperature[i]≤10^9로 정했습니다. 원본 raw에는 정리된 HTML이 누락시킨 접두사/접미사 연산의 범위가 완전히 복원되어 있습니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 4, 12, 0입니다. 원문 예제 2는 10으로 표기되어 있으나 이는 틀렸습니다. 첫 단계에서 마지막 온도를 1에서 −2로 내리는데, 이는 한 번의 연산당 −1이라는 규칙을 이미 위반합니다. 이 사이트는 이를 12로 바로잡았습니다. 전체 +1 연산 3번으로 [5,1,0,4]를 만들고, 0에서 끝나는 접두사를 4번, 1에서 끝나는 접두사를 1번, 3에서 시작하는 접미사를 4번 1씩 감소시키면 총 12번입니다. 단위 연산에 대한 독립적인 그래프 탐색으로 이 최적값을 확인했습니다.",
+    "hints": [
+      "인접한 감소량의 총합을 P, 인접한 증가량의 총합을 Q라 합니다. 내부의 모든 차이를 없애려면 최소 P번의 접두사 감소와 Q번의 접미사 감소가 필요하고, 그 뒤에는 모든 온도가 a[0]−P로 같아집니다. 정답은 P+Q+abs(a[0]−P)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác tối thiểu với làm lạnh tiền tố, làm lạnh hậu tố và nóng lên toàn cục",
+    "description": "Mỗi thao tác là đúng một trong các loại sau: giảm 1 mọi phần tử của một tiền tố khác rỗng; giảm 1 mọi phần tử của một hậu tố khác rỗng; hoặc tăng 1 cho cả mảng. Hãy tìm số thao tác tối thiểu để đưa mọi nhiệt độ về 0. Một thao tác không thể giảm nhiều hơn một đơn vị, và không thể giảm 1 cho một đoạn nằm giữa tùy ý.\n\nĐề bài, định dạng vào/ra, ví dụ và lời giải do trang này tự viết; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa temperature. Đề gốc không nêu giới hạn giá trị; trên trang này 1≤n≤200000, −10^9≤temperature[i]≤10^9. Bản gốc thô khôi phục đầy đủ phạm vi của các thao tác tiền tố/hậu tố, vốn đã bị HTML đã làm sạch nuốt mất.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đáp án là 4, 12 và 0. Ví dụ gốc 2 được ghi là 10, điều này sai: bước đầu tiên của nó đưa nhiệt độ cuối từ 1 xuống −2, đã vi phạm quy tắc chỉ giảm −1 mỗi thao tác. Trang này công khai sửa thành 12: ba thao tác +1 cho cả mảng cho ra [5,1,0,4], rồi giảm 1 tiền tố kết thúc tại 0 bốn lần, tiền tố kết thúc tại 1 một lần, và hậu tố bắt đầu tại 3 bốn lần, tổng cộng 12 thao tác. Một đồ thị độc lập trên các thao tác đơn vị xác nhận đây là giá trị tối ưu.",
+    "hints": [
+      "Gọi P là tổng các lần giảm giữa hai phần tử kề nhau và Q là tổng các lần tăng giữa hai phần tử kề nhau. Để xóa mọi hiệu bên trong cần ít nhất P lần giảm tiền tố tương ứng và Q lần giảm hậu tố tương ứng, sau đó mọi nhiệt độ đều bằng a[0]−P; đáp án là P+Q+abs(a[0]−P)."
+    ]
   }
 }

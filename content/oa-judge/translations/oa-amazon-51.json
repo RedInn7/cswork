@@ -11,5 +11,35 @@
     "hints": [
       "A server needs p=ceil(health/k) attacks and has weight request. Process servers one after another in ascending order of p/request, comparing the ratios with integer cross products."
     ]
+  },
+  "ja": {
+    "title": "すべてのサーバーが停止するまでの最小リクエスト数",
+    "description": "各秒の開始時に、まだ稼働中のサーバーはそれぞれ自分の request の分だけリクエストを発生させます。同じ秒の間に、稼働中のサーバーを 1 台選んで体力を k だけ減らし、体力が ≤0 になるとそのサーバーは直ちに停止します。すべてのサーバーが停止した後に、さらにちょうど 1 リクエストが送られます。攻撃の順序を調整して、リクエストの総数を最小化してください。\n\n標準入出力・例・判定は本サイトが独自に作成したものです。",
+    "input": "1 行目に n k (1≤n≤100000, 1≤k≤5000)、2 行目に n 個のリクエスト値、3 行目に n 個の体力値が与えられます。値はすべて 1..5000 です。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: まず request=4 のサーバーを 2 回続けて攻撃し、次にもう一方を 2 回攻撃します。リクエスト数は 7+7+3+3+1=21 です。例 2: その秒の 1 リクエストと最後の 1 リクエストで、合計 2 です。例 3: request=5 のサーバーを先に停止させ、その後、もう一方を 3 秒間処理するので、合計は 6+1+1+1+1=10 です。",
+    "hints": [
+      "サーバーは p=ceil(health/k) 回の攻撃を必要とし、重みは request です。サーバーを p/request の昇順に 1 台ずつ処理し、比率は整数の交差積で比較します。"
+    ]
+  },
+  "ko": {
+    "title": "모든 서버가 종료되기 전까지의 최소 요청 수",
+    "description": "매초 시작 시점에 아직 살아 있는 서버는 각각 자신의 request만큼 요청을 발생시킵니다. 같은 초에 살아 있는 서버 하나를 골라 체력을 k만큼 깎으며, 체력이 health≤0이 되면 즉시 종료됩니다. 모든 서버가 종료된 뒤에는 요청이 정확히 1개 더 전송됩니다. 총 요청 수가 최소가 되도록 공격 순서를 정하세요.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n k(1≤n≤100000, 1≤k≤5000)가 주어지고, 둘째 줄에 n개의 요청 값이, 셋째 줄에 n개의 체력 값이 주어집니다. 모든 값은 1..5000입니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: request=4인 서버를 먼저 연속으로 두 번 공격하고 이어서 다른 서버를 두 번 공격합니다. 요청은 7+7+3+3+1=21입니다. 예제 2: 그 초에 요청 1개와 마지막 요청 1개로 총 2입니다. 예제 3: request=5인 서버를 먼저 종료시킨 뒤 다른 서버를 3초 동안 계속 처리하여 총 6+1+1+1+1=10입니다.",
+    "hints": [
+      "서버는 p=ceil(health/k)번의 공격이 필요하고 가중치는 request입니다. p/request가 작은 순서대로 서버를 차례로 처리하며, 비율은 정수 교차곱으로 비교합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số yêu cầu tối thiểu trước khi mọi máy chủ ngừng hoạt động",
+    "description": "Vào đầu mỗi giây, mọi máy chủ còn sống đóng góp số yêu cầu bằng request của nó; trong cùng giây đó, chọn một máy chủ còn sống và giảm máu của nó đi k, và nó chết ngay khi máu≤0. Sau khi mọi máy chủ đã chết, có thêm đúng 1 yêu cầu nữa được gửi. Hãy sắp xếp thứ tự tấn công để cực tiểu hóa tổng số yêu cầu.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn, các ví dụ và bộ chấm.",
+    "input": "Dòng đầu tiên chứa n k (1≤n≤100000, 1≤k≤5000); dòng thứ hai chứa n giá trị request, và dòng thứ ba chứa n giá trị máu, tất cả trong khoảng 1..5000.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: trước hết tấn công máy chủ có request=4 hai lần liên tiếp, sau đó tấn công máy chủ còn lại hai lần; số yêu cầu là 7+7+3+3+1=21. Ví dụ 2: 1 yêu cầu trong giây đó cộng với yêu cầu cuối cùng là 1, tổng cộng 2. Ví dụ 3: tắt máy chủ có request=5 trước, rồi tiếp tục xử lý máy chủ còn lại trong ba giây, tổng cộng 6+1+1+1+1=10.",
+    "hints": [
+      "Một máy chủ cần p=ceil(health/k) lần tấn công và có trọng số request. Xử lý các máy chủ lần lượt theo thứ tự tăng dần của p/request, so sánh các tỉ số bằng tích chéo số nguyên."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "For each letter, precompute for both strings the number of strictly greater characters in every prefix. dp[i][j] is the minimum number of inversions after merging the first i and j characters; appending the next character of either string adds the total number of strictly greater characters in the two used prefixes. Solve it with rolling rows."
     ]
+  },
+  "ja": {
+    "title": "2 つの文字列を内部の順序を保ったままマージしたときの転倒数の最小値",
+    "description": "2 つの小文字の文字列を、それぞれの元の文字列の内部の相対順序を保ったままマージし、マージ後の文字列で s[i]>s[j] となるペア i<j の個数を最小化します。同じ元の文字列の内部の転倒も数え、等しい文字は数えません。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "2 行で primary と secondary が与えられます。元の範囲は、どちらも長さ 1≤length≤1000 で小文字のみです。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 2、1、0 です。2 つ目の例は adadde にマージできます。元の問題のように文字列をまたぐ転倒だけを数えると、1 つ目の例は 1 と過少に数えてしまいます。また、元の問題に示されている adddae は、2 つ目の例の最適な並びではありません。",
+    "hints": [
+      "各文字について、両方の文字列の各接頭辞に含まれる、その文字より厳密に大きい文字の個数を前計算します。dp[i][j] を、先頭の i 文字と j 文字をマージした時点の転倒数の最小値とします。どちらかの文字列の次の文字を追加すると、使用済みの 2 つの接頭辞に含まれる、厳密に大きい文字の総数が加わります。ローリング配列で解きます。"
+    ]
+  },
+  "ko": {
+    "title": "두 문자열을 각자의 내부 순서를 유지하며 병합할 때의 최소 역전 수",
+    "description": "소문자로 이루어진 두 문자열을 각 원래 문자열 내부의 상대적 순서를 유지하며 병합하고, 병합된 문자열에서 i<j이면서 s[i]>s[j]인 쌍의 수를 최소화하세요. 같은 원래 문자열 안의 역전도 포함하며, 같은 문자는 포함하지 않습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "두 줄에 primary와 secondary가 주어집니다. 원문의 범위는 두 문자열 모두 1≤길이≤1000이며 소문자만 사용합니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 2, 1, 0입니다. 두 번째 예제는 adadde로 병합할 수 있습니다. 원문처럼 문자열 사이의 역전만 세면 첫 번째 예제가 1로 과소 계산되며, 원문에 나온 adddae도 두 번째 예제의 최적 배열이 아닙니다.",
+    "hints": [
+      "각 문자에 대해 두 문자열의 모든 접두사에서 엄격하게 더 큰 문자의 개수를 미리 계산합니다. dp[i][j]는 처음 i개와 j개 문자를 병합했을 때의 최소 역전 수이고, 어느 한 문자열의 다음 문자를 이어 붙이면 사용된 두 접두사에서 엄격하게 더 큰 문자의 총 개수가 더해집니다. 롤링 행으로 풉니다."
+    ]
+  },
+  "vi": {
+    "title": "Số nghịch thế tối thiểu khi trộn hai xâu theo thứ tự nội bộ",
+    "description": "Trộn hai xâu chữ thường trong khi giữ nguyên thứ tự tương đối nội bộ của mỗi xâu gốc, và tối thiểu hóa số cặp i<j trong xâu đã trộn có s[i]>s[j]. Các nghịch thế trong cùng một xâu gốc cũng được tính; các ký tự bằng nhau thì không.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Hai dòng chứa primary và secondary; cận gốc là 1≤độ dài≤1000 cho cả hai, chỉ gồm chữ cái thường.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, 1 và 0. Ví dụ thứ hai có thể được trộn thành adadde. Nếu chỉ đếm nghịch thế giữa hai xâu như đề gốc thì ví dụ đầu bị đếm thiếu thành 1; adddae trong đề gốc cũng không phải cách sắp xếp tối ưu cho ví dụ thứ hai.",
+    "hints": [
+      "Với mỗi chữ cái, tính trước cho cả hai xâu số ký tự lớn hơn ngặt trong mọi tiền tố. dp[i][j] là số nghịch thế nhỏ nhất sau khi trộn i ký tự đầu và j ký tự đầu; thêm ký tự tiếp theo của một trong hai xâu cộng thêm tổng số ký tự lớn hơn ngặt trong hai tiền tố đã dùng. Giải bằng các hàng cuốn chiếu."
+    ]
   }
 }

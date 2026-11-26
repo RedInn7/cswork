@@ -13,5 +13,41 @@
       "The most expensive employees discarded in a subtree for exceeding the budget will not be chosen for any ancestor either.",
       "Use a max-heap to maintain the retained costs, and merge each child's heap into its parent's."
     ]
+  },
+  "ja": {
+    "title": "Rubrik OA #18: 人事",
+    "description": "ある会社には N 人の従業員がいて、1..N の番号が付いています。CEO(従業員 1)以外のすべての従業員には直属の上司 RM がいます。従業員は、自分の RM、その RM の RM、というように(つまり祖先から)のみ業務の割り当てを受けます。従業員 i を雇うコストは C[i]、そのリーダーシップは L[i] です。\n\nクライアントのために、総コストが予算 M 以下になるように従業員のグループを雇い、マネージャーを 1 人選びます。マネージャーは、雇われたすべての従業員に業務を割り当てられなければなりません。つまり、雇われた各従業員は、マネージャー自身か、マネージャーの部下(マネージャーの部分木内の従業員)のどちらかです。マネージャーは雇われても雇われなくてもよく、雇われないマネージャーにコストはかかりません。\n\nクライアントの満足度は(マネージャーのリーダーシップ × 雇われた従業員の数)です。満足度の最大値を求めてください。",
+    "input": "1 行目に、テストケースの数 T。各テストケースの 1 行目に N と M、続く N 行のうち i 行目に 3 つの整数 R[i], C[i], L[i](従業員 i の RM、コスト、リーダーシップ。CEO の R は 0)。1≤T≤10、1≤N≤100000、1≤M≤10^9、0≤R[i]<i(R[i]=0 は i=1 のときだけ)、1≤C[i]≤M、1≤L[i]≤10^9。",
+    "output": "各テストケースについて、満足度の最大値を 1 行で出力します。",
+    "explanation": "例 1: 従業員 1 が CEO で、従業員 2, 4, 5 が 1 に報告し、3, 6, 7 が 2 に報告します。予算は 20 です。1 をマネージャーに選び、2, 6, 7 または 4, 6, 7 を雇う(コスト 20)と、満足度は 400×3=1200 です。\n例 2: マネージャー 1 が自分自身を雇う(コスト 4)と、満足度は 50×1=50 です。2 または 3 を雇っても 3 にしかなりません。\n例 3: 最初のテストケースでは、従業員 1 をマネージャーに選んで 3 人全員を雇うと 2×3=6 になります。2 番目のテストケースでは、従業員 1 が自分自身を雇うと 10、2 人の部下を雇うと 20 になります。",
+    "hints": [
+      "マネージャーを固定したら、その部分木の中でコストの小さい順に雇います。",
+      "予算を超えたために部分木の中で捨てられた最も高コストの従業員は、どの祖先についても選ばれません。",
+      "最大ヒープで保持するコストを管理し、各子のヒープを親のヒープにマージします。"
+    ]
+  },
+  "ko": {
+    "title": "Rubrik OA #18: 인사 관리",
+    "description": "회사에 1..N번으로 번호가 매겨진 N명의 직원이 있습니다. CEO(직원 1)를 제외한 모든 직원에게는 직속 관리자 RM이 있습니다. 직원은 자신의 RM, RM의 RM 등 (즉 조상들)에게서만 업무 배정을 받습니다. 직원 i를 고용하는 비용은 C[i]이고 리더십은 L[i]입니다.\n\n고객을 위해 총 비용이 예산 M 이하인 직원 그룹을 고용하고 관리자 한 명을 선택하려고 합니다. 관리자는 고용된 모든 직원에게 업무를 배정할 수 있어야 하며, 즉 고용된 각 직원은 관리자 본인이거나 관리자의 부하(관리자의 서브트리에 속한 직원)여야 합니다. 관리자는 고용되어도 되고 고용되지 않아도 되며, 고용되지 않은 관리자는 비용이 들지 않습니다.\n\n고객의 만족도는 (관리자의 리더십 × 고용된 직원 수)입니다. 만족도의 최댓값을 구하세요.",
+    "input": "첫 줄에 테스트 케이스 수 T가 주어집니다. 각 테스트 케이스의 첫 줄에는 N과 M이 주어지고, 이어서 N개의 줄이 주어지는데 i번째 줄에는 세 정수 R[i], C[i], L[i]가 직원 i의 RM, 비용, 리더십으로 주어집니다(CEO의 R은 0). 1≤T≤10, 1≤N≤100000, 1≤M≤10^9, 0≤R[i]<i (R[i]=0은 i=1일 때만), 1≤C[i]≤M, 1≤L[i]≤10^9.",
+    "output": "각 테스트 케이스마다 최대 만족도를 한 줄에 출력합니다.",
+    "explanation": "예제 1: 직원 1이 CEO이고 직원 2, 4, 5는 1에게 보고하며 3, 6, 7은 2에게 보고합니다. 예산은 20입니다. 1을 관리자로 선택하고 2, 6, 7 또는 4, 6, 7을 고용하면(비용 20) 만족도는 400×3=1200입니다.\n예제 2: 관리자 1이 자신을 고용하면(비용 4) 만족도는 50×1=50이고, 2나 3을 고용하면 3뿐입니다.\n예제 3: 첫 번째 테스트 케이스에서는 직원 1을 관리자로 선택하고 3명 모두를 고용하면 2×3=6을 얻습니다. 두 번째 테스트 케이스에서는 직원 1이 자신만 고용하면 10, 부하 두 명을 고용하면 20을 얻습니다.",
+    "hints": [
+      "관리자를 고정하면 그 서브트리 안에서 비용이 낮은 순서대로 고용하세요.",
+      "서브트리에서 예산 초과로 버려진 가장 비싼 직원은 어떤 조상에서도 선택되지 않습니다.",
+      "최대 힙으로 유지되는 비용을 관리하고, 각 자식의 힙을 부모의 힙에 합치세요."
+    ]
+  },
+  "vi": {
+    "title": "Rubrik OA #18: Nhân sự",
+    "description": "Một công ty có N nhân viên, đánh số 1..N. Mọi nhân viên trừ CEO (nhân viên 1) đều có một quản lý trực tiếp RM. Một nhân viên chỉ nhận giao việc từ RM của họ, RM của RM, và cứ thế (tức là từ các tổ tiên của họ). Thuê nhân viên i tốn C[i], và năng lực lãnh đạo của họ là L[i].\n\nBạn muốn thuê một nhóm nhân viên cho một khách hàng với tổng chi phí không quá ngân sách M, và chọn một quản lý: quản lý đó phải có thể giao việc cho mọi nhân viên được thuê, tức là mỗi nhân viên được thuê hoặc là quản lý hoặc là cấp dưới của quản lý (một nhân viên trong cây con của quản lý). Quản lý có thể được thuê hoặc không; một quản lý không được thuê thì không tốn gì.\n\nĐộ hài lòng của khách hàng là (năng lực lãnh đạo của quản lý × số nhân viên được thuê). Tìm độ hài lòng lớn nhất.",
+    "input": "Dòng đầu chứa T, số lượng test. Dòng đầu của mỗi test chứa N và M; tiếp theo là N dòng, trong đó dòng i chứa ba số nguyên R[i], C[i], L[i]: RM, chi phí và năng lực lãnh đạo của nhân viên i (R của CEO là 0). 1≤T≤10, 1≤N≤100000, 1≤M≤10^9, 0≤R[i]<i (R[i]=0 chỉ khi i=1), 1≤C[i]≤M, 1≤L[i]≤10^9.",
+    "output": "Với mỗi test, in ra một dòng chứa độ hài lòng lớn nhất.",
+    "explanation": "Ví dụ 1: nhân viên 1 là CEO, các nhân viên 2, 4, 5 báo cáo cho 1, và 3, 6, 7 báo cáo cho 2; ngân sách là 20. Chọn 1 làm quản lý và thuê 2, 6, 7 hoặc 4, 6, 7 (chi phí 20), được độ hài lòng 400×3=1200.\nVí dụ 2: quản lý 1 tự thuê chính mình (chi phí 4) cho độ hài lòng 50×1=50; thuê 2 hoặc 3 chỉ được 3.\nVí dụ 3: ở test đầu tiên, chọn nhân viên 1 làm quản lý và thuê cả 3 người, được 2×3=6; ở test thứ hai, nhân viên 1 tự thuê mình được 10, còn thuê hai cấp dưới được 20.",
+    "hints": [
+      "Khi đã cố định quản lý, hãy thuê trong cây con của họ theo thứ tự chi phí tăng dần.",
+      "Những nhân viên đắt nhất bị loại trong một cây con vì vượt ngân sách cũng sẽ không được chọn cho bất kỳ tổ tiên nào.",
+      "Dùng một max-heap để duy trì các chi phí được giữ lại, và gộp heap của mỗi con vào heap của cha."
+    ]
   }
 }

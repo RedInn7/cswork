@@ -11,5 +11,35 @@
     "hints": [
       "Convert the times to minutes since midnight, take the largest departure minute strictly less than the current minute, and subtract."
     ]
+  },
+  "ja": {
+    "title": "その日の最後に出発したバスからの経過分数",
+    "description": "その日の出発時刻と現在時刻が与えられます。すでに出発した最新のバスから何分経ったかを求めてください。ちょうど現在時刻に出発するバスは出発済みとは数えません。その日にまだ出発したバスがなければ −1 を返し、前日にさかのぼることはしません。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、本サイトの取り決めとして明記しています。",
+    "input": "1 行目に n、続く n 行に HH:MM 形式の出発時刻、最後の行に現在時刻が与えられます。元の問題には上限がありません。本サイトでは 0≤n≤100000、時刻は 00:00..23:59 とします。リストは時刻の非減少順で与えられ、重複を含むことがあります。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1: 最も新しい出発は 14:00 で、30 分前です。例 2: 14:00 のバスはまだ出発済みと数えないので、12:30 だけが対象で、90 分前です。例 3: ちょうど 00:00 のバスは出発済みと数えず、その日にそれより前のバスはないので、出力は −1 です。",
+    "hints": [
+      "時刻を 0 時からの分に変換し、現在の分より真に小さい出発の分の最大値を取って、差を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "당일 마지막으로 출발한 버스 이후 경과 분",
+    "description": "당일의 출발 시각 목록과 현재 시각이 주어질 때, 이미 출발한 가장 최근 버스로부터 몇 분이 지났는지 구하세요. 현재 시각에 정확히 출발하는 버스는 출발한 것으로 치지 않으며, 그날 아직 출발한 버스가 없으면 전날로 넘기지 않고 −1을 반환합니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문 문제에서 주어지지 않은 범위는 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 n이 주어지고, 이어서 HH:MM 형식의 출발 시각이 n줄, 마지막 줄에 현재 시각이 주어집니다. 원문에는 상한이 없으며, 이 사이트는 0≤n≤100000, 시각은 00:00..23:59로 합니다. 목록은 시각의 비내림차순으로 주어지며 중복이 있을 수 있습니다.",
+    "output": "정수 하나, answer를 출력합니다.",
+    "explanation": "예제 1: 가장 최근 출발은 14:00이며 30분 전입니다. 예제 2: 14:00 버스는 아직 출발하지 않은 것으로 치므로 12:30만 해당하며 90분 전입니다. 예제 3: 정확히 00:00에 출발하는 버스는 출발한 것으로 치지 않고 그날 그 이전 버스도 없으므로 −1을 출력합니다.",
+    "hints": [
+      "시각을 자정 이후 분으로 바꾸고, 현재 분보다 엄격히 작은 출발 분 중 가장 큰 값을 구해 뺍니다."
+    ]
+  },
+  "vi": {
+    "title": "Số phút kể từ chuyến xe buýt khởi hành gần nhất trong ngày",
+    "description": "Cho các giờ khởi hành trong ngày và thời điểm hiện tại, hãy tìm xem đã trôi qua bao nhiêu phút kể từ chuyến xe buýt gần nhất đã khởi hành. Xe buýt khởi hành đúng vào thời điểm hiện tại không tính là đã khởi hành; nếu chưa có chuyến nào khởi hành trong ngày thì trả về −1, không quay vòng sang ngày hôm trước.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà bài gốc không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu chứa n, tiếp theo là n dòng giờ khởi hành theo định dạng HH:MM, và dòng cuối chứa thời điểm hiện tại. Bài gốc không có cận trên; trang này dùng 0≤n≤100000 và các giờ trong khoảng 00:00..23:59. Danh sách được cho theo thứ tự thời gian không giảm và có thể chứa các giá trị trùng lặp.",
+    "output": "In ra một số nguyên answer.",
+    "explanation": "Ví dụ 1: lần khởi hành gần nhất là lúc 14:00, cách đây 30 phút. Ví dụ 2: chuyến 14:00 chưa được tính là đã khởi hành, nên chỉ có 12:30 được tính, cách đây 90 phút. Ví dụ 3: chuyến đúng 00:00 không được tính là đã khởi hành, và không có chuyến nào sớm hơn trong ngày, nên đầu ra là −1.",
+    "hints": [
+      "Chuyển các giờ thành số phút kể từ nửa đêm, lấy phút khởi hành lớn nhất nhỏ hơn hẳn phút hiện tại, rồi trừ."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "First separate each rule of the original problem from the input conventions added by this site, then choose a suitable data structure."
     ]
+  },
+  "ja": {
+    "title": "Implement a Rate Limiter",
+    "description": "キーごとにリクエストをレート制限します。元の問題では固定ウィンドウとスライディングウィンドウのどちらも認められており、例と整合していればよいとされていますが、本サイトは明示的に固定ウィンドウを採用します。ウィンドウ番号は floor(timestamp/window) で、各キーは 1 つのウィンドウ番号の中で高々 limit 個のリクエストを許可できます。拒否されたリクエストはクォータを消費しません。\n\n「本サイトで追加」と記した部分と標準入出力の形式は、本サイトが明示的に整理したものです。元の問題に他の明示されていないルールがあることを意味するものではありません。",
+    "input": "1 行目に window limit q が与えられ、続く q 行は timestamp key です。本サイトで追加：timestamp は非負整数で非減少、key は空白を含みません。1≤q≤200000、1≤window≤10^9、1≤limit≤10^5。",
+    "output": "各リクエストについて ALLOW または REJECT を、空白区切りで出力してください。",
+    "explanation": "考え方、正当性の証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "まず、元の問題の各ルールと、本サイトが追加した入力の取り決めを切り分けたうえで、適切なデータ構造を選んでください。"
+    ]
+  },
+  "ko": {
+    "title": "Implement a Rate Limiter",
+    "description": "키별로 요청의 속도를 제한합니다. 원문 문제는 고정 윈도우와 슬라이딩 윈도우를 모두 허용하며 예제와의 일관성만 요구하지만, 이 사이트는 명시적으로 고정 윈도우를 사용합니다. 윈도우 번호는 floor(timestamp/window)이며, 각 키는 하나의 윈도우 번호 안에서 최대 limit개의 요청만 허용됩니다. 거부된 요청은 할당량을 소비하지 않습니다.\n\n'added by this site'로 표시된 부분과 표준 입출력 규약은 이 사이트에서 명시적으로 정리한 것이며, 원문 문제에 다른 명시되지 않은 규칙이 있다는 뜻은 아닙니다.",
+    "input": "첫 줄에 window limit q가 주어지고, 이어서 q개의 줄에 timestamp key가 주어집니다. 이 사이트가 추가한 조건: timestamp는 음이 아닌 정수이며 감소하지 않고, key에는 공백이 없습니다. 1≤q≤200000, 1≤window≤10^9, 1≤limit≤10^5.",
+    "output": "각 요청에 대해 ALLOW 또는 REJECT를 공백으로 구분하여 출력합니다.",
+    "explanation": "접근 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "먼저 원문 문제의 각 규칙과 이 사이트가 추가한 입력 규약을 구분한 뒤, 알맞은 자료구조를 선택하세요."
+    ]
+  },
+  "vi": {
+    "title": "Implement a Rate Limiter",
+    "description": "Giới hạn tốc độ các yêu cầu theo khóa. Đề gốc cho phép cửa sổ cố định hoặc cửa sổ trượt, chỉ yêu cầu nhất quán với các ví dụ; trang này tường minh dùng cửa sổ cố định: số hiệu cửa sổ là floor(timestamp/window), và mỗi khóa được cho phép tối đa limit yêu cầu trong một số hiệu cửa sổ. Các yêu cầu bị từ chối không tiêu tốn hạn mức.\n\nCác phần đánh dấu 'do trang này bổ sung' và giao thức đầu vào/đầu ra chuẩn đều do trang này biên soạn tường minh; điều đó không có nghĩa đề gốc còn quy tắc nào khác chưa nêu.",
+    "input": "Dòng đầu chứa window limit q; sau đó là q dòng timestamp key. Do trang này bổ sung: timestamp là số nguyên không âm và không giảm, key không chứa dấu cách; 1≤q≤200000, 1≤window≤10^9, 1≤limit≤10^5.",
+    "output": "Với mỗi yêu cầu, in ALLOW hoặc REJECT, cách nhau bởi dấu cách.",
+    "explanation": "Xem phần lời giải đi kèm để biết cách tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Trước hết hãy tách từng quy tắc của đề gốc khỏi quy ước đầu vào do trang này thêm vào, rồi chọn cấu trúc dữ liệu phù hợp."
+    ]
   }
 }

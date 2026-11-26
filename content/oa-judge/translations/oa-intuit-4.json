@@ -12,5 +12,38 @@
       "Each row has 3^3−3=24 non-monochromatic arrangements.",
       "Apply inclusion-exclusion to the three events \"some column is entirely one color\"."
     ]
+  },
+  "ja": {
+    "title": "3 色グリッドの塗り分けの数え上げ（Intuit OA）",
+    "description": "n×3 のグリッドを赤・緑・青の 3 色で塗ります。有効な塗り方では、すべての行とすべての列に少なくとも 2 色が含まれなければなりません。元の問題の n=3 と n=4 のサンプル出力は問題文と矛盾しているため、問題文に従って、それぞれ 9750 と 296490 に修正しています。導出は解説を参照してください。",
+    "input": "整数 n が 1 つ与えられます（サイトの範囲 1≤n≤10^18。元の問題には n の制約がありません）。",
+    "output": "有効な塗り方の個数を 1,000,000,007 で割った余りで出力します。",
+    "explanation": "3 つの列がそれぞれ単色になるという事象に包除原理を適用すると、答えは 24^n−9·8^n+9·2^n+18·3^n−24（mod）です。",
+    "hints": [
+      "各行の単色でない塗り方は 3^3−3=24 通りです。",
+      "「ある列が全体で 1 色になる」という 3 つの事象に包除原理を適用します。"
+    ]
+  },
+  "ko": {
+    "title": "세 가지 색 격자 색칠 방법의 수 세기 (Intuit OA)",
+    "description": "n×3 격자를 빨강, 초록, 파랑의 세 가지 색으로 칠합니다. 유효한 색칠은 모든 행과 모든 열에 최소 두 가지 색이 포함되어야 합니다. 원문의 n=3과 n=4에 대한 예제 출력은 문제 설명과 모순되어, 문제 설명에 따라 각각 9750과 296490으로 정정했습니다. 유도 과정은 해설을 참고하세요.",
+    "input": "정수 n 하나가 주어집니다(사이트 범위 1≤n≤10^18이며, 원문에는 n에 대한 제약이 없습니다).",
+    "output": "유효한 색칠의 수를 1,000,000,007로 나눈 나머지를 출력합니다.",
+    "explanation": "세 열 각각이 한 가지 색으로만 이루어지는 사건들에 포함-배제 원리를 적용하면 답은 24^n−9·8^n+9·2^n+18·3^n−24 (모듈러)입니다.",
+    "hints": [
+      "각 행에는 단색이 아닌 배치가 3^3−3=24가지 있습니다.",
+      "\"어떤 열이 위에서 아래까지 한 가지 색이다\"라는 세 사건에 포함-배제 원리를 적용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm số cách tô màu lưới ba màu (Intuit OA)",
+    "description": "Tô màu một lưới n×3 bằng ba màu: đỏ, xanh lá và xanh dương. Một cách tô hợp lệ yêu cầu mọi hàng và mọi cột đều chứa ít nhất hai màu. Đầu ra mẫu của nguồn gốc cho n=3 và n=4 mâu thuẫn với đề; theo đúng đề, chúng được sửa lần lượt thành 9750 và 296490. Xem phần lời giải để biết cách suy ra.",
+    "input": "Một số nguyên n duy nhất (phạm vi của trang 1≤n≤10^18; nguồn gốc không đưa ra ràng buộc nào cho n).",
+    "output": "In ra số cách tô hợp lệ theo modulo 1,000,000,007.",
+    "explanation": "Áp dụng nguyên lý bao hàm - loại trừ cho các sự kiện \"mỗi cột trong ba cột chỉ có một màu\"; đáp án là 24^n−9·8^n+9·2^n+18·3^n−24 (theo modulo).",
+    "hints": [
+      "Mỗi hàng có 3^3−3=24 cách sắp xếp không đơn sắc.",
+      "Áp dụng bao hàm - loại trừ cho ba sự kiện \"có một cột nào đó hoàn toàn cùng một màu\"."
+    ]
   }
 }

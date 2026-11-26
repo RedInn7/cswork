@@ -11,5 +11,35 @@
     "hints": [
       "Record the original position pos of each number; the answer is 1 plus the number of times pos[v+1]<pos[v]."
     ]
+  },
+  "ja": {
+    "title": "増加する数を集めるための左から右への走査の最小回数",
+    "description": "入力は 1..n の順列です。最初、次に集める数は 1 です。1 回の走査では先頭から末尾へ向かって見ていき、次に必要な数に出会うたびにそれを集めて目標を 1 増やし、それ以外は飛ばします。1..n をすべて集めるのに何回の走査が必要かを求めてください。元の問題文にある式 sortingSequence[i]==arrangedCount+1 から実際の操作を復元しており、導入部は別の目標順列を説明しているものと誤読していません。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に sortingSequence が与えられます。元の問題文には値の範囲がありません。当サイトでは 1≤n≤200000 とし、入力は 1..n の順列であることが保証されます。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 3、1、3 です。1 つ目の例では、3 回の走査でそれぞれ 1、2 と 3、4 を集めます。配列の隣り合う要素の下降の回数を単純に数えてはいけません。",
+    "hints": [
+      "各数の元の位置 pos を記録します。答えは 1 に、pos[v+1]<pos[v] となる回数を加えた値です。"
+    ]
+  },
+  "ko": {
+    "title": "증가하는 수를 모으기 위한 왼쪽에서 오른쪽 스캔의 최소 횟수",
+    "description": "입력은 1..n의 순열입니다. 처음에 모을 다음 수는 1입니다. 매 스캔마다 처음부터 끝까지 훑으며, 다음 수를 만나면 그 수를 모으고 목표를 1 증가시키며 나머지는 건너뜁니다. 1..n을 모두 모으는 데 필요한 스캔 횟수를 구하세요. 실제 연산은 원문의 명시적 공식 sortingSequence[i]==arrangedCount+1에서 복원했으며, 도입부를 다른 목표 순열을 설명하는 것으로 잘못 읽지 않았습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n, 둘째 줄에 sortingSequence가 주어집니다. 원문에는 값의 범위가 없으며 본 사이트에서는 1≤n≤200000이고, 입력은 1..n의 순열임이 보장됩니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 3, 1, 3입니다. 첫 번째 예제에서는 세 번의 스캔이 각각 1, 2와 3, 4를 모읍니다. 인접한 배열 원소 사이의 내리막 횟수를 세는 것만으로는 안 됩니다.",
+    "hints": [
+      "각 수의 원래 위치 pos를 기록하면 답은 1에 pos[v+1]<pos[v]인 횟수를 더한 값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lượt quét từ trái sang phải tối thiểu để thu thập các số tăng dần",
+    "description": "Đầu vào là một hoán vị của 1..n. Ban đầu số cần thu thập tiếp theo là 1. Mỗi lượt bạn quét từ đầu đến cuối; mỗi khi gặp số cần thu thập tiếp theo, bạn thu thập nó và tăng mục tiêu lên 1, bỏ qua mọi thứ khác. Tìm số lượt cần để thu thập 1..n. Thao tác thực sự được khôi phục từ công thức tường minh sortingSequence[i]==arrangedCount+1 trong đề gốc; phần giới thiệu không bị hiểu nhầm là mô tả một hoán vị đích khác.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n và dòng thứ hai chứa sortingSequence. Đề gốc không cho cận giá trị nào; trên trang này 1≤n≤200000, và đầu vào được đảm bảo là một hoán vị của 1..n.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 3, 1 và 3. Ở ví dụ đầu, ba lượt lần lượt thu thập 1; 2 và 3; và 4. Bạn không thể chỉ đơn giản đếm số chỗ giảm giữa các phần tử kề nhau của mảng.",
+    "hints": [
+      "Ghi lại vị trí gốc pos của mỗi số; đáp án là 1 cộng với số lần pos[v+1]<pos[v]."
+    ]
   }
 }

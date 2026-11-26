@@ -11,5 +11,35 @@
     "hints": [
       "Sort by start and maintain the last merged segment; if the new start does not exceed its end, extend it, otherwise start a new segment."
     ]
+  },
+  "ja": {
+    "title": "重なり合う閉区間のマージ",
+    "description": "重なり合う閉区間をマージし、重ならない区間を開始位置の昇順に出力します。端点が一致して接している場合は重なりとみなしますが、等しくない隣り合う整数の端点は重なりとみなしません。元の例の入力には [1,23] が含まれているので、正しい結果は [[1,23]] です。元の出力は [1,2] として誤って計算されていました。\n\n入出力形式は当サイトが整理したもので、元の問題にない数値の制約は当サイトによる補足として明記しています。",
+    "input": "1行目に n、続く n 行に start end が与えられます。1≤n≤100000、1≤start≤end≤1000000000。元の制約 intervals[i][2] は端点の添字に関する誤記なので、2つの端点それぞれの範囲として復元しています。",
+    "output": "1行目にマージ後の区間の数、続けて各区間の2つの端点を1行ずつ、開始位置の昇順に出力します。",
+    "explanation": "3つの公開例の出力は順に次のとおりです: 1 / 1 23; 2 / 1 3 / 5 5; 2 / 1 1 / 2 2。これらの解答は、独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "開始位置でソートし、最後にマージした区間を保持します。新しい開始位置がその終了位置を超えなければ延長し、そうでなければ新しい区間を始めます。"
+    ]
+  },
+  "ko": {
+    "title": "겹치는 닫힌 구간 병합",
+    "description": "겹치는 닫힌 구간을 병합하고, 겹치지 않는 구간들을 시작점 오름차순으로 출력하세요. 끝점이 같은 값에서 맞닿으면 겹친 것으로 보지만, 서로 다른 정수 끝점이 인접한 경우는 겹친 것이 아닙니다. 원문 예제 입력에는 [1,23]이 있으므로 올바른 결과는 [[1,23]]이며, 원문 출력은 [1,2]로 잘못 계산한 것입니다.\n\n이 사이트에서 입출력 형식을 정리했으며, 원문에 없던 수치 범위는 사이트에서 추가한 것임을 명시했습니다.",
+    "input": "첫 줄에 n이 주어지고, 이어서 n개의 줄에 start end가 주어집니다. 1≤n≤100000, 1≤start≤end≤1000000000입니다. 원문 제약 intervals[i][2]는 끝점 인덱스와 관련된 오타이며, 두 끝점에 대한 범위로 복원했습니다.",
+    "output": "첫 줄에는 병합된 구간의 수를 출력하고, 이어서 구간마다 두 끝점을 한 줄씩 시작점 오름차순으로 출력합니다.",
+    "explanation": "세 개의 공개 예제의 출력은 순서대로 1 / 1 23; 2 / 1 3 / 5 5; 2 / 1 1 / 2 2입니다. 이 답들은 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증되었습니다.",
+    "hints": [
+      "시작점 기준으로 정렬하고 마지막으로 병합된 구간을 유지합니다. 새 구간의 시작점이 그 끝점을 넘지 않으면 확장하고, 아니면 새 구간을 시작합니다."
+    ]
+  },
+  "vi": {
+    "title": "Gộp các đoạn đóng chồng lấn",
+    "description": "Gộp các đoạn đóng chồng lấn nhau và in ra các đoạn không giao nhau theo thứ tự tăng dần của điểm đầu. Chạm nhau tại cùng một đầu mút được tính là chồng lấn, nhưng các đầu mút nguyên liền kề mà không bằng nhau thì không. Đầu vào ví dụ gốc chứa [1,23], nên kết quả đúng là [[1,23]]; đầu ra gốc bị tính nhầm như thể đó là [1,2].\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các giới hạn số còn thiếu được ghi rõ là phần trang bổ sung.",
+    "input": "Dòng đầu chứa n, tiếp theo là n dòng start end; 1≤n≤100000, 1≤start≤end≤1000000000. Ràng buộc gốc intervals[i][2] là lỗi đánh máy liên quan đến chỉ số đầu mút; nó được khôi phục thành các cận cho hai đầu mút.",
+    "output": "Dòng đầu là số đoạn sau khi gộp, tiếp theo là mỗi đoạn một dòng gồm hai đầu mút, theo thứ tự tăng dần của điểm đầu.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 1 / 1 23; 2 / 1 3 / 5 5; 2 / 1 1 / 2 2. Các đáp án này đã được kiểm tra bằng vét cạn độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Sắp xếp theo điểm đầu và duy trì đoạn đã gộp cuối cùng; nếu điểm đầu mới không vượt quá điểm cuối của nó thì mở rộng, ngược lại bắt đầu đoạn mới."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Sort each player's values as a<b<c; a player can beat another if their own b is greater than the other's a and their own c is greater than the other's b. So precompute the maximum of all a and of all b, then filter."
     ]
+  },
+  "ja": {
+    "title": "3 ラウンドで全対戦相手に勝てるプレイヤー",
+    "description": "各プレイヤーは 3 つの異なるブースト値を持ち、1 試合で各値を 1 回ずつ使います。X が Y に勝てるとは、両者の値の並べ方のうち、少なくとも 2 ラウンドで X が Y を厳密に上回るものが存在することです。他のすべてのプレイヤーに個別に勝てるプレイヤーの数を数えてください。相手ごとに並べ方が異なってもかまいません。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n（2..100000）、続く n 行にそれぞれ 3 つのブースト値（1..10^9）が与えられます。1 行の中の値は互いに異なりますが、行をまたいで値が重複することはあります。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 双方に 2 ラウンドで勝てる組み合わせがあるので、答えは 2 です。例 2: 2 人目だけが 1 人目に勝てるので、答えは 1 です。例 3: 各プレイヤーの中央値はすべての最小値を上回り、各最大値はすべての中央値を上回るので、3 人全員が勝ち、答えは 3 です。",
+    "hints": [
+      "各プレイヤーの値を a<b<c にソートします。自分の b が相手の a より大きく、自分の c が相手の b より大きければ勝てます。したがって、すべての a の最大値と、すべての b の最大値をあらかじめ求めてから、絞り込みます。"
+    ]
+  },
+  "ko": {
+    "title": "세 라운드에서 모든 상대를 이길 수 있는 선수의 수",
+    "description": "각 선수는 서로 다른 세 개의 부스트 값을 가지며, 한 경기에서 각각 한 번씩 사용합니다. 두 선수의 값을 각각 어떻게 배치했을 때 X가 적어도 두 라운드에서 Y보다 엄격하게 크다면 X는 Y를 이길 수 있습니다. 다른 모든 선수를 각각 이길 수 있는 선수의 수를 세세요. 상대마다 배치가 달라도 됩니다.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n(2..100000)이 주어지고, 이어서 n줄에 세 개의 부스트 값(1..10^9)이 주어집니다. 한 줄 안의 값은 서로 다르며, 줄 사이에서는 값이 반복될 수 있습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 양쪽 모두 두 라운드를 이기는 짝짓기가 있으므로 답은 2입니다. 예제 2: 두 번째 선수만 첫 번째 선수를 이길 수 있으므로 답은 1입니다. 예제 3: 각 선수의 중간 값이 모든 최솟값보다 크고 각 최댓값이 모든 중간 값보다 크므로 세 선수 모두 이기며 답은 3입니다.",
+    "hints": [
+      "각 선수의 값을 a<b<c로 정렬합니다. 자신의 b가 상대의 a보다 크고 자신의 c가 상대의 b보다 크면 이길 수 있습니다. 따라서 모든 a의 최댓값과 모든 b의 최댓값을 미리 구한 뒤 걸러 내면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Những người chơi có thể thắng mọi đối thủ trong ba vòng",
+    "description": "Mỗi người chơi có ba giá trị tăng cường khác nhau, mỗi giá trị được dùng một lần trong mỗi trận. X có thể thắng Y nếu tồn tại cách sắp xếp các giá trị của cả hai người sao cho X lớn hơn Y một cách chặt ở ít nhất hai vòng. Đếm số người chơi có thể thắng từng người chơi khác; các đối thủ khác nhau có thể dùng các cách sắp xếp khác nhau.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n (2..100000), tiếp theo là n dòng, mỗi dòng ba giá trị tăng cường (1..10^9); các giá trị trong cùng một dòng đôi một khác nhau, còn giữa các dòng có thể lặp lại.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: mỗi bên đều có một cách ghép thắng hai vòng, nên đáp án là 2. Ví dụ 2: chỉ người chơi thứ hai có thể thắng người thứ nhất, nên đáp án là 1. Ví dụ 3: giá trị giữa của mỗi người chơi vượt mọi giá trị nhỏ nhất và mỗi giá trị lớn nhất vượt mọi giá trị giữa, nên cả ba người đều thắng; đáp án là 3.",
+    "hints": [
+      "Sắp xếp các giá trị của mỗi người chơi thành a<b<c; một người chơi thắng được người khác nếu b của mình lớn hơn a của người kia và c của mình lớn hơn b của người kia. Vì vậy hãy tính trước giá trị lớn nhất của mọi a và của mọi b, rồi lọc."
+    ]
   }
 }

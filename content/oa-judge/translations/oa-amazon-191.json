@@ -11,5 +11,35 @@
     "hints": [
       "Use a difference array to get how many times each index is covered, and use that count as the element's weight. Sort and group elements by value; each uncovered element contributes the cumulative weight of all strictly smaller values."
     ]
+  },
+  "ja": {
+    "title": "繰り返し区間を連結したあとの美しさの合計",
+    "description": "各閉区間を元の配列から取り出して連結します。繰り返された区間や重なった区間は、その要素を再び寄与させます。いずれかの区間に覆われている元のインデックスの美しさは 0 で、覆われていないインデックスの美しさは、連結後の配列にあるその値より厳密に小さい要素の個数に等しくなります。美しさの合計を求めてください。元の問題の例は繰り返された要素を数え間違えていたため、本サイトでは 12 に訂正しています。\n\n標準入出力と判定は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n m、2 行目に配列、続いて m 行の 0 始まりの閉区間 l r が与えられます。元の問題には数値の範囲がなかったため、本サイトでは 1≤n,m≤200000、−10^9≤要素≤10^9、0≤l≤r<n とします。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "1 つ目の例では、覆われていない 3 より小さい要素が 5 個、5 より小さい要素が 7 個で、合計は 12 です。他の 2 つの例は 0 と 4 です。",
+    "hints": [
+      "差分配列で各インデックスが何回覆われるかを求め、その回数を要素の重みとして使います。要素を値でソートしてグループ化し、覆われていない各要素は、厳密に小さいすべての値の累積した重みを寄与します。"
+    ]
+  },
+  "ko": {
+    "title": "반복 구간을 이어 붙인 뒤의 총 아름다움",
+    "description": "각 닫힌 구간을 원래 배열에서 잘라 이어 붙입니다. 반복되거나 겹치는 구간은 그 원소를 다시 기여시킵니다. 어떤 구간에든 포함된 원래 인덱스의 아름다움은 0이고, 포함되지 않은 인덱스의 아름다움은 이어 붙인 배열에서 그 값보다 엄격하게 작은 원소의 개수입니다. 총 아름다움을 구하세요. 원 출처의 예제는 반복된 원소를 잘못 세었으며, 이 사이트에서는 12로 바로잡았습니다.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n m이, 두 번째 줄에 배열이, 이어서 m줄에 0부터 시작하는 닫힌 구간 l r이 주어집니다. 원 출처에는 수치 범위가 없었으며, 이 사이트에서는 1≤n,m≤200000, −10^9≤원소≤10^9, 0≤l≤r<n으로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "첫 번째 예제에서 구간에 포함되지 않은 3보다 작은 원소는 5개, 5보다 작은 원소는 7개이므로 합계는 12입니다. 나머지 두 예제의 답은 0과 4입니다.",
+    "hints": [
+      "차분 배열로 각 인덱스가 몇 번 덮이는지 구하고, 그 횟수를 원소의 가중치로 씁니다. 원소를 값으로 정렬해 묶고, 덮이지 않은 각 원소는 자신보다 엄격하게 작은 모든 값의 누적 가중치를 기여합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng độ đẹp sau khi nối các đoạn lặp lại",
+    "description": "Mỗi đoạn đóng được lấy từ mảng gốc và các phần được nối lại với nhau; các đoạn lặp lại và chồng lấn đóng góp các phần tử của chúng thêm lần nữa. Một chỉ số gốc được bất kỳ đoạn nào phủ có độ đẹp 0; một chỉ số không được phủ có độ đẹp bằng số phần tử trong mảng đã nối nhỏ hơn hẳn giá trị của nó. Tìm tổng độ đẹp. Ví dụ của đề gốc đếm sai các phần tử lặp lại; trang này sửa thành 12.\n\nCách vào/ra chuẩn, ví dụ và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai là mảng, tiếp theo là m dòng các đoạn đóng l r đánh chỉ số từ 0. Đề gốc không có cận số học; trang này quy định 1≤n,m≤200000, −10^9≤phần tử≤10^9, 0≤l≤r<n.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ở ví dụ thứ nhất, số 3 không được phủ có 5 phần tử nhỏ hơn và số 5 có 7, tổng cộng 12; hai ví dụ còn lại cho 0 và 4.",
+    "hints": [
+      "Dùng mảng hiệu để biết mỗi chỉ số được phủ bao nhiêu lần, và dùng số đếm đó làm trọng số của phần tử. Sắp xếp và nhóm các phần tử theo giá trị; mỗi phần tử không được phủ đóng góp trọng số tích lũy của mọi giá trị nhỏ hơn hẳn."
+    ]
   }
 }

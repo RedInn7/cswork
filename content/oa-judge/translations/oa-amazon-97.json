@@ -11,5 +11,35 @@
     "hints": [
       "Keep a min-heap of free IDs plus a min-heap of busy (end time, ID). For each request, advance to its arrival time; if no server is free, advance to the earliest end time, then release all servers that are due and take the smallest ID."
     ]
+  },
+  "ja": {
+    "title": "待ち行列付きリクエストへの最小の空きサーバー ID の割り当て",
+    "description": "リクエスト i は時刻 i に到着し、requests[i] 秒かかります。リクエストを到着順に処理し、その時点で空いている最小の ID を選びます。すべてのサーバーが使用中の場合は最も早い解放時刻まで待ち、同時刻に複数が解放されたら最小の ID を選びます。0 秒のリクエストはサーバーを即座に解放します。元の例は最小の空き ID というルールに従っていないため、本サイトでは問題文に従って修正しています。\n\n標準入出力と判定は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目にサーバー数 n、2 行目に n 個の所要時間が与えられます。元の問題には数値の制約がないため、本サイトではサーバー数と n を 1..100000、所要時間を 0..10⁹ としています。",
+    "output": "各リクエストに割り当てられたサーバー ID を、空白区切りで出力してください。",
+    "explanation": "例 1: 時刻 2 では ID 1 が解放済みで、0 は時刻 3 まで空かないので、5 つの割り当ては 0, 1, 1, 0, 1 です。元の問題の 0, 1, 0, 2, 1 は問題文と一致しません。例 2: ID 0 しかないので、3 つのリクエストはすべてそこに割り当てられ、後ろの 2 つは待たされます。例 3: 時刻 2 に 2 台が同時に解放されるので、小さいほうの ID 0 を選び、0, 1, 0 になります。",
+    "hints": [
+      "空き ID の最小ヒープと、使用中の (終了時刻, ID) の最小ヒープを持ちます。各リクエストについて到着時刻まで進め、空きサーバーがなければ最も早い終了時刻まで進め、期限が来たサーバーをすべて解放してから最小の ID を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "대기열이 있는 요청에 가장 작은 빈 서버 ID 배정하기",
+    "description": "요청 i는 시각 i에 도착하여 requests[i]초 동안 지속됩니다. 요청을 도착 순서대로 처리하며 현재 비어 있는 서버 중 가장 작은 ID를 고릅니다. 모든 서버가 사용 중이면 가장 이른 해제 시각까지 기다리고, 같은 시각에 여러 서버가 해제되면 가장 작은 ID를 고릅니다. 0초짜리 요청은 서버를 즉시 해제합니다. 원문의 예제는 가장 작은 빈 ID 규칙을 따르지 않으며, 이 사이트는 문제 설명에 맞게 바로잡았습니다.\n\n표준 입출력 형식과 채점은 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 서버 수 n이, 둘째 줄에 n개의 지속 시간이 주어집니다. 원문에는 수치 제약이 없으며, 이 사이트는 서버 수와 n 모두 1..100000, 지속 시간은 0..10⁹으로 둡니다.",
+    "output": "각 요청에 배정된 서버 ID를 공백으로 구분하여 출력합니다.",
+    "explanation": "예제 1: 시각 2에는 ID 1이 해제되었지만 0은 3이 되어야 비므로, 다섯 번의 배정은 0, 1, 1, 0, 1입니다. 원문의 0, 1, 0, 2, 1은 문제 설명과 맞지 않습니다. 예제 2: ID 0만 있으므로 세 요청이 모두 여기에 배정되고 마지막 두 요청은 대기해야 합니다. 예제 3: 시각 2에 두 서버가 동시에 해제되므로 작은 ID 0을 고르며, 결과는 0, 1, 0입니다.",
+    "hints": [
+      "빈 ID의 최소 힙과 사용 중인 (종료 시각, ID)의 최소 힙을 유지합니다. 각 요청마다 도착 시각까지 시간을 진행하고, 빈 서버가 없으면 가장 이른 종료 시각까지 진행한 뒤, 해제 시각이 된 서버를 모두 해제하고 가장 작은 ID를 고릅니다."
+    ]
+  },
+  "vi": {
+    "title": "Gán ID máy chủ rảnh nhỏ nhất với các yêu cầu xếp hàng",
+    "description": "Yêu cầu i đến vào thời điểm i và kéo dài requests[i] giây. Xử lý các yêu cầu theo thứ tự đến và chọn ID rảnh nhỏ nhất hiện tại; khi mọi máy chủ đều bận, chờ đến thời điểm giải phóng sớm nhất, và nếu nhiều máy chủ được giải phóng cùng lúc thì chọn ID nhỏ nhất. Một yêu cầu 0 giây giải phóng máy chủ của nó ngay lập tức. Ví dụ trong đề nguồn không tuân theo quy tắc ID rảnh nhỏ nhất; trang này sửa lại theo đúng đề bài.\n\nTrang này tự viết phần nhập/xuất chuẩn và chương trình chấm; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa số máy chủ servers, và dòng thứ hai chứa n thời lượng. Đề gốc không đưa ra ràng buộc số; trang này dùng 1..100000 cho cả số máy chủ và n, và thời lượng trong khoảng 0..10⁹.",
+    "output": "In ra ID máy chủ được gán cho từng yêu cầu, cách nhau bằng dấu cách.",
+    "explanation": "Ví dụ 1: tại thời điểm 2, ID 1 đã được giải phóng trong khi 0 chưa rảnh cho đến 3, nên năm lần gán là 0, 1, 1, 0, 1; kết quả 0, 1, 0, 2, 1 của đề nguồn không khớp với đề bài. Ví dụ 2: chỉ có ID 0, nên cả ba yêu cầu đều vào nó và hai yêu cầu cuối phải xếp hàng. Ví dụ 3: tại thời điểm 2 cả hai máy chủ được giải phóng cùng lúc, nên chọn ID nhỏ hơn là 0, cho 0, 1, 0.",
+    "hints": [
+      "Giữ một min-heap các ID rảnh cùng một min-heap các cặp (thời điểm kết thúc, ID) đang bận. Với mỗi yêu cầu, tua đến thời điểm nó đến; nếu không có máy chủ rảnh, tua đến thời điểm kết thúc sớm nhất, rồi giải phóng mọi máy chủ đến hạn và lấy ID nhỏ nhất."
+    ]
   }
 }

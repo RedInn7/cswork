@@ -11,5 +11,35 @@
     "hints": [
       "Run a DP from right to left, where the state records whether the unit on the right moves into the current city. Enumerate whether the current unit stays or moves left, add the current city's population if it is covered, and pass on the state of whether a unit moves to the left neighbor."
     ]
+  },
+  "ja": {
+    "title": "左に最大 1 歩だけ動けるユニットによる最大カバー人口",
+    "description": "unit[i]=1 は、都市 i に 1 つのユニットがあることを表します。各ユニットはその場に留まるか、i>1 のときは左に 1 歩だけ、高々 1 回移動できます。ユニットが 1 つ以上ある都市はカバーされたものとし、複数回カバーされた都市の人口は 1 回だけ数えます。カバーされた人口の合計の最大値を求めてください。\n\n標準入出力、例、判定は本サイトが独自に作成しました。",
+    "input": "1 行目に n (1..100000)、2 行目に n 個の人口 (1..10000)、3 行目に長さ n の 01 文字列が与えられます。",
+    "output": "答えとなる整数を 1 つ出力します。",
+    "explanation": "例 1: 都市 2 のユニットは 1 に移動し、都市 3 のユニットは 3 に留まり、都市 5 のユニットは 4 に移動するので、人口は 10+8+9=27 です。例 2: ユニットがないので、カバーは 0 です。例 3: 2 つのユニットはどちらもその場に留まるので、人口は 3+8=11 です。",
+    "hints": [
+      "右から左へ DP を行います。状態には、右にあるユニットが現在の都市に移動してくるかどうかを持たせます。現在のユニットが留まるか左に動くかを列挙し、現在の都市がカバーされるなら人口を加え、左隣にユニットが移動するかどうかという状態を引き継ぎます。"
+    ]
+  },
+  "ko": {
+    "title": "유닛이 왼쪽으로 최대 한 칸 이동할 때 커버되는 최대 인구",
+    "description": "unit[i]=1이면 도시 i에 유닛이 하나 있습니다. 각 유닛은 제자리에 머물거나, i>1이면 왼쪽으로 한 칸 이동할 수 있으며 이동은 최대 한 번입니다. 유닛이 하나 이상 있는 도시는 커버된 것으로 보며, 여러 번 커버된 도시의 인구는 한 번만 셉니다. 커버되는 인구의 최대 총합을 구하세요.\n\n표준 입출력, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n(1..100000)이 주어지고, 둘째 줄에 n개의 인구(1..10000)가, 셋째 줄에 길이 n의 01 문자열이 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 도시 2의 유닛은 1로 이동하고, 도시 3의 유닛은 3에 머물며, 도시 5의 유닛은 4로 이동하므로 인구는 10+8+9=27입니다. 예제 2: 유닛이 없으므로 커버되는 인구는 0입니다. 예제 3: 두 유닛이 모두 제자리에 머물러 인구는 3+8=11입니다.",
+    "hints": [
+      "오른쪽에서 왼쪽으로 DP를 수행하며, 상태는 오른쪽 유닛이 현재 도시로 이동해 오는지 여부를 기록합니다. 현재 유닛이 머무는 경우와 왼쪽으로 이동하는 경우를 열거하고, 도시가 커버되면 현재 도시의 인구를 더한 뒤 왼쪽 이웃으로 이동하는지 여부의 상태를 넘깁니다."
+    ]
+  },
+  "vi": {
+    "title": "Dân số được phủ tối đa khi các đơn vị di chuyển tối đa một bước sang trái",
+    "description": "unit[i]=1 nghĩa là thành phố i có một đơn vị; mỗi đơn vị có thể giữ nguyên chỗ hoặc, khi i>1, di chuyển một bước sang trái, tối đa một lần. Một thành phố được phủ nếu có ít nhất một đơn vị; dân số của thành phố được phủ nhiều lần chỉ tính một lần. Hãy tìm tổng dân số được phủ lớn nhất.\n\nTrang này tự viết độc lập phần vào/ra chuẩn, các ví dụ và phần chấm bài.",
+    "input": "Dòng đầu chứa n (1..100000), dòng thứ hai chứa n giá trị dân số (1..10000), dòng thứ ba chứa một xâu 01 có độ dài n.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: đơn vị ở thành phố 2 di chuyển sang 1, đơn vị ở thành phố 3 giữ nguyên ở 3, và đơn vị ở thành phố 5 di chuyển sang 4, dân số được phủ là 10+8+9=27. Ví dụ 2: không có đơn vị nào nên độ phủ là 0. Ví dụ 3: cả hai đơn vị giữ nguyên chỗ, dân số được phủ là 3+8=11.",
+    "hints": [
+      "Chạy quy hoạch động từ phải sang trái, trong đó trạng thái ghi lại việc đơn vị bên phải có di chuyển vào thành phố hiện tại hay không. Liệt kê việc đơn vị hiện tại giữ nguyên hay di chuyển sang trái, cộng dân số của thành phố hiện tại nếu nó được phủ, và truyền tiếp trạng thái liệu có đơn vị di chuyển sang láng giềng bên trái hay không."
+    ]
   }
 }

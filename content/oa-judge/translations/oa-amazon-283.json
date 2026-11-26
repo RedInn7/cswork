@@ -11,5 +11,35 @@
     "hints": [
       "Count both strings. For each target letter c, deleting max(0,countPwd[c]−countTarget[c]+1) copies leaves too few of it; take the minimum required cost over all letters."
     ]
+  },
+  "ja": {
+    "title": "並べ替えても target を含まないようにする文字削除の最小コスト",
+    "description": "パスワードから文字をいくつか削除します。a..z の各文字を 1 個削除するコストは、26 個の要素を持つ cost で与えられます。残ったパスワードをどのように並べ替えても、target を部分列として含まないようにしてください。コストの最小値を求めます。元の順序で target を含まないようにするだけでは不十分です。また、ある文字をすべて削除する必要はありません。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に pwd、2 行目に target、3 行目にちょうど 26 個の cost の値が与えられます。元の問題では、2 つの文字列の長さはいずれも 1..100000 で小文字のみ、cost≥0 です。cost の上限は 10° と書かれていて確認できなかったため、当サイトでは 0≤cost[i]≤10^9 を追加しています。本文の 26 個の要素から、文字化けした添字 251 は 26 を指すものと明確に訂正できます。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 3、20、1 です。1 つ目の例では、コスト 1 の c を 3 個削除するほうが、コスト 3 の b を 2 個削除するより安くなります。元の cost 配列に余分に付いていた 0 は、正式な 26 個の要素に訂正しています。2 つ目の例では、元の解説は k が 5 個あると誤って書いていますが、実際は 4 個で、1 個あたり 5 なので合計は 20 です。",
+    "hints": [
+      "両方の文字列の文字数を数えます。target に含まれる各文字 c について、max(0,countPwd[c]−countTarget[c]+1) 個を削除すると、その文字が不足します。すべての文字についてこの必要コストを求め、最小値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "어떤 재배열도 목표 문자열을 포함하지 않도록 만드는 최소 삭제 비용",
+    "description": "비밀번호에서 일부 문자를 삭제합니다. 알파벳 a..z 각 문자를 한 개 삭제하는 비용은 길이 26인 cost 배열로 주어집니다. 남은 비밀번호를 어떻게 재배열하더라도 target이 부분 수열로 포함되지 않아야 합니다. 이때 최소 비용을 구하세요. 원래 순서에서만 target을 막으면 되는 문제가 아니며, 어떤 문자의 사본을 전부 삭제할 필요도 없습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 pwd, 둘째 줄에 target, 셋째 줄에 정확히 26개의 cost 값이 주어집니다. 원문에서 두 문자열의 길이는 1..100000이고 모두 소문자이며 cost≥0입니다. cost의 상한은 10°로 적혀 있었고 확인되지 않았으므로 본 사이트는 0≤cost[i]≤10^9를 추가합니다. 본문의 26개 항목은 깨진 인덱스 251을 명확히 바로잡아 줍니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 3, 20, 1입니다. 첫 번째 예제에서는 비용 1인 c 세 개를 삭제하는 편이 비용 3인 b 두 개를 삭제하는 것보다 쌉니다. 원문 cost 배열의 남는 0들은 정식 26개 항목으로 바로잡았습니다. 두 번째 예제에서 원문 해설은 k가 5개라고 잘못 적었으나 실제로는 4개이며, 각 비용이 5이므로 합계는 20입니다.",
+    "hints": [
+      "두 문자열의 문자 수를 셉니다. target의 각 문자 c에 대해 max(0,countPwd[c]−countTarget[c]+1)개를 삭제하면 그 문자가 모자라게 됩니다. 모든 문자에 대한 필요 비용 중 최솟값을 취합니다."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí xóa tối thiểu để không hoán vị nào chứa chuỗi đích",
+    "description": "Xóa một số ký tự của mật khẩu; chi phí xóa một bản sao của mỗi chữ cái a..z cho bởi 26 phần tử của cost. Sau khi xóa, không hoán vị nào của mật khẩu còn lại được chứa target như một dãy con. Hãy tối thiểu hóa chi phí. Bài này không chỉ cấm target xuất hiện theo thứ tự ban đầu, và bạn không bắt buộc phải xóa hết mọi bản sao của một chữ cái.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa pwd, dòng thứ hai chứa target, dòng thứ ba chứa đúng 26 giá trị cost. Trong đề gốc cả hai xâu có độ dài 1..100000, gồm chữ thường, và cost≥0; cận trên của cost được ghi là 10° và đánh dấu chưa xác nhận, nên trang này bổ sung 0≤cost[i]≤10^9. 26 phần tử trong phần nội dung đã sửa rõ ràng chỉ số bị hỏng 251.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 3, 20 và 1. Ở ví dụ đầu, xóa ba chữ c với giá 1 mỗi chữ rẻ hơn xóa hai chữ b với giá 3 mỗi chữ; các số 0 thừa trong mảng cost của đề gốc được sửa về đúng 26 phần tử. Ở ví dụ thứ hai, lời giải thích gốc ghi sai là 5 chữ k; thực tế có 4 chữ, mỗi chữ giá 5, tổng cộng 20.",
+    "hints": [
+      "Đếm số lần xuất hiện của từng chữ cái trong cả hai xâu. Với mỗi chữ cái c của target, xóa max(0,countPwd[c]−countTarget[c]+1) bản sao sẽ khiến chữ đó không đủ; lấy chi phí nhỏ nhất trong tất cả các chữ cái."
+    ]
   }
 }

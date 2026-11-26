@@ -11,5 +11,35 @@
     "hints": [
       "Sort the intervals by start and track the rightmost end of the busy time scanned so far; as soon as the gap before an interval is long enough, return its start."
     ]
+  },
+  "ja": {
+    "title": "全員が空いている最も早い会議時刻",
+    "description": "1 日は [0,1440) 分です。全従業員の予定のある半開区間が与えられます。全員が空いていて、指定された長さの会議が収まる最も早い整数の開始時刻を求め、存在しなければ −1 を出力してください。元のサイトの例の答え 240 は予定区間と矛盾していたため、本サイトで 60 に修正しました。\n\n入出力形式、例、テストデータは CSWork が作成しました。",
+    "input": "本サイトでは、全従業員の予定区間を 1 つの入力にまとめています。1 行目に区間の総数 b（0..100000）と会議の長さ L（1..1440）が与えられ、続く b 行は start finish（0≤start<finish≤1440）です。区間は重なっていてもよく、ソートされているとは限りません。",
+    "output": "説明どおりに答えを出力してください。複数の結果はスペース区切りで順に出力し、空配列の場合は空行を出力してください。",
+    "explanation": "例 1：全員が [60,180) の間は空いており、その長さはちょうど 120 です。それより前の [0,60) は誰かの予定があるので、最も早い開始時刻は 60 です。",
+    "hints": [
+      "区間を開始時刻でソートし、ここまでに走査した予定時間の最も右の終了時刻を追跡します。ある区間の手前の空きが十分な長さになった時点で、その開始時刻を返します。"
+    ]
+  },
+  "ko": {
+    "title": "모두가 비는 가장 이른 공통 회의 시간",
+    "description": "하루는 [0,1440)분입니다. 모든 직원의 바쁜 반개구간이 주어질 때, 모든 직원이 비어 있고 주어진 길이의 회의가 들어가는 가장 이른 정수 시작 시각을 구하세요. 그런 시각이 없으면 −1을 출력합니다. 원문 사이트의 예제 답 240은 바쁜 구간과 충돌하므로 이 사이트에서 60으로 바로잡았습니다.\n\n입력 형식, 예제, 테스트 데이터는 CSWork가 정리하고 작성했습니다.",
+    "input": "이 사이트에서는 모든 직원의 바쁜 구간을 하나의 입력으로 합쳤습니다. 첫째 줄에 구간의 총 개수 b(0..100000)와 회의 길이 L(1..1440)이 주어지고, 다음 b개의 줄에 start finish(0≤start<finish≤1440)가 주어집니다. 구간은 겹칠 수 있고 정렬되어 있지 않을 수 있습니다.",
+    "output": "설명된 대로 답을 출력합니다. 결과가 여러 개이면 순서대로 공백으로 구분하여 출력하고, 빈 배열이면 빈 줄을 출력합니다.",
+    "explanation": "예제 1: [60,180) 동안은 모두가 비어 있으며 그 길이가 정확히 120입니다. 그 이전인 [0,60)에는 누군가 바쁘므로 가장 이른 시작 시각은 60입니다.",
+    "hints": [
+      "구간을 시작 시각으로 정렬하고, 지금까지 훑은 바쁜 시간의 가장 오른쪽 끝을 추적합니다. 어떤 구간 앞의 빈 틈이 충분히 길어지는 즉시 그 시작 시각을 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời điểm họp sớm nhất mà mọi người cùng rảnh",
+    "description": "Một ngày là [0,1440) phút. Cho các khoảng bận nửa mở của tất cả nhân viên, tìm thời điểm bắt đầu nguyên sớm nhất mà tất cả nhân viên đều rảnh và một cuộc họp có độ dài cho trước nằm gọn trong đó; nếu không có thì in −1. Đáp án 240 của ví dụ ở trang gốc mâu thuẫn với các khoảng bận, nên trang này đã sửa thành 60.\n\nĐịnh dạng đầu vào, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn và viết.",
+    "input": "Trang này gộp các khoảng bận của tất cả nhân viên vào một đầu vào duy nhất: dòng đầu chứa tổng số khoảng b (0..100000) và độ dài cuộc họp L (1..1440); b dòng tiếp theo là start finish (0≤start<finish≤1440). Các khoảng có thể chồng lấn và chưa được sắp xếp.",
+    "output": "In ra đáp án như mô tả; nhiều kết quả được phân tách bằng dấu cách theo thứ tự, và với mảng rỗng thì in một dòng trống.",
+    "explanation": "Ví dụ 1: mọi người đều rảnh trong [60,180), độ dài đúng 120; trước đó có người bận trong [0,60), nên thời điểm bắt đầu sớm nhất là 60.",
+    "hints": [
+      "Sắp xếp các khoảng theo thời điểm bắt đầu và theo dõi điểm kết thúc ngoài cùng bên phải của thời gian bận đã quét; ngay khi khoảng trống trước một khoảng đủ dài, trả về thời điểm bắt đầu của nó."
+    ]
   }
 }

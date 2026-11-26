@@ -11,5 +11,35 @@
     "hints": [
       "Reverse the return trip so that it becomes two people walking simultaneously from the top-left to the bottom-right. The shared step count t determines column = t−row, so the DP state only records the two rows; a shared cell adds its passenger only once."
     ]
+  },
+  "ja": {
+    "title": "グリッドを往復したときの最大乗客数",
+    "description": "グリッドの左上から右下へ右・下のみで移動し、その後、左・上のみで戻ります。−1 は壁、0 は空きマス、1 は乗客 1 人を表し、一度通ったマスの乗客は乗せて、再び数えられることはありません。有効な往路がなければ 0 を返します。乗客の合計の最大値を求めてください。\n\n入出力プロトコルと明示された補足制約は本サイトが整備したものであり、元の解法は実行していません。",
+    "input": "1 行目に n が与えられ、続く n 行に行列が与えられます。1≤n≤100 で、各マスは −1、0、1 のいずれかです。始点と終点のマスにも乗客や壁があることがあり、どちらかが壁なら有効な往復はありません。",
+    "output": "問題で求められる整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 1; 5; 1 です。例は、独立した全探索・状態探索・直接シミュレーションで再確認済みです。",
+    "hints": [
+      "復路を反転すると、左上から右下へ 2 人が同時に歩く問題になります。共通のステップ数 t から列 = t−行が決まるので、DP の状態は 2 つの行だけを持てばよく、共有するマスの乗客は 1 回だけ加算します。"
+    ]
+  },
+  "ko": {
+    "title": "격자를 왕복하며 태울 수 있는 최대 승객 수",
+    "description": "왼쪽 위에서 오른쪽 아래로 오른쪽/아래로만 이동한 다음, 왼쪽/위로만 이동하여 돌아옵니다. −1은 벽, 0은 빈 칸, 1은 승객 한 명입니다. 한 번 지나간 칸의 승객은 태우며 다시 세지 않습니다. 유효한 가는 길이 없으면 0을 반환합니다. 태울 수 있는 승객의 최대 총수를 구하세요.\n\n입출력 규약과 명시된 보충 제약 조건은 이 사이트에서 정리한 것이며, 원본 풀이는 실행하여 검증하지 않았습니다.",
+    "input": "첫 번째 줄에 n이 주어지고, 이어서 n개의 줄에 행렬이 주어집니다. 1≤n≤100이며 각 칸은 −1, 0 또는 1입니다. 시작 칸과 도착 칸에도 승객이나 벽이 있을 수 있으며, 둘 중 하나라도 벽이면 유효한 왕복이 없습니다.",
+    "output": "문제에서 요구하는 정수 하나를 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 1; 5; 1입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 다시 검증했습니다.",
+    "hints": [
+      "돌아오는 길을 뒤집으면 두 사람이 동시에 왼쪽 위에서 오른쪽 아래로 걷는 것과 같아집니다. 공통 걸음 수 t가 열 = t−행을 결정하므로 DP 상태에는 두 행만 기록하면 되고, 공유하는 칸의 승객은 한 번만 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số hành khách tối đa trong chuyến đi khứ hồi qua lưới",
+    "description": "Đi từ góc trên bên trái đến góc dưới bên phải chỉ theo hướng phải/xuống, rồi quay về chỉ theo hướng trái/lên. −1 là tường, 0 là ô trống và 1 là một hành khách; khi đi qua một ô, hành khách ở ô đó được đón và không được tính lại. Nếu không có đường đi hợp lệ cho lượt đi, trả về 0. Hãy tìm tổng số hành khách tối đa.\n\nGiao thức đầu vào/đầu ra và các ràng buộc bổ sung được đánh dấu rõ do trang này biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n, tiếp theo là n dòng của ma trận. 1≤n≤100, và mỗi ô là −1, 0 hoặc 1. Ô xuất phát và ô đích cũng có thể chứa hành khách hoặc tường; nếu một trong hai là tường thì không có chuyến đi hợp lệ.",
+    "output": "In ra một số nguyên duy nhất theo yêu cầu của đề bài.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 1; 5; 1. Các ví dụ đã được kiểm tra lại bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Đảo ngược lượt về để nó trở thành hai người cùng đi từ góc trên bên trái đến góc dưới bên phải. Số bước chung t xác định cột = t−hàng, nên trạng thái DP chỉ cần ghi hai hàng; một ô dùng chung chỉ cộng hành khách của nó một lần."
+    ]
   }
 }

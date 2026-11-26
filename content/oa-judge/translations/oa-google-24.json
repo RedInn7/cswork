@@ -11,5 +11,35 @@
     "hints": [
       "dp[v] is the best length of a subsequence ending with v in the current prefix. When the scan reaches v, update dp[v] with dp[v−1]+1."
     ]
+  },
+  "ja": {
+    "title": "1ずつ増える最長部分列",
+    "description": "整数配列から、順序を保ったまま部分列を選びます。各要素は直前の要素よりちょうど 1 大きくなければなりません。最大の長さを出力してください。要素は連続していなくても構いません。\n\n標準の入出力・例・テストは CSWork が作成したものです。「本サイト」と記した範囲は採点上の取り決めであり、面接の原典の制約であると主張するものではありません。",
+    "input": "1行目に n（1..100000）、2行目に n 個の整数（−10⁹..10⁹）が与えられます。",
+    "output": "条件に従って答えを出力します。複数のクエリの結果は、順番に空白区切りで出力します。",
+    "explanation": "例 1：1, 2, 3, 4, 5 を順に選べるので、長さは 5 です。例 2：配列は狭義単調減少なので、順序どおりに 1 大きい要素を続けることはできず、答えは 1 です。例 3：同じ数を続けて選ぶことはできません。1, 2, 3 を選ぶと 3 になります。",
+    "hints": [
+      "dp[v] を、現在の接頭辞における v で終わる部分列の最大長とします。走査が v に達したら、dp[v−1]+1 で dp[v] を更新します。"
+    ]
+  },
+  "ko": {
+    "title": "1씩 증가하는 가장 긴 부분 수열",
+    "description": "정수 배열에서 순서를 유지한 부분 수열을 골라, 각 원소가 바로 앞 원소보다 정확히 1 큰 경우의 최대 길이를 출력합니다. 원소들이 연속해서 붙어 있을 필요는 없습니다.\n\n표준 입력/출력, 예제, 테스트는 CSWork가 작성했습니다. \"이 사이트\"로 표시된 범위는 채점 기준일 뿐이며, 실제 면접의 원래 제한이라고 주장하지 않습니다.",
+    "input": "첫째 줄에 n(1..100000)이 주어지고, 둘째 줄에 n개의 정수(−10⁹..10⁹)가 주어집니다.",
+    "output": "설명에 따라 답을 출력합니다. 여러 질의의 결과는 순서대로 공백으로 구분하여 출력합니다.",
+    "explanation": "예제 1: 1, 2, 3, 4, 5를 순서대로 고를 수 있으므로 길이는 5입니다. 예제 2: 배열이 엄격하게 감소하므로 순서상 뒤에 1 큰 원소가 올 수 없어 답은 1입니다. 예제 3: 같은 숫자를 연달아 고를 수는 없으며, 1, 2, 3을 고르면 3입니다.",
+    "hints": [
+      "dp[v]는 현재까지의 접두사에서 값 v로 끝나는 부분 수열의 최대 길이입니다. 스캔이 v에 도달하면 dp[v−1]+1로 dp[v]를 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy con dài nhất tăng đúng một đơn vị mỗi bước",
+    "description": "Chọn một dãy con giữ nguyên thứ tự của mảng số nguyên sao cho mỗi phần tử sau lớn hơn phần tử ngay trước nó đúng 1. Xuất độ dài lớn nhất. Các phần tử không cần liên tiếp nhau.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ test do CSWork biên soạn; các phạm vi được đánh dấu \"trang này\" là quy ước chấm bài, không được xem là giới hạn gốc của buổi phỏng vấn.",
+    "input": "Dòng đầu chứa n (1..100000); dòng thứ hai chứa n số nguyên (−10⁹..10⁹).",
+    "output": "Xuất đáp án theo mô tả; kết quả của nhiều truy vấn được ngăn cách bằng dấu cách, theo đúng thứ tự.",
+    "explanation": "Ví dụ 1: có thể chọn lần lượt 1, 2, 3, 4, 5, độ dài là 5. Ví dụ 2: mảng giảm nghiêm ngặt nên không có phần tử nào lớn hơn một đơn vị đứng sau theo đúng thứ tự; đáp án là 1. Ví dụ 3: các số lặp lại không thể được chọn liên tiếp nhau; chọn 1, 2, 3 cho kết quả 3.",
+    "hints": [
+      "dp[v] là độ dài tốt nhất của dãy con kết thúc bằng v trong tiền tố hiện tại. Khi duyệt tới v, cập nhật dp[v] bằng dp[v−1]+1."
+    ]
   }
 }

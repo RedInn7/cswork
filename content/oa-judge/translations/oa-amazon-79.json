@@ -12,5 +12,38 @@
       "The total cost of k complete rounds is sum(cost)×k×(k+1)/2.",
       "With the remaining budget, you only need to check a prefix of the next round."
     ]
+  },
+  "ja": {
+    "title": "循環ショッピングで購入できる最大アイテム数",
+    "description": "n 個のアイテムを順番に循環させながら購入します。アイテム i の t 回目の購入コストは t×cost[i] です。問題文には、買えないアイテムがあった場合の挙動が書かれていません。同じ固定版の OAMaster の Python、Java、C++ の解答はいずれも、最初に買えないアイテムに当たった時点で即座に停止します。そこで本サイトでは、スキップして続行するのではなく、購入を停止すると規定します。元の問題には標準入出力の例が付いておらず、以下の例は本サイトが追加したものです。",
+    "input": "1 行目に n m、2 行目に n 個の整数 cost[i] が与えられます。1≤n≤100000、1≤m≤10^15、1≤cost[i]≤200000 です。標準入出力と本サイトの例は、本サイトが追加したものです。",
+    "output": "停止するまでに購入したアイテムの総数を出力します。現在のアイテムが買えない場合は即座に停止し、スキップしてはいけません。",
+    "explanation": "まず、完全に購入できるラウンド数を二分探索で求め、その次のラウンドを順に処理します。最初に買えないアイテムで停止します。",
+    "hints": [
+      "k 回の完全なラウンドの総コストは sum(cost)×k×(k+1)/2 です。",
+      "残りの予算では、次のラウンドの先頭部分だけを確認すれば十分です。"
+    ]
+  },
+  "ko": {
+    "title": "순환 쇼핑에서 구매할 수 있는 최대 물품 수",
+    "description": "n개의 물품을 순서대로 순환하며 구매합니다. 물품 i의 t번째 구매 비용은 t×cost[i]입니다. 문제 본문에는 살 수 없는 물품이 있을 때의 동작이 명시되어 있지 않습니다. 같은 고정 OAMaster 버전의 Python, Java, C++ 풀이는 모두 처음으로 살 수 없는 물품에서 즉시 멈추므로, 이 사이트는 건너뛰고 계속하는 것이 아니라 구매를 멈추는 것으로 규정합니다. 원문에는 표준 입출력 예제가 없으며, 아래 예제는 이 사이트가 추가했습니다.",
+    "input": "첫째 줄에 n m이 주어지고, 둘째 줄에 n개의 정수 cost[i]가 주어집니다. 1≤n≤100000, 1≤m≤10^15, 1≤cost[i]≤200000입니다. 표준 입출력과 이 사이트의 예제는 이 사이트가 추가했습니다.",
+    "output": "멈추기 전까지 구매한 물품의 총 개수를 출력합니다. 현재 물품을 살 수 없으면 건너뛰지 않고 즉시 멈춥니다.",
+    "explanation": "먼저 완전히 구매할 수 있는 라운드 수를 이분 탐색한 뒤, 다음 라운드를 순서대로 처리하며 처음으로 살 수 없는 물품에서 멈춥니다.",
+    "hints": [
+      "완전한 k라운드의 총비용은 sum(cost)×k×(k+1)/2입니다.",
+      "남은 예산으로는 다음 라운드의 접두사만 확인하면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số món tối đa mua được khi mua sắm theo vòng",
+    "description": "Mua n món theo vòng tuần hoàn theo thứ tự. Lần mua thứ t của món i có giá t×cost[i]. Đề không nói rõ điều gì xảy ra khi một món không đủ tiền; các lời giải Python, Java và C++ của cùng phiên bản OAMaster cố định đều dừng ngay ở món đầu tiên không đủ tiền, nên trang này quy định việc mua dừng lại thay vì bỏ qua và tiếp tục. Đề gốc không cho ví dụ vào/ra chuẩn; các ví dụ dưới đây do trang này bổ sung.",
+    "input": "Dòng đầu chứa n m; dòng thứ hai chứa n số nguyên cost[i]. 1≤n≤100000, 1≤m≤10^15, 1≤cost[i]≤200000. Vào/ra chuẩn và các ví dụ của trang này do trang này bổ sung.",
+    "output": "In ra tổng số món đã mua trước khi dừng. Dừng ngay khi món hiện tại không đủ tiền; không bỏ qua nó.",
+    "explanation": "Trước tiên tìm kiếm nhị phân số vòng đầy đủ có thể mua, rồi xử lý vòng kế tiếp theo thứ tự; dừng ở món đầu tiên không đủ tiền.",
+    "hints": [
+      "Tổng chi phí của k vòng đầy đủ là sum(cost)×k×(k+1)/2.",
+      "Với ngân sách còn lại, chỉ cần kiểm tra một tiền tố của vòng kế tiếp."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Run BFS on states made of the coordinates and the locked direction (plus a free state), enumerating the allowed directions and all valid landing cells; a long jump locks the direction, and a short jump makes the state free."
     ]
+  },
+  "ja": {
+    "title": "長いジャンプで方向が固定されるグリッドの最短経路",
+    "description": "グリッドには、空きマス *、壁 #、始点 S、終点 E があります。各移動では、上下左右のいずれかに正の整数の距離だけジャンプします。ジャンプは壁を飛び越えられますが、壁の上に着地することはできません。直前のジャンプの長さが >1 だった場合、次のジャンプは同じ方向でなければなりません。長さ 1 のジャンプをするとこの制限は解除されます。E に到達したとみなされるのは、最後の移動の長さが 1 で E に着地したときだけです。E に到達できない場合は −1 を出力してください。\n\n入出力の形式は本サイトで独自に整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n m、続く n 行にグリッドが与えられます。2≤n,m≤100 で、S と E はそれぞれちょうど 1 つずつあります。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 1、4、-1 です。すべての例は、独立した小規模な全探索または状態探索で検証済みです。",
+    "hints": [
+      "座標と固定された方向（および固定なしの状態）からなる状態に対して BFS を行い、許される方向と有効な着地マスをすべて列挙します。長いジャンプは方向を固定し、短いジャンプは状態を固定なしにします。"
+    ]
+  },
+  "ko": {
+    "title": "긴 점프가 방향을 고정하는 격자 최단 경로",
+    "description": "격자에는 빈 칸 *, 벽 #, 시작점 S, 도착점 E가 있습니다. 한 번의 이동은 위, 아래, 왼쪽, 오른쪽 중 한 방향으로 양의 정수 거리만큼 점프하는 것이며, 벽을 넘어갈 수는 있지만 벽 위에 착지할 수는 없습니다. 직전 점프의 길이가 1보다 컸다면 다음 점프는 같은 방향이어야 하고, 길이 1의 점프는 이 제한을 해제합니다. 마지막 이동의 길이가 1이면서 E에 착지해야만 E에 도달한 것으로 칩니다. E에 도달할 수 없으면 −1을 출력합니다.\n\n입출력 규약은 이 사이트에서 독자적으로 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n m이 주어지고 이어서 격자 n줄이 주어집니다. 2≤n,m≤100이며 S와 E는 각각 정확히 하나씩 있습니다.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 1; 4; -1입니다. 모든 예제는 독립적인 소규모 완전 탐색 또는 상태 탐색으로 검증했습니다.",
+    "hints": [
+      "좌표와 고정된 방향(그리고 자유 상태)으로 이루어진 상태에 대해 BFS를 수행합니다. 허용되는 방향과 유효한 착지 칸을 모두 열거하며, 긴 점프는 방향을 고정하고 짧은 점프는 상태를 자유 상태로 만듭니다."
+    ]
+  },
+  "vi": {
+    "title": "Đường đi ngắn nhất trên lưới khi bước nhảy dài khóa hướng",
+    "description": "Lưới gồm các ô trống *, tường #, điểm xuất phát S và điểm kết thúc E. Mỗi lần di chuyển là một bước nhảy với khoảng cách nguyên dương lên, xuống, trái hoặc phải; bước nhảy có thể vượt qua tường nhưng không được đáp xuống tường. Nếu bước nhảy trước có độ dài >1, bước tiếp theo phải theo cùng hướng; một bước nhảy độ dài 1 gỡ bỏ hạn chế này. E chỉ được coi là đã đến khi nước đi cuối cùng có độ dài 1 và đáp xuống E. Nếu không thể đến E, in ra −1.\n\nGiao thức đầu vào/đầu ra do trang này tự biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n m, tiếp theo là n dòng của lưới; 2≤n,m≤100, và có đúng một S và đúng một E.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 1; 4; -1. Tất cả ví dụ đã được kiểm chứng bằng liệt kê quy mô nhỏ độc lập hoặc tìm kiếm trạng thái.",
+    "hints": [
+      "Chạy BFS trên các trạng thái gồm tọa độ và hướng đang bị khóa (cộng thêm một trạng thái tự do), liệt kê các hướng được phép và mọi ô đáp hợp lệ; bước nhảy dài khóa hướng, còn bước nhảy ngắn đưa trạng thái về tự do."
+    ]
   }
 }

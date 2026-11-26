@@ -11,5 +11,35 @@
     "hints": [
       "Scan runs of identical characters each round and compute the replacement as the digit value times the run length; stop when every run has length 1."
     ]
+  },
+  "ja": {
+    "title": "連続する同じ数字のグループを安定するまで合計する",
+    "description": "各ラウンドで、連続する同じ数字のグループをすべて同時に、そのグループの数字の合計を 10 進表記した文字列で置き換えます。隣り合う数字が 2 つとも同じになる箇所がなくなるまで繰り返します。入力は文字列で、先頭の 0 は保持されます。複数の 0 の合計は 1 つの 0 になります。\n\n本サイトでは標準入出力の形式を明確にしています。出題元に記載のない範囲は、本サイト独自の仕様として定めています。",
+    "input": "空でない数字列を含む 1 行が与えられます。出題元には長さの範囲の記載がないため、本サイトでは長さを 1..2000 とします。",
+    "output": "最終的な数字列を出力してください。",
+    "explanation": "例 1：999→27 と 33→6 で 2746 となり、すでに安定しています。例 2：1 ラウンド目の後の 12163244 にはまだ 44 が含まれるので、さらに 1216328 へ進みます。元のサイトは早く止まりすぎていました。例 3：0044886→08166→08112→0822→084 となり、答えは先頭の 0 を保持した 084 です。",
+    "hints": [
+      "各ラウンドで同じ文字の連なりを走査し、置換後の値を数字の値に連の長さを掛けたものとして計算します。すべての連の長さが 1 になったら止めます。"
+    ]
+  },
+  "ko": {
+    "title": "같은 숫자 묶음을 합산해 안정될 때까지 반복",
+    "description": "각 라운드에서 연속으로 같은 숫자가 이어지는 묶음마다 그 숫자들의 합의 십진 표기로 동시에 바꿉니다. 인접한 두 숫자가 같은 경우가 없어질 때까지 반복하세요. 입력은 문자열이며 앞의 0은 유지되고, 0이 여러 개이면 합이 0 하나가 됩니다.\n\n이 사이트는 표준 입출력을 명시적으로 정했으며, 원문에 범위가 없는 부분은 모두 이 사이트의 규약으로 표시했습니다.",
+    "input": "비어 있지 않은 숫자 문자열 한 줄이 주어집니다. 원문에는 길이 범위가 없으며, 이 사이트에서는 길이가 1..2000입니다.",
+    "output": "최종 숫자 문자열을 출력합니다.",
+    "explanation": "예제 1: 999→27과 33→6으로 2746이 되며 이미 안정되었습니다. 예제 2: 첫 라운드 후 12163244에 여전히 44가 있으므로 1216328까지 계속합니다. 원래 사이트는 너무 일찍 멈췄습니다. 예제 3: 0044886→08166→08112→0822→084이므로 답은 084이며 앞의 0이 유지됩니다.",
+    "hints": [
+      "매 라운드마다 같은 문자의 연속 구간을 스캔하여 숫자 값에 구간 길이를 곱한 것으로 바꾸고, 모든 구간의 길이가 1이면 멈춥니다."
+    ]
+  },
+  "vi": {
+    "title": "Cộng các nhóm chữ số lặp cho đến khi ổn định",
+    "description": "Trong mỗi vòng, đồng thời thay mỗi nhóm chữ số giống nhau liên tiếp bằng biểu diễn thập phân của tổng các chữ số của nhóm đó. Lặp lại cho đến khi không còn hai chữ số liền kề nào giống nhau. Đầu vào là một xâu, và các số 0 đứng đầu được giữ nguyên; nhiều số 0 có tổng là một số 0 duy nhất.\n\nTrang này nêu rõ định dạng đầu vào/đầu ra chuẩn; mọi khoảng giá trị mà nguồn không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Một dòng chứa xâu chữ số không rỗng. Nguồn không cho khoảng độ dài; trên trang này độ dài là 1..2000.",
+    "output": "In ra xâu chữ số cuối cùng.",
+    "explanation": "Ví dụ 1: 999→27 và 33→6 cho 2746, đã ổn định. Ví dụ 2: sau vòng đầu, 12163244 vẫn còn 44, nên tiếp tục đến 1216328; trang gốc đã dừng quá sớm. Ví dụ 3: 0044886→08166→08112→0822→084, nên đáp án là 084, giữ nguyên số 0 đứng đầu.",
+    "hints": [
+      "Mỗi vòng quét các đoạn ký tự giống nhau và tính phần thay thế bằng giá trị chữ số nhân với độ dài đoạn; dừng khi mọi đoạn có độ dài 1."
+    ]
   }
 }

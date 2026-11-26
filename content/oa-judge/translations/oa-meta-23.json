@@ -11,5 +11,35 @@
     "hints": [
       "Update the window total with a sliding sum. Scale the absolute value of the total by 10⁶ and use integer division and the remainder to round to six decimal places, avoiding binary floating-point error."
     ]
+  },
+  "ja": {
+    "title": "スライディングウィンドウの平均",
+    "description": "整数配列と正の窓長が与えられます。長さが窓長の連続する窓すべてについて平均を出力してください。窓長が配列の長さを超える場合、結果は空です。\n\n標準入力、本サイトの制約、サンプル、テストデータは CSWork が独自に作成・整理したものです。",
+    "input": "本サイトの入力: 1 行目に n と w (0≤n≤50000, 1≤w≤100000)、2 行目に n 個の整数 (−10⁹..10⁹) が与えられます。",
+    "output": "1 行目は結果の個数です。0 より大きい場合、2 行目に窓の順に平均を空白区切りで出力します。結果が空の場合は 0 のみを出力します。各値は絶対誤差または相対誤差が 10⁻⁵ 以下であれば許容され、NaN や Infinity を出力してはいけません。",
+    "explanation": "サンプル 1: 3 つの窓の合計は 28、35、42 で、7 で割ると 4.000000、5.000000、6.000000 になります。\n\nサンプル 2: 唯一の窓の平均は 1/3 で、小数点以下 6 桁では 0.333333 です。\n\nサンプル 3: 窓長 3 が配列の長さ 2 を超えるため、完全な窓は存在せず、出力する個数は 0 です。",
+    "hints": [
+      "窓の合計はスライディングサムで更新します。合計の絶対値を 10⁶ 倍し、整数の除算と剰余で小数点以下 6 桁に丸めることで、2 進浮動小数点誤差を避けます。"
+    ]
+  },
+  "ko": {
+    "title": "슬라이딩 윈도 평균",
+    "description": "정수 배열과 양의 윈도 길이가 주어집니다. 길이가 윈도 길이인 모든 연속 구간의 평균을 출력하세요. 윈도 길이가 배열 길이보다 크면 결과는 비어 있습니다.\n\n표준 입력, 이 사이트의 제약 조건, 예제, 테스트 데이터는 CSWork에서 독자적으로 정리하여 작성했습니다.",
+    "input": "이 사이트의 입력입니다. 첫 줄에 n w (0≤n≤50000, 1≤w≤100000)가 주어지고, 두 번째 줄에 n개의 정수(−10⁹..10⁹)가 주어집니다.",
+    "output": "첫 줄에 결과의 개수를 출력합니다. 0보다 크면 두 번째 줄에 평균을 윈도 순서대로 공백으로 구분하여 출력하고, 결과가 비어 있으면 0만 출력합니다. 각 값은 절대 오차 또는 상대 오차가 최대 10⁻⁵까지 허용되며, NaN이나 Infinity를 출력해서는 안 됩니다.",
+    "explanation": "예제 1: 세 윈도의 합은 28, 35, 42이고 7로 나누면 4.000000, 5.000000, 6.000000이 됩니다.\n\n예제 2: 유일한 윈도의 평균은 1/3이며 소수점 여섯 자리까지 0.333333입니다.\n\n예제 3: 윈도 길이 3이 배열 길이 2보다 크므로 완전한 윈도가 없고, 출력하는 개수는 0입니다.",
+    "hints": [
+      "슬라이딩 합으로 윈도의 합을 갱신합니다. 합의 절댓값에 10⁶을 곱한 뒤 정수 나눗셈과 나머지로 소수점 여섯 자리까지 반올림하여 이진 부동소수점 오차를 피합니다."
+    ]
+  },
+  "vi": {
+    "title": "Trung bình của các cửa sổ trượt",
+    "description": "Cho một mảng số nguyên và một độ dài cửa sổ dương, in ra trung bình của mọi cửa sổ liên tiếp; nếu độ dài cửa sổ vượt quá độ dài mảng thì kết quả rỗng.\n\nĐầu vào chuẩn, các ràng buộc của trang này, các ví dụ và dữ liệu kiểm thử do CSWork tự biên soạn.",
+    "input": "Đầu vào của trang này: dòng đầu chứa n và w (0≤n≤50000, 1≤w≤100000), và dòng thứ hai chứa n số nguyên (−10⁹..10⁹).",
+    "output": "Dòng đầu là số lượng kết quả. Nếu lớn hơn 0 thì dòng thứ hai là các giá trị trung bình theo thứ tự cửa sổ, cách nhau bằng dấu cách; với kết quả rỗng thì chỉ in 0. Mỗi giá trị được phép có sai số tuyệt đối hoặc tương đối tối đa 10⁻⁵, và không được in NaN hay Infinity.",
+    "explanation": "Ví dụ 1: tổng của ba cửa sổ là 28, 35 và 42; chia cho 7 được 4.000000, 5.000000 và 6.000000.\n\nVí dụ 2: trung bình của cửa sổ duy nhất là 1/3, tức 0.333333 khi làm tròn đến sáu chữ số thập phân.\n\nVí dụ 3: độ dài cửa sổ 3 vượt quá độ dài mảng 2, nên không có cửa sổ đầy đủ nào, và số lượng in ra là 0.",
+    "hints": [
+      "Cập nhật tổng của cửa sổ bằng tổng trượt. Nhân giá trị tuyệt đối của tổng với 10⁶ và dùng phép chia nguyên cùng số dư để làm tròn đến sáu chữ số thập phân, tránh sai số dấu phẩy động nhị phân."
+    ]
   }
 }

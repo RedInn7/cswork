@@ -11,5 +11,35 @@
     "hints": [
       "For each warehouse, take the positive remainder after full rounds r=(v−1)mod(p+q)+1; winning it needs floor((r−1)/p) skips. Buy rewards in ascending order of the number of skips needed."
     ]
+  },
+  "ja": {
+    "title": "スキップを共有する場合の最大の出荷報酬",
+    "description": "各倉庫では、まずあなたが dispatch1 を引き、次に同僚が dispatch2 を引く、というように、在庫が ≤0 になるまで交互に繰り返し、最後に出荷した人が報酬を得ます。同僚は自分の番をスキップでき、全倉庫を通じて合計で高々 skips 回までです。あなたが勝てる倉庫の最大数を求めてください。\n\n標準入出力・例・判定は本サイトが独自に作成したものです。",
+    "input": "1 行目に n dispatch1 dispatch2 skips (1≤n≤100000、他は 1..10⁹)、2 行目に n 個の在庫値 (1..10⁹) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 在庫 6 と 2 はスキップなしで、どちらもあなたが最後に出荷します。在庫 3 も 1 回のスキップで勝てるので、実際には 3 つ勝てます。元の答えの 2 は、使えるスキップを見落としていました。例 2: 最初の番で直接空になるので、1 つ勝てます。例 3: 各倉庫に 4 回のスキップが必要で、予算の 1 回では足りないので、答えは 0 です。",
+    "hints": [
+      "各倉庫について、完全なラウンドを除いた正の剰余 r=(v−1)mod(p+q)+1 を取ります。それに勝つには floor((r−1)/p) 回のスキップが必要です。必要なスキップの回数が少ない順に報酬を買っていきます。"
+    ]
+  },
+  "ko": {
+    "title": "건너뛰기를 공유하는 배송 보상의 최대화",
+    "description": "각 창고에서 먼저 당신이 dispatch1만큼 재고를 줄이고, 이어서 동료가 dispatch2만큼 줄이며, 재고가 ≤0이 될 때까지 번갈아 진행합니다. 마지막으로 출고한 사람이 보상을 받습니다. 동료는 자신의 차례를 건너뛸 수 있으며, 모든 창고를 통틀어 최대 skips번까지입니다. 당신이 이길 수 있는 창고의 최대 개수를 구하세요.\n\n표준 입출력 형식, 예제, 채점은 이 사이트가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 n dispatch1 dispatch2 skips(1≤n≤100000, 나머지는 1..10⁹)가 주어지고, 둘째 줄에 n개의 재고 값(1..10⁹)이 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 재고 6과 2는 건너뛰기 없이 두 창고 모두에서 당신이 마지막으로 출고합니다. 재고 3도 건너뛰기 1번으로 이길 수 있으므로 실제로는 3개를 이길 수 있으며, 원문의 답 2는 사용할 수 있는 건너뛰기를 놓친 것입니다. 예제 2: 첫 차례에 바로 재고가 비므로 1개를 이깁니다. 예제 3: 각 창고에 건너뛰기가 4번 필요한데 예산이 1이라 부족하므로 답은 0입니다.",
+    "hints": [
+      "각 창고에서 전체 라운드를 제외한 양의 나머지 r=(v−1)mod(p+q)+1을 구합니다. 이기려면 floor((r−1)/p)번의 건너뛰기가 필요합니다. 필요한 건너뛰기 횟수가 적은 창고부터 보상을 사세요."
+    ]
+  },
+  "vi": {
+    "title": "Phần thưởng điều phối lớn nhất với các lượt bỏ qua dùng chung",
+    "description": "Ở mỗi kho, bạn trừ dispatch1 trước, rồi đồng nghiệp của bạn trừ dispatch2, luân phiên cho đến khi tồn kho ≤0; ai điều phối cuối cùng sẽ nhận phần thưởng. Đồng nghiệp có thể bỏ qua lượt của mình, tối đa skips lần tính chung cho mọi kho. Hãy tìm số kho tối đa bạn có thể thắng.\n\nTrang này tự biên soạn độc lập đầu vào/đầu ra chuẩn, các ví dụ và bộ chấm.",
+    "input": "Dòng đầu tiên chứa n dispatch1 dispatch2 skips (1≤n≤100000, các giá trị còn lại 1..10⁹); dòng thứ hai chứa n giá trị tồn kho (1..10⁹).",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: các kho 6 và 2 không cần lượt bỏ qua và bạn điều phối cuối cùng ở cả hai; kho 3 cũng có thể thắng với 1 lượt bỏ qua, nên thực tế bạn có thể thắng 3, và đáp án 2 của đề gốc đã bỏ sót lượt bỏ qua sẵn có. Ví dụ 2: lượt đầu tiên làm rỗng kho ngay, thắng 1. Ví dụ 3: mỗi kho cần 4 lượt bỏ qua và ngân sách 1 là không đủ, nên đáp án là 0.",
+    "hints": [
+      "Với mỗi kho, lấy phần dư dương sau các vòng đầy đủ r=(v−1)mod(p+q)+1; thắng kho đó cần floor((r−1)/p) lượt bỏ qua. Mua phần thưởng theo thứ tự tăng dần của số lượt bỏ qua cần thiết."
+    ]
   }
 }

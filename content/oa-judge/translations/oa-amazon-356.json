@@ -11,5 +11,35 @@
     "hints": [
       "First flatten the highest plateau, in descending order; until it reaches the lowest positive stock, the minimum does not change. Once everything is equal, charge by full rounds plus the remainder; once everything is down to 1, every remaining request charges 2."
     ]
+  },
+  "ja": {
+    "title": "最大在庫から貸し出し、最大値と非ゼロ最小在庫の和を課金する",
+    "description": "毎回、まず現在の最大在庫と現在の最小の非ゼロ在庫の和を課金し、その後、在庫が最大のタイプから1単位を貸し出します。最小値を考えるとき、在庫ゼロは対象外です。最大値が複数ある場合は、任意に選んで構いません。すべての要求にわたる総収入を求めてください。\n\n本サイトでは標準入出力と解説を独自にまとめています。出典で欠けている制約の補足やサンプルの訂正は、プロトコル中に明記しています。",
+    "input": "1行目に n m、2行目に n 個の在庫値が与えられます。OCR313 では n≤10^6、314 では 10^5 で在庫≤10^6 とされ、Fastprep は値が非負で、すべて貸し出せる場合もあると明記しています。本サイトは出典に即したより広い範囲を扱い、1≤n≤10^6、0≤stock[i]≤10^6、0≤m≤sum(stock)≤10^12 とし、sum>m は課しません。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "サンプルの答えは 15、12、60 です。OCR313 の表にある 1+4=6 は計算ミスで、正しくは 5 です。316 の VM 5種類は3項目の入力と一致しないため、3種類として扱います。",
+    "hints": [
+      "まず、最も高い台地を降順に平らにしていきます。最小の正の在庫に達するまで、最小値は変化しません。全体が等しくなったら、完全なラウンドと端数に分けて課金します。全体が 1 まで下がったら、残りの要求はすべて 2 を課金します。"
+    ]
+  },
+  "ko": {
+    "title": "재고가 가장 많은 유형에서 대여하며 최댓값과 0이 아닌 최소 재고를 합산",
+    "description": "매번 먼저 현재 최대 재고와 현재 0이 아닌 최소 재고의 합을 청구한 뒤, 재고가 최대인 유형 중 아무 곳에서나 한 단위를 대여합니다. 재고가 0인 유형은 최솟값 계산에서 제외하며, 최댓값이 동점이면 임의로 골라도 됩니다. 모든 요청에 대한 총 수입을 계산하십시오.\n\n이 사이트에서 표준 입출력과 해설을 독자적으로 정리했으며, 출처에 빠진 범위의 보완과 예제의 정정 사항은 프로토콜에 명시했습니다.",
+    "input": "첫째 줄에 n과 m이 주어지고, 둘째 줄에 n개의 재고 값이 주어집니다. OCR313은 n≤10^6, 314는 10^5와 재고≤10^6이라고 하며, Fastprep은 값이 음이 아니고 전부 대여될 수 있다고 명시합니다. 이 사이트는 더 넓은 출처 범위를 다룹니다: 1≤n≤10^6, 0≤stock[i]≤10^6, 0≤m≤sum(stock)≤10^12이며, sum>m은 강제하지 않습니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "예제의 답은 15, 12, 60입니다. OCR313 표의 1+4=6은 산술 오타로 5여야 하며, 316의 VM 유형 5개는 입력 항목 3개와 맞지 않으므로 3개 유형이어야 합니다.",
+    "hints": [
+      "먼저 가장 높은 고원을 내림차순으로 평탄화합니다. 가장 낮은 양의 재고에 도달할 때까지는 최솟값이 변하지 않습니다. 모든 값이 같아지면 완전한 라운드와 나머지로 계산하고, 모두 1까지 내려가면 남은 모든 요청은 2를 청구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cho thuê từ kho lớn nhất và tính phí bằng max cộng min khác 0",
+    "description": "Mỗi lần, trước tiên tính phí bằng tổng của tồn kho lớn nhất hiện tại và tồn kho khác 0 nhỏ nhất hiện tại, sau đó cho thuê một đơn vị từ một loại bất kỳ có tồn kho lớn nhất. Tồn kho bằng 0 không được xét khi tìm giá trị nhỏ nhất, và khi có nhiều giá trị lớn nhất bằng nhau thì chọn tùy ý. Hãy tính tổng thu nhập qua tất cả các yêu cầu.\n\nTrang này tự biên soạn phần đầu vào/đầu ra chuẩn và lời giải; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai chứa n giá trị tồn kho. OCR313 cho n≤10^6, còn 314 cho 10^5 với stock≤10^6; Fastprep nêu rõ các giá trị không âm và có thể cho thuê hết. Trang này bao phủ miền rộng hơn có nguồn: 1≤n≤10^6, 0≤stock[i]≤10^6, 0≤m≤sum(stock)≤10^12, không áp đặt sum>m.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các ví dụ cho 15, 12 và 60. Phép tính 1+4=6 trong bảng của OCR313 là lỗi số học và phải là 5; 5 loại VM trong 316 không khớp với đầu vào ba phần tử và phải là 3 loại.",
+    "hints": [
+      "Trước hết san phẳng cao nguyên cao nhất, theo thứ tự giảm dần; cho đến khi nó chạm tồn kho dương nhỏ nhất, giá trị nhỏ nhất không đổi. Khi mọi phần tử đã bằng nhau, tính phí theo các vòng đầy đủ cộng với phần dư; khi tất cả đã xuống còn 1, mọi yêu cầu còn lại đều tính phí 2."
+    ]
   }
 }

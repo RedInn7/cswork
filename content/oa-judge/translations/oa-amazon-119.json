@@ -11,5 +11,35 @@
     "hints": [
       "For each character, map it to +1 and every other character to −1, and count pairs of equal prefix sums to find where it makes up exactly half. The only double counting happens when there are exactly two characters in equal numbers; for each pair of characters, merge their positions, do a balance count within the stretches that contain no other character, and subtract it."
     ]
+  },
+  "ja": {
+    "title": "ある文字がちょうど半分を占める部分文字列の個数",
+    "description": "偶数長の部分文字列をインデックスで数えます。少なくとも 1 種類の文字がちょうど長さの半分の回数だけ現れる部分文字列は 1 回数えます。2 種類の文字がそれぞれ半分を占める場合も、1 回だけ数えます。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "文字列が 1 行で与えられます。出典には長さや文字種の制限がないため、本サイトでは長さを 1..100000、小文字のみとしています。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 条件を満たすのは ai、id、aaid の合計 3 個です。出典の解説にある aa は定義を満たしません。例 2: 長さ 2 の 3 個と全体の abab で、合計 4 個です。例 3: aa では a が 2 回現れ、長さの半分である 1 回ではないので、答えは 0 です。",
+    "hints": [
+      "各文字について、その文字を +1、それ以外を −1 に写し、同じ累積和を持つペアを数えて、ちょうど半分を占める箇所を求めます。二重に数えるのは、ちょうど 2 種類の文字が同数ずつの場合だけです。各文字のペアについて、2 種類の位置をマージし、他の文字を含まない区間ごとに釣り合いを数えて、それを引きます。"
+    ]
+  },
+  "ko": {
+    "title": "한 문자가 정확히 절반을 차지하는 부분 문자열의 수",
+    "description": "길이가 짝수인 부분 문자열을 인덱스 기준으로 세되, 어떤 문자가 정확히 길이의 절반만큼 등장하는 문자가 하나 이상 있으면 한 번만 셉니다. 두 문자가 각각 절반씩 차지하더라도 한 번만 셉니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "문자열이 한 줄로 주어집니다. 원문에는 길이나 문자 집합의 제한이 없으며, 이 사이트에서 길이를 1..100000, 소문자로만 구성되도록 정했습니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 유효한 것은 ai, id, aaid로 총 3개이며, 원문 설명의 aa는 정의를 만족하지 않습니다. 예제 2: 길이 2인 부분 문자열 세 개와 전체 abab로 총 4개입니다. 예제 3: aa에서 a는 길이의 절반인 1번이 아니라 2번 등장하므로 답은 0입니다.",
+    "hints": [
+      "각 문자를 +1, 나머지 문자를 −1로 매핑하고 같은 누적 합을 가진 쌍을 세어 그 문자가 정확히 절반을 차지하는 구간을 찾습니다. 중복 계산은 두 문자가 같은 개수로만 이루어진 경우에만 생기며, 각 문자 쌍에 대해 두 문자의 위치를 합치고 다른 문자가 없는 구간 안에서 균형을 세어 빼 줍니다."
+    ]
+  },
+  "vi": {
+    "title": "Số xâu con mà một ký tự chiếm đúng một nửa",
+    "description": "Đếm các xâu con có độ dài chẵn theo chỉ số: một xâu con được tính một lần nếu có ít nhất một ký tự xuất hiện đúng một nửa độ dài của nó. Nếu hai ký tự mỗi ký tự chiếm một nửa, nó vẫn chỉ được tính một lần.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Một dòng chứa một xâu. Nguồn không giới hạn độ dài hay bảng ký tự; trang này đặt độ dài 1..100000 và chỉ gồm chữ cái thường.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: các xâu hợp lệ là ai, id và aaid, tổng cộng 3; phần aa trong lời giải thích của nguồn không thỏa định nghĩa. Ví dụ 2: ba xâu con độ dài 2 cộng với toàn bộ abab, tổng cộng 4. Ví dụ 3: trong aa, a xuất hiện 2 lần chứ không phải một nửa độ dài, tức 1, nên đáp án là 0.",
+    "hints": [
+      "Với mỗi ký tự, ánh xạ nó thành +1 và mọi ký tự khác thành −1, rồi đếm các cặp tổng tiền tố bằng nhau để tìm nơi nó chiếm đúng một nửa. Trường hợp đếm trùng duy nhất xảy ra khi có đúng hai ký tự với số lượng bằng nhau; với mỗi cặp ký tự, gộp các vị trí của chúng, đếm cân bằng trong các đoạn không chứa ký tự nào khác, rồi trừ đi."
+    ]
   }
 }

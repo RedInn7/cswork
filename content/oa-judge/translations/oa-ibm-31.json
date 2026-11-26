@@ -12,5 +12,38 @@
       "Each sale changes the price of the next item in that category.",
       "Prefer the category with the largest current remaining quantity."
     ]
+  },
+  "ja": {
+    "title": "在庫が動的に変わる販売での最大売上(IBM OA)",
+    "description": "商品は n カテゴリあり、カテゴリ i には現在 quantity[i] 個の在庫があります。商品を 1 つ売るたびに、その価格は売る前のそのカテゴリの残り個数に等しくなります。最適な順序でちょうど m 個を売ったときの、売上の合計の最大値を求めてください。有効な入力では在庫が少なくとも m 個あります。これは「ちょうど m 個を売る」ための実現可能性の条件で、元の問題の数値範囲には明記されていません。元の 2 つの例の出力は、ルールに従って独立した全探索で確認済みです。\n\n標準的な入出力形式と例は本サイトで整理したものです。本サイトのものと明記されている範囲は、元の問題文の制約ではありません。",
+    "input": "1 行目に n と m、2 行目に n 個の整数 quantity[i] が与えられます。元の範囲に従います:1≤n,m≤100000、1≤quantity[i]≤100000。本サイトでは、ちょうど m 個を売ることが可能であるよう、m≤sum(quantity) を明示的に要求します。",
+    "output": "売上の合計の最大値を出力してください。",
+    "explanation": "毎回、残りの在庫が最も多いカテゴリを選びます。売上はその在庫数だけ増え、その後在庫が 1 減ります。",
+    "hints": [
+      "1 つ売るたびに、そのカテゴリの次の商品の価格が変わります。",
+      "現在の残り個数が最大のカテゴリを優先します。"
+    ]
+  },
+  "ko": {
+    "title": "동적 재고 판매의 최대 수익 (IBM OA)",
+    "description": "물품 종류가 n개 있고, i번째 종류는 현재 quantity[i]개가 남아 있습니다. 물품을 하나 팔 때마다 가격은 판매 전에 그 종류에 남아 있던 개수와 같습니다. 정확히 m개를 최적의 순서로 팔았을 때 얻을 수 있는 최대 총수익을 구하세요. 유효한 입력은 재고가 최소 m개 이상이어야 하며, 이는 \"정확히 m개를 판다\"의 실현 가능 조건으로 원문의 수치 범위에는 명시되어 있지 않습니다. 원문의 두 예제 출력은 모두 독립적인 완전 탐색으로 규칙에 맞음을 확인했습니다.",
+    "input": "첫째 줄에 n과 m이 주어지고, 둘째 줄에 n개의 정수 quantity[i]가 주어집니다. 원문의 범위를 따라 1≤n,m≤100000, 1≤quantity[i]≤100000이며, 정확히 m개를 파는 것이 가능하도록 이 사이트에서는 m≤sum(quantity)를 명시적으로 요구합니다.",
+    "output": "최대 총수익을 출력합니다.",
+    "explanation": "매번 남은 재고가 가장 많은 종류를 고릅니다. 수익은 그 재고 수만큼 증가하고, 이후 재고는 1 줄어듭니다.",
+    "hints": [
+      "한 번 팔 때마다 그 종류의 다음 물품 가격이 바뀝니다.",
+      "현재 남은 수량이 가장 많은 종류를 우선합니다."
+    ]
+  },
+  "vi": {
+    "title": "Doanh thu tối đa từ bán hàng tồn kho động (IBM OA)",
+    "description": "Có n loại vật phẩm, và loại i hiện còn quantity[i] vật phẩm. Mỗi lần bán một vật phẩm, giá của nó bằng số vật phẩm còn lại của loại đó trước lần bán. Hãy bán đúng m vật phẩm theo thứ tự tối ưu và tìm tổng doanh thu lớn nhất. Đầu vào hợp lệ phải có ít nhất m vật phẩm trong kho; đây là điều kiện khả thi cho việc \"bán đúng m vật phẩm\", mà các giới hạn số của đề gốc không nêu. Cả hai đầu ra ví dụ gốc đã được xác nhận theo các quy tắc bằng vét cạn độc lập.\n\nĐịnh dạng đầu vào/đầu ra chuẩn và các ví dụ do trang này biên soạn; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n và m, dòng thứ hai chứa n số nguyên quantity[i]. Áp dụng các khoảng của đề gốc: 1≤n,m≤100000, 1≤quantity[i]≤100000; trang này yêu cầu rõ m≤sum(quantity) để việc bán đúng m vật phẩm là khả thi.",
+    "output": "In ra doanh thu tối đa.",
+    "explanation": "Mỗi lần, chọn loại còn nhiều hàng nhất; doanh thu tăng thêm số lượng hàng đó, rồi số hàng giảm đi một.",
+    "hints": [
+      "Mỗi lần bán làm thay đổi giá của vật phẩm tiếp theo trong loại đó.",
+      "Ưu tiên loại có số lượng còn lại hiện tại lớn nhất."
+    ]
   }
 }

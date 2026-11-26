@@ -11,5 +11,35 @@
     "hints": [
       "Precompute suffix frequencies and suffix MEX values; in each round, take the MEX of the remaining array and cut the shortest prefix that first covers 0..MEX−1. When the MEX is 0, delete only one element. When a frequency drops to zero, update the suffix MEX downward."
     ]
+  },
+  "ja": {
+    "title": "接頭辞 MEX の取り出しで得られる辞書順最大の結果",
+    "description": "空でない接頭辞を選び、その MEX を結果に追加して、その接頭辞を削除する操作を、配列が空になるまで繰り返します。辞書順で最大となる結果を求めてください。一方の配列が他方の真の接頭辞であるときは、長いほうが大きいとします。MEX とは、現れない最小の非負整数です。\n\n入出力の形式は本サイトで独自に整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n、2 行目に n 個の値が与えられます。1≤n≤100000、0≤arr[i]≤n です。",
+    "output": "まず結果の長さを出力し、続いて対応する整数配列を出力してください。",
+    "explanation": "3 つの公開例の答えは順に 1\n3、3\n0 0 0、2\n3 3 です。すべての例は、独立した小規模な全探索または状態探索で検証済みです。",
+    "hints": [
+      "接尾辞の出現頻度と接尾辞の MEX を前計算します。各ラウンドで、残りの配列の MEX をとり、0..MEX−1 を初めてすべて含む最短の接頭辞を切り取ります。MEX が 0 のときは要素を 1 つだけ削除します。出現頻度が 0 になったら、接尾辞の MEX を下方向に更新します。"
+    ]
+  },
+  "ko": {
+    "title": "접두사 MEX 제거로 얻는 사전순 최대 결과",
+    "description": "배열이 빌 때까지 비어 있지 않은 접두사를 하나 골라 그 MEX를 결과에 추가하고 그 접두사를 삭제하는 일을 반복합니다. 사전순으로 가장 큰 결과를 구하세요. 한 배열이 다른 배열의 진접두사이면 더 긴 쪽이 더 큽니다. MEX는 등장하지 않는 가장 작은 음이 아닌 정수입니다.\n\n입출력 규약은 이 사이트에서 독자적으로 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n이, 둘째 줄에 n개의 값이 주어집니다. 1≤n≤100000, 0≤arr[i]≤n.",
+    "output": "먼저 결과의 길이를 출력한 다음, 해당 정수 배열을 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 1\n3; 3\n0 0 0; 2\n3 3입니다. 모든 예제는 독립적인 소규모 완전 탐색 또는 상태 탐색으로 검증했습니다.",
+    "hints": [
+      "접미사 빈도와 접미사 MEX 값을 미리 계산합니다. 매 라운드에서 남은 배열의 MEX를 구하고, 0..MEX−1을 처음으로 모두 포함하는 가장 짧은 접두사를 잘라 냅니다. MEX가 0이면 원소 하나만 삭제합니다. 어떤 빈도가 0이 되면 접미사 MEX를 아래로 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Kết quả lớn nhất theo từ điển khi xóa tiền tố theo MEX",
+    "description": "Lặp lại việc chọn một tiền tố không rỗng, nối MEX của nó vào kết quả, rồi xóa tiền tố đó, cho đến khi mảng rỗng. Tìm kết quả lớn nhất theo thứ tự từ điển; khi một mảng là tiền tố thực sự của mảng khác thì mảng dài hơn lớn hơn. MEX là số nguyên không âm nhỏ nhất không xuất hiện.\n\nGiao thức đầu vào/đầu ra do trang này tự biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n, dòng thứ hai chứa n giá trị. 1≤n≤100000, 0≤arr[i]≤n.",
+    "output": "Trước hết in độ dài của kết quả, sau đó in mảng số nguyên tương ứng.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 1\n3; 3\n0 0 0; 2\n3 3. Tất cả ví dụ đã được kiểm chứng bằng liệt kê quy mô nhỏ độc lập hoặc tìm kiếm trạng thái.",
+    "hints": [
+      "Tính trước tần suất hậu tố và MEX hậu tố; ở mỗi vòng, lấy MEX của mảng còn lại và cắt tiền tố ngắn nhất lần đầu phủ 0..MEX−1. Khi MEX bằng 0, chỉ xóa một phần tử. Khi một tần suất về không, cập nhật MEX hậu tố giảm xuống."
+    ]
   }
 }

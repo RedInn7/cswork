@@ -11,5 +11,35 @@
     "hints": [
       "Let b[i]=products[i]−i and maintain a stack of indices with strictly increasing b. Pop indices whose b is ≥ the current b; if a top j remains, dp[i]=dp[j]+ the arithmetic sum from products[i]−(i−j)+1 to products[i]; if there is no j, take only the last min(i+1,products[i]) positive integers. The answer is max(dp)."
     ]
+  },
+  "ja": {
+    "title": "連続した棚から厳密に増加する個数で取れる商品の最大数",
+    "description": "空でない連続する部分配列を選び、選んだ各棚から、少なくとも 1 個、多くとも在庫数までの商品を、取る個数が左から右へ厳密に増加するように取ります。取れる商品の総数の最大値を求めてください。選んだ部分配列の途中の棚を飛ばすことはできません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に products が与えられます。1≤n≤5000、1≤products[i]≤10^9 です。この完全な範囲は、元の本文の Constraints に由来するもので、HTML で切り詰められた整形版ではありません。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 16、9、1 です。2 つ目の例では、最初の 2 つの棚だけを選んで 4 と 5 を取れば 9 になります。3 つの棚すべてを選ぶと 1+2+3=6 にしかなりません。",
+    "hints": [
+      "b[i]=products[i]−i とし、b が厳密に増加するインデックスのスタックを保持します。b が現在の b 以上のインデックスをポップし、先頭 j が残れば、dp[i]=dp[j]+products[i]−(i−j)+1 から products[i] までの等差数列の和とします。j がなければ、最後の min(i+1,products[i]) 個の正の整数だけを取ります。答えは max(dp) です。"
+    ]
+  },
+  "ko": {
+    "title": "연속된 진열대에서 엄격히 증가하는 수량으로 가져가는 최대 물건 수",
+    "description": "비어 있지 않은 연속 부분 배열을 고르고, 선택한 각 진열대에서 최소 1개, 최대 재고만큼 가져와 가져간 수량이 왼쪽에서 오른쪽으로 엄격히 증가하게 합니다. 가져간 물건의 총합의 최댓값을 구하세요. 선택한 부분 배열의 중간 진열대를 건너뛸 수는 없습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 둘째 줄에 products가 주어집니다. 1≤n≤5000, 1≤products[i]≤10^9입니다. 이 전체 범위는 HTML 때문에 잘린 정리본이 아니라 원본 본문의 제약 조건에서 가져온 것입니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 각각 16, 9, 1입니다. 두 번째 예제에서는 처음 두 진열대만 골라 4와 5를 가져가면 9이고, 세 진열대를 모두 고르면 1+2+3=6밖에 되지 않습니다.",
+    "hints": [
+      "b[i]=products[i]−i로 두고 b가 엄격히 증가하는 인덱스 스택을 유지합니다. b가 현재 b 이상인 인덱스는 pop하고, 남은 top j가 있으면 dp[i]=dp[j]+products[i]−(i−j)+1부터 products[i]까지의 등차수열 합이며, j가 없으면 마지막 min(i+1,products[i])개의 양의 정수만 취합니다. 답은 max(dp)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số món lấy được lớn nhất với số lượng tăng ngặt từ các kệ liên tiếp",
+    "description": "Chọn một mảng con liên tiếp khác rỗng và lấy ít nhất một món, nhiều nhất bằng tồn kho của kệ, từ mỗi kệ được chọn, sao cho số lượng lấy tăng ngặt từ trái sang phải. Tìm tổng số món lớn nhất. Bạn không thể bỏ qua các kệ ở giữa mảng con đã chọn.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và dòng thứ hai chứa products. 1≤n≤5000, 1≤products[i]≤10^9. Khoảng giá trị đầy đủ này lấy từ phần Constraints trong nội dung thô, không phải từ bản đã dọn dẹp bị HTML cắt bớt.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 16, 9 và 1. Ở ví dụ thứ hai, bạn có thể chỉ chọn hai kệ đầu và lấy 4 và 5, được 9; lấy cả ba kệ chỉ được 1+2+3=6.",
+    "hints": [
+      "Đặt b[i]=products[i]−i và duy trì một ngăn xếp các chỉ số có b tăng ngặt. Loại bỏ các chỉ số có b ≥ b hiện tại; nếu còn đỉnh j, dp[i]=dp[j]+ tổng cấp số cộng từ products[i]−(i−j)+1 đến products[i]; nếu không có j, chỉ lấy min(i+1,products[i]) số nguyên dương cuối cùng. Đáp án là max(dp)."
+    ]
   }
 }

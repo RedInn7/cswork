@@ -11,5 +11,35 @@
     "hints": [
       "Sort the capacities and compute their total S. When warehouse w is chosen, the cost is max(0,a−w)+max(0,b−(S−w)). Binary search for the first w≥a, and compare only it and the capacity just before it."
     ]
+  },
+  "ja": {
+    "title": "各ストレージ要求に必要な最小の拡張トークン数",
+    "description": "各要求 a b では、容量が少なくとも a の倉庫を1つ選び、さらに選んだ倉庫以外のすべての倉庫の容量の合計が少なくとも b でなければなりません。トークンを1つ使うと、任意の倉庫の容量を1だけ増やせます。選んだ倉庫の余った容量をバックアップに充てることはできません。各要求は独立で、そのつど元の容量から計算します。必要なトークンの最小数を返してください。\n\n本サイトでは標準入出力、解説、テストを独自に作成しています。元の問題で欠けている制約やサンプルの誤りの訂正は、問題文中に明記しています。",
+    "input": "1行目に n q、2行目に n 個の倉庫の容量、続いて q 行の a b が与えられます。元の制約はすべて、2≤n≤100000、1≤q≤100000、容量と a は 1..10^9、b は 1..10^15 です。",
+    "output": "各要求に必要な最小のトークン数を、要求の順に1行に1つずつ、合計 q 行出力します。",
+    "explanation": "3つの公開入力に対する出力は 2、1, 3, 5、0 です。出典の最初のサンプル出力は TO-DO のままでしたが、本サイトでは倉庫ごとのコストから 2 と独自に補いました。",
+    "hints": [
+      "容量をソートして合計 S を求めます。倉庫 w を選ぶ場合のコストは max(0,a−w)+max(0,b−(S−w)) です。w≥a となる最初の位置を二分探索で見つけ、その倉庫と、直前の容量だけを比較します。"
+    ]
+  },
+  "ko": {
+    "title": "각 저장 요청에 필요한 최소 확장 토큰 수",
+    "description": "각 요청 a b는 창고 하나를 선택하며, 그 창고의 용량은 최소 a 이상이어야 하고 나머지 모든 창고의 용량 합은 최소 b 이상이어야 합니다. 토큰 1개를 쓰면 임의의 창고 용량을 1 늘릴 수 있습니다. 선택한 창고의 남는 용량은 백업에 사용할 수 없습니다. 각 요청은 독립적이며 원래 용량에서 다시 계산합니다. 필요한 최소 토큰 수를 구하십시오.\n\n이 사이트에서 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 원문에 빠진 범위와 예제의 정정 사항은 문제에 명시했습니다.",
+    "input": "첫째 줄에 n과 q가 주어지고, 둘째 줄에 n개의 창고 용량이 주어지며, 이어서 q개의 줄에 a b가 주어집니다. 원문의 전체 범위는 2≤n≤100000, 1≤q≤100000, 용량과 a는 1..10^9, b는 1..10^15입니다.",
+    "output": "각 요청의 최소 토큰 수를 요청 순서대로 한 줄에 하나씩, 총 q줄 출력합니다.",
+    "explanation": "공개 입력 3개의 출력은 각각 2, 1, 3, 5, 그리고 0입니다. 원문의 첫 번째 예제 출력은 아직 TO-DO였으며, 이 사이트에서 창고별 비용으로 독립적으로 계산해 2로 채웠습니다.",
+    "hints": [
+      "용량을 정렬하고 합계 S를 구합니다. 창고 w를 선택하면 비용은 max(0,a−w)+max(0,b−(S−w))입니다. w≥a인 첫 위치를 이분 탐색으로 찾고, 그 위치와 바로 앞의 용량만 비교합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số token mở rộng tối thiểu cho mỗi yêu cầu lưu trữ",
+    "description": "Mỗi yêu cầu a b chọn một kho, kho này phải có dung lượng ít nhất a, trong khi tổng dung lượng của tất cả các kho còn lại phải ít nhất b; tiêu 1 token sẽ tăng dung lượng của một kho bất kỳ thêm 1. Dung lượng dư của kho được chọn không thể dùng cho phần sao lưu. Mỗi yêu cầu là độc lập và được tính lại từ dung lượng ban đầu; hãy trả về số token tối thiểu.\n\nTrang này tự viết lại phần đầu vào/đầu ra chuẩn, lời giải và bộ test; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa n q, dòng thứ hai chứa n dung lượng kho, tiếp theo là q dòng a b. Đầy đủ giới hạn gốc là 2≤n≤100000, 1≤q≤100000, dung lượng và a trong khoảng 1..10^9, và b trong khoảng 1..10^15.",
+    "output": "In số token tối thiểu cho mỗi yêu cầu, mỗi yêu cầu một dòng theo thứ tự yêu cầu, tổng cộng q dòng.",
+    "explanation": "Ba đầu vào công khai có đầu ra lần lượt là 2; 1, 3, 5; và 0. Đầu ra của ví dụ đầu tiên trong nguồn vẫn là TO-DO; trang này tự điền là 2 dựa trên chi phí của từng kho.",
+    "hints": [
+      "Sắp xếp các dung lượng và tính tổng S. Khi chọn kho w, chi phí là max(0,a−w)+max(0,b−(S−w)). Tìm kiếm nhị phân w≥a đầu tiên, rồi chỉ so sánh nó với dung lượng ngay trước nó."
+    ]
   }
 }

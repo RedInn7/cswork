@@ -11,5 +11,35 @@
     "hints": [
       "If x>y, reverse the string and swap the costs. After that x≤y, and there is an optimal solution in which the unknown bits are 0s followed by 1s. Start with all unknown bits set to 1, then change them to 0 one by one from left to right, updating the cost with the counts of 0/1 on the left and right, and take the minimum over all split points."
     ]
+  },
+  "ja": {
+    "title": "未知の 2 進ビットを含む部分列エラーの最小化",
+    "description": "各 ! を 0 か 1 に置き換えます。i<j のインデックスの組で 01 になるものは 1 組あたりコスト x、10 になるものは 1 組あたりコスト y です。まず合計コストの最小値を求め、その後で 10⁹+7 で割った余りを出力してください。剰余を取った後でコストを比較してはいけません。\n\n標準入出力と判定は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に errorString (長さ 1..100000) が与えられ、2 行目に x y (0..10⁹) が与えられます。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: すべてを 0 にすると、異なる値の組がなくコストは 0 です。例 2: 001 と 011 のどちらを選んでも 01 の組が 2 つできるので、コストは 4 です。例 3: 唯一の 10 の部分列のコストが 5 です。",
+    "hints": [
+      "x>y なら文字列を反転してコストを入れ替えます。すると x≤y になり、未知のビットは 0 が並んだ後に 1 が並ぶ形の最適解が存在します。まず未知のビットをすべて 1 にし、左から順に 1 つずつ 0 に変えながら、左右の 0/1 の個数でコストを更新し、すべての分割点での最小値を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "알 수 없는 이진 비트가 있을 때 부분 수열 오류의 최솟값",
+    "description": "각 !를 0 또는 1로 바꿉니다. i<j인 인덱스 쌍이 01을 이루면 비용 x가, 10을 이루면 비용 y가 듭니다. 먼저 총비용의 최솟값을 구한 뒤 10⁹+7로 나눈 나머지를 출력하세요. 나머지를 취한 뒤의 값끼리 비용을 비교하면 안 됩니다.\n\n표준 입출력 형식과 채점은 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 errorString(길이 1..100000)이 주어지고, 둘째 줄에 x y(0..10⁹)가 주어집니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 모두 0으로 두면 서로 다른 값의 쌍이 없어 비용은 0입니다. 예제 2: 001이나 011을 택하면 둘 다 01 쌍이 두 개 생겨 비용은 4입니다. 예제 3: 유일한 10 부분 수열의 비용이 5입니다.",
+    "hints": [
+      "x>y이면 문자열을 뒤집고 비용을 서로 바꿉니다. 그러면 x≤y이고, 알 수 없는 비트가 0들 다음에 1들이 오는 최적 해가 존재합니다. 먼저 알 수 없는 비트를 모두 1로 두고, 왼쪽부터 하나씩 0으로 바꾸면서 좌우의 0/1 개수로 비용을 갱신하여 모든 분할 지점에 대한 최솟값을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lỗi dãy con tối thiểu với các bit nhị phân chưa biết",
+    "description": "Thay mỗi ký tự ! bằng 0 hoặc 1; mỗi cặp chỉ số i<j tạo thành 01 tốn x, và mỗi cặp tạo thành 10 tốn y. Trước hết tìm tổng chi phí nhỏ nhất, sau đó lấy modulo 10⁹+7; không được so sánh các chi phí sau khi đã lấy modulo.\n\nTrang này tự viết phần nhập/xuất chuẩn và chương trình chấm; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa errorString (độ dài 1..100000), dòng thứ hai chứa x y (0..10⁹).",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: đặt tất cả bằng 0; không có cặp nào gồm hai giá trị khác nhau, chi phí 0. Ví dụ 2: chọn 001 hoặc 011 đều tạo ra hai cặp 01, chi phí 4. Ví dụ 3: dãy con 10 duy nhất tốn 5.",
+    "hints": [
+      "Nếu x>y, hãy đảo ngược xâu và hoán đổi hai chi phí. Sau đó x≤y, và tồn tại một phương án tối ưu trong đó các bit chưa biết là các số 0 rồi đến các số 1. Bắt đầu với mọi bit chưa biết đặt bằng 1, rồi đổi lần lượt từng bit sang 0 từ trái sang phải, cập nhật chi phí theo số lượng 0/1 bên trái và bên phải, và lấy giá trị nhỏ nhất qua mọi điểm chia."
+    ]
   }
 }

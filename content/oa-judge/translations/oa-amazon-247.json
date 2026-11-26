@@ -11,5 +11,35 @@
     "hints": [
       "Parse letters or dots and group contents into atoms, each flagged with whether it has *. Run a DP atom by atom over the query prefixes that can be matched; an atom without * consumes exactly once, while an atom with * can consume zero times or consume once more from a shorter prefix at the same level. Skip an empty ()* directly."
     ]
+  },
+  "ja": {
+    "title": "グループとスターを含む正規表現による文字列全体のマッチ",
+    "description": "各クエリについて、文字列全体が正規表現にマッチするかを判定してください。小文字の英字は自分自身にマッチし、. は任意の小文字 1 文字にマッチし、* は直前のアトムの 0 回以上の繰り返しを表します。括弧で囲まれたグループは、英字または . の並びで、入れ子や * を含みません。グループの直後には必ず * が付き、空のグループ ()* も許されます。繰り返しのたびに、その中の . は独立にマッチします。正式な規則と、例 a(b.d)* および ab(e.r)*e に基づき、本サイトは元の問題の孤立した誤った注記を修正しています。(.)* は ac、and、bcd にマッチし、空文字列にもマッチします。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に正規表現、2 行目にクエリ数 q、続く q 行にクエリが与えられます。空のクエリは単独の - で表します（- は正規表現の文字ではありません）。元の問題には数値の範囲がなかったため、本サイトでは、正規表現の長さを 1..200、1≤q≤200、各クエリの長さを 0..20000、クエリの長さの合計を 20000 以下とします。正規表現の構文は正しいことが保証され、* はアトムの直後にのみ現れ、連続して現れることはありません。",
+    "output": "各クエリについて、YES または NO を 1 行に 1 つ出力してください。",
+    "explanation": "出力は NO/YES、NO/YES/YES、YES/YES/YES/YES です。空の ()* は文字を消費せず、無限ループしてはいけません。",
+    "hints": [
+      "英字、ドット、グループの中身を、* の有無のフラグ付きのアトムに分解します。クエリの接頭辞のうちマッチ可能なものに対して、アトムごとに DP を行います。* のないアトムはちょうど 1 回消費し、* のあるアトムは 0 回消費するか、同じレベルのより短い接頭辞からもう 1 回消費します。空の ()* は直接飛ばします。"
+    ]
+  },
+  "ko": {
+    "title": "그룹과 별표가 있는 정규식의 전체 문자열 매칭",
+    "description": "각 질의에 대해 문자열 전체가 정규식과 매칭되는지 판단하세요. 소문자는 자기 자신과 매칭되고, .은 소문자 하나와 매칭되며, *는 바로 앞의 원자(atom)가 0번 이상 반복됨을 뜻합니다. 괄호 그룹은 글자 또는 .으로 이루어진 문자열이며 중첩과 *를 포함하지 않습니다. 그룹 뒤에는 항상 *가 오고, 빈 그룹 ()*도 허용됩니다. 반복할 때마다 .은 독립적으로 매칭됩니다. 형식 규칙과 a(b.d)*, ab(e.r)*e 예제에 따라, 이 사이트는 원문의 고립된 잘못된 설명을 바로잡았습니다. (.)*는 ac, and, bcd와 빈 문자열에도 매칭될 수 있습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독립적으로 작성했으며, 이 사이트 기준이라고 명시한 범위는 원문의 원래 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 정규식, 둘째 줄에 질의 수 q가 주어지고, 이어서 q개의 줄에 질의가 주어집니다. 빈 질의는 - 하나로 표기합니다(-는 정규식 문자가 아닙니다). 원문에는 수치 범위가 없었으며, 이 사이트에서는 정규식 길이 1..200, 1≤q≤200, 각 질의 길이 0..20000, 질의 길이의 총합 ≤20000으로 설정했습니다. 정규식 문법은 올바르게 주어지며, *는 원자 뒤에만 오고 연속해서 두 번 나타나지 않습니다.",
+    "output": "각 질의마다 YES 또는 NO를 한 줄에 하나씩 출력합니다.",
+    "explanation": "출력은 NO/YES, NO/YES/YES, YES/YES/YES/YES입니다. 빈 ()*는 문자를 소비하지 않으므로 무한 루프에 빠지지 않도록 해야 합니다.",
+    "hints": [
+      "글자 또는 점과 그룹의 내용을 원자로 파싱하고, 각 원자에 *가 붙었는지 표시합니다. 원자 단위로 질의의 매칭 가능한 접두사에 대해 DP를 수행합니다. *가 없는 원자는 정확히 한 번 소비하고, *가 있는 원자는 0번 소비하거나 같은 레벨의 더 짧은 접두사에서 한 번 더 소비할 수 있습니다. 빈 ()*는 바로 건너뜁니다."
+    ]
+  },
+  "vi": {
+    "title": "Khớp toàn xâu với nhóm và dấu sao",
+    "description": "Với mỗi truy vấn, xác định xem toàn bộ xâu có khớp với biểu thức chính quy hay không: chữ cái thường khớp với chính nó, . khớp với một chữ cái thường bất kỳ, và * nghĩa là nguyên tử đứng trước lặp lại không hoặc nhiều lần. Nhóm trong ngoặc là một xâu gồm chữ cái hoặc ., không lồng nhau và không chứa *; nhóm luôn được theo sau bởi *, và nhóm rỗng ()* được phép. Mỗi lần lặp thì . khớp độc lập. Dựa trên các quy tắc hình thức và các ví dụ a(b.d)* và ab(e.r)*e, trang này sửa một ghi chú sai lẻ loi trong nguồn: (.)* có thể khớp ac, and, bcd và cả xâu rỗng.\n\nĐề bài chuẩn hóa vào/ra, các ví dụ và lời giải được trang này tự biên soạn; những khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa biểu thức chính quy, dòng thứ hai chứa số truy vấn q, tiếp theo là q dòng truy vấn. Truy vấn rỗng được viết là một dấu - đơn lẻ (- không phải ký tự của biểu thức chính quy). Nguồn không có cận số; trang này dùng độ dài biểu thức chính quy 1..200, 1≤q≤200, độ dài mỗi truy vấn 0..20000, và tổng độ dài truy vấn ≤20000. Cú pháp biểu thức chính quy được đảm bảo hợp lệ, và * chỉ đứng sau một nguyên tử, không bao giờ xuất hiện hai lần liên tiếp.",
+    "output": "Với mỗi truy vấn, in YES hoặc NO trên một dòng riêng.",
+    "explanation": "Các đầu ra là NO/YES; NO/YES/YES; YES/YES/YES/YES. Nhóm rỗng ()* không tiêu thụ ký tự nào và không được lặp vô hạn.",
+    "hints": [
+      "Phân tích các chữ cái hoặc dấu chấm và nội dung nhóm thành các nguyên tử, mỗi nguyên tử đánh dấu có * hay không. Chạy DP từng nguyên tử trên các tiền tố của truy vấn có thể khớp; nguyên tử không có * tiêu thụ đúng một lần, còn nguyên tử có * có thể tiêu thụ không lần nào hoặc tiêu thụ thêm một lần từ tiền tố ngắn hơn ở cùng tầng. Bỏ qua trực tiếp ()* rỗng."
+    ]
   }
 }

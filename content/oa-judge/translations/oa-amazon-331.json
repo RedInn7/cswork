@@ -11,5 +11,35 @@
     "hints": [
       "The total number of 0s in the target must equal that of the original string. First subtract the fixed 0s, place the required 0s at the earliest ? positions, and fill the remaining ? with 1; if there are too few or too many, answer NO. Then check that every prefix of the target has no more 1s than the matching prefix of the original; answer YES only if all of them hold."
     ]
+  },
+  "ja": {
+    "title": "部分列のソートでワイルドカード付き2値ターゲットに到達できるか",
+    "description": "1回の操作では、文字列の任意の部分列を選び、選んだ文字を昇順にソートして、同じ選んだ位置に戻します。0/1/? からなる、同じ長さの各ターゲット文字列について、すべての ? を 0 または 1 に置き換えて、元の2値文字列から0回以上の操作で到達できるようにできるかを判定してください。各ターゲットは、それぞれ独立に元の文字列から始めます。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に長さ L とクエリ数 q、2行目に binary、続く q 行にターゲットが与えられます。元の問題文には値の範囲が示されていないため、本サイトでは 1≤L,q≤200000、各ターゲットの長さは L、ターゲット文字の総数は L×q≤2000000 とします。許されるのはソートだけで、任意の交換はできません。",
+    "output": "各クエリについて YES または NO を、順に空白区切りで出力してください。",
+    "explanation": "答えは YES NO、NO YES、NO YES です。元の例では、101100 から 011100 にするには、元の説明にある {0,2} ではなく、0 始まりの位置 {0,1} をソートするのが正しいです。出典は 1 の総数しか比較しないため、111??? を誤って受理してしまいます。",
+    "hints": [
+      "ターゲットの 0 の総数は元の文字列と等しくなければなりません。まず固定された 0 を引き、必要な 0 を最も前方の ? の位置に置き、残りの ? を 1 で埋めます。不足または過剰なら NO です。次に、ターゲットのすべての接頭辞について、1 の個数が元の文字列の対応する接頭辞より多くないことを確認し、すべて満たすときだけ YES とします。"
+    ]
+  },
+  "ko": {
+    "title": "부분 수열 정렬로 와일드카드 이진 목표 문자열에 도달할 수 있는가",
+    "description": "한 번의 연산은 문자열에서 임의의 부분 수열을 골라, 선택한 문자들을 오름차순으로 정렬하여 같은 위치에 다시 넣는 것입니다. 0/1/?로 이루어진 같은 길이의 각 목표 문자열에 대해, 모든 ?를 0 또는 1로 바꾸어 원래의 이진 문자열에서 연산을 0번 이상 수행해 도달할 수 있는지 판정하세요. 각 목표 문자열은 원래 문자열에서 독립적으로 시작합니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 길이 L과 질의 수 q가, 둘째 줄에 binary가, 이어지는 q개 줄에 목표 문자열이 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서 1≤L,q≤200000, 모든 목표 문자열의 길이는 L, 목표 문자 총수는 L×q≤2000000으로 정했습니다. 정렬만 허용되며 임의의 교환은 허용되지 않습니다.",
+    "output": "각 질의에 대해 YES 또는 NO를 순서대로 공백으로 구분하여 출력합니다.",
+    "explanation": "정답은 각각 YES NO, NO YES, NO YES입니다. 원문 예제에서 101100을 011100으로 만들려면 원문 설명의 0 기반 위치 {0,2}가 아니라 {0,1}을 정렬해야 합니다. 원문은 1의 총개수만 비교하므로 111???를 잘못 받아들입니다.",
+    "hints": [
+      "목표 문자열의 0의 총개수는 원래 문자열과 같아야 합니다. 먼저 고정된 0의 개수를 빼고, 필요한 0을 가장 앞쪽의 ? 위치에 놓고 나머지 ?는 1로 채웁니다. 부족하거나 남으면 NO입니다. 그다음 목표 문자열의 모든 접두사에서 1의 개수가 원래 문자열의 같은 길이 접두사보다 많지 않은지 확인하여, 모두 성립할 때에만 YES입니다."
+    ]
+  },
+  "vi": {
+    "title": "Sắp xếp dãy con có thể đạt tới xâu đích chứa ký tự đại diện hay không",
+    "description": "Một thao tác chọn một dãy con bất kỳ của xâu, sắp xếp các ký tự đã chọn theo thứ tự tăng dần rồi đặt lại vào đúng các vị trí đã chọn. Với mỗi xâu đích cùng độ dài chứa 0/1/?, hãy xác định liệu có thể thay mỗi ? bằng 0 hoặc 1 sao cho xâu nhị phân ban đầu đạt tới nó sau không hoặc nhiều thao tác. Mỗi xâu đích đều xuất phát độc lập từ xâu ban đầu.\n\nĐề bài, định dạng vào/ra, ví dụ và lời giải do trang này tự viết; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa độ dài L và số truy vấn q, dòng thứ hai chứa binary, và q dòng tiếp theo chứa các xâu đích. Đề gốc không nêu giới hạn giá trị; trên trang này 1≤L,q≤200000, mỗi xâu đích có độ dài L, và tổng số ký tự của các xâu đích là L×q≤2000000. Chỉ được sắp xếp, không được hoán đổi tùy ý.",
+    "output": "In YES hoặc NO cho mỗi truy vấn theo thứ tự, cách nhau bởi dấu cách.",
+    "explanation": "Đáp án là YES NO; NO YES; và NO YES. Trong ví dụ gốc, để đi từ 101100 đến 011100 cần sắp xếp các vị trí {0,1} (đánh số từ 0), không phải {0,2} như lời giải thích gốc nói. Đề gốc chỉ so sánh tổng số chữ số 1 nên sẽ chấp nhận nhầm 111???.",
+    "hints": [
+      "Tổng số chữ số 0 của xâu đích phải bằng của xâu ban đầu. Trước hết trừ đi các số 0 cố định, đặt số 0 còn thiếu vào các vị trí ? sớm nhất, điền phần ? còn lại bằng 1; nếu thiếu hoặc thừa thì trả lời NO. Sau đó kiểm tra mọi tiền tố của xâu đích có không quá số chữ số 1 của tiền tố tương ứng trong xâu ban đầu; chỉ trả lời YES nếu tất cả đều thỏa."
+    ]
   }
 }

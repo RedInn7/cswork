@@ -11,5 +11,35 @@
     "hints": [
       "Binary search the K-th largest pair sum T. After sorting, use two pointers and prefix sums to get the count C and the total S of all pairs with sum ≥T; the result is S−(C−K)T."
     ]
+  },
+  "ja": {
+    "title": "異なる順序付きサーバーペアを選んだときの転送量の最大合計",
+    "description": "pipelineCount 個の相異なる順序付きインデックスペア (i,j) を選びます。各ペアは throughput[i]+throughput[j] を生み出します。i=j も許され、(i,j) と (j,i) は別のペアとして扱います。同じ容量を持つ異なるサーバーも別の個体です。合計の最大値を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n と pipelineCount、2 行目に throughput が与えられます。元の問題文には数値の範囲がありませんでしたが、本サイトでは 1≤n≤200000、1≤throughput[i]≤10^9、1≤pipelineCount≤n² とします。K には 64 ビット整数を使ってください。本サイトでは正確な整数の出力を求めます。答えの最大値 8×10^19 は符号付き 64 ビット整数の範囲を超えますが、剰余は取りません。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 36、16、42 です。3 つ目の例では、上位 3 つは 20、11、11 であり、両方向を数える必要があります。",
+    "hints": [
+      "K 番目に大きいペア和 T を二分探索します。ソート後、しゃくとり法と累積和を使って、和が T 以上のペアの個数 C と合計 S を求めると、答えは S−(C−K)T です。"
+    ]
+  },
+  "ko": {
+    "title": "서로 다른 순서쌍 선택으로 얻는 최대 전송량 합",
+    "description": "pipelineCount개의 서로 다른 순서쌍 인덱스 (i,j)를 선택합니다. 각 쌍은 throughput[i]+throughput[j]를 더합니다. i=j도 허용되며, (i,j)와 (j,i)는 서로 다른 쌍입니다. 용량이 같은 서로 다른 서버도 서로 다른 개체로 취급합니다. 합계의 최댓값을 구하세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n pipelineCount가 주어지고, 둘째 줄에 throughput이 주어집니다. 원문에는 수치 범위가 없었으며, 본 사이트는 1≤n≤200000, 1≤throughput[i]≤10^9, 1≤pipelineCount≤n²을 사용합니다. K에는 64비트를 사용하세요. 본 사이트는 정확한 정수를 출력하도록 요구합니다. 답의 최댓값 8×10^19는 부호 있는 64비트 범위를 넘으며, 나머지 연산은 하지 않습니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 36, 16, 42입니다. 세 번째 예제에서는 상위 3개가 20, 11, 11이며 양방향을 모두 세어야 합니다.",
+    "hints": [
+      "K번째로 큰 쌍의 합 T를 이분 탐색합니다. 정렬한 뒤 투 포인터와 누적 합으로 합이 T 이상인 모든 쌍의 개수 C와 총합 S를 구하면, 결과는 S−(C−K)T입니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng truyền tải lớn nhất khi chọn các cặp server có thứ tự phân biệt",
+    "description": "Chọn pipelineCount cặp chỉ số có thứ tự (i,j) phân biệt; mỗi cặp đóng góp throughput[i]+throughput[j]. Cho phép i=j, và (i,j) khác (j,i); các server khác nhau có cùng dung lượng vẫn là các server khác nhau. Tìm tổng lớn nhất.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và pipelineCount; dòng thứ hai chứa throughput. Đề gốc không nêu giới hạn số; trang này dùng 1≤n≤200000, 1≤throughput[i]≤10^9, 1≤pipelineCount≤n²; dùng 64 bit cho K. Trang này yêu cầu in ra số nguyên chính xác; đáp án lớn nhất 8×10^19 vượt quá miền số nguyên có dấu 64 bit, và không lấy modulo.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 36, 16 và 42. Ở ví dụ thứ ba, 3 giá trị lớn nhất là 20, 11 và 11, và phải tính cả hai chiều.",
+    "hints": [
+      "Tìm kiếm nhị phân tổng cặp lớn thứ K là T. Sau khi sắp xếp, dùng hai con trỏ và tổng tiền tố để lấy số lượng C và tổng S của mọi cặp có tổng ≥T; kết quả là S−(C−K)T."
+    ]
   }
 }

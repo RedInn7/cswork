@@ -11,5 +11,35 @@
     "hints": [
       "Run a digit DP from the most significant digit to the least significant, with the state recording the current digit sum and whether the number is still tight against the prefix of X."
     ]
+  },
+  "ja": {
+    "title": "上限以下で桁和が指定値になる数の個数",
+    "description": "1..X の整数のうち、10 進数の桁和がちょうど Y になるものの個数を数えてください。元の問題では、条件を満たす数がないとき 0 ではなく −1 を出力する必要があります。\n\n範囲の補足や元の問題の誤記の修正については、入力プロトコルを参照してください。",
+    "input": "入力は X Y です。元の問題には数値の範囲がなかったため、本サイトでは 1≤X≤10^18、1≤Y≤162 と定めています。数えるのは正の整数のみです。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "3 つの公開例の出力は順に 2、-1、2 です。独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "最上位桁から最下位桁へ向かう桁 DP を行います。状態には、現在の桁和と、X の接頭辞に対してまだ境界上にあるかどうかを持ちます。"
+    ]
+  },
+  "ko": {
+    "title": "상한 이하에서 자릿수 합이 주어진 값인 수의 개수",
+    "description": "1..X의 정수 중 십진 자릿수 합이 정확히 Y인 수의 개수를 구하세요. 조건을 만족하는 수가 없으면 0이 아니라 −1을 출력해야 한다는 것이 원문의 요구입니다.\n\n이 사이트가 누락된 범위를 보충한 내용과 원문의 오타를 바로잡은 방식은 입력 규약을 참고하세요.",
+    "input": "입력은 X Y입니다. 원문에는 수치 범위가 없었으며, 이 사이트는 1≤X≤10^18, 1≤Y≤162로 보충했습니다. 양의 정수만 셉니다.",
+    "output": "정답 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 2; -1; 2 입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "최상위 자리부터 최하위 자리까지 자릿수 DP를 수행합니다. 상태에는 현재까지의 자릿수 합과 수가 아직 X의 접두사에 붙어(tight) 있는지 여부를 기록합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đếm các số không vượt quá một cận có tổng chữ số cho trước",
+    "description": "Đếm các số nguyên trong 1..X có tổng các chữ số thập phân đúng bằng Y. Đề gốc yêu cầu in −1, không phải 0, khi không có số nào thỏa mãn.\n\nXem giao thức đầu vào để biết các bổ sung của trang này cho những khoảng giá trị còn thiếu và cách khôi phục lỗi đánh máy trong nguồn gốc.",
+    "input": "Đầu vào là X Y. Đề gốc không nêu giới hạn số; trang này bổ sung 1≤X≤10^18 và 1≤Y≤162; chỉ đếm các số nguyên dương.",
+    "output": "In một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: 2; -1; 2. Đã kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Chạy DP chữ số từ chữ số có nghĩa lớn nhất đến nhỏ nhất, với trạng thái ghi lại tổng chữ số hiện tại và việc số đang xây còn bám sát (tight) tiền tố của X hay không."
+    ]
   }
 }

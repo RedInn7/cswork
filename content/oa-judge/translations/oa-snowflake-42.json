@@ -11,5 +11,35 @@
     "hints": [
       "For each log, count the sender first; count the recipient only if it is different. Filter the users who reach the threshold, then sort them as integers."
     ]
+  },
+  "ja": {
+    "title": "取引ログ内の不審なユーザー",
+    "description": "各ログは sender recipient amount の形式です。ユーザーが送信者または受信者としてログに関与するたびに、そのユーザーを 1 回数えます。自分自身への送金も 1 回だけ数えます。threshold 件以上のログに関与したすべてのユーザーの ID を、辞書順ではなく数値の昇順にソートして出力してください。金額は件数に影響しません。\n\n入出力プロトコルは本サイトが整備したものです。元の文章で欠けていた数値範囲は、本サイトによる補足として明記しています。",
+    "input": "1 行目に n threshold が与えられ、続く n 行に sender recipient amount が与えられます。1≤n≤100000、1≤threshold≤n で、各フィールドは先頭に 0 のない 1..9 桁の正の 10 進整数です。元の文章では、少なくとも 1 人のユーザーが出力されることが保証されています。",
+    "output": "まずユーザー数を出力し、続いて各ユーザー ID を数値の昇順に出力してください。",
+    "explanation": "3 つの公開例の答えは順に 1\n1; 2\n2 10; 1\n999999999 です。例は、独立した全探索・状態探索・直接シミュレーションで確認済みです。",
+    "hints": [
+      "各ログについて、まず送信者を数えます。受信者は送信者と異なる場合にのみ数えます。threshold に達したユーザーを絞り込み、整数としてソートします。"
+    ]
+  },
+  "ko": {
+    "title": "거래 로그에서 의심스러운 사용자 찾기",
+    "description": "각 로그는 sender recipient amount 형식입니다. 사용자가 보내는 쪽 또는 받는 쪽으로 로그에 관여하면 그 로그에 대해 한 번 계산하며, 자기 자신에게 보내는 이체도 한 번만 계산합니다. 적어도 threshold개의 로그에 관여한 모든 사용자의 ID를 문자열의 사전순이 아니라 숫자 오름차순으로 정렬하여 출력하세요. 금액은 계산에 영향을 주지 않습니다.\n\n입출력 규약은 이 사이트에서 정리한 것이며, 원문에 없는 수치 범위는 이 사이트가 추가한 것으로 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n threshold가 주어지고, 이어서 n개의 줄에 sender recipient amount가 주어집니다. 1≤n≤100000, 1≤threshold≤n이며, 각 필드는 선행 0이 없는 1..9자리의 양의 십진 정수입니다. 원문은 출력되는 사용자가 적어도 한 명 있음을 보장합니다.",
+    "output": "먼저 사용자의 수를 출력하고, 이어서 각 사용자 ID를 숫자 오름차순으로 출력합니다.",
+    "explanation": "세 공개 예제의 답은 순서대로 1\n1; 2\n2 10; 1\n999999999입니다. 예제는 독립적인 완전 탐색, 상태 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "각 로그에서 보내는 사용자를 먼저 세고, 받는 사용자는 보내는 사용자와 다를 때만 셉니다. 임계값에 도달한 사용자를 걸러낸 뒤 정수로 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Người dùng đáng ngờ trong nhật ký giao dịch",
+    "description": "Mỗi dòng nhật ký có dạng sender recipient amount. Một người dùng được tính một lần cho một dòng nhật ký mỗi khi họ tham gia vào đó với vai trò người gửi hoặc người nhận; chuyển cho chính mình vẫn chỉ tính một lần. Hãy in ID của mọi người dùng tham gia ít nhất threshold dòng nhật ký, sắp xếp tăng dần theo giá trị số, không phải theo thứ tự từ điển của xâu. Số tiền không ảnh hưởng đến việc đếm.\n\nGiao thức đầu vào/đầu ra do trang này biên soạn, và các khoảng giá trị bị thiếu trong văn bản gốc được đánh dấu rõ là phần bổ sung của trang này.",
+    "input": "Dòng đầu tiên chứa n threshold, tiếp theo là n dòng sender recipient amount. 1≤n≤100000, 1≤threshold≤n; mỗi trường là một số nguyên thập phân dương gồm 1..9 chữ số không có số 0 đứng đầu. Văn bản gốc đảm bảo có ít nhất một người dùng được in ra.",
+    "output": "Trước hết in số người dùng, sau đó in từng ID người dùng theo thứ tự số tăng dần.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 1\n1; 2\n2 10; 1\n999999999. Các ví dụ đã được kiểm tra bằng liệt kê độc lập, tìm kiếm trạng thái hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Với mỗi dòng nhật ký, đếm người gửi trước; chỉ đếm người nhận nếu họ khác người gửi. Lọc ra những người dùng đạt ngưỡng, rồi sắp xếp họ như các số nguyên."
+    ]
   }
 }

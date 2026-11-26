@@ -11,5 +11,35 @@
     "hints": [
       "For each row, record the minimum and maximum x; for each column, record the minimum and maximum y. A point is idle if it lies strictly between both pairs of extremes."
     ]
+  },
+  "ja": {
+    "title": "四方向すべてに隣接ロボットがあるアイドルロボット",
+    "description": "あるロボットがアイドルであるとは、同じ行に厳密に左側と右側にそれぞれ少なくとも 1 台の別のロボットがあり、同じ列に厳密に上側と下側にそれぞれ少なくとも 1 台の別のロボットがあることを指します。隣り合っている必要はありません。アイドルロボットの台数を求めてください。\n\n標準入出力・例・判定は CSWork が独自に作成したものです。このサイト独自の規約は、元の問題の制約としては扱っていません。",
+    "input": "1 行目に n (1..100000) が与えられ、続く n 行に x y (−10⁹..10⁹) が与えられます。同じ座標にあるロボットは別々に数えますが、互いに厳密な方向の隣接ロボットとはみなしません。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 3×3 の格子点のうち、中央の (1,1) だけが四方向すべてに隣接ロボットを持つので、答えは 1 です。例 2: 隣接ロボットがないので答えは 0 です。例 3: 十字の中心 (0,0) はアイドルで、他の 4 点はそれぞれいずれかの方向が欠けているので、答えは 1 です。",
+    "hints": [
+      "各行について x の最小値と最大値、各列について y の最小値と最大値を記録します。点が両方の最小値・最大値の厳密に内側にあれば、アイドルです。"
+    ]
+  },
+  "ko": {
+    "title": "네 방향 모두 이웃이 있는 유휴 로봇",
+    "description": "같은 행에서 자신보다 엄격하게 왼쪽에 로봇이 하나 이상, 엄격하게 오른쪽에 로봇이 하나 이상 있고, 같은 열에서 엄격하게 위쪽에 로봇이 하나 이상, 엄격하게 아래쪽에 로봇이 하나 이상 있을 때에만 그 로봇은 유휴 상태입니다. 이웃은 바로 인접해 있지 않아도 됩니다. 유휴 로봇의 수를 구하세요.\n\n표준 입출력 형식, 예제, 채점은 CSWork가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 규칙은 원문의 제약 조건으로 제시하지 않습니다.",
+    "input": "첫째 줄에 n(1..100000)이 주어지고, 이어서 n개의 줄에 x y(−10⁹..10⁹)가 주어집니다. 같은 좌표에 있는 로봇은 각각 따로 세지만, 서로를 방향상 엄격한 이웃으로 보지는 않습니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 3×3 격자의 점에서 중앙 (1,1)만 네 방향 모두에 이웃이 있으므로 답은 1입니다. 예제 2: 이웃이 없으므로 답은 0입니다. 예제 3: 십자 모양의 중앙 (0,0)은 유휴 상태이고, 나머지 네 점은 각각 어느 한 방향이 없으므로 답은 1입니다.",
+    "hints": [
+      "각 행마다 x의 최솟값과 최댓값을, 각 열마다 y의 최솟값과 최댓값을 기록합니다. 어떤 점이 두 쌍의 극값 사이에 엄격하게 놓여 있으면 유휴 로봇입니다."
+    ]
+  },
+  "vi": {
+    "title": "Robot nhàn rỗi có hàng xóm ở cả bốn hướng",
+    "description": "Một robot được gọi là nhàn rỗi khi và chỉ khi trong cùng hàng có ít nhất một robot khác nằm hoàn toàn bên trái và một robot nằm hoàn toàn bên phải nó, đồng thời trong cùng cột có một robot nằm hoàn toàn phía trên và một robot nằm hoàn toàn phía dưới. Các robot này không cần nằm sát cạnh nhau. Hãy tìm số robot nhàn rỗi.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ chấm do CSWork tự biên soạn độc lập; những quy ước được ghi là của trang này không được trình bày như ràng buộc gốc của đề.",
+    "input": "Dòng đầu tiên chứa n (1..100000), tiếp theo là n dòng, mỗi dòng gồm x y (−10⁹..10⁹). Các robot cùng tọa độ được đếm riêng, nhưng chúng không phải là hàng xóm theo hướng nghiêm ngặt của nhau.",
+    "output": "In ra một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: trong lưới điểm 3×3, chỉ có tâm (1,1) có hàng xóm ở cả bốn hướng nên đáp án là 1. Ví dụ 2: không có hàng xóm nào nên đáp án là 0. Ví dụ 3: tâm (0,0) của hình chữ thập là robot nhàn rỗi, còn mỗi điểm trong bốn điểm còn lại đều thiếu một hướng, nên đáp án là 1.",
+    "hints": [
+      "Với mỗi hàng, ghi lại x nhỏ nhất và lớn nhất; với mỗi cột, ghi lại y nhỏ nhất và lớn nhất. Một điểm là nhàn rỗi nếu nó nằm hoàn toàn giữa cả hai cặp giá trị cực trị."
+    ]
   }
 }

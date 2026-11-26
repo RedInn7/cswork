@@ -11,5 +11,35 @@
     "hints": [
       "Compute the prefix surplus P of each container relative to the average. The clockwise cost is sum(P)−n min(P) and the counterclockwise cost is n max(P)−sum(P); take the smaller one."
     ]
+  },
+  "ja": {
+    "title": "一方向にのみ移動できるリングを均等にする最小コスト",
+    "description": "n 個のコンテナがリング状に並んでおり、すべての製品が最終的にコンテナ間で均等に分配されなければなりません。合計は n で割り切れることが保証されています。製品を 1 つ隣接する辺を越えて動かすコストは 1 です。全工程で使える方向は時計回りか反時計回りのどちらか一方だけで、どちらを選んでもかまいませんが、混ぜることはできません。最小コストを求めてください。\n\n標準入出力、例、解説はこのサイトが独自に作成したものです。このサイトのものと明記された範囲は、出典の元の制約ではありません。",
+    "input": "1 行目に n、2 行目に製品の個数が与えられます。元のスナップショットには数値の範囲がありません。このサイトでは 1≤n≤200000、個数は 0..10^9、合計は n で割り切れるものとします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 接頭辞の過不足は −2、−3、−2、−1、0 で、時計回りのコストは 7、反時計回りのコストは 8 なので、答えは 7 です。例 2: すでに均等に分配されているので、コストは 0 です。例 3: 製品 1 個を 1 つの辺を越えて空のコンテナに送り、コストは 1 です。",
+    "hints": [
+      "平均に対する各コンテナの接頭辞の過不足 P を計算します。時計回りのコストは sum(P)−n min(P)、反時計回りのコストは n max(P)−sum(P) で、小さい方を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "한 방향으로만 이동하는 원형 배열을 균등하게 만드는 최소 비용",
+    "description": "n개의 컨테이너가 원형으로 놓여 있고, 모든 제품을 컨테이너들에 균등하게 분배해야 합니다. 총량은 n으로 나누어떨어짐이 보장됩니다. 제품 하나를 인접한 간선 하나만큼 옮기는 데 비용 1이 듭니다. 전체 과정에서는 시계 방향 또는 반시계 방향 중 한 방향만 사용할 수 있으며, 어느 쪽을 고르든 되지만 섞어서 쓸 수는 없습니다. 최소 비용을 구하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했으며, 이 사이트가 명시적으로 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 제품 수가 주어집니다. 원본 스냅샷에는 수치 범위가 없으며, 이 사이트는 1≤n≤200000, 개수는 0..10^9, 총합은 n으로 나누어떨어지는 것으로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 접두사 초과량은 −2, −3, −2, −1, 0이며, 시계 방향 비용은 7, 반시계 방향 비용은 8이므로 답은 7입니다. 예제 2: 이미 균등하게 분배되어 있으므로 비용은 0입니다. 예제 3: 빈 컨테이너로 제품 1개를 간선 하나만큼 보내므로 비용은 1입니다.",
+    "hints": [
+      "각 컨테이너의 평균 대비 접두사 초과량 P를 계산합니다. 시계 방향 비용은 sum(P)−n min(P)이고 반시계 방향 비용은 n max(P)−sum(P)입니다. 둘 중 작은 값을 취하세요."
+    ]
+  },
+  "vi": {
+    "title": "Chi phí tối thiểu để cân bằng vòng tròn chỉ di chuyển một chiều",
+    "description": "n thùng chứa tạo thành một vòng tròn, và mọi sản phẩm phải được phân bố đều giữa các thùng; tổng được đảm bảo chia hết cho n. Chuyển một sản phẩm qua một cạnh kề tốn 1. Toàn bộ quá trình chỉ được dùng một chiều, theo chiều kim đồng hồ hoặc ngược chiều kim đồng hồ; có thể chọn chiều nào cũng được, nhưng không được trộn lẫn. Tìm chi phí tối thiểu.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bài giải do trang này tự viết; các khoảng giá trị được trang này ghi rõ không phải là ràng buộc gốc của nguồn.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa số sản phẩm. Ảnh chụp gốc không cho giới hạn số; trang này dùng 1≤n≤200000, số sản phẩm 0..10^9, và tổng chia hết cho n.",
+    "output": "In ra một số nguyên, là đáp án.",
+    "explanation": "Ví dụ 1: các phần dư tiền tố là −2, −3, −2, −1, 0; chi phí theo chiều kim đồng hồ là 7 và ngược chiều kim đồng hồ là 8, nên đáp án là 7. Ví dụ 2: đã phân bố đều, chi phí 0. Ví dụ 3: chuyển 1 sản phẩm qua một cạnh tới thùng trống, chi phí 1.",
+    "hints": [
+      "Tính phần dư tiền tố P của mỗi thùng so với giá trị trung bình. Chi phí theo chiều kim đồng hồ là sum(P)−n min(P) và ngược chiều kim đồng hồ là n max(P)−sum(P); lấy giá trị nhỏ hơn."
+    ]
   }
 }

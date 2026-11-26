@@ -11,5 +11,35 @@
     "hints": [
       "Each conversion consumes a fixed number of P's, so you can convert floor(P/rate) times. Each conversion also produces one A that must be consumed, so the total number of cycles is the initial number of A's plus twice the number of conversions."
     ]
+  },
+  "ja": {
+    "title": "優先順位で資源を変換・消費するサイクル数",
+    "description": "各サイクルでは、まず conversionRate 個の P を消費して 1 個の A に変換します。それができず A があれば、A を 1 個消費します。どちらもできなければ停止し、停止する行動はサイクルに数えません。問題文に厳密に従い、A を消費しても余分な P は生まれません。元の最初の 2 つの例 13 と 4 は問題文と矛盾していたため、それぞれ 5 と 2 に修正しました。\n\n本サイトでは標準入出力を明示し、元の問題で与えられていない範囲は本サイトの規約として示します。",
+    "input": "1 行目に n conversionRate、2 行目に n 文字の A/P の連続した文字列が与えられます。2≤n≤500、2≤conversionRate≤500 です。",
+    "output": "答えを整数 1 つで出力してください。",
+    "explanation": "例 1：1 回変換して A が 4 個、P が 1 個になり、その後 4 個の A を消費するので、合計 5 サイクルです。例 2：2 個の A を消費して停止するので、合計 2 サイクルです。例 3：1 回変換して A を 1 個得て、それを消費するので、合計 2 サイクルです。",
+    "hints": [
+      "各変換は固定個数の P を消費するので、floor(P/rate) 回変換できます。各変換は消費しなければならない A を 1 個生むので、サイクルの総数は、最初の A の個数に変換回数の 2 倍を足したものです。"
+    ]
+  },
+  "ko": {
+    "title": "우선순위에 따라 자원을 변환하고 소비하는 사이클 수",
+    "description": "각 사이클에서는 먼저 P를 conversionRate개 소비하여 A 하나로 변환합니다. 그럴 수 없고 A가 있으면 A 하나를 소비합니다. 둘 다 할 수 없으면 멈추며, 멈추는 동작은 사이클로 세지 않습니다. 문제를 엄격히 따르세요. A를 소비해도 추가 P가 생기지 않습니다. 원문의 처음 두 예제인 13과 4는 문제와 모순되어 각각 5와 2로 수정했습니다.\n\n이 사이트의 표준 입출력은 명시적으로 밝혀 두며, 원문 문제에 주어지지 않은 범위는 이 사이트의 규칙으로 표시합니다.",
+    "input": "첫째 줄에 n conversionRate가 주어지고, 둘째 줄에 A/P 문자 n개가 공백 없이 이어진 문자열이 주어집니다. 2≤n≤500, 2≤conversionRate≤500입니다.",
+    "output": "정수 하나를 답으로 출력합니다.",
+    "explanation": "예제 1: 한 번 변환하면 A 4개와 P 1개가 남고, 이어서 A 4개를 소비하여 총 5사이클입니다. 예제 2: A 두 개를 소비하고 멈추어 총 2사이클입니다. 예제 3: 한 번 변환해서 A를 얻고 그것을 소비하여 총 2사이클입니다.",
+    "hints": [
+      "변환 한 번에는 정해진 개수의 P가 소비되므로 변환은 floor(P/rate)번 할 수 있습니다. 변환할 때마다 소비해야 하는 A가 하나씩 생기므로, 전체 사이클 수는 처음 A의 개수에 변환 횟수의 두 배를 더한 값입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số chu kỳ chuyển đổi và tiêu thụ tài nguyên theo mức ưu tiên",
+    "description": "Trong mỗi chu kỳ, trước hết tiêu thụ conversionRate chữ P để chuyển chúng thành một chữ A; nếu không làm được và còn chữ A, tiêu thụ một chữ A; nếu cả hai đều không làm được thì dừng, và hành động dừng không được tính là một chu kỳ. Hãy theo sát đề: tiêu thụ một chữ A không tạo thêm chữ P nào. Hai ví dụ đầu tiên của đề gốc là 13 và 4 mâu thuẫn với đề và được sửa lần lượt thành 5 và 2.\n\nĐầu vào và đầu ra chuẩn của trang này được nêu rõ; những khoảng giá trị mà đề gốc không nêu được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu tiên chứa n conversionRate, dòng thứ hai chứa một xâu liền gồm n ký tự A/P. 2≤n≤500, 2≤conversionRate≤500.",
+    "output": "In ra một số nguyên, là đáp án.",
+    "explanation": "Ví dụ 1: chuyển đổi một lần, còn lại 4 chữ A và 1 chữ P, sau đó tiêu thụ 4 chữ A, tổng cộng 5 chu kỳ. Ví dụ 2: tiêu thụ hai chữ A rồi dừng, tổng cộng 2 chu kỳ. Ví dụ 3: chuyển đổi một lần để có một chữ A, sau đó tiêu thụ nó, tổng cộng 2 chu kỳ.",
+    "hints": [
+      "Mỗi lần chuyển đổi tiêu thụ một số lượng P cố định, nên có thể chuyển đổi floor(P/rate) lần. Mỗi lần chuyển đổi cũng tạo ra một chữ A phải được tiêu thụ, nên tổng số chu kỳ là số chữ A ban đầu cộng hai lần số lần chuyển đổi."
+    ]
   }
 }

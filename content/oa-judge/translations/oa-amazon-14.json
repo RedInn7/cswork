@@ -11,5 +11,35 @@
     "hints": [
       "Scan the new password from left to right, and match immediately whenever the current character or its successor matches the current character of the old password."
     ]
+  },
+  "ja": {
+    "title": "循環インクリメント後のパスワード部分列",
+    "description": "新しいパスワードと古いパスワードが与えられます。新しいパスワードの各文字は、そのままにするか、高々 1 回だけ循環的にインクリメントできます（z は a になります）。変換後の新しいパスワードの部分列として、古いパスワードを作れるかどうかを判定してください。このサイトでは、各テストでパスワードの組を 1 つ入力します。\n\n標準入力の形式、例、テストデータは CSWork が独自に作成したものです。",
+    "input": "1 行目に新しいパスワード、2 行目に古いパスワードが与えられます。どちらも小文字の英字からなり、1≤(古いパスワードの長さ)≤(新しいパスワードの長さ) で、2 つの文字列の長さの合計は 200000 以下です。",
+    "output": "YES または NO を出力してください。",
+    "explanation": "例 1: 元の文字列の（1 始まりの）インデックス 2, 3, 4, 5, 7 を取ると a, a, c, b, b が得られます。元の文字列の位置 3, 4, 7 をそれぞれ 1 回インクリメントすると、選んだ文字は a, b, d, b, c となり、目標の abdbc になるので、YES を出力します。例 2: 元の文字列のどの文字も h のままでも、インクリメントしても h にはならないので、NO を出力します。例 3: z は循環的にインクリメントして a にできるので、YES を出力します。",
+    "hints": [
+      "新しいパスワードを左から右へ走査し、現在の文字またはその次の文字が、古いパスワードの現在の文字と一致したら、すぐにマッチさせます。"
+    ]
+  },
+  "ko": {
+    "title": "순환 증가 후 비밀번호 부분 수열 판별",
+    "description": "새 비밀번호와 이전 비밀번호가 주어집니다. 새 비밀번호의 각 문자는 그대로 두거나 최대 한 번 순환 증가시킬 수 있습니다(z는 a가 됩니다). 변환된 새 비밀번호의 부분 수열로 이전 비밀번호를 만들 수 있는지 판별하세요. 이 사이트에서는 각 테스트가 비밀번호 한 쌍을 입력으로 받습니다.\n\n표준 입력 형식, 예제, 테스트 데이터는 CSWork가 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 새 비밀번호, 둘째 줄에 이전 비밀번호가 주어지며 둘 다 영어 소문자로 이루어져 있습니다. 1≤(이전 비밀번호의 길이)≤(새 비밀번호의 길이)이고 두 문자열의 길이의 합은 200000 이하입니다.",
+    "output": "YES 또는 NO를 출력합니다.",
+    "explanation": "예제 1: 원래 문자열의 인덱스 2, 3, 4, 5, 7(1부터 시작)을 취하면 a, a, c, b, b가 됩니다. 원래 문자열의 3, 4, 7번째 위치를 각각 한 번씩 증가시키면 선택한 문자는 a, b, d, b, c가 되어 목표 abdbc와 같으므로 YES를 출력합니다. 예제 2: 원래 문자열의 어떤 문자도 h가 될 수 없으므로 NO를 출력합니다. 예제 3: z는 순환 증가하여 a가 될 수 있으므로 YES를 출력합니다.",
+    "hints": [
+      "새 비밀번호를 왼쪽에서 오른쪽으로 훑으면서, 현재 문자 또는 그 다음 문자가 이전 비밀번호의 현재 문자와 일치하면 즉시 매칭합니다."
+    ]
+  },
+  "vi": {
+    "title": "Dãy con của mật khẩu sau khi tăng vòng",
+    "description": "Cho một mật khẩu mới và một mật khẩu cũ. Mỗi ký tự của mật khẩu mới có thể giữ nguyên hoặc được tăng vòng tối đa một lần (z trở thành a). Hãy xác định xem mật khẩu cũ có thể trở thành dãy con của mật khẩu mới sau khi biến đổi hay không. Trên trang này, mỗi bài kiểm thử nhập một cặp mật khẩu.\n\nĐịnh dạng đầu vào chuẩn, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn độc lập.",
+    "input": "Dòng đầu tiên chứa mật khẩu mới và dòng thứ hai chứa mật khẩu cũ; cả hai gồm các chữ cái Latin thường, 1≤(độ dài mật khẩu cũ)≤(độ dài mật khẩu mới), và tổng độ dài của hai xâu ≤200000.",
+    "output": "In ra YES hoặc NO.",
+    "explanation": "Ví dụ 1: lấy các chỉ số 2, 3, 4, 5, 7 (đánh số từ 1) của xâu gốc được a, a, c, b, b; sau khi tăng mỗi ký tự ở các vị trí 3, 4 và 7 của xâu gốc một lần, các ký tự đã chọn trở thành a, b, d, b, c, chính là đích abdbc, nên in YES. Ví dụ 2: không ký tự nào của xâu gốc có thể giữ nguyên hay được tăng thành h, nên in NO. Ví dụ 3: z có thể được tăng vòng thành a, nên in YES.",
+    "hints": [
+      "Quét mật khẩu mới từ trái sang phải, và khớp ngay mỗi khi ký tự hiện tại hoặc ký tự kế tiếp của nó khớp với ký tự hiện tại của mật khẩu cũ."
+    ]
   }
 }

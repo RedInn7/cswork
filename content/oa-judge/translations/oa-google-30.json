@@ -13,5 +13,41 @@
       "The last two digits of seconds can exceed 59; do not normalize them to base sixty.",
       "Use the integer comparison `10*|actual-target| <= target` to avoid floating-point error."
     ]
+  },
+  "ja": {
+    "title": "電子レンジの最適なキー入力",
+    "description": "電子レンジは、キーパッドに入力した数字で加熱時間を指定します。入力が 2 桁以下なら秒として読み、それより長い入力では、下 2 桁が秒、残りの先頭部分が分になります（秒は 99 まで入力でき、たとえば 999 は 9 分 99 秒を意味します）。キーを 1 回押すたびにコスト 1 がかかり、連続する 2 回の押下が異なる数字キーにあるときは、指の移動に追加で 2 かかります。実際の時間は目標の 10% 以内でなければなりません。まず合計コストを最小化し、コストが同じなら実際の時間が目標との差が最小の入力を選び、それも同じなら数値として最小の入力を選びます。その入力を整数として返してください。\n\n本サイトの採点範囲：0≤targetTime≤6039 秒で、0..9999 の非負整数の入力のみを考えます（最大 4 桁で、先頭に 0 を付けない通常の 10 進表記とし、入力 0 は 0 秒を意味します）。この範囲のどの目標にも、ちょうど表現できる時間があります。これらの範囲は OAMaster の原典にはなく、元サイトの 3 言語の参照実装の探索範囲に合わせて、本サイトが明示的に追加したものです。\n\n原典：https://oamaster.com/docs/companies/google#30-find-optimal-input。同じ問題の面接記録と例：https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/。",
+    "input": "1行に整数 targetTime（秒）が与えられます。",
+    "output": "規則に従って選ばれた整数の入力を出力します。",
+    "explanation": "候補は高々 10000 個です。それぞれについて実際の秒数とキー入力のコストを計算し、10% を超えてずれているものを除外してから、（キー入力のコスト、時間の差、入力値）の昇順に並べ替え、先頭を取ります。",
+    "hints": [
+      "異なる数字キー間の移動コストは、連続する 2 回の押下の間にだけ数えます。",
+      "秒の下 2 桁は 59 を超えることがあります。60 進法に正規化してはいけません。",
+      "浮動小数点誤差を避けるため、整数の比較 `10*|actual-target| <= target` を使います。"
+    ]
+  },
+  "ko": {
+    "title": "전자레인지 키패드 최적 입력",
+    "description": "전자레인지는 키패드로 입력한 숫자로 조리 시간을 받습니다. 두 자리 이하 입력은 초로 해석하고, 더 긴 입력은 마지막 두 자리가 초, 나머지 앞부분이 분입니다(초는 99까지 가능하며, 예를 들어 999는 9분 99초입니다). 키를 한 번 누를 때마다 비용 1이 들고, 연속한 두 입력이 서로 다른 숫자 키이면 손가락 이동에 추가로 2가 듭니다. 실제 시간은 목표 시간의 10% 이내여야 합니다. 먼저 총비용을 최소화하고, 비용이 같으면 실제 시간이 목표와 가장 적게 차이 나는 입력을, 그래도 같으면 수치가 가장 작은 입력을 고릅니다. 해당 입력을 정수로 반환하세요.\n\n이 사이트의 채점 범위: 0≤targetTime≤6039초이며, 0..9999 범위의 음이 아닌 정수 입력만 고려합니다(최대 네 자리, 앞에 0이 없는 일반적인 십진수 표기이며, 입력 0은 0초를 의미합니다). 이 범위의 모든 목표 시간은 정확히 표현 가능한 시간을 가집니다. 이 범위는 OAMaster 원문에 나오지 않으며, 원 사이트의 세 가지 언어 참조 구현의 탐색 영역에 맞추기 위해 이 사이트가 명시적으로 추가했습니다.\n\n원 출처: https://oamaster.com/docs/companies/google#30-find-optimal-input. 같은 문제의 면접 기록과 예제: https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/.",
+    "input": "한 줄에 정수 targetTime(초 단위)이 주어집니다.",
+    "output": "규칙에 따라 선택된 정수 입력을 출력합니다.",
+    "explanation": "후보는 최대 10000개입니다. 각 후보의 실제 초와 키 입력 비용을 계산하고, 10%를 넘게 벗어난 후보를 걸러낸 뒤, (키 입력 비용, 시간 차이, 입력 값)의 오름차순으로 정렬하여 첫 번째를 선택합니다.",
+    "hints": [
+      "서로 다른 숫자 키 사이의 이동 비용은 연속한 두 번의 입력 사이에서만 계산됩니다.",
+      "초의 마지막 두 자리는 59를 넘을 수 있으며, 60진법으로 정규화하지 않습니다.",
+      "부동소수점 오차를 피하기 위해 정수 비교 `10*|actual-target| <= target`을 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Cách nhập tối ưu trên bàn phím lò vi sóng",
+    "description": "Một lò vi sóng nhận thời gian nấu dưới dạng các chữ số nhập trên bàn phím. Đầu vào có tối đa hai chữ số được hiểu là số giây; với đầu vào dài hơn, hai chữ số cuối là giây và phần tiền tố còn lại là phút (số giây có thể lên đến 99; ví dụ 999 nghĩa là 9 phút 99 giây). Mỗi lần nhấn phím tốn 1; khi hai lần nhấn liên tiếp ở hai phím chữ số khác nhau, việc di chuyển ngón tay tốn thêm 2. Thời gian thực tế phải nằm trong phạm vi 10% so với mục tiêu. Trước hết tối thiểu hóa tổng chi phí; nếu chi phí bằng nhau, chọn đầu vào có thời gian thực tế lệch ít nhất so với mục tiêu; nếu vẫn bằng nhau, chọn đầu vào nhỏ nhất về mặt số học. Trả về đầu vào đó dưới dạng số nguyên.\n\nGiới hạn chấm bài của trang này: 0≤targetTime≤6039 giây, và chỉ xét các đầu vào là số nguyên không âm trong 0..9999 (tối đa bốn chữ số, viết theo thập phân thông thường không có số 0 đứng đầu; đầu vào 0 nghĩa là 0 giây). Mọi mục tiêu trong khoảng này đều có một thời gian biểu diễn chính xác được. Các phạm vi này không xuất hiện trong bản gốc của OAMaster; trang này bổ sung chúng một cách tường minh để khớp với miền tìm kiếm của các cài đặt tham chiếu bằng ba ngôn ngữ của trang nguồn.\n\nNguồn gốc: https://oamaster.com/docs/companies/google#30-find-optimal-input. Ghi chép phỏng vấn và các ví dụ của cùng bài: https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/.",
+    "input": "Một dòng duy nhất chứa số nguyên targetTime (tính bằng giây).",
+    "output": "Xuất số nguyên là đầu vào được chọn theo các quy tắc.",
+    "explanation": "Có tối đa 10000 giá trị ứng viên. Tính số giây thực tế và chi phí nhấn phím của từng ứng viên, loại những ứng viên lệch quá 10%, rồi sắp xếp theo (chi phí nhấn phím, độ lệch thời gian, giá trị đầu vào) tăng dần và lấy phần tử đầu tiên.",
+    "hints": [
+      "Chi phí di chuyển giữa các phím chữ số khác nhau chỉ được tính giữa hai lần nhấn liên tiếp.",
+      "Hai chữ số cuối của số giây có thể vượt quá 59; đừng chuẩn hóa chúng theo cơ số sáu mươi.",
+      "Dùng phép so sánh số nguyên `10*|actual-target| <= target` để tránh sai số dấu phẩy động."
+    ]
   }
 }

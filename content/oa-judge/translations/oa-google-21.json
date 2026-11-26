@@ -12,5 +12,38 @@
       "The choice must keep the indices increasing.",
       "Enumerate three indices; a combination whose leading digit is zero is not a three-digit number."
     ]
+  },
+  "ja": {
+    "title": "順序を保って作る最大の 3 桁の数",
+    "description": "10 進数字の配列が与えられます。配列内での相対的な順序を保ったままちょうど 3 個の数字を選び、連結して 3 桁の数を作ります。作れる最大の数を求めてください。先頭の数字は 0 であってはいけません。固定された上流の例 [7,4,3,8,2] の答えは 782 です。これは 7, 8, 2 を順に選ぶことに対応し、数字を並べ替えれば別の結果になります。\n\n本サイトが追加した入力の範囲: 3≤N≤50、0≤nums[i]≤9。本サイトは標準入出力を使い、これらの制約やこのプロトコルが元の OA に由来するとは主張しません。\n有効な 3 桁の数が作れない場合の戻り値は元の OA では定義されていません。本サイトでは、その場合に -1 を出力すると明示的に定めています。\n\n出典: https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career (固定された OAMaster スナップショットのコンテンツフィンガープリント: df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698)。同じ問題に関する資料: https://www.1point3acres.com/interview/problems/google-find-largest-number。この資料は、配列から 3 要素を選んで最大の 3 桁の数を作ることだけを確認するもので、順序を保つ例は含みません。",
+    "input": "1 行目に整数 N、2 行目に N 個の整数 nums[i] が与えられます。",
+    "output": "配列の元の相対的な順序で 3 つの数字を選んで作れる最大の 3 桁の数を出力してください。先頭が 0 でない有効な選び方がなければ -1 を出力します (本サイトの定義)。",
+    "explanation": "i<j<k のすべての添字の 3 つ組を列挙し、nums[i]=0 の組み合わせは飛ばし、3 桁の数を計算して最大値を取ります。N≤50 なので O(N³) で十分です。",
+    "hints": [
+      "選ぶ添字は増加していなければなりません。",
+      "3 つの添字を列挙します。先頭の数字が 0 の組み合わせは 3 桁の数ではありません。"
+    ]
+  },
+  "ko": {
+    "title": "순서를 유지해 만드는 가장 큰 세 자리 수",
+    "description": "십진수 숫자 배열이 주어집니다. 배열에서의 상대 순서를 유지하면서 정확히 세 개의 숫자를 골라 이어 붙여 세 자리 수를 만들 때, 만들 수 있는 가장 큰 수를 구하세요. 첫 자리는 0이 아니어야 합니다. 고정된 원문 예제 [7,4,3,8,2]의 답은 782입니다. 이는 7, 8, 2를 순서대로 고른 것과 일치하며, 숫자를 재배열하면 다른 결과가 나옵니다.\n\n이 사이트가 추가한 입력 범위: 3≤N≤50, 0≤nums[i]≤9. 이 사이트는 표준 입출력을 사용하며 이 제약이나 프로토콜이 원래 OA의 것이라고 주장하지 않습니다.\n원래 OA는 유효한 세 자리 수가 없을 때의 반환값을 정의하지 않습니다. 이 사이트는 그 경우 -1을 출력하도록 명시합니다.\n\n원문 출처: https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career (고정된 OAMaster 스냅샷의 콘텐츠 지문: df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698). 같은 문제의 참고 자료: https://www.1point3acres.com/interview/problems/google-find-largest-number. 이 자료는 배열에서 세 원소를 골라 가장 큰 세 자리 수를 만든다는 점만 확인해 주며, 순서를 유지하는 예제는 제공하지 않습니다.",
+    "input": "첫 번째 줄에 정수 N이 주어지고, 두 번째 줄에 N개의 정수 nums[i]가 주어집니다.",
+    "output": "원래 배열의 상대 순서대로 세 숫자를 골라 만들 수 있는 가장 큰 세 자리 수를 출력합니다. 첫 자리가 0이 아닌 유효한 선택이 없으면 -1을 출력합니다 (이 사이트의 정의).",
+    "explanation": "인덱스가 i<j<k인 모든 조합을 열거하고, nums[i]=0인 조합은 건너뛰며, 세 자리 수를 계산하여 최댓값을 취합니다. N≤50이므로 O(N³)이면 충분합니다.",
+    "hints": [
+      "선택은 인덱스가 증가하는 순서를 유지해야 합니다.",
+      "인덱스 세 개를 열거합니다. 첫 자리가 0인 조합은 세 자리 수가 아닙니다."
+    ]
+  },
+  "vi": {
+    "title": "Số ba chữ số lớn nhất tạo theo thứ tự",
+    "description": "Cho một mảng các chữ số thập phân, hãy chọn đúng ba chữ số và giữ nguyên thứ tự tương đối của chúng trong mảng, rồi ghép chúng thành một số có ba chữ số; tìm số lớn nhất có thể tạo ra. Chữ số đầu phải khác 0. Đáp án của ví dụ gốc cố định [7,4,3,8,2] là 782; điều này khớp với việc chọn 7, 8, 2 theo thứ tự, trong khi sắp xếp lại các chữ số sẽ cho kết quả khác.\n\nCác khoảng đầu vào do trang này bổ sung: 3≤N≤50, 0≤nums[i]≤9. Trang này dùng nhập/xuất chuẩn và không khẳng định rằng các ràng buộc hay giao thức này đến từ OA gốc.\nOA gốc không định nghĩa giá trị trả về khi không tồn tại số có ba chữ số hợp lệ; trang này quy định rõ rằng trong trường hợp đó in -1.\n\nNguồn gốc: https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career (dấu vân nội dung của bản chụp OAMaster cố định: df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698). Tài liệu về cùng bài toán: https://www.1point3acres.com/interview/problems/google-find-largest-number; tài liệu đó chỉ xác nhận việc chọn ba phần tử từ mảng để tạo số có ba chữ số lớn nhất và không cung cấp ví dụ nào giữ nguyên thứ tự.",
+    "input": "Dòng đầu chứa một số nguyên N; dòng thứ hai chứa N số nguyên nums[i].",
+    "output": "In ra số có ba chữ số lớn nhất có thể tạo được bằng cách chọn ba chữ số theo thứ tự tương đối ban đầu của mảng; nếu không có cách chọn hợp lệ với chữ số đầu khác 0 thì in -1 (do trang này quy định).",
+    "explanation": "Liệt kê mọi bộ ba chỉ số i<j<k, bỏ qua các tổ hợp có nums[i]=0, tính số có ba chữ số và lấy giá trị lớn nhất. N≤50 nên O(N³) là đủ.",
+    "hints": [
+      "Cách chọn phải giữ các chỉ số tăng dần.",
+      "Liệt kê ba chỉ số; tổ hợp có chữ số đầu bằng không thì không phải số có ba chữ số."
+    ]
   }
 }

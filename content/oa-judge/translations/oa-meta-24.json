@@ -12,5 +12,38 @@
       "Once the departure day i is fixed, you only need the cheapest return fare after it.",
       "Precompute suffix minimums, or update and compute at the same time while scanning from right to left."
     ]
+  },
+  "ja": {
+    "title": "往復航空券の最小運賃",
+    "description": "長さの等しい配列 departing と returning が与えられ、それぞれ i 日目の往路運賃と復路運賃を表します。出発日 i と帰着日 j を選びます。帰着は出発より厳密に後 (j > i) でなければなりません。departing[i] + returning[j] の最小値を求めてください。この厳密な順序の制約は、同じ問題について公開されている報告から補ったものです。固定された OAMaster のスナップショットにある元の問題文と解答にはこの制約が書かれておらず、その解答は日の順序を無視して各配列の最小値をそれぞれ取っています。\n\n本サイトの制約: 2≤n≤200000、−1000000000≤各運賃≤1000000000。固定された OAMaster のスナップショットには制約が示されていないため、上記の範囲と標準入出力の形式は本サイトが追加したものです。\n\n元の問題の出典: https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost\n同じ問題における条件の出典: https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem。",
+    "input": "1 行目に n、2 行目に n 個の往路運賃 departing、3 行目に n 個の復路運賃 returning が与えられます。",
+    "output": "帰着日 j が出発日 i より厳密に後であるという条件のもとでの、合計費用の最小値を出力してください。",
+    "explanation": "右から左へ走査し、returning[i+1..n-1] の最小値を保持しながら departing[i] と組み合わせ、答えを更新します。",
+    "hints": [
+      "出発日 i を固定すれば、それより後の最も安い復路運賃だけが分かればよいです。",
+      "接尾辞の最小値を事前計算するか、右から左への走査中に更新と計算を同時に行います。"
+    ]
+  },
+  "ko": {
+    "title": "최소 왕복 항공 요금",
+    "description": "길이가 같은 배열 departing과 returning이 주어지며, 각각 i일의 가는 항공편과 오는 항공편 요금입니다. 출발일 i와 귀환일 j를 고르되, 귀환은 출발보다 엄격하게 늦어야 하며(j > i), departing[i] + returning[j]의 최솟값을 구하세요. 이 엄격한 순서 제약은 같은 문제에 대해 공개된 후기를 바탕으로 보충한 것입니다. 고정된 OAMaster 스냅샷의 원문과 풀이에는 이 제약이 명시되어 있지 않으며, 그 풀이는 날짜 순서를 무시하고 두 배열의 최솟값을 각각 따로 취합니다.\n\n사이트 제약 조건: 2≤n≤200000, -1000000000≤모든 요금≤1000000000. 고정된 OAMaster 스냅샷에는 제약 조건이 없으며, 위의 범위와 stdin/stdout 형식은 이 사이트에서 추가한 것입니다.\n\n원 문제 출처: https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost\n같은 문제의 조건 출처: https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem.",
+    "input": "첫 줄에 n이 주어지고, 두 번째 줄에 가는 항공편 요금 departing n개, 세 번째 줄에 오는 항공편 요금 returning n개가 주어집니다.",
+    "output": "귀환일 j가 출발일 i보다 엄격하게 큰 조건에서의 최소 총 비용을 출력합니다.",
+    "explanation": "오른쪽에서 왼쪽으로 훑으면서 returning[i+1..n-1]의 최솟값을 유지하고, 이를 departing[i]와 짝지어 답을 갱신합니다.",
+    "hints": [
+      "출발일 i를 고정하면 그 이후의 가장 저렴한 귀환 요금만 있으면 됩니다.",
+      "접미사 최솟값을 미리 계산하거나, 오른쪽에서 왼쪽으로 훑으면서 갱신과 계산을 동시에 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Giá vé khứ hồi thấp nhất",
+    "description": "Cho hai mảng departing và returning có độ dài bằng nhau, lần lượt là giá vé chiều đi và chiều về của ngày i. Chọn ngày đi i và ngày về j, trong đó ngày về phải sau ngày đi một cách chặt chẽ (j > i), và tìm giá trị nhỏ nhất của departing[i] + returning[j]. Ràng buộc thứ tự chặt này được bổ sung từ các báo cáo công khai về cùng bài toán; văn bản gốc và lời giải trong bản chụp OAMaster cố định không nêu nó, và lời giải đó lấy giá trị nhỏ nhất của từng mảng một cách riêng rẽ, bỏ qua thứ tự các ngày.\n\nRàng buộc của trang này: 2≤n≤200000, -1000000000≤mọi giá vé≤1000000000. Bản chụp OAMaster cố định không cung cấp ràng buộc; các khoảng giá trị trên và định dạng stdin/stdout do trang này bổ sung.\n\nNguồn đề bài gốc: https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost\nNguồn của điều kiện trong cùng bài toán: https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n giá vé chiều đi departing; dòng thứ ba chứa n giá vé chiều về returning.",
+    "output": "In ra tổng chi phí nhỏ nhất sao cho ngày về j lớn hơn ngày đi i một cách chặt chẽ.",
+    "explanation": "Quét từ phải sang trái, duy trì giá trị nhỏ nhất của returning[i+1..n-1], ghép nó với departing[i], và cập nhật đáp án.",
+    "hints": [
+      "Khi đã cố định ngày đi i, chỉ cần giá vé về rẻ nhất sau đó.",
+      "Tính trước các giá trị nhỏ nhất của hậu tố, hoặc vừa cập nhật vừa tính trong lúc quét từ phải sang trái."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Find the rightmost position where z[i] differs from both x[i] and y[i]. Output the full 26-letter class at every position, and remove z[i] only at the chosen position."
     ]
+  },
+  "ja": {
+    "title": "辞書順最小の最長正規表現",
+    "description": "正規表現は、大文字の英字と、角括弧で囲んだ文字クラスで構成されます。クラス内の文字は重複してはならず、1 つのクラスは 1 文字にマッチします。同じ長さの x、y、z が与えられたとき、x と y にマッチし z にはマッチしない最長の正規表現を求めてください。長さが等しいものの中では辞書順最小のものを取ります。解がなければ −1 を出力します。\n\n標準入力の形式、例、テストデータは CSWork が独自に作成したものです。",
+    "input": "x、y、z の 3 行が与えられます。大文字の英字のみからなり、長さはいずれも n (1..1000000) です。辞書順は ASCII の文字順に従います。",
+    "output": "正規表現の文字列、または −1 を出力してください。",
+    "explanation": "例 1: 2 番目の位置では z=D は y の文字でもあるので取り除けません。1 番目の位置では C を取り除き、2 つの文字クラスの他のすべての文字は残すので、式は AB と BD にマッチし、CD にはマッチしません。例 2: z が x と等しいので、x にマッチする式は z にもマッチします。解はありません。例 3: B はどの位置でも取り除けます。辞書順最小にするには、最も右の文字クラスでのみ B を取り除きます。",
+    "hints": [
+      "z[i] が x[i] とも y[i] とも異なる最も右の位置を見つけます。すべての位置で 26 文字すべてのクラスを出力し、選んだ位置でのみ z[i] を取り除きます。"
+    ]
+  },
+  "ko": {
+    "title": "가장 길면서 사전순으로 가장 작은 정규 표현식",
+    "description": "정규 표현식은 대문자와 대괄호로 묶인 문자 클래스로 이루어지며, 클래스 안의 문자는 중복될 수 없고 하나의 클래스는 한 문자와 일치합니다. 길이가 같은 x, y, z가 주어질 때, x와 y에는 일치하지만 z에는 일치하지 않는 가장 긴 정규 표현식을 구하세요. 길이가 같은 것이 여러 개면 사전순으로 가장 작은 것을 택합니다. 해가 없으면 −1을 출력합니다.\n\n표준 입력 형식, 예제, 테스트 데이터는 CSWork가 독자적으로 작성했습니다.",
+    "input": "x, y, z를 담은 세 줄이 주어지며, 각각 영어 대문자만으로 이루어진 길이 n(1..1000000)의 문자열입니다. 사전순은 ASCII 문자 순서를 따릅니다.",
+    "output": "정규 표현식 문자열 또는 −1을 출력합니다.",
+    "explanation": "예제 1: 두 번째 위치에서 z=D는 y의 문자이기도 하므로 제거할 수 없습니다. 첫 번째 위치에서는 C를 제거하고 두 문자 클래스의 나머지 문자는 모두 유지하므로, 이 표현식은 여전히 AB와 BD에 일치하지만 CD에는 일치하지 않습니다. 예제 2: z가 x와 같으므로 x에 일치하는 모든 표현식은 z에도 일치하여 해가 없습니다. 예제 3: B는 어느 위치에서든 제거할 수 있으며, 결과를 사전순으로 가장 작게 만들려면 가장 오른쪽 문자 클래스에서만 B를 제거합니다.",
+    "hints": [
+      "z[i]가 x[i]와도 y[i]와도 다른 가장 오른쪽 위치를 찾습니다. 모든 위치에서 26개 문자 전체 클래스를 출력하되, 선택한 위치에서만 z[i]를 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Biểu thức chính quy dài nhất có thứ tự từ điển nhỏ nhất",
+    "description": "Một biểu thức chính quy gồm các chữ cái in hoa và các lớp ký tự đặt trong ngoặc vuông; các chữ cái trong một lớp không được lặp lại, và một lớp khớp với một ký tự. Cho x, y và z có cùng độ dài, hãy tìm biểu thức chính quy dài nhất khớp với x và y nhưng không khớp với z; trong các biểu thức cùng độ dài, chọn biểu thức nhỏ nhất theo thứ tự từ điển. Nếu không có nghiệm, in −1.\n\nĐịnh dạng đầu vào chuẩn, các ví dụ và dữ liệu kiểm thử do CSWork biên soạn độc lập.",
+    "input": "Ba dòng x, y và z, chỉ chứa chữ cái Latin in hoa, mỗi xâu có độ dài n (1..1000000). Thứ tự từ điển theo thứ tự ký tự ASCII.",
+    "output": "In ra xâu biểu thức chính quy, hoặc −1.",
+    "explanation": "Ví dụ 1: ở vị trí thứ hai, z=D cũng là ký tự của y nên không thể loại bỏ; ở vị trí đầu tiên loại bỏ C, và giữ nguyên mọi chữ cái khác của cả hai lớp ký tự, nên biểu thức vẫn khớp với AB và BD nhưng không khớp với CD. Ví dụ 2: z bằng x, nên mọi biểu thức khớp với x cũng khớp với z; không có nghiệm. Ví dụ 3: B có thể bị loại ở bất kỳ vị trí nào; để kết quả nhỏ nhất theo thứ tự từ điển, chỉ loại B ở lớp ký tự ngoài cùng bên phải.",
+    "hints": [
+      "Tìm vị trí ngoài cùng bên phải mà z[i] khác cả x[i] và y[i]. In lớp đầy đủ 26 chữ cái ở mọi vị trí, và chỉ loại z[i] tại vị trí đã chọn."
+    ]
   }
 }

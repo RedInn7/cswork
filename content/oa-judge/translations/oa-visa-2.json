@@ -13,5 +13,41 @@
       "List the sticks on each side from nearest to farthest.",
       "Stop immediately when the total reaches exactly 100 as well."
     ]
+  },
+  "ja": {
+    "title": "固定された巣の両側から交互に枝を集める",
+    "description": "forest の正の整数はその位置にある枝の長さ、0 は空きを表します。巣は添字 bird に固定されており、forest[bird]=0 です。鳥は 1 回目に、巣の右側を 1 マスずつ探して最も近い 0 でない枝を取り（その位置は 0 になります）、最初の巣に戻ります。次は巣の左側で最も近い枝を探して巣に戻り、その後は右と左を交互に繰り返します。累積した枝の長さが 100 以上になったら、ただちに停止します。取った枝の元の 0 始まりの添字を、集めた順にすべて返してください。合計が 100 に達する前は、各ラウンドで必要な側に必ず枝があることが保証されているので、探索が範囲外に出ることはありません。",
+    "input": "1 行目に n と bird、2 行目に n 個の整数 forest[i] が与えられます。3≤n≤1000、0≤forest[i]≤50、0≤bird<n、forest[bird]=0、sum(forest)≥100。元の問題の追加の保証：交互の手順に従うとき、100 に達していない間は、必要な側に取られていない正の長さの枝が必ずあります。合計が十分に大きくてもラウンドごとの保証を満たさない配列は、有効な入力ではありません。",
+    "output": "空白区切りの元の 0 始まりの添字を 1 行で、実際に集めた順に出力してください。角括弧や要素数は出力しません。",
+    "explanation": "例 1 は元の OCR によるものです。bird=4 で、位置 7（長さ 15）、位置 2（長さ 50）、位置 10（長さ 45）の順に取り、合計は 110 なので、7 2 10 を出力します。例 2 の [50,0,50]（bird=1）はサイト追加です。2、0 の順に取るとちょうど 100 になります。例 3 の [40,30,0,40,50]（bird=2）はサイト追加です。3、1、4 の順に取ると合計は 120 です。MDX 版では元の位置に戻る処理が省略されており、その例は元の空の巣のルールと長さの制限に違反しています。この問題では OCR の完全なルールを復元し、その無効な例は使用しません。",
+    "hints": [
+      "各探索は、直前の枝ではなく、固定された巣から始まります。",
+      "各側の枝を、近い方から遠い方へ並べておきます。",
+      "合計がちょうど 100 に達したときも、ただちに停止します。"
+    ]
+  },
+  "ko": {
+    "title": "고정된 둥지 양쪽에서 번갈아 막대기 모으기",
+    "description": "forest의 양의 정수는 그 위치에 있는 막대기의 길이이고, 0은 빈 자리입니다. 둥지는 인덱스 bird에 고정되어 있으며 forest[bird]=0입니다. 새는 첫 번째에는 둥지의 오른쪽을 한 칸씩 탐색해 가장 가까운 0이 아닌 막대기를 가져오고(그 위치는 0이 됩니다) 처음의 둥지로 돌아옵니다. 다음에는 둥지의 왼쪽에서 가장 가까운 막대기를 찾은 뒤 둥지로 돌아오고, 그 후로는 오른쪽과 왼쪽을 번갈아 갑니다. 누적 막대기 길이가 100 이상이 되면 즉시 멈춥니다. 가져온 모든 막대기의 원래 0-기반 인덱스를 수집한 순서대로 반환하세요. 총합이 100에 도달하기 전에는 매 라운드에 필요한 쪽에 항상 막대기가 있음이 보장되므로, 탐색이 범위를 벗어나는 일은 없습니다.",
+    "input": "첫 번째 줄에 n과 bird가 주어지고, 두 번째 줄에 정수 n개 forest[i]가 주어집니다. 3≤n≤1000, 0≤forest[i]≤50, 0≤bird<n, forest[bird]=0, sum(forest)≥100입니다. 원문의 추가 보장: 번갈아 가는 과정을 따를 때 100에 도달하기 전까지 필요한 쪽에는 아직 가져가지 않은 양의 길이의 막대기가 항상 있습니다. 총합은 충분히 크지만 라운드별 보장을 만족하지 않는 배열은 유효한 입력이 아닙니다.",
+    "output": "한 줄에 실제로 가져온 순서대로 원래 0-기반 인덱스를 공백으로 구분해 출력합니다. 대괄호나 원소 개수는 출력하지 않습니다.",
+    "explanation": "첫 번째 예제는 원문 OCR에서 온 것입니다. bird=4이며, 위치 7의 길이 15, 위치 2의 길이 50, 위치 10의 길이 45를 차례로 가져오면 합계가 110이므로 7 2 10을 출력합니다. 두 번째 예제 [50,0,50], bird=1은 사이트에서 추가한 것입니다. 2와 0을 가져오면 정확히 100입니다. 세 번째 예제 [40,30,0,40,50], bird=2는 사이트에서 추가한 것입니다. 3, 1, 4를 가져오면 합계가 120입니다. MDX 버전에서는 처음 위치로 돌아오는 것이 빠져 있었고, 그 예제는 원문의 빈 둥지 규칙과 길이 제한을 위반했습니다. 이 문제는 OCR의 전체 규칙을 복원했으며 그 유효하지 않은 예제는 사용하지 않습니다.",
+    "hints": [
+      "매번의 탐색은 직전 막대기가 아니라 고정된 둥지에서 시작합니다.",
+      "각 쪽의 막대기를 가까운 것부터 먼 것 순으로 나열합니다.",
+      "총합이 정확히 100에 도달했을 때도 즉시 멈춥니다."
+    ]
+  },
+  "vi": {
+    "title": "Thu nhặt que ở hai phía của tổ cố định",
+    "description": "Một số nguyên dương trong forest là độ dài của que tại vị trí đó, và 0 nghĩa là ô trống. Tổ cố định ở chỉ số bird, với forest[bird]=0. Lần đầu tiên, con chim tìm từng ô một về bên phải tổ để tìm que khác 0 gần nhất, nhặt nó (vị trí đó trở thành 0), rồi quay về tổ ban đầu. Lần sau nó tìm về bên trái tổ que gần nhất, rồi quay về tổ; sau đó luân phiên phải và trái. Nó dừng ngay khi tổng độ dài các que đã nhặt đạt hoặc vượt 100. Hãy trả về các chỉ số gốc (đánh từ 0) của mọi que đã nhặt, theo thứ tự thu nhặt. Đảm bảo rằng trước khi tổng đạt 100, phía cần tìm ở mỗi vòng luôn còn que, nên việc tìm kiếm không bao giờ vượt biên.",
+    "input": "Dòng đầu chứa n và bird, dòng thứ hai chứa n số nguyên forest[i]. 3≤n≤1000, 0≤forest[i]≤50, 0≤bird<n, forest[bird]=0, sum(forest)≥100. Đảm bảo gốc bổ sung: theo quá trình luân phiên, khi chưa đạt 100, phía cần thiết luôn còn một que có độ dài dương chưa được nhặt; một mảng có tổng đủ lớn nhưng không thỏa đảm bảo theo từng vòng thì không phải đầu vào hợp lệ.",
+    "output": "Một dòng gồm các chỉ số gốc (đánh từ 0) cách nhau bởi dấu cách, đúng theo thứ tự thu nhặt thực tế; không in dấu ngoặc hay số lượng phần tử.",
+    "explanation": "Ví dụ đầu tiên lấy từ OCR gốc: bird=4, lần lượt nhặt vị trí 7 với độ dài 15, vị trí 2 với độ dài 50 và vị trí 10 với độ dài 45, tổng cộng 110, nên in 7 2 10. Ví dụ thứ hai [50,0,50] với bird=1 do trang bổ sung: nhặt 2 rồi 0 cho tổng đúng 100. Ví dụ thứ ba [40,30,0,40,50] với bird=2 do trang bổ sung: nhặt 3, 1, 4 cho tổng 120. Phiên bản MDX bỏ qua việc quay về vị trí ban đầu, và ví dụ của nó vi phạm quy tắc tổ trống và giới hạn độ dài của bản gốc; bài này khôi phục đầy đủ các quy tắc OCR và không dùng ví dụ không hợp lệ đó.",
+    "hints": [
+      "Mỗi lần tìm đều bắt đầu từ tổ cố định, không phải từ que trước đó.",
+      "Liệt kê các que ở mỗi phía từ gần nhất đến xa nhất.",
+      "Dừng ngay cả khi tổng đạt đúng 100."
+    ]
   }
 }

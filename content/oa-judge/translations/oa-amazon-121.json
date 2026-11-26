@@ -11,5 +11,35 @@
     "hints": [
       "Store the consecutive error count for each server; success resets it to zero, and an error adds one, replacing the server and resetting the count when it reaches 3."
     ]
+  },
+  "ja": {
+    "title": "3 回連続のエラーによるサーバー交換の回数",
+    "description": "各サーバーのリクエストを個別に観察します。エラーが 3 回連続したらサーバーを交換し、連続エラー数を 0 に戻します。成功でも連続エラー数は 0 に戻ります。ほかのサーバーのログは、そのサーバーの連続したリクエストを中断しません。\n\n標準入出力と解答は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n m が与えられ、続く m 行に、サーバー番号（1 始まり）と success/error が与えられます。1≤n≤200、1≤m≤20000 です。m の上限は、出典のぼやけた画像を文字に起こしたものに従っており、元の画像と照合済みであるとは主張しません。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: s1 は 3 回目のエラーで 1 回交換され、その後はエラーが 1 回あるだけなので、答えは 1 です。例 2: 6 回連続のエラーで 3 回ごとに交換されるので、答えは 2 です。例 3: 成功が連続エラーを中断するので、答えは 0 です。",
+    "hints": [
+      "各サーバーの連続エラー数を保持します。成功なら 0 に戻し、エラーなら 1 増やして、3 に達したらサーバーを交換して 0 に戻します。"
+    ]
+  },
+  "ko": {
+    "title": "연속 세 번 오류 후 서버 교체 횟수",
+    "description": "각 서버의 요청을 따로 관찰하세요. 연속 세 번 오류 결과가 나오면 서버를 교체하고 그 서버의 연속 오류 횟수를 0으로 되돌리며, 성공해도 0으로 되돌립니다. 다른 서버의 로그는 한 서버의 연속 요청을 끊지 않습니다.\n\n표준 입출력 형식과 풀이는 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n m이 주어지고, 이어지는 m개의 줄에 각각 서버 번호(1-기반)와 success/error가 주어집니다. 1≤n≤200, 1≤m≤20000이며, m의 상한은 원문의 흐릿한 이미지를 글자로 옮긴 것에 따랐고 원본 이미지와 대조해 확인했다고 주장하지는 않습니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: s1은 세 번째 오류에서 한 번 교체되고 그 뒤로는 오류가 한 번 더 있을 뿐이므로 답은 1입니다. 예제 2: 오류가 연속 여섯 번이면 세 번마다 교체되어 답은 2입니다. 예제 3: 성공이 연속 오류를 끊으므로 답은 0입니다.",
+    "hints": [
+      "서버마다 연속 오류 횟수를 저장합니다. 성공이면 0으로 초기화하고, 오류이면 1을 더하며 3이 되면 서버를 교체하고 횟수를 초기화합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần thay máy chủ sau ba lỗi liên tiếp",
+    "description": "Quan sát các yêu cầu của từng máy chủ riêng biệt; sau ba kết quả lỗi liên tiếp, thay máy chủ và đặt lại số lỗi liên tiếp của nó về 0, và một lần thành công cũng đặt lại số này. Nhật ký của các máy chủ khác không làm gián đoạn các yêu cầu liên tiếp của một máy chủ.\n\nTrang này tự viết phần nhập/xuất chuẩn và lời giải; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu tiên chứa n m; mỗi dòng trong m dòng tiếp theo chứa số máy chủ (đánh số từ 1) và success/error. 1≤n≤200, 1≤m≤20000; cận trên của m dựa trên bản chép lại bằng văn bản của một hình ảnh mờ trong nguồn và không được khẳng định là đã đối chiếu với hình gốc.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: s1 được thay một lần khi nó gặp lỗi thứ ba, sau đó chỉ có thêm một lỗi nữa, nên đáp án là 1. Ví dụ 2: sáu lỗi liên tiếp khiến cứ ba lỗi lại thay một lần, nên đáp án là 2. Ví dụ 3: một lần thành công làm gián đoạn chuỗi lỗi liên tiếp, nên đáp án là 0.",
+    "hints": [
+      "Lưu số lỗi liên tiếp cho mỗi máy chủ; thành công đặt lại về 0, và mỗi lỗi cộng một, thay máy chủ và đặt lại bộ đếm khi đạt 3."
+    ]
   }
 }

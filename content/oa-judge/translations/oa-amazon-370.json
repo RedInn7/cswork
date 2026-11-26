@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate the left and right endpoints and extend the range sum incrementally; whenever the sum is divisible by the length, add 1 to the count of the corresponding mean."
     ]
+  },
+  "ja": {
+    "title": "各整数を平均とする連続部分列の個数",
+    "description": "配列は 1..n の順列です。x=1..n それぞれについて、平均がちょうど x になる空でない連続部分配列の個数を求めてください。添字の範囲が異なるものは別々に数えます。\n\n本サイトは標準入出力と解説を独自に作成しました。出典に欠けている制約の補足や、例の訂正は仕様に明記しています。",
+    "input": "1 行目に n、2 行目に n 個の相異なる順位が与えられます。元の制約は 1≤n≤1000 で、配列はちょうど 1..n の順列です。重複を含む一般の配列ではありません。",
+    "output": "n 個の整数を出力してください。x 番目の値は、平均が x となる区間の個数です。",
+    "explanation": "3 つの公開例の出力は 1 2 3 2 1、1 2 2 1、1 1 1 4 4 1 1 で、独立した全列挙または直接シミュレーションで確認済みです。",
+    "hints": [
+      "左端と右端を全探索し、区間和を差分更新で伸ばします。和が長さで割り切れるたびに、対応する平均の個数に 1 を加えます。"
+    ]
+  },
+  "ko": {
+    "title": "정수 평균을 갖는 연속 구간의 개수",
+    "description": "배열은 1..n의 순열입니다. 각 x=1..n에 대해 평균이 정확히 x인 비어 있지 않은 연속 부분 배열의 개수를 구하세요. 인덱스 범위가 다르면 따로 셉니다.\n\n본 사이트에서 표준 입출력 형식과 풀이를 독립적으로 정리했습니다. 출처에 없는 범위를 보충한 내용과 예제의 오류를 바로잡은 내용은 명세에 명시되어 있습니다.",
+    "input": "첫 번째 줄에 n, 두 번째 줄에 서로 다른 n개의 순위가 주어집니다. 원래 제약 조건은 1≤n≤1000이며, 배열은 중복 값이 있는 일반 배열이 아니라 정확히 1..n의 순열입니다.",
+    "output": "n개의 정수를 출력합니다. x번째 값은 평균이 x인 구간의 개수입니다.",
+    "explanation": "세 개의 공개 예제의 출력은 각각 1 2 3 2 1; 1 2 2 1; 1 1 1 4 4 1 1이며, 독립적인 완전 탐색 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "왼쪽 끝과 오른쪽 끝을 순회하면서 구간 합을 누적해 갱신합니다. 합이 길이로 나누어떨어질 때마다 해당 평균의 카운트에 1을 더합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số nhóm hạng liên tiếp có trung bình bằng từng số nguyên",
+    "description": "Mảng là một hoán vị của 1..n. Với mỗi x=1..n, hãy tìm số mảng con liên tiếp khác rỗng có trung bình cộng đúng bằng x. Các đoạn chỉ số khác nhau được đếm riêng.\n\nTrang này tự biên soạn phần vào/ra chuẩn và lời giải; các bổ sung cho giới hạn mà nguồn còn thiếu và các chỉnh sửa cho ví dụ đều được nêu rõ trong đặc tả.",
+    "input": "Dòng đầu chứa n, dòng thứ hai chứa n hạng phân biệt. Giới hạn gốc là 1≤n≤1000, và mảng đúng là một hoán vị của 1..n, không phải mảng tổng quát có giá trị trùng lặp.",
+    "output": "In ra n số nguyên; số thứ x là số đoạn có trung bình bằng x.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là 1 2 3 2 1; 1 2 2 1; và 1 1 1 4 4 1 1, đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Duyệt đầu trái và đầu phải, cộng dồn tổng của đoạn khi mở rộng; mỗi khi tổng chia hết cho độ dài, tăng bộ đếm của giá trị trung bình tương ứng thêm 1."
+    ]
   }
 }

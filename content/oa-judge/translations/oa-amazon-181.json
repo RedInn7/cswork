@@ -11,5 +11,35 @@
     "hints": [
       "When wt is 0, each group of equal weights forms its own perfect matching, so multiply by the odd double factorial. When wt>0, process weights in increasing order: packages still unpaired at the current weight v can only match the next weight v+wt; choose and arrange partners among that weight's remaining identities, multiply by the falling factorial, then subtract the number used."
     ]
+  },
+  "ja": {
+    "title": "すべての荷物をバランスのとれたペアに分ける方法の数",
+    "description": "各荷物はそれぞれ別のものとして区別されるので、重さが等しくても荷物は異なります。すべての荷物を、それぞれちょうど 1 回ずつ使って順序なしのペアに分けます。各ペア内の重さの差の絶対値はちょうど wt でなければなりません。完全な分け方の個数を 1000000007 で割った余りで求め、完全な分け方がなければ 0 を返してください。元の文章にある「単独のペアの個数」に関する一節は、本文と、出力が 6 になる完全な分け方の例の両方と矛盾しているため、本サイトでは本文とその例の意味、つまりすべての荷物をペアにすることを明示的に採用します。\n\n標準入出力と判定は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n wt、2 行目に重さが与えられます。元のスナップショットには数値の範囲がなかったため、本サイトでは 1≤n≤100000、0≤wt≤10^9、重さは 1..10^9 とします。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "答えは 6、3、0 です。",
+    "hints": [
+      "wt が 0 のときは、等しい重さのグループごとに独立した完全マッチングが作られるので、奇数の二重階乗を掛け合わせます。wt>0 のときは重さを昇順に処理します。現在の重さ v でまだペアになっていない荷物は、次の重さ v+wt の荷物としかペアになれません。その重さの残りの荷物からパートナーを選んで並べる方法の数、つまり下降階乗冪を掛け、使った分を引きます。"
+    ]
+  },
+  "ko": {
+    "title": "모든 소포를 균형 잡힌 쌍으로 나누는 방법의 수",
+    "description": "각 소포는 고유한 존재이므로 무게가 같아도 서로 구별됩니다. 모든 소포를 정확히 한 번씩 사용해 순서 없는 쌍으로 나누며, 각 쌍 안의 무게 차이의 절댓값은 wt여야 합니다. 완전한 짝짓기의 수를 1000000007로 나눈 나머지로 구하고, 완전한 짝짓기가 없으면 0을 반환하세요. 원문에 있던 \"단일 쌍의 수\"에 관한 문구는 본문 설명 및 출력이 6인 완전 짝짓기 예제와 모순되므로, 이 사이트에서는 본문 설명과 그 예제의 의미, 즉 모든 소포를 짝짓는 것으로 명시적으로 채택합니다.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n wt가, 두 번째 줄에 무게들이 주어집니다. 원 출처의 스냅샷에는 수치 범위가 없었으며, 이 사이트에서는 1≤n≤100000, 0≤wt≤10^9, 무게 1..10^9로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "답은 6, 3, 0입니다.",
+    "hints": [
+      "wt가 0이면 무게가 같은 그룹마다 독립적인 완전 매칭을 이루므로 홀수 이중 팩토리얼을 곱합니다. wt>0이면 무게를 오름차순으로 처리합니다. 현재 무게 v에서 아직 짝이 없는 소포는 다음 무게 v+wt와만 짝지을 수 있으므로, 그 무게의 남은 소포들 중에서 파트너를 골라 배치하는 경우의 수를 하강 팩토리얼로 곱한 뒤 사용한 개수를 뺍니다."
+    ]
+  },
+  "vi": {
+    "title": "Số cách chia mọi gói hàng thành các cặp cân bằng",
+    "description": "Mỗi gói hàng có danh tính riêng, nên các gói là phân biệt kể cả khi có cùng khối lượng. Chia tất cả gói hàng thành các cặp không có thứ tự, mỗi gói dùng đúng một lần; chênh lệch tuyệt đối về khối lượng trong mỗi cặp phải bằng wt. Tìm số cách chia hoàn chỉnh theo modulo 1000000007, và trả về 0 nếu không tồn tại cách chia hoàn chỉnh nào. Một mệnh đề trong đề gốc về \"số cặp đơn lẻ\" mâu thuẫn với phát biểu chính và ví dụ chia hoàn chỉnh có đầu ra 6; trang này chủ động chọn ý nghĩa của phát biểu chính và ví dụ đó, tức là ghép cặp tất cả các gói hàng.\n\nCách vào/ra chuẩn, ví dụ và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n wt; dòng thứ hai chứa các khối lượng. Bản chụp gốc không cho cận số học; trang này quy định 1≤n≤100000, 0≤wt≤10^9, khối lượng 1..10^9.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Các đáp án là 6, 3 và 0.",
+    "hints": [
+      "Khi wt bằng 0, mỗi nhóm khối lượng bằng nhau tự tạo thành một ghép cặp hoàn hảo riêng, nên nhân với giai thừa kép số lẻ. Khi wt>0, xử lý các khối lượng theo thứ tự tăng dần: các gói chưa ghép ở khối lượng v hiện tại chỉ có thể ghép với khối lượng kế tiếp v+wt; chọn và sắp xếp đối tác trong các danh tính còn lại của khối lượng đó, nhân với giai thừa giảm, rồi trừ đi số đã dùng."
+    ]
   }
 }

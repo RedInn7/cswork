@@ -11,5 +11,35 @@
     "hints": [
       "Use all initially infected cells as BFS sources at the same time and infect healthy cells layer by layer."
     ]
+  },
+  "ja": {
+    "title": "ウイルスの感染拡大にかかる時間",
+    "description": "グリッドで、0 は空き地、1 は健康なセル、2 は感染したセルです。1 秒ごとに、ウイルスは上下左右に隣接する健康なセルにだけ広がります。すべての健康なセルが感染するまでに必要な最小の秒数を出力します。感染できないセルがある場合は -1 を出力します。",
+    "input": "入力は N M（1..100）で始まり、続く N 行にそれぞれ M 個の整数（0..2）が与えられます。",
+    "output": "説明どおりに答えを出力します。配列の答えでは、値をスペースで区切ります。",
+    "explanation": "最初に感染しているセルをすべて同時に BFS の始点とし、層ごとに健康なセルを感染させます。\n\n正しさ：多始点 BFS の層 t は、最短 t 秒で到達できるセルとちょうど一致します。最後に感染する健康なセルの層が完了時間です。探索が終わっても健康なセルが残っている場合、それらはすべての感染セルから切り離されているので -1 を返します。健康なセルがなければ答えは 0 です。\n\n計算量：時間 O(NM)、空間 O(NM)。",
+    "hints": [
+      "最初に感染しているセルをすべて同時に BFS の始点とし、層ごとに健康なセルを感染させます。"
+    ]
+  },
+  "ko": {
+    "title": "바이러스 확산 시간",
+    "description": "격자에서 0은 빈 땅, 1은 건강한 세포, 2는 감염된 세포입니다. 매초 바이러스는 상하좌우로 인접한 건강한 세포로만 퍼집니다. 모든 건강한 세포가 감염되는 데 필요한 최소 시간(초)을 출력하세요. 감염될 수 없는 세포가 있으면 -1을 출력합니다.",
+    "input": "N M(1..100)이 주어지고, 이어서 각각 M개의 정수(0..2)로 이루어진 N개의 줄이 주어집니다.",
+    "output": "설명된 대로 답을 출력하며, 배열 형태의 답은 값들을 공백으로 구분합니다.",
+    "explanation": "처음 감염된 모든 세포를 동시에 BFS의 시작점으로 사용하여 건강한 세포를 층별로 감염시킵니다.\n\n정당성: 다중 시작점 BFS의 층 t는 최소 t초에 도달할 수 있는 세포들로 정확히 이루어집니다. 마지막으로 감염되는 건강한 세포의 층이 완료 시간입니다. 탐색이 끝난 뒤에도 건강한 세포가 남아 있다면 그 세포는 모든 감염된 세포와 연결되어 있지 않으므로 -1을 반환합니다. 건강한 세포가 없으면 답은 0입니다.\n\n복잡도: 시간 O(NM), 공간 O(NM).",
+    "hints": [
+      "처음 감염된 모든 세포를 동시에 BFS의 시작점으로 사용하여 건강한 세포를 층별로 감염시킵니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời gian lan truyền virus",
+    "description": "Trong lưới, 0 là đất trống, 1 là ô khỏe mạnh và 2 là ô đã nhiễm. Mỗi giây, virus chỉ lan sang các ô khỏe mạnh kề trên, dưới, trái hoặc phải. In ra số giây tối thiểu cần để mọi ô khỏe mạnh đều bị nhiễm; nếu có ô nào không bao giờ bị nhiễm, in -1.",
+    "input": "Đầu vào cho N M (1..100), sau đó là N dòng, mỗi dòng M số nguyên (0..2).",
+    "output": "In ra đáp án như mô tả; với đáp án là mảng, các giá trị cách nhau bằng dấu cách.",
+    "explanation": "Dùng tất cả các ô nhiễm ban đầu làm nguồn BFS cùng lúc và lây nhiễm các ô khỏe mạnh theo từng lớp.\n\nTính đúng đắn: lớp t của BFS đa nguồn gồm đúng các ô có thể đến được trong tối thiểu t giây. Lớp của ô khỏe mạnh bị nhiễm cuối cùng là thời gian hoàn thành; nếu sau khi tìm kiếm kết thúc vẫn còn ô khỏe mạnh, chúng không liên thông với mọi ô nhiễm, nên trả về -1. Nếu không có ô khỏe mạnh nào, đáp án là 0.\n\nĐộ phức tạp: thời gian O(NM), bộ nhớ O(NM).",
+    "hints": [
+      "Dùng tất cả các ô nhiễm ban đầu làm nguồn BFS cùng lúc và lây nhiễm các ô khỏe mạnh theo từng lớp."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Record the positions of the failed characters: take the maximum of the length before the first failure and the distances between adjacent failure positions; the suffix after the last failure is never deleted."
     ]
+  },
+  "ja": {
+    "title": "故障したサービスが左隣を削除していくときの安定までの時間",
+    "description": "毎秒、その秒の開始時点の文字列に基づいて、すべての failedService が、すぐ左隣の文字を同時に削除します。削除される文字が故障したサービスであることもあります。文字列が変化しなくなるまでに経過する秒数を求めてください。\n\n標準入出力と判定は本サイトが独自に作成しました。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目が pipeline、2 行目が failedService の 1 文字です。長さは 1..200000 で、本サイトでは小文字を使います。",
+    "output": "答えとなる整数を 1 つ出力します。",
+    "explanation": "例 1: 3 つの a はインデックス 1、3、5 にあります。先頭の区間の長さは 1、2 つの間隔の長さは 2 なので、答えは 2 です。例 2: 1 秒目に、最初の 3 つの a は右隣によって同時に削除され、1 つだけが残るので、答えは 1 です。例 3: a がなく、削除は起こらないので、答えは 0 です。",
+    "hints": [
+      "故障した文字の位置を記録します。最初の故障の前の長さと、隣り合う故障位置の間の距離の最大値を取ります。最後の故障より後ろのサフィックスは削除されません。"
+    ]
+  },
+  "ko": {
+    "title": "장애 서비스가 왼쪽 이웃을 삭제할 때 안정될 때까지 걸리는 시간",
+    "description": "매초, 그 초가 시작될 때의 문자열을 기준으로 모든 failedService가 동시에 바로 왼쪽의 문자를 삭제합니다. 삭제되는 문자가 failedService일 수도 있습니다. 문자열이 더 이상 변하지 않을 때까지 몇 초가 걸리는지 구하세요.\n\n표준 입출력과 채점은 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄은 pipeline이고, 둘째 줄은 failedService 문자 하나입니다. 길이는 1..200000이며, 이 사이트에서는 소문자를 사용합니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 세 개의 a는 인덱스 1, 3, 5에 있고, 맨 앞 구간의 길이는 1, 두 틈의 길이는 2이므로 답은 2입니다. 예제 2: 첫 1초에 처음 세 개의 a가 오른쪽 이웃에 의해 동시에 삭제되어 하나만 남으므로 답은 1입니다. 예제 3: a가 없어 삭제가 일어나지 않으므로 답은 0입니다.",
+    "hints": [
+      "장애 문자의 위치를 기록합니다. 첫 장애 앞의 길이와 인접한 장애 위치 사이의 거리들 중 최댓값을 취합니다. 마지막 장애 뒤의 접미사는 절대 삭제되지 않습니다."
+    ]
+  },
+  "vi": {
+    "title": "Thời gian đến khi ổn định khi các dịch vụ lỗi xóa láng giềng bên trái",
+    "description": "Mỗi giây, dựa trên xâu tại thời điểm bắt đầu giây đó, mọi failedService đồng thời xóa ký tự nằm ngay bên trái nó; ký tự bị xóa cũng có thể là một failed service. Hãy tìm số giây trôi qua trước khi xâu ngừng thay đổi.\n\nTrang này tự viết độc lập phần vào/ra chuẩn và phần chấm bài; các khoảng giá trị đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu là pipeline, dòng thứ hai là một ký tự failedService. Độ dài 1..200000; trang này dùng chữ cái thường.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: ba ký tự a nằm ở các chỉ số 1, 3, 5; đoạn đầu có độ dài 1 và hai khoảng trống có độ dài 2, nên đáp án là 2. Ví dụ 2: trong giây đầu tiên, ba ký tự a đầu bị các láng giềng bên phải của chúng xóa đồng thời, chỉ còn lại một, nên đáp án là 1. Ví dụ 3: không có a nên không có gì bị xóa, đáp án là 0.",
+    "hints": [
+      "Ghi lại vị trí của các ký tự lỗi: lấy giá trị lớn nhất giữa độ dài trước lỗi đầu tiên và các khoảng cách giữa các vị trí lỗi liền kề; phần hậu tố sau lỗi cuối cùng không bao giờ bị xóa."
+    ]
   }
 }

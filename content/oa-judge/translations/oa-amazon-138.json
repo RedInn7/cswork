@@ -11,5 +11,35 @@
     "hints": [
       "Request i exceeds a limit if it is in the same second as request i−3, or less than 10 apart from request i−20, or less than 60 apart from request i−60. Take the OR of the three conditions."
     ]
+  },
+  "ja": {
+    "title": "レート制限ゲートウェイが破棄するリクエスト数",
+    "description": "リクエストは時刻の非減少順に与えられます。1 秒あたり最大 3 件、現在の秒を含む直近 10 秒で最大 20 件、直近 60 秒で最大 60 件までが許可され、いずれかの制限を超えたリクエストは破棄され、1 回だけ数えます。すでに破棄されたリクエストも、以降の統計には数えられます。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n（1..1000000）、2 行目に n 個の非減少の時刻（1..10^9）が与えられます。10 秒の窓は [T−9,T]、60 秒の窓は [T−59,T] で、端点を含みます。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 同じ秒の 4 番目のリクエストが破棄されるので、答えは 1 です。例 2: 同じ秒の 4 番目と、10 秒以内の 21 番目がそれぞれ破棄されるので、答えは 2 です。例 3: どの 60 秒の区間もちょうど 60 件以下なので、すべて受理され、答えは 0 です。",
+    "hints": [
+      "リクエスト i が制限を超えるのは、リクエスト i−3 と同じ秒にある場合、リクエスト i−20 との差が 10 未満の場合、またはリクエスト i−60 との差が 60 未満の場合です。3 つの条件の OR を取ります。"
+    ]
+  },
+  "ko": {
+    "title": "속도 제한 게이트웨이가 거부한 요청 수",
+    "description": "요청은 시간이 감소하지 않는 순서로 주어집니다. 1초에 최대 3개, 현재 초를 포함한 최근 10초 동안 최대 20개, 최근 60초 동안 최대 60개까지 허용되며, 어느 한도라도 초과한 요청은 거부되고 한 번만 셉니다. 이미 거부된 요청도 이후의 통계에는 계속 포함됩니다.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n(1..1000000), 두 번째 줄에 감소하지 않는 n개의 시간(1..10^9)이 주어집니다. 10초 창은 [T−9,T], 60초 창은 [T−59,T]이며 양 끝을 포함합니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 같은 초의 4번째 요청이 거부되므로 답은 1입니다. 예제 2: 같은 초의 4번째 요청과 10초 안의 21번째 요청이 각각 거부되므로 답은 2입니다. 예제 3: 모든 60초 구간에 최대 정확히 60개만 있으므로 모두 허용되어 답은 0입니다.",
+    "hints": [
+      "요청 i가 한도를 초과하는 경우는 요청 i−3과 같은 초에 있거나, 요청 i−20과의 시간 차가 10 미만이거나, 요청 i−60과의 시간 차가 60 미만일 때입니다. 세 조건을 OR로 묶으면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số yêu cầu bị cổng giới hạn tốc độ loại bỏ",
+    "description": "Các yêu cầu được cho theo thứ tự thời gian không giảm. Tối đa 3 yêu cầu mỗi giây, tối đa 20 yêu cầu trong 10 giây gần nhất kể cả giây hiện tại, và tối đa 60 yêu cầu trong 60 giây gần nhất; một yêu cầu vượt bất kỳ giới hạn nào sẽ bị loại bỏ và chỉ được đếm một lần. Các yêu cầu đã bị loại bỏ vẫn được tính vào thống kê về sau.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n (1..1000000), dòng thứ hai chứa n thời điểm không giảm (1..10^9). Cửa sổ 10 giây là [T−9,T] và cửa sổ 60 giây là [T−59,T], bao gồm cả hai đầu mút.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: yêu cầu thứ 4 trong cùng một giây bị loại bỏ, nên đáp án là 1. Ví dụ 2: yêu cầu thứ 4 trong cùng một giây và yêu cầu thứ 21 trong vòng 10 giây đều bị loại bỏ, nên đáp án là 2. Ví dụ 3: mọi khoảng 60 giây có tối đa đúng 60 yêu cầu, nên tất cả đều được chấp nhận và đáp án là 0.",
+    "hints": [
+      "Yêu cầu i vượt giới hạn nếu nó cùng giây với yêu cầu i−3, hoặc cách yêu cầu i−20 chưa đến 10, hoặc cách yêu cầu i−60 chưa đến 60. Lấy OR của ba điều kiện."
+    ]
   }
 }

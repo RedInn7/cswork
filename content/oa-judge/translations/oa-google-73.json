@@ -11,5 +11,35 @@
     "hints": [
       "Iterate over the friends of friends of each person and count all non-friend candidates; if there is a positive count, pick the best by count and then by number. If there is no positive count, just find the smallest number that is neither the person nor a friend."
     ]
+  },
+  "ja": {
+    "title": "共通の友人数によるフレンド推薦",
+    "description": "ユーザーには 1..n の番号が付いています。各ユーザーについて、本人でも既存の友人でもないユーザーを 1 人推薦します。共通の友人が最も多い人を優先し、同数なら番号が小さい人を選びます。候補がいなければ −1 を出力します。問題文の候補条件「友人ではない」に従うと、共通の友人が 0 人のユーザーも推薦されえます。元の例は 0 始まりの番号を使っていましたが、本サイトでは 1 始まりに統一しています。\n\n標準入出力の形式は CSWork が整備したもので、「本サイト」と記した値の範囲は本サイトの判定上の取り決めです。",
+    "input": "1 行目に n m、続く m 行に、重複しない無向の友人関係の辺 u v が与えられます。1≤n≤100000、0≤m≤250000 で、自己ループはなく、各人の友人は高々 15 人です。",
+    "output": "ユーザー 1..n の順に n 個の整数を出力します。各ユーザーに推薦するユーザーで、候補がなければ −1 です。",
+    "explanation": "例 1：ユーザー 1 には候補がいません。2 と 3 はどちらも 1 と知り合いなので、結果は −1 3 2 です。例 2：友人関係がないので、すべての候補の共通の友人は 0 人です。番号が最小の人を選ぶと 2 1 1 1 になります。例 3：ユーザー本人しかおらず候補がいないので、出力は −1 です。",
+    "hints": [
+      "各人の友人の友人を走査し、友人でない候補すべてについて出現回数を数えます。正の回数があれば、回数、次いで番号で最良のものを選びます。正の回数がなければ、本人でも友人でもない最小の番号を探すだけです。"
+    ]
+  },
+  "ko": {
+    "title": "공통 친구 수 기반 친구 추천",
+    "description": "사용자는 1..n번으로 번호가 매겨져 있습니다. 각 사용자에게 본인도 아니고 이미 친구도 아닌 사용자 한 명을 추천하는데, 공통 친구가 가장 많은 사용자를 우선하고 같으면 번호가 가장 작은 사용자를 고릅니다. 후보가 없으면 −1을 출력합니다. \"친구가 아님\"이라는 문제의 후보 조건에 따라 공통 친구가 0명인 사용자도 추천될 수 있습니다. 원본 예제는 0부터 시작하는 번호를 사용했는데, 이 사이트에서는 1부터 시작하는 번호로 일괄 변환했습니다.\n\n표준 입출력 형식은 CSWork에서 정리한 것이며, \"이 사이트\"라고 표시된 값의 범위는 이 사이트의 채점 기준입니다.",
+    "input": "첫째 줄에 n m이 주어지고, 이어서 서로 다른 무방향 친구 관계 간선 u v가 m개의 줄로 주어집니다. 1≤n≤100000, 0≤m≤250000이며 자기 자신으로의 간선은 없고 각 사용자의 친구는 최대 15명입니다.",
+    "output": "사용자 1..n의 순서대로 각 사용자에게 추천된 사용자를 n개의 정수로 출력합니다. 후보가 없으면 −1입니다.",
+    "explanation": "예제 1: 사용자 1에게는 후보가 없고, 2와 3은 모두 1과 아는 사이이므로 결과는 −1 3 2입니다. 예제 2: 친구 관계가 없으므로 모든 후보의 공통 친구는 0명이며, 번호가 가장 작은 사용자를 고르면 2 1 1 1입니다. 예제 3: 사용자 본인만 있고 후보가 없으므로 출력은 −1입니다.",
+    "hints": [
+      "각 사용자의 친구의 친구를 순회하면서 친구가 아닌 모든 후보의 횟수를 셉니다. 양수인 횟수가 있으면 횟수가 가장 큰 후보, 같으면 번호가 가장 작은 후보를 고릅니다. 양수인 횟수가 없으면 본인도 친구도 아닌 가장 작은 번호를 찾으면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Gợi ý kết bạn theo số bạn chung",
+    "description": "Người dùng được đánh số từ 1..n. Với mỗi người, hãy gợi ý một người dùng không phải chính họ và chưa là bạn bè, ưu tiên người có nhiều bạn chung nhất, rồi đến số thứ tự nhỏ nhất; nếu không có ứng viên nào, in −1. Theo điều kiện ứng viên \"không phải bạn bè\" của đề bài, một người dùng có 0 bạn chung cũng có thể được gợi ý. Ví dụ gốc dùng cách đánh số từ 0; trang này chuyển thống nhất sang cách đánh số từ 1.\n\nĐịnh dạng đầu vào/đầu ra chuẩn do CSWork biên soạn; các khoảng giá trị được đánh dấu \"this site\" là quy ước chấm bài của trang này.",
+    "input": "Dòng đầu chứa n m, tiếp theo là m dòng mô tả các cạnh kết bạn vô hướng phân biệt u v. 1≤n≤100000, 0≤m≤250000, không có khuyên (self-loop), và mỗi người có tối đa 15 bạn.",
+    "output": "In ra n số nguyên theo thứ tự người dùng 1..n: người dùng được gợi ý cho từng người; −1 nếu không có ứng viên.",
+    "explanation": "Ví dụ 1: người dùng 1 không có ứng viên; 2 và 3 đều quen 1, nên kết quả là −1 3 2. Ví dụ 2: không có quan hệ bạn bè nào, nên mọi ứng viên đều có 0 bạn chung; chọn số thứ tự nhỏ nhất cho ra 2 1 1 1. Ví dụ 3: chỉ có bản thân người dùng và không có ứng viên, nên đầu ra là −1.",
+    "hints": [
+      "Duyệt các bạn của bạn của mỗi người và đếm mọi ứng viên không phải bạn bè; nếu có số đếm dương, chọn người tốt nhất theo số đếm rồi theo số thứ tự. Nếu không có số đếm dương, chỉ cần tìm số thứ tự nhỏ nhất không phải chính người đó và cũng không phải bạn."
+    ]
   }
 }

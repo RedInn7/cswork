@@ -13,5 +13,41 @@
       "Binary search on the maximum allowed diameter D, and check whether at least n−k vertices can be kept.",
       "For even D, look at radius balls centered on a vertex; for odd D, also check the vertex sets centered on an edge with depth r on each side."
     ]
+  },
+  "ja": {
+    "title": "葉を高々 k 個削除した後の木の最小直径（Google OA）",
+    "description": "n 頂点の無向木が与えられます。1 回の操作で葉を 1 つ削除し、操作は高々 k 回行えます。削除後に少なくとも 1 つの頂点が残らなければなりません。残った木の直径（辺の本数で測る）の最小値を求めてください。\n\n元サイトの制約は 0 < k < n ですが、公開されている例 1 は k=0 を明示的に使っており、両者は矛盾しています。この候補では、例と「高々 k 回」という意味に合わせて、制約を 0 ≤ k < n に明示的に改めています。n=1、k=0 は有効で、頂点が 1 つ残る場合の直径は 0 です。これは本サイトによる明示的な改訂であり、元サイトの制約であるとは主張しません。\n\n標準入力：1行目に n k、続く n−1 行にそれぞれ 1 始まりの辺 u v が与えられます。入力は有効な木であることが保証されています。出力は整数 1 つです。元サイトのオブジェクト形式の例は、ここでは標準入出力に書き直しています。",
+    "input": "1行目に n k（1≤n≤100000、0≤k<n）が与えられます。続く n−1 行には、1 始まりの頂点間の無向辺を表す 2 つの整数 u v が与えられます。これらの辺は木をなすことが保証されています。",
+    "output": "高々 k 個の葉を削除して得られる最小の直径を出力します。頂点が 1 つの木の直径は 0 です。",
+    "explanation": "導出、正当性の証明、計算量については、候補ノートを参照してください。",
+    "hints": [
+      "残す頂点集合は連結でなければなりません。連結な部分木は、外側から順に葉を削除することで必ず得られます。",
+      "許容する直径の最大値 D で二分探索し、n−k 個以上の頂点を残せるかを判定します。",
+      "D が偶数のときは、ある頂点を中心とする半径の球を調べます。D が奇数のときは、辺を中心として両側に深さ r までとった頂点集合も調べます。"
+    ]
+  },
+  "ko": {
+    "title": "리프를 최대 k번 삭제한 뒤 트리 지름의 최솟값 (Google OA)",
+    "description": "정점이 n개인 무방향 트리가 주어집니다. 한 번의 연산으로 리프 하나를 삭제하며, 최대 k번까지 수행할 수 있습니다. 삭제 후 정점이 최소 하나는 남아 있어야 합니다. 남은 트리의 지름(간선 수 기준)의 최솟값을 구하세요.\n\n원 사이트의 제약은 0 < k < n이지만 공개된 예제 1이 명시적으로 k=0을 사용하므로 둘은 서로 충돌합니다. 이 후보 문제에서는 예제와 \"최대 k번\"이라는 의미에 맞도록 0 ≤ k < n으로 명시적으로 수정했습니다. n=1, k=0도 유효하며, 정점이 하나 남으면 지름은 0입니다. 이는 이 사이트의 명시적 수정이며 원 사이트의 제약으로 제시하는 것이 아닙니다.\n\n표준 입력: 첫째 줄에 n k가 주어지고, 이어서 n−1개의 줄에 각각 1-기반 간선 u v가 주어집니다. 입력은 올바른 트리임이 보장됩니다. 정수 하나를 출력합니다. 원 사이트의 객체 형식 예제는 여기서 표준 입출력으로 다시 작성했습니다.",
+    "input": "첫째 줄에 n k(1≤n≤100000, 0≤k<n)가 주어지고, 이어서 n−1개의 줄에 각각 두 정수 u v가 주어지며, 이는 1-기반 정점 사이의 무방향 간선을 나타냅니다. 간선들은 트리를 이룸이 보장됩니다.",
+    "output": "리프를 최대 k개 삭제한 뒤 얻을 수 있는 최소 지름을 출력합니다. 정점이 하나인 트리의 지름은 0입니다.",
+    "explanation": "유도 과정, 정당성 증명, 복잡도는 후보 문제 노트를 참고하세요.",
+    "hints": [
+      "유지하는 정점 집합은 연결되어야 하며, 연결된 부분 트리는 바깥쪽부터 리프를 삭제해 얻을 수 있습니다.",
+      "허용되는 최대 지름 D에 대해 이분 탐색하고, 정점을 n−k개 이상 유지할 수 있는지 확인합니다.",
+      "D가 짝수이면 한 정점을 중심으로 한 반지름 구, 홀수이면 한 간선을 중심으로 양쪽 깊이 r까지의 정점 집합도 함께 확인합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đường kính nhỏ nhất của cây sau khi xóa tối đa k lá (Google OA)",
+    "description": "Cho một cây vô hướng gồm n đỉnh. Mỗi thao tác xóa một lá, và được thực hiện tối đa k thao tác; sau khi xóa phải còn lại ít nhất một đỉnh. Tìm đường kính nhỏ nhất có thể của cây còn lại (đường kính được tính bằng số cạnh).\n\nRàng buộc của trang gốc ghi 0 < k < n, nhưng ví dụ công khai 1 của họ lại dùng k=0 một cách tường minh, nên hai điều này mâu thuẫn. Bản ứng viên này sửa rõ ràng thành 0 ≤ k < n, giữ được ví dụ và phù hợp với ý nghĩa của \"tối đa k lần\"; n=1,k=0 là hợp lệ, và đường kính bằng 0 khi chỉ còn một đỉnh. Đây là chỉnh sửa tường minh của trang này, không được trình bày như ràng buộc của trang gốc.\n\nĐầu vào chuẩn: dòng đầu chứa n k, tiếp theo là n−1 dòng, mỗi dòng chứa một cạnh u v đánh số từ 1. Đầu vào đảm bảo là một cây hợp lệ. Xuất một số nguyên. Các ví dụ dạng đối tượng của trang gốc được viết lại ở đây thành đầu vào/đầu ra chuẩn.",
+    "input": "Dòng đầu chứa n k (1≤n≤100000, 0≤k<n); sau đó là n−1 dòng, mỗi dòng chứa hai số nguyên u v, biểu diễn một cạnh vô hướng giữa các đỉnh đánh số từ 1. Các cạnh đảm bảo tạo thành một cây.",
+    "output": "Xuất đường kính nhỏ nhất có thể đạt được sau khi xóa tối đa k lá. Đường kính của cây một đỉnh là 0.",
+    "explanation": "Xem ghi chú của ứng viên để biết phần suy dẫn, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Tập đỉnh được giữ lại phải liên thông; mọi cây con liên thông đều có thể thu được bằng cách xóa các lá từ ngoài vào trong.",
+      "Chặt nhị phân đường kính tối đa cho phép D, và kiểm tra xem có thể giữ được ít nhất n−k đỉnh hay không.",
+      "Với D chẵn, xét các quả cầu bán kính có tâm là một đỉnh; với D lẻ, còn phải xét các tập đỉnh có tâm là một cạnh với độ sâu r về mỗi phía."
+    ]
   }
 }

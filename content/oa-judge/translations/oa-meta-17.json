@@ -11,5 +11,35 @@
     "hints": [
       "Binary search, comparing the middle element with its right neighbor. If the middle is smaller, a peak exists in the right half; otherwise a peak exists in the left half, including the middle."
     ]
+  },
+  "ja": {
+    "title": "任意のピークのインデックスを見つける",
+    "description": "ピークとは、隣接する要素よりも厳密に大きい要素のことで、配列の両端の外側の位置は負の無限大とみなします。隣り合う要素は必ず異なることが保証されます。任意のピークの 0 始まりのインデックスを返してください。ピークが複数ある場合は、そのうちどれでも正解です。時間は O(log n) が求められます。\n\n入出力の形式、制約の補足、例、テストデータは CSWork が独自に作成しました。",
+    "input": "1 行目に n（1..1000）、2 行目に n 個の整数（−2147483648..2147483647）が与えられ、隣り合う数は異なります。",
+    "output": "有効なピークの 0 始まりのインデックスを 1 つ出力してください。例で選ばれているのと同じピークである必要はありません。",
+    "explanation": "例 1：インデックス 2 の 3 は、隣の 2 と 1 より大きいので、出力は 2 です。\n\n例 2：インデックス 1 と 3 の値はどちらも 3 で、両側の 1 より厳密に大きいです。1 でも 3 でも出力すれば受理されます。\n\n例 3：唯一の要素は、両側の位置（負の無限大とみなします）より大きいので、その要素が 32 ビット整数の最小値であってもインデックス 0 は有効です。",
+    "hints": [
+      "二分探索で、中央の要素とその右隣を比較します。中央が小さければ、ピークは右半分にあります。そうでなければ、ピークは中央を含む左半分にあります。"
+    ]
+  },
+  "ko": {
+    "title": "임의의 피크 인덱스 찾기",
+    "description": "피크는 이웃보다 엄격하게 큰 원소이며, 배열 양 끝 바깥의 위치는 음의 무한대로 간주합니다. 인접한 원소는 서로 다름이 보장됩니다. 임의의 피크의 0 기반 인덱스를 반환하세요. 피크가 여러 개이면 어느 것이든 정답입니다. 시간 복잡도는 O(log n)이어야 합니다.\n\n입력 형식, 제약 조건 보충, 예제, 테스트 데이터는 CSWork가 독자적으로 정리했습니다.",
+    "input": "첫째 줄에 n(1..1000)이 주어지고, 둘째 줄에 n개의 정수(−2147483648..2147483647)가 주어지며 인접한 수는 서로 다릅니다.",
+    "output": "유효한 피크의 0 기반 인덱스를 아무거나 하나 출력합니다. 예제에서 고른 피크와 같지 않아도 됩니다.",
+    "explanation": "예제 1: 인덱스 2의 3은 이웃인 2와 1보다 크므로 출력은 2입니다.\n\n예제 2: 인덱스 1과 3의 값은 모두 3이며, 각각 양옆의 1보다 엄격하게 큽니다. 1이나 3 중 어느 것을 출력해도 허용됩니다.\n\n예제 3: 유일한 원소는 음의 무한대로 간주되는 양쪽 위치보다 크므로, 그 원소가 32비트 정수의 최솟값이더라도 인덱스 0이 유효합니다.",
+    "hints": [
+      "이분 탐색을 하며 가운데 원소를 오른쪽 이웃과 비교한다. 가운데가 더 작으면 오른쪽 절반에 피크가 있고, 아니면 가운데를 포함한 왼쪽 절반에 피크가 있다."
+    ]
+  },
+  "vi": {
+    "title": "Tìm chỉ số của một đỉnh bất kỳ",
+    "description": "Một đỉnh lớn hơn chặt các phần tử kề nó, và các vị trí ngoài hai đầu mảng được coi là âm vô cực. Các phần tử kề nhau được đảm bảo khác nhau. Trả về chỉ số tính từ 0 của một đỉnh bất kỳ; nếu có nhiều đỉnh, đỉnh nào cũng đúng. Yêu cầu thời gian O(log n).\n\nĐịnh dạng đầu vào, các bổ sung ràng buộc, ví dụ và dữ liệu kiểm thử do CSWork tự biên soạn.",
+    "input": "Dòng đầu chứa n (1..1000); dòng thứ hai chứa n số nguyên (−2147483648..2147483647), các số kề nhau khác nhau.",
+    "output": "In ra chỉ số tính từ 0 của một đỉnh hợp lệ bất kỳ; không nhất thiết là đỉnh được chọn trong ví dụ.",
+    "explanation": "Ví dụ 1: số 3 tại chỉ số 2 lớn hơn các phần tử kề là 2 và 1, nên đầu ra là 2.\n\nVí dụ 2: các giá trị tại chỉ số 1 và 3 đều là 3, mỗi giá trị lớn hơn chặt các số 1 ở hai bên; in 1 hoặc 3 đều được chấp nhận.\n\nVí dụ 3: phần tử duy nhất lớn hơn các vị trí ở hai bên, vốn được coi là âm vô cực, nên chỉ số 0 hợp lệ ngay cả khi phần tử đó là số nguyên 32 bit nhỏ nhất.",
+    "hints": [
+      "Tìm kiếm nhị phân, so sánh phần tử giữa với phần tử kề bên phải. Nếu phần tử giữa nhỏ hơn, có một đỉnh ở nửa phải; ngược lại có một đỉnh ở nửa trái, bao gồm cả phần tử giữa."
+    ]
   }
 }

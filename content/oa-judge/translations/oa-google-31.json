@@ -11,5 +11,35 @@
     "hints": [
       "An iterative post-order traversal maps each subtree to a contiguous range of the whole string; run odd- and even-length Manacher on the whole string, and directly check the palindrome radius each query range needs."
     ]
+  },
+  "ja": {
+    "title": "部分木の後行順文字列に対する回文クエリ",
+    "description": "木は根がノード 1 です。S(u) は、各子 v の S(v) を子の番号の昇順に連結し、最後にノード u の小文字を付け足したものです。各クエリのノードについて、S(u) が回文かどうかを出力してください。回文なら 1、そうでなければ 0 です。\n\n標準の入出力・例・テストは CSWork が作成したものです。「本サイト」と記した範囲は採点上の取り決めであり、面接の原典の制約であると主張するものではありません。",
+    "input": "1行目に n q（どちらも 1..200000）が与えられ、2行目に長さ n の小文字の文字列（ノード番号で添字付け）が与えられます。続いて無向の木の辺が n−1 行、最後に q 個のクエリのノード番号が与えられます。",
+    "output": "条件に従って答えを出力します。複数のクエリの結果は、順番に空白区切りで出力します。",
+    "explanation": "例 1：ノード 1 の後行順文字列は bcbaa で回文ではなく、ノード 2 のものは bcb で回文なので、出力は 0 1 です。例 2：1 文字の z は回文です。例 3：根の文字列は aba で回文であり、2 つの葉の 1 文字もそれぞれ回文なので、出力は 1 1 1 です。",
+    "hints": [
+      "反復的な後行順走査により、各部分木は全体の文字列の連続した区間に対応します。全体の文字列に対して奇数長と偶数長の Manacher を実行し、各クエリ区間に必要な回文半径を直接確認します。"
+    ]
+  },
+  "ko": {
+    "title": "서브트리 후위 순회 문자열의 팰린드롬 질의",
+    "description": "트리는 노드 1을 루트로 합니다. S(u)는 각 자식 v의 S(v)를 자식 번호의 오름차순으로 이어 붙인 뒤, 노드 u의 소문자를 마지막에 붙인 문자열입니다. 각 질의 노드에 대해 S(u)가 팰린드롬이면 1, 아니면 0을 출력합니다.\n\n표준 입력/출력, 예제, 테스트는 CSWork가 작성했습니다. \"이 사이트\"로 표시된 범위는 채점 기준일 뿐이며, 실제 면접의 원래 제한이라고 주장하지 않습니다.",
+    "input": "첫째 줄에 n q(모두 1..200000)가 주어지고, 둘째 줄에 길이 n의 소문자 문자열(노드 번호로 인덱싱)이 주어집니다. 이어서 n−1개의 줄에 무방향 트리 간선이 주어지고, 마지막으로 q개의 질의 노드 번호가 주어집니다.",
+    "output": "설명에 따라 답을 출력합니다. 여러 질의의 결과는 순서대로 공백으로 구분하여 출력합니다.",
+    "explanation": "예제 1: 노드 1의 후위 순회 문자열은 bcbaa로 팰린드롬이 아니고, 노드 2의 문자열은 bcb로 팰린드롬이므로 출력은 0 1입니다. 예제 2: 문자 하나 z는 팰린드롬입니다. 예제 3: 루트의 문자열은 aba로 팰린드롬이고, 두 리프의 한 글자 문자열도 팰린드롬이므로 출력은 1 1 1입니다.",
+    "hints": [
+      "반복문 기반 후위 순회는 각 서브트리를 전체 문자열의 연속 구간으로 대응시킵니다. 전체 문자열에 홀수 길이와 짝수 길이 Manacher를 실행하고, 각 질의 구간에 필요한 팰린드롬 반지름을 바로 확인합니다."
+    ]
+  },
+  "vi": {
+    "title": "Truy vấn đối xứng trên xâu duyệt hậu thứ tự của cây con",
+    "description": "Cây có gốc là nút 1. S(u) được tạo bằng cách nối S(v) của từng nút con v theo thứ tự tăng dần của số hiệu nút con, rồi thêm chữ cái thường của nút u vào cuối. Với mỗi nút truy vấn, xuất xem S(u) có phải xâu đối xứng (palindrome) hay không: 1 nếu đúng, ngược lại 0.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và bộ test do CSWork biên soạn; các phạm vi được đánh dấu \"trang này\" là quy ước chấm bài, không được xem là giới hạn gốc của buổi phỏng vấn.",
+    "input": "Dòng đầu chứa n q (cả hai trong 1..200000); dòng thứ hai chứa một xâu chữ cái thường độ dài n (đánh chỉ số theo số hiệu nút). Sau đó là n−1 dòng chứa các cạnh vô hướng của cây, và cuối cùng là q số hiệu nút truy vấn.",
+    "output": "Xuất đáp án theo mô tả; kết quả của nhiều truy vấn được ngăn cách bằng dấu cách, theo đúng thứ tự.",
+    "explanation": "Ví dụ 1: xâu hậu thứ tự của nút 1 là bcbaa, không đối xứng; của nút 2 là bcb, đối xứng, nên kết quả là 0 1. Ví dụ 2: một chữ cái đơn z là xâu đối xứng. Ví dụ 3: xâu của gốc là aba, đối xứng, và các chữ cái đơn của hai lá cũng đối xứng, nên kết quả là 1 1 1.",
+    "hints": [
+      "Một lần duyệt hậu thứ tự lặp ánh xạ mỗi cây con thành một đoạn liên tiếp của toàn xâu; chạy Manacher cho độ dài lẻ và chẵn trên toàn xâu, rồi kiểm tra trực tiếp bán kính đối xứng mà mỗi đoạn truy vấn cần."
+    ]
   }
 }

@@ -13,5 +13,41 @@
       "Each city needs to check at most 4 candidates.",
       "When distances tie, compare names lexicographically, not by length."
     ]
+  },
+  "ja": {
+    "title": "Akuna Capital OA #15: 最も近い同一直線上の都市",
+    "description": "平面上に n 個の都市があり、それぞれ整数座標 (x,y) にあります。名前も座標もすべて異なります。各クエリの都市 q について、x 座標または y 座標を共有する他の都市のうち、マンハッタン距離 (|Δx|+|Δy|) が最小のものを求めてください。距離が同じ都市が複数ある場合は、名前が辞書順で最小のものを選びます (例: ab<aba<abb)。x 座標も y 座標も共有する他の都市がなければ、答えは NONE です。",
+    "input": "1 行目に n が与えられます。続く n 行はそれぞれ 1 つの都市を表し、名前 c、x、y がスペース区切りで与えられます。次の行に m が与えられ、続く m 行にはそれぞれ、クエリの都市の名前 (実在する都市であることが保証されます) が与えられます。1≤n,m≤100000、1≤x,y≤10^9 で、名前の長さは 1..10 で、小文字、数字、- のみを含みます。",
+    "output": "m 行を出力してください。i 行目はクエリ i の答え (都市名または NONE) です。",
+    "explanation": "例 1: 3 つの都市 c1(3,3)、c2(2,2)、c3(1,3) があります。c1 と c3 は y を共有していて距離は 2 なので、c1 の答えは c3 です。c2 には同一直線上の都市がないので、答えは NONE です。c3 の答えは c1 です。\n例 2: 3 つの都市はすべて x=23 上にあります。fastcity(23,1)、bigbanana(23,10)、xyz(23,20) で、答えは順に bigbanana、fastcity、bigbanana です。\n例 3: london(1,1) には同一直線上の都市がありません。warsaw(10,10) と hackerland(20,10) は y を共有していて、互いの答えになります。",
+    "hints": [
+      "x を共有する都市は同じ垂直線上にあり、最も近いものは、y でソートしたときに隣り合っているはずです。",
+      "各都市で確認すべき候補は高々 4 つです。",
+      "距離が等しい場合は、長さではなく辞書順で名前を比較します。"
+    ]
+  },
+  "ko": {
+    "title": "Akuna Capital OA #15: 가장 가까운 같은 선상의 도시",
+    "description": "평면에 도시가 n개 있고, 각 도시는 정수 좌표 (x,y)에 있습니다. 이름과 좌표는 모두 서로 다릅니다. 각 질의 도시 q에 대해, x 좌표 또는 y 좌표가 같은 다른 도시들 중 맨해튼 거리(|Δx|+|Δy|)가 가장 작은 도시를 찾으세요. 거리가 같은 도시가 여럿이면 이름이 사전순으로 가장 앞서는 것을 선택합니다 (예: ab<aba<abb). x나 y 좌표를 공유하는 다른 도시가 없으면 답은 NONE입니다.",
+    "input": "첫째 줄에 n이 주어집니다. 이어지는 n개의 줄 각각에 도시 하나가 공백으로 구분된 name c, x, y 형태로 주어집니다. 그다음 줄에 m이 주어지고, 이어서 m개의 줄에 각각 질의 도시의 이름이 주어집니다 (존재하는 도시임이 보장됩니다). 1≤n,m≤100000, 1≤x,y≤10^9. 이름의 길이는 1..10이며 소문자, 숫자, -만 포함합니다.",
+    "output": "m개의 줄을 출력합니다. i번째 줄은 i번째 질의의 답입니다 (도시 이름 또는 NONE).",
+    "explanation": "예제 1: 도시 세 개 c1(3,3), c2(2,2), c3(1,3). c1과 c3은 y를 공유하며 거리 2이므로 답은 c3입니다. c2는 같은 선상의 도시가 없으므로 답은 NONE입니다. c3의 답은 c1입니다.\n예제 2: 세 도시 모두 x=23 위에 있습니다: fastcity(23,1), bigbanana(23,10), xyz(23,20). 답은 차례로 bigbanana, fastcity, bigbanana입니다.\n예제 3: london(1,1)은 같은 선상의 도시가 없습니다. warsaw(10,10)과 hackerland(20,10)는 y를 공유하며 서로의 답입니다.",
+    "hints": [
+      "x를 공유하는 도시들은 같은 수직선 위에 있으며, y로 정렬했을 때 가장 가까운 도시는 반드시 인접해 있습니다.",
+      "각 도시마다 확인해야 할 후보는 최대 4개입니다.",
+      "거리가 같을 때는 이름을 길이가 아니라 사전순으로 비교하세요."
+    ]
+  },
+  "vi": {
+    "title": "Akuna Capital OA #15: Thành phố thẳng hàng gần nhất",
+    "description": "Có n thành phố trên một mặt phẳng, mỗi thành phố ở tọa độ nguyên (x,y); tên và tọa độ đều phân biệt. Với mỗi thành phố truy vấn q, trong số các thành phố khác có cùng tọa độ x hoặc cùng tọa độ y với nó, hãy tìm thành phố có khoảng cách Manhattan (|Δx|+|Δy|) nhỏ nhất. Nếu nhiều thành phố hòa khoảng cách, lấy thành phố có tên nhỏ nhất theo thứ tự từ điển (ví dụ ab<aba<abb). Nếu không có thành phố nào khác cùng tọa độ x hoặc y, đáp án là NONE.",
+    "input": "Dòng đầu tiên chứa n. Mỗi dòng trong n dòng tiếp theo mô tả một thành phố: tên c, x, y, cách nhau bằng dấu cách. Dòng kế tiếp chứa m, rồi m dòng, mỗi dòng là tên của một thành phố truy vấn (đảm bảo là thành phố có tồn tại). 1≤n,m≤100000, 1≤x,y≤10^9; tên có độ dài 1..10 và chỉ gồm chữ cái thường, chữ số và -.",
+    "output": "In ra m dòng; dòng i là đáp án cho truy vấn i (tên một thành phố hoặc NONE).",
+    "explanation": "Ví dụ 1: ba thành phố c1(3,3), c2(2,2), c3(1,3). c1 và c3 cùng y với khoảng cách 2, nên đáp án là c3; c2 không có thành phố nào thẳng hàng, nên đáp án là NONE; đáp án của c3 là c1.\nVí dụ 2: cả ba thành phố đều nằm trên x=23: fastcity(23,1), bigbanana(23,10), xyz(23,20); các đáp án lần lượt là bigbanana, fastcity, bigbanana.\nVí dụ 3: london(1,1) không có thành phố thẳng hàng; warsaw(10,10) và hackerland(20,10) cùng y và là đáp án của nhau.",
+    "hints": [
+      "Các thành phố cùng x nằm trên cùng một đường thẳng đứng, và thành phố gần nhất phải kề với nó khi sắp xếp theo y.",
+      "Mỗi thành phố chỉ cần kiểm tra tối đa 4 ứng viên.",
+      "Khi khoảng cách hòa nhau, so sánh tên theo thứ tự từ điển, không phải theo độ dài."
+    ]
   }
 }

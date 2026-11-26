@@ -11,5 +11,35 @@
     "hints": [
       "Try adding cars as prefixes in ascending order of duration, and use a bitset to maintain the reachable total durations of the cars assigned to the first line. The prefix can be built if some total s≤X also has sum−s≤Y."
     ]
+  },
+  "ja": {
+    "title": "2 本の組立ラインで作れる車の最大台数",
+    "description": "各車はどちらかの組立ラインに割り当てられ、作り始めたらラインを替えることはできず、作られるのは高々 1 回です。2 本のラインの時間の上限はそれぞれ X と Y です。作れる車の台数を最大化してください。\n\n標準入出力、例、解法、テストは本サイトが独自に作成しました。",
+    "input": "1 行目に N X Y（1≤N≤1000、1≤X,Y≤500）、2 行目に N 個の所要時間（1..1000）が与えられます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：各ラインで所要時間 1 の車を 1 台ずつ作り、合計 2 台です。\n\n例 2：車を 3+5 と 4+5 に分け、合計 4 台です。\n\n例 3：どの 2 台も合計で 9 以上かかるので、各ラインで作れるのは高々 1 台で、合計 2 台です。",
+    "hints": [
+      "所要時間の昇順に車を接頭辞として追加していき、ビットセットで第 1 ラインに割り当てた車の所要時間の合計として到達可能な値を管理します。ある合計 s≤X について sum−s≤Y も成り立てば、その接頭辞は作れます。"
+    ]
+  },
+  "ko": {
+    "title": "두 조립 라인에서 만들 수 있는 최대 자동차 수",
+    "description": "각 자동차는 두 조립 라인 중 한 곳에 배정할 수 있으며, 시작한 뒤에는 라인을 바꿀 수 없고 최대 한 번만 만들어집니다. 두 라인의 시간 예산은 각각 X와 Y입니다. 만들 수 있는 자동차의 수를 최대화하세요.\n\n이 사이트에서 표준 입출력, 예제, 풀이, 테스트를 독자적으로 작성했습니다.",
+    "input": "첫째 줄에 N X Y (1≤N≤1000, 1≤X,Y≤500)가 주어지고, 둘째 줄에 N개의 소요 시간 (1..1000)이 주어집니다.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "예제 1: 각 라인이 소요 시간 1인 자동차를 하나씩 만들어 총 2대입니다.\n\n예제 2: 자동차를 3+5와 4+5로 나누어 총 4대입니다.\n\n예제 3: 어떤 두 자동차든 최소 9가 걸리므로 각 라인에서 최대 한 대만 만들 수 있어 총 2대입니다.",
+    "hints": [
+      "소요 시간 오름차순으로 접두사를 하나씩 늘려 가며, 비트셋으로 첫 번째 라인에 배정된 자동차들의 가능한 소요 시간 합을 관리합니다. 어떤 합 s≤X에 대해 sum−s≤Y이면 그 접두사를 만들 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số xe tối đa lắp ráp được trên hai dây chuyền",
+    "description": "Mỗi xe có thể được giao cho một trong hai dây chuyền lắp ráp, không thể đổi dây chuyền khi đã bắt đầu, và được lắp tối đa một lần. Hai dây chuyền có ngân sách thời gian lần lượt là X và Y; hãy tối đa hóa số xe được lắp.\n\nTrang này tự viết độc lập đầu vào/đầu ra chuẩn, các ví dụ, lời giải và bộ test.",
+    "input": "Dòng đầu chứa N X Y (1≤N≤1000, 1≤X,Y≤500), dòng thứ hai chứa N thời lượng (1..1000).",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: mỗi dây chuyền lắp một xe có thời lượng 1, tổng cộng 2.\n\nVí dụ 2: chia các xe thành 3+5 và 4+5, tổng cộng 4 xe.\n\nVí dụ 3: hai xe bất kỳ mất ít nhất 9, nên mỗi dây chuyền lắp tối đa một xe, tổng cộng 2.",
+    "hints": [
+      "Thử thêm các xe dưới dạng tiền tố theo thứ tự thời lượng tăng dần, và dùng bitset để duy trì các tổng thời lượng đạt được của các xe giao cho dây chuyền thứ nhất. Có thể lắp tiền tố nếu tồn tại tổng s≤X sao cho sum−s≤Y."
+    ]
   }
 }

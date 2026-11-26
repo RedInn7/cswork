@@ -11,5 +11,35 @@
     "hints": [
       "Maintain a queue of future completion times. Before an arrival, remove everyone already finished; the front of the queue, if any, is the guest being served, and the rest are the waiting count. If it exceeds 10, the guest leaves; otherwise they join the end of the queue."
     ]
+  },
+  "ja": {
+    "title": "限定イベントの入場待ち行列",
+    "description": "ゲストは到着時刻の非減少順に到着します。身分確認には 300 秒かかります。現在確認中のゲストは待ち行列に数えません。到着時に待っているゲストがすでに 10 人を超えている場合、そのゲストは帰り、到着時刻を出力します。ゲストの到着と確認の終了が同時刻のときは、すでに待っているゲストが先に確認を始め、新しいゲストは列の末尾に並びます。各ゲストの確認完了時刻を出力し、帰ったゲストについては到着時刻を出力してください。\n\n本サイトの入力形式とこのバッチの例は CSWork が作成しました。",
+    "input": "1行目に n（1..5000）、2行目に n 個の非減少の非負整数の到着時刻（≤10^9）が与えられます。",
+    "output": "n 個の整数を到着順にスペース区切りで出力します。",
+    "explanation": "上記の確定したルールに従って処理します。解法、正しさの証明、計算量については付属の解説を参照してください。",
+    "hints": [
+      "将来の完了時刻のキューを保持します。到着の前に、すでに終わった人をすべて取り除きます。キューの先頭（あれば）が確認中のゲストで、残りが待っている人数です。それが 10 を超えるならそのゲストは帰り、そうでなければキューの末尾に追加します。"
+    ]
+  },
+  "ko": {
+    "title": "단독 이벤트 입장 대기열",
+    "description": "손님은 도착 시각이 비감소 순으로 도착합니다. 신분 확인에는 300초가 걸립니다. 현재 확인 중인 손님은 대기열에 포함하지 않으며, 도착 시점에 대기 중인 손님이 이미 10명보다 많으면 그 손님은 떠나고 도착 시각이 출력됩니다. 손님이 확인이 끝나는 순간과 동시에 도착하면, 이미 기다리던 손님이 먼저 확인을 시작하고 새 손님은 대기열 맨 뒤에 섭니다. 각 손님의 확인 완료 시각을 출력하되, 떠난 손님은 도착 시각을 출력하세요.\n\n이 배치의 입력 규약과 예제는 CSWork에서 작성했습니다.",
+    "input": "첫째 줄에 n(1..5000)이, 둘째 줄에 비감소 순서의 음이 아닌 정수 도착 시각 n개(≤10^9)가 주어집니다.",
+    "output": "도착 순서대로 n개의 정수를 공백으로 구분하여 출력합니다.",
+    "explanation": "위에서 정한 규칙대로 처리하면 됩니다. 풀이 방법, 정당성 증명, 복잡도는 함께 제공되는 해설을 참고하세요.",
+    "hints": [
+      "앞으로 끝날 완료 시각들의 큐를 유지합니다. 손님이 도착하기 전에 이미 끝난 사람을 모두 제거하면, 큐의 맨 앞(있다면)이 현재 확인 중인 손님이고 나머지가 대기 인원입니다. 대기 인원이 10을 넘으면 손님은 떠나고, 아니면 큐의 맨 뒤에 들어갑니다."
+    ]
+  },
+  "vi": {
+    "title": "Xếp hàng vào sự kiện độc quyền",
+    "description": "Các khách đến theo thứ tự không giảm về thời gian. Mỗi lần kiểm tra giấy tờ mất 300 giây. Khách đang được kiểm tra không được tính vào hàng chờ; nếu khi một khách đến mà số khách đang chờ đã lớn hơn 10, khách đó bỏ đi và ta in ra thời điểm đến của họ. Nếu một khách đến đúng lúc một lượt kiểm tra kết thúc, những khách đã chờ sẵn bắt đầu kiểm tra trước, còn khách mới vào cuối hàng. In ra thời điểm hoàn thành của từng khách; với khách bỏ đi thì in ra thời điểm đến của họ.\n\nGiao thức đầu vào và các ví dụ trong bộ này do CSWork biên soạn.",
+    "input": "Dòng đầu chứa n (1..5000); dòng thứ hai chứa n thời điểm đến là các số nguyên không âm không giảm (≤10^9).",
+    "output": "In ra n số nguyên cách nhau bằng dấu cách theo thứ tự đến.",
+    "explanation": "Xử lý theo các quy tắc xác định ở trên; xem bài giải kèm theo để biết hướng tiếp cận, chứng minh tính đúng đắn và độ phức tạp.",
+    "hints": [
+      "Duy trì một hàng đợi các thời điểm hoàn thành trong tương lai. Trước mỗi lượt đến, loại bỏ những người đã xong; phần tử đầu hàng đợi (nếu có) là khách đang được phục vụ, còn phần còn lại là số người chờ. Nếu số này vượt quá 10 thì khách bỏ đi, ngược lại khách vào cuối hàng đợi."
+    ]
   }
 }

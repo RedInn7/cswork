@@ -11,5 +11,35 @@
     "hints": [
       "Map identifiers to integers and merge each pair with a union-find that uses union by size and path compression; finally collect the sizes of the roots and sort them."
     ]
+  },
+  "ja": {
+    "title": "推移的な商品の同値関係を適用した後のグループサイズ",
+    "description": "互いに異なるすべての商品識別子と、いくつかの商品ペアが与えられます。各ペアは、2つの商品が同じカテゴリに属することを意味します。同じカテゴリという関係は推移的です。最終的な各カテゴリの商品数を求め、グループサイズを昇順に出力してください。どのペアにも現れない商品は、それ単独で1つのグループになります。自己ペアや重複した関係によって新しい商品が増えることはありません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "入力はコンパクトな JSON [products,pairs] です。pairs の各要素は、既存の2つの商品識別子です。元の問題文が保証するのは、商品が互いに異なることと端点が有効であることだけで、値や文字の範囲は示されていません。本サイトでは、0≤商品数、関係の数≤100000、識別子は 0..8 個の Unicode 文字とします。JSON 文字列内の空白や非 ASCII 文字は JSON のエスケープで表し、空白は \\u0020 と書きます。商品リストが空のとき、関係も空です。",
+    "output": "商品がある場合は、カテゴリのサイズを昇順に空白区切りで出力してください。商品がない場合は 0 を出力してください。",
+    "explanation": "出力は 2 3、1 2、0 です。空集合に対する本サイトの出力規約は 0 を1つ出力することで、それ以外の場合は正のグループサイズだけを出力し、グループ数は出力しません。",
+    "hints": [
+      "識別子を整数に対応づけ、union by size と経路圧縮を用いた union-find で各ペアを併合します。最後に各根のサイズを集めてソートします。"
+    ]
+  },
+  "ko": {
+    "title": "추이적 상품 동치 관계를 적용한 뒤의 그룹 크기",
+    "description": "서로 다른 모든 상품 식별자와 여러 상품 쌍이 주어지며, 각 쌍은 두 상품이 같은 카테고리에 속한다는 뜻입니다. 같은 카테고리라는 관계는 추이적입니다. 최종 카테고리별 상품 수를 구하여 그룹 크기를 오름차순으로 출력하세요. 어떤 쌍에도 등장하지 않는 상품은 혼자서 하나의 그룹이 됩니다. 자기 자신과의 쌍이나 중복된 관계는 새로운 상품을 만들지 않습니다.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "입력은 압축된 JSON [products,pairs]이며, pairs의 각 항목은 존재하는 두 상품 식별자입니다. 원문은 상품이 서로 다르고 끝점이 유효하다는 것만 보장할 뿐 값이나 문자에 대한 범위는 없습니다. 이 사이트에서는 0≤상품 수, 관계 수≤100000이고 식별자는 유니코드 문자 0..8개로 정했습니다. JSON 문자열 안의 공백과 비ASCII 문자는 JSON 이스케이프를 사용하며 공백은 \\u0020으로 씁니다. 상품 목록이 비어 있으면 관계도 비어 있습니다.",
+    "output": "상품이 있으면 카테고리 크기를 오름차순으로 공백으로 구분하여 출력하고, 상품이 없으면 0을 출력합니다.",
+    "explanation": "출력은 각각 2 3, 1 2, 0입니다. 이 사이트에서 빈 집합의 출력 규약은 0 하나이며, 그 외에는 양수인 그룹 크기만 출력하고 그룹의 개수는 출력하지 않습니다.",
+    "hints": [
+      "식별자를 정수로 대응시키고 크기 기준 합치기와 경로 압축을 쓰는 유니온 파인드로 각 쌍을 합친 뒤, 마지막으로 루트들의 크기를 모아 정렬합니다."
+    ]
+  },
+  "vi": {
+    "title": "Kích thước các nhóm sau khi áp dụng quan hệ tương đương bắc cầu giữa sản phẩm",
+    "description": "Cho tất cả mã sản phẩm (đôi một khác nhau) và một số cặp sản phẩm, mỗi cặp nghĩa là hai sản phẩm thuộc cùng một danh mục. Quan hệ cùng danh mục có tính bắc cầu. Hãy tìm số sản phẩm cuối cùng của mỗi danh mục và in kích thước các nhóm theo thứ tự tăng dần; sản phẩm không xuất hiện trong cặp nào tự tạo thành một nhóm. Cặp có hai đầu trùng nhau và các quan hệ lặp lại không tạo ra sản phẩm mới.\n\nĐề bài, định dạng vào/ra, ví dụ và lời giải do trang này tự viết; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của nguồn.",
+    "input": "Đầu vào là JSON gọn: [products,pairs], trong đó mỗi phần tử của pairs là hai mã sản phẩm đã tồn tại. Đề gốc chỉ đảm bảo các sản phẩm đôi một khác nhau và các đầu mút hợp lệ, không giới hạn giá trị hay ký tự; trên trang này 0≤số sản phẩm, số quan hệ≤100000, và mã có 0..8 ký tự Unicode. Khoảng trắng và ký tự không phải ASCII trong chuỗi JSON dùng dạng thoát JSON, dấu cách viết là \\u0020. Khi danh sách sản phẩm rỗng thì danh sách quan hệ cũng rỗng.",
+    "output": "Nếu có sản phẩm, in kích thước các danh mục theo thứ tự tăng dần, cách nhau bởi dấu cách; nếu không có sản phẩm, in 0.",
+    "explanation": "Đầu ra là 2 3; 1 2; và 0. Quy ước đầu ra của trang này cho tập rỗng là một số 0 duy nhất; ngược lại chỉ in các kích thước nhóm dương, không in số nhóm.",
+    "hints": [
+      "Ánh xạ mã sang số nguyên và gộp từng cặp bằng union-find dùng union by size và path compression; cuối cùng thu kích thước của các gốc rồi sắp xếp."
+    ]
   }
 }

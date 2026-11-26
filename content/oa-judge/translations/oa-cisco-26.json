@@ -11,5 +11,35 @@
     "hints": [
       "Precompute all rows, all columns, and their reversed strings. Build a KMP prefix table for each word and search these strings one by one; cache the results of repeated queries for the same word."
     ]
+  },
+  "ja": {
+    "title": "行または列に沿って指定された単語を探す",
+    "description": "各単語について、グリッドのある行またはある列の連続した区間として、正方向または逆方向に読んで現れるかどうかを個別に判定してください。曲がることも斜めに進むこともできず、照合は大文字小文字を区別します。\n\n範囲の補足や元の問題の誤記の修正については、入力プロトコルを参照してください。",
+    "input": "入力は JSON 配列 [gridRows,words] です。元の問題には数値の範囲がなかったため、本サイトでは 1≤行数,列数≤200 と定め、すべての行の長さは Unicode コードポイント数で等しいものとします。単語数は 0≤単語数≤200 で、各単語は 1..200 コードポイント、単語の長さの合計は ≤40000 です。文字は空白、NUL、BMP 外の文字を含む任意の Unicode スカラー値で、孤立サロゲートは許されません。JSON 全体は ≤1000000 UTF-8 バイトで、ジェネレータは制御文字がそのまま運ばれるように ASCII エスケープを使います。",
+    "output": "各クエリについて順に Yes または No を、空白または改行区切りで出力してください。クエリがなければ空行を出力します。",
+    "explanation": "3 つの公開例の出力は順に Yes Yes No、Yes Yes Yes、空のテキストです。独立した全探索または直接シミュレーションで検証済みです。",
+    "hints": [
+      "すべての行、すべての列、およびそれらの反転した文字列を事前に計算します。各単語について KMP の接頭辞テーブルを作り、これらの文字列を 1 つずつ探索します。同じ単語の繰り返しのクエリは結果をキャッシュします。"
+    ]
+  },
+  "ko": {
+    "title": "행 또는 열을 따라 주어진 단어 찾기",
+    "description": "각 단어에 대해, 격자의 어떤 행 또는 어떤 열의 연속된 부분으로 앞쪽 또는 뒤쪽 방향으로 읽었을 때 나타나는지를 독립적으로 판정합니다. 꺾거나 대각선으로 갈 수 없으며, 대소문자를 구분합니다.\n\n이 사이트가 누락된 범위를 보충한 내용과 원문의 오타를 바로잡은 방식은 입력 규약을 참고하세요.",
+    "input": "입력은 JSON 배열 [gridRows,words]입니다. 원문에는 수치 범위가 없었으며, 이 사이트는 1≤행 수, 열 수≤200으로 보충했고 모든 행의 길이(유니코드 코드 포인트 기준)는 같습니다. 0≤단어 수≤200, 각 단어는 코드 포인트 1..200개, 단어 길이의 총합은 ≤40000입니다. 문자는 공백, NUL, BMP 밖의 문자를 포함한 임의의 유니코드 스칼라 값이며, 단독 서로게이트는 허용되지 않습니다. 전체 JSON은 UTF-8 바이트로 ≤1000000이고, 생성기는 제어 문자가 그대로 전달되도록 ASCII 이스케이프를 사용합니다.",
+    "output": "각 질의에 대해 Yes 또는 No를 순서대로 공백 또는 줄바꿈으로 구분하여 출력합니다. 질의가 없으면 빈 줄을 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 순서대로 Yes Yes No; Yes Yes Yes; 빈 텍스트 입니다. 독립적인 전수 조사 또는 직접 시뮬레이션으로 검증했습니다.",
+    "hints": [
+      "모든 행, 모든 열과 그것들을 뒤집은 문자열을 미리 계산합니다. 각 단어마다 KMP 접두사 표를 만들어 이 문자열들을 하나씩 검색하고, 같은 단어의 반복 질의 결과는 캐시합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tìm các từ cho trước dọc theo hàng hoặc cột",
+    "description": "Với mỗi từ, hãy xác định độc lập xem nó có xuất hiện như một đoạn liên tiếp của một hàng hoặc một cột nào đó của lưới hay không, đọc xuôi hoặc đọc ngược. Không được rẽ hướng hay đi chéo, và việc so khớp phân biệt chữ hoa chữ thường.\n\nXem giao thức đầu vào để biết các bổ sung của trang này cho những khoảng giá trị còn thiếu và cách khôi phục lỗi đánh máy trong nguồn gốc.",
+    "input": "Đầu vào là một mảng JSON [gridRows,words]. Đề gốc không có giới hạn số; trang này bổ sung 1≤số hàng, số cột≤200, mọi hàng có cùng độ dài tính theo Unicode code point; 0≤số từ≤200, mỗi từ 1..200 code point, và tổng độ dài các từ ≤40000. Ký tự là các giá trị Unicode scalar tùy ý, kể cả khoảng trắng, NUL và ký tự ngoài BMP; không cho phép surrogate đơn lẻ. Toàn bộ JSON ≤1000000 byte UTF-8, và bộ sinh dữ liệu dùng escape ASCII để các ký tự điều khiển được giữ nguyên vẹn.",
+    "output": "In Yes hoặc No cho mỗi truy vấn theo thứ tự, cách nhau bởi dấu cách hoặc xuống dòng; nếu không có truy vấn nào thì in một dòng trống.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là: Yes Yes No; Yes Yes Yes; văn bản rỗng. Đã kiểm chứng bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Tính trước mọi hàng, mọi cột và các xâu đảo ngược của chúng. Xây bảng tiền tố KMP cho mỗi từ và tìm kiếm lần lượt trong các xâu này; lưu đệm kết quả của các truy vấn lặp lại cho cùng một từ."
+    ]
   }
 }

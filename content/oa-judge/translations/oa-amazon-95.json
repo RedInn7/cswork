@@ -11,5 +11,35 @@
     "hints": [
       "dp[j] records the number of subsequences exactly equal to the first j characters of system, and greater records the number already greater. Each new character doubles greater; an equal prefix followed by a larger character, or the complete system followed by any character, also becomes greater; update the equal-prefix DP in reverse order."
     ]
+  },
+  "ja": {
+    "title": "システムパスワードより辞書順で大きい部分列の個数",
+    "description": "customer のすべてのインデックス部分列のうち、system より辞書順で真に大きいものの個数を数えてください。異なるインデックスから選んだ同一の文字列は別々に数えます。system が接頭辞の場合は、長い文字列のほうが大きいとします。結果を 10⁹+7 で割った余りで出力してください。\n\n標準入出力と判定は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "小文字の文字列 customer と system が 2 行で与えられます。長さはそれぞれ 1..100000 と 1..100 です。",
+    "output": "整数 1 つ（答え）を出力してください。",
+    "explanation": "例 1: 異なるインデックスの 2 つの b に加えて ba, bb, bab で、合計 5 個です。例 2: a より大きいのは aa だけで、1 文字の a 2 つは等しいので、答えは 1 です。例 3: a は z より小さいので、条件を満たす部分列はなく、答えは 0 です。",
+    "hints": [
+      "dp[j] は system の先頭 j 文字にちょうど等しい部分列の個数、greater はすでに大きくなっている部分列の個数とします。新しい文字ごとに greater は 2 倍になります。接頭辞が等しくて次の文字が大きい場合や、system 全体の後に任意の文字が続く場合も大きくなります。等しい接頭辞の DP は逆順に更新します。"
+    ]
+  },
+  "ko": {
+    "title": "시스템 비밀번호보다 사전순으로 큰 부분 수열의 수",
+    "description": "customer의 모든 인덱스 부분 수열 중 system보다 사전순으로 엄격하게 큰 것의 수를 세세요. 서로 다른 인덱스를 골라 같은 문자열이 되더라도 따로 세며, system이 접두사인 경우 더 긴 문자열이 더 큽니다. 결과를 10⁹+7로 나눈 나머지로 출력하세요.\n\n표준 입출력 형식과 채점은 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "소문자로 이루어진 문자열 customer와 system이 두 줄에 걸쳐 주어지며, 길이는 각각 1..100000과 1..100입니다.",
+    "output": "정수 하나로 답을 출력합니다.",
+    "explanation": "예제 1: 서로 다른 인덱스의 b 두 개와 ba, bb, bab를 더해 모두 5개입니다. 예제 2: aa만 a보다 크고, 한 글자짜리 a 두 개는 같으므로 답은 1입니다. 예제 3: a는 z보다 작으므로 조건을 만족하는 부분 수열이 없어 답은 0입니다.",
+    "hints": [
+      "dp[j]는 system의 앞 j글자와 정확히 같은 부분 수열의 수, greater는 이미 더 커진 부분 수열의 수입니다. 새 문자가 올 때마다 greater는 두 배가 되고, 같은 접두사 뒤에 더 큰 문자가 오거나 system 전체 뒤에 아무 문자나 오는 경우에도 더 커집니다. 같은 접두사에 대한 DP는 역순으로 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số dãy con lớn hơn mật khẩu hệ thống theo thứ tự từ điển",
+    "description": "Trong tất cả các dãy con theo chỉ số của customer, đếm những dãy lớn hơn system theo thứ tự từ điển một cách chặt. Các xâu giống nhau được chọn từ các chỉ số khác nhau được đếm riêng; khi system là tiền tố, xâu dài hơn thì lớn hơn. In kết quả modulo 10⁹+7.\n\nTrang này tự viết phần nhập/xuất chuẩn và chương trình chấm; các khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Hai dòng chứa các xâu chữ thường customer và system, có độ dài lần lượt là 1..100000 và 1..100.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Ví dụ 1: hai chữ b ở các chỉ số khác nhau, cộng với ba, bb, bab, tổng cộng 5. Ví dụ 2: chỉ có aa lớn hơn a; hai chữ a đơn lẻ thì bằng nhau, nên đáp án là 1. Ví dụ 3: a nhỏ hơn z, nên không có dãy con nào thỏa mãn, và đáp án là 0.",
+    "hints": [
+      "dp[j] ghi số dãy con đúng bằng j ký tự đầu của system, còn greater ghi số dãy con đã lớn hơn. Mỗi ký tự mới làm greater nhân đôi; một tiền tố bằng nhau theo sau là ký tự lớn hơn, hoặc toàn bộ system theo sau là ký tự bất kỳ, cũng trở thành lớn hơn; cập nhật DP tiền tố bằng nhau theo thứ tự ngược."
+    ]
   }
 }

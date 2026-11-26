@@ -13,5 +13,41 @@
       "A route through waypoint may revisit vertices.",
       "The largest answer may exceed the 32-bit integer range, so use 64-bit distances."
     ]
+  },
+  "ja": {
+    "title": "必須の経由地を通る最短経路",
+    "description": "n 個のノードを持つ重み付き有向グラフが与えられます。辺 [u,v,w] は u から v への一方向の辺で、重みは非負です。start から target への最短距離と、waypoint を必ず通る経路の最短距離を出力してください。存在しないほうは -1 を出力します。waypoint を通る経路では、ノードや辺を再訪してもかまいません。\n\n本サイトでの補足：入力のノードは 0 から番号付けされます。経路はウォークなので、waypoint へ向かう区間や waypoint から出る区間でノードを再訪できます。距離は 64 ビット整数です。元のスナップショットにある 3 言語のコードは、すべての辺を逆向きにも追加しており、これは 2 番目の例と矛盾します。関数シグネチャ・例・制約が同じ有向版に基づき、本サイトでは一方向の辺に訂正しています。",
+    "input": "1 行目に n m、続く m 行に u v w、最後の行に start target waypoint が与えられます。",
+    "output": "2 つの整数を出力します。最短距離と、waypoint を通る最短距離です。解がない場合、対応する値は -1 です。",
+    "explanation": "元の有向グラフ上で、start と waypoint のそれぞれからダイクストラ法を実行します。1 つ目の値は start から target への距離、2 つ目は start から waypoint への距離と waypoint から target への距離の和です。辺の重みが非負なので、制約付きの最適経路は 2 本の最短経路をつなげて作れます。経路はノードを再訪してもかまいません。",
+    "hints": [
+      "辺は一方向です。逆向きの辺を自動的に追加しないでください。",
+      "waypoint を通る経路は頂点を再訪してもかまいません。",
+      "答えの最大値は 32 ビット整数の範囲を超えることがあるので、64 ビットの距離を使ってください。"
+    ]
+  },
+  "ko": {
+    "title": "필수 경유지를 지나는 최단 경로",
+    "description": "n개의 노드를 가진 가중치 방향 그래프가 주어집니다. 간선 [u,v,w]는 u에서 v로 가는 단방향 간선이며 가중치는 음수가 아닙니다. start에서 target까지의 최단 거리와, waypoint를 반드시 지나는 경로의 최단 거리를 출력하세요. 존재하지 않는 값은 -1로 출력합니다. waypoint를 지나는 경로는 노드와 간선을 다시 방문할 수 있습니다.\n\n이 사이트의 추가 사항: 입력의 노드 번호는 0부터 시작합니다. 경로는 walk이므로 waypoint까지의 구간이나 waypoint에서 나오는 구간에서 노드를 다시 방문할 수 있습니다. 거리는 64비트 정수를 사용합니다. 원본 스냅샷의 세 언어 코드는 모든 간선을 역방향으로도 추가하는데, 이는 두 번째 예제와 모순됩니다. 함수 시그니처, 예제, 제약 조건이 같은 방향 그래프 버전에 따라 이 사이트에서는 단방향 간선으로 바로잡았습니다.",
+    "input": "첫째 줄에 n m이 주어지고, 다음 m개의 줄에 각각 u v w가 주어지며, 마지막 줄에 start target waypoint가 주어집니다.",
+    "output": "두 정수를 출력합니다. 최단 거리와 waypoint를 지나는 최단 거리이며, 해가 없으면 해당 값은 -1입니다.",
+    "explanation": "원래의 방향 그래프에서 start와 waypoint 각각을 시작점으로 Dijkstra를 실행합니다. 첫 번째 값은 start에서 target까지의 거리이고, 두 번째 값은 start에서 waypoint까지의 거리와 waypoint에서 target까지의 거리의 합입니다. 간선 가중치가 음수가 아니므로 제약이 있는 최적 경로는 두 최단 경로를 이어 붙여 만들 수 있으며, 경로는 노드를 다시 방문할 수 있습니다.",
+    "hints": [
+      "간선은 단방향입니다. 역방향 간선을 자동으로 추가하지 마세요.",
+      "waypoint를 지나는 경로는 정점을 다시 방문할 수 있습니다.",
+      "답의 최댓값이 32비트 정수 범위를 넘을 수 있으므로 64비트 거리를 사용하세요."
+    ]
+  },
+  "vi": {
+    "title": "Đường đi ngắn nhất qua một điểm bắt buộc",
+    "description": "Cho một đồ thị có hướng có trọng số với n đỉnh, trong đó cạnh [u,v,w] là cạnh một chiều từ u đến v với trọng số không âm. Hãy in ra khoảng cách ngắn nhất từ start đến target, và khoảng cách ngắn nhất của một đường đi bắt buộc phải đi qua waypoint; in -1 cho giá trị nào không tồn tại. Đường đi qua waypoint có thể đi lại các đỉnh và cạnh.\n\nBổ sung của trang này: các đỉnh trong đầu vào được đánh số từ 0; đường đi là một walk, nên các đỉnh có thể được thăm lại ở đoạn đi tới waypoint hoặc đoạn đi ra từ waypoint; khoảng cách dùng số nguyên 64 bit. Mã nguồn ba ngôn ngữ trong bản snapshot gốc còn thêm mọi cạnh theo chiều ngược lại, điều này mâu thuẫn với ví dụ thứ hai của nó; dựa trên phiên bản có hướng với cùng chữ ký hàm, ví dụ và ràng buộc, trang này sửa lại thành các cạnh một chiều.",
+    "input": "Dòng đầu chứa n m; mỗi dòng trong m dòng tiếp theo chứa u v w; dòng cuối chứa start target waypoint.",
+    "output": "In ra hai số nguyên: khoảng cách ngắn nhất và khoảng cách ngắn nhất qua waypoint; nếu không có nghiệm thì giá trị tương ứng là -1.",
+    "explanation": "Chạy Dijkstra từ start và từ waypoint trên đồ thị có hướng gốc. Giá trị đầu tiên là khoảng cách từ start đến target; giá trị thứ hai là khoảng cách từ start đến waypoint cộng với khoảng cách từ waypoint đến target. Vì trọng số cạnh không âm, đường đi tối ưu có ràng buộc có thể được tạo bằng cách nối hai đường đi ngắn nhất; đường đi có thể thăm lại các đỉnh.",
+    "hints": [
+      "Các cạnh là một chiều; đừng tự động thêm cạnh ngược.",
+      "Đường đi qua waypoint có thể thăm lại các đỉnh.",
+      "Đáp án lớn nhất có thể vượt quá phạm vi số nguyên 32 bit, nên hãy dùng khoảng cách 64 bit."
+    ]
   }
 }

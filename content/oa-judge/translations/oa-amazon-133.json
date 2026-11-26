@@ -11,5 +11,35 @@
     "hints": [
       "A full round without skips always consumes a+b. Reduce the stock to a remainder r in 1..a+b; scoring a warehouse needs at least (r−1)//a skips. Sort these costs and buy as many cheap points as possible."
     ]
+  },
+  "ja": {
+    "title": "同僚のスキップ回数に制限がある場合の最大得点",
+    "description": "各倉庫では、まずあなたが a 個を出荷し、次に同僚が b 個を出荷します。同僚はスキップでき、合計で最大 skips 回までスキップできます。在庫が ≤0 になるまでこの交代を繰り返し、最後の出荷をあなたが行った場合にのみ 1 点を得ます。得点の最大値を求めてください。\n\nこのサイトの標準入出力と解法は独自に作成したものです。このサイトの制約と明記された範囲は、元の出典の制約ではありません。",
+    "input": "1 行目に n a b skips、2 行目に n 個の在庫数が与えられます。元の問題では n≤100000 で在庫は正の値です。上限が示されていない値については、このサイトで stock、a、b を正の整数かつ ≤10⁹、0≤skips≤10⁹ とします。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1: 6 つの倉庫で必要な最小スキップ回数は 2, 0, 0, 1, 2, 0 なので、3 回のスキップで 5 点を得られます。例 2: あなたが先に 2 個出荷し、次に同僚が 2 個出荷して在庫を空にするため、得点は 0 です。例 3: 同僚が 1 回スキップすると、あなたがさらに 2 個出荷して在庫を空にでき、1 点を得ます。",
+    "hints": [
+      "スキップなしの 1 ラウンドでは、常に a+b 個が消費されます。在庫を 1..a+b の範囲の余り r に落とすと、その倉庫で得点するには少なくとも (r−1)//a 回のスキップが必要です。これらのコストをソートし、安いものから順にできるだけ多く得点を買います。"
+    ]
+  },
+  "ko": {
+    "title": "동료의 건너뛰기가 제한될 때의 최대 점수",
+    "description": "각 창고에서 먼저 당신이 a개를 출하하고, 이어서 동료가 b개를 출하합니다. 동료는 건너뛸 수 있으며, 전체 건너뛰기 횟수는 최대 skips번입니다. 재고가 ≤0이 될 때까지 이 순서가 번갈아 반복되고, 마지막 출하를 당신이 했을 때만 1점을 얻습니다. 얻을 수 있는 최대 점수를 구하세요.\n\n표준 입출력과 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n a b skips가 주어지고, 두 번째 줄에 n개의 재고 값이 주어집니다. 원 출처에는 n≤100000이고 재고가 양수라고만 되어 있습니다. 빠진 상한은 이 사이트에서 재고, a, b를 양수이고 ≤10⁹, 0≤skips≤10⁹로 정했습니다.",
+    "output": "정수 하나를 출력합니다.",
+    "explanation": "예제 1: 여섯 창고의 최소 건너뛰기 비용은 2, 0, 0, 1, 2, 0이므로 건너뛰기 3번으로 5점을 얻습니다. 예제 2: 당신이 먼저 2를 출하하고, 이어서 동료가 2를 출하해 재고를 비우므로 점수를 얻지 못합니다. 예제 3: 동료가 한 번 건너뛰면 당신이 2를 더 출하해 재고를 비우게 되어 1점을 얻습니다.",
+    "hints": [
+      "건너뛰기가 없으면 한 라운드마다 항상 a+b가 소진됩니다. 재고를 1..a+b 범위의 나머지 r로 줄이면, 한 창고에서 점수를 얻으려면 최소 (r−1)//a번의 건너뛰기가 필요합니다. 이 비용들을 정렬해서 싼 것부터 최대한 많이 사면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Điểm tối đa khi đồng nghiệp được bỏ lượt có giới hạn",
+    "description": "Ở mỗi kho, bạn xuất a món trước, sau đó đồng nghiệp xuất b món; đồng nghiệp có thể bỏ lượt, nhưng tổng số lần bỏ lượt không vượt quá skips. Các lượt luân phiên lặp lại cho đến khi tồn kho ≤0, và bạn chỉ được 1 điểm nếu là người thực hiện lần xuất cuối cùng. Tìm điểm số tối đa.\n\nCách vào/ra chuẩn và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n a b skips, dòng thứ hai chứa n giá trị tồn kho. Đề gốc có n≤100000 và tồn kho dương; với các cận trên còn thiếu, trang này quy định stock, a và b dương và ≤10⁹, còn 0≤skips≤10⁹.",
+    "output": "Xuất một số nguyên duy nhất là đáp án.",
+    "explanation": "Ví dụ 1: chi phí bỏ lượt tối thiểu của sáu kho lần lượt là 2, 0, 0, 1, 2, 0, nên 3 lần bỏ lượt đem lại 5 điểm. Ví dụ 2: bạn xuất 2 trước, rồi đồng nghiệp xuất 2 và làm rỗng kho, nên bạn không được điểm nào. Ví dụ 3: đồng nghiệp bỏ lượt một lần, để bạn xuất thêm 2 và làm rỗng kho, được 1 điểm.",
+    "hints": [
+      "Một vòng đầy đủ không có lượt bỏ luôn tiêu thụ a+b. Rút tồn kho về số dư r trong 1..a+b; để ghi điểm ở một kho cần ít nhất (r−1)//a lần bỏ lượt. Sắp xếp các chi phí này và mua càng nhiều điểm rẻ càng tốt."
+    ]
   }
 }

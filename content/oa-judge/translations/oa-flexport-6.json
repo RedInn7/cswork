@@ -11,5 +11,15 @@
     "hints": [
       "Enumerate every node to delete; each time, simulate the spread on the remaining graph with a multi-source BFS, and compare the final infected counts and the indices."
     ]
+  },
+  "vi": {
+    "title": "Malware Spread",
+    "description": "Nguồn: Flexport #6 Malware Spread. Xóa đúng một nút của mạng cùng với các cạnh liên thuộc của nó, rồi để sự lây nhiễm lan theo các cạnh vô hướng từ mọi nút nhiễm ban đầu chưa bị xóa, cho đến khi không còn nút nào bị nhiễm thêm. Tìm cách xóa làm tối thiểu số nút bị nhiễm cuối cùng; nếu bằng nhau, chọn chỉ số tính từ 1 nhỏ nhất. Hiểu theo nghĩa đen, đề gốc cho phép bất kỳ nút nào trong mạng làm ứng viên, kể cả các nút khỏe mạnh.\n\nĐịnh dạng nhập/xuất do trang này biên soạn.",
+    "input": "Dòng đầu tiên chứa n m; dòng thứ hai chứa n cờ nhiễm ban đầu, mỗi cờ là 0/1; mỗi dòng trong m dòng tiếp theo chứa một cạnh vô hướng u v đánh số từ 1. 1≤n≤1000, 0≤m≤min(n(n−1)/2,1000); trang này coi đồ thị là đơn (không có cạnh song song hay khuyên).",
+    "output": "In ra chỉ số tính từ 1 của nút cần xóa. Dù không có nút nào bị nhiễm thì vẫn phải xóa một nút; nếu bằng nhau thì in chỉ số nhỏ nhất.",
+    "explanation": "Ví dụ công khai 1 được mô phỏng lại trên đồ thị và các nút bị nhiễm đã cho trong đề: xóa nút 3 cho số nút nhiễm ít nhất, nên đầu ra là 3. Trong ví dụ công khai 2, các nút còn lại vẫn bị nhiễm dù xóa nút nào, nên chọn chỉ số nhỏ nhất là 1. Quy tắc của trang này cho phép rõ ràng việc xóa một nút khỏe mạnh; ví dụ thứ ba, một ca hồi quy do trang này bổ sung, kiểm tra cụ thể một đỉnh cắt khỏe mạnh.",
+    "hints": [
+      "Liệt kê mọi nút để xóa; mỗi lần, mô phỏng sự lan truyền trên đồ thị còn lại bằng BFS đa nguồn, rồi so sánh số nút nhiễm cuối cùng và các chỉ số."
+    ]
   }
 }

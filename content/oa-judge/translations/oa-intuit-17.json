@@ -11,5 +11,35 @@
     "hints": [
       "Scan the matrix, maintaining the minimum value among earlier cells that can reach the current position, and subtract it from the current value."
     ]
+  },
+  "ja": {
+    "title": "行列でボールをパスしたときの最大報酬合計",
+    "description": "ボールは任意のプレイヤーから始められ、行列の中を右か下にだけパスでき、少なくとも 2 人のプレイヤーを経由しなければなりません。パスを受け取るたびに、受け取ったセルの値からパスしたセルの値を引いた報酬が得られます。累積報酬の最大値を求めます。",
+    "input": "入力は N M（2≤N,M≤1000）で始まり、続く N 行にそれぞれ M 個の整数が与えられます。元の問題の制約は行列の値のところで途切れているため、本サイトでは 0≤a[i][j]≤10000 を追加しています。累積報酬の最大値を出力します。",
+    "output": "説明どおりに答えを出力します。配列の答えでは、値をスペースで区切ります。",
+    "explanation": "行列を走査し、現在位置に到達できる過去のセルの値の最小値を保持して、現在の値からそれを引きます。\n\n正しさ：経路に沿った各報酬は「後のセル − 前のセル」なので、累積和は「終点 − 始点」に打ち消されます。右・下への単調な移動で到達できる始点と終点のペアは、行と列がどちらも減らない、異なるセルのペアとちょうど一致します。各終点について、到達可能な過去のセルの最小値を引けば十分です。上からと左からの接頭辞最小値を現在の値に統合することで、O(NM) の走査になります。\n\n計算量：時間 O(NM)、空間 O(NM)。累積報酬の絶対値の最大は 10000 を超えません。",
+    "hints": [
+      "行列を走査し、現在位置に到達できる過去のセルの値の最小値を保持して、現在の値からそれを引きます。"
+    ]
+  },
+  "ko": {
+    "title": "행렬에서 공을 패스할 때의 최대 총 보상",
+    "description": "공은 임의의 선수에서 시작할 수 있고 행렬에서 오른쪽 또는 아래로만 패스할 수 있으며, 최소 두 명의 선수를 거쳐야 합니다. 공을 받을 때마다 받는 칸의 값에서 패스하는 칸의 값을 뺀 만큼의 보상을 얻습니다. 누적 보상의 최댓값을 구하세요.",
+    "input": "N M(2≤N,M≤1000)이 주어지고, 이어서 각각 M개의 정수로 이루어진 N개의 줄이 주어집니다. 원문의 제약 조건은 행렬 값 부분에서 잘려 있으며, 이 사이트에서는 0≤a[i][j]≤10000을 추가했습니다. 누적 보상의 최댓값을 출력합니다.",
+    "output": "설명된 대로 답을 출력하며, 배열 형태의 답은 값들을 공백으로 구분합니다.",
+    "explanation": "행렬을 훑으면서 현재 위치에 도달할 수 있는 이전 칸들의 최솟값을 유지하고, 현재 값에서 그 값을 뺍니다.\n\n정당성: 경로를 따라 얻는 각 보상은 뒤쪽 칸에서 앞쪽 칸을 뺀 값이므로 누적 합은 끝 값에서 시작 값을 뺀 값으로 소거됩니다. 오른쪽/아래로만 단조롭게 이동하여 도달할 수 있는 시작/끝 쌍은 행과 열이 모두 감소하지 않는 서로 다른 칸의 쌍과 정확히 같으며, 각 끝점에 대해 도달 가능한 이전 칸들의 최솟값을 빼면 충분합니다. 위쪽과 왼쪽의 접두 최솟값을 현재 값에 병합하면 O(NM) 스캔이 됩니다.\n\n복잡도: 시간 O(NM), 공간 O(NM). 누적 보상의 절댓값 최댓값은 10000을 넘지 않습니다.",
+    "hints": [
+      "행렬을 훑으면서 현재 위치에 도달할 수 있는 이전 칸들의 최솟값을 유지하고, 현재 값에서 그 값을 뺍니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng phần thưởng lớn nhất khi chuyền bóng trong ma trận",
+    "description": "Quả bóng có thể bắt đầu từ bất kỳ cầu thủ nào và chỉ được chuyền sang phải hoặc xuống dưới trong ma trận, và phải đi qua ít nhất hai cầu thủ. Mỗi lần bắt bóng nhận phần thưởng bằng giá trị của ô nhận trừ đi giá trị của ô chuyền. Tìm tổng phần thưởng tích lũy lớn nhất.",
+    "input": "Đầu vào cho N M (2≤N,M≤1000), tiếp theo là N dòng, mỗi dòng M số nguyên. Ràng buộc của nguồn gốc bị cắt ở các giá trị của ma trận; trang này bổ sung 0≤a[i][j]≤10000. In ra tổng phần thưởng tích lũy lớn nhất.",
+    "output": "In ra đáp án như mô tả; với đáp án là mảng, các giá trị cách nhau bằng dấu cách.",
+    "explanation": "Quét ma trận, duy trì giá trị nhỏ nhất trong các ô trước đó có thể đến được vị trí hiện tại, rồi trừ nó khỏi giá trị hiện tại.\n\nTính đúng đắn: mỗi phần thưởng dọc theo một đường đi là ô sau trừ ô trước, nên tổng tích lũy rút gọn thành cuối trừ đầu. Các cặp đầu/cuối đến được bằng cách di chuyển đơn điệu sang phải/xuống dưới chính là các cặp ô khác nhau mà cả hàng lẫn cột đều không giảm; với mỗi ô cuối, chỉ cần trừ đi giá trị nhỏ nhất trong các ô trước đó có thể đến được. Gộp các giá trị nhỏ nhất tiền tố từ phía trên và từ bên trái vào giá trị hiện tại cho một lượt quét O(NM).\n\nĐộ phức tạp: thời gian O(NM), bộ nhớ O(NM); giá trị tuyệt đối lớn nhất của phần thưởng tích lũy không vượt quá 10000.",
+    "hints": [
+      "Quét ma trận, duy trì giá trị nhỏ nhất trong các ô trước đó có thể đến được vị trí hiện tại, rồi trừ nó khỏi giá trị hiện tại."
+    ]
   }
 }

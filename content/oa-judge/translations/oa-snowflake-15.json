@@ -11,5 +11,35 @@
     "hints": [
       "Binary search on the number of operations t; first give every task a base amount of ty, then divide each task's remaining need by x−y, rounding up, to get how many extra times it must be the main task. t is feasible if the sum does not exceed t."
     ]
+  },
+  "ja": {
+    "title": "タスクを並列実行する最小の操作回数",
+    "description": "1 回の操作で、未完了のタスクを 1 つ選んで x 秒実行します。そのとき他のすべてのタスクは y 秒実行されます（y<x）。累積の実行時間が必要な時間に達したタスクは終了します。すべてのタスクを終えるのに必要な最小の操作回数を求めてください。元のスナップショットでは y<x が復元されています。\n\n入出力の形式は本サイトで独自に整備したものであり、出題元の解答は実行していません。",
+    "input": "1 行目に n x y、2 行目に n 個の実行時間が与えられます。1≤n≤100000、1≤time≤10⁹、1≤y<x≤10⁹ です。",
+    "output": "問題が求める整数を 1 つ出力してください。",
+    "explanation": "3 つの公開例の答えは順に 3、1、6 です。すべての例は、独立した小規模な全探索または状態探索で検証済みです。",
+    "hints": [
+      "操作回数 t を二分探索します。まず各タスクに基本量 ty を与え、次に各タスクの残りの必要量を x−y で割って切り上げ、主タスクとして追加で何回選ばれる必要があるかを求めます。この合計が t 以下なら t は実現可能です。"
+    ]
+  },
+  "ko": {
+    "title": "작업을 병렬로 실행하는 최소 연산 횟수",
+    "description": "한 번의 연산에서는 끝나지 않은 작업 하나를 골라 x초 동안 실행하고, 나머지 모든 작업은 y초 동안 실행합니다(y<x). 작업은 누적 실행 시간이 필요한 시간에 도달하면 종료됩니다. 모든 작업을 끝내는 데 필요한 최소 연산 횟수를 구하세요. 원본 스냅샷에서 y<x 조건을 복원했습니다.\n\n입출력 규약은 이 사이트에서 독자적으로 정리한 것이며, 원 출처의 풀이는 실행하지 않습니다.",
+    "input": "첫 줄에 n x y가, 둘째 줄에 n개의 실행 시간이 주어집니다. 1≤n≤100000, 1≤time≤10⁹, 1≤y<x≤10⁹.",
+    "output": "문제가 요구하는 정수 하나를 출력합니다.",
+    "explanation": "공개 예제 3개의 답은 순서대로 3; 1; 6입니다. 모든 예제는 독립적인 소규모 완전 탐색 또는 상태 탐색으로 검증했습니다.",
+    "hints": [
+      "연산 횟수 t에 대해 이분 탐색합니다. 먼저 모든 작업에 기본으로 ty를 주고, 각 작업의 남은 필요량을 x−y로 나누어 올림하면 그 작업이 추가로 주 작업이 되어야 하는 횟수가 나옵니다. 이 합이 t 이하이면 t는 가능합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thao tác tối thiểu để chạy song song các tác vụ",
+    "description": "Trong một thao tác, chọn một tác vụ chưa hoàn thành và chạy nó trong x giây trong khi mọi tác vụ khác chạy trong y giây, với y<x; một tác vụ thoát khi thời gian chạy tích lũy của nó đạt thời gian yêu cầu. Tìm số thao tác tối thiểu để hoàn thành mọi tác vụ. Bản chụp gốc khôi phục điều kiện y<x.\n\nGiao thức đầu vào/đầu ra do trang này tự biên soạn; lời giải của nguồn gốc không được chạy.",
+    "input": "Dòng đầu tiên chứa n x y, dòng thứ hai chứa n thời gian thực thi; 1≤n≤100000, 1≤time≤10⁹, 1≤y<x≤10⁹.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Đáp án của ba ví dụ công khai lần lượt là: 3; 1; 6. Tất cả ví dụ đã được kiểm chứng bằng liệt kê quy mô nhỏ độc lập hoặc tìm kiếm trạng thái.",
+    "hints": [
+      "Tìm kiếm nhị phân số thao tác t; trước hết cho mỗi tác vụ một lượng cơ bản là ty, rồi chia nhu cầu còn lại của mỗi tác vụ cho x−y, làm tròn lên, để biết nó phải làm tác vụ chính thêm bao nhiêu lần. t khả thi nếu tổng không vượt quá t."
+    ]
   }
 }

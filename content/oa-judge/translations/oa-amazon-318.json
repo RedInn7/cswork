@@ -11,5 +11,35 @@
     "hints": [
       "What remains is always a contiguous substring of the original string. Scan every end position j while maintaining the nearest position i holding the original first character; if the current character equals the original last character, try keeping [i,j] and update the shortest length. Return n minus the shortest length."
     ]
+  },
+  "ja": {
+    "title": "最初と最後の種類を保ったまま両端から削除できる最大回数",
+    "description": "各ステップで、現在の文字列の先頭または末尾の文字を1つ削除します。文字列の種類(type)は、先頭の文字に末尾の文字を続けたものです。1文字 a の type は aa、空文字列の type は空です。最終的な type だけが最初の type と等しければよく、途中では異なっていても構いません。削除できる最大回数を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "英小文字の文字列 s が1行で与えられます。元の制約は 2≤|s|≤200000 です。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 5、4、2 です。319 の元の例 babdcaac の出力 0 は、その例自身の説明にある結論 5 とも、同じ問題の完全版である 318 とも矛盾しています。本サイトでは明示的にこれを 5 に訂正し、両方の元データに適用しています。hchc の type は h ではなく hc とすべきです。318 の元の解法は末尾の文字の最初の出現だけを見ているため、後ろにあるより短い有効な範囲を見逃します。",
+    "hints": [
+      "残るのは常に元の文字列の連続する部分文字列です。すべての終端位置 j を走査しながら、元の先頭文字を持つ最も近い位置 i を保持します。現在の文字が元の末尾の文字と等しければ、[i,j] を残す場合を試して最短の長さを更新します。n から最短の長さを引いた値を返します。"
+    ]
+  },
+  "ko": {
+    "title": "원래의 첫/마지막 타입을 유지하면서 양 끝에서 삭제할 수 있는 최대 횟수",
+    "description": "매 단계마다 현재 문자열의 첫 문자 또는 마지막 문자를 삭제합니다. 문자열의 타입은 첫 문자 다음에 마지막 문자를 이어 붙인 것이며, 문자 하나 a의 타입은 aa이고 빈 문자열의 타입은 빈 문자열입니다. 최종 타입만 처음 타입과 같으면 되고, 도중에는 달라져도 됩니다. 삭제 횟수의 최댓값을 구하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "한 줄에 소문자 문자열 s가 주어집니다. 원문의 범위는 2≤|s|≤200000입니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 5, 4, 2입니다. 319번 원문 예제 babdcaac의 출력 0은 그 예제 자신의 설명에 있는 결론 5, 그리고 같은 문제의 완전한 버전인 318번과 모순됩니다. 이 사이트는 이를 5로 분명히 바로잡고 두 원문을 함께 묶었습니다. hchc의 타입은 h가 아니라 hc여야 합니다. 318번 원문은 마지막 문자의 첫 번째 등장만 보기 때문에 뒤쪽에 있는 더 짧은 유효 구간을 놓칩니다.",
+    "hints": [
+      "남는 것은 항상 원래 문자열의 연속 부분 문자열입니다. 모든 끝 위치 j를 훑으면서 원래의 첫 문자가 있는 가장 가까운 위치 i를 유지하고, 현재 문자가 원래의 마지막 문자와 같으면 [i,j]를 남기는 경우를 시도해 가장 짧은 길이를 갱신합니다. n에서 가장 짧은 길이를 뺀 값을 반환합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần xóa tối đa từ hai đầu mà vẫn giữ kiểu đầu/cuối ban đầu",
+    "description": "Ở mỗi bước, xóa ký tự đầu hoặc ký tự cuối của xâu hiện tại. Kiểu của một xâu là ký tự đầu tiên theo sau là ký tự cuối cùng của nó; một ký tự đơn a có kiểu aa, và xâu rỗng có kiểu rỗng. Chỉ kiểu cuối cùng phải bằng kiểu ban đầu; trong quá trình xóa kiểu có thể tạm thời khác. Hãy tìm số lần xóa tối đa.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Một dòng chứa xâu chữ thường s; cận gốc là 2≤|s|≤200000.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 5, 4 và 2. Đầu ra 0 của ví dụ gốc babdcaac của 319 mâu thuẫn với kết luận 5 trong phần giải thích của chính ví dụ đó và với 318, phiên bản đầy đủ của cùng bài toán; trang này sửa nó một cách công khai thành 5 và ràng buộc cả hai nguồn thô. Kiểu của hchc phải là hc, không phải h. Nguồn 318 chỉ xét lần xuất hiện đầu tiên của ký tự cuối, nên bỏ sót các đoạn hợp lệ ngắn hơn ở phía sau.",
+    "hints": [
+      "Phần còn lại luôn là một xâu con liên tiếp của xâu ban đầu. Quét mọi vị trí kết thúc j trong khi duy trì vị trí i gần nhất chứa ký tự đầu tiên ban đầu; nếu ký tự hiện tại bằng ký tự cuối cùng ban đầu, thử giữ [i,j] và cập nhật độ dài ngắn nhất. Trả về n trừ đi độ dài ngắn nhất."
+    ]
   }
 }

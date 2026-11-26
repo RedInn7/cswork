@@ -11,5 +11,35 @@
     "hints": [
       "Sort the logs by time, and sort the queries too while keeping their original indices. With two pointers, add logs with time ≤q and remove logs with time <q−window, maintaining the active count with per-skill frequencies."
     ]
+  },
+  "ja": {
+    "title": "閉じたリクエストウィンドウ内で非アクティブなスキル",
+    "description": "各ログエントリは skillId とタイムスタンプからなります。各クエリ q について、閉区間 [q−timeWindow,q] にリクエストが 1 つもないスキルの数を数え、クエリの入力順に答えを出力してください。\n\n標準入出力と判定は本サイトが独自に作成しました。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に numSkills m q timeWindow が与えられ、4 つとも 1..100000 です。続いて skill timestamp の行が m 行、その後に q 個の queryTime が 1 行で与えられます。skill は 1..numSkills で、すべての時刻は 1..100000 です。",
+    "output": "q 個の非アクティブな数を、スペース区切りで 1 行に出力します。",
+    "explanation": "例 1: q=3 ではウィンドウ [1,3] にスキル 1 と 2 が含まれるので、非アクティブなのは 1 つです。q=4 ではウィンドウ [2,4] にスキル 2 しか含まれないので、非アクティブなのは 2 つです。例 2: クエリ 5 にはスキル 1 があるので、非アクティブなのは 1 つです。クエリ 1 にはログがないので、非アクティブなのは 2 つで、元の順序は保たれます。例 3: 2 つのログエントリはどちらもスキル 1 のものなので、アクティブなスキルとしては 1 つだけと数えられ、非アクティブなのは 0 です。",
+    "hints": [
+      "ログを時刻でソートし、クエリも元のインデックスを保持したままソートします。2 つのポインタを使い、時刻が ≤q のログを追加し、時刻が <q−window のログを削除します。アクティブな数は、スキルごとの頻度で管理します。"
+    ]
+  },
+  "ko": {
+    "title": "닫힌 요청 구간에서 비활성인 스킬",
+    "description": "각 로그 항목은 skillId와 타임스탬프로 이루어집니다. 각 쿼리 q에 대해 닫힌 구간 [q−timeWindow,q] 안에 요청이 하나도 없는 스킬의 수를 세고, 쿼리의 입력 순서대로 답을 출력하세요.\n\n표준 입출력과 채점은 이 사이트가 독자적으로 작성했으며, 이 사이트의 것이라고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 numSkills m q timeWindow가 주어지며 네 값 모두 1..100000입니다. 이어서 m개의 줄에 skill timestamp가, 그다음 한 줄에 q개의 queryTime 값이 주어집니다. skill은 1..numSkills이고 모든 시각은 1..100000입니다.",
+    "output": "q개의 비활성 스킬 수를 공백으로 구분해 한 줄로 출력합니다.",
+    "explanation": "예제 1: q=3일 때 구간 [1,3]에는 스킬 1과 2가 있으므로 비활성 스킬은 1개이고, q=4일 때 구간 [2,4]에는 스킬 2만 있으므로 2개가 비활성입니다. 예제 2: 쿼리 5에는 스킬 1이 있으므로 1개가 비활성이고, 쿼리 1에는 로그가 없으므로 2개가 비활성이며, 원래 순서가 유지됩니다. 예제 3: 두 로그 항목이 모두 스킬 1의 것이므로 활성 스킬은 하나로만 세어져 비활성은 0개입니다.",
+    "hints": [
+      "로그를 시각순으로 정렬하고 쿼리도 원래 인덱스를 유지한 채 정렬합니다. 투 포인터로 시각 ≤q인 로그를 추가하고 시각 <q−window인 로그를 제거하며, 스킬별 빈도로 활성 수를 유지합니다."
+    ]
+  },
+  "vi": {
+    "title": "Các kỹ năng không hoạt động trong cửa sổ yêu cầu đóng",
+    "description": "Mỗi bản ghi nhật ký gồm một skillId và một mốc thời gian. Với mỗi truy vấn q, đếm số kỹ năng không có yêu cầu nào trong khoảng đóng [q−timeWindow,q]; in các đáp án theo thứ tự đầu vào của các truy vấn.\n\nTrang này tự viết độc lập phần vào/ra chuẩn và phần chấm bài; các khoảng giá trị đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa numSkills m q timeWindow, cả bốn trong 1..100000; sau đó là m dòng skill timestamp, rồi một dòng q giá trị queryTime. skill nằm trong 1..numSkills, và mọi thời gian trong 1..100000.",
+    "output": "Một dòng gồm q số kỹ năng không hoạt động, cách nhau bằng dấu cách.",
+    "explanation": "Ví dụ 1: với q=3, cửa sổ [1,3] chứa kỹ năng 1 và 2, nên có 1 kỹ năng không hoạt động; với q=4, cửa sổ [2,4] chỉ chứa kỹ năng 2, nên có 2 kỹ năng không hoạt động. Ví dụ 2: truy vấn 5 có kỹ năng 1, nên có 1 kỹ năng không hoạt động; truy vấn 1 không có nhật ký, nên có 2 kỹ năng không hoạt động, và thứ tự ban đầu được giữ nguyên. Ví dụ 3: cả hai bản ghi nhật ký đều thuộc kỹ năng 1, chỉ tính là một kỹ năng hoạt động, nên có 0 kỹ năng không hoạt động.",
+    "hints": [
+      "Sắp xếp nhật ký theo thời gian, và sắp xếp cả các truy vấn nhưng giữ chỉ số ban đầu. Với hai con trỏ, thêm các nhật ký có thời gian ≤q và loại các nhật ký có thời gian <q−window, duy trì số kỹ năng hoạt động bằng tần suất theo từng kỹ năng."
+    ]
   }
 }

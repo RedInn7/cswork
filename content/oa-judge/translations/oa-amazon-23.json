@@ -12,5 +12,38 @@
       "Color the elements by the parity of their original index, and observe which colors can merge.",
       "Consider separately the case where some value is positive and the case where all values are non-positive."
     ]
+  },
+  "ja": {
+    "title": "システムを削除して両隣を統合したときの最大チャージ",
+    "description": "空でない整数配列 charge が与えられます。現在のシステムを 1 つ選んで削除する操作を繰り返します。左右両方に隣があるシステムを削除すると、その 2 つの隣が自動的に 1 つのシステムに統合され、値は 2 つの隣の和になります。削除されたシステムの値は単に捨てられます。現在の左端または右端のシステムを削除する場合は、そのシステムが取り除かれるだけで統合は起こりません。システムが 1 つになるまで続けたとき、最後に残るシステムの値の最大値を求めてください。n=1 のときは操作が不要で、最後の 1 つは削除できません。\n\n本サイトでは、完全な原文に基づいてカタログを訂正しています。削除された値は隣に加算されず、内部の任意のシステムを、両隣を残したままコストなしで削除することもできません。最初の例 [-2,4,3,-2,1] の正しい答えは 4 で、カタログに誤って書かれていた 9 は採用しません。原文の数値と大きさの範囲はそのまま保持しています。",
+    "input": "1 行目に整数 n、2 行目に n 個の整数 charge[i] が与えられます。1≤n≤200000、−10^9≤charge[i]≤10^9 です。これらの数値の範囲は完全な元の問題文に基づくもので、標準入力の形式は本サイトで追加したものです。",
+    "output": "最後に残るシステムの最大チャージを整数 1 つで出力します。負になることもあります。",
+    "explanation": "3 つの公開例はすべて完全な原文に基づいており、答えは 4、9、3 です。例 1 では、まず左端の −2 を削除し、続いて右端の 1、−2、3 を順に削除して 4 を残します。例 2 では、9 以外のすべての要素を両端から順に削除して 9 を残します。例 3 では、左端の −1 を削除し、次に右端の 2 を削除して 3 を残します。",
+    "hints": [
+      "元のインデックスの偶奇で要素を色分けし、どの色同士が統合されるかを観察しましょう。",
+      "正の値が存在する場合と、すべての値が 0 以下の場合を分けて考えます。"
+    ]
+  },
+  "ko": {
+    "title": "시스템을 삭제하고 양쪽 이웃을 합쳤을 때의 최대 충전량",
+    "description": "비어 있지 않은 정수 배열 charge가 주어집니다. 현재 시스템 하나를 골라 삭제하는 연산을 반복합니다. 삭제한 시스템에 왼쪽 이웃과 오른쪽 이웃이 모두 있으면 두 이웃이 자동으로 하나의 시스템으로 합쳐지며 그 값은 두 이웃 값의 합이 되고, 삭제된 시스템의 값은 그냥 버려집니다. 현재 가장 왼쪽 또는 가장 오른쪽 시스템을 삭제하면 그 시스템만 제거되고 합쳐지는 일은 없습니다. 시스템이 하나만 남을 때까지 반복하여, 남은 시스템이 가질 수 있는 최댓값을 구하세요. n=1이면 연산이 필요 없으며, 마지막 시스템은 삭제할 수 없습니다.\n\n이 사이트는 고정된 전체 원문에 따라 카탈로그를 바로잡았습니다. 삭제된 값은 이웃에 더해지지 않으며, 두 이웃을 그대로 둔 채 임의의 내부 시스템을 비용 없이 삭제할 수도 없습니다. 첫 번째 예제 [-2,4,3,-2,1]의 올바른 답은 4이며, 카탈로그에 잘못 적혀 있던 9는 채택하지 않습니다. 원문의 수치와 크기 범위는 모두 그대로 유지했습니다.",
+    "input": "첫째 줄에 정수 n이 주어지고, 둘째 줄에 n개의 정수 charge[i]가 주어집니다. 1≤n≤200000, −10^9≤charge[i]≤10^9입니다. 이 수치 범위는 전체 원문에서 가져온 것이며, 표준 입력 규약은 이 사이트에서 추가한 것입니다.",
+    "output": "마지막에 남은 시스템의 최대 충전량을 나타내는 정수 하나를 출력합니다. 음수일 수도 있습니다.",
+    "explanation": "세 개의 공개 예제는 모두 전체 원문에서 가져온 것이며, 답은 4, 9, 3입니다. 예제 1: 먼저 왼쪽 끝의 −2를 삭제한 뒤 오른쪽 끝의 1, −2, 3을 차례로 삭제하면 4가 남습니다. 예제 2: 9를 제외한 모든 원소를 양 끝에서 차례로 삭제하면 9가 남습니다. 예제 3: 왼쪽 끝의 −1을 삭제하고 오른쪽 끝의 2를 삭제하면 3이 남습니다.",
+    "hints": [
+      "원래 인덱스의 홀짝에 따라 원소를 색칠하고, 어떤 색끼리 합쳐질 수 있는지 관찰하세요.",
+      "어떤 값이 양수인 경우와 모든 값이 양수가 아닌 경우를 나누어 생각하세요."
+    ]
+  },
+  "vi": {
+    "title": "Điện tích lớn nhất sau khi xóa hệ thống và gộp hai hệ thống lân cận",
+    "description": "Cho một mảng số nguyên không rỗng charge, lặp lại việc chọn và xóa một hệ thống hiện có: nếu nó có cả hàng xóm bên trái và bên phải, hai hàng xóm đó tự động gộp thành một hệ thống có giá trị bằng tổng của hai hàng xóm, còn giá trị của hệ thống bị xóa chỉ đơn giản là bị bỏ đi. Nếu xóa hệ thống ngoài cùng bên trái hoặc ngoài cùng bên phải, chỉ có nó bị loại bỏ và không có gì được gộp. Tiếp tục cho đến khi chỉ còn một hệ thống, và tìm giá trị lớn nhất có thể của nó. Khi n=1 không cần thao tác nào, và hệ thống cuối cùng không thể bị xóa.\n\nTrang này chỉnh lại danh mục theo toàn văn gốc đã được cố định: giá trị bị xóa không được cộng vào hàng xóm, và không thể xóa một hệ thống ở giữa tùy ý mà không mất gì trong khi vẫn giữ cả hai hàng xóm. Đáp án đúng của ví dụ đầu tiên [-2,4,3,-2,1] là 4; giá trị 9 bị ghi nhầm trong danh mục không được chấp nhận. Các giá trị số và phạm vi kích thước của văn bản gốc được giữ nguyên đầy đủ.",
+    "input": "Dòng đầu chứa số nguyên n; dòng thứ hai chứa n số nguyên charge[i]. 1≤n≤200000, −10^9≤charge[i]≤10^9. Các phạm vi số này lấy từ đề gốc đầy đủ; giao thức đầu vào chuẩn là phần bổ sung của trang này.",
+    "output": "Xuất một số nguyên duy nhất, là điện tích lớn nhất của hệ thống cuối cùng còn lại, có thể âm.",
+    "explanation": "Cả ba ví dụ công khai đều lấy từ toàn văn gốc, với đáp án 4, 9 và 3. Ví dụ 1: xóa đầu trái −2 trước, rồi lần lượt xóa các đầu phải 1, −2 và 3, còn lại 4. Ví dụ 2: lần lượt xóa mọi phần tử khác 9 từ hai đầu, còn lại 9. Ví dụ 3: xóa đầu trái −1, rồi đầu phải 2, còn lại 3.",
+    "hints": [
+      "Tô màu các phần tử theo tính chẵn lẻ của chỉ số ban đầu, và quan sát những màu nào có thể gộp với nhau.",
+      "Hãy xét riêng trường hợp có giá trị dương và trường hợp mọi giá trị đều không dương."
+    ]
   }
 }

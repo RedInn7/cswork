@@ -11,5 +11,35 @@
     "hints": [
       "Bucket indices by deadline, and maintain the queue front with alive flags and a forward-moving pointer. Each second, remove the request that was served, then remove the still-alive requests in the bucket that expires now."
     ]
+  },
+  "ja": {
+    "title": "FIFO キューの 1 秒ごとのリクエスト数",
+    "description": "時刻 0 にすべてのリクエストがキューに入ります。毎秒、先頭のリクエストが処理されます。そのリクエストはその秒のサイズには含まれ、次の秒に取り除かれます。他のリクエストは t=wait[i] の時点で期限切れとなってすぐに取り除かれ、t<wait[i] の間だけ処理を開始できます。時刻 0 からキューが空になるまで、各秒のキューの長さを、最後の 0 も含めて出力してください。\n\n標準入出力と判定は本サイトが独自に作成したものです。本サイト独自とされている範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、2 行目に n 個の待ち時間の期限が与えられます。1≤n≤100000、1≤wait[i]≤100000。",
+    "output": "各時刻のキューの長さを空白区切りで出力してください。最後の値は 0 です。",
+    "explanation": "3 つの例の出力は 4 2 1 0、3 2 1 0、4 1 0 です。",
+    "hints": [
+      "インデックスを期限ごとにバケットに入れ、生存フラグと前にしか進まないポインタでキューの先頭を管理します。毎秒、処理されたリクエストを取り除き、そのあと今期限切れになるバケット内のまだ生きているリクエストを取り除きます。"
+    ]
+  },
+  "ko": {
+    "title": "FIFO 큐의 초당 요청 수",
+    "description": "시각 0에 모든 요청이 큐에 들어갑니다. 매초 맨 앞 요청이 처리되며, 그 요청은 해당 초의 크기에는 여전히 포함되고 다음 초에 제거됩니다. 그 밖의 요청은 t=wait[i]에 만료되어 즉시 제거되며, t<wait[i]인 동안에만 처리를 시작할 수 있습니다. 시각 0부터 큐가 빌 때까지 매초의 큐 길이를 마지막 0까지 포함해 출력하세요.\n\n표준 입출력, 예제, 풀이는 이 사이트에서 독자적으로 작성했으며, 이 사이트가 정한 것으로 표시된 범위는 원 출처의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n이, 두 번째 줄에 n개의 대기 마감 시각이 주어집니다. 1≤n≤100000, 1≤wait[i]≤100000.",
+    "output": "각 시각의 큐 길이를 공백으로 구분해 출력합니다. 마지막 값은 0입니다.",
+    "explanation": "세 예제의 출력은 4 2 1 0, 3 2 1 0, 4 1 0입니다.",
+    "hints": [
+      "인덱스를 마감 시각별로 버킷에 담고, alive 플래그와 앞으로만 움직이는 포인터로 큐의 맨 앞을 유지합니다. 매초 처리된 요청을 제거한 다음, 지금 만료되는 버킷에서 아직 살아 있는 요청들을 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lượng yêu cầu mỗi giây của hàng đợi FIFO",
+    "description": "Tại thời điểm 0, mọi yêu cầu cùng vào hàng đợi. Mỗi giây yêu cầu đứng đầu được xử lý; nó vẫn được tính vào kích thước của giây đó và bị loại ở giây tiếp theo. Mọi yêu cầu khác hết hạn và bị loại ngay tại t=wait[i], và nó chỉ có thể bắt đầu được phục vụ khi t<wait[i]. Xuất độ dài hàng đợi tại mỗi giây từ thời điểm 0 cho đến khi hàng đợi rỗng, gồm cả số 0 cuối cùng.\n\nCách vào/ra chuẩn, ví dụ và lời giải do trang này tự viết; các phạm vi được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n; dòng thứ hai chứa n thời hạn chờ. 1≤n≤100000, 1≤wait[i]≤100000.",
+    "output": "Xuất độ dài hàng đợi tại mỗi thời điểm, cách nhau bởi dấu cách; giá trị cuối là 0.",
+    "explanation": "Ba ví dụ cho kết quả 4 2 1 0, 3 2 1 0 và 4 1 0.",
+    "hints": [
+      "Chia các chỉ số vào các thùng theo thời hạn, và duy trì đầu hàng đợi bằng cờ còn sống và một con trỏ chỉ tiến về phía trước. Mỗi giây, loại yêu cầu vừa được phục vụ, rồi loại các yêu cầu còn sống trong thùng hết hạn ngay lúc đó."
+    ]
   }
 }

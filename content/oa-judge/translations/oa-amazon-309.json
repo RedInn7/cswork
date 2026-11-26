@@ -11,5 +11,35 @@
     "hints": [
       "dp[w][i] is the minimum total effort for splitting the first i activities into w weeks. Enumerate the start j of the last week and transition with dp[w−1][j]+max(cost[j:i]). Maintain the range maximum while enumerating j leftward, and roll over the week layers."
     ]
+  },
+  "ja": {
+    "title": "アクティビティを順序通りに分割したときの週ごとの最大値の合計の最小化",
+    "description": "すべてのアクティビティを元の順序のまま、空でない連続したグループにちょうど weeks 個に分割し、それぞれを別々の週に割り当てます。1週間の労力は、そのグループ内のアクティビティの労力の最大値です。すべての週の労力の合計の最小値を求めてください。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイト独自と明記した範囲は、出典の元の制約ではありません。",
+    "input": "1行目に n weeks、2行目に労力の配列が与えられます。元の制約は 1≤n≤300、1≤weeks≤n、1≤cost[i]≤100000 です。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "答えは 9500、6、5 です。週の数は指定どおりちょうどでなければならず、空の週は作れません。また、アクティビティの順序を入れ替えることもできません。",
+    "hints": [
+      "dp[w][i] を、最初の i 個のアクティビティを w 週に分割する場合の労力合計の最小値とします。最後の週の開始位置 j を列挙し、dp[w−1][j]+max(cost[j:i]) で遷移します。j を左へ動かしながら区間の最大値を保持し、週の層はローリングして使います。"
+    ]
+  },
+  "ko": {
+    "title": "활동을 순서대로 나눌 때 주간 최댓값 합의 최솟값",
+    "description": "모든 활동을 원래 순서를 유지한 채 정확히 weeks개의 비어 있지 않은 연속 그룹으로 나누고, 각 그룹을 각각 한 주에 배정합니다. 한 주의 노력은 그 그룹에 속한 활동 노력의 최댓값입니다. 모든 주의 노력 합의 최솟값을 구하세요.\n\n표준 입출력, 예제, 해설은 이 사이트에서 독자적으로 작성했습니다. 이 사이트가 직접 정했다고 표시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n weeks가, 둘째 줄에 노력 배열이 주어집니다. 원문의 범위는 1≤n≤300, 1≤weeks≤n, 1≤cost[i]≤100000입니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "정답은 각각 9500, 6, 5입니다. 주의 수는 주어진 값과 정확히 같아야 하며, 비어 있는 주는 없고 활동의 순서를 바꿀 수 없습니다.",
+    "hints": [
+      "dp[w][i]는 처음 i개의 활동을 w주로 나누었을 때의 최소 노력 합입니다. 마지막 주의 시작 j를 열거하고 dp[w−1][j]+max(cost[j:i])로 전이합니다. j를 왼쪽으로 열거하면서 구간 최댓값을 유지하고, 주 단위 층은 롤링합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tổng giá trị lớn nhất mỗi tuần nhỏ nhất khi chia các hoạt động theo thứ tự",
+    "description": "Chia toàn bộ các hoạt động, giữ nguyên thứ tự ban đầu, thành đúng weeks nhóm liên tiếp không rỗng, mỗi nhóm được lên lịch trong một tuần riêng; công sức của một tuần bằng công sức lớn nhất trong các hoạt động của nhóm đó. Hãy tìm tổng công sức nhỏ nhất qua tất cả các tuần.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n weeks, dòng thứ hai chứa mảng công sức. Cận gốc là 1≤n≤300, 1≤weeks≤n, 1≤cost[i]≤100000.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 9500, 6 và 5. Số tuần phải đúng bằng giá trị đã cho; không tuần nào được rỗng, và không được sắp xếp lại các hoạt động.",
+    "hints": [
+      "dp[w][i] là tổng công sức tối thiểu khi chia i hoạt động đầu tiên thành w tuần. Duyệt vị trí bắt đầu j của tuần cuối và chuyển trạng thái bằng dp[w−1][j]+max(cost[j:i]). Duy trì giá trị lớn nhất của đoạn khi duyệt j sang trái, và cuốn chiếu các lớp theo tuần."
+    ]
   }
 }

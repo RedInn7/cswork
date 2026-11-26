@@ -11,5 +11,35 @@
     "hints": [
       "Precompute the frequencies of the 26 letters, enumerate pairs of different strings, and update the maximum length difference whenever the common multiplicity is within the limit."
     ]
+  },
+  "ja": {
+    "title": "共通文字数に制限がある場合の情報利得の最大化",
+    "description": "n 個の英小文字の文字列から、添字の異なる 2 つを選びます。2 つの共通特徴数とは、多重度を考慮した共通文字の個数、すなわち各文字について出現回数の小さい方を足し合わせたものです。たとえば aa と aaa では 2 になります。共通特徴数が ≤K であるペアが有効で、2 つの文字列の長さの差の絶対値を最大化します。元の問題文では有効なペアが存在しない場合の戻り値が定義されていませんでした。本サイトでは、その場合は −1 を出力し、有効なペアはあるが長さが等しい場合は 0 を出力するものとします。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n K、続く n 行に英小文字の文字列が与えられます。2≤n≤1000、1≤string length≤1000、1≤K≤1000 です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 1、−1、0 です。2 番目の例では、共通文字は異なる 1 文字ではなく 2 と数えます。",
+    "hints": [
+      "26 文字の出現頻度を前計算し、異なる文字列のペアを列挙して、共通の多重度が制限以内なら長さの差の最大値を更新します。"
+    ]
+  },
+  "ko": {
+    "title": "공통 문자 수가 제한된 최대 정보 이득",
+    "description": "n개의 소문자 문자열 중 서로 다른 두 인덱스를 고릅니다. 두 문자열의 공통 특징 수는 중복을 포함한 공통 문자 수, 즉 각 알파벳에 대해 두 빈도 중 작은 값의 합입니다. 예를 들어 aa와 aaa는 2입니다. 공통 특징 수가 ≤K이면 유효한 쌍이며, 유효한 쌍 중 두 문자열 길이의 차이의 절댓값을 최대화하세요. 원문에는 유효한 쌍이 없을 때의 반환값이 정의되어 있지 않았으며, 본 사이트에서는 그 경우 −1을 출력하고, 유효한 쌍이 있지만 길이가 같으면 0을 출력하도록 추가했습니다.\n\n표준 입출력, 예제, 해설은 본 사이트에서 독자적으로 작성했으며, 본 사이트에서 정했다고 명시한 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "첫 번째 줄에 n K, 이어서 n개의 줄에 소문자 문자열이 주어집니다. 2≤n≤1000, 1≤문자열 길이≤1000, 1≤K≤1000.",
+    "output": "정답을 나타내는 정수 하나를 출력합니다.",
+    "explanation": "정답은 각각 1, −1, 0입니다. 두 번째 예제에서 공통 문자는 서로 다른 문자 1개가 아니라 2로 셉니다.",
+    "hints": [
+      "26개 알파벳의 빈도를 미리 계산하고, 서로 다른 문자열 쌍을 열거하면서 공통 중복 수가 제한 이내일 때마다 최대 길이 차이를 갱신합니다."
+    ]
+  },
+  "vi": {
+    "title": "Lượng thông tin thu được lớn nhất với số ký tự chung bị giới hạn",
+    "description": "Chọn hai chỉ số khác nhau trong n xâu chữ thường. Số đặc trưng chung của chúng là số ký tự chung tính cả bội, tức tổng theo từng chữ cái của tần suất nhỏ hơn; với aa và aaa là 2. Một cặp hợp lệ khi số đặc trưng chung của nó ≤K; hãy cực đại hóa giá trị tuyệt đối của hiệu độ dài hai xâu. Đề gốc không định nghĩa giá trị trả về khi không có cặp hợp lệ; trang này bổ sung rằng in −1 trong trường hợp đó, và in 0 khi có cặp hợp lệ nhưng độ dài bằng nhau.\n\nĐịnh dạng nhập/xuất chuẩn, ví dụ và bài giải do trang này tự viết độc lập; các khoảng giá trị được ghi rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n K, tiếp theo là n dòng xâu chữ thường. 2≤n≤1000, 1≤string length≤1000, 1≤K≤1000.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 1, −1 và 0; ở ví dụ thứ hai, các ký tự chung được tính là 2, không phải 1 chữ cái phân biệt.",
+    "hints": [
+      "Tính trước tần suất của 26 chữ cái, duyệt các cặp xâu khác nhau, và cập nhật hiệu độ dài lớn nhất mỗi khi số lần xuất hiện chung nằm trong giới hạn."
+    ]
   }
 }

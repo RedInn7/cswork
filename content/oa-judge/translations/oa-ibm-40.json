@@ -11,5 +11,35 @@
     "hints": [
       "Handle the cases where a run limit is 0 first. Otherwise, if the A's exceed the capacity of the countB+1 slots provided by the B's, use only as many A's as the slots can hold; handle too many B's symmetrically; if neither is in excess, use them all."
     ]
+  },
+  "ja": {
+    "title": "連続数が制限された最長の AB 文字列",
+    "description": "A を高々 countA 個、B を高々 countB 個使い、A の連続は高々 maxA 個、B の連続は高々 maxB 個という条件で、作れる文字列の最大長を求めてください。すべての文字を使う必要はありません。ある文字の最大連続長が 0 であれば、その文字は使えません。\n\n標準的な入出力形式と例は本サイトが整備したものです。本サイトのものと明記されている範囲は、出典の元の制約ではありません。",
+    "input": "1 行に countA countB maxA maxB が与えられます。4 つとも 0..10^6 の整数です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例の答えはそれぞれ 5、2、0 です。1 つ目の例では AABAA を作れます。",
+    "hints": [
+      "まず連続長の制限が 0 の場合を処理します。そうでなければ、A が B の作る countB+1 個の枠に収まる量を超えているなら、枠に入る分だけ A を使います。B が多すぎる場合も対称に処理し、どちらも超えていなければすべて使います。"
+    ]
+  },
+  "ko": {
+    "title": "연속 길이가 제한된 가장 긴 AB 문자열",
+    "description": "A를 최대 countA개, B를 최대 countB개 사용하고, 연속된 A는 최대 maxA개, 연속된 B는 최대 maxB개까지만 허용될 때, 만들 수 있는 문자열의 최대 길이를 구하세요. 모든 문자를 사용할 필요는 없으며, 어떤 문자의 최대 연속 길이가 0이면 그 문자는 사용할 수 없습니다.\n\n표준 입출력 형식과 예제는 이 사이트에서 정리한 것이며, 이 사이트의 기준이라고 명시된 범위는 원문의 제약 조건이 아닙니다.",
+    "input": "한 줄에 countA countB maxA maxB가 주어지며, 네 값 모두 0..10^6 범위의 정수입니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "예제의 답은 각각 5, 2, 0입니다. 첫 번째 예제에서는 AABAA를 만들 수 있습니다.",
+    "hints": [
+      "연속 길이 제한이 0인 경우를 먼저 처리합니다. 그렇지 않을 때 A의 개수가 B가 만드는 countB+1개의 칸이 담을 수 있는 양을 넘으면 칸이 담을 수 있는 만큼만 A를 쓰고, B가 넘치는 경우도 대칭적으로 처리하며, 어느 쪽도 넘치지 않으면 모두 사용합니다."
+    ]
+  },
+  "vi": {
+    "title": "Xâu AB dài nhất với giới hạn độ dài dãy liên tiếp",
+    "description": "Dùng nhiều nhất countA chữ A và countB chữ B, với tối đa maxA chữ A liên tiếp và tối đa maxB chữ B liên tiếp, tìm độ dài lớn nhất của xâu có thể xây dựng. Không cần dùng hết các ký tự; giới hạn dãy liên tiếp bằng 0 với một chữ cái nghĩa là không được dùng chữ cái đó.\n\nĐịnh dạng đầu vào/đầu ra chuẩn và các ví dụ do trang này biên soạn; những khoảng giá trị được đánh dấu là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Một dòng chứa countA countB maxA maxB, cả bốn đều là số nguyên trong khoảng 0..10^6.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Các ví dụ lần lượt cho kết quả 5, 2 và 0. Trong ví dụ đầu có thể xây dựng AABAA.",
+    "hints": [
+      "Xử lý trước các trường hợp giới hạn bằng 0. Ngược lại, nếu số chữ A vượt quá sức chứa của countB+1 ô do các chữ B tạo ra thì chỉ dùng số chữ A mà các ô chứa được; xử lý đối xứng khi chữ B quá nhiều; nếu không bên nào dư thì dùng hết."
+    ]
   }
 }

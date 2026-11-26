@@ -11,5 +11,35 @@
     "hints": [
       "Use table to track the number of coins on the table, and answer to track the number already won. On d, keep table non-negative; on w, settle first, then reset table to zero."
     ]
+  },
+  "ja": {
+    "title": "コインゲームの累計報酬",
+    "description": "テーブルは最初は空です。イベントを順に処理します。i はコインを 1 枚テーブルに置き、d はコインを 1 枚取り除きます (テーブルが空なら何もしません)。w はテーブルの上のコインをすべて獲得してテーブルを空にします。すべての w イベントで獲得したコインの総数を求めてください。最後にテーブルに残ったコインは報酬に数えません。\n\nこの問題は CSWork がまとめた標準入出力形式を使っています。アルゴリズムの規則は出典の問題に対応しており、例とテストデータは CSWork が作成しました。",
+    "input": "イベント文字列が 1 行で与えられます。長さは 1 から 200 で、i、d、w だけからなります。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "例 1 では、連続する d イベントがあってもテーブルのコインの数は負になりません。最後の 2 つの i イベントで 2 枚のコインを置き、w が 2 枚のコインを獲得します。",
+    "hints": [
+      "table でテーブルの上のコインの数を、answer で獲得済みの数を管理します。d では table を非負に保ち、w では先に精算してから table を 0 に戻します。"
+    ]
+  },
+  "ko": {
+    "title": "동전 게임의 누적 보상",
+    "description": "테이블은 처음에 비어 있습니다. 이벤트를 순서대로 처리합니다. i는 테이블에 동전 하나를 올리고, d는 동전 하나를 치우되 테이블이 비어 있으면 아무 일도 하지 않으며, w는 테이블 위의 모든 동전을 얻고 테이블을 비웁니다. 모든 w 이벤트에서 얻은 동전의 총수를 구하세요. 마지막에 테이블에 남은 동전은 보상으로 세지 않습니다.\n\n이 문제는 CSWork에서 정리한 표준 입출력 형식을 사용합니다. 알고리즘 규칙은 원문 문제와 같으며, 예제와 테스트 데이터는 CSWork에서 작성했습니다.",
+    "input": "이벤트 문자열이 담긴 한 줄이 주어집니다. 길이는 1 이상 200 이하이며 i, d, w로만 이루어집니다.",
+    "output": "정답인 정수 하나를 출력합니다.",
+    "explanation": "예제 1에서는 연속된 d 이벤트가 있어도 테이블 위 동전 수가 음수가 되지 않으며, 마지막 두 i 이벤트가 동전 두 개를 올리고 w가 동전 2개를 얻습니다.",
+    "hints": [
+      "table로 테이블 위 동전 수를, answer로 이미 얻은 수를 추적합니다. d에서는 table이 음수가 되지 않게 하고, w에서는 먼저 정산한 뒤 table을 0으로 되돌립니다."
+    ]
+  },
+  "vi": {
+    "title": "Phần thưởng tích lũy trong trò chơi đồng xu",
+    "description": "Ban đầu bàn trống. Xử lý các sự kiện theo thứ tự: i đặt một đồng xu lên bàn; d lấy đi một đồng xu, không làm gì nếu bàn trống; w thắng toàn bộ đồng xu trên bàn và dọn sạch bàn. Tìm tổng số đồng xu thắng được qua tất cả các sự kiện w. Các đồng xu còn lại trên bàn ở cuối không tính là phần thưởng.\n\nBài toán này dùng định dạng vào/ra chuẩn do CSWork biên soạn; quy tắc thuật toán tương ứng với bài toán nguồn, còn ví dụ và dữ liệu kiểm thử do CSWork viết.",
+    "input": "Một dòng duy nhất chứa xâu sự kiện, độ dài từ 1 đến 200, chỉ gồm i, d, w.",
+    "output": "In ra một số nguyên là đáp án.",
+    "explanation": "Trong ví dụ 1, các sự kiện d liên tiếp không bao giờ làm số đồng xu trên bàn âm; hai sự kiện i cuối đặt xuống hai đồng xu, và w thắng 2 đồng xu.",
+    "hints": [
+      "Dùng table để theo dõi số đồng xu trên bàn, và answer để theo dõi số đã thắng. Với d, giữ table không âm; với w, tính vào đáp án trước, rồi đặt table về không."
+    ]
   }
 }

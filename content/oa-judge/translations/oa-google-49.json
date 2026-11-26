@@ -12,5 +12,38 @@
       "Fix a candidate day and decide whether it is achievable.",
       "An unbloomed rose cuts a contiguous run; a run of length L can make at most floor(L/k) bouquets."
     ]
+  },
+  "ja": {
+    "title": "最も早く花束が作れる日",
+    "description": "配列 roses が与えられます。roses[i] は i 番目のバラが咲く日です。さらに k（1 つの花束に必要な隣り合うバラの数）と n（必要な花束の数）が与えられます。n 個の花束を作れる最も早い日を求めてください。各バラは高々 1 つの花束にしか使えません。バラの総数が n*k に満たない場合は -1 を返します。\n\nこのサイトの入力範囲: 1≤N≤200000、1≤k,n≤200000、0≤roses[i]≤1000000000。OAMaster は制約を示していません。上記の数値範囲は、このサイトが対応する範囲です。\n\n出典: https://oamaster.com/docs/companies/google#49-min-days-to-bloom（スナップショットの内容フィンガープリント 975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f で固定）。同じ問題の説明と元の例: https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/。",
+    "input": "1 行目に N、k、n、2 行目に N 個の整数 roses[i] が与えられます。",
+    "output": "最も早く咲く日を出力してください。必要な数の花束を作れない場合は -1 を出力してください。",
+    "explanation": "答えの日 d に対して二分探索します。咲いたバラの連続区間を線形に走査し、k 本たまるたびに花束が 1 つ完成するので、区間の長さをリセットします。重ならない花束をいくつ作れるかを数えます。",
+    "hints": [
+      "候補の日を固定して、その日に達成可能かどうかを判定します。",
+      "まだ咲いていないバラが連続区間を分断します。長さ L の区間からは、高々 floor(L/k) 個の花束が作れます。"
+    ]
+  },
+  "ko": {
+    "title": "가장 이른 개화일",
+    "description": "배열 roses가 주어집니다. roses[i]는 i번째 장미가 피는 날이며, 부케 하나에 필요한 인접한 장미의 수 k와 필요한 부케의 수 n이 함께 주어집니다. n개의 부케를 만들 수 있는 가장 이른 날을 구하세요. 각 장미는 최대 하나의 부케에만 사용할 수 있습니다. 전체 장미 수가 n*k보다 적으면 -1을 반환합니다.\n\n이 사이트의 입력 범위: 1≤N≤200000, 1≤k,n≤200000, 0≤roses[i]≤1000000000. OAMaster는 제약 조건을 제시하지 않으며, 위의 수치 범위는 이 사이트가 지원하는 범위입니다.\n\n원본 출처: https://oamaster.com/docs/companies/google#49-min-days-to-bloom (고정된 스냅샷 내용 지문 975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f). 같은 문제의 설명과 원본 예제: https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/.",
+    "input": "첫째 줄에 N, k, n이 주어지고, 둘째 줄에 N개의 정수 roses[i]가 주어집니다.",
+    "output": "가장 이른 개화일을 출력합니다. 필요한 수의 부케를 만들 수 없으면 -1을 출력합니다.",
+    "explanation": "답이 되는 날 d에 대해 이분 탐색을 합니다. 핀 장미로 이어진 구간을 선형으로 스캔하며, k송이가 모일 때마다 부케 하나를 완성하고 구간 길이를 초기화합니다. 겹치지 않게 만들 수 있는 부케의 수를 셉니다.",
+    "hints": [
+      "후보 날짜를 고정하고 그날 가능한지 판단합니다.",
+      "피지 않은 장미는 연속 구간을 끊습니다. 길이 L인 구간에서는 최대 floor(L/k)개의 부케를 만들 수 있습니다."
+    ]
+  },
+  "vi": {
+    "title": "Ngày hoa nở sớm nhất",
+    "description": "Cho mảng roses, trong đó roses[i] là ngày bông hồng thứ i nở, cùng k (số bông hồng liền kề cần cho mỗi bó) và n (số bó cần làm), hãy tìm ngày sớm nhất có thể làm được n bó hoa. Mỗi bông hồng được dùng trong tối đa một bó. Nếu tổng số bông ít hơn n*k thì trả về -1.\n\nPhạm vi đầu vào của trang này: 1≤N≤200000, 1≤k,n≤200000, 0≤roses[i]≤1000000000. OAMaster không cho ràng buộc nào; các phạm vi số trên là các phạm vi mà trang này hỗ trợ.\n\nNguồn gốc: https://oamaster.com/docs/companies/google#49-min-days-to-bloom (dấu vân tay nội dung snapshot cố định 975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f). Mô tả và các ví dụ gốc của cùng bài toán: https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/.",
+    "input": "Dòng đầu chứa N, k, n; dòng thứ hai chứa N số nguyên roses[i].",
+    "output": "In ra ngày hoa nở sớm nhất; nếu không thể làm đủ số bó yêu cầu thì in -1.",
+    "explanation": "Tìm kiếm nhị phân theo ngày đáp án d. Quét tuyến tính các đoạn liên tiếp gồm các bông hồng đã nở; mỗi khi tích lũy được k bông thì hoàn thành một bó và độ dài đoạn được đặt lại. Đếm số bó không chồng lấn có thể làm được.",
+    "hints": [
+      "Cố định một ngày ứng viên và quyết định xem nó có khả thi không.",
+      "Một bông hồng chưa nở cắt đứt một đoạn liên tiếp; một đoạn có độ dài L làm được tối đa floor(L/k) bó."
+    ]
   }
 }

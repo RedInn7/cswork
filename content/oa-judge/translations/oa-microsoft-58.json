@@ -11,5 +11,35 @@
     "hints": [
       "Traverse the undirected tree from 0. If a parent–child edge originally points from parent to child, it must be reversed; if it points from child to parent, keep it. Count the edges of the first kind."
     ]
+  },
+  "ja": {
+    "title": "すべての都市が首都に到達できるようにする道路の最小反転数",
+    "description": "元の無向グラフは木で、各辺は現在一方通行です。辺の向きをいくつか反転して、すべての都市が首都である都市 0 に到達できるようにします。反転の最小回数を求めてください。\n\n本サイトでは標準入出力の形式を使い、元の問題で与えられていない範囲は明示します。",
+    "input": "1 行目に N（2..50000）が与えられ、続く N−1 行は a b で、それぞれ a→b を表します。0≤a,b<N、a≠b で、元のグラフは木であることが保証されます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1：0→1、1→3、4→5 を反転する必要があり、合計 3 回です。例 2：1→2 と 3→4 を反転する必要があり、合計 2 回です。例 3：すべての辺がすでに 0 に向かっているので、反転は 0 回です。",
+    "hints": [
+      "0 から無向の木をたどります。親から子へ向かう辺は反転が必要で、子から親へ向かう辺はそのままにします。前者の辺の数を数えます。"
+    ]
+  },
+  "ko": {
+    "title": "모든 도시가 수도에 도달하도록 도로 방향을 뒤집는 최소 횟수",
+    "description": "기저 무방향 그래프는 트리이며, 각 간선은 현재 일방통행입니다. 간선의 방향을 뒤집어 모든 도시가 수도(0번 도시)에 도달할 수 있게 만들려고 합니다. 뒤집어야 하는 최소 횟수를 구하세요.\n\n이 사이트는 표준 입출력 방식을 사용하며, 원문에 주어지지 않은 범위는 명시적으로 밝혀 둡니다.",
+    "input": "첫째 줄에 N(2..50000)이 주어지고, 이어서 N−1개의 줄에 a b가 주어집니다. 각 줄은 a→b를 뜻하며 0≤a,b<N, a≠b이고, 기저 그래프는 트리임이 보장됩니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "예제 1: 0→1, 1→3, 4→5를 뒤집어야 하므로 총 3입니다. 예제 2: 1→2와 3→4를 뒤집어야 하므로 총 2입니다. 예제 3: 모든 간선이 이미 0을 향하므로 뒤집을 필요가 없어 0입니다.",
+    "hints": [
+      "0에서 시작해 무방향 트리를 순회합니다. 부모–자식 간선이 원래 부모에서 자식으로 향하면 뒤집어야 하고, 자식에서 부모로 향하면 그대로 둡니다. 첫 번째 종류의 간선 수를 세면 됩니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần đảo chiều đường tối thiểu để mọi thành phố đến được thủ đô",
+    "description": "Đồ thị vô hướng nền là một cây, và mỗi cạnh hiện là một chiều. Có thể đảo chiều các cạnh để mọi thành phố đều đến được thủ đô, tức thành phố 0. Tìm số lần đảo chiều tối thiểu.\n\nTrang này dùng giao thức đầu vào/đầu ra chuẩn; những khoảng giá trị mà đề gốc không nêu được ghi rõ ràng.",
+    "input": "Dòng đầu tiên chứa N (2..50000), tiếp theo là N−1 dòng a b, mỗi dòng nghĩa là a→b; 0≤a,b<N, a≠b, và đảm bảo đồ thị nền là một cây.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Ví dụ 1: cần đảo chiều 0→1, 1→3 và 4→5, tổng cộng 3. Ví dụ 2: cần đảo chiều 1→2 và 3→4, tổng cộng 2. Ví dụ 3: mọi cạnh đã hướng về 0, nên 0 lần đảo chiều.",
+    "hints": [
+      "Duyệt cây vô hướng từ 0. Nếu một cạnh cha–con ban đầu hướng từ cha sang con thì phải đảo chiều; nếu hướng từ con sang cha thì giữ nguyên. Đếm các cạnh thuộc loại đầu."
+    ]
   }
 }

@@ -11,5 +11,35 @@
     "hints": [
       "Use a tree knapsack dp[u][k] that keeps the open component containing u at size k, with value equal to the maximum product of the other, already closed components. For each child edge, cutting multiplies by the child subtree's best closed value, while keeping the edge convolves the two component sizes. When closing at the root, exclude k=n."
     ]
+  },
+  "ja": {
+    "title": "木の辺を少なくとも 1 本切ったときの連結成分サイズの積の最大値",
+    "description": "無向の木が与えられます。辺を少なくとも 1 本、好きなだけ削除して、複数の連結成分に分けます。各成分のサイズはその頂点数です。すべての成分サイズの積の最大値を求めてください。頂点に重みはなく、答えは剰余を取らず、まったく切らないことは許されません。このページの元の文には「1 本以上」と明記されており、これと矛盾する別の問題ページの例でこのページの規則を置き換えてはいけません。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n、続く n−1 行にそれぞれ u v が与えられます。頂点には 1..n の番号が付けられ、木になることが保証されています。元の問題文には数値の範囲がありませんでしたが、本サイトでは 2≤n≤2000 とし、出力は 64 ビットを超えることもある正確な整数です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 6、1、5 です。スター型の木を、整数の分割のように 3 頂点の成分 2 つへ自由に分けることはできません。2 頂点の木は必ず切る必要があり、答えは 1 になります。",
+    "hints": [
+      "木のナップサック dp[u][k] を使い、u を含む未確定の成分のサイズが k のとき、すでに確定した他の成分の積の最大値を値として保持します。子への辺ごとに、切れば子の部分木の最良の確定値を掛け、残せば 2 つの成分のサイズを畳み込みます。根で確定させるときは k=n を除外します。"
+    ]
+  },
+  "ko": {
+    "title": "트리 간선을 하나 이상 끊을 때 컴포넌트 크기 곱의 최댓값",
+    "description": "무방향 트리가 주어집니다. 간선을 최소 하나 이상, 원하는 만큼 삭제해 여러 연결 컴포넌트를 만듭니다. 각 컴포넌트의 크기는 노드의 개수이며, 모든 컴포넌트 크기의 곱의 최댓값을 구하세요. 노드 가중치는 없고, 답은 어떤 수로도 나머지를 취하지 않으며, 전혀 끊지 않는 것은 허용되지 않습니다. 이 페이지의 원문에는 하나 이상이라고 명시되어 있으며, 상충하는 다른 문제 페이지의 예제로 이 페이지의 규칙을 대체해서는 안 됩니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n이 주어지고, 이어서 n−1개의 줄에 각각 u v가 주어집니다. 노드는 1..n으로 번호가 매겨져 있으며 트리임이 보장됩니다. 원문에는 수치 범위가 없었으며, 본 사이트는 2≤n≤2000을 사용하고, 출력은 64비트를 넘을 수 있는 정확한 정수입니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 6, 1, 5입니다. 스타 그래프는 정수 분할처럼 임의로 3개 노드 컴포넌트 두 개로 나눌 수 없고, 노드가 두 개인 트리는 반드시 끊어야 하므로 답이 1입니다.",
+    "hints": [
+      "트리 배낭 dp[u][k]로, u를 포함하는 열린 컴포넌트의 크기가 k일 때 이미 닫힌 나머지 컴포넌트들의 곱의 최댓값을 값으로 둡니다. 자식 간선마다 끊으면 자식 서브트리의 최적 닫힌 값을 곱하고, 유지하면 두 컴포넌트의 크기를 합성곱으로 합칩니다. 루트에서 닫을 때는 k=n을 제외합니다."
+    ]
+  },
+  "vi": {
+    "title": "Tích kích thước các thành phần lớn nhất sau khi cắt ít nhất một cạnh của cây",
+    "description": "Cho một cây vô hướng, xóa ít nhất một cạnh, và nhiều tùy ý, để tạo thành nhiều thành phần liên thông. Kích thước mỗi thành phần là số nút của nó; hãy tìm tích lớn nhất của kích thước mọi thành phần. Không có trọng số nút, đáp án không lấy modulo, và không được phép không cắt gì cả. Nguyên văn trang này nói rõ là một hoặc nhiều, và các ví dụ từ một trang đề khác mâu thuẫn không được thay thế quy tắc của trang này.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n, tiếp theo là n−1 dòng, mỗi dòng chứa u v; các nút được đánh số 1..n và đảm bảo tạo thành một cây. Đề gốc không nêu giới hạn số; trang này dùng 2≤n≤2000, và đầu ra là một số nguyên chính xác có thể vượt quá 64 bit.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án là 6, 1 và 5. Một cây hình sao không thể chia tùy ý thành hai thành phần 3 nút như phân hoạch số nguyên; một cây hai nút phải bị cắt, cho kết quả 1.",
+    "hints": [
+      "Dùng knapsack trên cây dp[u][k] giữ thành phần đang mở chứa u có kích thước k, với giá trị bằng tích lớn nhất của các thành phần khác đã đóng. Với mỗi cạnh tới con, cắt thì nhân với giá trị đóng tốt nhất của cây con, còn giữ cạnh thì tích chập hai kích thước thành phần. Khi đóng ở gốc, loại trừ k=n."
+    ]
   }
 }

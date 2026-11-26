@@ -11,5 +11,35 @@
     "hints": [
       "Record the removal time of each original index. For a given number of removals t, filter out the removed positions and compute the LIS length with patience sorting. Feasibility is monotonically non-increasing in t, so check t=0 first, then binary search for the largest feasible t."
     ]
+  },
+  "ja": {
+    "title": "指定された順序で取り除いても増加部分列を保てる最大の除去数",
+    "description": "タイルのサイズは互いに異なり、removalOrder は取り除く順に元の 0 始まりのインデックスを与えます。取り除けるのはその順序の接頭辞だけで、残ったタイルは相対的な順序を保ちます。残ったタイルの最長の狭義単調増加部分列の長さが minOrder 以上になるような、除去数の最大値を求めてください。元の問題文は、最初から解がない場合の出力を規定していません。本サイトでは −1 と定め、そのような入力も残します。minOrder=0 のときは、すべてを取り除けます。\n\n標準入出力、例、解説は本サイトが独自に作成したものです。本サイトのものと明記された範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n と minOrder、2 行目に tile、3 行目に removalOrder が与えられます。元の問題文には値の範囲がありませんでしたが、本サイトでは 1≤n≤200000、1≤tile[i]≤10^9（すべて異なる）、0≤minOrder≤n とし、除去順は 0..n−1 の順列であると定めます。最初の LIS が minOrder より短い入力も有効で、その答えは −1 です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 2、−1、1 です。1 つ目の例では、元のインデックス 1 と 2 を取り除いた後も、残った 1,4 は長さ 2 を保ちます。0 も取り除くと、1 つしか残りません。2 つ目の例では、最初の時点で要件を満たしていないので、除去数 0 も実行可能とは見なしません。",
+    "hints": [
+      "各元のインデックスの除去される時刻を記録します。除去数 t を固定したら、除去された位置を除外し、patience sorting で LIS の長さを計算します。実行可能性は t について単調非増加なので、まず t=0 を確認し、その後、実行可能な最大の t を二分探索します。"
+    ]
+  },
+  "ko": {
+    "title": "주어진 순서로 제거하면서 증가 부분 수열을 유지할 수 있는 최대 제거 횟수",
+    "description": "타일 크기는 모두 서로 다르며, removalOrder는 제거되는 순서대로 원래 0-based 인덱스를 나열한 것입니다. 이 순서의 접두사만 제거할 수 있고, 남은 타일은 상대적인 순서를 유지합니다. 남은 타일의 최장 증가 부분 수열(엄격히 증가)의 길이가 minOrder 이상이 되도록 하면서 제거할 수 있는 최대 횟수를 구하세요. 원문은 처음부터 해가 없는 경우의 출력을 정하지 않았으며, 본 사이트는 이를 −1로 정의하고 그런 입력도 유지합니다. minOrder=0이면 모두 제거할 수 있습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n minOrder가 주어지고, 둘째 줄에 tile, 셋째 줄에 removalOrder가 주어집니다. 원문에는 값의 범위가 없으며, 본 사이트에서는 1≤n≤200000, 1≤tile[i]≤10^9이고 모든 값은 서로 다르며, 0≤minOrder≤n입니다. 본 사이트는 제거 순서가 0..n−1의 순열이라고 명시합니다. 처음 LIS가 minOrder보다 짧은 입력도 유효하며 답은 −1입니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 각각 2, −1, 1입니다. 첫 번째 예제에서는 원래 인덱스 1과 2를 제거하면 남은 1,4의 길이가 여전히 2이고, 0까지 제거하면 하나만 남습니다. 두 번째 예제에서는 처음부터 요구 조건을 만족하지 못하므로 제거 0회도 가능한 것으로 취급하지 않습니다.",
+    "hints": [
+      "각 원래 인덱스의 제거 시점을 기록합니다. 제거 횟수 t가 주어지면 제거된 위치를 걸러 내고 patience sorting으로 LIS 길이를 계산합니다. 가능 여부는 t에 대해 단조 비증가이므로 먼저 t=0을 확인한 뒤 이분 탐색으로 가능한 가장 큰 t를 찾습니다."
+    ]
+  },
+  "vi": {
+    "title": "Số lần xóa nhiều nhất theo thứ tự cho trước mà vẫn giữ được dãy con tăng",
+    "description": "Kích thước các viên gạch đều khác nhau, và removalOrder cho các chỉ số gốc (tính từ 0) theo thứ tự bị xóa. Bạn chỉ được xóa một tiền tố của thứ tự đó, và các viên gạch còn lại giữ nguyên thứ tự tương đối. Tìm số lần xóa nhiều nhất sao cho dãy con tăng ngặt dài nhất của các viên gạch còn lại có độ dài ít nhất là minOrder. Đề gốc không nêu đầu ra khi ngay từ đầu đã không có lời giải; trang này quy định là −1 và vẫn giữ các đầu vào như vậy. Khi minOrder=0, có thể xóa hết mọi thứ.\n\nĐịnh dạng vào/ra chuẩn, các ví dụ và lời giải được trang này tự biên soạn độc lập; những khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề nguồn.",
+    "input": "Dòng đầu chứa n và minOrder, dòng thứ hai chứa tile, và dòng thứ ba chứa removalOrder. Đề gốc không nêu giới hạn giá trị; trang này dùng 1≤n≤200000, 1≤tile[i]≤10^9 với mọi giá trị đôi một khác nhau, và 0≤minOrder≤n; trang này quy định thứ tự xóa là một hoán vị của 0..n−1. Các đầu vào có LIS ban đầu ngắn hơn minOrder vẫn hợp lệ, và đáp án của chúng là −1.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, −1 và 1. Ở ví dụ thứ nhất, sau khi xóa các chỉ số gốc 1 và 2, phần còn lại 1,4 vẫn có độ dài 2; xóa thêm 0 thì chỉ còn một phần tử. Ở ví dụ thứ hai, yêu cầu đã không thỏa ngay từ đầu, nên 0 lần xóa không được coi là khả thi.",
+    "hints": [
+      "Ghi lại thời điểm xóa của mỗi chỉ số gốc. Với một số lần xóa t cho trước, lọc bỏ các vị trí đã bị xóa và tính độ dài LIS bằng patience sorting. Tính khả thi không tăng đơn điệu theo t, nên kiểm tra t=0 trước, sau đó tìm kiếm nhị phân t lớn nhất khả thi."
+    ]
   }
 }

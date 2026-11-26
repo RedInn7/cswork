@@ -11,5 +11,35 @@
     "hints": [
       "During DFS, maintain the XOR mask of the letters on the root path, along with the frequencies of the parent-prefix masks of every ancestor on the current path. Count the cases where the current prefix XOR a candidate mask is 0 or a single bit, checking 27 masks in total; remove the current mask when backtracking."
     ]
+  },
+  "ja": {
+    "title": "回文に並べ替えられる祖先へのパス",
+    "description": "木は 0 を根とします。各クエリのノード q について、q 自身を含む祖先 v のうち、q から v までのパス上のすべてのノードの文字を並べ替えて回文にできるものの個数を数えてください。回文への並べ替えが存在するのは、奇数回現れる文字が高々 1 種類のときです。\n\n本サイトでは標準入出力を明示しています。元の問題で与えられていない範囲は、本サイトの取り決めとして明記しています。",
+    "input": "1 行目に n m、2 行目に n 文字の英小文字からなる文字列、続く n−1 行に無向辺 u v、最後の行に m 個のクエリのノードが与えられます。1≤n,m≤100000 で、ノードの番号は 0..n−1 です。木は正しいものが保証されます。",
+    "output": "答えを整数 1 つで出力します。",
+    "explanation": "例 1: 問題文のとおりにすべての祖先パスを調べると 3 4 1 になります。例 2: 同じ文字だけのパスはどれも回文に並べ替えられます。ノード 2 の祖先は 3 つ、根は 1 つなので、出力は 3 1 です。例 3: ノード 1 自身の b は有効ですが、ba は回文に並べ替えられないので、出力は 1 です。",
+    "hints": [
+      "DFS の間、根からのパスの文字の XOR マスクを保持し、現在のパス上のすべての祖先について、親の接頭辞マスクの出現回数も保持します。現在の接頭辞との XOR が 0 または 1 ビットになる候補マスクの場合を、合計 27 個のマスクを調べて数えます。バックトラックのときに現在のマスクを取り除きます。"
+    ]
+  },
+  "ko": {
+    "title": "회문으로 재배열할 수 있는 조상 경로",
+    "description": "트리는 0번 노드를 루트로 합니다. 각 질의 노드 q에 대해, q에서 v까지의 경로에 있는 모든 노드의 글자를 회문으로 재배열할 수 있는 조상 v(q 자신 포함)의 개수를 세세요. 회문 재배열이 가능한 것은 홀수 번 나타나는 글자가 많아야 하나일 때와 정확히 같습니다.\n\n이 사이트의 표준 입출력은 명시적으로 정의되어 있으며, 원문 문제에서 주어지지 않은 범위는 이 사이트의 규약으로 표시합니다.",
+    "input": "첫째 줄에 n m이, 둘째 줄에 소문자 n개로 된 문자열이 주어지고, 이어서 무방향 간선 u v가 n−1줄, 마지막 줄에 m개의 질의 노드가 주어집니다. 1≤n,m≤100000이며 노드 번호는 0..n−1이고, 트리는 유효함이 보장됩니다.",
+    "output": "정수 하나, answer를 출력합니다.",
+    "explanation": "예제 1: 문제 설명대로 모든 조상 경로를 확인하면 3 4 1입니다. 예제 2: 같은 글자로만 된 경로는 항상 회문으로 재배열할 수 있습니다. 노드 2의 조상은 3개이고 루트는 1개이므로 3 1을 출력합니다. 예제 3: 노드 1 자신, 즉 b는 유효하지만 ba는 회문으로 재배열할 수 없으므로 1을 출력합니다.",
+    "hints": [
+      "DFS 중에 루트 경로의 글자 XOR 마스크를 유지하고, 현재 경로의 모든 조상의 부모 접두 마스크의 빈도를 함께 유지합니다. 현재 접두 XOR 후보 마스크가 0이거나 비트 하나인 경우를 세며 총 27개의 마스크를 확인하고, 되돌아올 때 현재 마스크를 제거합니다."
+    ]
+  },
+  "vi": {
+    "title": "Đường đi tổ tiên có thể sắp xếp lại thành xâu palindrome",
+    "description": "Cây có gốc là 0. Với mỗi nút truy vấn q, đếm các tổ tiên v của q (bao gồm cả q) sao cho các chữ cái của mọi nút trên đường đi từ q đến v có thể sắp xếp lại thành một palindrome. Một cách sắp xếp thành palindrome tồn tại khi và chỉ khi có nhiều nhất một chữ cái xuất hiện số lần lẻ.\n\nĐầu vào/đầu ra chuẩn của trang này được nêu rõ; những phạm vi mà bài gốc không cho đều được đánh dấu là quy ước của trang này.",
+    "input": "Dòng đầu chứa n m, dòng thứ hai chứa xâu gồm n chữ cái thường, tiếp theo là n−1 dòng cạnh vô hướng u v, và dòng cuối chứa m nút truy vấn. 1≤n,m≤100000, các nút được đánh số 0..n−1, và cây đảm bảo hợp lệ.",
+    "output": "In ra một số nguyên answer.",
+    "explanation": "Ví dụ 1: kiểm tra mọi đường đi tổ tiên theo đề bài cho kết quả 3 4 1. Ví dụ 2: mọi đường đi gồm các chữ cái giống nhau đều có thể sắp xếp thành palindrome; nút 2 có 3 tổ tiên và gốc có 1, nên đầu ra là 3 1. Ví dụ 3: bản thân nút 1, b, là hợp lệ, nhưng ba không thể sắp xếp thành palindrome, nên đầu ra là 1.",
+    "hints": [
+      "Trong khi DFS, duy trì mặt nạ XOR của các chữ cái trên đường từ gốc, cùng với tần suất của các mặt nạ tiền tố của nút cha của mọi tổ tiên trên đường hiện tại. Đếm các trường hợp tiền tố hiện tại XOR một mặt nạ ứng viên bằng 0 hoặc một bit duy nhất, kiểm tra tổng cộng 27 mặt nạ; xóa mặt nạ hiện tại khi quay lui."
+    ]
   }
 }

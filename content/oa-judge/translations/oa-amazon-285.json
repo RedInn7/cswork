@@ -11,5 +11,35 @@
     "hints": [
       "First merge the existing intersecting intervals into m separate components. Use two pointers to find the longest run of consecutive components l..r with L[r]−R[l]≤k; the answer is m−(r−l)."
     ]
+  },
+  "ja": {
+    "title": "長さ制限つき配送ゾーンを 1 つ追加した後の連結成分の最小数",
+    "description": "既存の閉区間の配送ゾーンがあり、互いに重なっていてもかまいません。閉区間 [a,b] をちょうど 1 つ追加してください。長さは b−a で定義され、0 でもよく、k を超えてはなりません。区間どうしが連結するのは共有する点があるときだけで、隣り合う整数は連結とは見なしません。追加後の連結成分数の最小値を求めてください。元の問題文には [2,2] と [3,4] は連結しないと明記されており、ここから連続区間の意味づけを復元しています。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n k、続く n 行にそれぞれ a[i] b[i] が与えられます。1≤n≤100000、1≤a[i]≤b[i]≤10^9、1≤k≤10^9 です。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えはそれぞれ 2、2、1 です。3 つ目の例では、1 つの [1,5] で 3 つの成分を一度につなげられます。一度に 2 つまでしかつなげられないわけではありません。",
+    "hints": [
+      "まず、既存の交わる区間を併合して m 個の独立した成分にします。しゃくとり法で、L[r]−R[l]≤k を満たす連続した成分 l..r の最長区間を求めます。答えは m−(r−l) です。"
+    ]
+  },
+  "ko": {
+    "title": "길이가 제한된 배송 구역 하나를 추가한 뒤의 최소 연결 요소 수",
+    "description": "서로 겹칠 수도 있는 닫힌 구간 형태의 배송 구역이 이미 여러 개 있습니다. 닫힌 구간 [a,b]를 정확히 하나 추가해야 하며, 길이는 b−a로 정의합니다. 길이는 0일 수 있고 k를 넘을 수 없습니다. 구간들은 점을 공유할 때만 연결되며, 인접한 정수는 연결된 것으로 보지 않습니다. 추가 후 연결 요소 수의 최솟값을 구하세요. 원문은 [2,2]와 [3,4]가 연결되지 않는다고 명시하고 있으며, 이로부터 연속 구간 의미론을 복원했습니다.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n k가 주어지고, 이어서 n개 줄에 각각 a[i] b[i]가 주어집니다. 1≤n≤100000, 1≤a[i]≤b[i]≤10^9, 1≤k≤10^9입니다.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 2, 2, 1입니다. 세 번째 예제에서는 구간 [1,5] 하나가 세 연결 요소를 한꺼번에 연결합니다. 한 번에 두 개씩만 연결할 수 있는 것이 아닙니다.",
+    "hints": [
+      "먼저 이미 교차하는 구간들을 합쳐 m개의 분리된 연결 요소로 만듭니다. 투 포인터로 L[r]−R[l]≤k를 만족하는 연속된 연결 요소 구간 l..r 중 가장 긴 것을 찾으면 답은 m−(r−l)입니다."
+    ]
+  },
+  "vi": {
+    "title": "Số thành phần liên thông tối thiểu sau khi thêm một vùng giao hàng có độ dài giới hạn",
+    "description": "Cho các vùng giao hàng là đoạn đóng, có thể chồng lên nhau. Bạn phải thêm đúng một đoạn đóng [a,b], độ dài được định nghĩa là b−a; độ dài có thể bằng 0 và không được vượt quá k. Các đoạn chỉ liên thông khi chúng có chung một điểm; hai số nguyên liền kề không được tính là liên thông. Tìm số thành phần liên thông tối thiểu sau khi thêm. Đề gốc nói rõ [2,2] và [3,4] không liên thông, và ngữ nghĩa đoạn liên tục được khôi phục từ đó.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n k, tiếp theo là n dòng, mỗi dòng chứa a[i] b[i]. 1≤n≤100000, 1≤a[i]≤b[i]≤10^9, 1≤k≤10^9.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 2, 2 và 1. Ở ví dụ thứ ba, một đoạn [1,5] duy nhất nối ba thành phần cùng lúc; không bị giới hạn ở việc nối hai thành phần mỗi lần.",
+    "hints": [
+      "Trước hết gộp các đoạn đang cắt nhau thành m thành phần riêng biệt. Dùng hai con trỏ để tìm dãy dài nhất gồm các thành phần liên tiếp l..r thỏa L[r]−R[l]≤k; đáp án là m−(r−l)."
+    ]
   }
 }

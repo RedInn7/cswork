@@ -12,5 +12,38 @@
       "Feasibility is monotonic in the number of removals k: the more you remove, the remaining LIS can never get longer.",
       "Strictly increasing corresponds to bisect_left/lower_bound, not upper_bound."
     ]
+  },
+  "ja": {
+    "title": "Domino Removal Problem",
+    "description": "ドミノの値、除去位置の 0 始まりの順列、しきい値 min_order が与えられます。順列の順に最初の k 個のドミノを取り除くと、残ったドミノは元の配列での相対的な順序を保ちます。最長狭義単調増加部分列の長さがまだ min_order 以上であるような k の最大値を求めてください。初期配列の LIS がすでにしきい値未満で、k=0 でも満たさない場合、本サイトのプロトコルでは -1 を出力します。元の問題には、このような入力に対する戻り値の定義はありません。",
+    "input": "1 行目に n と min_order、2 行目に n 個のドミノの値、3 行目に n 個の除去インデックスが与えられます。remove は 0..n-1 の順列です。この stdin/stdout の形式と、解なしの出力は、本サイトのプロトコルで追加したものです。",
+    "output": "条件を満たす k∈[0,n] が少なくとも 1 つあれば、そのうち最大の k を出力します。1 つもない場合（初期の LIS < min_order）は -1 を出力します。-1 は、元の問題で定義されていない入力範囲に対する本サイト独自の補足的な取り決めにすぎません。",
+    "explanation": "k について二分探索し、remove[k:] が指す元の配列の位置を残して、patience sorting で狭義の LIS を確認します。解がない場合は、本サイトのプロトコルに従って -1 を出力します。",
+    "hints": [
+      "除去数 k に対して、実行可能性は単調です。多く取り除くほど、残りの LIS が長くなることはありません。",
+      "狭義単調増加なので、対応するのは bisect_left/lower_bound であり、upper_bound ではありません。"
+    ]
+  },
+  "ko": {
+    "title": "Domino Removal Problem",
+    "description": "도미노의 값, 제거 위치의 0-기반 순열, 그리고 임계값 min_order가 주어집니다. 순열의 순서대로 처음 k개의 도미노를 제거하며, 남은 도미노는 원래 배열에서의 상대적 순서를 유지합니다. 가장 긴 순증가 부분 수열(LIS)의 길이가 여전히 min_order 이상이 되는 최대 k를 구하세요. 초기 배열의 LIS가 이미 임계값보다 작아서 k=0조차 만족하지 못하면, 이 사이트의 프로토콜은 -1을 출력하도록 정하고 있습니다. 원문은 이런 입력에 대한 반환값을 정의하지 않습니다.",
+    "input": "첫째 줄에 n과 min_order가 주어지고, 둘째 줄에 n개의 도미노 값이, 셋째 줄에 n개의 remove 인덱스가 주어집니다. remove는 0..n-1의 순열입니다. 이 stdin/stdout 배치와 해가 없을 때의 출력은 이 사이트의 프로토콜에서 추가한 것입니다.",
+    "output": "조건을 만족하는 k∈[0,n]이 하나라도 있으면 그중 가장 큰 k를 출력하고, 없으면(초기 LIS < min_order) -1을 출력합니다. -1은 원문이 정의하지 않은 입력 영역에 대해 이 사이트가 보충한 규약일 뿐입니다.",
+    "explanation": "k에 대해 이분 탐색을 하고, remove[k:]가 가리키는 원래 배열의 위치들만 남겨 patience sorting으로 순증가 LIS를 확인합니다. 해가 없으면 이 사이트의 프로토콜에 따라 -1을 출력합니다.",
+    "hints": [
+      "제거 횟수 k에 대해 실현 가능성은 단조적입니다. 더 많이 제거할수록 남은 LIS는 결코 길어질 수 없습니다.",
+      "순증가는 upper_bound가 아니라 bisect_left/lower_bound에 해당합니다."
+    ]
+  },
+  "vi": {
+    "title": "Domino Removal Problem",
+    "description": "Cho các giá trị của domino, một hoán vị bắt đầu từ 0 của các vị trí loại bỏ, và một ngưỡng min_order. Loại bỏ k domino đầu tiên theo thứ tự của hoán vị; các domino còn lại giữ nguyên thứ tự tương đối từ mảng ban đầu. Tìm k lớn nhất sao cho độ dài của dãy con tăng chặt dài nhất (LIS) vẫn ít nhất là min_order. Nếu LIS của mảng ban đầu đã nhỏ hơn ngưỡng, nên ngay cả k=0 cũng không thỏa, giao thức của trang này quy định xuất -1; bài toán gốc không định nghĩa giá trị trả về cho các đầu vào như vậy.",
+    "input": "Dòng đầu chứa n và min_order; dòng thứ hai chứa n giá trị domino; dòng thứ ba chứa n chỉ số loại bỏ. remove là một hoán vị của 0..n-1. Bố cục stdin/stdout này và đầu ra khi không có nghiệm là phần bổ sung trong giao thức của trang này.",
+    "output": "Nếu có ít nhất một k∈[0,n] thỏa điều kiện, xuất k lớn nhất như vậy; nếu không có (LIS ban đầu < min_order), xuất -1. -1 chỉ là quy ước bổ sung của trang này cho một miền đầu vào mà bài toán gốc để không xác định.",
+    "explanation": "Tìm kiếm nhị phân theo k, giữ các vị trí mảng ban đầu cho bởi remove[k:], và kiểm tra chúng bằng patience sorting để tìm LIS chặt. Khi không có nghiệm, xuất -1 theo quy định của giao thức trang này.",
+    "hints": [
+      "Tính khả thi là đơn điệu theo số lần loại bỏ k: loại bỏ càng nhiều, LIS còn lại không bao giờ dài hơn.",
+      "Tăng chặt tương ứng với bisect_left/lower_bound, không phải upper_bound."
+    ]
   }
 }

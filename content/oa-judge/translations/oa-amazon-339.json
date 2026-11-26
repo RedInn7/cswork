@@ -11,5 +11,35 @@
     "hints": [
       "Treat rows and columns as the vertices of a bipartite graph, with each rook as an edge joining its row and its column. Merge all occupied positions with a union-find and count the connected components that contain edges."
     ]
+  },
+  "ja": {
+    "title": "ルークが取ることしかできないときに残る最小のルーク数",
+    "description": "盤面で、1 はルーク、0 は空きマスです。ルークは、自分の行または列に沿って、出会った別のルークを取る方向にしか動けません。ほかのルークを飛び越えることも、空きマスへ動くこともできません。取り続けたとき、互いに攻撃し合うルークがなくなった時点で残るルークの最小数を求めてください。\n\n本サイトが標準入出力、解説、テストを独自に作成しました。元の範囲が欠けている点や、例の訂正は、問題文中に明記しています。",
+    "input": "1行目に行数 n と列数 m が与えられ、続く n 行にそれぞれ m 個の値(0 または 1)が与えられます。元の制約は 1≤n,m≤1000 で、盤面がまったく空である場合も許されます。",
+    "output": "答えとなる整数を1つ出力してください。",
+    "explanation": "3つの公開例の出力は 1、3、0 で、独立した列挙または直接のシミュレーションで確認済みです。",
+    "hints": [
+      "行と列を二部グラフの頂点とみなし、各ルークをその行と列を結ぶ辺とします。ルークのあるすべての位置を union-find で併合し、辺を含む連結成分の数を数えます。"
+    ]
+  },
+  "ko": {
+    "title": "룩이 잡기만 할 수 있을 때 남는 룩의 최소 개수",
+    "description": "보드에서 1은 룩, 0은 빈 칸입니다. 룩은 자신의 행이나 열을 따라 만나는 다른 룩을 잡는 방향으로만 이동할 수 있으며, 다른 룩을 뛰어넘을 수 없고 빈 칸으로 이동할 수도 없습니다. 계속 잡아서, 서로 공격하는 룩이 없을 때 남는 룩의 최소 개수를 구하세요.\n\n이 사이트가 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 누락된 원문 범위와 예제의 정정 사항은 문제 설명에 명시했습니다.",
+    "input": "첫째 줄에 행 수 n과 열 수 m이 주어지고, 이어서 각각 0 또는 1인 m개의 값으로 이루어진 n개의 줄이 주어집니다. 원문의 범위는 1≤n,m≤1000이며 완전히 빈 보드도 허용됩니다.",
+    "output": "정답을 정수 하나로 출력합니다.",
+    "explanation": "공개 예제 세 개의 출력은 각각 1, 3, 0이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "행과 열을 이분 그래프의 정점으로 보고, 각 룩을 그 행과 열을 잇는 간선으로 봅니다. 모든 룩의 위치를 유니온 파인드로 합치고, 간선을 포함한 연결 요소의 개수를 셉니다."
+    ]
+  },
+  "vi": {
+    "title": "Số quân xe còn lại tối thiểu khi quân xe chỉ được ăn quân",
+    "description": "Trên bàn cờ, 1 là quân xe và 0 là ô trống. Một quân xe chỉ có thể đi dọc hàng hoặc cột của nó để ăn một quân xe khác mà nó gặp; nó không thể nhảy qua các quân xe khác và không thể đi tới ô trống. Cứ tiếp tục ăn quân, hãy tìm số quân xe còn lại ít nhất khi không còn hai quân nào tấn công nhau.\n\nTrang này tự viết đầu vào/ra chuẩn, lời giải và các bộ kiểm thử; các giới hạn gốc bị thiếu và các chỗ sửa ví dụ được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa số hàng n và số cột m, tiếp theo là n dòng, mỗi dòng m giá trị 0 hoặc 1. Giới hạn gốc là 1≤n,m≤1000, và bàn cờ hoàn toàn trống được phép.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Đầu ra của ba ví dụ công khai là 1; 3; và 0, được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Coi các hàng và cột là các đỉnh của một đồ thị hai phía, mỗi quân xe là một cạnh nối hàng và cột của nó. Gộp mọi vị trí bị chiếm bằng union-find và đếm các thành phần liên thông có chứa cạnh."
+    ]
   }
 }

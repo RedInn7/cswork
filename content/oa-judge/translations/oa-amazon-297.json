@@ -11,5 +11,35 @@
     "hints": [
       "Enumerate the final number of left takes l and right takes r=n−l. The base cost is uniquely determined by the first l items and the last r items, and the minimum numbers of consecutive left/right repeats are max(0,l−r−1) and max(0,r−l−1) respectively. Accumulate prefix sums and enumerate to find the minimum."
     ]
+  },
+  "ja": {
+    "title": "両端から荷物をすべて取るための最小エネルギー",
+    "description": "毎回、残っている荷物のうち最も左または最も右のものを取ります。重さ w の荷物を左から取る基本コストは w·X、右から取る場合は w·Y です。今回と前回の取り出しがどちらも左からなら El を、どちらも右からなら Er を加えます。最初の取り出しには連続のコストはありません。すべての荷物を取り、最小の総エネルギーを求めてください。\n\n標準入出力・例・解説は当サイトが独自に作成したものです。当サイトのものと明記した範囲は、元の問題の制約ではありません。",
+    "input": "1 行目に n X Y El Er、2 行目に weights が与えられます。元の問題文には値の範囲がありません。当サイトでは 1≤n≤200000、0≤weights[i],X,Y,El,Er≤10^9 とします。正確な整数を出力してください。64 ビットを超える場合があります。",
+    "output": "答えを表す整数を 1 つ出力してください。",
+    "explanation": "答えは 576、15、0 です。2 つ目の例では、左から 5、右から 1 を取れば、左を連続して 2 回取ったときの追加コスト 100 を避けられます。",
+    "hints": [
+      "最終的な左から取る回数 l と右から取る回数 r=n−l を列挙します。基本コストは、先頭の l 個と末尾の r 個で一意に決まり、連続する左・右の繰り返しの最小回数は、それぞれ max(0,l−r−1) と max(0,r−l−1) です。接頭辞和を累積し、列挙して最小値を求めます。"
+    ]
+  },
+  "ko": {
+    "title": "양 끝에서 모든 짐을 가져가는 최소 에너지",
+    "description": "매번 남은 가방 중 가장 왼쪽 또는 가장 오른쪽 가방을 가져갑니다. 무게 w인 가방을 왼쪽에서 가져가는 기본 비용은 w·X이고, 오른쪽에서는 w·Y입니다. 이번 가져가기와 직전 가져가기가 모두 왼쪽이면 El을 더하고, 모두 오른쪽이면 Er을 더합니다. 첫 번째 가져가기에는 연속 비용이 없습니다. 모든 가방을 가져가는 최소 총 에너지를 구하세요.\n\n표준 입출력 형식, 예제, 해설은 본 사이트가 독자적으로 작성했습니다. 본 사이트의 범위라고 명시한 값은 원문의 제약 조건이 아닙니다.",
+    "input": "첫째 줄에 n X Y El Er, 둘째 줄에 weights가 주어집니다. 원문에는 값의 범위가 없으며 본 사이트에서는 1≤n≤200000, 0≤weights[i],X,Y,El,Er≤10^9입니다. 64비트를 넘을 수 있는 정확한 정수를 출력하세요.",
+    "output": "정수 하나, 즉 답을 출력합니다.",
+    "explanation": "답은 순서대로 576, 15, 0입니다. 두 번째 예제에서는 5를 왼쪽에서, 1을 오른쪽에서 가져가 왼쪽 연속 가져가기의 추가 비용 100을 피합니다.",
+    "hints": [
+      "최종 왼쪽 가져가기 횟수 l과 오른쪽 가져가기 횟수 r=n−l을 열거합니다. 기본 비용은 처음 l개와 마지막 r개 항목으로 유일하게 정해지며, 왼쪽/오른쪽 연속 반복의 최소 횟수는 각각 max(0,l−r−1)과 max(0,r−l−1)입니다. 누적 합을 쌓으며 열거해 최솟값을 구합니다."
+    ]
+  },
+  "vi": {
+    "title": "Năng lượng tối thiểu để lấy hết hành lý từ cả hai đầu",
+    "description": "Mỗi lần, lấy túi ngoài cùng bên trái hoặc ngoài cùng bên phải còn lại. Lấy một túi nặng w từ bên trái có chi phí cơ bản w·X, và từ bên phải là w·Y. Nếu lần lấy này và lần trước đều từ bên trái, cộng thêm El; nếu đều từ bên phải, cộng thêm Er; lần lấy đầu tiên không có chi phí liên tiếp. Lấy hết các túi và tìm tổng năng lượng nhỏ nhất.\n\nĐầu vào/đầu ra chuẩn, các ví dụ và phần lời giải do trang này tự viết; các khoảng giá trị được đánh dấu rõ là của trang này không phải ràng buộc gốc của đề.",
+    "input": "Dòng đầu chứa n X Y El Er và dòng thứ hai chứa weights. Đề gốc không cho cận giá trị nào; trên trang này 1≤n≤200000, 0≤weights[i],X,Y,El,Er≤10^9. In ra số nguyên chính xác, có thể vượt quá 64 bit.",
+    "output": "In ra một số nguyên duy nhất, là đáp án.",
+    "explanation": "Các đáp án lần lượt là 576, 15 và 0. Ở ví dụ thứ hai, lấy 5 từ bên trái và 1 từ bên phải, tránh chi phí thêm 100 khi lấy hai lần liên tiếp từ bên trái.",
+    "hints": [
+      "Duyệt số lần lấy bên trái cuối cùng l và số lần lấy bên phải r=n−l. Chi phí cơ bản được xác định duy nhất bởi l phần tử đầu và r phần tử cuối, và số lần lặp liên tiếp tối thiểu của bên trái/bên phải lần lượt là max(0,l−r−1) và max(0,r−l−1). Tích lũy tổng tiền tố và duyệt để tìm giá trị nhỏ nhất."
+    ]
   }
 }

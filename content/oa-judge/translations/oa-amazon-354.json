@@ -11,5 +11,35 @@
     "hints": [
       "Sort, then use two pointers: if the sum is less than the target, move the left pointer forward; if it is greater, move the right pointer back; if it is equal, record the pair and skip all duplicate values at both ends."
     ]
+  },
+  "ja": {
+    "title": "目標和となる異なるペアを数値の辞書順で出力",
+    "description": "異なる2つの添字を選び、その値の和が target になるものを探します。各ペアは内部で値の昇順に並べ、値としての異なるペアだけを出力し、1つ目の値、次に2つ目の値の昇順(数値順)にソートします。同じ値同士でペアにするには、その値が少なくとも2回出現している必要があります。入力に重複があっても、出力に重複は生じません。\n\n本サイトでは標準入出力、解説、テストを独自に作成しています。元の問題で欠けている制約やサンプルの誤りの訂正は、問題文中に明記しています。",
+    "input": "1行目に n と target、2行目に n 個の整数が与えられます。出典には値の範囲の記載がありません。本サイトでは 0≤n≤200000 とし、要素と target はすべて −10^9..10^9 の範囲です。",
+    "output": "異なる値のペアを a,b の形式で1行に1つずつ出力します(括弧やスペースは付けません)。順序は数値としての辞書順の昇順です。答えがない場合は、None の1行だけを出力します。",
+    "explanation": "3つの公開サンプルの出力は 0,5 / 1,4 / 2,3、None、2,2 です。独立した全探索または直接シミュレーションで確認済みです。",
+    "hints": [
+      "ソートしてから2つのポインタを使います。和が target より小さければ左ポインタを進め、大きければ右ポインタを戻し、等しければペアを記録して両端の重複する値をすべて飛ばします。"
+    ]
+  },
+  "ko": {
+    "title": "합이 목표값인 서로 다른 쌍을 수치 사전순으로 모두 출력",
+    "description": "서로 다른 두 인덱스를 골라 그 값의 합이 target이 되게 합니다. 각 쌍은 내부적으로 값의 오름차순으로 정렬하고, 서로 다른 값의 쌍만 출력하며, 첫 번째 값, 그다음 두 번째 값의 수치 오름차순으로 정렬합니다. 같은 값끼리 쌍을 이루려면 그 값이 최소 두 번 나타나야 하며, 입력에 중복이 있어도 출력에는 중복이 생기지 않습니다.\n\n이 사이트에서 표준 입출력, 해설, 테스트를 독자적으로 작성했으며, 원문에 빠진 범위와 예제의 정정 사항은 문제에 명시했습니다.",
+    "input": "첫째 줄에 n과 target이 주어지고, 둘째 줄에 n개의 정수가 주어집니다. 원문에는 값의 범위가 없으며, 이 사이트에서는 0≤n≤200000이고 원소와 target은 모두 −10^9..10^9 범위입니다.",
+    "output": "서로 다른 각 값의 쌍을 한 줄에 a,b 형식(괄호와 공백 없이)으로 수치 사전순 오름차순으로 출력합니다. 답이 없으면 None 한 줄을 출력합니다.",
+    "explanation": "공개 예제 3개의 출력은 각각 0,5 / 1,4 / 2,3, 그리고 None, 그리고 2,2이며, 독립적인 전수 조사 또는 직접 시뮬레이션으로 확인했습니다.",
+    "hints": [
+      "정렬한 뒤 투 포인터를 사용합니다. 합이 target보다 작으면 왼쪽 포인터를 앞으로, 크면 오른쪽 포인터를 뒤로 옮기고, 같으면 쌍을 기록한 뒤 양쪽 끝의 중복 값을 모두 건너뜁니다."
+    ]
+  },
+  "vi": {
+    "title": "Liệt kê mọi cặp có tổng bằng target theo thứ tự từ điển số học",
+    "description": "Chọn hai chỉ số khác nhau có tổng giá trị bằng target. Trong mỗi cặp, sắp xếp hai giá trị tăng dần; chỉ in các cặp giá trị phân biệt, và sắp xếp chúng theo thứ tự số học tăng dần của giá trị thứ nhất rồi đến giá trị thứ hai. Ghép một giá trị với chính nó đòi hỏi giá trị đó xuất hiện ít nhất hai lần, và các phần tử trùng trong đầu vào không tạo ra đầu ra trùng.\n\nTrang này tự viết lại phần đầu vào/đầu ra chuẩn, lời giải và bộ test; những giới hạn gốc còn thiếu và các chỗ sửa lại ví dụ đều được nêu rõ trong đề bài.",
+    "input": "Dòng đầu chứa n target, dòng thứ hai chứa n số nguyên. Nguồn gốc không cho giới hạn giá trị; trên trang này 0≤n≤200000, và các phần tử cũng như target đều nằm trong khoảng −10^9..10^9.",
+    "output": "In mỗi cặp giá trị phân biệt dưới dạng a,b trên một dòng riêng (không có ngoặc, không có dấu cách), theo thứ tự từ điển số học tăng dần; nếu không có đáp án, in một dòng duy nhất None.",
+    "explanation": "Đầu ra của ba ví dụ công khai lần lượt là 0,5 / 1,4 / 2,3; None; và 2,2, đã được kiểm tra bằng liệt kê độc lập hoặc mô phỏng trực tiếp.",
+    "hints": [
+      "Sắp xếp rồi dùng hai con trỏ: nếu tổng nhỏ hơn target thì dịch con trỏ trái lên; nếu lớn hơn thì lùi con trỏ phải; nếu bằng thì ghi nhận cặp và bỏ qua mọi giá trị trùng ở cả hai đầu."
+    ]
   }
 }

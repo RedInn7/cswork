@@ -13,5 +13,41 @@
       "Group words by signature in a hash map; each group only needs to be sorted once.",
       "Words identical to the query must also be output."
     ]
+  },
+  "ja": {
+    "title": "Goldman Sachs OA #1: オートコレクト試作",
+    "description": "オートコレクト機能を実装してください。単語リスト words とクエリ数 queries が与えられます。各クエリについて、リスト内でそのクエリのアナグラムになっている単語をすべて、辞書順の昇順で返してください。\n\nアナグラムとは、ある文字列の文字を並べ替えてできる文字列のことで、各文字の出現回数がまったく同じである必要があります。クエリと同一の単語もアナグラムとして数えます。",
+    "input": "1 行目に整数 n が与えられ、続く n 行に 1 行につき 1 単語が与えられます。次の行に整数 q が与えられ、続く q 行に 1 行につき 1 クエリが与えられます。\n\n1≤n≤750、1≤q≤750。各単語とクエリの長さは 1..100 で、英小文字のみからなります。リスト内の単語は互いに異なります。どのクエリにも、リスト内にアナグラムが少なくとも 1 つ存在することが保証されます。",
+    "output": "q 行を出力します。i 行目には、まずクエリ i の結果の個数 k を出力し、続けて k 個の単語を辞書順の昇順にスペース区切りで出力します。",
+    "explanation": "例 1: spede のアナグラムは speed だけで、deul のアナグラムは duel と dule です。cars はどのクエリのアナグラムでもありません。\n例 2: listen、silent、enlist、tinsel は互いにアナグラムで、辞書順に出力されます。google と elgoog はどちらも google に対応します。\n例 3: aab と abb は同じ文字を使っていますが出現回数が異なるため、アナグラムではありません。クエリ ab の結果には、同一の単語 ab が含まれます。",
+    "hints": [
+      "単語の文字をソートした文字列をシグネチャとします。アナグラム同士は同じシグネチャを持ちます。",
+      "シグネチャごとにハッシュマップで単語をグループ化します。各グループのソートは 1 回で済みます。",
+      "クエリと同一の単語も出力する必要があります。"
+    ]
+  },
+  "ko": {
+    "title": "Goldman Sachs OA #1: 자동 교정 프로토타입",
+    "description": "자동 교정 기능을 구현하세요. 단어 목록 words와 질의 개수 queries가 주어질 때, 각 질의에 대해 목록에서 해당 질의의 애너그램인 모든 단어를 사전순 오름차순으로 반환합니다.\n\n애너그램이란 다른 문자열의 문자를 재배열하여 만든 문자열을 말하며, 각 문자의 등장 횟수가 정확히 같아야 합니다. 질의와 동일한 단어도 애너그램으로 간주합니다.",
+    "input": "첫 번째 줄에 정수 n이 주어지고, 이어서 n개의 줄에 단어가 하나씩 주어집니다. 그다음 줄에 정수 q가 주어지고, 이어서 q개의 줄에 질의가 하나씩 주어집니다.\n\n1≤n≤750, 1≤q≤750이며, 각 단어와 질의의 길이는 1..100이고 영문 소문자로만 이루어져 있습니다. 목록의 단어는 서로 다르며, 모든 질의에는 목록에 애너그램이 하나 이상 존재함이 보장됩니다.",
+    "output": "q개의 줄을 출력합니다. i번째 줄에는 먼저 i번째 질의의 결과 개수 k를 출력하고, 이어서 k개의 단어를 사전순 오름차순으로 공백으로 구분하여 출력합니다.",
+    "explanation": "예제 1: spede의 애너그램은 speed뿐이고, deul의 애너그램은 duel과 dule입니다. cars는 어떤 질의의 애너그램도 아닙니다.\n예제 2: listen, silent, enlist, tinsel은 서로 애너그램이며 사전순으로 출력됩니다. google과 elgoog는 모두 google에 대응됩니다.\n예제 3: aab와 abb는 같은 문자를 사용하지만 등장 횟수가 달라 애너그램이 아닙니다. 질의 ab의 결과에는 동일한 단어 ab도 포함됩니다.",
+    "hints": [
+      "단어의 문자를 정렬한 문자열을 시그니처로 사용하세요. 애너그램끼리는 시그니처가 같습니다.",
+      "해시 맵에서 시그니처별로 단어를 묶으세요. 각 그룹은 한 번만 정렬하면 됩니다.",
+      "질의와 동일한 단어도 출력해야 합니다."
+    ]
+  },
+  "vi": {
+    "title": "Goldman Sachs OA #1: Bản mẫu tự động sửa lỗi",
+    "description": "Hãy cài đặt tính năng tự động sửa lỗi (autocorrect): cho danh sách từ words và số truy vấn queries, với mỗi truy vấn hãy trả về tất cả các từ trong danh sách là anagram của nó, sắp xếp theo thứ tự từ điển tăng dần.\n\nAnagram là xâu thu được bằng cách sắp xếp lại các chữ cái của một xâu khác; số lần xuất hiện của mỗi chữ cái phải hoàn toàn bằng nhau. Từ giống hệt truy vấn cũng được tính.",
+    "input": "Dòng đầu chứa số nguyên n, tiếp theo là n dòng, mỗi dòng một từ. Dòng kế tiếp chứa số nguyên q, tiếp theo là q dòng, mỗi dòng một truy vấn.\n\n1≤n≤750, 1≤q≤750; mỗi từ và mỗi truy vấn có độ dài 1..100 và chỉ gồm chữ cái tiếng Anh viết thường; các từ trong danh sách đôi một khác nhau; mỗi truy vấn đều được đảm bảo có ít nhất một anagram trong danh sách.",
+    "output": "In ra q dòng. Dòng thứ i trước hết ghi số k kết quả của truy vấn i, sau đó là k từ theo thứ tự từ điển tăng dần, cách nhau bằng dấu cách.",
+    "explanation": "Ví dụ 1: anagram duy nhất của spede là speed; các anagram của deul là duel và dule. cars không phải anagram của truy vấn nào.\nVí dụ 2: listen, silent, enlist và tinsel là anagram của nhau và được in theo thứ tự từ điển; google và elgoog đều ứng với google.\nVí dụ 3: aab và abb dùng cùng các chữ cái nhưng số lần xuất hiện khác nhau, nên không phải anagram; kết quả của truy vấn ab bao gồm cả từ giống hệt là ab.",
+    "hints": [
+      "Dùng xâu các ký tự đã sắp xếp của một từ làm chữ ký; các anagram có cùng chữ ký.",
+      "Gom các từ theo chữ ký bằng hash map; mỗi nhóm chỉ cần sắp xếp một lần.",
+      "Từ giống hệt truy vấn cũng phải được in ra."
+    ]
   }
 }

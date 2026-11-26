@@ -13,5 +13,17 @@
       "Count the good subsequences whose maximum is the current value.",
       "A missing value breaks the consecutive range, and duplicate values correspond to different index choices."
     ]
+  },
+  "vi": {
+    "title": "Đếm chính xác các dãy con tốt có giá trị phân biệt và liên tiếp",
+    "description": "Cho một mảng số nguyên arr. Một dãy con khác rỗng là dãy thu được bằng cách chọn một số chỉ số tăng chặt trong mảng; các giá trị của nó không cần theo thứ tự tăng dần. Một dãy con được gọi là tốt nếu mọi giá trị của nó đều phân biệt và mọi số nguyên nằm giữa giá trị nhỏ nhất a và giá trị lớn nhất b của nó đều xuất hiện trong dãy. Hãy đếm số dãy con tốt. Các cách chọn chỉ số khác nhau được đếm riêng, kể cả khi dãy giá trị giống hệt nhau. In ra số nguyên chính xác về mặt toán học, không lấy modulo. Giao diện gốc dùng long, nhưng trên toàn bộ miền giá trị đáp án có thể vượt quá 64 bit, và phép modulo được thêm vào trong mã của trang đã biên dịch không có cơ sở trong đề bài; trang này sửa rõ cả hai điểm đó và giữ nguyên mọi giới hạn gốc.",
+    "input": "Dòng đầu tiên chứa một số nguyên n, dòng thứ hai chứa n số nguyên arr[i]. 1≤n≤100000, 1≤arr[i]≤100000; cho phép giá trị trùng lặp và thứ tự gốc bất kỳ.",
+    "output": "In ra một số nguyên thập phân không âm chính xác, không modulo, không cắt bớt và không dùng ký hiệu khoa học. Kết quả có thể vượt quá 64 bit và vượt quá giới hạn chuyển đổi 4300 chữ số thập phân mặc định của Python; hãy dùng số nguyên độ chính xác tùy ý. Đáp án có tối đa 30103 chữ số thập phân.",
+    "explanation": "Đề gốc không có ví dụ nhập/xuất chính thức; cả ba ví dụ công khai đều do trang này suy ra từ định nghĩa. [2,2,1] có 3 dãy con một phần tử và 2 dãy con có tập giá trị {1,2}, tổng cộng 5. [1,3] chỉ cho phép các phần tử đơn lẻ, tổng cộng 2. [3,1,2] có 3 dãy con một phần tử, 2 đoạn gồm các giá trị liền kề và 1 đoạn đầy đủ, tổng cộng 6; thứ tự gốc của các giá trị không ảnh hưởng đến việc một đoạn có được phủ hợp lệ hay không.",
+    "hints": [
+      "Khi đã cố định đoạn giá trị, có bao nhiêu cách chọn một chỉ số cho mỗi giá trị?",
+      "Hãy đếm các dãy con tốt có giá trị lớn nhất là giá trị hiện tại.",
+      "Một giá trị bị thiếu sẽ làm đứt đoạn liên tiếp, còn các giá trị trùng nhau tương ứng với các cách chọn chỉ số khác nhau."
+    ]
   }
 }
