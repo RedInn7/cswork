@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import hints from '../lib/content/ling-hints.json';
+import { forReader } from '../lib/language';
 import { curatedEntries } from '../lib/ling-curated';
+import { lingHints } from '../lib/server/study-library';
+import { TRANSLATED, scriptProblem } from '../scripts/oa-judge/text-checks.mjs';
 
 // Room above today's longest (119 zh chars / 220 en chars) for a later refresh.
 const MAX = { zh: 160, en: 320 } as const;
@@ -41,6 +44,26 @@ void test('only server code imports the hint file, so it stays out of client bun
     .flatMap((dir) =>
       (readdirSync(dir, { recursive: true }) as string[]).map((f) => join(dir, f)),
     )
-    .filter((f) => /\.(tsx?|mjs)$/.test(f) && readFileSync(f, 'utf8').includes('ling-hints.json'));
+    .filter((f) => /\.(tsx?|mjs)$/.test(f) && statSync(f).isFile() && /ling-hints\.(\w+\.)?json/.test(readFileSync(f, 'utf8')));
   assert.deepEqual(importers, [join('lib', 'server', 'study-library.ts')]);
+});
+
+void test('ja/ko/vi hint files hold three hints, in their own language, for problems that have hints', () => {
+  const base = hints as Record<string, unknown>;
+  const bad: string[] = [];
+  for (const lang of TRANSLATED as ('ja' | 'ko' | 'vi')[]) {
+    const file = JSON.parse(readFileSync(`lib/content/ling-hints.${lang}.json`, 'utf8')) as Record<string, unknown>;
+    for (const [id, list] of Object.entries(file)) {
+      if (!Object.hasOwn(base, id)) bad.push(`${lang} ${id}: not in ling-hints.json`);
+      else if (!Array.isArray(list) || list.length !== 3 || list.some((hint) => typeof hint !== 'string' || !hint.trim()))
+        bad.push(`${lang} ${id}: not 3 non-empty hints`);
+      else if (list.some((hint) => scriptProblem(lang, hint) || hint.includes('`'))) bad.push(`${lang} ${id}: not written in ${lang}, or contains code`);
+      else assert.deepEqual(lingHints(id)?.[lang], list);
+    }
+  }
+  assert.deepEqual(bad, []);
+  // A reader is sent Chinese, English and their own language only.
+  const all = { zh: ['一'], en: ['one'], ja: ['いち'], ko: ['하나'] };
+  assert.deepEqual(forReader(all, 'ja'), { zh: ['一'], en: ['one'], ja: ['いち'] });
+  assert.deepEqual(forReader(all, null), { zh: ['一'], en: ['one'] });
 });
