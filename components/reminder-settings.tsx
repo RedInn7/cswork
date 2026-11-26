@@ -25,7 +25,6 @@ const KINDS = [
   ['review', '到期复习的题', 'Problems due for review'],
   ['streak', '连续打卡快断时', 'When a streak is about to break'],
   ['daily', '每日一题', 'The daily problem'],
-  ['contest', '报名的周赛和入门赛（开赛前 1 小时再提醒一次）', 'Weeklies and starters you entered (again an hour before)'],
   [
     'applications',
     '投递提醒（OA 截止前 24 小时和 2 小时、面试前 1 小时、offer 截止前 3 天和 1 天各一次，到期的跟进并入每日汇总）',

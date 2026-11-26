@@ -173,9 +173,6 @@ export function ProfileView({
         <section aria-labelledby="learner-contest">
           <h2 id="learner-contest" className="lists-public-h2">
             {t('比赛 rating', 'Contest rating')}
-            <small>
-              <a href="/contest/leaderboard">{t('排行榜', 'Leaderboard')}</a>
-            </small>
           </h2>
           <RatingCurve points={profile.contest} zh={zh} />
         </section>

@@ -42,7 +42,6 @@ import { WorkBadgeSettings } from './work-badge';
 import { ApiTokenSettings } from './api-tokens';
 import '@/app/commerce.css';
 import { GiftBlock, RedeemGift } from './course-gift';
-import { NewsletterToggle } from './newsletter-toggle';
 import { ReminderSettings } from './reminder-settings';
 import { FollowedCompanies } from './company-follow-button';
 import { clearOfflineCaches, clearPush } from './sw-register';
@@ -1201,10 +1200,6 @@ export function AccountView({
             void refresh();
           }}
         />
-      </section>
-      <section className="form-card commerce-account-card" id="newsletter">
-        <h2>{t('每周周报', 'Weekly newsletter')}</h2>
-        <NewsletterToggle />
       </section>
       <ReminderSettings />
       <section className="form-card commerce-account-card" id="companies">

@@ -33,7 +33,6 @@ test('the board links handles, marks the sort and the viewer, and keeps a far-do
     assert.equal(doc.querySelector('input[name="sort"]').value, 'solved');
     assert.equal(doc.querySelector('select[name="school"] option[selected]').value, 'mit');
     assert.equal(doc.querySelector('select[name="language"] option[selected]').value, 'cpp');
-    assert.ok(doc.querySelector('a[href="/contest/leaderboard"]'));
     // No email, nickname or user id: nothing but the handle and the three numbers.
     assert.equal(doc.body.textContent.includes('@example'), false);
   }
