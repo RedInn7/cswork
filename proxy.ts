@@ -22,7 +22,6 @@ export function proxy(request: NextRequest) {
   if (
     request.method === 'GET' &&
     (request.headers.get('accept') || '').includes('text/html') &&
-    !request.headers.has('rsc') &&
     // Crawlers read every language at its own URL; some do send Accept-Language.
     !/bot|spider|crawl|slurp|preview|facebookexternalhit|lighthouse/i.test(request.headers.get('user-agent') || '') &&
     // A reader who chose a language, or who already has an account, keeps what they see today.

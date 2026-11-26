@@ -90,8 +90,9 @@ export function LocaleProvider({
     // Arriving on a language URL chooses it for the unprefixed pages its links lead to.
     if (pathLanguage()) return remember(chosen);
     // Readers from before the cookie only have localStorage: their next load renders right.
-    // Non-default choices are rewritten every load because Safari expires script-set cookies after 7 days.
-    if (chosen !== locale || chosen !== 'zh') writeCookie(chosen);
+    // Rewritten every load because Safari expires script-set cookies after 7 days; without it
+    // proxy.ts would take the next visit for a first one and send it to the browser's language.
+    writeCookie(chosen);
   }, [locale]);
   const language = useSyncExternalStore(subscribe, readLanguage, () => locale);
   useEffect(() => {
