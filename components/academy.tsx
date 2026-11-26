@@ -52,7 +52,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { openCommandPalette, PaletteKey } from './command-palette';
+import { openCommandPalette, PaletteKey, setPaletteSignedOut } from './command-palette';
 import {
   api,
   bootIdentity,
@@ -167,6 +167,9 @@ export function Academy() {
   }, []);
   const personId = boot.person?.id,
     identity = bootIdentity(boot);
+  useEffect(() => {
+    if (!loading) setPaletteSignedOut(!personId);
+  }, [loading, personId]);
   // Periodic and post-submission refreshes only need personal data; the problem
   // catalogue stays from the full load unless the identity changed.
   const refreshLite = useCallback(async () => {

@@ -18,7 +18,7 @@ import { DailyView } from './view';
 export async function generateMetadata() {
   const zh = (await requestLocale()) === 'zh';
   const metadata = await pageMetadata({
-    title: zh ? '每日一题 · cswork' : 'Daily problem · cswork',
+    title: zh ? '每日一题 · CSWork' : 'Daily problem · CSWork',
     description: zh
       ? '每天一道题，所有人同一道：单号日练 500 路算法题，双号日练热门公司的 OA 真题。'
       : 'One problem a day, the same for everyone: Line 500 on odd dates, a hot company’s OA on even dates.',

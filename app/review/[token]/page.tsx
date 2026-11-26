@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   // No canonical or Open Graph URL: the path is the secret. Never indexed, never sent on as a referrer.
   return {
-    title: zh ? '代码评审 · cswork' : 'Code review · cswork',
+    title: zh ? '代码评审 · CSWork' : 'Code review · CSWork',
     description: zh ? '一份提交的私密评审链接。' : 'A private review link for one submission.',
     robots: { index: false, follow: false },
     referrer: 'no-referrer',

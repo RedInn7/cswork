@@ -171,6 +171,8 @@ const urlParam = (key: string) =>
     ? ''
     : new URLSearchParams(location.search).get(key) || '';
 const SORTS = ['frequency', 'number', 'difficulty', 'rating', 'acceptance'];
+const STAGES = ['基础', '核心', '进阶'];
+const LEVELS = ['简单', '中等', '困难'];
 /** Rating bands for the filter, as ratingMin-ratingMax (an open end is empty). */
 const BANDS = ['0-1199', '1200-1399', '1400-1599', '1600-1899', '1900-2099', '2100-2399', '2400-'];
 
@@ -209,15 +211,7 @@ export function StudyLibrary({
   const listRequest = useRef(0);
   // ?section=<stop> opens on that stop (links from the mock OA topics).
   const [section, setSection] = useState(stopFromUrl);
-  // Kept in the URL, so going back or reloading reopens the stop chosen since.
-  useEffect(() => {
-    if (typeof location === 'undefined') return;
-    const url = new URL(location.href);
-    if (section) url.searchParams.set('section', section);
-    else url.searchParams.delete('section');
-    if (url.href !== location.href) history.replaceState(history.state, '', url);
-  }, [section]);
-  const [stage, setStage] = useState('');
+  const [stage, setStage] = useState(() => (STAGES.includes(urlParam('stage')) ? urlParam('stage') : ''));
   const [status, setStatus] = useState('');
   // Company pages link here with ?company=<slug>&sort=frequency.
   const [company, setCompany] = useState(() => urlParam('company').slice(0, 80));
@@ -258,7 +252,17 @@ export function StudyLibrary({
       current = false;
     };
   }, [signedIn]);
-  const [difficulty, setDifficulty] = useState('');
+  const [difficulty, setDifficulty] = useState(() => (LEVELS.includes(urlParam('difficulty')) ? urlParam('difficulty') : ''));
+  // The filters live in the URL, so going back, reloading or sharing the link reopens the same list.
+  useEffect(() => {
+    if (typeof location === 'undefined') return;
+    const url = new URL(location.href);
+    for (const [key, value] of Object.entries({ section, stage, difficulty, company, sort })) {
+      if (value) url.searchParams.set(key, value);
+      else url.searchParams.delete(key);
+    }
+    if (url.href !== location.href) history.replaceState(history.state, '', url);
+  }, [section, stage, difficulty, company, sort]);
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LibraryPage | null>(null);
   const [dataQuery, setDataQuery] = useState('');

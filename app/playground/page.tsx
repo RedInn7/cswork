@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return {
     ...await pageMetadata({
-      title: zh ? '代码沙盒 · cswork' : 'Code playground · cswork',
+      title: zh ? '代码沙盒 · CSWork' : 'Code playground · CSWork',
       description: zh
         ? '不挑题目，直接写 Python、C++、Java、Go，带自定义输入运行，链接一键分享。'
         : 'Write Python, C++, Java or Go with your own input, run it, and share it as a link.',
