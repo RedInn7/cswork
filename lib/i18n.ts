@@ -17,7 +17,7 @@ import {
  * localStorage; the API learns it from the X-Locale header (see lib/types.ts api()).
  * The cswork_locale cookie mirrors it so app/layout.tsx renders the first HTML in it.
  */
-import { asLanguage, htmlLang, type Language, type Locale } from './language';
+import { asLanguage, htmlLang, languagePath, localeOf, splitLanguagePath, type Language, type Locale } from './language';
 export { asLanguage, htmlLang, LANGUAGES, type Language, type Locale } from './language';
 const KEY = 'cswork:locale';
 const listeners = new Set<() => void>();
@@ -26,8 +26,13 @@ let current: Language | null = null;
 // The language the server rendered in: hydration starts from it.
 const ServerLanguage = createContext<Language>('zh');
 
+/** The language in the address (/en/oa): on those pages it is the language, whatever was chosen before. */
+const pathLanguage = () => (typeof location === 'undefined' ? null : splitLanguagePath(location.pathname).language);
+
 export function readLanguage(): Language {
   if (current) return current;
+  const fromPath = pathLanguage();
+  if (fromPath) return fromPath;
   try {
     return asLanguage(typeof localStorage !== 'undefined' ? localStorage.getItem(KEY) : null);
   } catch {
@@ -35,7 +40,7 @@ export function readLanguage(): Language {
   }
 }
 export function readLocale(): Locale {
-  return readLanguage() === 'en' ? 'en' : 'zh';
+  return localeOf(readLanguage());
 }
 function writeCookie(locale: Language) {
   try {
@@ -44,7 +49,21 @@ function writeCookie(locale: Language) {
     // Sandboxed frames have no cookies; the server then renders Chinese.
   }
 }
+function remember(locale: Language) {
+  writeCookie(locale);
+  try {
+    localStorage.setItem(KEY, locale);
+  } catch {
+    // Private mode: the cookie still carries it.
+  }
+}
 export function setLocale(locale: Language) {
+  // On a language URL the switch goes to the same page in the other language.
+  if (pathLanguage()) {
+    remember(locale);
+    const { path } = splitLanguagePath(location.pathname);
+    return location.assign(languagePath(locale, path) + location.search + location.hash);
+  }
   // Converted text can't be turned back to Simplified in place: leaving Traditional reloads.
   const reload = readLanguage() === 'zh-Hant' && locale !== 'zh-Hant';
   current = locale;
@@ -68,6 +87,8 @@ export function LocaleProvider({
 }) {
   useEffect(() => {
     const chosen = readLanguage();
+    // Arriving on a language URL chooses it for the unprefixed pages its links lead to.
+    if (pathLanguage()) return remember(chosen);
     // Readers from before the cookie only have localStorage: their next load renders right.
     // Non-default choices are rewritten every load because Safari expires script-set cookies after 7 days.
     if (chosen !== locale || chosen !== 'zh') writeCookie(chosen);
@@ -98,7 +119,7 @@ export function useLanguage(): Language {
   return useSyncExternalStore(subscribe, readLanguage, () => serverLanguage);
 }
 export function useLocale(): Locale {
-  return useLanguage() === 'en' ? 'en' : 'zh';
+  return localeOf(useLanguage());
 }
 /** t('中文', 'English'): pick the text for the current site language. */
 export function useT() {
