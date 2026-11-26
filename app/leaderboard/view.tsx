@@ -53,9 +53,6 @@ export function PracticeBoardView({
             'Each accepted problem counts once: a LeetCode problem scores its zerotrac problem rating, estimated from weekly and biweekly contests; an OA problem scores the estimated rating its page shows (1400, 1750 or 2150 for easy, medium or hard); anything else without a rating scores 1200, 1600 or 2000 (unknown difficulty counts as medium), and the total over 100 is your points. Only judged runs on public problems count, the same ones your profile counts.',
           )}
         </p>
-        <p className="contest-calendar">
-          <a href="/contest/leaderboard">{t('比赛 Rating 排行榜', 'Contest rating board')} →</a>
-        </p>
       </section>
       <nav className="contest-schools" aria-label={t('排序方式', 'Sort by')}>
         {SORTS.map(([key, zhName, en]) => (

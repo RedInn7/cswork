@@ -3,13 +3,13 @@ import './newsletter.css';
 import Link from 'next/link';
 import { requestLocale } from '@/lib/server/locale';
 
-/** The weekly newsletter's public pages (/newsletter, /newsletter/<week>) on the classic lists' shell. */
+/** The mail unsubscribe page (/newsletter/unsubscribe) on the classic lists' shell. */
 export default async function NewsletterLayout({ children }: { children: React.ReactNode }) {
   const zh = (await requestLocale()) === 'zh';
   return (
     <div className="lists-public newsletter-public" lang={zh ? 'zh-CN' : 'en'}>
       <header className="lists-public-header">
-        <Link className="lists-public-brand" href="/newsletter" prefetch={false}>
+        <Link className="lists-public-brand" href="/" prefetch={false}>
           cswork<span> / {zh ? '周报' : 'weekly'}</span>
         </Link>
         <Link href="/" prefetch={false}>
